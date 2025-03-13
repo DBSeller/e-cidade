@@ -1,0 +1,8 @@
+#!/bin/bash
+
+gcc -fpic -DCOMPILE_DL_IMPFISCAL=1 -I/usr/include/php/main -I/usr/include/php/ext -I/usr/include/php/regex -I/usr/include/php/TSRM -I/usr/include/php/Zend -I/usr/include/php/ -c -o temp.o impAutent.c
+
+gcc -shared -L/usr/lib -rdynamic -o /usr/lib/php4/impAutent.so temp.o
+
+rm -f temp.o
+

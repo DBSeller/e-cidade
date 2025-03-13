@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -74,7 +74,7 @@ $rsDocumentoTemplate   = $oDaoDocumentoTemplate->sql_record($sSqlDocumentoTempla
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_ouvidoriaparametro','func_ouvidoriaparametro.php?funcao_js=parent.js_preenchepesquisa|ov_06_instit|ov06_anousu','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ouvidoriaparametro','func_ouvidoriaparametro.php?funcao_js=parent.js_preenchepesquisa|ov_06_instit|ov06_anousu','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_ouvidoriaparametro.hide();

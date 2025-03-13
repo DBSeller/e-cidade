@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empagegera_classe.php");
-include("classes/db_empageconfgera_classe.php");
-include("classes/db_empageconf_classe.php");
-include("classes/db_empagetipo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empagegera_classe.php"));
+include(modification("classes/db_empageconfgera_classe.php"));
+include(modification("classes/db_empageconf_classe.php"));
+include(modification("classes/db_empagetipo_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clempagegera = new cl_empagegera;
 $clempageconfgera = new cl_empageconfgera;
@@ -160,10 +160,10 @@ function js_enviarmovimentos(){
 }
 function js_pesquisa_gera(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera&processado=false','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empagegera','func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera&processado=false','Pesquisa',true);
   }else{
      if(document.form1.e87_codgera.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?pesquisa_chave='+document.form1.e87_codgera.value+'&funcao_js=parent.js_mostragera&processado=false','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empagegera','func_empagegera.php?pesquisa_chave='+document.form1.e87_codgera.value+'&funcao_js=parent.js_mostragera&processado=false','Pesquisa',false);
      }else{
        document.form1.e87_descgera.value = ''; 
        document.form1.submit();

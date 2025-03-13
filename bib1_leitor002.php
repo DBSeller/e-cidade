@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_leitor_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_leitor_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -55,7 +55,7 @@ if (isset($chavepesquisa)) {
   ?>
   <script>
     parent.document.formaba.acervo2.disabled = false;
-    top.corpo.iframe_acervo2.location.href='bib1_carteira001.php?bi16_leitor=<?=$bi10_codigo?>&z01_nome=<?=$nome?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_acervo2.location.href='bib1_carteira001.php?bi16_leitor=<?=$bi10_codigo?>&z01_nome=<?=$nome?>';
   </script>
   <?
 }
@@ -76,7 +76,7 @@ if (isset($chavepesquisa)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Leitor</b></legend>
-    <?require_once("forms/db_frmleitor.php");?>
+    <?require_once(modification("forms/db_frmleitor.php"));?>
    </fieldset>
    </center>
   </td>
@@ -102,7 +102,7 @@ if (isset($alterar)) {
     ?>
     <script>
       parent.document.formaba.acervo2.disabled = false;
-      top.corpo.iframe_acervo2.location.href='bib1_carteira001.php?bi16_leitor=<?=$bi10_codigo?>&z01_nome=<?=$nome?>';
+      (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_acervo2.location.href='bib1_carteira001.php?bi16_leitor=<?=$bi10_codigo?>&z01_nome=<?=$nome?>';
     </script>
     <?
     $clleitor->erro(true,false);

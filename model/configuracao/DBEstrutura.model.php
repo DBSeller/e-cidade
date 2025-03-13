@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -174,6 +174,83 @@ class DBEstrutura {
     } 
     return true;
   }
-}
+  /**
+   * Remove os estruturais zerados as esquerda
+   * 
+   * @param  String $sEstrutural Estrutural sintetico que possa ter zeros a direita. Ex.: 01.10.00.00
+   * @return String              Estrutural sintetico correto.                       Ex.: 01.10
+   */
+  public static function removerEstruturalVazio($sEstrutural) {
 
-?>
+    $sRegex = '/\.(0)+$/';
+
+    if ( !preg_match($sRegex, $sEstrutural) ) {
+      return $sEstrutural;
+    }   
+
+    return self::removerEstruturalVazio(preg_replace($sRegex, '',$sEstrutural));
+  }
+
+  /**
+   * Aplica máscara a um numero
+   * 
+   * @param  String $sMascara Mascara do Estrutural           Ex.: 00.00.00
+   * @param  String $sNumero  NUmero a ser aplicado a mascara Ex.: 123456
+   * @return String           Numero com a mascara aplicada   Ex.: 12.34.56 
+   */
+  public static function mascararString( $sMascara, $sNumero ) {
+
+    $iCaracteresValidos = strlen( str_replace(".", "", $sMascara) );                 // Retorna todos os caracteres != de .
+    $sNumero            = str_pad( $sNumero, $iCaracteresValidos, 0, STR_PAD_RIGHT );// Preenche espaços faltando
+    $sNumero            = substr( $sNumero, 0, $iCaracteresValidos );                // Corta Pedaços Sobrando
+    $aNumero            = str_split($sNumero);                                       // String Transformada em Array
+    $aLocaisPontuados = array();
+
+    /**
+     * Percorre a mascara procurando a pontuacao
+     */
+    for ($iPosicao = 0; $iPosicao < strlen($sMascara); $iPosicao++ ) {
+    
+      $sCaracter = $sMascara[$iPosicao];
+
+      /**
+       * Os Locais pontuados devem ser diminiuidos do total pontuado, pois os pontos contam na contagem geral, 
+       * mas não são caracteres validos
+       *
+       * 0  0  .  0  0  .  0  0  .  0  0  -> Mascara Passada
+       * |  |  |  |  |  |  |  |  |  |  |   
+       * 1  2  3  4  5  6  7  8  9  10 11 -> Posicoes( Comeca em zero, eu sei, mas eh para ilustrar :] )
+       * |  |  |  |  |  |  |  |  |  |  |   
+       * 1  2  .  3  4  .  5  6  .  7  8   
+       *      (3        5        7)       -> Posicoes Pontuadas
+       */
+      if ( $sCaracter == ".") {
+        $aLocaisPontuados[] = $iPosicao - count($aLocaisPontuados);
+      }
+    }
+    
+    /**
+     * Ordena de Forma Reversa para colocar os numeros sem precisar fazer cálculos de posicao
+     */
+    rsort($aLocaisPontuados);
+
+    /**
+     * Adiciona os Pontos de Trás para frente
+     *
+     * Ex.:   01010101
+     *     -> 010101.01
+     *     -> 0101.01.01
+     *     -> 01.01.01.01
+     */
+    foreach ($aLocaisPontuados as $iPosicao ) {
+      array_splice($aNumero, $iPosicao, 0, ".");
+    }
+     
+    /**
+     * Transforma o array manipulado em string
+     */
+    $sNumero = implode('', $aNumero);
+
+    return $sNumero;
+  }
+}

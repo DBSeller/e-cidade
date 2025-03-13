@@ -26,7 +26,7 @@
  */
 
 //MODULO: Trânsito
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clveiculos_env->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -277,7 +277,7 @@ function js_mostratipo_habilitacao1(chave1,chave2){
   db_iframe_tipo_habilitacao.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('','db_iframe_veiculos_env','func_veiculos_env.php?funcao_js=top.js_preenchepesquisa|tr08_id','Pesquisa',true);
+  js_OpenJanelaIframe('','db_iframe_veiculos_env','func_veiculos_env.php?funcao_js=parent.CurrentWindow.js_preenchepesquisa|tr08_id','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiculos_env.hide();

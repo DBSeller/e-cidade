@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_libpessoal.php");
-require_once("classes/db_afasta_classe.php");
-require_once("classes/db_codmovsefip_classe.php");
-require_once("classes/db_movcasadassefip_classe.php");
-require_once("classes/db_rhpessoal_classe.php");
-require_once("classes/db_rhpessoalmov_classe.php");
-require_once("classes/db_pontofx_classe.php");
-require_once("classes/db_pontofs_classe.php");
-require_once("classes/db_rhrubricas_classe.php");
-require_once("classes/db_inssirf_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("classes/db_afasta_classe.php"));
+require_once(modification("classes/db_codmovsefip_classe.php"));
+require_once(modification("classes/db_movcasadassefip_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_rhpessoalmov_classe.php"));
+require_once(modification("classes/db_pontofx_classe.php"));
+require_once(modification("classes/db_pontofs_classe.php"));
+require_once(modification("classes/db_rhrubricas_classe.php"));
+require_once(modification("classes/db_inssirf_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -60,7 +60,8 @@ $afasta            = " disabled ";
 $aVerificaAfastamento = array();
 $aRetornoNulo = array();
 
-if(isset($incluir)){
+if (isset($incluir)) {
+
   db_inicio_transacao();
 
   $r45_dtafas = $r45_dtafas_ano."-".$r45_dtafas_mes."-".$r45_dtafas_dia;
@@ -107,7 +108,8 @@ if(isset($incluir)){
   	$erro_msg = "O Servidor já possui afastamento para o período selecionado \\n Verifique afastamentos Anteriores";
   }
 
-  if($sqlerro == false){
+  if ($sqlerro == false) {
+
     $clafasta->r45_anousu = $r45_anousu;
     $clafasta->r45_mesusu = $r45_mesusu;
     $clafasta->r45_regist = $r45_regist;
@@ -118,6 +120,7 @@ if(isset($incluir)){
     $clafasta->r45_codafa = $r45_codafa;
     $clafasta->r45_codret = $r45_codret;
     $clafasta->r45_obs    = $r45_obs;
+
     $clafasta->incluir(null);
     $erro_msg             = $clafasta->erro_msg;
     
@@ -125,7 +128,7 @@ if(isset($incluir)){
       $sqlerro  = true;
     }
     if($sqlerro == false){
-      $arr_possiveis = Array(2,3,4,5,6,7);
+      $arr_possiveis = Array(2,3,4,5,6,7,8);
       if(in_array($r45_situac,$arr_possiveis)){
 
         $result_pontofx = $clpontofx->sql_record($clpontofx->sql_query_file(db_anofolha(),db_mesfolha(),$r45_regist));
@@ -138,8 +141,8 @@ if(isset($incluir)){
         global $dias_pagamento, $data_afastamento, $dtfim,$subpes;
         $data_ultimo_dia = db_dias_mes(db_anofolha(),db_mesfolha(),true);
         
-	      if($r45_dtreto == '' || $r45_dtreto > $data_ultimo_dia ){
-	      	
+        if($r45_dtreto == '' || $r45_dtreto > $data_ultimo_dia ){
+          
            $result_dias_trab = db_query("select fc_dias_trabalhados(".$r45_regist.",".db_anofolha().",".db_mesfolha().",true,".db_getsession("DB_instit").") as dias_pagamento");
           if(pg_numrows($result_dias_trab) > 0){
             db_fieldsmemory($result_dias_trab, 0);
@@ -149,85 +152,35 @@ if(isset($incluir)){
           if(pg_numrows($result_dias_trab) > 0){
             db_fieldsmemory($result_dias_trab, 0);
           }
-       }   
-	$result_tbprev = $clrhpessoalmov->sql_record($clrhpessoalmov->sql_query_file(null,db_getsession('DB_instit'),"(rh02_tbprev + 2) as rh02_tbpev","","rh02_anousu = ".db_anofolha()." and rh02_mesusu = ".db_mesfolha()." and rh02_regist = ".$r45_regist." and rh02_instit = ".db_getsession("DB_instit")));
+        }   
+        $result_tbprev = $clrhpessoalmov->sql_record($clrhpessoalmov->sql_query_file(null,db_getsession('DB_instit'),"(rh02_tbprev + 2) as rh02_tbpev","","rh02_anousu = ".db_anofolha()." and rh02_mesusu = ".db_mesfolha()." and rh02_regist = ".$r45_regist." and rh02_instit = ".db_getsession("DB_instit")));
 
-	if($clrhpessoalmov->numrows > 0){
-	  db_fieldsmemory($result_tbprev, 0);
-	}
-	$result_inssirfsau = $clinssirf->sql_record($clinssirf->sql_query_file(null,db_getsession('DB_instit'),"*","","r33_anousu = ".db_anofolha()." and r33_mesusu = ".db_mesfolha()." and r33_codtab = '".trim($rh02_tbpev)."' and trim(r33_rubsau) <> '' "));
-	$numrows_sau = $clinssirf->numrows;
-	
-	$result_inssirfmat = $clinssirf->sql_record($clinssirf->sql_query_file(null,db_getsession('DB_instit'),"*","","r33_anousu = ".db_anofolha()." and r33_mesusu = ".db_mesfolha()." and r33_codtab = '".trim($rh02_tbpev)."' and trim(r33_rubmat) <> '' "));
-    $numrows_mat = $clinssirf->numrows;
+        if($clrhpessoalmov->numrows > 0){
+          db_fieldsmemory($result_tbprev, 0);
+        }
+        $result_inssirfsau = $clinssirf->sql_record($clinssirf->sql_query_file(null,db_getsession('DB_instit'),"*","","r33_anousu = ".db_anofolha()." and r33_mesusu = ".db_mesfolha()." and r33_codtab = '".trim($rh02_tbpev)."' and trim(r33_rubsau) <> '' "));
+        $numrows_sau = $clinssirf->numrows;
+  
+        $result_inssirfmat = $clinssirf->sql_record($clinssirf->sql_query_file(null,db_getsession('DB_instit'),"*","","r33_anousu = ".db_anofolha()." and r33_mesusu = ".db_mesfolha()." and r33_codtab = '".trim($rh02_tbpev)."' and trim(r33_rubmat) <> '' "));
+        $numrows_mat = $clinssirf->numrows;
 
-	$result_inssirfaci = $clinssirf->sql_record($clinssirf->sql_query_file(null,db_getsession('DB_instit'),"*","","r33_anousu = ".db_anofolha()." and r33_mesusu = ".db_mesfolha()." and r33_codtab = '".trim($rh02_tbpev)."' and trim(r33_rubaci) <> '' "));
-	$numrows_aci = $clinssirf->numrows;
-	if(($dias_pagamento > 0 && 
-	   (  
-	      ($r45_situac == 6 && $numrows_sau == 0) || 
-	      ($r45_situac == 5 && $numrows_mat == 0) ||
-	      ($r45_situac == 3 && $numrows_aci == 0)
-	   ))
-	    || ($dias_pagamento > 0 && $r45_situac != 6 && $r45_situac != 5 && $r45_situac != 3)
-	  ){
-	  for($i=0; $i<$numrows_pontofx; $i++){
-	    db_fieldsmemory($result_pontofx, $i);
-	    //echo "<br> rubricas --> ".($clrhrubricas->sql_query_file(null,db_getsession('DB_instit'),"rh27_propq","","rh27_rubric = '".$r90_rubric."' and rh27_calcp = 't'"));
-	    $result_procp = $clrhrubricas->sql_record($clrhrubricas->sql_query_file(null,db_getsession('DB_instit'),"rh27_propq","","rh27_rubric = '".$r90_rubric."' and rh27_calcp = 't'"));
+        $result_inssirfaci = $clinssirf->sql_record($clinssirf->sql_query_file(null,db_getsession('DB_instit'),"*","","r33_anousu = ".db_anofolha()." and r33_mesusu = ".db_mesfolha()." and r33_codtab = '".trim($rh02_tbpev)."' and trim(r33_rubaci) <> '' "));
+        $numrows_aci = $clinssirf->numrows;
 
-	    $valor_ponto = $r90_valor;
-	    $quant_ponto = $r90_quant;
-	    if($clrhrubricas->numrows > 0){
-	      db_fieldsmemory($result_procp, 0);
-	      if($r90_valor > 0){
-		$valor_ponto = ($r90_valor / 30) * $dias_pagamento;
-	      }
-	      if($r90_quant > 0 && $rh27_propq == "t"){
-		$quant_ponto = ($r90_quant / 30) * $dias_pagamento;
-	      }
-	    }
 
-	    $altinclui = true;
-	    $result_pontofs = $clpontofs->sql_record($clpontofs->sql_query_file(db_anofolha(),db_mesfolha(),$r45_regist,$r90_rubric));
-	    if($clpontofs->numrows == 0){
-	      $altinclui = false;
-	    }
+        /**
+         * Realiza a proporcionalização do ponto
+         */
+        $oDataRetorno = null;
 
-	    $clpontofs->r10_anousu = db_anofolha();
-	    $clpontofs->r10_mesusu = db_mesfolha();
-	    $clpontofs->r10_regist = $r45_regist;
-	    $clpontofs->r10_rubric = $r90_rubric;
-	    $clpontofs->r10_valor  = "round($valor_ponto,2)";
-	    $clpontofs->r10_quant  = "round($quant_ponto,2)";
-	    $clpontofs->r10_lotac  = $r90_lotac;
-	    $clpontofs->r10_datlim = $r90_datlim;
-	    $clpontofs->r10_instit = db_getsession("DB_instit");
-	    //echo '<br>'.($clpontofs->sql_query_file(db_anofolha(),db_mesfolha(),$r45_regist,$r90_rubric));
-	    $result_pontofs = $clpontofs->sql_record($clpontofs->sql_query_file(db_anofolha(),db_mesfolha(),$r45_regist,$r90_rubric));
-	    if($altinclui == true){
-	      $clpontofs->alterar(db_anofolha(),db_mesfolha(),$r45_regist,$r90_rubric);
-	    }else{
-	      $clpontofs->incluir(db_anofolha(),db_mesfolha(),$r45_regist,$r90_rubric);
-	    }
-	    if($clpontofs->erro_status=="0"){
-	      $sqlerro = true;
-	      $erro_msg = $clpontofs->erro_msg;
-	      break;
-	    }
-	  }
-	}else if( $r45_situac == 2 || $r45_situac == 7    || 
-	         ($r45_situac == 6  && $numrows_sau == 0) || 
-	         ($r45_situac == 5  && $numrows_mat == 0) || 
-	         ($r45_situac == 3  && $numrows_aci == 0)   ) {
-	  
-	  $clpontofs->excluir(db_anofolha(),db_mesfolha(),$r45_regist,null);
-	  if($clpontofs->erro_status=="0"){
-	    $sqlerro = true;
-	    $erro_msg = $clpontofs->erro_msg;
-	    break;
-	  }
-	}
+        if(isset($r45_dtreto) && !empty($r45_dtreto)) {
+          $oDataRetorno = new DBDate($r45_dtreto);
+        }
+
+        $oCompetencia = DBPessoal::getCompetenciaFolha(); 
+        $oServidor = ServidorRepository::getInstanciaByCodigo($r45_regist, $oCompetencia->getAno(), $oCompetencia->getMes());
+        $oProporcionalizacaoPontoSalario = new ProporcionalizacaoPontoSalario($oServidor->getPonto(Ponto::SALARIO), $r45_situac, $oDataRetorno);
+        $oProporcionalizacaoPontoSalario->processar();
       }
     }
     db_fim_transacao($sqlerro);
@@ -308,7 +261,7 @@ function dias_pagto($registro=null,$r45_dtreto,$r45_dtafas){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
       <center>
       <?
-      require_once("forms/db_frmafasta.php");
+      require_once(modification("forms/db_frmafasta.php"));
       
       
         if(count($aRetornoNulo) > 0){

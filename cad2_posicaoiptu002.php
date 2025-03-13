@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('');
@@ -67,7 +67,7 @@ inner join tabrec on j21_receit = k02_codigo
 inner join iptucalc on j23_matric = j21_matric and j23_anousu = j21_anousu
 where j21_anousu = $exercicio $where_considerar
 group by j21_receit, k02_drecei";
-$Result_calc =  pg_exec($sql_calc);
+$Result_calc =  db_query($sql_calc);
 $NumRows_calc = pg_numrows($Result_calc);
 for($w=0;$w<$NumRows_calc;$w++){
 	db_fieldsmemory($Result_calc,$w);
@@ -92,7 +92,7 @@ for($w=0;$w<$NumRows_calc;$w++){
 }
 $pdf->setfont('arial','b',8);
 $sql_mat_calc="select count(*) as mat_calc from iptucalc where j23_anousu = $exercicio $where_considerar";
-$Result_mat_calc =  pg_exec($sql_mat_calc);
+$Result_mat_calc =  db_query($sql_mat_calc);
 $NumRows_mat_calc = pg_numrows($Result_mat_calc);
 if ($NumRows_mat_calc>0){
 	db_fieldsmemory($Result_mat_calc,0);
@@ -109,8 +109,17 @@ inner join arrepaga on j20_numpre = k00_numpre
 inner join tabrec on k02_codigo = k00_receit 
 inner join iptucalc on j23_matric = j20_matric and j23_anousu = j20_anousu
 where j20_anousu = $exercicio $where_considerar
+  and not exists(
+    select 1 from abatimentoutilizacaodestino
+      inner join abatimentoutilizacao on k157_sequencial = k170_utilizacao
+      inner join abatimento           on k125_sequencial = k157_abatimento
+    where k170_numpre = arrepaga.k00_numpre
+      and k170_numpar = arrepaga.k00_numpar
+      and k170_receit = arrepaga.k00_receit
+      and k125_tipoabatimento = 3
+  )
 group by k00_receit, k02_drecei";
-$Result_pago =  pg_exec($sql_pago);
+$Result_pago =  db_query($sql_pago);
 $NumRows_pago = pg_numrows($Result_pago);
 for($w=0;$w<$NumRows_pago;$w++){
 	db_fieldsmemory($Result_pago,$w);
@@ -141,7 +150,7 @@ inner join arrepaga on j20_numpre = k00_numpre
 inner join iptucalc on j20_matric = j23_matric and j20_anousu = j23_anousu
 where j20_anousu = $exercicio
 ) as x";
-$Result_mat_pag =  pg_exec($sql_mat_pag);
+$Result_mat_pag =  db_query($sql_mat_pag);
 $NumRows_mat_pag = pg_numrows($Result_mat_pag);
 if ($NumRows_mat_pag>0){
 	db_fieldsmemory($Result_mat_pag,0);
@@ -155,6 +164,7 @@ $div_total=0;
 $sql_div = "select v03_receit, k02_drecei, round(sum(v01_vlrhis),2) as div 
 from divida 
 inner join divold on v01_coddiv = k10_coddiv
+                 and v01_numpar = k10_numpar
 inner join iptunump on j20_numpre = k10_numpre
 inner join iptucalc on j20_matric = j23_matric and j20_anousu = j23_anousu 
 inner join arrematric on arrematric.k00_numpre = v01_numpre 
@@ -162,7 +172,7 @@ inner join proced on v03_codigo = v01_proced
 inner join tabrec on v03_receit = k02_codigo 
 where v01_exerc = $exercicio $where_considerar
 group by v03_receit, k02_drecei";
-$Result_div =  pg_exec($sql_div);
+$Result_div =  db_query($sql_div);
 $NumRows_div = pg_numrows($Result_div);
 for($w=0;$w<$NumRows_div;$w++){
 	db_fieldsmemory($Result_div,$w);
@@ -191,12 +201,13 @@ $sql_mat_div="select count(*) as mat_div from (
 select distinct k00_matric 
 from divida 
 inner join divold on v01_coddiv = k10_coddiv
+                 and v01_numpar = k10_numpar
 inner join iptunump on j20_numpre = k10_numpre
 inner join iptucalc on j20_matric = j23_matric and j20_anousu = j23_anousu 
 inner join arrematric on arrematric.k00_numpre = v01_numpre 
 where v01_exerc = $exercicio $where_considerar
 ) as x";
-$Result_mat_div =  pg_exec($sql_mat_div);
+$Result_mat_div =  db_query($sql_mat_div);
 $NumRows_mat_div = pg_numrows($Result_mat_div);
 if ($NumRows_mat_div>0){
 	db_fieldsmemory($Result_mat_div,0);

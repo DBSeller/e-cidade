@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("RelatoriosLegaisBase.model.php");
+require_once(modification("model/contabilidade/relatorios/RelatoriosLegaisBase.model.php"));
 /**
  * classe para controle dos valores do Anexo V da RGF
  * @package    contabilidade
@@ -76,7 +76,7 @@ class AnexoVRGF extends RelatoriosLegaisBase  {
     $vRPPS              = '';
     $sSqlVerificaInstituicao = "SELECT codigo, db21_tipoinstit From db_config where codigo in({$this->getInstituicoes()})";
     $rsVerificaInstituicao   = db_query($sSqlVerificaInstituicao);
-    $aInstituicoes           = db_utils::getColectionByRecord($rsVerificaInstituicao);
+    $aInstituicoes           = db_utils::getCollectionByRecord($rsVerificaInstituicao);
     foreach ($aInstituicoes as $oInstituicao) {
        
       if ($oInstituicao->db21_tipoinstit == 5 || $oInstituicao->db21_tipoinstit == 6) {
@@ -404,7 +404,7 @@ class AnexoVRGF extends RelatoriosLegaisBase  {
     $sSqlRecurso .= "  from orctiporec  "; 
     $sSqlRecurso .= "  order by o15_codigo"; 
     $rsRecurso    = db_query($sSqlRecurso);
-    $aRecursos    = db_utils::getColectionByRecord($rsRecurso);
+    $aRecursos    = db_utils::getCollectionByRecord($rsRecurso);
     $oRetorno     = new stdClass();    
     foreach ($aRecursos as $oRecurso) {
       

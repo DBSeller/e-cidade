@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,16 +24,16 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_propri_classe.php");
-require_once("classes/db_promitente_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libpessoal.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_propri_classe.php"));
+require_once(modification("classes/db_promitente_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libpessoal.php"));
 
 $oPost     = db_utils::postMemory($_POST);
 $oGet      = db_utils::postMemory($_GET);
@@ -218,7 +218,7 @@ foreach ( $aFolhas as $oFolha ) {
           
           foreach ( $oFolha->aDadosBases as $oBase ) {
           
-            $sRubrica = "<a href='#' id='$oBase->rubrica'>{$oBase->rubrica}</a>";
+            $sRubrica = "<a href='#' id='{$oBase->rubrica}'>{$oBase->rubrica}</a>";
           
             if ( $oBase->tem_base_formula == 't' ) {
               $sRubrica = "B " . $sRubrica;
@@ -269,7 +269,7 @@ $$('.folha-complementar').each(function( oElemento, iIndice ){
   
   function js_Pesquisarubrica( rubrica ) {
     
-   var janela = js_OpenJanelaIframe('top.corpo','db_iframe_pesquisarubrica','pes1_rhrubricas006.php?tela_pesquisa=true&chavepesquisa='+rubrica,'Pesquisa',true,'20');
+   var janela = js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesquisarubrica','pes1_rhrubricas006.php?tela_pesquisa=true&chavepesquisa='+rubrica,'Pesquisa',true,'20');
    janela.moldura.style.zIndex = 9999;
   }
   
@@ -290,6 +290,7 @@ $$('.folha-complementar').each(function( oElemento, iIndice ){
       );
 
     fieldset.style.height = html.scrollHeight + 7 + 'px';
+    parent.iframeLoaded();
   }
 
   var aLinks = document.querySelectorAll("#tabela-calculos tr td:nth-child(2) a");

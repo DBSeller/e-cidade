@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("classes/db_pcsubgrupo_classe.php");
-include("classes/db_orcparametro_classe.php");
-include("classes/db_empautitem_classe.php");
-include("classes/db_pcmaterele_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("classes/db_pcsubgrupo_classe.php"));
+include(modification("classes/db_orcparametro_classe.php"));
+include(modification("classes/db_empautitem_classe.php"));
+include(modification("classes/db_pcmaterele_classe.php"));
 
 $clpcsubgrupo = new cl_pcsubgrupo;
 $clempautitem = new cl_empautitem;

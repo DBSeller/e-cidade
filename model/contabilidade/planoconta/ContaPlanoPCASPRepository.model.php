@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -38,13 +38,7 @@
      * Collection de ContaPlanoPCASP
      * @var ContaPlanoPCASP[]
      */
-    private $aContas = array();
-
-    /**
-     * Instancia da classe
-     * @var ContaPlanoPCASPRepository
-     */
-    private static $oInstance;
+    private static $aContas = array();
 
     private function __construct() {
 
@@ -59,30 +53,18 @@
      * @return ContaPlanoPCASP
      */
     public static function getContaByCodigo($iCodigoContaPlanoPCASP, $iAno, $iCodigoReduzido = null,
-                                            $iInstituicaoSessao=null) {
+                                            $iInstituicaoSessao = null) {
 
       $sChave = "{$iCodigoContaPlanoPCASP}{$iAno}{$iCodigoReduzido}{$iInstituicaoSessao}";
-      if (!array_key_exists($sChave, ContaPlanoPCASPRepository::getInstance()->aContas)) {
-        ContaPlanoPCASPRepository::getInstance()->aContas[$sChave] = new ContaPlanoPCASP($iCodigoContaPlanoPCASP,
+
+      if (!array_key_exists($sChave, self::$aContas)) {
+        self::$aContas[$sChave] = new ContaPlanoPCASP($iCodigoContaPlanoPCASP,
                                                                                          $iAno,
                                                                                          $iCodigoReduzido,
                                                                                          $iInstituicaoSessao
                                                                                         );
       }
-      return ContaPlanoPCASPRepository::getInstance()->aContas[$sChave];
-    }
-
-    /**
-     * Retorna a instancia da classe
-     * @return ContaPlanoPCASPRepository
-     */
-    protected static function getInstance() {
-
-      if (self::$oInstance == null) {
-
-        self::$oInstance = new ContaPlanoPCASPRepository();
-      }
-      return self::$oInstance;
+      return self::$aContas[$sChave];
     }
 
     /**
@@ -92,8 +74,8 @@
      */
     public static function adicionarContaPlanoPCASP(ContaPlanoPCASP $oContaPlanoPCASP) {
 
-      if (!array_key_exists($oContaPlanoPCASP->getCodigo(), ContaPlanoPCASPRepository::getInstance()->aContas)) {
-        ContaPlanoPCASPRepository::getInstance()->aContas[$oContaPlanoPCASP->getCodigo()] = $oContaPlanoPCASP;
+      if (!array_key_exists($oContaPlanoPCASP->getCodigo(), self::$aContas)) {
+        self::$aContas[$oContaPlanoPCASP->getCodigo()] = $oContaPlanoPCASP;
       }
       return true;
     }
@@ -107,8 +89,8 @@
        /**
         *
         */
-      if (array_key_exists($oContaPlanoPCASP->getCodigo(), ContaPlanoPCASPRepository::getInstance()->aContas)) {
-        unset(ContaPlanoPCASPRepository::getInstance()->aContas[$oContaPlanoPCASP->getCodigo()]);
+      if (array_key_exists($oContaPlanoPCASP->getCodigo(), self::$aContas)) {
+        unset(self::$aContas[$oContaPlanoPCASP->getCodigo()]);
       }
       return true;
     }
@@ -118,26 +100,26 @@
      * @return integer;
      */
     public static function getTotalContaPlanoPCASP() {
-      return count(ContaPlanoPCASPRepository::getInstance()->aContas);
+      return count(self::$aContas);
     }
-    
+
     /**
      * Retorna uma conta do plano orcamentário através de seu estrutural
      * @param string  $sEstrutural estrutural da conta
      * @param integer $iAno
-     * @return false | ContaOrcamento
+     * @return false | ContaPlanoPCASP
      */
     public static function getContaPorEstrutural($sEstrutural, $iAno,  Instituicao $oInstituicao = null) {
-    
-      foreach (ContaPlanoPCASPRepository::getInstance()->aContas as $oConta) {
+
+      foreach (self::$aContas as $oConta) {
 
         if ($oConta->getEstrutural() == $sEstrutural && $oConta->getAno() == $iAno) {
           return $oConta;
         }
       }
-       
+
       $oDaoPlano = new cl_conplano;
-    
+
       $sWhere  = "c60_estrut      = '{$sEstrutural}'";
       $sWhere .= " and c60_anousu = {$iAno}";
       if (!empty($oInstituicao)) {
@@ -150,7 +132,7 @@
                                                    );
       $rsContaPCasp = $oDaoPlano->sql_record($sSqlPlanoPcasp);
       if ($oDaoPlano->numrows > 0) {
-    
+
         $oContaPCASP = db_utils::fieldsMemory($rsContaPCasp, 0);
         return ContaPlanoPCASPRepository::getContaByCodigo(
                                                           $oContaPCASP->c60_codcon,
@@ -159,28 +141,19 @@
                                                           $oContaPCASP->c61_instit
                                                          );
       }
-    
+
       return false;
     }
 
-    /**
-    * Retorna uma conta do plano orcamentário através de seu estrutural
-    * @param string  $sEstrutural estrutural da conta
-    * @param integer $iAno
-    * @return false | ContaOrcamento
-    */
+      /**
+       * @param                  $iReduzido
+       * @param                  $iAno
+       * @param Instituicao|null $oInstituicao
+       * @return bool|ContaPlanoPCASP
+       */
     public static function getContaPorReduzido($iReduzido, $iAno,  Instituicao $oInstituicao = null) {
 
-      foreach (ContaPlanoPCASPRepository::getInstance()->aContas as $oConta) {
-
-        foreach ($oConta->getContasReduzidas() as $oReduzido) {
-          if ($oReduzido->c61_reduz == $iReduzido && $oConta->getAno() == $iAno)
-          return $oConta;
-        }
-      }
-
       $oDaoPlano = new cl_conplano;
-
       $sWhere  = "c61_reduz       = '{$iReduzido}'";
       $sWhere .= " and c61_anousu = {$iAno}";
       if (!empty($oInstituicao)) {
@@ -204,5 +177,75 @@
       }
 
       return false;
+    }
+
+    /**
+     * @param             $sEstrutural
+     * @param Instituicao $oInstituicao
+     * @param             $iAnoUsu
+     * @return ContaPlanoPCASP[]
+     */
+    public static function getContasPorEstrutural($sEstrutural, Instituicao $oInstituicao, $iAnoUsu) {
+
+      $aContas      = Array();
+      $oDaoConplano = new cl_conplano();
+
+      $sWhere  = " c60_estrut like '{$sEstrutural}%' ";
+      $sWhere .= " and c60_anousu = {$iAnoUsu}";
+      if (!empty($oInstituicao)) {
+        $sWhere .= " and (c61_instit is null or c61_instit = {$oInstituicao->getSequencial()})";
+      }
+      $sSqlPlanoPcasp = $oDaoConplano->sql_query_geral(null, null,
+                                                       'c60_codcon, c60_anousu, c61_instit, c61_reduz',
+                                                       'c60_estrut',
+                                                        $sWhere
+                                                      );
+      $rsContas = $oDaoConplano->sql_record($sSqlPlanoPcasp);
+      if (!$rsContas || $oDaoConplano->numrows == 0) {
+        return array();
+      }
+      for ($iConta = 0; $iConta < $oDaoConplano->numrows; $iConta++) {
+
+        $oContaPCASP = db_utils::fieldsMemory($rsContas, $iConta);
+        $aContas[]   =  ContaPlanoPCASPRepository::getContaByCodigo(
+                                                          $oContaPCASP->c60_codcon,
+                                                          $oContaPCASP->c60_anousu,
+                                                          $oContaPCASP->c61_reduz,
+                                                          $oContaPCASP->c61_instit
+                                                        );
+
+      }
+      return $aContas;
+    }
+
+
+      /**
+       * @param $codigoConta
+       * @param $ano
+       * @param $codigoInstituicao
+       *
+       * @return bool|ContaPlanoPCASP
+       * @throws Exception
+       */
+    public static function getReduzidoPorContaInstituicao($codigoConta, $ano, $codigoInstituicao) {
+
+        $daoReduz = new cl_conplanoreduz();
+        $where = implode(' and ', array(
+            "c61_codcon = {$codigoConta}",
+            "c61_anousu = {$ano}",
+            "c61_instit = {$codigoInstituicao}",
+        ));
+        $buscaReduzido = $daoReduz->sql_query_file(null, null, 'c61_reduz', null, $where);
+        $buscaReduzido = db_query($buscaReduzido);
+        if (!$buscaReduzido) {
+            throw new Exception("Ocorreu um erro ao consultar o reduzido para a instituição.");
+        }
+
+        if (pg_num_rows($buscaReduzido) === 0) {
+            return false;
+        }
+
+        $codigoReduzido = db_utils::fieldsMemory($buscaReduzido, 0)->c61_reduz;
+        return self::getContaPorReduzido($codigoReduzido, $ano, InstituicaoRepository::getInstituicaoByCodigo($codigoInstituicao));
     }
   }

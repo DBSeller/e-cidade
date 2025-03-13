@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/JSON.php");
-require_once ("model/contabilidade/arquivos/tce/AC/ImportacaoArquivoTCEAC.model.php");
-require_once ("model/contabilidade/arquivos/tce/AC/ArquivoLancamento.model.php");
-require_once ("model/contabilidade/arquivos/tce/AC/ArquivoPartida.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("model/contabilidade/arquivos/tce/AC/ImportacaoArquivoTCEAC.model.php"));
+require_once(modification("model/contabilidade/arquivos/tce/AC/ArquivoLancamento.model.php"));
+require_once(modification("model/contabilidade/arquivos/tce/AC/ArquivoPartida.model.php"));
 
 $oJson                  = new services_json();
-$oParam                 = json_decode(str_replace("\\","",$_POST["json"]));
+$oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
 $oRetorno               = new stdClass();
 $oRetorno->iStatus      = 1;
 $oRetorno->sMessage     = '';
@@ -114,4 +114,4 @@ try {
   $oRetorno->sMessage = $eErro->getMessage();
 }
 $oRetorno->sMessage = urlencode($oRetorno->sMessage);
-echo json_encode($oRetorno);
+echo $oJson->encode($oRetorno);

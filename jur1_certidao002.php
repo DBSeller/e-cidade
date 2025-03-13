@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
 if(isset($retorno)) {
-  $result = pg_exec("select c.v56_codigo,c.v56_certid,c.v56_proces,c.v56_execut,c.v56_endere,c.v56_movim,
+  $result = db_query("select c.v56_codigo,c.v56_certid,c.v56_proces,c.v56_execut,c.v56_endere,c.v56_movim,
                        c.v56_vara,v.v53_descr as varadescr,
                        to_char(c.v56_data,'DD') as data_dia,to_char(c.v56_data,'MM') as data_mes,to_char(c.v56_data,'YYYY') as data_ano
                      from cerjur c
@@ -47,8 +47,8 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
   $data = "$data_ano-$data_mes-$data_dia";
   $data = $data=="--"?"null":"'$data'";
-  pg_exec("BEGIN");
-  pg_exec("UPDATE cerjur
+  db_query("BEGIN");
+  db_query("UPDATE cerjur
 			SET v56_certid = '$v56_certid',
 				v56_proces = '$v56_proces',
 				v56_data = $data,
@@ -57,7 +57,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 				v56_movim = '$v56_movim',
 				v56_vara = $db_vara
 				WHERE v56_codigo = $v56_codigo") or die("Erro(28) alterando cerjur");
-  pg_exec("commit");
+  db_query("commit");
   db_redireciona();
 }
 ?>
@@ -85,7 +85,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 	   if(isset($HTTP_POST_VARS["procurar"]) || isset($HTTP_POST_VARS["priNoMe"]) || isset($HTTP_POST_VARS["antNoMe"]) || isset($HTTP_POST_VARS["proxNoMe"]) || isset($HTTP_POST_VARS["ultNoMe"])) {
 	     db_postmemory($HTTP_POST_VARS);
          if(!empty($codigo)) {
-           $result = pg_exec("select v56_codigo from cerjur where v56_codigo = $codigo");
+           $result = db_query("select v56_codigo from cerjur where v56_codigo = $codigo");
 	       if(pg_numrows($result) > 0) {
  	         db_redireciona("jur1_certidao002.php?".base64_encode("retorno=".pg_result($result,0,0)));
 	         exit;
@@ -130,9 +130,9 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 	  </center>
 	  <?
 	    } else {
-          include("dbforms/db_funcoes.php");
+          include(modification("dbforms/db_funcoes.php"));
 		  $Alterar_PopularSelect = 1;
-	      include("forms/db_frmjurcert.php");
+	      include(modification("forms/db_frmjurcert.php"));
 		}
     ?>
 	</td>

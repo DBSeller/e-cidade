@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_db_documentopadrao_classe.php");
-include("classes/db_db_paragrafopadrao_classe.php");
-include("classes/db_db_docparagpadrao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_db_documentopadrao_classe.php"));
+include(modification("classes/db_db_paragrafopadrao_classe.php"));
+include(modification("classes/db_db_docparagpadrao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $cldb_config    = new cl_db_config;
@@ -92,7 +92,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmordparagpadrao.php");
+	include(modification("forms/db_frmordparagpadrao.php"));
 	?>
     </center>
 	</td>

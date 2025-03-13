@@ -1,0 +1,914 @@
+<?
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
+//MODULO: orcamento
+//CLASSE DA ENTIDADE receita
+class cl_receita { 
+   // cria variaveis de erro 
+   var $rotulo     = null; 
+   var $query_sql  = null; 
+   var $numrows    = 0; 
+   var $erro_status= null; 
+   var $erro_sql   = null; 
+   var $erro_banco = null;  
+   var $erro_msg   = null;  
+   var $erro_campo = null;  
+   var $pagina_retorno = null; 
+   // cria variaveis do arquivo 
+   var $o08_anousu = 0; 
+   var $o08_codigo = null; 
+   var $o08_reduz = 0; 
+   var $o08_digito = null; 
+   var $o08_valor = 0; 
+   var $o08_arre01 = 0; 
+   var $o08_arre02 = 0; 
+   var $o08_arre03 = 0; 
+   var $o08_arre04 = 0; 
+   var $o08_arre05 = 0; 
+   var $o08_arre06 = 0; 
+   var $o08_arre07 = 0; 
+   var $o08_arre08 = 0; 
+   var $o08_arre09 = 0; 
+   var $o08_arre10 = 0; 
+   var $o08_arre11 = 0; 
+   var $o08_arre12 = 0; 
+   var $o08_tcevin = 0; 
+   var $o08_lancad = 0; 
+   var $o08_instit = 0; 
+   // cria propriedade com as variaveis do arquivo 
+   var $campos = "
+                 o08_anousu = int4 = Exercício 
+                 o08_codigo = varchar(12) = Codigo da Receita 
+                 o08_reduz = int4 = Codigo Reduzido da Receita 
+                 o08_digito = varchar(1) = Digito do Codigo Reduzido 
+                 o08_valor = float8 = Valor da Receita 
+                 o08_arre01 = float8 = Valor da Receita de Janeiro 
+                 o08_arre02 = float8 = Valor da Receita de Fevereiro 
+                 o08_arre03 = float8 = Valor da Receita de Março 
+                 o08_arre04 = float8 =  
+                 o08_arre05 = float8 =  
+                 o08_arre06 = float8 =  
+                 o08_arre07 = float8 =  
+                 o08_arre08 = float8 =  
+                 o08_arre09 = float8 =  
+                 o08_arre10 = float8 =  
+                 o08_arre11 = float8 =  
+                 o08_arre12 = float8 =  
+                 o08_tcevin = int4 =  
+                 o08_lancad = int4 =  
+                 o08_instit = int4 = Instituicao 
+                 ";
+   //funcao construtor da classe 
+   function cl_receita() { 
+     //classes dos rotulos dos campos
+     $this->rotulo = new rotulo("receita"); 
+     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
+   }
+   //funcao erro 
+   function erro($mostra,$retorna) { 
+     if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
+        echo "<script>alert(\"".$this->erro_msg."\");</script>";
+        if($retorna==true){
+           echo "<script>location.href='".$this->pagina_retorno."'</script>";
+        }
+     }
+   }
+   // funcao para atualizar campos
+   function atualizacampos($exclusao=false) {
+     if($exclusao==false){
+       $this->o08_anousu = ($this->o08_anousu == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_anousu"]:$this->o08_anousu);
+       $this->o08_codigo = ($this->o08_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_codigo"]:$this->o08_codigo);
+       $this->o08_reduz = ($this->o08_reduz == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_reduz"]:$this->o08_reduz);
+       $this->o08_digito = ($this->o08_digito == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_digito"]:$this->o08_digito);
+       $this->o08_valor = ($this->o08_valor == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_valor"]:$this->o08_valor);
+       $this->o08_arre01 = ($this->o08_arre01 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre01"]:$this->o08_arre01);
+       $this->o08_arre02 = ($this->o08_arre02 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre02"]:$this->o08_arre02);
+       $this->o08_arre03 = ($this->o08_arre03 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre03"]:$this->o08_arre03);
+       $this->o08_arre04 = ($this->o08_arre04 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre04"]:$this->o08_arre04);
+       $this->o08_arre05 = ($this->o08_arre05 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre05"]:$this->o08_arre05);
+       $this->o08_arre06 = ($this->o08_arre06 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre06"]:$this->o08_arre06);
+       $this->o08_arre07 = ($this->o08_arre07 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre07"]:$this->o08_arre07);
+       $this->o08_arre08 = ($this->o08_arre08 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre08"]:$this->o08_arre08);
+       $this->o08_arre09 = ($this->o08_arre09 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre09"]:$this->o08_arre09);
+       $this->o08_arre10 = ($this->o08_arre10 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre10"]:$this->o08_arre10);
+       $this->o08_arre11 = ($this->o08_arre11 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre11"]:$this->o08_arre11);
+       $this->o08_arre12 = ($this->o08_arre12 == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_arre12"]:$this->o08_arre12);
+       $this->o08_tcevin = ($this->o08_tcevin == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_tcevin"]:$this->o08_tcevin);
+       $this->o08_lancad = ($this->o08_lancad == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_lancad"]:$this->o08_lancad);
+       $this->o08_instit = ($this->o08_instit == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_instit"]:$this->o08_instit);
+     }else{
+       $this->o08_anousu = ($this->o08_anousu == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_anousu"]:$this->o08_anousu);
+       $this->o08_codigo = ($this->o08_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["o08_codigo"]:$this->o08_codigo);
+     }
+   }
+   // funcao para inclusao
+   function incluir ($o08_anousu,$o08_codigo){ 
+      $this->atualizacampos();
+     if($this->o08_reduz == null ){ 
+       $this->erro_sql = " Campo Codigo Reduzido da Receita nao Informado.";
+       $this->erro_campo = "o08_reduz";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_digito == null ){ 
+       $this->erro_sql = " Campo Digito do Codigo Reduzido nao Informado.";
+       $this->erro_campo = "o08_digito";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_valor == null ){ 
+       $this->erro_sql = " Campo Valor da Receita nao Informado.";
+       $this->erro_campo = "o08_valor";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre01 == null ){ 
+       $this->erro_sql = " Campo Valor da Receita de Janeiro nao Informado.";
+       $this->erro_campo = "o08_arre01";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre02 == null ){ 
+       $this->erro_sql = " Campo Valor da Receita de Fevereiro nao Informado.";
+       $this->erro_campo = "o08_arre02";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre03 == null ){ 
+       $this->erro_sql = " Campo Valor da Receita de Março nao Informado.";
+       $this->erro_campo = "o08_arre03";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre04 == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_arre04";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre05 == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_arre05";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre06 == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_arre06";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre07 == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_arre07";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre08 == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_arre08";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre09 == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_arre09";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre10 == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_arre10";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre11 == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_arre11";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_arre12 == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_arre12";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_tcevin == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_tcevin";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_lancad == null ){ 
+       $this->erro_sql = " Campo  nao Informado.";
+       $this->erro_campo = "o08_lancad";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->o08_instit == null ){ 
+       $this->erro_sql = " Campo Instituicao nao Informado.";
+       $this->erro_campo = "o08_instit";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+       $this->o08_anousu = $o08_anousu; 
+       $this->o08_codigo = $o08_codigo; 
+     if(($this->o08_anousu == null) || ($this->o08_anousu == "") ){ 
+       $this->erro_sql = " Campo o08_anousu nao declarado.";
+       $this->erro_banco = "Chave Primaria zerada.";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if(($this->o08_codigo == null) || ($this->o08_codigo == "") ){ 
+       $this->erro_sql = " Campo o08_codigo nao declarado.";
+       $this->erro_banco = "Chave Primaria zerada.";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     $result = @pg_query("insert into receita(
+                                       o08_anousu 
+                                      ,o08_codigo 
+                                      ,o08_reduz 
+                                      ,o08_digito 
+                                      ,o08_valor 
+                                      ,o08_arre01 
+                                      ,o08_arre02 
+                                      ,o08_arre03 
+                                      ,o08_arre04 
+                                      ,o08_arre05 
+                                      ,o08_arre06 
+                                      ,o08_arre07 
+                                      ,o08_arre08 
+                                      ,o08_arre09 
+                                      ,o08_arre10 
+                                      ,o08_arre11 
+                                      ,o08_arre12 
+                                      ,o08_tcevin 
+                                      ,o08_lancad 
+                                      ,o08_instit 
+                       )
+                values (
+                                $this->o08_anousu 
+                               ,'$this->o08_codigo' 
+                               ,$this->o08_reduz 
+                               ,'$this->o08_digito' 
+                               ,$this->o08_valor 
+                               ,$this->o08_arre01 
+                               ,$this->o08_arre02 
+                               ,$this->o08_arre03 
+                               ,$this->o08_arre04 
+                               ,$this->o08_arre05 
+                               ,$this->o08_arre06 
+                               ,$this->o08_arre07 
+                               ,$this->o08_arre08 
+                               ,$this->o08_arre09 
+                               ,$this->o08_arre10 
+                               ,$this->o08_arre11 
+                               ,$this->o08_arre12 
+                               ,$this->o08_tcevin 
+                               ,$this->o08_lancad 
+                               ,$this->o08_instit 
+                      )");
+     if($result==false){ 
+       $this->erro_banco = str_replace("\n","",@pg_last_error());
+       if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
+         $this->erro_sql   = "Receita Orcamentaria ($this->o08_anousu."-".$this->o08_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_banco = "Receita Orcamentaria já Cadastrado";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       }else{
+         $this->erro_sql   = "Receita Orcamentaria ($this->o08_anousu."-".$this->o08_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       }
+       $this->erro_status = "0";
+       return false;
+     }
+     $this->erro_banco = "";
+     $this->erro_sql = "Inclusao Efetivada com Sucesso\\n";
+         $this->erro_sql .= "Valores : ".$this->o08_anousu."-".$this->o08_codigo;
+     $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+     $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+     $this->erro_status = "1";
+     $resaco = $this->sql_record($this->sql_query_file($this->o08_anousu,$this->o08_codigo));
+     $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     $acount = pg_result($resac,0,0);
+     $resac = pg_query("insert into db_acountkey values($acount,1893,'$this->o08_anousu','I')");
+     $resac = pg_query("insert into db_acountkey values($acount,1897,'$this->o08_reduz','I')");
+     $resac = pg_query("insert into db_acount values($acount,317,1893,'','".pg_result($resaco,0,'o08_anousu')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1896,'','".pg_result($resaco,0,'o08_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1897,'','".pg_result($resaco,0,'o08_reduz')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1898,'','".pg_result($resaco,0,'o08_digito')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1899,'','".pg_result($resaco,0,'o08_valor')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1900,'','".pg_result($resaco,0,'o08_arre01')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1901,'','".pg_result($resaco,0,'o08_arre02')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1902,'','".pg_result($resaco,0,'o08_arre03')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1924,'','".pg_result($resaco,0,'o08_arre04')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1925,'','".pg_result($resaco,0,'o08_arre05')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1926,'','".pg_result($resaco,0,'o08_arre06')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1928,'','".pg_result($resaco,0,'o08_arre07')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1929,'','".pg_result($resaco,0,'o08_arre08')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1930,'','".pg_result($resaco,0,'o08_arre09')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1931,'','".pg_result($resaco,0,'o08_arre10')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1932,'','".pg_result($resaco,0,'o08_arre11')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1933,'','".pg_result($resaco,0,'o08_arre12')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1934,'','".pg_result($resaco,0,'o08_tcevin')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1935,'','".pg_result($resaco,0,'o08_lancad')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1936,'','".pg_result($resaco,0,'o08_instit')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     pg_free_result($resaco);
+     return true;
+   } 
+   // funcao para alteracao
+   function alterar ($o08_anousu=null,$o08_codigo=null) { 
+      $this->atualizacampos();
+     $sql = " update receita set ";
+     $virgula = "";
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_anousu"])){ 
+       $sql  .= $virgula." o08_anousu = $this->o08_anousu ";
+       $virgula = ",";
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_codigo"])){ 
+       $sql  .= $virgula." o08_codigo = '$this->o08_codigo' ";
+       $virgula = ",";
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_reduz"])){ 
+       $sql  .= $virgula." o08_reduz = $this->o08_reduz ";
+       $virgula = ",";
+       if($this->o08_reduz == null ){ 
+         $this->erro_sql = " Campo Codigo Reduzido da Receita nao Informado.";
+         $this->erro_campo = "o08_reduz";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_digito"])){ 
+       $sql  .= $virgula." o08_digito = '$this->o08_digito' ";
+       $virgula = ",";
+       if($this->o08_digito == null ){ 
+         $this->erro_sql = " Campo Digito do Codigo Reduzido nao Informado.";
+         $this->erro_campo = "o08_digito";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_valor"])){ 
+       $sql  .= $virgula." o08_valor = $this->o08_valor ";
+       $virgula = ",";
+       if($this->o08_valor == null ){ 
+         $this->erro_sql = " Campo Valor da Receita nao Informado.";
+         $this->erro_campo = "o08_valor";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre01"])){ 
+       $sql  .= $virgula." o08_arre01 = $this->o08_arre01 ";
+       $virgula = ",";
+       if($this->o08_arre01 == null ){ 
+         $this->erro_sql = " Campo Valor da Receita de Janeiro nao Informado.";
+         $this->erro_campo = "o08_arre01";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre02"])){ 
+       $sql  .= $virgula." o08_arre02 = $this->o08_arre02 ";
+       $virgula = ",";
+       if($this->o08_arre02 == null ){ 
+         $this->erro_sql = " Campo Valor da Receita de Fevereiro nao Informado.";
+         $this->erro_campo = "o08_arre02";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre03"])){ 
+       $sql  .= $virgula." o08_arre03 = $this->o08_arre03 ";
+       $virgula = ",";
+       if($this->o08_arre03 == null ){ 
+         $this->erro_sql = " Campo Valor da Receita de Março nao Informado.";
+         $this->erro_campo = "o08_arre03";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre04"])){ 
+       $sql  .= $virgula." o08_arre04 = $this->o08_arre04 ";
+       $virgula = ",";
+       if($this->o08_arre04 == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_arre04";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre05"])){ 
+       $sql  .= $virgula." o08_arre05 = $this->o08_arre05 ";
+       $virgula = ",";
+       if($this->o08_arre05 == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_arre05";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre06"])){ 
+       $sql  .= $virgula." o08_arre06 = $this->o08_arre06 ";
+       $virgula = ",";
+       if($this->o08_arre06 == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_arre06";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre07"])){ 
+       $sql  .= $virgula." o08_arre07 = $this->o08_arre07 ";
+       $virgula = ",";
+       if($this->o08_arre07 == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_arre07";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre08"])){ 
+       $sql  .= $virgula." o08_arre08 = $this->o08_arre08 ";
+       $virgula = ",";
+       if($this->o08_arre08 == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_arre08";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre09"])){ 
+       $sql  .= $virgula." o08_arre09 = $this->o08_arre09 ";
+       $virgula = ",";
+       if($this->o08_arre09 == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_arre09";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre10"])){ 
+       $sql  .= $virgula." o08_arre10 = $this->o08_arre10 ";
+       $virgula = ",";
+       if($this->o08_arre10 == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_arre10";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre11"])){ 
+       $sql  .= $virgula." o08_arre11 = $this->o08_arre11 ";
+       $virgula = ",";
+       if($this->o08_arre11 == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_arre11";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre12"])){ 
+       $sql  .= $virgula." o08_arre12 = $this->o08_arre12 ";
+       $virgula = ",";
+       if($this->o08_arre12 == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_arre12";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_tcevin"])){ 
+       $sql  .= $virgula." o08_tcevin = $this->o08_tcevin ";
+       $virgula = ",";
+       if($this->o08_tcevin == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_tcevin";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_lancad"])){ 
+       $sql  .= $virgula." o08_lancad = $this->o08_lancad ";
+       $virgula = ",";
+       if($this->o08_lancad == null ){ 
+         $this->erro_sql = " Campo  nao Informado.";
+         $this->erro_campo = "o08_lancad";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(isset($GLOBALS["HTTP_POST_VARS"]["o08_instit"])){ 
+       $sql  .= $virgula." o08_instit = $this->o08_instit ";
+       $virgula = ",";
+       if($this->o08_instit == null ){ 
+         $this->erro_sql = " Campo Instituicao nao Informado.";
+         $this->erro_campo = "o08_instit";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     $sql .= " where  o08_anousu = $this->o08_anousu
+ and  o08_codigo = '$this->o08_codigo'
+";
+     $resaco = $this->sql_record($this->sql_query_file($this->o08_anousu,$this->o08_codigo));
+     if($this->numrows>0){       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $acount = pg_result($resac,0,0);
+       $resac = pg_query("insert into db_acountkey values($acount,1893,'$this->o08_anousu','A')");
+       $resac = pg_query("insert into db_acountkey values($acount,1897,'$this->o08_reduz','A')");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_anousu"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1893,'$this->o08_anousu','".pg_result($resaco,0,'o08_anousu')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_codigo"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1896,'$this->o08_codigo','".pg_result($resaco,0,'o08_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_reduz"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1897,'$this->o08_reduz','".pg_result($resaco,0,'o08_reduz')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_digito"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1898,'$this->o08_digito','".pg_result($resaco,0,'o08_digito')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_valor"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1899,'$this->o08_valor','".pg_result($resaco,0,'o08_valor')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre01"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1900,'$this->o08_arre01','".pg_result($resaco,0,'o08_arre01')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre02"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1901,'$this->o08_arre02','".pg_result($resaco,0,'o08_arre02')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre03"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1902,'$this->o08_arre03','".pg_result($resaco,0,'o08_arre03')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre04"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1924,'$this->o08_arre04','".pg_result($resaco,0,'o08_arre04')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre05"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1925,'$this->o08_arre05','".pg_result($resaco,0,'o08_arre05')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre06"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1926,'$this->o08_arre06','".pg_result($resaco,0,'o08_arre06')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre07"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1928,'$this->o08_arre07','".pg_result($resaco,0,'o08_arre07')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre08"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1929,'$this->o08_arre08','".pg_result($resaco,0,'o08_arre08')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre09"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1930,'$this->o08_arre09','".pg_result($resaco,0,'o08_arre09')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre10"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1931,'$this->o08_arre10','".pg_result($resaco,0,'o08_arre10')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre11"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1932,'$this->o08_arre11','".pg_result($resaco,0,'o08_arre11')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_arre12"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1933,'$this->o08_arre12','".pg_result($resaco,0,'o08_arre12')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_tcevin"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1934,'$this->o08_tcevin','".pg_result($resaco,0,'o08_tcevin')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_lancad"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1935,'$this->o08_lancad','".pg_result($resaco,0,'o08_lancad')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       if(isset($GLOBALS["HTTP_POST_VARS"]["o08_instit"]))
+         $resac = pg_query("insert into db_acount values($acount,317,1936,'$this->o08_instit','".pg_result($resaco,0,'o08_instit')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       pg_free_result($resaco);
+     }
+     $result = @pg_exec($sql);
+     if($result==false){ 
+       $this->erro_banco = str_replace("\n","",@pg_last_error());
+       $this->erro_sql   = "Receita Orcamentaria nao Alterado. Alteracao Abortada.\\n";
+         $this->erro_sql .= "Valores : ".$this->o08_anousu."-".$this->o08_codigo;
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }else{
+       if(pg_affected_rows($result)==0){
+         $this->erro_banco = "";
+         $this->erro_sql = "Receita Orcamentaria nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql .= "Valores : ".$this->o08_anousu."-".$this->o08_codigo;
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "1";
+         return true;
+       }else{
+         $this->erro_banco = "";
+         $this->erro_sql = "Alteração Efetivada com Sucesso\\n";
+         $this->erro_sql .= "Valores : ".$this->o08_anousu."-".$this->o08_codigo;
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "1";
+         return true;
+       } 
+     } 
+   } 
+   // funcao para exclusao 
+   function excluir ($o08_anousu=null,$o08_codigo=null) { 
+     $this->atualizacampos(true);
+     $resaco = $this->sql_record($this->sql_query_file($this->o08_anousu,$this->o08_codigo));
+     $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     $acount = pg_result($resac,0,0);
+     $resac = pg_query("insert into db_acountkey values($acount,1893,'".pg_result($resaco,$iresaco,'o08_anousu')."','E')");
+     $resac = pg_query("insert into db_acountkey values($acount,1897,'".pg_result($resaco,$iresaco,'o08_reduz')."','E')");
+     $resac = pg_query("insert into db_acount values($acount,317,1893,'','".pg_result($resaco,0,'o08_anousu')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1896,'','".pg_result($resaco,0,'o08_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1897,'','".pg_result($resaco,0,'o08_reduz')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1898,'','".pg_result($resaco,0,'o08_digito')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1899,'','".pg_result($resaco,0,'o08_valor')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1900,'','".pg_result($resaco,0,'o08_arre01')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1901,'','".pg_result($resaco,0,'o08_arre02')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1902,'','".pg_result($resaco,0,'o08_arre03')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1924,'','".pg_result($resaco,0,'o08_arre04')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1925,'','".pg_result($resaco,0,'o08_arre05')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1926,'','".pg_result($resaco,0,'o08_arre06')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1928,'','".pg_result($resaco,0,'o08_arre07')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1929,'','".pg_result($resaco,0,'o08_arre08')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1930,'','".pg_result($resaco,0,'o08_arre09')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1931,'','".pg_result($resaco,0,'o08_arre10')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1932,'','".pg_result($resaco,0,'o08_arre11')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1933,'','".pg_result($resaco,0,'o08_arre12')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1934,'','".pg_result($resaco,0,'o08_tcevin')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1935,'','".pg_result($resaco,0,'o08_lancad')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $resac = pg_query("insert into db_acount values($acount,317,1936,'','".pg_result($resaco,0,'o08_instit')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     pg_free_result($resaco);
+     $sql = " delete from receita
+                    where ";
+     $sql2 = "";
+      if($this->o08_anousu != ""){
+      if($sql2!=""){
+        $sql2 .= " and ";
+      }
+      $sql2 .= " o08_anousu = $this->o08_anousu ";
+}
+      if($this->o08_codigo != ""){
+      if($sql2!=""){
+        $sql2 .= " and ";
+      }
+      $sql2 .= " o08_codigo = '$this->o08_codigo' ";
+}
+     $result = @pg_exec($sql.$sql2);
+     if($result==false){ 
+       $this->erro_banco = str_replace("\n","",@pg_last_error());
+       $this->erro_sql   = "Receita Orcamentaria nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql .= "Valores : ".$this->o08_anousu."-".$this->o08_codigo;
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }else{
+       if(pg_affected_rows($result)==0){
+         $this->erro_banco = "";
+         $this->erro_sql = "Receita Orcamentaria nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql .= "Valores : ".$this->o08_anousu."-".$this->o08_codigo;
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "1";
+         return true;
+       }else{
+         $this->erro_banco = "";
+         $this->erro_sql = "Exclusão Efetivada com Sucesso\\n";
+         $this->erro_sql .= "Valores : ".$this->o08_anousu."-".$this->o08_codigo;
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "1";
+         return true;
+       } 
+     } 
+   } 
+   // funcao do recordset 
+   function sql_record($sql) { 
+     $result = @pg_query($sql);
+     if($result==false){
+       $this->numrows    = 0;
+       $this->erro_banco = str_replace("\n","",@pg_last_error());
+       $this->erro_sql   = "Erro ao selecionar os registros.";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     $this->numrows = pg_numrows($result);
+      if($this->numrows==0){
+        $this->erro_banco = "";
+        $this->erro_sql   = "Dados do Grupo nao Encontrado";
+        $this->erro_msg   = "Usuário: \n\n ".$this->erro_sql." \n\n";
+        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+        $this->erro_status = "0";
+        return false;
+      }
+     return $result;
+   }
+   // funcao do sql 
+   function sql_query ( $o08_anousu=null,$o08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from receita ";
+     $sql .= "      inner join db_config  on  db_config.codigo = receita.o08_instit";
+     $sql .= "      inner join orcam  on  orcam.o02_anousu = receita.o08_anousu and  orcam.o02_codigo = receita.o08_codigo::char(13)";
+     $sql .= "      inner join tabrecurso  on  tabrecurso.o14_anousu = receita.o08_anousu and  tabrecurso.o14_recurs = receita.o08_tcevin::char(4)";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($o08_anousu!=null ){
+         $sql2 .= " where receita.o08_anousu = $o08_anousu "; 
+       } 
+       if($o08_codigo!=null ){
+         if($sql2!=""){
+            $sql2 .= " and ";
+         }else{
+            $sql2 .= " where ";
+         } 
+         $sql2 .= " receita.o08_codigo = '$o08_codigo' "; 
+       } 
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+   // funcao do sql 
+   function sql_query_file ( $o08_anousu=null,$o08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from receita ";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($o08_anousu!=null ){
+         $sql2 .= " where receita.o08_anousu = $o08_anousu "; 
+       } 
+       if($o08_codigo!=null ){
+         if($sql2!=""){
+            $sql2 .= " and ";
+         }else{
+            $sql2 .= " where ";
+         } 
+         $sql2 .= " receita.o08_codigo = '$o08_codigo' "; 
+       } 
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+}
+?>

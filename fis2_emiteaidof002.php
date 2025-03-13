@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("fpdf151/scpdf.php");
-include("fpdf151/impcarne.php");
-include("libs/db_sql.php");
-include ("libs/db_utils.php");
-include("classes/db_aidof_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_notasiss_classe.php");
-include("classes/db_parfiscal_classe.php");
-require_once "libs/db_libdocumento.php";
+require(modification("fpdf151/scpdf.php"));
+include(modification("fpdf151/impcarne.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_aidof_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_notasiss_classe.php"));
+include(modification("classes/db_parfiscal_classe.php"));
+require_once modification("libs/db_libdocumento.php");
 
 $claidof     = new cl_aidof;
 $clcgm       = new cl_cgm;
@@ -45,7 +45,7 @@ $clparfiscal = new cl_parfiscal;
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $sqlpref = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 if (pg_numrows($resultpref)!=0){
   db_fieldsmemory($resultpref,0);
 }
@@ -101,13 +101,13 @@ $sql_empr=" select empresa.q02_inscr  as inscr_usu,
                    inner join issbase on issbase.q02_inscr = empresa.q02_inscr
              where empresa.q02_inscr = $y08_inscr ";           
            
-$result_empresa=pg_exec($sql_empr);
+$result_empresa=db_query($sql_empr);
 if (pg_numrows($result_empresa)!=0){
   db_fieldsmemory($result_empresa,0);
 }
 
 $sqlDbUsuarioAutoriza = "select nome as nomeusu from db_usuarios where id_usuario = $y08_login";
-$rsDbUsuarioAutoriza  = pg_query($sqlDbUsuarioAutoriza);
+$rsDbUsuarioAutoriza  = db_query($sqlDbUsuarioAutoriza);
 $iDbUsuarioAutoriza   = pg_numrows($rsDbUsuarioAutoriza);
 
 if ($iDbUsuarioAutoriza > 0) {
@@ -116,7 +116,7 @@ if ($iDbUsuarioAutoriza > 0) {
 
 
 $sqlDbUsuario = "select nome as nomeusu from db_usuarios where id_usuario =".db_getsession("DB_id_usuario");
-$rsDbUsuario  = pg_query($sqlDbUsuario);
+$rsDbUsuario  = db_query($sqlDbUsuario);
 $iDbUsuario   = pg_numrows($rsDbUsuario);
 
 if ($iDbUsuario > 0) {

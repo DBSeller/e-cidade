@@ -69,7 +69,7 @@ db_select('c20_tipo',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_congrupo','func_congrupo.php?funcao_js=parent.js_preenchepesquisa|c20_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_congrupo','func_congrupo.php?funcao_js=parent.js_preenchepesquisa|c20_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_congrupo.hide();

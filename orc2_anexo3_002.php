@@ -1,35 +1,36 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/ReceitaSaldo.php"));
 
 $classinatura = new cl_assinatura;
 
@@ -62,26 +63,19 @@ $anousu  = db_getsession("DB_anousu");
 $dataini = db_getsession("DB_anousu")."-01-01";
 $datafin = db_getsession("DB_anousu")."-01-01";
 $xinstit = str_replace('-',', ',$db_selinstit);
-/*
-$sql = "
-        select * 
-	from orcreceita
-	     inner join orcfontes on o70_codfon = o57_codfon
-	                          and o70_anousu = $anousu
-				  and o70_instit in ($xinstit)
-	order by o57_fonte
-       ";
-//echo $sql ; exit;
-$result = db_query($sql);
-*/
+
 $instit = ' o70_instit in ('.$xinstit.')';
 
-$result = db_receitasaldo(11,1,3,true,$instit,$anousu,$dataini,$datafin);
+if (EMENTARIO_RECEITA) {
+    $result = ReceitaSaldo(11, 1, 3, true, $instit, $anousu, $dataini, $datafin);
+} else {
+    $result = db_receitasaldo(11, 1, 3, true, $instit, $anousu, $dataini, $datafin);
+}
 
 
-$pdf = new PDF(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
+$pdf = new PDF();
+$pdf->Open();
+$pdf->AliasNbPages();
 $pdf->addpage();
 $total = 0;
 $pdf->setfillcolor(235);
@@ -118,19 +112,14 @@ for($x = 0; $x < pg_numrows($result);$x++){
       $col = 8;
    else
       $col = 9;
-   
+
    $pdf->setfont('arial','',7);
-   $pdf->cell(9-$col,$alt,db_formatar($aux,'receita'),0,0,"L",0);
+   //$pdf->cell(9-$col,$alt,db_formatar($aux,'ementario_receita'),0,0,"L",0);
+   $pdf->cell(9,$alt,db_formatar($aux,'ementario_receita'),0,0,"L",0);
    $pdf->cell($col+18,$alt,'',0,0,"L",0);
    $pdf->cell(90,$alt,str_repeat(" ",$col*2).$o57_descr,0,0,"L",0);
    //$pdf->cell(20+(9-$col)+$col,$alt,(8-$col),1,0,"L",0);
    $pdf->cell(20,$alt,substr($o57_finali,0,40),0,1,"L",0);
 }
-
-
 $pdf->ln(14);
-
-// assinaturas(&$pdf,&$classinatura,'BG');
-
-
 $pdf->Output();

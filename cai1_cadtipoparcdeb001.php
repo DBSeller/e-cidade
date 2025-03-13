@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cadtipoparcdeb_classe.php");
-include("classes/db_cadtipoparc_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cadtipoparcdeb_classe.php"));
+include(modification("classes/db_cadtipoparc_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -49,7 +49,7 @@ $clcadtipoparcdeb->k41_arretipo = $k41_arretipo;
 
 if( isset($_self)) {
   $sql1 = "select k40_codigo,k40_dtini,k40_dtfim from cadtipoparc where k40_codigo = $k41_cadtipoparc";
-    $result1 = pg_query($sql1);
+    $result1 = db_query($sql1);
     db_fieldsmemory($result1,0);
     /*
      ####################### retirado este codigo a pedido da tarefa 13885 ########################
@@ -61,7 +61,7 @@ if( isset($_self)) {
 	              where k41_arretipo = $k41_arretipo ) as x
 	      where (k40_dtini::date,k40_dtfim::date )
 	      overlaps ('$k40_dtini'::date,'$k40_dtfim'::date) and k40_codigo <> $k40_codigo ";
-    $resulttipo = pg_query($sql);
+    $resulttipo = db_query($sql);
     $linhastipo = pg_num_rows($resulttipo);
     if($linhastipo>0){
       db_fieldsmemory($resulttipo,0);
@@ -120,7 +120,7 @@ if(isset($_self) && $_self=="Incluir"){
    }
 }
 $sql= "select * from cadtipoparc where k40_codigo = $k41_cadtipoparc";
-$result = pg_query($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 
 ?>
@@ -138,7 +138,7 @@ db_fieldsmemory($result,0);
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcadtipoparcdeb.php");
+	include(modification("forms/db_frmcadtipoparcdeb.php"));
 	?>
     </center>
 	</td>

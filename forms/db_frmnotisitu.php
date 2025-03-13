@@ -58,7 +58,7 @@ db_input('k59_descr',40,$Ik59_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_notisitu','func_notisitu.php?funcao_js=parent.js_preenchepesquisa|k59_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_notisitu','func_notisitu.php?funcao_js=parent.js_preenchepesquisa|k59_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_notisitu.hide();

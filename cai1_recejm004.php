@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_tabrecjm_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_tabrecjm_classe.php"));
 
 $db_opcao   = 1 ;
 $cltabrecjm = new cl_tabrecjm();
@@ -40,11 +40,11 @@ if ( isset($incluir) ) {
 
   db_postmemory($HTTP_POST_VARS);  
 
-  pg_exec("BEGIN");
+  db_query("BEGIN");
   $cltabrecjm->k02_desjm  = 'false';
   $cltabrecjm->k02_instit = $instit;
   $cltabrecjm->incluir($k02_codjm);
-  pg_exec("COMMIT");
+  db_query("COMMIT");
 }
 ?>
 <html>
@@ -61,7 +61,7 @@ if ( isset($incluir) ) {
   <table width="790" height="100%" border="0" cellspacing="0" cellpadding="0">
     <tr> 
       <td height="430"  valign="top" bgcolor="#CCCCCC"> 
-        <?php require_once("forms/db_frmrecejm.php"); ?>
+        <?php require_once(modification("forms/db_frmrecejm.php")); ?>
       </td>
     </tr>
   </table>

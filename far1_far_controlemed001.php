@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
-$oDaoFarControlemed      = db_utils::getdao('far_controlemed');
-$oDaoFarControle         = db_utils::getdao('far_controle');
-$oDaoTmpFarRetiradaitens = db_utils::getdao('tmp_far_retiradaitens');
-$oDaoFarPrograma         = db_utils::getdao('far_programa');
-$oDaoFarParametros       = db_utils::getdao('far_parametros');
+$oDaoFarControlemed      = new cl_far_controlemed;
+$oDaoFarControle         = new cl_far_controle;
+$oDaoTmpFarRetiradaitens = new cl_tmp_far_retiradaitens;
+$oDaoFarPrograma         = new cl_far_programa;
+$oDaoFarParametros       = new cl_far_parametros;
 $oIframeAlterarExcluir   = new cl_iframe_alterar_excluir;
 
 $db_opcao                = 1;
@@ -112,16 +112,33 @@ if (isset($fa11_i_cgsund)) {
 $sqlerror = false;
 if (isset($incluir)) {
 
+  $data = new \DateTime();
+  $data->modify('+100 years');
+
   db_inicio_transacao();
-  $sSql       = $oDaoFarControlemed->sql_query('', 'fa10_i_medicamento', '', "fa10_i_medicamento = $fa10_i_medicamento".
-                                               " and fa11_i_cgsund = $fa11_i_cgsund"
-                                              );
+
+  $where = [];
+  $where[] = "fa10_i_medicamento = {$fa10_i_medicamento}";
+  $where[] = "fa11_i_cgsund = {$fa11_i_cgsund}";
+  
+  // Valida se existe algum registro com o periodo 'dentro' das datas informadas
+  $orWhere = "(fa10_d_datafim is null OR fa10_d_datafim >= '{$fa10_d_dataini}')";
+  if ($fa10_d_datafim != '') {
+    $orWhere = [];
+    $orWhere[] = "('{$fa10_d_dataini}' BETWEEN fa10_d_dataini AND coalesce(fa10_d_datafim, '{$data->format('Y-m-d')}'))";
+    $orWhere[] = "('{$fa10_d_datafim}' BETWEEN fa10_d_dataini AND coalesce(fa10_d_datafim, '{$data->format('Y-m-d')}'))";
+
+    $orWhere = '(' . implode(' OR ', $orWhere) . ')';
+  }
+
+  $where[] = $orWhere;
+  $where = implode(' AND ', $where);
+
+  $sSql = $oDaoFarControlemed->sql_query('', 'fa10_i_medicamento', '', $where);
   $result_cont = $oDaoFarControlemed->sql_record($sSql);
   if ($oDaoFarControlemed->numrows > 0) {
-?>
-    <script> alert('Medicamento já incluido!!')</script>;
-<?
-    $sqlerror= true;       
+    db_msgbox('Medicamento já incluido para o paciente no período informado!');
+    $sqlerror= true;
   }
 
   $sSql     = $oDaoFarControle->sql_query('' ,'fa11_t_obs,fa11_i_codigo', '', "fa11_i_cgsund = $fa11_i_cgsund");
@@ -139,20 +156,66 @@ if (isset($incluir)) {
     $oDaoFarControle->fa11_t_obs= str_replace("'", ".", $fa11_t_obs);
     $oDaoFarControle->incluir(null);
   } 
+
+  if ($oDaoFarControle->erro_status == '0') {
+    $sqlerror = true;
+  }
     
   $oDaoFarControlemed->fa10_i_controle= $oDaoFarControle->fa11_i_codigo;          
   $oDaoFarControlemed->incluir(null);
-  db_fim_transacao($oDaoFarControlemed->erro_status == '0' ? true : false);
+  if ($oDaoFarControlemed->erro_status == '0') {
+    $sqlerror = true;
+  }
 
+  db_fim_transacao($sqlerror);
 }
 
 if (isset($alterar)) {
+  $erro = false;
+  $data = new \DateTime();
+  $data->modify('+100 years');
 
   db_inicio_transacao();
-  $oDaoFarControle->alterar($fa11_i_codigo);    
-  $oDaoFarControlemed->alterar($fa10_i_codigo);
-  db_fim_transacao($oDaoFarControlemed->erro_status == '0' ? true : false);
 
+  $where = [];
+  $where[] = "fa10_i_codigo != {$fa10_i_codigo}";
+  $where[] = "fa10_i_medicamento = {$fa10_i_medicamento}";
+  $where[] = "fa11_i_cgsund = {$fa11_i_cgsund}";
+  
+  // Valida se existe algum registro com o periodo 'dentro' das datas informadas
+  $orWhere = "(fa10_d_datafim is null OR fa10_d_datafim >= '{$fa10_d_dataini}')";
+  if ($fa10_d_datafim != '') {
+    $orWhere = [];
+    $orWhere[] = "('{$fa10_d_dataini}' BETWEEN fa10_d_dataini AND coalesce(fa10_d_datafim, '{$data->format('Y-m-d')}'))";
+    $orWhere[] = "('{$fa10_d_datafim}' BETWEEN fa10_d_dataini AND coalesce(fa10_d_datafim, '{$data->format('Y-m-d')}'))";
+
+    $orWhere = '(' . implode(' OR ', $orWhere) . ')';
+  }
+
+  $where[] = $orWhere;
+
+  $where = implode(' AND ', $where);
+
+  $sSql = $oDaoFarControlemed->sql_query('', 'fa10_i_medicamento', '', $where);
+  $result_cont = $oDaoFarControlemed->sql_record($sSql);
+  if ($oDaoFarControlemed->numrows > 0) {
+    db_msgbox('Medicamento já incluido para o paciente no período informado!');
+    $erro = true;       
+  }
+
+  $oDaoFarControle->alterar($fa11_i_codigo);
+
+  if ($oDaoFarControle->erro_status == '0') {
+    $erro = true;
+  }
+
+  $oDaoFarControlemed->alterar($fa10_i_codigo);
+
+  if ($oDaoFarControlemed->erro_status == '0') {
+    $erro = true;
+  }
+
+  db_fim_transacao($erro);
 }
 
 if (isset($excluir)) {
@@ -207,15 +270,15 @@ if (!isset($incluir) && !isset($alterar) && !isset($excluir) && !isset($fa10_i_p
   <tr> 
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
       <fieldset style="width: auto;"><legend><b>Medicamentos Continuados</b></legend>
-        <?
-        require_once("forms/db_frmfar_controlemed.php");
+        <?php
+        require_once(modification("forms/db_frmfar_controlemed.php"));
         ?>
       </fieldset>
     </td>
   </tr>
 </table>
 </center>
-<?
+<?php
 $sVarsGet1 = '';
 $sVarsGet2 = '';
 if (!isset($lBotao)) {
@@ -236,7 +299,7 @@ if (!isset($lBotao)) {
 </html>
 <script>
 
-<? 
+<?php
 if ( isset($fa11_i_cgsund) && (int)$fa11_i_cgsund > 0 ) {
   echo "js_tabulacaoforms('form1','fa10_i_medicamento',true,1,'fa10_i_medicamento',true);";
 } else {
@@ -304,12 +367,12 @@ if (isset($incluir) || isset($alterar) || isset($excluir)) {
      <script>          
        location.href='far1_far_controlemed001.php<?=@$sVarsGet1?>';
      </script>
-     <?
+     <?php
    }
    ?>
    <script>          
      location.href='far1_far_controlemed001.php?fa11_i_cgsund=<?=$fa11_i_cgsund.$sVarsGet2?>'
    </script>
-   <?
+   <?php
 }
 ?>

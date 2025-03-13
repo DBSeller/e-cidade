@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,15 +26,15 @@
  */
  
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once('model/pessoal/ferias/PeriodoAquisitivoFerias.model.php');
-require_once('model/pessoal/Servidor.model.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification('model/pessoal/ferias/PeriodoAquisitivoFerias.model.php'));
+require_once(modification('model/pessoal/Servidor.model.php'));
 
 $clrhferias   = new cl_rhferias;
 $clrhferias->rotulo->label();
@@ -55,7 +55,8 @@ $rh109_regist     = isset($oRequest->rh109_regist)     ? $oRequest->rh109_regist
 $rh109_sequencial = isset($oRequest->rh109_sequencial) ? $oRequest->rh109_sequencial : null;
 $sOpcao           = isset($oRequest->opcao)            ? $oRequest->opcao            : null;
 
-if (isset($processar)) {
+
+if (isset($processar) || isset($incluir)) {
 
   $oRequest = db_utils::postMemory($_POST);
   
@@ -78,16 +79,22 @@ if (isset($processar)) {
     }
     $oPeriodoAquisitivo->setDataFinal($oDataFinal);
     
-    //$oPeriodoAquisitivo->setDiasDireito($iDiasDireito);
-    $oPeriodoAquisitivo->setFaltasPeriodoAquisitivo($oRequest->rh109_faltasperiodoaquisitivo);
+    if (isset($incluir)) {
+        $oPeriodoAquisitivo->setDiasDireito($iDiasDireito);
+    }
+
+    $oPeriodoAquisitivo->setFaltasPeriodoAquisitivo(0);
     $oPeriodoAquisitivo->setServidor(new Servidor($oRequest->rh109_regist));
     $oPeriodoAquisitivo->setObservacao($oRequest->rh109_observacao);
-    
+    $oPeriodoAquisitivo->setPerdeuDireitoFerias($oRequest->rh109_perdeudireitoferias);
+
     $oPeriodoAquisitivo->salvar();
     
     db_fim_transacao();
     
-    db_msgbox( _M(PeriodoAquisitivoFerias::MENSAGENS . "alterar") );
+    $tipoAcao = (isset($incluir) ? "incluir" : "alterar");
+
+    db_msgbox( _M(PeriodoAquisitivoFerias::MENSAGENS . $tipoAcao) );
     db_redireciona('pes1_periodoaquisitivo002.php?rh109_regist=' . $oRequest->rh109_regist . "&z01_nome=" . $oRequest->z01_nome);
     exit;
   
@@ -107,10 +114,21 @@ if (isset($processar)) {
 	$rh109_periodoaquisitivofinal_ano   = $oPeriodoAquisitivo->getDataFinal()->getAno();
 	$rh109_diasdireito                  = $oPeriodoAquisitivo->getDiasDireito();
 	$rh109_faltasperiodoaquisitivo      = $oPeriodoAquisitivo->getFaltasPeriodoAquisitivo();
-	$rh109_observacao                   = $oPeriodoAquisitivo->getObservacao();
+  $rh109_observacao                   = $oPeriodoAquisitivo->getObservacao();
+	$rh109_perdeudireitoferias          = $oPeriodoAquisitivo->getPerdeuDireitoFerias();
+
 } else {
-	$db_opcao     = 3;
+
+   $sSql  = "SELECT  1  FROM rhferias WHERE rh109_regist = ". $oRequest->rh109_regist .";";   
+   $rsSql = db_query($sSql);   
+
+   if (pg_num_rows($rsSql) == 0) {
+       $db_opcao = 4;
+   } else {
+       $db_opcao = 3;
+   }
 }
+
 ?>
 
 <html>
@@ -141,7 +159,7 @@ if (isset($processar)) {
                 
                   <table width="100%" >
                     <tr>
-              		    <td title="<?php echo $Trh109_regist; ?>">
+              		    <td width="145" title="<?php echo $Trh109_regist; ?>">
               		      <?php
               		      db_ancora($Lrh109_regist, "js_pesquisarh109_regist(true);", 3);
               		      ?>
@@ -154,7 +172,7 @@ if (isset($processar)) {
               		    </td>
               		  </tr>
                     <tr>
-                      <td nowrap title="<?=$Trh109_periodoaquisitivoinicial?>" width="35%">
+                      <td width="145" title="<?=$Trh109_periodoaquisitivoinicial?>">
                         <?= $Lrh109_periodoaquisitivoinicial; ?>
                       </td>
                       <td>
@@ -169,7 +187,7 @@ if (isset($processar)) {
                     </tr>
                     
                     <tr>
-                      <td nowrap title="<?=$Trh109_periodoaquisitivofinal?>">
+                      <td width="145" title="<?=$Trh109_periodoaquisitivofinal?>">
                         <?=$Lrh109_periodoaquisitivofinal; ?>                      
                       </td>
                       <td>
@@ -184,7 +202,7 @@ if (isset($processar)) {
                     </tr>
                     
                     <tr>
-                      <td>
+                      <td width="145">
                         <?php echo $Lrh109_diasdireito; ?>
                       </td>
                       <td>
@@ -192,8 +210,8 @@ if (isset($processar)) {
                       </td>
                     </tr>
                     
-                    <tr>
-                      <td nowrap title="<?=$Trh109_faltasperiodoaquisitivo?>">
+                    <tr style="display: none">
+                      <td width="145" title="<?=$Trh109_faltasperiodoaquisitivo?>">
                         <?=$Lrh109_faltasperiodoaquisitivo?>
                       </td>
                       <td>
@@ -204,24 +222,24 @@ if (isset($processar)) {
                     </tr>
                     
                     <tr>
-                      <td nowrap>
-                        <strong><?php echo 'Tem direito a férias:'; ?></strong>
+                      <td width="145">
+                        <strong><?php echo 'Perdeu direito a férias:'; ?></strong>
                       </td>
                       <td>
                         <?php 
-                          $aDiasDeDireito                     = array('1' => 'Sim', '2' => 'Não');
-                          $GLOBALS['rh109_possuidiasdireito'] = (!isset($rh109_diasdireito) || $rh109_diasdireito > 0) ? '1': '2';
+                         
+                          $aDiasDeDireito = array('f' => 'Não', 't' => 'Sim');
                           
-                          db_select('rh109_possuidiasdireito', $aDiasDeDireito, true, $db_opcao, "");
+                          db_select('rh109_perdeudireitoferias', $aDiasDeDireito, true, $db_opcao, "");
                         ?>
                       </td>
                     </tr>
                     
                     <tr>
-                      <td nowrap title="<?php echo @$Trh109_observacao; ?>" colspan="2" >
+                      <td width="145" title="<?php echo @$Trh109_observacao; ?>" colspan="2" >
                         <fieldset>
                           <legend><?=@$Lrh109_observacao?></legend>
-                          <?php db_textarea('rh109_observacao', 3, 80, ($rh109_possuidiasdireito =='1' ? 0 : 2),true, 'textarea', $db_opcao); ?>
+                          <?php db_textarea('rh109_observacao', 3, 80, (!empty($rh109_possuidiasdireito) && $rh109_possuidiasdireito =='1' ? 0 : 2),true, 'textarea', $db_opcao); ?>
                         </fieldset>
                       </td>
                     </tr>
@@ -231,7 +249,7 @@ if (isset($processar)) {
 							      	<?php
 							      	
 							           if (!empty($oRequest->rh109_regist)){
-							      
+							         
 							             $chavepri= array("rh109_sequencial" => "");
 							             
 							             $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
@@ -240,7 +258,7 @@ if (isset($processar)) {
 													 $sCampos .= "rh109_periodoaquisitivoinicial,";
 													 $sCampos .= "rh109_periodoaquisitivofinal,  ";
 													 $sCampos .= "rh109_diasdireito,             ";
-													 $sCampos .= "rh109_faltasperiodoaquisitivo  ";
+                           $sCampos .= "rh109_perdeudireitoferias      ";
 													 
                            $sWhere   = "     rh109_regist = {$oRequest->rh109_regist}";
                            $sWhere  .= " and not exists ( select 1 from rhferiasperiodo where rh109_sequencial = rh110_rhferias ) ";
@@ -248,11 +266,12 @@ if (isset($processar)) {
 													 if (!empty($rh109_sequencial)) {
                              $chavepri= array("rh109_sequencial"=> $rh109_sequencial);
 													 }
+
                            if (!empty($oRequest->rh109_sequencial)) {                            
                              $sWhere .= " and rh109_sequencial <> {$oRequest->rh109_sequencial}";
                            }
 
-									         $sSql     = $clrhferias->sql_query_file (null, $sCampos, 'rh109_periodoaquisitivoinicial, rh109_periodoaquisitivofinal', $sWhere);
+									         $sSql     = $clrhferias->sql_query_file (null, $sCampos, 'rh109_periodoaquisitivoinicial desc, rh109_periodoaquisitivofinal desc', $sWhere);
 							             $rsSql    = db_query($sSql);
 
                             if ( !$rsSql ) {
@@ -265,7 +284,7 @@ if (isset($processar)) {
                               db_redireciona('pes1_periodoaquisitivo002.php?lRedireciona=false&rh109_regist=' . $oRequest->rh109_regist . '&rh109_sequencial='.$rh109_sequencial.'&z01_nome=' . $oRequest->z01_nome . '&opcao=alterar');
                               exit;
                             }
-
+                            
 
 							             $cliframe_alterar_excluir->chavepri      = $chavepri;
 							             $cliframe_alterar_excluir->sql           = $sSql;
@@ -289,15 +308,15 @@ if (isset($processar)) {
                   
               </fieldset>
               
-              <?php 
-                if ($db_opcao != 3) {
-              ?>
-                <input name="processar" type="submit" id="db_opcao" value="Processar" onclick="return js_processar()" />
-              <?php 
-                }
-              ?>
+              <?php if ($db_opcao == 1) :?>
+                 <input name="processar" type="submit" id="db_opcao" value="Salvar" onclick="return js_processar()" />
+              <?php endif; ?>
+              
+              <?php if ($db_opcao == 4) : ?>
+                 <input name="incluir" type="submit" id="db_opcao" value="Incluir" onclick="return js_processar()" />   
+              <?php endif; ?>
+
               <input name="voltar" type="button" id="voltar" value="Voltar" onclick="js_voltar()" />
-            
             </form>
           </center>
         </td>
@@ -339,10 +358,13 @@ if (isset($processar)) {
 				 return false;
 			 }	          
 
-       if ($F('rh109_possuidiasdireito') == 2 && !$F('rh109_observacao'))  { 
-         alert('Campo Observação deve ser preenchido.');
-         return false;
-       }
+            if ($F('rh109_perdeudireitoferias') == 't' && !$F('rh109_observacao')) {
+                alert('Ao informar que o servidor perdeu direito de férias deve ser informada uma observação.');
+                return false;
+            }
+
+       var form_insere = document.form_insere;
+
 
        /**
         * Realiza a validação da data inicial e data final.
@@ -352,12 +374,13 @@ if (isset($processar)) {
                                                  js_formatar($F("rh109_periodoaquisitivofinal"),'d'), 
                                                  3
                                                );
-       
-       if ( sDiferencaDatas && sDiferencaDatas != 'i'){
+      
+       if (sDiferencaDatas || sDiferencaDatas == 'i') {
 
-        alert('Data Inicial não pode ser maior que a Data Final');
+        alert('Data Inicial deve ser menor que Data Final.');
         return false;
        }
+
        
        return true;
      }
@@ -409,7 +432,7 @@ if (isset($processar)) {
        $('rh109_diasdireito').value       = iDias;
      }
      
-     //top.corpo.iframe_periodos.onload = js_load();
+     //(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_periodos.onload = js_load();
 
      document.onreadystatechange = function () {
 
@@ -425,7 +448,7 @@ if (isset($processar)) {
       */
      function js_load() {
 
-       var aLinks  = top.corpo.iframe_periodos.document.querySelectorAll('a:last-child');
+       var aLinks  = (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_periodos.document.querySelectorAll('a:last-child');
        var iLimite = 0;
 
        for ( var iIndice in aLinks ) {
@@ -437,6 +460,9 @@ if (isset($processar)) {
          oElemento.style.display = "none";
        };
      }
+
+    
+
 
    </script>
 </html>

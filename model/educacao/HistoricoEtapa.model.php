@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -130,11 +130,15 @@ abstract class HistoricoEtapa {
    */
   protected $sTermoFinal;
 
+  protected $periodoReferencia;
+
   /**
    * Observação lançado no histórico da etapa
    * @var text
    */
   protected $sObservacao;
+
+  protected $nPercentualFrequencia;
 
   /**
    *
@@ -155,11 +159,24 @@ abstract class HistoricoEtapa {
     $this->iAnoCurso = $iAnoCurso;
   }
 
+   /**
+   * @return unknown
+   */
+  public function getPeriodoReferencia() {
+    return $this->periodoReferencia;
+  }
+  /**
+   * @param integer $periodoReferencia
+   */
+  public function setPeriodoReferencia($periodoReferencia) {
+    $this->periodoReferencia = $periodoReferencia;
+  }
+
   /**
    * @return integer
    */
   public function getCargaHoraria() {
-    return $this->iCargaHoraria;
+    return (int)$this->iCargaHoraria;
   }
 
   /**
@@ -320,8 +337,14 @@ abstract class HistoricoEtapa {
     if (empty($iCodigoDeLancamentoDisciplina)) {
       throw new ParameterException("Codigo da Disciplina deve ser informado.");
     }
+
     $iIndiceRemover = null;
-    $oDisciplina     = $this->getDisciplinaByCodigoDeLancamento($iCodigoDeLancamentoDisciplina);
+    $oDisciplina    = $this->getDisciplinaByCodigoDeLancamento($iCodigoDeLancamentoDisciplina);
+
+    if ( $oDisciplina === false ) {
+      throw new ParameterException("Disciplina não encontrada para remoção.");
+    }
+
     foreach ($this->aDisciplinas as $iIndice => $oDisciplinaIndice) {
       if ($oDisciplinaIndice->getCodigo() == $iCodigoDeLancamentoDisciplina) {
 
@@ -410,12 +433,13 @@ abstract class HistoricoEtapa {
     return $this->nPercentualFrequencia;
   }
 
-  /**
-   * Retorna a ultima etapa do histórico cursada pelo aluno
-   * @param Aluno $oAluno
-   * @throws DBException
-   * @return HistoricoEtapa
-   */
+    /**
+     * Retorna a ultima etapa do histórico cursada pelo aluno
+     * @param Aluno $oAluno
+     * @return HistoricoEtapa
+     * @throws ParameterException
+     * @throws DBException
+     */
   public static function getUltimaEtapaAluno( Aluno $oAluno ) {
 
     $oDaoHistorico  = new cl_historico();

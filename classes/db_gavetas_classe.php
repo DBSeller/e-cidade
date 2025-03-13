@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -60,7 +60,7 @@ class cl_gavetas {
                  cm27_i_restogaveta = int4 = Resto/Gaveta
                  cm27_d_exumprevista = date = Exumação Prevista
                  cm27_d_exumfeita = date = Exumação Feita
-                 cm27_c_ossoario = char(1) = Está no Ossoário
+                 cm27_c_ossoario = char(1) = Está no Ossário
                  cm27_i_gaveta = int4 = N da Gaveta
                  ";
    //funcao construtor da classe

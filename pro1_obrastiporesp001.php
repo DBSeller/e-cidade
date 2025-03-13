@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_obrastiporesp_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_obrastiporesp_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clobrastiporesp = new cl_obrastiporesp;
 $db_opcao = 1;
@@ -52,7 +52,7 @@ if(isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"]=="Incluir")
 </head>
 <body bgcolor=#CCCCCC>
 	<?
-	include("forms/db_frmobrastiporesp.php");
+	include(modification("forms/db_frmobrastiporesp.php"));
 	?>
 <?
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));

@@ -1,31 +1,30 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("RelatoriosLegaisBase.model.php");
 /**
  * Classe para controle dos valores do Anexo I da RGF.
  *
@@ -83,45 +82,10 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
       $sDataExercicio  = "{$this->iAnoUsu}-{$oDadosPeriodo->o114_mesfinal}-{$iUltimoDiaMes}";
     }
 
-    $this->setDataInicial("{$iAnoUsu}-01-01");
-    $this->setDataFinal($sDataExercicio);
+    $this->setDataInicial( new DBDate("{$iAnoUsu}-01-01") );
+    $this->setDataFinal( new DBDate($sDataExercicio) );
   }
 
-  /**
-   * Seta a data inicial do relatório.
-   *
-   * @param date_type $dtDataInicial
-   */
-  public function setDataInicial($dtDataInicial) {
-    $this->dtDataInicial = $dtDataInicial;
-  }
-
-  /**
-   * Retorna a data inicial para o relatório.
-   *
-   * @return date_type
-   */
-  public function getDataInicial() {
-    return $this->dtDataInicial;
-  }
-
-  /**
-   * Seta a data final do relatório.
-   *
-   * @param date_type $dtDataFinal
-   */
-  public function setDataFinal($dtDataFinal) {
-    $this->dtDataFinal = $dtDataFinal;
-  }
-
-  /**
-   * Retorna a data final para o relatório.
-   *
-   * @return date_type
-   */
-  public function getDataFinal() {
-    return $this->dtDataFinal;
-  }
 
   /**
    * Retorna os dados da classe em forma de objeto.
@@ -251,20 +215,21 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
      * Quadro de despesa total com pessoal.
      */
     $oDespesaTotalComPessoal = new stdClass();
-    $oDespesaTotalComPessoal->quadrodescricao   = 'DESPESA TOTAL COM PESSOAL - DTP(IV) = (IIIa + IIIb)';
-    $oDespesaTotalComPessoal->exercicio         = 0;
-    $oDespesaTotalComPessoal->inscritas         = 0;
-    $oDespesaTotalComPessoal->linhas            = array();
-    $oDespesaTotalComPessoal->colunameses       = array();
-    $oDespesaTotalComPessoal->valorapurado      = 0;
-    $oDespesaTotalComPessoal->percentuallimite  = 0;
-    $oDespesaTotalComPessoal->linhatotalizadora = true;
+    $oDespesaTotalComPessoal->quadrodescricao    = 'DESPESA TOTAL COM PESSOAL - DTP(V) = (IIIa + IIIb)';
+    $oDespesaTotalComPessoal->exercicio          = 0;
+    $oDespesaTotalComPessoal->inscritas          = 0;
+    $oDespesaTotalComPessoal->linhas             = array();
+    $oDespesaTotalComPessoal->colunameses        = array();
+    $oDespesaTotalComPessoal->valorapurado       = 0;
+    $oDespesaTotalComPessoal->percentuallimite   = 0;
+    $oDespesaTotalComPessoal->linhatotalizadora  = true;
+    $oDespesaTotalComPessoal->percentualsobrercl = 0;
 
     /**
      * Quadro de receita corrente líquida.
      */
     $oReceitaTotalCorrenteLiquida = new stdClass();
-    $oReceitaTotalCorrenteLiquida->quadrodescricao   = 'RECEITA CORRENTE LÍQUIDA - RCL (V)';
+    $oReceitaTotalCorrenteLiquida->quadrodescricao   = 'RECEITA CORRENTE LÍQUIDA - RCL (IV)';
     $oReceitaTotalCorrenteLiquida->exercicio         = 0;
     $oReceitaTotalCorrenteLiquida->inscritas         = 0;
     $oReceitaTotalCorrenteLiquida->linhas            = array();
@@ -277,7 +242,7 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
      * Quadro de despesa total com pessoal sem a RCL.
      */
     $oDespesaTotalComPessoalSemRCL = new stdClass();
-    $oDespesaTotalComPessoalSemRCL->quadrodescricao   = '% da DESPESA TOTAL COM PESSOAL - DTP sobre a RCL (VI)=(IV/V)*100';
+    $oDespesaTotalComPessoalSemRCL->quadrodescricao   = 'DESPESA TOTAL COM PESSOAL - DTP (V) = (III a + III b)';
     $oDespesaTotalComPessoalSemRCL->exercicio         = 0;
     $oDespesaTotalComPessoalSemRCL->inscritas         = 0;
     $oDespesaTotalComPessoalSemRCL->linhas            = array();
@@ -290,7 +255,7 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
      * Quadro de limite máximo.
      */
     $oLimiteMaximo = new stdClass();
-    $oLimiteMaximo->quadrodescricao   = 'LIMITE MÁXIMO (incisos I, II e III, art. 20 da LRF)';
+    $oLimiteMaximo->quadrodescricao   = 'LIMITE MÁXIMO (VI) (incisos I, II e III, art. 20 da LRF)';
     $oLimiteMaximo->exercicio         = 0;
     $oLimiteMaximo->inscritas         = 0;
     $oLimiteMaximo->linhas            = array();
@@ -303,7 +268,7 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
      * Quadro de limite prudencial.
      */
     $oLimitePrudencial = new stdClass();
-    $oLimitePrudencial->quadrodescricao   = 'LIMITE PRUDENCIAL (parágrafo único, art. 22 da LRF)';
+    $oLimitePrudencial->quadrodescricao   = 'LIMITE PRUDENCIAL (VII) = (0,95 x VI) (parágrafo único do art. 22 da LRF)';
     $oLimitePrudencial->exercicio         = 0;
     $oLimitePrudencial->inscritas         = 0;
     $oLimitePrudencial->linhas            = array();
@@ -313,7 +278,7 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
     $oLimitePrudencial->linhatotalizadora = false;
 
     $oLimiteAlerta = new stdClass();
-    $oLimiteAlerta->quadrodescricao   = 'LIMITE DE ALERTA (inciso II do § 1º do art. 59 da LRF)';
+    $oLimiteAlerta->quadrodescricao   = 'LIMITE DE ALERTA (VIII) = (0,90 x VI) (inciso II do §1º do art. 59 da LRF)';
     $oLimiteAlerta->exercicio         = 0;
     $oLimiteAlerta->inscritas         = 0;
     $oLimiteAlerta->linhas            = array();
@@ -347,23 +312,23 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
           break;
 
         case 3:
-          $sDescricao = '   Outras Desp Pessoal dec de Contr Terceirização';
+          $sDescricao = '   Outras despesas de pessoal decorrentes de contratos de terceirização (§ 1º do art. 18 da LRF)';
           break;
 
         case 4:
-          $sDescricao = '   Ind por Demissão e Inc à Demissão Voluntária';
+          $sDescricao = '   Indenizações por Demissão e Incentivos à Demissão Voluntária';
           break;
 
         case 5:
-          $sDescricao = '   Decorrentes de Decisão Judicial';
+          $sDescricao = '   Decorrentes de Decisão Judicial de período anterior ao da apuração';
           break;
 
         case 6:
-          $sDescricao = '   Despesas de Exercícios Anteriores';
+          $sDescricao = '   Despesas de Exercícios Anteriores de período anterior ao da apuração';
           break;
 
         case 7:
-          $sDescricao = '   Inativos e Pensionistas com Rec Vinculados';
+          $sDescricao = '   Inativos e Pensionistas com Recursos Vinculados';
           break;
       }
 
@@ -450,11 +415,10 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
                 $aChaveMesColunaMeses = array_keys($oLinha->colunameses);
                 if (trim($aChaveMesColunaMeses[11]) == trim($sChaveMes)) {
 
-                  $oLinha->inscritas += abs(round(
+                  $oLinha->inscritas += round(
                     $oDespesaValores->empenhado_acumulado -
                     $oDespesaValores->anulado_acumulado -
-                    $oDespesaValores->liquidado_acumulado, 2)
-                  );
+                    $oDespesaValores->liquidado_acumulado, 2);
                 }
               }
             }
@@ -524,6 +488,7 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
     /**
      * Verifica valor RCL nas configurações da linha 8.
      */
+    $aLinhasRelatorio[8]->setPeriodo($this->iCodigoPeriodo);
     $aValoresColunasLinhas = $aLinhasRelatorio[8]->getValoresColunas(null, null,
                                                                      $this->getInstituicoes(),
                                                                      $this->iAnoUsu);
@@ -540,7 +505,7 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
        * deve ser feita por todas as instituições.
        */
       $rsInstituicoes = db_query("SELECT codigo FROM db_config;");
-      $oInstituicoes  = db_utils::getColectionByRecord($rsInstituicoes);
+      $oInstituicoes  = db_utils::getCollectionByRecord($rsInstituicoes);
       $aInstituicoes  = array();
       foreach ($oInstituicoes as $oInstituicao){
           $aInstituicoes[]= $oInstituicao->codigo;
@@ -555,10 +520,10 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
 
       duplicaReceitaaCorrenteLiquida($this->iAnoUsu, 81);
 
-      $nTotalRCL += calcula_rcl2($this->iAnoUsu, $this->getDataInicial(), $this->getDataFinal(),
+      $nTotalRCL += calcula_rcl2($this->iAnoUsu, $this->getDataInicial()->getDate(), $this->getDataFinal()->getDate(),
                                  $sInstituicoes, false, 81);
       $nTotalRCL += calcula_rcl2(($this->iAnoUsu-1), $dtInicialAnterior, $dtFinalAnterior,
-                                 $sInstituicoes, false, 81, $this->getDataFinal());
+                                 $sInstituicoes, false, 81, $this->getDataFinal()->getDate());
     }
 
     $nValorDespesaTotalPessoal = ($oDespesaLiquida->exercicio + $oDespesaLiquida->inscritas);
@@ -572,6 +537,11 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
       $nValorDesepesaTotalPessoalSobreRCL = 0;
     }
 
+    $nPercentualDespesaPessoalSobreRcl = 0;
+    if ($nTotalRCL > 0) {
+      $nPercentualDespesaPessoalSobreRcl = ($nValorDespesaTotalPessoal * 100) / $nTotalRCL;
+    }
+
     /**
      * Soma valores totail do limite maximo (incisos I, II e III, art. 20 da LRF) e
      * do limite prudencial (parágrafo único, art. 22 da LRF).
@@ -581,6 +551,7 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
     $nValorLimiteAlerta     = (($nTotalRCL + 0) * $iLimiteMaximoAlerta) / 100;
 
     $oDespesaTotalComPessoal->valorapurado       = $nValorDespesaTotalPessoal;
+    $oDespesaTotalComPessoal->percentualsobrercl = $nPercentualDespesaPessoalSobreRcl;
     $oReceitaTotalCorrenteLiquida->valorapurado  = $nTotalRCL;
     $oDespesaTotalComPessoalSemRCL->valorapurado = $nValorDesepesaTotalPessoalSobreRCL;
     $oLimiteMaximo->percentuallimite             = $iLimiteMaximo;
@@ -622,6 +593,13 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
 	   * Monta o Object de retorno do método.
 	   */
     $oDadosSimplificado = new stdClass();
+    $oDadosSimplificado->despesatotalpessoal         = new stdClass();
+    $oDadosSimplificado->receitacorrenteliquida      = new stdClass();
+    $oDadosSimplificado->despesatotalpessoalsobreRCL = new stdClass();
+    $oDadosSimplificado->limitemaximo     = new stdClass();
+    $oDadosSimplificado->limiteprudencial = new stdClass();
+
+
     $oDadosSimplificado->despesatotalpessoal->valorapurado         = 0;
     $oDadosSimplificado->receitacorrenteliquida->valorapurado      = 0;
     $oDadosSimplificado->despesatotalpessoalsobreRCL->valorapurado = 0;
@@ -670,7 +648,7 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
   public function getDadosColuna() {
 
   	$aRetorno                     = array();
-	  $aUltimaData                  = explode("-", $this->getDataFinal());
+	  $aUltimaData                  = explode("-", $this->getDataFinal()->getDate());
 		$iMesFinalExecicioAtual       = $aUltimaData[1];
 		$iMesInicialExercicioAnterior = ($aUltimaData[1]+1);
 		$iAnoExercicioAtual           = $this->iAnoUsu;
@@ -805,4 +783,3 @@ final class AnexoIRGF extends RelatoriosLegaisBase {
     return $sDescricaoMes;
   }
 }
-?>

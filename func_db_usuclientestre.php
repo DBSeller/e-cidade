@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_clientesmodulosprocusu_classe.php");
-include("classes/db_db_usuclientes_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_clientesmodulosprocusu_classe.php"));
+include(modification("classes/db_db_usuclientes_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -107,7 +107,7 @@ echo "<table>";
 for($i=0;$i<pg_numrows($result);$i+=2){
   db_fieldsmemory($result,$i);
 
-  $res = $clclientesmodulosprocusu->sql_record($clclientesmodulosprocusu->sql_query_file(null,"*",null," at76_usuario = $at10_usuario"));
+  $res = $clclientesmodulosprocusu->sql_record($clclientesmodulosprocusu->sql_query_file(null,"*",null," at76_seqproc = $at76_sequen and at76_usuario = $at10_usuario"));
   if( $clclientesmodulosprocusu->numrows>0 ){
     $select = " checked  ";
   }else{
@@ -119,15 +119,15 @@ for($i=0;$i<pg_numrows($result);$i+=2){
   echo "<td><strong>$at10_login</strong></td>";
   echo "<td><strong>$at10_nome</strong></td>";
 
-  if($i+1 <= pg_numrows($result)){
+  if($i+1 < pg_numrows($result)){
     db_fieldsmemory($result,$i+1);
 
-  $res = $clclientesmodulosprocusu->sql_record($clclientesmodulosprocusu->sql_query_file(null,"*",null," at76_usuario = $at10_usuario"));
-  if( $clclientesmodulosprocusu->numrows>0 ){
-    $select = " checked ";
-  }else{
-    $select = "" ;
-  }
+    $res = $clclientesmodulosprocusu->sql_record($clclientesmodulosprocusu->sql_query_file(null,"*",null," at76_seqproc = $at76_sequen and  at76_usuario = $at10_usuario"));
+    if( $clclientesmodulosprocusu->numrows>0 ){
+      $select = " checked ";
+    }else{
+      $select = "" ;
+    }
 
 
 
@@ -146,3 +146,9 @@ echo "</table>";
 </form>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

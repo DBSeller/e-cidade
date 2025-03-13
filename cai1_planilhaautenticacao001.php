@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libdicionario.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_placaixa_classe.php");
-require_once("classes/db_placaixarec_classe.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libdicionario.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_placaixa_classe.php"));
+require_once(modification("classes/db_placaixarec_classe.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $oRotulo = new rotulo("placaixa");
 $oRotulo->label();
@@ -48,36 +48,49 @@ $iDbOpcao               = 1;
 
 if (isset($oGet->db_opcao) && $oGet->db_opcao == 3) {
 
-	$sLabel                 = "Exclusão";
-	$sSTyleButtonAutenticar = "Display:None;";
-	$sSTyleButtonExcluir    = "Display:InLine;";
-	$iDbOpcao               = $oGet->db_opcao;
+  $sLabel                 = "Exclusão";
+  $sSTyleButtonAutenticar = "Display:None;";
+  $sSTyleButtonExcluir    = "Display:InLine;";
+  $iDbOpcao               = $oGet->db_opcao;
 }
 
-
+//Checa parametro e mostra alerta de confirmacao de data
+if($iDbOpcao == 1) {
+    $clconparametro = new cl_conparametro();
+    $rsconparametro = $clconparametro->sql_record($clconparametro->sql_query_file(null, "c90_confirmadata"));
+    $conparametro = db_utils::fieldsMemory($rsconparametro, 0);
+    if($conparametro->c90_confirmadata == 't'){
+        $data = date('d/m/y', db_getsession('DB_datausu'));
+        echo "<db-alertaconfirmadatafinanceiro data=" . $data . "></db-alertaconfirmadatafinanceiro>";
+    }
+}
 
 ?>
 <html>
 <head>
+    <link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.core.css"
+      rel="stylesheet"/>
+  <link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.bootstrap.css"
+      rel="stylesheet"/>
   <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta http-equiv="Expires" CONTENT="0">
   <?php
-    db_app::load("scripts.js");
-    db_app::load("prototype.js");
-    db_app::load("datagrid.widget.js");
-    db_app::load("strings.js");
-    db_app::load("grid.style.css");
-    db_app::load("estilos.css");
+  db_app::load("scripts.js");
+  db_app::load("prototype.js");
+  db_app::load("datagrid.widget.js");
+  db_app::load("strings.js");
+  db_app::load("grid.style.css");
+  db_app::load("estilos.css");
   ?>
 </head>
 <body>
 
 <center>
-  <form name="form1" method="post" action="<?=$db_action?>">
+  <form name="form1" method="post">
     <fieldset style="margin-top: 50px; width: 900px;">
       <legend><strong><?php echo $sLabel?> de Planilha de Arrecadação</strong></legend>
-        <table width="100%" border="0">
+      <table width="100%" border="0">
         <tr>
           <td width="70px" nowrap title="<?=$Tk80_codpla?>">
             <? db_ancora(@$Lk80_codpla, "js_pesquisaPlanilha(true);",1);?>
@@ -100,263 +113,282 @@ if (isset($oGet->db_opcao) && $oGet->db_opcao == 3) {
           </td>
 
           <td colspan="3">
-             <? db_input('k144_numeroprocesso', 10, null, true, 'text', $iDbOpcao, null,null,null,null,15);?>
+            <? db_input('k144_numeroprocesso', 10, null, true, 'text', $iDbOpcao, null,null,null,null,15);?>
           </td>
         </tr>
 
-        </table>
-    <fieldset style="width: 95%">
-      <legend><b>Receitas Vinculadas</b></legend>
-      <div id="ctnGridReceitasVinculadas">
-      </div>
+      </table>
+      <fieldset style="width: 95%">
+        <legend><b>Receitas Vinculadas</b></legend>
+        <div id="ctnGridReceitasVinculadas">
+        </div>
+      </fieldset>
     </fieldset>
-  </fieldset>
-  <p align="center">
+    <p align="center">
 
-    <input type="button" style="<?php echo $sSTyleButtonAutenticar; ?>" value='Autenticar Planilha' id='autenticar' name='autenticar' onclick="js_autenticar();"/>
-    <input type="button" style="<?php echo $sSTyleButtonExcluir; ?>" value='Excluir Planilha' id='excluir' name='excluir' onclick="js_excluirPlanilha();"/>
+      <input type="button" style="<?php echo $sSTyleButtonAutenticar; ?>" value='Autenticar Planilha' id='autenticar' name='autenticar' onclick="js_autenticar();"/>
+      <input type="button" style="<?php echo $sSTyleButtonExcluir; ?>" value='Excluir Planilha' id='excluir' name='excluir' onclick="js_excluirPlanilha();"/>
 
-  </p>
+    </p>
   </form>
 </center>
 <?
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
+<script type="text/javascript" src='extension/package/Desktop/assets/vendors/alertify/alertify.js'></script>
+<script type="text/javascript" src="scripts/components/AlertaConfirmaDataFinanceiro.js"></script>
 <script type="text/javascript">
 
-var sRPC          = 'cai4_planilhaarrecadacao.RPC.php';
-
-
-function js_excluirPlanilha(){
-
-	var iPlanilha = $F('k80_codpla');
-
-  if (iPlanilha == '') {
-
-    alert("Selecione uma planilha de arrecadação a ser excluida.");
-    return false;
-	}
-
-  var sMensagemExcluir  = "Deseja excluir a planilha de arrecadação selecionada?\n\n";
-  if (!confirm(sMensagemExcluir)) {
-    return false;
-  }
-
-	js_divCarregando("Aguarde, autenticando planilha de arrecadação...", "msgBox");
-
-	var oParametro       = new Object();
-	oParametro.iPlanilha = iPlanilha;
-	oParametro.exec      = 'excluirPlanilha';
-	oParametro.iPlanilha = $F('k80_codpla');
-
-	var oAjax = new Ajax.Request(sRPC,
-	                             {
-	                              method: 'post',
-	                              parameters: 'json='+Object.toJSON(oParametro),
-	                              onComplete:js_retornoExclusaoPlanilha
-	                             }
-	                            );
-
-}
-function js_retornoExclusaoPlanilha(oAjax) {
-
-	  js_removeObj('msgBox');
-	  var oRetorno = eval("("+oAjax.responseText+")");
-
-    alert(oRetorno.message.urlDecode());
-
-	  js_limparDadosTela();
-	}
-
-var oGridReceitas = new DBGrid('ctnGridReceitasVinculadas');
-oGridReceitas.nameInstance = 'oGridReceitas';
-oGridReceitas.setCellWidth(new Array( '40%',
-                                      '40%',
-                                      '20%'));
-
-oGridReceitas.setCellAlign(new Array( 'left',
-                                      'left',
-                                      'right'));
-
-
-oGridReceitas.setHeader(new Array( 'Dados da Conta',
-                                   'Conta Tesouraria',
-                                   'Valor'));
-oGridReceitas.hasTotalizador = true;
-oGridReceitas.show($('ctnGridReceitasVinculadas'));
-
-
-function js_autenticar() {
-
-  if ($F('k80_codpla') == '') {
-
-    alert('Selecione uma planilha de arrecadação.');
-    return false;
-  }
-
-  var sMensagemSalvar  = "Deseja autenticar a planilha de arrecadação selecionada?\n\n";
-  sMensagemSalvar     += "Este procedimento pode demandar algum tempo.";
-  if (!confirm(sMensagemSalvar)) {
-    return false;
-  }
-
-  js_divCarregando("Aguarde, autenticando planilha de arrecadação...", "msgBox");
-
-  var oParametro                 = new Object();
-  oParametro.exec                = 'autenticarPlanilha';
-  oParametro.iPlanilha           = $F('k80_codpla');
-  oParametro.k144_numeroprocesso = encodeURIComponent(tagString($F("k144_numeroprocesso")));
-
-  var oAjax = new Ajax.Request(sRPC,
-                               {
-                                method: 'post',
-                                parameters: 'json='+Object.toJSON(oParametro),
-                                onComplete:js_retornoAutenticacao
-                               }
-                              );
-}
-
-/**
- * Função que busca as receitas vinculadas na planilha selecionada
- */
-function js_getReceitasPlanilha() {
-
-  if ($F('k80_codpla') == "") {
-    return false;
-  }
-
-  js_divCarregando("Aguarde, carregando receitas vinculadas...", "msgBox");
-
-  var oParam       = new Object();
-  oParam.exec      = "getDadosPlanilhaArrecadacao";
-  oParam.iPlanilha = $F('k80_codpla');
-
-  new Ajax.Request(sRPC,
-                    {
-                     method: 'post',
-                     parameters: 'json='+Object.toJSON(oParam),
-                     onComplete: js_preencheGridReceitas
-                    }
-                   );
-}
-
-/**
- * Função que preenche a grid com as receitas vinculadas
- */
-function js_preencheGridReceitas(oAjax) {
-
-  js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
-
-  var oPlanilha = oRetorno.oPlanilha;
-  var iTotalReceitasPlanilha = oPlanilha.aReceitas.length;
-
-  if (oPlanilha.k144_numeroprocesso != null) {
-    $('k144_numeroprocesso').value = oPlanilha.k144_numeroprocesso.urlDecode();
-  }
-
-  var iDbOpcao               = <?php echo $iDbOpcao;?>
-
-		  if (iTotalReceitasPlanilha == 0) {
-
-		    // verificamos a acao, autenticar ou excluir, se for autenticar
-		    // limpamos a tela, pois só pode ser autenticada, planilha com receitas
-		    alert("Nenhuma receita vinculada para a planilha "+$F('k80_codpla')+".");
-			  if (iDbOpcao == 1 || iDbOpcao == '1') {
-
-					js_limparDadosTela();
-					return false;
-				}
-		  }
-
-  oGridReceitas.clearAll(true);
-  $('k80_data').value = oPlanilha.dtDataCriacao;
-  var nTotalReceitas = 0;
-  oPlanilha.aReceitas.each(function (oReceita, iIndice) {
-
-    var aRow = new Array();
-    aRow[0]  = oReceita.iReceita+" - "+oReceita.sDescricaoReceita.urlDecode();
-    aRow[1]  = oReceita.iContaTesouraria+" - "+oReceita.sDescricaoConta.urlDecode();
-    aRow[2]  = js_formatar(oReceita.nValor, "f");
-    nTotalReceitas = (new Number(nTotalReceitas) + new Number(oReceita.nValor));
-    oGridReceitas.addRow(aRow);
-  });
-  oGridReceitas.renderRows();
-  $('TotalForCol2').innerHTML = "Total: "+js_formatar(nTotalReceitas, 'f');
-}
-
-
-function js_limparDadosTela() {
-
-  $('k80_codpla').value = "";
-  $('k80_data').value   = "";
-  $('TotalForCol2').innerHTML = "Total: 0";
-  oGridReceitas.clearAll(true);
-}
-
-
-function js_retornoAutenticacao (oAjax) {
-
-  js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
-  if (oRetorno.status == 1) {
-
-    if (confirm(oRetorno.message.urlDecode())) {
-
-      var sUrlOpen = "cai2_emiteplanilha002.php?codpla="+oRetorno.iPlanilha;
-      var oJanelaRelatorio = window.open(sUrlOpen,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+    var iDbOpcao = '<?php echo $iDbOpcao ?>'
+    if(iDbOpcao == 1) {
+        let c90_confirmadata = '<?php echo $conparametro->c90_confirmadata ?>'
+        if (c90_confirmadata == 't') {
+            const msg = "Antes de realizar a operação confirme a data em que deseja incluir o movimento";
+            alertify.alert(msg)
+        }
     }
-  } else {
+
+  var sRPC          = 'cai4_planilhaarrecadacao.RPC.php';
+
+
+  function js_excluirPlanilha(){
+
+    var iPlanilha = $F('k80_codpla');
+
+    if (iPlanilha == '') {
+
+      alert("Selecione uma planilha de arrecadação a ser excluida.");
+      return false;
+    }
+
+    var sMensagemExcluir  = "Deseja excluir a planilha de arrecadação selecionada?\n\n";
+    if (!confirm(sMensagemExcluir)) {
+      return false;
+    }
+
+    js_divCarregando("Aguarde, autenticando planilha de arrecadação...", "msgBox");
+
+    var oParametro       = new Object();
+    oParametro.iPlanilha = iPlanilha;
+    oParametro.exec      = 'excluirPlanilha';
+    oParametro.iPlanilha = $F('k80_codpla');
+
+    var oAjax = new Ajax.Request(sRPC,
+      {
+        method: 'post',
+        parameters: 'json='+Object.toJSON(oParametro),
+        onComplete:js_retornoExclusaoPlanilha
+      }
+    );
+
+  }
+  function js_retornoExclusaoPlanilha(oAjax) {
+
+    js_removeObj('msgBox');
+    var oRetorno = JSON.parse(oAjax.responseText);
+
     alert(oRetorno.message.urlDecode());
+
+    js_limparDadosTela();
+    js_pesquisaPlanilha(true);
   }
-  js_limparDadosTela();
-}
+
+  var oGridReceitas = new DBGrid('ctnGridReceitasVinculadas');
+  oGridReceitas.nameInstance = 'oGridReceitas';
+  oGridReceitas.setCellWidth(new Array( '40%',
+    '40%',
+    '20%'));
+
+  oGridReceitas.setCellAlign(new Array( 'left',
+    'left',
+    'right'));
 
 
-function js_pesquisaPlanilha(mostra) {
+  oGridReceitas.setHeader(new Array( 'Dados da Conta',
+    'Conta Tesouraria',
+    'Valor'));
+  oGridReceitas.hasTotalizador = true;
+  oGridReceitas.show($('ctnGridReceitasVinculadas'));
 
-  var lPlanilhasSemSlip = "";
-  var iDbOpcao          = <?php echo $iDbOpcao;?>;
-  if (iDbOpcao == 3) {
-	  lPlanilhasSemSlip = "lPlanilhasSemSlip=1&";
-	}
 
-  var sUrl              = 'func_placaixaaut.php?' + lPlanilhasSemSlip;
-  if (mostra) {
+  function js_autenticar() {
 
-    sUrl += 'funcao_js=parent.js_mostraPlanilha1|k80_codpla';
-    js_OpenJanelaIframe('', 'db_iframe_placaixa',
-                        sUrl, 'Pesquisa', true);
-  } else {
+    if ($F('k80_codpla') == '') {
 
-     if($F('k80_codpla') != '') {
+      alert('Selecione uma planilha de arrecadação.');
+      return false;
+    }
 
-       sUrl += 'pesquisa_chave='+$F('k80_codpla')+'&funcao_js=parent.js_mostraPlanilha';
-        js_OpenJanelaIframe('','db_iframe_placaixa',
-                            sUrl, 'Pesquisa', false);
-     } else {
-       $('k80_codpla').value = '';
+    var sMensagemSalvar  = "Deseja autenticar a planilha de arrecadação selecionada?\n\n";
+    sMensagemSalvar     += "Este procedimento pode demandar algum tempo.";
+    if (!confirm(sMensagemSalvar)) {
+      return false;
+    }
+
+    js_divCarregando("Aguarde, autenticando planilha de arrecadação...", "msgBox");
+
+    var oParametro                 = new Object();
+    oParametro.exec                = 'autenticarPlanilha';
+    oParametro.iPlanilha           = $F('k80_codpla');
+    oParametro.k144_numeroprocesso = encodeURIComponent(tagString($F("k144_numeroprocesso")));
+
+    var oAjax = new Ajax.Request(sRPC,
+      {
+        method: 'post',
+        parameters: 'json='+Object.toJSON(oParametro),
+        onComplete:js_retornoAutenticacao
+      }
+    );
+  }
+
+  /**
+   * Função que busca as receitas vinculadas na planilha selecionada
+   */
+  function js_getReceitasPlanilha() {
+
+    if ($F('k80_codpla') == "") {
+      return false;
+    }
+
+    js_divCarregando("Aguarde, carregando receitas vinculadas...", "msgBox");
+
+    var oParam       = new Object();
+    oParam.exec      = "getDadosPlanilhaArrecadacao";
+    oParam.iPlanilha = $F('k80_codpla');
+
+    new Ajax.Request(sRPC,
+      {
+        method: 'post',
+        parameters: 'json='+Object.toJSON(oParam),
+        onComplete: js_preencheGridReceitas
+      }
+    );
+  }
+
+  /**
+   * Função que preenche a grid com as receitas vinculadas
+   */
+  function js_preencheGridReceitas(oAjax) {
+
+    js_removeObj("msgBox");
+    var oRetorno = JSON.parse(oAjax.responseText);
+
+    var oPlanilha = oRetorno.oPlanilha;
+    var iTotalReceitasPlanilha = oPlanilha.aReceitas.length;
+
+    if (oPlanilha.k144_numeroprocesso != null) {
+      $('k144_numeroprocesso').value = oPlanilha.k144_numeroprocesso.urlDecode();
+    }
+
+    var iDbOpcao               = <?php echo $iDbOpcao;?>
+
+    if (iTotalReceitasPlanilha == 0) {
+
+      // verificamos a acao, autenticar ou excluir, se for autenticar
+      // limpamos a tela, pois só pode ser autenticada, planilha com receitas
+      alert("Nenhuma receita vinculada para a planilha "+$F('k80_codpla')+".");
+      if (iDbOpcao == 1 || iDbOpcao == '1') {
+
+        js_limparDadosTela();
+        return false;
+      }
+    }
+
+    oGridReceitas.clearAll(true);
+    $('k80_data').value = oPlanilha.dtDataCriacao;
+    var nTotalReceitas = 0;
+    oPlanilha.aReceitas.each(function (oReceita, iIndice) {
+
+      var aRow = new Array();
+      aRow[0]  = oReceita.iReceita+" - "+oReceita.sDescricaoReceita.urlDecode();
+      aRow[1]  = oReceita.iContaTesouraria+" - "+oReceita.sDescricaoConta.urlDecode();
+      aRow[2]  = js_formatar(oReceita.nValor, "f");
+      nTotalReceitas = (new Number(nTotalReceitas) + new Number(oReceita.nValor));
+      oGridReceitas.addRow(aRow);
+    });
+    oGridReceitas.renderRows();
+    $('TotalForCol2').innerHTML = "Total: "+js_formatar(nTotalReceitas, 'f');
+  }
+
+
+  function js_limparDadosTela() {
+
+    $('k80_codpla').value = "";
+    $('k80_data').value   = "";
+    $('TotalForCol2').innerHTML = "Total: 0";
+    oGridReceitas.clearAll(true);
+  }
+
+
+  function js_retornoAutenticacao (oAjax) {
+
+    js_removeObj('msgBox');
+    var oRetorno = JSON.parse(oAjax.responseText);
+    if (oRetorno.status == 1) {
+
+      if (confirm(oRetorno.message.urlDecode())) {
+
+        var sUrlOpen = "cai2_emiteplanilha002.php?codpla="+oRetorno.iPlanilha;
+        var oJanelaRelatorio = window.open(sUrlOpen,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+      }
+
+     if (oRetorno.sSlipAutomatico != "") {
+
+       if ( confirm("Foram Gerados Slips para asReceitas, Deseja Imprimir ?") ) {
+         window.open('cai1_slip003.php?numslip=' + oRetorno.sSlipAutomatico, '', 'location=0');
+       }
      }
-  }
-}
-function js_mostraPlanilha(sData, lErro, iPlanilha) {
 
-  $('k80_codpla').focus();
-  $('k80_codpla').value = '';
-  if (!lErro) {
+    } else {
+      alert(oRetorno.message.urlDecode());
+    }
+
+    js_limparDadosTela();
+  }
+
+
+  function js_pesquisaPlanilha(mostra) {
+
+    var lPlanilhasSemSlip = "";
+    var iDbOpcao          = <?php echo $iDbOpcao;?>;
+    if (iDbOpcao == 3) {
+      lPlanilhasSemSlip = "lPlanilhasSemSlip=1&";
+    }
+
+    var sUrl              = 'func_placaixaaut.php?' + lPlanilhasSemSlip;
+    if (mostra) {
+
+      sUrl += 'funcao_js=parent.js_mostraPlanilha1|k80_codpla';
+      js_OpenJanelaIframe('', 'db_iframe_placaixa',
+        sUrl, 'Pesquisa', true);
+    } else {
+
+      if($F('k80_codpla') != '') {
+
+        sUrl += 'pesquisa_chave='+$F('k80_codpla')+'&funcao_js=parent.js_mostraPlanilha';
+        js_OpenJanelaIframe('','db_iframe_placaixa',
+          sUrl, 'Pesquisa', false);
+      } else {
+        $('k80_codpla').value = '';
+      }
+    }
+  }
+  function js_mostraPlanilha(sData, lErro, iPlanilha) {
+
+    if (lErro) {
+      $('k80_codpla').value = '';
+    }
+
+    js_getReceitasPlanilha();
+  }
+  function js_mostraPlanilha1(iPlanilha) {
+
     $('k80_codpla').value = iPlanilha;
+    db_iframe_placaixa.hide();
+    js_getReceitasPlanilha();
   }
-  js_limparDadosTela();
-  js_getReceitasPlanilha();
-}
-function js_mostraPlanilha1(iPlanilha) {
 
-  $('k80_codpla').value = iPlanilha;
-  db_iframe_placaixa.hide();
-  js_getReceitasPlanilha();
-}
-
-js_pesquisaPlanilha(true);
+  js_pesquisaPlanilha(true);
 </script>
 </html>

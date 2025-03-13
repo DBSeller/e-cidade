@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_solicita_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_db_depusu_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_solicita_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_db_depusu_classe.php"));
 
 $oDaoPcParam             = new cl_pcparam;
 $oDaoDepartamentoUsuario = new cl_db_depusu;
@@ -116,7 +116,7 @@ $sWhereContrato = " and 1 = 1 ";
       if (isset($lFiltroContrato) && $lFiltroContrato == 1 ){
         $sWhereContrato .= ' and acordopcprocitem.ac23_sequencial is null ';
       }
-
+      $sWhereSolicitaAnulada = " not exists (select 1 from solicitaanulada where pc67_solicita = pc10_numero) ";
 
       switch ($iTipoConsulta) {
         case 1:
@@ -196,13 +196,13 @@ $sWhereContrato = " and 1 = 1 ";
         $where_depart .= " and pc10_solicitacaotipo <> 5";
       }
 
-
+      $where_depart .= " and pc10_solicitacaotipo <> 8 ";
 
       if (!isset($pesquisa_chave)) {
 
         if (isset($campos)==false) {
           if (file_exists("funcoes/db_func_solicita.php")==true) {
-            include("funcoes/db_func_solicita.php");
+            include(modification("funcoes/db_func_solicita.php"));
           } else {
             $campos = "solicita.*";
           }
@@ -214,24 +214,24 @@ $sWhereContrato = " and 1 = 1 ";
         if (isset($chave_pc10_numero) && (trim($chave_pc10_numero)!="") ) {
 
           $sWhere = " pc10_numero=$chave_pc10_numero $where_depart {$sFiltrarDepartamento} ";
-          $sql    = $clsolicita->sql_query(null,$campos,"pc10_numero desc ", $sWhere . $sWhereContrato);
+          $sql    = $clsolicita->sql_query(null,$campos,"pc10_numero desc ", $sWhere . $sWhereContrato . " and {$sWhereSolicitaAnulada} ");
 
         } else if ( !empty($chave_pc10_data_inicial) ) {
 
           $chave_pc10_data_inicial = implode('-', array_reverse(explode('/', $chave_pc10_data_inicial)));
-          $sql = $clsolicita->sql_query("",$campos,"pc10_numero desc "," pc10_data >= '$chave_pc10_data_inicial' $sWhereContrato ");
+          $sql = $clsolicita->sql_query("",$campos,"pc10_numero desc "," pc10_data >= '$chave_pc10_data_inicial' $sWhereContrato  and {$sWhereSolicitaAnulada}");
 
           if ( !empty($chave_pc10_data_final) ) {
 
             $chave_pc10_data_final = implode('-', array_reverse(explode('/', $chave_pc10_data_final)));
             $sWhere  = " pc10_data >= '$chave_pc10_data_inicial' AND pc10_data <= '$chave_pc10_data_final' ";
             $sWhere .= " {$where_depart} {$sFiltrarDepartamento}";
-            $sql     = $clsolicita->sql_query("",$campos,"pc10_numero desc ",$sWhere . $sWhereContrato);
+            $sql     = $clsolicita->sql_query("",$campos,"pc10_numero desc ",$sWhere . $sWhereContrato ." and {$sWhereSolicitaAnulada}");
           }
 
         } else {
 
-          $sql = $clsolicita->sql_query("",$campos,"pc10_numero desc "," 1=1 $where_depart {$sFiltrarDepartamento}  $sWhereContrato");
+          $sql = $clsolicita->sql_query("",$campos,"pc10_numero desc "," 1=1 $where_depart {$sFiltrarDepartamento}  $sWhereContrato and {$sWhereSolicitaAnulada}");
         }
 
 
@@ -242,7 +242,7 @@ $sWhereContrato = " and 1 = 1 ";
         if ($pesquisa_chave!=null && $pesquisa_chave!="") {
 
           $sWhere = " pc10_numero=$pesquisa_chave $where_depart {$sFiltrarDepartamento} ";
-          $sSql = $clsolicita->sql_query(null, "distinct *", "", $sWhere . $sWhereContrato. " and pc10_instit = " . db_getsession("DB_instit"));
+          $sSql = $clsolicita->sql_query(null, "distinct *", "", $sWhere . $sWhereContrato. " and {$sWhereSolicitaAnulada} and pc10_instit = " . db_getsession("DB_instit"));
           $result = $clsolicita->sql_record($sSql);
           if ($clsolicita->numrows!=0) {
             db_fieldsmemory($result,0);
@@ -270,3 +270,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_matestoqueitem_classe.php");
-include("classes/db_matestoqueini_classe.php");
-include("classes/db_matestoqueinimei_classe.php");
-include("classes/db_db_depart_classe.php");
-require("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-require("classes/materialestoque.model.php");
-require_once "libs/db_app.utils.php";
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_matestoqueini_classe.php"));
+include(modification("classes/db_matestoqueinimei_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+require(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("classes/materialestoque.model.php"));
+require_once modification("libs/db_app.utils.php");
 db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 db_app::import("Acordo");
 db_app::import("AcordoComissao");
@@ -83,7 +83,7 @@ $mostraiframeexclui = true;
 <center>
 	<?
 	if (!USE_PCASP) {
-	include("forms/db_frmmatestoquesaiexc.php");
+	include(modification("forms/db_frmmatestoquesaiexc.php"));
 	} else {
    echo "<h1>Para realizar o cancelamento da saída, realizar uma entrada manual";
   }

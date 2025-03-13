@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sql.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_procandamint_classe.php");
-include("classes/db_procandamintand_classe.php");
-include("classes/db_procandamintusu_classe.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_proctransferint_classe.php");
-include("classes/db_proctransferintand_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_procandamint_classe.php"));
+include(modification("classes/db_procandamintand_classe.php"));
+include(modification("classes/db_procandamintusu_classe.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_proctransferint_classe.php"));
+include(modification("classes/db_proctransferintand_classe.php"));
 
 $clproctransferint = new cl_proctransferint;
 $clproctransferintand = new cl_proctransferintand;
@@ -84,7 +84,7 @@ if (isset($incluir)){
                                                        null, 
                                                        "p87_codtransferint=".$dados[1]
                                                        );
-      $result3  = pg_exec($sql3);
+      $result3  = db_query($sql3);
       $numrows3 = pg_numrows($result3); 
       for($y = 0; $y < $numrows3; $y++) {
         
@@ -171,12 +171,12 @@ background-color:#ccddcc;
        $usuario=db_getsession("DB_id_usuario");
        $depto=db_getsession("DB_coddepto");
        $sql=$clproctransferint->sql_query_andusu(null,"distinct p88_codigo,p88_data,p88_hora,p88_usuario,atual.nome",null,"p89_usuario=$usuario and p61_coddepto=$depto ");
-       $result = pg_exec($sql);
+       $result = db_query($sql);
        $numrows=pg_numrows($result);
        for($i=0; $i<$numrows; $i++){
          db_fieldsmemory($result,$i);
 	 $sql2 = $clprocandamintand->sql_query_file(null,"*",null,"p86_codtrans=$p88_codigo");
-	 $result2=pg_exec($sql2);
+	 $result2=db_query($sql2);
 	 $numrows2=pg_numrows($result2);
 	 if ($numrows2!=0){
 	   $soma++;
@@ -205,7 +205,7 @@ background-color:#ccddcc;
 	 for($i=0; $i<$numrows; $i++){
 	   db_fieldsmemory($result,$i);
 	   $sql2 = $clprocandamintand->sql_query_file(null,"*",null,"p86_codtrans=$p88_codigo");
-	   $result2=pg_exec($sql2);
+	   $result2=db_query($sql2);
 	   $numrows2=pg_numrows($result2);
 	   
 	   if ($numrows2==0){
@@ -245,7 +245,7 @@ if (isset($incluir)){
       echo "<script> document.form1.".$clprocandamint->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clprocandamint->erro_campo.".focus();</script>";
     }else{ 
-      echo"<script>top.corpo.location.href='pro4_recebinter001.php';</script>";
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='pro4_recebinter001.php';</script>";
     }
 }
 
@@ -254,6 +254,6 @@ if (isset($incluir)){
 </html>
 <script>
 function js_verinfo(codigo){
-  js_OpenJanelaIframe('top.corpo','db_iframe_recebinterinfo','pro4_recebinterinfo.php?p88_codigo='+codigo,'Info.',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_recebinterinfo','pro4_recebinterinfo.php?p88_codigo='+codigo,'Info.',true);
 }
 </script>

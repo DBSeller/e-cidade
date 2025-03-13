@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_matestoqueitem_classe.php");
-include("classes/db_matestoqueini_classe.php");
-include("classes/db_matestoqueinimei_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_matestoqueini_classe.php"));
+include(modification("classes/db_matestoqueinimei_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmatestoque = new cl_matestoque;
 $clmatestoqueitem = new cl_matestoqueitem;
@@ -70,7 +70,7 @@ if(isset($chavepesquisa)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmmatestoquesaialtexc.php");
+	include(modification("forms/db_frmmatestoquesaialtexc.php"));
 	?>
     </center>
 	</td>

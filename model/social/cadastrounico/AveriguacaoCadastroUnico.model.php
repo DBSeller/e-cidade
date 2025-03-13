@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once 'model/social/cadastrounico/IProcessarSituacaoCadastroUnico.interface.php';
-require_once 'model/dbLayoutReader.model.php';
-require_once 'model/dbLayoutLinha.model.php';
+require_once modification("model/social/cadastrounico/IProcessarSituacaoCadastroUnico.interface.php");
+require_once modification("model/dbLayoutReader.model.php");
+require_once modification("model/dbLayoutLinha.model.php");
 /**
  *  
  * @author Andrio Costa <andrio.costa@dbseller.com.br>

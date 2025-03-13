@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("libs/JSON.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_workflowativ_classe.php");
-require_once("classes/db_workflowativandpadrao_classe.php");
-require_once("classes/db_workflowativdb_cadattdinamico_classe.php");
-require_once("classes/db_andpadrao_classe.php");
+require_once(modification("classes/db_workflowativ_classe.php"));
+require_once(modification("classes/db_workflowativandpadrao_classe.php"));
+require_once(modification("classes/db_workflowativdb_cadattdinamico_classe.php"));
+require_once(modification("classes/db_andpadrao_classe.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\", "", $_POST["json"]));
@@ -58,7 +58,7 @@ switch ($oParam->exec) {
       $sCampos                       = "db114_sequencial, db114_descricao, db114_ordem, p53_codigo, p53_coddepto, p53_dias";
       $sSqlWorkflowAtivAndPadrao     = $clworkflowativandpadrao->sql_query(null, $sCampos, $sOrderBy, $sWhere);
       $rsSqlWorkflowAtivAndPadrao    = $clworkflowativandpadrao->sql_record($sSqlWorkflowAtivAndPadrao);
-      $oRetorno->aAtividadesLancadas = db_utils::getColectionByRecord($rsSqlWorkflowAtivAndPadrao, false, false, true);
+      $oRetorno->aAtividadesLancadas = db_utils::getCollectionByRecord($rsSqlWorkflowAtivAndPadrao, false, false, true);
       break;
       
   case "atualizarOrdemAtividades":

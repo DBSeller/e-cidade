@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 ?>
 <html>
 <head>
@@ -112,7 +112,7 @@ input {
                      on a.codarq = am.codarq
                      $qr
                      order by codmod";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $numrows = pg_numrows($result);
   $RecordsetTabMod = $result;
   if($numrows == 0) {
@@ -128,7 +128,7 @@ input {
     fputs($fd,"<?\n");
     for($i = 0;$i < $numrows;$i++) {
 	  $varpk = ""; 
-      $pk = pg_exec("select a.nomearq,c.nomecam,p.sequen
+      $pk = db_query("select a.nomearq,c.nomecam,p.sequen
                        from db_sysprikey p
                             inner join db_sysarquivo a on a.codarq = p.codarq
                             inner join db_syscampo c   on c.codcam = p.codcam
@@ -141,7 +141,7 @@ input {
           $varpk .= "##".trim(pg_result($pk,$p,"nomecam"));
         } 
       }
-      $campo = pg_exec("select c.*
+      $campo = db_query("select c.*
                           from db_syscampo c
                                inner join db_sysarqcamp a   on a.codcam = c.codcam
                           where codarq = ".pg_result($result,$i,"codarq").
@@ -152,7 +152,7 @@ input {
         fputs($fd,'$cl'.trim(pg_result($result,$i,"nomearq")).'->rotulo->label();'."\n");
 
         // testar se existe chaves estrangeiras deste arquivo
-        $forkey = pg_exec("select distinct f.codcam,b.nomecam as nomecerto,f.referen, q.nomearq, c.camiden, a.nomecam, a.tamanho
+        $forkey = db_query("select distinct f.codcam,b.nomecam as nomecerto,f.referen, q.nomearq, c.camiden, a.nomecam, a.tamanho
                           from db_sysforkey f 
 						       inner join db_sysprikey c on c.codarq = f.referen 
 						       inner join db_syscampo a on a.codcam = c.camiden 

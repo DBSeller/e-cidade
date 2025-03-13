@@ -82,10 +82,10 @@ db_input('d01_descr',40,$Id01_descr,true,'text',3,'')
 <script>
 function js_pesquisad13_db_documento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_documento','func_db_documento.php?funcao_js=parent.js_mostradb_documento1|db03_docum|db03_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_documento','func_db_documento.php?funcao_js=parent.js_mostradb_documento1|db03_docum|db03_descr','Pesquisa',true);
   }else{
      if(document.form1.d13_db_documento.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_documento','func_db_documento.php?pesquisa_chave='+document.form1.d13_db_documento.value+'&funcao_js=parent.js_mostradb_documento','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_documento','func_db_documento.php?pesquisa_chave='+document.form1.d13_db_documento.value+'&funcao_js=parent.js_mostradb_documento','Pesquisa',false);
      }else{
        document.form1.db03_descr.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostradb_documento1(chave1,chave2){
 }
 function js_pesquisad13_edital(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_edital','func_edital.php?funcao_js=parent.js_mostraedital1|d01_codedi|d01_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_edital','func_edital.php?funcao_js=parent.js_mostraedital1|d01_codedi|d01_descr','Pesquisa',true);
   }else{
      if(document.form1.d13_edital.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_edital','func_edital.php?pesquisa_chave='+document.form1.d13_edital.value+'&funcao_js=parent.js_mostraedital','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_edital','func_edital.php?pesquisa_chave='+document.form1.d13_edital.value+'&funcao_js=parent.js_mostraedital','Pesquisa',false);
      }else{
        document.form1.d01_descr.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostraedital1(chave1,chave2){
   db_iframe_edital.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_editaldoc','func_editaldoc.php?funcao_js=parent.js_preenchepesquisa|d13_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_editaldoc','func_editaldoc.php?funcao_js=parent.js_preenchepesquisa|d13_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_editaldoc.hide();

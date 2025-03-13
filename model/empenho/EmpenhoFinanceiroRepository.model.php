@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -69,6 +69,27 @@ class EmpenhoFinanceiroRepository {
     }
 
     return EmpenhoFinanceiroRepository::getInstance()->aEmpenhoFinanceiro[$iCodigoEmpenho];
+  }
+
+  /**
+   * Retorna uma instancia de EmpenhoFinanceiro por código/ano
+   * @param int         $iCodigoEmpenho
+   * @param int         $iAnoEmpenho
+   * @param Instituicao $oInstituicao
+   *
+   * @return EmpenhoFinanceiro
+   * @throws Exception
+   */
+  public static function getEmpenhoFinanceiroPorCodigoAno($iCodigoEmpenho, $iAnoEmpenho, Instituicao $oInstituicao) {
+
+    $oDaoEmpempenho = new cl_empempenho();
+    $sSqlEmpempenho = $oDaoEmpempenho->sql_query_file(null, "e60_numemp", null, "e60_codemp = '{$iCodigoEmpenho}' and e60_anousu = {$iAnoEmpenho} and e60_instit = {$oInstituicao->getCodigo()}");
+    $rsEmpenho      = $oDaoEmpempenho->sql_record( $sSqlEmpempenho );
+    if (!$rsEmpenho || $oDaoEmpempenho->erro_status == "0" || $oDaoEmpempenho->numrows == 0) {
+      throw new Exception("Empenho {$iCodigoEmpenho}/{$iAnoEmpenho} não encontrado.");
+    }
+    $iNumeroEmpenho = db_utils::fieldsMemory($rsEmpenho, 0)->e60_numemp;
+    return self::getEmpenhoFinanceiroPorNumero($iNumeroEmpenho);
   }
 
   /**

@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-require("libs/db_utils.php");
-include("classes/db_empempenho_classe.php");
+include(modification("fpdf151/pdf.php"));
+require(modification("libs/db_utils.php"));
+include(modification("classes/db_empempenho_classe.php"));
 
 
 

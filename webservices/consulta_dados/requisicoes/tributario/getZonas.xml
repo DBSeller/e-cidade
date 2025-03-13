@@ -1,0 +1,14 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="j50_zona"  label="codigo"  />
+        <campo campo="j50_descr" label="descricao"    />
+    </campos>
+    <from tabela="zonas"/>
+    <juncoes>
+    </juncoes>
+    <filtros>
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao   campos="descricao"/>
+</consulta>

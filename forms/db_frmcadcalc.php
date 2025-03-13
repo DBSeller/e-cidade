@@ -156,9 +156,9 @@ db_select('q85_outromun',$x,true,$db_opcao,"");
 <script>
 function js_pesquisaq85_codven(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadvencdesc','func_cadvencdesc.php?funcao_js=parent.js_mostracadvencdesc1|q92_codigo|q92_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadvencdesc','func_cadvencdesc.php?funcao_js=parent.js_mostracadvencdesc1|q92_codigo|q92_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadvencdesc','func_cadvencdesc.php?pesquisa_chave='+document.form1.q85_codven.value+'&funcao_js=parent.js_mostracadvencdesc','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadvencdesc','func_cadvencdesc.php?pesquisa_chave='+document.form1.q85_codven.value+'&funcao_js=parent.js_mostracadvencdesc','Pesquisa',false);
   }
 }
 function js_mostracadvencdesc(chave,erro){
@@ -175,9 +175,9 @@ function js_mostracadvencdesc1(chave1,chave2){
 }
 function js_pesquisaq85_forcal(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_forcaldesc','func_forcaldesc.php?funcao_js=parent.js_mostraforcaldesc1|q87_codigo|q87_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_forcaldesc','func_forcaldesc.php?funcao_js=parent.js_mostraforcaldesc1|q87_codigo|q87_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_forcaldesc','func_forcaldesc.php?pesquisa_chave='+document.form1.q85_forcal.value+'&funcao_js=parent.js_mostraforcaldesc','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_forcaldesc','func_forcaldesc.php?pesquisa_chave='+document.form1.q85_forcal.value+'&funcao_js=parent.js_mostraforcaldesc','Pesquisa',false);
   }
 }
 function js_mostraforcaldesc(chave,erro){
@@ -193,7 +193,7 @@ function js_mostraforcaldesc1(chave1,chave2){
   db_iframe_forcaldesc.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadcalc','func_cadcalc.php?funcao_js=parent.js_preenchepesquisa|q85_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadcalc','func_cadcalc.php?funcao_js=parent.js_preenchepesquisa|q85_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadcalc.hide();

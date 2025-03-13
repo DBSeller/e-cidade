@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -224,7 +224,7 @@ function js_pesquisavc19_i_vacinalote(mostra) {
 
     if (mostra == true) {
 
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_vac_vacinalote',
                           'func_vac_vacinalote.php?funcao_js=parent.js_mostravacinalote|m77_sequencial|'+
                           'm77_lote|m77_dtvalidade|m61_descr|vc15_i_lote|dl_total'+
@@ -237,7 +237,7 @@ function js_pesquisavc19_i_vacinalote(mostra) {
 
        if ($F('m77_lote') != '') {  
 
-          js_OpenJanelaIframe('top.corpo',
+          js_OpenJanelaIframe('CurrentWindow.corpo',
                               'db_iframe_vac_vacinalote',
                               'func_vac_vacinalote.php?&funcao_js=parent.js_mostravacinalote|m77_sequencial|m77_lote|'+
                               'm77_dtvalidade|db_m61_descr|vc15_i_lote|dl_total&nao_mostra=true'+
@@ -292,7 +292,7 @@ function js_mostravacinalote(iCod, sLote, dValidade, sUnidade, iLote, iQuant) {
 
 function js_retornoDosesUsadasLote(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
  
   if (oRetorno.iStatus == 1) {
 
@@ -327,7 +327,7 @@ function js_pesquisavc19_i_vacina(mostra) {
 
   if (mostra==true) {
 
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_vac_vacina',
                         'func_vac_vacina.php?funcao_js=parent.js_mostravac_vacina1|'+
                         'vc06_i_codigo|vc06_c_descr|vc06_i_vacina',
@@ -338,7 +338,7 @@ function js_pesquisavc19_i_vacina(mostra) {
 
      if ($F('vc19_i_vacina') != '') {  
 
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_vac_vacina',
                             'func_vac_vacina.php?pesquisa_chave='+$F('vc19_i_vacina')+
                             '&funcao_js=parent.js_mostravac_vacina',
@@ -397,7 +397,7 @@ function js_pesquisavc19_i_sala(mostra) {
 
 	  if (mostra==true) {
 
-	    js_OpenJanelaIframe('top.corpo',
+	    js_OpenJanelaIframe('CurrentWindow.corpo',
 	                        'db_iframe_vac_sala',
 	                        'func_vac_sala.php?funcao_js=parent.js_mostravac_sala1|'+
 	                        'vc01_i_codigo|vc01_c_nome',
@@ -408,7 +408,7 @@ function js_pesquisavc19_i_sala(mostra) {
 
 	     if ($F('vc19_i_sala') != '') {  
 
-	        js_OpenJanelaIframe('top.corpo',
+	        js_OpenJanelaIframe('CurrentWindow.corpo',
 	                            'db_iframe_vac_vacina',
 	                            'func_vac_sala.php?pesquisa_chave='+$F('vc19_i_sala')+
 	                            '&funcao_js=parent.js_mostravac_sala',

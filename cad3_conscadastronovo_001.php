@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_iptubaseregimovel_classe.php");
-require_once("classes/db_setorloc_classe.php");
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/db_app.utils.php");
+require_once modification("classes/db_iptubaseregimovel_classe.php");
+require_once modification("classes/db_setorloc_classe.php");
 $cliptubaseregimovel = new cl_iptubaseregimovel;
 
 $clsetorloc = new cl_setorloc();
@@ -53,114 +53,113 @@ $rsSetorLoc = $clsetorloc->sql_record($clsetorloc->sql_query_file(null, 'j05_cod
   <tr>
     <td height="430" align="left" valign="top">
 <?php
-    // Cria a janela para visualizacao de todas as matriculas cadastradas
-    $VisualizacaoTodasMatCad = new janela("VisualizacaoTodasMatCad","");
-	  $VisualizacaoTodasMatCad->posX=1;
-	  $VisualizacaoTodasMatCad->posY=20;
-	  $VisualizacaoTodasMatCad->largura=785;
-	  $VisualizacaoTodasMatCad->altura=430;
-	  $VisualizacaoTodasMatCad->titulo="Visualização das matriculas cadastradas";
-	  $VisualizacaoTodasMatCad->iniciarVisivel = false;
-	  $VisualizacaoTodasMatCad->mostrar();
+// Cria a janela para visualizacao de todas as matriculas cadastradas
+$VisualizacaoTodasMatCad = new janela("VisualizacaoTodasMatCad", "");
+$VisualizacaoTodasMatCad->posX = 1;
+$VisualizacaoTodasMatCad->posY = 20;
+$VisualizacaoTodasMatCad->largura = 785;
+$VisualizacaoTodasMatCad->altura = 430;
+$VisualizacaoTodasMatCad->titulo = "Visualização das matriculas cadastradas";
+$VisualizacaoTodasMatCad->iniciarVisivel = false;
+$VisualizacaoTodasMatCad->mostrar();
 
-    // Cria a janela para visualizacao da matricula
-    $VisualizacaoMatricula = new janela("VisualizacaoMatricula","");
-	  $VisualizacaoMatricula->posX=1;
-	  $VisualizacaoMatricula->posY=20;
-	  $VisualizacaoMatricula->largura=785;
-	  $VisualizacaoMatricula->altura=430;
-	  $VisualizacaoMatricula->titulo="Visualização dos dados do imóvel";
-	  $VisualizacaoMatricula->iniciarVisivel = false;
-	  $VisualizacaoMatricula->mostrar();
+// Cria a janela para visualizacao da matricula
+$VisualizacaoMatricula = new janela("VisualizacaoMatricula", "");
+$VisualizacaoMatricula->posX = 1;
+$VisualizacaoMatricula->posY = 20;
+$VisualizacaoMatricula->largura = 785;
+$VisualizacaoMatricula->altura = 430;
+$VisualizacaoMatricula->titulo = "Visualização dos dados do imóvel";
+$VisualizacaoMatricula->iniciarVisivel = false;
+$VisualizacaoMatricula->mostrar();
 
-    // Cria a janela para visualizacao da lista com os nomes de proprietarios
-    $VisualizacaoProprietario = new janela("VisualizacaoProprietario","");
-	  $VisualizacaoProprietario->posX=1;
-	  $VisualizacaoProprietario->posY=20;
-	  $VisualizacaoProprietario->largura=785;
-	  $VisualizacaoProprietario->altura=430;
-	  $VisualizacaoProprietario->titulo="Lista com nomes de proprietários";
-	  $VisualizacaoProprietario->iniciarVisivel = false;
-	  $VisualizacaoProprietario->mostrar();
+// Cria a janela para visualizacao da lista com os nomes de proprietarios
+$VisualizacaoProprietario = new janela("VisualizacaoProprietario", "");
+$VisualizacaoProprietario->posX = 1;
+$VisualizacaoProprietario->posY = 20;
+$VisualizacaoProprietario->largura = 785;
+$VisualizacaoProprietario->altura = 430;
+$VisualizacaoProprietario->titulo = "Lista com nomes de proprietários";
+$VisualizacaoProprietario->iniciarVisivel = false;
+$VisualizacaoProprietario->mostrar();
 
-    // Cria a janela para visualizacao da lista com os nomes das imobiliarias
-    $VisualizacaoImobiliaria = new janela("VisualizacaoImobiliaria","");
-	  $VisualizacaoImobiliaria->posX=1;
-	  $VisualizacaoImobiliaria->posY=20;
-	  $VisualizacaoImobiliaria->largura=785;
-	  $VisualizacaoImobiliaria->altura=430;
-	  $VisualizacaoImobiliaria->titulo="Lista com nomes de imobiliárias";
-	  $VisualizacaoImobiliaria->iniciarVisivel = false;
-	  $VisualizacaoImobiliaria->mostrar();
+// Cria a janela para visualizacao da lista com os nomes das imobiliarias
+$VisualizacaoImobiliaria = new janela("VisualizacaoImobiliaria", "");
+$VisualizacaoImobiliaria->posX = 1;
+$VisualizacaoImobiliaria->posY = 20;
+$VisualizacaoImobiliaria->largura = 785;
+$VisualizacaoImobiliaria->altura = 430;
+$VisualizacaoImobiliaria->titulo = "Lista com nomes de imobiliárias";
+$VisualizacaoImobiliaria->iniciarVisivel = false;
+$VisualizacaoImobiliaria->mostrar();
 
-    // Cria a janela para visualizacao da lista com Setor, Quadra e Lote
-    $VisualizacaoSetQuaLotLoc = new janela("VisualizacaoSetorQuadraLoteLoc","");
-	  $VisualizacaoSetQuaLotLoc->posX=1;
-	  $VisualizacaoSetQuaLotLoc->posY=20;
-	  $VisualizacaoSetQuaLotLoc->largura=785;
-	  $VisualizacaoSetQuaLotLoc->altura=430;
-	  $VisualizacaoSetQuaLotLoc->titulo="Lista com setores, quadras e lotes de localização";
-	  $VisualizacaoSetQuaLotLoc->iniciarVisivel = false;
-	  $VisualizacaoSetQuaLotLoc->mostrar();
+// Cria a janela para visualizacao da lista com Setor, Quadra e Lote
+$VisualizacaoSetQuaLotLoc = new janela("VisualizacaoSetorQuadraLoteLoc", "");
+$VisualizacaoSetQuaLotLoc->posX = 1;
+$VisualizacaoSetQuaLotLoc->posY = 20;
+$VisualizacaoSetQuaLotLoc->largura = 785;
+$VisualizacaoSetQuaLotLoc->altura = 430;
+$VisualizacaoSetQuaLotLoc->titulo = "Lista com setores, quadras e lotes de localização";
+$VisualizacaoSetQuaLotLoc->iniciarVisivel = false;
+$VisualizacaoSetQuaLotLoc->mostrar();
 
-	  // Cria a janela para visualizacao da lista com Setor, Quadra e Lote
-    $VisualizacaoSetorQuadraLote = new janela("VisualizacaoSetorQuadraLote","");
-	  $VisualizacaoSetorQuadraLote->posX=1;
-	  $VisualizacaoSetorQuadraLote->posY=20;
-	  $VisualizacaoSetorQuadraLote->largura=785;
-	  $VisualizacaoSetorQuadraLote->altura=430;
-	  $VisualizacaoSetorQuadraLote->titulo="Lista com setores, quadras e lotes";
-	  $VisualizacaoSetorQuadraLote->iniciarVisivel = false;
-	  $VisualizacaoSetorQuadraLote->mostrar();
+// Cria a janela para visualizacao da lista com Setor, Quadra e Lote
+$VisualizacaoSetorQuadraLote = new janela("VisualizacaoSetorQuadraLote", "");
+$VisualizacaoSetorQuadraLote->posX = 1;
+$VisualizacaoSetorQuadraLote->posY = 20;
+$VisualizacaoSetorQuadraLote->largura = 785;
+$VisualizacaoSetorQuadraLote->altura = 430;
+$VisualizacaoSetorQuadraLote->titulo = "Lista com setores, quadras e lotes";
+$VisualizacaoSetorQuadraLote->iniciarVisivel = false;
+$VisualizacaoSetorQuadraLote->mostrar();
 
-    // Cria a janela para visualizacao da lista com os códigos das ruas
-    $VisualizacaoRuas = new janela("VisualizacaoRuas","");
-	  $VisualizacaoRuas->posX=1;
-	  $VisualizacaoRuas->posY=20;
-	  $VisualizacaoRuas->largura=785;
-	  $VisualizacaoRuas->altura=430;
-	  $VisualizacaoRuas->titulo="Lista com código das ruas";
-	  $VisualizacaoRuas->iniciarVisivel = false;
-	  $VisualizacaoRuas->mostrar();
+// Cria a janela para visualizacao da lista com os códigos das ruas
+$VisualizacaoRuas = new janela("VisualizacaoRuas", "");
+$VisualizacaoRuas->posX = 1;
+$VisualizacaoRuas->posY = 20;
+$VisualizacaoRuas->largura = 785;
+$VisualizacaoRuas->altura = 430;
+$VisualizacaoRuas->titulo = "Lista com código das ruas";
+$VisualizacaoRuas->iniciarVisivel = false;
+$VisualizacaoRuas->mostrar();
 
-    // Cria a janela para visualizacao da lista com os nomes das ruas
-    $VisualizacaoNomeRuas = new janela("VisualizacaoNomeRuas","");
-	  $VisualizacaoNomeRuas->posX=1;
-	  $VisualizacaoNomeRuas->posY=20;
-	  $VisualizacaoNomeRuas->largura=785;
-	  $VisualizacaoNomeRuas->altura=430;
-	  $VisualizacaoNomeRuas->titulo="Lista com nomes das ruas";
-	  $VisualizacaoNomeRuas->iniciarVisivel = false;
-	  $VisualizacaoNomeRuas->mostrar();
+// Cria a janela para visualizacao da lista com os nomes das ruas
+$VisualizacaoNomeRuas = new janela("VisualizacaoNomeRuas", "");
+$VisualizacaoNomeRuas->posX = 1;
+$VisualizacaoNomeRuas->posY = 20;
+$VisualizacaoNomeRuas->largura = 785;
+$VisualizacaoNomeRuas->altura = 430;
+$VisualizacaoNomeRuas->titulo = "Lista com nomes das ruas";
+$VisualizacaoNomeRuas->iniciarVisivel = false;
+$VisualizacaoNomeRuas->mostrar();
 
-    // Cria a janela para visualizacao da lista com os códigos dos bairros
-    $VisualizacaoBairros = new janela("VisualizacaoBairros","");
-	  $VisualizacaoBairros->posX=1;
-	  $VisualizacaoBairros->posY=20;
-	  $VisualizacaoBairros->largura=785;
-	  $VisualizacaoBairros->altura=430;
-	  $VisualizacaoBairros->titulo="Lista com códigos dos bairros";
-	  $VisualizacaoBairros->iniciarVisivel = false;
-	  $VisualizacaoBairros->mostrar();
+// Cria a janela para visualizacao da lista com os códigos dos bairros
+$VisualizacaoBairros = new janela("VisualizacaoBairros", "");
+$VisualizacaoBairros->posX = 1;
+$VisualizacaoBairros->posY = 20;
+$VisualizacaoBairros->largura = 785;
+$VisualizacaoBairros->altura = 430;
+$VisualizacaoBairros->titulo = "Lista com códigos dos bairros";
+$VisualizacaoBairros->iniciarVisivel = false;
+$VisualizacaoBairros->mostrar();
 
-    // Cria a janela para visualizacao da lista com os nomes dos bairros
-    $VisualizacaoNomeBairro = new janela("VisualizacaoNomeBairro","");
-	  $VisualizacaoNomeBairro->posX=1;
-	  $VisualizacaoNomeBairro->posY=20;
-	  $VisualizacaoNomeBairro->largura=785;
-	  $VisualizacaoNomeBairro->altura=430;
-	  $VisualizacaoNomeBairro->titulo="Lista com nomes dos bairros";
-	  $VisualizacaoNomeBairro->iniciarVisivel = false;
-	  $VisualizacaoNomeBairro->mostrar();
+// Cria a janela para visualizacao da lista com os nomes dos bairros
+$VisualizacaoNomeBairro = new janela("VisualizacaoNomeBairro", "");
+$VisualizacaoNomeBairro->posX = 1;
+$VisualizacaoNomeBairro->posY = 20;
+$VisualizacaoNomeBairro->largura = 785;
+$VisualizacaoNomeBairro->altura = 430;
+$VisualizacaoNomeBairro->titulo = "Lista com nomes dos bairros";
+$VisualizacaoNomeBairro->iniciarVisivel = false;
+$VisualizacaoNomeBairro->mostrar();
 
-
-    include("forms/db_frmconsultacadastronovo.php");
-    ?>
+include modification("forms/db_frmconsultacadastronovo.php");
+?>
     </td>
   </tr>
 </table>
 <?php
-  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+db_menu();
 ?>
 </body>
 </html>

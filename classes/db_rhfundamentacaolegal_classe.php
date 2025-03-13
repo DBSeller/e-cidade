@@ -28,6 +28,7 @@ class cl_rhfundamentacaolegal {
    var $rh137_datafim_ano = null; 
    var $rh137_datafim = null; 
    var $rh137_descricao = null; 
+   var $rh137_instituicao = 0; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  rh137_sequencial = int4 = Código Fundamentação Legal 
@@ -35,7 +36,8 @@ class cl_rhfundamentacaolegal {
                  rh137_numero = int4 = Número 
                  rh137_datainicio = date = Data ínicio fundamentação legal 
                  rh137_datafim = date = Data fim fundamentação legal 
-                 rh137_descricao = text = Descrição fundamentação legal 
+                 rh137_descricao = text = Descrição fundamentação legal
+                 rh137_instituicao = int4 = Instituição 
                  ";
    //funcao construtor da classe 
    function cl_rhfundamentacaolegal() { 
@@ -75,6 +77,7 @@ class cl_rhfundamentacaolegal {
          }
        }
        $this->rh137_descricao = ($this->rh137_descricao == ""?@$GLOBALS["HTTP_POST_VARS"]["rh137_descricao"]:$this->rh137_descricao);
+       $this->rh137_instituicao = ($this->rh137_instituicao == ""?@$GLOBALS["HTTP_POST_VARS"]["rh137_instituicao"]:$this->rh137_instituicao);
      }else{
        $this->rh137_sequencial = ($this->rh137_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["rh137_sequencial"]:$this->rh137_sequencial);
      }
@@ -105,6 +108,15 @@ class cl_rhfundamentacaolegal {
      }
      if($this->rh137_datafim == null ){ 
        $this->rh137_datafim = "null";
+     }
+     if($this->rh137_instituicao == null ){ 
+       $this->erro_sql = " Campo Instituição não informado.";
+       $this->erro_campo = "rh137_instituicao";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
      }
      if($rh137_sequencial == "" || $rh137_sequencial == null ){
        $result = db_query("select nextval('rhfundamentacaolegal_rh137_sequencial_seq')"); 
@@ -145,6 +157,7 @@ class cl_rhfundamentacaolegal {
                                       ,rh137_datainicio 
                                       ,rh137_datafim 
                                       ,rh137_descricao 
+                                      ,rh137_instituicao 
                        )
                 values (
                                 $this->rh137_sequencial 
@@ -153,17 +166,18 @@ class cl_rhfundamentacaolegal {
                                ,".($this->rh137_datainicio == "null" || $this->rh137_datainicio == ""?"null":"'".$this->rh137_datainicio."'")." 
                                ,".($this->rh137_datafim == "null" || $this->rh137_datafim == ""?"null":"'".$this->rh137_datafim."'")." 
                                ,'$this->rh137_descricao' 
+                               ,$this->rh137_instituicao 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Fundamentação Legal ($this->rh137_sequencial) nao Incluído. Inclusão Abortada.";
+         $this->erro_sql   = "Fundamentação Legal ($this->rh137_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Fundamentação Legal já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Fundamentação Legal ($this->rh137_sequencial) nao Incluído. Inclusão Abortada.";
+         $this->erro_sql   = "Fundamentação Legal ($this->rh137_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -172,7 +186,7 @@ class cl_rhfundamentacaolegal {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusão efetuada com sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
          //$this->erro_sql .= "Valores : ".$this->rh137_sequencial;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -195,12 +209,13 @@ class cl_rhfundamentacaolegal {
          $resac = db_query("insert into db_acount values($acount,3697,20536,'','".AddSlashes(pg_result($resaco,0,'rh137_datainicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3697,20537,'','".AddSlashes(pg_result($resaco,0,'rh137_datafim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3697,20538,'','".AddSlashes(pg_result($resaco,0,'rh137_descricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3697,20902,'','".AddSlashes(pg_result($resaco,0,'rh137_instituicao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
    } 
    // funcao para alteracao
-   function alterar ($rh137_sequencial=null) { 
+   public function alterar ($rh137_sequencial=null) { 
       $this->atualizacampos();
      $sql = " update rhfundamentacaolegal set ";
      $virgula = "";
@@ -265,6 +280,19 @@ class cl_rhfundamentacaolegal {
        $sql  .= $virgula." rh137_descricao = '$this->rh137_descricao' ";
        $virgula = ",";
      }
+     if(trim($this->rh137_instituicao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh137_instituicao"])){ 
+       $sql  .= $virgula." rh137_instituicao = $this->rh137_instituicao ";
+       $virgula = ",";
+       if(trim($this->rh137_instituicao) == null ){ 
+         $this->erro_sql = " Campo Instituição não informado.";
+         $this->erro_campo = "rh137_instituicao";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
      if($rh137_sequencial!=null){
        $sql .= " rh137_sequencial = $this->rh137_sequencial";
@@ -274,32 +302,33 @@ class cl_rhfundamentacaolegal {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->rh137_sequencial));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,20533,'$this->rh137_sequencial','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh137_sequencial"]) || $this->rh137_sequencial != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh137_sequencial"]) || $this->rh137_sequencial != "")
              $resac = db_query("insert into db_acount values($acount,3697,20533,'".AddSlashes(pg_result($resaco,$conresaco,'rh137_sequencial'))."','$this->rh137_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh137_tipodocumentacao"]) || $this->rh137_tipodocumentacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh137_tipodocumentacao"]) || $this->rh137_tipodocumentacao != "")
              $resac = db_query("insert into db_acount values($acount,3697,20534,'".AddSlashes(pg_result($resaco,$conresaco,'rh137_tipodocumentacao'))."','$this->rh137_tipodocumentacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh137_numero"]) || $this->rh137_numero != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh137_numero"]) || $this->rh137_numero != "")
              $resac = db_query("insert into db_acount values($acount,3697,20535,'".AddSlashes(pg_result($resaco,$conresaco,'rh137_numero'))."','$this->rh137_numero',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh137_datainicio"]) || $this->rh137_datainicio != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh137_datainicio"]) || $this->rh137_datainicio != "")
              $resac = db_query("insert into db_acount values($acount,3697,20536,'".AddSlashes(pg_result($resaco,$conresaco,'rh137_datainicio'))."','$this->rh137_datainicio',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh137_datafim"]) || $this->rh137_datafim != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh137_datafim"]) || $this->rh137_datafim != "")
              $resac = db_query("insert into db_acount values($acount,3697,20537,'".AddSlashes(pg_result($resaco,$conresaco,'rh137_datafim'))."','$this->rh137_datafim',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["rh137_descricao"]) || $this->rh137_descricao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh137_descricao"]) || $this->rh137_descricao != "")
              $resac = db_query("insert into db_acount values($acount,3697,20538,'".AddSlashes(pg_result($resaco,$conresaco,'rh137_descricao'))."','$this->rh137_descricao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh137_instituicao"]) || $this->rh137_instituicao != "")
+             $resac = db_query("insert into db_acount values($acount,3697,20902,'".AddSlashes(pg_result($resaco,$conresaco,'rh137_instituicao'))."','$this->rh137_instituicao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
-
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Fundamentação Legal nao Alterado. Alteracao Abortada.\\n";
          //$this->erro_sql .= "Valores : ".$this->rh137_sequencial;
@@ -308,8 +337,8 @@ class cl_rhfundamentacaolegal {
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
          $this->erro_sql = "Fundamentação Legal nao foi Alterado. Alteracao Executada.\\n";
          //$this->erro_sql .= "Valores : ".$this->rh137_sequencial;
@@ -318,9 +347,9 @@ class cl_rhfundamentacaolegal {
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
       //   $this->erro_sql .= "Valores : ".$this->rh137_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -331,13 +360,13 @@ class cl_rhfundamentacaolegal {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($rh137_sequencial=null,$dbwhere=null) { 
+   public function excluir ($rh137_sequencial=null,$dbwhere=null) { 
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($rh137_sequencial));
        } else { 
@@ -357,34 +386,35 @@ class cl_rhfundamentacaolegal {
            $resac  = db_query("insert into db_acount values($acount,3697,20536,'','".AddSlashes(pg_result($resaco,$iresaco,'rh137_datainicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3697,20537,'','".AddSlashes(pg_result($resaco,$iresaco,'rh137_datafim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3697,20538,'','".AddSlashes(pg_result($resaco,$iresaco,'rh137_descricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3697,20902,'','".AddSlashes(pg_result($resaco,$iresaco,'rh137_instituicao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from rhfundamentacaolegal
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($rh137_sequencial != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($rh137_sequencial)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " rh137_sequencial = $rh137_sequencial ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Fundamentação Legal nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Fundamentação Legal não Excluído. Exclusão Abortada.\\n";
        //$this->erro_sql .= "Valores : ".$rh137_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
          $this->erro_sql = "Fundamentação Legal nao Encontrado. Exclusão não Efetuada.\\n";
          //$this->erro_sql .= "Valores : ".$rh137_sequencial;
@@ -393,7 +423,7 @@ class cl_rhfundamentacaolegal {
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
          //$this->erro_sql .= "Valores : ".$rh137_sequencial;
@@ -406,9 +436,9 @@ class cl_rhfundamentacaolegal {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -417,8 +447,8 @@ class cl_rhfundamentacaolegal {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:rhfundamentacaolegal";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -429,72 +459,78 @@ class cl_rhfundamentacaolegal {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $rh137_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from rhfundamentacaolegal ";
+   public function sql_query ($rh137_sequencial = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from rhfundamentacaolegal ";
+     $sql .= "      inner join db_config  on  db_config.codigo = rhfundamentacaolegal.rh137_instituicao";
+     $sql .= "      inner join cgm  on  cgm.z01_numcgm = db_config.numcgm";
+     $sql .= "      inner join db_tipoinstit  on  db_tipoinstit.db21_codtipo = db_config.db21_tipoinstit";
      $sql2 = "";
-     if($dbwhere==""){
-       if($rh137_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($rh137_sequencial)) {
          $sql2 .= " where rhfundamentacaolegal.rh137_sequencial = $rh137_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $rh137_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from rhfundamentacaolegal ";
+   public function sql_query_file ($rh137_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from rhfundamentacaolegal ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($rh137_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($rh137_sequencial)){
          $sql2 .= " where rhfundamentacaolegal.rh137_sequencial = $rh137_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
+  
+  /**
+   * Retorna a query que faz o vínculo entre as tabelas: rhfundamentacaolegal e rhrubricas
+   * 
+   * @param Integer $rh137_sequencial
+   * @param String $sCampos
+   * @param String $sOrdem
+   * @param String $sWhere
+   * @return String
+   */
+  public function sql_query_fundamentacao_rubrica ($rh137_sequencial = null, $sCampos = "*", $sOrdem = null, $sWhere = "") {
+    
+    $sSql  = "select {$sCampos} ";
+    $sSql .= "  from rhfundamentacaolegal ";
+    $sSql .= "    inner join rhrubricas ";
+    $sSql .= "  on rhfundamentacaolegal.rh137_sequencial = rhrubricas.rh27_rhfundamentacaolegal ";
+    $sSql2 = "";
+    
+    if (empty($sWhere)) { 
+      if (!empty($rh137_sequencial)){
+        $sSql2 .= " where rhfundamentacaolegal.rh137_sequencial = $rh137_sequencial "; 
+      } 
+    } else if (!empty($sWhere)) {
+      $sSql2 = " where $sWhere";
+    }
+    
+    $sSql .= $sSql2;
+    if (!empty($sOrdem)) {
+      $sSql .= " order by {$sOrdem}";
+    }
+    
+    return $sSql;
+  }
+  
 }
-?>

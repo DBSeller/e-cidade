@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010840' name='pessoal.rhimigrante' description="Indentifica se o servidor é imigrante" prefix="rh252" label="Servidor é imigrante" type="0">
+  <fields>
+    <field codigo="1013509" 
+           campo_api='' 
+           name="rh252_sequencial" 
+           conteudo="int4" 
+           description="Código Sequencial" 
+           inivalue="0" 
+           label="Código Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='pessoal.rhimigrante_rh252_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013510" 
+           campo_api='' 
+           name="rh252_matricula" 
+           conteudo="int4" 
+           description="Matrícula" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013511" 
+           campo_api='' 
+           name="rh252_residencia" 
+           conteudo="int4" 
+           description="Tipo de Residência" 
+           inivalue="0" 
+           label="Tipo de Residência" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Residência" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013512" 
+           campo_api='' 
+           name="rh252_condicao" 
+           conteudo="int4" 
+           description="Tipo de Condição" 
+           inivalue="0" 
+           label="Tipo de Condição" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Condição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013513" 
+           campo_api='' 
+           name="rh252_instituicao" 
+           conteudo="int4" 
+           description="Código da Instituição" 
+           inivalue="0" 
+           label="Código da Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh252_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="rh252_matricula" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

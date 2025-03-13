@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -62,6 +62,10 @@ define('TIPO_CALCULO_GERAL',   2);
 define('TIPO_CALCULO_PARCIAL', 1);
 
  function pes4_geracalculo003($calcula_parcial=null,$calcula_pensao=null) {
+
+   $r110_regisi = 1;
+   $r110_regisf = 999999;
+   flush();
 
    LogCalculoFolha::write();
    LogCalculoFolha::write("==============================Iniciando Cálculo Financeiro==============================");
@@ -149,8 +153,8 @@ define('TIPO_CALCULO_PARCIAL', 1);
      if ($calcula_parcial != " ") {
 
        //echo "<BR> --------------------------------------------Segunda vez 1-----------------------------------";
-       $r110_regisi = db_val(db_substr($calcula_parcial,1,6));
-       $r110_regisf = db_val(db_substr($calcula_parcial,-6));
+       $r110_regisi = 1;
+       $r110_regisf = 999999;
        $r110_lotaci = db_substr($calcula_parcial,7,4);
        $r110_lotacf = db_substr($calcula_parcial,11,4);
        $chamada_geral = "a";
@@ -344,10 +348,14 @@ define('TIPO_CALCULO_PARCIAL', 1);
 
         case PONTO_SALARIO:
 
+          $sFolhaPagamento = CalculoFolha::CALCULO_SALARIO;
+          $sPonto          = Ponto::SALARIO;
+
           if ($db_debug) {
             echo "[pes4_geracalculo003] Excluindo dados da gerfsal, Condição: ".bb_condicaosubpes("r14_")." ...<br>";
           }
-          db_delete( "gerfsal", bb_condicaosubpes("r14_") );
+
+          db_delete( "gerfsal", bb_condicaosubpes("r14_", "pontofs"));
 
           $stringferias  = "('".$cfpess[0]["r11_ferias"]."','".$cfpess[0]["r11_fer13"]."','";
           $stringferias .= $cfpess[0]["r11_fer13a"]."','".$cfpess[0]["r11_ferabo"]."','";
@@ -374,9 +382,13 @@ define('TIPO_CALCULO_PARCIAL', 1);
 
         case PONTO_ADIANTAMENTO:
 
+          $sFolhaPagamento = CalculoFolha::CALCULO_ADIANTAMENTO;
+          $sPonto          = Ponto::ADIANTAMENTO;
+
           if ($db_debug) {
             echo "[pes4_geracalculo003] Excluindo dados da gerfadi, Condição: ".bb_condicaosubpes("r22_")." ...<br>";
           }
+
           db_delete( "gerfadi", bb_condicaosubpes("r22_") ) ;
           break;
 
@@ -398,6 +410,8 @@ define('TIPO_CALCULO_PARCIAL', 1);
 
         case PONTO_RESCISAO:
 
+          $sFolhaPagamento = CalculoFolha::CALCULO_RESCISAO;
+          $sPonto          = Ponto::ADIANTAMENTO;
           if ($db_debug) {
             echo "[pes4_geracalculo003] Excluindo dados da gerfres, Condição: ".bb_condicaosubpes("r20_")." ...<br>";
           }
@@ -412,6 +426,8 @@ define('TIPO_CALCULO_PARCIAL', 1);
 
         case PONTO_13_SALARIO:
 
+          $sFolhaPagamento = CalculoFolha::CALCULO_13o;
+          $sPonto          = Ponto::PONTO_13o;
           if ($db_debug) {
             echo "[pes4_geracalculo003] Excluindo dados da gerfs13, Condição: ".bb_condicaosubpes("r35_")." ...<br>";
           }
@@ -423,9 +439,10 @@ define('TIPO_CALCULO_PARCIAL', 1);
           deleta_ajustes_calculogeral("3");
 
           break;
-
         case PONTO_COMPLEMENTAR:
 
+          $sFolhaPagamento = CalculoFolha::CALCULO_COMPLEMENTAR;
+          $sPonto          = Ponto::COMPLEMENTAR;
           if ($db_debug) {
             echo "[pes4_geracalculo003] Excluindo dados da gerfadi, Condição: ".bb_condicaosubpes("r22_")." ...<br>";
           }
@@ -454,6 +471,9 @@ define('TIPO_CALCULO_PARCIAL', 1);
 
         case PONTO_FIXO:
 
+          $sFolhaPagamento = CalculoFolha::CALCULO_PONTO_FIXO;
+          $sPonto          = Ponto::FIXO;
+
           if ($db_debug) {
             echo "[pes4_geracalculo003] Excluindo dados da gerffx, Condição: ".bb_condicaosubpes("r53_")." ...<br>";
           }
@@ -463,6 +483,8 @@ define('TIPO_CALCULO_PARCIAL', 1);
 
         case PONTO_PROVISAO_FERIAS:
 
+          $sFolhaPagamento = CalculoFolha::CALCULO_PROVISAO_FERIAS;
+          $sPonto          = Ponto::PROVISAO_FERIAS;
           if ($db_debug) {
             echo "[pes4_geracalculo003] Excluindo dados da gerfprovfer, Condição: ".bb_condicaosubpes("r93_")." ...<br>";
           }
@@ -472,6 +494,8 @@ define('TIPO_CALCULO_PARCIAL', 1);
 
         case PONTO_PROVISAO_13_SALARIO:
 
+          $sFolhaPagamento = CalculoFolha::CALCULO_PROVISAO_13o;
+          $sPonto          = Ponto::PROVISAO_13o;;
           if ($db_debug) {
             echo "[pes4_geracalculo003] Excluindo dados da gerfprovs13, Condição: ".bb_condicaosubpes("r94_")." ...<br>";
           }
@@ -487,6 +511,7 @@ define('TIPO_CALCULO_PARCIAL', 1);
       $matriz2 = array();
       $matriz1[ 1 ] = "r60_altera";
       $matriz2[ 1 ] = 'f';
+      LogCalculoFolha::write("Alterando os dados da tabela previden, Condição: ".bb_condicaosubpes("r60_"));
       if ($db_debug) {
         echo "[pes4_geracalculo003] Alterando os dados da tabela previden, Condição: ".bb_condicaosubpes("r60_")." ...<br>";
         echo "[pes4_geracalculo003] Campos:";
@@ -494,12 +519,22 @@ define('TIPO_CALCULO_PARCIAL', 1);
         print_r($matriz2);
         echo "<br><br>";
       }
-      db_update("previden", $matriz1, $matriz2, bb_condicaosubpes("r60_") );
+
+      if( $opcao_tipo == TIPO_CALCULO_PARCIAL ) {
+
+         $sWhereMatriculasCalculadas = " and r60_regist in ({$faixa_regis})";
+         db_update("previden", $matriz1, $matriz2, bb_condicaosubpes("r60_") . $sWhereMatriculasCalculadas  );
+
+       }else{
+         $sWhereMatriculasCalculadas = '';
+         db_update("previden", $matriz1, $matriz2, bb_condicaosubpes("r60_") );
+       }
 
       $matriz1 = array();
       $matriz2 = array();
       $matriz1[ 1 ] = "r61_altera";
       $matriz2[ 1 ] = 'f';
+      LogCalculoFolha::write("Alterando os dados da tabela ajusteir, Condição: ".bb_condicaosubpes("r61_"));
       if ($db_debug) {
         echo "[pes4_geracalculo003] Alterando os dados da tabela ajusteir, Condição: ".bb_condicaosubpes("r61_")." ...<br>";
         echo "[pes4_geracalculo003] Campos:";
@@ -507,7 +542,13 @@ define('TIPO_CALCULO_PARCIAL', 1);
         print_r($matriz2);
         echo "<br><br>";
       }
-      db_update("ajusteir", $matriz1, $matriz2, bb_condicaosubpes("r61_") );
+
+      if( $opcao_tipo == TIPO_CALCULO_PARCIAL ) {
+        $sWhereMatriculasCalculadas = " and r61_regist in ({$faixa_regis})";
+        db_update("ajusteir", $matriz1, $matriz2, bb_condicaosubpes("r61_") . $sWhereMatriculasCalculadas  );
+      }else{
+        db_update("ajusteir", $matriz1, $matriz2, bb_condicaosubpes("r61_") );
+      }
 
       $minha_calcula_pensao = false;
 
@@ -568,6 +609,8 @@ define('TIPO_CALCULO_PARCIAL', 1);
 
         if ($icalc == CALCULO_NORMAL || ($icalc == CALCULO_PENSAO && $minha_calcula_pensao)) {
 
+          $r110_regisi = 1;
+          $r110_regisf = 999999;
           $calcula_parcial = db_str($r110_regisi+0,6,0,"0").$r110_lotaci.$r110_lotacf.db_str($r110_regisf+0,6,0,"0");
           if ($db_debug) {
             echo "<br>";
@@ -587,22 +630,72 @@ define('TIPO_CALCULO_PARCIAL', 1);
         // R981 BASE IRF SALARIO
         // R982 BASE IRF 13O SAL (BRUTA) BASE -
         // R983 BASE IRF FERIAS BASE -
-
-        $y1 = ( ($opcao_geral == PONTO_SALARIO || $opcao_geral ==PONTO_RESCISAO )? 1: ( $opcao_geral == PONTO_13_SALARIO ? 2: 3 ) );
+        $aFolhas  = array(PONTO_COMPLEMENTAR, PONTO_SALARIO, PONTO_RESCISAO);
+        $y1 = ( in_array($opcao_geral, $aFolhas) ? 1: ( $opcao_geral == PONTO_13_SALARIO ? 2: 3 ) );
 
         if ($icalc == CALCULO_PENSAO && $opcao_geral != PONTO_RESCISAO) {
 
+          $aFolhas  = array(PONTO_COMPLEMENTAR, PONTO_SALARIO, PONTO_RESCISAO);
           $rubrica1 = ( ($opcao_geral == PONTO_SALARIO || $opcao_geral ==PONTO_RESCISAO ) ? "R985": ( $opcao_geral == PONTO_13_SALARIO ? "R986": "R987" ) );
-          $rubrica  = ( ($opcao_geral == PONTO_SALARIO || $opcao_geral ==PONTO_RESCISAO ) ? "R981": ( $opcao_geral == PONTO_13_SALARIO ? "R982": "R983" ) );
+          $rubrica  =  in_array($opcao_geral, $aFolhas) ? "R981" : ($opcao_geral == PONTO_13_SALARIO ? "R982" : "R983");
 
-          //echo "<BR> entrando no ajusta_previdencia() --> $rubrica1";
           LogCalculoFolha::write();
           LogCalculoFolha::write("Chamando Função de Ajuste de Previdencia");
-          ajusta_previdencia( $chamada_geral_arquivo, $rubrica1, $y1, $sigla1);
+          global $pessoal;
+
+          if ( DBPessoal::verificarUtilizacaoEstruturaSuplementar() && ($opcao_geral == PONTO_SALARIO || $opcao_geral == PONTO_COMPLEMENTAR) ) {
+
+            /**
+             * Percorrer os servidores
+             */
+            foreach ($pessoal as $aDadosServidor) {
+
+               $oServidor = ServidorRepository::getInstanciaByCodigo($aDadosServidor["r01_regist"], DBPessoal::getAnoFolha(), DBPessoal::getMesFolha());
+               AjustePrevidencia::gravarDadosCalculados($oServidor, CalculoFolha::$oFolhaAtual);
+            }
+          }
+
+          /**
+           * Para executar testes sem ajuste de Previdencia, o comando a baixo deve ser comentado
+           */
+          ajusta_previdencia( $chamada_geral_arquivo, $rubrica1, $y1, $sigla1); //Pos processamento dos dados da previdencia
           LogCalculoFolha::write();
           LogCalculoFolha::write("Chamando Função de Ajuste de IRRF - Para a Rubrica: $rubrica");
-          AjusteIRRF::ajustar($chamada_geral_arquivo, $rubrica,$y1 ,$sigla1);
+          /**
+           * Para executar testes sem ajuste de Imposto de Renda, o comando a baixo deve ser comentado
+           */
+          AjusteIRRF::ajustar($chamada_geral_arquivo, $rubrica,$y1 ,$sigla1); //pós-processamento dos dados de IRRF
         }
+
+        if ( $icalc == CALCULO_PENSAO ) {
+
+          /**
+           * Executa a Criação do Abono de Permanencia
+           */
+          global $pessoal;
+          if(!empty($pessoal)) {
+              foreach ($pessoal as $aDadosServidor) {
+
+                  $oServidor = ServidorRepository::getInstanciaByCodigo($aDadosServidor["r01_regist"], DBPessoal::getAnoFolha(), DBPessoal::getMesFolha());
+
+                  /**
+                   * Se o Servidor não possuir abono de permanência não executo o Calculo de Abono de Permanência.
+                   */
+                  if (!$oServidor->hasAbonoPermanencia()) {
+                      continue;
+                  }
+
+                  $oCalculo = $oServidor->getCalculoFinanceiro($chamada_geral_arquivo);
+
+                  $oCalculoPrevidencia = new CalculoDescontoPrevidencia($oCalculo);
+
+                  LogCalculoFolha::write('Lançando o abono permanência no cálculo de :' . $chamada_geral_arquivo);
+                  LogCalculoFolha::write('Lançando para a matrícula: ' . $oServidor->getMatricula());
+                  $oCalculoPrevidencia->lancarAbonoPermanencia();
+              }
+          }
+        }
+
 
         if ( ( $icalc == CALCULO_PENSAO ) && $opcao_geral == PONTO_SALARIO ) {
 

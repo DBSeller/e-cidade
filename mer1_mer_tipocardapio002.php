@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_tipocardapio_classe.php");
-include("classes/db_mer_cardapio_classe.php");
-include("classes/db_mer_cardapiodata_classe.php");
-include("classes/db_mer_cardapiodia_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_tipocardapio_classe.php"));
+include(modification("classes/db_mer_cardapio_classe.php"));
+include(modification("classes/db_mer_cardapiodata_classe.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_tipocardapio = new cl_mer_tipocardapio;
@@ -96,10 +96,10 @@ if (isset($alterar)) {
   ?>
   <script>
     parent.document.formaba.a2.disabled    = false;
-    top.corpo.iframe_a2.location.href      = 'mer1_mer_cardapioescola001.php?me32_i_tipocardapio=<?=$chavepesquisa?>'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'mer1_mer_cardapioescola001.php?me32_i_tipocardapio=<?=$chavepesquisa?>'+
                                              '&me27_c_nome=<?=$me27_c_nome?>';
     parent.document.formaba.a3.disabled    = false;
-    top.corpo.iframe_a3.location.href      = 'mer1_mer_tpcardapioturma001.php?me32_i_tipocardapio=<?=$chavepesquisa?>'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href      = 'mer1_mer_tpcardapioturma001.php?me32_i_tipocardapio=<?=$chavepesquisa?>'+
                                              '&me27_c_nome=<?=$me27_c_nome?>';  
   </script>
   <?
@@ -121,7 +121,7 @@ if (isset($alterar)) {
       <br>
       <center>
       <fieldset style="width:95%"><legend><b>Alteração de Cardápio</b></legend>
-        <?include("forms/db_frmmer_tipocardapio.php");?>
+        <?include(modification("forms/db_frmmer_tipocardapio.php"));?>
       </fieldset>
       </center>
     </td>
@@ -151,10 +151,10 @@ if (isset($alterar)) {
     ?>
     <script>
       parent.document.formaba.a2.disabled    = false;
-      top.corpo.iframe_a2.location.href      = 'mer1_mer_cardapioescola001.php?me32_i_tipocardapio=<?=$chavepesquisa?>'+
+      (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'mer1_mer_cardapioescola001.php?me32_i_tipocardapio=<?=$chavepesquisa?>'+
                                                '&me27_c_nome=<?=$me27_c_nome?>';
       parent.document.formaba.a3.disabled    = false;
-      top.corpo.iframe_a3.location.href      = 'mer1_mer_tpcardapioturma001.php?me32_i_tipocardapio=<?=$chavepesquisa?>'+
+      (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href      = 'mer1_mer_tpcardapioturma001.php?me32_i_tipocardapio=<?=$chavepesquisa?>'+
                                                '&me27_c_nome=<?=$me27_c_nome?>';  
       parent.mo_camada('a2');   
     </script>

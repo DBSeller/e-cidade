@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $sql = "select proprietario.*,ll.j34_descr , c.z01_nome as promitente, c.z01_ender as ender_promitente,
                                   j.z01_nome as imobiliaria,j.z01_ender as ender_imobiliaria, j.z01_numcgm as z01_numimob
@@ -40,7 +40,7 @@ $sql = "select proprietario.*,ll.j34_descr , c.z01_nome as promitente, c.z01_end
 								  left outer join loteam ll on ll.j34_loteam = l.j34_loteam
  			                      where j01_matric = $cod_matricula limit 1";
 
-$matriculaSelecionada = pg_exec($sql);
+$matriculaSelecionada = db_query($sql);
 $numMatriculaSelecionada = pg_numrows($matriculaSelecionada);
 
  /***********************************************************************************************/

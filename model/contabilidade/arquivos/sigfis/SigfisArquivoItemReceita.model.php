@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("interfaces/iPadArquivoTxtBase.interface.php");
-require_once ("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php");
+require_once  modification("interfaces/iPadArquivoTxtBase.interface.php");
+require_once  modification("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php");
 
 /**
  *
@@ -37,71 +37,107 @@ require_once ("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php")
  *
  */
 class SigfisArquivoItemReceita extends SigfisArquivoBase implements iPadArquivoTXTBase {
-  
-  protected $iCodigoLayout     = 116;
-  protected $sNomeArquivo      = 'EspRec';
-  
-  /**
-  * Busca os dados para gerar o Arquivo do Programa do Orçamento
-  */
-  public function gerarDados() {
-  
+
+    protected $iCodigoLayout     = 116;
+    protected $sNomeArquivo      = 'EspRec';
+
     /**
-     * Busca os dados da db_config
+     * Busca os dados para gerar o Arquivo do Programa do Orçamento
      */
-    $oDbConfig     = new db_stdClass();
-    $oDadoConfig   = $oDbConfig->getDadosInstit();
-                   
-    $clOrcFontes   = db_utils::getDao('orcfontes');
-                   
-    $sCampos       = "distinct orcfontes.o57_fonte, orcfontes.o57_descr, orcfontes.o57_anousu, orcfontes.o57_codfon, ";
-    $sCampos      .= "'1' as reduz ";
-    $sOrder        = "orcfontes.o57_fonte";
-    $sSqlOrcFontes = $clOrcFontes->sql_query_previsao(null, $this->iAnoUso, $sCampos, $sOrder);
+    public function gerarDados() {
 
-    $sSqlOrcFontes = "select substr(o57_fonte,1,9) as o57_fonte , max(o57_descr) as o57_descr, o57_anousu, max(o57_codfon) as o57_codfon, '1' as reduz 
-                      from (".$sSqlOrcFontes.") as x group by substr(o57_fonte,1,9), o57_anousu order by o57_fonte ";
-    
-//  die( $sSqlOrcFontes );
-    $rsOrcFontes   = $clOrcFontes->sql_record($sSqlOrcFontes);
-    
-    $this->addLog("=====Arquivo: ".$this->getNomeArquivo()." Erros:\n");
-    if ($clOrcFontes->numrows > 0) {
-  
-      if (empty($this->sCodigoTribunal)) {
-        throw new Exception("O código do tribunal deve ser informado para geração do arquivo");
-      }
-      
-      for($i = 0; $i < $clOrcFontes->numrows; $i++) {
-  
-        $oDadosQuery = new stdClass();
-        $oDadosQuery = db_utils::fieldsMemory($rsOrcFontes, $i);
-        $oDados      = new stdClass();
+        /**
+         * Busca os dados da db_config
+         */
+        $sCampos       = "distinct orcfontes.o57_fonte, orcfontes.o57_descr, orcfontes.o57_anousu, orcfontes.o57_codfon, ";
+        $sCampos      .= "case when o70_codrec is not null then '1' else '2' end as reduz ";
+        $sOrder        = "orcfontes.o57_fonte";
+        $clOrcFontes   = new cl_orcfontes();
+        $sSqlOrcFontes = $clOrcFontes->sql_query_previsao(null, $this->iAnoUso, $sCampos, $sOrder, " o70_anousu = " . db_getsession("DB_anousu") . " and o70_instit = " . db_getsession("DB_instit"));
 
-        if ($oVinculo = SigfisVinculoReceita::getVinculoReceita($oDadosQuery->o57_codfon)) {
+        $sSqlOrcFontes = "
+          select substr(o57_fonte,1,14) as o57_fonte, 
+                 max(o57_descr) as o57_descr, 
+                 o57_anousu, 
+                 max(o57_codfon) as o57_codfon, 
+                 min(reduz) as reduz
+            from (".$sSqlOrcFontes.") as x 
+           group by substr(o57_fonte,1,14), o57_anousu order by o57_fonte ";
 
-          $oDados->cd_Unidade           = str_pad($this->sCodigoTribunal,                  4, ' ', STR_PAD_LEFT);
-          if(substr($oDadosQuery->o57_fonte, 0,  1) == '9'   ){
-            $oDados->cd_ItemReceitaGestor = str_pad( '9'.substr($oDadosQuery->o57_fonte, 2,  7),  8, " ", STR_PAD_LEFT);
-          }else{
-            $oDados->cd_ItemReceitaGestor = str_pad(substr($oDadosQuery->o57_fonte, 1,  8),  8, " ", STR_PAD_LEFT);
-          }
-          $oDados->de_ItemReceita       = str_pad(substr($oDadosQuery->o57_descr, 0, 50), 50, ' ', STR_PAD_RIGHT);
-          $oDados->cd_ItemReceita       = $oVinculo->receitatce;
-          $oDados->dt_ano               = $oDadosQuery->o57_anousu;
-          $oDados->Cd_receblanc         = $oDadosQuery->reduz;
-          $oDados->codigolinha          = 403;
+        $clausulaWhen = SigfisArquivoItemReceita::getCaseWhen();
+        $sSqlOrcFontes = "
+          select {$clausulaWhen} as o57_fonte, 
+                  o57_descr, 
+                  o57_anousu, 
+                  o57_codfon, 
+                  reduz 
+             from ( {$sSqlOrcFontes} ) as x 
+            group by {$clausulaWhen}, 
+                     o57_descr, 
+                     o57_anousu, 
+                     o57_codfon, 
+                     reduz 
+               order by {$clausulaWhen}";
 
-          $this->aDados[] = $oDados;
-          
-        } else {
-        
-          $sErroLog  = "Receita {$oDadosQuery->o57_fonte} do ano de {$this->iAnoUso} ";
-          $sErroLog .= "não tem vinculo com Recita Sigfis.\n";
-          $this->addLog($sErroLog);
+
+//        die($sSqlOrcFontes);
+        $rsOrcFontes   = $clOrcFontes->sql_record($sSqlOrcFontes);
+
+        $this->addLog("=====Arquivo: ".$this->getNomeArquivo()." Erros:\n");
+        if ($clOrcFontes->numrows > 0) {
+
+            if (empty($this->sCodigoTribunal)) {
+                throw new Exception("O código do tribunal deve ser informado para geração do arquivo");
+            }
+
+            for($i = 0; $i < $clOrcFontes->numrows; $i++) {
+
+                $oDadosQuery = db_utils::fieldsMemory($rsOrcFontes, $i);
+                $oDados      = new stdClass();
+
+                if (substr($oDadosQuery->o57_fonte, 1,  13) == '00000000') {
+                    continue;
+                }
+
+                $oVinculo = SigfisVinculoReceita::getVinculoReceita($oDadosQuery->o57_codfon);
+
+                if (empty($oVinculo)) {
+
+                    $sErroLog  = "Receita {$oDadosQuery->o57_fonte} do ano de {$this->iAnoUso} ";
+                    $sErroLog .= "não tem vinculo com Recita Sigfis.\n";
+                    $this->addLog($sErroLog);
+                    continue;
+                }
+
+                $oDados->cd_Unidade           = str_pad($this->sCodigoTribunal,                  4, ' ', STR_PAD_LEFT);
+                $oDados->cd_ItemReceitaGestor = str_pad($oDadosQuery->o57_fonte, 13, " ", STR_PAD_RIGHT);
+                $oDados->de_ItemReceita       = str_pad(substr($oDadosQuery->o57_descr, 0, 50), 50, ' ', STR_PAD_RIGHT);
+                $oDados->cd_ItemReceita       = str_pad(substr($oVinculo->receitatce,0,13), 13, ' ', STR_PAD_RIGHT);
+                $oDados->dt_ano               = $oDadosQuery->o57_anousu;
+                $oDados->Cd_receblanc         = $oDadosQuery->reduz;
+                $oDados->codigolinha          = 403;
+                $this->aDados[] = $oDados;
+            }
         }
-      }
-    } 
-    $this->addLog("===== Fim do Arquivo: ".$this->getNomeArquivo()."\n");
-  }
+        $this->addLog("===== Fim do Arquivo: ".$this->getNomeArquivo()."\n");
+    }
+
+
+    /**
+     * Criei isso como segurança pois foi mexido nos parâmetros do substr. Visto que é
+     * usado o mesmo diversas vezes, corrigindo aqui corrige todos os lugares.
+     *
+     * Desculpe! :-(
+     * @return string
+     */
+    public static function getCaseWhen() {
+
+        $retorno = "
+             case when substr(o57_fonte,1,1) = '9' 
+                  then substr(o57_fonte,1,1) || substr(o57_fonte,3,14) 
+                  else substr(o57_fonte,2,13) 
+              end
+        ";
+        return $retorno;
+    }
 }

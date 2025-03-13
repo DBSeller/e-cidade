@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include ("libs/db_liborcamento.php");
-include("classes/db_orcorgao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $get                     = db_utils::postmemory($_GET);
 $post                    = db_utils::postmemory($_POST);
@@ -179,7 +179,7 @@ Inscrição de Restos a Pagar Não Processados
 function js_mostraEmpenho(chave){
 
   arq = 'func_empempenho001.php?e60_numemp='+chave 
-  js_OpenJanelaIframe('top.corpo','db_iframe_saldos',arq,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saldos',arq,'Pesquisa',true);
 }
 function js_marca(){
   
@@ -205,13 +205,13 @@ function js_marca(){
 function mostraFiltros(instit){
 
   url ='func_selorcdotacao_aba.php?instit='+instit+'&db_selinstit='+instit+'&desdobramento=true'
-  js_OpenJanelaIframe('top.corpo','db_iframe_filtro',url,'Filtros',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_filtro',url,'Filtros',true);
   $('pesquisar').disabled=false;
 }
 
 function js_pesquisa(){
   
-  $('filtros').value = top.corpo.db_iframe_filtro.jan.js_atualiza_variavel_retorno();
+  $('filtros').value = (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_filtro.jan.js_atualiza_variavel_retorno();
   js_consultaEmpenho(); 
 
 }
@@ -237,7 +237,7 @@ function js_consultaEmpenho(){
 
 function js_saida(oAjax){
 
-    obj  = eval("("+oAjax.responseText+")");
+    obj  = JSON.parse(oAjax.responseText);
     saida = '';
     $('numrows').innerHTML = obj.numrows;
     $('dados').innerHTML   = '';
@@ -335,7 +335,7 @@ function js_saidaInscricao(oAjax){
     js_removeObj("msgRPS");
     $('pesquisar').disabled = false;
     $('inscrever').disabled = false;
-    obj      = eval("("+oAjax.responseText+")");
+    obj      = JSON.parse(oAjax.responseText);
     mensagem = obj.mensagem.replace(/\+/g," ");
     mensagem = unescape(mensagem);
     parent.$('processarec').disabled        = false

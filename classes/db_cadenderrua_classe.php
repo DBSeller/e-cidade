@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -449,7 +449,7 @@ class cl_cadenderrua {
    function sql_query ( $db74_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -460,19 +460,22 @@ class cl_cadenderrua {
      }
      $sql .= " from cadenderrua ";
      $sql .= "      inner join cadendermunicipio  on  cadendermunicipio.db72_sequencial = cadenderrua.db74_cadendermunicipio";
+     $sql .= "      inner join cadendermunicipiosistema ";
+     $sql .= "         on cadendermunicipio.db72_sequencial = cadendermunicipiosistema.db125_cadendermunicipio";
+     $sql .= "        and cadendermunicipiosistema.db125_db_sistemaexterno = 4";
      $sql .= "      inner join cadenderestado  on  cadenderestado.db71_sequencial = cadendermunicipio.db72_cadenderestado";
      $sql2 = "";
      if($dbwhere==""){
        if($db74_sequencial!=null ){
-         $sql2 .= " where cadenderrua.db74_sequencial = $db74_sequencial "; 
+         $sql2 .= " where cadenderrua.db74_descricao <> ' ' and cadenderrua.db74_sequencial = $db74_sequencial "; 
        } 
      }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
+       $sql2 = " where cadenderrua.db74_descricao <> ' ' and $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -485,7 +488,7 @@ class cl_cadenderrua {
    function sql_query_file ( $db74_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -501,12 +504,12 @@ class cl_cadenderrua {
          $sql2 .= " where cadenderrua.db74_sequencial = $db74_sequencial "; 
        } 
      }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
+       $sql2 = " where cadenderrua.db74_descricao <> ' ' and $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -518,7 +521,7 @@ class cl_cadenderrua {
    function sql_query_left_full ( $db74_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -530,6 +533,9 @@ class cl_cadenderrua {
      
      $sql .= " from cadenderrua ";
      $sql .= "      left join cadendermunicipio         on db72_sequencial                = db74_cadendermunicipio   ";
+     $sql .= "      left join cadendermunicipiosistema                                                               ";
+     $sql .= "        on cadendermunicipio.db72_sequencial = cadendermunicipiosistema.db125_cadendermunicipio        ";
+     $sql .= "       and cadendermunicipiosistema.db125_db_sistemaexterno = 4                                        ";
      $sql .= "      left join cadenderestado            on db71_sequencial                = db72_cadenderestado      ";
      $sql .= "      left join cadenderbairrocadenderrua on db87_cadenderrua               = db74_sequencial          ";
      $sql .= "      left join cadenderbairro            on db73_sequencial                = db87_cadenderbairro      ";
@@ -541,15 +547,15 @@ class cl_cadenderrua {
      $sql2 = "";
      if($dbwhere==""){
        if($db74_sequencial!=null ){
-         $sql2 .= " where cadenderrua.db74_sequencial = $db74_sequencial "; 
+         $sql2 .= " where cadenderrua.db74_descricao <> ' ' and cadenderrua.db74_sequencial = $db74_sequencial "; 
        } 
      }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
+       $sql2 = " where cadenderrua.db74_descricao <> ' ' and $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -562,7 +568,7 @@ class cl_cadenderrua {
   function sql_query_endereco_full ( $db74_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -574,6 +580,9 @@ class cl_cadenderrua {
      
     $sql .= " from cadenderrua ";
     $sql .= "      left join cadendermunicipio         on db72_sequencial                = db74_cadendermunicipio ";   
+    $sql .= "      left join cadendermunicipiosistema                                                             ";
+    $sql .= "        on cadendermunicipio.db72_sequencial = cadendermunicipiosistema.db125_cadendermunicipio      ";
+    $sql .= "       and cadendermunicipiosistema.db125_db_sistemaexterno = 4                                      ";
     $sql .= "      left join cadenderestado            on db71_sequencial                = db72_cadenderestado    ";      
     $sql .= "      left join cadenderbairrocadenderrua on db87_cadenderrua               = db74_sequencial        ";      
     $sql .= "      left join cadenderbairro            on db73_sequencial                = db87_cadenderbairro    ";
@@ -586,12 +595,12 @@ class cl_cadenderrua {
         $sql2 .= " where cadenderrua.db74_sequencial = $db74_sequencial ";
       }
       }else if($dbwhere != ""){
-      $sql2 = " where $dbwhere";
+      $sql2 = " where cadenderrua.db74_descricao <> ' ' and $dbwhere";
       }
       $sql .= $sql2;
       if($ordem != null ){
       $sql .= " order by ";
-         $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
       $sql .= $virgula.$campos_sql[$i];
@@ -605,7 +614,7 @@ class cl_cadenderrua {
    function sql_query_rua_codigo ( $db74_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -616,7 +625,10 @@ class cl_cadenderrua {
      }
      $sql .= " from cadenderrua ";
      $sql .= "      inner join cadendermunicipio on cadendermunicipio.db72_sequencial = cadenderrua.db74_cadendermunicipio";
-     $sql .= "      inner join cadenderestado on cadenderestado.db71_sequencial = cadendermunicipio.db72_cadenderestado";
+     $sql .= "      inner join cadendermunicipiosistema ";
+     $sql .= "         on cadendermunicipio.db72_sequencial = cadendermunicipiosistema.db125_cadendermunicipio ";
+     $sql .= "        and cadendermunicipiosistema.db125_db_sistemaexterno = 4 ";
+     $sql .= "      inner join cadenderestado on cadenderestado.db71_sequencial = cadendermunicipio.db72_cadenderestado ";
      $sql .= "      inner join cadenderruaruastipo on cadenderruaruastipo.db85_cadenderrua = cadenderrua.db74_sequencial ";
      $sql .= "      inner join cadenderbairrocadenderrua on cadenderbairrocadenderrua.db87_cadenderrua = cadenderrua.db74_sequencial ";
      $sql .= "      inner join cadenderbairro on cadenderbairro.db73_sequencial = cadenderbairrocadenderrua.db87_cadenderbairro ";
@@ -626,12 +638,12 @@ class cl_cadenderrua {
          $sql2 .= " where cadenderrua.db74_sequencial = $db74_sequencial "; 
        } 
      }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
+       $sql2 = " where cadenderrua.db74_descricao <> ' ' and $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -641,4 +653,3 @@ class cl_cadenderrua {
      return $sql;
   }
 }
-?>

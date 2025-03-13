@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,15 +26,15 @@
  */
  
 
-require ('fpdf151/pdf.php');
-include ("dbforms/db_funcoes.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_db_proced_classe.php");
-include("classes/db_tarefacadsituacao_classe.php");
-include("classes/db_tarefacadmotivo_classe.php");
-include("classes/db_clientes_classe.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefalog_classe.php");
+require(modification('fpdf151/pdf.php'));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_db_proced_classe.php"));
+include(modification("classes/db_tarefacadsituacao_classe.php"));
+include(modification("classes/db_tarefacadmotivo_classe.php"));
+include(modification("classes/db_clientes_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefalog_classe.php"));
 
 $cltarefa      = new cl_tarefa;
 $clclientes = new cl_clientes;
@@ -251,7 +251,7 @@ if(!isset($pesquisa_chave)){
   
 }
 //die($sql);
-$result = pg_exec($sql) or die($sql);
+$result = db_query($sql) or die($sql);
 
 if($result==false || pg_numrows($result)==0){
   db_redireciona('db_erros.php?fechar=true&db_erro=Sem registros!');
@@ -330,7 +330,7 @@ if (isset($tipo_rel)&&$tipo_rel=="c"){
       at45_tarefa  = tarefalog.at43_tarefa
       where at43_tarefa=$at40_sequencial 
       order by at43_sequencial";
-      $res_tarefalog = pg_query($sql);
+      $res_tarefalog = db_query($sql);
       $numrows       = pg_numrows($res_tarefalog);
       if ($numrows > 0){
         for($i=0; $i < $numrows; $i++){
@@ -432,7 +432,7 @@ if (isset($tipo_rel)&&$tipo_rel=="c"){
       at45_tarefa  = tarefalog.at43_tarefa
       where at43_tarefa=$at40_sequencial 
       order by at43_sequencial";
-      $res_tarefalog = pg_query($sql) or die($sql);
+      $res_tarefalog = db_query($sql) or die($sql);
       $numrows       = pg_numrows($res_tarefalog);
       if ($numrows > 0){
 				$pdf->Ln(5);

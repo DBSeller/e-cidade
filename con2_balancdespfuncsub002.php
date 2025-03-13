@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_liborcamento.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_sql.php"));
 
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 db_postmemory($HTTP_SERVER_VARS);
@@ -36,7 +36,7 @@ $head1 = "BALANCETE DA DESPESA";
 $head3 = "EXERCÍCIO: ".db_getsession("DB_anousu");
 $head5 = "PERÍODO: ".db_formatar($dataini,'d')." A ".db_formatar($datafin,'d');
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -95,10 +95,10 @@ $sql = "select o58_funcao,
 //db_criatabela($result);exit;
 // funcao para gerar work
 //echo $sql; exit;
-$res = pg_exec($sql);
+$res = db_query($sql);
 
 
-pg_exec("commit");
+db_query("commit");
 
 $pdf = new PDF(); 
 $pdf->Open(); 
@@ -310,6 +310,6 @@ $pdf->setfont('arial','',7);
 
 
 //pg_free_result($result);
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf->Output();
 ?>

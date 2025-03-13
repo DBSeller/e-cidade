@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
- require_once ("libs/db_stdlib.php");
- require_once ("libs/db_conecta.php");
- require_once ("libs/db_sessoes.php");
- require_once ("libs/db_sql.php");
- require_once ("libs/db_utils.php");
- require_once ("libs/db_app.utils.php");
- require_once ("std/db_stdClass.php");
- require_once ("std/DBLargeObject.php");
- require_once ("classes/db_certidao_classe.php");
-  
- parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
+ require_once(modification("libs/db_stdlib.php"));
+ require_once(modification("libs/db_conecta.php"));
+ require_once(modification("libs/db_sessoes.php"));
+ require_once(modification("libs/db_sql.php"));
+ require_once(modification("libs/db_utils.php"));
+ require_once(modification("libs/db_app.utils.php"));
+ require_once(modification("std/db_stdClass.php"));
+ require_once(modification("std/DBLargeObject.php"));
+ require_once(modification("classes/db_certidao_classe.php"));
 
+ parse_str(base64_decode($_SERVER['QUERY_STRING']));
+ 
  if($tipo_cert==1){
  	$tipo = "Positiva";
  }else if($tipo_cert==0){
@@ -44,7 +44,7 @@
  }else{
  	$tipo = "Negativa";
  }
- 
+
  $sOrigem       = 'C';
  $iCodigoOrigem = '';
 ?>
@@ -52,6 +52,7 @@
 	<head>
     	<title>Documento sem t&iacute;tulo</title>
     	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
     	<?php
         db_app::load("estilos.css");
         db_app::load("scripts.js");
@@ -62,7 +63,7 @@
         db_app::load("widgets/dbtextFieldData.widget.js");
       ?>
   	</head>
-  	
+
   	<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#cccccc">
   	  <form method="post" name="form1" target="certreg">
   	    <input type="hidden" id="tipoindconjunta" name="tipoindconjunta" value="<?=@$indconjunta?>">
@@ -72,7 +73,7 @@
         <input type="hidden" id="cadrecibo"       name="cadrecibo"       value="" />
         <input type="hidden" id="origem"          name="origem"          value="" />
         <input type="hidden" id="codorigem"       name="codorigem"       value="" />
-		    <?	
+		    <?php
           if(isset($matric)){
             echo "<input type='hidden' rel='tipo_emissor' name='matric' value='{$matric}'>";
             $sOrigem 			 = 'M';
@@ -88,16 +89,21 @@
           }else{
             echo "<input type='hidden' rel='tipo_emissor' name='naolibera' value='naolibera'>";
           }
+          
+          echo "<input type='hidden' id='nomeservico' name='nomeservico' value='{$nomeservico}'>";
+          echo "<input type='hidden' id='resultado' name='resultado' value='{$resultado}'>";
+          echo "<input type='hidden' id='dataconsulta' name='dataconsulta' value='{$dataconsulta}'>";
+          
         ?>
 			</form>
-			
+
       <div class='container'  style="width:90%; max-width:1000px;">
-      
+
         <fieldset>
           <legend><strong>Certidões Emitidas</strong></legend>
 
        		  <div id="container-grid"></div>
-          		
+
         </fieldset>
       <input name="certidao" type="button" id="certidao" value="Nova Certidão" onClick="parent.js_windowCertidao(js_Certidao, <?php echo $tipo_cert;?>);">
       </div>
@@ -107,7 +113,7 @@
 var sUrlRPC    = 'cai2_emitecnd.RPC.php';
 
 var montarGrid = function(){
-   
+
    oGridCertidoes                 = new DBGrid('GridCertidoes');
    oGridCertidoes.nameInstance    = 'oGridCertidoes';
    oGridCertidoes.sName           = 'GridCertidoes';
@@ -116,29 +122,29 @@ var montarGrid = function(){
    oGridCertidoes.aWidths		      = new Array('5%','10%','15%','8%','13.5%','5%','20%','11.5%','7%');
    oGridCertidoes.show($('container-grid'));
    oGridCertidoes.clearAll(true);
-   
+
    var oParametros                = new Object();
    oParametros.sExec              = 'getCertidoes';
-   oParametros.sOrigem            = '<? echo $sOrigem;       ?>';
-   oParametros.iCodigoOrigem      = '<? echo $iCodigoOrigem; ?>';
-   
+   oParametros.sOrigem            = '<?=$sOrigem?>';
+   oParametros.iCodigoOrigem      = '<?=$iCodigoOrigem?>';
+
    var oDadosRequisicao    		    = new Object();
    oDadosRequisicao.method 		    = 'post';
    oDadosRequisicao.asynchronous  = false;
    oDadosRequisicao.parameters    = 'json='+Object.toJSON(oParametros),
    oDadosRequisicao.onComplete    = function(oAjax){
-       
-     var oRetorno = eval("("+oAjax.responseText+")");
+
+     var oRetorno = JSON.parse(oAjax.responseText);
      if (oRetorno.iStatus == "2") {
-         
+
        alert(oRetorno.sMensagem.urlDecode());
        return;
      }
-   
+
      for(var iCertidao=0; iCertidao < oRetorno.aCertidoes.length; iCertidao++ ){
-   
+
    	  var oDadosCertidao = oRetorno.aCertidoes[iCertidao];
-   
+
    	  if( oDadosCertidao.tipo_certidao == 'p' ) {
    		  oDadosCertidao.tipo_certidao = "Positiva";
    		}else if( oDadosCertidao.tipo_certidao == 'r' ) {
@@ -146,39 +152,39 @@ var montarGrid = function(){
    		}else{
    			oDadosCertidao.tipo_certidao = "Negativa";
    		}
-   	  
+
       if( oDadosCertidao.emissao_dbpref  == 't') {
-      	oDadosCertidao.emissao_dbpref = 'e-Cidade Online';    
+      	oDadosCertidao.emissao_dbpref = 'e-Cidade Online';
       }else{
-      	oDadosCertidao.emissao_dbpref = 'e-Cidade';    
+      	oDadosCertidao.emissao_dbpref = 'e-Cidade';
       }
-   
+
       if( oDadosCertidao.habilita_reemissao == 't') {
       	oDadosCertidao.habilita_reemissao = '<a href="#" onclick="js_reemitirCertidao(' + oDadosCertidao.nro + ');">Reemitir</a>';
       }else{
     	  oDadosCertidao.prazo_reemissao    = '';
       	oDadosCertidao.habilita_reemissao = '';
       }
-      
-   	  oGridCertidoes.addRow([ oDadosCertidao.nro,              
-                               oDadosCertidao.tipo_certidao,    
-                               js_formatar( oDadosCertidao.data_emissao, 'd') + ' - ' + oDadosCertidao.hora_emissao.urlDecode(),     
-                               js_formatar( oDadosCertidao.data_validade, 'd'),    
+
+   	  oGridCertidoes.addRow([ oDadosCertidao.nro,
+                               oDadosCertidao.tipo_certidao,
+                               js_formatar( oDadosCertidao.data_emissao, 'd') + ' - ' + oDadosCertidao.hora_emissao.urlDecode(),
+                               js_formatar( oDadosCertidao.data_validade, 'd'),
                                js_formatar( oDadosCertidao.prazo_reemissao, 'd'),
-                               oDadosCertidao.origem.urlDecode(),           
-                               oDadosCertidao.emissor.urlDecode(),          
-                               oDadosCertidao.emissao_dbpref,   
+                               oDadosCertidao.origem.urlDecode(),
+                               oDadosCertidao.emissor.urlDecode(),
+                               oDadosCertidao.emissao_dbpref,
                                oDadosCertidao.habilita_reemissao
  	 												]);
      }
      oGridCertidoes.renderRows();
    };
-   
+
    var oAjax  = new Ajax.Request( sUrlRPC, oDadosRequisicao );
-   
+
    parent.document.getElementById('processando').style.visibility = 'hidden';
 };
-     
+
 document.form1.origem.value       = parent.document.form2.tipo_filtro.value;
 document.form1.codorigem.value    = parent.document.form2.cod_filtro.value;
 
@@ -186,12 +192,12 @@ document.form1.codorigem.value    = parent.document.form2.cod_filtro.value;
  * Emite uma certidao negativa/positiva/regular de débitos
  *
  * @param iCodigoProcesso $iCodigoProcesso
- * @param sObservacoes    $sObservacoes 
+ * @param sObservacoes    $sObservacoes
  * @access public
  * @return void
  */
 var js_Certidao = function ( iCodigoProcesso, sObservacoes ){
-  
+
   origem          = '';
   titulo          = '';
   textarea        = '';
@@ -199,92 +205,129 @@ var js_Certidao = function ( iCodigoProcesso, sObservacoes ){
   codproc         = '';
   tipoindconj     = '';
 
-  codproc         = iCodigoProcesso;	  
-  textarea        = sObservacoes;
-  titulo          = document.getElementById('origem'         ).value;
-  origem          = document.getElementById('codorigem'      ).value;
-  tipo            = document.getElementById('tipo'           ).value;
-  tipoindconjunta = document.getElementById('tipoindconjunta').value;
+  codproc             = iCodigoProcesso;
+  textarea            = sObservacoes;
+  titulo              = document.getElementById('origem'         ).value;
+  origem              = document.getElementById('codorigem'      ).value;
+  tipo                = document.getElementById('tipo'           ).value;
+  tipoindconjunta     = document.getElementById('tipoindconjunta').value;
+  nomeServico         = document.getElementById('nomeservico').value;
+  resultadoWebservice = document.getElementById('resultado').value;
+  dataHoraConsulta    = document.getElementById('dataconsulta').value;
+
   textarea        = tagString(textarea);
 
   var sTipoCertidao = ( tipo == 1 ? 'Positiva' : ( tipo == 0 ? 'Regular' : 'Negativa' ) );
 
   if ( confirm( 'Emitir Certidão ' + sTipoCertidao + '?' ) ) {
 
-    if ( document.form1.cadrecibo.value == 't' ) {
-      js_recibo( titulo, origem, codproc, textarea, tipo);	
-    } else {
-      
-      var sQuery  = "cai2_emitecnd001.php";
-      sQuery     += '?tipocertidao=' + tipoindconjunta;
-      sQuery     += '&titulo='       + titulo;
-      sQuery     += '&origem='       + origem;
-      sQuery     += '&textarea='     + textarea;
-      sQuery     += '&tipo='         + tipo;
-      sQuery     += '&codproc='      + codproc;
-      var oJanela = window.open( sQuery ,'', 'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
-      oJanela.moveTo(0,0);
-    }
-  }
+      var sQuery  = "";
 
-	if ( parent.window.$('EmissaoCertidao') ) {
-    parent.window.$('EmissaoCertidao').outerHTML = '';
+      var oParametros     = new Object();
+      oParametros.sExec   = 'getValidaTemplate';
+      oParametros.iTipo   = tipo;
+      oParametros.sTitulo = titulo;
+
+      AjaxRequest.create(sUrlRPC, oParametros, function (retorno, erro) {
+
+              if (retorno.bValidaTemplate) {
+                  sQuery   = "cai3_certidregular001.php";
+                  textarea = encodeURIComponent(sObservacoes);
+              } else {
+                  if (document.form1.cadrecibo.value == 't') {
+                      js_recibo(titulo, origem, codproc, textarea, tipo);
+                  } else {
+                      sQuery = "cai2_emitecnd001.php";
+                  }
+              }
+              
+              if(sQuery != ""){
+                  sQuery     += '?tipocertidao='        + tipoindconjunta;
+                  sQuery     += '&titulo='              + titulo;
+                  sQuery     += '&origem='              + origem;
+                  sQuery     += '&textarea='            + textarea;
+                  sQuery     += '&tipo='                + tipo;
+                  sQuery     += '&codproc='             + codproc;
+                  sQuery     += '&sTipoCertidao='       + sTipoCertidao;
+                  if(nomeServico != null && nomeServico != '') {
+
+                    sQuery     += '&nomeServico='         + nomeServico;
+                  }
+                  if(resultadoWebservice != null && resultadoWebservice != '') {
+                    
+                    sQuery     += '&resultadoWebservice=' + resultadoWebservice;
+                  }
+                  if(dataHoraConsulta != null && dataHoraConsulta != '') {
+                    
+                    sQuery     += '&dataHoraConsulta='     + dataHoraConsulta;
+                  }  
+
+                  var oJanela = window.open(sQuery ,'', 'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
+                  oJanela.moveTo(0,0);
+              }
+              
+              if ( parent.window.$('EmissaoCertidao') ) {
+                  parent.window.$('EmissaoCertidao').outerHTML = '';
+              }
+
+              window.location.href = window.location.href;
+      }).execute();
   }
-  window.location.href = window.location.href;
 }
 
 function js_reemitirCertidao( iCertidaoSequencial ){
 
-	var oParametros              				= new Object();
-      oParametros.sExec        				= 'getCertidao';
+	var oParametros              	  = new Object();
+      oParametros.sExec        		  = 'getCertidao';
       oParametros.iCertidaoSequencial = iCertidaoSequencial;
-    
-	var oDadosRequisicao    		        = new Object();
-      oDadosRequisicao.method 		    = 'post';
+
+	var oDadosRequisicao    		  = new Object();
+      oDadosRequisicao.method 		  = 'post';
       oDadosRequisicao.asynchronous   = false;
-      oDadosRequisicao.parameters     = 'json='+Object.toJSON(oParametros),
+      oDadosRequisicao.parameters     = 'json='+Object.toJSON(oParametros);
       oDadosRequisicao.onComplete     = function(oAjax){
-        
-        var oRetorno = eval("("+oAjax.responseText+")");
+
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.iStatus == "2") {
-            
+
            alert(oRetorno.sMensagem.urlDecode());
            return;
         }
 
         var oJanela = window.open( oRetorno.sArquivo ,'', 'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
         oJanela.moveTo(0,0);
+          window.location.href = window.location.href;
       };
-    
+
   var oAjax  = new Ajax.Request( sUrlRPC, oDadosRequisicao );
 }
 
 function js_recibo(titulo,origem,codproc,textarea,tipo){
-  js_OpenJanelaIframe('top.corpo','db_recibo','cai4_recibo001.php?mostramenu=t&titulo='+titulo+'&origem='+origem+'&codproc='+codproc+'&textarea='+textarea+'&tipo='+tipo,'Cadastro de recibo',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_recibo','cai4_recibo001.php?mostramenu=t&titulo='+titulo+'&origem='+origem+'&codproc='+codproc+'&textarea='+textarea+'&tipo='+tipo,'Cadastro de recibo',true);
 }
 montarGrid();
 </script>
 </html>
 
 <?
-flush();	
-db_postmemory($HTTP_POST_VARS);  
+flush();
+db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
 
 if($tipo_cert==1){
-  echo "<script> document.form1.tipo.value = 1;</script>"; 
+  echo "<script> document.form1.tipo.value = 1;</script>";
 }else if($tipo_cert==0){
-  echo "<script> document.form1.tipo.value = 0;</script>"; 
+  echo "<script> document.form1.tipo.value = 0;</script>";
 }else{
-  echo "<script> document.form1.tipo.value = 2;</script>"; 
+  echo "<script> document.form1.tipo.value = 2;</script>";
 }
-flush();	
+flush();
 $rsNumpref = db_query("select * from numpref where k03_anousu = ".db_getsession("DB_anousu")." and k03_instit = ".db_getsession('DB_instit') );
 $numrows = pg_numrows($rsNumpref);
 if ($numrows>0){
   db_fieldsmemory($rsNumpref,0);
   if(isset($k03_reccert) && $k03_reccert == 't'){
-    echo "<script>document.form1.cadrecibo.value = 't';</script>"; 
+    echo "<script>document.form1.cadrecibo.value = 't';</script>";
   }
 }
 ?>

@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptuconstr_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptuconstr_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cliptuconstr = new cl_iptuconstr;
@@ -83,7 +83,7 @@ $cliptuconstr->rotulo-> label("j39_idcons");
   
           $sql = "select * from iptuconstr where j39_matric = $j11_matric and j39_idcons = $pesquisa_chave";
           echo "xxxxxxxxxxxxxxx = $sql"; 
-          $result = pg_query($sql);
+          $result = db_query($sql);
           $linhas = pg_num_rows($result);
           if($linhas!=0){
             db_fieldsmemory($result,0);
@@ -111,4 +111,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

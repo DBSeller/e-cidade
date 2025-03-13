@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -122,36 +122,40 @@ class RelatorioAlunosMatriculados extends EstatisticaAlunosMatriculados {
 
         $this->oPdf->setfillcolor(self::COR_ETAPA);
         $this->oPdf->setfont('arial', 'b', 8);
-        $this->oPdf->cell(60 ,4, "Etapa: {$oEtapa->sNome}", 1, 0, "L", 1);
-        $this->oPdf->cell(15 ,4, "Matr. Inic.",             1, 0, "L", 1);
-        $this->oPdf->cell(15 ,4, "EVAD.",                   1, 0, "L", 1);
-        $this->oPdf->cell(15 ,4, "CANC.",                   1, 0, "L", 1);
-        $this->oPdf->cell(15 ,4, "TRANS.",                  1, 0, "L", 1);
-        $this->oPdf->cell(15 ,4, "PROGR.",                  1, 0, "L", 1);
-        $this->oPdf->cell(15 ,4, "ÓBITO",                   1, 0, "L", 1);
-        $this->oPdf->cell(15 ,4, "Matr. Efet.",             1, 0, "L", 1);
-        $this->oPdf->cell(15 ,4, "Vagas",                   1, 0, "L", 1);
-        $this->oPdf->cell(15 ,4, "Vag. Disp.",              1, 1, "L", 1);
+        $this->oPdf->cell(58,   4, "Etapa: {$oEtapa->sNome}", 1, 0, "L", 1);
+        $this->oPdf->cell(15,   4, "Matr. Inic.",             1, 0, "L", 1);
+        $this->oPdf->cell(9.5,  4, "Evad.",                   1, 0, "L", 1);
+        $this->oPdf->cell(9.5,  4, "Canc.",                   1, 0, "L", 1);
+        $this->oPdf->cell(10,   4, "Trans.",                  1, 0, "L", 1);
+        $this->oPdf->cell(10,   4, "Troca",                   1, 0, "L", 1);
+        $this->oPdf->cell(10,   4, "Progr.",                  1, 0, "L", 1);
+        $this->oPdf->cell(9.5,  4, "Óbito",                   1, 0, "L", 1);
+        $this->oPdf->cell(11,   4, "I. MEC",                  1, 0, "L", 1);
+        $this->oPdf->cell(11,   4, "Capac.",                  1, 0, "L", 1);
+        $this->oPdf->cell(15.5, 4, "Matr. Efet.",             1, 0, "L", 1);
+        $this->oPdf->cell(14,   4, "V. Turma",                1, 0, "L", 1);
+        $this->oPdf->cell(12,   4, "V. Disp.",                1, 1, "L", 1);
 
         /**
          * Monta as linhas contendo as informações de matriculas por turma
          */
         foreach ( $oEtapa->aTurmas as $oTurma ) {
-
           $sTurma = substr("{$oTurma->sTurma} - {$oTurma->sTurno}", 0, 35);
-
           $this->oPdf->setfillcolor(self::COR_TURMA);
           $this->oPdf->setfont('arial', '', 8);
-          $this->oPdf->cell(60, 4, "{$sTurma}",                        1, 0, "L", 1);
-          $this->oPdf->cell(15, 4, "$oTurma->matricula_inicial",       1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "$oTurma->matriculas_evadidas",     1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "$oTurma->matriculas_canceladas",   1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "$oTurma->matriculas_transferidas", 1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "$oTurma->matriculas_progredidas",  1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "$oTurma->matriculas_falecidas",    1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "$oTurma->matriculas_efetivas",     1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "$oTurma->total_vagas",             1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "$oTurma->total_disponiveis",       1, 1, "C", 1);
+          $this->oPdf->cell(58,   4, "{$sTurma}",                        1, 0, "L", 1);
+          $this->oPdf->cell(15,   4, "$oTurma->matricula_inicial",       1, 0, "C", 1);
+          $this->oPdf->cell(9.5,  4, "$oTurma->matriculas_evadidas",     1, 0, "C", 1);
+          $this->oPdf->cell(9.5,  4, "$oTurma->matriculas_canceladas",   1, 0, "C", 1);
+          $this->oPdf->cell(10,   4, "$oTurma->matriculas_transferidas", 1, 0, "C", 1);
+          $this->oPdf->cell(10,   4, "$oTurma->matriculas_trocas",       1, 0, "C", 1);
+          $this->oPdf->cell(10,   4, "$oTurma->matriculas_progredidas",  1, 0, "C", 1);
+          $this->oPdf->cell(9.5,  4, "$oTurma->matriculas_falecidas",    1, 0, "C", 1);
+          $this->oPdf->cell(11,   4, "$oTurma->matriculas_nee",          1, 0, "C", 1);
+          $this->oPdf->cell(11,   4, "$oTurma->total_capacidade",        1, 0, "C", 1);
+          $this->oPdf->cell(15.5, 4, "$oTurma->matriculas_efetivas",     1, 0, "C", 1);
+          $this->oPdf->cell(14,   4, "$oTurma->total_vagas",             1, 0, "C", 1);
+          $this->oPdf->cell(12,   4, "$oTurma->total_disponiveis",       1, 1, "C", 1);
 
         }
 
@@ -160,29 +164,35 @@ class RelatorioAlunosMatriculados extends EstatisticaAlunosMatriculados {
          */
         $this->oPdf->setfillcolor(self::COR_ETAPA);
         $this->oPdf->setfont('arial', 'b', 8);
-        $this->oPdf->cell(60, 4, "Total da Etapa: {$oEtapa->sNome}", 1, 0, "R", 1);
-        $this->oPdf->cell(15, 4, "{$oEtapa->iTotalMatriculaInicial}",    1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEtapa->iTotalEvadidos        }",    1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEtapa->iTotalCancelados      }",    1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEtapa->iTotalTransferidos    }",    1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEtapa->iTotalProgredidos     }",    1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEtapa->iTotalObitos          }",    1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEtapa->iTotalMatriculaEfetiva}",    1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEtapa->iTotalVagas           }",    1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEtapa->iTotalVagasDisponiveis}",    1, 1, "C", 1);
+        $this->oPdf->cell(58,   4, "Total da Etapa: {$oEtapa->sNome}", 1, 0, "R", 1);
+        $this->oPdf->cell(15,   4, "{$oEtapa->iTotalMatriculaInicial}",    1, 0, "C", 1);
+        $this->oPdf->cell(9.5,  4, "{$oEtapa->iTotalEvadidos        }",    1, 0, "C", 1);
+        $this->oPdf->cell(9.5,  4, "{$oEtapa->iTotalCancelados      }",    1, 0, "C", 1);
+        $this->oPdf->cell(10,   4, "{$oEtapa->iTotalTransferidos    }",    1, 0, "C", 1);
+        $this->oPdf->cell(10,   4, "{$oEtapa->iTotalTrocas          }",    1, 0, "C", 1);
+        $this->oPdf->cell(10,   4, "{$oEtapa->iTotalProgredidos     }",    1, 0, "C", 1);
+        $this->oPdf->cell(9.5,  4, "{$oEtapa->iTotalObitos          }",    1, 0, "C", 1);
+        $this->oPdf->cell(11,   4, "{$oEtapa->iTotalMatriculaNEE    }",    1, 0, "C", 1);
+        $this->oPdf->cell(11,   4, "{$oEtapa->iTotalCapacidade      }",    1, 0, "C", 1);
+        $this->oPdf->cell(15.5, 4, "{$oEtapa->iTotalMatriculaEfetiva}",    1, 0, "C", 1);
+        $this->oPdf->cell(14,   4, "{$oEtapa->iTotalVagas           }",    1, 0, "C", 1);
+        $this->oPdf->cell(12,   4, "{$oEtapa->iTotalVagasDisponiveis}",    1, 1, "C", 1);
 
         if ($this->lPercentual) {
 
-          $this->oPdf->cell(60, 4, 'Percentuais: ',                           1, 0, "R", 1);
-          $this->oPdf->cell(15, 4, "",                                        1, 0, "C" , 1);
-          $this->oPdf->cell(15, 4, "{$oEtapa->iPercentualEvadidos        }%", 1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "{$oEtapa->iPercentualCancelados      }%", 1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "{$oEtapa->iPercentualTransferidos    }%", 1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "{$oEtapa->iPercentualProgredidos     }%", 1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "{$oEtapa->iPercentualObitos          }%", 1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "{$oEtapa->iPercentualMatriculaEfetiva}%", 1, 0, "C", 1);
-          $this->oPdf->cell(15, 4, "",                                        1, 0, "C" , 1);
-          $this->oPdf->cell(15, 4, "{$oEtapa->iPercentualVagasDisponiveis}%", 1, 1, "C", 1);
+          $this->oPdf->cell(58,   4, 'Percentuais: ',                           1, 0, "R", 1);
+          $this->oPdf->cell(15,   4, "",                                        1, 0, "C", 1);
+          $this->oPdf->cell(9.5,  4, "{$oEtapa->iPercentualEvadidos        }%", 1, 0, "C", 1);
+          $this->oPdf->cell(9.5,  4, "{$oEtapa->iPercentualCancelados      }%", 1, 0, "C", 1);
+          $this->oPdf->cell(10,   4, "{$oEtapa->iPercentualTransferidos    }%", 1, 0, "C", 1);
+          $this->oPdf->cell(10,   4, "{$oEtapa->iPercentualTrocas          }%", 1, 0, "C", 1);
+          $this->oPdf->cell(10,   4, "{$oEtapa->iPercentualProgredidos     }%", 1, 0, "C", 1);
+          $this->oPdf->cell(9.5,  4, "{$oEtapa->iPercentualObitos          }%", 1, 0, "C", 1);
+          $this->oPdf->cell(11,   4, "{$oEtapa->iPercentualMatriculaNEE    }%", 1, 0, "C", 1);
+          $this->oPdf->cell(11,   4, "",                                        1, 0, "C", 1);
+          $this->oPdf->cell(15.5, 4, "{$oEtapa->iPercentualMatriculaEfetiva}%", 1, 0, "C", 1);
+          $this->oPdf->cell(14,   4, "",                                        1, 0, "C", 1);
+          $this->oPdf->cell(12,   4, "{$oEtapa->iPercentualVagasDisponiveis}%", 1, 1, "C", 1);
         }
 
       }
@@ -192,29 +202,40 @@ class RelatorioAlunosMatriculados extends EstatisticaAlunosMatriculados {
        */
       $this->oPdf->setfillcolor(self::COR_ENSINO);
       $this->oPdf->setfont('arial', 'b', 8);
-      $this->oPdf->cell(60, 4, substr("Total {$oEnsino->sNome}", 0, 35), 1, 0, "R", 1);
-      $this->oPdf->cell(15, 4, "{$oEnsino->iTotalMatriculaInicial}",         1, 0, "C", 1);
-      $this->oPdf->cell(15, 4, "{$oEnsino->iTotalEvadidos        }",         1, 0, "C", 1);
-      $this->oPdf->cell(15, 4, "{$oEnsino->iTotalCancelados      }",         1, 0, "C", 1);
-      $this->oPdf->cell(15, 4, "{$oEnsino->iTotalTransferidos    }",         1, 0, "C", 1);
-      $this->oPdf->cell(15, 4, "{$oEnsino->iTotalProgredidos     }",         1, 0, "C", 1);
-      $this->oPdf->cell(15, 4, "{$oEnsino->iTotalObitos          }",         1, 0, "C", 1);
-      $this->oPdf->cell(15, 4, "{$oEnsino->iTotalMatriculaEfetiva}",         1, 0, "C", 1);
-      $this->oPdf->cell(15, 4, "{$oEnsino->iTotalVagas           }",         1, 0, "C", 1);
-      $this->oPdf->cell(15, 4, "{$oEnsino->iTotalVagasDisponiveis}",         1, 1, "C", 1);
+
+      $totalEnsino = "Total {$oEnsino->sNome}";
+      $this->ajustaTamanhoFonte($totalEnsino, 58, 8);
+      $this->oPdf->cell(58, 4, $totalEnsino, 1, 0, "R", 1);
+
+      $this->oPdf->setfont('arial', 'b', 8);
+      $this->oPdf->cell(15,   4, "{$oEnsino->iTotalMatriculaInicial}",         1, 0, "C", 1);
+      $this->oPdf->cell(9.5,  4, "{$oEnsino->iTotalEvadidos        }",         1, 0, "C", 1);
+      $this->oPdf->cell(9.5,  4, "{$oEnsino->iTotalCancelados      }",         1, 0, "C", 1);
+      $this->oPdf->cell(10,   4, "{$oEnsino->iTotalTransferidos    }",         1, 0, "C", 1);
+      $this->oPdf->cell(10,   4, "{$oEnsino->iTotalTrocas          }",         1, 0, "C", 1);
+      $this->oPdf->cell(10,   4, "{$oEnsino->iTotalProgredidos     }",         1, 0, "C", 1);
+      $this->oPdf->cell(9.5,  4, "{$oEnsino->iTotalObitos          }",         1, 0, "C", 1);
+      $this->oPdf->cell(11,   4, "{$oEnsino->iTotalMatriculaNEE    }",         1, 0, "C", 1);
+      $this->oPdf->cell(11,   4, "{$oEnsino->iTotalCapacidade      }",         1, 0, "C", 1);
+      $this->oPdf->cell(15.5, 4, "{$oEnsino->iTotalMatriculaEfetiva}",         1, 0, "C", 1);
+      $this->oPdf->cell(14,   4, "{$oEnsino->iTotalVagas           }",         1, 0, "C", 1);
+      $this->oPdf->cell(12,   4, "{$oEnsino->iTotalVagasDisponiveis}",         1, 1, "C", 1);
 
       if ($this->lPercentual) {
 
-        $this->oPdf->cell(60, 4, 'Percentuais: ',                            1, 0, "R", 1);
-        $this->oPdf->cell(15, 4, "",                                         1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEnsino->iPercentualEvadidos        }%", 1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEnsino->iPercentualCancelados      }%", 1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEnsino->iPercentualTransferidos    }%", 1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEnsino->iPercentualProgredidos     }%", 1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEnsino->iPercentualObitos          }%", 1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEnsino->iPercentualMatriculaEfetiva}%", 1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "",                                         1, 0, "C", 1);
-        $this->oPdf->cell(15, 4, "{$oEnsino->iPercentualVagasDisponiveis}%", 1, 1, "C", 1);
+        $this->oPdf->cell(58,   4, 'Percentuais: ',                            1, 0, "R", 1);
+        $this->oPdf->cell(15,   4, "",                                         1, 0, "C", 1);
+        $this->oPdf->cell(9.5,  4, "{$oEnsino->iPercentualEvadidos        }%", 1, 0, "C", 1);
+        $this->oPdf->cell(9.5,  4, "{$oEnsino->iPercentualCancelados      }%", 1, 0, "C", 1);
+        $this->oPdf->cell(10,   4, "{$oEnsino->iPercentualTransferidos    }%", 1, 0, "C", 1);
+        $this->oPdf->cell(10,   4, "{$oEnsino->iPercentualTrocas          }%", 1, 0, "C", 1);
+        $this->oPdf->cell(10,   4, "{$oEnsino->iPercentualProgredidos     }%", 1, 0, "C", 1);
+        $this->oPdf->cell(9.5,  4, "{$oEnsino->iPercentualObitos          }%", 1, 0, "C", 1);
+        $this->oPdf->cell(11,   4, "{$oEnsino->iPercentualMatriculaNEE    }%", 1, 0, "C", 1);
+        $this->oPdf->cell(11,   4, "",                                         1, 0, "C", 1);
+        $this->oPdf->cell(15.5, 4, "{$oEnsino->iPercentualMatriculaEfetiva}%", 1, 0, "C", 1);
+        $this->oPdf->cell(14,   4, "",                                         1, 0, "C", 1);
+        $this->oPdf->cell(12,   4, "{$oEnsino->iPercentualVagasDisponiveis}%", 1, 1, "C", 1);
       }
 
     }
@@ -230,41 +251,60 @@ class RelatorioAlunosMatriculados extends EstatisticaAlunosMatriculados {
 
     $this->oPdf->cell(195, 4, "TOTAL GERAL", 1, 1, "L", 1);
 
-    $this->oPdf->cell(60 ,4, "",            1, 0, "L", 1);
-    $this->oPdf->cell(15 ,4, "Matr. Inic.", 1, 0, "L", 1);
-    $this->oPdf->cell(15 ,4, "EVAD.",       1, 0, "L", 1);
-    $this->oPdf->cell(15 ,4, "CANC.",       1, 0, "L", 1);
-    $this->oPdf->cell(15 ,4, "TRANS.",      1, 0, "L", 1);
-    $this->oPdf->cell(15 ,4, "PROGR.",      1, 0, "L", 1);
-    $this->oPdf->cell(15 ,4, "ÓBITO",       1, 0, "L", 1);
-    $this->oPdf->cell(15 ,4, "Matr. Efet.", 1, 0, "L", 1);
-    $this->oPdf->cell(15 ,4, "Vagas",       1, 0, "L", 1);
-    $this->oPdf->cell(15 ,4, "Vag. Disp.",  1, 1, "L", 1);
+    $this->oPdf->cell(58,   4, "",            1, 0, "L", 1);
+    $this->oPdf->cell(15,   4, "Matr. Inic.", 1, 0, "L", 1);
+    $this->oPdf->cell(9.5,  4, "Evad.",       1, 0, "L", 1);
+    $this->oPdf->cell(9.5,  4, "Canc.",       1, 0, "L", 1);
+    $this->oPdf->cell(10,   4, "Trans.",      1, 0, "L", 1);
+    $this->oPdf->cell(10,   4, "Troca",       1, 0, "L", 1);
+    $this->oPdf->cell(10,   4, "Progr.",      1, 0, "L", 1);
+    $this->oPdf->cell(9.5,  4, "Óbito",       1, 0, "L", 1);
+    $this->oPdf->cell(11,   4, "I. MEC",      1, 0, "L", 1);
+    $this->oPdf->cell(11,   4, "Capac.",      1, 0, "L", 1);
+    $this->oPdf->cell(15.5, 4, "Matr. Efet.", 1, 0, "L", 1);
+    $this->oPdf->cell(14,   4, "V. Turma",    1, 0, "L", 1);
+    $this->oPdf->cell(12,   4, "V. Disp.",    1, 1, "L", 1);
 
     $this->oPdf->setfillcolor(self::COR_TURMA);
     $this->oPdf->setfont('arial', 'b', 8);
-    $this->oPdf->cell(60, 4, "Somas: ",                            1, 0, "R", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iTotalMatriculaInicial}", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iTotalEvadidos        }", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iTotalCancelados      }", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iTotalTransferidos    }", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iTotalProgredidos     }", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iTotalObitos          }", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iTotalMatriculaEfetiva}", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iTotalVagas           }", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iTotalVagasDisponiveis}", 1, 1, "C", 1);
+    $this->oPdf->cell(58,   4, "Somas: ",                                1, 0, "R", 1);
+    $this->oPdf->cell(15,   4, "{$oTotalGeral->iTotalMatriculaInicial}", 1, 0, "C", 1);
+    $this->oPdf->cell(9.5,  4, "{$oTotalGeral->iTotalEvadidos        }", 1, 0, "C", 1);
+    $this->oPdf->cell(9.5,  4, "{$oTotalGeral->iTotalCancelados      }", 1, 0, "C", 1);
+    $this->oPdf->cell(10,   4, "{$oTotalGeral->iTotalTransferidos    }", 1, 0, "C", 1);
+    $this->oPdf->cell(10,   4, "{$oTotalGeral->iTotalTrocas          }", 1, 0, "C", 1);
+    $this->oPdf->cell(10,   4, "{$oTotalGeral->iTotalProgredidos     }", 1, 0, "C", 1);
+    $this->oPdf->cell(9.5,  4, "{$oTotalGeral->iTotalObitos          }", 1, 0, "C", 1);
+    $this->oPdf->cell(11,   4, "{$oTotalGeral->iTotalMatriculaNEE    }", 1, 0, "C", 1);
+    $this->oPdf->cell(11,   4, "{$oTotalGeral->iTotalCapacidade      }", 1, 0, "C", 1);
+    $this->oPdf->cell(15.5, 4, "{$oTotalGeral->iTotalMatriculaEfetiva}", 1, 0, "C", 1);
+    $this->oPdf->cell(14,   4, "{$oTotalGeral->iTotalVagas           }", 1, 0, "C", 1);
+    $this->oPdf->cell(12,   4, "{$oTotalGeral->iTotalVagasDisponiveis}", 1, 1, "C", 1);
 
-    $this->oPdf->cell(60, 4, 'Percentuais: ',                                1, 0, "R", 1);
-    $this->oPdf->cell(15, 4, "",                                             1, 0, "C" , 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iPercentualEvadidos        }%", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iPercentualCancelados      }%", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iPercentualTransferidos    }%", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iPercentualProgredidos     }%", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iPercentualObitos          }%", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iPercentualMatriculaEfetiva}%", 1, 0, "C", 1);
-    $this->oPdf->cell(15, 4, "",                                             1, 0, "C" , 1);
-    $this->oPdf->cell(15, 4, "{$oTotalGeral->iPercentualVagasDisponiveis}%", 1, 1, "C", 1);
+    $this->oPdf->cell(58,   4, 'Percentuais: ',                                1, 0, "R", 1);
+    $this->oPdf->cell(15,   4, "",                                             1, 0, "C", 1);
+    $this->oPdf->cell(9.5,  4, "{$oTotalGeral->iPercentualEvadidos        }%", 1, 0, "C", 1);
+    $this->oPdf->cell(9.5,  4, "{$oTotalGeral->iPercentualCancelados      }%", 1, 0, "C", 1);
+    $this->oPdf->cell(10,   4, "{$oTotalGeral->iPercentualTransferidos    }%", 1, 0, "C", 1);
+    $this->oPdf->cell(10,   4, "{$oTotalGeral->iPercentualTrocas          }%", 1, 0, "C", 1);
+    $this->oPdf->cell(10,   4, "{$oTotalGeral->iPercentualProgredidos     }%", 1, 0, "C", 1);
+    $this->oPdf->cell(9.5,  4, "{$oTotalGeral->iPercentualObitos          }%", 1, 0, "C", 1);
+    $this->oPdf->cell(11,   4, "{$oTotalGeral->iPercentualMatriculaNEE    }%", 1, 0, "C", 1);
+    $this->oPdf->cell(11,   4, "",                                             1, 0, "C", 1);
+    $this->oPdf->cell(15.5, 4, "{$oTotalGeral->iPercentualMatriculaEfetiva}%", 1, 0, "C", 1);
+    $this->oPdf->cell(14,   4, "",                                             1, 0, "C", 1);
+    $this->oPdf->cell(12,   4, "{$oTotalGeral->iPercentualVagasDisponiveis}%", 1, 1, "C", 1);
     $this->oPdf->Output();
   }
 
+    public function ajustaTamanhoFonte($content, $largura, $tamanhoFonteOriginal)
+    {
+        $content = "${content}   ";
+        $tamanhoString = $this->oPdf->GetStringWidth($content);
+
+        if ($tamanhoString > $largura) {
+            $tamanhoFonte = $tamanhoFonteOriginal * $largura / $tamanhoString;
+            $this->oPdf->SetFontSize($tamanhoFonte);
+        }
+    }
 }

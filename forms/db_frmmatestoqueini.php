@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt
  */
 //MODULO: material
-require_once("classes/db_matmater_classe.php");
-require_once("classes/db_matmaterunisai_classe.php");
-require_once("classes/db_matestoqueitemnotafiscalmanual_classe.php");
+require_once(modification("classes/db_matmater_classe.php"));
+require_once(modification("classes/db_matmaterunisai_classe.php"));
+require_once(modification("classes/db_matestoqueitemnotafiscalmanual_classe.php"));
 
 $clmatmater = new cl_matmater;
 $clmatmaterunisai = new cl_matmaterunisai;
@@ -59,7 +59,7 @@ if($db_opcao==2 || $db_opcao==22 || $db_opcao==3 || $db_opcao==33){
 
 if (isset($m60_codmater) && trim($m60_codmater) != "" && ( USE_PCASP && db_getsession("DB_anousu") > 2012) ) {
 
-  $oDaoMaterialEstoqueGrupo = db_utils::getDao('matmatermaterialestoquegrupo');
+  $oDaoMaterialEstoqueGrupo = new cl_matmatermaterialestoquegrupo;
   $sWhere                   = "    m68_matmater = {$m60_codmater} ";
   $sWhere                  .= "and m60_ativo    = true ";
   $sSqlValidaContaContabil  = $oDaoMaterialEstoqueGrupo->sql_query_grupo_conta(null, "m66_codcon", null, $sWhere);
@@ -88,45 +88,57 @@ if (isset($m60_codmater) && trim($m60_codmater) != "" && ( USE_PCASP && db_getse
   $m66_codcon = db_utils::fieldsMemory($rsValidaContaContabil, 0)->m66_codcon;
 }
 
+if (isset($coddepto) || $coddepto != "") {
+    $daoDeposito = new cl_db_almox();
+    $sqlDeposito = $daoDeposito->sql_query_file(null, 'm91_codigo', null, " m91_depto = {$coddepto}");
+    $rsDeposito = db_query($sqlDeposito);
+    if ($rsDeposito) {
+        $m91_codigo = pg_fetch_array($rsDeposito)['m91_codigo'];
+    }
+}
 
+$title = "Implantação de Estoque";
+if (isset($entrada) && $entrada == 'true') {
+    $title = "Entrada Manual";
+}
 ?>
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td>
-    <fieldset><legend><b>Entrada Manual</b></legend>
-    <table border='0'>
-      <tr>
-        <td nowrap title="<?=@$Tcoddepto?>">
-          <?
-            db_ancora(@$Lcoddepto, "js_pesquisacoddepto(true);", $db_opcao);
-          ?>
-        </td>
-        <td colspan="3">
-          <?
-            db_input('coddepto', 10, $Icoddepto,true,'text',$tranca," onchange='js_pesquisacoddepto(false);'");
-            db_input('descrdepto', 40, $Idescrdepto,true,'text',3,'');
-            db_input('m66_codcon', 10, $Im66_codcon,true,'hidden',3,'');
-          ?>
-        </td>
-      </tr>
-      <tr>
-        <td nowrap title="<?=@$Tm60_codmater?>">
-          <?
-            db_ancora(@$Lm60_codmater,"js_pesquisam60_codmater(true);",$tranca);
-          ?>
-        </td>
-        <td colspan="3">
-          <?
+<?php require_once("mat_aviso_deposito.php"); ?>
+<div class="container" <?= $isDeposito ?: 'style="display: none"' ?>>
+    <form name="form1" method="post" action="">
+        <table class="form-container">
+            <tr>
+                <td>
+                    <fieldset>
+                        <legend><b><?=$title?></b></legend>
+                        <table border='0'>
+                            <tr>
+                                <td nowrap title="<?= @$Tcoddepto ?>">
+                                    <label for="m91_codigo">Depósito:</label>
+                                </td>
+                                <td colspan="3">
+                                    <?php
+                                    db_input('m91_codigo', 10, $Icoddepto, true, 'text', 3);
+                                    db_input('descrdepto', 40, $Idescrdepto, true, 'text', 3);
+                                    db_input('m66_codcon', 10, $Im66_codcon, true, 'hidden', 3);
+                                    ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td nowrap title="<?= @$Tm60_codmater ?>">
+                                    <?php
+                                    db_ancora(@$Lm60_codmater, "js_pesquisam60_codmater(true);", $tranca);
+                                    ?>
+                                </td>
+                                <td colspan="3">
+                                    <?php
             db_input('m60_codmater',10,$Im60_codmater,true,'text',$tranca," onchange='js_pesquisam60_codmater(false);'");
             db_input('m60_descr',40,$Im60_descr,true,'text',3,'');
           ?>
         </td>
       </tr>
-        <?
+        <?php
           if (isset($m60_codmater) && trim($m60_codmater) != "" && $db_opcao != 3 && $db_opcao != 33) {
             $result = $clmatmater->sql_record($clmatmater->sql_query($m60_codmater,"m61_descr,m60_controlavalidade"));
             if ($clmatmater->numrows>0){
@@ -140,18 +152,18 @@ if (isset($m60_codmater) && trim($m60_codmater) != "" && ( USE_PCASP && db_getse
       <tr>
         <td nowrap title="Unid. Entrada:"><strong>Unid. Entrada:</strong></td>
         <td>
-          <?
+          <?php
             db_input('m61_descr',20,$Im61_descr,true,'text',3)
           ?>
         </td>
         <td nowrap title="Unid. Saída" align="right"><strong>Unid. Saída:</strong></td>
         <td align="right">
-          <?
+          <?php
             db_input('m61_descrsai',20,$Im61_descr,true,'text',3)
           ?>
         </td>
       </tr>
-      <?
+      <?php
           }
       $colspan = 3;
       $onchange= "";
@@ -165,11 +177,11 @@ if (isset($m60_codmater) && trim($m60_codmater) != "" && ( USE_PCASP && db_getse
 <?=@$Lm71_quant?>
 </td>
         <td nowrap colspan="<?=$colspan?>">
-<?
+<?php
 db_input('m71_quant',10,$Im71_quant,true,'text',$tranca,"onchange='js_calculavalortotal(this.value,\"quant\");$onchange'")
 ?>
 </td>
-<?
+<?php
 if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
   echo "
   <td nowrap title='Quantidade já solicitada' align='right'>
@@ -189,7 +201,7 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
   }
   ?>
   </tr>
-  <?
+  <?php
   if(isset($m60_codmater) && trim($m60_codmater)!="" && $db_opcao!=3 && $db_opcao!=33){
     $result_transmater = $cltransmater->sql_record($cltransmater->sql_query_file(null,"distinct m63_codpcmater",null,"m63_codmatmater=$m60_codmater"));
     if($cltransmater->numrows>0){
@@ -222,13 +234,13 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
   <tr>
         <td nowrap title="Valor unitário do item"><strong>Valor unitário do item:</strong></td>
         <td>
-  <?
+  <?php
   db_input('m71_valorunit',10,$Im71_valor,true,'text',$tranca,"onchange='js_calculavalortotal(this.value,\"unit\");'")
   ?>
   </td>
         <td nowrap title="Valor total" align="right"><strong>Valor total:</strong></td>
         <td align="left">
-  <?
+  <?php
   db_input('m71_valor',10,$Im71_valor,true,'text',$tranca,"onchange='js_calculavalortotal(this.value,\"total\");'")
   ?>
   </td>
@@ -236,11 +248,11 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
       <tr>
         <td><b>Lote:</b></td>
         <td>
-      <? db_input('m77_lote',10,$Im77_lote,true,'text',$tranca);?>
+      <?php db_input('m77_lote',10,$Im77_lote,true,'text',$tranca);?>
     </td>
         <td align="right"><b>Validade:</b></td>
         <td>
-      <?
+      <?php
 
       if (!isset($m77_dtvalidade)) {
         $m77_dtvalidade_dia = "";
@@ -252,12 +264,12 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
       </tr>
       <tr>
         <td nowrap title="<?=@$Tm78_matfabricante?>">
-        <?
+        <?php
         db_ancora(@$Lm78_matfabricante,"js_pesquisam78_matfabricante(true);",$tranca);
         ?>
        </td>
        <td colspan="3">
-       <?
+       <?php
        db_input('m78_matfabricante',10,$Im78_matfabricante,true,'text',$tranca," onchange='js_pesquisam78_matfabricante(false);'");
        db_input('m76_nome',40,$Im76_nome,true,'text',3,'')
        ?>
@@ -301,12 +313,12 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
     </td>
   </tr>
 </table>
-</center>
+
 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit"
   id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"
   <?=($db_botao==false?"disabled":"")?> onclick="return js_controlavalidadade()"> <input name="pesquisar" type="button"
   id="pesquisar" value="Pesquisar" onclick="js_pesquisainicio();">
-  <?
+  <?php
   db_input('m60_controlavalidade',10,$Im80_codigo,true,'hidden',3);
   if(isset($m80_codigo) && trim($m80_codigo)!=""){
     db_input('m80_codigo',10,$Im80_codigo,true,'hidden',3);
@@ -321,17 +333,19 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
   }
   db_input('m80_codtipo',10,$Im80_codtipo,true,'hidden',3);
   ?>
-  </form>
+    </form>
+</div>
 <script>
-  function js_calculavalortotal(valor,opcao){
-    if(document.form1.m71_quant.value!=""){
-      if(opcao!="quant"){
-        pos = valor.indexOf('.');
-        if(pos!=-1){
-          tam = valor.length;
-          qts = valor.slice((pos+1),tam);
-          dec = qts.length;
-          if(dec==1){
+
+    function js_calculavalortotal(valor, opcao) {
+        if (document.form1.m71_quant.value != "") {
+            if (opcao != "quant") {
+                pos = valor.indexOf('.');
+                if (pos != -1) {
+                    tam = valor.length;
+                    qts = valor.slice((pos + 1), tam);
+                    dec = qts.length;
+                    if (dec == 1) {
             dec   = 2;
           }
         }else{
@@ -375,10 +389,10 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
   function js_pesquisam60_codmater(mostra) {
 
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_matmater','func_matmater.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matmater','func_matmater.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr','Pesquisa',true);
     }else{
       if(document.form1.m60_codmater.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_matmater','func_matmater.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostramatmater','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matmater','func_matmater.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostramatmater','Pesquisa',false);
       }else{
         document.form1.m60_descr.value = '';
         document.form1.submit();
@@ -394,61 +408,54 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
       document.form1.submit();
     }
   }
-  function js_mostramatmater1(chave1,chave2) {
-    document.form1.m60_codmater.value = chave1;
-    document.form1.m60_descr.value = chave2;
-    db_iframe_matmater.hide();
-    document.form1.submit();
+
+  function js_mostramatmater1(chave1, chave2) {
+      document.form1.m60_codmater.value = chave1;
+      document.form1.m60_descr.value = chave2;
+      db_iframe_matmater.hide();
+      document.form1.submit();
   }
-  function js_pesquisacoddepto(mostra){
-    if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_depart','func_db_depart_material.php?funcao_js=parent.js_mostradepart1|coddepto|descrdepto','Pesquisa',true);
-    }else{
-      if(document.form1.coddepto.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_depart','func_db_depart_material.php?pesquisa_chave='+document.form1.coddepto.value+'&funcao_js=parent.js_mostradepart','Pesquisa',false);
-      }else{
-        document.form1.descrdepto.value = '';
+
+  function js_mostradepart(chave, erro) {
+      document.form1.descrdepto.value = chave;
+      if (erro == true) {
+          document.form1.m91_codigo.focus();
+          document.form1.m91_codigo.value = '';
       }
-    }
   }
-  function js_mostradepart(chave,erro){
-    document.form1.descrdepto.value = chave;
-    if(erro==true){
-      document.form1.coddepto.focus();
-      document.form1.coddepto.value = '';
-    }
+
+  function js_mostradepart1(chave1, chave2) {
+      document.form1.m91_codigo.value = chave1;
+      document.form1.descrdepto.value = chave2;
+      db_iframe_depart.hide();
   }
-  function js_mostradepart1(chave1,chave2){
-    document.form1.coddepto.value = chave1;
-    document.form1.descrdepto.value = chave2;
-    db_iframe_depart.hide();
-  }
-  function js_pesquisainicio(){
-    qry  = "&chave_m80_codtipo=<?=$naoinill?>";
+
+  function js_pesquisainicio() {
+      qry = "&chave_m80_codtipo=<?=$naoinill?>";
     qry += "&chave_m80_coddepto=<?=db_getsession("DB_coddepto")?>";
     qry += "&naoinill=<?=($naoinill)?>";
-    <?
+    <?php
     if($db_opcao!=3 && $db_opcao!=33){
       echo "qry += '&naoatendido=true';";
     }
     ?>
-    js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueini','func_matestoqueini.php?funcao_js=parent.js_preenchepesquisa|m80_codigo'+qry,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueini','func_matestoqueini.php?funcao_js=parent.js_preenchepesquisa|m80_codigo'+qry,'Pesquisa',true);
   }
   function js_preenchepesquisa(chave){
     db_iframe_matestoqueini.hide();
     qry = "";
-    <?
+    <?php
     if((isset($entrada) && $entrada == true) || $m80_codtipo==3 || $m80_codtipo==15 ){
       echo "qry = '&entrada=true';\n";
     }
     ?>
-    <?
+    <?php
     if($db_opcao!=1){
       echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave+qry";
     }
     ?>
   }
-  <?
+  <?php
   if(isset($m71_valor) && trim($m71_valor)!="" && isset($m71_quant) && trim($m71_quant)!=""){
     echo "
     js_calculavalortotal('$m71_valor','total');
@@ -457,7 +464,7 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
   ?>
   function js_pesquisaimplanta(){
     qry = "&chave_m80_codtipo=<?=$m80_codtipo?>";
-    js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueini','func_matestoqueini.php?funcao_js=parent.js_preenchepesquisa|m60_codmater|m80_codigo'+qry,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueini','func_matestoqueini.php?funcao_js=parent.js_preenchepesquisa|m60_codmater|m80_codigo'+qry,'Pesquisa',true);
   }
   function js_verificaquant(valor){
     //  splitar = document.form1.quantrest.value.split(" / ");
@@ -484,7 +491,7 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
       document.form1.m71_quant.focus();
     }
   }
-  <?
+  <?php
   if(isset($mostrar)){
     echo '
     function js_calcularmedia(){
@@ -548,7 +555,7 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
 
       if ($F('m77_lote') == '' || $F('m77_dtvalidade') == '') {
 
-        if (!confirm('Não foi informado o lote/data de validade do item.\nDeseja Processeguir?')) {
+        if (!confirm('Não foi informado o lote/data de validade do item.\nDeseja Prosseguir?')) {
           return false;
         } else {
           return true;
@@ -558,10 +565,10 @@ if(isset($m80_codigo) && trim($m80_codigo)!="" && $db_opcao==2){
    }
   function js_pesquisam78_matfabricante(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matfabricante','func_matfabricante.php?funcao_js=parent.js_mostramatfabricante1|m76_sequencial|m76_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matfabricante','func_matfabricante.php?funcao_js=parent.js_mostramatfabricante1|m76_sequencial|m76_nome','Pesquisa',true);
   }else{
      if(document.form1.m78_matfabricante.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_matfabricante','func_matfabricante.php?pesquisa_chave='+document.form1.m78_matfabricante.value+'&funcao_js=parent.js_mostramatfabricante','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matfabricante','func_matfabricante.php?pesquisa_chave='+document.form1.m78_matfabricante.value+'&funcao_js=parent.js_mostramatfabricante','Pesquisa',false);
      }else{
        document.form1.m76_nome.value = '';
      }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_turmaacativ_classe.php");
-include("classes/db_turmaac_classe.php");
-include("classes/db_turmalogac_classe.php");
-include("classes/db_calendario_classe.php");
-include("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php"); 
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_turmaacativ_classe.php"));
+include(modification("classes/db_turmaac_classe.php"));
+include(modification("classes/db_turmalogac_classe.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php")); 
 $escola                = db_getsession("DB_coddepto");
 $clturmaac             = new cl_turmaac;
 $clturmaacativ         = new cl_turmaacativ;
@@ -334,7 +334,7 @@ function fillSelectFromArray2(selectCtrl, itemArray, goodPrompt, badPrompt, defa
        $sql   .= "        inner join calendario  on  calendario.ed52_i_codigo = turmaac.ed268_i_calendario ";
        $sql   .= "        where ed288_i_tipoturma = 2 and ed268_i_calendario = $calendario1)  order by ed268_c_descr";
         //die($sql);
-        $result = pg_query($sql);
+        $result = db_query($sql);
         $linhas = pg_num_rows($result);
        ?>
        <b>Turmas:</b><br>
@@ -405,7 +405,7 @@ function fillSelectFromArray2(selectCtrl, itemArray, goodPrompt, badPrompt, defa
           $sql1   .= "      left join turmalogac on turmalogac.ed288_i_turmaac = turmaac.ed268_i_codigo";
           $sql1   .= " where ed52_i_codigo = $calendario1 order by descr1";    
    
-          $result1 = pg_query($sql1);
+          $result1 = db_query($sql1);
           $linhas1 = pg_num_rows($result1);
          ?>
         <select name="turmasincluidas" id="turmasincluidas" size="10" onclick="js_desabexc()" 

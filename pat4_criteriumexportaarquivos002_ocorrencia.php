@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -32,7 +32,7 @@ $sSqlOcorrencia .= "       t68_sequencial as id_da_ocorrencia, ";
 $sSqlOcorrencia .= "       t68_descricao as nome_da_ocorrencia";
 $sSqlOcorrencia .= "       from ocorrenciabens";
 
-$rsOcorrencia   = pg_query($sSqlOcorrencia);
+$rsOcorrencia   = db_query($sSqlOcorrencia);
 $iNumeroLinhas 	= pg_num_rows($rsOcorrencia);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {

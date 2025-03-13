@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,7 +31,7 @@
  *          Fábio Esteves <fabio.esteves@dbseller.com.br>
  *  @package educacao
  */
-require_once("std/DBNumber.php");
+require_once(modification("std/DBNumber.php"));
 class EducacaoArredondamento {
 
   /**

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -154,12 +154,20 @@ function js_salvarAbertura() {
 function js_retornoSalvarabertura(oAjax) {
   
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
-     
+
      parent.iframe_itens.location.href='com4_solicitaaberturaitens.php';
      $('pc10_numero').value = oRetorno.iCodigoSolicita;
+     
+     //var resumo = decodeURIComponent(oRetorno.resumo.replace(/\+/g, " "));
+     var resumo = oRetorno.resumo.urlDecode();
+     
+     $('pc10_resumo').value = resumo.replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(n); });
+      
      parent.mo_camada('itens');
+     
+     js_completaPesquisa(oRetorno.iCodigoSolicita);
   } else {
    alert(oRetorno.message.urlDecode());
   }
@@ -192,15 +200,22 @@ function js_completaPesquisa(iSolicitacao) {
 }
 function js_retornoCompletaPesquisa(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
+  
   if (oRetorno.status == 1) {
   
     $('pc54_datainicio').value  = oRetorno.datainicio;
     $('pc54_datatermino').value = oRetorno.datatermino;
-    $('pc10_resumo').value      = oRetorno.resumo.urlDecode();
+
+    //var resumo = decodeURIComponent(oRetorno.resumo.replace(/\+/g, " "));
+    var resumo = oRetorno.resumo.urlDecode();
+    
+    $('pc10_resumo').value = resumo.replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(n); });
+
     $('pc54_liberado').checked  = oRetorno.liberado;
     $('pc10_numero').value      = oRetorno.solicitacao;
-    parent.iframe_itens.js_preencheGrid(oRetorno.itens);
+    
+    parent.iframe_itens.js_preencheGrid(oRetorno.itens, oRetorno.tipoSolicitacao);
     
   } else {
     alert(oRetorno.message.urlDecode());

@@ -1,41 +1,92 @@
-
 /**
- * Classe responsavel por instanciar os comportamentos padrão para Ancora informada como parametro
- * @param Object oAncora         Ancora para lookUp
- * @param Object oInputID        Input com a informação do ID
- * @param Object oInputDescricao Input com a informação da Descrição
- * @param Object oParametros     Parametros opcionais
+ * DBLookUp Classe responsavel por instanciar os comportamentos padrão para Ancora informada como parametro
+ *
+ *  @param oAncora          {HTMLAnchorElement} Ancora para lookUp
+ *  @param oInputID         {HTMLInputElement}  Input com a informação do ID
+ *  @param oInputDescricao  {HTMLInputElement}  Input com a informação da Descrição
+ *  @param oParametros      {Object}            Parametros opcionais
+ *
+ *  @constructor
  */
-var DBLookUp = function (oAncora, oInputID, oInputDescricao, oParametros) {
-  
+DBLookUp = function (oAncora, oInputID, oInputDescricao, oParametros) {
+
   /**
    * Define valor padrão
    */
- 
   oParametros = oParametros || {};
-  
-  this.iReferencia     = DBLookUp.repository.addInstance(this);
 
+  this.iReferencia     = CurrentWindow.DBLookUp.repository.addInstance(this);
   this.oAncora         = oAncora;
   this.oInputID        = oInputID;
   this.oInputDescricao = oInputDescricao;
   this.oParametros     = {
-    "sArquivo"           : oParametros.sArquivo          || null,
-    "sLabel"             : oParametros.sLabel            || "Pesquisar",
-    "sQueryString"       : oParametros.sQueryString      || "",
-    "sDestinoLookUp"     : oParametros.sDestinoLookUp    || "",
-    "sObjetoLookUp"      : oParametros.sObjetoLookUp     || "db_pesquisa",
-    "aCamposAdicionais"  : oParametros.aCamposAdicionais || [],
-    "sCallBack"          : oParametros.sCallBack         || null 
+    "sArquivo"              : oParametros.sArquivo               || oParametros.arquivo                || this.oAncora.getAttribute('func-arquivo') || null,
+    "sLabel"                : oParametros.sLabel                 || oParametros.label                  || "Pesquisar",
+    "sQueryString"          : oParametros.sQueryString           || oParametros.queryString            || "",
+    "sDestinoLookUp"        : oParametros.sDestinoLookUp         || oParametros.destinoLookup          || "",
+    "sObjetoLookUp"         : oParametros.sObjetoLookUp          || oParametros.objetoLookup           || this.oAncora.getAttribute('func-objeto') || "db_pesquisa",
+    "aCamposAdicionais"     : oParametros.aCamposAdicionais      || oParametros.camposAdicionais       || [],
+    "fCallBack"             : oParametros.fCallBack              || oParametros.callBack               || null,
+    "fnAbrirJanela"         : oParametros.fnAbrirJanela          || oParametros.abrirJanela            || null,
+    "aParametrosAdicionais" : oParametros.aParametrosAdicionais  || oParametros.parametrosAdicionais   || [],
+    "zIndex"                : oParametros.zIndex                 || oParametros.index                  || null,
+      'oBotaoParaDesabilitar': oParametros.oBotaoParaDesabilitar ||
+          oParametros.botaoParaDesabilitar || '',
+      'parametrosIniciais': oParametros.parametrosIniciais || [],
+      'atualizarParametros': oParametros.atualizarParametros || false,
+      'oCampoDocumento':     oParametros.oCampoDocumento     || null,
   };
 
-this.oCallback  = {
-  onChange         : function(lErro) {},
-  onClick          : function() {},
-};
-  this.__init();
-};
+  this.oCallback  = {
+    onChange         : function(lErro) {},
+    onClick          : function() {}
+  };
 
+  this.__init();
+
+  var lHabilitado = true;
+
+  this.habilitar = function() {
+
+    if (lHabilitado) {
+      return true;
+
+    }
+
+    this.oInputID.classList.remove("readonly");
+    this.oInputID.readOnly = false;
+
+    if ( !(this.oAncora instanceof HTMLInputElement) ){
+
+      this.oAncora.href = "javascript:;";
+      this.oAncora.classList.add("DBAncora");
+    }
+    this.oAncora.onclick   = this.eventFunctions.click.bind(this);
+    this.oInputID.onchange = this.eventFunctions.change.bind(this);
+
+    lHabilitado = true;
+  };
+
+  this.desabilitar = function() {
+
+    if (!lHabilitado) {
+      return true;
+    }
+
+    this.oInputID.readOnly = true;
+    this.oInputID.onchange = null;
+    this.oAncora.classList.remove("DBAncora");
+
+    if ( !(this.oAncora instanceof HTMLInputElement) ){
+
+      this.oInputID.classList.add("readonly");
+      this.oAncora.removeAttribute("href");
+    }
+    this.oAncora.onclick = null;
+
+    lHabilitado = false;
+  };
+};
 
 /**
  * Função __init para alterar os elementos necessários
@@ -46,72 +97,112 @@ DBLookUp.prototype.__init = function() {
   /**
    * Modifica a ancora
    */
-   this.oAncora.className         += "DBAncora bold";
-   this.oAncora.href               = "javascript:void(0)";
+  if ( !(this.oAncora instanceof HTMLInputElement) ){
 
-   /**
-    * Modifica os Inputs
-    */
-   this.oInputID.className        += "field-size2"; 
-   this.oInputID.oInstancia        = this;
-   this.oInputDescricao.className += "field-size8";
-   this.oInputDescricao.className += " readOnly";
-   this.oInputDescricao.readOnly   = true;
-   this.oInputDescricao.oInstancia = this;
-
-   this.oAncora .addEventListener('click', this.eventFunctions.click.bind(this));
-   this.oInputID.onchange = this.eventFunctions.change.bind(this);
-};
-
-DBLookUp.prototype.eventFunctions =
-
-/**
- * Realiza o tratamento dos eventos 
- * Click e Change
- */
-DBLookUp.prototype.eventFunctions = { 
-
-  click: function(click){
-    this.abrirJanela(true);
-  },
-  change: function(change){
-    
-    if ( this.oInputID.value == "" ) {
-      this.oInputDescricao.value = "";
-      change.preventDefault();
-      return false;
-    }
-    this.abrirJanela(false);
+    this.oAncora.className         += "DBAncora bold";
+    this.oAncora.href               = "javascript:void(0)";
   }
+  /**
+   * Modifica os Inputs
+   */
+  var sClassID = this.oInputID.classList.toString();
+  if ( sClassID.match(/field-size/) == null ) {
+   this.oInputID.className        += " field-size2";
+  }
+  this.oInputID.oInstancia = this;
+
+  var sClassDescricao = this.oInputDescricao.classList.toString();
+  if ( sClassDescricao.match(/field-size/) == null ) { // validado se já foi adicionado alguma classe
+    this.oInputDescricao.className += " field-size8";
+  }
+
+  this.oInputDescricao.className += " readonly";
+  this.oInputDescricao.readOnly   = true;
+  this.oInputDescricao.oInstancia = this;
+  this.oInputDescricao.tabIndex = -1;
+
+  this.oAncora.onclick = this.eventFunctions.click.bind(this);
+  this.oInputID.onchange = this.eventFunctions.change.bind(this);
+    this.oInputID.oninput = this.eventFunctions.input.bind(this);
 };
 
 /**
- * Monta a QueryString para quando é 
+ * Realiza o tratamento dos eventos Click e Change
+ */
+DBLookUp.prototype.eventFunctions = {
+
+  /**
+   *  Abre a janela para pesquisa
+   *
+   *  @param  {String} click Onde será aberta a janela
+   *  @return {void}
+   */
+  click: function(event) {
+      if (this.atualizarParametros(event)) {
+          this.abrirJanela(true);
+      }
+  },
+
+  /**
+   *  Callbackda digitação
+   *
+   *  @param  {String} change
+   *  @return {void}
+   */
+  change: function(change){
+      if (this.oInputID.value == "") {
+          this.oInputDescricao.value = "";
+          if (this.oParametros.oCampoDocumento != null) {
+            this.oParametros.oCampoDocumento.value = "";
+          }
+          change.preventDefault();
+          return false;
+      }
+
+      if (this.atualizarParametros(change)) {
+          this.abrirJanela(false);
+      }
+  },
+
+    input: function() {
+        this.atualizarParametros();
+    },
+};
+
+/**
+ * Monta a QueryString para quando é
  * feito o click na ancora
+ *
  * @return String QueryString
  */
 DBLookUp.prototype.getQueryStringClick = function() {
 
   var sQuery  = "";
-      sQuery += this.oParametros.sArquivo;
-      sQuery += "?";
-      sQuery += "funcao_js=parent.DBLookUp.repository.getInstance("+this.iReferencia+").callBackClick";
-      sQuery += "|" + this.oInputID.lang;
-      sQuery += "|" + this.oInputDescricao.lang;
-  
+  sQuery += this.oParametros.sArquivo;
+  sQuery += "?";
+
+  if ( this.oParametros.aParametrosAdicionais.length > 0 ){
+    sQuery += this.oParametros.aParametrosAdicionais.join("&");
+    sQuery += "&";
+  }
+
+  sQuery += "funcao_js=parent.CurrentWindow.DBLookUp.repository.getInstance("+this.iReferencia+").callBackClick";
+  sQuery += "|" + (this.oInputID.lang        || this.oInputID.getAttribute('data')        || this.oInputID.id        || this.oInputID.name);
+  sQuery += "|" + (this.oInputDescricao.lang || this.oInputDescricao.getAttribute('data') || this.oInputDescricao.id || this.oInputDescricao.name);
+
   var sCampos = this.oParametros.aCamposAdicionais.join("|");
 
   if ( sCampos ) {
     sQuery += "|" + sCampos;
-  } 
+  }
 
   sQuery += this.oParametros.sQueryString ? "|" + this.oParametros.sQueryString : "";
 
-  return sQuery; 
-}
+  return sQuery;
+};
 
 /**
- * Monta a QueryString para quando é executado 
+ * Monta a QueryString para quando é executado
  * o Change no objeto oInputID
  * @return String QueryString
  */
@@ -122,39 +213,45 @@ DBLookUp.prototype.getQueryStringChange = function() {
       sQuery += "?";
       sQuery += "pesquisa_chave=" + this.oInputID.value;
       sQuery += "&";
-      sQuery += "funcao_js=parent.DBLookUp.repository.getInstance("+this.iReferencia+").callBackChange";
-  
-  var sCampos = this.oParametros.aCamposAdicionais.join("|");
 
-  if ( sCampos ) {
-    sQuery += "|" + sCampos;
-  } 
+      if ( this.oParametros.aParametrosAdicionais.length > 0 ){
+        sQuery += this.oParametros.aParametrosAdicionais.join("&");
+        sQuery += "&";
+      }
+
+      sQuery += "funcao_js=parent.CurrentWindow.DBLookUp.repository.getInstance("+this.iReferencia+").callBackChange";
 
   sQuery += this.oParametros.sQueryString;
 
-  return sQuery; 
-}
+  return sQuery;
+};
 
 /**
  * Trata o retorno do click na Ancora
- * @param  integer iCodigo
- * @param  string sDescricao
+ *
+ * @param iCodigo {Integer}
+ * @param sDescricao {String}
  */
 DBLookUp.prototype.callBackClick = function(iCodigo, sDescricao) {
 
   this.oInputID.value        = iCodigo;
   this.oInputDescricao.value = sDescricao;
-  var oObjetoLookUp          = eval(this.oParametros.sObjetoLookUp);
+  var prefixo                = !!this.oParametros.sDestinoLookUp ? this.oParametros.sDestinoLookUp + '.' : '';
+  var oObjetoLookUp          = eval(prefixo + this.oParametros.sObjetoLookUp);
+
   oObjetoLookUp.hide();
-   
-  this.oCallback.onClick();
-  return;
-}
+  this.oCallback.onClick(arguments);
+
+  if (this.oParametros.fCallBack) {
+    this.oParametros.fCallBack.apply(this.oParametros, arguments);
+  }
+
+};
 
 /**
  * Trata o retorno do change no objeto oInputID.
  * Percorre todos os arguments recebido pela função, pois não temos um padrão
- * de retorno dos dados, verificando qual deles é responsavel por informar 
+ * de retorno dos dados, verificando qual deles é responsavel por informar
  * a ocorrencia de erro e qual realmente é a string que deverá ser a descrição.
  */
 DBLookUp.prototype.callBackChange  = function() {
@@ -165,46 +262,66 @@ DBLookUp.prototype.callBackChange  = function() {
 
   for (var iArgumento = 0; iArgumento < aArgumentos.length; iArgumento++) {
 
-    if (typeof(aArgumentos[iArgumento]) == "boolean") {  
+    if (typeof(aArgumentos[iArgumento]) == "boolean") {
       lErro = aArgumentos[iArgumento];
-    };
-
-    if (typeof(aArgumentos[iArgumento]) == 'string' && sDescricao == null ) {
+    }
+      if (typeof(aArgumentos[iArgumento]) == 'string' && sDescricao == null) {
       sDescricao = aArgumentos[iArgumento];
-    };
-  };
-
+      }
+  }
+    this.oInputDescricao.value = sDescricao;
   if (lErro) {
-
     this.oInputID.value        = '';
-    this.oInputDescricao.value = sDescricao;
-  } else {
-    this.oInputDescricao.value = sDescricao;
-  };
+  }
 
-  this.oCallback.onChange(lErro);
+  if (this.oParametros.oBotaoParaDesabilitar != '') {
+    this.oParametros.oBotaoParaDesabilitar.disabled = false;
+  }
 
-  return;
+  this.oCallback.onChange(lErro, arguments);
+
+  if (this.oParametros.fCallBack) {
+    this.oParametros.fCallBack.apply(this.oParametros, arguments);
+  }
+
+
 };
 
 /**
  * Função responsável pela abertura da janela de pesquisa.
- * @param  boolean lAbre
+ * @param lAbre {Boolean}
  */
 DBLookUp.prototype.abrirJanela = function(lAbre){
-  
-  var sQueryString = '';
+
+    var sQueryString = '';
+
+  if (typeof lAbre == 'undefined') {
+    lAbre = true;
+  }
 
   if ( !this.oParametros.sArquivo ) {
     throw "Arquivo não pode ser vazio.";
-  };
+  }
+
+  if (this.oParametros.fnAbrirJanela) {
+
+    var camposAdicionais = this.oParametros.fnAbrirJanela.apply(this.oParametros, arguments);
+    if (camposAdicionais !== undefined && camposAdicionais !== null && camposAdicionais !== "") {
+      for (var filtro of camposAdicionais) {
+        this.oParametros.aParametrosAdicionais.push(filtro);
+      }
+    }
+  }
 
   if (lAbre) {
     sQueryString = this.getQueryStringClick();
   } else {
-    sQueryString = this.getQueryStringChange();
-  };
 
+    if (this.oParametros.oBotaoParaDesabilitar != '') {
+      this.oParametros.oBotaoParaDesabilitar.disabled = true;
+    }
+    sQueryString = this.getQueryStringChange();
+  }
   var oJanela = js_OpenJanelaIframe(
 
     this.oParametros.sDestinoLookUp,
@@ -214,13 +331,18 @@ DBLookUp.prototype.abrirJanela = function(lAbre){
     lAbre
   );
 
-  if ( oJanela ) {
-    oJanela.setAltura("calc(100% - 10px)");
-    oJanela.setLargura("calc(100% - 10px)");
-    oJanela.setPosY("0");
-  };
-};
+    if (oJanela.setAltura) {
+        oJanela.setAltura('calc(100% - 10px)');
+        oJanela.setLargura('calc(100% - 10px)');
+        oJanela.setPosY('5%');
+        oJanela.focus();
+    }
 
+  if ( this.oParametros.zIndex != null ) {
+    $('Jan' + this.oParametros.sObjetoLookUp).style.zIndex = this.oParametros.zIndex;
+  }
+
+};
 
 /**
  * Seta o arquivo responsável pela pesquisa
@@ -231,18 +353,18 @@ DBLookUp.prototype.setArquivo = function(sArquivo){
 };
 
 /**
- * Seta o nome do Label que será utilizado como 
- * titulo da janela de pesquisa
- * @param String sLabel
+ * Seta o nome do Label que será utilizado como titulo da janela de pesquisa
+ *
+ * @param sLabel {String}
  */
 DBLookUp.prototype.setLabel = function(sLabel){
   this.oParametros.sLabel = sLabel;
 };
 
 /**
- * Seta a query string que deverá ser utilizada 
- * na função de pesquisa.
- * @param String sQueryString
+ * Seta a query string que deverá ser utilizada na função de pesquisa.
+ *
+ * @param sQueryString {String}
  */
 DBLookUp.prototype.setQueryString = function(sQueryString){
   this.oParametros.sQueryString = sQueryString;
@@ -250,7 +372,8 @@ DBLookUp.prototype.setQueryString = function(sQueryString){
 
 /**
  * Seta o Destino da LookUp
- * @param String sDestinoLookUp
+ *
+ * @param sDestinoLookUp {String}
  */
 DBLookUp.prototype.setDestinoLookUp = function(sDestinoLookUp){
   this.oParametros.sDestinoLookUp = sDestinoLookUp;
@@ -258,7 +381,7 @@ DBLookUp.prototype.setDestinoLookUp = function(sDestinoLookUp){
 
 /**
  * Seta o nome do objeto que será utilizado na tela de pesquisa.
- * @param String sObjetoLookUp
+ * @param sObjetoLookUp {String}
  */
 DBLookUp.prototype.setObjetoLookUp = function(sObjetoLookUp){
   this.oParametros.sObjetoLookUp = sObjetoLookUp;
@@ -266,22 +389,29 @@ DBLookUp.prototype.setObjetoLookUp = function(sObjetoLookUp){
 
 /**
  * Seta os campos adicionais
- * @param array aCamposAdicionais
+ *
+ * @param CamposAdicionais {Array}
  */
 DBLookUp.prototype.setCamposAdicionais = function(aCamposAdicionais){
   this.oParametros.aCamposAdicionais = aCamposAdicionais;
 };
 
-
-
+DBLookUp.prototype.setParametrosAdicionais = function (aParametrosAdicionais) {
+  this.oParametros.aParametrosAdicionais = aParametrosAdicionais;
+};
 /**
  * Seta função de callBack.
- * @param string sEvento tipo do evendo (onChange ou onClick)
- * @param string fFuncao
+ *
+ * @param sEvento {String} tipo do evendo (onChange ou onClick)
+ * @param fFuncao {String}
  */
 DBLookUp.prototype.setCallBack = function(sEvento, fFuncao){
   this.oCallback[sEvento] = fFuncao;
-}
+};
+
+window.DBLookup        = CurrentWindow.DBLookUp || DBLookUp;
+window.Lookup          = CurrentWindow.DBLookUp || DBLookUp;
+CurrentWindow.DBLookUp = CurrentWindow.DBLookUp || DBLookUp;
 
 DBLookUp.repository = DBLookUp.repository || {};
 DBLookUp.repository = {
@@ -289,17 +419,50 @@ DBLookUp.repository = {
   "oInstances"  : DBLookUp.repository.oInstances || {},
 
   "iCounter"    : DBLookUp.repository.iCounter   || 0,
-  
-  "addInstance" : function( oDBLookUp ) { 
-  
-    if ( !( oDBLookUp instanceof DBLookUp ) ) {
-      throw('Objeto Inválido');
-    }
+
+  "addInstance" : function( oDBLookUp ) {
+
     var iNumeroInstancia = DBLookUp.repository.iCounter++;
     DBLookUp.repository.oInstances['DBLookUp'+ iNumeroInstancia] = oDBLookUp;
     return iNumeroInstancia;
   },
-  "getInstance" : function( iCodigo ) { 
+  "getInstance" : function( iCodigo ) {
     return DBLookUp.repository.oInstances["DBLookUp" + iCodigo];
   }
-}
+};
+
+DBLookUp.prototype.atualizarParametros = function(event) {
+
+    if (this.oParametros.atualizarParametros) {
+        const parametros = [];
+
+        try {
+            Array.from(document.querySelectorAll('[data-order]')).each(element => {
+                if (element.dataset.order > this.oInputID.dataset.order) {
+                    element.value = '';
+                } else {
+                    if (element.dataset.hasOwnProperty('identificador')) {
+                        if (element.dataset.hasOwnProperty('obrigatorio') && element.value === '') {
+                            if (!element.dataset.hasOwnProperty('label')) {
+                                console.error('*ATENÇÃO!* Quando usar data-obrigatorio no input, você deve informar também data-label para personalizar a mensagem.');
+                                throw 'Existem campos de preenchimento obrigatório';
+                            }
+
+                            throw `Você deve informar ${element.dataset.label}.`;
+                        }
+                        parametros.push(element.dataset.identificador + '=' + element.value);
+                    }
+                }
+            });
+        } catch (e) {
+            event.stopPropagation();
+            event.preventDefault();
+            alert(e);
+            return false
+        }
+
+        this.oParametros.aParametrosAdicionais = parametros.concat(this.oParametros.parametrosIniciais);
+    }
+
+    return true;
+};

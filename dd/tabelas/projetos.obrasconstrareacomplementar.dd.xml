@@ -1,0 +1,186 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010455' name='projetos.obrasconstrareacomplementar' description="Tabela para armazenar as áreas complementares" prefix="ob27" label="" type="0">
+  <fields>
+    <field codigo="1010559" 
+           campo_api='' 
+           name="ob27_sequencial" 
+           conteudo="int4" 
+           description="Campo responsável para armazenar o sequencial" 
+           inivalue="0" 
+           label="sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='projetos.obrasconstrareacomplementar_ob27_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010561" 
+           campo_api='' 
+           name="ob27_descricao" 
+           conteudo="varchar(100)" 
+           description="Campo responsável por armazenar a descrição da construção" 
+           inivalue="" 
+           label="descricao" 
+           size="100" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="descricao" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010562" 
+           campo_api='' 
+           name="ob27_medidaareacoberta" 
+           conteudo="float8" 
+           description="Campo responsável por armazenar a medida da área coberta" 
+           inivalue="0" 
+           label="medida area coberta" 
+           size="15" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="medida area coberta" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010563" 
+           campo_api='' 
+           name="ob27_medidaareadescoberta" 
+           conteudo="float8" 
+           description="Campo responsável por armazenar a medida área descoberta" 
+           inivalue="0" 
+           label="medida área descoberta" 
+           size="15" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="medida área descoberta" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010560" 
+           campo_api='' 
+           name="ob27_construcao" 
+           conteudo="int4" 
+           description="Campo responsável para armazenar a construção" 
+           inivalue="0" 
+           label="construcao" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="construcao" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010565" 
+           campo_api='' 
+           name="ob27_tipoconstrucao" 
+           conteudo="int4" 
+           description="Armazena o tipo da construcao" 
+           inivalue="0" 
+           label="tipo construcao" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="tipo construcao" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010566" 
+           campo_api='' 
+           name="ob27_tipolancamento" 
+           conteudo="int4" 
+           description="Armazena o tipo lancamento" 
+           inivalue="0" 
+           label="tipo lancamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="tipo lancamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010567" 
+           campo_api='' 
+           name="ob27_tipo" 
+           conteudo="int4" 
+           description="Armazena o tipo da construção complementar" 
+           inivalue="0" 
+           label="tipo" 
+           size="2" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="tipo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010564" 
+           campo_api='' 
+           name="ob27_ocupacao" 
+           conteudo="int4" 
+           description="Armazena a ocupação" 
+           inivalue="0" 
+           label="ocupacao" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="ocupacao" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="ob27_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="obrasconstr" inner='t'>
+      <fieldfk name="ob27_construcao" reference="ob08_codconstr" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

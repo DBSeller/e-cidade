@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_txossoariojazigo_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_sql.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_txossoariojazigo_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -68,7 +68,7 @@ if(isset($chavepesquisa)){
        }else{
             echo "<script>";
             echo " parent.document.formaba.a4.disabled=false; ";
-            echo " top.corpo.iframe_a4.location.href='cai3_gerfinanc002.php?numpre=6765503&tipo=".pg_result($result,0,"k00_tipo")."&emrec=".pg_result($result,0,"k00_emrec")."&agnum=".pg_result($result,0,"k00_agnum")."&agpar=".pg_result($result,0,"k00_agpar")."&certidao=&k03_tipo=&k00_tipo=".pg_result($result,0,"k00_tipo")."&db_datausu=".date('Y-m-d',db_getsession("DB_datausu"))."'";
+            echo " (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href='cai3_gerfinanc002.php?numpre=6765503&tipo=".pg_result($result,0,"k00_tipo")."&emrec=".pg_result($result,0,"k00_emrec")."&agnum=".pg_result($result,0,"k00_agnum")."&agpar=".pg_result($result,0,"k00_agpar")."&certidao=&k03_tipo=&k00_tipo=".pg_result($result,0,"k00_tipo")."&db_datausu=".date('Y-m-d',db_getsession("DB_datausu"))."'";
             echo "</script>";
        }
    }else{

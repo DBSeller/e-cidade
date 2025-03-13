@@ -8,7 +8,7 @@
   "informe_aproveitamento_disciplina" : "Deve ser informado o aproveitamento para a disciplina.",
   "informe_justificativa_amparo"      : "Deve ser informada justificativa para amparo na disciplina.",
   "resultado_final_aprovado"          : "O resultado final da etapa é Aprovado. Portanto, o resultado da disciplina deve estar como Aprovado.",
-  "situacao_aprovado"                 : "Situação está como Aprovado, mas a nota informada é menor que o mínimo para aprovação: [sNotaMinima]",
+  "situacao_aprovado"                 : "Situação está como Aprovado, mas a nota informada é menor que o mínimo para aprovação: [sNotaMinima] \nDeseja continuar?",
   "situacao_reprovado"                : "Situação está como Reprovado, mas a nota informada é maior ou igual ao mínimo para aprovação: [sNotaMinima]",
   "valor_invalido_carga_horaria"      : "Valor inválido para carga horária.",
   "salvando_disciplina"               : "Aguarde, salvando dados da disciplina...",

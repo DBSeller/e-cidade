@@ -58,7 +58,7 @@ db_input('ve11_descr',40,$Ive11_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veiccaditensobrigtipobaixa','func_veiccaditensobrigtipobaixa.php?funcao_js=parent.js_preenchepesquisa|ve11_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccaditensobrigtipobaixa','func_veiccaditensobrigtipobaixa.php?funcao_js=parent.js_preenchepesquisa|ve11_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiccaditensobrigtipobaixa.hide();

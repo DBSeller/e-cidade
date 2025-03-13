@@ -22,14 +22,14 @@ class AgataMergePdf extends AgataMerge
         $this->Pages['Letter']    = array(612, 790);
         $this->Pages['Legal']     = array(612, 1009);
         
-        $this->PageFormat  = $this->XmlArray['Report']['Merge']['PageSetup']['Format']      ? $this->XmlArray['Report']['Merge']['PageSetup']['Format']         : 'A4';
-        $this->Orientation = $this->XmlArray['Report']['Merge']['PageSetup']['Orientation'] ? $this->XmlArray['Report']['Merge']['PageSetup']['Orientation']    : 'portrait';
-        $this->LeftMargin  = $this->XmlArray['Report']['Merge']['PageSetup']['LeftMargin']  ? $this->XmlArray['Report']['Merge']['PageSetup']['LeftMargin']     : 0;
-        $this->TopMargin   = $this->XmlArray['Report']['Merge']['PageSetup']['TopMargin']   ? $this->XmlArray['Report']['Merge']['PageSetup']['TopMargin']      : 0;
-        $this->RightMargin = $this->XmlArray['Report']['Merge']['PageSetup']['RightMargin'] ? $this->XmlArray['Report']['Merge']['PageSetup']['RightMargin']    : 0;
-        $this->FooterMargin= $this->XmlArray['Report']['Merge']['PageSetup']['BottomMargin']? $this->XmlArray['Report']['Merge']['PageSetup']['BottomMargin']   : 10;
-        $this->FooterHeight= $this->XmlArray['Report']['Merge']['PageSetup']['FooterHeight']? $this->XmlArray['Report']['Merge']['PageSetup']['FooterHeight']   : 0;
-        $this->ShowFooter  = $this->XmlArray['Report']['Merge']['Config']['ShowFooter']     ? $this->XmlArray['Report']['Merge']['Config']['ShowFooter']        : FALSE;
+        $this->PageFormat   = ( isset($this->XmlArray['Report']['Merge']['PageSetup']['Format'])        && ! empty($this->XmlArray['Report']['Merge']['PageSetup']['Format']) )       ? $this->XmlArray['Report']['Merge']['PageSetup']['Format']         : 'A4';
+        $this->Orientation  = ( isset($this->XmlArray['Report']['Merge']['PageSetup']['Orientation'])   && ! empty($this->XmlArray['Report']['Merge']['PageSetup']['Orientation']) )  ? $this->XmlArray['Report']['Merge']['PageSetup']['Orientation']    : 'portrait';
+        $this->LeftMargin   = ( isset($this->XmlArray['Report']['Merge']['PageSetup']['LeftMargin'])    && ! empty($this->XmlArray['Report']['Merge']['PageSetup']['LeftMargin']) )   ? $this->XmlArray['Report']['Merge']['PageSetup']['LeftMargin']     : 0;
+        $this->TopMargin    = ( isset($this->XmlArray['Report']['Merge']['PageSetup']['TopMargin'])     && ! empty($this->XmlArray['Report']['Merge']['PageSetup']['TopMargin']) )    ? $this->XmlArray['Report']['Merge']['PageSetup']['TopMargin']      : 0;
+        $this->RightMargin  = ( isset($this->XmlArray['Report']['Merge']['PageSetup']['RightMargin'])   && ! empty($this->XmlArray['Report']['Merge']['PageSetup']['RightMargin']) )  ? $this->XmlArray['Report']['Merge']['PageSetup']['RightMargin']    : 0;
+        $this->FooterMargin = ( isset($this->XmlArray['Report']['Merge']['PageSetup']['BottomMargin'])  && ! empty($this->XmlArray['Report']['Merge']['PageSetup']['BottomMargin']) ) ? $this->XmlArray['Report']['Merge']['PageSetup']['BottomMargin']   : 10;
+        $this->FooterHeight = ( isset($this->XmlArray['Report']['Merge']['PageSetup']['FooterHeight'])  && ! empty($this->XmlArray['Report']['Merge']['PageSetup']['FooterHeight']) ) ? $this->XmlArray['Report']['Merge']['PageSetup']['FooterHeight']   : 0;
+        $this->ShowFooter   = ( isset($this->XmlArray['Report']['Merge']['Config']['ShowFooter'])       && ! empty($this->XmlArray['Report']['Merge']['Config']['ShowFooter']) )      ? $this->XmlArray['Report']['Merge']['Config']['ShowFooter']        : FALSE;
         
         if (!$this->ShowFooter)
         {
@@ -48,7 +48,7 @@ class AgataMergePdf extends AgataMerge
         Wait::On();
         $FileName = $this->FileName;
 
-        $this->PDF = &new FPDF($this->Orientation, 'pt', $this->PageFormat);
+        $this->PDF = new FPDF($this->Orientation, 'pt', $this->PageFormat);
         $this->PDF->SetAutoPageBreak(true);
         $this->PDF->SetMargins($this->LeftMargin,$this->TopMargin,$this->RightMargin);
         $this->PDF->SetCreator('Agata Report');
@@ -96,8 +96,8 @@ class AgataMergePdf extends AgataMerge
             
             if ($this->posAction)
             {
-                $obj = &$this->posAction[0];
-                $att = &$this->posAction[1];
+                $obj = $this->posAction[0];
+                $att = $this->posAction[1];
                 
                 $obj->{$att}();
             }
@@ -157,7 +157,7 @@ class AgataMergePdf extends AgataMerge
             {
                 $lineN ++;
                 $page = $this->page;
-                $Line = ereg_replace("\"", "\\\"", $Line);
+                $Line = preg_replace("/\"/", "\\\"", $Line);
                 eval ("\$Line = \"$Line\";");
             }
 
@@ -264,7 +264,7 @@ class AgataMergePdf extends AgataMerge
                 $counter = $i;
                 foreach ($Lines as $Line)
                 {
-                    $Line = ereg_replace("\"", "\\\"", $Line);
+                    $Line = preg_replace("/\"/", "\\\"", $Line);
                     foreach ($replace as $this_text =>$that_text)
                     {
                         $Line = str_replace($this_text, $that_text, $Line);

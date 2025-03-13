@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_cgm_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_cgm_classe.php"));
 
 $clcgm    = new cl_cgm;
 $clrotulo = new rotulocampo;
@@ -35,13 +35,31 @@ $clrotulo->label("t64_class"); //classificação
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
-if(isset($matric)){
+$sqlCondCgm = "";
+
+if (isset($matric)) {
+  
 	$from = "arrematric";
-}else if(isset($inscr)){
+  $sqlCgmMat = "select rinumcgm as j01_numcgm
+                  from fc_busca_envolvidos(true, 
+                                           (select db21_regracgmiptu from db_config where codigo = ".db_getsession('DB_instit')."), 
+                                           'M', 
+                                           ".$matric.")";
+
+  $rsCgmMat = db_query($sqlCgmMat);
+  $iCgmMat = \db_utils::fieldsMemory($rsCgmMat, 0)->j01_numcgm;
+
+} else if(isset($inscr)) {
 	$from = "arreinscr";
-}else{
+	$sqlCgmIns = "SELECT q02_numcgm FROM  issbase  WHERE  q02_inscr  = ". $inscr;
+    $rsCgmIns  = db_query($sqlCgmIns);
+    $iCgmIncs  = \db_utils::fieldsMemory($rsCgmIns, 0)->q02_numcgm;
+
+} else{
 	$from = "arrenumcgm";
+	$sqlCondCgm = "AND q.k00_numcgm = {$numcgm}";
 }
+
 
 $sql = "select distinct p.k00_numpre                 as numpre,
                p.k00_numpar                          as par,
@@ -49,7 +67,7 @@ $sql = "select distinct p.k00_numpre                 as numpre,
                p.k00_dtvenc                          as venc,
                p.k00_hist                            as hist,
                p.k00_receit                          as rec,
-               p.k00_numcgm                          as numcgm1,
+               q.k00_numcgm                          as numcgm1,
                p.k00_valor                           as valor,
                k02_drecei                            as descrec,
                k01_descr                             as deschis,
@@ -61,7 +79,10 @@ $sql = "select distinct p.k00_numpre                 as numpre,
                login        as usuario  ,
                cancdebitosreg.k21_codigo                            
         from $from o
+         inner join arrenumcgm q               on q.k00_numpre  = o.k00_numpre  $sqlCondCgm  
+				 
 				 inner join arrecant p                 on p.k00_numpre                          = o.k00_numpre
+				 
 				 inner join arreinstit                 on arreinstit.k00_numpre                 = p.k00_numpre 
 						                                      and arreinstit.k00_instit                 =	".db_getsession('DB_instit')."
                  left join cancdebitosreg     on cancdebitosreg.k21_numpre             = p.k00_numpre 
@@ -85,9 +106,9 @@ $sql = "select distinct p.k00_numpre                 as numpre,
 if(isset($numcgm)) {
   $sql = $sql . " where o.k00_numcgm = ".$numcgm;
 }else if(isset($matric)){
-  $sql = $sql . " where k00_matric = ".$matric;
+  $sql = $sql . " where k00_matric = ".$matric.  " AND q.k00_numcgm =". $iCgmMat;
 }else if(isset($inscr)){
-  $sql = $sql . " where k00_inscr = ".$inscr;
+  $sql = $sql . " where k00_inscr = ".$inscr. " AND q.k00_numcgm=" .$iCgmIncs;
 } else {
   $sql = $sql . " where p.k00_numpre = ".$numpre;
 }
@@ -108,6 +129,8 @@ $sql = $sql . " and a.k00_numpre is null
 if(!isset($numcgm) && !isset($matric) && !isset($inscr) && !isset($numpre)) {
   db_redireciona("db_erros.php?fechar=true&db_erro=Sem parâmetros para impressão");
 }
+
+
 $result  = db_query($sql);
 $numrows = pg_numrows($result);
 
@@ -121,7 +144,7 @@ $result_cgm = $clcgm->sql_record($sSqlCgm);
 if ($clcgm->numrows == 0){
   db_redireciona("db_erros.php?fechar=true&db_erro=CGM não encontrado");
 } else {
-  
+
   db_fieldsmemory($result_cgm,0);
   $head2 = "CANCELAMENTOS EFETUADOS";
   if(isset($dataini)){

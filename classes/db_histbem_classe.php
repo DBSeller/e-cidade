@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -90,7 +90,7 @@ class cl_histbem {
        }
        $this->t56_depart = ($this->t56_depart == ""?@$GLOBALS["HTTP_POST_VARS"]["t56_depart"]:$this->t56_depart);
        $this->t56_situac = ($this->t56_situac == ""?@$GLOBALS["HTTP_POST_VARS"]["t56_situac"]:$this->t56_situac);
-       $this->t56_histor = ($this->t56_histor == ""?@$GLOBALS["HTTP_POST_VARS"]["t56_histor"]:$this->t56_histor);
+       $this->t56_histor = pg_escape_string(($this->t56_histor == ""?@$GLOBALS["HTTP_POST_VARS"]["t56_histor"]:$this->t56_histor));
      }else{
        $this->t56_histbem = ($this->t56_histbem == ""?@$GLOBALS["HTTP_POST_VARS"]["t56_histbem"]:$this->t56_histbem);
      }

@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_utils.php");
-include("classes/db_procjurjudicialadvog_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_utils.php"));
+include(modification("classes/db_procjurjudicialadvog_classe.php"));
 
 $oGet = db_utils::postmemory($_GET);
 $clprocjurjudicialadvog = new cl_procjurjudicialadvog();

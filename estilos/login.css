@@ -168,6 +168,26 @@ body.imagem04 {
   text-shadow: 0px 0px 4px rgba(150, 150, 150, 1);
 }
 
+.access-fields .btn-login {
+  margin-left: 17%;
+  width: 280px;
+  clear: both;
+  display: block;
+  height: 30px;
+  color:#FFFFFF;
+  font-weight: bold;
+
+  background-color: #79aedb;
+  border-color: #578ebc;
+  border-style: solid;
+
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  border-radius: 7px;
+
+  text-shadow: 0px 0px 4px rgba(150, 150, 150, 1); 
+}
+
 .primeiroAcesso .access-fields input[type="button"] {
   margin-left: 35%;
 }
@@ -296,6 +316,29 @@ body.imagem04 {
 
 .text-left {
   text-align: left !important;
+}
+
+.avisoFirefox {
+
+  background-color: #E1DEDE;
+  border-radius: 25px 25px 25px 25px;
+  box-shadow: 15px 15px 20px 0 rgba(50, 50, 50, 0.82);
+  display: none;
+  margin-top: -250px;
+  padding: 70px;
+  font-size: large;
+  text-align:justify;
+  position: absolute;
+  top: 50%;
+  left:5%;
+  width: 800px;
+  opacity: 0.8;
+}
+
+@media screen and (min-width: 900px) {
+     .avisoFirefox {
+      width:540px;
+ }
 }
 
 /**

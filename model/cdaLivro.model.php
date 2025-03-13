@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,7 +28,7 @@
 
 /**
  * @desc Livros de Certidoes de divida ativa
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.10 $
  */
 class cdaLivro {
   
@@ -82,7 +82,7 @@ class cdaLivro {
    */
   public function __construct($iInstit, $numeroLivro) {
 
-     require_once("classes/db_certidlivro_classe.php");
+     require_once(modification("classes/db_certidlivro_classe.php"));
      $this->oDaoCertidLivro = new cl_certidlivro;
      $this->iInstituicao    = $iInstit;
      
@@ -152,7 +152,7 @@ class cdaLivro {
       $iProximaPagina     = 1;  
       $sWhere             = "v26_certidlivro = ".$this->getCodigoLivro();
       $sWhere            .= "group by v26_numerofolha";
-      require_once('classes/db_certidlivrofolha_classe.php');
+      require_once(modification('classes/db_certidlivrofolha_classe.php'));
       $oDaoCDALivroFolha  = new cl_certidlivrofolha();
       $sSqlProximaFolha   = $oDaoCDALivroFolha->sql_query_file(null,
                                                               "count(*) as total_cdas, 
@@ -276,7 +276,7 @@ class cdaLivro {
     $sWhere  .= "  and (certter.v14_certid is not null or certdiv.v14_certid is not null)";  
     $sSqlCDA  = $this->oDaoCertidLivro->sql_query_livro(null,"distinct v13_certid", "v13_certid", $sWhere);
     $rsCda    = $this->oDaoCertidLivro->sql_record($sSqlCDA);
-    $aCDAs    = db_utils::getColectionByRecord($rsCda);
+    $aCDAs    = db_utils::getCollectionByRecord($rsCda);
     if (count($aCDAs) == 0) {
        throw new Exception("Não Existem CDA's para adicionar ao Livro {$this->iNumeroLivro}.");
     }
@@ -306,7 +306,7 @@ class cdaLivro {
   
   public function getTotalCdaPorPagina($iNumeroPagina) {
     
-    require_once('classes/db_certidlivrofolha_classe.php');
+    require_once(modification('classes/db_certidlivrofolha_classe.php'));
     $oDaoCDALivroFolha  = new cl_certidlivrofolha();
     $sSqlTotalCDA       = $oDaoCDALivroFolha->sql_query_file(null,
                                                              "coalesce(count(*),0) as total_cdas",

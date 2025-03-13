@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,25 +28,38 @@
 
 ini_set('error_reporting', 0);
 
-include("fpdf151/pdf.php");
-include("libs/db_libtributario.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_libtributario.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 
-$geracalculo = false;
+$dadosBic = array();
 
 if(isset($par)){
   $parametro = split("_",$par);
   $tipo = 2;
   $geracalculo = true;
 }
+
+if(isset($sigiloso)) {
+  $dadosBic['sigiloso'] = $sigiloso;
+}
+
+if(isset($imprimevenais)) {
+  $dadosBic['venais'] = $imprimevenais;
+}
+
+if(isset($geracalculo)) {
+  $dadosBic['geraCalculo'] = $geracalculo;
+}
+
 //print_r($par);
 
 $pdf = new PDF();
 $pdf->Open();
 $pdf->AliasNbPages();
-//require("libs/db_conectapdf.php");
-require_once("fpdf151/pdf.php");
-db_emitebic($parametro,$pdf, $tipo,$geracalculo);
+//require(modification("libs/db_conectapdf.php"));
+require_once(modification("fpdf151/pdf.php"));
+db_emitebic($parametro,$pdf, $tipo,$geracalculo, $dadosBic);
 $pdf->Output();
 ?>

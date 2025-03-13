@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
 
 $cllevanta            = db_utils::getDao('levanta');
 $clautolevanta        = db_utils::getDao('autolevanta');
@@ -96,6 +96,7 @@ if ( isset($importar) ) {
 
         $result = $cllevvalor->sql_record($cllevvalor->sql_query_file(null,"y63_ano as min_ano,y63_mes as min_mes","y63_ano asc,y63_mes asc ","y63_codlev=$y60_codlev"));
         db_fieldsmemory($result,0);
+
 
         $arr = array();
         $cont = 0;
@@ -251,15 +252,58 @@ if ( isset($importar) ) {
     }
 
     $parc   = 0;
-    $numpre = $clnumpref->sql_numpre();
-    for($i=0; $i<$numrows; $i++){
+    $dataOperacao = null;
 
+    for($i=0; $i<$numrows; $i++){
+      
       if($sqlerro == true){
         break;
       }
 
       db_fieldsmemory($resultado,$i);
+
+      if ($anoAnterior != $y63_ano) {
+          $anoAnterior = $y63_ano;
+          $parc = 0;
+          $numtot = 0;
+          $numpre = $clnumpref->sql_numpre();
+          $levantamentos = db_utils::getCollectionByRecord($resultado);
+
+          foreach ($levantamentos as $levantamento){
+              if ($levantamento->y63_ano == $y63_ano) {
+                  $numtot++;
+              }
+          }
+      }
+
       $parc++;
+ 
+      /* Regra: Se existir mais de um movimento na mesma competência do levatamento, utilizamos o contador de parcela.
+                Caso contrário, utilizamos o mês da competência como número da parcela.
+                A busca abaixo usa somente o codlev como filtro, pois pode ser em qualquer ano/mes do levantamento.
+      */
+      $sSqlTotParComp = "select coalesce(tot_par_comp, 1) as tot_par_comp
+                           from (select y63_ano, 
+                                        y63_mes, 
+                                        count(*) as tot_par_comp 
+                                  from levvalor 
+                                 where y63_codlev = $y60_codlev
+                                 group by y63_ano, y63_mes 
+                                 order by y63_ano,
+                                          y63_mes) as x order by tot_par_comp desc limit 1";
+
+      $resultTotParComp = db_query($sSqlTotParComp);
+
+      //db_criatabela($resultTotParComp);
+
+      if($tot_par_comp == 1) {
+          $parc = $y63_mes; /* M18617 - Deixar numpar = mês competência */
+      }
+      
+      //dump($parc, $y63_ano, $y63_mes, 'ANALISANDO...');
+
+      db_fieldsmemory($resultTotParComp,0);
+      
       if($sqlerro == false){
 
         $clissvar->q05_numpre=$numpre;
@@ -388,9 +432,7 @@ if ( isset($importar) ) {
         $result77 = $clcadvenc->sql_record($clcadvenc->sql_query_file($q60_codvencvar,$y63_mes,"q82_venc,q82_hist"));
         db_fieldsmemory($result77,0);
         $clarrecad->k00_hist = $q82_hist;
-        if($y63_ano == db_getsession("DB_anousu")){
-          $clarrecad->k00_dtvenc="$y63_dtvenc";
-        }else{
+        if($y63_ano != db_getsession("DB_anousu")){
 
           $res = $cldb_confplan->sql_record($cldb_confplan->sql_query());
           if($cldb_confplan->numrows > 0){
@@ -408,13 +450,33 @@ if ( isset($importar) ) {
             $qmes = 1;
             $qano += 1;
           }
-          $clarrecad->k00_dtvenc="$y63_dtvenc";
+
         }
 
-        $arr = split  ("-",$clarrecad->k00_dtvenc);
-
+        /**
+         *  paramentro : $y32_tipodataoperacao (1=igual data vencimento, 2=igual data levantamento)
+        **/
+        $dDataOperParam = $y63_dtvenc;
+        if ($y32_tipodataoperacao == 2 && isset($y60_data)) {
+          $dDataOperParam    = $y60_data;
+        }
+        
+        /**
+         *  parametro: $y32_tipodatavencimento (1=igual data de vencimento do levantamento, 2=igual data vencimento do auto
+         *  de infracao)
+         **/
+        $dDataVencParam = $y63_dtvenc;
+        if ($y32_tipodatavencimento == 2) {
+           $resultAuto  =  $clautolevanta->sql_record($clautolevanta->sql_query(null,"y50_codauto, y50_dtvenc, y117_sequencial, y117_levanta,y117_auto","y117_sequencial desc limit 1","y117_levanta=$y60_codlev"));
+           if ($clautolevanta->numrows > 0){
+              db_fieldsmemory($resultAuto,0);
+              $dDataVencParam = $y50_dtvenc;
+           }
+        }
+        //dd($y60_data, $dDataOperParam, $dDataVencParam) ;
+        $clarrecad->k00_dtvenc="$dDataVencParam";
         $clarrecad->k00_numcgm=$z01_numcgm;
-        $clarrecad->k00_dtoper= $arr[0]."-".$arr[1]."-01";
+        $clarrecad->k00_dtoper= $dDataOperParam;
         $clarrecad->k00_valor=$y63_saldo;
         $clarrecad->k00_numpre=$numpre;
         $clarrecad->k00_numtot=1;
@@ -429,7 +491,7 @@ if ( isset($importar) ) {
         }
       }
     }
-
+    //dd('PAREI');
     db_fim_transacao($sqlerro);
   }else{
     db_msgbox("Não existem fiscais cadastrados para o levantamento!!Exportação Cancelada!!");
@@ -495,9 +557,9 @@ if ( isset($importar) ) {
 function js_pesquisaTipo(lMostra) {
 
   if (lMostra) {
-    js_OpenJanelaIframe("top.corpo","db_iframe_arretipo_nova","func_arretipo_nova.php?k03_tipo=3,10,11&funcao_js=parent.js_preencheTipo|k00_tipo|k00_descr","Pesquisa",true);
+    js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_arretipo_nova","func_arretipo_nova.php?k03_tipo=3,10,11&funcao_js=parent.js_preencheTipo|k00_tipo|k00_descr","Pesquisa",true);
   } else {
-    js_OpenJanelaIframe("top.corpo","db_iframe_arretipo_nova","func_arretipo_nova.php?k03_tipo=3,10,11&funcao_js=parent.js_preencheTipo1&pesquisa_chave="+document.form1.k00_tipo.value,"Pesquisa",false);
+    js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_arretipo_nova","func_arretipo_nova.php?k03_tipo=3,10,11&funcao_js=parent.js_preencheTipo1&pesquisa_chave="+document.form1.k00_tipo.value,"Pesquisa",false);
   }
  }
 
@@ -533,12 +595,12 @@ function js_Exportar(){
 function js_lev(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_levanta02.php?funcao_js=parent.js_mostralev1|y60_codlev|DBtxtnome_origem','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_levanta02.php?funcao_js=parent.js_mostralev1|y60_codlev|DBtxtnome_origem','Pesquisa',true);
   }else{
 
     lev = document.form1.y60_codlev.value;
     if(lev != ''){
-      js_OpenJanelaIframe('top.corpo','db_iframe','func_levanta02.php?pesquisa_chave='+lev+'&funcao_js=parent.js_mostralev','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_levanta02.php?pesquisa_chave='+lev+'&funcao_js=parent.js_mostralev','Pesquisa',false);
     }else{
       document.form1.z01_nome.value='';
     }
@@ -574,7 +636,7 @@ function js_mostralev1(chave1,chave2){
 
 function js_verificaVinculoLevantamentoAuto (y60_codlev) {
   if (y60_codlev != "") {
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_autolevanta.php?y117_levanta='+y60_codlev+'&lovrot=false&funcao_js=parent.js_mostraTipoDebito','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_autolevanta.php?y117_levanta='+y60_codlev+'&lovrot=false&funcao_js=parent.js_mostraTipoDebito','Pesquisa',false);
   }
 }
 

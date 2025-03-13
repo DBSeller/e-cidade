@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -57,6 +57,7 @@ class cl_edu_parametros {
    var $ed233_formalancamentoparecer = 0; 
    var $ed233_bloqueioalteracaoavaliacao = 'f'; 
    var $ed233_reclassificaetapaanterior = 'f'; 
+   var $ed233_apresentarnotaproporcional = 'f'; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  ed233_i_codigo = int8 = Código 
@@ -74,6 +75,7 @@ class cl_edu_parametros {
                  ed233_formalancamentoparecer = int4 = Forma de Lançamento do Parecer 
                  ed233_bloqueioalteracaoavaliacao = bool = Bloquear Alteração das Avaliações 
                  ed233_reclassificaetapaanterior = bool = Reclassifica para Etapa Anterior 
+                 ed233_apresentarnotaproporcional = bool = Apresentar nota proporcional 
                  ";
    //funcao construtor da classe 
    function cl_edu_parametros() { 
@@ -108,11 +110,12 @@ class cl_edu_parametros {
        $this->ed233_formalancamentoparecer = ($this->ed233_formalancamentoparecer == ""?@$GLOBALS["HTTP_POST_VARS"]["ed233_formalancamentoparecer"]:$this->ed233_formalancamentoparecer);
        $this->ed233_bloqueioalteracaoavaliacao = ($this->ed233_bloqueioalteracaoavaliacao == "f"?@$GLOBALS["HTTP_POST_VARS"]["ed233_bloqueioalteracaoavaliacao"]:$this->ed233_bloqueioalteracaoavaliacao);
        $this->ed233_reclassificaetapaanterior = ($this->ed233_reclassificaetapaanterior == "f"?@$GLOBALS["HTTP_POST_VARS"]["ed233_reclassificaetapaanterior"]:$this->ed233_reclassificaetapaanterior);
+       $this->ed233_apresentarnotaproporcional = ($this->ed233_apresentarnotaproporcional == "f"?@$GLOBALS["HTTP_POST_VARS"]["ed233_apresentarnotaproporcional"]:$this->ed233_apresentarnotaproporcional);
      }else{
        $this->ed233_i_codigo = ($this->ed233_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed233_i_codigo"]:$this->ed233_i_codigo);
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir ($ed233_i_codigo){ 
       $this->atualizacampos();
      if($this->ed233_i_escola == null ){ 
@@ -235,6 +238,15 @@ class cl_edu_parametros {
      if($this->ed233_reclassificaetapaanterior == null ){ 
        $this->ed233_reclassificaetapaanterior = "f";
      }
+     if($this->ed233_apresentarnotaproporcional == null ){ 
+       $this->erro_sql = " Campo Apresentar nota proporcional não informado.";
+       $this->erro_campo = "ed233_apresentarnotaproporcional";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
      if($ed233_i_codigo == "" || $ed233_i_codigo == null ){
        $result = db_query("select nextval('edu_parametros_ed233_i_codigo_seq')"); 
        if($result==false){
@@ -260,7 +272,7 @@ class cl_edu_parametros {
        }
      }
      if(($this->ed233_i_codigo == null) || ($this->ed233_i_codigo == "") ){ 
-       $this->erro_sql = " Campo ed233_i_codigo nao declarado.";
+       $this->erro_sql = " Campo ed233_i_codigo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -283,6 +295,7 @@ class cl_edu_parametros {
                                       ,ed233_formalancamentoparecer 
                                       ,ed233_bloqueioalteracaoavaliacao 
                                       ,ed233_reclassificaetapaanterior 
+                                      ,ed233_apresentarnotaproporcional 
                        )
                 values (
                                 $this->ed233_i_codigo 
@@ -300,17 +313,18 @@ class cl_edu_parametros {
                                ,$this->ed233_formalancamentoparecer 
                                ,'$this->ed233_bloqueioalteracaoavaliacao' 
                                ,'$this->ed233_reclassificaetapaanterior' 
+                               ,'$this->ed233_apresentarnotaproporcional' 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Parâmetros da Educação ($this->ed233_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Parâmetros da Educação ($this->ed233_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Parâmetros da Educação já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Parâmetros da Educação ($this->ed233_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Parâmetros da Educação ($this->ed233_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -319,7 +333,7 @@ class cl_edu_parametros {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->ed233_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -351,12 +365,13 @@ class cl_edu_parametros {
          $resac = db_query("insert into db_acount values($acount,2019,19274,'','".AddSlashes(pg_result($resaco,0,'ed233_formalancamentoparecer'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,2019,19995,'','".AddSlashes(pg_result($resaco,0,'ed233_bloqueioalteracaoavaliacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,2019,20359,'','".AddSlashes(pg_result($resaco,0,'ed233_reclassificaetapaanterior'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2019,21940,'','".AddSlashes(pg_result($resaco,0,'ed233_apresentarnotaproporcional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
    } 
    // funcao para alteracao
-   function alterar ($ed233_i_codigo=null) { 
+   public function alterar ($ed233_i_codigo=null) { 
       $this->atualizacampos();
      $sql = " update edu_parametros set ";
      $virgula = "";
@@ -546,6 +561,19 @@ class cl_edu_parametros {
        $sql  .= $virgula." ed233_reclassificaetapaanterior = '$this->ed233_reclassificaetapaanterior' ";
        $virgula = ",";
      }
+     if(trim($this->ed233_apresentarnotaproporcional)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed233_apresentarnotaproporcional"])){ 
+       $sql  .= $virgula." ed233_apresentarnotaproporcional = '$this->ed233_apresentarnotaproporcional' ";
+       $virgula = ",";
+       if(trim($this->ed233_apresentarnotaproporcional) == null ){ 
+         $this->erro_sql = " Campo Apresentar nota proporcional não informado.";
+         $this->erro_campo = "ed233_apresentarnotaproporcional";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
      if($ed233_i_codigo!=null){
        $sql .= " ed233_i_codigo = $this->ed233_i_codigo";
@@ -555,68 +583,70 @@ class cl_edu_parametros {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->ed233_i_codigo));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,11720,'$this->ed233_i_codigo','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_i_codigo"]) || $this->ed233_i_codigo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_i_codigo"]) || $this->ed233_i_codigo != "")
              $resac = db_query("insert into db_acount values($acount,2019,11720,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_i_codigo'))."','$this->ed233_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_i_escola"]) || $this->ed233_i_escola != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_i_escola"]) || $this->ed233_i_escola != "")
              $resac = db_query("insert into db_acount values($acount,2019,11721,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_i_escola'))."','$this->ed233_i_escola',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_decimais"]) || $this->ed233_c_decimais != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_decimais"]) || $this->ed233_c_decimais != "")
              $resac = db_query("insert into db_acount values($acount,2019,11722,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_c_decimais'))."','$this->ed233_c_decimais',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_notabranca"]) || $this->ed233_c_notabranca != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_notabranca"]) || $this->ed233_c_notabranca != "")
              $resac = db_query("insert into db_acount values($acount,2019,11853,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_c_notabranca'))."','$this->ed233_c_notabranca',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_f_medidaaluno"]) || $this->ed233_f_medidaaluno != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_f_medidaaluno"]) || $this->ed233_f_medidaaluno != "")
              $resac = db_query("insert into db_acount values($acount,2019,13456,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_f_medidaaluno'))."','$this->ed233_f_medidaaluno',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_limitemov"]) || $this->ed233_c_limitemov != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_limitemov"]) || $this->ed233_c_limitemov != "")
              $resac = db_query("insert into db_acount values($acount,2019,13632,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_c_limitemov'))."','$this->ed233_c_limitemov',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_database"]) || $this->ed233_c_database != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_database"]) || $this->ed233_c_database != "")
              $resac = db_query("insert into db_acount values($acount,2019,13761,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_c_database'))."','$this->ed233_c_database',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_consistirmat"]) || $this->ed233_c_consistirmat != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_consistirmat"]) || $this->ed233_c_consistirmat != "")
              $resac = db_query("insert into db_acount values($acount,2019,15465,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_c_consistirmat'))."','$this->ed233_c_consistirmat',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_avalalternativa"]) || $this->ed233_c_avalalternativa != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_c_avalalternativa"]) || $this->ed233_c_avalalternativa != "")
              $resac = db_query("insert into db_acount values($acount,2019,17114,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_c_avalalternativa'))."','$this->ed233_c_avalalternativa',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_i_idadevotacao"]) || $this->ed233_i_idadevotacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_i_idadevotacao"]) || $this->ed233_i_idadevotacao != "")
              $resac = db_query("insert into db_acount values($acount,2019,17456,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_i_idadevotacao'))."','$this->ed233_i_idadevotacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_i_habilitaordemalfabeticaturma"]) || $this->ed233_i_habilitaordemalfabeticaturma != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_i_habilitaordemalfabeticaturma"]) || $this->ed233_i_habilitaordemalfabeticaturma != "")
              $resac = db_query("insert into db_acount values($acount,2019,17603,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_i_habilitaordemalfabeticaturma'))."','$this->ed233_i_habilitaordemalfabeticaturma',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_deslocamentocursor"]) || $this->ed233_deslocamentocursor != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_deslocamentocursor"]) || $this->ed233_deslocamentocursor != "")
              $resac = db_query("insert into db_acount values($acount,2019,18555,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_deslocamentocursor'))."','$this->ed233_deslocamentocursor',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_formalancamentoparecer"]) || $this->ed233_formalancamentoparecer != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_formalancamentoparecer"]) || $this->ed233_formalancamentoparecer != "")
              $resac = db_query("insert into db_acount values($acount,2019,19274,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_formalancamentoparecer'))."','$this->ed233_formalancamentoparecer',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_bloqueioalteracaoavaliacao"]) || $this->ed233_bloqueioalteracaoavaliacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_bloqueioalteracaoavaliacao"]) || $this->ed233_bloqueioalteracaoavaliacao != "")
              $resac = db_query("insert into db_acount values($acount,2019,19995,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_bloqueioalteracaoavaliacao'))."','$this->ed233_bloqueioalteracaoavaliacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed233_reclassificaetapaanterior"]) || $this->ed233_reclassificaetapaanterior != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_reclassificaetapaanterior"]) || $this->ed233_reclassificaetapaanterior != "")
              $resac = db_query("insert into db_acount values($acount,2019,20359,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_reclassificaetapaanterior'))."','$this->ed233_reclassificaetapaanterior',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed233_apresentarnotaproporcional"]) || $this->ed233_apresentarnotaproporcional != "")
+             $resac = db_query("insert into db_acount values($acount,2019,21940,'".AddSlashes(pg_result($resaco,$conresaco,'ed233_apresentarnotaproporcional'))."','$this->ed233_apresentarnotaproporcional',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Parâmetros da Educação nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Parâmetros da Educação não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed233_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Parâmetros da Educação nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Parâmetros da Educação não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed233_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Alteração efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->ed233_i_codigo;
@@ -629,13 +659,13 @@ class cl_edu_parametros {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($ed233_i_codigo=null,$dbwhere=null) { 
+   public function excluir ($ed233_i_codigo=null,$dbwhere=null) { 
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($ed233_i_codigo));
        } else { 
@@ -664,43 +694,44 @@ class cl_edu_parametros {
            $resac  = db_query("insert into db_acount values($acount,2019,19274,'','".AddSlashes(pg_result($resaco,$iresaco,'ed233_formalancamentoparecer'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,2019,19995,'','".AddSlashes(pg_result($resaco,$iresaco,'ed233_bloqueioalteracaoavaliacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,2019,20359,'','".AddSlashes(pg_result($resaco,$iresaco,'ed233_reclassificaetapaanterior'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2019,21940,'','".AddSlashes(pg_result($resaco,$iresaco,'ed233_apresentarnotaproporcional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from edu_parametros
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($ed233_i_codigo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($ed233_i_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " ed233_i_codigo = $ed233_i_codigo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Parâmetros da Educação nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Parâmetros da Educação não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed233_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Parâmetros da Educação nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Parâmetros da Educação não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$ed233_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$ed233_i_codigo;
@@ -713,9 +744,9 @@ class cl_edu_parametros {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -724,8 +755,8 @@ class cl_edu_parametros {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:edu_parametros";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -736,19 +767,10 @@ class cl_edu_parametros {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $ed233_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from edu_parametros ";
+   public function sql_query ($ed233_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from edu_parametros ";
      $sql .= "      inner join escola  on  escola.ed18_i_codigo = edu_parametros.ed233_i_escola";
      $sql .= "      inner join bairro  on  bairro.j13_codi = escola.ed18_i_bairro";
      $sql .= "      inner join ruas  on  ruas.j14_codigo = escola.ed18_i_rua";
@@ -759,58 +781,37 @@ class cl_edu_parametros {
      $sql .= "      left  join censoorgreg  on  censoorgreg.ed263_i_codigo = escola.ed18_i_censoorgreg";
      $sql .= "      left  join censolinguaindig  on  censolinguaindig.ed264_i_codigo = escola.ed18_i_linguaindigena";
      $sql2 = "";
-     if($dbwhere==""){
-       if($ed233_i_codigo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($ed233_i_codigo)) {
          $sql2 .= " where edu_parametros.ed233_i_codigo = $ed233_i_codigo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $ed233_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from edu_parametros ";
+   public function sql_query_file ($ed233_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from edu_parametros ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($ed233_i_codigo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($ed233_i_codigo)){
          $sql2 .= " where edu_parametros.ed233_i_codigo = $ed233_i_codigo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
+
 }
-?>

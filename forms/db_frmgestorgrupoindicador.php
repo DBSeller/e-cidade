@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: Gestor BI
 $clgestorgrupoindicador->rotulo->label();
-require_once ('libs/db_libdicionario.php');
+require_once(modification('libs/db_libdicionario.php'));
 ?>
 <form name="form1" method="post" action="">
 <center>
@@ -92,7 +92,7 @@ db_input('g03_sequencial',10,$Ig03_sequencial,true,'text',3,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_gestorgrupoindicador','func_gestorgrupoindicador.php?funcao_js=parent.js_preenchepesquisa|g03_sequencial|g03_descricao','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_gestorgrupoindicador','func_gestorgrupoindicador.php?funcao_js=parent.js_preenchepesquisa|g03_sequencial|g03_descricao','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave,chave2){

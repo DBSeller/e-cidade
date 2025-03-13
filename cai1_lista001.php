@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_lista_classe.php");
-include ("classes/db_listadeb_classe.php");
-include ("classes/db_listatipos_classe.php");
-include ("classes/db_arretipo_classe.php");
-require_once('libs/db_utils.php');
-require_once("libs/db_libpostgres.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_lista_classe.php"));
+include(modification("classes/db_listadeb_classe.php"));
+include(modification("classes/db_listatipos_classe.php"));
+include(modification("classes/db_arretipo_classe.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_libpostgres.php"));
 
 $clarretipo = new cl_arretipo;
 $clrotulo   = new rotulocampo;
@@ -1594,7 +1594,7 @@ return false;
 
 function js_pesquisadb02_idparag(mostra){
   document.form1.lanca.onclick = "";
-  parent.bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
+  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
   if(mostra==true){
     js_OpenJanelaIframe('','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostradb_paragrafo1|k00_tipo|k00_descr','Pesquisa',true);
   }else{
@@ -1609,7 +1609,7 @@ function js_mostradb_paragrafo(chave,erro){
   }else{
     document.form1.lanca.onclick = js_insSelect;
   }
-  parent.bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
+  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
 
 }
 

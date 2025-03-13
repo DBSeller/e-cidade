@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,19 +28,19 @@
 
 define("TAREFA",true);
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_tarefa_classe.php");
-include ("classes/db_tarefamodulo_classe.php");
-include ("classes/db_tarefaproced_classe.php");
-include ("classes/db_tarefasituacao_classe.php");
-include ("classes/db_tarefausu_classe.php");
-include ("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefamotivo_classe.php");
-include("classes/db_db_versaotarefa_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefamodulo_classe.php"));
+include(modification("classes/db_tarefaproced_classe.php"));
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefausu_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefamotivo_classe.php"));
+include(modification("classes/db_db_versaotarefa_classe.php"));
 
 $cltarefa         = new cl_tarefa;
 $cltarefamodulo   = new cl_tarefamodulo;
@@ -333,7 +333,7 @@ if (isset ($alterar)) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-include ("forms/db_frmcontarefa.php");
+include(modification("forms/db_frmcontarefa.php"));
 ?>
     </center>
 	</td>
@@ -353,7 +353,7 @@ if (isset ($alterar)) {
 		};
 	} else {
 		db_msgbox($erro_msg);
-		echo "<script>top.corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."'</script>";
+		echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."'</script>";
 	}
 }
 if (isset ($chavepesquisa)||isset($at40_sequencial)) {
@@ -367,13 +367,13 @@ if (isset ($chavepesquisa)||isset($at40_sequencial)) {
          " . (($at40_autorizada == 't' or 1==1)?"parent.document.formaba.tarefalog.disabled=false;":"") . "
          parent.document.formaba.agenda.disabled=false;
 	     parent.document.formaba.tarefaanexos.disabled=false;
-         ".(isset($menu)?"parent":"top.corpo").".iframe_tarefaobs.location.href='ate1_tarefaobs001.php?at42_tarefa=".@$at40_sequencial."';
-         ".(isset($menu)?"parent":"top.corpo").".iframe_tarefaclientes.location.href='ate1_tarefaclientes002.php?at70_tarefa=".@$at40_sequencial."';
-         ".(isset($menu)?"parent":"top.corpo").".iframe_tarefausu.location.href='ate1_tarefausu002.php?at42_tarefa=".@$at40_sequencial."';
-         ".(isset($menu)?"parent":"top.corpo").".iframe_tarefaenvol.location.href='ate1_tarefaenvol002.php?at45_tarefa=".@$at40_sequencial."';
-         ".(isset($menu)?"parent":"top.corpo").".iframe_tarefalog.location.href='ate1_tarefalogand002.php?at43_tarefa=".@$at40_sequencial."&at43_usuario=".db_getsession("DB_id_usuario")."';
-         ".(isset($menu)?"parent":"top.corpo").".iframe_agenda.location.href='ate1_tarefaagenda002.php?at13_tarefa=".@$at40_sequencial."';
-         ".(isset($menu)?"parent":"top.corpo").".iframe_tarefaanexos.location.href='ate3_constarefaanexos.php?at25_tarefa=".@$at40_sequencial."';
+         ".(isset($menu)?"parent":"(window.CurrentWindow || parent.CurrentWindow).corpo").".iframe_tarefaobs.location.href='ate1_tarefaobs001.php?at42_tarefa=".@$at40_sequencial."';
+         ".(isset($menu)?"parent":"(window.CurrentWindow || parent.CurrentWindow).corpo").".iframe_tarefaclientes.location.href='ate1_tarefaclientes002.php?at70_tarefa=".@$at40_sequencial."';
+         ".(isset($menu)?"parent":"(window.CurrentWindow || parent.CurrentWindow).corpo").".iframe_tarefausu.location.href='ate1_tarefausu002.php?at42_tarefa=".@$at40_sequencial."';
+         ".(isset($menu)?"parent":"(window.CurrentWindow || parent.CurrentWindow).corpo").".iframe_tarefaenvol.location.href='ate1_tarefaenvol002.php?at45_tarefa=".@$at40_sequencial."';
+         ".(isset($menu)?"parent":"(window.CurrentWindow || parent.CurrentWindow).corpo").".iframe_tarefalog.location.href='ate1_tarefalogand002.php?at43_tarefa=".@$at40_sequencial."&at43_usuario=".db_getsession("DB_id_usuario")."';
+         ".(isset($menu)?"parent":"(window.CurrentWindow || parent.CurrentWindow).corpo").".iframe_agenda.location.href='ate1_tarefaagenda002.php?at13_tarefa=".@$at40_sequencial."';
+         ".(isset($menu)?"parent":"(window.CurrentWindow || parent.CurrentWindow).corpo").".iframe_tarefaanexos.location.href='ate3_constarefaanexos.php?at25_tarefa=".@$at40_sequencial."';
      ";
 	if (isset ($liberaaba)) {
 		echo "  parent.mo_camada('tarefausu');";

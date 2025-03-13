@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
-include("classes/db_orcimpactovalmov_classe.php");
-include("classes/db_orcimpactovalmovmes_classe.php");
-include("classes/db_orcimpactoval_classe.php");
-include("classes/db_orcimpactovalmovele_classe.php");
-include("classes/db_orcimpactomovtiporec_classe.php");
-include("classes/db_orcimpactomov_classe.php");
-include("classes/db_orcimpactomovpai_classe.php");
-include("classes/db_orcimpactomovimp_classe.php");
-include("classes/db_orcimpacto_classe.php");
-include("classes/db_orcelemento_classe.php");
+include(modification("classes/db_orcimpactovalmov_classe.php"));
+include(modification("classes/db_orcimpactovalmovmes_classe.php"));
+include(modification("classes/db_orcimpactoval_classe.php"));
+include(modification("classes/db_orcimpactovalmovele_classe.php"));
+include(modification("classes/db_orcimpactomovtiporec_classe.php"));
+include(modification("classes/db_orcimpactomov_classe.php"));
+include(modification("classes/db_orcimpactomovpai_classe.php"));
+include(modification("classes/db_orcimpactomovimp_classe.php"));
+include(modification("classes/db_orcimpacto_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -447,7 +447,7 @@ if(isset($incluir)){
 if( (isset($opcao) && $opcao=="alterar") || isset($tavaincluindo) ){
     echo "      
         <script> 
-           top.corpo.iframe_orcimpactovalmovmes.location.href='orc1_orcimpactovalmovmes001.php?o64_proces=$o64_proces&o65_codimpmov=".$o64_codimpmov."';
+           (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactovalmovmes.location.href='orc1_orcimpactovalmovmes001.php?o64_proces=$o64_proces&o65_codimpmov=".$o64_codimpmov."';
            parent.document.formaba.orcimpactovalmovmes.disabled=false;";
 	if(isset($tavaincluindo)){
                 echo "\nparent.mo_camada('orcimpactovalmovmes');";
@@ -479,7 +479,7 @@ if( (isset($opcao) && $opcao=="alterar") || isset($tavaincluindo) ){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcimpactovalmov.php");
+	include(modification("forms/db_frmorcimpactovalmov.php"));
 	?>
     </center>
 	</td>

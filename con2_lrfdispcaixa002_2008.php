@@ -1,44 +1,44 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/db_liborcamento.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_orcparamrel_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_orcparamrel_classe.php"));
 
 $classinatura = new cl_assinatura;
 ## declaracao de  Variaveis
 /*
  * lista de contas das obrigacoes financeiras
- */ 
+ */
 $aListaObrig = array();
 /*
  * lista de contas das Disponibilidades financeiras
@@ -48,15 +48,15 @@ $aListaDisp  = array();
  * lista de parametros do relatorio
  */
 $aParametros           = array();
-$nTotalRPinscritos     = 0; 
+$nTotalRPinscritos     = 0;
 $nTotalRPinscritosRpps = 0;
 $sInstitRPPS           = '';
-## Fim declaracao variaveis 
+## Fim declaracao variaveis
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
 $orcparamrel = new cl_orcparamrel;
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,
+$resultinst = db_query("select codigo,nomeinst,
     nomeinstabrev,
     db21_tipoinstit,
     munic
@@ -74,29 +74,29 @@ $temadmind  = false;
 $flag_abrev = false;
 
 if (!isset($lGerarPDF)){
-  $lGerarPDF = true;	
-} 
+  $lGerarPDF = true;
+}
 
 //******************************************************************
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++) {
   db_fieldsmemory($resultinst,$xins);
   if ($db21_tipoinstit == 5 or $db21_tipoinstit == 6) {
-  	
+
     $sInstitRPPS .=  "{$yvirg} {$codigo}";
     $yvirg = ', ';
-    
+
   } else {
-  	
+
     $db_selinstit .= "{$xvirg} {$codigo}";
     $xvirg        = ", ";
-    
+
   }
   //$xvirg        = '';
   if (strlen(trim($nomeinstabrev)) > 0){
-    $descr_inst .= $xvirg.$nomeinstabrev; 
+    $descr_inst .= $xvirg.$nomeinstabrev;
     $flag_abrev  = true;
   } else {
-    $descr_inst .= $xvirg.$nomeinst; 
+    $descr_inst .= $xvirg.$nomeinst;
   }
 
   //$xvirg = ', ';
@@ -141,7 +141,7 @@ if ($temcamara == true && $temprefa == false && $temadmind == false){
 $dataini = $anousu.'-01-01';
 $datafin = $anousu.'-12-31';
 $dt1 = split('-',$dataini);
-$dt2 = split('-',$datafin); 
+$dt2 = split('-',$datafin);
 $tipo_emissao='periodo';
 if ($tipo_emissao=='periodo'){
     //$textodt = strtoupper(db_mes($dt1[1]))." A ".strtoupper(db_mes($dt2[1]))." DE ";
@@ -157,14 +157,14 @@ if ($tipo_emissao=='periodo'){
   } else {
     $head6 = 'PERÍODO :'.$dt1[2].'/'.$dt1[1].'/'.$dt1[0].' à '.$dt2[2].'/'.$dt2[1].'/'.$dt2[0];
   }
-}  
+}
 
 //$where = " c61_instit in (".str_replace('-',', ',$db_selinstit).") ";
 $where = " c61_instit in ($db_selinstit)";
 $result1 = db_planocontassaldo_matriz(db_getsession("DB_anousu"),$dataini,$datafin,false,$where);
 //db_criatabela($result1);
 
-pg_exec("Drop Table work_pl");
+db_query("Drop Table work_pl");
 /*
  * Calculamos o total de RPS da instituicoes que nao sejam rpps
  */
@@ -176,11 +176,11 @@ $sSqlRPInscritos .= "        inner join conencerramento       on c44_encerrament
 $sSqlRPInscritos .= "  where c71_coddoc = 1007 ";
 $sSqlRPInscritos .= "    and c70_anousu = {$anousu} ";
 $sSqlRPInscritos .= "    and c42_instit in ({$db_selinstit})";
-$rsRPInscritos    = pg_query($sSqlRPInscritos);
+$rsRPInscritos    = db_query($sSqlRPInscritos);
 if ($rsRPInscritos) {
 
   $oRPinscritos      = db_utils::fieldsMemory($rsRPInscritos,0);
-  $nTotalRPinscritos = $oRPinscritos->totalrp; 
+  $nTotalRPinscritos = $oRPinscritos->totalrp;
 
 }
 // RPPS ///////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ $aTextoDisp[6]["descr"]  = '  Outras Disponibilidades Financeiras';
 
 for ($i = 0; $i < count($aTextoDisp); $i++){
   $aTextoDisp[$i]["valor"] = 0;
-}  
+}
 /*
  * array de parametros de Obrigações financeira
  */
@@ -214,7 +214,7 @@ $aTextoObrig[6]["descr"] = '  Outras Obrigações Financeiras';
 
 for ($i = 0; $i < count($aTextoObrig); $i++){
   $aTextoObrig[$i]["valor"] = 0;
-}  
+}
 /*
  * Lista de parametros das disponibilidades
  */
@@ -248,56 +248,56 @@ for ($x = 6; $x <= 9; $x++){
     case 8:
 
       $iInd = 4;
-      break;    
+      break;
 
     case 9:
       $iInd = 6;
-      break;  
-  }  
+      break;
+  }
 
   for ($i=0;$i < pg_numrows($result1); $i++) {
 
     db_fieldsmemory($result1,$i);
     if (in_array($estrutural,$aParametros[$x])) {
       $aTextoObrig[$iInd]["valor"] += $saldo_final;
-    } 
+    }
   }
 }
 
 for ($x = 1; $x <= 5; $x++){
 
   if ($x > 1){
-    $iInd = $x + 1;  
+    $iInd = $x + 1;
   }else{
-    $iInd = $x;  
+    $iInd = $x;
   }
   for ($i=0;$i < pg_numrows($result1); $i++) {
 
     db_fieldsmemory($result1,$i);
     if (in_array($estrutural,$aParametros[$x])) {
       $aTextoDisp[$iInd]["valor"] += $saldo_final;
-    } 
+    }
   }
 }
 
 
 /*
- * Totais 
+ * Totais
  */
 //total Bancos Disponibilidade Financeira
-$aTextoDisp[2]["valor"] = ($aTextoDisp[3]["valor"] + $aTextoDisp[4]["valor"]); 
+$aTextoDisp[2]["valor"] = ($aTextoDisp[3]["valor"] + $aTextoDisp[4]["valor"]);
 //total disponibilidade Financeira
 $aTextoDisp[0]["valor"] = ($aTextoDisp[6]["valor"] + $aTextoDisp[5]["valor"]
     + $aTextoDisp[2]["valor"] + $aTextoDisp[1]["valor"]);
 
 /*
- * Totas Obrigações                           
+ * Totas Obrigações
  */
 
 /*
  * total Bancos
  */
-$aTextoObrig[2]["valor"] = ($aTextoObrig[3]["valor"]+$aTextoObrig[4]["valor"]); 
+$aTextoObrig[2]["valor"] = ($aTextoObrig[3]["valor"]+$aTextoObrig[4]["valor"]);
 /*
  * total Geral
  */
@@ -305,8 +305,8 @@ $aTextoObrig[0]["valor"] = ($aTextoObrig[6]["valor"]+$aTextoObrig[5]["valor"]
     +$aTextoObrig[2]["valor"]+$aTextoObrig[1]["valor"]);
 $cont = 0;
 /*
- * Definimos a suficiencia/insuficiencia do caixa pela 
- * diminuicao do total das disponibilidades ($aTextoDisp[0]) com o 
+ * Definimos a suficiencia/insuficiencia do caixa pela
+ * diminuicao do total das disponibilidades ($aTextoDisp[0]) com o
  * total das obrigacoes ($aTextoObrig[0])
  * caso o valor for negativo temos insuficiencia, caso positivo temos sufuciencia
  */
@@ -325,7 +325,7 @@ if ($nTotalSuficiencia > 0){
 }
 
 $nTotalDisp  = abs(abs($nInsuficiencia) + $aTextoDisp[0]["valor"]);
-$nTotalObrig = abs(abs($nSuficiencia) + $aTextoObrig[0]["valor"]); 
+$nTotalObrig = abs(abs($nSuficiencia) + $aTextoObrig[0]["valor"]);
 /*
  * Listamos as contas das outras disponibilidades
  */
@@ -335,7 +335,7 @@ for ( $i = 0; $i < pg_num_rows($result1); $i++ ) {
   db_fieldsmemory($result1,$i);
   if ( in_array($estrutural,$aParametros[5]) ) {
 
-    $aListaDisp[$cont]["descr"] = $c60_descr; 
+    $aListaDisp[$cont]["descr"] = $c60_descr;
     $aListaDisp[$cont]["valor"] = $saldo_final;
     $cont++;
 
@@ -348,7 +348,7 @@ for ($i = 0; $i < pg_num_rows($result1); $i++) {
   db_fieldsmemory($result1,$i);
   if ( in_array($estrutural,$aParametros[9]) ) {
 
-    $aListaObrig[$cont]["descr"] = $c60_descr; 
+    $aListaObrig[$cont]["descr"] = $c60_descr;
     $aListaObrig[$cont]["valor"] = $saldo_final;
     $cont++;
   }
@@ -366,9 +366,9 @@ if ( count($aListaDisp) > count($aListaObrig) ) {
 
 if ( $lGerarPDF ){
 
-$pdf = new PDF("L","mm","A4"); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
+$pdf = new PDF("L","mm","A4");
+$pdf->Open();
+$pdf->AliasNbPages();
 $pdf->setfillcolor(235);
 $pdf->setfont('arial','b',7);
 $pdf->addpage();
@@ -400,7 +400,7 @@ for( $i = 0; $i < 7; $i++ ) {
     $pdf->cell(32,$alt,'','',1,"R",0);
   }else{
     $pdf->cell(32,$alt,db_formatar($aTextoObrig[$i]["valor"],'f'),'',1,"R",0);
-  }  
+  }
 }
 
 /*
@@ -433,12 +433,12 @@ for( $i=0; $i < $iTotalLinhas; $i++ ) {
 }
 
 if ($nInsuficiencia == 0){
-    $sInsuficiencia = "-";  
+    $sInsuficiencia = "-";
 }else{
     $sInsuficiencia = db_formatar($nInsuficiencia,'f');
 }
 if ($nSuficiencia == 0){
-  $sSuficiencia = " -";  
+  $sSuficiencia = " -";
 }else{
   $sSuficiencia = db_formatar($nSuficiencia,'f');
 }
@@ -458,16 +458,16 @@ $pdf->cell(243,$alt,'SUFICIÊNCIA APÓS A INSCRIÇÃO EM RESTOS APAGAR NÃO PROCESSAD
 $pdf->cell(32,$alt,db_formatar($nSuficiencia - $nTotalRPinscritos, 'f'),'TB',1,"R",0);
 
 if ($sInstitRPPS != ''){
-  
+
    $pdf->ln();
    $aListaObrig = array();
    $aListaDisp  = array();
 /*
  * seleciona instituição do RPPS
- */ 
-   $where       = " c61_instit in (".$sInstitRPPS.") "; 
+ */
+   $where       = " c61_instit in (".$sInstitRPPS.") ";
    $result_rpps = db_planocontassaldo_matriz(db_getsession("DB_anousu"),$dataini,$datafin,false,$where);
- 
+
 
   /*
    * array de parametros de disponibilidade financeira
@@ -482,8 +482,8 @@ if ($sInstitRPPS != ''){
 
   for ($i = 0; $i < count($aTextoDisp); $i++){
     $aTextoDisp[$i]["valor"] = 0;
-  }  
- 
+  }
+
   $aTextoObrig[0]["descr"] = 'OBRIGAÇÕES FINANCEIRAS';
   $aTextoObrig[1]["descr"] = '  Depósitos';
   $aTextoObrig[2]["descr"] = '  Restos a Pagar Processados';
@@ -494,7 +494,7 @@ if ($sInstitRPPS != ''){
 
   for ($i = 0; $i < count($aTextoObrig); $i++){
     $aTextoObrig[$i]["valor"] = 0;
-  }  
+  }
   /*
    * Lista de parametros das disponibilidades
    */
@@ -528,56 +528,56 @@ if ($sInstitRPPS != ''){
       case 8:
 
         $iInd = 4;
-        break;    
+        break;
 
       case 9:
         $iInd = 6;
-        break;  
-    }  
+        break;
+    }
 
     for ($i=0;$i < pg_numrows($result_rpps); $i++) {
 
       db_fieldsmemory($result_rpps,$i);
       if (in_array($estrutural,$aParametros[$x])) {
         $aTextoObrig[$iInd]["valor"] += $saldo_final;
-      } 
+      }
     }
   }
 
   for ($x = 1; $x <= 5; $x++){
 
     if ($x > 1){
-      $iInd = $x + 1;  
+      $iInd = $x + 1;
     }else{
-      $iInd = $x;  
+      $iInd = $x;
     }
     for ($i=0;$i < pg_numrows($result_rpps); $i++) {
 
       db_fieldsmemory($result_rpps,$i);
       if (in_array($estrutural,$aParametros[$x])) {
         $aTextoDisp[$iInd]["valor"] += $saldo_final;
-      } 
+      }
     }
   }
 
 
   /*
-   * Totais 
+   * Totais
    */
   //total Bancos Disponibilidade Financeira
-  $aTextoDisp[2]["valor"] = ($aTextoDisp[3]["valor"] + $aTextoDisp[4]["valor"]); 
+  $aTextoDisp[2]["valor"] = ($aTextoDisp[3]["valor"] + $aTextoDisp[4]["valor"]);
   //total disponibilidade Financeira
   $aTextoDisp[0]["valor"] = ($aTextoDisp[6]["valor"] + $aTextoDisp[5]["valor"]
       + $aTextoDisp[2]["valor"] + $aTextoDisp[1]["valor"]);
 
   /*
-   * Totas Obrigações                           
+   * Totas Obrigações
    */
 
   /*
    * total Bancos
    */
-  $aTextoObrig[2]["valor"] = ($aTextoObrig[3]["valor"]+$aTextoObrig[4]["valor"]); 
+  $aTextoObrig[2]["valor"] = ($aTextoObrig[3]["valor"]+$aTextoObrig[4]["valor"]);
   /*
    * total Geral
    */
@@ -585,8 +585,8 @@ if ($sInstitRPPS != ''){
       +$aTextoObrig[2]["valor"]+$aTextoObrig[1]["valor"]);
   $cont = 0;
   /*
-   * Definimos a suficiencia/insuficiencia do caixa pela 
-   * diminuicao do total das disponibilidades ($aTextoDisp[0]) com o 
+   * Definimos a suficiencia/insuficiencia do caixa pela
+   * diminuicao do total das disponibilidades ($aTextoDisp[0]) com o
    * total das obrigacoes ($aTextoObrig[0])
    * caso o valor for negativo temos insuficiencia, caso positivo temos sufuciencia
    */
@@ -605,17 +605,17 @@ if ($sInstitRPPS != ''){
   }
 
   $nTotalDisp  = abs($nInsuficiencia + $aTextoDisp[0]["valor"]);
-  $nTotalObrig = abs($nSuficiencia + $aTextoObrig[0]["valor"]); 
+  $nTotalObrig = abs($nSuficiencia + $aTextoObrig[0]["valor"]);
   /*
    * Listamos as contas das outras disponibilidades
    */
-  
+
   for ( $i = 0; $i < pg_num_rows($result_rpps); $i++ ) {
 
     db_fieldsmemory($result_rpps,$i);
     if ( in_array($estrutural,$aParametros[5]) ) {
 
-      $aListaDisp[$cont]["descr"] = $c60_descr; 
+      $aListaDisp[$cont]["descr"] = $c60_descr;
       $aListaDisp[$cont]["valor"] = $saldo_final;
       $cont++;
 
@@ -628,7 +628,7 @@ if ($sInstitRPPS != ''){
     db_fieldsmemory($result_rpps,$i);
     if ( in_array($estrutural,$aParametros[9]) ) {
 
-      $aListaObrig[$cont]["descr"] = $c60_descr; 
+      $aListaObrig[$cont]["descr"] = $c60_descr;
       $aListaObrig[$cont]["valor"] = $saldo_final;
       $cont++;
     }
@@ -666,7 +666,7 @@ if ($sInstitRPPS != ''){
       $pdf->cell(32,$alt,'','',1,"R",0);
     }else{
       $pdf->cell(32,$alt,db_formatar($aTextoObrig[$i]["valor"],'f'),'',1,"R",0);
-    }  
+    }
   }
 
   /*
@@ -703,14 +703,14 @@ if ($sInstitRPPS != ''){
   $pdf->cell(33,$alt,'','TR',0,"R",0);
   $pdf->cell(105,$alt,'SUFICIÊNCIA ANTES DA INSCRIÇÃO EM RESTOS A PAGAR NÃO PROCESSADOS ','TR',0,"L",0);
   $pdf->cell(32,$alt,'','T',1,"R",0);
-  
+
   if ($nInsuficiencia == 0) {
-     $sInsuficiencia = "-";  
+     $sInsuficiencia = "-";
   } else{
      $sInsuficiencia = db_formatar($nInsuficiencia,'f');
   }
   if ($nSuficiencia == 0) {
-    $sSuficiencia = "-";  
+    $sSuficiencia = "-";
   } else {
     $sSuficiencia = db_formatar($nSuficiencia,'f');
   }
@@ -730,17 +730,17 @@ if ($sInstitRPPS != ''){
   $pdf->cell(243,$alt,'SUFICIÊNCIA APÓS A INSCRIÇÃO EM RESTOS APAGAR NÃO PROCESSADOS DO REGIME PREVIDENCIÁRIO (VIII) = (VI - VII)','TBR',0,"L",0);
   $pdf->cell(32,$alt,db_formatar($nSuficiencia -$nTotalRPinscritos, 'f'),'TB',1,"R",0);
 }
-notasExplicativas(&$pdf, 33, "1B",275);
+notasExplicativas($pdf, 33, "1B",275);
 $pdf->Ln(5);
 // assinaturas
 if ($sInstitRPPS != ''){
- 
-  $pdf->addPage();  
+
+  $pdf->addPage();
 }
 $pdf->setfont('arial','',5);
 $pdf->ln(20);
 
-assinaturas(&$pdf,&$classinatura,'GF');
+assinaturas($pdf,$classinatura,'GF');
 
 $pdf->Output();
 }

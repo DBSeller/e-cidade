@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_syscadproced_classe.php");
-include("classes/db_db_syscadproceditem_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_syscadproced_classe.php"));
+include(modification("classes/db_db_syscadproceditem_classe.php"));
 $cldb_syscadproced = new cl_db_syscadproced;
   /*
 $cldb_syscadproceditem = new cl_db_syscadproceditem;
@@ -67,7 +67,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_syscadproced.php");
+	include(modification("forms/db_frmdb_syscadproced.php"));
 	?>
     </center>
 	</td>

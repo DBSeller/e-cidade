@@ -1,0 +1,87 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo="1010285" name="pessoal.registrapontoeletronicohistorico" description="Guarda o histórico de alterações da opção Registra Ponto Eletrônico do servidor." prefix="rh215" label="Registra Ponto Eletrônico Histórico" type="0">
+  <fields>
+    <field codigo="1009760"
+           name="rh215_sequencial"
+           conteudo="int8"
+           description="Sequencial da tabela registrapontoeletronicohistorico."
+           inivalue="0"
+           label="Sequencial"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sequencial"
+           reference=""
+           ispk="t"
+           hassequence="t">
+                           
+      <sequence name="registrapontoeletronicohistorico_rh215_sequencial_seq" ></sequence>
+    
+    </field>
+    <field codigo="1009761"
+           name="rh215_matricula"
+           conteudo="int8"
+           description="Matrícula referente a alteração de registro do ponto eletrônico no cadastro do servidor."
+           inivalue="0"
+           label="Matrícula"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Matrícula"
+           reference=""
+           ispk="f"
+           hassequence="t">
+                           
+    </field>
+    <field codigo="1009762"
+           name="rh215_registrapontoeletronico"
+           conteudo="bool"
+           description="Opção selecionada em registra ponto eletrônico."
+           inivalue="f"
+           label="Registra Ponto Eletrônico"
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="5"
+           tipoobj="text"
+           labelrel="Registra Ponto Eletrônico"
+           reference=""
+           ispk="f"
+           hassequence="t">
+                           
+    </field>
+    <field codigo="1009763"
+           name="rh215_data"
+           conteudo="date"
+           description="Data da alteração da opção registra ponto eletrônico no cadastro do servidor."
+           inivalue="null"
+           label="Data da Alteração"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Data da Alteração"
+           reference=""
+           ispk="f"
+           hassequence="t">
+                           
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk  name="rh215_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal">
+      <fieldfk name="rh215_matricula" reference="rh01_regist" inner='t'></fieldfk> 
+    </foreignkey>
+  </foreignkeys>
+</table>

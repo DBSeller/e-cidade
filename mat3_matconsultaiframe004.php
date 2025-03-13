@@ -1,35 +1,35 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clrotulo = new rotulocampo;
@@ -44,7 +44,7 @@ $clrotulo->label("");
   <link href="estilos.css" rel="stylesheet" type="text/css">
   <script>
   function js_requi(codigo){
-    js_OpenJanelaIframe('top.corpo','db_iframe_requi','mat3_consultarequi001.php?codigo='+codigo,'Consulta Requisição',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_requi','mat3_consultarequi001.php?codigo='+codigo,'Consulta Requisição',true);
   }
   </script>
   <style>
@@ -67,14 +67,14 @@ $clrotulo->label("");
   }
   </style>
   </head>
-  <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"> 
+  <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
   <table  border="0" cellspacing="0" cellpadding="0" width='100%'>
-  <tr> 
-  <td  align="center" valign="top" > 
-  <table border='0'>  
+  <tr>
+  <td  align="center" valign="top" >
+  <table border='0'>
     <tr>
       <td colspan=6 align=center>
-      <?php 
+      <?php
         if (!$lNovaConsulta) {
   	      echo "<input type='button' value='Voltar' onclick='parent.db_iframe_requisicao.hide();' >";
         }
@@ -90,35 +90,40 @@ $clrotulo->label("");
 	$depto_atual=db_getsession("DB_coddepto");
 	$where.="  and m40_depto=$depto_atual ";
       }else{
-	$where.=" and $db_where  "; 
+	$where.=" and $db_where  ";
       }
     }
     if (isset($db_inner)&&$db_inner!=""){
-      $inner="  $db_inner  "; 
+      $inner="  $db_inner  ";
     }else{
       $inner="";
     }
     $sql= "select distinct m40_codigo,
 		  m40_data,
 		  m40_hora,
+          m91_codigo,
+          deposito.descrdepto as dl_deposito,
 		  m40_depto,
-		  descrdepto,
+		  db_depart.descrdepto,
 		  m40_login,
 		  nome,
-		  m40_obs 
-	  from matrequi 
-		inner join matrequiitem on m41_codmatrequi = m40_codigo 
-		inner join db_depart on m40_depto = coddepto		
-		inner join db_usuarios on m40_login = id_usuario 
+		  m40_obs
+	  from matrequi
+		inner join matrequiitem on m41_codmatrequi = m40_codigo
+		inner join db_depart on m40_depto = coddepto
+        inner join db_almox on matrequi.m40_almox = db_almox.m91_codigo
+        inner join db_depart deposito ON deposito.coddepto = db_almox.m91_depto
+		inner join db_usuarios on m40_login = id_usuario
 		$inner
-	where m41_codmatmater = $codmater $where" ;
+	where m41_codmatmater = $codmater $where order by 2 desc" ;
   }
- 
+
   }
 //  db_lovrot($sql,15,"()","","");
 //$repassa = array('dblov'=>'0');
+//  die($sql);
   db_lovrot(@$sql,15,"()","",'ok');
- /* $result=pg_exec($sql);
+ /* $result=db_query($sql);
   $numrows = pg_numrows($result);
   if($numrows>0){
     echo "<tr class='bordas'>
@@ -133,11 +138,11 @@ $clrotulo->label("");
   for($i=0; $i<$numrows; $i++){
     db_fieldsmemory($result,$i);
      echo "
-           <tr>	    
+           <tr>
 	     <td class='bordas_corp' align='center'><small>";
 	     db_ancora($m40_codigo,"js_requi($m40_codigo);",1);
      echo "  </small></td>
-	     <td class='bordas_corp' align='center'><small>".db_formatar($m40_data,'d')."</small></td>		    
+	     <td class='bordas_corp' align='center'><small>".db_formatar($m40_data,'d')."</small></td>
 	     <td class='bordas_corp' align='center'><small>$m40_hora</small></td>
 	     <td class='bordas_corp' align='center'><small>$m40_depto-$descrdepto</small></td>
 	     <td class='bordas_corp' align='center'><small>$nome</small></td>
@@ -146,7 +151,7 @@ $clrotulo->label("");
 	   ";
   }*/
 
-?>     
+?>
 </table>
 </td>
 </tr>

@@ -1,39 +1,39 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_ppaestimativa_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_ppaestimativa_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet = db_utils::postMemory($_GET);
 $oDaoPPalei = db_utils::getDao("ppaversao");
@@ -83,7 +83,7 @@ if (pg_num_rows($rsAnoCancelar) > 0) {
 $iAnoImplantacaoPCASP = db_getsession("DB_anousu");
 
 /**
- * Ano de implantacao do PCASP > ano atual 
+ * Ano de implantacao do PCASP > ano atual
  */
 if ( !empty($_SESSION['DB_ano_pcasp']) && $_SESSION['DB_ano_pcasp'] > $iAnoImplantacaoPCASP ) {
   $iAnoImplantacaoPCASP = $_SESSION['DB_ano_pcasp'];
@@ -259,7 +259,7 @@ function js_getEstimativas() {
 function js_retornoProcessaQuadro(oAjax){
 
   js_removeObj("MsgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   gridPPA.clearAll(true);
   if (oRetorno.status == 2) {
 
@@ -396,6 +396,8 @@ function js_retornoProcessaQuadro(oAjax){
        * Criamos inputs para as estimativas do ppa
        */
       for (var iAno = iAnoInicio; iAno <= iAnoFinal;iAno++) {
+
+        iCodigo = (iTipo == 2) ? aCodigoEstimativa[iAno] : iCodigo;
 
         var nValor  =  js_formatar(aEstimativas[iAno],'f');
         var sStyle  = '';
@@ -550,7 +552,7 @@ function js_salvarPPa(iCodigo, iAno, nValor,iEstrutural, lDesdobrar, lDeducao, i
 
 function js_retornoSalvar(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 2) {
     alert(oRetorno.message.urlDecode());
   } else {
@@ -635,7 +637,7 @@ function atualizaValores(iAno, aContas, valorAdicionar,nValorOriginal, lDeducao,
 function js_mostraSaldo(chave){
 
   arq = 'func_saldoorcdotacao.php?o58_coddot='+chave
-  js_OpenJanelaIframe('top.corpo','db_iframe_saldos',arq,'Saldo da dotação',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saldos',arq,'Saldo da dotação',true);
 
 }
 </script>

@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_projmelhorias_classe.php");
-include("classes/db_contlot_classe.php");
-include("classes/db_contlotv_classe.php");
-include("classes/db_lote_classe.php");
-include("classes/db_editalserv_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_projmelhorias_classe.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("classes/db_contlotv_classe.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("classes/db_editalserv_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clprojmelhorias = new cl_projmelhorias;
 $cllote = new cl_lote;
 $clcontlot = new cl_contlot;
@@ -88,11 +88,11 @@ function js_nocontri(){
   alert("Contribuição inválida.");
 }
 function js_lotecontri(){
-  js_OpenJanelaIframe('top.corpo','db_iframe','func_lote.php?funcao_js=parent.js_lotecontri1|j34_idbql','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_lote.php?funcao_js=parent.js_lotecontri1|j34_idbql','Pesquisa',true);
 }
 function js_lotecontri1(lote){
   contri=document.form1.contri.value;
-  js_OpenJanelaIframe('top.corpo','db_iframe','con1_contlot006.php?j34_idbql='+lote+'&d02_contri='+contri,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','con1_contlot006.php?j34_idbql='+lote+'&d02_contri='+contri,'Pesquisa',true);
 }
   function js_lotecontri2(idbql,setor,quadra,lote,zona,dad,testadas,testada){
   db_iframe.hide();
@@ -186,9 +186,9 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 function js_contri(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_editalrua.php?funcao_js=parent.js_mostracontri1|d02_contri|j14_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_editalrua.php?funcao_js=parent.js_mostracontri1|d02_contri|j14_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_editalrua.php?pesquisa_chave='+document.form1.d02_contri.value+'&funcao_js=parent.js_mostracontri','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_editalrua.php?pesquisa_chave='+document.form1.d02_contri.value+'&funcao_js=parent.js_mostracontri','Pesquisa',false);
   }
 }
 function js_mostracontri(chave,erro){

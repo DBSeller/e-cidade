@@ -1,5 +1,5 @@
 <?php
-require('fpdf.php');
+require(modification('fpdf151/fpdf.php'));
 
 class PDF_Javascript extends FPDF {
 

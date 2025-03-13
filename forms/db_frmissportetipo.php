@@ -82,10 +82,10 @@ db_input('q41_codtipcalc',4,$Iq41_codtipcalc,true,'text',$db_opcao,"")
 <script>
 function js_pesquisaq41_codporte(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issporte','func_issporte.php?funcao_js=parent.js_mostraissporte1|q40_codporte|q40_codporte','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issporte','func_issporte.php?funcao_js=parent.js_mostraissporte1|q40_codporte|q40_codporte','Pesquisa',true);
   }else{
      if(document.form1.q41_codporte.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_issporte','func_issporte.php?pesquisa_chave='+document.form1.q41_codporte.value+'&funcao_js=parent.js_mostraissporte','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issporte','func_issporte.php?pesquisa_chave='+document.form1.q41_codporte.value+'&funcao_js=parent.js_mostraissporte','Pesquisa',false);
      }else{
        document.form1.q40_codporte.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostraissporte1(chave1,chave2){
 }
 function js_pesquisaq41_codclasse(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_classe','func_classe.php?funcao_js=parent.js_mostraclasse1|q12_classe|q12_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_classe','func_classe.php?funcao_js=parent.js_mostraclasse1|q12_classe|q12_descr','Pesquisa',true);
   }else{
      if(document.form1.q41_codclasse.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_classe','func_classe.php?pesquisa_chave='+document.form1.q41_codclasse.value+'&funcao_js=parent.js_mostraclasse','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_classe','func_classe.php?pesquisa_chave='+document.form1.q41_codclasse.value+'&funcao_js=parent.js_mostraclasse','Pesquisa',false);
      }else{
        document.form1.q12_descr.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostraclasse1(chave1,chave2){
   db_iframe_classe.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_issportetipo','func_issportetipo.php?funcao_js=parent.js_preenchepesquisa|q41_codporte|q41_codclasse|q41_codtipcalc','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issportetipo','func_issportetipo.php?funcao_js=parent.js_preenchepesquisa|q41_codporte|q41_codclasse|q41_codtipcalc','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_issportetipo.hide();

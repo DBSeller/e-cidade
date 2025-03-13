@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -102,7 +102,7 @@ class cl_rhpessalario {
                                 $this->rh04_seqpes 
                                ,$this->rh04_salari 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -128,11 +128,11 @@ class cl_rhpessalario {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->rh04_seqpes));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,7041,'$this->rh04_seqpes','I')");
-       $resac = pg_query("insert into db_acount values($acount,1160,7041,'','".AddSlashes(pg_result($resaco,0,'rh04_seqpes'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1160,7042,'','".AddSlashes(pg_result($resaco,0,'rh04_salari'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,7041,'$this->rh04_seqpes','I')");
+       $resac = db_query("insert into db_acount values($acount,1160,7041,'','".AddSlashes(pg_result($resaco,0,'rh04_seqpes'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1160,7042,'','".AddSlashes(pg_result($resaco,0,'rh04_salari'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -174,16 +174,16 @@ class cl_rhpessalario {
      $resaco = $this->sql_record($this->sql_query_file($this->rh04_seqpes));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,7041,'$this->rh04_seqpes','A')");
+         $resac = db_query("insert into db_acountkey values($acount,7041,'$this->rh04_seqpes','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["rh04_seqpes"]))
-           $resac = pg_query("insert into db_acount values($acount,1160,7041,'".AddSlashes(pg_result($resaco,$conresaco,'rh04_seqpes'))."','$this->rh04_seqpes',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1160,7041,'".AddSlashes(pg_result($resaco,$conresaco,'rh04_seqpes'))."','$this->rh04_seqpes',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["rh04_salari"]))
-           $resac = pg_query("insert into db_acount values($acount,1160,7042,'".AddSlashes(pg_result($resaco,$conresaco,'rh04_salari'))."','$this->rh04_salari',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1160,7042,'".AddSlashes(pg_result($resaco,$conresaco,'rh04_salari'))."','$this->rh04_salari',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Salário nao Alterado. Alteracao Abortada.\\n";
@@ -224,11 +224,11 @@ class cl_rhpessalario {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,7041,'$rh04_seqpes','E')");
-         $resac = pg_query("insert into db_acount values($acount,1160,7041,'','".AddSlashes(pg_result($resaco,$iresaco,'rh04_seqpes'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1160,7042,'','".AddSlashes(pg_result($resaco,$iresaco,'rh04_salari'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,7041,'$rh04_seqpes','E')");
+         $resac = db_query("insert into db_acount values($acount,1160,7041,'','".AddSlashes(pg_result($resaco,$iresaco,'rh04_seqpes'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1160,7042,'','".AddSlashes(pg_result($resaco,$iresaco,'rh04_salari'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from rhpessalario
@@ -244,7 +244,7 @@ class cl_rhpessalario {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Salário nao Excluído. Exclusão Abortada.\\n";
@@ -278,7 +278,7 @@ class cl_rhpessalario {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,587 +25,896 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_app.utils.php");
-require_once("model/CgmFactory.model.php");
-require_once("model/CgmBase.model.php");
-require_once("model/CgmJuridico.model.php");
-require_once("model/CgmFisico.model.php");
-require_once("model/Dotacao.model.php");
-require_once("model/agendaPagamento.model.php");
-require_once("model/impressaoCheque.model.php");
-require_once('model/empenho/EmpenhoFinanceiro.model.php');
-require_once('model/empenho/EmpenhoFinanceiroItem.model.php');
-require_once('model/MaterialCompras.model.php');
-require_once("classes/ordemPagamento.model.php");
-//require_once "model/caixa/ArrecadacaoReceitaOrcamentaria.model.php";
-require_once "model/caixa/AutenticacaoArrecadacao.model.php";
-require_once("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteBase.model.php");
-require_once("model/financeiro/ContaBancaria.model.php");
-require_once("model/contabilidade/planoconta/ContaPlano.model.php");
-require_once("model/contabilidade/planoconta/ClassificacaoConta.model.php");
-require_once("model/contabilidade/planoconta/ContaCorrente.model.php");
-require_once("model/contabilidade/planoconta/ContaOrcamento.model.php");
-require_once("model/contabilidade/planoconta/ContaPlanoPCASP.model.php");
-//db_app::import("exceptions.*");
-require_once("libs/exceptions/BusinessException.php");
-require_once("libs/exceptions/DBException.php");
-require_once("libs/exceptions/FileException.php");
-require_once("libs/exceptions/ParameterException.php");
-//db_app::import("configuracao.*");
-require_once("model/configuracao/Agenda.model.php");
-require_once("model/configuracao/DBDepartamento.model.php");
-require_once("model/configuracao/DBDivisaoDepartamento.model.php");
-require_once("model/configuracao/DBEstrutura.model.php");
-require_once("model/configuracao/DBEstruturaValor.model.php");
-require_once("model/configuracao/DBFormCache.model.php");
-require_once("model/configuracao/DBLogJSON.model.php");
-require_once("model/configuracao/DBLog.model.php");
-require_once("model/configuracao/DBLogTXT.model.php");
-require_once("model/configuracao/DBLogXML.model.php");
-require_once("model/configuracao/Instituicao.model.php");
-require_once("model/configuracao/Job.model.php");
-require_once("model/configuracao/RemessaWebService.model.php");
-require_once("model/configuracao/TaskManager.model.php");
-require_once("model/configuracao/Task.model.php");
-require_once("model/configuracao/UsuarioSistema.model.php");
-//db_app::import("caixa.*");
-require_once("model/caixa/ArrecadacaoReceitaOrcamentaria.model.php");
-require_once("model/caixa/AutenticacaoArrecadacao.model.php");
-require_once("model/caixa/AutenticacaoBaixaBanco.model.php");
-require_once("model/caixa/AutenticacaoPlanilha.model.php");
-require_once("model/caixa/LancamentoContabilAjusteBaixaBanco.model.php");
-require_once("model/caixa/PlanilhaArrecadacao.model.php");
-require_once("model/caixa/ReceitaPlanilha.model.php");
-//b_app::import("contabilidade.*");
-require_once("model/contabilidade/DocumentoContabilConjuntoRegra.model.php");
-require_once("model/contabilidade/DocumentoContabil.model.php");
-require_once("model/contabilidade/DocumentoContabilRegra.model.php");
-require_once("model/contabilidade/EventoContabilLancamento.model.php");
-require_once("model/contabilidade/EventoContabil.model.php");
-require_once("model/contabilidade/GrupoContaOrcamento.model.php");
-require_once("model/contabilidade/InscricaoPassivoOrcamentoItem.model.php");
-require_once("model/contabilidade/InscricaoPassivoOrcamento.model.php");
-require_once("model/contabilidade/RegraLancamentoContabil.model.php");
-require_once("model/contabilidade/SingletonDocumentoContabil.model.php");
-//db_app::import("contabilidade.contacorrente.*");
-require_once("model/contabilidade/contacorrente/AdiantamentoConcessao.model.php");
-require_once("model/contabilidade/contacorrente/AdiantamentoConcessaoRepository.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteBase.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteContrato.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteContratoRepository.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteRepositoryBase.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteRepositoryFactory.model.php");
-require_once("model/contabilidade/contacorrente/CredorFornecedorDevedor.model.php");
-require_once("model/contabilidade/contacorrente/CredorFornecedorDevedorRepository.model.php");
-require_once("model/contabilidade/contacorrente/DisponibilidadeFinanceira.model.php");
-require_once("model/contabilidade/contacorrente/DisponibilidadeFinanceiraRepository.model.php");
-require_once("model/contabilidade/contacorrente/DomicilioBancario.model.php");
-require_once("model/contabilidade/contacorrente/DomicilioBancarioRepository.model.php");
-//db_app::import("contabilidade.lancamento.*");
-require_once("model/contabilidade/lancamento/EscrituracaoRestosAPagarNaoProcessados.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarAberturaExercicioOrcamento.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarArrecadacaoReceitaExtraOrcamentaria.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarArrecadacaoReceita.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarContaCorrente.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarDepreciacao.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarEmLiquidacaoMaterialPermanente.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarEmLiquidacao.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarEmpenhoEmLiquidacaoMaterialAlmoxarifado.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarEmpenhoLiquidacao.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarEmpenho.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarEmpenhoPassivo.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarInscricao.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarInscricaoRestosAPagarNaoProcessados.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarInventario.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarMovimentacaoEstoque.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarProvisaoDecimoTerceiro.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarProvisaoFerias.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarReconhecimentoReceitaFatoGerador.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarSlip.model.php");
-require_once("model/contabilidade/lancamento/LancamentoEmpenhoEmLiquidacao.model.php");
-require_once("model/contabilidade/lancamento/ReceitaFatoGerador.model.php");
-require_once("model/contabilidade/lancamento/RegraAnulacaoSlip.model.php");
-require_once("model/contabilidade/lancamento/RegraArrecadacaoReceita.model.php");
-require_once("model/contabilidade/lancamento/RegraBaixaInscricaoPassivoSemSuporteOrcamentario.model.php");
-require_once("model/contabilidade/lancamento/RegraEmLiquidacao.model.php");
-require_once("model/contabilidade/lancamento/RegraEmpenhoPassivoSemSuporteOrcamentario.model.php");
-require_once("model/contabilidade/lancamento/RegraInscricaoPassivoSemSuporteOrcamentario.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoAberturaExercicio.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoContabilFactory.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoContaDepreciacao.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoDevolucaoAdiantamento.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoEmLiquidacaoMaterialConsumo.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoEmLiquidacaoMaterialPermanente.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoEmpenhoPrestacaoConta.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoEntradaEstoque.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoLiquidacaoEmpenho.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoProvisaoDecimoTerceiro.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoProvisaoFerias.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoReavaliacaoBem.model.php");
-require_once("model/contabilidade/lancamento/RegraLancamentoRestosAPagar.model.php");
-require_once("model/contabilidade/lancamento/RegraLiquidacaoEmpenhoPassivoSemSuporteOrcamentario.model.php");
-require_once("model/contabilidade/lancamento/RegraMovimentacaoEstoque.model.php");
-require_once("model/contabilidade/lancamento/RegraPagamentoSlip.model.php");
-require_once("model/contabilidade/lancamento/RegraReconhecimentoReceitaFatoGerador.model.php");
-//db_app::import("orcamento.*");
-require_once("model/orcamento/CaracteristicaPeculiar.model.php");
-require_once("model/orcamento/Orgao.model.php");
-require_once("model/orcamento/ReceitaContabil.model.php");
-require_once("model/orcamento/ReceitaExtraOrcamentaria.model.php");
-require_once("model/orcamento/ReceitaOrcamentaria.model.php");
-require_once("model/orcamento/Recurso.model.php");
-require_once("model/orcamento/TribunalEstrutura.model.php");
-require_once("model/orcamento/Unidade.model.php");
+use ECidade\Patrimonial\Protocolo\NaturezaCGM;
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification("model/CgmBase.model.php"));
+require_once(modification("model/CgmJuridico.model.php"));
+require_once(modification("model/CgmFisico.model.php"));
+require_once(modification("model/Dotacao.model.php"));
+require_once(modification('model/agendaPagamento.model.php'));
+require_once(modification("model/impressaoCheque.model.php"));
+require_once(modification('model/empenho/EmpenhoFinanceiro.model.php'));
+require_once(modification('model/empenho/EmpenhoFinanceiroItem.model.php'));
+require_once(modification('model/MaterialCompras.model.php'));
+require_once(modification("classes/ordemPagamento.model.php"));
+require_once modification("model/caixa/AutenticacaoArrecadacao.model.php");
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteBase.model.php"));
+require_once(modification("model/financeiro/ContaBancaria.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlano.model.php"));
+require_once(modification("model/contabilidade/planoconta/ClassificacaoConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaCorrente.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaOrcamento.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlanoPCASP.model.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
+require_once(modification("libs/exceptions/DBException.php"));
+require_once(modification("libs/exceptions/FileException.php"));
+require_once(modification("libs/exceptions/ParameterException.php"));
+require_once(modification("model/configuracao/Agenda.model.php"));
+require_once(modification("model/configuracao/DBDepartamento.model.php"));
+require_once(modification("model/configuracao/DBDivisaoDepartamento.model.php"));
+require_once(modification("model/configuracao/DBEstrutura.model.php"));
+require_once(modification("model/configuracao/DBEstruturaValor.model.php"));
+require_once(modification("model/configuracao/DBFormCache.model.php"));
+require_once(modification("model/configuracao/DBLogJSON.model.php"));
+require_once(modification("model/configuracao/DBLog.model.php"));
+require_once(modification("model/configuracao/DBLogTXT.model.php"));
+require_once(modification("model/configuracao/DBLogXML.model.php"));
+require_once(modification("model/configuracao/Instituicao.model.php"));
+require_once(modification("model/configuracao/Job.model.php"));
+require_once(modification("model/configuracao/RemessaWebService.model.php"));
+require_once(modification("model/configuracao/TaskManager.model.php"));
+require_once(modification("model/configuracao/Task.model.php"));
+require_once(modification("model/configuracao/UsuarioSistema.model.php"));
+require_once(modification("model/caixa/ArrecadacaoReceitaOrcamentaria.model.php"));
+require_once(modification("model/caixa/AutenticacaoArrecadacao.model.php"));
+require_once(modification("model/caixa/AutenticacaoBaixaBanco.model.php"));
+require_once(modification("model/caixa/AutenticacaoPlanilha.model.php"));
+require_once(modification("model/caixa/LancamentoContabilAjusteBaixaBanco.model.php"));
+require_once(modification("model/caixa/PlanilhaArrecadacao.model.php"));
+require_once(modification("model/caixa/ReceitaPlanilha.model.php"));
+require_once(modification("model/contabilidade/DocumentoContabilConjuntoRegra.model.php"));
+require_once(modification("model/contabilidade/DocumentoContabil.model.php"));
+require_once(modification("model/contabilidade/DocumentoContabilRegra.model.php"));
+require_once(modification("model/contabilidade/EventoContabilLancamento.model.php"));
+require_once(modification("model/contabilidade/EventoContabil.model.php"));
+require_once(modification("model/contabilidade/GrupoContaOrcamento.model.php"));
+require_once(modification("model/contabilidade/InscricaoPassivoOrcamentoItem.model.php"));
+require_once(modification("model/contabilidade/InscricaoPassivoOrcamento.model.php"));
+require_once(modification("model/contabilidade/RegraLancamentoContabil.model.php"));
+require_once(modification("model/contabilidade/SingletonDocumentoContabil.model.php"));
+require_once(modification("model/contabilidade/contacorrente/AdiantamentoConcessao.model.php"));
+require_once(modification("model/contabilidade/contacorrente/AdiantamentoConcessaoRepository.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteBase.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteContrato.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteContratoRepository.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteRepositoryBase.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteRepositoryFactory.model.php"));
+require_once(modification("model/contabilidade/contacorrente/CredorFornecedorDevedor.model.php"));
+require_once(modification("model/contabilidade/contacorrente/CredorFornecedorDevedorRepository.model.php"));
+require_once(modification("model/contabilidade/contacorrente/DisponibilidadeFinanceira.model.php"));
+require_once(modification("model/contabilidade/contacorrente/DisponibilidadeFinanceiraRepository.model.php"));
+require_once(modification("model/contabilidade/contacorrente/DomicilioBancario.model.php"));
+require_once(modification("model/contabilidade/contacorrente/DomicilioBancarioRepository.model.php"));
+require_once(modification("model/contabilidade/lancamento/EscrituracaoRestosAPagarNaoProcessados.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarAberturaExercicioOrcamento.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarArrecadacaoReceitaExtraOrcamentaria.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarArrecadacaoReceita.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarContaCorrente.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarDepreciacao.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarEmLiquidacaoMaterialPermanente.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarEmLiquidacao.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarEmpenhoEmLiquidacaoMaterialAlmoxarifado.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarEmpenhoLiquidacao.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarEmpenho.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarEmpenhoPassivo.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarInscricao.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarInscricaoRestosAPagar.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarInventario.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarMovimentacaoEstoque.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarProvisaoDecimoTerceiro.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarProvisaoFerias.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarReconhecimentoReceitaFatoGerador.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarSlip.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoEmpenhoEmLiquidacao.model.php"));
+require_once(modification("model/contabilidade/lancamento/ReceitaFatoGerador.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraAnulacaoSlip.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraArrecadacaoReceita.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraBaixaInscricaoPassivoSemSuporteOrcamentario.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraEmLiquidacao.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraEmpenhoPassivoSemSuporteOrcamentario.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraInscricaoPassivoSemSuporteOrcamentario.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoAberturaExercicio.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoContabilFactory.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoContaDepreciacao.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoDevolucaoAdiantamento.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoEmLiquidacaoMaterialConsumo.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoEmLiquidacaoMaterialPermanente.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoEmpenhoPrestacaoConta.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoEntradaEstoque.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoLiquidacaoEmpenho.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoProvisaoDecimoTerceiro.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoProvisaoFerias.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoReavaliacaoBem.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLancamentoRestosAPagar.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraLiquidacaoEmpenhoPassivoSemSuporteOrcamentario.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraMovimentacaoEstoque.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraPagamentoSlip.model.php"));
+require_once(modification("model/contabilidade/lancamento/RegraReconhecimentoReceitaFatoGerador.model.php"));
+require_once(modification("model/orcamento/CaracteristicaPeculiar.model.php"));
+require_once(modification("model/orcamento/Orgao.model.php"));
+require_once(modification("model/orcamento/ReceitaContabil.model.php"));
+require_once(modification("model/orcamento/ReceitaExtraOrcamentaria.model.php"));
+require_once(modification("model/orcamento/ReceitaOrcamentaria.model.php"));
+require_once(modification("model/orcamento/Recurso.model.php"));
+require_once(modification("model/orcamento/TribunalEstrutura.model.php"));
+require_once(modification("model/orcamento/Unidade.model.php"));
 
 
-require_once 'model/impressaoAutenticacao.php';
-
-$oGet     = db_utils::postMemory($_GET);
-$oJson    = new services_json();
-$oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
-
+require_once modification("model/impressaoAutenticacao.php");
+$dataSessao = date('Y-m-d', db_getsession('DB_datausu'));
+$oGet    = db_utils::postMemory($_GET);
+$oParam  = JSON::create()->parse(str_replace("\\","",$_POST["json"]));
+$oRetono = new stdClass();
+$iInstituicaoOriginal = db_getsession('DB_instit');
 switch($oParam->exec) {
 
-  case "getMovimentos" :
+    case "getMovimentos" :
 
-    // variavel de controle para configuração de arquivos padrao OBN
-    $lArquivoObn = false;
-    $lTrazContasFornecedor = true;
-    $lTrazContasRecurso    = true;
-    if (!empty($oParam->params[0]->lObn)) {
+        // variavel de controle para configuracao de arquivos padrao OBN
+        $lArquivoObn = false;
+        $lTrazContasFornecedor = true;
+        $lTrazContasRecurso    = true;
+        if (!empty($oParam->params[0]->lObn)) {
 
-      $lTrazContasFornecedor = false;
-      $lTrazContasRecurso    = true;
-      $lArquivoObn = true;
-    }
-
-    $oAgenda = new agendaPagamento();
-    $oAgenda->setUrlEncode(true);
-    $sJoin   = '';
-    $sWhereIni  = " ((round(e53_valor,2)-round(e53_vlranu,2)-round(e53_vlrpag,2)) > 0 ";
-    $sWhereIni .= " and (round(e60_vlremp,2)-round(e60_vlranu,2)-round(e60_vlrpag,2)) > 0) ";
-    $sWhereIni .= " and corempagemov.k12_codmov is null and e81_cancelado is null";
-    $sWhereIni .= " and e80_data  <= '".date("Y-m-d",db_getsession("DB_datausu"))."'";
-    $sWhereIni .= " and e60_instit = ".db_getsession("DB_instit");
-    $sWhere     = $sWhereIni;
-    $oAgenda->setOrdemConsultas("e82_codord, e81_codmov");
-    if ($oParam->params[0]->iOrdemIni != '' && $oParam->params[0]->iOrdemFim == "") {
-      $sWhere .= " and e50_codord = {$oParam->params[0]->iOrdemIni}";
-    } else if ($oParam->params[0]->iOrdemIni != '' && $oParam->params[0]->iOrdemFim != "") {
-      $sWhere .= " and e50_codord between  {$oParam->params[0]->iOrdemIni} and {$oParam->params[0]->iOrdemFim}";
-    }
-
-    if ($oParam->params[0]->dtDataIni != "" && $oParam->params[0]->dtDataFim == "") {
-      $sWhere .= " and e50_data = '".implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataIni)))."'";
-    } else if ($oParam->params[0]->dtDataIni != "" && $oParam->params[0]->dtDataFim != "") {
-
-      $dtDataIni = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataIni)));
-      $dtDataFim = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataFim)));
-      $sWhere .= " and e50_data between '{$dtDataIni}' and '{$dtDataFim}'";
-
-    } else if ($oParam->params[0]->dtDataIni == "" && $oParam->params[0]->dtDataFim != "") {
-
-      $dtDataFim  = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataFim)));
-      $sWhere    .= " and e50_data <= '{$dtDataFim}'";
-    }
-
-    //Filtro para Empenho
-    if ($oParam->params[0]->iCodEmp!= '') {
-
-      if (strpos($oParam->params[0]->iCodEmp,"/")) {
-
-        $aEmpenho = explode("/",$oParam->params[0]->iCodEmp);
-        $sWhere .= " and e60_codemp = '{$aEmpenho[0]}' and e60_anousu={$aEmpenho[1]}";
-
-      } else {
-        $sWhere .= " and e60_codemp = '{$oParam->params[0]->iCodEmp}' and e60_anousu=".db_getsession("DB_anousu");
-      }
-
-    }
-
-    $sCredorCgm = '';
-
-    //filtro para filtrar por credor
-    if ($oParam->params[0]->iNumCgm != '') {
-
-      $sWhere    .= " and (e60_numcgm = {$oParam->params[0]->iNumCgm})";
-      $sCredorCgm = $oParam->params[0]->iNumCgm;
-    }
-    if ($oParam->params[0]->iAutorizadas == 2) {
-
-      $lAutorizadas      = true;
-      if ($oParam->params[0]->sDtAut != "") {
-
-        $sDtAut   = implode("-", array_reverse(explode("/", $oParam->params[0]->sDtAut)));
-        $sWhere .= " and e42_dtpagamento = '{$sDtAut}'";
-
-      }
-
-
-      $sWhere .= " and e43_autorizado is true ";
-
-    } else if ($oParam->params[0]->iAutorizadas == 3) {
-
-      $sWhere .= " and e43_empagemov is null";
-    }
-
-    if ($oParam->params[0]->iOPauxiliar != '') {
-
-      $sWhere .= " and e42_sequencial = {$oParam->params[0]->iOPauxiliar}";
-    }
-    if ($oParam->params[0]->iRecurso != '') {
-
-      $sWhere .= " and o15_codigo = {$oParam->params[0]->iRecurso}";
-    }
-    if ($oParam->params[0]->iOPManutencao != '') {
-
-      $sWhere .= " or ( e42_sequencial = {$oParam->params[0]->iOPManutencao}  and $sWhereIni)";
-      $oAgenda->setOrdemConsultas("e42_sequencial,e43_sequencial, e81_codmov,e50_codord");
-
-    } else if (!empty($oParam->params[0]->e03_numeroprocesso)) {
-
-      $sProcesso = addslashes(db_stdClass::normalizeStringJson($oParam->params[0]->e03_numeroprocesso));
-      $sWhere   .= " and e03_numeroprocesso = '{$sProcesso}'";
-    }
-
-    // validamos se é configuracao OBN
-    if ($lArquivoObn == true) {
-      $sWhere .= " and empagemovforma.e97_codforma = 3 ";
-    }
-
-    $sJoin   .= " left join empagenotasordem on e81_codmov         = e43_empagemov  ";
-    $sJoin   .= " left join empageordem      on e43_ordempagamento = e42_sequencial ";
-    $sJoin   .= " left join pagordemprocesso on e50_codord = e03_pagordem ";
-
-    if ($oParam->params[0]->orderBy == "cgm.z01_nome") {
-      $oAgenda->setOrdemConsultas("case when trim(a.z01_nome)   is not null then a.z01_nome   else cgm.z01_nome end");
-    }
-
-    $aOrdensAgenda = $oAgenda->getMovimentosAgenda($sWhere,$sJoin,$lTrazContasFornecedor , $lTrazContasRecurso,'',$oParam->params[0]->lVinculadas, $sCredorCgm);
-
-    if (!empty($oParam->params[0]->lTratarMovimentosConfigurados) && $oParam->params[0]->lTratarMovimentosConfigurados) {
-
-      $aMovimentosConfigurados = array();
-      foreach ($aOrdensAgenda as $oStdMovimento) {
-
-        if ($oStdMovimento->e91_codmov != "" || $oStdMovimento->e90_codmov != "") {
-          continue;
-        } else {
-          $aMovimentosConfigurados[] = $oStdMovimento;
+            $lTrazContasFornecedor = false;
+            $lTrazContasRecurso    = true;
+            $lArquivoObn = true;
         }
-      }
-      $aOrdensAgenda = $aMovimentosConfigurados;
-    }
-    if (count($aOrdensAgenda) > 0) {
 
-      $oRetono->status           = 1;
-      $oRetono->mensagem         = 1;
-      $oRetono->totais           = $oAgenda->getTotaisAgenda($sWhere);
-      $oRetono->aNotasLiquidacao = $aOrdensAgenda;
-      echo $oJson->encode($oRetono);
+        $oAgenda = new agendaPagamento();
+        $oAgenda->setUrlEncode(true);
+        $sJoin   = '';
+        $sWhereIni  = " ((round(e53_valor,2)-round(e53_vlranu,2)-round(e53_vlrpag,2)) > 0 ";
+        $sWhereIni .= " and (round(e60_vlremp,2)-round(e60_vlranu,2)-round(e60_vlrpag,2)) > 0) ";
+        $sWhereIni .= " and corempagemov.k12_codmov is null and e81_cancelado is null";
+        $sWhereIni .= " and e80_data  <= '".date("Y-m-d",db_getsession("DB_datausu"))."'";
+        $sWhereIni .= " and e60_instit = ".db_getsession("DB_instit");
 
-    } else {
+        $sWhereIni .= " and (e69_codnota is null or (not exists ";
+        $sWhereIni .= " (select e69_codnota from empnotasuspensao where e69_codnota = cc36_empnota) ";
+        $sWhereIni .= " or (select cc36_dataretorno from empnotasuspensao where e69_codnota = cc36_empnota order ";
+        $sWhereIni .= " by cc36_sequencial desc limit 1) is not null)) ";
 
-      $oRetono->status           = 2;
-      $oRetono->mensagem         = "";
-      $oRetono->aNotasLiquidacao = array();
-      echo $oJson->encode($oRetono);
-
-    }
-    break;
-
-
-
-  case 'efetuarPagamentoSlip':
-
-    $oAgenda                        = new agendaPagamento();
-    $oRetorno                       = new stdClass();
-    $oRetorno->status               = '1';
-    $oRetorno->iCodigoOrdemAuxiliar = null;
-    $oRetorno->aAutenticacoes       = array();
-
-    try {
-
-      db_inicio_transacao();
-
-
-      foreach ($oParam->aMovimentos as $oMovimento) {
-        $oAgenda->configurarPagamentos($oParam->dtPagamento, $oMovimento);
-      }
-
-      /*
-       * Se o usuario marcou a opcao para "Efetuar pagamento" o sistema gera pagamento sequingo a mesma logica
-      *   da rotina de pagamento de empenho por agenda (Caixa > Procedimentos > Agenda > Pgtos Empenho p/ Agenda )
-      */
-
-      if ($oParam->lEfetuarPagamento) {
-
-        foreach ($oParam->aMovimentos as $oMovimento) {
-
-          $oTransferencia = TransferenciaFactory::getInstance(null, $oMovimento->iCodNota);
-
-          $oTransferencia->executaAutenticacao();
-
-          if (USE_PCASP) {
-            $oTransferencia->executarLancamentoContabil();
-          }
-
-          $oAutentica                 = new stdClass();
-          $oAutentica->iNota          = $oMovimento->iCodNota;
-          $oAutentica->sAutentica     = $oTransferencia->getStringAutenticacao();
-          $oRetorno->aAutenticacoes[] = $oAutentica;
+        $sWhere     = $sWhereIni;
+        $oAgenda->setOrdemConsultas("e82_codord, e81_codmov");
+        if ($oParam->params[0]->iOrdemIni != '' && $oParam->params[0]->iOrdemFim == "") {
+            $sWhere .= " and e50_codord = {$oParam->params[0]->iOrdemIni}";
+        } else if ($oParam->params[0]->iOrdemIni != '' && $oParam->params[0]->iOrdemFim != "") {
+            $sWhere .= " and e50_codord between  {$oParam->params[0]->iOrdemIni} and {$oParam->params[0]->iOrdemFim}";
         }
-      }
-      db_fim_transacao(false);
 
-    } catch (Exception $eErro) {
+        if ($oParam->params[0]->dtDataIni != "" && $oParam->params[0]->dtDataFim == "") {
+            $sWhere .= " and e50_data = '".implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataIni)))."'";
+        } else if ($oParam->params[0]->dtDataIni != "" && $oParam->params[0]->dtDataFim != "") {
+            $dtDataIni = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataIni)));
+            $dtDataFim = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataFim)));
+            $sWhere .= " and e50_data between '{$dtDataIni}' and '{$dtDataFim}'";
+        } else if ($oParam->params[0]->dtDataIni == "" && $oParam->params[0]->dtDataFim != "") {
+            $dtDataFim  = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataFim)));
+            $sWhere    .= " and e50_data <= '{$dtDataFim}'";
+        }
 
-      db_fim_transacao(true);
-      $oRetorno->status  = 2;
-      $oRetorno->message = urlencode($eErro->getMessage());
+        if ($oParam->params[0]->iCodEmp!= '') {
+            if (strpos($oParam->params[0]->iCodEmp,"/")) {
+                $aEmpenho = explode("/",$oParam->params[0]->iCodEmp);
+                $sWhere .= " and e60_codemp = '{$aEmpenho[0]}' and e60_anousu={$aEmpenho[1]}";
+            } else {
+                $sWhere .= " and e60_codemp = '{$oParam->params[0]->iCodEmp}' and e60_anousu=".db_getsession("DB_anousu");
+            }
+        }
 
-    }
-    echo $oJson->encode($oRetorno);
+        $sCredorCgm = '';
 
-    break;
+        if ($oParam->params[0]->iNumCgm != '') {
+            $sWhere    .= " and (e60_numcgm = {$oParam->params[0]->iNumCgm})";
+            $sCredorCgm = $oParam->params[0]->iNumCgm;
+        }
 
-  case "configurarPagamento" :
+        if ($oParam->params[0]->iAutorizadas == 2) {
+            $lAutorizadas      = true;
+            if ($oParam->params[0]->sDtAut != "") {
+                $sDtAut   = implode("-", array_reverse(explode("/", $oParam->params[0]->sDtAut)));
+                $sWhere .= " and e42_dtpagamento = '{$sDtAut}'";
+            }
 
-    $oAgenda                       = new agendaPagamento();
-    $oRetorno                       = new stdClass();
-    $oRetorno->status               = '1';
-    $oRetorno->iCodigoOrdemAuxiliar = null;
-    $oRetorno->aAutenticacoes      = array();
-    try {
+            $sWhere .= " and e43_autorizado is true ";
+        } else if ($oParam->params[0]->iAutorizadas == 3) {
+            $sWhere .= " and e43_empagemov is null";
+        }
 
-      db_inicio_transacao();
-      $iCodigoOrdemAuxiliar = null;
-      if ($oParam->lEmitirOrdeAuxiliar) {
-        $iCodigoOrdemAuxiliar =  $oAgenda->autorizarPagamento($oParam->dtPagamento);
-      }
-      /*
-       * Adiciona o Movimento na ordem auxiliar escolhida pelo usuário
-       */
-      if (isset($oParam->iOPAuxiliarManutencao) && $oParam->iOPAuxiliarManutencao != "") {
-        $iCodigoOrdemAuxiliar = $oParam->iOPAuxiliarManutencao;
-        $oParam->lEmitirOrdeAuxiliar = true;
-      }
+        if ($oParam->params[0]->iOPauxiliar != '') {
+            $sWhere .= " and e42_sequencial = {$oParam->params[0]->iOPauxiliar}";
+        }
 
-      foreach ($oParam->aMovimentos as $oMovimento) {
+        if (isset($oParam->params[0]->iRecurso) && $oParam->params[0]->iRecurso  != '') {
+            $sWhere .= " and o15_codigo = {$oParam->params[0]->iRecurso}";
+        }
 
+        if (isset($oParam->params[0]->fonteRecurso) && $oParam->params[0]->fonteRecurso != '') {
+            $sWhere .= " and o15_recurso = '{$oParam->params[0]->fonteRecurso}'";
+        }
 
-        $oAgenda->configurarPagamentos($oParam->dtPagamento, $oMovimento, $iCodigoOrdemAuxiliar, $oParam->lEmitirOrdeAuxiliar);
+        if ($oParam->params[0]->iOPManutencao != '') {
+            $sWhere .= " or ( e42_sequencial = {$oParam->params[0]->iOPManutencao}  and $sWhereIni)";
+            $oAgenda->setOrdemConsultas("e42_sequencial,e43_sequencial, e81_codmov,e50_codord");
+        } elseif (!empty($oParam->params[0]->e03_numeroprocesso)) {
+            $sProcesso = addslashes(db_stdClass::normalizeStringJson($oParam->params[0]->e03_numeroprocesso));
+            $sWhere   .= " and e03_numeroprocesso = '{$sProcesso}'";
+        }
 
-        $iCodForma = $oMovimento->iCodForma;
-        $iCodMov   = $oMovimento->iCodMov;
+        // validamos se e configuracao OBN
+        if ($lArquivoObn == true) {
+            $sWhere .= " and empagemovforma.e97_codforma = 3 ";
+        }
+
+        $sJoin   .= " left join empagenotasordem on e81_codmov         = e43_empagemov  ";
+        $sJoin   .= " left join empageordem      on e43_ordempagamento = e42_sequencial ";
+        $sJoin   .= " left join pagordemprocesso on e50_codord = e03_pagordem ";
+
+        if (property_exists($oParam->params[0], 'orderBy') && $oParam->params[0]->orderBy == "cgm.z01_nome") {
+            $oAgenda->setOrdemConsultas("case when trim(a.z01_nome)   is not null then a.z01_nome   else cgm.z01_nome end");
+        }
+
+        if (!empty($oParam->params[0]->codigo_classificacao)) {
+            $sJoin  .= " left join classificacaocredoresempenho on cc31_empempenho = e60_numemp ";
+            $sWhere .= " and cc31_classificacaocredores = {$oParam->params[0]->codigo_classificacao} ";
+        }
+
+        if (!empty($oParam->params[0]->data_vencimento_inicial)) {
+            $oDataVencimentoInicial = new DBDate($oParam->params[0]->data_vencimento_inicial);
+            $sWhere .= " and e69_dtvencimento >= '{$oDataVencimentoInicial->getDate()}'";
+        }
+
+        if (!empty($oParam->params[0]->data_vencimento_final)) {
+            $oDataVencimentoFinal = new DBDate($oParam->params[0]->data_vencimento_final);
+            $sWhere .= " and e69_dtvencimento <= '{$oDataVencimentoFinal->getDate()}'";
+        }
+
+        if (!empty($oParam->params[0]->movimentosSelecionados)) {
+            $sWhere .= " and empagemov.e81_codmov in ({$oParam->params[0]->movimentosSelecionados}) ";
+        }
+
+        $contasVinculadas = null;
+        if (!empty($oParam->params[0]->lVinculadas)) {
+            $contasVinculadas = $oParam->params[0]->lVinculadas;
+        }
+
+        if (!empty($oParam->params[0]->recurso_reduzido)) {
+            $grupo = substr($oParam->params[0]->recurso_reduzido, 0, 1);
+            $especificacao = substr($oParam->params[0]->recurso_reduzido, 1, 2);
+            $sWhere .= " and (o15_loagrupo = '{$grupo}' and o15_loaespecificacao = '{$especificacao}') ";
+        }
+
+        $aOrdensAgenda = $oAgenda->getMovimentosAgendaPagamento($sWhere,$sJoin,$lTrazContasFornecedor , $lTrazContasRecurso,'', $contasVinculadas, $sCredorCgm);
+
+        if (!empty($oParam->params[0]->lTratarMovimentosConfigurados) && $oParam->params[0]->lTratarMovimentosConfigurados) {
+            $aMovimentosConfigurados = array();
+            foreach ($aOrdensAgenda as $oStdMovimento) {
+                if ($oStdMovimento->e91_codmov != "" || $oStdMovimento->e90_codmov != "") {
+                    continue;
+                } else {
+                    $aMovimentosConfigurados[] = $oStdMovimento;
+                }
+            }
+            $aOrdensAgenda = $aMovimentosConfigurados;
+        }
 
         /**
-         * Verificamos se o codigo do movimento está vinculado a algum tipo de transmissão. caso esteja, deletamos os
-         * detalhes pois o usuário pode ter alterado o valor a ser pago no movimento, entrando assim em conflito com os
-         * detalhes (códigos de barras) lançados na configuração de envio.
+         * Verifica a conta pagadora de cada movimento
          */
-        $oDaoEmpAgeMovTipoTransmissao   = db_utils::getDao('empagemovtipotransmissao');
-        $sSqlBuscaConfiguracaoMovimento = $oDaoEmpAgeMovTipoTransmissao->sql_query_file(null, "*", null, "e25_empagemov = {$iCodMov}");
-        $rsBuscaConfiguracaoMovimento   = $oDaoEmpAgeMovTipoTransmissao->sql_record($sSqlBuscaConfiguracaoMovimento);
-        if ($oDaoEmpAgeMovTipoTransmissao->numrows > 0 && $iCodForma == 3) {
-
-          $oDaoDetalheTransmissao = new cl_empagemovdetalhetransmissao();
-          $oDaoDetalheTransmissao->excluir(null, "e74_empagemov = {$iCodMov}");
-          if ($oDaoDetalheTransmissao->erro_status == "0") {
-            throw new BusinessException("Não foi possível excluir as configurações do movimento {$iCodMov}.");
-          }
-
-        } else {
-
-          $oDaoEmpAgeMovTipoTransmissao->excluir (null, "e25_empagemov = {$iCodMov}");
-          if ($oDaoEmpAgeMovTipoTransmissao->erro_status == 0) {
-            throw new Exception("ERRO [0] - Vinculando Movimento Tipo Transmissao - " .$oDaoEmpAgeMovTipoTransmissao->erro_msg );
-          }
-
-          if ($iCodForma == 3) {
-
-            $oDaoEmpAgeMovTipoTransmissao->e25_empagemov             = $iCodMov;
-            $oDaoEmpAgeMovTipoTransmissao->e25_empagetipotransmissao = 1;
-            $oDaoEmpAgeMovTipoTransmissao->incluir(null);
-            if ($oDaoEmpAgeMovTipoTransmissao->erro_status == 0) {
-               throw new Exception("ERRO [1] - Vinculando Movimento Tipo Transmissao - " .$oDaoEmpAgeMovTipoTransmissao->erro_msg );
+        foreach ($aOrdensAgenda as $iIndice => $oStdMovimento) {
+            $oDaoContaPagadora = new cl_empagetipo();
+            $sSqlBuscaContaPagadora = $oDaoContaPagadora->sql_query_movimento('e83_conta, e83_descr', "e81_codmov = {$oStdMovimento->e81_codmov}");
+            $rsBuscaContaPagadora   = db_query($sSqlBuscaContaPagadora);
+            if (!$rsBuscaContaPagadora) {
+                throw new Exception("Ocorreu um erro para buscar a conta pagadora configurada para o movimento {$oStdMovimento->e81_codmov}.");
             }
-          }
+
+            $oStdContaPagadoraConfigurada = db_utils::fieldsMemory($rsBuscaContaPagadora, 0);
+            $oContaPagadora = new stdClass();
+            $oContaPagadora->codigo    = $oStdContaPagadoraConfigurada->e83_conta;
+            $oContaPagadora->descricao = $oStdContaPagadoraConfigurada->e83_descr;
+            $aOrdensAgenda[$iIndice]->conta_pagadora = $oContaPagadora;
+
+            /**
+             * Para não gerar impacto nas demais rotinas, manterei o nome o15_codigo
+             */
+            $aOrdensAgenda[$iIndice]->o15_codigo = $oStdMovimento->o15_codigo;
+            $aOrdensAgenda[$iIndice]->recurso = getFonteReduzidaRecurso($oStdMovimento->o15_codigo);
+            $aOrdensAgenda[$iIndice]->o58_codigo = getFonteReduzidaRecurso($oStdMovimento->o58_codigo);
         }
-      }
 
-      /*
-       * Se o usuario marcou a opcao para "Efetuar pagamento" o sistema gera pagamento sequingo a mesma logica
-       *   da rotina de pagamento de empenho por agenda (Caixa > Procedimentos > Agenda > Pgtos Empenho p/ Agenda )
-       */
-      if ($oParam->lEfetuarPagamento) {
-        foreach ($oParam->aMovimentos as $oMovimento) {
-
-          $oOrdemPagamento = new ordemPagamento($oMovimento->iCodNota);
-          $oOrdemPagamento->setCheque(null);
-          $oOrdemPagamento->setConta($oMovimento->iContaSaltes); // temos que verificar esses parametros
-          $oOrdemPagamento->setValorPago($oMovimento->nValor);
-          $oOrdemPagamento->setMovimentoAgenda($oMovimento->iCodMov);
-          $oOrdemPagamento->setHistorico('');
-          $oOrdemPagamento->pagarOrdem();
-
-          $oRetorno->iItipoAutent     = $oOrdemPagamento->oAutentica->k11_tipautent;
-          $c70_codlan                 = $oOrdemPagamento->iCodLanc;
-          $oAutentica                 = new stdClass();
-          $oAutentica->iNota          = $oMovimento->iCodNota;
-          $oAutentica->sAutentica     = $oOrdemPagamento->getRetornoautenticacao();
-          $oRetorno->aAutenticacoes[] = $oAutentica;
+        $oRetono->status           = 2;
+        $oRetono->mensagem         = "";
+        $oRetono->aNotasLiquidacao = array();
+        if (count($aOrdensAgenda) > 0) {
+            $oRetono->status           = 1;
+            $oRetono->mensagem         = 1;
+            $oRetono->totais           = $oAgenda->getTotaisAgenda($sWhere);
+            $oRetono->aNotasLiquidacao = $aOrdensAgenda;
         }
-      }
 
-      $oRetorno->iCodigoOrdemAuxiliar = $iCodigoOrdemAuxiliar;
-      db_fim_transacao(false);
+        echo JSON::create()->stringify($oRetono);
+        break;
 
-    }
-    catch (Exception $eErro) {
+    case 'efetuarPagamentoSlip':
+        $oAgenda                        = new agendaPagamento();
+        $oRetorno                       = new stdClass();
+        $oRetorno->status               = '1';
+        $oRetorno->iCodigoOrdemAuxiliar = null;
+        $oRetorno->aAutenticacoes       = array();
+        $novosSlipsParciais = array();
+        try {
+            db_inicio_transacao();
 
-      db_fim_transacao(true);
-      $oRetorno->status  = 2;
-      $oRetorno->message = urlencode($eErro->getMessage());
+            foreach ($oParam->aMovimentos as $oMovimento) {
+                /*
+                 * alteramos a conta a credito do slip no caso de ter sido alterado na agenda de pagamento
+                 */
+                $contaPagadoraSlip = $oMovimento->iContaPagadora;
+                Transferencia::alterarContaCredito($oMovimento->iCodNota, $contaPagadoraSlip);
 
-    }
-    echo $oJson->encode($oRetorno);
-    break;
+                $oDaoEmpAgeTipo = new cl_empagetipo();
+                $buscaCodigoContaPagadora = $oDaoEmpAgeTipo->sql_query_file(null, 'e83_codtipo', null, 'e83_conta = ' . $contaPagadoraSlip);
+                $buscaCodigoContaPagadora = db_query($buscaCodigoContaPagadora);
+                $iCodTipo = db_utils::fieldsMemory($buscaCodigoContaPagadora, 0)->e83_codtipo;
+                $oMovimento->iContaPagadora = $iCodTipo;
+                $oAgenda->configurarPagamentos($oParam->dtPagamento, $oMovimento);
 
-  case "getMovimentosSlip":
+                /**
+                 * Incluindo possibilidade de pagamento parcial dos slips
+                 * Atualmente apenas com necessidade em Campina Grande
+                 */
+                if(isParaiba()){
 
-    // variavel de controle para configuração de arquivos padrao OBN
-    $lArquivoObn = false;
-    if (!empty($oParam->params[0]->lObn)) {
-      $lArquivoObn = true;
-    }
+                    /**
+                     * Se o tipo de operacao do slip importado for pagamento, mais precisamente, 9 ou 13.
+                     */
+                    $aTipoOperacao = [9,13];
+                    $slipTipoOperacao = slip::getSlipTipoOperacao($oMovimento->iCodNota)->k153_slipoperacaotipo;
+                    if (in_array($slipTipoOperacao,$aTipoOperacao)){
+                        $codSlip = $oMovimento->iCodNota;
+                        $codMov = $oMovimento->iCodMov;
+                        $novoSlip = slip::prepararPagamentoParcialSlip($codSlip,$codMov,$oMovimento->nValor);
+                        if(!empty($novoSlip)){
+                           $novosSlipsParciais[] = $novoSlip;
+                        }
+                    }
+                }
+            }
 
-    $oAgenda = new agendaPagamento();
-    $oAgenda->setUrlEncode(true);
-    $sWhere  = " s.k17_instit = ".db_getsession("DB_instit");
-    $sWhere .= " and e91_codmov is null    ";
-    $sWhere .= " and e81_cancelado is null ";
-    //$sWhere .= " and e90_codmov is null    ";
-    // alterada condicao do where vara ver o campo e90_cancelado = true, pois agora os registros da empageconfgera
-    // ao cancelar um arquivo, nao serão mais deletados
-    $sWhere .= " and (e90_cancelado is true or e90_cancelado is null)";
-    $sWhere .= "and k17_situacao in(1,3)   ";
-    if ($oParam->params[0]->iOrdemIni != '' && $oParam->params[0]->iOrdemFim == "") {
-      $sWhere .= " and s.k17_codigo = {$oParam->params[0]->iOrdemIni}";
-    } else if ($oParam->params[0]->iOrdemIni != '' && $oParam->params[0]->iOrdemFim != "") {
-      $sWhere .= " and s.k17_codigo between  {$oParam->params[0]->iOrdemIni} and {$oParam->params[0]->iOrdemFim}";
-    }
+            /*
+             * Se o usuario marcou a opcao para "Efetuar pagamento" o sistema gera pagamento sequingo a mesma logica
+             *   da rotina de pagamento de empenho por agenda (Caixa > Procedimentos > Agenda > Pgtos Empenho p/ Agenda )
+             */
 
-    if ($oParam->params[0]->dtDataIni != "" && $oParam->params[0]->dtDataFim == "") {
-      $sWhere .= " and k17_data = '".implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataIni)))."'";
-    } else if ($oParam->params[0]->dtDataIni != "" && $oParam->params[0]->dtDataFim != "") {
+            if ($oParam->lEfetuarPagamento) {
 
-      $dtDataIni = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataIni)));
-      $dtDataFim = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataFim)));
-      $sWhere .= " and k17_data between '{$dtDataIni}' and '{$dtDataFim}'";
+                foreach ($oParam->aMovimentos as $oMovimento) {
 
-    } else if ($oParam->params[0]->dtDataIni == "" && $oParam->params[0]->dtDataFim != "") {
+                    if ($oMovimento->iCodForma == 3) {
+                        throw new Exception("Para efetuar pagamento automático somente são permitidas as forma de pagamento : Dinheiro (DIN), Débito (DEB). Verifique os movimentos configurados.");
+                    }
 
-      $dtDataFim  = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataFim)));
-      $sWhere    .= " and k17_data <= '{$dtDataFim}'";
-    }
+                    $oTransferencia   = TransferenciaFactory::getInstance(null, $oMovimento->iCodNota);
+                    $oDataPagamento   = new DBDate($oParam->dtPagamento);
+                    $oDataEmissaoSlip = new DBDate($oTransferencia->getData());
+                    if($oDataPagamento->getTimeStamp() < $oDataEmissaoSlip->getTimeStamp()) {
+                        throw new Exception('Data de pagamento deve ser igual ou superior a data de emissão do slip.');
+                    }
 
-    //filtro para filtrar por credor
-    if ($oParam->params[0]->iNumCgm != '') {
-      $sWhere .= " and (k17_numcgm = {$oParam->params[0]->iNumCgm})";
-    }
+                    if (!empty($_SESSION["HISTORICO_PAGAMENTO_{$oMovimento->iCodMov}"])) {
+                        $oTransferencia->setObservacao($_SESSION["HISTORICO_PAGAMENTO_{$oMovimento->iCodMov}"]);
+                    }
 
-    if ($oParam->params[0]->iRecurso != '') {
-      $sWhere .= " and ctapag.c61_codigo = {$oParam->params[0]->iRecurso}";
-    }
+                    $oTransferencia->executaAutenticacao();
 
-    if ($lArquivoObn == true) {
-      $sWhere .= " and empagemovforma.e97_codforma = 3 ";
-    }
+                    if (USE_PCASP) {
+                        $oTransferencia->executarLancamentoContabil();
+                    }
 
-    if ( isset($oParam->params[0]->k145_numeroprocesso) && !empty($oParam->params[0]->k145_numeroprocesso) ) {
+                    $oAutentica                 = new stdClass();
+                    $oAutentica->iNota          = $oMovimento->iCodNota;
+                    $oAutentica->sAutentica     = $oTransferencia->getStringAutenticacao();
+                    $oRetorno->aAutenticacoes[] = $oAutentica;
+                    $lApropriacao = APROPRIACAO_RETENCAO;
 
-      $sProcesso = db_stdClass::normalizeStringJsonEscapeString($oParam->params[0]->k145_numeroprocesso);
-      $sWhere .= " and k145_numeroprocesso = '{$sProcesso}' ";
-    }
+                    //realiza a transferencia se a apropriacao de retencao esta ativa
+                    if ($lApropriacao) {
 
-    $aSlipsAgenda = $oAgenda->getSlips($sWhere, true);
-    if (count($aSlipsAgenda) > 0) {
+                        $oSlip = new slip($oMovimento->iCodNota);
 
-      $oRetono->status           = 1;
-      $oRetono->mensagem         = 1;
-      $oRetono->aSlips           = $aSlipsAgenda;
-      echo $oJson->encode($oRetono);
+                        $lContaExtra = contaTesouraria::isContaExtra($oSlip->getContaCredito());
 
-    } else {
+                        // se for um sliprecurso vai ser criado um novo e executado a transferencia
+                        //  e Uma conta extra para credito no novo slip
+                        //  e somente para slip que nao seja da folha
 
-      $oRetono->status           = 2;
-      $oRetono->mensagem         = "";
-      echo $oJson->encode($oRetono);
+                        if ( $oSlip->isSlipRecurso() &&  $lContaExtra && !$oSlip->isFolha()) {
 
-    }
-    break;
+                            $iCodigoDebito = $oSlip->getContaCredito();
+                            $iCodigoCredito = $oSlip->getContaPrincipalPorContaExtra();
+                            $sObservacao  = "Valor Correspondente a Transferência de Valor para Cobertura de Recurso ";
+                            $sObservacao .= "Extra orçamentário referente ao Movimento registrado no Slip : ";
+                            $sObservacao .= $oSlip->getSlip();
 
-  case "cancelaMovimentoOrdemAuxiliar":
+                            $oNovoSlip = new Slip();
+                            $oNovoSlip->setContaCredito($iCodigoCredito);
+                            $oNovoSlip->setContaDebito($iCodigoDebito);
+                            $oNovoSlip->setCaracteristicaPeculiarCredito("000");
+                            $oNovoSlip->setCaracteristicaPeculiarDebito("000");
+                            $oNovoSlip->setValor($oMovimento->nValor);
+                            $oNovoSlip->setTipoPagamento(3);
+                            $oNovoSlip->setSituacao(1);
+                            $oNovoSlip->setNumCgm($oSlip->getNumCgm());
+                            $oNovoSlip->setHistorico($oSlip->getHistorico());
+                            $oNovoSlip->setObservacoes($sObservacao);
+                            $oNovoSlip->save();
+                            Slip::vincularTipoOperacaoSlip($oNovoSlip->getSlip(), 17);
 
-    $oAgenda                       = new agendaPagamento();
-    $oRetono                       = new stdClass();
-    $oRetono->status               = '1';
-    $oRetono->message              = '1';
-    $oRetono->iCodigoOrdemAuxiliar = null;
+                            $oNovaTransferencia   = TransferenciaFactory::getInstance(null, $oNovoSlip->getSlip());
+                            $oNovaTransferencia->setObservacao($sObservacao);
+                            $oNovaTransferencia->executaAutenticacao();
+                            if (USE_PCASP) {
+                                $oNovaTransferencia->executarLancamentoContabil();
+                            }
+                        }
+                    }
+                }
+            }
+            $oRetorno->novosSlipsParciais = $novosSlipsParciais;
+            db_fim_transacao(false);
+        } catch (Exception $eErro) {
+            db_fim_transacao(true);
+            $oRetorno->status  = 2;
+            $oRetorno->message = urlencode($eErro->getMessage());
 
-    try {
+        }
+        echo JSON::create()->stringify($oRetorno);
 
-      db_inicio_transacao();
-      $iCodigoOrdemAuxiliar = $oParam->iOPAuxiliarManutencao;
-      foreach ($oParam->aMovimentos as $oMovimento) {
-        $oAgenda->cancelaMovimentoOrdemAuxiliar($iCodigoOrdemAuxiliar, $oMovimento->iCodMov);
-      }
-      $oRetono->iCodigoOrdemAuxiliar = $iCodigoOrdemAuxiliar;
-      db_fim_transacao(false);
-    }
-    catch (Exception $eErro) {
+        break;
 
-      db_fim_transacao(true);
-      $oRetono->status  = 2;
-      $oRetono->message = urlencode($eErro->getMessage());
+    case "configurarPagamento" :
+        $oAgenda                       = new agendaPagamento();
+        $oRetorno                       = new stdClass();
+        $oRetorno->status               = '1';
+        $oRetorno->iCodigoOrdemAuxiliar = null;
+        $oRetorno->aAutenticacoes      = array();
+        $oRetorno->sSlipsGeradoAutomatico = "";
+        $aSlipAutomatico = array();
+        $novosSlipsParciais = array();
 
-    }
-    echo $oJson->encode($oRetono);
-    break;
+        try {
+            db_inicio_transacao();
 
-  case "agruparMovimentos":
+            $iCodigoOrdemAuxiliar = null;
+            if ($oParam->lEmitirOrdeAuxiliar) {
+                $iCodigoOrdemAuxiliar =  $oAgenda->autorizarPagamento($oParam->dtPagamento);
+            }
+            /*
+             * Adiciona o Movimento na ordem auxiliar escolhida pelo usuario
+             */
+            if (isset($oParam->iOPAuxiliarManutencao) && $oParam->iOPAuxiliarManutencao != "") {
+                $iCodigoOrdemAuxiliar = $oParam->iOPAuxiliarManutencao;
+                $oParam->lEmitirOrdeAuxiliar = true;
+            }
 
-    $oRetorno                       = new stdClass();
-    $oRetorno->status               = 1;
-    $oRetorno->message              = '1';
-    $oRetorno->totalagrupados       = "".count($oParam->aMovimentosAgrupar)."";
-    $oAgenda                       = new agendaPagamento();
-    try {
+            foreach ($oParam->aMovimentos as $oMovimento) {
+                /** Plugin limite de saque */
 
-      db_inicio_transacao();
-      $oAgenda->agruparMovimentos($oParam->aMovimentosAgrupar);
-      db_fim_transacao(false);
 
-    } catch (Exception $eErro) {
+                /*
+                 * alteramos a conta a credito do slip no caso d  e ter sido alterado na agenda de pagamento
+                 * Quando o movimento percorrido por de slip
+                 */
+                $daoEmpageSlip = new cl_empageslip();
+                $buscaMovimentoSlip = $daoEmpageSlip->sql_query_file($oMovimento->iCodMov);
+                $buscaMovimentoSlip = db_query($buscaMovimentoSlip);
+                if (!$buscaMovimentoSlip) {
+                    throw new Exception("Não foi possível localizar o slip para o movimento {$oMovimento->iCodMov}");
+                }
 
-      db_fim_transacao(true);
-      $oRetorno->status               = 2;
-      $oRetorno->message              = urlencode($eErro->getMessage());
+                if (pg_num_rows($buscaMovimentoSlip) > 0) {
 
-    }
-    echo $oJson->encode($oRetorno);
-    break;
+                    $daoContaPagadora = new cl_empagetipo();
+                    $buscaContaPagadora = $daoContaPagadora->sql_query_file(null, 'e83_codtipo', null, "e83_conta = {$oMovimento->iContaPagadora}");
+                    $buscaContaPagadora = db_query($buscaContaPagadora);
+                    if (!$buscaContaPagadora || pg_num_rows($buscaContaPagadora) === 0) {
+                        throw new Exception("Não foi encontrada cadastro de conta pagadora para a conta {$oMovimento->iContaPagadora}.");
+                    }
+
+                    Transferencia::alterarContaCredito($oMovimento->iCodNota, $oMovimento->iContaPagadora);
+                    $oMovimento->iContaPagadora = db_utils::fieldsMemory($buscaContaPagadora, 0)->e83_codtipo;
+                }
+
+                $oAgenda->configurarPagamentos($oParam->dtPagamento, $oMovimento, $iCodigoOrdemAuxiliar, $oParam->lEmitirOrdeAuxiliar);
+
+                $iCodForma = $oMovimento->iCodForma;
+                $iCodMov   = $oMovimento->iCodMov;
+
+                /**
+                 * Verificamos se o codigo do movimento est? vinculado a algum tipo de transmiss?o. caso esteja, deletamos os
+                 * detalhes pois o usu?rio pode ter alterado o valor a ser pago no movimento, entrando assim em conflito com os
+                 * detalhes (c?digos de barras) lan?ados na configura??o de envio.
+                 */
+                $oDaoEmpAgeMovTipoTransmissao   = new cl_empagemovtipotransmissao;
+                $sSqlBuscaConfiguracaoMovimento = $oDaoEmpAgeMovTipoTransmissao->sql_query_file(null, "*", null, "e25_empagemov = {$iCodMov}");
+                $rsBuscaConfiguracaoMovimento   = $oDaoEmpAgeMovTipoTransmissao->sql_record($sSqlBuscaConfiguracaoMovimento);
+                if ($oDaoEmpAgeMovTipoTransmissao->numrows > 0 && $iCodForma == 3) {
+
+                    $oDaoDetalheTransmissao = new cl_empagemovdetalhetransmissao;
+                    $oDaoDetalheTransmissao->excluir(null, "e74_empagemov = {$iCodMov}");
+                    if ($oDaoDetalheTransmissao->erro_status == "0") {
+                        throw new BusinessException("Não foi possível excluir as configurações do movimento {$iCodMov}.");
+                    }
+
+                } else {
+
+                    $oDaoEmpAgeMovTipoTransmissao->excluir (null, "e25_empagemov = {$iCodMov}");
+                    if ($oDaoEmpAgeMovTipoTransmissao->erro_status == 0) {
+                        throw new Exception("ERRO [0] - Vinculando Movimento Tipo Transmissao - " .$oDaoEmpAgeMovTipoTransmissao->erro_msg );
+                    }
+
+                    if ($iCodForma == 3) {
+
+                        $oParametroCaixa = new ParametroCaixa();
+                        $iTransmissao = empty($oParam->iTipoTransmissao) ? $oParametroCaixa->getTipoTransmissaoPadrao() : $oParam->iTipoTransmissao;
+
+                        $oDaoEmpAgeMovTipoTransmissao->e25_empagemov             = $iCodMov;
+                        $oDaoEmpAgeMovTipoTransmissao->e25_empagetipotransmissao = $iTransmissao;
+                        $oDaoEmpAgeMovTipoTransmissao->incluir(null);
+                        if ($oDaoEmpAgeMovTipoTransmissao->erro_status == 0) {
+                            throw new Exception("ERRO [1] - Vinculando Movimento Tipo Transmissao - " .$oDaoEmpAgeMovTipoTransmissao->erro_msg );
+                        }
+                    }
+                }
+
+                /* Plugin GeracaoSlipRetencaoAutomatico Natal */
+
+
+                /**
+                 * Incluindo possibilidade de pagamento parcial dos slips
+                 * Atualmente apenas com necessidade em Campina Grande
+                 */
+                if(isParaiba()){
+
+                    /**
+                     * Se o tipo de operacao do slip importado for pagamento, mais precisamente, 9 ou 13.
+                     */
+                    $aTipoOperacao = [9,13];
+                    $slipTipoOperacao = slip::getSlipTipoOperacao($oMovimento->iCodNota)->k153_slipoperacaotipo;
+                    if (in_array($slipTipoOperacao,$aTipoOperacao)){
+                        $codSlip = $oMovimento->iCodNota;
+                        $codMov = $oMovimento->iCodMov;
+                        $novoSlip = slip::prepararPagamentoParcialSlip($codSlip,$codMov,$oMovimento->nValor);
+                        if(!empty($novoSlip)){
+                            $novosSlipsParciais[] = $novoSlip;
+                        }
+                    }
+                }
+            }
+
+            /*
+             * Se o usuario marcou a opcao para "Efetuar pagamento" o sistema gera pagamento sequingo a mesma logica
+             *   da rotina de pagamento de empenho por agenda (Caixa > Procedimentos > Agenda > Pgtos Empenho p/ Agenda )
+             */
+            if ($oParam->lEfetuarPagamento) {
+
+                foreach ($oParam->aMovimentos as $oMovimento) {
+
+                    if ($oMovimento->iCodForma == 3) {
+                        throw new Exception("Para efetuar pagamento automático somente são permitidas as forma de pagamento : Dinheiro (DIN), Débito (DEB). Verifique os movimentos configurados.");
+                    }
+
+                    /**
+                     * help - Daqui para baixo executa lançamento contabil
+                     */
+                    $oOrdemPagamento = new ordemPagamento($oMovimento->iCodNota);
+                    $oOrdemPagamento->setCheque(null);
+                    $oOrdemPagamento->setConta($oMovimento->iContaSaltes); // temos que verificar esses parametros
+                    $oOrdemPagamento->setValorPago($oMovimento->nValor);
+                    $oOrdemPagamento->setMovimentoAgenda($oMovimento->iCodMov);
+                    $oOrdemPagamento->setHistorico('');
+                    if (!empty($_SESSION["HISTORICO_PAGAMENTO_{$oMovimento->iCodMov}"])) {
+                        $oOrdemPagamento->setHistorico($_SESSION["HISTORICO_PAGAMENTO_{$oMovimento->iCodMov}"]);
+                    }
+                    $oOrdemPagamento->pagarOrdem();
+                    // gera slip das retencoes da OP que foram apropriadas
+                    if (APROPRIACAO_RETENCAO) {
+
+                        $oOrdemPagamento->gerarSlipDasRetencoesApropriadas($oMovimento);
+                    }
+
+                    $oRetorno->iItipoAutent     = $oOrdemPagamento->oAutentica->k11_tipautent;
+                    $c70_codlan                 = $oOrdemPagamento->iCodLanc;
+                    $oAutentica                 = new stdClass();
+                    $oAutentica->iNota          = $oMovimento->iCodNota;
+                    $oAutentica->sAutentica     = $oOrdemPagamento->getRetornoautenticacao();
+                    $oRetorno->aAutenticacoes[] = $oAutentica;
+
+                    if (count($oOrdemPagamento->getSlipsGeradosAutomaticamente(1)) > 0  ) {
+
+                        $aSlipAutomatico[] = $sSlipsGeradoAutomatico = implode(", ", $oOrdemPagamento->getSlipsGeradosAutomaticamente(1));
+                    }
+
+                }
+
+                if ( count($aSlipAutomatico) > 0) {
+
+                    $sSlipsGeradoAutomatico = implode(", ", $aSlipAutomatico);
+                    $oRetorno->sSlipsGeradoAutomatico = $sSlipsGeradoAutomatico;
+                }
+            }
+
+
+            /* [Extensão] Programação Financeira */
+            $oRetorno->iCodigoOrdemAuxiliar = $iCodigoOrdemAuxiliar;
+            $oRetorno->novosSlipsParciais = $novosSlipsParciais;
+            db_fim_transacao(false);
+
+        }
+        catch (Exception $eErro) {
+
+            db_fim_transacao(true);
+            $oRetorno->status  = 2;
+            $oRetorno->message = urlencode($eErro->getMessage());
+
+        }
+        echo JSON::create()->stringify($oRetorno);
+        break;
+
+    case "getMovimentosSlip":
+
+        // variavel de controle para configuração de arquivos padrao OBN
+        $lArquivoObn = false;
+        if (!empty($oParam->params[0]->lObn)) {
+            $lArquivoObn = true;
+        }
+
+        $oAgenda = new agendaPagamento();
+        $oAgenda->setUrlEncode(true);
+        $sWhere  = " s.k17_instit = ".db_getsession("DB_instit");
+        $sWhere .= " and e91_codmov is null    ";
+        $sWhere .= " and e81_cancelado is null ";
+        //$sWhere .= " and e90_codmov is null    ";
+        // alterada condicao do where vara ver o campo e90_cancelado = true, pois agora os registros da empageconfgera
+        // ao cancelar um arquivo, nao serão mais deletados
+//        $sWhere .= " and (e90_cancelado is true or e90_cancelado is null)";
+        $sWhere .= " and k17_situacao in (1, 3) ";
+
+        if ($oParam->params[0]->iOrdemIni != '' && $oParam->params[0]->iOrdemFim == "") {
+            $sWhere .= " and s.k17_codigo = {$oParam->params[0]->iOrdemIni}";
+        } else if ($oParam->params[0]->iOrdemIni != '' && $oParam->params[0]->iOrdemFim != "") {
+            $sWhere .= " and s.k17_codigo between  {$oParam->params[0]->iOrdemIni} and {$oParam->params[0]->iOrdemFim}";
+        }
+
+        if ($oParam->params[0]->dtDataIni != "" && $oParam->params[0]->dtDataFim == "") {
+            $sWhere .= " and k17_data = '".implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataIni)))."'";
+        } else if ($oParam->params[0]->dtDataIni != "" && $oParam->params[0]->dtDataFim != "") {
+            $dtDataIni = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataIni)));
+            $dtDataFim = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataFim)));
+            $sWhere .= " and k17_data between '{$dtDataIni}' and '{$dtDataFim}'";
+        } else if ($oParam->params[0]->dtDataIni == "" && $oParam->params[0]->dtDataFim != "") {
+            $dtDataFim  = implode("-",array_reverse(explode("/",$oParam->params[0]->dtDataFim)));
+            $sWhere    .= " and k17_data <= '{$dtDataFim}'";
+        }
+
+        //filtro para filtrar por credor
+        if ($oParam->params[0]->iNumCgm != '') {
+            $sWhere .= " and (k17_numcgm = {$oParam->params[0]->iNumCgm})";
+        }
+
+        if (!empty($oParam->params[0]->iRecurso)) {
+            $sWhere .= " and ctapag.c61_codigo = {$oParam->params[0]->iRecurso}";
+        }
+
+        if (!empty($oParam->params[0]->iRetencao)) {
+            $sWhere .= " and retencaotiporec.e21_sequencial = {$oParam->params[0]->iRetencao}";
+        }
+
+        if (!empty($oParam->params[0]->fonteRecurso)) {
+            $ativos = "(o15_datalimite is null or o15_datalimite > '{$dataSessao}')";
+            $ids = \ECidade\Financeiro\Orcamento\Repository\RecursoRepository::getIdsRecursoPorFonteRecurso(
+                $oParam->params[0]->fonteRecurso,
+                $ativos
+            );
+
+            $sWhere .= " and ctapag.c61_codigo in (" . implode(', ', $ids) . ")";
+        }
+
+        if (FONTE_RECURSO_UNIAO && !empty($oParam->params[0]->recurso_reduzido)) {
+            $grupo = substr($oParam->params[0]->recurso_reduzido, 0, 1);
+            $especificacao = substr($oParam->params[0]->recurso_reduzido, 1, 2);
+            $sWhere .= " and (o15_loagrupo = '{$grupo}' and o15_loaespecificacao = '{$especificacao}') ";
+        }
+
+        if ($lArquivoObn == true) {
+            $sWhere .= " and empagemovforma.e97_codforma = 3 ";
+        }
+
+        if (isset($oParam->params[0]->k145_numeroprocesso) && !empty($oParam->params[0]->k145_numeroprocesso)) {
+            $sProcesso = db_stdClass::normalizeStringJsonEscapeString($oParam->params[0]->k145_numeroprocesso);
+            $sWhere .= " and k145_numeroprocesso = '{$sProcesso}' ";
+        }
+
+        if (!empty($oParam->params[0]->movimentosSelecionados)) {
+            $sWhere .= " and empagemov.e81_codmov in ({$oParam->params[0]->movimentosSelecionados}) ";
+        }
+
+        $aSlipsAgenda = $oAgenda->getSlips($sWhere, true);
+
+        if (count($aSlipsAgenda) > 0) {
+            $oRetono->status           = 1;
+            $oRetono->mensagem         = 1;
+            $oRetono->aSlips           = $aSlipsAgenda;
+
+            $clsaltes  = new cl_saltes();
+
+            $sWhere    = " ( k13_limite is null or k13_limite >= '".date("Y-m-d",db_getsession("DB_datausu"))."')";
+            $sWhere   .= " and c61_instit = ".db_getsession("DB_instit");
+            /**
+             *  Retirar contas configuradas como conta padrao para slip
+             */
+            $sWhere   .= " and not exists (select 1 ";
+            $sWhere   .= "                   from caiparametro ";
+            $sWhere   .= "                  where k29_contapadraoslip = k13_conta ";
+            $sWhere   .= "                    and k29_instit = ".db_getsession('DB_instit').") ";
+            $result05  = $clsaltes->sql_record(
+                $clsaltes->sql_query_anousu(
+                    null,
+                    "c63_banco as banco, k13_conta as e83_conta, k13_descr as e83_descr, c61_codigo as recurso ",
+                    "c63_banco, c63_agencia",
+                    $sWhere
+                )
+            );
+            $aContas = db_utils::getCollectionByRecord($result05);
+            $oRetono->contas = $aContas;
+
+            if (!empty($oRetono->aSlips)) {
+                foreach ($oRetono->aSlips as $indice => $slip) {
+                    $oRetono->aSlips[$indice]->c61_codigo = $slip->c61_codigo;
+                    $oRetono->aSlips[$indice]->recurso = getFonteReduzidaRecurso($slip->c61_codigo);
+                }
+            }
+
+            echo JSON::create()->stringify($oRetono);
+        } else {
+            $oRetono->status           = 2;
+            $oRetono->mensagem         = "";
+            echo JSON::create()->stringify($oRetono);
+        }
+        break;
+
+    case "cancelaMovimentoOrdemAuxiliar":
+
+        $oAgenda                       = new agendaPagamento();
+        $oRetono                       = new stdClass();
+        $oRetono->status               = '1';
+        $oRetono->message              = '1';
+        $oRetono->iCodigoOrdemAuxiliar = null;
+
+        try {
+
+            db_inicio_transacao();
+            $iCodigoOrdemAuxiliar = $oParam->iOPAuxiliarManutencao;
+            foreach ($oParam->aMovimentos as $oMovimento) {
+                $oAgenda->cancelaMovimentoOrdemAuxiliar($iCodigoOrdemAuxiliar, $oMovimento->iCodMov);
+            }
+            $oRetono->iCodigoOrdemAuxiliar = $iCodigoOrdemAuxiliar;
+            db_fim_transacao(false);
+        }
+        catch (Exception $eErro) {
+
+            db_fim_transacao(true);
+            $oRetono->status  = 2;
+            $oRetono->message = urlencode($eErro->getMessage());
+
+        }
+        echo JSON::create()->stringify($oRetono);
+        break;
+
+    case "agruparMovimentos":
+
+        $oRetorno                       = new stdClass();
+        $oRetorno->status               = 1;
+        $oRetorno->message              = '1';
+        $oRetorno->totalagrupados       = "".count($oParam->aMovimentosAgrupar)."";
+        $oAgenda                       = new agendaPagamento();
+        try {
+
+            db_inicio_transacao();
+            $oAgenda->agruparMovimentos($oParam->aMovimentosAgrupar);
+            db_fim_transacao(false);
+
+        } catch (Exception $eErro) {
+
+            db_fim_transacao(true);
+            $oRetorno->status               = 2;
+            $oRetorno->message              = urlencode($eErro->getMessage());
+
+        }
+        echo JSON::create()->stringify($oRetorno);
+        break;
+
+    case "verificarNaturezaCredor":
+
+        $retorno = new stdClass();
+        $retorno->erro = false;
+        $retorno->mensagem = "";
+        $retorno->credorPossuiNatureza = false;
+        $retorno->movimentosRelacionados = array();
+        try {
+
+            $parametroCaixa = new ParametroCaixa();
+            if ($parametroCaixa->getTipoTransmissaoPadrao() === ParametroCaixa::TIPO_TRANSMISSAO_OBN) {
+
+                if (empty($oParam->codigoMovimentos)) {
+                    throw new ParameterException("Não foi informado o código do movimento para verificação.");
+                }
+
+                if (empty($oParam->origem) || !in_array($oParam->origem, array(1,2))) {
+                    throw new ParameterException("Não foi possível definir a origem das informações para buscar.");
+                }
+
+                $natureza  = new NaturezaCGM();
+                $naturezas = $natureza->get();
+                unset($naturezas[NaturezaCGM::TIPO_PESSOA_FISICA_JURIDICA_DIREITO_PRIVADO]);
+                $naturezas = array_keys($naturezas);
+
+                $where = array(
+                    "cgmnatureza.c05_tipo in (" . implode(',', $naturezas) . ")",
+                    "empagemov.e81_codmov in (" . implode(',', $oParam->codigoMovimentos) . ")"
+                );
+
+                $metodo = $oParam->origem === 1 ? 'sql_query_empenho' : 'sql_query_slip';
+                $cgmNatureza   = new cl_cgmnatureza();
+                $buscaNatureza = $cgmNatureza->{$metodo}("cgmnatureza.*, empagemov.e81_codmov", null, implode(' and ', $where));
+                $resBuscaNatureza = db_query($buscaNatureza);
+                if (!$resBuscaNatureza) {
+                    throw new DBException("Ocorreu um erro ao verificar a natureza do CGM.");
+                }
+
+                $movimentosParaConfigurar = array();
+                for ($rowNatureza = 0; $rowNatureza < pg_num_rows($resBuscaNatureza); $rowNatureza++) {
+
+                    $stdMovimento = db_utils::fieldsMemory($resBuscaNatureza, $rowNatureza);
+                    $movimentosParaConfigurar[] = $stdMovimento->e81_codmov;
+                }
+                $retorno->credorPossuiNatureza = count($movimentosParaConfigurar) > 0;
+                $retorno->movimentosRelacionados = $movimentosParaConfigurar;
+            }
+
+        } catch (Exception $e) {
+
+            db_putsession('DB_instit', $iInstituicaoOriginal);
+            $retorno->erro = true;
+            $retorno->mensagem = $e->getMessage();
+        }
+        echo JSON::create()->stringify($retorno);
+        break;
 }

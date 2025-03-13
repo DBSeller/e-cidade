@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -103,10 +103,10 @@ db_input('db125_codigosistema',10,$Idb125_codigosistema,true,'text',$db_opcao,""
 <script>
 function js_pesquisadb125_cadendermunicipio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadendermunicipio','func_cadendermunicipio.php?funcao_js=parent.js_mostracadendermunicipio1|db72_sequencial|db72_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadendermunicipio','func_cadendermunicipio.php?funcao_js=parent.js_mostracadendermunicipio1|db72_sequencial|db72_descricao','Pesquisa',true);
   }else{
      if(document.form1.db125_cadendermunicipio.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cadendermunicipio','func_cadendermunicipio.php?pesquisa_chave='+document.form1.db125_cadendermunicipio.value+'&funcao_js=parent.js_mostracadendermunicipio','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadendermunicipio','func_cadendermunicipio.php?pesquisa_chave='+document.form1.db125_cadendermunicipio.value+'&funcao_js=parent.js_mostracadendermunicipio','Pesquisa',false);
      }else{
        document.form1.db72_descricao.value = ''; 
      }
@@ -126,10 +126,10 @@ function js_mostracadendermunicipio1(chave1,chave2){
 }
 function js_pesquisadb125_db_sistemaexterno(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_sistemaexterno','func_db_sistemaexterno.php?funcao_js=parent.js_mostradb_sistemaexterno1|db124_sequencial|db124_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_sistemaexterno','func_db_sistemaexterno.php?funcao_js=parent.js_mostradb_sistemaexterno1|db124_sequencial|db124_descricao','Pesquisa',true);
   }else{
      if(document.form1.db125_db_sistemaexterno.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_sistemaexterno','func_db_sistemaexterno.php?pesquisa_chave='+document.form1.db125_db_sistemaexterno.value+'&funcao_js=parent.js_mostradb_sistemaexterno','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_sistemaexterno','func_db_sistemaexterno.php?pesquisa_chave='+document.form1.db125_db_sistemaexterno.value+'&funcao_js=parent.js_mostradb_sistemaexterno','Pesquisa',false);
      }else{
        document.form1.db124_descricao.value = ''; 
      }
@@ -148,7 +148,7 @@ function js_mostradb_sistemaexterno1(chave1,chave2){
   db_iframe_db_sistemaexterno.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadendermunicipiosistema','func_cadendermunicipiosistema.php?funcao_js=parent.js_preenchepesquisa|db125_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadendermunicipiosistema','func_cadendermunicipiosistema.php?funcao_js=parent.js_preenchepesquisa|db125_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadendermunicipiosistema.hide();

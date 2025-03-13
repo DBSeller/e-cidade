@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
 
 
 
@@ -153,9 +153,10 @@ $sCampos .= "  end as idade, ";
 $sCampos .= " trim(z01_nome) as z01_nome, ";
 $sCampos .= " trim(la22_c_medico) as la22_c_medico, ";
 $sCampos .= " la22_i_codigo, ";
+$sCampos .= " la02_c_descr, ";
 $sCampos .= " array_to_string(array_accum(la08_i_codigo), ',')  as la08_i_codigo  ";
 
-$sGroupBy = " group by la21_d_data, z01_i_cgsund, z01_v_nome, idade, z01_nome, la22_c_medico, la22_i_codigo ";
+$sGroupBy = " group by la21_d_data, z01_i_cgsund, z01_v_nome, idade, z01_nome, la22_c_medico, la22_i_codigo, la02_c_descr ";
 $sOrdem   = " la22_i_codigo, la21_d_data";
 
 if (!empty($iOrdemData) && $filtrarRelatorio == 1) {
@@ -166,7 +167,7 @@ if (!empty($iOrdemRequisicao) && $filtrarRelatorio == 1) {
   $sOrdem = " la22_i_codigo ";
 }
 
-$sWhere = "  la21_c_situacao = '8 - Autorizado' ";
+$sWhere = "  la21_c_situacao = '20 - Autorizado' ";
 
 if ( !empty($dData_inicio) && !empty($dData_fim))  {
   $sWhere .= " and la21_d_data between '{$dData_inicio}' and '{$dData_fim}' ";
@@ -174,7 +175,7 @@ if ( !empty($dData_inicio) && !empty($dData_fim))  {
 
 if ($filtrarRelatorio == 2 ) {
 
-  $sWhere    = " la21_c_situacao = '6 - Coletado' ";
+  $sWhere    = " la21_c_situacao = '30 - Coletado' ";
   if ( !empty($dData_inicio) && !empty($dData_fim))  {
     $sWhere .= " and la32_d_data between '{$dData_inicio}' and '{$dData_fim}' ";
   }
@@ -228,7 +229,10 @@ $oPdf = new PDF();
 $oPdf->Open();
 $oPdf->AliasNbPages();
 
-$head1 = "Mapa de trabalho";
+$oDadosExame   = db_utils::fieldsMemory($rs, 0);
+
+$head1 = "\nMapa de trabalho\n\n";
+$head2 = "Laboratório: " . $oDadosExame->la02_c_descr;
 $head3 = "Setor: {$nomesetor}";
 
 $head4 = 'Período:';

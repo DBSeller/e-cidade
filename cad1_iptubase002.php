@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptubase_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptubase_classe.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $cliptubase = new cl_iptubase;
@@ -65,14 +65,14 @@ function js_checa(){
 <br />  <br />
 
 
-<form name="form1" method="post" action="cad1_iptubase0021.php">
+<form name="form1" method="post" action="">
   <center>
   <fieldset style="width:600px;">
     <legend>Matricula do imóvel</legend>
     <table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
       <tr>
           <td>     
-
+            <input type="hidden" name="tipoImovel" value="<?=$tipoImovel?>"> 
             <input type="hidden" name="testaentra" value="true"> 
             <?
               db_ancora($Lj01_matric,' js_matri(true); ',1);
@@ -101,7 +101,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 function js_matri(mostra){
   var matri=document.form1.j01_matric.value;
   if(mostra==true){
-    js_OpenJanelaIframe('','db_iframe','func_iptubase.php?funcao_js=parent.js_mostra|0|2','Pesquisa',true);
+    js_OpenJanelaIframe('','db_iframe','func_iptubase.php?tipoImovel=<?=$tipoImovel?>&funcao_js=parent.js_mostra|0|2','Pesquisa',true);
 //    db_iframe.jan.location.href = 'func_iptubase.php?funcao_js=parent.js_mostra|0|1';
 //    db_iframe.mostraMsg();
 //   db_iframe.show();
@@ -125,7 +125,35 @@ function js_mostra1(chave,erro){
 }
 
 </script>
-<?
+<?php
+if (isset($_POST['tipoImovel'])) {
+  $tipoImovel = $_POST['tipoImovel'];
+  $j01_matric = $_POST['j01_matric'];
+  $sql = "SELECT * FROM iptubase WHERE j01_matric = $j01_matric AND j01_tipoimovel = $tipoImovel";
+  $result = db_query($sql);
+  if (pg_num_rows($result) > 0) {
+    $testaentra = $_POST['testaentra'];
+    $z01_nome = $_POST['z01_nome'];
+    $entrar = $_POST['entrar'];
+    echo "<script>
+      const obj = document.form1;
+      obj.action = 'cad1_iptubase0021.php';
+      obj.tipoImovel.value = $tipoImovel;
+      obj.testaentra.value = $testaentra;
+      obj.j01_matric.value = $j01_matric;
+      obj.z01_nome.value = '$z01_nome';
+      obj.entrar.value = '$entrar';
+      obj.submit();
+    </script>";
+  } else {
+    if ($tipoImovel == 1) {
+      db_msgbox("Matrícula de Imóvel Rural!");
+    } elseif ($tipoImovel == 2) {
+      db_msgbox("Matrícula de Imóvel Urbano!");
+    }
+  }
+}
+
 if(isset($invalido)){
   echo "<script>alert('Numero de matrícula inválido!')</script>";
 }

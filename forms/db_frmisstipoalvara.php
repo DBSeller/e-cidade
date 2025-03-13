@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -403,7 +403,7 @@ function js_mostradb_documentotemplate1(chave1,chave2){
   db_iframe_db_documentotemplate.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('','db_iframe_isstipoalvara','func_isstipoalvara.php?cadastro=1&funcao_js=parent.js_preenchepesquisa|q98_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('','db_iframe_isstipoalvara','func_isstipoalvara.php?cadastro=1&funcao_js=parent.js_preenchepesquisa|q98_sequencial&todos_tipos_alvara=true','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_isstipoalvara.hide();

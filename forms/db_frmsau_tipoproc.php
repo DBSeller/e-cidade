@@ -58,7 +58,7 @@ db_input('sd93_c_nome',50,$Isd93_c_nome,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_tipoproc','func_sau_tipoproc.php?funcao_js=parent.js_preenchepesquisa|sd93_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_tipoproc','func_sau_tipoproc.php?funcao_js=parent.js_preenchepesquisa|sd93_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_tipoproc.hide();

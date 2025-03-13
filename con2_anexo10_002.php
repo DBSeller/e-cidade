@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("libs/db_libcontabilidade.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $classinatura = new cl_assinatura;
 
@@ -50,7 +50,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -97,7 +97,7 @@ $troca = 1;
 $alt = 4;
 
 //$sql = "select * from work order by elemento";
-//$result = pg_exec($sql);
+//$result = db_query($sql);
 $anousu  = db_getsession("DB_anousu");
 if($opcao == 2){
   $dataini = $perini;
@@ -187,7 +187,7 @@ $pdf->cell(20,$alt,db_formatar($total_para_menos,'f'),0,1,"R",0);
 
 $pdf->Ln(25);
 
-assinaturas(&$pdf,&$classinatura,'BG');
+assinaturas($pdf,$classinatura,'BG');
 
 
 

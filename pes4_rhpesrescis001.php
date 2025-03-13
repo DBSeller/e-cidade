@@ -1,7 +1,8 @@
-<?
-/*
+<?php
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +26,34 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhpesrescisao_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhpesrescisao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
-$clrhpesrescisao = new cl_rhpesrescisao;
-$db_opcao = 1;
-$db_botao = true;
 
-$rh02_anousu = db_anofolha();
-$rh02_mesusu = db_mesfolha();
+$clrhpesrescisao = new cl_rhpesrescisao;
+$db_opcao        = 1;
+$db_botao        = true;
+$rh02_anousu     = DBPessoal::getAnoFolha();
+$rh02_mesusu     = DBPessoal::getMesFolha();
+
+// Bloqueio da liberação do contracheque no DBPref
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+
+  try {
+    FolhaPagamentoRescisao::verificaLiberacaoDBPref();
+  } catch (Exception $e) {
+
+    $db_opcao = 3;
+    $db_botao = false;
+    db_msgbox($e->getMessage());
+  }
+}
 ?>
 <html>
 <head>
@@ -54,14 +69,12 @@ $rh02_mesusu = db_mesfolha();
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
     <br><br>
-    <? 
-    include("forms/db_frmrhpesrescis.php");
-    ?>
+    <?php include(modification("forms/db_frmrhpesrescis.php")); ?>
     </center>
     </td>
   </tr>
 </table>
-<?
+<?php
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>

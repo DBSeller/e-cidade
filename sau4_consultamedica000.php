@@ -24,13 +24,13 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas = new cl_criaabas;
 $db_opcao = 1;
 ?>
@@ -43,6 +43,7 @@ $db_opcao = 1;
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
+<?php validaDepartamentoLogado('unidade'); ?>
 <table width="100%" height="18"  border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
  <tr>
   <td>&nbsp;</td>
@@ -52,11 +53,37 @@ $db_opcao = 1;
 <table valign="top" marginwidth="0" width="100%" border="0" cellspacing="0" cellpadding="0">
  <tr>
   <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
-   <?	
-   $clcriaabas->identifica = array("a1"=>"Procedimentos","a2"=>"Diagnóstico", 'a3' => 'Receita', 'a4'=>'Encaminhamentos');
-   $clcriaabas->sizecampo  = array("a1"=>"20","a2"=>"30","a3"=>"30", 'a4' => '30');
-   $clcriaabas->src        = array("a1"=>"sau4_consultamedica001.php","a2"=>"","a3"=>"", 'a4' => '');
-   $clcriaabas->disabled   = array("a2"=>"true","a3"=>"true");
+   <?php
+   $clcriaabas->identifica = [
+      "a1"=>"Procedimentos",
+      "a2"=>"Diagnóstico",
+      "a5" => "Solicitação e Avaliação de Exames",
+      'a3' => 'Receita',
+      'a4'=>'Encaminhamentos'
+   ];
+
+   $clcriaabas->sizecampo = [
+      "a1"=>"20",
+      "a2"=>"30",
+      'a5' => '30',
+      "a3"=>"30",
+      'a4' => '30'
+   ];
+
+   $clcriaabas->src = [
+      "a1"=>"sau4_consultamedica001.php",
+      "a2"=>"",
+      'a5' => '',
+      "a3"=>"",
+      'a4' => ''
+   ];
+
+   $clcriaabas->disabled = [
+      "a2"=>"true",
+      "a5"=> "true",
+      "a3"=>"true",
+      "a4" => "true"
+   ];
    $clcriaabas->cordisabled = "#9b9b9b";
    $clcriaabas->cria_abas();
    ?>
@@ -64,6 +91,8 @@ $db_opcao = 1;
  </tr>
 </table>
 </form>
-<?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
+<?php 
+   db_menu();
+?>
 </body>
 </html>

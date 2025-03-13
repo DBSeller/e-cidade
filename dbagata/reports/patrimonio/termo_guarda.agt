@@ -155,7 +155,7 @@
             <detail1>
                 <DataSet>
                     <Query>
-                        <Select>t52_bem                   as codigo_bem,t41_placa || t41_placaseq as placa,t52_descr                 as descricao_bem</Select>
+                        <Select>t52_bem                   as codigo_bem, t41_placaseq as placa,t52_descr                 as descricao_bem</Select>
                         <From>bensguarda  inner join bensguardaitem on bensguardaitem.t22_bensguarda = bensguarda.t21_codigo  inner join bens           on bens.t52_bem                  = bensguardaitem.t22_bem  inner join bensplaca      on bensplaca.t41_bem             = bens.t52_bem</From>
                         <Where>t21_codigo = $iCodigoTermo    and t21_instit = $iInstituicao;</Where>
                         <GroupBy></GroupBy>

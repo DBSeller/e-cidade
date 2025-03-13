@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010482' name='configuracoes.assinaturasdocumento' description="Tabela que guarda informações a respeito de quem assinou um determinado documento." prefix="db178" label="Assinaturas" type="0">
+  <fields>
+    <field codigo="1010806" 
+           campo_api='' 
+           name="db178_sequencial" 
+           conteudo="int8" 
+           description="Código sequencial da tabela" 
+           inivalue="0" 
+           label="Código" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='configuracoes.assinaturasdocumento_db178_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010807" 
+           campo_api='' 
+           name="db178_nome" 
+           conteudo="text" 
+           description="Nome de quem está assinando o arquivo." 
+           inivalue="" 
+           label="Nome" 
+           size="256" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nome" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010808" 
+           campo_api='' 
+           name="db178_cpf" 
+           conteudo="text" 
+           description="Cpf de quem está assinando o arquivo" 
+           inivalue="" 
+           label="CPF" 
+           size="11" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CPF" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010809" 
+           campo_api='' 
+           name="db178_metadados" 
+           conteudo="text" 
+           description="Campo tipo JSON para receber demais informações que possam ser úteis." 
+           inivalue="" 
+           label="Demais informações" 
+           size="256" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Demais informações" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010810" 
+           campo_api='' 
+           name="db178_imagem" 
+           conteudo="int8" 
+           description="Imagem da assinatura, para que possa ser utilizada nos documentos quando houver necessidade." 
+           inivalue="0" 
+           label="Imagem" 
+           size="19" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Imagem" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db178_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="arquivoestorage" inner='f'>
+      <fieldfk name="db178_imagem" reference="db177_idestorage" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

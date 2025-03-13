@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 
-include("classes/db_agendamentos_ext_classe.php");
-include("classes/db_undmedhorario_ext_classe.php");
-include("classes/db_ausencias_ext_classe.php");
+include(modification("classes/db_agendamentos_ext_classe.php"));
+include(modification("classes/db_undmedhorario_ext_classe.php"));
+include(modification("classes/db_ausencias_ext_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
 ?>
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js">
@@ -514,4 +514,10 @@ function js_emissaopm( cgs ){
 	}
 
 }
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

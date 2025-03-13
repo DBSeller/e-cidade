@@ -10,7 +10,12 @@ $ass_tesFunc  = $classinatura->assinatura(1004,"","1");
 $ass_cont     = $classinatura->assinatura(1005,"","0");
 $ass_contFunc = $classinatura->assinatura(1005,"","1");
 
-
+$tituloDocumento = "ESTORNO DE PAGAMENTO";
+$valorSubtracao = 0;
+if ((int)$_SESSION['DB_itemmenu_acessado'] === 228110) {
+	$tituloDocumento = "ESTORNO DE APROPRIAÇÃO";
+	$valorSubtracao = 5;
+}
 
  for($xxx = 0;$xxx < $this->nvias;$xxx++){	
 	$this->objpdf->AliasNbPages();
@@ -24,7 +29,7 @@ $ass_contFunc = $classinatura->assinatura(1005,"","1");
 	$this->objpdf->rect($xcol-2,$xlin-18,206,292,2,'DF','1234');
 	$this->objpdf->setfillcolor(255,255,255);
 	$this->objpdf->Setfont('Arial','B',10);
-	$this->objpdf->text(117,$xlin-13,'ESTORNO DE PAGAMENTO N'.CHR(176).': ');
+	$this->objpdf->text(117-$valorSubtracao,$xlin-13,"{$tituloDocumento} N".CHR(176).': ');
 	$this->objpdf->text(175,$xlin-13,db_formatar($this->anulado,'s','0',6,'e'));
 	$this->objpdf->text(134,$xlin-8,'DATA DE EMISSÃO : ');
 	$this->objpdf->text(175,$xlin-8,$this->emissao);

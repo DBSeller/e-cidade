@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -208,10 +208,10 @@ $clrotulo->label("j06_lote");
   
   function js_pesquisaj04_setorregimovel(mostra){
   if(mostra==true){
-     js_OpenJanelaIframe('top.corpo','db_iframe_setorregimovel','func_setorregimovel.php?funcao_js=parent.js_mostrasetorregimovel1|j69_sequencial|j69_descr','Pesquisa',true);
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_setorregimovel','func_setorregimovel.php?funcao_js=parent.js_mostrasetorregimovel1|j69_sequencial|j69_descr','Pesquisa',true);
   }else{
      if(document.form1.j04_setorregimovel.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_setorregimovel','func_setorregimovel.php?pesquisa_chave='+document.form1.j04_setorregimovel.value+'&funcao_js=parent.js_mostrasetorregimovel','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_setorregimovel','func_setorregimovel.php?pesquisa_chave='+document.form1.j04_setorregimovel.value+'&funcao_js=parent.js_mostrasetorregimovel','Pesquisa',false);
      }else{
        document.form1.j69_descr.value = ''; 
      }
@@ -234,7 +234,7 @@ function js_pesquisaMatricula(lMostra) {
   if(lMostra) {
 	  sQueryString += 'funcao_js=parent.js_mostraMatricula|j01_matric|z01_nome';
   } 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_iptubase', sQueryString, 'Pesquisa', lMostra, 20);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_iptubase', sQueryString, 'Pesquisa', lMostra, 20);
 }
 function js_mostraMatricula(iMatricula, sNome) {
 	document.form1.j01_matric.value = iMatricula;
@@ -454,7 +454,7 @@ var oAjax = new Ajax.Request('func_iptubase.RPC.php',
 
 function js_retornaQuadra(oAjax) {
 
-var oRetorno = eval("("+oAjax.responseText+")"); 
+var oRetorno = JSON.parse(oAjax.responseText); 
 var aQuadras = new Array(); 
 
 if(oRetorno.status == 1) {
@@ -489,7 +489,7 @@ var oAjax = new Ajax.Request('func_iptubase.RPC.php',
 
 function js_retornaLote(oAjax) {
 
-var oRetorno = eval("("+oAjax.responseText+")");
+var oRetorno = JSON.parse(oAjax.responseText);
 var aLotes   = new Array(); 
 aLotes['']   = 'Todos...';
 

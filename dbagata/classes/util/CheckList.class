@@ -36,9 +36,9 @@ class CheckList
     /***********************************************************/
     function CheckList($options)
     {
-        $this->widget   = &new GtkScrolledWindow;
-        $this->viewport = &new GtkViewport;
-        $this->vbox     = &new GtkVBox;
+        $this->widget   = new GtkScrolledWindow;
+        $this->viewport = new GtkViewport;
+        $this->vbox     = new GtkVBox;
         
         $this->widget->add($this->viewport);
         $this->viewport->add($this->vbox);
@@ -46,7 +46,7 @@ class CheckList
         
         foreach ($options as $option)
         {
-            $element = &new GtkCheckButton($option);
+            $element = new GtkCheckButton($option);
             $this->vbox->pack_start($element, false, false);
             $this->elements[] = $element;
         }

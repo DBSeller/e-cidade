@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_utils.php");
-require_once("libs/JSON.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/JSON.php"));
 
 $oGet       = db_utils::postMemory($_GET);
 $oJson      = new services_json();
 $aProcessos = $oJson->decode(str_replace("\\","",$oGet->aObjProcessos));
 
 
-require_once("classes/db_processoouvidoriaprorrogacao_classe.php");
+require_once(modification("classes/db_processoouvidoriaprorrogacao_classe.php"));
 $clProcessoOuvidoriaProrrogacao = new cl_processoouvidoriaprorrogacao();
 
 $head2 = "Controle de Atendimento";

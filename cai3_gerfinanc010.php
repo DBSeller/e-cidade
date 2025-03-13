@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,14 +27,14 @@
 
 set_time_limit(0);
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+parse_str($_SERVER['QUERY_STRING']);
 $clrotulo = new rotulocampo;
 $clrotulo->label("v01_exerc");
 
@@ -147,7 +147,7 @@ function js_somatotal(linha) {
 }
 
   function js_AbreJanelaRelatorioold() { 
-    jandb = window.open('arr3_relatoriototaldebitossintetico001.php?db_datausu=<?
+    jandb = window.open('arr3_relatoriototaldebitossintetico001.php?db_datausu=<?php
 	  echo $db_datausu."&";
 	  if(isset($matric)){
          echo "matric=$matric";
@@ -263,7 +263,6 @@ function js_verifTipo(obj){
 
 </script>
 <style type="text/css">
-<!--
 .borda {
 	border-right-width: 1px;
 	border-right-style: solid;
@@ -274,7 +273,7 @@ function js_verifTipo(obj){
 	border-right-style: solid;
 	border-right-color: #000000;
 }
--->
+
 </style>
 <script>
 function MM_reloadPage(init) {  //reloads the window if Nav4 resized
@@ -304,7 +303,7 @@ MM_reloadPage(true);
 <th class="borda" style="font-size:12px" nowrap>Valor Total</th>
 <th class="borda" style="font-size:12px" nowrap></th>
 </tr>
-<?
+<?php
 $erro = false;
 if(isset($matric)){
   $result = debitos_tipos_matricula($matric);
@@ -322,7 +321,7 @@ if(isset($matric)){
   $sql = "select termo.v07_numpre as numpre 
  		    from termo 
 		   where termo.v07_parcel = ".$Parcelamento;
-  $numpre = pg_result(pg_query($sql),0,0);	
+  $numpre = pg_result(db_query($sql),0,0);	
   $result = debitos_tipos_numpre($numpre);  
   $chave = $Parcelamento;
 }else{
@@ -443,13 +442,13 @@ if($chave !=0){
 		   $cor="#EFE029";
 		?>
         <tr>
-        <?
+        <?php
 		if(!isset($tiposoma) || ( isset($tiposoma) && ($tiposoma=="Por Tipo"))){	 
 		
 		?>
         <td class="borda" style="font-size:12px" nowrap bgcolor="<?=$cor?>"><?=$k00_tipo?></td>
         <td class="borda" style="font-size:12px" nowrap bgcolor="<?=$cor?>"><?=$k00_descr?></td>
-        <?
+        <?php
 		}else{
 		?>
         <td align="left" colspan="2" style="font-size:12px" nowrap bgcolor="<?=$cor?>">Total Tipo:</td>
@@ -512,7 +511,7 @@ if($erro==false){
     <input type="submit" name="tiposoma" value="<?=(@$tiposoma=="Por Receita"?"Por Tipo":"Por Receita")?>">
     <input type="hidden" name="db_datausu" value="$db_datausu">
     &nbsp;&nbsp; 
-    <input type="button" name="Submit3" value="Relat&oacute;rio Sint&eacute;tico" onclick="js_AbreJanelaRelatorio('arr3_relatoriototaldebitossintetico001.php?db_datausu=<?
+    <input type="button" name="Submit2" value="Relat&oacute;rio Sint&eacute;tico" onclick="js_AbreJanelaRelatorio('arr3_relatoriototaldebitossintetico001.php?db_datausu=<?
           echo $db_datausu."&";
           if(isset($matric)){
          echo "matric=$matric";
@@ -524,6 +523,19 @@ if($erro==false){
          echo "numpre=$numpre";
       }
      ?>');">
+     &nbsp;&nbsp; 
+    <input type="button" name="Submit32" value="Relat&oacute;rio Sint&eacute;tico(novo)" onClick="js_AbreJanelaRelatorio('arr3_relatoriototaldebitossinteticonovo001.php?db_datausu=<?
+	  echo $db_datausu."&";
+	  if(isset($matric)){
+         echo "matric=$matric";
+      }else if(isset($inscr)){
+         echo "inscr=$inscr";
+      }else if(isset($numcgm)){
+         echo "numcgm=$numcgm";
+      }else if(isset($numpre)){
+         echo "numpre=$numpre";
+      }
+	?>');">	
     &nbsp;&nbsp; 
     <input type="button" name="Submit32" value="Relat&oacute;rio Anal&iacute;tico" onClick="js_AbreJanelaRelatorio('arr3_relatoriototaldebitosanalitico001.php?db_datausu=<?
 	  echo $db_datausu."&";

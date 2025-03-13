@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("libs/db_stdlibwebseller.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_escola_classe.php");
-include("classes/db_procavaliacao_classe.php");
-include("classes/db_regenciahorario_classe.php");
-include("classes/db_regenciaperiodo_classe.php");
-include("classes/db_periodocalendario_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("libs/db_stdlibwebseller.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_escola_classe.php"));
+include(modification("classes/db_procavaliacao_classe.php"));
+include(modification("classes/db_regenciahorario_classe.php"));
+include(modification("classes/db_regenciaperiodo_classe.php"));
+include(modification("classes/db_periodocalendario_classe.php"));
 $clmatricula         = new cl_matricula;
 $clregencia          = new cl_regencia;
 $clescola            = new cl_escola;

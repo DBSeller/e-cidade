@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_cgm_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $db_botao=1;
@@ -155,10 +155,10 @@ function js_testacamp(){
 function js_matri(mostra){
   var matri=document.form1.k00_matric.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe3','func_iptubase.php?funcao_js=parent.js_mostramatri|0|2','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe3','func_iptubase.php?funcao_js=parent.js_mostramatri|0|2','Pesquisa',true);
   }else{
     if (matri != "") {
-	    js_OpenJanelaIframe('top.corpo','db_iframe3','func_iptubase.php?pesquisa_chave='+matri+
+	    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe3','func_iptubase.php?pesquisa_chave='+matri+
 	                                                                  '&funcao_js=parent.js_mostramatri1','Pesquisa',false);
     }                                                                 
   }
@@ -183,9 +183,9 @@ function js_mostramatri1(chave,erro){
 function js_inscr(mostra){
   var inscr=document.form1.k00_inscr.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_issbase.php?funcao_js=parent.js_mostrainscr|q02_inscr|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_issbase.php?funcao_js=parent.js_mostrainscr|q02_inscr|z01_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_issbase.php?pesquisa_chave='+inscr+
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_issbase.php?pesquisa_chave='+inscr+
                                                                   '&funcao_js=parent.js_mostrainscr1','Pesquisa',false);
   }
 }
@@ -210,9 +210,9 @@ function js_mostrainscr1(chave,erro){
 function js_cgm(mostra){
   var cgm=document.form1.z01_numcgm.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_mostracgm|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_mostracgm|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?pesquisa_chave=' + cgm 
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?pesquisa_chave=' + cgm 
                                                                   + '&funcao_js=parent.js_mostracgm1','Pesquisa',false);
   }
 }
@@ -248,12 +248,12 @@ if(isset($dado) && $dado=="numcgm"){
 <script>
 
 function js_mostraParcelamento(parcelamento){
-  js_OpenJanelaIframe('top.corpo','db_iframe_consultaparc'+parcelamento,'div3_consultaParcelamento.php?parcelamento='+
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consultaparc'+parcelamento,'div3_consultaParcelamento.php?parcelamento='+
                                                                              parcelamento,'Consulta Pacelamentos',true);
 }
 
 function jsParcelamentos(sFiltro, sValor) {
-  js_OpenJanelaIframe('top.corpo','db_iframe_consultaparc'+sFiltro,'div3_consultaParcelamentoFiltro.php?sFiltro='+
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consultaparc'+sFiltro,'div3_consultaParcelamentoFiltro.php?sFiltro='+
                                                                 sFiltro+'&sValor='+sValor,'Consulta Pacelamentos',true);
 }
 

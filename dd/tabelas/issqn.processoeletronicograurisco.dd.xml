@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010474' name='issqn.processoeletronicograurisco' description="Tabela que guarda o grau de risco selecionado em um processo" prefix="" label="Grau de risco processo eletronico" type="0">
+  <fields>
+    <field codigo="1010768"
+           campo_api=''
+           name="q151_sequencial"
+           conteudo="int8"
+           description="Sequecial da tabela"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='issqn.processoeletronicograurisco_q151_sequencial_seq' />
+
+    </field>
+    <field codigo="1010769"
+           campo_api=''
+           name="q151_processo"
+           conteudo="int8"
+           description="Sequencial do processo"
+           inivalue=""
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010770"
+           campo_api=''
+           name="q151_graurisco"
+           conteudo="char(1)"
+           description="Grau de risco do processo"
+           inivalue=""
+           label=""
+           size="1"
+           null="f"
+           uppercase="t"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="q151_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="protprocesso" inner='t'>
+      <fieldfk name="q151_processo" reference="p58_codproc" />
+    </foreignkey>
+  </foreignkeys>
+</table>

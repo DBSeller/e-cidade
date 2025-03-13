@@ -26,21 +26,21 @@
  */
 
 set_time_limit(0);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-//require("libs/db_conecta.php");
-//include("libs/db_sessoes.php");
-//include("libs/db_sql.php");
-//require("libs/db_stdlib.php");
+//require(modification("libs/db_conecta.php"));
+//include(modification("libs/db_sessoes.php"));
+//include(modification("libs/db_sql.php"));
+//require(modification("libs/db_stdlib.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 
 $sql = "select q12_classe,q12_descr from clasativ inner join classe on q82_classe=q12_classe group by q12_classe,q12_descr";
-$result = pg_exec($sql);
+$result = db_query($sql);
 if(pg_numrows($result) == 0 ){
   db_redireciona("db_erros.php?fechar=true&db_erro=Não Existe Atividade Para o Intervalo Digitado.&pagina_retorno=iss4_contativ001.php");
   exit;

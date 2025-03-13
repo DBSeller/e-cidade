@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_contabancaria_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_contabancaria_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_conciliapendcorrente_classe.php");
-include("classes/db_conciliapendextrato_classe.php");
-include("classes/db_conciliacor_classe.php");
-include("classes/db_conciliaextrato_classe.php");
-include("classes/db_conciliaitem_classe.php");
+include(modification("classes/db_conciliapendcorrente_classe.php"));
+include(modification("classes/db_conciliapendextrato_classe.php"));
+include(modification("classes/db_conciliacor_classe.php"));
+include(modification("classes/db_conciliaextrato_classe.php"));
+include(modification("classes/db_conciliaitem_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -159,7 +159,7 @@ function js_retorno(oAjax){
 
   js_removeObj('msgBox');
   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   if (oRetorno.status == 1) {
     alert("Exclusão efetuada com sucesso!");
@@ -177,7 +177,7 @@ function js_pesquisadb83_sequencial(mostra){
   }else{
     var sUrl = 'func_contabancariaconcilia.php?pesquisa_chave='+$F('db83_sequencial')+'&funcao_js=parent.js_mostrasequencial|db83_sequencial|db83_descricao';
   }
-  js_OpenJanelaIframe('top.corpo','db_iframe_contabancaria',sUrl,'Pesquisa',mostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contabancaria',sUrl,'Pesquisa',mostra);
   
 }
 
@@ -195,7 +195,7 @@ function js_mostrasequencial1(chave1,chave2){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_contabancaria','func_contabancaria.php?funcao_js=parent.js_preenchepesquisa|db83_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contabancaria','func_contabancaria.php?funcao_js=parent.js_preenchepesquisa|db83_sequencial','Pesquisa',true);
 
 }
 function js_preenchepesquisa(chave1,chave2){

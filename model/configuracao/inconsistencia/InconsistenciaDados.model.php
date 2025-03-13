@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,7 +31,7 @@
  * @require db_utils
  *
  * @author Jeferson Belmiro <jeferson.belmiro@dbseller.com.br>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.9 $
  */
 class InconsistenciaDados {
 
@@ -317,7 +317,7 @@ class InconsistenciaDados {
       throw new Exception($oDaoDb_registrosinconsistentesdados->erro_msg);
     }
   
-    return db_utils::getColectionByRecord($rsDependencias);
+    return db_utils::getCollectionByRecord($rsDependencias);
   }
 
   /**

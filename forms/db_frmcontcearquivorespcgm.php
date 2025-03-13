@@ -82,10 +82,10 @@ db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
 <script>
 function js_pesquisac13_contcearquivoresp(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_contcearquivoresp','func_contcearquivoresp.php?funcao_js=parent.js_mostracontcearquivoresp1|c12_sequencial|c12_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contcearquivoresp','func_contcearquivoresp.php?funcao_js=parent.js_mostracontcearquivoresp1|c12_sequencial|c12_nome','Pesquisa',true);
   }else{
      if(document.form1.c13_contcearquivoresp.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_contcearquivoresp','func_contcearquivoresp.php?pesquisa_chave='+document.form1.c13_contcearquivoresp.value+'&funcao_js=parent.js_mostracontcearquivoresp','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contcearquivoresp','func_contcearquivoresp.php?pesquisa_chave='+document.form1.c13_contcearquivoresp.value+'&funcao_js=parent.js_mostracontcearquivoresp','Pesquisa',false);
      }else{
        document.form1.c12_nome.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostracontcearquivoresp1(chave1,chave2){
 }
 function js_pesquisac13_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.c13_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.c13_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.c13_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostracgm1(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_contcearquivorespcgm','func_contcearquivorespcgm.php?funcao_js=parent.js_preenchepesquisa|c13_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contcearquivorespcgm','func_contcearquivorespcgm.php?funcao_js=parent.js_preenchepesquisa|c13_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_contcearquivorespcgm.hide();

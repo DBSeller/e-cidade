@@ -34,7 +34,7 @@ class Report
     /***********************************************************/
     /*
     /***********************************************************/
-    function OpenReport($FileName)
+    static function OpenReport($FileName)
     {
         $Report['Report'] = AgataCompatibility::readReport($FileName);
         //var_dump($Report);
@@ -67,7 +67,7 @@ class Report
     /***********************************************************/
     /* exporta sql de um dataset
     /***********************************************************/
-    function BlockToSql($Block, $distinct = false, $break = false)
+    static function BlockToSql($Block, $distinct = false, $break = false)
     {
         $sql = '';
         $ln = $break ? "\n" : '';
@@ -214,7 +214,7 @@ class Report
     /***********************************************************/
     /*
     /***********************************************************/    
-    function SqlFromReport($DataSet)
+    static function SqlFromReport($DataSet)
     {
         return Report::BlockToSql(Report::ExtractBlock($DataSet), $DataSet['Query']['Config']['Distinct'], false);
     }
@@ -222,7 +222,7 @@ class Report
     /***********************************************************/
     /*
     /***********************************************************/
-    function ExtractBlock($DataSet)
+    static function ExtractBlock($DataSet)
     {
         $Block['Select']   = array('Select',   $DataSet['Query']['Select']);
         $Block['From']     = array('From',     $DataSet['Query']['From']);
@@ -233,8 +233,9 @@ class Report
         return $Block;
     }
     
-    function ExtractAdjustments($DataSet)
-    {            
+    static function ExtractAdjustments($DataSet)
+    {  
+        $Adjustments = [];     
         $adjustments = $DataSet['Fields'];
         
         if ($adjustments)
@@ -252,8 +253,9 @@ class Report
         return $Adjustments;
     }
     
-    function ExtractBreaks($Report)
+    static function ExtractBreaks($Report)
     {
+        $Breaks = [];
         if ($groups = $Report['Report']['DataSet']['Groups']['Formulas'])
         {
             foreach ($groups as $key => $formula)
@@ -265,7 +267,7 @@ class Report
         return $Breaks;
     }
     
-    function GetFunctionNames()
+    static function GetFunctionNames()
     {
         return array('count' => 'Count',        'sum'   => 'Sum',
                      'gavg'  => 'Group Average','avg'   => 'Average',

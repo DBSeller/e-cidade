@@ -58,7 +58,7 @@ db_textarea('y98_descr',3,30,$Iy98_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tiaftipodoc','func_tiaftipodoc.php?funcao_js=parent.js_preenchepesquisa|y98_tiafdoc','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiaftipodoc','func_tiaftipodoc.php?funcao_js=parent.js_preenchepesquisa|y98_tiafdoc','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tiaftipodoc.hide();

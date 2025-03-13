@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,28 +26,28 @@
  */
 
 
-require("fpdf151/scpdf.php");
-include("fpdf151/impcarne.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_isscalc_classe.php");
-include("classes/db_arrecad_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptucalc_classe.php");
-include("classes/db_iptunump_classe.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_massamat_classe.php");
-include("classes/db_iptuender_classe.php");
-include("classes/db_cadban_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_db_docparag_classe.php");
-include("classes/db_arrematric_classe.php");
-include("classes/db_listadoc_classe.php");
-include("classes/db_cadconvenio_classe.php");
-include("model/convenio.model.php");
+require(modification("fpdf151/scpdf.php"));
+include(modification("fpdf151/impcarne.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_isscalc_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptucalc_classe.php"));
+include(modification("classes/db_iptunump_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_massamat_classe.php"));
+include(modification("classes/db_iptuender_classe.php"));
+include(modification("classes/db_cadban_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_db_docparag_classe.php"));
+include(modification("classes/db_arrematric_classe.php"));
+include(modification("classes/db_listadoc_classe.php"));
+include(modification("classes/db_cadconvenio_classe.php"));
+include(modification("model/convenio.model.php"));
 
 $cliptucalc    = new cl_iptucalc;
 $cliptuender   = new cl_iptuender;
@@ -72,12 +72,12 @@ $pdf->Open();
 $nomearquivos = "";
 $wheretipo = "";
 
-$resul = $cldb_config->sql_record($cldb_config->sql_query(db_getsession("DB_instit"), "numbanco, logo, nomeinst as prefeitura, munic, db21_codcli"));
+$resul = $cldb_config->sql_record($cldb_config->sql_query(db_getsession("DB_instit"), "numbanco, logo, nomeinst as prefeitura, munic"));
 db_fieldsmemory($resul, 0);
 $munic2 = $munic;
 $numbanco = $numbanco;
 $nomeinst2 = $prefeitura;
-if ($db21_codcli == 14) {
+if ($munic == "CHARQUEADAS") {
   $impmodelo = 28;
 } else {
   $impmodelo = 1;
@@ -147,7 +147,7 @@ $sql .= "                left  join iptumatzonaentrega 	on iptumatzonaentrega.j8
 $sql .= "         where iptucalc.j23_anousu = $anousu $wheretipo $limit ) as x ";
 $sql .= " order by $orderby "; 
 
-$rsUnica 	  = pg_query($sql) or die($sql);
+$rsUnica 	  = db_query($sql) or die($sql);
 $numrowsunica = pg_numrows($rsUnica);
 
 if ($numrowsunica == 0) {
@@ -196,7 +196,7 @@ for ($iunica=0;$iunica < $numrowsunica;$iunica++){
 		   where k00_matric = $matric 
 			 and k00_dtvenc < '".date("Y-m-d", db_getsession("DB_datausu"))."' limit 1";
 
-  $rsResulant = pg_query($sql);
+  $rsResulant = db_query($sql);
   $numlin = pg_numrows($rsResulant);
   
   if ($numlin > 0) {
@@ -233,11 +233,11 @@ for ($iunica=0;$iunica < $numrowsunica;$iunica++){
     $codigos = split("P", $numpres[$volta]);
   }
   
-  $resultunica = pg_exec("select j23_anousu from iptucalc inner join iptunump on j20_anousu = j23_anousu and j20_matric = j23_matric where j20_numpre = $numpre_unica");
+  $resultunica = db_query("select j23_anousu from iptucalc inner join iptunump on j20_anousu = j23_anousu and j20_matric = j23_matric where j20_numpre = $numpre_unica");
   db_fieldsmemory($resultunica, 0);
   $pdf2->iptj23_anousu = $j23_anousu;
   
-  $resultunica = pg_exec("select * from recibounica where k00_numpre = $numpre_unica");
+  $resultunica = db_query("select * from recibounica where k00_numpre = $numpre_unica");
   if (pg_numrows($resultunica)){
     db_fieldsmemory($resultunica, 0);
     $vencunica = db_formatar($k00_dtvenc, "d");
@@ -250,7 +250,7 @@ for ($iunica=0;$iunica < $numrowsunica;$iunica++){
                     from recibounica r
               where r.k00_numpre = ".$codigos[0]." and r.k00_dtvenc >= '".date('Y-m-d', db_getsession("DB_datausu"))."'::date limit 1";
     $linha = 220;
-    $resultfin = pg_query($sql) or die($sql);
+    $resultfin = db_query($sql) or die($sql);
     if ($resultfin != false && pg_numrows($resultfin) > 0) {
       db_fieldsmemory($resultfin, 0);
 
@@ -295,14 +295,14 @@ for ($iunica=0;$iunica < $numrowsunica;$iunica++){
            from iptucale
           where j22_anousu = $j23_anousu 
             and j22_matric = $matric";
-  $sqlres = pg_exec($sql);
+  $sqlres = db_query($sql);
   if (pg_numrows($sqlres) > 0) {
     db_fieldsmemory($sqlres, 0);
   } else {
     $vlredi = 0;
   }
   $sql = "select j23_vlrter, j23_aliq from iptucalc where j23_anousu = $j23_anousu and j23_matric = $matric";
-  $sqlres = pg_exec($sql);
+  $sqlres = db_query($sql);
   if (pg_numrows($sqlres) > 0) {
     db_fieldsmemory($sqlres, 0);
     $pdf2->iptj23_aliq = $j23_aliq;

@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_processoouvidoria_classe.php");
-include("classes/db_ouvidoriaatendimento_classe.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_processoouvidoria_classe.php"));
+include(modification("classes/db_ouvidoriaatendimento_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -42,7 +42,7 @@ db_postmemory($HTTP_POST_VARS);
 $oPost        = db_utils::postMemory($_POST);
 $oGet         = db_utils::postMemory($_GET);
 
-require_once("model/processoOuvidoria.model.php");
+require_once(modification("model/processoOuvidoria.model.php"));
 $oProcessoOuvidoria = new processoOuvidoria();
 
 $iP58_CodProc    = $oPost->p58_codproc;
@@ -144,7 +144,7 @@ if (isset($oPost->opcao) && $oPost->opcao == "excluir") {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-		include("forms/db_frmvincatendprocpesquisa.php");
+		include(modification("forms/db_frmvincatendprocpesquisa.php"));
 	?>
     </center>
 	</td>

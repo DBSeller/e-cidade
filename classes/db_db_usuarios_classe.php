@@ -1,89 +1,99 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-
 
 //MODULO: configuracoes
 //CLASSE DA ENTIDADE db_usuarios
-class cl_db_usuarios { 
+
+class cl_db_usuarios
+{
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $id_usuario = 0; 
-   var $nome = null; 
-   var $login = null; 
-   var $senha = null; 
-   var $usuarioativo = null; 
-   var $email = null; 
-   var $usuext = 0; 
-   var $administrador = 0; 
-   var $datatoken_dia = null; 
-   var $datatoken_mes = null; 
-   var $datatoken_ano = null; 
-   var $datatoken = null; 
+    public $rotulo = null; 
+    public $query_sql = null; 
+    public $numrows = 0; 
+    public $numrows_incluir = 0; 
+    public $numrows_alterar = 0; 
+    public $numrows_excluir = 0; 
+    public $erro_status = null; 
+    public $erro_sql = null; 
+    public $erro_banco = null;  
+    public $erro_msg = null;  
+    public $erro_campo = null;  
+    public $pagina_retorno = null; 
+    /* Variáveis do Arquivo */
+    public $id_usuario = 0; 
+    public $nome = null; 
+    public $login = null; 
+    public $senha = null; 
+    public $usuarioativo = 0; 
+    public $email = null; 
+    public $usuext = 0; 
+    public $administrador = 0; 
+    public $datatoken_dia = null; 
+    public $datatoken_mes = null; 
+    public $datatoken_ano = null; 
+    public $datatoken = null; 
+    public $dataexpira_dia = null; 
+    public $dataexpira_mes = null; 
+    public $dataexpira_ano = null; 
+    public $dataexpira = null; 
+    public $liberalotacao = 0; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
-                 id_usuario = int4 = Cod. Usuário 
-                 nome = varchar(40) = nome do usuario 
-                 login = varchar(20) = login do usuario 
-                 senha = varchar(20) = senha 
-                 usuarioativo = char(1) = Situação 
+    public $campos = "
+                 id_usuario = int4 = Código do Usuário 
+                 nome = varchar(60) = Nome do Usuário 
+                 login = varchar(20) = Login do Usuário 
+                 senha = varchar(40) = senha 
+                 usuarioativo = int4 = Situação 
                  email = varchar(200) = email 
                  usuext = int4 = Utiliza DBPortal 
                  administrador = int4 = Administrador 
                  datatoken = date = Data de Criação do token 
+                 dataexpira = date = Data de Expiração 
+                 liberalotacao = int4 = Libera todas lotações 
                  ";
-   //funcao construtor da classe 
-   function cl_db_usuarios() { 
-     //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("db_usuarios"); 
-     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+
+    public function __construct()
+    {
+        $this->rotulo = new rotulo("db_usuarios"); 
+        $this->pagina_retorno = basename($_SERVER['PHP_SELF']);
+    }
+
+    public function erro($mostra, $retorna)
+    {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
-        echo "<script>alert(\"".$this->erro_msg."\");</script>";
+        echo "<script>alert(\"".$this->erro_msg."\")</script>";
         if($retorna==true){
            echo "<script>location.href='".$this->pagina_retorno."'</script>";
         }
      }
    }
-   // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+
+    public function atualizacampos($exclusao = false)
+    {
      if($exclusao==false){
        $this->id_usuario = ($this->id_usuario == ""?@$GLOBALS["HTTP_POST_VARS"]["id_usuario"]:$this->id_usuario);
        $this->nome = ($this->nome == ""?@$GLOBALS["HTTP_POST_VARS"]["nome"]:$this->nome);
@@ -101,24 +111,34 @@ class cl_db_usuarios {
             $this->datatoken = $this->datatoken_ano."-".$this->datatoken_mes."-".$this->datatoken_dia;
          }
        }
+       if($this->dataexpira == ""){
+         $this->dataexpira_dia = ($this->dataexpira_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["dataexpira_dia"]:$this->dataexpira_dia);
+         $this->dataexpira_mes = ($this->dataexpira_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["dataexpira_mes"]:$this->dataexpira_mes);
+         $this->dataexpira_ano = ($this->dataexpira_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["dataexpira_ano"]:$this->dataexpira_ano);
+         if($this->dataexpira_dia != ""){
+            $this->dataexpira = $this->dataexpira_ano."-".$this->dataexpira_mes."-".$this->dataexpira_dia;
+         }
+       }
+       $this->liberalotacao = ($this->liberalotacao == ""?@$GLOBALS["HTTP_POST_VARS"]["liberalotacao"]:$this->liberalotacao);
      }else{
        $this->id_usuario = ($this->id_usuario == ""?@$GLOBALS["HTTP_POST_VARS"]["id_usuario"]:$this->id_usuario);
      }
    }
-   // funcao para inclusao
-   function incluir ($id_usuario){ 
+
+    public function incluir($id_usuario)
+    {
       $this->atualizacampos();
-     if($this->nome == null ){ 
-       $this->erro_sql = " Campo nome do usuario não informado.";
-       $this->erro_campo = "nome";
-       $this->erro_banco = "";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       $this->erro_status = "0";
-       return false;
-     }
-     if($this->login == null ){ 
-       $this->erro_sql = " Campo login do usuario não informado.";
+      if($this->nome == null ){
+        $this->erro_sql = " Campo nome do usuario não informado.";
+        $this->erro_campo = "nome";
+        $this->erro_banco = "";
+        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+        $this->erro_status = "0";
+        return false;
+      }
+      if($this->login == null ){ 
+       $this->erro_sql = " Campo Login do Usuário não informado.";
        $this->erro_campo = "login";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -135,63 +155,68 @@ class cl_db_usuarios {
        $this->erro_status = "0";
        return false;
      }
-     if($this->usuarioativo == null ){ 
-       $this->erro_sql = " Campo Situação não informado.";
-       $this->erro_campo = "usuarioativo";
-       $this->erro_banco = "";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       $this->erro_status = "0";
-       return false;
-     }
-     if($this->usuext == null ){ 
-       $this->erro_sql = " Campo Utiliza DBPortal não informado.";
-       $this->erro_campo = "usuext";
-       $this->erro_banco = "";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       $this->erro_status = "0";
-       return false;
-     }
-     if($this->administrador == null ){ 
-       $this->erro_sql = " Campo Administrador não informado.";
-       $this->erro_campo = "administrador";
-       $this->erro_banco = "";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       $this->erro_status = "0";
-       return false;
-     }
-     if($this->datatoken == null ){ 
-        
-       $this->datatoken = date('Y-m-d ');
+     if($this->usuarioativo == null ){
+      $this->erro_sql = " Campo Situação não informado.";
+      $this->erro_campo = "usuarioativo";
+      $this->erro_banco = "";
+      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+      $this->erro_status = "0";
+      return false;
+    }
+    if($this->usuext == null ){
+      $this->erro_sql = " Campo usuário externo não informado.";
+      $this->erro_campo = "usuext";
+      $this->erro_banco = "";
+      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+      $this->erro_status = "0";
+      return false;
+    }
+    if($this->administrador == null ){
+      $this->erro_sql = " Campo Administrador não informado.";
+      $this->erro_campo = "administrador";
+      $this->erro_banco = "";
+      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+      $this->erro_status = "0";
+      return false;
+    }
+    if($this->datatoken == null ){
+      $this->datatoken = date('Y-m-d ');
+    }
+    if($this->dataexpira == null ){
+      $this->dataexpira = "null";
+    }
+    if($this->liberalotacao == null || $this->liberalotacao == ''){
+      $this->liberalotacao = 0;
      }
      if($id_usuario == "" || $id_usuario == null ){
-       $result = db_query("select nextval('db_usuarios_id_usuario_seq')"); 
-       if($result==false){
-         $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: db_usuarios_id_usuario_seq do campo: id_usuario"; 
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "0";
-         return false; 
-       }
-       $this->id_usuario = pg_result($result,0,0); 
-     }else{
-       $result = db_query("select last_value from db_usuarios_id_usuario_seq");
-       if(($result != false) && (pg_result($result,0,0) < $id_usuario)){
-         $this->erro_sql = " Campo id_usuario maior que último número da sequencia.";
-         $this->erro_banco = "Sequencia menor que este número.";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "0";
-         return false;
-       }else{
-         $this->id_usuario = $id_usuario; 
-       }
-     }
-     if(($this->id_usuario == null) || ($this->id_usuario == "") ){ 
-       $this->erro_sql = " Campo id_usuario nao declarado.";
+      $result = db_query("select nextval('db_usuarios_id_usuario_seq')");
+      if($result==false){
+        $this->erro_banco = str_replace("\n","",@pg_last_error());
+        $this->erro_sql   = "Verifique o cadastro da sequencia: db_usuarios_id_usuario_seq do campo: id_usuario";
+        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+        $this->erro_status = "0";
+        return false;
+      }
+      $this->id_usuario = pg_result($result,0,0);
+    }else{
+      $result = db_query("select last_value from db_usuarios_id_usuario_seq");
+      if(($result != false) && (pg_result($result,0,0) < $id_usuario)){
+        $this->erro_sql = " Campo id_usuario maior que último número da sequencia.";
+        $this->erro_banco = "Sequencia menor que este número.";
+        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+        $this->erro_status = "0";
+        return false;
+      }else{
+        $this->id_usuario = $id_usuario;
+      }
+    }
+    if(($this->id_usuario == null) || ($this->id_usuario == "") ){ 
+       $this->erro_sql = " Campo id_usuario não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -208,28 +233,32 @@ class cl_db_usuarios {
                                       ,usuext 
                                       ,administrador 
                                       ,datatoken 
+                                      ,dataexpira 
+                                      ,liberalotacao 
                        )
                 values (
                                 $this->id_usuario 
                                ,'$this->nome' 
                                ,'$this->login' 
                                ,'$this->senha' 
-                               ,'$this->usuarioativo' 
+                               ,$this->usuarioativo 
                                ,'$this->email' 
                                ,$this->usuext 
                                ,$this->administrador 
-                               ,'$this->datatoken' 
+                               ,'$this->datatoken'
+                               ,".($this->dataexpira == "null" || $this->dataexpira == ""?"null":"'".$this->dataexpira."'")." 
+                               ,$this->liberalotacao 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = " ($this->id_usuario) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Cadastro usuários ($this->id_usuario) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_banco = " já Cadastrado";
+         $this->erro_banco = "Cadastro usuários já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = " ($this->id_usuario) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Cadastro usuários ($this->id_usuario) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -238,8 +267,8 @@ class cl_db_usuarios {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
-         $this->erro_sql .= "Valores : ".$this->id_usuario;
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
+     $this->erro_sql .= "Valores : ".$this->id_usuario;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
@@ -264,12 +293,15 @@ class cl_db_usuarios {
          $resac = db_query("insert into db_acount values($acount,109,3598,'','".AddSlashes(pg_result($resaco,0,'usuext'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,109,12093,'','".AddSlashes(pg_result($resaco,0,'administrador'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,109,20639,'','".AddSlashes(pg_result($resaco,0,'datatoken'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,109,21606,'','".AddSlashes(pg_result($resaco,0,'dataexpira'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,109,268337844,'','".AddSlashes(pg_result($resaco,0,'liberalotacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
    } 
-   // funcao para alteracao
-   function alterar ($id_usuario=null) { 
+
+    public function alterar($id_usuario=null)
+    {
       $this->atualizacampos();
      $sql = " update db_usuarios set ";
      $virgula = "";
@@ -277,7 +309,7 @@ class cl_db_usuarios {
        $sql  .= $virgula." id_usuario = $this->id_usuario ";
        $virgula = ",";
        if(trim($this->id_usuario) == null ){ 
-         $this->erro_sql = " Campo Cod. Usuário não informado.";
+         $this->erro_sql = " Campo Código do Usuário não informado.";
          $this->erro_campo = "id_usuario";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -286,10 +318,10 @@ class cl_db_usuarios {
          return false;
        }
      }
-     if(trim($this->nome)!="" || isset($GLOBALS["HTTP_POST_VARS"]["nome"])){ 
+     if(trim($this->nome)!="" || isset($GLOBALS["HTTP_POST_VARS"]["nome"])){
        $sql  .= $virgula." nome = '$this->nome' ";
        $virgula = ",";
-       if(trim($this->nome) == null ){ 
+       if(trim($this->nome) == null ){
          $this->erro_sql = " Campo nome do usuario não informado.";
          $this->erro_campo = "nome";
          $this->erro_banco = "";
@@ -299,11 +331,11 @@ class cl_db_usuarios {
          return false;
        }
      }
-     if(trim($this->login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["login"])){ 
+     if(trim($this->login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["login"])){
        $sql  .= $virgula." login = '$this->login' ";
        $virgula = ",";
-       if(trim($this->login) == null ){ 
-         $this->erro_sql = " Campo login do usuario não informado.";
+       if(trim($this->login) == null ){
+         $this->erro_sql = " Campo Login do Usuário não informado.";
          $this->erro_campo = "login";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -312,24 +344,17 @@ class cl_db_usuarios {
          return false;
        }
      }
-     if(trim($this->senha)!="" ){ 
+     if(trim($this->senha)!="" || isset($GLOBALS["HTTP_POST_VARS"]["senha"])){
        $sql  .= $virgula." senha = '$this->senha' ";
        $virgula = ",";
-
-       /*if(trim($this->senha) == null ){
-         $this->erro_sql = " Campo senha não Informado.";
-         $this->erro_campo = "senha";
-         $this->erro_banco = "";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "0";
-         return false;
-       }*/
      }
      if(trim($this->usuarioativo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["usuarioativo"])){ 
-       $sql  .= $virgula." usuarioativo = '$this->usuarioativo' ";
+        if(trim($this->usuarioativo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["usuarioativo"])){ 
+           $this->usuarioativo = "0" ; 
+        } 
+       $sql  .= $virgula." usuarioativo = $this->usuarioativo ";
        $virgula = ",";
-       if(trim($this->usuarioativo) == null ){ 
+       if(trim($this->usuarioativo) == null ){
          $this->erro_sql = " Campo Situação não informado.";
          $this->erro_campo = "usuarioativo";
          $this->erro_banco = "";
@@ -344,10 +369,13 @@ class cl_db_usuarios {
        $virgula = ",";
      }
      if(trim($this->usuext)!="" || isset($GLOBALS["HTTP_POST_VARS"]["usuext"])){ 
+        if(trim($this->usuext)=="" && isset($GLOBALS["HTTP_POST_VARS"]["usuext"])){ 
+           $this->usuext = "0" ; 
+        } 
        $sql  .= $virgula." usuext = $this->usuext ";
        $virgula = ",";
-       if(trim($this->usuext) == null ){ 
-         $this->erro_sql = " Campo Utiliza DBPortal não informado.";
+       if(trim($this->usuext) == null ){
+         $this->erro_sql = " Campo usuário externo não informado.";
          $this->erro_campo = "usuext";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -357,9 +385,12 @@ class cl_db_usuarios {
        }
      }
      if(trim($this->administrador)!="" || isset($GLOBALS["HTTP_POST_VARS"]["administrador"])){ 
+        if(trim($this->administrador)=="" && isset($GLOBALS["HTTP_POST_VARS"]["administrador"])){ 
+           $this->administrador = "0" ; 
+        } 
        $sql  .= $virgula." administrador = $this->administrador ";
        $virgula = ",";
-       if(trim($this->administrador) == null ){ 
+       if(trim($this->administrador) == null ){
          $this->erro_sql = " Campo Administrador não informado.";
          $this->erro_campo = "administrador";
          $this->erro_banco = "";
@@ -396,6 +427,30 @@ class cl_db_usuarios {
          }
        }
      }
+     if (((trim($this->dataexpira) != "") && ($this->dataexpira != 'null'))
+        || isset($GLOBALS["HTTP_POST_VARS"]["dataexpira_dia"])
+        && ($GLOBALS["HTTP_POST_VARS"]["dataexpira_dia"] != "")) {
+        $sql  .= $virgula." dataexpira = '$this->dataexpira' ";
+        $virgula = ",";
+     }else{ 
+       if(isset($GLOBALS["HTTP_POST_VARS"]["dataexpira_dia"])){ 
+         $sql  .= $virgula." dataexpira = null ";
+         $virgula = ",";
+       }
+     }
+     if(trim($this->liberalotacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["liberalotacao"])){ 
+       $sql  .= $virgula." liberalotacao = $this->liberalotacao ";
+       $virgula = ",";
+       if(trim($this->liberalotacao) == null ){ 
+         $this->erro_sql = " Campo Libera todas lotações não informado.";
+         $this->erro_campo = "liberalotacao";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
      if($id_usuario!=null){
        $sql .= " id_usuario = $this->id_usuario";
@@ -405,59 +460,62 @@ class cl_db_usuarios {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->id_usuario));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,568,'$this->id_usuario','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["id_usuario"]))
+           if (isset($GLOBALS["HTTP_POST_VARS"]["id_usuario"]) || $this->id_usuario != "")
              $resac = db_query("insert into db_acount values($acount,109,568,'".AddSlashes(pg_result($resaco,$conresaco,'id_usuario'))."','$this->id_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["nome"]))
+           if (isset($GLOBALS["HTTP_POST_VARS"]["nome"]) || $this->nome != "")
              $resac = db_query("insert into db_acount values($acount,109,570,'".AddSlashes(pg_result($resaco,$conresaco,'nome'))."','$this->nome',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["login"]))
+           if (isset($GLOBALS["HTTP_POST_VARS"]["login"]) || $this->login != "")
              $resac = db_query("insert into db_acount values($acount,109,571,'".AddSlashes(pg_result($resaco,$conresaco,'login'))."','$this->login',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["senha"]))
+           if (isset($GLOBALS["HTTP_POST_VARS"]["senha"]) || $this->senha != "")
              $resac = db_query("insert into db_acount values($acount,109,572,'".AddSlashes(pg_result($resaco,$conresaco,'senha'))."','$this->senha',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["usuarioativo"]))
+           if (isset($GLOBALS["HTTP_POST_VARS"]["usuarioativo"]) || $this->usuarioativo != "")
              $resac = db_query("insert into db_acount values($acount,109,573,'".AddSlashes(pg_result($resaco,$conresaco,'usuarioativo'))."','$this->usuarioativo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["email"]))
+           if (isset($GLOBALS["HTTP_POST_VARS"]["email"]) || $this->email != "")
              $resac = db_query("insert into db_acount values($acount,109,574,'".AddSlashes(pg_result($resaco,$conresaco,'email'))."','$this->email',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["usuext"]))
+           if (isset($GLOBALS["HTTP_POST_VARS"]["usuext"]) || $this->usuext != "")
              $resac = db_query("insert into db_acount values($acount,109,3598,'".AddSlashes(pg_result($resaco,$conresaco,'usuext'))."','$this->usuext',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["administrador"]))
+           if (isset($GLOBALS["HTTP_POST_VARS"]["administrador"]) || $this->administrador != "")
              $resac = db_query("insert into db_acount values($acount,109,12093,'".AddSlashes(pg_result($resaco,$conresaco,'administrador'))."','$this->administrador',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["datatoken"]) || $this->datatoken != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["datatoken"]) || $this->datatoken != "")
              $resac = db_query("insert into db_acount values($acount,109,20639,'".AddSlashes(pg_result($resaco,$conresaco,'datatoken'))."','$this->datatoken',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["dataexpira"]) || $this->dataexpira != "")
+             $resac = db_query("insert into db_acount values($acount,109,21606,'".AddSlashes(pg_result($resaco,$conresaco,'dataexpira'))."','$this->dataexpira',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["liberalotacao"]) || $this->liberalotacao != "")
+             $resac = db_query("insert into db_acount values($acount,109,268337844,'".AddSlashes(pg_result($resaco,$conresaco,'liberalotacao'))."','$this->liberalotacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     
-     if($result==false){ 
+     if (!$result) {
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = " nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Cadastro usuários não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->id_usuario;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = " nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Cadastro usuários não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->id_usuario;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->id_usuario;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -467,17 +525,17 @@ class cl_db_usuarios {
        } 
      } 
    } 
-   // funcao para exclusao 
-   function excluir ($id_usuario=null,$dbwhere=null) { 
 
+    public function excluir($id_usuario=null, $dbwhere = null)
+    {
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($id_usuario));
-       } else { 
+       } else {
          $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
        }
        if (($resaco != false) || ($this->numrows!=0)) {
@@ -497,45 +555,47 @@ class cl_db_usuarios {
            $resac  = db_query("insert into db_acount values($acount,109,3598,'','".AddSlashes(pg_result($resaco,$iresaco,'usuext'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,109,12093,'','".AddSlashes(pg_result($resaco,$iresaco,'administrador'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,109,20639,'','".AddSlashes(pg_result($resaco,$iresaco,'datatoken'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,109,21606,'','".AddSlashes(pg_result($resaco,$iresaco,'dataexpira'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,109,268337844,'','".AddSlashes(pg_result($resaco,$iresaco,'liberalotacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from db_usuarios
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($id_usuario != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($id_usuario)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " id_usuario = $id_usuario ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) {
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = " nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Cadastro usuários não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$id_usuario;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = " nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Cadastro usuários não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$id_usuario;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$id_usuario;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -545,31 +605,158 @@ class cl_db_usuarios {
        } 
      } 
    } 
-   // funcao do recordset 
-   function sql_record($sql) { 
-     $result = db_query($sql);
-     if($result==false){
-       $this->numrows    = 0;
-       $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Erro ao selecionar os registros.";
+
+  public function sql_record($sql)
+  {
+    $result = db_query($sql);
+    if (!$result) {
+      $this->numrows    = 0;
+      $this->erro_banco = str_replace("\n","",@pg_last_error());
+      $this->erro_sql   = "Erro ao selecionar os registros.";
+      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+      $this->erro_status = "0";
+      return false;
+    }
+    $this->numrows = pg_num_rows($result);
+     if ($this->numrows == 0) {
+       $this->erro_banco = "";
+       $this->erro_sql   = "Record Vazio na Tabela:db_usuarios";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
-        $this->erro_banco = "";
-        $this->erro_sql   = "Record Vazio na Tabela:db_usuarios";
-        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-        $this->erro_status = "0";
-        return false;
+    return $result;
+  }
+
+  public function sql_query($id_usuario = null,$campos = "*", $ordem = null, $dbwhere = "")
+  {
+    $sql  = "select {$campos}";
+    $sql .= "  from db_usuarios ";
+    $sql2 = "";
+    if (empty($dbwhere)) {
+      if (!empty($id_usuario)) {
+        $sql2 .= " where db_usuarios.id_usuario = $id_usuario "; 
+      } 
+    } else if (!empty($dbwhere)) {
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+    return $sql;
+  }
+
+  public function sql_query_file($id_usuario = null, $campos = "*", $ordem = null, $dbwhere = "")
+  {
+    $sql  = "select {$campos} ";
+    $sql .= "  from db_usuarios ";
+    $sql2 = "";
+    if (empty($dbwhere)) {
+      if (!empty($id_usuario)){
+        $sql2 .= " where db_usuarios.id_usuario = $id_usuario "; 
+      } 
+    } else if (!empty($dbwhere)) {
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+    return $sql;
+  }
+
+  function sql_query_instit($id_usuario=null,$campos="*",$ordem=null,$dbwhere="")
+  {
+    $sql  = "select {$campos} ";
+    $sql .= " from db_usuarios ";
+    $sql .= "      inner join db_depusu on db_usuarios.id_usuario = db_depusu.id_usuario ";
+    $sql .= "      inner join db_depart on db_depart.coddepto     = db_depusu.coddepto ";
+    $sql2 = "";
+    if($dbwhere==""){
+      if($id_usuario!=null ){
+        $sql2 .= " where db_usuarios.id_usuario = $id_usuario ";
       }
-     return $result;
-   }
-   
-   function enviar_senha($id_usuario,$email,$nome,$login,$senha,$nomeinst,$url=null,$enviar){
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+   return $sql;
+  }
+
+  function sql_query_exportaUsuario($id_usuario=null,$campos="*",$ordem=null,$dbwhere="")
+  {
+    $sql  = "select {$campos} ";
+    $sql .= " from db_usuarios u";
+    $sql .= "      inner join db_permissao as p on p.id_usuario = u.id_usuario ";
+    $sql2 = "";
+    if($dbwhere==""){
+      if($id_usuario!=null ){
+        $sql2 .= " where db_usuarios.id_usuario = $id_usuario ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+    return $sql;
+  }
+
+   /**
+   * Retorna Todos os usuários que possuem permissão no item de menu 8634
+   * item de menu 8634 é usado como parâmetro para saber os usuários do sistema que podem possuir permissão em
+   * projétos do BI
+   * @param String $campos
+   * @param String $ordem
+   * @param String $dbwhere
+   * @return String
+   */
+  function sql_query_usuarios_bi($campos="*",$ordem=null,$dbwhere="")
+  {
+    $sql  = "select {$campos} ";
+    $sql .= " from db_usuarios ";
+    $sql .= " inner join db_permissao on db_permissao.id_usuario = db_usuarios.id_usuario ";
+    $sql2 = " where id_item = 8634 ";
+    if($dbwhere != ""){
+      $sql2 .= " and $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+    return $sql;
+  }
+
+  function sql_query_usuarios_cgm($id_usuario = null, $campos = "*", $ordem = null, $dbwhere = "")
+  {
+    $sql  = "select {$campos} ";
+    $sql .= " from db_usuarios";
+    $sql .= " join db_usuacgm on db_usuacgm.id_usuario = db_usuarios.id_usuario ";
+    $sql .= " join cgm on cgm.z01_numcgm = db_usuacgm.cgmlogin  ";
+    $sql2 = "";
+    if($dbwhere != ""){
+      $sql2 .= " where $dbwhere";
+    } else {
+      if (!empty($id_usuario)) {
+        $sql2 .= " where db_usuarios.id_usuario = $id_usuario ";
+      }
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+    return $sql;
+  }
+
+  function enviar_senha($id_usuario,$email,$nome,$login,$senha,$nomeinst,$url=null,$enviar, $emailPrefeitura = null)
+  {
     $erro = false;
 
     if ($enviar == true){
@@ -764,8 +951,26 @@ class cl_db_usuarios {
                                  </html>";
     }
 
-    $headers = "Content-Type:text/html;";
-    $erro    = mail($email,"Senha do site Prefeitura On-Line",$mensagemDestinatario,$headers);
+
+    // tem email da prefeitura e tem arquivo de configuracoes de email, usa classe Smtp
+    if (!empty($emailPrefeitura) && file_exists('libs/config.mail.php')) {
+
+      require modification("libs/smtp.class.php");
+      try {
+
+        $smtp =  new Smtp();
+        $smtp->html = true;
+        $erro = $smtp->send($email, $emailPrefeitura, "Senha do site Prefeitura On-Line", $mensagemDestinatario);
+
+      } catch (Exception $oErro) {
+        $erro = true;
+      }
+
+    } else {
+
+      $headers = "Content-Type:text/html;";
+      $erro    = mail($email,"Senha do site Prefeitura On-Line",$mensagemDestinatario,$headers);
+    }
 
     if ($erro == false && $enviar == true){
          $this->senha = Encriptacao::encriptaSenha($passwd);
@@ -778,186 +983,4 @@ class cl_db_usuarios {
 
     return $erro;
   }
-   // funcao do sql 
-   function sql_query ( $id_usuario=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from db_usuarios ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($id_usuario!=null ){
-         $sql2 .= " where db_usuarios.id_usuario = $id_usuario "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-   
-   function sql_query_file ( $id_usuario=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from db_usuarios ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($id_usuario!=null ){
-         $sql2 .= " where db_usuarios.id_usuario = $id_usuario "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-
-  function sql_query_instit ( $id_usuario=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from db_usuarios ";
-     $sql .= "      inner join db_depusu on db_usuarios.id_usuario = db_depusu.id_usuario ";
-     $sql .= "      inner join db_depart on db_depart.coddepto     = db_depusu.coddepto ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($id_usuario!=null ){
-         $sql2 .= " where db_usuarios.id_usuario = $id_usuario ";
-       }
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-
-   function sql_query_exportaUsuario ( $id_usuario=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from db_usuarios u";
-     $sql .= "      inner join db_permissao as p on p.id_usuario = u.id_usuario ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($id_usuario!=null ){
-         $sql2 .= " where db_usuarios.id_usuario = $id_usuario "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     
-     return $sql;
-  }
-   /**
-   * Retorna Todos os usuários que possuem permissão no item de menu 8634 
-   * item de menu 8634 é usado como parâmetro para saber os usuários do sistema que podem possuir permissão em 
-   * projétos do BI
-   * @param String $campos
-   * @param String $ordem
-   * @param String $dbwhere
-   * @return String
-   */
-  function sql_query_usuarios_bi ($campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from db_usuarios ";
-     $sql .= " inner join db_permissao on db_permissao.id_usuario = db_usuarios.id_usuario ";
-     $sql2 = " where id_item = 8634 ";
-     
-     if($dbwhere != ""){
-       $sql2 .= " and $dbwhere";
-     }
-     
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
 }
-?>

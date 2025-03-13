@@ -1,35 +1,35 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 set_time_limit(0);
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("classes/db_inicial_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_inicial_classe.php"));
 $clinicial = new cl_inicial;
 $clinicial->rotulo->label();
 
@@ -46,7 +46,7 @@ $mostra = false;
 
 db_postmemory($_GET);
 
-//echo "data = $xdata"; 
+//echo "data = $xdata";
 $db_where = " v50_instit = ".db_getsession('DB_instit');
 $db_ordem = "";
 $and = "";
@@ -119,7 +119,7 @@ if (($dataini != "--") && ($datafim != "--")) {
 }
 //echo "<br> where  = $db_where"; exit;
 if ($ordem=='n'){
-  
+
   $db_ordem .= " nome_exec  ";
   //$db_ordem .= " a.z01_nome ";
   $info2 = "Ordenado por nome";
@@ -161,14 +161,14 @@ if($linhaspar>0){
   $sCampos .= " a.z01_numcgm as cgm_exe,						         ";
   $sCampos .= " b.z01_nome as nome_advog,						         ";
   $sCampos .= " v52_codsit,                                  ";
-  $sCampos .= " v52_descr                                    "; 
-	
-	
+  $sCampos .= " v52_descr                                    ";
+
+
 $sql = ($clinicial->sql_query_inform(null,$sCampos,$db_ordem,$db_where));
 $result= db_query($sql);
 $linhas = pg_num_rows($result);
 if ($linhas == 0){
-  
+
   $sMsg = _M('tributario.juridico.jur2_relinicial002.nao_existem_registros');
   db_redireciona("db_erros.php?fechar=true&db_erro={$sMsg}");
 }
@@ -189,10 +189,10 @@ $p = 0;
 for($x = 0; $x < $linhas;$x++){
   $mostra 	= false;
   $lContiua = false;
-  
+
   db_fieldsmemory($result,$x);
 
-  
+
   $sql  = "select distinct                                     ";
   $sql .= "       coalesce(k00_matric,0) as k00_matric,        ";
   $sql .= "       coalesce(k00_inscr,0)  as k00_inscr,         ";
@@ -206,7 +206,7 @@ for($x = 0; $x < $linhas;$x++){
 	$sql .= "         when k00_inscr  is not null then 'I'		   ";
 	$sql .= "         else 'C'					    				             ";
 	$sql .= "       end as descrtipo					          			   ";
-  $sql .= "from inicialnumpre	                 ";     
+  $sql .= "from inicialnumpre	                 ";
   $sql .= "     left join arrematric on arrematric.k00_numpre = inicialnumpre.v59_numpre ";
   $sql .= "     left join arreinscr  on arreinscr.k00_numpre  = inicialnumpre.v59_numpre ";
   $sql .= "     left join arrenumcgm on arrenumcgm.k00_numpre = inicialnumpre.v59_numpre ";
@@ -221,14 +221,14 @@ for($x = 0; $x < $linhas;$x++){
 
   foreach ($aOrigens as $sTipoOrigem) {
   	if ($descrtipo == $sTipoOrigem) {
-  	   $lContiua = true;	
+  	   $lContiua = true;
   	}
   }
-  
+
   if (!$lContiua) {
-    continue;  	
+    continue;
   }
-  
+
   if($descrtipo == 'M'){
     // inicial é de matricula
     if($db21_regracgmiptu==2){
@@ -243,7 +243,7 @@ for($x = 0; $x < $linhas;$x++){
           //  esse é o promitente
           $mostra = true;
         }
-         
+
       }else{
         // não tem promitente... vê se tem proprietario
         $sqlprop = "select * from iptubase where j01_matric = $k00_matric";
@@ -253,10 +253,10 @@ for($x = 0; $x < $linhas;$x++){
           db_fieldsmemory($resultprop,0);
           //  esse é o proprietario
           $mostra = true;
-           
+
         }
       }
-       
+
     }elseif($db21_regracgmiptu==1){
       //Considerar Somente Proprietario
       $sqlprop = "select * from iptubase where j01_matric = $k00_matric";
@@ -271,7 +271,7 @@ for($x = 0; $x < $linhas;$x++){
       //Considerar Proprietario e Promitente
       $mostra = true;
     }
-     
+
   }elseif($descrtipo == 'I'){
       // se é de inscrição
       // inicial é de inscrição
@@ -294,69 +294,117 @@ for($x = 0; $x < $linhas;$x++){
     $mostra = true;
   }
 
- 
+
   $valorcor = 0;
-  
-  
+
+
+  //Situação parcelada
   if ($v52_codsit == 4){
-    $sSqlValorCor  = " select distinct v07_numpre					    "; 
-    $sSqlValorCor .= "   from termoini					 		    	";
-    $sSqlValorCor .= "   	    inner join termo on v07_parcel = parcel ";
-    $sSqlValorCor .= "  where inicial = {$v50_inicial}			    	";   
-    
+    // $sSqlValorCor  = " select distinct v07_numpre					    ";
+    // $sSqlValorCor .= "   from termoini					 		    	";
+    // $sSqlValorCor .= "   	    inner join termo on v07_parcel = parcel ";
+    // $sSqlValorCor .= "  where inicial = {$v50_inicial}            ";
+
+    // //Trecho adicionado para pegar apenas termo ativo
+    // $sSqlValorCor .= "  and v07_situacao = 1		    	";
+
+    //Modificado sql para buscar numpre das iniciais e nao do termo! (redmine 16311)
+    $sSqlValorCor  = " select distinct k00_numpre as v07_numpre           ";
+    $sSqlValorCor .= "   from inicialnumpre                               ";
+    $sSqlValorCor .= "        inner join arreold on arreold.k00_numpre = inicialnumpre.v59_numpre ";
+    $sSqlValorCor .= "  where v59_inicial = {$v50_inicial}                        ";
+
     $rsValorCor  = db_query($sSqlValorCor) or die($sSqlValorCor);
     $iNroLinha 	 = pg_num_rows($rsValorCor);
-  
-    
+
+    $lDebitoAberto = false;
     for ($i=0; $i < $iNroLinha; $i++) {
-    	
-	     $oValorCor = db_utils::fieldsMemory($rsValorCor,$i);
-       
-	     $rsConsultaNumpre = debitos_numpre($oValorCor->v07_numpre,0,0,db_getsession("DB_datausu"),db_getsession("DB_anousu"),0,"k00_numpre");
-       
-	     if (!$rsConsultaNumpre){
-	     	$rsConsultaNumpre = debitos_numpre_old($oValorCor->v07_numpre,0,0,db_getsession("DB_datausu"),db_getsession("DB_anousu"),0,"k00_numpre");
-	     }
-	     if ($rsConsultaNumpre){ 
-	       $oConsultaNumpre  = db_utils::fieldsMemory($rsConsultaNumpre,0);
-	       $valorcor 		 += $oConsultaNumpre->total;
-	     }
+
+	    $oValorCor = db_utils::fieldsMemory($rsValorCor,$i);
+
+	    $rsConsultaNumpre = debitos_numpre($oValorCor->v07_numpre,0,0,db_getsession("DB_datausu"),db_getsession("DB_anousu"),0,"k00_numpre");
+
+	    if (!$rsConsultaNumpre){
+	      $rsConsultaNumpre = debitos_numpre_old($oValorCor->v07_numpre,0,0,db_getsession("DB_datausu"),db_getsession("DB_anousu"),0,"k00_numpre");
+	    }
+      
+      if ($rsConsultaNumpre){
+	      $oConsultaNumpre  = db_utils::fieldsMemory($rsConsultaNumpre,0);
+        /* Verifica parcelamento ativo e com débito aberto */
+        $numpre_aberto = "";
+
+        $sSqlDebito    = " select distinct                                                         ";
+        $sSqlDebito   .= "        termo.v07_parcel,       									                       ";  
+        $sSqlDebito   .= "        termo.v07_situacao,                                              ";
+        $sSqlDebito   .= "        arrecad.k00_numpre as numpre_aberto                              ";
+        $sSqlDebito   .= "   from termoini      			 								                         	   ";
+        $sSqlDebito   .= "   	    inner join termo on termoini.parcel = termo.v07_parcel           ";
+        $sSqlDebito   .= "   	    inner join arrecad on termo.v07_numpre = arrecad.k00_numpre      ";
+        $sSqlDebito   .= "  where termoini.inicial = {$v50_inicial}					   	    	             ";
+        $sSqlDebito   .= "    and termo.v07_parcel not in (select v09_parcel from termoanu where v09_parcel = v07_parcel)";
+        $rsDebito      = db_query($sSqlDebito) or die($sSqlDebito);
+        $iNroLinhaDeb  = pg_num_rows($rsDebito);                                                 
+
+        for ($iRP=0; $iRP < $iNroLinhaDeb; $iRP++) {
+          db_fieldsmemory($rsDebito,$iRP);       
+          if (!empty($numpre_aberto)) {
+             /* Achou débito aberto sai para permitir atualizar */
+             $lDebitoAberto = true;
+          }
+          if ($v07_situacao == '1' && empty($numpre_aberto)) {
+            $sSqlReparc  = "    select termoreparc.v08_parcel,                   ";
+            $sSqlReparc .= "           a.k00_numpre numpre_aberto                ";
+            $sSqlReparc .= "      from termoreparc                               ";
+            $sSqlReparc .= "inner join termo t   on v08_parcel = t.v07_parcel    ";
+            $sSqlReparc .= "left  join arrecad a on t.v07_numpre = a.k00_numpre  ";
+            $sSqlReparc .= "     where v08_parcelorigem = $v07_parcel            ";
+            $rsReparc    = db_query($sSqlReparc) or die($sSqlReparc);            
+            db_fieldsmemory($rsReparc,0);       
+            if (!empty($numpre_aberto)) {
+              $lDebitoAberto = true;
+            }
+          }
+        }
+      }
+      if ($lDebitoAberto == true) {
+          $valorcor += $oConsultaNumpre->total;
+      } else {
+          $valorcor += 0;
+      }
     }
-  
-  
   } else if ($v52_codsit != 8 && $v52_codsit != 9) {
-  	
-    $sSqlValorCor  = " select distinct k00_numpre												    "; 
+
+    $sSqlValorCor  = " select distinct k00_numpre												    ";
     $sSqlValorCor .= "   from inicialnumpre													    	";
     $sSqlValorCor .= "   	    inner join arrecad on arrecad.k00_numpre = inicialnumpre.v59_numpre ";
-    $sSqlValorCor .= "  where v59_inicial = {$v50_inicial}									    	";   
-    
+    $sSqlValorCor .= "  where v59_inicial = {$v50_inicial}									    	";
+
     $rsValorCor  = db_query($sSqlValorCor) or die($sSqlValorCor);
     $iNroLinha 	 = pg_num_rows($rsValorCor);
-  
-    
+
+
     for ($i=0; $i < $iNroLinha; $i++) {
 	  $oValorCor = db_utils::fieldsMemory($rsValorCor,$i);
-	
+
 	  $rsConsultaNumpre = debitos_numpre($oValorCor->k00_numpre,0,0,db_getsession("DB_datausu"),db_getsession("DB_anousu"),0,"k00_numpre");
 	  $oConsultaNumpre  = db_utils::fieldsMemory($rsConsultaNumpre,0);
-	
+
 	  $valorcor += $oConsultaNumpre->total;
     }
 
   }
-  
-  
+
+
   // valor da Ação
 
-					  
-$sqlvalor = " select sum(k00_valor) as valor 
-			    from inicialcert 
+
+$sqlvalor = " select sum(k00_valor) as valor
+			    from inicialcert
 			    	 inner join arreforo on k00_certidao = v51_certidao
-	   		   where v51_inicial = $v50_inicial" ;					  
-					  
-					  
-					  
+	   		   where v51_inicial = $v50_inicial" ;
+
+
+
 $resultvalor = db_query($sqlvalor);
 $linhasvalor = pg_num_rows($resultvalor);
 
@@ -370,12 +418,12 @@ if($linhasvalor > 0){
       $sDescrOrigem  = "Matrícula";
       $sDescrOrigem2 = "{$codtipo} - Matrícula";
     } else if ($descrtipo == "I") {
-      $sDescrOrigem  = "Inscrição";  	
-      $sDescrOrigem2 = "{$codtipo} - Inscrição";  	
+      $sDescrOrigem  = "Inscrição";
+      $sDescrOrigem2 = "{$codtipo} - Inscrição";
   	} else {
-      $sDescrOrigem  = "Cgm";  	
-      $sDescrOrigem2 = "{$codtipo} - Cgm";  	
-      
+      $sDescrOrigem  = "Cgm";
+      $sDescrOrigem2 = "{$codtipo} - Cgm";
+
     }
     // filtros por valores
     if (isset($nValorMinAcao) && (float)$valor < (float)$nValorMinAcao) {
@@ -391,16 +439,16 @@ if($linhasvalor > 0){
     if (isset($nValorMaxAtu) && (float)$valorcor > (float)$nValorMaxAtu) {
       continue;
     }
-    
+
     if ( ! in_array($v50_inicial,$aIniciais)) {
        if (isset($aTotValOrigem[$sDescrOrigem])){
          $aTotValOrigem[$sDescrOrigem]['valor']    += (float)$valor;
          $aTotValOrigem[$sDescrOrigem]['valorcor'] += (float)$valorcor;
        } else {
          $aTotValOrigem[$sDescrOrigem]['valor']    = (float)$valor;
-         $aTotValOrigem[$sDescrOrigem]['valorcor'] = (float)$valorcor;       
+         $aTotValOrigem[$sDescrOrigem]['valorcor'] = (float)$valorcor;
        }
-    }   
+    }
 
 
     if ( $selTipo == "c" ) {
@@ -417,7 +465,7 @@ if($linhasvalor > 0){
         $pdf->cell(25,$alt,"Vlr Ação"	     ,1,0,"C",1);
         $pdf->cell(25,$alt,"Vlr Atualizado",1,1,"C",1);
 
-      
+
         $troca = 0;
         $p = 0;
       }
@@ -438,22 +486,22 @@ if($linhasvalor > 0){
         $totalvalor += $valor;
         $totalvalorcor +=$valorcor;
       } else {
-      	
+
         $pdf->cell(25,$alt,"",0,0,"R",$p);
         $pdf->cell(25,$alt,"",0,1,"R",$p);
       }
-    
+
       if ($p==0) $p=1;
       else $p=0;
 
-      
-      $aIniciais[] = $v50_inicial; 
+
+      $aIniciais[] = $v50_inicial;
 
 
     }
   }
 }
-if ($selTipo == "c") { 
+if ($selTipo == "c") {
   $pdf->setfont('arial','b',8);
   $pdf->cell(230,$alt,'TOTAL DE REGISTROS : '.$total,"T",0,"L",0);
   $pdf->cell(25,$alt,db_formatar(@$totalvalor,'f')   ,"T",0,"R",0);
@@ -461,10 +509,10 @@ if ($selTipo == "c") {
 
   $pdf->ln(10);
 } else {
-  
+
  $pdf->addpage('L');
  $pdf->setfont('arial','b',8);
-	
+
 }
 
 $pdf->cell(100,$alt,"Resumo Origens" ,1,1,"C",1);
@@ -474,8 +522,8 @@ $pdf->cell(30 ,$alt,"Vlr. Atualizado",1,1,"C",1);
 
 foreach ($aTotValOrigem as $sDescrOrigem => $aValores){
   $pdf->cell(40,$alt,$sDescrOrigem	 					   ,1,0,"L",0);
-  $pdf->cell(30,$alt,db_formatar($aValores['valor'],'f')   ,1,0,"R",0);  
-  $pdf->cell(30,$alt,db_formatar($aValores['valorcor'],'f'),1,1,"R",0);  
+  $pdf->cell(30,$alt,db_formatar($aValores['valor'],'f')   ,1,0,"R",0);
+  $pdf->cell(30,$alt,db_formatar($aValores['valorcor'],'f'),1,1,"R",0);
 
 }
 

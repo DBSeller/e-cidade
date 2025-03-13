@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once "libs/db_stdlib.php";
-require_once "libs/db_conecta.php";
-require_once "libs/db_sessoes.php";
-require_once "libs/db_usuariosonline.php";
-require_once "dbforms/db_funcoes.php";
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("dbforms/db_funcoes.php");
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -83,7 +83,7 @@ $db_chama = 'alterar';
   </head>
   <body class="body-default">
   	<?php
-  	  include("forms/db_frmprocesso.php");
+  	  include(modification("forms/db_frmprocesso.php"));
   	?>
   </body>
 </html>
@@ -133,10 +133,10 @@ if (isset($retorno)) {
     <script>
         function js_db_libera(){
            parent.document.formaba.fornec.disabled = false;
-           top.corpo.iframe_fornec.location.href='com1_fornec001.php?solic=false&pc21_codorc=$retorno&p80_codproc=$pc80_codproc';
+           (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_fornec.location.href='com1_fornec001.php?solic=false&pc21_codorc=$retorno&p80_codproc=$pc80_codproc';
 
            parent.document.formaba.item.disabled = false;
-           top.corpo.iframe_item.location.href = 'com1_itensproc001.php?pc22_codorc=" . @$pc20_codorc
+           (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_item.location.href = 'com1_itensproc001.php?pc22_codorc=" . @$pc20_codorc
                                                                       . "&pc80_codproc=" . @$pc80_codproc
                                                                       . "&db_opcaoal=" . @$db_opcaoal
                                                                       . "&db_chama=" . @$db_chama
@@ -148,13 +148,13 @@ if (isset($retorno)) {
     </script>  ";
 
     if ($lAutoInsert) {
-      echo "<script>top.corpo.mo_camada('item');</script>";
+      echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.mo_camada('item');</script>";
     }
 
   } catch (Exception $e) {
 
     db_msgbox($e->getMessage());
-    echo "<script>top.corpo.iframe_orcam.location.href = 'com1_selsolicproc001.php?pc22_codorc=$retorno&op=alterar';</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_selsolicproc001.php?pc22_codorc=$retorno&op=alterar';</script>";
   }
 }
 
@@ -169,20 +169,20 @@ if ($db_open == true) {
     db_fieldsmemory($result_solic,0);
 
     echo "<script>
-              top.corpo.iframe_orcam.location.href = 'com1_processo005.php?retorno=$chavepesquisa&pc80_codproc=$pc81_codproc';
+              (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_processo005.php?retorno=$chavepesquisa&pc80_codproc=$pc81_codproc';
           </script>
             ";
   }else{
     $result_pcorcamitem = $clpcorcam->sql_record($clpcorcam->sql_query_solproc(null,"pc20_codorc","","pc20_codorc=$chavepesquisa and pc22_codorc is null"));
     if($clpcorcam->numrows!=0){
     echo "<script>
-            top.corpo.iframe_orcam.location.href = 'com1_selsolicproc001.php?pc22_codorc=$chavepesquisa&op=alterar';
+            (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_selsolicproc001.php?pc22_codorc=$chavepesquisa&op=alterar';
 	  </script>
 	  ";
     }else{
     echo "<script>
             alert('Usuário: \\n\\nOrçamento inexistente ou foi gerada autorização de empenho para este processo de compras.\\n\\nAdministrador:');
-            top.corpo.iframe_orcam.location.href = 'com1_processo005.php';
+            (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_processo005.php';
           </script>";
     }
   }

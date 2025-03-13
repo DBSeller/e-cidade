@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: Ambulatorial
 //CLASSE DA ENTIDADE sau_upsparalisada
-require_once( "db_sau_upsparalisada_classe.php");
+require_once(modification( "classes/db_sau_upsparalisada_classe.php"));
 
 class cl_sau_upsparalisada_ext extends cl_sau_upsparalisada { 
    // funcao do sql 

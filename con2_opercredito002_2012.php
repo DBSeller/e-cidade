@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,22 +27,22 @@
 
 if (!isset($arqinclude)){
 
-  require_once("fpdf151/pdf.php");
-  require_once("fpdf151/assinatura.php");
-  require_once("libs/db_sql.php");
-  require_once("libs/db_utils.php");
-  require_once("libs/db_libcontabilidade.php");
-  require_once("libs/db_liborcamento.php");
-  require_once("classes/db_orcparamrel_classe.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("classes/db_orcparamrelopcre_classe.php");
-  require_once("classes/db_conrelinfo_classe.php");
-  require_once("classes/db_conrelvalor_classe.php");
-  require_once("classes/db_orcparamrelopcre_classe.php");
-  require_once("classes/db_orcparamelemento_classe.php");
-  require_once("libs/db_utils.php");
-  require_once("model/linhaRelatorioContabil.model.php");
-  require_once("model/relatorioContabil.model.php");
+  require_once(modification("fpdf151/pdf.php"));
+  require_once(modification("fpdf151/assinatura.php"));
+  require_once(modification("libs/db_sql.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_libcontabilidade.php"));
+  require_once(modification("libs/db_liborcamento.php"));
+  require_once(modification("classes/db_orcparamrel_classe.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("classes/db_orcparamrelopcre_classe.php"));
+  require_once(modification("classes/db_conrelinfo_classe.php"));
+  require_once(modification("classes/db_conrelvalor_classe.php"));
+  require_once(modification("classes/db_orcparamrelopcre_classe.php"));
+  require_once(modification("classes/db_orcparamelemento_classe.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("model/linhaRelatorioContabil.model.php"));
+  require_once(modification("model/relatorioContabil.model.php"));
 
   $classinatura = new cl_assinatura;
   $orcparamrel  = new cl_orcparamrel;

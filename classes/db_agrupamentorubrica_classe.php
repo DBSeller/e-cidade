@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -46,12 +46,14 @@ class cl_agrupamentorubrica {
    var $rh113_codigo = 0; 
    var $rh113_descricao = null; 
    var $rh113_tipo = 0; 
+   var $rh113_tipogrupo = 0; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  rh113_sequencial = int4 = Sequencial 
                  rh113_codigo = int4 = Código do grupo 
                  rh113_descricao = varchar(200) = Descrição 
                  rh113_tipo = int4 = Tipo 
+                 rh113_tipogrupo = int4 = Tipo Grupo
                  ";
    //funcao construtor da classe 
    function cl_agrupamentorubrica() { 
@@ -109,6 +111,16 @@ class cl_agrupamentorubrica {
        $this->erro_status = "0";
        return false;
      }
+     if($this->rh113_tipogrupo == null ){ 
+       $this->erro_sql = " Campo Tipo Grupo nao Informado.";
+       $this->erro_campo = "rh113_tipogrupo";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+
      if($rh113_sequencial == "" || $rh113_sequencial == null ){
        $result = db_query("select nextval('agrupamentorubrica_rh113_sequencial_seq')"); 
        if($result==false){
@@ -146,12 +158,14 @@ class cl_agrupamentorubrica {
                                       ,rh113_codigo 
                                       ,rh113_descricao 
                                       ,rh113_tipo 
+                                      ,rh113_tipogrupo
                        )
                 values (
                                 $this->rh113_sequencial 
                                ,$this->rh113_codigo 
                                ,'$this->rh113_descricao' 
                                ,$this->rh113_tipo 
+                               ,$this->rh113_tipogrupo
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -187,6 +201,7 @@ class cl_agrupamentorubrica {
        $resac = db_query("insert into db_acount values($acount,3478,19586,'','".AddSlashes(pg_result($resaco,0,'rh113_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,3478,19559,'','".AddSlashes(pg_result($resaco,0,'rh113_descricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,3478,19561,'','".AddSlashes(pg_result($resaco,0,'rh113_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3478,1011850,'','".AddSlashes(pg_result($resaco,0,'rh113_tipogrupo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -247,6 +262,19 @@ class cl_agrupamentorubrica {
          return false;
        }
      }
+     if(trim($this->rh113_tipogrupo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh113_tipogrupo"])){ 
+       $sql  .= $virgula." rh113_tipogrupo = $this->rh113_tipogrupo ";
+       $virgula = ",";
+       if(trim($this->rh113_tipogrupo) == null ){ 
+         $this->erro_sql = " Campo Tipo Grupo nao Informado.";
+         $this->erro_campo = "rh113_tipogrupo";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
      if($rh113_sequencial!=null){
        $sql .= " rh113_sequencial = $this->rh113_sequencial";
@@ -266,6 +294,8 @@ class cl_agrupamentorubrica {
            $resac = db_query("insert into db_acount values($acount,3478,19559,'".AddSlashes(pg_result($resaco,$conresaco,'rh113_descricao'))."','$this->rh113_descricao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["rh113_tipo"]) || $this->rh113_tipo != "")
            $resac = db_query("insert into db_acount values($acount,3478,19561,'".AddSlashes(pg_result($resaco,$conresaco,'rh113_tipo'))."','$this->rh113_tipo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["rh113_tipogrupo"]) || $this->rh113_tipogrupo != "")
+           $resac = db_query("insert into db_acount values($acount,3478,1011850,'".AddSlashes(pg_result($resaco,$conresaco,'rh113_tipogrupo'))."','$this->rh113_tipogrupo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
@@ -317,6 +347,7 @@ class cl_agrupamentorubrica {
          $resac = db_query("insert into db_acount values($acount,3478,19586,'','".AddSlashes(pg_result($resaco,$iresaco,'rh113_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3478,19559,'','".AddSlashes(pg_result($resaco,$iresaco,'rh113_descricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3478,19561,'','".AddSlashes(pg_result($resaco,$iresaco,'rh113_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3478,1011850,'','".AddSlashes(pg_result($resaco,$iresaco,'rh113_tipogrupo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from agrupamentorubrica
@@ -401,6 +432,7 @@ class cl_agrupamentorubrica {
        $sql .= $campos;
      }
      $sql .= " from agrupamentorubrica ";
+     $sql .= "  left join tipoagrupamentorubrica on rh238_sequencial = rh113_tipogrupo ";
      $sql2 = "";
      if($dbwhere==""){
        if($rh113_sequencial!=null ){

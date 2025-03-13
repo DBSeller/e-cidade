@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_turma_classe.php");
-include("classes/db_calendario_classe.php");
-include("classes/db_turnoreferente_classe.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("classes/db_turnoreferente_classe.php"));
 $clturma = new cl_turma;
 $clcalendario = new cl_calendario;
 $clturnoreferente = new cl_turnoreferente;

@@ -79,7 +79,7 @@ db_input('h13_descr',40,$Ih13_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tpcontra','func_tpcontra.php?funcao_js=parent.js_preenchepesquisa|h13_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tpcontra','func_tpcontra.php?funcao_js=parent.js_preenchepesquisa|h13_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tpcontra.hide();

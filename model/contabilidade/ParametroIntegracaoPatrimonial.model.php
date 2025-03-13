@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 
-require_once("std/DBDate.php");
-require_once("model/configuracao/Instituicao.model.php");
+require_once(modification("std/DBDate.php"));
+require_once(modification("model/configuracao/Instituicao.model.php"));
 
 /**
  * Patrametros de integracao da contabilidade com modulos do patrimonio
@@ -35,7 +35,7 @@ require_once("model/configuracao/Instituicao.model.php");
  * @author Jeferson Belmiro <jeferson.belmiro@dbseller.com.br>
  * @author Bruno de Boni <bruno.boni@dbseller.com.br>
  * @package contabilidade
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.5 $
  */
 class ParametroIntegracaoPatrimonial {
   

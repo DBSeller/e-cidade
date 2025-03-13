@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt
  */
 
-include_once("fpdf151/pdf.php");
-include_once("libs/db_libpessoal.php");
-include_once("dbforms/db_funcoes.php");
+include_once(modification("fpdf151/pdf.php"));
+include_once(modification("libs/db_libpessoal.php"));
+include_once(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 
 global $cfpess,$subpes,$d08_carnes;
@@ -253,6 +253,7 @@ global $pess;
                                     when 5 then 50
                                     when 6 then 40
                                     when 7 then 70
+                                    when 8 then 40
                                     else 40
                                end
 
@@ -304,6 +305,7 @@ global $pess;
                                     when 5 then 50
                                     when 6 then 40
                                     when 7 then 70
+                                    when 8 then 40
                                     else 40
                                end
 
@@ -353,6 +355,7 @@ global $pess;
                                     when 5 then 50
                                     when 6 then 40
                                     when 7 then 70
+                                    when 8 then 40
                                     else 40
                                end
 

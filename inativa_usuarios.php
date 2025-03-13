@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conn.php");
-require("classes/db_db_usuarios_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conn.php"));
+require(modification("classes/db_db_usuarios_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 // Salva sessao php, variavel $_SESSION, na base de dados
-require_once("libs/db_libsession.php");
+require_once(modification("libs/db_libsession.php"));
 
 session_start();
 
@@ -62,7 +62,7 @@ if(!$conn = @pg_connect("host=$DB_SERVIDOR dbname=$DB_BASE port=$DB_PORTA user=$
 }
 
 $sqlsessao    = "select fc_startsession();";
-$resultsessao = pg_query($conn, $sqlsessao);
+$resultsessao = db_query($conn, $sqlsessao);
 
 $aInstit = explode(",", $DB_instit);
 $iLinhas = count($aInstit);

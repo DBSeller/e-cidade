@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,26 +25,105 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matparam_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_matparam_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("model/configuracao/DBEstrutura.model.php"));
+require_once(modification("model/configuracao/DBEstruturaValor.model.php"));
+require_once(modification("model/estoque/MaterialGrupo.model.php"));
+
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clmatparam = new cl_matparam;
 $db_opcao = 22;
 $db_botao = false;
 if(isset($alterar)){
+  
+   $lSqlErro = false;
    db_inicio_transacao();
+   
+   $iDbEstruturaAnterior = $m90_db_estrutura_anterior;
+   $iDbEstruturaNova     = $m90_db_estrutura;
+   
+   /**
+    * Valido se o usuário alterou a estrutura que deve ser utilizada pelo grupo de material
+    * Alteramos os dados em DB_EstruturaValor para o novo parâmetro selecionado pelo usuário
+    */
+   if ($iDbEstruturaAnterior != $iDbEstruturaNova) {
+     
+     try {
+       
+       $oEstruturaNova           = new DBEstrutura($iDbEstruturaNova);
+       $aNiveisEstruturaNova     = $oEstruturaNova->getNiveis();
+       $oEstruturaAnterior       = new DBEstrutura($iDbEstruturaAnterior);
+       $aNiveisEstruturaAnterior = $oEstruturaAnterior->getNiveis();
+       
+       $iTotalNiveisNova     = count($aNiveisEstruturaNova);
+       $iTotalNiveisAnterior = count($aNiveisEstruturaAnterior);
+       
+       if ($iTotalNiveisNova < $iTotalNiveisAnterior) {
+         throw new Exception("Não é possível alterar a Estrutura dos Grupos para níveis menores que o atual.");
+       }
+       
+       $iTotalNivelCriar  = ($iTotalNiveisNova - $iTotalNiveisAnterior);
+       $aNovaEstrutura   = array();
+       foreach ($aNiveisEstruturaNova as $oStdNivel) {
+         
+         if ($oStdNivel->nivel <= $iTotalNivelCriar) {
+
+           if ($oStdNivel->nivel == 1) {
+             $aNovaEstrutura[] = str_pad('1', $oStdNivel->digitos, STR_PAD_LEFT, "0");
+           } else {
+             $aNovaEstrutura[] = str_pad('0', $oStdNivel->digitos, STR_PAD_LEFT, "0");
+           }
+         }
+       }
+       $sEstruturaNova          = implode('.', $aNovaEstrutura);
+       $oDaoEstruturaValor      = db_utils::getDao('db_estruturavalor');
+       $sSqlBuscaEstruturaValor = $oDaoEstruturaValor->sql_query_file(null, "*", null, "db121_db_estrutura = {$iTotalNiveisAnterior}");
+       $rsBuscaEstruturaValor   = $oDaoEstruturaValor->sql_record($sSqlBuscaEstruturaValor);
+       
+       if ($oDaoEstruturaValor->numrows > 0) {
+         
+         for ($iRowEstrutura = 0; $iRowEstrutura < $oDaoEstruturaValor->numrows; $iRowEstrutura++) {
+           
+           $oDadoEstruturaValor = db_utils::fieldsMemory($rsBuscaEstruturaValor, $iRowEstrutura);
+           
+           $oDaoUpdadeEstruturaValor = db_utils::getDao('db_estruturavalor');
+           $oDaoUpdadeEstruturaValor->db121_sequencial        = $oDadoEstruturaValor->db121_sequencial;
+           $oDaoUpdadeEstruturaValor->db121_db_estrutura      = $iDbEstruturaNova;
+           $oDaoUpdadeEstruturaValor->db121_estrutural        = "{$sEstruturaNova}.{$oDadoEstruturaValor->db121_estrutural}";
+           $oDaoUpdadeEstruturaValor->db121_descricao         = $oDadoEstruturaValor->db121_descricao;
+           $oDaoUpdadeEstruturaValor->db121_estruturavalorpai = $oDadoEstruturaValor->db121_estruturavalorpai;
+           $oDaoUpdadeEstruturaValor->db121_nivel             = ($oDadoEstruturaValor->db121_nivel+$iTotalNivelCriar);
+           $oDaoUpdadeEstruturaValor->db121_tipoconta         = $oDadoEstruturaValor->db121_tipoconta;
+           $oDaoUpdadeEstruturaValor->alterar($oDadoEstruturaValor->db121_sequencial);
+           
+           if ($oDaoUpdadeEstruturaValor->erro_status == 0) {
+             throw new Exception("Impossivel alterar os dados da estrutura.");
+           }
+         }
+       }
+       
+       
+     } catch (Exception $eErro) {
+       db_msgbox($eErro->getMessage());
+       $lSqlErro = true;
+     }
+   }
+   
+   
    $result = $clmatparam->sql_record($clmatparam->sql_query());
    if($result==false || $clmatparam->numrows==0){
      $clmatparam->incluir();
    }else{
      $clmatparam->alterar();
    }
-   db_fim_transacao();
+   db_fim_transacao($lSqlErro);
 }
 $db_opcao = 2;
 $result = $clmatparam->sql_record($clmatparam->sql_query());
@@ -59,6 +138,7 @@ $db_botao = true;
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <style type="text/css">
 fieldset.interno table tr > td:FIRST-CHILD {
@@ -80,7 +160,7 @@ fieldset.interno table tr > td:FIRST-CHILD {
     <td height="430" valign="top" bgcolor="#CCCCCC"> 
 			<center>
 				<?
-					include("forms/db_frmmatparam.php");
+					include(modification("forms/db_frmmatparam.php"));
 				?>
     </center>
 	</td>

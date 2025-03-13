@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,18 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/JSON.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("std/db_stdClass.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/db_stdClass.php"));
 
 db_app::import('exceptions.*');
+
+use ECidade\Configuracao\Relatorios\RelatorioAcessosAuditoria;
 
 $oJSON              = new services_json();
 $oParametros        = $oJSON->decode(str_replace("\\", "", $_POST["json"]));
@@ -65,6 +67,62 @@ try {
      *                1 - Apenas Acesso a Rotina
      *                2 - Acesso a Rotina com Modificações no Sistema
      */
+    case "imprimeAcessos":
+
+      $aParametros                = array();
+      $aParametros["dDataInicio"] = $oParametros->dDataInicio;
+      $aParametros["dDataFim"]    = $oParametros->dDataFim;
+
+      if ( !empty( $oParametros->sHoraInicio ) ) {
+        $aParametros["sHoraInicio"] = $oParametros->sHoraInicio.":00";
+      }
+
+      if ( !empty( $oParametros->sHoraFim ) ) {
+        $aParametros["sHoraFim"]    = $oParametros->sHoraFim.":59";
+      }
+
+      $aParametros["sUsuario"]    = db_stdClass::normalizeStringJsonEscapeString( $oParametros->sUsuario );
+      $aParametros["iUsuario"]    = $oParametros->iUsuario;
+      $aParametros["iModulo"]     = $oParametros->iModulo;
+      $aParametros["iItemMenu"]   = $oParametros->iItemMenu;
+      $aParametros["iTipoAcesso"] = $oParametros->iTipoAcesso;
+      $aParametros["sEsquema"]    = db_stdClass::normalizeStringJsonEscapeString( $oParametros->sEsquema );
+      $aParametros["sTabela"]     = db_stdClass::normalizeStringJsonEscapeString( $oParametros->sTabela );
+      $aParametros["sCampo"]      = db_stdClass::normalizeStringJsonEscapeString( $oParametros->sCampo );
+      $aParametros["mValor"]      = db_stdClass::normalizeStringJsonEscapeString( $oParametros->mValor );
+
+      /**
+       * Cria acount da pesquisa feita
+       */
+      if ( $oParametros->lCienteMensagens ) {
+
+        $sMensagemLog  = "Parâmetros de pesquisa:\n";
+        $sMensagemLog .= "sUsuario....: " . $aParametros["sUsuario"]    . "\n";
+        $sMensagemLog .= "iUsuario....: " . $aParametros["iUsuario"]    . "\n";
+        $sMensagemLog .= "iModulo.....: " . $aParametros["iModulo"]     . "\n";
+        $sMensagemLog .= "iItemMenu...: " . $aParametros["iItemMenu"]   . "\n";
+        $sMensagemLog .= "iTipoAcesso.: " . $aParametros["iTipoAcesso"] . "\n";
+        $sMensagemLog .= "sEsquema....: " . $aParametros["sEsquema"]    . "\n";
+        $sMensagemLog .= "sTabela.....: " . $aParametros["sTabela"]     . "\n";
+        $sMensagemLog .= "sCampo......: " . $aParametros["sCampo"]      . "\n";
+        $sMensagemLog .= "mValor......: " . $aParametros["mValor"]      . "\n";
+        $sMensagemLog .= "dDataInicio.: " . $aParametros["dDataInicio"] . "\n";
+        $sMensagemLog .= "dDataFim....: " . $aParametros["dDataFim"]    . "\n";
+
+        $sMensagemLog .= "\n";
+
+        $sMensagemLog .= "Usuário Logado..: " . db_getsession('DB_login')   . "\n";
+        $sMensagemLog .= "Data Sistema....: " . db_getsession('DB_datausu') . "\n";
+
+        db_logsmanual($sMensagemLog);
+      }
+
+      $oRelatorioAcessosAuditoria = new RelatorioAcessosAuditoria($aParametros);
+      $oRetorno->sRelatorioAcessos = $oRelatorioAcessosAuditoria->emitirPdf();
+      $oRetorno->status = 3;
+
+    break;
+
     case "getAcessos":
 
       $aParametros                = array();
@@ -122,7 +180,11 @@ try {
       $rsBuscaAcessos       = db_query( $sSqlBuscaAcessos );
 
       if ( !$rsBuscaAcessos ) {
-        throw new DBException( "Erro ao buscar os acessos: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
+        throw new DBException( "Erro ao buscar os acessos: ".pg_last_error() );
+      }
+
+      if ( pg_num_rows( $rsBuscaAcessos ) == 0 ) {
+        throw new DBException( "Acessos ao sistema: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
       }
 
       $aAcessos          = array();
@@ -130,9 +192,7 @@ try {
       $aDetalhesAcesso   = array();
       $aRetornoAcessos   = array();
 
-      if ( pg_num_rows( $rsBuscaAcessos ) > 0 ) {
-        $aAcessos = db_utils::getCollectionByRecord($rsBuscaAcessos, false, false, true);
-      }
+      $aAcessos = db_utils::getCollectionByRecord($rsBuscaAcessos, false, false, true);
 
       /**
        * Array para controlar se um logacessa já não foi inserido ao array dos detalhes do acesso, evitando duplicação
@@ -222,10 +282,14 @@ try {
 
       $oDaoDBAuditoria       = new cl_db_auditoria();
       $sSqlBuscaModificacoes = $oDaoDBAuditoria->sql_query_modificacoes($aParametros);
-      $rsBuscaModificacoes   = $oDaoDBAuditoria->sql_record($sSqlBuscaModificacoes);
+      $rsBuscaModificacoes   = db_query($sSqlBuscaModificacoes);
 
       if ( !$rsBuscaModificacoes ) {
-        throw new DBException( "Erro ao buscar as modificações: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
+        throw new DBException( "Erro ao buscar as modificações: ".pg_last_error() );
+      }
+
+      if ( pg_num_rows($rsBuscaModificacoes) == 0 ) {
+        throw new DBException( "Modificações do sistema: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
       }
 
       $aDadosQuery               = db_utils::getCollectionByRecord($rsBuscaModificacoes);
@@ -261,7 +325,16 @@ try {
 
       $oDaoDBItensMenu      = new cl_db_itensmenu();
       $sSqlItensMenu        = $oDaoDBItensMenu->sql_queryArvoreMenus();
-      $rsMenus              = $oDaoDBItensMenu->sql_record($sSqlItensMenu);
+      $rsMenus              = db_query($sSqlItensMenu);
+
+      if ( !$rsMenus ) {
+        throw new DBException( "Erro ao buscar os itens de menu: ".pg_last_error() );
+      }
+
+      if ( pg_num_rows($rsMenus) == 0 ) {
+        throw new DBException( "Itens de menu do sistema: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
+      }
+
       $aItens               = db_utils::getCollectionByRecord($rsMenus, false, false, true);
 
       $sSqlModulos          = " select db_modulos.id_item,                                                  ";
@@ -272,6 +345,15 @@ try {
       $sSqlModulos         .= "  order by id_item                                                      ";
 
       $rsModulos            = db_query($sSqlModulos);
+
+      if ( !$rsModulos ) {
+        throw new DBException( "Erro ao buscar os módulos dos itens de menu: ".pg_last_error() );
+      }
+
+      if ( pg_num_rows($rsModulos) == 0 ) {
+        throw new DBException( "Módulos dos itens de menu do sistema: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
+      }
+
       $oRetorno->aModulos   = db_utils::getCollectionByRecord($rsModulos, false, false, true);
       $oRetorno->aBaseMenus = array();
 
@@ -299,24 +381,24 @@ try {
       $sOrderDbModulos  = "nome_modulo";
       $sSqlDbModulos    = $oDaoDbModulos->sql_query_file( null, $sCamposDbModulos, $sOrderDbModulos );
       $rsDbModulos      = db_query( $sSqlDbModulos );
-
+      
       if ( !$rsDbModulos ) {
-        throw new DBException( "Erro ao buscar os módulos: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
+        throw new DBException( "Erro ao buscar os módulos: ".pg_last_error() );
+      }
+      
+      $iLinhasDbModulos = pg_num_rows( $rsDbModulos );
+      if ( $iLinhasDbModulos == 0 ) {
+        throw new DBException( "Módulos do sistema: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );        
       }
 
-      $iLinhasDbModulos = pg_num_rows( $rsDbModulos );
-      if ( $iLinhasDbModulos > 0 ) {
-
-        for ( $iContador = 0; $iContador < $iLinhasDbModulos; $iContador++ ) {
+      for ( $iContador = 0; $iContador < $iLinhasDbModulos; $iContador++ ) {
 
           $oRetornoModulos       = db_utils::fieldsMemory( $rsDbModulos, $iContador );
           $oDadosModulo          = new stdClass();
           $oDadosModulo->iCodigo = $oRetornoModulos->id_item;
           $oDadosModulo->sNome   = urlencode( $oRetornoModulos->nome_modulo );
           $oRetorno->aModulos[]  = $oDadosModulo;
-        }
       }
-
       break;
 
     /**
@@ -334,22 +416,21 @@ try {
       $rsDbSysModulo      = db_query( $sSqlDbSysModulo );
 
       if ( !$rsDbSysModulo ) {
-        throw new DBException( "Erro ao buscar os esquemas: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
+        throw new DBException( "Erro ao buscar os esquemas: ".pg_last_error() );
       }
 
       $iLinhasDbSysModulo = pg_num_rows( $rsDbSysModulo );
-      if ( $iLinhasDbSysModulo > 0 ) {
-
-        for ( $iContador = 0; $iContador < $iLinhasDbSysModulo; $iContador++ ) {
-
-          $oRetornoModulo        = db_utils::fieldsMemory( $rsDbSysModulo, $iContador );
-          $oDadosModulo          = new stdClass();
-          $oDadosModulo->iCodigo = $oRetornoModulo->codmod;
-          $oDadosModulo->sNome   = urlencode( $oRetornoModulo->nomemod );
-          $oRetorno->aEsquemas[] = $oDadosModulo;
-        }
+      if ( $iLinhasDbSysModulo == 0 ) {
+        throw new DBException( "Esquemas do sistema: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
       }
-
+ 
+      for ( $iContador = 0; $iContador < $iLinhasDbSysModulo; $iContador++ ) {
+        $oRetornoModulo        = db_utils::fieldsMemory( $rsDbSysModulo, $iContador );
+        $oDadosModulo          = new stdClass();
+        $oDadosModulo->iCodigo = $oRetornoModulo->codmod;
+        $oDadosModulo->sNome   = urlencode( $oRetornoModulo->nomemod );
+        $oRetorno->aEsquemas[] = $oDadosModulo;
+      }
       break;
 
     /**
@@ -364,7 +445,7 @@ try {
         $oRetorno->aTabelas  = array();
 
         $oDaoDbSysArquivo    = new cl_db_sysarquivo();
-        $sCamposDbSysArquivo = "db_sysarquivo.codarq, db_sysarquivo.nomearq";
+        $sCamposDbSysArquivo = "db_sysarquivo.codarq, db_sysarquivo.nomearq, db_sysarquivo.rotulo";
         $sWhereDbSysArquivo  = "db_sysarqmod.codmod = {$oParametros->iEsquema}";
         $sOrderDbSysArquivo  = "db_sysarquivo.nomearq";
         $sSqlDbSysArquivo    = $oDaoDbSysArquivo->sql_query_arqmod(
@@ -376,21 +457,27 @@ try {
         $rsDbSysArquivo = db_query( $sSqlDbSysArquivo );
 
         if ( !$rsDbSysArquivo ) {
-          throw new DBException( "Erro ao buscar as tabelas do módulo: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
+          throw new DBException("Erro ao buscar as tabelas dos módulos: ".pg_last_error());
         }
 
-        $iLinhasDbSysArquivo = pg_num_rows( $rsDbSysArquivo );
+        $iLinhasDbSysArquivo = pg_num_rows($rsDbSysArquivo);
+        if ($iLinhasDbSysArquivo == 0) {
+          throw new DBException("Tabelas dos módulos: "._M("{$sCaminhoMensagens}.registros_nao_encontrados"));
+        }
 
-        if ( $iLinhasDbSysArquivo > 0 ) {
+        for ($iContador = 0; $iContador < $iLinhasDbSysArquivo; $iContador++) {
+          $oRetornoTabelaModulo        = db_utils::fieldsMemory($rsDbSysArquivo, $iContador);
+          $oDadosTabelaModulo          = new stdClass();
+          $oDadosTabelaModulo->iCodigo = $oRetornoTabelaModulo->codarq;
+          $sNome = $oRetornoTabelaModulo->nomearq;
+          $oDadosTabelaModulo->sLabel   = urlencode( $sNome );
 
-          for ( $iContador = 0; $iContador < $iLinhasDbSysArquivo; $iContador++ ) {
-
-            $oRetornoTabelaModulo        = db_utils::fieldsMemory( $rsDbSysArquivo, $iContador );
-            $oDadosTabelaModulo          = new stdClass();
-            $oDadosTabelaModulo->iCodigo = $oRetornoTabelaModulo->codarq;
-            $oDadosTabelaModulo->sNome   = urlencode( $oRetornoTabelaModulo->nomearq );
-            $oRetorno->aTabelas[]        = $oDadosTabelaModulo;
+          if (!empty($oRetornoTabelaModulo->rotulo)) {
+            $sNome = $oRetornoTabelaModulo->rotulo . " (" . $sNome . ")";
           }
+
+          $oDadosTabelaModulo->sNome   = urlencode( $sNome );
+          $oRetorno->aTabelas[]        = $oDadosTabelaModulo;
         }
       }
 
@@ -408,7 +495,7 @@ try {
         $oRetorno->aCampos   = array();
 
         $oDaoDbSysArqCamp    = new cl_db_sysarqcamp();
-        $sCamposDbSysArqCamp = "db_syscampo.codcam, db_syscampo.nomecam";
+        $sCamposDbSysArqCamp = "db_syscampo.codcam, db_syscampo.nomecam, db_syscampo.rotulo";
         $sOrderDbSysArqCamp  = "db_syscampo.codcam";
         $sSqlDbSysArqCamp    = $oDaoDbSysArqCamp->sql_query(
                                                              $oParametros->iTabela,
@@ -420,21 +507,27 @@ try {
         $rsDbSysArqCamp      = db_query( $sSqlDbSysArqCamp );
 
         if ( !$rsDbSysArqCamp ) {
-          throw new DBException( "Erro ao buscar os campos da tabela: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
+          throw new DBException( "Erro ao buscar os campos da tabela: ".pg_last_error() );
         }
 
         $iLinhasDbSysArqCamp = pg_num_rows( $rsDbSysArqCamp );
+        if ( $iLinhasDbSysArqCamp == 0 ) {
+          throw new DBException( "Campos das tabelas: "._M( "{$sCaminhoMensagens}.registros_nao_encontrados" ) );
+        }
 
-        if ( $iLinhasDbSysArqCamp > 0 ) {
+        for ( $iContador = 0; $iContador < $iLinhasDbSysArqCamp; $iContador++ ) {
+          $oRetornoCamposTabela        = db_utils::fieldsMemory( $rsDbSysArqCamp, $iContador );
+          $oDadosCamposTabela          = new stdClass();
+          $oDadosCamposTabela->iCodigo = $oRetornoCamposTabela->codcam;
+          $sNome = $oRetornoCamposTabela->nomecam;
+          $oDadosCamposTabela->sLabel   = urlencode( $sNome );
 
-          for ( $iContador = 0; $iContador < $iLinhasDbSysArqCamp; $iContador++ ) {
-
-            $oRetornoCamposTabela        = db_utils::fieldsMemory( $rsDbSysArqCamp, $iContador );
-            $oDadosCamposTabela          = new stdClass();
-            $oDadosCamposTabela->iCodigo = $oRetornoCamposTabela->codcam;
-            $oDadosCamposTabela->sNome   = urlencode( $oRetornoCamposTabela->nomecam );
-            $oRetorno->aCampos[]         = $oDadosCamposTabela;
+          if ( !empty($oRetornoCamposTabela->rotulo) ) {
+            $sNome = $oRetornoCamposTabela->rotulo . " (" . $sNome . ")";
           }
+
+          $oDadosCamposTabela->sNome   = urlencode( $sNome );
+          $oRetorno->aCampos[]         = $oDadosCamposTabela;
         }
       }
 

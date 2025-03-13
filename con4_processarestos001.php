@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libcontabilidade.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libcontabilidade.php"));
 
-include("classes/db_empresto_classe.php");
-include("classes/db_conlancam_classe.php");
-include("classes/db_empempenho_classe.php");
+include(modification("classes/db_empresto_classe.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
 
 $clempresto     = new cl_empresto;
 $clconlancam    = new cl_conlancam;
@@ -105,13 +105,13 @@ if(isset($processar)){
           echo "Empenho $e91_numemp -> Valor do empenho $e60_vlremp -> $vlremp <br>";
           $sqlempenho     = "update empempenho  set e60_vlremp = $vlremp where e60_numemp = $e91_numemp";
           $sqlempelemento = "update empelemento set e64_vlremp = $vlremp where e64_numemp = $e91_numemp";
-          $res = @pg_query($sqlempenho);
+          $res = @db_query($sqlempenho);
           if($res == false){
             $sqlerro = true;
             $db_msgerro = "Erro ao atualizar o empenho (Numemp : $e91_numemp)";
             break;
           }
-          $res = @pg_query($sqlempelemento);
+          $res = @db_query($sqlempelemento);
           if($res == false){
             $sqlerro = true;
             $db_msgerro = "Erro ao atualizar o empelemento (Numemp : $e91_numemp)";
@@ -122,13 +122,13 @@ if(isset($processar)){
           echo "Empenho $e91_numemp -> Valor do anulado $e60_vlranu -> $vlranu <br>";
           $sqlempenho     = "update empempenho  set e60_vlranu = $vlranu where e60_numemp = $e91_numemp";
           $sqlempelemento = "update empelemento set e64_vlranu = $vlranu where e64_numemp = $e91_numemp"; 
-          $res = @pg_query($sqlempenho);
+          $res = @db_query($sqlempenho);
           if($res == false){
             $sqlerro = true;
             $db_msgerro = "Erro ao atualizar o empenho (Numemp : $e91_numemp)";
             break;
           }
-          $res = @pg_query($sqlempelemento);
+          $res = @db_query($sqlempelemento);
           if($res == false){
             $sqlerro = true;
             $db_msgerro = "Erro ao atualizar o empelemento (Numemp : $e91_numemp)";
@@ -139,13 +139,13 @@ if(isset($processar)){
           echo "Empenho $e91_numemp -> Valor do liquida $e60_vlrliq -> $vlrliq <br>";
           $sqlempenho     = "update empempenho  set e60_vlrliq = $vlrliq where e60_numemp = $e91_numemp";
           $sqlempelemento = "update empelemento set e64_vlrliq = $vlrliq where e64_numemp = $e91_numemp"; 
-          $res = @pg_query($sqlempenho);
+          $res = @db_query($sqlempenho);
           if($res == false){
             $sqlerro = true;
             $db_msgerro = "Erro ao atualizar o empenho (Numemp : $e91_numemp)";
             break;
           }
-          $res = @pg_query($sqlempelemento);
+          $res = @db_query($sqlempelemento);
           if($res == false){
             $sqlerro = true;
             $db_msgerro = "Erro ao atualizar o empelemento (Numemp : $e91_numemp)";
@@ -156,13 +156,13 @@ if(isset($processar)){
           echo "Empenho $e91_numemp -> Valor do pago    $e60_vlrpag -> $vlrpag <br>";
           $sqlempenho     = "update empempenho  set e60_vlrpag = $vlrpag where e60_numemp = $e91_numemp";
           $sqlempelemento = "update empelemento set e64_vlrpag = $vlrpag where e64_numemp = $e91_numemp"; 
-          $res = @pg_query($sqlempenho);
+          $res = @db_query($sqlempenho);
           if($res == false){
             $sqlerro = true;
             $db_msgerro = "Erro ao atualizar o empenho (Numemp : $e91_numemp)";
             break;
           }
-          $res = @pg_query($sqlempelemento);
+          $res = @db_query($sqlempelemento);
           if($res == false){
             $sqlerro = true;
             $db_msgerro = "Erro ao atualizar o empelemento (Numemp : $e91_numemp)";

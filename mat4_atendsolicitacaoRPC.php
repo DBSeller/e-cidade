@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_utils.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("dbforms/db_funcoes.php");
-require ("classes/db_matpedidotransf_classe.php");
-include("classes/db_db_almox_classe.php");
-include ("model/solicitacaoMaterial.model.php");
-include ("classes/materialestoque.model.php");
-include ("classes/db_matparam_classe.php");
-include ("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("classes/db_matpedidotransf_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("model/solicitacaoMaterial.model.php"));
+include(modification("classes/materialestoque.model.php"));
+include(modification("classes/db_matparam_classe.php"));
+include(modification("libs/JSON.php"));
 $clmatpedidotransf = new cl_matpedidotransf ( );
 $cldb_dbalmox = new cl_db_almox();
 $oJson = new services_json ( );
 $oParam = $oJson->decode ( str_replace ( "\\", "", $_POST ["json"] ) );
-require_once "libs/db_app.utils.php";
+require_once modification("libs/db_app.utils.php");
 db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 db_app::import("Acordo");
 db_app::import("AcordoComissao");

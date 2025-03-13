@@ -1,40 +1,40 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_orcimpactovalmovmes_classe.php");
-include("classes/db_orcimpactovalmov_classe.php");
-include("classes/db_orcimpactomov_classe.php");
-include("classes/db_orcimpactorecmov_classe.php");
-include("classes/db_orcimpactorecmovmes_classe.php");
-include("classes/db_orcimpactoger_classe.php");
-include("classes/db_orcimpactoperiodo_classe.php");
-include("classes/db_orctiporec_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_orcimpactovalmovmes_classe.php"));
+include(modification("classes/db_orcimpactovalmov_classe.php"));
+include(modification("classes/db_orcimpactomov_classe.php"));
+include(modification("classes/db_orcimpactorecmov_classe.php"));
+include(modification("classes/db_orcimpactorecmovmes_classe.php"));
+include(modification("classes/db_orcimpactoger_classe.php"));
+include(modification("classes/db_orcimpactoperiodo_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 
 $clorcimpactovalmovmes = new cl_orcimpactovalmovmes;
 $clorcimpactovalmov    = new cl_orcimpactovalmov;
@@ -54,7 +54,7 @@ if(isset($recurso) && $recurso !='' && $recurso !=0){
   $result = $clorctiporec->sql_record($clorctiporec->sql_query_file($recurso));
   $numrows = $clorctiporec->numrows;
   if($numrows==0){
-    db_redireciona('db_erros.php?fechar=true&db_erro=Recuros inválido!');
+    db_redireciona('db_erros.php?fechar=true&db_erro=Recursos inválido!');
   }else{
     $head3 = "Recurso:$recurso";
   }
@@ -67,9 +67,9 @@ if(isset($recurso) && $recurso!=0 && $recurso!=''){
   $head4 = "Recurso: $recurso";
 }
 
-$pdf = new PDF(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
+$pdf = new PDF();
+$pdf->Open();
+$pdf->AliasNbPages();
 $pdf->AddPage("L");
 $pdf->setfillcolor(235);
 $alt="5";
@@ -84,7 +84,7 @@ if($numrows==0){
   db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum registro encontrado!');
 }else{
   db_fieldsmemory($result,0);
-} 
+}
 //---------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------
@@ -141,20 +141,20 @@ for($i=$o96_anoini;$i<=$o96_anofim;$i++){
   $arr_cods =  array();
   $sql02= $clorcimpactovalmov->sql_query_soma(null,"sum(o64_valor) as o64_valor,o64_exercicio","o64_exercicio","$dbwhere group by o64_exercicio");
   $result02  = $clorcimpactovalmov->sql_record($sql02);
-  $numrows02 = $clorcimpactovalmov->numrows; 
+  $numrows02 = $clorcimpactovalmov->numrows;
   //-------------------------------------------------------------------------------
 
   db_fieldsmemory($result02,0);
-  
+
   $arr_dadosimprime["E"][$i] = $o64_valor;
   $arr_dadosimprime["F"][$i] = $arr_dadosimprime["C"][$i] + $arr_dadosimprime["D"][$i] - $arr_dadosimprime["E"][$i];
   $arr_dadosimprime["G"][$i] = $arr_dadosimprime["F"][$i] - $arr_dadosimprime["C"][$i];
 }
   //   Valores usados no array $arr_dadosimprime[ANO]['Valores abaixo']
-  // ______________________________________________ 
-  //|           |                                  | 
+  // ______________________________________________
+  //|           |                                  |
   //|   Valor   |           Descrição              |
-  //|___________|__________________________________| 
+  //|___________|__________________________________|
   //|           |                                  |
   //|    [A]    | Ativo Financeiro Inicial         |
   //|    [B]    | Passivo Financeiro Inicial       |
@@ -171,8 +171,8 @@ for($i=$o96_anoini;$i<=$o96_anofim;$i++){
   $arr_descricao["E"] = "Despesas e Interferências";
   $arr_descricao["F"] = "Situação Financeira Projetada";
   $arr_descricao["G"] = "Situação Orçamentária Projetada";
-  
-  reset($arr_dadosimprime);  // vai pro inicio da variável 
+
+  reset($arr_dadosimprime);  // vai pro inicio da variável
   for($i=0;$i<count($arr_dadosimprime);$i++){
     $pdf->setfillcolor(235);
     $passa = false;

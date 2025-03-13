@@ -1,6 +1,6 @@
 /*
  *      E-cidade Software Publico para Gestao Municipal
- *   Copyright (C) 2014  DBSeller Servicos de Informatica
+ *   Copyright (C) 2009  DBSeller Servicos de Informatica
  *                             www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *
@@ -163,7 +163,7 @@ DBViewFormularioEducacao.LegendasLancamentoAvaliacao.prototype.getLegendasPeriod
   oObjeto.parameters = 'json='+Object.toJSON(oParametros);
   oObjeto.onComplete = function(oAjax) {
 
-    var oRetorno = eval("(" + oAjax.responseText + ")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if (oRetorno.aPeriodos.length == 0) {
       return;
@@ -198,7 +198,7 @@ DBViewFormularioEducacao.LegendasLancamentoAvaliacao.prototype.getTermosResultad
   oObjeto.parameters = 'json='+Object.toJSON(oParametros);
   oObjeto.onComplete = function(oAjax) {
 
-    var oRetorno = eval("(" + oAjax.responseText + ")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if (oRetorno.aTermos.length == 0) {
       return;

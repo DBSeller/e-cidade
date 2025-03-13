@@ -33,7 +33,7 @@ $clrotulo = new rotulocampo;
 $clrotulo->label("s108_c_exame");
 $clrotulo->label("s131_c_descricao");
 $clrotulo->label("s131_i_codigo");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
 ?>
@@ -108,10 +108,10 @@ $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 <script>
 function js_pesquisas132_i_atributoexames(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_a3','db_iframe_sau_examesatributos','func_sau_atributoexames.php?funcao_js=parent.js_mostrasau_atributos1|s131_i_codigo|s131_c_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_a3','db_iframe_sau_examesatributos','func_sau_atributoexames.php?funcao_js=parent.js_mostrasau_atributos1|s131_i_codigo|s131_c_descricao','Pesquisa',true);
   }else{
      if(document.form1.s132_i_atributoexames.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_a3','db_iframe_sau_examesatributos','func_sau_atributoexames.php?pesquisa_chave='+document.form1.s132_i_atributoexames.value+'&funcao_js=parent.js_mostrasau_atributos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_a3','db_iframe_sau_examesatributos','func_sau_atributoexames.php?pesquisa_chave='+document.form1.s132_i_atributoexames.value+'&funcao_js=parent.js_mostrasau_atributos','Pesquisa',false);
      }else{
        document.form1.s131_i_codigo.value = ''; 
      }
@@ -130,7 +130,7 @@ function js_mostrasau_atributos1(chave1,chave2){
   db_iframe_sau_examesatributos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_a3','db_iframe_sau_examesatributos','func_sau_examerequisitos.php?funcao_js=parent.js_preenchepesquisa|s132_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_a3','db_iframe_sau_examesatributos','func_sau_examerequisitos.php?funcao_js=parent.js_preenchepesquisa|s132_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_examesatributos.hide();

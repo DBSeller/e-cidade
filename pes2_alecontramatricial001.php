@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_gerfcom_classe.php");
-include("dbforms/db_layouttxt.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_gerfcom_classe.php"));
+include(modification("dbforms/db_layouttxt.php"));
+include(modification("libs/db_sql.php"));
 $aux = new cl_arquivo_auxiliar;
 $clgerfcom = new cl_gerfcom;
 $clrotulo = new rotulocampo;
@@ -378,7 +378,7 @@ function js_emite(){
     query+= "&semest="+document.form1.r48_semest.value;
   }
   query+="&local="+document.form1.rh56_localtrab.value;
-  js_OpenJanelaIframe('top.corpo','db_iframe_geracontra',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_geracontra',
   'pes2_alecontramatricial002.php?opcao='+document.form1.folha.value+
         '&ano='+document.form1.DBtxt23.value+'&mes='+document.form1.DBtxt25.value+
 	'&filtro='+document.form1.filtro.value+'&msg='+document.form1.mensagem1.value+query,'Gerando Arquivo',true);
@@ -393,17 +393,17 @@ function js_detectaarquivo(arquivo,erro,mensagem){
 }
 function js_controlarodape(mostra){
   if(mostra == true){
-    document.form1.rodape.value = parent.bstatus.document.getElementById('st').innerHTML;
-    parent.bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
+    document.form1.rodape.value = (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
   }else{
-    parent.bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
   }
 }
 </script>
 <?
 if(isset($emite2)){
   $sql = "select * from db_config where codigo = ".db_getsession("DB_instit");
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 
   $xtipo = "'x'";
@@ -492,13 +492,13 @@ if(isset($emite2)){
 					   cgm.*,
 					   substr(r70_estrut,1,7) as estrut,
 					   substr(db_fxxx(rh01_regist,$ano,$mes,".db_getsession("DB_instit")."),111,11) as f010,
-					   substr(db_fxxx(rh01_regist,$ano,$mes,".db_getsession("DB_instit")."),210,8) as padrao
+					   substr(db_fxxx(rh01_regist,$ano,$mes,".db_getsession("DB_instit")."),221,8) as padrao
 					  ",
 					  "rh55_estrut,z01_nome",
 					  $txt_where.$localtrabprinc
 					 );
   // die($sqlDentro);
-  $res = pg_query($sqlDentro);
+  $res = db_query($sqlDentro);
   $num = pg_numrows($res);
   if($num == 0){
     $erro_msg = "Não existe Cálculo no período de $mes / $ano";
@@ -565,7 +565,7 @@ if(isset($emite2)){
       $somafaixairrf = 0;
       $somabaseprevidencia = 0;
       $somabaseliquida = 0;
-      $res_env = pg_exec($sql);
+      $res_env = db_query($sql);
       if(pg_num_rows($res_env) > 0){
         $quantidade ++;
 	      $contadorContra ++;
@@ -635,15 +635,15 @@ if(isset($emite2)){
               $totalproventos = "";
               $totaldescontos = "";
               $totalprovdesc  = "";
-              db_setaPropriedadesLayoutTxt(&$db_layouttxt,RODAPEARQUIVO);
+              db_setaPropriedadesLayoutTxt($db_layouttxt,RODAPEARQUIVO);
 	      $contapaginas ++;
             }
-            db_setaPropriedadesLayoutTxt(&$db_layouttxt,CABECALHOARQUIVO);
+            db_setaPropriedadesLayoutTxt($db_layouttxt,CABECALHOARQUIVO);
           }
        
           if($provdesc != "B"){
             $linhas ++;
-            db_setaPropriedadesLayoutTxt(&$db_layouttxt,REGISTROSARQUIVO);
+            db_setaPropriedadesLayoutTxt($db_layouttxt,REGISTROSARQUIVO);
           }
 
         }
@@ -656,7 +656,7 @@ if(isset($emite2)){
         $multiplic -= $linhas;
         $db_layouttxt->quebraLinha($multiplic);
        
-        db_setaPropriedadesLayoutTxt(&$db_layouttxt,RODAPEARQUIVO);
+        db_setaPropriedadesLayoutTxt($db_layouttxt,RODAPEARQUIVO);
       }
 
     }

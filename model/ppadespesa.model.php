@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -43,7 +43,7 @@ class ppaDespesa {
 
   function processaBaseCalculo($iAno) {
 
-    require_once("libs/db_liborcamento.php");
+    require_once(modification("libs/db_liborcamento.php"));
     $dtDataInicial   = "{$iAno}-01-01";
     $dtDataFinal     = "{$iAno}-12-31";
     $lMediaPonderada = false;
@@ -59,7 +59,7 @@ class ppaDespesa {
 
     }
 
-    require_once("classes/db_ppadotacao_classe.php");
+    require_once(modification("classes/db_ppadotacao_classe.php"));
     $rsDespesa = $sqlprinc = db_dotacaosaldo(8,
                                              2,
                                              4,true,
@@ -72,7 +72,7 @@ class ppaDespesa {
 
     $oDaoPppaEstimativa        = db_utils::getDao("ppaestimativa");
     $oDaoPppaEstimativaDespesa = db_utils::getDao("ppaestimativadespesa");
-    $aDespesasAno              = db_utils::getColectionByRecord($rsDespesa);
+    $aDespesasAno              = db_utils::getCollectionByRecord($rsDespesa);
     foreach ($aDespesasAno as $oDespesaAno) {
 
 
@@ -236,7 +236,7 @@ class ppaDespesa {
     $oPPADotacaoOrcDotacao     = db_utils::getDao("ppadotacaoorcdotacao");
     $oDaoPppaEstimativa        = db_utils::getDao("ppaestimativa");
     $oDaoPppaEstimativaDespesa = db_utils::getDao("ppaestimativadespesa");
-    $aValoresBases             = db_utils::getColectionByRecord($rsValores);
+    $aValoresBases             = db_utils::getCollectionByRecord($rsValores);
 
     foreach ( $aValoresBases as $oValorBase) {
 
@@ -325,10 +325,10 @@ class ppaDespesa {
         $sSqlPpaDotacao .= "   and o08_recurso           = {$oValorBase->o08_recurso}                   ";
         $sSqlPpaDotacao .= "   and o08_elemento          = {$oValorBase->o08_elemento}                  ";
         $sSqlPpaDotacao .= "   and o08_localizadorgastos = {$oValorBase->o08_localizadorgastos}         ";
-        $sSqlPpaDotacao .= "   and o08_instit            = {$oValorBase->o08_instit}                    ";         
-        
+        $sSqlPpaDotacao .= "   and o08_instit            = {$oValorBase->o08_instit}                    ";
+
         $rsPPADotacao    = $oPPADotacao->sql_record($sSqlPpaDotacao);
-        
+
         $nValorSalvar = round($nValor);
         if ($oParametroOrcamento->o50_liberadecimalppa == "t") {
            $nValorSalvar = round($nValor, 2);
@@ -436,7 +436,8 @@ class ppaDespesa {
                               o08_projativ,
                               o08_elemento,
                               o08_localizadorgastos,
-                              o08_recurso";
+                              o08_recurso,
+                              gestao";
     $sOrderBy     = "o08_orgao,
                      o08_unidade,
                      o08_funcao,
@@ -491,7 +492,7 @@ class ppaDespesa {
        throw new Exception("Não foi encontrado estimativas para  o estrutural informado!",16);
     }
 
-    $aFontes         = db_utils::getColectionByRecord($rsFontes);
+    $aFontes         = db_utils::getCollectionByRecord($rsFontes);
     $aEstruturaisPai = array();
     $iIndex          = 0;
     foreach ($aFontes as $oFonteDados) {
@@ -513,7 +514,7 @@ class ppaDespesa {
       }
       $aElementos = explode(".",$oFonteDados->c60_estrut);
       $oLinhaQuadro->sDescricao      = "";
-      $oLinhaQuadro->iRecurso        = @$oFonteDados->o08_recurso;
+      $oLinhaQuadro->iRecurso        = @$oFonteDados->o19_coddot;
       $oLinhaQuadro->iEstrutural     = $oFonteDados->c60_estrut;
       $oLinhaQuadro->lDeducao        = "f";
       $oLinhaQuadro->subfuncao       = 0;
@@ -531,9 +532,10 @@ class ppaDespesa {
       } else {
       	$oLinhaQuadro->iElemento = @$oFonteDados->o56_elemento;
       }
-      $oLinhaQuadro->aDesdobramentos = array();
-      $oLinhaQuadro->lDesdobra       = false;
-      $oLinhaQuadro->aBaseCalculo  = array();
+      $oLinhaQuadro->aDesdobramentos   = array();
+      $oLinhaQuadro->lDesdobra         = false;
+      $oLinhaQuadro->aBaseCalculo      = array();
+      $oLinhaQuadro->aCodigoEstimativa = array();
       for ($iAno = $iAnoBaseInicio; $iAno < $oPpaLei->o01_anoinicio; $iAno++) {
 
         $oLinhaQuadro->aBaseCalculo["{$iAno}"] = 0;
@@ -542,8 +544,9 @@ class ppaDespesa {
          * calculamos o valor somente para as contas analiticas.
          * e somamos os valores para a contamae;
          */
-        $nValorReceita = $this->getValorAno($oFonteDados, $iAno, $iNivel);
-        $oLinhaQuadro->aBaseCalculo["{$iAno}"] = $nValorReceita;
+        $oValorReceita = $this->getValorAno($oFonteDados, $iAno, $iNivel);
+        $oLinhaQuadro->aBaseCalculo["{$iAno}"]      = $oValorReceita->valor;
+        $oLinhaQuadro->aCodigoEstimativa["{$iAno}"] = $oValorReceita->ppaestimativa;
       }
 
       if (count($oLinhaQuadro->aBaseCalculo) > 0) {
@@ -554,7 +557,10 @@ class ppaDespesa {
       }
       $oLinhaQuadro->aEstimativas  = array();
       for ($iAno = $oPpaLei->o01_anoinicio; $iAno <= $oPpaLei->o01_anofinal; $iAno++) {
-        $oLinhaQuadro->aEstimativas["{$iAno}"] = $this->getValorAno($oFonteDados, $iAno, $iNivel);
+
+        $oValorReceita = $this->getValorAno($oFonteDados, $iAno, $iNivel);
+        $oLinhaQuadro->aEstimativas["{$iAno}"]      = $oValorReceita->valor;
+        $oLinhaQuadro->aCodigoEstimativa["{$iAno}"] = $oValorReceita->ppaestimativa;
       }
       array_push($aQuadroEstimativa, $oLinhaQuadro);
       $iIndex++;
@@ -576,11 +582,11 @@ class ppaDespesa {
      */
     $oDaoPPAEstimativa = db_utils::getDao("ppaestimativa");
     $oDaoPPADespesa = db_utils::getDao("ppaestimativadespesa");
-    $sWhere         = "o19_coddot = {$iCodCon} and o05_anoreferencia = {$iAno} and o05_ppaversao = {$this->iCodigoVersao}";
-    $sWhere         .= " and o08_instit = ".db_getsession("DB_instit")." and o08_ano = {$iAno} and o08_ppaversao = {$this->iCodigoVersao}";
+    $sWhere         = "o05_sequencial = {$iCodCon} and o05_anoreferencia = {$iAno} and o05_ppaversao = {$this->iCodigoVersao}";
+    $sWhere         .= " and o08_instit = ".db_getsession("DB_instit")." /*and o08_ano = {$iAno}*/ and o08_ppaversao = {$this->iCodigoVersao}";
     $sSqlEstimativa = $oDaoPPADespesa->sql_query_conplano(null,"*",null,$sWhere);
     $rsEstimativa   = $oDaoPPADespesa->sql_record(analiseQueryPlanoOrcamento($sSqlEstimativa));
-    
+
     if ($oDaoPPADespesa->numrows == 1) {
 
       $nValorSalvar = round($nValor);
@@ -649,7 +655,7 @@ class ppaDespesa {
     $oDaoPppaEstimativaDespesa = db_utils::getDao("ppaestimativadespesa");
     $oPPADotacao               = db_utils::getDao("ppadotacao");
     $oDaoPPADotacaoOrc         = db_utils::getDao("ppadotacaoorcdotacao");
-    $aValoresBases             = db_utils::getColectionByRecord($rsValores);
+    $aValoresBases             = db_utils::getCollectionByRecord($rsValores);
     foreach ( $aValoresBases as $oValorBase) {
 
       $nValorAnterior = 0;
@@ -811,11 +817,14 @@ class ppaDespesa {
    */
   function getValorAno($oLinhaQuadro, $iAno, $iNivel = null) {
 
-    $nValor   = 0;
-    $sSql     = "select coalesce(sum(o05_valor),0) as valor";
+    $sSql     = "select ";
+    $sSql    .= ($iNivel == null) ? "o05_sequencial as codigo_estimativa, " : '';
+    $sSql    .= "       coalesce(sum(o05_valor),0) as valor";
     $sSql    .= "  from ppaestimativa ";
     $sSql    .= "       inner join ppaestimativadespesa on o05_sequencial = o07_ppaestimativa ";
     $sSql    .= "       inner join ppadotacao           on o08_sequencial = o07_coddot        ";
+    $sSql    .= "       inner join orctiporec on o15_codigo = o08_recurso ";
+    $sSql    .= "       inner join fonterecurso on o15_codigo = orctiporec_id and exercicio = o05_anoreferencia ";
     $sSql    .= " where o05_anoreferencia    = {$iAno}";
     $sSql    .= "   and o05_ppaversao = {$this->iCodigoVersao}";
     $sSql    .= "   and o08_ppaversao = {$this->iCodigoVersao}";
@@ -880,15 +889,30 @@ class ppaDespesa {
 
       case 8:
 
-        $sSql   .= "   and o08_recurso   = {$oLinhaQuadro->o19_coddot}";
+        $sSql   .= "   and codigo_siconfi   = '{$oLinhaQuadro->o19_coddot}'";
         break;
 
     }
-    $rsValor  = db_query($sSql);
-    if ($rsValor) {
-      $nValor = db_utils::fieldsMemory($rsValor, 0)->valor;
+
+    if ($iNivel == null) {
+      $sSql .= " group by o05_sequencial ";
     }
-    return  $nValor;
+
+    $rsValor  = db_query($sSql);
+
+    $oStdRetorno = (object) array(
+        'valor' => 0,
+        'ppaestimativa' => null
+      );
+
+    if ($rsValor) {
+
+      $oValor = db_utils::fieldsMemory($rsValor, 0);
+      $oStdRetorno->valor         = $oValor->valor;
+      $oStdRetorno->ppaestimativa = property_exists($oValor, 'codigo_estimativa') ? $oValor->codigo_estimativa : null;
+    }
+
+    return $oStdRetorno;
   }
   /**
    * Adiciona uma estimativa de despesa ao ppa
@@ -988,18 +1012,43 @@ class ppaDespesa {
    */
   function getCamposPorNivel($iNivel) {
 
+    $oFields = new stdClass;
 
     switch ($iNivel) {
 
       case 1:
 
-        $oFields->sCampos = "o08_orgao as o19_coddot,trim(o40_descr) as c60_estrut";
+        $oFields->sCampos = "
+          o08_orgao as o19_coddot,
+          (
+            select
+              trim(o40_descr)
+            from
+              orcorgao
+            where
+              orcorgao.o40_orgao = ppadotacao.o08_orgao
+            order by
+              orcorgao.o40_anousu desc
+            limit 1
+          ) as c60_estrut";
         $oFields->sOrder  = "1, 2";
         break;
 
       case 2:
 
-        $oFields->sCampos = "o08_orgao,o08_unidade as o19_coddot, trim(o41_descr) as c60_estrut";
+        $oFields->sCampos = "o08_orgao, o08_unidade as o19_coddot,
+        (
+          select
+            trim(o41_descr)
+          from
+            orcunidade
+          where
+            orcunidade.o41_orgao       = ppadotacao.o08_orgao
+            and orcunidade.o41_unidade = ppadotacao.o08_unidade
+          order by
+            orcunidade.o41_anousu desc
+          limit 1
+        ) as c60_estrut";
         $oFields->sOrder  = "1,2,3";
         break;
 
@@ -1035,8 +1084,8 @@ class ppaDespesa {
 
       case 8:
 
-        $oFields->sCampos = "o08_recurso as o19_coddot, o15_descr as c60_estrut";
-        $oFields->sOrder  = "o08_recurso,o15_descr";
+        $oFields->sCampos = "fontesiconfi.codigo_siconfi as o19_coddot, fontesiconfi.descricao as c60_estrut";
+        $oFields->sOrder  = "fontesiconfi.codigo_siconfi,fontesiconfi.descricao";
         break;
 
     }
@@ -1070,7 +1119,7 @@ class ppaDespesa {
     $oDaoPPaVersao = db_utils::getDao("ppaversao");
     $sSqlVersao    = $oDaoPPaVersao->sql_query($iPerspectiva);
     $rsVersao      = $oDaoPPaVersao->sql_record($sSqlVersao);
-    
+
     if ($oDaoPPaVersao->numrows == 0) {
 
       $sErro  = "Erro [1] - Erro ao verificar existência da perspectiva ($iPerspectiva).\n";
@@ -1096,7 +1145,7 @@ class ppaDespesa {
       $aAnosVersao[] = $iAno;
     }
 
-    
+
     /**
      * Criamos o array com os anos iguais,
      */
@@ -1125,7 +1174,7 @@ class ppaDespesa {
                                                                     ." and o05_base is false"
                                                                     );
     $rsEstimativasDespesa     = $oDaoPPAEstimativaDespesa->sql_record(analiseQueryPlanoOrcamento($sSqlEstimativasDespesa));
-    $aItensEstimativasDespesa = db_utils::getColectionByRecord($rsEstimativasDespesa);
+    $aItensEstimativasDespesa = db_utils::getCollectionByRecord($rsEstimativasDespesa);
     $oPPADotacao = db_utils::getDao("ppadotacao");
     foreach ($aItensEstimativasDespesa as $oEstimativa) {
 
@@ -1185,7 +1234,7 @@ class ppaDespesa {
           }
         }
       }
-      
+
       $oDaoPPAEstimativaNova = new cl_ppaestimativa;
       $oDaoPPAEstimativaNova->o05_anoreferencia = $oEstimativa->o05_anoreferencia;
       $oDaoPPAEstimativaNova->o05_base          = $oEstimativa->o05_base == "t"?"true":"false";
@@ -1212,9 +1261,9 @@ class ppaDespesa {
      * processamos os anos que nao sao iguais
      */
     asort($aAnosProcessar);
-        
-    if (count($aAnosProcessar) > 1) {
-      
+
+
+    if (isset($aAnosProcessar[0])) {
       $iAnoInicial = $aAnosProcessar[0];
       $iAnoFinal   = end($aAnosProcessar);
       $this->processarEstimativasGlobais($iAnoInicial, $iAnoFinal, true);
@@ -1259,5 +1308,3 @@ class ppaDespesa {
     return db_utils::fieldsMemory($rsBuscaValor, 0)->o05_valor;
   }
 }
-
-?>

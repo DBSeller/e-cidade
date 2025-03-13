@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $escola = db_getsession("DB_coddepto");
 function db_criatermometro_edu($dbnametermo='termometro',$dbtexto='Concluído',$dbcor='blue',$dbborda=1,$dbacao='Aguarde Processando...'){
@@ -123,7 +123,7 @@ if(isset($ano_opcao)){
    <center>
    <fieldset style="width:95%"><legend><b>Importação de informações do CENSO ESCOLAR <?=$titulofieldset?></b></legend>
     <?
-    $result = pg_query("SELECT ed18_c_codigoinep FROM escola WHERE ed18_i_codigo = $escola");
+    $result = db_query("SELECT ed18_c_codigoinep FROM escola WHERE ed18_i_codigo = $escola");
     $codigoinep_banco = pg_result($result,0,0);
     ?>
     <table border="0" align="left">
@@ -351,7 +351,7 @@ if(isset($processar)){
    $arquivo_logerro = "tmp/censo_impGeral_".$escola."_".db_getsession("DB_id_usuario")."_".date("dmY")."_".date("His")."_log.txt";
    $ponteiro_log = fopen($arquivo_logerro,"w");
    fwrite($ponteiro_log,"Registros não atualizados na importação do Censo Escolar:\n\n");
-   pg_exec("begin");
+   db_query("begin");
    $ponteiro4 = fopen($caminho_arquivo,"r");
    $erro_naoencontrado = false;
    $cont_escola_while = 0;
@@ -380,7 +380,7 @@ if(isset($processar)){
       $codigoescola = "";
       $codigoinep_escola = trim(substr($linha,13,8));
       $sql44 = "SELECT * FROM escola WHERE ed18_c_codigoinep = '$codigoinep_escola'";
-      $result44 = pg_query($sql44);
+      $result44 = db_query($sql44);
       if(!$result44){
        die("ERRO ESCOLA: ".$sql44."<br><br>");
       }
@@ -393,7 +393,7 @@ if(isset($processar)){
        $sqlupdateescola  .= " ,ed18_c_codigoinep = $codigoinep_escola ";
       }
       $sqlupdateescola .= " WHERE ed18_i_codigo = $codigoescola";
-      $resultupdateescola = pg_query($sqlupdateescola);
+      $resultupdateescola = db_query($sqlupdateescola);
       if(!$resultupdateescola){
        die("ERRO ESCOLA[1]: ".$sqlupdateescola."<br><br>");
       }
@@ -427,7 +427,7 @@ if(isset($processar)){
                       AND ed10_i_tipoensino = $modalidade_turmacenso
                       AND ed18_c_codigoinep = '$codigoinep_banco'
                      ";
-       $resultturma33 = pg_query($sqlturma33);
+       $resultturma33 = db_query($sqlturma33);
        if(!$resultturma33){
         die("ERRO TURMA[1]: ".$sqlturma33."<br><br>");
        }
@@ -445,7 +445,7 @@ if(isset($processar)){
          $sqlupdate_turma = "UPDATE turma SET
                               ed57_i_codigoinep = $codigoinep_turmacenso
                              WHERE ed57_i_codigo = $codigoturma ";
-         $resulupdate_turma = pg_query($sqlupdate_turma);
+         $resulupdate_turma = db_query($sqlupdate_turma);
          if(!$resulupdate_turma){
           die("ERRO TURMA[2]: ".$sqlupdate_turma."<br><br>");
          }        	
@@ -461,7 +461,7 @@ if(isset($processar)){
                       AND ed52_i_ano = $anoletivo
                       AND ed18_c_codigoinep = $codigoinep_banco
                      ";
-       $resultturma33 = pg_query($sqlturma33);
+       $resultturma33 = db_query($sqlturma33);
        if(!$resultturma33){
         die("ERRO TURMA[3]: ".$sqlturma33."<br><br>");
        }
@@ -486,7 +486,7 @@ if(isset($processar)){
            $sqlupdate_turma .= " ,ed268_c_aee = '$aee_turma' ";
           }
           $sqlupdate_turma .= " WHERE ed268_i_codigo = $codigoturma ";
-          $resulupdate_turma = pg_query($sqlupdate_turma);
+          $resulupdate_turma = db_query($sqlupdate_turma);
           if(!$resulupdate_turma){
            die("ERRO TURMA[4]: ".$sqlupdate_turma."<br><br>");
           }
@@ -527,7 +527,7 @@ if(isset($processar)){
                      ( (to_ascii(case when ed20_i_tiposervidor = 1 then cgmrh.z01_nome else cgmcgm.z01_nome end, 'LATIN1') = '$nome_docentecenso2' OR to_ascii(case when ed20_i_tiposervidor = 1 then cgmrh.z01_nomecomple else cgmcgm.z01_nomecomple end, 'LATIN1') = '$nome_docentecenso2'))
                     )
                 ";
-      $result22 = pg_query($sql22);
+      $result22 = db_query($sql22);
       if(!$result22){
        die("ERRO DOCENTE[1]: ".$sql22."<br><br>");
       }
@@ -553,7 +553,7 @@ if(isset($processar)){
          $sqlupdatedocente .= " ,ed20_i_codigoinep = $ed20_i_codigoinep ";
         }
         $sqlupdatedocente .= " WHERE ed20_i_codigo = $codigodocente ";        
-        $resultupdatedocente = pg_query($sqlupdatedocente);
+        $resultupdatedocente = db_query($sqlupdatedocente);
         if(!$resultupdatedocente){
          die("ERRO DOCENTE[2]: ".$sqlupdatedocente."<br><br>");
         }
@@ -577,7 +577,7 @@ if(isset($processar)){
                  inner join escola on ed18_i_codigo = ed56_i_escola
                 WHERE to_ascii(translate(ed47_v_nome,'´`',''),'LATIN1') = '$nome_censo2'
                 ";
-      $result11 = pg_query($sql11);
+      $result11 = db_query($sql11);
       $linhas11 = pg_num_rows($result11);
       if($linhas11==0){
        fwrite($ponteiro_log,"\nAluno [$ed47_c_codigoinep] $nome_censo2: Nome cadastrado no censo não existe no sistema.");
@@ -603,7 +603,7 @@ if(isset($processar)){
          $sqlupdate11 .= " ,ed47_c_codigoinep = '$ed47_c_codigoinep' ";
         }
         $sqlupdate11 .= " WHERE ed47_i_codigo = $codigoaluno";
-        $resultupdate11 = pg_query($sqlupdate11);
+        $resultupdate11 = db_query($sqlupdate11);
         if(!$resultupdate11){
          die("ERRO ALUNO[2]: ".$sqlupdate11."<br><br>");
         }
@@ -627,7 +627,7 @@ if(isset($processar)){
     clearTimeout(varTempo);
     document.form1.recomecar.style.visibility = "visible";
    </script><?
-   pg_exec("commit");
+   db_query("commit");
    unlink($caminho_arquivo);
    db_msgbox("Importação realizada com sucesso!");
   }

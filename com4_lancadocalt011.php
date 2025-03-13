@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
 $clrotulo->label("pc74_codigo");
@@ -107,10 +107,10 @@ function js_emite(){
 <script>
 function js_pesquisapc74_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pcfornecertif','func_pcfornecertifalt.php?funcao_js=parent.js_mostracgm1|pc74_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcfornecertif','func_pcfornecertifalt.php?funcao_js=parent.js_mostracgm1|pc74_codigo','Pesquisa',true);
   }else{
      if(document.form1.pc74_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pcfornecertif','func_pcfornecertifalt.php?pesquisa_chave='+document.form1.pc74_codigo.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcfornecertif','func_pcfornecertifalt.php?pesquisa_chave='+document.form1.pc74_codigo.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
      }
   }

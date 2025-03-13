@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -191,7 +191,7 @@ class cl_atendimentoorigem {
        }
      }
      $sql .= " where ";
-$sql .= "at11_sequencial = '$at11_sequencial'";     $result = @pg_exec($sql);
+$sql .= "at11_sequencial = '$at11_sequencial'";     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Registro de Atendimentos nao Alterado. Alteracao Abortada.\\n";

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -60,10 +60,10 @@ if (isset($chave_pesquisa)) {
      <td>
      <?
      
-     $clcriaabas->identifica = array("taxa"       => "Cadastro de Tarifas",
+     $clcriaabas->identifica = array("taxa"       => "Cadastro de Taxas / Custas",
                                      "favorecido" => "Favorecidos"
                                     );//nome do iframe e o label    
-     $clcriaabas->title      = array("taxa"       => "Cadastro de Tarifas", 
+     $clcriaabas->title      = array("taxa"       => "Cadastro de Taxas / Custas",
                                      "favorecido" => "Favorecidos"
                                     );//nome do iframe e o label    
      $clcriaabas->src        = array("taxa"       => "arr1_taxa002.php", 
@@ -71,17 +71,7 @@ if (isset($chave_pesquisa)) {
                                     );  //nome do iframe e SRC  
      $clcriaabas->sizecampo  = array("taxa"       => "30" );    
      $clcriaabas->disabled   = array("favorecido" => "false");    
-     $clcriaabas->cria_abas();    
-      
-     
-     /*
-       $clcriaabas->identifica = array("cadvencdesc"=>"Vencimento","cadvenc"=>"Datas");//nome do iframe e o label    
-       $clcriaabas->title      = array("cadvencdesc"=>"Descrição dos vencimentos","cadvenc"=>"Datas do vencimento");//nome do iframe e o label    
-       $clcriaabas->src = array("cadvencdesc"=>"iss1_cadvencdesc015.php");  //nome do iframe e SRC  
-       $clcriaabas->sizecampo= array("cadvencdesc"=>"10");    
-       $clcriaabas->disabled= array("cadvenc"=>"true");    
-       $clcriaabas->cria_abas();
-      */    
+     $clcriaabas->cria_abas();          
      ?> 
      </td>
   </tr>

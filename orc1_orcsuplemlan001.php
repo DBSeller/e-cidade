@@ -26,28 +26,28 @@
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_orcsuplemlan_classe.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_orcprojeto_classe.php");
-include ("classes/db_orcsuplem_classe.php");
-include ("classes/db_orcprojlan_classe.php");
-include ("libs/db_libcontabilidade.php");
-require ("classes/db_orcreserva_classe.php"); // reserva de saldo
-require ("classes/db_orcreservasup_classe.php"); // reserva de saldo das suplementações
-require ("classes/db_orcsuplemval_classe.php"); // lançamento das suplementações
-require ("classes/db_orcsuplemrec_classe.php");
-//require("dbforms/db_classesgenericas.php");
-include ("classes/db_conlancam_classe.php");
-include ("classes/db_conlancamval_classe.php");
-include ("classes/db_conlancamsup_classe.php");
-include ("classes/db_conlancamdot_classe.php");
-include ("classes/db_conlancamdoc_classe.php");
-include ("classes/db_conlancamrec_classe.php");
-include ("dbforms/db_suplementacao.php"); // contem a função que processa a suplementação
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcsuplemlan_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcprojeto_classe.php"));
+include(modification("classes/db_orcsuplem_classe.php"));
+include(modification("classes/db_orcprojlan_classe.php"));
+include(modification("libs/db_libcontabilidade.php"));
+require(modification("classes/db_orcreserva_classe.php")); // reserva de saldo
+require(modification("classes/db_orcreservasup_classe.php")); // reserva de saldo das suplementações
+require(modification("classes/db_orcsuplemval_classe.php")); // lançamento das suplementações
+require(modification("classes/db_orcsuplemrec_classe.php"));
+//require(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("classes/db_conlancamsup_classe.php"));
+include(modification("classes/db_conlancamdot_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_conlancamrec_classe.php"));
+include(modification("dbforms/db_suplementacao.php")); // contem a função que processa a suplementação
 $clorcsuplemlan = new cl_orcsuplemlan;
 $clorcsuplem = new cl_orcsuplem;
 $clorcprojeto = new cl_orcprojeto;
@@ -156,31 +156,10 @@ if (isset ($Processar) && $Processar =="Processar") {
 <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
 
-
-include ("forms/db_frmorcsuplemlan.php");
-?>
-    </center>
-	</td>
-  </tr>
-</table>
-<?
-
-
-db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit"));
+<?php
+include(modification("forms/db_frmorcsuplemlan.php"));
+db_menu();
 ?>
 </body>
 </html>

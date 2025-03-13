@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $oGet   = db_utils::postMemory($_GET);
 $codrel = $oGet->iCodRel;
 
@@ -99,6 +99,7 @@ $db_opcao = 1;
                                   6 => "Projeto/Atividade",
                                   7 => "Elemento",
                                   8 => "Recurso",
+                                  9 => "Orgao /Unidade /Recurso / Anexo",
                                  );
                   db_select("nivel", $aNiveis,true,1);
                   ?>          
@@ -150,7 +151,7 @@ function js_pesquisao125_cronogramaperspectiva(mostra) {
     js_OpenJanelaIframe('',
                         'db_iframe_cronogramaperspectiva',
                         'func_cronogramaperspectiva.php?funcao_js='+
-                        'top.corpo.iframe_g1.js_mostracronogramaperspectiva1|o124_sequencial|o124_descricao|o124_ano',
+                        'parent.CurrentWindow.corpo.iframe_g1.js_mostracronogramaperspectiva1|o124_sequencial|o124_descricao|o124_ano',
                         'Perspectivas do Cronograma',true);
   }else{
      if(document.form1.o124_sequencial.value != ''){ 
@@ -158,10 +159,10 @@ function js_pesquisao125_cronogramaperspectiva(mostra) {
                             'db_iframe_cronogramaperspectiva',
                             'func_cronogramaperspectiva.php?pesquisa_chave='+
                             document.form1.o124_sequencial.value+
-                            '&funcao_js=top.corpo.iframe_g1.js_mostracronogramaperspectiva',
+                            '&funcao_js=parent.CurrentWindow.corpo.iframe_g1.js_mostracronogramaperspectiva',
                             'Perspectivas do Cronograma',
                             false);
-     }else{
+     } else {
      
        document.form1.o124_descricao.value = '';
        document.form1.ano.value             = ''
@@ -188,7 +189,18 @@ function js_mostracronogramaperspectiva1(chave1,chave2,chave3) {
 }
 variavel = 0;
 function js_emite() {
-    
+
+    if ($F('o124_sequencial') == '') {
+
+      alert('O campo Perspectiva é de preenchimento obrigatório.');
+      return;
+    }
+    if (document.form1.db_selinstit.value == '') {
+
+      alert('Selecione uma ou mais Instituições.');
+      return;
+
+    }
     variavel++; 
     var sQuery  = "?iPerspectiva="+$F('o124_sequencial');
     document.form1.filtra_despesa.value = parent.iframe_filtros.js_atualiza_variavel_retorno();

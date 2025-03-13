@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -324,14 +324,38 @@ $clconfigdbpref->rotulo->label();
     </td>
   </tr>
       
-  </table>
-  </fieldset>
-  </center>
+  <tr>
+     <td nowrap title="Recaptcha Chave Pública">
+
+      <strong>  Recaptcha Chave Pública: </strong>
+      </td>
+
+     <td>   
+         <?php  
+               db_input('w13_recaptcha_sitekey',50,"Recaptcha Chave Pública",true,'text',$db_opcao,"");
+         ?>   
+    </td>
+ </tr>  
+
+ <tr>
+     <td nowrap title="Recaptcha Chave Privada">
+      <strong>    Recaptcha Chave Privada:  </strong>
+     </td>
+     <td>   
+         <?php  
+               db_input('w13_recaptcha_privatekey',50,"Recaptcha Chave Privada",true,'text',$db_opcao,"");
+         ?>   
+    </td>
+ </tr>  
+
+ </table>
+ </fieldset>
+ </center>
 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_configdbpref','func_configdbpref.php?funcao_js=parent.js_preenchepesquisa|w13_instit','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_configdbpref','func_configdbpref.php?funcao_js=parent.js_preenchepesquisa|w13_instit','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_configdbpref.hide();

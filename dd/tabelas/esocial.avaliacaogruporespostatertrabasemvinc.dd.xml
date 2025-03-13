@@ -1,0 +1,135 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010321' name='esocial.avaliacaogruporespostatertrabasemvinc' description="Tabela para guardar vinculo do formulario do esocial com o trabalhador sem vinculo" prefix="eso24" label="" type="0">
+  <fields>
+    <field codigo="1009959" 
+           campo_api='' 
+           name="eso24_sequencial" 
+           conteudo="int8" 
+           description="sequencial da tabela avaliacaogruporespostatertrabasemvinc" 
+           inivalue="0" 
+           label="eso24_sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="eso24_sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.avaliacaogruporespostatertrabasemvinc_eso24_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009961" 
+           campo_api='' 
+           name="eso24_avaliacaogruporesposta" 
+           conteudo="int8" 
+           description="eso24_avaliacaogruporesposta" 
+           inivalue="0" 
+           label="eso24_avaliacaogruporesposta" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="eso24_avaliacaogruporesposta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009962" 
+           campo_api='' 
+           name="eso24_rhpessoal" 
+           conteudo="int8" 
+           description="eso24_rhpessoal" 
+           inivalue="0" 
+           label="eso24_rhpessoal" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="eso24_rhpessoal" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field>
+
+    <field codigo="1009966"
+           campo_api=''
+           name="eso24_codigorescisao"
+           conteudo="text"
+           description="Código de rescisão para o eSocial formado da matrícula junto da competência."
+           inivalue="0"
+           label="Código de rescisão"
+           size="11"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código de rescisão"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+
+    <field codigo="1009967"
+           campo_api=''
+           name="eso24_cgmempregador"
+           conteudo="int8"
+           description="Código CGM do empregador."
+           inivalue="0"
+           label="CGM do empregador"
+           size="11"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="CGM do empregador"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+    <field codigo="1010315"
+           campo_api=''
+           name="eso24_avaliacao"
+           conteudo="int4"
+           description="Avaliação"
+           inivalue="0"
+           label="Avaliação"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Avaliação"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="eso24_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="eso24_rhpessoal" reference="rh01_regist" /> 
+    </foreignkey>
+    <foreignkey reference="avaliacaogruporesposta" inner='t'>
+      <fieldfk name="eso24_avaliacaogruporesposta" reference="db107_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="avaliacao" inner='t'>
+      <fieldfk name="eso24_avaliacao" reference="db101_sequencial" />
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $oLabel = new rotulocampo();
 $oLabel->label("ed60_i_aluno");
 $oLabel->label("ed47_v_nome");
@@ -146,7 +146,7 @@ function js_pesquisaAluno(mostra) {
 
   if (mostra) {
   
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_aluno', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aluno', 
                        'func_aluno.php?funcao_js=parent.js_mostraaluno1|ed47_i_codigo|ed47_v_nome', 
                        'Pesquisar Alunos',
                         true
@@ -155,7 +155,7 @@ function js_pesquisaAluno(mostra) {
   
     if ($F('ed60_i_aluno') != "") {
     
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_aluno', 
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aluno', 
                        'func_aluno.php?funcao_js=parent.js_mostraaluno2&pesquisa_chave2='+$F('ed60_i_aluno'), 
                        'Pesquisar Alunos',
                         false
@@ -189,7 +189,7 @@ function js_pesquisaTurma(mostra) {
 
   if (mostra) {
   
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_turma', 
                         'func_turma.php?funcao_js=parent.js_mostraTurma|ed57_i_codigo|ed57_c_descr', 
                         'Pesquisar Turmas',
@@ -199,7 +199,7 @@ function js_pesquisaTurma(mostra) {
   
     if ($F('ed57_i_codigo') != "") {
     
-      js_OpenJanelaIframe('top.corpo', 
+      js_OpenJanelaIframe('CurrentWindow.corpo', 
                           'db_iframe_turma', 
                           'func_turma.php?funcao_js=parent.js_mostraTurma2&pesquisa_chave='+$F('ed57_i_codigo'), 
                           'Pesquisar Turmas',
@@ -233,7 +233,7 @@ function js_pesquisaLote(mostra) {
 
   if (mostra) {
   
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_lote', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_lote', 
                        'func_loteimpressaocartaoidentificacaoescola.php?funcao_js=parent.js_mostrarLote1|ed305_sequencial', 
                        'Pesquisar Lotes',
                         true
@@ -391,7 +391,7 @@ function js_carregarAlunos() {
 function js_preencherCartoes(oResponse) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
   oDataGridAlunos.clearAll(true);
   oRetorno.cartoes.each(function (oCartao, iSeq) {
   
@@ -522,7 +522,7 @@ function js_salvar () {
                                      onComplete: function (oResponse) {
                                         
                                         js_removeObj('msgBox');
-                                        var oRetorno = eval("("+oResponse.responseText+")");
+                                        var oRetorno = JSON.parse(oResponse.responseText);
                                         if (oRetorno.status == 2) {
                                           alert(oRetorno.message.urlDecode());
                                         } else {

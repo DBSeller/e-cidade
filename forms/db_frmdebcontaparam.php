@@ -94,10 +94,10 @@ db_input('d62_mascara',25,$Id62_mascara,true,'text',$db_opcao,"")
 <script>
 function js_pesquisad62_instituicao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
   }else{
      if(document.form1.d62_instituicao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.d62_instituicao.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.d62_instituicao.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
      }else{
        document.form1.nomeinst.value = ''; 
      }
@@ -116,7 +116,7 @@ function js_mostradb_config1(chave1,chave2){
   db_iframe_db_config.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_debcontaparam','func_debcontaparam.php?funcao_js=parent.js_preenchepesquisa|d62_instituicao|d62_banco','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_debcontaparam','func_debcontaparam.php?funcao_js=parent.js_preenchepesquisa|d62_instituicao|d62_banco','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_debcontaparam.hide();

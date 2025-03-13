@@ -58,7 +58,7 @@ db_input('sd21_c_descr',40,$Isd21_c_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_nivelhierar','func_nivelhierar.php?funcao_js=parent.js_preenchepesquisa|sd21_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nivelhierar','func_nivelhierar.php?funcao_js=parent.js_preenchepesquisa|sd21_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_nivelhierar.hide();

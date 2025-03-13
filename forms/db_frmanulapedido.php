@@ -131,7 +131,7 @@ iTipoControle = <?=$iTipoControleCustos;?>;
 function js_pesquisa() {
 
   sFiltro = "sFiltro=almox";
-  js_OpenJanelaIframe('top.corpo','db_iframe_atendsolitransf','func_anulasolitransf.php?'+sFiltro+'&funcao_js=parent.js_preenchepesquisa|m97_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atendsolitransf','func_anulasolitransf.php?'+sFiltro+'&funcao_js=parent.js_preenchepesquisa|m97_sequencial','Pesquisa',true);
 
 }
 
@@ -162,7 +162,7 @@ function js_marca(){
 
 function js_janelaSolicitacao(oAjax) {
 
-  var obj = eval("(" + oAjax.responseText + ")");
+  var obj = JSON.parse(oAjax.responseText);
   if (obj.status && obj.status == 2) {
 
     js_removeObj("msgBox");
@@ -372,7 +372,7 @@ function js_atendeSolicitacao() {
 function js_saidaAtendimento(oAjax) {
 
   js_removeObj("msgBox");
-  var obj = eval("(" + oAjax.responseText + ")");
+  var obj = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
 
     alert(obj.message.urlDecode());
@@ -408,7 +408,7 @@ function js_mostraLotes(iItem) {
   sField        = new Number($('atendido'+iItem).value);
   sUrl          = 'mat4_mostraitemlotes.php?iCodMater='+iCodItem+'&iCodDepto='+iCodEstoque;
   sUrl         += '&nValor='+nValor+'&nValorSolicitado='+nValorSolItem+'&updateField='+sField;
-  js_OpenJanelaIframe('top.corpo','db_iframe_lotes',sUrl,'Lotes ',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotes',sUrl,'Lotes ',true);
 
 }
 

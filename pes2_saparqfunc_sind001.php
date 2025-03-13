@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,35 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory($_POST);
+
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
 
+$sWhereLotacoes = "";
+if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+    $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+
+    $sWhereLotacoes = " and rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+
+    $sWhereRegist = " and r54_regist in (select rh02_regist 
+                                           from rhpessoalmov 
+                                          where rh02_anousu = {$ano}  
+                                            and rh02_mesusu = {$mes} {$sWhereLotacoes}) ";
+}
+        
 if (isset($gera)){
 
   if($func == 'F'){
     
-  $arq = '/tmp/func_sind.txt';
+  $arq = 'tmp/func_sind.txt';
 
   $arquivo = fopen($arq,'w');  
   $sql = "select lpad(rh01_regist,6,0)||
@@ -54,12 +68,12 @@ if (isset($gera)){
                left join rhregime      on rh30_codreg = rh02_codreg 
                                       and rh30_instit = rh02_instit
 	             inner join cgm          on rh01_numcgm = z01_numcgm
-	        where rh05_seqpes is null
+	        where rh05_seqpes is null {$sWhereLotacoes}
 	 ";
 
 }elseif($func == 'S'){
   
-  $arq = '/tmp/socios_sind.txt';
+  $arq = 'tmp/socios_sind.txt';
 
   $arquivo = fopen($arq,'w');
   
@@ -88,14 +102,14 @@ if (isset($gera)){
                                and r53_mesusu = $mes 
                                and r53_rubric = '1600' 
                                and r53_instit = ".db_getsession("DB_instit")." )
-		  and rh05_seqpes is null
+		  and rh05_seqpes is null {$sWhereLotacoes}
 		group by rh01_regist,z01_nome
 		  ";
 
 
 }elseif($func == 'D'){
   
-  $arq = '/tmp/desc_sind.txt';
+  $arq = 'tmp/desc_sind.txt';
 
   $arquivo = fopen($arq,'w'); 
   if($mes == 12){
@@ -123,7 +137,9 @@ select lpad(registro,6,0)
      ||'#'
      ||fc_sap_afas(registro,$ano,$mes)
      ||'#'
-     ||lpad(to_char(emprestimo,'999999.99'),15,' ') as tipo
+     ||lpad(to_char(emprestimo,'999999.99'),15,' ') 
+     ||'#'
+     ||lpad(to_char(socio,'999999.99'),15,' ') as tipo
 from 
 (
 SELECT ano,
@@ -149,7 +165,8 @@ from
 	from movrel  
 	where r54_anomes = '".$ano.db_formatar($mes,'s','0',2,'e')."' 
 	  and r54_codrel = '9000'
-      and r54_instit = ".db_getsession("DB_instit")."
+          and r54_instit = ".db_getsession("DB_instit")."
+	  {$sWhereLotacoes2}
 
 	union
 
@@ -166,6 +183,7 @@ from
 	  and r14_mesusu = $mes 
 	  and r14_rubric = '1602'
       and r14_instit = ".db_getsession("DB_instit")."
+      {$sWhereRegist}
 
         union
 	 
@@ -181,6 +199,8 @@ from
 	  and r14_mesusu = $mes 
 	  and r14_rubric in ('1710','1715','1720')
       and r14_instit = ".db_getsession("DB_instit")."
+      {$sWhereRegist}
+
 	union
 
 
@@ -195,14 +215,15 @@ from
 	where r14_anousu = $ano
 	  and r14_mesusu = $mes 
 	  and r14_rubric = '1600'
-      and r14_instit = ".db_getsession("DB_instit")."
+          and r14_instit = ".db_getsession("DB_instit")."
+          {$sWhereRegist}
 	) as x
 	
 	left JOIN rhpessoal    on rh01_regist = registro
     left join rhpessoalmov on rh02_regist = rh01_regist
 			              and rh02_anousu = ano
 			              and rh02_mesusu = mes
-                          and rh02_instit = ".db_getsession("DB_instit")."
+                          and rh02_instit = ".db_getsession("DB_instit")." {$sWhereRegist}
 	left JOIN cgm          on rh01_numcgm = z01_numcgm
 
 GROUP BY ano,mes,z01_nome,registro
@@ -210,8 +231,8 @@ GROUP BY ano,mes,z01_nome,registro
 where socio+sind > 0
 " ;
   }
-//  echo "<br><br><br><br><br>".$sql;
-  $result = pg_query($sql);
+  
+  $result = db_query($sql);
   for($x = 0;$x < pg_numrows($result);$x++){
     db_fieldsmemory($result,$x);
   fputs($arquivo,$tipo."\r\n");
@@ -287,13 +308,13 @@ where socio+sind > 0
 
   </form>
     </table>
-<?
-  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+<?php
+  db_menu();
 ?>
 </body>
 </html>
 <script>
-  <?
+  <?php
   if(isset($gera)){
   	echo "js_montarlista('".$arq."#Arquivo gerado em: ".$arq."','form1');";
   }

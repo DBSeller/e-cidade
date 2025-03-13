@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_listanotifica_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_listanotifica_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $instit  = db_getsession("DB_instit");
@@ -98,7 +98,7 @@ $cllistanotifica->rotulo->label("k63_notifica");
          db_redireciona('db_erros.php?fechar=true&db_erro=Não Existe Lista Selecionada');
       }
       $sqllista = "select * from lista where k60_codigo = $lista and k60_instit= $instit";
-      $resultlista = pg_exec($sqllista);
+      $resultlista = db_query($sqllista);
       db_fieldsmemory($resultlista,0);
       if ($k60_tipo == 'M'){
 	 $xcodigo  = 'matric';
@@ -194,7 +194,7 @@ $cllistanotifica->rotulo->label("k63_notifica");
 		   where k61_codigo = $lista and matric = $pesquisa_chave) as y
 		   group by k63_notifica, $xcodigo1,z01_numcgm,z01_nome"; 
 //		   echo $sql;exit;
-          $result = pg_exec($sql);
+          $result = db_query($sql);
 	  
           if(pg_numrows($result) !=0 ){
             db_fieldsmemory($result,0);

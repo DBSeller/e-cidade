@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,28 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
 if(isset($retorno)) {
-  $result = pg_exec("select s_codigo as codigo,s_localid as localid,s_servico as servico,s_nome as nome,s_endereco as endereco,s_fone as fone,s_email as email from db_guia where s_codigo = $retorno");
+  $result = db_query("select s_codigo as codigo,s_localid as localid,s_servico as servico,s_nome as nome,s_endereco as endereco,s_fone as fone,s_email as email from db_guia where s_codigo = $retorno");
   db_fieldsmemory($result,0);
 }
 if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select max(s_codigo) from db_guia");
+  $result = db_query("select max(s_codigo) from db_guia");
   $codigo = pg_result($result,0,0)==""?1:(integer)pg_result($result,0,0) + 1;
-  pg_exec("insert into db_guia values($codigo,'$localid','".ucfirst(trim($servico))."','$nome','$endereco','$fone','$email')");
+  db_query("insert into db_guia values($codigo,'$localid','".ucfirst(trim($servico))."','$nome','$endereco','$fone','$email')");
   //db_redireciona();
   echo "<script>location.href='sit1_servicos001.php'</script>\n";
   exit;
 } else if(isset($HTTP_POST_VARS["alterar"])) {
   db_postmemory($HTTP_POST_VARS);
-  pg_exec("UPDATE db_guia SET
+  db_query("UPDATE db_guia SET
              s_localid = '$localid',
 			 s_nome = '$nome',
 			 s_servico = '".ucfirst(trim($servico))."',
@@ -57,7 +57,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   db_redireciona();
   exit;
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("delete from db_guia where s_codigo = ".$HTTP_POST_VARS["codigo"]);
+  db_query("delete from db_guia where s_codigo = ".$HTTP_POST_VARS["codigo"]);
   db_redireciona();
   exit;
 }

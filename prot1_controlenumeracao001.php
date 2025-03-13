@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_protparamglobal_classe.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_protprocessonumeracao_classe.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_protparamglobal_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_protprocessonumeracao_classe.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_app::import("protocolo.ProcessoProtocoloNumeracao");
 
 $sMsgErro                = "";
 
@@ -55,7 +57,7 @@ $clrotulo->label("p07_instit");
 $clrotulo->label("p07_ano");
 $clrotulo->label("p07_proximonumero");
 
-$sSqlProtParamGlobal     = "SELECT * FROM protparamglobal";
+$sSqlProtParamGlobal     = "SELECT * FROM protparamglobal WHERE p06_instituicao = ". db_getsession('DB_instit');
 $rsProtParamGlobal       = $clprotparamglobal->sql_record($sSqlProtParamGlobal);
 $oProtParamGlobal        = db_utils::fieldsMemory($rsProtParamGlobal, 0);
 
@@ -67,9 +69,12 @@ $iTipoParamGlobal        = 2;
 $db_opcao                = 1;
 
 // Verifica qual o tipo setado no Cadastro global
+$widthForm = 500;
 if ($oProtParamGlobal->p06_tipo == 1) {
   $iTipoParamGlobal = $oProtParamGlobal->p06_tipo;
   $db_opcao = 22;
+} else if ($oProtParamGlobal->p06_tipo == ProcessoProtocoloNumeracao::TIPOORGAO) {
+  $widthForm = 700;
 }
 
 $sBotao = "Salvar";
@@ -78,7 +83,15 @@ if (isset($oGet->opcao)){
   switch (trim($oGet->opcao)){
     
     case "alterar": // Vem da Grid
-      $sSqlProtProcessoNumeracao = "SELECT * FROM protprocessonumeracao WHERE p07_sequencial = {$oGet->p07_sequencial}"; 
+      $sSqlProtProcessoNumeracao = "
+        SELECT protprocessonumeracao.*, p91_descricao 
+        FROM 
+          protprocessonumeracao 
+        LEFT JOIN prottipodocumentoprocesso 
+          ON p91_sequencial = p07_prottipodocumentoprocesso
+        WHERE 
+          p07_sequencial = {$oGet->p07_sequencial}
+      "; 
       $rsProtProcessoNumeracao   = $clprotprocessonumeracao->sql_record($sSqlProtProcessoNumeracao);
       $oProtProcessoNumeracao    = db_utils::fieldsMemory($rsProtProcessoNumeracao, 0);
       
@@ -86,6 +99,9 @@ if (isset($oGet->opcao)){
       $p07_instit        = $oProtProcessoNumeracao->p07_instit;
       $p07_ano           = $oProtProcessoNumeracao->p07_ano;
       $p07_proximonumero = $oProtProcessoNumeracao->p07_proximonumero;
+      $p07_prottipodocumentoprocesso = $oProtProcessoNumeracao->p07_prottipodocumentoprocesso;
+      $p91_descricao = $oProtProcessoNumeracao->p91_descricao;
+      $p07_orgao = $oProtProcessoNumeracao->p07_orgao;
       
       $sBotao = "Alterar";
       
@@ -97,13 +113,32 @@ if (isset($oGet->opcao)){
       $iInstit = db_getsession("DB_instit");
       $iAno    = db_getsession("DB_anousu");
       $iNumero = $oGet->p07_proximonumero;
-      
-      $sWhereProtProcesso  = " trim(p58_numero) <> '' and p58_instit = {$iInstit} ";
-      $sWhereProtProcesso .= " and p58_ano = {$iAno} and coalesce(cast(p58_numero as integer), 0) >= {$iNumero} "; 
-      $sOrderProtProcessso = " p58_numero desc limit 1 ";      
-      
-      $sSqlProcessoNumeracao = $clprotprocesso->sql_query_file(null, "p58_numero", $sOrderProtProcessso, $sWhereProtProcesso);
+
+      /**
+       * Próximo número não pode ser menor que o número de um processo já existente.
+       */
+      $sSqlProcessoNumeracao = $clprotprocesso->sql_query_maior_numeracao_processo(
+        $iNumero, $oGet->p07_orgao, $oGet->p07_prottipodocumentoprocesso
+      );
+
       $rsProcessoNumeracao   = $clprotprocesso->sql_record($sSqlProcessoNumeracao);
+
+      if ($oProtParamGlobal->p06_tipo == ProcessoProtocoloNumeracao::TIPOORGAO) {
+        $messageError = 'Os seguintes campos não foram preenchidos: ';
+        $camposNaoPreenchidos = '';
+        if (empty($oGet->p07_prottipodocumentoprocesso)) {
+          $camposNaoPreenchidos .= 'Tipo de Documento';
+        }
+
+        if (empty($oGet->p07_orgao)) {
+          $camposNaoPreenchidos .= !$camposNaoPreenchidos ? 'Órgão ': ', Órgão';
+        }
+
+        if ($camposNaoPreenchidos) {
+          db_msgbox("{$messageError} {$camposNaoPreenchidos}");
+          break;
+        }
+      }
       
       if ($clprotprocesso->numrows > 0) {
         
@@ -111,31 +146,69 @@ if (isset($oGet->opcao)){
         db_msgbox($sMsgErro);
         db_fim_transacao(true);
       } else {
-        
+        if ($oGet->p07_proximonumero > ProcessoProtocoloNumeracao::MAXNUMEROORGAO) {
+          $sMsgErro = "Próximo número não pode ser superior a " . ProcessoProtocoloNumeracao::MAXNUMEROORGAO . '.';
+          db_msgbox($sMsgErro);
+          db_fim_transacao(true);
+          break;
+        }
+
         $clprotprocessonumeracao->p07_sequencial    = $oGet->p07_sequencial;
         $clprotprocessonumeracao->p07_proximonumero = $oGet->p07_proximonumero;
+        $clprotprocessonumeracao->p07_prottipodocumentoprocesso = $oGet->p07_prottipodocumentoprocesso;
+        $clprotprocessonumeracao->p07_orgao = $oGet->p07_orgao;
         $clprotprocessonumeracao->alterar($clprotprocessonumeracao->p07_sequencial);
         
         if ($clprotprocessonumeracao->erro_status == 0) {
-        db_fim_transacao(true);
-      }
-      
-      db_fim_transacao(false);  
-      db_msgbox($clprotprocessonumeracao->erro_msg);  
+          db_fim_transacao(true);
+        }
+        
+        db_fim_transacao(false);  
+        db_msgbox($clprotprocessonumeracao->erro_msg);  
       }
       
       
       break;
     case "Salvar":
+      if ($oProtParamGlobal->p06_tipo != ProcessoProtocoloNumeracao::TIPOORGAO) {
+        if ($oGet->p07_proximonumero > ProcessoProtocoloNumeracao::MAXNUMEROORGAO) {
+          $sMsgErro = "Próximo número não pode ser superior a " . ProcessoProtocoloNumeracao::MAXNUMEROORGAO . '.';
+          db_msgbox($sMsgErro);
+          db_fim_transacao(true);
+          break;
+        }
+        
+        $sql = $clprotprocessonumeracao->sql_query_file(
+          null,
+          'p07_sequencial',
+          '',
+          " 
+            p07_instit = ". db_getsession('DB_instit') . " 
+            AND p07_ano = ". db_getsession('DB_anousu') ." 
+            AND p07_orgao = 0 AND p07_prottipodocumentoprocesso = 0
+          "
+        );
+
+        $pgObject = db_query($sql);
+
+        if (pg_num_rows($pgObject) > 0) {
+          db_msgbox('Já existe numeração configurada para '. db_getsession('DB_instit') . ' no ano de' . db_getsession('DB_anousu'));
+          db_fim_transacao(true);
+          break;
+        }
+      }
+
       $clprotprocessonumeracao->p07_proximonumero = $oGet->p07_proximonumero;
       $clprotprocessonumeracao->p07_ano           = $oGet->p07_ano;
+      $clprotprocessonumeracao->p07_prottipodocumentoprocesso = $oGet->p07_prottipodocumentoprocesso;
+      $clprotprocessonumeracao->p07_orgao = $oGet->p07_orgao;
       $clprotprocessonumeracao->p07_instit        = db_getsession("DB_instit");
       db_inicio_transacao();
       $clprotprocessonumeracao->incluir(null);
-      if ($clprotprocessonumeracao->erro_status == 0) { 
-        
-        
+
+      if ($clprotprocessonumeracao->erro_status == 0) {   
         db_fim_transacao(true);
+
       }
       db_fim_transacao(false);
       db_msgbox($clprotprocessonumeracao->erro_msg);
@@ -183,7 +256,7 @@ if (isset($oGet->opcao)){
 
 <div align="center" id='frm_content'>
   <?
-    include("forms/db_frmcontrolenumeracao.php");
+    include(modification("forms/db_frmcontrolenumeracao.php"));
   ?>
 </div>
 <?

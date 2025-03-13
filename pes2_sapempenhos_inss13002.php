@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_inssirf_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_inssirf_classe.php"));
 
 $clrotulo = new rotulocampo;
 
@@ -39,14 +39,17 @@ $clrotulo->label('r06_pd');
 $clinssirf = new cl_inssirf;
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-//db_postmemory($HTTP_SERVER_VARS,2);exit;
-//$ano = 2006;
-//$mes = 3;
 
 $res_prev = $clinssirf->sql_record($clinssirf->sql_query_file(null,
-                                   db_getsession('DB_instit'),"r33_ppatro,r33_nome,r33_rubmat",
-										               "r33_nome limit 1","r33_anousu = $ano and r33_mesusu = $mes and r33_codtab = 3"));
+                                   db_getsession('DB_instit'),"r33_ppatro,r33_nome,r33_rubmat","r33_nome limit 1",
+                           "r33_anousu = $ano and r33_mesusu = $mes and r33_instit = ".db_getsession("DB_instit")." r33_codtab = 3"));
 db_fieldsmemory($res_prev,0);
+
+$res_prev_consel = $clinssirf->sql_record($clinssirf->sql_query_file(null,
+                                          db_getsession('DB_instit'),"r33_ppatro as r33_ppatroconsel","r33_nome limit 1",
+                                  "r33_anousu = $ano and r33_mesusu = $mes and r33_instit = r33_instit = ".db_getsession("DB_instit")." r33_codtab = 5"));
+db_fieldsmemory($res_prev_consel,0);
+
 $head3 = "EMPENHOS DO INSS - 13o SALARIO";
 $head5 = "PERÍODO : ".$mes." / ".$ano;
 
@@ -69,8 +72,8 @@ select
        eme,
        ded,
        ded_eme,
-       round(case when rh26_orgao = 2 and rh26_unidade = 3 then (inss)/100*20 else (inss)/100*$r33_ppatro end,2) as pat,
-       round(case when rh26_orgao = 2 and rh26_unidade = 3 then (sub)/100*20 else (sub)/100*$r33_ppatro end,2) as pat_sub,
+       round(case when (rh26_orgao = 2 and rh26_unidade = 3) or (rh26_orgao = 13 and rh26_unidade = 4) then (inss)/100*$r33_ppatroconsel else (inss)/100*$r33_ppatro end,2) as pat,
+       round(case when (rh26_orgao = 2 and rh26_unidade = 3) or (rh26_orgao = 13 and rh26_unidade = 4) then (sub)/100*$r33_ppatroconsel else (sub)/100*$r33_ppatro end,2) as pat_sub,
        round(eme/100*$r33_ppatro,2) as pat_eme,
        round(fund60/100*$r33_ppatro,2) as pat60,
        round(fund40/100*$r33_ppatro,2) as pat40
@@ -174,10 +177,8 @@ group by
 order by rh26_orgao
        ";
 
-//echo $sql ; exit;
 
-$result = pg_exec($sql);
-//db_criatabela($result);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=No existem movimentos cadastrados no perodo de '.$mes.' / '.$ano);
@@ -195,7 +196,6 @@ $alt = 4;
 $proj  = '';
 $orgao = '';
 $unidade = '';
-//$pdf->addpage();
 $val_fgts     = 0;
 $val_fgts_seg = 0;
 $val_fgts_pad = 0;
@@ -238,7 +238,6 @@ for($x = 0; $x < pg_numrows($result);$x++){
    }
    $pdf->setfont('arial','',7);
    if($sub != 0){
-      //$pat1 = $sub / 100 * 21;
       $pdf->cell(10,$alt,'',0,0,"C",0);
       $pdf->cell(15,$alt,$rh25_recurso,0,0,"C",0);
       $pdf->cell(80,$alt,$o15_descr.'  (SUBSDIO) ',0,0,"L",0);
@@ -248,7 +247,6 @@ for($x = 0; $x < pg_numrows($result);$x++){
       $pdf->cell(20,$alt,db_formatar(($pat_sub),'f'),0,1,"R",0);
    }
    if($eme != 0){
-      //$pat1 = $sub / 100 * 21;
       $pdf->cell(10,$alt,'',0,0,"C",0);
       $pdf->cell(15,$alt,$rh25_recurso,0,0,"C",0);
       $pdf->cell(80,$alt,$o15_descr.'  (EMERGENCIAL) ',0,0,"L",0);
@@ -259,7 +257,6 @@ for($x = 0; $x < pg_numrows($result);$x++){
    }
    if($rh25_recurso == 31){
      $pdf->cell(25,$alt,'',0,0,"C",0);
-     //$pat60 = $fund60 /100 * 21;
      $pdf->cell(80,$alt,'FUNDEB 60%',0,0,"L",0);
      $pdf->cell(20,$alt,db_formatar($fund60,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar($pat60,'f'),0,0,"R",0);
@@ -267,7 +264,6 @@ for($x = 0; $x < pg_numrows($result);$x++){
      $pdf->cell(20,$alt,db_formatar(($pat60 - $ded60),'f'),0,1,"R",0);
      
      $pdf->cell(25,$alt,'',0,0,"C",0);
-     //$pat40 = $fund40 / 100 * 21;
      $pdf->cell(80,$alt,'FUNDEB 40%',0,0,"L",0);
      $pdf->cell(20,$alt,db_formatar($fund40,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar($pat40,'f'),0,0,"R",0);
@@ -277,11 +273,6 @@ for($x = 0; $x < pg_numrows($result);$x++){
      $ded  = $ded60  + $ded40;
      $inss = $fund60 + $fund40;
    }else{
-   //  if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){ 
-   //    $pat = $inss / 100 * 20;
-   //  }else{
-   //    $pat = $inss / 100 * 21;
-   //  }
      $pdf->cell(10,$alt,'',0,0,"C",0);
      $pdf->cell(15,$alt,$rh25_recurso,0,0,"C",0);
      $pdf->cell(80,$alt,$o15_descr,0,0,"L",0);
@@ -290,17 +281,12 @@ for($x = 0; $x < pg_numrows($result);$x++){
      $pdf->cell(20,$alt,db_formatar($ded,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar(($pat - $ded),'f'),0,1,"R",0);
    }
-  // if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){ 
-  //   $val_pat      += (($inss+$sub)/100)*20;
-  // }else{
-  //   $val_pat      += (($inss+$sub)/100)*21;
-   //}
+
    $val_pat      += $pat + $pat_sub + $pat_eme;
    $val_fgts     += $inss+$sub+$eme;
    $val_ded      += $ded + $ded_eme;
 }
 
-//echo $teste;exit;
    $pdf->setfont('arial','B',8);
    $pdf->cell(105,$alt,'TOTAL ',0,0,"C",0);
    $pdf->cell(20,$alt,db_formatar($val_fgts,'f'),0,0,"R",0);

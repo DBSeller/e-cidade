@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,8 +29,8 @@
  * Classe que implementa cursor do banco de dados
  * @author    Rafael Serpa Nery - rafael.nery@dbseller.com.br
  * @package   Configuração
- * @revision  $Author: dbrafael.nery $
- * @version   $Revision: 1.1 $
+ * @revision  $Author: dbanderson $
+ * @version   $Revision: 1.4 $
  */
 class DBCursor{
 
@@ -89,6 +89,7 @@ class DBCursor{
    * Encerra Transação com o banco
    */
   private function terminateExecution () {
+    db_query("close cur_{$this->sTableName}");
     db_query("rollback;");
   }
 

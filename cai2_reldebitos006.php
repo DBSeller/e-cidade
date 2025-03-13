@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_projmelhorias_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_projmelhorias_classe.php"));
 $clprojmelhorias = new cl_projmelhorias;
 
 $clrotulo = new rotulocampo;
@@ -66,7 +66,7 @@ if($dataini != "--" && $datafim == "--"){
 }
 //data
 $sql="select k22_data from debitos where k22_instit = $instit order by k22_data desc limit 1";
-$result=pg_query($sql);
+$result=db_query($sql);
 db_fieldsmemory($result,0);
 $dbwhere .= " $and k22_data = '$k22_data'";
 //$dbwhere.=" and  dtoper = '2004-10-06'";
@@ -216,7 +216,7 @@ if($modelo!="completo"){
   $sql = "select codig, z01_nome, round(sum(vlrcor),2) as vlrcor, round(sum(vlrhis),2) as vlrhis, round(sum(juros),2) as juros, round(sum(multa),2) as multa, round(sum(desconto),2) as desconto, round(sum(total),2) as total from ($sql) as x group by codig, z01_nome order by $order $ordem $limite";
 }
 
-$result = @pg_query($sql);
+$result = @db_query($sql);
 if($result){
  $numrows = pg_numrows($result);
 }else{
@@ -312,7 +312,7 @@ $pdf->cell(60,3,"Total de registros: $numrows",0,0,"L",0);
  	      ) as x 
 	        inner join tabrec on x.k22_receit = tabrec.k02_codigo $limite;
    ";
-   $result = @pg_query($sql);
+   $result = @db_query($sql);
    if($result){
      $numrows = pg_numrows($result);
    }else{
@@ -399,14 +399,14 @@ for ($i = 0;$i < $numrows;$i++){
 	        inner join cadtipo on x.k03_tipo = cadtipo.k03_tipo $limite;
   ";
   
-   $result = @pg_query($sql);
+   $result = @db_query($sql);
    if($result){
      $numrows = pg_numrows($result);
    }else{
      $numrows ='0';
    }  
 
-   $result = @pg_query($sql);
+   $result = @db_query($sql);
    if($result){
      $numrows = pg_numrows($result);
    }else{
@@ -494,14 +494,14 @@ for ($i = 0;$i < $numrows;$i++){
 	        inner join arretipo on x.k22_tipo = arretipo.k00_tipo $limite;
   ";
   
-   $result = @pg_query($sql);
+   $result = @db_query($sql);
    if($result){
      $numrows = pg_numrows($result);
    }else{
      $numrows ='0';
    }  
 
-   $result = @pg_query($sql);
+   $result = @db_query($sql);
    if($result){
      $numrows = pg_numrows($result);
    }else{
@@ -589,7 +589,7 @@ for ($i = 0;$i < $numrows;$i++){
 	        inner join histcalc on x.k22_hist = histcalc.k01_codigo $limite;
   ";
   
-   $result = @pg_query($sql);
+   $result = @db_query($sql);
    if($result){
      $numrows = pg_numrows($result);
    }else{
@@ -680,7 +680,7 @@ if($historico != ""){
   $cod='';
   $vir='';
   $consta=($selehist=='S'?"SOMENTE HISTÓRICO DE CÁLCULO(S)-> ":" SEM HISTÓRICO DE CÁLCULO(S)-> "); 
-  $result = pg_query("select k01_descr from histcalc where k01_codigo in ($historico)");
+  $result = db_query("select k01_descr from histcalc where k01_codigo in ($historico)");
   for($x=0;$x<pg_numrows($result);$x++){
     db_fieldsmemory($result,$x);
     $cod .= $vir.$k01_descr;
@@ -696,7 +696,7 @@ if($receitas != ""){
   $cod='';
   $vir='';
   $consta=($selerec=='S'?"SOMENTE O(S) TIPO(S) DE RECEITA(S)-> ":" SEM O(S) TIPO(S) DE RECEITA(S)-> "); 
-  $result = pg_query("select k02_descr from tabrec where k02_codigo in ($receitas)");
+  $result = db_query("select k02_descr from tabrec where k02_codigo in ($receitas)");
   for($x=0;$x<pg_numrows($result);$x++){
     db_fieldsmemory($result,$x);
     $cod .= $vir.$k02_descr;
@@ -712,7 +712,7 @@ if($debitos != ""){
   $cod='';
   $vir='';
   $consta=($seledeb=='S'?"SOMENTE O(S) TIPO(S) DE DÉBITO(S)-> ":" SEM O(S) TIPO(S) DE DÉBITO(S)-> "); 
-  $result = pg_query("select k00_descr from arretipo where k00_tipo in ($debitos)");
+  $result = db_query("select k00_descr from arretipo where k00_tipo in ($debitos)");
   for($x=0;$x<pg_numrows($result);$x++){
     db_fieldsmemory($result,$x);
     $cod .= $vir.$k00_descr;
@@ -776,7 +776,7 @@ if(isset($registros)){
 /*************fim das propriedades****************************************************************************/  
 //echo $sql;
 //die();
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 
 $pdf->Output();
 

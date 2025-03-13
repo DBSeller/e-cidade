@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("dbforms/db_classesgenericas.php");
-include ("classes/db_pcproc_classe.php");
-include ("classes/db_solicitem_classe.php");
-include ("classes/db_liclicitem_classe.php");
-include ("classes/db_proctransfer_classe.php");
-include ("classes/db_proctransferproc_classe.php");
-include ("classes/db_solicitemprot_classe.php");
-include ("classes/db_pcandpadrao_classe.php");
-include ("classes/db_pcandpadraodepto_classe.php");
-include ("classes/db_solandpadrao_classe.php");
-include ("classes/db_solandpadraodepto_classe.php");
-include ("classes/db_solandam_classe.php");
-include ("classes/db_solandamand_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_pcproc_classe.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_liclicitem_classe.php"));
+include(modification("classes/db_proctransfer_classe.php"));
+include(modification("classes/db_proctransferproc_classe.php"));
+include(modification("classes/db_solicitemprot_classe.php"));
+include(modification("classes/db_pcandpadrao_classe.php"));
+include(modification("classes/db_pcandpadraodepto_classe.php"));
+include(modification("classes/db_solandpadrao_classe.php"));
+include(modification("classes/db_solandpadraodepto_classe.php"));
+include(modification("classes/db_solandam_classe.php"));
+include(modification("classes/db_solandamand_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_GET_VARS);
 $cliframe_seleciona = new cl_iframe_seleciona;

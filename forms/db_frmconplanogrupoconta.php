@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
@@ -127,10 +127,10 @@ $clrotulo->label("c64_descr");
 <script>
 function js_pesquisac60_codcon(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_conplano','<?=$sNomeLookup;?>?funcao_js=parent.js_mostraconta1|c60_codcon|c60_descr|c60_estrut|DB_codsis|c52_descr|DB_codcla|c51_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_conplano','<?=$sNomeLookup;?>?funcao_js=parent.js_mostraconta1|c60_codcon|c60_descr|c60_estrut|DB_codsis|c52_descr|DB_codcla|c51_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.c60_codcon.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_conplano','<?=$sNomeLookup;?>?chave_c60_codcon='+document.form1.c60_codcon.value+'&funcao_js=parent.js_mostraconta&ret_congrupo=true','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_conplano','<?=$sNomeLookup;?>?chave_c60_codcon='+document.form1.c60_codcon.value+'&funcao_js=parent.js_mostraconta&ret_congrupo=true','Pesquisa',false);
      }else{
        document.form1.c60_descr.value = ''; 
      }
@@ -169,7 +169,7 @@ function js_mostraconta1(chave1,chave2,chave3,chave4,chave5,chave6,chave7){
   db_iframe_conplano.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_conplano','<?=$sNomeLookup;?>?funcao_js=parent.js_preenchepesquisa|c60_codcon','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_conplano','<?=$sNomeLookup;?>?funcao_js=parent.js_preenchepesquisa|c60_codcon','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_conplano.hide();

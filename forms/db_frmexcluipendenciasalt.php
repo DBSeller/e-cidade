@@ -181,7 +181,7 @@ function js_filtrar(){
 function js_processar(){
 	var dados = document.form1.selecionados.value;
 	var conta = document.form1.conta.value; 
-  js_OpenJanelaIframe('top.corpo','db_iframe_processar','cai4_excluipendenciasantigas.php?dados='+dados+'&conta='+conta,'Processando',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processar','cai4_excluipendenciasantigas.php?dados='+dados+'&conta='+conta,'Processando',true);
 
 }
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $pdf = new PDF(); 
@@ -72,7 +72,7 @@ from arrepaga f
 	to_char(k00_dtpaga,'MM') 
     order by e.z01_nome 
   ";
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem lançamentos para a receita '.$codrec.' no período de '.db_formatar($datai,'d').' a '.db_formatar($dataf,'d'));

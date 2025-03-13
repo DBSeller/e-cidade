@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
+//
 //MODULO: cadastro
 //CLASSE DA ENTIDADE averbacao
+//
 class cl_averbacao { 
    // cria variaveis de erro 
    var $rotulo     = null; 
@@ -56,6 +58,7 @@ class cl_averbacao {
    var $j75_dttipo = null; 
    var $j75_situacao = 0; 
    var $j75_regra = 0; 
+   var $j75_responsavel = 0; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  j75_codigo = int4 = Código Averbação 
@@ -65,7 +68,8 @@ class cl_averbacao {
                  j75_tipo = int4 = Tipo 
                  j75_dttipo = date = Data do Tipo 
                  j75_situacao = int4 = Situação 
-                 j75_regra = int4 = Regra usada para averbar conforme tipo 
+                 j75_regra = int4 = Regra usada para averbar conforme tipo
+                 j75_responsavel = int4 =  Servidor Responsável
                  ";
    //funcao construtor da classe 
    function cl_averbacao() { 
@@ -107,6 +111,7 @@ class cl_averbacao {
        }
        $this->j75_situacao = ($this->j75_situacao == ""?@$GLOBALS["HTTP_POST_VARS"]["j75_situacao"]:$this->j75_situacao);
        $this->j75_regra = ($this->j75_regra == ""?@$GLOBALS["HTTP_POST_VARS"]["j75_regra"]:$this->j75_regra);
+       $this->j75_responsavel = ($this->j75_responsavel == ""?@$GLOBALS["HTTP_POST_VARS"]["j75_responsavel"]:$this->j75_responsavel);
      }else{
        $this->j75_codigo = ($this->j75_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["j75_codigo"]:$this->j75_codigo);
      }
@@ -171,6 +176,15 @@ class cl_averbacao {
        $this->erro_status = "0";
        return false;
      }
+     if($this->j75_responsavel == null ){ 
+       $this->erro_sql = " Campo Responsável usada para averbar conforme tipo nao Informado.";
+       $this->erro_campo = "j75_responsavel";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
      if($j75_codigo == "" || $j75_codigo == null ){
        $result = db_query("select nextval('averbacao_j75_codigo_seq')"); 
        if($result==false){
@@ -212,6 +226,7 @@ class cl_averbacao {
                                       ,j75_dttipo 
                                       ,j75_situacao 
                                       ,j75_regra 
+                                      ,j75_responsavel
                        )
                 values (
                                 $this->j75_codigo 
@@ -222,6 +237,7 @@ class cl_averbacao {
                                ,".($this->j75_dttipo == "null" || $this->j75_dttipo == ""?"null":"'".$this->j75_dttipo."'")." 
                                ,$this->j75_situacao 
                                ,$this->j75_regra 
+                               ,$this->j75_responsavel
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -261,6 +277,7 @@ class cl_averbacao {
        $resac = db_query("insert into db_acount values($acount,1649,9594,'','".AddSlashes(pg_result($resaco,0,'j75_dttipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,1649,9615,'','".AddSlashes(pg_result($resaco,0,'j75_situacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,1649,10009,'','".AddSlashes(pg_result($resaco,0,'j75_regra'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1649,1014443,'','".AddSlashes(pg_result($resaco,0,'j75_responsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -392,6 +409,20 @@ class cl_averbacao {
          return false;
        }
      }
+     if(trim($this->j75_responsavel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j75_responsavel"])){ 
+       $sql  .= $virgula." j75_responsavel = $this->j75_responsavel ";
+       $virgula = ",";
+       if(trim(
+        l) == null ){ 
+         $this->erro_sql = " Campo Responsável usada para averbar conforme tipo nao Informado.";
+         $this->erro_campo = "j75_responsavel";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
      if($j75_codigo!=null){
        $sql .= " j75_codigo = $this->j75_codigo";
@@ -419,8 +450,11 @@ class cl_averbacao {
            $resac = db_query("insert into db_acount values($acount,1649,9615,'".AddSlashes(pg_result($resaco,$conresaco,'j75_situacao'))."','$this->j75_situacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j75_regra"]))
            $resac = db_query("insert into db_acount values($acount,1649,10009,'".AddSlashes(pg_result($resaco,$conresaco,'j75_regra'))."','$this->j75_regra',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["j75_responsavel"]))
+           $resac = db_query("insert into db_acount values($acount,1649,1014443,'".AddSlashes(pg_result($resaco,$conresaco,'j75_responsavel'))."','$this->j75_responsavel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
+
      $result = db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
@@ -474,6 +508,7 @@ class cl_averbacao {
          $resac = db_query("insert into db_acount values($acount,1649,9594,'','".AddSlashes(pg_result($resaco,$iresaco,'j75_dttipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1649,9615,'','".AddSlashes(pg_result($resaco,$iresaco,'j75_situacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1649,10009,'','".AddSlashes(pg_result($resaco,$iresaco,'j75_regra'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1649,1014443,'','".AddSlashes(pg_result($resaco,$iresaco,'j75_responsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from averbacao

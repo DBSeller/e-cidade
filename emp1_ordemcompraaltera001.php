@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_liborcamento.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_cgm_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
 
 $clempempenho = new cl_empempenho;
 $clcgm    = new cl_cgm;
@@ -81,7 +81,7 @@ function js_limpa(){
   <tr> 
     <td  align="left" nowrap title="<?=$Tm51_codordem?>"><?db_ancora(@$Lm51_codordem,"js_pesquisa_matordem(true);",1);?></td>
     <td align="left" nowrap>
-      <? db_input("m51_codordem",6,$Im51_codordem,true,"text",4,"onchange='js_pesquisa_matordem(false);'");
+      <? db_input("m51_codordem",6,$Im51_codordem,true,"text",4);
          ?></td>
   </tr>
 
@@ -107,10 +107,10 @@ function js_limpa(){
 //--------------------------------
 function js_pesquisa_matordem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matordem','func_matordem.php?funcao_js=parent.js_mostramatordem1|m51_codordem|','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matordem','func_matordem.php?funcao_js=parent.js_mostramatordem1|m51_codordem|','Pesquisa',true);
   }else{
      if(document.form1.m51_codordem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matordem','func_matordem.php?pesquisa_chave='+document.form1.m51_codordem.value+'&funcao_js=parent.js_mostramatordem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matordem','func_matordem.php?pesquisa_chave='+document.form1.m51_codordem.value+'&funcao_js=parent.js_mostramatordem','Pesquisa',false);
      }else{
        document.form1.m51_codordem.value = ''; 
      }

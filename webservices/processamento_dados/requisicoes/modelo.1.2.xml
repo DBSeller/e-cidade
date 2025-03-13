@@ -1,6 +1,7 @@
 <?xml version='1.0' ?>
 <processamento>
   <versao>1.2</versao>
+  <transacao>false</transacao>
   <parametros>
     <parametro nome="tipo0"   obrigatorio="true" tipo="texto" />
     <parametro nome="tipo1"   obrigatorio="true" tipo="texto" />

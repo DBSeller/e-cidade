@@ -1,40 +1,40 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 //db_app::import("contabilidade.lancamento.*");
 /**
- * @todo modificara para (!USE_PCASP) 
+ * @todo modificara para (!USE_PCASP)
  */
 if (!USE_PCASP) {
   db_redireciona("db_erros.php?fechar=true&db_erro=Este menu só é acessível com o PCASP ativado.");
@@ -55,10 +55,12 @@ $c36_sequencial = $oGet->iCodigoInscricao;
   <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta http-equiv="Expires" CONTENT="0">
-  <?
+
+  <?php
     db_app::load("scripts.js, prototype.js, strings.js, datagrid.widget.js");
     db_app::load("estilos.css, grid.style.css");
   ?>
+    <script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
   <style type="text/css">
     .tamanho-primeira-col{
       width:100px;
@@ -88,13 +90,13 @@ $c36_sequencial = $oGet->iCodigoInscricao;
     }
     #desdobramento {
       width: 95px;
-    }        
+    }
     #peculiar {
       width: 95px;
     }
     #lLiquidar {
       width: 95px;
-    }    
+    }
     #tipoCompradescr {
       width: 410px;
     }
@@ -115,22 +117,20 @@ $c36_sequencial = $oGet->iCodigoInscricao;
     }
     #empenho {
       width: 95px;
-    }    
+    }
     #empenhodescr {
       width: 410px;
-    }    
-  </style>  
+    }
+  </style>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1;js_getDadosInscricao();" >
-  <form action="" id ='inscricao-passiva'> 
+  <form action="" id ='inscricao-passiva'>
 
   <center>
       <fieldset style="width: 750px; margin-top: 50px;">
         <legend><strong>Empenho de Passivo sem Suporte Orçamentário</strong></legend>
-        
+
           <table >
-          
-            
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col'>
                 <?php
@@ -139,93 +139,96 @@ $c36_sequencial = $oGet->iCodigoInscricao;
                 ?>
                 <b>Favorecido:</b>
               </td>
-              <td nowrap="nowrap"> 
+              <td nowrap="nowrap">
                 <?php
                   db_input('numcgm',     10, '', true, 'text', 3, " onchange='js_pesquisaFavorecido(false);'");
                   db_input('favorecido', 56, '', true, 'text', 3);
                 ?>
               </td>
             </tr>
-            
+
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col'>
                <strong><?db_ancora('Dotação:',"js_pesquisa_dotacao(true);",1);?></strong>
               </td>
-              <td nowrap="nowrap"> 
-              
+              <td nowrap="nowrap">
+
                 <?php
-                
                   db_input("o58_coddot",10,"",true,"text",3,"onchange='js_pesquisa_dotacao(false);'");
-                  db_input("estruturalDotacao",56,"",true,"text",3); 
+                  db_input("estruturalDotacao",56,"",true,"text",3);
 
                   db_input("valorDotacao",10,"",true,"hidden",3);
                 ?>
               </td>
-            </tr>        
-            
+            </tr>
+
+            <tr>
+              <td><label for="complemento" class="bold">Complemento</label></td>
+              <td>
+                  <select id="complemento" name="complemento" class="field-size-max">
+                  </select>
+              </td>
+            </tr>
+
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col'>
               <b>Tipo de Compra:</b>
               </td>
-              <td nowrap="nowrap"> 
-                <?php 
+              <td nowrap="nowrap">
+                <?php
                   $sSqlTipoCompra = "select pc50_codcom, pc50_descr from pctipocompra order by pc50_codcom";
                   $rsTipoCompra   = db_query($sSqlTipoCompra);
-                  db_selectrecord('tipoCompra',$rsTipoCompra, true, $db_opcao, '', '', '', '', '');  
+                  db_selectrecord('tipoCompra',$rsTipoCompra, true, $db_opcao, '', '', '', '', '');
                 ?>
               </td>
-            </tr>            
-            
- 
- 
+            </tr>
+
+
+
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col'>
                 <strong>Tipo de Licitação:</strong>
               </td>
-              <td nowrap="nowrap"> 
+              <td nowrap="nowrap">
                 <?php
                   $sSqlTipoLicitacao = "select l03_codigo, l03_descr from cflicita order by l03_codigo";
                   $rsTipoLicitacao   = db_query($sSqlTipoLicitacao);
-                  db_selectrecord('tipoLicitacao',$rsTipoLicitacao, true, $db_opcao, '', '', '', '', '');  
+                  db_selectrecord('tipoLicitacao',$rsTipoLicitacao, true, $db_opcao, '', '', '', '', '');
                 ?>
               </td>
-            </tr> 
+            </tr>
 
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col'>
                 <strong>Licitação</strong>
               </td>
-              <td nowrap="nowrap"> 
-              <?php 
+              <td nowrap="nowrap">
+              <?php
                   db_input('Licitação', 10, '', true, 'text', 1);
                 ?>
               </td>
-            </tr>             
-            
-            
- 
+            </tr>
+
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col'>
                 <b>Tipo de Empenho:</b>
               </td>
-              <td nowrap="nowrap"> 
-                <?php 
+              <td nowrap="nowrap">
+                <?php
                   $sSqlTipoEmpenho = "select e41_codtipo, e41_descr from emptipo order by e41_codtipo";
                   $rsTipoEmpenho   = db_query($sSqlTipoEmpenho);
-                  db_selectrecord('empenho',$rsTipoEmpenho, true, $db_opcao, '', '', '', '', '');  
+                  db_selectrecord('empenho',$rsTipoEmpenho, true, $db_opcao, '', '', '', '', '');
                 ?>
               </td>
-            </tr>  
- 
- 
-                
+            </tr>
+
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col' title="">
                 <b>Histórico:</b>
               </td>
               <td>
-                <?php 
-                  
+                <?php
+
                   $sSqlHistorico = "select c50_codhist, c50_descr from conhist order by c50_codhist";
                   $rsHistorico   = db_query($sSqlHistorico);
                   db_selectrecord('historico',$rsHistorico, true, $db_opcao, '', '', '', '', '');
@@ -233,130 +236,122 @@ $c36_sequencial = $oGet->iCodigoInscricao;
               </td>
             </tr>
 
-  
-  
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col' title="">
                 <b>Evento:</b>
               </td>
               <td>
-                <?php 
+                <?php
                   $sSqlEvento = "select e44_tipo, e44_descr from empprestatip order by e44_tipo";
                   $rsEvento   = db_query($sSqlEvento);
-                  db_selectrecord('evento',$rsEvento, true, $db_opcao, '', '', '', '', '');  
+                  db_selectrecord('evento',$rsEvento, true, $db_opcao, '', '', '', '', '');
                 ?>
               </td>
-            </tr>  
-  
- 
+            </tr>
+
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col' title="">
-                <b>Desdobramento:</b> 
+                <b>Desdobramento:</b>
               </td>
               <td>
-                <?php 
+                <?php
                   db_input('iDesdobramento', 10, '', true, 'text', 3);
                   db_input('o56_descr'     , 56, '', true, 'text', 3);
                   db_input('c36_anousu'    , 10, '', true, 'hidden', 3);
                   db_input('iDesdobramentoElemento', 10, '', true, 'hidden', 3);
                 ?>
               </td>
-            </tr>   
- 
-  
+            </tr>
+
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col' title="">
               <b>Destino:</b>
               </td>
               <td>
-                <?php 
-                  db_input('sDestino',   69, '', true, 'text', $db_opcao);    
+                <?php
+                  db_input('sDestino',   69, '', true, 'text', $db_opcao);
                 ?>
               </td>
-            </tr>  
- 
- 
-    
+            </tr>
+
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col' title="">
                 <b>CP / CA</b>
               </td>
               <td>
-                <?php 
+                <?php
                   $sSqlPeculiar = "select c58_sequencial, c58_descr from concarpeculiar order by c58_sequencial";
                   $rsPeculiar   = db_query($sSqlPeculiar);
-                  db_selectrecord('peculiar',$rsPeculiar, true, $db_opcao, '', '', '', '', '');  
+                  db_selectrecord('peculiar',$rsPeculiar, true, $db_opcao, '', '', '', '', '');
                 ?>
               </td>
-            </tr>    
-    
-    
+            </tr>
+
             <tr>
               <td nowrap="nowrap" class='tamanho-primeira-col' title="">
-                <strong>Liquidar:</strong> 
+                <strong>Liquidar:</strong>
               </td>
               <td>
-                <?php 
+                <?php
                   $aLiquidar = array('0' => 'NÃO' , '1' => 'SIM');
-                  db_select('lLiquidar', $aLiquidar, true, $db_opcao, "onchange='js_mostraLiquidar();'");    
+                  db_select('lLiquidar', $aLiquidar, true, $db_opcao, "onchange='js_mostraLiquidar();'");
                 ?>
               </td>
-            </tr>  
-            
+            </tr>
 
             <tr id='ctmLiquidar' style="display: none;">
               <td nowrap="nowrap" class='tamanho-primeira-col'>
                 <strong>Número da Nota:</strong>
               </td>
-              <td nowrap="nowrap"> 
+              <td nowrap="nowrap">
                 <?php
                   db_input('numeroNota',   10, '', true, 'text', $db_opcao);
-                  
-                  
-                  
+
+
+
                   echo "&nbsp;&nbsp;&nbsp;<b>Data da Nota:</b>";
                   //db_input('Licitação', 15, '', true, 'text', 3);
                   db_inputdata('dataNota', null, null, null, true, null, $db_opcao);
                 ?>
               </td>
-            </tr>             
-            
+            </tr>
+
             <tr id='ctmOrdemPagamento' style="display:none;">
               <td colspan="4">
-                <fieldset style="margin-top: 10px;"> 
+                <fieldset style="margin-top: 10px;">
                   <legend><b>Informações da Ordem de Pagamento</b></legend>
-                  <?php 
-                    db_textarea("infoPagamento", 4, 80, "", true, 'text', 1); 
-                  ?>
-                </fieldset>
-              </td>
-            </tr>           
-            
-            
-            <tr>
-              <td colspan="2">
-                <fieldset style="margin-top: 10px;"> 
-                  <legend><b>Resumo</b></legend>
-                  <?php 
-                    db_textarea("resumo", 4, 80, "", true, 'text', $db_opcao); 
+                  <?php
+                    db_textarea("infoPagamento", 4, 80, "", true, 'text', 1);
                   ?>
                 </fieldset>
               </td>
             </tr>
-            
 
-            
+
+            <tr>
+              <td colspan="2">
+                <fieldset style="margin-top: 10px;">
+                  <legend><b>Resumo</b></legend>
+                  <?php
+                    db_textarea("resumo", 4, 80, "", true, 'text', $db_opcao);
+                  ?>
+                </fieldset>
+              </td>
+            </tr>
+
+
+
           </table>
-          
+
       </fieldset>
-      
-      
+
+
       <div style="margin-top: 10px;">
         <input type="button" name="empenhar" id="empenhar" value='Empenhar' onclick="js_gerarEmpenhoPassivo(false);"/>
-      
-        <input type="button" name="empenharimprimir" id="empenharimprimir" value='Empenhar e Imprimir' 
+
+        <input type="button" name="empenharimprimir" id="empenharimprimir" value='Empenhar e Imprimir'
                onclick="js_gerarEmpenhoPassivo(true);"/>
-             
+
       </div>
   </center>
 </form>
@@ -371,6 +366,8 @@ var sUrlRpc    = 'con4_empenhopassivo.RPC.php';
 var aItens     = new Array();
 var oParam     = new Object();
 
+
+const cboComplemento = document.getElementById('complemento');
 
 /**
  * função para gerar o empenho
@@ -392,7 +389,7 @@ function js_gerarEmpenhoPassivo(lImprimir) {
   var sResumo                  = $F('resumo');
   var lLiquidar                = $F('lLiquidar');
   var nValorDotacao            = $F('valorDotacao');
-  // se escolher liquidar      
+  // se escolher liquidar
   var iNota                    = $F('numeroNota');
   var dNota                    = $F('dataNota');
   var sInfoPagamento           = $F('infoPagamento');
@@ -409,31 +406,29 @@ function js_gerarEmpenhoPassivo(lImprimir) {
       alert("Informe a data da nota.");
       return false;
     }
-  } 
+  }
 
-  
-  oParam.exec                    = "gerarEmpenhoPassivo"    ;
+  oParam.exec                    = "gerarEmpenhoPassivo";
   oParam.iInscricaoPassivo       = iInscricaoPassivo;
-  oParam.iFavorecido             = iFavorecido              ;
-  oParam.iDotacao                = iDotacao                 ;
-  oParam.nValorDotacao           = nValorDotacao            ;
-  oParam.iTipoCompra             = iTipoCompra              ;
-  oParam.iTipoLicitacao          = iTipoLicitacao           ;
-  oParam.iLicitacao              = iLicitacao               ;
-  oParam.iTipoEmpenho            = iTipoEmpenho             ;
-  oParam.iHistorico              = iHistorico               ;
-  oParam.iEvento                 = iEvento                  ;
-  oParam.iCodEle                 = iCodEle                  ;
-  oParam.sDestino                = sDestino                 ;
-  oParam.iCaracteristicaPeculiar = iCaracteristicaPeculiar  ;
-  oParam.sResumo                 = sResumo                  ;
-  oParam.lLiquidar               = lLiquidar                ;
-  oParam.iNota                   = iNota         ;
-  oParam.dNota                   = dNota         ;
+  oParam.iFavorecido             = iFavorecido;
+  oParam.iDotacao                = iDotacao;
+  oParam.nValorDotacao           = nValorDotacao;
+  oParam.iTipoCompra             = iTipoCompra;
+  oParam.iTipoLicitacao          = iTipoLicitacao;
+  oParam.iLicitacao              = iLicitacao;
+  oParam.iTipoEmpenho            = iTipoEmpenho;
+  oParam.iHistorico              = iHistorico;
+  oParam.iEvento                 = iEvento;
+  oParam.iCodEle                 = iCodEle;
+  oParam.sDestino                = sDestino;
+  oParam.iCaracteristicaPeculiar = iCaracteristicaPeculiar;
+  oParam.sResumo                 = sResumo;
+  oParam.lLiquidar               = lLiquidar;
+  oParam.iNota                   = iNota;
+  oParam.dNota                   = dNota;
   oParam.sInfoPagamento          = sInfoPagamento;
-  oParam.lImprimir               = lImprimir;
-  
-  
+  oParam.lImprimir = lImprimir;
+  oParam.complemento = $F('complemento');
 
   js_divCarregando('Aguarde...','msgBox');
   var oAjax   = new Ajax.Request (sUrlRpc,{
@@ -443,12 +438,12 @@ function js_gerarEmpenhoPassivo(lImprimir) {
                                         }
                                     );
 
-  
+
 }
 function js_retornoGeraEmpenhoPassivo(oJson) {
 
-  js_removeObj("msgBox");  
-  var oRetorno = eval("("+oJson.responseText+")");
+  js_removeObj("msgBox");
+  var oRetorno = JSON.parse(oJson.responseText);
   alert(oRetorno.sMessage.urlDecode());
 
   if (oRetorno.iStatus == 1) {
@@ -486,8 +481,8 @@ function js_getDadosInscricao() {
 
 function js_retornoBuscaInscricao(oJson) {
 
-  js_removeObj("msgBox");  
-  var oRetorno = eval("("+oJson.responseText+")");
+  js_removeObj("msgBox");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (oRetorno.iStatus == 2) {
 
@@ -505,11 +500,11 @@ function js_retornoBuscaInscricao(oJson) {
 }
 
 /*
- * função para verificar se a dotação selecionada possui saldo 
+ * função para verificar se a dotação selecionada possui saldo
  */
 function js_verificaSaldoDotacao() {
 
-  var oParam        = new Object();  
+  var oParam        = new Object();
   oParam.exec       = "getSaldoDotacao";
   oParam.iDotacao   = $F('o58_coddot');
 
@@ -519,14 +514,14 @@ function js_verificaSaldoDotacao() {
                                          parameters:'json='+Object.toJSON(oParam),
                                          onComplete:js_retornoSaldoDotacao
                                         }
-                                    );  
-  
+                                    );
+
 }
 
 function js_retornoSaldoDotacao(oJson) {
 
-  js_removeObj("msgBox");  
-  var oRetorno = eval("("+oJson.responseText+")");
+  js_removeObj("msgBox");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (new Number($F('nValorTotalInscricao')) > new Number(oRetorno.iSaldoDotacao)) {
 
@@ -547,8 +542,8 @@ function js_mostraLiquidar(){
   } else {
     $("ctmLiquidar").style.display = "none";
     $("ctmOrdemPagamento").style.display = "none";
-  }  
-  
+  }
+
 }
 
 
@@ -559,24 +554,26 @@ function js_pesquisa_dotacao(mostra){
   var iElemento  = $F('iDesdobramentoElemento');
   var iAnoUsu    = $F('c36_anousu');
   var iInscricao = $F('c36_sequencial');
-  
+
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcdotacao','func_permorcdotacao.php?iInscricao='+iInscricao+'&elemento='+iElemento+'&iAnoUsu='+iAnoUsu+'&funcao_js=parent.js_mostradotacao1|o58_coddot|o50_estrutdespesa','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcdotacao','func_permorcdotacao.php?iInscricao='+iInscricao+'&elemento='+iElemento+'&iAnoUsu='+iAnoUsu+'&funcao_js=parent.js_mostradotacao1|o58_coddot|o50_estrutdespesa','Pesquisa',true);
   }else{
-     if(document.form1.o58_coddot.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_orcdotacao','func_permorcdotacao.php?iInscricao='+iInscricao+'&elemento='+iElemento+'&iAnoUsu='+iAnoUsu+'&pesquisa_chave='+$F('o58_coddot')+'&funcao_js=parent.js_mostradotacao','Pesquisa',false);
+     if(document.form1.o58_coddot.value != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcdotacao','func_permorcdotacao.php?iInscricao='+iInscricao+'&elemento='+iElemento+'&iAnoUsu='+iAnoUsu+'&pesquisa_chave='+$F('o58_coddot')+'&funcao_js=parent.js_mostradotacao','Pesquisa',false);
      }else{
-       document.form1.o40_descr.value = ''; 
+       document.form1.o40_descr.value = '';
      }
   }
 }
 function js_mostradotacao(chave,erro){
-  
-  document.form1.o40_descr.value = chave; 
-  if(erro==true){ 
-    document.form1.o58_coddot.focus(); 
-    document.form1.o58_coddot.value = ''; 
+
+  document.form1.o40_descr.value = chave;
+  if(erro==true){
+    document.form1.o58_coddot.focus();
+    document.form1.o58_coddot.value = '';
   }
+
+  buscarComplemento();
 }
 function js_mostradotacao1(chave1, chave2){
 
@@ -585,6 +582,27 @@ function js_mostradotacao1(chave1, chave2){
   db_iframe_orcdotacao.hide();
 
   js_verificaSaldoDotacao();
+  buscarComplemento();
+}
+
+function buscarComplemento() {
+    const codigoDotacao = $F('o58_coddot');
+    cboComplemento.options.length = 0;
+
+    if (empty(codigoDotacao)) {
+        return
+    }
+
+    AjaxRequest.create(
+        'con4_complementoFonte001.RPC.php',
+        {'exec': 'getComplementoPorDotacao', 'codigo_dotacao' : codigoDotacao },
+        function (retorno, erro) {
+            cboComplemento.options.length = 0;
+            retorno.complementos.each((complemento) => {
+                cboComplemento.add(new Option(complemento.descricao, complemento.codigo));
+            });
+        }
+    ).setMessage('Aguarde, carregando complementos do recurso...').execute();
 }
 
 /**

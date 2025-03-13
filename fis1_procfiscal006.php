@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_procfiscal_classe.php");
-include("classes/db_procfiscalfiscais_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_procfiscal_classe.php"));
+include(modification("classes/db_procfiscalfiscais_classe.php"));
 $clprocfiscal = new cl_procfiscal;
   /*
 $clprocfiscalfiscais = new cl_procfiscalfiscais;
@@ -78,7 +78,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmprocfiscal.php");
+	include(modification("forms/db_frmprocfiscal.php"));
 	?>
     </center>
 	</td>
@@ -111,7 +111,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.procfiscalfiscais.disabled=false;
-         top.corpo.iframe_procfiscalfiscais.location.href='fis1_procfiscalfiscais001.php?db_opcaoal=33&y106_sequencial=".@$y100_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_procfiscalfiscais.location.href='fis1_procfiscalfiscais001.php?db_opcaoal=33&y106_sequencial=".@$y100_sequencial."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('procfiscalfiscais');";

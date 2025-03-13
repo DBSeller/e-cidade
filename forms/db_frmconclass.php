@@ -58,7 +58,7 @@ db_input('c51_descr',50,$Ic51_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conclass','func_conclass.php?funcao_js=parent.js_preenchepesquisa|c51_codcla','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conclass','func_conclass.php?funcao_js=parent.js_preenchepesquisa|c51_codcla','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conclass.hide();

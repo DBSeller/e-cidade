@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 
-require_once ('model/patrimonio/depreciacao/interface/IFormulaCalculo.interface.php');
+require_once(modification('model/patrimonio/depreciacao/interface/IFormulaCalculo.interface.php'));
 
 /**
  * Model para executar a forma de cálculo Manual
  * @author matheus.felini@dbseller.com.br
  * @package patrimonio
  * @subpackage depreciacao
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.7 $
  */
 class FormulaCalculoManual implements IFormulaCalculo {
   

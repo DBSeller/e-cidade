@@ -197,7 +197,7 @@ function js_carrega_iframe() {
 function js_retornoMontagrid(oAjax) {
 	
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   $('div_grid').innerHTML = oRetorno.urlDecode();
   $('div_grid').style.visibility = "visible";
   
@@ -237,7 +237,7 @@ function js_calcular() {
     return false;
     
   }
-  js_OpenJanelaIframe('top.corpo','db_iframe_calculo','mer4_mer_baixamanual002.php?lista='+registros,
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_calculo','mer4_mer_baixamanual002.php?lista='+registros,
 		              ' Cálculo de Itens para Baixa no Estoque',true
 		             );
 }
@@ -260,7 +260,7 @@ function js_verificarefeicao(quadro,me12_i_codigo,me01_i_codigo) {
 function js_retornoVerificaRefeicao(oAjax) {
     
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno[0] < 0) {
     alert("Refeição contém alimento(s) não vinculado(s) a materiais!");
     document.form1.checkbaixa[oRetorno[2]].checked = false;

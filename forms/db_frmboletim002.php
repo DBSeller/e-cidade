@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
-include("../libs/db_sessoes.php");
-include("../libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 ?>
 <html>
@@ -67,7 +67,7 @@ if($tipo=="recorc" || $tipo=="recextra"){
 
 
     
-    $result = pg_query($sql);
+    $result = db_query($sql);
 
     //db_criatabela($result);
     
@@ -166,7 +166,7 @@ if($tipo=="recorc" || $tipo=="recextra"){
 				   b.k12_conta,
 				   p1.c60_descr
     ) as x " ;
-    $result = pg_query($sql);
+    $result = db_query($sql);
     $clrotulo = new rotulocampo;
 
     if(pg_numrows($result)!=0){
@@ -227,7 +227,7 @@ if($tipo=="recorc" || $tipo=="recextra"){
 	     b.k12_conta,
 	     p1.c60_descr
     ) as x where conta_lanc is null " ;
-    $result = pg_query($sql);
+    $result = db_query($sql);
     $clrotulo = new rotulocampo;
 
     if(pg_numrows($result)!=0){

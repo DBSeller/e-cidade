@@ -1,78 +1,78 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: contabilidade
 //CLASSE DA ENTIDADE contranslr
-class cl_contranslr { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $c47_seqtranslr = 0; 
-   var $c47_seqtranslan = 0; 
-   var $c47_debito = 0; 
-   var $c47_credito = 0; 
-   var $c47_obs = null; 
-   var $c47_ref = 0; 
-   var $c47_anousu = 0; 
-   var $c47_instit = 0; 
-   var $c47_compara = 0; 
-   var $c47_tiporesto = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_contranslr {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $c47_seqtranslr = 0;
+   var $c47_seqtranslan = 0;
+   var $c47_debito = 0;
+   var $c47_credito = 0;
+   var $c47_obs = null;
+   var $c47_ref = 0;
+   var $c47_anousu = 0;
+   var $c47_instit = 0;
+   var $c47_compara = 0;
+   var $c47_tiporesto = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 c47_seqtranslr = int4 = Sequ. Translr 
-                 c47_seqtranslan = int4 = Sequência 
-                 c47_debito = int4 = Débito 
-                 c47_credito = int4 = Crédito 
-                 c47_obs = text = Observações 
-                 c47_ref = int4 = Campo referência 
-                 c47_anousu = int4 = Ano 
-                 c47_instit = int4 = Instituição 
-                 c47_compara = int4 = Compara 
-                 c47_tiporesto = int4 = tipo resto 
+                 c47_seqtranslr = int4 = Sequ. Translr
+                 c47_seqtranslan = int4 = Sequência
+                 c47_debito = int4 = Débito
+                 c47_credito = int4 = Crédito
+                 c47_obs = text = Observações
+                 c47_ref = int4 = Campo referência
+                 c47_anousu = int4 = Ano
+                 c47_instit = int4 = Instituição
+                 c47_compara = int4 = Compara
+                 c47_tiporesto = int4 = tipo resto
                  ";
-   //funcao construtor da classe 
-   function cl_contranslr() { 
+   //funcao construtor da classe
+   function cl_contranslr() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("contranslr"); 
+     $this->rotulo = new rotulo("contranslr");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -98,9 +98,9 @@ class cl_contranslr {
      }
    }
    // funcao para inclusao
-   function incluir ($c47_seqtranslr){ 
+   function incluir ($c47_seqtranslr){
       $this->atualizacampos();
-     if($this->c47_seqtranslan == null ){ 
+     if($this->c47_seqtranslan == null ){
        $this->erro_sql = " Campo Sequência nao Informado.";
        $this->erro_campo = "c47_seqtranslan";
        $this->erro_banco = "";
@@ -109,7 +109,7 @@ class cl_contranslr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c47_debito == null ){ 
+     if($this->c47_debito == null ){
        $this->erro_sql = " Campo Débito nao Informado.";
        $this->erro_campo = "c47_debito";
        $this->erro_banco = "";
@@ -118,7 +118,7 @@ class cl_contranslr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c47_credito == null ){ 
+     if($this->c47_credito == null ){
        $this->erro_sql = " Campo Crédito nao Informado.";
        $this->erro_campo = "c47_credito";
        $this->erro_banco = "";
@@ -127,10 +127,10 @@ class cl_contranslr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c47_ref == null ){ 
+     if($this->c47_ref == null ){
        $this->c47_ref = "0";
      }
-     if($this->c47_anousu == null ){ 
+     if($this->c47_anousu == null ){
        $this->erro_sql = " Campo Ano nao Informado.";
        $this->erro_campo = "c47_anousu";
        $this->erro_banco = "";
@@ -139,7 +139,7 @@ class cl_contranslr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c47_instit == null ){ 
+     if($this->c47_instit == null ){
        $this->erro_sql = " Campo Instituição nao Informado.";
        $this->erro_campo = "c47_instit";
        $this->erro_banco = "";
@@ -148,7 +148,7 @@ class cl_contranslr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c47_compara == null ){ 
+     if($this->c47_compara == null ){
        $this->erro_sql = " Campo Compara nao Informado.";
        $this->erro_campo = "c47_compara";
        $this->erro_banco = "";
@@ -157,7 +157,7 @@ class cl_contranslr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c47_tiporesto == null ){ 
+     if($this->c47_tiporesto == null ){
        $this->erro_sql = " Campo tipo resto nao Informado.";
        $this->erro_campo = "c47_tiporesto";
        $this->erro_banco = "";
@@ -167,16 +167,16 @@ class cl_contranslr {
        return false;
      }
      if($c47_seqtranslr == "" || $c47_seqtranslr == null ){
-       $result = db_query("select nextval('contranslr_c47_seqtranslr_seq')"); 
+       $result = db_query("select nextval('contranslr_c47_seqtranslr_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: contranslr_c47_seqtranslr_seq do campo: c47_seqtranslr"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: contranslr_c47_seqtranslr_seq do campo: c47_seqtranslr";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->c47_seqtranslr = pg_result($result,0,0); 
+       $this->c47_seqtranslr = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from contranslr_c47_seqtranslr_seq");
        if(($result != false) && (pg_result($result,0,0) < $c47_seqtranslr)){
@@ -187,10 +187,10 @@ class cl_contranslr {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->c47_seqtranslr = $c47_seqtranslr; 
+         $this->c47_seqtranslr = $c47_seqtranslr;
        }
      }
-     if(($this->c47_seqtranslr == null) || ($this->c47_seqtranslr == "") ){ 
+     if(($this->c47_seqtranslr == null) || ($this->c47_seqtranslr == "") ){
        $this->erro_sql = " Campo c47_seqtranslr nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -199,31 +199,31 @@ class cl_contranslr {
        return false;
      }
      $sql = "insert into contranslr(
-                                       c47_seqtranslr 
-                                      ,c47_seqtranslan 
-                                      ,c47_debito 
-                                      ,c47_credito 
-                                      ,c47_obs 
-                                      ,c47_ref 
-                                      ,c47_anousu 
-                                      ,c47_instit 
-                                      ,c47_compara 
-                                      ,c47_tiporesto 
+                                       c47_seqtranslr
+                                      ,c47_seqtranslan
+                                      ,c47_debito
+                                      ,c47_credito
+                                      ,c47_obs
+                                      ,c47_ref
+                                      ,c47_anousu
+                                      ,c47_instit
+                                      ,c47_compara
+                                      ,c47_tiporesto
                        )
                 values (
-                                $this->c47_seqtranslr 
-                               ,$this->c47_seqtranslan 
-                               ,$this->c47_debito 
-                               ,$this->c47_credito 
-                               ,'$this->c47_obs' 
-                               ,$this->c47_ref 
-                               ,$this->c47_anousu 
-                               ,$this->c47_instit 
-                               ,$this->c47_compara 
-                               ,$this->c47_tiporesto 
+                                $this->c47_seqtranslr
+                               ,$this->c47_seqtranslan
+                               ,$this->c47_debito
+                               ,$this->c47_credito
+                               ,'$this->c47_obs'
+                               ,$this->c47_ref
+                               ,$this->c47_anousu
+                               ,$this->c47_instit
+                               ,$this->c47_compara
+                               ,$this->c47_tiporesto
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Contas dos Lançamentos ($this->c47_seqtranslr) nao Incluído. Inclusao Abortada.";
@@ -264,16 +264,16 @@ class cl_contranslr {
        $resac = db_query("insert into db_acount values($acount,966,6242,'','".AddSlashes(pg_result($resaco,0,'c47_tiporesto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($c47_seqtranslr=null) { 
+   function alterar ($c47_seqtranslr=null) {
       $this->atualizacampos();
      $sql = " update contranslr set ";
      $virgula = "";
-     if(trim($this->c47_seqtranslr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_seqtranslr"])){ 
+     if(trim($this->c47_seqtranslr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_seqtranslr"])){
        $sql  .= $virgula." c47_seqtranslr = $this->c47_seqtranslr ";
        $virgula = ",";
-       if(trim($this->c47_seqtranslr) == null ){ 
+       if(trim($this->c47_seqtranslr) == null ){
          $this->erro_sql = " Campo Sequ. Translr nao Informado.";
          $this->erro_campo = "c47_seqtranslr";
          $this->erro_banco = "";
@@ -283,10 +283,10 @@ class cl_contranslr {
          return false;
        }
      }
-     if(trim($this->c47_seqtranslan)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_seqtranslan"])){ 
+     if(trim($this->c47_seqtranslan)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_seqtranslan"])){
        $sql  .= $virgula." c47_seqtranslan = $this->c47_seqtranslan ";
        $virgula = ",";
-       if(trim($this->c47_seqtranslan) == null ){ 
+       if(trim($this->c47_seqtranslan) == null ){
          $this->erro_sql = " Campo Sequência nao Informado.";
          $this->erro_campo = "c47_seqtranslan";
          $this->erro_banco = "";
@@ -296,10 +296,10 @@ class cl_contranslr {
          return false;
        }
      }
-     if(trim($this->c47_debito)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_debito"])){ 
+     if(trim($this->c47_debito)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_debito"])){
        $sql  .= $virgula." c47_debito = $this->c47_debito ";
        $virgula = ",";
-       if(trim($this->c47_debito) == null ){ 
+       if(trim($this->c47_debito) == null ){
          $this->erro_sql = " Campo Débito nao Informado.";
          $this->erro_campo = "c47_debito";
          $this->erro_banco = "";
@@ -309,10 +309,10 @@ class cl_contranslr {
          return false;
        }
      }
-     if(trim($this->c47_credito)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_credito"])){ 
+     if(trim($this->c47_credito)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_credito"])){
        $sql  .= $virgula." c47_credito = $this->c47_credito ";
        $virgula = ",";
-       if(trim($this->c47_credito) == null ){ 
+       if(trim($this->c47_credito) == null ){
          $this->erro_sql = " Campo Crédito nao Informado.";
          $this->erro_campo = "c47_credito";
          $this->erro_banco = "";
@@ -322,21 +322,21 @@ class cl_contranslr {
          return false;
        }
      }
-     if(trim($this->c47_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_obs"])){ 
+     if(trim($this->c47_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_obs"])){
        $sql  .= $virgula." c47_obs = '$this->c47_obs' ";
        $virgula = ",";
      }
-     if(trim($this->c47_ref)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_ref"])){ 
-        if(trim($this->c47_ref)=="" && isset($GLOBALS["HTTP_POST_VARS"]["c47_ref"])){ 
-           $this->c47_ref = "0" ; 
-        } 
+     if(trim($this->c47_ref)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_ref"])){
+        if(trim($this->c47_ref)=="" && isset($GLOBALS["HTTP_POST_VARS"]["c47_ref"])){
+           $this->c47_ref = "0" ;
+        }
        $sql  .= $virgula." c47_ref = $this->c47_ref ";
        $virgula = ",";
      }
-     if(trim($this->c47_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_anousu"])){ 
+     if(trim($this->c47_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_anousu"])){
        $sql  .= $virgula." c47_anousu = $this->c47_anousu ";
        $virgula = ",";
-       if(trim($this->c47_anousu) == null ){ 
+       if(trim($this->c47_anousu) == null ){
          $this->erro_sql = " Campo Ano nao Informado.";
          $this->erro_campo = "c47_anousu";
          $this->erro_banco = "";
@@ -346,10 +346,10 @@ class cl_contranslr {
          return false;
        }
      }
-     if(trim($this->c47_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_instit"])){ 
+     if(trim($this->c47_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_instit"])){
        $sql  .= $virgula." c47_instit = $this->c47_instit ";
        $virgula = ",";
-       if(trim($this->c47_instit) == null ){ 
+       if(trim($this->c47_instit) == null ){
          $this->erro_sql = " Campo Instituição nao Informado.";
          $this->erro_campo = "c47_instit";
          $this->erro_banco = "";
@@ -359,10 +359,10 @@ class cl_contranslr {
          return false;
        }
      }
-     if(trim($this->c47_compara)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_compara"])){ 
+     if(trim($this->c47_compara)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_compara"])){
        $sql  .= $virgula." c47_compara = $this->c47_compara ";
        $virgula = ",";
-       if(trim($this->c47_compara) == null ){ 
+       if(trim($this->c47_compara) == null ){
          $this->erro_sql = " Campo Compara nao Informado.";
          $this->erro_campo = "c47_compara";
          $this->erro_banco = "";
@@ -372,10 +372,10 @@ class cl_contranslr {
          return false;
        }
      }
-     if(trim($this->c47_tiporesto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_tiporesto"])){ 
+     if(trim($this->c47_tiporesto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c47_tiporesto"])){
        $sql  .= $virgula." c47_tiporesto = $this->c47_tiporesto ";
        $virgula = ",";
-       if(trim($this->c47_tiporesto) == null ){ 
+       if(trim($this->c47_tiporesto) == null ){
          $this->erro_sql = " Campo tipo resto nao Informado.";
          $this->erro_campo = "c47_tiporesto";
          $this->erro_banco = "";
@@ -422,7 +422,7 @@ class cl_contranslr {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Contas dos Lançamentos nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->c47_seqtranslr;
@@ -450,14 +450,14 @@ class cl_contranslr {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($c47_seqtranslr=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($c47_seqtranslr=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($c47_seqtranslr));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -492,7 +492,7 @@ class cl_contranslr {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Contas dos Lançamentos nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$c47_seqtranslr;
@@ -520,11 +520,11 @@ class cl_contranslr {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -546,7 +546,8 @@ class cl_contranslr {
       }
      return $result;
    }
-   function sql_query ( $c47_seqtranslr=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $c47_seqtranslr=null,$campos="*",$ordem=null,$dbwhere=""){
+
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -562,18 +563,19 @@ class cl_contranslr {
      $sql .= "      inner join contranslan  on  contranslan.c46_seqtranslan = contranslr.c47_seqtranslan";
      $sql .= "      inner join conhist  on  conhist.c50_codhist = contranslan.c46_codhist";
      $sql .= "      inner join contrans  on  contrans.c45_seqtrans = contranslan.c46_seqtrans";
+     $sql .= "      left  join contranslrelemento  on  contranslrelemento.c114_contranslr = contranslr.c47_seqtranslr ";
      $sql2 = "";
      if($dbwhere==""){
        if($c47_seqtranslr!=null ){
-         $sql2 .= " where contranslr.c47_seqtranslr = $c47_seqtranslr "; 
-       } 
+         $sql2 .= " where contranslr.c47_seqtranslr = $c47_seqtranslr ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -582,7 +584,49 @@ class cl_contranslr {
      }
      return $sql;
   }
-   function sql_query_file ( $c47_seqtranslr=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+  function sql_queryRegraLancamento ( $c47_seqtranslr=null,$campos="*",$ordem=null,$dbwhere=""){
+
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from contranslr ";
+    $sql .= "      inner join contranslan  on  contranslan.c46_seqtranslan = contranslr.c47_seqtranslan";
+    $sql .= "      inner join conhist  on  conhist.c50_codhist = contranslan.c46_codhist";
+    $sql .= "      inner join contrans  on  contrans.c45_seqtrans = contranslan.c46_seqtrans ";
+    $sql .= "                          and c45_instit = c47_instit ";
+    $sql .= "      left  join contranslrelemento  on  contranslrelemento.c114_contranslr = contranslr.c47_seqtranslr ";
+    $sql2 = "";
+    if($dbwhere==""){
+      if($c47_seqtranslr!=null ){
+        $sql2 .= " where contranslr.c47_seqtranslr = $c47_seqtranslr ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = explode("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+ }
+
+
+   function sql_query_file ( $c47_seqtranslr=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -598,8 +642,8 @@ class cl_contranslr {
      $sql2 = "";
      if($dbwhere==""){
        if($c47_seqtranslr!=null ){
-         $sql2 .= " where contranslr.c47_seqtranslr = $c47_seqtranslr "; 
-       } 
+         $sql2 .= " where contranslr.c47_seqtranslr = $c47_seqtranslr ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -615,9 +659,9 @@ class cl_contranslr {
      }
      return $sql;
   }
-  
+
   public function sql_query_lancamento_contabil($c47_seqtranslr=null,$campos="*",$ordem=null,$dbwhere="") {
-  	
+
   	$sql = "select ";
   	if($campos != "*" ){
   		$campos_sql = split("#",$campos);

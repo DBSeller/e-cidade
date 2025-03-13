@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -188,7 +188,7 @@ class cl_moblevantamento {
        return false;
      }
      if($j97_sequen == "" || $j97_sequen == null ){
-       $result = @pg_query("select nextval('moblevatamento_j97_sequen_seq')"); 
+       $result = @db_query("select nextval('moblevatamento_j97_sequen_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: moblevatamento_j97_sequen_seq do campo: j97_sequen"; 
@@ -199,7 +199,7 @@ class cl_moblevantamento {
        }
        $this->j97_sequen = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from moblevatamento_j97_sequen_seq");
+       $result = @db_query("select last_value from moblevatamento_j97_sequen_seq");
        if(($result != false) && (pg_result($result,0,0) < $j97_sequen)){
          $this->erro_sql = " Campo j97_sequen maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -247,7 +247,7 @@ class cl_moblevantamento {
                                ,$this->j97_muro 
                                ,$this->j97_calcada 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -273,21 +273,21 @@ class cl_moblevantamento {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->j97_sequen));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,9737,'$this->j97_sequen','I')");
-       $resac = pg_query("insert into db_acount values($acount,1668,9737,'','".AddSlashes(pg_result($resaco,0,'j97_sequen'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9733,'','".AddSlashes(pg_result($resaco,0,'j97_codimporta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9689,'','".AddSlashes(pg_result($resaco,0,'j97_matric'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9690,'','".AddSlashes(pg_result($resaco,0,'j97_endcor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9691,'','".AddSlashes(pg_result($resaco,0,'j97_cidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9692,'','".AddSlashes(pg_result($resaco,0,'j97_profun'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9693,'','".AddSlashes(pg_result($resaco,0,'j97_sitterreno'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9694,'','".AddSlashes(pg_result($resaco,0,'j97_pedol'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9695,'','".AddSlashes(pg_result($resaco,0,'j97_topog'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9696,'','".AddSlashes(pg_result($resaco,0,'j97_vistoria'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9697,'','".AddSlashes(pg_result($resaco,0,'j97_muro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1668,9698,'','".AddSlashes(pg_result($resaco,0,'j97_calcada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,9737,'$this->j97_sequen','I')");
+       $resac = db_query("insert into db_acount values($acount,1668,9737,'','".AddSlashes(pg_result($resaco,0,'j97_sequen'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9733,'','".AddSlashes(pg_result($resaco,0,'j97_codimporta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9689,'','".AddSlashes(pg_result($resaco,0,'j97_matric'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9690,'','".AddSlashes(pg_result($resaco,0,'j97_endcor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9691,'','".AddSlashes(pg_result($resaco,0,'j97_cidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9692,'','".AddSlashes(pg_result($resaco,0,'j97_profun'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9693,'','".AddSlashes(pg_result($resaco,0,'j97_sitterreno'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9694,'','".AddSlashes(pg_result($resaco,0,'j97_pedol'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9695,'','".AddSlashes(pg_result($resaco,0,'j97_topog'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9696,'','".AddSlashes(pg_result($resaco,0,'j97_vistoria'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9697,'','".AddSlashes(pg_result($resaco,0,'j97_muro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1668,9698,'','".AddSlashes(pg_result($resaco,0,'j97_calcada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -441,36 +441,36 @@ class cl_moblevantamento {
      $resaco = $this->sql_record($this->sql_query_file($this->j97_sequen));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,9737,'$this->j97_sequen','A')");
+         $resac = db_query("insert into db_acountkey values($acount,9737,'$this->j97_sequen','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_sequen"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9737,'".AddSlashes(pg_result($resaco,$conresaco,'j97_sequen'))."','$this->j97_sequen',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9737,'".AddSlashes(pg_result($resaco,$conresaco,'j97_sequen'))."','$this->j97_sequen',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_codimporta"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9733,'".AddSlashes(pg_result($resaco,$conresaco,'j97_codimporta'))."','$this->j97_codimporta',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9733,'".AddSlashes(pg_result($resaco,$conresaco,'j97_codimporta'))."','$this->j97_codimporta',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_matric"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9689,'".AddSlashes(pg_result($resaco,$conresaco,'j97_matric'))."','$this->j97_matric',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9689,'".AddSlashes(pg_result($resaco,$conresaco,'j97_matric'))."','$this->j97_matric',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_endcor"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9690,'".AddSlashes(pg_result($resaco,$conresaco,'j97_endcor'))."','$this->j97_endcor',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9690,'".AddSlashes(pg_result($resaco,$conresaco,'j97_endcor'))."','$this->j97_endcor',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_cidade"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9691,'".AddSlashes(pg_result($resaco,$conresaco,'j97_cidade'))."','$this->j97_cidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9691,'".AddSlashes(pg_result($resaco,$conresaco,'j97_cidade'))."','$this->j97_cidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_profun"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9692,'".AddSlashes(pg_result($resaco,$conresaco,'j97_profun'))."','$this->j97_profun',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9692,'".AddSlashes(pg_result($resaco,$conresaco,'j97_profun'))."','$this->j97_profun',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_sitterreno"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9693,'".AddSlashes(pg_result($resaco,$conresaco,'j97_sitterreno'))."','$this->j97_sitterreno',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9693,'".AddSlashes(pg_result($resaco,$conresaco,'j97_sitterreno'))."','$this->j97_sitterreno',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_pedol"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9694,'".AddSlashes(pg_result($resaco,$conresaco,'j97_pedol'))."','$this->j97_pedol',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9694,'".AddSlashes(pg_result($resaco,$conresaco,'j97_pedol'))."','$this->j97_pedol',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_topog"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9695,'".AddSlashes(pg_result($resaco,$conresaco,'j97_topog'))."','$this->j97_topog',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9695,'".AddSlashes(pg_result($resaco,$conresaco,'j97_topog'))."','$this->j97_topog',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_vistoria"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9696,'".AddSlashes(pg_result($resaco,$conresaco,'j97_vistoria'))."','$this->j97_vistoria',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9696,'".AddSlashes(pg_result($resaco,$conresaco,'j97_vistoria'))."','$this->j97_vistoria',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_muro"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9697,'".AddSlashes(pg_result($resaco,$conresaco,'j97_muro'))."','$this->j97_muro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9697,'".AddSlashes(pg_result($resaco,$conresaco,'j97_muro'))."','$this->j97_muro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j97_calcada"]))
-           $resac = pg_query("insert into db_acount values($acount,1668,9698,'".AddSlashes(pg_result($resaco,$conresaco,'j97_calcada'))."','$this->j97_calcada',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1668,9698,'".AddSlashes(pg_result($resaco,$conresaco,'j97_calcada'))."','$this->j97_calcada',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Levantamento do cadastro PDA nao Alterado. Alteracao Abortada.\\n";
@@ -511,21 +511,21 @@ class cl_moblevantamento {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,9737,'$j97_sequen','E')");
-         $resac = pg_query("insert into db_acount values($acount,1668,9737,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_sequen'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9733,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_codimporta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9689,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_matric'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9690,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_endcor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9691,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_cidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9692,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_profun'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9693,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_sitterreno'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9694,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_pedol'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9695,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_topog'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9696,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_vistoria'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9697,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_muro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1668,9698,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_calcada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,9737,'$j97_sequen','E')");
+         $resac = db_query("insert into db_acount values($acount,1668,9737,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_sequen'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9733,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_codimporta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9689,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_matric'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9690,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_endcor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9691,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_cidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9692,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_profun'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9693,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_sitterreno'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9694,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_pedol'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9695,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_topog'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9696,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_vistoria'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9697,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_muro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1668,9698,'','".AddSlashes(pg_result($resaco,$iresaco,'j97_calcada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from moblevantamento
@@ -541,7 +541,7 @@ class cl_moblevantamento {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Levantamento do cadastro PDA nao Excluído. Exclusão Abortada.\\n";
@@ -575,7 +575,7 @@ class cl_moblevantamento {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

@@ -1,38 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_stdlibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 db_postmemory($_POST);
 $clrotulo           = new rotulocampo ();
 $oDaoSauFechamento  = db_utils::getdao('sau_fechamento');
@@ -83,7 +83,7 @@ if ($oSauConfig != false) {
       <tr>
         <td height="100%" align="left" valign="top" bgcolor="#CCCCCC"><br>
           <center>
-          
+
           <form name="form1" method="post" action="">
             <center>
             <fieldset style="width: 40%"><legend><b>Gerador de Arquivo:</b></legend>
@@ -104,7 +104,7 @@ if ($oSauConfig != false) {
                         <tr>
                           <td>
                             <?
-                              db_ancora("<b>Competencia:</b>", "js_pesquisasd98_i_fechamento(true);", $db_opcao );
+                              db_ancora("<b>Competência:</b>", "js_pesquisasd98_i_fechamento(true);", $db_opcao );
                             ?>
                           </td>
                           <td colspan="3">
@@ -140,15 +140,18 @@ if ($oSauConfig != false) {
                                   }
 
                                 }
+
+                                /* PLUGIN ESF - Buscando procedimentos do ESF */
+
                                 if ($oDaoSauFechapront->numrows > 0) {
 
                                   db_fieldsmemory ( $result2, 0 );
                                   $desabilita = "";
-                                         
-                                } else {
 
-                                  $desabilita = "disabled";
-                                  db_msgbox("Nenhum registro para gerar o arquivo");
+                                } else {
+                                  /* PLUGIN ESF - Sobrescrevendco validações abaixo */
+                                    $desabilita = "disabled";
+                                    db_msgbox("Nenhum registro para gerar o arquivo");
 
                                 }
                                }
@@ -170,7 +173,7 @@ if ($oSauConfig != false) {
                           </td>
                         </tr>
                         <tr>
-                          <td><b>Tipo de Fianciamento:</b></td>
+                          <td><b>Tipo de Financiamento:</b></td>
                           <td colspan="3">
                             <?
                               db_input('sd97_i_financiamento', 6, @$sd97_i_financiamento, true, 'hidden', 3, "");
@@ -292,7 +295,7 @@ if ($oSauConfig != false) {
                 $sSql   = $oDaoSauFechamento->sql_query("", "sd97_i_codigo", "", "sd97_i_codigo=$sd97_i_codigo");
                 $result = $oDaoSauFechamento->sql_record($sSql);
                 if ($oDaoSauFechamento->numrows > 0) {
-                  
+
                   db_fieldsmemory ($result, 0);
                   $sSql    = $oDaoSauFecharquivo->sql_query("", "sd99_i_codigo", "", "sd99_i_fechamento=$sd97_i_codigo");
                   $result1 = $oDaoSauFecharquivo->sql_record ($sSql);
@@ -302,7 +305,7 @@ if ($oSauConfig != false) {
                     $regerar = true;
 
                   }
-                  
+
                 }
               }
               if ($regerar == true) {
@@ -338,7 +341,7 @@ if ($oSauConfig != false) {
   }
 ?>
 function js_listUnidades() {
-    
+
     iTam = document.getElementById('sselecionados').length;
     sStr = '';
     sSep = '';
@@ -359,7 +362,7 @@ function js_pesquisasd98_i_fechamento(mostra) {
                       'db_iframe_sau_fechamento',
                       'func_sau_fechamento.php?funcao_js=parent.js_mostrasau_fechamento1|sd97_i_compmes|sd97_i_compano'+
                       '|sd97_i_financiamento|sd65_c_nome|sd97_d_dataini|sd97_d_datafim|sd97_i_codigo','Pesquisa',true);
-  
+
 }
 
 function js_mostrasau_fechamento1(chave1, chave2, iFinanciamento, sFinanciamento, sd97_d_dataini, sd97_d_datafim, codigo) {
@@ -387,10 +390,10 @@ function js_mostrasau_fechamento1(chave1, chave2, iFinanciamento, sFinanciamento
   document.form1.sd97_d_datafim_mes.value           = aVet[1];
   document.form1.sd97_d_datafim_ano.value           = aVet[0];
   document.getElementById('nomeExtencao').innerHTML = js_nomeMes(chave1,1);
-  
+
   db_iframe_sau_fechamento.hide();
   document.form1.submit();
-  
+
 }
 
 function js_nomeMes(iNumero,iTipo) {
@@ -474,14 +477,14 @@ function js_gerarArquivo() {
   oParam.sOrgResp       = $F('snomedepart');
 
   js_divCarregando(_M("saude.ambulatorial.sau4_bpa_2013.gerando_arquivo"),'msgBox');
-  
+
   new Ajax.Request( 'sau4_bpamagnetico.RPC.php',
                     {method     : 'post',
                      parameters : 'json='+Object.toJSON(oParam),
                      onComplete : js_retornoArquivo
                     }
                   );
-  
+
 }
 
 var oDadoRecibo = new Object();
@@ -489,7 +492,7 @@ var oDadoRecibo = new Object();
 function js_retornoArquivo (oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval ('(' +oAjax.responseText +')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 1) {
 
@@ -498,7 +501,7 @@ function js_retornoArquivo (oAjax) {
     if (!oRetorno.lTemInconsistencia) {
 
       alert(_M("saude.ambulatorial.sau4_bpa_2013.arquivo_gerado"));
-      
+
       var oArquivoBPA = new DBDownload();
       oArquivoBPA.addFile(oRetorno.sNomeArquivo.urlDecode(), "Download arquivo TXT (BPA)");
       oArquivoBPA.show();
@@ -506,17 +509,17 @@ function js_retornoArquivo (oAjax) {
     } else {
 
       alert(_M("saude.ambulatorial.sau4_bpa_2013.erro_ao_gerar_arquivo"));
-      
+
       sUrl = "sau2_bpainconsistencia002.php";
       jan  = window.open(sUrl, '',
                          'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
       jan.moveTo(0,0);
     }
-    
+
   } else {
     alert(oRetorno.message.urlDecode());
   }
-  
+
 }
 
 /**
@@ -525,7 +528,7 @@ function js_retornoArquivo (oAjax) {
          e iBpa é o numero de registro no arquivo
  */
 function js_recibo() {
- 
+
   var sUrl  = 'sau2_recibobpa001.php?';
       sUrl += 'linhas='+oDadoRecibo.iLinhas;
       sUrl += '&sd97_i_compmes='+$F('sd97_i_compmes');
@@ -538,7 +541,7 @@ function js_recibo() {
       sUrl += '&sDestino='+$F('sDestino');
       sUrl += '&iCntrl='+oDadoRecibo.nControle;
       sUrl += '&sd97_i_compano='+$F('sd97_i_compano');
-  
+
   jan = window.open(sUrl,
                     '',
                     'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+

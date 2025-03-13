@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('');
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -89,8 +89,8 @@ $sql_parc="select v07_parcel,
 //die($sql_norm);
 //die($sql_parc);	  		
 
-$result_norm=pg_query($sql_norm);
-$result_parc=pg_query($sql_parc);
+$result_norm=db_query($sql_norm);
+$result_parc=db_query($sql_parc);
 if (pg_numrows($result_norm)==0&&pg_numrows($result_parc)==0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem dividas.');
 }

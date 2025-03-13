@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
 
 $oGet        = db_utils::postMemory($_GET);
 $iInstit     = db_getsession("DB_instit");
@@ -154,7 +154,7 @@ $pdf->addpage();
 $pdf->setfillcolor(235);
 $troca  = 1;
 $alt    = 4;
-$rsRel  = @pg_query($sSQLRel);
+$rsRel  = @db_query($sSQLRel);
 $iNumRows = pg_num_rows($rsRel);
 if ($iNumRows > 0){
 

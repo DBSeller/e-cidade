@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -30,8 +30,9 @@
  * @package educacao
  * @subpackage avaliacao
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
- *         Iuri Guntchnigg <iuri@dbseller.com.br>
- * @version $Revision: 1.23 $
+ * @author Iuri Guntchnigg <iuri@dbseller.com.br>
+ *
+ * @version $Revision: 1.34 $
  */
 final class AvaliacaoAproveitamento {
 
@@ -129,6 +130,19 @@ final class AvaliacaoAproveitamento {
    * @var string
    */
   private $sParecer = '';
+
+  /**
+   * Guarda a instância das avaliações do aluno
+   * @var DiarioAvaliacaoDisciplina
+   */
+  private $oDiarioAvaliacaoDisciplina = null;
+
+
+  /**
+   * Instancia das faltas abonadas para o período
+   * @var AbonoFalta
+   */
+  private $oAbonoFalta = null;
 
   public function __construct($iCodigo = null) {
 
@@ -306,16 +320,10 @@ final class AvaliacaoAproveitamento {
    */
   public function getFaltasAbonadas() {
 
-    $iFaltasAbonadas    = 0;
+    $iFaltasAbonadas = 0;
 
-    $oDaoAbonoFalta     = db_utils::getDao("abonofalta");
-    $sWhere             = " ed80_i_diarioavaliacao = {$this->getCodigo()} ";
-    $sCampos            = " sum(ed80_i_numfaltas) as ed80_i_numfaltas ";
-    $sSqlFaltasAbonadas = $oDaoAbonoFalta->sql_query_file(null, $sCampos, null, $sWhere);
-    $rsFaltasAbonadas   = $oDaoAbonoFalta->sql_record($sSqlFaltasAbonadas);
-
-    if ($oDaoAbonoFalta->numrows > 0) {
-      $iFaltasAbonadas = db_utils::fieldsMemory($rsFaltasAbonadas, 0)->ed80_i_numfaltas;
+    if ( !empty($this->oAbonoFalta) && $this->oAbonoFalta instanceof AbonoFalta) {
+      $iFaltasAbonadas = $this->oAbonoFalta->getNumeroFaltas();
     }
 
     return $iFaltasAbonadas;
@@ -350,30 +358,17 @@ final class AvaliacaoAproveitamento {
    */
   public function salvarAbono(Justificativa $oJustificativa, $iDiarioAvaliacao, $iFaltasAbonadas) {
 
-  	$oDaoAbonoFalta   = db_utils::getDao("abonofalta");
-  	$sWhereAbonoFalta = "ed80_i_diarioavaliacao = {$iDiarioAvaliacao}";
-  	$sSqlAbonoFalta   = $oDaoAbonoFalta->sql_query_file(null, "ed80_i_codigo", null, $sWhereAbonoFalta);
-  	$rsAbonoFalta     = $oDaoAbonoFalta->sql_record($sSqlAbonoFalta);
+    $oAbonoFalta = new AbonoFalta();
+    if ( !empty($this->oAbonoFalta) && $this->oAbonoFalta instanceof AbonoFalta) {
+      $oAbonoFalta = $this->oAbonoFalta;
+    }
 
-  	$oDaoAbonoFalta->ed80_i_justificativa = $oJustificativa->getCodigo();
-  	$oDaoAbonoFalta->ed80_i_numfaltas     = $iFaltasAbonadas;
+    $oAbonoFalta->setDiarioAvaliacao($iDiarioAvaliacao);
+    $oAbonoFalta->setJustificativa($oJustificativa->getCodigo());
+    $oAbonoFalta->setNumeroFaltas($iFaltasAbonadas);
+    $oAbonoFalta->salvar();
 
-  	if ($oDaoAbonoFalta->numrows > 0) {
-
-  		$iCodigo                       = db_utils::fieldsMemory($rsAbonoFalta, 0)->ed80_i_codigo;
-  		$oDaoAbonoFalta->ed80_i_codigo = $iCodigo;
-  		$oDaoAbonoFalta->alterar($iCodigo);
-  	} else {
-
-  		$oDaoAbonoFalta->ed80_i_diarioavaliacao = $iDiarioAvaliacao;
-  		$oDaoAbonoFalta->incluir(null);
-  	}
-
-  	if ($oDaoAbonoFalta->erro_status == "0") {
-  		throw new DBException($oDaoAbonoFalta->erro_msg);
-  	}
-
-  	unset($oDaoAbonoFalta);
+    $this->oAbonoFalta = $oAbonoFalta;
   }
 
   /**
@@ -383,12 +378,16 @@ final class AvaliacaoAproveitamento {
   public function getAbono() {
 
   	$oDadosAbono        = new stdClass();
-  	$oDaoAbonoFalta     = db_utils::getDao("abonofalta");
+  	$oDaoAbonoFalta     = new cl_abonofalta();
   	$sWhere             = " ed80_i_diarioavaliacao = {$this->getCodigo()} ";
   	$sSqlFaltasAbonadas = $oDaoAbonoFalta->sql_query_file(null, "*", null, $sWhere);
-  	$rsFaltasAbonadas   = $oDaoAbonoFalta->sql_record($sSqlFaltasAbonadas);
+  	$rsFaltasAbonadas   = db_query($sSqlFaltasAbonadas);
 
-  	if ($oDaoAbonoFalta->numrows > 0) {
+    if ( !$rsFaltasAbonadas ) {
+      throw new Exception("Erro ao buscar faltas abonadas. " . pg_last_error());
+    }
+
+  	if ( pg_num_rows($rsFaltasAbonadas) > 0) {
 
   		$oResultAbonoFalta             = db_utils::fieldsMemory($rsFaltasAbonadas, 0);
   		$oDadosAbono->iCodigo          = $oResultAbonoFalta->ed80_i_codigo;
@@ -405,23 +404,13 @@ final class AvaliacaoAproveitamento {
    * @param integer $iDiarioAvaliacao
    * @throws DBException
    */
-  public function excluirAbono($iDiarioAvaliacao) {
+  public function excluirAbono($iDiarioAvaliacao = null) {
 
-  	if (!empty($iDiarioAvaliacao)) {
+    if ( !empty($this->oAbonoFalta) && $this->oAbonoFalta instanceof AbonoFalta) {
 
-  		$oDaoAbonoFalta   = db_utils::getDao("abonofalta");
-  		$sWhereAbonoFalta = "ed80_i_diarioavaliacao = {$iDiarioAvaliacao}";
-  		$sSqlAbonoFalta   = $oDaoAbonoFalta->sql_query_file(null, "ed80_i_codigo", null, $sWhereAbonoFalta);
-  		$rsAbonoFalta     = $oDaoAbonoFalta->sql_record($sSqlAbonoFalta);
-
-  		if ($oDaoAbonoFalta->numrows > 0) {
-
-  			$oDaoAbonoFalta->excluir(null, $sWhereAbonoFalta);
-  			if ($oDaoAbonoFalta->erro_status == "0") {
-  				throw new DBException($oDaoAbonoFalta->erro_msg);
-  			}
-  		}
-  	}
+      $this->oAbonoFalta->excluir();
+      $this->oAbonoFalta = null;
+    }
   }
 
   /**
@@ -486,11 +475,16 @@ final class AvaliacaoAproveitamento {
             $oAvaliacaoAproveitamentoOrigem->setParecerPadronizado($oDadosDiario->parecerpadronizado);
             $oAvaliacaoAproveitamentoOrigem->setAmparado(trim($oDadosDiario->amparo) == "S" ? true : false);
             $oAvaliacaoAproveitamentoOrigem->setConvertido(trim($oDadosDiario->convertido) == "S" ? true : false);
+
+            if ( !empty($oDadosDiario->codigo_faltas_abonadas) ) {
+                $oAvaliacaoAproveitamentoOrigem->setFaltasAbonadas(AbonoFaltaRepository::getByCodigo($oDadosDiario->codigo_faltas_abonadas));
+            }
             switch ($oElementoAvaliacao->getFormaDeAvaliacao()->getTipo()) {
 
               case 'NOTA' :
 
                 $oValorAproveitamento = new ValorAproveitamentoNota($oDadosDiario->valor_nota);
+                $oValorAproveitamento->setAproveitamentoReal( $oDadosDiario->valor_nota_real );
                 break;
 
               case 'PARECER' :
@@ -628,4 +622,37 @@ final class AvaliacaoAproveitamento {
     return false;
   }
 
+  /**
+   * Define a qual o Diário de Avaliação Disciplina pertence a avaliação
+   * @param DiarioAvaliacaoDisciplina $oDiarioAvaliacaoDisciplina
+   */
+  public function setDiarioAvaliacaoDisciplina( DiarioAvaliacaoDisciplina $oDiarioAvaliacaoDisciplina ) {
+    $this->oDiarioAvaliacaoDisciplina = $oDiarioAvaliacaoDisciplina;
+  }
+
+  /**
+   * Retorna o Diário de Avaliação Disciplina
+   * @return DiarioAvaliacaoDisciplina $oDiarioAvaliacaoDisciplina
+   */
+  public function getDiarioAvaliacaoDisciplina () {
+    return $this->oDiarioAvaliacaoDisciplina;
+  }
+
+  /**
+   * Retorna se a avaliação é um resultado
+   * @return boolean
+   */
+  public function isResultado() {
+
+    return $this->getElementoAvaliacao()->isResultado();
+  }
+
+  /**
+   * Informa as faltas abonadas
+   * @param AbonoFalta $oAbonoFalta
+   */
+  public function setFaltasAbonadas(AbonoFalta $oAbonoFalta) {
+
+    $this->oAbonoFalta = $oAbonoFalta;
+  }
 }

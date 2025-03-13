@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,38 +26,38 @@
  */
 
 
-require_once ("libs/db_libcontabilidade.php");
-require_once ("libs/db_liborcamento.php");
-require_once ("libs/db_utils.php");
-require_once ("classes/db_conlancam_classe.php");
-require_once ("classes/db_conlancamdot_classe.php");
-require_once ("classes/db_conlancamsup_classe.php");
-require_once ("classes/db_conlancamdoc_classe.php");
-require_once ("classes/db_conlancamrec_classe.php");
-require_once ("classes/db_conlancamval_classe.php");
-require_once ("classes/db_conlancamretif_classe.php");
-require_once ("classes/db_orcsuplem_classe.php");
-require_once ("classes/db_orcsuplemlan_classe.php");
-require_once ("classes/db_orcprojeto_classe.php");
-require_once ("classes/db_orcreserva_classe.php"); // reserva de saldo
-require_once ("classes/db_orcreservasup_classe.php"); // reserva de saldo das suplementações
-require_once ("classes/db_orcsuplemval_classe.php"); // lançamento das suplementações
-require_once ("classes/db_orcsuplemrec_classe.php");
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_conlancam_classe.php"));
+require_once(modification("classes/db_conlancamdot_classe.php"));
+require_once(modification("classes/db_conlancamsup_classe.php"));
+require_once(modification("classes/db_conlancamdoc_classe.php"));
+require_once(modification("classes/db_conlancamrec_classe.php"));
+require_once(modification("classes/db_conlancamval_classe.php"));
+require_once(modification("classes/db_conlancamretif_classe.php"));
+require_once(modification("classes/db_orcsuplem_classe.php"));
+require_once(modification("classes/db_orcsuplemlan_classe.php"));
+require_once(modification("classes/db_orcprojeto_classe.php"));
+require_once(modification("classes/db_orcreserva_classe.php")); // reserva de saldo
+require_once(modification("classes/db_orcreservasup_classe.php")); // reserva de saldo das suplementa??es
+require_once(modification("classes/db_orcsuplemval_classe.php")); // lan?amento das suplementa??es
+require_once(modification("classes/db_orcsuplemrec_classe.php"));
 
 
 /*
-*  recebe o codigo de uma suplementação e processa
+*  recebe o codigo de uma suplementa??o e processa
 *  atente para o parametro $estorno=true ...
 *  se quiser imprimir saida na tela, sete a variavel saida_tela=true
 */
 function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) {
-  $erro = false; //retorna esta variavel se algo aconteceu errado, ela terá o conteúdo = true
+  $erro = false; //retorna esta variavel se algo aconteceu errado, ela ter? o conte?do = true
   $debug= false;  // veriavel que permite debug na tela
   $matriz_dotacao=array();
 
   global $fc_lancam_suplementacao, $anousu, $valor, $tipo, $dot, $codsup, $o48_tiposup, $erro, $c53_tipo, $documento_estorno,$saldoatual;
   /*
-  *  para variáveis boleanas o php retorna vazio para resultados 'false' e retorna '1' para resultados = 'true'
+  *  para vari?veis boleanas o php retorna vazio para resultados 'false' e retorna '1' para resultados = 'true'
   *
   */
   $auxiliar = new cl_orcsuplem;
@@ -79,19 +79,19 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
     exit;
   }
   if ($debug==true){
-    echo "<br> saida da função fc_lancam_suplementação(codsup,data,usuario) = $o46_codsup,$data,$usuario";
+    echo "<br> saida da fun??o fc_lancam_suplementa??o(codsup,data,usuario) = $o46_codsup,$data,$usuario";
     db_criatabela($result);
   }
   if ($auxiliar->numrows > 0) {
     db_fieldsmemory($result, 0);
     if ($fc_lancam_suplementacao[0] == "1") {
-      // retornou mensagem de suplementação processada com sucesso
+      // retornou mensagem de suplementa??o processada com sucesso
     } else {
       if ($estorno==false){
         $erro = true;
         db_msgbox("Av14: Processamento : ".$fc_lancam_suplementacao);
       } else {
-        // quando estorno==true, esta suplementação deve ser já processada
+        // quando estorno==true, esta suplementa??o deve ser j? processada
       }
     }
   };
@@ -114,7 +114,7 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
   ";
   $rval = db_query($sql) or die($sql);
   if ($debug==true){
-    echo "<br> pesquisa na tabela orcsuplemval, as dotações constantes nas suplementações e os tipos ";
+    echo "<br> pesquisa na tabela orcsuplemval, as dota??es constantes nas suplementa??es e os tipos ";
     db_criatabela($rval);
   }
   if ($erro == false) {
@@ -134,7 +134,7 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
       $codlan = $clconlancam->c70_codlan; //pega o codigo gerado
 
       /*
-      *  para projetos retificadores, não lança conlancamdoc nem conlancamrec
+      *  para projetos retificadores, Não lan?a conlancamdoc nem conlancamrec
       */
       //if ($estorno==false){
         if ($tipo == "rec") {
@@ -184,7 +184,7 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
             break;
           }
 
-        $cltranslan->db_trans_suplem($anousu, $o48_tiposup, true, false, $instit_dot); // sempre redução, reduz uma receita e coloca numa dotação !
+        $cltranslan->db_trans_suplem($anousu, $o48_tiposup, true, false, $instit_dot); // sempre redu??o, reduz uma receita e coloca numa dotação !
 
       } else {
 
@@ -200,13 +200,13 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
             $oDotacao = db_utils::fieldsMemory($resultdot, 0);
           } else {
             $erro = true;
-            db_msgbox("Er: orcdotação. $dot não encontrada  ");
+            db_msgbox("Er: orcdotação. $dot não encontrada ");
             break;
           }
 
         $lSuplementacaoEspecial = false;
         /**
-         * verifica se a suplementacao é especial.(dotacao com valor = 0 e já existe uma suplmentacao para essa mesma
+         * verifica se a suplementacao ? especial.(dotacao com valor = 0 e j? existe uma suplmentacao para essa mesma
          * dotação)
          */
         if ($oDotacao->o58_valor == 0) {
@@ -229,18 +229,18 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
       }
 
       if ($debug==true){
-        echo "<br><Br><Br> retorno das transações contábeis";
+        echo "<br><Br><Br> retorno das transa??es cont?beis";
         print_r($cltranslan->arr_debito);
         print_r($cltranslan->arr_credito);
         print_r($cltranslan->arr_histori);
         echo $cltranslan->coddoc;
       }
       /*
-      *  se for estorno descobre qual o coddoc a ser lançado
+      *  se for estorno descobre qual o coddoc a ser lan?ado
       */
       if ($estorno == true) {
-        /* tres estados possiveis,   rec = receitas ( campo 48_arrecadmaior , s = suplementações (o48_coddocsup)
-        *   e   nenhum dos dois  = o48_coddocrec ( documento de redução )
+        /* tres estados possiveis,   rec = receitas ( campo 48_arrecadmaior , s = suplementa??es (o48_coddocsup)
+        *   e   nenhum dos dois  = o48_coddocrec ( documento de redu??o )
         */
         if ($tipo == 'rec') {
           $sql = "select /* o48_arrecadmaior,*/ c53_tipo
@@ -273,7 +273,7 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
 
         } else {
           $erro = true;
-          db_msgbox("E54: Tipo da tabela orcsuplemtipo não encontrado na conhistdoc ! Contante Suporte !");
+          db_msgbox("E54: Tipo da tabela orcsuplemtipo Não encontrado na conhistdoc ! Contante Suporte !");
           break;
         }
       }
@@ -306,7 +306,7 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
         break;
       }
 
-      //if ($o48_tiposup != 1014) { // só gera lancamentos contábeis se for diferente de transferência de recursos
+      //if ($o48_tiposup != 1014) { // s? gera lancamentos cont?beis se for diferente de transfer?ncia de recursos
         for ($fi = 0; $fi < sizeof($cltranslan->arr_debito); $fi ++) {
           $clconlancamval->c69_anousu = $anousu;
           $clconlancamval->c69_codlan = $codlan;
@@ -323,16 +323,16 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
           $clconlancamval->incluir("");
           if ($clconlancamval->erro_status == "0") {
             $erro = true;
-            db_msgbox("Er41:  Não consegui inserir na tabela de lançamentos (conlançanval)");
+            db_msgbox("Er41:  Não consegui inserir na tabela de lan?amentos (conlan?anval)");
             break;
           }
         }
       //}
     }
   }
-  // o if abaixo serve pra retificação, que no desprocessamento não verifica saldo
-  // porém o projeto retificador deve ter as mesmas dotações suplementadas com os mesmos valores ou a maior
-  // pra não ficar dotação negativa, por isto deixei comentado este if, pra não liberar a retificação a "lá vontê"
+  // o if abaixo serve pra retifica??o, que no desprocessamento Não verifica saldo
+  // por?m o projeto retificador deve ter as mesmas dota??es suplementadas com os mesmos valores ou a maior
+  // pra Não ficar dotação negativa, por isto deixei comentado este if, pra Não liberar a retifica??o a "l? vont?"
   // if ($estorno == false) //  quando nao for estorno entramos no loop
   for ($x = 0; $x < sizeof($matriz_dotacao); $x ++) {
     $dot = $matriz_dotacao[$x];
@@ -346,7 +346,7 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
     db_fieldsmemory($res, 0);
     if ($saldoatual < 0) {
       $erro = true;
-      db_msgbox("Não posso confirmar esta operação porque a dotação $dot ficará com saldo negativo! (1)");
+      db_msgbox("Não posso confirmar esta operação porque a dotação $dot ficar? com saldo negativo! (1)");
     }
   }
 
@@ -363,7 +363,8 @@ function processa_suplementacao($o46_codsup, $data, $usuario, $estorno = false) 
 */
 
 function desprocessa_suplementacao($codsup,$anousu,$estornar=false) {
-  $erro  = false;    // retorna esta variavel se algo aconteceu errado, ela terá o conteúdo = true
+
+  $erro  = false;    // retorna esta variavel se algo aconteceu errado, ela ter? o conte?do = true
   $debug = false;  // veriavel que permite debug na tela
   $matriz_dotacao = array ();
   $lista_lan = array ();
@@ -382,15 +383,19 @@ function desprocessa_suplementacao($codsup,$anousu,$estornar=false) {
   $clconlancamrec = new cl_conlancamrec;
   $clconlancamretif = new cl_conlancamretif;
 
+  $clconlamrecurso = new cl_conlancamrecurso();
+  $clconlamdepartamento = new cl_conlancamdepartamento();
+  $clconlancamconcarpeculiar = new cl_conlancamconcarpeculiar();
+
   /*
-  *  para variáveis boleanas o php retorna vazio para resultados 'false' e retorna '1' para resultados = 'true'
+  *  para vari?veis boleanas o php retorna vazio para resultados 'false' e retorna '1' para resultados = 'true'
   */
 
   if ($debug==true && $estornar==true){
     echo "<br> iniciando desprocessamento de um projeto retificado ";
   }
-  // tira as suplementações da lista de processadas
-  // no estorno de suplementação não é removido do orcsuplemlan
+  // tira as suplementa??es da lista de processadas
+  // no estorno de suplementa??o Não ? removido do orcsuplemlan
   if ($erro == false  && $estornar==false) {
     $res = $clorcsuplemlan->excluir($codsup);
     if ($clorcsuplemlan->erro_status == 0) {
@@ -398,11 +403,11 @@ function desprocessa_suplementacao($codsup,$anousu,$estornar=false) {
       $erro = true;
     }
   }
-  // seleciona lançamentos contábeis
+  // seleciona lan?amentos cont?beis
   if ($estornar==false){
     $res = $clconlancamsup->sql_record($clconlancamsup->sql_query_file(null, "c79_codlan", null, "c79_codsup=$codsup"));
   } else {
-    // lançamentos do projeto retificado
+    // lan?amentos do projeto retificado
     $sql_retif  = "select c79_codlan
     from conlancamsup
     inner join conlancamdoc on c71_codlan = c79_codlan
@@ -450,7 +455,31 @@ function desprocessa_suplementacao($codsup,$anousu,$estornar=false) {
       db_msgbox($clconlancamdoc->erro_msg);
       $erro = true;
     }
-    //  projetos que foram retificados não tem lançamnetos na conlancamdot
+
+      $res = $clconlancamrecurso->excluir(null, "c130_conlancam = {$codlan}");
+      if ($clconlancamrecurso->erro_status == '0') {
+          db_msgbox($clconlancamrecurso->erro_msg);
+          $sqlerro = true;
+          break;
+      }
+
+      $res = $clconlancamconcarpeculiar->excluir(null, "c08_codlan = {$codlan}");
+      if ($clconlancamconcarpeculiar->erro_status == '0') {
+          db_msgbox($clconlancamconcarpeculiar->erro_msg);
+          $sqlerro = true;
+          break;
+      }
+
+      $res = $clconlancamdepartamento->excluir(null, "c128_conlancam = {$codlan}");
+      if ($clconlancamdepartamento->erro_status == '0') {
+          db_msgbox($clconlancamdepartamento->erro_msg);
+          $sqlerro = true;
+          break;
+      }
+
+
+
+      //  projetos que foram retificados Não tem lan?amnetos na conlancamdot
     //if ($estornar==false){
       $res = $clconlancamdot->sql_record($clconlancamdot->sql_query_file($codlan));
       if ($clconlancamdot->numrows > 0) {
@@ -507,13 +536,20 @@ function desprocessa_suplementacao($codsup,$anousu,$estornar=false) {
       $erro = true;
     }
 
+      $daoConlancamCompl = new cl_conlancamcompl();
+      $daoConlancamCompl->excluir($codlan);
+      if ($daoConlancamCompl->erro_status == "0") {
+          db_msgbox($daoConlancamCompl->erro_msg);
+          $erro = true;
+      }
+
     $res = $clconlancam->excluir($codlan);
     if ($clconlancam->erro_status == 0) {
       db_msgbox($clconlancam->erro_msg);
       $erro = true;
     }
   }
-  // para gravar a transação, nenhuma dotação pode ser negativa
+  // para gravar a transa??o, nenhuma dotação pode ser negativa
   //if ($estornar==false){
     for ($x = 0; $x < sizeof($matriz_dotacao); $x ++) {
       $dot = $matriz_dotacao[$x];
@@ -527,7 +563,7 @@ function desprocessa_suplementacao($codsup,$anousu,$estornar=false) {
       db_fieldsmemory($res, 0);
       if ($saldoatual < 0) {
         $erro = true;
-        db_msgbox("Não posso confirmar esta operação porque a dotação $dot ficará com saldo negativo! (2)");
+        db_msgbox("Não posso confirmar esta operação porque a dotação $dot ficar? com saldo negativo! (2)");
       }
     }
   //}
@@ -535,7 +571,7 @@ function desprocessa_suplementacao($codsup,$anousu,$estornar=false) {
 }
 
 function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
-  $sqlerro  = false;    // retorna esta variavel se algo aconteceu errado, ela terá o conteúdo = true
+  $sqlerro  = false;    // retorna esta variavel se algo aconteceu errado, ela ter? o conte?do = true
   $debug    = false;  // veriavel que permite debug na tela
   $matriz_dotacao = array ();
   $lista_lan = array ();
@@ -555,6 +591,11 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
   $clconlancamsup = new cl_conlancamsup;
   $clconlancamdot = new cl_conlancamdot;
   $clconlancamdoc = new cl_conlancamdoc;
+
+  $clconlancamrecurso        = new cl_conlancamrecurso();
+  $clconlancamdepartamento   = new cl_conlancamdepartamento();
+  $clconlancamconcarpeculiar = new cl_conlancamconcarpeculiar();
+
   $clconlancamrec = new cl_conlancamrec;
   $clconlancamretif = new cl_conlancamretif;
 
@@ -565,7 +606,7 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
   }
 
   if ($sqlerro == false ){
-    // seleciona todos lançamentos contabeis
+    // seleciona todos lan?amentos contabeis
     $res = $clconlancamsup->sql_record($clconlancamsup->sql_query_file(null, "c79_codlan", null, "c79_codsup=$codsup"));
 
     if ($clconlancamsup->numrows > 0) {
@@ -619,6 +660,27 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
         break;
       }
 
+      $res = $clconlancamrecurso->excluir(null, "c130_conlancam = {$codlan}");
+      if ($clconlancamrecurso->erro_status == '0') {
+          db_msgbox($clconlancamrecurso->erro_msg);
+          $sqlerro = true;
+          break;
+      }
+
+      $res = $clconlancamconcarpeculiar->excluir(null, "c08_codlan = {$codlan}");
+      if ($clconlancamconcarpeculiar->erro_status == '0') {
+          db_msgbox($clconlancamconcarpeculiar->erro_msg);
+          $sqlerro = true;
+          break;
+      }
+
+      $res = $clconlancamdepartamento->excluir(null, "c128_conlancam = {$codlan}");
+      if ($clconlancamdepartamento->erro_status == '0') {
+          db_msgbox($clconlancamdepartamento->erro_msg);
+          $sqlerro = true;
+          break;
+      }
+
       $res = $clorcsuplem->sql_record($clorcsuplem->sql_query($codsup, "o46_tiposup"));
 			if ($clorcsuplem->numrows == 0) {
         db_msgbox("(t) Orcsuplem sem registros!");
@@ -637,17 +699,58 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
       $oDaoDetalhes = new cl_contacorrentedetalheconlancamval();
       $oDaoDetalhes->excluir(null, "c28_conlancamval in (select c69_sequen from conlancamval where c69_codlan = {$codlan})");
       if ($oDaoDetalhes->erro_status == '0') {
-        db_msgbox("Não foi possível excluir o detalhamento do conta corrente. Lançamento {$codlan}");
+        db_msgbox("Não foi possível excluir o detalhamento do conta corrente. Lan?amento {$codlan}");
         $erro = true;
       }
 
-				$res = $clconlancamval->excluir_codlan($codlan);
-				if ($clconlancamval->erro_status == '0') {
-					db_msgbox("(t)Conlancamval  ".$clconlancamval->erro_msg);
-					$sqlerro = true;
-					break;
-				}
+        try {
+
+          $sqlContas = $res = $clconlancamval->sql_query_file(null, "*", null, "c69_codlan = {$codlan}");
+          $buscaLancamento = db_query($sqlContas);
+          $contasLancamento = db_utils::getCollectionByRecord($buscaLancamento);
+          foreach ($contasLancamento as $lancamento) {
+              ECidade\Financeiro\Contabilidade\ContaCorrente\Services\Processamento::atualizarSaldoPorContaLancamento($lancamento->c69_debito, ($lancamento->c69_valor * -1), $codlan, new DBDate($lancamento->c69_data));
+              ECidade\Financeiro\Contabilidade\ContaCorrente\Services\Processamento::atualizarSaldoPorContaLancamento($lancamento->c69_credito, ($lancamento->c69_valor), $codlan, new DBDate($lancamento->c69_data));
+
+          }
+         $daoAtributoLancamento = new cl_conplanoatributolancamentos();
+         $buscaCodigos = $daoAtributoLancamento->sql_query_file(null,
+            "array_to_string(array_accum(c124_sequencial), ',') as codigos", null, "c124_lancamento = {$codlan}");
+         $buscaCodigos = db_query($buscaCodigos);
+         if (!$buscaCodigos) {
+             throw new DBException("Erro.");
+         }
+
+        $codigos = db_utils::fieldsMemory($buscaCodigos, 0)->codigos;
+
+        if (!empty($codigos)) {
+            $daoInfoComplementarValor = new cl_infocomplementarvalor();
+            $daoInfoComplementarValor->excluir(null, "c123_conplanoatributolancamentos in ( {$codigos} )");
+            $daoAtributoLancamento->excluir(null, "c124_lancamento = {$codlan}");
+        }
+
+
+        } catch (Exception $e) {
+
+            $erro = true;
+            $msg_erro = $e->getMessage();
+        }
+
+        $res = $clconlancamval->excluir_codlan($codlan);
+     if ($clconlancamval->erro_status == '0') {
+
+        db_msgbox("(t)Conlancamval  ".$clconlancamval->erro_msg);
+        $sqlerro = true;
+        break;
+     }
 			//}
+
+        $daoConlancamCompl = new cl_conlancamcompl();
+        $daoConlancamCompl->excluir($codlan);
+        if ($daoConlancamCompl->erro_status == "0") {
+            db_msgbox($daoConlancamCompl->erro_msg);
+            $erro = true;
+        }
 
       $oDaoConlancamInstit = new cl_conlancaminstit();
       $oDaoConlancamInstit->excluir(null, "c02_codlan = {$codlan}");
@@ -662,6 +765,26 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
         db_msgbox($oDaoConlancamOrdem->erro_msg);
         $erro = true;
       }
+        $oDaoConlancamDepartamento = new cl_conlancamdepartamento();
+        $oDaoConlancamDepartamento->excluir(null, "c128_conlancam = {$codlan}");
+        if ($oDaoConlancamDepartamento->erro_status == "0") {
+            db_msgbox($oDaoConlancamDepartamento->erro_msg);
+            $erro = true;
+        }
+
+        $daoConlancamLogAtributos = new cl_conlancamlogatributos();
+        $daoConlancamLogAtributos->excluir(null, "c134_codlan = {$codlan}");
+        if ($daoConlancamLogAtributos->erro_status == "0") {
+            db_msgbox($daoConlancamLogAtributos->erro_msg);
+            $erro = true;
+        }
+
+        $daoComplementoRecurso = new cl_conlancamcomplementorecurso();
+        $daoComplementoRecurso->excluir(null, "o201_codlan = {$codlan}");
+        if ($daoComplementoRecurso->erro_status == '0') {
+            db_msgbox($daoComplementoRecurso->erro_msg);
+            $erro = true;
+        }
 
       $res = $clconlancam->excluir($codlan);
       if ($clconlancam->erro_status == '0') {
@@ -676,7 +799,7 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
   }
 
   if ($sqlerro==false){
-  	// seleciona todas as reduções para recriar as reservas de saldo
+  	// seleciona todas as redu??es para recriar as reservas de saldo
     $res = $clorcsuplemval->sql_record($clorcsuplemval->sql_query(null,null,null,"o47_codsup,o47_anousu,o47_coddot,o47_valor",null," o47_codsup=$codsup and o47_valor < 0"));
 
     if ($clorcsuplemval->numrows > 0 ){
@@ -694,13 +817,13 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
         db_fieldsmemory($resdot,0);
         if ( abs($o47_valor)  > $atual_menos_reservado ){
           $sqlerro =true;
-          db_msgbox("Dotação $o47_coddot sem saldo ! (Saldo $atual_menos_reservado) ");
+          db_msgbox("dotação $o47_coddot sem saldo ! (Saldo $atual_menos_reservado) ");
           break;
         }
         */
         // recria reserva de saldo
         if ($sqlerro == false ) {
-          // lança reserva
+          // lan?a reserva
           $clorcreserva->o80_anousu = $anousu;
           $clorcreserva->o80_coddot = $o47_coddot;
           $clorcreserva->o80_dtlanc = date("Y-m-d", db_getsession('DB_datausu'));
@@ -712,7 +835,7 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
             $clorcreserva->incluir("");
             if ($clorcreserva->erro_status == 0 ){
             	$sqlerro = true;
-              db_msgbox("( Dotação $o47_coddot )  ".$clorcreserva->erro_msg);
+              db_msgbox("( dotação $o47_coddot )  ".$clorcreserva->erro_msg);
             }
           }
           $clorcreservasup->o81_codres = $clorcreserva->o80_codres;
@@ -730,7 +853,7 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
     } //--
   }
 
-  // seleciona todas as suplementações, para verificar se não iram ficar negativas
+  // seleciona todas as suplementa??es, para verificar se Não iram ficar negativas
   $res = $clorcsuplemval->sql_record($clorcsuplemval->sql_query(null,null,null,"o47_codsup,o47_anousu,o47_coddot,o47_valor",null," o47_codsup=$codsup and o47_valor > 0"));
   if ($clorcsuplemval->numrows > 0 ){
     if ($debug==true) db_criatabela($res);
@@ -745,7 +868,7 @@ function desprocessa_suplementacao2($codsup,$anousu,$estornar=false) {
       db_fieldsmemory($resdot,0);
       if ( $atual_menos_reservado < 0 ){
         $sqlerro =true;
-        db_msgbox("Dotação $o47_coddot não pode ser desprocessada porque ficara com saldo negativo ! ( Valor $o47_valor, Saldo: $atual_menos_reservado) ");
+        db_msgbox("Dotação $o47_coddot não pode ser desprocessada porque ficará com saldo negativo ! ( Valor $o47_valor, Saldo: $atual_menos_reservado) ");
         break;
       }
     }

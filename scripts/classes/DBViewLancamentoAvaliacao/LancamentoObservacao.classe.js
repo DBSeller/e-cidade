@@ -367,7 +367,7 @@ DBViewAvaliacao.LancamentoObservacao.prototype.retornoObservacaoLancada = functi
 
   var oSelf = this;
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')'); 
+  var oRetorno = JSON.parse(oAjax.responseText); 
   
   oSelf.oTextObservacao.innerHTML = '';
   oSelf.oTextObservacao.value = '';
@@ -472,7 +472,7 @@ DBViewAvaliacao.LancamentoObservacao.prototype.salvar = function () {
 DBViewAvaliacao.LancamentoObservacao.prototype.retornoSalvar = function (oAjax) {
   
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')'); 
+  var oRetorno = JSON.parse(oAjax.responseText); 
   
   alert(oRetorno.message.urlDecode());
   this.oReplicaDisciplina.removerSelecao();

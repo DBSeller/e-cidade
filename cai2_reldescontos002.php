@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("fpdf151/pdf.php");
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("fpdf151/pdf.php"));
 
 $oGet         = db_utils::postMemory($_GET);
 $iInstit      = db_getsession("DB_instit");
@@ -36,16 +36,16 @@ $lDebugSQL    = false;
 $iAnoUsu      = db_getsession('DB_anousu');
 $dtDataIni    = $oGet->datai;
 $dtDataFim    = $oGet->dataf;
-
+$sTipo        = $oGet->aTipoDebito;
 $aAgrupador['receita']     = 'receit';
 $aAgrupador['tipo_debito'] = 'tipo';
-
+$aAgrupador['estrutural']  = 'receitorcamentoestrutural';
 //$aAgrupador['proced']      = 'proced';
 //$aAgrupador['tipo_proced'] = 'proced';
 
 $oDaoArrepaga  = db_utils::getDao('arrepaga');
 
-$sSqlDescontos = $oDaoArrepaga->sql_queryDescontoConcedidoPorRegra($dtDataIni, $dtDataFim);
+$sSqlDescontos = $oDaoArrepaga->sql_queryDescontoConcedidoPorRegra($dtDataIni, $dtDataFim, $sTipo);
 
 $rsDescontos   = $oDaoArrepaga->sql_record($sSqlDescontos);
 
@@ -80,7 +80,7 @@ for ( $iInd = 0; $iInd < $oDaoArrepaga->numrows; $iInd++ ) {
       $sDescricao = $oDesconto->descrproced;
     } else if ( $sDescrAgrupa == 'tipo_proced' ) {
       $sDescricao = $oDesconto->descrtipoproced;
-    } else if ( $sDescrAgrupa == 'receita' ) {
+    } else if ( $sDescrAgrupa == 'receita' || $sDescrAgrupa == 'estrutural') {
       $sDescricao = $oDesconto->descrreceit;
     } else {
       $sDescricao = $oDesconto->descrtipo;
@@ -304,14 +304,16 @@ foreach ( $aAgrupador as $sTipoAgrupa => $sCampo ) {
 	$nTotalDesconto   = 0;
 
 	if ( $sTipoAgrupa == "receita" ) {
-		$sTituloAgrupa = "Receita";
+    $sTituloAgrupa = "Receita";
+  } else if ( $sTipoAgrupa == "estrutural" ) {  
+    $sTituloAgrupa = "Estrutural da Receita";
 	} else {
 		$sTituloAgrupa = "Tipo de Débito";
 	}
 
 	$oPdf->SetFont('Arial','B',$iFonte);
-	$oPdf->Cell(190, $iAlt, "Resumo por {$sTituloAgrupa}", 1, 1, 'L', 1);
-	$oPdf->Cell(10,  $iAlt, 'Código'                     , 1, 0, 'C', 1);
+	$oPdf->Cell(210, $iAlt, "Resumo por {$sTituloAgrupa}", 1, 1, 'L', 1);
+	$oPdf->Cell(30,  $iAlt, 'Código'                     , 1, 0, 'C', 1);
 	$oPdf->Cell(80,  $iAlt, 'Descrição'                  , 1, 0, 'C', 1);
 	$oPdf->Cell(33,  $iAlt, 'Valor a Pagar'              , 1, 0, 'C', 1);
 	$oPdf->Cell(33,  $iAlt, 'Valor Pago'                 , 1, 0, 'C', 1);
@@ -319,7 +321,7 @@ foreach ( $aAgrupador as $sTipoAgrupa => $sCampo ) {
 
 	foreach ( $aResumos[$sTipoAgrupa] as $iCodResumo => $aValoresResumo ) {
 
-		$oPdf->Cell(10, $iAlt, $iCodResumo                   , 1, 0, 'C', 0);
+		$oPdf->Cell(30, $iAlt, $iCodResumo                   , 1, 0, 'C', 0);
 		$oPdf->Cell(80, $iAlt, 						 $aValoresResumo['sDescricao']       , 1, 0, 'C', 0);
 		$oPdf->Cell(33, $iAlt, db_formatar($aValoresResumo['nValorPagar'], 'f'), 1, 0, 'C', 0);
 		$oPdf->Cell(33, $iAlt, db_formatar($aValoresResumo['nValorPago'] , 'f'), 1, 0, 'C', 0);
@@ -331,7 +333,7 @@ foreach ( $aAgrupador as $sTipoAgrupa => $sCampo ) {
 		
 	}
 	
-	$oPdf->Cell(10, $iAlt, ''               , 1, 0, 'C', 0);
+	$oPdf->Cell(30, $iAlt, ''               , 1, 0, 'C', 0);
 	$oPdf->Cell(80, $iAlt, 'Total'          , 1, 0, 'C', 0);
 	$oPdf->Cell(33, $iAlt, db_formatar($nTotalValorPagar, 'f'), 1, 0, 'C', 0);
 	$oPdf->Cell(33, $iAlt, db_formatar($nTotalValorPago , 'f'), 1, 0, 'C', 0);

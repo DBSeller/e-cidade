@@ -59,7 +59,7 @@ class XmlArray
     
     function XmlArray($FileName)
     {
-        if (substr(PHP_VERSION, 0, 1) == '5')
+        if (substr(PHP_VERSION, 0, 1) >= '5')
         {
             $file = @file($FileName);
             if (!$file)
@@ -68,7 +68,8 @@ class XmlArray
                 return false;
             }
             $string = utf8_encode(implode("\n" , $file));
-            $this->document = DOMDocument::loadXML($string);
+            $this->document = new DOMDocument;
+            $this->document->loadXML($string);
         }
         else
         {
@@ -93,7 +94,7 @@ class XmlArray
     
     function getXmlArray($Node = null) 
     {
-        if (substr(PHP_VERSION, 0, 1) == '5')
+        if (substr(PHP_VERSION, 0, 1) >= '5')
         {
             $Node = $Node == null ? $this->document->firstChild : $Node;
             if ($nextNode = $Node->firstChild)
@@ -127,7 +128,7 @@ class XmlArray
                     {
                         if (trim($nextNode->nodeValue) != "")
                         {
-                            $array = ereg_replace("\n\n","\n",utf8_decode($nextNode->nodeValue));
+                            $array = preg_replace("/\n\n/","\n",utf8_decode($nextNode->nodeValue));
                             $array = str_replace('&lt;', '<', $array);
                             $array = str_replace('&gt;', '>', $array);
                         }

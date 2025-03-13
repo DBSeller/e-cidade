@@ -1,45 +1,46 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/db_stdClass.php");
-require_once("std/DBDate.php");
-require_once("classes/db_cursoedu_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("classes/db_cursoedu_classe.php"));
 db_app::import("exceptions.*");
 db_app::import("educacao.*");
 db_app::import("educacao.progressaoparcial.*");
+/* ATENCAO: PLUGIN ParametroProgressaoParcial - Requires - INSTALADO AQUI - NAO REMOVER */
 
 
 $oJson              = new services_json();
@@ -57,7 +58,7 @@ try {
    * Validar se a secretaria habilitou a escola para editar os parametros ou se ela resguardou esse direito
    * somente para a Secretaria
    */
-  $oDaoSecretaria = db_utils::getDao('sec_parametros');
+  $oDaoSecretaria = new cl_sec_parametros();
   $sSqlSecretaria = $oDaoSecretaria->sql_query_file(null, "ed290_controleprogressaoparcial");
   $rsSecretaria   = $oDaoSecretaria->sql_record($sSqlSecretaria);
 
@@ -128,6 +129,7 @@ try {
 
       $oProgressaoParcial            = null;
       $aEtapasConfiguradas           = array();
+      /* ATENCAO: PLUGIN ParametroProgressaoParcial - INICIALIZANDO PARAMETRO PROGRESSAO MESMA DISCIPLINA - INSTALADO AQUI - NAO REMOVER */
       if ($oDaoParamProgressao->numrows > 0) {
 
         $iCodigoEscola                 = db_utils::fieldsMemory($rsParametros, 0)->ed112_escola;
@@ -139,6 +141,7 @@ try {
         $lDisciplinaEliminaDependencia = $oProgressaoParcial->disciplinaAprovadaEliminaProgressao();
         $sJustificativa                = $oProgressaoParcial->getJustificativa();
         $aEtapasConfiguradas           = $oProgressaoParcial->getEtapas();
+        /* ATENCAO: PLUGIN ParametroProgressaoParcial - DEFININDO PARAMETRO PROGRESSAO MESMA DISCIPLINA - INSTALADO AQUI - NAO REMOVER */
       }
 
       /**
@@ -160,6 +163,7 @@ try {
       $oDados->lControlaFrequencia           = $lControlaFrequencia;
       $oDados->lDisciplinaEliminaDependencia = $lDisciplinaEliminaDependencia;
       $oDados->sJustificativa                = urlencode($sJustificativa);
+      /* ATENCAO: PLUGIN ParametroProgressaoParcial - RETORNANDO PARAMETRO PROGRESSAO MESMA DISCIPLINA - INSTALADO AQUI - NAO REMOVER */
 
       /**
        * Comessamos a validar o 3o caso
@@ -264,15 +268,18 @@ try {
       }
 
       db_inicio_transacao();
+
+      /* ATENCAO: PLUGIN ParametroProgressaoParcial - Verifica Escola tem Progressao - INSTALADO AQUI - NAO REMOVER */
+
       foreach ($aEscolas as $oEscola) {
 
         $sJustificativa = db_stdClass::normalizeStringJson($oParam->sJustificativa);
         $oProgressaoParcial = new ProgressaoParcialParametro($oEscola->ed18_i_codigo);
         $oProgressaoParcial->setControleFrequencia($oParam->lControlaFrequencia);
         $oProgressaoParcial->setQuantidadeDisciplina($oParam->iNumeroDisciplina);
-        $oProgressaoParcial->setDisciplinaAprovadaEliminaProgressao($oParam->lDisciplinaEliminaDependencia) ;
+        $oProgressaoParcial->setDisciplinaAprovadaEliminaProgressao($oParam->lDisciplinaEliminaDependencia);
         $oProgressaoParcial->setFormaControle($oParam->iFormaControle);
-        $oProgressaoParcial->setHabilitada($oParam->lHabilitado) ;
+        $oProgressaoParcial->setHabilitada($oParam->lHabilitado);
         $oProgressaoParcial->setJustificativa($sJustificativa) ;
         $oProgressaoParcial->removerEtapa();
         foreach ($oParam->aEtapas as $iCodigoEtapa) {
@@ -280,22 +287,23 @@ try {
           $oEtapa = EtapaRepository::getEtapaByCodigo($iCodigoEtapa);
           $oProgressaoParcial->adicionarEtapa($oEtapa);
         }
+        /* ATENCAO: PLUGIN ParametroProgressaoParcial - Setando Dependência Mesma Disciplina - INSTALADO AQUI - NAO REMOVER */
         $oProgressaoParcial->salvar();
         unset ($oProgressaoParcial);
       }
       db_fim_transacao();
       $oRetorno->message = "Parâmetros configurados com sucesso.";
       break;
-    
+
     case 'verificaAlunoEmProgressao':
-      
+
       $oRetorno->lTemEscolaProgressaoParcial = false;
       $oDaoProgressaoParcialAluno            = db_utils::getDao("progressaoparcialaluno");
       $sSqlProgressaoParcialAluno            = $oDaoProgressaoParcialAluno->sql_query();
       $rsProgressaoParcialAluno              = $oDaoProgressaoParcialAluno->sql_record($sSqlProgressaoParcialAluno);
-      
+
       if ($oDaoProgressaoParcialAluno->numrows > 0) {
-        
+
         $oRetorno->lTemEscolaProgressaoParcial  = true;
         $oRetorno->message                      = "AVISO: o Controle de Progressão Parcial encontra-se desabilitado, ";
         $oRetorno->message                     .= "pois já existem escolas com Progressão Parcial configurada e alunos ";

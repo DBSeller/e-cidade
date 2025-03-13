@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_aluno_classe.php");
-include("classes/db_alunoaltera_classe.php");
-include("classes/db_alunocurso_classe.php");
-include("classes/db_censouf_classe.php");
-include("classes/db_censomunic_classe.php");
-include("classes/db_censoorgemissrg_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_aluno_classe.php"));
+include(modification("classes/db_alunoaltera_classe.php"));
+include(modification("classes/db_alunocurso_classe.php"));
+include(modification("classes/db_censouf_classe.php"));
+include(modification("classes/db_censomunic_classe.php"));
+include(modification("classes/db_censoorgemissrg_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $claluno = new cl_aluno;
@@ -84,7 +84,7 @@ if(isset($chavepesquisa)){
                  AND ed47_i_codigo = $chavepesquisa
 	         ORDER BY ed18_c_nome
 	        ";
- $result_vinculo = pg_query($sql_vinculo);
+ $result_vinculo = db_query($sql_vinculo);
  $linhas_vinculo = pg_num_rows($result_vinculo);
  if($linhas_vinculo>0){
   $db_botao = false;
@@ -106,7 +106,7 @@ if(isset($chavepesquisa)){
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Documentação do Aluno</b></legend>
-    <?include("forms/db_frmbibaluno.php");?>
+    <?include(modification("forms/db_frmbibaluno.php"));?>
    </fieldset>
    </center>
   </td>

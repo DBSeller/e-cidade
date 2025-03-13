@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,8 +30,8 @@ db_app::import("configuracao.RemessaWebService");
 /**
  * Classe de Geração e Envio de Remessas para o TJ 
  * @author Rafael Serpa Nery <rafael.nery@dbseller.com.br>
- * @revision $Author: dbrafael.nery $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbanderson $
+ * @version $Revision: 1.3 $
  */
 class RemessaWebServiceTJ extends RemessaWebService {
 

@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_progmatricula_classe.php");
-include("classes/db_proginterrompe_classe.php");
-include("classes/db_progconfig_classe.php");
-include("classes/db_progantig_classe.php");
-include("classes/db_progconvocacao_classe.php");
-include("classes/db_progconvocacaores_classe.php");
-include("classes/db_progavaladmin_classe.php");
-include("classes/db_progavalpedag_classe.php");
-include("classes/db_progconhec_classe.php");
-include("classes/db_proglicencamatr_classe.php");
-include("classes/db_convocacao_classe.php");
-include("classes/db_opcaoquestao_classe.php");
-include("classes/db_progclasse_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_progmatricula_classe.php"));
+include(modification("classes/db_proginterrompe_classe.php"));
+include(modification("classes/db_progconfig_classe.php"));
+include(modification("classes/db_progantig_classe.php"));
+include(modification("classes/db_progconvocacao_classe.php"));
+include(modification("classes/db_progconvocacaores_classe.php"));
+include(modification("classes/db_progavaladmin_classe.php"));
+include(modification("classes/db_progavalpedag_classe.php"));
+include(modification("classes/db_progconhec_classe.php"));
+include(modification("classes/db_proglicencamatr_classe.php"));
+include(modification("classes/db_convocacao_classe.php"));
+include(modification("classes/db_opcaoquestao_classe.php"));
+include(modification("classes/db_progclasse_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
@@ -514,7 +514,7 @@ if(isset($chavepesquisa)){
                  inner join escola on ed18_i_codigo = ed126_i_escola
                 WHERE ed75_i_rechumano = $ed112_i_rhpessoal
                ";
-       $result1 = pg_query($sql1);
+       $result1 = db_query($sql1);
        $linhas1 = pg_num_rows($result1);
        if($linhas1>0){
         $ed112_c_dacesso = 'S';
@@ -555,7 +555,7 @@ if(isset($chavepesquisa)){
 </html>
 <script>
 function js_pesquisa(){
- js_OpenJanelaIframe('top.corpo','db_iframe_progmatricula','func_progmatricula.php?funcao_js=parent.js_preenchepesquisa|ed112_i_codigo','Pesquisa de Matrículas',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_progmatricula','func_progmatricula.php?funcao_js=parent.js_preenchepesquisa|ed112_i_codigo','Pesquisa de Matrículas',true);
 }
 function js_preenchepesquisa(chave){
  db_iframe_progmatricula.hide();

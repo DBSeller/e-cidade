@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-include("classes/db_mer_alimentomatmater_classe.php");
-include("classes/db_matmater_classe.php");
-require("libs/db_conecta.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+include(modification("classes/db_mer_alimentomatmater_classe.php"));
+include(modification("classes/db_matmater_classe.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clmer_alimentomatmater = new cl_mer_alimentomatmater;
 $clmatmater             = new cl_matmater;
 $clmatmater->rotulo->label();

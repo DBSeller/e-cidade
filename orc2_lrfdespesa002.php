@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//include("libs/db_liborcamento.php");
-include("fpdf151/pdf.php");
-include("libs/db_liborcamento.php");
+//include(modification("libs/db_liborcamento.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
 
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -49,7 +49,7 @@ $head1 = "DEMONSTRATIVO DA DESPESA";
 $head3 = "EXERCÍCIO: ".db_getsession("DB_anousu");
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -81,11 +81,11 @@ $head5 = "INSTITUIÇÕES : ".$descr_inst;
          group by o58_funcao,o52_descr,o58_subfuncao,o53_descr
 	";
  
- $result= pg_exec($sql);
+ $result= db_query($sql);
  // db_criatabela($result);
  // exit;
 
-pg_exec("commit");
+db_query("commit");
 
 $pdf = new PDF(); 
 $pdf->Open(); 
@@ -126,6 +126,6 @@ for($i=0;$i<pg_numrows($result);$i++){
 
 
 pg_free_result($result);
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf->Output();
 ?>

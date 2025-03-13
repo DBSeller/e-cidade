@@ -1,0 +1,118 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010313' name='esocial.avaliacaogruporespostatrabintermitente'
+       description="Preenchimento Con. Trabalho Intermitente" prefix="eso19"
+       label="Preenchimento Con. Trabalho Intermitente" type="0">
+    <fields>
+        <field codigo="1009931"
+               campo_api=''
+               name="eso19_sequencial"
+               conteudo="int4"
+               description="Sequencial"
+               inivalue="0"
+               label="Sequencial"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Sequencial"
+               reference=""
+               ispk="t"
+               hassequence="t">
+
+            <sequence name='esocial.avaliacaogruporespostatrabintermitente_eso19_sequencial_seq'/>
+
+        </field>
+        <field codigo="1009932"
+               campo_api=''
+               name="eso19_avaliacaogruporesposta"
+               conteudo="int4"
+               description="Preenchimento"
+               inivalue="0"
+               label="Preenchimento"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Preenchimento"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+        <field codigo="1009933"
+               campo_api=''
+               name="eso19_matricula"
+               conteudo="int4"
+               description="Matrícula"
+               inivalue="0"
+               label="Matrícula"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Matrícula"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+        <field codigo="1009934"
+               campo_api=''
+               name="eso19_cgm"
+               conteudo="int4"
+               description="Empregador"
+               inivalue="0"
+               label="Empregador"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Empregador"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+        <field codigo="1009940"
+               campo_api=''
+               name="eso19_codigoconvocacao"
+               conteudo="varchar(30)"
+               description="Código Convocação"
+               inivalue="0"
+               label="Código Convocação"
+               size="30"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Código Convocação"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+    </fields>
+    <primarykey>
+        <fieldpk name="eso19_sequencial"></fieldpk>
+    </primarykey>
+    <foreignkeys>
+        <foreignkey reference="cgm" inner='t'>
+            <fieldfk name="eso19_cgm" reference="z01_numcgm"/>
+        </foreignkey>
+        <foreignkey reference="rhpessoal" inner='t'>
+            <fieldfk name="eso19_matricula" reference="rh01_regist"/>
+        </foreignkey>
+        <foreignkey reference="avaliacaogruporesposta" inner='t'>
+            <fieldfk name="eso19_avaliacaogruporesposta" reference="db107_sequencial"/>
+        </foreignkey>
+    </foreignkeys>
+</table>

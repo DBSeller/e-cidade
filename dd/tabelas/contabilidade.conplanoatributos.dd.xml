@@ -1,0 +1,117 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010255' name='contabilidade.conplanoatributos' description="Cadastro das informações complementares das contas do plano orçamentário" prefix="c120" label="conplanoatributos" type="0">
+  <fields>
+    <field codigo="1009610" 
+           campo_api='' 
+           name="c120_sequencial" 
+           conteudo="int4" 
+           description="Sequencial do campo" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='contabilidade.conplanoatributos_c120_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009612" 
+           campo_api='' 
+           name="c120_anousu" 
+           conteudo="int4" 
+           description="Ano" 
+           inivalue="0" 
+           label="Ano" 
+           size="4" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1009611" 
+           campo_api='' 
+           name="c120_conplano" 
+           conteudo="int4" 
+           description="Código da Conplano" 
+           inivalue="0" 
+           label="Código Conplano" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Conplano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1009613" 
+           campo_api='' 
+           name="c120_infocomplementar" 
+           conteudo="int4" 
+           description="Código da informação complementar" 
+           inivalue="0" 
+           label="Código informação complementar" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código informação complementar" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1009614" 
+           campo_api='' 
+           name="c120_conplanosistema" 
+           conteudo="int4" 
+           description="conplanosistema" 
+           inivalue="0" 
+           label="conplanosistema" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="conplanosistema" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c120_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="conplano" inner='t'>
+      <fieldfk name="c120_conplano" reference="c60_codcon" /> 
+      <fieldfk name="c120_anousu" reference="c60_anousu" /> 
+    </foreignkey>
+    <foreignkey reference="conplanoinfocomplementar" inner='t'>
+      <fieldfk name="c120_infocomplementar" reference="c121_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="conplanosistema" inner='t'>
+      <fieldfk name="c120_conplanosistema" reference="c122_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

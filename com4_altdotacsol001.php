@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_liborcamento.php");
-include ("classes/db_solicitem_classe.php");
-include ("classes/db_solicitemele_classe.php");
-include ("classes/db_solicitemunid_classe.php");
-include ("classes/db_solicitempcmater_classe.php");
-include ("classes/db_pcdotac_classe.php");
-include ("classes/db_solicitatipo_classe.php");
-include ("classes/db_orcreserva_classe.php");
-include ("classes/db_orcreservasol_classe.php");
-include ("classes/db_orcdotacao_classe.php");
-include ("classes/db_pcparam_classe.php");
-include ("classes/db_protprocesso_classe.php");
-include ("classes/db_solicitemprot_classe.php");
-include ("classes/db_db_config_classe.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_solicitemele_classe.php"));
+include(modification("classes/db_solicitemunid_classe.php"));
+include(modification("classes/db_solicitempcmater_classe.php"));
+include(modification("classes/db_pcdotac_classe.php"));
+include(modification("classes/db_solicitatipo_classe.php"));
+include(modification("classes/db_orcreserva_classe.php"));
+include(modification("classes/db_orcreservasol_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_pcparam_classe.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_solicitemprot_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($_GET);
 db_postmemory($_POST);
@@ -77,15 +77,15 @@ if (isset($incluir) && $incluir != "") {
 	$sqlerro            = false;
 	$sCamposParametros  = "pc30_mincar, pc30_obrigamat, pc30_obrigajust, pc30_seltipo, pc30_sugforn, pc30_permsemdotac, ";
 	$sCamposParametros .= "pc30_contrandsol, pc30_tipoprocsol, pc30_gerareserva, pc30_passadepart";
-	$sSqlParametros     = $clpcparam->sql_query_file(db_getsession("DB_instit"), $sCamposParametros); 
+	$sSqlParametros     = $clpcparam->sql_query_file(db_getsession("DB_instit"), $sCamposParametros);
 	$result_tipo        = $clpcparam->sql_record($sSqlParametros);
 	
 	if ($clpcparam->numrows > 0) {
 		db_fieldsmemory($result_tipo, 0);
 	}
 	
-	$sSqlItensAnt      = "select distinct                                                                                ";
-	$sSqlItensAnt     .= "			 pc13_codigo as codigo_ant,                                                              ";
+	$sSqlItensAnt      = "select distinct pc11_seq    ,                                                                      ";
+	$sSqlItensAnt     .= "			 pc11_codigo as codigo_ant,                                                              ";
 	$sSqlItensAnt     .= "			 pc16_codmater,                                                                          ";
 	$sSqlItensAnt     .= "			 pc01_descrmater,                                                                        ";
 	$sSqlItensAnt     .= "			 pc13_coddot,                                                                            ";
@@ -95,14 +95,14 @@ if (isset($incluir) && $incluir != "") {
 	$sSqlItensAnt     .= "			 pc13_codele,                                                                            ";
 	$sSqlItensAnt     .= "			 o56_elemento                                                                            ";
 	$sSqlItensAnt     .= "			 from solicitem                                                                          ";
-	$sSqlItensAnt     .= "       inner join pcdotac          on pc13_codigo    = pc11_codigo                             ";
+	$sSqlItensAnt     .= "       left  join pcdotac          on pc13_codigo    = pc11_codigo                             ";
 	$sSqlItensAnt     .= "       inner join solicitempcmater on pc16_solicitem = pc11_codigo                             ";
 	$sSqlItensAnt     .= "       inner join solicita         on pc10_numero    = pc11_numero                             ";
-	$sSqlItensAnt     .= "       inner join orcelemento      on o56_codele     = pc13_codele                             ";
+	$sSqlItensAnt     .= "       left  join orcelemento      on o56_codele     = pc13_codele                             ";
 	$sSqlItensAnt     .= "															    and o56_anousu     = extract (year from pc10_data)           ";
 	$sSqlItensAnt     .= "       inner join pcmater on pc01_codmater=pc16_codmater                                       ";
-	$sSqlItensAnt     .= " where pc11_numero = {$importado}                                                              ";
-	$result_itens_ant  = pg_exec($sSqlItensAnt);
+	$sSqlItensAnt     .= " where pc11_numero = {$importado}   order by pc11_seq                                          ";
+	$result_itens_ant  = db_query($sSqlItensAnt);
 	$numrows_itens_ant = pg_numrows($result_itens_ant);
 	$sequencia = 0;
   
@@ -364,10 +364,10 @@ $sSql = "select distinct
                 pc13_codele, 
                 o56_elemento 
            from solicitem 
-          inner join pcdotac          on pc13_codigo    = pc11_codigo 
+          left  join pcdotac          on pc13_codigo    = pc11_codigo
           inner join solicitempcmater on pc16_solicitem = pc11_codigo 
           inner join solicita         on pc10_numero    = pc11_numero 
-          inner join orcelemento      on o56_codele     = pc13_codele 
+          left  join orcelemento      on o56_codele     = pc13_codele
                                      and o56_anousu     = extract (year from pc10_data) 
           inner join pcmater          on pc01_codmater  = pc16_codmater  
           where pc11_numero = $importado";

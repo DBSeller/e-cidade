@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBseller Servicos de Informatica             
+ *  Copyright (C) 2009  DBseller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -39,6 +39,7 @@ if ($db_opcao == 1) {
   $db_action = "con1_db_usuarios006.php";
 }
 
+$where = isset($where) ? $where : null;
 ?>
 <script src="scripts/prototype.js"></script>
 <div class="container">
@@ -175,6 +176,17 @@ if ($db_opcao == 1) {
               </tr>
 
               <tr>
+                <td nowrap title="<?php echo $Tdataexpira; ?>">
+                  <?php echo $Ldataexpira; ?>
+                </td>
+                <td nowrap title="<?php echo $Tdataexpira; ?>" >
+                  <?php
+                    db_inputdata('dataexpira', $dataexpira_dia, $dataexpira_mes, $dataexpira_ano,true,'text', $db_opcao);
+                  ?>
+                </td>
+              </tr>
+
+              <tr>
                 <td nowrap title="<?=@$Temail?>">
                    <?=@$Lemail?>
                 </td>
@@ -186,10 +198,23 @@ if ($db_opcao == 1) {
               </tr>
 
               <tr>
+                <td nowrap title="<?=@$Tliberalotacao?>">
+                   <?=@$Lliberalotacao?>
+                </td>
+                <td>
+                  <?php
+                    $aLiberaLotacao = array("0" => "Não", "1" => "Sim");
+                    db_select("liberalotacao", $aLiberaLotacao, true, $db_opcao);
+                  ?>
+                </td>
+              </tr>
+
+              <tr>
                 <td height="25" valign="top" nowrap><strong>Institui&ccedil;&atilde;o:</strong></td>
                 <td height="25" nowrap> <select name="instit[]" size="5" multiple>
-                  <?
-              		  if(isset($id_usuario)&&$id_usuario!="") {
+                  <?php
+
+              		  if (!empty($id_usuario)) {
               	        $result = db_query("select c.codigo,c.nomeinst,u.id_instit
                                              from db_config c
                                              left outer join db_userinst u
@@ -199,12 +224,15 @@ if ($db_opcao == 1) {
               		  } else {
               		    $result = db_query("select codigo,nomeinst from db_config $where");
               		  }
-              		  for($i = 0;$i < pg_numrows($result);$i++) {
+
+              		  for ($i = 0;$i < pg_numrows($result);$i++) {
               		  	$sel ="";
-              		  	if (pg_result($result,$i,"id_instit")==pg_result($result,$i,"codigo")){
-              		  		$sel = "selected";
-              		  	}
-              		  	if($i==0&&(!isset($id_usuario)&&$id_usuario=="")){
+
+                      if (!empty($id_usuario) && pg_result($result,$i,"id_instit")==pg_result($result,$i,"codigo")){
+                        $sel = "selected";
+                      }
+
+              		  	if ($i == 0 && empty($id_usuario)) {
               		  		$sel = "selected";
               		  	}
               		    echo "<option  ".$sel." value=\"".pg_result($result,$i,"codigo")."\" >".pg_result($result,$i,"nomeinst")."</option>\n";

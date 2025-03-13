@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_tabrecjm_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_tabrecjm_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -42,19 +42,19 @@ if(isset($excluir)) {
  
   $db_opcao     = 3;
   $sqlregras    = "select * from tabrecregrasjm where k04_codjm = $k02_codjm";
-  $resultregras = pg_query($sqlregras);
+  $resultregras = db_query($sqlregras);
   $linhasregras = pg_num_rows($resultregras);
   
   if($linhasregras > 0) {
     db_msgbox("Exclusão não realizada. Existe regra cadastrada para este tipo de juro e multa.");
   } else { 
 
-    pg_exec("BEGIN");
+    db_query("BEGIN");
 
     if ($cltabrecjm->excluir($k02_codjm) == false){
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
     } else {
-      pg_exec("COMMIT");
+      db_query("COMMIT");
     }
   }
 } elseif (isset($chavepesquisa)) {
@@ -74,7 +74,7 @@ if(isset($excluir)) {
 </head>
 <body bgcolor="#CCCCCC" leftmargin="0" onLoad="a=1;" >
 
-  <?php include("forms/db_frmrecejm.php"); ?>
+  <?php include(modification("forms/db_frmrecejm.php")); ?>
 
 </body>
 </html>

@@ -58,7 +58,7 @@ db_input('o100_descricao',50,$Io100_descricao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orctiporecconveniosituacao','func_orctiporecconveniosituacao.php?funcao_js=parent.js_preenchepesquisa|o100_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orctiporecconveniosituacao','func_orctiporecconveniosituacao.php?funcao_js=parent.js_preenchepesquisa|o100_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orctiporecconveniosituacao.hide();

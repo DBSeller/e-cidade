@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,46 +29,29 @@
 $clsetorloc->rotulo->label();
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tj05_codigo?>">
-       <?=@$Lj05_codigo?>
-    </td>
-    <td> 
-<?
-db_input('j05_codigo',6,$Ij05_codigo,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj05_descr?>">
-       <?=@$Lj05_descr?>
-    </td>
-    <td> 
-<?
-db_input('j05_descr',40,$Ij05_descr,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj05_codigoproprio?>">
-       <?=@$Lj05_codigoproprio?>
-    </td>
-    <td> 
-<?
-db_input('j05_codigoproprio',10,$Ij05_codigoproprio,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  </table>
-  </center>
+  <fieldset>
+    <legend class="bold">Cadastro de Setor Localização</legend>
+    <table border="0">
+      <tr>
+        <td nowrap title="<?=@$Tj05_codigo?>"><?=@$Lj05_codigo?></td>
+        <td><? db_input('j05_codigo',6,$Ij05_codigo,true,'text',$db_opcao,"") ?></td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj05_descr?>"><?=@$Lj05_descr?></td>
+        <td><? db_input('j05_descr',40,$Ij05_descr,true,'text',$db_opcao,"") ?></td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj05_codigoproprio?>"><?=@$Lj05_codigoproprio?></td>
+        <td><? db_input('j05_codigoproprio',10,$Ij05_codigoproprio,true,'text',$db_opcao,"") ?></td>
+      </tr>
+    </table>
+  </fieldset>
 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_setorloc','func_setorloc.php?funcao_js=parent.js_preenchepesquisa|j05_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_setorloc','func_setorloc.php?funcao_js=parent.js_preenchepesquisa|j05_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_setorloc.hide();

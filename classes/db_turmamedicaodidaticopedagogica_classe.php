@@ -369,7 +369,7 @@ class cl_turmamedicaodidaticopedagogica {
      $sql .= "      inner join medicaoditaticopedagocica  on  medicaoditaticopedagocica.ed344_sequencial = turmamedicaodidaticopedagogica.ed345_medicaodidaticopedagogica";
      $sql .= "      inner join turma  on  turma.ed57_i_codigo = turmamedicaodidaticopedagogica.ed345_turma";
      $sql .= "      left  join censocursoprofiss  on  censocursoprofiss.ed247_i_codigo = turma.ed57_i_censocursoprofiss";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = turma.ed57_i_censoetapa";
+     $sql .= "      inner join turmacensoetapa on turmacensoetapa.ed132_turma = turma.ed57_i_codigo";
      $sql .= "      inner join escola  on  escola.ed18_i_codigo = turma.ed57_i_escola";
      $sql .= "      inner join turno  on  turno.ed15_i_codigo = turma.ed57_i_turno";
      $sql .= "      inner join sala  on  sala.ed16_i_codigo = turma.ed57_i_sala";

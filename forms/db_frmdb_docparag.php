@@ -82,9 +82,9 @@ db_input('db04_ordem',4,$Idb04_ordem,true,'text',$db_opcao,"")
 <script>
 function js_pesquisadb04_docum(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_db_documento.php?funcao_js=parent.js_mostradb_documento1|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_documento.php?funcao_js=parent.js_mostradb_documento1|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_db_documento.php?pesquisa_chave='+document.form1.db04_docum.value+'&funcao_js=parent.js_mostradb_documento','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_documento.php?pesquisa_chave='+document.form1.db04_docum.value+'&funcao_js=parent.js_mostradb_documento','Pesquisa',false);
   }
 }
 function js_mostradb_documento(chave,erro){
@@ -97,13 +97,13 @@ function js_mostradb_documento(chave,erro){
 function js_mostradb_documento1(chave1,chave2){
   document.form1.db04_docum.value = chave1;
   document.form1.db03_descr.value = chave2;
-  top.corpo.db_iframe.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe.hide();
 }
 function js_pesquisadb04_idparag(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_db_paragrafo.php?funcao_js=parent.js_mostradb_paragrafo1|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_paragrafo.php?funcao_js=parent.js_mostradb_paragrafo1|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_db_paragrafo.php?pesquisa_chave='+document.form1.db04_idparag.value+'&funcao_js=parent.js_mostradb_paragrafo','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_paragrafo.php?pesquisa_chave='+document.form1.db04_idparag.value+'&funcao_js=parent.js_mostradb_paragrafo','Pesquisa',false);
   }
 }
 function js_mostradb_paragrafo(chave,erro){
@@ -116,13 +116,13 @@ function js_mostradb_paragrafo(chave,erro){
 function js_mostradb_paragrafo1(chave1,chave2){
   document.form1.db04_idparag.value = chave1;
   document.form1.db02_descr.value = chave2;
-  top.corpo.db_iframe.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe','func_db_docparag.php?funcao_js=parent.js_preenchepesquisa|0|1','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_docparag.php?funcao_js=parent.js_preenchepesquisa|0|1','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
-  top.corpo.db_iframe.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe.hide();
   location.href = '<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>'+"?chavepesquisa="+chave+"&chavepesquisa1="+chave1;
 }
 </script>

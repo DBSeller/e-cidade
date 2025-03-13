@@ -3,7 +3,7 @@
  * para ajuda ao usuário
  *
  * @author Iuri Guntchnigg iuri@dbseller.com.br
- * @version  $Revision: 1.4 $
+ * @version  $Revision: 1.5 $
  */
 
 const MSG_INFO    =  1;
@@ -31,6 +31,8 @@ function messageBoard (sId, sTitle, sHelp, oElementToAppend) {
   
   this.divContent    = document.createElement("DIV");
   this.divContent.id = this.id;
+
+  this.divContent.className = "DBMessageBoard";
   with (this.divContent.style) {
   
      borderBottom    = "2px groove white";

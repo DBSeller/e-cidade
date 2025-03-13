@@ -150,6 +150,7 @@ for ($i = 0;$i < $iVias;$i++){
   $this->objpdf->text($xcol+2,$xlin+9,'CGS ');
   $this->objpdf->Setfont('Arial','',8);
   $this->objpdf->text($xcol+24,$xlin+9,':  '.$this->Rnomeus);
+
   $this->objpdf->Setfont('Arial','b',8);
   $this->objpdf->text($xcol+110,$xlin+9,'Atendente ');
   $this->objpdf->Setfont('Arial','',8);

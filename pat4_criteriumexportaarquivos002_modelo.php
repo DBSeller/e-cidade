@@ -33,7 +33,7 @@ $sSqlModelo .= "       t66_descricao as nome_do_modelo";
 $sSqlModelo .= "     from bensmodelo ";
 
 
-$rsModelo    		= pg_query($sSqlModelo);
+$rsModelo    		= db_query($sSqlModelo);
 $iNumeroLinhas 	= pg_num_rows($rsModelo);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {

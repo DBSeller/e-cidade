@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,13 +26,13 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet  = db_utils::postMemory($_GET);
 $oPost = db_utils::postMemory($_POST);
@@ -73,6 +73,7 @@ $sDBHintMetadata  = "db-action='hint' db-hint-text='O filtro de período deve est
       db_app::load("dbcomboBox.widget.js");
       db_app::load("DBTreeView.widget.js");
       db_app::load("DBHint.widget.js");
+      db_app::load("DBDownload.widget.js");
       ?>
   </head>
   <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#cccccc">
@@ -199,6 +200,7 @@ $sDBHintMetadata  = "db-action='hint' db-hint-text='O filtro de período deve est
 
       </fieldset>
       <input id="reemissao" type="button"  value="Pesquisar"  onclick="js_buscaAcessos();">
+      <input id="relatoriologs" type="button"  value="Relatório"  onclick="js_imprimeAcessos();">
     </form>
     <?php
     db_menu(db_getsession("DB_id_usuario"),
@@ -224,6 +226,10 @@ $sDBHintMetadata  = "db-action='hint' db-hint-text='O filtro de período deve est
   DBHint.build($('data_final')  , oHintOptions);
 
   $('data_inicial').observe('data:change', function() {
+
+    if (empty($F('data_final'))) {
+       return;
+    }
 
     var dDataInicial = Date.convertFrom(this.value, 'd/m/Y'),
         dDataFinal   = Date.convertFrom($F('data_final'), 'd/m/Y');
@@ -354,7 +360,7 @@ function js_pesquisaMenus(lMostra) {
 
   } else {
 
-    if ( $F('id_usuario') != '' ) {
+    if ( $F('id_item') != '' ) {
     js_OpenJanelaIframe('',
             'db_iframe',
             'func_db_itensmenu.php?' + sParametros + '&pesquisa_chave='+$F('id_item')+
@@ -391,6 +397,86 @@ function js_mostraMenusDigitacao(sCaminho, lErro) {
 var sPathRPC          = "con2_consultaacesso.RPC.php";
 var sCaminhoMensagens = "configuracao.configuracao.con2_consultaacesso001";
 var iTabela           = 0;
+
+
+function js_imprimeAcessos() {
+
+  if ( $F('data_inicial') == "" ) {
+    alert("A data Inicial deve ser indicada");
+    return;
+  }
+  if ( $F('data_final') == "" ) {
+    alert("A data Final deve ser indicada");
+    return;
+  }
+  
+  $('data_final').fire("data:change");
+  
+  if ( $F('data_final') == "" ) {
+    return;
+  }
+  
+  if ( $F('selectEsquemas') != 0 && $F('selectTabelas') == 0 ) {
+    alert("Ao selecionar o campo Esquema, os campos Tabela e Campo devem ser preenchidos.");
+    return;
+  }
+  
+  if ( $F('selectTabelas') != 0 && $F('selectCampos') == 0 ) {
+    alert("Ao selecionar o campo Tabela, o campo Campo deve ser preenchido.");
+    return;
+  }
+  
+  if ( $F('selectCampos') != 0 && $F('inputValor') == '' ) {
+    alert("Ao selecionar o campo Campo, o campo Valor deve ser preenchido.");
+    return;
+  }
+
+  var dDataInicial = Date.convertFrom($F('data_inicial'), 'd/m/Y'),
+      dDataFinal   = Date.convertFrom($F('data_final')  , 'd/m/Y'),
+      lCienteMensagens = false;
+  
+  if ( !confirm('Confirma a emissão do relatório de acessos ao sistema?') ) {
+     return;
+  }
+
+  var sMensagemProcessamento  = "Pesquisando. Favor Aguarde ...";
+  
+  var iIndexEsquema = oSelectEsquemas.selectedIndex;
+  var iIndexTabela  = oSelectTabelas.selectedIndex;
+  var iIndexCampo   = oSelectCampos.selectedIndex;
+  iTabela           = oSelectTabelas.value;
+  
+  var oParametros                  = new Object();
+      oParametros.sExecucao        = 'imprimeAcessos';
+      oParametros.sUsuario         = $F('login');
+      oParametros.iUsuario         = $F('id_usuario');
+      oParametros.iItemMenu        = $F('id_item');
+      oParametros.dDataInicio      = js_formatar($F('data_inicial'),"d");
+      oParametros.dDataFim         = js_formatar($F('data_final'),   "d");
+      oParametros.sHoraInicio      = $F('hora_inicial');
+      oParametros.sHoraFim         = $F('hora_final');
+      oParametros.iModulo          = oSelectModulos.value;
+      oParametros.iTipoAcesso      = 2;
+      oParametros.sEsquema         = encodeURIComponent( tagString( oSelectEsquemas.options[iIndexEsquema].getAttribute( "label" ) ) );
+      oParametros.sTabela          = encodeURIComponent( tagString( oSelectTabelas.options[iIndexTabela].getAttribute( "label" ) ) );
+      oParametros.sCampo           = encodeURIComponent( tagString( oSelectCampos.options[iIndexCampo].getAttribute( "label" ) ) );
+      oParametros.mValor           = encodeURIComponent( tagString( oInputValor.value ) );
+      oParametros.lCienteMensagens = lCienteMensagens;
+  
+  js_divCarregando(sMensagemProcessamento,'msgBox');
+  
+  var oDadosRequisicao              = new Object();
+      oDadosRequisicao.method       = "post";
+      oDadosRequisicao.parameters   = 'json='+Object.toJSON(oParametros);
+      oDadosRequisicao.onComplete   = js_retornoAcessos;
+      oDadosRequisicao.asynchronous = false;
+  
+  
+  new Ajax.Request(sPathRPC, oDadosRequisicao);
+}
+
+
+
 
 function js_buscaAcessos() {
 
@@ -553,12 +639,23 @@ function js_retornoAcessos( oAjax ) {
 
   js_removeObj('msgBox');
 
-  var oRespostaRequisicao = eval( "("+oAjax.responseText+")" );
+  var oRespostaRequisicao = JSON.parse(oAjax.responseText);
 
   if ( oRespostaRequisicao.iStatus == 2 ) {
 
     alert( 'Erro ao Buscar os Dados: ' + oRespostaRequisicao.sMessage.urlDecode() );
     return;
+  }
+
+  /**
+   * Verifica se o retorno for 3, emtite o relatório da prévia de retorno
+   */
+  if (oRespostaRequisicao.status == 3) {
+
+    jan = window.open(oRespostaRequisicao.sRelatorioAcessos.path, '', 'scrollbars=1,location=0');
+    jan.moveTo(0,0);
+
+     return false;
   }
 
   var aAcessos      = oRespostaRequisicao.aAcessos;
@@ -615,6 +712,7 @@ function js_retornoAcessos( oAjax ) {
     }
   }
   oGridAcessos.renderRows();
+  $('oGridAcessosnumrows').innerHTML = oCabecalhoAcesso.aDetalhesAcesso.length;
 }
 
 function js_mostraAcount(iCodigoAcesso, dDataAcesso, sHoraAcesso, sUsuario, iInstituicao) {
@@ -657,7 +755,7 @@ function js_mostraAcount(iCodigoAcesso, dDataAcesso, sHoraAcesso, sUsuario, iIns
 function js_ProcessaRespostaAcount(oRetornoAjax) {
 
   js_removeObj('msgBox');
-  var oResposta = eval("("+oRetornoAjax.responseText+")");
+  var oResposta = JSON.parse(oRetornoAjax.responseText);
 
   /**
    * Define os Dados a Serem manipulados pela janela
@@ -858,7 +956,7 @@ function pesquisaModulos() {
 function retornoPesquisaModulos( oResponse ) {
 
   js_removeObj( "msgBox" );
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if ( oRetorno.iStatus == 1 && oRetorno.aModulos.length > 0 ) {
 
@@ -905,7 +1003,7 @@ function pesquisaEsquemas() {
 function retornoPesquisaEsquemas( oResponse ) {
 
   js_removeObj( "msgBox" );
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if ( oRetorno.iStatus == 1 && oRetorno.aEsquemas.length > 0 ) {
 
@@ -959,14 +1057,14 @@ function pesquisaTabelas() {
 function retornoPesquisaTabelas( oResponse ) {
 
   js_removeObj( "msgBox" );
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if ( oRetorno.iStatus == 1 && oRetorno.aTabelas.length > 0 ) {
 
     oRetorno.aTabelas.each(function( oTabela, iSeq ) {
 
       oSelectTabelas.add( new Option( oTabela.sNome.urlDecode(), oTabela.iCodigo ) );
-      oSelectTabelas.options[iSeq + 1].setAttribute( "label", oTabela.sNome.urlDecode() );
+      oSelectTabelas.options[iSeq + 1].setAttribute( "label", oTabela.sLabel.urlDecode() );
     });
   }
 }
@@ -1015,14 +1113,14 @@ function pesquisaCampos() {
 function retornoPesquisaCampos( oResponse ) {
 
   js_removeObj( "msgBox" );
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if ( oRetorno.iStatus == 1 && oRetorno.aCampos.length > 0 ) {
 
     oRetorno.aCampos.each(function( oCampo, iSeq ) {
 
       oSelectCampos.add( new Option( oCampo.sNome.urlDecode(), oCampo.iCodigo ) );
-      oSelectCampos.options[iSeq + 1].setAttribute( "label", oCampo.sNome.urlDecode() );
+      oSelectCampos.options[iSeq + 1].setAttribute( "label", oCampo.sLabel.urlDecode() );
     });
   }
 }

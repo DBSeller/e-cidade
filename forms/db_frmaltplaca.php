@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -105,7 +105,7 @@ if ($clcfpatriplaca->numrows > 0) {
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bens','func_bens.php?funcao_js=parent.js_preenchepesquisa|t52_bem','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bens','func_bens.php?funcao_js=parent.js_preenchepesquisa|t52_bem','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bens.hide();

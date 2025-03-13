@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
 
 
 ?>
@@ -112,7 +112,7 @@ function js_pesquisaContas() {
 function js_retornoContas(oJson) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oJson.responseText+')');
+  var oRetorno = JSON.parse(oJson.responseText);
 
   oCboContas.clearItens();
   oCboContas.addItem("", "Selecione uma Conta");
@@ -146,7 +146,7 @@ function js_pesquisaAno() {
 function js_retornoAno(oJson) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oJson.responseText+')');
+  var oRetorno = JSON.parse(oJson.responseText);
   oCboAno.clearItens();
   oCboAno.addItem("", "Selecione um Ano");
   aAnoMes = [];

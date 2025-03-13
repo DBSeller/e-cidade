@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -89,11 +89,14 @@ class SolicitacaoMaterial {
 	 * seta a propriedade oDadosSolicitacao os dados da solicitação
 	 * @return object false em caso de erro
 	 */
-	function getDados() {
+  function getDados() {
+
 		$oDaoMatSolicitacao = db_utils::getDao ( "matpedido" );
 		$sSqlMatPedido = $oDaoMatSolicitacao->sql_query_almox ( $this->icodSol );
-		$rsMatPedido = $oDaoMatSolicitacao->sql_record ( $sSqlMatPedido );
-		if ($oDaoMatSolicitacao->numrows == 1) {
+    $rsMatPedido = $oDaoMatSolicitacao->sql_record ( $sSqlMatPedido );
+
+    if ($oDaoMatSolicitacao->numrows == 1) {
+
 			$this->oDadosSolicitacao = db_utils::fieldsMemory ( $rsMatPedido, 0, false, false, $this->getEncode () );
 			return true;
 		} else {

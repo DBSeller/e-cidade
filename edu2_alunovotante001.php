@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_edu_relatmodel_classe.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_edu_relatmodel_classe.php"));
+require_once(modification("libs/db_utils.php"));
 $iEscola          = db_getsession("DB_coddepto");
 $clEduRelatmodel  = new cl_edu_relatmodel();
 $clrotulo = new rotulocampo;
@@ -45,6 +45,7 @@ $clrotulo->label("presidente");
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <SCRIPT LANGUAGE="JavaScript">
@@ -57,7 +58,7 @@ $clrotulo->label("presidente");
   $sql       .= "       WHERE ed38_i_escola = $iEscola ";
   $sql       .= "       AND ed52_c_passivo = 'N' ";
   $sql       .= "       ORDER BY ed52_i_ano DESC";
-  $sql_result = pg_query($sql);
+  $sql_result = db_query($sql);
   $num        = pg_num_rows($sql_result);
   $conta      = "";
   while ($row=pg_fetch_array($sql_result)) {
@@ -77,7 +78,7 @@ $clrotulo->label("presidente");
     $sub_sql    .= "           AND ed57_i_escola = $iEscola ";
     $sub_sql    .= "           AND ed221_c_origem = 'S' ";
     $sub_sql    .= "           ORDER BY ed57_c_descr,ed11_c_descr ";             
-    $sub_result  = pg_query($sub_sql);
+    $sub_result  = db_query($sub_sql);
     $num_sub     = pg_num_rows($sub_result);
     
     if ($num_sub >= 1) {
@@ -176,7 +177,7 @@ function fillSelectFromArray(selectCtrl, itemArray, goodPrompt, badPrompt, defau
        $sql       .= "       WHERE ed38_i_escola = $iEscola ";
        $sql       .= "       AND ed52_c_passivo = 'N' ";
        $sql       .= "       ORDER BY ed52_i_ano DESC";
-       $sql_result = pg_query($sql);
+       $sql_result = db_query($sql);
        while ($row = pg_fetch_array($sql_result)) {
        	
          $cod_curso  = $row["ed52_i_codigo"];
@@ -231,7 +232,7 @@ function fillSelectFromArray(selectCtrl, itemArray, goodPrompt, badPrompt, defau
     <b>Modelo:</b>
    <select name="modelo" id="modelo" style="font-size:9px;" Onchange ="js_escolha();">
      <option value='5'>Alunos Votantes</option>
-     <option value='6'>responsáveis votantes</option>     
+     <option value='6'>Responsáveis Votantes</option>     
    </select>
    </td>
     </tr>
@@ -319,6 +320,8 @@ function fillSelectFromArray(selectCtrl, itemArray, goodPrompt, badPrompt, defau
 <script>
 document.getElementById("tipo06").style.display= 'none';
 function js_pesquisa(curso) {
+
+
   turmas = "";
   sep = "";
   for (i = 0; i < document.form1.subgrupo.length; i++) {
@@ -341,30 +344,35 @@ function js_pesquisa(curso) {
   sDataVotacao = document.form1.datavotacao.value;
   sSecretario  = document.form1.secretario.value;
   sPresidente  = document.form1.presidente.value;
-  if (document.form1.modelo.value == 5) {      
-	if (document.form1.ed217_i_codigo.value == "") {
-		  
-	  alert("Informe o tipo de modelo!");
-	  return false;
-				    
+  if (document.form1.modelo.value == 5) {    
+    var iTipoModelo = document.form1.ed217_i_codigo.value;
+    
+  	if (iTipoModelo == "") {
+  		  
+  	  alert("Informe o tipo de modelo!");
+  	  return false;
     }
+
     jan = window.open('edu2_alunovotante002.php?turmas='+turmas+'&iData='+sDataVotacao+'&sSecretario='+sSecretario+
-    	              '&sPresidente='+sPresidente,
+    	              '&sPresidente='+sPresidente+'&iTipoModelo='+iTipoModelo,
                       '','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 '
                      );
     jan.moveTo(0,0);
     
   } 
   if (document.form1.modelo.value == 6) {
-	if (document.form1.tipo6.value == "") {
-		  
-	  alert("Informe o tipo de modelo!");
-	  return false;
-				    
-	}
+
+    var iTipoModelo = document.form1.tipo6.value;
+
+  	if (iTipoModelo == "") {
+  		  
+  	  alert("Informe o tipo de modelo!");
+  	  return false;
+  				    
+  	}
 		  
     jan = window.open('edu2_alunovotante003.php?turmas='+turmas+'&iData='+sDataVotacao+
-    	              '&sSecretario='+sSecretario+'&sPresidente='+sPresidente,
+    	              '&sSecretario='+sSecretario+'&sPresidente='+sPresidente+'&iTipoModelo='+iTipoModelo,
                       '','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 '
                      );
     jan.moveTo(0,0);

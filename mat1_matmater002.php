@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_libdicionario.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_matmater_classe.php");
-require_once("classes/db_transmater_classe.php");
-require_once("classes/db_matmaterunisai_classe.php");
-require_once("classes/db_db_almox_classe.php");
-require_once("classes/db_matmatermaterialestoquegrupo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libdicionario.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_matmater_classe.php"));
+require_once(modification("classes/db_transmater_classe.php"));
+require_once(modification("classes/db_matmaterunisai_classe.php"));
+require_once(modification("classes/db_db_almox_classe.php"));
+require_once(modification("classes/db_matmatermaterialestoquegrupo_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -167,7 +167,7 @@ if (isset($alterar)) {
 </table>
     <center>
 	<?
-	require_once("forms/db_frmmatmater.php");
+	require_once(modification("forms/db_frmmatmater.php"));
 	?>
     </center>
 <?

@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: material
@@ -305,8 +305,8 @@ class cl_matestoquetransf {
    function sql_query ( $m83_matestoqueini=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
+         $campos_sql = explode("#", $campos);
+         $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
@@ -331,9 +331,9 @@ class cl_matestoquetransf {
      }
      $sql .= $sql2;
      if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
+         $sql .= " order by ";
+         $campos_sql = explode("#", $ordem);
+         $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
@@ -344,8 +344,8 @@ class cl_matestoquetransf {
    function sql_query_file ( $m83_matestoqueini=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
+         $campos_sql = explode("#", $campos);
+         $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
@@ -364,9 +364,9 @@ class cl_matestoquetransf {
      }
      $sql .= $sql2;
      if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
+         $sql .= " order by ";
+         $campos_sql = explode("#", $ordem);
+         $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
@@ -377,29 +377,32 @@ class cl_matestoquetransf {
    function sql_query_inill ( $m83_matestoqueini=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
+         $campos_sql = explode("#", $campos);
+         $virgula = "";
+         for ($i = 0; $i < sizeof($campos_sql); $i++) {
+             $sql .= $virgula . $campos_sql[$i];
+             $virgula = ",";
+         }
+     } else {
+         $sql .= $campos;
      }
-     $sql .= " from matestoquetransf ";
-     $sql .= "      inner join db_depart a  on  a.coddepto = matestoquetransf.m83_coddepto";
-     $sql .= "      inner join matestoqueini  on  matestoqueini.m80_codigo = matestoquetransf.m83_matestoqueini";
-     $sql .= "      inner join db_depart   on  db_depart.coddepto = matestoqueini.m80_coddepto";
-     $sql .= "      inner join db_usuarios   on  db_usuarios.id_usuario = matestoqueini.m80_login";
-     $sql .= "      inner join matestoqueinimei  on  matestoqueinimei.m82_matestoqueini = matestoqueini.m80_codigo";
-     $sql .= "      inner join matestoqueinimeipm  on matestoqueinimeipm.m89_matestoqueinimei = matestoqueinimei.m82_codigo";
-     $sql .= "      inner join matestoqueitem  on  matestoqueitem.m71_codlanc = matestoqueinimei.m82_matestoqueitem";
-     $sql .= "      inner join matestoque  on  matestoque.m70_codigo = matestoqueitem.m71_codmatestoque";
-     $sql .= "      inner join matmater    on  matmater.m60_codmater = matestoque.m70_codmatmater";
-     $sql .= "      left  join matestoqueinil  on  matestoqueinil.m86_matestoqueini = matestoqueini.m80_codigo";
-     $sql .= "      left  join matestoqueinill  on  matestoqueinill.m87_matestoqueinil = matestoqueinil.m86_codigo";
-     $sql .= "      left  join matestoqueini b on  b.m80_codigo = matestoqueinill.m87_matestoqueini";
-     $sql2 = "";
+       $sql .= " from matestoquetransf ";
+       $sql .= "      inner join db_depart a  on  a.coddepto = matestoquetransf.m83_coddepto";
+       $sql .= "      inner join db_almox as dep_destino on a.coddepto = dep_destino.m91_depto";
+       $sql .= "      inner join matestoqueini  on  matestoqueini.m80_codigo = matestoquetransf.m83_matestoqueini";
+       $sql .= "      inner join matestoquetransferencia ON m84_matestoqueini = matestoqueini.m80_codigo";
+       $sql .= "      inner join db_depart   on  db_depart.coddepto = matestoqueini.m80_coddepto";
+       $sql .= "      inner join db_almox as dep_origem on db_depart.coddepto = dep_origem.m91_depto";
+       $sql .= "      inner join db_usuarios   on  db_usuarios.id_usuario = matestoqueini.m80_login";
+       $sql .= "      inner join matestoqueinimei  on  matestoqueinimei.m82_matestoqueini = matestoqueini.m80_codigo";
+       $sql .= "      inner join matestoqueinimeipm  on matestoqueinimeipm.m89_matestoqueinimei = m82_codigo";
+       $sql .= "      inner join matestoqueitem  on  matestoqueitem.m71_codlanc = matestoqueinimei.m82_matestoqueitem";
+       $sql .= "      inner join matestoque  on  matestoque.m70_codigo = matestoqueitem.m71_codmatestoque";
+       $sql .= "      inner join matmater    on  matmater.m60_codmater = matestoque.m70_codmatmater";
+       $sql .= "      left  join matestoqueinil  on  matestoqueinil.m86_matestoqueini = matestoqueini.m80_codigo";
+       $sql .= "      left  join matestoqueinill  on  matestoqueinill.m87_matestoqueinil = matestoqueinil.m86_codigo";
+       $sql .= "      left  join matestoqueini b on  b.m80_codigo = matestoqueinill.m87_matestoqueini";
+       $sql2 = "";
      if($dbwhere==""){
        if($m83_matestoqueini!=null ){
          $sql2 .= " where matestoquetransf.m83_matestoqueini = $m83_matestoqueini ";
@@ -409,9 +412,9 @@ class cl_matestoquetransf {
      }
      $sql .= $sql2;
      if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
+         $sql .= " order by ";
+         $campos_sql = explode("#", $ordem);
+         $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
@@ -422,8 +425,8 @@ class cl_matestoquetransf {
    function sql_query_mater ( $m83_matestoqueini=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
+         $campos_sql = explode("#", $campos);
+         $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
@@ -446,9 +449,9 @@ class cl_matestoquetransf {
      }
      $sql .= $sql2;
      if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
+         $sql .= " order by ";
+         $campos_sql = explode("#", $ordem);
+         $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";

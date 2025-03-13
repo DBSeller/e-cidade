@@ -1,37 +1,37 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory( $_POST );
 parse_str( $_SERVER["QUERY_STRING"] );
@@ -69,30 +69,20 @@ $oSauConfig = loadConfig('sau_config_ext');
         <legend>Filtros:</legend>
         <table>
           <tr>
-            <td nowrap title="<?=$Tsd96_i_codigo?>">
-              <?=$Lsd96_i_codigo?>
-            </td>
-            <td nowrap>
-              <?php
-              db_input( 'sd96_i_codigo', 5, $Isd96_i_codigo, true, 'text',   4, "", "chave_sd96_i_codigo" );
-              db_input( 'sTodos',        5,              '', true, 'hidden', 4 );
-              db_input( 'lAutomatico',   5,              '', true, 'hidden', 4 );
-              ?>
-            </td>
-          </tr>
-          <tr>
             <td nowrap title="<?=$Tsd63_c_procedimento?>">
-              <?=$Lsd63_c_procedimento?>
+              <label for="chave_sd63_c_procedimento"><?=$Lsd63_c_procedimento?></label>
             </td>
             <td nowrap>
               <?php
-              db_input( "sd63_c_procedimento", 10, $Isd63_c_procedimento, true, "text", 4, "", "chave_sd63_c_procedimento" );
+                db_input( 'sTodos',        5,              '', true, 'hidden', 4 );
+                db_input( 'lAutomatico',   5,              '', true, 'hidden', 4 );
+                db_input( "sd63_c_procedimento", 10, $Isd63_c_procedimento, true, "text", 4, "", "chave_sd63_c_procedimento" );
               ?>
             </td>
           </tr>
           <tr>
             <td nowrap title="<?=$Tsd63_c_nome?>">
-              <?=$Lsd63_c_nome?>
+              <label for="chave_sd63_c_nome"><?=$Lsd63_c_nome?></label>
             </td>
             <td nowrap>
               <?php
@@ -177,7 +167,7 @@ $oSauConfig = loadConfig('sau_config_ext');
             if( isset( $campos ) == false ) {
 
               if( file_exists( "funcoes/db_func_sau_proccbo.php" ) == true ) {
-                include("funcoes/db_func_sau_proccbo.php");
+                include(modification("funcoes/db_func_sau_proccbo.php"));
               } else {
                 $campos = "sau_proccbo.*";
               }
@@ -189,19 +179,7 @@ $oSauConfig = loadConfig('sau_config_ext');
               $lProcSemCBO = false;
             }
 
-            if( isset( $chave_sd96_i_codigo ) && ( trim( $chave_sd96_i_codigo ) != "" ) ) {
-
-              $sql = $clsau_proccbo->sql_query_func(
-                                                     $chave_sd96_i_codigo . $strWhere,
-                                                     $campos,
-                                                     "sd96_i_anocomp desc, sd96_i_mescomp desc, sd96_i_codigo asc",
-                                                     '',
-                                                     $intUnidade,
-                                                     $lFiltraServico,
-                                                     $chave_rh70_sequencial
-                                                   );
-
-            } else if( isset( $chave_sd63_c_procedimento ) && ( trim( $chave_sd63_c_procedimento ) != '' ) ) {
+            if( isset( $chave_sd63_c_procedimento ) && ( trim( $chave_sd63_c_procedimento ) != '' ) ) {
 
               $sql = $clsau_proccbo->sql_query_func(
                                                      '',
@@ -336,11 +314,10 @@ function js_fechar( campoFoco ) {
   }
 
   parent.db_iframe_sau_proccbo.hide();
-} 
+}
 
 function js_limpar() {
 
-  document.form2.chave_sd96_i_codigo.value       = "";
   document.form2.chave_sd63_c_procedimento.value = "";
   document.form2.chave_sd63_c_nome.value         = "";
 }
@@ -351,9 +328,14 @@ function js_mostrarTodos() {
   document.form2.submit();
 }
 
-$('chave_sd96_i_codigo').className       = 'field-size2';
 $('chave_sd63_c_procedimento').className = 'field-size2';
 $('chave_sd63_c_nome').className         = 'field-size7';
 
 js_tabulacaoforms( "form2", "chave_sd96_i_procedimento", true, 1, "chave_sd96_i_procedimento", true );
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

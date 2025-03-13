@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-include ("libs/db_sql.php");
-include ("std/db_stdClass.php");
-include ("classes/db_divida_classe.php");
-include ("classes/db_proced_classe.php");
-include ("classes/db_arreinscr_classe.php");
-include ("classes/db_arrematric_classe.php");
-include ("classes/db_db_docparag_classe.php");
-include ("classes/db_pardiv_classe.php");
-include ("model/cdaLivro.model.php");
-include ("libs/db_utils.php");
-include ("libs/db_libdocumento.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("std/db_stdClass.php"));
+include(modification("classes/db_divida_classe.php"));
+include(modification("classes/db_proced_classe.php"));
+include(modification("classes/db_arreinscr_classe.php"));
+include(modification("classes/db_arrematric_classe.php"));
+include(modification("classes/db_db_docparag_classe.php"));
+include(modification("classes/db_pardiv_classe.php"));
+include(modification("model/cdaLivro.model.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_libdocumento.php"));
 
 $oGet = db_utils::postMemory($_GET);
 try {

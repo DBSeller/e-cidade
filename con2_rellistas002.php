@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_projmelhorias_classe.php");
-include("classes/db_editalproj_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_projmelhorias_classe.php"));
+include(modification("classes/db_editalproj_classe.php"));
 
 $clprojmelhorias = new cl_projmelhorias;
 $cleditalproj = new cl_editalproj;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,6 +30,34 @@ $clproctransfer->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("nome");
 $clrotulo->label("descrdepto");
+
+$cldbdepart = new cl_db_depart;
+
+$sqlDepartamento = "
+  SELECT 
+    descrdepto,
+    o40_descr,
+    o40_orgao
+  FROM 
+    db_depart
+  LEFT JOIN db_departorg
+    ON db_departorg.db01_coddepto = db_depart.coddepto
+  LEFT JOIN orcorgao
+    ON db_departorg.db01_orgao = orcorgao.o40_orgao
+  WHERE 
+    coddepto = " . db_getsession("DB_coddepto") ."
+    AND o40_anousu = " . db_getsession("DB_anousu") . "
+    AND db01_anousu = " . db_getsession("DB_anousu")
+;
+
+$postgresObjectDepartamento = db_query($sqlDepartamento);
+
+if (pg_num_rows($postgresObjectDepartamento) > 0) {
+  $resultado = pg_fetch_assoc($postgresObjectDepartamento);
+  $departamento = $resultado['descrdepto'];
+  $orgao = $resultado['o40_orgao'] . ' - ' . $resultado['o40_descr'];
+}
+
 ?>
 <style>
 .ordenador {
@@ -53,14 +81,23 @@ $clrotulo->label("descrdepto");
     </td>
   </tr>
   <tr>
-    <td nowrap title="Usuário">
-      <b>Departamento:</b> 
+    <td nowrap title="Departamento">
+      <b>Departamento:</b>
     </td>
-    <td> 
-     <?
-       $sql = "select descrdepto from db_depart where coddepto = ".db_getsession("DB_coddepto");
-       echo pg_result(db_query($sql),0,"descrdepto");  
-     ?>
+    <td>
+        <?php
+          echo $departamento;
+        ?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="Órgão">
+      <b>Órgão:</b>
+    </td>
+    <td>
+        <?php
+          echo $orgao;
+        ?>
     </td>
   </tr>
   <tr>
@@ -107,9 +144,24 @@ $clrotulo->label("descrdepto");
        ?>
     </td>
   </tr>
+  <?php 
+    if ($tipoControleProtocolo == ProcessoProtocoloNumeracao::TIPOORGAO) { ?>
+      <tr>
+        <td  nowrap title="Tramitar Volumes com Processo Principal:">
+          <strong>Tramitar Volumes com Processo Principal:</strong>
+        </td>
+        <td nowrap>
+          <select id="tramitar_volumes" style="width:129px;">
+            <option value="0">Não</option>
+            <option value="1">Sim</option>
+          </select>
+        </td>
+      </tr>
+  <?php 
+    } ?>
 </table>
 </fieldset>
-<fieldset style="width:800; margin-bottom:5px;">
+<fieldset style="width:1000px; margin-bottom:5px;">
 <legend><strong>Processos Existentes</strong></legend>
 <div id="ctnProcessos"></div>
 <?
@@ -152,6 +204,8 @@ if (sUrl) {
 var processa = true;
 var sUrlRPC = "pro4_proctransf.RPC.php";
 
+var mapProcessoPai = [];
+
 oDBGridProcessosDif = new DBGrid('difprocessos');
 oDBGridProcessosDif.nameInstance = 'oDBGridProcessosDif';
 oDBGridProcessosDif.setHeader(new Array('Processo','Requerente','Número Dias','Seguir no Andamento','obj'));
@@ -170,7 +224,7 @@ function js_carregaGridProcessos() {
 	oGridProcessos = new DBGrid('ctnProcessos');
 	oGridProcessos.nameInstance = 'oGridProcessos';
 	oGridProcessos.setCheckbox(0);
-	oGridProcessos.setCellWidth(new Array("15%", "15%", "15%", "15%", "30%", "20%", "20%"));
+	oGridProcessos.setCellWidth(new Array("12%", "18%", "15%", "15%", "30%", "20%", "20%"));
 
 	/**
 	 * Alterado a visibilidade da Grid de acordo com o Módulo que acessa o fonte, sendo que é utilizado uma variável
@@ -180,22 +234,30 @@ function js_carregaGridProcessos() {
 	 * O número de Processo do Procolo é controlado pelos campos p58_numero e p58_ano enquanto que na Ouvidoria é
 	 * utilizado o campo p58_codproc 
 	 */
-	oGridProcessos.setHeader(new Array("N. Controle", 
-	  	                               "Processo", 
-	  	                               "Processo", 
-	  	                               "Atendimento", 
-	  	                               "Requerente", 
-	  	                               "Tipo Processo", 
-	  	                               "Depto. Padrão",
-	  	                               "Cod. Depart.",
-	  	                               "Limite")
-                                    );
+	oGridProcessos.setHeader(
+    new Array(
+      "N. Controle",
+      "Processo",
+      "Processo",
+      "Atendimento",
+      "Requerente",
+      "Tipo Processo",
+      "Depto. Padrão",
+      "Cod. Depart.",
+      "Limite",
+      "Processo Principal",
+      "Orgao"
+    )
+  );
+
 	oGridProcessos.setCellAlign(new Array('center', 'center', 'center', 'center', 'left', 'left', 'left'));
 
 	oGridProcessos.aHeaders[1].lDisplayed = false;
 	oGridProcessos.aHeaders[2].lDisplayed = false;
 	oGridProcessos.aHeaders[8].lDisplayed = false;
-	oGridProcessos.aHeaders[9].lDisplayed = false;
+  oGridProcessos.aHeaders[9].lDisplayed = false;
+  oGridProcessos.aHeaders[10].lDisplayed = false;
+  oGridProcessos.aHeaders[11].lDisplayed = false;
 	if (oUrl.grupo == 1 ) {
 
 	  oGridProcessos.aHeaders[1].lDisplayed = true;
@@ -236,13 +298,30 @@ function js_populaGridProcessos(sOrdenador) {
 	js_divCarregando('Aguarde, carregando processos...','msgBox'); // exibimos uma notificação de processamento.
 }
 
+function aux(processopai, coddepto)
+{
+  var lista = oGridProcessos.getRows();
+
+  for (var i = 0; i < lista.length; i++) {
+    if (lista[i].aCells[10].getValue() == processopai && lista[i].aCells[8].getValue() == coddepto) {
+      $(`chkctnProcessos${lista[i].aCells[1].getValue()}`).checked = true;
+
+      js_enviaSetor(lista[i].aCells[8].getValue(), lista[i].aCells[7].getValue(), lista[i].aCells[9].getValue(), $(`chkctnProcessos${lista[i].aCells[1].getValue()}`), false);
+      $(lista[i].aCells).className = 'marcado';
+      lista[i].aCells.isSelected   = true;
+    }
+  }
+}
+
 /**
  * Sobreescrevemos a função da datagrid para poder inserir uma nova função no onclick do checkbox
  */
 oGridProcessos.selectSingle = function (oCheckbox, sRow, oRow) {
-  
   if (oCheckbox.checked) {
-
+    if ($('tramitar_volumes').value == 1) {
+      aux(oRow.aCells[1].getValue(), oRow.aCells[8].getValue());
+    }
+    
     js_enviaSetor(oRow.aCells[8].getValue(), oRow.aCells[7].getValue(), oRow.aCells[9].getValue(), oCheckbox, false);
     $(sRow).className = 'marcado';
     oRow.isSelected   = true;
@@ -263,12 +342,10 @@ function js_retornoPopulaGridProcesos(oAjax) {
 
   var teste ='';
 	js_removeObj("msgBox"); // removemos a notificação de processamento.
-	var oRetorno = eval("("+oAjax.responseText+")");
+	var oRetorno = JSON.parse(oAjax.responseText);
 	oRetorno.aProcessosEncontrados.each(function(oProcesso, iIndiceProcessos) {
 
     var aLinha = new Array();
-
-    		
         aLinha[0] = oProcesso.p58_codproc;
         aLinha[1] = oProcesso.processoProtocolo;
         aLinha[2] = oProcesso.p58_codproc  + '/' + oProcesso.p58_ano;
@@ -278,16 +355,18 @@ function js_retornoPopulaGridProcesos(oAjax) {
         aLinha[6] = oProcesso.coddepto + ' - ' + oProcesso.descrdepto.urlDecode();
         aLinha[7] = oProcesso.coddepto;
         aLinha[8] = oProcesso.limiteBloqueado;
+        aLinha[9] = oProcesso.p58_processopai;
+        aLinha[10] = oProcesso.p58_orgao;
         
       	sClass = "normal";
 				if (parseInt($F('id_usuario')) == oProcesso.p58_id_usuario) {
           sClass = "destacado";
-    		}
+        }
     		
     	  oGridProcessos.addRow(aLinha);
     	  oGridProcessos.aRows[iIndiceProcessos].setClassName(sClass);
 
-	});
+  });
   oGridProcessos.renderRows();
 }
 
@@ -486,12 +565,12 @@ function js_validaCamposDif() {
 }
 
 
-function js_objProcesso(iCodProc,iDias,lSegue){
+function js_objProcesso(iCodProc, iDias, lSegue, iOrgao = 0){
   
   this.iCodProc = iCodProc;
   this.iDias    = iDias;
   this.lSegue   = lSegue;
-
+  this.iOrgao   = iOrgao;
 }
 
 function js_incluirTramiteInicial(aObjProcesso) {
@@ -506,8 +585,8 @@ function js_incluirTramiteInicial(aObjProcesso) {
       if ( $('p62_id_usorec').options[iIndOpt].selected ) {
         iIdUsuarioRec = $('p62_id_usorec').options[iIndOpt].value;
       }
-    }  
-  }     
+    }
+  }
      
   var sQuery  = 'sMethod=incluirTramite';
       sQuery += '&aObjProcesso='+Object.toJSON(aObjProcesso);
@@ -526,12 +605,14 @@ function js_incluirTramiteInicial(aObjProcesso) {
 function js_retornoIncluirTramite(oAjax){
 
   js_removeObj("msgBox");
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   var sExpReg  = new RegExp('\\\\n','g');
   
   alert(aRetorno.sMsg.urlDecode().replace(sExpReg,'\n'));
   
   if ( aRetorno.lErro ) {
+    
+    document.form1.db_opcao.disabled = false;
     return false;
   } else {
     url = "pro4_termorecebimento.php?codtran="+aRetorno.iCodTran;
@@ -600,7 +681,7 @@ function carregaDadosSelect(oResposta) {
 
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tran','func_proctransfer.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true); 
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tran','func_proctransfer.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true); 
 }
 function js_preenchepesquisa(chave){
   db_iframe_tran.hide();
@@ -641,9 +722,9 @@ function js_pesquisap62_coddeptorec(mostra){
   if(processa == true){
     
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_tran','func_db_depart_transferencias.php?funcao_js=parent.js_mostradb_depart1|0|1&todasinstit=1','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tran','func_db_depart_transferencias.php?funcao_js=parent.js_mostradb_depart1|0|1&todasinstit=1','Pesquisa',true);
     }else{
-      js_OpenJanelaIframe('top.corpo','db_iframe_tran','func_db_depart_transferencias.php?pesquisa_chave='+document.form1.p62_coddeptorec.value+'&funcao_js=parent.js_mostradb_depart&todasinstit=1&instituicao=0','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tran','func_db_depart_transferencias.php?pesquisa_chave='+document.form1.p62_coddeptorec.value+'&funcao_js=parent.js_mostradb_depart&todasinstit=1&instituicao=0','Pesquisa',false);
     }
   }
 }
@@ -839,11 +920,14 @@ function js_validaProcessos(){
   
     var aListaChk = js_getChkProcessos();
     var aProcesso = new Array();
-    
+    var lista = oGridProcessos.getRows();
+
     aListaChk.each(
       function ( eChk, iInd ) {
+        
         if ( eChk.checked ) {
-          var oProcesso = new js_objProcesso(eChk.value,0,false);
+          var orgao = lista[iInd].aCells[11].getValue();
+          var oProcesso = new js_objProcesso(eChk.value, 0, false, orgao);
           aProcesso.push(oProcesso);    
         }     
       }
@@ -860,7 +944,7 @@ function js_retornoValidaProcesso(oAjax){
 
   js_removeObj("msgBox");
    
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   
   if ( aRetorno.aListaDiferenca.length > 0 ) {
     
@@ -870,11 +954,13 @@ function js_retornoValidaProcesso(oAjax){
   
     var aListaChk = js_getChkProcessos();
 	  var aProcesso = new Array();
+    var lista = oGridProcessos.getRows();
 	  
 	  aListaChk.each(
 	    function ( eChk, iInd ) {
 	      if ( eChk.checked ) {
-	        var oProcesso = new js_objProcesso(eChk.value,0,false);
+          	var orgao = lista[iInd].aCells[11].getValue();
+	        var oProcesso = new js_objProcesso(eChk.value, 0, false, orgao);
 	        aProcesso.push(oProcesso);    
 	      }     
 	    }

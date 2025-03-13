@@ -1,11 +1,11 @@
 <?PHP
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 db_postmemory($HTTP_POST_VARS);
 
 db_app::load("scripts.js");
@@ -36,7 +36,14 @@ if ($oGet->db_opcao == 3) {
 	$sDescricaoFieldSet  = "Exclusão";
 }
 
-
+//Checa parametro e mostra alerta de confirmacao de data
+$clconparametro  = new cl_conparametro();
+$rsconparametro  = $clconparametro->sql_record($clconparametro->sql_query_file(null, "c90_confirmadata"));
+$conparametro    = db_utils::fieldsMemory($rsconparametro, 0);
+if($conparametro->c90_confirmadata == 't'){
+    $data = date('d/m/y', db_getsession('DB_datausu'));
+    echo "<db-alertaconfirmadatafinanceiro data=" . $data . "></db-alertaconfirmadatafinanceiro>";
+}
 
 
 ?>
@@ -46,6 +53,10 @@ if ($oGet->db_opcao == 3) {
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <link href="estilos.css" rel="stylesheet" type="text/css">
+<link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.core.css"
+      rel="stylesheet"/>
+<link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.bootstrap.css"
+      rel="stylesheet"/>
 <script src="scripts/widgets/DBAncora.widget.js" type="text/javascript"></script>
 <script src="scripts/widgets/dbtextField.widget.js" type="text/javascript"></script>
 </head>
@@ -103,7 +114,16 @@ if ($oGet->db_opcao == 3) {
 </body>
 </html>
 
+<script type="text/javascript" src='extension/package/Desktop/assets/vendors/alertify/alertify.js'></script>
+<script type="text/javascript" src="scripts/components/AlertaConfirmaDataFinanceiro.js"></script>
 <script>
+
+
+    let c90_confirmadata = '<?php echo $conparametro->c90_confirmadata ?>'
+    if (c90_confirmadata == 't') {
+        const msg = "Antes de realizar a operação confirme a data em que deseja incluir o movimento";
+        alertify.alert(msg)
+    }
 
 
 var lComponenteReadOnly = <?php echo $lComponenteReadOnly; ?>;
@@ -131,7 +151,7 @@ function js_getDadosSlip(iSlip){
 function js_retornoGetDados(oAjax) {
 
 	js_removeObj('msgBox');
-	var oRetorno = eval("("+oAjax.responseText+")");
+	var oRetorno = JSON.parse(oAjax.responseText);
 
 
   if (oRetorno.status == "2") {
@@ -141,6 +161,7 @@ function js_retornoGetDados(oAjax) {
 
   $('ctnSlipPagamento').innerHTML = "";
   oDBViewSlipPagamento = new DBViewSlipPagamento("oDBViewSlipPagamento", oRetorno.iTipoOperacao, 1, $('ctnSlipPagamento'), null, lComponenteReadOnly);
+  oDBViewSlipPagamento.setRecursoUniao('<?php echo (FONTE_RECURSO_UNIAO ? 'true' : 'false');?>');
   oDBViewSlipPagamento.show();
   oDBViewSlipPagamento.setPCASPAtivo('<?php echo db_getsession('DB_use_pcasp');?>');
   oDBViewSlipPagamento.start();
@@ -179,7 +200,7 @@ function js_retornoGetDados(oAjax) {
                    onComplete: function (oAjax) {
 
                      js_removeObj("msgBox");
-                     var oRetorno = eval("("+oAjax.responseText+")");
+                     var oRetorno = JSON.parse(oAjax.responseText);
 
                      if (oRetorno.lPossuiFinalidadePagamento) {
 
@@ -224,7 +245,7 @@ function js_processar(iAcao) {
 function js_retornoProcessamento(oAjax) {
 
 	js_removeObj('msgBox');
-	var oRetorno = eval("("+oAjax.responseText+")");
+	var oRetorno = JSON.parse(oAjax.responseText);
 
 	alert(oRetorno.message.urlDecode());
 
@@ -354,7 +375,7 @@ function js_consultaslip(){
 		  alert('Selecione um slip para consulta.');
 		  return false;
 	  }
-	  js_OpenJanelaIframe('top.corpo','db_iframe_slip2','cai3_conslip003.php?slip='+iCodigoSlip,'Slip nº '+iCodigoSlip,true);
+	  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_slip2','cai3_conslip003.php?slip='+iCodigoSlip,'Slip nº '+iCodigoSlip,true);
 	}
 
 $("iSlip"). value = '';

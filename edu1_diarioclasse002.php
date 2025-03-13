@@ -1,36 +1,36 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $db_opcao = 1;
 $escola = db_getsession("DB_nomedepto");
 $codescola = db_getsession("DB_coddepto");
@@ -194,7 +194,7 @@ var TREE_ITEMS = [
                            AND ed52_c_passivo = 'N'
                            ORDER BY ed52_i_ano,ed52_c_descr
                            ";
-                   $query = pg_query($sql);
+                   $query = db_query($sql);
                    $linhas = pg_num_rows($query);
                    if($linhas==0){
                     ?>
@@ -217,7 +217,7 @@ var TREE_ITEMS = [
                               AND ed57_i_escola = $codescola
                               ORDER BY ed10_c_abrev
                              ";
-                     $query1 = pg_query($sql1);
+                     $query1 = db_query($sql1);
                      $linhas1 = pg_num_rows($query1);
                      for($b=0;$b<$linhas1;$b++){
                      ?>
@@ -234,7 +234,7 @@ var TREE_ITEMS = [
                                  AND ed77_i_escola = $codescola
                                  ORDER BY ed218_i_codigo
                                 ";
-                       $query11 = pg_query($sql11);
+                       $query11 = db_query($sql11);
                        $linhas11 = pg_num_rows($query11);
                        for($bb=0;$bb<$linhas11;$bb++){
                        ?>
@@ -251,7 +251,7 @@ var TREE_ITEMS = [
                                   AND ed77_i_escola = $codescola
                                   ORDER BY ed31_c_descr desc
                                  ";
-                         $query2 = pg_query($sql2);
+                         $query2 = db_query($sql2);
                          $linhas2 = pg_num_rows($query2);
                          for($c=0;$c<$linhas2;$c++){
                          ?>
@@ -263,7 +263,7 @@ var TREE_ITEMS = [
                                       inner join serie as sf on sf.ed11_i_codigo = baseserie.ed87_i_seriefinal
                                      WHERE ed87_i_codigo = ".pg_result($query2,$c,"ed31_i_codigo")."
                                     ";
-                           $query3 = pg_query($sql3);
+                           $query3 = db_query($sql3);
                            $sql4 = "SELECT DISTINCT ed11_i_codigo,ed11_c_descr,ed11_i_sequencia
                                     FROM turma
                                      inner join matricula on ed60_i_turma = ed57_i_codigo
@@ -277,16 +277,24 @@ var TREE_ITEMS = [
                                     AND ed221_c_origem = 'S'
                                     ORDER BY ed11_i_sequencia
                                    ";
-                           $query4 = pg_query($sql4);
+                           $query4 = db_query($sql4);
                            $linhas4 = pg_num_rows($query4);
                            for($d=0;$d<$linhas4;$d++){
                            ?>
                              ['Etapa: <b><?=trim(pg_result($query4,$d,"ed11_c_descr"))?></b>', 'edu1_diarioclasse003.php?ed11_i_codigo=<?=pg_result($query4,$d,"ed11_i_codigo")?>&ed31_i_regimemat=<?=pg_result($query2,$c,"ed31_i_regimemat")?>&proximo=<?=trim(pg_result($query4,$d,"ed11_c_descr"))?>&ed52_c_descr=<?=trim(pg_result($query,$a,"ed52_c_descr"))?>&calendario=<?=pg_result($query,$a,"ed52_i_codigo")?>',
                              <?
-                             $sql5 = "SELECT DISTINCT ed57_i_codigo,ed57_c_descr
-                                      FROM turma
-                                       inner join matricula on ed60_i_turma = ed57_i_codigo
-                                       inner join matriculaserie on ed221_i_matricula = ed60_i_codigo
+
+                             $sql5 = "SELECT DISTINCT ed57_i_codigo, ed57_c_descr,
+                                             (select count(*)
+                                               from regencia
+                                              where ed59_i_turma = ed57_i_codigo
+                                                and ed59_i_serie = ed221_i_serie
+                                                and ed59_procedimento <> ed220_i_procedimento ) as n_procedimentos
+                                        FROM turma
+                                       inner join matricula           on ed60_i_turma = ed57_i_codigo
+                                       inner join matriculaserie      on ed221_i_matricula = ed60_i_codigo
+                                       inner join turmaserieregimemat on ed220_i_turma = ed60_i_turma
+                                       inner join serieregimemat      on ed223_i_codigo = ed220_i_serieregimemat
                                        inner join base on ed31_i_codigo = ed57_i_base
                                       WHERE ed221_i_serie in (".pg_result($query4,$d,"ed11_i_codigo").")
                                       AND ed57_i_calendario = ".pg_result($query,$a,"ed52_i_codigo")."
@@ -295,9 +303,14 @@ var TREE_ITEMS = [
                                       AND ed221_c_origem = 'S'
                                       ORDER BY ed57_c_descr
                                      ";
-                             $query5 = pg_query($sql5);
+
+                             $query5 = db_query($sql5);
                              $linhas5 = pg_num_rows($query5);
                              for($e=0;$e<$linhas5;$e++){
+
+                              if ( pg_result($query5, $e, "n_procedimentos") > 0) {
+                                continue;
+                              }
                              ?>
                                ['Turma: <b><?=trim(pg_result($query5,$e,"ed57_c_descr"))?></b>', 'edu1_diarioclasse004.php?turma=<?=pg_result($query5,$e,"ed57_i_codigo")?>&ed57_c_descr=<?=trim(pg_result($query5,$e,"ed57_c_descr"))?>&codserieregencia=<?=pg_result($query4,$d,"ed11_i_codigo")?>&ed52_c_descr=<?=trim(pg_result($query,$a,"ed52_c_descr"))?>'],
                              <?}?>
@@ -314,6 +327,8 @@ var TREE_ITEMS = [
                    <?}?>
                    ]
                  ];
+
+
 /*
  Feel free to use your custom icons for the tree. Make sure they are all of the same size.
  User icons collections are welcome, we'll publish them giving all regards.

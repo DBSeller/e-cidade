@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -702,7 +702,7 @@ class cl_tarefalog {
       $header = 'Content-type: text/html; charset=iso-8859-1'."\r\n";
       return(mail($para,$assunto,$mensagem,$header));
     } else {
-      include_once("libs/db_conn.php");
+      include_once(modification("libs/db_conn.php"));
       $oSmtp = new Smtp();
       $oSmtp->html = true;
       return $oSmtp->Send($para, "www@desenvolvimento.dbseller.com.br", $assunto, $mensagem);
@@ -792,6 +792,8 @@ class cl_tarefalog {
      $sql .= " from tarefalog ";
      $sql .= "      inner join tarefa  on  tarefa.at40_sequencial = tarefalog.at43_tarefa";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = tarefalog.at43_usuario";
+     $sql .= "       left join tarefalogsituacao  on  at48_tarefalog = at43_sequencial";     
+     $sql .= "       left join tarefacadsituacao  on  at46_codigo = at48_situacao";     
      $sql2 = "";
      if($dbwhere==""){
        if($at43_sequencial!=null ){

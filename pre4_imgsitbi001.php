@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 $DocHome = "http://".$_SERVER["SERVER_ADDR"].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],"/"));
 $DocRoot = substr($_SERVER['SCRIPT_FILENAME'],0,strrpos($_SERVER['SCRIPT_FILENAME'],"/"));
@@ -39,7 +39,7 @@ if(isset($HTTP_POST_VARS["confirmar"])) {
   $TestaMatricula = 0;
   if($HTTP_POST_VARS["matricula"] != $aux[0] && $HTTP_POST_VARS["matricula"] != "") {
     $matricula = trim($HTTP_POST_VARS["matricula"]);
-	$result = pg_exec("select j01_matric from iptubase where j01_matric = $matricula");
+	$result = db_query("select j01_matric from iptubase where j01_matric = $matricula");
 	if(pg_numrows($result) == 0)
 	  $TestaMatricula = 1;
   } else
@@ -61,10 +61,10 @@ if(isset($HTTP_POST_VARS["confirmar"])) {
 	    exit;
 	  }
     }
-    pg_exec("begin");
+    db_query("begin");
     $oid = pg_loimport($DocRoot."/tmp/".$imagem) or die("Erro(21) importando imagem");
-    pg_exec("insert into db_imgsitbi(matricula,data,arq) values('$matricula','$data',$oid)") or die("Erro(22) inserindo em db_imgsitbi");
-    pg_exec("commit");  
+    db_query("insert into db_imgsitbi(matricula,data,arq) values('$matricula','$data',$oid)") or die("Erro(22) inserindo em db_imgsitbi");
+    db_query("commit");  
   } else {
     db_msgbox("A matricula ($matricula) informada não existe");
     $HTTP_POST_VARS["procura"] = "procura";
@@ -115,7 +115,7 @@ table {
 	  $data_dia = substr(@$aux[3],0,strpos(@$aux[3],"."));	  
 	  $cod_matricula = $matricula;	  
 	  if(is_integer($matricula)) {
-        $result = pg_exec("select proprietario.*,o.z01_nome as promitente, i.z01_nome as imobiliaria from 
+        $result = db_query("select proprietario.*,o.z01_nome as promitente, i.z01_nome as imobiliaria from 
                            from proprietario p
 	  					 left outer join cgm o on o.j41_numcgm = p.j41_numcgm
 		  				 left outer join cgm i on i.j44_numcgm = p.j44_numcgm

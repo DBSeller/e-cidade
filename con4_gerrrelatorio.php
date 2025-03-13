@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
   
   //
-  include("fpdf151/pdf.php");
+  include(modification("fpdf151/pdf.php"));
   // variaveis de cabeçalho
 
 
@@ -36,7 +36,7 @@
   $from = " cgm ";
   $where = " z01_nome like 'PAULO RICARDO DA S%'"; 
   $sql = "select ".$campos." from ".$from." where ".$where;
-  $resultsql = pg_query($sql);
+  $resultsql = db_query($sql);
   if($resultsql==false){
     echo "Verifique os dados a serem gerados.<br>";
 	echo $sql;

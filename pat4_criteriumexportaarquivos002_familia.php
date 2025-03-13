@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -42,7 +42,7 @@ $sSqlFamilia .= "			where t64_analitica is false order by t64_codcla";
 //$sSqlFamilia .= " t64_codcla not in (select t64_codcla from clabens where t64_class ilike '%000000')";
 //$sSqlFamilia .= "	order by t64_class asc";
 
-$rsFamilia     = pg_query($sSqlFamilia);
+$rsFamilia     = db_query($sSqlFamilia);
 $iNumeroLinhas = pg_num_rows($rsFamilia);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {
@@ -54,7 +54,7 @@ for ($i=0; $i<$iNumeroLinhas; $i++) {
 //$sSqlEmpresa .= "       '10101' as id_da_empresa, ";
 //$sSqlEmpresa .= "       '10003' as id_da_familia, ";
 //$sSqlEmpresa .= "       'TESTE FAMILIA EXPORTACAO CRITERIUM' as nome_da_familia";
-//$rsEmpresa    = pg_query($sSqlEmpresa);
+//$rsEmpresa    = db_query($sSqlEmpresa);
 //$oEmpresa     = db_utils::fieldsMemory($rsEmpresa,0);
 
 // var_dump($oEmpresa);

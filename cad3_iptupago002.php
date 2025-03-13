@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $pdf = new PDF("L"); 
 $pdf->Open(); 
@@ -106,7 +106,7 @@ $sql .= "   group by j23_tipoim ";
 
 //die($sql);
 
-$result = pg_query($sql) or die($sql);
+$result = db_query($sql) or die($sql);
 
 for($i=0;$i < pg_numrows($result);$i++){
   db_fieldsmemory($result,$i);
@@ -186,7 +186,7 @@ $sql .= " 		   k02_drecei ";
 
 //echo $sql;exit;
 
-$result=pg_query($sql) or die($sql);
+$result=db_query($sql) or die($sql);
 
 $TotalTaxas  = 0;
 $TotalQTaxas = 0;
@@ -378,7 +378,7 @@ for ($mes = $mesini; $mes <= $mesfim; $mes++ ) {
 
   //die($sql);			
 
-  $result = pg_exec($sql) or die($sql);
+  $result = db_query($sql) or die($sql);
   if (pg_numrows($result)==0){
     continue;
   }

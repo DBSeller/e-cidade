@@ -26,7 +26,7 @@
  */
 
 //MODULO: recursoshumanos
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrhestagiocriterio->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -140,10 +140,10 @@ function js_cancelar(){
 }
 function js_pesquisah52_rhestagio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhestagiocriterio','db_iframe_rhestagio','func_rhestagio.php?funcao_js=parent.js_mostrarhestagio1|h50_sequencial|h50_sequencial','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagiocriterio','db_iframe_rhestagio','func_rhestagio.php?funcao_js=parent.js_mostrarhestagio1|h50_sequencial|h50_sequencial','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.h52_rhestagio.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhestagiocriterio','db_iframe_rhestagio','func_rhestagio.php?pesquisa_chave='+document.form1.h52_rhestagio.value+'&funcao_js=parent.js_mostrarhestagio','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagiocriterio','db_iframe_rhestagio','func_rhestagio.php?pesquisa_chave='+document.form1.h52_rhestagio.value+'&funcao_js=parent.js_mostrarhestagio','Pesquisa',false);
      }else{
        document.form1.h50_sequencial.value = ''; 
      }

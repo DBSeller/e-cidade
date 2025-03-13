@@ -1,31 +1,31 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
  *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
  *  detalhes.                                                         
  *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
  *  02111-1307, USA.                                                  
  *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdfnovo.php");
+require_once(modification("fpdf151/pdfnovo.php"));
 
 class ArquivoEconsig {
 
@@ -44,8 +44,8 @@ class ArquivoEconsig {
     $this->iInstit = $iInstit;
     $this->sArquivoLog = "tmp/inconsistencias_econsig_" . db_anofolha() . "_" . db_mesfolha() . $iInstit . ".json";
 
-    require_once("libs/JSON.php");
-    require_once("model/configuracao/DBLogJSON.model.php");
+    require_once(modification("libs/JSON.php"));
+    require_once(modification("model/configuracao/DBLogJSON.model.php"));
     $this->oDbLog = new DBLogJSON($this->sArquivoLog);
   }
 
@@ -87,9 +87,10 @@ class ArquivoEconsig {
      */
     $this->validaCabecalho($oCabecalho);
     
-
-    $this->apagaTabelaImportacao();
-
+    /**
+     * Apaga os dados das tabelas da econsig pela competência
+     */
+    $this->apagaTabelaImportacao(new DBCompetencia(DBPessoal::getAnoFolha(), DBPessoal::getMesFolha()));
 
     /**
      * Salva o arquivo e seus dados no banco
@@ -323,14 +324,64 @@ class ArquivoEconsig {
 
   /**
    * Apagar toda a tabela do econsig e suas dependencias
-   * @return [type] [description]
+   * 
+   * @param DBCompetencia $oCompetencia
    */
-  private function apagaTabelaImportacao() {
+  private function apagaTabelaImportacao(DBCompetencia $oCompetencia = null) {
 
-    $sSql = "truncate econsigmovimento cascade";
-    $rsTruncate = db_query($sSql);
+    if (is_null($oCompetencia)) {
+      $oCompetencia = new DBCompetencia(DBPessoal::getAnoFolha(), DBPessoal::getMesFolha());
+    }
 
-    return is_resource($rsTruncate);
+    $sSql = "
+      DELETE
+        FROM econsigmovimentoservidorrubrica
+       WHERE rh135_econsigmovimentoservidor IN (
+         SELECT DISTINCT rh135_econsigmovimentoservidor
+           FROM econsigmovimento
+                INNER JOIN econsigmovimentoservidor ON rh133_sequencial = rh134_econsigmovimento
+                INNER JOIN econsigmovimentoservidorrubrica ON rh134_sequencial = rh135_econsigmovimentoservidor
+          WHERE rh133_ano    = {$oCompetencia->getAno()}
+            AND rh133_mes    = {$oCompetencia->getMes()}
+            AND rh133_instit = {$this->iInstit}
+       )
+    ";
+
+    $rsResult = db_query($sSql);
+    if (!is_resource($rsResult)) {
+      throw new DBException("Problema ao deletar as rubricas.");
+    }     
+
+    $sSql = "
+      DELETE
+        FROM econsigmovimentoservidor
+       WHERE rh134_econsigmovimento IN (
+         SELECT DISTINCT rh134_econsigmovimento
+           FROM econsigmovimento
+                INNER JOIN econsigmovimentoservidor ON rh133_sequencial = rh134_econsigmovimento
+          WHERE rh133_ano    = {$oCompetencia->getAno()}
+            AND rh133_mes    = {$oCompetencia->getMes()}
+            AND rh133_instit = {$this->iInstit}
+       )
+    ";
+
+    $rsResult = db_query($sSql);
+    if (!is_resource($rsResult)) {
+      throw new DBException("Problema ao deletar os dados do servidor.");
+    } 
+
+    $sSql = "
+      DELETE
+        FROM econsigmovimento
+       WHERE rh133_ano    = {$oCompetencia->getAno()}
+         AND rh133_mes    = {$oCompetencia->getMes()}
+         AND rh133_instit = {$this->iInstit}
+    ";
+
+    $rsResult = db_query($sSql);
+    if (!is_resource($rsResult)) {
+      throw new DBException("Problema ao deletar um movimento para a competência atual.");
+    }
   }
   
   /**

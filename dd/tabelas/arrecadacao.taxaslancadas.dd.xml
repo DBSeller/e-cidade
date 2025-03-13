@@ -1,0 +1,288 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010547' name='arrecadacao.taxaslancadas' description="Guarda as taxas lançadas." prefix="ar44" label="Lancamento de Taxas" type="0">
+  <fields>
+    <field codigo="1011176" 
+           campo_api='' 
+           name="ar44_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela taxaslancadas." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='arrecadacao.taxaslancadas_ar44_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011186" 
+           campo_api='' 
+           name="ar44_receita" 
+           conteudo="int4" 
+           description="Código da receita." 
+           inivalue="0" 
+           label="Receita" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Receita" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011185" 
+           campo_api='' 
+           name="ar44_procedencia" 
+           conteudo="int4" 
+           description="Código da procedência." 
+           inivalue="0" 
+           label="Procedência" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Procedência" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011183" 
+           campo_api='' 
+           name="ar44_datavigencia" 
+           conteudo="date" 
+           description="Data limite que esta taxa está disponível para ser utilizada." 
+           inivalue="null" 
+           label="Data Limite" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Limite" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011182" 
+           campo_api='' 
+           name="ar44_valortaxaexpediente" 
+           conteudo="float4" 
+           description="Quantidade de Inflator da Taxa de Expediente" 
+           inivalue="0" 
+           label="Quantidade de Inflator da Taxa de Expediente" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Quantidade de Inflator da Taxa de Expedi" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011181" 
+           campo_api='' 
+           name="ar44_receitaxaexpediente" 
+           conteudo="int4" 
+           description="Receita da taxa de expediente." 
+           inivalue="0" 
+           label="Receita" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Receita" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011180" 
+           campo_api='' 
+           name="ar44_diasvencimento" 
+           conteudo="int4" 
+           description="Quantidade de dias para ser somado a data atual e calcular o dia de vencimento do boleto." 
+           inivalue="0" 
+           label="Dias para vencimento" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Dias para vencimento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011179" 
+           campo_api='' 
+           name="ar44_inflator" 
+           conteudo="char(11)" 
+           description="Código do inflator." 
+           inivalue="" 
+           label="Inflator" 
+           size="11" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Inflator" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011178" 
+           campo_api='' 
+           name="ar44_valorinflator" 
+           conteudo="float4" 
+           description="Quantidade que foi definido para o inflator." 
+           inivalue="0" 
+           label="Quantidade de Inflator da Taxa" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Quantidade de Inflator da Taxa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011177" 
+           campo_api='' 
+           name="ar44_descricao" 
+           conteudo="varchar(255)" 
+           description="Descrição da taxa." 
+           inivalue="" 
+           label="Descrição" 
+           size="255" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011217" 
+           campo_api='' 
+           name="ar44_tipo" 
+           conteudo="int4" 
+           description="Campo com o tipo de taxa (fixa / variável)." 
+           inivalue="0" 
+           label="Tipo de Taxa" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Taxa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011612" 
+           campo_api='' 
+           name="ar44_recursoadm" 
+           conteudo="char(1)" 
+           description="Define se a taxa é de recurso administrativo." 
+           inivalue="" 
+           label="Recurso Administrativo" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Recurso Administrativo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011187" 
+           campo_api='' 
+           name="ar44_emissaoweb" 
+           conteudo="char(1)" 
+           description="Permite que o contribuinte emita o boleto ou não para esta taxa na web." 
+           inivalue="" 
+           label="Emissão na WEB" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Emissão na WEB" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011756" 
+           campo_api='' 
+           name="ar44_origem" 
+           conteudo="char(1)" 
+           description="Define qual deve ser o tipo de origem da taxa." 
+           inivalue="" 
+           label="Tipo de Origem" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Tipo de Origem" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="ar44_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="tabrec" inner='false'>
+      <fieldfk name="ar44_receitaxaexpediente" reference="k02_codigo" /> 
+      <fieldfk name="ar44_receita" reference="k02_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="inflan" inner='t'>
+      <fieldfk name="ar44_inflator" reference="i01_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="procdiver" inner='false'>
+      <fieldfk name="ar44_procedencia" reference="dv09_procdiver" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

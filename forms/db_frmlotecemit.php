@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
 $cllotecemit->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("cm22_i_codigo");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cllotecemit->rotulo->label();
 if( isset( $cm22_i_qtdlote ) and (int)$cm22_i_qtdlote > 0 ){
@@ -68,7 +68,7 @@ if(isset($atualizar)){
            ed15_i_sequencia = ".($i+1)."
           WHERE ed15_i_codigo = $campos[$i]
          ";
-  $query = pg_query($sql);
+  $query = db_query($sql);
  }
  echo "<script>location.href='".$cllotecemit->pagina_retorno."'</script>";
 }
@@ -174,7 +174,7 @@ function js_mostraquadracemit1(chave1,chave2){
   db_iframe_quadracemit.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lotecemit','func_lotecemit.php?funcao_js=parent.js_preenchepesquisa|cm23_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotecemit','func_lotecemit.php?funcao_js=parent.js_preenchepesquisa|cm23_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_lotecemit.hide();

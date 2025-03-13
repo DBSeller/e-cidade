@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sDiretorioEcidade="/dados/www/ecidade"
+
+cd $sDiretorioEcidade;
+/usr/bin/php FrontIntegracaoExterna.php --executable duploscgs.php > duploscgs.log 2>&1
+sed -i '/^$/d' $sDiretorioEcidade/duploscgs.log
+sed -i '/^PHP Notice*/d' $sDiretorioEcidade/duploscgs.log
+yes | cp -af duploscgs.log duploscgs-zabbix.log
+exit 0
+

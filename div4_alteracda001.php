@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_divida_classe.php");
-include("classes/db_pardiv_classe.php");
-include("classes/db_certidlivro_classe.php");
-include("classes/db_certidlivrofolha_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_divida_classe.php"));
+include(modification("classes/db_pardiv_classe.php"));
+include(modification("classes/db_certidlivro_classe.php"));
+include(modification("classes/db_certidlivrofolha_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oGet                 = db_utils::postMemory($_GET);
 $clrotulo             = new rotulocampo;
@@ -176,9 +176,9 @@ if (isset($oGet->chave_pesquisa)) {
  function js_pesquisaparcel(mostra){
      
      if(mostra==true){
-       js_OpenJanelaIframe('top.corpo','db_iframe',sLookUp+'?funcao_js=parent.js_mostratermo|0','Pesquisa',true);      
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe',sLookUp+'?funcao_js=parent.js_mostratermo|0','Pesquisa',true);      
      }else{
-       js_OpenJanelaIframe('top.corpo','db_iframe',sLookUp+'?pesquisa_chave='+document.form1.v13_certid.value+'&funcao_js=parent.js_mostratermo','Pesquisa',false);       
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe',sLookUp+'?pesquisa_chave='+document.form1.v13_certid.value+'&funcao_js=parent.js_mostratermo','Pesquisa',false);       
      }
 }
 function js_mostratermo(chave) {
@@ -218,7 +218,7 @@ function getProximaPagina() {
 
 function js_retornoGetProximaPagina(oAjax) {
 
-   var oRetorno = eval("("+oAjax.responseText+")");
+   var oRetorno = JSON.parse(oAjax.responseText);
    if (oRetorno.status == 1) {
      $('pagina').value = oRetorno.proximapagina;
    }
@@ -283,7 +283,7 @@ function js_alterarCda() {
 function js_retornoAlterarCDA(oAjax) {
   
    js_removeObj('msgbox');
-   var oRetorno = eval("("+oAjax.responseText+")");
+   var oRetorno = JSON.parse(oAjax.responseText);
    if (oRetorno.status == 1) {
    
       alert('CDA alterada com sucesso');

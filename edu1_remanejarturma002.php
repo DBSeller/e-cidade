@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_turma_classe.php");
-include("classes/db_turmaturnoadicional_classe.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_escola_classe.php");
-include("classes/db_escolaestrutura_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_regenciahorario_classe.php");
-include("classes/db_turmaserieregimemat_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_turmaturnoadicional_classe.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_escola_classe.php"));
+include(modification("classes/db_escolaestrutura_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_regenciahorario_classe.php"));
+include(modification("classes/db_turmaserieregimemat_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
+$iAnoEtapaCenso        = null;
 $clturma               = new cl_turma;
 $clturmaturnoadicional = new cl_turmaturnoadicional;
 $clescola              = new cl_escola;
@@ -91,7 +92,23 @@ if(isset($alterar)) {
 } else if(isset($chavepesquisa)) {
   $db_opcao  = 2;
   $db_opcao1 = 3;
-  $result    = $clturma->sql_record($clturma->sql_query($chavepesquisa));
+  
+  $oDaoTurmaCensoEtapa    = new cl_turmacensoetapa();
+  $sWhereTurmaCensoEtapa  = " ed132_turma = {$chavepesquisa}";
+  $sSqlTurmaCensoEtapa    = $oDaoTurmaCensoEtapa->sql_query_file(null, "ed132_ano", null, $sWhereTurmaCensoEtapa);
+  $rsTurmaCensoEtapa      = db_query( $sSqlTurmaCensoEtapa );
+
+  if ( !$rsTurmaCensoEtapa ) {
+    throw new DBException("Não foi possivel buscar o vinculo da turma com o censo.");
+  }
+
+  if ( pg_num_rows( $rsTurmaCensoEtapa ) == 0 ) {
+    throw new DBException("Não há vinculos do censo com a turma.");
+  }
+
+  $iAnoEtapaCenso = db_utils::fieldsMemory( $rsTurmaCensoEtapa, 0 )->ed132_ano;
+
+  $result    = $clturma->sql_record($clturma->sql_query_turma_etapa_censo($chavepesquisa, $iAnoEtapaCenso));
   db_fieldsmemory($result,0);
   $db_botao = true;
   $result1  = $clmatricula->sql_record($clmatricula->sql_query_file(""," count(*) ",""," ed60_i_turma = $ed57_i_codigo"));
@@ -112,13 +129,13 @@ if(isset($alterar)) {
    parent.document.formaba.a3.disabled = false;
    parent.document.formaba.a4.disabled = false;
    parent.document.formaba.a5.disabled = false;
-   top.corpo.iframe_a2.location.href='edu1_regenciaabas001.php?ed59_i_turma=<?=$ed57_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='edu1_regenciaabas001.php?ed59_i_turma=<?=$ed57_i_codigo?>'+
                                      '&ed57_c_descr=<?=$ed57_c_descr?>';
-   top.corpo.iframe_a3.location.href='edu1_regenciahorarioabas001.php?ed59_i_turma=<?=$ed57_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href='edu1_regenciahorarioabas001.php?ed59_i_turma=<?=$ed57_i_codigo?>'+
                                      '&ed57_c_descr=<?=$ed57_c_descr?>&ed57_i_turno=<?=$ed57_i_turno?>';
-   top.corpo.iframe_a4.location.href='edu1_alunoturma001.php?ed60_i_turma=<?=$ed57_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href='edu1_alunoturma001.php?ed60_i_turma=<?=$ed57_i_codigo?>'+
                                      '&ed57_c_descr=<?=$ed57_c_descr?>&ed52_c_descr=<?=$ed52_c_descr?>';
-   top.corpo.iframe_a5.location.href='edu1_parecerturma001.php?ed105_i_turma=<?=$ed57_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a5.location.href='edu1_parecerturma001.php?ed105_i_turma=<?=$ed57_i_codigo?>'+
                                      '&ed57_c_descr=<?=$ed57_c_descr?>&ed52_c_descr=<?=$ed52_c_descr?>';
   </script>
  <?
@@ -141,7 +158,7 @@ if(isset($alterar)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Turma</b></legend>
-    <?include("forms/db_frmturma.php");?>
+    <?include(modification("forms/db_frmturma.php"));?>
    </fieldset>
    </center>
   </td>

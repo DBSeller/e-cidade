@@ -26,7 +26,7 @@
  */
 
 //MODULO: caixa
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcadtipoitem->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -129,10 +129,10 @@ function js_cancelar(){
 }
 function js_pesquisak09_cadtipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadtipoitem','db_iframe_cadtipo','func_cadtipo.php?funcao_js=parent.js_mostracadtipo1|k03_tipo|k03_tipo','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoitem','db_iframe_cadtipo','func_cadtipo.php?funcao_js=parent.js_mostracadtipo1|k03_tipo|k03_tipo','Pesquisa',true,'0');
   }else{
      if(document.form1.k09_cadtipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadtipoitem','db_iframe_cadtipo','func_cadtipo.php?pesquisa_chave='+document.form1.k09_cadtipo.value+'&funcao_js=parent.js_mostracadtipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoitem','db_iframe_cadtipo','func_cadtipo.php?pesquisa_chave='+document.form1.k09_cadtipo.value+'&funcao_js=parent.js_mostracadtipo','Pesquisa',false);
      }else{
        document.form1.k03_tipo.value = ''; 
      }
@@ -152,10 +152,10 @@ function js_mostracadtipo1(chave1,chave2){
 }
 function js_pesquisak09_cadtipoitemgrupo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadtipoitem','db_iframe_cadtipoitemgrupo','func_cadtipoitemgrupo.php?funcao_js=parent.js_mostracadtipoitemgrupo1|k37_sequencial|k37_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoitem','db_iframe_cadtipoitemgrupo','func_cadtipoitemgrupo.php?funcao_js=parent.js_mostracadtipoitemgrupo1|k37_sequencial|k37_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.k09_cadtipoitemgrupo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadtipoitem','db_iframe_cadtipoitemgrupo','func_cadtipoitemgrupo.php?pesquisa_chave='+document.form1.k09_cadtipoitemgrupo.value+'&funcao_js=parent.js_mostracadtipoitemgrupo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoitem','db_iframe_cadtipoitemgrupo','func_cadtipoitemgrupo.php?pesquisa_chave='+document.form1.k09_cadtipoitemgrupo.value+'&funcao_js=parent.js_mostracadtipoitemgrupo','Pesquisa',false);
      }else{
        document.form1.k37_descr.value = ''; 
      }

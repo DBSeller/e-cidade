@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once "libs/db_stdlib.php";
-require_once "libs/db_conecta.php";
-require_once "libs/db_sessoes.php";
-require_once "libs/db_usuariosonline.php";
-require_once "libs/db_liborcamento.php";
-require_once "dbforms/db_funcoes.php";
-require_once "dbforms/db_classesgenericas.php";
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/db_liborcamento.php");
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("dbforms/db_classesgenericas.php");
 
 $clpcorcamtroca  = new cl_pcorcamtroca();
 $clpcorcamjulg   = new cl_pcorcamjulg();
@@ -59,18 +59,18 @@ try {
     $sSqlOrcamItem = $oDaoPcorcamitem->sql_query_pcmaterproc($pc25_orcamitem, "pc22_codorc, pc69_processocompralote");
     $rsOrcamItem   = $oDaoPcorcamitem->sql_record($sSqlOrcamItem);
 
-    if (!$rsOrcamItem || !$oDaoPcorcamitem->numrows) {
-      throw new Exception("Erro ao buscar os dados.");
-    }
-
-    $oDadosItem  = db_utils::fieldsMemory($rsOrcamItem, 0);
     $aItensTroca = array();
+    $oDadosItem  = null;
+
+    if ($oDaoPcorcamitem->numrows) {
+      $oDadosItem = db_utils::fieldsMemory($rsOrcamItem, 0);
+    }
 
     /**
      * Verifica se o Orçamento do processo de compras é por item ou por lote
      * para alterar o fornecedor de todos os itens do lote
      */
-    if (empty($oDadosItem->pc69_processocompralote)) {
+    if (empty($oDadosItem) || empty($oDadosItem->pc69_processocompralote)) {
       $aItensTroca[] = $pc25_orcamitem;
     } else {
 
@@ -171,7 +171,7 @@ try {
   </head>
   <body class="body-default" >
     <div class="container">
-      <?php include("forms/db_frmtrocpcorcamtroca.php"); ?>
+      <?php include(modification("forms/db_frmtrocpcorcamtroca.php")); ?>
     </div>
     <?php db_menu( db_getsession("DB_id_usuario"),
                    db_getsession("DB_modulo"),
@@ -192,7 +192,7 @@ try {
         }
 
       } else {
-        echo "<script> top.corpo.location.href = 'com1_pcorcamtroca001.php?sol=$sol&pc20_codorc=$orcamento'; </script>";
+        echo "<script> (window.CurrentWindow || parent.CurrentWindow).corpo.location.href = 'com1_pcorcamtroca001.php?sol=$sol&pc20_codorc=$orcamento'; </script>";
       }
     }
   ?>

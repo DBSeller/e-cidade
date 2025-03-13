@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_tpcardapioturma_classe.php");
-include("classes/db_mer_cardapiodia_classe.php");
-include("classes/db_mer_cardapiodiaescola_classe.php");
-include("classes/db_mer_cardapioescola_classe.php");
-include("classes/db_mer_cardapiodata_classe.php");
-include("classes/db_mer_cardapio_classe.php");
-include("classes/db_mer_tprefeicao_classe.php");
-include("classes/db_mer_tipocardapio_classe.php");
-include("classes/db_mer_cardapiotipo_classe.php");
-include("classes/db_mer_cardapioitem_classe.php");
-include("classes/db_diasemana_classe.php");
-include("classes/db_feriado_classe.php");
-include("classes/db_calendario_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_tpcardapioturma_classe.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("classes/db_mer_cardapiodiaescola_classe.php"));
+include(modification("classes/db_mer_cardapioescola_classe.php"));
+include(modification("classes/db_mer_cardapiodata_classe.php"));
+include(modification("classes/db_mer_cardapio_classe.php"));
+include(modification("classes/db_mer_tprefeicao_classe.php"));
+include(modification("classes/db_mer_tipocardapio_classe.php"));
+include(modification("classes/db_mer_cardapiotipo_classe.php"));
+include(modification("classes/db_mer_cardapioitem_classe.php"));
+include(modification("classes/db_diasemana_classe.php"));
+include(modification("classes/db_feriado_classe.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clmer_tpcardapioturma = new cl_mer_tpcardapioturma;
 $clmer_cardapiodia     = new cl_mer_cardapiodia;
 $clmer_cardapiodiaescola = new cl_mer_cardapiodiaescola;
@@ -282,7 +282,7 @@ if ($oPost->sAction == 'PesquisaTipoRefeicao') {
                                             "me21_i_cardapio = {$oPost->refeicao}"
                                            )                                                                           
                                            );
-  $aResult = db_utils::getColectionByRecord($result, false, false, true);
+  $aResult = db_utils::getCollectionByRecord($result, false, false, true);
   $oJson = new services_json();
   echo $oJson->encode($aResult);
   
@@ -333,7 +333,7 @@ if ($oPost->sAction == 'PesquisaRefeicao') {
                                         "me01_i_tipocardapio = {$oPost->codcardapio}"
                                        )                                                                           
                                        );
-  $aResult = db_utils::getColectionByRecord($result, false, false, true);
+  $aResult = db_utils::getCollectionByRecord($result, false, false, true);
   $oJson = new services_json();
   echo $oJson->encode($aResult);
   
@@ -350,7 +350,7 @@ if ($oPost->sAction == 'PesquisaItemRefeicao') {
                                             " me07_i_cardapio = {$oPost->refeicao}"
                                            )
                                            );
-  $aResult = db_utils::getColectionByRecord($result, false, false, true);
+  $aResult = db_utils::getCollectionByRecord($result, false, false, true);
   $oJson = new services_json();
   echo $oJson->encode($aResult);
   

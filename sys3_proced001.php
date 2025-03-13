@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_sysmodulo_classe.php");
-include("classes/db_db_syscadproced_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_sysmodulo_classe.php"));
+include(modification("classes/db_db_syscadproced_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $cldb_sysmodulo	= new cl_db_sysmodulo;
 $cldb_syscadproced 	= new cl_db_syscadproced;
@@ -57,7 +57,7 @@ function js_pesquisa_codmod(codmod){
 }
 function js_listaitensproced (codproced){
 
-  js_OpenJanelaIframe('top.corpo','DBI_itensproced','sys3_proced002.php?codproced='+codproced);
+  js_OpenJanelaIframe('CurrentWindow.corpo','DBI_itensproced','sys3_proced002.php?codproced='+codproced);
   
 }
 

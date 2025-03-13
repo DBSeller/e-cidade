@@ -28,17 +28,17 @@
 /**
  * 
  * @author I
- * @revision $Author: dbluizmarcelo $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.3 $
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 ?>
 <html>

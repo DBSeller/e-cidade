@@ -1,0 +1,19 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="q38_categoria" label="categoria" />
+  </campos>
+  <from tabela="isscadsimples" />
+  <juncoes>
+      <join tipo="left" tabela="isscadsimplesbaixa" condicao="q38_sequencial = q39_isscadsimples" />
+  </juncoes>
+  <filtros>
+    <filtro label="inscricao_municipal" condicao="q38_inscr = '$inscricao_municipal'" obrigatorio="true" />
+    <filtro label="data"
+            condicao="(('$data' &gt;= q38_dtinicial and '$data' &lt;= q39_dtbaixa and q39_dtbaixa is not null) or 
+                       ('$data' &gt;= q38_dtinicial and q39_dtbaixa is null))"
+            obrigatorio="true" />
+  </filtros>
+  <agrupamento />
+  <ordenacao />
+</consulta>

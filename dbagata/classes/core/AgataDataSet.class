@@ -32,12 +32,17 @@
 /*******************************************************************************/
 class AgataDataSet
 {
-    var $result;
-    var $ColumnCount;
-    var $FunctionMatrix;
-    var $CrossMatrix;
-    var $rownum = 0;
-    var $lastrow = null;
+    public $result;
+    public $ColumnCount;
+    public $FunctionMatrix;
+    public $CrossMatrix= [];
+    public $rownum = 0;
+    public $lastrow = null;
+    public $Query;
+    public $MaxLen;
+    public $Columns;
+    public $ColumnTypes;
+    public $Parameters;
 
     function reset()
     {
@@ -50,21 +55,20 @@ class AgataDataSet
     /*******************************************************************************/
     function FetchNext()
     {
-        //var_dump($this->rownum);
+        $QueryLine = [];
         if ($row=$this->result->Fetch())
         {
-            //echo "fetch";
             $this->rownum ++;
             for ($col=1; $col<=$this->ColumnCount; $col++)
             {
                 $Conteudo = $row[$col-1] == null ? '' : trim($row[$col-1]);
                 
-                if ($this->CrossMatrix[$col])
+                if (isset($this->CrossMatrix[$col]))
                 {
                     $Conteudo =  $this->GetExternalField($this->ext_conn, $this->CrossMatrix[$col], $Conteudo);
                 }
                 
-                if ($this->FunctionMatrix[$col])
+                if (isset($this->FunctionMatrix[$col]))
                 {
                     $function = $this->FunctionMatrix[$col];
                     if (function_exists($function))

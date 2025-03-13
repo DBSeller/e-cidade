@@ -72,7 +72,7 @@ $clrotulo->label("r36_mesusu");
     <td align='right'><b>Unifica I.P.E:</b></td>
     <td align='left'>
       <?
-      $arr_unifica  = Array('t'=>'Sim','f'=>'Não');
+      $arr_unifica  = Array('f'=>'Não', 't'=>'Sim');
       db_select("unifica_ipe",$arr_unifica,true,1);
       ?>
     </td>

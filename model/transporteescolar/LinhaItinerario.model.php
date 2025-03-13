@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Linha Itinerário
  * @author Trucolo <trucolo@dbseller.com.br>
  * @package transporteescolar
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 class LinhaItinerario {
 
@@ -77,6 +77,11 @@ class LinhaItinerario {
    */
   protected $oLinhaTransporte = null;
 
+  static private $aTipos = array(
+    self::IDA   => "Ida",
+    self::VOLTA => "Retorno",
+  );
+
   /**
    * Instancia uma linha itinerário
    * @param integer $iCodigo Codigo da linha itinerário
@@ -119,7 +124,7 @@ class LinhaItinerario {
    * @return LinhaItinerarioLogradouro
    */
   public function getLogradouros() {
-    
+
     if (count($this->aLogradouros) == 0) {
 
       $oDaoItinerarioLogradouro   = new cl_itinerariologradouro();
@@ -130,15 +135,15 @@ class LinhaItinerario {
                                                                           "tre10_ordem",
                                                                           $sWhereItinerarioLogradouro
                                                                         );
-      
-      
+
+
       $rsItinerarioLogradouro     = $oDaoItinerarioLogradouro->sql_record($sSqlItinerarioLogradouro);
       $iTotalItinerarioLogradouro = $oDaoItinerarioLogradouro->numrows;
-      
+
       if ($iTotalItinerarioLogradouro > 0) {
-        
+
         for ($iContador = 0; $iContador < $iTotalItinerarioLogradouro; $iContador++) {
-          
+
           $iItinerarioLogradouro = db_utils::fieldsMemory($rsItinerarioLogradouro, $iContador)->tre10_sequencial;
           $oItinerarioLogradouro = new LinhaItinerarioLogradouro($iItinerarioLogradouro);
           $this->aLogradouros[]  = $oItinerarioLogradouro;
@@ -153,7 +158,7 @@ class LinhaItinerario {
    * @return array
    */
   public function getHorarios() {
-    
+
     $oDaoItinerarioHorario    = new cl_linhatransportehorario();
     $sWhereItinerarioHorario  = "    tre07_linhatransporteitinerario = {$this->getCodigo()} ";
     $sSqlItinerarioHorario    = $oDaoItinerarioHorario->sql_query_file(
@@ -164,11 +169,11 @@ class LinhaItinerario {
                                                                  );
     $rsItinerarioHorario     = $oDaoItinerarioHorario->sql_record($sSqlItinerarioHorario);
     $iTotalItinerarioHorario = $oDaoItinerarioHorario->numrows;
-    
+
     if ($iTotalItinerarioHorario > 0) {
-      
+
       for ($iContador = 0; $iContador < $iTotalItinerarioHorario; $iContador++) {
-        
+
         $iLinhaItinerarioHorario = db_utils::fieldsMemory($rsItinerarioHorario, $iContador)->tre07_sequencial;
         $oLinhaItinerarioHorario = new LinhaItinerarioHorario($iLinhaItinerarioHorario);
         $this->aHorarios[]       = $oLinhaItinerarioHorario;
@@ -297,5 +302,13 @@ class LinhaItinerario {
       }
     }
 
+  }
+
+  /**
+   * Retorna o tipo do itinerário
+   * @return string
+   */
+  public function getDescricaoTipo() {
+    return self::$aTipos[$this->iTipo];
   }
 }

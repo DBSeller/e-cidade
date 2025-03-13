@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_db_versao_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_db_versao_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -54,7 +54,7 @@ $sql = "select m.id_item,nome_modulo
 				where m.id_item in ($mod)
 				order by nome_modulo";
 
-$res = pg_exec($sql);
+$res = db_query($sql);
 
 $numrows = pg_numrows($res);
 
@@ -93,7 +93,7 @@ for($i=0;$i<$numrows;$i++){
                   from db_itensmenu
                   where id_item = ".$impmat[$imp]." and itemativo = 1";
           //echo "$sql";
-          $resi = pg_exec($sql);
+          $resi = db_query($sql);
           $linhas = pg_num_rows($resi);
           if($linhas >0){
             $descr = pg_result($resi,0,0);

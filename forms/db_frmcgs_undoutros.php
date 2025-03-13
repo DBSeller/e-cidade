@@ -1,28 +1,28 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: saude
@@ -73,7 +73,7 @@ $escola = db_getsession("DB_coddepto");
 
             $mostrarimagem = "imagens/none1.jpeg";
 
-            if( $oid != null ) {
+            if( !empty($oid) ) {
               $mostrarimagem = "func_mostrarimagem.php?oid=".$oid;
             }
 
@@ -85,7 +85,7 @@ $escola = db_getsession("DB_coddepto");
         <SCRIPT LANGUAGE="JavaScript">
           team = new Array(
           <?php
-          # Seleciona todos os calendários
+          // Seleciona todos os calendários
           $sql1        = "SELECT sd34_i_codigo,sd34_v_descricao ";
           $sql1       .= "  FROM microarea ";
           $sql1       .= " ORDER BY sd34_v_descricao";
@@ -136,7 +136,7 @@ $escola = db_getsession("DB_coddepto");
             }
           }
 
-          echo ")\n";
+          echo "))\n";
           ?>
 
           //Inicio da função JS
@@ -194,6 +194,21 @@ $escola = db_getsession("DB_coddepto");
             }
           }
         </script>
+        <tr title="<?=@$Trh70_descr?>">
+          <td  align="left" nowrap  >
+            <strong>
+              <?
+              db_ancora("Ocupação", "js_pesquisaCbo(true);", $db_opcao);
+              ?>
+            </strong>
+          </td>
+          <td colspan="4" align="left">
+            <?
+            db_input("z01_i_codocupacao",  10, "", true, "text", $db_opcao, "onchange='js_pesquisaCbo(false);'");
+            db_input("z01_i_descocupacao",  110, "",  true, "text", 3, "");
+            ?>
+          </td>
+        </tr>
         <tr>
           <td nowrap>
             <b>Micro:</b>&nbsp;&nbsp;&nbsp;
@@ -366,7 +381,7 @@ function js_pesquisasd35_i_familiamicroarea( mostra ) {
     if( document.form1.sd35_i_familia.value != '' ) {
 
       js_OpenJanelaIframe(
-                           'top.corpo',
+                           'CurrentWindow.corpo',
                            'db_iframe_familia',
                            'func_familia.php?pesquisa_chave=' + document.form1.z01_i_familiamicroarea.value
                                           +'&funcao_js=parent.js_mostrafamiliamicroarea',
@@ -454,7 +469,7 @@ function js_buscaEtnia() {
 }
 
 function js_mostraEtnia( iCodigo, iIdentificador, sDescricao ) {
-  
+
   $('s200_codigo').value        = iCodigo;
   $('s200_identificador').value = iIdentificador;
   $('s200_descricao').value     = sDescricao;
@@ -462,6 +477,47 @@ function js_mostraEtnia( iCodigo, iIdentificador, sDescricao ) {
 }
 
 js_validaRaca();
+function js_pesquisaCbo(mostra){
+
+  if(mostra==true){
+    js_OpenJanelaIframe('','db_iframe_Cbo','func_rhcbo.php?funcao_js=parent.js_mostraCbo|rh70_sequencial|rh70_descr|rh70_estrutural','Pesquisa',true);
+  }else{
+    js_OpenJanelaIframe('','db_iframe_Cbo','func_rhcbo.php?lCadastroCgm=true&pesquisa_chave='+document.form1.z01_i_codocupacao.value+'&funcao_js=parent.js_mostraCboHide','Pesquisa', false);
+  }
+
+}
+
+js_pesquisaCbo(false);
+
+function js_mostraCboHide(chave, chave2, chave3, erro){
+
+  if (chave2 != false) {
+
+    if(erro==true){
+
+      document.form1.z01_i_codocupacao.value = '';
+      document.form1.z01_i_codocupacao.focus();
+
+    }
+
+    document.form1.z01_i_descocupacao.value = chave3 + ' - ' + chave2;
+
+  } else {
+
+    document.form1.z01_i_codocupacao.value = '';
+    document.form1.z01_i_descocupacao.value      = '';
+
+  }
+
+}
+
+function js_mostraCbo(chave1,chave2,chave3){
+
+  document.form1.z01_i_codocupacao.value = chave1;
+  document.form1.z01_i_descocupacao.value      = chave3 + ' - ' + chave2;
+  db_iframe_Cbo.hide();
+
+}
 
 $('z01vnome').className               = 'field-size-max';
 $('z01_v_micro').className            = 'field-size-max';

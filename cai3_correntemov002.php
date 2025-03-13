@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,10 +26,10 @@
  */
 
 // select k00_numpre,k00_numpar,k00_receit from arrecad where k00_numpre = 11111454;
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-//include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+//include(modification("libs/db_sql.php"));
 
 //db_postmemory($HTTP_POST_VARS,2);
 ?>
@@ -112,11 +112,11 @@ group by k13_conta,k13_descr,c60_codsis
        where c.k12_data = '$data' $xcaixa1  and k12_empen is not null and c60_codsis = 5
 	  
 	 ";
-    $result1 = pg_exec($sql);
-    $result2 = pg_exec($sql1);
+    $result1 = db_query($sql);
+    $result2 = db_query($sql1);
     $num2    = pg_numrows($result2);
 //    db_criatabela($result2);
-//    db_fieldsmemory(pg_exec($sql),0);
+//    db_fieldsmemory(db_query($sql),0);
     $sql = "
       select k12_idautent,
              k12_tipomov,
@@ -132,7 +132,7 @@ group by k13_conta,k13_descr,c60_codsis
             $xcaixa;
       ";
 //echo $sql;exit;										      
-   $result = pg_exec($sql);
+   $result = db_query($sql);
    ?>
   <tr bgcolor="#666666">
     <th width="8%" >Caixa</th>

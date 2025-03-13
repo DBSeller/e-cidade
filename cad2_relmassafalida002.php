@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_iptuconstr_classe.php");
-include("classes/db_iptubase_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_iptuconstr_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
 $cliptuconstr = new cl_iptuconstr;
 $cliptuconstr1 = new cl_iptuconstr;
 $cliptubase = new cl_iptubase;
@@ -60,7 +60,7 @@ if($resumido == 't'){
   		(select count(j59_matric) as totmat,j59_codigo 
 			from massamat group by j59_matric,j59_codigo) as x 
 			inner join massafalida on x.j59_codigo = j58_codigo group by totmat,j58_numcgm";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $numrows = pg_numrows($result);
   $pdf->Cell(50,$tam,"CGM",1,0,"C",1);
   $pdf->Cell(70,$tam,"QUANTIDADE DE MATRÍCULAS",1,1,"C",1);
@@ -80,7 +80,7 @@ if($resumido == 't'){
   $sql = "select j01_matric,z01_numcgm,z01_nome,j58_data from massamat
                         inner join massafalida on j58_codigo = j59_codigo 
 			inner join proprietario_nome on j59_matric = j01_matric $where order by $ordem $modo";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $numrows = pg_numrows($result);
   $pdf->Cell(35,$tam,"CGM",1,0,"C",1);
   $pdf->Cell(35,$tam,"MATRÍCULA",1,0,"C",1);
@@ -117,7 +117,7 @@ $pdf->SetFont('Arial','',7);
 if(isset($ruas) && !empty($ruas) && $temruas == "t"){
   $vir = "";
   $rua = "";
-  $result1 = pg_exec("select j14_nome from ruas where j14_codigo in ($ruas)");
+  $result1 = db_query("select j14_nome from ruas where j14_codigo in ($ruas)");
       for($x=0;$x<pg_numrows($result1);$x++){
 	db_fieldsmemory($result1,$x);
 	$cod .= $vir.$j14_nome;
@@ -128,7 +128,7 @@ if(isset($ruas) && !empty($ruas) && $temruas == "t"){
 if(isset($ruas) && $ruas != "" && $temruas == "f"){
   $vir = "";
   $rua = "";
-  $result1 = pg_exec("select j14_nome from ruas where j14_codigo in ($ruas)");
+  $result1 = db_query("select j14_nome from ruas where j14_codigo in ($ruas)");
       for($x=0;$x<pg_numrows($result1);$x++){
 	db_fieldsmemory($result1,$x);
 	$cod .= $vir.$j14_nome;
@@ -142,7 +142,7 @@ if(isset($ruas) && $ruas == ""){
 $vir = "";
 $cod = "";
 if($listadas != ""){
-  $result1 = pg_exec("select distinct j31_descr,j31_codigo from carlote inner join caracter on j35_caract=j31_codigo where j31_codigo in ($listadas)");
+  $result1 = db_query("select distinct j31_descr,j31_codigo from carlote inner join caracter on j35_caract=j31_codigo where j31_codigo in ($listadas)");
   if(pg_numrows($result1) > 0){
     for($x=0;$x<pg_numrows($result1);$x++){
       db_fieldsmemory($result1,$x);
@@ -157,7 +157,7 @@ if($listadas != ""){
 $vir = "";
 $cod = "";
 if(isset($chaves_caract) && $chaves_caract != ""){
-  $result1 = pg_exec("select distinct j31_descr,j31_codigo from carlote inner join caracter on j35_caract=j31_codigo  where j31_codigo in ($chaves_caract)");
+  $result1 = db_query("select distinct j31_descr,j31_codigo from carlote inner join caracter on j35_caract=j31_codigo  where j31_codigo in ($chaves_caract)");
       for($x=0;$x<pg_numrows($result1);$x++){
 	db_fieldsmemory($result1,$x);
 	$cod .= $vir.$j31_codigo." - ".$j31_descr;
@@ -204,7 +204,7 @@ if(isset($ordem) && $ordem != ""){
 if(isset($order) && $order != ""){
   $pdf->MultiCell(280,05,"MODO -".$modo1,0,"L");
 }
-$result1 = pg_exec("select j34_setor,count(j34_quadra) as quadra,count(j34_lote) as lotes,sum(j34_area) as area,sum(j34_totcon) as areac,sum(j36_testad) as testada from ($sql) as f group by j34_setor");
+$result1 = db_query("select j34_setor,count(j34_quadra) as quadra,count(j34_lote) as lotes,sum(j34_area) as area,sum(j34_totcon) as areac,sum(j36_testad) as testada from ($sql) as f group by j34_setor");
 $pdf->MultiCell(180,05,"TOTAIS POR SETOR",1,"C");
 $pdf->SetFillColor(235);
 $pdf->Cell(30,$tam,"SETOR(ES)",1,0,"C",1);
@@ -224,7 +224,7 @@ for($x=0;$x<pg_numrows($result1);$x++){
   $pdf->Cell(30,$tam,"".db_formatar($testada,'f'),1,1,"C",1);
 }
 $pdf->ln(5);
-$result1 = pg_exec("select j34_setor,j34_quadra,count(j34_lote) as lotes,sum(j34_area) as area,sum(j34_totcon) as areac,sum(j36_testad) as testada from ($sql) as f group by j34_setor, j34_quadra");
+$result1 = db_query("select j34_setor,j34_quadra,count(j34_lote) as lotes,sum(j34_area) as area,sum(j34_totcon) as areac,sum(j36_testad) as testada from ($sql) as f group by j34_setor, j34_quadra");
 $pdf->MultiCell(180,05,"TOTAIS POR SETOR/QUADRA",1,"C");
 $pdf->SetFillColor(235);
 $pdf->Cell(30,$tam,"SETOR(ES)",1,0,"C",1);
@@ -243,7 +243,7 @@ for($x=0;$x<pg_numrows($result1);$x++){
   $pdf->Cell(30,$tam,"".db_formatar($areac,'f'),1,0,"C",1);
   $pdf->Cell(30,$tam,"".db_formatar($testada,'f'),1,1,"C",1);
 }
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 */
 $pdf->output();
 ?>

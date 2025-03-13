@@ -9,175 +9,181 @@ require_once("scripts/strings.js");
  */
 DBViewLancamentoAvaliacaoParecer = function(sInstancia, iTurma, iCodigoRegencia, oWindowParent, sRPCAlterado) {
 
-   this.sInstancia = sInstancia;
-   this.iMatricula = '';
-   this.iTurma     = iTurma;
-   this.sRPC       = "edu4_lancamentoavaliacao.RPC.php";
-   this.iOrdem     = null;
-   if (sRPCAlterado && sRPCAlterado != '') {
-     this.sRPC = sRPCAlterado;
-   }
+  this.sInstancia = sInstancia;
+  this.iMatricula = '';
+  this.iTurma     = iTurma;
+  this.sRPC       = "edu4_lancamentoavaliacao.RPC.php";
+  this.iOrdem     = null;
+  if (sRPCAlterado && sRPCAlterado != '') {
+    this.sRPC = sRPCAlterado;
+  }
 
-   this.metodoSalvarRpc = 'salvarParecer';
+  this.metodoSalvarRpc = 'salvarParecer';
 
-   this.getParecerRpc = 'getParecer';
+  this.getParecerRpc = 'getParecer';
 
-   this.iCodigoPeriodo = '';
-   this.iCodigoEtapa   = '';
+  this.iCodigoPeriodo = '';
+  this.iCodigoEtapa   = '';
 
-   this.lMostrarPesquisaAluno = false;
+  this.lMostrarPesquisaAluno = false;
 
-   this.lMostrarPesquisaPeriodo = false;
+  this.lMostrarPesquisaPeriodo = false;
 
-   this.oAlunoTurma   = null;
-   this.oPeriodoTurma = null;
+  this.oAlunoTurma   = null;
+  this.oPeriodoTurma = null;
 
-   this.iCodigoRegencia = iCodigoRegencia;
+  this.iCodigoRegencia = iCodigoRegencia;
 
-   this.lSalvar          = false;
-   this.lProfessorLogado = false;
+  this.lSalvar          = false;
+  this.lProfessorLogado = false;
 
-   this.oCallback = function () {
-     return true;
-   };
-   /**
-    * Lista de disciplinas da turma
-    */
-   this.oDisciplinasTurma = null;
-   /**
-    * Array com os parecers padronizados
-    */
-   this.aParecer = new Array();
-   var me = this;
+  this.oCallback = function () {
+    return true;
+  };
+  /**
+   * Lista de disciplinas da turma
+   */
+  this.oDisciplinasTurma = null;
 
-    var iWidth  = document.body.getWidth()/1.3;
-    var iHeight = document.body.getHeight()/1.2;
-    if (oWindowParent != null) {
+  /**
+   * Array com os parecers padronizados
+   */
+  this.aParecer = new Array();
 
-      iWidth  = oWindowParent.getWidth()/1.2;
-      iHeight = oWindowParent.getHeight()/1.2;
-    }
-    this.oWindowParecer = new windowAux("wndParecer", "Lançamento de Pareceres", iWidth, iHeight);
-    this.oWindowParecer.setShutDownFunction(function () {
+  this.lDisciplinasProcedimentoAvaliacaoParecer = true;
 
-      me.oWindowParecer.destroy();
-      me.oCallback();
-    });
-    var sConteudo  = "<div id='ctnparecer' >";
-    sConteudo     += "  <fieldset id='ctnFieldSetAlunos' style='display:none'>";
-    sConteudo     += "    <Legend><b>Alunos</b></legend>";
-    sConteudo     += "    <table>";
-    sConteudo     += "     <tr id='ctnListaAlunos' style='display:none'>";
-    sConteudo     += "      <td>";
-    sConteudo     += "       <b>Aluno:</b>";
-    sConteudo     += "      </td>";
-    sConteudo     += "      <td id='tdAluno'>";
-    sConteudo     += "      </td>";
-    sConteudo     += "     </tr>";
-    sConteudo     += "     <tr id='ctnListaPeriodos' style='display:none'>";
-    sConteudo     += "      <td>";
-    sConteudo     += "       <b>Período:</b>";
-    sConteudo     += "      </td> ";
-    sConteudo     += "      <td id='tdPeriodo'>";
-    sConteudo     += "      </td>";
-    sConteudo     += "     </tr>";
-    sConteudo     += "    </table>";
-    sConteudo     += "  </fieldset>";
-    sConteudo     += "  <fieldset>";
-    sConteudo     += "    <legend><b>Parecer Padronizado</b></legend>";
-    sConteudo     += "      <div style='width:100%'>";
-    sConteudo     += "        <table> ";
-    sConteudo     += "          <tr> ";
-    sConteudo     += "            <td> ";
-    sConteudo     += "              <a href='#' onclick='"+me.sInstancia+".consultarParecer(true);return false;'>";
-    sConteudo     += "                <b>Parecer:</b></a>";
-    sConteudo     += "            </td> ";
-    sConteudo     += "            <td>  ";
-    sConteudo     += "              <span id='ctnTxtCodigoParecer'></span>";
-    sConteudo     += "              <span id='ctnTxtDescricaoParecer'></span>";
-    sConteudo     += "            </td> ";
-    sConteudo     += "          </tr> ";
-    sConteudo     += "          <tr> ";
-    sConteudo     += "            <td> ";
-    sConteudo     += "              <b>Legenda:</b> ";
-    sConteudo     += "            </td> ";
-    sConteudo     += "            <td id='ctnComboLegenda'>";
-    sConteudo     += "            </td>";
-    sConteudo     += "          </tr> ";
-    sConteudo     += "          <tr> ";
-    sConteudo     += "            <td>&nbsp;</td> ";
-    sConteudo     += "           <td> ";
-    sConteudo     += "              <input type='button' id='btnSalvarParecerPadronizado' value='Adicionar Parecer'>";
-    sConteudo     += "            </td>";
-    sConteudo     += "          </tr>";
-    sConteudo     += "        </table> ";
-    sConteudo     += "        <fieldset style='border:0px;border-top:2px groove white'>";
-    sConteudo     += "          <legend><b>Pareceres Lançados</b></legend>";
-    sConteudo     += "           <div style='width:100%' id='ctnGridParecer'>";
-    sConteudo     += "           </div>";
-    sConteudo     += "        </fieldset>";
-    sConteudo     += "      </div>";
-    sConteudo     += "  </fieldset>";
-    sConteudo     += "  <fieldset>";
-    sConteudo     += "    <legend>";
-    sConteudo     += "      <b>Parecer Descritivo</b>";
-    sConteudo     += "    </legend>";
-    sConteudo     += "    <textarea style='width:100%;' id='parecer' rows='4'></textarea>";
-    sConteudo     += "  </fieldset>";
+  var me = this;
 
-    sConteudo     += "  <fieldset id='ctnDisciplinasTurmas'>";
-    sConteudo     += "    <Legend id='legendDisciplinasTurmas'><b>Outras Disciplinas para o parecer</b></legend>";
-    sConteudo     += "  </fieldset>";
+  var iWidth  = document.body.getWidth()/1.3;
+  var iHeight = document.body.getHeight()/1.2;
+  if (oWindowParent != null) {
 
+    iWidth  = oWindowParent.getWidth()/1.2;
+    iHeight = oWindowParent.getHeight()/1.2;
+  }
 
-    sConteudo     += "  <center>";
-    sConteudo     += "    <input type='button' id='btnSalvarPareceres' value='Salvar Parecer'/>";
-    sConteudo     += "  </center>";
-    sConteudo     += "</div>";
+  this.oWindowParecer = new windowAux("wndParecer", "Lançamento de Pareceres", iWidth, iHeight);
+  this.oWindowParecer.setShutDownFunction(function () {
 
-    this.oWindowParecer.setContent(sConteudo);
-    this.oMessageBoard = new DBMessageBoard('msgBoardLancamentoParecer',
-                                          'Lançamento de Avaliação por Parecer',
-                                          '',
-                                           this.oWindowParecer.getContentContainer()
-                                          );
-    if (oWindowParent != null) {
-      this.oWindowParecer.setChildOf(oWindowParent);
-    }
+    me.oWindowParecer.destroy();
+    me.oCallback();
+  });
 
-    this.oTxtCodigoParecer = new DBTextField('oTxtCodigoParecer', this.sInstancia+'.oTxtCodigoParecer','', 10);
-    this.oTxtCodigoParecer.addEvent("onBlur",";"+this.sInstancia+".consultarParecer(false);");
-    this.oTxtCodigoParecer.show($('ctnTxtCodigoParecer'));
-    this.oTxtCodigoParecer.setReadOnly(false);
+  var sConteudo  = "<div id='ctnparecer' >";
+  sConteudo     += "  <fieldset id='ctnFieldSetAlunos' style='display:none'>";
+  sConteudo     += "    <Legend><b>Alunos</b></legend>";
+  sConteudo     += "    <table>";
+  sConteudo     += "     <tr id='ctnListaAlunos' style='display:none'>";
+  sConteudo     += "      <td>";
+  sConteudo     += "       <b>Aluno:</b>";
+  sConteudo     += "      </td>";
+  sConteudo     += "      <td id='tdAluno'>";
+  sConteudo     += "      </td>";
+  sConteudo     += "     </tr>";
+  sConteudo     += "     <tr id='ctnListaPeriodos' style='display:none'>";
+  sConteudo     += "      <td>";
+  sConteudo     += "       <b>Período:</b>";
+  sConteudo     += "      </td> ";
+  sConteudo     += "      <td id='tdPeriodo'>";
+  sConteudo     += "      </td>";
+  sConteudo     += "     </tr>";
+  sConteudo     += "    </table>";
+  sConteudo     += "  </fieldset>";
+  sConteudo     += "  <fieldset>";
+  sConteudo     += "    <legend><b>Parecer Padronizado</b></legend>";
+  sConteudo     += "      <div style='width:100%'>";
+  sConteudo     += "        <table> ";
+  sConteudo     += "          <tr> ";
+  sConteudo     += "            <td> ";
+  sConteudo     += "              <a href='#' onclick='"+me.sInstancia+".consultarParecer(true);return false;'>";
+  sConteudo     += "                <b>Parecer:</b></a>";
+  sConteudo     += "            </td> ";
+  sConteudo     += "            <td>  ";
+  sConteudo     += "              <span id='ctnTxtCodigoParecer'></span>";
+  sConteudo     += "              <span id='ctnTxtDescricaoParecer'></span>";
+  sConteudo     += "            </td> ";
+  sConteudo     += "          </tr> ";
+  sConteudo     += "          <tr> ";
+  sConteudo     += "            <td> ";
+  sConteudo     += "              <b>Legenda:</b> ";
+  sConteudo     += "            </td> ";
+  sConteudo     += "            <td id='ctnComboLegenda'>";
+  sConteudo     += "            </td>";
+  sConteudo     += "          </tr> ";
+  sConteudo     += "          <tr> ";
+  sConteudo     += "            <td>&nbsp;</td> ";
+  sConteudo     += "           <td> ";
+  sConteudo     += "              <input type='button' id='btnSalvarParecerPadronizado' value='Adicionar Parecer'>";
+  sConteudo     += "            </td>";
+  sConteudo     += "          </tr>";
+  sConteudo     += "        </table> ";
+  sConteudo     += "        <fieldset style='border:0px;border-top:2px groove white'>";
+  sConteudo     += "          <legend><b>Pareceres Lançados</b></legend>";
+  sConteudo     += "           <div style='width:100%' id='ctnGridParecer'>";
+  sConteudo     += "           </div>";
+  sConteudo     += "        </fieldset>";
+  sConteudo     += "      </div>";
+  sConteudo     += "  </fieldset>";
+  sConteudo     += "  <fieldset>";
+  sConteudo     += "    <legend>";
+  sConteudo     += "      <b>Parecer Descritivo</b>";
+  sConteudo     += "    </legend>";
+  sConteudo     += "    <textarea style='width:100%;' id='parecer' rows='4'></textarea>";
+  sConteudo     += "  </fieldset>";
+
+  sConteudo     += "  <fieldset id='ctnDisciplinasTurmas'>";
+  sConteudo     += "    <Legend id='legendDisciplinasTurmas'><b>Outras Disciplinas para o parecer</b></legend>";
+  sConteudo     += "  </fieldset>";
 
 
-    this.oTxtDescricaoParecer = new DBTextField('oTxtDescricaoAcordo', this.sInstancia+'.oTxtDescricaoParecer','', 50);
-    this.oTxtDescricaoParecer.show($('ctnTxtDescricaoParecer'));
-    this.oTxtDescricaoParecer.setReadOnly(true);
+  sConteudo     += "  <center>";
+  sConteudo     += "    <input type='button' id='btnSalvarPareceres' value='Salvar Parecer'/>";
+  sConteudo     += "  </center>";
+  sConteudo     += "</div>";
 
-    this.oCboLegendas  = new DBComboBox('oCboLegendas', this.sInstancia+'.oCboLegendas', null, '100%');
-    this.oCboLegendas.show($('ctnComboLegenda'));
-    this.oCboLegendas.addItem('', ' ');
+  this.oWindowParecer.setContent(sConteudo);
+  this.oMessageBoard = new DBMessageBoard('msgBoardLancamentoParecer',
+                                        'Lançamento de Avaliação por Parecer',
+                                        '',
+                                         this.oWindowParecer.getContentContainer()
+                                        );
+  if (oWindowParent != null) {
+    this.oWindowParecer.setChildOf(oWindowParent);
+  }
 
-    $('oTxtCodigoParecer').focus();
-    $('oTxtDescricaoAcordo').disabled    = true;
-    $('oTxtDescricaoAcordo').style.color = '#000';
+  this.oTxtCodigoParecer = new DBTextField('oTxtCodigoParecer', this.sInstancia+'.oTxtCodigoParecer','', 10);
+  this.oTxtCodigoParecer.addEvent("onBlur",";"+this.sInstancia+".consultarParecer(false);");
+  this.oTxtCodigoParecer.show($('ctnTxtCodigoParecer'));
+  this.oTxtCodigoParecer.setReadOnly(false);
 
-    this.oGridParecer               = new DBGrid('gridParecer');
-    this.oGridParecer.sNameInstance = this.sInstancia+'.oGridParecer';
-    this.oGridParecer.setHeight(80);
-    this.oGridParecer.setHeader(new Array('Código', 'Parecer', 'Ação'));
-    this.oGridParecer.setCellWidth(new Array('5%', '85%', '10%'));
 
-    $('btnSalvarParecerPadronizado').observe('click',  function() {
-      me.adicionarParecer();
-    });
+  this.oTxtDescricaoParecer = new DBTextField('oTxtDescricaoAcordo', this.sInstancia+'.oTxtDescricaoParecer','', 50);
+  this.oTxtDescricaoParecer.show($('ctnTxtDescricaoParecer'));
+  this.oTxtDescricaoParecer.setReadOnly(true);
 
-    me.getLegendas();
+  this.oCboLegendas  = new DBComboBox('oCboLegendas', this.sInstancia+'.oCboLegendas', null, '100%');
+  this.oCboLegendas.show($('ctnComboLegenda'));
+  this.oCboLegendas.addItem('', ' ');
 
-    $('btnSalvarPareceres').observe('click', function() {
-      me.salvarParecer();
-    });
+  $('oTxtCodigoParecer').focus();
+  $('oTxtDescricaoAcordo').disabled    = true;
+  $('oTxtDescricaoAcordo').style.color = '#000';
+
+  this.oGridParecer               = new DBGrid('gridParecer');
+  this.oGridParecer.sNameInstance = this.sInstancia+'.oGridParecer';
+  this.oGridParecer.setHeight(80);
+  this.oGridParecer.setHeader(new Array('Código', 'Parecer', 'Ação'));
+  this.oGridParecer.setCellWidth(new Array('5%', '85%', '10%'));
+
+  $('btnSalvarParecerPadronizado').observe('click',  function() {
+    me.adicionarParecer();
+  });
+
+  me.getLegendas();
+
+  $('btnSalvarPareceres').observe('click', function() {
+    me.salvarParecer();
+  });
 
   $('btnSalvarParecerPadronizado').disabled = true;
 
@@ -243,6 +249,10 @@ DBViewLancamentoAvaliacaoParecer.prototype.getParecer =  function () {
 
   var me = this;
 
+  if ( me.iOrdem === null ) {
+    return;
+  }
+
   me.oGridParecer.clearAll(true);
   me.aParecer = new Array();
 
@@ -258,7 +268,7 @@ DBViewLancamentoAvaliacaoParecer.prototype.getParecer =  function () {
   oJson.onComplete = function (oResponse) {
 
     js_removeObj('msgBox');
-    var oRetorno       = eval("("+oResponse.responseText+")");
+    var oRetorno       = JSON.parse(oResponse.responseText);
     $('parecer').value = oRetorno.sParecer.urlDecode();
 
     if (oRetorno.sParecerPadronizado.urlDecode() != '') {
@@ -344,7 +354,7 @@ DBViewLancamentoAvaliacaoParecer.prototype.getLegendas = function() {
   oJson.parameters = 'json='+Object.toJSON(oParametros);
   oJson.onComplete = function (oResponse) {
 
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
     oRetorno.aLegendas.each(function(oLegenda, iSeq) {
       me.oCboLegendas.addItem(oLegenda.codigo, oLegenda.descricao.urlDecode());
     });
@@ -507,7 +517,7 @@ DBViewLancamentoAvaliacaoParecer.prototype.salvarParecer = function() {
   oJson.onComplete = function (oResponse) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
     if (oRetorno.status == 1) {
       me.oCallback(me);
     }
@@ -537,6 +547,7 @@ DBViewLancamentoAvaliacaoParecer.prototype.show = function () {
 
   this.oDisciplinasTurma = new DBViewAvaliacao.DisciplinaTurma(this.iTurma, this.iCodigoEtapa, this.lProfessorLogado);
   this.oDisciplinasTurma.naoListarAsRegencias([this.iCodigoRegencia]);
+  this.oDisciplinasTurma.somenteDisciplinasParecer( this.lDisciplinasProcedimentoAvaliacaoParecer );
   this.oDisciplinasTurma.show($('ctnDisciplinasTurmas'));
 };
 
@@ -600,7 +611,7 @@ DBViewLancamentoAvaliacaoParecer.prototype.getParecerAluno = function() {
   this.iOrdem         = this.oPeriodoTurma.getOrdemSelecionados()[0];
   this.iCodigoPeriodo = this.oPeriodoTurma.getPeriodoAvaliacaoSelecionados()[0];
 
-  if (!js_empty(this.iMatricula) != '' && !js_empty(this.iCodigoPeriodo)) {
+  if (!empty(this.iMatricula) != '' && !empty(this.iCodigoPeriodo)) {
     this.getParecer();
   }
 };
@@ -619,4 +630,12 @@ DBViewLancamentoAvaliacaoParecer.prototype.setProfessorLogado = function(lProfes
  */
 DBViewLancamentoAvaliacaoParecer.prototype.setOrdem = function (iOrdem) {
   this.iOrdem = iOrdem;
+};
+
+/**
+ * Seta se devem ser apresentadas somente disciplinas com procedimento de avaliação do tipo PARECER
+ * @param {bool} lDisciplinasProcedimentoAvaliacaoParecer
+ */
+DBViewLancamentoAvaliacaoParecer.prototype.disciplinasProcedimentoAvaliacaoParecer = function( lDisciplinasProcedimentoAvaliacaoParecer ) {
+  this.lDisciplinasProcedimentoAvaliacaoParecer = lDisciplinasProcedimentoAvaliacaoParecer;
 };

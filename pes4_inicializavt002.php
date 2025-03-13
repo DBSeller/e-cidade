@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -198,7 +198,7 @@ function inicializa_vt()
         $matriz4[4] = $vtffuncant[$Ivtffuncant]["r17_difere"];
         $matriz4[5] = $vtffuncant[$Ivtffuncant]["r17_situac"];
         $matriz4[6] = 't';
-        $matriz4[7] = 0;
+        $matriz4[7] = $vtffuncant[$Ivtffuncant]["r17_quant"];
         $matriz4[8] = db_val(db_substr($subpes,1,4));
         $matriz4[9] = db_val(db_substr($subpes,6,2));
         

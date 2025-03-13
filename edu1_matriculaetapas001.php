@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_jsplibwebseller.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
 
 if ( !isset( $ed60_d_datamatricula_dia ) ) {
   
@@ -154,7 +154,7 @@ if ( isset( $incluir ) ) {
       $clmatriculamov->ed229_i_matricula    = $ultima;
       $clmatriculamov->ed229_i_usuario      = db_getsession("DB_id_usuario");
       $clmatriculamov->ed229_c_procedimento = "$sitmatricula ALUNO";
-      $clmatriculamov->ed229_t_descr        = "ALUNO {$sitmatricula1} NA TURMA {$ed57_c_descr}. SITUAÇÂO ANTERIOR: ".trim( $sitanterior );
+      $clmatriculamov->ed229_t_descr        = "ALUNO {$sitmatricula1} NA TURMA {$ed57_c_descr}. SITUAÇÃO ANTERIOR: ".trim( $sitanterior );
       $clmatriculamov->ed229_d_dataevento   = $ed60_d_datamatricula_ano."-".$ed60_d_datamatricula_mes."-".$ed60_d_datamatricula_dia;
       $clmatriculamov->ed229_c_horaevento   = date("H:i");
       $clmatriculamov->ed229_d_data         = date( "Y-m-d", db_getsession("DB_datausu") );

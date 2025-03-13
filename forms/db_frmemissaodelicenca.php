@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,23 +26,20 @@
  */
 
 $clrotulo = new rotulocampo;
-$clrotulo->label("am05_sequencial");
+$clrotulo->label("am08_sequencial");
 $clrotulo->label("am05_nome");
-$clrotulo->label("am08_protprocesso");
-$clrotulo->label("am08_tipolicenca");
-$clrotulo->label("am08_dataemissao");
-$clrotulo->label("am08_datavencimento");
+$clrotulo->label("am05_sequencial");
 
 $db_opcao = 1;
 ?>
 <form name="formEmissaoLicenca" id="formEmissaoLicenca" method="post" action="">
 
   <fieldset>
-    <legend>Emissão de Licenças</legend>
+    <legend>Emissão de Licença</legend>
 
-    <table>
+    <table class="form-container">
       <tr>
-        <td nowrap title="<?php echo $Tam05_sequencial; ?>">
+        <td nowrap title="<?php echo $Tam05_sequencial; ?>" width="170px">
          <?php
           db_ancora($Lam05_sequencial,' js_pesquisaEmpreendimento(true); ',1);
          ?>
@@ -50,162 +47,62 @@ $db_opcao = 1;
         <td>
          <?php
           db_input('am05_sequencial',5,1,true,'text',1,"onchange='js_pesquisaEmpreendimento(false)'");
-          db_input('am05_nome',40,0,true,'text',3,"",null);
+          db_input('am05_nome',50,0,true,'text',3,"",null);
          ?>
         </td>
       </tr>
 
       <tr>
-        <td nowrap title="<?php echo $Tam08_protprocesso; ?>">
-         <?php
-          db_ancora('Código do Processo:',' js_pesquisaProcesso(true); ',1);
-         ?>
-        </td>
-        <td>
-         <?php
-          db_input('am08_protprocesso',5,1,true,'text',1,"onchange='js_pesquisaProcesso(false)'");
-          db_input('p51_descr',40,0,true,'text',3,"",null);
-         ?>
+        <td colspan="2">
+          <fieldset id="dadosLicenca" class="hide">
+            <legend>Dados da Licença</legend>
+
+            <input type="hidden" name="am08_sequencial" id="am08_sequencial" value="" />
+            <strong>Número:</strong> <span id="codigoLicenca"></span> <br/>
+            <strong>Tipo de Licença:</strong> <span id="tipoLicenca"></span> <br/>
+            <strong>Tipo de Emissão:</strong> <span id="tipoEmissao"></span> <br/>
+            <strong>Data de Vencimento:</strong> <span id="dataVencimento"></span> <br/>
+            <strong>Número do Parecer Técnico:</strong> <span id="codigoParecerTecnico"></span> <br/>
+            <strong>Código do Processo:</strong> <span id="codigoProcesso"></span> <br/>
+            <strong>Data de Emissão do Parecer Técnico:</strong> <span id="dataEmissao"></span> <br/>
+          </fieldset>
         </td>
       </tr>
+
     </table>
-
-    <fieldset>
-
-      <legend>Dados da Licença</legend>
-
-      <table>
-
-        <tr>
-          <td nowrap title="<?php echo $Tam08_tipolicenca; ?>">
-            <?php echo $Lam08_tipolicenca; ?>
-          </td>
-          <td>
-            <?php
-              $aOpcoes = array(''  => 'Selecione');
-              db_select('am08_tipolicenca', $aOpcoes, true, $db_opcao, "onchange='js_getTiposEmissao()'");
-            ?>
-          </td>
-        </tr>
-
-         <tr>
-          <td nowrap style="width:150px;" >
-            <strong>Tipo de Emissão:</strong>
-          </td>
-          <td>
-            <?php
-              db_select('tipoEmissao', $aOpcoes, true, $db_opcao);
-            ?>
-          </td>
-        </tr>
-
-        <tr>
-          <td nowrap title="<?php echo $Tam08_dataemissao; ?>">
-            <?php echo $Lam08_dataemissao; ?>
-          </td>
-          <td>
-            <?php
-
-              $sDataHoje = date( "d/m/Y", db_getsession("DB_datausu") );
-              $aDataHoje = explode("/", $sDataHoje);
-              $am08_dataemissao_dia = $aDataHoje[0];
-              $am08_dataemissao_mes = $aDataHoje[1];
-              $am08_dataemissao_ano = $aDataHoje[2];
-
-              db_inputdata('am08_dataemissao',$am08_dataemissao_dia,$am08_dataemissao_mes,$am08_dataemissao_ano,true,'text',$db_opcao,"");
-            ?>
-          </td>
-        </tr>
-
-        <tr>
-          <td nowrap title="<?php echo $Tam08_datavencimento; ?>">
-            <?php echo $Lam08_datavencimento; ?>
-          </td>
-          <td>
-            <?php
-
-              $am08_datavencimento_dia = '';
-              $am08_datavencimento_mes = '';
-              $am08_datavencimento_ano = '';
-              db_inputdata('am08_datavencimento',$am08_datavencimento_dia,$am08_datavencimento_mes,$am08_datavencimento_ano,true,'text',$db_opcao,"");
-            ?>
-          </td>
-        </tr>
-      </table>
-    </fieldset>
-
   </fieldset>
 
-  <input name="emitir" type="button" id="emitir" value="Emitir" onclick="return js_validaEmissao();"/>
-  <input name="limpar" type="reset"  id="limpar" value="Limpar" onclick="js_limpaFormulario()"/>
+  <input name="emitir" type="button" id="emitir" value="Emitir" onclick="return js_validaEmissao();" disabled />
+  <input name="limpar" type="reset"  id="limpar" value="Limpar" onclick="js_limparFormulario();"/>
 
 </form>
 <script type="text/javascript">
 
-$('tipoEmissao').addClassName('field-size3');
-$('am08_tipolicenca').addClassName('field-size3');
-
-var sCaminhoMensagens = "tributario.meioambiente.amb4_emissaodelicenca.";
+var sCaminhoMensagens = "tributario.meioambiente.frm_emissaodelicenca.";
 var sRpc              = "amb4_emissaodelicenca.RPC.php";
+
+function js_limparFormulario(){
+
+  $('formEmissaoLicenca').reset();
+  $('dadosLicenca').addClassName('hide');
+  $('am08_sequencial').value = '';
+  $('emitir').disabled       = true;
+}
 
 /**
  * Função que reseta o formulário, mantendo os dados do empreendimento
  */
-function js_limpaFormulario() {
-
-  var iCodigoEmpreendimento = $('am05_sequencial').value;
-
-  $('limpar').click();
-
-  $('am05_sequencial').value = iCodigoEmpreendimento;
-}
-
 function js_validaEmissao(){
 
-  if( !isNumeric( $F('am05_sequencial') ) || empty( $F('am05_sequencial') ) ){
+  if( !isNumeric( $F('am08_sequencial') ) || empty( $F('am08_sequencial') ) ){
 
     alert( _M( sCaminhoMensagens + 'empreendimento_obrigatorio' ) );
     return false;
   }
 
-  if( !isNumeric( $F('am08_protprocesso') ) || empty( $F('am08_protprocesso') )  ){
-
-    alert( _M( sCaminhoMensagens + 'processo_obrigatorio' ) );
-    return false;
-  }
-
-  if( empty( $F('am08_tipolicenca') ) ){
-
-    alert( _M( sCaminhoMensagens + 'tipo_de_licenca_obrigatorio' ) );
-    return false;
-  }
-
-  if( empty( $F('tipoEmissao') ) ){
-
-    alert( _M( sCaminhoMensagens + 'tipo_de_emissao_obrigatorio' ) );
-    return false;
-  }
-
-  if( empty( $F('am08_dataemissao') ) ){
-
-    alert( _M( sCaminhoMensagens + 'data_emissao_obrigatorio' ) );
-    return false;
-  }
-
-  if( empty( $F('am08_datavencimento') ) ){
-
-    alert( _M( sCaminhoMensagens + 'data_vencimento_obrigatorio' ) );
-    return false;
-  }
-
   var oParametros = {
       sExecucao             : 'emitirLicenca',
-      iCodigoEmpreendimento : $F('am05_sequencial'),
-      iCodigoProtocolo      : $F('am08_protprocesso'),
-      iTipoLicenca          : $F('am08_tipolicenca'),
-      iTipoEmissao          : $F('tipoEmissao'),
-      sDataEmissao          : $F('am08_dataemissao'),
-      sDataVencimento       : $F('am08_datavencimento')
+      iCodigoParecerTecnico : $F('am08_sequencial')
   }
 
   new AjaxRequest(sRpc, oParametros, function(oRetorno, erro) {
@@ -234,77 +131,47 @@ function js_validaEmissao(){
  */
 function js_pesquisaEmpreendimento(mostra) {
 
-  js_limpaFormulario();
-
+  if( empty( $F('am05_sequencial') ) ){
+    js_limparFormulario();
+  }
   if (mostra==true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_empreendimento','func_empreendimento.php?funcao_js=parent.js_mostraempreendimento1|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empreendimento','func_empreendimento.php?funcao_js=parent.js_mostraempreendimento1|0|1','Pesquisa',true);
   } else {
-    js_OpenJanelaIframe('top.corpo','db_iframe_empreendimento','func_empreendimento.php?pesquisa_chave='+document.formEmissaoLicenca.am05_sequencial.value+'&funcao_js=parent.js_mostraempreendimento','Pesquisa',false,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empreendimento','func_empreendimento.php?pesquisa_chave='+$F('am05_sequencial')+'&funcao_js=parent.js_mostraempreendimento','Pesquisa',false,0);
   }
 }
 
 function js_mostraempreendimento1(chave1,chave2) {
 
-  document.formEmissaoLicenca.am05_sequencial.value = chave1;
-  document.formEmissaoLicenca.am05_nome.value       = chave2;
+  $('am05_sequencial').value = chave1;
+  $('am05_nome').value       = chave2;
   db_iframe_empreendimento.hide();
-  js_getTiposLicenca();
+  js_getLicenca();
 }
 
 function js_mostraempreendimento(chave,erro) {
 
-  document.formEmissaoLicenca.am05_nome.value = chave;
+  $('am05_nome').value = chave;
   if (erro==true) {
 
-    document.formEmissaoLicenca.am05_sequencial.focus();
-    document.formEmissaoLicenca.am05_sequencial.value = '';
+    $('am05_sequencial').focus();
+    $('am05_sequencial').value = '';
   }else{
-    js_getTiposLicenca();
+    js_getLicenca();
   }
 }
 
 /**
- * Func protprocesso
+ * Função que retorna a licença disponível para emissão
  */
-function js_pesquisaProcesso(mostra){
-
-  if(mostra==true){
-    js_OpenJanelaIframe('','db_iframe_processo','func_protprocesso.php?funcao_js=parent.js_mostraprocesso1|p58_codproc|p51_descr','Pesquisa',true);
-  }else{
-    js_OpenJanelaIframe('','db_iframe_processo','func_protprocesso.php?pesquisa_chave='+document.formEmissaoLicenca.am08_protprocesso.value+'&rettipoproc=true&funcao_js=parent.js_mostraprocesso','Pesquisa',false);
-  }
-}
-
-function js_mostraprocesso1(chave1,chave2){
-
-  document.formEmissaoLicenca.am08_protprocesso.value = chave1;
-  document.formEmissaoLicenca.p51_descr.value         = chave2;
-  db_iframe_processo.hide();
-}
-
-function js_mostraprocesso(chave, sDescricao, lErro){
-
-  document.formEmissaoLicenca.p51_descr.value = sDescricao;
-  if( lErro==true){
-
-    document.formEmissaoLicenca.am08_protprocesso.focus();
-    document.formEmissaoLicenca.am08_protprocesso.value = '';
-  }
-}
-
-/**
- * Função que retorna os tipos de licença disponíveis para emissão
- */
-function js_getTiposLicenca(){
+function js_getLicenca(){
 
   if( !isNumeric( $F('am05_sequencial') ) || empty( $F('am05_sequencial') ) ){
-
-    alert( _M( sCaminhoMensagens + 'empreendimento_obrigatorio' ) );
     return false;
   }
 
   var oParametros = {
-      sExecucao             : 'getTiposLicenca',
+      sExecucao             : 'getLicencaValida',
       iCodigoEmpreendimento : $F('am05_sequencial')
   }
 
@@ -313,85 +180,26 @@ function js_getTiposLicenca(){
     if (erro) {
 
       alert(oRetorno.sMensagem.urlDecode());
+      js_limparFormulario();
       return false;
     }
 
     /**
-     * Remove options e adiciona o padrão
+     * Mostramos os dados da licença e liberamos o botao emitir
      */
-    var oSelectLicenca       = $('am08_tipolicenca');
+    $('dadosLicenca').removeClassName('hide');
+    $('emitir').disabled = false;
 
-    oSelectLicenca.innerHTML = '';
-    var option               = document.createElement("option");
-    option.text              = 'Selecione';
-    option.value             = '';
-    oSelectLicenca.add(option);
+    $('am08_sequencial').value          = oRetorno.codigoParecerTecnico;
 
-    for (var key in oRetorno.aTiposLicenca) {
+    $('codigoLicenca').innerHTML        = oRetorno.codigoLicenca;
+    $('codigoParecerTecnico').innerHTML = oRetorno.codigoParecerTecnico;
+    $('codigoProcesso').innerHTML       = oRetorno.codigoProcesso;
+    $('tipoLicenca').innerHTML          = oRetorno.tipoLicenca;
+    $('tipoEmissao').innerHTML          = oRetorno.tipoEmissao;
+    $('dataVencimento').innerHTML       = oRetorno.dataVencimento;
+    $('dataEmissao').innerHTML          = oRetorno.dataEmissao;
 
-      if (!isNumeric(key)) {
-        break;
-      }
-
-      var option   = document.createElement("option");
-      option.text  = oRetorno.aTiposLicenca[key];
-      option.value = key;
-      oSelectLicenca.add(option);
-    }
-  }).setMessage( _M( sCaminhoMensagens + 'carregando_dados_tipolicenca' ) ).execute();
-}
-
-/**
- * Função que retorna os tipos de emissão disponíveis
- */
-function js_getTiposEmissao(){
-
-  if( !isNumeric( $F('am05_sequencial') ) || empty( $F('am05_sequencial') ) ){
-
-    alert( _M( sCaminhoMensagens + 'empreendimento_obrigatorio' ) );
-    return false;
-  }
-
-  if ( !isNumeric( $F('am08_tipolicenca') ) ) {
-    return false;
-  }
-
-  var oParametros = {
-      sExecucao             : 'getTiposEmissao',
-      iCodigoEmpreendimento : $F('am05_sequencial'),
-      iTipoLicenca          : $F('am08_tipolicenca')
-  }
-
-  new AjaxRequest(sRpc, oParametros, function(oRetorno, erro) {
-
-    if (erro) {
-
-      alert(oRetorno.sMensagem.urlDecode());
-      return false;
-    }
-
-    /**
-     * Remove options e adiciona o padrão
-     */
-    var oSelectEmissao       = $('tipoEmissao');
-
-    oSelectEmissao.innerHTML = '';
-    var option               = document.createElement("option");
-    option.text              = 'Selecione';
-    option.value             = '';
-    oSelectEmissao.add(option);
-
-    for (var key in oRetorno.aTiposEmissao) {
-
-      if (!isNumeric(key)) {
-        break;
-      }
-
-      var option   = document.createElement("option");
-      option.text  = oRetorno.aTiposEmissao[key];
-      option.value = key;
-      oSelectEmissao.add(option);
-    }
-  }).setMessage( _M( sCaminhoMensagens + 'carregando_dados_tipolicenca' ) ).execute();
+  }).setMessage( _M( sCaminhoMensagens + 'carregando_dados_licenca' ) ).execute();
 }
 </script>

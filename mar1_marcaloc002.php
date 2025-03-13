@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_marcaloc_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_marcaloc_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmarcaloc = new cl_marcaloc;
@@ -105,7 +105,7 @@ if(isset($cancelar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
         <?
-        include("forms/db_frmmarcaloc.php");
+        include(modification("forms/db_frmmarcaloc.php"));
         ?>
     </center>
         </td>

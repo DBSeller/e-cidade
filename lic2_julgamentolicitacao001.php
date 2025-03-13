@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("dbforms/db_classesgenericas.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
 $clrotulo->label("l20_codigo");
@@ -94,13 +94,13 @@ $clrotulo->label("l03_descr");
     
     if (mostra) {
       
-      js_OpenJanelaIframe('top.corpo','db_iframe_liclicita',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_liclicita',
                           'func_liclicita.php?funcao_js=parent.js_mostraliclicita1|l20_codigo',
                           'Pesquisa',true);
     } else {
       
        if (document.form1.l20_codigo.value != '') { 
-          js_OpenJanelaIframe('top.corpo','db_iframe_liclicita',
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_liclicita',
                               'func_liclicita.php?pesquisa_chave='+$F('l20_codigo')+'&funcao_js=parent.js_mostraliclicita',
                               'Pesquisa',false);
        }else{

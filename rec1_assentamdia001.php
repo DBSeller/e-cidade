@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_assenta_classe.php");
-include("classes/db_assmeio_classe.php");
-include("classes/db_tipoasse_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_assenta_classe.php"));
+include(modification("classes/db_assmeio_classe.php"));
+include(modification("classes/db_tipoasse_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $classenta = new cl_assenta;
 $classmeio = new cl_assmeio;
@@ -53,8 +53,11 @@ if(isset($incluir)){
   $dtconc  = $h16_dtconc_ano . "-" . $h16_dtconc_mes . "-" . $h16_dtconc_dia;
 
   $sqlerro = false;
-  $result_verifica_lancado = $classmeio->sql_record($classmeio->sql_query_file(null, "h22_codigo as codigo, h22_histor || ' ' || h22_hist2 as historico_mdia", "", " h22_regist = ".$h16_regist." and h22_assent = ".$h16_assent." and h22_data is null"));
+
+  $result_verifica_lancado = $classmeio->sql_record($classmeio->sql_query_file(null, "h22_codigo as codigo, h22_histor || ' ' || h22_hist2 as historico_mdia", "", " h22_regist = ".$h16_regist." and h22_assent = '".$h16_assent."' and h22_data is null"));
+  
   if($classmeio->numrows > 0){
+
     db_fieldsmemory($result_verifica_lancado, 0);
     $historico = $historico_mdia . "\\n" . $h16_histor;
     $classmeio->h22_data   = $dtconc;
@@ -65,6 +68,7 @@ if(isset($incluir)){
     $classenta->h16_conver = "true";
     $classenta->h16_login  = $usuaatu;
     $classenta->incluir($h16_codigo);
+
     if($classenta->erro_status == "0"){
       $sqlerro = true;
       $erro_msg = $classenta->erro_msg;
@@ -72,6 +76,7 @@ if(isset($incluir)){
   }
 
   if($sqlerro == false){
+    $classmeio->h22_codigo = null;
     $classmeio->h22_regist = $h16_regist; 
     $classmeio->h22_assent = $h16_assent;
     $classmeio->h22_dtconc = $dtconc;
@@ -139,11 +144,11 @@ $lBloqueiaPeriodoAquisitivo = true;
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
-	<?
-	include("forms/db_frmassenta.php");
-	?>
+     <?
+     include(modification("forms/db_frmassentamdia.php"));
+     ?>
     </center>
-	</td>
+  </td>
   </tr>
 </table>
 <?

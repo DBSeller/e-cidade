@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_liborcamento.php");
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);

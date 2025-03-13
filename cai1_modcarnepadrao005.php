@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_modcarnepadrao_classe.php");
-require_once("classes/db_modcarnepadraotipo_classe.php");
-require_once("classes/db_modcarnepadraolayouttxt_classe.php");
-require_once("classes/db_modcarnepadraocadmodcarne_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_modcarnepadrao_classe.php"));
+require_once(modification("classes/db_modcarnepadraotipo_classe.php"));
+require_once(modification("classes/db_modcarnepadraolayouttxt_classe.php"));
+require_once(modification("classes/db_modcarnepadraocadmodcarne_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);	
@@ -182,7 +182,7 @@ if (isset($oPost->alterar)) {
 //   } else {
 //   	$oValidaRegra = db_utils::fieldsMemory($rsValidaRegra,0);
 //   	$lSqlErro = true;
-//   	$erro_msg = "Já existe regra nº {$oValidaRegra->k48_sequencial} com os mesmo parâmetros configurados! Verifique.";
+//   	$erro_msg = "Já existe regra no {$oValidaRegra->k48_sequencial} com os mesmo parámetros configurados! Verifique.";
 //   }
   
   db_fim_transacao($lSqlErro);
@@ -217,7 +217,7 @@ if (isset($oPost->alterar)) {
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmmodcarnepadrao.php");
+	include(modification("forms/db_frmmodcarnepadrao.php"));
 	?>
     </center>
 	</td>
@@ -243,8 +243,11 @@ if (isset($oGet->chavepesquisa) ) {
       function js_db_libera() {
          parent.document.formaba.modcarnepadraotipo.disabled = false;
          parent.document.formaba.modcarneexcessao.disabled   = false;
-         top.corpo.iframe_modcarnepadraotipo.location.href='cai1_modcarnepadraotipo001.php?k49_modcarnepadrao=".@$k48_sequencial."';
-         top.corpo.iframe_modcarneexcessao.location.href='cai1_modcarneexcessao001.php?k36_modcarnepadrao=".@$k48_sequencial."';
+         parent.document.formaba.pix.disabled = false;
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_modcarnepadraotipo.location.href='cai1_modcarnepadraotipo001.php?k49_modcarnepadrao=".@$k48_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_modcarneexcessao.location.href='cai1_modcarneexcessao001.php?k36_modcarnepadrao=".@$k48_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_pix.location.href='cai1_pix002.php?k36_modcarnepadrao=".@$k48_sequencial."';
+
      ";
          if (isset($oGet->liberaaba)) {
            echo "  parent.mo_camada('modcarnepadraotipo');";

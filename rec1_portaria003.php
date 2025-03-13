@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_portaria_classe.php");
-include("classes/db_assenta_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_portariaassenta_classe.php");
-include("classes/db_portariatipo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+parse_str($_SERVER["QUERY_STRING"]);
+db_postmemory($_POST);
 
-$clportaria        = new cl_portaria;
-$classenta         = new cl_assenta;
-$clrhpessoal       = new cl_rhpessoal;
-$clportariaassenta = new cl_portariaassenta;
-$clportariatipo    = new cl_portariatipo;
+$clportaria              = new cl_portaria;
+$classenta               = new cl_assenta;
+$clrhpessoal             = new cl_rhpessoal;
+$clportariaassenta       = new cl_portariaassenta;
+$clportariatipo          = new cl_portariatipo;
+$classentamentofuncional = new cl_assentamentofuncional;
+          
 
 $db_botao = false;
 $db_opcao = 33;
@@ -52,39 +49,166 @@ $erro_msg = "";
 
 $lExibirNumeracaoPortaria = true;
 $db_opcao_numero = 3;
+
+try {
+
+  if(isset($excluir)) {
+
+    /**
+     * Excluindo a situação
+     */
+    $situacaoPortaria = new cl_portariaassentasituacao();
+    $situacaoPortaria->excluir(null, "rh236_portariaassenta IN (select h33_sequencial 
+                                                                  from portariaassenta 
+                                                                 where h33_portaria = {$h31_sequencial})");
+    if($situacaoPortaria->erro_status == 0) {
+      throw new Exception($situacaoPortaria->erro_msg);
+    }
+
+
+    /**
+     * Verificamos se o assentamento já não esta vinculado com um lote de registros de ponto
+     * se estiver, não permite a exclusão.
+     */
+    $oDaoAssentaLoteRegistroPonto = new cl_assentaloteregistroponto();
+    $sSqlAssentaLoteRegistroPonto = $oDaoAssentaLoteRegistroPonto->sql_query_file(null, "rh160_sequencial", null, "rh160_assentamento = {$h16_codigo}");
+    $rsAssentaLoteRegistroPonto   = db_query($sSqlAssentaLoteRegistroPonto);
+   
+    if (pg_num_rows($rsAssentaLoteRegistroPonto) > 0) {
+      
+      db_msgbox("Assentamento já possuí evento financeiro, exclusão não permitida.");
+      db_redireciona("");
+    }
+
+    db_inicio_transacao();
+    $db_opcao = 3;
+
+    /**
+     * Tratamento para exclusão de assentamentos de substituição
+     */
+    $oDaoAssentamentoSubstituicao = new cl_assentamentosubstituicao();
+    $rsAssentamentoSubstituicao   = $oDaoAssentamentoSubstituicao->sql_record($oDaoAssentamentoSubstituicao->sql_query_file($h16_codigo));
+
+    if($rsAssentamentoSubstituicao && $oDaoAssentamentoSubstituicao->numrows > 0){
+      $oDaoAssentamentoSubstituicao->excluir($h16_codigo);
+    }
     
-if(isset($excluir)){
-  db_inicio_transacao();
+    $clportariaassenta->excluir(null,"h33_portaria = $h31_sequencial ");
+    if($classenta->erro_status !='0') {
+      $classentamentofuncional->excluir($h16_codigo);
+    }
+          
 
-  $db_opcao = 3;
-  $clportariaassenta->excluir(null,"h33_portaria = $h31_sequencial ");
+    if ($clportariaassenta->erro_status == "0"){
+         $sqlerro  = true;
+         $erro_msg = $clportariaassenta->erro_msg;
+    }
 
-  if ($clportariaassenta->erro_status == "0"){
-       $sqlerro  = true;
-       $erro_msg = $clportariaassenta->erro_msg;
+    if ($sqlerro == false){
+
+      /**
+       * Verificamos a configuração se há tipo de assentamentos do RH que geram afastamentos do pessoal
+       * se houver excluímos o afastamento vinculado
+       */
+      $oAssentamento  = AssentamentoRepository::getInstanceByCodigo($h16_codigo);
+      $aListaInformacoesExternas = InformacoesExternasTipoAssentamento::getTipoAssentamentoConfiguradosPorCompetencia(DBPessoal::getCompetenciaFolha());
+
+      if(is_array($aListaInformacoesExternas)){
+
+        $aTiposAssentamentoConfigurados = array();
+        foreach ($aListaInformacoesExternas as $oInformacoesExternas) {
+          $aTiposAssentamentoConfigurados[] = $oInformacoesExternas->getTipoAssentamento()->getCodigo();
+        }
+
+        if( in_array($oAssentamento->getTipoAssentamento(), $aTiposAssentamentoConfigurados) ) {
+
+          $aAfastaAssenta = AfastaAssentaRepository::getAfastamentosPorAssentamento($oAssentamento);
+
+          if(!is_array($aAfastaAssenta)) {
+            throw new BusinessException("Não foi possível buscar o vínculo entre assentamento e afastamento.");
+          }
+
+          $oAfastamento   = $aAfastaAssenta[0];
+          $oAfastaAssenta = new AfastaAssenta($oAssentamento, $oAfastamento);
+
+          /**
+           * Excluímos o vínculo entre assentamentos e afastamentos
+           */
+          if(!$oAfastaAssenta->remove()) {
+            throw new BusinessException("Erro ao excluir o vínculo entre o assentamento e afastamento.");
+          }
+
+          /**
+           * Excluímos o afastamento que foi originado a partir do assentamento
+           */
+          if(!AfastamentoRepository::remove($oAfastamento)) {
+            throw new BusinessException("Erro ao excluir o afastamento.");
+          }
+        }
+      }
+
+      $clportaria->excluir($h31_sequencial);
+      if ($clportaria->erro_status == "0") {
+
+          $sqlerro  = true;
+          $erro_msg = $clportaria->erro_msg;
+      }
+    }
+
+    if ($h80_db_cadattdinamicovalorgrupo) {
+      $oDaoAssentaAttr = new cl_assentadb_cadattdinamicovalorgrupo();
+      $oDaoAssentaAttr->excluir(null,null, "h80_db_cadattdinamicovalorgrupo = {$h80_db_cadattdinamicovalorgrupo}" );
+    }
+
+    if ($sqlerro == false && !empty($h16_codigo)) {
+
+      $classenta->excluir($h16_codigo);
+      if ($classenta->erro_status == "0"){
+           $sqlerro  = true;
+           $erro_msg = $classenta->erro_msg;
+      }
+    }
+    
+    db_fim_transacao($sqlerro);
+  }else if(isset($chavepesquisa)){
+     $db_opcao = 3;
+     $result = $clportaria->sql_record($clportaria->sql_query($chavepesquisa));
+     $classentamentofuncional = new cl_assentamentofuncional;
+     $rsAssentamentoFuncional = db_query($classentamentofuncional->sql_query($chavepesquisa));
+     $sOpcaoAssentamento      = 1;
+
+     if($rsAssentamentoFuncional && pg_num_rows($rsAssentamentoFuncional) > 0) {
+       $sOpcaoAssentamento    = 2;
+     }
+           
+     db_fieldsmemory($result,0);
+     $db_botao = true;
+
+     if(isset($h16_regist) && !empty($h16_regist)) {
+      
+      $oServidor = ServidorRepository::getInstanciaByCodigo($h16_regist, DBPessoal::getAnoFolha(), DBPessoal::getMesFolha());
+
+      if($oServidor instanceof Servidor) {
+        $z01_nome = $oServidor->getCgm()->getNome();
+      }
+    }
+
+    if ($result && pg_numrows($result) > 0) {
+    
+      $res_portariaassenta = $clportariaassenta->sql_record($clportariaassenta->sql_query_file(null,"h33_assenta",null,"h33_portaria = {$h31_sequencial}"));
+
+      db_fieldsmemory($res_portariaassenta,0);
+             
+      $oDaoAssentaAttr = new cl_assentadb_cadattdinamicovalorgrupo();
+      $rsComplemento   = db_query($oDaoAssentaAttr->sql_query(null,null, "h80_db_cadattdinamicovalorgrupo", null, "h80_assenta = {$h33_assenta}"));
+      if (pg_num_rows($rsComplemento) > 0) {
+        db_fieldsmemory($rsComplemento,0);
+      }
+    }
   }
-
-  if ($sqlerro == false){
-       $clportaria->excluir($h31_sequencial);
-       if ($clportaria->erro_status == "0"){
-            $sqlerro  = true;
-            $erro_msg = $clportaria->erro_msg;
-       }
-  }
-
-  if ($sqlerro == false && !empty($h16_codigo)) {
-       $classenta->excluir($h16_codigo);
-       if ($classenta->erro_status == "0"){
-            $sqlerro  = true;
-            $erro_msg = $classenta->erro_msg;
-       }
-  }
-  db_fim_transacao($sqlerro);
-}else if(isset($chavepesquisa)){
-   $db_opcao = 3;
-   $result = $clportaria->sql_record($clportaria->sql_query($chavepesquisa)); 
-   db_fieldsmemory($result,0);
-   $db_botao = true;
+} catch (Exception $oException) {
+    db_msgbox($oException->getMessage());
+    db_redireciona("rec1_portaria003.php");
 }
 ?>
 <html>
@@ -100,7 +224,7 @@ if(isset($excluir)){
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 
-	<?php include("forms/db_frmportaria.php"); ?>
+	<?php include(modification("forms/db_frmportaria.php")); ?>
   <?php db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
 
 </body>
@@ -118,5 +242,7 @@ if($db_opcao==33){
 }
 ?>
 <script>
+renderizarFormulario();
+js_criarCamposAdicionais();
 js_tabulacaoforms("form1","excluir",true,1,"excluir",true);
 </script>

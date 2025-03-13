@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhestagioagenda_classe.php");
-include("classes/db_rhestagioresultado_classe.php");
-include("classes/db_rhestagioagendadata_classe.php");
-include("classes/estagioAvaliacoes.classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhestagioagenda_classe.php"));
+include(modification("classes/db_rhestagioresultado_classe.php"));
+include(modification("classes/db_rhestagioagendadata_classe.php"));
+include(modification("classes/estagioAvaliacoes.classe.php"));
 $clrhestagioagenda     = new cl_rhestagioagenda;
 $clrhestagioagendadata = new cl_rhestagioagendadata;
 $clrhestagioresultado  = new cl_rhestagioresultado;
@@ -116,7 +116,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmrhestagioagenda.php");
+	include(modification("forms/db_frmrhestagioagenda.php"));
 	?>
     </center>
 	</td>
@@ -149,7 +149,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.rhestagioagendadata.disabled=false;
-         top.corpo.iframe_rhestagioagendadata.location.href='rec1_rhestagioagendadata001.php?db_opcaoal=33&h64_estagioagenda=".@$h57_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhestagioagendadata.location.href='rec1_rhestagioagendadata001.php?db_opcaoal=33&h64_estagioagenda=".@$h57_sequencial."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('rhestagioagendadata');";

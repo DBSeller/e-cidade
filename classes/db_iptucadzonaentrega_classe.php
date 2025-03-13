@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -47,9 +47,9 @@ class cl_iptucadzonaentrega {
    var $j85_ender = null; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
-                 j85_codigo = int4 = Codigo da zona de entrega 
-                 j85_descr = varchar(40) = Descricao da zona de entrega 
-                 j85_ender = varchar(60) = Endereco da zona de entrega 
+                 j85_codigo = int4 = Código da zona de entrega 
+                 j85_descr = varchar(40) = Descrição da zona de entrega 
+                 j85_ender = varchar(60) = Endereço da zona de entrega 
                  ";
    //funcao construtor da classe 
    function cl_iptucadzonaentrega() { 
@@ -76,11 +76,11 @@ class cl_iptucadzonaentrega {
        $this->j85_codigo = ($this->j85_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["j85_codigo"]:$this->j85_codigo);
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir ($j85_codigo){ 
       $this->atualizacampos();
      if($this->j85_descr == null ){ 
-       $this->erro_sql = " Campo Descricao da zona de entrega nao Informado.";
+       $this->erro_sql = " Campo Descrição da zona de entrega não informado.";
        $this->erro_campo = "j85_descr";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -89,7 +89,7 @@ class cl_iptucadzonaentrega {
        return false;
      }
      if($this->j85_ender == null ){ 
-       $this->erro_sql = " Campo Endereco da zona de entrega nao Informado.";
+       $this->erro_sql = " Campo Endereço da zona de entrega não informado.";
        $this->erro_campo = "j85_ender";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -122,7 +122,7 @@ class cl_iptucadzonaentrega {
        }
      }
      if(($this->j85_codigo == null) || ($this->j85_codigo == "") ){ 
-       $this->erro_sql = " Campo j85_codigo nao declarado.";
+       $this->erro_sql = " Campo j85_codigo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -143,12 +143,12 @@ class cl_iptucadzonaentrega {
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Cadastro das zonas de entrega ($this->j85_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Cadastro das zonas de entrega ($this->j85_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Cadastro das zonas de entrega já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Cadastro das zonas de entrega ($this->j85_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Cadastro das zonas de entrega ($this->j85_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -157,7 +157,7 @@ class cl_iptucadzonaentrega {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->j85_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -176,7 +176,7 @@ class cl_iptucadzonaentrega {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($j85_codigo=null) { 
+   public function alterar ($j85_codigo=null) { 
       $this->atualizacampos();
      $sql = " update iptucadzonaentrega set ";
      $virgula = "";
@@ -184,7 +184,7 @@ class cl_iptucadzonaentrega {
        $sql  .= $virgula." j85_codigo = $this->j85_codigo ";
        $virgula = ",";
        if(trim($this->j85_codigo) == null ){ 
-         $this->erro_sql = " Campo Codigo da zona de entrega nao Informado.";
+         $this->erro_sql = " Campo Código da zona de entrega não informado.";
          $this->erro_campo = "j85_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -197,7 +197,7 @@ class cl_iptucadzonaentrega {
        $sql  .= $virgula." j85_descr = '$this->j85_descr' ";
        $virgula = ",";
        if(trim($this->j85_descr) == null ){ 
-         $this->erro_sql = " Campo Descricao da zona de entrega nao Informado.";
+         $this->erro_sql = " Campo Descrição da zona de entrega não informado.";
          $this->erro_campo = "j85_descr";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -210,7 +210,7 @@ class cl_iptucadzonaentrega {
        $sql  .= $virgula." j85_ender = '$this->j85_ender' ";
        $virgula = ",";
        if(trim($this->j85_ender) == null ){ 
-         $this->erro_sql = " Campo Endereco da zona de entrega nao Informado.";
+         $this->erro_sql = " Campo Endereço da zona de entrega não informado.";
          $this->erro_campo = "j85_ender";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -239,28 +239,28 @@ class cl_iptucadzonaentrega {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Cadastro das zonas de entrega nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Cadastro das zonas de entrega não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->j85_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Cadastro das zonas de entrega nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Cadastro das zonas de entrega não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->j85_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->j85_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -291,39 +291,39 @@ class cl_iptucadzonaentrega {
      $sql = " delete from iptucadzonaentrega
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($j85_codigo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($j85_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " j85_codigo = $j85_codigo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Cadastro das zonas de entrega nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Cadastro das zonas de entrega não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$j85_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Cadastro das zonas de entrega nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Cadastro das zonas de entrega não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$j85_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$j85_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -334,9 +334,9 @@ class cl_iptucadzonaentrega {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -345,8 +345,8 @@ class cl_iptucadzonaentrega {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:iptucadzonaentrega";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";

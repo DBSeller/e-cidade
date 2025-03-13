@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -373,7 +373,6 @@ class cl_parametroprogressaoparcialetapa {
      $sql .= "      inner join parametroprogressaoparcial  on  parametroprogressaoparcial.ed112_sequencial = parametroprogressaoparcialetapa.ed113_parametroprogressaoparcial";
      $sql .= "      inner join serie  on  serie.ed11_i_codigo = parametroprogressaoparcialetapa.ed113_serie";
      $sql .= "      inner join escola  on  escola.ed18_i_codigo = parametroprogressaoparcial.ed112_escola";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = serie.ed11_i_codcenso";
      $sql .= "      inner join ensino  on  ensino.ed10_i_codigo = serie.ed11_i_ensino";
      $sql2 = "";
      if($dbwhere==""){

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,66 +25,66 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if(isset($retorno)) {
   $sql = "select codmodelo,nomemodelo,orientacao
           from db_carnesimg
 		  where codmodelo = $retorno";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 }
 //////////INCLUIR/////////////
 if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS);
   db_postmemory($_FILES["arq"]);
-  $result = pg_exec("select max(codmodelo) + 1 from db_carnesimg");
+  $result = db_query("select max(codmodelo) + 1 from db_carnesimg");
   $codigo = pg_result($result,0,0);
   $codigo = $codigo == ""?"1":$codigo;
   
-  pg_exec("begin");
+  db_query("begin");
   if($formulario==0){
     $oid = pg_loimport($tmp_name) or die("Erro(15) importando imagem");
-    pg_exec("insert into db_carnesimg values($codigo,'$nome',$oid,'$orientacao')") or die("Erro(16) inserindo em tabimagens"); // insere um codigo de controle mais o codigo da imagem(oid)
+    db_query("insert into db_carnesimg values($codigo,'$nome',$oid,'$orientacao')") or die("Erro(16) inserindo em tabimagens"); // insere um codigo de controle mais o codigo da imagem(oid)
   }else{
-    $result = pg_exec("select * from db_carnesimg where codmodelo = $formulario");
+    $result = db_query("select * from db_carnesimg where codmodelo = $formulario");
 	if(pg_numrows($result)!=0){	  
-      pg_exec("insert into db_carnesimg values($codigo,'$nome',".pg_result($result,0,"imgmodelo").",'".pg_result($result,0,"orientacao")."')") or die("Erro(16) inserindo em tabimagens"); // insere um codigo de controle mais o codigo da imagem(oid)
-      pg_exec("insert into db_carnescampos 
+      db_query("insert into db_carnesimg values($codigo,'$nome',".pg_result($result,0,"imgmodelo").",'".pg_result($result,0,"orientacao")."')") or die("Erro(16) inserindo em tabimagens"); // insere um codigo de controle mais o codigo da imagem(oid)
+      db_query("insert into db_carnescampos 
 	               select nomecam,".$codigo.",posxmodelo,posymodelo,tipocampo
 				   from db_carnescampos where codmodelo = $formulario") or die("Erro(16) inserindo em db_carnescampos"); // insere um codigo de controle mais o codigo da imagem(oid)
 	}
   }
-  pg_exec("end");
+  db_query("end");
 ////////////////ALTERAR////////////////  
 } else if(isset($HTTP_POST_VARS["alterar"])) {
   db_postmemory($HTTP_POST_VARS);
   db_postmemory($_FILES["arq"]);
   if($error != 0) {
-    pg_exec("update db_carnesimg set nomemodelo = '$nome',	
+    db_query("update db_carnesimg set nomemodelo = '$nome',	
 								   orientacao = '$orientacao'
 				where codmodelo = $codmodelo") or die("Erro(36) alterando em tabimagens"); 
   } else {
-    pg_exec("begin");
+    db_query("begin");
     $oid = pg_loimport($tmp_name) or die("Erro(15) importando imagem");
-    pg_exec("update db_carnesimg set nomemodelo = '$nome',
+    db_query("update db_carnesimg set nomemodelo = '$nome',
 								   imgmodelo = $oid,
 								   orientacao = '$orientacao'
 				where codmodelo = $codmodelo") or die("Erro(36) alterando em tabimagens"); 
-    pg_exec("end");
+    db_query("end");
   }
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
   exit;		     
 ////////////////EXCLUIR//////////////
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("BEGIN");
-  pg_exec("delete from db_carnescampos where codmodelo = ".$HTTP_POST_VARS["codmodelo"]) or die("Erro(49) excluindo db_carnescampos: ".pg_errormessage());
-  pg_exec("delete from db_carnesimg where codmodelo = ".$HTTP_POST_VARS["codmodelo"]) or die("Erro(50) excluindo db_carnesimgs: ".pg_errormessage());
-  pg_exec("COMMIT");  
+  db_query("BEGIN");
+  db_query("delete from db_carnescampos where codmodelo = ".$HTTP_POST_VARS["codmodelo"]) or die("Erro(49) excluindo db_carnescampos: ".pg_errormessage());
+  db_query("delete from db_carnesimg where codmodelo = ".$HTTP_POST_VARS["codmodelo"]) or die("Erro(50) excluindo db_carnesimgs: ".pg_errormessage());
+  db_query("COMMIT");  
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
   exit;  
 }
@@ -140,7 +140,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
             <td><select name="formulario" id="formulario" >
             <option value="0">Nenhum...</option>
             <?
-			    $result = pg_exec("select codmodelo,nomemodelo from db_carnesimg");
+			    $result = db_query("select codmodelo,nomemodelo from db_carnesimg");
 				$numrows = pg_numrows($result);
 				for($i = 0;$i < $numrows;$i++) {
 				  echo "<option value=\"".pg_result($result,$i,"codmodelo")."\" ".(isset($HTTP_POST_VARS["formulario"])?($HTTP_POST_VARS["formulario"]==pg_result($result,$i,"codmodelo")?"selected":""):"").">".pg_result($result,$i,"nomemodelo")."</option>\n";

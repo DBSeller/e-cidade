@@ -1,35 +1,35 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 ?>
 <form name="form1" method="post" action="">
 <center>
 <table border="0" width="100%" height="95%">
   <tr align="center">
-    <td nowrap  width="100%" height="100%"><br><br> 
+    <td nowrap  width="100%" height="100%"><br><br>
       <iframe name="iframe_solicitem" id="solicitem" marginwidth="0" marginheight="0" frameborder="0" src="com1_gerautautiframe001.php"  width="95%" height="400"></iframe>
       <?
         db_input('pc80_codproc',8,$Ipc80_codproc,true,'hidden',3);
@@ -57,7 +57,7 @@
       ?>
       <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="button" id="db_opcao" value="<?=$botao?>" <?=($db_botao==false?"disabled":"")?> onclick="<?=$click?>" >
       <input name="voltar" type="button" id="db_opcao" value="Selecionar PC" onclick="<?=$click2?>" >
-    </td>    
+    </td>
   </tr>
 </table>
 </center>
@@ -93,7 +93,7 @@ function js_enviarcampos(){
          $res_sol     = $clempautoriza->sql_record($clempautoriza->sql_query_solicita($e54_autori));
          $numrows_sol = $clempautoriza->numrows;
          if ($numrows_sol > 0){
-					 
+
 					 $rsPcparam = $clpcparam->sql_record($clpcparam->sql_query(db_getsession('DB_instit'),"pc30_gerareserva"));
 					 if($clpcparam->numrows > 0){
 						 db_fieldsmemory($rsPcparam,0);
@@ -101,7 +101,7 @@ function js_enviarcampos(){
 					 }else{
 						 $lGeraReserva = "t";
 					 }
-					
+
 					 if ($lGeraReserva == "f"){
 ?>
 						op.setAttribute("value","false");
@@ -121,13 +121,13 @@ function js_enviarcampos(){
 <?
          }
 ?>
-    iframe_solicitem.document.form1.appendChild(op);       
+    iframe_solicitem.document.form1.appendChild(op);
 <?
     }
 ?>
     iframe_solicitem.document.form1.submit();
   }else{
-    document.form1.<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>.disabled = false; 
+    document.form1.<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>.disabled = false;
     alert('Usuário:\n\nNenhum item foi selecionado. \nAutorização não gerada.\n\nAdministrador:');
   }
 }

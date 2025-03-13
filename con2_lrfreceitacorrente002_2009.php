@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,18 +27,18 @@
 
 if (!isset($arqinclude)) {
 
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_utils.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_liborcamento.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_conrelinfo_classe.php");
-  include("classes/db_db_config_classe.php");
-  include("classes/db_orcparamrelnota_classe.php");
-  include("classes/db_orcparamelemento_classe.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_utils.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("classes/db_db_config_classe.php"));
+  include(modification("classes/db_orcparamrelnota_classe.php"));
+  include(modification("classes/db_orcparamelemento_classe.php"));
   
   $classinatura      = new cl_assinatura;
   $orcparamrel       = new cl_orcparamrel;
@@ -52,7 +52,7 @@ if (!isset($arqinclude)) {
 
 }
 $db_selinstit = 1;
-$resultinst = pg_exec("select codigo,nomeinst,munic,nomeinstabrev from db_config where codigo in (1)");
+$resultinst = db_query("select codigo,nomeinst,munic,nomeinstabrev from db_config where codigo in (1)");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -81,7 +81,7 @@ $tipo_emissao='periodo';
   // Inclui elemento no exercício anterior com base no atual;
   $sSqlWhere	  = " o44_codparrel = {$sCodParRel} ";
   $sSqlDuplicaEle = " select fc_duplica_exercicio('orcparamelemento', 'o44_anousu', ".db_getsession('DB_anousu').",{$iExercAnt},'{$sSqlWhere}');";
-  $rsDuplicaEle	  = pg_query($sSqlDuplicaEle);
+  $rsDuplicaEle	  = db_query($sSqlDuplicaEle);
 
 if (!isset($arqinclude)) {
 
@@ -290,7 +290,7 @@ $clreceita_saldo_mes->usa_datas = 'sim';
 $clreceita_saldo_mes->instit = $todasinstit;
 $clreceita_saldo_mes->sql_record();
 //db_criatabela($clreceita_saldo_mes->result);exit;
-pg_exec("drop table work_plano");
+db_query("drop table work_plano");
 
 for ($p=1;$p<=22;$p++) {
 
@@ -391,7 +391,7 @@ $clreceita_saldo_mes->usa_datas = 'sim';
 $clreceita_saldo_mes->instit = $todasinstit;
 $clreceita_saldo_mes->sql_record();
 //echo $clreceita_saldo_mes->sql; exit;
-pg_exec("drop table work_plano");
+db_query("drop table work_plano");
 
 //echo $dt_ini." => ".$dt_fin."<br>"; exit;
 

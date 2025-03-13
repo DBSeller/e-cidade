@@ -1,0 +1,170 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010399' name='pessoal.rhpessoalprocessosjudiciais' description="Processos judiciais do servidor." prefix="rh226" label="Processos Judiciais" type="0">
+  <fields>
+    <field codigo="1010258" 
+           campo_api='' 
+           name="rh226_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='pessoal.rhpessoalprocessosjudiciais_rh226_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010260" 
+           campo_api='' 
+           name="rh226_mes" 
+           conteudo="int4" 
+           description="Mês da competência." 
+           inivalue="0" 
+           label="Mês" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Mês" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010261" 
+           campo_api='' 
+           name="rh226_matricula" 
+           conteudo="int8" 
+           description="Matrícula do servidor." 
+           inivalue="0" 
+           label="Matrícula" 
+           size="20" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010262" 
+           campo_api='' 
+           name="rh226_instituicao" 
+           conteudo="int4" 
+           description="Código da Instituição." 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010259" 
+           campo_api='' 
+           name="rh226_ano" 
+           conteudo="int4" 
+           description="Ano da competência." 
+           inivalue="0" 
+           label="Ano" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010264" 
+           campo_api='' 
+           name="rh226_numero" 
+           conteudo="varchar(20)" 
+           description="Número do processo" 
+           inivalue="0" 
+           label="Número do processo" 
+           size="20" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Número do processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010265" 
+           campo_api='' 
+           name="rh226_indicativosuspensao" 
+           conteudo="varchar(14)" 
+           description="Código do Indicativo da Suspensão" 
+           inivalue="0" 
+           label="Código do Indicativo da Suspensão" 
+           size="14" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Código do Indicativo da Suspensão" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010263" 
+           campo_api='' 
+           name="rh226_tipoprocesso" 
+           conteudo="int4" 
+           description="Tipo de processo judicial" 
+           inivalue="0" 
+           label="Tipo de processo judicial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de processo judicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh226_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="rh226_instituicao" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="rh226_matricula" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

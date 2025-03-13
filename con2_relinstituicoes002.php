@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_db_config_classe.php");
-include ("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("libs/db_utils.php"));
 
 $cldbconfig = new cl_db_config();
 
@@ -99,7 +99,7 @@ if ($cldbconfig->numrows == 0){
   exit;
 }
 
-$aRelatorio = db_utils::getColectionByRecord($result);
+$aRelatorio = db_utils::getCollectionByRecord($result);
 //echo "<pre>";
 //echo var_dump($aRelatorio);
 //echo "</pre>";

@@ -1,0 +1,98 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010316' name='esocial.avaliacaogruporespostareintegracao' description="Preenchimento Reintegração"
+       prefix="eso21" label="Preenchimento Reintegração" type="0">
+    <fields>
+        <field codigo="1009945"
+               campo_api=''
+               name="eso21_sequencial"
+               conteudo="int4"
+               description="Sequencial"
+               inivalue="0"
+               label="Sequencial"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Sequencial"
+               reference=""
+               ispk="t"
+               hassequence="t">
+
+            <sequence name='esocial.avaliacaogruporespostareintegracao_eso21_sequencial_seq'/>
+
+        </field>
+        <field codigo="1009946"
+               campo_api=''
+               name="eso21_avaliacaogruporesposta"
+               conteudo="int4"
+               description="Preenchimento"
+               inivalue="0"
+               label="Preenchimento"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Preenchimento"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+        <field codigo="1009947"
+               campo_api=''
+               name="eso21_matricula"
+               conteudo="int4"
+               description="Matrícula"
+               inivalue="0"
+               label="Matrícula"
+               size="11"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Matrícula"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+        <field codigo="1009948"
+               campo_api=''
+               name="eso21_cgm"
+               conteudo="int4"
+               description="Empregador"
+               inivalue="0"
+               label="Empregador"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Empregador"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+    </fields>
+    <primarykey>
+        <fieldpk name="eso21_sequencial"></fieldpk>
+    </primarykey>
+    <foreignkeys>
+        <foreignkey reference="cgm" inner='t'>
+            <fieldfk name="eso21_cgm" reference="z01_numcgm"/>
+        </foreignkey>
+        <foreignkey reference="rhpessoal" inner='t'>
+            <fieldfk name="eso21_matricula" reference="rh01_regist"/>
+        </foreignkey>
+        <foreignkey reference="avaliacaogruporesposta" inner='t'>
+            <fieldfk name="eso21_avaliacaogruporesposta" reference="db107_sequencial"/>
+        </foreignkey>
+    </foreignkeys>
+</table>

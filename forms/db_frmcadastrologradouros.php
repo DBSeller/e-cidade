@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -140,7 +140,7 @@ function js_pesquisaEstados() {
 function js_retornoPesquisaEstados(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.aEstados.length > 0) {
 
@@ -185,7 +185,7 @@ function js_pesquisaMunicipios() {
 function js_retornoPesquisaMunicipios(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oCboMunicipios.length > 0) {
 
@@ -270,7 +270,7 @@ $('salvar').observe("click", function () {
 function js_retornoSalvar(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.sMensagem.urlDecode());
 
   if (iOpcao == 1) {
@@ -300,7 +300,7 @@ function js_limpaCampos() {
 function js_pesquisaLogradouro(mostra) {
 
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadenderrua','func_cadenderrua.php?funcao_js=parent.js_mostracadenderrua1|db74_sequencial|db74_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadenderrua','func_cadenderrua.php?funcao_js=parent.js_mostracadenderrua1|db74_sequencial|db74_descricao','Pesquisa',true);
   }
 }
 function js_mostracadenderrua1(chave1,chave2) {
@@ -356,7 +356,7 @@ function js_pesquisaBairros() {
 function js_retornoPesquisaBairros(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   oLancadorBairro.clearAll();
 
@@ -396,7 +396,7 @@ function js_buscaEstado(iMunicipio) {
  */
 function js_retornoBuscaEstado(oResponse) {
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oCboMunicipios.length > 0) {
     js_limpaMunicipios();
@@ -419,7 +419,7 @@ function js_buscaMunicipio(iBairro) {
       oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
       oDadosRequisicao.onComplete =  function (oResponse) {
 
-        var oRetorno = eval('('+oResponse.responseText+')');
+        var oRetorno = JSON.parse(oResponse.responseText);
         iCodigoBairro =  oRetorno.iMunicipio;
       };
       oDadosRequisicao.asynchronous = false;
@@ -432,7 +432,7 @@ function js_buscaMunicipio(iBairro) {
  */
 function js_retornoBuscaMunicipio(oResponse) {
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   return oRetorno.iMunicipio;
 }

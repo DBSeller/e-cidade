@@ -195,10 +195,10 @@ db_input('cp05_localidades',72,$Icp05_localidades,true,'text',3,'')
 <script>
 function js_pesquisacp06_codbairroinicial(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cepbairros','func_cepbairros.php?funcao_js=parent.js_mostracepbairros1|cp01_codbairro|cp01_bairro','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cepbairros','func_cepbairros.php?funcao_js=parent.js_mostracepbairros1|cp01_codbairro|cp01_bairro','Pesquisa',true);
   }else{
      if(document.form1.cp06_codbairroinicial.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cepbairros','func_cepbairros.php?pesquisa_chave='+document.form1.cp06_codbairroinicial.value+'&funcao_js=parent.js_mostracepbairros','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cepbairros','func_cepbairros.php?pesquisa_chave='+document.form1.cp06_codbairroinicial.value+'&funcao_js=parent.js_mostracepbairros','Pesquisa',false);
      }else{
        document.form1.cp01_bairro_ini.value = ''; 
      }
@@ -218,10 +218,10 @@ function js_mostracepbairros1(chave1,chave2){
 }
 function js_pesquisacp06_codbairrofinal(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cepbairros','func_cepbairros.php?funcao_js=parent.js_mostracepbairros3|cp01_codbairro|cp01_bairro','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cepbairros','func_cepbairros.php?funcao_js=parent.js_mostracepbairros3|cp01_codbairro|cp01_bairro','Pesquisa',true);
   }else{
      if(document.form1.cp06_codbairrofinal.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cepbairros','func_cepbairros.php?pesquisa_chave='+document.form1.cp06_codbairrofinal.value+'&funcao_js=parent.js_mostracepbairros2','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cepbairros','func_cepbairros.php?pesquisa_chave='+document.form1.cp06_codbairrofinal.value+'&funcao_js=parent.js_mostracepbairros2','Pesquisa',false);
      }else{
        document.form1.cp01_bairro_fim.value = ''; 
      }
@@ -241,10 +241,10 @@ function js_mostracepbairros3(chave4,chave5){
 }
 function js_pesquisacp06_codlocalidade(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_ceplocalidades','func_ceplocalidades.php?funcao_js=parent.js_mostraceplocalidades1|cp05_codlocalidades|cp05_localidades','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ceplocalidades','func_ceplocalidades.php?funcao_js=parent.js_mostraceplocalidades1|cp05_codlocalidades|cp05_localidades','Pesquisa',true);
   }else{
      if(document.form1.cp06_codlocalidade.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_ceplocalidades','func_ceplocalidades.php?pesquisa_chave='+document.form1.cp06_codlocalidade.value+'&funcao_js=parent.js_mostraceplocalidades','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ceplocalidades','func_ceplocalidades.php?pesquisa_chave='+document.form1.cp06_codlocalidade.value+'&funcao_js=parent.js_mostraceplocalidades','Pesquisa',false);
      }else{
        document.form1.cp05_localidades.value = ''; 
      }
@@ -264,10 +264,10 @@ function js_mostraceplocalidades1(chave1,chave2){
 }
 function js_pesquisacp06_codlogradouro(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_ceplogradouros','func_ceplogradouros.php?funcao_js=parent.js_mostralograd1|cp06_codlogradouro','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ceplogradouros','func_ceplogradouros.php?funcao_js=parent.js_mostralograd1|cp06_codlogradouro','Pesquisa',true);
   }else{
      if(document.form1.cp06_codlogradouro.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_ceplogradouros','func_ceplogradouros.php?pesquisa_chave='+document.form1.cp06_codlogradouro+'&funcao_js=parent.js_mostralograd','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ceplogradouros','func_ceplogradouros.php?pesquisa_chave='+document.form1.cp06_codlogradouro+'&funcao_js=parent.js_mostralograd','Pesquisa',false);
      }else{
        document.form1.cp06_codlogradouro.value = ''; 
      }
@@ -285,7 +285,7 @@ function js_mostralograd1(chave1){
   document.form1.submit();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_ceplogradouros','func_ceplogradouros.php?funcao_js=parent.js_preenchepesquisa|cp06_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ceplogradouros','func_ceplogradouros.php?funcao_js=parent.js_preenchepesquisa|cp06_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_ceplogradouros.hide();

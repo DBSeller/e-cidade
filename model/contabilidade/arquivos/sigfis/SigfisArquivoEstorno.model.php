@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("interfaces/iPadArquivoTxtBase.interface.php");
-require_once ("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php");
+require_once(modification("interfaces/iPadArquivoTxtBase.interface.php"));
+require_once(modification("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php"));
 
 /**
  * Classe que processa as informações para serem inseridas no
@@ -94,7 +94,7 @@ class SigfisArquivoEstorno extends SigfisArquivoBase implements iPadArquivoTXTBa
 
     $rsBuscaEstornos   = $oDaoEmpempenho->sql_record($sSqlBuscaEstornos);
     
-    $aEstornos         = db_utils::getColectionByRecord($rsBuscaEstornos);
+    $aEstornos         = db_utils::getCollectionByRecord($rsBuscaEstornos);
     
     if (count($aEstornos) > 0) {
     	

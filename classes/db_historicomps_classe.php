@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -27,66 +27,66 @@
 
 //MODULO: escola
 //CLASSE DA ENTIDADE historicomps
-class cl_historicomps { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ed62_i_codigo = 0; 
-   var $ed62_i_historico = 0; 
-   var $ed62_i_escola = 0; 
-   var $ed62_i_serie = 0; 
-   var $ed62_i_turma = null; 
+class cl_historicomps {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ed62_i_codigo = 0;
+   var $ed62_i_historico = 0;
+   var $ed62_i_escola = 0;
+   var $ed62_i_serie = 0;
+   var $ed62_i_turma = null;
    var $ed62_i_justificativa = null;
-   var $ed62_i_anoref = 0; 
-   var $ed62_i_periodoref = 0; 
-   var $ed62_c_resultadofinal = null; 
-   var $ed62_c_situacao = null; 
-   var $ed62_i_qtdch = 0; 
-   var $ed62_i_diasletivos = 0; 
-   var $ed62_c_minimo = null; 
-   var $ed62_c_termofinal = null; 
-   var $ed62_lancamentoautomatico = 'f'; 
+   var $ed62_i_anoref = 0;
+   var $ed62_i_periodoref = '0';
+   var $ed62_c_resultadofinal = null;
+   var $ed62_c_situacao = null;
+   var $ed62_i_qtdch = 0;
+   var $ed62_i_diasletivos = 0;
+   var $ed62_c_minimo = null;
+   var $ed62_c_termofinal = null;
+   var $ed62_lancamentoautomatico = 'f';
    var $ed62_percentualfrequencia = null;
-   var $ed62_observacao = null; 
-   // cria propriedade com as variaveis do arquivo 
+   var $ed62_observacao = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 ed62_i_codigo = int8 = Código 
-                 ed62_i_historico = int8 = Histórico 
-                 ed62_i_escola = int8 = Escola 
-                 ed62_i_serie = int8 = Etapa 
-                 ed62_i_turma = char(80) = Turma 
-                 ed62_i_justificativa = int8 = Justificativa 
-                 ed62_i_anoref = int4 = Ano 
-                 ed62_i_periodoref = int4 = Período 
-                 ed62_c_resultadofinal = char(1) = Resultado Final 
-                 ed62_c_situacao = char(20) = Situação 
-                 ed62_i_qtdch = numeric(10) = Carga Horária 
-                 ed62_i_diasletivos = int4 = Dias Letivos 
-                 ed62_c_minimo = char(20) = Mínimo Aprovação 
-                 ed62_c_termofinal = varchar(4) = Termo Final 
-                 ed62_lancamentoautomatico = bool = Lançamento Automático 
-                 ed62_percentualfrequencia = float8 = Percentual de Frequência 
-                 ed62_observacao = text = Observação 
+                 ed62_i_codigo = int8 = Código
+                 ed62_i_historico = int8 = Histórico
+                 ed62_i_escola = int8 = Escola
+                 ed62_i_serie = int8 = Etapa
+                 ed62_i_turma = char(80) = Turma
+                 ed62_i_justificativa = int8 = Justificativa
+                 ed62_i_anoref = int4 = Ano
+                 ed62_i_periodoref = char(200) = Período
+                 ed62_c_resultadofinal = char(1) = Resultado Final
+                 ed62_c_situacao = char(20) = Situação
+                 ed62_i_qtdch = numeric(10) = Carga Horária
+                 ed62_i_diasletivos = int4 = Dias Letivos
+                 ed62_c_minimo = char(20) = Mínimo Aprovação
+                 ed62_c_termofinal = varchar(4) = Termo Final
+                 ed62_lancamentoautomatico = bool = Lançamento Automático
+                 ed62_percentualfrequencia = float8 = Percentual de Frequência
+                 ed62_observacao = text = Observação
                  ";
-   //funcao construtor da classe 
-   function cl_historicomps() { 
+   //funcao construtor da classe
+   function cl_historicomps() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("historicomps"); 
+     $this->rotulo = new rotulo("historicomps");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -119,9 +119,9 @@ class cl_historicomps {
      }
    }
    // funcao para inclusao
-   function incluir ($ed62_i_codigo){ 
+   function incluir ($ed62_i_codigo){
       $this->atualizacampos();
-     if($this->ed62_i_historico == null ){ 
+     if($this->ed62_i_historico == null ){
        $this->erro_sql = " Campo Histórico não informado.";
        $this->erro_campo = "ed62_i_historico";
        $this->erro_banco = "";
@@ -130,7 +130,7 @@ class cl_historicomps {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed62_i_escola == null ){ 
+     if($this->ed62_i_escola == null ){
        $this->erro_sql = " Campo Escola não informado.";
        $this->erro_campo = "ed62_i_escola";
        $this->erro_banco = "";
@@ -139,7 +139,7 @@ class cl_historicomps {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed62_i_serie == null ){ 
+     if($this->ed62_i_serie == null ){
        $this->erro_sql = " Campo Etapa não informado.";
        $this->erro_campo = "ed62_i_serie";
        $this->erro_banco = "";
@@ -148,10 +148,10 @@ class cl_historicomps {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed62_i_justificativa == null ){ 
+     if($this->ed62_i_justificativa == null ){
        $this->ed62_i_justificativa = "null";
      }
-     if($this->ed62_i_anoref == null ){ 
+     if($this->ed62_i_anoref == null ){
        $this->erro_sql = " Campo Ano não informado.";
        $this->erro_campo = "ed62_i_anoref";
        $this->erro_banco = "";
@@ -160,10 +160,10 @@ class cl_historicomps {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed62_i_periodoref == null ){ 
+     if($this->ed62_i_periodoref == null ){
        $this->ed62_i_periodoref = "0";
      }
-     if($this->ed62_c_resultadofinal == null ){ 
+     if($this->ed62_c_resultadofinal == null ){
        $this->erro_sql = " Campo Resultado Final não informado.";
        $this->erro_campo = "ed62_c_resultadofinal";
        $this->erro_banco = "";
@@ -172,7 +172,7 @@ class cl_historicomps {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed62_c_situacao == null ){ 
+     if($this->ed62_c_situacao == null ){
        $this->erro_sql = " Campo Situação não informado.";
        $this->erro_campo = "ed62_c_situacao";
        $this->erro_banco = "";
@@ -181,13 +181,13 @@ class cl_historicomps {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed62_i_qtdch == null ){ 
+     if($this->ed62_i_qtdch == null ){
        $this->ed62_i_qtdch = "null";
      }
-     if($this->ed62_i_diasletivos == null ){ 
+     if($this->ed62_i_diasletivos == null ){
        $this->ed62_i_diasletivos = "null";
      }
-     if($this->ed62_lancamentoautomatico == null ){ 
+     if($this->ed62_lancamentoautomatico == null ){
        $this->erro_sql = " Campo Lançamento Automático não informado.";
        $this->erro_campo = "ed62_lancamentoautomatico";
        $this->erro_banco = "";
@@ -196,20 +196,20 @@ class cl_historicomps {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed62_percentualfrequencia == null ){ 
+     if($this->ed62_percentualfrequencia == null ){
        $this->ed62_percentualfrequencia = "null";
      }
      if($ed62_i_codigo == "" || $ed62_i_codigo == null ){
-       $result = db_query("select nextval('historicomps_ed62_i_codigo_seq')"); 
+       $result = db_query("select nextval('historicomps_ed62_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: historicomps_ed62_i_codigo_seq do campo: ed62_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: historicomps_ed62_i_codigo_seq do campo: ed62_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->ed62_i_codigo = pg_result($result,0,0); 
+       $this->ed62_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from historicomps_ed62_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $ed62_i_codigo)){
@@ -220,10 +220,10 @@ class cl_historicomps {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->ed62_i_codigo = $ed62_i_codigo; 
+         $this->ed62_i_codigo = $ed62_i_codigo;
        }
      }
-     if(($this->ed62_i_codigo == null) || ($this->ed62_i_codigo == "") ){ 
+     if(($this->ed62_i_codigo == null) || ($this->ed62_i_codigo == "") ){
        $this->erro_sql = " Campo ed62_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -232,45 +232,45 @@ class cl_historicomps {
        return false;
      }
      $sql = "insert into historicomps(
-                                       ed62_i_codigo 
-                                      ,ed62_i_historico 
-                                      ,ed62_i_escola 
-                                      ,ed62_i_serie 
-                                      ,ed62_i_turma 
-                                      ,ed62_i_justificativa 
-                                      ,ed62_i_anoref 
-                                      ,ed62_i_periodoref 
-                                      ,ed62_c_resultadofinal 
-                                      ,ed62_c_situacao 
-                                      ,ed62_i_qtdch 
-                                      ,ed62_i_diasletivos 
-                                      ,ed62_c_minimo 
-                                      ,ed62_c_termofinal 
-                                      ,ed62_lancamentoautomatico 
-                                      ,ed62_percentualfrequencia 
-                                      ,ed62_observacao 
+                                       ed62_i_codigo
+                                      ,ed62_i_historico
+                                      ,ed62_i_escola
+                                      ,ed62_i_serie
+                                      ,ed62_i_turma
+                                      ,ed62_i_justificativa
+                                      ,ed62_i_anoref
+                                      ,ed62_i_periodoref
+                                      ,ed62_c_resultadofinal
+                                      ,ed62_c_situacao
+                                      ,ed62_i_qtdch
+                                      ,ed62_i_diasletivos
+                                      ,ed62_c_minimo
+                                      ,ed62_c_termofinal
+                                      ,ed62_lancamentoautomatico
+                                      ,ed62_percentualfrequencia
+                                      ,ed62_observacao
                        )
                 values (
-                                $this->ed62_i_codigo 
-                               ,$this->ed62_i_historico 
-                               ,$this->ed62_i_escola 
-                               ,$this->ed62_i_serie 
-                               ,'$this->ed62_i_turma' 
-                               ,$this->ed62_i_justificativa 
-                               ,$this->ed62_i_anoref 
-                               ,$this->ed62_i_periodoref 
-                               ,'$this->ed62_c_resultadofinal' 
-                               ,'$this->ed62_c_situacao' 
-                               ,$this->ed62_i_qtdch 
-                               ,$this->ed62_i_diasletivos 
-                               ,'$this->ed62_c_minimo' 
-                               ,'$this->ed62_c_termofinal' 
-                               ,'$this->ed62_lancamentoautomatico' 
-                               ,$this->ed62_percentualfrequencia 
-                               ,'$this->ed62_observacao' 
+                                $this->ed62_i_codigo
+                               ,$this->ed62_i_historico
+                               ,$this->ed62_i_escola
+                               ,$this->ed62_i_serie
+                               ,'$this->ed62_i_turma'
+                               ,$this->ed62_i_justificativa
+                               ,$this->ed62_i_anoref
+                               ,'$this->ed62_i_periodoref'
+                               ,'$this->ed62_c_resultadofinal'
+                               ,'$this->ed62_c_situacao'
+                               ,$this->ed62_i_qtdch
+                               ,$this->ed62_i_diasletivos
+                               ,'$this->ed62_c_minimo'
+                               ,'$this->ed62_c_termofinal'
+                               ,'$this->ed62_lancamentoautomatico'
+                               ,$this->ed62_percentualfrequencia
+                               ,'$this->ed62_observacao'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Historico MPS ($this->ed62_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -287,7 +287,7 @@ class cl_historicomps {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->ed62_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -324,16 +324,16 @@ class cl_historicomps {
        }
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   public function alterar ($ed62_i_codigo=null) { 
+   public function alterar ($ed62_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update historicomps set ";
      $virgula = "";
-     if(trim($this->ed62_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_codigo"])){ 
+     if(trim($this->ed62_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_codigo"])){
        $sql  .= $virgula." ed62_i_codigo = $this->ed62_i_codigo ";
        $virgula = ",";
-       if(trim($this->ed62_i_codigo) == null ){ 
+       if(trim($this->ed62_i_codigo) == null ){
          $this->erro_sql = " Campo Código não informado.";
          $this->erro_campo = "ed62_i_codigo";
          $this->erro_banco = "";
@@ -343,10 +343,10 @@ class cl_historicomps {
          return false;
        }
      }
-     if(trim($this->ed62_i_historico)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_historico"])){ 
+     if(trim($this->ed62_i_historico)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_historico"])){
        $sql  .= $virgula." ed62_i_historico = $this->ed62_i_historico ";
        $virgula = ",";
-       if(trim($this->ed62_i_historico) == null ){ 
+       if(trim($this->ed62_i_historico) == null ){
          $this->erro_sql = " Campo Histórico não informado.";
          $this->erro_campo = "ed62_i_historico";
          $this->erro_banco = "";
@@ -356,10 +356,10 @@ class cl_historicomps {
          return false;
        }
      }
-     if(trim($this->ed62_i_escola)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_escola"])){ 
+     if(trim($this->ed62_i_escola)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_escola"])){
        $sql  .= $virgula." ed62_i_escola = $this->ed62_i_escola ";
        $virgula = ",";
-       if(trim($this->ed62_i_escola) == null ){ 
+       if(trim($this->ed62_i_escola) == null ){
          $this->erro_sql = " Campo Escola não informado.";
          $this->erro_campo = "ed62_i_escola";
          $this->erro_banco = "";
@@ -369,10 +369,10 @@ class cl_historicomps {
          return false;
        }
      }
-     if(trim($this->ed62_i_serie)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_serie"])){ 
+     if(trim($this->ed62_i_serie)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_serie"])){
        $sql  .= $virgula." ed62_i_serie = $this->ed62_i_serie ";
        $virgula = ",";
-       if(trim($this->ed62_i_serie) == null ){ 
+       if(trim($this->ed62_i_serie) == null ){
          $this->erro_sql = " Campo Etapa não informado.";
          $this->erro_campo = "ed62_i_serie";
          $this->erro_banco = "";
@@ -382,21 +382,21 @@ class cl_historicomps {
          return false;
        }
      }
-     if(trim($this->ed62_i_turma)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_turma"])){ 
+     if(trim($this->ed62_i_turma)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_turma"])){
        $sql  .= $virgula." ed62_i_turma = '$this->ed62_i_turma' ";
        $virgula = ",";
      }
-     if(trim($this->ed62_i_justificativa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_justificativa"])){ 
-        if(trim($this->ed62_i_justificativa)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_justificativa"])){ 
+     if(trim($this->ed62_i_justificativa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_justificativa"])){
+        if(trim($this->ed62_i_justificativa)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_justificativa"])){
            $this->ed62_i_justificativa = "null" ;
-        } 
+        }
        $sql  .= $virgula." ed62_i_justificativa = $this->ed62_i_justificativa ";
        $virgula = ",";
      }
-     if(trim($this->ed62_i_anoref)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_anoref"])){ 
+     if(trim($this->ed62_i_anoref)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_anoref"])){
        $sql  .= $virgula." ed62_i_anoref = $this->ed62_i_anoref ";
        $virgula = ",";
-       if(trim($this->ed62_i_anoref) == null ){ 
+       if(trim($this->ed62_i_anoref) == null ){
          $this->erro_sql = " Campo Ano não informado.";
          $this->erro_campo = "ed62_i_anoref";
          $this->erro_banco = "";
@@ -406,17 +406,17 @@ class cl_historicomps {
          return false;
        }
      }
-     if(trim($this->ed62_i_periodoref)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_periodoref"])){ 
-        if(trim($this->ed62_i_periodoref)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_periodoref"])){ 
-           $this->ed62_i_periodoref = "0" ; 
-        } 
-       $sql  .= $virgula." ed62_i_periodoref = $this->ed62_i_periodoref ";
+     if(trim($this->ed62_i_periodoref)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_periodoref"])){
+        if(trim($this->ed62_i_periodoref)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_periodoref"])){
+           $this->ed62_i_periodoref = "0" ;
+        }
+       $sql  .= $virgula." ed62_i_periodoref = '$this->ed62_i_periodoref' ";
        $virgula = ",";
      }
-     if(trim($this->ed62_c_resultadofinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_c_resultadofinal"])){ 
+     if(trim($this->ed62_c_resultadofinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_c_resultadofinal"])){
        $sql  .= $virgula." ed62_c_resultadofinal = '$this->ed62_c_resultadofinal' ";
        $virgula = ",";
-       if(trim($this->ed62_c_resultadofinal) == null ){ 
+       if(trim($this->ed62_c_resultadofinal) == null ){
          $this->erro_sql = " Campo Resultado Final não informado.";
          $this->erro_campo = "ed62_c_resultadofinal";
          $this->erro_banco = "";
@@ -426,10 +426,10 @@ class cl_historicomps {
          return false;
        }
      }
-     if(trim($this->ed62_c_situacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_c_situacao"])){ 
+     if(trim($this->ed62_c_situacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_c_situacao"])){
        $sql  .= $virgula." ed62_c_situacao = '$this->ed62_c_situacao' ";
        $virgula = ",";
-       if(trim($this->ed62_c_situacao) == null ){ 
+       if(trim($this->ed62_c_situacao) == null ){
          $this->erro_sql = " Campo Situação não informado.";
          $this->erro_campo = "ed62_c_situacao";
          $this->erro_banco = "";
@@ -439,32 +439,32 @@ class cl_historicomps {
          return false;
        }
      }
-     if(trim($this->ed62_i_qtdch)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_qtdch"])){ 
+     if(trim($this->ed62_i_qtdch)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_qtdch"])){
        if(trim($this->ed62_i_qtdch)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_qtdch"])){
          $this->ed62_i_qtdch = "null" ;
        }
        $sql  .= $virgula." ed62_i_qtdch = $this->ed62_i_qtdch ";
        $virgula = ",";
      }
-     if(trim($this->ed62_i_diasletivos)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_diasletivos"])){ 
-        if(trim($this->ed62_i_diasletivos)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_diasletivos"])){ 
-           $this->ed62_i_diasletivos = "null" ; 
-        } 
+     if(trim($this->ed62_i_diasletivos)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_diasletivos"])){
+        if(trim($this->ed62_i_diasletivos)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed62_i_diasletivos"])){
+           $this->ed62_i_diasletivos = "null" ;
+        }
        $sql  .= $virgula." ed62_i_diasletivos = $this->ed62_i_diasletivos ";
        $virgula = ",";
      }
-     if(trim($this->ed62_c_minimo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_c_minimo"])){ 
+     if(trim($this->ed62_c_minimo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_c_minimo"])){
        $sql  .= $virgula." ed62_c_minimo = '$this->ed62_c_minimo' ";
        $virgula = ",";
      }
-     if(trim($this->ed62_c_termofinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_c_termofinal"])){ 
+     if(trim($this->ed62_c_termofinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_c_termofinal"])){
        $sql  .= $virgula." ed62_c_termofinal = '$this->ed62_c_termofinal' ";
        $virgula = ",";
      }
-     if(trim($this->ed62_lancamentoautomatico)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_lancamentoautomatico"])){ 
+     if(trim($this->ed62_lancamentoautomatico)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_lancamentoautomatico"])){
        $sql  .= $virgula." ed62_lancamentoautomatico = '$this->ed62_lancamentoautomatico' ";
        $virgula = ",";
-       if(trim($this->ed62_lancamentoautomatico) == null ){ 
+       if(trim($this->ed62_lancamentoautomatico) == null ){
          $this->erro_sql = " Campo Lançamento Automático não informado.";
          $this->erro_campo = "ed62_lancamentoautomatico";
          $this->erro_banco = "";
@@ -483,7 +483,7 @@ class cl_historicomps {
        $sql  .= $virgula." ed62_percentualfrequencia = $this->ed62_percentualfrequencia ";
        $virgula = ",";
      }
-     if(trim($this->ed62_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_observacao"])){ 
+     if(trim($this->ed62_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed62_observacao"])){
        $sql  .= $virgula." ed62_observacao = '$this->ed62_observacao' ";
        $virgula = ",";
      }
@@ -542,7 +542,7 @@ class cl_historicomps {
        }
      }
      $result = db_query($sql);
-     if (!$result) { 
+     if (!$result) {
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Historico MPS nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed62_i_codigo;
@@ -570,11 +570,11 @@ class cl_historicomps {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   public function excluir ($ed62_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   public function excluir ($ed62_i_codigo=null,$dbwhere=null) {
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
@@ -583,7 +583,7 @@ class cl_historicomps {
        if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($ed62_i_codigo));
-       } else { 
+       } else {
          $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
        }
        if (($resaco != false) || ($this->numrows!=0)) {
@@ -628,7 +628,7 @@ class cl_historicomps {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if ($result == false) { 
+     if ($result == false) {
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Historico MPS nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed62_i_codigo;
@@ -656,11 +656,11 @@ class cl_historicomps {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   public function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   public function sql_record($sql) {
      $result = db_query($sql);
      if (!$result) {
        $this->numrows    = 0;
@@ -682,31 +682,31 @@ class cl_historicomps {
       }
      return $result;
    }
-   // funcao do sql 
-   public function sql_query ($ed62_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+   // funcao do sql
+   public function sql_query ($ed62_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") {
 
      $sql  = "select {$campos}";
      $sql .= "  from historicomps ";
-     $sql .= "      inner join escola  on  escola.ed18_i_codigo = historicomps.ed62_i_escola";
-     $sql .= "      inner join bairro  on  bairro.j13_codi = escola.ed18_i_bairro";
-     $sql .= "      inner join ruas  on  ruas.j14_codigo = escola.ed18_i_rua";
-     $sql .= "      inner join db_depart  on  db_depart.coddepto = escola.ed18_i_codigo";
-     $sql .= "      left join ruascep on ruascep.j29_codigo = ruas.j14_codigo ";
-     $sql .= "      left join logradcep on logradcep.j65_lograd = ruas.j14_codigo ";
-     $sql .= "      left join ceplogradouros on ceplogradouros.cp06_codlogradouro = logradcep.j65_ceplog ";
-     $sql .= "      left join ceplocalidades on ceplocalidades.cp05_codlocalidades = ceplogradouros.cp06_codlocalidade ";
-     $sql .= "      left join justificativa  on  justificativa.ed06_i_codigo = historicomps.ed62_i_justificativa";
-     $sql .= "      inner join serie  on  serie.ed11_i_codigo = historicomps.ed62_i_serie";
-     $sql .= "      inner join historico  on  historico.ed61_i_codigo = historicomps.ed62_i_historico";
-     $sql .= "      inner join ensino  on  ensino.ed10_i_codigo = serie.ed11_i_ensino";
-     $sql .= "      inner join escola as hescola on  hescola.ed18_i_codigo = historico.ed61_i_escola";
-     $sql .= "      inner join cursoedu  on  cursoedu.ed29_i_codigo = historico.ed61_i_curso";
-     $sql .= "      inner join aluno  on  aluno.ed47_i_codigo = historico.ed61_i_aluno";
+     $sql .= "      inner join escola             on  escola.ed18_i_codigo = historicomps.ed62_i_escola";
+     $sql .= "      inner join bairro             on  bairro.j13_codi = escola.ed18_i_bairro";
+     $sql .= "      inner join ruas               on  ruas.j14_codigo = escola.ed18_i_rua";
+     $sql .= "      inner join db_depart          on  db_depart.coddepto = escola.ed18_i_codigo";
+     $sql .= "      left join ruascep             on ruascep.j29_codigo = ruas.j14_codigo ";
+     $sql .= "      left join logradcep           on logradcep.j65_lograd = ruas.j14_codigo ";
+     $sql .= "      left join ceplogradouros      on ceplogradouros.cp06_codlogradouro = logradcep.j65_ceplog ";
+     $sql .= "      left join ceplocalidades      on ceplocalidades.cp05_codlocalidades = ceplogradouros.cp06_codlocalidade ";
+     $sql .= "      left join justificativa       on  justificativa.ed06_i_codigo = historicomps.ed62_i_justificativa";
+     $sql .= "      inner join serie              on  serie.ed11_i_codigo = historicomps.ed62_i_serie";
+     $sql .= "      inner join historico          on  historico.ed61_i_codigo = historicomps.ed62_i_historico";
+     $sql .= "      inner join ensino             on  ensino.ed10_i_codigo = serie.ed11_i_ensino";
+     $sql .= "      inner join escola as hescola  on  hescola.ed18_i_codigo = historico.ed61_i_escola";
+     $sql .= "      inner join cursoedu           on  cursoedu.ed29_i_codigo = historico.ed61_i_curso";
+     $sql .= "      inner join aluno              on  aluno.ed47_i_codigo = historico.ed61_i_aluno";
      $sql2 = "";
      if (empty($dbwhere)) {
        if (!empty($ed62_i_codigo)) {
-         $sql2 .= " where historicomps.ed62_i_codigo = $ed62_i_codigo "; 
-       } 
+         $sql2 .= " where historicomps.ed62_i_codigo = $ed62_i_codigo ";
+       }
      } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
@@ -716,7 +716,7 @@ class cl_historicomps {
      }
      return $sql;
   }
-   // funcao do sql 
+   // funcao do sql
    public function sql_query_file ($ed62_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
 
      $sql  = "select {$campos} ";
@@ -724,8 +724,8 @@ class cl_historicomps {
      $sql2 = "";
      if (empty($dbwhere)) {
        if (!empty($ed62_i_codigo)){
-         $sql2 .= " where historicomps.ed62_i_codigo = $ed62_i_codigo "; 
-       } 
+         $sql2 .= " where historicomps.ed62_i_codigo = $ed62_i_codigo ";
+       }
      } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
@@ -736,61 +736,60 @@ class cl_historicomps {
      return $sql;
   }
 
-   function sql_query_historico ( $ed62_i_codigo=null,$campos="*",$ordem=null,$dbwhere="") {                              
-                                                                                                                        
-   $sql = "select ";                                                                                                    
-   if ($campos != "*" ) {                                                                                               
-                                                                                                                        
-     $campos_sql = split("#",$campos);                                                                                  
-     $virgula    = "";                                                                                                  
-     for ($i = 0; $i < sizeof($campos_sql); $i++) {                                                                     
-                                                                                                                        
-       $sql     .= $virgula.$campos_sql[$i];                                                                            
-       $virgula  = ",";                                                                                                 
-     }                                                                                                                  
-   } else {                                                                                                             
-     $sql .= $campos;                                                                                                   
-   }                                                                                                                    
-   $sql .= " from historicomps                                                                                    \n";  
-   $sql .= "      inner join escola           on  escola.ed18_i_codigo = historicomps.ed62_i_escola               \n";  
-   $sql .= "      left  join justificativa    on  justificativa.ed06_i_codigo = historicomps.ed62_i_justificativa \n";  
-   $sql .= "      inner join serie            on  serie.ed11_i_codigo = historicomps.ed62_i_serie                 \n";  
-   $sql .= "      inner join historico        on  historico.ed61_i_codigo = historicomps.ed62_i_historico         \n";  
-   $sql .= "      inner join bairro           on  bairro.j13_codi = escola.ed18_i_bairro                          \n";  
-   $sql .= "      inner join ruas             on  ruas.j14_codigo = escola.ed18_i_rua                             \n";  
-   $sql .= "      inner join db_depart        on  db_depart.coddepto = escola.ed18_i_codigo                       \n";  
-   $sql .= "      inner join censouf          on  censouf.ed260_i_codigo = escola.ed18_i_censouf                  \n";  
-   $sql .= "      inner join censomunic       on  censomunic.ed261_i_codigo = escola.ed18_i_censomunic            \n";  
-   $sql .= "      inner join censodistrito    on  censodistrito.ed262_i_codigo = escola.ed18_i_censodistrito      \n";  
-   $sql .= "      left  join censoorgreg      on  censoorgreg.ed263_i_codigo = escola.ed18_i_censoorgreg          \n";  
-   $sql .= "      left  join censolinguaindig on  censolinguaindig.ed264_i_codigo = escola.ed18_i_linguaindigena  \n";  
-   $sql .= "      inner join censoetapa       on  censoetapa.ed266_i_codigo = serie.ed11_i_codcenso               \n";  
-   $sql .= "      inner join ensino           on  ensino.ed10_i_codigo = serie.ed11_i_ensino                      \n";  
-   $sql .= "      inner join cursoedu         on  cursoedu.ed29_i_codigo = historico.ed61_i_curso                 \n";  
-   $sql .= "      inner join aluno            on  aluno.ed47_i_codigo = historico.ed61_i_aluno                      ";  
-   $sql2 = "";                                                                                                          
-                                                                                                                        
-   if ($dbwhere == "") {                                                                                                
-                                                                                                                        
-     if ($ed62_i_codigo != null ) {                                                                                     
-       $sql2 .= " where historicomps.ed62_i_codigo = $ed62_i_codigo ";                                                  
-     }                                                                                                                  
-   } else if ($dbwhere != "") {                                                                                         
-     $sql2 = " where $dbwhere";                                                                                         
-   }                                                                                                                    
-   $sql .= $sql2;                                                                                                       
-   if ($ordem != null ) {                                                                                               
-                                                                                                                        
-     $sql        .= " order by ";                                                                                       
-     $campos_sql  = split("#",$ordem);                                                                                  
-     $virgula     = "";                                                                                                 
-     for ($i = 0; $i < sizeof($campos_sql); $i++) {                                                                     
-                                                                                                                        
-       $sql     .= $virgula.$campos_sql[$i];                                                                            
-       $virgula  = ",";                                                                                                 
-     }                                                                                                                  
-   }                                                                                                                    
-   return $sql;                                                                                                         
+   function sql_query_historico ( $ed62_i_codigo=null,$campos="*",$ordem=null,$dbwhere="") {
+
+   $sql = "select ";
+   if ($campos != "*" ) {
+
+     $campos_sql = split("#",$campos);
+     $virgula    = "";
+     for ($i = 0; $i < sizeof($campos_sql); $i++) {
+
+       $sql     .= $virgula.$campos_sql[$i];
+       $virgula  = ",";
+     }
+   } else {
+     $sql .= $campos;
+   }
+   $sql .= " from historicomps                                                                                    \n";
+   $sql .= "      inner join escola           on  escola.ed18_i_codigo = historicomps.ed62_i_escola               \n";
+   $sql .= "      left  join justificativa    on  justificativa.ed06_i_codigo = historicomps.ed62_i_justificativa \n";
+   $sql .= "      inner join serie            on  serie.ed11_i_codigo = historicomps.ed62_i_serie                 \n";
+   $sql .= "      inner join historico        on  historico.ed61_i_codigo = historicomps.ed62_i_historico         \n";
+   $sql .= "      inner join bairro           on  bairro.j13_codi = escola.ed18_i_bairro                          \n";
+   $sql .= "      inner join ruas             on  ruas.j14_codigo = escola.ed18_i_rua                             \n";
+   $sql .= "      inner join db_depart        on  db_depart.coddepto = escola.ed18_i_codigo                       \n";
+   $sql .= "      inner join censouf          on  censouf.ed260_i_codigo = escola.ed18_i_censouf                  \n";
+   $sql .= "      inner join censomunic       on  censomunic.ed261_i_codigo = escola.ed18_i_censomunic            \n";
+   $sql .= "      inner join censodistrito    on  censodistrito.ed262_i_codigo = escola.ed18_i_censodistrito      \n";
+   $sql .= "      left  join censoorgreg      on  censoorgreg.ed263_i_codigo = escola.ed18_i_censoorgreg          \n";
+   $sql .= "      left  join censolinguaindig on  censolinguaindig.ed264_i_codigo = escola.ed18_i_linguaindigena  \n";
+   $sql .= "      inner join ensino           on  ensino.ed10_i_codigo = serie.ed11_i_ensino                      \n";
+   $sql .= "      inner join cursoedu         on  cursoedu.ed29_i_codigo = historico.ed61_i_curso                 \n";
+   $sql .= "      inner join aluno            on  aluno.ed47_i_codigo = historico.ed61_i_aluno                      ";
+   $sql2 = "";
+
+   if ($dbwhere == "") {
+
+     if ($ed62_i_codigo != null ) {
+       $sql2 .= " where historicomps.ed62_i_codigo = $ed62_i_codigo ";
+     }
+   } else if ($dbwhere != "") {
+     $sql2 = " where $dbwhere";
+   }
+   $sql .= $sql2;
+   if ($ordem != null ) {
+
+     $sql        .= " order by ";
+     $campos_sql  = split("#",$ordem);
+     $virgula     = "";
+     for ($i = 0; $i < sizeof($campos_sql); $i++) {
+
+       $sql     .= $virgula.$campos_sql[$i];
+       $virgula  = ",";
+     }
+   }
+   return $sql;
  }
    function sql_query_certconclusao($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
 

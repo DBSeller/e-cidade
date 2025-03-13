@@ -104,7 +104,7 @@
             <option value="0">Nenhum ...</option>
             <?
 		$sql = "select codmodelo as a_codmodelo,nomemodelo from db_carnesimg";
-		$result = pg_exec($sql);
+		$result = db_query($sql);
 		if(pg_numrows($result)!=0){
 		  for($i=0;$i<pg_numrows($result);$i++){
 		     db_fieldsmemory($result,$i);
@@ -135,7 +135,7 @@
            <select name="k03_tipo">
             <?
 		$sql = "select k03_tipo as tipo,k03_descr from cadtipo order by k03_tipo";
-		$result = pg_exec($sql);
+		$result = db_query($sql);
 		if(pg_numrows($result)!=0){
 		  for($i=0;$i<pg_numrows($result);$i++){
 		     db_fieldsmemory($result,$i);

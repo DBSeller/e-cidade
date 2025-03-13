@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_stdlibwebseller.php");
-include("classes/db_mer_cardapioaluno_classe.php");
-include("classes/db_mer_cardapio_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_stdlibwebseller.php"));
+include(modification("classes/db_mer_cardapioaluno_classe.php"));
+include(modification("classes/db_mer_cardapio_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmer_cardapioaluno = new cl_mer_cardapioaluno;
 $clmer_cardapio      = new cl_mer_cardapio;
@@ -161,7 +161,7 @@ function js_cardapio(cardapio) {
 function js_retornoPesquisaTurma_e_Refeicao(oAjax) {
 	
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   sHtml = '';
   if (oRetorno[0].length==0) {
     sHtml += '<option value="">Nenhuma refeição consumida para o cardápio selecionado!</option>';
@@ -233,7 +233,7 @@ function js_aluno(){
 
 function js_retornoPesquisaAluno(oAjax) {
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   sHtml = '';
   for (var i = 0;i < oRetorno[0].length; i++) {
 	  
@@ -304,7 +304,7 @@ function js_verificadia() {
 function js_retornoVerificaDia(oAjax) {
 	
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   numreg       = parseInt(oRetorno.urlDecode());
   var Tam      = document.form1.select_cardapioaluno.length;
   cod_alunos   = '';
@@ -347,7 +347,7 @@ function js_retornoVerificaDia(oAjax) {
 function js_retornoInclusaoCardapiodia(oAjax) {
 	
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.urlDecode());
  
 }

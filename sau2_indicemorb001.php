@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_unidades_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_unidades_classe.php"));
 $clunidades = new cl_unidades;
 $clrotulo = new rotulocampo;
 $clrotulo->label("sd02_i_codigo");
@@ -149,7 +149,7 @@ function MostraPac(){
  }
 }
 function js_pesquisa_bairro(){
-   js_OpenJanelaIframe('top.corpo','db_iframe_cids','func_bairro.php?funcao_js=parent.js_mostrabairro|j13_codi|j13_descr','Pesquisa',true);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cids','func_bairro.php?funcao_js=parent.js_mostrabairro|j13_codi|j13_descr','Pesquisa',true);
 }
 function js_mostrabairro(chave1,chave2){
    document.form1.bairro.value = chave2;
@@ -180,10 +180,10 @@ function js_mostraunidades1(chave1,chave2){
 }
 function js_pesquisa_cids(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_sau_cid','func_sau_cid2.php?funcao_js=parent.js_mostracids1|sd70_c_cid|sd70_c_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_cid','func_sau_cid2.php?funcao_js=parent.js_mostracids1|sd70_c_cid|sd70_c_nome','Pesquisa',true);
   }else{
      if(document.form1.cids.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_sau_cid','func_sau_cid2.php?pesquisa_chave='+document.form1.cids.value+'&funcao_js=parent.js_mostracids','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_cid','func_sau_cid2.php?pesquisa_chave='+document.form1.cids.value+'&funcao_js=parent.js_mostracids','Pesquisa',false);
      }else{
        document.form1.descr.value = '';
      }
@@ -199,7 +199,7 @@ function js_mostracids(chave,erro){
 function js_mostracids1(chave1,chave2){
   document.form1.cids.value = chave1;
   document.form1.descr.value = chave2;
-  db_iframe_cids.hide();
+  db_iframe_sau_cid.hide();
 }
 
 function valida(tudo,documento){

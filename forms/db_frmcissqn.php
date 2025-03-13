@@ -157,13 +157,13 @@ function js_pesquisaq04_inflat(mostra) {
   if (mostra == true) {
     
     var sUrl = 'func_inflan.php?funcao_js=parent.js_mostrainflan1|i01_codigo|i01_descr';
-    js_OpenJanelaIframe('top.corpo','db_iframe_inflan',sUrl,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inflan',sUrl,'Pesquisa',true);
   } else {
   
     if (document.form1.q04_inflat.value != '') {
     
       var sUrl = 'func_inflan.php?pesquisa_chave='+document.form1.q04_inflat.value+'&funcao_js=parent.js_mostrainflan';
-      js_OpenJanelaIframe('top.corpo','db_iframe_inflan',sUrl,'Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inflan',sUrl,'Pesquisa',false);
     } else {
       document.form1.i01_descr.value = ''; 
     }
@@ -192,13 +192,13 @@ function js_pesquisaq04_proced(mostra) {
   if (mostra == true) {
   
     var sUrl = 'func_proced.php?funcao_js=parent.js_mostraproced1|v03_codigo|v03_descr';
-    js_OpenJanelaIframe('top.corpo','db_iframe_proced',sUrl,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_proced',sUrl,'Pesquisa',true);
   } else {
   
     if (document.form1.q04_proced.value != '') {
     
       var sUrl = 'func_proced.php?pesquisa_chave='+document.form1.q04_proced.value+'&funcao_js=parent.js_mostraproced';
-      js_OpenJanelaIframe('top.corpo','db_iframe_proced',sUrl,'Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_proced',sUrl,'Pesquisa',false);
     } else {
       document.form1.v03_descr.value = ''; 
     }
@@ -225,7 +225,7 @@ function js_mostraproced1(chave1,chave2) {
 function js_pesquisa() {
 
   var sUrl = 'func_cissqn.php?funcao_js=parent.js_preenchepesquisa|q04_anousu';
-  js_OpenJanelaIframe('top.corpo','db_iframe_cissqn',sUrl,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cissqn',sUrl,'Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave){
@@ -315,7 +315,7 @@ function js_importar() {
                                              
                                                js_removeObj('msgBoxImportacao');
                                              
-                                               var oRetorno = eval("("+oAjax.responseText+")");
+                                               var oRetorno = JSON.parse(oAjax.responseText);
                                                if (oRetorno.status == 1) {
                                                   
                                                  $('q04_anousu').value          = oRetorno.dados.q04_anousu;

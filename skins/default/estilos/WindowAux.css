@@ -1,14 +1,45 @@
-
 /**
  * WindowAux
  */
 .windowAux12 {
-  background-color: #e1dede !important;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #e1dede;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: .3rem;
+    outline: 0;
+    box-sizing: border-box;
 }
 
 .windowAux12 .windowAuxTitle {
-  background-color: #326094 !important;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0 1rem;
+    border-top-left-radius: .2rem;
+    border-top-right-radius: .2rem;
+    background-color: #326094 !important;
+    border: 1px solid #326094;
+    cursor: grab;
 }
-.windowAux12 .windowAuxTitle .dragme {
-  padding: 3px !important;
+
+.windowAux12 .windowAuxTitle h4 {
+    margin-top: 7px;
+    margin-bottom: 7px;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.close {
+    float: right;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+    color: white;
+    text-shadow: 0 1px 0 #fff;
+    margin: auto 0;
 }

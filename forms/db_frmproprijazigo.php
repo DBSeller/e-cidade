@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,7 +25,6 @@
  *                                licenca/licenca_pt.txt
  */
 
-//MODULO: cemiterio
 $clproprijazigo->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("cm28_i_codigo");
@@ -35,14 +34,12 @@ $clrotulo->label("z01_nome");
 $cm29_i_propricemit = $cm28_i_codigo;
 ?>
 <form name="form1" method="post" action="">
-<center>
 <table border="0">
 
-     <?
+   <?php
      db_input('cm29_i_codigo',10,$Icm29_i_codigo,true,'hidden',$db_opcao,"");
      db_input('cm29_i_propricemit',10,$Icm29_i_propricemit,true,'hidden',$db_opcao,"");
-     ?>
-
+   ?>
 
 <!--
   <tr>
@@ -71,12 +68,8 @@ $cm29_i_propricemit = $cm28_i_codigo;
     </td>
   </tr>
 -->
-
-
-  <tr>
-     <td colspan=2 align="left">
      <tr>
-         <td colspan=2 nowrap title="<?=@$Tcm28_i_proprietario?>">
+         <td colspan="2" title="<?=@$Tcm28_i_proprietario?>">
             <?=@$Lcm28_i_proprietario?>
           <?
           db_input('cm28_i_proprietario',10,$Icm28_i_proprietario,true,'text',3,"")
@@ -86,12 +79,10 @@ $cm29_i_propricemit = $cm28_i_codigo;
           ?>
          </td>
      </tr>
-     </td>
-  </tr>
 
-  <tr>
-    <td>
-       <fieldset><legend><b>Termo de Compromisso</b></legend>
+     <tr>
+      <td colspan="2">
+       <fieldset><legend>Termo de Compromisso</legend>
        <table>
        <tr>
          <td nowrap title="<?=@$Tcm29_i_termo?>">
@@ -127,8 +118,12 @@ $cm29_i_propricemit = $cm28_i_codigo;
        -->
        </table>
     </td>
-    <td>
-       <fieldset><legend><b>Carta de Concessão</b></legend>
+    </tr>
+
+    <tr>
+    <td colspan="2">
+       <fieldset>
+       <legend>Carta de Concessão</legend>
        <table>
             <tr>
               <td nowrap title="<?=@$Tcm29_i_concessao?>">
@@ -168,16 +163,28 @@ $cm29_i_propricemit = $cm28_i_codigo;
   </tr>
 
   <tr>
-    <td colspan=2>
-       <fieldset><legend><b>Datas da Construção</b></legend>
+    <td colspan="2">
+       <fieldset><legend>Datas da Construção</legend>
        <table>
             <tr>
               <td nowrap title="<?=@$Tcm29_d_estrutura?>">
                  <?=@$Lcm29_d_estrutura?>
               </td>
               <td>
-               <?
-	       db_input('cm29_d_estrutura',20,$Icm29_d_estrutura,true,'text',$db_opcao,"")
+               <?php
+
+                 $cm29_d_estrutura_dia = null;
+                 $cm29_d_estrutura_mes = null;
+                 $cm29_d_estrutura_ano = null;
+
+                 if(!empty($cm29_d_estrutura)){
+
+                   $oDataEstrutura       = new DBDate($cm29_d_estrutura);
+                   $cm29_d_estrutura_dia = $oDataEstrutura->getDia();
+                   $cm29_d_estrutura_mes = $oDataEstrutura->getMes();
+                   $cm29_d_estrutura_ano = $oDataEstrutura->getAno();
+                 }
+	               db_inputdata('cm29_d_estrutura', $cm29_d_estrutura_dia, $cm29_d_estrutura_mes, $cm29_d_estrutura_ano, true, 'text', $db_opcao);
                ?>
               </td>
             </tr>
@@ -186,8 +193,20 @@ $cm29_i_propricemit = $cm28_i_codigo;
                  <?=@$Lcm29_d_base?>
               </td>
               <td>
-               <?
-	       db_input('cm29_d_base',20,$Icm29_d_base,true,'text',$db_opcao,"")
+               <?php
+
+                 $cm29_d_base_dia = null;
+                 $cm29_d_base_mes = null;
+                 $cm29_d_base_ano = null;
+
+                 if(!empty($cm29_d_base)){
+
+                   $oDataBase       = new DBDate($cm29_d_base);
+                   $cm29_d_base_dia = $oDataBase->getDia();
+                   $cm29_d_base_mes = $oDataBase->getMes();
+                   $cm29_d_base_ano = $oDataBase->getAno();
+                 }
+                 db_inputdata('cm29_d_base', $cm29_d_base_dia, $cm29_d_base_mes, $cm29_d_base_ano, true, 'text', $db_opcao);
                ?>
               </td>
             </tr>
@@ -196,8 +215,20 @@ $cm29_i_propricemit = $cm28_i_codigo;
                  <?=@$Lcm29_d_pronto?>
               </td>
               <td>
-               <?
-	       db_input('cm29_d_pronto',20,$Icm29_d_pronto,true,'text',$db_opcao,"")
+               <?php
+
+                 $cm29_d_pronto_dia = null;
+                 $cm29_d_pronto_mes = null;
+                 $cm29_d_pronto_ano = null;
+
+                 if(!empty($cm29_d_pronto)){
+
+                   $oDataPronto       = new DBDate($cm29_d_pronto);
+                   $cm29_d_pronto_dia = $oDataPronto->getDia();
+                   $cm29_d_pronto_mes = $oDataPronto->getMes();
+                   $cm29_d_pronto_ano = $oDataPronto->getAno();
+                 }
+                 db_inputdata('cm29_d_pronto', $cm29_d_pronto_dia, $cm29_d_pronto_mes, $cm29_d_pronto_ano, true, 'text', $db_opcao);
                ?>
               </td>
             </tr>
@@ -206,16 +237,15 @@ $cm29_i_propricemit = $cm28_i_codigo;
     </td>
   </tr>
   </table>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-<!--<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >-->
+  <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?>/ >
 </form>
 <script>
 function js_pesquisacm29_i_propricemit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_propricemit','func_propricemit.php?funcao_js=parent.js_mostrapropricemit1|cm28_i_codigo|cm28_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_propricemit','func_propricemit.php?funcao_js=parent.js_mostrapropricemit1|cm28_i_codigo|cm28_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.cm29_i_propricemit.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_propricemit','func_propricemit.php?pesquisa_chave='+document.form1.cm29_i_propricemit.value+'&funcao_js=parent.js_mostrapropricemit','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_propricemit','func_propricemit.php?pesquisa_chave='+document.form1.cm29_i_propricemit.value+'&funcao_js=parent.js_mostrapropricemit','Pesquisa',false);
      }else{
        document.form1.cm28_i_codigo.value = '';
      }
@@ -234,7 +264,7 @@ function js_mostrapropricemit1(chave1,chave2){
   db_iframe_propricemit.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_proprijazigo','func_proprijazigo.php?funcao_js=parent.js_preenchepesquisa|cm29_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_proprijazigo','func_proprijazigo.php?funcao_js=parent.js_preenchepesquisa|cm29_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_proprijazigo.hide();

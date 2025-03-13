@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 
@@ -63,7 +63,7 @@ db_selectmax("cfpess"," select * from cfpess ".bb_condicaosubpes("r11_"));
 <?
 
 global $db_config;
-db_selectmax("db_config","select cgc,email, db21_codcli , cgc from db_config where codigo = ".db_getsession("DB_instit"));
+db_selectmax("db_config","select cgc,email,lower(trim(munic)) as d08_carnes , cgc from db_config where codigo = ".db_getsession("DB_instit"));
 
 global $d08_cgc,$d08_email; 
 global $fopag_geracao,
@@ -131,7 +131,7 @@ global $fopag_geracao,
                                where rh66_valor > 0
                                order by rh66_pis";
       db_selectmax("rhfopag", $sql);
-//      db_criatabela(pg_query($sql));exit;
+//      db_criatabela(db_query($sql));exit;
 
       // **********************************
       // * HEADER

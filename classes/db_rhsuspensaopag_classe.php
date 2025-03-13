@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -180,7 +180,7 @@ class cl_rhsuspensaopag {
        $this->rh101_dtdesativacao = "null";
      }
      if($rh101_sequencial == "" || $rh101_sequencial == null ){
-       $result = @pg_query("select nextval('rhsuspensaopag_rh101_sequencial_seq')"); 
+       $result = @db_query("select nextval('rhsuspensaopag_rh101_sequencial_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: rhsuspensaopag_rh101_sequencial_seq do campo: rh101_sequencial"; 
@@ -191,7 +191,7 @@ class cl_rhsuspensaopag {
        }
        $this->rh101_sequencial = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from rhsuspensaopag_rh101_sequencial_seq");
+       $result = @db_query("select last_value from rhsuspensaopag_rh101_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $rh101_sequencial)){
          $this->erro_sql = " Campo rh101_sequencial maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -211,7 +211,7 @@ class cl_rhsuspensaopag {
        $this->erro_status = "0";
        return false;
      }
-     $result = @pg_query("insert into rhsuspensaopag(
+     $result = @db_query("insert into rhsuspensaopag(
                                        rh101_sequencial 
                                       ,rh101_regist 
                                       ,rh101_dtcadastro 
@@ -254,17 +254,17 @@ class cl_rhsuspensaopag {
      $this->erro_status = "1";
      $resaco = $this->sql_record($this->sql_query_file($this->rh101_sequencial));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,18098,'$this->rh101_sequencial','I')");
-       $resac = pg_query("insert into db_acount values($acount,3203,18098,'','".pg_result($resaco,0,'rh101_sequencial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18099,'','".pg_result($resaco,0,'rh101_regist')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18100,'','".pg_result($resaco,0,'rh101_dtcadastro')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18101,'','".pg_result($resaco,0,'rh101_usuario')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18102,'','".pg_result($resaco,0,'rh101_dtinicial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18103,'','".pg_result($resaco,0,'rh101_dtfinal')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18104,'','".pg_result($resaco,0,'rh101_dtdesativacao')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18105,'','".pg_result($resaco,0,'rh101_obs')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,18098,'$this->rh101_sequencial','I')");
+       $resac = db_query("insert into db_acount values($acount,3203,18098,'','".pg_result($resaco,0,'rh101_sequencial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18099,'','".pg_result($resaco,0,'rh101_regist')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18100,'','".pg_result($resaco,0,'rh101_dtcadastro')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18101,'','".pg_result($resaco,0,'rh101_usuario')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18102,'','".pg_result($resaco,0,'rh101_dtinicial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18103,'','".pg_result($resaco,0,'rh101_dtfinal')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18104,'','".pg_result($resaco,0,'rh101_dtdesativacao')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18105,'','".pg_result($resaco,0,'rh101_obs')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -418,27 +418,27 @@ class cl_rhsuspensaopag {
      $sql .= " where  rh101_sequencial = $this->rh101_sequencial
 ";
      $resaco = $this->sql_record($this->sql_query_file($this->rh101_sequencial));
-     if($this->numrows>0){       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     if($this->numrows>0){       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,18098,'$this->rh101_sequencial','A')");
+       $resac = db_query("insert into db_acountkey values($acount,18098,'$this->rh101_sequencial','A')");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh101_sequencial"]))
-         $resac = pg_query("insert into db_acount values($acount,3203,18098,'".pg_result($resaco,0,'rh101_sequencial')."','$this->rh101_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3203,18098,'".pg_result($resaco,0,'rh101_sequencial')."','$this->rh101_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh101_regist"]))
-         $resac = pg_query("insert into db_acount values($acount,3203,18099,'".pg_result($resaco,0,'rh101_regist')."','$this->rh101_regist',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3203,18099,'".pg_result($resaco,0,'rh101_regist')."','$this->rh101_regist',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh101_dtcadastro"]))
-         $resac = pg_query("insert into db_acount values($acount,3203,18100,'".pg_result($resaco,0,'rh101_dtcadastro')."','$this->rh101_dtcadastro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3203,18100,'".pg_result($resaco,0,'rh101_dtcadastro')."','$this->rh101_dtcadastro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh101_usuario"]))
-         $resac = pg_query("insert into db_acount values($acount,3203,18101,'".pg_result($resaco,0,'rh101_usuario')."','$this->rh101_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3203,18101,'".pg_result($resaco,0,'rh101_usuario')."','$this->rh101_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh101_dtinicial"]))
-         $resac = pg_query("insert into db_acount values($acount,3203,18102,'".pg_result($resaco,0,'rh101_dtinicial')."','$this->rh101_dtinicial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3203,18102,'".pg_result($resaco,0,'rh101_dtinicial')."','$this->rh101_dtinicial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh101_dtfinal"]))
-         $resac = pg_query("insert into db_acount values($acount,3203,18103,'".pg_result($resaco,0,'rh101_dtfinal')."','$this->rh101_dtfinal',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3203,18103,'".pg_result($resaco,0,'rh101_dtfinal')."','$this->rh101_dtfinal',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh101_dtdesativacao"]))
-         $resac = pg_query("insert into db_acount values($acount,3203,18104,'".pg_result($resaco,0,'rh101_dtdesativacao')."','$this->rh101_dtdesativacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3203,18104,'".pg_result($resaco,0,'rh101_dtdesativacao')."','$this->rh101_dtdesativacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh101_obs"]))
-         $resac = pg_query("insert into db_acount values($acount,3203,18105,'".pg_result($resaco,0,'rh101_obs')."','$this->rh101_obs',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3203,18105,'".pg_result($resaco,0,'rh101_obs')."','$this->rh101_obs',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Suspensão de Pagamento nao Alterado. Alteracao Abortada.\\n";
@@ -472,17 +472,17 @@ class cl_rhsuspensaopag {
      $this->atualizacampos(true);
      $resaco = $this->sql_record($this->sql_query_file($this->rh101_sequencial));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,18098,'$this->rh101_sequencial','E')");
-       $resac = pg_query("insert into db_acount values($acount,3203,18098,'','".pg_result($resaco,0,'rh101_sequencial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18099,'','".pg_result($resaco,0,'rh101_regist')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18100,'','".pg_result($resaco,0,'rh101_dtcadastro')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18101,'','".pg_result($resaco,0,'rh101_usuario')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18102,'','".pg_result($resaco,0,'rh101_dtinicial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18103,'','".pg_result($resaco,0,'rh101_dtfinal')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18104,'','".pg_result($resaco,0,'rh101_dtdesativacao')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3203,18105,'','".pg_result($resaco,0,'rh101_obs')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,18098,'$this->rh101_sequencial','E')");
+       $resac = db_query("insert into db_acount values($acount,3203,18098,'','".pg_result($resaco,0,'rh101_sequencial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18099,'','".pg_result($resaco,0,'rh101_regist')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18100,'','".pg_result($resaco,0,'rh101_dtcadastro')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18101,'','".pg_result($resaco,0,'rh101_usuario')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18102,'','".pg_result($resaco,0,'rh101_dtinicial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18103,'','".pg_result($resaco,0,'rh101_dtfinal')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18104,'','".pg_result($resaco,0,'rh101_dtdesativacao')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3203,18105,'','".pg_result($resaco,0,'rh101_obs')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      $sql = " delete from rhsuspensaopag
                     where ";
@@ -493,7 +493,7 @@ class cl_rhsuspensaopag {
       }
       $sql2 .= " rh101_sequencial = $this->rh101_sequencial ";
 }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Suspensão de Pagamento nao Excluído. Exclusão Abortada.\\n";
@@ -524,7 +524,7 @@ class cl_rhsuspensaopag {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

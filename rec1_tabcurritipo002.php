@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tabcurritipo_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tabcurritipo_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cltabcurritipo = new cl_tabcurritipo;
@@ -43,7 +43,8 @@ if(isset($alterar)){
   db_fim_transacao();
 }else if(isset($chavepesquisa)){
    $db_opcao = 2;
-   $result = $cltabcurritipo->sql_record($cltabcurritipo->sql_query($chavepesquisa)); 
+   $sql = "select * from recursoshumanos.tabcurritipo left join recursoshumanos.tipotreinamentoesocial on h02_tipotreinamento = h84_codigo where tabcurritipo.h02_codigo = {$chavepesquisa}";
+   $result = db_query($sql);
    db_fieldsmemory($result,0);
    $db_botao = true;
 }
@@ -70,7 +71,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmtabcurritipo.php");
+	include(modification("forms/db_frmtabcurritipo.php"));
 	?>
     </center>
 	</td>

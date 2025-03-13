@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_solicitem_classe.php");
-require_once("classes/db_liclicita_classe.php");
-require_once("classes/db_pcproc_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_liclicitem_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_solicitem_classe.php"));
+require_once(modification("classes/db_liclicita_classe.php"));
+require_once(modification("classes/db_pcproc_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_liclicitem_classe.php"));
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clsolicitem = new cl_solicitem;
@@ -52,7 +52,14 @@ $clrotulo->label("descrdepto");
 $clrotulo->label("nome");
 $clrotulo->label("l20_codigo");
 $lRegistroPreco = false;
-$result = $clliclicita->sql_record($clliclicita->sql_query($licitacao,"l08_altera, l20_usaregistropreco"));
+
+if (empty($licitacao)) {
+
+  db_redireciona("db_erros.php?db_erro=" . urlencode("Código da Licitação não informado."));
+  die;
+}
+
+$result = $clliclicita->sql_record($clliclicita->sql_query($licitacao,"l08_altera, l20_usaregistropreco,  l20_formacontroleregistropreco"));
 if ($clliclicita->numrows > 0) {
 
   db_fieldsmemory($result,0);
@@ -68,9 +75,9 @@ if ($clliclicita->numrows > 0) {
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script>
-function js_submit(codproc){
+function js_submit(){
 	parent.itens.js_submit_form();
-	parent.itens.document.form1.codproc.value=codproc;
+	parent.itens.document.form1.codproc.value = document.form1.codproc.value;
 	
 	parent.itens.document.form1.submit();
 	document.form1.submit();
@@ -113,69 +120,73 @@ function js_submit(codproc){
   <tr>
      <td><b>Processo de Compra:</b></td>
     <td>
+    <?php
     
-    <?
+    $codprocinputvalue = "";
+
+    if (!empty($codproc)) {
     
-    $rsPcparam = $clpcparam->sql_record($clpcparam->sql_query_file(db_getsession("DB_instit"), "pc30_contrandsol"));
-    db_fieldsmemory($rsPcparam, 0);
-    $sWhere = "";
-    if ($lRegistroPreco) {
-      $sWhere = " and pc10_solicitacaotipo = 6";
-    } else {
-      $sWhere .= " and pc10_solicitacaotipo in(1,2)";
+        $codprocinputvalue = $codproc;
+
+        $rsPcparam = $clpcparam->sql_record($clpcparam->sql_query_file(db_getsession("DB_instit"), "pc30_contrandsol"));
+        db_fieldsmemory($rsPcparam, 0);
+        
+        $sWhere = "";
+
+        if ($lRegistroPreco) {
+
+            $sWhere  = " and pc10_solicitacaotipo = 6";
+            $sWhere .= " and pc54_formacontrole   = {$l20_formacontroleregistropreco}";
+        } else {
+            $sWhere .= " and pc10_solicitacaotipo in(1,2)";
+        }
+
+        $sWhere .= " and pc80_codproc = {$codproc} ";
+        $sWhere .= " and pc80_situacao = 2";
+        $sWhere .= " and not exists (select 1 "; 
+        $sWhere .= "                   from acordopcprocitem ";
+        $sWhere .= "                        inner join acordoitem    on ac23_acordoitem    = ac20_sequencial";
+        $sWhere .= "                        inner join acordoposicao on ac20_acordoposicao = ac26_sequencial";
+        $sWhere .= "                        inner join acordo        on ac26_acordo        = ac16_sequencial";
+        $sWhere .= "                  where ac23_pcprocitem = pc81_codprocitem ";
+        $sWhere .= "                    and (ac16_acordosituacao  not in (2,3)))";
+
+    	if (isset($pc30_contrandsol) && $pc30_contrandsol == 't') {
+    	    
+    	    $sSqlProc = $clpcproc->sql_query_soland(null, "*",
+    	                                           "pc80_codproc",
+    	                                           "(e55_sequen is null or (e55_sequen is not null and e54_anulad is not null))
+    	                                             and pc43_depto = ".db_getsession('DB_coddepto')." {$sWhere}");
+          
+        } else {
+
+            $sSqlProc = $clpcproc->sql_query_aut(null, 
+                                                "*", 
+                                                "pc80_codproc",
+                                                "(e55_sequen is null or (e55_sequen is not null and e54_anulad is not null))
+                                                  and pc10_instit = ".db_getsession("DB_instit")." {$sWhere}");
+        }
+        
+        $nome = "";
+        $descrdepto = "";
+        $pc80_resumo = "";
+        $pc80_data_dia = "";
+        $pc80_data_mes = "";
+        $pc80_data_ano = "";
+
+        $result_pcproc = $clpcproc->sql_record($sSqlProc);
+        db_fieldsmemory($result_pcproc, 0);
+
+        if (isset($codproc) && $codproc != "") {
+
+            $couni = "codproc";
+            $$couni = $codproc;
+        }
     }
-    $sWhere .= " and pc80_situacao = 2";
-    $sWhere .= " and not exists (select 1 "; 
-    $sWhere .= "                   from acordopcprocitem ";
-    $sWhere .= "                        inner join acordoitem    on ac23_acordoitem    = ac20_sequencial";
-    $sWhere .= "                        inner join acordoposicao on ac20_acordoposicao = ac26_sequencial";
-    $sWhere .= "                        inner join acordo        on ac26_acordo        = ac16_sequencial";
-    $sWhere .= "                  where ac23_pcprocitem = pc81_codprocitem ";
-    $sWhere .= "                    and (ac16_acordosituacao  not in (2,3)))";
-	if (isset ($pc30_contrandsol) && $pc30_contrandsol == 't') {
-	    
-	    $sSqlProc = $clpcproc->sql_query_soland(null, "distinct pc80_codproc",
-	                                           "pc80_codproc",
-	                                           "(e55_sequen is null or (e55_sequen is not null and e54_anulad is not null))
-	                                             and pc43_depto = ".db_getsession('DB_coddepto')." {$sWhere}");
-      
-    } else {
-      $sSqlProc = $clpcproc->sql_query_aut(null, 
-                                           "distinct pc80_codproc", 
-                                           "pc80_codproc",
-                                           "(e55_sequen is null or (e55_sequen is not null and e54_anulad is not null))
-                                             and pc10_instit = ".db_getsession("DB_instit")." {$sWhere}");
-    }
-    
-    $result_pcproc=$clpcproc->sql_record($sSqlProc);
-    if (isset($codproc)&&$codproc!=""){
-      $couni="codproc";
-	  $$couni=$codproc;
-    }else{
-    	$nome="";
-    	$descrdepto="";
-    	$pc80_resumo="";
-    	$pc80_data_dia="";
-        $pc80_data_mes="";
-        $pc80_data_ano="";
-    }
-    
-	echo"<select name='codproc' id='codproc' onchange='js_submit(this.value);'>";
-	echo "<option value=''></option>\n";
-	for($y=0;$y<$clpcproc->numrows;$y++){
- 	  db_fieldsmemory($result_pcproc,$y);
-	  echo "<option value=$pc80_codproc ".(isset($couni)?($$couni==$pc80_codproc?"selected":""):"")." >$pc80_codproc</option>\n";
-   	}
-    echo " </select>";
-  
+
     ?>
+    <input value="<?php echo $codprocinputvalue; ?>" type="text" name="codproc" id="codproc" maxlength="11" size="8" autocomplete="off" onkeyup="js_ValidaCampos(this,1,'Processo de Compra','t','f',event);" onblur="js_ValidaMaiusculo(this,'f',event);"/>
     </td>
-    <?
-    if (isset($codproc)&&$codproc!=""){
-      $result_pcproc=$clpcproc->sql_record($clpcproc->sql_query($codproc));
-      db_fieldsmemory($result_pcproc,0);
-    }
-    ?>
     <td align="right" nowrap title="<?=@$Tnome?>">
       <strong>Usuário:</strong>      
     </td>
@@ -214,6 +225,12 @@ function js_submit(codproc){
     <?
       db_textarea('pc80_resumo',2,73,$Ipc80_resumo,true,'text',3,"")     
     ?>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="5" align="center" nowrap>
+        <br/>
+        <input name='incluir' type='button' value='Pesquisar' onclick='js_submit();' ></td>
     </td>
   </tr>
 </table>

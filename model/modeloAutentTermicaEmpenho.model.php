@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once 'modeloAutentTermicaBasica.php';
+require_once modification("model/modeloAutentTermicaBasica.php");
 
 class modeloAutentTermicaEmpenho extends modeloAutentTermicaBasica {
   
@@ -62,6 +62,7 @@ class modeloAutentTermicaEmpenho extends modeloAutentTermicaBasica {
     $sSqlContas .= "                               and conplano.c60_anousu = conplanoreduz.c61_anousu ";
     $sSqlContas .= "       left  join conplanoconta on conplanoconta.c63_codcon = conplanoreduz.c61_codcon ";
     $sSqlContas .= "                               and conplanoconta.c63_anousu = conplanoreduz.c61_anousu ";
+    $sSqlContas .= "                               and conplanoconta.c63_reduz = conplanoreduz.c61_reduz ";
     $sSqlContas .= "       left  join db_bancos     on db_bancos.db90_codban    = conplanoconta.c63_banco  ";
     $sSqlContas .= " where conplano.c60_anousu = ".db_getsession('DB_anousu');
   	$sSqlContas .= "   and corrente.k12_id     = {$this->iId}";

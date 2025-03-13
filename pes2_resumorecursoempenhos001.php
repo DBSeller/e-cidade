@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_gerfcom_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_gerfcom_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -62,11 +62,27 @@ function js_verifica(){
 }
 
 function js_emite() {
-  qry = "";
-  if(document.form1.r48_semest){
-    qry = "&iSemestre="+document.form1.r48_semest.value;
-  }
   
+  qry = "";
+
+  if (document.form1.ponto.value == 'c') {
+    
+    if(document.form1.r48_semest){
+      
+      qry = "&iSemestre="+document.form1.r48_semest.value;
+      
+    } else {
+
+      alert('Sem complementar encerrada para o período.');
+
+      return false;
+      
+    }
+
+    
+
+  }
+
   jan = window.open('pes2_resumorecursoempenhos002.php?sPonto='+document.form1.ponto.value+
                     '&iAno='+document.form1.DBtxt23.value+
                     '&iMes='+document.form1.DBtxt25.value+
@@ -149,7 +165,7 @@ function js_emite() {
 	                  </tr>
 	                      ";
                  } else {
-                 	echo "<tr><td  align='left' title='Sem complementar'><strong>Sem Complementar</strong></td><td></tr>";
+                  echo "<tr><td colspan='2' align='left' title='Sem complementar'><strong>Sem Complementar encerrada para o período</strong></td><td></tr>";
                  }
                }
                ?>

@@ -187,7 +187,7 @@ DBViewControleFrequencia.prototype.buscaMeses = function () {
 DBViewControleFrequencia.prototype.retornoMesesDeAbrangencia = function (oAjax) {
   
   var oSelf    = this;
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   this.aMeses  = oRetorno.aMeses;
   
   this.oCboMeses.options.length = 0;
@@ -257,7 +257,7 @@ DBViewControleFrequencia.prototype.retornoDiasMes = function (oAjax) {
   js_removeObj('msgBox');
   var oSelf = this;
   
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   this.aDias   = oRetorno.aDias;
 
   var iNumeroDias = this.aDias.length;
@@ -349,7 +349,7 @@ DBViewControleFrequencia.prototype.buscaAlunos = function (iMes) {
 DBViewControleFrequencia.prototype.retornoAlunos = function (oAjax) {
   
   js_removeObj('msgBox2');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   var oSelf = this;
   
@@ -532,7 +532,7 @@ DBViewControleFrequencia.prototype.salvar = function () {
 DBViewControleFrequencia.prototype.retornoSalvarFaltas = function (oAjax) {
   
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')'); 
+  var oRetorno = JSON.parse(oAjax.responseText); 
   
   alert(oRetorno.message.urlDecode());
   if (oRetorno.status == 1) {

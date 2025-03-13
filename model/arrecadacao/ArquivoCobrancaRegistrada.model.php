@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-require_once('std/DBLargeObject.php');
+require_once(modification('std/DBLargeObject.php'));
 
 class ArquivoCobrancaRegistrada {
   
@@ -91,7 +91,8 @@ class ArquivoCobrancaRegistrada {
   	/*
      * Buscamos as informações referentes ao convênio com o banco
      */
-    $rsConvenioCobranca = $oDaoConvenioCobranca->sql_record($oDaoConvenioCobranca->sql_query("","*",null,"ar13_carteira = '17' and ar11_cadtipoconvenio = 7"));
+    $iConvenioCustaBoleto = regraEmissao::getConveioCustaBoleto();
+    $rsConvenioCobranca = $oDaoConvenioCobranca->sql_record($oDaoConvenioCobranca->sql_query("","*",null,"ar13_carteira = '17' and ar11_cadtipoconvenio = $iConvenioCustaBoleto"));
     if ($oDaoConvenioCobranca->numrows == 0) {
       throw new Exception("[ 1 ] - Nenhum cadastro de convênio do tipo Cobrança Registrada com carteira 17 encontrado!");
     }

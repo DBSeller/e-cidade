@@ -1,7 +1,7 @@
 <?php
-/*
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("classes/db_rhpromocao_classe.php");
-require_once("classes/db_rhavaliacao_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("classes/db_rhpromocao_classe.php"));
+require_once(modification("classes/db_rhavaliacao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once ('model/recursosHumanos/Promocao.model.php');
+require_once(modification('model/recursosHumanos/Promocao.model.php'));
 
 $db_opcao      = 1;
 $db_botao      = true;
@@ -149,18 +149,18 @@ function js_pesquisah72_regist(lMostra) {
 
   if (lMostra == true) {
 
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_rhpessoal',
-                        'func_rhpessoal.php?funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome', 
+                        'func_rhpessoal.php?filtro_lotacao=true&funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome', 
                         'Pesquisa', 
                         true);
   } else {
 
      if(document.form1.h72_regist.value != ''){ 
        
-       js_OpenJanelaIframe('top.corpo', 
+       js_OpenJanelaIframe('CurrentWindow.corpo', 
                            'db_iframe_rhpessoal',
-                           'func_rhpessoal.php?pesquisa_chave='+document.form1.h72_regist.value+'&funcao_js=parent.js_mostrarhpessoal',
+                           'func_rhpessoal.php?filtro_lotacao=true&pesquisa_chave='+document.form1.h72_regist.value+'&funcao_js=parent.js_mostrarhpessoal',
                            'Pesquisa',
                            false);
      }else{
@@ -189,7 +189,7 @@ function js_mostrarhpessoal1(chave1, chave2) {
 
 function js_pesquisa(){
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_rhpromocao',
                       'func_rhpromocao.php?funcao_js=parent.js_preenchepesquisa|h72_sequencial&lAtivo=1',
                       'Pesquisa',

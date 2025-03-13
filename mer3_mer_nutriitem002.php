@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_desperdicio_classe.php");
-include("classes/db_mer_cardapioitem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_desperdicio_classe.php"));
+include(modification("classes/db_mer_cardapioitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $escola = db_getsession("DB_coddepto");
@@ -54,7 +54,7 @@ $escola = db_getsession("DB_coddepto");
 <?
 $sql    = "select me09_i_codigo,me09_c_descr
            from mer_nutriente order by me09_c_descr";
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 $sql2   = " select me35_c_nomealimento,me35_i_codigo from mer_alimento ";
 if ($item!="") {
@@ -62,7 +62,7 @@ if ($item!="") {
 }elseif($grupo!=""){
   $sql2 .= " where me35_i_grupoalimentar = $grupo ";	
 }
-$result2 = pg_query($sql2);
+$result2 = db_query($sql2);
 $linhas2 = pg_num_rows($result2);
 ?>
 <br>
@@ -106,7 +106,7 @@ $linhas2 = pg_num_rows($result2);
                    ";        
         $sqln   .= "  where me08_i_alimento=$me35_i_codigo";
         $sqln   .= "  and me08_i_nutriente=$me09_i_codigo";
-        $resultn = pg_query($sqln);
+        $resultn = db_query($sqln);
         if (pg_num_rows($resultn)>0) {
         	
           db_fieldsmemory($resultn,0);

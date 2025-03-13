@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/JSON.php");
-require_once ("std/db_stdClass.php");
-require_once ("std/DBDate.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/exceptions/BusinessException.php");
-require_once ("libs/exceptions/DBException.php");
-require_once ("libs/exceptions/FileException.php");
-require_once ("libs/exceptions/ParameterException.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
+require_once(modification("libs/exceptions/DBException.php"));
+require_once(modification("libs/exceptions/FileException.php"));
+require_once(modification("libs/exceptions/ParameterException.php"));
 
 $iEscola           = db_getsession("DB_coddepto");
 $oJson             = new Services_JSON();
@@ -57,8 +57,8 @@ try {
 
       $oRetorno->aAlunos = array();
 
-      $oTurma  = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
-      $oEtapa  = EtapaRepository::getEtapaByCodigo($oParam->iEtapa);
+      $oTurma  = EducacaoSessionManager::carregarTurma( $oParam->iTurma );
+      $oEtapa  = EducacaoSessionManager::carregarEtapa( $oParam->iEtapa );
       $aAlunos = $oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa);
 
       foreach ($aAlunos as $oMatricula) {
@@ -67,7 +67,7 @@ try {
         $oDisciplinaAvaliacao = $oDiario->getDisciplinasPorRegencia(RegenciaRepository::getRegenciaByCodigo($oParam->iRegencia));
 
         $lTemAmparo = false;
-        if ($oDisciplinaAvaliacao->getAmparo() != null || $oMatricula->getSituacao() != 'MATRICULADO' ||
+        if ($oDisciplinaAvaliacao->getAmparo()->getCodigo() != null || $oMatricula->getSituacao() != 'MATRICULADO' ||
             !$oMatricula->isAtiva() || $oMatricula->isConcluida()
            ) {
           continue;
@@ -83,8 +83,8 @@ try {
         $oRetorno->aAlunos[]              = $oDadosMatricula;
       }
 
-      TurmaRepository::removerTurma($oTurma);
       db_fim_transacao(false);
+
       break;
 
     /**
@@ -98,8 +98,8 @@ try {
       db_inicio_transacao();
 
       $oRetorno->aAlunos = array();
-      $oTurma            = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
-      $oEtapa            = EtapaRepository::getEtapaByCodigo($oParam->iEtapa);
+      $oTurma            =  EducacaoSessionManager::carregarTurma( $oParam->iTurma );
+      $oEtapa            =  EducacaoSessionManager::carregarEtapa( $oParam->iEtapa );
       $aAlunos           = $oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa);
 
       foreach ($aAlunos as $oMatricula) {
@@ -109,12 +109,12 @@ try {
         $oRegencia            = RegenciaRepository::getRegenciaByCodigo($oParam->iRegencia);
         $oDisciplinaAvaliacao = $oDiario->getDisciplinasPorRegencia($oRegencia);
 
-        if ($oDisciplinaAvaliacao->getAmparo() == null || $oMatricula->getSituacao() != 'MATRICULADO' ||
+        if ($oDisciplinaAvaliacao->getAmparo()->getCodigo() == null || $oMatricula->getSituacao() != 'MATRICULADO' ||
             !$oMatricula->isAtiva() || $oMatricula->isConcluida()) {
           continue;
         }
 
-        $oAmparo = new AmparoDisciplina($oDisciplinaAvaliacao);
+        $oAmparo = $oDisciplinaAvaliacao->getAmparo();
 
         if (!empty($oAmparo)) {
 
@@ -127,8 +127,16 @@ try {
 
             $oDadosPeriodo               = new stdClass();
             $oDadosPeriodo->iCodigo      = $oPeriodo->getElementoAvaliacao()->getCodigo();
-            $oDadosPeriodo->sDescricao   = urlencode($oPeriodo->getElementoAvaliacao()->getPeriodoAvaliacao()->getDescricao());
-            $oDadosPeriodo->sAbreviatura = urlencode($oPeriodo->getElementoAvaliacao()->getPeriodoAvaliacao()->getDescricaoAbreviada());
+
+            if ( $oPeriodo->getElementoAvaliacao() instanceof AvaliacaoPeriodica ) {
+
+              $oDadosPeriodo->sDescricao   = urlencode($oPeriodo->getElementoAvaliacao()->getPeriodoAvaliacao()->getDescricao());
+              $oDadosPeriodo->sAbreviatura = urlencode($oPeriodo->getElementoAvaliacao()->getPeriodoAvaliacao()->getDescricaoAbreviada());
+            }
+
+            if ( $oPeriodo->getElementoAvaliacao() instanceof ResultadoAvaliacao ) {
+              continue;
+            }
             $oDadosAluno->aPeriodos[]    = $oDadosPeriodo;
           }
 
@@ -147,10 +155,8 @@ try {
         $oRetorno->aAlunos[] = $oDadosAluno;
       }
 
-      TurmaRepository::removerTurma($oTurma);
-      RegenciaRepository::removerRegencia($oRegencia);
-
       db_fim_transacao(false);
+
       break;
 
     /**
@@ -165,19 +171,27 @@ try {
      */
     case 'salvarAmparo':
 
-      $oTurma    = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
-      $oEtapa    = EtapaRepository::getEtapaByCodigo($oParam->iEtapa);
       $oRegencia = RegenciaRepository::getRegenciaByCodigo($oParam->iRegencia);
 
       db_inicio_transacao();
       foreach ($oParam->aAlunos as $oAluno) {
 
-
-        $oMatricula       = MatriculaRepository::getMatriculaByCodigo($oAluno->iCodigo);
+        /**
+         * $oAluno->iCodigo     é o código da matricula de verdade ed60_i_codigo
+         * $oAluno->iMatricula  representa a matrícula no ano.. ed60_matricula (matricula fake... não usar)
+         */
+        $oMatricula       = EducacaoSessionManager::carregarMatricula( $oAluno->iCodigo );
         $oDiarioAvaliacao = $oMatricula->getDiarioDeClasse()->getDisciplinasPorRegencia($oRegencia);
 
         $oTipoAmparo        = null;
         $aPeriodosAvaliacao = array();
+
+        if ( !$oDiarioAvaliacao instanceof DiarioAvaliacaoDisciplina ) {
+
+          $sMsgErro  = "Não foi possível carregar vínculo do aluno {$oMatricula->getAluno()->getNome()} ";
+          $sMsgErro .= "com a disciplina {$oRegencia->getDisciplina()->getNomeDisciplina()}. ";
+          throw new Exception(($sMsgErro));
+        }
 
         foreach ($oDiarioAvaliacao->getAvaliacoes() as $oAvaliacaoAproveitamento) {
 
@@ -196,56 +210,45 @@ try {
         }
 
         $oDiarioAvaliacao->salvarAmparo($aPeriodosAvaliacao, $oTipoAmparo, $oParam->lCargaHoraria);
-
       }
+
+      EducacaoSessionManager::limpar();
+
       db_fim_transacao();
       $oRetorno->message = urlencode("Amparo salvo com sucesso.");
 
-
-      MatriculaRepository::removeAll();
-      RegenciaRepository::removerRegencia($oRegencia);
       break;
 
     /**
      * Exclui o amparo de um aluno para uma regencia
-     * @param integer $oParam->iMatricula - codigo da matricula do aluno
-     * @param integer $oParam->iRegencia - codigo da regencia selecionada
+     * $oParam->iTurma     código da turma
+     * $oParam->iEtapa     código da etapa
+     * $oParam->iRegencia  código da regencia
+     * $oParam->aAlunos    array de matriculas ( ed60_i_codigo )
      */
     case 'excluirAmparo':
 
       $oRegencia = RegenciaRepository::getRegenciaByCodigo($oParam->iRegencia);
-
       db_inicio_transacao();
       foreach ($oParam->aAlunos as $iMatricula) {
 
-        $oMatricula       = MatriculaRepository::getMatriculaByCodigo($iMatricula);
+        $oMatricula       = EducacaoSessionManager::carregarMatricula( $iMatricula );
         $oDiarioAvaliacao = $oMatricula->getDiarioDeClasse()->getDisciplinasPorRegencia($oRegencia);
         $oDiarioAvaliacao->removerAmparo();
-
       }
       db_fim_transacao();
 
+      EducacaoSessionManager::limpar();
       $oRetorno->message = urlencode("Amparo(s) excluído(s) com sucesso.");
 
-      MatriculaRepository::removeAll();
-      RegenciaRepository::removerRegencia($oRegencia);
       break;
   }
-} catch (ParameterException $oErro) {
 
-  db_fim_transacao(true);
-  $oRetorno->status  = 2;
-  $oRetorno->message = urlencode($oErro->getMessage());
-} catch (BusinessException $oErro) {
-
-  db_fim_transacao(true);
-  $oRetorno->status  = 2;
-  $oRetorno->message = urlencode($oErro->getMessage());
-} catch (DBException $oErro) {
+} catch (Exception $oErro) {
 
   db_fim_transacao(true);
   $oRetorno->status  = 2;
   $oRetorno->message = urlencode($oErro->getMessage());
 }
+
 echo $oJson->encode($oRetorno);
-?>

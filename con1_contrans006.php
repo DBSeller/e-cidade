@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_contrans_classe.php");
-include("classes/db_contranslan_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_contrans_classe.php"));
+include(modification("classes/db_contranslan_classe.php"));
 $clcontrans = new cl_contrans;
   /*
 $clcontranslan = new cl_contranslan;
@@ -72,7 +72,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcontrans.php");
+	include(modification("forms/db_frmcontrans.php"));
 	?>
     </center>
 	</td>
@@ -105,7 +105,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.contranslan.disabled=false;
-         top.corpo.iframe_contranslan.location.href='con1_contranslan001.php?db_opcaoal=33&c46_codseq=".@$c45_anousu."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_contranslan.location.href='con1_contranslan001.php?db_opcaoal=33&c46_codseq=".@$c45_anousu."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('contranslan');";

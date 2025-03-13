@@ -26,7 +26,7 @@
  */
 
 //MODULO: Cadastro
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $cl_iframeseleciona = new cl_iframe_seleciona();
 $cliptutabelasconfig->rotulo->label();

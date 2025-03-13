@@ -25,12 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
+
+$aux = new cl_arquivo_auxiliar;
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('e50_numemp');
@@ -48,7 +51,25 @@ $clrotulo->label('e50_codord');
 
 <script>
 function js_emite(){
-  jan = window.open('emp2_ordempag002.php?data='+document.form1.data_ano.value+'-'+document.form1.data_mes.value+'-'+document.form1.data_dia.value+'&data1='+document.form1.data1_ano.value+'-'+document.form1.data1_mes.value+'-'+document.form1.data1_dia.value+'&codini='+document.form1.e50_codordINI.value+'&codfim='+document.form1.e50_codordFIM.value+'&numempini='+document.form1.e50_numempINI.value+'&numempfim='+document.form1.e50_numempFIM.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+
+  vir="";
+  listacredor="";
+  for(x=0;x<document.form1.credor.length;x++){
+   listacredor+=vir+document.form1.credor.options[x].value;
+   vir=",";
+  }
+
+
+  var param =  "data="+document.form1.data_ano.value+'-'+document.form1.data_mes.value+'-'+document.form1.data_dia.value;
+      param += "&data1="+document.form1.data1_ano.value+'-'+document.form1.data1_mes.value+'-'+document.form1.data1_dia.value;
+      param += "&codini="+document.form1.e50_codordINI.value;
+      param += "&codfim="+document.form1.e50_codordFIM.value;
+      param += "&numempini="+document.form1.e50_numempINI.value;
+      param += "&numempfim="+document.form1.e50_numempFIM.value;
+      param += "&ordem="+document.form1.sOrdem.value;
+      param += "&listacredor="+listacredor;
+
+  jan = window.open('emp2_ordempag002.php?'+param,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
 }
 function js_testa(campo,valor,nomecampo1,nomecampo2){
@@ -73,66 +94,111 @@ function js_testa(campo,valor,nomecampo1,nomecampo2){
 </script>  
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
+
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
-  <table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
+<table align="center" width="30%">
   <tr>
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>
+      <form name="form1" method="post" action="">
+      <fieldset class="fildset-principal">
+        <legend>
+          <b>Ordens De Pagamento</b>
+        </legend>
+        <table align="left" border="0" class="table-campos">
+            <tr>
+                <td nowrap align="left"><b>De:</b></td>
+                <td  align="left" nowrap>
+                 <?php
+                   db_inputdata("data","","","","true","text",2);
+                   echo " <b>Até:</b> ";
+                   db_inputdata("data1","","","","true","text",2)
+                 ?>
+                </td>
+            </tr>
+            <tr>
+                <td nowrap align="left"><b>Apartir da Ordem:</b></td>
+                <td  align="left" nowrap>
+                 <?php
+		   db_input('e50_codord',16,$Ie50_codord,true,'text',1,"onChange=\"js_testa('i',this.value,'e50_codordINI','e50_codordFIM')\"","e50_codordINI","");
+                   echo " <b>Até:</b> ";
+		   db_input('e50_codord',16,$Ie50_codord,true,'text',1,"onChange=\"js_testa('f',this.value,'e50_codordINI','e50_codordFIM')\"","e50_codordFIM","");
+                 ?>
+                </td>
+            </tr>
+            <tr>
+                <td nowrap align="left"><b>Apartir do Empenho:</b></td>
+                <td  align="left" nowrap>
+                 <?php
+		   db_input('e50_numemp',16,$Ie50_numemp,true,'text',1,"onChange=\"js_testa('i',this.value,'e50_numempINI','e50_numempFIM')\"","e50_numempINI","");
+                   echo " <b>Até:</b> ";
+		   db_input('e50_numemp',16,$Ie50_numemp,true,'text',1,"onChange=\"js_testa('f',this.value,'e50_numempINI','e50_numempFIM')\"","e50_numempFIM","");
+                 ?>
+                </td>
+            </tr>
+            <tr>
+              <td nowrap>
+                <b>Ordem:</b>
+              </td>
+              <td>
+                <?php
+                  $op=array("e"=>"Empenho","d"=>"Data Empenho","l"=>"Data Lançamento","v"=>"Valor","c"=>"Credor");
+                  db_select("sOrdem",$op,true,"text");
+                ?>
+              </td>
+            </tr>
+
+            <tr>
+               <td nowrap width="50%">
+                    <?
+                      // $aux = new cl_arquivo_auxiliar;
+                      $aux->cabecalho = "<strong>Credores</strong>";
+                      $aux->codigo = "e60_numcgm"; //chave de retorno da func
+                      $aux->descr  = "z01_nome";   //chave de retorno
+                      $aux->nomeobjeto = 'credor';
+                      $aux->funcao_js = 'js_mostra';
+                      $aux->funcao_js_hide = 'js_mostra1';
+                      $aux->sql_exec  = "";
+                      $aux->func_arquivo = "func_cgm_empenho.php";  //func a executar
+                      $aux->nomeiframe = "db_iframe_cgm";
+                      $aux->localjan = "";
+                      $aux->onclick = "";
+                      $aux->db_opcao = 2;
+                      $aux->tipo = 2;
+                      $aux->top = 1;
+                      $aux->linhas = 4;
+                      $aux->vwhidth = 400;
+                      $aux->funcao_gera_formulario();
+                   ?>
+               </td>
+            </tr>
+
+
+
+      </fieldset>
+      <table align="center">
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="2" align = "center">
+            <input  name="emite2" id="emite2" type="button" value="Emitir Relatório" onclick="js_emite();" >
+          </td>
+        </tr>
+      </table>
+      </form>
+    </td>
   </tr>
 </table>
 
-  <table  align="center">
-    <form name="form1" method="post" action="">
-      <tr>
-         <td >&nbsp;</td>
-         <td >&nbsp;</td>
-      </tr>
-         <tr>
-	 <td><b>De:</b><?db_inputdata("data","","","","true","text",2)      ?>      </td>
-	 <td><b>Ate:</b>  <?db_inputdata("data1","","","","true","text",2)      ?> </td>
-	 </tr>
-      <tr >
-        <td align="left" nowrap >
-        <strong>Apartir da Ordem:</strong>
-	  <?
-            db_input('e50_codord',8,$Ie50_codord,true,'text',1,"onChange=\"js_testa('i',this.value,'e50_codordINI','e50_codordFIM')\"","e50_codordINI","");             
-	  ?>
-        </td>
-	<td><strong>ate:</strong>
-	  <?
-            db_input('e50_codord',8,$Ie50_codord,true,'text',1,"onChange=\"js_testa('f',this.value,'e50_codordINI','e50_codordFIM')\"","e50_codordFIM","");             
-          ?>
-	</td>
-      </tr>
-      <tr >
-        <td align="left" nowrap >
-        <strong>Apartir do Empenho:</strong>
-	  <?
-            db_input('e50_numemp',8,$Ie50_numemp,true,'text',1,"onChange=\"js_testa('i',this.value,'e50_numempINI','e50_numempFIM')\"","e50_numempINI","");             
-	  ?>
-        </td>
-	<td><strong>ate:</strong>
-	  <?
-            db_input('e50_numemp',8,$Ie50_numemp,true,'text',1,"onChange=\"js_testa('f',this.value,'e50_numempINI','e50_numempFIM')\"","e50_numempFIM","");             
-          ?>
-	</td>
-      </tr>
-      <tr>
-        <td >&nbsp;</td>
-        <td >&nbsp;</td>
-      </tr>
-      <tr>
-        <td colspan="2" align = "center"> 
-          <input  name="emite2" id="emite2" type="button" value="Emitir Relatório" onclick="js_emite();" >
-        </td>
-      </tr>
-
-  </form>
-    </table>
-<?
+<?php
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
+
 </html>

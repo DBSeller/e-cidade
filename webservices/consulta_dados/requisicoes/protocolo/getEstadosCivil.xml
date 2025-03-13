@@ -1,0 +1,15 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="defcampo" label="codigo"  />
+        <campo campo="defdescr" label="descricao"    />
+    </campos>
+    <from tabela="db_syscampodef"/>
+    <juncoes>
+    </juncoes>
+    <filtros>
+        <filtro label="" condicao="codcam = 240" obrigatorio="false"/>
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao   campos="codigo"/>
+</consulta>

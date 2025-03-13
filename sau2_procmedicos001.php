@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_unidades_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_unidades_classe.php"));
 $clunidades = new cl_unidades;
 $clrotulo = new rotulocampo;
 $clrotulo->label("sd04_i_unidade");
@@ -139,10 +139,10 @@ function js_pesquisasd04_i_medico(mostra){
   alert("Informe a unidade!");
  }else{
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_medicos','func_unidademedicos.php?unidade='+document.form1.sd04_i_unidade.value+'&funcao_js=parent.js_mostramedicos1|sd04_i_medico|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_medicos','func_unidademedicos.php?unidade='+document.form1.sd04_i_unidade.value+'&funcao_js=parent.js_mostramedicos1|sd04_i_medico|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.sd04_i_medico.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_medicos','func_unidademedicos.php?unidade='+document.form1.sd04_i_unidade.value+'&pesquisa_chave='+document.form1.sd04_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_medicos','func_unidademedicos.php?unidade='+document.form1.sd04_i_unidade.value+'&pesquisa_chave='+document.form1.sd04_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = '';
      }
@@ -163,10 +163,10 @@ function js_mostramedicos1(chave1,chave2){
 }
 function js_pesquisa_procedimento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_procedimento','func_procedimentos.php?funcao_js=parent.js_mostraprocedimento1|sd09_i_codigo|sd09_c_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedimento','func_procedimentos.php?funcao_js=parent.js_mostraprocedimento1|sd09_i_codigo|sd09_c_descr','Pesquisa',true);
   }else{
      if(document.form1.sd09_i_codigo.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_procedimento','func_procedimentos.php?pesquisa_chave='+document.form1.sd09_i_codigo.value+'&funcao_js=parent.js_mostraprocedimento','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedimento','func_procedimentos.php?pesquisa_chave='+document.form1.sd09_i_codigo.value+'&funcao_js=parent.js_mostraprocedimento','Pesquisa',false);
      }else{
        document.form1.sd09_c_descr.value = '';
      }

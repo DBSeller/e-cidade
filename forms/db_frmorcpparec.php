@@ -26,7 +26,7 @@
  */
 
 //MODULO: orcamento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clorcpparec->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -305,7 +305,7 @@ for($i=$o21_anoini; $i<= $o21_anofim; $i++){
 //elemento
 function js_fonte_<?=$i?>(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_orcpparec','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostrafonte1_<?=$i?>|o57_fonte|o57_descr','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcpparec','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostrafonte1_<?=$i?>|o57_fonte|o57_descr','Pesquisa',true,'0','1');
   }else{
     fonte = document.form1.o57_fonte_<?=$i?>.value;
     if(fonte != ''){
@@ -313,7 +313,7 @@ function js_fonte_<?=$i?>(mostra){
 	fonte = fonte+"0";
       }
        document.form1.o57_fonte_<?=$i?>.value=fonte;
-      js_OpenJanelaIframe('top.corpo.iframe_orcpparec','db_iframe_orcfontes','func_orcfontes.php?pesquisa_chave='+document.form1.o57_fonte_<?=$i?>.value+'&funcao_js=parent.js_mostrafonte_<?=$i?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcpparec','db_iframe_orcfontes','func_orcfontes.php?pesquisa_chave='+document.form1.o57_fonte_<?=$i?>.value+'&funcao_js=parent.js_mostrafonte_<?=$i?>','Pesquisa',false);
     }      
   }
 }
@@ -351,10 +351,10 @@ function js_pesquisao27_concarpeculiar_<?=$i?>(mostra,ano){
   var obj_c58_descr          = eval("document.form1.c58_descr_"+ano);
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_orcpparec','db_iframe_concarpeculiar','func_concarpeculiar.php?funcao_js=parent.js_mostraconcarpeculiar1_<?=$i?>|c58_sequencial|c58_descr&filtro=receita','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcpparec','db_iframe_concarpeculiar','func_concarpeculiar.php?funcao_js=parent.js_mostraconcarpeculiar1_<?=$i?>|c58_sequencial|c58_descr&filtro=receita','Pesquisa',true,'0','1');
   }else{
      if(obj_o27_concarpeculiar.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_orcpparec','db_iframe_caponcarpeculiar','func_concarpeculiar.php?pesquisa_chave='+obj_o27_concarpeculiar.value+'&funcao_js=parent.js_mostraconcarpeculiar_<?=$i?>&filtro=receita','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcpparec','db_iframe_caponcarpeculiar','func_concarpeculiar.php?pesquisa_chave='+obj_o27_concarpeculiar.value+'&funcao_js=parent.js_mostraconcarpeculiar_<?=$i?>&filtro=receita','Pesquisa',false);
      }else{
        obj_c58_descr.value = ''; 
      }
@@ -374,7 +374,7 @@ function js_mostraconcarpeculiar1_<?=$i?>(chave1,chave2){
 }
 <?}?>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_orcpparec','db_iframe_orcppalei','func_orcppalei.php?funcao_js=parent.js_preenchepesquisa|o21_codleippa','Pesquisa',true,0);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcpparec','db_iframe_orcppalei','func_orcppalei.php?funcao_js=parent.js_preenchepesquisa|o21_codleippa','Pesquisa',true,0);
 }
 function js_preenchepesquisa(chave){
    document.form1.o27_codleippa.value=chave;

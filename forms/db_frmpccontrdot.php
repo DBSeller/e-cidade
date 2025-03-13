@@ -30,7 +30,7 @@ $clpccontrdot->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("p71_datalanc");
 $clrotulo->label("o58_orgao");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -121,9 +121,9 @@ db_input('p73_valor',20,$Ip73_valor,true,'text',$db_opcao,"")
 <script>
 function js_pesquisao47_coddot(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_dotacao','db_iframe_orcdotacao','func_permorcdotacao.php?funcao_js=parent.js_mostraorcdotacao1|o58_coddot','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_dotacao','db_iframe_orcdotacao','func_permorcdotacao.php?funcao_js=parent.js_mostraorcdotacao1|o58_coddot','Pesquisa',true,0);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_dotacao','db_iframe_orcdotacao','func_permorcdotacao.php?pesquisa_chave='+document.form1.p73_coddot.value+'&funcao_js=parent.js_mostraorcdotacao','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_dotacao','db_iframe_orcdotacao','func_permorcdotacao.php?pesquisa_chave='+document.form1.p73_coddot.value+'&funcao_js=parent.js_mostraorcdotacao','Pesquisa',false);
   }
 }
 function js_mostraorcdotacao(chave,erro){

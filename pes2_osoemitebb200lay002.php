@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("classes/db_rhgeracaofolha_classe.php");
-require_once("classes/db_rharqbanco_classe.php");
-require_once("classes/db_rhgeracaofolhaarquivo_classe.php");
-require_once("classes/db_rhgeracaofolhaarquivoreg_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("classes/db_rhgeracaofolha_classe.php"));
+require_once(modification("classes/db_rharqbanco_classe.php"));
+require_once(modification("classes/db_rhgeracaofolhaarquivo_classe.php"));
+require_once(modification("classes/db_rhgeracaofolhaarquivoreg_classe.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 $oGet = db_utils::postMemory($HTTP_GET_VARS);

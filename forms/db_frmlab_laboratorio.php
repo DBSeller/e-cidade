@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -130,6 +130,13 @@ db_input('la02_i_telefone',11,$Ila02_i_telefone,true,'text',$db_opcao,"")
          <?db_input('la02_i_turnoatend',10,$Ila02_i_turnoatend,true,'text',$db_opcao,"onchange='js_pesquisala02_i_turnoatend(false);'")?>
          <?db_input('sd43_v_descricao',40,@$Isd43_v_descricao,true,'text',3,"")?>
      </td>
+   </tr>
+
+   <tr>
+      <td><b>Possui Interfaceamento:</b></td>
+      <td><input type="checkbox" name="la02_interfaceado" id="la02_interfaceado" 
+                 title="Verifica se possui interfaceamento &#013; &#013; &#013;Campo:la02_interfaceado" 
+                 <?= $la02_interfaceado == 't' ? " checked" : "" ?>></td>
    </tr>
                                                 
   </table>

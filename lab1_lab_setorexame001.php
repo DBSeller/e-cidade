@@ -25,16 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_lab_labusuario_classe.php");
-include("classes/db_lab_setorexame_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lab_labusuario_classe.php"));
+include(modification("classes/db_lab_setorexame_classe.php"));
+include(modification("classes/db_lab_horario_classe.php"));
+include(modification("classes/db_lab_requiitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $cllab_labusuario = new cl_lab_labusuario;
 $cllab_setorexame = new cl_lab_setorexame;
+$cllab_horario = new cl_lab_horario;
+$cllab_requiitem = new cl_lab_requiitem;
 $db_opcao = 1;
 $db_botao = true;
 
@@ -58,21 +62,57 @@ if(isset($opcao)){
 if(isset($incluir)){
 
   db_inicio_transacao();
-  $cllab_setorexame->incluir(null);
+  $error = false;
+  $result = $cllab_setorexame->sql_record($cllab_setorexame->sql_query(null, '*', null, ' la09_i_labsetor = '.$la09_i_labsetor.' and la09_i_exame = '.$la09_i_exame .' and la02_i_codigo = '.$la24_i_laboratorio));
+  if($cllab_setorexame->numrows>0){ 
+    $error = true;
+    $errorMessage = "Exame já cadastrado nesse setor.";
+  }
+  if($error==false){
+    $result = $cllab_setorexame->sql_record($cllab_setorexame->sql_query(null, '*', null, ' la09_i_exame = '.$la09_i_exame .' and la02_i_codigo = '.$la24_i_laboratorio));
+    if($cllab_setorexame->numrows>0){ 
+      $error = true;
+      $errorMessage = "Não é possivel incluir o mesmo exame em mais de um setor.";
+    }
+  }
+  if($error==false){
+    $cllab_setorexame->incluir(null);
+  }
   db_fim_transacao();
 
 }else if(isset($alterar)){
-
   db_inicio_transacao();
-  $db_opcao = 2;
-  $cllab_setorexame->alterar($la09_i_codigo);
+  $result = $cllab_setorexame->sql_record($cllab_setorexame->sql_query(null, '*', null, ' la09_i_codigo <> '.$la09_i_codigo.' and la09_i_exame= '.$la09_i_exame .' and la02_i_codigo = '.$la24_i_laboratorio));
+  if($cllab_setorexame->numrows>0){ 
+    $error = true;
+    $errorMessage = "Não é possivel alterar o exame, pois o mesmo já esta cadastrado em outro setor.";
+  }else{
+    $db_opcao = 2;
+    $cllab_setorexame->alterar($la09_i_codigo);
+  }
   db_fim_transacao();
 
 }else if(isset($excluir)){
 
   db_inicio_transacao();
-  $db_opcao = 3;
-  $cllab_setorexame->excluir($la09_i_codigo);
+  $error = false;
+  $result = $cllab_horario->sql_record($cllab_horario->sql_query_laboratorio(null, '*', null, 'la09_i_codigo = '.$la09_i_codigo .' and la02_i_codigo = '.$la24_i_laboratorio));
+  if($cllab_horario->numrows>0){ 
+    $error = true;
+    $errorMessage = "Não é possivel excluir o exame deste setor, pois o mesmo está vinculado a um horário.";
+  }
+  if($error == false){
+    $result = $cllab_requiitem->sql_record($cllab_requiitem->sql_query2(null, '*', null, 'la21_i_setorexame = '.$la09_i_codigo .' and la02_i_codigo = '.$la24_i_laboratorio));
+    if($cllab_requiitem->numrows>0){ 
+      $error = true;
+      $errorMessage = "Não é possivel excluir o exame deste setor pois o mesmo está vinculado à, pelo menos, uma requisição. Caso necessario, é possivel alterar a situação para Desativado.";
+    }
+  }
+  if($error == false){
+    $db_opcao = 3;
+    $cllab_setorexame->excluir($la09_i_codigo);
+  }
+  
   db_fim_transacao();
 
 }else if(isset($chavepesquisa)){
@@ -118,7 +158,7 @@ if(isset($incluir)){
     <center>
     <fieldset style='width: 75%;'> <legend><b>Setor Exame</b></legend>
 	<?
-	include("forms/db_frmlab_setorexame.php");
+	include(modification("forms/db_frmlab_setorexame.php"));
 	?>
 	</fieldset>
     </center>
@@ -136,7 +176,7 @@ js_tabulacaoforms("form1","la09_i_setor",true,1,"la09_i_setor",true);
 </script>
 <?
 if( (isset($incluir)) || (isset($alterar)) || (isset($excluir)) ){
-  if($cllab_setorexame->erro_status=="0"){
+  if($cllab_setorexame->erro_status=="0" && $error == false){
     $cllab_setorexame->erro(true,false);
     $db_botao=true;
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
@@ -145,8 +185,12 @@ if( (isset($incluir)) || (isset($alterar)) || (isset($excluir)) ){
       echo "<script> document.form1.".$cllab_setorexame->erro_campo.".focus();</script>";
     }
   }else{
-    $cllab_setorexame->erro(true,false);
-    db_redireciona("lab1_lab_setorexame001.php?la24_i_laboratorio=$la24_i_laboratorio&la02_c_descr=$la02_c_descr");
+    if($error){
+      echo "<script>alert('$errorMessage')</script>";
+    }else{
+      $cllab_setorexame->erro(true,false);
+      db_redireciona("lab1_lab_setorexame001.php?la24_i_laboratorio=$la24_i_laboratorio&la02_c_descr=$la02_c_descr");
+    }
   }
 }
 ?>

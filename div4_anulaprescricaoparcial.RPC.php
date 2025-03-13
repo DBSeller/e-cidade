@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("classes/db_prescricaolista_classe.php");
-require_once("classes/db_arrecant_classe.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_arreprescr_classe.php");
-require_once("classes/db_prescricaoanula_classe.php");
-require_once("classes/db_prescricaoanulareg_classe.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("classes/db_prescricaolista_classe.php"));
+require_once(modification("classes/db_arrecant_classe.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_arreprescr_classe.php"));
+require_once(modification("classes/db_prescricaoanula_classe.php"));
+require_once(modification("classes/db_prescricaoanulareg_classe.php"));
 
 $oJson           = new services_json();
 $oParam          = $oJson->decode(db_stdClass::db_stripTagsJson(str_replace("\\","",$_POST["json"])));
@@ -74,7 +74,7 @@ switch($oParam->exec) {
       $sWhere .= "v01_exerc in ({$oParam->sListaExercicios}) and ";
     }
 
-    $sSql  = "   select distinct v01_exerc,                                                    "; 
+    $sSql  = "   select distinct v01_exerc,                                                    ";
     $sSql .= "          v01_numpre,                                                            ";
     $sSql .= "          v01_numpar,                                                            ";
     $sSql .= "          k02_codigo,                                                            ";
@@ -86,8 +86,8 @@ switch($oParam->exec) {
     $sSql .= "          k30_multa,                                                             ";
     $sSql .= "          k30_desconto,                                                          ";
     $sSql .= "         (k30_vlrcorr+k30_vlrjuros+k30_multa-k30_desconto) as total              ";
-    $sSql .= "    from arreprescr                                                              "; 
-    $sSql .= "         inner join tabrec     on tabrec.k02_codigo     = arreprescr.k30_receit  "; 
+    $sSql .= "    from arreprescr                                                              ";
+    $sSql .= "         inner join tabrec     on tabrec.k02_codigo     = arreprescr.k30_receit  ";
     $sSql .= "         inner join divida     on divida.v01_numpre     = arreprescr.k30_numpre  ";
     $sSql .= "                              and divida.v01_numpar     = arreprescr.k30_numpar  ";
     $sSql .= "         inner join arreinstit on arreinstit.k00_numpre = arreprescr.k30_numpre  ";

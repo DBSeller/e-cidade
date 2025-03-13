@@ -93,10 +93,10 @@ db_input('j57_valor',15,$Ij57_valor,true,'text',$db_opcao,"")
 <script>
 function js_pesquisaj57_zona(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_zonas','func_zonas.php?funcao_js=parent.js_mostrazonas1|j50_zona|j50_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_zonas','func_zonas.php?funcao_js=parent.js_mostrazonas1|j50_zona|j50_descr','Pesquisa',true);
   }else{
      if(document.form1.j57_zona.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_zonas','func_zonas.php?pesquisa_chave='+document.form1.j57_zona.value+'&funcao_js=parent.js_mostrazonas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_zonas','func_zonas.php?pesquisa_chave='+document.form1.j57_zona.value+'&funcao_js=parent.js_mostrazonas','Pesquisa',false);
      }else{
        document.form1.j50_descr.value = ''; 
      }
@@ -116,10 +116,10 @@ function js_mostrazonas1(chave1,chave2){
 }
 function js_pesquisaj57_receit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true);
   }else{
      if(document.form1.j57_receit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.j57_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.j57_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
      }else{
        document.form1.k02_descr.value = ''; 
      }
@@ -138,7 +138,7 @@ function js_mostratabrec1(chave1,chave2){
   db_iframe_tabrec.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_zonastaxa','func_zonastaxa.php?funcao_js=parent.js_preenchepesquisa|j57_zona|j57_receit|j57_anousu','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_zonastaxa','func_zonastaxa.php?funcao_js=parent.js_preenchepesquisa|j57_zona|j57_receit|j57_anousu','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_zonastaxa.hide();

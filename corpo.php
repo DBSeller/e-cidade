@@ -28,10 +28,10 @@
 session_start();
 $_SESSION["DB_itemmenu_acessado"] = "0";
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_conn.php");
-require_once('model/configuracao/SkinService.service.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_conn.php"));
+require_once(modification('model/configuracao/SkinService.service.php'));
 
 if(session_is_registered("DB_uol_hora")) {
 
@@ -45,17 +45,16 @@ if(session_is_registered("DB_uol_hora")) {
    or die("Erro(26) atualizando db_usuariosonline");
 }
 
-if(isset($DB_SELLER)){
-  if(!session_is_registered("DB_SELLER")) {
-     session_register("DB_SELLER");
-     db_putsession("DB_SELLER","on");
+if (isset($DB_SELLER)){
+  if (!session_is_registered("DB_SELLER")) {
+    session_register("DB_SELLER");
+    db_putsession("DB_SELLER","on");
   }
-  if(!session_is_registered("DB_NBASE")) {
-    session_register("DB_NBASE");
-    db_putsession("DB_NBASE",$DB_BASE);
-  }
-}else if(session_is_registered("DB_NBASE")) {
-  session_unregister("DB_NBASE");
+}
+
+if (!session_is_registered("DB_NBASE")) {
+  session_register("DB_NBASE");
+  db_putsession("DB_NBASE",$DB_BASE);
 }
 
 if(!session_is_registered("DB_instit")) {
@@ -186,7 +185,6 @@ if (db_getsession("DB_id_usuario") == 1 || db_getsession("DB_administrador") == 
 
 $rsModulos = db_query($sSqlmodulos) or die($sSqlmodulos);
 $iNumRowsModulos = pg_numrows($rsModulos);
-
 ?>
 
 <html>
@@ -211,7 +209,7 @@ $iNumRowsModulos = pg_numrows($rsModulos);
 
     $oSkin = new SkinService();
 
-    include( $oSkin->getPathFile("corpo.php") );
+    include(modification( $oSkin->getPathFile("corpo.php")) );
 
   ?>
 </html>

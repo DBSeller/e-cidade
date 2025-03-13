@@ -26,16 +26,16 @@
  */
 
 //MODULO:saude
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cgs_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("classes/db_prontuarios_classe.php");
-include("classes/db_prontproced_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_stdlibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cgs_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
+include(modification("classes/db_prontuarios_classe.php"));
+include(modification("classes/db_prontproced_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_stdlibwebseller.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcgs = new cl_cgs;
 $clcgs_und = new cl_cgs_und;
@@ -130,7 +130,7 @@ db_fieldsmemory($result,$i);
 <?
 //echo $clprontproced->sql_query("","*","sd29_i_codigo desc","sd29_i_prontuario=$sd24_i_codigo");
 $sql=$clprontproced->sql_query("","sd03_i_codigo,z01_nome,rh70_estrutural,rh70_descr","sd29_i_codigo desc","sd29_i_prontuario=$sd24_i_codigo");
-$query = pg_query($sql);
+$query = db_query($sql);
 $linhas = pg_num_rows($query);
  if($linhas>0){
   db_lovrot($sql,15,"()","","","","NoMe",array("sd03_i_codigo"=>$sd03_i_codigo,"z01_nome"=>$z01_nome,"rh70_estrutural"=>$rh70_estrutural,"rh70_descr"=>$rh70_descr));

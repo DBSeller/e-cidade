@@ -1,0 +1,129 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010637' name='configuracoes.assinantesdocumentos' description="Tabela para guardar permissão dos assinantes de documentos, se ADMIN ou ASSINANTE." prefix="db67" label="" type="0">
+  <fields>
+    <field codigo="1011915" 
+           campo_api='' 
+           name="db67_codigo" 
+           conteudo="int8" 
+           description="Código sequencial da tabela" 
+           inivalue="0" 
+           label="Código" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='configuracoes.assinantesdocumentos_db67_codigo_seq' />
+     
+    </field> 
+    <field codigo="1011916" 
+           campo_api='' 
+           name="db67_nome" 
+           conteudo="varchar(250)" 
+           description="Nome do assinante" 
+           inivalue="" 
+           label="Nome" 
+           size="250" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nome" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011917" 
+           campo_api='' 
+           name="db67_tipo" 
+           conteudo="char(2)" 
+           description="Tipo de assinante, se PF ou PJ" 
+           inivalue="" 
+           label="Tipo" 
+           size="2" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Tipo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011918" 
+           campo_api='' 
+           name="db67_cpf_cnpj" 
+           conteudo="varchar(14)" 
+           description="CPF ou CNPJ do assinante." 
+           inivalue="" 
+           label="CPF/CNPJ" 
+           size="14" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CPF/CNPJ" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011919" 
+           campo_api='' 
+           name="db67_id_usuario" 
+           conteudo="int8" 
+           description="ID do usuario ao qual o assinante está vinculado" 
+           inivalue="0" 
+           label="Usuario" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Usuario" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011920" 
+           campo_api='' 
+           name="db67_permissao" 
+           conteudo="varchar(9)" 
+           description="Permissão do assinante, se ADMIN ou ASSINANTE. O perfil de ADMIN pode dar manutenção nos documentos a assinar." 
+           inivalue="" 
+           label="Permissão" 
+           size="9" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Permissão" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db67_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_usuarios" inner='t'>
+      <fieldfk name="db67_id_usuario" reference="id_usuario" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,70 +1,70 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: material
 //CLASSE DA ENTIDADE matrequiitem
-class cl_matrequiitem { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $m41_codigo = 0; 
-   var $m41_codmatrequi = 0; 
-   var $m41_codmatmater = 0; 
-   var $m41_codunid = 0; 
-   var $m41_quant = 0; 
-   var $m41_obs = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_matrequiitem {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $m41_codigo = 0;
+   var $m41_codmatrequi = 0;
+   var $m41_codmatmater = 0;
+   var $m41_codunid = 0;
+   var $m41_quant = 0;
+   var $m41_obs = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 m41_codigo = int8 = Codigo Sequencial 
-                 m41_codmatrequi = int8 = Codigo Sequencial 
-                 m41_codmatmater = int8 = Código do material 
-                 m41_codunid = int8 = Código da unidade 
-                 m41_quant = float8 = Quantidade 
-                 m41_obs = text = Observação 
+                 m41_codigo = int8 = Codigo Sequencial
+                 m41_codmatrequi = int8 = Codigo Sequencial
+                 m41_codmatmater = int8 = Código do material
+                 m41_codunid = int8 = Código da unidade
+                 m41_quant = float8 = Quantidade
+                 m41_obs = text = Observação
                  ";
-   //funcao construtor da classe 
-   function cl_matrequiitem() { 
+   //funcao construtor da classe
+   function cl_matrequiitem() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("matrequiitem"); 
+     $this->rotulo = new rotulo("matrequiitem");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -86,9 +86,9 @@ class cl_matrequiitem {
      }
    }
    // funcao para inclusao
-   function incluir ($m41_codigo){ 
+   function incluir ($m41_codigo){
       $this->atualizacampos();
-     if($this->m41_codmatrequi == null ){ 
+     if($this->m41_codmatrequi == null ){
        $this->erro_sql = " Campo Codigo Sequencial nao Informado.";
        $this->erro_campo = "m41_codmatrequi";
        $this->erro_banco = "";
@@ -97,7 +97,7 @@ class cl_matrequiitem {
        $this->erro_status = "0";
        return false;
      }
-     if($this->m41_codmatmater == null ){ 
+     if($this->m41_codmatmater == null ){
        $this->erro_sql = " Campo Código do material nao Informado.";
        $this->erro_campo = "m41_codmatmater";
        $this->erro_banco = "";
@@ -106,7 +106,7 @@ class cl_matrequiitem {
        $this->erro_status = "0";
        return false;
      }
-     if($this->m41_codunid == null ){ 
+     if($this->m41_codunid == null ){
        $this->erro_sql = " Campo Código da unidade nao Informado.";
        $this->erro_campo = "m41_codunid";
        $this->erro_banco = "";
@@ -115,7 +115,7 @@ class cl_matrequiitem {
        $this->erro_status = "0";
        return false;
      }
-     if($this->m41_quant == null ){ 
+     if($this->m41_quant == null ){
        $this->erro_sql = " Campo Quantidade nao Informado.";
        $this->erro_campo = "m41_quant";
        $this->erro_banco = "";
@@ -125,16 +125,16 @@ class cl_matrequiitem {
        return false;
      }
      if($m41_codigo == "" || $m41_codigo == null ){
-       $result = db_query("select nextval('matrequiitem_m41_codigo_seq')"); 
+       $result = db_query("select nextval('matrequiitem_m41_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: matrequiitem_m41_codigo_seq do campo: m41_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: matrequiitem_m41_codigo_seq do campo: m41_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->m41_codigo = pg_result($result,0,0); 
+       $this->m41_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from matrequiitem_m41_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $m41_codigo)){
@@ -145,10 +145,10 @@ class cl_matrequiitem {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->m41_codigo = $m41_codigo; 
+         $this->m41_codigo = $m41_codigo;
        }
      }
-     if(($this->m41_codigo == null) || ($this->m41_codigo == "") ){ 
+     if(($this->m41_codigo == null) || ($this->m41_codigo == "") ){
        $this->erro_sql = " Campo m41_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -157,23 +157,23 @@ class cl_matrequiitem {
        return false;
      }
      $sql = "insert into matrequiitem(
-                                       m41_codigo 
-                                      ,m41_codmatrequi 
-                                      ,m41_codmatmater 
-                                      ,m41_codunid 
-                                      ,m41_quant 
-                                      ,m41_obs 
+                                       m41_codigo
+                                      ,m41_codmatrequi
+                                      ,m41_codmatmater
+                                      ,m41_codunid
+                                      ,m41_quant
+                                      ,m41_obs
                        )
                 values (
-                                $this->m41_codigo 
-                               ,$this->m41_codmatrequi 
-                               ,$this->m41_codmatmater 
-                               ,$this->m41_codunid 
-                               ,$this->m41_quant 
-                               ,'$this->m41_obs' 
+                                $this->m41_codigo
+                               ,$this->m41_codmatrequi
+                               ,$this->m41_codmatmater
+                               ,$this->m41_codunid
+                               ,$this->m41_quant
+                               ,'$this->m41_obs'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "matrequiitem ($this->m41_codigo) nao Incluído. Inclusao Abortada.";
@@ -210,16 +210,16 @@ class cl_matrequiitem {
        $resac = db_query("insert into db_acount values($acount,1129,6874,'','".AddSlashes(pg_result($resaco,0,'m41_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($m41_codigo=null) { 
+   function alterar ($m41_codigo=null) {
       $this->atualizacampos();
      $sql = " update matrequiitem set ";
      $virgula = "";
-     if(trim($this->m41_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_codigo"])){ 
+     if(trim($this->m41_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_codigo"])){
        $sql  .= $virgula." m41_codigo = $this->m41_codigo ";
        $virgula = ",";
-       if(trim($this->m41_codigo) == null ){ 
+       if(trim($this->m41_codigo) == null ){
          $this->erro_sql = " Campo Codigo Sequencial nao Informado.";
          $this->erro_campo = "m41_codigo";
          $this->erro_banco = "";
@@ -229,10 +229,10 @@ class cl_matrequiitem {
          return false;
        }
      }
-     if(trim($this->m41_codmatrequi)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_codmatrequi"])){ 
+     if(trim($this->m41_codmatrequi)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_codmatrequi"])){
        $sql  .= $virgula." m41_codmatrequi = $this->m41_codmatrequi ";
        $virgula = ",";
-       if(trim($this->m41_codmatrequi) == null ){ 
+       if(trim($this->m41_codmatrequi) == null ){
          $this->erro_sql = " Campo Codigo Sequencial nao Informado.";
          $this->erro_campo = "m41_codmatrequi";
          $this->erro_banco = "";
@@ -242,10 +242,10 @@ class cl_matrequiitem {
          return false;
        }
      }
-     if(trim($this->m41_codmatmater)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_codmatmater"])){ 
+     if(trim($this->m41_codmatmater)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_codmatmater"])){
        $sql  .= $virgula." m41_codmatmater = $this->m41_codmatmater ";
        $virgula = ",";
-       if(trim($this->m41_codmatmater) == null ){ 
+       if(trim($this->m41_codmatmater) == null ){
          $this->erro_sql = " Campo Código do material nao Informado.";
          $this->erro_campo = "m41_codmatmater";
          $this->erro_banco = "";
@@ -255,10 +255,10 @@ class cl_matrequiitem {
          return false;
        }
      }
-     if(trim($this->m41_codunid)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_codunid"])){ 
+     if(trim($this->m41_codunid)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_codunid"])){
        $sql  .= $virgula." m41_codunid = $this->m41_codunid ";
        $virgula = ",";
-       if(trim($this->m41_codunid) == null ){ 
+       if(trim($this->m41_codunid) == null ){
          $this->erro_sql = " Campo Código da unidade nao Informado.";
          $this->erro_campo = "m41_codunid";
          $this->erro_banco = "";
@@ -268,10 +268,10 @@ class cl_matrequiitem {
          return false;
        }
      }
-     if(trim($this->m41_quant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_quant"])){ 
+     if(trim($this->m41_quant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_quant"])){
        $sql  .= $virgula." m41_quant = $this->m41_quant ";
        $virgula = ",";
-       if(trim($this->m41_quant) == null ){ 
+       if(trim($this->m41_quant) == null ){
          $this->erro_sql = " Campo Quantidade nao Informado.";
          $this->erro_campo = "m41_quant";
          $this->erro_banco = "";
@@ -281,7 +281,7 @@ class cl_matrequiitem {
          return false;
        }
      }
-     if(trim($this->m41_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_obs"])){ 
+     if(trim($this->m41_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m41_obs"])){
        $sql  .= $virgula." m41_obs = '$this->m41_obs' ";
        $virgula = ",";
      }
@@ -311,7 +311,7 @@ class cl_matrequiitem {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "matrequiitem nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->m41_codigo;
@@ -339,14 +339,14 @@ class cl_matrequiitem {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($m41_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($m41_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($m41_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -377,7 +377,7 @@ class cl_matrequiitem {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "matrequiitem nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$m41_codigo;
@@ -405,11 +405,11 @@ class cl_matrequiitem {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -431,8 +431,8 @@ class cl_matrequiitem {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $m41_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $m41_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -455,8 +455,8 @@ class cl_matrequiitem {
      $sql2 = "";
      if($dbwhere==""){
        if($m41_codigo!=null ){
-         $sql2 .= " where matrequiitem.m41_codigo = $m41_codigo "; 
-       } 
+         $sql2 .= " where matrequiitem.m41_codigo = $m41_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -472,8 +472,8 @@ class cl_matrequiitem {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $m41_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $m41_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -489,8 +489,8 @@ class cl_matrequiitem {
      $sql2 = "";
      if($dbwhere==""){
        if($m41_codigo!=null ){
-         $sql2 .= " where matrequiitem.m41_codigo = $m41_codigo "; 
-       } 
+         $sql2 .= " where matrequiitem.m41_codigo = $m41_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -526,7 +526,7 @@ class cl_matrequiitem {
      $sql .= "      inner join db_depart  on  db_depart.coddepto = matrequi.m40_depto";
      $sql .= "      left join atendrequiitem  on  atendrequiitem.m43_codmatrequiitem = matrequiitem.m41_codigo";
      $sql .= "      left join matanulitemrequi  on  matanulitemrequi.m102_matrequiitem = matrequiitem.m41_codigo";
-           
+
      $sql2 = "";
      if($dbwhere==""){
        if($m41_codigo!=null ){
@@ -605,6 +605,8 @@ class cl_matrequiitem {
      $sql .= "      inner join matmater  on  matmater.m60_codmater = matrequiitem.m41_codmatmater";
      $sql .= "      inner join matrequi  on  matrequi.m40_codigo = matrequiitem.m41_codmatrequi";
      $sql .= "      inner join matunid  on  matunid.m61_codmatunid = matmater.m60_codmatunid";
+     $sql .= "      inner join matmaterunisai  on  matmaterunisai.m62_codmater = matmater.m60_codmater";
+     $sql .= "      inner join matunid as unidade_saida  on unidade_saida.m61_codmatunid = matmaterunisai.m62_codmatunid";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = matrequi.m40_login";
      $sql .= "      inner join db_depart  on  db_depart.coddepto = matrequi.m40_depto";
      $sql .= "      inner join db_almox   on  matrequi.m40_almox = m91_codigo";
@@ -690,7 +692,7 @@ class cl_matrequiitem {
      $sql .= "      inner join matunid  on  matunid.m61_codmatunid = matmater.m60_codmatunid";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = matrequi.m40_login";
      $sql .= "      inner join db_depart  on  db_depart.coddepto = matrequi.m40_depto";
-     $sql .= "      inner join db_almox  on  db_almox.m91_codigo = matrequi.m40_almox";     
+     $sql .= "      inner join db_almox  on  db_almox.m91_codigo = matrequi.m40_almox";
      $sql .= "      left join atendrequiitem  on  atendrequiitem.m43_codmatrequiitem = matrequiitem.m41_codigo";
      $sql .= "      inner join matestoque on m60_codmater =  m70_codmatmater";
      $sql .= "      left  join matrequiitemcriteriocustorateio on cc13_matrequiitem = m41_codigo";

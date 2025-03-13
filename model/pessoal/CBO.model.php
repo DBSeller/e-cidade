@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,7 +31,7 @@ define("URL_MENSAGEM_CBO", "recursoshumanos.pessoal.CBO.");
  * 
  * @author Andrio Costa    <andrio.costa@dbseller.com.br
  * @package pessoal
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.4 $
  */
 class CBO {
 	
@@ -82,7 +82,6 @@ class CBO {
       $this->sDescricao  = $oDados->rh70_descr;
       $this->iTipo       = $oDados->rh70_tipo;
     }
-    
   }
  
   /**
@@ -95,20 +94,19 @@ class CBO {
 
   /**
    * Define estrutural definido pelo governo
-   * @param strinf $sEstrutural
+   * @param string $sEstrutural
    */
-  public function setSetter ($sEstrutural) {
-    $this->prop = $sEstrutural;
+  public function setEstrutural ($sEstrutural) {
+    $this->sEstrutural = $sEstrutural;
   }
   
   /**
    * Retorna estrutural definido pelo governo
-   * @return strinf $sEstrutural
+   * @return string $sEstrutural
    */
-  public function getSetter () {
-    return $this->prop; 
+  public function getEstrutural () {
+    return $this->sEstrutural;
   }
-  
 
   /**
    * Define Descricao do CBO
@@ -125,8 +123,6 @@ class CBO {
   public function getDescricao () {
     return $this->sDescricao; 
   }
-  
-
 
   /**
    * Define tipo do cbo
@@ -143,6 +139,4 @@ class CBO {
   public function getTipo () {
     return $this->iTipo; 
   }
-  
-   
 }

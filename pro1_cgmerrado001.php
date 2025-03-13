@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,71 +25,64 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cgmerrado_classe.php");
-include("dbforms/db_funcoes.php");
-db_postmemory($HTTP_POST_VARS);
-db_postmemory($HTTP_SERVER_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("classes/db_cgmerrado_classe.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory($_POST);
+db_postmemory($_SERVER);
 $clcgmerrado = new cl_cgmerrado;
 $db_opcao = 3;
 $db_botao = false;
 
-if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir"){
-  db_inicio_transacao();
-  $clcgmerrado->incluir($z11_codigo,$z11_numcgm);
-  db_fim_transacao();
+if ((isset($_POST["db_opcao"]) && $_POST["db_opcao"]) == "Incluir") {
+    db_inicio_transacao();
+    $clcgmerrado->incluir($z11_codigo, $z11_numcgm);
+    db_fim_transacao();
 }
-/*
-if($codigo!=""){
-	$result = $clcgmerrado->sql_record($clcgmerrado->sql_query($codigo));
-	$linhas = pg_num_rows($result);
-	if($linhas>0){
-		db_fieldsmemory($result,0);
-	}
-	//die("xxxx= ".$codigo ."linha".$linhas);
-}
-*///
-//die("xxxx= ".$z11_codigo );
 ?>
 <html>
+
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmcgmerrado.php");
-	?>
-    </center>
-	</td>
-  </tr>
-</table>
+
+<body background-color=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
+    <div class="container">
+        <table width="790" cellspacing="0" cellpadding="0">
+            <tr>
+                <td height="430" valign="top" background-color="#CCCCCC">
+                    <?php
+                    include_once(modification("forms/db_frmcgmerrado.php"));
+                    ?>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
+
 </html>
-<?
-if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir"){
-  if($clcgmerrado->erro_status=="0"){
-    $clcgmerrado->erro(true,false);
-    $db_botao=true;
-    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    echo "<script> document.form1.db_opcao.value='Incluir';</script>  ";
-    if($clcgmerrado->erro_campo!=""){
-      echo "<script> document.form1.".$clcgmerrado->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$clcgmerrado->erro_campo.".focus();</script>";
-    };
-  }else{
-    $clcgmerrado->erro(true,false);
-    echo "
+<?php
+if ((isset($_POST["db_opcao"]) && $_POST["db_opcao"]) == "Incluir") {
+    if ($clcgmerrado->erro_status == "0") {
+        $clcgmerrado->erro(true, false);
+        $db_botao = true;
+        echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+        echo "<script> document.form1.db_opcao.value='Incluir';</script>  ";
+        if ($clcgmerrado->erro_campo != "") {
+            echo "<script> document.form1." . $clcgmerrado->erro_campo . ".style.backgroundColor='#99A9AE';</script>";
+            echo "<script> document.form1." . $clcgmerrado->erro_campo . ".focus();</script>";
+        };
+    } else {
+        $clcgmerrado->erro(true, false);
+        echo "
          <script>
          function js_src(){
            parent.iframe_cgmerrado.location.href ='pro1_cgmerrado001.php?z11_codigo=$z11_codigo&abas=1';\n
@@ -97,6 +90,6 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
          js_src();
          </script>
        ";
-  };
+    };
 };
 ?>

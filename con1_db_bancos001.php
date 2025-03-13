@@ -25,37 +25,60 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_bancos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_bancos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $cldb_bancos = new cl_db_bancos;
 $db_opcao = 1;
 $db_botao = true;
 if(isset($incluir)){
+
   $sqlerro= false;
+  $erro = false;
+  $erro_mensagem = '';
+
   db_inicio_transacao();
-  if(isset($db90_logo) && $db90_logo!=""){
-  	$oidgrava = db_geraArquivoOid("db90_logo","",1,$conn);
+
+  if(isset($db90_logo) && $db90_logo!="" && $db90_logo['tmp_name'] != ''){
+
+    try {
+
+      if (getimagesize($db90_logo['tmp_name']) === FALSE) {
+          throw new Exception("Formato do arquivo do logo inválido.");
+      }
+
+      $oidgrava = db_geraArquivoOid("db90_logo","",1,$conn);
+
+    } catch (Exception $e) {
+        db_fim_transacao(true);
+        $erro = true;
+        $erro_mensagem = $e->getMessage();
+    }
+
+  	
   }else{
   	//se não informou nenhum arquivo ele grava null
   	$oidgrava = "null";
   }			
   
-  $db90_codban = str_pad($db90_codban, 3, "0", STR_PAD_LEFT);
-  $cldb_bancos->db90_codban = $db90_codban;
-  $cldb_bancos->db90_descr  = $db90_descr;
-  $cldb_bancos->db90_digban = $db90_digban;
-  $cldb_bancos->db90_abrev  = $db90_abrev;
-  $cldb_bancos->db90_logo   = $oidgrava;
-  $cldb_bancos->incluir($db90_codban);
-  $erro_msg = $cldb_bancos->erro_msg;
-  if ($cldb_bancos->erro_status == 0) {
-	$sqlerro = true;
+  if (!$erro) {
+
+    $db90_codban = str_pad($db90_codban, 3, "0", STR_PAD_LEFT);
+    $cldb_bancos->db90_codban = $db90_codban;
+    $cldb_bancos->db90_descr  = $db90_descr;
+    $cldb_bancos->db90_digban = $db90_digban;
+    $cldb_bancos->db90_abrev  = $db90_abrev;
+    $cldb_bancos->db90_logo   = $oidgrava;
+    $cldb_bancos->incluir($db90_codban);
+    $erro_msg = $cldb_bancos->erro_msg;
+    if ($cldb_bancos->erro_status == 0) {
+      $sqlerro = true;
+    }
   }
 		
   db_fim_transacao();
@@ -67,28 +90,21 @@ if(isset($incluir)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBAbas.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBAbasItem.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/datagrid.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
+<link href="grid.style.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
+<div class="container">
 	<?
-	include("forms/db_frmdb_bancos.php");
+	include(modification("forms/db_frmdb_bancos.php"));
 	?>
-    </center>
-	</td>
-  </tr>
-</table>
+</div>
 <?
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
@@ -99,7 +115,11 @@ js_tabulacaoforms("form1","db90_descr",true,1,"db90_descr",true);
 </script>
 <?
 if(isset($incluir)){
-  if($cldb_bancos->erro_status=="0"){
+
+  if ($erro) {
+    db_msgbox($erro_mensagem);
+    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+  } else if($cldb_bancos->erro_status == "0") {
     $cldb_bancos->erro(true,false);
     $db_botao=true;
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
@@ -108,7 +128,9 @@ if(isset($incluir)){
       echo "<script> document.form1.".$cldb_bancos->erro_campo.".focus();</script>";
     }
   }else{
-    $cldb_bancos->erro(true,true);
+    $cldb_bancos->erro(true,false);
+    db_redireciona('con1_db_bancos002.php?chavepesquisa='.$db90_codban);
+    exit;
   }
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -196,13 +196,14 @@ class DBMenu {
    * @param  Integer  $iModulo
    * @return null
    */
-  public static function limpaCache($iIdUsuario = '', $iInstituicao = '', $iModulo = '') {
+  public static function limpaCache($iIdUsuario = '', $iInstituicao = '', $iModulo = '', $iAno = '') {
 
     $iIdUsuario   = (empty($iIdUsuario)   ? '(\d+)' : $iIdUsuario   );
     $iInstituicao = (empty($iInstituicao) ? '(\d+)' : $iInstituicao );
     $iModulo      = (empty($iModulo)      ? '(\d+)' : $iModulo      );
+    $iAno         = (empty($iAno)         ? '(\d+)' : $iAno         );
 
-    $sPattern = "/{$iModulo}_{$iInstituicao}_{$iIdUsuario}_(\w+|\W+)/";
+    $sPattern = "/{$iAno}_{$iModulo}_{$iInstituicao}_{$iIdUsuario}_(\w+|\W+)/";
 
     DBCache::remove( DBCache::scanCache("menus/", $sPattern) );
   }
@@ -215,7 +216,7 @@ class DBMenu {
    */
   public function buscaMenu($sConteudo) {
 
-    $aMenus = DBCache::read("menus/{$this->iModulo}_{$this->iInstituicao}_{$this->iIdUsuario}_pesquisa");
+    $aMenus = DBCache::read("menus/{$this->iAnoUsu}_{$this->iModulo}_{$this->iInstituicao}_{$this->iIdUsuario}_pesquisa");
 
     if ($aMenus === false) {
       return array();
@@ -250,7 +251,7 @@ class DBMenu {
      * Verifica se os menus estão em cache e se deve utilizar o cache
      */
     if ( $oPreferenciaUsuario->getHabilitaCacheMenu()
-         && ($sHtmlCache = DBCache::read("menus/{$this->iModulo}_{$this->iInstituicao}_{$this->iIdUsuario}_estrutura")) ) {
+         && ($sHtmlCache = DBCache::read("menus/{$this->iAnoUsu}_{$this->iModulo}_{$this->iInstituicao}_{$this->iIdUsuario}_estrutura")) ) {
 
       return base64_decode($sHtmlCache);
     }
@@ -282,7 +283,6 @@ class DBMenu {
 
       $this->montaModulos();
       $this->montaHelp();
-      $this->montaNotificacao();
 
       /**
        * Exibe a busca de menus
@@ -302,10 +302,10 @@ class DBMenu {
      * Somente salva o arquivo da estrutura dos menus se for utilizar o cache
      */
     if ($oPreferenciaUsuario->getHabilitaCacheMenu()) {
-      DBCache::write("menus/{$this->iModulo}_{$this->iInstituicao}_{$this->iIdUsuario}_estrutura", base64_encode($this->sHtmlMenu));
+      DBCache::write("menus/{$this->iAnoUsu}_{$this->iModulo}_{$this->iInstituicao}_{$this->iIdUsuario}_estrutura", base64_encode($this->sHtmlMenu));
     }
 
-    DBCache::write("menus/{$this->iModulo}_{$this->iInstituicao}_{$this->iIdUsuario}_pesquisa", $this->aCacheMenus);
+    DBCache::write("menus/{$this->iAnoUsu}_{$this->iModulo}_{$this->iInstituicao}_{$this->iIdUsuario}_pesquisa", $this->aCacheMenus);
 
     return $this->sHtmlMenu;
   }
@@ -453,40 +453,30 @@ class DBMenu {
 
     $this->sHtmlMenu .= "<ul>\n";
     $this->sHtmlMenu .= "<li class=\"sub-menu\" onclick=\"Menu_toggle(this, event)\" onmouseover=\"Menu_parentOver(this, event)\">\n";
-    $this->sHtmlMenu .= "<a href=\"javascript:;\">Help</a>\n";
+    $this->sHtmlMenu .= "<a href=\"javascript:;\">Central de Ajuda</a>\n";
 
     $this->sHtmlMenu .= "<ul>\n";
     $this->sHtmlMenu .= "<li onmouseover=\"Menu_mouseOver(this, event)\">\n";
-    $this->sHtmlMenu .= "<a href=\"javascript:;\" onclick=\"buttonHelp('{$this->sFuncao}','{$this->iIdFuncaoHelp}','{$this->iModulo}', true);\">Help</a>\n";
+    // botao do Help
+    $this->sHtmlMenu .= "<a href=\"javascript:;\" onclick=\"require_once('scripts/classes/configuracao/DBViewHelp.classe.js'); DBViewHelp.build(); \">Ajuda do Sistema</a>\n";
+    $this->sHtmlMenu .= "</li>\n";
+
+    // botao de FAQ
+    $this->sHtmlMenu .= "<li onmouseover=\"Menu_mouseOver(this, event)\">\n";
+    $this->sHtmlMenu .= "<a href=\"javascript:;\" onclick=\"require_once('scripts/classes/configuracao/DBViewFaq.classe.js'); DBViewFaq.build(); \">Perguntas Frequentes</a>\n";
     $this->sHtmlMenu .= "</li>\n";
 
     $this->sHtmlMenu .= "<li onmouseover=\"Menu_mouseOver(this, event)\">\n";
-    $this->sHtmlMenu .= "<a href=\"javascript:;\"onclick=\"require_once('scripts/classes/configuracao/DBViewReleaseNote.classe.js'); DBViewReleaseNote.build(); \">Versões</a>\n";
+    $this->sHtmlMenu .= "<a href=\"javascript:;\"onclick=\"require_once('scripts/classes/configuracao/DBViewReleaseNote.classe.js'); DBViewReleaseNote.build(); \">Notas da Versão</a>\n";
     $this->sHtmlMenu .= "</li>\n";
+
+    $this->sHtmlMenu .= "<li onmouseover=\"Menu_mouseOver(this, event)\">\n";
+    $this->sHtmlMenu .= "<a href=\"javascript:;\"onclick=\"require_once('scripts/classes/configuracao/TutorialRepository.classe.js'); TutorialRepository.build(); \">Tutoriais</a>\n";
+    $this->sHtmlMenu .= "</li>\n";
+
     $this->sHtmlMenu .= "</ul>\n";
 
     $this->sHtmlMenu .= "</li>\n";
-    $this->sHtmlMenu .= "</ul>\n";
-  }
-
-  /**
-   * Monta html para mensageria
-   * @return void
-   */
-  private function montaNotificacao() {
-
-    /**
-     * Verifica se foi instalado mensageria
-     */
-    if (!is_readable('integracao_externa/mensageria/DBSeller/Mensageria/View/js/mensageria.js')) {
-      return false;
-    }
-
-    $this->sHtmlMenu .= "<script type='text/javascript' async='true' src='integracao_externa/mensageria/mensageria.js'></script>\n";
-    $this->sHtmlMenu .= "<ul>\n";
-    $this->sHtmlMenu .= "  <li>\n";
-    $this->sHtmlMenu .= "    <a href='javascript:void(0);' id='mensageria-notificacoes'></a>\n";
-    $this->sHtmlMenu .= "  </li>\n";
     $this->sHtmlMenu .= "</ul>\n";
   }
 
@@ -573,6 +563,7 @@ class DBMenu {
       $sSql .= "                   left outer join db_usumod u  on u.id_item = i.id_modulo and u.id_usuario = i.id_usuario            \n";
       $sSql .= "            where i.id_usuario = {$this->iIdUsuario}                                                                  \n";
       $sSql .= "              and i.id_instit = {$this->iInstituicao}                                                                 \n";
+      $sSql .= "              and it.libcliente is true                                                                               \n";
       $sSql .= "          union                                                                                                       \n";
       $sSql .= "          select distinct i.id_modulo as id_item,                                                                     \n";
       $sSql .= "                 m.nome_modulo,                                                                                       \n";
@@ -598,6 +589,7 @@ class DBMenu {
       $sSql .= "                  inner join db_itensmenu it on it.id_item = i.id_modulo                                              \n";
       $sSql .= "                  left outer join db_usumod u  on u.id_item = i.id_modulo and u.id_usuario = i.id_usuario             \n";
       $sSql .= "            where i.id_instit = {$this->iInstituicao}                                                                 \n";
+      $sSql .= "            and it.libcliente is true                                                                                 \n";
       $sSql .= "         order by nome_modulo                                                                                         \n";
       $sSql .= "        ) as x                                                                                                        \n";
       $sSql .= "         inner join atendcadareamod on id_item = atendcadareamod.at26_id_item                                         \n";
@@ -637,5 +629,77 @@ class DBMenu {
 
     return $sOrdenacao;
   }
+
+  /**
+   * @param integer $id
+   * @param integer $idModulo
+   * @return string
+   */
+  public static function getBreadcrumb($id, $idModulo = null, $sSeparator = ' > ') {
+
+    if (empty($idModulo)) {
+      return \db_stdClass::getCaminhoMenu((int) $id);
+    }
+
+    $aCaminho = array();
+    $oDaoMenu = new cl_db_itensmenu();
+    $iLimiteIteracoes = 100;
+
+    $sCampos  = " case when db_menu.modulo = db_menu.id_item then true  else false end as is_raiz,\n";
+    $sCampos .= " db_menu.id_item  as id_parent,\n";
+    $sCampos .= " db_modulos.nome_modulo  as descricao_modulo,\n";
+    $sCampos .= " db_itensmenu.descricao\n";
+
+    while (--$iLimiteIteracoes > 0) {
+
+      $sSql = $oDaoMenu->sql_queryArvoreMenus($sCampos, $id, $idModulo);
+      $rsMenu = db_query($sSql);
+
+      if (!$rsMenu || pg_num_rows($rsMenu) == 0) {
+        break;
+      }
+
+      $oDados = db_utils::fieldsMemory($rsMenu, 0);
+      $aCaminho[] = $oDados->descricao;
+      $id = $oDados->id_parent;
+
+      if ($oDados->is_raiz == 't') {
+
+        $aCaminho[] = $oDados->descricao_modulo;
+        break;
+      }
+    }
+
+    return implode($sSeparator, array_reverse($aCaminho));
+  }
+
+
+    /**
+     * @param $iCodigoItem
+     * @return bool
+     * @throws DBException
+     */
+  public static function excluir($iCodigoItem) {
+
+      $daoPermissaoMenu = new cl_db_permissao();
+      $daoMenu = new cl_db_menu();
+      $daoItensMenu = new cl_db_itensmenu();
+
+      $daoPermissaoMenu->excluir(null, $iCodigoItem);
+      if ($daoPermissaoMenu->erro_status === '0') {
+          throw new DBException("1. Não foi possível excluir o registro.");
+      }
+
+      $daoMenu->excluir($iCodigoItem);
+      if ($daoMenu->erro_status === '0') {
+          throw new DBException("2. Não foi possível excluir o registro.");
+      }
+
+      $daoItensMenu->excluir($iCodigoItem);
+      if ($daoItensMenu->erro_status === '0') {
+          throw new DBException("3. Não foi possível excluir o registro.");
+      }
+
+      return true;
+  }
 }
-?>

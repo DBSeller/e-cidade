@@ -29,36 +29,28 @@
 $clorientacao->rotulo->label();
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tj64_sequencial?>">
-       <?=@$Lj64_sequencial?>
-    </td>
-    <td> 
-<?
-db_input('j64_sequencial',5,$Ij64_sequencial,true,'text',3,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj64_descricao?>">
-       <?=@$Lj64_descricao?>
-    </td>
-    <td> 
-<?
-db_input('j64_descricao',40,$Ij64_descricao,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  </table>
-  </center>
+  <fieldset>
+    <legend class="bold">Cadastro de Orientação</legend>
+    <table border="0">
+      <tr>
+        <td nowrap title="<?=@$Tj64_sequencial?>">
+           <?=@$Lj64_sequencial?>
+        </td>
+        <td><? db_input('j64_sequencial',5,$Ij64_sequencial,true,'text',3,"") ?></td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj64_descricao?>"><?=@$Lj64_descricao?></td>
+        <td><? db_input('j64_descricao',40,$Ij64_descricao,true,'text',$db_opcao,"") ?></td>
+      </tr>
+    </table>
+  </fieldset>
+
 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orientacao','func_orientacao.php?funcao_js=parent.js_preenchepesquisa|j64_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orientacao','func_orientacao.php?funcao_js=parent.js_preenchepesquisa|j64_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orientacao.hide();

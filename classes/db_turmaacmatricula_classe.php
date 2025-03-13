@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: escola
@@ -113,7 +113,7 @@ class cl_turmaacmatricula {
 			$this->erro_status = "0";
 			return false;
 		}
-		 
+
 		if($this->ed269_aluno != null ){
 
 			$result = $this->sql_record("SELECT ed47_i_codigo FROM aluno WHERE ed47_i_codigo = {$this->ed269_aluno}");
@@ -129,7 +129,7 @@ class cl_turmaacmatricula {
 			$result = db_query("SELECT ed268_i_tipoatend FROM turmaac WHERE ed268_i_codigo = {$this->ed269_i_turmaac}");
 			$iTipoAtendimento = pg_result($result,0,0);
 			if($iTipoAtendimento == 5){
-				 
+
 				$result = db_query("SELECT COUNT(ed214_i_aluno) FROM alunonecessidade WHERE ed214_i_aluno = {$this->ed269_aluno}");
 				$iQuantidadeDeNecessidade = pg_result($result,0,0);
 				if($iQuantidadeDeNecessidade == 0){
@@ -141,7 +141,7 @@ class cl_turmaacmatricula {
 				}
 			}
 		}
-		 
+
 		if($this->ed269_aluno == null ){
 			$this->erro_sql = " Campo Código do Aluno não Informado.";
 			$this->erro_campo = "ed269_aluno";
@@ -524,7 +524,7 @@ class cl_turmaacmatricula {
 	}
 
 	function sql_query_censo ( $ed269_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
-		
+
 	  $sql = "select ";
 		if($campos != "*" ){
 			$campos_sql = split("#",$campos);
@@ -575,18 +575,18 @@ class cl_turmaacmatricula {
 		}
 		return $sql;
 	}
-	
+
 	public function sql_query_turma ($ed269_i_codigo=null,$campos="*",$ordem=null,$dbwhere="") {
-	  
+
 	  $sql = "select ";
-	  
+
 	  if ($campos != "*" ) {
-	    
+
 	    $campos_sql = split("#",$campos);
 	    $virgula    = "";
-	    
+
 	    for ( $i = 0; $i < sizeof($campos_sql); $i++ ) {
-	      
+
 	      $sql     .= $virgula.$campos_sql[$i];
 	      $virgula  = ",";
 	    }
@@ -599,30 +599,70 @@ class cl_turmaacmatricula {
 	  $sql .= "      inner join calendario on calendario.ed52_i_codigo = turmaac.ed268_i_calendario";
 	  $sql .= "      inner join aluno      on aluno.ed47_i_codigo      = turmaacmatricula.ed269_aluno";
 	  $sql2 = "";
-	  
+
 	  if ( $dbwhere == "") {
-	    
+
 	    if ( $ed269_i_codigo != null ) {
 	      $sql2 .= " where turmaacmatricula.ed269_i_codigo = $ed269_i_codigo ";
 	    }
 	  } else if ( $dbwhere != "" ) {
 	    $sql2 = " where $dbwhere";
 	  }
-	  
+
 	  $sql .= $sql2;
 	  if ( $ordem != null ) {
-	    
+
 	    $sql        .= " order by ";
 	    $campos_sql  = split("#",$ordem);
 	    $virgula     = "";
-	    
+
 	    for ( $i = 0; $i < sizeof($campos_sql); $i++ ) {
-	      
+
 	      $sql     .= $virgula.$campos_sql[$i];
 	      $virgula  = ",";
 	    }
 	  }
 	  return $sql;
 	}
+
+
+  public function queryDadosAlunoCenso( $ed269_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "" ) {
+
+    $sql  = " select {$campos} ";
+    $sql .= "  from turmaacmatricula ";
+    $sql .= " join turmaac               on turmaac.ed268_i_codigo         = turmaacmatricula.ed269_i_turmaac";
+    $sql .= " join escola                on escola.ed18_i_codigo           = turmaac.ed268_i_escola";
+    $sql .= " left join sala             on sala.ed16_i_codigo             = turmaac.ed268_i_sala";
+    $sql .= " join calendario            on calendario.ed52_i_codigo       = turmaac.ed268_i_calendario";
+    $sql .= " join turno                 on turno.ed15_i_codigo            = turmaac.ed268_i_turno";
+    $sql .= " left join turnoreferente   on turnoreferente.ed231_i_turno   = turno.ed15_i_codigo";
+    $sql .= " join aluno                 on aluno.ed47_i_codigo            = turmaacmatricula.ed269_aluno";
+    $sql .= " join pais                  on pais.ed228_i_codigo            = aluno.ed47_i_pais";
+    $sql .= " left join censouf          on censouf.ed260_i_codigo         = aluno.ed47_i_censoufcert";
+    $sql .= "                           and censouf.ed260_i_codigo         = aluno.ed47_i_censoufnat";
+    $sql .= "                           and censouf.ed260_i_codigo         = aluno.ed47_i_censoufident";
+    $sql .= "                           and censouf.ed260_i_codigo         = aluno.ed47_i_censoufend";
+    $sql .= " left join censomunic       on censomunic.ed261_i_codigo      = aluno.ed47_i_censomunicend";
+    $sql .= "                           and censomunic.ed261_i_codigo      = aluno.ed47_i_censomuniccert";
+    $sql .= "                           and censomunic.ed261_i_codigo      = aluno.ed47_i_censomunicnat";
+    $sql .= " left join censoorgemissrg  on censoorgemissrg.ed132_i_codigo = aluno.ed47_i_censoorgemissrg";
+    $sql .= " left join censocartorio    on censocartorio.ed291_i_codigo   = aluno.ed47_i_censocartorio";
+    $sql .= " left join alunonecessidade on alunonecessidade.ed214_i_aluno = aluno.ed47_i_codigo";
+    $sql2 = "";
+
+    if (empty($dbwhere)) {
+
+      if (!empty($ed269_i_codigo)){
+        $sql2 .= " where turmaacmatricula.ed269_i_codigo = = $ed269_i_codigo ";
+      }
+    } else if (!empty($dbwhere)) {
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+    return $sql;
+  }
 }
 ?>

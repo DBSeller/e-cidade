@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,14 +27,14 @@
 
 if (!isset($arqinclude)){
   
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_utils.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_db_config_classe.php");
-	include("model/linhaRelatorioContabil.model.php");
-  include ("model/relatorioContabil.model.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_utils.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_db_config_classe.php"));
+	include(modification("model/linhaRelatorioContabil.model.php"));
+  include(modification("model/relatorioContabil.model.php"));
 
   $oRelatorio    = new relatorioContabil(71);
   $classinatura  = new cl_assinatura;

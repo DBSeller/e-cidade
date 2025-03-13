@@ -58,7 +58,7 @@ db_inputdata('rh07_data',@$rh07_data_dia,@$rh07_data_mes,@$rh07_data_ano,true,'t
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpesprogres','func_rhpesprogres.php?funcao_js=parent.js_preenchepesquisa|rh07_seqpes','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpesprogres','func_rhpesprogres.php?funcao_js=parent.js_preenchepesquisa|rh07_seqpes','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpesprogres.hide();

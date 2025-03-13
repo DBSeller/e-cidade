@@ -110,10 +110,10 @@ db_inputData('rh01_admiss',@$rh01_admiss_dia,@$rh01_admiss_mes,@$rh01_admiss_ano
 <script>
 function js_pesquisah57_rhestagio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhestagioagenda','db_iframe_rhestagio','func_rhestagio.php?funcao_js=parent.js_mostrarhestagio1|h50_sequencial|h50_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagioagenda','db_iframe_rhestagio','func_rhestagio.php?funcao_js=parent.js_mostrarhestagio1|h50_sequencial|h50_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.h57_rhestagio.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhestagioagenda','db_iframe_rhestagio','func_rhestagio.php?pesquisa_chave='+document.form1.h57_rhestagio.value+'&funcao_js=parent.js_mostrarhestagio','Pesquisa',false,'0');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagioagenda','db_iframe_rhestagio','func_rhestagio.php?pesquisa_chave='+document.form1.h57_rhestagio.value+'&funcao_js=parent.js_mostrarhestagio','Pesquisa',false,'0');
      }else{
        document.form1.h50_descr.value = ''; 
      }
@@ -133,10 +133,10 @@ function js_mostrarhestagio1(chave1,chave2){
 }
 function js_pesquisah57_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhestagioagenda','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome|rh01_admiss','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagioagenda','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome|rh01_admiss','Pesquisa',true,'0');
   }else{
      if(document.form1.h57_regist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhestagioagenda','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.h57_regist.value+'&funcao_js=parent.js_mostrarhpessoal','Pesquisa',false,0);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagioagenda','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.h57_regist.value+'&funcao_js=parent.js_mostrarhpessoal','Pesquisa',false,0);
      }else{
        document.form1.rh01_nome.value = ''; 
      }
@@ -161,7 +161,7 @@ function js_mostrarhpessoal1(chave1,chave2,chave3){
   db_iframe_rhpessoal.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_rhestagioagenda','db_iframe_rhestagioagenda','func_rhestagioagenda.php?funcao_js=parent.js_preenchepesquisa|h57_sequencial','Pesquisa',true,0);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagioagenda','db_iframe_rhestagioagenda','func_rhestagioagenda.php?funcao_js=parent.js_preenchepesquisa|h57_sequencial','Pesquisa',true,0);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhestagioagenda.hide();

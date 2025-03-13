@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("classes/db_db_certidaoweb_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("classes/db_db_certidaoweb_classe.php"));
 $clcertidao = new cl_db_certidaoweb;
 $result = $clcertidao->sql_record($clcertidao->sql_query("","*","","codcert = $cod"));
 db_fieldsmemory($result,0);
@@ -49,6 +49,6 @@ if(strcmp($dtat, $dtvenc)<"0"){
   }
 }elseif(strcmp($dtat, $dtvenc)>"0"){
 //passou 90 dias
-  include("certidaovencida.php");
+  include(modification("certidaovencida.php"));
 }
 ?>

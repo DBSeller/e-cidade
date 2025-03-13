@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_empagemov_classe.php");
+include(modification("classes/db_empagemov_classe.php"));
 $clempagemov    = new cl_empagemov;
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
@@ -51,7 +51,7 @@ if(isset($e50_codord) && $e50_codord != ''){
 $sql    = $clempagemov->sql_query_conf(null,"e91_codcheque as DB_e91_codcheque,substr(k13_descr,0,30),e81_codmov,substr(z01_nome,1,30),e83_conta,e83_descr,e91_cheque,e91_valor","","$dbwhere");
 $result = $clempagemov->sql_record($sql);
 
-$result_param = pg_query("select e30_agendaautomatico from empparametro where e39_anousu = ".db_getsession("DB_anousu"));
+$result_param = db_query("select e30_agendaautomatico from empparametro where e39_anousu = ".db_getsession("DB_anousu"));
 db_fieldsmemory($result_param,0);
 if ( $e30_agendaautomatico == 'f'){
   if ( $clempagemov->numrows == 0 ) {

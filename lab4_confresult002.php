@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-include_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-include_once("classes/db_lab_atributo_componente_classe.php");
-include_once("classes/db_lab_requiitem_classe.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+include_once(modification("classes/db_lab_atributo_componente_classe.php"));
+include_once(modification("classes/db_lab_requiitem_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
 $oAtributos = new cl_lab_atributo_componente;
 $oRequiitem = new cl_lab_requiitem;
 ?>

@@ -161,7 +161,7 @@ function js_completaCustos(iCodigo, iCriterio, iDescr) {
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_custoapropria',
                       'func_custoapropria.php?funcao_js=parent.js_preenchepesquisa|cc12_sequencial',
                       'Apropriações de Custo Realizadas',

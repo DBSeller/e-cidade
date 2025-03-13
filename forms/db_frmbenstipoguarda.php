@@ -58,7 +58,7 @@ db_input('t20_descr',40,$It20_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_benstipoguarda','func_benstipoguarda.php?funcao_js=parent.js_preenchepesquisa|t20_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstipoguarda','func_benstipoguarda.php?funcao_js=parent.js_preenchepesquisa|t20_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_benstipoguarda.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_app.utils.php");
-include("classes/db_periodoescola_classe.php");
-include("classes/db_periodoaula_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_app.utils.php"));
+include(modification("classes/db_periodoescola_classe.php"));
+include(modification("classes/db_periodoaula_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clperiodoescola = new cl_periodoescola;
@@ -163,7 +163,7 @@ if(isset($alterar)){
     <center>
     <fieldset style="width:90%"><legend><b>Alteração de Períodos da Escola</b></legend>
         <?
-        include("forms/db_frmperiodoescola.php");
+        include(modification("forms/db_frmperiodoescola.php"));
         ?>
     </fieldset>
     </center>

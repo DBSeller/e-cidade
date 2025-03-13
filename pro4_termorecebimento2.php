@@ -24,7 +24,7 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
- include("fpdf151/scpdf.php");
+ include(modification("fpdf151/scpdf.php"));
    $codtran = 5; 
    $sqlpara= "select pd.descrdepto as pdepto,
                      pu.nome as pnome pusu,
@@ -49,7 +49,7 @@
                   p63_codproc = p58_codproc
                   inner join tipoproc on p58_codigo = p51_codigo
           where p63_codtran = $codtran";*/
-   $rspara = pg_exec($sqlpara);
+   $rspara = db_query($sqlpara);
 	$pdf->AliasNbPages();
 	$pdf->AddPage();
 	$pdf->settopmargin(1);

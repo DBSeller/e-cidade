@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -463,6 +463,45 @@ class cl_cidadaoavaliacao {
        }
      }
      return $sql;
+  }
+  function sql_query_cadastrounico ( $as01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from cidadaoavaliacao ";
+    $sql .= "      inner join cidadao  on  cidadao.ov02_sequencial = cidadaoavaliacao.as01_cidadao and  cidadao.ov02_seq = cidadaoavaliacao.as01_cidadao_seq";
+    $sql .= "      inner join cidadaocomposicaofamiliar  on  cidadao.ov02_sequencial = cidadaocomposicaofamiliar.as03_cidadao and  cidadao.ov02_seq = cidadaocomposicaofamiliar.as03_cidadao_seq";
+    $sql .= "      inner join avaliacaogruporesposta  on  avaliacaogruporesposta.db107_sequencial = cidadaoavaliacao.as01_avaliacaogruporesposta";
+    $sql .= "      inner join situacaocidadao  on  situacaocidadao.ov16_sequencial = cidadao.ov02_situacaocidadao";
+    $sql .= "      inner join cidadaocadastrounico  on as02_cidadao     = ov02_sequencial";
+    $sql .= "                                      and as02_cidadao_seq = ov02_seq";
+    $sql2 = "";
+    if($dbwhere==""){
+      if($as01_sequencial!=null ){
+        $sql2 .= " where cidadaoavaliacao.as01_sequencial = $as01_sequencial ";
+      }
+      }else if($dbwhere != ""){
+          $sql2 = " where $dbwhere";
+          }
+          $sql .= $sql2;
+          if($ordem != null ){
+            $sql .= " order by ";
+            $campos_sql = split("#",$ordem);
+            $virgula = "";
+            for($i=0;$i<sizeof($campos_sql);$i++){
+              $sql .= $virgula.$campos_sql[$i];
+              $virgula = ",";
+            }
+          }
+          return $sql;
   }
 }
 ?>

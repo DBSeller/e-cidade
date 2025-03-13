@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_relat_classe.php");
-include("classes/db_db_relattabelas_classe.php");
-include("classes/db_db_relatfiltros_classe.php");
-include("classes/db_db_relatcabec_classe.php");
-include("classes/db_db_relatselecionados_classe.php");
-include("classes/db_db_relatsoma_classe.php");
-include("classes/db_db_relatquebra_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_relat_classe.php"));
+include(modification("classes/db_db_relattabelas_classe.php"));
+include(modification("classes/db_db_relatfiltros_classe.php"));
+include(modification("classes/db_db_relatcabec_classe.php"));
+include(modification("classes/db_db_relatselecionados_classe.php"));
+include(modification("classes/db_db_relatsoma_classe.php"));
+include(modification("classes/db_db_relatquebra_classe.php"));
 $cldb_relat = new cl_db_relat;
   /*
 $cldb_relattabelas = new cl_db_relattabelas;
@@ -123,7 +123,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_relat.php");
+	include(modification("forms/db_frmdb_relat.php"));
 	?>
     </center>
 	</td>
@@ -156,17 +156,17 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_relattabelas.disabled=false;
-         top.corpo.iframe_db_relattabelas.location.href='con1_db_relattabelas001.php?db_opcaoal=33&db92_codigo=".@$db91_codrel."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_relattabelas.location.href='con1_db_relattabelas001.php?db_opcaoal=33&db92_codigo=".@$db91_codrel."';
          parent.document.formaba.db_relatfiltros.disabled=false;
-         top.corpo.iframe_db_relatfiltros.location.href='con1_db_relatfiltros001.php?db_opcaoal=33&db94_codigo=".@$db91_codrel."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_relatfiltros.location.href='con1_db_relatfiltros001.php?db_opcaoal=33&db94_codigo=".@$db91_codrel."';
          parent.document.formaba.db_relatcabec.disabled=false;
-         top.corpo.iframe_db_relatcabec.location.href='con1_db_relatcabec001.php?db_opcaoal=33&db95_codigo=".@$db91_codrel."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_relatcabec.location.href='con1_db_relatcabec001.php?db_opcaoal=33&db95_codigo=".@$db91_codrel."';
          parent.document.formaba.db_relatselecionados.disabled=false;
-         top.corpo.iframe_db_relatselecionados.location.href='con1_db_relatselecionados001.php?db_opcaoal=33&db93_codigo=".@$db91_codrel."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_relatselecionados.location.href='con1_db_relatselecionados001.php?db_opcaoal=33&db93_codigo=".@$db91_codrel."';
          parent.document.formaba.db_relatsoma.disabled=false;
-         top.corpo.iframe_db_relatsoma.location.href='con1_db_relatsoma001.php?db_opcaoal=33&db96_codigo=".@$db91_codrel."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_relatsoma.location.href='con1_db_relatsoma001.php?db_opcaoal=33&db96_codigo=".@$db91_codrel."';
          parent.document.formaba.db_relatquebra.disabled=false;
-         top.corpo.iframe_db_relatquebra.location.href='con1_db_relatquebra001.php?db_opcaoal=33&db97_codigo=".@$db91_codrel."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_relatquebra.location.href='con1_db_relatquebra001.php?db_opcaoal=33&db97_codigo=".@$db91_codrel."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_relattabelas');";

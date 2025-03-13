@@ -1,321 +1,585 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/impcarne.php");
-require_once("fpdf151/scpdf.php");
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("fpdf151/scpdf.php"));
 
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_rhemitecontracheque_classe.php");
-require_once("classes/db_cfpess_classe.php");
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_rhemitecontracheque_classe.php"));
+require_once(modification("classes/db_cfpess_classe.php"));
 
-require_once("libs/db_utils.php");
-require_once("libs/db_libpessoal.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libpessoal.php"));
 
-db_postmemory($HTTP_SERVER_VARS);
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+$oGet = db_utils::postMemory($_GET);
 
-$clrhemitecontracheque = new cl_rhemitecontracheque();
-$oDaoCfpess            = new cl_cfpess;
+$oDaoEmiteContraCheque = new cl_rhemitecontracheque();
+$oDaoCfPess            = new cl_cfpess();
+
+/**
+ * Corrige caracteres especias enviados por parametro
+ */
+$oGet->sMensagem = stripslashes(urldecode($oGet->sMensagem));
+
+$iAnoFolha    = DBPessoal::getAnoFolha();
+$iMesFolha    = DBPessoal::getMesFolha();
+$iInstituicao = db_getsession('DB_instit');
 
 /**
  * Tipo de relatório contracheque
  * Retorna false caso der erro na consulta
- */   
-$iTipoRelatorio = $oDaoCfpess->buscaCodigoRelatorio('contracheque', db_anofolha(), db_mesfolha());
+ */
+$iTipoRelatorio = $oDaoCfPess->buscaCodigoRelatorio('contracheque', $iAnoFolha, $iMesFolha);
+
 if(!$iTipoRelatorio) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Modelo de impressão invalido, verifique parametros.');
 }
 
-$wherepes = '';
-if($selecao != ''){
-  $result_sel = db_query("select r44_where , r44_descr from selecao where r44_selec = {$selecao} and r44_instit = " . db_getsession("DB_instit"));
-  if(pg_numrows($result_sel) > 0){
-    db_fieldsmemory($result_sel, 0, 1);
-    $wherepes .= " and ".$r44_where;
-    $head5 = $r44_descr;
-    $erroajuda = " ou seleção informada é inválida";
+/**
+ * Se sSelecao vier vazia.
+ */
+if (!empty($oGet->sSelecao)) {
+
+  $sSql = "
+    SELECT r44_where AS where
+      FROM selecao
+     WHERE r44_selec  = {$oGet->sSelecao}
+       AND r44_instit = {$iInstituicao}
+  ";
+
+  $rsResult = db_query($sSql);
+
+  if (pg_num_rows($rsResult)) {
+
+    $oSelecao = db_utils::fieldsMemory($rsResult, 0, true);
+    $aWhere[] = $oSelecao->where;
   }
 }
 
-$sql = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$result = db_query($sql);
-db_fieldsmemory($result,0);
+$sSql = "
+  SELECT *
+    FROM db_config
+   WHERE codigo = {$iInstituicao}
+";
 
-$xtipo = "'x'";
-$qualarquivo = '';
-if ( $opcao == 'salario' ){
-  $sigla   = 'r14_';
-  $arquivo = 'gerfsal';
-  $qualarquivo = 'SALÁRIO';
-}elseif ( $opcao == 'ferias' ){
-  $sigla   = 'r31_';
-  $arquivo = 'gerffer';
-  $xtipo   = ' r31_tpp ';
-  $qualarquivo = 'FÉRIAS';
-}elseif ( $opcao == 'rescisao' ){
-  $sigla   = 'r20_';
-  $arquivo = 'gerfres';
-  $xtipo   = ' r20_tpp ';
-  $qualarquivo = 'RESCISÃO';
-}elseif ($opcao == 'adiantamento'){
-  $sigla   = 'r22_';
-  $arquivo = 'gerfadi';
-  $qualarquivo = 'ADIANTAMENTO';
-}elseif ($opcao == '13salario'){
-  $sigla   = 'r35_';
-  $arquivo = 'gerfs13';
-  $qualarquivo = '13o. SALÁRIO';
-}elseif ($opcao == 'complementar'){
-  $sigla   = 'r48_';
-  $arquivo = 'gerfcom';
-  $qualarquivo = 'COMPLEMENTAR';
-}elseif ($opcao == 'fixo'){
-  $sigla   = 'r53_';
-  $arquivo = 'gerffx';
-  $qualarquivo = 'FIXO';
-}elseif ($opcao == 'previden'){
-  $sigla   = 'r60_';
-  $arquivo = 'previden';
-  $qualarquivo = 'AJUSTE DA PREVIDÊNCIA';
-}elseif ($opcao == 'irf'){
-  $sigla   = 'r61_';
-  $arquivo = 'ajusteir';
-  $qualarquivo = 'AJUSTE DO IRRF';
+$rsResult = db_query($sSql);
+$oConfig  = db_utils::fieldsMemory($rsResult, 0);
+
+$sTipo         = "'x'";
+$sWhereSemest  = '';
+$lNovaRotina   = false;
+
+switch ($oGet->sOpcao) {
+  case 'salario':
+    $sPrefix  = 'r14';
+    $sArquivo = 'gerfsal';
+    $sTitulo  = 'SALÁRIO';
+    $iTipoFolha = FolhaPagamento::TIPO_FOLHA_SALARIO;
+
+    /**
+     * Controla se o salário é da nova
+     * rotina.
+     */
+    if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+      
+      $lNovaRotina = true;
+      $sWhereSemest  = 'AND rh141_codigo = 0';
+    }
+    break;
+
+  case 'ferias':
+    $sPrefix  = 'r31';
+    $sArquivo = 'gerffer';
+    $sTitulo  = 'FÉRIAS';
+    $sTipo    = 'r31_tpp';
+    break;
+
+  case 'rescisao':
+    $sPrefix  = 'r20';
+    $sArquivo = 'gerfres';
+    $sTitulo  = 'RESCISÃO';
+    $sTipo    = 'r20_tpp';
+    break;
+
+  case 'adiantamento':
+    $sPrefix  = 'r22';
+    $sArquivo = 'gerfadi';
+    $sTitulo  = 'ADIANTAMENTO';
+    break;
+
+  case '13salario':
+    $sPrefix  = 'r35';
+    $sArquivo = 'gerfs13';
+    $sTitulo  = '13o. SALÁRIO';
+    break;
+
+  case 'complementar':
+    $sPrefix  = 'r48';
+    $sArquivo = 'gerfcom';
+    $sTitulo  = "COMPLEMENTAR {$oGet->iSemest}";
+    $iTipoFolha     = FolhaPagamento::TIPO_FOLHA_COMPLEMENTAR;
+    break;
+
+  case 'fixo':
+    $sPrefix  = 'r53';
+    $sArquivo = 'gerffx';
+    $sTitulo  = 'FIXO';
+    break;
+
+  case 'previden':
+    $sPrefix  = 'r60';
+    $sArquivo = 'previden';
+    $sTitulo  = 'AJUSTE DA PREVIDÊNCIA';
+    break;
+
+  case 'irf':
+    $sPrefix  = 'r61';
+    $sArquivo = 'ajusteir';
+    $sTitulo  = 'AJUSTE DO IRRF';
+    break;
+
+  case 'suplementar':
+    $sPrefix    = 'r14';
+    $sArquivo   = 'gerfsal';
+    $sTitulo    = "SUPLEMENTAR {$oGet->iSemest}";
+    $iTipoFolha = FolhaPagamento::TIPO_FOLHA_SUPLEMENTAR;
+    break;
 }
-$txt_where="1=1";
-if (isset($filtro)&&$filtro!='N'){
-  if ($filtro=='M'){
-    $campo=$sigla."regist";
-  }else if ($filtro=='L'){
-    $campo=$sigla."lotac::integer";
-  }else if ($filtro=='T'){
-    $campo= "rh56_localtrab";
+
+if (isset($oGet->iSemest) && $oGet->iSemest) {
+
+  if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+
+    $sWhereSemest = "AND rh141_codigo = {$oGet->iSemest}";
+    $lNovaRotina = true;
+    $aWhere[] = "
+      rh143_regist IN (
+        SELECT rh143_regist
+          FROM rhfolhapagamento
+            INNER JOIN rhhistoricocalculo ON rh143_folhapagamento = rh141_sequencial
+         WHERE rh141_mesusu         = {$oGet->iMes}
+           AND rh141_anousu         = {$oGet->iAno}
+           AND rh141_instit         = {$iInstituicao}
+           AND rh141_codigo         = {$oGet->iSemest}
+           AND rh141_tipofolha      = {$iTipoFolha}
+      )
+    ";
+  } else {
+
+    $sWhereSemest = " AND r48_semest = {$oGet->iSemest}";
+    $aWhere[]     = "r48_semest = {$oGet->iSemest}";
   }
-  if (isset($dados)&&$dados!=""){
-    $txt_where = " $campo in ($dados) ";
-  }elseif (isset($codini) && $codini != "" && $codfim != ""){
-    $txt_where = " $campo between $codini and $codfim ";
+}
+
+if ($oGet->sFiltro != 'N') {
+
+  switch ($oGet->sFiltro) {
+    case 'M':
+      $sCampo = "{$sPrefix}_regist";
+      if ($lNovaRotina) {
+        $sCampo = "rh143_regist";
+      }
+      break;
+
+    case 'L':
+      $sCampo = "{$sPrefix}_lotac::integer";
+      if ($lNovaRotina) {
+        $sCampo = "rh01_lotac::integer";
+      }
+      break;
+
+    case 'T':
+      $sCampo = 'rh56_localtrab';
+      break;
+  }
+
+  if (isset($oGet->sLista) && !empty($oGet->sLista)) {
+    $aWhere[] = "{$sCampo} IN ($oGet->sLista)";
+  } elseif (isset($oGet->iCodIni) &&
+            isset($oGet->iCodFim) &&
+           !empty($oGet->iCodIni) &&
+           !empty($oGet->iCodFim)) {
+    $aWhere[] = "{$sCampo} BETWEEN {$oGet->iCodIni} AND {$oGet->iCodFim}";
   }
 }
-if(isset($local) && trim($local) != ""){
-  if($txt_where!=""){
-     $txt_where.= " and ";
+
+if (!empty($oGet->sLocal)) {
+
+  if ($oGet->sTipoLocal == 's') {
+    $aWhere[] = "rh56_localtrab  = {$oGet->sLocal}";
+  } else {
+    $aWhere[] = "rh56_localtrab != {$oGet->sLocal}";
   }
-  if($tipo_local == 's'){
-    $txt_where.= " rh56_localtrab = ".$local;
-  }else{
-    $txt_where.= " rh56_localtrab <> ".$local;
-  }
 }
 
-$wheresemest = "";
-if(isset($semest) && trim($semest) != 0){
-  $wheresemest = " and r48_semest = ".$semest;
+$sWhere   = '';
+if (isset($aWhere)) {
+  $sWhere = 'WHERE ' . implode(' AND ', $aWhere);
 }
 
-$sql1= "select distinct
-       		z01_nome,
-       		rhpessoal.*,
-       		rhpessoalmov.*,
-          rhpesbanco.*,
-       		rh37_descr,
-       		r70_descr,
-          rhregime.*,
-      		substr(r70_estrut,1,7) as estrut,
-	       	".$sigla."regist as regist,
-	        substr(db_fxxx(".$sigla."regist,$ano,$mes,".db_getsession("DB_instit")."),111,11) as f010, 
-        	substr(db_fxxx(".$sigla."regist,$ano,$mes,".db_getsession("DB_instit")."),210,8) as padrao
-          from (select distinct ".$sigla."regist,
-                                ".$sigla."anousu,
-                                ".$sigla."mesusu,
-                                ".$sigla."lotac
-	              from ".$arquivo." ".bb_condicaosubpesproc( $sigla,$ano."/".$mes ).$wheresemest." 
-               ) as ".$arquivo."
-       	  inner join rhpessoal     on rh01_regist = ".$sigla."regist 
-		      inner join rhpessoalmov  on rh02_regist = rh01_regist
-                                  and rh02_anousu = $ano 
-		  	                          and rh02_mesusu = $mes 
-		  	                          and rh02_instit = ".db_getsession("DB_instit")."
-          inner join rhregime      on rh02_codreg = rh30_codreg
-                                  and rh02_instit = rh30_instit
-     		  inner join cgm           on rh01_numcgm  = z01_numcgm
-     		  left join rhfuncao       on rh37_funcao = rh02_funcao
-		                              and rh37_instit = rh02_instit
-     		  left join rhlota         on r70_codigo  = rh02_lota
-				                          and r70_instit  = rh02_instit	
-          left join rhpescargo     on rh20_seqpes = rh02_seqpes
-		                              and rh20_instit = rh02_instit
-          left join rhpesbanco     on rh44_seqpes = rh02_seqpes
-          left join rhcargo     	 on rh04_codigo = rh20_cargo
-		                              and rh04_instit = rh02_instit
-          left join rhpeslocaltrab on rh56_seqpes = rh02_seqpes
-                                  and rh56_princ  = true
+/**
+ * Início de rotina parametrizada.
+ */
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar() && $lNovaRotina) {
 
-	        where $txt_where $wherepes
-	        ";
-
-$sql = "select * from ($sql1) as xxx, generate_series(1,$num_vias) order by ";
-
-if($ordem == "L"){
-  $sql .= " estrut,z01_nome, rh01_regist ";
-}else if($ordem == "N"){
-  $sql .= " z01_nome , rh01_regist";
-}else if($ordem == "T"){
-  $sql .= " rh56_localtrab , z01_nome , rh01_regist ";
-}else{
-  $sql .= " rh01_regist ";
-}
-
-// ------------- busca url do site do cliente ----------------------
-$sqlDbConfig = " select url from db_config where prefeitura = true ";
-$rsDbConfig  = db_query($sqlDbConfig);
-$iDbConfig   = pg_numrows($rsDbConfig);
-
-if ($iDbConfig > 0) {
-	$oDbConfig = db_utils::fieldsMemory($rsDbConfig, 0);
-	$sDbConfig = $oDbConfig->url;
+  $sSql = "
+    SELECT DISTINCT z01_nome                 AS nome,
+                    r70_descr                AS lotacao,
+                    rh37_descr               AS cargo,
+                    rh04_descr               AS funcao,
+                    rh44_codban              AS banco,
+                    rh44_conta               AS conta,
+                    rh44_agencia             AS agencia,
+                    rh44_dvconta             AS dvconta,   /* Favor atualizar a documentacao. */
+                    rh44_dvagencia           AS dvagencia, /* Favor atualizar a documentacao. */
+                    rh01_admiss              AS admissao,
+                    rh56_localtrab           AS localtrabalho,
+                    rh143_regist             AS matricula,
+                    substr(r70_estrut, 1, 7) AS estrutural,
+                    substr(
+                      db_fxxx(rh143_regist,
+                              {$oGet->iAno},
+                              {$oGet->iMes},
+                              {$iInstituicao}), 111, 11
+                    )                        AS salario, /* F010: Salário base com progreção. */
+                    substr(
+                      db_fxxx(rh143_regist,
+                              {$oGet->iAno},
+                              {$oGet->iMes},
+                              {$iInstituicao}), 222, 20
+                    )                        AS padrao
+      FROM (
+        SELECT DISTINCT rh143_regist,
+                        rh141_anousu,
+                        rh141_mesusu
+          FROM rhhistoricocalculo
+            INNER JOIN rhfolhapagamento ON rh143_folhapagamento = rh141_sequencial
+            INNER JOIN rhpessoalmov     ON rh02_anousu          = rh141_anousu
+                                       AND rh02_mesusu          = rh141_mesusu
+                                       AND rh02_instit          = rh141_instit
+                                       AND rh02_regist          = rh143_regist
+          WHERE rh141_anousu    = {$oGet->iAno}
+            AND rh141_mesusu    = {$oGet->iMes}
+            AND rh141_instit    = {$iInstituicao}
+            AND rh141_tipofolha = {$iTipoFolha}
+        )                                    AS rhhistoricocalculo
+        INNER JOIN rhpessoal       ON rh01_regist = rh143_regist 
+        INNER JOIN rhpessoalmov    ON rh02_regist =  rh01_regist
+                                  AND rh02_anousu = {$oGet->iAno}
+                                  AND rh02_mesusu = {$oGet->iMes}
+                                  AND rh02_instit = {$iInstituicao}
+        INNER JOIN rhregime        ON rh02_codreg =  rh30_codreg
+                                  AND rh02_instit =  rh30_instit
+        INNER JOIN cgm             ON rh01_numcgm =   z01_numcgm
+        LEFT  JOIN  rhfuncao       ON rh37_funcao =  rh02_funcao
+                                  AND rh37_instit =  rh02_instit
+        LEFT  JOIN  rhlota         ON  r70_codigo =  rh02_lota
+                                  AND  r70_instit =  rh02_instit
+        LEFT  JOIN  rhpescargo     ON rh20_seqpes =  rh02_seqpes
+                                  AND rh20_instit =  rh02_instit
+        LEFT  JOIN  rhpesbanco     ON rh44_seqpes =  rh02_seqpes
+        LEFT  JOIN  rhcargo        ON rh04_codigo =  rh20_cargo
+                                  AND rh04_instit =  rh02_instit
+        LEFT  JOIN  rhpeslocaltrab ON rh56_seqpes =  rh02_seqpes
+                                  AND rh56_princ  =  true
+      {$sWhere}
+  ";
 } else {
-	$sDbConfig = "";
-}
-//------------------------------------------------------------------
-// echo $sql;exit;
-$res = db_query($sql);
-$num = pg_numrows($res);
-if ($num == 0){
-   db_redireciona('db_erros.php?fechar=true&db_erro=Não existe Cálculo no período de '.$mes.' / '.$ano);
-}
-  global $pdf;
-  $pdf = new scpdf();
-  $pdf->setautopagebreak(false,0.05);
-  $pdf->Open();
-  $pdf1 = new db_impcarne($pdf, $iTipoRelatorio);
-  $pdf1->logo             = $logo;
-  $pdf1->prefeitura       = $nomeinst;
-  $pdf1->enderpref        = $ender.(isset($numero)?(', '.$numero):"");
-  $pdf1->cgcpref          = $cgc;
-  $pdf1->municpref        = $munic;
-  $pdf1->telefpref        = $telef;
-  $pdf1->emailpref        = $email;
-  $pdf1->ano        	    = $ano;
-  $pdf1->mes          	  = $mes;
-  $pdf1->mensagem         = $msg;
-  $pdf1->qualarquivo     = $qualarquivo;
- 
-  $lin = 1;
-  
-for($i=0;$i<$num;$i++){
-	
-  db_fieldsmemory($res,$i);
 
-  $rsSeqContraCheque = db_query("select nextval('rhemitecontracheque_rh85_sequencial_seq') as sequencial");
-  $oSeqContraCheque  = db_utils::fieldsMemory($rsSeqContraCheque,0);
-  $iSequencial       = str_pad($oSeqContraCheque->sequencial,6,'0',STR_PAD_LEFT);
-  
-  $iMes       = str_pad($mes,2,'0',STR_PAD_LEFT);
-  $iMatricula = str_pad($regist,6,'0',STR_PAD_LEFT);
-  $iMod1      = db_CalculaDV($iMatricula);
-  $iMod2      = db_CalculaDV($iMatricula.$iMod1.$iMes.$ano.$iSequencial); 
-     
-  $iCodAutent = $iMatricula.$iMod1.$iMes.$iMod2.$ano.$iSequencial;
-  
-  $clrhemitecontracheque->rh85_sequencial  = $iSequencial;
-  $clrhemitecontracheque->rh85_regist      = $regist;
-  $clrhemitecontracheque->rh85_anousu      = $ano;
-  $clrhemitecontracheque->rh85_mesusu      = $mes;
-  $clrhemitecontracheque->rh85_sigla       = substr($sigla,0,3);
-  $clrhemitecontracheque->rh85_codautent   = $iCodAutent;
-  $clrhemitecontracheque->rh85_dataemissao = date('Y-m-d',db_getsession('DB_datausu'));
-  $clrhemitecontracheque->rh85_horaemissao = db_hora();
-  $clrhemitecontracheque->rh85_ip          = db_getsession('DB_ip');
-  $clrhemitecontracheque->rh85_externo     = 'false';
+  $sWhereAuxiliar = bb_condicaosubpesproc(
+    $sPrefix . '_',
+    $oGet->iAno . "/" . $oGet->iMes
+  ) . $sWhereSemest;
 
-  $clrhemitecontracheque->incluir($iSequencial);
-  
-  if ( $clrhemitecontracheque->erro_status == 0 ) {
-  	db_redireciona('db_erros.php?fechar=true&db_erro='.$clrhemitecontracheque->erro_msg);
+  $sSql = "
+    SELECT DISTINCT z01_nome                 AS nome,
+                    r70_descr                AS lotacao,
+                    rh37_descr               AS cargo,
+                    rh04_descr               AS funcao,
+                    rh44_codban              AS banco,
+                    rh44_agencia             AS agencia,
+                    rh44_conta               AS conta,
+                    rh44_dvagencia           AS dvagencia, /* Favor atualizar a documentacao. */
+                    rh44_dvconta             AS dvconta,   /* Favor atualizar a documentacao. */
+                    rh01_admiss              AS admissao,
+                    rh56_localtrab           AS localtrabalho,
+              {$sPrefix}_regist              AS matricula,
+                    substr(r70_estrut, 1, 7) AS estrutural,
+                    substr(
+                      db_fxxx({$sPrefix}_regist,
+                              {$oGet->iAno},
+                              {$oGet->iMes},
+                              {$iInstituicao}), 111, 11
+                    )                        AS salario, /* F010: Salário base com progreção. */
+                    substr(
+                      db_fxxx({$sPrefix}_regist,
+                              {$oGet->iAno},
+                              {$oGet->iMes},
+                              {$iInstituicao}), 222, 20
+                    )                        AS padrao
+      FROM (
+        SELECT DISTINCT {$sPrefix}_regist,
+                        {$sPrefix}_anousu,
+                        {$sPrefix}_mesusu,
+                        {$sPrefix}_lotac
+          FROM {$sArquivo}
+          {$sWhereAuxiliar}
+        )                                    AS {$sArquivo}
+        INNER JOIN rhpessoal       ON rh01_regist = {$sPrefix}_regist 
+        INNER JOIN rhpessoalmov    ON rh02_regist =       rh01_regist
+                                  AND rh02_anousu =      {$oGet->iAno}
+                                  AND rh02_mesusu =      {$oGet->iMes}
+                                  AND rh02_instit =      {$iInstituicao}
+        INNER JOIN rhregime        ON rh02_codreg =       rh30_codreg
+                                  AND rh02_instit =       rh30_instit
+        INNER JOIN cgm             ON rh01_numcgm =        z01_numcgm
+        LEFT  JOIN  rhfuncao       ON rh37_funcao =       rh02_funcao
+                                  AND rh37_instit =       rh02_instit
+        LEFT  JOIN  rhlota         ON  r70_codigo =       rh02_lota
+                                  AND  r70_instit =       rh02_instit 
+        LEFT  JOIN  rhpescargo     ON rh20_seqpes =       rh02_seqpes
+                                  AND rh20_instit =       rh02_instit
+        LEFT  JOIN  rhpesbanco     ON rh44_seqpes =       rh02_seqpes
+        LEFT  JOIN  rhcargo        ON rh04_codigo =       rh20_cargo
+                                  AND rh04_instit =       rh02_instit
+        LEFT  JOIN  rhpeslocaltrab ON rh56_seqpes =       rh02_seqpes
+                                  AND rh56_princ  =       true
+      {$sWhere}
+  ";
+}
+
+
+
+$sSql = "
+  SELECT *
+    FROM(
+      {$sSql}
+    ) AS xxx, generate_series(1, $oGet->iNumVias)
+   ORDER BY
+";
+switch ($oGet->sOrdem) {
+  case 'L':
+    $sSql .= " estrutural, nome, matricula";
+    break;
+
+  case 'N':
+    $sSql .= " nome, matricula";
+    break;
+
+  case 'T':
+    $sSql .= " localtrabalho, nome, matricula";
+    break;
+
+  default:
+    $sSql .= " matricula";
+    break;
+}
+
+/**
+ * busca URL do cliente.
+ */
+$sSqlUrl = "
+  SELECT url
+    FROM db_config
+   WHERE prefeitura = true
+";
+
+$rsResult = db_query($sSqlUrl);
+if (pg_num_rows($rsResult)) {
+  $oUrl = db_utils::fieldsMemory($rsResult, 0);
+  $sUrl = $oUrl->url;
+} else {
+  $sUrl = ' ';
+}
+
+$rsResult = db_query($sSql);
+$iNumRow  = pg_num_rows($rsResult);
+
+/**
+ * Se não trazer nenhum registro.
+ */
+if (!$iNumRow) {
+  db_redireciona("db_erros.php?fechar=true&db_erro=Não existe Cálculo no período de {$oGet->iMes}/{$oGet->iAno}.");
+}
+
+/**
+ * Grrrrrr... Globals
+ */
+global $pdf;
+$pdf = new scpdf();
+$pdf->setautopagebreak(false, 0.05);
+$pdf->Open();
+
+$oPDF = new db_impcarne($pdf, $iTipoRelatorio);
+$oPDF->logo             = $oConfig->logo;
+$oPDF->prefeitura       = $oConfig->nomeinst; //Plugin Modificação Nome Instituição
+$oPDF->enderpref        = $oConfig->ender . ( isset($oConfig->numero ) ? (", {$oConfig->numero}"): "");
+$oPDF->cgcpref          = $oConfig->cgc;
+$oPDF->municpref        = $oConfig->munic;
+$oPDF->telefpref        = $oConfig->telef;
+$oPDF->emailpref        = $oConfig->email;
+$oPDF->ano              = $oGet->iAno;
+$oPDF->mes              = $oGet->iMes;
+$oPDF->mensagem         = utf8_decode($oGet->sMensagem);
+$oPDF->qualarquivo      = $sTitulo;
+
+$lin = 1;
+
+$aServidores = db_utils::getCollectionByRecord($rsResult);
+foreach ($aServidores as $iIndex => $oServidor) {
+
+  $rsResult         = db_query("SELECT nextval('rhemitecontracheque_rh85_sequencial_seq') AS sequencial");
+  $oSeqContraCheque = db_utils::fieldsMemory($rsResult, 0);
+  $iSequencial      = str_pad($oSeqContraCheque->sequencial, 6, '0', STR_PAD_LEFT);
+
+  $iMes             = str_pad($oGet->iMes, 2, '0', STR_PAD_LEFT);
+  $iMatricula       = str_pad($oServidor->matricula, 6, '0', STR_PAD_LEFT);
+  $iMod1            = db_CalculaDV($iMatricula);
+  $iMod2            = db_CalculaDV($iMatricula . $iMod1 . $iMes . $oGet->iAno . $iSequencial);
+
+  $iCodAutent       = $iMatricula . $iMod1 . $iMes . $iMod2 . $oGet->iAno . $iSequencial;
+  $sDataEmissao     = date('Y-m-d', db_getsession('DB_datausu'));
+  $sHoraEmissao     = db_hora();
+  $sIpEmissao       = db_getsession('DB_ip');
+
+  $oDaoEmiteContraCheque->rh85_sequencial  = $iSequencial;
+  $oDaoEmiteContraCheque->rh85_regist      = $oServidor->matricula;
+  $oDaoEmiteContraCheque->rh85_anousu      = $oGet->iAno;
+  $oDaoEmiteContraCheque->rh85_mesusu      = $oGet->iMes;
+  $oDaoEmiteContraCheque->rh85_sigla       = $sPrefix;
+  $oDaoEmiteContraCheque->rh85_codautent   = $iCodAutent;
+  $oDaoEmiteContraCheque->rh85_dataemissao = $sDataEmissao;
+  $oDaoEmiteContraCheque->rh85_horaemissao = $sHoraEmissao;
+  $oDaoEmiteContraCheque->rh85_ip          = $sIpEmissao;
+  $oDaoEmiteContraCheque->rh85_externo     = 'false';
+
+  if ($iIndex %2 == 0) {
+    $oPDF->seq = 0;
+  } else {
+    $oPDF->seq = 1;
   }
-  
-  if($lin == 1){
-    $lin = 0;
-    $pdf1->seq = 0;
-  }else{
-    $lin = 1;
-    $pdf1->seq = 1;
-  }
-  
-  $sql = "
-  select ".$sigla."rubric as rubrica,
-       round(".$sigla."valor,2) as valor,
-       round(".$sigla."quant,2) as quant, 
-       rh27_descr, 
-       ".$xtipo." as tipo , 
-       case when rh27_pd = '3' then 'B' 
-            when ".$sigla."pd = 1 then 'P' 
-	          when ".$sigla."pd = 2 then 'D' 
-       end as provdesc
- 
-  from ".$arquivo." 
-     inner join rhrubricas on rh27_rubric = ".$sigla."rubric 
-                          and rh27_instit = ".db_getsession('DB_instit')."
-  where ".$sigla."regist = $regist
-    and ".$sigla."anousu = $ano 
-    and ".$sigla."mesusu = $mes
-    and ".$sigla."instit = ".db_getsession("DB_instit")."
-    $wheresemest
-  order by ".$sigla."rubric  ";
 
-  $res_env = db_query($sql);
-   
-  $pdf1->registro	        = $rh01_regist;
-  $pdf1->admissao	        = db_formatar($rh01_admiss,'d');
-  $pdf1->nome		          = $z01_nome;
-  $pdf1->descr_funcao	    = $rh37_descr;
-  $pdf1->descr_lota       = $estrut.'-'.$r70_descr;
-  $pdf1->f010          	  = $f010;
-  $pdf1->padrao        	  = $padrao;
-  $pdf1->banco         	  = $rh44_codban;
-  $pdf1->agencia       	  = trim($rh44_agencia).'-'.trim($rh44_dvagencia);
-  $pdf1->conta         	  = trim($rh44_conta).'-'.trim($rh44_dvconta);
-  $pdf1->lotacao	        = $estrut;
-  $pdf1->recordenvelope   = $res_env;
-  $pdf1->linhasenvelope	  = pg_numrows($res_env);
-  $pdf1->valor		        = 'valor';
-  $pdf1->quantidade	      = 'quant';
-  $pdf1->tipo		          = 'provdesc';
-  $pdf1->rubrica	        = 'rubrica';
-  $pdf1->descr_rub	      = 'rh27_descr';
-  $pdf1->numero	  	      = $i+1;
-  $pdf1->total	  	      = $num;
-  $pdf1->codautent        = $iCodAutent;
-  $pdf1->url              = $sDbConfig;
-  $pdf1->imprime();
-  
+  if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()  && $lNovaRotina) {
+
+    $sSql = "
+      SELECT rh143_rubrica              AS rubrica,
+             round(rh143_valor,      2) AS valor,
+             round(rh143_quantidade, 2) AS quantidade,
+             rh27_descr                 AS descricao,
+             {$sTipo}                   AS tipo,
+             CASE WHEN rh143_tipoevento  = 1 THEN 'P'
+                  WHEN rh143_tipoevento  = 2 THEN 'D'
+                  ELSE 'B'
+             END                        AS tipoevento
+        FROM rhhistoricocalculo
+          INNER JOIN rhfolhapagamento ON rh143_folhapagamento = rh141_sequencial
+          INNER JOIN rhrubricas       ON rh143_rubrica        = rh27_rubric
+                                     AND rh141_instit         = rh27_instit
+       WHERE rh143_regist    = {$oServidor->matricula}
+         AND rh141_anousu    = {$oGet->iAno}
+         AND rh141_mesusu    = {$oGet->iMes}
+         AND rh141_instit    = {$iInstituicao}
+         AND rh141_tipofolha = {$iTipoFolha}
+         {$sWhereSemest}
+       ORDER BY rh143_rubrica
+    ";
+  } else {
+
+    $sSql = "
+      SELECT {$sPrefix}_rubric          AS rubrica,
+             round({$sPrefix}_valor, 2) AS valor,
+             round({$sPrefix}_quant, 2) AS quantidade,
+             rh27_descr                 AS descricao,
+             {$sTipo}                   AS tipo,
+             CASE WHEN {$sPrefix}_pd = 1 THEN 'P'
+                  WHEN {$sPrefix}_pd = 2 THEN 'D'
+                  ELSE 'B'
+             END                        AS tipoevento
+        FROM {$sArquivo}
+          INNER JOIN rhrubricas ON rh27_rubric = {$sPrefix}_rubric
+                               AND rh27_instit = {$iInstituicao}
+       WHERE {$sPrefix}_regist = {$oServidor->matricula}
+         AND {$sPrefix}_anousu = {$oGet->iAno}
+         AND {$sPrefix}_mesusu = {$oGet->iMes}
+         AND {$sPrefix}_instit = {$iInstituicao}
+         {$sWhereSemest}
+       ORDER BY {$sPrefix}_rubric
+    ";
+  }
+
+  $rsResult = db_query($sSql);
+  // Inicializa os valores de provento e desconto
+  $oDaoEmiteContraCheque->rh85_provento = 0;
+  $oDaoEmiteContraCheque->rh85_desconto = 0;
+
+  for ($i=0; $i < pg_num_rows($rsResult); $i++) { 
+    $oStd = db_utils::fieldsMemory($rsResult, $i);
+    switch ($oStd->tipoevento ) {
+      case 'P':
+        $oDaoEmiteContraCheque->rh85_provento += $oStd->valor;
+        break;
+      case 'D':
+        $oDaoEmiteContraCheque->rh85_desconto += $oStd->valor;
+        break;
+    }
+  }
+  $oDaoEmiteContraCheque->rh85_liquido = $oDaoEmiteContraCheque->rh85_provento - $oDaoEmiteContraCheque->rh85_desconto;
+
+
+  $oDaoEmiteContraCheque->incluir($iSequencial);
+  if (!$oDaoEmiteContraCheque->erro_status) {
+    db_redireciona("db_erros.php?fechar=true&db_erro={$clrhemitecontracheque->erro_msg}");
+  }
+
+  $oPDF->registro         = $oServidor->matricula;
+  $oPDF->admissao         = db_formatar($oServidor->admissao, 'd');
+  $oPDF->nome             = $oServidor->nome;
+  $oPDF->descr_funcao     = $oServidor->funcao;
+  $oPDF->descr_cargo      = $oServidor->cargo;
+  $oPDF->descr_lota       = "{$oServidor->estrutural}-{$oServidor->lotacao}";
+  $oPDF->f010             = $oServidor->salario;
+  $oPDF->padrao           = $oServidor->padrao;
+  $oPDF->banco            = $oServidor->banco;
+  $oPDF->agencia          = "{$oServidor->agencia}-{$oServidor->dvagencia}";
+  $oPDF->conta            = "{$oServidor->conta}-{$oServidor->dvconta}";
+  $oPDF->lotacao          = $oServidor->estrutural;
+  $oPDF->recordenvelope   = $rsResult;
+  $oPDF->linhasenvelope   = pg_num_rows($rsResult);
+  $oPDF->valor            = 'valor';
+  $oPDF->quantidade       = 'quantidade';
+  $oPDF->tipo             = 'tipoevento';
+  $oPDF->rubrica          = 'rubrica';
+  $oPDF->descr_rub        = 'descricao';
+  $oPDF->numero           = $iIndex + 1;
+  $oPDF->total            = $iNumRow;
+  $oPDF->codautent        = $iCodAutent;
+  $oPDF->url              = $sUrl;
+  $oPDF->imprime();
 }
-$pdf1->objpdf->output();
-?>
+$oPDF->objpdf->output();

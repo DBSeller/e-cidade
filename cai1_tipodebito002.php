@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if(isset($retorno)) {
-  $result = pg_exec("select * from arretipo where k00_tipo = $retorno ");
+  $result = db_query("select * from arretipo where k00_tipo = $retorno ");
   db_fieldsmemory($result,0);
 } 
 if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
   $k00_codbco = $k00_codbco==""?"null":$k00_codbco;  
-  pg_exec("update arretipo set k00_descr = '$k00_descr',
+  db_query("update arretipo set k00_descr = '$k00_descr',
                                k00_emrec = '$k00_emrec',
 			       k00_agnum = '$k00_agnum',
 			       k00_agpar = '$k00_agpar',
@@ -85,7 +85,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 	if(isset($HTTP_POST_VARS["procurar"]) || isset($HTTP_POST_VARS["priNoMe"]) || isset($HTTP_POST_VARS["antNoMe"]) || isset($HTTP_POST_VARS["proxNoMe"]) || isset($HTTP_POST_VARS["ultNoMe"])) {
       db_postmemory($HTTP_POST_VARS);
       if(!empty($k00_tipo)) {
-        $result = pg_exec("select k00_tipo from arretipo where k00_tipo = $k00_tipo");
+        $result = db_query("select k00_tipo from arretipo where k00_tipo = $k00_tipo");
 	    if(pg_numrows($result) > 0) {
  	      db_redireciona("cai1_tipodebito002.php?".base64_encode("retorno=".pg_result($result,0,0)));
 	      exit;
@@ -120,7 +120,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 	  </center>
 	  <?
     } else { 
-	  include("forms/db_frmtipodebito.php");
+	  include(modification("forms/db_frmtipodebito.php"));
 	}
     ?>
 	</td>

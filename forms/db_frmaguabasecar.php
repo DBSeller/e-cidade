@@ -26,7 +26,7 @@
  */
 
 //MODULO: agua
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $claguabasecar->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -114,10 +114,10 @@ function js_cancelar(){
 }
 function js_pesquisax30_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguabasecar','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabasecar','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x30_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabasecar','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x30_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabasecar','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x30_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false);
      }else{
        document.form1.x01_numcgm.value = ''; 
      }

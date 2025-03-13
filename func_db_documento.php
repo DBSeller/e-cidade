@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,107 +25,120 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_documento_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_db_documento_classe.php"));
+
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+
 $cldb_documento = new cl_db_documento;
 $cldb_documento->rotulo->label("db03_docum");
 $cldb_documento->rotulo->label("db03_descr");
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link href="estilos.css" rel="stylesheet" type="text/css">
+  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
+<table height="100%" border="0" align="center" cellspacing="0" bgcolor="#CCCCCC">
+  <tr>
     <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tdb03_docum?>">
-              <?=$Ldb03_docum?>
+      <table width="35%" border="0" align="center" cellspacing="0">
+        <form name="form2" method="post" action="">
+          <tr>
+            <td width="4%" align="right" nowrap title="<?= $Tdb03_docum ?>">
+                <?= $Ldb03_docum ?>
             </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("db03_docum",8,$Idb03_docum,true,"text",4,"","chave_db03_docum");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tdb03_descr?>">
-              <?=$Ldb03_descr?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("db03_descr",40,$Idb03_descr,true,"text",4,"","chave_db03_descr");
-		       ?>
+            <td width="96%" align="left" nowrap>
+                <?
+                db_input("db03_docum", 8, $Idb03_docum, true, "text", 4, "", "chave_db03_docum");
+                ?>
             </td>
           </tr>
-          <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_db_documento.hide();">
-             </td>
+          <tr>
+            <td width="4%" align="right" nowrap title="<?= $Tdb03_descr ?>">
+                <?= $Ldb03_descr ?>
+            </td>
+            <td width="96%" align="left" nowrap>
+                <?
+                db_input("db03_descr", 40, $Idb03_descr, true, "text", 4, "", "chave_db03_descr");
+                ?>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center">
+              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
+              <input name="limpar" type="reset" id="limpar" value="Limpar">
+              <input name="Fechar" type="button" id="fechar" value="Fechar"
+                     onClick="parent.db_iframe_db_documento.hide();">
+            </td>
           </tr>
         </form>
-        </table>
-      </td>
+      </table>
+    </td>
   </tr>
-  <tr> 
-    <td align="center" valign="top"> 
-      <?
-      if(!isset($pesquisa_chave)){
-        if(isset($campos)==false){
-           if(file_exists("funcoes/db_func_db_documento.php")==true){
-             include("funcoes/db_func_db_documento.php");
-           }else{
-           $campos = "db_documento.*";
-           }
+  <tr>
+    <td align="center" valign="top">
+        <?
+        $where = array();
+
+        if (!empty($tipoDocumento)) {
+            $where[] = "db03_tipodoc = {$tipoDocumento}";
         }
-        if(isset($chave_db03_docum) && (trim($chave_db03_docum)!="") ){
-	       $sql = $cldb_documento->sql_query($chave_db03_docum,$campos,"db03_docum");
-        }else if(isset($chave_db03_descr) && (trim($chave_db03_descr)!="") ){
-           $sql = $cldb_documento->sql_query("",$campos,"db03_descr"," db03_descr like '$chave_db03_descr%' ");
-        }else if(isset($chave_db03_tipodoc) && trim($chave_db03_tipodoc)!=""){
-           $sql = $cldb_documento->sql_query("",$campos,"db03_docum"," db03_tipodoc = {$chave_db03_tipodoc}");
-        }else{
-           $sql = $cldb_documento->sql_query("",$campos,"db03_docum","");
+
+        if (!isset($pesquisa_chave)) {
+            if (isset($campos) == false) {
+                if (file_exists("funcoes/db_func_db_documento.php") == true) {
+                    include(modification("funcoes/db_func_db_documento.php"));
+                } else {
+                    $campos = "db_documento.*";
+                }
+            }
+
+            if (isset($chave_db03_docum) && (trim($chave_db03_docum) != "")) {
+                $where[] = "db03_docum = {$chave_db03_docum}";
+            }
+
+            if (isset($chave_db03_descr) && (trim($chave_db03_descr) != "")) {
+                $where[] = " db03_descr like '{$chave_db03_descr}%' ";
+            }
+
+            if (isset($chave_db03_tipodoc) && trim($chave_db03_tipodoc) != "") {
+                $where[] = " db03_tipodoc = {$chave_db03_tipodoc}";
+            }
+
+            $sql = $cldb_documento->sql_query("", $campos, "db03_docum", implode(' AND ', $where));
+
+            db_lovrot($sql, 15, "()", "", $funcao_js);
+        } else {
+            if ($pesquisa_chave != null && $pesquisa_chave != "") {
+                $result = $cldb_documento->sql_record($cldb_documento->sql_query($pesquisa_chave));
+                if ($cldb_documento->numrows != 0) {
+                    db_fieldsmemory($result, 0);
+                    echo "<script>" . $funcao_js . "('$db03_descr',false);</script>";
+                } else {
+                    echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true);</script>";
+                }
+            } else {
+                echo "<script>" . $funcao_js . "('',false);</script>";
+            }
         }
-//	echo $sql;
-        db_lovrot($sql,15,"()","",$funcao_js);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $cldb_documento->sql_record($cldb_documento->sql_query($pesquisa_chave));
-          if($cldb_documento->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$db03_descr',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
-          }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
-        }
-      }
-      ?>
-     </td>
-   </tr>
+        ?>
+    </td>
+  </tr>
 </table>
 </body>
 </html>
-<?
-if(!isset($pesquisa_chave)){
-  ?>
-  <script>
-  </script>
-  <?
-}
-?>
+<script type="text/javascript">
+  (function() {
+    var query = frameElement.getAttribute('name').replace('IF', ''),
+      input = document.querySelector('input[value="Fechar"]');
+    input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+  })();
+</script>

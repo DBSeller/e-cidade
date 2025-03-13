@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_requi_classe.php");
-include("classes/db_mer_requiitem_classe.php");
-include("classes/db_mer_requiitem_classe_ext.php");
-include("classes/db_mer_item_classe.php");
-include("classes/db_mer_estoque_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_utils.php");
-include("dbforms/db_classesgenericas.php");
-require("classes/requisicaoMaterial.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_requi_classe.php"));
+include(modification("classes/db_mer_requiitem_classe.php"));
+include(modification("classes/db_mer_requiitem_classe_ext.php"));
+include(modification("classes/db_mer_item_classe.php"));
+include(modification("classes/db_mer_estoque_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_utils.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+require(modification("classes/requisicaoMaterial.model.php"));
 
-require_once "libs/db_app.utils.php";
+require_once modification("libs/db_app.utils.php");
 db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 db_app::import("Acordo");
 db_app::import("AcordoComissao");
@@ -165,7 +165,7 @@ function atenderRequisicao($iCodtipo, $aItensRequisicao, $iCodAlmox, $iCodAtend 
        * fazermos a baixa do estoque.
        */
     if (! class_exists("materialEstoque")) {
-      require 'classes/materialestoque.model.php';
+      require modification("classes/materialestoque.model.php");
     }     
     $oMaterialEstoque = new materialEstoque($oItemAtual->m41_codmatmater);
     $aItemsEstoque = $oMaterialEstoque->ratearLotes($aItensRequisicao [$iInd]->nQtde, null, $iCodAlmox);
@@ -341,7 +341,7 @@ if (isset($incluir)) {
   <tr> 
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
     <fieldset style="width:95%"><legend><b>Exclusão Requisição de Itens</b></legend>
-	<?	include("forms/db_frmmer_req.php");?>
+	<?	include(modification("forms/db_frmmer_req.php"));?>
 	</fieldset>
 	</td>
   </tr>
@@ -369,7 +369,7 @@ db_menu(db_getsession("DB_id_usuario"),
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
    <center>
 	<?
-	include("forms/db_frmmer_req.php");
+	include(modification("forms/db_frmmer_req.php"));
 	?>
     </center>
 <?db_menu(db_getsession("DB_id_usuario"),

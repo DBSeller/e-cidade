@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_clientes_classe.php");
-include("classes/db_atendemail_classe.php");
-include("classes/db_clientesmodulos_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_clientes_classe.php"));
+include(modification("classes/db_atendemail_classe.php"));
+include(modification("classes/db_clientesmodulos_classe.php"));
 
-require_once("classes/db_clienteatributovalor_classe.php");
-require_once("classes/db_clientescontato_classe.php");
-require_once("classes/db_clientesprodutoscomercial_classe.php");
+require_once(modification("classes/db_clienteatributovalor_classe.php"));
+require_once(modification("classes/db_clientescontato_classe.php"));
+require_once(modification("classes/db_clientesprodutoscomercial_classe.php"));
 
 $clclientes        = new cl_clientes;
 $clatendemail      = new cl_atendemail;
@@ -154,7 +154,7 @@ if(isset($excluir)){
     <td> 
     <center>
 	<?
-	include("forms/db_frmclientes.php");
+	include(modification("forms/db_frmclientes.php"));
 	?>
     </center>
 	</td>
@@ -187,9 +187,9 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.atendemail.disabled=false;
-         top.corpo.iframe_atendemail.location.href='ate1_atendemail001.php?db_opcaoal=33&at12_codcli=".@$at01_codcli."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_atendemail.location.href='ate1_atendemail001.php?db_opcaoal=33&at12_codcli=".@$at01_codcli."';
          parent.document.formaba.clientesmodulos.disabled=false;
-         top.corpo.iframe_clientesmodulos.location.href='ate1_clientesmodulos001.php?db_opcaoal=33&at74_sequencial=".@$at01_codcli."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_clientesmodulos.location.href='ate1_clientesmodulos001.php?db_opcaoal=33&at74_sequencial=".@$at01_codcli."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('atendemail');";

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,11 +26,11 @@
  */
 
 
-require_once ('interfaces/calculoRetencao.interface.php');
+require_once(modification('interfaces/calculoRetencao.interface.php'));
 /**
  * Calcula o IRRF pessoa física.
  * @author Iuri Guntchnigg
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.27 $ 
  */
 class calculoRetencaoIrrfFisica implements iCalculoRetencao {
 
@@ -149,7 +149,7 @@ class calculoRetencaoIrrfFisica implements iCalculoRetencao {
     if ($oDaoNota->numrows > 0) {
 
       $nValorJaRetido = db_utils::fieldsMemory($rsValorRetido, 0)->valorretido;
-      $nValorRetido  -= $nValorJaRetido;
+      $nValorRetido  -= (float)$nValorJaRetido;
       
     }
    /**
@@ -286,7 +286,7 @@ class calculoRetencaoIrrfFisica implements iCalculoRetencao {
     //die($sSqlInssRetido);
     $rsInssRetido    = $oDaoNota->sql_record($sSqlInssRetido);
     if ($oDaoNota->numrows > 0) {
-      $this->nValorDeducao += db_utils::fieldsMemory($rsInssRetido, 0)->valorretido;
+      $this->nValorDeducao += (float)db_utils::fieldsMemory($rsInssRetido, 0)->valorretido;
     }
     
     /*

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
@@ -136,12 +136,12 @@ $oPost = db_utils::postMemory($_POST);
     function js_pesquisarpadrao(lMostra) {
         
       if ( lMostra) {
-        js_OpenJanelaIframe('top.corpo','db_iframe_padrao','func_padroes.php?funcao_js=parent.js_mostrapadrao1|r02_codigo|r02_descr','Pesquisa',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_padrao','func_padroes.php?funcao_js=parent.js_mostrapadrao1|r02_codigo|r02_descr','Pesquisa',true);
       } else {
           
          if ( $F(r02_codigo) != '' ) {
            
-           js_OpenJanelaIframe('top.corpo','db_iframe_padrao','func_padroes.php?pesquisa_chave='+$F(r02_codigo)+'&funcao_js=parent.js_mostrapadrao','Pesquisa',false);
+           js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_padrao','func_padroes.php?pesquisa_chave='+$F(r02_codigo)+'&funcao_js=parent.js_mostrapadrao','Pesquisa',false);
          } else { 
            $(r02_descr).setValue(''); 
          }

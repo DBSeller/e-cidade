@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 
-//include("classes/db_undmedhorario_classe.php");
-include("classes/db_undmedhorario_ext_classe.php");
-include("classes/db_medicos_classe.php");
-include("classes/db_unidademedicos_classe.php");
-include("classes/db_sau_tipoficha_classe.php");
-include("classes/db_diasemana_classe.php");
+//include(modification("classes/db_undmedhorario_classe.php"));
+include(modification("classes/db_undmedhorario_ext_classe.php"));
+include(modification("classes/db_medicos_classe.php"));
+include(modification("classes/db_unidademedicos_classe.php"));
+include(modification("classes/db_sau_tipoficha_classe.php"));
+include(modification("classes/db_diasemana_classe.php"));
 
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -74,8 +74,8 @@ if(isset($incluir) || isset($alterar) ){
 					where sd23_i_undmedhor = $sd30_i_codigo  
 					  and sd23_d_consulta >= '$sd30_d_valfinal_ano/$sd30_d_valfinal_mes/$sd30_d_valfinal_dia' "; 
 
-	$res_horario = pg_query( $str_query ) or die( ">>>> $str_query ");
-	$res_agenda  = @pg_query( $str_query2 );
+	$res_horario = db_query( $str_query ) or die( ">>>> $str_query ");
+	$res_agenda  = @db_query( $str_query2 );
 	$db_opcao    = isset($alterar)?2:$db_opcao;	
 	$db_opcao2   = isset($alterar)?22:$db_opcao;	
 	if( pg_num_rows( $res_horario ) > 0   ) {
@@ -107,7 +107,7 @@ if(isset($excluir)){
           where sd23_d_consulta >= '$datausu'
             and sd23_i_unidmed = $sd30_i_undmed
             and extract(dow from sd23_d_consulta ) = $sd30_i_diasemana ";
-	$result = pg_exec( $sql );
+	$result = db_query( $sql );
 	if( pg_numrows( $result ) > 0 ){
 		echo "<script>alert('Profissional tem agendamentos efetuadas posteriormente. Não permitindo a exclusão do horário')</script>";
 	}else{
@@ -145,7 +145,7 @@ if(isset($opcao)){
     <td align="left" valign="top" bgcolor="#CCCCCC">
     <center>
         <?
-        include("forms/db_frmundmedhorario006.php");
+        include(modification("forms/db_frmundmedhorario006.php"));
         ?>
     </center>
         </td>

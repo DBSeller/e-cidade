@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if(isset($HTTP_POST_VARS["excluir"])) {
-  $result = pg_exec("select v56_codigo from cerjur where v56_codigo = ".$HTTP_POST_VARS["codigo"]);
+  $result = db_query("select v56_codigo from cerjur where v56_codigo = ".$HTTP_POST_VARS["codigo"]);
   if(pg_numrows($result)) {
-    pg_exec("BEGIN");
-    $result = pg_exec("delete from cerjur where v56_codigo = ".$HTTP_POST_VARS["codigo"]) or die("Erro(43) excluindo cerjur");
-    pg_exec("commit");
+    db_query("BEGIN");
+    $result = db_query("delete from cerjur where v56_codigo = ".$HTTP_POST_VARS["codigo"]) or die("Erro(43) excluindo cerjur");
+    db_query("commit");
    db_redireciona();
   } else
     $DB_ERRO = "Código ".$HTTP_POST_VARS["codigo"]." não encontrado!";

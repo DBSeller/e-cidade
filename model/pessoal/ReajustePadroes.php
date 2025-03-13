@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -76,7 +76,7 @@ class ReajustePadroes{
 
         $rsServidoresInvalidos = $this->getServidoresInvalidos($oPadrao);  
 
-        $oInconsistencias->aServidores = db_utils::getColectionByRecord($rsServidoresInvalidos);
+        $oInconsistencias->aServidores = db_utils::getCollectionByRecord($rsServidoresInvalidos);
         $aInconsistencias[] = $oInconsistencias;
       }
 

@@ -2,7 +2,7 @@
 
 /**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,7 +33,7 @@
  * @author Alberto Ferri <alberto@dbseller.com.br>
  */
 
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_utils.php"));
 
 class cl_importaDadosColetor {
 
@@ -203,7 +203,7 @@ class cl_importaDadosColetor {
 
   public function importaFoto($iCodImportacao, $iCodMatricula, $iCodColetorExportaDados, $arrayArquivos, $conn) {
     
-    require_once("classes/db_aguacoletorexportadadosfoto_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadadosfoto_classe.php"));
 
     $this->clACEDadosFoto = new cl_aguacoletorexportadadosfoto();
      
@@ -281,7 +281,7 @@ class cl_importaDadosColetor {
         
         pg_lo_close($objeto);
       } else {
-        $erro_msg ("Operação Cancelada!!");
+        $erro_msg = "Operação Cancelada!!";
         $sqlerro = true;
       }
 
@@ -703,7 +703,7 @@ class cl_importaDadosColetor {
    */
   public function comparaRegistrosArquivo($iCodExportacao) {
 
-    require_once('classes/db_aguacoletorexportadados_classe.php');
+    require_once(modification('classes/db_aguacoletorexportadados_classe.php'));
 
     $clAguaColetorExportaDados = new cl_aguacoletorexportadados();
 
@@ -743,7 +743,7 @@ class cl_importaDadosColetor {
 
   public function mudaSituacaoExportacao($iCodExportacao, $iCodSituacao = 2) {
     
-    require_once("classes/db_aguacoletorexporta_classe.php");
+    require_once(modification("classes/db_aguacoletorexporta_classe.php"));
 
     $this->clACExporta = new cl_aguacoletorexporta();
 
@@ -780,7 +780,7 @@ class cl_importaDadosColetor {
 
   public function geraSituacaoExportacao($iCodExportacao, $iUsuario, $dData, $sHora, $sMotivo, $iCodSituacao = 2) {
      
-    require_once("classes/db_aguacoletorexportasituacao_classe.php");
+    require_once(modification("classes/db_aguacoletorexportasituacao_classe.php"));
      
     $this->clACESituacao = new cl_aguacoletorexportasituacao();
      
@@ -810,7 +810,7 @@ class cl_importaDadosColetor {
 
   public function geraDadosImportacao($iCodColetorExportaDados, $iLinhaArquivo) {
      
-    require_once("classes/db_aguacoletorexportadados_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadados_classe.php"));
      
     $this->iCodColetorExportaDados = $iCodColetorExportaDados;
     $this->iLinhaArquivo           = $iLinhaArquivo;
@@ -848,7 +848,9 @@ class cl_importaDadosColetor {
       $this->clACExportaDados->x50_nrohidro                = $oACExportaDados->x50_nrohidro;
       $this->clACExportaDados->x50_numpre                  = $oACExportaDados->x50_numpre;
       $this->clACExportaDados->x50_natureza                = $oACExportaDados->x50_natureza;
-      $this->clACExportaDados->x50_dtleituraanterior       = $oACExportaDados->x50_dtleituraanteiror;
+
+      $this->clACExportaDados->x50_dtleituraanterior       = @$oACExportaDados->x50_dtleituraanteiror;
+      
       $this->clACExportaDados->x50_consumopadrao           = $oACExportaDados->x50_consumopadrao;
       $this->clACExportaDados->x50_consumomaximo           = $oACExportaDados->x50_consumomaximo;
       $this->clACExportaDados->x50_imprimeconta            = $oACExportaDados->x50_imprimeconta;
@@ -888,7 +890,7 @@ class cl_importaDadosColetor {
 
   public function getLeituraExportacao($iCodColetorExportaDados){
     
-    require_once("classes/db_aguacoletorexportadadosleitura_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadadosleitura_classe.php"));
     
     $this->clACExportaDadosLeitura = new cl_aguacoletorexportadadosleitura();
     $this->iCodColetorExportaDados = $iCodColetorExportaDados;
@@ -907,7 +909,7 @@ class cl_importaDadosColetor {
 
   public function alteraLeitura($iCodLeitura) {
     
-    require_once("classes/db_agualeitura_classe.php");
+    require_once(modification("classes/db_agualeitura_classe.php"));
     
     $this->clAguaLeitura = new cl_agualeitura();
     $this->iCodLeitura   = $iCodLeitura;
@@ -939,13 +941,35 @@ class cl_importaDadosColetor {
       
       $this->clAguaLeitura->x21_consumo  = ($this->getLeituraColetada($this->iLinhaArquivo) == "1") ? $iConsumo : $oAguaLeitura->x21_consumo;
       $this->clAguaLeitura->x21_excesso  = ($this->getLeituraColetada($this->iLinhaArquivo) == "1") ? $this->getExcesso($this->iLinhaArquivo) : $oAguaLeitura->x21_excesso;
-      $this->clAguaLeitura->x21_virou    = ($this->getLeituraColetada($this->iLinhaArquivo) == "1") ? (($this->getHidrometroVirou == "1") ? "true" : "false") : $oAguaLeitura->x21_virou;
+      $this->clAguaLeitura->x21_virou    = ($this->getLeituraColetada($this->iLinhaArquivo) == "1") ? (($this->getHidrometroVirou($this->iLinhaArquivo) == "1") ? "true" : "false") : $oAguaLeitura->x21_virou;
 
       $this->clAguaLeitura->x21_tipo     = 3;
       $this->clAguaLeitura->x21_status   = ($this->getLeituraColetada($this->iLinhaArquivo) == "1") ? 1 : 3;
+      
+      if ($this->clAguaLeitura->x21_status == "3") {
+        
+        $oColetorExportaDadosLeitura = new cl_aguacoletorexportadadosleitura();
+        $oColetorExportaDadosLeitura->excluir('', 'x51_agualeitura = ' . $iCodLeitura);
+        
+        if ($oColetorExportaDadosLeitura->erro_status == "0") {
+        
+          $this->iErroStatus = 0;
+          $this->sErroMsg    = "Inclusão na tabela aguacoletorexportadadosleitura não efetuada. Operação abortada. ";
+          $this->sErroMsg   .= "ERRO: {$oColetorExportaDadosLeitura->erro_msg}<br/>";
+          return false;
+          
+        } else {
+          
+          $this->clAguaLeitura->excluir($this->clAguaLeitura->x21_codleitura);
+          
+        }
 
-      $this->clAguaLeitura->alterar($this->clAguaLeitura->x21_codleitura);
-
+      } else {
+        
+        $this->clAguaLeitura->alterar($this->clAguaLeitura->x21_codleitura);
+        
+      } 
+      
       if ($this->clAguaLeitura->erro_status == "0") {
         
         $this->iErroStatus = 0;
@@ -954,16 +978,12 @@ class cl_importaDadosColetor {
         
         return false;
       }
-
-      if ($this->getLeituraColetada($this->iLinhaArquivo) != "1") {
-        $this->cancelaLeitura($this->iCodLeitura);
-      }
     }
   }
 
   public function cancelaLeitura($iCodLeitura) {
     
-    require_once("classes/db_agualeituracancela_classe.php");
+    require_once(modification("classes/db_agualeituracancela_classe.php"));
     
     $this->clAguaLeituraCancela = new cl_agualeituracancela();
      
@@ -987,8 +1007,8 @@ class cl_importaDadosColetor {
 
   public function geraOperacaoExcesso($iCodConfExcesso, $iCodRecExcesso) {
     
-    require_once("classes/db_aguacalc_classe.php");
-    require_once("classes/db_aguacalcval_classe.php");
+    require_once(modification("classes/db_aguacalc_classe.php"));
+    require_once(modification("classes/db_aguacalcval_classe.php"));
      
     $this->clAguaCalc      = new cl_aguacalc();
     $this->clAguaCalcVal   = new cl_aguacalcval();
@@ -1053,8 +1073,8 @@ class cl_importaDadosColetor {
   
   public function geraReciboPaga($iCodColetorExportaDados) {
     
-    require_once("classes/db_aguacoletorexportadados_classe.php");
-    require_once("classes/db_recibopaga_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadados_classe.php"));
+    require_once(modification("classes/db_recibopaga_classe.php"));
     
     $this->clACExportaDados   = new cl_aguacoletorexportadados();
     $this->clReciboPaga       = new cl_recibopaga();
@@ -1111,8 +1131,8 @@ class cl_importaDadosColetor {
    */
   public function lancarOcorrencia ($iMatricula, $dtDataLeitura, $iLeitura, $dtDataLeturaReal, $iLeituraReal) {
       
-    require_once("classes/db_histocorrencia_classe.php");
-    require_once("classes/db_histocorrenciamatric_classe.php");
+    require_once(modification("classes/db_histocorrencia_classe.php"));
+    require_once(modification("classes/db_histocorrenciamatric_classe.php"));
     
     $clhistocorrencia = new cl_histocorrencia;
     
@@ -1129,7 +1149,7 @@ class cl_importaDadosColetor {
     $clhistocorrencia->ar23_id_itensmenu = db_getsession("DB_itemmenu_acessado");
     $clhistocorrencia->ar23_descricao    = "Adequação Leitura Maior 30 Dias";
     $clhistocorrencia->ar23_ocorrencia   = $sOcorrencia;
-    $clhistocorrencia->ar23_tipo         = 1;
+    $clhistocorrencia->ar23_tipo         = 2;
     $clhistocorrencia->ar23_hora         = date("H:i");
     $clhistocorrencia->ar23_data         = date("d")."/".date("m")."/".date("Y");
     
@@ -1161,8 +1181,8 @@ class cl_importaDadosColetor {
   
   public function geraReciboWeb($iCodColetorExportaDados) {
     
-    require_once("classes/db_aguacoletorexportadadosreceita_classe.php");
-    require_once("classes/db_db_reciboweb_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadadosreceita_classe.php"));
+    require_once(modification("classes/db_db_reciboweb_classe.php"));
     
     $this->clACEDadosReceita = new cl_aguacoletorexportadadosreceita();
     $this->clDBReciboWeb     = new cl_db_reciboweb();
@@ -1218,7 +1238,7 @@ class cl_importaDadosColetor {
 
   public function geraReciboCodBar() {
     
-    require_once("classes/db_recibocodbar_classe.php");
+    require_once(modification("classes/db_recibocodbar_classe.php"));
     
     $this->clReciboCodBar = new cl_recibocodbar();
     
@@ -1272,7 +1292,7 @@ class cl_importaDadosColetor {
   
   public function getCodReceita($iCodConfExcesso) {
     
-    require_once("classes/db_aguaconsumotipo_classe.php");
+    require_once(modification("classes/db_aguaconsumotipo_classe.php"));
      
     $this->iCodConfExcesso   = $iCodConfExcesso;
     $this->clAguaConsumoTipo = new cl_aguaconsumotipo();

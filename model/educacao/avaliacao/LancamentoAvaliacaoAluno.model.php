@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -44,21 +44,21 @@ final class LancamentoAvaliacaoAluno {
     $oDiarioClasse = $oMatricula->getDiarioDeClasse();
     $oDiarioClasse->salvar();
   }
-  
+
   /**
    * Salva os dados do Diário de Classe de uma Matricula
    * @param Matricula $oMatricula
    * @throws DBException
    */
   static function salvaAvaliacaoDisciplinaAluno(Matricula $oMatricula, Regencia $oDisciplina) {
-  
+
     $oDiarioClasse = $oMatricula->getDiarioDeClasse();
     $oDisciplinaDiario = $oDiarioClasse->getDisciplinasPorRegencia($oDisciplina);
     if (!empty($oDisciplinaDiario)) {
      $oDisciplinaDiario->salvar();
     }
   }
-  
+
 
 
   /**
@@ -70,15 +70,20 @@ final class LancamentoAvaliacaoAluno {
    */
   static function calcularResultado (Matricula $oMatricula, $oAvaliacao, $oRetorno) {
 
-
     $oDiario                = $oMatricula->getDiarioDeClasse();
     $iAno                   = $oMatricula->getTurma()->getCalendario()->getAnoExecucao();
     $oDiarioDisciplina      = $oDiario->getDisciplinasPorRegencia(RegenciaRepository::getRegenciaByCodigo($oAvaliacao->iCodigoRegencia));
     $oAproveitamentoAlterar = $oDiarioDisciplina->getAvaliacoesPorOrdem($oAvaliacao->iPeriodo);
+
+    if ( !$oAproveitamentoAlterar instanceof AvaliacaoAproveitamento) {
+      throw new Exception("Período de Avaliação não encontrado no Diário do Aluno. Contate o Suporte.");
+    }
+
     $oFormaAvaliacao        = $oAproveitamentoAlterar->getElementoAvaliacao()->getFormaDeAvaliacao();
     $oValorAproveitamento   = FormaObtencao::getTipoValorAproveitamento($oFormaAvaliacao);
 
     $oValorAproveitamento->setAproveitamento($oAvaliacao->nNota);
+    $oValorAproveitamento->setAproveitamentoReal($oAvaliacao->nNota);
     if ($oValorAproveitamento->hasOrdem()) {
       $oValorAproveitamento->setOrdem($oAvaliacao->iOrdem);
     }
@@ -108,10 +113,10 @@ final class LancamentoAvaliacaoAluno {
     $oRetorno->iCodigoPeriodo  = $oAvaliacao->iPeriodo;
     $oRetorno->lMinimoAtingido = $oAproveitamentoAlterar->temAproveitamentoMinimo();
     $oPeriodoDependente        = $oDiarioDisciplina->getAvaliacaoDependentesDoPeriodo($oElementoAvaliacaoPeriodo);
-    
+
     $oUltimoResultado   = null;
     $aPeriodosVerificar = array();
-    
+
     foreach ($aResultados as $oResultado) {
 
       $oUltimoResultado = $oUltimoResultado;
@@ -123,7 +128,17 @@ final class LancamentoAvaliacaoAluno {
       /**
        * Calcula o valor do Resultado final o Retorna uma instancia de ValorResultado
        */
-      $oValorResultado = $oResultado->getElementoAvaliacao()->getResultado($oDiarioDisciplina->getAvaliacoes());
+      $oValorResultado = $oResultado->getElementoAvaliacao()->getResultado( $oDiarioDisciplina->getAvaliacoes(), false, $iAno );
+      if ( is_null( $oValorResultado->getAproveitamentoReal() ) ) {
+        $oValorResultado->setAproveitamentoReal($oValorResultado->getAproveitamento());
+      }
+
+
+      /* calula a nota real */
+      $mNotaReal = DiarioAvaliacaoDisciplina::calcularResultadoReal( $oResultado->getElementoAvaliacao(), $oDiarioDisciplina->getDiario(), $oDiarioDisciplina->getAvaliacoes(), $iAno);
+      if ( !is_null($mNotaReal) ) {
+        $oValorResultado->setAproveitamentoReal($mNotaReal);
+      }
 
       $oFormaAvaliacao = $oResultado->getElementoAvaliacao()->getFormaDeAvaliacao();
 
@@ -132,7 +147,7 @@ final class LancamentoAvaliacaoAluno {
        */
       $oResultado->setValorAproveitamento($oValorResultado);
       $nValorMinimo        = $oResultado->getElementoAvaliacao()->getAproveitamentoMinimo();
-      $nResultadoVerificar = ArredondamentoNota::arredondar($oValorResultado->getAproveitamento(), $iAno);
+      $nResultadoVerificar = $oValorResultado->getAproveitamento();
 
       $oValorResultado->setAproveitamento($nResultadoVerificar);
       $oResultado->setAproveitamentoMinimo(true);
@@ -143,19 +158,18 @@ final class LancamentoAvaliacaoAluno {
         $nValorMinimo        = $oConceitoMinimo->iOrdem;
         $nResultadoVerificar = $oValorAproveitamento->getOrdem();
       }
-      
+
       if ($nResultadoVerificar < $nValorMinimo) {
         $oResultado->setAproveitamentoMinimo(false);
       }
 
-      
       $oPeriodoDependente = $oDiarioDisciplina->getAvaliacaoDependentesDoPeriodo($oResultado->getElementoAvaliacao());
       if ($oPeriodoDependente) {
-        
+
         if ( $oResultado->temAproveitamentoMinimo()) {
           $oPeriodoDependente->getValorAproveitamento()->setAproveitamento('');
         }
-        
+
         $oDadosPeriodoVerificar                         = new stdClass();
         $oDadosPeriodoVerificar->oResultado             = $oResultado->getElementoAvaliacao();
         $oDadosPeriodoVerificar->oPeriodoDependente     = $oPeriodoDependente->getElementoAvaliacao();
@@ -165,12 +179,16 @@ final class LancamentoAvaliacaoAluno {
       }
 
       $oResultadoRetorno        = new stdClass();
-      $oResultadoRetorno->nNota = ArredondamentoNota::formatar($oValorResultado->getAproveitamento(), $iAno);
+      $oResultadoRetorno->nNota = ArredondamentoNota::formatar($oValorResultado->getAproveitamentoReal(), $iAno);
+      if ($oDiarioDisciplina->getResultadoFinal()->getResultadoAvaliacao()->getFormaDeObtencao() == 'AP') {
+          $oResultadoRetorno->nNota = '';
+      }
 
       $oResultadoRetorno->iOrdem          = '';
       $oResultadoRetorno->iCodigoRegencia = $oDiarioDisciplina->getRegencia()->getCodigo();
       $oResultadoRetorno->iPeriodo        = $oResultado->getElementoAvaliacao()->getOrdemSequencia();
       $oResultadoRetorno->lMinimoAtingido = $oResultado->temAproveitamentoMinimo();
+      $oResultadoRetorno->lAmparado       = $oResultado->isAmparado();
 
       $aReprovacoesPeriodo = $oDiario->getDisciplinasReprovadasNoPeriodo($oResultado->getElementoAvaliacao());
 
@@ -183,8 +201,8 @@ final class LancamentoAvaliacaoAluno {
       $aResultadosRetorno[] = $oResultadoRetorno;
       $oUltimoResultado     = $oResultado;
     }
-   
-    
+
+
 
     /**
      * Ajuste das recuperacoes.
@@ -208,7 +226,7 @@ final class LancamentoAvaliacaoAluno {
             $oAproveitamento->setEmRecuperacao(false);
           }
         }
-      } 
+      }
     }
 
     $oRetorno->aResultados                = $aResultadosRetorno;
@@ -217,12 +235,12 @@ final class LancamentoAvaliacaoAluno {
     $oRetorno->iCodigoPeriodoMediaParcial = '';
 
     if (!empty($oUltimoResultado)) {
-      
+
       $oRetorno->iPeriodoMediaParcial       = $oResultado->getElementoAvaliacao()->getOrdemSequencia();
       $oRetorno->iCodigoPeriodoMediaParcial = $oResultado->getCodigo();
       $oRetorno->nMediaParcial              = $oDiarioDisciplina->getNotaParcial($oResultado->getElementoAvaliacao());
     }
-    
+
     return $oMatricula;
 
   }
@@ -305,7 +323,8 @@ final class LancamentoAvaliacaoAluno {
     $oDiarioDisciplina                    = $oDiario->getDisciplinasPorRegencia($oRegencia);
     $oAproveitamentoAlterar               = $oDiarioDisciplina->getAvaliacoesPorOrdem($iOrdem);
     $oRetornoParecer->sParecerPadronizado = $oAproveitamentoAlterar->getParecerPadronizado();
-    $oRetornoParecer->sParecer            = $oAproveitamentoAlterar->getValorAproveitamento()->getAproveitamento();
+    $oRetornoParecer->sParecer            = !empty($oAproveitamentoAlterar->getParecer()) ? $oAproveitamentoAlterar->getParecer() :
+                                            $oAproveitamentoAlterar->getValorAproveitamento()->getAproveitamento();
 
     return $oRetornoParecer;
 
@@ -314,8 +333,8 @@ final class LancamentoAvaliacaoAluno {
   /**
    * Retorna os parecers complementares de uma Matricula para uma disciplina e um período(ordem do período)
    * @param Matricula $oMatricula
-   * @param Regencia $oRegencia
-   * @param integer $iOrdem ordem do período de avaliacao
+   * @param Regencia  $oRegencia
+   * @param integer   $iOrdem      ordem do período de avaliacao
    * @return stdClass
    */
   static function getParecerComplementar (Matricula $oMatricula, Regencia $oRegencia, $iOrdem) {
@@ -324,6 +343,9 @@ final class LancamentoAvaliacaoAluno {
     $oDiario                              = $oMatricula->getDiarioDeClasse();
     $oDiarioDisciplina                    = $oDiario->getDisciplinasPorRegencia($oRegencia);
     $oAproveitamentoAlterar               = $oDiarioDisciplina->getAvaliacoesPorOrdem($iOrdem);
+    if ( !$oAproveitamentoAlterar instanceof AvaliacaoAproveitamento) {
+      throw new Exception("Período de Avaliação não encontrado no Diário do Aluno. Contate o Suporte.");
+    }
     $oRetornoParecer->sParecerPadronizado = $oAproveitamentoAlterar->getParecerPadronizado();
     $oRetornoParecer->sParecer            = $oAproveitamentoAlterar->getParecer();
     return $oRetornoParecer;
@@ -362,8 +384,8 @@ final class LancamentoAvaliacaoAluno {
      * Buscamos os pareceres vinculados a uma disciplina
      */
     $aPareceres               = array();
-    $oDaoParecerDisciplina    = db_utils::getDao("parecer");
-    $sCamposParecerDisciplina = "ed92_i_codigo, ed92_c_descr";
+    $oDaoParecerDisciplina    = new cl_parecer();
+    $sCamposParecerDisciplina = "distinct ed92_i_codigo, ed92_c_descr, ed92_i_sequencial";
 
     $aWhereParecer   = array();
     $aWhereParecer[] = " ed105_i_turma = " . $oRegencia->getTurma()->getCodigo();
@@ -381,14 +403,14 @@ final class LancamentoAvaliacaoAluno {
 
     $sWhereParecer         = implode(" and ", $aWhereParecer);
     $sSqlParecerDisciplina = $oDaoParecerDisciplina->sql_query_turma_disciplina_periodo(null,
-                                                                                        "distinct ed92_i_codigo, ed92_c_descr",
-                                                                                        null,
+                                                                                        $sCamposParecerDisciplina,
+                                                                                        "ed92_i_sequencial",
                                                                                         $sWhereParecer);
     $rsParecerDisciplina = $oDaoParecerDisciplina->sql_record($sSqlParecerDisciplina);
     $iTotalLinhas        = $oDaoParecerDisciplina->numrows;
 
     if ($iTotalLinhas > 0) {
-  
+
       for ($iContadorParecer = 0; $iContadorParecer < $iTotalLinhas; $iContadorParecer++) {
 
         $oDadosParecerDisciplina            = db_utils::fieldsMemory($rsParecerDisciplina, $iContadorParecer);
@@ -404,7 +426,7 @@ final class LancamentoAvaliacaoAluno {
      * Buscamos as legendas cadastradas na escola
      */
     $aLegendas      = array();
-    $oDaoLegenda    = db_utils::getDao("parecerlegenda");
+    $oDaoLegenda    = new cl_parecerlegenda();
     $sCamposLegenda = "ed91_i_codigo, ed91_sigla";
     $sWhereLegenda  = "ed91_i_escola = {$iEscola}";
     $sSqlLegenda    = $oDaoLegenda->sql_query(null, $sCamposLegenda, null, $sWhereLegenda);

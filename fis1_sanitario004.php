@@ -91,9 +91,9 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 function js_cgm(mostra){
   var numcgm=document.form1.q02_numcgm.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_nome.php?funcao_js=parent.js_mostra|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_nome.php?funcao_js=parent.js_mostra|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_nome.php?pesquisa_chave='+numcgm+'&funcao_js=parent.js_mostra1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_nome.php?pesquisa_chave='+numcgm+'&funcao_js=parent.js_mostra1','Pesquisa',false);
   }
 }
 function js_mostra(chave1,chave2){

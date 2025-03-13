@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("fpdf151/assinatura.php");
-include("classes/db_orcparamrel_classe.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_libtxt.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_libtxt.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -52,7 +52,7 @@ $sql = "select *
                and c61_codcon is null
             ";
 
-$res = pg_exec($sql);
+$res = db_query($sql);
 if (pg_numrows($res) == 0 ){      
     db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum registro encontrado ! ');   
 }

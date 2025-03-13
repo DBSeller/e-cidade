@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -135,7 +135,7 @@ class cl_db_arquivos {
        $this->erro_status = "0";
        return false;
      }
-     $sql = "insert into db_arquivos(
+     $sql = "insert into db_arquivos (
                                        codfilho 
                                       ,arqfilho 
                                       ,descfilho 

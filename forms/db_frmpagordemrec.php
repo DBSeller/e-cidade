@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
 //MODULO: empenho
@@ -205,10 +205,10 @@ db_input('e52_valor',15,$Ie52_valor,true,'text',$db_opcao,"")
 <script>
 function js_pesquisae52_receit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_pagordemrec','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pagordemrec','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true,0);
   }else{
      if(document.form1.e52_receit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_pagordemrec','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.e52_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false,0);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pagordemrec','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.e52_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false,0);
      }else{
        document.form1.k02_descr.value = ''; 
      }

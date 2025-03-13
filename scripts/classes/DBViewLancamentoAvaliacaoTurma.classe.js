@@ -8,6 +8,8 @@ require_once("scripts/classes/DBViewConsultaAvaliacoesAluno.classe.js");
 require_once("scripts/classes/DBViewLancamentoAvaliacao/LancamentoObservacao.classe.js");
 require_once("scripts/classes/DBViewLancamentoAvaliacao/LancamentoAmparo.classe.js");
 require_once("scripts/classes/educacao/escola/LegendasLancamentoAvaliacao.classe.js");
+require_once("scripts/classes/educacao/escola/Proporcionalidade.classe.js");
+require_once("scripts/classes/educacao/escola/AvaliacaoAlternativa.classe.js");
 
 /**
  * Monta a grade de avaliação de uma turma
@@ -29,6 +31,7 @@ DBViewLancamentoAvaliacaoTurma = function (oDadosTurmaSelecionada ) {
    *   sTurma:"8º ANO",
    *   sEtapa:"8º ANO",
    *   sProcedimentoAvaliacao:"NOTA",
+   *   sFormaObtencaoResultado:"SO",
    *   sTurno:"MANHÃ",
    *   sFrequencia:"PERÍCDODOS",
    *   aDisciplinas:[{iCodigo:"5627",
@@ -87,7 +90,6 @@ DBViewLancamentoAvaliacaoTurma = function (oDadosTurmaSelecionada ) {
    */
   this.sRpcPadrao = 'edu4_lancamentoavaliacaonota.RPC.php';
 
-
   /**
    * Períodos de avaliação da turma
    * @var {Array}
@@ -127,8 +129,6 @@ DBViewLancamentoAvaliacaoTurma = function (oDadosTurmaSelecionada ) {
 
   this.lTurmaEncerrada = oDadosTurmaSelecionada.lTurmaEncerrada;
 
-  this.sRpcOutrosDados = 'edu4_lancamentoavaliacoesturma.RPC.php';
-
   this.oJanelaOrigemNota = false;
 
   this.lProfessorLogado  = oDadosTurmaSelecionada.lProfessorLogado;
@@ -139,9 +139,6 @@ DBViewLancamentoAvaliacaoTurma = function (oDadosTurmaSelecionada ) {
    ******     Botoes e componentes da View   ***********
    ***************************************************** */
   var sDisplayBotoes = '';
-  if (this.lProfessorLogado) {
-    sDisplayBotoes = 'none';
-  }
 
   /**
    * Label Exibir troca de Turma
@@ -182,6 +179,7 @@ DBViewLancamentoAvaliacaoTurma = function (oDadosTurmaSelecionada ) {
   this.oBtnAbonarFaltas.name              = 'abonarFaltas';
   this.oBtnAbonarFaltas.id                = 'btnAbonarFaltas';
   this.oBtnAbonarFaltas.style.marginRight = '5px';
+  this.oBtnAbonarFaltas.style.width       = '115px';
   this.oBtnAbonarFaltas.style.height      = '20px';
   this.oBtnAbonarFaltas.style.display     = sDisplayBotoes;
   this.oBtnAbonarFaltas.disabled          = true;
@@ -193,6 +191,7 @@ DBViewLancamentoAvaliacaoTurma = function (oDadosTurmaSelecionada ) {
   this.oBtnParecer.id                = 'btnParecer';
   this.oBtnParecer.style.marginRight = '5px';
   this.oBtnParecer.style.height      = '20px';
+  this.oBtnParecer.style.width       = '130px';
   this.oBtnParecer.disabled          = false;
 
   if (this.oDadosTurmaSelecionada.sTipoProcedimentoAvaliacao == 'PARECER' || this.lTurmaEncerrada) {
@@ -252,6 +251,20 @@ DBViewLancamentoAvaliacaoTurma = function (oDadosTurmaSelecionada ) {
   this.oBtnLegendas.setAttribute( 'id', 'btnLegendas' );
   this.oBtnLegendas.setStyle( { 'width' : '106px' } );
 
+  this.oBtnProporcionalidade = document.createElement( 'input' );
+  this.oBtnProporcionalidade.setAttribute( 'type', 'button' );
+  this.oBtnProporcionalidade.setAttribute( 'value', 'Proporcionalidade' );
+  this.oBtnProporcionalidade.setAttribute( 'name', 'proporcionalidade' );
+  this.oBtnProporcionalidade.setAttribute( 'id', 'btnProporcionalidade' );
+  this.oBtnProporcionalidade.setStyle( { 'width' : '115px' } );
+
+  this.oBtnAvaliacaoAlternativa = document.createElement( 'input' );
+  this.oBtnAvaliacaoAlternativa.setAttribute( 'type', 'button' );
+  this.oBtnAvaliacaoAlternativa.setAttribute( 'value', 'Avaliação Alternativa' );
+  this.oBtnAvaliacaoAlternativa.setAttribute( 'name', 'avaliacaoalternativa' );
+  this.oBtnAvaliacaoAlternativa.setAttribute( 'id', 'btnAvaliacaoAlternativa' );
+  this.oBtnAvaliacaoAlternativa.setStyle( { 'width' : '130px' } );
+
   this.oTabelaOpcoes = document.createElement( 'table' );
   this.oTabelaOpcoes.setAttribute( 'id', 'oTabelaOpcoes' );
 
@@ -264,6 +277,11 @@ DBViewLancamentoAvaliacaoTurma = function (oDadosTurmaSelecionada ) {
   this.oColunaBotaoLegenda = document.createElement( 'td' );
   this.oColunaBotaoLegenda.setAttribute( 'id', 'oColunaBotaoLegenda' );
 
+  this.oColunaProporcionalidade = document.createElement( 'td' );
+  this.oColunaProporcionalidade.setAttribute( 'id', 'oColunaProporcionalidade' );
+
+  this.oColunaAvaliacaoAlternativa = document.createElement( 'td' );
+  this.oColunaAvaliacaoAlternativa.setAttribute( 'id', 'oColunaAvaliacaoAlternativa' );
 
   this.oLinhaDisciplinaBotoes = document.createElement( 'tr' );
   this.oLinhaDisciplinaBotoes.setAttribute( 'id', 'oLinhaDisciplinaBotoes' );
@@ -308,7 +326,6 @@ DBViewLancamentoAvaliacaoTurma = function (oDadosTurmaSelecionada ) {
  * @param function sFunction funcao a ser executada
  */
 DBViewLancamentoAvaliacaoTurma.prototype.setCallBackCloseWindow = function(sFunction) {
-
   this.oCallBackCloseWindow = sFunction;
 };
 
@@ -401,13 +418,15 @@ DBViewLancamentoAvaliacaoTurma.prototype.criarWindow = function () {
 
           var iCodigoDisciplina = $('disciplina').options[iProximoIndiceComboDisciplina].value;
           $('disciplina').value = iCodigoDisciplina;
+
+          oSelf.validaFormaAvaliacaoDisciplina();
+          oSelf.getPeriodosAvaliacao();
           oSelf.buscaAlunos();
         }
 
         if (iTecla == KEY_S && oSelf.lGradeAlterada) {
           oSelf.salvarGradeAproveitamento();
         }
-
       }
     }
 
@@ -419,8 +438,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.criarWindow = function () {
     Event.stopPropagation();
     return false;
   });
-
-
 };
 
 /**
@@ -439,11 +456,16 @@ DBViewLancamentoAvaliacaoTurma.prototype.show = function() {
 
   $('oLinhaTrocaTurmaLegenda').appendChild( this.oColunaTrocaTurma );
   $('oLinhaTrocaTurmaLegenda').appendChild( this.oColunaBotaoLegenda );
+  $('oLinhaTrocaTurmaLegenda').appendChild( this.oColunaProporcionalidade );
+  $('oLinhaTrocaTurmaLegenda').appendChild( this.oColunaAvaliacaoAlternativa );
 
   $('oColunaTrocaTurma').appendChild( this.oLabelExibirTrocaTurma );
   $('oColunaTrocaTurma').appendChild( this.oSelectExibirTrocaTurma );
 
   $('oColunaBotaoLegenda').appendChild( this.oBtnLegendas );
+  $('oColunaProporcionalidade').appendChild( this.oBtnProporcionalidade );
+
+  $('oColunaAvaliacaoAlternativa').appendChild( this.oBtnAvaliacaoAlternativa );
 
   $('oLinhaDisciplinaBotoes').appendChild( this.oColunaDisciplinas );
   $('oLinhaDisciplinaBotoes').appendChild( this.oColunaOrigemNota );
@@ -464,9 +486,10 @@ DBViewLancamentoAvaliacaoTurma.prototype.show = function() {
   $('oColunaAlteraResultadoFinal').appendChild( this.oBtnAlteraResultadoFinal );
 
   this.oDBFormCache.load();
+
   this.montaSelectDisciplinas();
-  this.getPeriodosAvaliacao();
   this.buscaTermosTurma();
+  this.getPeriodosAvaliacao();
   this.buscaAlunos();
 
   $('ctnSalvar').appendChild(this.oBtnSalvar);
@@ -487,17 +510,19 @@ DBViewLancamentoAvaliacaoTurma.prototype.show = function() {
     oSelf.lAlteraResultadoFinal = false;
 
     oSelf.bloqueiaBotoes();
+    oSelf.validaFormaAvaliacaoDisciplina();
 
     if (oSelf.validaSeGradeFoiAlterada()) {
       return false;
     }
+
+    oSelf.getPeriodosAvaliacao();
     oSelf.buscaAlunos();
   };
 
   $('exibirTrocaTurma').onchange = function() {
     oSelf.buscaAlunos();
   }
-
 };
 
 /**
@@ -528,7 +553,8 @@ DBViewLancamentoAvaliacaoTurma.prototype.montaSelectDisciplinas = function() {
   var oSelf = this;
 
   $('disciplina').innerHTML = '';
-  this.oDadosTurmaSelecionada.aDisciplinas.each(function(oDisciplina, iSeq) {
+
+  this.oDadosTurmaSelecionada.aDisciplinas.each(function(oDisciplina) {
 
     var sTipoMatricula = "OP";
     if (oDisciplina.lObrigatoria) {
@@ -539,10 +565,8 @@ DBViewLancamentoAvaliacaoTurma.prototype.montaSelectDisciplinas = function() {
     oOption.value     = oDisciplina.iCodigo;
     oOption.innerHTML = sTipoMatricula + ' - ' + oDisciplina.sDescricao.urlDecode();
     oSelf.oSelectDisciplinas.appendChild(oOption);
-    oSelf.oSelectDisciplinas.onchange = function () {
-      oSelf.montaGrig(oSelf.oDadosTurmaSelecionada.iTurma, oSelf.oDadosTurmaSelecionada.iEtapa, oDisciplina.iCodigo);
-    };
   });
+  this.validaFormaAvaliacaoDisciplina();
 };
 
 /**
@@ -568,7 +592,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.buscaTermosTurma = function () {
                                  }
                    }
                   );
-
 };
 
 /**
@@ -577,7 +600,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.buscaTermosTurma = function () {
  */
 DBViewLancamentoAvaliacaoTurma.prototype.retornoTermos = function (oAjax) {
 
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   this.aTermos = oRetorno.aTermos;
 };
 
@@ -592,6 +615,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.getPeriodosAvaliacao = function () {
   oParametro.exec            = 'getPeriodosAvaliacao';
   oParametro.iEtapa          = this.oDadosTurmaSelecionada.iEtapa;
   oParametro.iTurma          = this.oDadosTurmaSelecionada.iTurma;
+  oParametro.iRegencia       = $F('disciplina');
   oParametro.lTrazResultados = true;
 
   var oSelf = this;
@@ -606,7 +630,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.getPeriodosAvaliacao = function () {
                                  }
                    }
                   );
-
 };
 
 /**
@@ -615,13 +638,15 @@ DBViewLancamentoAvaliacaoTurma.prototype.getPeriodosAvaliacao = function () {
 DBViewLancamentoAvaliacaoTurma.prototype.retornoDosPeriodos = function (oAjax) {
 
   var oSelf    = this;
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 2) {
 
     alert(oRetorno.message.urlDecode());
     return false;
   }
+
+  this.aPeriodosAvaliacao = [];
 
   this.lProfessorLogado = oRetorno.lProfessorLogado;
   this.bloqueiaBotoes();
@@ -630,7 +655,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.retornoDosPeriodos = function (oAjax) {
    * aGrupos represenca a primeira coluna do cabeçalho da grid
    * aHeader representa a segunda coluna do cabeçalho da grid
    */
-
   var aAlign  = new Array('right', 'left');
   var aHeader = new Array('Nº', 'Aluno', 'Situação', 'FA', 'OBS', 'PAR' );
   var aWidth  = new Array('20px', '38%', '8%', '2%', '2%', '2%' );
@@ -641,7 +665,8 @@ DBViewLancamentoAvaliacaoTurma.prototype.retornoDosPeriodos = function (oAjax) {
   oGrupo.aColunas  = new Array(0, 1, 2, 3, 4, 5);
   aGrupos.push(oGrupo);
 
-  var iUltimoPeriodo = 0;
+  var iUltimoPeriodo       = 0;
+
   oRetorno.aPeriodos.each(function (oPeriodo, iPeriodo) {
 
     oSelf.aPeriodosAvaliacao[oPeriodo.iOrdemAvaliacao] = oPeriodo;
@@ -668,7 +693,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.retornoDosPeriodos = function (oAjax) {
   aAlign.push('center', 'center');
   aWidth.push('8%', '9%');
 
-
   delete this.oGridAproveitamento;
   $('ctnGradeAproveitamento').innerHTML = '';
 
@@ -683,9 +707,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.retornoDosPeriodos = function (oAjax) {
 
   this.oGridAproveitamento.setHeight(this.iTamanhoJanela / 4.5);
   this.oGridAproveitamento.show($('ctnGradeAproveitamento'));
-
   this.oGridAproveitamento.clearAll(true);
-
 };
 
 /**
@@ -711,7 +733,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.buscaAlunos = function () {
   new Ajax.Request(this.sRpcPadrao,
                    { method:     'post',
                      parameters: 'json='+Object.toJSON(oParametro),
-                     asynchronous: false,
+                     asynchronous: true,
                      onComplete: function(oAjax) {
                                    oSelf.populaGrid(oAjax);
                                  }
@@ -731,7 +753,13 @@ DBViewLancamentoAvaliacaoTurma.prototype.populaGrid = function (oAjax) {
   $('disciplina').disabled = false;
   var oSelf = this;
 
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
+
+  if (oRetorno.status == 2 ) {
+
+    alert( oRetorno.message.urlDecode() );
+    return;
+  }
 
   this.sMascara              = oRetorno.sMascaraFormatacao;
   this.iTabIndex             = oRetorno.iTabIndex;
@@ -739,7 +767,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.populaGrid = function (oAjax) {
   var iLinhaGrid = 0;
 
   var sImagemSituacao     = "<img src='imagens/gtk_ok.png' border='0'>";
-  oRetorno.aAlunos.each(function (oAluno, iAluno) {
+  oRetorno.aAlunos.each(function (oAluno) {
 
     if ($F('exibirTrocaTurma') == 2 && oAluno.sSituacaoAluno.urlDecode() == 'TROCA DE TURMA' ) {
       return;
@@ -811,6 +839,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.populaGrid = function (oAjax) {
       if (oAluno.oDisciplina.sFrequenciaGlobal == 'F') {
         oParametros.lReadOnlyNota = true;
       }
+
       /**
        * Bloqueamos o lancamento de faltas quando tipo de frequencia for 'A'
        */
@@ -835,7 +864,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.populaGrid = function (oAjax) {
         oParametros.lAvaliacaoExterna = true;
       }
 
-
       if (oAproveitamento.lAvaliacaoExterna &&
           oAproveitamento.iFormaAvaliacao != oAproveitamento.oAvaliacaoOrigem.iFormaAvaliacao) {
         oParametros.lPrecisaConversao = true;
@@ -851,8 +879,20 @@ DBViewLancamentoAvaliacaoTurma.prototype.populaGrid = function (oAjax) {
         oSelf.lConversao = true;
       }
 
-
       if (oAproveitamento.lNotaBloqueada) {
+        oParametros.lReadOnlyNota  = true;
+      }
+
+      if ( !oAproveitamento.lPeriodoControlaFrequencia ) {
+        oParametros.lReadOnlyFalta = true;
+      }
+
+      /**
+       * caso seja um aluno com proporcionalidade, e o período não estaja configurado para o calculo do Resultado Final
+       */
+      if ( oAproveitamento.lBloqueiaPeriodo ) {
+
+        oParametros.lReadOnlyFalta = true;
         oParametros.lReadOnlyNota  = true;
       }
 
@@ -877,14 +917,12 @@ DBViewLancamentoAvaliacaoTurma.prototype.populaGrid = function (oAjax) {
           break;
       }
 
-
       oCampoFalta = oSelf.constroiInputFalta(oAluno, oAproveitamento, oParametros);
 
       aLinha.push(oCampoAvaliacao.outerHTML);
       aLinha.push(oCampoFalta.outerHTML);
-
-
     });
+
     var oResultadoFinal = oAluno.oDisciplina.oResultadoFinal;
     var sDescricao      = '';
 
@@ -897,7 +935,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.populaGrid = function (oAjax) {
     aLinha.push("<div style='text-align:center;'>"+oResultadoFinal.nValor+"</div>");
     if (oResultadoFinal.sResultadoFinal != '') {
 
-      oSelf.aTermos.each(function (oTermo, iSeq) {
+      oSelf.aTermos.each(function (oTermo) {
 
         if (oTermo.sReferencia == oResultadoFinal.sResultadoFinal) {
 
@@ -924,7 +962,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.populaGrid = function (oAjax) {
       }
     }
 
-    if( oAluno.lProgressaoParcialNaEtapa && !oAluno.lProgressaoParcialAnterior ) {
+    if( oAluno.oDisciplina.lProgressaoParcial && !oAluno.lProgressaoParcialAnterior ) {
       sDescricao = 'AP/DP';
     }
 
@@ -996,32 +1034,43 @@ DBViewLancamentoAvaliacaoTurma.prototype.populaGrid = function (oAjax) {
    */
   iLinhaGrid = 0;
 
-  oRetorno.aAlunos.each(function (oAluno, iAluno) {
+  oRetorno.aAlunos.each(function (oAluno) {
 
     if ($F('exibirTrocaTurma') == 2 && oAluno.sSituacaoAluno.urlDecode() == 'TROCA DE TURMA' ) {
       return;
     }
 
-    $(oSelf.oGridAproveitamento.aRows[iLinhaGrid].sId).onmouseover = function () {
-      oSelf.sinalizarLinhaGrid(this, true);
-    };
-    $(oSelf.oGridAproveitamento.aRows[iLinhaGrid].sId).onmouseout = function () {
-      oSelf.sinalizarLinhaGrid(this, false);
-    };
+      $(oSelf.oGridAproveitamento.aRows[iLinhaGrid].sId).onmouseover = function () {
+          oSelf.sinalizarLinhaGrid(this, true);
+      };
+      $(oSelf.oGridAproveitamento.aRows[iLinhaGrid].sId).onmouseout = function () {
+          oSelf.sinalizarLinhaGrid(this, false);
+      };
+      $(oSelf.oGridAproveitamento.aRows[iLinhaGrid].sId).addEventListener("click", (e) => {
+          let elementoTR = e.target.parentNode;
+          if (elementoTR.tagName !== 'TR') {
+              elementoTR = elementoTR.parentNode;
+          }
+          let idClicado = elementoTR.getAttribute('id');
+          oSelf.oGridAproveitamento.aRows.map((linha) => {
+              linha.removeClassName('escuro');
+              if (idClicado === linha.sId) {
+                  linha.addClassName('escuro');
+              }
+          });
+      });
     $(oSelf.oGridAproveitamento.aRows[iLinhaGrid].aCells[1].sId).observe('dblclick', function() {
       oSelf.gradeAvalicaoAluno(oAluno.iMatricula);
     });
 
-    oAluno.oDisciplina.aAproveitamentos.each(function (oAproveitamento, iSeq) {
+    oAluno.oDisciplina.aAproveitamentos.each(function (oAproveitamento) {
 
       oSelf.setaFuncoesNota(oAluno, oAproveitamento, iLinhaGrid);
       oSelf.setaFuncoesFalta(oAluno, oAproveitamento, iLinhaGrid);
-
     });
 
-    oAluno.oDisciplina.aAproveitamentos.each(function (oAproveitamento, iSeq) {
+    oAluno.oDisciplina.aAproveitamentos.each(function (oAproveitamento) {
       oSelf.ajustaDependenciaDoPeriodo(oAproveitamento.iPeriodo, oAluno, oAproveitamento);
-
     });
 
     if ( oAluno.oDisciplina.oResultadoFinal.iAprovadoPeloConselho == 1 &&
@@ -1228,7 +1277,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.constroiSelectNivel = function(oAluno, 
   var sOptions      = '';
   var oOptionVazio  = document.createElement('option');
   sOptions         += oOptionVazio.outerHTML;
-  oAproveitamento.aConceito.each(function (oConceito, iSeq) {
+  oAproveitamento.aConceito.each(function (oConceito) {
 
     var oOption = document.createElement('option');
     oOption.setAttribute('ordem', oConceito.iOrdem);
@@ -1269,10 +1318,13 @@ DBViewLancamentoAvaliacaoTurma.prototype.constroiSelectNivel = function(oAluno, 
   }
 
   /**
-   * Quando aluno esta amparado, não devemos apresentar os conceitos e sim uma string 'SUP'
+   * Quando aluno esta amparado, não devemos apresentar os conceitos e sim uma string 'AMP'
    */
+
+
   if (oAproveitamento.lAmparado) {
-    oConceito.setAttribute('value', 'SUP');
+
+    oConceito.setAttribute('value', 'AMP');
   }
 
   if (
@@ -1350,7 +1402,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.constroiInputParecer = function(oAluno,
     }
 
     var sOptions = '';
-    oSelf.aTermos.each(function (oTermo, iSeq) {
+    oSelf.aTermos.each(function (oTermo) {
 
       if (oTermo.sReferencia == 'P') {
         return;
@@ -1413,10 +1465,10 @@ DBViewLancamentoAvaliacaoTurma.prototype.constroiInputParecer = function(oAluno,
  */
 DBViewLancamentoAvaliacaoTurma.prototype.preencheNotaDisciplina = function(oAluno, oAproveitamento, oElement) {
 
-  var iMenorValor      = this.aPeriodosAvaliacao[oAproveitamento.iPeriodo].iMenorValor;
-  var iMaiorValor      = this.aPeriodosAvaliacao[oAproveitamento.iPeriodo].iMaiorValor;
-  var mMinimoAprovacao = this.aPeriodosAvaliacao[oAproveitamento.iPeriodo].mMinimoAprovacao;
-  var nVariacao        = this.aPeriodosAvaliacao[oAproveitamento.iPeriodo].nVariacao;
+  var iMenorValor      = oAproveitamento.nMenorValor;
+  var iMaiorValor      = oAproveitamento.nMaiorValor;
+  var mMinimoAprovacao = oAproveitamento.mAproveitamentoMinino;
+  var nVariacao        = oAproveitamento.nVariacao;
   var lAtingiuMinimo   = true;
 
   if (this.aPeriodosAvaliacao[oAproveitamento.iPeriodo].sFormaAvaliacao == 'NOTA') {
@@ -1452,7 +1504,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.preencheNotaDisciplina = function(oAlun
   }
 
   return true;
-
 };
 
 /**
@@ -1489,10 +1540,12 @@ DBViewLancamentoAvaliacaoTurma.prototype.setaFuncoesNota = function (oAluno, oAp
   oNota.observe("focus", function() {
     oSelf.getInformacoesPeriodo(oAproveitamento.iPeriodo);
   });
+
   switch (oAproveitamento.sTipoFormaAvaliacao.urlDecode()) {
 
     case 'PARECER':
 
+      oSelf.getInformacoesPeriodo(oAproveitamento.iPeriodo);
       if (oAproveitamento.sTipoAvaliacao == 'R' && !oAproveitamento.lAmparado && !oAproveitamento.lEncerrado) {
         lFuncaoPreencheNota = true;
       }
@@ -1564,9 +1617,17 @@ DBViewLancamentoAvaliacaoTurma.prototype.setaFuncoesNota = function (oAluno, oAp
     iTamanhoHint = 90;
   }
 
+  if ( oAproveitamento.lPeriodoComAvaliacaoAlternativaSemAvaliacao ) {
+
+    lSetaHint    = true;
+    iTamanhoHint = 200;
+    sStringHint  = 'Avaliação Alternativa Configurada';
+  }
+
+
   if (lSetaHint) {
 
-    var oDBHintNota = eval("oDBHintNota_"+iSequencia+"_"+oAproveitamento.iPeriodo+"_"+oAluno.iMatricula+" = new DBHint('oDBHintNota_"+iSequencia+"_"+oAproveitamento.iPeriodo+"_"+oAluno.iMatricula+"')");
+    var oDBHintNota = new DBHint(`oDBHintNota_${iSequencia}_${oAproveitamento.iPeriodo}_${oAluno.iMatricula}`);
 
     oDBHintNota.setWidth(iTamanhoHint);
     oDBHintNota.setText(sStringHint);
@@ -1692,7 +1753,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.preencheFaltaDisciplina = function (iPe
   oJson.parameters   = 'json='+Object.toJSON(oParametros);
   oJson.onComplete   = function () {};
 
-  var oAjax = new Ajax.Request(oSelf.sRpcPadrao, oJson);
+  new Ajax.Request(oSelf.sRpcPadrao, oJson);
   $('btnSalvar').removeAttribute('disabled');
 };
 
@@ -1767,7 +1828,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.salvarResultadoFinalParecer = function 
     return true;
   };
 
-  var oAjax = new Ajax.Request(this.sRpcPadrao, oJson);
+  new Ajax.Request(this.sRpcPadrao, oJson);
   $('btnSalvar').removeAttribute('disabled');
 };
 
@@ -1796,58 +1857,55 @@ DBViewLancamentoAvaliacaoTurma.prototype.abrirParecer = function (oAproveitament
   var oParametro  = new Object();
   oParametro.exec = 'getParametroTelaParecer';
   oWindowParecer  = '';
-  var oAjax = new Ajax.Request('edu4_lancamentoavaliacao.RPC.php',
-                               {
-                                 method:     'post',
-                                 parameters: 'json='+Object.toJSON(oParametro),
-                                 onComplete: function (oResponse) {
+  new Ajax.Request('edu4_lancamentoavaliacao.RPC.php',
+                   {
+                     method:     'post',
+                     parameters: 'json='+Object.toJSON(oParametro),
+                     onComplete: function (oResponse) {
 
-                                   var oRetorno = eval('('+oResponse.responseText+')');
-                                   if (oRetorno.iParametro == 0) {
+                       var oRetorno = JSON.parse(oResponse.responseText);
+                       if (oRetorno.iParametro == 0) {
 
-                                     oWindowParecer = new DBViewLancamentoAvaliacaoParecer('oWindowParecer',
-                                                                                           iTurma,
-                                                                                           iRegencia,
-                                                                                           oSelf.oWindow,
-                                                                                           oSelf.sRpcPadrao
-                                                                                          );
+                         oWindowParecer = new DBViewLancamentoAvaliacaoParecer('oWindowParecer',
+                                                                               iTurma,
+                                                                               iRegencia,
+                                                                               oSelf.oWindow,
+                                                                               oSelf.sRpcPadrao
+                                                                              );
 
-                                   } else {
+                       } else {
+                         oWindowParecer = new DBViewLancamentoParecerDisciplina('oWindowParecer',
+                                                                                iTurma,
+                                                                                iRegencia,
+                                                                                oSelf.oWindow,
+                                                                                oSelf.sRpcPadrao
+                                                                               );
+                       }
 
-                                     oWindowParecer = new DBViewLancamentoParecerDisciplina('oWindowParecer',
-                                                                                            iTurma,
-                                                                                            iRegencia,
-                                                                                            oSelf.oWindow,
-                                                                                            oSelf.sRpcPadrao
-                                                                                           );
-                                   }
+                       oWindowParecer.setProfessorLogado(oSelf.lProfessorLogado);
+                       oWindowParecer.setMatricula(iMatricula);
+                       oWindowParecer.setCodigoPeriodo(oAproveitamento.iCodigoPeriodo);
+                       oWindowParecer.setOrdem(oAproveitamento.iPeriodo);
+                       oWindowParecer.setEtapa(iEtapa);
+                       oWindowParecer.show();
 
-                                   oWindowParecer.setProfessorLogado(oSelf.lProfessorLogado);
-                                   oWindowParecer.setMatricula(iMatricula);
-                                   oWindowParecer.setCodigoPeriodo(oAproveitamento.iCodigoPeriodo);
-                                   oWindowParecer.setOrdem(oAproveitamento.iPeriodo);
-                                   oWindowParecer.setEtapa(iEtapa);
-                                   oWindowParecer.show();
+                       oWindowParecer.setCallback(function(oDados) {
 
-                                   oWindowParecer.setCallback(function(oDados) {
+                         oSelf.lGradeAlterada = true;
+                         $(sIdAlvo).value     = $F('parecer');
+                         oWindowParecer.getWindow().destroy();
 
-                                     oSelf.lGradeAlterada = true;
-                                     $(sIdAlvo).value     = $F('parecer');
-                                     oWindowParecer.getWindow().destroy();
-                                     $('btnSalvar').removeAttribute('disabled');
-                                     oSelf.oWindow.toFront();
-                                     oSelf.lAbriuWindowParecer = false;
-                                   });
+                         $('btnSalvar').removeAttribute('disabled');
+                         oSelf.oWindow.toFront();
+                         oSelf.lAbriuWindowParecer = false;
+                       });
 
-                                   $('window' + oWindowParecer.oWindowParecer.idWindow +'_btnclose').onclick = function() {
-
-                                     oWindowParecer.oWindowParecer.destroy();
-                                     oSelf.lAbriuWindowParecer = false;
-                                   }
-                                 }
-                               }
-                              );
-
+                       $('window' + oWindowParecer.oWindowParecer.idWindow +'_btnclose').onclick = function() {
+                           oSelf.lAbriuWindowParecer = false;
+                       }
+                     }
+                   }
+                  );
 };
 
 /**
@@ -1861,6 +1919,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.salvarGradeAproveitamento = function ()
   if (!this.lGradeAlterada) {
     return false;
   }
+
   js_divCarregando("Salvando dados, aguarde...", "msgBox");
   var oObject        = new Object();
   oObject.exec       = 'salvaAvaliacaoAluno';
@@ -1874,8 +1933,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.salvarGradeAproveitamento = function ()
   };
   oJson.asynchronous = false;
 
-  var oAjax = new Ajax.Request(this.sRpcPadrao, oJson);
-
+  new Ajax.Request(this.sRpcPadrao, oJson);
 };
 
 /**
@@ -1887,7 +1945,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.salvarGradeAproveitamento = function ()
 DBViewLancamentoAvaliacaoTurma.prototype.retornoSalvarGradeAproveitamento = function(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   this.lGradeAlterada = false;
   $('btnSalvar').setAttribute('disabled', 'disabled');
@@ -1943,7 +2001,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.calcularResultados = function (oAluno, 
   };
   oJson.asynchronous = false;
 
-  var oAjax = new Ajax.Request(oSelf.sRpcPadrao, oJson);
+  new Ajax.Request(oSelf.sRpcPadrao, oJson);
 };
 
 /**
@@ -1966,19 +2024,18 @@ DBViewLancamentoAvaliacaoTurma.prototype.calcularResultados = function (oAluno, 
  */
 DBViewLancamentoAvaliacaoTurma.prototype.retornoCalculo = function (oAjax, oAluno, oAproveitamento, oSelf) {
 
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 1) {
 
     oSelf.ajustaDependenciaDoPeriodo(oAproveitamento.iPeriodo, oAluno, oAproveitamento);
-    oRetorno.aResultados.each(function(oResultado, iSeq) {
+    oRetorno.aResultados.each(function(oResultado) {
 
       var sIdCampoNota = 'nota#'+oResultado.iPeriodo+'#'+oAluno.iMatricula;
       oSelf.ajustaDependenciaDoPeriodo(oResultado.iPeriodo, oAluno, oResultado);
       if ($(sIdCampoNota))  {
 
-        var nNota = '';
-        nNota     = oResultado.nNota;
+        var nNota = oResultado.nNota;
         if ((oAproveitamento.sTipoFormaAvaliacao.urlDecode() == 'NOTA' && oAproveitamento.sFormaObtencao != 'AT') ||
             oAproveitamento.lEncerrado) {
 
@@ -2002,6 +2059,11 @@ DBViewLancamentoAvaliacaoTurma.prototype.retornoCalculo = function (oAjax, oAlun
           $(sIdCampoNota).removeClassName('bold');
         }
         $(sIdCampoNota).value = nNota;
+        if (oResultado.lAmparado) {
+
+          $(sIdCampoNota).removeClassName('bold');
+          $(sIdCampoNota).value = "AMP";
+        }
       }
     });
   }
@@ -2081,7 +2143,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.liberarBotoes = function () {
       oSelf.oJanelaOrigemNota = true;
       oSelf.oViewAbonoFalta.show();
     };
-
   }
 
   if (oSelf.lConversao && !oSelf.lTurmaEncerrada) {
@@ -2105,6 +2166,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.liberarBotoes = function () {
 
       oSelf.oViewConversao.setCallBackWindow(function() {
 
+        oSelf.getPeriodosAvaliacao();
         oSelf.buscaAlunos();
         oSelf.oJanelaOrigemNota = false;
       });
@@ -2134,13 +2196,13 @@ DBViewLancamentoAvaliacaoTurma.prototype.liberarBotoes = function () {
 
       oSelf.oViewAlteraResultadoFinal.setCallBackWindow(function() {
 
-        oSelf.oJanelaOrigemNota = false;
+        oSelf.getPeriodosAvaliacao();
         oSelf.buscaAlunos();
+        oSelf.oJanelaOrigemNota = false;
       });
 
       oSelf.oJanelaOrigemNota = true;
       oSelf.oViewAlteraResultadoFinal.show();
-
     };
   }
 
@@ -2170,6 +2232,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.liberarBotoes = function () {
 
       oSelf.oViewLancamentoObservacao.setCallBackWindow(function() {
 
+        oSelf.getPeriodosAvaliacao();
         oSelf.buscaAlunos();
         oSelf.oJanelaOrigemNota = false;
       });
@@ -2177,7 +2240,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.liberarBotoes = function () {
       oSelf.oJanelaOrigemNota = true;
       oSelf.oViewLancamentoObservacao.show();
     };
-
   }
 
   /**
@@ -2204,7 +2266,9 @@ DBViewLancamentoAvaliacaoTurma.prototype.liberarBotoes = function () {
       }
 
       oSelf.oViewLancamentoAmparo.setCallBackWindow(function() {
-
+          oSelf.lGradeAlterada = true;
+          $('btnSalvar').removeAttribute('disabled');
+          oSelf.getPeriodosAvaliacao();
         oSelf.buscaAlunos();
         oSelf.oJanelaOrigemNota = false;
       });
@@ -2239,6 +2303,58 @@ DBViewLancamentoAvaliacaoTurma.prototype.liberarBotoes = function () {
     oSelf.oViewLegendas.getLegendas();
     oSelf.oViewLegendas.show();
   };
+
+  $('btnProporcionalidade').onclick = function() {
+
+    var fCallBack = function() {
+
+      oSelf.lGradeAlterada = true;
+      oSelf.salvarGradeAproveitamento();
+      oSelf.oJanelaOrigemNota = false;
+    };
+
+    oSelf.oViewProporcionalidade = new DBViewFormularioEducacao.Proporcionalidade(
+                                                                                   oSelf.oDadosTurmaSelecionada.iTurma,
+                                                                                   oSelf.oDadosTurmaSelecionada.iEtapa
+                                                                                 );
+
+    oSelf.oViewProporcionalidade.setContainerPai( oSelf.oWindow );
+    if( oSelf.oJanelaOrigemNota ) {
+      return true;
+    }
+
+    oSelf.oViewProporcionalidade.setCallBackSalvar( fCallBack );
+    oSelf.oViewProporcionalidade.show();
+  };
+
+  $('btnAvaliacaoAlternativa').onclick = function (){
+
+    if (oSelf.lGradeAlterada && !confirm(sMsgConfirm)) {
+      return false;
+    }
+
+    var fCallBack = function() {
+
+      oSelf.lGradeAlterada = true;
+      oSelf.salvarGradeAproveitamento();
+    };
+
+    oSelf.oViewAvaliacaoAlternativa = new DBViewFormularioEducacao.AvaliacaoAlternativa(
+                                                                      oSelf.oDadosTurmaSelecionada.iTurma,
+                                                                      oSelf.oDadosTurmaSelecionada.iEtapa
+                                                                    );
+
+    oSelf.oViewAvaliacaoAlternativa.setContainerPai( oSelf.oWindow );
+    if( oSelf.oJanelaOrigemNota ) {
+      return true;
+    }
+    oSelf.oJanelaOrigemNota = true;
+    oSelf.oViewAvaliacaoAlternativa.setCallBackSalvar( fCallBack );
+    oSelf.oViewAvaliacaoAlternativa.setCallBack(function () {
+      oSelf.oJanelaOrigemNota = false;
+    })
+    oSelf.oViewAvaliacaoAlternativa.show();
+  };
 };
 
 DBViewLancamentoAvaliacaoTurma.prototype.abrirParecerComplementar = function () {
@@ -2254,47 +2370,46 @@ DBViewLancamentoAvaliacaoTurma.prototype.abrirParecerComplementar = function () 
   var oParametro  = new Object();
   oParametro.exec = 'getParametroTelaParecer';
   oWindowParecer  = '';
-  var oAjax = new Ajax.Request( 'edu4_lancamentoavaliacao.RPC.php',
-                                {
-                                  method:     'post',
-                                  parameters: 'json='+Object.toJSON(oParametro),
-                                  onComplete: function (oResponse) {
+  new Ajax.Request( 'edu4_lancamentoavaliacao.RPC.php',
+                    {
+                      method:     'post',
+                      parameters: 'json='+Object.toJSON(oParametro),
+                      onComplete: function (oResponse) {
 
-                                    var oRetorno = eval('('+oResponse.responseText+')');
+                        var oRetorno = JSON.parse(oResponse.responseText);
 
-                                    if (oRetorno.iParametro == 0) {
+                        if (oRetorno.iParametro == 0) {
 
-                                      oWindowParecer = new DBViewLancamentoAvaliacaoParecer('oWindowParecer',
-                                                                                           iTurma,
-                                                                                           iRegencia,
-                                                                                           oSelf.oWindow
-                                                                                          );
-                                    } else {
+                          oWindowParecer = new DBViewLancamentoAvaliacaoParecer('oWindowParecer',
+                                                                               iTurma,
+                                                                               iRegencia,
+                                                                               oSelf.oWindow
+                                                                              );
+                        } else {
 
-                                      oWindowParecer = new DBViewLancamentoParecerDisciplina('oWindowParecer',
-                                                                                            iTurma,
-                                                                                            iRegencia,
-                                                                                            oSelf.oWindow
-                                                                                           );
-                                    }
+                          oWindowParecer = new DBViewLancamentoParecerDisciplina('oWindowParecer',
+                                                                                iTurma,
+                                                                                iRegencia,
+                                                                                oSelf.oWindow
+                                                                               );
+                        }
 
-                                    oWindowParecer.setEtapa(this.oDadosTurmaSelecionada.iEtapa);
-                                    oWindowParecer.setProfessorLogado(oSelf.lProfessorLogado);
-                                    oWindowParecer.mostrarPesquisaAluno(true);
-                                    oWindowParecer.mostrarPesquisaPeriodo(true);
-                                    oWindowParecer.show();
+                        oWindowParecer.disciplinasProcedimentoAvaliacaoParecer( false );
+                        oWindowParecer.setEtapa(this.oDadosTurmaSelecionada.iEtapa);
+                        oWindowParecer.setProfessorLogado(oSelf.lProfessorLogado);
+                        oWindowParecer.mostrarPesquisaAluno(true);
+                        oWindowParecer.mostrarPesquisaPeriodo(true);
+                        oWindowParecer.show();
 
-                                    oWindowParecer.setCallback(function(oDados) {
+                        oWindowParecer.setCallback(function(oDados) {
 
-                                      oSelf.buscaAlunos();
-                                      oWindowParecer.getWindow().destroy();
-                                      oSelf.oWindow.toFront();
-                                    });
-                                  }
-                                });
-
-
-
+                          oSelf.getPeriodosAvaliacao();
+                          oSelf.buscaAlunos();
+                          oWindowParecer.getWindow().destroy();
+                          oSelf.oWindow.toFront();
+                        });
+                      }
+                    });
 };
 
 /**
@@ -2310,7 +2425,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.ajustaDependenciaDoPeriodo = function(i
 
     if (oPeriodo.iPeriodoDependenteAprovacao == iPeriodo) {
 
-      var oPeriodoDependente = oSelf.aPeriodosAvaliacao[iPeriodo];
       var oDependencia = oPeriodo;
       var sIdCampoNota = 'nota#'+oDependencia.iOrdemAvaliacao+'#'+oAluno.iMatricula;
       var lReadOnly    = false;
@@ -2319,11 +2433,14 @@ DBViewLancamentoAvaliacaoTurma.prototype.ajustaDependenciaDoPeriodo = function(i
 
       var sTextoRecuperacao = 'dispensado';
       var iLimiteAprovacao  = new Number(oPeriodo.iLimiteReprovacao);
-      if ( iLimiteAprovacao > 0 && oAproveitamento.iTotalDisciplinasReprovadas > iLimiteAprovacao) {
+      if (    ( iLimiteAprovacao > 0 && oAproveitamento.iTotalDisciplinasReprovadas > iLimiteAprovacao )
+           || ( iLimiteAprovacao > 0 && iLimiteAprovacao != 999 && !oAproveitamento.lRecuperacao && $(sIdCampoNota).value === "" )
+         ) {
 
-        var lBloqueada    = true;
+        lBloqueada        = true;
         sTextoRecuperacao = 'Não Habilitado';
       }
+
       if (oAproveitamento.lMinimoAtingido || lBloqueada) {
 
         sValor    = sTextoRecuperacao;
@@ -2361,7 +2478,6 @@ DBViewLancamentoAvaliacaoTurma.prototype.gradeAvalicaoAluno = function(iMatricul
   oGradeAluno.show();
 };
 
-
 /**
  * Adiciona estilo disabled nos botões especificados
  */
@@ -2372,6 +2488,16 @@ DBViewLancamentoAvaliacaoTurma.prototype.bloqueiaBotoes = function() {
   $('btnConversao').setAttribute('disabled', 'disabled');
   $('btnAlteraResultadoFinal').setAttribute('disabled', 'disabled');
 
+  if( !this.oDadosTurmaSelecionada.sFormaObtencaoResultado == 'SO' || !this.oDadosTurmaSelecionada.lUtilizaProporcionalidade ) {
+    $('btnProporcionalidade').setAttribute( 'disabled', 'disabled' );
+  }
+
+  if( !this.oDadosTurmaSelecionada.sFormaObtencaoResultado == 'SO'
+      || !this.oDadosTurmaSelecionada.lUtilizaAvaliacaoAlternativa
+      || !this.oDadosTurmaSelecionada.lEscolaUtilizaAvaliacaoAlternativa
+    ) {
+    $('btnAvaliacaoAlternativa').setAttribute( 'disabled', 'disabled' );
+  }
 };
 
 /**
@@ -2382,19 +2508,20 @@ DBViewLancamentoAvaliacaoTurma.prototype.limparSessao = function() {
 
   var oParam  = new Object();
   oParam.exec = "destroySession";
-  var oAjax   = new Ajax.Request('edu4_lancamentoavaliacaonota.RPC.php',
-                                 {
-                                  asynchronous:false,
-                                  method: "post",
-                                  parameters:'json='+Object.toJSON(oParam)
-                                });
+  new Ajax.Request('edu4_lancamentoavaliacaonota.RPC.php',
+                   {
+                    asynchronous:false,
+                    method: "post",
+                    parameters:'json='+Object.toJSON(oParam)
+                  });
   return true;
 };
 
 DBViewLancamentoAvaliacaoTurma.prototype.getDadosPeriodo = function(iPeriodo) {
 
   var oPeriodoRetorno = '';
-  this.aPeriodosAvaliacao.each(function(oPeriodo, iSeq) {
+
+  this.aPeriodosAvaliacao.each(function(oPeriodo) {
 
     if (oPeriodo.iOrdemAvaliacao) {
       if (oPeriodo.iOrdemAvaliacao == iPeriodo) {
@@ -2404,6 +2531,7 @@ DBViewLancamentoAvaliacaoTurma.prototype.getDadosPeriodo = function(iPeriodo) {
       }
     }
   });
+
   return oPeriodoRetorno;
 };
 
@@ -2427,22 +2555,23 @@ DBViewLancamentoAvaliacaoTurma.prototype.getInformacoesPeriodo = function(iPerio
       sMensagemFormaAvaliacao += " com o mínimo para aprovação: "+oPeriodo.mMinimoAprovacao;
       break;
 
-     case 'NOTA':
+    case 'NOTA':
 
       sMensagemFormaAvaliacao += "Notas de "+oPeriodo.iMenorValor+" a "+oPeriodo.iMaiorValor+", ";
       sMensagemFormaAvaliacao += "com variação de "+oPeriodo.nVariacao+", com o ";
       sMensagemFormaAvaliacao += "mínimo para aprovação de "+oPeriodo.mMinimoAprovacao;
       break;
 
-     case 'PARECER':
+    case 'PARECER':
 
-       sMensagemFormaAvaliacao += "<br>";
-       break
-    }
+      sMensagemFormaAvaliacao += "<br>";
+      break
+  }
 
-    $('legendaFormaAvaliacao').innerHTML = sMensagemFormaAvaliacao;
-    $('legendaFormaAvaliacao').title     = sMensagemFormaAvaliacao.replace('<br>', ' - ');
+  $('legendaFormaAvaliacao').innerHTML = sMensagemFormaAvaliacao;
+  $('legendaFormaAvaliacao').title     = sMensagemFormaAvaliacao.replace('<br>', ' - ');
 };
+
 /**
  * Retorna o periodo dependente  do período passado como parâmetro.
  * @param iPeriodo
@@ -2464,6 +2593,24 @@ DBViewLancamentoAvaliacaoTurma.prototype.getPeriodoDependenteDoPeriodo = functio
 };
 
 DBViewLancamentoAvaliacaoTurma.prototype.isMatriculaValida = function (sSituacaoMatricula)  {
-
   return this.aSituacoesMatriculaValida.in_array(sSituacaoMatricula);
-}
+};
+
+/**
+ * Verifica o tipo de procedimento de avaliação da disciplina selecionada, para bloqueio ou não do botão do parecer
+ */
+DBViewLancamentoAvaliacaoTurma.prototype.validaFormaAvaliacaoDisciplina = function() {
+
+  var oSelf = this;
+
+  if( !oSelf.lTurmaEncerrada ) {
+
+    oSelf.oBtnParecer.disabled = false;
+    oSelf.oDadosTurmaSelecionada.aDisciplinas.each(function( oDisciplina ) {
+
+      if( oDisciplina.iCodigo == $F('disciplina') && oDisciplina.sFormaAvaliacao == 'PARECER' ) {
+        oSelf.oBtnParecer.disabled = true;
+      }
+    });
+  }
+};

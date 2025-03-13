@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -30,7 +30,7 @@
  * @package educacao
  * @subpackage avaliacao
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.10 $
  */
 class FormaAvaliacao {
 
@@ -234,7 +234,7 @@ class FormaAvaliacao {
 
       $oDaoConceitos = db_utils::getDao('conceito');
       $sWhere        = " ed39_i_formaavaliacao = {$this->getCodigo()} ";
-      $sCampos       = "ed39_i_codigo, ed39_c_conceito, ed39_i_sequencia, ed39_c_nome";
+      $sCampos       = "ed39_i_codigo, ed39_c_conceito, ed39_i_sequencia, ed39_c_nome, ed39_c_conceitodescr";
       $sSqlConceitos = $oDaoConceitos->sql_query_file(null, $sCampos, "ed39_i_sequencia", $sWhere);
       $rsConceitos   = $oDaoConceitos->sql_record($sSqlConceitos);
       $iTotalLinhas  = $oDaoConceitos->numrows;
@@ -243,13 +243,14 @@ class FormaAvaliacao {
 
         for ($i = 0; $i < $iTotalLinhas; $i++) {
 
-          $oDadosConceito       = db_utils::fieldsMemory($rsConceitos, $i);
-          $oConceito            = new stdClass();
-          $oConceito->iCodigo   = $oDadosConceito->ed39_i_codigo;
-          $oConceito->sConceito = $oDadosConceito->ed39_c_conceito;
-          $oConceito->iOrdem    = $oDadosConceito->ed39_i_sequencia;
-          $oConceito->sNome     = $oDadosConceito->ed39_c_nome;
-          $this->aConceitos[]   =  $oConceito;
+          $oDadosConceito        = db_utils::fieldsMemory($rsConceitos, $i);
+          $oConceito             = new stdClass();
+          $oConceito->iCodigo    = $oDadosConceito->ed39_i_codigo;
+          $oConceito->sConceito  = $oDadosConceito->ed39_c_conceito;
+          $oConceito->iOrdem     = $oDadosConceito->ed39_i_sequencia;
+          $oConceito->sNome      = $oDadosConceito->ed39_c_nome;
+          $oConceito->sDescricao = $oDadosConceito->ed39_c_conceitodescr;
+          $this->aConceitos[]    = $oConceito;
           unset($oDadosConceito);
         }
       }

@@ -113,10 +113,10 @@ db_inputdata('fa22_d_data',@$fa22_d_data_dia,@$fa22_d_data_mes,@$fa22_d_data_ano
 <script>
 function js_pesquisafa22_i_cgsund(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgs_und','func_cgs_und.php?funcao_js=parent.js_mostracgs_und1|z01_i_cgsund|z01_i_cgsund','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgs_und','func_cgs_und.php?funcao_js=parent.js_mostracgs_und1|z01_i_cgsund|z01_i_cgsund','Pesquisa',true);
   }else{
      if(document.form1.fa22_i_cgsund.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgs_und','func_cgs_und.php?pesquisa_chave='+document.form1.fa22_i_cgsund.value+'&funcao_js=parent.js_mostracgs_und','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgs_und','func_cgs_und.php?pesquisa_chave='+document.form1.fa22_i_cgsund.value+'&funcao_js=parent.js_mostracgs_und','Pesquisa',false);
      }else{
        document.form1.z01_i_cgsund.value = ''; 
      }
@@ -136,10 +136,10 @@ function js_mostracgs_und1(chave1,chave2){
 }
 function js_pesquisafa22_i_login(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
      if(document.form1.fa22_i_login.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.fa22_i_login.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.fa22_i_login.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
      }else{
        document.form1.nome.value = ''; 
      }
@@ -158,7 +158,7 @@ function js_mostradb_usuarios1(chave1,chave2){
   db_iframe_db_usuarios.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_devolucao','func_far_devolucao.php?funcao_js=parent.js_preenchepesquisa|fa22_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_devolucao','func_far_devolucao.php?funcao_js=parent.js_preenchepesquisa|fa22_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_devolucao.hide();

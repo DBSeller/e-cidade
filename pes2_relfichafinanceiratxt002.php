@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhfuncao_classe.php");
-include("classes/db_rhpescargo_classe.php");
-include("classes/db_rhrubricas_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhfuncao_classe.php"));
+include(modification("classes/db_rhpescargo_classe.php"));
+include(modification("classes/db_rhrubricas_classe.php"));
 $clrhpessoal = new cl_rhpessoal;
 $clrhfuncao = new cl_rhfuncao;
 $clrhpescargo = new cl_rhpescargo;
@@ -137,8 +137,8 @@ $sql_create_indexes_temp = "
                                    on work_ficha_financ(regist);
                            ";
 
-$result_create_temporary_table = pg_exec($sql_create_temporary_table);
-$result_create_indexes_temp    = pg_exec($sql_create_indexes_temp);
+$result_create_temporary_table = db_query($sql_create_temporary_table);
+$result_create_indexes_temp    = db_query($sql_create_indexes_temp);
 
 //echo "<BR> ".$clrhpessoal->sql_query_cgm(null,"distinct rh01_regist as regist, z01_numcgm as numcgm, z01_nome as nomefc, r70_codigo as lotaca, r70_descr as dlotac, rh01_funcao as funcao",$orderby,$db_where_matriculas);
 //exit;
@@ -282,7 +282,7 @@ for($i=0; $i < $clrhpessoal->numrows; $i++){
                        ";
 //echo "<BR> $sql_dados_gerfs";
 //exit;
-  $result_dados_gerfs = pg_exec($sql_dados_gerfs);
+  $result_dados_gerfs = db_query($sql_dados_gerfs);
   $numrows_dados_gerfs = pg_numrows($result_dados_gerfs);
   $mes_anterior = "";
   $ano_anterior = "";
@@ -354,7 +354,7 @@ for($i=0; $i < $clrhpessoal->numrows; $i++){
                                                                );
                                      ";
 
-    $result_insert_na_temporary_table = pg_exec($sql_insert_na_temporary_table);
+    $result_insert_na_temporary_table = db_query($sql_insert_na_temporary_table);
     if($result_insert_na_temporary_table == false){
       db_redireciona("db_erros.php?fechar=true&db_erro=Erro ao inserir na tabela auxiliar 'work_ficha_financ'. Contate o suporte.");
       break;
@@ -371,11 +371,11 @@ $arq = 'tmp/rel_ficha_financ_'.time().'.txt';
 $arquivo = fopen($arq,'w');
 
 $sql_rubr = "select distinct rubric as rubric1,drubri as drubri1 from work_ficha_financ order by rubric";
-$result_rubr = pg_exec($sql_rubr);
+$result_rubr = db_query($sql_rubr);
 $numrows_rubr = pg_numrows($result_rubr);
 //db_criatabela($result_rubr);exit;
 $sql_work = "select * from work_ficha_financ order by $orderby2";
-$result_work = pg_exec($sql_work);
+$result_work = db_query($sql_work);
 $numrows_work = pg_numrows($result_work);
 //db_criatabela($result_work);exit;
 $primatric = "";

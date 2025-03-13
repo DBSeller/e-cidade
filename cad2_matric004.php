@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_face_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_face_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 $clface = new cl_face;
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clface->rotulo->label();
@@ -39,7 +39,7 @@ $clrotulo->label("z01_nome");
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 if(isset($j34_setor) && $j34_setor != "") {
-   
+
   $setor = split(",",$j34_setor);
   $vir = "";
   $set = "";
@@ -65,6 +65,7 @@ if(isset($j34_setor) && $j34_setor != "") {
   function js_nome(obj) {
 
     j37_quadra = "";
+    j34_setor  = "";
     vir = "";
     x = 0;
     for(i=0;i<quadras.document.form1.length;i++) {
@@ -73,14 +74,15 @@ if(isset($j34_setor) && $j34_setor != "") {
         if(quadras.document.form1.elements[i].checked == true) {
           valor = quadras.document.form1.elements[i].value.split("_")
           j37_quadra += vir + valor[0];
+          j34_setor  += vir + valor[1];
           vir = ",";
-          x += 1; 
+          x += 1;
         }
       }
     }
 
     if( x != 0) {
-	
+
       parent.document.formaba.g3.disabled = false;
     } else {
 
@@ -89,12 +91,20 @@ if(isset($j34_setor) && $j34_setor != "") {
 
 	  parent.iframe_g3.document.form1.j37_quadra.value = j37_quadra;
     if(document.form1.setor.value == "") {
-	 	   
+
 		  document.form1.setor.value ='<?=$set2?>';
 	  }
-	 
-    parent.iframe_g3.document.form1.j34_setor.value = document.form1.setor.value;	 
+
+    parent.iframe_g3.document.form1.j34_setor.value = j34_setor;
 	  parent.iframe_g3.document.form1.submit();
+
+    parent.iframe_g1.document.form1.quadraParametro.value = j37_quadra;
+    parent.iframe_g1.document.form1.setorParametro.value  = j34_setor;
+    parent.iframe_g1.document.form1.loteParametro.value  = "";
+
+    if (empty(j37_quadra)) {
+      parent.iframe_g1.js_nome(this);
+    }
   }
 
 </script>
@@ -105,7 +115,7 @@ if(isset($j34_setor) && $j34_setor != "") {
 				<tr>
 					<td align="top" colspan="2">
 						<?php
-							
+
               if(isset($j34_setor)&& $j34_setor!="") {
 								$cliframe_seleciona->campos  = "j37_setor,j37_quadra";
 								$cliframe_seleciona->legenda="Quadra";
@@ -121,13 +131,13 @@ if(isset($j34_setor) && $j34_setor != "") {
 								$cliframe_seleciona->dbscript ="onClick='parent.js_nome(this)'";
 								$cliframe_seleciona->js_marcador="parent.js_nome()";
                 $cliframe_seleciona->alignlegenda  = "left";
-								$cliframe_seleciona->iframe_seleciona(@$db_opcao);   
+								$cliframe_seleciona->iframe_seleciona(@$db_opcao);
               } else {
-								
+
                 echo "<br><strong>SELECIONE UM SETOR PARA ESCOLHER A(S) QUADRAS(S)</strong>";
                 echo "<script>parent.document.formaba.g3.disabled = true;</script>";
               }
-            ?>   
+            ?>
 					</td>
 					<input type="hidden"  name="setor">
 				</tr>

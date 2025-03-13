@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -39,7 +39,11 @@ class ConfiguracaoArquivoObn {
   const OPERACAO_DOC           = 31;
   const OPERACAO_TED           = 31;
   const OPERACAO_DEP           = 32;
+  const OPERACAO_DEP_INSTIT    = 34;
   const OPERACAO_CODIGO_BARRAS = 38;
+
+  /* [Inicio plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte1] */
+  /* [Fim plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte1] */
 
   //Tipo de pagamento
   const PAGAMENTO_CONTA_BB      = 1;
@@ -74,10 +78,24 @@ class ConfiguracaoArquivoObn {
       return ConfiguracaoArquivoObn::OPERACAO_CODIGO_BARRAS;
     }
 
+    /* [Inicio plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte2] */
+    /* [Fim plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte2] */
+
     // Contas do mesmo banco, operação tipo DEP
     if ($oDadosMovimentacao->getCodigoBancoFavorecido() == $oDadosMovimentacao->getCodigoBancoPagador()) {
-      return ConfiguracaoArquivoObn::OPERACAO_DEP;
+
+      /* [Inicio plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte3] */
+      /* [Fim plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte3] */
+
+      if ($oDadosMovimentacao->getCnpj() == $oDadosMovimentacao->getCnpjPagador()){
+         return ConfiguracaoArquivoObn::OPERACAO_DEP_INSTIT;
+      }else{
+         return ConfiguracaoArquivoObn::OPERACAO_DEP;
+      }
     }
+
+    /* [Inicio plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte4] */
+    /* [Fim plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte4] */
 
     //Operação tipo DOC
     if ($oDadosMovimentacao->getValor() <= ConfiguracaoArquivoObn::VALOR_DETERMINANTE_DOC_TED) {
@@ -150,7 +168,9 @@ class ConfiguracaoArquivoObn {
     }
     return ConfiguracaoArquivoObn::LAYOUT4;
   }
+
+
+  /* [Inicio plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte5] */
+  /* [Fim plugin GeracaoArquivoOBN  - Geracao arquivo OBN - parte5] */
+  
 }
-
-
-?>

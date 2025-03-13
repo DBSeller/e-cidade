@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010556' name='issqn.issgsanexosfaixasimpostosvalores' description="Tabela que relaciona issgruposervicoanexosfaixasimpostosfaixas e issgruposervicocadimpostos" prefix="q165" label="" type="0">
+  <fields>
+    <field codigo="1011225" 
+           campo_api='' 
+           name="q165_sequencial" 
+           conteudo="int4" 
+           description="Sequencial issgruposervicoanexosfaixasimpostosvalores" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='issqn.issgsanexosfaixasimpostosvalores_q165_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011232" 
+           campo_api='' 
+           name="q165_issgsanexosfaixasimpostosfaixas" 
+           conteudo="int4" 
+           description="Relaciona issgsanexosfaixasimpostosfaixa" 
+           inivalue="0" 
+           label="Relaciona issgsanexosfaixasimpostosfaixa" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Relaciona issgsanexosfaixasimpostosfaixa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011233" 
+           campo_api='' 
+           name="q165_issgscadimpostos" 
+           conteudo="int4" 
+           description="Relaciona issgruposervicocadimpostos" 
+           inivalue="0" 
+           label="Relaciona issgruposervicocadimpostos" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Relaciona issgruposervicocadimpostos" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011234" 
+           campo_api='' 
+           name="q165_aliquotaimposto" 
+           conteudo="float4" 
+           description="Aliquota do imposto" 
+           inivalue="0" 
+           label="Aliquota do imposto" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Aliquota do imposto" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q165_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="issgscadimpostos" inner='t'>
+      <fieldfk name="q165_issgscadimpostos" reference="q160_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="issgsanexosfaixasimpostosfaixas" inner='t'>
+      <fieldfk name="q165_issgsanexosfaixasimpostosfaixas" reference="q164_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_rhempfolha_classe.php");
-include("classes/db_rhrubelementoprinc_classe.php");
-include("classes/db_rhlotaexe_classe.php");
-include("classes/db_rhlotavinc_classe.php");
-include("classes/db_rhlotavincele_classe.php");
-include("classes/db_rhlotavincativ_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcelemento_classe.php");
-include("classes/db_orcparametro_classe.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_orcunidade_classe.php");
-include("classes/db_orcprojativ_classe.php");
-include("classes/db_orctiporec_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_rhempfolha_classe.php"));
+include(modification("classes/db_rhrubelementoprinc_classe.php"));
+include(modification("classes/db_rhlotaexe_classe.php"));
+include(modification("classes/db_rhlotavinc_classe.php"));
+include(modification("classes/db_rhlotavincele_classe.php"));
+include(modification("classes/db_rhlotavincativ_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_orcparametro_classe.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcunidade_classe.php"));
+include(modification("classes/db_orcprojativ_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 $clrhrubelementoprinc = new cl_rhrubelementoprinc;
 $clrhlotaexe = new cl_rhlotaexe;
 $clrhempfolha = new cl_rhempfolha;
@@ -424,7 +424,7 @@ $sql2 = "select rh40_recurso,
 
 //echo $sql2; exit;
 
-$result2 = pg_query($sql2);
+$result2 = db_query($sql2);
 
 $numrows2 = pg_numrows($result2);
 

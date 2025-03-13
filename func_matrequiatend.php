@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_matrequi_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_matrequi_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -82,77 +82,99 @@ $clmatrequi->rotulo->label("m40_codigo");
     <td valign="top"> 
       <?php
 
-		// filtro para trazer requisição não automáticas
-		$where  = " m40_auto='f' ";
-		if (!isset($trazoutrozexercicios)) {
-		  $trazoutrozexercicios = 'n';
-		}
-		// filtro por departamento
-    if (isset($sFiltro)) {
-      if ($sFiltro == "almox") {
-        $where .= " and m91_depto = ".db_getsession("DB_coddepto");
-      }
-     }
-	   if ($trazoutrozexercicios == 'n') {
-	     $where .= " and cast(extract(year from m40_data) as integer) = ".db_getsession('DB_anousu');
-	   }
-       // filtra todas as requisições pelas não atendidas e as parcialmente atendidas 			
-	   $where .= " group by matrequi.m40_codigo,     "; 
- 	   $where .= "		      matrequi.m40_login,      ";
-	   $where .= "		      matrequi.m40_auto,       ";
- 	   $where .= " 	        matrequi.m40_data,       ";
- 	   $where .= " 	        matrequi.m40_depto,      "; 
- 	   $where .= "		      matrequi.m40_hora,       ";
- 	   $where .= "		      matrequi.m40_obs,        ";
- 	   $where .= "		      matrequiitem.m41_quant,  ";
- 	   $where .= "		      matrequiitem.m41_codigo, ";
-     $where .= "   		    db_depart.descrdepto     "; 	  
-	   $where .= "		    having                     "; 
-	   $where .= "          coalesce(matrequiitem.m41_quant - ";
-	   $where .= "                   ((select coalesce(sum(atendrequiitem.m43_quantatend-coalesce(m46_quantdev,0)),0)";
-       $where .= "                     from atendrequiitem"; 
-       $where .= "                      left join matestoquedevitem on atendrequiitem.m43_codigo = m46_codatendrequiitem";
-       $where .= "                     where m43_codmatrequiitem = m41_codigo) + ";
-       $where .= "                    (select coalesce(sum(m103_quantanulada),0) from matanulitem";
-       $where .= "                     left join matanulitemrequi on matanulitemrequi.m102_matanulitem = matanulitem.m103_codigo";
-       $where .= "                     where m102_matrequiitem = m41_codigo))";
-       $where .= "                   ,0) > 0";       
-
-       if(!isset($pesquisa_chave)){
-        if(isset($campos)==false){
-           if(file_exists("funcoes/db_func_matrequi.php")==true){
-             //include("funcoes/db_func_matrequi.php");
-             $campos = "matrequi.m40_codigo,matrequi.m40_data,matrequi.m40_depto,matrequi.m40_login,matrequi.m40_hora,matrequi.m40_obs,matrequi.m40_auto,db_depart.descrdepto";
-           }else{
-           $campos = "matrequi.*, db_depart.descrdepto";
-           }
+        $m40_codigo = "";
+        $campos = "matrequi.*, db_depart.descrdepto";
+		    // filtro para trazer requisição não automáticas
+		    $where[] = "m40_auto='f'";
+		    if (!isset($trazoutrozexercicios)) {
+		      $trazoutrozexercicios = 'n';
+		    }
+      
+        // filtro para não trazer registro de atendimentos com itens devolvidos
+        if(isset($naoTrazerDevolucoes)) {
+          $where[] = "not exists(
+            select * 
+            from matestoquedevitem as x
+              inner join matestoquedev as a
+              on x.m46_codmatestoquedev = a.m45_codigo
+              inner join atendrequi as b
+              on a.m45_codatendrequi = b.m42_codigo
+              inner join matrequi as c
+              on c.m40_codigo = a.m45_codmatrequi
+            where c.m40_codigo = matrequi.m40_codigo)";
         }
-                if(isset($chave_m40_codigo) && (trim($chave_m40_codigo)!="") ){
-	         $sql = $clmatrequi->sql_query_atentimentos($chave_m40_codigo,$campos,"m40_codigo desc","m40_codigo=$chave_m40_codigo and $where");
-				}else{
-           $sql = $clmatrequi->sql_query_atentimentos("",$campos,"m40_codigo desc","$where");
-				}
-        db_lovrot($sql,15,"()","",$funcao_js);
-        
-      } else {
-
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          
-          $sSql   = $clmatrequi->sql_query_atentimentos($pesquisa_chave,"matrequi.*, db_depart.descrdepto","m40_codigo desc","m40_codigo=$pesquisa_chave and $where");
-          $result = $clmatrequi->sql_record($sSql);
-          if($clmatrequi->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$m40_codigo',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
+		    // filtro por departamento
+        if (isset($sFiltro)) {
+          if ($sFiltro == "almox") {
+            $where[] = "m91_depto = ".db_getsession("DB_coddepto");
           }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
         }
-      }
+	      if ($trazoutrozexercicios == 'n') {
+	        $where[] = "cast(extract(year from m40_data) as integer) = ".db_getsession('DB_anousu');
+	      }
+
+        // filtra todas as requisições pelas não atendidas e as parcialmente atendidas 			
+	      $groupBy  = "group by 
+          matrequi.m40_codigo,      
+ 	      	matrequi.m40_login,      
+	      	matrequi.m40_auto,       
+ 	       	matrequi.m40_data,       
+ 	       	matrequi.m40_depto,       
+ 	      	matrequi.m40_hora,       
+ 	      	matrequi.m40_obs,        
+ 	      	matrequiitem.m41_quant,  
+ 	      	matrequiitem.m41_codigo, 
+          db_depart.descrdepto";
+         	  
+	      $having  = "having                     
+	        coalesce(matrequiitem.m41_quant - 
+	        ((select coalesce(sum(atendrequiitem.m43_quantatend-coalesce(m46_quantdev,0)),0)
+            from atendrequiitem 
+              left join matestoquedevitem on atendrequiitem.m43_codigo = m46_codatendrequiitem
+            where m43_codmatrequiitem = m41_codigo) + 
+            (select coalesce(sum(m103_quantanulada),0) from matanulitem
+                left join matanulitemrequi on matanulitemrequi.m102_matanulitem = matanulitem.m103_codigo
+              where m102_matrequiitem = m41_codigo))
+          ,0) > 0";       
+      
+        if (!isset($pesquisa_chave)) {
+          if (isset($campos) == false) { 
+            if(file_exists("funcoes/db_func_matrequi.php") == true) {
+              $campos = "matrequi.m40_codigo,matrequi.m40_data,matrequi.m40_depto,matrequi.m40_login,matrequi.m40_hora,matrequi.m40_obs,matrequi.m40_auto,db_depart.descrdepto";
+            }
+          }
+          if (isset($chave_m40_codigo) && (trim($chave_m40_codigo) != "")) {
+	          $m40_codigo = $chave_m40_codigo;
+		    	}
+
+          $where = implode(' AND ', $where);
+          $sql = $clmatrequi->sql_query_atentimentos(
+            $m40_codigo,
+            $campos,
+            "m40_codigo desc",
+            "{$where} {$groupBy} {$having}"
+          );
+		    	
+		    	$aRepassa = array();
+          db_lovrot($sql, 15, "()", "", $funcao_js, null, 'NoMe', $aRepassa, false);
+
+        } else {
+          if ($pesquisa_chave != null && $pesquisa_chave != "") {
+            $sSql   = $clmatrequi->sql_query_atentimentos($pesquisa_chave, $campos, "m40_codigo desc", $where);
+            $result = $clmatrequi->sql_record($sSql);
+            if ($clmatrequi->numrows != 0){
+              db_fieldsmemory($result,0);
+              echo "<script>".$funcao_js."('$m40_codigo',false);</script>";
+            } else {
+	           echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
+            }
+          } else {
+	         echo "<script>".$funcao_js."('',false);</script>";
+          }
+        }
       ?>
-     </td>
-   </tr>
+    </td>
+  </tr>
 </table>
 </body>
 </html>
@@ -162,4 +184,11 @@ document.getElementById('btnLimpar').addEventListener('click', function() {
   document.getElementById('chave_m40_codigo').value = '';
   document.getElementById('chave_m40_codigo').setAttribute('value', '');
 });
+</script>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

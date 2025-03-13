@@ -1,0 +1,24 @@
+{
+    "relatorios" : [
+        {
+            "anexo"    : "I",
+            "liberado" : true
+        },
+        {
+            "anexo"    : "II",
+            "liberado" : true
+        },
+        {
+            "anexo"    : "III",
+            "liberado" : true
+        },
+        {
+            "anexo"    : "IV",
+            "liberado" : true
+        },
+        {
+            "anexo"    : "VI",
+            "liberado" : true
+        }
+    ]
+}

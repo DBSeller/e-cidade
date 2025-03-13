@@ -1,31 +1,31 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
+require_once(modification("fpdf151/pdf.php"));
 
 $cliptubase = db_utils::getDao("iptubase");
 $cllote = db_utils::getDao("lote");
@@ -42,6 +42,7 @@ $clrotulo->label("j01_baixa");
 $clrotulo->label("j23_vlrter");
 
 db_postmemory($HTTP_POST_VARS);
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 $head1 = "RELATÓRIO DE MATRÍCULAS";
@@ -85,57 +86,88 @@ if ($process == "S" || $process == "T") {
 }
 
 if (isset($relatorio1)) {
-  if (isset($idbql) && $idbql != "") {
-    $aTemp = split(',', $idbql);
-    sort($aTemp);
 
-    $x = 0;
-    $y = 0;
-    $or = " and (";
+  $aSetorQuadraLote = array();
 
-    for ($i=$aTemp[0]; $i <= end($aTemp); $i++) {
-      if ($i == $aTemp[$y]) { 	
-        $y++;
-      } else {
-        $where .= $or." j34_idbql between ".$aTemp[$x]." and ".$aTemp[($y-1)]." ";	
-        $or = " or ";
-        $x = $y;
-        $i = ($aTemp[$y]-1);
-      }
-    }
-    $where .= $or." j34_idbql between ".$aTemp[$x]." and ".end($aTemp)." )";	
+  $aSetor  = explode(',', $setorParametro);
+  $aQuadra = explode(',', $quadraParametro);
+  $aLote   = explode(',', $loteParametro);
 
+  foreach ($aSetor as $iIndice => $iSetor) {
+    $aSetorQuadraLote[$iIndice]['setor'] = $iSetor;
   }
 
-  $listadas = $idbql;
+  foreach ($aQuadra as $iIndice => $iQuadra) {
+
+    $aSetorQuadraLote[$iIndice]['setor']  = $aSetor[$iIndice];
+    $aSetorQuadraLote[$iIndice]['quadra'] = $iQuadra;
+  }
+
+  foreach ($aLote as $iIndice => $iLote) {
+
+    $aSetorQuadraLote[$iIndice]['setor']  = $aSetor[$iIndice];
+    $aSetorQuadraLote[$iIndice]['quadra'] = $aQuadra[$iIndice];
+    $aSetorQuadraLote[$iIndice]['lote']   = $iLote;
+  }
+
+  $where = "";
+  $sAnd  = "";
+  if($setorParametro != ""){
+
+    $sOr   = " ( ";
+
+    foreach ($aSetorQuadraLote as $iIndice => $aSetorQuadraLote) {
+
+      if ( isset($aSetorQuadraLote['setor']) && $aSetorQuadraLote['setor'] != "" ) {
+        $where .= "$sOr ( j34_setor  = '{$aSetorQuadraLote['setor']}'  ";
+      }
+
+      if ( isset($aSetorQuadraLote['quadra']) && $aSetorQuadraLote['quadra'] != "" ) {
+        $where .= "and  j34_quadra = '{$aSetorQuadraLote['quadra']}' ";
+      }
+
+      if ( isset($aSetorQuadraLote['lote']) && $aSetorQuadraLote['lote'] != "" ) {
+        $where .= "and  j34_lote   = '{$aSetorQuadraLote['lote']}' ";
+      }
+
+      $where .= " )";
+      $sOr    = " or ";
+    }
+
+    if ( !empty($where) ) {
+      $where .= " ) ";
+      $sAnd   = " and ";
+    }
+  }
+
   if (isset($process) && $process == "S") {
-    $where .= " and j01_baixa is not null ";
+    $where .= $sAnd . " j01_baixa is not null ";
   } else if(isset($process) && $process == "N") {
-    $where .= " and j01_baixa is null ";
+    $where .= $sAnd . " j01_baixa is null ";
   }
 }
 
 if ($terreno == 'B') {
-  $where .= "and j39_matric is null";
+  $where .= $sAnd . " j39_matric is null";
 } elseif ($terreno == 'P'){
-  $where .= "and j39_matric is not null";
+  $where .= $sAnd . " j39_matric is not null";
 }
 
-$sCampos  = "distinct iptubase.j01_matric,    \n";
-$sCampos .= "         iptubase.j01_numcgm,    \n";
-$sCampos .= "         cgm.z01_nome,           \n";
-$sCampos .= "         lote.j34_setor,         \n";
-$sCampos .= "         lote.j34_quadra,        \n";
-$sCampos .= "         lote.j34_lote,          \n";
-$sCampos .= "         iptubase.j01_baixa,     \n";
+$sCampos  = "distinct iptubase.j01_matric,                                                                                      \n";
+$sCampos .= "         iptubase.j01_numcgm,                                                                                      \n";
+$sCampos .= "         cgm.z01_nome,                                                                                             \n";
+$sCampos .= "         lote.j34_setor,                                                                                           \n";
+$sCampos .= "         lote.j34_quadra,                                                                                          \n";
+$sCampos .= "         lote.j34_lote,                                                                                            \n";
+$sCampos .= "         iptubase.j01_baixa,                                                                                       \n";
 $sCampos .= "         ( select coalesce(j23_vlrter,0) + coalesce( ( select sum(j22_valor)                                       \n";
 $sCampos .= "                                                         from iptucale                                             \n";
 $sCampos .= "                                                        where j22_matric = j01_matric                              \n";
 $sCampos .= "                                                          and j22_anousu = " . db_getsession("DB_anousu") . ") ,0) \n";
-$sCampos .= "             from iptucalc                                                         \n";
-$sCampos .= "            where j23_matric = j01_matric                                          \n";
-$sCampos .= "              and j23_anousu = " . db_getsession("DB_anousu") . " ) as j23_vlrter, \n";
-$sCampos .= "         iptuant.j40_refant                                                        \n";
+$sCampos .= "             from iptucalc                                                                                         \n";
+$sCampos .= "            where j23_matric = j01_matric                                                                          \n";
+$sCampos .= "              and j23_anousu = " . db_getsession("DB_anousu") . " ) as j23_vlrter,                                 \n";
+$sCampos .= "         iptuant.j40_refant                                                                                        \n";
 
 $result_matric = $cliptubase->sql_record($cliptubase->sql_query_constr( null, $sCampos, "j34_setor, j34_quadra, j34_lote", $where));
 $numrows_matric = $cliptubase->numrows;

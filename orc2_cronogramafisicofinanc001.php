@@ -28,15 +28,15 @@
 /**
  * 
  * @author Iuri Guncthnigg
- * @revision $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.4 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label("o74_sequencial");
 $clrotulo->label("o74_descricao");
@@ -76,7 +76,7 @@ $clrotulo->label("o74_descricao");
                      $sSqlAno    .= "  from pactovalorsaldo   ";
                      $sSqlAno    .= " order by o103_anousu     ";
                      $rsAno       = db_query($sSqlAno);
-                     $aAnos       = db_utils::getColectionByRecord($rsAno);
+                     $aAnos       = db_utils::getCollectionByRecord($rsAno);
                      $aAnosSelect = array();
                      foreach ($aAnos as $oAno) {
                        $aAnosSelect[$oAno->o103_anousu] = $oAno->o103_anousu; 

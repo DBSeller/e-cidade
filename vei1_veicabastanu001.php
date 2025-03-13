@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,42 +25,55 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_veicabastanu_classe.php");
-include("classes/db_veicabast_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_veicabastanu_classe.php"));
+include(modification("classes/db_veicabast_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+
 db_postmemory($HTTP_POST_VARS);
+
 $clveicabast = new cl_veicabast;
 $clveicabastanu = new cl_veicabastanu;
 $db_opcao = 1;
 $db_botao = true;
 $pesq=false;
-if(isset($incluir)){
-  $sqlerro=false;
+
+if (isset($incluir)) {
+  $sqlerro = false;
   db_inicio_transacao();
-  $clveicabastanu->ve74_data=date("Y-m-d",db_getsession("DB_datausu"));
-  $clveicabastanu->ve74_hora=db_hora();
-  $clveicabastanu->ve74_usuario=db_getsession("DB_id_usuario");  
+
+  $clveicabastanu->ve74_data = date("Y-m-d",db_getsession("DB_datausu"));
+  $clveicabastanu->ve74_hora = db_hora();
+  $clveicabastanu->ve74_usuario = db_getsession("DB_id_usuario");  
   $clveicabastanu->incluir($ve74_codigo);
-  $erro_msg=$clveicabastanu->erro_msg;
+
+  $erro_msg = $clveicabastanu->erro_msg;
+
   if ($clveicabastanu->erro_status==0){
-  	$sqlerro=true;
+  	$sqlerro = true;
   }
+
   if ($sqlerro==false){
-  	$clveicabast->ve70_ativo="0";
-  	$clveicabast->ve70_codigo=$ve74_veicabast;
-  	$clveicabast->alterar($ve74_veicabast);  	
-  	if ($clveicabast->erro_status==0){
-  		$sqlerro=true;
-  		$erro_msg=$clveicabast->erro_msg;
-  	}  	  	
+  	$clveicabast->ve70_ativo = "0";
+  	$clveicabast->ve70_codigo = $ve74_veicabast;
+    $clveicabast->alterar($ve74_veicabast);  	
+    
+  	if ($clveicabast->erro_status==0) {
+  		$sqlerro = true;
+  		$erro_msg = $clveicabast->erro_msg;
+    }
+    
+    $daoVeiculoAbastecimentoRetirada = new cl_veicabastretirada();
+    $daoVeiculoAbastecimentoRetirada->excluir(null, "ve73_veicabast = {$ve74_veicabast}");
   }
+  
   db_fim_transacao($sqlerro);
 }
-if (isset($abast)&&$abast!=""){
+
+if (isset($abast) && $abast != "") {
 	$ve74_veicabast=$abast;
 	$pesq=true;
 }
@@ -75,7 +88,7 @@ if (isset($abast)&&$abast!=""){
 </head>
 <body bgcolor=#CCCCCC style='margin-top: 25px'topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 	<?
-	include("forms/db_frmveicabastanu.php");
+	include(modification("forms/db_frmveicabastanu.php"));
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
   ?>
 </body>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -112,7 +112,7 @@ class cl_consistencia {
 					inner join empempenho   on c75_numemp = e60_numemp
 					left join conlancamele on c67_codlan = c70_codlan
 					where count <> " . $clcontranslan->numrows . ") as y";
-					$result = pg_exec($sql) or die($sql);
+					$result = db_query($sql) or die($sql);
 					if (pg_numrows($result) > 0) {
 						echo "doc $c53_coddoc - $c53_descr ... comparando com " . $clcontranslan->numrows . " lanc...";
 						echo "erro - quantidade: " . pg_numrows($result) . "<br>";

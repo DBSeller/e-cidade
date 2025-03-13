@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -72,7 +72,7 @@ select rh01_regist,
 
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem cálculos para o período de '.$mes.' / '.$ano);

@@ -1,39 +1,38 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-//MODULO: fiscal
-include("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clvistusuario->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("y70_data");
 $clrotulo->label("y39_codandam");
 $clrotulo->label("nome");
-$aux = new cl_arquivo_auxiliar; 
+$aux = new cl_arquivo_auxiliar;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 if(isset($opcao) && $opcao == "alterar"){
@@ -55,10 +54,10 @@ if(isset($opcao) && $opcao == "excluir"){
 
 <table border="0" width=750 >
   <tr>
-    <td nowrap title="<?=@$Ty75_codvist?>">
-    <?=@$Ly75_codvist?>
+    <td nowrap title="<?=$Ty75_codvist?>">
+    <?=$Ly75_codvist?>
     </td>
-    <td> 
+    <td>
 <?
 db_input('y75_codvist',5,$Iy75_codvist,true,'text',3,"");
 db_input('y39_codandam',5,$Iy39_codandam,true,'hidden',3,"");
@@ -68,12 +67,10 @@ db_input('y70_data',10,$Iy70_data,true,'hidden',3,'')
        ?>
     </td>
   </tr>
-  
-  
-   
-  <? 
-    if($db_opcao == 1 || $db_opcao == 11) { 
-  ?> 
+
+  <?
+    if($db_opcao == 1 || $db_opcao == 11) {
+  ?>
       <tr>
         <td colspan=2 align=center>
         <?
@@ -99,14 +96,14 @@ db_input('y70_data',10,$Iy70_data,true,'hidden',3,'')
         ?>
        </td>
       </tr>
-      
+
    <?
-    } else {  
+    } else {
    ?>
    <tr>
-    <td nowrap title="<?=@$Ty75_id_usuario?>">
+    <td nowrap title="<?=$Ty75_id_usuario?>">
        <?
-       db_ancora(@$Ly75_id_usuario,"js_pesquisay75_id_usuario(true);",$db_opcao);
+       db_ancora($Ly75_id_usuario,"js_pesquisay75_id_usuario(true);",$db_opcao);
        ?>
     </td>
     <td>
@@ -122,32 +119,32 @@ db_input('y70_data',10,$Iy70_data,true,'hidden',3,'')
        ?>
     </td>
   </tr>
-  
+
    <? }	?>
-  
-  
+
+
   <tr>
-    <td nowrap title="<?=@$Ty75_obs?>">
-       <?=@$Ly75_obs?>
+    <td nowrap title="<?=$Ty75_obs?>">
+       <?=$Ly75_obs?>
     </td>
-    <td> 
+    <td>
 <?
 db_textarea('y75_obs',3,50,$Iy75_obs,true,'text',$db_opcao,"");
 ?>
     </td>
   </tr>
   </table>
-  
+
   </fieldset>
-  
-  
-  
+
+
+
   </td></tr>
   </table>
-  
-  
-  
- <table border="0" align=center> 
+
+
+
+ <table border="0" align=center>
   <tr>
     <td align="center" colspan="2">
       <input name="db_opcao" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
@@ -162,42 +159,46 @@ db_textarea('y75_obs',3,50,$Iy75_obs,true,'text',$db_opcao,"");
   </tr>
   <tr>
     <td align="top" colspan="2">
-   <?
-    $chavepri= array("y75_codvist"=>@$y75_codvist,"y75_id_usuario"=>@$y75_id_usuario);
-    $cliframe_alterar_excluir->chavepri=$chavepri;
-    $cliframe_alterar_excluir->campos="y75_codvist,y75_id_usuario,y75_obs,nome";
-    $cliframe_alterar_excluir->sql=$clvistusuario->sql_query("",""," vistusuario.*,db_usuarios.*",""," y75_codvist = $y75_codvist");
-    $cliframe_alterar_excluir->legenda="Fiscais da Vistoria";
-    $cliframe_alterar_excluir->msg_vazio ="<font size='1'>Nenhum Usuário Cadastrado!</font>";
-    $cliframe_alterar_excluir->textocabec ="darkblue";
-    $cliframe_alterar_excluir->textocorpo ="black";
-    $cliframe_alterar_excluir->fundocabec ="#aacccc";
-    $cliframe_alterar_excluir->fundocorpo ="#ccddcc";
-    $cliframe_alterar_excluir->iframe_height ="170";
-    $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);
+   <?php
+
+     if(!empty($y75_codvist)){
+
+      $chavepri= array("y75_codvist"=>$y75_codvist,"y75_id_usuario"=>$y75_id_usuario);
+      $cliframe_alterar_excluir->chavepri=$chavepri;
+      $cliframe_alterar_excluir->campos="y75_codvist,y75_id_usuario,y75_obs,nome";
+      $cliframe_alterar_excluir->sql=$clvistusuario->sql_query("",""," vistusuario.*,db_usuarios.*",""," y75_codvist = $y75_codvist");
+      $cliframe_alterar_excluir->legenda="Fiscais da Vistoria";
+      $cliframe_alterar_excluir->msg_vazio ="<font size='1'>Nenhum Usuário Cadastrado!</font>";
+      $cliframe_alterar_excluir->textocabec ="darkblue";
+      $cliframe_alterar_excluir->textocorpo ="black";
+      $cliframe_alterar_excluir->fundocabec ="#aacccc";
+      $cliframe_alterar_excluir->fundocorpo ="#ccddcc";
+      $cliframe_alterar_excluir->iframe_height ="170";
+      $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);
+     }
    ?>
    </td>
    <?
-   $resultvistusuario = db_query($clvistusuario->sql_query("",""," vistusuario.*,db_usuarios.*",""," y75_codvist = $y75_codvist"));
-   if(pg_numrows($resultvistusuario) == 0){  
-   ?>
-   
-   <?
-   }else{
-     echo "<script>
+   if(!empty($y75_codvist)){
+
+     $resultvistusuario = db_query($clvistusuario->sql_query("",""," vistusuario.*,db_usuarios.*",""," y75_codvist = $y75_codvist"));
+     if(pg_numrows($resultvistusuario) != 0){
+
+         echo "<script>
            tam = parent.document.formaba;
            for(i=0;i<tam.length;i++){
-	     if(tam[i].name == 'calculo'){
+            if(tam[i].name == 'calculo'){
                parent.iframe_calculo.location.href = 'fis1_calculo001.php?y70_codvist=$y75_codvist';
                parent.document.formaba.calculo.disabled = false;
-	     }
-	   }
+            }
+           }
           </script>";
+     }
    }
    ?>
- </tr>  
+ </tr>
   </table>
-  
+
   </center>
 </form>
 <script>
@@ -209,10 +210,10 @@ function js_pesquisay75_codvist(mostra){
   }
 }
 function js_mostravistorias(chave,erro){
-  document.form1.y70_data.value = chave; 
-  if(erro==true){ 
-    document.form1.y75_codvist.focus(); 
-    document.form1.y75_codvist.value = ''; 
+  document.form1.y70_data.value = chave;
+  if(erro==true){
+    document.form1.y75_codvist.focus();
+    document.form1.y75_codvist.value = '';
   }
 }
 function js_mostravistorias1(chave1,chave2){
@@ -228,10 +229,10 @@ function js_pesquisay75_id_usuario(mostra){
   }
 }
 function js_mostradb_usuarios(chave,erro){
-  document.form1.nome.value = chave; 
-  if(erro==true){ 
-    document.form1.y75_id_usuario.focus(); 
-    document.form1.y75_id_usuario.value = ''; 
+  document.form1.nome.value = chave;
+  if(erro==true){
+    document.form1.y75_id_usuario.focus();
+    document.form1.y75_id_usuario.value = '';
   }
 }
 function js_mostradb_usuarios1(chave1,chave2){
@@ -248,13 +249,13 @@ function js_preenchepesquisa(chave,chave1){
 
 
 function js_seleciona_fiscais() {
-  
+
   var ofiscais = $('y75_id_usuario');
-  
+
   for(i = 0 ; i < ofiscais.options.length ; i++ ) {
     ofiscais.options[i].selected = true;
   }
-  
+
 }
 
 

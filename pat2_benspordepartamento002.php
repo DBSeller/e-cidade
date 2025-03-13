@@ -1,57 +1,147 @@
 <?php
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (c) 2019  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Bens por Departamento
  * @author matheus.felini@dbseller.com.br
  */
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once "model/patrimonio/Bem.model.php";
-require_once "model/patrimonio/BemClassificacao.model.php";
-require_once "model/patrimonio/BemTipoAquisicao.php";
-require_once "model/patrimonio/BemTipoDepreciacao.php";
-require_once "model/patrimonio/PlacaBem.model.php";
-require_once "model/CgmFactory.model.php";
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("fpdf151/pdf.php"));
 
-$oDaoBens           = db_utils::getDao("bens");
-$oDaoBensMater      = db_utils::getDao("bensmater");
-$oDaoDbDepart       = db_utils::getDao("db_depart");;
-$oDaoDepartOrg      = db_utils::getDao("db_departorg");
-$iAnoUsoSessao      = db_getsession("DB_anousu");
+$oDaoBens = new cl_bens();
+$oDaoBensMater = new cl_bensmater();
+$oDaoDbDepart = new cl_db_depart();
+$oDaoDepartOrg = new cl_db_departorg();
+$iAnoUsoSessao = db_getsession("DB_anousu");
 $iInstituicaoSessao = db_getsession("DB_instit");
-$oGet               = db_utils::postMemory($_GET);
+$oGet = db_utils::postMemory($_GET);
+
+
+ini_set("memory_limit", "-1");
+
+$sWhereValor = '';
+
+//
+
+$sDataInicial = $oGet->dtInicial ? implode("-", array_reverse(explode("/", $oGet->dtInicial))) : '';
+$sDataFinal = $oGet->dtFinal ? implode("-", array_reverse(explode("/", $oGet->dtFinal))) : '';
+
+
+if ($sDataInicial && $sDataFinal) {
+    if($tipoData == "1"){
+        $sWhereValor = " t52_dtaqu between '{$sDataInicial}' and '{$sDataFinal}' ";
+    } else {
+        $sWhereValor = " t52_dtinclusao between '{$sDataInicial}' and '{$sDataFinal}' ";
+    }
+} else {
+    if (!$sDataInicial) {
+        $sDataFinal = date('Y-m-d');
+    }
+    if($tipoData == 1){
+        $sWhereValor = $sDataInicial ? " t52_dtaqu >= '{$sDataInicial}' " : " t52_dtaqu <= '{$sDataFinal}' ";
+    } else {
+        $sWhereValor = $sDataInicial ? " t52_dtinclusao >= '{$sDataInicial}' " : " t52_dtinclusao <= '{$sDataFinal}' ";
+    }
+}
+
+function getValores($sIdsBem, $sWhere, $sDataFinal)
+{
+    $date = new DateTime();
+    $date->setTimestamp(db_getsession('DB_datausu'));
+
+    $sWhereValor = $sWhere ? "t52_bem IN({$sIdsBem}) AND {$sWhere}" : "t52_bem IN({$sIdsBem})";
+
+    $sSqlValor = "
+        SELECT
+            t52_bem,
+            Round(sum(round(t52_valaqu, 2)), 2) as valor,
+            Round(Sum(
+            CASE WHEN
+                historicocalculobem.t58_bens IS NULL
+                THEN
+                    t52_valaqu
+                ELSE
+                    historicocalculobem.t58_valoratual
+            END
+            ), 2) AS valor_atual
+        FROM
+            bens
+        LEFT JOIN (
+            SELECT
+                t58_sequencial,
+                t58_bens,
+                t58_valoratual
+            FROM
+                benshistoricocalculobem bhcb
+            INNER JOIN benshistoricocalculo bhc
+                ON bhcb.t58_benshistoricocalculo = bhc.t57_sequencial
+                    AND bhc.t57_datacalculo <= '{$sDataFinal}'
+                    AND bhc.t57_processado is true
+                    AND bhc.t57_ativo is true
+            ) historicocalculobem ON historicocalculobem.t58_bens = t52_bem
+                AND t58_sequencial in (
+                    SELECT
+                        t58_sequencial seq_bhc
+                    FROM
+                        benshistoricocalculobem bhcb1
+                    INNER JOIN benshistoricocalculo bhcb2
+                        ON bhcb1.t58_benshistoricocalculo = bhcb2.t57_sequencial
+                    WHERE
+                        bhcb1.t58_bens = historicocalculobem.t58_bens
+                        AND historicocalculobem.t58_bens IN ({$sIdsBem})
+                        AND bhcb2.t57_processado is true
+                        AND bhcb2.t57_ativo is true
+                        AND bhcb2.t57_datacalculo <= '{$sDataFinal}'
+                    ORDER BY
+                        bhcb2.t57_datacalculo desc limit 1
+                )
+            LEFT JOIN bensbaix
+                ON t55_codbem = t52_bem
+        WHERE
+            t52_instit = " . db_getsession("DB_instit") . "
+            AND {$sWhereValor}
+        GROUP BY
+            t52_bem
+    ";
+
+    $rsValor = db_query($sSqlValor);
+
+    while($row = pg_fetch_assoc($rsValor)) {
+        yield $row;
+    }
+}
+
 
 /**
  * Variavel que armazena todos os filtros utilizados pelo usuário
@@ -59,122 +149,144 @@ $oGet               = db_utils::postMemory($_GET);
  * um implode da string " and " no array.
  * @var array
  */
-$aWhereParametros   = array();
-
 $aWhereParametros[] = "t52_instit = {$iInstituicaoSessao}";
-$sWhereDivisao      = "";
+$sWhereDivisao = "";
 $oGet->lUsarDivisao = $oGet->lUsarDivisao == '1' ? true : false;
+
+/*
+ * Esconde ou não as colunas: Baixa e Estado.
+ */
+$lineBreak = 0;
+$flagColunasVisiveis = true;
+if ($oGet->lImprimeValorAquisicao == "t" && $oGet->filtroColunas == "1") {
+    $lineBreak = 1;
+    $flagColunasVisiveis = false;
+}
 
 /**
  * Filtra o SQL por departamentos divisões
  */
 if (trim($oGet->sDepartamentos) != "") {
+    $sWhereDivisao .= "and db_depart.instit = {$iInstituicaoSessao}";
 
-  $sWhereDivisao .= "and db_depart.instit = ".db_getsession("DB_instit");
-  if (trim($oGet->sDivisoes) != "") {
+   // $aWhereParametros[] = "t30_depto in({$oGet->sDepartamentos})";
 
-    $aWhereParametros[] = "t33_divisao in ({$oGet->sDivisoes})";
-    if ($oGet->lUsarDivisao) {
-      $sWhereDivisao .= " and t30_codigo in ({$oGet->sDivisoes})";
+    if (trim($oGet->sDivisoes) != "") {
+        $aWhereParametros[] = "t33_divisao in ({$oGet->sDivisoes})";
+
+        if ($oGet->lUsarDivisao) {
+            $sWhereDivisao .= " and t30_codigo in ({$oGet->sDivisoes})";
+        }
     }
-  }
-  $sWhereDepartamentos = "coddepto in ({$oGet->sDepartamentos}) $sWhereDivisao";
-  $sSqlDbDepartamentos = $oDaoDbDepart->sql_query_div(null, "*", null, $sWhereDepartamentos);
-  $lTodosDepartamentos = false;
-
+    $sWhereDepartamentos = "coddepto in ({$oGet->sDepartamentos}) $sWhereDivisao";
+    $sSqlDbDepartamentos = $oDaoDbDepart->sql_query_div(null, "*", null, $sWhereDepartamentos);
+    $lTodosDepartamentos = false;
 } else {
-
-  $sSqlDbDepartamentos = $oDaoDbDepart->sql_query_div(null, "*", null, "o40_instit = {$iInstituicaoSessao}");
-  $lTodosDepartamentos = true;
+    $sSqlDbDepartamentos = $oDaoDbDepart->sql_query_div(null, "*", null, "o40_instit = {$iInstituicaoSessao}");
+    $lTodosDepartamentos = true;
 }
 
 $rsDbDepartamentos = $oDaoDbDepart->sql_record($sSqlDbDepartamentos);
 if ($oDaoDbDepart->numrows == 0) {
-  
-  $oParms = new stdClass();
-  $oParms->sDepartamentos = $oGet->sDepartamentos;
-  $sMsg = _M('patrimonial.patrimonio.pat2_benspordepartamento002.departamento_nao_encontrado',$oParms);
-  db_redireciona("db_erros.php?fechar=true&db_erro=" . $sMsg);
+    $oParms = new stdClass();
+    $oParms->sDepartamentos = $oGet->sDepartamentos;
+    $sMsg = _M('patrimonial.patrimonio.pat2_benspordepartamento002.departamento_nao_encontrado', $oParms);
+    db_redireciona("db_erros.php?fechar=true&db_erro=" . $sMsg);
 }
 
 /**
  * Classificação
  */
-if (trim($oGet->iClassificacao) != "") {
-  $aWhereParametros[] = "t64_class = '{$oGet->iClassificacao}'";
+if (trim($oGet->sClabens) != "") {
+    $aClabens = explode(',', $sClabens);
+    $sClassificacao = '';
+
+    foreach($aClabens as $classificacao) {
+        $sClassificacao .=  $sClassificacao ? ", '{$classificacao}'" : "'{$classificacao}'";
+    }
+
+    $aWhereParametros[] = "t64_class IN ({$sClassificacao})";
 }
+
+if (trim($oGet->sOrgaos) != '') {
+    $sJoinOrgao = "INNER JOIN db_departorg ON db01_coddepto = db_depart.coddepto AND db01_anousu = {$iAnoUsoSessao}";
+    $aWhereParametros[] = "db01_orgao IN ({$oGet->sOrgaos}) AND db01_anousu = {$iAnoUsoSessao}";
+}
+
 /**
  * Bens
  */
 if (trim($oGet->sBens) != "") {
-  $aWhereParametros[] = "t52_bem in ({$oGet->sBens})";
+    $aWhereParametros[] = "t52_bem in ({$oGet->sBens})";
 }
 /**
  * Situação dos Bens
  */
 if (trim($oGet->sSituacaoBens) != "") {
+    $sSqlSituaBens = "(select t56_situac ";
+    $sSqlSituaBens .= "   from histbem ";
+    $sSqlSituaBens .= "  where t56_codbem = t52_bem";
+    $sSqlSituaBens .= "  order by t56_data desc ";
+    $sSqlSituaBens .= "  limit 1 ) in ({$oGet->sSituacaoBens})";
 
-  $sSqlSituaBens       = "(select t56_situac ";
-  $sSqlSituaBens      .= "   from histbem ";
-  $sSqlSituaBens      .= "  where t56_codbem = t52_bem";
-  $sSqlSituaBens      .= "  order by t56_data desc ";
-  $sSqlSituaBens      .= "  limit 1 ) in ({$oGet->sSituacaoBens})";
-  $aWhereParametros[]  = $sSqlSituaBens;
-}
-/**
- * Filtro de baixados ou nao
- */
-if (trim($oGet->iListarBens) == 2) {
-
-	$aWhereParametros[] = "t55_codbem is null";
-}elseif (trim($oGet->iListarBens) == 3) {
-	
-	$aWhereParametros[] = "t55_codbem is not null";
+    $aWhereParametros[] = $sSqlSituaBens;
 }
 
 /**
  * Contas Estruturais
  */
 if (trim($oGet->sContasEstruturais) != "") {
+    $aWhereParametros[] = "c60_codcon in ({$oGet->sContasEstruturais})";
 
-  $aWhereParametros[] = "c60_codcon in ({$oGet->sContasEstruturais})";
-
-  $oDaoConplano       = db_utils::getDao("conplano");
-  $sWhereConplano     = "c60_codcon in {$contas} and c60_anousu = {$iAnoUsoSessao}";
-  $sSqlConplano       = $oDaoConplano->sql_query_file(null, null, "*", null, $sWhereConplano);
-  $rsConplano         = $oDaoConplano->sql_record($sSqlConplano);
-  /*
-   * Configura um header para o relatório caso tenha somente um plano de conta escolhido
-   */
-  if ($oDaoConplano->numrows == 1) {
-
-    $oConta  = db_utils::fieldsMemory($rsConplano, 0);
-    $head6   = "Conta: {$oConta->c60_estrut} - {$oConta->c60_descr}";
-  }
+    $oDaoConplano = new cl_conplano();
+    $sWhereConplano = "c60_codcon in ({$oGet->sContasEstruturais}) and c60_anousu = {$iAnoUsoSessao}";
+    $sSqlConplano = $oDaoConplano->sql_query_file(null, null, "*", null, $sWhereConplano);
+    $rsConplano = $oDaoConplano->sql_record($sSqlConplano);
+    /*
+     * Configura um header para o relatório caso tenha somente um plano de conta escolhido
+     */
+    if ($oDaoConplano->numrows == 1) {
+        $oConta = db_utils::fieldsMemory($rsConplano, 0);
+        $head6 = "Conta: {$oConta->c60_estrut} - {$oConta->c60_descr}";
+    }
 }
 
 /**
  * Configurações da data de aquisição
  */
-if (trim($oGet->dtAquisicaoInicial) != "" && trim($oGet->dtAquisicaoFinal) == "") {
 
-  $dtAquisicaoInicial = implode("-", array_reverse(explode("/", $oGet->dtAquisicaoInicial)));
-  $aWhereParametros[] = "t52_dtaqu >= cast('{$dtAquisicaoInicial}' as date)";
-} else if (trim($oGet->dtAquisicaoInicial) == "" && trim($oGet->dtAquisicaoFinal) != "") {
-
-  $dtAquisicaoFinal   = implode("-", array_reverse(explode("/", $oGet->dtAquisicaoFinal)));
-  $aWhereParametros[] = "t52_dtaqu <= cast('{$dtAquisicaoFinal}' as date)";
-} else if (trim($oGet->dtAquisicaoInicial) != "" && trim($oGet->dtAquisicaoFinal) != "") {
-
-  $dtAquisicaoInicial = implode("-", array_reverse(explode("/", $oGet->dtAquisicaoInicial)));
-  $dtAquisicaoFinal   = implode("-", array_reverse(explode("/", $oGet->dtAquisicaoFinal)));
-  $aWhereParametros[] = "t52_dtaqu between cast('{$dtAquisicaoInicial}' as date) and cast('{$dtAquisicaoFinal}' as date)";
+if (trim($oGet->dtInicial) != "" && trim($oGet->dtFinal) == "") {
+    $dtInicial = implode("-", array_reverse(explode("/", $oGet->dtInicial)));
+    if($tipoData == "1"){
+        $aWhereParametros[] = "t52_dtaqu >= cast('{$dtInicial}' as date)";
+    } else {
+        $aWhereParametros[] = "t52_dtinclusao >= cast('{$dtInicial}' as date)";
+    }
+} else {
+    if (trim($oGet->dtInicial) == "" && trim($oGet->dtFinal) != "") {
+        $dtFinal = implode("-", array_reverse(explode("/", $oGet->dtFinal)));
+        if($tipoData == "1"){
+            $aWhereParametros[] = "t52_dtaqu <= cast('{$dtFinal}' as date)";
+        } else {
+            $aWhereParametros[] = "t52_dtinclusao <= cast('{$dtFinal}' as date)";
+        }
+    } else {
+        if (trim($oGet->dtInicial) != "" && trim($oGet->dtFinal) != "") {
+            $dtInicial = implode("-", array_reverse(explode("/", $oGet->dtInicial)));
+            $dtFinal = implode("-", array_reverse(explode("/", $oGet->dtFinal)));
+            if($tipoData == "1"){
+                $aWhereParametros[] = "t52_dtaqu between cast('{$dtInicial}' as date) and cast('{$dtFinal}' as date)";
+            } else {
+                $aWhereParametros[] = "t52_dtinclusao between cast('{$dtInicial}' as date) and cast('{$dtFinal}' as date)";
+            }
+        }
+    }
 }
 /**
  * Descrição do Bem
  */
 if (trim($oGet->sDescricaoBem) != "") {
-  $aWhereParametros[] = "t52_descr ilike '%{$oGet->sDescricaoBem}%'";
+    $aWhereParametros[] = "t52_descr ilike '%{$oGet->sDescricaoBem}%'";
 }
 
 /**
@@ -182,86 +294,139 @@ if (trim($oGet->sDescricaoBem) != "") {
  */
 $sOrdemBuscaBens = null;
 switch ($oGet->iOrdem) {
+    /*
+     * Placa
+     */
+    case "1":
+        $sOrdemBuscaBens = "t64_class, t52_ident";
+        break;
 
-  /*
-   * Placa
-   */
-  case "1":
-    $sOrdemBuscaBens = "t64_class, t52_ident::numeric";
-    break;
+    /*
+     * Descrição
+     */
+    case "3":
+        $sOrdemBuscaBens = "t52_descr";
+        break;
 
-  /*
-   * Descrição
-   */
-  case "3":
-    $sOrdemBuscaBens = "t52_descr";
-    break;
-
-  /*
-   * Ordem Default
-   */
-  default:
-    $sOrdemBuscaBens = "t52_bem";
+    /*
+     * Ordem Default
+     */
+    default:
+        $sOrdemBuscaBens = "t52_bem";
 }
 
 /**
  * Tratamento da propriedade iConvenio
  */
 switch ($oGet->iConvenio) {
-
-  /*
-   * Ambos vinculados a convênio
-   */
-  case "2":
-    if (!empty($oGet->sCedentes)) {
-      $aWhereParametros[] = "t04_sequencial in({$oGet->sCedentes})";
-    } else {
-      $aWhereParametros[] = "t04_sequencial is not null";
-    }
-    break;
+    /*
+     * Ambos vinculados a convênio
+     */
+    case "2":
+        if (!empty($oGet->sCedentes)) {
+            $aWhereParametros[] = "t04_sequencial in({$oGet->sCedentes})";
+        } else {
+            $aWhereParametros[] = "t04_sequencial is not null";
+        }
+        break;
 
     /*
      * Apenas não vinculados a convênio
      */
-  case "3":
-    $aWhereParametros[] = "t04_sequencial is null";
-    break;
+    case "3":
+        $aWhereParametros[] = "t04_sequencial is null";
+        break;
 }
 
 /**
  * Configura as datas de baixa selecionado pelo usuário
  */
-$dtBaixaInicial   = "";
-$dtBaixaFinal     = "";
+$dtBaixaInicial = "";
+$dtBaixaFinal = "";
+$baixaini = "";
 if (trim($oGet->dtBaixaInicial) != "" && trim($oGet->dtBaixaFinal) != "") {
-
-  $dtBaixaInicial = implode("-", array_reverse(explode("/", $oGet->dtBaixaInicial)));
-  $dtBaixaFinal   = implode("-", array_reverse(explode("/", $oGet->dtBaixaFinal)));
-} else if (trim($oGet->dtBaixaInicial) != "" && trim($oGet->dtBaixaFinal) == "") {
-
-  $dtBaixaInicial = implode("-", array_reverse(explode("/", $oGet->dtBaixaInicial)));
-  $dtBaixaFinal   = date("Y-m-d", $iAnoUsoSessao);
-} else if (trim($oGet->dtBaixaInicial) == "" && trim($oGet->dtBaixaFinal) != "") {
-
-  $dtBaixaInicial = date("Y-m-d", $iAnoUsoSessao);
-  $dtBaixaFinal   = implode("-", array_reverse(explode("/", $oGet->dtBaixaFinal)));
+    $dtBaixaInicial = implode("-", array_reverse(explode("/", $oGet->dtBaixaInicial)));
+    $dtBaixaFinal = implode("-", array_reverse(explode("/", $oGet->dtBaixaFinal)));
+} else {
+    if (trim($oGet->dtBaixaInicial) != "" && trim($oGet->dtBaixaFinal) == "") {
+        $dtBaixaInicial = implode("-", array_reverse(explode("/", $oGet->dtBaixaInicial)));
+        $dtBaixaFinal = date("Y-m-d", $iAnoUsoSessao);
+    } else {
+        if (trim($oGet->dtBaixaInicial) == "" && trim($oGet->dtBaixaFinal) != "") {
+            $dtBaixaInicial = date("Y-m-d", $iAnoUsoSessao);
+            $dtBaixaFinal = implode("-", array_reverse(explode("/", $oGet->dtBaixaFinal)));
+        }
+    }
 }
 
+/**
+ * Adiciona a busca por data de baixa caso o usuário tenha setado as datas no formulário
+ * Caso o usuário tenha filtrado por itens não baixados, o filtro de período de baixa será ignorado.
+ * Caso o usuário tenha filtrado por todos os itens, busca os baixados no período e os não baixados independente do período de baixa.
+ * Caso o usuário tenha filtrado por itens baixados, busca somente os baixados no período.
+ */
+$sWhereFiltroBaixa = '';
+if (!empty($oGet->iListarBens)) {
+
+    $lPeriodoBaixa = false;
+
+    if (isset($dtBaixaInicial) && isset($dtBaixaFinal)) {
+        if ($dtBaixaInicial != '' && $dtBaixaFinal != '') {
+            $dtBaixaInicial = implode('-', array_reverse(explode('/', $dtBaixaInicial)));
+            $dtBaixaFinal = implode('-', array_reverse(explode('/', $dtBaixaFinal)));
+            $sWhereBaixados = "  t55_codbem is not null and t55_baixa between '$dtBaixaInicial' and '$dtBaixaFinal' ";
+            $sWhereSemBaixa = "  (t55_codbem is null or t55_baixa not between '$dtBaixaInicial' and '$dtBaixaFinal') ";
+
+            $lPeriodoBaixa = true;
+        } else {
+            if ($dtBaixaInicial != '' && $dtBaixaFinal == '') {
+                $dtBaixaInicial = implode('-', array_reverse(explode('/', $dtBaixaInicial)));
+                $sWhereBaixados = " and t55_codbem is not null and t55_baixa >= '$dtBaixaInicial' ";
+                $sWhereSemBaixa = " and (t55_codbem is null or t55_baixa >= '$dtBaixaInicial' )";
+
+                $lPeriodoBaixa = true;
+            } else {
+                if ($baixaini == '' && $dtBaixaFinal != '') {
+                    $dtBaixaFinal = implode('-', array_reverse(explode('/', $dtBaixaFinal)));
+                    $sWhereBaixados = " and t55_codbem is not null and t55_baixa <= '$dtBaixaFinal' ";
+                    $sWhereSemBaixa = " and (t55_codbem is null or t55_baixa <= '$dtBaixaFinal' )";
+
+                    $lPeriodoBaixa = true;
+                }
+            }
+        }
+    }
+
+    if ($oGet->iListarBens == 3) {
+        $sWhereFiltroBaixa .= ($lPeriodoBaixa) ? $sWhereBaixados : "t55_codbem is not null ";
+    } else {
+        if ($oGet->iListarBens == 2) {
+            $sData = date("Y-m-d", db_getsession('DB_datausu'));
+
+            if (isset($sDataFinal) && trim($sDataFinal) != '') {
+                $sData = $sDataFinal;
+            } else if (!empty($dtBaixaFinal)) {
+                $sData = implode('-', array_reverse(explode('/', $dtBaixaFinal)));
+            }
+
+            $sWhereFiltroBaixa .= ($lPeriodoBaixa) ? $sWhereSemBaixa : "(t55_codbem is null or t55_baixa > '{$sData}') ";
+        }
+    }
+} else {
+    $sWhereFiltroBaixa .= "( t55_codbem  is null or t55_baixa < '" . date("Y-m-d", db_getsession('DB_datausu')) . "' ) ";
+}
+
+if($sWhereFiltroBaixa != "") {
+
+  $aWhereParametros[] = $sWhereFiltroBaixa;
+}
 
 /**
  * Query que busca os bens que se encaixam nos filtros selecionados pelo usuário
  */
 $sWhereParametros = implode(" and ", $aWhereParametros);
 
-/**
- * Adiciona a busca por data de baixa caso o usuário tenha setado as datas no formulário
- * Esta parte do WHERE deve ser concatenado pois utiliza um OR ao invés de AND
- */
-if (!empty($dtBaixaInicial) && !empty($dtBaixaFinal)) {
-  $sWhereParametros .= " or t55_baixa between cast('{$dtBaixaInicial}' as date) and cast('{$dtBaixaFinal}' as date)";
-}
-
-$sCamposBens  = "case when t54_codbem is null ";
+$sCamposBens = "case when t54_codbem is null ";
 $sCamposBens .= "     then 'Material'";
 $sCamposBens .= "     else 'Imóvel'";
 $sCamposBens .= " end as tipobem,";
@@ -273,7 +438,18 @@ $sCamposBens .= " end as situacaobem,";
 /**
  * t44_valoratual = valor depreciavel
  */
-$sCamposBens .= "((t52_valaqu - t44_valorresidual) - t44_valoratual ) as valordepreciado,";
+
+$sCamposBens .= "(
+    select t58_sequencial from benshistoricocalculobem
+    inner join benshistoricocalculo
+      on benshistoricocalculo.t57_sequencial = benshistoricocalculobem.t58_benshistoricocalculo
+    where t57_ativo is true and
+      t57_processado is true and
+      t58_bens = t52_bem
+    limit 1
+  ) as depreciado,
+";
+
 $sCamposBens .= "(t44_valoratual + t44_valorresidual) as valoratual,";
 $sCamposBens .= "bens.*, ";
 $sCamposBens .= "db_depart.*, ";
@@ -297,63 +473,73 @@ $sCamposBens .= " order by t56_histbem desc limit 1 ) as estadobem";
  * Monta o SQL de acordo validando se o usuário selecionou todos departamentos ou não
  */
 if ($lTodosDepartamentos) {
+    $sSqlBens = "   select {$sCamposBens} ";
+    $sSqlBens .= "     from bens ";
+    $sSqlBens .= "          inner join db_depart      on db_depart.coddepto 				= bens.t52_depart";
+    $sSqlBens .= "          left  join bensdiv        on t52_bem 										= t33_bem";
+    $sSqlBens .= "          left  join departdiv      on t33_divisao 								= t30_codigo";
 
-  $sSqlBens  = "   select {$sCamposBens} ";
-  $sSqlBens .= "     from bens ";
-  $sSqlBens .= "          inner join db_depart      on db_depart.coddepto 				= bens.t52_depart";
-  $sSqlBens .= "          left  join bensdiv        on t52_bem 										= t33_bem";
-  $sSqlBens .= "          left  join departdiv      on t33_divisao 								= t30_codigo";
-  
-  $sSqlBens .= "          inner join clabens        on clabens.t64_codcla 				= bens.t52_codcla";
-  $sSqlBens .= "          inner join clabensconplano on clabensconplano.t86_clabens = clabens.t64_codcla ";
-  $sSqlBens .= "                                   and clabensconplano.t86_anousu  = {$iAnoUsoSessao}";
-  $sSqlBens .= "          inner join conplano        on conplano.c60_codcon = clabensconplano.t86_conplano ";
-  $sSqlBens .= "                                   and conplano.c60_anousu 				= {$iAnoUsoSessao}";
-  
-  $sSqlBens .= "          inner join db_departorg   on db_departorg.db01_coddepto = db_depart.coddepto";
-  $sSqlBens .= "                                   and db_departorg.db01_anousu   = {$iAnoUsoSessao}";
-  $sSqlBens .= "          left join benscedente     on t09_bem                		= t52_bem";
-  $sSqlBens .= "          left join benscadcedente  on t09_benscadcedente     		= t04_sequencial";
-  $sSqlBens .= "  				left join bensmater       on t53_codbem                 = t52_bem";
-  $sSqlBens .= "  				left join bensimoveis     on t54_codbem                 = t52_bem";
-  $sSqlBens .= "  				left join bensbaix        on t55_codbem                 = t52_bem";
-  $sSqlBens .= "  				left join bensdepreciacao on t44_bens                   = t52_bem";
-  $sSqlBens .= "    where {$sWhereParametros}";
-  $sSqlBens .= " order by db01_orgao, db01_coddepto, t52_depart, t30_codigo, {$sOrdemBuscaBens}";
+    $sSqlBens .= "          inner join clabens        on clabens.t64_codcla 				= bens.t52_codcla";
+    $sSqlBens .= "          inner join clabensconplano on clabensconplano.t86_clabens = clabens.t64_codcla ";
+    $sSqlBens .= "                                   and clabensconplano.t86_anousu  = {$iAnoUsoSessao}";
+    $sSqlBens .= "          inner join conplano        on conplano.c60_codcon = clabensconplano.t86_conplano ";
+    $sSqlBens .= "                                   and conplano.c60_anousu 				= {$iAnoUsoSessao}";
 
+    $sSqlBens .= "          inner join db_departorg   on db_departorg.db01_coddepto = db_depart.coddepto";
+    $sSqlBens .= "                                   and db_departorg.db01_anousu   = {$iAnoUsoSessao}";
+    $sSqlBens .= "          left join benscedente     on t09_bem                		= t52_bem";
+    $sSqlBens .= "          left join benscadcedente  on t09_benscadcedente     		= t04_sequencial";
+    $sSqlBens .= "  				left join bensmater       on t53_codbem                 = t52_bem";
+    $sSqlBens .= "  				left join bensimoveis     on t54_codbem                 = t52_bem";
+    $sSqlBens .= "  				left join bensbaix        on t55_codbem                 = t52_bem";
+    $sSqlBens .= "  				left join bensdepreciacao on t44_bens                   = t52_bem";
+    $sSqlBens .= "    where {$sWhereParametros}";
+    $sSqlBens .= " order by db01_orgao, db01_coddepto, t52_depart, t30_codigo, {$sOrdemBuscaBens} ";
 } else {
+    $sSqlBens = "   select {$sCamposBens}";
+    $sSqlBens .= "          from bens ";
+    $sSqlBens .= "          inner join db_depart 			 on db_depart.coddepto  = bens.t52_depart ";
+    $sSqlBens .= "          left  join bensdiv   			 on t52_bem 						 = t33_bem ";
+    $sSqlBens .= "          left  join departdiv 			 on t33_divisao         = t30_codigo ";
 
-  $sSqlBens  = "   select {$sCamposBens}";
-  $sSqlBens .= "          from bens ";
-  $sSqlBens .= "          inner join db_depart 			 on db_depart.coddepto  = bens.t52_depart ";
-  $sSqlBens .= "          left  join bensdiv   			 on t52_bem 						 = t33_bem ";
-  $sSqlBens .= "          left  join departdiv 			 on t33_divisao         = t30_codigo ";
-  
-  $sSqlBens .= "          inner join clabens   			 on clabens.t64_codcla  = bens.t52_codcla ";
-  $sSqlBens .= "         inner join clabensconplano  on clabensconplano.t86_clabens = clabens.t64_codcla ";
-  $sSqlBens .= "                                    and clabensconplano.t86_anousu  = {$iAnoUsoSessao}";
-  $sSqlBens .= "         inner join conplano         on conplano.c60_codcon = clabensconplano.t86_conplano ";
-  $sSqlBens .= " 	                             		  and conplano.c60_anousu = {$iAnoUsoSessao}";
-  
-  $sSqlBens .= "  				left  join benscedente     on t09_bem            = t52_bem";
-  $sSqlBens .= "  				left  join benscadcedente  on t09_benscadcedente = t04_sequencial";
-  $sSqlBens .= "  				left  join bensmater       on t53_codbem         = t52_bem";
-  $sSqlBens .= "  				left  join bensimoveis     on t54_codbem         = t52_bem";
-  $sSqlBens .= "  				left  join bensbaix        on t55_codbem         = t52_bem";
-  $sSqlBens .= "  				left  join bensdepreciacao on t44_bens           = t52_bem";
-  $sSqlBens .= " 		where t52_depart in ({$oGet->sDepartamentos}) and {$sWhereParametros} ";
-  $sSqlBens .= " order by t52_depart,t30_codigo, {$sOrdemBuscaBens} ";
+    $sSqlBens .= "          inner join clabens   			 on clabens.t64_codcla  = bens.t52_codcla ";
+    $sSqlBens .= "         inner join clabensconplano  on clabensconplano.t86_clabens = clabens.t64_codcla ";
+    $sSqlBens .= "                                    and clabensconplano.t86_anousu  = {$iAnoUsoSessao}";
+    $sSqlBens .= "         inner join conplano         on conplano.c60_codcon = clabensconplano.t86_conplano ";
+    $sSqlBens .= " 	                             		  and conplano.c60_anousu = {$iAnoUsoSessao}";
+    $sSqlBens .= $sJoinOrgao;
+
+    $sSqlBens .= "  				left  join benscedente     on t09_bem            = t52_bem";
+    $sSqlBens .= "  				left  join benscadcedente  on t09_benscadcedente = t04_sequencial";
+    $sSqlBens .= "  				left  join bensmater       on t53_codbem         = t52_bem";
+    $sSqlBens .= "  				left  join bensimoveis     on t54_codbem         = t52_bem";
+    $sSqlBens .= "  				left  join bensbaix        on t55_codbem         = t52_bem";
+    $sSqlBens .= "  				left  join bensdepreciacao on t44_bens           = t52_bem";
+    $sSqlBens .= " 		where t52_depart in ({$oGet->sDepartamentos}) and {$sWhereParametros} ";
+    $sSqlBens .= " order by t52_depart,t30_codigo, {$sOrdemBuscaBens} ";
 }
 
 /**
  * Executa a query que busca os bens que serão impressos no relatório
  */
-$rsBuscaBens      = db_query($sSqlBens);
+$rsBuscaBens = db_query($sSqlBens);
 $iLinhasBuscaBens = pg_num_rows($rsBuscaBens);
 if ($iLinhasBuscaBens == 0) {
-  $sMsg = _M('patrimonial.patrimonio.pat2_benspordepartamento002.nao_existem_bens');
-  db_redireciona("db_erros.php?fechar=true&db_erro=" . $sMsg);
-  exit;
+    $sMsg = _M('patrimonial.patrimonio.pat2_benspordepartamento002.nao_existem_bens');
+    db_redireciona("db_erros.php?fechar=true&db_erro=" . $sMsg);
+    exit;
+}
+
+$sIdsBem = '';
+
+while ($row = pg_fetch_assoc($rsBuscaBens)) {
+    $sIdsBem .= $sIdsBem ? ", {$row['t52_bem']}" : $row['t52_bem'];
+}
+
+$arrayValores = array();
+foreach (getValores($sIdsBem, $sWhereValor, $sDataFinal) as $bem) {
+    $arrayValores[$bem['t52_bem']]['valor'] = $bem['valor'];
+    $arrayValores[$bem['t52_bem']]['valor_atual'] = $bem['valor_atual'];
 }
 
 /**
@@ -377,380 +563,490 @@ $aDepartamentos = array();
  * novo array de dados com todos os bens já organizados por divisão e classificação.
  */
 for ($iRow = 0; $iRow < $iLinhasBuscaBens; $iRow++) {
+    $oBem = db_utils::fieldsMemory($rsBuscaBens, $iRow);
+    $bemModel = new Bem($oBem->t52_bem);
 
-  $oBem = db_utils::fieldsMemory($rsBuscaBens, $iRow);
-  
-  /**
-   * Busca o órgao
-   */
-  if (!array_key_exists($oBem->t52_depart, $aOrgaosUnidade)) {
-
-    $sCamposDepartamentoOrgao = "db01_orgao, db01_unidade, o40_descr as orgao, o41_descr as unidade";
-    $sWhereDepartamentoOrgao  = "db01_coddepto in ({$oBem->t52_depart}) and db01_anousu = {$iAnoUsoSessao}";
-    $sSqlDepartamentoOrgao    = $oDaoDepartOrg->sql_query_orgunid(null, null, $sCamposDepartamentoOrgao, null, $sWhereDepartamentoOrgao);
-    $rsDepartamentoOrgao      = $oDaoDepartOrg->sql_record($sSqlDepartamentoOrgao);
+    $valorAtual = $arrayValores[$oBem->t52_bem]['valor_atual'];
 
     /**
-     * Adicionamos o órgao/unidade para o departamento dentro de um array $aOrgaosUnidade
-     * Para usar posteriormente durante a impressão das páginas do relatório
+     * Busca o órgao
      */
-    $oDadoDepartamentoOrgao                        = db_utils::fieldsMemory($rsDepartamentoOrgao, 0);
-    $oDadoDepartamentoOrgao->codigodepartamento    = $oBem->t52_depart;
-    $oDadoDepartamentoOrgao->descricaodepartamento = $oBem->descrdepto;
-    $aOrgaosUnidade[$oBem->t52_depart]             = $oDadoDepartamentoOrgao;
-  }
+    if (!array_key_exists($oBem->t52_depart, $aOrgaosUnidade)) {
+        $sCamposDepartamentoOrgao = "db01_orgao, db01_unidade, o40_descr as orgao, o41_descr as unidade";
+        $sWhereDepartamentoOrgao = "db01_coddepto in ({$oBem->t52_depart}) and db01_anousu = {$iAnoUsoSessao}";
+        $sSqlDepartamentoOrgao = $oDaoDepartOrg->sql_query_orgunid(null, null, $sCamposDepartamentoOrgao, null,
+          $sWhereDepartamentoOrgao);
+        $rsDepartamentoOrgao = $oDaoDepartOrg->sql_record($sSqlDepartamentoOrgao);
 
-  /**
-   * Configura a variável t30_codigo caso o bem não tenha divisao
-   */
-  $iCodigoDivisao    = $oBem->t30_codigo;
-  $sDescricaoDivisao = $oBem->t30_descr;
-  if (empty($oBem->t30_codigo)) {
-
-    $iCodigoDivisao    = 0;
-    $sDescricaoDivisao = "BENS SEM DIVISÃO";
-  }
-  
-  $iDepartamento                = $oBem->t52_depart;
-  $sDepartamento                = $oBem->descrdepto;
-  
-  $iClassificacao               = $oBem->t64_codcla;
-  $sClassificacao               = $oBem->t64_class;
-  $sClassificacaoDescricao      = $oBem->t64_descr;
-  
-  $before                       = memory_get_usage();
-  $oStdBem                      = new stdClass();
-  $oStdBem->t52_depart          = $oBem->t52_depart;
-  $oStdBem->t52_dtaqu           = $oBem->t52_dtaqu;
-  $oStdBem->t52_bem             = $oBem->t52_bem;
-  $oStdBem->t52_obs							= $oBem->t52_obs;
-  $oStdBem->t52_descr           = substr($oBem->t52_descr,0, 35);
-  $oStdBem->t52_valaqu          = $oBem->t52_valaqu;
-  $oStdBem->t44_valorresidual   = $oBem->t44_valorresidual;
-  $oStdBem->valordepreciado     = $oBem->valordepreciado;
-  $oStdBem->valoratual          = $oBem->valoratual;
-  $oStdBem->t44_valoratual      = $oBem->t44_valoratual;
-  $oStdBem->estadobem           = $oBem->estadobem;
-  $oStdBem->tipobem             = $oBem->tipobem;
-  $oStdBem->situacaobem         = $oBem->situacaobem;
-  $oStdBem->t52_depart          = $oBem->t52_depart;
-  $oStdBem->t52_ident           = $oBem->t52_ident;
-  $after                        = memory_get_usage();
-  $allocatedSize                = ($after - $before);
-  unset($oBem);
-  
-
-  /**
-   * Criamos um novo array contendo os dados já organizados que serão impressos no relatório.
-   *
-   * Valida se o Departamento já existe no array que deve ser configurado.
-   */
-  if (empty($aDepartamentos[$iDepartamento])) {
-
-    /*
-     * Caso o departamento não exista, é criado uma estrutura dentro do array $aDepartamentos
-     * com os dados que serão preenchidos no decorrer do FOR
-     */
-    $oDepartamento                                                                                        = new stdClass();
-    $oDepartamento->iCodigoDepartamento                                                                   = $iDepartamento;
-    $oDepartamento->sDescricaoDepartamento                                                                = $sDepartamento;
-    $oDepartamento->aDivisao                                                                              = array();
-    $oDepartamento->aDivisao[$iCodigoDivisao]                                                             = new stdClass();
-    $oDepartamento->aDivisao[$iCodigoDivisao]->iCodigoDivisao                                             = $iCodigoDivisao;
-    $oDepartamento->aDivisao[$iCodigoDivisao]->sDescricaoDivisao                                          = $sDescricaoDivisao;
-    $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao                                             = array();
-    $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]                            = new stdClass();
-    $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->iCodigoClassificacao      = $iClassificacao;
-    $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sClassificacao            = $sClassificacao;
-    $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sDescricaoClassificacao   = $sClassificacaoDescricao;
-    $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens                     = array();
-    $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens[]                   = $oStdBem;
-
-    /*
-     * Adicionamos o objeto dentro do array de departamentos.
-     */
-    $aDepartamentos[$iDepartamento] = $oDepartamento;
-
-  } else {
-
-    /**
-     * Caso o departamento exista no array, validamos se existe a divisão para o departamento em questão.
-     */
-    if ( empty ($aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]) ) {
-
-      /*
-       * Caso não exista criamos uma nova posição no array aDivisao com a classificação já setada para o bem
-       */
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]                                                           = new stdClass();
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->iCodigoDivisao                                           = $iCodigoDivisao;
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->sDescricaoDivisao                                        = $sDescricaoDivisao;
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao                                           = array();
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]                          = new stdClass();
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->iCodigoClassificacao    = $iClassificacao;
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sClassificacao          = $sClassificacao;
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sDescricaoClassificacao = $sClassificacaoDescricao;
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens                   = array();
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens[]                 = $oStdBem;
-
-    } else {
-
-      /*
-       * Caso a divisão já exista, apenas adicionamos uma nova posição no array aClassificacao com o bem em questão
-       */
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->iCodigoClassificacao    = $iClassificacao;          
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sClassificacao          = $sClassificacao;          
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sDescricaoClassificacao = $sClassificacaoDescricao; 
-      $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens[]                 = $oStdBem;
+        /**
+         * Adicionamos o órgao/unidade para o departamento dentro de um array $aOrgaosUnidade
+         * Para usar posteriormente durante a impressão das páginas do relatório
+         */
+        $oDadoDepartamentoOrgao = db_utils::fieldsMemory($rsDepartamentoOrgao, 0);
+        $oDadoDepartamentoOrgao->codigodepartamento = $oBem->t52_depart;
+        $oDadoDepartamentoOrgao->descricaodepartamento = $oBem->descrdepto;
+        $aOrgaosUnidade[$oBem->t52_depart] = $oDadoDepartamentoOrgao;
     }
-  }
+
+    /**
+     * Configura a variável t30_codigo caso o bem não tenha divisao
+     */
+    $iCodigoDivisao = $oBem->t30_codigo;
+    $sDescricaoDivisao = $oBem->t30_descr;
+    if (empty($oBem->t30_codigo)) {
+        $iCodigoDivisao = 0;
+        $sDescricaoDivisao = "BENS SEM DIVISÃO";
+    }
+
+    $iDepartamento = $oBem->t52_depart;
+    $sDepartamento = $oBem->descrdepto;
+
+    $iClassificacao = $oBem->t64_codcla;
+    $sClassificacao = $oBem->t64_class;
+    $sClassificacaoDescricao = $oBem->t64_descr;
+
+    $before = memory_get_usage();
+    $oStdBem = new stdClass();
+    $oStdBem->t52_depart = $oBem->t52_depart;
+    $oStdBem->t52_dtaqu = $oBem->t52_dtaqu;
+    $oStdBem->t52_dtinclusao = $oBem->t52_dtinclusao;
+    $oStdBem->t52_bem = $oBem->t52_bem;
+    $oStdBem->t52_obs = $oBem->t52_obs;
+    $oStdBem->t52_descr = substr($oBem->t52_descr, 0, 35);
+    $oStdBem->t52_valaqu = $oBem->t52_valaqu;
+    $oStdBem->t44_valorresidual = $oBem->t44_valorresidual;
+
+    $valorUltimaAvaliacao = $bemModel->getValorUltimaReavaliacao();
+
+    $oStdBem->valoratual = $valorAtual;
+    $oStdBem->t44_valoratual = $valorAtual;
+
+    $oStdBem->estadobem = $oBem->estadobem;
+    $oStdBem->tipobem = $oBem->tipobem;
+    $oStdBem->situacaobem = $oBem->situacaobem;
+    $oStdBem->t52_depart = $oBem->t52_depart;
+    $oStdBem->t52_ident = $oBem->t52_ident;
+    $oStdBem->t44_benstipodepreciacao = $oBem->t44_benstipodepreciacao;
+
+    $oStdBem->valorDepreciavel = $valorUltimaAvaliacao - $bemModel->getValorResidual();
+
+    $oStdBem->valor_ultimaavaliacao = $valorUltimaAvaliacao;
+
+    $after = memory_get_usage();
+    $allocatedSize = ($after - $before);
+    unset($oBem);
+
+
+    /**
+     * Criamos um novo array contendo os dados já organizados que serão impressos no relatório.
+     *
+     * Valida se o Departamento já existe no array que deve ser configurado.
+     */
+    if (empty($aDepartamentos[$iDepartamento])) {
+        /*
+         * Caso o departamento não exista, é criado uma estrutura dentro do array $aDepartamentos
+         * com os dados que serão preenchidos no decorrer do FOR
+         */
+        $oDepartamento = new stdClass();
+        $oDepartamento->iCodigoDepartamento = $iDepartamento;
+        $oDepartamento->sDescricaoDepartamento = $sDepartamento;
+        $oDepartamento->aDivisao = array();
+        $oDepartamento->aDivisao[$iCodigoDivisao] = new stdClass();
+        $oDepartamento->aDivisao[$iCodigoDivisao]->iCodigoDivisao = $iCodigoDivisao;
+        $oDepartamento->aDivisao[$iCodigoDivisao]->sDescricaoDivisao = $sDescricaoDivisao;
+        $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao = array();
+        $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao] = new stdClass();
+        $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->iCodigoClassificacao = $iClassificacao;
+        $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sClassificacao = $sClassificacao;
+        $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sDescricaoClassificacao = $sClassificacaoDescricao;
+        $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens = array();
+        $oDepartamento->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens[] = $oStdBem;
+
+        /*
+         * Adicionamos o objeto dentro do array de departamentos.
+         */
+        $aDepartamentos[$iDepartamento] = $oDepartamento;
+    } else {
+        /**
+         * Caso o departamento exista no array, validamos se existe a divisão para o departamento em questão.
+         */
+        if (empty ($aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao])) {
+            /*
+             * Caso não exista criamos uma nova posição no array aDivisao com a classificação já setada para o bem
+             */
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao] = new stdClass();
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->iCodigoDivisao = $iCodigoDivisao;
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->sDescricaoDivisao = $sDescricaoDivisao;
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao = array();
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao] = new stdClass();
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->iCodigoClassificacao = $iClassificacao;
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sClassificacao = $sClassificacao;
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sDescricaoClassificacao = $sClassificacaoDescricao;
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens = array();
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens[] = $oStdBem;
+        } else {
+            if (!isset($aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao])) {
+                $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao] = new stdClass();
+            }
+            /*
+             * Caso a divisão já exista, apenas adicionamos uma nova posição no array aClassificacao com o bem em questão
+             */
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->iCodigoClassificacao = $iClassificacao;
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sClassificacao = $sClassificacao;
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->sDescricaoClassificacao = $sClassificacaoDescricao;
+            $aDepartamentos[$iDepartamento]->aDivisao[$iCodigoDivisao]->aClassificacao[$iClassificacao]->aBens[] = $oStdBem;
+        }
+    }
 }
+
+unset($rsBuscaBens);
+
+/*
+ * Verifica quais bens foram reavaliados
+ */
+$daoCalculo = new \cl_benshistoricocalculobem();
+$rsBensReavaliados = pg_fetch_all(db_query($daoCalculo->sql_query_busca_bens_reavaliados($sIdsBem)));
+
+$bensReavaliados = array();
+if ($rsBensReavaliados !== false) {
+    foreach ($rsBensReavaliados as $bem) {
+        $bensReavaliados[$bem['t58_bens']] = true;
+    }
+}
+
+unset($rsBensReavaliados);
 
 /**
  * Configura variável que valida se deve imprimir o valor ou não.
  * Facilita a forma de validação
  */
-$oGet->lImprimeValorAquisicao   = $oGet->lImprimeValorAquisicao 	== 't' ? true : false;
+$oGet->lImprimeValorAquisicao = $oGet->lImprimeValorAquisicao == 't' ? true : false;
 $oGet->lCaracteristicaAdicional = $oGet->lCaracteristicaAdicional == 't' ? true : false;
 
-$head1   = "Relatório de Bens por Departamento";
-$oPdf    = new PDF();
+$head1 = "Relatório de Bens por Departamento";
+$oPdf = new PDF();
 $oPdf->Open();
 $oPdf->AliasNbPages();
 $oPdf->SetAutoPageBreak(false);
 
-$iHeigth             = 4;
-$iWidth              = 100;
+$iHeigth = 4;
+$iWidth = 100;
 $iTotalClassificacao = 0;
-$lPrimeiroLaco       = true;
+$lPrimeiroLaco = true;
 
 /**
  * Variáveis configuradas para impressão de bens SEM VALORES
  */
-$iWCodigoSemValor    = 20;
-$iWPlacaSemValor     = 20;
+$iWCodigoSemValor = 15;
+$iWPlacaSemValor = 17;
 $iWDescricaoSemValor = 50;
-$iWAquisicaoSemValor = 20;
-$iWEstadoSemValor    = 20;
-$iWDefinicaoSemValor = 20;
-$iWSituacaoSemValor  = 20;
+$iWAquisicaoSemValor = 17;
+$iWEstadoSemValor = 14;
+$iWSituacaoSemValor = 20;
 
 /**
  * Percorremos o array de departamentos imprimindo as divisões, classificações e bens
  */
 $iTamanhoWidth = 190;
 if ($oGet->lImprimeValorAquisicao) {
-  $iTamanhoWidth = 280;
+    $iTamanhoWidth = 280;
 }
 
 $oTotal = new stdClass();
-$oTotal->nValorAquisicao   = 0;
-$oTotal->nValorResidual    = 0;
-$oTotal->nValorDepreciado  = 0;
-$oTotal->nValorAtual       = 0;
+$oTotal->nValorAquisicao = 0;
+$oTotal->nValorResidual = 0;
+$oTotal->nValorDepreciado = 0;
+$oTotal->nValorAtual = 0;
 $oTotal->nValorDepreciavel = 0;
+$oTotal->nValorReavaliado = 0;
+$oTotal->nSaldoDepreciavel = 0;
 
 foreach ($aDepartamentos as $iIndiceDepartamento => $oDepartamento) {
+    /**
+     * Caso o usuário tenha escolhido a opção para imprimir os valores, o relatório será gerado em formato
+     * paisagem. Do contrário será gerado em formato retrato.
+     *
+     * A variável $oGet->iQuebraPagina é referente a quebra de página por departamento
+     */
+    if ($oGet->iQuebraPagina == 2 || $oPdf->gety() > $oPdf->h - 30 || $lPrimeiroLaco) {
+        setHeader(
+          $oPdf,
+          $iHeigth,
+          $oGet->lImprimeValorAquisicao,
+          $oGet->lCaracteristicaAdicional,
+          $oDepartamento->iCodigoDepartamento,
+          $aOrgaosUnidade,
+          $flagColunasVisiveis
+        );
+        $lPrimeiroLaco = false;
+    }
 
-  /**
-   * Caso o usuário tenha escolhido a opção para imprimir os valores, o relatório será gerado em formato
-   * paisagem. Do contrário será gerado em formato retrato.
-   *
-   * A variável $oGet->iQuebraPagina é referente a quebra de página por departamento
-   */
-  if ($oGet->iQuebraPagina == 2 || $oPdf->gety() > $oPdf->h - 30 || $lPrimeiroLaco) {
+    foreach ($oDepartamento->aDivisao as $iIndiceDivisao => $oDivisao) {
+        $iTotaBemPorDivisao = 0;
 
-    setHeader($oPdf, $iHeigth, $oGet->lImprimeValorAquisicao, $oGet->lCaracteristicaAdicional, $oDepartamento->iCodigoDepartamento, $aOrgaosUnidade);
-    $lPrimeiroLaco = false;
-  }
+        $oTotalDivisao = new stdClass();
+        $oTotalDivisao->nValorAquisicao = 0;
+        $oTotalDivisao->nValorResidual = 0;
+        $oTotalDivisao->nValorDepreciado = 0;
+        $oTotalDivisao->nValorAtual = 0;
+        $oTotalDivisao->nValorDepreciavel = 0;
+        $oTotalDivisao->nValorReavaliado = 0;
+        $oTotalDivisao->nSaldoDepreciavel = 0;
 
-  foreach ($oDepartamento->aDivisao as $iIndiceDivisao => $oDivisao) {
+        $oPdf->SetFont("arial", "b", 8);
+        $oPdf->Cell($iTamanhoWidth, $iHeigth, "Divisão: {$oDivisao->iCodigoDivisao} - {$oDivisao->sDescricaoDivisao}",
+          "T", 1);
+        $iTotalBemNaClassificacao = 0;
+        foreach ($oDivisao->aClassificacao as $iIndiceClassificacao => $oClassificacao) {
+            $iTotaBemPorClassificacao = 0;
+            $oPdf->SetFont("arial", "b", 6);
+            $oPdf->Cell($iTamanhoWidth, 4,
+              "Classificação: {$oClassificacao->sClassificacao} - {$oClassificacao->sDescricaoClassificacao}", "T", 1);
 
-    $iTotaBemPorDivisao = 0;
-    
-    $oTotalDivisao = new stdClass();
-    $oTotalDivisao->nValorAquisicao   = 0;
-    $oTotalDivisao->nValorResidual    = 0;
-    $oTotalDivisao->nValorDepreciado  = 0;
-    $oTotalDivisao->nValorAtual       = 0;
-    $oTotalDivisao->nValorDepreciavel = 0;
-    
-    $oPdf->SetFont("arial", "b", 8);
-    $oPdf->Cell($iTamanhoWidth, $iHeigth, "Divisão: {$oDivisao->iCodigoDivisao} - {$oDivisao->sDescricaoDivisao}", "T", 1);
-    $iTotalBemNaClassificacao = 0;
-    foreach ($oDivisao->aClassificacao as $iIndiceClassificacao => $oClassificacao) {
+            /**
+             * Imprimimos os bens da classificação
+             */
+            foreach ($oClassificacao->aBens as $iIndiceBem => $oBem) {
+                $valorAtual = $arrayValores[$oBem->t52_bem]['valor_atual'];
 
-      $iTotaBemPorClassificacao = 0;
-      $oPdf->SetFont("arial", "b", 6);
-      $oPdf->Cell($iTamanhoWidth, 4, "Classificação: {$oClassificacao->sClassificacao} - {$oClassificacao->sDescricaoClassificacao}", "T", 1);
+                /**
+                 * Configuramos variáveis
+                 */
+                $dtAquisicaoBem = implode("/", array_reverse(explode("-", $oBem->t52_dtaqu)));
+                $dtInclusaoBem = implode('/', array_reverse(explode("-", $oBem->t52_dtinclusao)));
 
-      /**
-       * Imprimimos os bens da classificação
-       */
-      foreach ($oClassificacao->aBens as $iIndiceBem => $oBem) {
+                $sPlacaConfigurada = str_pad($oBem->t52_ident, 7, "0", STR_PAD_LEFT);
 
-        /**
-         * Configuramos variáveis
-         */
-        $dtAquisicaoBem    = implode("/", array_reverse(explode("-", $oBem->t52_dtaqu)));
-        $sPlacaConfigurada = str_pad($oBem->t52_ident, 7, "0", STR_PAD_LEFT);
+                $oPdf->SetFont("arial", "", 6);
+                $oPdf->cell($iWCodigoSemValor, $iHeigth, $oBem->t52_bem, 0, 0, "C");
+                $oPdf->cell($iWPlacaSemValor, $iHeigth, $sPlacaConfigurada, 0, 0, "C");
+                $oPdf->cell($iWDescricaoSemValor, $iHeigth, $oBem->t52_descr, 0, 0, "L");
+                if($tipoData == "1"){
+                    $oPdf->cell($iWAquisicaoSemValor, $iHeigth, $dtAquisicaoBem, 0, 0, "C");
+                } else {
+                    $oPdf->cell($iWAquisicaoSemValor, $iHeigth, $dtInclusaoBem, 0, 0, "C");
+                }
 
-        $oPdf->SetFont("arial", "", 6);
-        $oPdf->cell($iWCodigoSemValor,    $iHeigth, $oBem->t52_bem     , 0, 0, "C");
-        $oPdf->cell($iWPlacaSemValor,     $iHeigth, $sPlacaConfigurada , 0, 0, "C");
-        $oPdf->cell($iWDescricaoSemValor, $iHeigth, $oBem->t52_descr   , 0, 0, "L");
-        $oPdf->cell($iWAquisicaoSemValor, $iHeigth, $dtAquisicaoBem    , 0, 0, "C");
-
-        /**
-         * Caso o usuário tenha solicitado a impressão dos valores, os mesmos serão
-         * impressos neste bloco
-         */
-        if ($oGet->lImprimeValorAquisicao) {
-
-
-          $oDaoBensHistoricoCalculoBem  = db_utils::getDao('benshistoricocalculobem');
-          $sSqlBuscaHistoricoCalculoBem = $oDaoBensHistoricoCalculoBem->sql_query_calculo(null,
-                                                                                          "t58_valoranterior",
-                                                                                          "t58_sequencial asc limit 1",
-                                                                                          "    t58_bens = {$oBem->t52_bem}
+                /**
+                 * Caso o usuário tenha solicitado a impressão dos valores, os mesmos serão
+                 * impressos neste bloco
+                 */
+                if ($oGet->lImprimeValorAquisicao) {
+                    $oDaoBensHistoricoCalculoBem = new cl_benshistoricocalculobem();
+                    $sSqlBuscaHistoricoCalculoBem = $oDaoBensHistoricoCalculoBem->sql_query_calculo(null,
+                      "t58_valoranterior",
+                      "t58_sequencial asc limit 1",
+                      "    t58_bens = {$oBem->t52_bem}
                                                                                            and t58_benstipodepreciacao <> 6");
-          $rsValorAnterior = db_query($sSqlBuscaHistoricoCalculoBem);
-          $nValorAnterior  = $oBem->t52_valaqu;
+                    $rsValorAnterior = db_query($sSqlBuscaHistoricoCalculoBem);
+                    $nValorAnterior = $oBem->t52_valaqu;
 
-          if ($nValorAnterior == 0) {
-            $nValorAnterior = $oBem->t44_valoratual;
-          }
+                    if ($nValorAnterior == 0) {
+                        $nValorAnterior = $valorAtual;
+                    }
 
-          if (pg_num_rows($rsValorAnterior) == 1) {
-            $nValorAnterior = db_utils::fieldsMemory($rsValorAnterior, 0)->t58_valoranterior;
-          }
+                    if (pg_num_rows($rsValorAnterior) == 1) {
+                        $nValorAnterior = db_utils::fieldsMemory($rsValorAnterior, 0)->t58_valoranterior;
+                    }
 
-          $nValorDepreciado = $nValorAnterior - $oBem->t44_valoratual;
-          $oPdf->cell(24, $iHeigth, db_formatar($oBem->t52_valaqu, "f"),        0, 0, "R");
-          $oPdf->cell(22, $iHeigth, db_formatar($oBem->t44_valorresidual, "f"), 0, 0, "R");
-          $oPdf->cell(24, $iHeigth, db_formatar($nValorDepreciado, "f"),        0, 0, "R");
-          $oPdf->cell(20, $iHeigth, db_formatar($oBem->valoratual, "f"),        0, 0, "R");
-          $oPdf->cell(24, $iHeigth, db_formatar($oBem->t44_valoratual, "f"),    0, 0, "C");
-          
-          $oTotal->nValorAquisicao   += $oBem->t52_valaqu;
-          $oTotal->nValorResidual    += $oBem->t44_valorresidual;
-          $oTotal->nValorDepreciado  += $nValorDepreciado;
-          $oTotal->nValorAtual       += $oBem->valoratual;
-          $oTotal->nValorDepreciavel += $oBem->t44_valoratual;
-          
-          $oTotalDivisao->nValorAquisicao   += $oBem->t52_valaqu;
-          $oTotalDivisao->nValorResidual    += $oBem->t44_valorresidual;
-          $oTotalDivisao->nValorDepreciado  += $nValorDepreciado;
-          $oTotalDivisao->nValorAtual       += $oBem->valoratual;
-          $oTotalDivisao->nValorDepreciavel += $oBem->t44_valoratual;
-          
-          
+                    $nValorDepreciado = $nValorAnterior - $valorAtual;
+                    if ($oBem->t44_benstipodepreciacao == 4 || pg_num_rows($rsValorAnterior) == 0) {
+                        $nValorDepreciado = 0;
+                    }
+
+                    $valorReavaliado = 0;
+                    $valorDepreciado = $oBem->t52_valaqu - $valorAtual;
+                    $valorAtual = $valorAtual;
+                    $valorAux = $oBem->t52_valaqu;
+
+                    if ($valorAtual == ($oBem->t52_valaqu + $oBem->t44_valorresidual) && $valorDepreciado < 0) {
+                        $valorDepreciado = 0;
+                    }
+
+                    if (isset($bensReavaliados[$oBem->t52_bem])) {
+                        $valorReavaliado = $oBem->valor_ultimaavaliacao;
+                        $valorDepreciado = $valorReavaliado - $oBem->valoratual;
+
+                        if ($valorDepreciado == $oBem->t44_valorresidual) {
+                            $valorDepreciado = 0;
+                        }
+
+                        $valorAux = $valorReavaliado > $oBem->t52_valaqu ? $valorReavaliado : $oBem->t52_valaqu;
+                    }
+
+                    /*
+                     * Necessário por causa de um bug ao desprocessar um bem reavalido
+                     */
+                    if ($valorAtual > $valorAux) {
+                        $valorAtual = $valorAux;
+                    }
+
+                    $saldoDepreciavel = $valorAtual - $oBem->t44_valorresidual;
+
+                    $oPdf->cell(17, $iHeigth, db_formatar($oBem->t52_valaqu, "f"), 0, 0, "R");
+                    $oPdf->cell(24, $iHeigth, db_formatar($valorReavaliado, "f"), 0, 0, "C");
+                    $oPdf->cell(22, $iHeigth, db_formatar($oBem->t44_valorresidual, "f"), 0, 0, "C");
+                    $oPdf->cell(24, $iHeigth, db_formatar($valorDepreciado, "f"), 0, 0, "C");
+                    $oPdf->cell(20, $iHeigth, db_formatar($valorAtual, "f"), 0, 0, "C");
+                    $oPdf->cell(24, $iHeigth, db_formatar($oBem->valorDepreciavel, "f"), 0, 0, "C");
+                    $oPdf->cell(24, $iHeigth, db_formatar($saldoDepreciavel, "f"), 0, $lineBreak, "C");
+
+                    $oTotal->nValorAquisicao += $oBem->t52_valaqu;
+                    $oTotal->nValorReavaliado += $valorReavaliado;
+                    $oTotal->nValorResidual += $oBem->t44_valorresidual;
+                    $oTotal->nValorDepreciado += $valorDepreciado;
+                    $oTotal->nValorAtual += $arrayValores[$oBem->t52_bem]['valor_atual'];
+                    $oTotal->nValorDepreciavel += $oBem->valorDepreciavel;
+                    $oTotal->nSaldoDepreciavel += $saldoDepreciavel;
+
+                    $oTotalDivisao->nValorAquisicao += $oBem->t52_valaqu;
+                    $oTotalDivisao->nValorReavaliado += $valorReavaliado;
+                    $oTotalDivisao->nValorResidual += $oBem->t44_valorresidual;
+                    $oTotalDivisao->nValorDepreciado += $valorDepreciado;
+                    $oTotalDivisao->nValorAtual += $arrayValores[$oBem->t52_bem]['valor_atual'];
+                    $oTotalDivisao->nValorDepreciavel += $oBem->valorDepreciavel;
+                    $oTotalDivisao->nSaldoDepreciavel += $saldoDepreciavel;
+                }
+
+                if ($flagColunasVisiveis) {
+                    $oPdf->cell($iWEstadoSemValor, $iHeigth, $oBem->estadobem, 0, 0, "C");
+                    $oPdf->cell($iWEstadoSemValor, $iHeigth, $oBem->situacaobem, 0, 1, "C");
+                }
+
+                if ($oGet->lCaracteristicaAdicional) {
+                    $oPdf->cell($iTamanhoWidth, $iHeigth, $oBem->t52_obs, 1, 1, "L", 1);
+                }
+
+                /**
+                 * Verifica se precisa adicionar uma nova página para imprimir os bens
+                 */
+                if ($oPdf->gety() > $oPdf->h - 30) {
+                    setHeader(
+                      $oPdf,
+                      $iHeigth,
+                      $oGet->lImprimeValorAquisicao,
+                      $oGet->lCaracteristicaAdicional,
+                      $oBem->t52_depart,
+                      $aOrgaosUnidade,
+                      $flagColunasVisiveis
+                    );
+                }
+
+                $iTotalBemNaClassificacao++;
+                $iTotaBemPorClassificacao++;
+                $iTotaBemPorDivisao++;
+            }
+            $oPdf->SetFont("arial", "b", 6);
+            $oPdf->Cell($iTamanhoWidth, 4, "Total da Classificação: {$iTotaBemPorClassificacao}", "T", 1);
+        }
+        $oPdf->Cell($iTamanhoWidth, 4, "Total da Divisão: {$iTotaBemPorDivisao}", "T", 1);
+
+        if ($oGet->lImprimeValorAquisicao) {
+            $oPdf->SetFont("arial", "b", 6);
+            $oPdf->cell(90, $iHeigth, "Total:", 0, 0, "R");
+            $oPdf->cell(24, $iHeigth, db_formatar($oTotalDivisao->nValorAquisicao, "f"), 0, 0, "R");
+            $oPdf->cell(24, $iHeigth, db_formatar($oTotalDivisao->nValorReavaliado, "f"), 0, 0, "R");
+            $oPdf->cell(22, $iHeigth, db_formatar($oTotalDivisao->nValorResidual, "f"), 0, 0, "R");
+            $oPdf->cell(24, $iHeigth, db_formatar($oTotalDivisao->nValorDepreciado, "f"), 0, 0, "C");
+            $oPdf->cell(20, $iHeigth, db_formatar($oTotalDivisao->nValorAtual, "f"), 0, 0, "C");
+            $oPdf->cell(22, $iHeigth, db_formatar($oTotalDivisao->nValorDepreciavel, "f"), 0, 0, "C");
+            $oPdf->cell(24, $iHeigth, db_formatar($oTotalDivisao->nSaldoDepreciavel, "f"), 0, 1, "C");
+            $oPdf->SetFont("arial", "", 6);
         }
 
-        $oPdf->cell($iWEstadoSemValor,    $iHeigth, $oBem->estadobem   , 0, 0, "L");
-        $oPdf->cell($iWDefinicaoSemValor, $iHeigth, $oBem->tipobem     , 0, 0, "L");
-        $oPdf->cell($iWEstadoSemValor,    $iHeigth, $oBem->situacaobem , 0, 1, "L");
-        
-        if ($oGet->lCaracteristicaAdicional) {
-          $oPdf->cell($iTamanhoWidth, $iHeigth, $oBem->t52_obs,  1, 1, "L", 1);
-        }
-
-        /**
-         * Verifica se precisa adicionar uma nova página para imprimir os bens
-         */
-        if ($oPdf->gety() > $oPdf->h - 30) {
-          setHeader($oPdf, $iHeigth, $oGet->lImprimeValorAquisicao, $oGet->lCaracteristicaAdicional, $oBem->t52_depart, $aOrgaosUnidade);
-        }
-
-        $iTotalBemNaClassificacao++;
-        $iTotaBemPorClassificacao++;
-        $iTotaBemPorDivisao++;
-      }
-      $oPdf->SetFont("arial", "b", 6);
-      $oPdf->Cell($iTamanhoWidth, 4, "Total da Classificação: {$iTotaBemPorClassificacao}", "T", 1);
     }
-    $oPdf->Cell($iTamanhoWidth, 4, "Total da Divisão: {$iTotaBemPorDivisao}", "T", 1);
-    
-    if ($oGet->lImprimeValorAquisicao) {
-      
-      $oPdf->SetFont("arial", "b", 6);
-      $oPdf->cell(110, $iHeigth, "Total:", 0, 0, "R");
-      $oPdf->cell(24, $iHeigth, db_formatar($oTotalDivisao->nValorAquisicao  ,"f"),   0, 0, "R");
-      $oPdf->cell(22, $iHeigth, db_formatar($oTotalDivisao->nValorResidual   ,"f"),0, 0, "R");
-      $oPdf->cell(24, $iHeigth, db_formatar($oTotalDivisao->nValorDepreciado ,"f"),0, 0, "R");
-      $oPdf->cell(20, $iHeigth, db_formatar($oTotalDivisao->nValorAtual      ,"f"),0, 0, "R");
-      $oPdf->cell(24, $iHeigth, db_formatar($oTotalDivisao->nValorDepreciavel,"f"),0, 1, "C");
-      $oPdf->SetFont("arial", "", 6);
-    }
-    
-  }
 }
 
 $oPdf->SetFont("arial", "b", 7);
 if ($oGet->lImprimeValorAquisicao) {
-    
-  $oPdf->SetFont("arial", "b", 8);
-  $oPdf->cell(110, $iHeigth, "Total:", 0, 0, "R", 1);
-  $oPdf->cell(24, $iHeigth, db_formatar($oTotal->nValorAquisicao  ,"f"),0, 0, "R", 1);
-  $oPdf->cell(22, $iHeigth, db_formatar($oTotal->nValorResidual   ,"f"),0, 0, "R", 1);
-  $oPdf->cell(24, $iHeigth, db_formatar($oTotal->nValorDepreciado ,"f"),0, 0, "R", 1);
-  $oPdf->cell(20, $iHeigth, db_formatar($oTotal->nValorAtual      ,"f"),0, 0, "R", 1);
-  $oPdf->cell(24, $iHeigth, db_formatar($oTotal->nValorDepreciavel,"f"),0, 0, "C", 1);
-  $oPdf->cell(55, $iHeigth, "",0, 1, "C", 1);
-  $oPdf->SetFont("arial", "", 6);
+    $oPdf->SetFont("arial", "b", 8);
+    $oPdf->cell(90, $iHeigth, "Total:", 0, 0, "R", 1);
+    $oPdf->cell(22, $iHeigth, db_formatar($oTotal->nValorAquisicao, "f"), 0, 0, "R", 1);
+    $oPdf->cell(22, $iHeigth, db_formatar($oTotal->nValorReavaliado, "f"), 0, 0, "R", 1);
+    $oPdf->cell(22, $iHeigth, db_formatar($oTotal->nValorResidual, "f"), 0, 0, "R", 1);
+    $oPdf->cell(22, $iHeigth, db_formatar($oTotal->nValorDepreciado, "f"), 0, 0, "R", 1);
+    $oPdf->cell(20, $iHeigth, db_formatar($oTotal->nValorAtual, "f"), 0, 0, "R", 1);
+    $oPdf->cell(24, $iHeigth, db_formatar($oTotal->nValorDepreciavel, "f"), 0, 0, "C", 1);
+    $oPdf->cell(24, $iHeigth, db_formatar($oTotal->nSaldoDepreciavel, "f"), 0, 0, "C", 1);
+    $oPdf->cell(55, $iHeigth, "", 0, 1, "C", 1);
+    $oPdf->SetFont("arial", "", 6);
 }
 $oPdf->SetFont("arial", "", 6);
 
 /**
  * Função que imprime o cabeçalho do relatório
- * @param PDF     $oPdf
+ * @param PDF $oPdf
  * @param integer $iHeigth
  * @param boolean $lImprimeValores
  * @param integer $iCodigoDepartamento
- * @param array   $aOrgaosUnidade
+ * @param array $aOrgaosUnidade
  */
-function setHeader($oPdf, $iHeigth, $lImprimeValores, $lImprimeCaracteristicaAdicional, $iCodigoDepartamento, $aOrgaosUnidade) {
 
 
-  global $head3, $head4, $head5;
+function setHeader(
+  $oPdf,
+  $iHeigth,
+  $lImprimeValores,
+  $lImprimeCaracteristicaAdicional,
+  $iCodigoDepartamento,
+  $aOrgaosUnidade,
+  $flagColunasVisiveis
+) {
+    global $head3, $head4, $head5, $head6, $tipoData, $sDataInicial, $sDataFinal;
+    $nomeData = $tipoData == "1" ? "Aquisição" : "Inclusão";
+    $dataInicial = implode('/', array_reverse(explode('-', $sDataInicial)));
+    $dataFinal = implode('/', array_reverse(explode('-', $sDataFinal)));
 
-  /**
-   * Verifica se os valores terão de ser impressos. Caso SIM
-   * é adicionado uma página no formato PAISAGEM.
-   */
-  $head3 = "Órgão: {$aOrgaosUnidade[$iCodigoDepartamento]->db01_orgao} - {$aOrgaosUnidade[$iCodigoDepartamento]->orgao}";
-  $head4 = "Unidade: {$aOrgaosUnidade[$iCodigoDepartamento]->db01_unidade} - {$aOrgaosUnidade[$iCodigoDepartamento]->unidade}";
-  $head5 = "Departamento: {$aOrgaosUnidade[$iCodigoDepartamento]->codigodepartamento} - {$aOrgaosUnidade[$iCodigoDepartamento]->descricaodepartamento}";
 
-  if ($lImprimeValores) {
-    $oPdf->AddPage("L");
-    $iWidthPagina = "280";
-  } else {
-    $oPdf->AddPage("P");
-    $iWidthPagina = "190";
-  }
-  $oPdf->setfont('arial', 'b', 8);
-  $oPdf->setfillcolor(235);
-  $oPdf->cell(20, $iHeigth, "Código",    1, 0, "C", 1);
-  $oPdf->cell(20, $iHeigth, "Placa",     1, 0, "C", 1);
-  $oPdf->cell(50, $iHeigth, "Descrição", 1, 0, "C", 1);
-  $oPdf->cell(20, $iHeigth, "Aquisição", 1, 0, "C", 1);
 
-  if ($lImprimeValores) {
+    /**
+     * Verifica se os valores terão de ser impressos. Caso SIM
+     * é adicionado uma página no formato PAISAGEM.
+     */
+    $head3 = "Órgão: {$aOrgaosUnidade[$iCodigoDepartamento]->db01_orgao} - {$aOrgaosUnidade[$iCodigoDepartamento]->orgao}";
+    $head4 = "Unidade: {$aOrgaosUnidade[$iCodigoDepartamento]->db01_unidade} - {$aOrgaosUnidade[$iCodigoDepartamento]->unidade}";
+    $head5 = "Departamento: {$aOrgaosUnidade[$iCodigoDepartamento]->codigodepartamento} - {$aOrgaosUnidade[$iCodigoDepartamento]->descricaodepartamento}";
+    $head6 = "Período Selecionado: {$dataInicial} á {$dataFinal}";
 
-    $oPdf->cell(24, $iHeigth, "Vlr. Aquisição",  1, 0, "C", 1);
-    $oPdf->cell(22, $iHeigth, "Vlr. Residual",   1, 0, "C", 1);
-    $oPdf->cell(24, $iHeigth, "Vlr. Depreciado", 1, 0, "C", 1);
-    $oPdf->cell(20, $iHeigth, "Vlr. Atual",      1, 0, "C", 1);
-    $oPdf->cell(24, $iHeigth, "Vlr. Depreciavel", 1, 0, "C", 1);
-  }
 
-  $oPdf->cell(20, $iHeigth, "Estado",    1, 0, "C", 1);
-  $oPdf->cell(20, $iHeigth, "Definição", 1, 0, "C", 1);
-  $oPdf->cell(15, $iHeigth, "Baixado",  1, 1, "C", 1);
-  
-  if ($lImprimeCaracteristicaAdicional) {
-    $oPdf->cell($iWidthPagina, $iHeigth, "Características Adicionais",  1, 1, "L", 1);
-  }
+    if ($lImprimeValores) {
+        $oPdf->AddPage("L");
+        $iWidthPagina = "280";
+    } else {
+        $oPdf->AddPage("P");
+        $iWidthPagina = "190";
+    }
+
+    $lineBreak = 1;
+    if ($flagColunasVisiveis) {
+        $lineBreak = 0;
+    }
+
+    $oPdf->setfont('arial', 'b', 8);
+    $oPdf->setfillcolor(235);
+    $oPdf->cell(15, $iHeigth, "Código", 1, 0, "C", 1);
+    $oPdf->cell(17, $iHeigth, "Placa", 1, 0, "C", 1);
+    $oPdf->cell(50, $iHeigth, "Descrição", 1, 0, "C", 1);
+    $oPdf->cell(15, $iHeigth, $nomeData, 1, 0, "C", 1);
+    // 24 Vlr. Reavaliado
+    if ($lImprimeValores) {
+        $oPdf->cell(22, $iHeigth, "Vlr. Aquisição", 1, 0, "C", 1);
+        $oPdf->cell(22, $iHeigth, "Vlr. Reavaliado", 1, 0, "C", 1);
+        $oPdf->cell(22, $iHeigth, "Vlr. Residual", 1, 0, "C", 1);
+        $oPdf->cell(22, $iHeigth, "Vlr. Depreciado", 1, 0, "C", 1);
+        $oPdf->cell(20, $iHeigth, "Vlr. Atual", 1, 0, "C", 1);
+        $oPdf->cell(24, $iHeigth, "Vlr. Depreciável", 1, 0, "C", 1);
+        $oPdf->cell(24, $iHeigth, "Sal. Depreciável", 1, $lineBreak, "C", 1);
+    }
+
+    if ($flagColunasVisiveis) {
+        $oPdf->cell(14, $iHeigth, "Estado", 1, 0, "C", 1);
+        $oPdf->cell(13, $iHeigth, "Baixado", 1, 1, "C", 1);
+    }
+
+    if ($lImprimeCaracteristicaAdicional) {
+        $oPdf->cell($iWidthPagina, $iHeigth, "Características Adicionais", 1, 1, "L", 1);
+    }
 }
+
 $oPdf->Output();
-?>

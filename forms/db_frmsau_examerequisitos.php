@@ -32,7 +32,7 @@ $clrotulo->label("s108_i_codigo");
 $clrotulo->label("s107_i_codigo");
 $clrotulo->label("s108_c_exame");
 $clrotulo->label("s107_c_requisito");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
 ?>

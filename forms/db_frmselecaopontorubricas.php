@@ -26,7 +26,7 @@
  */
 
 //MODULO: pessoal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clselecaopontorubricas->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -158,10 +158,10 @@ function js_cancelar(){
 
 function js_pesquisar73_rubric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_selecaopontorubricas','db_iframe_rhrubricas','func_rhrubricas.php?fixas=true&datlimit=false&funcao_js=parent.js_mostrarhrubricas1|rh27_rubric|rh27_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_selecaopontorubricas','db_iframe_rhrubricas','func_rhrubricas.php?fixas=true&datlimit=false&funcao_js=parent.js_mostrarhrubricas1|rh27_rubric|rh27_descr','Pesquisa',true);
   }else{
      if(document.form1.r73_rubric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_selecaopontorubricas','db_iframe_rhrubricas','func_rhrubricas.php?fixas=true&datlimit=false&pesquisa_chave='+document.form1.r73_rubric.value+'&funcao_js=parent.js_mostrarhrubricas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_selecaopontorubricas','db_iframe_rhrubricas','func_rhrubricas.php?fixas=true&datlimit=false&pesquisa_chave='+document.form1.r73_rubric.value+'&funcao_js=parent.js_mostrarhrubricas','Pesquisa',false);
      }else{
        document.form1.rh27_descr.value = ''; 
      }

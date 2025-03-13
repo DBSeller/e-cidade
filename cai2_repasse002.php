@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
 
-include("libs/db_liborcamento.php");
-include("fpdf151/pdf.php");
-require("libs/db_utils.php");
+include(modification("libs/db_liborcamento.php"));
+include(modification("fpdf151/pdf.php"));
+require(modification("libs/db_utils.php"));
 //#00#//relatorio
 //#10#//Procedimentos básicos para a criação de relatórios no formato pdf
-//#99#//Fazer o "include" do programa onde enconta-se a classe que será utilizada no relatório,
+//#99#//Fazer o "include modification(" do programa onde enconta-se a classe que será utilizada no relatório,
 //#99#//esta pode ser: |pdf|,|pdf1|,|pdf2| e |scpdf|.
 //#99#//
 //#99#//Exemplo : 
-//#99#//   include("fpdf151/pdf.php");            // include do programa que contem a classe
+//#99#//   include(modification(")fpdf151/pdf.php"));            // include do programa que contem a classe
 //#99#//   $pdf = new PDF();                      // estancia a classe
 //#99#//   $pdf->open();                          // inicia a geração do documento
 //#99#//   $pdf->aliasnbpages();                  // define o apelido para o número total de páginas
@@ -67,8 +67,8 @@ require("libs/db_utils.php");
 //#99#//   $pdf->cell(25,4,$total_geral,1,1,"R",0);
 //#99#//   $pdf->Output();                                     // saída do relatório direto para o browser
 
-include("classes/db_orctiporec_classe.php");
-include("libs/db_sql.php");
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("libs/db_sql.php"));
 
 $clorctiporec = new cl_orctiporec;
 
@@ -114,7 +114,7 @@ order by g.k02_tipo desc ,g.k02_codigo
 ";
 //echo $sql;exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
   //db_redireciona('db_erros.php?fechar=true&db_erro=Não existem lançamentos para a receita '.$codrec.' no período de '.db_formatar($datai,'d').' a '.db_formatar($dataf,'d'));
@@ -218,7 +218,7 @@ if($tipo=='T' || $tipo =='O'){
         inner join orcfontes on o57_codfon = o70_codfon and o57_anousu = o70_anousu
         inner join orcfontesdes on o60_anousu = o70_anousu and o60_codfon = o70_codfon
         where o70_anousu = ".db_getsession("DB_anousu")." and o70_codrec = $k02_codrec";
-        $result1 = pg_exec($sql);
+        $result1 = db_query($sql);
         if($result1!=false && pg_numrows($result1) > 0){
           $fonte = pg_result($result1,0,0);
           $contamae = db_le_mae_rec_sin($fonte,false);
@@ -229,7 +229,7 @@ if($tipo=='T' || $tipo =='O'){
           inner join orcfontesdes on o60_anousu = o70_anousu and o60_codfon = o70_codfon
           where o57_fonte like '$contamae%' and o70_anousu = ".db_getsession("DB_anousu") . "
           order by o57_fonte";
-          $result1 = pg_exec($sql);
+          $result1 = db_query($sql);
           if($result1!=false && pg_numrows($result1) > 0){
             $tem_desdobramento = true;
           }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -32,7 +32,8 @@ $campos = "distinct
            cgm.z01_nome,
 	   rh01_admiss,
 	   rh05_recis,
-	   rh37_descr
+	   rh37_descr,
+       rh30_vinculoemprego::int
           ";
 //$campos = "rhpessoal.rh01_regist,rhpessoal.rh01_numcgm,rhpessoal.rh01_funcao,rhpessoalmov.rh02_lota,rhpessoal.rh01_admiss,rhpessoal.rh01_nasc,rhpessoal.rh01_nacion,rhpessoal.rh01_anoche,rhpessoal.rh01_instru,rhpessoal.rh01_sexo,rhpessoal.rh01_estciv,rhpessoal.rh01_tipadm,rhpessoal.rh01_natura,rhpessoal.rh01_tpcont,rhpessoal.rh01_raca,rhpessoal.rh01_clas1,rhpessoal.rh01_clas2,rhpessoal.rh01_trienio,rhpessoal.rh01_progres";
 ?>

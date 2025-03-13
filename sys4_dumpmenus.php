@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 ?>
 <html>
 <head>
@@ -59,50 +59,50 @@ include("libs/db_usuariosonline.php");
     fputs($fd,"//data : ".date("d/m/Y",db_getsession("DB_datausu"))."\n");
 	// itens dos menus 
 	$sql = "select * from db_itensmenu";
-    $result = pg_query($sql);
+    $result = db_query($sql);
 	if(pg_numrows($result)!=0){
 	  for($i=0;$i<pg_numrows($result);$i++){
 	     db_fieldsmemory($result,$i);
 	     fputs($fd,'$sql = "delete from db_itensmenu where id_item = '.$id_item.'";'."\n");
-	     fputs($fd,'$result = pg_query($sql);'."\n");
+	     fputs($fd,'$result = db_query($sql);'."\n");
 	     fputs($fd,'$sql = "insert into db_itensmenu(id_item,descricao,help,funcao,itemativo,manutencao,desctec) value ('.$id_item.",'".$descricao."','".$help."','".$funcao."','".$itemativo."','".$manutencao."','".$desctec.'\')";'."\n");
-	     fputs($fd,'$result = pg_query($sql);'."\n");
+	     fputs($fd,'$result = db_query($sql);'."\n");
 	  }
 	}
 	// menus 
 	$sql = "select * from db_menu";
-    $result = pg_query($sql);
+    $result = db_query($sql);
 	if(pg_numrows($result)!=0){
 	  for($i=0;$i<pg_numrows($result);$i++){
 	     db_fieldsmemory($result,$i);
 	     fputs($fd,'$sql = "delete from db_menu where id_item = '.$id_item.' and id_item_filho = '.$id_item.' and modulo = '.$modulo.'";'."\n");
-	     fputs($fd,'$result = pg_query($sql);'."\n");
+	     fputs($fd,'$result = db_query($sql);'."\n");
 	     fputs($fd,'$sql = "insert into db_menu(id_item,id_item_filho,menusequencia,modulo) value ('.$id_item.",".$id_item_filho.",".$menusequencia.",".$modulo.')";'."\n");
-	     fputs($fd,'$result = pg_query($sql);'."\n");
+	     fputs($fd,'$result = db_query($sql);'."\n");
 	  }
 	}
 	// meodulos dos menus
 	$sql = "select * from db_modulo";
-    $result = pg_query($sql);
+    $result = db_query($sql);
 	if(pg_numrows($result)!=0){
 	  for($i=0;$i<pg_numrows($result);$i++){
 	     db_fieldsmemory($result,$i);
 	     fputs($fd,'$sql = "delete from db_modulo where id_item = '.$id_item.'";'."\n");
-	     fputs($fd,'$result = pg_query($sql);'."\n");
+	     fputs($fd,'$result = db_query($sql);'."\n");
 	     fputs($fd,'$sql = "insert into db_modulo(id_item,nome_modulo,descr_modulo,imagem,temexerc) value ('.$id_item.",'".$nome_modulo."','".$descr_modulo."','".$imagem."','".$temexerc."')\";"."\n");
-	     fputs($fd,'$result = pg_query($sql);'."\n");
+	     fputs($fd,'$result = db_query($sql);'."\n");
 	  }
 	}
 	// permissoes do usuário dbseller
     fputs($fd,'$sql = "delete from db_permissao where id_usuario = 1";'."\n");
-    fputs($fd,'$result = pg_query($sql);'."\n");
+    fputs($fd,'$result = db_query($sql);'."\n");
 	$sql = "select * from db_permissao where id_usuario = 1";
-    $result = pg_query($sql);
+    $result = db_query($sql);
 	if(pg_numrows($result)!=0){
 	  for($i=0;$i<pg_numrows($result);$i++){
 	     db_fieldsmemory($result,$i);
 	     fputs($fd,'$sql = "insert into db_permissao(id_usuario,id_item,permissaoativa,anousu,id_instit,id_modulo) value ('.$id_usuario.",".$id_item.",'".$permissaoativa."',".$anousu.",".$id_instit.",".$id_modulo.")\";"."\n");
-	     fputs($fd,'$result = pg_query($sql);'."\n");
+	     fputs($fd,'$result = db_query($sql);'."\n");
 	  }
 	}
     fputs($fd,'?>'."\n");

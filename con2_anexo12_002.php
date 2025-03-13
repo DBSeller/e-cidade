@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_empresto_classe.php");
-include("classes/db_empempenho_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -42,7 +42,7 @@ $classinatura = new cl_assinatura;
 $clempresto  = new cl_empresto;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $consolidado = false;
@@ -230,7 +230,7 @@ for ($i=0;$i<pg_numrows($result_rec);$i++){
     if ($flag_ok == true){   // 49 e 9172
       $estrut     = substr($o57_fonte,0,2)."0000000000000"; 
       $sql_estrut = "select o57_descr from orcfontes where o57_fonte = '$estrut' limit 1";
-      $result_estrut = @pg_query($sql_estrut);
+      $result_estrut = @db_query($sql_estrut);
       if (@pg_numrows($result_estrut) > 0){
         $descr_receita = pg_result($result_estrut,0,"o57_descr");
       }
@@ -599,11 +599,11 @@ $pdf->cell(55,$alt,"FONTE: Contabilidade",'0',0,"L",0);
 
 // assinaturas
 
-// include("dbforms/db_assinaturas_balancetes.php");
+// include(modification("dbforms/db_assinaturas_balancetes.php"));
 $pdf->Ln(14);
 $pdf->setfont('arial','',8);
 
-assinaturas(&$pdf,&$classinatura,'BG');
+assinaturas($pdf, $classinatura,'BG');
 
 
 $pdf->Output();

@@ -149,10 +149,10 @@ db_textarea('o03_fonte', 5, 40, $Io03_fonte,true,'text',$db_opcao,"")
 
 function js_pesquisao03_orccenarioeconomico(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orccenarioeconomico','func_orccenarioeconomico.php?funcao_js=parent.js_mostraorccenarioeconomico1|o02_sequencial|o02_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orccenarioeconomico','func_orccenarioeconomico.php?funcao_js=parent.js_mostraorccenarioeconomico1|o02_sequencial|o02_descricao','Pesquisa',true);
   }else{
      if(document.form1.o03_orccenarioeconomico.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_orccenarioeconomico','func_orccenarioeconomico.php?pesquisa_chave='+document.form1.o03_orccenarioeconomico.value+'&funcao_js=parent.js_mostraorccenarioeconomico','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orccenarioeconomico','func_orccenarioeconomico.php?pesquisa_chave='+document.form1.o03_orccenarioeconomico.value+'&funcao_js=parent.js_mostraorccenarioeconomico','Pesquisa',false);
      }else{
        document.form1.o02_descricao.value = ''; 
      }
@@ -171,7 +171,7 @@ function js_mostraorccenarioeconomico1(chave1,chave2){
   db_iframe_orccenarioeconomico.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orccenarioeconomicoparam','func_orccenarioeconomicoparam.php?funcao_js=parent.js_preenchepesquisa|o03_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orccenarioeconomicoparam','func_orccenarioeconomicoparam.php?funcao_js=parent.js_preenchepesquisa|o03_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orccenarioeconomicoparam.hide();

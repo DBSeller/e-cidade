@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oPost    = db_utils::postMemory($_POST);
 
@@ -41,19 +41,19 @@ $oJson    = new services_json();
 $lErro    = false;
 $sMsgErro = '';
 
-require_once("classes/db_ouvidoriacadlocal_classe.php");
+require_once(modification("classes/db_ouvidoriacadlocal_classe.php"));
 $clOuvidoriaCadLocal       = new cl_ouvidoriacadlocal();
 
-require_once("classes/db_ouvidoriacadlocalgeral_classe.php");
+require_once(modification("classes/db_ouvidoriacadlocalgeral_classe.php"));
 $clOuvidoriaCadLocalGeral  = new cl_ouvidoriacadlocalgeral();
 
-require_once("classes/db_ouvidoriacadlocalender_classe.php");
+require_once(modification("classes/db_ouvidoriacadlocalender_classe.php"));
 $clOuvidoriaCadLocalEnder  = new cl_ouvidoriacadlocalender();
 
-require_once("classes/db_ouvidoriacadlocaldepart_classe.php");
+require_once(modification("classes/db_ouvidoriacadlocaldepart_classe.php"));
 $clOuvidoriaCadLocalDepart = new cl_ouvidoriacadlocaldepart();
 
-require_once("classes/db_ruas_classe.php");
+require_once(modification("classes/db_ruas_classe.php"));
 $oDaoRuas = new cl_ruas();
 
 

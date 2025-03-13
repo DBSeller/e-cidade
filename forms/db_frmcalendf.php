@@ -58,7 +58,7 @@ db_inputdata('r62_data',@$r62_data_dia,@$r62_data_mes,@$r62_data_ano,true,'text'
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_calendf','func_calendf.php?funcao_js=parent.js_preenchepesquisa|r62_calend|r62_data','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_calendf','func_calendf.php?funcao_js=parent.js_preenchepesquisa|r62_calend|r62_data','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_calendf.hide();

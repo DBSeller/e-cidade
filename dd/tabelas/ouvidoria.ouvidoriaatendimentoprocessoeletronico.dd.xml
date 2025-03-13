@@ -1,0 +1,109 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010472' name='ouvidoria.ouvidoriaatendimentoprocessoeletronico' description="Processo eletronico do atendimento" prefix="ov33" label="Processo eletronico do atendimento" type="0">
+  <fields>
+    <field codigo="1010749"
+           campo_api=''
+           name="ov33_sequencial"
+           conteudo="int4"
+           description="Sequencial"
+           inivalue=""
+           label="Sequencial"
+           size="8"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sequencial"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='ouvidoria.ouvidoriaatendimentoprocessoeletronico_ov33_sequencial_seq' />
+
+    </field>
+    <field codigo="1010750"
+           campo_api=''
+           name="ov33_ouvidoriaatendimento"
+           conteudo="int4"
+           description="Sequencial"
+           inivalue="0"
+           label="Sequencial"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sequencial"
+           reference="ov01_sequencial"
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1010751"
+           campo_api=''
+           name="ov33_informacoesprocesso"
+           conteudo="text"
+           description="Informações do processo"
+           inivalue=""
+           label="Informações do processo"
+           size="1000"
+           null="f"
+           uppercase="t"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel="Informações do processo"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+
+    <field codigo="1011943"
+         campo_api=''
+         name="ov33_ouvidoriaatendimento_anterior"
+         conteudo="int8"
+         description="Atendimento anterior"
+         inivalue="0"
+         label="Atendimento anterior"
+         size="10"
+         null="t"
+         uppercase="f"
+         autocompl="f"
+         aceitatipo="1"
+         tipoobj="text"
+         labelrel="Atendimento anterior"
+         reference="ov01_sequencial"
+         ispk="f"
+         hassequence="f" >
+    </field>
+      <field codigo="1013429"
+             campo_api=''
+             name="ov33_client_atendimento_id"
+             conteudo="int8"
+             description="Identificação da aplicação de atendimento referente ao EAUTH"
+             inivalue="0"
+             label="ov33_client_atendimento_id"
+             size="8"
+             null="t"
+             uppercase="f"
+             autocompl="f"
+             aceitatipo="1"
+             tipoobj="text"
+             labelrel="ov33_client_atendimento_id"
+             reference=""
+             ispk="f"
+             hassequence="f" >
+      </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="ov33_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="ouvidoriaatendimento" inner='t'>
+      <fieldfk name="ov33_ouvidoriaatendimento" reference="ov01_sequencial" />
+    </foreignkey>
+  </foreignkeys>
+</table>

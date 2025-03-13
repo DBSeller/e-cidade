@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_procandamint_classe.php");
-require_once("classes/db_procandamintusu_classe.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_procandamint_classe.php"));
+require_once(modification("classes/db_procandamintusu_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -105,6 +105,33 @@ if ( isset($alterar) ) {
           }
         }
 
+        if ( $sqlerro == false ) {
+
+          $oDaoProcAndamInt      = db_utils::getDao('procandamint');
+          $sSqlBuscaProcAndamInt = "select p78_data, p78_hora 
+                                      from procandamint 
+                                     where p78_codandam = {$p58_codandam} 
+                                     order by p78_sequencial desc limit 1";
+      
+          $rsBuscaProcAndamInt   = $oDaoProcAndamInt->sql_record($sSqlBuscaProcAndamInt);
+      
+          if($oDaoProcAndamInt->numrows > 0) {
+            
+            $oProcAndamInt       = db_utils::fieldsMemory($rsBuscaProcAndamInt, 0);
+            $dDataProcAndam      = $oProcAndamInt->p78_data;
+            $dHoraProcAndam      = $oProcAndamInt->p78_hora;
+          }
+          
+          if ( $dDataProcAndam > date('Y-m-d', db_getsession('DB_datausu')) || 
+              ( $dDataProcAndam == date('Y-m-d', db_getsession('DB_datausu')) 
+              && $dHoraProcAndam > db_hora() ) ) 
+          {
+        
+            $sqlerro             = true;
+            $erro_msg            = "A data do andamento é maior que a data atual. Verifique a data da sessão";
+          }
+        }
+
         if ( !$sqlerro ) {
 
           $clprocandamint->p78_codandam = $p58_codandam;
@@ -150,7 +177,7 @@ if ( isset($alterar) ) {
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-	<?php require_once("forms/db_frmdespachoalt.php"); ?>
+	<?php require_once(modification("forms/db_frmdespachoalt.php")); ?>
 </body>
 </html>
 <?php

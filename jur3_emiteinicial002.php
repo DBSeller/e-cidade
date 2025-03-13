@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_app.utils.php"));
 
-require_once 'std/DBDate.php';
+require_once modification("std/DBDate.php");
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_iptubase_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_advog_classe.php");
-include("classes/db_inicial_classe.php");
-include("classes/db_inicialcert_classe.php");
-include("classes/db_inicialmov_classe.php");
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_advog_classe.php"));
+include(modification("classes/db_inicial_classe.php"));
+include(modification("classes/db_inicialcert_classe.php"));
+include(modification("classes/db_inicialmov_classe.php"));
 
 db_app::import('exceptions.*');
 
@@ -608,7 +608,7 @@ function js_testacodforo(){
 
 	if (document.form1.v50_inicial.value==""){
 		if (document.form1.v70_codforo.value!=""){
-			js_openjanelaiframe('top.corpo','db_iframe_processoforo','func_processoforo.php?chave_v70_codforo='+document.form1.v70_codforo.value+'&funcao_js=parent.js_mostracodforo|v70_codforo|v71_inicial','pesquisa',true);
+			js_openjanelaiframe('CurrentWindow.corpo','db_iframe_processoforo','func_processoforo.php?chave_v70_codforo='+document.form1.v70_codforo.value+'&funcao_js=parent.js_mostracodforo|v70_codforo|v71_inicial','pesquisa',true);
 			return false;
 		}
 	}else{
@@ -621,7 +621,7 @@ function js_retorno(){
   return false;
 }
 
-var msg= parent.bstatus.document.getElementById('st').innerHTML ;
+var msg= (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML ;
 
 
 /**
@@ -733,10 +733,10 @@ function js_mostraAdvogado1(chave1,chave2){
 //----------------------------------------------------------------------------------------------------------------------------------------------
 function js_pesquisav70_codforo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_processoforo','func_processoforo.php?funcao_js=parent.js_mostracodforo|v70_codforo|v71_inicial','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processoforo','func_processoforo.php?funcao_js=parent.js_mostracodforo|v70_codforo|v71_inicial','Pesquisa',true);
   }else{
     if(document.form1.v70_codforo.value!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe_processoforo','func_processoforo.php?chave_v70_codforo='+document.form1.v70_codforo.value+'&funcao_js=parent.js_mostracodforo1|v70_codforo','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processoforo','func_processoforo.php?chave_v70_codforo='+document.form1.v70_codforo.value+'&funcao_js=parent.js_mostracodforo1|v70_codforo','Pesquisa',false);
     }
   }
 }

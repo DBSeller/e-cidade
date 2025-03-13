@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -42,12 +42,14 @@ class Plugin{
 
   private $lSituacao;
 
+  private $sVersao;
+
   const MENSAGEM = 'configuracao.configuracao.plugin.';
 
   /**
-   * Função construtora, instancia os atributos da classe, 
+   * Função construtora, instancia os atributos da classe,
    * se for informado um plugin existente.
-   * 
+   *
    * @var integer Codigo do plugin.
    */
   public function __construct($iPlugin = null, $sNome = null) {
@@ -70,9 +72,9 @@ class Plugin{
 
     $oPlugin = db_utils::fieldsMemory($rsPlugin, 0);
 
-    $this->iCodigo   = $oPlugin->db145_sequencial;  
-    $this->sNome     = $oPlugin->db145_nome;  
-    $this->sLabel    = $oPlugin->db145_label;  
+    $this->iCodigo   = $oPlugin->db145_sequencial;
+    $this->sNome     = $oPlugin->db145_nome;
+    $this->sLabel    = $oPlugin->db145_label;
     $this->lSituacao = $oPlugin->db145_situacao == "t";
 
     return;
@@ -81,7 +83,7 @@ class Plugin{
   public function setCodigo($iCodigo) {
     $this->iCodigo = $iCodigo;
   }
-  
+
   public function getCodigo() {
     return $this->iCodigo;
   }
@@ -114,6 +116,19 @@ class Plugin{
     return $this->lSituacao;
   }
 
+  public function getVersao() {
+
+    if ( empty($this->sVersao) ) {
+      $this->carregaDadosManifest();
+    }
+
+    return $this->sVersao;
+  }
+
+  public function setVersao($sVersao) {
+    $this->sVersao = $sVersao;
+  }
+
   /**
    * Salva o plugin na tabela db_plugin
    * @return boolean
@@ -124,11 +139,21 @@ class Plugin{
     $oDaoPlugin->db145_nome       = $this->sNome;
     $oDaoPlugin->db145_label      = $this->sLabel;
     $oDaoPlugin->db145_situacao   = ($this->lSituacao) ? 'true' : 'false';
-    $oDaoPlugin->incluir(null);
+
+    if ($this->getCodigo()) {
+
+      $oDaoPlugin->db145_sequencial = $this->getCodigo();
+      $oDaoPlugin->alterar($this->getCodigo());
+    } else {
+
+      $oDaoPlugin->incluir(null);
+    }
 
     if ($oDaoPlugin->erro_status == "0") {
       throw new DBException(_M(self::MENSAGEM . 'erro_inserir'));
     }
+
+    $this->setCodigo($oDaoPlugin->db145_sequencial);
 
     return true;
   }
@@ -166,5 +191,21 @@ class Plugin{
 
     return true;
   }
+
+  public function carregaDadosManifest() {
+
+    $sNome = $this->getNome();
+
+    if ( empty($sNome) ) {
+      return;
+    }
+
+    $oPluginService = new PluginService();
+    // @todo remover este caminho fixo daqui, rever classe do PluginService
+    $oManifest = $oPluginService->loadManifest("plugins/{$sNome}/Manifest.xml");
+
+    $this->sVersao = $oManifest->plugin['plugin-version'];
+
+  }
+
 }
-?>

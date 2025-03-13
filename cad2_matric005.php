@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_lote_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_lote_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cllote							= new cl_lote;
@@ -44,14 +44,14 @@ if(isset($j37_quadra) && $j37_quadra != "") {
   $vir = "";
   $qua = "";
   for($i=0;$i<count($quadra);$i++) {
-    
+
     $qua .= $vir."'".$quadra[$i]."'";
     $vir = ",";
   }
 }
 
 if(isset($j34_setor) && $j34_setor != "") {
-  
+
   $setor = split(",",$j34_setor);
   $vir = "";
   $set = "";
@@ -74,7 +74,7 @@ if(isset($j34_setor) && $j34_setor != "") {
 <script>
 
   function js_loadVars(iInicio,iFinal) {
-	
+
 	  var oColection = lote.document.getElementsByTagName('input');
 		for(var i = iInicio; i <  iFinal  ; i++ ) {
 
@@ -82,7 +82,11 @@ if(isset($j34_setor) && $j34_setor != "") {
 
 			  if(oColection[i].checked == true) {
 
-		  		j34_idbql += vir +  lote.document.form1.elements[i].value;
+          var valor = lote.document.form1.elements[i].value.split("_");
+
+          setorParametro  += vir + valor[0];
+          quadraParametro += vir + valor[1];
+		  		loteParametro   += vir + valor[2];
 		  		vir = ",";
         }
       }
@@ -90,31 +94,46 @@ if(isset($j34_setor) && $j34_setor != "") {
 
 	  if (i == aCol.length) {
 
-		  parent.iframe_g1.document.form1.idbql.value = j34_idbql;
+		  parent.iframe_g1.document.form1.loteParametro.value   = loteParametro;
+
+      if ( !empty(parent.iframe_g1.document.form1.setorParametro.value) ) {
+        parent.iframe_g1.document.form1.setorParametro.value  = setorParametro;
+      }
+
+      if ( !empty(parent.iframe_g1.document.form1.quadraParametro.value) ) {
+        parent.iframe_g1.document.form1.quadraParametro.value = quadraParametro;
+      }
+
 		  js_removeObj("msgbox");
 	  }
+
+    if ( empty(loteParametro) ) {
+      parent.iframe_g2.js_nome(this);
+    }
   }
 
 
   function js_nome(obj) {
-    
+
     js_divCarregando('Aguarde, efetuando pesquisa ....','msgbox');
-	  j34_idbql      = "";
-	  vir			 	     = "";
+    setorParametro = "";
+    quadraParametro= "";
+	  loteParametro  = "";
+    vir            = "";
 	  iQuantidade		 = 0;
     aCol					 = lote.document.getElementsByTagName('input');
 	  iTamanhoVoltas = ( aCol.length / 10);
 	  iResto				 = ( aCol.length % 10);
-	  iTamanhoVoltas = Math.floor(iTamanhoVoltas);	
-	  if ( iTamanhoVoltas > 500 ) {  
-		
+	  iTamanhoVoltas = Math.floor(iTamanhoVoltas);
+	  if ( iTamanhoVoltas > 500 ) {
+
 		  for ( var ii = 0 ; ii < 10; ii++ ) {
 
 		  	tmp = setTimeout("js_loadVars("+iQuantidade+","+( ii==9?eval(iQuantidade+iResto+iTamanhoVoltas):eval(iQuantidade+iTamanhoVoltas))+")",2000);
 		  	iQuantidade = eval(iQuantidade+iTamanhoVoltas);
-		  }	
+		  }
 	  } else {
-    
+
 		  js_loadVars(0,aCol.length);
 	  }
   }
@@ -129,7 +148,7 @@ if(isset($j34_setor) && $j34_setor != "") {
             <?php
               if(isset($j37_quadra)&& $j37_quadra!="") {
 
-                $sql = 	$cllote->sql_query(""," distinct on(j34_setor,j34_quadra,j34_lote) j34_setor,j34_quadra,j34_lote ,j34_idbql","j34_setor,j34_quadra,j34_lote","j34_quadra in ($qua) and j34_setor in ($set)");       
+                $sql = 	$cllote->sql_query("","distinct j34_setor,j34_quadra,j34_lote","j34_setor,j34_quadra,j34_lote","j34_quadra in ($qua) and j34_setor in ($set)");
 								$cliframe_seleciona->campos  = "j34_setor,j34_quadra,j34_lote";
                 $cliframe_seleciona->legenda="Lote";
                 $cliframe_seleciona->sql=$sql;
@@ -140,16 +159,16 @@ if(isset($j34_setor) && $j34_setor != "") {
                 $cliframe_seleciona->iframe_height ="250";
                 $cliframe_seleciona->iframe_width ="700";
                 $cliframe_seleciona->iframe_nome ="lote";
-                $cliframe_seleciona->chaves ="j34_idbql";
+                $cliframe_seleciona->chaves ="j34_setor,j34_quadra,j34_lote";
                 $cliframe_seleciona->dbscript ="onClick='parent.js_nome(this)'";
                 $cliframe_seleciona->js_marcador="parent.js_nome()";
                 $cliframe_seleciona->alignlegenda  = "left";
-                $cliframe_seleciona->iframe_seleciona(@$db_opcao);   
+                $cliframe_seleciona->iframe_seleciona(@$db_opcao);
 							} else {
 
 								echo "<br><strong>SELECIONE UMA QUADRA PARA ESCOLHER O(S) LOTES(S)</strong>";
 						  }
-					  ?>   
+					  ?>
 				  </td>
 			  </tr>
 				<tr>

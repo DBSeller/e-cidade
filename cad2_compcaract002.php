@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -50,13 +50,13 @@ if(isset($grupof) && $grupof != ""){
     $wheregrupof = " and cargrup.j32_grupo = $grupof "; 
 }
 
-$rslote = pg_query("select j32_descr as grlote from cargrup where j32_grupo = $grupol");
+$rslote = db_query("select j32_descr as grlote from cargrup where j32_grupo = $grupol");
 db_fieldsmemory($rslote,0);
 
-$rsface = pg_query("select j32_descr as grface from cargrup where j32_grupo = $grupof");
+$rsface = db_query("select j32_descr as grface from cargrup where j32_grupo = $grupof");
 db_fieldsmemory($rsface,0);
 
-$rsrua = pg_query("select j14_nome as nomerua from ruas where j14_codigo = $rua");
+$rsrua = db_query("select j14_nome as nomerua from ruas where j14_codigo = $rua");
 db_fieldsmemory($rsrua,0);
 $head5 = "";
 //die($baixadas);
@@ -118,7 +118,7 @@ $sql = "
 	        $where	
 			";
 //e($sql);
-$result = pg_query($sql);
+$result = db_query($sql);
 //db_criatabela($result);exit; 
 
 $xxnum = pg_numrows($result);

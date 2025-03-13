@@ -2,7 +2,7 @@
 
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,10 +26,10 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("model/configuracao/consulta_dados/ConsultaDados.model.php");
-require_once("model/webservices/Processamento.model.php");
-require_once("model/webservices/Autenticacao.model.php");
-require_once("model/configuracao/DBLog.model.php");
+require_once(modification("model/configuracao/consulta_dados/ConsultaDados.model.php"));
+require_once(modification("model/webservices/Processamento.model.php"));
+require_once(modification("model/webservices/Autenticacao.model.php"));
+require_once(modification("model/configuracao/DBLog.model.php"));
 
 /**
  * Classe Responsável pelo gerenciamento das conexões via WebService
@@ -56,6 +56,7 @@ class DBWebService {
   static public function getInstance( $sMetodo ) {
 
     if ( !isset(DBWebService::$aInstancia[$sMetodo]) ) {
+
       switch ( $sMetodo ) {
 
         case "consultar":
@@ -83,19 +84,19 @@ class DBWebService {
 
     try {
 
-      if (array_key_exists('webservice', $aArgumentos[1][1])) {
+      if (isset($aArgumentos[1][1]) && array_key_exists('webservice', $aArgumentos[1][1])) {
 
         $aParametrosGlobais = $aArgumentos[1][1];
-        $aArgumentos[1] = $aArgumentos[1][0];
+        $aArgumentos[1]     = $aArgumentos[1][0];
 
-        $this->setParametrosGlobais($aParametrosGlobais);
-
+        DBWebService::setParametrosGlobais($aParametrosGlobais);
       }
 
       Autenticacao::validaConexao($aArgumentos[0]);
 
       $oRequisicao = DBWebService::getInstance( $sMetodo );
       $oResposta   = call_user_func_array( array( $oRequisicao, $sMetodo ), $aArgumentos );
+       
       return $oResposta;
     } catch ( Exception $oExcecao ){
       throw new SoapFault( "e-Cidade", utf8_encode($oExcecao->getMessage()) );
@@ -146,80 +147,98 @@ class DBWebService {
    *
    * @param array $aParametros
    */
-  private function setParametrosGlobais($aParametros) {
+  static public function setParametrosGlobais($aParametros) {
 
     if (!empty($aParametros['webservice'])) {
 
-      $aParametros = $aParametros['webservice'];
+      $aFlagAmbiente = $aParametros['webservice'];
 
-      if (isset($aParametros['DB_id_usuario'])) {
-        $_SESSION['DB_id_usuario'       ] = $aParametros['DB_id_usuario'];
+      if (isset($aFlagAmbiente['DB_id_usuario'])) {
+        $_SESSION['DB_id_usuario'] = $aFlagAmbiente['DB_id_usuario'];
       }
-      if (isset($aParametros['DB_login'])) {
-        $_SESSION['DB_login'            ] = $aParametros['DB_login'];
+
+      if (isset($aFlagAmbiente['DB_login'])) {
+        $_SESSION['DB_login'] = $aFlagAmbiente['DB_login'];
       }
-      if (isset($aParametros['DB_administrador'])) {
-        $_SESSION['DB_administrador'    ] = $aParametros['DB_administrador'];
+
+      if (isset($aFlagAmbiente['DB_administrador'])) {
+        $_SESSION['DB_administrador'] = $aFlagAmbiente['DB_administrador'];
       }
-      if (isset($aParametros['DB_ip'])) {
-        $_SESSION['DB_ip'               ] = $aParametros['DB_ip'];
+
+      if (isset($aFlagAmbiente['DB_ip'])) {
+        $_SESSION['DB_ip'] = $aFlagAmbiente['DB_ip'];
       }
-      if (isset($aParametros['REQUEST_URI'])) {
-        $_SESSION['REQUEST_URI'         ] = $aParametros['REQUEST_URI'];
+
+      if (isset($aFlagAmbiente['REQUEST_URI'])) {
+        $_SESSION['REQUEST_URI'] = $aFlagAmbiente['REQUEST_URI'];
       }
-      if (isset($aParametros['DB_configuracao_ok'])) {
-        $_SESSION['DB_configuracao_ok'  ] = $aParametros['DB_configuracao_ok'];
+
+      if (isset($aFlagAmbiente['DB_configuracao_ok'])) {
+        $_SESSION['DB_configuracao_ok'] = $aFlagAmbiente['DB_configuracao_ok'];
       }
-      if (isset($aParametros['DB_acessado'])) {
-        $_SESSION['DB_acessado'         ] = $aParametros['DB_acessado'];
+
+      if (isset($aFlagAmbiente['DB_instit'])) {
+        $_SESSION['DB_instit'] = $aFlagAmbiente['DB_instit'];
       }
-      if (isset($aParametros['DB_instit'])) {
-        $_SESSION['DB_instit'           ] = $aParametros['DB_instit'];
+
+      if (isset($aFlagAmbiente['DB_totalmodulos'])) {
+        $_SESSION['DB_totalmodulos'] = $aFlagAmbiente['DB_totalmodulos'];
       }
-      if (isset($aParametros['DB_totalmodulos'])) {
-        $_SESSION['DB_totalmodulos'     ] = $aParametros['DB_totalmodulos'];
+
+      if (isset($aFlagAmbiente['DB_use_pcasp'])) {
+        $_SESSION['DB_use_pcasp'] = $aFlagAmbiente['DB_use_pcasp'];
       }
-      if (isset($aParametros['DB_use_pcasp'])) {
-        $_SESSION['DB_use_pcasp'        ] = $aParametros['DB_use_pcasp'];
+
+      if (isset($aFlagAmbiente['DB_Area'])) {
+        $_SESSION['DB_Area'] = $aFlagAmbiente['DB_Area'];
       }
-      if (isset($aParametros['DB_Area'])) {
-        $_SESSION['DB_Area'             ] = $aParametros['DB_Area'];
+
+      if (isset($aFlagAmbiente['DB_modulo'])) {
+        $_SESSION['DB_modulo'] = $aFlagAmbiente['DB_modulo'];
       }
-      if (isset($aParametros['DB_modulo'])) {
-        $_SESSION['DB_modulo'           ] = $aParametros['DB_modulo'];
+
+      if (isset($aFlagAmbiente['DB_nome_modulo'])) {
+        $_SESSION['DB_nome_modulo'] = $aFlagAmbiente['DB_nome_modulo'];
       }
-      if (isset($aParametros['DB_nome_modulo'])) {
-        $_SESSION['DB_nome_modulo'      ] = $aParametros['DB_nome_modulo'];
+
+      if (isset($aFlagAmbiente['DB_coddepto'])) {
+        $_SESSION['DB_coddepto'] = $aFlagAmbiente['DB_coddepto'];
       }
-      if (isset($aParametros['DB_coddepto'])) {
-        $_SESSION['DB_coddepto'         ] = $aParametros['DB_coddepto'];
+
+      if (isset($aFlagAmbiente['DB_nomedepto'])) {
+        $_SESSION['DB_nomedepto'] = $aFlagAmbiente['DB_nomedepto'];
       }
-      if (isset($aParametros['DB_nomedepto'])) {
-        $_SESSION['DB_nomedepto'        ] = $aParametros['DB_nomedepto'];
+
+      if (isset($aFlagAmbiente['DB_itemmenu_acessado'])) {
+        $_SESSION['DB_itemmenu_acessado'] = $aFlagAmbiente['DB_itemmenu_acessado'];
       }
-      if (isset($aParametros['DB_itemmenu_acessado'])) {
-        $_SESSION['DB_itemmenu_acessado'] = $aParametros['DB_itemmenu_acessado'];
+
+      if (isset($aFlagAmbiente['SERVER_ADDR'])) {
+        $_SERVER['SERVER_ADDR'] = $aFlagAmbiente['SERVER_ADDR'];
       }
-      if (isset($aParametros['SERVER_ADDR'])) {
-        $_SERVER['SERVER_ADDR']           = $aParametros['SERVER_ADDR'];
+
+      if (isset($aFlagAmbiente['SERVER_PORT'])) {
+        $_SERVER['SERVER_PORT']= $aFlagAmbiente['SERVER_PORT'];
       }
-      if (isset($aParametros['SERVER_PORT'])) {
-        $_SERVER['SERVER_PORT']           = $aParametros['SERVER_PORT'];
+
+      if (isset($aFlagAmbiente['DOCUMENT_ROOT'])) {
+        $_SERVER['DOCUMENT_ROOT'] = $aFlagAmbiente['DOCUMENT_ROOT'];
       }
-      if (isset($aParametros['DOCUMENT_ROOT'])) {
-        $_SERVER['DOCUMENT_ROOT']         = $aParametros['DOCUMENT_ROOT'];
+
+      if (isset($aFlagAmbiente['SERVER_ADMIN'])) {
+        $_SERVER['SERVER_ADMIN'] = $aFlagAmbiente['SERVER_ADMIN'];
       }
-      if (isset($aParametros['SERVER_ADMIN'])) {
-        $_SERVER['SERVER_ADMIN']          = $aParametros['SERVER_ADMIN'];
+
+      if (isset($aFlagAmbiente['PHP_SELF'])) {
+        $_SERVER['PHP_SELF'] = $aFlagAmbiente['PHP_SELF'];
       }
-      if (isset($aParametros['PHP_SELF'])) {
-        $_SERVER['PHP_SELF']              = $aParametros['PHP_SELF'];
+
+      if (isset($aFlagAmbiente['REQUEST_URI'])) {
+        $_SERVER["REQUEST_URI"] = $aFlagAmbiente['REQUEST_URI'];
       }
-      if (isset($aParametros['REQUEST_URI'])) {
-        $_SERVER["REQUEST_URI"]           = $aParametros['REQUEST_URI'];
-      }
-      if (isset($aParametros['HTTP_HOST'])) {
-        $_SERVER['HTTP_HOST']             = $aParametros['HTTP_HOST'];
+
+      if (isset($aFlagAmbiente['HTTP_HOST'])) {
+        $_SERVER['HTTP_HOST'] = $aFlagAmbiente['HTTP_HOST'];
       }
     }
   }

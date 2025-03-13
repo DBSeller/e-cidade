@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_procvar_classe.php");
-require_once("classes/db_proctipovar_classe.php");
-require_once("classes/db_db_syscampo_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_procvar_classe.php"));
+require_once(modification("classes/db_proctipovar_classe.php"));
+require_once(modification("classes/db_db_syscampo_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $clprotprocesso = new cl_protprocesso;
 $rotulo = new rotulocampo();
@@ -51,7 +51,7 @@ $rotulo->label("p58_numero");
 function js_processa(){
 
   if (document.form1.p58_numero.value!=""){
-        js_OpenJanelaIframe('top.corpo','db_iframe_despint','func_procdespint.php?grupo=1&pesquisa_chave='+document.form1.p58_numero.value+'&funcao_js=parent.js_mudapagina&sCampoRetorno=p58_codproc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_despint','func_procdespint.php?grupo=1&pesquisa_chave='+document.form1.p58_numero.value+'&funcao_js=parent.js_mudapagina&sCampoRetorno=p58_codproc','Pesquisa',false);
   }else{
     alert("Informe o Cod. do Processo!!");
     document.form1.p58_numero.focus();
@@ -60,14 +60,14 @@ function js_processa(){
 
 function js_mudapagina(iCodigoProcesso, iNumCgm, sNome, lErro){
 
+  let numeroProc = document.form1.p58_numero;
   /**
    * Erro na consulta 
    */
-  if ( lErro ) {
-
-    alert("Digite um codigo de processo valido!!");
-    document.form1.p58_numero.value="";
-    document.form1.p58_numero.focus();
+  if (lErro || numeroProc.value == "" ) {
+    numeroProc.value = "";
+    numeroProc.focus();
+    alert("Informe um processo válido!");
     return false;
   }
 
@@ -88,7 +88,7 @@ function js_mudapagina(iCodigoProcesso, iNumCgm, sNome, lErro){
 	           <? db_ancora("Processo:","js_pesquisa(true);",1); ?>
 	        </td>
 	        <td>
-	           <?php db_input("p58_numero", 15, $Ip58_numero, true, "text", 2, "onchange='js_pesquisa(false);'"); ?>
+	           <?php db_input("p58_numero", 15, $Ip58_numero, true, "text", 3, "onchange='js_pesquisa(false);'"); ?>
              <?php db_input("p58_codproc", 30, 0, true, "hidden", 1); ?>
 	        </td>
 	        <td> 
@@ -99,7 +99,7 @@ function js_mudapagina(iCodigoProcesso, iNumCgm, sNome, lErro){
     </fieldset>  
     
     <div style="margin-top: 10px;">
-      <input type="button" value="Processar" onclick="js_processa();">
+      <input type="button" value="Processar" onclick="js_mudapagina(document.form1.p58_codproc.value);">
     </div>    
     
   </form>
@@ -110,15 +110,18 @@ function js_mudapagina(iCodigoProcesso, iNumCgm, sNome, lErro){
 </body>
 </html>
 <script>
+
+js_pesquisa(true);
+
 function js_pesquisa(mostra) {
 
   if( mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_despint','func_procdespint.php?grupo=1&funcao_js=parent.js_mostra1|dl_cod_processo|dl_processo|dl_nome_ou_Razão_social','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_despint','func_procdespint.php?grupo=1&funcao_js=parent.js_mostra1|dl_cod_processo|dl_processo|dl_nome_ou_Razão_social','Pesquisa',true);
   } else {
 
      if (document.form1.p58_numero.value != '') { 
 
-        js_OpenJanelaIframe('top.corpo','db_iframe_despint',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_despint',
           'func_procdespint.php?grupo=1&pesquisa_chave='+document.form1.p58_numero.value+'&funcao_js=parent.js_mostra&sCampoRetorno=p58_codproc',
           'Pesquisa',false);
      }

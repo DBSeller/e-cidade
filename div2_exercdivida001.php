@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_proced_classe.php");
-require_once('libs/db_utils.php');
-require_once("libs/db_libpostgres.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_proced_classe.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_libpostgres.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -162,6 +162,15 @@ function js_emite(){
                    '','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
  jan.moveTo(0,0);
 }
+function js_analitico_sintetico(){
+  console.log(document.form1.analitico.value);
+  if (document.form1.analitico.value==1){
+     document.getElementById('ordem_valor_span').style.display = 'none';
+     document.form1.ordem.value="z01_nome";
+  }else{
+     document.getElementById('ordem_valor_span').style.display = 'inline';
+  }
+}
 </script>  
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
@@ -186,7 +195,7 @@ function js_emite(){
          </tr>
          <?
            $cor = '#E4F471';
-           $sql = "select distinct (v01_exerc) as exerc from divida where v01_instit = ".db_getsession('DB_instit');
+           $sql = "select distinct (v01_exerc) as exerc from divida where v01_instit = ".db_getsession('DB_instit').' order by v01_exerc';
            $rs  = db_query($sql);
          ?>
          <tr style="cursor: hand; height: 20px" bgcolor="<?=$cor?>">
@@ -237,7 +246,7 @@ function js_emite(){
             <td>
               <?
                 $arr = array("0"=>"Sintético","1"=>"Analítico");
-                db_select('analitico',$arr,true,$db_opcao,"");
+                db_select('analitico',$arr,true,$db_opcao,"onclick='js_analitico_sintetico()'");
               ?>
             </td>
          </tr>
@@ -315,9 +324,11 @@ function js_emite(){
               <label for="ordem_valor3" id="lordem4">
                 <input id="ordem_valor4" type="radio" name="ordem" value="numerica">Numérica&nbsp;&nbsp;
               </label>
+              <span id="ordem_valor_span">
               <label for="ordem_valor" id='lordem3' >
                 <input type="radio" id="ordem_valor" name="ordem" value="valor" checked>Valor&nbsp;&nbsp;
               </label>
+              </span>
             </td>
          </tr>
          <tr>
@@ -346,7 +357,7 @@ function js_emite(){
         </td>
       </tr>
         <?
-          include("dbforms/db_classesgenericas.php");
+          include(modification("dbforms/db_classesgenericas.php"));
           $aux = new cl_arquivo_auxiliar;
           $aux->cabecalho      = "Selecione uma procedência";
           $aux->codigo         = "v03_codigo";
@@ -382,7 +393,7 @@ function js_emite(){
 <script>
 function js_pesquisadb02_idparag(mostra){
   document.form1.lanca.onclick = "";
-  parent.bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
+  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
   if(mostra==true){
     db_iframe.jan.location.href = 'cai2_emitenotif003.php?lista='+document.form1.k60_codigo.value+
                                   '&funcao_js=parent.js_mostradb_paragrafo1|1|3';
@@ -404,7 +415,7 @@ function js_mostradb_paragrafo(chave,erro){
   }else{
     document.form1.lanca.onclick = js_insSelect;
   }  
-    parent.bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
   
 }
 
@@ -477,6 +488,8 @@ function js_mostralista1(chave1,chave2){
      document.form1.k60_descr.value = chave2;
      db_iframe.hide();
 }
+
+
 </script>
 <?
   $func_iframe = new janela('db_iframe','');

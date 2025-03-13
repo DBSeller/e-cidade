@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_turma_classe.php");
-include("libs/db_stdlibwebseller.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("libs/db_stdlibwebseller.php"));
 $resultedu= eduparametros(db_getsession("DB_coddepto"));
 $decimais = $resultedu=="N"?0:2;
 $clturma = new cl_turma;
@@ -61,7 +61,7 @@ $sql1 = "SELECT round((1-(((case when sum(ed72_i_numfaltas) is null then 0 else 
          AND ed60_c_ativa = 'S'
          GROUP BY ed11_c_descr,ed18_c_abrev,ed10_c_descr,ed18_i_codigo
          ORDER BY ed11_c_descr,ed18_c_abrev";
-$result1 = pg_query($sql1);
+$result1 = db_query($sql1);
 $linhas1 = pg_num_rows($result1);
 //db_criatabela($result1);
 //exit;

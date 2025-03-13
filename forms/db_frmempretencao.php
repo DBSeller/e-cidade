@@ -88,7 +88,7 @@ db_textarea('e65_hist',0,0,$Ie65_hist,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empretencao','func_empretencao.php?funcao_js=parent.js_preenchepesquisa|e65_seq','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empretencao','func_empretencao.php?funcao_js=parent.js_preenchepesquisa|e65_seq','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_empretencao.hide();

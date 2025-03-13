@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_iptubase_classe.php");
-include("agu3_conscadastro_002_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("agu3_conscadastro_002_classe.php"));
 
 if(!isset($j39_numero)){
   $j39_numero = 0;

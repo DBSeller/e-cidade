@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 
-require_once ('model/PadArquivoSigap.model.php');
+require_once(modification('model/PadArquivoSigap.model.php'));
 /**
  * Prove dados para a geração do arquivo dos decretos no periodo 
  * do municipio para o SIGAP
  * @package Pad
  * @author  Iuri Guncthnigg
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.6 $
  */
 final class PadArquivoSigapBalanceteVerificacaoAnterior extends PadArquivoSigap {
   
@@ -119,7 +119,7 @@ final class PadArquivoSigapBalanceteVerificacaoAnterior extends PadArquivoSigap 
        * Verificamos o nivel da conta
        */
       $sql     = "select fc_nivel_plano2005(rpad('{$oBalancete->estrutural}', 20, '0')) as nivel ";
-      $rsNivel = pg_exec($sql);
+      $rsNivel = db_query($sql);
       $iNivel  = db_utils::fieldsMemory($rsNivel, 0)->nivel;
       $oBalanceteRetorno->bveNumeroNivelConta   = $iNivel;
       /**

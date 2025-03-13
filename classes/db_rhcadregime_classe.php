@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -368,5 +368,43 @@ class cl_rhcadregime {
      }
      return $sql;
   }
+
+  function sql_query_com_bases ( $rh52_regime=null,$campos="*",$ordem=null,$dbwhere="", $sOnjoin = ''){
+    
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from rhcadregime ";
+    $sql .= " left join baserhcadregime on rh158_regime = rh52_regime";
+    $sql .= empty($sOnjoin) ? '' : " and $sOnjoin ";
+   
+    $sql2 = "";
+    if($dbwhere==""){
+      if($rh52_regime!=null ){
+        $sql2 .= " where rhcadregime.rh52_regime = $rh52_regime "; 
+      } 
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+  }    
 }
 ?>

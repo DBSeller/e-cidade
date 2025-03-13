@@ -215,7 +215,7 @@ function js_pesquisa_refeicao(codcardapio) {
 }
 function js_retornoPesquisaRefeicao(oAjax) {
     
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   document.form1.refeicao.length = null;  
   if (oRetorno.length==0) {
     document.form1.refeicao.options[document.form1.refeicao.length] = new Option("Nenhuma refeição para este cardápio","0");
@@ -238,7 +238,7 @@ function js_retornoPesquisaRefeicao(oAjax) {
 
 function js_retornoPesquisaTipoRefeicao(oAjax) {
 	
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   iCodigos     = '';
   vTexto       = '';
   hHorafim     = '';
@@ -264,7 +264,7 @@ function js_retornoPesquisaTipoRefeicao(oAjax) {
 
 function js_retornoPesquisaItemRefeicao(oAjax) {
 	
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   sHtml  = '<table border="1" cellspacing="0" cellpadding="2">';
   sHtml += '<tr align="center" bgcolor="#999999"><td colspan="2"><b>'+document.form1.refeicao.options[document.form1.refeicao.selectedIndex].text+'</b></td></tr>';
   sHtml += '<tr align="center" bgcolor="#999999"><td><b>Item</b></td><td><b>Qtde.</b></td></tr>';
@@ -335,7 +335,7 @@ function js_carrega_iframe() {
 function js_retornoMontagrid(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno                       = eval("("+oAjax.responseText+")");
+  var oRetorno                       = JSON.parse(oAjax.responseText);
   $('div_grid').innerHTML            = oRetorno.urlDecode();
   $('div_grid').style.visibility     = "visible";
   $('div_refeicao').style.visibility = "visible";
@@ -381,7 +381,7 @@ function js_incluiregistro(codtprefeicao,data,evt) {
 function js_retornoVerificaRegistro(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno[0].urlDecode()!="0") {
     alert(oRetorno[0].urlDecode());
   } else {
@@ -402,7 +402,7 @@ function js_retornoVerificaRegistro(oAjax) {
 function js_retornoMontaInclusao(oAjax) {
     
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   $('div_inclusao').innerHTML = oRetorno.urlDecode();	  
   
 }
@@ -479,7 +479,7 @@ function js_alteraregistro(codcardapiodia,evt,tipoacao) {
 function js_retornoMontaAlteracao(oAjax) {
     
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   $('div_inclusao').innerHTML = oRetorno.urlDecode();     
 	  
 }

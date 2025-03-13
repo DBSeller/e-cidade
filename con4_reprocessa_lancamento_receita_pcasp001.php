@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/db_stdClass.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/DBDate.php");
-require_once'libs/db_liborcamento.php';
-require_once'model/contabilidade/planoconta/ContaPlano.model.php';
-require_once'model/contabilidade/planoconta/ContaOrcamento.model.php';
-require_once'model/contabilidade/planoconta/ClassificacaoConta.model.php';
-require_once'model/contabilidade/planoconta/SistemaConta.model.php';
-require_once'model/contabilidade/planoconta/SubSistemaConta.model.php';
-require_once'model/CgmFactory.model.php';
-require_once'model/caixa/AutenticacaoArrecadacao.model.php';
-require_once'model/caixa/LancamentoContabilAjusteBaixaBanco.model.php';
-require_once'model/caixa/AutenticacaoPlanilha.model.php';
-require_once'model/caixa/PlanilhaArrecadacao.model.php';
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBDate.php"));
+require_once modification("libs/db_liborcamento.php");
+require_once modification("model/contabilidade/planoconta/ContaPlano.model.php");
+require_once modification("model/contabilidade/planoconta/ContaOrcamento.model.php");
+require_once modification("model/contabilidade/planoconta/ClassificacaoConta.model.php");
+require_once modification("model/contabilidade/planoconta/SistemaConta.model.php");
+require_once modification("model/contabilidade/planoconta/SubSistemaConta.model.php");
+require_once modification("model/CgmFactory.model.php");
+require_once modification("model/caixa/AutenticacaoArrecadacao.model.php");
+require_once modification("model/caixa/LancamentoContabilAjusteBaixaBanco.model.php");
+require_once modification("model/caixa/AutenticacaoPlanilha.model.php");
+require_once modification("model/caixa/PlanilhaArrecadacao.model.php");
 
 db_app::import("exceptions.*");
 db_app::import("configuracao.Instituicao");
@@ -62,63 +62,65 @@ db_app::import("exceptions.*");
 echo "<div style=\"display: block;\">";
 if (!USE_PCASP) {
 
-  echo "<h1> Cliente nao utiliza pcasp</h1>";
-  exit;
+    echo "<h1> Cliente nao utiliza pcasp</h1>";
+    exit;
 
 }
 
-$aTables = array("cornump",
-                 "corrente",
-                 "corcla",
-                 "corplacaixa",
-                 "corplacaixa",
-                 "cornumpdesconto",
-                 "conlancam",
-                 "conlancamval",
-                 "conlancamcgm",
-                 "conlancamcompl",
-                 "conlancamrec",
-                 "conlancampag",
-                 "conlancamslip",
-                 "conlancamdoc",
-                 "conlancamcorgrupocorrente",
-                 "conlancamcorrente",
-                 "contacorrentedetalheconlancamval",
-                 "conlancamconcarpeculiar"
-       );
+$aTables = array(
+    "cornump",
+    "corrente",
+    "corcla",
+    "corplacaixa",
+    "corplacaixa",
+    "cornumpdesconto",
+    "conlancam",
+    "conlancamval",
+    "conlancamcgm",
+    "conlancamcompl",
+    "conlancamrec",
+    "conlancampag",
+    "conlancamslip",
+    "conlancamdoc",
+    "conlancamcorgrupocorrente",
+    "conlancamcorrente",
+    "conlancamordem",
+    "conlancaminstit",
+    "contacorrentedetalheconlancamval",
+    "conlancamconcarpeculiar"
+);
 if (isset($_POST["processar"])) {
 
-  foreach ($aTables as $sTabela) {
+    foreach ($aTables as $sTabela) {
 
-    $sSqlAjusteDesempenho = "alter table {$sTabela} set (autovacuum_enabled = false, toast.autovacuum_enabled = false)";
-    $rsAjusteDesempenho   = db_query($sSqlAjusteDesempenho);
-  }
-
-  $_SESSION["DB_desativar_account"] = true;
-  $oData   = new DBDate($_POST["sData"]);
-  $sData   = $oData->convertTo(DBDate::DATA_EN);
-
-  $oDataFinal = new DBDate($_POST["sDataFinal"]);
-  $sDataFinal = $oDataFinal->convertTo(DBDate::DATA_EN);
-
-  $rsErros = fopen('tmp/erros_correcao_lancamentos.txt', 'w');
-
-  try {
-
-    if ($_POST["reprocessar_descontos_tesouraria"]) {
-
-      db_inicio_transacao();
-      reprocessarDescontoTesouraria($sData, $sDataFinal);
-      db_fim_transacao(false);
+        $sSqlAjusteDesempenho = "alter table {$sTabela} set (autovacuum_enabled = false, toast.autovacuum_enabled = false)";
+        $rsAjusteDesempenho = db_query($sSqlAjusteDesempenho);
     }
-    db_inicio_transacao();
-    echo "<br><br>Limpando lançamentos contabeis de receita<br>";
-    flush();
 
-    $rstrigger = db_query("alter table conlancamval disable trigger all;");
-    $rstrigger = db_query("alter table conlancamval disable trigger all;");
+    $_SESSION["DB_desativar_account"] = true;
+    $oData = new DBDate($_POST["sData"]);
+    $sData = $oData->convertTo(DBDate::DATA_EN);
 
-    $rsTabelaLancamentos = db_query("create temp table w_conlancam as
+    $oDataFinal = new DBDate($_POST["sDataFinal"]);
+    $sDataFinal = $oDataFinal->convertTo(DBDate::DATA_EN);
+
+    $rsErros = fopen('tmp/erros_correcao_lancamentos.txt', 'w');
+
+    try {
+
+        if ($_POST["reprocessar_descontos_tesouraria"]) {
+
+            db_inicio_transacao();
+            reprocessarDescontoTesouraria($sData, $sDataFinal);
+            db_fim_transacao(false);
+        }
+        db_inicio_transacao();
+        echo "<br><br>Limpando lançamentos contabeis de receita<br>";
+        flush();
+
+        $rstrigger = db_query("alter table conlancamval disable trigger all;");
+
+        $rsTabelaLancamentos = db_query("create temp table w_conlancam as
                                       select distinct conlancam.*
                                         From conlancam inner join conlancamdoc  on c71_codlan = c70_codlan
                                                        inner join conhistdoc    on c53_coddoc   = c71_coddoc
@@ -126,112 +128,184 @@ if (isset($_POST["processar"])) {
                                                        inner join conplanoreduz on c61_reduz  = c69_debito
                                                                                and c69_anousu = c61_anousu
                                        where c70_data  between '{$sData}' and '{$sDataFinal}'
-                                         and c53_tipo in( 160, 162, 100, 101)
-                                         and c61_instit = ".db_getsession("DB_instit")."
+                                         and c53_tipo in(100, 101, 160, 162)
+                                         and c71_coddoc not in(6000,6001, 6002, 6003, 6006, 6007)
+                                         and c61_instit = " . db_getsession("DB_instit") . "
                                          and not exists(select 1
-                                                         from conlancamslip where c84_conlancam = c70_codlan) order by 1;"
-    );
+                                                         from conlancamslip where c84_conlancam = c70_codlan) 
+                                         and (not exists(select 1
+                                                           from conlancamemp 
+                                                          where c75_codlan = c70_codlan)
+                                               or exists( select 1 
+                                                            from conlancamemp 
+                                                                 inner join conlancamdoc on c75_codlan = c71_codlan 
+                                                           where c75_codlan = c70_codlan 
+                                                             and c71_coddoc = 416 )
+                                             ) order by 1;"
+        );
 
-    if (!$rsTabelaLancamentos) {
-      throw new Exception('Não foi possivel criar tabela para exclusão de lançamentos');
-    }
+        if (!$rsTabelaLancamentos) {
+            throw new Exception('Não foi possivel criar tabela para exclusão de lançamentos');
+        }
 
-    $rsDeleteConlancamCgm = db_query("delete from conlancamcgm  where c76_codlan in (select c70_codlan from w_conlancam)");
-    if (!$rsDeleteConlancamCgm) {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancamcgm');
-    }
-    $rsDeleteConlancamGrupo = db_query("delete from conlancamcorgrupocorrente
+        $daoConPlanoAtributosLancamentos = new cl_conplanoatributolancamentos();
+        $daoConfiguracaoInsituicao = new cl_configuracaoinstituicaosiconfi();
+        $sqlInstituicoes = $daoConfiguracaoInsituicao->sql_query(null, 'codigo');
+        $rsInstituicoes = db_query($sqlInstituicoes);
+
+        if (!$rsInstituicoes) {
+            throw new DBException("Erro ao buscar as instituições configuradas");
+        }
+
+        $instituicoes = array();
+        $instituicoes = db_utils::makeCollectionFromRecord($rsInstituicoes, function ($dadosInstituicao) {
+            return new Instituicao($dadosInstituicao->codigo);
+        });
+
+        if (count($instituicoes) > 0) {
+            $daoConPlanoAtributosLancamentos->removerLancametosCompetencia($oData->getMes(), $oData->getAno(),
+                $instituicoes);
+        }
+
+        $rsDeleteConlancamCgm = db_query("delete from conlancamcgm  where c76_codlan in (select c70_codlan from w_conlancam)");
+        if (!$rsDeleteConlancamCgm) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamcgm');
+        }
+        $rsDeleteConlancamGrupo = db_query("delete from conlancamcorgrupocorrente
                                          where c23_conlancam in (select c70_codlan from w_conlancam)"
-                                      );
-    if (!$rsDeleteConlancamGrupo) {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancamGrupo');
-    }
-    $rsDeleteConlancamCorrente = db_query("delete from conlancamcorrente
+        );
+        if (!$rsDeleteConlancamGrupo) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamGrupo');
+        }
+        $rsDeleteConlancamCorrente = db_query("delete from conlancamcorrente
                                             where c86_conlancam in (select c70_codlan from w_conlancam)"
-    );
-    if (!$rsDeleteConlancamCorrente) {
-      throw new Exception("Não foi possivel excluir dados da tabela conlancamcorrente\n".pg_last_error());
-    }
+        );
+        if (!$rsDeleteConlancamCorrente) {
+            throw new Exception("Não foi possivel excluir dados da tabela conlancamcorrente\n" . pg_last_error());
+        }
 
-    $rsDeleteConlancamRec = db_query("delete from conlancamrec
+        $rsDeleteConlancamRec = db_query("delete from conlancamrec
                                        where c74_codlan in (select c70_codlan from w_conlancam)"
-                                    );
-    if (!$rsDeleteConlancamRec)  {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancamrec');
-    }
+        );
+        if (!$rsDeleteConlancamRec) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamrec');
+        }
 
-    $rsDeleteConlancamCompl = db_query("delete from conlancamcompl
+        $rsDeleteConlancamCompl = db_query("delete from conlancamcompl
                                        where c72_codlan in (select c70_codlan from w_conlancam)"
-                                    );
-    if (!$rsDeleteConlancamCompl)  {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancamcompl');
-    }
+        );
+        if (!$rsDeleteConlancamCompl) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamcompl');
+        }
 
-    $rsDeleteConlancamPag = db_query("delete from conlancampag
+        $rsDeleteConlancamPag = db_query("delete from conlancampag
                                        where c82_codlan in (select c70_codlan from w_conlancam)"
-    );
-    if (!$rsDeleteConlancamPag)  {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancampag');
-    }
+        );
+        if (!$rsDeleteConlancamPag) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancampag');
+        }
 
-    $rsDeleteConlancamDoc = db_query("delete from conlancamdoc
+        $rsDeleteConlancamDoc = db_query("delete from conlancamdoc
                                        where c71_codlan in (select c70_codlan from w_conlancam)"
-                                    );
-    if (!$rsDeleteConlancamDoc)  {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancamdoc');
-    }
+        );
+        if (!$rsDeleteConlancamDoc) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamdoc');
+        }
 
-    $rsDeleteConlancamCC = db_query("delete from contacorrentedetalheconlancamval
+        $rsDeleteConlancamCC = db_query("delete from contacorrentedetalheconlancamval
                                        where c28_conlancamval in (select c69_sequen
                                                                     from conlancamval
                                                                    where c69_codlan in (select c70_codlan
                                                                                          from w_conlancam)
                                                                    )"
-                                   );
-    if (!$rsDeleteConlancamCC)  {
-      throw new Exception('Não foi possivel excluir dados da tabela contacorrentedetalheconlancamval');
-    }
+        );
+        if (!$rsDeleteConlancamCC) {
+            throw new Exception('Não foi possivel excluir dados da tabela contacorrentedetalheconlancamval');
+        }
 
-    $rsDeleteConlanordem = db_query(" delete from conlancamordem
-                                        where c03_codlan in (select c70_codlan from w_conlancam)"
-                                    );
-    if (!$rsDeleteConlanordem)  {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancamordem');
-    }
-
-    $rsDeleteConlancamVal = db_query(" delete from conlancamval
+        $rsDeleteConlancamVal = db_query(" delete from conlancamval
                                         where c69_codlan in (select c70_codlan from w_conlancam)"
-                                    );
-    if (!$rsDeleteConlancamVal)  {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancamval');
-    }
+        );
+        if (!$rsDeleteConlancamVal) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamval');
+        }
 
-    $rsDeleteConlancamCP = db_query("delete from conlancamconcarpeculiar
+        $rsDeleteConlancamCP = db_query("delete from conlancamconcarpeculiar
                                       where c08_codlan in (select c70_codlan from w_conlancam)"
-    );
-    if (!$rsDeleteConlancamCP)  {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancamconcarpeculiar');
-    }
+        );
+        if (!$rsDeleteConlancamCP) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamconcarpeculiar');
+        }
 
-    $rsDeleteConlancamInstit = db_query( "delete from conlancaminstit where c02_codlan in (select c70_codlan from w_conlancam)" );
+        $rsDeleteConlancamOrdem = db_query("delete from conlancamordem where c03_codlan in (select c70_codlan from w_conlancam)");
 
-    if (!$rsDeleteConlancamInstit) {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancaminstit');
-    }
+        if (!$rsDeleteConlancamOrdem) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamordem');
+        }
 
-    $rsDeleteConlancam = db_query("delete from conlancam where c70_codlan in (select c70_codlan from w_conlancam)");
-    if (!$rsDeleteConlancam)  {
-      throw new Exception('Não foi possivel excluir dados da tabela conlancam');
-    }
+        $rsDeleteConlancamInstit = db_query("delete from conlancaminstit where c02_codlan in (select c70_codlan from w_conlancam)");
 
-    /*
+        if (!$rsDeleteConlancamInstit) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancaminstit');
+        }
 
+        $rsDeleteConlancamOrdem = db_query("delete from conlancamordem where c03_codlan in (select c70_codlan from w_conlancam)");
 
-    echo "Iniciando Reprocessando da arrecadacao de Receita<br>";
-    flush();
-    db_fim_transacao(false);
+        if (!$rsDeleteConlancamOrdem) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamordem');
+        }
 
-    $sSqlReceita = "select distinct k12_conta, corrente.k12_id as id,
+        $rsDeleteConlancamemp = db_query("delete from conlancamemp where c75_codlan in(select c70_codlan from w_conlancam)");
+
+        if (!$rsDeleteConlancamemp) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamemp');
+        }
+
+        $rsDeleteConlancamdepartamento = db_query("delete from conlancamdepartamento where c128_conlancam in(select c70_codlan from w_conlancam)");
+
+        if (!$rsDeleteConlancamemp) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamdepartamento');
+        }
+
+        $rsDeleteConlancamrecurso = db_query("delete from conlancamrecurso where c130_conlancam in(select c70_codlan from w_conlancam)");
+
+        if (!$rsDeleteConlancamrecurso) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancamrecurso');
+        }
+        $rsDeleteConlancamrecurso = db_query("delete from infocomplementarvalor using conplanoatributolancamentos where c123_conplanoatributolancamentos = c124_sequencial
+                                             and c124_lancamento in(select c70_codlan from w_conlancam)");
+
+        if (!$rsDeleteConlancamrecurso) {
+            throw new Exception('Não foi possivel excluir dados da tabela infocomplementarvalor');
+        }
+
+        $rsDeleteatributos = db_query("delete from conplanoatributolancamentos where c124_lancamento in(select c70_codlan from w_conlancam)");
+
+        if (!$rsDeleteatributos) {
+            throw new Exception('Não foi possivel excluir dados da tabela conplanoatributolancamentos');
+        }
+
+        $rsDeleteConlancam = db_query("delete from conlancam where c70_codlan in (select c70_codlan from w_conlancam)");
+        if (!$rsDeleteConlancam) {
+            throw new Exception('Não foi possivel excluir dados da tabela conlancam');
+        }
+
+        echo "Iniciando Reprocessando da arrecadacao de Receita<br>";
+        db_fim_transacao(false);
+
+        $whereRetencoes = '';
+        if (APROPRIACAO_RETENCAO) {
+
+            $whereRetencoes = " and not exists ( select 1 
+                                        from corgrupocorrente
+                                            inner join retencaocorgrupocorrente on e47_corgrupocorrente = k105_sequencial
+                                       where k105_data = corrente.k12_data
+                                         and k105_autent = corrente.k12_autent
+                                         and k105_id = corrente.k12_id
+                                         )";
+        }
+        echo "aqui";
+        $sSqlReceita = "select distinct k12_conta, corrente.k12_id as id,
                            corrente.k12_autent as codautent,
                            corrente.k12_data as data,
                            corrente.k12_estorn
@@ -249,73 +323,78 @@ if (isset($_POST["processar"])) {
                    where corrente.k12_data  between '{$sData}' and '{$sDataFinal}'
                      and k82_seqpla is null
                      and corcla.k12_autent is null
-                     and corrente.k12_instit = ".db_getsession("DB_instit")."
+                     and corrente.k12_instit = " . db_getsession("DB_instit") . "
+                     
+                    {$whereRetencoes}
+                     
                    order by corrente.k12_data, corrente.k12_id, corrente.k12_autent;";
 
-    $rsReceitas       = db_query($sSqlReceita);
-    $iTotalLinhas = pg_num_rows($rsReceitas);
-    for ($i = 0; $i < $iTotalLinhas; $i++) {
+        echo $sSqlReceita."<br>";
+        $rsReceitas = db_query($sSqlReceita);
+        $iTotalLinhas = pg_num_rows($rsReceitas);
+        for ($i = 0; $i < $iTotalLinhas; $i++) {
 
-       db_inicio_transacao();
+            db_inicio_transacao();
 
-       $oDadosAutenticacao = db_utils::fieldsMemory($rsReceitas, $i);
-       $lEstorno =  $oDadosAutenticacao->k12_estorn == 't' ? true : false;
-       echo "processando {$oDadosAutenticacao->data} - AUT:{$oDadosAutenticacao->codautent} ID:{$oDadosAutenticacao->id}<br>";
-       flush();
-       $oAutenticacao    = new AutenticacaoArrecadacao(1,
-                                                       null,
-                                                       $oDadosAutenticacao->k12_conta
-                                                      );
-       $lReceitaContabil = $oAutenticacao->efetuarLancamentos($oDadosAutenticacao->data,
-                                                              $oDadosAutenticacao->id,
-                                                              $oDadosAutenticacao->codautent,
-                                                              $oDadosAutenticacao->k12_conta,
-                                                              $lEstorno
-                                                             );
+            $oDadosAutenticacao = db_utils::fieldsMemory($rsReceitas, $i);
+            $lEstorno = $oDadosAutenticacao->k12_estorn == 't' ? true : false;
+            echo "processando {$oDadosAutenticacao->data} - AUT:{$oDadosAutenticacao->codautent} ID:{$oDadosAutenticacao->id}<br>";
+            flush();
+            $oAutenticacao = new AutenticacaoArrecadacao(1,
+                null,
+                $oDadosAutenticacao->k12_conta
+            );
+            $lReceitaContabil = $oAutenticacao->efetuarLancamentos($oDadosAutenticacao->data,
+                $oDadosAutenticacao->id,
+                $oDadosAutenticacao->codautent,
+                $oDadosAutenticacao->k12_conta,
+                $lEstorno
+            );
 
-       if ($lReceitaContabil) {
 
-         $oAutenticacao->efetuarLancamentos($oDadosAutenticacao->data,
-                                            $oDadosAutenticacao->id,
-                                            $oDadosAutenticacao->codautent,
-                                            $oDadosAutenticacao->k12_conta,
-                                            $lEstorno,
-                                            true, true
-                                           );
+            if ($lReceitaContabil) {
 
-         $oAutenticacao->efetuarLancamentos($oDadosAutenticacao->data,
-                                            $oDadosAutenticacao->id,
-                                            $oDadosAutenticacao->codautent,
-                                            $oDadosAutenticacao->k12_conta,
-                                            $lEstorno,
-                                            true
-                                           );
+                $oAutenticacao->efetuarLancamentos($oDadosAutenticacao->data,
+                    $oDadosAutenticacao->id,
+                    $oDadosAutenticacao->codautent,
+                    $oDadosAutenticacao->k12_conta,
+                    $lEstorno,
+                    true, true
+                );
+
+                $oAutenticacao->efetuarLancamentos($oDadosAutenticacao->data,
+                    $oDadosAutenticacao->id,
+                    $oDadosAutenticacao->codautent,
+                    $oDadosAutenticacao->k12_conta,
+                    $lEstorno,
+                    true
+                );
+            }
+
+            $lReceitaExtra = $oAutenticacao->efetuarLancamentosReceitaExtra($lEstorno,
+                $oDadosAutenticacao->data,
+                $oDadosAutenticacao->codautent,
+                $oDadosAutenticacao->id
+            );
+
+            if (!$lReceitaContabil && !$lReceitaExtra) {
+                fputs($rsErros,
+                    "Arrecadacao {$oDadosAutenticacao->k12_numpre} - {$oDadosAutenticacao->data} - AUT:{$oDadosAutenticacao->codautent} ID:{$oDadosAutenticacao->id} não foi efetuado lançamento contábil.\n");
+            }
+
+            db_fim_transacao(false);
+
         }
-
-        $lReceitaExtra = $oAutenticacao->efetuarLancamentosReceitaExtra($lEstorno,
-                                                                        $oDadosAutenticacao->data,
-                                                                        $oDadosAutenticacao->codautent,
-                                                                        $oDadosAutenticacao->id
-                                                                       );
-
-        if (!$lReceitaContabil && !$lReceitaExtra) {
-           fputs($rsErros, "Arrecadacao {$oDadosAutenticacao->k12_numpre} - {$oDadosAutenticacao->data} - AUT:{$oDadosAutenticacao->codautent} ID:{$oDadosAutenticacao->id} não foi efetuado lançamento contábil.\n");
-        }
-
-       db_fim_transacao(false);
-
-    }
-    echo "Termino do  Reprocessamento da arrecadacao de Receita<br>";
-    flush();
-    $rstrigger = db_query("alter table conlancamval enable trigger all;");
-    $rstrigger = db_query("alter table conlancamval enable trigger all;");
-    db_fim_transacao(false);
+        echo "Termino do  Reprocessamento da arrecadacao de Receita<br>";
+        $rstrigger = db_query("alter table conlancamval enable trigger all;");
+        $rstrigger = db_query("alter table conlancamval enable trigger all;");
+        db_fim_transacao(false);
 
 
-    echo "Iniciando Reprocessando da baixa de banco<br>";
-    flush();
-   // db_inicio_transacao();
-    $sSqlReceita = "select distinct k12_codcla
+        echo "Iniciando Reprocessando da baixa de banco<br>";
+        flush();
+        // db_inicio_transacao();
+        $sSqlReceita = "select distinct k12_codcla
                      From corrente
                           inner join cornump on corrente.k12_data  = cornump.k12_data
                                             and corrente.k12_id    = cornump.k12_id
@@ -324,34 +403,29 @@ if (isset($_POST["processar"])) {
                                           and corcla.k12_data     = corrente.k12_data
                                           and corrente.k12_autent = corcla.k12_autent
                    where corrente.k12_data  between '{$sData}' and '{$sDataFinal}'
-                     and corrente.k12_instit = ".db_getsession("DB_instit");
+                     and corrente.k12_instit = " . db_getsession("DB_instit");
 
-    $rsReceitas       = db_query($sSqlReceita);
-    $iTotalLinhas = pg_num_rows($rsReceitas);
-    for ($i = 0; $i < $iTotalLinhas; $i++) {
+        $rsReceitas = db_query($sSqlReceita);
+        $iTotalLinhas = pg_num_rows($rsReceitas);
+        for ($i = 0; $i < $iTotalLinhas; $i++) {
 
-      db_inicio_transacao();
-      $oDadosAutenticacao = db_utils::fieldsMemory($rsReceitas, $i);
+            db_inicio_transacao();
+            $oDadosAutenticacao = db_utils::fieldsMemory($rsReceitas, $i);
 
-      $oAutenticacao      = new LancamentoContabilAjusteBaixaBanco($oDadosAutenticacao->k12_codcla);
-      $oAutenticacao->autenticar();
+            $oAutenticacao = new LancamentoContabilAjusteBaixaBanco($oDadosAutenticacao->k12_codcla);
+            $oAutenticacao->autenticar();
 
-      db_fim_transacao(false);
+            db_fim_transacao(false);
 
-    }
-
-*/
-
-
-//  #planilhainicio
-
+        }
 //    db_fim_transacao(false);
-    echo "termino do  Reprocessando da baixa de banco<Br>";
-    flush();
+        echo "termino do  Reprocessando da baixa de banco<Br>";
+        flush();
 
-    echo "Iniciando Processamento das Planilhas de Arrecadacao<br>";
-    flush();
-    $sSqlReceita = "select  distinct k12_conta, corrente.k12_id as id,
+
+        echo "Iniciando Processamento das Planilhas de Arrecadacao<br>";
+        flush();
+        $sSqlReceita = "select  distinct k12_conta, corrente.k12_id as id,
                            corrente.k12_autent as codautent,
                            corrente.k12_data as data,
                            corrente.k12_autent,
@@ -373,64 +447,65 @@ if (isset($_POST["processar"])) {
                                                 and k82_data   = corrente.k12_data
                                                 and k82_autent = corrente.k12_autent
                    inner join placaixarec on k82_seqpla  = k81_seqpla
-                   left  join taborc      on k02_codigo  = k81_receita and k02_anousu = 2013
+                   left  join taborc      on k02_codigo  = k81_receita and k02_anousu = 2014
                    inner join placaixa   on k80_codpla  = k81_codpla
                    where corrente.k12_data between '{$sData}' and '{$sDataFinal}'
-                     and corrente.k12_instit = ".db_getsession("DB_instit")."
+                     and corrente.k12_instit = " . db_getsession("DB_instit") . "
                   order by corrente.k12_data, corrente.k12_id,corrente.k12_autent;";
 
-    $rsReceitas   = db_query($sSqlReceita);
-    $iTotalLinhas = pg_num_rows($rsReceitas);
+        $rsReceitas = db_query($sSqlReceita);
+        $iTotalLinhas = pg_num_rows($rsReceitas);
 
-    for ($i = 0; $i < $iTotalLinhas; $i++) {
+        for ($i = 0; $i < $iTotalLinhas; $i++) {
 
-    db_inicio_transacao();
-      $oDadosAutenticacao           = db_utils::fieldsMemory($rsReceitas, $i);
-      $oDadosAutenticacao->estorno  = $oDadosAutenticacao->estorno == 't' ? true : false;
-      echo "processando Planilha {$oDadosAutenticacao->k81_codpla} - {$oDadosAutenticacao->data} - AUT:{$oDadosAutenticacao->codautent} ID:{$oDadosAutenticacao->id}\n";
-      flush();
-      $oPlanilhaArrecadacao = new AutenticacaoPlanilha(new PlanilhaArrecadacao($oDadosAutenticacao->k81_codpla));
+            db_inicio_transacao();
+            $oDadosAutenticacao = db_utils::fieldsMemory($rsReceitas, $i);
+            $oDadosAutenticacao->estorno = $oDadosAutenticacao->estorno == 't' ? true : false;
+            echo "processando Planilha {$oDadosAutenticacao->k81_codpla} - {$oDadosAutenticacao->data} - AUT:{$oDadosAutenticacao->codautent} ID:{$oDadosAutenticacao->id}\n";
+            flush();
+            $oPlanilhaArrecadacao = new AutenticacaoPlanilha(new PlanilhaArrecadacao($oDadosAutenticacao->k81_codpla));
 
-      $lReceita      = $oPlanilhaArrecadacao->executarLancamentoContabeis($oDadosAutenticacao->codautent,
-                                                          $oDadosAutenticacao->estorno,
-                                                          $oDadosAutenticacao
-                                                         );
-      $lReceitaExtra = $oPlanilhaArrecadacao->executarLancamentosReceitaExtraOrcamentaria($oDadosAutenticacao->codautent,
-                                                                                 $oDadosAutenticacao->estorno,
-                                                                                 $oDadosAutenticacao
-                                                                                );
-
-
+            $lReceita = $oPlanilhaArrecadacao->executarLancamentoContabeis($oDadosAutenticacao->codautent,
+                $oDadosAutenticacao->estorno,
+                $oDadosAutenticacao
+            );
+            $lReceitaExtra = $oPlanilhaArrecadacao->executarLancamentosReceitaExtraOrcamentaria($oDadosAutenticacao->codautent,
+                $oDadosAutenticacao->estorno,
+                $oDadosAutenticacao
+            );
 
 
-      if (!$lReceita && !$lReceitaExtra) {
-        fputs($rsErros, "planilha {$oDadosAutenticacao->k81_codpla}  - {$oDadosAutenticacao->data} - AUT:{$oDadosAutenticacao->codautent} ID:{$oDadosAutenticacao->id} não foi efetuado lançamento contábil.\n");
-      }
-    db_fim_transacao(false);
+            if (!$lReceita && !$lReceitaExtra) {
+                fputs($rsErros,
+                    "planilha {$oDadosAutenticacao->k81_codpla}  - {$oDadosAutenticacao->data} - AUT:{$oDadosAutenticacao->codautent} ID:{$oDadosAutenticacao->id} não foi efetuado lançamento contábil.\n");
+            }
+            db_fim_transacao(false);
 
+        }
+
+        echo "Fim do processamento das planilhas de arrecadacao <br>";
+        if ($_POST["reprocessar_saldo_contabil"] == 's') {
+
+            db_inicio_transacao();
+            recriarConplanoExeSaldo();
+            db_fim_transacao(false);
+        }
+
+        db_msgbox('Processamento Efetuado com sucesso');
+    } catch (Exception $eErro) {
+
+        $sMsg = @str_replace("\n", "\\n", $sMensagem);
+        echo $sMsg;
+        $sMensagem = $eErro->getMessage() . " | [ERRO] - " . pg_last_error();
+        db_msgbox($sMsg);
+        db_fim_transacao(true);
     }
+    unset($_SESSION["DB_desativar_account"]);
+    foreach ($aTables as $sTabela) {
 
-    echo "Fim do processamento das planilhas de arrecadacao <br>";
-    if ($_POST["reprocessar_saldo_contabil"] == 's') {
-
-      db_inicio_transacao();
-      recriarConplanoExeSaldo();
-      db_fim_transacao(false);
+        $sSqlAjusteDesempenho = "alter table {$sTabela} set (autovacuum_enabled = true, toast.autovacuum_enabled = true)";
+        $rsAjusteDesempenho = db_query($sSqlAjusteDesempenho);
     }
-
-    db_msgbox('Processamento Efetuado com sucesso');
-  } catch (Exception $eErro) {
-
-    $sMsg = @str_replace("\n", "\\n", $eErro->getMessage())." ID:{$oDadosAutenticacao->id} AUT:{$oDadosAutenticacao->codautent} Data:{$oDadosAutenticacao->data} Classificacao: {$oDadosAutenticacao->k12_codcla}";
-    db_msgbox($sMsg);
-    db_fim_transacao(true);
-  }
-  unset($_SESSION["DB_desativar_account"]);
-  foreach ($aTables as $sTabela) {
-
-    $sSqlAjusteDesempenho = "alter table {$sTabela} set (autovacuum_enabled = true, toast.autovacuum_enabled = true)";
-    $rsAjusteDesempenho   = db_query($sSqlAjusteDesempenho);
-  }
 }
 $_SESSION["DB_desativar_account"] = false;
 unset($_SESSION["DB_desativar_account"]);
@@ -438,171 +513,175 @@ unset($_SESSION["DB_desativar_account"]);
 </div>
 <html>
 <head>
-  <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta http-equiv="Expires" CONTENT="0">
-  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-  <link href="estilos.css" rel="stylesheet" type="text/css">
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body style="margin-top: 25px; background-color: #cccccc" >
-  <center>
-  <div style="display: table">
-    <form action="" method="post">
-    <fieldset>
-      <legend>
-        <b>Reprocessamento dos lançamentos Receita do PCASP</b>
-      </legend>
-      <table>
-         <tr>
-            <td><b>Data para inicio do processamento:</b></td>
-            <td>
-              <?php
-               db_inputdata('sData', null, null. null, null,true, 'text', 1);
-              ?>
-              <b>à</b>
-              <?php
-               db_inputdata('sDataFinal', null, null. null, null,true, 'text', 1);
-              ?>
-            </td>
-         </tr>
+<body style="margin-top: 25px; background-color: #cccccc">
+<center>
+    <div class="container">
+        <form action="" method="post">
+            <fieldset>
+                <legend>
+                    <b>Reprocessamento dos lançamentos Receita do PCASP</b>
+                </legend>
+                <table>
+                    <tr>
+                        <td><b>Data para Processamento:</b></td>
+                        <td>
+                            <?php
+                            db_inputdata('sData', null, null . null, null, true, 'text', 1);
+                            ?>
+                            <b>à</b>
+                            <?php
+                            db_inputdata('sDataFinal', null, null . null, null, true, 'text', 1);
+                            ?>
+                        </td>
+                    </tr>
 
-         <tr>
-           <td>
-             <b>Reprocessar Conplanoexesaldo:</b>
-           </td>
-           <td>
-             <select name='reprocessar_saldo_contabil' style="width: 100%">
-               <option value='n' selected>Não</option>
-               <option value='s'>Sim</option>
-             </select>
-           </td>
-         </tr>
+                    <tr>
+                        <td>
+                            <b>Reprocessar Saldo do Exercício:</b>
+                        </td>
+                        <td>
+                            <select name='reprocessar_saldo_contabil' style="width: 100%">
+                                <option value='n' selected>Não</option>
+                                <option value='s'>Sim</option>
+                            </select>
+                        </td>
+                    </tr>
 
-         <tr>
-           <td>
-             <b>Reprocessar Descontos Tesouraria:</b>
-           </td>
-           <td>
-             <select name='reprocessar_descontos_tesouraria' style="width: 100%">
-               <option value='n' selected>Não</option>
-               <option value='s'>Sim</option>
-             </select>
-           </td>
-         </tr>
-      </table>
-    </fieldset>
-    <input type="submit" value='Processar' name='processar' onclick='return confirm("Confirma o processamento dos dados a partir data informada?")'>
-  </form>
-  </div>
-  </center>
+                    <tr>
+                        <td>
+                            <b>Reprocessar Descontos Tesouraria:</b>
+                        </td>
+                        <td>
+                            <select name='reprocessar_descontos_tesouraria' style="width: 100%">
+                                <option value='n' selected>Não</option>
+                                <option value='s'>Sim</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <input type="submit" value='Processar' name='processar'
+                   onclick='return confirm("Confirma o processamento dos dados a partir data informada?")'>
+        </form>
+    </div>
+</center>
 </body>
 <?php
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"),
+    db_getsession("DB_instit"));
 
 
+function recriarConplanoExeSaldo()
+{
 
-function recriarConplanoExeSaldo() {
-
-  $rsDeleteConplanoExe = db_query("delete from conplanoexesaldo");
-  if (!$rsDeleteConplanoExe) {
-    throw new Exception('Não foi possivel excluir conplanoexesaldo');
-  }
-  $rsCreateTableSaldoDebito = db_query("create table landeb as
+    $rsDeleteConplanoExe = db_query("delete from conplanoexesaldo");
+    if (!$rsDeleteConplanoExe) {
+        throw new Exception('Não foi possivel excluir conplanoexesaldo');
+    }
+    $rsCreateTableSaldoDebito = db_query("create table landeb as
                                          select c69_anousu,c69_debito,to_char(c69_data,'MM')::integer,
                                                 sum(round(c69_valor,2)),0::float8
                                            from conlancamval
                                           group by c69_anousu,c69_debito,to_char(c69_data,'MM')::integer;");
 
-  if (!$rsCreateTableSaldoDebito) {
-    throw new Exception('Não foi possivel criar tabela temporaria para saldo a debito');
-  }
-  $rsCreateTableSaldoCredito = db_query("
+    if (!$rsCreateTableSaldoDebito) {
+        throw new Exception('Não foi possivel criar tabela temporaria para saldo a debito');
+    }
+    $rsCreateTableSaldoCredito = db_query("
                                         create table lancre as
                                         select c69_anousu,c69_credito,to_char(c69_data,'MM')::integer,0::float8,sum(round(c69_valor,2))
                                         from conlancamval
                                         group by c69_anousu,c69_credito,to_char(c69_data,'MM')::integer;"
-                                       );
+    );
 
-  if (!$rsCreateTableSaldoCredito) {
-    throw new Exception('Não foi possivel criar tabela temporaria para saldo a credito');
-  }
-  $rsInsertDebito = db_query("insert into conplanoexesaldo select * from landeb");
-  if (!$rsInsertDebito) {
-    throw new Exception('Não foi possivel incluir saldo a debito');
-  }
-  $rsUpdateDebito = db_query("
+    if (!$rsCreateTableSaldoCredito) {
+        throw new Exception('Não foi possivel criar tabela temporaria para saldo a credito');
+    }
+    $rsInsertDebito = db_query("insert into conplanoexesaldo select * from landeb");
+    if (!$rsInsertDebito) {
+        throw new Exception('Não foi possivel incluir saldo a debito');
+    }
+    $rsUpdateDebito = db_query("
                               update conplanoexesaldo
                               set c68_credito = lancre.sum
                               from lancre
                               where c68_anousu = lancre.c69_anousu
                               and c68_reduz = lancre.c69_credito
                               and c68_mes = lancre.to_char;"
-                            );
+    );
 
-  if (!$rsUpdateDebito) {
-    throw new Exception('Não foi possivel atualizar saldo a debito');
-  }
-  $rsDeleteCredito = db_query("
+    if (!$rsUpdateDebito) {
+        throw new Exception('Não foi possivel atualizar saldo a debito');
+    }
+    $rsDeleteCredito = db_query("
                               delete from lancre
                               using conplanoexesaldo
                               where lancre.c69_anousu = conplanoexesaldo.c68_anousu
                               and conplanoexesaldo.c68_reduz = lancre.c69_credito
                               and conplanoexesaldo.c68_mes = lancre.to_char;"
-                             );
-  if (!$rsDeleteCredito) {
-    throw new Exception('Não foi possivel excluir contas a credito');
-  }
+    );
+    if (!$rsDeleteCredito) {
+        throw new Exception('Não foi possivel excluir contas a credito');
+    }
 
-  $rsInsertCredito = db_query("insert into conplanoexesaldo select * from lancre");
-  if (!$rsInsertCredito) {
-    throw new Exception('Não foi possivel insert contas a credito');
-  }
-  $rsDropTemTables = db_query("drop table landeb;
+    $rsInsertCredito = db_query("insert into conplanoexesaldo select * from lancre");
+    if (!$rsInsertCredito) {
+        throw new Exception('Não foi possivel insert contas a credito');
+    }
+    $rsDropTemTables = db_query("drop table landeb;
                                drop table lancre;
                               ");
 
 }
 
-function reprocessarDescontoTesouraria ($sDataInicial, $sDataFinal) {
+function reprocessarDescontoTesouraria($sDataInicial, $sDataFinal)
+{
 
-  $sSqlDatas = "select data::date from generate_series('{$sDataInicial}'::timestamp,
+    $sSqlDatas = "select data::date from generate_series('{$sDataInicial}'::timestamp,
                                                         '{$sDataFinal}'::timestamp, '1 day') as data;";
-  $rsDatas = db_query($sSqlDatas);
-  if (!$rsDatas) {
-    throw new Exception('Não foi possivel criar intervalo de Datas');
-  }
-  $aDatas = db_utils::getCollectionByRecord($rsDatas);
-  foreach ($aDatas as $oData) {
+    $rsDatas = db_query($sSqlDatas);
+    if (!$rsDatas) {
+        throw new Exception('Não foi possivel criar intervalo de Datas');
+    }
+    $aDatas = db_utils::getCollectionByRecord($rsDatas);
+    foreach ($aDatas as $oData) {
 
-    $sSqlCreateTabelaCornump = "create temp table w_copia_cornump as
+        $sSqlCreateTabelaCornump = "create temp table w_copia_cornump as
                                 select *
                                   from caixa.cornump
                                  where k12_data = '{$oData->data}'";
-    $rsCreateTempTable = db_query($sSqlCreateTabelaCornump);
-    if (!$rsCreateTempTable) {
-      throw new Exception("Não foi possivel criar tabela com os dados da cornump do dia {$oData->data}");
-    }
+        $rsCreateTempTable = db_query($sSqlCreateTabelaCornump);
+        if (!$rsCreateTempTable) {
+            throw new Exception("Não foi possivel criar tabela com os dados da cornump do dia {$oData->data}");
+        }
 
-    $rsDeleteCornumpDesconto = db_query("delete from contabilidade.cornumpdesconto
+        $rsDeleteCornumpDesconto = db_query("delete from contabilidade.cornumpdesconto
                                          where k12_data = '{$oData->data}'"
-                                       );
-    if (!$rsDeleteCornumpDesconto) {
-      throw new Exception("Não foi possivel delete com os dados da cornumpdesconto do dia {$oData->data}");
-    }
+        );
+        if (!$rsDeleteCornumpDesconto) {
+            throw new Exception("Não foi possivel delete com os dados da cornumpdesconto do dia {$oData->data}");
+        }
 
-     $rsDelete = db_query("delete from caixa.cornump
+        $rsDelete = db_query("delete from caixa.cornump
                            where k12_data = '{$oData->data}'"
-                        );
-     if (!$rsDelete) {
-        throw new Exception("Não foi possivel delete com os dados da cornump do dia {$oData->data}");
-     }
+        );
+        if (!$rsDelete) {
+            throw new Exception("Não foi possivel delete com os dados da cornump do dia {$oData->data}");
+        }
 
-     $rsInsert = db_query("insert into caixa.cornump select * from w_copia_cornump;");
-     if (!$rsInsert) {
-       throw new Exception("Não foi possivel inserir dados da cornump do dia {$oData->data}");
-     }
-     $rsCreateTempTable = db_query("drop table w_copia_cornump");
-   }
+        $rsInsert = db_query("insert into caixa.cornump select * from w_copia_cornump;");
+        if (!$rsInsert) {
+            throw new Exception("Não foi possivel inserir dados da cornump do dia {$oData->data}");
+        }
+        $rsCreateTempTable = db_query("drop table w_copia_cornump");
+    }
 }
- ?>
+
+?>
 </html>

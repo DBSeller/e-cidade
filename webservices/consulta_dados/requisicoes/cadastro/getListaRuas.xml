@@ -1,0 +1,22 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="j88_sigla"  label="tipo_abreviacao"                 />
+    <campo campo="j88_descricao"  label="tipo_descricao"              />
+    <campo campo="j14_nome "  label="descricao"                       />
+    <campo campo="j14_codigo" label="codigo"                          />
+    <campo campo="j14_rural" label="rural"                            />
+    <campo campo="j16_bairro" label="bairro"                          />
+    <campo campo="j13_descr" label="bairro_descricao"                 />
+  </campos>
+  <from tabela="ruas"                               />
+  <juncoes>
+    <join tipo="inner" tabela="ruastipo"    condicao="j14_tipo = j88_codigo"    />
+    <join tipo="inner" tabela="ruasbairro"  condicao="j14_codigo = j16_lograd"  />
+    <join tipo="inner" tabela="bairro"      condicao="j16_bairro = j13_codi"    />
+  </juncoes>
+  <filtros></filtros>
+  <agrupamento campos=""                                                        />
+  <ordenacao   campos="j14_nome"                                                />
+</consulta>
+

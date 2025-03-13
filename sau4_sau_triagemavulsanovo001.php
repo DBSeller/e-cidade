@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,54 +25,51 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_stdlibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 
 $oParametrosConfiguracao = loadConfig('sau_config');
 $iModelo                 = $oParametrosConfiguracao->s103_i_modelofaa;
 ?>
  
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
   <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta http-equiv="Expires" CONTENT="0">
-  <link type="text/css" rel="stylesheet" href="estilos.css">
+  <meta charset="iso-8859-1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link type="text/css" href="assets/bootstrap-table/css/bootstrap.min.css" rel="stylesheet"/>
+  <link type="text/css" href="assets/bootstrap-table/bootstrap-table.min.css" rel="stylesheet"/>
+  <link type="text/css" href="estilos.css" rel="stylesheet">
+  <link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.core.css" rel="stylesheet"/>
+  <link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.bootstrap.css" rel="stylesheet"/>
   <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
   <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
   <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
-  <script language="JavaScript" type="text/javascript" src="scripts/classes/saude/ambulatorial/DBViewTriagem.classe.js"></script>
 </head>
-<body class="body-default">
+<body>
     <div id="cntTriagem" class="container"></div>
 </body>
 </html>
+<script type="text/javascript" src="assets/jquery/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="assets/bootstrap-table/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="assets/bootstrap-table/locale/bootstrap-table-pt-BR.min.js"></script>
+<script type="text/javascript" src='extension/package/Desktop/assets/vendors/alertify/alertify.js'></script>
+<script language="JavaScript" type="text/javascript" src="scripts/classes/saude/ambulatorial/DBViewTriagem.classe.js"></script>
 <script>
-
-var oGet = js_urlToObject();
-var oTriagem = new DBViewTriagem( DBViewTriagem.prototype.TELA_TRIAGEM );
+$.noConflict();
+const oTriagem = new DBViewTriagem( DBViewTriagem.prototype.TELA_TRIAGEM );
 oTriagem.temProntuario( true );
 oTriagem.bloqueiaCartaoSus( true );
 oTriagem.exibirBotaoEmitirFAA( true, <?=$iModelo;?> );
 oTriagem.origemAgenda( true );
 oTriagem.show($('cntTriagem'));
-
-function js_comparaDatasoInputDataConsulta(dia, mes, ano) {
-  
-  var objData   = document.getElementById('oInputDataConsultaValor');
-  objData.value = dia + "/" + mes + "/" + ano;
-}
-
-function js_comparaDatasoInputDataPrimeiroSintoma(dia, mes, ano) {
-  
-  var objData   = document.getElementById('oInputDataPrimeiroSintomaValor');
-  objData.value = dia + "/" + mes + "/" + ano;
-}
-
+oTriagem.consultarFaa();
 </script>

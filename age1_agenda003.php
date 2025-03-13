@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if(isset($HTTP_POST_VARS["excluir"])) {
   $id = $HTTP_POST_VARS["id"];
-  $result = pg_exec("select id from db_contatos where id = $id");
+  $result = db_query("select id from db_contatos where id = $id");
   if(pg_numrows($result) > 0) {
-    $result = pg_exec("DELETE FROM db_contatos WHERE id = $id") or die("Erro(10) excluindo db_contatos.");
+    $result = db_query("DELETE FROM db_contatos WHERE id = $id") or die("Erro(10) excluindo db_contatos.");
   } else {
     $DB_ERRO = "Código $id não encontrado";
   }

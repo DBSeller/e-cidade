@@ -1,38 +1,40 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_portaria_classe.php");
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_portaria_classe.php"));
+
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
+
 $clrotulo   = new rotulocampo;
 $clportaria = new cl_portaria;
 $clportaria->rotulo->label("h31_sequencial");
@@ -44,55 +46,61 @@ $clrotulo->label("h42_descr");
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/Input/DBInput.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/Input/DBInputDate.widget.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
+  <tr>
     <td height="63" align="center" valign="top">
         <table width="35%" border="0" align="center" cellspacing="0">
 	     <form name="form2" method="post" action="" >
-          <tr> 
+          <tr>
             <td width="4%" align="right" nowrap title="Portarias emitidas entre as datas.">
               <b>Emitidas entre : </b>
             </td>
-            <td width="96%" align="left" nowrap> 
-              <?
+            <td width="96%" align="left" nowrap>
+              <?php
               if(!isset($dataini)){
-                $dataini = date('d/m/Y',mktime(0, 0, 0, date("m")  , date("d")-1, date("Y")));
-                $datafim = date("d/m/Y");
+                $oData = new DBDate(date('d/m/Y'));
+
+                $datafim = $oData->getDate(DBDate::DATA_PTBR);
+                $dataini = $oData->adiantarPeriodo(-30, 'd')->getDate(DBDate::DATA_PTBR);
               }
-              //echo $dataini.'   '.$datafim;
-		          db_input("dataini",10,$dataini,true,"text",2,"");
+              db_input("dataini",10,$dataini,true,"text",2,"");
+
 		          ?>
               <b> a </b>
-              <?
+              <?php
 		          db_input("datafim",10,$datafim,true,"text",2,"");
               ?>
             </td>
           </tr>
-          <tr> 
+          <tr>
             <td width="4%" align="right" nowrap title="<?=$Th31_numero?>">
               <?=$Lh31_numero?>
             </td>
-            <td width="96%" align="left" nowrap> 
-              <?
+            <td width="96%" align="left" nowrap>
+              <?php
 		       db_input("h31_numero",10,$Ih31_numero,true,"text",4,"","chave_h31_numero");
 		       ?>
             </td>
           </tr>
-          <tr> 
+          <tr>
             <td width="4%" align="right" nowrap title="<?=$Th42_descr?>">
               <?=$Lh42_descr?>
             </td>
-            <td width="96%" align="left" nowrap> 
-              <?
+            <td width="96%" align="left" nowrap>
+              <?php
 		       db_input("h42_descr",40,$Ih42_descr,true,"text",4,"","chave_h42_descr");
 		       ?>
             </td>
           </tr>
-          <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
+          <tr>
+            <td colspan="2" align="center">
+              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
               <input name="limpar" type="reset" id="limpar" value="Limpar" >
               <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_portaria.hide();">
              </td>
@@ -101,42 +109,136 @@ $clrotulo->label("h42_descr");
         </table>
       </td>
   </tr>
-  <tr> 
-    <td align="center" valign="top"> 
-      <?
+  <tr>
+    <td align="center" valign="top">
+      <?php
+
+      $lErro = false;
+              
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_portaria.php")==true){
-             include("funcoes/db_func_portaria.php");
+             include(modification("funcoes/db_func_portaria.php"));
            }else{
            $campos = "portaria.*";
            }
         }
         $campos = "distinct ".$campos;
 
-        if(isset($chave_h42_descr) && (trim($chave_h42_descr)!="") ){
-	         $sql = $clportaria->sql_query("",$campos,"h31_dtportaria desc,  h31_sequencial desc"," upper(h42_descr) like '$chave_h42_descr%' ");
-        }elseif(isset($chave_h31_numero) && (trim($chave_h31_numero)!="") ){
-	         $sql = $clportaria->sql_query("",$campos,"h31_numero"," h31_numero like '$chave_h31_numero' ");
-        }else if(isset($lcoletiva)) {
-        	 $sql = $clportaria->sql_query("",$campos,"h31_sequencial desc"," h31_sequencial in (  select h33_portaria from portariaassenta  group by h33_portaria having  count(h33_portaria) > 1 ) ");
-        }else{
-             $sql = $clportaria->sql_query("",$campos,"h31_dtportaria desc,  h31_sequencial desc"," h31_dtportaria between to_date('$dataini','dd/mm/yyyy') and to_date('$datafim','dd/mm/yyyy')");
+        $sqlSituacao = '';// Se não estiver na rotina de reemissão de portarias
+        if (!$flag_reemissao) {
+          $sqlSituacao = "
+            h31_sequencial IN ( select h33_portaria
+                                  from (  select pa.*,
+                                                (  select rh236_situacao 
+                                                    from portariaassentasituacao
+                                                    where rh236_portariaassenta = pa.h33_sequencial 
+                                                order by rh236_momento desc
+                                                    limit 1
+                                                ) as rh236_situacao 
+                                            from portariaassenta as pa
+                                          where h33_portaria IN (h31_sequencial) 
+                                        order by h33_portaria desc
+                                        ) as xx
+                                where xx.rh236_situacao is null 
+                                    or xx.rh236_situacao = 'D'
+          )";
+        } else {
+          $campos .= ", arquivoestorage.db177_idestorage as id_estorage";
         }
+
+        $sSqlVerificaLotacao = null;
+        
+        if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+            $filtro_lotacao = true;
+        }
+
+        if (isset($filtro_lotacao) && $filtro_lotacao) {
+
+            $sSqlVerificaLotacao = " and h16_regist in ( select distinct rh02_regist
+                                                           from rhpessoalmov
+                                                           INNER JOIN rhlota ON rhlota.r70_codigo = rhpessoalmov.rh02_lota
+                                                           INNER JOIN db_usuariosrhlota ON rhlota.r70_codigo = db_usuariosrhlota.rh157_lotacao
+                                                          where rh02_anousu = ".DBPessoal::getAnoFolha()."
+                                                            and rh02_mesusu = ".DBPessoal::getMesFolha()."
+                                                            AND rh157_usuario = ".db_getsession("DB_id_usuario").")";
+        }
+        
+        $sSqlVerificoesAdicionais = "";
+        $sSqlVerificoesAdicionais .= $sqlSituacao;
+        $sSqlVerificoesAdicionais .= ' AND ';
+        $sSqlVerificoesAdicionais  = $sSqlVerificaLotacao;
+
+        if(isset($chave_h42_descr) && (trim($chave_h42_descr)!="") ){
+	         $sql = $clportaria->sql_query_assentamento_funcional("",$campos,"h31_dtportaria desc,  h31_sequencial desc"," upper(h42_descr) like '$chave_h42_descr%' ", $sSqlVerificoesAdicionais, "2");
+        }elseif(isset($chave_h31_numero) && (trim($chave_h31_numero)!="") ){
+	         $sql = $clportaria->sql_query_assentamento_funcional(
+             "",
+             $campos,
+             " h31_numero ", 
+             " h31_numero like '$chave_h31_numero' AND h31_dtportaria between to_date('$dataini','dd/mm/yyyy') and to_date('$datafim','dd/mm/yyyy') ", 
+             $sSqlVerificoesAdicionais,
+              "2"
+           );
+        }else if(isset($lcoletiva)) {
+        	 $sql = $clportaria->sql_query_assentamento_funcional("",$campos,"h31_sequencial desc"," h31_sequencial in (  select h33_portaria from portariaassenta  group by h33_portaria having  count(h33_portaria) > 1 ) ", $sSqlVerificoesAdicionais, "2");
+        }else{
+            if ( empty($dataini) || empty($datafim) ) {
+              $lErro = true;
+            }
+
+            if ( !$lErro ) {
+             $sql = $clportaria->sql_query_assentamento_funcional("",$campos,"h31_dtportaria desc,  h31_sequencial desc"," h31_dtportaria between to_date('$dataini','dd/mm/yyyy') and to_date('$datafim','dd/mm/yyyy')", $sSqlVerificoesAdicionais, "2");
+            }
+        }
+
         $repassa = array();
         if(isset($chave_h42_descr)||isset($chave_h31_numero)){
-          $repassa = array("chave_h31_numero"=>$chave_h31_numero,"chave_h42_descr"=>$chave_h42_descr);
+          $repassa = array(
+            "chave_h31_numero" => $chave_h31_numero,
+            "chave_h42_descr" => $chave_h42_descr
+          );
         }
-        //echo $sql;
-	      if(isset($sql) && trim($sql) != ""){
+       
+
+        $sql2 = $sql;
+        $sql = "select h31_sequencial,
+                       h31_portariatipo,
+                       h31_usuario,
+                       h31_numero,
+                       h31_dtportaria,
+                       h31_dtinicio,
+                       h31_dtlanc,
+                       h31_amparolegal,
+                       db_h31_anousu ";
+
+        if ($flag_reemissao) {
+           $sql .= ', max(id_estorage) as id_estorage ';
+        }
+
+        $sql .= " from ({$sql2}) as x
+                  group by h31_sequencial,
+                           h31_portariatipo,
+                           h31_usuario,
+                           h31_numero,
+                           h31_dtportaria,
+                           h31_dtinicio,
+                           h31_dtlanc,
+                           h31_amparolegal,
+                           db_h31_anousu
+                ";
+
+        if(isset($sql) && trim($sql) != ""){
            db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa,false);
         }
+        
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clportaria->sql_record($clportaria->sql_query($pesquisa_chave));
-          if($clportaria->numrows!=0){
+          $result = $clportaria->sql_record($clportaria->sql_query_assentamento_funcional($pesquisa_chave), $sSqlVerificoesAdicionais, "2");
+          
+          if($clportaria->numrows!=0){ 
             db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$h31_sequencial',false);</script>";
+            echo "<script>".$funcao_js."('$h31_sequencial', false);</script>";
           }else{
 	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
           }
@@ -148,16 +250,27 @@ $clrotulo->label("h42_descr");
      </td>
    </tr>
 </table>
+<script>
+(function(){
+  new DBInputDate($('dataini'));
+  new DBInputDate($('datafim'));
+})();
+</script>
 </body>
 </html>
-<?
-if(!isset($pesquisa_chave)){
-  ?>
-  <script>
-  </script>
-  <?
-}
-?>
 <script>
 js_tabulacaoforms("form2","chave_h31_sequencial",true,1,"chave_h31_sequencial",true);
 </script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>
+<?php
+
+  if ( $lErro ) {
+    db_msgbox("Data(s) não informada(s). Informe a data inicial e final.");
+  }
+
+?>

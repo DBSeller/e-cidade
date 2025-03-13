@@ -732,7 +732,7 @@ Object.extend(String.prototype, (function() {
       });
     }
     try {
-      if (!sanitize || json.isJSON()) return eval('(' + json + ')');
+      if (!sanitize || json.isJSON()) return JSON.parse(json);
     } catch (e) { }
     throw new SyntaxError('Badly formed JSON string: ' + this.inspect());
   }
@@ -1666,7 +1666,7 @@ Object.extend(Ajax.Responders, Enumerable);
 
 Ajax.Responders.register({
   onCreate:   function() { Ajax.activeRequestCount++ },
-  onComplete: function() { Ajax.activeRequestCount-- }
+  onComplete: function() { }
 });
 Ajax.Base = Class.create({
   initialize: function(options) {
@@ -1793,9 +1793,12 @@ Ajax.Request = Class.create(Ajax.Base, {
   },
 
   respondToReadyState: function(readyState) {
-    var state = Ajax.Request.Events[readyState], response = new Ajax.Response(this);
 
+
+    var state = Ajax.Request.Events[readyState], response = new Ajax.Response(this);
     if (state == 'Complete') {
+
+      Ajax.activeRequestCount--;
       try {
         this._complete = true;
         (this.options['on' + response.status]
@@ -1841,7 +1844,7 @@ Ajax.Request = Class.create(Ajax.Base, {
 
   evalResponse: function() {
     try {
-      return eval((this.transport.responseText || '').unfilterJSON());
+      return JSON.parse((this.transport.responseText || '').unfilterJSON());
     } catch (e) {
       this.dispatchException(e);
     }

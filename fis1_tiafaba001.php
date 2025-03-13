@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("classes/db_tiaf_classe.php");
-include("classes/db_tiafprazo_classe.php");
-include("classes/db_tiafcgm_classe.php");
-include("classes/db_tiafinscr_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("classes/db_tiaf_classe.php"));
+include(modification("classes/db_tiafprazo_classe.php"));
+include(modification("classes/db_tiafcgm_classe.php"));
+include(modification("classes/db_tiafinscr_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 $cltiaf = new cl_tiaf;
 $cltiafcgm = new cl_tiafcgm;
@@ -109,7 +109,7 @@ if (isset($incluir)){
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 	    <?
-	    	include("forms/db_frmtiaf001.php");
+	    	include(modification("forms/db_frmtiaf001.php"));
 	    ?> 
 	</td>
   </tr>
@@ -119,7 +119,7 @@ if (isset($incluir)){
 <script>
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_preenchepesquisa|y90_codtiaf','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_preenchepesquisa|y90_codtiaf','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave){

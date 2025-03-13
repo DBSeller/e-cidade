@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_tipoproc_classe.php");
-require_once("classes/db_tipoprocdepto_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_tipoproc_classe.php"));
+require_once(modification("classes/db_tipoprocdepto_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -92,10 +92,15 @@ $oDaoTipoProcDpto = new cl_tipoprocdepto();
       if ((isset($grupo) && $grupo == 1) || (isset($grupo) && $grupo == 2)) {
       	$where .= " and p51_tipoprocgrupo = $grupo";
       }
+
+      if (!empty($_GET['p91_sequencial'])) {
+        $where .= " and p51_prottipodocumentoprocesso = {$_GET['p91_sequencial']}";
+      }
+
       if (!isset($pesquisa_chave)) {
         if (isset($campos) == false) {
           if (file_exists("funcoes/db_func_tipoproc.php")==true) {
-            include("funcoes/db_func_tipoproc.php");
+            include(modification("funcoes/db_func_tipoproc.php"));
           } else {
             $campos = "tipoproc.*";
           }
@@ -106,22 +111,21 @@ $oDaoTipoProcDpto = new cl_tipoprocdepto();
         	$sWhereBuscaTipos .= " and (p51_dtlimite is null                                            ";
         	$sWhereBuscaTipos .= "  or p51_dtlimite >= '".date("Y-m-d",db_getsession("DB_datausu"))."') ";
         	$sWhereBuscaTipos .= " and {$where}                                                         ";
-	        $sSqlBuscaTipos    = $cltipoproc->sql_query(null,$campos,"p51_codigo", $sWhereBuscaTipos);
         } else if (isset($chave_p51_descr) && (trim($chave_p51_descr) != "")) {
         	
         	$sWhereBuscaTipos  = " p51_descr like '$chave_p51_descr%'                                   ";
         	$sWhereBuscaTipos .= " and (p51_dtlimite is null                                            ";
         	$sWhereBuscaTipos .= "  or p51_dtlimite >= '".date("Y-m-d",db_getsession("DB_datausu"))."') ";
         	$sWhereBuscaTipos .= " and {$where}                                                         ";
-	        $sSqlBuscaTipos    = $cltipoproc->sql_query("", $campos, "p51_codigo", $sWhereBuscaTipos);
         } else {
         	 
         	$sWhereBuscaTipos  = " (p51_dtlimite is null                                                ";
         	$sWhereBuscaTipos .= "  or p51_dtlimite >= '".date("Y-m-d",db_getsession("DB_datausu"))."') ";
         	$sWhereBuscaTipos .= " and {$where}                                                         ";
-          $sSqlBuscaTipos    = $cltipoproc->sql_query("", $campos, "p51_codigo", $sWhereBuscaTipos);
         }
-        
+
+        $sSqlBuscaTipos = $cltipoproc->sql_query(null,$campos,"p51_codigo", $sWhereBuscaTipos);
+
         if (isset($sDepartamentos) && $sDepartamentos != "") {
           
           $sWhereDepart   = "db_depart.coddepto in ({$sDepartamentos})";
@@ -150,13 +154,14 @@ $oDaoTipoProcDpto = new cl_tipoprocdepto();
      	    $sSqlBuscaChave = $cltipoproc->sql_query(null,"tipoproc.*","p51_codigo", $sWhere);
      	  }
 
-     	  $result  = $cltipoproc->sql_record($sSqlBuscaChave);
+         $result  = $cltipoproc->sql_record($sSqlBuscaChave);
+
         if ($cltipoproc->numrows != 0) {
-        	
           db_fieldsmemory($result, 0);
-          echo "<script>".$funcao_js."('$p51_descr',false);</script>";
+          // echo "<script>".$funcao_js."('$p51_descr',false);</script>";
+          echo "<script>".$funcao_js."($pesquisa_chave,'$p51_descr');</script>";
         } else {
-	        echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
+	        echo "<script>".$funcao_js."(true,'Chave(".$pesquisa_chave.") não Encontrado');</script>";
         }
       }
 
@@ -178,4 +183,10 @@ document.form2.chave_p51_descr.select();
 ?>
 <script>
 js_tabulacaoforms("form2","chave_p51_descr",true,1,"chave_p51_descr",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

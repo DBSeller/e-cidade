@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,17 +28,17 @@
 /**
  * 
  * @author I
- * @revision $Author: dbbruno.silva $
- * @version $Revision: 1.9 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.12 $
  */
-require("libs/db_stdlib.php");
-require("std/db_stdClass.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label("pc16_codmater");
 $clrotulo->label("pc01_descrmater");
@@ -50,7 +50,7 @@ $oDaoUnidades = db_utils::getDao("matunid");
 $sSqlUnid     = $oDaoUnidades->sql_query_file(null, "m61_codmatunid,substr(m61_descr,1,20) as m61_descr,
                                                      m61_usaquant,m61_usadec", "m61_descr");
 $rsUnid              = $oDaoUnidades->sql_record($sSqlUnid);
-$aUnidades           = db_utils::getColectionByRecord($rsUnid); 
+$aUnidades           = db_utils::getCollectionByRecord($rsUnid); 
 $aParametrosCompras  = db_stdClass::getParametro("pcparam",array(db_getsession("DB_anousu")));
 
 $sDisplay = '';
@@ -78,7 +78,7 @@ db_app::load("widgets/windowAux.widget.js");
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="js_init()">
   <center>
    <form name='frmItens' id='frmItens'>
-    <table width="70%">
+    <table style="width:62%;">
       <tr>
         <td>
           <fieldset id='itensEstimativa' style='display: <?=$sDisplay?>'>
@@ -301,7 +301,7 @@ function js_adicionarItem() {
 function js_retornoadicionarItem(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
   
     js_preencheGrid(oRetorno.itens);
@@ -364,7 +364,7 @@ function js_salvarItens() {
 function js_retornoSalvarItem(oAjax) {
   
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
     alert('Itens Salvos Com sucesso.')
   } else {
@@ -491,7 +491,7 @@ function js_salvarQuantidade(iIndice, nQuantidade) {
 function js_retornoSalvarQuantidade(oAjax) {
   
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 2) {
     alert(oRetorno.message.urlDecode());
   }
@@ -595,7 +595,7 @@ function js_alterarDados(iIndice) {
 }
 function js_retornoparametro(oAjax) {
   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   for (var iParam = 0; iParam < oRetorno.itens.length; iParam++) {
     
      with(oRetorno.itens[iParam]) {

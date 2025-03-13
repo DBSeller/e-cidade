@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,36 +25,36 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_socios_classe.php");
-require_once("classes/db_tabativ_classe.php");
-require_once("classes/db_issmatric_classe.php");
-require_once("classes/db_escrito_classe.php");
-require_once("classes/db_issbairro_classe.php");
-require_once("classes/db_bairro_classe.php");
-require_once("classes/db_issquant_classe.php");
-require_once("classes/db_isszona_classe.php");
-require_once("classes/db_issruas_classe.php");
-require_once("classes/db_issprocesso_classe.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_iptuconstr_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_db_cgmruas_classe.php");
-require_once("classes/db_db_cgmcpf_classe.php");
-require_once("classes/db_db_cgmbairro_classe.php");
-require_once("classes/db_arreinscr_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_issbaseporte_classe.php");
-require_once("classes/db_issporte_classe.php");
-require_once("model/logInscricao.model.php");
-require_once("classes/db_issbasecaracteristica_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_socios_classe.php"));
+require_once(modification("classes/db_tabativ_classe.php"));
+require_once(modification("classes/db_issmatric_classe.php"));
+require_once(modification("classes/db_escrito_classe.php"));
+require_once(modification("classes/db_issbairro_classe.php"));
+require_once(modification("classes/db_bairro_classe.php"));
+require_once(modification("classes/db_issquant_classe.php"));
+require_once(modification("classes/db_isszona_classe.php"));
+require_once(modification("classes/db_issruas_classe.php"));
+require_once(modification("classes/db_issprocesso_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_iptuconstr_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_db_cgmruas_classe.php"));
+require_once(modification("classes/db_db_cgmcpf_classe.php"));
+require_once(modification("classes/db_db_cgmbairro_classe.php"));
+require_once(modification("classes/db_arreinscr_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_issbaseporte_classe.php"));
+require_once(modification("classes/db_issporte_classe.php"));
+require_once(modification("model/logInscricao.model.php"));
+require_once(modification("classes/db_issbasecaracteristica_classe.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -358,7 +358,7 @@ if ($db_opcao==33) {
   <div class ='container'>
 
     <?php
-    include("forms/db_frmissbasealt.php");
+    include(modification("forms/db_frmissbasealt.php"));
     ?>
   </div>
 

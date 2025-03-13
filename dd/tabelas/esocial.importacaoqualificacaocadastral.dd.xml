@@ -1,0 +1,129 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010282' name='esocial.importacaoqualificacaocadastral' description="Qualificação cadastral dos servidores." prefix="eso11" label="Qualificação Cadastral" type="0">
+  <fields>
+    <field codigo="1009743" 
+           campo_api='' 
+           name="eso11_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.importacaoqualificacaocadastral_eso11_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009744" 
+           campo_api='' 
+           name="eso11_data" 
+           conteudo="varchar"
+           description="Data de importação do arquivo" 
+           inivalue="null" 
+           label="Data" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009745" 
+           campo_api='' 
+           name="eso11_instituicao" 
+           conteudo="int4" 
+           description="Vínculo da importação com a instituição." 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009746" 
+           campo_api='' 
+           name="eso11_nomearquivo" 
+           conteudo="varchar(255)" 
+           description="Nome do arquivo importado." 
+           inivalue="" 
+           label="Nome do arquivo" 
+           size="255" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nome do arquivo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009747" 
+           campo_api='' 
+           name="eso11_processado" 
+           conteudo="bool" 
+           description="Se o arquivo importado foi processado ou rejeitado." 
+           inivalue="true" 
+           label="Processado" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Processado" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009748" 
+           campo_api='' 
+           name="eso11_arquivo" 
+           conteudo="oid" 
+           description="Arquivo de retorno no formato TXT importado, com os dados da validação." 
+           inivalue="" 
+           label="Arquivo importado" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Arquivo importado" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso11_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="eso11_instituicao" reference="codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

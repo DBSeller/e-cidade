@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/JSON.php");
-require_once ("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $oJson  = new services_json();
 $oParam = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -58,7 +58,7 @@ try {
 	      throw new DBException("Erro ao buscar os dados sobre as instituições");
 	    }
 	    
-	    $aInstituicoes = db_utils::getColectionByRecord($rsQueryInstituicoes, false, false, true);
+	    $aInstituicoes = db_utils::getCollectionByRecord($rsQueryInstituicoes, false, false, true);
 	    
 	    /**
 	     * Percorre todas as instituições separando por ativas e inativas
@@ -76,8 +76,8 @@ try {
 	    
 	  case 'processar' :
 	  	
-	  	require_once('model/pessoal/calculoatuarial/cnm/CalculoAtuarialCNM.model.php');
-	  	require_once('model/pessoal/ServidorRepository.model.php');
+	  	require_once(modification('model/pessoal/calculoatuarial/cnm/CalculoAtuarialCNM.model.php'));
+	  	require_once(modification('model/pessoal/ServidorRepository.model.php'));
 	  	
 	  	$iAnoFolha             = $oParam->iAno;
 	  	$iMesFolha             = $oParam->iMes;

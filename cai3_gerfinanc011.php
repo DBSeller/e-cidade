@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,9 +26,9 @@
  */
 
 set_time_limit(0);
-include ("libs/db_sql.php");
-include ("libs/db_utils.php");
-require ("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+require(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $sTiposDebitos = $tipos;
@@ -62,7 +62,7 @@ if (isset ($matric)) {
 	$result = debitos_tipos_matricula($matric);
 	$chave = $matric;
 	$sql = "select * from proprietario where j01_matric = $matric limit 1";
-	$result1 = pg_exec($sql);
+	$result1 = db_query($sql);
 	db_fieldsmemory($result1, 0);
 	$nome = $z01_nome;
 //	$ender = $j14_tipo . ' ' . $j14_nome . ', ' . $j39_numero . ' ' . $j39_compl;
@@ -80,7 +80,7 @@ if (isset ($matric)) {
 		$result = debitos_tipos_inscricao($inscr);
 		$chave = $inscr;
 		$sql = "select * from empresa where q02_inscr = $inscr";
-		$result1 = pg_exec($sql);
+		$result1 = db_query($sql);
 		db_fieldsmemory($result1, 0);
 		$nome = $z01_nome;
 		$ender = $j14_tipo . ' ' . $z01_ender . ', ' . $z01_numero . ' ' . $z01_compl;
@@ -92,7 +92,7 @@ if (isset ($matric)) {
 			$result = debitos_tipos_numcgm($numcgm);
 			$chave = $numcgm;
 			$sql = "select * from cgm where z01_numcgm = $numcgm";
-			$result1 = pg_exec($sql);
+			$result1 = db_query($sql);
 			db_fieldsmemory($result1, 0);
 			$nome = $z01_nome;
 			$ender = $z01_ender . ', ' . $z01_numero . ' ' . $z01_compl;
@@ -108,7 +108,7 @@ if (isset ($matric)) {
 				               inner join arreinstit  on arreinstit.k00_numpre = arrecad.k00_numpre 
 											                       and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
          				 where arrecad.k00_numpre = $numpre limit 1";
-				$result1 = pg_exec($sql);
+				$result1 = db_query($sql);
 				db_fieldsmemory($result1, 0);
 				$nome = $z01_nome;
 				$ender = $z01_ender . ', ' . $z01_numero . ' ' . $z01_compl;
@@ -287,7 +287,7 @@ if ($chave != 0) {
 
       $sqlReceit = "select distinct k02_descr from tabrec where k02_codigo in ($parReceit)";
 			//echo $sqlReceit;
-			$rsRec     = pg_query($sqlReceit);
+			$rsRec     = db_query($sqlReceit);
 			$numRows   = pg_num_rows($rsRec);
 			$vRec      = "";
 			$legRec    = '';
@@ -336,7 +336,7 @@ if ($chave != 0) {
    $sSqlSuspensao .= " 	   and arresusp.k00_tipo   in ({$sTiposDebitos})			 	  		    ";
    $sSqlSuspensao .= " 	   and arretipo.k00_instit = ".db_getsession('DB_instit');
    
-   $rsSuspensao      = pg_query($sSqlSuspensao);
+   $rsSuspensao      = db_query($sSqlSuspensao);
    $iLinhasSuspensao = pg_num_rows($rsSuspensao);
    $aSuspensao		 = array();
 	

@@ -58,7 +58,7 @@ db_input('e41_descr',60,$Ie41_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_emptipo','func_emptipo.php?funcao_js=parent.js_preenchepesquisa|e41_codtipo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emptipo','func_emptipo.php?funcao_js=parent.js_preenchepesquisa|e41_codtipo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_emptipo.hide();

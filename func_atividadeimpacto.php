@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_atividadeimpacto_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_atividadeimpacto_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -70,17 +70,17 @@ $clatividadeimpacto->rotulo->label("am03_descricao");
 
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_atividadeimpacto.php")==true){
-             include("funcoes/db_func_atividadeimpacto.php");
+             include(modification("funcoes/db_func_atividadeimpacto.php"));
            }else{
            $campos = "atividadeimpacto.*";
            }
         }
         if(isset($chave_am03_sequencial) && (trim($chave_am03_sequencial)!="") ){
-	         $sql = $clatividadeimpacto->sql_query($chave_am03_sequencial,$campos,"am03_sequencial");
+	         $sql = $clatividadeimpacto->sql_query_agrupado($chave_am03_sequencial,$campos,"am03_sequencial");
         }else if(isset($chave_am03_descricao) && (trim($chave_am03_descricao)!="") ){
-	         $sql = $clatividadeimpacto->sql_query("",$campos,"am03_descricao"," am03_descricao ilike '$chave_am03_descricao%' ");
+	         $sql = $clatividadeimpacto->sql_query_agrupado("",$campos,"am03_descricao"," am03_descricao ilike '$chave_am03_descricao%' ");
         }else{
-           $sql = $clatividadeimpacto->sql_query("",$campos,"am03_sequencial","");
+           $sql = $clatividadeimpacto->sql_query_agrupado("",$campos,"am03_sequencial","");
         }
         $repassa = array();
         if(isset($chave_am03_descricao)){
@@ -97,7 +97,7 @@ $clatividadeimpacto->rotulo->label("am03_descricao");
           echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
         } else {
           if($pesquisa_chave!=null && $pesquisa_chave!=""){
-            $result = $clatividadeimpacto->sql_record($clatividadeimpacto->sql_query($pesquisa_chave));
+            $result = $clatividadeimpacto->sql_record($clatividadeimpacto->sql_query_agrupado($pesquisa_chave, 'am03_descricao'));
             if($clatividadeimpacto->numrows!=0){
               db_fieldsmemory($result,0);
               echo "<script>".$funcao_js."('$am03_descricao',false);</script>";
@@ -122,4 +122,11 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_am03_descricao",true,1,"chave_am03_descricao",true);
+</script>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

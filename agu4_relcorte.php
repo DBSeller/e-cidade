@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-require_once("agu3_conscadastro_002_classe.php");
+include(modification("fpdf151/pdf.php"));
+require_once(modification("agu3_conscadastro_002_classe.php"));
 $Consulta = new ConsultaAguaBase($matric);
 $sqlender = " select j01_matric,j01_numcgm,z01_ender,z01_numero,z01_nome 
 							from iptubase 
 							inner join cgm on z01_numcgm = j01_numcgm 
 							where j01_matric = $matric";
-$resultender  = pg_query($sqlender);
+$resultender  = db_query($sqlender);
 $linhasender =pg_num_rows($resultender);
 if($linhasender>0){
   db_fieldsmemory($resultender,0);
@@ -50,7 +50,7 @@ $pdf->SetFont('Arial','',11);
 $primeiro =0;
 $total = 0;
 $sql = $Consulta->GetAguaCorteMatMovSQL();
-$result = pg_exec($sql);
+$result = db_query($sql);
 $linhas= pg_num_rows($result);
 if($linhas>0){
   for($i=0;$i<$linhas;$i++) {

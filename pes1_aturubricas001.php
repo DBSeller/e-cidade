@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_gerfcom_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_gerfcom_classe.php"));
 $db_opcao= 1;
 
 $clgerfcom = new cl_gerfcom;
@@ -155,7 +155,7 @@ db_utils::postMemory($_POST);
   <script src="scripts/classes/DBViewFormularioFolha/ComboPrevidencia.js" type="text/javascript"></script>
   <script src="scripts/classes/DBViewFormularioFolha/ComboVinculo.js"     type="text/javascript"></script>
   <script>
-    <?php if (isset($DB_COMPLEMENTAR)) {
+    <?php if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
 
       echo 'aDadosTipoPonto = [
           {folha: "fx", descricao: "Fixo"},
@@ -263,14 +263,14 @@ db_utils::postMemory($_POST);
 
   function js_pesquisarrubric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr','Pesquisa',true);
   }else{
      if(document.form1.rh27_rubric.value != ''){
        quantcaracteres = document.form1.rh27_rubric.value.length;
        for(i=quantcaracteres;i<4;i++){
          document.form1.rh27_rubric.value = "0"+document.form1.rh27_rubric.value;
        }
-       js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh27_rubric.value+'&funcao_js=parent.js_mostrarubricas','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh27_rubric.value+'&funcao_js=parent.js_mostrarubricas','Pesquisa',false);
      }else{
        document.form1.rh27_descr.value = '';
      }
@@ -299,10 +299,10 @@ var oTiposFiltrosFolha;
 function js_pesquisaSelecao(lMostra) {
 
   if ( lMostra ) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_geraform_mostraselecao1|r44_selec|r44_descr&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_geraform_mostraselecao1|r44_selec|r44_descr&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
   } else {
     if ( $F(r44_selec) != "" ) {
-      js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave=' + $F(r44_selec) + '&funcao_js=parent.js_geraform_mostraselecao&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave=' + $F(r44_selec) + '&funcao_js=parent.js_geraform_mostraselecao&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
     } else {
       $(r44_des).setValue("");
     }

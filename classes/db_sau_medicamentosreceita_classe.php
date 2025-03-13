@@ -1,70 +1,70 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: ambulatorial
 //CLASSE DA ENTIDADE sau_medicamentosreceita
-class cl_sau_medicamentosreceita { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $s159_i_codigo = 0; 
-   var $s159_i_medicamento = 0; 
-   var $s159_i_receita = 0; 
-   var $s159_i_formaadm = 0; 
-   var $s159_n_quant = 0; 
-   var $s159_t_posologia = null; 
-   // cria propriedade com as variaveis do arquivo 
-   var $campos = "
-                 s159_i_codigo = int4 = Código 
-                 s159_i_medicamento = int4 = Medicamento 
-                 s159_i_receita = int4 = Receita 
-                 s159_i_formaadm = int4 = Uso 
-                 s159_n_quant = float4 = Qtde 
-                 s159_t_posologia = text = Posologia 
+class cl_sau_medicamentosreceita {
+   // cria variaveis de erro
+   public $rotulo     = null;
+   public $query_sql  = null;
+   public $numrows    = 0;
+   public $numrows_incluir = 0;
+   public $numrows_alterar = 0;
+   public $numrows_excluir = 0;
+   public $erro_status= null;
+   public $erro_sql   = null;
+   public $erro_banco = null;
+   public $erro_msg   = null;
+   public $erro_campo = null;
+   public $pagina_retorno = null;
+   // cria variaveis do arquivo
+   public $s159_i_codigo = 0;
+   public $s159_i_medicamento = 0;
+   public $s159_i_receita = 0;
+   public $s159_i_formaadm = 0;
+   public $s159_n_quant = 0;
+   public $s159_t_posologia = null;
+   // cria propriedade com as variaveis do arquivo
+   public $campos = "
+                 s159_i_codigo = int4 = Código
+                 s159_i_medicamento = int4 = Medicamento
+                 s159_i_receita = int4 = Receita
+                 s159_i_formaadm = int4 = Uso
+                 s159_n_quant = float4 = Qtde
+                 s159_t_posologia = text = Posologia
                  ";
-   //funcao construtor da classe 
-   function cl_sau_medicamentosreceita() { 
+   //funcao construtor da classe
+   public function __construct() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("sau_medicamentosreceita"); 
+     $this->rotulo = new rotulo("sau_medicamentosreceita");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   public function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -73,7 +73,7 @@ class cl_sau_medicamentosreceita {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->s159_i_codigo = ($this->s159_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["s159_i_codigo"]:$this->s159_i_codigo);
        $this->s159_i_medicamento = ($this->s159_i_medicamento == ""?@$GLOBALS["HTTP_POST_VARS"]["s159_i_medicamento"]:$this->s159_i_medicamento);
@@ -86,9 +86,9 @@ class cl_sau_medicamentosreceita {
      }
    }
    // funcao para inclusao
-   function incluir ($s159_i_codigo){ 
+   public function incluir ($s159_i_codigo){
       $this->atualizacampos();
-     if($this->s159_i_medicamento == null ){ 
+     if($this->s159_i_medicamento == null ){
        $this->erro_sql = " Campo Medicamento nao Informado.";
        $this->erro_campo = "s159_i_medicamento";
        $this->erro_banco = "";
@@ -97,7 +97,7 @@ class cl_sau_medicamentosreceita {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s159_i_receita == null ){ 
+     if($this->s159_i_receita == null ){
        $this->erro_sql = " Campo Receita nao Informado.";
        $this->erro_campo = "s159_i_receita";
        $this->erro_banco = "";
@@ -106,7 +106,7 @@ class cl_sau_medicamentosreceita {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s159_i_formaadm == null ){ 
+     if($this->s159_i_formaadm == null ){
        $this->erro_sql = " Campo Uso nao Informado.";
        $this->erro_campo = "s159_i_formaadm";
        $this->erro_banco = "";
@@ -115,7 +115,7 @@ class cl_sau_medicamentosreceita {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s159_n_quant == null ){ 
+     if($this->s159_n_quant == null ){
        $this->erro_sql = " Campo Qtde nao Informado.";
        $this->erro_campo = "s159_n_quant";
        $this->erro_banco = "";
@@ -124,7 +124,7 @@ class cl_sau_medicamentosreceita {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s159_t_posologia == null ){ 
+     if($this->s159_t_posologia == null ){
        $this->erro_sql = " Campo Posologia nao Informado.";
        $this->erro_campo = "s159_t_posologia";
        $this->erro_banco = "";
@@ -134,16 +134,16 @@ class cl_sau_medicamentosreceita {
        return false;
      }
      if($s159_i_codigo == "" || $s159_i_codigo == null ){
-       $result = db_query("select nextval('sau_medicamentosreceita_s159_i_codigo_seq')"); 
+       $result = db_query("select nextval('sau_medicamentosreceita_s159_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: sau_medicamentosreceita_s159_i_codigo_seq do campo: s159_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: sau_medicamentosreceita_s159_i_codigo_seq do campo: s159_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->s159_i_codigo = pg_result($result,0,0); 
+       $this->s159_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from sau_medicamentosreceita_s159_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $s159_i_codigo)){
@@ -154,10 +154,10 @@ class cl_sau_medicamentosreceita {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->s159_i_codigo = $s159_i_codigo; 
+         $this->s159_i_codigo = $s159_i_codigo;
        }
      }
-     if(($this->s159_i_codigo == null) || ($this->s159_i_codigo == "") ){ 
+     if(($this->s159_i_codigo == null) || ($this->s159_i_codigo == "") ){
        $this->erro_sql = " Campo s159_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -166,23 +166,23 @@ class cl_sau_medicamentosreceita {
        return false;
      }
      $sql = "insert into sau_medicamentosreceita(
-                                       s159_i_codigo 
-                                      ,s159_i_medicamento 
-                                      ,s159_i_receita 
-                                      ,s159_i_formaadm 
-                                      ,s159_n_quant 
-                                      ,s159_t_posologia 
+                                       s159_i_codigo
+                                      ,s159_i_medicamento
+                                      ,s159_i_receita
+                                      ,s159_i_formaadm
+                                      ,s159_n_quant
+                                      ,s159_t_posologia
                        )
                 values (
-                                $this->s159_i_codigo 
-                               ,$this->s159_i_medicamento 
-                               ,$this->s159_i_receita 
-                               ,$this->s159_i_formaadm 
-                               ,$this->s159_n_quant 
-                               ,'$this->s159_t_posologia' 
+                                $this->s159_i_codigo
+                               ,$this->s159_i_medicamento
+                               ,$this->s159_i_receita
+                               ,$this->s159_i_formaadm
+                               ,$this->s159_n_quant
+                               ,'$this->s159_t_posologia'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "sau_medicamentosreceita ($this->s159_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -219,16 +219,16 @@ class cl_sau_medicamentosreceita {
        $resac = db_query("insert into db_acount values($acount,3131,17742,'','".AddSlashes(pg_result($resaco,0,'s159_t_posologia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($s159_i_codigo=null) { 
+   public function alterar ($s159_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update sau_medicamentosreceita set ";
      $virgula = "";
-     if(trim($this->s159_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_i_codigo"])){ 
+     if(trim($this->s159_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_i_codigo"])){
        $sql  .= $virgula." s159_i_codigo = $this->s159_i_codigo ";
        $virgula = ",";
-       if(trim($this->s159_i_codigo) == null ){ 
+       if(trim($this->s159_i_codigo) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "s159_i_codigo";
          $this->erro_banco = "";
@@ -238,10 +238,10 @@ class cl_sau_medicamentosreceita {
          return false;
        }
      }
-     if(trim($this->s159_i_medicamento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_i_medicamento"])){ 
+     if(trim($this->s159_i_medicamento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_i_medicamento"])){
        $sql  .= $virgula." s159_i_medicamento = $this->s159_i_medicamento ";
        $virgula = ",";
-       if(trim($this->s159_i_medicamento) == null ){ 
+       if(trim($this->s159_i_medicamento) == null ){
          $this->erro_sql = " Campo Medicamento nao Informado.";
          $this->erro_campo = "s159_i_medicamento";
          $this->erro_banco = "";
@@ -251,10 +251,10 @@ class cl_sau_medicamentosreceita {
          return false;
        }
      }
-     if(trim($this->s159_i_receita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_i_receita"])){ 
+     if(trim($this->s159_i_receita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_i_receita"])){
        $sql  .= $virgula." s159_i_receita = $this->s159_i_receita ";
        $virgula = ",";
-       if(trim($this->s159_i_receita) == null ){ 
+       if(trim($this->s159_i_receita) == null ){
          $this->erro_sql = " Campo Receita nao Informado.";
          $this->erro_campo = "s159_i_receita";
          $this->erro_banco = "";
@@ -264,10 +264,10 @@ class cl_sau_medicamentosreceita {
          return false;
        }
      }
-     if(trim($this->s159_i_formaadm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_i_formaadm"])){ 
+     if(trim($this->s159_i_formaadm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_i_formaadm"])){
        $sql  .= $virgula." s159_i_formaadm = $this->s159_i_formaadm ";
        $virgula = ",";
-       if(trim($this->s159_i_formaadm) == null ){ 
+       if(trim($this->s159_i_formaadm) == null ){
          $this->erro_sql = " Campo Uso nao Informado.";
          $this->erro_campo = "s159_i_formaadm";
          $this->erro_banco = "";
@@ -277,10 +277,10 @@ class cl_sau_medicamentosreceita {
          return false;
        }
      }
-     if(trim($this->s159_n_quant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_n_quant"])){ 
+     if(trim($this->s159_n_quant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_n_quant"])){
        $sql  .= $virgula." s159_n_quant = $this->s159_n_quant ";
        $virgula = ",";
-       if(trim($this->s159_n_quant) == null ){ 
+       if(trim($this->s159_n_quant) == null ){
          $this->erro_sql = " Campo Qtde nao Informado.";
          $this->erro_campo = "s159_n_quant";
          $this->erro_banco = "";
@@ -290,10 +290,10 @@ class cl_sau_medicamentosreceita {
          return false;
        }
      }
-     if(trim($this->s159_t_posologia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_t_posologia"])){ 
+     if(trim($this->s159_t_posologia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s159_t_posologia"])){
        $sql  .= $virgula." s159_t_posologia = '$this->s159_t_posologia' ";
        $virgula = ",";
-       if(trim($this->s159_t_posologia) == null ){ 
+       if(trim($this->s159_t_posologia) == null ){
          $this->erro_sql = " Campo Posologia nao Informado.";
          $this->erro_campo = "s159_t_posologia";
          $this->erro_banco = "";
@@ -329,7 +329,7 @@ class cl_sau_medicamentosreceita {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "sau_medicamentosreceita nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->s159_i_codigo;
@@ -357,14 +357,14 @@ class cl_sau_medicamentosreceita {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($s159_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   public function excluir ($s159_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($s159_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -395,7 +395,7 @@ class cl_sau_medicamentosreceita {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "sau_medicamentosreceita nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$s159_i_codigo;
@@ -423,11 +423,11 @@ class cl_sau_medicamentosreceita {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   public function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -449,11 +449,11 @@ class cl_sau_medicamentosreceita {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $s159_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function sql_query ( $s159_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -483,15 +483,15 @@ class cl_sau_medicamentosreceita {
      $sql2 = "";
      if($dbwhere==""){
        if($s159_i_codigo!=null ){
-         $sql2 .= " where sau_medicamentosreceita.s159_i_codigo = $s159_i_codigo "; 
-       } 
+         $sql2 .= " where sau_medicamentosreceita.s159_i_codigo = $s159_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -500,11 +500,11 @@ class cl_sau_medicamentosreceita {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $s159_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function sql_query_file ( $s159_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -517,15 +517,15 @@ class cl_sau_medicamentosreceita {
      $sql2 = "";
      if($dbwhere==""){
        if($s159_i_codigo!=null ){
-         $sql2 .= " where sau_medicamentosreceita.s159_i_codigo = $s159_i_codigo "; 
-       } 
+         $sql2 .= " where sau_medicamentosreceita.s159_i_codigo = $s159_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -535,11 +535,11 @@ class cl_sau_medicamentosreceita {
      return $sql;
   }
 
-  function sql_query_receita ( $s159_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+  public function sql_query_receita ( $s159_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -560,15 +560,15 @@ class cl_sau_medicamentosreceita {
      $sql2 = "";
      if($dbwhere==""){
        if($s159_i_codigo!=null ){
-         $sql2 .= " where sau_medicamentosreceita.s159_i_codigo = $s159_i_codigo "; 
-       } 
+         $sql2 .= " where sau_medicamentosreceita.s159_i_codigo = $s159_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

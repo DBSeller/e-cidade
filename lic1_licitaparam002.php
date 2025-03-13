@@ -1,7 +1,8 @@
-<?
+<?php
+
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2014  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,97 +26,62 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_licitaparam_classe.php");
-include("dbforms/db_funcoes.php");
-require_once("libs/db_libdicionario.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_licitaparam_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 
-$cllicitaparam = new cl_licitaparam;
+$oDaoLicitaparam = new cl_licitaparam;
+$db_opcao    = 22;
+$db_botao    = false;
+$sPosScripts = "";
 
-$db_opcao = 22;
+if (isset($alterar)) {
 
-$db_botao = false;
-if(isset($alterar)){
-   db_inicio_transacao();
-   $result = $cllicitaparam->sql_record($cllicitaparam->sql_query(DB_getsession("DB_instit")));
-   if($result==false || $cllicitaparam->numrows==0){
-     $cllicitaparam->l12_instit = DB_getsession("DB_instit");
-     $cllicitaparam->incluir(DB_getsession("DB_instit"));
-   }else {
+  db_inicio_transacao();
+  $result = $oDaoLicitaparam->sql_record( $oDaoLicitaparam->sql_query(DB_getsession("DB_instit")) );
 
-     $cllicitaparam->l12_instit = DB_getsession("DB_instit");
-     $cllicitaparam->alterar(db_getsession("DB_instit"));
-   }
-   db_fim_transacao();
-}
-$db_opcao = 2;
+  if ($result == false || $oDaoLicitaparam->numrows == 0) {
+    $oDaoLicitaparam->incluir(DB_getsession("DB_instit"));
+  } else {
+    $oDaoLicitaparam->alterar(DB_getsession("DB_instit"));
+  }
+  db_fim_transacao();
 
-$result = $cllicitaparam->sql_record($cllicitaparam->sql_query(db_getsession("DB_instit")));
+  $sPosScripts .= 'alert("' . $oDaoLicitaparam->erro_msg . '");' . "\n";
 
-if($result!=false && $cllicitaparam->numrows>0){
-  db_fieldsmemory($result,0);
-} else {
-	$l12_tipoliberacaoweb = 1;
-}
+  if ($oDaoLicitaparam->erro_status == "0") {
 
-$db_botao = true;
-?>
-<html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    $db_botao = true;
+    $sPosScripts .= "document.form1.db_opcao.disabled = false;\n";
 
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmlicitaparam.php");
-	?>
-    </center>
-	</td>
-  </tr>
-</table>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
-</body>
-</html>
-<?
-if(isset($alterar)){
-  if($cllicitaparam->erro_status=="0"){
-    $cllicitaparam->erro(true,false);
-    $db_botao=true;
-    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if($cllicitaparam->erro_campo!=""){
-      echo "<script> document.form1.".$cllicitaparam->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$cllicitaparam->erro_campo.".focus();</script>";
+    if ($oDaoLicitaparam->erro_campo != "") {
+      $sPosScripts .= "document.form1.{$oDaoLicitaparam->erro_campo}.classList.add('form-error');";
+      $sPosScripts .= "document.form1.{$oDaoLicitaparam->erro_campo}.focus();";
     }
-  }else{
-    $cllicitaparam->erro(true,true);
+  } else {
+    $sPosScripts .= "location.href = '" . basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]) . "';\n";
   }
 }
-if($db_opcao==22){
-  echo "<script>document.form1.pesquisar.click();</script>";
+
+$db_opcao = 2;
+$db_botao = true;
+$result   = $oDaoLicitaparam->sql_record( $oDaoLicitaparam->sql_query(DB_getsession("DB_instit")) );
+
+if ($result != false && $oDaoLicitaparam->numrows > 0) {
+  db_fieldsmemory($result, 0);
 }
+
+if ($db_opcao == 22) {
+  $sPosScripts .= "document.form1.pesquisar.click();\n";
+}
+
+$sPosScripts .=  'js_tabulacaoforms("form1", "l12_escolherprocesso", true, 1, "l12_escolherprocesso", true);';
+
+include(modification("forms/db_frmlicitaparam.php"));
 ?>

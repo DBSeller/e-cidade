@@ -710,8 +710,8 @@ class cl_assmeio {
        $sql .= $campos;
      }
      $sql .= " from assmeio ";
-     $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = assmeio.h22_login";
-     $sql .= "      inner join tipoasse  on  tipoasse.h12_codigo = assmeio.h22_assent";
+     $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario =  cast(assmeio.h22_login as integer)";
+     $sql .= "      inner join tipoasse  on  tipoasse.h12_codigo = cast(assmeio.h22_assent as integer)";
      $sql .= "      inner join rhpessoal  on  rhpessoal.rh01_regist = assmeio.h22_regist";
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = rhpessoal.rh01_numcgm";
      $sql .= "      inner join db_config  on  db_config.codigo = rhpessoal.rh01_instit";

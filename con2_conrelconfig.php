@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("libs/db_liborcamento.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
 
-include ("classes/db_conrelinfo_classe.php");
-include ("classes/db_conrelvalor_classe.php");
-include ("classes/db_orcparamrel_classe.php");
-include ("classes/db_orcparamseq_classe.php");
-include ("classes/db_orcparamelemento_classe.php");
-include ("classes/db_orcparamrecurso_classe.php");
-include ("classes/db_orcparamsubfunc_classe.php");
+include(modification("classes/db_conrelinfo_classe.php"));
+include(modification("classes/db_conrelvalor_classe.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_orcparamseq_classe.php"));
+include(modification("classes/db_orcparamelemento_classe.php"));
+include(modification("classes/db_orcparamrecurso_classe.php"));
+include(modification("classes/db_orcparamsubfunc_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS,2);
@@ -67,10 +67,10 @@ $db_botao = true;
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
 function js_editar_estrut(codrel,seq){
-  js_OpenJanelaIframe('top.corpo.iframe_config','nome','con2_conrelconfig_estrut.php?c83_codrel='+codrel+'&sequen='+seq,'Editar',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_config','nome','con2_conrelconfig_estrut.php?c83_codrel='+codrel+'&sequen='+seq,'Editar',true,'0');
 }  
 function js_editar_recurso(codrel,seq){
-  js_OpenJanelaIframe('top.corpo.iframe_config','nome','con2_conrelconfig_recurso.php?c83_codrel='+codrel+'&sequen='+seq,'Editar',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_config','nome','con2_conrelconfig_recurso.php?c83_codrel='+codrel+'&sequen='+seq,'Editar',true,'0');
 }  
 
 </script>

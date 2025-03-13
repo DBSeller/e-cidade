@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $escola = db_getsession("DB_coddepto");
 ?>
 <html>
@@ -176,7 +176,7 @@ init = function () {
 js_retornoPreencheEscolas = function (oAjax) {
 
  js_removeObj('msgBox');
- var oRetorno = eval("("+oAjax.responseText+")");
+ var oRetorno = JSON.parse(oAjax.responseText);
 
    oCboEscola.clearItens();
    oCboEscola.addItem("0", "Todos");
@@ -211,7 +211,7 @@ js_pesquisarEnsino = function() {
 function js_retornoPesquisarEnsino(oResponse) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
   oRetorno.aResultCursoEscola.each(function(oEnsino, iSeq) {
     oCboEnsino.addItem(oEnsino.codigo_curso, oEnsino.nome_curso.urlDecode());
   });
@@ -245,7 +245,7 @@ function js_retornoPesquisarEtapa(oResponse) {
   var aEtapas = new Array();
 
   js_removeObj('msgBox');
-  var oRetorno   = eval("("+oResponse.responseText+")");
+  var oRetorno   = JSON.parse(oResponse.responseText);
   aEtapasCompara = oRetorno.aResultado;
 
   oRetorno.aResultado.each(function(oEtapa, iSeq) {
@@ -286,7 +286,7 @@ js_pesquisarCalendario = function() {
 function js_retornoPesquisarCalendario(oResponse) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   oRetorno.aResult.each(function(oCalendario, iSeq) {
    oCboCalendario.addItem(oCalendario.ed52_i_ano, oCalendario.ed52_i_ano);

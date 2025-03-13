@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -34,21 +34,21 @@ if($db_opcao==1){
   $db_action="con1_contcearquivo004.php";
 }else if($db_opcao==2||$db_opcao==22){
   $db_action="con1_contcearquivo005.php";
-}else if($db_opcao==3||$db_opcao==33){  
+}else if($db_opcao==3||$db_opcao==33){
   $db_action="con1_contcearquivo006.php";
-} 
+}
 
 if ($db_opcao == 1) {
   $rsInstit   = $oInstit->sql_record($oInstit->sql_query_file(db_getsession('DB_instit'),'codigo,nomeinst'));
   $oDados     = db_utils::fieldsMemory($rsInstit,0);
   $c11_instit =  $oDados->codigo;
   $nomeinst   =  $oDados->nomeinst;
-  
+
   $c11_datageracao_ano = date('Y',db_getsession('DB_datausu'));
   $c11_datageracao_mes = date('m',db_getsession('DB_datausu'));
   $c11_datageracao_dia = date('d',db_getsession('DB_datausu'));
   $c11_datageracao     = date('d/m/Y',db_getsession('DB_datausu'));
-  
+
 }
 ?>
 <form name="form1" method="post" action="<?=$db_action?>">
@@ -63,8 +63,8 @@ if ($db_opcao == 1) {
     <b>Filtros para Geração</b>
   </legend>
 <table border="0">
-  <tr>  
-    <td> 
+  <tr>
+    <td>
     <?
     db_input('c11_sequencial',10,$Ic11_sequencial,true,'hidden',3,"")
     ?>
@@ -76,7 +76,7 @@ if ($db_opcao == 1) {
        db_ancora(@$Lc11_concadtce,"js_pesquisac11_concadtce(true);",$db_opcao);
        ?>
     </td>
-    <td> 
+    <td>
 <?
 db_input('c11_concadtce',10,$Ic11_concadtce,true,'text',$db_opcao," onchange='js_pesquisac11_concadtce(false);'")
 ?>
@@ -91,7 +91,7 @@ db_input('c10_nome',52,$Ic10_nome,true,'text',3,'')
        db_ancora(@$Lc11_instit,"js_pesquisac11_instit(true);",3);
        ?>
     </td>
-    <td> 
+    <td>
 <?
 
 
@@ -102,23 +102,23 @@ db_input('nomeinst',52,$Inomeinst,true,'text',3,'')
        ?>
     </td>
   </tr>
-  
+
     <tr height="21">
     <td nowrap title="<?=@$Tc11_datageracao?>">
        <?=@$Lc11_datageracao?>
     </td>
-    <td> 
+    <td>
 <?
 db_inputdata('c11_datageracao',@$c11_datageracao_dia,@$c11_datageracao_mes,@$c11_datageracao_ano,true,'text',3,"")
 ?>
     </td>
-  </tr>  
-  
+  </tr>
+
   <tr height="21">
     <td nowrap title="<?=@$Tc11_dataini?>">
        <?=@$Lc11_dataini?>
     </td>
-    <td> 
+    <td>
 <?
 db_inputdata('c11_dataini',@$c11_dataini_dia,@$c11_dataini_mes,@$c11_dataini_ano,true,'text',$db_opcao,"")
 ?>
@@ -128,31 +128,31 @@ db_inputdata('c11_dataini',@$c11_dataini_dia,@$c11_dataini_mes,@$c11_dataini_ano
     <td nowrap title="<?=@$Tc11_datafim?>">
        <?=@$Lc11_datafim?>
     </td>
-    <td> 
+    <td>
 <?
 db_inputdata('c11_datafim',@$c11_datafim_dia,@$c11_datafim_mes,@$c11_datafim_ano,true,'text',$db_opcao,"")
 ?>
-    </td>    
+    </td>
   </tr>
   <tr height="21">
     <td nowrap title="<?=@$Tc11_diapagtofolha?>">
        <?=@$Lc11_diapagtofolha?>
     </td>
-    <td> 
+    <td>
 <?
 db_input('c11_diapagtofolha',10,$Ic11_diapagtofolha,true,'text',$db_opcao,'')
 ?>
-    </td>    
+    </td>
   </tr>
   <tr height="21">
     <td nowrap title="<?=@$Tc11_codigoremessa?>">
        <?=@$Lc11_codigoremessa?>
     </td>
-    <td> 
+    <td>
     <?
       db_input('c11_codigoremessa',10,$Ic11_codigoremessa,true,'text',$db_opcao,'')
     ?>
-    </td>    
+    </td>
   </tr>
   </table>
   <fieldset>
@@ -161,7 +161,7 @@ db_input('c11_diapagtofolha',10,$Ic11_diapagtofolha,true,'text',$db_opcao,'')
   </legend>
   <table>
   <tr>
-    <td> 
+    <td>
     <?
       db_textarea('c11_infleiame',10,83,$Ic11_infleiame,true,'text',$db_opcao,"")
     ?>
@@ -169,12 +169,12 @@ db_input('c11_diapagtofolha',10,$Ic11_diapagtofolha,true,'text',$db_opcao,'')
   </tr>
   </fieldset>
   </table>
-  
- 
+
+
   </td>
   </tr>
   </table>
-  
+
   </center>
 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> onclick = "return js_valida();" >
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
@@ -196,19 +196,19 @@ $('c11_concadtce').onpaste = function(event) {
 
 $('c11_codigoremessa').onpaste = function(event) {
   return /^[0-9|.]+$/.test(event.clipboardData.getData('text/plain'));
-} 
+}
 
 $('c11_diapagtofolha').onpaste = function(event) {
   return /^[0-9|.]+$/.test(event.clipboardData.getData('text/plain'));
-}  
+}
 
 $('c11_dataini').onpaste = function(event) {
   return /^[0-9|.\/]+$/.test(event.clipboardData.getData('text/plain'));
-}  
+}
 
 $('c11_datafim').onpaste = function(event) {
   return /^[0-9|.\/]+$/.test(event.clipboardData.getData('text/plain'));
-} 
+}
 
 
 function js_valida() {
@@ -223,7 +223,7 @@ function js_valida() {
     alert("Campo Código do Tribunal de Contas é de preenchimento obrigatório.");
     return false;
   }
- 
+
   if (dataini == '') {
     alert("Campo Data Inicial é de preenchimento obrigatório.");
     return false;
@@ -260,7 +260,7 @@ function js_processar() {
   var datafim  = document.form1.datafinal.value;
   var diafolha = document.form1.diapagfolha.value;
   var remessa  = document.form1.remessa.value;
-  
+
   if (dataini == '') {
     alert("Preencha a data inicial !");
     return false;
@@ -276,18 +276,18 @@ function js_processar() {
   if (remessa == '') {
     alert("Preencha o código da remessa do arquivo !");
     return false;
-  }  
+  }
   if (new Number(diafolha) > 31 || new Number(diafolha) < 1) {
     alert("Dia de pagamento deve ser um dia entre 1 e 31 !");
     return false;
   }
-  
+
   document.form1.submit();
-  
+
 }
 
 function js_importar() {
-  js_OpenJanelaIframe('top.corpo.iframe_contcearquivo','db_iframe_contcearquivo','func_contcearquivo.php?funcao_js=parent.js_importarRegistros|c11_sequencial','Pesquisa',true,0);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contcearquivo','db_iframe_contcearquivo','func_contcearquivo.php?funcao_js=parent.js_importarRegistros|c11_sequencial','Pesquisa',true,0);
 }
 
 function js_importarRegistros(codigo) {
@@ -297,25 +297,25 @@ function js_importarRegistros(codigo) {
       location.href = 'con1_contcearquivo004.php?importar=true&icodigonovo='+codigo;
     }
   }
-  
+
 }
 
 function js_pesquisac11_instit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_contcearquivo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contcearquivo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true,0);
   }else{
-     if(document.form1.c11_instit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_contcearquivo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.c11_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false,0);
+     if(document.form1.c11_instit.value != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contcearquivo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.c11_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false,0);
      }else{
-       document.form1.nomeinst.value = ''; 
+       document.form1.nomeinst.value = '';
      }
   }
 }
 function js_mostradb_config(chave,erro){
-  document.form1.nomeinst.value = chave; 
-  if(erro==true){ 
-    document.form1.c11_instit.focus(); 
-    document.form1.c11_instit.value = ''; 
+  document.form1.nomeinst.value = chave;
+  if(erro==true){
+    document.form1.c11_instit.focus();
+    document.form1.c11_instit.value = '';
   }
 }
 function js_mostradb_config1(chave1,chave2){
@@ -325,20 +325,20 @@ function js_mostradb_config1(chave1,chave2){
 }
 function js_pesquisac11_concadtce(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_contcearquivo','db_iframe_concadtce','func_concadtce.php?funcao_js=parent.js_mostraconcadtce1|c10_sequencial|c10_nome','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contcearquivo','db_iframe_concadtce','func_concadtce.php?funcao_js=parent.js_mostraconcadtce1|c10_sequencial|c10_nome','Pesquisa',true,0);
   }else{
-     if(document.form1.c11_concadtce.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_contcearquivo','db_iframe_concadtce','func_concadtce.php?pesquisa_chave='+document.form1.c11_concadtce.value+'&funcao_js=parent.js_mostraconcadtce','Pesquisa',false);
+     if(document.form1.c11_concadtce.value != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contcearquivo','db_iframe_concadtce','func_concadtce.php?pesquisa_chave='+document.form1.c11_concadtce.value+'&funcao_js=parent.js_mostraconcadtce','Pesquisa',false);
      }else{
-       document.form1.c10_nome.value = ''; 
+       document.form1.c10_nome.value = '';
      }
   }
 }
 function js_mostraconcadtce(chave,erro){
-  document.form1.c10_nome.value = chave; 
-  if(erro==true){ 
-    document.form1.c11_concadtce.focus(); 
-    document.form1.c11_concadtce.value = ''; 
+  document.form1.c10_nome.value = chave;
+  if(erro==true){
+    document.form1.c11_concadtce.focus();
+    document.form1.c11_concadtce.value = '';
   }
 }
 function js_mostraconcadtce1(chave1,chave2){
@@ -347,7 +347,7 @@ function js_mostraconcadtce1(chave1,chave2){
   db_iframe_concadtce.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_contcearquivo','db_iframe_contcearquivo','func_contcearquivo.php?funcao_js=parent.js_preenchepesquisa|c11_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contcearquivo','db_iframe_contcearquivo','func_contcearquivo.php?funcao_js=parent.js_preenchepesquisa|c11_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_contcearquivo.hide();

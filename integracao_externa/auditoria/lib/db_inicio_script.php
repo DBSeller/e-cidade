@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -57,6 +57,10 @@ if(!is_dir("log")) {
 }
 
 // Logs...
+
+// time utilizado para monitoria pelo zabbix
+db_log(time(), $sArquivoLog);
+
 db_log("", $sArquivoLog);
 db_log("*** INICIO Script ".$sNomeScript." ***", $sArquivoLog);
 db_log("", $sArquivoLog);

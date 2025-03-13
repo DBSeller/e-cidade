@@ -1,0 +1,113 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010555' name='issqn.issgsanexosfaixasimpostosfaixas' description="Tabela que relaciona a issgruposervicoanexoscadfaixas, issgruposervicoanexosfaixas e issgruposervicoanexosfaixasimpostosvalores" prefix="q164" label="" type="0">
+  <fields>
+    <field codigo="1011220" 
+           campo_api='' 
+           name="q164_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='issqn.issgsanexosfaixasimpostosfaixas_q164_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011221" 
+           campo_api='' 
+           name="q164_issgsanexosfaixas" 
+           conteudo="int4" 
+           description="Relaciona issgruposervicoanexosfaixas" 
+           inivalue="0" 
+           label="Relaciona issgruposervicoanexosfaixas" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Relaciona issgruposervicoanexosfaixas" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011222" 
+           campo_api='' 
+           name="q164_aliquotatotal" 
+           conteudo="float4" 
+           description="Valor total aliquota" 
+           inivalue="0" 
+           label="Valor total aliquota" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor total aliquota" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011223" 
+           campo_api='' 
+           name="q164_valordeducao" 
+           conteudo="float4" 
+           description="Valor da Dedução" 
+           inivalue="0" 
+           label="Valor da Dedução" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor da Dedução" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011224" 
+           campo_api='' 
+           name="q164_issgsanexoscadfaixas" 
+           conteudo="int4" 
+           description="Relaciona issgruposervicoanexoscadfaixas" 
+           inivalue="0" 
+           label="Relaciona issgruposervicoanexoscadfaixas" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Relaciona issgruposervicoanexoscadfaixas" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q164_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="issgsanexoscadfaixas" inner='t'>
+      <fieldfk name="q164_issgsanexoscadfaixas" reference="q161_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="issgsanexosfaixas" inner='t'>
+      <fieldfk name="q164_issgsanexosfaixas" reference="q163_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

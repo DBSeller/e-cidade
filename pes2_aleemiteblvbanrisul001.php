@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_folha_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_folha_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clfolha = new cl_folha;
 $clrotulo = new rotulocampo;
@@ -52,15 +52,15 @@ if(isset($emite)){
   $entrar = true;
   $alt = 4;
 
-  include("dbforms/db_layouttxt.php");
+  include(modification("dbforms/db_layouttxt.php"));
   $db_layouttxt = new db_layouttxt(1,"/tmp/blvreme.txt");
 
-  $result_dados = $clfolha->sql_record($clfolha->sql_query_gerarqbag(null,"*","r38_nome"," r38_banco = '041'"));
+  $result_dados = $clfolha->sql_record($clfolha->sql_query_gerarqbag(null,"*","r38_nome"," r38_banco = '041' and r38_liq > 0"));
 
   $valortotal = 0;
 
   if($clfolha->numrows > 0){
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 1);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 1);
     for($i=0; $i<$clfolha->numrows; $i++){
       db_fieldsmemory($result_dados, $i);
 
@@ -96,7 +96,7 @@ if(isset($emite)){
       $nomeregistro  = $r38_nome;
       $valorregistro  = $r38_liq; 
       $matricularegistro = $r38_regist;
-      db_setaPropriedadesLayoutTxt(&$db_layouttxt, 3);
+      db_setaPropriedadesLayoutTxt($db_layouttxt, 3);
       $valortotal += $r38_liq;
     }
     $pdf->ln(2);
@@ -105,7 +105,7 @@ if(isset($emite)){
     $pdf->cell(20,$alt,$clfolha->numrows,"TB",0,"R",1);
     $pdf->cell(20,$alt,db_formatar($valortotal,"f"),"TB",0,"R",1);
     $pdf->cell(55,$alt,"","TRB",1,"C",1);
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 5);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 5);
     $pdf->Output("/tmp/blvreme.pdf",false,true);
   }else{
     $erro_msg = "Nenhum registro encontrado.\\nVerifique geração da folha em disco.";

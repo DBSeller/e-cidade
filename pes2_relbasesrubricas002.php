@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 
@@ -76,7 +76,7 @@ if($tipo == 'r'){
          ";
   //echo $sql ; exit;
   
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $xxnum = pg_numrows($result);
   if ($xxnum == 0){
      db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);
@@ -165,7 +165,7 @@ if($tipo == 'r'){
          ";
   //echo $sql ; exit;
   
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $xxnum = pg_numrows($result);
   if ($xxnum == 0){
      db_redireciona('db_erros.php?fechar=true&db_erro=Não existe Nenhuma Rubrica com a base '.$base.' em suas fórmulas.');

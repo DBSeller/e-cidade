@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,44 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_aguahidrotroca_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_aguahidrotroca_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $claguahidrotroca = new cl_aguahidrotroca;
 $db_opcao = 1;
 $db_botao = true;
+$lErro    = false;
+
 if(isset($incluir)){
-  db_inicio_transacao();
-  $claguahidrotroca->incluir($x28_codhidrometro);
-  db_fim_transacao();
+  
+  $oDaoHidroMatric = new cl_aguahidromatric();
+  
+  $sSqlMatricula  = $oDaoHidroMatric->sql_query_file($x28_codhidrometro, 'x04_matric');
+  $rsSqlMatricula = db_query($sSqlMatricula);
+  
+  if (pg_num_rows($rsSqlMatricula) <= 0) {
+    db_msgbox('Matricula não encontrada, favor verificar cadastros!');
+    $lErro = true;
+  }
+  
+  $iMatricula = db_utils::fieldsMemory($rsSqlMatricula, 0)->x04_matric;
+  
+  $oColetorExportacao = new clExpDadosColetores();
+  
+  if ($oColetorExportacao->getImportacaoPendente($iMatricula)) {
+    db_msgbox('Existe uma Importação de dados pendente, favor verificar!');
+    $lErro = true;
+  }
+
+  if (!$lErro) {  
+    db_inicio_transacao();
+    $claguahidrotroca->incluir($x28_codhidrometro);
+    db_fim_transacao();
+  }
 }
 ?>
 <html>
@@ -63,7 +87,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmaguahidrotroca.php");
+	include(modification("forms/db_frmaguahidrotroca.php"));
 	?>
     </center>
 	</td>

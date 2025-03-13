@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptunaogeracarne_classe.php");
-include("classes/db_iptunaogeracarnecgm_classe.php");
-include("classes/db_iptunaogeracarnesetqua_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptunaogeracarne_classe.php"));
+include(modification("classes/db_iptunaogeracarnecgm_classe.php"));
+include(modification("classes/db_iptunaogeracarnesetqua_classe.php"));
 $cliptunaogeracarne = new cl_iptunaogeracarne;
   
 $cliptunaogeracarnecgm = new cl_iptunaogeracarnecgm;
@@ -87,7 +87,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmiptunaogeracarne.php");
+	include(modification("forms/db_frmiptunaogeracarne.php"));
 	?>
     </center>
 	</td>
@@ -120,9 +120,9 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.iptunaogeracarnecgm.disabled=false;
-         top.corpo.iframe_iptunaogeracarnecgm.location.href='cad1_iptunaogeracarnecgm001.php?db_opcaoal=33&j68_naogeracarne=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_iptunaogeracarnecgm.location.href='cad1_iptunaogeracarnecgm001.php?db_opcaoal=33&j68_naogeracarne=".@$chavepesquisa."';
          parent.document.formaba.iptunaogeracarnesetqua.disabled=false;
-         top.corpo.iframe_iptunaogeracarnesetqua.location.href='cad1_iptunaogeracarnesetqua001.php?db_opcaoal=33&j67_naogeracarne=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_iptunaogeracarnesetqua.location.href='cad1_iptunaogeracarnesetqua001.php?db_opcaoal=33&j67_naogeracarne=".@$chavepesquisa."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('iptunaogeracarnecgm');";

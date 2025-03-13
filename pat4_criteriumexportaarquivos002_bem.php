@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -139,7 +139,7 @@ if($iCodigoDepto!="" && $iCodigoDepto != 0){
 //$sSqlEmpresa .= "       '10009' as id_anterior_localizacao, ";
 //$sSqlEmpresa .= "       '10100' as id_original_do_bem ";
 
-$rsBem		    = pg_query($sSqlBem);
+$rsBem		    = db_query($sSqlBem);
 
 $iNumeroLinhas = pg_num_rows($rsBem);
 for ($i=0; $i<$iNumeroLinhas; $i++) {

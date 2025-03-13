@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -177,7 +177,7 @@ function js_pesquisaVariavel() {
 function js_preencheGridVariavel(oAjax){
 
   js_removeObj("msgBox");
-  var oRetornoVariavel = eval("("+oAjax.responseText+")");
+  var oRetornoVariavel = JSON.parse(oAjax.responseText);
   oDataGridVariavel.clearAll(true);
   
   oRetornoVariavel.aVariavel.each(function (oVariavel , iLinha) {
@@ -221,7 +221,7 @@ function js_salvar() {
   oParam.c92_sequencial     = $F('c92_sequencial');
   oParam.c92_conhistdoc     = $F('c53_coddoc');
   oParam.c92_descricao      = $F('c92_descricao');
-  oParam.c92_regra          = $F('c92_regra');
+  oParam.c92_regra          = encodeURIComponent($F('c92_regra'));
 
   js_divCarregando("Aguarde, salvando dados da regra...", "msgBox");
   var oAjax = new Ajax.Request(sUrlDocumentoContabil,
@@ -233,7 +233,7 @@ function js_salvar() {
 function js_finalizaSalvarRegra(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 	alert(oRetorno.message.urlDecode());
   $('btnExcluir').disabled = false;
   $('c92_sequencial').value = oRetorno.iCodigoRegra;
@@ -259,7 +259,7 @@ function js_excluir(){
 function js_finalizaExcluirRegra(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 	alert(oRetorno.message.urlDecode());
 	$('form1').reset();
 	js_pesquisaVariavel();
@@ -287,7 +287,7 @@ function js_validarSql(){
 function js_finalizaValidacaoRegra(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 	alert(oRetorno.message.urlDecode()); 
 }
 
@@ -311,7 +311,7 @@ function js_pesquisaRegraDocumentoCadastrado() {
 function js_preencheFormularioAlteracao(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 	$("c92_sequencial").value = oRetorno.c92_sequencial;
 	$("c92_descricao").value  = oRetorno.c92_descricao.urlDecode();
 	$("c92_regra").value      = oRetorno.c92_regra;	

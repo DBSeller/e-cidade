@@ -27,13 +27,13 @@
 
 
 $head5 = "Relatório de Imóveis";
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
 $pdf = new PDF();
 $pdf->Open();
 $pdf->AliasNbPages();
 $pdf->AddPage();
-require("libs/db_conectapdf.php");
+require(modification("libs/db_conectapdf.php"));
 for ($totalRegistos=0;$totalRegistos<sizeof($parametro);$totalRegistos++){
   // $parametro recebe cod_matricula
 $sql = "
@@ -45,7 +45,7 @@ $sql = "
     left outer join cgm j on j44_numcgm = j.z01_numcgm
   where j01_matric = $parametro[$totalRegistos] limit 1
 ";
-$matriculaSelecionada = pg_exec($sql);
+$matriculaSelecionada = db_query($sql);
 $numMatriculaSelecionada = pg_numrows($matriculaSelecionada);
   if ($numMatriculaSelecionada == 0) {
 

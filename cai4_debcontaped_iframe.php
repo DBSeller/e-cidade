@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -94,7 +94,7 @@ $sql = "select arrecad.k00_numpre,k00_numpar,k00_dtvenc,sum(k00_valor)as k00_val
                   and arreinstit.k00_instit = ".db_getsession("DB_instit")."
 	              group by arrecad.k00_numpre,k00_numpar,k00_dtvenc,arrecad.k00_tipo,k00_descr
 				  order by arrecad.k00_numpre,arrecad.k00_numpar                  ";
-$result = pg_exec($sql);
+$result = db_query($sql);
 $numrows = pg_numrows($result);
 if ($numrows > 0) {
 	echo "
@@ -124,7 +124,7 @@ for ($i = 0; $i < $numrows; $i ++) {
                    and arreinstit.k00_instit = ".db_getsession("DB_instit");
                   
     $chek="";
-    $result_marca=pg_exec($sql_marca);               
+    $result_marca=db_query($sql_marca);               
     if (pg_numrows($result_marca)>0){
     	$chek="checked";
     }

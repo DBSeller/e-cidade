@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,6 +24,10 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification('model/configuracao/SkinService.service.php'));
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -41,6 +45,9 @@
 -->
 </style>
 <link href="estilos.css" rel="stylesheet" type="text/css">
+<script src="scripts/scripts.js" type="text/javascript" language="JavaScript"></script>
+<script src="scripts/strings.js" type="text/javascript" language="JavaScript"></script>
+<script src="scripts/prototype.js" type="text/javascript" language="JavaScript"></script>
 <script>
 semanas = new Array('Dom','Seg','Ter','Qua','Qui','Sex','Sáb');
 meses = new Array('jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez');
@@ -67,21 +74,11 @@ function js_mostra_log(tipo){
     alert(document.getElementById('logtext').innerHTML);
 
 }
-
 </script>
 </head>
+<?
+$oSkin = new SkinService();
 
-<body bgcolor=#CCCCCC bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="setInterval('js_data()',1000)">
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="533" align="left" valign="middle" class="tab" id="st" ></td>
-    <!--<td width="10" align="left" valign="middle" class="tab" id="log" onmouseover="js_mostra_log(true)" onmouseout="js_mostra_log(false)" ><strong>Logs</strong></td>-->
-    <td width="30"  align="left" valign="middle" class="tab" ><strong>Data:&nbsp</strong></td>
-    <td width="80"  align="center" valign="middle" class="tab" id="dtatual"></td>
-    <td width="60"  align="left" valign="middle" class="tab" ><strong>Exercício:&nbsp</strong></td>
-    <td width="60"  align="center" valign="middle" class="tab" id="dtanousu"></td>
-  </tr>
-</table>
-<div name='logtext' id='logtext' style='visibility:hidden'></div>
-</body>
+include(modification( $oSkin->getPathFile("status.php")));
+?>
 </html>

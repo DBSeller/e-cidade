@@ -31,7 +31,7 @@ $clrotulo = new rotulocampo;
 $clrotulo->label("y60_data");
 $clrotulo->label("nome");
 $clrotulo->label("y60_contato");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 ?>
 <form name="form1" method="post" action="fis1_levusu001.php">
@@ -128,9 +128,9 @@ function js_novo(){
 }
 function js_pesquisay61_id_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_levusu','db_iframe_db_usuarios','func_cadfiscais.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_levusu','db_iframe_db_usuarios','func_cadfiscais.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true,0);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_levusu','db_iframe_db_usuarios','func_cadfiscais.php?pesquisa_chave='+document.form1.y61_id_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_levusu','db_iframe_db_usuarios','func_cadfiscais.php?pesquisa_chave='+document.form1.y61_id_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
   }
 }
 function js_mostradb_usuarios(chave,erro){

@@ -41,15 +41,15 @@ if(!defined('DB_BIBLIOT')){
 
   session_cache_limiter('none');
   session_start();
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
   db_postmemory($HTTP_POST_VARS);
   db_postmemory($HTTP_SERVER_VARS);
 
   define('FPDF_FONTPATH','font/');
-  require('fpdf.php');
+  require(modification('fpdf151/fpdf.php'));
 }
 
 class PDF_Label extends FPDF {
@@ -132,7 +132,7 @@ class PDF_Label extends FPDF {
 			$Tformat = $this->_Avery_Labels[$format];
 		}
 
-		parent::FPDF('P', $Tformat['metric'], $Tformat['paper-size']);
+		parent::__construct('P', $Tformat['metric'], $Tformat['paper-size']);
 		$this->_Set_Format($Tformat);
 		$this->Set_Font_Name('Arial');
 		$this->SetMargins(0,0); 

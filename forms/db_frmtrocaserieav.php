@@ -1,33 +1,7 @@
-<?
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -52,8 +26,8 @@
  */
 
 //MODULO: educação
-require_once("dbforms/db_classesgenericas.php");
-require_once("libs/db_jsplibwebseller.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
 $cltrocaserie->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("ed47_i_codigo");
@@ -76,9 +50,20 @@ $clrotulo->label("ed60_d_datamatricula");
           ?>
         </td>
       </tr>
+        <tr>
+            <td><label for="sTipo">Tipo: </label></td>
+            <td>
+                <select name="sTipo" id="sTipo" style="width: 160px;">
+                    <option value="A">AVANÇO</option>
+                    <option value="C">CLASSIFICAÇÃO</option>
+                </select>
+            </td>
+        </tr>
       <tr>
         <td nowrap title="<?=@$Ted101_i_aluno?>">
-          <?db_ancora( @$Led101_i_aluno, "js_pesquisaed101_i_aluno(true);", $db_opcao );?>
+          <?php
+            db_ancora( @$Led101_i_aluno, "js_pesquisaed101_i_aluno(true);", $db_opcao );
+          ?>
         </td>
         <td>
           <?php
@@ -89,7 +74,9 @@ $clrotulo->label("ed60_d_datamatricula");
       </tr>
       <tr>
         <td nowrap title="<?=@$Ted101_i_turmaorig?>">
-          <?db_ancora( @$Led101_i_turmaorig, "", 3 );?>
+          <?php
+            db_ancora( @$Led101_i_turmaorig, "", 3 );
+          ?>
         </td>
         <td>
           <?php
@@ -114,7 +101,9 @@ $clrotulo->label("ed60_d_datamatricula");
       </tr>
       <tr id = "linhaTurmaDestino">
         <td nowrap title="<?=@$Ted101_i_turmadest?>">
-          <?db_ancora( @$Led101_i_turmadest, "js_pesquisaed101_i_turmadest(true);", $db_opcao );?>
+          <?php
+            db_ancora( @$Led101_i_turmadest, "js_pesquisaed101_i_turmadest(true);", $db_opcao );
+          ?>
         </td>
         <td>
           <?php
@@ -129,7 +118,9 @@ $clrotulo->label("ed60_d_datamatricula");
         <td nowrap title="<?=@$Ted101_t_obs?>" colspan="2">
           <fieldset class="separator">
             <legend><?=@$Led101_t_obs?></legend>
-            <?db_textarea( 'ed101_t_obs', 4, 70, @$Ied101_t_obs, true, 'text', $db_opcao );?>
+            <?php
+              db_textarea( 'ed101_t_obs', 4, 70, @$Ied101_t_obs, true, 'text', $db_opcao );
+            ?>
           </fieldset>
         </td>
       </tr>
@@ -138,7 +129,9 @@ $clrotulo->label("ed60_d_datamatricula");
           <?=@$Led101_d_data?>
         </td>
         <td>
-          <?db_inputdata( 'ed101_d_data', @$ed101_d_data_dia, @$ed101_d_data_mes, @$ed101_d_data_ano, true, 'text', $db_opcao );?>
+          <?php
+            db_inputdata( 'ed101_d_data', @$ed101_d_data_dia, @$ed101_d_data_mes, @$ed101_d_data_ano, true, 'text', $db_opcao );
+          ?>
         </td>
       </tr>
     </table>
@@ -209,7 +202,7 @@ function js_pesquisaed101_i_aluno(mostra) {
   if (mostra == true) {
 
     js_OpenJanelaIframe(
-                         'top.corpo',
+                         'CurrentWindow.corpo',
                          'db_iframe_aluno',
                          'func_alunoavancoav.php?funcao_js=parent.js_mostraaluno1|ed60_i_aluno|ed47_v_nome'
                                                                                             +'|ed60_i_turma|ed57_c_descr'
@@ -225,7 +218,7 @@ function js_pesquisaed101_i_aluno(mostra) {
     if (document.form1.ed101_i_aluno.value != '') {
 
       js_OpenJanelaIframe(
-                           'top.corpo',
+                           'CurrentWindow.corpo',
                            'db_iframe_aluno',
                            'func_alunoavancoav.php?pesquisa_chave=' + document.form1.ed101_i_aluno.value
                                                 +'&funcao_js=parent.js_mostraaluno',
@@ -308,14 +301,12 @@ function js_pesquisaed101_i_turmadest(mostra) {
     document.form1.ed101_i_aluno.style.backgroundColor = '#99A9AE';
     document.form1.ed101_i_aluno.focus();
   } else {
-
     js_OpenJanelaIframe(
-                         'top.corpo',
+                         'CurrentWindow.corpo',
                          'db_iframe_turma',
                          'func_turmaavanco.php?aluno='+document.form1.ed47_v_nome.value
                                             +'&codaluno='+document.form1.ed101_i_aluno.value
                                             +'&turma='+document.form1.ed101_i_turmaorig.value
-                                            +'&sTipoValidacaoEtapa=avanco'
                                             +'&funcao_js=parent.js_mostraturma1|ed57_i_codigo|ed57_c_descr'
                                                                              +'|ed11_i_codigo|ed11_c_descr',
                          'Pesquisa de Turma de Destino',
@@ -345,8 +336,20 @@ function js_mostraturma1( chave1, chave2, chave3, chave4 ) {
 
 function dadosImportacao() {
 
-  if ( !oTurmaTurno.temTurnoSelecionado() ) {
+  var dadosVagasTurma = oTurmaTurno.oVagasTurma[Object.keys(oTurmaTurno.oVagasTurma)[0]];
+  var vagasDisponiveisTurma = 0;
 
+  if (dadosVagasTurma !== undefined) {
+    vagasDisponiveisTurma = dadosVagasTurma.iVagasDisponiveis;
+  }
+
+  if (vagasDisponiveisTurma === 0) {
+    document.getElementById('iframeImportacao').style.display = 'none';
+    alert(_M( CAMINHO_MENSAGENS_AVANCO + 'turma_sem_vagas' ));
+    return;
+  }
+
+  if ( !oTurmaTurno.temTurnoSelecionado() ) {
     document.getElementById('iframeImportacao').style.display = 'none';
     alert(_M( CAMINHO_MENSAGENS_AVANCO + 'sem_turno_selecionada' ));
     return;
@@ -358,6 +361,7 @@ function dadosImportacao() {
       sGet += document.form1.ed101_i_turmadest.value+'&codetapaorigem=';
       sGet += document.form1.ed11_i_codorigem.value;
       sGet += '&sTipo=A'; // Avanço
+      sGet += '&codetapadestino='+document.form1.ed11_i_coddestino.value; // Avanço
 
   aTurnosSelecionados = new Array();
   for ( var iContador = 1; iContador <= 3; iContador++ ) {
@@ -386,6 +390,7 @@ function dadosImportacao() {
   }
 
   sGet += '&sTurno=' + aTurnosSelecionados.join( "," );
+  sGet += '&sTipo=' + document.getElementById('sTipo').value;
 
   document.getElementById('iframeImportacao').src           = 'edu4_trocaserieimportacao001.php?'+sGet;
   document.getElementById('iframeImportacao').style.display = ''; // Habilito a visualização

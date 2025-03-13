@@ -26,7 +26,7 @@
  */
 
 //MODULO: pessoal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrhrubelementoprinc->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -118,10 +118,10 @@ function js_cancelar(){
 }
 function js_pesquisarh24_rubric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhrubelementoprinc','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarhrubricas1|rh27_rubric|rh27_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhrubelementoprinc','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarhrubricas1|rh27_rubric|rh27_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.rh24_rubric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhrubelementoprinc','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh24_rubric.value+'&funcao_js=parent.js_mostrarhrubricas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhrubelementoprinc','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh24_rubric.value+'&funcao_js=parent.js_mostrarhrubricas','Pesquisa',false);
      }else{
        document.form1.rh27_descr.value = ''; 
      }
@@ -141,10 +141,10 @@ function js_mostrarhrubricas1(chave1,chave2){
 }
 function js_pesquisarh24_codele(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhrubelementoprinc','db_iframe_orcelemento','func_orcelemento.php?funcao_js=parent.js_mostraorcelemento1|o56_codele|o56_elemento','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhrubelementoprinc','db_iframe_orcelemento','func_orcelemento.php?funcao_js=parent.js_mostraorcelemento1|o56_codele|o56_elemento','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.rh24_codele.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhrubelementoprinc','db_iframe_orcelemento','func_orcelemento.php?pesquisa_chave='+document.form1.rh24_codele.value+'&funcao_js=parent.js_mostraorcelemento','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhrubelementoprinc','db_iframe_orcelemento','func_orcelemento.php?pesquisa_chave='+document.form1.rh24_codele.value+'&funcao_js=parent.js_mostraorcelemento','Pesquisa',false);
      }else{
        document.form1.o56_elemento.value = ''; 
      }

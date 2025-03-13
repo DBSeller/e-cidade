@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -266,7 +266,7 @@ class RelatorioBensAlmoxarifado {
     $sTipoMaterial = ($this->oBensAlmoxarifado->getTipoEmissao() == TipoGrupo::BEM_PERMANENTE ? 'permanente' : 'de consumo');
 
     $this->oPdf->cell($nWidth, 2, "", "R:L", 1);
-    $this->oPdf->multiCell($nWidth, 4, "Declaro que o estoque em {$oData->getDate(DBDate::DATA_PTBR)} de material {$sTipoMaterial} importa em R$ " . db_extenso($nValorTotalSoma + $nValorTotalSaidas) . ".", "L:R");
+    $this->oPdf->multiCell($nWidth, 4, "Declaro que o estoque em {$oData->getDate(DBDate::DATA_PTBR)} de material {$sTipoMaterial} importa em R$ " . db_extenso($nValorTotalSoma - $nValorTotalSaidas) . ".", "L:R");
     $this->oPdf->cell($nWidth, 2, "", "R:L:B", 1);
 
     $this->oPdf->setFont($this->sFont, '', $this->iFont);

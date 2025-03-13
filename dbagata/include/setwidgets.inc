@@ -75,6 +75,7 @@
     $labelShowDetail = $this->radios['checkShowDetail']->child;
     $labelShowNumber = $this->radios['checkShowNumber']->child;
     $labelShowIndent = $this->radios['checkShowIndent']->child;
+    $labelShowHeader = $this->radios['checkShowHeader']->child;
 
     $labelradioLines = $this->radios['radioLines']->child;
     $labelradioColumns = $this->radios['radioColumns']->child;
@@ -89,6 +90,7 @@
     $labelShowDetail->set_text(_a('Show Detail'));
     $labelShowNumber->set_text(_a('Show Index Number'));
     $labelShowIndent->set_text(_a('Show Indentation'));
+    $labelShowHeader->set_text(_a('Show header labels'));
     $labelradioAscendantOrder->set_text(_a('Ascendant Order'));
     $labelradioDescendantOrder->set_text(_a('Descendant Order'));
     $labelradioLines->set_text(_a('Per lines'));
@@ -102,6 +104,6 @@
       $buttonRel = $this->glade->get_widget('buttonRel'.$n);
       $label = $buttonRel->child;
       $text = $label->get();
-      $buttonRel->connect_object('clicked', array(&$this,'InsertOnBlock'), 'Where', $text);
+      $buttonRel->connect_object('clicked', array($this,'InsertOnBlock'), 'Where', $text);
     }
 ?>

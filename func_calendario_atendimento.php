@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 // parse_str($HTTP_SERVER_VARS['QUERY_STRING']); // ta com o globals desativado no php -- Crestani
 
@@ -53,7 +53,7 @@ if ( isset($seleciona) || isset($acumulaseleciona) || isset($lembrete) ){
        $sql .= " and extract(month from at77_dataagenda) = $mes ";
      }  
 
-     $result = pg_exec($sql);
+     $result = db_query($sql);
 
      $tarefa = $HTTP_POST_VARS["tarefa"];
    }else{
@@ -108,7 +108,7 @@ if ( isset($seleciona) || isset($acumulaseleciona) || isset($lembrete) ){
                   and at77_hora         = '".trim($at77_hora)."'"."
                   and at77_observacao = '$observacao'";
 
-       $result = pg_exec($sql);
+       $result = db_query($sql);
 
        if ( pg_numrows($result) == 0 ){
 
@@ -136,7 +136,7 @@ if ( isset($seleciona) || isset($acumulaseleciona) || isset($lembrete) ){
                      and at77_hora         = '".trim($at77_hora)."'";
 
        }
-       $result = pg_exec($sql);
+       $result = db_query($sql);
 
      }
                                               
@@ -153,7 +153,7 @@ if ( isset($seleciona) || isset($acumulaseleciona) || isset($lembrete) ){
                     and at77_dataagenda   = '".$ano."-".$mes."-".$dia[$i]."' 
                     and at77_observacao = '$observacao'";
 
-         $result = pg_exec($sql);
+         $result = db_query($sql);
 
          if ( pg_numrows($result) == 0 ){
 
@@ -182,7 +182,7 @@ if ( isset($seleciona) || isset($acumulaseleciona) || isset($lembrete) ){
 
          }
 
-         $result = pg_exec($sql);
+         $result = db_query($sql);
        
        }
 
@@ -247,7 +247,7 @@ class calendario{
                   left join tarefaagenda on at77_tarefa = at40_sequencial and at77_datavalidade is null
              where at40_sequencial = ".$this->tarefa." 
                and at77_id_usuario = ".db_getsession("DB_id_usuario");
-     $result = pg_exec($sql);
+     $result = db_query($sql);
      if( pg_numrows($result) > 0 ){
        $this->tarefadescricao = pg_result($result,0,'at40_descr');
        $this->observacao = pg_result($result,0,'at77_observacao');
@@ -427,7 +427,7 @@ class calendario{
      $sSqlQuemAcessa = "select db_depusu.coddepto from db_depart
                         inner join db_depusu on db_depart.coddepto = db_depusu.coddepto
                         where db_depusu.id_usuario = ".db_getsession("DB_id_usuario");
-     $rResult = pg_query($sSqlQuemAcessa);
+     $rResult = db_query($sSqlQuemAcessa);
 
      if(pg_result($rResult,0,0) != 708 && pg_result($rResult,0,0) != 717){
        $sSqlClientes .= " where at01_status is true "; 
@@ -552,7 +552,7 @@ class calendario{
                and at77_datavalidade is null 
                and at77_id_usuario != ".db_getsession("DB_id_usuario")."
                and at77_usuenvolvido = ".db_getsession("DB_id_usuario");
-     $result = pg_exec($sql);
+     $result = db_query($sql);
       
      if (pg_numrows($result)>0){
 
@@ -581,7 +581,7 @@ class calendario{
             where usuarioativo= '1'
              ) as x
                order by nome ";
-     $result = pg_exec($sql);
+     $result = db_query($sql);
 
      for($i=0;$i<pg_numrows($result);$i++){
        $idtec = pg_result($result,$i,'at27_usuarios');
@@ -595,7 +595,7 @@ class calendario{
                  from tarefaenvol
                  where at45_tarefa = ".$this->tarefa." and at45_usuario = $idtec and at45_perc = 100";
 
-         $result_envol = pg_exec($sql);
+         $result_envol = db_query($sql);
          if( pg_numrows($result_envol) > 0 ){
            $str .= "<font size='1' color='red'>".pg_result($result,$i,'nome')."</font></td></tr>";
          }else{
@@ -628,7 +628,7 @@ class calendario{
                          and at77_datavalidade is null ) as x 
               order by at77_datainclusao,at77_hora ";
 
-     $result = pg_exec($sql);
+     $result = db_query($sql);
       
      if (pg_numrows($result)>0){
 
@@ -754,4 +754,10 @@ function janela(d,m,a){
   ?>
 }
 
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_serieregimemat_classe.php");
-include("classes/db_ensino_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_serieregimemat_classe.php"));
+include(modification("classes/db_ensino_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clserieregimemat = new cl_serieregimemat;
 $clensino = new cl_ensino;
@@ -117,7 +117,7 @@ function js_ensino(codensino){
 }
 function js_retornaPesquisaRegime(oAjax){
  js_removeObj("msgBox");
- var oRetorno = eval("("+oAjax.responseText+")");
+ var oRetorno = JSON.parse(oAjax.responseText);
  sHtml = '<tr>';
  sHtml += ' <td valign="top"><b>Regime de Matrícula:</b>';
  sHtml += ' </td>';
@@ -164,7 +164,7 @@ function js_regime(codregime){
 }
 function js_retornaPesquisaDivisao(oAjax){
  js_removeObj("msgBox");
- var oRetorno = eval("("+oAjax.responseText+")");
+ var oRetorno = JSON.parse(oAjax.responseText);
  sHtml = '<tr>';
  sHtml += ' <td colspan="2" valign="top">';
  sHtml += '  <table border="0"><tr><td>';
@@ -219,7 +219,7 @@ function js_retornaPesquisaDivisao(oAjax){
 }
 function js_retornaPesquisaSerie(oAjax){
  js_removeObj("msgBox");
- var oRetorno = eval("("+oAjax.responseText+")");
+ var oRetorno = JSON.parse(oAjax.responseText);
  sHtml = '<tr>';
  sHtml += ' <td colspan="2" valign="top">';
  sHtml += '  <table border="0"><tr><td>';
@@ -337,7 +337,7 @@ function js_selecionar(tipo){
 }
 function js_retornaUpdate(oAjax){
  js_removeObj("msgBox");
- var oRetorno = eval("("+oAjax.responseText+")");
+ var oRetorno = JSON.parse(oAjax.responseText);
  alert(oRetorno.urlDecode());
  js_regime($('regime').value);
 }

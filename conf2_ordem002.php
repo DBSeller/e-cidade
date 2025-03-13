@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('');
@@ -95,7 +95,7 @@ $head4 = "Tipo  $tipo ";
 $head5 = "Ordem $ordem";
 //echo $sql;exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 if (pg_numrows($result) == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem ordens cadastradas para filtros selecionados.');
@@ -117,7 +117,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
    $sqlmod = "	select nome_modulo from db_ordemmod 
    		inner join db_modulos on db_ordemmod.id_item = db_modulos.id_item
    		where codordem = $codordem limit 1";
-   $resultmod = pg_exec($sqlmod);
+   $resultmod = db_query($sqlmod);
    if (pg_numrows($resultmod) == 0) {
      $nome_modulo = "";
    } else {

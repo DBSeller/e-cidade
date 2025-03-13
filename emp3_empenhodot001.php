@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_orcunidade_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcdotacaocontr_classe.php");
-include("classes/db_orcparametro_classe.php");
-require("libs/db_liborcamento.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcunidade_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcdotacaocontr_classe.php"));
+include(modification("classes/db_orcparametro_classe.php"));
+require(modification("libs/db_liborcamento.php"));
 $clorcparametro = new cl_orcparametro;
 $clorcorgao = new cl_orcorgao;
 $clorcunidade = new cl_orcunidade;
@@ -329,7 +329,7 @@ function js_troca(nome){
     $dbwhere .= " and o58_codigo = $o58_codigo ";
   }
 
-  $result = $clorcdotacaocontr->sql_record($clorcdotacaocontr->sql_query(null,null,"distinct o15_codigo as o61_codigo,o15_descr as o15_contra_recurso","o15_codigo","o58_anousu=".db_getsession("DB_anousu")." and o58_instit=".db_getsession("DB_instit")." $dbwhere "));
+  $result = $clorcdotacaocontr->sql_record($clorcdotacaocontr->sql_query_rec(null,null,"distinct o15_codigo as o61_codigo,o15_descr as o15_contra_recurso","o15_codigo","o58_anousu=".db_getsession("DB_anousu")." and o58_instit=".db_getsession("DB_instit")." $dbwhere "));
   db_selectrecord("o61_codigo",$result,true,2,"","","","0");
   ?>
   </td>

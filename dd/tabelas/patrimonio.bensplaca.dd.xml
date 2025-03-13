@@ -1,0 +1,170 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1523' name='patrimonio.bensplaca' description="Historico de placa do bem." prefix="t41" label="Placa referente a um bem." type="0">
+  <fields>
+    <field codigo="8905" 
+           campo_api='' 
+           name="t41_codigo" 
+           conteudo="int4" 
+           description="Código sequencial do registro" 
+           inivalue="0" 
+           label="Código" 
+           size="6" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='patrimonio.bensplaca_t41_codigo_seq' />
+     
+    </field> 
+    <field codigo="8906" 
+           campo_api='' 
+           name="t41_bem" 
+           conteudo="int8" 
+           description="Código do bem" 
+           inivalue="0" 
+           label="Código do bem" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do bem" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8907" 
+           campo_api='' 
+           name="t41_placa" 
+           conteudo="varchar(20)" 
+           description="Placa" 
+           inivalue="" 
+           label="Placa" 
+           size="20" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Placa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8908" 
+           campo_api='' 
+           name="t41_placaseq" 
+           conteudo="int4" 
+           description="Nº sequencial da placa" 
+           inivalue="0" 
+           label="Nº sequencial da placa" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Nº sequencial da placa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8909" 
+           campo_api='' 
+           name="t41_obs" 
+           conteudo="text" 
+           description="Observação referente a placa ou a motivo de troca da mesma" 
+           inivalue="" 
+           label="Observação referente a placa" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Observação referente a placa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8910" 
+           campo_api='' 
+           name="t41_data" 
+           conteudo="date" 
+           description="Data inclusão  da placa" 
+           inivalue="null" 
+           label="Data Placa" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Placa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8911" 
+           campo_api='' 
+           name="t41_usuario" 
+           conteudo="int4" 
+           description="codigo do usuario" 
+           inivalue="0" 
+           label="Cod. Usuário" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Cod. Usuário" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013423" 
+           campo_api='' 
+           name="t41_excluido" 
+           conteudo="bool" 
+           description="Indica se o histórico de placa foi excluído ou não. False se foi excluído, true caso contrário." 
+           inivalue="f"
+           label="Ativo" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Ativo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="t41_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_usuarios" inner='t'>
+      <fieldfk name="t41_usuario" reference="id_usuario" /> 
+    </foreignkey>
+    <foreignkey reference="bens" inner='t'>
+      <fieldfk name="t41_bem" reference="t52_bem" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

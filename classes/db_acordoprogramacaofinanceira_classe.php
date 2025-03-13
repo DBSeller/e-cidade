@@ -1,64 +1,64 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Acordos
 //CLASSE DA ENTIDADE acordoprogramacaofinanceira
-class cl_acordoprogramacaofinanceira { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ac34_sequencial = 0; 
-   var $ac34_programacaofinanceira = 0; 
-   var $ac34_acordo = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_acordoprogramacaofinanceira {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ac34_sequencial = 0;
+   var $ac34_programacaofinanceira = 0;
+   var $ac34_acordo = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  ac34_sequencial = int4 = Código Sequencial 
                  ac34_programacaofinanceira = int4 = Programação Financeira 
                  ac34_acordo = int4 = Acordo 
                  ";
-   //funcao construtor da classe 
-   function cl_acordoprogramacaofinanceira() { 
+   //funcao construtor da classe
+   function cl_acordoprogramacaofinanceira() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("acordoprogramacaofinanceira"); 
+     $this->rotulo = new rotulo("acordoprogramacaofinanceira");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -77,9 +77,9 @@ class cl_acordoprogramacaofinanceira {
      }
    }
    // funcao para inclusao
-   function incluir ($ac34_sequencial){ 
+   function incluir ($ac34_sequencial){
       $this->atualizacampos();
-     if($this->ac34_programacaofinanceira == null ){ 
+     if($this->ac34_programacaofinanceira == null ){
        $this->erro_sql = " Campo Programação Financeira nao Informado.";
        $this->erro_campo = "ac34_programacaofinanceira";
        $this->erro_banco = "";
@@ -88,7 +88,7 @@ class cl_acordoprogramacaofinanceira {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ac34_acordo == null ){ 
+     if($this->ac34_acordo == null ){
        $this->erro_sql = " Campo Acordo nao Informado.";
        $this->erro_campo = "ac34_acordo";
        $this->erro_banco = "";
@@ -98,16 +98,16 @@ class cl_acordoprogramacaofinanceira {
        return false;
      }
      if($ac34_sequencial == "" || $ac34_sequencial == null ){
-       $result = db_query("select nextval('acordoprogramacaofinanceira_ac34_sequencial_seq')"); 
+       $result = db_query("select nextval('acordoprogramacaofinanceira_ac34_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: acordoprogramacaofinanceira_ac34_sequencial_seq do campo: ac34_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: acordoprogramacaofinanceira_ac34_sequencial_seq do campo: ac34_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->ac34_sequencial = pg_result($result,0,0); 
+       $this->ac34_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from acordoprogramacaofinanceira_ac34_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $ac34_sequencial)){
@@ -118,10 +118,10 @@ class cl_acordoprogramacaofinanceira {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->ac34_sequencial = $ac34_sequencial; 
+         $this->ac34_sequencial = $ac34_sequencial;
        }
      }
-     if(($this->ac34_sequencial == null) || ($this->ac34_sequencial == "") ){ 
+     if(($this->ac34_sequencial == null) || ($this->ac34_sequencial == "") ){
        $this->erro_sql = " Campo ac34_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -139,8 +139,8 @@ class cl_acordoprogramacaofinanceira {
                                ,$this->ac34_programacaofinanceira 
                                ,$this->ac34_acordo 
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Acordos Programação Financeira ($this->ac34_sequencial) nao Incluído. Inclusao Abortada.";
@@ -174,16 +174,16 @@ class cl_acordoprogramacaofinanceira {
        $resac = db_query("insert into db_acount values($acount,3040,17199,'','".AddSlashes(pg_result($resaco,0,'ac34_acordo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($ac34_sequencial=null) { 
+   function alterar ($ac34_sequencial=null) {
       $this->atualizacampos();
      $sql = " update acordoprogramacaofinanceira set ";
      $virgula = "";
-     if(trim($this->ac34_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac34_sequencial"])){ 
+     if(trim($this->ac34_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac34_sequencial"])){
        $sql  .= $virgula." ac34_sequencial = $this->ac34_sequencial ";
        $virgula = ",";
-       if(trim($this->ac34_sequencial) == null ){ 
+       if(trim($this->ac34_sequencial) == null ){
          $this->erro_sql = " Campo Código Sequencial nao Informado.";
          $this->erro_campo = "ac34_sequencial";
          $this->erro_banco = "";
@@ -193,10 +193,10 @@ class cl_acordoprogramacaofinanceira {
          return false;
        }
      }
-     if(trim($this->ac34_programacaofinanceira)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac34_programacaofinanceira"])){ 
+     if(trim($this->ac34_programacaofinanceira)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac34_programacaofinanceira"])){
        $sql  .= $virgula." ac34_programacaofinanceira = $this->ac34_programacaofinanceira ";
        $virgula = ",";
-       if(trim($this->ac34_programacaofinanceira) == null ){ 
+       if(trim($this->ac34_programacaofinanceira) == null ){
          $this->erro_sql = " Campo Programação Financeira nao Informado.";
          $this->erro_campo = "ac34_programacaofinanceira";
          $this->erro_banco = "";
@@ -206,10 +206,10 @@ class cl_acordoprogramacaofinanceira {
          return false;
        }
      }
-     if(trim($this->ac34_acordo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac34_acordo"])){ 
+     if(trim($this->ac34_acordo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac34_acordo"])){
        $sql  .= $virgula." ac34_acordo = $this->ac34_acordo ";
        $virgula = ",";
-       if(trim($this->ac34_acordo) == null ){ 
+       if(trim($this->ac34_acordo) == null ){
          $this->erro_sql = " Campo Acordo nao Informado.";
          $this->erro_campo = "ac34_acordo";
          $this->erro_banco = "";
@@ -239,7 +239,7 @@ class cl_acordoprogramacaofinanceira {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Acordos Programação Financeira nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ac34_sequencial;
@@ -267,14 +267,14 @@ class cl_acordoprogramacaofinanceira {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($ac34_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($ac34_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ac34_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -302,7 +302,7 @@ class cl_acordoprogramacaofinanceira {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Acordos Programação Financeira nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ac34_sequencial;
@@ -330,11 +330,11 @@ class cl_acordoprogramacaofinanceira {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -356,8 +356,8 @@ class cl_acordoprogramacaofinanceira {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $ac34_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $ac34_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -381,8 +381,8 @@ class cl_acordoprogramacaofinanceira {
      $sql2 = "";
      if($dbwhere==""){
        if($ac34_sequencial!=null ){
-         $sql2 .= " where acordoprogramacaofinanceira.ac34_sequencial = $ac34_sequencial "; 
-       } 
+         $sql2 .= " where acordoprogramacaofinanceira.ac34_sequencial = $ac34_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -398,8 +398,8 @@ class cl_acordoprogramacaofinanceira {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $ac34_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $ac34_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -415,8 +415,8 @@ class cl_acordoprogramacaofinanceira {
      $sql2 = "";
      if($dbwhere==""){
        if($ac34_sequencial!=null ){
-         $sql2 .= " where acordoprogramacaofinanceira.ac34_sequencial = $ac34_sequencial "; 
-       } 
+         $sql2 .= " where acordoprogramacaofinanceira.ac34_sequencial = $ac34_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -432,5 +432,58 @@ class cl_acordoprogramacaofinanceira {
      }
      return $sql;
   }
+
+  // funcao do sql
+  public function sql_query_parcelas ($ac34_sequencial = null,$campos = "*", $ordem = null, $dbwhere = "", $limit = null) {
+
+    $sql  = "select {$campos}";
+    $sql .= "  from acordoprogramacaofinanceira  ";
+    $sql .= "      inner join programacaofinanceira        on  programacaofinanceira.k117_sequencial = ac34_programacaofinanceira";
+    $sql .= "      inner join programacaofinanceiraparcela on  programacaofinanceira.k117_sequencial = programacaofinanceiraparcela.k118_programacaofinanceira";
+    $sql .= "      inner join acordo                       on  ac34_acordo  = acordo.ac16_sequencial";
+
+
+    $sql2 = "";
+    if (empty($dbwhere)) {
+      if (!empty($ac34_sequencial)) {
+        $sql2 .= " where ac34_sequencial = $ac34_sequencial ";
+      }
+    } else if (!empty($dbwhere)) {
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+
+      if (!empty($limit)) {
+          $sql .= " limit {$limit}";
+      }
+
+    return $sql;
+  }
+
+  // funcao do sql
+  public function sql_query_parcelas_lancamento ($ac34_sequencial = null,$campos = "*", $ordem = null, $dbwhere = "") {
+
+    $sql  = "select {$campos}";
+    $sql .= "  from acordoprogramacaofinanceira  ";
+    $sql .= "      inner join programacaofinanceira        on  programacaofinanceira.k117_sequencial = ac34_programacaofinanceira";
+    $sql .= "      inner join programacaofinanceiraparcela on  programacaofinanceira.k117_sequencial = programacaofinanceiraparcela.k118_programacaofinanceira";
+    $sql .= "      inner join acordo                       on  ac34_acordo  = acordo.ac16_sequencial";
+    $sql .= "      left  join  conlancamprogramacaofinanceiraparcela on k118_sequencial = c118_programacaofinanceiraparcela";
+    $sql2 = "";
+    if (empty($dbwhere)) {
+      if (!empty($ac34_sequencial)) {
+        $sql2 .= " where ac34_sequencial = $ac34_sequencial ";
+      }
+    } else if (!empty($dbwhere)) {
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+    return $sql;
+  }
 }
-?>

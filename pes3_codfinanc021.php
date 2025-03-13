@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,17 +26,18 @@
  */
 
 set_time_limit(0);
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_sql.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+
 $oGet = db_utils::postMemory($_GET);
 
-if ($sigla == "") {
-	echo "SELECIONE ALGUMA OPÇÃO";
+if (!isset($sigla)) {
+	echo "Nenhum resultado encontrado.";
 	die();
 }
 
@@ -63,6 +64,8 @@ $sSql = "select distinct
            and {$oGet->sigla}_mesusu = {$oGet->mes}
 					 and {$oGet->sigla}_instit = ".db_getsession("DB_instit")."
           order by z01_nome";
+
+
 $rsDadosPonto = db_query($sSql);
 
 ?>
@@ -176,7 +179,7 @@ th {
 </body>
 <script>
 function js_consultaregistro(registro,rubrica){
-  js_OpenJanelaIframe('top.corpo','func_nome','pes3_conspessoal002.php?regist='+registro,'Visualização das matriculas cadastradas',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','func_nome','pes3_conspessoal002.php?regist='+registro,'Visualização das matriculas cadastradas',true);
 }
 </script>
 </html>

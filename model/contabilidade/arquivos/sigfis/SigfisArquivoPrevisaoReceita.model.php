@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,9 +26,9 @@
  */
 
 
-require_once ("interfaces/iPadArquivoTxtBase.interface.php");
-require_once ("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php");
-require_once ("libs/db_liborcamento.php");
+require_once  modification("interfaces/iPadArquivoTxtBase.interface.php");
+require_once  modification("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php");
+require_once  modification("libs/db_liborcamento.php");
 
 /**
  *
@@ -39,97 +39,102 @@ require_once ("libs/db_liborcamento.php");
  *
  */
 class SigfisArquivoPrevisaoReceita extends SigfisArquivoBase implements iPadArquivoTXTBase {
-  
-  protected $iCodigoLayout     = 119;
-  protected $sNomeArquivo      = 'PrevRec';
-  
-  /**
-  * Busca os dados para gerar o Arquivo do Previsao da Receita
-  */
-  public function gerarDados() {
-  
+
+    protected $iCodigoLayout     = 119;
+    protected $sNomeArquivo      = 'PrevRec';
+
     /**
-     * Busca os dados da db_config
+     * Busca os dados para gerar o Arquivo do Previsao da Receita
      */
-    $oDbConfig       = new db_stdClass();
-    $oDadoConfig     = $oDbConfig->getDadosInstit();
-    $sWhere          = "o70_instit = ".db_getsession("DB_instit");
-    $rsReceitaSaldo = db_receitasaldo(11, 1, 2, true, $sWhere, 
-                                       $this->iAnoUso, 
-                                       $this->dtDataInicial, $this->dtDataFinal);
+    public function gerarDados() {
 
-//db_criatabela( $rsReceitaSaldo );exit;
-
-    $aReceitas = db_utils::getColectionByRecord($rsReceitaSaldo);
-//    echo "<pre>";
-//    var_dump( $aReceitas );
-//    exit;
-    
-    $aReceitaSoma = array();
-
-    if (empty($this->sCodigoTribunal)) {
-      throw new Exception("O código do tribunal deve ser informado para geração do arquivo");
-    }
-    /**
-     * Percorre o array retornado pelo metodo db_receitasaldo
-     */
-    foreach ($aReceitas as $iInd => $aReceita) {
-      
-      /**
-       * 
-       * Como o metodo db_receitasaldo não retorna o campo orcfontes.o57_codfon precisamos fazer uma consulta
-       * para descobrilo
-       */
-      $oDaoOrcFontes = db_utils::getDao('orcfontes');
-      $sWhereFontes  = "o57_anousu = {$this->iAnoUso} and o57_fonte = '$aReceita->o57_fonte'";
-      $sSqlOrcFontes = $oDaoOrcFontes->sql_query_file(null, null, "*", null, $sWhereFontes);
-//      die($sSqlOrcFontes);
-
-      $rsOrcFontes   = $oDaoOrcFontes->sql_record($sSqlOrcFontes);
-      
-      if ($oDaoOrcFontes->numrows == 1) {
-        
-        $sCodFon = db_utils::fieldsmemory($rsOrcFontes, 0)->o57_codfon;
-        $sEstrut = db_utils::fieldsmemory($rsOrcFontes, 0)->o57_fonte;
-        
         /**
-         * Para cada o57_codfon retornado verificamos se este possui vinculo com Recita Sigfis.
+         * Busca os dados da db_config
          */
-//        if ($oVinculo = SigfisVinculoReceita::getVinculoReceita($sCodFon)) {
-        if ( true ) {
-        
-//          echo "receitatce: $oVinculo->receitatce - saldo_inicial: $aReceita->saldo_inicial \n";
-          if (!isset($aReceitaSoma[$sEstrut])) {
-            $aReceitaSoma[$sEstrut] = $aReceita->saldo_inicial ;
-          } else {
-            $aReceitaSoma[$sEstrut] += $aReceita->saldo_inicial ;
-          }
-        } else {
-          $sErroLog  = "Receita {$aReceita->o57_fonte} do ano de {$this->iAnoUso} ";
-          $sErroLog .= "não tem vinculo com Receita Sigfis.\n";
-          $this->addLog($sErroLog);
+        $oDbConfig       = new db_stdClass();
+        $oDadoConfig     = $oDbConfig->getDadosInstit();
+        $sWhere          = "o70_instit = ".db_getsession("DB_instit");
+        $rsReceitaSaldo = db_receitasaldo(11, 1, 2, true, $sWhere,
+            $this->iAnoUso,
+            $this->dtDataInicial, $this->dtDataFinal);
+
+
+        $aReceitas = db_utils::getColectionByRecord($rsReceitaSaldo);
+        $aReceitaSoma = array();
+
+        if (empty($this->sCodigoTribunal)) {
+            throw new Exception("O código do tribunal deve ser informado para geração do arquivo");
         }
-      } else {
-        $sErroLog  = "Receita {$aReceita->o57_fonte} do ano de {$this->iAnoUso} retornou mais de um registro.($sSqlOrcFontes)\n";
-        $this->addLog($sErroLog);
-      }
+        /**
+         * Percorre o array retornado pelo metodo db_receitasaldo
+         */
+        foreach ($aReceitas as $iInd => $aReceita) {
+
+            /**
+             *
+             * Como o metodo db_receitasaldo não retorna o campo orcfontes.o57_codfon precisamos fazer uma consulta
+             * para descobri-lo
+             */
+            $oDaoOrcFontes = db_utils::getDao('orcfontes');
+            $sWhereFontes  = "o57_anousu = {$this->iAnoUso} and o57_fonte = '$aReceita->o57_fonte'";
+            $sSqlOrcFontes = $oDaoOrcFontes->sql_query_file(null, null, "*, ( select count(*) from orcreceita where o57_codfon = o70_codfon and o57_anousu = o70_anousu ) as quant_rec ", null, $sWhereFontes);
+            $rsOrcFontes   = $oDaoOrcFontes->sql_record($sSqlOrcFontes);
+
+            if ($oDaoOrcFontes->numrows == 1) {
+
+                $sCodFon       = db_utils::fieldsmemory($rsOrcFontes, 0)->o57_codfon;
+                $sEstrut       = db_utils::fieldsmemory($rsOrcFontes, 0)->o57_fonte;
+                $iQuantReceita = db_utils::fieldsmemory($rsOrcFontes, 0)->quant_rec;
+
+                if ( $iQuantReceita == 0 ) {
+                    continue;
+                }
+
+                /**
+                 * Para cada o57_codfon retornado verificamos se este possui vinculo com Recita Sigfis.
+                 */
+                $oVinculo = SigfisVinculoReceita::getVinculoReceita($sCodFon);
+                if (empty($oVinculo)) {
+
+                    $sErroLog  = "Receita {$aReceita->o57_fonte} do ano de {$this->iAnoUso} ";
+                    $sErroLog .= "não tem vinculo com Receita Sigfis.\n";
+                    $this->addLog($sErroLog);
+                    continue;
+                }
+
+                //$sEstrut = $oVinculo->receitatce;
+                if (substr($sEstrut, 0,  1) == '9' ) {
+                    $sEstrut = '9' . substr($sEstrut, 2, 12);
+                } else {
+                    $sEstrut = substr($sEstrut, 0, 13);
+                }
+
+                if (!isset($aReceitaSoma[$sEstrut])) {
+                    $aReceitaSoma[$sEstrut] = $aReceita->saldo_inicial ;
+                } else {
+                    $aReceitaSoma[$sEstrut] += $aReceita->saldo_inicial ;
+                }
+
+            } else {
+                $sErroLog  = "Receita {$aReceita->o57_fonte} do ano de {$this->iAnoUso} retornou mais de um registro.($sSqlOrcFontes)\n";
+                $this->addLog($sErroLog);
+            }
+        }
+
+        if (count($aReceitaSoma) > 0) {
+
+            foreach ($aReceitaSoma as $sFonte => $nValor) {
+
+                $oDados      = new stdClass();
+
+                $oDados->dt_Ano             = $this->iAnoUso;
+                $oDados->Cd_Unidade         = str_pad($this->sCodigoTribunal, 4, ' ', STR_PAD_LEFT);
+                $oDados->Cd_ItemReceita     = str_pad(substr($sFonte, 0, 13), 13, ' ', STR_PAD_RIGHT);
+                $oDados->vl_Receita         = str_pad(number_format(abs($nValor), 2, '',''), 16, ' ', STR_PAD_LEFT);
+                $oDados->codigolinha        = 406;
+                $this->aDados[] = $oDados;
+
+            }
+        }
     }
-    
-    if (count($aReceitaSoma) > 0) {
-      
-      foreach ($aReceitaSoma as $sFonte => $nValor) {
-        
-        $oDados      = new stdClass();
-        
-        $oDados->dt_Ano             = $this->iAnoUso;
-        $oDados->Cd_Unidade         = str_pad($this->sCodigoTribunal, 4, ' ', STR_PAD_LEFT);
-        $oDados->Cd_ItemReceita     = str_pad(substr($sFonte,1,8),  8, ' ', STR_PAD_LEFT);
-        $oDados->vl_Receita         = str_pad(number_format($nValor, 2, '',''), 16, ' ', STR_PAD_LEFT);
-        
-        $oDados->codigolinha        = 406;
-        
-        $this->aDados[] = $oDados;
-      }
-    } 
-  }
 }

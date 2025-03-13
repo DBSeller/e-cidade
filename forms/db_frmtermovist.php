@@ -106,10 +106,10 @@ db_input('y91_tipo',3,$Iy91_tipo,true,'text',$db_opcao,"")
 <script>
 function js_pesquisay91_inscr(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issbase','func_issbase.php?funcao_js=parent.js_mostraissbase1|q02_inscr|q02_numcgm','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issbase','func_issbase.php?funcao_js=parent.js_mostraissbase1|q02_inscr|q02_numcgm','Pesquisa',true);
   }else{
      if(document.form1.y91_inscr.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_issbase','func_issbase.php?pesquisa_chave='+document.form1.y91_inscr.value+'&funcao_js=parent.js_mostraissbase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issbase','func_issbase.php?pesquisa_chave='+document.form1.y91_inscr.value+'&funcao_js=parent.js_mostraissbase','Pesquisa',false);
      }else{
        document.form1.q02_numcgm.value = ''; 
      }
@@ -128,7 +128,7 @@ function js_mostraissbase1(chave1,chave2){
   db_iframe_issbase.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_termovist','func_termovist.php?funcao_js=parent.js_preenchepesquisa|y91_termovist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_termovist','func_termovist.php?funcao_js=parent.js_preenchepesquisa|y91_termovist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_termovist.hide();

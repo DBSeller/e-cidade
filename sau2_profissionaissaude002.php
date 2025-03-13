@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('fpdf151/pdf.php');
-require_once('libs/db_utils.php');
+require_once(modification('fpdf151/pdf.php'));
+require_once(modification('libs/db_utils.php'));
 
-$oDaoUndMedHorario = db_utils::getdao('undmedhorario_ext');
+$oDaoUndMedHorario = new cl_undmedhorario_ext;
 
 function novoProfissional($oPdf, $iProfissional, $sNomeProf, $sEstruturalEspec, $sNomeEspec, 
                           $iUnidade, $sNomeUnidade) {
@@ -133,20 +133,20 @@ if (!empty($sProfissionais)) {
 }
 
 $sPeriodo = '';
-if (!empty($aDatas2[0]) && !empty($aDatas2[1])) {
+if (!empty($aDatas2[0]) && !empty($aDatas2[1]) && $iSituacao == 2) {
 
-  $sWhere  .= "and ((sd30_d_valinicial >= '".$aDatas2[0]."') and (sd30_d_valfinal <= '";
-  $sWhere  .= $aDatas[1]."')) ";
+  $sWhere  .= "and ((sd30_d_valinicial >= '{$aDatas2[0]}')";
+  $sWhere  .= "and (sd30_d_valfinal <= '{$aDatas[1]}'))";
   $sPeriodo = $aDatas[0].' a '.$aDatas[1];
 
 } elseif (!empty($aDatas2[0])) {
 
-  $sWhere  .= "and sd30_d_valinicial >= '".$aDatas2[0]."' ";
+  $sWhere  .= "and sd30_d_valinicial >= '{$aDatas2[0]}' ";
   $sPeriodo = 'a partir de '.$aDatas[0];
 
-} elseif (!empty($aDatas2[1])) {
+} elseif (!empty($aDatas2[1]) && $iSituacao == 2) {
 
-  $sWhere  .= "and sd30_d_valfinal <= '".$aDatas[1]."' ";
+  $sWhere  .= "and sd30_d_valfinal <= '{$aDatas[1]}' ";
   $sPeriodo = 'até '.$aDatas[1];
 
 } else { // as duas datas não foram informadas

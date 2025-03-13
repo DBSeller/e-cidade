@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -188,7 +188,7 @@ class cl_aguadescarrehist {
        $this->erro_status = "0";
        return false;
      }
-     $result = @pg_query("insert into aguadescarrehist(
+     $result = @db_query("insert into aguadescarrehist(
                                        x36_numpre 
                                       ,x36_numpar 
                                       ,x36_hist 
@@ -380,7 +380,7 @@ class cl_aguadescarrehist {
        }
      }
      $sql .= " where oid = $oid ";
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "aguadescarrehist nao Alterado. Alteracao Abortada.\\n";
@@ -413,7 +413,7 @@ class cl_aguadescarrehist {
                     where ";
      $sql2 = "";
      $sql2 = "oid = $oid";
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "aguadescarrehist nao Excluído. Exclusão Abortada.\\n";
@@ -441,7 +441,7 @@ class cl_aguadescarrehist {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

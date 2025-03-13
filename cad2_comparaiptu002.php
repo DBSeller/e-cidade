@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_projmelhorias_classe.php");
-include("classes/db_editalproj_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_projmelhorias_classe.php"));
+include(modification("classes/db_editalproj_classe.php"));
 
 $clprojmelhorias = new cl_projmelhorias;
 $cleditalproj = new cl_editalproj;
@@ -79,34 +79,78 @@ if(isset($ordem) && $ordem != ""){
 }
 
 $sql =  "
-	select * from (
-	  select j01_matric, valor1, valor2, case when valor1 = 0 or valor2 = 0 then 0 else round(100 - (valor2 / valor1 * 100),5) * -1 end as percentual from (
-	    select * from ( 
-		select j01_matric, sum1 as valor1, sum2 as valor2 from (
-			select j01_matric, sum1, sum2
-			from (
-		select j01_matric, x.sum as sum1, y.sum as sum2 from iptubase
-			left join
-			(select j21_matric, sum(j21_valor) from iptucalv where j21_anousu = $ano1
-				group by iptucalv.j21_matric) as x
-				on x.j21_matric = iptubase.j01_matric
-				left join (
-						select j21_matric, sum(j21_valor) from iptucalv
+  	SELECT *
+    FROM (  SELECT
+                j01_matric,
+                valor1,
+                valor2,
+                CASE
+                    WHEN valor1 = 0 OR valor2 = 0 THEN 0
+                    ELSE round(100 - (valor2 / valor1 * 100),5) * -1
+                END AS percentual
+            FROM(
+                    SELECT *
+                    FROM(   
+                            SELECT
+                                j01_matric,
+                                sum1 AS valor1,
+                                sum2 AS valor2
+                            FROM(
+                                    SELECT
+                                        j01_matric,
+                                        sum1,
+                                        sum2
+                                    FROM(   
+                                            SELECT
+                                                j01_matric,
+                                                (x.sum1 + x.sum2) AS sum1,
+                                                (y.sum1 + y.sum2) AS sum2
+                                            FROM iptubase
+                                            LEFT JOIN   (   SELECT
+                                                                j21_matric,
+                                                                sum(j21_valor) as sum1,
+                                                                sum(coalesce(j152_valor, 0)) as sum2
+                                                            FROM iptucalv
+                                                            LEFT JOIN ( SELECT
+                                                                            *
+                                                                        FROM
+                                                                            iptutaxanump
+                                                                        INNER JOIN 
+                                                                            iptucadtaxaexe ON iptucadtaxaexe.j08_iptucadtaxaexe = iptutaxanump.j151_iptucadtaxaexe
+                                                                      ) as txn ON txn.j151_matric = j21_matric
+                                                                              AND txn.j08_anousu  = j21_anousu
+                                                            LEFT JOIN
+                                                                iptutaxacalv ON iptutaxacalv.j152_iptutaxanump = txn.j151_codigo
+                                                            WHERE j21_anousu = {$ano1}
+                                                            GROUP BY iptucalv.j21_matric
+                                                        ) AS x ON x.j21_matric = iptubase.j01_matric
+                                            LEFT JOIN   (   SELECT
+                                                                j21_matric,
+                                                                sum(j21_valor) as sum1,
+                                                                sum(coalesce(j152_valor, 0)) as sum2
+                                                            FROM iptucalv
+                                                            LEFT JOIN ( SELECT
+                                                                            *
+                                                                        FROM
+                                                                            iptutaxanump
+                                                                        INNER JOIN 
+                                                                            iptucadtaxaexe ON iptucadtaxaexe.j08_iptucadtaxaexe = iptutaxanump.j151_iptucadtaxaexe
+                                                                      ) as txn ON txn.j151_matric = j21_matric
+                                                                              AND txn.j08_anousu  = j21_anousu
+                                                            LEFT JOIN
+                                                                iptutaxacalv ON iptutaxacalv.j152_iptutaxanump = txn.j151_codigo
+                                                            WHERE j21_anousu = {$ano2}
+                                                            GROUP BY iptucalv.j21_matric
+                                                        ) AS y ON y.j21_matric = iptubase.j01_matric
+                                            WHERE j01_baixa IS NULL
+                                        ) AS z
+                                ) AS a 
+                        ) AS f
+                ) AS g
+        ) AS h
+    WHERE $dbwhere ";
 
-						   where j21_anousu = $ano2
-						group by iptucalv.j21_matric
-				
-					  ) as y
-				on y.j21_matric = iptubase.j01_matric
-
-			where j01_baixa is null 
-			
-			) as z) as a
-	     ) as f) as g) as h
-	     where $dbwhere
-		
-         ";
-$result = pg_query($sql);
+$result = db_query($sql);
 $numrows = pg_numrows($result); 
 $alt="5";
 $pdf = new PDF(); 

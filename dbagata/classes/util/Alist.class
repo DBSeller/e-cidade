@@ -70,14 +70,14 @@ class Alist
         $this->Columns = $Columns;
         
         
-        $hbox = &new GtkHBox();
+        $hbox = new GtkHBox();
         $container->add($hbox);
         
-        $scrolled_win = &new GtkScrolledWindow();
+        $scrolled_win = new GtkScrolledWindow();
         $scrolled_win->set_border_width(5);
         $scrolled_win->set_policy(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
         
-        $this->clist = &new GtkCList(count($Columns), $Columns);
+        $this->clist = new GtkCList(count($Columns), $Columns);
         $this->clist->set_selection_mode($mode);
         $scrolled_win->add($this->clist);
         
@@ -86,7 +86,7 @@ class Alist
         else
         $hbox->pack_start($scrolled_win);
         
-        $vbox = &new GtkVBox();
+        $vbox = new GtkVBox();
         $this->vbox = &$vbox;
         $hbox->pack_start($vbox, false, false, 5);
         
@@ -99,22 +99,22 @@ class Alist
         $local_pix['save']  = Gdk::pixmap_create_from_xpm($this->window->window, null,  images . 'ico_save.xpm');
         
         if ($aButtons['Add'])
-            $vbox->pack_start(new Button(array(&$this, 'Add'), _a('Add'), $local_pix['add'], $format), false, false, 2);
+            $vbox->pack_start(new Button(array($this, 'Add'), _a('Add'), $local_pix['add'], $format), false, false, 2);
         
         if ($aButtons['Edit'])
-            $vbox->pack_start(new Button(array(&$this, 'Edit'), _a('Edit'), $local_pix['edit'], $format), false, false, 2);
+            $vbox->pack_start(new Button(array($this, 'Edit'), _a('Edit'), $local_pix['edit'], $format), false, false, 2);
         
         if ($aButtons['Delete'])
-            $vbox->pack_start(new Button(array(&$this, 'Delete'), _a('Delete'), $local_pix['delete'], $format), false, false, 2);
+            $vbox->pack_start(new Button(array($this, 'Delete'), _a('Delete'), $local_pix['delete'], $format), false, false, 2);
         
         if ($aButtons['Clear'])
-            $vbox->pack_start(new Button(array(&$this, 'Clear'), _a('Clear'), $local_pix['clear'], $format), false, false, 2);
+            $vbox->pack_start(new Button(array($this, 'Clear'), _a('Clear'), $local_pix['clear'], $format), false, false, 2);
         
         if ($aButtons['Up'])
-            $vbox->pack_start(new Button(array(&$this, 'Up'), _a('Up'), $local_pix['up'], $format), false, false, 2);
+            $vbox->pack_start(new Button(array($this, 'Up'), _a('Up'), $local_pix['up'], $format), false, false, 2);
         
         if ($aButtons['Down'])
-            $vbox->pack_start(new Button(array(&$this, 'Down'), _a('Down'), $local_pix['down'], $format), false, false, 2);
+            $vbox->pack_start(new Button(array($this, 'Down'), _a('Down'), $local_pix['down'], $format), false, false, 2);
         
         if ($aButtons['Save'])
             $vbox->pack_start($this->buttonc = new VoidButton(_a('Write'), $local_pix['save'], $format), false, false, 2);
@@ -258,7 +258,7 @@ class Alist
         if ($this->ColumnCount == 1)
         {
             $this->InputBox = new InputArea(_a('New Item'), 200);
-            $this->InputBox->button->connect_object('clicked', array(&$this,'AddItem'));
+            $this->InputBox->button->connect_object('clicked', array($this,'AddItem'));
         }
         else
         {
@@ -274,7 +274,7 @@ class Alist
             }
             
             $this->InputForm = new FormEntry(_a('New Item'), $vars);
-            $this->InputForm->button->connect_object('clicked', array(&$this,'AddGroup'));
+            $this->InputForm->button->connect_object('clicked', array($this,'AddGroup'));
         }
     }
 
@@ -367,7 +367,7 @@ class Alist
                 }
                 
                 $this->InputBox = new InputArea(_a('Edit Item'), 360, $text);
-                $this->InputBox->button->connect_object('clicked', array(&$this,'EditItem'), $line);
+                $this->InputBox->button->connect_object('clicked', array($this,'EditItem'), $line);
             }
             else
             {
@@ -384,7 +384,7 @@ class Alist
                 }
                 
                 $this->EditForm = new FormEntry(_a('Edit Item'), $vars);
-                $this->EditForm->button->connect_object('clicked', array(&$this,'EditGroup'), $line);
+                $this->EditForm->button->connect_object('clicked', array($this,'EditGroup'), $line);
             }
         }
     }
@@ -548,14 +548,14 @@ class Wlist extends Alist
     /***********************************************************/
     function Wlist($Title, $Columns, $Elements, $width, $height,  $isleft, $aButtons)
     {
-        $this->window = &new GtkWindow;
-        $this->window->connect_object('delete-event', array(&$this,'CloseList'));
+        $this->window = new GtkWindow;
+        $this->window->connect_object('delete-event', array($this,'CloseList'));
         $this->window->set_title($Title);
         $this->window->set_border_width(0);
         $this->window->set_default_size($width, $height);
         $this->window->set_uposition(80, 80);
         $this->window->realize();
-        $this->window->connect_object('key_press_event', array(&$this,'KeyTest'));
+        $this->window->connect_object('key_press_event', array($this,'KeyTest'));
 
         Alist::Alist($this->window, $this->window, $Title, $Columns, $Elements, $width, $height,  $isleft, $aButtons);
     }

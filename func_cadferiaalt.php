@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cadferia_classe.php");
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cadferia_classe.php"));
+
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
+
 $clcadferia = new cl_cadferia;
 $clrotulo = new rotulocampo;
 $clrotulo->label("r30_regist");
@@ -60,7 +62,7 @@ if(isset($valor_testa_rescisao)){
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
-<?
+<?php
 if(!isset($pesquisa_chave)){
   ?>
   <script>
@@ -82,7 +84,7 @@ if(!isset($pesquisa_chave)){
       document.form2.submit();
     }
   </script>
-  <?
+  <?php
 }
 ?>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
@@ -96,7 +98,7 @@ if(!isset($pesquisa_chave)){
             <?=$Lr30_regist?>
           </td>
           <td width="96%" align="left" nowrap> 
-            <?
+            <?php
 	    db_input("r30_regist",8,$Ir30_regist,true,"text",4,"","chave_r30_regist");
 	    ?>
           </td>
@@ -106,7 +108,7 @@ if(!isset($pesquisa_chave)){
             <?=$Lz01_numcgm?>
           </td>
           <td width="96%" align="left" nowrap> 
-            <?
+            <?php
 	    db_input("z01_numcgm",8,$Iz01_numcgm,true,"text",4,"","chave_z01_numcgm");
 	    ?>
           </td>
@@ -116,7 +118,7 @@ if(!isset($pesquisa_chave)){
             <?=$Lz01_nome?>
           </td>
           <td width="96%" align="left" nowrap> 
-            <?
+            <?php
 	    db_input("z01_nome",40,$Iz01_nome,true,"text",4,"","chave_z01_nome");
 	    ?>
           </td>
@@ -134,12 +136,18 @@ if(!isset($pesquisa_chave)){
   </tr>
   <tr> 
     <td align="center" valign="top"> 
-      <?
+      <?php
       $dbwhere = " and (case when trim(r30_proc2) = '' or r30_proc2 is null then r30_proc1 >= '".$chave_r30_anousu."/".$chave_r30_mesusu."' else r30_proc2 >= '".$chave_r30_anousu."/".$chave_r30_mesusu."' end)";
+        
+      if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+          $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+          $dbwhere .= " and rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+      }
+
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_cadferiaalt.php")==true){
-             include("funcoes/db_func_cadferiaalt.php");
+             include(modification("funcoes/db_func_cadferiaalt.php"));
            }else{
              $campos = "cadferia.oid,cadferia.*";
            }
@@ -180,11 +188,17 @@ if(!isset($pesquisa_chave)){
 </table>
 </body>
 </html>
-<?
+<?php
 if(!isset($pesquisa_chave)){
   ?>
   <script>
   </script>
-  <?
+  <?php
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

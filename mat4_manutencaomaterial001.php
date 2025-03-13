@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $rotulo = new rotulocampo();
 $rotulo->label("m60_codmater");
@@ -91,16 +91,16 @@ function js_pesquisar() {
   }
 
   var sAbrirUrl = "mat4_manutencaomaterial002.php?iCodigoMaterial="+$('m60_codmater').value + "&sDescricaoMaterial=" + $('m60_descr').value;
-  js_OpenJanelaIframe('top.corpo','db_iframe_material', sAbrirUrl, "Material: "+$('m60_codmater').value+" - "+$('m60_descr').value, true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_material', sAbrirUrl, "Material: "+$('m60_codmater').value+" - "+$('m60_descr').value, true);
 
 }
 
 function js_pesquisam60_codmater(mostra) {
   if(mostra==true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_matmater','func_matmater.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matmater','func_matmater.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr','Pesquisa',true);
   } else {
     if(document.form1.m60_codmater.value != '') {
-      js_OpenJanelaIframe('top.corpo','db_iframe_matmater','func_matmater.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostramatmater','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matmater','func_matmater.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostramatmater','Pesquisa',false);
     } else {
       document.form1.m60_descr.value = '';
     }

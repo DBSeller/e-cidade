@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 
-require_once ('model/patrimonio/depreciacao/interface/IFormulaCalculo.interface.php');
+require_once(modification('model/patrimonio/depreciacao/interface/IFormulaCalculo.interface.php'));
 /**
  * Strategy FormulaCalculo
  * Identifica a fórmula de cálculo de depreciação de um bem e aplica a fórmula configurada.
  * @author iuri@dbseller.com.br, matheus.felini@dbseller.com.br
  * @package patrimonio
  * @subpackage depreciacao
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.6 $
  */
 class FormulaCalculo implements IFormulaCalculo {
   
@@ -93,31 +93,31 @@ class FormulaCalculo implements IFormulaCalculo {
       
       case 1:
         
-        require_once("model/patrimonio/depreciacao/FormulaCalculoSomaDigito.model.php");
+        require_once(modification("model/patrimonio/depreciacao/FormulaCalculoSomaDigito.model.php"));
         $this->oFormulaCalculo = new FormulaCalculoSomaDigito($iTipoCalculoDepreciacao);        
       break;
       
       case 2:
         
-        require_once("model/patrimonio/depreciacao/FormulaCalculoQuotaConstante.model.php");
+        require_once(modification("model/patrimonio/depreciacao/FormulaCalculoQuotaConstante.model.php"));
         $this->oFormulaCalculo = new FormulaCalculoQuotaConstante($iTipoCalculoDepreciacao);        
       break;
       
       case 3:
         
-        require_once("model/patrimonio/depreciacao/FormulaCalculoReceitaFederal.model.php");
+        require_once(modification("model/patrimonio/depreciacao/FormulaCalculoReceitaFederal.model.php"));
         $this->oFormulaCalculo = new FormulaCalculoReceitaFederal($iTipoCalculoDepreciacao);        
       break;
       
       case 4:
       
-        require_once("model/patrimonio/depreciacao/FormulaCalculoSemCalculo.model.php");
+        require_once(modification("model/patrimonio/depreciacao/FormulaCalculoSemCalculo.model.php"));
         $this->oFormulaCalculo = new FormulaCalculoSemCalculo($iTipoCalculoDepreciacao);
       break;
       
       case 5:
       
-        require_once("model/patrimonio/depreciacao/FormulaCalculoManual.model.php");
+        require_once(modification("model/patrimonio/depreciacao/FormulaCalculoManual.model.php"));
         $this->oFormulaCalculo = new FormulaCalculoManual($iTipoCalculoDepreciacao);
       break;
       
@@ -128,7 +128,7 @@ class FormulaCalculo implements IFormulaCalculo {
         $rsTipoDepreciacao       = $oDaoBensTipoDepreciacao->sql_record($sSqlBensTipoDepreciacao);
         
         if ($oDaoBensTipoDepreciacao->numrows == 1) {
-          require_once("model/patrimonio/depreciacao/FormulaCalculoPersonalizado.model.php");
+          require_once(modification("model/patrimonio/depreciacao/FormulaCalculoPersonalizado.model.php"));
           $this->oFormulaCalculo = new FormulaCalculoPersonalizado($iTipoCalculoDepreciacao);
         } else {
           throw new Exception("Tipo de cálculo de depreciação é inválido.");

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_usuariosonline.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 //$divulgacao_codigo = 1;
 ?>
@@ -66,7 +66,7 @@ p {
   }else{
  
     $sql = "select demodescr from db_itensmenudemonstracao where id_item = $divulgacao_codigo";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     $numrows = pg_numrows($result);
     if( $numrows > 0 ){
       $descricao = pg_result($result,0,0); 
@@ -75,7 +75,7 @@ p {
     }
 
     $sql = "select desctec from db_itensmenu where id_item = $divulgacao_codigo";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     $descricao_item = pg_result($result,0,0); 
 
 

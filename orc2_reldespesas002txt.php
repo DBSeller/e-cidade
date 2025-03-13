@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_liborcamento.php");
+require_once(modification("libs/db_liborcamento.php"));
 
 $tipo_mesini = 1;
 $tipo_mesfim = 1;
@@ -50,17 +50,17 @@ $tipo_nivel = 6;
 $qorgao = 0;
 $qunidade = 0;
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
 
-db_postmemory($HTTP_POST_VARS);
+db_postmemory($_POST);
 
 $clselorcdotacao = new cl_selorcdotacao();
 $clselorcdotacao->setDados($filtra_despesa); // passa os parametros vindos da func_selorcdotacao_abas.php
 $instits= $clselorcdotacao->getInstit();
 
 if (!isset($instits) && trim(@$instits)==""){
-     $instits = "(".db_getsession("DB_instit").")";
+    $instits = "(".db_getsession("DB_instit").")";
 }
 
 //@ recupera as informações fornecidas para gerar os dados
@@ -81,6 +81,79 @@ $head5 = "INSTITUIÇÕES : ".$descr_inst;
 
 $sele_work = $clselorcdotacao->getDados()." and w.o58_instit in $instits ";
 
+$campos = "
+x.o58_orgao,
+x.o40_descr,
+x.o58_unidade,
+x.o41_descr,
+x.o58_funcao,
+x.o52_descr,
+x.o58_subfuncao,
+x.o53_descr,
+x.o58_programa,
+x.o54_descr,
+x.o58_projativ,
+x.o55_descr,
+x.o55_finali,
+x.o58_elemento,
+x.o56_descr,
+x.o58_coddot,
+oc.o15_recurso,
+x.o15_descr,
+sum(x.dot_ini) as dot_ini,
+sum(x.saldo_anterior) as saldo_anterior,
+sum(x.empenhado) as empenhado,
+sum(x.anulado) as anulado,
+sum(x.liquidado) as liquidado,
+sum(x.pago) as pago,
+sum(x.suplementado) as suplementado,
+sum(x.reduzido) as reduzido,
+sum(x.atual) as atual,
+sum(x.reservado) as reservado,
+sum(x.atual_menos_reservado) as atual_menos_reservado,
+sum(x.atual_a_pagar) as atual_a_pagar,
+sum(x.atual_a_pagar_liquidado) as atual_a_pagar_liquidado,
+sum(x.empenhado_acumulado) as empenhado_acumulado,
+sum(x.anulado_acumulado) as anulado_acumulado,
+sum(x.liquidado_acumulado) as liquidado_acumulado,
+sum(x.pago_acumulado) as pago_acumulado,
+sum(x.suplementado_acumulado) as suplementado_acumulado,
+sum(x.reduzido_acumulado) as reduzido_acumulado,
+sum(x.proj) as proj,
+sum(x.ativ) as ativ,
+sum(x.oper) as oper,
+sum(x.ordinario) as ordinario,
+sum(x.vinculado) as vinculado,
+sum(x.suplemen) as suplemen,
+sum(x.suplemen_acumulado) as suplemen_acumulado,
+sum(x.especial) as especial,
+sum(x.especial_acumulado) as especial_acumulado,
+sum(x.reservado_manual_ate_data) as reservado_manual_ate_data,
+sum(x.reservado_automatico_ate_data) as reservado_automatico_ate_data,
+sum(x.reservado_ate_data) as reservado_ate_data
+";
+
+$group = "
+x.o58_orgao,
+x.o40_descr,
+x.o58_unidade,
+x.o41_descr,
+x.o58_funcao,
+x.o52_descr,
+x.o58_subfuncao,
+x.o53_descr,
+x.o58_programa,
+x.o54_descr,
+x.o58_projativ,
+x.o55_descr,
+x.o55_finali,
+x.o58_elemento,
+x.o56_descr,
+x.o58_coddot,
+oc.o15_recurso,
+x.o15_descr
+";
+
 if (substr($nivel,1,1) == 'A'){
   $completo = false;
   $nivela = substr($nivel,0,1);
@@ -92,16 +165,38 @@ if (substr($nivel,1,1) == 'A'){
   $anousu  = db_getsession("DB_anousu");
   $dataini = date("Y-m-d",db_getsession("DB_datausu"));
   $datafin = date("Y-m-d",db_getsession("DB_datausu"));
-  $result = db_dotacaosaldo($nivela,1,2,true,$sele_work,$anousu,$dataini,$datafin);
+  $sqlDados = db_dotacaosaldo($nivela,1,2,true,$sele_work,$anousu,$dataini,$datafin, 8, 0, true);
 
+  $whereFiltroRecurso = '';
+  if (!is_null($clselorcdotacao->recurso)) {
+      $whereFiltroRecurso = " where o58_codigo in  {$clselorcdotacao->recurso} ";
+  }
+
+    $sql = "
+        select {$campos}
+          from ($sqlDados) as x
+          join orctiporec oc on oc.o15_codigo = x.o58_codigo
+         {$whereFiltroRecurso}
+        group by {$group}
+    ";
+    $result = db_query($sql);
   if($formato_arq == 'C'){
      $fp = fopen("tmp/reldesp.csv","w");
-     fputs($fp,"Orgao;Unidade;Função,Subfunção,Projativ;Elemento;CodDot;Recurso;liqui acumulado;saldo\n");
+     /**
+      * Em caso de falha ao tentar abrir o arquivo para escrita
+      */
+     if ($fp === false) {
+       db_redireciona('db_erros.php?fechar=true&db_erro=Ocorreu um erro ao tentar gerar o relatório, por favor entre o contato com o suporte.');
+     }
+
+     fputs($fp,"Orgao;Unidade;Função;Subfunção;Projativ;Elemento;CodDot;Recurso;liqui acumulado;Reservado;saldo \n");
+
      while($ln = pg_fetch_array($result)){
+
         fputs($fp,$ln["o58_orgao"]." - ".$ln["o40_descr"].";".$ln["o58_unidade"]." - ".$ln["o41_descr"].";");
         fputs($fp,$ln["o58_funcao"]." - ".$ln["o52_descr"].";".$ln["o58_subfuncao"]." - ".$ln["o53_descr"].";");
         fputs($fp,$ln["o58_projativ"]." - ".$ln["o55_descr"].";".$ln["o58_elemento"]." - ".$ln["o56_descr"].";");
-        fputs($fp,$ln["o58_coddot"].";".$ln["o58_codigo"]." - ".$ln["o15_descr"].";".$ln["liquidado_acumulado"].";"
+        fputs($fp,$ln["o58_coddot"].";".$ln["o15_recurso"]." - ".$ln["o15_descr"].";".$ln["liquidado_acumulado"]."; {$ln["reservado"]} ; "
         .$ln["atual_menos_reservado"]."\n");
      }
      echo "<html><body bgcolor='#cccccc'><center><a href='tmp/reldesp.csv'>Clique para Salvar o arquivo <b>reldesp.csv</b></a></body></html>";
@@ -463,11 +558,11 @@ if (substr($nivel,1,1) == 'A'){
       	$totunidaatual += $atual_menos_reservado;
       }
     }
-    if($o58_codigo > 0){
+    if($o15_recurso > 0){
       $descr = $o56_descr;
       $pdf->cell(20,$alt,$o58_elemento,0,0,"L",0);
       $pdf->cell(80,$alt,$descr,0,0,"L",0);
-      $pdf->cell(10,$alt,db_formatar($o58_codigo,'s','0',4,'e'),0,0,"L",0);
+      $pdf->cell(10,$alt,$o15_recurso,0,0,"L",0);
       $pdf->cell(50,$alt,$o15_descr,0,0,"L",0);
       $pdf->cell(15,$alt,$o58_coddot."-".db_CalculaDV($o58_coddot),0,0,"R",0);
 
@@ -607,7 +702,17 @@ if (substr($nivel,1,1) == 'A'){
   $anousu  = db_getsession("DB_anousu");
   $dataini = db_getsession("DB_anousu")."-01-01";
   $datafin = date("Y-m-d",db_getsession("DB_datausu"));
-  $result = db_dotacaosaldo($nivela,3,2,true,$sele_work,$anousu,$dataini,$datafin);
+
+    $sqlDados = db_dotacaosaldo($nivela,3,2,true,$sele_work,$anousu,$dataini,$datafin, 8, 0, true);
+
+    $sql = "
+    select {$campos}
+      from ($sqlDados) as x
+     join orctiporec oc on oc.o15_codigo = x.o58_codigo
+   where o58_codigo in  (5010, 4641, 1)
+  group by {$group}
+  ";
+    $result = db_query($sql);
 
   $pdf = new PDF();
   $pdf->Open();
@@ -797,7 +902,7 @@ if (substr($nivel,1,1) == 'A'){
 	$totunidaatual += $atual_menos_reservado;
       }
       if($nivela == 8){
-	$pdf->cell(25,$alt,$o58_codigo,0,0,"L",0);
+	$pdf->cell(25,$alt, $o15_recurso,0,0,"L",0);
 	$pdf->cell(60,$alt,$o15_descr,0,0,"L",0);
 	$pdf->cell(90,$alt,'',0,0,"L",0);
 	$pdf->cell(25,$alt,db_formatar($dot_ini,'f'),0,0,"R",0);

@@ -1,44 +1,41 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
+define( "MENSAGENS_TRE4_LINHATRANSPORTE_RPC", 'educacao.transporteescolar.tre4_linhastransporte.' );
 
-require_once ("std/db_stdClass.php");
-require_once ("std/DBNumber.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/JSON.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ('libs/exceptions/DBException.php');
-require_once ('libs/exceptions/FileException.php');
-require_once ('libs/exceptions/BusinessException.php');
-require_once ('libs/exceptions/ParameterException.php');
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBNumber.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oJson  = new services_json();
 $oParam = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -48,7 +45,7 @@ $oRetorno->iStatus   = 1;
 $oRetorno->sMensagem = '';
 
 try {
-
+  db_inicio_transacao();
   switch ($oParam->sExecucao) {
 
     /**
@@ -63,8 +60,6 @@ try {
     case 'salvarLinha':
 
       if (isset($oParam->iCodigo) && isset($oParam->sNome)) {
-
-        db_inicio_transacao();
 
         $oLinhaTransporte = new LinhaTransporte($oParam->iCodigo);
         $oLinhaTransporte->setNome(db_stdClass::normalizeStringJsonEscapeString($oParam->sNome));
@@ -83,9 +78,7 @@ try {
         }
 
         $oRetorno->iCodigo   = $oLinhaTransporte->getCodigo();
-        $oRetorno->sMensagem = urlencode(_M('educacao.transporteescolar.tre4_linhastransporte.linha_salva'));
-
-        db_fim_transacao();
+        $oRetorno->sMensagem = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC .'linha_salva') );
       }
       break;
 
@@ -106,8 +99,6 @@ try {
 
       if (isset($oParam->iCodigoLinha) && isset($oParam->iCodigoBairroLogradouro) && isset($oParam->iTipo)) {
 
-        db_inicio_transacao();
-
         $oLinhaTransporte = new LinhaTransporte($oParam->iCodigoLinha);
         $oLinhaItinerario = new LinhaItinerario();
         $oLinhaItinerario->setLinhaTransporte($oLinhaTransporte);
@@ -125,9 +116,7 @@ try {
         $oLinhaItinerarioLogradouro->salvar();
 
         $oRetorno->iCodigoItinerario = $oLinhaItinerario->getCodigo();
-        $oRetorno->sMensagem         = urlencode(_M('educacao.transporteescolar.tre4_linhastransporte.itinerario_logradouro_salvo'));
-
-        db_fim_transacao();
+        $oRetorno->sMensagem         = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'itinerario_logradouro_salvo' ) );
       }
       break;
 
@@ -145,8 +134,6 @@ try {
 
       if (isset($oParam->sHoraPartida) && isset($oParam->sHoraChegada) && isset($oParam->iLinhaTransporte)) {
 
-        db_inicio_transacao();
-
         $oLinhaTransporte        = new LinhaTransporte($oParam->iLinhaTransporte);
         foreach ($oLinhaTransporte->getItinerarios() as $oLinhaItinerario) {
 
@@ -160,9 +147,7 @@ try {
           }
         }
 
-        $oRetorno->sMensagem = urlencode(_M('educacao.transporteescolar.tre4_linhastransporte.itinerario_horario_salvo'));
-
-        db_fim_transacao();
+        $oRetorno->sMensagem = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'itinerario_horario_salvo' ) );
       }
       break;
 
@@ -248,14 +233,10 @@ try {
 
       if (isset($oParam->iCodigoHorario)) {
 
-        db_inicio_transacao();
-
         $oLinhaItinerarioHorario = new LinhaItinerarioHorario($oParam->iCodigoHorario);
         $oLinhaItinerarioHorario->remover();
 
-        $oRetorno->sMensagem = urlencode(_M('educacao.transporteescolar.tre4_linhastransporte.itinerario_horario_removido'));
-
-        db_fim_transacao();
+        $oRetorno->sMensagem = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'itinerario_horario_removido' ) );
       }
       break;
 
@@ -267,14 +248,10 @@ try {
 
       if (isset($oParam->iCodigoLinhaLogradouro)) {
 
-        db_inicio_transacao();
-
         $oLinhaItinerarioLogradouro = new LinhaItinerarioLogradouro($oParam->iCodigoLinhaLogradouro);
         $oLinhaItinerarioLogradouro->remover();
 
-        $oRetorno->sMensagem = urlencode(_M('educacao.transporteescolar.tre4_linhastransporte.itinerario_logradouro_removido'));
-
-        db_fim_transacao();
+        $oRetorno->sMensagem = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'itinerario_logradouro_removido' ) );
       }
       break;
 
@@ -288,15 +265,11 @@ try {
 
       if (isset($oParam->iItinerarioLogradouro) && isset($oParam->iPontoParada)) {
 
-        db_inicio_transacao();
-
         $oLinhaItinerarioLogradouro = new LinhaItinerarioLogradouro($oParam->iItinerarioLogradouro);
 
         if ($oLinhaItinerarioLogradouro->adicionarPontoDeParada(new PontoParada($oParam->iPontoParada))) {
-          $oRetorno->sMensagem = urlencode(_M('educacao.transporteescolar.tre4_linhastransporte.vinculopontoparada_salvo'));
+          $oRetorno->sMensagem = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'vinculopontoparada_salvo' ) );
         }
-
-        db_fim_transacao();
       }
       break;
 
@@ -310,25 +283,32 @@ try {
 
       if (isset($oParam->iPontoParada)) {
 
-        db_inicio_transacao();
-
         //Validação para verificar se não existe aluno vinculado ao ponto.
         $oLinhaTransportePontoParadaAluno    = new cl_linhatransportepontoparadaaluno();
         $sWhere                              = "tre12_linhatransportepontoparada = {$oParam->iPontoParada}";
         $sSqlLinhaTransportePontoParadaAluno = $oLinhaTransportePontoParadaAluno->sql_query_file(null,
-                                                                                               'tre12_sequencial',
-                                                                                               'tre12_sequencial',
-                                                                                                $sWhere);
-        $oLinhaTransportePontoParadaAluno->sql_record($sSqlLinhaTransportePontoParadaAluno);
+                                                                                                 'tre12_sequencial',
+                                                                                                 'tre12_sequencial',
+                                                                                                 $sWhere);
 
-        if ($oLinhaTransportePontoParadaAluno->numrows == 0) {
+        $rsLinhaTransportePontoParadaAluno = db_query( $sSqlLinhaTransportePontoParadaAluno );
 
-          $oItinerarioPontoParada = new ItinerarioPontoParada($oParam->iPontoParada);
-          $oItinerarioPontoParada->remover();
-          $oRetorno->sMensagem = urlencode(_M('educacao.transporteescolar.tre4_linhastransporte.vinculopontoparada_excluido'));
+        if( !$rsLinhaTransportePontoParadaAluno ) {
+
+          $oErro        = new stdClass();
+          $oErro->sErro = pg_last_error();
+
+          throw new DBException( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'erro_buscar_vinculo_pontoparada', $oErro ) );
         }
 
-        db_fim_transacao();
+        if( pg_num_rows( $rsLinhaTransportePontoParadaAluno ) > 0 ) {
+          throw new BusinessException( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'aluno_vinculado' ) );
+        }
+
+        $oItinerarioPontoParada = new ItinerarioPontoParada($oParam->iPontoParada);
+        $oItinerarioPontoParada->remover();
+
+        $oRetorno->sMensagem = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'vinculopontoparada_excluido' ) );
       }
       break;
 
@@ -393,13 +373,13 @@ try {
         $oLinhaTransporte = new LinhaTransporte($oParam->iCodigoLinha);
         $oLinhaTransporte->remover();
 
-        $oRetorno->sMensagem = urlencode(_M('educacao.transporteescolar.tre4_linhastransporte.linha_transporte_removida'));
+        $oRetorno->sMensagem = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'linha_transporte_removida' ) );
       }
       break;
 
     case 'salvarReordenacaoItinerario':
 
-      db_inicio_transacao();
+
       if (is_array($oParam->aNovoItinerario)) {
 
         foreach ($oParam->aNovoItinerario as $oItinerarioOrdenado) {
@@ -411,35 +391,25 @@ try {
 
       }
 
-      $oRetorno->sMensagem = urlencode('Itinerário reordenado com sucesso.');
-      db_fim_transacao(false);
+      $oRetorno->sMensagem = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'itinerario_reordenado' ) );
+      break;
+
+    case 'gerarRetorno':
+
+      $oLinhaTransporte = new LinhaTransporte($oParam->iCodigoLinha);
+      $oLinhaTransporte->gerarRetorno();
+
+      $oRetorno->sMensagem = urlencode( _M( MENSAGENS_TRE4_LINHATRANSPORTE_RPC . 'retorno_gerado')  );
+
       break;
   }
-} catch (BusinessException $eBusinnesException) {
-
-  $oRetorno->iStatus   = 2;
-  $oRetorno->sMensagem = urlencode($eBusinnesException->getMessage());
-  db_fim_transacao(true);
-} catch (DBException $eDBException) {
-
-  $oRetorno->iStatus   = 2;
-  $oRetorno->sMensagem = urlencode($eDBException->getMessage());
-  db_fim_transacao(true);
-} catch (ParameterException $eParameterException) {
-
-  $oRetorno->iStatus   = 2;
-  $oRetorno->sMensagem = urlencode($eParameterException->getMessage());
-  db_fim_transacao(true);
-} catch (FileException $eFileException) {
-
-  $oRetorno->iStatus   = 2;
-  $oRetorno->sMensagem = urlencode($eFileException->getMessage());
-  db_fim_transacao(true);
+  db_fim_transacao();
 } catch (Exception $eException) {
 
   $oRetorno->iStatus   = 2;
   $oRetorno->sMensagem = urlencode($eException->getMessage());
   db_fim_transacao(true);
 }
+
+$oRetorno->erro = $oRetorno->iStatus == 2;
 echo $oJson->encode($oRetorno);
-?>

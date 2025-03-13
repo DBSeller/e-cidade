@@ -1,97 +1,78 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
+<?php
 
-//MODULO: farmacia
-//CLASSE DA ENTIDADE far_retirada
-class cl_far_retirada { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $fa04_i_codigo = 0; 
-   var $fa04_c_numeroreceita = null; 
-   var $fa04_d_dtvalidade_dia = null; 
-   var $fa04_d_dtvalidade_mes = null; 
-   var $fa04_d_dtvalidade_ano = null; 
-   var $fa04_d_dtvalidade = null; 
-   var $fa04_i_unidades = 0; 
-   var $fa04_i_cgsund = 0; 
-   var $fa04_i_tiporeceita = 0; 
-   var $fa04_i_dbusuario = 0; 
-   var $fa04_d_data_dia = null; 
-   var $fa04_d_data_mes = null; 
-   var $fa04_d_data_ano = null; 
-   var $fa04_d_data = null; 
-   var $fa04_i_profissional = 0; 
-   var $fa04_i_receita = 0; 
-   var $fa04_tiporetirada = 0; 
-   var $fa04_numeronotificacao = 0; 
-   // cria propriedade com as variaveis do arquivo 
-   var $campos = "
-                 fa04_i_codigo = int4 = Retirada 
-                 fa04_c_numeroreceita = char(10) = Número receita 
-                 fa04_d_dtvalidade = date = Data validade 
-                 fa04_i_unidades = int4 = Unidades 
-                 fa04_i_cgsund = int4 = CGS 
-                 fa04_i_tiporeceita = int4 = Tipo receita 
-                 fa04_i_dbusuario = int4 = Usuario 
-                 fa04_d_data = date = Data 
-                 fa04_i_profissional = int4 = Profissional 
-                 fa04_i_receita = int4 = Receita 
-                 fa04_tiporetirada = int4 = Tipo de Retirada 
-                 fa04_numeronotificacao = int8 = Número de Notificação 
+class cl_far_retirada
+{
+   // cria variaveis de erro
+    public $rotulo = null;
+    public $query_sql = null;
+    public $numrows = 0;
+    public $numrows_incluir = 0;
+    public $numrows_alterar = 0;
+    public $numrows_excluir = 0;
+    public $erro_status = null;
+    public $erro_sql = null;
+    public $erro_banco = null;
+    public $erro_msg = null;
+    public $erro_campo = null;
+    public $pagina_retorno = null;
+    /* Variáveis do Arquivo */
+    public $fa04_i_codigo = 0;
+    public $fa04_c_numeroreceita = null;
+    public $fa04_d_dtvalidade_dia = null;
+    public $fa04_d_dtvalidade_mes = null;
+    public $fa04_d_dtvalidade_ano = null;
+    public $fa04_d_dtvalidade = null;
+    public $fa04_i_unidades = 0;
+    public $fa04_i_cgsund = 0;
+    public $fa04_i_tiporeceita = 0;
+    public $fa04_i_dbusuario = 0;
+    public $fa04_d_data_dia = null;
+    public $fa04_d_data_mes = null;
+    public $fa04_d_data_ano = null;
+    public $fa04_d_data = null;
+    public $fa04_i_profissional = 0;
+    public $fa04_i_receita = 0;
+    public $fa04_tiporetirada = 0;
+    public $fa04_numeronotificacao = 0;
+    public $fa04_data_prescricao_dia = null;
+    public $fa04_data_prescricao_mes = null;
+    public $fa04_data_prescricao_ano = null;
+    public $fa04_data_prescricao = null;
+   // cria propriedade com as variaveis do arquivo
+    public $campos = "
+                 fa04_i_codigo = int4 = Retirada
+                 fa04_c_numeroreceita = char(10) = Número receita
+                 fa04_d_dtvalidade = date = Data validade
+                 fa04_i_unidades = int4 = Unidades
+                 fa04_i_cgsund = int4 = CGS
+                 fa04_i_tiporeceita = int4 = Tipo receita
+                 fa04_i_dbusuario = int4 = Usuario
+                 fa04_d_data = date = Data
+                 fa04_i_profissional = int4 = Profissional
+                 fa04_i_receita = int4 = Receita
+                 fa04_tiporetirada = int4 = Tipo de Retirada
+                 fa04_numeronotificacao = int8 = Número de Notificação
+                 fa04_data_prescricao = date = Data Prescrição
                  ";
-   //funcao construtor da classe 
-   function cl_far_retirada() { 
-     //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("far_retirada"); 
-     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+
+    public function __construct()
+    {
+        $this->rotulo = new rotulo("far_retirada");
+        $this->pagina_retorno = basename($_SERVER['PHP_SELF']);
+    }
+
+    public function erro($mostra, $retorna)
+    {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
-        echo "<script>alert(\"".$this->erro_msg."\");</script>";
+        echo "<script>alert(\"".$this->erro_msg."\")</script>";
         if($retorna==true){
            echo "<script>location.href='".$this->pagina_retorno."'</script>";
         }
      }
    }
-   // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+
+    public function atualizacampos($exclusao = false)
+    {
      if($exclusao==false){
        $this->fa04_i_codigo = ($this->fa04_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["fa04_i_codigo"]:$this->fa04_i_codigo);
        $this->fa04_c_numeroreceita = ($this->fa04_c_numeroreceita == ""?@$GLOBALS["HTTP_POST_VARS"]["fa04_c_numeroreceita"]:$this->fa04_c_numeroreceita);
@@ -119,18 +100,27 @@ class cl_far_retirada {
        $this->fa04_i_receita = ($this->fa04_i_receita == ""?@$GLOBALS["HTTP_POST_VARS"]["fa04_i_receita"]:$this->fa04_i_receita);
        $this->fa04_tiporetirada = ($this->fa04_tiporetirada == ""?@$GLOBALS["HTTP_POST_VARS"]["fa04_tiporetirada"]:$this->fa04_tiporetirada);
        $this->fa04_numeronotificacao = ($this->fa04_numeronotificacao == ""?@$GLOBALS["HTTP_POST_VARS"]["fa04_numeronotificacao"]:$this->fa04_numeronotificacao);
+       if($this->fa04_data_prescricao == ""){
+         $this->fa04_data_prescricao_dia = ($this->fa04_data_prescricao_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["fa04_data_prescricao_dia"]:$this->fa04_data_prescricao_dia);
+         $this->fa04_data_prescricao_mes = ($this->fa04_data_prescricao_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["fa04_data_prescricao_mes"]:$this->fa04_data_prescricao_mes);
+         $this->fa04_data_prescricao_ano = ($this->fa04_data_prescricao_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["fa04_data_prescricao_ano"]:$this->fa04_data_prescricao_ano);
+         if($this->fa04_data_prescricao_dia != ""){
+            $this->fa04_data_prescricao = $this->fa04_data_prescricao_ano."-".$this->fa04_data_prescricao_mes."-".$this->fa04_data_prescricao_dia;
+         }
+       }
      }else{
        $this->fa04_i_codigo = ($this->fa04_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["fa04_i_codigo"]:$this->fa04_i_codigo);
      }
    }
-   // funcao para inclusao
-   function incluir ($fa04_i_codigo){ 
+
+    public function incluir($fa04_i_codigo)
+    {
       $this->atualizacampos();
-     if($this->fa04_d_dtvalidade == null ){ 
+     if($this->fa04_d_dtvalidade == null ){
        $this->fa04_d_dtvalidade = "null";
      }
-     if($this->fa04_i_unidades == null ){ 
-       $this->erro_sql = " Campo Unidades nao Informado.";
+     if($this->fa04_i_unidades == null ){
+       $this->erro_sql = " Campo Unidades não informado.";
        $this->erro_campo = "fa04_i_unidades";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -138,8 +128,8 @@ class cl_far_retirada {
        $this->erro_status = "0";
        return false;
      }
-     if($this->fa04_i_cgsund == null ){ 
-       $this->erro_sql = " Campo CGS nao Informado.";
+     if($this->fa04_i_cgsund == null ){
+       $this->erro_sql = " Campo CGS não informado.";
        $this->erro_campo = "fa04_i_cgsund";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -147,8 +137,8 @@ class cl_far_retirada {
        $this->erro_status = "0";
        return false;
      }
-     if($this->fa04_i_tiporeceita == null ){ 
-       $this->erro_sql = " Campo Tipo receita nao Informado.";
+     if($this->fa04_i_tiporeceita == null ){
+       $this->erro_sql = " Campo Tipo receita não informado.";
        $this->erro_campo = "fa04_i_tiporeceita";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -156,8 +146,8 @@ class cl_far_retirada {
        $this->erro_status = "0";
        return false;
      }
-     if($this->fa04_i_dbusuario == null ){ 
-       $this->erro_sql = " Campo Usuario nao Informado.";
+     if($this->fa04_i_dbusuario == null ){
+       $this->erro_sql = " Campo Usuario não informado.";
        $this->erro_campo = "fa04_i_dbusuario";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -165,8 +155,8 @@ class cl_far_retirada {
        $this->erro_status = "0";
        return false;
      }
-     if($this->fa04_d_data == null ){ 
-       $this->erro_sql = " Campo Data nao Informado.";
+     if($this->fa04_d_data == null ){
+       $this->erro_sql = " Campo Data não informado.";
        $this->erro_campo = "fa04_d_data_dia";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -174,14 +164,14 @@ class cl_far_retirada {
        $this->erro_status = "0";
        return false;
      }
-     if($this->fa04_i_profissional == null ){ 
+     if($this->fa04_i_profissional == null ){
        $this->fa04_i_profissional = "null";
      }
-     if($this->fa04_i_receita == null ){ 
+     if($this->fa04_i_receita == null ){
        $this->fa04_i_receita = "null";
      }
-     if($this->fa04_tiporetirada == null ){ 
-       $this->erro_sql = " Campo Tipo de Retirada nao Informado.";
+     if($this->fa04_tiporetirada == null ){
+       $this->erro_sql = " Campo Tipo de Retirada não informado.";
        $this->erro_campo = "fa04_tiporetirada";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -189,20 +179,23 @@ class cl_far_retirada {
        $this->erro_status = "0";
        return false;
      }
-     if($this->fa04_numeronotificacao == null ){ 
+     if($this->fa04_numeronotificacao == null ){
        $this->fa04_numeronotificacao = "0";
      }
+     if($this->fa04_data_prescricao == null ){
+       $this->fa04_data_prescricao = "null";
+     }
      if($fa04_i_codigo == "" || $fa04_i_codigo == null ){
-       $result = db_query("select nextval('farretirada_fa04_i_codigo_seq')"); 
+       $result = db_query("select nextval('farretirada_fa04_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: farretirada_fa04_i_codigo_seq do campo: fa04_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: farretirada_fa04_i_codigo_seq do campo: fa04_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->fa04_i_codigo = pg_result($result,0,0); 
+       $this->fa04_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from farretirada_fa04_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $fa04_i_codigo)){
@@ -213,11 +206,11 @@ class cl_far_retirada {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->fa04_i_codigo = $fa04_i_codigo; 
+         $this->fa04_i_codigo = $fa04_i_codigo;
        }
      }
-     if(($this->fa04_i_codigo == null) || ($this->fa04_i_codigo == "") ){ 
-       $this->erro_sql = " Campo fa04_i_codigo nao declarado.";
+     if(($this->fa04_i_codigo == null) || ($this->fa04_i_codigo == "") ){
+       $this->erro_sql = " Campo fa04_i_codigo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -225,43 +218,45 @@ class cl_far_retirada {
        return false;
      }
      $sql = "insert into far_retirada(
-                                       fa04_i_codigo 
-                                      ,fa04_c_numeroreceita 
-                                      ,fa04_d_dtvalidade 
-                                      ,fa04_i_unidades 
-                                      ,fa04_i_cgsund 
-                                      ,fa04_i_tiporeceita 
-                                      ,fa04_i_dbusuario 
-                                      ,fa04_d_data 
-                                      ,fa04_i_profissional 
-                                      ,fa04_i_receita 
-                                      ,fa04_tiporetirada 
-                                      ,fa04_numeronotificacao 
+                                       fa04_i_codigo
+                                      ,fa04_c_numeroreceita
+                                      ,fa04_d_dtvalidade
+                                      ,fa04_i_unidades
+                                      ,fa04_i_cgsund
+                                      ,fa04_i_tiporeceita
+                                      ,fa04_i_dbusuario
+                                      ,fa04_d_data
+                                      ,fa04_i_profissional
+                                      ,fa04_i_receita
+                                      ,fa04_tiporetirada
+                                      ,fa04_numeronotificacao
+                                      ,fa04_data_prescricao
                        )
                 values (
-                                $this->fa04_i_codigo 
-                               ,'$this->fa04_c_numeroreceita' 
-                               ,".($this->fa04_d_dtvalidade == "null" || $this->fa04_d_dtvalidade == ""?"null":"'".$this->fa04_d_dtvalidade."'")." 
-                               ,$this->fa04_i_unidades 
-                               ,$this->fa04_i_cgsund 
-                               ,$this->fa04_i_tiporeceita 
-                               ,$this->fa04_i_dbusuario 
-                               ,".($this->fa04_d_data == "null" || $this->fa04_d_data == ""?"null":"'".$this->fa04_d_data."'")." 
-                               ,$this->fa04_i_profissional 
-                               ,$this->fa04_i_receita 
-                               ,$this->fa04_tiporetirada 
-                               ,$this->fa04_numeronotificacao 
+                                $this->fa04_i_codigo
+                               ,'$this->fa04_c_numeroreceita'
+                               ,".($this->fa04_d_dtvalidade == "null" || $this->fa04_d_dtvalidade == ""?"null":"'".$this->fa04_d_dtvalidade."'")."
+                               ,$this->fa04_i_unidades
+                               ,$this->fa04_i_cgsund
+                               ,$this->fa04_i_tiporeceita
+                               ,$this->fa04_i_dbusuario
+                               ,".($this->fa04_d_data == "null" || $this->fa04_d_data == ""?"null":"'".$this->fa04_d_data."'")."
+                               ,$this->fa04_i_profissional
+                               ,$this->fa04_i_receita
+                               ,$this->fa04_tiporetirada
+                               ,$this->fa04_numeronotificacao
+                               ,".($this->fa04_data_prescricao == "null" || $this->fa04_data_prescricao == ""?"null":"'".$this->fa04_data_prescricao."'")."
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "far_retirada ($this->fa04_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "far_retirada ($this->fa04_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "far_retirada já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "far_retirada ($this->fa04_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "far_retirada ($this->fa04_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -270,7 +265,7 @@ class cl_far_retirada {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->fa04_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -299,20 +294,22 @@ class cl_far_retirada {
          $resac = db_query("insert into db_acount values($acount,2106,17754,'','".AddSlashes(pg_result($resaco,0,'fa04_i_receita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,2106,18106,'','".AddSlashes(pg_result($resaco,0,'fa04_tiporetirada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,2106,20167,'','".AddSlashes(pg_result($resaco,0,'fa04_numeronotificacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2106,1014575,'','".AddSlashes(pg_result($resaco,0,'fa04_data_prescricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
-   } 
-   // funcao para alteracao
-   function alterar ($fa04_i_codigo=null) { 
+   }
+
+    public function alterar($fa04_i_codigo=null)
+    {
       $this->atualizacampos();
      $sql = " update far_retirada set ";
      $virgula = "";
-     if(trim($this->fa04_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_codigo"])){ 
+     if(trim($this->fa04_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_codigo"])){
        $sql  .= $virgula." fa04_i_codigo = $this->fa04_i_codigo ";
        $virgula = ",";
-       if(trim($this->fa04_i_codigo) == null ){ 
-         $this->erro_sql = " Campo Retirada nao Informado.";
+       if(trim($this->fa04_i_codigo) == null ){
+         $this->erro_sql = " Campo Retirada não informado.";
          $this->erro_campo = "fa04_i_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -321,24 +318,24 @@ class cl_far_retirada {
          return false;
        }
      }
-     if(trim($this->fa04_c_numeroreceita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_c_numeroreceita"])){ 
+     if(trim($this->fa04_c_numeroreceita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_c_numeroreceita"])){
        $sql  .= $virgula." fa04_c_numeroreceita = '$this->fa04_c_numeroreceita' ";
        $virgula = ",";
      }
-     if(trim($this->fa04_d_dtvalidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_dtvalidade_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["fa04_d_dtvalidade_dia"] !="") ){ 
+     if(trim($this->fa04_d_dtvalidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_dtvalidade_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["fa04_d_dtvalidade_dia"] !="") ){
        $sql  .= $virgula." fa04_d_dtvalidade = '$this->fa04_d_dtvalidade' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_dtvalidade_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_dtvalidade_dia"])){
          $sql  .= $virgula." fa04_d_dtvalidade = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->fa04_i_unidades)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_unidades"])){ 
+     if(trim($this->fa04_i_unidades)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_unidades"])){
        $sql  .= $virgula." fa04_i_unidades = $this->fa04_i_unidades ";
        $virgula = ",";
-       if(trim($this->fa04_i_unidades) == null ){ 
-         $this->erro_sql = " Campo Unidades nao Informado.";
+       if(trim($this->fa04_i_unidades) == null ){
+         $this->erro_sql = " Campo Unidades não informado.";
          $this->erro_campo = "fa04_i_unidades";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -347,11 +344,11 @@ class cl_far_retirada {
          return false;
        }
      }
-     if(trim($this->fa04_i_cgsund)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_cgsund"])){ 
+     if(trim($this->fa04_i_cgsund)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_cgsund"])){
        $sql  .= $virgula." fa04_i_cgsund = $this->fa04_i_cgsund ";
        $virgula = ",";
-       if(trim($this->fa04_i_cgsund) == null ){ 
-         $this->erro_sql = " Campo CGS nao Informado.";
+       if(trim($this->fa04_i_cgsund) == null ){
+         $this->erro_sql = " Campo CGS não informado.";
          $this->erro_campo = "fa04_i_cgsund";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -360,11 +357,11 @@ class cl_far_retirada {
          return false;
        }
      }
-     if(trim($this->fa04_i_tiporeceita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_tiporeceita"])){ 
+     if(trim($this->fa04_i_tiporeceita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_tiporeceita"])){
        $sql  .= $virgula." fa04_i_tiporeceita = $this->fa04_i_tiporeceita ";
        $virgula = ",";
-       if(trim($this->fa04_i_tiporeceita) == null ){ 
-         $this->erro_sql = " Campo Tipo receita nao Informado.";
+       if(trim($this->fa04_i_tiporeceita) == null ){
+         $this->erro_sql = " Campo Tipo receita não informado.";
          $this->erro_campo = "fa04_i_tiporeceita";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -373,11 +370,11 @@ class cl_far_retirada {
          return false;
        }
      }
-     if(trim($this->fa04_i_dbusuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_dbusuario"])){ 
+     if(trim($this->fa04_i_dbusuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_dbusuario"])){
        $sql  .= $virgula." fa04_i_dbusuario = $this->fa04_i_dbusuario ";
        $virgula = ",";
-       if(trim($this->fa04_i_dbusuario) == null ){ 
-         $this->erro_sql = " Campo Usuario nao Informado.";
+       if(trim($this->fa04_i_dbusuario) == null ){
+         $this->erro_sql = " Campo Usuario não informado.";
          $this->erro_campo = "fa04_i_dbusuario";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -386,11 +383,11 @@ class cl_far_retirada {
          return false;
        }
      }
-     if(trim($this->fa04_d_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["fa04_d_data_dia"] !="") ){ 
+     if(trim($this->fa04_d_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["fa04_d_data_dia"] !="") ){
        $sql  .= $virgula." fa04_d_data = '$this->fa04_d_data' ";
        $virgula = ",";
-       if(trim($this->fa04_d_data) == null ){ 
-         $this->erro_sql = " Campo Data nao Informado.";
+       if(trim($this->fa04_d_data) == null ){
+         $this->erro_sql = " Campo Data não informado.";
          $this->erro_campo = "fa04_d_data_dia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -398,12 +395,12 @@ class cl_far_retirada {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_data_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_data_dia"])){
          $sql  .= $virgula." fa04_d_data = null ";
          $virgula = ",";
-         if(trim($this->fa04_d_data) == null ){ 
-           $this->erro_sql = " Campo Data nao Informado.";
+         if(trim($this->fa04_d_data) == null ){
+           $this->erro_sql = " Campo Data não informado.";
            $this->erro_campo = "fa04_d_data_dia";
            $this->erro_banco = "";
            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -413,25 +410,25 @@ class cl_far_retirada {
          }
        }
      }
-     if(trim($this->fa04_i_profissional)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_profissional"])){ 
-        if(trim($this->fa04_i_profissional)=="" && isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_profissional"])){ 
-           $this->fa04_i_profissional = "null" ; 
-        } 
+     if(trim($this->fa04_i_profissional)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_profissional"])){
+        if(trim($this->fa04_i_profissional)=="" && isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_profissional"])){
+           $this->fa04_i_profissional = "null" ;
+        }
        $sql  .= $virgula." fa04_i_profissional = $this->fa04_i_profissional ";
        $virgula = ",";
      }
-     if(trim($this->fa04_i_receita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_receita"])){ 
-        if(trim($this->fa04_i_receita)=="" && isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_receita"])){ 
-           $this->fa04_i_receita = "0" ; 
-        } 
+     if(trim($this->fa04_i_receita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_receita"])){
+        if(trim($this->fa04_i_receita)=="" && isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_receita"])){
+           $this->fa04_i_receita = "0" ;
+        }
        $sql  .= $virgula." fa04_i_receita = $this->fa04_i_receita ";
        $virgula = ",";
      }
-     if(trim($this->fa04_tiporetirada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_tiporetirada"])){ 
+     if(trim($this->fa04_tiporetirada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_tiporetirada"])){
        $sql  .= $virgula." fa04_tiporetirada = $this->fa04_tiporetirada ";
        $virgula = ",";
-       if(trim($this->fa04_tiporetirada) == null ){ 
-         $this->erro_sql = " Campo Tipo de Retirada nao Informado.";
+       if(trim($this->fa04_tiporetirada) == null ){
+         $this->erro_sql = " Campo Tipo de Retirada não informado.";
          $this->erro_campo = "fa04_tiporetirada";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -440,12 +437,21 @@ class cl_far_retirada {
          return false;
        }
      }
-     if(trim($this->fa04_numeronotificacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_numeronotificacao"])){ 
-        if(trim($this->fa04_numeronotificacao)=="" && isset($GLOBALS["HTTP_POST_VARS"]["fa04_numeronotificacao"])){ 
-           $this->fa04_numeronotificacao = "0" ; 
-        } 
+     if(trim($this->fa04_numeronotificacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_numeronotificacao"])){
+        if(trim($this->fa04_numeronotificacao)=="" && isset($GLOBALS["HTTP_POST_VARS"]["fa04_numeronotificacao"])){
+           $this->fa04_numeronotificacao = "0" ;
+        }
        $sql  .= $virgula." fa04_numeronotificacao = $this->fa04_numeronotificacao ";
        $virgula = ",";
+     }
+     if(trim($this->fa04_data_prescricao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa04_data_prescricao_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["fa04_data_prescricao_dia"] !="") ){
+       $sql  .= $virgula." fa04_data_prescricao = '$this->fa04_data_prescricao' ";
+       $virgula = ",";
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_data_prescricao_dia"])){
+         $sql  .= $virgula." fa04_data_prescricao = null ";
+         $virgula = ",";
+       }
      }
      $sql .= " where ";
      if($fa04_i_codigo!=null){
@@ -456,84 +462,86 @@ class cl_far_retirada {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->fa04_i_codigo));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,12143,'$this->fa04_i_codigo','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_codigo"]) || $this->fa04_i_codigo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_codigo"]) || $this->fa04_i_codigo != "")
              $resac = db_query("insert into db_acount values($acount,2106,12143,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_codigo'))."','$this->fa04_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_c_numeroreceita"]) || $this->fa04_c_numeroreceita != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_c_numeroreceita"]) || $this->fa04_c_numeroreceita != "")
              $resac = db_query("insert into db_acount values($acount,2106,12144,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_c_numeroreceita'))."','$this->fa04_c_numeroreceita',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_dtvalidade"]) || $this->fa04_d_dtvalidade != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_dtvalidade"]) || $this->fa04_d_dtvalidade != "")
              $resac = db_query("insert into db_acount values($acount,2106,12147,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_d_dtvalidade'))."','$this->fa04_d_dtvalidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_unidades"]) || $this->fa04_i_unidades != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_unidades"]) || $this->fa04_i_unidades != "")
              $resac = db_query("insert into db_acount values($acount,2106,12148,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_unidades'))."','$this->fa04_i_unidades',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_cgsund"]) || $this->fa04_i_cgsund != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_cgsund"]) || $this->fa04_i_cgsund != "")
              $resac = db_query("insert into db_acount values($acount,2106,12149,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_cgsund'))."','$this->fa04_i_cgsund',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_tiporeceita"]) || $this->fa04_i_tiporeceita != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_tiporeceita"]) || $this->fa04_i_tiporeceita != "")
              $resac = db_query("insert into db_acount values($acount,2106,12150,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_tiporeceita'))."','$this->fa04_i_tiporeceita',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_dbusuario"]) || $this->fa04_i_dbusuario != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_dbusuario"]) || $this->fa04_i_dbusuario != "")
              $resac = db_query("insert into db_acount values($acount,2106,12187,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_dbusuario'))."','$this->fa04_i_dbusuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_data"]) || $this->fa04_d_data != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_data"]) || $this->fa04_d_data != "")
              $resac = db_query("insert into db_acount values($acount,2106,12186,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_d_data'))."','$this->fa04_d_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_profissional"]) || $this->fa04_i_profissional != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_profissional"]) || $this->fa04_i_profissional != "")
              $resac = db_query("insert into db_acount values($acount,2106,12188,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_profissional'))."','$this->fa04_i_profissional',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_receita"]) || $this->fa04_i_receita != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_receita"]) || $this->fa04_i_receita != "")
              $resac = db_query("insert into db_acount values($acount,2106,17754,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_receita'))."','$this->fa04_i_receita',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_tiporetirada"]) || $this->fa04_tiporetirada != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_tiporetirada"]) || $this->fa04_tiporetirada != "")
              $resac = db_query("insert into db_acount values($acount,2106,18106,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_tiporetirada'))."','$this->fa04_tiporetirada',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_numeronotificacao"]) || $this->fa04_numeronotificacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_numeronotificacao"]) || $this->fa04_numeronotificacao != "")
              $resac = db_query("insert into db_acount values($acount,2106,20167,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_numeronotificacao'))."','$this->fa04_numeronotificacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa04_data_prescricao"]) || $this->fa04_data_prescricao != "")
+             $resac = db_query("insert into db_acount values($acount,2106,1014575,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_data_prescricao'))."','$this->fa04_data_prescricao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) {
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "far_retirada nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "far_retirada não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->fa04_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "far_retirada nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "far_retirada não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->fa04_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->fa04_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($fa04_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
 
+    public function excluir($fa04_i_codigo=null, $dbwhere = null)
+    {
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($fa04_i_codigo));
-       } else { 
+       } else {
          $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
        }
        if (($resaco != false) || ($this->numrows!=0)) {
@@ -556,58 +564,60 @@ class cl_far_retirada {
            $resac  = db_query("insert into db_acount values($acount,2106,17754,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_receita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,2106,18106,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_tiporetirada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,2106,20167,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_numeronotificacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2106,1014575,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_data_prescricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from far_retirada
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($fa04_i_codigo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($fa04_i_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " fa04_i_codigo = $fa04_i_codigo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) {
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "far_retirada nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "far_retirada não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$fa04_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "far_retirada nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "far_retirada não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$fa04_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$fa04_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+
+    public function sql_record($sql)
+    {
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -616,8 +626,8 @@ class cl_far_retirada {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:far_retirada";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -627,20 +637,11 @@ class cl_far_retirada {
       }
      return $result;
    }
-   // funcao do sql 
-function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from far_retirada ";
+
+    public function sql_query($fa04_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos}";
+     $sql .= "  from far_retirada ";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = far_retirada.fa04_i_dbusuario";
      $sql .= "      inner join far_tiporeceita  on  far_tiporeceita.fa03_i_codigo = far_retirada.fa04_i_tiporeceita";
      $sql .= "      inner join unidades  on  unidades.sd02_i_codigo = far_retirada.fa04_i_unidades";
@@ -666,64 +667,44 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     // $sql .= "      inner join familiamicroarea  on  familiamicroarea.sd35_i_codigo = cgs_und.z01_i_familiamicroarea";
     // $sql .= "      inner join cgs  as b on   b.z01_i_numcgs = cgs_und.z01_i_cgsund";
      $sql2 = "";
-     if($dbwhere==""){
-       if($fa04_i_codigo!=null ){
-         $sql2 .= " where far_retirada.fa04_i_codigo = $fa04_i_codigo "; 
-       } 
-     }else if($dbwhere != ""){
+     if (empty($dbwhere)) {
+       if (!empty($fa04_i_codigo)) {
+         $sql2 .= " where far_retirada.fa04_i_codigo = $fa04_i_codigo ";
+       }
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from far_retirada ";
+
+    public function sql_query_file($fa04_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from far_retirada ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($fa04_i_codigo!=null ){
-         $sql2 .= " where far_retirada.fa04_i_codigo = $fa04_i_codigo "; 
-       } 
-     }else if($dbwhere != ""){
+     if (empty($dbwhere)) {
+       if (!empty($fa04_i_codigo)){
+         $sql2 .= " where far_retirada.fa04_i_codigo = $fa04_i_codigo ";
+       }
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-  function sql_query_retiradas ($fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
-  
+
+  public function sql_query_retiradas ($fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -744,25 +725,25 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
       if($fa04_i_codigo!=null ){
         $sql2 .= " where far_retirada.fa04_i_codigo = $fa04_i_codigo ";
       }
-      }else if($dbwhere != ""){
-          $sql2 = " where $dbwhere";
-          }
-          $sql .= $sql2;
-          if($ordem != null ){
-            $sql .= " order by ";
-            $campos_sql = split("#",$ordem);
-            $virgula = "";
-            for($i=0;$i<sizeof($campos_sql);$i++){
-              $sql .= $virgula.$campos_sql[$i];
-              $virgula = ",";
-            }
-          }
-          return $sql;
-  }
-  function sql_query_nova ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = explode("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+ }
+ public function sql_query_nova ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -775,47 +756,47 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = far_retirada.fa04_i_dbusuario";
     $sql .= "      inner join far_tiporeceita  on  far_tiporeceita.fa03_i_codigo = far_retirada.fa04_i_tiporeceita";
     $sql .= "      inner join unidades  on  unidades.sd02_i_codigo = far_retirada.fa04_i_unidades";
-    $sql .= "      left  join medicos  on  medicos.sd03_i_codigo = far_retirada.fa04_i_profissional";
-    $sql .= "      left  join cgm  on  cgm.z01_numcgm = medicos.sd03_i_cgm";
+    $sql .= "      left join medicos  on  medicos.sd03_i_codigo = far_retirada.fa04_i_profissional";
+    $sql .= "      left join cgm  on  cgm.z01_numcgm = medicos.sd03_i_cgm";
     $sql .= "      inner join cgs_und  on  cgs_und.z01_i_cgsund = far_retirada.fa04_i_cgsund";
-    $sql .= "      left  join far_retiradarequisitante  on  far_retiradarequisitante.fa08_i_retirada = far_retirada.fa04_i_codigo";
-    $sql .= "      left  join cgs_und b  on b.z01_i_cgsund= far_retiradarequisitante.fa08_i_codigo";
-    $sql .= "      left  join far_retiradarequi  on far_retiradarequi.fa07_i_retirada= far_retirada.fa04_i_codigo";
+    $sql .= "      left join far_retiradarequisitante  on  far_retiradarequisitante.fa08_i_retirada = far_retirada.fa04_i_codigo";
+    $sql .= "      left join cgs_und b  on b.z01_i_cgsund= far_retiradarequisitante.fa08_i_codigo";
+    $sql .= "      left join far_retiradarequi  on far_retiradarequi.fa07_i_retirada= far_retirada.fa04_i_codigo";
     $sql .= "      inner join db_depart  on  db_depart.coddepto = unidades.sd02_i_codigo";
     $sql2 = "";
     if($dbwhere==""){
       if($fa04_i_codigo!=null ){
         $sql2 .= " where far_retirada.fa04_i_codigo = $fa04_i_codigo ";
       }
-      }else if($dbwhere != ""){
-          $sql2 = " where $dbwhere";
-          }
-          $sql .= $sql2;
-          if($ordem != null ){
-            $sql .= " order by ";
-            $campos_sql = split("#",$ordem);
-            $virgula = "";
-            for($i=0;$i<sizeof($campos_sql);$i++){
-              $sql .= $virgula.$campos_sql[$i];
-              $virgula = ",";
-            }
-          }
-          return $sql;
-  }
-   function sql_query_geral($iFa04_i_codigo=null, $sCampos="*", $sOrdem=null, $sWhere="") { 
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = explode("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+ }
+  public function sql_query_geral($iFa04_i_codigo=null, $sCampos="*", $sOrdem=null, $sWhere="") {
 
     $sSql = "select ";
     if ($sCampos != "*" ) {
-    
-      $sCampos_sql = split("#", $sCampos);
+
+      $sCampos_sql = explode("#", $sCampos);
       $sVirgula    = "";
       for ($i = 0; $i < sizeof($sCampos_sql); $i++) {
-    
+
         $sSql    .= $sVirgula.$sCampos_sql[$i];
         $sVirgula = ",";
-      
+
       }
-      
+
     } else {
       $sSql .= $sCampos;
     }
@@ -853,7 +834,7 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     if ($sWhere == "") {
 
       if ($iFa04_i_codigo!=null ) {
-        $sSql2 .= " where far_retirada.fa04_i_codigo = $iFa04_i_codigo "; 
+        $sSql2 .= " where far_retirada.fa04_i_codigo = $iFa04_i_codigo ";
       }
 
     } elseif ($sWhere != "") {
@@ -863,23 +844,23 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     if ($sOrdem != null ) {
 
       $sSql        .= " order by ";
-      $sCampos_sql  = split("#",$sOrdem);
+      $sCampos_sql  = explode("#",$sOrdem);
       $sVirgula     = "";
       for ($i = 0; $i < sizeof($sCampos_sql); $i++) {
-      	
+
         $sSql     .= $sVirgula.$sCampos_sql[$i];
         $sVirgula  = ",";
-        
+
       }
     }
     return $sSql;
-  }   
-   public function sql_query_dados_retirada ($fa04_i_codigo = null, $campos ="*", $ordem = null, $dbwhere = "") {
-    
+  }
+  public function sql_query_dados_retirada ($fa04_i_codigo = null, $campos ="*", $ordem = null, $dbwhere = "") {
+
     $sql = "select ";
     if ($campos != "*" ) {
-      
-      $campos_sql = split("#",$campos);
+
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
 
@@ -901,10 +882,10 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql .= "      left  join matrequi           on far_retiradarequi.fa07_i_matrequi = m40_codigo";
     $sql2 = "";
     if ($dbwhere == "") {
-      
+
       if ($fa04_i_codigo != null) {
-        $sql2 .= " where far_retirada.fa04_i_codigo = $fa04_i_codigo "; 
-      } 
+        $sql2 .= " where far_retirada.fa04_i_codigo = $fa04_i_codigo ";
+      }
     } else if ($dbwhere != "") {
       $sql2 = " where $dbwhere";
     }
@@ -912,7 +893,7 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     if ($ordem != null ) {
 
       $sql       .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula    = "";
       for ($i     = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -922,17 +903,18 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     }
     return $sql;
   }
+
    /*Função sql_query_devov faz referencia ao arquivo far1_far_devovlistamed001.php,
 * Devolução de medicamentos:Cancelamento ou Devolucao;
 */
-  function sql_query_devov ($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
+  public function sql_query_devov ($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
 
     $sSql  = "";
     $sSql .= "select ";
 
     if ($sCampos != '*') {
 
-      $sCampos_sql = split("#",$sCampos);
+      $sCampos_sql = explode("#",$sCampos);
       $sVirgula = "";
 
       for ($iCont = 0; $iCont < sizeof($sCampos_sql); $iCont++){
@@ -980,7 +962,7 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     if ($sOrdem != null) {
 
       $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
+      $sCamposSql = explode('#', $sOrdem);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
 
@@ -995,4 +977,3 @@ function sql_query ( $fa04_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
 
   }
 }
-?>

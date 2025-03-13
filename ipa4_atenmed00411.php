@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 ?>
 <html>
@@ -84,7 +84,7 @@ input {
 			where ag30_regist = '$codigo'
 			order by ag40_data desc
 			limit 10";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	$numrows = pg_numrows($result);
 	if($numrows == 0) {
 	  echo "<h3>Sem Consultas Anteriores</h3>\n";

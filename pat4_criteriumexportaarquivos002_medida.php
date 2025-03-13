@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -32,7 +32,7 @@ $sSqlMedida .= "       t67_sequencial as id_da_medida, ";
 $sSqlMedida .= "       t67_descricao as nome_da_medida";
 $sSqlMedida .= "      from bensmedida ";
 
-$rsMedida    = pg_query($sSqlMedida);
+$rsMedida    = db_query($sSqlMedida);
 $iNumeroLinhas 	= pg_num_rows($rsMedida);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-require_once('libs/db_utils.php');
-require_once('libs/db_stdlibwebseller.php');
-require_once('libs/db_stdlib.php');
+include(modification("fpdf151/pdf.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_stdlibwebseller.php'));
+require_once(modification('libs/db_stdlib.php'));
 db_postmemory($HTTP_POST_VARS);
 $iPaciente          = 1;
 $aIni               = explode("/", $dIni);
@@ -84,7 +84,7 @@ if  ($iPadrao == 1) { //Se o padrão selecionado para o relatorio for igual a "NO
   $iQuant            = quantDias($dIni, $dFim);
   $oFarRetiradaItens = db_utils::getdao("far_retiradaitens");
   $sCampos           = "fa04_i_unidades,  ";
-  $sCampos          .= "descrdepto ";
+  $sCampos          .= "descrdepto, ";
   $sCampos          .= "count(fa06_i_codigo) as itotaldepart";
 
   if (isset($sMedicamentos) && $sMedicamentos != "") {//if que verifica se existe medicamentos selecionados

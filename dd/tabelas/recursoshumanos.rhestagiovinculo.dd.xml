@@ -1,0 +1,205 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010893' name='recursoshumanos.rhestagiovinculo' description="Tabela para o vínculo do estágio do servidor" prefix="rh260" label="Vínculo estágio do servidor" type="0">
+  <fields>
+    <field codigo="1013956" 
+           campo_api='' 
+           name="rh260_sequencial" 
+           conteudo="int4" 
+           description="Codigo de Refência da Tabela, Chave Primaria" 
+           inivalue="0" 
+           label="Codigo de Refência da Tabela" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Codigo de Refência da Tabela" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.rhestagiovinculo_rh260_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013957" 
+           campo_api='' 
+           name="rh260_matricula" 
+           conteudo="int4" 
+           description="Matrícula do Servidor Referente ao Estágio" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013958" 
+           campo_api='' 
+           name="rh260_naturezaestagio" 
+           conteudo="char(1)" 
+           description="Natureza do Estágio do Servidor" 
+           inivalue="" 
+           label="Natureza do Estágio" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Natureza do Estágio" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013959" 
+           campo_api='' 
+           name="rh260_nivelestagio" 
+           conteudo="char(1)" 
+           description="Nível do Estagio do Servidor" 
+           inivalue="" 
+           label="Nivel" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nivel" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013960" 
+           campo_api='' 
+           name="rh260_dataterminoestagio" 
+           conteudo="date" 
+           description="Previsão do Termino Estágio do Servidor" 
+           inivalue="null" 
+           label="Previsão do Termino" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="3" 
+           tipoobj="text" 
+           labelrel="Previsão do Termino" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013961" 
+           campo_api='' 
+           name="rh260_cnpjinstensino" 
+           conteudo="char(14)" 
+           description="CNPJ da Instituição de Ensino do Servidor" 
+           inivalue="0" 
+           label="CNPJ Insti. Ensino" 
+           size="14" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CNPJ Insti. Ensino" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013962" 
+           campo_api='' 
+           name="rh260_cnpjagentintegracao" 
+           conteudo="char(14)" 
+           description="CNPJ do Agente de Integração do Servidor" 
+           inivalue="0" 
+           label="CNPJ Agente Inte." 
+           size="14" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CNPJ Agente Inte." 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1014488" 
+           campo_api='' 
+           name="rh260_cpfsupervisor" 
+           conteudo="varchar(11)" 
+           description="CPF do responsável pela supervisão do estagiário." 
+           inivalue="" 
+           label="CPF Supervisor Estagiário" 
+           size="11" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CPF Supervisor Estagiário" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1014487" 
+           campo_api='' 
+           name="rh260_apoliceseguro" 
+           conteudo="varchar(30)" 
+           description="Número da apólice de seguro." 
+           inivalue="" 
+           label="Nº Apólice Seguro" 
+           size="30" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nº Apólice Seguro" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1014486" 
+           campo_api='' 
+           name="rh260_areaatuacao" 
+           conteudo="varchar(100)" 
+           description="Área de atuação do estagiário ou, no caso de prestação de serviço civil voluntário, jornada semanal do desempenho de atividades em formato decimal." 
+           inivalue="" 
+           label="Área de Atuação:" 
+           size="100" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Área de Atuação:" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh260_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal" inner='f'>
+      <fieldfk name="rh260_matricula" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

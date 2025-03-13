@@ -196,7 +196,7 @@ function js_mostratfd_tipotratamento1(chave1,chave2){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tfd_tipotratamentoproced','func_tfd_tipotratamentoproced.php?funcao_js=parent.js_preenchepesquisa|tf05_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tfd_tipotratamentoproced','func_tfd_tipotratamentoproced.php?funcao_js=parent.js_preenchepesquisa|tf05_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tfd_tipotratamentoproced.hide();

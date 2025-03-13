@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_acordo_classe.php");
-require_once("classes/db_acordomovimentacao_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_acordo_classe.php"));
+require_once(modification("classes/db_acordomovimentacao_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -117,6 +117,20 @@ fieldset table td:first-child {
 	            ?>
 	          </td>
 	        </tr>
+          <tr>
+	          <td><strong>Tipo de Paralisação:</strong></td>
+	          <td> 
+                <select name="" id="tipoParalisacao" class="field-size6" >
+                    <option value="">Selecione</option>
+                </select>
+	          </td>
+	        </tr>
+          <tr id="linhaProcesso" style="display:none">
+	          <td><strong>Processo:</strong></td>
+	          <td> 
+                <input type="text" placeholder = "Número/Ano" id="processo" class="field-size4" >
+	          </td>
+	        </tr>
 		      <tr>
 		        <td colspan="2">
 		          <fieldset id="fieldsetobservacao" class="fieldsetinterno">
@@ -148,288 +162,363 @@ fieldset table td:first-child {
       </div>
 </center>
 
-<?PHP db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
 
 </body>
 
 <script>
-
-var   sUrl                    = 'aco4_acordo.RPC.php';
-var   oGet                    = js_urlToObject(window.location.search);
-var   iDbOpcao                = oGet.dbopcao;
-var   sExec                   = '';
-const CAMINHO_MENSSAGENS      = "patrimonial.contratos.aco4_acordoparalisacao.";
-
-
-
-var sAcao = "Incluir";
-
-switch (iDbOpcao) {
-
-  case "1" :
-
-    sAcao = "Incluir";
-    sExec = "salvarParalisacao";
-    js_pesquisaac16_sequencial(true);
-  break;
-
-  case "2" :
-
-    sAcao = "Alterar";
-    sExec = "alterarParalisacao";
-    js_pesquisaParalisacao(true);
-  break;
-
-  case "3" :
-
-    sAcao = "Excluir";
-    sExec = "excluirParalisacao";
-    js_pesquisaParalisacao(true);
-  break;
+  
+    var   sUrl = 'aco4_acordo.RPC.php';
+    var   oGet = js_urlToObject(window.location.search);
+    var   iDbOpcao = oGet.dbopcao;
+    var   sExec = '';
+    const CAMINHO_MENSSAGENS = "patrimonial.contratos.aco4_acordoparalisacao.";
+    
+    var selectTipos = document.querySelector('#tipoParalisacao');
+    var inputProcesso = document.querySelector('#processo');
+    
+    window.addEventListener('load', () => {
+      var codigos = [9, 10, 11];
+      var oParam = new Object();
+          oParam.exec = "getTiposParalisacao";
+          oParam.codes = codigos;
+          new Ajax.Request(
+              sUrl,
+              {
+                  method: 'post',
+                  parameters: 'json='+js_objectToJson(oParam),
+                  onComplete: retorno => {
+                      dados = JSON.parse(retorno.responseText);
+                      for (let key in dados.tiposParalisacao) {
+                          let value = dados.tiposParalisacao[key];
+                          let options = `<option value="${value.codigo}">${value.descricao.urlDecode()}</option>`;
+                          selectTipos.innerHTML += options;
+                      }
+                  }
+              }
+          );
+    })
 
 
-}
+    selectTipos.addEventListener("change", (event) => {
+        var tipoEvento = selectTipos.options[selectTipos.selectedIndex].value;
+        switch(tipoEvento) {
+          case '9':
+          case '10':
+                document.querySelector("#linhaProcesso").style = "display: visible";
+                document.querySelector('#processo').value = '';
+                break;
+            default: 
+                document.querySelector("#linhaProcesso").style = "display: none";
+                document.querySelector('#processo').value = ''; 
+                break;
+           
+        }
+    })
+  
+    var sAcao = "Incluir";
+    
+    switch (iDbOpcao) {
+      
+      case "1" :
+        
+        sAcao = "Incluir";
+        sExec = "salvarParalisacao";
+        js_pesquisaac16_sequencial(true);
+        break;
 
-  $("incluir").value = sAcao;
-  $('sTituloFieldSet').innerHTML = sAcao;
+        case "2" :
 
+        sAcao = "Alterar";
+        sExec = "alterarParalisacao";
+        js_pesquisaParalisacao(true);
+        break;
 
-function js_verAcordo( iAcordo ){
+        case "3" :
+            sAcao = "Excluir";
+            sExec = "excluirParalisacao";
+            document.querySelector("#ac10_obs").setAttribute("disabled", "disabled");
+            selectTipos.setAttribute("disabled", "disabled");
+            inputProcesso.setAttribute("disabled", "disabled");
+            js_pesquisaParalisacao(true);
+            break;
+      }
 
-  var iAcordo  = $("ac16_sequencial").value;
-  if ( iAcordo == '') {
+      $("incluir").value = sAcao;
+      $('sTituloFieldSet').innerHTML = sAcao;
+      
+      
+    function js_verAcordo( iAcordo ){
+      
+      var iAcordo  = $("ac16_sequencial").value;
+      if ( iAcordo == '') {
 
-    alert(_M(CAMINHO_MENSSAGENS + "contrato_invalido" ));
-    return false;
-  };
+        alert(_M(CAMINHO_MENSSAGENS + "contrato_invalido" ));
+        return false;
+      };
 
-  js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
       'db_iframe_consultaacordo',
-      'con4_consacordos003.php?ac16_sequencial='+iAcordo,
-      'Consulta Dados Acordo',
-      true);
+          'con4_consacordos003.php?ac16_sequencial='+iAcordo,
+          'Consulta Dados Acordo',
+          true);
 
-}
+        }
 
+        
+        /**
+     * funcao para retornar dados da paralisação
+     usada apenas no caso de alteracao ou exclusao
+    */
+   function js_buscaDadosParalisacao( iAcordo ){
 
-/**
- * funcao para retornar dados da paralisação
-   usada apenas no caso de alteracao ou exclusao
- */
-function js_buscaDadosParalisacao( iAcordo ){
+     var oParam              = new Object();
+          oParam.exec         = "getDadosParalisacao";
+          oParam.iAcordo      = iAcordo;
+      new Ajax.Request( sUrl, {
+        method: 'post',
+                                parameters: 'json='+js_objectToJson(oParam),
+                                onComplete: js_retornoGetDadosParalisacao
+      });
+    }
 
-  var oParam              = new Object();
-      oParam.exec         = "getDadosParalisacao";
-      oParam.iAcordo      = iAcordo;
-  new Ajax.Request( sUrl, {
-                            method: 'post',
-                            parameters: 'json='+js_objectToJson(oParam),
-                            onComplete: js_retornoGetDadosParalisacao
-  });
-}
+    /**
+     * retorno da funcao getDadosParalisacao
+     * ira preenher os campos
+     */
+    function js_retornoGetDadosParalisacao(oAjax) {
+      
+      var oRetorno = JSON.parse(oAjax.responseText);
+      var sMensagem = oRetorno.message.urlDecode();
 
-/**
- * retorno da funcao getDadosParalisacao
- * ira preenher os campos
- */
-function js_retornoGetDadosParalisacao(oAjax) {
+      if (oRetorno.status > 1) {
+        return alert(sMensagem);
+      }
+      
+      $("ac47_datainicio").value = oRetorno.oDados.dtInicial;
+      $("ac10_obs").value = oRetorno.oDados.sObservacao.urlDecode();
+      selectTipos.value = oRetorno.oDados.sTipoEvento;
+      if (selectTipos.value == '9' || selectTipos.value == '10') {
+        document.querySelector("#linhaProcesso").style = "display: visible";
+      }
+      inputProcesso.value = oRetorno.oDados.sAnoProcesso;
+    }
 
-  var oRetorno = eval("("+oAjax.responseText+")");
-  var sMensagem = oRetorno.message.urlDecode();
+    /**
+     * Incluir paralisacao
+     */
+    function js_paralisarContrato() {
+      if (iDbOpcao == 3) {
+          if (!confirm('A paralisação e o evento criado automaticamente serão excluidos. Deseja prosseguir com a exclusão?')) {
+              return;
+          };
+      }
+      var oErro = {};
+          oErro.acao = sAcao.toLowerCase();
+          if (iDbOpcao != 3) {
+              if ($('ac16_sequencial').value == '') {
+                alert(  _M(CAMINHO_MENSSAGENS + 'contrato_invalido' ) ); return false;
+              }
 
-  if (oRetorno.status > 1) {
-    return alert(sMensagem);
-  }
+              if ( $("ac47_datainicio").value == '' ) {
+                alert(  _M(CAMINHO_MENSSAGENS + 'data_invalida' ) ); return false;
+              }
 
-  $("ac47_datainicio").value = oRetorno.oDados.dtInicial;
-  $("ac10_obs").value = oRetorno.oDados.sObservacao.urlDecode();
-}
+              if ( $('ac10_obs').value == '' ) {
+                alert(  _M(CAMINHO_MENSSAGENS + 'observacao_branco' , oErro) ); return false;
+              }
 
-/**
- * Incluir paralisacao
- */
-function js_paralisarContrato() {
-
-  var oErro = {};
-      oErro.acao = sAcao.toLowerCase();
-
-  if ($('ac16_sequencial').value == '') {
-    alert(  _M(CAMINHO_MENSSAGENS + 'contrato_invalido' ) ); return false;
-  }
-
-  if ( $("ac47_datainicio").value == '' ) {
-    alert(  _M(CAMINHO_MENSSAGENS + 'data_invalida' ) ); return false;
-  }
-
-  if ( $('ac10_obs').value == '' ) {
-    alert(  _M(CAMINHO_MENSSAGENS + 'observacao_branco' , oErro) ); return false;
-  }
-
-  js_divCarregando(_M(CAMINHO_MENSSAGENS + 'incluindo_paralisacao' ),'msgBox');
-
-  var iAcordo      = $("ac16_sequencial").value;
-  var dtInicial    = js_formatar($("ac47_datainicio").value, 'd');
-  var sObservacao  = $("ac10_obs").value;
-
-  var oParam          = new Object();
-  oParam.exec         = sExec;
-  oParam.iAcordo      = iAcordo;
-  oParam.dtInicial    = dtInicial;
-  oParam.sObservacao  = encodeURIComponent(tagString(sObservacao));
-
-  new Ajax.Request( sUrl, {
-                            method: 'post',
-                            parameters: 'json='+js_objectToJson(oParam),
-                            onComplete: js_retornoParalisacao
-  });
-}
-
-/**
- * Retorna os dados da homologacao
- */
-function js_retornoParalisacao(oAjax) {
-
-  js_removeObj("msgBox");
-
-  var oRetorno = eval("("+oAjax.responseText+")");
-
-  alert( oRetorno.message.urlDecode() );
-
-  if (oRetorno.status == '1') {
-
-    $("ac16_sequencial")  .value = '';
-    $("ac47_datainicio")  .value = '';
-    $("ac16_resumoobjeto").value = '';
-    $("ac10_obs")         .value = '';
-  };
-}
-
-/**
- * Pesquisa acordos Paralisados para serem Alteradas ou excluidas
- */
-function js_pesquisaParalisacao(lMostrar) {
-
-  var sTituloJanela = 'Pesquisar Acordos Paralisados';
-
-  if (lMostrar == true) {
-
-    var sUrl = 'func_acordo.php?funcao_js=parent.js_mostraParalisacao1|ac16_sequencial|ac16_resumoobjeto&iTipoFiltro=5';
-    js_OpenJanelaIframe('top.corpo',
-                        'db_iframe_acordoParalisado',
-                        sUrl,
-                        sTituloJanela,
-                        true);
-  } else {
-
-    if ($('ac16_sequencial').value != '') {
-
-      var sUrl = 'func_acordo.php?descricao=true&pesquisa_chave='+$('ac16_sequencial').value+
-                 '&funcao_js=parent.js_mostraParalisacao&iTipoFiltro=5';
-
-      js_OpenJanelaIframe('top.corpo',
-                          'db_iframe_acordoParalisado',
-                          sUrl,
-                          sTituloJanela,
-                          false);
-     } else {
-       $('ac16_sequencial').value = '';
-     };
-
-  };
-}
-
-/**
- * Retorno da pesquisa acordos
- */
-function js_mostraParalisacao(chave1,chave2,erro) {
-
-  if (erro == true) {
-
-    $('ac16_sequencial').value   = '';
-    $('ac16_resumoobjeto').value = chave1;
-    $('ac16_sequencial').focus();
-    $('ac47_datainicio') . value = '';
-    $('ac10_obs')        . value = '';
-  } else {
-
-    $('ac16_sequencial').value   = chave1;
-    $('ac16_resumoobjeto').value = chave2;
-    js_buscaDadosParalisacao(chave1);
-  }
-}
-
-/**
- * Retorno da pesquisa acordos paralisados
- */
-function js_mostraParalisacao1(chave1,chave2) {
-
-  $('ac16_sequencial').value    = chave1;
-  $('ac16_resumoobjeto').value  = chave2;
-  db_iframe_acordoParalisado.hide();
-  js_buscaDadosParalisacao(chave1);
-}
+              if (selectTipos.value == '') {
+                  alert("O tipo de Paralisação deve ser informado.");
+                  return false;
+              }
+              if (selectTipos.value == '9' || selectTipos.value == '10') {
+                  if (inputProcesso.value == '') {
+                    alert("O Ano e o Processo devem ser informados.");
+                    return false;
+                  }
+              }
+          }
 
 
-/**
- * Pesquisa acordos Homologados para serem paralisados
- */
-function js_pesquisaac16_sequencial(lMostrar) {
 
-  var sTituloJanela = 'Pesquisar Acordos Homologados';
+      js_divCarregando(_M(CAMINHO_MENSSAGENS + 'incluindo_paralisacao' ),'msgBox');
 
-  if (lMostrar == true) {
+      var iAcordo      = $("ac16_sequencial").value;
+      var dtInicial    = js_formatar($("ac47_datainicio").value, 'd');
+      var sObservacao  = $("ac10_obs").value;
+      var tipoParalisacao = selectTipos.value;
+      var oParam = new Object();
 
-    var sUrl = 'func_acordo.php?funcao_js=parent.js_mostraacordo1|ac16_sequencial|ac16_resumoobjeto&iTipoFiltro=4';
-    js_OpenJanelaIframe('top.corpo',
-                        'db_iframe_acordo',
-                        sUrl,
-                        sTituloJanela,
-                        true);
-  } else {
+      if (inputProcesso.value != "") {
+          var processoAno = inputProcesso.value.split("/");
+          oParam.processo = processoAno[0];
+          oParam.ano = processoAno[1];
+      }
+     
+      oParam.exec = sExec;
+      oParam.iAcordo = iAcordo;
+      oParam.dtInicial = dtInicial;
+      oParam.tipoParalisacao = tipoParalisacao;
+     
+      oParam.sObservacao  = encodeURIComponent(tagString(sObservacao));
+      new Ajax.Request(
+          sUrl,
+          {
+              method: 'post',
+              parameters: 'json=' + js_objectToJson(oParam),
+              onComplete: res => {
+                  var oRetorno = JSON.parse(res.responseText);
+                  js_removeObj("msgBox");
+  
+                  alert(oRetorno.message.urlDecode());
+            
+                  if (oRetorno.status == '1') {
+                      
+                      $("ac16_sequencial")  .value = '';
+                      $("ac47_datainicio")  .value = '';
+                      $("ac16_resumoobjeto").value = '';
+                      $("ac10_obs")         .value = '';
+                      document.querySelector('#processo').value = '';
+                      selectTipos.value = '';
+                  }
+              }
+          }
+      );
 
-    if ($('ac16_sequencial').value != '') {
+    }
 
-      var sUrl = 'func_acordo.php?descricao=true&pesquisa_chave='+$('ac16_sequencial').value+
-                 '&funcao_js=parent.js_mostraacordo&iTipoFiltro=4';
+    /**
+     * Retorna os dados da homologacao
+     */
+    
+    /**
+     * Pesquisa acordos Paralisados para serem Alteradas ou excluidas
+     */
+    function js_pesquisaParalisacao(lMostrar) {
 
-      js_OpenJanelaIframe('top.corpo',
-                          'db_iframe_acordo',
-                          sUrl,
-                          sTituloJanela,
-                          false);
-     } else {
-       $('ac16_sequencial').value = '';
-       $('ac16_resumoobjeto').value = '';
-     };
-  };
-}
+      var sTituloJanela = 'Pesquisar Acordos Paralisados';
 
-/**
- * Retorno da pesquisa acordos
- */
-function js_mostraacordo(chave1,chave2,erro) {
+      if (lMostrar == true) {
 
-  if (erro == true) {
+        var sUrl = 'func_acordo.php?funcao_js=parent.js_mostraParalisacao1|ac16_sequencial|ac16_resumoobjeto&iTipoFiltro=5';
+        js_OpenJanelaIframe('CurrentWindow.corpo',
+        'db_iframe_acordoParalisado',
+                            sUrl,
+                            sTituloJanela,
+                            true);
+      } else {
+        
+        if ($('ac16_sequencial').value != '') {
 
-    $('ac16_sequencial').value   = '';
-    $('ac16_resumoobjeto').value = chave1;
-    $('ac16_sequencial').focus();
-  } else {
+          var sUrl = 'func_acordo.php?descricao=true&pesquisa_chave='+$('ac16_sequencial').value+
+                    '&funcao_js=parent.js_mostraParalisacao&iTipoFiltro=5';
+                    
+          js_OpenJanelaIframe('CurrentWindow.corpo',
+                              'db_iframe_acordoParalisado',
+                              sUrl,
+                              sTituloJanela,
+                              false);
+        } else {
+          $('ac16_sequencial').value = '';
+        };
 
-    $('ac16_sequencial').value   = chave1;
-    $('ac16_resumoobjeto').value = chave2;
-  }
-}
+      };
+    }
+    
+    /**
+     * Retorno da pesquisa acordos
+     */
+    function js_mostraParalisacao(chave1,chave2,erro) {
+      
+      if (erro == true) {
 
-/**
- * Retorno da pesquisa acordos
- */
-function js_mostraacordo1(chave1,chave2) {
+        $('ac16_sequencial').value   = '';
+        $('ac16_resumoobjeto').value = chave1;
+        $('ac16_sequencial').focus();
+        $('ac47_datainicio') . value = '';
+        $('ac10_obs')        . value = '';
+      } else {
 
-  $('ac16_sequencial').value    = chave1;
-  $('ac16_resumoobjeto').value  = chave2;
-  db_iframe_acordo.hide();
-}
+        $('ac16_sequencial').value   = chave1;
+        $('ac16_resumoobjeto').value = chave2;
+        js_buscaDadosParalisacao(chave1);
+      }
+    }
 
+    /**
+     * Retorno da pesquisa acordos paralisados
+     */
+    function js_mostraParalisacao1(chave1,chave2) {
+
+      $('ac16_sequencial').value    = chave1;
+      $('ac16_resumoobjeto').value  = chave2;
+      db_iframe_acordoParalisado.hide();
+      js_buscaDadosParalisacao(chave1);
+    }
+    
+
+    /**
+     * Pesquisa acordos Homologados para serem paralisados
+     */
+    function js_pesquisaac16_sequencial(lMostrar) {
+
+      var sTituloJanela = 'Pesquisar Acordos Homologados';
+
+      if (lMostrar == true) {
+
+        var sUrl = 'func_acordo.php?funcao_js=parent.js_mostraacordo1|ac16_sequencial|ac16_resumoobjeto&iTipoFiltro=4';
+        js_OpenJanelaIframe('CurrentWindow.corpo',
+        'db_iframe_acordo',
+                            sUrl,
+                            sTituloJanela,
+                            true);
+      } else {
+        
+        if ($('ac16_sequencial').value != '') {
+
+          var sUrl = 'func_acordo.php?descricao=true&pesquisa_chave='+$('ac16_sequencial').value+
+                    '&funcao_js=parent.js_mostraacordo&iTipoFiltro=4';
+                    
+          js_OpenJanelaIframe('CurrentWindow.corpo',
+                              'db_iframe_acordo',
+                              sUrl,
+                              sTituloJanela,
+                              false);
+                            } else {
+          $('ac16_sequencial').value = '';
+          $('ac16_resumoobjeto').value = '';
+        };
+      };
+    }
+    
+    /**
+     * Retorno da pesquisa acordos
+     */
+    function js_mostraacordo(chave1,chave2,erro) {
+
+      if (erro == true) {
+        
+        $('ac16_sequencial').value   = '';
+        $('ac16_resumoobjeto').value = chave1;
+        $('ac16_sequencial').focus();
+      } else {
+
+        $('ac16_sequencial').value   = chave1;
+        $('ac16_resumoobjeto').value = chave2;
+      }
+    }
+
+    /**
+     * Retorno da pesquisa acordos
+     */
+    function js_mostraacordo1(chave1,chave2) {
+      
+      $('ac16_sequencial').value    = chave1;
+      $('ac16_resumoobjeto').value  = chave2;
+      db_iframe_acordo.hide();
+    }
+    
 </script>
+<?PHP db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
+
 </html>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -34,6 +34,32 @@ $clrotulo->label("r29_tpp");
 $clrotulo->label("r70_descr");
 $clrotulo->label("DBtxt23");
 $clrotulo->label("DBtxt25");
+
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+  
+  try {
+    
+    switch ($ponto) {
+      
+      case "fa":
+        FolhaPagamentoAdiantamento::verificaLiberacaoDBPref();
+        break;
+      
+      case "fr":
+        FolhaPagamentoRescisao::verificaLiberacaoDBPref();
+        break;
+      
+      case "f13":
+        FolhaPagamento13o::verificaLiberacaoDBPref();
+        break;
+    }
+  } catch (BusinessException $e) {
+
+    $db_opcao     = 3;
+    db_msgbox($e->getMessage());
+  }
+}
+
 if($ponto == "fx"){
   $dponto = " Ponto fixo";
 }else if($ponto == "fs"){
@@ -43,7 +69,7 @@ if($ponto == "fx"){
 }else if($ponto == "com"){
   $dponto = " Ponto Complementar por Código";
   try{
-    if (isset($DB_COMPLEMENTAR) && $DB_COMPLEMENTAR) {
+    if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
       
       if ( FolhaPagamentoComplementar::hasFolhaAberta( new DBCompetencia(DBPessoal::getAnoFolha(), DBPessoal::getMesFolha()) ) ) {
         
@@ -75,13 +101,13 @@ if($ponto == "fx"){
 <fieldset>
   <legend><?= $dponto ?></legend>
   <?php
-  if ($ponto == "com" && isset($DB_COMPLEMENTAR) && $DB_COMPLEMENTAR) {
+  if ($ponto == "com" && DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
     
     echo '<fieldset id="toogle">';
     echo "  <legend>Dados da Folha Complementar</legend>";      
     $sDBOpcaoAnterior            = $db_opcao;
     $db_opcao                    = 3;
-    include("forms/db_frmrhfolhapagamento.php");
+    include(modification("forms/db_frmrhfolhapagamento.php"));
     $db_opcao                    = $sDBOpcaoAnterior;
     echo "</fieldset>";
     
@@ -109,7 +135,7 @@ if($ponto == "fx"){
           db_input('admissa_matricula', 40, 0, true, 'hidden', 3, '');
           db_input('repassar_rubricas', 40, 0, true, 'hidden', 3, '');
           db_input('opcoes_rubricas', 40, 0, true, 'hidden', 3, '');
-      
+
           $qry = "rubricas_selecionadas_enviar=".$rubricas_selecionadas_enviar;
           $qry.= "&ponto=".$ponto;
           if(isset($repassar_rubricas)){
@@ -123,7 +149,7 @@ if($ponto == "fx"){
         </td>
       </tr>
       <tr>
-        <td title="<?=@$Tr90_regist?>">
+        <td title="<? echo isset($Tr90_regist) ? $Tr90_regist : '' ?>">
           <?php
             db_ancora(@$Lr90_regist, "js_pesquisar90_regist(true);", $db_opcao);
           ?>
@@ -171,10 +197,22 @@ function js_testarRegraPonto() {
    
   var oParametros  = new Object();
 
-  oParametros.sExecucao  = 'testarRegistroPonto';
-  oParametros.iMatricula = $('r90_regist').value;
-  oParametros.sTipoPonto = $('ponto').value;
-  oParametros.aRubricas  = $('rubricas_selecionadas_enviar').value.split(',');
+  oParametros.sExecucao            = 'testarRegistroPonto';
+  oParametros.iMatricula           = $('r90_regist').value;
+  oParametros.sTipoPonto           = $('ponto').value;
+  oParametros.aRubricas            = $('rubricas_selecionadas_enviar').value.split(',');
+  oParametros.aRubricasQuantidade  = $('quantidade_rubricas_selecionadas_enviar').value.split(',');
+  oParametros.aRubricasValor       = $('valores_rubricas_selecionadas_enviar').value.split(',');
+  oParametros.aRubricasQuantidadeValor = [];
+
+  for (var iIndRubricas = 0; iIndRubricas < oParametros.aRubricas.length; iIndRubricas++) {
+    var oRubrica = {
+      sRubrica    : oParametros.aRubricas[iIndRubricas],
+      nQuantidade : oParametros.aRubricasQuantidade[iIndRubricas],
+      nValor      : oParametros.aRubricasValor[iIndRubricas]
+    };
+    oParametros.aRubricasQuantidadeValor.push(oRubrica);
+  };
 
 	var oAjax = new Ajax.Request(
 		'pes1_rhrubricas.RPC.php', 
@@ -193,7 +231,7 @@ function js_retornoTestarRegraPonto(oAjax) {
 
   js_removeObj('msgBox');
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
 	var sMensagem = oRetorno.sMensagem.urlDecode().replace(/\\n/g, "\n");
 
   /**
@@ -262,16 +300,18 @@ function js_receber_dados_inclui() {
     obj.setAttribute('value','incluir');
     document.form1.appendChild(obj);
     document.form1.submit();
+    
+    js_removeObj("msgBox");
   }
 
 }
 function js_pesquisar90_regist(mostra){
   document.getElementById('caixa_de_texto').innerHTML = "";
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=<?=($ponto == "fs" ? "raf" : "ra")?>&funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>&chave_r01_mesusu='+document.form1.r90_mesusu.value+'&chave_r01_anousu'+document.form1.r90_anousu.value,'Pesquisa Matrícula',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=<?=($ponto == "fs" ? "raf" : "ra")?>&funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>&chave_r01_mesusu='+document.form1.r90_mesusu.value+'&chave_r01_anousu'+document.form1.r90_anousu.value,'Pesquisa Matrícula',true);
   }else{
      if(document.form1.r90_regist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=<?=($ponto == "fs" ? "raf" : "ra")?>&pesquisa_chave='+document.form1.r90_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa Matrícula',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=<?=($ponto == "fs" ? "raf" : "ra")?>&pesquisa_chave='+document.form1.r90_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa Matrícula',false);
      }else{
        document.form1.z01_nome.value = '';
        rubricas_dados_enviar.location.href = "pes1_pontoRfx0011_iframe.php?rubricas_selecionadas_enviar=<?=$rubricas_selecionadas_enviar?>&ponto=<?=$ponto?>&repassar_rubricas="+document.form1.repassar_rubricas.value; 

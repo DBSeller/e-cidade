@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
-require_once("classes/db_rhlota_classe.php");
-require_once("classes/db_orcorgao_classe.php");
-require_once("classes/db_orcunidade_classe.php");
-require_once("classes/db_rhlotaexe_classe.php");
-require_once("classes/db_rhlotacalend_classe.php");
-require_once("classes/db_cfpess_classe.php");
-require_once("classes/db_rhlotavinc_classe.php");
+require_once(modification("classes/db_rhlota_classe.php"));
+require_once(modification("classes/db_orcorgao_classe.php"));
+require_once(modification("classes/db_orcunidade_classe.php"));
+require_once(modification("classes/db_rhlotaexe_classe.php"));
+require_once(modification("classes/db_rhlotacalend_classe.php"));
+require_once(modification("classes/db_cfpess_classe.php"));
+require_once(modification("classes/db_rhlotavinc_classe.php"));
 
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -155,7 +155,7 @@ if ( isset($excluir) ) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmrhlota.php");
+	include(modification("forms/db_frmrhlota.php"));
 	?>
     </center>
 	</td>
@@ -192,7 +192,7 @@ if ( isset($chavepesquisa) ) {
   echo "
         <script>
           parent.document.formaba.rhlotavinc.disabled = false;
-	      top.corpo.iframe_rhlotavinc.location.href = 'pes1_rhlotavinc001.php?chavepesquisa=$r70_codigo&db_opcaoal=false';
+	      (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.location.href = 'pes1_rhlotavinc001.php?chavepesquisa=$r70_codigo&db_opcaoal=false';
 	    </script>
        ";
 }

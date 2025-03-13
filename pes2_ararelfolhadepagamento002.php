@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_rhlocaltrab_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_rhlocaltrab_classe.php"));
 $clrhlocaltrab = new cl_rhlocaltrab;
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -332,7 +332,7 @@ $sql_basico =
               //".$campo_pen." > 0 and  
 
 //echo $sql_basico;exit;
-$res_basico = pg_query($sql_basico);
+$res_basico = db_query($sql_basico);
 
 
 

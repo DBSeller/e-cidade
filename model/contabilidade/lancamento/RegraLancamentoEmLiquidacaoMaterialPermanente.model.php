@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("interfaces/IRegraLancamentoContabil.interface.php");
+require_once(modification("interfaces/IRegraLancamentoContabil.interface.php"));
 
 /**
  * Verifica a regra de lançamentos para o movimento em liquidacao de materiais permanentes.
@@ -33,71 +33,82 @@ require_once("interfaces/IRegraLancamentoContabil.interface.php");
  * @author Matheus Felini  matheus.felini@dbseller.com.br
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.8 $
  */
 class RegraLancamentoEmLiquidacaoMaterialPermanente implements IRegraLancamentoContabil {
 
-  /**
-   * Retorna um objeto RegraLancamentoContabil
-   * @see IRegraLancamentoContabil::getRegraLancamento()
-   * @param integer $iCodigoDocumento  - Documento contabil
-   * @param integer $iCodigoLancamento - Codigo do lancamento contabil
-   * @param ILancamentoAuxiliar $oLancamentoAuxiliar
-   * @return RegraLancamentoContabil
-   */
-  public function getRegraLancamento($iCodigoDocumento, $iCodigoLancamento, ILancamentoAuxiliar $oLancamentoAuxiliar) {
-
-    $oEventoContabil           = EventoContabilRepository::getEventoContabilByCodigo($iCodigoDocumento, db_getsession("DB_anousu"));
-    $oLancamentoEventoContabil = $oEventoContabil->getEventoContabilLancamentoPorCodigo($iCodigoLancamento);  
-
     /**
-     * Nao encontrou nenhuam regra para o lancamento
+     * @param int $iCodigoDocumento
+     * @param int $iCodigoLancamento
+     * @param ILancamentoAuxiliar $oLancamentoAuxiliar
+     * @return bool|mixed|RegraLancamentoContabil
+     * @throws BusinessException|Exception
      */
-    if (!$oLancamentoEventoContabil || count($oLancamentoEventoContabil->getRegrasLancamento()) == 0) {
-      return false;
-    }         
+    public function getRegraLancamento($iCodigoDocumento, $iCodigoLancamento, ILancamentoAuxiliar $oLancamentoAuxiliar) {
 
-    $aRegrasDoLancamento = $oLancamentoEventoContabil->getRegrasLancamento();    
-    $iContaClassificacao = $oLancamentoAuxiliar->getClassificacao()->getContaContabil()->getReduzido();                                             
-    $aContasEncontradas  = array();
+        $oEventoContabil           = EventoContabilRepository::getEventoContabilByCodigo($iCodigoDocumento, db_getsession("DB_anousu"));
+        $oLancamentoEventoContabil = $oEventoContabil->getEventoContabilLancamentoPorCodigo($iCodigoLancamento);
 
-    foreach ($aRegrasDoLancamento as  $oRegraLancamentoContabil ) {
-
-      if ( $oLancamentoEventoContabil->getOrdem() == 1 ) {
-
-        if ( $iCodigoDocumento == 209 ) {
-          $oRegraLancamentoContabil->setContaCredito($iContaClassificacao);
-        } else {
-          $oRegraLancamentoContabil->setContaDebito($iContaClassificacao);
+        /**
+         * Nao encontrou nenhuam regra para o lancamento
+         */
+        if (!$oLancamentoEventoContabil || count($oLancamentoEventoContabil->getRegrasLancamento()) == 0) {
+            return false;
         }
-        $aContasEncontradas[] = $oRegraLancamentoContabil;
-      } else {
-        $aContasEncontradas[] = $oRegraLancamentoContabil;
-      }
+
+        $aRegrasDoLancamento = $oLancamentoEventoContabil->getRegrasLancamento();
+        $aContasEncontradas  = array();
+
+        foreach ($aRegrasDoLancamento as  $oRegraLancamentoContabil ) {
+
+            if ( $oLancamentoEventoContabil->getOrdem() == 1 ) {
+
+                if (UTILIZA_INCORPORACAO_BEM) {
+                    $aContasEncontradas[] = $oRegraLancamentoContabil;
+                } else {
+                    $iContaClassificacao = $oLancamentoAuxiliar->getClassificacao()->getContaContabil()->getReduzido();
+                    if ($oEventoContabil->estorno()) {
+                        $oRegraLancamentoContabil->setContaCredito($iContaClassificacao);
+                    } else {
+                        $oRegraLancamentoContabil->setContaDebito($iContaClassificacao);
+                    }
+                    $aContasEncontradas[] = $oRegraLancamentoContabil;
+                }
+            } else {
+                $aContasEncontradas[] = $oRegraLancamentoContabil;
+            }
+        }
+
+        /**
+         * Nenhuma regra de lancamento encontrada para o documento
+         */
+        if (count($aContasEncontradas) == 0) {
+            return false;
+        }
+
+        if (count($aContasEncontradas) > 1) {
+
+            if (!UTILIZA_INCORPORACAO_BEM) {
+                $oContaContabilClassificacao = $oLancamentoAuxiliar->getClassificacao()->getContaContabil();
+                $oStdDadosMensagem = new stdClass();
+                $oStdDadosMensagem->estrutural              = $oContaContabilClassificacao->getEstrutural();
+                $oStdDadosMensagem->descricao_conta         = $oContaContabilClassificacao->getDescricao();
+                $oStdDadosMensagem->descricao_classificacao = $oLancamentoAuxiliar->getClassificacao()->getDescricao();
+                $oStdDadosMensagem->documento               = $iCodigoDocumento . ' - ' . $oEventoContabil->getDescricaoDocumento();
+                $oStdDadosMensagem->ordem_lancamento        = $oLancamentoEventoContabil->getOrdem();
+                $mensagem = 'financeiro.contabilidade.RegraLancamentoEmLiquidacaoMaterialPermanente.mais_de_uma_regra_encontrada';
+            } else {
+
+                $oStdDadosMensagem = (object)array(
+                    'documento' => $iCodigoDocumento . ' - ' . $oEventoContabil->getDescricaoDocumento()
+                );
+                $mensagem = 'financeiro.contabilidade.RegraLancamentoEmLiquidacaoMaterialPermanente.mais_de_uma_regra_encontrada_1';
+            }
+            throw new BusinessException(_M($mensagem, $oStdDadosMensagem));
+        }
+
+        $oRegraLancamentoContabil = $aContasEncontradas[0];
+        return $oRegraLancamentoContabil;
     }
-
-    /**
-     * Nenhuma regra de lancamento encontrada para o documento 
-     */
-    if (count($aContasEncontradas) == 0) {
-      return false;
-    }
-
-    if (count($aContasEncontradas) > 1) {
-
-      $oContaContabilClassificacao = $oLancamentoAuxiliar->getClassificacao()->getContaContabil();
-      $oStdDadosMensagem = new stdClass();
-      $oStdDadosMensagem->estrutural              = $oContaContabilClassificacao->getEstrutural();
-      $oStdDadosMensagem->descricao_conta         = $oContaContabilClassificacao->getDescricao();
-      $oStdDadosMensagem->descricao_classificacao = $oLancamentoAuxiliar->getClassificacao()->getDescricao();
-      $oStdDadosMensagem->documento               = $iCodigoDocumento . ' - ' . $oEventoContabil->getDescricaoDocumento();
-      $oStdDadosMensagem->ordem_lancamento        = $oLancamentoEventoContabil->getOrdem();
-
-      throw new BusinessException(_M('financeiro.contabilidade.RegraLancamentoEmLiquidacaoMaterialPermanente.mais_de_uma_regra_encontrada', $oStdDadosMensagem));
-    }
-
-    $oRegraLancamentoContabil = $aContasEncontradas[0];
-    return $oRegraLancamentoContabil;
-  }
 
 }

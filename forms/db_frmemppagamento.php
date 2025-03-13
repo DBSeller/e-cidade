@@ -463,7 +463,7 @@ db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
 
 
 function js_cheque(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cheque','emp1_emppagamento003.php?js_funcao=parent.js_vai|e91_codcheque|e83_conta|e91_cheque|k13_descr|e91_valor&e50_codord=<?=@$e50_codord?>&e60_numemp=<?=@$e60_numemp?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cheque','emp1_emppagamento003.php?js_funcao=parent.js_vai|e91_codcheque|e83_conta|e91_cheque|k13_descr|e91_valor&e50_codord=<?=@$e50_codord?>&e60_numemp=<?=@$e60_numemp?>','Pesquisa',true);
 }
 <?
 if(isset($e81_codmov) && $e81_codmov != '' ){
@@ -501,9 +501,9 @@ function js_volta(){
 
 function js_pesquisak13_conta(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr&c61_codigo='+document.form1.o58_codigo.value,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr&c61_codigo='+document.form1.o58_codigo.value,'Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k13_conta.value+'&funcao_js=parent.js_mostrasaltes&c61_codigo='+document.form1.o58_codigo.value,'Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k13_conta.value+'&funcao_js=parent.js_mostrasaltes&c61_codigo='+document.form1.o58_codigo.value,'Pesquisa',false);
   }
 }
 function js_mostrasaltes(chave,erro){
@@ -570,7 +570,7 @@ if(isset($e60_numemp)){
 ?>
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_empempenho.hide();

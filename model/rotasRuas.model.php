@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -155,7 +155,7 @@ class rotasRuas {
     
     $this->iCodRota = $iCodRota;
     
-    require_once("classes/db_aguarotarua_classe.php");
+    require_once(modification("classes/db_aguarotarua_classe.php"));
     
     $oDaoAguaRotaRua = new cl_aguarotarua();
       
@@ -213,7 +213,7 @@ class rotasRuas {
       throw new Exception("Código da Rua não informado.");
     }
     
-    require_once("classes/db_aguarotarua_classe.php");
+    require_once(modification("classes/db_aguarotarua_classe.php"));
 
     $this->iCodRua        = $iCodRua;
     $this->iCodRota       = $iCodRota;
@@ -274,7 +274,7 @@ class rotasRuas {
       throw new Exception("Numero não definido.");
     }  
       
-    require_once("classes/db_aguarotarua_classe.php");
+    require_once(modification("classes/db_aguarotarua_classe.php"));
 
     $this->iCodRua   = $iCodRua;
     $this->iCodRota  = $iCodRota;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -531,6 +531,7 @@ class cl_pcorcamitemsol {
      $sql .= "      inner join pcorcam  on  pcorcam.pc20_codorc = pcorcamitem.pc22_codorc";
      $sql .= "      inner join solicitem  on  solicitem.pc11_codigo = pcorcamitemsol.pc29_solicitem";
      $sql .= "      inner join solicita  on  solicita.pc10_numero = solicitem.pc11_numero";
+     $sql .= "      left  join pcorcamforne  on  pcorcamforne.pc21_codorc = pcorcam.pc20_codorc";
      $sql .= "      left  join solicitemunid  on  solicitemunid.pc17_codigo = solicitem.pc11_codigo";
      $sql .= "      left  join matunid  on  matunid.m61_codmatunid = solicitemunid.pc17_unid";
      $sql .= "      left  join solicitempcmater  on  solicitempcmater.pc16_solicitem = solicitem.pc11_codigo";     

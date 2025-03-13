@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulo = new rotulo('rhsefip');
 $oRotulo->label('rh90_anousu');
@@ -208,7 +208,7 @@ $oRotulo->label('rh90_mesusu');
   
   function js_retornoConsultaReg(oAjax){
 
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     js_removeObj('msgbox');
     
     if ( oRetorno.iStatus == 2 ) {
@@ -388,7 +388,7 @@ $oRotulo->label('rh90_mesusu');
   
   function js_retornoInsereReg(oAjax){
 
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     js_removeObj('msgbox');
     
     if ( oRetorno.iStatus == 2 ) {
@@ -434,7 +434,7 @@ $oRotulo->label('rh90_mesusu');
 	  js_OpenJanelaIframe('', 
 	                      'db_iframe_novocgm', 
 	                      'prot1_cadgeralmunic002.php?chavepesquisa='+iCgm+
-	                      '&lMenu=false&lCpf=true&funcaoRetorno=top.corpo.js_retornoAlteraCgm',
+	                      '&lMenu=false&lCpf=true&funcaoRetorno=parent.CurrentWindow.corpo.js_retornoAlteraCgm',
 	                      'Novo CGM');
 	 }
 	} 

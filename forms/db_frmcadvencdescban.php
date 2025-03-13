@@ -72,9 +72,9 @@ db_input('k15_numcgm',6,$Ik15_numcgm,true,'text',3,'')
 <script>
 function js_pesquisaq93_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadvencdesc','func_cadvencdesc.php?funcao_js=parent.js_mostracadvencdesc1|q92_codigo|q92_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadvencdesc','func_cadvencdesc.php?funcao_js=parent.js_mostracadvencdesc1|q92_codigo|q92_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadvencdesc','func_cadvencdesc.php?pesquisa_chave='+document.form1.q93_codigo.value+'&funcao_js=parent.js_mostracadvencdesc','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadvencdesc','func_cadvencdesc.php?pesquisa_chave='+document.form1.q93_codigo.value+'&funcao_js=parent.js_mostracadvencdesc','Pesquisa',false);
   }
 }
 function js_mostracadvencdesc(chave,erro){
@@ -91,9 +91,9 @@ function js_mostracadvencdesc1(chave1,chave2){
 }
 function js_pesquisaq93_cadban(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadban','func_cadban.php?funcao_js=parent.js_mostracadban1|k15_codigo|k15_numcgm','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadban','func_cadban.php?funcao_js=parent.js_mostracadban1|k15_codigo|k15_numcgm','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadban','func_cadban.php?pesquisa_chave='+document.form1.q93_cadban.value+'&funcao_js=parent.js_mostracadban','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadban','func_cadban.php?pesquisa_chave='+document.form1.q93_cadban.value+'&funcao_js=parent.js_mostracadban','Pesquisa',false);
   }
 }
 function js_mostracadban(chave,erro){
@@ -109,7 +109,7 @@ function js_mostracadban1(chave1,chave2){
   db_iframe_cadban.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadvencdescban','func_cadvencdescban.php?funcao_js=parent.js_preenchepesquisa|q93_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadvencdescban','func_cadvencdescban.php?funcao_js=parent.js_preenchepesquisa|q93_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadvencdescban.hide();

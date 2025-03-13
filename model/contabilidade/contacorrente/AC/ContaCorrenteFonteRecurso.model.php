@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("interfaces/IContaCorrente.interface.php");
-require_once ("model/contabilidade/contacorrente/ContaCorrenteBase.model.php");
+require_once(modification("interfaces/IContaCorrente.interface.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteBase.model.php"));
 
 /**
  * @author     Jeferson Belmiro <jeferson.belmiro@dbseller.com.br>
@@ -127,7 +127,8 @@ class ContaCorrenteFonteRecurso extends ContaCorrenteBase implements IContaCorre
    */
   private function validarInformacoes() {
 
-    if ( !$this->oContaCorrenteDetalhe->getRecurso() instanceof Recurso) {
+    $oRecurso = $this->oContaCorrenteDetalhe->getRecurso();
+    if ( !$oRecurso instanceof Recurso || !is_object($oRecurso)) {
       throw new ParameterException("Recurso não informado para execução do conta corrente {$this->oContaCorrente->getDescricao()}.");
     }
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
 $clrotulo->label("e54_autori");
@@ -97,10 +97,10 @@ $clrotulo->label("e54_autori");
 <script>
 function js_pesquisa_autori(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empautoriza','func_empautoriza.php?anul=ok&funcao_js=parent.js_mostraautori1|e54_autori','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empautoriza','func_empautoriza.php?anul=ok&funcao_js=parent.js_mostraautori1|e54_autori','Pesquisa',true);
   }else{
      if(document.form1.e54_autori.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_empautoriza','func_empautoriza.php?anul=ok&pesquisa_chave='+document.form1.e54_autori.value+'&funcao_js=parent.js_mostraautori','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empautoriza','func_empautoriza.php?anul=ok&pesquisa_chave='+document.form1.e54_autori.value+'&funcao_js=parent.js_mostraautori','Pesquisa',false);
      }
   }
 }

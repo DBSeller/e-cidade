@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,27 +29,23 @@ define( 'MENSAGEM_MATRICULA_REPOSITORY', 'educacao.escola.MatriculaRepository.' 
 
 /**
  * Repositoy para Matriculas
+ *
  * @package   Educacao
- * @author
- * @version   $Revision: 1.17 $
+ * @version   $Revision: 1.27 $
  */
 class MatriculaRepository {
 
   private $aMatricula = array();
   private static $oInstance;
 
-  private function __construct() {
-
-  }
-  private function __clone() {
-
-  }
+  private function __construct() {}
+  private function __clone() {}
 
   /**
    * Retorna a instancia do Repositorio
    * @return MatriculaRepository
    */
-  protected function getInstance() {
+  protected static function getInstance() {
 
     if(self::$oInstance == null) {
       self::$oInstance = new MatriculaRepository();
@@ -74,19 +70,27 @@ class MatriculaRepository {
 
   /**
    * Busca o aluno pela matricula
-   *
    * @deprecated
    *
-   * @param integer $iMatricula
-   * @return Matricula
+   * @param $iMatricula
+   * @return bool|Matricula
+   * @throws DBException
    */
   public static function getAlunoByMatricula($iMatricula) {
 
     $oDaoMatricula = db_utils::getDao('matricula');
     $sSqlMatricula = $oDaoMatricula->sql_query_file($iMatricula, "ed60_i_codigo");
-    $rsMatricula   = $oDaoMatricula->sql_record($sSqlMatricula);
+    $rsMatricula   = db_query($sSqlMatricula);
 
-    if ($oDaoMatricula->numrows > 0) {
+    if( !is_resource( $rsMatricula ) ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+
+      throw new DBException( _M( MENSAGEM_MATRICULA_REPOSITORY . 'erro_buscar_matricula', $oErro ) );
+    }
+
+    if( pg_num_rows( $rsMatricula ) > 0 ) {
       return MatriculaRepository::getInstance()->getMatriculaByCodigo(db_utils::fieldsMemory($rsMatricula, 0)->ed60_i_codigo);
     }
     return false;
@@ -94,53 +98,75 @@ class MatriculaRepository {
 
   /**
    * Busca os Alunos de uma turma
-   *
    * @param Turma $oTurma
-   * @return Matricula
+   * @return Matricula[]
+   * @throws DBException
    */
   public static function getMatriculasByTurma(Turma $oTurma) {
 
-    $oDaoMatricula = db_utils::getDao('matricula');
-    $sWhere        = " ed60_i_turma         = {$oTurma->getCodigo()}";
-    $sSqlMatricula = $oDaoMatricula->sql_query_aluno_matricula(null, "ed60_i_codigo, ed60_i_aluno, ed60_i_numaluno",
-                                                               "ed60_i_numaluno, ed47_v_nome", $sWhere);
-    $rsMatricula   = $oDaoMatricula->sql_record($sSqlMatricula);
-    $iTotalLinhas  = $oDaoMatricula->numrows;
-    $aMatriculasTurma  = array();
+    $oDaoMatricula = new cl_matricula();
+    $sWhere        = " ed60_i_turma = {$oTurma->getCodigo()}";
+    $sCampos       = "ed60_i_codigo, ed60_i_aluno, ed60_i_numaluno";
+    $sOrdenacao    = "ed60_i_numaluno, ed47_v_nome";
+    $sSqlMatricula = $oDaoMatricula->sql_query_aluno_matricula( null, $sCampos, $sOrdenacao, $sWhere );
+    $rsMatricula   = db_query($sSqlMatricula);
+
+    if( !is_resource( $rsMatricula ) ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+
+      throw new DBException( _M( MENSAGEM_MATRICULA_REPOSITORY . 'erro_buscar_matriculas_turma', $oErro ) );
+    }
+
+    $iTotalLinhas     = pg_num_rows( $rsMatricula );
+    $aMatriculasTurma = array();
 
     if ($iTotalLinhas > 0) {
 
       for ($i = 0; $i < $iTotalLinhas; $i++) {
 
        $iCodigoMatricula   = db_utils::fieldsMemory($rsMatricula, $i)->ed60_i_codigo;
-       $aMatriculasTurma[] = MatriculaRepository::getInstance()->getMatriculaByCodigo($iCodigoMatricula);
+       $aMatriculasTurma[] = MatriculaRepository::getMatriculaByCodigo($iCodigoMatricula);
       }
     }
+
     return $aMatriculasTurma;
   }
 
   /**
    * Busca os Alunos de uma turma
-   *
    * @param Turma $oTurma
+   * @throws DBException
+   *
    * @return Matricula[]
    */
   public static function getMatriculasByTurmaOrdemAlfabetica(Turma $oTurma) {
 
-    $oDaoMatricula = db_utils::getDao('matricula');
+      $oDaoMatricula = new cl_matricula;
     $sWhere        = " ed60_i_turma = {$oTurma->getCodigo()}";
-    $sSqlMatricula = $oDaoMatricula->sql_query_aluno_matricula(null, "ed60_i_codigo, ed60_i_aluno, ed60_i_numaluno",
-                                                              "ed47_v_nome, ed60_i_numaluno", $sWhere);
-    $rsMatricula   = $oDaoMatricula->sql_record($sSqlMatricula);
-    $iTotalLinhas  = $oDaoMatricula->numrows;
-    $aMatriculasTurma  = array();
+    $sCampos       = "ed60_i_codigo, ed60_i_aluno, ed60_i_numaluno";
+    $sOrdenacao    = "ed47_v_nome, ed60_i_numaluno";
+    $sSqlMatricula = $oDaoMatricula->sql_query_aluno_matricula( null, $sCampos,$sOrdenacao, $sWhere );
+    $rsMatricula   = db_query($sSqlMatricula);
+
+    if( !is_resource( $rsMatricula ) ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+
+      throw new DBException( _M( MENSAGEM_MATRICULA_REPOSITORY . 'erro_buscar_matriculas_turma', $oErro ) );
+    }
+
+    $iTotalLinhas     = pg_num_rows( $rsMatricula );
+    $aMatriculasTurma = array();
 
     if ($iTotalLinhas > 0) {
 
       for ($i = 0; $i < $iTotalLinhas; $i++) {
 
         $iCodigoMatricula   = db_utils::fieldsMemory($rsMatricula, $i)->ed60_i_codigo;
-        $aMatriculasTurma[] = MatriculaRepository::getInstance()->getMatriculaByCodigo($iCodigoMatricula);
+        $aMatriculasTurma[] = MatriculaRepository::getMatriculaByCodigo($iCodigoMatricula);
       }
     }
     return $aMatriculasTurma;
@@ -181,11 +207,11 @@ class MatriculaRepository {
     return true;
   }
 
-
   /**
    * Retorna a matrícula ativa do aluno
    * @param Aluno $oAluno
    * @return Matricula|null
+   * @throws DBException
    */
   public static function getMatriculaAtivaPorAluno(Aluno $oAluno) {
 
@@ -195,9 +221,17 @@ class MatriculaRepository {
 
     $oDaoMatricula = new cl_matricula();
     $sSqlMatricula = $oDaoMatricula->sql_query_file(null, "ed60_i_codigo", null, $sWhere);
-    $rsMatricula   = $oDaoMatricula->sql_record($sSqlMatricula);
+    $rsMatricula   = db_query($sSqlMatricula);
 
-    if ($oDaoMatricula->numrows == 0) {
+    if( !is_resource( $rsMatricula ) ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+
+      throw new DBException( _M( MENSAGEM_MATRICULA_REPOSITORY . 'erro_buscar_matricula_ativa', $oErro ) );
+    }
+
+    if( pg_num_rows( $rsMatricula ) == 0 ) {
     	return null;
     }
 
@@ -206,18 +240,32 @@ class MatriculaRepository {
 
   /**
    * Retorna a ultima matricula de um aluno
-   * @param Aluno $oAluno
-   * @return NULL|Matricula
+   * @param Aluno   $oAluno
+   * @param integer $iAno   filtra a ultima matrícula de um ano especifico
+   * @return Matricula|null
+   * @throws DBException
    */
-  public static function getUltimaMatriculaAluno(Aluno $oAluno) {
+  public static function getUltimaMatriculaAluno(Aluno $oAluno, $iAno = null) {
 
-    $sWhere  = "     ed60_i_aluno = {$oAluno->getCodigoAluno()} ";
+    $sWhere    = " ed60_i_aluno = {$oAluno->getCodigoAluno()} ";
+    if ( !is_null($iAno) ) {
+      $sWhere .= "and extract (year from ed60_d_datamatricula) = {$iAno}";
+    }
+
 
     $oDaoMatricula = new cl_matricula();
     $sSqlMatricula = $oDaoMatricula->sql_query_file(null, "max(ed60_i_codigo) as ed60_i_codigo", null, $sWhere);
-    $rsMatricula   = $oDaoMatricula->sql_record($sSqlMatricula);
+    $rsMatricula   = db_query($sSqlMatricula);
 
-    if ($oDaoMatricula->numrows == 0 || empty(db_utils::fieldsMemory($rsMatricula, 0)->ed60_i_codigo)) {
+    if( !is_resource( $rsMatricula ) ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+
+      throw new DBException( _M( MENSAGEM_MATRICULA_REPOSITORY . 'erro_buscar_ultima_matricula', $oErro ) );
+    }
+
+    if (pg_num_rows( $rsMatricula ) == 0 || empty(db_utils::fieldsMemory($rsMatricula, 0)->ed60_i_codigo)) {
       return null;
     }
 
@@ -225,28 +273,35 @@ class MatriculaRepository {
   }
 
   /**
-   * Busca todas as matriculas que o aluno possui.
-   * @param  Aluno   $oAluno
-   * @param  boolean $lSomenteSituacaoMatriculado
-   * @return array
+   * @param Aluno $oAluno
+   * @param bool  $lSomenteSituacaoMatriculado
+   * @param Turma $oTurma
+   * @return Matricula[]
+   * @throws DBException
    */
-  public static function getTodasMatriculasAluno( Aluno $oAluno, $lSomenteSituacaoMatriculado = true ) {
+  public static function getTodasMatriculasAluno( Aluno $oAluno, $lSomenteSituacaoMatriculado = true, $oTurma = null, $sOrdem = null ) {
 
     $aMatriculas     = array();
     $oDaoMatricula   = new cl_matricula();
     $sWhereMatricula = "ed60_i_aluno = {$oAluno->getCodigoAluno()}";
+
     if( $lSomenteSituacaoMatriculado ) {
       $sWhereMatricula .= " and ed60_c_situacao = 'MATRICULADO' ";
     }
 
-    $sSqlMatricula = $oDaoMatricula->sql_query_file( null, 'ed60_i_codigo', null, $sWhereMatricula );
+    if( $oTurma != null && $oTurma instanceof Turma ) {
+      $sWhereMatricula .= " and ed60_i_turma = {$oTurma->getCodigo()} ";
+    }
+
+    $sSqlMatricula = $oDaoMatricula->sql_query_file( null, 'ed60_i_codigo', $sOrdem, $sWhereMatricula );
     $rsMatricula   = db_query( $sSqlMatricula );
 
     if( !$rsMatricula ) {
 
       $oErro        = new stdClass();
       $oErro->sErro = pg_last_error();
-      throw new DBException( _M( MENSAGEM_MATRICULA_REPOSITORY + 'erro_buscar_matriculas', $oErro ) );
+
+      throw new DBException( _M( MENSAGEM_MATRICULA_REPOSITORY . 'erro_buscar_matriculas', $oErro ) );
     }
 
     $iTotalMatriculas = pg_num_rows( $rsMatricula );
@@ -262,4 +317,111 @@ class MatriculaRepository {
 
     return $aMatriculas;
   }
+
+  /**
+   * Retorna a matrícula ativa de um aluno em determinada turma
+   * @param Turma $oTurma
+   * @param Aluno $oAluno
+   * @return Matricula|null
+   * @throws DBException
+   */
+  public static function getMatriculaAtivaTurma( Turma $oTurma, Aluno $oAluno ) {
+
+    $aMatriculas = MatriculaRepository::getTodasMatriculasAluno( $oAluno, true, $oTurma );
+
+    return isset( $aMatriculas[0] ) ? $aMatriculas[0] : null;
+  }
+
+  /**
+   * Busca a ultima de TODOS os ALUNOS,
+   * em cima destas matrículas filtra a escola e etapa informada
+   * @param  Escola $oEscola
+   * @param  Etapa  $oEtapa
+   * @return Matricula[]
+   */
+  public static function getTodasMatriculasEncerradasPorEtapa(Escola $oEscola, Etapa $oEtapa, $sFiltroAdicional = '') {
+
+    $sSql  = " select matricula.ed60_i_codigo, matricula.ed60_i_aluno, trim(ed47_v_nome) as nome ";
+    $sSql .= "   from ( select max(ed60_i_codigo) , ed60_i_aluno ";
+    $sSql .= "            from matricula  ";
+    $sSql .= "           group by ed60_i_aluno) as x ";
+    $sSql .= "   join matricula       on ed60_i_codigo     = x.max ";
+    $sSql .= "   join aluno           on ed47_i_codigo     = matricula.ed60_i_aluno ";
+    $sSql .= "   join turma           on ed57_i_codigo     = ed60_i_turma ";
+    $sSql .= "   join matriculaserie  on ed221_i_matricula = ed60_i_codigo ";
+    $sSql .= "                       and ed221_c_origem    = 'S'  ";
+    $sSql .= "  where ed57_i_escola    = {$oEscola->getCodigo()} ";
+    $sSql .= "    and ed221_i_serie    = {$oEtapa->getCodigo()} ";
+    $sSql .= "    and ed60_c_situacao  = 'MATRICULADO' ";
+    $sSql .= "    and ed60_c_concluida = 'S' ";
+    $sSql .= "    {$sFiltroAdicional} ";
+    $sSql .= "  order by nome";
+
+    $rsMatriculasEncerradas = db_query( $sSql );
+
+    if ( !$rsMatriculasEncerradas ) {
+      throw new DBException( _M(MENSAGEM_MATRICULA_REPOSITORY . "erro_buscar_matriculas_encerradas") );
+    }
+
+    $aMatriculasEncerradas = array();
+
+    $iLinhas = pg_num_rows($rsMatriculasEncerradas);
+    for( $i = 0; $i < $iLinhas; $i++) {
+
+      $oDados                  = db_utils::fieldsMemory($rsMatriculasEncerradas, $i);
+      $aMatriculasEncerradas[] = self::getMatriculaByCodigo($oDados->ed60_i_codigo);
+    }
+
+    return $aMatriculasEncerradas;
+  }
+
+    /**
+     * @param array $filtros
+     * @return Matricula|null
+     * @throws DBException
+     * @throws Exception
+     */
+    public static function getMatriculaByFiltros($filtros = array())
+    {
+        if (empty($filtros)) {
+            throw new Exception("Não foi informado nenhum filtro.");
+        }
+
+        $where = implode(' and ', $filtros);
+
+        $dao = new cl_matricula();
+        $sql = $dao->sql_query_censo_situacao_aluno(null, "ed60_i_codigo", null, $where);
+        $rs = db_query($sql);
+
+        if (!is_resource($rs)) {
+            throw new DBException("Erro ao buscar matricula.");
+        }
+
+        if (pg_num_rows($rs) == 0) {
+            return null;
+        }
+
+        return MatriculaRepository::getInstance()->getMatriculaByCodigo(db_utils::fieldsMemory($rs, 0)->ed60_i_codigo);
+    }
+
+    /**
+     * @param $codigoMatricula
+     * @return Matricula
+     * @throws DBException
+     */
+    public static function getMatriculaByCodigoMatricula($codigoMatricula)
+    {
+        $dao = new cl_matricula();
+        $sql = $dao->sql_query_file(
+            null,
+            "max(ed60_i_codigo) as codigo",
+            null,
+            "ed60_matricula = {$codigoMatricula}"
+        );
+        $rs = db_query($sql);
+        if (!$rs && pg_num_rows($rs) == 0) {
+            throw new DBException("Erro ao buscar matricula.");
+        }
+        return MatriculaRepository::getInstance()->getMatriculaByCodigo(db_utils::fieldsMemory($rs, 0)->codigo);
+    }
 }

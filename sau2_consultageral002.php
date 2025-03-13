@@ -1,37 +1,40 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once('fpdf151/pdf.php');
-require_once('libs/db_utils.php');
-require_once('libs/db_stdlibwebseller.php');
+use ECidade\Pdf\Pdf;
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_stdlibwebseller.php'));
 
 function getInfoCgs($iCgs) {
 
-  $oDaoCgsUnd = db_utils::getdao('cgs_und');
+  $oDaoCgsUnd = new cl_cgs_und;
   $sSql       = $oDaoCgsUnd->sql_query_file($iCgs);
   $rs         = $oDaoCgsUnd->sql_record($sSql);
   $aDados     = array();
@@ -44,7 +47,7 @@ function getInfoCgs($iCgs) {
 }
 
 function getDocumentosCgs($iCgs, $iTipo, $dIni, $dFim) {
- 
+
   global $aDadosCgs; // Dados do Cgs já buscados pela função getInfoCgs
   return $aDadosCgs;
 
@@ -52,7 +55,7 @@ function getDocumentosCgs($iCgs, $iTipo, $dIni, $dFim) {
 
 function getCartaoSusCgs($iCgs, $iTipo, $dIni, $dFim) {
 
-  $oDaoCgsCartaoSus = db_utils::getdao('cgs_cartaosus');
+  $oDaoCgsCartaoSus = new cl_cgs_cartaosus;
 
   /* pega os cartões sus */
   $sSql           = $oDaoCgsCartaoSus->sql_query(null, ' s115_c_cartaosus, s115_c_tipo, s115_i_codigo ',
@@ -66,6 +69,7 @@ function getCartaoSusCgs($iCgs, $iTipo, $dIni, $dFim) {
     for ($iCont = 0; $iCont < $oDaoCgsCartaoSus->numrows; $iCont++) {
 
       $oDadosCgsCartaoSus                 = db_utils::fieldsmemory($rsCgsCartaoSus, $iCont);
+      $aCartoes[$iCont] = new stdClass;
       $aCartoes[$iCont]->s115_c_cartaosus = $oDadosCgsCartaoSus->s115_c_cartaosus;
       $aCartoes[$iCont]->s115_c_tipo      = $oDadosCgsCartaoSus->s115_c_tipo;
       $aCartoes[$iCont]->s115_i_codigo    = $oDadosCgsCartaoSus->s115_i_codigo;
@@ -73,14 +77,14 @@ function getCartaoSusCgs($iCgs, $iTipo, $dIni, $dFim) {
     }
 
   }
-  
+
   return $aCartoes;
 
 }
 
 function getAgendamentosCgs($iCgs, $iTipo, $dIni, $dFim) {
 
-  $oDaoAgendamentos = db_utils::getdao('agendamentos');
+  $oDaoAgendamentos = new cl_agendamentos;
   $dDataAtual       = date('Y-m-d', db_getsession('DB_datausu'));
 
   $sSubAtendido     = 'select sd29_i_codigo from prontagendamento inner join prontproced ';
@@ -104,7 +108,7 @@ function getAgendamentosCgs($iCgs, $iTipo, $dIni, $dFim) {
   $sCampos         .= " (select login from  ($sSubAnulado2) as tmp3) as usuario_anulacao ";
 
   $sOrderBy         = ' sd23_d_consulta desc, sd23_c_hora desc ';
-  
+
   $sWhere           = ' sd23_i_numcgs = '.$iCgs;
   if ($dIni != '') {
     $sWhere .= " and sd23_d_consulta >= '".$dIni."'";
@@ -123,10 +127,11 @@ function getAgendamentosCgs($iCgs, $iTipo, $dIni, $dFim) {
       $oDados = db_utils::fieldsmemory($rs, $iCont);
 
       /* Verifico qual a situação do agendamentos */
-      $sSituacao = $oDados->anulado == 'true' ? 'Anulado' : 
+      $sSituacao = $oDados->anulado == 'true' ? 'Anulado' :
                                                  (empty($oDados->situacao) ? 'Não compareceu' :
                                                                              $oDados->situacao);
-                                                                            
+
+      $aAgendamentos[$iCont] = new stdClass;
       $aAgendamentos[$iCont]->sd23_d_agendamento = $oDados->sd23_d_agendamento;
       $aAgendamentos[$iCont]->id_usuario         = $oDados->id_usuario;
       $aAgendamentos[$iCont]->login              = $oDados->login;
@@ -142,69 +147,70 @@ function getAgendamentosCgs($iCgs, $iTipo, $dIni, $dFim) {
 
     }
 
-  } 
-  
+  }
+
   return $aAgendamentos;
 
 }
 
 function getProntuariosCgs($iCgs, $iTipo, $dIni, $dFim) {
 
-  $oDaoProntProced = db_utils::getdao('prontproced');
+  $oDaoProntProced = new cl_prontproced();
 
   if ($iTipo == 1) {
-    
+
     $sCampos  = 'sd24_i_codigo, s102_i_agendamento, sd29_d_data, sd29_c_hora, coddepto, ';
     $sCampos .= 'descrdepto, sd03_i_codigo, z01_nome, rh70_estrutural, rh70_descr, ';
     $sCampos .= 'sd29_i_usuario, login, sd29_d_cadastro, sd29_c_cadastro ';
     $sGroupBy = '';
     $sOrderBy = ' sd29_d_data desc, sd29_c_hora desc, sd24_i_codigo desc';
-    $sWhere   = ' sd24_i_numcgs = '.$iCgs; 
+    $sWhere   = ' sd24_i_numcgs = '.$iCgs;
     if ($dIni != '') {
       $sWhere .= " and sd29_d_data >= '".$dIni."'";
     }
     if ($dFim != '') {
       $sWhere .= " and sd29_d_data <= '".$dFim."'";
     }
-  
+
   } else {
-    
+
     $sCampos  = ' sd63_c_procedimento,sd63_c_nome, (sd63_f_sh + sd63_f_sa + sd63_f_sp) as valor_unitario, ';
     $sCampos .= ' count(sd63_i_codigo) as quantidade,sum(sd63_f_sh + sd63_f_sa + sd63_f_sp) as valor_total ';
-    $sGroupBy = ' group by sd63_c_procedimento, sd63_c_nome, sd63_f_sh, sd63_f_sa, sd63_f_sp'; 
+    $sGroupBy = ' group by sd63_c_procedimento, sd63_c_nome, sd63_f_sh, sd63_f_sa, sd63_f_sp';
     $sOrderBy = '';
     $sWhere   = ' sd24_i_numcgs = '.$iCgs;
     if ($dIni != "" || $dFim != "") {
-      
-      $sWhere2  = ''; 
+
+      $sWhere2  = '';
       if ($dIni != "") {
-        $sWhere2 .= " and sd29_d_data >= '".$dIni."'";  
+        $sWhere2 .= " and sd29_d_data >= '".$dIni."'";
       }
       if ($dFim != "") {
         $sWhere2 .= " and sd29_d_data <= '".$dFim."'";
       }
       $sWhere .= ' and sd63_i_codigo in ('.$oDaoProntProced->sql_query("","sd63_i_codigo","",$sWhere.$sWhere2).')';
       $sWhere .= $sWhere2;
-      
-    } 
-    
+
+    }
+
   }
 
-  $sSql         = $oDaoProntProced->sql_query_consulta_geral(null, $sCampos, $sOrderBy, 
+  $sSql         = $oDaoProntProced->sql_query_consulta_geral(null, $sCampos, $sOrderBy,
                                                              $sWhere.$sGroupBy
                                                             );
 
   $rs           = $oDaoProntProced->sql_record($sSql);
-  
+
   $aProntuarios = array();
   if ($oDaoProntProced->numrows > 0) { // Se o paciente possui prontuários
 
     for ($iCont = 0; $iCont < $oDaoProntProced->numrows; $iCont++) {
 
       $oDados = db_utils::fieldsmemory($rs, $iCont);
+      $aProntuarios[$iCont] = new stdClass;
 
       if ($iTipo == 1) {
-        
+
         $aProntuarios[$iCont]->sd24_i_codigo      = $oDados->sd24_i_codigo;
         $aProntuarios[$iCont]->s102_i_agendamento = $oDados->s102_i_agendamento;
         $aProntuarios[$iCont]->sd29_d_data        = $oDados->sd29_d_data;
@@ -219,15 +225,15 @@ function getProntuariosCgs($iCgs, $iTipo, $dIni, $dFim) {
         $aProntuarios[$iCont]->login              = $oDados->login;
         $aProntuarios[$iCont]->sd29_d_cadastro    = $oDados->sd29_d_cadastro;
         $aProntuarios[$iCont]->sd29_c_cadastro    = $oDados->sd29_c_cadastro;
-        
+
       } else {
-        
+
         $aProntuarios[$iCont]->sd63_c_procedimento = $oDados->sd63_c_procedimento;
         $aProntuarios[$iCont]->sd63_c_nome         = $oDados->sd63_c_nome;
         $aProntuarios[$iCont]->valor_unitario      = $oDados->valor_unitario;
         $aProntuarios[$iCont]->quantidade          = $oDados->quantidade;
         $aProntuarios[$iCont]->valor_total         = $oDados->valor_total;
-        
+
       }
 
     }
@@ -240,13 +246,13 @@ function getProntuariosCgs($iCgs, $iTipo, $dIni, $dFim) {
 
 function getRetiradasCgs($iCgs, $iTipo, $dIni, $dFim) {
 
-  $oDaoFarRetiradaItens = db_utils::getdao('far_retiradaitens');
+  $oDaoFarRetiradaItens = new cl_far_retiradaitens;
 
   $sCampos  = 'fa04_d_data, fa01_i_codigo, m60_descr, fa06_f_quant, m77_lote, fa07_i_matrequi, login, tipo,';
   $sCampos .= "case when tipo = 1 then 'Retirada' else case when fa23_i_cancelamento = 1 then 'Cancelamento '";
   $sCampos .= "else 'Devolução' end end as stipo, m77_dtvalidade, fa23_c_motivo, ";
   $sCampos .= 'fa22_d_data, fa23_i_quantidade ';
-  
+
   $sWhereRetirada  = " z01_i_cgsund = $iCgs ";
   if ($dIni != '') {
     $sWhereRetirada .= " and fa04_d_data >= '".$dIni."'";
@@ -261,9 +267,9 @@ function getRetiradasCgs($iCgs, $iTipo, $dIni, $dFim) {
   if ($dFim != '') {
     $sWhereDevolucao .= " and fa22_d_data <= '".$dFim."'";
   }
-  
-  $sSql     = $oDaoFarRetiradaItens->sql_query_historicoretiradasdevolucoes($iCgs, 
-                                                                            $sCampos, 
+
+  $sSql     = $oDaoFarRetiradaItens->sql_query_historicoretiradasdevolucoes($iCgs,
+                                                                            $sCampos,
                                                                             'fa06_i_codigo desc, tipo asc',
                                                                             $sWhereRetirada,
                                                                             $sWhereDevolucao
@@ -275,10 +281,10 @@ function getRetiradasCgs($iCgs, $iTipo, $dIni, $dFim) {
 
     $oDados = db_utils::fieldsmemory($rs, $iCont);
     if ($oDados->tipo == 2) {
-    
+
       $oDados->fa04_d_data  = $oDados->fa22_d_data;
       $oDados->fa06_f_quant = $oDados->fa23_i_quantidade;
-    
+
     }
 
     $aRetiradas[$iCont] = $oDados;
@@ -291,21 +297,21 @@ function getRetiradasCgs($iCgs, $iTipo, $dIni, $dFim) {
 
 function getExamesCgs($iCgs, $iTipo, $dIni, $dFim) {
 
-  $oDaoLabRequiItem = db_utils::getdao('lab_requiitem');
+  $oDaoLabRequiItem = new cl_lab_requiitem;
 
   if ($iTipo == 1) {
-  
+
     $sCampos  = 'la21_d_data, la02_c_descr, la08_c_descr, la32_d_data, la31_d_data';
     $sOrderBy = 'la21_d_data';
     $sGroupBy = '';
-    $sWhere   = ' la22_i_cgs = '.$iCgs; 
+    $sWhere   = ' la22_i_cgs = '.$iCgs;
     if ($dIni != '') {
       $sWhere .= " and la21_d_data >= '".$dIni."'";
     }
     if ($dFim != '') {
       $sWhere .= " and la21_d_data <= '".$dFim."'";
     }
-  
+
   } else {
 
     $sCampos  = ' sd63_c_procedimento,sd63_c_nome, ';
@@ -315,23 +321,23 @@ function getExamesCgs($iCgs, $iTipo, $dIni, $dFim) {
     $sCampos .= ' as valor_total ';
     $sWhere   = ' la22_i_cgs = '.$iCgs;
     if ($dIni != "" || $dFim != "") {
-      
-      $sWhere2  = ' la22_i_cgs = '.$iCgs; 
+
+      $sWhere2  = ' la22_i_cgs = '.$iCgs;
       if ($dIni != "") {
-        $sWhere2 .= " and la21_d_data >= '".$dIni."'";  
+        $sWhere2 .= " and la21_d_data >= '".$dIni."'";
       }
       if ($dFim != "") {
         $sWhere2 .= " and la21_d_data <= '".$dFim."'";
       }
-      $sWhere .= ' and la21_i_codigo in ('.$oDaoLabRequiItem->sql_query_consulta_geral("", "la21_i_codigo","", 
+      $sWhere .= ' and la21_i_codigo in ('.$oDaoLabRequiItem->sql_query_consulta_geral("", "la21_i_codigo","",
                                                                                        $sWhere2).')';
-      
+
     }
-    $sGroupBy = ' group by sd63_c_procedimento, sd63_c_nome, valor_unitario '; 
+    $sGroupBy = ' group by sd63_c_procedimento, sd63_c_nome, valor_unitario ';
     $sOrderBy = ' sd63_c_procedimento ';
-    
+
   }
-  $sSql    = $oDaoLabRequiItem->sql_query_consulta_geral(null, $sCampos, $sOrderBy, 
+  $sSql    = $oDaoLabRequiItem->sql_query_consulta_geral(null, $sCampos, $sOrderBy,
                                                          $sWhere.$sGroupBy
                                                         );
   $rs      = $oDaoLabRequiItem->sql_record($sSql);
@@ -342,25 +348,26 @@ function getExamesCgs($iCgs, $iTipo, $dIni, $dFim) {
     for ($iCont = 0; $iCont < $oDaoLabRequiItem->numrows; $iCont++) {
 
       $oDados = db_utils::fieldsmemory($rs, $iCont);
-      
+      $aExames[$iCont] = new stdClass;
+
       if ($iTipo == 1) {
-        
+
         $aExames[$iCont]->la21_d_data  = $oDados->la21_d_data;
         $aExames[$iCont]->la02_c_descr = $oDados->la02_c_descr;
         $aExames[$iCont]->la08_c_descr = $oDados->la08_c_descr;
         $aExames[$iCont]->la32_d_data  = $oDados->la32_d_data;
         $aExames[$iCont]->la31_d_data  = $oDados->la31_d_data;
-      
+
       } else {
-      
+
         $aExames[$iCont]->sd63_c_procedimento = $oDados->sd63_c_procedimento;
         $aExames[$iCont]->sd63_c_nome         = $oDados->sd63_c_nome;
         $aExames[$iCont]->valor_unitario      = $oDados->valor_unitario;
         $aExames[$iCont]->quantidade          = $oDados->quantidade;
         $aExames[$iCont]->valor_total         = $oDados->valor_total;
-       
+
       }
-      
+
     }
 
   }
@@ -371,15 +378,15 @@ function getExamesCgs($iCgs, $iTipo, $dIni, $dFim) {
 
 function getPedidosTfdCgs($iCgs, $iTipo, $dIni, $dFim) {
 
-  $oDaoTfdPedidoTfd = db_utils::getdao('tfd_pedidotfd');
-  $sWhere           = ' tf01_i_cgsund = '.$iCgs; 
+  $oDaoTfdPedidoTfd = new cl_tfd_pedidotfd;
+  $sWhere           = ' tf01_i_cgsund = '.$iCgs;
   if ($dIni != '') {
     $sWhere .= " and tf16_d_dataagendamento >= '".$dIni."'";
   }
   if ($dFim != '') {
     $sWhere .= " and tf16_d_dataagendamento <= '".$dFim."'";
   }
-  $sSql     = $oDaoTfdPedidoTfd->sql_query_grid(null, '*', ' tf16_d_dataagendamento desc ', 
+  $sSql     = $oDaoTfdPedidoTfd->sql_query_grid(null, '*', ' tf16_d_dataagendamento desc ',
                                                 $sWhere
                                                );
   $rs       = $oDaoTfdPedidoTfd->sql_record($sSql);
@@ -389,6 +396,7 @@ function getPedidosTfdCgs($iCgs, $iTipo, $dIni, $dFim) {
 
     $oDados                                   = db_utils::fieldsmemory($rs, $iCont);
 
+    $aPedidos[$iCont] = new stdClass;
     $aPedidos[$iCont]->tf01_i_codigo          = $oDados->tf01_i_codigo;
     $aPedidos[$iCont]->tf16_d_dataagendamento = $oDados->tf16_d_dataagendamento;
     $aPedidos[$iCont]->tf17_d_datasaida       = $oDados->tf17_d_datasaida;
@@ -405,17 +413,17 @@ function getPedidosTfdCgs($iCgs, $iTipo, $dIni, $dFim) {
 }
 
 function getVacinasCgs($iCgs, $iTipo, $dIni, $dFim) {
-  
+
   global $aDadosCgs;
-  $oDaoVacVacinadose = db_utils::getdao('vac_vacinadose');
-  $oDaoCgsUnd        = db_utils::getdao('cgs_und');
+  $oDaoVacVacinadose = new cl_vac_vacinadose;
+  $oDaoCgsUnd        = new cl_cgs_und;
 
   /* Pego a data de nascimento do CGS */
   $dNasc  = $aDadosCgs[0]->z01_d_nasc;
 
   $dAtual = date('d/m/Y', db_getsession('DB_datausu'));
   $aAtual = explode('/', $dAtual);
-  
+
   /* Bloco que busca a informação das vacinas e doses */
   $sCampos  = ' vc07_i_codigo,';
   $sCampos .= ' vc05_c_descr,';
@@ -453,23 +461,23 @@ function getVacinasCgs($iCgs, $iTipo, $dIni, $dFim) {
   $sOrderBy = ' vc07_i_faixainiano, vc07_i_faixainimes, vc07_i_faixainidias ';
   $sSql     = $oDaoVacVacinadose->sql_query(null, $sCampos, $sOrderBy);
   $rs       = $oDaoVacVacinadose->sql_record($sSql);
-  
+
   $aDadosVacinas = array();
   for ($iCont = 0; $iCont < $oDaoVacVacinadose->numrows; $iCont++) {
-   
+
     $oDados = db_utils::fieldsmemory($rs, $iCont);
- 
+
     $dDataAplicacao = '';
     $sObsAplicacao  = '';
     $iLogin         = '';
     $sLogin         = '';
     $iCodigoAplic   = '';
     $sForaRede      = '';
-   
+
     /* A variável $oDados->aplicacao contém as informações da aplicação da vacina concatenadas com ' || ',
        que são buscadas no select acima. Caso a vacina (dose) ainda não tenha sido aplicada, a variável estará vazia */
     if (!empty($oDados->aplicacao)) {
-     
+
       $aAplicacao     = explode(' || ', $oDados->aplicacao);
       $dDataAplicacao = $aAplicacao[0]; // data da aplicacao
       $sObsAplicacao  = $aAplicacao[1]; // obs da aplicacao
@@ -477,32 +485,32 @@ function getVacinasCgs($iCgs, $iTipo, $dIni, $dFim) {
       $sLogin         = $aAplicacao[3]; // login do usuario que lancou a aplicacao
       $iCodigoAplic   = $aAplicacao[4]; // codigo da aplicacao
       $sForaRede      = $aAplicacao[5]; // foi ou nao realizada fora da rede
- 
+
     }
-   
+
     $aNasc = explode('-', $dNasc);
- 
+
     /* Cálculo da data de vencimento (último dia em que é permitido tomar a vacina)*/
-    $dVencimento = somaDataDiaMesAno($aNasc[2], $aNasc[1], $aNasc[0], 
-                                     $oDados->vc07_i_faixafimdias + $oDados->vc07_i_diasatraso, 
+    $dVencimento = somaDataDiaMesAno($aNasc[2], $aNasc[1], $aNasc[0],
+                                     $oDados->vc07_i_faixafimdias + $oDados->vc07_i_diasatraso,
                                      $oDados->vc07_i_faixafimmes, $oDados->vc07_i_faixafimano
-                                    ); 
+                                    );
     /* Cálculo do primeiro dia em que é possível tomar a vacina */
-    $dInicio     = somaDataDiaMesAno($aNasc[2], $aNasc[1], $aNasc[0], 
-                                     $oDados->vc07_i_faixainidias - $oDados->vc07_i_diasantecipacao, 
+    $dInicio     = somaDataDiaMesAno($aNasc[2], $aNasc[1], $aNasc[0],
+                                     $oDados->vc07_i_faixainidias - $oDados->vc07_i_diasantecipacao,
                                      $oDados->vc07_i_faixainimes, $oDados->vc07_i_faixainiano
                                     );
- 
+
     /* Verifica se a pessoa já podia ter tomado a vacina, ou seja, se a data atual
        é maior ou igual a data de início do periodo para a pessoa tomar a vacina */
     $aInicio     = explode('/', $dInicio);
-    if(adodb_mktime(0, 0, 0, $aAtual[1], $aAtual[0], $aAtual[2]) 
+    if(adodb_mktime(0, 0, 0, $aAtual[1], $aAtual[0], $aAtual[2])
        <= adodb_mktime(0, 0, 0, $aInicio[1], $aInicio[0], $aInicio[2])) {
       $sPassouInicio = 'false';
     } else {
       $sPassouInicio = 'true';
     }
- 
+
     $aDadosVacinas[$iCont]->vc07_i_codigo  = $oDados->vc07_i_codigo;
     $aDadosVacinas[$iCont]->vc05_c_descr   = $oDados->vc05_c_descr;
     $aDadosVacinas[$iCont]->vc03_c_descr   = $oDados->vc03_c_descr;
@@ -521,7 +529,7 @@ function getVacinasCgs($iCgs, $iTipo, $dIni, $dFim) {
       $aDadosVacinas[$iCont]->periodo = "$dInicio - $dVencimento";
     }
     $aDadosVacinas[$iCont]->passouinicio = $sPassouInicio;
- 
+
   }
 
   return $aDadosVacinas;
@@ -529,10 +537,10 @@ function getVacinasCgs($iCgs, $iTipo, $dIni, $dFim) {
 }
 function getHiperdiaCgs($iCgs, $iTipo, $dIni, $dFim) {
 
-  $oDaoHiperdia = db_utils::getdao('far_cadacomppachiperdia');
+  $oDaoHiperdia = new cl_far_cadacomppachiperdia;
   $sCampos  = " s152_i_codigo, s152_i_pressaosistolica, s152_i_pressaodiastolica, s152_i_cintura, s152_n_peso,";
-  $sCampos .= " s152_i_altura, s152_i_glicemia, "; 
-  $sCampos .= " case when s152_i_alimentacaoexameglicemia=0 then "; 
+  $sCampos .= " s152_i_altura, s152_i_glicemia, ";
+  $sCampos .= " case when s152_i_alimentacaoexameglicemia=0 then ";
   $sCampos .= "   'Não informado' ";
   $sCampos .= " else case when s152_i_alimentacaoexameglicemia=1 then ";
   $sCampos .= "        'Em jejum' ";
@@ -542,12 +550,12 @@ function getHiperdiaCgs($iCgs, $iTipo, $dIni, $dFim) {
   $sCampos .= " end as s152_i_alimentacaoexameglicemia , ";
   $sCampos .= " z01_nome, ";
   $sCampos .= " s152_d_dataconsulta ";
-  $sWhere   = ' fa50_i_cgsund = '.$iCgs; 
+  $sWhere   = ' fa50_i_cgsund = '.$iCgs;
   if ($dIni != '') {
-    $sWhere .= " and tf16_d_dataagendamento >= '".$dIni."'";
+    $sWhere .= " and s152_d_dataconsulta >= '".$dIni."'";
   }
   if ($dFim != '') {
-    $sWhere .= " and tf16_d_dataagendamento <= '".$dFim."'";
+    $sWhere .= " and s152_d_dataconsulta <= '".$dFim."'";
   }
   $sSql     = $oDaoHiperdia->sql_query2(null, $sCampos, ' s152_d_dataconsulta desc ', $sWhere);
   $rs       = $oDaoHiperdia->sql_record($sSql);
@@ -567,15 +575,15 @@ function getHiperdiaCgs($iCgs, $iTipo, $dIni, $dFim) {
     $aHiperdia[$iCont]->s152_i_alimentacaoexameglicemia = $oDados->s152_i_alimentacaoexameglicemia;
     $aHiperdia[$iCont]->z01_nome                        = $oDados->z01_nome;
     $aHiperdia[$iCont]->s152_d_dataconsulta             = $oDados->s152_d_dataconsulta;
-    
+
   }
   return $aHiperdia;
 
 }
 function getCidsCgs($iCgs, $iTipo, $dIni, $dFim) {
 
-  $oDaoProntprocedcid = db_utils::getdao('prontprocedcid'); 
-  
+  $oDaoProntprocedcid = new cl_prontprocedcid;
+
   $sCampos = "sd29_d_data, sd70_c_cid, sd70_c_nome";
   $sWhere  = " sd24_i_numcgs = $iCgs ";
   if ($dIni != '') {
@@ -592,16 +600,19 @@ function getCidsCgs($iCgs, $iTipo, $dIni, $dFim) {
 
     $oDados                     = db_utils::fieldsmemory($rs, $iCont);
 
+    $aCids[$iCont] = new stdClass;
     $aCids[$iCont]->sd29_d_data = $oDados->sd29_d_data;
     $aCids[$iCont]->sd70_c_cid  = $oDados->sd70_c_cid;
     $aCids[$iCont]->sd70_c_nome = $oDados->sd70_c_nome;
-    
+
   }
   return $aCids;
 
 }
 
 function imprimirInfoCgs($oPdf, $oDados) {
+
+  $nome = $oDados->z01_v_nome;
 
   $lCor = false;
   $iTam = 5;
@@ -613,11 +624,14 @@ function imprimirInfoCgs($oPdf, $oDados) {
   $oPdf->setfont('arial', 'B', 9);
   $oPdf->cell(20, $iTam, 'CGS:', 0, 0, 'L', $lCor);
   $oPdf->setfont('arial', '', 9);
-  $oPdf->cell(75, $iTam, $oDados->z01_i_cgsund, 0, 0, 'L', $lCor);
+  $oPdf->cell(75, $iTam, $oDados->z01_i_cgsund, 0, 1, 'L', $lCor);
   $oPdf->setfont('arial', 'B', 9);
+
   $oPdf->cell(20, $iTam, 'Nome:', 0, 0, 'L', $lCor);
   $oPdf->setfont('arial', '', 9);
-  $oPdf->cell(75, $iTam, $oDados->z01_v_nome, 0, 1, 'L', $lCor);
+  $oPdf->cell(75, $iTam, $nome, 0, 1, 'L', $lCor);
+
+
 
   $oPdf->setfont('arial', 'B', 9);
   $oPdf->cell(20, $iTam, 'CPF:', 0, 0, 'L', $lCor);
@@ -689,7 +703,7 @@ function imprimirInfoCgs($oPdf, $oDados) {
   $oPdf->cell(20, $iTam, 'Celular:', 0, 0, 'L', $lCor);
   $oPdf->setfont('arial', '', 9);
   $oPdf->cell(75, $iTam, $oDados->z01_v_telcel, 0, 1, 'L', $lCor);
-  
+
 }
 
 function novoTituloCartaoSus($oPdf) {
@@ -697,7 +711,7 @@ function novoTituloCartaoSus($oPdf) {
   $lCor = false;
   $iTam = 10;
   $oPdf->setfont('arial', 'B', 11);
-  
+
   $oPdf->cell(190, $iTam, 'Cartões SUS do Paciente', 0, 1, 'C', $lCor);
 
 }
@@ -707,9 +721,9 @@ function novoTituloAgendamentos($oPdf) {
   $lCor = false;
   $iTam = 10;
   $oPdf->setfont('arial', 'B', 11);
-  
+
   $oPdf->cell(190, $iTam, 'Agendamentos de Consulta', 0, 1, 'C', $lCor);
-  
+
 }
 
 function novoTituloProntuarios($oPdf) {
@@ -717,7 +731,7 @@ function novoTituloProntuarios($oPdf) {
   $lCor = false;
   $iTam = 10;
   $oPdf->setfont('arial', 'B', 11);
-  
+
   $oPdf->cell(190, $iTam, 'Atendimentos Ambulatoriais', 0, 1, 'C', $lCor);
 
 }
@@ -727,7 +741,7 @@ function novoTituloRetiradas($oPdf) {
   $lCor = false;
   $iTam = 10;
   $oPdf->setfont('arial', 'B', 11);
-  
+
   $oPdf->cell(190, $iTam, 'Retiradas e Devoluções de Medicamentos', 0, 1, 'C', $lCor);
 
 }
@@ -737,9 +751,9 @@ function novoTituloExames($oPdf) {
   $lCor = false;
   $iTam = 10;
   $oPdf->setfont('arial', 'B', 11);
-  
+
   $oPdf->cell(190, $iTam, 'Exames Realizados', 0, 1, 'C', $lCor);
-  
+
 }
 
 function novoTituloPedidosTfd($oPdf) {
@@ -747,7 +761,7 @@ function novoTituloPedidosTfd($oPdf) {
   $lCor = false;
   $iTam = 10;
   $oPdf->setfont('arial', 'B', 11);
-  
+
   $oPdf->cell(190, $iTam, 'Pedidos de Tratamento Fora de Domicílio', 0, 1, 'C', $lCor);
 
 }
@@ -757,7 +771,7 @@ function novoTituloVacinas($oPdf) {
   $lCor = false;
   $iTam = 10;
   $oPdf->setfont('arial', 'B', 11);
-  
+
   $oPdf->cell(190, $iTam, 'Vacinas', 0, 1, 'C', $lCor);
 
 }
@@ -766,7 +780,7 @@ function novoTituloHiperdia($oPdf) {
   $lCor = false;
   $iTam = 10;
   $oPdf->setfont('arial', 'B', 11);
-  
+
   $oPdf->cell(190, $iTam, 'Hiperdia', 0, 1, 'C', $lCor);
 
 }
@@ -775,7 +789,7 @@ function novoTituloCids($oPdf) {
   $lCor = false;
   $iTam = 10;
   $oPdf->setfont('arial', 'B', 11);
-  
+
   $oPdf->cell(190, $iTam, "CID's", 0, 1, 'C', $lCor);
 
 }
@@ -786,7 +800,7 @@ function novoCabecalhoDocumentos($oPdf, $iTipo) {
   $iTam = 6;
   $oPdf->setfont('arial', 'B', 11);
   $oPdf->setfillcolor(223);
-  
+
   $oPdf->cell(190, $iTam, 'Documentos', 0, 1, 'C', $lCor);
 
 }
@@ -797,7 +811,7 @@ function novoCabecalhoCartaoSus($oPdf, $iTipo) {
   $iTam = 5;
   $oPdf->setfont('arial', 'B', 9);
   $oPdf->setfillcolor(223);
-  
+
   $oPdf->cell(65, $iTam, '', 0, 0, 'C', false);
   $oPdf->cell(30, $iTam, 'Cartão SUS', 1, 0, 'C', $lCor);
   $oPdf->cell(30, $iTam, 'Tipo', 1, 0, 'C', $lCor);
@@ -811,13 +825,13 @@ function novoCabecalhoAgendamentos($oPdf, $iTipo) {
   $iTam = 5;
   $oPdf->setfont('arial', 'B', 8);
   $oPdf->setfillcolor(223);
-  
-  $oPdf->cell(13, $iTam, 'Agenda', 1, 0, 'C', $lCor);
+
+  $oPdf->cell(12, $iTam, 'Agenda', 1, 0, 'C', $lCor);
   $oPdf->cell(20, $iTam, 'Usuário', 1, 0, 'C', $lCor);
   $oPdf->cell(20, $iTam, 'Ficha', 1, 0, 'C', $lCor);
   $oPdf->cell(13, $iTam, 'Data', 1, 0, 'C', $lCor);
-  $oPdf->cell(10, $iTam, 'Hora', 1, 0, 'C', $lCor);
-  $oPdf->cell(33, $iTam, 'Profissional', 1, 0, 'C', $lCor);
+  $oPdf->cell(7, $iTam, 'Hora', 1, 0, 'C', $lCor);
+  $oPdf->cell(37, $iTam, 'Profissional', 1, 0, 'C', $lCor);
   $oPdf->cell(18, $iTam, 'Situação', 1, 0, 'C', $lCor);
   $oPdf->cell(13, $iTam, 'Anulação', 1, 0, 'C', $lCor);
   $oPdf->cell(30, $iTam, 'Motivo', 1, 0, 'C', $lCor);
@@ -831,29 +845,29 @@ function novoCabecalhoProntuarios($oPdf, $iTipo) {
   $iTam = 5;
   $oPdf->setfont('arial', 'B', 8);
   $oPdf->setfillcolor(223);
-  
+
   if ($iTipo == 1) {
-    
+
     $oPdf->cell(20, $iTam, 'FAA', 1, 0, 'C', $lCor);
     $oPdf->cell(20, $iTam, 'Agenda', 1, 0, 'C', $lCor);
     $oPdf->cell(20, $iTam, 'Data', 1, 0, 'C', $lCor);
     $oPdf->cell(15, $iTam, 'Hora', 1, 0, 'C', $lCor);
     $oPdf->cell(115, $iTam, 'UPS', 1, 1, 'C', $lCor);
-    $oPdf->cell(70, $iTam, 'Profissional', 1, 0, 'C', $lCor);
-    $oPdf->cell(65, $iTam, 'Especialidade', 1, 0, 'C', $lCor);
+    $oPdf->cell(50, $iTam, 'Profissional', 1, 0, 'C', $lCor);
+    $oPdf->cell(85, $iTam, 'Especialidade', 1, 0, 'C', $lCor);
     $oPdf->cell(20, $iTam, 'Usuário', 1, 0, 'C', $lCor);
     $oPdf->cell(20, $iTam, 'Data', 1, 0, 'C', $lCor);
     $oPdf->cell(15, $iTam, 'Hora', 1, 1, 'C', $lCor);
 
   } else {
-    
+
     $oPdf->cell(145, $iTam, 'Procedimento', 1, 0, 'L', $lCor);
     $oPdf->cell(15, $iTam, 'Valor Unit.', 1, 0, 'C', $lCor);
     $oPdf->cell(10, $iTam, 'Qtde.', 1, 0, 'C', $lCor);
     $oPdf->cell(20, $iTam, 'Valor Total', 1, 1, 'C', $lCor);
-    
+
   }
-  
+
 }
 
 function novoCabecalhoRetiradas($oPdf, $iTipo) {
@@ -874,7 +888,7 @@ function novoCabecalhoRetiradas($oPdf, $iTipo) {
   $oPdf->cell(20, $iTam, 'Devolução', 1, 0, 'C', $lCor);
   $oPdf->cell(80, $iTam, 'Motivo', 1, 0, 'C', $lCor);
   $oPdf->cell(30, $iTam, 'Usuário', 1, 1, 'C', $lCor);
-  
+
 }
 
 function novoCabecalhoExames($oPdf, $iTipo) {
@@ -883,22 +897,22 @@ function novoCabecalhoExames($oPdf, $iTipo) {
   $iTam = 5;
   $oPdf->setfont('arial', 'B', 8);
   $oPdf->setfillcolor(223);
-  
+
   if ($iTipo == 1) {
-    
-    $oPdf->cell(20, $iTam, 'Data', 1, 0, 'C', $lCor);
-    $oPdf->cell(90, $iTam, 'Laboratório', 1, 0, 'C', $lCor);
-    $oPdf->cell(40, $iTam, 'Exame', 1, 0, 'C', $lCor);
-    $oPdf->cell(20, $iTam, 'Coleta', 1, 0, 'C', $lCor);
-    $oPdf->cell(20, $iTam, 'Entrega', 1, 1, 'C', $lCor);
-    
+
+    $oPdf->cell(15, $iTam, 'Data', 1, 0, 'C', $lCor);
+    $oPdf->cell(45, $iTam, 'Laboratório', 1, 0, 'C', $lCor);
+    $oPdf->cell(100, $iTam, 'Exame', 1, 0, 'C', $lCor);
+    $oPdf->cell(15, $iTam, 'Coleta', 1, 0, 'C', $lCor);
+    $oPdf->cell(15, $iTam, 'Entrega', 1, 1, 'C', $lCor);
+
   } else {
-   
+
     $oPdf->cell(145, $iTam, 'Procedimento', 1, 0, 'L', $lCor);
     $oPdf->cell(15, $iTam, 'Valor Unit.', 1, 0, 'C', $lCor);
     $oPdf->cell(10, $iTam, 'Qtde.', 1, 0, 'C', $lCor);
     $oPdf->cell(20, $iTam, 'Valor Total', 1, 1, 'C', $lCor);
-    
+
   }
 }
 
@@ -924,7 +938,7 @@ function novoCabecalhoVacinas($oPdf, $iTipo) {
   $iTam = 5;
   $oPdf->setfont('arial', 'B', 8);
   $oPdf->setfillcolor(223);
-  
+
   $oPdf->cell(30, $iTam, 'Calendário', 1, 0, 'C', $lCor);
   $oPdf->cell(30, $iTam, 'Vacina', 1, 0, 'C', $lCor);
   $oPdf->cell(30, $iTam, 'Dose', 1, 0, 'C', $lCor);
@@ -940,7 +954,7 @@ function novoCabecalhoHiperdia($oPdf, $iTipo) {
   $iTam = 5;
   $oPdf->setfont('arial', 'B', 8);
   $oPdf->setfillcolor(223);
-  
+
   $oPdf->cell(10, $iTam, 'Cod', 1, 0, 'C', $lCor);
   $oPdf->cell(14, $iTam, 'Sistólica', 1, 0, 'C', $lCor);
   $oPdf->cell(15, $iTam, 'Diastólica', 1, 0, 'C', $lCor);
@@ -951,7 +965,7 @@ function novoCabecalhoHiperdia($oPdf, $iTipo) {
   $oPdf->cell(20, $iTam, 'Alimentação', 1, 0, 'C', $lCor);
   $oPdf->cell(50, $iTam, 'Profissional', 1, 0, 'C', $lCor);
   $oPdf->cell(15, $iTam, 'Consulta', 1, 1, 'C', $lCor);
-  
+
 }
 
 function novoCabecalhoCids($oPdf, $iTipo) {
@@ -960,13 +974,13 @@ function novoCabecalhoCids($oPdf, $iTipo) {
   $iTam = 5;
   $oPdf->setfont('arial', 'B', 8);
   $oPdf->setfillcolor(223);
-  
-  $oPdf->cell(40, $iTam, '', 0, 0, 'C', false);
+
+  $oPdf->cell(5, $iTam, '', 0, 0, 'C', false);
   $oPdf->cell(20, $iTam, 'Atendimento', 1, 0, 'C', $lCor);
-  $oPdf->cell(20, $iTam, 'CID', 1, 0, 'C', $lCor);
-  $oPdf->cell(80, $iTam, 'Descrição', 1, 0, 'C', $lCor);
-  $oPdf->cell(40, $iTam, '', 0, 1, 'C', false);
-  
+  $oPdf->cell(15, $iTam, 'CID', 1, 0, 'C', $lCor);
+  $oPdf->cell(150, $iTam, 'Descrição', 1, 0, 'C', $lCor);
+  $oPdf->cell(5, $iTam, '', 0, 1, 'C', false);
+
 }
 
 function novaLinhaDocumentos($oPdf, $oDados, $iTipo) {
@@ -1083,7 +1097,7 @@ function novaLinhaDocumentos($oPdf, $oDados, $iTipo) {
   $oPdf->cell(15, $iTam, 'Agência:', 0, 0, 'L', $lCor);
   $oPdf->setfont('arial', '', 9);
   $oPdf->cell(20, $iTam, $oDados->z01_c_agencia, 0, 1, 'L', $lCor);
-  
+
   return false;
 
 }
@@ -1100,39 +1114,51 @@ function novaLinhaCartaoSus($oPdf, $oDados, $iTipo) {
   $oPdf->cell(30, $iTam, $oDados->s115_c_cartaosus, 1, 0, 'C', $lCor);
   $oPdf->cell(30, $iTam, $sTipo, 1, 0, 'C', $lCor);
   $oPdf->cell(65, $iTam, '', 0, 1, 'C', false);
-  
+
   return false;
 
 }
 
-function novaLinhaAgendamentos($oPdf, $oDados, $iTipo) {
+function novaLinhaAgendamentos(Pdf $oPdf, $oDados, $iTipo) {
 
   $lCor = false;
-  $iTam = 5;
+  $iTam = 4;
   $oPdf->setfont('arial', '', 6);
 
-  $oPdf->cell(13, $iTam, formataData($oDados->sd23_d_agendamento, 2), 1, 0, 'C', $lCor);
-  $oPdf->cell(20, $iTam, $oDados->login, 1, 0, 'C', $lCor);
-  $oPdf->cell(20, $iTam, $oDados->sd101_c_descr, 1, 0, 'C', $lCor);
-  $oPdf->cell(13, $iTam, formataData($oDados->sd23_d_consulta, 2), 1, 0, 'C', $lCor);
-  $oPdf->cell(10, $iTam, $oDados->sd23_c_hora, 1, 0, 'C', $lCor);
-  $oPdf->cell(33, $iTam, substr($oDados->sd03_i_codigo.' - '.$oDados->z01_nome, 0, 27), 1, 0, 'C', $lCor);
-  $oPdf->cell(18, $iTam, $oDados->situacao, 1, 0, 'C', $lCor);
-  $oPdf->cell(13, $iTam, formataData($oDados->data_anulacao, 2), 1, 0, 'C', $lCor);
-  $oPdf->cell(30, $iTam, $oDados->motivo_anulacao, 1, 0, 'C', $lCor);
-  $oPdf->cell(20, $iTam, $oDados->usuario_anulacao, 1, 1, 'C', $lCor);
-  
+  $altura = $oPdf->nbLines(30, $oDados->motivo_anulacao) * 4;
+
+  if ($oPdf->getAvailHeight() < $altura) {
+    $oPdf->addPage();
+    novoTitulo($oPdf);
+    novoCabecalho($oPdf);
+  }
+
+  $oPdf->cell(12, $altura, formataData($oDados->sd23_d_agendamento, 2), 1, 0, 'C', $lCor);
+  $oPdf->cell(20, $altura, $oDados->login, 1, 0, 'C', $lCor);
+  $oPdf->cellAdapt(6, 20, $altura, $oDados->sd101_c_descr, 1, 0, 'C', $lCor);
+  $oPdf->cell(13, $altura, formataData($oDados->sd23_d_consulta, 2), 1, 0, 'C', $lCor);
+  $oPdf->cell(7, $altura, $oDados->sd23_c_hora, 1, 0, 'C', $lCor);
+  $oPdf->cellAdapt(6, 37, $altura, $oDados->sd03_i_codigo.' - '.$oDados->z01_nome, 1, 0, 'C', $lCor);
+  $oPdf->cell(18, $altura, $oDados->situacao, 1, 0, 'C', $lCor);
+  $oPdf->cell(13, $altura, formataData($oDados->data_anulacao, 2), 1, 0, 'C', $lCor);
+  $x = $oPdf->getX();
+  $y = $oPdf->getY();
+  $oPdf->multiCell(30, $iTam, $oDados->motivo_anulacao, 1, 'C', false);
+  $oPdf->setXY($x + 30, $y);
+  $oPdf->cell(20, $altura, $oDados->usuario_anulacao, 1, 1, 'C', $lCor);
+
+
   return false;
 
 }
 
-function novaLinhaProntuarios($oPdf, $oDados, $iTipo) {
+function novaLinhaProntuarios(Pdf $oPdf, $oDados, $iTipo) {
 
   global $iCor;
   $lCor = true;
   $iTam = 5;
   $oPdf->setfont('arial', '', 7);
-  
+
   if ($iCor == 0) {
 
     $oPdf->setfillcolor(255, 255, 210);
@@ -1146,36 +1172,36 @@ function novaLinhaProntuarios($oPdf, $oDados, $iTipo) {
   }
 
   if ($iTipo == 1) {
-    
+
     $oPdf->cell(20, $iTam, $oDados->sd24_i_codigo, 1, 0, 'C', $lCor);
     $oPdf->cell(20, $iTam, $oDados->s102_i_agendamento, 1, 0, 'C', $lCor);
     $oPdf->cell(20, $iTam, formataData($oDados->sd29_d_data, 2), 1, 0, 'C', $lCor);
     $oPdf->cell(15, $iTam, $oDados->sd29_c_hora, 1, 0, 'C', $lCor);
     $oPdf->cell(115, $iTam, $oDados->coddepto.' - '.$oDados->descrdepto, 1, 1, 'C', $lCor);
-    $oPdf->cell(70, $iTam, $oDados->sd03_i_codigo.' - '.$oDados->z01_nome, 1, 0, 'C', $lCor);
-    $oPdf->cell(65, $iTam, $oDados->rh70_estrutural.' - '.$oDados->rh70_descr, 1, 0, 'C', $lCor);
+    $oPdf->cellAdapt(6, 50, $iTam, $oDados->sd03_i_codigo.' - '.$oDados->z01_nome, 1, 0, 'C', true);
+    $oPdf->cellAdapt(6, 85, $iTam, $oDados->rh70_estrutural.' - '.$oDados->rh70_descr, 1, 0, 'C', true);
     $oPdf->cell(20, $iTam, $oDados->login, 1, 0, 'C', $lCor);
     $oPdf->cell(20, $iTam, formataData($oDados->sd29_d_cadastro, 2), 1, 0, 'C', $lCor);
     $oPdf->cell(15, $iTam, $oDados->sd29_c_cadastro, 1, 1, 'C', $lCor);
 
   } else {
-    
+
     $oPdf->cell(145, $iTam, $oDados->sd63_c_nome." - ".$oDados->sd63_c_procedimento, 1, 0, 'L', $lCor);
     $oPdf->cell(15, $iTam, number_format((double)$oDados->valor_unitario, 2, ',','.'), 1, 0, 'R', $lCor);
     $oPdf->cell(10, $iTam, $oDados->quantidade, 1, 0, 'R', $lCor);
     $oPdf->cell(20, $iTam, number_format((double)$oDados->valor_total, 2, ',','.'), 1, 1, 'R', $lCor);
-    
+
     return array($oDados->quantidade, $oDados->valor_total);
-    
+
   }
-  
+
   return false;
 }
 
 function novaLinhaRetiradas($oPdf, $oDados, $iTipo) {
 
   global $iCor;
-  
+
   $lCor = true;
   $iTam = 5;
   $oPdf->setfont('arial', '', 7);
@@ -1203,35 +1229,35 @@ function novaLinhaRetiradas($oPdf, $oDados, $iTipo) {
   $oPdf->cell(20, $iTam, formataData($oDados->fa22_d_data, 2), 1, 0, 'C', $lCor);
   $oPdf->cell(80, $iTam, $oDados->fa23_c_motivo, 1, 0, 'C', $lCor);
   $oPdf->cell(30, $iTam, $oDados->login, 1, 1, 'C', $lCor);
-  
+
   return false;
 
 }
 
-function novaLinhaExames($oPdf, $oDados, $iTipo) {
+function novaLinhaExames(Pdf $oPdf, $oDados, $iTipo) {
 
   $lCor = false;
   $iTam = 5;
   $oPdf->setfont('arial', '', 7);
   if ($iTipo == 1) {
-  
-    $oPdf->cell(20, $iTam, formataData($oDados->la21_d_data, 2), 1, 0, 'C', $lCor);
-    $oPdf->cell(90, $iTam, $oDados->la02_c_descr, 1, 0, 'C', $lCor);
-    $oPdf->cell(40, $iTam, $oDados->la08_c_descr, 1, 0, 'C', $lCor);
-    $oPdf->cell(20, $iTam, formataData($oDados->la32_d_data, 2), 1, 0, 'C', $lCor);
-    $oPdf->cell(20, $iTam, formataData($oDados->la31_d_data, 2), 1, 1, 'C', $lCor);
-  
+
+    $oPdf->cell(15, $iTam, formataData($oDados->la21_d_data, 2), 1, 0, 'C', $lCor);
+    $oPdf->cell(45, $iTam, $oDados->la02_c_descr, 1, 0, 'C', $lCor);
+    $oPdf->cellAdapt(6, 100, $iTam, $oDados->la08_c_descr, 1, 0, 'C', $lCor);
+    $oPdf->cell(15, $iTam, formataData($oDados->la32_d_data, 2), 1, 0, 'C', $lCor);
+    $oPdf->cell(15, $iTam, formataData($oDados->la31_d_data, 2), 1, 1, 'C', $lCor);
+
   } else {
-   
+
     $oPdf->cell(145, $iTam, $oDados->sd63_c_nome." - ".$oDados->sd63_c_procedimento, 1, 0, 'L', $lCor);
     $oPdf->cell(15, $iTam, number_format((double)$oDados->valor_unitario,2,',','.'), 1, 0, 'R', $lCor);
     $oPdf->cell(10, $iTam, $oDados->quantidade, 1, 0, 'R', $lCor);
     $oPdf->cell(20, $iTam, number_format((double)$oDados->valor_total,2,',','.'), 1, 1, 'R', $lCor);
-      
+
     return array($oDados->quantidade, $oDados->valor_total);
-    
+
   }
-  
+
   return false;
 
 }
@@ -1248,9 +1274,9 @@ function novaLinhaPedidosTfd($oPdf, $oDados, $iTipo) {
   $oPdf->cell(50, $iTam, $oDados->tf03_c_descr, 1, 0, 'C', $lCor);
   $oPdf->cell(15, $iTam, formataData($oDados->tf17_d_datasaida, 2), 1, 0, 'C', $lCor);
   $oPdf->cell(20, $iTam, $oDados->tf26_c_descr, 1, 1, 'C', $lCor);
-  
+
   return false;
-  
+
 }
 
 function novaLinhaVacinas($oPdf, $oDados, $iTipo) {
@@ -1265,9 +1291,9 @@ function novaLinhaVacinas($oPdf, $oDados, $iTipo) {
   $oPdf->cell(35, $iTam, $oDados->periodo, 1, 0, 'C', $lCor);
   $oPdf->cell(20, $iTam, formataData($oDados->dataAplicacao, 2), 1, 0, 'C', $lCor);
   $oPdf->cell(45, $iTam, $oDados->obsAplicacao, 1, 1, 'C', $lCor);
-  
+
   return false;
-  
+
 }
 
 function novaLinhaHiperdia($oPdf, $oDados, $iTipo) {
@@ -1287,22 +1313,22 @@ function novaLinhaHiperdia($oPdf, $oDados, $iTipo) {
   $oPdf->cell(15, $iTam, $oDados->s152_d_dataconsulta, 1, 1, 'C', $lCor);
 
   return false;
-  
+
 }
 
-function novaLinhaCids($oPdf, $oDados, $iTipo) {
+function novaLinhaCids(Pdf $oPdf, $oDados, $iTipo) {
 
   $lCor = false;
   $iTam = 5;
   $oPdf->setfont('arial', '', 7);
-  $oPdf->cell(40, $iTam, '', 0, 0, 'C', $lCor);
-  $oPdf->cell(20, $iTam, $oDados->sd29_d_data, 1, 0, 'C', $lCor);
-  $oPdf->cell(20, $iTam, $oDados->sd70_c_cid, 1, 0, 'C', $lCor);
-  $oPdf->cell(80, $iTam, $oDados->sd70_c_nome, 1, 0, 'C', $lCor);
-  $oPdf->cell(40, $iTam, '', 0, 1, 'C', $lCor);
-  
+  $oPdf->cell(5, $iTam, '', 0, 0, 'C', $lCor);
+  $oPdf->cell(20, $iTam, formataData($oDados->sd29_d_data, 2), 1, 0, 'C', $lCor);
+  $oPdf->cell(15, $iTam, $oDados->sd70_c_cid, 1, 0, 'C', $lCor);
+  $oPdf->cellAdapt(6, 150, $iTam, $oDados->sd70_c_nome, 1, 0, 'C');
+  $oPdf->cell(5, $iTam, '', 0, 1, 'C', $lCor);
+
   return false;
-  
+
 }
 
 function subTotalDocumentos($oPdf, $aSubtotal, $iTipo) {
@@ -1315,26 +1341,26 @@ function subTotalAgendamentos($oPdf, $aSubtotal, $iTipo) {
   return false;
 }
 function subTotalProntuarios($oPdf, $aSubtotal, $iTipo) {
-  
+
   if ($iTipo == 2) {
-     
+
     $lCor = true;
     $iTam = 5;
     $oPdf->setfont('arial', 'B', 7);
     $oPdf->setfillcolor(223);
-    
+
     $oPdf->cell(160, $iTam, "Total:", 1, 0, 'R', $lCor);
     $oPdf->cell(10, $iTam, $aSubtotal[0], 1, 0, 'R', $lCor);
     $oPdf->cell(20, $iTam, number_format($aSubtotal[1],2,',','.'), 1, 1, 'R', $lCor);
-    
+
   }
-   
+
 }
 function subTotalRetiradas($oPdf, $aSubtotal, $iTipo) {
   return false;
 }
 function subTotalExames($oPdf, $aSubtotal, $iTipo) {
-  subTotalProntuarios($oPdf, $aSubtotal, $iTipo); 
+  subTotalProntuarios($oPdf, $aSubtotal, $iTipo);
 }
 function subTotalPedidosTfd($oPdf, $aSubtotal, $iTipo) {
   return false;
@@ -1351,7 +1377,7 @@ function subTotalCids($oPdf, $aSubtotal, $iTipo) {
 
 
 function formataData($dData, $iTipo = 1) {
-  
+
   if (empty($dData)) {
     return '';
   }
@@ -1361,9 +1387,9 @@ function formataData($dData, $iTipo = 1) {
     $dData = explode('/', $dData);
     $dData = $dData[2].'-'.$dData[1].'-'.$dData[0];
     return $dData;
-  
+
   }
- 
+
   $dData = explode('-', $dData);
   $dData = @$dData[2].'/'.@$dData[1].'/'.@$dData[0];
   return $dData;
@@ -1409,57 +1435,57 @@ function imprimirOpcao($iOpcao, $iCgs, $oPdf, $iTipo, $dIni, $dFim) {
   switch ($iOpcao) {
 
     case 1: // Imprimir os documentos
-     
+
       $sFinalFunc = 'Documentos';
       break;
 
     case 2: // Imprimir todos os cartoes sus do paciente
-     
+
       $sFinalFunc = 'CartaoSus';
       break;
 
     case 3: // Imprimir os agendamentos
-      
+
        $sFinalFunc = 'Agendamentos';
        break;
- 
+
     case 4: // Imprimir imprimir os prontuários
-      
+
        $sFinalFunc = 'Prontuarios';
        break;
- 
+
     case 5: // Imprimir as retiradas de medicamentos
-      
+
        $sFinalFunc = 'Retiradas';
        break;
- 
+
     case 6: // Imprimir os exames realizados
-     
+
       $sFinalFunc = 'Exames';
       break;
- 
+
     case 7: // Imprimir os pedidos de TFD
-      
+
        $sFinalFunc = 'PedidosTfd';
        break;
- 
+
     case 8: // Imprimir as vacinas
-      
+
        $sFinalFunc = 'Vacinas';
        break;
-   
-    case 9: // Imprimir as Hiperdia 
-      
+
+    case 9: // Imprimir as Hiperdia
+
        $sFinalFunc = 'Hiperdia';
        break;
-       
+
     case 10: // Imprimir os CID's
-      
+
        $sFinalFunc = 'Cids';
        break;
-       
+
     default: // Nenhuma opção válida
-       
+
        return false;
 
   }
@@ -1476,7 +1502,7 @@ function imprimirOpcao($iOpcao, $iCgs, $oPdf, $iTipo, $dIni, $dFim) {
   $aSubtotal = array();
   for ($iCont = 0; $iCont < $iLinhas; $iCont++) {
 
-    if ($oPdf->getY() >$oPdf->h - 30) {
+    if ($oPdf->getY() >$oPdf->getH() - 30) {
 
       $oPdf->Addpage('P');
       call_user_func('novoCabecalho'.$sFinalFunc, $oPdf, $iTipo);
@@ -1491,7 +1517,7 @@ function imprimirOpcao($iOpcao, $iCgs, $oPdf, $iTipo, $dIni, $dFim) {
   if ($iLinhas > 0) {
     call_user_func('subTotal'.$sFinalFunc, $oPdf, $aSubtotal, $iTipo);
   }
-  
+
 }
 
 /* Final do bloco de funções ****/
@@ -1506,7 +1532,7 @@ $iLinhas   = count($aDadosCgs);
 $lErroVac  = false;
 $sMsgErro  = 'CGS não encontrado.';
 // Se o CGS não tiver data de nascimento, não pode ser selecionado para imprimir as vacinas
-if ($iLinhas > 0 && empty($aDadosCgs[0]->z01_d_nasc) && in_array(8, $aOpcoes)) { 
+if ($iLinhas > 0 && empty($aDadosCgs[0]->z01_d_nasc) && in_array(8, $aOpcoes)) {
 
   $lErroVac = true;
   $sMsgErro  = 'O CGS não possui data de nascimento cadastrada, então, as vacinas não podem ser impressas.';
@@ -1526,35 +1552,37 @@ if ($iLinhas == 0 || $lErroVac) {
       </td>
     </tr>
   </table>
-<?
+<?php
   exit;
 }
 
-$oPdf = new PDF();
-$oPdf->Open();
+$oPdf = new Pdf();
+$oPdf->init(false);
 $oPdf->AliasNbPages();
 
+$oPdf->addTitulo("Consulta Geral da Saúde");
+
 if ($iTipo == 1) {
-  $head2 = "Tipo: Analítico";
+  $oPdf->addTitulo("Tipo: Analítico");
 } else {
-  $head2 = "Tipo: Sintético";
+  $oPdf->addTitulo("Tipo: Sintético");
 }
-$head3 = "";
+$periodo = "";
 if (isset($dIni)) {
-  $head3 .= " Periodo: ".$dIni;
+  $periodo .= " Periodo: ".$dIni;
 } else {
   $dIni = "";
 }
 if (isset($dFim)) {
-  if($head3 == ""){
-    $head3 = " Periodo: ";
+  if($periodo == ""){
+    $periodo = " Periodo: ";
   }
-  $head3 .= " até ".$dFim;
+  $periodo .= " até ".$dFim;
 } else {
   $dFim = "";
 }
 
-$head1 = 'Consulta Geral da Saúde';
+$oPdf->addTitulo($periodo);
 
 $oPdf->Addpage('P'); // L deitado
 

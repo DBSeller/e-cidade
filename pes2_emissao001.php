@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_usuariosonline.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("classes/db_relrub_classe.php");
-  require_once("classes/db_relrubmov_classe.php");
-  require_once("classes/db_selecao_classe.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("classes/db_relrub_classe.php"));
+  require_once(modification("classes/db_relrubmov_classe.php"));
+  require_once(modification("classes/db_selecao_classe.php"));
   $clrelrub    = new cl_relrub;
   $clrelrubmov = new cl_relrubmov;
   $clselecao   = new cl_selecao;
@@ -255,10 +255,10 @@
       var width  = document.body.clientWidth -20; 
 
       if (mostra == true) {
-        js_OpenJanelaIframe('top.corpo','db_iframe_relrub','func_relrub.php?funcao_js=top.corpo.js_mostracodigo1|rh45_codigo|rh45_descr','Pesquisa',true,20, 5, width, height);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_relrub','func_relrub.php?funcao_js=parent.CurrentWindow.corpo.js_mostracodigo1|rh45_codigo|rh45_descr','Pesquisa',true,20, 5, width, height);
       } else {
          if ($('rh45_codigo').value != '') {  
-            js_OpenJanelaIframe('top.corpo','db_iframe_relrub','func_relrub.php?pesquisa_chave='+$('rh45_codigo').value+'&funcao_js=top.corpo.js_mostracodigo','Pesquisa',false,0,0, width, height);
+            js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_relrub','func_relrub.php?pesquisa_chave='+$('rh45_codigo').value+'&funcao_js=parent.CurrentWindow.corpo.js_mostracodigo','Pesquisa',false,0,0, width, height);
          } else {
            $('rh45_descr').value = '';
          }
@@ -339,27 +339,27 @@
       aFolhasSelecionadas.each (function(oTipoFolha, iIndice) {
          
          aTipoFolhas[iIndice]     = oTipoFolha[0];
-         aNomeTipoFolhas[iIndice] = oTipoFolha[2];
+         aNomeTipoFolhas[iIndice] = oTipoFolha[2].urlEncode();
       })
 
       /**
        * Envia os dados para a geração do relatório
        */
       var oQuery = {}
-      oQuery.aTipoFolha      = aTipoFolhas;
-      oQuery.aNomeTipoFolha  = aNomeTipoFolhas;
-      oQuery.sComplementar   = $F('selectComplementar');
-      oQuery.iAnoCompetencia = $F('ano');
-      oQuery.iMesCompetencia = $F('mes');
-      oQuery.iRelatorio      = $F('rh45_codigo');
-      oQuery.sTipoResumo     = $F('tipo_resumo');
-      oQuery.sTipoArquivo    = $F('tipo_arquivo');
-      oQuery.sModoImpressao  = $F('modo_impressao');
-      oQuery.sOrdem          = $F('ordem');
-      oQuery.sSomenteTotais  = $F('somente_totais');
-      oQuery.sVinculo        = $F('vinculo');
+          oQuery.aTipoFolha      = aTipoFolhas;
+          oQuery.aNomeTipoFolha  = aNomeTipoFolhas;
+          oQuery.sComplementar   = $F('selectComplementar');
+          oQuery.iAnoCompetencia = $F('ano');
+          oQuery.iMesCompetencia = $F('mes');
+          oQuery.iRelatorio      = $F('rh45_codigo');
+          oQuery.sTipoResumo     = $F('tipo_resumo');
+          oQuery.sTipoArquivo    = $F('tipo_arquivo');
+          oQuery.sModoImpressao  = $F('modo_impressao');
+          oQuery.sOrdem          = $F('ordem');
+          oQuery.sSomenteTotais  = $F('somente_totais');
+          oQuery.sVinculo        = $F('vinculo');
       
-      var oJanela = window.open('pes2_emissao002.php?json='+Object.toJSON(oQuery),'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+      var oJanela = window.open('pes2_emissao002.php?json='+window.btoa(Object.toJSON(oQuery)),'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
       oJanela.moveTo(0,0);
       return false;
     }
@@ -390,7 +390,7 @@
     function js_retornoComplementar(oComplementar) {
 
       $('selectComplementar').options.length = 0;
-      var aRetorno = eval("("+oComplementar.responseText+")");
+      var aRetorno = JSON.parse(oComplementar.responseText);
       
       if (aRetorno.aSemestre.length > 0) {
 

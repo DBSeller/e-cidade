@@ -26,7 +26,7 @@
  */
 
 //MODULO: contabilidade
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcontranslr->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -296,10 +296,10 @@ function js_cancelar(){
 
 function js_pesquisac47_credito(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_contranslr','db_iframe_conplanoexe_credito','func_conplanoexe.php?funcao_js=parent.js_mostraconplanoexe1_credito|c62_reduz|c60_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contranslr','db_iframe_conplanoexe_credito','func_conplanoexe.php?funcao_js=parent.js_mostraconplanoexe1_credito|c62_reduz|c60_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.c47_credito.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_contranslr','db_iframe_conplanoexe_credito','func_conplanoexe.php?pesquisa_chave='+document.form1.c47_credito.value+'&funcao_js=parent.js_mostraconplanoexe_credito','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contranslr','db_iframe_conplanoexe_credito','func_conplanoexe.php?pesquisa_chave='+document.form1.c47_credito.value+'&funcao_js=parent.js_mostraconplanoexe_credito','Pesquisa',false);
      }else{
        document.form1.c60_descr_credito.value = ''; 
      }
@@ -322,10 +322,10 @@ function js_mostraconplanoexe1_credito(chave1,chave2){
 
 function js_pesquisac47_debito(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_contranslr','db_iframe_conplanoexe','func_conplanoexe.php?funcao_js=parent.js_mostraconplanoexe1|c62_reduz|c60_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contranslr','db_iframe_conplanoexe','func_conplanoexe.php?funcao_js=parent.js_mostraconplanoexe1|c62_reduz|c60_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.c47_debito.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_contranslr','db_iframe_conplanoexe','func_conplanoexe.php?pesquisa_chave='+document.form1.c47_debito.value+'&funcao_js=parent.js_mostraconplanoexe','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contranslr','db_iframe_conplanoexe','func_conplanoexe.php?pesquisa_chave='+document.form1.c47_debito.value+'&funcao_js=parent.js_mostraconplanoexe','Pesquisa',false);
      }else{
        document.form1.c60_descr.value = ''; 
      }

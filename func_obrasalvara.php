@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (c) 2018  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,100 +25,144 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_obrasalvara_classe.php");
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_obrasalvara_classe.php"));
+
+$get = db_postmemory($_GET);
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
+
+if(isset($ob04_ativo) && $ob04_ativo == 't'){
+  $get->somenteAtivos = 't';
+}
+
 $clobrasalvara = new cl_obrasalvara;
 $clobrasalvara->rotulo->label("ob04_codobra");
 $clobrasalvara->rotulo->label("ob04_alvara");
+$clobrasalvara->rotulo->label("ob04_ativo");
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link href="estilos.css" rel="stylesheet" type="text/css">
+  <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
+<table height="100%" border="0" align="center" cellspacing="0" bgcolor="#CCCCCC">
   <tr>
     <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
+      <table width="35%" border="0" align="center" cellspacing="0">
+        <form name="form2" method="post" action="">
           <tr>
-            <td width="4%" align="right" nowrap title="<?=$Tob04_codobra?>">
-              <?=$Lob04_codobra?>
+            <td width="4%" align="right" nowrap title="<?= $Tob04_codobra ?>">
+                <?= $Lob04_codobra ?>
             </td>
             <td width="96%" align="left" nowrap>
-              <?  db_input("ob04_codobra",10,$Iob04_codobra,true,"text",4,"","chave_ob04_codobra");  ?>
+                <?php
+                db_input("ob04_codobra", 10, $Iob04_codobra, true, "text", 4, "", "chave_ob04_codobra");
+                ?>
             </td>
           </tr>
           <tr>
-            <td width="4%" align="right" nowrap title="<?=$Tob04_alvara?>">
-              <?=$Lob04_alvara?>
+            <td width="4%" align="right" nowrap title="<?= $Tob04_alvara ?>">
+                <?= $Lob04_alvara ?>
             </td>
             <td width="96%" align="left" nowrap>
-              <? db_input("ob04_alvara",10,$Iob04_alvara,true,"text",4,"","chave_ob04_alvara");  ?>
+                <?php
+                db_input("ob04_alvara", 10, $Iob04_alvara, true, "text", 4, "", "chave_ob04_alvara");
+                ?>
+            </td>
+          </tr>
+          <tr>
+            <td width="4%" align="right" nowrap title="<?= $Tob04_ativo ?>">
+                <?= $Lob04_ativo ?>
+            </td>
+            <td width="96%" align="left" nowrap>
+                <?php
+                    $aAtivo = array ('t' => 'Ativo',
+                                     'f' => 'Cancelado'
+                                    );
+                    db_select('ob04_ativo', $aAtivo, true, 1);
+                ?>
             </td>
           </tr>
           <tr>
             <td colspan="2" align="center">
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar" onclick="return js_validar(arguments[0]);">
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_obrasalvara.hide();">
-             </td>
+              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"
+                     onclick="return js_validar(arguments[0]);">
+              <input name="limpar" type="reset" id="limpar" value="Limpar">
+              <input name="Fechar" type="button" id="fechar" value="Fechar"
+                     onClick="parent.db_iframe_obrasalvara.hide();">
+            </td>
           </tr>
         </form>
-        </table>
-      </td>
+      </table>
+    </td>
   </tr>
   <tr>
     <td align="center" valign="top">
-      <?
-      if(!isset($pesquisa_chave)){
-        $campos = "obrasalvara.ob04_codobra,
+        <?php
+        $where = array();
+
+        if (!isset($pesquisa_chave)) {
+            $campos = "obrasalvara.ob04_codobra,
         					 obrasalvara.ob04_alvara,
         					 obrasalvara.ob04_data,
 	           			 obras.ob01_nomeobra,
                    cgm.z01_nome as ob10_numcgm";
-        if(isset($chave_ob04_codobra) && (trim($chave_ob04_codobra)!="") ){
-	         $sql = $clobrasalvara->sql_query($chave_ob04_codobra,$campos,"ob04_codobra desc ");
-        }else if(isset($chave_ob04_alvara) && (trim($chave_ob04_alvara)!="") ){
-	         $sql = $clobrasalvara->sql_query("",$campos,"ob04_alvara"," ob04_alvara like '$chave_ob04_alvara%' ");
-        }else{
-           $sql = $clobrasalvara->sql_query("",$campos,"ob04_codobra desc ","");
+
+            if (isset($chave_ob04_codobra) && (trim($chave_ob04_codobra) != "")) {
+                $where[] = "ob04_codobra = {$chave_ob04_codobra}";
+            }
+
+            if (isset($chave_ob04_alvara) && (trim($chave_ob04_alvara) != "")) {
+                $where[] = " ob04_alvara = {$chave_ob04_alvara}";
+            }
+
+            if (isset($get->somenteAtivos)) {
+                $where[] = "ob04_ativo is true";
+            }
+
+            $sql = $clobrasalvara->sql_query("", $campos, "ob04_codobra desc ", implode(' AND ', $where));
+
+            db_lovrot($sql, 15, "()", "", $funcao_js);
+        } else {
+            if ($pesquisa_chave != null && $pesquisa_chave != "") {
+                $result = $clobrasalvara->sql_record($clobrasalvara->sql_query($pesquisa_chave));
+                if ($clobrasalvara->numrows != 0) {
+                    db_fieldsmemory($result, 0);
+                    echo "<script>" . $funcao_js . "('$z01_nome',false);</script>";
+                } else {
+                    echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true);</script>";
+                }
+            } else {
+                echo "<script>" . $funcao_js . "('',false);</script>";
+            }
         }
-        db_lovrot($sql,15,"()","",$funcao_js);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clobrasalvara->sql_record($clobrasalvara->sql_query($pesquisa_chave));
-          if($clobrasalvara->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$z01_nome',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
-          }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
-        }
-      }
-      ?>
-     </td>
-   </tr>
+        ?>
+    </td>
+  </tr>
 </table>
 </body>
 </html>
 <script type="text/javascript">
 
-function js_validar(evt) {
+  function js_validar(evt) {
 
-  $('chave_ob04_codobra').onkeyup = evt;
-  $('chave_ob04_alvara').onkeyup  = evt;
-}
+    $('chave_ob04_codobra').onkeyup = evt;
+    $('chave_ob04_alvara').onkeyup = evt;
+  }
 
+</script>
+<script type="text/javascript">
+  (function() {
+    var query = frameElement.getAttribute('name').replace('IF', ''),
+      input = document.querySelector('input[value="Fechar"]');
+    input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+  })();
 </script>

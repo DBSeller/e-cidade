@@ -1,78 +1,78 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: ambulatorial
 //CLASSE DA ENTIDADE medicos
-class cl_medicos { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $sd03_i_codigo = 0; 
-   var $sd03_i_crm = 0; 
-   var $sd03_i_numerodias = 0; 
-   var $sd03_d_folgaini_dia = null; 
-   var $sd03_d_folgaini_mes = null; 
-   var $sd03_d_folgaini_ano = null; 
-   var $sd03_d_folgaini = null; 
-   var $sd03_d_folgafim_dia = null; 
-   var $sd03_d_folgafim_mes = null; 
-   var $sd03_d_folgafim_ano = null; 
-   var $sd03_d_folgafim = null; 
-   var $sd03_i_cgm = 0; 
-   var $sd03_i_tipo = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_medicos {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $sd03_i_codigo = 0;
+   var $sd03_i_crm = 0;
+   var $sd03_i_numerodias = 0;
+   var $sd03_d_folgaini_dia = null;
+   var $sd03_d_folgaini_mes = null;
+   var $sd03_d_folgaini_ano = null;
+   var $sd03_d_folgaini = null;
+   var $sd03_d_folgafim_dia = null;
+   var $sd03_d_folgafim_mes = null;
+   var $sd03_d_folgafim_ano = null;
+   var $sd03_d_folgafim = null;
+   var $sd03_i_cgm = 0;
+   var $sd03_i_tipo = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 sd03_i_codigo = int4 = Profissional 
-                 sd03_i_crm = int4 = CRM 
-                 sd03_i_numerodias = int4 = Nro. Dias 
-                 sd03_d_folgaini = date = Folgaini 
-                 sd03_d_folgafim = date = Folgafim 
-                 sd03_i_cgm = int4 = CGM 
-                 sd03_i_tipo = int4 = Tipo 
+                 sd03_i_codigo = int4 = Profissional
+                 sd03_i_crm = int4 = CRM
+                 sd03_i_numerodias = int4 = Nro. Dias
+                 sd03_d_folgaini = date = Folgaini
+                 sd03_d_folgafim = date = Folgafim
+                 sd03_i_cgm = int4 = CGM
+                 sd03_i_tipo = int4 = Tipo
                  ";
-   //funcao construtor da classe 
-   function cl_medicos() { 
+   //funcao construtor da classe
+   function cl_medicos() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("medicos"); 
+     $this->rotulo = new rotulo("medicos");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -109,24 +109,24 @@ class cl_medicos {
      }
    }
    // funcao para inclusao
-   function incluir ($sd03_i_codigo){ 
+   function incluir ($sd03_i_codigo){
       $this->atualizacampos();
-     if($this->sd03_i_crm == null ){ 
+     if($this->sd03_i_crm == null ){
        $this->sd03_i_crm = "null";
      }
-     if($this->sd03_i_numerodias == null ){ 
+     if($this->sd03_i_numerodias == null ){
        $this->sd03_i_numerodias = "0";
      }
-     if($this->sd03_d_folgaini == null ){ 
+     if($this->sd03_d_folgaini == null ){
        $this->sd03_d_folgaini = "null";
      }
-     if($this->sd03_d_folgafim == null ){ 
+     if($this->sd03_d_folgafim == null ){
        $this->sd03_d_folgafim = "null";
      }
-     if($this->sd03_i_cgm == null ){ 
+     if($this->sd03_i_cgm == null ){
        $this->sd03_i_cgm = "null";
      }
-     if($this->sd03_i_tipo == null ){ 
+     if($this->sd03_i_tipo == null ){
        $this->erro_sql = " Campo Tipo nao Informado.";
        $this->erro_campo = "sd03_i_tipo";
        $this->erro_banco = "";
@@ -136,16 +136,16 @@ class cl_medicos {
        return false;
      }
      if($sd03_i_codigo == "" || $sd03_i_codigo == null ){
-       $result = db_query("select nextval('medicos_sd03_i_codigo_seq')"); 
+       $result = db_query("select nextval('medicos_sd03_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: medicos_sd03_i_codigo_seq do campo: sd03_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: medicos_sd03_i_codigo_seq do campo: sd03_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->sd03_i_codigo = pg_result($result,0,0); 
+       $this->sd03_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from medicos_sd03_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $sd03_i_codigo)){
@@ -156,10 +156,10 @@ class cl_medicos {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->sd03_i_codigo = $sd03_i_codigo; 
+         $this->sd03_i_codigo = $sd03_i_codigo;
        }
      }
-     if(($this->sd03_i_codigo == null) || ($this->sd03_i_codigo == "") ){ 
+     if(($this->sd03_i_codigo == null) || ($this->sd03_i_codigo == "") ){
        $this->erro_sql = " Campo sd03_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -168,25 +168,25 @@ class cl_medicos {
        return false;
      }
      $sql = "insert into medicos(
-                                       sd03_i_codigo 
-                                      ,sd03_i_crm 
-                                      ,sd03_i_numerodias 
-                                      ,sd03_d_folgaini 
-                                      ,sd03_d_folgafim 
-                                      ,sd03_i_cgm 
-                                      ,sd03_i_tipo 
+                                       sd03_i_codigo
+                                      ,sd03_i_crm
+                                      ,sd03_i_numerodias
+                                      ,sd03_d_folgaini
+                                      ,sd03_d_folgafim
+                                      ,sd03_i_cgm
+                                      ,sd03_i_tipo
                        )
                 values (
-                                $this->sd03_i_codigo 
-                               ,$this->sd03_i_crm 
-                               ,$this->sd03_i_numerodias 
-                               ,".($this->sd03_d_folgaini == "null" || $this->sd03_d_folgaini == ""?"null":"'".$this->sd03_d_folgaini."'")." 
-                               ,".($this->sd03_d_folgafim == "null" || $this->sd03_d_folgafim == ""?"null":"'".$this->sd03_d_folgafim."'")." 
-                               ,$this->sd03_i_cgm 
-                               ,$this->sd03_i_tipo 
+                                $this->sd03_i_codigo
+                               ,$this->sd03_i_crm
+                               ,$this->sd03_i_numerodias
+                               ,".($this->sd03_d_folgaini == "null" || $this->sd03_d_folgaini == ""?"null":"'".$this->sd03_d_folgaini."'")."
+                               ,".($this->sd03_d_folgafim == "null" || $this->sd03_d_folgafim == ""?"null":"'".$this->sd03_d_folgafim."'")."
+                               ,$this->sd03_i_cgm
+                               ,$this->sd03_i_tipo
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Médicos ($this->sd03_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -224,16 +224,16 @@ class cl_medicos {
        $resac = db_query("insert into db_acount values($acount,100012,17492,'','".AddSlashes(pg_result($resaco,0,'sd03_i_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($sd03_i_codigo=null) { 
+   function alterar ($sd03_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update medicos set ";
      $virgula = "";
-     if(trim($this->sd03_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_codigo"])){ 
+     if(trim($this->sd03_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_codigo"])){
        $sql  .= $virgula." sd03_i_codigo = $this->sd03_i_codigo ";
        $virgula = ",";
-       if(trim($this->sd03_i_codigo) == null ){ 
+       if(trim($this->sd03_i_codigo) == null ){
          $this->erro_sql = " Campo Profissional nao Informado.";
          $this->erro_campo = "sd03_i_codigo";
          $this->erro_banco = "";
@@ -243,49 +243,49 @@ class cl_medicos {
          return false;
        }
      }
-     if(trim($this->sd03_i_crm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_crm"])){ 
-        if(trim($this->sd03_i_crm)=="" && isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_crm"])){ 
-           $this->sd03_i_crm = "0" ; 
-        } 
+     if(trim($this->sd03_i_crm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_crm"])){
+        if(trim($this->sd03_i_crm)=="" && isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_crm"])){
+           $this->sd03_i_crm = "0" ;
+        }
        $sql  .= $virgula." sd03_i_crm = $this->sd03_i_crm ";
        $virgula = ",";
      }
-     if(trim($this->sd03_i_numerodias)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_numerodias"])){ 
-        if(trim($this->sd03_i_numerodias)=="" && isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_numerodias"])){ 
-           $this->sd03_i_numerodias = "0" ; 
-        } 
+     if(trim($this->sd03_i_numerodias)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_numerodias"])){
+        if(trim($this->sd03_i_numerodias)=="" && isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_numerodias"])){
+           $this->sd03_i_numerodias = "0" ;
+        }
        $sql  .= $virgula." sd03_i_numerodias = $this->sd03_i_numerodias ";
        $virgula = ",";
      }
-     if(trim($this->sd03_d_folgaini)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgaini_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgaini_dia"] !="") ){ 
+     if(trim($this->sd03_d_folgaini)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgaini_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgaini_dia"] !="") ){
        $sql  .= $virgula." sd03_d_folgaini = '$this->sd03_d_folgaini' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgaini_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgaini_dia"])){
          $sql  .= $virgula." sd03_d_folgaini = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->sd03_d_folgafim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgafim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgafim_dia"] !="") ){ 
+     if(trim($this->sd03_d_folgafim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgafim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgafim_dia"] !="") ){
        $sql  .= $virgula." sd03_d_folgafim = '$this->sd03_d_folgafim' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgafim_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["sd03_d_folgafim_dia"])){
          $sql  .= $virgula." sd03_d_folgafim = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->sd03_i_cgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_cgm"])){ 
-        if(trim($this->sd03_i_cgm)=="" && isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_cgm"])){ 
-           $this->sd03_i_cgm = "0" ; 
-        } 
+     if(trim($this->sd03_i_cgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_cgm"])){
+        if(trim($this->sd03_i_cgm)=="" && isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_cgm"])){
+           $this->sd03_i_cgm = "0" ;
+        }
        $sql  .= $virgula." sd03_i_cgm = $this->sd03_i_cgm ";
        $virgula = ",";
      }
-     if(trim($this->sd03_i_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_tipo"])){ 
+     if(trim($this->sd03_i_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd03_i_tipo"])){
        $sql  .= $virgula." sd03_i_tipo = $this->sd03_i_tipo ";
        $virgula = ",";
-       if(trim($this->sd03_i_tipo) == null ){ 
+       if(trim($this->sd03_i_tipo) == null ){
          $this->erro_sql = " Campo Tipo nao Informado.";
          $this->erro_campo = "sd03_i_tipo";
          $this->erro_banco = "";
@@ -323,7 +323,7 @@ class cl_medicos {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Médicos nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->sd03_i_codigo;
@@ -351,14 +351,14 @@ class cl_medicos {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($sd03_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($sd03_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($sd03_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -390,7 +390,7 @@ class cl_medicos {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Médicos nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$sd03_i_codigo;
@@ -418,11 +418,11 @@ class cl_medicos {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -444,8 +444,8 @@ class cl_medicos {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -465,8 +465,8 @@ class cl_medicos {
      $sql2 = "";
      if($dbwhere==""){
        if($sd03_i_codigo!=null ){
-         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo "; 
-       } 
+         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -482,8 +482,8 @@ class cl_medicos {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -502,8 +502,8 @@ class cl_medicos {
      $sql2 = "";
      if($dbwhere==""){
        if($sd03_i_codigo!=null ){
-         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo "; 
-       } 
+         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -519,7 +519,7 @@ class cl_medicos {
      }
      return $sql;
   }
-   function sql_query_cgm ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_cgm ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -536,8 +536,8 @@ class cl_medicos {
      $sql2 = "";
      if($dbwhere==""){
        if($sd03_i_codigo!=null ){
-         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo "; 
-       } 
+         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -553,7 +553,7 @@ class cl_medicos {
      }
      return $sql;
   }
-   function sql_query_ativo ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_ativo ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -574,8 +574,8 @@ class cl_medicos {
      $sql2 = "";
      if($dbwhere==""){
        if($sd03_i_codigo!=null ){
-         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo "; 
-       } 
+         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -592,8 +592,8 @@ class cl_medicos {
      return $sql;
   }
 
-   // funcao do sql 
-   function sql_query_cgm_fora_rede ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_cgm_fora_rede ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -615,8 +615,8 @@ class cl_medicos {
      $sql2 = "";
      if($dbwhere==""){
        if($sd03_i_codigo!=null ){
-         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo "; 
-       } 
+         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -633,7 +633,7 @@ class cl_medicos {
      return $sql;
   }
 
-  function sql_query_info_profissional ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  function sql_query_info_profissional ( $sd03_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -652,8 +652,8 @@ class cl_medicos {
      $sql2 = "";
      if($dbwhere==""){
        if($sd03_i_codigo!=null ){
-         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo "; 
-       } 
+         $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -671,8 +671,8 @@ class cl_medicos {
   }
 
   function sql_query_unidade_cbo_medico ( $sOrder = null, $sWhere = null) {
-    
-    $sSql  = "select * ";
+
+    $sSql  = "select * "; 
     $sSql .= "  from ( select sd03_i_crm            as crm,  ";
     $sSql .= "                medicos.sd03_i_codigo as codigo_medico,";
     $sSql .= "                medico.z01_nome       as nome,";
@@ -680,7 +680,8 @@ class cl_medicos {
     $sSql .= "                rhcbo.rh70_estrutural as estrutura_cbo,";
     $sSql .= "                rhcbo.rh70_descr      as nome_cbo,";
     $sSql .= "                sd02_i_codigo         as codigo_unidade, ";
-    $sSql .= "                unidade.z01_nome      as unidade";
+    $sSql .= "                unidade.z01_nome      as unidade,";
+    $sSql .= "                especmedico.sd27_c_situacao as situacao";
     $sSql .= "           from medicos";
     $sSql .= "          inner join cgm as medico       on medico.z01_numcgm            = medicos.sd03_i_cgm";
     $sSql .= "          inner join unidademedicos      on unidademedicos.sd04_i_medico = medicos.sd03_i_codigo";
@@ -696,12 +697,13 @@ class cl_medicos {
     $sSql .= "                rhcbo.rh70_estrutural  as estrutura_cbo,";
     $sSql .= "                rhcbo.rh70_descr       as nome_cbo,";
     $sSql .= "                null as codigo_unidade, ";
-    $sSql .= "                null as unidade";
+    $sSql .= "                null as unidade,";
+    $sSql .= "                null as situacao";
     $sSql .= "          from sau_medicosforarede";
     $sSql .= "         inner join medicos on medicos.sd03_i_codigo = sau_medicosforarede.s154_i_medico";
     $sSql .= "         inner join rhcbo   on rhcbo.rh70_sequencial = sau_medicosforarede.s154_rhcbo";
     $sSql .= "         ) as x ";
-    
+
     if (!empty($sWhere)) {
       $sSql .= " where {$sWhere} ";
     }
@@ -710,7 +712,7 @@ class cl_medicos {
     }
     return $sSql;
   }
-  
+
   /**
    * Retorna os médicos cadastrado no sistema com uma flag para saber se o médico é da rede ou de fora
    * @param string $sOrder
@@ -718,30 +720,36 @@ class cl_medicos {
    * @return string
    */
   function sql_query_medicos ( $sOrder = null, $sWhere = null) {
-  
+
     $sSql  = "select * ";
     $sSql .= "  from ( select sd03_i_crm            as crm,  ";
     $sSql .= "                medicos.sd03_i_codigo as codigo_medico,";
     $sSql .= "                medico.z01_nome       as nome,";
-    $sSql .= "                true                  as medico_rede";
+    $sSql .= "                true                  as medico_rede,";
+    $sSql .= "                z02_i_cns             as cns,";
+    $sSql .= "                z01_numcgm            as cgm";
     $sSql .= "           from medicos";
-    $sSql .= "          inner join cgm as medico       on medico.z01_numcgm            = medicos.sd03_i_cgm";
+    $sSql .= "          inner join cgm    as medico     on medico.z01_numcgm    = medicos.sd03_i_cgm";
+    $sSql .= "          left  join cgmdoc as medico_doc on medico_doc.z02_i_cgm = medico.z01_numcgm";
     $sSql .= "        union all";
     $sSql .= "         select sd03_i_crm            as crm,  ";
     $sSql .= "                medicos.sd03_i_codigo as codigo_medico,";
     $sSql .= "                s154_c_nome           as nome,";
-    $sSql .= "                false                 as medico_rede";
+    $sSql .= "                false                 as medico_rede,";
+    $sSql .= "                ''                    as cns,";
+    $sSql .= "                null                  as cgm";
     $sSql .= "          from sau_medicosforarede";
     $sSql .= "         inner join medicos on medicos.sd03_i_codigo = sau_medicosforarede.s154_i_medico";
     $sSql .= "         inner join rhcbo   on rhcbo.rh70_sequencial = sau_medicosforarede.s154_rhcbo";
     $sSql .= "         ) as x ";
-  
+
     if (!empty($sWhere)) {
       $sSql .= " where {$sWhere} ";
     }
     if (!empty($sOrder)) {
       $sSql .= " order by {$sOrder} ";
     }
+
     return $sSql;
   }
 
@@ -772,12 +780,12 @@ class cl_medicos {
     $sql .= " inner join db_usuarios    on db_usuarios.id_usuario       = db_usuacgm.id_usuario ";
     $sql .= " inner join unidademedicos on unidademedicos.sd04_i_medico = medicos.sd03_i_codigo";
     $sql .= " inner join unidades       on unidades.sd02_i_codigo       = unidademedicos.sd04_i_unidade ";
-  
+
     $sql2 = "";
     if($dbwhere==""){
       if($sd03_i_codigo!=null ){
-        $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo "; 
-      } 
+        $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo ";
+      }
     }else if($dbwhere != ""){
       $sql2 = " where $dbwhere";
     }
@@ -793,6 +801,83 @@ class cl_medicos {
     }
     return $sql;
   }
-  
+
+
+  /**
+   * Query para pesquisar profissionais da saude e suas especialidades
+   * @param  integer $sd03_i_codigo [description]
+   * @param  string $campos        [description]
+   * @param  string $ordem         [description]
+   * @param  string $dbwhere       [description]
+   */
+  function sql_query_profissional_saude_especialidade ( $sd03_i_codigo=null, $campos="*", $ordem=null, $dbwhere="" ) {
+
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= "    from medicos   ";
+    $sql .= "   inner join cgm            on cgm.z01_numcgm  = medicos.sd03_i_cgm";
+    $sql .= "   inner join db_usuacgm     on cgmlogin        = z01_numcgm ";
+    $sql .= "   inner join unidademedicos on sd04_i_medico   = sd03_i_codigo ";
+    $sql .= "   inner join especmedico    on sd27_i_undmed   = sd04_i_codigo ";
+    $sql .= "   inner join rhcbo          on rh70_sequencial = sd27_i_rhcbo ";
+
+    $sql2 = "";
+    if($dbwhere==""){
+      if($sd03_i_codigo!=null ){
+        $sql2 .= " where medicos.sd03_i_codigo = $sd03_i_codigo ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+  }
+
+  /**
+   * Busca os vínculos do medíco com as unidades e especialidade
+   * @return string Sql
+   */
+  public function sql_query_vinculos( $sd03_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "" ) {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from medicos ";
+     $sql .= " inner join cgm              on cgm.z01_numcgm  = medicos.sd03_i_cgm ";
+     $sql .= " inner join unidademedicos   on sd04_i_medico   = sd03_i_codigo ";
+     $sql .= " inner join especmedico      on sd27_i_undmed   = sd04_i_codigo ";
+     $sql .= " inner join rhcbo            on rh70_sequencial = sd27_i_rhcbo ";
+     $sql .= "  left join sau_orgaoemissor on sd51_i_codigo   = sd04_i_orgaoemissor ";
+     $sql2 = "";
+     if (empty($dbwhere)) {
+       if (!empty($sd03_i_codigo)){
+         $sql2 .= "  where medicos.sd03_i_codigo = $sd03_i_codigo ";
+       }
+     } else if (!empty($dbwhere)) {
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
+     }
+     return $sql;
+  }
+
 }
 ?>

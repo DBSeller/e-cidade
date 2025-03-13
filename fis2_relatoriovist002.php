@@ -1,42 +1,35 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require('fpdf151/pdf.php');
-include("classes/db_vistorias_classe.php");
-include("classes/db_vistlocal_classe.php");
-include("classes/db_vistexec_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_vistinscr_classe.php");
-include("classes/db_vistmatric_classe.php");
-include("classes/db_vistsanitario_classe.php");
-include("classes/db_vistcgm_classe.php");
-include("classes/db_vistusuario_classe.php");
-include("classes/db_vistoriarec_classe.php");
-include("classes/db_tipovistorias_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("fpdf151/pdf.php"));
 
 $clrotulo        = new rotulocampo;
 $clvistlocal     = new cl_vistlocal;
@@ -63,20 +56,16 @@ $clrotulo->label("y77_descricao");
 $clcgm->rotulo->label();
 $clvistorias->rotulo->label();
 
-//db_postmemory($HTTP_SERVER_VARS,2);
-//exit;
-
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-//die ($clvistorias->sql_query($y70_codvist,"*","y70_codvist asc",""));
+
 $dbdeptoatual=db_getsession("DB_coddepto");
 $and = "and";
 $where = " and y70_coddepto = $dbdeptoatual";
 
-
 $head3 = "TIPOS DE VISTORIAS:";
 
 if ($listatipo!=""){
-  //die($cltipovistorias->sql_query_file("","y77_descricao",""," y77_codtipo in ($listatipo)"));
+
   $vistdescr = $cltipovistorias->sql_record($cltipovistorias->sql_query_file("","y77_descricao",""," y77_codtipo in ($listatipo) and y77_instit = ".db_getsession('DB_instit') ));
   $v =  "";
 }else{
@@ -91,7 +80,7 @@ for($a=0;$a<$cltipovistorias->numrows;$a++){
 
 }
 if( @$consulta!=1){
- // die("xxxxxxxxxxxx");
+
   if ($vertipo == "com" && $listatipo!=""){
     $where .= " and y77_codtipo in ($listatipo)";
     $and = "and";
@@ -114,7 +103,7 @@ if( @$consulta!=1){
     $and = "and";
   }
   if($datai == "--" && $dataf == "--"){
-    //$where ="";
+
   } elseif($datai !== "--" && $dataf !== "--"){
     $where .=" and y70_data between '$datai' and '$dataf'";
     $info2 = "PERIODO:".db_formatar($datai,'d'). " A " .db_formatar($dataf,'d');
@@ -149,13 +138,7 @@ if( @$consulta!=1){
   $tiporel="ana";
 }
 
-//die($clvistorias->sql_query_info(null,"*",$order_by," 1=1 ".$where." and y70_instit = ".db_getsession('DB_instit') ));
-
 $result = $clvistorias->sql_record($clvistorias->sql_query_info(null,"*",$order_by," 1=1 ".$where." and y70_instit = ".db_getsession('DB_instit') ));
-
-//db_criatabela($result);
-//exit;
-//die($clvistorias->sql_querylocal("","*","",$where));
 
 $linhas = $clvistorias->numrows;
 if($linhas == 0){
@@ -163,7 +146,6 @@ if($linhas == 0){
 }
 
 $head2 = @$info2;
-//die (($clvistorias->sql_querylocal("","*","",$where)));
 $total = 0;
 $troca = 1;
 $alt = 4;
@@ -222,8 +204,8 @@ for($r=0;$r<$linhas;$r++){
     $pdf->Cell(50,4,$RLz01_cgccpf.': '.@$z01_cgccpf,1,"J",1,30);
     $pdf->Ln(4);
     $pdf->Cell(75,4,$RLj14_nome.': '.@$j14_nome,1,0,"J",1);
-    $pdf->Cell(80,4,$RLz01_numero.': '.@$z01_numero,1,"J",1,30);
-    $pdf->Cell(35,4,$RLz01_compl.': '.@$z01_compl,1,"J",1,30);
+    $pdf->Cell(35,4,$RLz01_numero.': '.@$z01_numero,1,"J",1,30);
+    $pdf->Cell(80,4,$RLz01_compl.': '.substr(@$z01_compl, 0, 100),1,"J",1,30);
     $pdf->Ln(4);
     $pdf->Cell(75,4,$RLz01_munic.': '.@$z01_munic,1,0,"J",1);
     $pdf->Cell(80,4,$RLj13_descr.': '.@$j13_descr,1,0,"J",1);
@@ -247,8 +229,8 @@ for($r=0;$r<$linhas;$r++){
     $pdf->SetFillColor(255);
     $pdf->Cell(75,4,$RLj14_nome.': '.@$rlocal,1,0,"J",1);
     $pdf->Cell(55,4,$RLj13_descr.': '.@$blocal,1,0,"J",1);
-    $pdf->Cell(25,4,$RLz01_numero.': '.@$y10_numero,1,"J",1,30);
-    $pdf->Cell(35,4,$RLz01_compl.': '.@$y10_compl,1,"J",1,30);
+    $pdf->Cell(20,4,$RLz01_numero.': '.@$y10_numero,1,"J",1,30);
+    $pdf->Cell(40,4,$RLz01_compl.': '.substr(@$y10_compl, 0,17),1,"J",1,30);
     $pdf->Ln(4);
     $pdf->SetFillColor(230);
     $pdf->Cell(190,4,"LOCAL DA EXECUÇÃO DA VISTORIA",1,0,"C",1);
@@ -256,8 +238,8 @@ for($r=0;$r<$linhas;$r++){
     $pdf->SetFillColor(255);
     $pdf->Cell(75,4,$RLj14_nome.': '.@$rexec,1,0,"J",1);
     $pdf->Cell(55,4,$RLj13_descr.': '.@$bexec,1,0,"J",1);
-    $pdf->Cell(25,4,$RLz01_numero.': '.@$y11_numero,1,"J",1,30);
-    $pdf->Cell(35,4,$RLz01_compl.': '.@$y11_compl,1,"J",1,30);
+    $pdf->Cell(20,4,$RLz01_numero.': '.@$y11_numero,1,"J",1,30);
+    $pdf->Cell(40,4,$RLz01_compl.': '.substr(@$y11_compl, 0,17),1,"J",1,30);
     $pdf->Ln(4);
     $resultfiscal = $clvistusuario->sql_record($clvistusuario->sql_query($y70_codvist,"","db_usuarios.nome as fiscal,y75_obs"));
     if($clvistusuario->numrows > 0){
@@ -266,20 +248,15 @@ for($r=0;$r<$linhas;$r++){
       $pdf->Ln(4);
       $pdf->SetFillColor(255);
       if($clvistusuario->numrows >= 1){
-        /*
-         $pdf->Cell(95,4,$RLnome.'',1,0,"C",1);
-         $pdf->Cell(95,4,$RLy75_obs.'',1,1,"C",1);
-         $pdf->SetAligns(array("C","C"));
-         $pdf->SetWidths(array(95,95));*/
+
         $vir="";
         $nome_fiscal = "";
         $obser_fiscal = "";
         for($i=0;$i<$clvistusuario->numrows;$i++){
+
           db_fieldsmemory($resultfiscal,$i);
           $nome_fiscal .= $vir.$fiscal;
           $obser_fiscal .= $y75_obs.". ";
-          /*$pdf->SetAligns(array("C","C"));
-           $pdf->Row(array($fiscal,$y75_obs),3);*/
           $vir=",";
         }
         $pdf->multicell(190,4,$RLnome.": ".@$nome_fiscal.".".$RLy75_obs.": ".$obser_fiscal,1,"L",0);
@@ -312,10 +289,9 @@ for($r=0;$r<$linhas;$r++){
   }
 
   //RELATORIO SINTETICO
-
   if ($tiporel=="sin"){
     $head1 = "RELATÓRIO DE VISTORIAS SINTÉTICO";
-     
+
     if ($pdf->gety() > $pdf->h - 30 || $troca != 0 ){
       $pdf->addpage();
       $pdf->setfont('arial','b',8);
@@ -337,4 +313,3 @@ for($r=0;$r<$linhas;$r++){
 $pdf->setfont('arial','b',8);
 $pdf->cell(0,$alt,"TOTAL DE REGISTROS  :  $total",'T',0,"L",0);
 $pdf->output();
-?>

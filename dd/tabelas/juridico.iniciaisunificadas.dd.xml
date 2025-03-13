@@ -1,0 +1,136 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010802' name='juridico.iniciaisunificadas' description="Guarda as iniciais que foram unificadas pela rotina de unificação." prefix="v45" label="Iniciais Unificadas" type="0">
+  <fields>
+    <field codigo="1013262" 
+           campo_api='' 
+           name="v45_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela iniciaisunificadas." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='juridico.iniciaisunificadas_v45_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013263" 
+           campo_api='' 
+           name="v45_inicialprimaria" 
+           conteudo="int4" 
+           description="Salva a inicial primária." 
+           inivalue="0" 
+           label="Inicial Primária" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Inicial Primária" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013264" 
+           campo_api='' 
+           name="v45_inicialsecundaria" 
+           conteudo="int4" 
+           description="Salva a inicial secundária." 
+           inivalue="0" 
+           label="Inicial Secundária" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Inicial Secundária" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013265" 
+           campo_api='' 
+           name="v45_certidao" 
+           conteudo="int4" 
+           description="Salva a certidão" 
+           inivalue="0" 
+           label="Certidão" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Certidão" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013266" 
+           campo_api='' 
+           name="v45_dataunificacao" 
+           conteudo="text" 
+           description="Salva a data da unificação" 
+           inivalue="" 
+           label="Data Unificação" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Data Unificação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013267" 
+           campo_api='' 
+           name="v45_usuario" 
+           conteudo="int4" 
+           description="Salva o usuário que executou a unificação." 
+           inivalue="0" 
+           label="Usuário" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Usuário" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="v45_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="certid" inner='t'>
+      <fieldfk name="v45_certidao" reference="v13_certid" /> 
+    </foreignkey>
+    <foreignkey reference="inicial" inner='t'>
+      <fieldfk name="v45_inicialprimaria" reference="v50_inicial" /> 
+      <fieldfk name="v45_inicialsecundaria" reference="v50_inicial" /> 
+    </foreignkey>
+    <foreignkey reference="db_usuarios" inner='t'>
+      <fieldfk name="v45_usuario" reference="id_usuario" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

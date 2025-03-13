@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_inicialnomes_classe.php");
-require_once("classes/db_processoforo_classe.php");
-require_once("classes/db_processoforoinicial_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_inicialnomes_classe.php"));
+require_once(modification("classes/db_processoforo_classe.php"));
+require_once(modification("classes/db_processoforoinicial_classe.php"));
+
+$get = (object)filter_input_array(INPUT_GET);
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -221,12 +223,18 @@ function js_retornaInicial(iCodigoInicial) {
 	</tr>
 	<tr>
 		<td>
-      <fieldset>
+      <fieldset id="fieldsetHidden">
       <table align="center">
         <tr> 
           <td align="center" valign="top"> 
             <?
             
+            if (count((array) $oPost) == 0) {
+              echo ("<script>
+                      document.getElementById('fieldsetHidden').style.visibility = 'hidden';
+                    </script>");
+            }
+
             $sWhere = " processoforo.v70_instit = ".db_getsession('DB_instit');
             
             if (isset($oGet->lAnuladas) && ($oGet->lAnuladas == 'false')) {
@@ -238,16 +246,16 @@ function js_retornaInicial(iCodigoInicial) {
             	if ($oPost->v70_anulado == 'AT') {
                 $sWhere .= " and processoforo.v70_anulado is false";
             	} else if ($oPost->v70_anulado == 'AN') {
-                $sWhere .= " and processoforo.v70_anulado is true";
+                $sWhere .= " and processoforo.v70_anulado is true";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
             	}
-            }
+            }            
             
-            if (!isset($pesquisa_chave)) {
+            if (!isset($pesquisa_chave) && count((array) $oPost) > 0) {              
             	
               if (isset($campos) == false) {
                   
                 if(file_exists("funcoes/db_func_processoforo.php")==true){
-                  include("funcoes/db_func_processoforo.php");
+                  include(modification("funcoes/db_func_processoforo.php"));
                 } else {
                   $campos  = "processoforo.v70_sequencial,processoforo.v70_codforo, processoforo.v70_vara,processoforo.v70_data,processoforo.v70_anulado, v71_inicial ";
                   
@@ -322,18 +330,24 @@ function js_retornaInicial(iCodigoInicial) {
               db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
             } else {
             	
-              if ($pesquisa_chave != null && $pesquisa_chave != "") {
+              if ( ! empty($pesquisa_chave) ) {
               	
               	$sWhere .= " and processoforo.v70_sequencial = {$pesquisa_chave}";
               	$sSqlProcessoForo = $clprocessoforo->sql_query_cgm_inicial(null, "processoforo.*", "processoforo.v70_sequencial, processoforo.v70_codforo", $sWhere);
                 
               	$result           = $clprocessoforo->sql_record($sSqlProcessoForo);
-                if ($clprocessoforo->numrows != 0) {
-                	
-                  db_fieldsmemory($result,0);
-                  echo "<script>".$funcao_js."('$v70_sequencial',false, '$v70_codforo');</script>";
-                } else {
-      	          echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
+
+                  if (isset($get->objeto)) {
+                      $objeto = JSON::create()->stringify(db_utils::fieldsMemory($result, 0));
+                      echo "<script>{$funcao_js}({$objeto}, {$pesquisa_chave})</script>";
+                  } else {
+                      if ($clprocessoforo->numrows != 0) {
+
+                          db_fieldsmemory($result, 0);
+                          echo "<script>" . $funcao_js . "('$v70_sequencial',false, '$v70_codforo');</script>";
+                      } else {
+                          echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true);</script>";
+                      }
                 }
               } else {
       	        echo "<script>".$funcao_js."('',false);</script>";
@@ -352,7 +366,7 @@ function js_retornaInicial(iCodigoInicial) {
 <?
 if(!isset($pesquisa_chave)){
   ?>
-  <script>
+  <script>  
   </script>
   <?
 }

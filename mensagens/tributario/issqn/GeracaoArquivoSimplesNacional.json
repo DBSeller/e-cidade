@@ -6,5 +6,7 @@
   "empresa_com_debitos_em_aberto" : "Empresa com débitos em aberto.",
   "empresa_sem_alvara"            : "Sem Alvará liberado.",
   "alvara_inativo"                : "Alvará inativo.",
-  "nenhuma_empresa_encontrada"    : "Nenhuma Empresa encontrada."
+  "nenhuma_empresa_encontrada"    : "Nenhuma Empresa encontrada.",
+  "todos_os_registros_aptos"      : "Nenhum registro de NÃO APTO encontrado.",
+  "inscricao_baixada"             : "Inscrição já baixada."
 }

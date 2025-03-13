@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ('model/PadArquivoSigap.model.php');
+require_once(modification('model/PadArquivoSigap.model.php'));
 /**
  * Prove dados para a geração do arquivo dados da RREO resultado nominal divída no periodo
  * do municipio para o SIGAP
  * @package Pad
  * @author  Luiz Marcelo Schmitt
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.5 $
  */
 final class PadArquivoSigapRRresultadoNominalDivida extends PadArquivoSigap {
   

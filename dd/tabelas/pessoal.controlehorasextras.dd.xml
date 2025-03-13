@@ -1,0 +1,111 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010477' name='pessoal.controlehorasextras' description="Armazena informações pertinentes a liberação de horas extras mensais para os servidores." prefix="rh232" label="controlehorasextras" type="0">
+  <fields>
+    <field codigo="1010785" 
+           campo_api='' 
+           name="rh232_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='pessoal.controlehorasextras_rh232_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010786" 
+           campo_api='' 
+           name="rh232_instituicao" 
+           conteudo="int4" 
+           description="Instituição" 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010787" 
+           campo_api='' 
+           name="rh232_selecao" 
+           conteudo="int4" 
+           description="Seleção" 
+           inivalue="0" 
+           label="Seleção" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Seleção" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010788" 
+           campo_api='' 
+           name="rh232_ano" 
+           conteudo="int4" 
+           description="Ano" 
+           inivalue="0" 
+           label="Ano" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010789" 
+           campo_api='' 
+           name="rh232_mes" 
+           conteudo="int4" 
+           description="Mês" 
+           inivalue="0" 
+           label="Mês" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Mês" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh232_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="selecao" inner='f'>
+      <fieldfk name="rh232_selecao" reference="r44_selec" /> 
+      <fieldfk name="rh232_instituicao" reference="r44_instit" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

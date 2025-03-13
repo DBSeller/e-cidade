@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,20 +30,20 @@ if(!isset($abas)){
   echo "<script>location.href='fis3_fandamauto005.php?db_opcao=3'</script>";
   exit;
 }
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_auto_classe.php");
-include("classes/db_autotipo_classe.php");
-include("classes/db_autoandam_classe.php");
-include("classes/db_autoultandam_classe.php");
-include("classes/db_fandam_classe.php");
-include("classes/db_fandamusu_classe.php");
-include("classes/db_autolocal_classe.php");
-include("classes/db_autoexec_classe.php");
-include("classes/db_autousu_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_auto_classe.php"));
+include(modification("classes/db_autotipo_classe.php"));
+include(modification("classes/db_autoandam_classe.php"));
+include(modification("classes/db_autoultandam_classe.php"));
+include(modification("classes/db_fandam_classe.php"));
+include(modification("classes/db_fandamusu_classe.php"));
+include(modification("classes/db_autolocal_classe.php"));
+include(modification("classes/db_autoexec_classe.php"));
+include(modification("classes/db_autousu_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo        = new rotulocampo;
 $clauto     = new cl_auto;
@@ -156,7 +156,7 @@ if($clautoultandam->numrows > 0){
 	  $db_opcao=33;
         }
         $db_botao = true;
-	include("forms/db_frmfandam.php");
+	include(modification("forms/db_frmfandam.php"));
         if(isset($desliga)){  
 	  echo "<script>document.form1.db_opcao.disabled=true;</script>";
 	}

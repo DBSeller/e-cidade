@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_gerfcom_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_gerfcom_classe.php"));
 $clgerfcom = new cl_gerfcom;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -78,7 +78,7 @@ db_postmemory($HTTP_POST_VARS);
   if(!isset($mesfolha) || (isset($mesfolha) && trim($mesfolha) == "")){
     $mesfolha = db_mesfolha();
   }
-  include("dbforms/db_classesgenericas.php");
+  include(modification("dbforms/db_classesgenericas.php"));
   $geraform = new cl_formulario_rel_pes;
 
   $geraform->usaregi = true;                      // PERMITIR SELEÇÃO DE MATRÍCULAS
@@ -247,6 +247,13 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 var qual_rub = 0;
 function js_emite(inserir){
+
+  if (document.form1.rh27_rub1.value == "") {
+
+    alert("Por favor, informe a Rubrica a ser inserida.");
+    return false;
+  }
+
   qry = "ponto1="+document.form1.ponto1.value;
   qry+= "&inserir="+inserir;
   qry+= "&ponto2="+document.form1.ponto2.value;
@@ -305,7 +312,7 @@ function js_emite(inserir){
     qry+= "&orf="+orgfim;
   }
 
- js_OpenJanelaIframe('top.corpo','db_iframe_rubinclref001','pes4_rubinclref002.php?'+qry,'Gerando Arquivo',false);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rubinclref001','pes4_rubinclref002.php?'+qry,'Gerando Arquivo',false);
 //jan = window.open('pes4_rubinclref002.php'+qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
 //jan.moveTo(0,0);
 
@@ -321,14 +328,24 @@ function js_verificar(){
 function js_pesquisarh27_rubric(mostra,qual){
   qual_rub = qual;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
   }else{
-    if(document.form1.rh27_rubric.value != ''){
-      js_completa_rubricas(document.form1.rh27_rubric);
-      js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh27_rubric.value+'&funcao_js=parent.js_mostrarubricas&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+    if(qual_rub == 1){
+       if(document.form1.rh27_rubric.value != ''){
+         js_completa_rubricas(document.form1.rh27_rubric);
+         js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh27_rubric.value+'&funcao_js=parent.js_mostrarubricas&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+       }else{
+         document.form1.rh27_rubric.value = '';
+         document.form1.rh27_descr.value  = '';
+       }
     }else{
-      document.form1.rh27_rubric.value = '';
-      document.form1.rh27_descr.value  = '';
+       if(document.form1.rh27_rub1.value != ''){
+         js_completa_rubricas(document.form1.rh27_rub1);
+         js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh27_rub1.value+'&funcao_js=parent.js_mostrarubricas&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+       }else{
+         document.form1.rh27_rub1.value = '';
+         document.form1.rh27_des1.value  = '';
+       }
     }
   }
 }
@@ -356,7 +373,7 @@ function js_mostrarubricas1(chave1,chave2){
   db_iframe_rhrubricas.hide();
 }
 function js_erro(msg){
-  top.corpo.db_iframe_rubinclref001.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_rubinclref001.hide();
   if(msg.substr(0,6) == 'Existe'){
     if(confirm(msg)){
       js_emite(2);    

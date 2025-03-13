@@ -111,13 +111,13 @@ db_input('i01_calc',1,$Ii01_calc,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_validainflat(obj){
-    if(obj.value.lenght > 5){
+    if(obj.value.length > 5){
 	    alert('O codigo do inflator pode ter no máximo 5 caracteres ! ');	  
         obj.value = obj.value.substr(1,5); 
 	}
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_inflan','func_inflan.php?funcao_js=parent.js_preenchepesquisa|i01_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inflan','func_inflan.php?funcao_js=parent.js_preenchepesquisa|i01_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_inflan.hide();

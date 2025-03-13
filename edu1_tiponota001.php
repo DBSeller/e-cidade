@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_diarioavaliacao_classe.php");
-require_once("classes/db_transfescolarede_classe.php");
-require_once("classes/db_transfaprov_classe.php");
-require_once("classes/db_alunotransfturma_classe.php");
-require_once("classes/db_regencia_classe.php");
-require_once("classes/db_conceito_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_diarioavaliacao_classe.php"));
+require_once(modification("classes/db_transfescolarede_classe.php"));
+require_once(modification("classes/db_transfaprov_classe.php"));
+require_once(modification("classes/db_alunotransfturma_classe.php"));
+require_once(modification("classes/db_regencia_classe.php"));
+require_once(modification("classes/db_conceito_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 db_app::import("educacao.ArredondamentoNota");
 db_postmemory($HTTP_POST_VARS);
 $resultedu= eduparametros(db_getsession("DB_coddepto"));
@@ -100,7 +100,7 @@ if(isset($converter)){
   $update .= " ,ed72_t_parecer = '".strtoupper($aprovperiodo)."' ";
  }
  $sql = "UPDATE diarioavaliacao SET $update WHERE ed72_i_codigo = $diarioavaliacao";
- $result = pg_query($sql);
+ $result = db_query($sql);
  db_msgbox("Alteração Efetuada com Sucesso!");
  ?>
  <script>
@@ -123,7 +123,7 @@ $sql1 = "SELECT ed53_d_inicio,ed53_d_fim,ed95_i_aluno,ed95_i_regencia,ed72_i_esc
          AND ed72_i_procavaliacao = $ed41_i_codigo
          AND ed53_i_periodoavaliacao = ed41_i_periodoavaliacao
         ";
-$result1 = pg_query($sql1);
+$result1 = db_query($sql1);
 db_fieldsmemory($result1,0);
 if(trim($tpdestino)=="NOTA"){
  $campoaprov = "ed72_i_valornota";
@@ -160,7 +160,7 @@ if(($cltransfescolarede->numrows>0) || ($clalunotransfturma->numrows>0&&$cltrans
            left join transfaprov on ed251_i_diarioorigem = ed72_i_codigo
           WHERE ed251_i_diariodestino = $diarioavaliacao
          ";
- $result1 = pg_query($sql1);
+ $result1 = db_query($sql1);
  if(pg_numrows($result1)>0){
   db_fieldsmemory($result1,0);
  }else{
@@ -176,7 +176,7 @@ if(($cltransfescolarede->numrows>0) || ($clalunotransfturma->numrows>0&&$cltrans
             AND ed223_i_serie = $ed59_i_serie
             AND ed41_i_periodoavaliacao = $ed53_i_periodoavaliacao
            ";
-   $result2 = pg_query($sql2);
+   $result2 = db_query($sql2);
    @db_fieldsmemory($result2,0);
    $ntorigem = $aprovperiodo;
    $prorigem = $aprovperiodo;

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_conplanoorcamento_classe.php");
-require_once("classes/db_orcfontes_classe.php");
-require_once("classes/db_orcelemento_classe.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_conplanoorcamento_classe.php"));
+require_once(modification("classes/db_orcfontes_classe.php"));
+require_once(modification("classes/db_orcelemento_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
 db_postmemory($HTTP_POST_VARS);
 
 $anousu = db_getsession("DB_anousu");
@@ -96,7 +96,7 @@ $clrotulo->label("c61_reduz");
 </fieldset>
 
 <div style="margin-top:10px;">
-  <input type='button' value='Pesquisar' onclick='js_listaContas();' />
+  <input type='button' value='Pesquisar' alt="Pesquisar" onclick='js_listaContas();' />
 </div>     
 
 <fieldset style="margin-top:10px; width: 700px;">
@@ -194,7 +194,7 @@ function js_listaContas() {
 function js_retornoCompletaContas(oAjax) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.iStatus == 1) {
 
@@ -270,7 +270,7 @@ function js_alterar() {
 function js_retornoAlterar(oAjax) {
   
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.sMessage.urlDecode());
   oGridContas.clearAll(true);
 }

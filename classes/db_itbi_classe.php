@@ -1,97 +1,108 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: ITBI
 //CLASSE DA ENTIDADE itbi
-class cl_itbi { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $it01_guia = 0; 
-   var $it01_data_dia = null; 
-   var $it01_data_mes = null; 
-   var $it01_data_ano = null; 
-   var $it01_data = null; 
-   var $it01_hora = null; 
-   var $it01_tipotransacao = 0; 
-   var $it01_areaterreno = 0; 
-   var $it01_areaedificada = 0; 
-   var $it01_obs = null; 
-   var $it01_valortransacao = 0; 
-   var $it01_areatrans = 0; 
-   var $it01_mail = null; 
-   var $it01_finalizado = 'f'; 
-   var $it01_origem = 0; 
-   var $it01_id_usuario = 0; 
-   var $it01_coddepto = 0; 
-   var $it01_valorterreno = 0; 
-   var $it01_valorconstr = 0; 
-   var $it01_envia = 'f'; 
-   var $it01_percentualareatransmitida = 0; 
-   // cria propriedade com as variaveis do arquivo 
-   var $campos = "
-                 it01_guia = int8 = Código da ITBI 
-                 it01_data = date = Data da solicitação 
-                 it01_hora = varchar(5) = Hora da solicitação 
-                 it01_tipotransacao = int8 = Tipo de Transação 
-                 it01_areaterreno = float8 = Àrea do terreno 
-                 it01_areaedificada = float8 = Área edificada 
-                 it01_obs = text = Observações 
-                 it01_valortransacao = float8 = Valor da transação 
-                 it01_areatrans = float8 = Área transmitida do terreno 
-                 it01_mail = varchar(50) = E-mail de contato 
-                 it01_finalizado = bool = Finalizado 
-                 it01_origem = int4 = Origem 
-                 it01_id_usuario = int4 = Usuário 
-                 it01_coddepto = int4 = Depto. 
-                 it01_valorterreno = float8 = Valor Terreno 
-                 it01_valorconstr = float8 = Valor Construção 
-                 it01_envia = bool = Enviado para Liberação 
-                 it01_percentualareatransmitida = float8 = Percentual Área Transmitida 
+class cl_itbi {
+   // cria variaveis de erro
+   public $rotulo     = null;
+   public $query_sql  = null;
+   public $numrows    = 0;
+   public $numrows_incluir = 0;
+   public $numrows_alterar = 0;
+   public $numrows_excluir = 0;
+   public $erro_status= null;
+   public $erro_sql   = null;
+   public $erro_banco = null;
+   public $erro_msg   = null;
+   public $erro_campo = null;
+   public $pagina_retorno = null;
+   // cria variaveis do arquivo
+   public $it01_guia = 0;
+   public $it01_data_dia = null;
+   public $it01_data_mes = null;
+   public $it01_data_ano = null;
+   public $it01_data = null;
+   public $it01_hora = null;
+   public $it01_tipotransacao = 0;
+   public $it01_areaterreno = 0;
+   public $it01_areaedificada = 0;
+   public $it01_obs = null;
+   public $it01_valortransacao = 0;
+   public $it01_areatrans = 0;
+   public $it01_mail = null;
+   public $it01_finalizado = 'f';
+   public $it01_origem = 0;
+   public $it01_id_usuario = 0;
+   public $it01_coddepto = 0;
+   public $it01_valorterreno = 0;
+   public $it01_valorconstr = 0;
+   public $it01_envia = 'f';
+   public $it01_percentualareatransmitida = 0;
+   public $it01_processo = null;
+   public $it01_tituprocesso = null;
+   public $it01_dtprocesso = null;
+   public $it01_notificado = '';
+   public $it01_cartorioextra = null;
+
+   // cria propriedade com as publiciaveis do arquivo
+   public $campos = "
+                 it01_guia = int8 = Código da ITBI
+                 it01_data = date = Data da solicitação
+                 it01_hora = varchar(5) = Hora da solicitação
+                 it01_tipotransacao = int8 = Tipo de Transação
+                 it01_areaterreno = float8 = Àrea do terreno
+                 it01_areaedificada = float8 = Área edificada
+                 it01_obs = text = Observações
+                 it01_valortransacao = float8 = Valor da transação
+                 it01_areatrans = float8 = Área transmitida do terreno
+                 it01_mail = varchar(50) = E-mail de contato
+                 it01_finalizado = bool = Finalizado
+                 it01_origem = int4 = Origem
+                 it01_id_usuario = int4 = Usuário
+                 it01_coddepto = int4 = Depto.
+                 it01_valorterreno = float8 = Valor Terreno
+                 it01_valorconstr = float8 = Valor Construção
+                 it01_envia = bool = Enviado para Liberação
+                 it01_percentualareatransmitida = float8 = Percentual Área Transmitida
+                 it01_processo = int8 = Número do Processo
+                 it01_tituprocesso = varchar(255) = Titular do Processo
+                 it01_dtprocesso = varchar(255) = Data do Processo
+                 it01_notificado = bool = Notificado
+                 it01_cartorioextra = integer = Código do Cartório
                  ";
-   //funcao construtor da classe 
-   function cl_itbi() { 
+   //funcao construtor da classe
+   public function  cl_itbi() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("itbi"); 
+     $this->rotulo = new rotulo("itbi");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   public function  erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -100,7 +111,7 @@ class cl_itbi {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function  atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->it01_guia = ($this->it01_guia == ""?@$GLOBALS["HTTP_POST_VARS"]["it01_guia"]:$this->it01_guia);
        if($this->it01_data == ""){
@@ -127,14 +138,19 @@ class cl_itbi {
        $this->it01_valorconstr = ($this->it01_valorconstr == ""?@$GLOBALS["HTTP_POST_VARS"]["it01_valorconstr"]:$this->it01_valorconstr);
        $this->it01_envia = ($this->it01_envia == "f"?@$GLOBALS["HTTP_POST_VARS"]["it01_envia"]:$this->it01_envia);
        $this->it01_percentualareatransmitida = ($this->it01_percentualareatransmitida == ""?@$GLOBALS["HTTP_POST_VARS"]["it01_percentualareatransmitida"]:$this->it01_percentualareatransmitida);
+       $this->it01_dtprocesso = ($this->it01_dtprocesso == null ?@$GLOBALS["HTTP_POST_VARS"]["it01_dtprocesso"]:$this->it01_dtprocesso);
+       $this->it01_processo = ($this->it01_processo == null ?@$GLOBALS["HTTP_POST_VARS"]["it01_processo"]:$this->it01_processo);
+       $this->it01_tituprocesso = ($this->it01_tituprocesso == null ?@$GLOBALS["HTTP_POST_VARS"]["it01_tituprocesso"]:$this->it01_tituprocesso);
+       $this->it01_notificado = ($this->it01_notificado == null ?@$GLOBALS["HTTP_POST_VARS"]["it01_notificado"]:$this->it01_notificado);
+       $this->it01_cartorioextra = ($this->it01_cartorioextra == null ?@$GLOBALS["HTTP_POST_VARS"]["it01_cartorioextra"]:$this->it01_cartorioextra);
      }else{
        $this->it01_guia = ($this->it01_guia == ""?@$GLOBALS["HTTP_POST_VARS"]["it01_guia"]:$this->it01_guia);
      }
    }
    // funcao para inclusao
-   function incluir ($it01_guia){ 
+   public function  incluir ($it01_guia){
       $this->atualizacampos();
-     if($this->it01_data == null ){ 
+     if($this->it01_data == null ){
        $this->erro_sql = " Campo Data da solicitação não informado.";
        $this->erro_campo = "it01_data_dia";
        $this->erro_banco = "";
@@ -143,7 +159,7 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_hora == null ){ 
+     if($this->it01_hora == null ){
        $this->erro_sql = " Campo Hora da solicitação não informado.";
        $this->erro_campo = "it01_hora";
        $this->erro_banco = "";
@@ -152,7 +168,7 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_tipotransacao == null ){ 
+     if($this->it01_tipotransacao == null ){
        $this->erro_sql = " Campo Tipo de Transação não informado.";
        $this->erro_campo = "it01_tipotransacao";
        $this->erro_banco = "";
@@ -161,7 +177,7 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_areaterreno == null ){ 
+     if($this->it01_areaterreno == null ){
        $this->erro_sql = " Campo Àrea do terreno não informado.";
        $this->erro_campo = "it01_areaterreno";
        $this->erro_banco = "";
@@ -170,7 +186,7 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_areaedificada == null ){ 
+     if($this->it01_areaedificada == null ){
        $this->erro_sql = " Campo Área edificada não informado.";
        $this->erro_campo = "it01_areaedificada";
        $this->erro_banco = "";
@@ -179,7 +195,7 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_valortransacao == null ){ 
+     if($this->it01_valortransacao == null ){
        $this->erro_sql = " Campo Valor da transação não informado.";
        $this->erro_campo = "it01_valortransacao";
        $this->erro_banco = "";
@@ -188,7 +204,7 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_areatrans == null ){ 
+     if($this->it01_areatrans == null ){
        $this->erro_sql = " Campo Área transmitida do terreno não informado.";
        $this->erro_campo = "it01_areatrans";
        $this->erro_banco = "";
@@ -197,10 +213,10 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_finalizado == null ){ 
+     if($this->it01_finalizado == null ){
        $this->it01_finalizado = "f";
      }
-     if($this->it01_origem == null ){ 
+     if($this->it01_origem == null ){
        $this->erro_sql = " Campo Origem não informado.";
        $this->erro_campo = "it01_origem";
        $this->erro_banco = "";
@@ -209,7 +225,7 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_id_usuario == null ){ 
+     if($this->it01_id_usuario == null ){
        $this->erro_sql = " Campo Usuário não informado.";
        $this->erro_campo = "it01_id_usuario";
        $this->erro_banco = "";
@@ -218,7 +234,7 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_coddepto == null ){ 
+     if($this->it01_coddepto == null ){
        $this->erro_sql = " Campo Depto. não informado.";
        $this->erro_campo = "it01_coddepto";
        $this->erro_banco = "";
@@ -227,13 +243,13 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_valorterreno == null ){ 
+     if($this->it01_valorterreno == null ){
        $this->it01_valorterreno = "0";
      }
-     if($this->it01_valorconstr == null ){ 
+     if($this->it01_valorconstr == null ){
        $this->it01_valorconstr = "0";
      }
-     if($this->it01_envia == null ){ 
+     if($this->it01_envia == null ){
        $this->erro_sql = " Campo Enviado para Liberação não informado.";
        $this->erro_campo = "it01_envia";
        $this->erro_banco = "";
@@ -242,21 +258,21 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it01_percentualareatransmitida == null || trim($this->it01_percentualareatransmitida) == ""){ 
-       
-       $this->it01_percentualareatransmitida = 0;    
+     if($this->it01_percentualareatransmitida == null || trim($this->it01_percentualareatransmitida) == ""){
+
+       $this->it01_percentualareatransmitida = 0;
      }
      if($it01_guia == "" || $it01_guia == null ){
-       $result = db_query("select nextval('itbi_it01_guia_seq')"); 
+       $result = db_query("select nextval('itbi_it01_guia_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: itbi_it01_guia_seq do campo: it01_guia"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: itbi_it01_guia_seq do campo: it01_guia";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->it01_guia = pg_result($result,0,0); 
+       $this->it01_guia = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from itbi_it01_guia_seq");
        if(($result != false) && (pg_result($result,0,0) < $it01_guia)){
@@ -267,10 +283,10 @@ class cl_itbi {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->it01_guia = $it01_guia; 
+         $this->it01_guia = $it01_guia;
        }
      }
-     if(($this->it01_guia == null) || ($this->it01_guia == "") ){ 
+     if(($this->it01_guia == null) || ($this->it01_guia == "") ){
        $this->erro_sql = " Campo it01_guia nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -278,48 +294,67 @@ class cl_itbi {
        $this->erro_status = "0";
        return false;
      }
+     if($this->it01_notificado != '' AND $this->it01_notificado == null ){
+        $this->erro_sql = " Campo Notificado não informado.";
+        $this->erro_campo = "it01_notificado";
+        $this->erro_banco = "";
+        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+        $this->erro_status = "0";
+        return false;
+      }
      $sql = "insert into itbi(
-                                       it01_guia 
-                                      ,it01_data 
-                                      ,it01_hora 
-                                      ,it01_tipotransacao 
-                                      ,it01_areaterreno 
-                                      ,it01_areaedificada 
-                                      ,it01_obs 
-                                      ,it01_valortransacao 
-                                      ,it01_areatrans 
-                                      ,it01_mail 
-                                      ,it01_finalizado 
-                                      ,it01_origem 
-                                      ,it01_id_usuario 
-                                      ,it01_coddepto 
-                                      ,it01_valorterreno 
-                                      ,it01_valorconstr 
-                                      ,it01_envia 
-                                      ,it01_percentualareatransmitida 
+                                       it01_guia
+                                      ,it01_data
+                                      ,it01_hora
+                                      ,it01_tipotransacao
+                                      ,it01_areaterreno
+                                      ,it01_areaedificada
+                                      ,it01_obs
+                                      ,it01_valortransacao
+                                      ,it01_areatrans
+                                      ,it01_mail
+                                      ,it01_finalizado
+                                      ,it01_origem
+                                      ,it01_id_usuario
+                                      ,it01_coddepto
+                                      ,it01_valorterreno
+                                      ,it01_valorconstr
+                                      ,it01_envia
+                                      ,it01_percentualareatransmitida
+                                      ,it01_processo
+                                      ,it01_tituprocesso
+                                      ,it01_dtprocesso
+                                      ,it01_notificado
+                                      ,it01_cartorioextra
                        )
                 values (
-                                $this->it01_guia 
-                               ,".($this->it01_data == "null" || $this->it01_data == ""?"null":"'".$this->it01_data."'")." 
-                               ,'$this->it01_hora' 
-                               ,$this->it01_tipotransacao 
-                               ,$this->it01_areaterreno 
-                               ,$this->it01_areaedificada 
-                               ,'$this->it01_obs' 
-                               ,$this->it01_valortransacao 
-                               ,$this->it01_areatrans 
-                               ,'$this->it01_mail' 
-                               ,'$this->it01_finalizado' 
-                               ,$this->it01_origem 
-                               ,$this->it01_id_usuario 
-                               ,$this->it01_coddepto 
-                               ,$this->it01_valorterreno 
-                               ,$this->it01_valorconstr 
-                               ,'$this->it01_envia' 
-                               ,$this->it01_percentualareatransmitida 
+                                $this->it01_guia
+                               ,".($this->it01_data == "null" || $this->it01_data == ""?"null":"'".$this->it01_data."'")."
+                               ,'$this->it01_hora'
+                               ,$this->it01_tipotransacao
+                               ,$this->it01_areaterreno
+                               ,$this->it01_areaedificada
+                               ,'$this->it01_obs'
+                               ,$this->it01_valortransacao
+                               ,$this->it01_areatrans
+                               ,'$this->it01_mail'
+                               ,'$this->it01_finalizado'
+                               ,$this->it01_origem
+                               ,$this->it01_id_usuario
+                               ,$this->it01_coddepto
+                               ,$this->it01_valorterreno
+                               ,$this->it01_valorconstr
+                               ,'$this->it01_envia'
+                               ,$this->it01_percentualareatransmitida
+                               ,".($this->it01_processo == "null" || $this->it01_processo == ""?"null":"'".$this->it01_processo."'")."
+                               ,".($this->it01_tituprocesso == "null" || $this->it01_tituprocesso == ""?"null":"'".$this->it01_tituprocesso."'")."
+                               ,".($this->it01_dtprocesso == "null" || $this->it01_dtprocesso == ""?"null":"'".$this->it01_dtprocesso."'")."
+                               ,".($this->it01_notificado == "null" || $this->it01_notificado == ""?"'f'":"'".$this->it01_notificado."'")."
+                               ,".($this->it01_cartorioextra == "NULL" || $this->it01_cartorioextra == ""?"null":"'".$this->it01_cartorioextra."'")."
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "ITBI ($this->it01_guia) nao Incluído. Inclusao Abortada.";
@@ -371,19 +406,25 @@ class cl_itbi {
          $resac = db_query("insert into db_acount values($acount,792,13542,'','".AddSlashes(pg_result($resaco,0,'it01_valorconstr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,792,15549,'','".AddSlashes(pg_result($resaco,0,'it01_envia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,792,20658,'','".AddSlashes(pg_result($resaco,0,'it01_percentualareatransmitida'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,792,1011710,'','".AddSlashes(pg_result($resaco,0,'it01_processo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,792,1011711,'','".AddSlashes(pg_result($resaco,0,'it01_tituprocesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,792,1011712,'','".AddSlashes(pg_result($resaco,0,'it01_dtprocesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,792,1011730,'','".AddSlashes(pg_result($resaco,0,'it01_notificado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,792,1011840,'','".AddSlashes(pg_result($resaco,0,'it01_cartorioextra'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+
        }
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($it01_guia=null) { 
+   public function  alterar ($it01_guia=null) {
       $this->atualizacampos();
      $sql = " update itbi set ";
      $virgula = "";
-     if(trim($this->it01_guia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_guia"])){ 
+     if(trim($this->it01_guia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_guia"])){
        $sql  .= $virgula." it01_guia = $this->it01_guia ";
        $virgula = ",";
-       if(trim($this->it01_guia) == null ){ 
+       if(trim($this->it01_guia) == null ){
          $this->erro_sql = " Campo Código da ITBI não informado.";
          $this->erro_campo = "it01_guia";
          $this->erro_banco = "";
@@ -393,10 +434,10 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["it01_data_dia"] !="") ){ 
+     if(trim($this->it01_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["it01_data_dia"] !="") ){
        $sql  .= $virgula." it01_data = '$this->it01_data' ";
        $virgula = ",";
-       if(trim($this->it01_data) == null ){ 
+       if(trim($this->it01_data) == null ){
          $this->erro_sql = " Campo Data da solicitação não informado.";
          $this->erro_campo = "it01_data_dia";
          $this->erro_banco = "";
@@ -405,11 +446,11 @@ class cl_itbi {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["it01_data_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["it01_data_dia"])){
          $sql  .= $virgula." it01_data = null ";
          $virgula = ",";
-         if(trim($this->it01_data) == null ){ 
+         if(trim($this->it01_data) == null ){
            $this->erro_sql = " Campo Data da solicitação não informado.";
            $this->erro_campo = "it01_data_dia";
            $this->erro_banco = "";
@@ -420,10 +461,10 @@ class cl_itbi {
          }
        }
      }
-     if(trim($this->it01_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_hora"])){ 
+     if(trim($this->it01_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_hora"])){
        $sql  .= $virgula." it01_hora = '$this->it01_hora' ";
        $virgula = ",";
-       if(trim($this->it01_hora) == null ){ 
+       if(trim($this->it01_hora) == null ){
          $this->erro_sql = " Campo Hora da solicitação não informado.";
          $this->erro_campo = "it01_hora";
          $this->erro_banco = "";
@@ -433,10 +474,10 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_tipotransacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_tipotransacao"])){ 
+     if(trim($this->it01_tipotransacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_tipotransacao"])){
        $sql  .= $virgula." it01_tipotransacao = $this->it01_tipotransacao ";
        $virgula = ",";
-       if(trim($this->it01_tipotransacao) == null ){ 
+       if(trim($this->it01_tipotransacao) == null ){
          $this->erro_sql = " Campo Tipo de Transação não informado.";
          $this->erro_campo = "it01_tipotransacao";
          $this->erro_banco = "";
@@ -446,10 +487,10 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_areaterreno)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_areaterreno"])){ 
+     if(trim($this->it01_areaterreno)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_areaterreno"])){
        $sql  .= $virgula." it01_areaterreno = $this->it01_areaterreno ";
        $virgula = ",";
-       if(trim($this->it01_areaterreno) == null ){ 
+       if(trim($this->it01_areaterreno) == null ){
          $this->erro_sql = " Campo Àrea do terreno não informado.";
          $this->erro_campo = "it01_areaterreno";
          $this->erro_banco = "";
@@ -459,10 +500,10 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_areaedificada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_areaedificada"])){ 
+     if(trim($this->it01_areaedificada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_areaedificada"])){
        $sql  .= $virgula." it01_areaedificada = $this->it01_areaedificada ";
        $virgula = ",";
-       if(trim($this->it01_areaedificada) == null ){ 
+       if(trim($this->it01_areaedificada) == null ){
          $this->erro_sql = " Campo Área edificada não informado.";
          $this->erro_campo = "it01_areaedificada";
          $this->erro_banco = "";
@@ -472,14 +513,14 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_obs"])){ 
+     if(trim($this->it01_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_obs"])){
        $sql  .= $virgula." it01_obs = '$this->it01_obs' ";
        $virgula = ",";
      }
-     if(trim($this->it01_valortransacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_valortransacao"])){ 
+     if(trim($this->it01_valortransacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_valortransacao"])){
        $sql  .= $virgula." it01_valortransacao = $this->it01_valortransacao ";
        $virgula = ",";
-       if(trim($this->it01_valortransacao) == null ){ 
+       if(trim($this->it01_valortransacao) == null ){
          $this->erro_sql = " Campo Valor da transação não informado.";
          $this->erro_campo = "it01_valortransacao";
          $this->erro_banco = "";
@@ -489,10 +530,10 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_areatrans)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_areatrans"])){ 
+     if(trim($this->it01_areatrans)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_areatrans"])){
        $sql  .= $virgula." it01_areatrans = $this->it01_areatrans ";
        $virgula = ",";
-       if(trim($this->it01_areatrans) == null ){ 
+       if(trim($this->it01_areatrans) == null ){
          $this->erro_sql = " Campo Área transmitida do terreno não informado.";
          $this->erro_campo = "it01_areatrans";
          $this->erro_banco = "";
@@ -502,18 +543,18 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_mail)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_mail"])){ 
+     if(trim($this->it01_mail)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_mail"])){
        $sql  .= $virgula." it01_mail = '$this->it01_mail' ";
        $virgula = ",";
      }
-     if(trim($this->it01_finalizado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_finalizado"])){ 
+     if(trim($this->it01_finalizado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_finalizado"])){
        $sql  .= $virgula." it01_finalizado = '$this->it01_finalizado' ";
        $virgula = ",";
      }
-     if(trim($this->it01_origem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_origem"])){ 
+     if(trim($this->it01_origem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_origem"])){
        $sql  .= $virgula." it01_origem = $this->it01_origem ";
        $virgula = ",";
-       if(trim($this->it01_origem) == null ){ 
+       if(trim($this->it01_origem) == null ){
          $this->erro_sql = " Campo Origem não informado.";
          $this->erro_campo = "it01_origem";
          $this->erro_banco = "";
@@ -523,10 +564,10 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_id_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_id_usuario"])){ 
+     if(trim($this->it01_id_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_id_usuario"])){
        $sql  .= $virgula." it01_id_usuario = $this->it01_id_usuario ";
        $virgula = ",";
-       if(trim($this->it01_id_usuario) == null ){ 
+       if(trim($this->it01_id_usuario) == null ){
          $this->erro_sql = " Campo Usuário não informado.";
          $this->erro_campo = "it01_id_usuario";
          $this->erro_banco = "";
@@ -536,10 +577,10 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_coddepto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_coddepto"])){ 
+     if(trim($this->it01_coddepto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_coddepto"])){
        $sql  .= $virgula." it01_coddepto = $this->it01_coddepto ";
        $virgula = ",";
-       if(trim($this->it01_coddepto) == null ){ 
+       if(trim($this->it01_coddepto) == null ){
          $this->erro_sql = " Campo Depto. não informado.";
          $this->erro_campo = "it01_coddepto";
          $this->erro_banco = "";
@@ -549,24 +590,24 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_valorterreno)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_valorterreno"])){ 
-        if(trim($this->it01_valorterreno)=="" && isset($GLOBALS["HTTP_POST_VARS"]["it01_valorterreno"])){ 
-           $this->it01_valorterreno = "0" ; 
-        } 
+     if(trim($this->it01_valorterreno)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_valorterreno"])){
+        if(trim($this->it01_valorterreno)=="" && isset($GLOBALS["HTTP_POST_VARS"]["it01_valorterreno"])){
+           $this->it01_valorterreno = "0" ;
+        }
        $sql  .= $virgula." it01_valorterreno = $this->it01_valorterreno ";
        $virgula = ",";
      }
-     if(trim($this->it01_valorconstr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_valorconstr"])){ 
-        if(trim($this->it01_valorconstr)=="" && isset($GLOBALS["HTTP_POST_VARS"]["it01_valorconstr"])){ 
-           $this->it01_valorconstr = "0" ; 
-        } 
+     if(trim($this->it01_valorconstr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_valorconstr"])){
+        if(trim($this->it01_valorconstr)=="" && isset($GLOBALS["HTTP_POST_VARS"]["it01_valorconstr"])){
+           $this->it01_valorconstr = "0" ;
+        }
        $sql  .= $virgula." it01_valorconstr = $this->it01_valorconstr ";
        $virgula = ",";
      }
-     if(trim($this->it01_envia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_envia"])){ 
+     if(trim($this->it01_envia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_envia"])){
        $sql  .= $virgula." it01_envia = '$this->it01_envia' ";
        $virgula = ",";
-       if(trim($this->it01_envia) == null ){ 
+       if(trim($this->it01_envia) == null ){
          $this->erro_sql = " Campo Enviado para Liberação não informado.";
          $this->erro_campo = "it01_envia";
          $this->erro_banco = "";
@@ -576,13 +617,49 @@ class cl_itbi {
          return false;
        }
      }
-     if(trim($this->it01_percentualareatransmitida)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_percentualareatransmitida"])){ 
+     if(trim($this->it01_notificado) != "" || isset($GLOBALS["HTTP_POST_VARS"]["it01_notificado"])){
+        $sql  .= $virgula." it01_notificado = '{$this->it01_notificado}' ";
+        $virgula = ",";
+        if(trim($this->it01_notificado) != '' AND trim($this->it01_notificado) == null ){
+          $this->erro_sql = " Campo Notificado não informado.";
+          $this->erro_campo = "it01_notificado";
+          $this->erro_banco = "";
+          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+          $this->erro_status = "0";
+          return false;
+        }
+      }
+     if(trim($this->it01_percentualareatransmitida)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it01_percentualareatransmitida"])){
        $sql  .= $virgula." it01_percentualareatransmitida = $this->it01_percentualareatransmitida ";
        $virgula = ",";
-       if(trim($this->it01_percentualareatransmitida) == null ){ 
+       if(trim($this->it01_percentualareatransmitida) == null ){
          $this->it01_percentualareatransmitida = 0;
        }
      }
+
+     if(trim($this->it01_processo)!=""){
+      $sql  .= $virgula." it01_processo = '$this->it01_processo' ";
+      $virgula = ",";
+    }
+
+
+    if(trim($this->it01_tituprocesso)!=""){
+      $sql  .= $virgula." it01_tituprocesso = '$this->it01_tituprocesso' ";
+      $virgula = ",";
+    }
+
+
+    if (trim($this->it01_dtprocesso)!="") {
+      $sql  .= $virgula." it01_dtprocesso = '$this->it01_dtprocesso' ";
+      $virgula = ",";
+    }
+
+   if ($this->it01_cartorioextra != null AND trim($this->it01_cartorioextra) != "") {
+       $sql  .= $virgula." it01_cartorioextra = $this->it01_cartorioextra ";
+       $virgula = ",";
+   }
+
      $sql .= " where ";
      if($it01_guia!=null){
        $sql .= " it01_guia = $this->it01_guia";
@@ -636,11 +713,22 @@ class cl_itbi {
              $resac = db_query("insert into db_acount values($acount,792,15549,'".AddSlashes(pg_result($resaco,$conresaco,'it01_envia'))."','$this->it01_envia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            if(isset($GLOBALS["HTTP_POST_VARS"]["it01_percentualareatransmitida"]) || $this->it01_percentualareatransmitida != "")
              $resac = db_query("insert into db_acount values($acount,792,20658,'".AddSlashes(pg_result($resaco,$conresaco,'it01_percentualareatransmitida'))."','$this->it01_percentualareatransmitida',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["it01_processo"]) || $this->it01_processo != "")
+             $resac = db_query("insert into db_acount values($acount,792,1011710,'".AddSlashes(pg_result($resaco,$conresaco,'it01_processo'))."','$this->it01_processo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["it01_tituprocesso"]) || $this->it01_tituprocesso != "")
+             $resac = db_query("insert into db_acount values($acount,792,1011711,'".AddSlashes(pg_result($resaco,$conresaco,'it01_tituprocesso'))."','$this->it01_tituprocesso',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["it01_dtprocesso"]) || $this->it01_dtprocesso != "")
+             $resac = db_query("insert into db_acount values($acount,792,1011712,'".AddSlashes(pg_result($resaco,$conresaco,'it01_dtprocesso'))."','$this->it01_dtprocesso',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["it01_notificado"]) || $this->it01_notificado != "")
+             $resac = db_query("insert into db_acount values($acount,792,1011730,'".AddSlashes(pg_result($resaco,$conresaco,'it01_notificado'))."','$this->it01_notificado',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+             if(isset($GLOBALS["HTTP_POST_VARS"]["it01_cartorioextra"]) || $this->it01_cartorioextra != "")
+                 $resac = db_query("insert into db_acount values($acount,792,1011840,'".AddSlashes(pg_result($resaco,$conresaco,'it01_cartorioextra'))."','$this->it01_cartorioextra',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
+
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "ITBI nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->it01_guia;
@@ -668,11 +756,11 @@ class cl_itbi {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($it01_guia=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   public function  excluir ($it01_guia=null,$dbwhere=null) {
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
@@ -681,7 +769,7 @@ class cl_itbi {
        if ($dbwhere==null || $dbwhere=="") {
 
          $resaco = $this->sql_record($this->sql_query_file($it01_guia));
-       } else { 
+       } else {
          $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
        }
        if (($resaco != false) || ($this->numrows!=0)) {
@@ -710,6 +798,8 @@ class cl_itbi {
            $resac  = db_query("insert into db_acount values($acount,792,13542,'','".AddSlashes(pg_result($resaco,$iresaco,'it01_valorconstr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,792,15549,'','".AddSlashes(pg_result($resaco,$iresaco,'it01_envia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,792,20658,'','".AddSlashes(pg_result($resaco,$iresaco,'it01_percentualareatransmitida'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,792,1011730,'','".AddSlashes(pg_result($resaco,$iresaco,'it01_notificado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,792,1011840,'','".AddSlashes(pg_result($resaco,$iresaco,'it01_cartorioextra'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
@@ -727,7 +817,7 @@ class cl_itbi {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "ITBI nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$it01_guia;
@@ -755,11 +845,11 @@ class cl_itbi {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   public function  sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -781,11 +871,11 @@ class cl_itbi {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function  sql_query ( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -799,31 +889,33 @@ class cl_itbi {
      $sql .= "      inner join db_depart  on  db_depart.coddepto = itbi.it01_coddepto";
      $sql .= "      inner join itbitransacao  on  itbitransacao.it04_codigo = itbi.it01_tipotransacao";
      $sql .= "      inner join db_config  on  db_config.codigo = db_depart.instit";
+     $sql .= "      left join cartorioextra  on  j167_sequencial = it01_cartorioextra";
      $sql2 = "";
      if($dbwhere==""){
        if($it01_guia!=null ){
-         $sql2 .= " where itbi.it01_guia = $it01_guia "; 
-       } 
+         $sql2 .= " where itbi.it01_guia = $it01_guia ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
        }
      }
+
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function  sql_query_file ( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -836,27 +928,28 @@ class cl_itbi {
      $sql2 = "";
      if($dbwhere==""){
        if($it01_guia!=null ){
-         $sql2 .= " where itbi.it01_guia = $it01_guia "; 
-       } 
+         $sql2 .= " where itbi.it01_guia = $it01_guia ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
        }
      }
+
      return $sql;
   }
-   function sql_query_dados( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function  sql_query_dados( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -867,12 +960,12 @@ class cl_itbi {
      }
      $sql .= " from itbi ";
 	 $sql .= "      inner join db_usuarios 			   on  db_usuarios.id_usuario 				 = itbi.it01_id_usuario";
-     $sql .= "      inner join db_depart   			   on  db_depart.coddepto				     = itbi.it01_coddepto  ";     
+     $sql .= "      inner join db_depart   			   on  db_depart.coddepto				     = itbi.it01_coddepto  ";
      $sql .= "      inner join itbiformapagamentovalor on  itbiformapagamentovalor.it26_guia     = itbi.it01_guia									  ";
      $sql .= "      inner join itbitransacaoformapag   on  itbitransacaoformapag.it25_sequencial = itbiformapagamentovalor.it26_itbitransacaoformapag ";
      $sql .= "      inner join itbitransacao  		   on  itbitransacao.it04_codigo			 = itbitransacaoformapag.it25_itbitransacao			  ";
      $sql .= "      inner join itbiformapagamento	   on  itbiformapagamento.it27_sequencial	 = itbitransacaoformapag.it25_itbiformapagamento      ";
-	 $sql .= "      left  join itbinome 			   on  itbinome.it03_guia					 = itbi.it01_guia									  ";     
+	 $sql .= "      left  join itbinome 			   on  itbinome.it03_guia					 = itbi.it01_guia									  ";
      $sql .= "      left  join itbidadosimovel		   on  itbidadosimovel.it22_itbi		     = itbi.it01_guia									  ";
      $sql .= "      left  join itbidadosimovelsetorloc on  itbidadosimovelsetorloc.it29_itbidadosimovel = itbidadosimovel.it22_sequencial			  ";
      $sql .= "      left  join itbimatric			   on  itbimatric.it06_guia			    	 = itbi.it01_guia									  ";
@@ -881,31 +974,33 @@ class cl_itbi {
      $sql .= "      left  join itbiruralcaract		   on  itbiruralcaract.it19_guia		   	 = itbi.it01_guia									  ";
      $sql .= "      left  join itbilocalidaderural     on  itbilocalidaderural.it33_guia   	 		        = itbi.it01_guia									  								";
      $sql .= "      left  join localidaderural         on  itbilocalidaderural.it33_localidaderural     = localidaderural.j137_sequencial 					  			";
-     
+     $sql .= "      left  join cartorioextra         on  cartorioextra.j167_sequencial     = itbi.it01_cartorioextra 					  			";
+
      $sql2 = "";
      if($dbwhere==""){
        if($it01_guia!=null ){
-         $sql2 .= " where itbi.it01_guia = $it01_guia "; 
-       } 
+         $sql2 .= " where itbi.it01_guia = $it01_guia ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
        }
      }
+
      return $sql;
   }
-   function sql_query_naolib( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function  sql_query_naolib( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -916,32 +1011,32 @@ class cl_itbi {
      }
      $sql .= " from itbi 																	";
      $sql .= "      inner join itbinome c  	on c.it03_guia 			      = itbi.it01_guia		  ";
-     $sql .= "      					             and upper(c.it03_tipo)  	  = 'C'					        "; 										 
+     $sql .= "      					             and upper(c.it03_tipo)  	  = 'C'					        ";
      $sql .= "      inner join itbinome t	  on t.it03_guia 	 		      = itbi.it01_guia		  ";
-     $sql .= "        					           and upper(t.it03_tipo)  	  = 'T'					        ";     
+     $sql .= "        					           and upper(t.it03_tipo)  	  = 'T'					        ";
 	   $sql .= "      inner join db_usuarios  on db_usuarios.id_usuario = itbi.it01_id_usuario";
      $sql .= "      inner join db_depart    on db_depart.coddepto     = itbi.it01_coddepto  ";
      $sql .= "     	left  join itbimatric   on itbimatric.it06_guia   = itbi.it01_guia		  ";
      $sql .= "      left  join itbicancela  on itbicancela.it16_guia  = itbi.it01_guia		  ";
-		 $sql .= "    	left  join itbiavalia   on itbiavalia.it14_guia   = itbi.it01_guia		  "; 
+		 $sql .= "    	left  join itbiavalia   on itbiavalia.it14_guia   = itbi.it01_guia		  ";
 		 $sql .= "    	left  join itbirural    on itbirural.it18_guia    = itbi.it01_guia		  ";
 		 $sql .= "    	left  join itburbano    on itburbano.it05_guia    = itbi.it01_guia		  ";
 		 $sql .= "    	left  join iptubase     on iptubase.j01_matric    = itbimatric.it06_matric ";
 		 $sql .= "    	left  join loteloc      on loteloc.j06_idbql      = iptubase.j01_idbql     ";
 		 $sql .= "    	left  join setorloc     on setorloc.j05_codigo    = loteloc.j06_setorloc   ";
- 
+
      $sql2 = "";
      if($dbwhere==""){
        if($it01_guia!=null ){
-         $sql2 .= " where itbi.it01_guia = $it01_guia "; 
-       } 
+         $sql2 .= " where itbi.it01_guia = $it01_guia ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -950,10 +1045,10 @@ class cl_itbi {
      }
      return $sql;
   }
-   function sql_query_pag( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function  sql_query_pag( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -967,21 +1062,21 @@ class cl_itbi {
      $sql .= "      inner join itbitransacaoformapag   on  itbitransacaoformapag.it25_sequencial = itbiformapagamentovalor.it26_itbitransacaoformapag ";
      $sql .= "      inner join itbitransacao  		   on  itbitransacao.it04_codigo			 = itbitransacaoformapag.it25_itbitransacao			  ";
      $sql .= "      inner join itbiformapagamento	   on  itbiformapagamento.it27_sequencial	 = itbitransacaoformapag.it25_itbiformapagamento      ";
-	 $sql .= "      inner join itbitipoformapag   	   on  itbitipoformapag.it28_sequencial      = itbiformapagamento.it27_itbitipoformapag";          
+	 $sql .= "      inner join itbitipoformapag   	   on  itbitipoformapag.it28_sequencial      = itbiformapagamento.it27_itbitipoformapag";
      $sql .= "      left  join itbiavalia			   on  itbiavalia.it14_guia			   		 = itbi.it01_guia									  ";
-     
+
      $sql2 = "";
      if($dbwhere==""){
        if($it01_guia!=null ){
-         $sql2 .= " where itbi.it01_guia = $it01_guia "; 
-       } 
+         $sql2 .= " where itbi.it01_guia = $it01_guia ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -990,11 +1085,11 @@ class cl_itbi {
      }
      return $sql;
   }
-   function sql_query_lib ( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){
-     
+   public function  sql_query_lib ( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){
+
 $sql = "select ";
 if($campos != "*" ){
-$campos_sql = split("#",$campos);
+$campos_sql = explode("#",$campos);
 $virgula = "";
 $totallinha = count($campos_sql);
 for($i=0;$i<$totallinha;$i++){
@@ -1018,7 +1113,7 @@ $sql2 = " where $dbwhere";
 $sql .= $sql2;
 if($ordem != null ){
 $sql .= " order by ";
-$campos_sql = split("#",$ordem);
+$campos_sql = explode("#",$ordem);
 $virgula = "";
 $totallinha = count($campos_sql);
 for($i=0;$i<$totallinha;$i++){
@@ -1028,10 +1123,10 @@ $virgula = ",";
 }
 return $sql;
 }
-   function sql_query_itbi( $it01_guia=null,$campos="*",$ordem=null,$dbwhere="",$sWhereLogradouro=""){ 
+   public function  sql_query_itbi( $it01_guia=null,$campos="*",$ordem=null,$dbwhere="",$sWhereLogradouro=""){
      $sSql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sSql .= $virgula.$campos_sql[$i];
@@ -1062,36 +1157,36 @@ return $sql;
 		$sSql .= "                    left  join loteloc           on j06_idbql                  = j01_idbql                  ";
 		$sSql .= "                    left  join setorloc          on j05_codigo                 = j06_setorloc               ";
 
- 
+
      $sql2 = "";
      if($dbwhere==""){
        if($it01_guia!=null ){
-         $sql2 .= " where itbi.it01_guia = $it01_guia "; 
-       } 
+         $sql2 .= " where itbi.it01_guia = $it01_guia ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sSql .= $sql2;
      if($ordem != null ){
        $sSql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sSql .= $virgula.$campos_sql[$i];
          $virgula = ",";
        }
      }
-     
-     
-     
+
+
+
      $sSql = "select * from ( {$sSql} ) as x {$sWhereLogradouro}";
-     
+
      return $sSql;
   }
-   function sql_query_canc( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function  sql_query_canc( $it01_guia=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1104,26 +1199,26 @@ return $sql;
      $sql .= "      inner join db_usuarios  on db_usuarios.id_usuario = itbi.it01_id_usuario                          ";
      $sql .= "      inner join db_depart    on db_depart.coddepto     = itbi.it01_coddepto                            ";
      $sql .= "      left  join itbimatric   on itbimatric.it06_guia   = itbi.it01_guia                                ";
-     $sql .= "      left  join itbiavalia   on itbiavalia.it14_guia   = itbi.it01_guia                                "; 
+     $sql .= "      left  join itbiavalia   on itbiavalia.it14_guia   = itbi.it01_guia                                ";
      $sql .= "      left  join itbinumpre   on itbinumpre.it15_guia   = itbi.it01_guia                                ";
-     $sql .= "      left  join itbinome     on itbinome.it03_guia     = itbi.it01_guia                                "; 
+     $sql .= "      left  join itbinome     on itbinome.it03_guia     = itbi.it01_guia                                ";
      $sql .= "      left  join itbicancela  on itbicancela.it16_guia  = itbi.it01_guia                                ";
      $sql .= "      left  join itbirural    on itbirural.it18_guia    = itbi.it01_guia                                ";
      $sql .= "      left  join itburbano    on itburbano.it05_guia    = itbi.it01_guia                                ";
 
- 
+
      $sql2 = "";
      if($dbwhere==""){
        if($it01_guia!=null ){
-         $sql2 .= " where itbi.it01_guia = $it01_guia "; 
-       } 
+         $sql2 .= " where itbi.it01_guia = $it01_guia ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

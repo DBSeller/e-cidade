@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("std/db_stdClass.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php"); 
-require_once ("dbforms/db_funcoes.php");
-require_once ("dbforms/verticalTab.widget.php");
-require_once ("model/aberturaRegistroPreco.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php")); 
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
+require_once(modification("model/aberturaRegistroPreco.model.php"));
 
 $clrotulo = new rotulocampo;
 
@@ -102,7 +102,7 @@ function js_completaPesquisa(pc10_numero,detalhe) {
 
 function js_retornoCompletaPesquisa(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   if (oRetorno.status == 1) {
     
@@ -174,17 +174,23 @@ function js_retornoCompletaPesquisa(oAjax) {
         oRetorno.dados.each( 
                   function (oDado, iInd) {
                     var aRow = new Array();
-                                                            
-                    aRow[0] = oDado.codigo;
-                    aRow[1] = oDado.material.urlDecode();
-                    aRow[2] = oDado.resumo.urlDecode();
-                    aRow[3] = oDado.unidade.urlDecode();
+
+                    aRow[0] = oDado.ordem;
+                    aRow[1] = oDado.codigo;
+                    aRow[2] = oDado.material.urlDecode();
+                    aRow[3] = oDado.resumo.urlDecode();
+                    aRow[4] = oDado.unidade.urlDecode();
+                    aRow[5] = js_formatar(oDado.valor_unitario, 'f');
                     oGrvDetalhes.addRow(aRow);
+                    oGrvDetalhes.aRows[iInd].aCells[0].sStyle +="background-color:#DED5CB;font-weight:bold;padding:1px";
                                         
                   }     
       
                   );
         oGrvDetalhes.renderRows();
+        if (oRetorno.formacontrole == 1) {
+          oGrvDetalhes.showColumn(false, 6);
+        }
       }
     } else {
         
@@ -269,36 +275,39 @@ function js_grvDetalhes() {
       oGrvDetalhes.renderRows();
 	    
 	 } else if (detalhe == 'itens') {
-      oGrvDetalhes = new DBGrid('detalhes');
+
+      oGrvDetalhes              = new DBGrid('detalhes');
       oGrvDetalhes.nameInstance = 'oGrvDetalhes';
       oGrvDetalhes.setCellWidth(new Array('5%',
-                                          '25%',
+                                          '5%',
+                                          '20%',
                                           '50%',
+                                          '20%',
                                           '20%'
-                                          
                                           ));
                                           
       oGrvDetalhes.setCellAlign(new Array('right',
+                                          'right',
+                                          'left',
                                           'left',
                                           'left',
                                           'right'
-                                          
                                           ));
                                           
-      oGrvDetalhes.setHeader(new Array('Código',
+      oGrvDetalhes.setHeader(new Array('Item',
+                                       'Código',
                                        'Material',
                                        'Resumo',
-                                       'Unidade'
-                                       
+                                       'Unidade',
+                                       'Valor'
                                       ));
       oGrvDetalhes.setHeight(230);
       oGrvDetalhes.show($('grvDetalhes'));
-              
       oGrvDetalhes.clearAll(true);
       oGrvDetalhes.renderRows();
       
    }
-	 js_completaPesquisa(pc10_numero,detalhe); 
+	 js_completaPesquisa(pc10_numero, detalhe);
 }
 
 

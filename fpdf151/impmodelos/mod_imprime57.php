@@ -9,7 +9,7 @@
 	$xlin = 20;
 	$xcol = 4;
 
-	
+
 	$this->objpdf->setfillcolor(245);
 	$this->objpdf->rect($xcol-2,$xlin-18,206,292,2,'DF','1234');
 	$this->objpdf->setfillcolor(255,255,255);
@@ -32,19 +32,19 @@
   if($tamdepto>20) {
     $this->objpdf->text(165,$xlin-4,substr($this->descrdepto,20,$tamdepto));
   }
-        
+
 	//$this->objpdf->text(130,$xlin-4,'PROCESSO DE COMPRA N'.CHR(176));
 	//$this->objpdf->text(165,$xlin-4,db_formatar(pg_result($this->recorddositens,0,$this->Snumeroproc),'s','0',6,'e'));
 
 	$this->objpdf->text(130,$xlin-$linpc,'PROCESSO DE COMPRA N'.CHR(176));
 	$this->objpdf->text(165,$xlin-$linpc,db_formatar(pg_result($this->recorddositens,0,$this->Snumeroproc),'s','0',6,'e'));
-	
+
    $this->objpdf->text(130, ($xlin+2.5) - $linpc, 'TIPO DA COMPRA: ');
-  $this->objpdf->text(165, ($xlin+2.5) - $linpc, db_formatar(pg_result($this->recorddositens, 0, 
+  $this->objpdf->text(165, ($xlin+2.5) - $linpc, db_formatar(pg_result($this->recorddositens, 0,
                                                  $this->sTipoCompra), 's' , '0', 6, 'e'));
 
 	$this->objpdf->Setfont('Arial','B',9);
-	$this->objpdf->Image('imagens/files/'.$this->logo,15,$xlin-17,12); 
+	$this->objpdf->Image('imagens/files/'.$this->logo,15,$xlin-17,12);
 	$this->objpdf->Setfont('Arial','B',9);
 	$this->objpdf->text(40,$xlin-15,$this->prefeitura);
 	$this->objpdf->Setfont('Arial','',9);
@@ -98,11 +98,11 @@
 	$sqltexto    = "select * from db_usuarios where id_usuario = " . db_getsession("DB_id_usuario");
 	$resulttexto = db_query($sqltexto);
 	db_fieldsmemory($resulttexto,0,true);
-	
+
 	$sqltexto    = "select * from db_textos where id_instit = " . db_getsession("DB_instit") . " and ( descrtexto like 'ordemdecompra%')";
 	$resulttexto = db_query($sqltexto);
 	for ( $xx = 0; $xx < pg_numrows($resulttexto);$xx ++ ) {
-	  
+
 	  db_fieldsmemory($resulttexto,$xx,true);
 	  $text  = $descrtexto;
 	  $$text = db_geratexto($conteudotexto);
@@ -110,11 +110,11 @@
 
 	$texto1 = @$ordemdecompra1;
 	$texto2 = @$ordemdecompra2;
-	
+
   $result_endent = db_query("select j14_nome as j14_nome_almox, numero as numero_almox, compl as compl_almox, j13_descr as j13_descr_almox, fonedepto as fone_almox, ramaldepto as ramal_almox, faxdepto as fax_almox
-														from db_departender 
+														from db_departender
 														inner join db_depart on db_depart.coddepto = db_departender.coddepto
-														inner join ruas on j14_codigo = codlograd 
+														inner join ruas on j14_codigo = codlograd
 														inner join bairro on j13_codi = codbairro where db_departender.coddepto = " . $this->depto);
 	if (pg_numrows($result_endent) > 0) {
   	  db_fieldsmemory($result_endent,0,true);
@@ -125,7 +125,7 @@
 		global $fone_almox;
 		global $ramal_almox;
 		global $fax_almox;
-	  
+
     $this->objpdf->sety($xlin+24);
   	$posicao_atual=$this->objpdf->gety();
 	  $this->objpdf->Setfont('Arial','B',8);
@@ -135,7 +135,7 @@
 	  $xlin+=$posicao_depois-$posicao_atual+2;
 
 	}
-	
+
   $this->objpdf->sety($xlin+24);
 	$posicao_atual=$this->objpdf->gety();
 	$this->objpdf->multicell(202,4,"PRAZO DE ENTREGA: " . $this->prazoent. " DIAS A CONTAR DA DATA DO RECEBIMENTO DESTA ORDEM DE COMPRA",1);
@@ -145,14 +145,14 @@
   $xlin+=$posicao_depois-$posicao_atual+2;
 
   if ($this->obs!="") {
-    
+
     $this->objpdf->sety($xlin+24);
 	  $posicao_atual=$this->objpdf->gety();
 	  $this->objpdf->multicell(202,4,"OBSERVAÇÕES:  ".$this->obs,1);
 	  $posicao_depois=$this->objpdf->gety();
     $xlin+=$posicao_depois-$posicao_atual+2;
 	}
-	
+
   $this->objpdf->sety($xlin+24);
 
 	$this->objpdf->Setfont('Arial','B',8);
@@ -170,10 +170,10 @@
 	$this->objpdf->rect($xcol+143,$xlin+30,30,205  -$xlin ,2,'DF','');
 	$this->objpdf->rect($xcol+173,$xlin+30,30,205  -$xlin ,2,'DF','34');
 
-	
+
   $this->objpdf->sety($xlin+28);
 	$alt = 4;
-	
+
 	$this->objpdf->text($xcol+   2,$xlin+28,'ITEM');
 	$this->objpdf->text($xcol+13.5,$xlin+28,'EMPENHO');
 	$this->objpdf->text($xcol+31.5,$xlin+28,'QUANT');  //$this->objpdf->text($xcol+27.5,$xlin+28,'QUANT');
@@ -184,7 +184,7 @@
 
 
     $this->objpdf->setfillcolor(0,0,0);
-// Assinatura documento    
+// Assinatura documento
 
     $sqlparag  = "select db02_texto ";
     $sqlparag .= "  from db_documento ";
@@ -192,60 +192,64 @@
     $sqlparag .= "       inner join db_tipodoc on db08_codigo  = db03_tipodoc ";
     $sqlparag .= "       inner join db_paragrafo on db04_idparag = db02_idparag ";
     $sqlparag .= " where db03_tipodoc = 1502 and db03_instit = " . db_getsession("DB_instit")." order by db04_ordem ";
-          
+
     $resparag = @db_query($sqlparag);
-          
+
     if (@pg_numrows($resparag) > 0) {
-      
+
       db_fieldsmemory($resparag,0);
       eval($db02_texto);
     } else {
-      
+
       $sqlparagpadrao  = "select db61_texto ";
       $sqlparagpadrao .= "  from db_documentopadrao ";
       $sqlparagpadrao .= "       inner join db_docparagpadrao  on db62_coddoc   = db60_coddoc ";
       $sqlparagpadrao .= "       inner join db_tipodoc         on db08_codigo   = db60_tipodoc ";
       $sqlparagpadrao .= "       inner join db_paragrafopadrao on db61_codparag = db62_codparag ";
       $sqlparagpadrao .= " where db60_tipodoc = 1502 order by db62_ordem";
-         
+
       $resparagpadrao = @db_query($sqlparagpadrao);
       if (@pg_numrows($resparagpadrao) > 0) {
-        
+
         db_fieldsmemory($resparagpadrao,0);
         eval($db61_texto);
       }
     }
-	
+
 	$this->objpdf->SetWidths(array(12,19,13,99,30,30));  //$this->objpdf->SetWidths(array(12,16,10,104,30,30));
 	$this->objpdf->SetAligns(array('C','C','R','L','R','R'));
-	
+
 	$this->objpdf->setleftmargin(4);
 	$this->objpdf->sety($xlin+32);
 
 	$xtotal    = 0;
   $item      = 1;
   $iVoltaImp = 0;
-  
+
 	for ($ii = 0;$ii < $this->linhasdositens ;$ii++) {
-	  
+
 	  db_fieldsmemory($this->recorddositens,$ii);
-	  
+
 	  $this->objpdf->Setfont('Arial','',10);
-	  
+
+    $sUnidade = pg_result($this->recorddositens, $ii, 'unidade');
 	  $descricaoitem = pg_result($this->recorddositens,$ii,$this->descricaoitem);
+    if (!empty($sUnidade)) {
+      $descricaoitem .= " (Unidade: {$sUnidade})";
+    }
     if (pg_result($this->recorddositens,$ii, $this->Snumero)!="") {
       $descricaoitem .= "\n\n".'SOLICITAÇÃO: '.pg_result($this->recorddositens,$ii,$this->Snumero);
 	  }
     $obsitem  = pg_result($this->recorddositens, $ii, $this->observacaoitem);
 	  $obsitem .= "\n\n".pg_result($this->recorddositens, $ii, $this->obs_ordcom_orcamval);
-    $sObsItem = $obsitem;   
+    $sObsItem = $obsitem;
     /////// troca de pagina
-	  if ( ( $this->objpdf->gety() > $this->objpdf->h - 85 && $pagina == 1 ) 
+	  if ( ( $this->objpdf->gety() > $this->objpdf->h - 85 && $pagina == 1 )
         || ( $this->objpdf->gety() > $this->objpdf->h - 50 && $pagina != 1 )) {
-	    
+
 	    $this->objpdf->Setfont('Arial','B',7);
       if ($this->objpdf->PageNo() == 1) {
-        
+
 	      if ($this->obs!="") {
 	        $this->objpdf->text(90,268-$xlin,'Continua na Página '.($pagina+1));
          //$this->objpdf->rect($xcol,$xlin+217,202,55,2,'DF','1234');
@@ -255,26 +259,26 @@
       } else {
 	      $this->objpdf->text(110,$xlin+320,'Continua na Página '.($pagina+1));
 	    }
-	    
+
 	    if ($pagina == 1) {
-	        
+
 	        $xlin = 20;
 	        $xcol = 4;
 	        $this->objpdf->rect($xcol,    $xlin+205,143, 10,2,'DF','34');
 	        $this->objpdf->rect($xcol+143,$xlin+205,30, 10,2,'DF','34');
 	        $this->objpdf->rect($xcol+173,$xlin+205,30, 10,2,'DF','34');
 	        $this->objpdf->text($xcol+100 ,$xlin+211,'T O T A L   D A   P Á G I N A');
-      
+
 	        $this->objpdf->SetXY(173,$xlin+205);
-	        $this->objpdf->cell(30 ,10,db_formatar($xtotal,'f'),0,0,"R");   
-      
+	        $this->objpdf->cell(30 ,10,db_formatar($xtotal,'f'),0,0,"R");
+
 	        $this->objpdf->SetXY(4,$xlin+217);
           if (isset($texto2) && trim($texto2) != "") {
 	          $this->objpdf->multicell(202, 4, $texto2, 1);
-          }		   
+          }
 	    }
       $this->objpdf->addpage();
-      $pagina += 1;	   
+      $pagina += 1;
   	  $this->objpdf->settopmargin(1);
 	    $xlin = 20;
 	    $xcol = 4;
@@ -284,7 +288,7 @@
 	    $this->objpdf->Setfont('Arial','B',9);
 	    $this->objpdf->text(130,$xlin-13,'ORDEM DE COMPRA N'.CHR(176));
 	    $this->objpdf->text(185,$xlin-13,db_formatar($this->numordem,'s','0',6,'e'));
-	    $this->objpdf->Image('imagens/files/'.$this->logo,15,$xlin-17,12); 
+	    $this->objpdf->Image('imagens/files/'.$this->logo,15,$xlin-17,12);
 	    $this->objpdf->Setfont('Arial','B',9);
 	    $this->objpdf->text(40,$xlin-15,$this->prefeitura);
 	    $this->objpdf->Setfont('Arial','',9);
@@ -294,7 +298,7 @@
 	    $this->objpdf->text(40,$xlin-2,$this->emailpref);
       $xlin = -30;
 	    $this->objpdf->Setfont('Arial','B',8);
-      
+
       $this->objpdf->rect($xcol    ,$xlin+54,12,6,2,'DF','12');
 	    $this->objpdf->rect($xcol+ 12,$xlin+54,19,6,2,'DF','12');
 	    $this->objpdf->rect($xcol+ 31,$xlin+54,13,6,2,'DF','12'); //$this->objpdf->rect($xcol+ 27,$xlin+54,11,6,2,'DF','12');
@@ -307,10 +311,10 @@
 	    $this->objpdf->rect($xcol+ 44,$xlin+60,99,252,2,'DF','34'); //$this->objpdf->rect($xcol+ 38,$xlin+60,104,252,2,'DF','34');
 	    $this->objpdf->rect($xcol+143,$xlin+60,30,252,2,'DF','');
       $this->objpdf->rect($xcol+173,$xlin+60,30,252,2,'DF','34');
-     
+
 	    $this->objpdf->sety($xlin+66);
 	    $alt = 4;
-     
+
 	    $this->objpdf->text($xcol+   2,$xlin+59,'ITEM');
 	    $this->objpdf->text($xcol+13.5,$xlin+59,'EMPENHO');
 	    $this->objpdf->text($xcol+31.5,$xlin+59,'QUANT');
@@ -319,21 +323,21 @@
 	    $this->objpdf->text($xcol+ 176,$xlin+59,'VALOR TOTAL');
       $this->objpdf->Setfont('Arial','',9.5);
 	    $this->objpdf->text($xcol+  44,$xlin+63,'Continuação da Página '.($pagina-1));
-     
+
 	    $maiscol = 0;
 	  }
     $controle = $item;
     $controle++;
     // Pega o ultimo item da pagina e testa se consegue imprimir tudo na mesma pagina
     if (($controle%7)==0) {
-      
+
       if (strlen($obsitem) > 68) {
          $obsitem = substr($obsitem,0,68)." ...";
       }
     }
-    
+
     if ($iVoltaImp == 0) {
-      
+
       $this->objpdf->Row(array(pg_result($this->recorddositens,$ii,$this->codmater),
 	                             pg_result($this->recorddositens,$ii,$this->empempenho)."/"
                               .pg_result($this->recorddositens,$ii,$this->anousuemp),
@@ -346,28 +350,28 @@
       $xtotal += pg_result($this->recorddositens,$ii,$this->valoritem);
 
     } else if ($iVoltaImp == 1) {
-      $sObsItem = $sTextoaImprimir; //resto do texto 
+      $sObsItem = $sTextoaImprimir; //resto do texto
     }
     if ((isset($sObsItem) && $obsitem != '' && $iVoltaImp == 0) || $iVoltaImp == 1) {
-      
+
       $sObsItem = $this->objpdf->Row(array('','','',stripslashes($sObsItem),'',''),
-                                             3,false,4,0,true);                         
+                                             3,false,4,0,true);
       if ($sObsItem != "") {
-        
+
         $iVoltaImp       = 1;
         $sTextoaImprimir = $sObsItem;
         $ii--;
       }
       if ($iVoltaImp == 4) {
-        
+
         $iVoltaImp = 1;
         $ii--;
       }
     }
-    
+
     $item++;
 	}
-  
+
 	if ($pagina == 1){
 	  $xlin = 20;
 	  $xcol = 4;
@@ -377,7 +381,7 @@
 	  $this->objpdf->text($xcol+100,$xlin+211,'T O T A L   G E R A L');
 
 	  $this->objpdf->SetXY(173,$xlin+205);
-	  $this->objpdf->cell(30 ,10,db_formatar($xtotal,'f'),0,0,"R");   
+	  $this->objpdf->cell(30 ,10,db_formatar($xtotal,'f'),0,0,"R");
 
 	  $this->objpdf->SetXY(4,$xlin+217);
 
@@ -385,7 +389,7 @@
  	    $this->objpdf->multicell(202,4,$texto2,1);
 	  }
 	}else{
-	  
+
 	  $this->objpdf->rect($xcol    ,$xlin+312,12,10,2,'DF','34');
 	  $this->objpdf->rect($xcol+ 12,$xlin+312,19,10,2,'DF','34');
 	  $this->objpdf->rect($xcol+ 31,$xlin+312,13,10,2,'DF','34');

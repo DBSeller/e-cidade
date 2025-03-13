@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include("fpdf151/pdf.php");
- require ("libs/jpgraph/jpgraph.php");
- require ("libs/jpgraph/jpgraph_line.php");
- //$rs = pg_exec($sql);
+ include(modification("fpdf151/pdf.php"));
+ require(modification("libs/jpgraph/jpgraph.php"));
+ require(modification("libs/jpgraph/jpgraph_line.php"));
+ //$rs = db_query($sql);
  $pdf = new pdf();
  $grafico = new graph(800,400,"png");
  $head3 = 'Resumo dos acidentes Em sapiranga';
@@ -61,7 +61,7 @@
  for ($i = 1; $i <= 12 ;$i++){
       $pdf->setxy(85+$x,35);
       $pdf->cell(10,5,$i,1,1,"C",1);
-     // $rs = pg_exec($sql);
+     // $rs = db_query($sql);
      /* $numrows = pg_num_rows($rs);
      // $ds = 0;
      // while($ln = pg_fetch_array($rs)){
@@ -80,7 +80,7 @@
                   and    extract(year from tr07_data) = $ano
                   group by dia_semana order by dia_semana";
 
-          $rs2      = pg_exec($sql2);
+          $rs2      = db_query($sql2);
           $numrows2 = pg_num_rows($rs2);
           $ln       = pg_fetch_array($rs2);
           $sum +=  $ln["quantidade"];
@@ -101,7 +101,7 @@
          from    acidentes
          group by mes,dia";
 //echo $sqlg;exit;
-$rsg = pg_exec($sqlg);
+$rsg = db_query($sqlg);
 while ($lng = pg_fetch_array($rsg)){
     if($lng["qt"] == "" ){
        $lng["qt"] = 0;
@@ -135,7 +135,7 @@ while ($lng = pg_fetch_array($rsg)){
                  from  acidentes where extract(year from tr07_data) = $ano) as x
            group by mes order by x.mes";
 //echo $sqlm;exit;
-$rsm = pg_exec($sqlm);
+$rsm = db_query($sqlm);
 while ($lnm = pg_fetch_array($rsm)){
       $legendm[] = $lnm["mes"];
       $totalm[]  = $lnm["total"];

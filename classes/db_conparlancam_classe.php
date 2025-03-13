@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -102,7 +102,7 @@ class cl_conparlancam {
                                 $this->c91_codele 
                                ,$this->c91_codconpas 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -128,11 +128,11 @@ class cl_conparlancam {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->c91_codele));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,5894,'$this->c91_codele','I')");
-       $resac = pg_query("insert into db_acount values($acount,944,5894,'','".AddSlashes(pg_result($resaco,0,'c91_codele'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,944,5893,'','".AddSlashes(pg_result($resaco,0,'c91_codconpas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,5894,'$this->c91_codele','I')");
+       $resac = db_query("insert into db_acount values($acount,944,5894,'','".AddSlashes(pg_result($resaco,0,'c91_codele'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,944,5893,'','".AddSlashes(pg_result($resaco,0,'c91_codconpas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -174,16 +174,16 @@ class cl_conparlancam {
      $resaco = $this->sql_record($this->sql_query_file($this->c91_codele));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,5894,'$this->c91_codele','A')");
+         $resac = db_query("insert into db_acountkey values($acount,5894,'$this->c91_codele','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["c91_codele"]))
-           $resac = pg_query("insert into db_acount values($acount,944,5894,'".AddSlashes(pg_result($resaco,$conresaco,'c91_codele'))."','$this->c91_codele',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,944,5894,'".AddSlashes(pg_result($resaco,$conresaco,'c91_codele'))."','$this->c91_codele',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["c91_codconpas"]))
-           $resac = pg_query("insert into db_acount values($acount,944,5893,'".AddSlashes(pg_result($resaco,$conresaco,'c91_codconpas'))."','$this->c91_codconpas',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,944,5893,'".AddSlashes(pg_result($resaco,$conresaco,'c91_codconpas'))."','$this->c91_codconpas',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Lançamentos de despesa nao Alterado. Alteracao Abortada.\\n";
@@ -224,11 +224,11 @@ class cl_conparlancam {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,5894,'".pg_result($resaco,$iresaco,'c91_codele')."','E')");
-         $resac = pg_query("insert into db_acount values($acount,944,5894,'','".AddSlashes(pg_result($resaco,$iresaco,'c91_codele'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,944,5893,'','".AddSlashes(pg_result($resaco,$iresaco,'c91_codconpas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,5894,'".pg_result($resaco,$iresaco,'c91_codele')."','E')");
+         $resac = db_query("insert into db_acount values($acount,944,5894,'','".AddSlashes(pg_result($resaco,$iresaco,'c91_codele'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,944,5893,'','".AddSlashes(pg_result($resaco,$iresaco,'c91_codconpas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from conparlancam
@@ -244,7 +244,7 @@ class cl_conparlancam {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Lançamentos de despesa nao Excluído. Exclusão Abortada.\\n";
@@ -278,7 +278,7 @@ class cl_conparlancam {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010491' name='configuracoes.assinaturadocumentodesignacao' description="Tabela que informa quem deve assinar um documento, para que seja possível sua correta exibição para assinatura" prefix="db59" label="Assinaturas do documento" type="0">
+  <fields>
+    <field codigo="1010853" 
+           campo_api='' 
+           name="db59_codigo" 
+           conteudo="int8" 
+           description="Código sequencial da tabela" 
+           inivalue="0" 
+           label="Código" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='configuracoes.assinaturadocumentodesignacao_db59_codigo_seq' />
+     
+    </field> 
+    <field codigo="1010854" 
+           campo_api='' 
+           name="db59_relatorio" 
+           conteudo="int8" 
+           description="Documento a ser assinado" 
+           inivalue="0" 
+           label="Documento" 
+           size="34" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Documento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010855" 
+           campo_api='' 
+           name="db59_usuario" 
+           conteudo="int8" 
+           description="Usuário a assinar o documento" 
+           inivalue="0" 
+           label="Usuário" 
+           size="34" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Usuário" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010856" 
+           campo_api='' 
+           name="db59_datainicio" 
+           conteudo="date" 
+           description="Data a partir determinado usuário está responsável por assinar um documento" 
+           inivalue="null" 
+           label="Data de Início" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data de Início" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db59_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_usuarios" inner='t'>
+      <fieldfk name="db59_usuario" reference="id_usuario" /> 
+    </foreignkey>
+    <foreignkey reference="db_relatorio" inner='t'>
+      <fieldfk name="db59_relatorio" reference="db63_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_stdlibwebseller.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_app.utils.php");
-include_once ("libs/db_utils.php");
-include ("dbforms/db_funcoes.php");
-include("libs/JSON.php");
-include ("classes/db_lab_laboratorio_classe.php");
-include ("classes/db_lab_fechamento_classe.php");
-include ("classes/db_lab_bpamagnetico_classe.php");
-include ("classes/db_unidades_classe.php");
-//include ("model/saudeBPA.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_app.utils.php"));
+include_once(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("classes/db_lab_laboratorio_classe.php"));
+include(modification("classes/db_lab_fechamento_classe.php"));
+include(modification("classes/db_lab_bpamagnetico_classe.php"));
+include(modification("classes/db_unidades_classe.php"));
+//include(modification("model/saudeBPA.model.php"));
 
 db_postmemory ( $HTTP_POST_VARS );
 $cllab_bpamagnetico = new cl_lab_bpamagnetico();
@@ -297,14 +297,14 @@ db_menu ( db_getsession ( "DB_id_usuario" ),
 	?>
   function js_pesquisala54_i_codigo(mostra){
     if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo','db_iframe_lab_fechamento',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_fechamento',
                           'func_lab_fechamento.php?'
                           +'funcao_js=parent.js_mostralab_fechamento1|'
                           +'la54_i_compmes|la54_i_compano|la54_i_codigo|'
                           +'la54_d_ini|la54_d_fim','Pesquisa',true);
     } else {
       if (document.form1.sd98_i_fechamento.value != '') { 
-        js_OpenJanelaIframe('top.corpo','db_iframe_lab_fechamento',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_fechamento',
                             'func_lab_fechamento.php?pesquisa_chave='
                             +document.form1.la54_i_codigo.value+'&funcao_js='
                             +'parent.js_mostralab_fechamento','Pesquisa',false);
@@ -333,7 +333,7 @@ db_menu ( db_getsession ( "DB_id_usuario" ),
 
   }
   function js_pesquisa(){
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_sau_fechapront',
                         'func_sau_fechapront.php?funcao_js=parent.js_preenchepesquisa|sd98_i_codigo',
                         'Pesquisa',true);
@@ -358,13 +358,13 @@ db_menu ( db_getsession ( "DB_id_usuario" ),
     $sSql = $cllab_bpamagnetico->sql_querry_prd_bpa($oDados);
     die("<br><br>".$sSql);
     
-    $rsProducao      = pg_query ( $sSql ) or die ( "Erro ao selecionar registros. <p>Comunique o adminstrador. <br> " );
+    $rsProducao      = db_query ( $sSql ) or die ( "Erro ao selecionar registros. <p>Comunique o adminstrador. <br> " );
     $iLinhasProducao = pg_num_rows ( $rsProducao );
 
     $oDados->iLinhas      = $iLinhasProducao;
 
     $sSql=$cllab_bpamagnetico->sql_querry_cbr_bpa($oDados);
-    $rsCabecalho = pg_query ( $sSql ) or die ( "Erro ao selecionar o Cabeçalho. <p>Comunique o adminstrador." );
+    $rsCabecalho = db_query ( $sSql ) or die ( "Erro ao selecionar o Cabeçalho. <p>Comunique o adminstrador." );
 
     /* Parte Generica */
     $lBpa = geraArquivoBPA($oDados,$rsCabecalho,$rsProducao,true,"tmp/filebpa.txt");

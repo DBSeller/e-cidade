@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("fpdf151/scpdf.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/scpdf.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 if ( $d01_codedi == null ) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Código do edital não preenchido!');
@@ -34,7 +34,7 @@ if ( $d01_codedi == null ) {
 $pdf = new SCPDF();
 $largura = 6;
 $dbwhere=" and  d41_pgtopref='f' ";
-$result = pg_exec("select munic,db12_extenso
+$result = db_query("select munic,db12_extenso
 	               from db_config 
                    inner join db_uf on db12_uf = uf
 	               where codigo = ".db_getsession('DB_instit'));
@@ -42,7 +42,7 @@ db_fieldsmemory($result,0);
 if ( pg_numrows($result) == 0 ) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Instituição não cadastrada!');
 }
-$resultedital = pg_query("select * from projmelhorias inner join editalproj on d10_codigo = d40_codigo inner join edital on d01_codedi = d10_codedi where d10_codedi = $d01_codedi");
+$resultedital = db_query("select * from projmelhorias inner join editalproj on d10_codigo = d40_codigo inner join edital on d01_codedi = d10_codedi where d10_codedi = $d01_codedi");
 if ( pg_numrows($resultedital) == 0 ) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum registros encontrado!');
 }
@@ -55,7 +55,7 @@ $sql = "select nomeinst,bairro,cgc,ender,upper(munic) as munic,uf,telef,email,ur
 		from db_config 
 		inner join db_uf on db12_uf = uf
 		where codigo = ".db_getsession("DB_instit");
-$result05 = pg_query($sql);
+$result05 = db_query($sql);
 global $nomeinst;
 global $ender;
 global $munic;
@@ -107,14 +107,14 @@ for($d=0;$d<pg_numrows($resultedital);$d++){
            left outer join projmelhoriasresp on projmelhoriasresp.d42_codigo = projmelhorias.d40_codigo 
            left outer join cgm on cgm.z01_numcgm = projmelhoriasresp.d42_numcgm 
           where d40_codigo = $d40_codigo";
-  $result3 = pg_exec($sql1);
+  $result3 = db_query($sql1);
   db_fieldsmemory($result3,0);
   $sql="select
 	    distinct proprietario,d41_pgtopref, j39_numero, z01_nome, j01_matric, j40_refant, d41_testada, d41_eixo, d41_obs
 	    from projmelhoriasmatric
 	    inner join proprietario on proprietario.j01_matric = projmelhoriasmatric.d41_matric
 	    where d41_codigo = $d40_codigo $dbwhere order by j40_refant";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if ( pg_numrows($result) == 0 ) {
    continue; 
    // db_redireciona('db_erros.php?fechar=true&db_erro=Lista nao cadastrada!');
@@ -148,7 +148,7 @@ $sql = "select nomeinst,bairro,cgc,ender,upper(munic) as munic,uf,telef,email,ur
 		from db_config 
 		inner join db_uf on db12_uf = uf
 		where codigo = ".db_getsession("DB_instit");
-$result05 = pg_query($sql);
+$result05 = db_query($sql);
 global $nomeinst;
 global $ender;
 global $munic;

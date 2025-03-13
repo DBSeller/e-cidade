@@ -1,0 +1,73 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010822' name='caixa.linha_tef_processado' description="Armazena uma linha do arquivo tef que já teve os lançamentos efetuadps" prefix="t70" label="Linha Processada TEF" type="0">
+  <fields>
+    <field codigo="1011345"
+           campo_api=''
+           name="id"
+           conteudo="int8"
+           description="id"
+           inivalue="0"
+           label="id"
+           size="11"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="id"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+        <sequence name='caixa.linha_tef_processado_id_seq' />
+    </field>
+    <field codigo="1013399"
+           campo_api=''
+           name="linha_tef_id"
+           conteudo="int4"
+           description="Representa a linha do arquivo TEF"
+           inivalue="0"
+           label="Linha TEF"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Linha TEF"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013400"
+           campo_api=''
+           name="conlancam_id"
+           conteudo="int4"
+           description="Vínculo com o lançamento contábil"
+           inivalue="0"
+           label="Lançamento"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Lançamento"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="id"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="conlancam" inner='t'>
+      <fieldfk name="conlancam_id" reference="c70_codlan" />
+    </foreignkey>
+    <foreignkey reference="arquivo_tef" inner='t'>
+      <fieldfk name="linha_tef_id" reference="id" />
+    </foreignkey>
+  </foreignkeys>
+</table>

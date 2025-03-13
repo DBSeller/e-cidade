@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas     = new cl_criaabas;
 $db_opcao = 1;
 ?>
@@ -57,34 +57,40 @@ $db_opcao = 1;
      <?
 			 $clcriaabas->identifica = array(
 		                                    "rhpessoal"      => "Dados Pessoais",
+						     "rhadmissional"  => "Dados admissionais",
 		                                    "rhpesdoc"       => "Documentos",
 		                                    "rhpessoalmov"   => "Movimentações",
 		                                    "rhdepend"       => "Dependentes",
 		                                    "rhpeslocaltrab" => "Locais de Trabalho",
 			                                "rhpontofixo"    => "Ponto Fixo",
-                                        	"rhpontosalario" => "Ponto de Salário"
+                                        	"rhpontosalario" => "Ponto de Salário",
+                                        	"rhcedencia"     => "Cedidos / Disposição"
 			                                
 		                                  );
 		                                   
 			 $clcriaabas->sizecampo  = array(
 		                                    "rhpessoal"      => "20",
+						     "rhadmissional"  => "20",
 		                                    "rhpesdoc"       => "15",
 		                                    "rhpessoalmov"   => "20",
 		                                    "rhdepend"       => "15",
 		                                    "rhpeslocaltrab" => "20",
 		                                    "rhpontofixo"    => "15",
-		                                    "rhpontosalario" => "15"                                        	
+		                                    "rhpontosalario" => "15",
+		                                    "rhcedencia"     => "20"
 			                                );
 			                                
 			 $clcriaabas->src        = array( "rhpessoal" => "pes1_rhpessoal004.php" );
 			 
 			 $clcriaabas->disabled   = array(
-		                                    "rhpesdoc"       => "true",
-		                                    "rhpessoalmov"   => "true",
-		                                    "rhdepend"       => "true",
-		                                    "rhpeslocaltrab" => "true",
-		                                    "rhpontofixo"    => "true",
-                                        	"rhpontosalario" => "true"
+						     "rhadmissional"  => "true",
+  						     "rhpesdoc"       => "true",
+		                                    "rhpessoalmov"    => "true",
+		                                    "rhdepend"        => "true",
+		                                    "rhpeslocaltrab"  => "true",
+		                                    "rhpontofixo"     => "true",
+                                        	"rhpontosalario"  => "true",
+                                        	"rhcedencia"      => "true"
 		                                  ); 
 	   $verifica_permissao = db_permissaomenu(db_getsession('DB_anousu'), 952, 8820);    
        if($verifica_permissao == "true"){

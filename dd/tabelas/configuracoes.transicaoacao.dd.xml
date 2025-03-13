@@ -1,0 +1,76 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010469' name='configuracoes.transicaoacao' description="Tabela que liga uma transição a uma ação" prefix="" label="Transição Ação" type="0">
+  <fields>
+    <field codigo="1010743"
+           campo_api=''
+           name="db175_sequencial"
+           conteudo="int8"
+           description="Sequencial da tabela"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+    <sequence name='configuracoes.transicao_db174_sequencial_seq' />
+
+    </field>
+    <field codigo="1010744"
+           campo_api=''
+           name="db175_transicao"
+           conteudo="int8"
+           description="Campo que guarda referencia para a transição"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+    <field codigo="1010745"
+           campo_api=''
+           name="db175_acao"
+           conteudo="int8"
+           description="Campo que guarda referencia para a ação"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="db174_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="transicao">
+      <fieldfk name="db175_transicao" reference="db174_sequencial" inner='t'></fieldfk> 
+    </foreignkey>
+    <foreignkey reference="acao">
+      <fieldfk name="db175_acao" reference="db176_sequencial" inner='t'></fieldfk> 
+    </foreignkey>
+  </foreignkeys>
+</table>
+
+
+

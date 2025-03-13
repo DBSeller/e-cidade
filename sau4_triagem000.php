@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-require("libs/db_stdlibwebseller.php");
-include("classes/db_prontuarios_classe.php");
-include("classes/db_prontuarios_ext_classe.php");
-include("classes/db_cgs_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("classes/db_sau_triagemprocsf_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+include(modification("classes/db_prontuarios_classe.php"));
+include(modification("classes/db_prontuarios_ext_classe.php"));
+include(modification("classes/db_cgs_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
+include(modification("classes/db_sau_triagemprocsf_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
 $z01_d_cadast_dia = date("d",db_getsession("DB_datausu"));
 $z01_d_cadast_mes = date("m",db_getsession("DB_datausu"));
@@ -116,7 +116,7 @@ if(isset($proceguir)){
                                         $sql_proc="select * from sau_triagemprocsf 
                                                       iner join sau_procsemfatura on s146_i_codigo=s147_i_procsf 
                                                    where s147_i_triagem=$sd24_i_codigo";
-                                        $result_proc=pg_query($sql_proc);
+                                        $result_proc=db_query($sql_proc);
                                         $linhas_proc=pg_num_rows($result_proc);
                                         $proc=array();
                                         for($c=0;$c<$linhas_proc;$c++){
@@ -137,7 +137,7 @@ $sql1 = "select z01_nome  as profissional,sd03_i_codigo,z01_numcgm
                   inner join unidades on unidades.sd02_i_codigo= unidademedicos.sd04_i_unidade		               
                   where sd02_i_codigo = $sd24_i_unidade and db_usuacgm.id_usuario=".db_getsession("DB_id_usuario");
                   
-$query1 = pg_query($sql1) or die(pg_errormessage());
+$query1 = db_query($sql1) or die(pg_errormessage());
 $linhas1 = pg_num_rows($query1);
 $profissional_branco = true;
 if($linhas1>0 && ( !isset( $sd03_i_codigo ) || (int)$sd03_i_codigo == 0 )) {
@@ -171,7 +171,7 @@ if($linhas1>0 && ( !isset( $sd03_i_codigo ) || (int)$sd03_i_codigo == 0 )) {
     <center>
     <fieldset style="width:95%"><legend><b>Triagem</b></legend>
         <?
-        include("forms/db_frmtriagem.php");
+        include(modification("forms/db_frmtriagem.php"));
         ?>
      </fieldset>
     </center>

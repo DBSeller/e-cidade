@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_solicita_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_solicita_classe.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("pc10_numero");
@@ -260,11 +260,11 @@ function js_pesquisa_pc10_numero_ini(mostra) {
   var sUrl2           = 'func_solicitacompilacao.php?pesquisa_chave='+pc10_numero_ini+'&tipobusca=1'+sFuncao;
 
   if (lMostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_solicitacompilacao',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicitacompilacao',sUrl1,'Pesquisa',true);
   } else {
 
      if (pc10_numero_ini != '') {
-        js_OpenJanelaIframe('top.corpo','db_iframe_solicitacompilacao',sUrl2,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicitacompilacao',sUrl2,'Pesquisa',false);
      } else {
        $('pc10_numero_ini').value = '';
      }
@@ -297,11 +297,11 @@ function js_pesquisa_pc10_numero_fim(mostra) {
   var sUrl2           = 'func_solicitacompilacao.php?pesquisa_chave='+pc10_numero_fim+'&tipobusca=1'+sFuncao;
 
   if (lMostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_solicitacompilacao',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicitacompilacao',sUrl1,'Pesquisa',true);
   } else {
 
      if (pc10_numero_fim != '') {
-       js_OpenJanelaIframe('top.corpo','db_iframe_solicitacompilacao',sUrl2,'Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicitacompilacao',sUrl2,'Pesquisa',false);
      } else {
        $('pc10_numero_fim').value = '';
      }

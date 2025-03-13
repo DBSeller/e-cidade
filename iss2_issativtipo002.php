@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('q85_descr');
 $clrotulo->label('z01_nome');
@@ -58,7 +58,7 @@ elseif($ordem == 'a'){
 */
 $head3 = " ";
 
-$result =  pg_query("select q02_inscr,z01_nome,q85_descr,q03_descr  from issbase inner join isscalc on q02_inscr = q01_inscr inner join cadcalc on q01_cadcal = q85_codigo inner join tabativ on q07_inscr = q02_inscr inner join ativprinc on q88_inscr = q02_inscr and q07_seq = q88_seq left join tabativbaixa on q11_inscr = q02_inscr and q11_seq = q07_seq inner join ativid on q03_ativ = q07_ativ inner join cgm on z01_numcgm = q02_numcgm where q01_anousu = 2007 and q85_codigo in (2,3) and q11_inscr is null order by z01_nome");
+$result =  db_query("select q02_inscr,z01_nome,q85_descr,q03_descr  from issbase inner join isscalc on q02_inscr = q01_inscr inner join cadcalc on q01_cadcal = q85_codigo inner join tabativ on q07_inscr = q02_inscr inner join ativprinc on q88_inscr = q02_inscr and q07_seq = q88_seq left join tabativbaixa on q11_inscr = q02_inscr and q11_seq = q07_seq inner join ativid on q03_ativ = q07_ativ inner join cgm on z01_numcgm = q02_numcgm where q01_anousu = 2007 and q85_codigo in (2,3) and q11_inscr is null order by z01_nome");
 
 
 $xxnum = pg_numrows($result);

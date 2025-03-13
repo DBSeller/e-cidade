@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,108 +25,126 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhpessoalmov_classe.php");
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_usuariosonline.php');
+require_once modification('dbforms/db_funcoes.php');
+require_once modification('classes/db_rhpessoalmov_classe.php');
+
 db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+
+parse_str($_SERVER['QUERY_STRING'], $queryString);
+
+foreach ($queryString as $key => $value) {
+    ${$key} = $value;
+}
+
 $clrhpessoalmov = new cl_rhpessoalmov;
 $clrhpessoalmov->rotulo->label("rh02_seqpes");
 $clrhpessoalmov->rotulo->label("rh02_regist");
 ?>
-<html>
+<!doctype html>
+<html lang="pt-BR">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="estilos.css">
+    <script src="scripts/scripts.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
-    <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Trh02_seqpes?>">
-              <?=$Lrh02_seqpes?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("rh02_seqpes",6,$Irh02_seqpes,true,"text",4,"","chave_rh02_seqpes");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Trh02_regist?>">
-              <?=$Lrh02_regist?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("rh02_regist",6,$Irh02_regist,true,"text",4,"","chave_rh02_regist");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_rhpessoalmov.hide();">
-             </td>
-          </tr>
-        </form>
-        </table>
-      </td>
-  </tr>
-  <tr> 
-    <td align="center" valign="top"> 
-      <?
-      if(!isset($pesquisa_chave)){
-        if(isset($campos)==false){
-           if(file_exists("funcoes/db_func_rhpessoalmov.php")==true){
-             include("funcoes/db_func_rhpessoalmov.php");
-           }else{
-           $campos = "rhpessoalmov.*";
-           }
-        }
-        if(isset($chave_rh02_seqpes) && (trim($chave_rh02_seqpes)!="") ){
-	         $sql = $clrhpessoalmov->sql_query($chave_rh02_seqpes,$campos,"rh02_seqpes");
-        }else if(isset($chave_rh02_regist) && (trim($chave_rh02_regist)!="") ){
-	         $sql = $clrhpessoalmov->sql_query("",$campos,"rh02_regist"," rh02_regist like '$chave_rh02_regist%' ");
-        }else{
-           $sql = $clrhpessoalmov->sql_query("",$campos,"rh02_seqpes","");
-        }
-        $repassa = array();
-        if(isset($chave_rh02_seqpes)){
-          $repassa = array("chave_rh02_seqpes"=>$chave_rh02_seqpes,"chave_rh02_seqpes"=>$chave_rh02_seqpes);
-        }
-        db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clrhpessoalmov->sql_record($clrhpessoalmov->sql_query($pesquisa_chave));
-          if($clrhpessoalmov->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$rh02_regist',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
-          }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
-        }
-      }
-      ?>
-     </td>
-   </tr>
+<table height="100%" border="0" align="center" cellspacing="0" bgcolor="#CCCCCC">
+    <tr>
+        <td height="63" align="center" valign="top">
+            <table width="35%" border="0" align="center" cellspacing="0">
+                <form name="form2" method="post" action="">
+                    <tr>
+                        <td width="4%" align="right" nowrap title="<?= $Trh02_seqpes ?>">
+                            <?= $Lrh02_seqpes ?>
+                        </td>
+                        <td width="96%" align="left" nowrap>
+                            <?php
+                            db_input("rh02_seqpes", 6, $Irh02_seqpes, true, "text", 4, "", "chave_rh02_seqpes");
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="4%" align="right" nowrap title="<?= $Trh02_regist ?>">
+                            <?= $Lrh02_regist ?>
+                        </td>
+                        <td width="96%" align="left" nowrap>
+                            <?php
+                            db_input("rh02_regist", 6, $Irh02_regist, true, "text", 4, "", "chave_rh02_regist");
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
+                            <input name="limpar" type="reset" id="limpar" value="Limpar">
+                            <input name="Fechar" type="button" id="fechar" value="Fechar"
+                                   onclick="parent.db_iframe_rhpessoalmov.hide();">
+                        </td>
+                    </tr>
+                </form>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" valign="top">
+            <?php
+            if (isset($pesquisa_chave) === false) {
+                if (isset($campos) === false) {
+                    if (file_exists("funcoes/db_func_rhpessoalmov.php") === true) {
+                        require_once modification('funcoes/db_func_rhpessoalmov.php');
+                    } else {
+                        $campos = 'rhpessoalmov.*';
+                    }
+                }
+                if (isset($chave_rh02_seqpes) && (trim($chave_rh02_seqpes) != "")) {
+                    $sql = $clrhpessoalmov->sql_query($chave_rh02_seqpes, $campos, "rh02_seqpes");
+                } else {
+                    if (isset($chave_rh02_regist) && (trim($chave_rh02_regist) != "")) {
+                        $sql = $clrhpessoalmov->sql_query(
+                            null,
+                            $campos,
+                            'rh02_regist',
+                            " rh02_regist ILIKE '{$chave_rh02_regist}%' "
+                        );
+                    } else {
+                        $sql = $clrhpessoalmov->sql_query(null, $campos, 'rh02_seqpes');
+                    }
+                }
+                $repassa = array();
+                if (isset($chave_rh02_seqpes)) {
+                    $repassa = array(
+                        'chave_rh02_seqpes' => $chave_rh02_seqpes
+                    );
+                }
+                db_lovrot($sql, 15, '()', '', $funcao_js, '', 'NoMe', $repassa);
+            } else {
+                if ($pesquisa_chave != null && $pesquisa_chave != "") {
+                    $result = $clrhpessoalmov->sql_record($clrhpessoalmov->sql_query($pesquisa_chave));
+                    if ($clrhpessoalmov->numrows != 0) {
+                        db_fieldsmemory($result, 0);
+                        echo "<script>" . $funcao_js . "('$rh02_regist', false);</script>";
+                    } else {
+                        echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não encontrado', true);</script>";
+                    }
+                } else {
+                    echo "<script>{$funcao_js}('', false);</script>";
+                }
+            }
+            ?>
+        </td>
+    </tr>
 </table>
+<script type="text/javascript">
+    (function() {
+        var query = frameElement.getAttribute('name').replace('IF', ''),
+            input = document.querySelector('input[value="Fechar"]');
+        input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+    })();
+</script>
 </body>
 </html>
-<?
-if(!isset($pesquisa_chave)){
-  ?>
-  <script>
-  </script>
-  <?
-}
-?>

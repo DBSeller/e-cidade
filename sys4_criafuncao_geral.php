@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 ?>
 <html>
 <head>
@@ -112,7 +112,7 @@ input {
                      on a.codarq = am.codarq
                      $qr
                      order by codmod";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $numrows = pg_numrows($result);
   $RecordsetTabMod = $result;
   if($numrows == 0) {
@@ -127,17 +127,17 @@ input {
     $fd = fopen($arquivo,"w");
     fputs($fd,"<?\n");
     for($i = 0;$i < $numrows;$i++) {
-	  fputs($fd,'require("libs/db_stdlib.php");'."\n");
-	  fputs($fd,'require("libs/db_conecta.php");'."\n");
-	  fputs($fd,'include("libs/db_sessoes.php");'."\n");
-	  fputs($fd,'include("libs/db_usuariosonline.php");'."\n");
-	  fputs($fd,'include("dbforms/db_funcoes.php");'."\n");
-      fputs($fd,'include("classes/db_'.trim(pg_result($result,$i,'nomearq')).'_classe.php");'."\n");
+	  fputs($fd,'require(modification("libs/db_stdlib.php"));'."\n");
+	  fputs($fd,'require(modification("libs/db_conecta.php"));'."\n");
+	  fputs($fd,'include(modification("libs/db_sessoes.php"));'."\n");
+	  fputs($fd,'include(modification("libs/db_usuariosonline.php"));'."\n");
+	  fputs($fd,'include(modification("dbforms/db_funcoes.php"));'."\n");
+      fputs($fd,'include(modification("classes/db_'.trim(pg_result($result,$i,'nomearq'))).'_classe.php");'."\n");
       fputs($fd,'db_postmemory($HTTP_POST_VARS);'."\n");
       fputs($fd,'parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);'."\n");
       fputs($fd,'$cl'.trim(pg_result($result,$i,'nomearq')).' = new cl_'.trim(pg_result($result,$i,'nomearq')).';'."\n");
 	  $varpk = ""; 
-      $pk = pg_exec("select a.nomearq,c.nomecam,c.tamanho,c.conteudo,p.sequen,p.camiden,d.nomecam as campoca, d.tamanho as catamanho
+      $pk = db_query("select a.nomearq,c.nomecam,c.tamanho,c.conteudo,p.sequen,p.camiden,d.nomecam as campoca, d.tamanho as catamanho
                        from db_sysprikey p
                             inner join db_sysarquivo a on a.codarq = p.codarq
                             inner join db_syscampo c   on c.codcam = p.codcam

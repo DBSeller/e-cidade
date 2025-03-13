@@ -1,38 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_acervo_classe.php");
-require_once("classes/db_biblioteca_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_acervo_classe.php"));
+require_once(modification("classes/db_biblioteca_classe.php"));
 
 $depto        = db_getsession("DB_coddepto");
 $clbiblioteca = new cl_biblioteca;
@@ -70,7 +70,8 @@ if (isset($valor)) {
     $titulo = " - Período: Não Informado";
   }
 
-  $sql  = "SELECT bi06_seq, bi06_titulo, bi06_edicao, bi06_volume, bi06_tipoitem, bi05_nome, bi29_nome, count(*) ";
+  $sql  = "SELECT bi06_seq, bi06_titulo, bi06_subtitulo, bi06_edicao, bi06_volume, bi06_tipoitem, bi05_nome, bi29_nome, ";
+  $sql .=  "      count(*) ";
   $sql .=  "  FROM acervo                                                                                        ";
   $sql .=  "       inner join exemplar         on bi23_acervo = bi06_seq                                         ";
   $sql .=  "       inner join emprestimoacervo on bi19_exemplar = bi23_codigo                                    ";
@@ -104,8 +105,9 @@ if (isset($valor)) {
       </tr>
       <tr bgcolor="#999999">
         <td align="center" width="5%"><b>Código Acervo</b></td>
-        <td width="35%"><b>Titulo</b></td>
-        <td width="30%"><b>Coleção</b></td>
+        <td width="25%"><b>Titulo</b></td>
+        <td width="25%"><b>Subtítulo</b></td>
+        <td width="15%"><b>Coleção</b></td>
         <td align="center" width="5%"><b>Edição</b></td>
         <td align="center" width="5%"><b>Volume</b></td>
         <td align="center" width="15%"><b>Tipo</b></td>
@@ -130,6 +132,7 @@ if (isset($valor)) {
         <tr bgcolor="<?=$cor?>">
           <td align="center"><?=$bi06_seq?></td>
           <td><?=$bi06_titulo?></td>
+          <td><?=$bi06_subtitulo?></td>
           <td><?=$bi29_nome?></td>
           <td align="center"><?=$bi06_edicao?></td>
           <td align="center"><?=$bi06_volume?></td>

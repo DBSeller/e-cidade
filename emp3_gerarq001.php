@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-include_once("dbforms/db_funcoes.php");
-include_once("classes/db_empagegera_classe.php");
-include_once("classes/db_empagetipo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+include_once(modification("classes/db_empagegera_classe.php"));
+include_once(modification("classes/db_empagetipo_classe.php"));
 $clempagegera = new cl_empagegera;
 $clempagetipo = new cl_empagetipo;
 $clrotulo     = new rotulocampo;
@@ -91,7 +91,7 @@ db_postmemory($HTTP_POST_VARS);
 
 </div>
 
- <input name="pes" type="button" onclick='js_OpenJanelaIframe("top.corpo","db_iframe_empagegera","func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera","Pesquisa",true);'  value="Pesquisar arquivos">      
+ <input name="pes" type="button" onclick='js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_empagegera","func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera","Pesquisa",true);'  value="Pesquisar arquivos">      
  <input name="cons" type="button" <?=("onclick='js_abrecons($db_passapar);'")?>  value="Consultar">
  <input name="rel" type="button" <?=("onclick='js_gerarel($db_passapar);'")?>  value="Gerar relatório">
 
@@ -119,7 +119,7 @@ function js_abrecons(x){
   }
   
   if(document.form1.e87_codgera.value!="" || document.form1.e83_codtipo.value!=0){
-    js_OpenJanelaIframe('top.corpo','db_iframe','emp3_gerarq002.php?lCancelado=0&e87_codgera='+document.form1.e87_codgera.value+'&e87_descgera='+document.form1.e87_descgera.value+'&e83_codtipo='+document.form1.e83_codtipo.value+'&e83_codtipodescr='+e83_codtipodescr,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','emp3_gerarq002.php?lCancelado=0&e87_codgera='+document.form1.e87_codgera.value+'&e87_descgera='+document.form1.e87_descgera.value+'&e83_codtipo='+document.form1.e83_codtipo.value+'&e83_codtipodescr='+e83_codtipodescr,'Pesquisa',true);
 //    jan = window.open('                          emp2_gerarq002.php?e87_codgera='+document.form1.e87_codgera.value+'&e87_descgera='+document.form1.e87_descgera.value+'&e83_codtipo='+document.form1.e83_codtipo.value+'&e83_codtipodescr='+e83_codtipodescr,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   }else{
     alert("Informe o código do arquivo ou selecione o tipo para gerar o relatório.");
@@ -145,10 +145,10 @@ function js_gerarel(x){
 }
 function js_pesquisa_gera(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empagegera','func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera','Pesquisa',true);
   }else{
      if(document.form1.e87_codgera.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?pesquisa_chave='+document.form1.e87_codgera.value+'&funcao_js=parent.js_mostragera','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empagegera','func_empagegera.php?pesquisa_chave='+document.form1.e87_codgera.value+'&funcao_js=parent.js_mostragera','Pesquisa',false);
      }else{
        document.form1.e87_descgera.value = ''; 
      }

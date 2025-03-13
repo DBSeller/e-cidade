@@ -1,28 +1,28 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (c) 2018  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: biblioteca
@@ -45,11 +45,13 @@ class cl_colecaoacervo {
    var $bi29_sequencial = 0; 
    var $bi29_nome = null; 
    var $bi29_abreviatura = null; 
-   // cria propriedade com as variaveis do arquivo 
+   var $bi29_quantidade = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  bi29_sequencial = int4 = Sequencial 
                  bi29_nome = varchar(70) = Nome 
                  bi29_abreviatura = varchar(5) = Abreviatura 
+                 bi29_quantidade = int4 = Quantidade de Itens 
                  ";
    //funcao construtor da classe 
    function cl_colecaoacervo() { 
@@ -72,6 +74,7 @@ class cl_colecaoacervo {
        $this->bi29_sequencial = ($this->bi29_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["bi29_sequencial"]:$this->bi29_sequencial);
        $this->bi29_nome = ($this->bi29_nome == ""?@$GLOBALS["HTTP_POST_VARS"]["bi29_nome"]:$this->bi29_nome);
        $this->bi29_abreviatura = ($this->bi29_abreviatura == ""?@$GLOBALS["HTTP_POST_VARS"]["bi29_abreviatura"]:$this->bi29_abreviatura);
+       $this->bi29_quantidade = ($this->bi29_quantidade == ""?@$GLOBALS["HTTP_POST_VARS"]["bi29_quantidade"]:$this->bi29_quantidade);
      }else{
        $this->bi29_sequencial = ($this->bi29_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["bi29_sequencial"]:$this->bi29_sequencial);
      }
@@ -80,7 +83,7 @@ class cl_colecaoacervo {
    function incluir ($bi29_sequencial){ 
       $this->atualizacampos();
      if($this->bi29_nome == null ){ 
-       $this->erro_sql = " Campo Nome nao Informado.";
+       $this->erro_sql = " Campo Nome não Informado.";
        $this->erro_campo = "bi29_nome";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -88,6 +91,17 @@ class cl_colecaoacervo {
        $this->erro_status = "0";
        return false;
      }
+
+     if(empty($this->bi29_quantidade)){
+         $this->erro_sql = " Campo Quantidade de Itens não Informado.";
+         $this->erro_campo = "bi29_quantidade";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+     }
+
      if($bi29_sequencial == "" || $bi29_sequencial == null ){
        $result = db_query("select nextval('colecaoacervo_bi29_sequencial_seq')"); 
        if($result==false){
@@ -103,7 +117,7 @@ class cl_colecaoacervo {
        $result = db_query("select last_value from colecaoacervo_bi29_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $bi29_sequencial)){
          $this->erro_sql = " Campo bi29_sequencial maior que último número da sequencia.";
-         $this->erro_banco = "Sequencia menor que este número.";
+         $this->erro_banco = "Seuqência menor que este número.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
@@ -113,8 +127,8 @@ class cl_colecaoacervo {
        }
      }
      if(($this->bi29_sequencial == null) || ($this->bi29_sequencial == "") ){ 
-       $this->erro_sql = " Campo bi29_sequencial nao declarado.";
-       $this->erro_banco = "Chave Primaria zerada.";
+       $this->erro_sql = " Campo bi29_sequencial não declarado.";
+       $this->erro_banco = "Chave Primária zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
@@ -124,22 +138,24 @@ class cl_colecaoacervo {
                                        bi29_sequencial 
                                       ,bi29_nome 
                                       ,bi29_abreviatura 
+                                      ,bi29_quantidade 
                        )
                 values (
                                 $this->bi29_sequencial 
                                ,'$this->bi29_nome' 
                                ,'$this->bi29_abreviatura' 
+                               ,$this->bi29_quantidade 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Coleção de Acervo ($this->bi29_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Coleção de Acervo ($this->bi29_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Coleção de Acervo já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Coleção de Acervo ($this->bi29_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Coleção de Acervo ($this->bi29_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -148,7 +164,7 @@ class cl_colecaoacervo {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->bi29_sequencial;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -168,6 +184,7 @@ class cl_colecaoacervo {
          $resac = db_query("insert into db_acount values($acount,3584,19991,'','".AddSlashes(pg_result($resaco,0,'bi29_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3584,19992,'','".AddSlashes(pg_result($resaco,0,'bi29_nome'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3584,19993,'','".AddSlashes(pg_result($resaco,0,'bi29_abreviatura'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3584,1010589,'','".AddSlashes(pg_result($resaco,0,'bi29_quantidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
@@ -181,7 +198,7 @@ class cl_colecaoacervo {
        $sql  .= $virgula." bi29_sequencial = $this->bi29_sequencial ";
        $virgula = ",";
        if(trim($this->bi29_sequencial) == null ){ 
-         $this->erro_sql = " Campo Sequencial nao Informado.";
+         $this->erro_sql = " Campo Sequencial não Informado.";
          $this->erro_campo = "bi29_sequencial";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -194,7 +211,7 @@ class cl_colecaoacervo {
        $sql  .= $virgula." bi29_nome = '$this->bi29_nome' ";
        $virgula = ",";
        if(trim($this->bi29_nome) == null ){ 
-         $this->erro_sql = " Campo Nome nao Informado.";
+         $this->erro_sql = " Campo Nome não Informado.";
          $this->erro_campo = "bi29_nome";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -203,6 +220,21 @@ class cl_colecaoacervo {
          return false;
        }
      }
+
+     if(trim($this->bi29_quantidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi29_quantidade"])){
+         $sql  .= $virgula." bi29_quantidade = $this->bi29_quantidade ";
+         $virgula = ",";
+         if(empty($this->bi29_quantidade)){
+             $this->erro_sql = " Campo Quantidade de Itens não Informado.";
+             $this->erro_campo = "bi29_quantidade";
+             $this->erro_banco = "";
+             $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+             $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+             $this->erro_status = "0";
+             return false;
+         }
+     }
+
      if(trim($this->bi29_abreviatura)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi29_abreviatura"])){ 
        $sql  .= $virgula." bi29_abreviatura = '$this->bi29_abreviatura' ";
        $virgula = ",";
@@ -230,13 +262,15 @@ class cl_colecaoacervo {
              $resac = db_query("insert into db_acount values($acount,3584,19992,'".AddSlashes(pg_result($resaco,$conresaco,'bi29_nome'))."','$this->bi29_nome',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            if(isset($GLOBALS["HTTP_POST_VARS"]["bi29_abreviatura"]) || $this->bi29_abreviatura != "")
              $resac = db_query("insert into db_acount values($acount,3584,19993,'".AddSlashes(pg_result($resaco,$conresaco,'bi29_abreviatura'))."','$this->bi29_abreviatura',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["bi29_quantidade"]) || $this->bi29_quantidade != "")
+               $resac = db_query("insert into db_acount values($acount,3584,1010589,'".AddSlashes(pg_result($resaco,$conresaco,'bi29_quantidade'))."','$this->bi29_quantidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Coleção de Acervo nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Coleção de Acervo não Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->bi29_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -246,7 +280,7 @@ class cl_colecaoacervo {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "Coleção de Acervo nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Coleção de Acervo não foi Alterado. Alteracao Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->bi29_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -289,6 +323,7 @@ class cl_colecaoacervo {
            $resac  = db_query("insert into db_acount values($acount,3584,19991,'','".AddSlashes(pg_result($resaco,$iresaco,'bi29_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3584,19992,'','".AddSlashes(pg_result($resaco,$iresaco,'bi29_nome'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3584,19993,'','".AddSlashes(pg_result($resaco,$iresaco,'bi29_abreviatura'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3584,1010589,'','".AddSlashes(pg_result($resaco,$iresaco,'bi29_quantidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
@@ -308,7 +343,7 @@ class cl_colecaoacervo {
      $result = db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Coleção de Acervo nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Coleção de Acervo não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$bi29_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -318,7 +353,7 @@ class cl_colecaoacervo {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "Coleção de Acervo nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Coleção de Acervo não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$bi29_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -429,4 +464,3 @@ class cl_colecaoacervo {
      return $sql;
   }
 }
-?>

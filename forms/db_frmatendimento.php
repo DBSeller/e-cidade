@@ -26,9 +26,9 @@
  */
 
 //MODULO: atendimento
-include("classes/db_tipoatend_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_clientes_classe.php");
+include(modification("classes/db_tipoatend_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_clientes_classe.php"));
 $cldb_usuarios = new cl_db_usuarios;
 $clclientes = new cl_clientes;
 $cltecnico = new cl_tecnico;

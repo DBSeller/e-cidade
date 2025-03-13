@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_liborcamento.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_orcsuplem_classe.php");
-require_once("classes/db_orcprojeto_classe.php");
-require_once("classes/db_orcsuplemval_classe.php");
-require_once("classes/db_orcdotacao_classe.php");   // instancia da classe dotação
-require_once("classes/db_orcreceita_classe.php"); // receita
-require_once("classes/db_orcorgao_classe.php"); // receita
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_orcsuplem_classe.php"));
+require_once(modification("classes/db_orcprojeto_classe.php"));
+require_once(modification("classes/db_orcsuplemval_classe.php"));
+require_once(modification("classes/db_orcdotacao_classe.php"));   // instancia da classe dotação
+require_once(modification("classes/db_orcreceita_classe.php")); // receita
+require_once(modification("classes/db_orcorgao_classe.php")); // receita
 
 db_app::import("orcamento.suplementacao.*");
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -146,6 +146,7 @@ if (isset($incluir)) {
     $clorcsuplemval->o47_valor          = $o47_valor; 
     $clorcsuplemval->o47_anousu         = db_getsession("DB_anousu");
     $clorcsuplemval->o47_concarpeculiar = "{$o58_concarpeculiar}";
+    $clorcsuplemval->o47_planoorcamentariolinhapacto = empty($pc13_planoorcamentariolinhapacto) ? 'null' : $pc13_planoorcamentariolinhapacto;
     $clorcsuplemval->incluir($o46_codsup,db_getsession("DB_anousu"),$o47_coddot);
     if ($clorcsuplemval->erro_status == 0){
        $sqlerro = true;
@@ -232,6 +233,7 @@ $soma_suplem    = $oSuplementacao->getvalorSuplementacao();
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -240,7 +242,7 @@ $soma_suplem    = $oSuplementacao->getvalorSuplementacao();
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcsuplemval.php");
+	include(modification("forms/db_frmorcsuplemval.php"));
 	?>
     </center>
 	</td>
@@ -265,3 +267,4 @@ if(isset($incluir) || isset($alterar) || isset($excluir)){
 };
 
 ?>
+

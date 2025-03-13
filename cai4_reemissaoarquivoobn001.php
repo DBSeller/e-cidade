@@ -1,230 +1,245 @@
-<?PHP
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_conhistdoc_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
-require_once("classes/db_empage_classe.php");
-require_once("classes/db_empagetipo_classe.php");
-require_once("classes/db_empagemov_classe.php");
-require_once("classes/db_empord_classe.php");
-require_once("classes/db_empagepag_classe.php");
-require_once("classes/db_empageslip_classe.php");
-require_once("classes/db_empagemovforma_classe.php");
-require_once("classes/db_empagegera_classe.php");
-require_once("classes/db_empageconf_classe.php");
-require_once("classes/db_empageconfgera_classe.php");
-require_once("classes/db_conplanoconta_classe.php");
-require_once("classes/db_empagemod_classe.php");
-require_once("classes/db_db_bancos_classe.php");
+$oGET        = db_utils::postMemory($_GET);
+$oEmpagegera = new cl_empagegera;
+$oRotulo     = new rotulocampo;
+$oEmpagetipo = new cl_empagetipo;
+$oEmpagegera->rotulo->label();
+$oEmpagetipo->rotulo->label();
 
-db_postmemory($HTTP_POST_VARS);
-$clempagegera     = new cl_empagegera;
-$clempageconf     = new cl_empageconf;
-$clempageconfgera = new cl_empageconfgera;
-$clrotulo         = new rotulocampo;
-$clempagetipo     = new cl_empagetipo;
-$clempagegera->rotulo->label();
-$clempagetipo->rotulo->label();
-
-db_app::load("scripts.js");
-db_app::load("prototype.js");
-db_app::load("datagrid.widget.js");
-db_app::load("DBLancador.widget.js");
-db_app::load("strings.js");
-db_app::load("grid.style.css");
-db_app::load("estilos.css");
-db_app::load("classes/dbViewAvaliacoes.classe.js");
-db_app::load("widgets/windowAux.widget.js");
-db_app::load("widgets/dbmessageBoard.widget.js");
-db_app::load("dbcomboBox.widget.js");
-//c60_descr
+$iTipoTransmissao = isset($oGET->tipo_transmissao) ? (int) $oGET->tipo_transmissao : null;
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script src="scripts/widgets/DBAncora.widget.js" type="text/javascript"></script>
-<script src="scripts/widgets/dbtextField.widget.js" type="text/javascript"></script>
+	<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Expires" content="0">
+	<link href="estilos.css" rel="stylesheet" type="text/css">
+	<?php
+	db_app::load("scripts.js");
+	db_app::load("prototype.js");
+	db_app::load("datagrid.widget.js");
+	db_app::load("DBLancador.widget.js");
+	db_app::load("strings.js");
+	db_app::load("grid.style.css");
+	db_app::load("estilos.css");
+	db_app::load("AjaxRequest.js");
+	db_app::load("classes/dbViewAvaliacoes.classe.js");
+	db_app::load("widgets/windowAux.widget.js");
+	db_app::load("widgets/dbmessageBoard.widget.js");
+	db_app::load("widgets/DBDownload.widget.js");
+	db_app::load("widgets/DBAncora.widget.js");
+	db_app::load("widgets/dbtextField.widget.js");
+	db_app::load("dbcomboBox.widget.js");
+	?>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 
+<body class="body-default">
 
-<center>
+<div class="container">
 
-<form name="form1" method="post" action="">
+	<form name="form1" method="post" action="">
 
-	<fieldset style="margin-top: 50px; width: 700px;">
+		<fieldset style="width: 550px;">
 
-	<legend><strong>Regerar Arquivo OBN</strong></legend>
+			<legend>
+				<strong>
+				<?php if ($iTipoTransmissao == 3) : ?>
+				Regerar Arquivo PagFor
+				<?php else : ?>
+				Regerar Arquivo OBN
+				<?php endif ?>
+				</strong>
+			</legend>
 
-		<table border='0' align='left'>
-		  <tr> 
-		    <td  align="left" nowrap title="<?=$Te87_codgera?>"> <? db_ancora(@$Le87_codgera,"js_pesquisa_gera(true);",1);?>  </td>
-		    <td align="left" nowrap>
-				  <?
-				     db_input("e87_codgera",10,$Ie87_codgera,true,"text",1,"onchange='js_pesquisa_gera(false);'"); 
-				     db_input("e87_descgera",40,$Ie87_descgera,true,"text",3);
-				  ?>
-		    </td>
-		  </tr>
-		  <tr>
-		    <td align='left'>
-		      <b>Data geração:</b>
-		    </td>
-		    <td>
-		      <?
-		      if(!isset($dtin_dia)){
-		        $dtin_dia = date('d',db_getsession('DB_datausu'));
-		      }
-		      if(!isset($dtin_mes)){
-		        $dtin_mes = date('m',db_getsession('DB_datausu'));
-		      }
-		      if(!isset($dtin_ano)){
-		        $dtin_ano = date('Y',db_getsession('DB_datausu'));
-		      }
-		      db_inputdata('dtin',@$dtin_dia,@$dtin_mes,@$dtin_ano,true,'text',1);
-		      ?>
-		    </td>
-		  </tr>
-		  <tr>
-		    <td align='left'>
-		      <b>Autoriza pgto.:</b>
-		    </td>
-		    <td>
-		      <?
-		        db_inputdata('deposito',@$deposito_dia,@$deposito_mes,@$deposito_ano,true,'text',1);
-		      ?>
-		    </td>
-		  </tr>
-		  <tr>
-		    <td colspan="2" align="center"><br>
-		    </td>
-		  </tr>
-		</table>
+			<table border='0'>
 
-</fieldset>
+				<tr>
+					<td title="<?=$Te87_codgera?>">
+						<?php db_ancora($Le87_codgera, "js_pesquisa_gera(true);", 1) ?>
+					</td>
 
-<div style="margin-top: 10px;">
-  <input name="imprimir" type="button" id="imprimir" value="Imprimir Arquivo" onclick="js_regerarArquivo();">
+					<td>
+						<?php
+						db_input("e87_codgera", 10, $Ie87_codgera, true, "text", 1, "onchange='js_pesquisa_gera(false);'");
+						db_input("e87_descgera", 40, $Ie87_descgera, true, "text", 3);
+						?>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<label class="bold" for="data_geracao">Data de Geração:</label>
+					</td>
+
+					<td>
+						<?php
+						$iGeracaoDia = date('d', db_getsession('DB_datausu'));
+						$iGeracaoMes = date('m', db_getsession('DB_datausu'));
+						$iGeracaoAno = date('Y', db_getsession('DB_datausu'));
+						db_inputdata('data_geracao', $iGeracaoDia, $iGeracaoMes, $iGeracaoAno, true, 'text', 1);
+						?>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<label class="bold" for="data_autorizacao">Data de Autorização:</label>
+					</td>
+
+					<td>
+						<?php
+						db_inputdata('data_autorizacao', null, null, null, true, 'text', 1);
+						?>
+					</td>
+				</tr>
+
+			</table>
+
+		</fieldset>
+
+		<div style="margin-top: 10px;">
+			<input name="regerar" type="button" id="regerar" value="Regerar">
+			<input name="tipo_transmissao" id="tipo_transmissao" type="hidden" value="<?php echo $iTipoTransmissao ?>">
+		</div>
+
+	</form>
+
 </div>
 
-</form>
-
-</center>
-
-
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
-</body>
-</html>
+<?php db_menu(); ?>
 
 <script>
-var sUrlRPC = "cai4_arquivoBanco004.RPC.php";
+var PAGFOR  = <?php echo ArquivoTransmissao::TRANSMISSAO_PAGFOR ?>;
 
-function js_regerarArquivo(){
+var oInputCodigo          = $("e87_codgera");
+var oInputDescricao       = $("e87_descgera");
+var oInputDataGeracao     = $("data_geracao");
+var oInputDataAutorizacao = $("data_autorizacao");
+var iTipoTransmissao      = $F("tipo_transmissao");
 
-  var iCodGera   = $F("e87_codgera");
-  var dtGeracao  = $F("dtin");
-  var dtAutoriza = $F("deposito");
+var sUrlRPC = 'cai4_arquivoBanco004.RPC.php';
+var sMetodo = 'regerarArquivoObn';
+if (iTipoTransmissao == PAGFOR) {
 
-
-  if ( iCodGera == '' ) {
-
-	  alert('Selecione um arquivo.');
-	  return false;
-	} 
-  
-	var oParametros        = new Object();
-	var msgDiv             = "Regerando arquivo.<br>Aguarde ...";
-	oParametros.exec       = 'regerarArquivoObn';
-	oParametros.iCodGera   = iCodGera  ;
-	oParametros.dtGeracao  = js_formatar(dtGeracao , 'd') ;
-	oParametros.dtAutoriza = js_formatar(dtAutoriza, 'd');
-
-	js_divCarregando(msgDiv,'msgBox');
-
-	new Ajax.Request(sUrlRPC,
-	                        {method: "post",
-	                         parameters:'json='+Object.toJSON(oParametros),
-	                         onComplete: js_retornoRegerarArquivo
-	                        });
+	sUrlRPC = 'cai4_gerararquivoPAGFOR.RPC.php';
+	sMetodo = 'regerarArquivo';
 }
-function js_retornoRegerarArquivo(oAjax) {
 
-	  js_removeObj('msgBox');
-	  var oRetorno = eval("("+oAjax.responseText+")");
+$('regerar').observe('click', regerarArquivo);
 
-	  if (oRetorno.iStatus == '1') {
-		  
-		  var pArquivo = oRetorno.sArquivo+"# Download do Arquivo - "+ oRetorno.sArquivo;
-	    js_montarlista(pArquivo, 'form1'); 
+function regerarArquivo() {
+
+	if (oInputCodigo.value == '') {
+		return alert('O campo Código é de preenchimento obrigatório.');
+	}
+	if (oInputDataGeracao.value == '') {
+		return alert('O campo Data de Geração é de preenchimento obrigatório.');
+	}
+	if (oInputDataAutorizacao.value == '') {
+		return alert('O campo Data de Autorização é de preenchimento obrigatório.');
+	}
+
+	if (js_comparadata(oInputDataGeracao.value, oInputDataAutorizacao.value, '>')) {
+		return alert('A Data de Geração não pode ser maior que a Data da Autorização.');
+	}
+
+	var oParametros = {
+		'exec'       : sMetodo,
+		'iCodGera'   : oInputCodigo.value,
+		'dtGeracao'  : js_formatar(oInputDataGeracao.value , 'd'),
+		'dtAutoriza' : js_formatar(oInputDataAutorizacao.value, 'd')
+	};
+	new AjaxRequest(sUrlRPC, oParametros, retornoRegerarArquivo)
+	  .setMessage('Regerando arquivo. Aguarde...')
+	  .execute();
+}
+
+function retornoRegerarArquivo(oRetorno, lErro) {
+
+	if (lErro == true) {
+		return alert(oRetorno.mensagem.urlDecode());
+	}
+
+	var oDownload = new DBDownload();
+	oDownload.addFile(oRetorno.sArquivo, oRetorno.sArquivo);
+	oDownload.show();
+}
+
+function js_pesquisa_gera(mostra) {
+
+	var sUrl = 'func_empagegera.php?';
+	var sFiltroPagFor = '&lFiltroOBN=1';
+	if (iTipoTransmissao == PAGFOR) {
+		sFiltroPagFor = '&lFiltroPagFor=1';
+	}
+
+	if (mostra == true) {
+
+		sUrl += 'funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera' + sFiltroPagFor;
+		js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_empagegera', sUrl, 'Pesquisa de Arquivos Gerados', true);
+	} else {
+
+		if (oInputCodigo.value != '') {
+
+			sUrl += 'funcao_js=parent.js_mostragera&pesquisa_chave=' + oInputCodigo.value + sFiltroPagFor;
+			js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_empagegera', sUrl, 'Pesquisa', false);
 		} else {
-	    alert(oRetorno.sMessage.urlDecode());
+			oInputDescricao.value = '';
 		}
-	  
+	}
 }
 
+function js_mostragera(chave, erro) {
 
+	oInputDescricao.value = chave;
+	if (erro == true) {
 
-	
+		oInputCodigo.focus();
+		oInputCodigo.value = '';
+	}
+}
 
-//======================================pesquisa arquivo
-function js_pesquisa_gera(mostra){
-	  if(mostra==true){
-	    js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera','Pesquisa de Arquivos Gerados',true);
-	  }else{
-	     if(document.form1.e87_codgera.value != ''){ 
-	        js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?pesquisa_chave='+document.form1.e87_codgera.value+'&funcao_js=parent.js_mostragera','Pesquisa',false);
-	     }else{
-	       document.form1.e87_descgera.value = ''; 
-	     }
-	  }
-	}
-	function js_mostragera(chave,erro){
-	  document.form1.e87_descgera.value = chave; 
-	  if(erro==true){ 
-	    document.form1.e87_codgera.focus(); 
-	    document.form1.e87_codgera.value = ''; 
-	  }
-	}
-	function js_mostragera1(chave1,chave2){
-	  document.form1.e87_codgera.value = chave1;
-	  document.form1.e87_descgera.value = chave2;
-	  db_iframe_empagegera.hide();
-	}
-	//--------------------------------
+function js_mostragera1(chave1, chave2) {
+
+	oInputCodigo.value  = chave1;
+	oInputDescricao.value = chave2;
+	db_iframe_empagegera.hide();
+}
 
 </script>
+
+</body>
+</html>

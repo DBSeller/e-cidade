@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-require_once ("libs/db_utils.php");
-require_once ("classes/db_empageordemcgm_classe.php");
-require_once ("classes/db_empagenotasordem_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_empageordemcgm_classe.php"));
+require_once(modification("classes/db_empagenotasordem_classe.php"));
 
 $clEmpAgeOrdemCgm = new cl_empageordemcgm();
 $clEmpAgeNotasOrdem    = new cl_empagenotasordem();
@@ -74,6 +74,7 @@ if(pg_num_rows($rsCredorConta) > 0){
 $sCamposPagamentos  = "e50_codord,e50_data,e60_codemp,e60_anousu,e69_numero,o56_elemento,o56_descr,e53_valor,e81_valor,e60_vlremp";
 $sCamposPagamentos .= ",fc_valorretencaomov(e81_codmov,false) as valorretencao ";
 $sWherePagamentos   = "e42_sequencial = ".$oGet->e42_sequencial;
+$sWherePagamentos  .= " and ((cgmemp.z01_numcgm is not null and cgmemp.z01_numcgm = {$oCredor->z01_numcgm}) or (cgmslip.z01_numcgm is not null and cgmslip.z01_numcgm = {$oCredor->z01_numcgm}));";
 $sqlPagamentos      = $clEmpAgeNotasOrdem->sql_query_empenho(null,$sCamposPagamentos,null,$sWherePagamentos);
 
 $rsPagamentos = $clEmpAgeNotasOrdem->sql_record($sqlPagamentos);

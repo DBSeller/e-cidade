@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_libpessoal.php");
-include("libs/db_utils.php");
-include("classes/db_rhsuspensaopag_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_rhsuspensaopag_classe.php"));
 
 $oGet   = db_utils::postMemory($_GET);
 
@@ -42,7 +42,7 @@ $sWhereSuspensao  .= "AND rh101_dtdesativacao IS NULL";
 $sRhSuspensao      = $cl_rhsuspensaopag->sql_query("", $sCamposSuspensao,"",$sWhereSuspensao);
 $rsRhSuspensao     = $cl_rhsuspensaopag->sql_record($sRhSuspensao);
 $iSuspensaoNumRows = $cl_rhsuspensaopag->numrows;
-$aSuspensoes       = db_utils::getColectionByRecord($rsRhSuspensao);
+$aSuspensoes       = db_utils::getCollectionByRecord($rsRhSuspensao);
 
 $pdf    = new PDF(); 
 $head3  = "RELATÓRIO DE SUSPENSÕES ATIVAS POR PERÍODO";

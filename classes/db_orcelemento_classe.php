@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -175,19 +175,6 @@ class cl_orcelemento {
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->o56_codele,$this->o56_anousu));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,5356,'$this->o56_codele','I')");
-       $resac = db_query("insert into db_acountkey values($acount,8063,'$this->o56_anousu','I')");
-       $resac = db_query("insert into db_acount values($acount,753,5356,'','".AddSlashes(pg_result($resaco,0,'o56_codele'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,753,8063,'','".AddSlashes(pg_result($resaco,0,'o56_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,753,5357,'','".AddSlashes(pg_result($resaco,0,'o56_elemento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,753,5358,'','".AddSlashes(pg_result($resaco,0,'o56_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,753,5359,'','".AddSlashes(pg_result($resaco,0,'o56_finali'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,753,5360,'','".AddSlashes(pg_result($resaco,0,'o56_orcado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-     }
      return true;
    }
    // funcao para alteracao
@@ -272,27 +259,6 @@ class cl_orcelemento {
        $sql .= " and  o56_anousu = $this->o56_anousu";
      }
      $resaco = $this->sql_record($this->sql_query_file($this->o56_codele,$this->o56_anousu));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,5356,'$this->o56_codele','A')");
-         $resac = db_query("insert into db_acountkey values($acount,8063,'$this->o56_anousu','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o56_codele"]))
-           $resac = db_query("insert into db_acount values($acount,753,5356,'".AddSlashes(pg_result($resaco,$conresaco,'o56_codele'))."','$this->o56_codele',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o56_anousu"]))
-           $resac = db_query("insert into db_acount values($acount,753,8063,'".AddSlashes(pg_result($resaco,$conresaco,'o56_anousu'))."','$this->o56_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o56_elemento"]))
-           $resac = db_query("insert into db_acount values($acount,753,5357,'".AddSlashes(pg_result($resaco,$conresaco,'o56_elemento'))."','$this->o56_elemento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o56_descr"]))
-           $resac = db_query("insert into db_acount values($acount,753,5358,'".AddSlashes(pg_result($resaco,$conresaco,'o56_descr'))."','$this->o56_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o56_finali"]))
-           $resac = db_query("insert into db_acount values($acount,753,5359,'".AddSlashes(pg_result($resaco,$conresaco,'o56_finali'))."','$this->o56_finali',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o56_orcado"]))
-           $resac = db_query("insert into db_acount values($acount,753,5360,'".AddSlashes(pg_result($resaco,$conresaco,'o56_orcado'))."','$this->o56_orcado',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
-     }
      $result = db_query($sql);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
@@ -331,21 +297,6 @@ class cl_orcelemento {
        $resaco = $this->sql_record($this->sql_query_file($o56_codele,$o56_anousu));
      }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,"*",null,$dbwhere));
-     }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,5356,'$o56_codele','E')");
-         $resac = db_query("insert into db_acountkey values($acount,8063,'$o56_anousu','E')");
-         $resac = db_query("insert into db_acount values($acount,753,5356,'','".AddSlashes(pg_result($resaco,$iresaco,'o56_codele'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,753,8063,'','".AddSlashes(pg_result($resaco,$iresaco,'o56_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,753,5357,'','".AddSlashes(pg_result($resaco,$iresaco,'o56_elemento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,753,5358,'','".AddSlashes(pg_result($resaco,$iresaco,'o56_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,753,5359,'','".AddSlashes(pg_result($resaco,$iresaco,'o56_finali'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,753,5360,'','".AddSlashes(pg_result($resaco,$iresaco,'o56_orcado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
      }
      $sql = " delete from orcelemento
                     where ";
@@ -425,7 +376,7 @@ class cl_orcelemento {
    function sql_query ( $o56_codele=null,$o56_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -454,7 +405,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -467,7 +418,7 @@ class cl_orcelemento {
    function sql_query_file ( $o56_codele=null,$o56_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -496,7 +447,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -611,7 +562,7 @@ class cl_orcelemento {
    function sql_query_def ( $o56_codele=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -633,7 +584,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -654,7 +605,7 @@ class cl_orcelemento {
   	 }
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -678,7 +629,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -691,7 +642,7 @@ class cl_orcelemento {
    function sql_query_nov ( $o56_codele=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -713,7 +664,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -725,7 +676,7 @@ class cl_orcelemento {
    function sql_query_pcmater ( $o56_codele=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -748,7 +699,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -760,7 +711,7 @@ class cl_orcelemento {
    function sql_query_razao($o56_codele=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -791,7 +742,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -809,7 +760,7 @@ class cl_orcelemento {
   	 $inst="";
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -829,7 +780,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -847,7 +798,7 @@ class cl_orcelemento {
   	 $inst="";
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -872,7 +823,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -890,7 +841,7 @@ class cl_orcelemento {
     $inst="";
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -915,7 +866,7 @@ class cl_orcelemento {
       $sql .= $sql2;
       if($ordem != null ){
       $sql .= " order by ";
-         $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
       $sql .= $virgula.$campos_sql[$i];
@@ -931,7 +882,7 @@ class cl_orcelemento {
   	  */
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -958,7 +909,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -972,7 +923,7 @@ class cl_orcelemento {
 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1005,7 +956,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1019,7 +970,7 @@ class cl_orcelemento {
 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1044,7 +995,7 @@ class cl_orcelemento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1060,7 +1011,7 @@ class cl_orcelemento {
     $sql = "select ";
     if($campos != "*" ) {
 
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++) {
 
@@ -1085,7 +1036,7 @@ class cl_orcelemento {
     if($ordem != null ) {
 
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++) {
 
@@ -1100,7 +1051,7 @@ class cl_orcelemento {
     $sql = "select ";
     if($campos != "*" ) {
 
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++) {
 
@@ -1124,7 +1075,7 @@ class cl_orcelemento {
     if($ordem != null ) {
 
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++) {
 

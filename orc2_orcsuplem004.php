@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include("fpdf151/pdf.php");
- include("classes/db_orcsuplem_classe.php");
- include("libs/db_liborcamento.php");
+ include(modification("fpdf151/pdf.php"));
+ include(modification("classes/db_orcsuplem_classe.php"));
+ include(modification("libs/db_liborcamento.php"));
  
  $auxiliar = new cl_orcsuplem;
  $anousu = db_getsession("DB_anousu");
@@ -136,7 +136,7 @@
 		                        and o48_coddocsup > 0
                  where o47_valor > 0   
                ";  	 
-	 $result_suplem = pg_exec($sql_suplem);
+	 $result_suplem = db_query($sql_suplem);
 	 
          $sql_reduz = "select orcsuplem.o46_codlei,o47_coddot as dotred,o47_valor as reduz
 	        from orcsuplemval
@@ -146,7 +146,7 @@
 		                        and o48_coddocred > 0
                  where o47_valor < 0   
                ";  	 
-	 $result_reduz = pg_exec($sql_reduz);
+	 $result_reduz = db_query($sql_reduz);
 	 
          $sql_super = "select orcsuplem.o46_codlei,o47_coddot, o47_valor 
 	        from orcsuplemval
@@ -155,7 +155,7 @@
 	           inner join orcsuplemtipo on o48_tiposup = orcsuplem.o46_tiposup		  
 		                        and o48_superavit ='t'
                ";  	 
-	 $result_superavit = pg_exec($sql_super);
+	 $result_superavit = db_query($sql_super);
 
 
          //---

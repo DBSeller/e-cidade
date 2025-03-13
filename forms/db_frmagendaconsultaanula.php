@@ -135,10 +135,10 @@ function js_fechar() {
 
 function js_pesquisas114_i_agendaconsulta(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_agendamentos', 'func_agendamentos.php?funcao_js=parent.js_mostraagendamentos1|sd23_i_codigo|sd23_d_consulta', 'Pesquisa', true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_agendamentos', 'func_agendamentos.php?funcao_js=parent.js_mostraagendamentos1|sd23_i_codigo|sd23_d_consulta', 'Pesquisa', true);
   }else{
      if(document.form1.s114_i_agendaconsulta.value != ''){ 
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_agendamentos', 'func_agendamentos.php?pesquisa_chave='+document.form1.s114_i_agendaconsulta.value+'&funcao_js=parent.js_mostraagendamentos', 'Pesquisa', false);
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_agendamentos', 'func_agendamentos.php?pesquisa_chave='+document.form1.s114_i_agendaconsulta.value+'&funcao_js=parent.js_mostraagendamentos', 'Pesquisa', false);
      }else{
        document.form1.sd23_d_consulta.value = ''; 
      }
@@ -157,7 +157,7 @@ function js_mostraagendamentos1(chave1, chave2){
   db_iframe_agendamentos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_agendaconsultaanula', 'func_agendaconsultaanula.php?funcao_js=parent.js_preenchepesquisa|s114_i_codigo', 'Pesquisa', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_agendaconsultaanula', 'func_agendaconsultaanula.php?funcao_js=parent.js_preenchepesquisa|s114_i_codigo', 'Pesquisa', true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_agendaconsultaanula.hide();

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: pessoal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrhpesrescisao->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -156,7 +156,33 @@ $clrotulo->label("rh02_codreg");
               db_input('rh05_mremun',6,$Irh05_mremun,true,'text',3,"")
               ?>
             </td>
+            <td  align="right">
+              <label for="dataPagamento" class="bold">Data de Pagamento:</label>
+            </td>
+            <td>
+              <?php
+                  db_input('rh05_datapagamento', 10, $Irh05_datapagamento, true, 'text', 3);
+              ?>              
+            </td>
           </tr>
+
+          <tr>
+            <td nowrap title="Observações" colspan="4">
+              <table width="100%">
+                <tr>
+                  <td align="center">
+                    <fieldset>
+                      <legend><b>Observações:</b></legend>
+                       <?php
+                         db_textarea("rh05_observacao",4, 100,  $Irh05_observacao, true,null, 3)
+                       ?>                      
+                    </fieldset>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        
         </table>
       </fieldset>
     </td>
@@ -171,7 +197,7 @@ $clrotulo->label("rh02_codreg");
 function js_faltas(registro){
   qry = 'opcao=dadosrescis';
   qry+= '&seqpes='+document.form1.rh02_seqpes.value;
-  js_OpenJanelaIframe('top.corpo','db_iframe_faltas','func_scriptsdb.php?'+qry,'Pesquisa',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_faltas','func_scriptsdb.php?'+qry,'Pesquisa',false);
 }
 function js_verificadados(){
   x = document.form1;
@@ -184,18 +210,22 @@ function js_verificadados(){
 }
 function js_pesquisarh01_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoalrecis.php?testarescisao=af&funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome|rh01_admiss|rh02_seqpes|r30_proc1|r30_proc2|r30_per1f|r30_per2f|rh02_codreg|rh14_matipe|rh14_dtvinc|rh05_recis|rescindido&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoalrecis.php?testarescisao=af&funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome|rh01_admiss|rh02_seqpes|r30_proc1|r30_proc2|r30_per1f|r30_per2f|rh02_codreg|rh14_matipe|rh14_dtvinc|rh05_recis|rescindido|rh05_datapagamento|rh05_observacao&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
   }else{
      if(document.form1.rh01_regist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoalrecis.php?testarescisao=af&pesquisa_chave='+document.form1.rh01_regist.value+'&funcao_js=parent.js_mostrarhpessoal&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoalrecis.php?testarescisao=af&pesquisa_chave='+document.form1.rh01_regist.value+'&funcao_js=parent.js_mostrarhpessoal&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = '';
        document.form1.rh01_admiss_dia.value = '';
        document.form1.rh01_admiss_mes.value = '';
        document.form1.rh01_admiss_ano.value = '';
+       document.form1.rh01_admiss.value = '';
+
        document.form1.rh05_recis_dia.value  = '';
        document.form1.rh05_recis_mes.value  = '';
        document.form1.rh05_recis_ano.value  = '';
+       document.form1.rh05_recis.value  = '';
+
        document.form1.rh05_causa.value      = '';
        document.form1.r59_descr.value       = '';
        document.form1.rh05_caub.value       = '';
@@ -204,11 +234,14 @@ function js_pesquisarh01_regist(mostra){
        document.form1.rh05_aviso_dia.value  = '';
        document.form1.rh05_aviso_mes.value  = '';
        document.form1.rh05_aviso_ano.value  = '';
+       document.form1.rh05_aviso.value  = '';
        document.form1.rh05_mremun.value     = ''; 
+       document.form1.rh05_datapagamento.value = '';
+       document.form1.rh05_observacao.value = ''; 
      }
   }
 }
-function js_mostrarhpessoal(chave,chave2,chave3,chave4,chave5,chave6,chave7,chave8,chave9,chave10,chave11,chave12,erro){
+function js_mostrarhpessoal(chave,chave2,chave3,chave4,chave5,chave6,chave7,chave8,chave9,chave10,chave11,chave12, chave13, rh05_observacao, erro){
   document.form1.z01_nome.value = chave;
   if(chave11 == "" && erro == false){
     alert("Funcionário "+document.form1.rh01_regist.value+" ("+chave+") não rescindiu contrato.");
@@ -230,12 +263,21 @@ function js_mostrarhpessoal(chave,chave2,chave3,chave4,chave5,chave6,chave7,chav
     document.form1.rh01_admiss_ano.value = chave2.substring(0,4);
     document.form1.rh01_admiss_mes.value = chave2.substring(5,7);
     document.form1.rh01_admiss_dia.value = chave2.substring(8,10);
+    document.form1.rh01_admiss.value     = chave2.substring(8,10)+'/'+chave2.substring(5,7)+'/'+chave2.substring(0,4);
+
     document.form1.rh02_seqpes.value = chave3;
     document.form1.rh02_codreg.value = chave8;
+    document.form1.rh05_datapagamento.value = js_formatar(chave13, 'd');
+    if (rh05_observacao != "" || rh05_observacao != "undefined") {
+      document.form1.rh05_observacao.value = rh05_observacao.replaceAll("<quebra_linha>", "\n");
+    } else {
+      document.form1.rh05_observacao.value = '';
+    }        
+    
     js_faltas(chave);
   }
 }
-function js_mostrarhpessoal1(chave1,chave2,chave3,chave4,chave5,chave6,chave7,chave8,chave9,chave10,chave11,chave12,chave13){
+function js_mostrarhpessoal1(chave1,chave2,chave3,chave4,chave5,chave6,chave7,chave8,chave9,chave10,chave11,chave12,chave13, chave14, rh05_observacao){
   if(chave12 == ""){
     alert("Funcionário "+chave1+" ("+chave2+") não rescindiu contrato.");
     document.form1.rh01_regist.value = '';
@@ -255,8 +297,17 @@ function js_mostrarhpessoal1(chave1,chave2,chave3,chave4,chave5,chave6,chave7,ch
     document.form1.rh01_admiss_ano.value = chave3.substring(0,4);
     document.form1.rh01_admiss_mes.value = chave3.substring(5,7);
     document.form1.rh01_admiss_dia.value = chave3.substring(8,10);
+    document.form1.rh01_admiss.value     = chave3.substring(8,10)+'/'+chave3.substring(5,7)+'/'+chave3.substring(0,4);
+
     document.form1.rh02_seqpes.value = chave4;
     document.form1.rh02_codreg.value = chave9;
+    document.form1.rh05_datapagamento.value = js_formatar(chave14, 'd');
+    if (rh05_observacao != "" || rh05_observacao != "undefined") {
+      document.form1.rh05_observacao.value = rh05_observacao.replaceAll("<quebra_linha>", "\n");
+    } else {
+      document.form1.rh05_observacao.value = '';
+    }        
+    
     js_faltas(chave1);
     db_iframe_rhpessoal.hide();
   }

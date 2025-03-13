@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_notitipo_classe.php");
-require_once("classes/db_notificacao_classe.php");
-require_once("classes/db_notiusu_classe.php");
-require_once("classes/db_notidebitos_classe.php");
-require_once("classes/db_notidebitosreg_classe.php");
-require_once("classes/db_notinumcgm_classe.php");
-require_once("classes/db_notiinscr_classe.php");
-require_once("classes/db_notimatric_classe.php");
-require_once("classes/db_db_usuarios_classe.php");
-require_once("classes/db_notificadoc_classe.php");
-require_once("classes/db_notificaarretipodoc_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_notitipo_classe.php"));
+require_once(modification("classes/db_notificacao_classe.php"));
+require_once(modification("classes/db_notiusu_classe.php"));
+require_once(modification("classes/db_notidebitos_classe.php"));
+require_once(modification("classes/db_notidebitosreg_classe.php"));
+require_once(modification("classes/db_notinumcgm_classe.php"));
+require_once(modification("classes/db_notiinscr_classe.php"));
+require_once(modification("classes/db_notimatric_classe.php"));
+require_once(modification("classes/db_db_usuarios_classe.php"));
+require_once(modification("classes/db_notificadoc_classe.php"));
+require_once(modification("classes/db_notificaarretipodoc_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 
@@ -177,7 +177,7 @@ $clnotificaarretipodoc->rotulo->label();
   	  		   $sSqlReceita .= "  where k00_numpre = {$ChaveNumpre}"; 
   	  		   $sSqlReceita .= "    and k00_numpar = {$iNumpar}    ";	
   	  		   
-  	  		   $rsReceita   = pg_query($sSqlReceita) or die($sSqlReceita);
+  	  		   $rsReceita   = db_query($sSqlReceita) or die($sSqlReceita);
   	  		   $iNroReceita = pg_num_rows($rsReceita);
   	  		   
   	  		   for ( $i=0; $i < $iNroReceita; $i++ ) {
@@ -360,7 +360,7 @@ $clnotificaarretipodoc->rotulo->label();
   	  		   $sSqlReceita .= "  where k00_numpre = {$ChaveNumpre}"; 
   	  		   $sSqlReceita .= "    and k00_numpar = {$iNumpar}    ";	
   	  		   
-  	  		   $rsReceita   = pg_query($sSqlReceita) or die($sSqlReceita);
+  	  		   $rsReceita   = db_query($sSqlReceita) or die($sSqlReceita);
   	  		   $iNroReceita = pg_num_rows($rsReceita);
   	  		   
   	  		   for ( $i=0; $i < $iNroReceita; $i++ ) {
@@ -595,7 +595,7 @@ $clnotificaarretipodoc->rotulo->label();
 				  $sSqlNotiDebitos .= "    		  k00_dtvenc,								  			   ";
 				  $sSqlNotiDebitos .= "    		  arretipo.k00_descr						  			   "; 
 				 
-				  $rsNotiDebitos   = pg_query($sSqlNotiDebitos) or die($sSqlNotiDebitos);
+				  $rsNotiDebitos   = db_query($sSqlNotiDebitos) or die($sSqlNotiDebitos);
 				  $iNroNotiDebitos = pg_num_rows($rsNotiDebitos);
 
 				  if ( $iNroNotiDebitos > 0 ) {
@@ -660,7 +660,7 @@ $clnotificaarretipodoc->rotulo->label();
 				  $sSqlDebitosNovos .= "    	   arretipo.k00_descr					    			  "; 
 				  $sSqlDebitosNovos .= "  order by k00_numpre,k00_numpar 			  	    			  ";
 
-				  $rsDebitosNovos = pg_query($sSqlDebitosNovos) or die($sSqlDebitosNovos);
+				  $rsDebitosNovos = db_query($sSqlDebitosNovos) or die($sSqlDebitosNovos);
 				  $oDebitosNovos  = db_utils::fieldsMemory($rsDebitosNovos,0);	
 
          	$rsDebitosNumpre   = debitos_numpre($oDebitosNovos->k00_numpre,0,0,db_getsession("DB_datausu"),db_getsession("DB_anousu"),$oDebitosNovos->k00_numpar);

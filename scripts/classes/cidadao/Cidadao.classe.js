@@ -563,7 +563,7 @@ DBViewCidadao.Cidadao.prototype.retornoCidadao = function (oResponse, oSelf) {
   js_removeObj("msgBox");
   
   var oSelf    = this;
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   oSelf.oDadosCidadao = oRetorno;
   
   /**
@@ -757,7 +757,7 @@ DBViewCidadao.Cidadao.prototype.retornoEstados = function (oResponse, oSelf) {
   
   js_removeObj("msgBox");
   
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   var oSelf = this;
   
   oRetorno.aEstados.each(function(oEstado, iSeq) {
@@ -819,7 +819,7 @@ DBViewCidadao.Cidadao.prototype.retornoMunicipios = function (oResponse, oSelf) 
 
   js_removeObj("msgBox");
   
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   var oSelf    = this;
   
   oRetorno.aMunicipios.each(function(oMunicipio, iSeq) {
@@ -1133,7 +1133,7 @@ DBViewCidadao.Cidadao.prototype.salvar = function () {
 DBViewCidadao.Cidadao.prototype.retornoSalvar = function(oResponse, oSelf, oParametro) {
   
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   
   alert(oRetorno.sMensagem.urlDecode());
   

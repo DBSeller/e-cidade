@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010337' name='contabilidade.conlancamdepartamento' description="Departamento de origem do lancamento" prefix="c128" label="Departamento de origem do lancamento" type="0">
+  <fields>
+    <field codigo="1010080" 
+           campo_api='' 
+           name="c128_sequencial" 
+           conteudo="int4" 
+           description="Código Sequencial" 
+           inivalue="" 
+           label="Código Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='contabilidade.conlancamdepartamento_c128_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010081" 
+           campo_api='' 
+           name="c128_conlancam" 
+           conteudo="int4" 
+           description="Código do Lancamento" 
+           inivalue="" 
+           label="Código do Lancamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Lancamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010082" 
+           campo_api='' 
+           name="c128_departamento" 
+           conteudo="int4" 
+           description="Código do departamento" 
+           inivalue="" 
+           label="Código do departamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do departamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c128_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_depart" inner='t'>
+      <fieldfk name="c128_departamento" reference="coddepto" /> 
+    </foreignkey>
+    <foreignkey reference="conlancam" inner='t'>
+      <fieldfk name="c128_conlancam" reference="c70_codlan" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

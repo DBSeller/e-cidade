@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt21');
@@ -108,7 +108,7 @@ function js_emite(){
 				js_OpenJanelaIframe('','db_iframe_orgao','func_selorcdotacao.php?nivel='+iValSel+'&db_selinstit='+iInstit+'&qvernivel='+iVerNivel+'&qorgaos='+iOrgao,'pesquisa',true);
 	  	}
 		
-		} else if (top.corpo.db_iframe_orgao != undefined) {
+		} else if ((window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_orgao != undefined) {
 
 		  if (iValSel == iVerNivelVal) {
 		 	  db_iframe_orgao.show();

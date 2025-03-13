@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,15 +28,15 @@
 
 if (!isset($arqinclude)){
 
-	include("fpdf151/pdf.php");
-	include("fpdf151/assinatura.php");
-	include("libs/db_sql.php");
-	include("libs/db_libcontabilidade.php");
-	include("libs/db_liborcamento.php");
-	include("classes/db_orcparamrel_classe.php");
-	include("classes/db_conrelinfo_classe.php");
-  include("classes/db_db_config_classe.php");
-	include("dbforms/db_funcoes.php");
+	include(modification("fpdf151/pdf.php"));
+	include(modification("fpdf151/assinatura.php"));
+	include(modification("libs/db_sql.php"));
+	include(modification("libs/db_libcontabilidade.php"));
+	include(modification("libs/db_liborcamento.php"));
+	include(modification("classes/db_orcparamrel_classe.php"));
+	include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("classes/db_db_config_classe.php"));
+	include(modification("dbforms/db_funcoes.php"));
 
 	$classinatura = new cl_assinatura;
 	$orcparamrel  = new cl_orcparamrel;
@@ -63,7 +63,7 @@ if ($clconrelinfo->numrows > 0 ){
 }
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -171,12 +171,12 @@ if ($usa_datas==true) {
 
 $sele_work   = ' c61_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
 $result_01 = db_planocontassaldo_matriz($anousu,$dtini_01,$dtfin_01,false,$sele_work); 
-@pg_exec("drop table work_pl"); 
+@db_query("drop table work_pl"); 
 
 $sele_work   = ' c61_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
 $result_02 = db_planocontassaldo_matriz($anousu,$dtini_02,$dtfin_02,false,$sele_work,"",false,"true"); 
 //$result_02 = db_planocontassaldo_matriz($anousu,$dtini_02,$dtfin_02,false,$sele_work); 
-@pg_exec("drop table work_pl"); 
+@db_query("drop table work_pl"); 
 
 //db_criatabela($result_02); exit;
 

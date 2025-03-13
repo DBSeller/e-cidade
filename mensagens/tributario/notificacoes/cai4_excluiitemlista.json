@@ -1,0 +1,14 @@
+{
+  "erro_codigo_lista"        : "Código da Lista não informado.",
+  "erro_busca_itens_lista"   : "Itens da Lista não encontrados.",
+  "codigolista_obrigatorio"  : "Campo Código da lista é de preenchimento obrigatório.",
+  "carregando_itens_lista"   : "Aguarde, carregando itens da lista...",
+  "itemlista_obrigatorio"    : "Obrigatório selecionar pelo menos um item da lista.",
+  "excluindo_itens_lista"    : "Aguarde, excluindo itens da lista...",
+  "todositens_selecionados"  : "Não é permitido selecionar todos os itens da lista.",
+  "erro_busca_origem_numpre" : "Origem do Código de Arrecadação [iNumpre] não encontrado.",
+  "erro_excluir_numprenumpar": "Erro ao excluir Código de Arrecadação/Parcela [sNumpreNumpar] da lista.",
+  "sucesso_exclusao_item"    : "Itens excluídos com sucesso.",
+  "confirma_exclusao"        : "Deseja excluir os itens selecionados ?",
+  "erro_lista_prescrita"     : "Não é permitido excluir itens de uma lista prescrita."
+}

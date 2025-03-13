@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_bens_classe.php");
-include("classes/db_db_depart_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_bens_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
 $clbens = new cl_bens;
 $cldb_depart = new cl_db_depart;
 $clrotulo = new rotulocampo;
@@ -54,7 +54,7 @@ function js_abre(botao){
     alert("Informe o código do departamento");
   }else{
     if(botao=="pesquisa"){
-      js_OpenJanelaIframe('top.corpo','db_iframe_func_consbensdepart001','func_consbensdepart001.php?funcao_js=parent.js_mostrabens|t52_bem&t52_depart='+document.form1.t52_depart.value,'Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_func_consbensdepart001','func_consbensdepart001.php?funcao_js=parent.js_mostrabens|t52_bem&t52_depart='+document.form1.t52_depart.value,'Pesquisa',true);
     }else if(botao=="relatorio"){
       jan = window.open('pat2_bensdepart002.php?t52_depart='+document.form1.t52_depart.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
     }
@@ -64,7 +64,7 @@ function js_abre(botao){
 }
 function js_mostrabens(chave1){
   if(chave1 != ''){
-    js_OpenJanelaIframe('top.corpo','db_iframe_func_consbensdepart001','func_consbens001.php?t52_bem='+chave1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_func_consbensdepart001','func_consbens001.php?t52_bem='+chave1,'Pesquisa',true);
   }
 }
 </script>  
@@ -115,10 +115,10 @@ function js_mostrabens(chave1){
 //--------------------------------
 function js_pesquisa_depart(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_depart','func_db_depart.php?funcao_js=parent.js_mostradepart1|coddepto|descrdepto','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_depart','func_db_depart.php?funcao_js=parent.js_mostradepart1|coddepto|descrdepto','Pesquisa',true);
   }else{
      if(document.form1.t52_depart.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_depart','func_db_depart.php?pesquisa_chave='+document.form1.t52_depart.value+'&funcao_js=parent.js_mostradepart','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_depart','func_db_depart.php?pesquisa_chave='+document.form1.t52_depart.value+'&funcao_js=parent.js_mostradepart','Pesquisa',false);
      }else{
        document.form1.t52_depart.value = ''; 
      }
@@ -140,3 +140,9 @@ function js_mostradepart1(chave1,chave2){
 </script>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

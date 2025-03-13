@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-db_postmemory($HTTP_GET_VARS);
-db_postmemory($HTTP_POST_VARS);
+db_postmemory($_GET);
+db_postmemory($_POST);
 
 $clcontabancaria = new cl_contabancaria;
 $clcontabancaria->rotulo->label("db83_sequencial");
@@ -40,119 +40,120 @@ $clcontabancaria->rotulo->label("db83_descricao");
 $clcontabancaria->rotulo->label("db83_conta");
 $iInstituicaoSessao = db_getsession("DB_instit");
 
-if ( !isset($chave_tipo_conta) ) {
-  $chave_tipo_conta = "1";
+if (!isset($chave_tipo_conta)) {
+    $chave_tipo_conta = "1";
 }
 ?>
 <html>
-  <head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link href="estilos.css" rel="stylesheet" type="text/css">
-    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-  </head>
-  <body>
+    <script type="text/javascript" src="scripts/scripts.js"></script>
+</head>
+<body>
 <?php
 
-require_once("forms/db_frmPesquisaContaBancaria.php");
+require_once(modification("forms/db_frmPesquisaContaBancaria.php"));
 
 $aWhere = array();
 
-if ( isset($bancoagencia) && trim($bancoagencia) != '' )  {
-  $aWhere[] = "db83_bancoagencia = {$bancoagencia} ";
+if (isset($bancoagencia) && trim($bancoagencia) != '') {
+    $aWhere[] = "db83_bancoagencia = {$bancoagencia} ";
 }
 
-if ( isset($mostra_tipo_conta) && trim($mostra_tipo_conta) != '' )  {
-
-  switch ( $mostra_tipo_conta ) {
-  case "1":
-    $sWhere  = " (not exists ( select 1 from rhpessoalmovcontabancaria where rh138_contabancaria = db83_sequencial )";
-    $sWhere .= "  and ";
-    $sWhere .= "  not exists ( select 1 from pensaocontabancaria       where rh139_contabancaria = db83_sequencial )";
-    $sWhere .= "  )";
-    $aWhere[]= $sWhere;
-    break;
-  case "2":
-    $sWhere  = " (exists ( select 1 from rhpessoalmovcontabancaria where rh138_contabancaria = db83_sequencial )";
-    $sWhere .= "  or ";
-    $sWhere .= "  exists ( select 1 from pensaocontabancaria       where rh139_contabancaria = db83_sequencial )";
-    $sWhere .= "  )";
-    $aWhere[]= $sWhere;
-    break;
-  } 
+if (isset($mostra_tipo_conta) && trim($mostra_tipo_conta) != '') {
+    switch ($mostra_tipo_conta) {
+        case "1":
+            $sWhere = " (not exists ( select 1 from rhpessoalmovcontabancaria where rh138_contabancaria = db83_sequencial )";
+            $sWhere .= "  and ";
+            $sWhere .= "  not exists ( select 1 from pensaocontabancaria       where rh139_contabancaria = db83_sequencial )";
+            $sWhere .= "  )";
+            $aWhere[] = $sWhere;
+            break;
+        case "2":
+            $sWhere = " (exists ( select 1 from rhpessoalmovcontabancaria where rh138_contabancaria = db83_sequencial )";
+            $sWhere .= "  or ";
+            $sWhere .= "  exists ( select 1 from pensaocontabancaria       where rh139_contabancaria = db83_sequencial )";
+            $sWhere .= "  )";
+            $aWhere[] = $sWhere;
+            break;
+    }
 }
 
 $aWhere[] = " (c56_sequencial is null or c61_instit = {$iInstituicaoSessao}) ";
 
 $sWhere = implode(" and ", $aWhere);
 
-if(!isset($pesquisa_chave)){
-
-  if(isset($campos)==false){
-
-    if(file_exists("funcoes/db_func_contabancaria.php")==true){
-      include("funcoes/db_func_contabancaria.php");
-    }else{
-      $campos = "contabancaria.*";
+if (!isset($pesquisa_chave)) {
+    if (isset($campos) == false) {
+        if (file_exists("funcoes/db_func_contabancaria.php") == true) {
+            include(modification("funcoes/db_func_contabancaria.php"));
+        } else {
+            $campos = "contabancaria.*";
+        }
     }
-  }
-  if(isset($chave_db83_sequencial) && (trim($chave_db83_sequencial)!="") ){
-    $sql = $clcontabancaria->sql_query_planocontas(null,$campos,"db83_sequencial",$sWhere." and db83_sequencial = ".$chave_db83_sequencial);
-  }else if(isset($chave_db83_descricao) && (trim($chave_db83_descricao)!="") ){
-    $sql = $clcontabancaria->sql_query_planocontas("",$campos,"db83_descricao",$sWhere." and db83_descricao like '$chave_db83_descricao%' ");
-  } else if ( isset($chave_db83_conta) && (trim($chave_db83_conta) != "") ) {
-    $sql = $clcontabancaria->sql_query_planocontas("",$campos,"db83_conta", $sWhere." and db83_conta like '$chave_db83_conta%' ");
-  }else{
-    $sql = $clcontabancaria->sql_query_planocontas("",$campos,"db83_sequencial",$sWhere);
-  }
-  $repassa = array();
-  if(isset($chave_db83_descricao)){
-    $repassa = array("chave_db83_sequencial"=>$chave_db83_sequencial,"chave_db83_descricao"=>$chave_db83_descricao);
-  }
 
-  echo "<div class='container'>";
-  echo "  <fieldset>";
-  echo "    <legend>Resultado da Pesquisa</legend>";
-  db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
-  echo "  </fieldset>";
-  echo "</div>";
-
-}else{
-
-  if($pesquisa_chave != null && $pesquisa_chave != ""){
-
-    if(isset($tp) && $tp == 1){
-      $sWhere .= " and db83_sequencial = '".$pesquisa_chave."'";
+    $campos .= ", 'Bco: '|| db90_codban || ' Ag: ' || db89_codagencia || ' - ' || db89_digito || ' Cta: ' || db83_conta || ' - ' || db83_dvconta as db_conta";
+    if (isset($chave_db83_sequencial) && (trim($chave_db83_sequencial) != "")) {
+        $sql = $clcontabancaria->sql_query_planocontas(null, $campos, "db83_sequencial", $sWhere . " and db83_sequencial = " . $chave_db83_sequencial);
+    } else if (isset($chave_db83_descricao) && (trim($chave_db83_descricao) != "")) {
+        $sql = $clcontabancaria->sql_query_planocontas("", $campos, "db83_descricao", $sWhere . " and db83_descricao like '$chave_db83_descricao%' ");
+    } else if (isset($chave_db83_conta) && (trim($chave_db83_conta) != "")) {
+        $sql = $clcontabancaria->sql_query_planocontas("", $campos, "db83_conta", $sWhere . " and db83_conta like '$chave_db83_conta%' ");
     } else {
-      $sWhere .= " and db83_conta = '".$pesquisa_chave."'";
+        $sql = $clcontabancaria->sql_query_planocontas("", $campos, "db83_sequencial", $sWhere);
     }
 
-    $sSql   = $clcontabancaria->sql_query_planocontas(null,"*",null,$sWhere);
-
-    $result = $clcontabancaria->sql_record($sSql);
-
-    if($clcontabancaria->numrows != 0){
-
-      db_fieldsmemory($result,0);
-
-      if (isset($lImplantacao) && $lImplantacao == 1) {
-        echo "<script>".$funcao_js."('$db83_descricao',false);</script>";
-      } else {
-
-        echo "<script>".$funcao_js."(false,'$db83_conta','$db83_dvconta','$db83_identificador','$db83_codigooperacao','$db83_tipoconta','$db83_bancoagencia','$db83_sequencial');</script>";
-      }
-
-    }else{
-
-      echo "<script>".$funcao_js."(true,'','','','','','','');</script>";
+    $repassa = array();
+    if (isset($chave_db83_descricao)) {
+        $repassa = array("chave_db83_sequencial" => $chave_db83_sequencial, "chave_db83_descricao" => $chave_db83_descricao);
     }
 
-  } else {
-    echo "<script>".$funcao_js."(false,'','','','','','','');</script>";
-  }
+    echo "<div class='container'>";
+    echo "  <fieldset>";
+    echo "    <legend>Resultado da Pesquisa</legend>";
+    db_lovrot($sql, 15, "()", "", $funcao_js, "", "NoMe", $repassa);
+    echo "  </fieldset>";
+    echo "</div>";
+} else {
+    if ($pesquisa_chave != null && $pesquisa_chave != "") {
+        if (isset($tp) && $tp == 1) {
+            $sWhere .= " and db83_sequencial = '" . $pesquisa_chave . "'";
+        } else {
+            $sWhere .= " and db83_conta = '" . $pesquisa_chave . "'";
+        }
+
+        $sSql = $clcontabancaria->sql_query_planocontas(null, "*", null, $sWhere);
+
+        $result = $clcontabancaria->sql_record($sSql);
+
+        if ($clcontabancaria->numrows != 0) {
+
+            db_fieldsmemory($result, 0);
+
+            if (isset($lImplantacao) && $lImplantacao == 1) {
+                echo "<script>" . $funcao_js . "('$db83_descricao',false);</script>";
+            } else {
+                echo "<script>" . $funcao_js . "(false,'$db83_conta','$db83_dvconta','$db83_identificador','$db83_codigooperacao','$db83_tipoconta','$db83_bancoagencia','$db83_sequencial');</script>";
+            }
+        } else {
+            echo "<script>" . $funcao_js . "(true,'','','','','','','');</script>";
+        }
+    } else {
+        echo "<script>" . $funcao_js . "(false,'','','','','','','');</script>";
+    }
 }
 ?>
 <script>
-js_tabulacaoforms("form2","chave_db83_descricao",true,1,"chave_db83_descricao",true);
+    js_tabulacaoforms("form2", "chave_db83_descricao", true, 1, "chave_db83_descricao", true);
 </script>
 </body>
 </html>
+
+<script type="text/javascript">
+    (function () {
+        var query = frameElement.getAttribute('name').replace('IF', ''),
+            input = document.querySelector('input[value="Fechar"]');
+        input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+    })();
+</script>

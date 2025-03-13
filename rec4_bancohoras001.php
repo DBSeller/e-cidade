@@ -1,7 +1,7 @@
 <?php
-/*
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_utils.php");
-  require_once("libs/db_app.utils.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("classes/db_bancohoras_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_bancohoras_classe.php"));
 
-  $clBancoHoras = new cl_bancohoras();
-  $clBancoHoras->rotulo->label();
-  $clrotulo = new rotulocampo();
-  $clrotulo->label("z01_nome");
-  $clrotulo->label("rh126_regist");
-  $clrotulo->label("rh126_soma");
-  $clrotulo->label("rh126_data");
-  $clrotulo->label("rh126_horas");
-  $clrotulo->label("rh126_observacao");
+$clBancoHoras = new cl_bancohoras();
+$clBancoHoras->rotulo->label();
+$clrotulo = new rotulocampo();
+$clrotulo->label("z01_nome");
+$clrotulo->label("rh126_regist");
+$clrotulo->label("rh126_soma");
+$clrotulo->label("rh126_data");
+$clrotulo->label("rh126_horas");
+$clrotulo->label("rh126_observacao");
 
-  $db_opcao = 1;
+$db_opcao = 1;
 ?>
 
 <html>
@@ -337,7 +337,7 @@
 
         js_removeObj('msgbox');
 
-        var oRetorno = eval("("+oAjax.responseText+")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.iStatus == "2") {
 
           alert(oRetorno.sMensagem.urlDecode());
@@ -376,7 +376,7 @@
              oDadosRequisicaoSaldo.parameters   = 'json='+Object.toJSON(oParametros);
              oDadosRequisicaoSaldo.onComplete   = function(oAjax){
 
-               var oRetorno = eval("("+oAjax.responseText+")");
+               var oRetorno = JSON.parse(oAjax.responseText);
                if (oRetorno.status == "2") {
 
                   alert(oRetorno.message.urlDecode());
@@ -405,7 +405,7 @@
       oDadosRequisicao.parameters   = 'json='+Object.toJSON(oParametros);
       oDadosRequisicao.onComplete   = function(oAjax){
 
-        var oRetorno = eval("("+oAjax.responseText+")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.iStatus == "2") {
 
           alert(oRetorno.sMensagem.urlDecode());
@@ -452,7 +452,7 @@
       oDadosRequisicao.parameters   = 'json='+Object.toJSON(oParametros);
       oDadosRequisicao.onComplete   = function(oAjax){
 
-        var oRetorno = eval("("+oAjax.responseText+")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.iStatus == "2") {
 
           alert(oRetorno.sMensagem.urlDecode());
@@ -470,11 +470,11 @@
     $('rh126_regist').onkeyup = new Event(Event.CHANGE);
 
     if( mostra == true ){
-      js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostraServidor1|rh01_regist|z01_nome&sAtivos=A','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?filtro_lotacao=true&funcao_js=parent.js_mostraServidor1|rh01_regist|z01_nome&sAtivos=A','Pesquisa',true);
     }else{
 
       if($F('rh126_regist') != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+$F('rh126_regist')+'&funcao_js=parent.js_mostraServidor&sAtivos=A','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?filtro_lotacao=true&pesquisa_chave='+$F('rh126_regist')+'&funcao_js=parent.js_mostraServidor&sAtivos=A','Pesquisa',false);
       }else{
         $('z01_nome').value = '';
       }

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/exceptions/ParameterException.php");
-require_once("model/issqn/alvara/MovimentacaoAlvara.model.php");
+require_once(modification("libs/exceptions/ParameterException.php"));
+require_once(modification("model/issqn/alvara/MovimentacaoAlvara.model.php"));
 
 /**
  * Fabrica de instancias de movimentacoes de alvara
@@ -81,14 +81,14 @@ abstract class MovimentacaoAlvaraFactory {
 
        case MovimentacaoAlvara::TIPO_LIBERACAO :
          
-         require_once 'model/issqn/alvara/LiberacaoAlvara.model.php';
+         require_once modification("model/issqn/alvara/LiberacaoAlvara.model.php");
          $oMovimentacao = new LiberacaoAlvara($iCodigo);
 
        break;
 
        case MovimentacaoAlvara::TIPO_BAIXA :
 
-         require_once 'model/issqn/alvara/BaixaAlvara.model.php';
+         require_once modification("model/issqn/alvara/BaixaAlvara.model.php");
          $oMovimentacao = new BaixaAlvara($iCodigo);
 
        break;
@@ -98,21 +98,21 @@ abstract class MovimentacaoAlvaraFactory {
        case MovimentacaoAlvara::TIPO_CANCELAMENTO_RENOVACAO :
        case MovimentacaoAlvara::TIPO_CANCELAMENTO :
 
-         require_once 'model/issqn/alvara/CancelamentoAlvara.model.php';
+         require_once modification("model/issqn/alvara/CancelamentoAlvara.model.php");
          $oMovimentacao = new CancelamentoAlvara($iCodigo);
 
        break;
 
        case MovimentacaoAlvara::TIPO_RENOVACAO :
 
-         require_once 'model/issqn/alvara/RenovacaoAlvara.model.php';
+         require_once modification("model/issqn/alvara/RenovacaoAlvara.model.php");
          $oMovimentacao = new RenovacaoAlvara($iCodigo);
 
        break;
 
        case MovimentacaoAlvara::TIPO_TRANSFORMACAO :
 
-         require_once 'model/issqn/alvara/TransformacaoAlvara.model.php';
+         require_once modification("model/issqn/alvara/TransformacaoAlvara.model.php");
          $oMovimentacao = new TransformacaoAlvara($iCodigo);
 
        break;

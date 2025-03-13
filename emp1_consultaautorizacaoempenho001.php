@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_liborcamento.php");
-require_once("classes/db_empempenho_classe.php");
-require_once("classes/db_orcdotacao_classe.php");
-require_once("classes/db_pcmater_classe.php");
-require_once("classes/db_cgm_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("classes/db_empempenho_classe.php"));
+require_once(modification("classes/db_orcdotacao_classe.php"));
+require_once(modification("classes/db_pcmater_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
 
 $oDaoEmpEmpenho  = db_utils::getDao('empempenho');
 $oDaoOrcDotacao  = db_utils::getDao('orcdotacao');
@@ -160,7 +160,7 @@ $("btnPesquisaEmpenho").observe("click", function () {
   sUrlRelatorio     += "&iCodigoDotacao="+$F("o58_coddot")+"&iCodigoMaterial="+$F("pc01_codmater");
   sUrlRelatorio     += "&iCodigoFornecedor="+$F("z01_numcgm")+"&iCodigoAutorizacao="+$F("e54_autori");
   sUrlRelatorio     += "&dtDataInicial="+$F("e60_emiss1")+"&dtDataFinal="+$F("e60_emiss2");
-  js_OpenJanelaIframe('top.corpo','db_iframe_consultaautorizacaoempenho003', sUrlRelatorio, 'Consulta Empenho',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consultaautorizacaoempenho003', sUrlRelatorio, 'Consulta Empenho',true);
   
 });
 
@@ -172,7 +172,7 @@ function js_pesquisaAutorizacao (lMostra) {
   if (lMostra) {
     sUrlOpen = "func_empautoriza.php?funcao_js=parent.js_preencheAutorizacao|e54_autori";
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_empautoriza', sUrlOpen, 'Pesquisa Autorização', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_empautoriza', sUrlOpen, 'Pesquisa Autorização', lMostra);
 }
 function js_preencheAutorizacao (iCodigo, sDescricao) {
   
@@ -193,7 +193,7 @@ function js_pesquisaFornecedor (lMostra) {
   if (lMostra) {
     sUrlOpen = "func_cgm_empenho.php?funcao_js=parent.js_preencheFornecedor|e60_numcgm|z01_nome";
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_cgm', sUrlOpen, 'Pesquisa Material', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_cgm', sUrlOpen, 'Pesquisa Material', lMostra);
 }
 function js_preencheFornecedor (iCodigo, sDescricao) {
   
@@ -216,7 +216,7 @@ function js_pesquisaMaterial (lMostra) {
   if (lMostra) {
     sUrlOpen = "func_pcmater.php?funcao_js=parent.js_preencheMaterial|pc01_codmater|pc01_descrmater";
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_pcmater', sUrlOpen, 'Pesquisa Material', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_pcmater', sUrlOpen, 'Pesquisa Material', lMostra);
 }
 function js_preencheMaterial (iCodigo, sDescricao) {
   
@@ -239,7 +239,7 @@ function js_pesquisaReduzido (lMostra) {
   if (lMostra) {
     sUrlOpen = "func_orcdotacao.php?funcao_js=parent.js_preencheReduzido|o58_coddot|o56_descr";
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_orcdotacao', sUrlOpen, 'Pesquisa Reduzido Dotação', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orcdotacao', sUrlOpen, 'Pesquisa Reduzido Dotação', lMostra);
 }
 function js_preencheReduzido (iCodigoReduzido, sDescricao) {
   

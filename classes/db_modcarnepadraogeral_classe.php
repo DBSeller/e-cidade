@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -154,7 +154,7 @@ class cl_modcarnepadraogeral {
        return false;
      }
      if($k48_sequencial == "" || $k48_sequencial == null ){
-       $result = @pg_query("select nextval('modcarnepadraogeral_k48_sequencial_seq')"); 
+       $result = @db_query("select nextval('modcarnepadraogeral_k48_sequencial_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: modcarnepadraogeral_k48_sequencial_seq do campo: k48_sequencial"; 
@@ -165,7 +165,7 @@ class cl_modcarnepadraogeral {
        }
        $this->k48_sequencial = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from modcarnepadraogeral_k48_sequencial_seq");
+       $result = @db_query("select last_value from modcarnepadraogeral_k48_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $k48_sequencial)){
          $this->erro_sql = " Campo k48_sequencial maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -201,7 +201,7 @@ class cl_modcarnepadraogeral {
                                ,".($this->k48_dataini == "null" || $this->k48_dataini == ""?"null":"'".$this->k48_dataini."'")." 
                                ,".($this->k48_datafim == "null" || $this->k48_datafim == ""?"null":"'".$this->k48_datafim."'")." 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -227,15 +227,15 @@ class cl_modcarnepadraogeral {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->k48_sequencial));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,8881,'$this->k48_sequencial','I')");
-       $resac = pg_query("insert into db_acount values($acount,1516,8881,'','".AddSlashes(pg_result($resaco,0,'k48_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1516,8882,'','".AddSlashes(pg_result($resaco,0,'k48_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1516,8883,'','".AddSlashes(pg_result($resaco,0,'k48_cadmodcarne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1516,8884,'','".AddSlashes(pg_result($resaco,0,'k48_cadtipomod'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1516,8885,'','".AddSlashes(pg_result($resaco,0,'k48_dataini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1516,8886,'','".AddSlashes(pg_result($resaco,0,'k48_datafim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,8881,'$this->k48_sequencial','I')");
+       $resac = db_query("insert into db_acount values($acount,1516,8881,'','".AddSlashes(pg_result($resaco,0,'k48_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1516,8882,'','".AddSlashes(pg_result($resaco,0,'k48_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1516,8883,'','".AddSlashes(pg_result($resaco,0,'k48_cadmodcarne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1516,8884,'','".AddSlashes(pg_result($resaco,0,'k48_cadtipomod'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1516,8885,'','".AddSlashes(pg_result($resaco,0,'k48_dataini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1516,8886,'','".AddSlashes(pg_result($resaco,0,'k48_datafim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -357,24 +357,24 @@ class cl_modcarnepadraogeral {
      $resaco = $this->sql_record($this->sql_query_file($this->k48_sequencial));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,8881,'$this->k48_sequencial','A')");
+         $resac = db_query("insert into db_acountkey values($acount,8881,'$this->k48_sequencial','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["k48_sequencial"]))
-           $resac = pg_query("insert into db_acount values($acount,1516,8881,'".AddSlashes(pg_result($resaco,$conresaco,'k48_sequencial'))."','$this->k48_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1516,8881,'".AddSlashes(pg_result($resaco,$conresaco,'k48_sequencial'))."','$this->k48_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["k48_instit"]))
-           $resac = pg_query("insert into db_acount values($acount,1516,8882,'".AddSlashes(pg_result($resaco,$conresaco,'k48_instit'))."','$this->k48_instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1516,8882,'".AddSlashes(pg_result($resaco,$conresaco,'k48_instit'))."','$this->k48_instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["k48_cadmodcarne"]))
-           $resac = pg_query("insert into db_acount values($acount,1516,8883,'".AddSlashes(pg_result($resaco,$conresaco,'k48_cadmodcarne'))."','$this->k48_cadmodcarne',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1516,8883,'".AddSlashes(pg_result($resaco,$conresaco,'k48_cadmodcarne'))."','$this->k48_cadmodcarne',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["k48_cadtipomod"]))
-           $resac = pg_query("insert into db_acount values($acount,1516,8884,'".AddSlashes(pg_result($resaco,$conresaco,'k48_cadtipomod'))."','$this->k48_cadtipomod',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1516,8884,'".AddSlashes(pg_result($resaco,$conresaco,'k48_cadtipomod'))."','$this->k48_cadtipomod',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["k48_dataini"]))
-           $resac = pg_query("insert into db_acount values($acount,1516,8885,'".AddSlashes(pg_result($resaco,$conresaco,'k48_dataini'))."','$this->k48_dataini',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1516,8885,'".AddSlashes(pg_result($resaco,$conresaco,'k48_dataini'))."','$this->k48_dataini',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["k48_datafim"]))
-           $resac = pg_query("insert into db_acount values($acount,1516,8886,'".AddSlashes(pg_result($resaco,$conresaco,'k48_datafim'))."','$this->k48_datafim',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1516,8886,'".AddSlashes(pg_result($resaco,$conresaco,'k48_datafim'))."','$this->k48_datafim',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Modelo padrão para a instituição nao Alterado. Alteracao Abortada.\\n";
@@ -415,15 +415,15 @@ class cl_modcarnepadraogeral {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,8881,'$k48_sequencial','E')");
-         $resac = pg_query("insert into db_acount values($acount,1516,8881,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1516,8882,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1516,8883,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_cadmodcarne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1516,8884,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_cadtipomod'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1516,8885,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_dataini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1516,8886,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_datafim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,8881,'$k48_sequencial','E')");
+         $resac = db_query("insert into db_acount values($acount,1516,8881,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1516,8882,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1516,8883,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_cadmodcarne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1516,8884,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_cadtipomod'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1516,8885,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_dataini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1516,8886,'','".AddSlashes(pg_result($resaco,$iresaco,'k48_datafim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from modcarnepadraogeral
@@ -439,7 +439,7 @@ class cl_modcarnepadraogeral {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Modelo padrão para a instituição nao Excluído. Exclusão Abortada.\\n";
@@ -473,7 +473,7 @@ class cl_modcarnepadraogeral {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

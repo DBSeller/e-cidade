@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_rhpesdoc_classe.php");
-require_once("classes/db_db_uf_classe.php");
+require_once(modification("classes/db_rhpesdoc_classe.php"));
+require_once(modification("classes/db_db_uf_classe.php"));
 
 $oDaoDb_uf    = new cl_db_uf;
 $oDaoRhPesDoc = new cl_rhpesdoc(); 
@@ -44,16 +44,17 @@ $oDaoDb_uf->rotulo->label();
 
 $db_opcao     = 2;
 
-rotulocampo::label('rh16_regist');
-rotulocampo::label('z01_cgccpf ');
-rotulocampo::label('rh16_titele');
-rotulocampo::label('rh16_secaoe');
-rotulocampo::label('rh16_zonael');
-rotulocampo::label('rh16_reserv');
-rotulocampo::label('rh16_ctps_n');
-rotulocampo::label('rh16_ctps_s');
-rotulocampo::label('rh16_ctps_d');
-rotulocampo::label('rh16_catres');
+$oRotulos = new rotulocampo();
+$oRotulos->label('rh16_regist');
+$oRotulos->label('z01_cgccpf ');
+$oRotulos->label('rh16_titele');
+$oRotulos->label('rh16_secaoe');
+$oRotulos->label('rh16_zonael');
+$oRotulos->label('rh16_reserv');
+$oRotulos->label('rh16_ctps_n');
+$oRotulos->label('rh16_ctps_s');
+$oRotulos->label('rh16_ctps_d');
+$oRotulos->label('rh16_catres');
 
 // Objeto com os itens do array ($_GET)
 $oGet  = db_utils::postMemory($_GET);
@@ -294,7 +295,7 @@ function js_salvar() {
 function js_retornoDocumentos(oAjax) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     // se o retorno do csv "status" for 1, significa que nao ocorreram erros e exibimos a opção de download
     

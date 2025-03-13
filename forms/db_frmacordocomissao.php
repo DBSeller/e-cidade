@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_utils.php"));
 
-require_once("classes/db_acordocomissao_classe.php");
-require_once("classes/db_acordocomissaomembro_classe.php");
+require_once(modification("classes/db_acordocomissao_classe.php"));
+require_once(modification("classes/db_acordocomissaomembro_classe.php"));
 
-require_once("model/AcordoComissao.model.php");
-require_once("model/AcordoComissaoMembro.model.php");
+require_once(modification("model/AcordoComissao.model.php"));
+require_once(modification("model/AcordoComissaoMembro.model.php"));
 
 
 //MODULO: Acordos
@@ -109,7 +109,7 @@ $clacordocomissao->rotulo->label();
 
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_acordocomissao','db_iframe_acordocomissao','func_acordocomissao.php?funcao_js=parent.js_preenchepesquisa|ac08_sequencial','Pesquisa',true,'0','1');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordocomissao','db_iframe_acordocomissao','func_acordocomissao.php?funcao_js=parent.js_preenchepesquisa|ac08_sequencial','Pesquisa',true,'0','1');
 }
 
 function js_preenchepesquisa(chave){

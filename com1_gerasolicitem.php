@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_solicitem_classe.php");
-require_once("classes/db_solicitemprot_classe.php");
-require_once("classes/db_solicita_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_pcorcamitemsol_classe.php");
-require_once("classes/db_solandam_classe.php");
-require_once("classes/db_solandpadraodepto_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_solicitem_classe.php"));
+require_once(modification("classes/db_solicitemprot_classe.php"));
+require_once(modification("classes/db_solicita_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_pcorcamitemsol_classe.php"));
+require_once(modification("classes/db_solandam_classe.php"));
+require_once(modification("classes/db_solandpadraodepto_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_GET_VARS);
 $clsolicitem         = new cl_solicitem;
@@ -113,14 +113,14 @@ function js_retornocampo(oCampo) {
 
   if (oCampo.checked) {
 
-    if (top.corpo.arr_dados.indexOf(oCampo.name) == -1) {
-      top.corpo.arr_dados.push(oCampo.name);
+    if ((window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.indexOf(oCampo.name) == -1) {
+      (window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.push(oCampo.name);
     }
   } else {
-    top.corpo.arr_dados.remove(oCampo.name);
+    (window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.remove(oCampo.name);
   }
 
-  top.corpo.document.form1.valores.value = top.corpo.arr_dados.valueOf();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.document.form1.valores.value = (window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.valueOf();
 }
 
 function js_setornosetimp(campo,SN){
@@ -129,9 +129,9 @@ function js_setornosetimp(campo,SN){
 
   if (SN == true) {
 
-    for (i = 0;i < top.corpo.arr_impor.length; i++ ){
+    for (i = 0;i < (window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor.length; i++ ){
 
-      if (top.corpo.arr_impor[i] == campo) {
+      if ((window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor[i] == campo) {
 
  	      cont++;
 	      break;
@@ -144,15 +144,15 @@ function js_setornosetimp(campo,SN){
   if (eval('document.form1.' + campo + '.checked') == true) {
 
     if (cont == 0) {
-      top.corpo.arr_impor.push(campo);
+      (window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor.push(campo);
     }
   } else {
 
     if (cont > 0) {
-      top.corpo.arr_impor.splice(i,1);
+      (window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor.splice(i,1);
     }
   }
-  top.corpo.document.form1.importa.value = top.corpo.arr_impor.valueOf();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.document.form1.importa.value = (window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor.valueOf();
 }
 
 function js_marcacampos() {
@@ -161,18 +161,18 @@ function js_marcacampos() {
   campo = "";
   for(i=0;i<document.form1.length;i++){
     if(document.form1.elements[i].type == 'checkbox' && document.form1.elements[i].name.search('imp')==-1){
-      if(top.corpo.document.form1.valores.value.search(document.form1.elements[i].name)!=-1){
+      if((window.CurrentWindow || parent.CurrentWindow).corpo.document.form1.valores.value.search(document.form1.elements[i].name)!=-1){
         document.form1.elements[i].checked = true;
       	campo = document.form1.elements[i].name;
-      	for(ii=0;ii<top.corpo.arr_dados.length;ii++){
-      	  if(top.corpo.arr_dados[ii]==campo){
+      	for(ii=0;ii<(window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.length;ii++){
+      	  if((window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados[ii]==campo){
       	    erro++;
       	    break;
       	  }
       	}
 
       	if(erro==0 && campo!=""){
-      	  top.corpo.arr_dados.push(campo);
+      	  (window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.push(campo);
       	}
       }
     }
@@ -182,7 +182,7 @@ function js_marcacampos() {
 function js_marcacamposimp(){
   for(i=0;i<document.form1.length;i++){
     if(document.form1.elements[i].type == 'checkbox'){
-      if(top.corpo.document.form1.importa.value.search(document.form1.elements[i].name)!=-1){
+      if((window.CurrentWindow || parent.CurrentWindow).corpo.document.form1.importa.value.search(document.form1.elements[i].name)!=-1){
         document.form1.elements[i].checked = true;
       }
     }
@@ -259,7 +259,7 @@ function js_marcar(){
     } else {
 
       echo "<center>";
-      echo "<table border='0' cellpadding='0' cellspacing='0' align='center' style='border:2px inset white'>\n";
+      echo "<table id='girdItensSolicitacaobody' border='0' cellpadding='0' cellspacing='0' align='center' style='border:2px inset white'>\n";
       echo "<tr bgcolor='' class='trcabecalhotabela'>\n";
       echo "  <td nowrap class='tdcabecalhotabela' align='center'><strong>";db_ancora('M','js_marcar();',1);echo"</strong></td>\n";
       echo "  <td nowrap class='tdcabecalhotabela' align='center'><strong>Item</strong></td>\n";
@@ -438,7 +438,7 @@ x.pc11_codigo,
 	//--------------------------------------------------------------------------------------------------------------------------------------
 
         echo "<tr class='trconteudotabela'>\n";
-	      echo "  <td nowrap class='tdconteudotabela'><input type='checkbox' $readonly  name='item_".$pc11_numero."_".$pc11_codigo."' onclick='js_retornocampo(this);'></td>\n";
+	      echo "  <td nowrap class='checkbox tdconteudotabela'><input type='checkbox' $readonly  name='item_".$pc11_numero."_".$pc11_codigo."' onclick='js_retornocampo(this);'></td>\n";
         echo "  <td nowrap class='tdconteudotabela' align='center'>$pc11_seq</td>\n";
       	echo "  <td class='tdconteudotabela' align='left'>  ".ucfirst(mb_strtolower($pc01_descrmater))."</td>\n";
       	echo "  <td nowrap class='tdconteudotabela' align='center'>" . (empty($m61_descr) ? "&nbsp;" : $m61_descr) . "</td>\n";

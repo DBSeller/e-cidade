@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 $db_anousu= db_getsession("DB_anousu");
 $sql="select j01_matric,
              z01_nome,
@@ -37,7 +37,7 @@ $sql="select j01_matric,
            inner join cgm on z01_numcgm = j01_numcgm
 	  order by $ordem
 ";
-$result=pg_query($sql);
+$result=db_query($sql);
 if(pg_numrows($result)==0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem matrículas Calculadas: Exercício:'.$db_anousu);
 }else{
@@ -100,7 +100,7 @@ for($i = 0;$i < pg_numrows($result);$i++){
                   from iptucalv 
 				  where j21_matric = $j01_matric and j21_anousu = $db_anousu
 				  group by j21_receit";
-  $resultv = pg_query($sql);
+  $resultv = db_query($sql);
   $vlriptu = 0;
   $vlrlimpeza = 0;
   $vlrbombeiro = 0;

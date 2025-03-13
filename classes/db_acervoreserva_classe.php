@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -148,7 +148,7 @@ class cl_acervoreserva {
        $this->bi20_retirada = "null";
      }
      if($bi20_codigo == "" || $bi20_codigo == null ){
-       $result = @pg_query("select nextval('acervoreserva_bi20_codigo_seq')"); 
+       $result = @db_query("select nextval('acervoreserva_bi20_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: acervoreserva_bi20_codigo_seq do campo: bi20_codigo"; 
@@ -159,7 +159,7 @@ class cl_acervoreserva {
        }
        $this->bi20_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from acervoreserva_bi20_codigo_seq");
+       $result = @db_query("select last_value from acervoreserva_bi20_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $bi20_codigo)){
          $this->erro_sql = " Campo bi20_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -195,7 +195,7 @@ class cl_acervoreserva {
                                ,'$this->bi20_hora' 
                                ,".($this->bi20_retirada == "null" || $this->bi20_retirada == ""?"null":"'".$this->bi20_retirada."'")." 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -221,15 +221,15 @@ class cl_acervoreserva {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->bi20_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,1008157,'$this->bi20_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,1008025,1008157,'','".AddSlashes(pg_result($resaco,0,'bi20_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1008025,1008927,'','".AddSlashes(pg_result($resaco,0,'bi20_reserva'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1008025,1008928,'','".AddSlashes(pg_result($resaco,0,'bi20_acervo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1008025,1008946,'','".AddSlashes(pg_result($resaco,0,'bi20_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1008025,1008947,'','".AddSlashes(pg_result($resaco,0,'bi20_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1008025,1008948,'','".AddSlashes(pg_result($resaco,0,'bi20_retirada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,1008157,'$this->bi20_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,1008025,1008157,'','".AddSlashes(pg_result($resaco,0,'bi20_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1008025,1008927,'','".AddSlashes(pg_result($resaco,0,'bi20_reserva'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1008025,1008928,'','".AddSlashes(pg_result($resaco,0,'bi20_acervo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1008025,1008946,'','".AddSlashes(pg_result($resaco,0,'bi20_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1008025,1008947,'','".AddSlashes(pg_result($resaco,0,'bi20_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1008025,1008948,'','".AddSlashes(pg_result($resaco,0,'bi20_retirada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -333,24 +333,24 @@ class cl_acervoreserva {
      $resaco = $this->sql_record($this->sql_query_file($this->bi20_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,1008157,'$this->bi20_codigo','A')");
+         $resac = db_query("insert into db_acountkey values($acount,1008157,'$this->bi20_codigo','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["bi20_codigo"]))
-           $resac = pg_query("insert into db_acount values($acount,1008025,1008157,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_codigo'))."','$this->bi20_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1008025,1008157,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_codigo'))."','$this->bi20_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["bi20_reserva"]))
-           $resac = pg_query("insert into db_acount values($acount,1008025,1008927,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_reserva'))."','$this->bi20_reserva',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1008025,1008927,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_reserva'))."','$this->bi20_reserva',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["bi20_acervo"]))
-           $resac = pg_query("insert into db_acount values($acount,1008025,1008928,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_acervo'))."','$this->bi20_acervo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1008025,1008928,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_acervo'))."','$this->bi20_acervo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["bi20_data"]))
-           $resac = pg_query("insert into db_acount values($acount,1008025,1008946,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_data'))."','$this->bi20_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1008025,1008946,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_data'))."','$this->bi20_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["bi20_hora"]))
-           $resac = pg_query("insert into db_acount values($acount,1008025,1008947,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_hora'))."','$this->bi20_hora',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1008025,1008947,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_hora'))."','$this->bi20_hora',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["bi20_retirada"]))
-           $resac = pg_query("insert into db_acount values($acount,1008025,1008948,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_retirada'))."','$this->bi20_retirada',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1008025,1008948,'".AddSlashes(pg_result($resaco,$conresaco,'bi20_retirada'))."','$this->bi20_retirada',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Acervos da Reserva nao Alterado. Alteracao Abortada.\\n";
@@ -391,15 +391,15 @@ class cl_acervoreserva {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,1008157,'$bi20_codigo','E')");
-         $resac = pg_query("insert into db_acount values($acount,1008025,1008157,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1008025,1008927,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_reserva'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1008025,1008928,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_acervo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1008025,1008946,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1008025,1008947,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1008025,1008948,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_retirada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,1008157,'$bi20_codigo','E')");
+         $resac = db_query("insert into db_acount values($acount,1008025,1008157,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008025,1008927,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_reserva'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008025,1008928,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_acervo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008025,1008946,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008025,1008947,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008025,1008948,'','".AddSlashes(pg_result($resaco,$iresaco,'bi20_retirada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from acervoreserva
@@ -415,7 +415,7 @@ class cl_acervoreserva {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Acervos da Reserva nao Excluído. Exclusão Abortada.\\n";
@@ -449,7 +449,7 @@ class cl_acervoreserva {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

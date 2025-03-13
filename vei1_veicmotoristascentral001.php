@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_veicmotoristascentral_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_veicmotoristascentral_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -111,7 +111,11 @@ if(isset($incluir)){
   if ($sqlerro == false){
     $clveicmotoristascentral->ve41_veicmotoristas = $ve41_veicmotoristas;
     $clveicmotoristascentral->ve41_veiccadcentral = $ve41_veiccadcentral;
-    $clveicmotoristascentral->ve41_dtini          = $ve41_dtini_ano."-".$ve41_dtini_mes."-".$ve41_dtini_dia;
+    if (isset($ve41_dtini_dia) && trim($ve41_dtini_dia) != ""){
+      $clveicmotoristascentral->ve41_dtini = $ve41_dtini_ano."-".$ve41_dtini_mes."-".$ve41_dtini_dia;
+    } else {
+      $clveicmotoristascentral->ve41_dtini = date('Y-m-d');
+    }
     if (isset($ve41_dtfim_dia) && trim($ve41_dtfim_dia) != ""){
       $clveicmotoristascentral->ve41_dtfim = $ve41_dtfim_ano."-".$ve41_dtfim_mes."-".$ve41_dtfim_dia;
     } else {
@@ -248,7 +252,7 @@ if (isset($excluir)){
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <center>
 	<?
-	include("forms/db_frmveicmotoristascentral.php");
+	include(modification("forms/db_frmveicmotoristascentral.php"));
 	?>
     </center>
 </table>

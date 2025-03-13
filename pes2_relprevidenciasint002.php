@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -37,7 +37,7 @@ $sql_prev = "select r33_ppatro,r33_nome from inssirf
 								   and r33_mesusu = $mes 
 									 and r33_instit = ".db_getsession("DB_instit")."
 									 and r33_codtab = $prev+2 limit 1;";
-$res_prev = pg_query($sql_prev);
+$res_prev = db_query($sql_prev);
 db_fieldsmemory($res_prev,0);
 
 $head3 = "RELATÓRIO ".strtoupper($r33_nome);
@@ -127,7 +127,7 @@ $instit = db_getsession('DB_instit');
          ";
 //  echo $sql ; exit;
 
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $xxnum = pg_numrows($result);
   if ($xxnum == 0){
      db_redireciona('db_erros.php?fechar=true&db_erro=No existem clculos para o perodo de '.$mes.' / '.$ano);

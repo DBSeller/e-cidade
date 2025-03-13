@@ -1,9 +1,9 @@
 <?php
 
-require_once 'model/configuracao/Task.model.php';
-require_once 'interfaces/iTarefa.interface.php';
-require_once 'integracao_externa/mensageria/DBSeller/Mensageria/Library/Cliente.php';
-
+require_once modification("model/configuracao/Task.model.php");
+require_once modification("interfaces/iTarefa.interface.php");
+require_once modification("integracao_externa/mensageria/DBSeller/Mensageria/Library/Cliente.php");
+require_once(modification("libs/db_conecta.php"));
 use \DBseller\Mensageria\Library\Cliente as MensageriaCliente;
 
 class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
@@ -46,30 +46,30 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
    */
   public function iniciar() {
 
-    parent::iniciar(); 
+    parent::iniciar();
 
     try {
 
       /**
-       * Variaveis necessarias para usar as bibliotecas padroes 
+       * Variaveis necessarias para usar as bibliotecas padroes
        */
       global $HTTP_SERVER_VARS, $HTTP_POST_VARS, $HTTP_GET_VARS, $_SESSION, $conn;
       $HTTP_SERVER_VARS = $_SESSION;
       $HTTP_POST_VARS = $_POST;
       $HTTP_GET_VARS = $_GET;
 
-      require_once 'libs/db_conn.php';
-      require_once 'libs/db_stdlib.php';
-      require_once 'libs/db_utils.php';
-      require_once 'libs/db_autoload.php';
-      require_once 'dbforms/db_funcoes.php';
+      require_once modification("libs/db_conn.php");
+      require_once modification("libs/db_stdlib.php");
+      require_once modification("libs/db_utils.php");
+      require_once "libs/db_autoload.php";
+      require_once modification("dbforms/db_funcoes.php");
 
       /**
        * Conecta no banco com variaveis definidas no 'libs/db_conn.php'
        */
       if (!($conn = @pg_connect("host=$DB_SERVIDOR dbname=$DB_BASE port=$DB_PORTA user=$DB_USUARIO password=$DB_SENHA"))) {
         throw new Exception('Erro ao conectar ao banco.');
-      } 
+      }
 
       /**
        * Desativa log de alteracoes nas classes de dao
@@ -80,7 +80,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
 
       $this->processarParametros();
       $this->processarAcordos();
-      $this->processarNotificacoes(); 
+      $this->processarNotificacoes();
 
       db_fim_transacao();
 
@@ -90,7 +90,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
       $this->log("Erro na execução:\n{$oErro->getMessage()}");
     }
 
-    parent::terminar(); 
+    parent::terminar();
   }
 
   public function cancelar() {}
@@ -98,9 +98,9 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
 
   /**
    * Processa os parametros configurados para mensagaria e definindo propriedades:
-   * - $this->aCodigoMensageriaAcordoUsuario : usuarios para notificar          
-   * - $this->aDataVencimento                : datas para buscar acordos        
-   * - $this->aCodigoDepartamentoUsuario     : departamentos com seus usuarios  
+   * - $this->aCodigoMensageriaAcordoUsuario : usuarios para notificar
+   * - $this->aDataVencimento                : datas para buscar acordos
+   * - $this->aCodigoDepartamentoUsuario     : departamentos com seus usuarios
    *
    * @return bool
    */
@@ -111,7 +111,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
      */
     $oDaoMensageriaUsuario = new cl_mensageriaacordodb_usuario();
     $sSqlUsuarios = $oDaoMensageriaUsuario->sql_query_usuariosNotificar('ac52_sequencial', 'ac52_dias');
-    
+
     $rsUsuarios = db_query($sSqlUsuarios);
     $iTotalUsuarios = pg_num_rows($rsUsuarios);
 
@@ -122,7 +122,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
     /**
      * Codigo do departamento com seus usuarios
      */
-    $aCodigoDepartamentoUsuario = array(); 
+    $aCodigoDepartamentoUsuario = array();
 
     /**
      * Percorre os usuarios e define propriedades necessarias para buscar acordos
@@ -137,7 +137,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
       /**
        * Codigo dos usuarios que serao notificados
        * - usado para verificar os usuarios que ja foram notificados
-       * - mensageriaacordodb_usuario.ac52_sequencial 
+       * - mensageriaacordodb_usuario.ac52_sequencial
        */
       $this->aCodigoMensageriaAcordoUsuario[] = $iCodigoMensageriaAcordoUsuario;
 
@@ -158,7 +158,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
        * - Soma data atual com dias definidos na rotina de parametros de mensageria
        */
       $iDias = $oMensageriaAcordoUsuario->getDias();
-      $this->aDataVencimento[] = date('Y-m-d', strtotime('+ ' . $iDias . ' days')); 
+      $this->aDataVencimento[] = date('Y-m-d', strtotime('+ ' . $iDias . ' days'));
 
       /**
        * Departamentos que o usuario tem permisao
@@ -175,7 +175,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
         if (!isset($aCodigoDepartamentoUsuario[$oDepartamento->getCodigo()])) {
           $aCodigoDepartamentoUsuario[$oDepartamento->getCodigo()] = array();
         }
-       
+
         if (!in_array($iCodigoUsuario, $aCodigoDepartamentoUsuario[$oDepartamento->getCodigo()])) {
           $aCodigoDepartamentoUsuario[$oDepartamento->getCodigo()][] = $iCodigoUsuario;
         }
@@ -187,7 +187,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
   }
 
   /**
-   * Processa acordos 
+   * Processa acordos
    * - buscando os acordos com data de vencimento menor ou igual as datas da propridade $this->aDataVencimento
    * - define os acordos que terao os usuarios notificados
    *
@@ -200,7 +200,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
     $sCodigoDepartamentos = implode(', ', array_keys($this->aCodigoDepartamentoUsuario));
 
     foreach ($this->aDataVencimento as $sDataVencimento) {
-    
+
       $sWhereAcordo  = "ac16_coddepto in($sCodigoDepartamentos) ";
       $sWhereAcordo .= "and ac16_datafim >= '$sDataAtual' and ac16_datafim <= '$sDataVencimento'";
       $sSqlAcordos = $oDaoAcordo->sql_query_file(null, 'ac16_sequencial', 'ac16_sequencial', $sWhereAcordo);
@@ -220,7 +220,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
 
         $iAcordo = db_utils::fieldsMemory($rsAcordos, $iIndiceAcodo)->ac16_sequencial;
         $this->aAcordos[$iAcordo] = AcordoRepository::getByCodigo($iAcordo);
-      } 
+      }
     }
 
     return true;
@@ -228,7 +228,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
 
   /**
    * Processa notificacoes
-   * - Busca propriedades necessarias para criar mensagem  
+   * - Busca propriedades necessarias para criar mensagem
    *   e no final usa metodo $this->enviarNotificacao()
    *
    * @return bool
@@ -291,10 +291,10 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
          * Salva acordo como ja notificado para usuario e dia
          * mensageriaacordoprocessados
          */
-        $this->salvarAcordoProcessado($iCodigoMensageriaAcordoUsuario, $oAcordo->getCodigo()); 
-        
+        $this->salvarAcordoProcessado($iCodigoMensageriaAcordoUsuario, $oAcordo->getCodigo());
+
         /**
-         * Usuario ja notificado com dia menor que o atual 
+         * Usuario ja notificado com dia menor que o atual
          */
         if (in_array($oUsuarioSistema->getCodigo(), $aUsuarioNotificado)) {
           continue;
@@ -313,16 +313,16 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
 
       $sAssunto = str_replace('[dias]', $iDiasVencimento, $sAssuntoAcordo);
       $sMensagem = str_replace('[dias]', $iDiasVencimento, $sMensagemAcordo);
-      $this->enviarNotificacao($sAssunto, $sMensagem, $sSistema, $aDestinatarios); 
+      $this->enviarNotificacao($sAssunto, $sMensagem, $sSistema, $aDestinatarios);
     }
-  
+
     return true;
   }
 
   /**
    * Salva acordo como ja notificado para usuario e dias
    * mensageriaacordoprocessados
-   * 
+   *
    * @return bool
    */
   private function salvarAcordoProcessado($iCodigoMensageriaAcordoUsuario, $iAcordo) {
@@ -357,7 +357,7 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
       'aDestinatarios' => $aDestinatarios
     );
 
-    $lEnviado = MensageriaCliente::enviar($sSistema, $sSistema, $aMensagem);  
+    $lEnviado = MensageriaCliente::enviar($sSistema, $sSistema, $aMensagem);
 
     if (!$lEnviado) {
       throw new Exception("Erro ao enviar notificação para servidor de mensageria.");
@@ -366,4 +366,4 @@ class MensageriaAcordoProcessamentoTask extends Task implements iTarefa {
     return true;
   }
 
-} 
+}

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,104 +25,112 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhdepend_classe.php");
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhdepend_classe.php"));
+db_postmemory($_POST);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clrhdepend = new cl_rhdepend;
 $clrhdepend->rotulo->label("rh31_codigo");
 $clrhdepend->rotulo->label("rh31_nome");
+
+$where = array();
+if (!empty($_GET['servidor'])) {
+    $where[] = "rh31_regist = {$_GET['servidor']}";
+}
+
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
-    <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Trh31_codigo?>">
-              <?=$Lrh31_codigo?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("rh31_codigo",10,$Irh31_codigo,true,"text",4,"","chave_rh31_codigo");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Trh31_nome?>">
-              <?=$Lrh31_nome?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("rh31_nome",40,$Irh31_nome,true,"text",4,"","chave_rh31_nome");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_rhdepend.hide();">
-             </td>
-          </tr>
-        </form>
-        </table>
-      </td>
-  </tr>
-  <tr> 
-    <td align="center" valign="top"> 
-      <?
-      if(!isset($pesquisa_chave)){
-        if(isset($campos)==false){
-           if(file_exists("funcoes/db_func_rhdepend.php")==true){
-             include("funcoes/db_func_rhdepend.php");
-           }else{
-           $campos = "rhdepend.*";
-           }
-        }
-        if(isset($chave_rh31_codigo) && (trim($chave_rh31_codigo)!="") ){
-	         $sql = $clrhdepend->sql_query($chave_rh31_codigo,$campos,"rh31_codigo");
-        }else if(isset($chave_rh31_nome) && (trim($chave_rh31_nome)!="") ){
-	         $sql = $clrhdepend->sql_query("",$campos,"rh31_nome"," rh31_nome like '$chave_rh31_nome%' ");
-        }else{
-           $sql = $clrhdepend->sql_query("",$campos,"rh31_codigo","");
-        }
-        db_lovrot($sql,15,"()","",$funcao_js);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clrhdepend->sql_record($clrhdepend->sql_query($pesquisa_chave));
-          if($clrhdepend->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$rh31_nome',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
-          }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
-        }
-      }
-      ?>
-     </td>
-   </tr>
+<table height="100%" border="0" align="center" cellspacing="0" bgcolor="#CCCCCC">
+    <tr>
+        <td height="63" align="center" valign="top">
+            <table width="35%" border="0" align="center" cellspacing="0">
+                <form name="form2" method="post" action="">
+                    <tr>
+                        <td width="4%" align="right" nowrap title="<?= $Trh31_codigo ?>">
+                            <?= $Lrh31_codigo ?>
+                        </td>
+                        <td width="96%" align="left" nowrap>
+                            <?php
+                            db_input("rh31_codigo", 10, $Irh31_codigo, true, "text", 4, "", "chave_rh31_codigo");
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="4%" align="right" nowrap title="<?= $Trh31_nome ?>">
+                            <?= $Lrh31_nome ?>
+                        </td>
+                        <td width="96%" align="left" nowrap>
+                            <?php
+                            db_input("rh31_nome", 40, $Irh31_nome, true, "text", 4, "", "chave_rh31_nome");
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
+                            <input name="limpar" type="reset" id="limpar" value="Limpar">
+                            <input name="Fechar" type="button" id="fechar" value="Fechar"
+                                   onClick="parent.db_iframe_rhdepend.hide();">
+                        </td>
+                    </tr>
+                </form>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" valign="top">
+            <?php
+            if (isset($campos) == false) {
+                $campos = 'rhdepend.*';
+
+                if (file_exists("funcoes/db_func_rhdepend.php")) {
+                    include(modification("funcoes/db_func_rhdepend.php"));
+                }
+            }
+
+            if (!isset($pesquisa_chave)) {
+                if (isset($chave_rh31_codigo) && (trim($chave_rh31_codigo) != "")) {
+                    $where[] = "rh31_codigo = {$chave_rh31_codigo}";
+                } elseif (isset($chave_rh31_nome) && (trim($chave_rh31_nome) != "")) {
+                    $where[] = " rh31_nome like '$chave_rh31_nome%' ";
+                }
+
+                $sql = $clrhdepend->sql_query(null, $campos, "rh31_nome", implode(' and ', $where));
+                db_lovrot($sql, 15, "()", "", $funcao_js);
+            } elseif ($pesquisa_chave != null && $pesquisa_chave != "") {
+                $where[] = "rh31_codigo = {$pesquisa_chave}";
+                $sql = $clrhdepend->sql_query(null, $campos, "rh31_nome", implode(' and ', $where));
+                $result = $clrhdepend->sql_record($sql);
+
+                if ($clrhdepend->numrows != 0) {
+                    db_fieldsmemory($result, 0);
+                    echo "<script>" . $funcao_js . "('$rh31_nome',false);</script>";
+                } else {
+                    echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true);</script>";
+                }
+            } else {
+                echo "<script>" . $funcao_js . "('',false);</script>";
+            }
+            ?>
+        </td>
+    </tr>
 </table>
 </body>
 </html>
-<?
-if(!isset($pesquisa_chave)){
-  ?>
-  <script>
-  </script>
-  <?
-}
-?>
+<script type="text/javascript">
+    (function () {
+        var query = frameElement.getAttribute('name').replace('IF', ''),
+            input = document.querySelector('input[value="Fechar"]');
+        input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+    })();
+</script>

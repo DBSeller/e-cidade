@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/JSON.php");
-require_once("libs/exceptions/DBException.php");
-require_once("libs/exceptions/BusinessException.php");
-require_once("model/contabilidade/lancamento/ReceitaFatoGerador.model.php");
-require_once("interfaces/ILancamentoAuxiliar.interface.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarReconhecimentoReceitaFatoGerador.model.php");
-require_once("model/contabilidade/EventoContabilLancamento.model.php");
-require_once("model/contabilidade/planoconta/ContaPlano.model.php");
-require_once("model/contabilidade/planoconta/ContaOrcamento.model.php");
-require_once("model/contabilidade/planoconta/ContaPlanoPCASP.model.php");
-require_once("model/contabilidade/planoconta/SistemaConta.model.php");
-require_once("model/contabilidade/planoconta/ClassificacaoConta.model.php");
-require_once("model/contabilidade/planoconta/SubSistemaConta.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/exceptions/DBException.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
+require_once(modification("model/contabilidade/lancamento/ReceitaFatoGerador.model.php"));
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarReconhecimentoReceitaFatoGerador.model.php"));
+require_once(modification("model/contabilidade/EventoContabilLancamento.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlano.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaOrcamento.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlanoPCASP.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/ClassificacaoConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/SubSistemaConta.model.php"));
 
 
 
@@ -54,7 +54,7 @@ db_app::import("contabilidade.contacorrente.*");
 db_app::import("configuracao.Instituicao");
 db_app::import("CgmFactory");
 db_app::import("contabilidade.planoconta.*");
-require_once("std/db_stdClass.php");
+require_once(modification("std/db_stdClass.php"));
 
 $oJson  = new services_json();
 $oParam = $oJson->decode(str_replace("\\", "", $_POST['json']));

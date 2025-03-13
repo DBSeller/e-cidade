@@ -63,6 +63,20 @@
     <browser name='firefox' versao='20.0.*'></browser>
     <browser name='firefox' versao='21.0.*'></browser>
     <browser name='firefox' versao='22.0.*'></browser>
+    <browser name='firefox' versao='23.0.*'></browser>
+    <browser name='firefox' versao='24.0.*'></browser>
+    <browser name='firefox' versao='25.0.*'></browser>
+    <browser name='firefox' versao='26.0.*'></browser>
+    <browser name='firefox' versao='27.0.*'></browser>
+    <browser name='firefox' versao='28.0.*'></browser>
+    <browser name='firefox' versao='29.0.*'></browser>
+    <browser name='firefox' versao='30.0.*'></browser>
+    <browser name='firefox' versao='31.0.*'></browser>
+    <browser name='firefox' versao='32.0.*'></browser>
+    <browser name='firefox' versao='33.0.*'></browser>
+    <browser name='firefox' versao='34.0.*'></browser>
+    <browser name='firefox' versao='35.0.*'></browser>
+    <browser name='firefox' versao='36.0.*'></browser>
   </browsers>
 
   <diretorio name='dbportal2' valorpadrao='e-cidade' label='Diretorio padrao para o e-cidade'></diretorio>

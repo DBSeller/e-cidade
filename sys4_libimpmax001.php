@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -54,7 +54,7 @@ if ((isset($incluir))||(isset($excluir))) {
 			where coddepto in $listaDepartamentos
 			order by id_usuario
 		";
-		$result = pg_exec($sql);
+		$result = db_query($sql);
 		$num = pg_numrows($result);
 		if ($num!=0){
 			if (isset($usuarios)){
@@ -71,7 +71,7 @@ if ((isset($incluir))||(isset($excluir))) {
 	}
 	if (isset($usuarios)){
 		sort($usuarios);
-		pg_exec("begin");
+		db_query("begin");
 		for ($i=0;$i<sizeof($usuarios);$i++){
 			for($a=0;$a<sizeof($impressoras);$a++){
 				$sql = "
@@ -80,41 +80,41 @@ if ((isset($incluir))||(isset($excluir))) {
 					where d51_usuario = $usuarios[$i]
 					and d51_impres = $impressoras[$a]
 				";
-				$result = pg_exec($sql);
+				$result = db_query($sql);
 				$num = pg_numrows($result);
 				if ($num == 0){
 					if (isset($incluir)){
 						$sql2 = "
 							insert into perimp values ($usuarios[$i],$impressoras[$a])
 						";
-						pg_exec($sql2);
+						db_query($sql2);
 					}
 				}else if (($num != 0)&&(isset($excluir))){
 					$sql2 = "
 						delete from perimp where d51_usuario =$usuarios[$i]
 						and d51_impres = $impressoras[$a]
 					";
-					pg_exec($sql2);
+					db_query($sql2);
 				}
 			}
 		}
-		pg_exec("end");
+		db_query("end");
 	}else if ((!isset($usuarios))&&(isset($excluir))){
-		pg_exec("begin");
+		db_query("begin");
 		if (sizeof($impressoras)!=0){
 			for ($i=0;$i<sizeof($impressoras);$i++){
 				$sql2 = "
 					delete from perimp where d51_impres = $impressoras[$i]
 				";
-				pg_exec($sql2);
+				db_query($sql2);
 			}
 		}else{
 			$sql2 = "
 				delete from perimp where d51_impres = $impressoras
 			";
-			pg_exec($sql2);
+			db_query($sql2);
 		}
-		pg_exec("end");
+		db_query("end");
 	}
 	if (isset($excluir)){
 		db_msgbox("Impresssoras por usários excluidas com sucesso.");
@@ -146,7 +146,7 @@ if ((isset($incluir))||(isset($excluir))) {
   <tr>
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 	<? 
-	include("forms/db_frmlibimpmax001.php"); 
+	include(modification("forms/db_frmlibimpmax001.php")); 
 	?>
 	</td>
   </tr>

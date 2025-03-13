@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,13 +24,13 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-include("fpdf151/pdfwebseller.php");
-include("libs/db_stdlibwebseller.php");
-include("classes/db_mer_restricao_classe.php");
-include("classes/db_mer_restriitem_classe.php");
-include("classes/db_mer_restricaointolerancia_classe.php");
-include("classes/db_turma_classe.php");
-include("classes/db_matricula_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("libs/db_stdlibwebseller.php"));
+include(modification("classes/db_mer_restricao_classe.php"));
+include(modification("classes/db_mer_restriitem_classe.php"));
+include(modification("classes/db_mer_restricaointolerancia_classe.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_matricula_classe.php"));
 $clmer_restricao             = new cl_mer_restricao;
 $clmer_restriitem            = new cl_mer_restriitem;
 $clmer_restricaointolerancia = new cl_mer_restricaointolerancia;

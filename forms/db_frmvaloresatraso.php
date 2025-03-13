@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo = new rotulocampo;
 $clrhpessoal->rotulo->label();
@@ -119,10 +119,10 @@ $clrotulo->label("rh59_descr");
 <script>
 function js_pesquisarh58_tipoocor(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpagtipoocor','func_rhpagtipoocor?funcao_js=parent.js_mostrarhpagtipoocor1|rh59_codigo|rh59_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpagtipoocor','func_rhpagtipoocor?funcao_js=parent.js_mostrarhpagtipoocor1|rh59_codigo|rh59_descr','Pesquisa',true);
   }else{
      if(document.form1.rh58_tipoocor.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhpagtipoocor','func_rhpagtipoocor?pesquisa_chave='+document.form1.rh58_tipoocor.value+'&funcao_js=parent.js_mostrarhpagtipoocor','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpagtipoocor','func_rhpagtipoocor?pesquisa_chave='+document.form1.rh58_tipoocor.value+'&funcao_js=parent.js_mostrarhpagtipoocor','Pesquisa',false);
      }else{
        document.form1.rh59_descr.value = '';
      }

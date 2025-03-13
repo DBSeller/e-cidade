@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_sau_fatorderisco_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_sau_fatorderisco_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clsau_fatorderisco = new cl_sau_fatorderisco;
 $db_opcao = 1;
@@ -56,7 +56,7 @@ if(isset($incluir)){
   <tr> 
     <td  align="left" valign="top" bgcolor="#CCCCCC"> 
 	<?
-	include("forms/db_frmsau_fatorderisco.php");
+	include(modification("forms/db_frmsau_fatorderisco.php"));
 	?>
 	</td>
   </tr>

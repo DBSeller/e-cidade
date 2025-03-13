@@ -9,7 +9,7 @@
   $sSqlVerifParcel .= "  WHERE k99_numpre_n = {$this->numnov_recibo}                                 ";
   $sSqlVerifParcel .= "    AND v07_desconto = 22                                                     ";
   
-  $resultVerifParcel = pg_query($sSqlVerifParcel);
+  $resultVerifParcel = db_query($sSqlVerifParcel);
   
   if (pg_num_rows($resultVerifParcel) > 0 ) {
     

@@ -84,10 +84,10 @@ db_input('k00_descr',60,$Ik00_descr,true,'text',3,'')
 <script>
 function js_pesquisak42_tiponovo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true);
   }else{
      if(document.form1.k42_tiponovo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k42_tiponovo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k42_tiponovo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
      }else{
        document.form1.k00_descr.value = ''; 
      }
@@ -107,10 +107,10 @@ function js_mostraarretipo1(chave1,chave2){
 }
 function js_pesquisak42_cadtipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadtipo','func_cadtipo.php?funcao_js=parent.js_mostracadtipo1|k03_tipo|k03_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadtipo','func_cadtipo.php?funcao_js=parent.js_mostracadtipo1|k03_tipo|k03_descr','Pesquisa',true);
   }else{
      if(document.form1.k42_cadtipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cadtipo','func_cadtipo.php?pesquisa_chave='+document.form1.k42_cadtipo.value+'&funcao_js=parent.js_mostracadtipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadtipo','func_cadtipo.php?pesquisa_chave='+document.form1.k42_cadtipo.value+'&funcao_js=parent.js_mostracadtipo','Pesquisa',false);
      }else{
        document.form1.k03_tipo.value = ''; 
      }
@@ -130,7 +130,7 @@ function js_mostracadtipo1(chave1,chave2){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_termotipoconfig','func_termotipoconfig.php?funcao_js=parent.js_preenchepesquisa|k42_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_termotipoconfig','func_termotipoconfig.php?funcao_js=parent.js_preenchepesquisa|k42_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_termotipoconfig.hide();

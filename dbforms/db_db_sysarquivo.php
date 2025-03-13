@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
-include("../libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 if(!isset($arg)) {
   $str = split("\?",$HTTP_SERVER_VARS['QUERY_STRING']);
@@ -60,7 +60,7 @@ else
   
   switch($campo) {
     case "tabela":
-      $sql = "select (codarq || '##' || nomearq) as db_codigo,codarq as código,nomearq as \"nome da tabela\"
+      $sql = "select (cast(codarq as text) || '##' || nomearq) as db_codigo,codarq as código,nomearq as \"nome da tabela\"
               from db_sysarquivo
 		      where nomearq like '".$arg[1]."%'
 		      order by nomearq";

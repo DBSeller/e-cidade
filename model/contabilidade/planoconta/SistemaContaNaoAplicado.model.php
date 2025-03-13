@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -34,7 +34,7 @@
 * @subpackage planoconta
 */
 
-require_once 'interface/ISistemaConta.interface.php';
+require_once modification("model/contabilidade/planoconta/interface/ISistemaConta.interface.php");
 
 class SistemaContaNaoAplicado implements ISistemaConta {
   

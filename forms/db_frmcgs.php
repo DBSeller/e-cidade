@@ -31,8 +31,8 @@ $clcgm->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("z01_nome");
 if($db_opcao == 2){
-    echo "<input type='button' value='Emitir Ficha Matricial' onclick='top.corpo.iframe_a3.";if($tp==1){ echo "emite_ficha($numero,1)'>";}else{ echo "emite_ficha1($numero,1)'>";}
-    echo "<input type='button' value='Emitir Ficha Outra' onclick='top.corpo.iframe_a3.";if($tp==1){ echo "emite_ficha($numero,2)'>";}else{ echo "emite_ficha1($numero,2)'>";}
+    echo "<input type='button' value='Emitir Ficha Matricial' onclick='(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.";if($tp==1){ echo "emite_ficha($numero,1)'>";}else{ echo "emite_ficha1($numero,1)'>";}
+    echo "<input type='button' value='Emitir Ficha Outra' onclick='(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.";if($tp==1){ echo "emite_ficha($numero,2)'>";}else{ echo "emite_ficha1($numero,2)'>";}
 }
 ?>
 <form name="form1" method="post" action="">
@@ -135,7 +135,7 @@ db_select('sd01_c_escola',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisarua(){
- js_OpenJanelaIframe('top.corpo.iframe_a4','db_iframe_rua','func_ruas.php?funcao_js=parent.js_mostrarua|j14_codigo|j14_nome','Pesquisa',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo.iframe_a4','db_iframe_rua','func_ruas.php?funcao_js=parent.js_mostrarua|j14_codigo|j14_nome','Pesquisa',true);
 }
 
 function js_mostrarua(chave1,chave2){
@@ -146,7 +146,7 @@ function js_mostrarua(chave1,chave2){
 
 /*function js_cep(rua){
  alert(rua);
- js_OpenJanelaIframe('top.corpo.iframe_a4','db_iframe_cep','func_cep.php?db11_logradouro='+rua+'&funcao_js=parent.js_preenchecep|cep','Pesquisa',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo.iframe_a4','db_iframe_cep','func_cep.php?db11_logradouro='+rua+'&funcao_js=parent.js_preenchecep|cep','Pesquisa',true);
 } */
 
 function js_preenchecep(chave){
@@ -155,7 +155,7 @@ function js_preenchecep(chave){
 }
 
 function js_pesquisabairro(){
-    js_OpenJanelaIframe('top.corpo.iframe_a4','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro|j13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_a4','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro|j13_descr','Pesquisa',true);
 }
 
 function js_mostrabairro(chave1){

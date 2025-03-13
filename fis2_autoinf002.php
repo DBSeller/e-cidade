@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_sql.php");
-require_once("fpdf151/pdf1.php");
-require_once("libs/db_libsys.php");
-require_once("dbagata/classes/core/AgataAPI.class");
-require_once("model/documentoTemplate.model.php");
+require_once(modification("libs/db_sql.php"));
+require_once(modification("fpdf151/pdf1.php"));
+require_once(modification("libs/db_libsys.php"));
+require_once(modification("dbagata/classes/core/AgataAPI.class"));
+require_once(modification("model/documentoTemplate.model.php"));
 
 $cldb_docparag = db_utils::getDao('db_docparag');
 $clauto        = db_utils::getDao('auto');
@@ -105,12 +105,14 @@ if ($clautofiscal->numrows > 0) {
 }
 
 //----------------------Traz valor do Auto----------------------------------
-$result_valor=$clautonumpre->sql_record($clautonumpre->sql_query_val(null,"y17_numpre as numpre, sum(k00_valor) as valor",null,"y17_codauto=$codauto group by y17_numpre"));
-if ($clautonumpre->numrows>0){
+$sql          = $clautonumpre->sql_query_paga($codauto);
+$result_valor = $clautonumpre->sql_record($sql);
+
+if ($clautonumpre->numrows > 0){
 
   db_fieldsmemory($result_valor,0,true);
-  $extenso=db_extenso($valor,false);
-  $valor=trim(db_formatar($valor,'f'));
+  $extenso = db_extenso($valor,false);
+  $valor   = trim(db_formatar($valor,'f'));
 }else{
 
   db_msgbox('Auto de Infração não Calculado');
@@ -124,8 +126,8 @@ $fiscal="";
 for($f=0;$f<$numrows_fiscal;$f++){
 
   db_fieldsmemory($result_fiscal,$f,true);
-  $fiscal.=$vir." $fisc";
-  $vir=",";
+  $fiscal .= $vir." $fisc";
+  $vir     = ",";
 }
 
 //----------------------Busca Procedências----------------------------------
@@ -137,7 +139,7 @@ $obsprocedenciacomquebra="";
 for($p=0;$p<$numrows_proc;$p++){
 
   db_fieldsmemory($result_proc,$p,true);
-  $procedencia.=$vir." $y29_descr <- aqui jézica";
+  $procedencia.=$vir." $y29_descr";
 	$obsprocedenciacomquebra.="$y29_descr_obs\n";
   $vir=",";
 }
@@ -161,6 +163,7 @@ for($i=0; $i<$numrows; $i++){
  $pdf->MultiCell("0",4+$db02_espaca,$texto,"0","J",0,$db02_inicia+0);
  $pdf->cell(0,6,"",0,1,"R",0);
 }
+
 $pdf->cell(0,10,"",0,1,"R",0);
 $pdf->SetFont('Arial','b',12);
 $pdf->cell(90,4,"___________________________",0,0,"C",0);

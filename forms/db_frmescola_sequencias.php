@@ -26,7 +26,7 @@
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clescola_sequencias->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -131,10 +131,10 @@ if(isset($opcao) && $opcao=="alterar"){
 <script>
 function js_pesquisaed129_i_escola(mostra){
  if(mostra==true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_escola','func_escola.php?funcao_js=parent.js_mostraescola1|ed18_i_codigo|ed18_c_nome','Pesquisa de Escolas',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escola','func_escola.php?funcao_js=parent.js_mostraescola1|ed18_i_codigo|ed18_c_nome','Pesquisa de Escolas',true);
  }else{
   if(document.form1.ed129_i_escola.value != ''){
-   js_OpenJanelaIframe('top.corpo','db_iframe_escola','func_escola.php?pesquisa_chave='+document.form1.ed129_i_escola.value+'&funcao_js=parent.js_mostraescola','Pesquisa',false);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escola','func_escola.php?pesquisa_chave='+document.form1.ed129_i_escola.value+'&funcao_js=parent.js_mostraescola','Pesquisa',false);
   }else{
    document.form1.ed18_c_nome.value = '';
   }

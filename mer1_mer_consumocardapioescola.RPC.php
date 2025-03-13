@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_mer_cardapioescola_classe.php");
-require_once("classes/db_mer_tipocardapio_classe.php");
-require_once("classes/db_mer_tpcardapioturma_classe.php");
-require_once("classes/db_mer_consumocardapio_classe.php");
-require_once("classes/db_mer_consumoescola_classe.php");
-require_once("classes/db_mer_cardapiodia_classe.php");
-require_once("classes/db_escola_classe.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_mer_cardapioescola_classe.php"));
+require_once(modification("classes/db_mer_tipocardapio_classe.php"));
+require_once(modification("classes/db_mer_tpcardapioturma_classe.php"));
+require_once(modification("classes/db_mer_consumocardapio_classe.php"));
+require_once(modification("classes/db_mer_consumoescola_classe.php"));
+require_once(modification("classes/db_mer_cardapiodia_classe.php"));
+require_once(modification("classes/db_escola_classe.php"));
+require_once(modification("libs/JSON.php"));
 
 $clmer_tipocardapio       = new cl_mer_tipocardapio();
 $clmer_tpcardapioturma    = new cl_mer_tpcardapioturma();
@@ -75,8 +75,8 @@ switch ($oParam->exec) {
     $sSqlDeptoSel             =  $clmer_consumoescola->sql_query(null,$sCampos,"ed18_c_nome",$sWhere); 
     $rsSqlDeptoSel            = $clmer_consumoescola->sql_record($sSqlDeptoSel);      
     
-    $oRetorno->aItensDptos    = db_utils::getColectionByRecord($rsEscola,false,false,true);
-    $oRetorno->aItensDptosSel = db_utils::getColectionByRecord($rsSqlDeptoSel,false,false,true);    
+    $oRetorno->aItensDptos    = db_utils::getCollectionByRecord($rsEscola,false,false,true);
+    $oRetorno->aItensDptosSel = db_utils::getCollectionByRecord($rsSqlDeptoSel,false,false,true);    
     
     break; 
     

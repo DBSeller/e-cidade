@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_empempenho_classe.php");
-require_once("classes/empenho.php");
-require_once("classes/db_empempenholiberado_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_empempenho_classe.php"));
+require_once(modification("classes/empenho.php"));
+require_once(modification("classes/db_empempenholiberado_classe.php"));
 
-include("libs/JSON.php");
+include(modification("libs/JSON.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -52,7 +52,7 @@ switch ($oParam->exec) {
 	case "pesquisaEmpempenho":
 		
 		$oEmpenho          = new empenho();
-	  $oRetorno->aItens  = $oEmpenho->getEmpenhosLiberados($oParam);
+	  	$oRetorno->aItens  = $oEmpenho->getEmpenhosLiberados($oParam);
 		break;
 		
 	/*
@@ -63,10 +63,32 @@ switch ($oParam->exec) {
 
     $oEmpenho = new empenho();
     try {
-    	
-    	db_inicio_transacao();
-      $oEmpenho->liberarEmpenho($oParam->aEmpenhos);
-      db_fim_transacao(false);	
+		$clEmpEmpenho = new cl_empempenho();
+		$sIdsEmpenho = '';
+
+		foreach($oParam->aEmpenhos as $empenho) {
+			$sIdsEmpenho .= $empenho->iNumemp;
+		}
+		
+		$sSql = $clEmpEmpenho->sql_query_liberarempenho(null, 'e60_numemp, e22_sequencial', '', "e60_numemp in ({$sIdsEmpenho})");
+		$oPostgresResource = db_query($sSql);
+
+		$mapEmpenhoLiberacao = array();
+		while ($row = pg_fetch_assoc($oPostgresResource)) {
+			$mapEmpenhoLiberacao[$row['e60_numemp']] = $row['e22_sequencial'] ? true : false;			
+		}
+
+		db_inicio_transacao();
+
+		$oEmpenho->liberarEmpenho($oParam->aEmpenhos);
+
+		foreach($oParam->aEmpenhos as &$empenho) {
+			$empenho->flagSemAcao = $mapEmpenhoLiberacao[$empenho->iNumemp];
+		}
+		
+		$oRetorno->empenhos = $oParam->aEmpenhos;
+	
+    	db_fim_transacao(false);	
     } catch (Exception $eErro) {
     	
     	db_fim_transacao(true);

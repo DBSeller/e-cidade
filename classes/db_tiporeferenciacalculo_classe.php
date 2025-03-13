@@ -1,30 +1,4 @@
 <?
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 //MODULO: laboratorio
 //CLASSE DA ENTIDADE tiporeferenciacalculo
 class cl_tiporeferenciacalculo { 
@@ -91,7 +65,7 @@ class cl_tiporeferenciacalculo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->la61_atributobase == null ){ 
+     if($this->la61_tipocalculo == 2 && $this->la61_atributobase == null){
        $this->erro_sql = " Campo Atributo Referência não informado.";
        $this->erro_campo = "la61_atributobase";
        $this->erro_banco = "";
@@ -141,6 +115,11 @@ class cl_tiporeferenciacalculo {
        $this->erro_status = "0";
        return false;
      }
+
+     if(empty($this->la61_atributobase)) {
+       $this->la61_atributobase = 'NULL';
+     }
+
      $sql = "insert into tiporeferenciacalculo(
                                        la61_sequencial 
                                       ,la61_tiporeferencialnumerico 
@@ -150,19 +129,19 @@ class cl_tiporeferenciacalculo {
                 values (
                                 $this->la61_sequencial 
                                ,$this->la61_tiporeferencialnumerico 
-                               ,$this->la61_atributobase 
+                               ,$this->la61_atributobase
                                ,$this->la61_tipocalculo 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Calculos da Referencia ($this->la61_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Calculos da Referencia ($this->la61_sequencial) já cadastrada. Inclusao Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Calculos da Referencia já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Calculos da Referencia ($this->la61_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Calculos da Referencia ($this->la61_sequencial) nao Incluído. Inclusao Abortada: " . $this->erro_banco;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }

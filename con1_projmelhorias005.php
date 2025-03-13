@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_projmelhorias_classe.php");
-include("classes/db_projmelhoriasresp_classe.php");
-include("classes/db_projmelhoriasmatric_classe.php");
-include("classes/db_testada_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_projmelhorias_classe.php"));
+include(modification("classes/db_projmelhoriasresp_classe.php"));
+include(modification("classes/db_projmelhoriasmatric_classe.php"));
+include(modification("classes/db_testada_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clprojmelhorias = new cl_projmelhorias;
 $clprojmelhoriasresp = new cl_projmelhoriasresp;
 $clprojmelhoriasmatric = new cl_projmelhoriasmatric;

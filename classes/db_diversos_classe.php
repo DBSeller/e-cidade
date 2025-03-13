@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -1027,6 +1027,36 @@ class cl_diversos {
              $ordem
            ";
     return $sql;
+  }
+
+    /**
+     * @param null $dv05_coddiver
+     * @param string $campos
+     * @param null $ordem
+     * @param string $where
+     * @return string
+     */
+  public function sql_query_issvar($dv05_coddiver=null, $campos = "*", $ordem = null, $where = "")
+  {
+      $sql  = " select {$campos}";
+      $sql .= "   from diversos ";
+      $sql .= "        inner join diverimportaold on dv05_coddiver = dv13_diversos ";
+      $sql .= "        inner join issvar on dv13_numpre = q05_numpre ";
+      $sql .= "                         and q05_numpar  = q05_numpar ";
+
+      if (!is_null($dv05_coddiver)) {
+           $sql .= " where dv05_coddiver = $dv05_coddiver";
+      } else {
+          if (!is_null($where)) {
+              $sql .= " where $where";
+          }
+      }
+
+      if (!is_null($ordem)) {
+          $sql .= " order by $ordem";
+      }
+
+      return $sql;
   }
 }
 ?>

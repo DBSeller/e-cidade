@@ -2,7 +2,7 @@
 
 /**
  * E-cidade Software Público para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -22,23 +22,23 @@
  *                                 licenca/licenca_pt.txt
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/db_usuariosonline.php');
-require_once('classes/db_ativid_classe.php');
-require_once('dbforms/db_funcoes.php');
-require_once('classes/db_clasativ_classe.php');
-require_once('classes/db_ativtipo_classe.php');
-require_once('classes/db_classe_classe.php');
-require_once('classes/db_cnae_classe.php');
-require_once('classes/db_cnaeanalitica_classe.php');
-require_once('classes/db_rhcbo_classe.php');
-require_once('classes/db_atividcnae_classe.php');
-require_once('classes/db_atividcbo_classe.php');
-require_once('dbforms/db_funcoes.php');
-require_once('classes/db_db_estruturavalor_classe.php');
-require_once('classes/db_issgruposervicoativid_classe.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_usuariosonline.php'));
+require_once(modification('classes/db_ativid_classe.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification('classes/db_clasativ_classe.php'));
+require_once(modification('classes/db_ativtipo_classe.php'));
+require_once(modification('classes/db_classe_classe.php'));
+require_once(modification('classes/db_cnae_classe.php'));
+require_once(modification('classes/db_cnaeanalitica_classe.php'));
+require_once(modification('classes/db_rhcbo_classe.php'));
+require_once(modification('classes/db_atividcnae_classe.php'));
+require_once(modification('classes/db_atividcbo_classe.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification('classes/db_db_estruturavalor_classe.php'));
+require_once(modification('classes/db_issgruposervicoativid_classe.php'));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -76,41 +76,41 @@ $sServicoStyle  = '';
 if (isset($chavepesquisa)) {
 
   $db_opcao = 2;
-  
+
   if (!isset($q03_ativ)) {
-    
+
     $sCampos     = "q03_ativ, q03_descr, q03_atmemo, q03_limite, q12_classe, q12_calciss, q12_descr, q12_fisica, q03_horaini, q03_horafim, q03_deducao, q03_tributacao_municipio";
     $sSqlAtivid  = $clativid->sql_query_clas($chavepesquisa,$sCampos);
     $result      = $clativid->sql_record($sSqlAtivid);
-  
+
     db_fieldsmemory($result,0);
-    
+
     if ($q12_calciss == 't') {
       $sServicoStyle = 'table-row';
     } else {
       $sServicoStyle = 'none';
     }
-    
+
     if ($q12_fisica == 't') {
       $pessoa = 'J';
     } else {
       $pessoa = 'F';
     }
   }
-  
+
   $result_tipcal = $clativtipo->sql_record($clativtipo->sql_query($chavepesquisa,null,'q80_tipcal,q81_descr'));
 
   if ($result_tipcal && $clativtipo->numrows > 0) {
     db_fieldsmemory($result_tipcal,0);
   }
-   
+
   // verifica se tem CBO
   $sqlcbo = "select * from atividcbo inner join rhcbo on q75_rhcbo = rh70_sequencial where q75_ativid = $chavepesquisa";
   $resultcbo = db_query($sqlcbo);
   $linhascbo = pg_num_rows($resultcbo);
-  
+
   if ($linhascbo > 0) {
-    
+
     $hiddenPF   = 'visible';
     $positionPF = 'relative';
     $db_opcaoselect = 1;
@@ -118,20 +118,20 @@ if (isset($chavepesquisa)) {
 
     // db_msgbox('cbo...'.$alteracbocnae);
     db_fieldsmemory($resultcbo,0);
-        
+
   } else {
-   
+
     // verifica se tem CNAE
     $sqlcnae = "select * from atividcnae
-                inner join cnaeanalitica on q74_cnaeanalitica= q72_sequencial 
-                inner join cnae on q71_sequencial = q72_cnae 
+                inner join cnaeanalitica on q74_cnaeanalitica= q72_sequencial
+                inner join cnae on q71_sequencial = q72_cnae
                 where q74_ativid = $chavepesquisa";
-    
+
     $resultcnae = db_query($sqlcnae);
     $linhascnae= pg_num_rows($resultcnae);
-    
+
     if ($linhascnae > 0) {
-      
+
       // db_msgbox('cnae');
       $hiddenPJ   = 'visible';
       $positionPJ = 'relative';
@@ -142,15 +142,15 @@ if (isset($chavepesquisa)) {
       $alteracbocnae = 'sim' ;
     }
   }
-  $sWhereGrpServAtiv  = " ativid.q03_ativ = {$chavepesquisa}"; 
+  $sWhereGrpServAtiv  = " ativid.q03_ativ = {$chavepesquisa}";
   $sCamposGrpServAtiv = "q126_sequencial as q127_sequencial, db121_descricao ";
   $sSqlGrpServAtiv    = $clIssGrupoServicoAtivid->sql_query('', $sCamposGrpServAtiv, '', $sWhereGrpServAtiv);
   $rsGrpServAtiv      = $clIssGrupoServicoAtivid->sql_record($sSqlGrpServAtiv);
-  
+
   if ($rsGrpServAtiv && $clIssGrupoServicoAtivid->numrows > 0) {
     db_fieldsmemory($rsGrpServAtiv,0);
-  }  
-  
+  }
+
   $db_botao = true;
 }
 ?>
@@ -167,16 +167,8 @@ if (isset($chavepesquisa)) {
   <link href="estilos.css" rel="stylesheet" type="text/css">
   <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="js_pessoa();">
-  <div style="margin-top: 30px;"></div>
-  <div>
-    <center><?php include("forms/db_frmativid.php"); ?></center>
-  </div>
-  <?php db_menu(db_getsession("DB_id_usuario"),
-             db_getsession("DB_modulo"),
-             db_getsession("DB_anousu"),
-             db_getsession("DB_instit"));
-  ?>
+<body class="body-default">
+  <?php include(modification("forms/db_frmativid.php")); ?>
 </body>
 </html>
 <?php

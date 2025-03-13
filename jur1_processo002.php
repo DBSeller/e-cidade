@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
@@ -47,7 +47,7 @@ if(isset($retorno)) {
   inner join localiza l
   on l.v54_codigo = j.v50_local
   where j.v50_codigo = $retorno";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 }
 
@@ -55,8 +55,8 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
   $data = "$data_ano-$data_mes-$data_dia";
   $data = $data=="--"?"null":"'$data'";
-  pg_exec("BEGIN");
-  $result = pg_exec("UPDATE juridico
+  db_query("BEGIN");
+  $result = db_query("UPDATE juridico
 					SET v50_numero = '$v50_numero',
 						v50_tipo = $db_tipo,
 						v50_local = $db_localizacao,
@@ -68,12 +68,12 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 						v50_dataen = $data,
 						v50_movim = '$v50_movim'
 					WHERE v50_codigo = $v50_codigo") or die("Erro(43) atualizando juridico");
-  $result = pg_exec("DELETE FROM autproc WHERE v55_proces = $v50_codigo") or die("Erro(44) deletando autproc");
+  $result = db_query("DELETE FROM autproc WHERE v55_proces = $v50_codigo") or die("Erro(44) deletando autproc");
   $aux_autor = split("#",$aux_autor);
   $tam = sizeof($aux_autor);
   for($i = 1;$i < $tam;$i++)
-    $result = pg_exec("INSERT INTO autproc VALUES($v50_codigo,'".$aux_autor[$i]."',$i)") or die("Erro(48) inserindo em autproc");
-  pg_exec("commit");
+    $result = db_query("INSERT INTO autproc VALUES($v50_codigo,'".$aux_autor[$i]."',$i)") or die("Erro(48) inserindo em autproc");
+  db_query("commit");
   db_redireciona();
 }
 ?>
@@ -101,7 +101,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 	   if(isset($HTTP_POST_VARS["procurar"]) || isset($HTTP_POST_VARS["priNoMe"]) || isset($HTTP_POST_VARS["antNoMe"]) || isset($HTTP_POST_VARS["proxNoMe"]) || isset($HTTP_POST_VARS["ultNoMe"])) {
 	     db_postmemory($HTTP_POST_VARS);
          if(!empty($codigo)) {
-           $result = pg_exec("select v50_codigo from juridico where v50_codigo = $codigo");
+           $result = db_query("select v50_codigo from juridico where v50_codigo = $codigo");
 	       if(pg_numrows($result) > 0) {
  	         db_redireciona("jur1_processo002.php?".base64_encode("retorno=".pg_result($result,0,0)));
 	         exit;
@@ -146,9 +146,9 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 	  </center>
 	  <?
 	    } else {
-          include("dbforms/db_funcoes.php");
+          include(modification("dbforms/db_funcoes.php"));
 		  $Alterar_PopularSelect = 1;
-	      include("forms/db_frmjurproc.php");
+	      include(modification("forms/db_frmjurproc.php"));
 		}
     ?>
 	</td>

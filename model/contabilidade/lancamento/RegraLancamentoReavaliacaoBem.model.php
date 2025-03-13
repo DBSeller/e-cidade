@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,11 +28,11 @@
 /**
  * Retorna as contas de lancamento de reavaliacao dos bens
  * @author Iuri Guntchnigg iuri@dbseller.com.br
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.6 $
  * @package contabilidade
  * @subpackage lancamentos
  */
-require_once ("interfaces/IRegraLancamentoContabil.interface.php");
+require_once(modification("interfaces/IRegraLancamentoContabil.interface.php"));
 
 class RegraLancamentoReavaliacaoBem implements IRegraLancamentoContabil {
 

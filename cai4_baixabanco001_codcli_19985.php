@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -28,6 +28,7 @@
 /**
  * Variável Especifica de Debug da rotina
  */
+require_once(modification("libs/db_conecta.php"));
 $lDebugMaricaAtivo = false;
 
 if (isset ($processar)) {
@@ -59,7 +60,7 @@ if (isset ($processar)) {
      	 throw new BusinessException( _M( MENSAGENS . "arquivo_importado" ) );
      }
 
-     system("cp -f ".$tmp_name." ".$DOCUMENT_ROOT."/tmp/", $intret);
+     system("cp -f ".$tmp_name." " . ECIDADE_PATH ." tmp/", $intret);
 
      if($intret != 0) {
 
@@ -232,12 +233,12 @@ if (isset ($processar)) {
   $rsCadBan = $clCadBan->sql_record($clCadBan->sql_query_file(null,"*",null,$sWhere));
   db_fieldsmemory($rsCadBan, 0);
 
-  $arq_array = file($DOCUMENT_ROOT."/tmp/".$arqret);
+  $arq_array = file(ECIDADE_PATH."tmp/".$arqret);
 
   if ($arq_array == false) {
 
     $oParametrosMsg                = new stdClass();
-    $oParametrosMsg->sDocumentRoot = $DOCUMENT_ROOT;
+    $oParametrosMsg->sDocumentRoot = ECIDADE_PATH;
     $sMsg                          = _M( MENSAGENS . 'erro_permissao_pasta', $oParametrosMsg);
     db_msgbox( $sMsg );
     exit;
@@ -257,11 +258,11 @@ if (isset ($processar)) {
 <?php
 
   if ($situacao == "") {
-    include ("forms/db_caiarq001.php");
+    include(modification("forms/db_caiarq001.php"));
   } else if ($situacao == 1 && empty($codretexiste)) {
-    include ("forms/db_caiarq002.php");
+    include(modification("forms/db_caiarq002.php"));
   } else if ($situacao == 2) {
-    include ("forms/db_caiarq003.php");
+    include(modification("forms/db_caiarq003.php"));
   }
   db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit"));
 ?>
@@ -1193,6 +1194,11 @@ if ($situacao == 2) {
 
        $numpar = trim($numpar);
 
+       /**
+        * Habilita variavel de sessao para permitir numpre's de outras instituições
+        */
+       permiteNumpreOutraInstituicao( true );
+
        $clDisBanco->codret     = $codret;
        $clDisBanco->k15_codbco = $k15_codbco;
        $clDisBanco->k15_codage = $k15_codage;
@@ -1223,6 +1229,11 @@ if ($situacao == 2) {
          $sMsg                     = _M( MENSAGENS . 'erro_inclusao_disbanco_numpre', $oParametrosMsg);
          throw new DBException($sMsg);
        }
+
+       /**
+        * Desabilita variavel de sessao para permitir numpre's de outras instituições
+        */
+       permiteNumpreOutraInstituicao( false );
 
        $idRet = $clDisBanco->idret;
 
@@ -1280,7 +1291,7 @@ if ($situacao == 2) {
      			|| $oDadosParametrosNumpref->k03_agrupadorarquivotxtbaixabanco == 2 ) {
 
      		$iCodRet = $codret;
-     		include_once("cai4_desmembramentodisbanco001.php");
+     		include_once(modification("cai4_desmembramentodisbanco001.php"));
      	 }
 
       if($lDebugMaricaAtivo == true){

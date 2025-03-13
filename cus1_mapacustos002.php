@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-include ("libs/db_utils.php");
-include ("dbforms/db_funcoes.php");
-include ("model/custoPlanilha.model.php");
-include ("classes/db_custoplanilhaorigem_classe.php");
-include ("classes/db_custoplano_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("model/custoPlanilha.model.php"));
+include(modification("classes/db_custoplanilhaorigem_classe.php"));
+include(modification("classes/db_custoplano_classe.php"));
 
 $oParametros = db_utils::postMemory($_POST);
 if ($oParametros->cc15_anousu ==  "" || $oParametros->cc15_mesusu == ""){
@@ -43,7 +43,7 @@ $oPlanilhaCusto = new custoPlanilha($oParametros->cc15_mesusu, $oParametros->cc1
 $aHeadersCusto  = array();
 $sSqlOrigens    = $oDaoOrigens->sql_query(null,"*", "cc14_sequencial");  
 $rsOrigens      = $oDaoOrigens->sql_record($sSqlOrigens);
-$aDadosOrigem   = db_utils::getColectionByRecord($rsOrigens);
+$aDadosOrigem   = db_utils::getCollectionByRecord($rsOrigens);
 foreach ($aDadosOrigem as $oOrigem) {
 
   if ($oOrigem->cc14_sequencial == 3) {

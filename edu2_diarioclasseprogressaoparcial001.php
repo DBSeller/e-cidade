@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -239,7 +239,7 @@ function js_pesquisarCalendarios() {
 function js_retornoPesquisarCalendario(oResponse) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
   oRetorno.dados.each(function(oCalendario, iSeq) {
     oCboCalendario.addItem(oCalendario.ed52_i_codigo, oCalendario.ed52_c_descr.urlDecode());
   });
@@ -283,7 +283,7 @@ function js_pesquisarTurmas() {
 function js_retornoGetTurmas(oResponse) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
     oRetorno.aTurmas.each(function(oTurma, iSeq) {
       oCboTurma.addItem(oTurma.ed57_i_codigo, oTurma.ed57_c_descr.urlDecode());
     });
@@ -321,7 +321,7 @@ function js_pesquisarDisciplinas () {
 function js_retornoGetDisciplinas(oResponse) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
   oCboDisciplinas.clearItens();
   oRetorno.aDisciplinas.each(function(oDisciplina, iSeq) {
     oCboDisciplinas.addItem(oDisciplina.iRegencia, oDisciplina.sDescricaoDisciplina.urlDecode());
@@ -355,7 +355,7 @@ function js_pesquisarPeriodos () {
 function js_retornoGetPeriodos(oResponse) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
   oRetorno.aPeriodos.each(function(oPeriodo, iSeq) {
     oCboPeriodo.addItem(oPeriodo.iCodigo, oPeriodo.sDescricao.urlDecode());
   });

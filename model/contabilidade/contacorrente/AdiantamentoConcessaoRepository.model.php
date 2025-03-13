@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/contabilidade/contacorrente/ContaCorrenteRepositoryBase.model.php");
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteRepositoryBase.model.php"));
 
 /**
  * Classe repositório com dados para o relatório balancete de conta corrente Adiantamento Concessao
  * @package contabilidade
  * @subpackage contacorrente
  * @author Acácio Schneider <acacio.schneider@dbseller.com.br>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.10 $
  */
 class AdiantamentoConcessaoRepository extends ContaCorrenteRepositoryBase {
 

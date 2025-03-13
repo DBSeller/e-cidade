@@ -1,7 +1,7 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,7 +24,6 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-
 //MODULO: saude
 $oDaoAgendamentos->rotulo->label();
 
@@ -46,208 +45,247 @@ $oRotulo->label('sd27_i_codigo');
 $oRotulo->label('rh70_sequencial');
 $oRotulo->label('rh70_estrutural');
 $oRotulo->label('rh70_descr');
-
 ?>
 
 <form name="form1" method="post">
   <table>
     <tr>
       <td>
-        <fieldset><legend>Transferência de Agenda por Especialização</legend>
-        <table>
-          <tr>
-            <td valign="top" colspan="2">
-              <fieldset><legend>De</legend>
-              <table>
-                <!-- PROFISSIONAL -->
-                <tr>
-                  <td nowrap title="<?=@$Tsd03_i_codigo?>">
-                    <?
-                    db_ancora(@$Lsd03_i_codigo, "js_pesquisasd03_i_codigo(true, 1);", $db_opcao);
-                    ?>
-                  </td>
-                  <td valing="top" align="top">
-                    <? 
-                    db_input('sd02_i_codigo', 10, $Isd02_i_codigo, true, 'hidden', $db_opcao, "");
-                    db_input('sd03_i_codigo', 10, $Isd03_i_codigo, true, 'text', $db_opcao, 
-                             " onchange='js_pesquisasd03_i_codigo(false, 1);' onFocus=\"nextfield='rh70_estrutural'\""
-                            ); 
-                    ?>
-                  </td>
-                  <td colspan="2">
-                    <?
-                    db_input('z01_nome', 30, $Iz01_nome, true, 'text', 3, '');
-                    ?>
-                  </td>
-                </tr>
-                <!-- CBO -->
-                <tr>
-                  <td nowrap title="<?=@$Tsd04_i_cbo?>">
-                    <?
-                    db_ancora(@$Lsd04_i_cbo, "js_pesquisasd04_i_cbo(true, 1);", $db_opcao);
-                    ?>
-                  </td>
-                  <td>
-                    <?
-                    db_input('sd27_i_codigo', 10, $Isd27_i_codigo, true, 'hidden', $db_opcao, "");
-                    db_input('rh70_sequencial', 10, $Irh70_sequencial, true, 'hidden', $db_opcao, "");
-                    db_input('rh70_estrutural', 10, $Irh70_estrutural, true, 'text', $db_opcao, 
-                             " onchange='js_pesquisasd04_i_cbo(false, 1);' onFocus=\"nextfield='sd23_d_consulta'\""
-                            );
-                    ?>
-                  </td>
-                  <td colspan="2">
-                    <?
-                    db_input('rh70_descr', 30, $Irh70_descr, true, 'text', 3, '');
-                    ?>
-                  </td>
-                </tr>
-                <tr>
-                  <td nowrap title="<?=@$Tsd23_d_consulta?>"><?=@$Lsd23_d_consulta?></td>
-                  <td>
-                    <?
-                    db_inputdatasaude('document.form1.sd27_i_codigo.value', 'sd23_d_consulta', @$sd23_d_consulta_dia, 
-                                      @$sd23_d_consulta_mes, @$sd23_d_consulta_ano, true, 'text', $db_opcao, 
-                                      " onchange='js_diasem(1)' onFocus=\"nextfield='sd03_i_codigo2'\" ",  "",  "", 
-                                      "parent.js_diasem(1); "
-                                     ); 
-                    ?>
-                  </td>
-                  <td>
-                    <? 
-                    db_input('diasemana', 30, @$diasemana, true, 'text', 3, ''); 
-                    db_input('dia', 10, @$dia, true, 'hidden', 3, ''); 
-                    ?>
-                  </td>
-                </tr>
-              </table>
-              </fieldset>              
-            </td>
-
-            <td valign="top" colspan="2">
-              <fieldset><legend>Para</legend>
-              <table>
-                <!-- PROFISSIONAL -->
-                <tr>
-                  <td nowrap title="<?=@$Tsd03_i_codigo?>" >
-                    <?
-                    db_ancora(@$Lsd03_i_codigo, "js_pesquisasd03_i_codigo(true, 2);", $db_opcao);
-                    ?>
-                  </td>
-                  <td valing="top" align="top">
-                    <?
-                    db_input('sd03_i_codigo2', 10, $Isd03_i_codigo, true, 'text', $db_opcao, 
-                             " onchange='js_pesquisasd03_i_codigo(false, 2);' onFocus=\"nextfield='rh70_estrutural2'\""
-                            );
-                    ?>
-                  </td>
-                  <td colspan="2">
-                    <?
-                    db_input('z01_nome2', 30, $Iz01_nome, true, 'text', 3, '');
-                    ?>
-                  </td>
-                </tr>
-                <!-- CBO -->
-                <tr>
-                  <td nowrap title="<?=@$Tsd04_i_cbo?>">
-                    <?
-                    db_ancora(@$Lsd04_i_cbo, "js_pesquisasd04_i_cbo(true, 2);", $db_opcao);
-                    ?>
-                  </td>
-                  <td>
-                    <?
-                    db_input('sd27_i_codigo2', 10, $Isd27_i_codigo, true, 'hidden', $db_opcao, "");
-                    db_input('rh70_sequencial2', 10, $Irh70_sequencial, true, 'hidden', $db_opcao, "");
-                    db_input('rh70_estrutural2', 10, $Irh70_estrutural, true, 'text', $db_opcao, 
-                             " onchange='js_pesquisasd04_i_cbo(false, 2);' onFocus=\"nextfield='sd23_d_consulta2'\""
-                            );
-                    ?>
-                  </td>
-                  <td colspan="2">
-                    <?
-                    db_input('rh70_descr2', 30, $Irh70_descr, true, 'text', 3, '');
-                    ?>
-                  </td>
-                </tr>
-                <tr>
-                  <td nowrap title="<?=@$Tsd23_d_consulta?>"><?=@$Lsd23_d_consulta?></td>
-                  <td>
-                    <?
-                    db_inputdatasaude('document.form1.sd27_i_codigo2.value', 'sd23_d_consulta2', 
-                                      @$sd23_d_consulta2_dia, @$sd23_d_consulta2_mes, @$sd23_d_consulta2_ano, 
-                                      true, 'text', $db_opcao, 
-                                      " onchange='js_diasem(2)' onFocus=\"nextfield='done'\" ",  "",  "",  
-                                      "parent.js_diasem(2); ");
-                    ?>
-                  </td>
-                  <td>
-                    <? 
-                    db_input('diasemana2', 30, @$diasemana2, true, 'text', 3, ''); 
-                    db_input('dia2', 10, @$dia2, true, 'hidden', 3, ''); 
-                    ?>
-                  </td>
-                </tr>
-              </table>
-              </fieldset>              
-            </td>          
-          </tr>
-          <tr>
-            <td colspan="2" align="center"><br>
-              <input type="button" name="transferir" value="Confirmar" onclick="js_transferir();"><br>
-            </td>
-            <td colspan="2" align="center">
-              <br>
-              <input type="submit" name="limpar" value="limpar" 
-                onclick="location.href='sau4_transfereagenda001.php';">
-              <br>
-            </td>
-          </tr>
-          <tr>
-            <td height="300px"><br>
-              <fieldset style="height: 94%;"><legend>Agendamento De:</legend>
-                <iframe id="frameagendadosde" name="frameagendadosde" src="" width="100%" height="100%" 
-                  scrolling="yes" frameborder="0"></iframe>
-              </fieldset>
-            </td>
-            <td nowrap align="center">
-              <input type="button" onclick="js_moveEsquerda();" value="<">
-              <br><br>
-              <input type="button" onclick="js_moveDireita();" value=">">
-            </td>
-            <td><br>
-              <fieldset style="height: 94%;"><legend>Agendamento Para:</legend>
-                <iframe id="frameagendadospara" name="frameagendadospara" src="" width="100%" height="100%" 
-                  scrolling="yes" frameborder="0"></iframe>
-              </fieldset>
-            </td>
-            <td nowrap align="center">
-              <input type="button" onclick="js_moveCima();" value="^">
-              <br><br>
-              <input type="button" onclick="js_moveBaixo();" value="V">
-            </td>
-
-          </tr>
-                    
-        </table>
+        <fieldset>
+          <legend>Transferência de Agenda por Especialização</legend>
+          <table>
+            <tr>
+              <td valign="top" colspan="2">
+                <fieldset>
+                  <legend>De</legend>
+                  <table>
+                    <!-- PROFISSIONAL -->
+                    <tr>
+                      <td nowrap title="<?=$Tsd03_i_codigo?>">
+                        <?php
+                        db_ancora( $Lsd03_i_codigo, "js_pesquisasd03_i_codigo(true, 1);", $db_opcao );
+                        ?>
+                      </td>
+                      <td valing="top" align="top">
+                        <?php
+                        $sScript = " onchange='js_pesquisasd03_i_codigo(false, 1);' onFocus=\"nextfield='rh70_estrutural'\"";
+                        db_input( 'sd02_i_codigo', 10, $Isd02_i_codigo, true, 'hidden', $db_opcao );
+                        db_input( 'sd03_i_codigo', 10, $Isd03_i_codigo, true, 'text',   $db_opcao, $sScript);
+                        ?>
+                      </td>
+                      <td colspan="2">
+                        <?php
+                        db_input( 'z01_nome', 30, $Iz01_nome, true, 'text', 3 );
+                        ?>
+                      </td>
+                    </tr>
+                    <!-- CBO -->
+                    <tr>
+                      <td nowrap title="<?=$Tsd04_i_cbo?>">
+                        <?php
+                        db_ancora( $Lsd04_i_cbo, "js_pesquisasd04_i_cbo(true, 1);", $db_opcao );
+                        ?>
+                      </td>
+                      <td>
+                        <?php
+                        $sScript = " onchange='js_pesquisasd04_i_cbo(false, 1);' onFocus=\"nextfield='sd23_d_consulta'\"";
+                        db_input( 'sd27_i_codigo',   10, $Isd27_i_codigo,   true, 'hidden', $db_opcao );
+                        db_input( 'rh70_sequencial', 10, $Irh70_sequencial, true, 'hidden', $db_opcao );
+                        db_input( 'rh70_estrutural', 10, $Irh70_estrutural, true, 'text',   $db_opcao, $sScript );
+                        ?>
+                      </td>
+                      <td colspan="2">
+                        <?php
+                        db_input( 'rh70_descr', 30, $Irh70_descr, true, 'text', 3 );
+                        ?>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td nowrap title="<?=$Tsd23_d_consulta?>"><?=$Lsd23_d_consulta?></td>
+                      <td>
+                        <?php
+                        $sd23_d_consulta_dia = !empty($sd23_d_consulta_dia) ? $sd23_d_consulta_dia : "";
+                        $sd23_d_consulta_mes = !empty($sd23_d_consulta_mes) ? $sd23_d_consulta_mes : "";
+                        $sd23_d_consulta_ano = !empty($sd23_d_consulta_ano) ? $sd23_d_consulta_ano : "";
+  
+                        db_inputdatasaude(
+                                           'document.form1.sd27_i_codigo.value',
+                                           'sd23_d_consulta',
+                                           $sd23_d_consulta_dia,
+                                           $sd23_d_consulta_mes,
+                                           $sd23_d_consulta_ano,
+                                           true,
+                                           'text',
+                                           $db_opcao,
+                                           " onchange='js_diasem(1)' onFocus=\"nextfield='sd03_i_codigo2'\" ",
+                                           "",
+                                           "",
+                                           "parent.js_diasem(1); ", '', '', '', false, false,
+                                           'document.form1.sd02_i_codigo.value',
+                                           'document.form1.sd02_i_codigo.value'
+                                         );
+                        ?>
+                      </td>
+                      <td>
+                        <?php
+                        db_input( 'diasemana', 30, $diasemana, true, 'text',   3 );
+                        db_input( 'dia',       10, $dia,       true, 'hidden', 3 );
+                        ?>
+                      </td>
+                    </tr>
+                  </table>
+                </fieldset>              
+              </td>
+  
+              <td valign="top" colspan="2">
+                <fieldset>
+                  <legend>Para</legend>
+                  <table>
+                    <!-- PROFISSIONAL -->
+                    <tr>
+                      <td nowrap title="<?=$Tsd03_i_codigo?>" >
+                        <?php
+                        db_ancora( $Lsd03_i_codigo, "js_pesquisasd03_i_codigo(true, 2);", $db_opcao );
+                        ?>
+                      </td>
+                      <td valing="top" align="top">
+                        <?php
+                        $sScript = " onchange='js_pesquisasd03_i_codigo(false, 2);' onFocus=\"nextfield='rh70_estrutural2'\"";
+                        db_input( 'sd03_i_codigo2', 10, $Isd03_i_codigo, true, 'text', $db_opcao, $sScript );
+                        ?>
+                      </td>
+                      <td colspan="2">
+                        <?php
+                        db_input( 'z01_nome2', 30, $Iz01_nome, true, 'text', 3 );
+                        ?>
+                      </td>
+                    </tr>
+                    <!-- CBO -->
+                    <tr>
+                      <td nowrap title="<?=$Tsd04_i_cbo?>">
+                        <?php
+                        db_ancora( $Lsd04_i_cbo, "js_pesquisasd04_i_cbo(true, 2);", $db_opcao );
+                        ?>
+                      </td>
+                      <td>
+                        <?php
+                        $sScript = " onchange='js_pesquisasd04_i_cbo(false, 2);' onFocus=\"nextfield='sd23_d_consulta2'\"";
+  
+                        db_input( 'sd27_i_codigo2',   10, $Isd27_i_codigo,   true, 'hidden', $db_opcao );
+                        db_input( 'rh70_sequencial2', 10, $Irh70_sequencial, true, 'hidden', $db_opcao );
+                        db_input( 'rh70_estrutural2', 10, $Irh70_estrutural, true, 'text',   $db_opcao, $sScript );
+                        ?>
+                      </td>
+                      <td colspan="2">
+                        <?php
+                        db_input( 'rh70_descr2', 30, $Irh70_descr, true, 'text', 3 );
+                        ?>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td nowrap title="<?=$Tsd23_d_consulta?>"><?=$Lsd23_d_consulta?></td>
+                      <td>
+                        <?php
+                        $sd23_d_consulta2_dia = !empty($sd23_d_consulta2_dia) ? $sd23_d_consulta2_dia : "";
+                        $sd23_d_consulta2_mes = !empty($sd23_d_consulta2_mes) ? $sd23_d_consulta2_mes : "";
+                        $sd23_d_consulta2_ano = !empty($sd23_d_consulta2_ano) ? $sd23_d_consulta2_ano : "";
+  
+                        db_inputdatasaude(
+                                           'document.form1.sd27_i_codigo2.value',
+                                           'sd23_d_consulta2',
+                                           $sd23_d_consulta2_dia,
+                                           $sd23_d_consulta2_mes,
+                                           $sd23_d_consulta2_ano,
+                                           true,
+                                           'text',
+                                           $db_opcao,
+                                           " onchange='js_diasem(2)' onFocus=\"nextfield='done'\" ",
+                                           "",
+                                           "",
+                                           "parent.js_diasem(2); ", '', '', '', false, false,
+                                           'document.form1.sd02_i_codigo.value',
+                                           'document.form1.sd02_i_codigo.value'
+                                         );
+                        ?>
+                      </td>
+                      <td>
+                        <?php
+                        db_input( 'diasemana2', 30, 'diasemana2', true, 'text',   3 );
+                        db_input( 'dia2',       10, 'dia2',       true, 'hidden', 3 );
+                        ?>
+                      </td>
+                    </tr>
+                  </table>
+                </fieldset>              
+              </td>          
+            </tr>
+            <tr>
+              <td colspan="2" align="center"><br>
+                <input type="button" name="transferir" value="Confirmar" onclick="js_transferir();"><br>
+              </td>
+              <td colspan="2" align="center">
+                <br>
+                <input type="submit" name="limpar" value="Limpar"
+                  onclick="location.href='sau4_transfereagenda001.php';">
+                <br>
+              </td>
+            </tr>
+            <tr>
+              <td height="300px">
+                <fieldset style="height: 94%;">
+                  <legend>Agendamento De:</legend>
+                  <iframe id="frameagendadosde"
+                          name="frameagendadosde"
+                          src=""
+                          width="100%"
+                          height="100%"
+                          scrolling="yes"
+                          frameborder="0"></iframe>
+                </fieldset>
+              </td>
+              <td nowrap align="center">
+                <input type="button" onclick="js_moveEsquerda();" value="<">
+                <br><br>
+                <input type="button" onclick="js_moveDireita();" value=">">
+              </td>
+              <td>
+                <fieldset style="height: 94%;">
+                  <legend>Agendamento Para:</legend>
+                  <iframe id="frameagendadospara"
+                          name="frameagendadospara"
+                          src=""
+                          width="100%"
+                          height="100%"
+                          scrolling="yes"
+                          frameborder="0"></iframe>
+                </fieldset>
+              </td>
+              <td nowrap align="center">
+                <input type="button" onclick="js_moveCima();" value="^">
+                <br><br>
+                <input type="button" onclick="js_moveBaixo();" value="V">
+              </td>
+            </tr>
+          </table>
         </fieldset>
       </td>
     </tr>
   </table>
 </form>
 
-<script>
+<script type="text/javascript">
 
-<?
-if (!isset($lBotao) || $lBotao != 'true') {
-  echo 'js_limpar();';
-} else {
+<?php
+  if (!isset($lBotao) || $lBotao != 'true') {
+    echo 'js_limpar();';
+  } else {
 
-  echo "$('sd23_d_consulta').value = '$sd23_d_consulta';";
-  echo 'js_agendados(1);';
-  echo "sAgendamentosMarcar = '$sAgendamentos';";
-  
-}
+    echo "$('sd23_d_consulta').value = '$sd23_d_consulta';";
+    echo 'js_agendados(1);';
+    echo "sAgendamentosMarcar = '$sAgendamentos';";
+  }
 ?>
+  
 function js_ajax(oParam, jsRetorno, sUrl) {
 
   var mRetornoAjax;
@@ -255,6 +293,7 @@ function js_ajax(oParam, jsRetorno, sUrl) {
   if (sUrl == undefined) {
     sUrl = 'sau4_agendamento.RPC.php';
   }
+
   var objAjax = new Ajax.Request(sUrl, 
                                  {
                                   method: 'post',
@@ -268,7 +307,6 @@ function js_ajax(oParam, jsRetorno, sUrl) {
                                 );
 
   return mRetornoAjax;
-
 }
 
 function js_limpar() {
@@ -287,7 +325,6 @@ function js_limpar() {
   $('diasemana2').value       = '';
   $('frameagendadosde').src   = '';
   $('frameagendadospara').src = '';
-
 }
 
 function js_transferir() {
@@ -296,7 +333,6 @@ function js_transferir() {
 
     alert('Selecione uma data para transferir os agendamentos');
     return false;
-
   }
 
   var oLadoPara   = document.getElementById('frameagendadospara').contentDocument; // Docuemnto do iframe para
@@ -306,65 +342,62 @@ function js_transferir() {
   /* aDados[0] -> codigo do agendamento
      aDados[1] -> codigo da undmedhorarios (codigo da grade de horarios)
      aDados[2] -> id da linha */
-  var aDadosAntes = new Array();
-  var aDadosNovos = new Array();
-
-  var oParam      = new Object();
-
+  var aDadosAntes         = new Array();
+  var aDadosNovos         = new Array();
+  var oParam              = new Object();
   var aDadosTransferencia = new Array();
 
   if (oCkLadoPara.length == 0) {
 
     alert('Nenhum agendamento para transferir.');
     return false;
-
   }
 
   for (var iCont = 0; iCont < oCkLadoPara.length; iCont++) {
     
     aDadosAntes = oLadoPara.getElementById('transf_'+iCont).value.split(' ## ');
     if (aDadosAntes.length == 3) { // deve ser transferido, pois os dados antigos estão preenchidos
-      
+
       aDadosNovos                                = oLadoPara.getElementById('ckbox_'+iCont).value.split(' ## ');
       iTam                                       = aDadosTransferencia.length;
       aDadosTransferencia[iTam]                  = new Object();
       aDadosTransferencia[iTam].sd23_i_codigo    = aDadosAntes[0];
       aDadosTransferencia[iTam].sd23_d_consulta  = $F('sd23_d_consulta2_ano')+'-'+$F('sd23_d_consulta2_mes')+'-'+
                                                    $F('sd23_d_consulta2_dia');
-      aDadosTransferencia[iTam].sd23_i_ficha     = oLadoPara.getElementById('td_'+iCont+'1').innerHTML;
-      aDadosTransferencia[iTam].sd23_c_hora      = oLadoPara.getElementById('td_'+iCont+'2').innerHTML;
+      aDadosTransferencia[iTam].sd23_i_ficha     = oLadoPara.getElementById('td_'+iCont+'1').innerHTML.trim();
+      aDadosTransferencia[iTam].sd23_c_hora      = oLadoPara.getElementById('td_'+iCont+'2').innerHTML.trim();
       aDadosTransferencia[iTam].sd23_i_undmedhor = aDadosNovos[1];
-      
     }
-
   }
 
   if (aDadosTransferencia.length == 0) {
 
     alert('Nenhum agendamento para transferir.');
     return false;
-    
   }
 
   oParam.exec                = 'transferirAgendamentos';
   oParam.aDadosTransferencia = aDadosTransferencia;
 
   js_ajax(oParam, 'js_retornoTransferir');
-
 }
 
 function js_retornoTransferir(oRetorno) {
   
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus == 1) {
 
-    alert('Transferencia realizada com sucesso.');
+    alert('Transferência realizada com sucesso.');
     js_diasem(1);
     js_diasem(2);
-    <?
-    if (isset($lBotao) || $lBotao == 'true') {
-      echo 'parent.js_agendados();';
+    
+    <?php
+    if (isset($lBotao)) {
+      
+      if ($lBotao == 'true') {
+        echo 'parent.js_agendados();';
+      }
     }
     ?>
     return true;
@@ -373,9 +406,7 @@ function js_retornoTransferir(oRetorno) {
 
     alert(oRetorno.sMessage.urlDecode().replace(/\\n/g, "\n"));
     return false;
-
   }
-
 }
 
 function js_moveEsquerda() {
@@ -427,15 +458,12 @@ function js_moveEsquerda() {
       /* retiro os dados do campo hidden dos agendamentos transferidos, 
          pois o agendamento voltou para seu lugar de origem */
       oLadoPara.getElementById('transf_'+aDadosAtual[2]).value = '';
-
     } // fim if agendamento do lado para foi marcado para ser transferido
-
   } // fim for procura agendamentos para mover no lado para
 
   if (!lHorarioSel) {
     alert('Nenhum horário selecionado para transferir.');
   }
-
 }
 
 function js_moveDireita() {
@@ -457,6 +485,7 @@ function js_moveDireita() {
       lBreak      = false;
       lMarcada    = false;
       lHorarioSel = true;
+
       for (var iCont2 = 0; iCont2 < oCkLadoPara.length; iCont2++) { // verif se alguma grade foi marc p/ recebr o agend
        
         if (oCkLadoPara[iCont2].checked) {
@@ -465,11 +494,13 @@ function js_moveDireita() {
 
           var oLivres = oLadoPara.getElementsByName('lLivre'+oCkLadoPara[iCont2].value);
           var aLivres = new Array();
+
           for (var iCont3 = 0; iCont3 < oLivres.length; iCont3++) { // verifico se tem algum horario livre para a grade
             
             /* aLivres[0] -> 'true' ou 'false', indicando se está ou não livre
                aLivres[1] -> id da linha */
-            aLivres = oLivres[iCont3].value.split(' ## '); 
+            aLivres = oLivres[iCont3].value.split(' ## ');
+
             if (aLivres[0] == 'true') {
 
               /* aDados[0] -> codigo do agendamento
@@ -505,9 +536,7 @@ function js_moveDireita() {
 
               lBreak = true;
               break;
-
             }
-            
           }
 
           if (lBreak) {
@@ -516,28 +545,21 @@ function js_moveDireita() {
 
             alert('A grade não possui mais horários vagos.');
             return false;
-
           }
-
         } // fim if grade foi marcada para receber os agendamentos sendo transferidos
-
       } // fim for que verifica se alguma grade for marcada para receber os agendamentos a serem transferidos
 
       if (!lMarcada) {
 
         alert('Selecione uma grade para receber os agendamentos a serem transferidos.');
         break;
-
       }
-
     } // fim if foi marcado para ser transferido
-
   } // fim for que verifica os agendamentos marcados para serem transferidos
 
   if (!lHorarioSel) {
     alert('Nenhum horário selecionado para transferir.');
   }
-
 }
 
 function js_moveBaixo() {
@@ -565,6 +587,7 @@ function js_moveBaixo() {
         /* aLivres[0] -> 'true' ou 'false', indicando se está ou não livre
            aLivres[1] -> id da linha */
         aLivres = oLadoPara.getElementById('livre_'+iCont2).value.split(' ## ');
+
         if (aLivres[0] == 'true') {
 
           // Quando a grade for período, só movo para outra grade, pois não faz diferença mover para a mesma
@@ -574,7 +597,6 @@ function js_moveBaixo() {
             if (aDadosTmp[1] == aDados[1]) { // ainda é a mesma grade
               continue;
             }
-          
           }
 
           // Dados que o agendamento já possuía (no lado de) para o novo horário e apago do antigo
@@ -608,13 +630,9 @@ function js_moveBaixo() {
           oLadoPara.getElementById('ckbox_'+iCont2).disabled = false;
 
           return true;
-          
         } // fim if horario livre
-
       } // fim do for que verifica se existe algum horario livre
-
     } // fim if agendamento foi marcado para ser movido
-
   } // fim for procura agendamentos para mover
 
   if (!lHorarioSel) {
@@ -622,7 +640,6 @@ function js_moveBaixo() {
   } else {
     alert('O horário não pode ser movido.');
   }
-
 }
 
 function js_moveCima() {
@@ -650,6 +667,7 @@ function js_moveCima() {
         /* aLivres[0] -> 'true' ou 'false', indicando se está ou não livre
            aLivres[1] -> id da linha */
         aLivres = oLadoPara.getElementById('livre_'+iCont2).value.split(' ## ');
+
         if (aLivres[0] == 'true') {
 
           // Quando a grade for período, só movo para outra grade, pois não faz diferença mover para a mesma
@@ -659,7 +677,6 @@ function js_moveCima() {
             if (aDadosTmp[1] == aDados[1]) { // ainda é a mesma grade
               continue;
             }
-          
           }
 
           // Dados que o agendamento já possuía (no lado de) para o novo horário e apago do antigo
@@ -693,13 +710,9 @@ function js_moveCima() {
           oLadoPara.getElementById('ckbox_'+iCont2).disabled = false;
 
           return true;
-          
         } // fim if horario livre
-
       } // fim do for que verifica se existe algum horario livre
-
     } // fim if agendamento foi marcado para ser movido
-
   } // fim for procura agendamentos para mover
 
   if (!lHorarioSel) {
@@ -707,7 +720,6 @@ function js_moveCima() {
   } else {
     alert('O horário não pode ser movido.');
   }
-
 }
 
 function js_marcarAgendamentosSelecionados() {
@@ -725,9 +737,7 @@ function js_marcarAgendamentosSelecionados() {
     if (!oLadoDe.getElementById('ckbox_'+aAgendamentos[iCont]).disabled) {
       oLadoDe.getElementById('ckbox_'+aAgendamentos[iCont]).checked = true;
     }
-
   }
-
 }
 
 function js_agendados(depara) {
@@ -737,13 +747,11 @@ function js_agendados(depara) {
     sd23_d_consulta = $F('sd23_d_consulta');
     sd27_i_codigo   = $F('sd27_i_codigo');
     iframe          = document.getElementById('frameagendadosde');
-
   } else {
 
     sd23_d_consulta = $F('sd23_d_consulta2');
     sd27_i_codigo  = $F('sd27_i_codigo2');
     iframe         = document.getElementById('frameagendadospara');
-
   }
   
   if (sd23_d_consulta != '') {
@@ -760,16 +768,14 @@ function js_agendados(depara) {
     sUrl     += '&sd23_d_consulta='+sd23_d_consulta;
     sUrl     += '&sTransf=true';
     sUrl     += '&sLado='+(depara == 1 ? 'de' : 'para');
-    <?
+    <?php
     if (isset($lBotao)) {
       echo "sUrl += '&lMarcarAgendamentos=true'";
     }
     ?>
 
     iframe.src = sUrl;
-
   }
-
 }
 
 function js_diasem(depara) {
@@ -780,29 +786,26 @@ function js_diasem(depara) {
 
       js_limpaDataConsulta(1);
       return false;
-
     }
-    iAno = $F('sd23_d_consulta_ano')
+
+    iAno = $F('sd23_d_consulta_ano');
     iMes = parseInt($F('sd23_d_consulta_mes'), 10) - 1;
     iDia = $F('sd23_d_consulta_dia');
-
   } else {
 
     if ($F('sd23_d_consulta2') == '') {
 
       js_limpaDataConsulta(2);
       return false;
-
     }
-    iAno = $F('sd23_d_consulta2_ano')
+
+    iAno = $F('sd23_d_consulta2_ano');
     iMes = parseInt($F('sd23_d_consulta2_mes'), 10) - 1;
     iDia = $F('sd23_d_consulta2_dia');
-
   }
 
   dData       = new Date(iAno, iMes, iDia);
   iDiaSemana  = dData.getDay();
-
   sNomeDia    = new Array(6);
   sNomeDia[0] = 'Domingo';
   sNomeDia[1] = 'Segunda-Feira';
@@ -816,16 +819,13 @@ function js_diasem(depara) {
 
     document.form1.diasemana.value = sNomeDia[iDiaSemana];
     document.form1.dia.value       = (iDiaSemana + 1);
-
   } else {
 
     document.form1.diasemana2.value = sNomeDia[iDiaSemana];
     document.form1.dia2.value       = (iDiaSemana + 1);
-    
   }
   
   js_agendados(depara);
-  
 }
 
 function js_calend() {
@@ -837,8 +837,6 @@ function js_calend() {
   
   iframe = $('framecalendario');
   iframe.src = x;
-    
-    
 }
 
 function js_limpaFrames(iLado) {
@@ -848,7 +846,6 @@ function js_limpaFrames(iLado) {
   } else {
     $('frameagendadospara').src = '';
   }
-
 }
 
 function js_limpaDataConsulta(iLado) {
@@ -857,18 +854,14 @@ function js_limpaDataConsulta(iLado) {
 
     $('diasemana').value        = '';
     $('sd23_d_consulta').value  = '';
-
   } else {
 
     $('diasemana2').value       = '';
     $('sd23_d_consulta2').value = '';
-
   }
 
   js_limpaFrames(iLado);
-
 }
-
 
 function js_limpaEspecialidade(iLado) {
 
@@ -879,7 +872,6 @@ function js_limpaEspecialidade(iLado) {
     $('sd27_i_codigo').value   = '';
     $('sd23_d_consulta').value = '';
     js_limpaDataConsulta(iLado);
-
   } else {
 
     $('rh70_descr2').value      = '';
@@ -887,9 +879,7 @@ function js_limpaEspecialidade(iLado) {
     $('sd27_i_codigo2').value   = '';
     $('sd23_d_consulta2').value = '';
     js_limpaDataConsulta(iLado);
-
   }
-  
 }
 
 function js_limpaProfissional(iLado) {
@@ -898,14 +888,11 @@ function js_limpaProfissional(iLado) {
 
     $('z01_nome').value      = '';
     js_limpaEspecialidade(iLado);
-
   } else {
 
     $('z01_nome2').value      = '';
     js_limpaEspecialidade(iLado);
-
   }
-
 }
 
 function js_pesquisasd04_i_cbo(mostra, depara) {
@@ -920,7 +907,6 @@ function js_pesquisasd04_i_cbo(mostra, depara) {
                           document.form1.sd02_i_codigo.value+'&chave_sd04_i_medico='+
                           document.form1.sd03_i_codigo2.value, 'Pesquisa', true
                          );
-
     } else {
 
       js_OpenJanelaIframe('', 'db_iframe_especmedico', 'func_especmedico.php?'+
@@ -929,9 +915,7 @@ function js_pesquisasd04_i_cbo(mostra, depara) {
                           document.form1.sd02_i_codigo.value+'&chave_sd04_i_medico='+
                           document.form1.sd03_i_codigo.value, 'Pesquisa', true
                          );
-
     }
-
   } else {
 
     if (depara == 2) {
@@ -946,11 +930,9 @@ function js_pesquisasd04_i_cbo(mostra, depara) {
                            );
         document.form1.rh70_estrutural2.value = '';
         document.form1.rh70_descr2.value      = '';
-
       } else {
         js_limpaEspecialidade(2);
       }
-
     } else {
 
       if (document.form1.rh70_estrutural.value != '') {
@@ -963,16 +945,13 @@ function js_pesquisasd04_i_cbo(mostra, depara) {
                            );
         document.form1.rh70_estrutural.value = '';
         document.form1.rh70_descr.value      = '';
-
       } else {
         js_limpaEspecialidade(2);
       }
-
     }
-
   }
-
 }
+
 function js_mostrarhcbo1(chave1, chave2, chave3, chave4) {
 
   js_limpaEspecialidade(1);
@@ -987,10 +966,9 @@ function js_mostrarhcbo1(chave1, chave2, chave3, chave4) {
 
     document.form1.rh70_estrutural.focus(); 
     document.form1.rh70_estrutural.value = ''; 
-
   }
-
 }
+
 function js_mostrarhcbo2(chave1, chave2, chave3, chave4) {
 
   js_limpaEspecialidade(2);
@@ -1006,14 +984,13 @@ function js_mostrarhcbo2(chave1, chave2, chave3, chave4) {
     if (document.form1.rh70_sequencial2.value != document.form1.rh70_sequencial.value) {
       alert('CBO do profissional de destino difere do profissional de origem.');
     }
+
     document.form1.rh70_estrutural2.focus();
     document.form1.sd27_i_codigo2.value   = '';
     document.form1.rh70_estrutural2.value = '';
     document.form1.rh70_descr2.value      = '';
     document.form1.rh70_sequencial2.value = '';
-
   }
-
 }
 
 function js_pesquisasd03_i_codigo(mostra, depara) {
@@ -1027,16 +1004,13 @@ function js_pesquisasd03_i_codigo(mostra, depara) {
                           document.form1.sd02_i_codigo.value+'&chave_rh70_estrutural='+
                           document.form1.rh70_estrutural.value, 'Pesquisa', true
                          );
-
     } else {
 
       js_OpenJanelaIframe('', 'db_iframe_medicos', 'func_medicos.php?funcao_js=parent.js_mostramedicos1|'+
                           'sd03_i_codigo|z01_nome&chave_sd06_i_unidade='+document.form1.sd02_i_codigo.value, 
                           'Pesquisa', true
                          );
-
     }
-
   } else {
 
     if (document.form1.sd03_i_codigo.value != '') {
@@ -1049,7 +1023,6 @@ function js_pesquisasd03_i_codigo(mostra, depara) {
                             document.form1.sd02_i_codigo.value+'&chave_rh70_estrutural='+
                             document.form1.rh70_estrutural.value, 'Pesquisa', false
                            );
-
       } else {
 
         js_OpenJanelaIframe('', 'db_iframe_medicos', 'func_medicos.php?pesquisa_chave='+
@@ -1057,16 +1030,13 @@ function js_pesquisasd03_i_codigo(mostra, depara) {
                             '&funcao_js=parent.js_mostramedicos_1&chave_sd06_i_unidade='+
                             document.form1.sd02_i_codigo.value, 'Pesquisa', false
                            );
-
       }
-
     } else {
       document.form1.z01_nome.value = '';
     }
-
   }
-
 }
+
 function js_mostramedicos_1(chave, erro) {
 
   js_limpaProfissional(1);
@@ -1078,12 +1048,11 @@ function js_mostramedicos_1(chave, erro) {
     document.form1.sd27_i_codigo.value   = '';
     document.form1.rh70_estrutural.value = '';
     document.form1.rh70_descr.value      = '';
-
   } else {
     js_pesquisasd04_i_cbo(true, 1);    
   }
-
 }
+
 function js_mostramedicos_2(chave, erro) {
 
   js_limpaProfissional(2);
@@ -1095,12 +1064,11 @@ function js_mostramedicos_2(chave, erro) {
     document.form1.sd27_i_codigo2.value   = '';
     document.form1.rh70_estrutural2.value = '';
     document.form1.rh70_descr2.value      = '';
-
   } else {
     js_pesquisasd04_i_cbo(true, 2);    
   }
-
 }
+
 function js_mostramedicos1(chave1, chave2) {
 
   js_limpaProfissional(1);
@@ -1108,8 +1076,8 @@ function js_mostramedicos1(chave1, chave2) {
   document.form1.z01_nome.value      = chave2;
   db_iframe_medicos.hide();
   js_pesquisasd04_i_cbo(true, 1);
-
 }
+
 function js_mostramedicos2(chave1, chave2) {
 
   js_limpaProfissional(2);
@@ -1117,7 +1085,5 @@ function js_mostramedicos2(chave1, chave2) {
   document.form1.z01_nome2.value      = chave2;
   db_iframe_medicos.hide();
   js_pesquisasd04_i_cbo(true, 2);
-
 }
-
 </script>

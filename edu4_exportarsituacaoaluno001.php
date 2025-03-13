@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_calendarioescola_classe.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_escoladiretor_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_calendarioescola_classe.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_escoladiretor_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
 $clcalendarioescola = new cl_calendarioescola;
@@ -488,7 +488,7 @@ if(isset($gerararquivo)){
    $ed221_i_serie     = trim($ed221_i_serie)!=""?trim($ed221_i_serie):"";
    $ed60_c_situacao   = trim($ed60_c_situacao)!=""?trim($ed60_c_situacao):"";
    $sql_etapa = "SELECT ed11_i_codcenso FROM serie WHERE ed11_i_codigo = $ed221_i_serie";
-   $result_etapa = pg_query($sql_etapa);
+   $result_etapa = db_query($sql_etapa);
    if(pg_num_rows($result_etapa)>0){
     $ed221_i_serie = pg_result($result_etapa,0,0);
    }else{
@@ -536,7 +536,7 @@ if(isset($gerararquivo)){
                      AND ed280_i_ano = $ed52_i_ano
                      AND ed280_i_turmacenso = $ed57_i_codigoinep 
                     ";
-    $result_matcenso = pg_query($sql_matcenso);   
+    $result_matcenso = db_query($sql_matcenso);   
     if(pg_num_rows($result_matcenso)==0 && $admitidoapos==0){
      $var_erro = "ALUNO: $ed47_i_codigo - $ed47_v_nome - Matrícula INEP não informada para este aluno.\n";
      fwrite($ponteiro2,$var_erro);

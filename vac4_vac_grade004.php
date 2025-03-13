@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_vac_aplica_classe.php");
-include("classes/db_vac_aplicaanula_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_utils.php");
-include("classes/db_vac_calendario_classe.php");
-include("classes/db_vac_vacinadoserestricao_classe.php");
-include("classes/db_vac_vacinadose_classe.php");
-include("classes/db_vac_vacina_classe.php");
-include("classes/db_vac_dose_classe.php");
-include("classes/db_cgs_und_classe.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("ext/php/adodb-time.inc.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_vac_aplica_classe.php"));
+include(modification("classes/db_vac_aplicaanula_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_utils.php"));
+include(modification("classes/db_vac_calendario_classe.php"));
+include(modification("classes/db_vac_vacinadoserestricao_classe.php"));
+include(modification("classes/db_vac_vacinadose_classe.php"));
+include(modification("classes/db_vac_vacina_classe.php"));
+include(modification("classes/db_vac_dose_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("ext/php/adodb-time.inc.php"));
 $clvac_aplicaanula         = new cl_vac_aplicaanula;
 $clvac_vacinadoserestricao = new cl_vac_vacinadoserestricao;
 $clvac_calendario          = new cl_vac_calendario;
@@ -85,7 +85,7 @@ $db_botao = true;
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmvac_aplicavacina.php");
+	include(modification("forms/db_frmvac_aplicavacina.php"));
 	?>
     </center>
 	</td>

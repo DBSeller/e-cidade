@@ -1,0 +1,3 @@
+<?
+$campos = "avaliacaogruporespostaremuneracaorgps.eso28_sequencial,avaliacaogruporespostaremuneracaorgps.eso28_avaliacaogruporesposta,avaliacaogruporespostaremuneracaorgps.eso28_cgm,avaliacaogruporespostaremuneracaorgps.eso28_ano,avaliacaogruporespostaremuneracaorgps.eso28_mes";
+?>

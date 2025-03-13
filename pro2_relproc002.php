@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include("fpdf151/pdf.php");
- //include("libs/db_stdlib.php");
+ include(modification("fpdf151/pdf.php"));
+ //include(modification("libs/db_stdlib.php"));
   parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
  
  // $processo = $processo;
@@ -40,7 +40,7 @@
              inner join db_usuarios on p58_id_usuario=id_usuario
 	 where protprocesso.p58_codproc=$processo  
        ";
- $res_proc = pg_exec($sql);
+ $res_proc = db_query($sql);
  $rows_proc = pg_numrows($res_proc);
  if (pg_numrows($res_proc) == 0){
      echo "zerado";
@@ -99,7 +99,7 @@
        	     where p61_codproc=$processo 
 	     order by p61_dtandam
             ";
-      $res_and = pg_exec($sql);
+      $res_and = db_query($sql);
       if (pg_numrows($res_and)>0){
             $pdf->Ln(4);
             $pdf->setX(20);
@@ -135,7 +135,7 @@
 	          and p63_codtran not in(select p64_codtran
 				         from proctransand 
 					 order by p64_codtran)";
-      $res_and = pg_exec($sql);
+      $res_and = db_query($sql);
       if (pg_numrows($res_and)>0){
            $pdf->Ln(4);
            $pdf->setX(20);
@@ -166,7 +166,7 @@
 		  left join arrepaga rp on rp.k00_numpre = k80_numpre 
 	      where k80_codproc = $processo 
 	      group by r.k00_numpre, rp.k00_numpre,rp.k00_dtpaga,r.k00_dtvenc,r.k00_dtoper";
-      $res_and = pg_exec($sql);
+      $res_and = db_query($sql);
       if(pg_numrows($res_and)>0){
            $pdf->Ln(4);
            $pdf->setX(20);

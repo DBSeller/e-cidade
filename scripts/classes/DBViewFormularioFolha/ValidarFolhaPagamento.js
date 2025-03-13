@@ -26,7 +26,7 @@ DBViewFormularioFolha.ValidarFolhaPagamento.prototype.verificarFolhaPagamentoAbe
     parameters  : 'json='+Object.toJSON(oParam),
     asynchronous: false,
     onComplete  : function( oRespostaAjax ) {
-      var oRetorno = eval("(" + oRespostaAjax.responseText + ")");
+      var oRetorno = JSON.parse(oRespostaAjax.responseText);
        
       if (oRetorno.iStatus == 2) {
         throw oRetorno.sMensagem;
@@ -40,3 +40,43 @@ DBViewFormularioFolha.ValidarFolhaPagamento.prototype.verificarFolhaPagamentoAbe
   return lAberta;
 };
 
+/**
+ * Verifica se a folha de pagamento esta aberta ou fechada conforme os parâmetros.
+ * 
+ * @param {Integer} iTipoFolha
+ * @param {Integer} iAnoFolha
+ * @param {Integer} iMesFolha
+ * @param {Boolean} lStatus
+ * @returns {Boolean}
+ */
+DBViewFormularioFolha.ValidarFolhaPagamento.prototype.verificarFolhaPagamento = function (iTipoFolha, iAnoFolha, iMesFolha, lStatus) {
+  
+  var lAberta = true;
+  
+  var oParam  = {
+      sExecucao   : 'VerificarFolhaPagamento',
+      iTipoFolha  : iTipoFolha,
+      iAnoFolha   : iAnoFolha,
+      iMesFolha   : iMesFolha,
+      lStatus     : lStatus
+  };
+  
+  var oDadosRequisicao = {
+    method      : 'post', 
+    parameters  : 'json='+Object.toJSON(oParam),
+    asynchronous: false,
+    onComplete  : function( oRespostaAjax ) {
+      
+      var oRetorno = JSON.parse(oRespostaAjax.responseText);
+       
+      if (oRetorno.iStatus == 2) {
+        throw oRetorno.sMensagem;
+      }
+
+      lAberta = oRetorno.lFolhaAberta; 
+    }
+  };
+  
+  new Ajax.Request('pes4_formularioFolha.RPC.php', oDadosRequisicao);
+  return lAberta;
+};

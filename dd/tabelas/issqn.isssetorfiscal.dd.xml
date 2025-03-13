@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010618' name='issqn.isssetorfiscal' description="Tabela de ligacao issbase setorfical" prefix="q177" label="Alvara - Setor Fiscal" type="0">
+  <fields>
+    <field codigo="1011822" 
+           campo_api='' 
+           name="q177_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='issqn.isssetorfiscal_q177_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011823" 
+           campo_api='' 
+           name="q177_issbase" 
+           conteudo="int8" 
+           description="Inscricao do registro (issbase)" 
+           inivalue="0" 
+           label="Inscricao" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Inscricao" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field>
+    <field codigo="1011824" 
+           campo_api='' 
+           name="q177_setorfiscal" 
+           conteudo="int8" 
+           description="Referencia para registro da tabela setorfiscal" 
+           inivalue="0" 
+           label="Setor Fiscal" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Setor Fiscal" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="q177_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="issqn.issbase" inner='t'>
+      <fieldfk name="q177_issbase" reference="q02_inscr" /> 
+    </foreignkey>
+    <foreignkey reference="cadastro.setorfiscal" inner='t'>
+      <fieldfk name="q177_setorfiscal" reference="j90_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

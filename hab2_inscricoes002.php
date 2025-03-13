@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-include ("libs/db_sql.php");
-require_once("libs/JSON.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -108,7 +108,7 @@ $sSqlInscricoes .= "order by $sOrderAdicional $sOrdem ;";
 //die($sSqlInscricoes);
 
 $rsDados         = db_query($sSqlInscricoes); 
-$aListaDados     = db_utils::getColectionByRecord($rsDados);
+$aListaDados     = db_utils::getCollectionByRecord($rsDados);
 $aDadosComQuebra = array();
 $aDadosSemQuebra = array();
 

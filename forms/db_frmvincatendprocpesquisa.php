@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -42,7 +42,7 @@ $sqlProcessoOuvidoria = " select ov09_sequencial,
                                  inner join ouvidoriaatendimento on processoouvidoria.ov09_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial 
                            where ov09_protprocesso = {$iP58_CodProc} ";
 
-$rsProcessoOuvidoria = pg_query($sqlProcessoOuvidoria);
+$rsProcessoOuvidoria = db_query($sqlProcessoOuvidoria);
 $iProcessoOuvidoria  = pg_num_rows($rsProcessoOuvidoria);
 
 if ($iProcessoOuvidoria > 0) {
@@ -125,13 +125,13 @@ function js_pesquisaov01_sequencial(mostra){
   var mostra = mostra;
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_ouvidoriaatendimento',
                         'func_ouvidoriaatendimentoprocesso.php?proc=false&tipo='+document.form1.p58_codigo.value+'&funcao_js=parent.js_mostra1|ov01_sequencial|ov01_requerente&situacao=1',
                         'Pesquisa',true);
   }else{
      if(document.form1.ov01_sequencial.value != ''){ 
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_ouvidoriaatendimento',
                             'func_ouvidoriaatendimentoprocesso.php?proc=false&requer=true&tipo='+document.form1.p58_codigo.value+'&pesquisa_chave='+document.form1.ov01_sequencial.value+'&funcao_js=parent.js_mostra&situacao=1',
                             'Pesquisa',false);
@@ -199,7 +199,7 @@ function js_retornoArquivarProcesso(oAjax){
   
   js_removeObj("msgBox");
   
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   var sExpReg  = new RegExp('\\\\n','g');
     
   alert(aRetorno.sMsg.urlDecode().replace(sExpReg,'\n'));

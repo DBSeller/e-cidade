@@ -13,7 +13,7 @@ $this->objpdf->cell(0,5,"GABINETE DO EXECUTIVO MUNICIPAL",0,1,"C");
 $this->objpdf->Setfont('Arial', 'b', 9);
 $this->objpdf->setY(40);
 $this->objpdf->cell(0,5,'A N E X O   III',0,1,"C");
-$this->objpdf->cell(0,5,'COMISSÃO ESPECIAL DE AVALIAÇÃO DE DESEMPENHO NO ESTÁGIO PROBÁTORIO',0,1,"C");
+$this->objpdf->cell(0,5,'COMISSÃO ESPECIAL DE AVALIAÇÃO DE DESEMPENHO NO ESTÁGIO PROBATÓRIO',0,1,"C");
 $this->objpdf->Setfont('Arial', '', 9);
 $this->objpdf->line(10,$this->objpdf->gety(),270,$this->objpdf->gety());
 $this->objpdf->ln();
@@ -40,10 +40,16 @@ $this->objpdf->ln();
 $this->objpdf->setfillcolor(245);
 $this->objpdf->cell(20,5,"AVALIAÇÃO",1,0,"C",1);
 $this->objpdf->cell(20,5,"DATA",1,0,"C",1);
+$iQuantidadeQuisitos = 0;
 foreach ($this->aQuesitos as $chave => $valor){
+
+  if ($iQuantidadeQuisitos == 6) {
+    break; // Solução temporário para corrigir a quebra que ocorria no relatório.
+  }
 
   $this->objpdf->cell(35,5,$valor,1,0,"C",1);
   $nTotalQuesito[$chave] = 0;
+  $iQuantidadeQuisitos++;
 }
 $this->objpdf->cell(20,5,'TOTAL',1,0,"C",1);
 $this->objpdf->ln();
@@ -60,7 +66,13 @@ foreach($this->aDadosAvaliacao as $chave => $valor){
   $texto      = "{$dataInicial} a {$dataFinal}";
   $this->objpdf->cell(20,5,$sequenciaaval,"TBR",0,"C");
   $this->objpdf->cell(20,5,$dataFinal,"TBR",0,"C");
-  foreach ($this->aQuesitos as $quesito => $descr){
+  $iQuantidadeQuisitos = 0;
+
+  foreach ($this->aQuesitos as $quesito => $descr) {
+
+     if ($iQuantidadeQuisitos == 6) {
+       break; // Solução temporário para corrigir a quebra que ocorria no relatório.
+     }
 
      if (isset($valor["quesito"][$quesito])){
         $this->objpdf->cell(35,5,$valor["quesito"][$quesito],1,0,"C");
@@ -70,6 +82,8 @@ foreach($this->aDadosAvaliacao as $chave => $valor){
      }else{
         $this->objpdf->cell(35,5,'',1,0,"C");
      }
+
+     $iQuantidadeQuisitos++;
   }
   $nTotal += $nTotalAval;
   $this->objpdf->cell(20,5,$nTotalAval,"TBL",0,"C");
@@ -77,8 +91,13 @@ foreach($this->aDadosAvaliacao as $chave => $valor){
   $dataInicial = $dataFinal;
 }
 $this->objpdf->cell(40,5,"Total",1,0,"C",1);
+$iQuantidadeQuisitos = 0;
 foreach ($this->aQuesitos as $chave => $valor){
+  if ($iQuantidadeQuisitos == 6) {
+    break; // Solução temporário para corrigir a quebra que ocorria no relatório.
+  }
   $this->objpdf->cell(35,5,$nTotalQuesito[$chave],1,0,"C",1);
+  $iQuantidadeQuisitos++;
 }
 $this->objpdf->cell(20,5,$nTotal,1,0,"C",1);
 $this->objpdf->Setfont('Arial', '', 10);

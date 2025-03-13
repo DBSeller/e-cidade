@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,37 +25,26 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_jsplibwebseller.php");
-include("libs/db_utils.php");
-require("libs/db_app.utils.php");
-include("libs/db_stdlibwebseller.php");
-
-include("classes/db_prontuarios_classe.php");
-include("classes/db_prontuarios_ext_classe.php");
-include("classes/db_prontproced_classe.php");
-include("classes/db_prontcid_classe.php");
-include("classes/db_unidades_ext_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("classes/db_sau_config_ext_classe.php");
-
-include("dbforms/db_funcoes.php");
-
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
-$clprontuarios     = new cl_prontuarios_ext;
-$clprontproced     = new cl_prontproced;
-$clprontcid        = new cl_prontcid;
-$clunidades        = new cl_unidades_ext;
-$clcgs_und         = new cl_cgs_und;
-$clsau_config      = new cl_sau_config_ext;
 
+$clprontuarios = new cl_prontuarios_ext;
+$clprontproced = new cl_prontproced;
+$clprontcid    = new cl_prontcid;
+$clunidades    = new cl_unidades_ext;
+$clcgs_und     = new cl_cgs_und;
+$clsau_config  = new cl_sau_config_ext;
 
-$db_opcao = $idarq==2?22:1;
-//$db_botao = isset($db_botao)?$db_botao:false;
+$db_opcao = $idarq == 2 ? 22 : 1;
 $db_botao = true;
 
 //Sau_Config
@@ -66,17 +55,19 @@ $sd24_i_login   = DB_getsession("DB_id_usuario");
 $login          = DB_getsession("DB_login");
 $sd24_i_unidade = !isset($sd24_i_unidade)?DB_getsession("DB_coddepto"):$sd24_i_unidade;
 
-
 //Pesquisas
 if (isset($chavepesquisaprontuario)&&(int)$chavepesquisaprontuario != 0){
 
 	$db_opcao = 2;
 	$result= $clprontuarios->sql_record($clprontuarios->sql_query_nolote_ext(null,"m.z01_nome as profissional_triagem, rhcbo.rh70_descr as cbo_triagem,  sau_lotepront.* ",null,"sd24_i_codigo = $chavepesquisaprontuario"));
 
+
 	if( $clprontuarios->numrows > 0 ){
 
 		$obj_prontuario = db_utils::fieldsMemory($result, 0);
+
 		if( $obj_prontuario->sd59_i_prontuario != "" ){
+
 			db_msgbox("Impossivel alteracao de FAA incluida via Lote [{$obj_prontuario->sd59_i_lote}] .");
 			$sd24_i_codigo = null;
 			db_redireciona("sau1_sau_individual001.php?idarq=".$idarq);
@@ -126,42 +117,24 @@ if(isset($incluir) || isset($alterar)){
 		$clprontuarios->sd24_d_cadastro = date("Y-m-d",db_getsession("DB_datausu"));
 		$clprontuarios->sd24_c_cadastro = db_hora();
 		$clprontuarios->sd24_i_login    = DB_getsession("DB_id_usuario");
-//		$clprontuarios->sd24_c_digitada = 'S';
 
 		$clprontuarios->incluir(null);
 		$sd24_i_codigo = $clprontuarios->sd24_i_codigo;
 	}else{
-//		$clprontuarios->sd24_c_digitada = 'S';
+
 		$clprontuarios->sd24_i_codigo = $sd24_i_codigo;
 		$clprontuarios->alterar($sd24_i_codigo);
 	}
 
-	//CGS
-	$clcgs_und->z01_i_cgsund = $z01_i_cgsund;
-	$clcgs_und->alterar($z01_i_cgsund);
-
-	/**
-	//CID
-	$result = $clprontcid->sql_record( $clprontcid->sql_query("","*","sd55_i_codigo","sd55_i_prontuario = $sd24_i_codigo") );
-	$clprontcid->sd55_i_prontuario = $sd24_i_codigo;
-	$clprontcid->sd55_b_principal  = 'true';
-	if( $clprontcid->numrows == 0 ){
-		$retorno = $clprontcid->incluir("");
-	}else{
-		$clprontcid->sd55_i_codigo=pg_result($result,0,"sd55_i_codigo");
-
-		$retorno = $clprontcid->alterar($clprontcid->sd55_i_codigo);
-	}
-	*/
 	db_fim_transacao();
 
 	if($retorno){
+
 		echo "<script> parent.document.formaba.a2.disabled = false;</script>";
 		echo "<script> parent.mo_camada('a2');</script>";
 		echo "<script>parent.iframe_a2.location.href='sau1_sau_individualproced001.php?idarq=$idarq&tmp_table=true&sd24_i_codigo=$sd24_i_codigo'</script>";
 	}
 }
-
 ?>
 <html>
 <head>
@@ -181,8 +154,8 @@ if(isset($incluir) || isset($alterar)){
   <tr>
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
-    	<?
-    	 include("forms/db_frmsau_individual.php");
+    	<?php
+    	 include(modification("forms/db_frmsau_individual.php"));
     	?>
     </center>
 	</td>
@@ -193,7 +166,7 @@ if(isset($incluir) || isset($alterar)){
 <script>
 function js_sair(){
 	if(confirm("Deseja realmente sair?")){
-		<?
+		<?php
 		if (isset($_SESSION["objRegistros"])) {
 			unset($_SESSION["objRegistros"]);
 		}

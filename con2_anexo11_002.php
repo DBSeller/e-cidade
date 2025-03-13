@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("dbforms/db_funcoes.php");
+include modification("fpdf151/pdf.php");
+include modification("fpdf151/assinatura.php");
+include modification("libs/db_sql.php");
+include modification("libs/db_libcontabilidade.php");
+include modification("dbforms/db_funcoes.php");
 
 
 $classinatura = new cl_assinatura;
@@ -44,8 +44,8 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 //db_postmemory($HTTP_POST_VARS,2);exit;
 
-$xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$xinstit = explode('-', $db_selinstit);
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -87,15 +87,15 @@ if($nivela >= 2){
   $sele_work .= " and exists (select 1 from t where t.o58_unidade = w.o58_unidade) ";
 }
   
-pg_exec("begin");
-pg_exec("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
-  
-$xcampos = split("-",$orgaos);
+db_query("begin");
+db_query("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
+
+$xcampos = explode('-', $orgaos);
 
 for($i=0;$i < sizeof($xcampos);$i++){
    $where = '';
-   $virgula = ''; 
-   $xxcampos = split("_",$xcampos[$i]);
+    $virgula = '';
+    $xxcampos = explode('_', $xcampos[$i]);
    for($ii=0;$ii<sizeof($xxcampos);$ii++){
       if($ii > 0){
         $where .= $virgula.$xxcampos[$ii];
@@ -106,10 +106,10 @@ for($i=0;$i < sizeof($xcampos);$i++){
      $where .= ",0,0,0,0,0,0,0";
    if($nivela == 2)
      $where .= ",0,0,0,0,0,0";
-   pg_exec("insert into t values($where)");
+   db_query("insert into t values($where)");
 }
 
-//db_criatabela(pg_query("select * from t"));
+//db_criatabela(db_query("select * from t"));
 
 $anousu = db_getsession("DB_anousu");
 
@@ -119,9 +119,8 @@ $datafin = db_getsession("DB_anousu").'-'.$mes.'-'.date('t',mktime(0,0,0,$mes,'0
 //echo $dataini."<br>";
 //echo $datafin."<br>";
 $result = db_elementosaldo($tipo_agrupa,4,$sele_work,$anousu,$dataini,$datafin);
-					     
-// db_criatabela($result);exit;
 
+//db_criatabela($result);exit;
 
 $fonte = 8;
 
@@ -316,22 +315,15 @@ if($tipo_agrupa == 1){
 }
 
 
-$pdf->cell(80,$alt,'TOTAL GERAL',0,0,"L",0,'','.');
-$pdf->cell(25,$alt,db_formatar($tot1_geral,'f'),0,0,"R",0);
-$pdf->cell(25,$alt,db_formatar($tot2_geral,'f'),0,0,"R",0);
-$pdf->cell(20,$alt,db_formatar($tot3_geral,'f'),0,0,"R",0);
-$pdf->cell(20,$alt,db_formatar($tot4_geral,'f'),0,0,"R",0);
-$pdf->cell(20,$alt,db_formatar($tot5_geral,'f'),0,1,"R",0);
-
-
+$pdf->cell(80, $alt, 'TOTAL GERAL', 0, 0, "L", 0, '', '.');
+$pdf->cell(25, $alt, db_formatar($tot1_geral, 'f'), 0, 0, "R", 0);
+$pdf->cell(25, $alt, db_formatar($tot2_geral, 'f'), 0, 0, "R", 0);
+$pdf->cell(20, $alt, db_formatar($tot3_geral, 'f'), 0, 0, "R", 0);
+$pdf->cell(20, $alt, db_formatar($tot4_geral, 'f'), 0, 0, "R", 0);
+$pdf->cell(20, $alt, db_formatar($tot5_geral, 'f'), 0, 1, "R", 0);
 
 $pdf->Ln(15);
 
-assinaturas(&$pdf,&$classinatura,'BG');
-
-
-
+assinaturas($pdf, $classinatura, 'BG');
 
 $pdf->Output();
-   
-?>

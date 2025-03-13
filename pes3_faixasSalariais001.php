@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_usuariosonline.php';
-require_once 'libs/db_utils.php';
-require_once 'libs/db_app.utils.php';
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/db_utils.php");
+require_once modification("libs/db_app.utils.php");
 
-require_once 'dbforms/db_funcoes.php';
-require_once 'dbforms/db_classesgenericas.php';
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("dbforms/db_classesgenericas.php");
 
-require_once 'classes/db_gerfcom_classe.php';
+require_once modification("classes/db_gerfcom_classe.php");
 
 $oDaoGerfcom = new cl_gerfcom;
 
@@ -291,7 +291,7 @@ function js_retornoComplentares(oAjax) {
   
   js_removeObj('msgBox');
 
-  var oRetorno              = eval("("+oAjax.responseText+")");
+  var oRetorno              = JSON.parse(oAjax.responseText);
 	var sMensagem             = oRetorno.sMensagem.urlDecode();
 	var oLinhaComplementares  = $('linhaComplementares');
 	var oColunaErroComplentar = $('colunaErroComplentar');
@@ -662,7 +662,7 @@ function js_retornoGerarRelatorio(oAjax) {
 
   js_removeObj('msgBox');
 
-  var oRetorno              = eval("("+oAjax.responseText+")");
+  var oRetorno              = JSON.parse(oAjax.responseText);
 	var sMensagem             = oRetorno.sMensagem.urlDecode();
 
 	/**
@@ -690,7 +690,7 @@ function js_retornoGerarRelatorio(oAjax) {
 function js_pesquisasel(mostra) {
 
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_selecao', 
                         'func_selecao.php?funcao_js=parent.js_mostrasel1|r44_selec|r44_descr',
                         'Pesquisa',
@@ -699,7 +699,7 @@ function js_pesquisasel(mostra) {
    } else {
      
      if (document.form1.r44_selec.value != '') { 
-       js_OpenJanelaIframe('top.corpo', 
+       js_OpenJanelaIframe('CurrentWindow.corpo', 
                            'db_iframe_selecao', 
                            'func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostrasel', 
                            'Pesquisa', 

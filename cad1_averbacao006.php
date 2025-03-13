@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_averbacao_classe.php");
-include("classes/db_averbacgm_classe.php");
-include("classes/db_averbaregimovel_classe.php");
-include("classes/db_averbaprocesso_classe.php");
-include("classes/db_averbaescritura_classe.php");
-include("classes/db_averbatipo_classe.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_averbaformalpartilha_classe.php");
-include("classes/db_averbaformalpartilhacgm_classe.php");
-include("classes/db_averbadecisaojudicial_classe.php");
-include("classes/db_averbaguia_classe.php");
-include("classes/db_averbaguiaitbi_classe.php");
-include("classes/db_cgm_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_averbacao_classe.php"));
+include(modification("classes/db_averbacgm_classe.php"));
+include(modification("classes/db_averbaregimovel_classe.php"));
+include(modification("classes/db_averbaprocesso_classe.php"));
+include(modification("classes/db_averbaescritura_classe.php"));
+include(modification("classes/db_averbatipo_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_averbaformalpartilha_classe.php"));
+include(modification("classes/db_averbaformalpartilhacgm_classe.php"));
+include(modification("classes/db_averbadecisaojudicial_classe.php"));
+include(modification("classes/db_averbaguia_classe.php"));
+include(modification("classes/db_averbaguiaitbi_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
 $cliptubase                  = new  cl_iptubase;
 $claverbacao                 = new cl_averbacao;
 $claverbacgm                 = new cl_averbacgm;
@@ -251,23 +251,18 @@ if(isset($excluir)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmaverbacao.php");
+<body class="body-default" onLoad="a=1" >
+
+	<?php
+	include(modification("forms/db_frmaverbacao.php"));
 	?>
-    </center>
-	</td>
-  </tr>
-</table>
+
 </body>
 </html>
-<?
+<?php
 if(isset($excluir)){
   if($sqlerro==true){
     db_msgbox($erro_msg);
@@ -292,7 +287,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.averbacgm.disabled=false;
-         top.corpo.iframe_averbacgm.location.href='cad1_averbacgm001.php?db_opcaoal=33&j76_averbacao=".@$j75_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_averbacgm.location.href='cad1_averbacgm001.php?db_opcaoal=33&j76_averbacao=".@$j75_codigo."';
 		
      ";
          if(isset($liberaaba)){

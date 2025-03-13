@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -47,7 +47,20 @@
        </tr>
      </table>
 <?}else{?>
-     <fieldset style="width: 70%">
+      <style>
+        #proprietario, #nome_cemiterio, #nome_cemit, #nome_sepultamento, #proprietario, #nome_cemiterio {
+          width: 290px;
+        }
+
+        #cm19_c_descr, #cm06_t_obs{
+          width: 383px;
+        }
+
+        #cm27_c_ossoario {
+          width: 90px;
+        }
+      </style>
+     <fieldset style="width: 100%">
      <legend>Localização</legend>
      <table>
       <tr>
@@ -59,7 +72,7 @@
           $tipoant = "";
           $codigo = 0;
 
-          require("funcoes/db_func_sepulta.php");
+          require(modification("funcoes/db_func_sepulta.php"));
 
           $result = $clsepulta->sql_record($clsepulta->sql_query("",$campos,"","cm24_i_sepultamento = $sepultamento"));
           if($clsepulta->numrows > 0){
@@ -96,11 +109,11 @@
                if( $clrestosgavetas->numrows > 0){
 
                    db_fieldsmemory($result,0);
-                   require("funcoes/db_func_ossoariojazigo.php");
+                   require(modification("funcoes/db_func_ossoariojazigo.php"));
                    $result = $clossoariojazigo->sql_record( $clossoariojazigo->sql_query( $cm26_i_ossoariojazigo, $campos ) );
                    db_fieldsmemory($result,0);
                    $db_botao = false;
-                   echo "<strong>Ossoario Particular</strong>";
+                   // echo "<strong>Ossoario Particular</strong>";
                    $cm26_i_sepultamento = $sepultamento;
                    $tipo='O';
                    $arquivo="forms/db_frmrestosgavetas.php";
@@ -113,11 +126,11 @@
                    if( $clgavetas->numrows>0){
 
                        db_fieldsmemory($result,0);
-                       require("funcoes/db_func_ossoariojazigo.php");
+                       require(modification("funcoes/db_func_ossoariojazigo.php"));
                        $result = $clossoariojazigo->sql_record( $clossoariojazigo->sql_query( $cm26_i_ossoariojazigo, $campos ) );
                        db_fieldsmemory($result,0);
                        $db_botao = false;
-                       echo "<strong>Jazigo/Capela</strong>";
+                       // echo "<strong>Jazigo/Capela</strong>";
                        $cm26_i_sepultamento = $sepultamento;
                        $tipo='J';
                        $arquivo="forms/db_frmrestosgavetas.php";
@@ -126,7 +139,7 @@
                        $codigo = $cm26_i_codigo;
                    }else{
 
-                       $result = $clretiradas->sql_record($clretiradas->sql_query("","*"));
+                       $result = $clretiradas->sql_record($clretiradas->sql_query("","*", null, "cm08_i_sepultamento = {$sepultamento}"));
                        if( $clretiradas->numrows>0){
                            db_fieldsmemory($result,0);
                            $db_botao = false;
@@ -146,7 +159,7 @@
                  <input name="tipoant" type="hidden" value="<?=$tipoant?>">
                  <input name="codigo" type="hidden" value="<?=$codigo?>">
              <?
-           include($arquivo);
+           include(modification($arquivo));
           }
         ?>
        </td>
@@ -160,12 +173,12 @@
  if( parent.document.formaba.a4 != null ){
   parent.document.formaba.a4.disabled=false;
   if(parent.document.formaba.a4.value != "Débitos"){
-   top.corpo.iframe_a4.location.href='cem1_transacao002.php?sepultamento=<?=$sepultamento?>&tipoant=<?=$tipoant?>&lotecemit=<?=@$cm23_i_codigo?>';
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href='cem1_transacao002.php?sepultamento=<?=$sepultamento?>&tipoant=<?=$tipoant?>&lotecemit=<?=@$cm23_i_codigo?>';
   }
  }
 
 function js_pesquisasepultamento(){
-    js_OpenJanelaIframe('top.corpo.iframe_a1','db_iframe_sepultamentos','func_sepultamentos.php?funcao_js=parent.js_mostrasepultamentos1|cm01_i_codigo|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_a1','db_iframe_sepultamentos','func_sepultamentos.php?funcao_js=parent.js_mostrasepultamentos1|cm01_i_codigo|z01_nome','Pesquisa',true);
 }
 function js_mostrasepultamentos1(chave1,chave2){
   document.form1.sepultamento.value = chave1;

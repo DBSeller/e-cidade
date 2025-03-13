@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -137,7 +137,10 @@ class DebitoIssContribuinte {
    */
   public function gerarDebito() {
 
-    db_inicio_transacao();
+    if (!db_utils::inTransaction()) {
+      throw new Exception("Sem transação ativa");
+    }
+
     $oDadosPlanilha  = $this->oDadosPlanilha;
     try {
 
@@ -150,12 +153,11 @@ class DebitoIssContribuinte {
         $aPlanilhasNotas[]           = $iCodigoNotaPlanilha;
       }
     } catch (Exception $eErro) {
-      throw new Exception(print_r($eErro->getMessage(), true));
+      throw new Exception($eErro->getMessage());
     }
     $oDadosPlanilha->codigo_planilha = $iCodigoPlanilha;
     $oDadosPlanilha->debito          = $this->gerarReciboDebito($aPlanilhasNotas);
     $oDadosPlanilha->debito_planilha = $oDadosPlanilha->debito->lista_debitos[0]->numpre;
-    db_fim_transacao(false);
 
     return $oDadosPlanilha;
   }

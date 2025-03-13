@@ -191,7 +191,7 @@ function js_pesquisame29_i_refeicao(mostra) {
 	
   if (mostra == true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapio',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapio',
     	                 'func_mer_cardapio.php?funcao_js=parent.js_mostramer_cardapio1|me01_i_codigo|me01_c_nome',
     	                 'Pesquisa',true
 		               );
@@ -200,7 +200,7 @@ function js_pesquisame29_i_refeicao(mostra) {
 	  
     if (document.form1.me29_i_refeicao.value != '') {
         
-      js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapio',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapio',
     	                  'func_mer_cardapio.php?pesquisa_chave='+document.form1.me29_i_refeicao.value+
     	                  '&funcao_js=parent.js_mostramer_cardapio','Pesquisa',false
 		                 );
@@ -244,7 +244,7 @@ function js_pesquisame29_i_alimentoorig(mostra) {
   }
   if (mostra == true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_alimento',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_alimento',
     	                'func_mer_alimento.php?refeicao='+refeicao+'&funcao_js=parent.js_mostraalimento1|me35_i_codigo|me35_c_nomealimento',
     	                'Pesquisa',true
 		               );
@@ -253,7 +253,7 @@ function js_pesquisame29_i_alimentoorig(mostra) {
 	  
     if (document.form1.me29_i_alimentoorig.value != '') {
         
-      js_OpenJanelaIframe('top.corpo','db_iframe_alimento',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_alimento',
     	                  'func_mer_alimento.php?pesquisa_chave='+document.form1.me29_i_alimentonovo.value+
     	                  '&funcao_js=parent.js_mostraalimento','Pesquisa',false
 		                 );
@@ -297,7 +297,7 @@ function js_pesquisame29_i_alimentonovo(mostra) {
   }
   if (mostra == true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_alimento',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_alimento',
     	                'func_mer_alimento.php?funcao_js=parent.js_mostraalimento3|me35_i_codigo|me35_c_nomealimento',
     	                'Pesquisa',true
 		               );
@@ -306,7 +306,7 @@ function js_pesquisame29_i_alimentonovo(mostra) {
 	  
     if (document.form1.me29_i_alimentonovo.value != '') {
         
-      js_OpenJanelaIframe('top.corpo','db_iframe_alimento',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_alimento',
     	                  'func_mer_alimento.php?pesquisa_chave='+document.form1.me29_i_alimentonovo.value+
 		                   '&funcao_js=parent.js_mostraalimento2','Pesquisa',false
 		                 );
@@ -341,7 +341,7 @@ function js_mostraalimento3(chave1,chave2) {
 
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_subitem',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_subitem',
 		              'func_mer_subitem.php?funcao_js=parent.js_preenchepesquisa|me29_i_codigo','Pesquisa',true
 		             );
   

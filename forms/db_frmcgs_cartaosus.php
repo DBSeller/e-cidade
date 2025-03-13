@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -112,7 +112,7 @@ function js_pesquisas115_i_cgs( mostra ) {
 
   if( mostra == true ) {
     js_OpenJanelaIframe(
-                         'top.corpo',
+                         'CurrentWindow.corpo',
                          'db_iframe_cgs',
                          'func_cgs_und.php?funcao_js=parent.js_mostracgs1|z01_i_cgsund|z01_v_nome',
                          'Pesquisa',
@@ -122,7 +122,7 @@ function js_pesquisas115_i_cgs( mostra ) {
 
     if( document.form1.s115_i_cgs.value != '' ) {
       js_OpenJanelaIframe(
-                           'top.corpo',
+                           'CurrentWindow.corpo',
                            'db_iframe_cgs',
                            'func_cgs_und.php?pesquisa_chave='+document.form1.s115_i_cgs.value+'&funcao_js=parent.js_mostracgs',
                            'Pesquisa',
@@ -156,7 +156,7 @@ function js_mostracgs1( chave1, chave2 ) {
 
 function js_pesquisa() {
   js_OpenJanelaIframe(
-                       'top.corpo',
+                       'CurrentWindow.corpo',
                        'db_iframe_cgs_cartaosus',
                        'func_cgs_cartaosus.php?funcao_js=parent.js_preenchepesquisa|s115_i_codigo',
                        'Pesquisa',
@@ -189,7 +189,7 @@ function js_atualizar() {
 
 function js_retorno_atualizar( objAjax ) {
 
-  var objRetorno = eval("("+objAjax.responseText+")");
+  var objRetorno = JSON.parse(objAjax.responseText);
 
   if( objRetorno.status == 1 ) {
 

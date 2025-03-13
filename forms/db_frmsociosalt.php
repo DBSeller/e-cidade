@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: issqn
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clsocios->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -45,11 +45,14 @@ if(isset($opcao) && $opcao=="alterar"){
     $db_opcao = 1;
 } 
     $sql = $clsocios->sql_query_socios($q95_cgmpri,"","sum(q95_perc) as somaval ");
-    $result_testaval=pg_exec($sql);
+    $result_testaval=db_query($sql);
     if (pg_numrows($result_testaval)!=0){
       db_fieldsmemory($result_testaval,0);
       
     }else $somaval=0;
+
+    $tipoSocio = isset($q95_tipo) ? $q95_tipo : '';
+
 ?>
 <form name="form1" method="post" action="iss1_socios004.php" >
 <table border="0" cellspacing="0" cellpadding="0">
@@ -71,7 +74,7 @@ if(isset($opcao) && $opcao=="alterar"){
 				?>
        <?
        $z01_nome = stripslashes($z01_nome);
-db_input('z01_nome',40,$Iz01_nome,true,'text',3,'');
+       db_input('z01_nome',40,$Iz01_nome,true,'text',3,'');
        ?>
     </td>
   </tr>
@@ -167,8 +170,8 @@ db_input('z01_nome',40,$Iz01_nome,true,'text',3,'');
     $sCampoQ95Tipo .= "   else 'Responsável'                       ";
     $sCampoQ95Tipo .= "  end    as tipo                            ";
     
-    $cliframe_alterar_excluir->sql        = $clsocios->sql_query_socios(null, null, "q95_numcgm,soc.z01_nome,q95_perc,q95_cgmpri,$sCampoQ95Tipo", null, $sWhereSocios);
-    $cliframe_alterar_excluir->campos     = "q95_numcgm,z01_nome,q95_perc, tipo ";
+    $cliframe_alterar_excluir->sql        = $clsocios->sql_query_socios(null, null, "q95_numcgm,soc.z01_nome,round(q95_perc,2) as q95_perc,q95_cgmpri,$sCampoQ95Tipo", null, $sWhereSocios);
+    $cliframe_alterar_excluir->campos     = "q95_numcgm,z01_nome, q95_perc, tipo ";
     $cliframe_alterar_excluir->legenda    = "SÓCIOS CADASTRADOS";
     $cliframe_alterar_excluir->msg_vazio  = "Não foi encontrado nenhum registro.";
     $cliframe_alterar_excluir->textocabec = "darkblue";
@@ -177,6 +180,8 @@ db_input('z01_nome',40,$Iz01_nome,true,'text',3,'');
     $cliframe_alterar_excluir->fundocorpo = "#ccddcc";
     $cliframe_alterar_excluir->formulario = false;
     $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);    
+
+    $q95_perc = trim(db_formatar($q95_perc, 'f'));
    ?>
    </td>
   </tr>
@@ -193,6 +198,7 @@ db_input('z01_nome',40,$Iz01_nome,true,'text',3,'');
 </table>  
 </form>
 <script>
+const inputValorCapital = new DBInputValor(document.getElementById('q95_perc'));
 
 // função verifica se q95_cgmpri e q95_numcgm são diferentes
 function jc_VerificaCgmCpfIgual(){
@@ -213,7 +219,7 @@ function jc_VerificaCgmCpfIgual(){
 // função que valida o tipo de pessoa, fisica ou juridica, se for fisica, não habilitara a opção sócio no select q95_tipo
 function js_tipoPessoa() {
 
-  var iTipoPessoa = top.corpo.iframe_issbase.document.form1.z01_cgccpf.value;
+  var iTipoPessoa = (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_issbase.document.form1.z01_cgccpf.value;
       iTipoPessoa = iTipoPessoa.length;
   
   if (iTipoPessoa <= 11 || iTipoPessoa == "" || iTipoPessoa == null) {
@@ -231,6 +237,8 @@ function js_tipoPessoa() {
     $("q95_tipo").options[1]     = new Option('Sócio', '1');
     $("q95_tipo").options[2]     = new Option('Responsável MEI', '2');
     $("q95_tipo").options[3]     = new Option('Responsável', '3');  
+    var tipoSocio = "<?=$tipoSocio?>";
+    $("q95_tipo").value = tipoSocio;
   }
 }
 
@@ -276,9 +284,9 @@ function js_cancelar() {
 
 function js_pesquisaq95_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_socios','db_iframe_cgm','func_nome.php?filtro=3&testanome=true&funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome|z01_ender|z01_cgccpf','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_socios','db_iframe_cgm','func_nome.php?filtro=3&testanome=true&funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome|z01_ender|z01_cgccpf','Pesquisa',true,0);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_socios','db_iframe_cgm','func_nome.php?filtro=3&testanome=true&pesquisa_chave='+document.form1.q95_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_socios','db_iframe_cgm','func_nome.php?filtro=3&testanome=true&pesquisa_chave='+document.form1.q95_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false,0);
   }
 }
 
@@ -317,7 +325,7 @@ function js_mostracgm1(chave1,chave2,chave3,chave4){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_socios','db_iframe_socios','func_socios.php?funcao_js=parent.js_preenchepesquisa|q95_numcgm|1','Pesquisa',true,0);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_socios','db_iframe_socios','func_socios.php?funcao_js=parent.js_preenchepesquisa|q95_numcgm|1','Pesquisa',true,0);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_socios.hide();

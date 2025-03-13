@@ -25,33 +25,33 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcimpactomov_classe.php");
-include("classes/db_orcimpactomovimp_classe.php");
-include("classes/db_orcimpactomovpai_classe.php");
-include("classes/db_orcimpacto_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcimpactomov_classe.php"));
+include(modification("classes/db_orcimpactomovimp_classe.php"));
+include(modification("classes/db_orcimpactomovpai_classe.php"));
+include(modification("classes/db_orcimpacto_classe.php"));
 
 $clorcimpactomov = new cl_orcimpactomov;
 $clorcimpactomovimp = new cl_orcimpactomovimp;
 $clorcimpactomovpai = new cl_orcimpactomovpai;
 $clorcimpacto = new cl_orcimpacto;
 
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcdotacaocontr_classe.php");
-include("classes/db_orcelemento_classe.php");
-include("classes/db_orcparametro_classe.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_orcunidade_classe.php");
-include("classes/db_orcfuncao_classe.php");
-include("classes/db_orcsubfuncao_classe.php");
-include("classes/db_orcprograma_classe.php");
-include("classes/db_orcprojativ_classe.php");
-include("classes/db_orcproduto_classe.php");
-include("classes/db_orcimpactoperiodo_classe.php");
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcdotacaocontr_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_orcparametro_classe.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcunidade_classe.php"));
+include(modification("classes/db_orcfuncao_classe.php"));
+include(modification("classes/db_orcsubfuncao_classe.php"));
+include(modification("classes/db_orcprograma_classe.php"));
+include(modification("classes/db_orcprojativ_classe.php"));
+include(modification("classes/db_orcproduto_classe.php"));
+include(modification("classes/db_orcimpactoperiodo_classe.php"));
 
 $clorcprojativ = new cl_orcprojativ;
 $clorcdotacao = new cl_orcdotacao;
@@ -246,7 +246,7 @@ if(isset($chavepesquisa)|| (isset($chave_nova) && $chave_nova != '')){
     <td height="300" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcimpactomov.php");
+	include(modification("forms/db_frmorcimpactomov.php"));
 	?>
     </center>
 	</td>
@@ -273,7 +273,7 @@ if(isset($atualizar) || isset($incluir) || (isset($chavepesquisa) && empty($chav
 	    $tipo ="&tipo=P";
 	}
 
- echo "  top.corpo.iframe_orcimpactovalmov.location.href='orc1_orcimpactovalmov001.php?o64_codimpmov=".@$o63_codimpmov."$tipo';";
+ echo "  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactovalmov.location.href='orc1_orcimpactovalmov001.php?o64_codimpmov=".@$o63_codimpmov."$tipo';";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('orcimpactovalmov');";
          }

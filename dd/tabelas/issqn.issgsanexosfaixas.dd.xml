@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010554' name='issqn.issgsanexosfaixas' description="Tabela de relação que liga issgruposervicocadanexos na issgruposervicoanexosfaixasimpostosfaixas" prefix="q163" label="" type="0">
+  <fields>
+    <field codigo="1011211" 
+           campo_api='' 
+           name="q163_sequencial" 
+           conteudo="int4" 
+           description="campo sequencial" 
+           inivalue="0" 
+           label="campo sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="sequencial issgruposervicoanexosfaixas" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='issqn.issgsanexosfaixas_q163_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011218" 
+           campo_api='' 
+           name="q163_issgscadanexos" 
+           conteudo="int4" 
+           description="Relaciona issgruposervicocadanexos" 
+           inivalue="0" 
+           label="Relaciona issgruposervicocadanexos" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Relaciona issgruposervicocadanexos" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011219" 
+           campo_api='' 
+           name="q163_competencia_inicial" 
+           conteudo="date" 
+           description="Data inicio competência" 
+           inivalue="null" 
+           label="Data inicio competência" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data inicio competência" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q163_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="issgscadanexos" inner='t'>
+      <fieldfk name="q163_issgscadanexos" reference="q157_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

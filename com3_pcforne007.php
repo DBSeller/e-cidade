@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-include ("classes/db_pcfornecertif_classe.php");
-include ("classes/db_pcfornecertifdoc_classe.php");
-include ("classes/db_pctipodoccertif_classe.php");
-include ("classes/db_pcdoccertif_classe.php");
-require ("libs/db_conecta.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+include(modification("classes/db_pcfornecertif_classe.php"));
+include(modification("classes/db_pcfornecertifdoc_classe.php"));
+include(modification("classes/db_pctipodoccertif_classe.php"));
+include(modification("classes/db_pcdoccertif_classe.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clpcfornecertif = new cl_pcfornecertif;
 $clpcfornecertifdoc = new cl_pcfornecertifdoc;
 $clpctipodoccertif = new cl_pctipodoccertif;

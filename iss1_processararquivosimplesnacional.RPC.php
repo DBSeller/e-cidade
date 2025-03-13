@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,31 +24,27 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-
-
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("std/db_stdClass.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/DBDate.php");
-require_once("fpdf151/pdfnovo.php");
-require_once("model/issqn/GeracaoArquivoSimplesNacional.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("fpdf151/pdfnovo.php"));
+require_once(modification("model/issqn/GeracaoArquivoSimplesNacional.model.php"));
+require_once(modification("classes/db_arquivosimplesimportacaoretorno_classe.php"));
+use App\Domain\Configuracao\Helpers\StorageHelper;
+use ECidade\Lib\File\FileEstorage;
 
 define('MENSAGENS', 'tributario.issqn.iss1_processararquivosimplesnacional.');
-
-$oJson                = new services_json();
-$oParametros          = $oJson->decode(utf8_decode(str_replace("\\", "", urldecode($_POST["json"]))));
-$oRetorno             = new stdClass();
-$oRetorno->iStatus    = 1;
-$oRetorno->sMensagem  = '';
-
+$parametros = JSON::requestParameters();
+$retorno = (object)['erro' => false, 'mensagem' => ''];
+$retorno->aArquivo = [];
 try {
 
-  switch ($oParametros->sExecucao) {
+  switch ($parametros->acao) {
 
     case 'getCnae' :
 
@@ -56,7 +52,7 @@ try {
       $aCnaesInvalidos               = array();
       $oDaoArquivoSimplesImportacao  = new GeracaoArquivoSimplesNacional();
 
-      $aCnaes = $oDaoArquivoSimplesImportacao->getCnae( $oParametros->iArquivo );
+      $aCnaes = $oDaoArquivoSimplesImportacao->getCnae( $parametros->iArquivo );
 
       if( empty($aCnaes) ){
         throw new BusinessException( _M( MENSAGENS . 'nenhum_cnae_encontrado' ) );
@@ -65,7 +61,7 @@ try {
       /**
        * Buscar CNAES não encontrados
        */
-      $aCnaesInvalidos = $oDaoArquivoSimplesImportacao->getCnae( $oParametros->iArquivo, false );
+      $aCnaesInvalidos = $oDaoArquivoSimplesImportacao->getCnae( $parametros->iArquivo, false );
       if( !empty($aCnaesInvalidos) ) {
 
         $aInvalidos = array( 'q71_estrutural' => 'Y' , 'q71_descr' => urlencode('CNAES NÃO ENCONTRADOS') );
@@ -76,34 +72,139 @@ try {
         throw new BusinessException( _M( MENSAGENS . 'nenhum_cnae_encontrado' ) );
       }
 
-      $oRetorno->aCnaes = $aCnaes;
+      $retorno->aCnaes = $aCnaes;
     break;
 
     case "gerar":
-
+      
+      $aEmpresas                      = JSON::create()->parse($parametros->aEmpresas);
+      $oDaoArquivoSimples             = new cl_arquivosimplesimportacao();
       $oGeracaoArquivoSimplesNacional = new GeracaoArquivoSimplesNacional();
-      $oGeracaoArquivoSimplesNacional->setArquivo( $oParametros->iArquivo );
+      $oGeracaoArquivoSimplesNacional->setArquivo( $parametros->iArquivo );
 
       if (!$oGeracaoArquivoSimplesNacional->isValido()) {
         throw new BusinessException(_M(MENSAGENS."preenchimento_obrigatorio"));
       }
 
-      $oRetorno->sArquivo         = $oGeracaoArquivoSimplesNacional->gerarTxt();
-      $oRetorno->sInconsistencias = $oGeracaoArquivoSimplesNacional->relatorioInconsistencias();
+      $sSql                = $oDaoArquivoSimples->sql_query( $parametros->iArquivo,
+                                                             'q64_datalimitevencimentos, q64_processado' );
+      $rsDaoArquivoSimples = $oDaoArquivoSimples->sql_record( $sSql );
+      if ($oDaoArquivoSimples->numrows <= 0) {
+
+        throw new BusinessException( _M( MENSAGENS . 'arquivo_nao_encontrado' ) );
+      }
+        
+      $oArquivoSimples = db_utils::fieldsMemory($rsDaoArquivoSimples, 0);
+      
+      db_inicio_transacao();
+      if ($oArquivoSimples->q64_processado == 'f') {
+       
+        $oDaoArquivoSimples->q64_processado = 't';
+        $oDaoArquivoSimples->q64_sequencial = $parametros->iArquivo;
+        $oDaoArquivoSimples->alterar($parametros->iArquivo);
+         // Atualiza os registros com as alterações manuais 
+        foreach ( $aEmpresas as $oEmpresa ) {
+   
+          $oDaoArquivoSimplesImportacaoDetalhe = new cl_arquivosimplesimportacaodetalhe();
+          $sSqlArquivoSimplesImportacaoDetalhe = $oDaoArquivoSimplesImportacaoDetalhe->sql_query_file($oEmpresa->q142_sequencial);
+          $rsArquivoSimplesImportacaoDetalhe   = $oDaoArquivoSimplesImportacaoDetalhe->sql_record($sSqlArquivoSimplesImportacaoDetalhe);
+          $oArquivoSimplesImportacaoDetalhe    = db_utils::fieldsMemory($rsArquivoSimplesImportacaoDetalhe, 0);
+        
+          if($oArquivoSimplesImportacaoDetalhe->q142_apto == $oEmpresa->q142_apto) {
+            
+            throw new Exception("Registro alterado durante processamento. Processo cancelado");
+          } 
+        
+          $oDaoArquivoSimplesImportacaoDetalhe->q142_sequencial = $oEmpresa->q142_sequencial;
+          $oDaoArquivoSimplesImportacaoDetalhe->q142_apto       = $oEmpresa->q142_apto; 
+          if($oEmpresa->q142_apto == "f") {
+           $oDaoArquivoSimplesImportacaoDetalhe->q142_observacao = $oEmpresa->q142_observacao; 
+          }
+        
+          $oDaoArquivoSimplesImportacaoDetalhe->alterar($oEmpresa->q142_sequencial);           
+        }
+
+        $retorno->aArquivo[] = $oGeracaoArquivoSimplesNacional->gerarTxt();       
+        
+      }  
+      
+      if ($oArquivoSimples->q64_processado == 't' || $parametros->lReprocessamento) {
+        
+        
+        
+        $sArquivoEmpresaAdicionada  = $oGeracaoArquivoSimplesNacional->gerarTxtArquivosADC($aEmpresas);
+        if($sArquivoEmpresaAdicionada) {
+          
+          $retorno->aArquivo[] = $sArquivoEmpresaAdicionada;
+        }
+        $sArquivoEmpresaExcluida = $oGeracaoArquivoSimplesNacional->gerarTxtArquivosEXC($aEmpresas);
+        if($sArquivoEmpresaExcluida) {
+
+          $retorno->aArquivo[] = $sArquivoEmpresaExcluida;
+        }
+        
+        if(count($retorno->aArquivo) == 0 && count($aEmpresas) > 0) {
+
+          throw new Exception("Não gerou arquivo(s) para as empresas modificadas");
+           
+        }
+        // Atualiza os registros 
+        foreach ( $aEmpresas as $oEmpresa ) {
+          
+          $oDaoArquivoSimplesImportacaoDetalhe = new cl_arquivosimplesimportacaodetalhe();
+          $sSqlArquivoSimplesImportacaoDetalhe = $oDaoArquivoSimplesImportacaoDetalhe->sql_query_file($oEmpresa->q142_sequencial);
+          $rsArquivoSimplesImportacaoDetalhe   = $oDaoArquivoSimplesImportacaoDetalhe->sql_record($sSqlArquivoSimplesImportacaoDetalhe);
+          $oArquivoSimplesImportacaoDetalhe    = db_utils::fieldsMemory($rsArquivoSimplesImportacaoDetalhe, 0);
+          
+         if($oArquivoSimplesImportacaoDetalhe->q142_apto == $oEmpresa->q142_apto) {
+           
+           throw new Exception("Registro alterado durante processamento. Processo cancelado");
+          } 
+          
+          $oDaoArquivoSimplesImportacaoDetalhe->q142_sequencial = $oEmpresa->q142_sequencial;
+          $oDaoArquivoSimplesImportacaoDetalhe->q142_apto       = $oEmpresa->q142_apto=='t'; 
+          if($oEmpresa->q142_apto == "f") {
+
+            $oDaoArquivoSimplesImportacaoDetalhe->q142_observacao = $oEmpresa->q142_observacao;
+          }
+          
+          $oDaoArquivoSimplesImportacaoDetalhe->alterar($oEmpresa->q142_sequencial);           
+        }
+      }
+       
+      foreach($retorno->aArquivo as $arquivo) {
+        
+        $idStorage   = StorageHelper::uploadArquivo($arquivo, null, true);
+        $nomeArquivo = basename($arquivo);
+        $daoArquivosSimplesImportacaoRetorno                   = new cl_arquivosimplesimportacaoretorno();
+        $daoArquivosSimplesImportacaoRetorno->q182_id_usuario  = db_getsession('DB_id_usuario');
+        $daoArquivosSimplesImportacaoRetorno->q182_nomearquivo = $nomeArquivo;
+        $daoArquivosSimplesImportacaoRetorno->q182_id_storage  = $idStorage;
+        $daoArquivosSimplesImportacaoRetorno->q182_arquivosimplesimportacao = $parametros->iArquivo;
+        $daoArquivosSimplesImportacaoRetorno->incluir(null);
+        if ($daoArquivosSimplesImportacaoRetorno->erro_status == 0) {
+
+          throw new Exception("[Erro ao vincular arquivo armazenado". $daoArquivosSimplesImportacaoRetorno->erro_msg);
+        }
+      }
+
+      db_fim_transacao();
+
     break;
 
     case "getArquivos":
-
-      $oRetorno->aArquivos = array();
+      
+      
+      $retorno->aArquivos = array();
 
       $oDaoArquivoSimplesImportacao = new cl_arquivosimplesimportacao();
-
-      $sWhere = ($oParametros->lReprocessamento ? 'q64_processado = true' : '');
-
+      $sWhere = ($parametros->lReprocessamento=="true"? 'q64_processado is true' : '');
+      
       $sSqlArquivoSimplesImportacao  = $oDaoArquivoSimplesImportacao->sql_query_file( null,
                                                                                       'q64_sequencial, q64_nomearquivo',
                                                                                       'q64_sequencial desc',
                                                                                       $sWhere );
+       
       $rsDAOArquivoSimplesImportacao = $oDaoArquivoSimplesImportacao->sql_record( $sSqlArquivoSimplesImportacao );
 
       if ( $oDaoArquivoSimplesImportacao->numrows <= 0 ) {
@@ -113,15 +214,15 @@ try {
       $aArquivoSimplesImportacao = db_utils::getCollectionByRecord( $rsDAOArquivoSimplesImportacao );
 
       foreach ($aArquivoSimplesImportacao as $aDados ) {
-        $oRetorno->aArquivos[] = array('iSequencial' => $aDados->q64_sequencial, 'sLabel' => $aDados->q64_nomearquivo);
+        $retorno->aArquivos[] = array('iSequencial' => $aDados->q64_sequencial, 'sLabel' => $aDados->q64_nomearquivo);
       }
     break;
 
     case "getDataVencimento":
 
-      $oDaoArquivoSimplesImportacao = new cl_arquivosimplesimportacao();
+      $oDaoArquivoSimplesImportacao  = new cl_arquivosimplesimportacao();
 
-      $sSql                          = $oDaoArquivoSimplesImportacao->sql_query( $oParametros->iArquivo,
+      $sSql                          = $oDaoArquivoSimplesImportacao->sql_query( $parametros->iArquivo,
                                                                                  'q64_data, q64_datalimitevencimentos, q64_processado' );
       $rsDAOArquivoSimplesImportacao = $oDaoArquivoSimplesImportacao->sql_record( $sSql );
 
@@ -138,8 +239,8 @@ try {
         $dtData = $oData->convertTo(DBDate::DATA_PTBR);
       }
 
-      $oRetorno->lProcessado = ($oArquivoSimplesImportacao->q64_processado == 't');
-      $oRetorno->dtData      = $dtData;
+      $retorno->lProcessado = ($oArquivoSimplesImportacao->q64_processado == 't');
+      $retorno->dtData      = $dtData;
     break;
 
     /**
@@ -149,10 +250,10 @@ try {
      *   -- Não ter sido processado ainda
      */
     case 'validacaoAutomatica':
-
-      $oDaoArquivoSimples = new cl_arquivosimplesimportacao();
-
-      $sSql                = $oDaoArquivoSimples->sql_query( $oParametros->iArquivo,
+      
+      $retorno->aEmpresasModificadas = [];
+      $oDaoArquivoSimples  = new cl_arquivosimplesimportacao();
+      $sSql                = $oDaoArquivoSimples->sql_query( $parametros->iArquivo,
                                                              'q64_datalimitevencimentos, q64_processado' );
       $rsDaoArquivoSimples = $oDaoArquivoSimples->sql_record( $sSql );
 
@@ -165,55 +266,93 @@ try {
       /**
        * Verifica se não foi processado ainda ou se veio da rotina de reprocessamento
        */
-      if ($oArquivoSimples->q64_processado == 'f' || $oParametros->lReprocessamento) {
+      if ($oArquivoSimples->q64_processado == 'f' || $parametros->lReprocessamento) {
 
-        $oData  = new DBDate($oParametros->dtLimite);
+        $oData  = new DBDate($parametros->dtLimite);
         $dtData = $oData->convertTo(DBDate::DATA_EN);
 
         db_inicio_transacao();
 
         $oGeracaoArquivoSimplesNacional = new GeracaoArquivoSimplesNacional();
 
-        $oGeracaoArquivoSimplesNacional->setArquivo( $oParametros->iArquivo );
+        $oGeracaoArquivoSimplesNacional->setArquivo( $parametros->iArquivo );
         $oGeracaoArquivoSimplesNacional->setDataLimite( $dtData );
-        $oGeracaoArquivoSimplesNacional->validacaoAutomatica();
-
+        $lReprocessamento              = $parametros->lReprocessamento==1?true:false;
+        db_putsession("DB_desativar_account", true);
+        $oGeracaoArquivoSimplesNacional->validacaoAutomatica($lReprocessamento);
+        db_putsession("DB_desativar_account", false);
+        // Somente retornar registros quando for rotina de reprocessamento
+        $retorno->aEmpresasModificadas = $oGeracaoArquivoSimplesNacional->empresasModificadasReprocessamento();
         /**
          * Altera o arquivo que foi validado como processado e a data limite utilizada
          */
         $oDaoArquivoSimples->q64_datalimitevencimentos = $dtData;
-        $oDaoArquivoSimples->q64_processado            = 't';
-        $oDaoArquivoSimples->q64_sequencial            = $oParametros->iArquivo;
-        $oDaoArquivoSimples->alterar( $oParametros->iArquivo );
-
+        $oDaoArquivoSimples->q64_sequencial            = $parametros->iArquivo;
+        $oDaoArquivoSimples->alterar( $parametros->iArquivo );
         db_fim_transacao();
       }
     break;
 
     case "getEmpresas":
 
-      $oArquivosSimples = new GeracaoArquivoSimplesNacional();
-      $oArquivosSimples->setArquivo( $oParametros->iArquivo );
-      $aEmpresas        = $oArquivosSimples->getEmpresasByCnae( $oParametros->sEstrutural );
-
-      $oRetorno->aEmpresas = $aEmpresas;
+      $oArquivosSimples   = new GeracaoArquivoSimplesNacional();
+      $oArquivosSimples->setArquivo( $parametros->iArquivo );
+      $aEmpresas          = $oArquivosSimples->getEmpresasByCnae($parametros->estrutural);
+     
+      $retorno->aEmpresas = $aEmpresas;
     break;
 
     case "setAptos":
 
       $oArquivoSimples = new GeracaoArquivoSimplesNacional();
-      $oArquivoSimples->setAptos($oParametros->oEmpresas, $oParametros->lApto);
+      $oArquivoSimples->setAptos($parametros->oEmpresas, $parametros->lApto);
 
     break;
 
+    case "getRegistro":
+
+      $oDaoArquivoSimplesImportacaoDetalhe = new cl_arquivosimplesimportacaodetalhe();
+      $sql = $oDaoArquivoSimplesImportacaoDetalhe->sql_query_file($parametros->sequencial);      
+      $rsDAOArquivoSimplesImportacaoDetalhe = $oDaoArquivoSimplesImportacaoDetalhe->sql_record($sql);
+      $retorno->registro = db_utils::fieldsMemory($rsDAOArquivoSimplesImportacaoDetalhe, 0);
+    break;
+    
+    case "getRelatorio":
+      $oGeracaoArquivoSimplesNacional = new GeracaoArquivoSimplesNacional();
+      $oGeracaoArquivoSimplesNacional->setArquivo( $parametros->iArquivo);
+      $retorno->sInconsistencias  = $oGeracaoArquivoSimplesNacional->relatorioInconsistencias();      
+    break;
+
+    case "buscarArquivos":
+
+      $oGeracaoArquivoSimplesNacional = new GeracaoArquivoSimplesNacional();
+      $oGeracaoArquivoSimplesNacional->setArquivo( $parametros->iArquivo);
+      $retorno->listaArquivos  = $oGeracaoArquivoSimplesNacional->getArquivosGerados();     
+    break;
+
+    case "downloadArquivo":
+      
+      $daoArquivosSimplesImportacaoRetorno = new cl_arquivosimplesimportacaoretorno();
+      $sSqlArquivo                         = $daoArquivosSimplesImportacaoRetorno->sql_query_file($parametros->id_arquivo);
+      $rsArquivo                           = $daoArquivosSimplesImportacaoRetorno->sql_record($sSqlArquivo);
+      $oArquivo                            = db_utils::fieldsMemory($rsArquivo, 0);
+      $storage                             = StorageHelper::downloadArquivo($oArquivo->q182_id_storage);
+      $pathArquivo                         = "tmp/{$oArquivo->q182_nomearquivo}";
+      if(!rename($storage, $pathArquivo)) {
+
+         throw new Exception("Não foi possível baixar o arquivo");
+      }
+
+      $retorno->urlArquivo = $pathArquivo;
+    break;
   }
 
 } catch (Exception $oErro) {
 
   db_fim_transacao(true);
-  $oRetorno->iStatus   = 2;
-  $oRetorno->sMensagem = $oErro->getMessage();
+  $retorno->erro   = true;
+  $retorno->mensagem = $oErro->getMessage();
 }
 
-$oRetorno->sMensagem = urlencode($oRetorno->sMensagem);
-echo $oJson->encode($oRetorno);
+$retorno->mensagem = urlencode($retorno->mensagem);
+echo JSON::create()->stringify($retorno);

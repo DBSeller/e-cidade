@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once "dbforms/db_classesgenericas.php";
-require_once "libs/db_utils.php";
+require_once modification("dbforms/db_classesgenericas.php");
+require_once modification("libs/db_utils.php");
 
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clpcorcamitem->rotulo->label();
@@ -299,9 +299,9 @@ if (isset($pc80_codproc)) {
     echo "<script>
             alert('Usuário:\\n\\nAlguns itens incluídos neste orçamento estão em autorização de empenho!\\n\\nAdministrador:');";
     if($db_chama=="alterar"){
-      echo "  top.corpo.iframe_orcam.location.href = 'com1_processo005.php';";
+      echo "  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_processo005.php';";
     }else if($db_chama=="excluir"){
-      echo "  top.corpo.iframe_orcam.location.href = 'com1_processo006.php';";
+      echo "  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_processo006.php';";
     }
     echo "</script>";
   }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sql.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_ativid_classe.php");
-include("classes/db_clasativ_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_ativid_classe.php"));
+include(modification("classes/db_clasativ_classe.php"));
 
 $clativid = new cl_ativid;
 $clclasativ = new cl_clasativ;
@@ -236,10 +236,10 @@ background-color:#ccddcc;
 //---------------------------------------------------------------
 function js_pesquisaq12_classe(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_classe','func_classe.php?funcao_js=parent.js_mostraclasse1|q12_classe|q12_descr','Pesquisa',true);  
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_classe','func_classe.php?funcao_js=parent.js_mostraclasse1|q12_classe|q12_descr','Pesquisa',true);  
     }else{
      if(document.form1.q12_classe.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_classe','func_classe.php?pesquisa_chave='+document.form1.q12_classe.value+'&funcao_js=parent.js_mostraclasse','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_classe','func_classe.php?pesquisa_chave='+document.form1.q12_classe.value+'&funcao_js=parent.js_mostraclasse','Pesquisa',false);
      }else{
        document.form1.q12_descr.value = ''; 
      }
@@ -266,7 +266,7 @@ if (isset($atualizar)){
       echo "<script> document.form1.".$clclasativ->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clclasativ->erro_campo.".focus();</script>";
     }else{ 
-      echo"<script>top.corpo.location.href='iss1_clasativ011.php';</script>";
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='iss1_clasativ011.php';</script>";
     }
 }
 ?>

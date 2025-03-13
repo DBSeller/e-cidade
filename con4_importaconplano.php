@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("libs/db_libcontabilidade.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conplanoexe_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_conplanoexe_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -55,7 +55,7 @@ if(isset($processar)){
               select c60_codcon, ".db_getsession("DB_anousu").",c60_estrut,c60_descr,c60_finali,c60_codsis,c60_codcla
               from conplano where c60_anousu = ".(db_getsession("DB_anousu")-1)." and c60_codcon = $codcon";
 
-      $res = pg_exec($sql);
+      $res = db_query($sql);
       if($res==false){
       	$erro = true;
       	$erro_msg ="Não incluido no conplano."; 
@@ -66,7 +66,7 @@ if(isset($processar)){
                 select c63_codcon , ".db_getsession("DB_anousu").", c63_banco , c63_agencia , c63_conta , c63_dvconta , c63_dvagencia
                 from conplanoconta where c63_anousu = ".(db_getsession("DB_anousu")-1)." and c63_codcon = $codcon";
 
-        $res = pg_exec($sql);
+        $res = db_query($sql);
         if($res==false){
       	  $erro = true;
       	  $erro_msg ="Não incluido no conplanoconta."; 
@@ -78,7 +78,7 @@ if(isset($processar)){
                 select  c61_codcon ,".db_getsession("DB_anousu").", c61_reduz , c61_instit , c61_codigo , c61_contrapartida
                 from conplanoreduz where c61_anousu = ".(db_getsession("DB_anousu")-1)." and c61_reduz = $reduz";
 
-        $res = pg_exec($sql);
+        $res = db_query($sql);
         if($res==false){
       	  $erro = true;
       	  $erro_msg ="Não incluido no conplanoreduz."; 
@@ -90,7 +90,7 @@ if(isset($processar)){
                 select ".db_getsession("DB_anousu").",c62_reduz ,c62_codrec ,0 ,0
                 from conplanoexe where c62_anousu = ".(db_getsession("DB_anousu")-1)." and c62_reduz = $reduz";
 
-        $res = pg_exec($sql);
+        $res = db_query($sql);
         if($res==false){
       	  $erro = true;
       	  $erro_msg ="Não incluido no conplanoexe."; 

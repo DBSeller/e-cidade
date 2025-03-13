@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_pcorcamtroca_classe.php");
-include("classes/db_pcorcamval_classe.php");
-include("classes/db_pcorcamforne_classe.php");
-include("classes/db_pcorcamjulg_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_pcorcamtroca_classe.php"));
+include(modification("classes/db_pcorcamval_classe.php"));
+include(modification("classes/db_pcorcamforne_classe.php"));
+include(modification("classes/db_pcorcamjulg_classe.php"));
 
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -189,7 +189,7 @@ if(isset($trocar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
       <?
-      include("forms/db_frmtrocpcorcamtrocalic.php");
+      include(modification("forms/db_frmtrocpcorcamtrocalic.php"));
       ?>
     </center>
     </td>
@@ -210,6 +210,6 @@ if(isset($trocar)){
       echo "<script> document.form1.".$clpcorcamtroca->erro_campo.".focus();</script>";
     }  
   }else{
-    echo "<script> top.corpo.location.href = 'lic1_pcorcamtroca001.php?pc20_codorc=$orcamento&pc21_orcamforne=$orcamforne&l20_codigo=$l20_codigo';</script>";
+    echo "<script> (window.CurrentWindow || parent.CurrentWindow).corpo.location.href = 'lic1_pcorcamtroca001.php?pc20_codorc=$orcamento&pc21_orcamforne=$orcamforne&l20_codigo=$l20_codigo';</script>";
   }
 }

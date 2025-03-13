@@ -1,64 +1,64 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
 //CLASSE DA ENTIDADE baseserie
-class cl_baseserie { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ed87_i_codigo = 0; 
-   var $ed87_i_serieinicial = 0; 
-   var $ed87_i_seriefinal = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_baseserie {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ed87_i_codigo = 0;
+   var $ed87_i_serieinicial = 0;
+   var $ed87_i_seriefinal = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 ed87_i_codigo = int8 = Base 
-                 ed87_i_serieinicial = int8 = Série/Ano Inicial 
-                 ed87_i_seriefinal = int8 = Série/Ano Final 
+                 ed87_i_codigo = int8 = Base
+                 ed87_i_serieinicial = int8 = Série/Ano Inicial
+                 ed87_i_seriefinal = int8 = Série/Ano Final
                  ";
-   //funcao construtor da classe 
-   function cl_baseserie() { 
+   //funcao construtor da classe
+   function cl_baseserie() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("baseserie"); 
+     $this->rotulo = new rotulo("baseserie");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -77,9 +77,9 @@ class cl_baseserie {
      }
    }
    // funcao para inclusao
-   function incluir ($ed87_i_codigo){ 
+   function incluir ($ed87_i_codigo){
       $this->atualizacampos();
-     if($this->ed87_i_serieinicial == null ){ 
+     if($this->ed87_i_serieinicial == null ){
        $this->erro_sql = " Campo Série/Ano Inicial nao Informado.";
        $this->erro_campo = "ed87_i_serieinicial";
        $this->erro_banco = "";
@@ -88,7 +88,7 @@ class cl_baseserie {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed87_i_seriefinal == null ){ 
+     if($this->ed87_i_seriefinal == null ){
        $this->erro_sql = " Campo Série/Ano Final nao Informado.";
        $this->erro_campo = "ed87_i_seriefinal";
        $this->erro_banco = "";
@@ -97,8 +97,8 @@ class cl_baseserie {
        $this->erro_status = "0";
        return false;
      }
-       $this->ed87_i_codigo = $ed87_i_codigo; 
-     if(($this->ed87_i_codigo == null) || ($this->ed87_i_codigo == "") ){ 
+       $this->ed87_i_codigo = $ed87_i_codigo;
+     if(($this->ed87_i_codigo == null) || ($this->ed87_i_codigo == "") ){
        $this->erro_sql = " Campo ed87_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -107,17 +107,17 @@ class cl_baseserie {
        return false;
      }
      $sql = "insert into baseserie(
-                                       ed87_i_codigo 
-                                      ,ed87_i_serieinicial 
-                                      ,ed87_i_seriefinal 
+                                       ed87_i_codigo
+                                      ,ed87_i_serieinicial
+                                      ,ed87_i_seriefinal
                        )
                 values (
-                                $this->ed87_i_codigo 
-                               ,$this->ed87_i_serieinicial 
-                               ,$this->ed87_i_seriefinal 
+                                $this->ed87_i_codigo
+                               ,$this->ed87_i_serieinicial
+                               ,$this->ed87_i_seriefinal
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Série Inicial e Final da Base MPS ($this->ed87_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -151,16 +151,16 @@ class cl_baseserie {
        $resac = db_query("insert into db_acount values($acount,1010065,1008388,'','".AddSlashes(pg_result($resaco,0,'ed87_i_seriefinal'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($ed87_i_codigo=null) { 
+   function alterar ($ed87_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update baseserie set ";
      $virgula = "";
-     if(trim($this->ed87_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed87_i_codigo"])){ 
+     if(trim($this->ed87_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed87_i_codigo"])){
        $sql  .= $virgula." ed87_i_codigo = $this->ed87_i_codigo ";
        $virgula = ",";
-       if(trim($this->ed87_i_codigo) == null ){ 
+       if(trim($this->ed87_i_codigo) == null ){
          $this->erro_sql = " Campo Base nao Informado.";
          $this->erro_campo = "ed87_i_codigo";
          $this->erro_banco = "";
@@ -170,10 +170,10 @@ class cl_baseserie {
          return false;
        }
      }
-     if(trim($this->ed87_i_serieinicial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed87_i_serieinicial"])){ 
+     if(trim($this->ed87_i_serieinicial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed87_i_serieinicial"])){
        $sql  .= $virgula." ed87_i_serieinicial = $this->ed87_i_serieinicial ";
        $virgula = ",";
-       if(trim($this->ed87_i_serieinicial) == null ){ 
+       if(trim($this->ed87_i_serieinicial) == null ){
          $this->erro_sql = " Campo Série/Ano Inicial nao Informado.";
          $this->erro_campo = "ed87_i_serieinicial";
          $this->erro_banco = "";
@@ -183,10 +183,10 @@ class cl_baseserie {
          return false;
        }
      }
-     if(trim($this->ed87_i_seriefinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed87_i_seriefinal"])){ 
+     if(trim($this->ed87_i_seriefinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed87_i_seriefinal"])){
        $sql  .= $virgula." ed87_i_seriefinal = $this->ed87_i_seriefinal ";
        $virgula = ",";
-       if(trim($this->ed87_i_seriefinal) == null ){ 
+       if(trim($this->ed87_i_seriefinal) == null ){
          $this->erro_sql = " Campo Série/Ano Final nao Informado.";
          $this->erro_campo = "ed87_i_seriefinal";
          $this->erro_banco = "";
@@ -216,7 +216,7 @@ class cl_baseserie {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Série Inicial e Final da Base MPS nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed87_i_codigo;
@@ -244,14 +244,14 @@ class cl_baseserie {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($ed87_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($ed87_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ed87_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -279,7 +279,7 @@ class cl_baseserie {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Série Inicial e Final da Base MPS nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed87_i_codigo;
@@ -307,11 +307,11 @@ class cl_baseserie {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -333,46 +333,48 @@ class cl_baseserie {
       }
      return $result;
    }
-   function sql_query ( $ed87_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from baseserie ";
-     $sql .= "      left  join serie as si on si.ed11_i_codigo = baseserie.ed87_i_serieinicial";
-     $sql .= "      left  join serie as sf on sf.ed11_i_codigo = baseserie.ed87_i_seriefinal";
-     $sql .= "      inner join base on base.ed31_i_codigo = baseserie.ed87_i_codigo";
-     $sql .= "      inner join escolabase on escolabase.ed77_i_base = base.ed31_i_codigo ";
-     $sql .= "      inner join ensino on ensino.ed10_i_codigo = si.ed11_i_ensino";
-     $sql .= "      inner join cursoedu on cursoedu.ed29_i_codigo = base.ed31_i_curso";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($ed87_i_codigo!=null ){
-         $sql2 .= " where baseserie.ed87_i_codigo = $ed87_i_codigo "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
+
+  function sql_query ( $ed87_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from baseserie ";
+    $sql .= "      left  join serie as si on si.ed11_i_codigo = baseserie.ed87_i_serieinicial";
+    $sql .= "      left  join serie as sf on sf.ed11_i_codigo = baseserie.ed87_i_seriefinal";
+    $sql .= "      inner join base on base.ed31_i_codigo = baseserie.ed87_i_codigo";
+    $sql .= "      inner join escolabase on escolabase.ed77_i_base = base.ed31_i_codigo ";
+    $sql .= "      inner join ensino on ensino.ed10_i_codigo = si.ed11_i_ensino";
+    $sql .= "      inner join cursoedu on cursoedu.ed29_i_codigo = base.ed31_i_curso";
+    $sql2 = "";
+    if($dbwhere==""){
+      if($ed87_i_codigo!=null ){
+        $sql2 .= " where baseserie.ed87_i_codigo = $ed87_i_codigo ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
   }
-   function sql_query_file ( $ed87_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $ed87_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -388,8 +390,8 @@ class cl_baseserie {
      $sql2 = "";
      if($dbwhere==""){
        if($ed87_i_codigo!=null ){
-         $sql2 .= " where baseserie.ed87_i_codigo = $ed87_i_codigo "; 
-       } 
+         $sql2 .= " where baseserie.ed87_i_codigo = $ed87_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -438,6 +440,34 @@ class cl_baseserie {
         $sql .= $virgula.$campos_sql[$i];
         $virgula = ",";
       }
+    }
+    return $sql;
+  }
+
+  function sql_query_etapa_base ( $ed87_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+    $sql  = "select {$campos}";
+    $sql .= " from baseserie ";
+    $sql .= "      left  join serie as si on si.ed11_i_codigo = baseserie.ed87_i_serieinicial";
+    $sql .= "      left  join serie as sf on sf.ed11_i_codigo = baseserie.ed87_i_seriefinal";
+    $sql .= "      inner join base        on base.ed31_i_codigo = baseserie.ed87_i_codigo";
+    $sql .= "      left  join escolabase  on escolabase.ed77_i_base = base.ed31_i_codigo ";
+    $sql .= "      inner join ensino      on ensino.ed10_i_codigo = si.ed11_i_ensino";
+    $sql .= "      inner join cursoedu    on cursoedu.ed29_i_codigo = base.ed31_i_curso";
+    $sql2 = "";
+
+    if($dbwhere==""){
+      if($ed87_i_codigo!=null ){
+        $sql2 .= " where baseserie.ed87_i_codigo = $ed87_i_codigo ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+
+    $sql .= $sql2;
+
+    if($ordem != null ){
+      $sql .= " order by {$ordem}";
     }
     return $sql;
   }

@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_item_classe.php");
-include("classes/db_mer_itemunisaida_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_libdicionario.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_item_classe.php"));
+include(modification("classes/db_mer_itemunisaida_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_libdicionario.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_item         = new cl_mer_item;
@@ -71,7 +71,7 @@ if (isset($alterar)) {
   <script>
    parent.document.formaba.a2.disabled    = false;
    parent.document.formaba.a2.style.color = "black";
-   top.corpo.iframe_a2.location.href      = 'mer1_mer_infnutricional001.php?meritem=<?=$me10_i_codigo?>';
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'mer1_mer_infnutricional001.php?meritem=<?=$me10_i_codigo?>';
   </script>
 <?
 
@@ -91,7 +91,7 @@ if (isset($alterar)) {
   <tr> 
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
     <fieldset style="width:95%"><legend><b>Alteração Item</b></legend>
-	<? include("forms/db_frmmer_item.php");?>
+	<? include(modification("forms/db_frmmer_item.php"));?>
 	</fieldset>
 	</td>
   </tr>

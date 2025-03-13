@@ -28,17 +28,17 @@
 /**
  * 
  * @author I
- * @revision $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.4 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_sau_examesatributos_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_sau_examesatributos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_app.utils.php"));
 $oDaoExames = new cl_sau_examesatributos;
 $oGet       = db_utils::postMemory($_GET);
 ?>
@@ -78,7 +78,7 @@ db_app::load("estilos.css");
      
      $sSqlAtributos = $oDaoExames->sql_query_atributovalores(null,"*","s132_i_codigo", $sWhere, $iCodigoConfirmaExame);
      $rsAtributos   = $oDaoExames->sql_record($sSqlAtributos);
-     $aAtributosExames = db_utils::getColectionByRecord($rsAtributos);
+     $aAtributosExames = db_utils::getCollectionByRecord($rsAtributos);
      foreach ($aAtributosExames as $oAtributo) {
 
        echo "<tr style='height:1em'>";

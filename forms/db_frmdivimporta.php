@@ -78,7 +78,7 @@ db_input('v02_hora',10,$Iv02_hora,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_divimporta','func_divimporta.php?funcao_js=parent.js_preenchepesquisa|v02_divimporta','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_divimporta','func_divimporta.php?funcao_js=parent.js_preenchepesquisa|v02_divimporta','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_divimporta.hide();

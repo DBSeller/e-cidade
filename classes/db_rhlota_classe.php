@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -546,7 +546,7 @@ class cl_rhlota {
    function sql_query ( $r70_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -570,7 +570,7 @@ class cl_rhlota {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -583,7 +583,7 @@ class cl_rhlota {
    function sql_query_file ( $r70_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -604,7 +604,7 @@ class cl_rhlota {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -616,7 +616,7 @@ class cl_rhlota {
    function sql_query_cgm ( $r70_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -626,12 +626,13 @@ class cl_rhlota {
        $sql .= $campos;
      }
      $sql .= " from rhlota ";
-     $sql .= "      inner join rhpessoal  on rhpessoal.rh01_lotac = rhlota.r70_codigo  ";
-     $sql .= "      inner join rhpessoalmov  on rhpessoalmov.rh02_regist = rhpessoal.rh01_regist ";
+     $sql .= "      inner join rhpessoalmov  on rhpessoalmov.rh02_lota = rhlota.r70_codigo ";
+     $sql .= "      inner join rhpessoal  on rhpessoal.rh01_regist = rhpessoalmov.rh02_regist   ";
      $sql .= "      left  join rhpesrescisao on rhpesrescisao.rh05_seqpes = rhpessoalmov.rh02_seqpes ";
      $sql .= "      inner join rhregime  on rhregime.rh30_codreg  = rhpessoalmov.rh02_codreg ";
      $sql .= "      inner join cgm      on cgm.z01_numcgm         = rhpessoal.rh01_numcgm ";
      $sql .= "      inner join rhfuncao on rhfuncao.rh37_funcao   = rhpessoal.rh01_funcao ";
+     $sql .= "          and rhfuncao.rh37_instit = rhlota.r70_instit";
      $sql2 = "";
      if($dbwhere==""){
        if($r70_codigo!=null ){
@@ -643,7 +644,7 @@ class cl_rhlota {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -655,7 +656,7 @@ class cl_rhlota {
    function sql_query_leftorgao ( $r70_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -678,7 +679,7 @@ class cl_rhlota {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -693,7 +694,7 @@ class cl_rhlota {
 
    $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -715,7 +716,7 @@ class cl_rhlota {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -727,7 +728,7 @@ class cl_rhlota {
    function sql_query_orgao ( $r70_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -750,7 +751,7 @@ class cl_rhlota {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -758,6 +759,45 @@ class cl_rhlota {
        }
      }
      return $sql;
+  }
+  
+  function sql_query_usuarios ( $r70_codigo=null,$campos="*",$ordem=null,$dbwhere="") {
+      $sql = "select ";
+      if($campos != "*" ){
+          $campos_sql = split("#",$campos);
+          $virgula = "";
+          for($i=0;$i<sizeof($campos_sql);$i++){
+              $sql .= $virgula.$campos_sql[$i];
+              $virgula = ",";
+          }
+      }else{
+          $sql .= $campos;
+      }
+      $sql .= " from rhlota ";
+      $sql .= "      inner join cgm  on  cgm.z01_numcgm = rhlota.r70_numcgm";
+      $sql .= "      inner join db_estrutura  on  db_estrutura.db77_codestrut = rhlota.r70_codestrut";
+      $sql .= "      inner join concarpeculiar  on  concarpeculiar.c58_sequencial = rhlota.r70_concarpeculiar";
+      $sql .= "      inner join db_usuariosrhlota on rhlota.r70_codigo = db_usuariosrhlota.rh157_lotacao";
+      $sql .= "      inner join db_usuarios on db_usuariosrhlota.rh157_usuario =  db_usuarios.id_usuario";
+      $sql2 = "";
+      if($dbwhere==""){
+          if($r70_codigo!=null ){
+              $sql2 .= " where rhlota.r70_codigo = $r70_codigo ";
+          }
+      }else if($dbwhere != ""){
+          $sql2 = " where $dbwhere";
+      }
+      $sql .= $sql2;
+      if($ordem != null ){
+          $sql .= " order by ";
+          $campos_sql = split("#",$ordem);
+          $virgula = "";
+          for($i=0;$i<sizeof($campos_sql);$i++){
+              $sql .= $virgula.$campos_sql[$i];
+              $virgula = ",";
+          }
+      }
+      return $sql;
   }
 
   /**

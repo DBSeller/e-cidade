@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -107,10 +107,10 @@ $clrotulo->label("c53_descr");
 <script>
 function js_pesquisac111_conhistdocEstorno(mostra){
 	  if(mostra==true){
-	    js_OpenJanelaIframe('top.corpo','db_iframe_conhistdocEstorno','func_conhistdoc.php?lTipoReconhecimentoContabil=true&funcao_js=parent.js_mostraconhistdocEstorno1|c53_coddoc|c53_descr','Pesquisa',true);
+	    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conhistdocEstorno','func_conhistdoc.php?lTipoReconhecimentoContabil=true&funcao_js=parent.js_mostraconhistdocEstorno1|c53_coddoc|c53_descr','Pesquisa',true);
 	  }else{
 	     if(document.form1.c111_conhistdoc.value != ''){ 
-	        js_OpenJanelaIframe('top.corpo','db_iframe_conhistdocEstorno','func_conhistdoc.php?lTipoReconhecimentoContabil=true&pesquisa_chave='+document.form1.c111_conhistdocestorno.value+'&funcao_js=parent.js_mostraconhistdocEstorno','Pesquisa',false);
+	        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conhistdocEstorno','func_conhistdoc.php?lTipoReconhecimentoContabil=true&pesquisa_chave='+document.form1.c111_conhistdocestorno.value+'&funcao_js=parent.js_mostraconhistdocEstorno','Pesquisa',false);
 	     }else{
 	       document.form1.c53_descrestorno.value = ''; 
 	     }
@@ -135,10 +135,10 @@ function js_pesquisac111_conhistdocEstorno(mostra){
 			
 function js_pesquisac111_conhistdoc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_conhistdoc','func_conhistdoc.php?lTipoReconhecimentoContabil=true&funcao_js=parent.js_mostraconhistdoc1|c53_coddoc|c53_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conhistdoc','func_conhistdoc.php?lTipoReconhecimentoContabil=true&funcao_js=parent.js_mostraconhistdoc1|c53_coddoc|c53_descr','Pesquisa',true);
   }else{
      if(document.form1.c111_conhistdoc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_conhistdoc','func_conhistdoc.php?lTipoReconhecimentoContabil=true&pesquisa_chave='+document.form1.c111_conhistdoc.value+'&funcao_js=parent.js_mostraconhistdoc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conhistdoc','func_conhistdoc.php?lTipoReconhecimentoContabil=true&pesquisa_chave='+document.form1.c111_conhistdoc.value+'&funcao_js=parent.js_mostraconhistdoc','Pesquisa',false);
      }else{
        document.form1.c53_descr.value = ''; 
      }
@@ -161,7 +161,7 @@ function js_mostraconhistdoc1(chave1,chave2){
 
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_reconhecimentocontabiltipo','func_reconhecimentocontabiltipo.php?funcao_js=parent.js_preenchepesquisa|c111_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_reconhecimentocontabiltipo','func_reconhecimentocontabiltipo.php?funcao_js=parent.js_preenchepesquisa|c111_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
 	

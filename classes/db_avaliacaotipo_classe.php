@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -329,7 +329,7 @@ class cl_avaliacaotipo {
    function sql_query ( $db100_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -342,15 +342,15 @@ class cl_avaliacaotipo {
      $sql2 = "";
      if($dbwhere==""){
        if($db100_sequencial!=null ){
-         $sql2 .= " where avaliacaotipo.db100_sequencial = $db100_sequencial "; 
-       } 
+           $sql2 .= " where avaliacaotipo.db100_sequencial = $db100_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -359,11 +359,11 @@ class cl_avaliacaotipo {
      }
      return $sql;
   }
-   // funcao do sql 
+    // funcao do sql
    function sql_query_file ( $db100_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -376,15 +376,15 @@ class cl_avaliacaotipo {
      $sql2 = "";
      if($dbwhere==""){
        if($db100_sequencial!=null ){
-         $sql2 .= " where avaliacaotipo.db100_sequencial = $db100_sequencial "; 
-       } 
+           $sql2 .= " where avaliacaotipo.db100_sequencial = $db100_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

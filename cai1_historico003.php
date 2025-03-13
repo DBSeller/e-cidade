@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if(isset($HTTP_POST_VARS["excluir"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select k01_codigo from histcalc where k01_codigo = $k01_codigo");
+  $result = db_query("select k01_codigo from histcalc where k01_codigo = $k01_codigo");
   if(pg_numrows($result) == 0 ) {
     db_msgbox("Registro não encontrado");
 	db_redireciona();	
   }
-  pg_exec("delete from histcalc where k01_codigo = $k01_codigo") or die("Erro(13) deletando histcalc");
+  db_query("delete from histcalc where k01_codigo = $k01_codigo") or die("Erro(13) deletando histcalc");
 }
 ?>
 

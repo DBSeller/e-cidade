@@ -1,0 +1,1 @@
+insert into db_itensmenu  select * from w_limpezamenus_db_itensmenu w where w.id_item not in (select dd.id_item from db_itensmenu dd );

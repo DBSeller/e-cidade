@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -243,7 +243,7 @@ db_input('db08_descr',40,$Idb08_descr,true,'hidden',3,'')
 <script>
 function js_pesquisadb02_idparag(mostra){
   document.form1.lanca.onclick = "";
-  parent.bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
+  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
   if(mostra==true){
     db_iframe.jan.location.href = 'func_db_paragrafo.php?funcao_js=parent.js_mostradb_paragrafo1|0|1';
     db_iframe.mostraMsg();
@@ -261,7 +261,7 @@ function js_mostradb_paragrafo(chave,erro){
   }else{
     document.form1.lanca.onclick = js_insSelect;
   }
-    parent.bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
 
 }
 function js_mostradb_paragrafo1(chave1,chave2){
@@ -291,10 +291,10 @@ function js_preenchepesquisa(chave){
 
 function js_pesquisadb03_tipodoc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_tipodoc','func_db_tipodoc.php?funcao_js=parent.js_mostradb_tipodoc1|db08_codigo|db08_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_tipodoc','func_db_tipodoc.php?funcao_js=parent.js_mostradb_tipodoc1|db08_codigo|db08_descr','Pesquisa',true);
   }else{
      if(document.form1.db03_tipodoc.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_tipodoc','func_db_tipodoc.php?pesquisa_chave='+document.form1.db03_tipodoc.value+'&funcao_js=parent.js_mostradb_tipodoc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_tipodoc','func_db_tipodoc.php?pesquisa_chave='+document.form1.db03_tipodoc.value+'&funcao_js=parent.js_mostradb_tipodoc','Pesquisa',false);
      }else{
        document.form1.db08_descr.value = '';
      }

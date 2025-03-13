@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_solicitem_classe.php");
-include("classes/db_solicitemprot_classe.php");
-include("classes/db_solicita_classe.php");
-include("classes/db_pcparam_classe.php");
-include("classes/db_pcorcamitemsol_classe.php");
-include("classes/db_solandam_classe.php");
-include("classes/db_solandpadraodepto_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_solicitemprot_classe.php"));
+include(modification("classes/db_solicita_classe.php"));
+include(modification("classes/db_pcparam_classe.php"));
+include(modification("classes/db_pcorcamitemsol_classe.php"));
+include(modification("classes/db_solandam_classe.php"));
+include(modification("classes/db_solandpadraodepto_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_GET_VARS);
 $clsolicitem = new cl_solicitem;
@@ -71,8 +71,8 @@ if(isset($solicita) && trim($solicita)!=""){
 function js_setornoset(campo,SN){
   cont = 0;
   if(SN==true){
-    for(i=0;i<top.corpo.arr_dados.length;i++){
-      if(top.corpo.arr_dados[i]==campo){
+    for(i=0;i<(window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.length;i++){
+      if((window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados[i]==campo){
 	cont++;
 	break;
       }
@@ -83,20 +83,20 @@ function js_setornoset(campo,SN){
 
   if(eval('document.form1.'+campo+'.checked')==true){
     if(cont==0){
-      top.corpo.arr_dados.push(campo);
+      (window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.push(campo);
     }
   }else{
     if(cont>0){
-      top.corpo.arr_dados.splice(i,1);
+      (window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.splice(i,1);
     }
   }
-  top.corpo.document.form1.valores.value = top.corpo.arr_dados.valueOf();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.document.form1.valores.value = (window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.valueOf();
 }
 function js_setornosetimp(campo,SN){
   cont = 0;
   if(SN==true){
-    for(i=0;i<top.corpo.arr_impor.length;i++){
-      if(top.corpo.arr_impor[i]==campo){
+    for(i=0;i<(window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor.length;i++){
+      if((window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor[i]==campo){
 	cont++;
 	break;
       }
@@ -107,31 +107,31 @@ function js_setornosetimp(campo,SN){
 
   if(eval('document.form1.'+campo+'.checked')==true){
     if(cont==0){
-      top.corpo.arr_impor.push(campo);
+      (window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor.push(campo);
     }
   }else{
     if(cont>0){
-      top.corpo.arr_impor.splice(i,1);
+      (window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor.splice(i,1);
     }
   }
-  top.corpo.document.form1.importa.value = top.corpo.arr_impor.valueOf();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.document.form1.importa.value = (window.CurrentWindow || parent.CurrentWindow).corpo.arr_impor.valueOf();
 }
 function js_marcacampos(){
   erro=0;
   campo = "";
   for(i=0;i<document.form1.length;i++){
     if(document.form1.elements[i].type == 'checkbox' && document.form1.elements[i].name.search('imp')==-1){
-      if(top.corpo.document.form1.valores.value.search(document.form1.elements[i].name)!=-1){
+      if((window.CurrentWindow || parent.CurrentWindow).corpo.document.form1.valores.value.search(document.form1.elements[i].name)!=-1){
         document.form1.elements[i].checked = true;
 	campo = document.form1.elements[i].name;
-	for(ii=0;ii<top.corpo.arr_dados.length;ii++){
-	  if(top.corpo.arr_dados[ii]==campo){
+	for(ii=0;ii<(window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.length;ii++){
+	  if((window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados[ii]==campo){
 	    erro++;
 	    break;
 	  }
 	}
 	if(erro==0 && campo!=""){
-	  top.corpo.arr_dados.push(campo);
+	  (window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.push(campo);
 	}
       }
     }
@@ -140,7 +140,7 @@ function js_marcacampos(){
 function js_marcacamposimp(){
   for(i=0;i<document.form1.length;i++){
     if(document.form1.elements[i].type == 'checkbox'){
-      if(top.corpo.document.form1.importa.value.search(document.form1.elements[i].name)!=-1){
+      if((window.CurrentWindow || parent.CurrentWindow).corpo.document.form1.importa.value.search(document.form1.elements[i].name)!=-1){
         document.form1.elements[i].checked = true;
       }
     }
@@ -150,8 +150,8 @@ function js_marcar(){
   for(i=0;i<document.form1.length;i++){
     cont = 0;
     if(document.form1.elements[i].type == 'checkbox' && document.form1.elements[i].disabled==false && document.form1.elements[i].name.search('imp')==-1){
-      for(ii=0;ii<top.corpo.arr_dados.length;ii++){
-	if(top.corpo.arr_dados[ii]==document.form1.elements[i].name){
+      for(ii=0;ii<(window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados.length;ii++){
+	if((window.CurrentWindow || parent.CurrentWindow).corpo.arr_dados[ii]==document.form1.elements[i].name){
 	  cont++;
 	  break;
 	}
@@ -270,7 +270,7 @@ x.pc11_codigo,
 				 left join arqproc 	on p68_codproc = x.p63_codproc
 			where p64_codtran is null and p68_codproc is null and x.pc11_codigo = $pc11_codigo";
 			
-			$result_tran=pg_exec($sqltran);
+			$result_tran=db_query($sqltran);
 			if(pg_numrows($result_tran)==0){
       	        	$readonly = "disabled";
 			}
@@ -313,7 +313,7 @@ x.pc11_codigo,
 				 left join arqproc 	on p68_codproc = x.p63_codproc
 			where p64_codtran is null and p68_codproc is null and x.pc11_codigo = $pc11_codigo";
 			
-			$result_tran=pg_exec($sqltran);
+			$result_tran=db_query($sqltran);
 			if(pg_numrows($result_tran)==0){
 			$readonly="disabled";
 			}
@@ -354,7 +354,7 @@ x.pc11_codigo,
 				 left join arqproc 	on p68_codproc = x.p63_codproc
 			where p64_codtran is null and p68_codproc is null and x.pc11_codigo = $pc11_codigo";
 			
-			$result_tran=pg_exec($sqltran);
+			$result_tran=db_query($sqltran);
 			if(pg_numrows($result_tran)==0){
         	$readonly = " disabled ";
 			}

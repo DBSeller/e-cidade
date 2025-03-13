@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_contranslan_classe.php");
-include("classes/db_contranslr_classe.php");
-include("classes/db_contrans_classe.php");
-include("classes/db_conhistdoc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_contranslan_classe.php"));
+include(modification("classes/db_contranslr_classe.php"));
+include(modification("classes/db_contrans_classe.php"));
+include(modification("classes/db_conhistdoc_classe.php"));
 
 
 
@@ -93,7 +93,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcontranslan.php");
+	include(modification("forms/db_frmcontranslan.php"));
 	?>
     </center>
 	</td>
@@ -126,7 +126,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.contranslr.disabled=false;
-         top.corpo.iframe_contranslr.location.href='con1_contranslr001.php?db_opcaoal=33&c47_seqtranslan=".@$c46_seqtranslan."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_contranslr.location.href='con1_contranslr001.php?db_opcaoal=33&c47_seqtranslan=".@$c46_seqtranslan."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('contranslr');";

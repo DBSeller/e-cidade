@@ -1,0 +1,14 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="j14_codigo" label="codigo"   />
+    <campo campo="j14_nome"   label="descricao"   />
+  </campos>
+  <from tabela="ruas" />
+  <juncoes>
+  </juncoes>
+  <filtros>
+  </filtros>
+  <agrupamento campos="" />
+  <ordenacao   campos="descricao" />
+</consulta>

@@ -88,7 +88,7 @@ db_inputdata('o45_datafim',@$o45_datafim_dia,@$o45_datafim_mes,@$o45_datafim_ano
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orclei','func_orclei.php?funcao_js=parent.js_preenchepesquisa|o45_codlei','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orclei','func_orclei.php?funcao_js=parent.js_preenchepesquisa|o45_codlei','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orclei.hide();

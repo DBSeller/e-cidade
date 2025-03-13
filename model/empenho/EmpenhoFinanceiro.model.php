@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,7 +29,7 @@
  * Model para controle do Empenho
  * @author  Matheus Felini <matheus.felini@dbseller.com.br>
  * @package empenho
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.67 $
  */
 class EmpenhoFinanceiro {
 
@@ -65,13 +65,13 @@ class EmpenhoFinanceiro {
 
   /**
    * Data de Emissão
-   * @var date
+   * @var string
    */
   protected $dtEmissao;
 
   /**
    * Data de Vencimento
-   * @var date
+   * @var string
    */
   protected $dtVencimento;
 
@@ -190,6 +190,57 @@ class EmpenhoFinanceiro {
   private $iCodigoDotacao;
 
   /**
+   * Tipo de Licitação (caso houver)
+   * @type integer
+   */
+  private $iTipoLicitacao;
+
+  /**
+   * Cotas de pagamento Mensal
+   * @var EmpenhoCotaMensal[]
+   */
+  private $aCotasMensais  = array();
+
+  /**
+   * @type NotaLiquidacao[]
+   */
+  private $aNotasLiquidadas = array();
+
+  private $iNumeroLicitacao = null;
+
+  /**
+   * @var integer
+   */
+  private $iCodigoListaClassificacaoCredor;
+
+  /**
+   * @var ListaClassificacaoCredor
+   */
+  private $oListaClassificacaoCredor;
+
+  /**
+   * @var TipoPrestacaoConta
+   */
+  private $oTipoPrestacaoConta;
+
+    /**
+     * Verifica se o empenho pé oriundo da folha de pagamento
+     * @var boolean
+     */
+  private $folhaPagamento;
+
+  /**
+   * @var integer
+   */
+  private $codigoElemento = null;
+
+    /**
+     * código do complemento
+     * @var integer
+     */
+    private $complemento;
+
+    /**
    * Carrega as propriedades de um empenho
    * @param integer  - Numero do Empenho
    * @return EmpenhoFinanceiro
@@ -200,7 +251,7 @@ class EmpenhoFinanceiro {
     $this->setNumero($iNumero);
     if (!empty($iNumero)) {
 
-      $oDaoEmpEmpenho   = db_utils::getDao('empempenho');
+      $oDaoEmpEmpenho   = new cl_empempenho();
       $sSqlBuscaEmpenho = $oDaoEmpEmpenho->sql_query_file($iNumero);
       $rsBuscaEmpenho   = $oDaoEmpEmpenho->sql_record($sSqlBuscaEmpenho);
 
@@ -222,12 +273,14 @@ class EmpenhoFinanceiro {
       $this->setResumo($oDadoEmpenho->e60_resumo);
       $this->setSaldoAnterior($oDadoEmpenho->e60_salant);
       $this->setTipoCompra($oDadoEmpenho->e60_codcom);
+      $this->setTipoLicitacao($oDadoEmpenho->e60_tipol);
       $this->setTipoEmpenho($oDadoEmpenho->e60_codtipo);
       $this->setValorAnulado($oDadoEmpenho->e60_vlranu);
       $this->setValorEmpenho($oDadoEmpenho->e60_vlremp);
       $this->setValorLiquidado($oDadoEmpenho->e60_vlrliq);
       $this->setValorOrcamento($oDadoEmpenho->e60_vlrorc);
       $this->setValorPago($oDadoEmpenho->e60_vlrpag);
+      $this->setNumeroDaLicitacao($oDadoEmpenho->e60_numerol);
       unset($oDadoEmpenho);
     }
   }
@@ -237,11 +290,12 @@ class EmpenhoFinanceiro {
    * Este metodo salva os dados do empenho em 'empempenho', salva os itens do empenho em 'empempitem'
    * salva tambem o vinculo com a autorizacao de empenho e o vínculo com o elemento dos itens
    *
-   * @return boolean true
+   * @return bool true
+   * @throws BusinessException
    */
   public function salvar() {
 
-    $oDaoEmpEmpenho                     = db_utils::getDao('empempenho');
+    $oDaoEmpEmpenho                     = new cl_empempenho;
     $oDaoEmpEmpenho->e60_numemp         = $this->getNumero();
     $oDaoEmpEmpenho->e60_codemp         = $this->getProximoCodigoEmpenho();    //$this->getCodigo();
     $oDaoEmpEmpenho->e60_anousu         = db_getsession("DB_anousu");
@@ -270,7 +324,7 @@ class EmpenhoFinanceiro {
       $this->setNumero($oDaoEmpEmpenho->e60_numemp);
       $this->setCodigo($oDaoEmpEmpenho->e60_codemp);
 
-      $oDaoEmpenhoNotaLiquidacao                 = db_utils::getDao('empempenhonl');
+      $oDaoEmpenhoNotaLiquidacao                 = new cl_empempenhonl;
       $oDaoEmpenhoNotaLiquidacao->e68_sequencial = null;
       $oDaoEmpenhoNotaLiquidacao->e68_numemp     = $this->getNumero();
       $oDaoEmpenhoNotaLiquidacao->e68_data       = date("Y-m-d", db_getsession("DB_datausu"));
@@ -286,6 +340,8 @@ class EmpenhoFinanceiro {
     } else {
       $oDaoEmpEmpenho->alterar($this->getNumero());
     }
+
+    $this->lancarComlementoRecurso();
 
     if ($oDaoEmpEmpenho->erro_status == 0) {
 
@@ -308,7 +364,7 @@ class EmpenhoFinanceiro {
       $oDadosEvento = db_utils::fieldsMemory($rsTipoEvento, 0);
       if ($oDadosEvento->e44_obriga != 0) {
 
-        $oDaoEmpPresta             = db_utils::getDao('emppresta');
+        $oDaoEmpPresta             = new cl_emppresta;
         $oDaoEmpPresta->e45_numemp = $this->getNumero();
         $oDaoEmpPresta->e45_data   = date("Y-m-d",db_getsession("DB_datausu"));
         $oDaoEmpPresta->e45_tipo   = $this->getTipoEvento();
@@ -346,7 +402,7 @@ class EmpenhoFinanceiro {
      * Vinculamos o empenho a uma autorizacao de empenho (empempaut)
      * Para isso, excluimos o vínculo existente
      */
-    $oDaoEmpEmpAut             = db_utils::getDao('empempaut');
+    $oDaoEmpEmpAut             = new cl_empempaut;
     $oDaoEmpEmpAut->e61_numemp = $this->getNumero();
     $oDaoEmpEmpAut->e61_autori = $this->getAutorizacaoEmpenho()->getAutorizacao();
     $oDaoEmpEmpAut->incluir($this->getNumero());
@@ -361,7 +417,7 @@ class EmpenhoFinanceiro {
     /*
      * Incluimos os registros na empelemento
      */
-    $oDaoEmpElemento             = db_utils::getDao('empelemento');
+    $oDaoEmpElemento             = new cl_empelemento;
     $oDaoEmpElemento->e64_numemp = $this->getNumero();
     $oDaoEmpElemento->e64_codele = $iElementoItens;
     $oDaoEmpElemento->e64_vlremp = $nValorTotalEmpenho;
@@ -397,7 +453,7 @@ class EmpenhoFinanceiro {
 
     if (empty($this->oAutorizacaoEmpenho)) {
 
-      $oDaoEmpEmpAut        = db_utils::getDao("empempaut");
+      $oDaoEmpEmpAut        = new cl_empempaut;
       $sSqlBuscaAutorizacao = $oDaoEmpEmpAut->sql_query_file($this->getNumero(), "e61_autori");
       $rsBuscaAutorizacao   = $oDaoEmpEmpAut->sql_record($sSqlBuscaAutorizacao);
       $iCodigoAutorizacao   = db_utils::fieldsMemory($rsBuscaAutorizacao, 0)->e61_autori;
@@ -412,7 +468,7 @@ class EmpenhoFinanceiro {
    */
   public function isEmpenhoPassivo() {
 
-    $oDaoEmpEmpAut    = db_utils::getDao("empempaut");
+    $oDaoEmpEmpAut    = new cl_empempaut;
     $sSqlBuscaEmpenho = $oDaoEmpEmpAut->sql_query_empenho_inscricaopassivo($this->getNumero());
     $rsBuscaEmpenho   = $oDaoEmpEmpAut->sql_record($sSqlBuscaEmpenho);
     if ($oDaoEmpEmpAut->numrows == 1) {
@@ -424,13 +480,13 @@ class EmpenhoFinanceiro {
 
   /**
    * Retorna uma coleção de objeto do tipo EmpenhoItem
-   * @return EmpenhoFinanceiroItem
+   * @return EmpenhoFinanceiroItem[]
    */
   public function getItens() {
 
     if (count($this->aItens) == 0 && !empty($this->iNumero)) {
 
-      $oDaoEmpEmpItem    = db_utils::getDao("empempitem");
+      $oDaoEmpEmpItem    = new cl_empempitem;
       $sSqlBuscaItem     = $oDaoEmpEmpItem->sql_query_file($this->getNumero(), null, "e62_sequencial");
       $rsBuscaItem       = $oDaoEmpEmpItem->sql_record($sSqlBuscaItem);
       $iLinhasRetornadas = $oDaoEmpEmpItem->numrows;
@@ -456,7 +512,7 @@ class EmpenhoFinanceiro {
   public function getProximoCodigoEmpenho() {
 
 
-    $oDaoEmpparametroNumero    = db_utils::getDao("empparamnum");
+    $oDaoEmpparametroNumero    = new cl_empparamnum;
     $sSqlEmpparametroNumeracao = $oDaoEmpparametroNumero->sql_query_file($this->getAnoUso(),
                                                                          db_getsession("DB_instit"),"
                                                                          (e29_codemp + 1) as e60_codemp"
@@ -464,7 +520,7 @@ class EmpenhoFinanceiro {
     $rsNumeracao               = $oDaoEmpparametroNumero->sql_record($sSqlEmpparametroNumeracao);
     if ($oDaoEmpparametroNumero->numrows == 0) {
 
-      $oDaoEmpparametro  = db_utils::getDao('empparametro');
+      $oDaoEmpparametro  = new cl_empparametro;
       $sSqlProximoCodigo = $oDaoEmpparametro->sql_query($this->getAnoUso());
       $rsProximoCodigo   = $oDaoEmpparametro->sql_record($sSqlProximoCodigo);
       $iCodigoEmpenho    = db_utils::fieldsMemory($rsProximoCodigo, 0)->e30_codemp + 1;
@@ -493,7 +549,7 @@ class EmpenhoFinanceiro {
 
   /**
    * Adiciona um objeto do tipo EmpenhoItem ao array
-   * @param EmpenhoItem $oEmpenhoItem
+   * @param EmpenhoFinanceiroItem $oEmpenhoItem
    */
   public function adicionarItem(EmpenhoFinanceiroItem $oEmpenhoItem) {
     $this->aItens[] = $oEmpenhoItem;
@@ -533,17 +589,35 @@ class EmpenhoFinanceiro {
 
   /**
    * Retorna o ano
+   * @deprecated
+   * @see getAno()
    */
   public function getAnoUso() {
     return $this->iAnoUso;
   }
 
   /**
+   * @return int
+   */
+  public function getAno() {
+    return $this->iAnoUso;
+  }
+
+  /**
    * Seta o Ano
    * @param integer $iAnoUso
+   * @deprecated
+   * @see setAno
    */
   public function setAnoUso($iAnoUso) {
     $this->iAnoUso = $iAnoUso;
+  }
+
+  /**
+   * @param $iAno
+   */
+  public function setAno($iAno) {
+    $this->iAnoUso = $iAno;
   }
 
   /**
@@ -568,7 +642,7 @@ class EmpenhoFinanceiro {
 
   /**
    * Retorna o Fornecedor do Empenho
-   * @return CgmBase
+   * @return CgmBase|CgmFisico|CgmJuridico
    */
   public function getCgm() {
     return $this->oCgm = CgmFactory::getInstanceByCgm($this->iCodigoFornecedor);
@@ -578,7 +652,7 @@ class EmpenhoFinanceiro {
    * Retorna o fornecedor do empenho
    *
    * @access public
-   * @return CgmBase
+   * @return CgmFisico|CgmJuridico
    */
   public function getFornecedor() {
     return $this->getCgm();
@@ -586,7 +660,7 @@ class EmpenhoFinanceiro {
 
   /**
    * Seta o CGM
-   * @param CGM $oCgm
+   * @param CgmBase $oCgm
    */
   public function setCgm($oCgm) {
 
@@ -603,7 +677,7 @@ class EmpenhoFinanceiro {
 
   /**
    * Seta a Data de Emissao
-   * @param date $dtEmissao
+   * @param string $dtEmissao
    */
   public function setDataEmissao($dtEmissao) {
     $this->dtEmissao = $dtEmissao;
@@ -617,7 +691,7 @@ class EmpenhoFinanceiro {
 
   /**
    * Seta o Data Vencimento
-   * @param date $dtVencimento
+   * @param string $dtVencimento
    */
   public function setDataVencimento($dtVencimento) {
       $this->dtVencimento = $dtVencimento;
@@ -686,6 +760,26 @@ class EmpenhoFinanceiro {
    */
   public function getTipoEmpenho() {
     return $this->iTipoEmpenho;
+  }
+
+  /**
+   * @return string
+   */
+  public function getDescricaoTipoEmpenho() {
+
+    if (empty($this->iTipoEmpenho)) {
+      return '';
+    }
+
+    $oDaoEmptipo = new cl_emptipo();
+    $sSqlEmptipo = $oDaoEmptipo->sql_query_file($this->getTipoEmpenho(), "e41_descr");
+    $rsEmptipo   = $oDaoEmptipo->sql_record( $sSqlEmptipo );
+
+    if ($oDaoEmptipo->numrows > 0) {
+      return db_utils::fieldsMemory($rsEmptipo, 0)->e41_descr;
+    }
+
+    return '';
   }
 
   /**
@@ -798,6 +892,24 @@ class EmpenhoFinanceiro {
     return $this->nValorPago;
   }
 
+  public function getValorPagoDasOrdens() {
+
+    $nValorPago = 0;
+    $sql = "
+             select sum(e53_vlrpag) as e53_vlrpag
+               from pagordem
+               join pagordemele on e50_codord = e53_codord
+               where e50_numemp = {$this->iNumero}
+    ";
+
+    $rs = db_query($sql);
+    if (pg_numrows($rs) > 0) {
+
+        $nValorPago = db_utils::fieldsMemory($rs, 0)->e53_vlrpag;
+    }
+    return $nValorPago;
+  }
+
   /**
    * Seta o Valor Pago
    * @param float $nValorPago
@@ -828,7 +940,7 @@ class EmpenhoFinanceiro {
    */
   public function isPrestacaoContas() {
 
-    $oDaoPrestacaContas = db_utils::getDao('emppresta');
+    $oDaoPrestacaContas = new cl_emppresta;
     $sSqlPrestacaContas = $oDaoPrestacaContas->sql_query_file(null, "1", null, "e45_numemp = {$this->iNumero}");
     $rsPrestacaContas   = $oDaoPrestacaContas->sql_record($sSqlPrestacaContas);
     if ($oDaoPrestacaContas->numrows > 0) {
@@ -840,20 +952,38 @@ class EmpenhoFinanceiro {
   /**
    * Busca os dados da prestacao de contas do empenho.
    * OBS.: Se o empenho nao esta na emppresta, ele nao eh uma prestacao de contas
-   * @return boolean | stdClass
+   * @return object | stdClass
    */
   public function getDadosPrestacaoContas() {
 
     if ($this->isPrestacaoContas()) {
 
-      $oDaoPrestacaContas = db_utils::getDao('emppresta');
+      $oDaoPrestacaContas = new cl_emppresta;
       $sSqlPrestacaContas = $oDaoPrestacaContas->sql_query_file(null, "*", null, "e45_numemp = {$this->iNumero}");
       $rsPrestacaContas   = $oDaoPrestacaContas->sql_record($sSqlPrestacaContas);
-      return db_utils::fieldsMemory($rsPrestacaContas, 0);
+      $oDadosPrestacao =db_utils::fieldsMemory($rsPrestacaContas, 0);
+      $oDadosPrestacao->iTensPrestacao = array();
+      /*
+        buscar os itens da prestacao
+      */
+      $oDaoEmpprestaitem = new cl_empprestaitem();
+      $sqlItem = $oDaoEmpprestaitem->sql_query_file ( null, "*", "e46_codigo","e46_numemp = {$this->iNumero}");
+      $rsItem = $oDaoEmpprestaitem->sql_record($sqlItem);
+      if ($oDaoEmpprestaitem->numrows > 0) {
+
+        $aItens = array();
+        for($i = 0; $i < $oDaoEmpprestaitem->numrows; $i++){
+
+            $oValorItem = db_utils::fieldsMemory($rsItem, $i);
+            $aItens[] = $oValorItem;
+        }
+        $oDadosPrestacao->iTensPrestacao = $aItens;
+      }
+
+      return $oDadosPrestacao;
     }
     return false;
   }
-
 
   /**
    * Retorna o codigo do elemento do empenho
@@ -861,10 +991,25 @@ class EmpenhoFinanceiro {
    */
   public function getDesdobramentoEmpenho() {
 
-    $oDaoEmpElemento   = db_utils::getDao('empelemento');
-    $sSqlBuscaElemento = $oDaoEmpElemento->sql_query_file($this->getNumero());
-    $rsBuscaElemento   = $oDaoEmpElemento->sql_record($sSqlBuscaElemento);
-    return db_utils::fieldsMemory($rsBuscaElemento, 0)->e64_codele;
+      if (empty($this->codigoElemento)) {
+
+          $oDaoEmpElemento   = new cl_empelemento;
+          $sSqlBuscaElemento = $oDaoEmpElemento->sql_query_file($this->getNumero());
+          $rsBuscaElemento   = $oDaoEmpElemento->sql_record($sSqlBuscaElemento);
+          $this->codigoElemento = db_utils::fieldsMemory($rsBuscaElemento, 0)->e64_codele;
+      }
+      return $this->codigoElemento;
+  }
+
+  public function getDesdobramento()
+  {
+      $dao   = new cl_empelemento;
+      $rs = db_query($dao->sql_query($this->getNumero(), null,'o56_elemento'));
+      if (!$rs || pg_num_rows($rs) === 0) {
+          return false;
+      }
+
+      return db_utils::fieldsMemory($rs, 0);
   }
 
   /**
@@ -900,6 +1045,20 @@ class EmpenhoFinanceiro {
   }
 
   /**
+   * @return int
+   */
+  public function getTipoLicitacao() {
+    return $this->iTipoLicitacao;
+  }
+
+  /**
+   * @param integer $iTipoLicitacao
+   */
+  public function setTipoLicitacao($iTipoLicitacao) {
+    $this->iTipoLicitacao = $iTipoLicitacao;
+  }
+
+  /**
    * Seta a finalidade de pagamento
    * Só irá existir caso a dotação possua recurso fundeb
    * @param FinalidadePagamentoFundeb $oFinalidadePagamentoFundeb
@@ -916,7 +1075,7 @@ class EmpenhoFinanceiro {
 
     if (empty($this->oFinalidadePagamentoFundeb)) {
 
-      $oDaoFinalidadePagamento      = db_utils::getDao('empempenhofinalidadepagamentofundeb');
+      $oDaoFinalidadePagamento      = new cl_empempenhofinalidadepagamentofundeb;
       $sSqlBuscaFinalidadePagamento = $oDaoFinalidadePagamento->sql_query_file(null,
                                                                                "e152_finalidadepagamentofundeb",
                                                                                null,
@@ -938,7 +1097,7 @@ class EmpenhoFinanceiro {
    * @param integer $iGrupo Codigo do grupo que se deseja verificar
    * @return boolean
    */
-  protected function verificaGrupoDoDesdobramento($iGrupo) {
+  public function verificaGrupoDoDesdobramento($iGrupo) {
 
     $iCodigoConta = $this->getDesdobramentoEmpenho();
     $oGrupo       = GrupoContaOrcamento::getGrupoConta($iCodigoConta, $this->getAnoUso());
@@ -951,12 +1110,14 @@ class EmpenhoFinanceiro {
 
   /**
    * Verifica se o empenho financeiro se tornou um resto a pagar na virada do exercício.
+   * @deprecated quando quer saber se o empenho é um RP, mesmo que já tenha sido finalizado
+   * @see isRP
    * @param integer $iAno ano da verificacao do resto a pagar
    * @return boolean
    */
   public function isRestoAPagar($iAno) {
 
-    $oDaoEmpPresta        = db_utils::getDao('empresto');
+    $oDaoEmpPresta        = new cl_empresto;
     $sSqlBuscaRestosPagar = $oDaoEmpPresta->sql_query_file($iAno, $this->getNumero(), "e91_anousu");
     $rsBuscaRestosPagar   = $oDaoEmpPresta->sql_record($sSqlBuscaRestosPagar);
     if ($oDaoEmpPresta->numrows > 0) {
@@ -965,13 +1126,35 @@ class EmpenhoFinanceiro {
     return false;
   }
 
+    /**
+     * Quando quer saber se o empenho é um resto a pagar, mesmo que já pago e não esta mais inscrito em RP.
+     * @param int $ano da sessão
+     * @return bool
+     */
+    public function isRP($ano)
+    {
+        $dao = new cl_empresto;
+        $where = [
+            "e60_numemp = {$this->getNumero()}",
+            "e60_anousu < {$ano}"
+        ];
+        $sql = $dao->sql_query_empenho(null, null, "1", null, implode(' and ', $where));
+        $rs = db_query($sql);
+
+        if (pg_num_rows($rs) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
   /**
    * Retorna o codigo do contrato vinculado ao empenho
    * @return integer
    */
   public function getCodigoContrato() {
 
-    $oDaoEmpenhoContrato = db_utils::getDao("empempenhocontrato");
+    $oDaoEmpenhoContrato = new cl_empempenhocontrato;
     $sSqlContrato        = $oDaoEmpenhoContrato->sql_query_file(null,
                                                                 "e100_acordo",
                                                                 null,
@@ -995,10 +1178,10 @@ class EmpenhoFinanceiro {
       throw new BusinessException("O objeto FinalidadePagamentoFundeb não foi setado.");
     }
 
-    $oDaoEmpenhoFinalidadePagamentoExcluir = db_utils::getDao('empempenhofinalidadepagamentofundeb');
+    $oDaoEmpenhoFinalidadePagamentoExcluir = new cl_empempenhofinalidadepagamentofundeb;
     $oDaoEmpenhoFinalidadePagamentoExcluir->excluir(null, "e152_numemp = {$this->getNumero()}");
 
-    $oDaoEmpenhoFinalidadePagamento = db_utils::getDao('empempenhofinalidadepagamentofundeb');
+    $oDaoEmpenhoFinalidadePagamento = new cl_empempenhofinalidadepagamentofundeb;
     $oDaoEmpenhoFinalidadePagamento->e152_sequencial                = null;
     $oDaoEmpenhoFinalidadePagamento->e152_numemp                    = $this->getNumero();
     $oDaoEmpenhoFinalidadePagamento->e152_finalidadepagamentofundeb = $this->oFinalidadePagamentoFundeb->getCodigoSequencial();
@@ -1013,30 +1196,11 @@ class EmpenhoFinanceiro {
   }
 
   /**
-   * @todo - Metodo implementado mas nao testado
-   */
-  public static function getInstanceByCodigo($iCodigo, $iAno) {
-
-    $oDaoEmpEmpenho   = db_utils::getDao('empempenho');
-    $sWhere           = "e60_codemp = '$iCodigo' and e60_anousu = $iAno";
-    $sSqlDadosEmpenho = $oDaoEmpEmpenho->sql_query_file(null, 'e60_numemp', null, $sWhere);
-    $rsDadosEmpenho   = $oDaoEmpEmpenho->sql_record($sSqlDadosEmpenho);
-
-    if ( $oDaoEmpEmpenho->erro_status == "0" ) {
-      throw new Exception(_M( 'financeiro.empenho.EmpenhoFinanceiro.empenho_pelo_codigo_nao_encontrado' ));
-    }
-
-    return new EmpenhoFinanceiro(db_utils::fieldsMemory($rsDadosEmpenho,0)->e60_numemp);
-  }
-
-  /**
    * metodo que retorna a conta do plano orçamentario
-   * @return object ContaOrcamento
+   * @return ContaOrcamento
    */
   public function getContaOrcamento() {
-
-  	$oContaOrcamento = new ContaOrcamento($this->getDesdobramentoEmpenho(), $this->getAnoUso(), null, null);
-  	return $oContaOrcamento;
+  	return ContaOrcamentoRepository::getContaByCodigo($this->getDesdobramentoEmpenho(), db_getsession("DB_anousu"), null, null);
   }
 
 
@@ -1048,14 +1212,16 @@ class EmpenhoFinanceiro {
    * @return boolean
    *
    */
-  public function empenhoRestosPagarPorDocumento($iCodDoc, $iAnoUsu){
+  public function empenhoRestosPagarPorDocumento($iCodDoc, $iAnoUsu = null){
 
     $lRestoPagar  = false;
     $iNumEmp      = $this->getNumero();
 
     $sWhere       = "     c71_coddoc = {$iCodDoc} ";
     $sWhere      .= " and c75_numemp = {$iNumEmp} ";
-    $sWhere      .= " and c70_anousu = {$iAnoUsu} ";
+    if (!empty($iAnoUsu)) {
+      $sWhere    .= " and c70_anousu = {$iAnoUsu} ";
+    }
 
     $oDaoRp = new cl_conlancamdoc();
     $sSqlRp = $oDaoRp->sql_queryEmpenhoRP(null, "*", null, $sWhere);
@@ -1067,7 +1233,276 @@ class EmpenhoFinanceiro {
     return $lRestoPagar;
   }
 
+  /**
+   * Verifica se o empenho possui vínculo com alguma conta corrente
+   * @return TipoCompra
+   */
+  public function getTipoDeCompra() {
+    return new TipoCompra($this->getTipoCompra());
+  }
+
+  /**
+   * Verifica se o empenho possui vínculo com alguma conta corrente
+   * @return bool
+   * @throws BusinessException
+   */
+  public function temContaCorrente() {
+
+    $sWhere                   = "c19_numemp = {$this->getNumero()}";
+    $sCampos                  = "count(*) as resultados";
+    $oDaoContaCorrenteDetalhe = new cl_contacorrentedetalhe();
+    $sSql                     = $oDaoContaCorrenteDetalhe->sql_query_lancamentos(null, $sCampos, null, $sWhere);
+    $rsContagem               = $oDaoContaCorrenteDetalhe->sql_record($sSql);
+    if ($oDaoContaCorrenteDetalhe->numrows == 0 || !$rsContagem) {
+      throw new BusinessException("Erro ao verificar contas correntes do empenho {$this->getCodigo()}/{$this->getAnoUso()}.");
+    }
+    return (db_utils::fieldsMemory($rsContagem, 0)->resultados > 0);
+  }
+
+  /**
+   * Retorna as Cotas Mensais do Empenho
+   *
+   * @return EmpenhoCotaMensal[]
+   * @throws BusinessException
+   */
+  public function getCotasMensais() {
+
+    if (count($this->aCotasMensais) > 0) {
+      return $this->aCotasMensais;
+    }
+
+    $oDaoEmpenhoCotaMensal = new cl_empenhocotamensal();
+    $sSqlCotasMensais      = $oDaoEmpenhoCotaMensal->sql_query_file(null, "*", "e05_mes", "e05_numemp = {$this->getNumero()}");
+    $rsCotasMensais        = db_query($sSqlCotasMensais);
+
+    if (!$rsCotasMensais) {
+      throw new BusinessException((_M("financeiro.empenho.EmpenhoFinanceiro.erro_retorno_cotas_mensais")));
+    }
+    $aCotas       = array();
+    $iTotalLinhas = pg_num_rows($rsCotasMensais);
+    for ($iCota = 0; $iCota < $iTotalLinhas; $iCota++) {
+
+      $oDadosCota = db_utils::fieldsMemory($rsCotasMensais, $iCota);
+      $oCota      = new EmpenhoCotaMensal();
+
+      $oCota->setValor($oDadosCota->e05_valor);
+      $oCota->setMes($oDadosCota->e05_mes);
+      $aCotas[$oDadosCota->e05_mes] = $oCota;
 
 
+    }
+    /**
+     * Adicionamos os meses nao lançados
+     */
+    for ($iMes = 1; $iMes <= 12; $iMes++) {
 
+      if (isset($aCotas[$iMes])) {
+        continue;
+      }
+      $oCota = new EmpenhoCotaMensal();
+      $oCota->setMes($iMes);
+      $oCota->setValor(0);
+      $aCotas[] = $oCota;
+    }
+
+    uasort($aCotas, function($oMes , $oProximoMes) {
+      return ($oProximoMes->getMes() > $oMes->getMes()) ? -1 : 1;
+    });
+    return $aCotas;
+
+  }
+
+  /**
+   * @param EmpenhoCotaMensal[] $aCotasMensais
+   * @throws BusinessException
+   * @throws ParameterException
+   */
+  public function adicionarCotas(array $aCotasMensais) {
+
+    if (!is_array($aCotasMensais)) {
+      throw new ParameterException(_M("financeiro.empenho.EmpenhoFinanceiro.parametro_cotas_nao_array"));
+    }
+
+    $nValorCotas = 0;
+    foreach ($aCotasMensais as $oCota) {
+      $nValorCotas += $oCota->getValor();
+    }
+
+    if ($nValorCotas != 0 && round($nValorCotas, 2) != round($this->getValorEmpenho(), 2)) {
+      throw new BusinessException(_M("financeiro.empenho.EmpenhoFinanceiro.valor_total_cotas"));
+    }
+
+    $oDaoEmpenhoCotaMensal = new cl_empenhocotamensal();
+    $oDaoEmpenhoCotaMensal->excluir(null, "e05_numemp={$this->getNumero()}");
+    if ($oDaoEmpenhoCotaMensal->erro_status == "0") {
+      throw new BusinessException(_M("financeiro.empenho.EmpenhoFinanceiro.erro_manuntecao_cotas"));
+    }
+
+    foreach ($aCotasMensais as $oCota) {
+
+      $oDaoEmpenhoCotaMensal = new cl_empenhocotamensal();
+      $oDaoEmpenhoCotaMensal->e05_mes    = $oCota->getMes();
+      $oDaoEmpenhoCotaMensal->e05_valor  = "'{$oCota->getValor()}'";
+      $oDaoEmpenhoCotaMensal->e05_numemp = $this->getNumero();
+      $oDaoEmpenhoCotaMensal->e05_sequencial = null;
+      $oDaoEmpenhoCotaMensal->incluir(null);
+      if ($oDaoEmpenhoCotaMensal->erro_status == "0") {
+        throw new BusinessException(_M("financeiro.empenho.EmpenhoFinanceiro.erro_manuntecao_cotas"));
+      }
+    }
+  }
+
+  public function temCotaMensais() {
+
+    if ($this->getNumero() == null) {
+      return false;
+    }
+    $oDaoEmpenhoCotaMensal = new cl_empenhocotamensal();
+    $sSqlCotasMensais      = $oDaoEmpenhoCotaMensal->sql_query_file(null, "count(*) as cotas", "", "e05_numemp = {$this->getNumero()}");
+    $rsCotasMensais        = db_query($sSqlCotasMensais);
+    if (!$rsCotasMensais) {
+      return false;
+    }
+    return db_utils::fieldsMemory($rsCotasMensais, 0)->cotas > 0;
+  }
+
+  /**
+   * @return int|null
+   * @throws DBException
+   */
+  public function getClassificacaoCredor() {
+
+    $oDaoClassificacao = new cl_classificacaocredoresempenho();
+    $sSqlBuscaClassificacao = $oDaoClassificacao->sql_query_file(null, "*",null, "cc31_empempenho = {$this->iNumero}");
+    $rsBuscaClassificacao   = db_query($sSqlBuscaClassificacao);
+
+    if (!$rsBuscaClassificacao) {
+      throw new DBException("Houve um erro ao buscar a Lista de Classificação de Credores do Empenho.");
+    }
+    if (pg_num_rows($rsBuscaClassificacao) == 0) {
+      return null;
+    }
+    return db_utils::fieldsMemory($rsBuscaClassificacao, 0)->cc31_classificacaocredores;
+  }
+
+  /**
+   * @return NotaLiquidacao[]
+   */
+  public function getNotasDeLiquidacao() {
+
+    if (count($this->aNotasLiquidadas) == 0) {
+      $this->aNotasLiquidadas = NotaLiquidacao::getNotaLiquidacaoPorEmpenho($this);
+    }
+    return $this->aNotasLiquidadas;
+  }
+
+  /**
+   * @return null
+   */
+  public function getNumeroDaLicitacao() {
+    return $this->iNumeroLicitacao;
+  }
+
+  /**
+   * @param null $iNumeroLicitacao
+   */
+  public function setNumeroDaLicitacao($iNumeroLicitacao) {
+    $this->iNumeroLicitacao = $iNumeroLicitacao;
+  }
+
+  /**
+   * Retorna o codigo da lista de classificaçao de credor vinculada ao empenho.
+   * @return int|null
+   * @throws DBException
+   */
+  public function getCodigoListaClassificacaoCredor() {
+
+    if (empty($this->iCodigoListaClassificacaoCredor) || !empty($this->iNumero)) {
+      $this->iCodigoListaClassificacaoCredor = $this->getClassificacaoCredor();
+    }
+
+    return $this->iCodigoListaClassificacaoCredor;
+  }
+
+  /**
+   * Retorna a lista de classificaçao de credor vinculada ao empenho.
+   * @return ListaClassificacaoCredor
+   * @throws BusinessException
+   */
+  public function getListaClassificacaoCredor() {
+
+    $iCodigoLista = $this->getCodigoListaClassificacaoCredor();
+    if (empty($this->oListaClassificacaoCredor) && !empty($iCodigoLista)) {
+      $this->oListaClassificacaoCredor = ListaClassificacaoCredorRepository::getPorCodigo($iCodigoLista);
+    }
+    return $this->oListaClassificacaoCredor;
+  }
+
+  /**
+   * @return TipoPrestacaoConta
+   * @throws DBException
+   */
+  public function getTipoPrestacaoConta() {
+
+    if (empty($this->oTipoPrestacaoConta)) {
+
+      $sCampos = "e45_tipo";
+      $sWhere  = " e45_numemp = {$this->iNumero} ";
+
+      $oDaoEmpPresta = new cl_emppresta();
+      $sSqlEmpPresta = $oDaoEmpPresta->sql_query_file(null, $sCampos, null, $sWhere);
+      $rsEmpPresta   = db_query($sSqlEmpPresta);
+
+      if (!$rsEmpPresta) {
+        throw new DBException("Houve um erro ao buscar as informações do tipo de prestação de contas do empenho.");
+      }
+
+      if (pg_num_rows($rsEmpPresta) > 0) {
+        $this->oTipoPrestacaoConta = new TipoPrestacaoConta(db_utils::fieldsMemory($rsEmpPresta, 0)->e45_tipo);
+      } else {
+
+        $oDaoBuscaPrestacao = new cl_empprestatip();
+        $sSqlBuscaPrestacao = $oDaoBuscaPrestacao->sql_query_file(null, 'e44_tipo', "e44_tipo", "e44_obriga = '0'");
+        $rsBuscaPrestacao   = db_query($sSqlBuscaPrestacao);
+        if (!$rsBuscaPrestacao) {
+          throw new DBException("Houve um erro ao buscar as informações do tipo de prestação de contas.");
+        }
+        $this->oTipoPrestacaoConta = new TipoPrestacaoConta(db_utils::fieldsMemory($rsBuscaPrestacao, 0)->e44_tipo);
+      }
+    }
+    return $this->oTipoPrestacaoConta;
+  }
+
+    /**
+     * Verifica se o empenho é oriundo da folha de pagamento.
+     * @return bool
+     * @throws DBException
+     */
+  public function isFolhaPagamento ()
+  {
+      if ($this->folhaPagamento === null) {
+
+          $daoRHempenhofolha = new cl_rhempenhofolhaempenho();
+          $where = "rh76_numemp = {$this->getNumero()}";
+          $sqlEmpenho = $daoRHempenhofolha->sql_query_file(null, "rh76_numemp", null, $where);
+          $rsEmpenho = db_query($sqlEmpenho);
+          if (!$rsEmpenho) {
+              throw new \DBException("Erro ao verificar informacoes do vínculo do empenho {$this->getNumero()} com a folha de pagamento.");
+          }
+          $this->folhaPagamento = pg_num_rows($rsEmpenho) > 0;
+      }
+      return $this->folhaPagamento;
+  }
+
+    public function setComplemento($complemento)
+    {
+        $this->complemento = $complemento;
+    }
+
+    private function lancarComlementoRecurso()
+    {
+
+        $lancar = new \ECidade\Financeiro\Orcamento\Service\LancarComlementoService();
+        $lancar->complementoEmpenho($this->getDotacao(), $this->getNumero(), $this->complemento);
+    }
 }

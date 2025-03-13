@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,7 +33,7 @@
  * @author   jeferson.belmiro <jeferson.belmiro@dbseller.com.br>
  * 
  * @revision $Author  : $
- * @version  $Revision: 1.2 $
+ * @version  $Revision: 1.4 $
  */
 class PeticaoEmissao {
 	

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_movrel_classe.php");
-include("classes/db_convenio_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_movrel_classe.php"));
+include(modification("classes/db_convenio_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmovrel = new cl_movrel;
 $clconvenio = new cl_convenio;
@@ -56,7 +56,7 @@ if(isset($gerar)){
 
     if(trim($r55_rubr01) != ""){
 
-      include("dbforms/db_layouttxt.php");
+      include(modification("dbforms/db_layouttxt.php"));
 
       // Nome do novo arquivo
       $nomearq = $_FILES["r56_dirarq"]["name"];
@@ -107,7 +107,7 @@ if(isset($gerar)){
           $anomes = $anoarquivo."-".$mesarquivo."-01";
           $nomeconvenio   = trim(substr($poslinha,  14, 50)); 
           $codigoconvenio = trim(substr($poslinha,   6,  8));  
-          db_setaPropriedadesLayoutTxt(&$cldb_layouttxt,1);
+          db_setaPropriedadesLayoutTxt($cldb_layouttxt,1);
 
 	      }else{
           $oa                   = trim(substr($poslinha,  6, 11)) + 0;
@@ -148,12 +148,12 @@ if(isset($gerar)){
              $valorconsignado = $testavaltot;
 	        }
 
-          db_setaPropriedadesLayoutTxt(&$cldb_layouttxt,3);
+          db_setaPropriedadesLayoutTxt($cldb_layouttxt,3);
         }
       }
       $valortotal   = $somavalmovrel;
       $qtderegistro = $linhacorrente++;
-      db_setaPropriedadesLayoutTxt(&$cldb_layouttxt,5);
+      db_setaPropriedadesLayoutTxt($cldb_layouttxt,5);
 
     }else{
       $erro_msg = "Rubrica não informada. Verifique o relacionamento.";
@@ -172,29 +172,13 @@ if(isset($gerar)){
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-        <?
-        include("forms/db_frmaleretbanri.php");
-        ?>
-    </center>
-        </td>
-  </tr>
-</table>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
+<body class="body-default" onLoad="a=1" >
+<div class="container">
+  <?php
+  include(modification("forms/db_frmaleretbanri.php"));
+  db_menu();
+  ?>
+</div>
 </body>
 <script>
 js_tabulacaoforms("form1","r54_anousu",true,1,"r54_anousu",true);
@@ -208,7 +192,7 @@ if(isset($gerar) || isset($confirma)){
     db_msgbox($dbcontator." registros incluídos.\\nValor total: ".db_formatar($somavalmovrel,"f")."\\n $dbrejeitados registros Rejeitados.");
     echo "
           <script>
-            parent.bstatus.document.getElementById('st').innerHTML = '$texto';
+            (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '$texto';
             js_arquivo_abrir('$arquivogeracao');
           </script>
          ";

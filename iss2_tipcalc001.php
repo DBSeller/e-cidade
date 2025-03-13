@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_cadcalc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_cadcalc_classe.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clcadcalc = new cl_cadcalc;
 $clcadcalc->rotulo->label();

@@ -68,7 +68,7 @@ $cltfd_motivoacompanhamento->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tfd_motivoacompanhamento','func_tfd_motivoacompanhamento.php?funcao_js=parent.js_preenchepesquisa|tf08_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tfd_motivoacompanhamento','func_tfd_motivoacompanhamento.php?funcao_js=parent.js_preenchepesquisa|tf08_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tfd_motivoacompanhamento.hide();

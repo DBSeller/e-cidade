@@ -1,4 +1,3 @@
-select fc_executa_ddl('alter table meigrupoevento set schema tributario');
 create table w_rhparam as
 select * from rhparam;
 
@@ -143,3 +142,5 @@ CREATE  INDEX finalidadepagamentofundeb_sequencial_in ON finalidadepagamentofund
 /**********************************************************************************************************************/
 /************************************************* TIME B - FIM *******************************************************/
 /**********************************************************************************************************************/
+
+

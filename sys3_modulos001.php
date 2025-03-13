@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 if(session_is_registered("tabelacod"))
   session_unregister("tabelacod");
 ?>
@@ -83,7 +83,7 @@ input {
 	
 	<?
     if(!isset($def)) {
-	  $result = pg_exec($conn,"SELECT codmod,nomemod,descricao,to_char(dataincl,'DD-MM-YYYY') as dataincl 
+	  $result = db_query($conn,"SELECT codmod,nomemod,descricao,to_char(dataincl,'DD-MM-YYYY') as dataincl 
 		FROM db_sysmodulo 
 		ORDER BY nomemod");
 	if(!$result) {

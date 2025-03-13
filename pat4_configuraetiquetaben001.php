@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_bensmodeloetiquetapadrao_classe.php");
-require_once("classes/db_bensmodeloetiquetapadrao_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_bensmodeloetiquetapadrao_classe.php"));
+require_once(modification("classes/db_bensmodeloetiquetapadrao_classe.php"));
 
 $clbensmodeloetiquetapadrao = new cl_bensmodeloetiquetapadrao();
 $clrotulo = new rotulocampo;
@@ -135,17 +135,17 @@ function js_imprimeEtiquetas(){
 	 
 	 var sQuery = "?t52_bem="+t52_bem;
 	 
-	 js_OpenJanelaIframe('top.corpo','db_iframe_imprime','pat4_imprimeetiquetas002.php'+sQuery,'Imprimindo Etiquetas',true);
+	 js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_imprime','pat4_imprimeetiquetas002.php'+sQuery,'Imprimindo Etiquetas',true);
 
 } 
    
   
 function js_pesquisa_modelo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bensmodeloetiquetapadrao','func_bensmodeloetiquetapadrao.php?funcao_js=parent.js_mostramodelo1|t72_sequencial|t72_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensmodeloetiquetapadrao','func_bensmodeloetiquetapadrao.php?funcao_js=parent.js_mostramodelo1|t72_sequencial|t72_descr','Pesquisa',true);
   }else{
      if(document.form1.t72_sequencial.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bensmodeloetiquetapadrao','func_bensmodeloetiquetapadrao.php?pesquisa_chave='+document.form1.t72_sequencial.value+'&funcao_js=parent.js_mostramodelo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensmodeloetiquetapadrao','func_bensmodeloetiquetapadrao.php?pesquisa_chave='+document.form1.t72_sequencial.value+'&funcao_js=parent.js_mostramodelo','Pesquisa',false);
      }else{
        document.form1.t72_sequencial.value = ''; 
      }

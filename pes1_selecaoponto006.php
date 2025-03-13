@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_selecaoponto_classe.php");
-include("classes/db_selecaopontorubricas_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_selecaoponto_classe.php"));
+include(modification("classes/db_selecaopontorubricas_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -101,7 +101,7 @@ if( isset($oPost->excluir) ){
   <tr> 
     <td> 
 			<?
-	  	   include("forms/db_frmselecaoponto.php");
+	  	   include(modification("forms/db_frmselecaoponto.php"));
 			?>
   	</td>
   </tr>
@@ -137,7 +137,7 @@ if(isset($oGet->chavepesquisa)){
  echo "
 		   <script>
 		     parent.document.formaba.selecaopontorubricas.disabled=false;
-		     top.corpo.iframe_selecaopontorubricas.location.href='pes1_selecaopontorubricas001.php?db_opcaoal=33&r73_sequencial=".@$r72_sequencial."';
+		     (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_selecaopontorubricas.location.href='pes1_selecaopontorubricas001.php?db_opcaoal=33&r73_sequencial=".@$r72_sequencial."';
 		   </script>\n
 		 ";
 }

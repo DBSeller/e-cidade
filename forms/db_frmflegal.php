@@ -79,7 +79,7 @@ db_select("h04_tpfund", $arr_tpfund, true, $db_opcao);
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_flegal','func_flegal.php?funcao_js=parent.js_preenchepesquisa|h04_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_flegal','func_flegal.php?funcao_js=parent.js_preenchepesquisa|h04_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_flegal.hide();

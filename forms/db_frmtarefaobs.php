@@ -26,7 +26,7 @@
  */
 
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cltarefa->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("at40_obs");

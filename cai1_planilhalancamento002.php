@@ -1,7 +1,7 @@
 <?PHP
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libdicionario.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_placaixa_classe.php");
-require_once("classes/db_placaixarec_classe.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libdicionario.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_placaixa_classe.php"));
+require_once(modification("classes/db_placaixarec_classe.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $clplacaixa    = new cl_placaixa;
 $clplacaixarec = new cl_placaixarec;
@@ -70,6 +70,15 @@ $sFuncaoBusca = "js_pesquisaMatricula";
 if ($oInstit->db21_usasisagua == "t") {
   $sFuncaoBusca = "js_pesquisa_agua";
 }
+
+//Checa parametro e mostra alerta de confirmacao de data
+$clconparametro  = new cl_conparametro();
+$rsconparametro  = $clconparametro->sql_record($clconparametro->sql_query_file(null, "c90_confirmadata"));
+$conparametro    = db_utils::fieldsMemory($rsconparametro, 0);
+if($conparametro->c90_confirmadata == 't'){
+    $data = date('d/m/y', db_getsession('DB_datausu'));
+    echo "<db-alertaconfirmadatafinanceiro data=" . $data . "></db-alertaconfirmadatafinanceiro>";
+}
 ?>
 <html>
 
@@ -78,7 +87,7 @@ if ($oInstit->db21_usasisagua == "t") {
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta http-equiv="Expires" CONTENT="0">
   <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-
+  <script type="text/javascript" src="scripts/components/AlertaConfirmaDataFinanceiro.js"></script>
   <link href="estilos.css" rel="stylesheet" type="text/css">
   <?PHP
     db_app::load("scripts.js");
@@ -179,7 +188,7 @@ if ($oInstit->db21_usasisagua == "t") {
 </div>
 </fieldset>
 
-<input type="button" value='Estornar Planilha' id='salvar' style="margin-top: 10px;" onclick='js_estornarPlanilha()'/>
+<input type="button" value='Estornar Planilha' id='salvar' style="margin-top: 10px;" onclick='js_verificaSlipAutomatico()'/>
 <input type="button" value='Pesquisa Planilha' id='salvar' style="margin-top: 10px;" onclick='js_pesquisaPlanilha()'/>
 </form>
 
@@ -191,13 +200,16 @@ if ($oInstit->db21_usasisagua == "t") {
 
 </body>
 </html>
-
 <script>
 
 /**
  * função para montar a grid de receitas:
  */
-
+let c90_confirmadata = '<?php echo $conparametro->c90_confirmadata ?>'
+if (c90_confirmadata == 't') {
+    const msg = "Antes de realizar a operação confirme a data em que deseja incluir o movimento";
+    alert(msg)
+}
 
  var oGridReceitas;
  var aReceitas       = [];
@@ -275,7 +287,7 @@ function js_renderizarGrid() {
 function js_pesquisaPlanilha() {
 
   js_limpaGrid();
-  js_OpenJanelaIframe('top.corpo','db_iframe_placaixa','func_placaixa.php?lAutenticada=true&funcao_js=parent.js_getPlanilha|k80_codpla','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_placaixa','func_placaixa.php?lAutenticada=true&funcao_js=parent.js_getPlanilha|k80_codpla','Pesquisa',true);
 }
 
 
@@ -301,7 +313,7 @@ function js_getPlanilha(iCodigoPlanilha) {
 function js_completaImportar (oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno          = eval("("+oAjax.responseText+")");
+  var oRetorno          = JSON.parse(oAjax.responseText);
   $('k80_codpla').value = oRetorno.oPlanilha.iPlanilha;
   $('k80_data').value   = oRetorno.oPlanilha.dtDataCriacao;
 
@@ -341,6 +353,43 @@ function js_completaImportar (oAjax) {
   js_renderizarGrid();
 }
 
+
+
+function js_verificaSlipAutomatico(){
+
+
+  var oParam = new Object();
+      oParam.iPlanilha =  $F('k80_codpla');
+      oParam.exec      = 'verificaSlipsAutomaticos';
+
+  var oAjax  = new Ajax.Request(sRPC,
+      {
+       method: 'post',
+       parameters: 'json='+Object.toJSON(oParam),
+       onComplete: js_RetornoverificaSlipAutomatico
+       });
+
+
+}
+
+function js_RetornoverificaSlipAutomatico(oAjax){
+
+    var oRetorno = JSON.parse(oAjax.responseText);
+    if (oRetorno.sSlipAutomatico != "" ) {
+
+        var msg =  "Existem Slips Vinculados que serão estornados: ";
+            msg += oRetorno.sSlipAutomatico + "\n Continuar?";
+
+        if (! confirm(msg ) ) {
+          return false;
+        }
+    }
+    js_estornarPlanilha();
+}
+
+
+
+
 /**
  *
  * @returns {boolean}
@@ -373,7 +422,7 @@ function js_estornarPlanilha() {
 function js_completaEstorno(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
 
   if(oRetorno.status != 2) {

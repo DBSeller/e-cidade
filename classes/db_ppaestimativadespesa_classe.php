@@ -1,66 +1,66 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: orcamento
 //CLASSE DA ENTIDADE ppaestimativadespesa
-class cl_ppaestimativadespesa { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $o07_sequencial = 0; 
-   var $o07_ppaestimativa = 0; 
-   var $o07_coddot = 0; 
-   var $o07_anousu = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_ppaestimativadespesa {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $o07_sequencial = 0;
+   var $o07_ppaestimativa = 0;
+   var $o07_coddot = 0;
+   var $o07_anousu = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 o07_sequencial = int4 = Código Sequencial 
-                 o07_ppaestimativa = int4 = Estimativa 
-                 o07_coddot = int4 = Dotação 
-                 o07_anousu = int4 = Ano do Exercicio 
+                 o07_sequencial = int4 = Código Sequencial
+                 o07_ppaestimativa = int4 = Estimativa
+                 o07_coddot = int4 = Dotação
+                 o07_anousu = int4 = Ano do Exercicio
                  ";
-   //funcao construtor da classe 
-   function cl_ppaestimativadespesa() { 
+   //funcao construtor da classe
+   function cl_ppaestimativadespesa() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("ppaestimativadespesa"); 
+     $this->rotulo = new rotulo("ppaestimativadespesa");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -80,9 +80,9 @@ class cl_ppaestimativadespesa {
      }
    }
    // funcao para inclusao
-   function incluir ($o07_sequencial){ 
+   function incluir ($o07_sequencial){
       $this->atualizacampos();
-     if($this->o07_ppaestimativa == null ){ 
+     if($this->o07_ppaestimativa == null ){
        $this->erro_sql = " Campo Estimativa nao Informado.";
        $this->erro_campo = "o07_ppaestimativa";
        $this->erro_banco = "";
@@ -91,7 +91,7 @@ class cl_ppaestimativadespesa {
        $this->erro_status = "0";
        return false;
      }
-     if($this->o07_coddot == null ){ 
+     if($this->o07_coddot == null ){
        $this->erro_sql = " Campo Dotação nao Informado.";
        $this->erro_campo = "o07_coddot";
        $this->erro_banco = "";
@@ -100,7 +100,7 @@ class cl_ppaestimativadespesa {
        $this->erro_status = "0";
        return false;
      }
-     if($this->o07_anousu == null ){ 
+     if($this->o07_anousu == null ){
        $this->erro_sql = " Campo Ano do Exercicio nao Informado.";
        $this->erro_campo = "o07_anousu";
        $this->erro_banco = "";
@@ -110,16 +110,16 @@ class cl_ppaestimativadespesa {
        return false;
      }
      if($o07_sequencial == "" || $o07_sequencial == null ){
-       $result = db_query("select nextval('ppaestimativadespesa_o07_sequencial_seq')"); 
+       $result = db_query("select nextval('ppaestimativadespesa_o07_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: ppaestimativadespesa_o07_sequencial_seq do campo: o07_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: ppaestimativadespesa_o07_sequencial_seq do campo: o07_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->o07_sequencial = pg_result($result,0,0); 
+       $this->o07_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from ppaestimativadespesa_o07_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $o07_sequencial)){
@@ -130,10 +130,10 @@ class cl_ppaestimativadespesa {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->o07_sequencial = $o07_sequencial; 
+         $this->o07_sequencial = $o07_sequencial;
        }
      }
-     if(($this->o07_sequencial == null) || ($this->o07_sequencial == "") ){ 
+     if(($this->o07_sequencial == null) || ($this->o07_sequencial == "") ){
        $this->erro_sql = " Campo o07_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -142,19 +142,19 @@ class cl_ppaestimativadespesa {
        return false;
      }
      $sql = "insert into ppaestimativadespesa(
-                                       o07_sequencial 
-                                      ,o07_ppaestimativa 
-                                      ,o07_coddot 
-                                      ,o07_anousu 
+                                       o07_sequencial
+                                      ,o07_ppaestimativa
+                                      ,o07_coddot
+                                      ,o07_anousu
                        )
                 values (
-                                $this->o07_sequencial 
-                               ,$this->o07_ppaestimativa 
-                               ,$this->o07_coddot 
-                               ,$this->o07_anousu 
+                                $this->o07_sequencial
+                               ,$this->o07_ppaestimativa
+                               ,$this->o07_coddot
+                               ,$this->o07_anousu
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Despesas da estimativa ($this->o07_sequencial) nao Incluído. Inclusao Abortada.";
@@ -189,16 +189,16 @@ class cl_ppaestimativadespesa {
        $resac = db_query("insert into db_acount values($acount,2385,2679,'','".AddSlashes(pg_result($resaco,0,'o07_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($o07_sequencial=null) { 
+   function alterar ($o07_sequencial=null) {
       $this->atualizacampos();
      $sql = " update ppaestimativadespesa set ";
      $virgula = "";
-     if(trim($this->o07_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o07_sequencial"])){ 
+     if(trim($this->o07_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o07_sequencial"])){
        $sql  .= $virgula." o07_sequencial = $this->o07_sequencial ";
        $virgula = ",";
-       if(trim($this->o07_sequencial) == null ){ 
+       if(trim($this->o07_sequencial) == null ){
          $this->erro_sql = " Campo Código Sequencial nao Informado.";
          $this->erro_campo = "o07_sequencial";
          $this->erro_banco = "";
@@ -208,10 +208,10 @@ class cl_ppaestimativadespesa {
          return false;
        }
      }
-     if(trim($this->o07_ppaestimativa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o07_ppaestimativa"])){ 
+     if(trim($this->o07_ppaestimativa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o07_ppaestimativa"])){
        $sql  .= $virgula." o07_ppaestimativa = $this->o07_ppaestimativa ";
        $virgula = ",";
-       if(trim($this->o07_ppaestimativa) == null ){ 
+       if(trim($this->o07_ppaestimativa) == null ){
          $this->erro_sql = " Campo Estimativa nao Informado.";
          $this->erro_campo = "o07_ppaestimativa";
          $this->erro_banco = "";
@@ -221,10 +221,10 @@ class cl_ppaestimativadespesa {
          return false;
        }
      }
-     if(trim($this->o07_coddot)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o07_coddot"])){ 
+     if(trim($this->o07_coddot)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o07_coddot"])){
        $sql  .= $virgula." o07_coddot = $this->o07_coddot ";
        $virgula = ",";
-       if(trim($this->o07_coddot) == null ){ 
+       if(trim($this->o07_coddot) == null ){
          $this->erro_sql = " Campo Dotação nao Informado.";
          $this->erro_campo = "o07_coddot";
          $this->erro_banco = "";
@@ -234,10 +234,10 @@ class cl_ppaestimativadespesa {
          return false;
        }
      }
-     if(trim($this->o07_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o07_anousu"])){ 
+     if(trim($this->o07_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o07_anousu"])){
        $sql  .= $virgula." o07_anousu = $this->o07_anousu ";
        $virgula = ",";
-       if(trim($this->o07_anousu) == null ){ 
+       if(trim($this->o07_anousu) == null ){
          $this->erro_sql = " Campo Ano do Exercicio nao Informado.";
          $this->erro_campo = "o07_anousu";
          $this->erro_banco = "";
@@ -269,7 +269,7 @@ class cl_ppaestimativadespesa {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Despesas da estimativa nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->o07_sequencial;
@@ -297,14 +297,14 @@ class cl_ppaestimativadespesa {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($o07_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($o07_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($o07_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -333,7 +333,7 @@ class cl_ppaestimativadespesa {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Despesas da estimativa nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$o07_sequencial;
@@ -361,11 +361,11 @@ class cl_ppaestimativadespesa {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -387,8 +387,8 @@ class cl_ppaestimativadespesa {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -415,8 +415,8 @@ class cl_ppaestimativadespesa {
      $sql2 = "";
      if($dbwhere==""){
        if($o07_sequencial!=null ){
-         $sql2 .= " where ppaestimativadespesa.o07_sequencial = $o07_sequencial "; 
-       } 
+         $sql2 .= " where ppaestimativadespesa.o07_sequencial = $o07_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -432,8 +432,8 @@ class cl_ppaestimativadespesa {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -449,8 +449,8 @@ class cl_ppaestimativadespesa {
      $sql2 = "";
      if($dbwhere==""){
        if($o07_sequencial!=null ){
-         $sql2 .= " where ppaestimativadespesa.o07_sequencial = $o07_sequencial "; 
-       } 
+         $sql2 .= " where ppaestimativadespesa.o07_sequencial = $o07_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -466,7 +466,7 @@ class cl_ppaestimativadespesa {
      }
      return $sql;
   }
-   function sql_query_conplano ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_conplano ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
 
     $sql = "select ";
      if($campos != "*" ){
@@ -496,11 +496,14 @@ class cl_ppaestimativadespesa {
      $sql .= "      left  join ppasubtitulolocalizadorgasto  on  ppasubtitulolocalizadorgasto.o11_sequencial = ppadotacao.o08_localizadorgastos";
      $sql .= "      inner join ppaversao on o05_ppaversao = o119_sequencial";
      $sql .= "      inner join ppalei   on o01_sequencial = o119_ppalei";
+     $sql .= "      inner join fonterecurso  on  orctiporec_id = o15_codigo and exercicio = o01_anoinicio";
+     $sql .= "      inner join complementofonterecurso on o200_sequencial = o15_complemento";
+     $sql .= "      inner join fontesiconfi on fontesiconfi.codigo_siconfi = fonterecurso.codigo_siconfi";
      $sql2 = "";
      if($dbwhere==""){
        if($o07_sequencial!=null ){
-         $sql2 .= " where ppaestimativadespesa.o07_sequencial = $o07_sequencial "; 
-       } 
+         $sql2 .= " where ppaestimativadespesa.o07_sequencial = $o07_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -517,9 +520,9 @@ class cl_ppaestimativadespesa {
      $sql = analiseQueryPlanoOrcamento($sql);
      return $sql;
   }
-  
+
   function sql_query_estimativadespesa ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
-  
+
    $sql = "select ";
    if($campos != "*" ){
     $campos_sql = split("#",$campos);
@@ -568,9 +571,9 @@ class cl_ppaestimativadespesa {
       $sql = analiseQueryPlanoOrcamento($sql);
       return $sql;
   }
-  
-  
-function sql_query_dotacao ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+
+function sql_query_dotacao ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
 
     $sql = "select ";
      if($campos != "*" ){
@@ -603,8 +606,8 @@ function sql_query_dotacao ( $o07_sequencial=null,$campos="*",$ordem=null,$dbwhe
      $sql2 = "";
      if($dbwhere==""){
        if($o07_sequencial!=null ){
-         $sql2 .= " where ppaestimativadespesa.o07_sequencial = $o07_sequencial "; 
-       } 
+         $sql2 .= " where ppaestimativadespesa.o07_sequencial = $o07_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

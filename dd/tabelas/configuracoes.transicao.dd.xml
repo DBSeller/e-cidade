@@ -1,0 +1,70 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010468' name='configuracoes.transicao' description="Tabela que guarda as transições de atividades" prefix="" label="Transições" type="0">
+  <fields>
+    <field codigo="1010740"
+           campo_api=''
+           name="db174_sequencial"
+           conteudo="int8"
+           description="Sequencial da tabela"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+    <sequence name='configuracoes.transicao_db174_sequencial_seq' />
+
+    </field>
+    <field codigo="1010741"
+           campo_api=''
+           name="db174_origem"
+           conteudo="int8"
+           description="Campo que guarda a atividade de origem"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+    <field codigo="1010742"
+           campo_api=''
+           name="db174_destino"
+           conteudo="int8"
+           description="Campo que guarda a atividade de destino"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="db174_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>
+
+
+

@@ -1,57 +1,110 @@
 <?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
 
-$x = fsockopen("192.168.1.17",4444);
-$modelo = 2;
-  if($modelo == 2){
-     fputs($x,chr(27).chr(66)."041");
-     fputs($x,chr(27).chr(67)."municipio$");
-          fputs($x,chr(27).chr(70)."carlos crestani$");
-    fputs($x,chr(27).chr(68).'010105');
+$x = fsockopen("192.168.0.18",4444);
 
-     fputs($x,chr(27).chr(86)."00000000012299");
- }else{
-     fputs($x,chr(27).chr(160)."EMITE_CHEQUE_FAVORECIDO \n");
-     fputs($x,chr(27).chr(161)."MUNICIPIO \n");
-     fputs($x,chr(27).chr(162)."BANCO \n");
-     fputs($x,chr(27).chr(163)."100 \n");
-     fputs($x,chr(27).chr(164)."01-01-05 \n");
-     fputs($x,chr(27).chr(176)."\n");
+$modelo=9;
 
-   fputs($x," \n");
-   fputs($x," \n");
-   fputs($x," \n");
-   fputs($x," \n");
-   fputs($x," \n");
-   fputs($x," \n");
-   fputs($x," \n");
-   fputs($x,"          Prefeito: Chefe Tesoureiro: Mestre"."\n");
+$codbco="001";
+$valor=123;
+$nome="JOAO DA SILVA";
+$municipio="TESTE";
+$data="";
+
+if($modelo == 2) {
+
+  fputs($x,chr(27).chr(66)."001");
+  fputs($x,chr(27).chr(70)."JOAO DA SILVA$");
+  fputs($x,chr(27).chr(67)."MUNICIPIO$");
+  fputs($x,chr(27).chr(68).'010107');
+  fputs($x,chr(27).chr(86)."00000000012299");
+  fputs($x,chr(27).chr(12));
+	
+} elseif ($modelo == 1) {
+
+	fputs($x, chr(27).chr(177));
+	fputs($x, chr(27).chr(162).$codbco.chr(13));
+	fputs($x, chr(27).chr(163).$valor.chr(13));
+	fputs($x, chr(27).chr(160).$nome.chr(13));
+	fputs($x, chr(27).chr(161).$municipio.chr(13));
+	fputs($x, chr(27).chr(164).$data.chr(13));
+	fputs($x, chr(27).chr(176));
+
+} elseif ($modelo == 3) {
+	
+	fputs($x, chr(27).chr(160)."$nome\n");
+	fputs($x, chr(27).chr(161)."$municipio\n");
+	fputs($x, chr(27).chr(162)."$codbco\n");
+	fputs($x, chr(27).chr(163)."$valor\n");
+	fputs($x, chr(27).chr(164)."$data\n");
+	fputs($x, chr(27).chr(176));
+	
+} elseif ($modelo == 8) {
+
+  $nValor = 6800;
+  $sStringImpressao  = chr(27).chr(66)." 001".chr(13);
+  $sStringImpressao .= chr(27).chr(70)." JOAO DA SILVA".chr(36).chr(13);
+  $sStringImpressao .= chr(27).chr(67)." TESTE".chr(36).chr(13);
+  $sStringImpressao .= chr(27).chr(68)." 120509";
+  $sStringImpressao .= chr(27).chr(86)." ".str_pad($nValor,14,0,STR_PAD_LEFT).chr(13);
+  fputs($x, $sStringImpressao);
+	
+} elseif ($modelo == 4) {
+	
+	$qtdcheques = 2;
+
+  for($i=1; $i<=$qtdcheques; $i++) {
+  	
+	  fputs($x, "Cheque: $i\n");
+	  fputs($x, "Banco: $codbco\n");
+    fputs($x, "Valor: $valor\n");
+	  fputs($x, "Favorecido: $nome\n");
+    fputs($x, "Municipio: $municipio\n");
+	  fputs($x, "Data: $data\n");
+	  fputs($x, "\n\n\n\n");
+	  
+  } 
+}elseif ($modelo == 9) {
+  /*
+  fputs($x, "Cheque: $i\n");
+  fputs($x, "Banco: $codbco\n");
+  fputs($x, "Valor: $valor\n");
+  fputs($x, "Favorecido: $nome\n");
+  fputs($x, "Municipio: $municipio\n");
+  fputs($x, "Data: $data\n");
+  fputs($x, "\n\n\n\n");
+  */
+
+  require 'model/impressaoCheque.model.php';
+  require 'libs/db_stdlib.php';
+  
+  $oImpressaoCheque = new impressaoCheque(9);
+	
+  $qtdcheques = 10;
+  
+  for($i=1; $i<=$qtdcheques; $i++) {
+
+    $oImpressaoCheque->setIp('192.168.0.18');
+    $oImpressaoCheque->setPorta(4444);
+    $oImpressaoCheque->setdtDataImpressao('2009-05-22');
+    $oImpressaoCheque->setnValor(10000);
+    $oImpressaoCheque->setSCredor('Dbseller informatica');
+
+    $oImpressaoCheque->montaImpressao();
+    $oImpressaoCheque->imprimir();
+
+  }
+
+  // var_dump($oImpressaoCheque->sStringImpressao);
+  // die();
+
+  
+  echo "ok \n \n";
+  
+  
 
 }
 
+
 fclose($x);
+
 ?>

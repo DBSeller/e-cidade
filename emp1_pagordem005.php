@@ -1,46 +1,47 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_pagordem_classe.php");
-include ("classes/db_pagordemconta_classe.php");
-include ("classes/db_pagordemnota_classe.php");
-include ("classes/db_pagordemrec_classe.php");
-include ("classes/db_pagordemele_classe.php");
-include ("classes/db_empempenho_classe.php");
-include ("classes/db_empelemento_classe.php");
-include ("classes/db_empnota_classe.php");
-include ("classes/db_empord_classe.php");
-include ("classes/db_empnotaele_classe.php");
-include ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("std/label/rotulo.php"));
+require_once(modification("classes/db_pagordem_classe.php"));
+require_once(modification("classes/db_pagordemconta_classe.php"));
+require_once(modification("classes/db_pagordemnota_classe.php"));
+require_once(modification("classes/db_pagordemrec_classe.php"));
+require_once(modification("classes/db_pagordemele_classe.php"));
+require_once(modification("classes/db_empempenho_classe.php"));
+require_once(modification("classes/db_empelemento_classe.php"));
+require_once(modification("classes/db_empnota_classe.php"));
+require_once(modification("classes/db_empord_classe.php"));
+require_once(modification("classes/db_empnotaele_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -69,7 +70,7 @@ if (isset ($alterar) || isset ($alterarimp)) {
 		$ngera = true;
 	}
 	$sql = "update empparametro set e39_anousu = e39_anousu where e39_anousu = ".db_getsession("DB_anousu");
-	$res = pg_query($sql);
+	$res = db_query($sql);
 
 	$clpagordem->e50_codord = $e50_codord;
 	$clpagordem->e50_numemp = $e50_numemp;
@@ -130,7 +131,7 @@ if (isset ($alterar) || isset ($alterarimp)) {
 			}
 		}
 
-		//rotina que altera em pagordemele 
+		//rotina que altera em pagordemele
 		if ($sqlerro == false) {
 			$arr_dados = split("#", $dados);
 			$tam = count($arr_dados);
@@ -146,7 +147,7 @@ if (isset ($alterar) || isset ($alterarimp)) {
 					$vlrord_nota = '0.00';
 				}
 
-				//=========================== 
+				//===========================
 				//rotina que atualiza o valor pago para somar com o que o usuario digitar
 				$result = $clpagordemele->sql_record($clpagordemele->sql_query_file($e50_codord, $elemento));
 				if ($clpagordemele->numrows > 0) {
@@ -157,7 +158,7 @@ if (isset ($alterar) || isset ($alterarimp)) {
 					$e53_vlranu = '0';
 					$e53_vlrpag = '0';
 				}
-				//==================      
+				//==================
 
 				//==================================================
 				//rotina que pega os valores de pagordemele
@@ -190,7 +191,7 @@ if (isset ($alterar) || isset ($alterarimp)) {
 				}
 				//==================================================================================
 
-				//=======================================================================================> 
+				//=======================================================================================>
 				//rotina que procura pega o total de ordens com  notas
 				$sql = $clempnotaele->sql_query_ordem(null, null, " sum(e70_valor) as tot_valornord, sum(e70_vlrliq) as tot_vlrliqnord, sum(e70_vlranu) as    tot_vlranunord", "", "e71_codord=$e50_codord and  e70_codele=$elemento  and e70_vlrliq <> 0  and ((e71_codnota is  not  null  and e71_anulado='f') ) ");
 				$result = $clempnotaele->sql_record($sql);
@@ -198,14 +199,14 @@ if (isset ($alterar) || isset ($alterarimp)) {
 				$tot_vlrliqnord = $tot_vlrliqnord - $tot_vlranunord;
 
 				/*
-				$notas_vlrliq_semordem  =  $tot_vlrliqnord; 
-				$notas_vlranu_semordem  =  $tot_vlranunord; 
-				$notas_vlrliq_comordem  = $tot_valor  - $tot_vlrliqnord; 
-				$notas_vlrau_comordem   = $tot_vlranu - $tot_vlranunord; 
+				$notas_vlrliq_semordem  =  $tot_vlrliqnord;
+				$notas_vlranu_semordem  =  $tot_vlranunord;
+				$notas_vlrliq_comordem  = $tot_valor  - $tot_vlrliqnord;
+				$notas_vlrau_comordem   = $tot_vlranu - $tot_vlranunord;
 				*/
 				//=====================================================>
 
-				//valor disponivel com notas   
+				//valor disponivel com notas
 				$vlrdis_nota = $tot_valor_nota - $tot_vlranu_nota;
 
 				//valor disponivel sem notas
@@ -215,12 +216,12 @@ if (isset ($alterar) || isset ($alterarimp)) {
 				$saldo_ordem_nota = $tot_valornord - $tot_vlranunord;
 				$saldo_ordem = ($e53_valor - $e53_vlranu - $e53_vlrpag) - $saldo_ordem_nota;
 
-				//   os valores que serão alterados    
+				//   os valores que serão alterados
 				$val_alt_ord_nota = $vlrord_nota;
 
 				$val_alt_ord = $vlrord;
 
-				//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5 
+				//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 				//testa valores com notas..
 				if ($val_alt_ord_nota > $vlrdis_nota) {
 					$sqlerro = true;
@@ -229,13 +230,13 @@ if (isset ($alterar) || isset ($alterarimp)) {
 				}
 
 				//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-				//	verifica os valores sem notas 
+				//	verifica os valores sem notas
 				if ($val_alt_ord > $vlrdis) {
 					$sqlerro = true;
 					$erro_msg = " Valor $vlrord do elemento $elemento não está disponivel. Verifique!";
 					break;
 				}
-				//=================== 
+				//===================
 
 				$valor = number_format($vlrord + $vlrord_nota + $e53_valor, "2", ".", "");
 
@@ -337,14 +338,14 @@ if (isset ($chavepesquisa) || isset ($e50_codord)) {
        </td>
      </tr>
      <tr><td>&nbsp;</td></tr>
-  <?}?>  
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
+  <?}?>
+  <tr>
+    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
 	<?
 
 
-include ("forms/db_frmpagordem.php");
+include(modification("forms/db_frmpagordem.php"));
 ?>
     </center>
 	</td>
@@ -381,7 +382,7 @@ if (isset ($e50_codord)) {
 	           <script>
 		    function js_bloqueia(){
 		        parent.document.formaba.pagordemrec.disabled=false;\n
-		        top.corpo.iframe_pagordemrec.location.href='emp1_pagordemrec001.php?e52_codord=".$e50_codord."".@$query."';\n
+		        (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_pagordemrec.location.href='emp1_pagordemrec001.php?e52_codord=".$e50_codord."".@$query."';\n
 		    }
 		    js_bloqueia();
 		 </script>

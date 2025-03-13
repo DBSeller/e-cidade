@@ -25,7 +25,7 @@ DBViewFormularioFolha.ComboPrevidencia = function() {
     asynchronous: false,
     onComplete  : function( oRespostaAjax ) {
 
-      var oRetorno = eval("(" + oRespostaAjax.responseText + ")");
+      var oRetorno = JSON.parse(oRespostaAjax.responseText);
       
       if ( oRetorno.iStatus == 2 ) {
         throw oRetorno.sMensagem;

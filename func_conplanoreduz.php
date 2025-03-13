@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conplanoreduz_classe.php");
-include("classes/db_conplano_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
+include(modification("classes/db_conplano_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clconplano = new cl_conplano;
@@ -95,7 +95,7 @@ $clconplano->rotulo->label("c60_estrut");
       if(!isset($pesquisa_chave) && !isset($pesquisa_chave_reduz)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_conplanoreduz.php")==true){
-             include("funcoes/db_func_conplanoreduz.php");
+             include(modification("funcoes/db_func_conplanoreduz.php"));
            }else{
            $campos = "conplanoreduz.*";
            }
@@ -107,7 +107,7 @@ $clconplano->rotulo->label("c60_estrut");
 	         $sql = $clconplanoreduz->sql_query("",null,$campos,"c61_reduz","$dbwhere and  c61_reduz = $chave_c61_reduz and c61_anousu=".db_getsession("DB_anousu")."");
         }else if(isset($chave_c60_estrut) && (trim($chave_c60_estrut)!="") ){
 	     //    $sql = $clconplanoexe->sql_query(db_getsession('DB_anousu'),"",$campos,"c62_codrec"," c62_codrec like '$chave_c62_codrec%' ");
-	     $sql = $clconplanoreduz->sql_query(null,null,$campos,"c60_estrut","c60_estrut like '$chave_c60_estrut%' and c60_anousu=".db_getsession("DB_anousu")."");
+	     $sql = $clconplanoreduz->sql_query(null,null,$campos,"c60_estrut","{$dbwhere} and c60_estrut like '$chave_c60_estrut%' and c60_anousu=".db_getsession("DB_anousu")."");
         }else{
            $sql = $clconplanoreduz->sql_query("",null,$campos,"c60_estrut","$dbwhere and c60_anousu=".db_getsession("DB_anousu"));
         }
@@ -120,12 +120,28 @@ $clconplano->rotulo->label("c60_estrut");
 	  }else{
             $result = $clconplanoreduz->sql_record($clconplanoreduz->sql_query(null,null,"*","","c61_anousu = ".db_getsession("DB_anousu")." and  c61_reduz = $pesquisa_chave_reduz "));
 	  }
-          if($clconplanoreduz->numrows!=0){
+
+	  if (!empty($pesquisa_chave) && !empty($pesquisaEstrutural)) {
+
+	      $where = implode(' and ', array(
+              "c61_anousu = ".db_getsession("DB_anousu"),
+              "c61_instit = ".db_getsession("DB_instit"),
+              "c60_estrut ilike '{$pesquisa_chave}%'",
+          ));
+	      $pesquisaEstrutural = $clconplanoreduz->sql_query(null,null,"*",null, $where);
+          $result = $clconplanoreduz->sql_record($pesquisaEstrutural);
+      }
+
+          if($clconplanoreduz->numrows!=0 && empty($pesquisaEstrutural)){
             db_fieldsmemory($result,0);
             echo "<script>".$funcao_js."('$c60_descr',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
+          } else if($clconplanoreduz->numrows != 0 && !empty($pesquisaEstrutural)){
+              db_fieldsmemory($result,0);
+              echo "<script>".$funcao_js."('$c60_descr', false, '$c60_estrut', $c61_reduz);</script>";
+          } else {
+              echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true);</script>";
           }
+
         }else{
 	       echo "<script>".$funcao_js."('',false);</script>";
         }
@@ -144,3 +160,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

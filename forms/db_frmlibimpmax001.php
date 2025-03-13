@@ -48,7 +48,7 @@
 		select id_usuario, nome
 		from db_usuarios
 	";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	$numrows = pg_numrows($result);
 	for ($i=0;$i<$numrows;$i++) {
 	  $db_select = ""; 
@@ -91,7 +91,7 @@
 		select coddepto, descrdepto
 		from db_depart
 	";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	$numrows = pg_numrows($result);
 	for ($i=0;$i<$numrows;$i++) {
 ?>
@@ -133,7 +133,7 @@
 		select d50_codigo, d50_descr
 		from impres
 	";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	$numrows = pg_numrows($result);
 	if (sizeof($usuarios)==1){
 		$sqlPesqisaImpressorasDoUsuario = "
@@ -141,7 +141,7 @@
 			from perimp
 			where d51_usuario = $usuarios[0]
 		";
-		$result_sqlPesqisaImpressorasDoUsuario = pg_exec($sqlPesqisaImpressorasDoUsuario);
+		$result_sqlPesqisaImpressorasDoUsuario = db_query($sqlPesqisaImpressorasDoUsuario);
 		$num = pg_numrows($result_sqlPesqisaImpressorasDoUsuario);
 	}
 	for ($i=0;$i<$numrows;$i++) {

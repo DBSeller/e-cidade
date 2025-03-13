@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,100 +25,117 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_lab_valorreferencia_classe.php");
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
+
 $cllab_valorreferencia = new cl_lab_valorreferencia;
 $cllab_valorreferencia->rotulo->label("la27_i_codigo");
-$cllab_valorreferencia->rotulo->label("la27_i_codigo");
+
+$rotulo = new rotulocampo();
+$rotulo->label('la25_c_descr');
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <link href="estilos.css" rel="stylesheet" type="text/css">
+  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
+<table height="100%" border="0" align="center" cellspacing="0" bgcolor="#CCCCCC">
   <tr>
     <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
+      <table width="35%" border="0" align="center" cellspacing="0">
+        <form name="form2" method="post" action="">
           <tr>
-            <td width="4%" align="right" nowrap title="<?=$Tla27_i_codigo?>">
-              <?=$Lla27_i_codigo?>
+            <td width="4%" align="right" nowrap title="<?= $Tla27_i_codigo ?>">
+                <?= $Lla27_i_codigo ?>
             </td>
             <td width="96%" align="left" nowrap>
-              <?
-		       db_input("la27_i_codigo",10,$Ila27_i_codigo,true,"text",4,"","chave_la27_i_codigo");
-		       ?>
+                <?
+                db_input("la27_i_codigo", 10, $Ila27_i_codigo, true, "text", 4, "", "chave_la27_i_codigo");
+                ?>
             </td>
           </tr>
           <tr>
-            <td width="4%" align="right" nowrap title="<?=$Tla27_i_codigo?>">
-              <?=$Lla27_i_codigo?>
+            <td width="4%" align="right" nowrap title="<?= $Tla25_c_descr ?>">
+                <?= $Lla25_c_descr ?>
             </td>
             <td width="96%" align="left" nowrap>
-              <?
-		       db_input("la27_i_codigo",10,$Ila27_i_codigo,true,"text",4,"","chave_la27_i_codigo");
-		       ?>
+                <?
+                db_input("la25_c_descr", 50, $Ila25_c_descr, true, "text", 4, "", "chave_la25_c_descr");
+                ?>
             </td>
           </tr>
           <tr>
             <td colspan="2" align="center">
               <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_lab_valorreferencia.hide();">
-             </td>
+              <input name="limpar" type="reset" id="limpar" value="Limpar">
+              <input name="Fechar" type="button" id="fechar" value="Fechar"
+                     onClick="parent.db_iframe_lab_valorreferencia.hide();">
+            </td>
           </tr>
         </form>
-        </table>
-      </td>
+      </table>
+    </td>
   </tr>
   <tr>
     <td align="center" valign="top">
-      <?
-      if(!isset($pesquisa_chave)){
-        if(isset($campos)==false){
-           //if(file_exists("funcoes/db_func_lab_valorreferencia.php")==true){
-             //include("funcoes/db_func_lab_valorreferencia.php");
-           //}else{
-             $campos = "la27_i_codigo,la25_c_estrutural,la25_c_descr";
-           //}
+        <?php
+        $where = array();
+
+        if (!isset($pesquisa_chave)) {
+            if (isset($campos) == false) {
+                $campos = "la27_i_codigo,la25_c_estrutural,la25_c_descr";
+            }
+
+            if (!empty($chave_la27_i_codigo)) {
+                $where[] = "la27_i_codigo = {$chave_la27_i_codigo}";
+            }
+
+            if (!empty($chave_la25_c_descr)) {
+                $where[] = "la25_c_descr ilike '%{$chave_la25_c_descr}%'";
+            }
+
+            $repassa = array();
+            if (isset($chave_la27_i_codigo)) {
+                $repassa = array(
+                  "chave_la27_i_codigo" => $chave_la27_i_codigo,
+                  "chave_la25_c_descr" => $chave_la25_c_descr
+                );
+            }
+
+            $sql = $cllab_valorreferencia->sql_query(null, $campos, "la27_i_codigo", implode(' AND ', $where));
+            db_lovrot($sql, 15, "()", "", $funcao_js, "", "NoMe", $repassa);
+        } else {
+            if ($pesquisa_chave != null && $pesquisa_chave != "") {
+                $result = $cllab_valorreferencia->sql_record($cllab_valorreferencia->sql_query($pesquisa_chave));
+                if ($cllab_valorreferencia->numrows != 0) {
+                    db_fieldsmemory($result, 0);
+                    echo "<script>" . $funcao_js . "('$la27_i_codigo',false);</script>";
+                } else {
+                    echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true);</script>";
+                }
+            } else {
+                echo "<script>" . $funcao_js . "('',false);</script>";
+            }
         }
-        if(isset($chave_la27_i_codigo) && (trim($chave_la27_i_codigo)!="") ){
-	         $sql = $cllab_valorreferencia->sql_query($chave_la27_i_codigo,$campos,"la27_i_codigo");
-        }else if(isset($chave_la27_i_codigo) && (trim($chave_la27_i_codigo)!="") ){
-	         $sql = $cllab_valorreferencia->sql_query("",$campos,"la27_i_codigo"," la27_i_codigo like '$chave_la27_i_codigo%' ");
-        }else{
-           $sql = $cllab_valorreferencia->sql_query("",$campos,"la27_i_codigo","");
-        }
-        $repassa = array();
-        if(isset($chave_la27_i_codigo)){
-          $repassa = array("chave_la27_i_codigo"=>$chave_la27_i_codigo,"chave_la27_i_codigo"=>$chave_la27_i_codigo);
-        }
-        db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $cllab_valorreferencia->sql_record($cllab_valorreferencia->sql_query($pesquisa_chave));
-          if($cllab_valorreferencia->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$la27_i_codigo',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
-          }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
-        }
-      }
-      ?>
-     </td>
-   </tr>
+        ?>
+    </td>
+  </tr>
 </table>
 </body>
 </html>
+
+<script type="text/javascript">
+  (function() {
+    var query = frameElement.getAttribute('name').replace('IF', ''),
+      input = document.querySelector('input[value="Fechar"]');
+    input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+  })();
+</script>

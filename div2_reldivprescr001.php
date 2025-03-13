@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('z01_numcgm');
@@ -45,6 +45,8 @@ $clrotulo->label('q02_inscr');
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBLancador.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBAncora.widget.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 
@@ -165,6 +167,14 @@ $clrotulo->label('q02_inscr');
           ?>
         </td>
       </tr>
+
+     <tr>
+       <td colspan="6">
+         <div style="margin-top: 20px;" id='ctnTipoDebito'> </div>
+       </td>
+     </tr>
+
+
     </table>
   </fieldset>
   <input  name="emite2" id="emite2" type="button" value="Emitir Relatório" onclick="js_emite();" >
@@ -177,8 +187,34 @@ $clrotulo->label('q02_inscr');
 </html>
 <script>
 
+
+    var alturaGrid = "150px";
+    /**
+     * Cria o lançador para os Documentos
+     */
+    function js_criarLancadorTipoDebito() {
+        oLancadorTipoDebito = new DBLancador("oLancadorTipoDebito");
+        oLancadorTipoDebito.setNomeInstancia("oLancadorTipoDebito");
+        oLancadorTipoDebito.setLabelAncora("Tipos de Débitos: ");
+        oLancadorTipoDebito.setTextoFieldset("Filtro de Tipos de Débitos");
+        oLancadorTipoDebito.setParametrosPesquisa("func_arretipo.php", ['k00_tipo', 'k00_descr']);
+        oLancadorTipoDebito.setGridHeight(alturaGrid);
+        oLancadorTipoDebito.setTituloJanela("Pesquisar Documentos");
+        oLancadorTipoDebito.show($("ctnTipoDebito"));
+    }
+
+    js_criarLancadorTipoDebito();
+
 function js_emite(){
- 
+
+
+  var aListaDebitosSelecionados = oLancadorTipoDebito.getRegistros();
+  var aTipoDebito = [];
+  aListaDebitosSelecionados.each( function( oValores, iIndice  ){
+
+    aTipoDebito.push(oValores.sCodigo);
+  } );
+   
 
 	qry  =	'?seltipo='+document.form1.seltipo.value;
   qry += 	'&selordem='+document.form1.selordem.value;
@@ -190,6 +226,8 @@ function js_emite(){
 	qry +=	'&j01_matric='+document.form1.j01_matric.value;
   qry +=  '&q02_inscr='+document.form1.q02_inscr.value;
   qry +=  '&anulada='+document.form1.anulada.value;
+
+  qry +=  '&aTipoDebito=' + aTipoDebito;
     
 	jan = window.open('div2_reldivprescr002.php'+qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
@@ -198,10 +236,10 @@ function js_emite(){
 
 function js_pesquisaz01_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_nome','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nome','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.z01_numcgm.value != ''){ 
-       js_OpenJanelaIframe('top.corpo','db_iframe_nome','func_nome.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nome','func_nome.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.kz01_numcgm.value = ''; 
      }
@@ -224,9 +262,9 @@ function js_mostracgm1(chave1,chave2){
 
 function js_pesquisaj01_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matric','func_iptubase.php?funcao_js=parent.js_mostramatric|j01_matric','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matric','func_iptubase.php?funcao_js=parent.js_mostramatric|j01_matric','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_matric','func_iptubase.php?pesquisa_chave='+document.form1.j01_matric.value+'&funcao_js=parent.js_mostramatric','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matric','func_iptubase.php?pesquisa_chave='+document.form1.j01_matric.value+'&funcao_js=parent.js_mostramatric','Pesquisa',false);
   }
 }
 
@@ -239,9 +277,9 @@ function js_mostramatric(chave){
 
 function js_pesquisaq02_inscr(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_inscr','func_issbase.php?funcao_js=parent.js_mostrainscr|q02_inscr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inscr','func_issbase.php?funcao_js=parent.js_mostrainscr|q02_inscr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_inscr','func_issbase.php?pesquisa_chave='+document.form1.q02_inscr.value+'&funcao_js=parent.js_mostrainscr','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inscr','func_issbase.php?pesquisa_chave='+document.form1.q02_inscr.value+'&funcao_js=parent.js_mostrainscr','Pesquisa',false);
   }
 }
 

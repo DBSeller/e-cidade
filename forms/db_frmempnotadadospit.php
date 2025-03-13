@@ -132,10 +132,10 @@ db_input('e11_valoicmssubstitutotrib',10,$Ie11_valoicmssubstitutotrib,true,'text
 <script>
 function js_pesquisae11_tipodocumentosfiscal(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tipodocumentosfiscal','func_tipodocumentosfiscal.php?funcao_js=parent.js_mostratipodocumentosfiscal1|e12_sequencial|e12_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipodocumentosfiscal','func_tipodocumentosfiscal.php?funcao_js=parent.js_mostratipodocumentosfiscal1|e12_sequencial|e12_descricao','Pesquisa',true);
   }else{
      if(document.form1.e11_tipodocumentosfiscal.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tipodocumentosfiscal','func_tipodocumentosfiscal.php?pesquisa_chave='+document.form1.e11_tipodocumentosfiscal.value+'&funcao_js=parent.js_mostratipodocumentosfiscal','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipodocumentosfiscal','func_tipodocumentosfiscal.php?pesquisa_chave='+document.form1.e11_tipodocumentosfiscal.value+'&funcao_js=parent.js_mostratipodocumentosfiscal','Pesquisa',false);
      }else{
        document.form1.e12_descricao.value = ''; 
      }
@@ -155,10 +155,10 @@ function js_mostratipodocumentosfiscal1(chave1,chave2){
 }
 function js_pesquisae11_cfop(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cfop','func_cfop.php?funcao_js=parent.js_mostracfop1|e10_sequencial|e10_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cfop','func_cfop.php?funcao_js=parent.js_mostracfop1|e10_sequencial|e10_descricao','Pesquisa',true);
   }else{
      if(document.form1.e11_cfop.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cfop','func_cfop.php?pesquisa_chave='+document.form1.e11_cfop.value+'&funcao_js=parent.js_mostracfop','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cfop','func_cfop.php?pesquisa_chave='+document.form1.e11_cfop.value+'&funcao_js=parent.js_mostracfop','Pesquisa',false);
      }else{
        document.form1.e10_descricao.value = ''; 
      }
@@ -177,7 +177,7 @@ function js_mostracfop1(chave1,chave2){
   db_iframe_cfop.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empnotadadospit','func_empnotadadospit.php?funcao_js=parent.js_preenchepesquisa|e11_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empnotadadospit','func_empnotadadospit.php?funcao_js=parent.js_preenchepesquisa|e11_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_empnotadadospit.hide();

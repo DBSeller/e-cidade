@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -57,12 +57,15 @@ class cl_rhpesbanco {
                  rh44_conta = varchar(50) = Conta 
                  rh44_dvconta = varchar(2) = DV conta 
                  ";
-   //funcao construtor da classe 
-   function cl_rhpesbanco() { 
-     //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("rhpesbanco"); 
-     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
+
+    /**
+     * cl_rhpesbanco constructor.
+     */
+    public function __construct()
+    {
+        $this->rotulo = new rotulo("rhpesbanco");
+        $this->pagina_retorno = basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
+    }
    //funcao erro 
    function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){

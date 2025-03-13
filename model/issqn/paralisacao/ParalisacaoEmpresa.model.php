@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -77,6 +77,12 @@ class ParalisacaoEmpresa {
   private $sObservacao;
 
   /**
+   * Código do usuário que realizou a paralisação
+   * @var integer
+   */
+  private $iUsuario;
+
+  /**
    * Contrutor da classe, se for informado como parametro o 
    * código da paralização, realiza o lazy load da classe.
    * 
@@ -122,6 +128,7 @@ class ParalisacaoEmpresa {
       $this->setDataFim(new DBDate($oDadosParalisacaoEmpresa->q140_datafim));
     }
     $this->setObservacao($oDadosParalisacaoEmpresa->q140_observacao);
+    $this->setUsuario($oDadosParalisacaoEmpresa->q140_usuario);
 
     return true;
   }
@@ -232,6 +239,24 @@ class ParalisacaoEmpresa {
     return $this->sObservacao;
   }
 
+  /**
+   * Retorna o usuário
+   * @return integer
+   */
+  public function getUsuario() {
+  	
+    return $this->iUsuario;
+  }
+  
+  /**
+   * Define o usuário
+   * @param $iUsuario
+   */
+  public function setUsuario($iUsuario) {
+  	
+    $this->iUsuario = $iUsuario;
+  }
+
   public function getDescricaoMotivo() {
 
     $oDaoIssMotivoparalisacao = db_utils::getDao('issmotivoparalisacao');
@@ -299,6 +324,7 @@ class ParalisacaoEmpresa {
     $oDaoIssBaseparalisacao->q140_datainicio           = $this->getDataInicio()->getDate();
     $oDaoIssBaseparalisacao->q140_datafim              = ($this->getDataFim()) ? $this->getDataFim()->getDate() : null;
     $oDaoIssBaseparalisacao->q140_observacao           = $this->getObservacao();
+    $oDaoIssBaseparalisacao->q140_usuario              = $this->getUsuario();
     $oDaoIssBaseparalisacao->q140_sequencial           = null;
 
     /**

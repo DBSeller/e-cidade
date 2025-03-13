@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,25 +26,25 @@
  */
 
 set_time_limit(0);
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_lista_classe.php");
-require_once("classes/db_listadeb_classe.php");
-require_once("classes/db_listanotifica_classe.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_termo_classe.php");
-require_once("classes/db_cgm_classe.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_listacda_classe.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_certidarqretorno_classe.php");
-require_once("classes/db_processoforo_classe.php");
-require_once("classes/db_processoforoinicial_classe.php");
-require_once("model/dbLayoutReader.model.php");
-require_once("model/dbLayoutLinha.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_lista_classe.php"));
+require_once(modification("classes/db_listadeb_classe.php"));
+require_once(modification("classes/db_listanotifica_classe.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_termo_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_listacda_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_certidarqretorno_classe.php"));
+require_once(modification("classes/db_processoforo_classe.php"));
+require_once(modification("classes/db_processoforoinicial_classe.php"));
+require_once(modification("model/dbLayoutReader.model.php"));
+require_once(modification("model/dbLayoutLinha.model.php"));
 
 
 db_postmemory($HTTP_POST_VARS);
@@ -264,9 +264,9 @@ function js_habilita(){
 
 function js_pesquisaremessa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_arqremessa','func_arqremessa.php?funcao_js=parent.js_mostraremessa1|iArqRemessa|v83_nomearq','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arqremessa','func_arqremessa.php?funcao_js=parent.js_mostraremessa1|iArqRemessa|v83_nomearq','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_arqremessa','func_arqremessa.php?pesquisa_chave='+document.form1.iArqRemessa.value+'&funcao_js=parent.js_mostraremessa','Pesquisa','false');
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arqremessa','func_arqremessa.php?pesquisa_chave='+document.form1.iArqRemessa.value+'&funcao_js=parent.js_mostraremessa','Pesquisa','false');
   }
 }
 

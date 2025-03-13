@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: saude
 //CLASSE DA ENTIDADE rechumano
-require_once("db_rechumano_classe.php");
+require_once(modification("classes/db_rechumano_classe.php"));
 
 class cl_rechumanoturmaac_ext extends cl_rechumano  { 
 function sql_query_ext ( $ed20_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){

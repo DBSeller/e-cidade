@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -341,7 +341,7 @@
 
   function js_retorna_rota(oAjax) {
 	
-	  var oRetorno =  eval("(" + oAjax.responseText + ")");
+	  var oRetorno =  JSON.parse(oAjax.responseText);
 
 	  if (oRetorno.status == 1) {
 
@@ -388,7 +388,7 @@
 
 	  js_removeObj('msgbox');
       
-	  var oRetorno = eval("("+oAjax.responseText+")");
+	  var oRetorno = JSON.parse(oAjax.responseText);
 	  sValida = false;
 	  if (oRetorno.status == 1) { 
 		  for(i = 0; i < oRetorno.aRotaOrientacao.length; i++) {
@@ -404,13 +404,13 @@
 	
     if (mostra == true) {
 
-      js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_ruas',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_ruas',
     	                    'func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome', 'Pesquisa', true);
 
     } else {
 
       if (document.form1.x01_codrua.value != '') {
-        js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_ruas', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_ruas', 
                             'func_ruas.php?pesquisa_chave=' + document.form1.x01_codrua.value +
                               '&funcao_js=parent.js_mostraruas',
                             'Pesquisa', false);
@@ -445,13 +445,13 @@
     
   function js_pesquisax01_codbairro(mostra) {
     if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_bairro', 
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_bairro', 
                           'func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr', 'Pesquisa', true);
 
     }else{
 
       if (document.form1.x01_codbairro.value != '') { 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_bairro', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_bairro', 
                             'func_bairro.php?pesquisa_chave=' + document.form1.x01_codbairro.value +
                               '&funcao_js=parent.js_mostrabairro',
                             'Pesquisa', false);
@@ -483,13 +483,13 @@
   function js_pesquisax01_numcgm(mostra) {
 
     if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_cgm',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_cgm',
                           'func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome', 'Pesquisa', true);
 
     } else {
 
       if (document.form1.x01_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_cgm', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_cgm', 
                             'func_nome.php?pesquisa_chave=' + document.form1.x01_numcgm.value +
                               '&funcao_js=parent.js_mostracgm',
                             'Pesquisa', false);
@@ -519,12 +519,12 @@
   function js_pesquisax01_promit(mostra) {
 
     if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_cgmpromit', 
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_cgmpromit', 
     	                    'func_nome.php?funcao_js=parent.js_mostrapromit1|z01_numcgm|z01_nome', 'Pesquisa', true);
     } else {
 
       if (document.form1.x01_promit.value != '') { 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_cgmpromit', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_cgmpromit', 
                             'func_nome.php?pesquisa_chave=' + document.form1.x01_promit.value + 
                               '&funcao_js=parent.js_mostrapromit',
                             'Pesquisa', false);
@@ -556,12 +556,12 @@
   function js_pesquisax01_zona(mostra) {
 
     if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_zonas', 
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_zonas', 
     	                    'func_zonas.php?funcao_js=parent.js_mostrazonas1|j50_zona|j50_descr', 'Pesquisa', true);
     } else {
           
       if (document.form1.x01_zona.value != '') { 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_zonas', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_zonas', 
                             'func_zonas.php?pesquisa_chave=' + document.form1.x01_zona.value + 
                               '&funcao_js=parent.js_mostrazonas',
                             'Pesquisa', false);
@@ -574,14 +574,14 @@
     
   function js_pesquisax01_entrega(mostra) {
     if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_iptucadzonaentrega', 
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_iptucadzonaentrega', 
     	                    'func_iptucadzonaentrega.php?funcao_js=parent.js_mostraiptucadzonaentrega1|j85_codigo|j85_ender|j85_descr',
     	                    'Pesquisa', true);
 
     } else {
 
     	if (document.form1.x01_entrega.value != '') { 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_iptucadzonaentrega', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_iptucadzonaentrega', 
                             'func_iptucadzonaentrega.php?ender=true&pesquisa_chave=' + document.form1.x01_entrega.value + 
                               '&funcao_js=parent.js_mostraiptucadzonaentrega',
                             'Pesquisa', false);
@@ -632,7 +632,7 @@
 
 
   function js_pesquisa() {
-    js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe_aguabase', 
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe_aguabase', 
     	                  'func_aguabase.php?funcao_js=parent.js_preenchepesquisa|x01_matric', 'Pesquisa', true);
   }
 
@@ -652,11 +652,11 @@
 	  caracteristica = document.form1.caracteristica.value;
 
     if (caracteristica != "") {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe', 
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe', 
     	                    'cad1_cargeral001.php?db_opcao=<?=$db_opcao?>&caracteristica=' + caracteristica + '&tipogrupo=A',
     	                    'Pesquisa',true);
     }else{
-      js_OpenJanelaIframe('top.corpo.iframe_aguabase', 'db_iframe',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabase', 'db_iframe',
     	                    'cad1_cargeral001.php?db_opcao=<?=$db_opcao?>&tipogrupo=A&codigo=',
     	                    'Pesquisa', true);
     }

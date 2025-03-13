@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,17 +27,17 @@
 
 if (! isset($arqinclude)) { // se este arquivo não esta incluido por outro
   set_time_limit(0);
-  include ("fpdf151/pdf.php");
-  include ("fpdf151/assinatura.php");
-  include ("libs/db_sql.php");
-  include ("libs/db_liborcamento.php");
-  include ("libs/db_libcontabilidade.php");
-  include ("libs/db_libtxt.php");
-  include ("dbforms/db_funcoes.php");
-  include ("classes/db_conrelinfo_classe.php");
-  include ("classes/db_orcparamrel_classe.php");
-  include ("classes/db_empresto_classe.php");
-  require_once("libs/db_utils.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_libtxt.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_empresto_classe.php"));
+  require_once(modification("libs/db_utils.php"));
   $iCodigoPeriodo  = $periodo;
   parse_str($HTTP_SERVER_VARS ['QUERY_STRING']);
   db_postmemory($_GET);
@@ -252,7 +252,7 @@ $result_despesa = db_dotacaosaldo(8, 2, 3, true, $sele_work, $anousu, $dt_ini, $
 
 $db_filtro = ' o70_instit in (' . str_replace('-', ', ', $db_selinstit) . ')';
 $result_rec = db_receitasaldo(11, 1, 3, true, $db_filtro, $anousu, $dt_ini, $dt_fin);
-@ pg_exec("drop table work_receita");
+@ db_query("drop table work_receita");
 
 //db_criatabela($result_despesa);exit;
 
@@ -310,7 +310,7 @@ $sqlperiodo = " select e91_recurso,
 				         e60_anousu";
 */
 $sqlperiodo  = $clempresto->sql_rp_novo($anousu, $sele_work, $dt_ini2, $dt_fin, $sele_work1, $sql_where_externo, "$sql_order ");
-$result_restos_mde1 = @pg_query($sqlperiodo);
+$result_restos_mde1 = @db_query($sqlperiodo);
 $numrows_restos_mde1 = @pg_numrows($result_restos_mde1);
 
 $saldo     = 0;
@@ -690,7 +690,7 @@ $n2 = 10;
 // end se incluido em outro arquivo
 
 $xinstit = split("-", $db_selinstit);
-$resultinst = pg_exec("select munic from db_config where codigo in (" . str_replace('-', ', ', $db_selinstit) . ") ");
+$resultinst = db_query("select munic from db_config where codigo in (" . str_replace('-', ', ', $db_selinstit) . ") ");
 $descr_inst = '';
 db_fieldsmemory($resultinst, 0);
 $descr_inst = $munic;

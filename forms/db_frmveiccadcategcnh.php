@@ -58,7 +58,7 @@ db_input('ve30_descr',40,$Ive30_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veiccadcategcnh','func_veiccadcategcnh.php?funcao_js=parent.js_preenchepesquisa|ve30_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadcategcnh','func_veiccadcategcnh.php?funcao_js=parent.js_preenchepesquisa|ve30_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiccadcategcnh.hide();

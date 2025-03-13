@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,5 +26,5 @@
  */
 
 $vLiquida=true; // indica que o fonte ira processar liquidação no lançamento da oc
-include("emp1_ordemcompra001.php");
+include(modification("emp1_ordemcompra001.php"));
 ?>

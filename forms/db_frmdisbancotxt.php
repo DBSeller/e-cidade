@@ -115,7 +115,7 @@ db_input('k34_diferenca',15,$Ik34_diferenca,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_disbancotxt','db_iframe_disbancotxt','func_disbancotxtalt.php?funcao_js=parent.js_preenchepesquisa|k34_sequencial','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_disbancotxt','db_iframe_disbancotxt','func_disbancotxtalt.php?funcao_js=parent.js_preenchepesquisa|k34_sequencial','Pesquisa',true,'0','1','775','390');
 }
 function js_preenchepesquisa(chave){
   db_iframe_disbancotxt.hide();

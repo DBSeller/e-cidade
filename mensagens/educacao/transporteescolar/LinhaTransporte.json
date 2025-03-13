@@ -6,5 +6,6 @@
   "horario_vinculado"                  : "Exclusão não permitida. Existem horários vinculados aos itinerários da linha.",
   "erro_remover_itinerario"            : "[sErro]",
   "erro_remover_linha_transporte"      : "[sErro]",
-  "nome_existente"                     : "Cadastro não realizado. Já há uma linha de transporte cadastrada com o nome informado."
+  "nome_existente"                     : "Cadastro não realizado. Já há uma linha de transporte cadastrada com o nome informado.",
+  "sem_itinerario_ida"                 : "Não existe um itinerário de Ida configurado para esta linha."
 }

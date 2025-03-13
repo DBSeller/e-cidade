@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: Ambulatorial
 //CLASSE DA ENTIDADE ausencias
-require_once("db_ausencias_classe.php");
+require_once(modification("classes/db_ausencias_classe.php"));
 class cl_ausencias_ext extends cl_ausencias  { 
    // funcao do sql 
    function sql_query_ext ( $sd06_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
 
 $classinatura = new cl_assinatura;
 
@@ -39,7 +39,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
 $orcparamrel = new cl_orcparamrel;
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -93,13 +93,13 @@ $where = " c61_instit in (".str_replace('-',', ',$db_selinstit).") ";
 $result1 = db_planocontassaldo_matriz(db_getsession("DB_anousu"),$dataini,$datafin,false,$where);
 //db_criatabela($result1);
 
-pg_exec("Drop Table work_pl");
+db_query("Drop Table work_pl");
 
 // RPPS ///////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // seleciona instituição do RPPS
 $sql        = "select codigo  from db_config where db21_tipoinstit in (5,6) ";
-$resultinst = pg_exec($sql);
+$resultinst = db_query($sql);
 $instit     = '';
 $xvirg      = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){

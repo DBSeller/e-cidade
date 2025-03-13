@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -60,7 +60,7 @@ $bancos["104"]['arquivo'] = 'pes4_geracalcatuarialcef.php';
 <br />
 <br />
 <center>
-  <form name="form1" method="post" action="<?=$bancos[$_GET["banco"]]["arquivo"];?>">
+  <form name="form1" id='form1' method="post" action="<?=$bancos[$_GET["banco"]]["arquivo"];?>">
     <fieldset style="width: 550px;">
       <legend><strong>Cálculo Atuarial - <?=$bancos[$_GET["banco"]]["nome"];?></strong></legend>
 
@@ -119,7 +119,7 @@ $bancos["104"]['arquivo'] = 'pes4_geracalcatuarialcef.php';
             echo '<tr>';
             echo '  <td><strong>Versão:</strong></td>';
             echo '  <td>';
-            $aAno = array (1 => 'Até 2010', 2 => 'Depois de 2010');
+            $aAno = array (1 => 'Até 2010', 2 => '2010 a 2015', 3=> 'A partir de 2016');
             db_select('versao', $aAno, true, 1);
             echo '  </td>';
             echo '</tr>';
@@ -133,15 +133,13 @@ $bancos["104"]['arquivo'] = 'pes4_geracalcatuarialcef.php';
 <?
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
-</body>
-</html>
 <script>
 function js_pesquisasel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_mostrasel1|r44_selec|r44_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_mostrasel1|r44_selec|r44_descr','Pesquisa',true);
   }else{
      if(document.form1.r44_selec.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostrasel','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostrasel','Pesquisa',false);
      }else{
        document.form1.r44_descr.value = '';
      }
@@ -175,4 +173,13 @@ function js_validapars (){
 	 }
 	 //return false;
 }
+$('versao').value=3;
+<?php
+
+  if (isset($_GET["funcao_downloadArquivo"])) {
+    echo base64_decode($_GET["funcao_downloadArquivo"]);
+  }
+?>
 </script>
+</body>
+</html>

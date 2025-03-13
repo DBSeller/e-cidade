@@ -31,7 +31,7 @@ $clrotulo = new rotulocampo;
 $clrotulo->label("fa16_c_nome");
 $clrotulo->label("fa17_i_codigo");
 $clrotulo->label("fa16_c_livro");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 ?>
 <form name="form1" method="post" action="">

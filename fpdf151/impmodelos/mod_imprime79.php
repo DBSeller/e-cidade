@@ -57,7 +57,9 @@ for ($xxx = 0; $xxx < $this->nvias; $xxx++) {
   $this->objpdf->text($xcol+17,$xlin+23,':  '.$this->dotacao);
   $this->objpdf->text($xcol+17,$xlin+27,':  '.db_formatar($this->elemento,'elemento'));
   $this->objpdf->text($xcol+17,$xlin+30,'   '.$this->descr_elemento);
-  $this->objpdf->text($xcol+17,$xlin+34,':  '.$this->recurso.' - '.$this->descr_recurso);
+
+  $sDescricaoRecursoFonte  = (FONTE_RECURSO_UNIAO ? $this->descr_recurso : $this->recurso . ' - ' . $this->descr_recurso);
+  $this->objpdf->text($xcol+17,$xlin+34,':  '.$sDescricaoRecursoFonte);
   
   if ($ano < db_getsession("DB_anousu")) {
     $this->objpdf->text($xcol+2,$xlin+38,'RESTOS A PAGAR ');

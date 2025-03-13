@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_censouf_classe.php");
-include("classes/db_aluno_classe.php");
-include("classes/db_censomunic_classe.php");
-include("classes/db_censocartorio_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_censouf_classe.php"));
+include(modification("classes/db_aluno_classe.php"));
+include(modification("classes/db_censomunic_classe.php"));
+include(modification("classes/db_censocartorio_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clcensouf       = new cl_censouf;
 $claluno         = new cl_aluno;
 $clcensomunic    = new cl_censomunic;
@@ -50,7 +50,7 @@ if ($oPost->sAction == 'PesquisaMunicipio') {
                                                                              "ed261_i_censouf = {$oPost->uf}"
 	                                                                        )
 	                                          );    
-    $aResult = db_utils::getColectionByRecord($rsResultMunic, false, false, true);   
+    $aResult = db_utils::getCollectionByRecord($rsResultMunic, false, false, true);   
     $oJson   = new services_json();
     echo $oJson->encode($aResult);
   
@@ -72,7 +72,7 @@ if ($oPost->sAction == 'PesquisaCartorio') {
                                                                              "ed291_i_censomunic = {$oPost->municipio}"
                                                                                    )
                                                   );     
-  $aResult1 = db_utils::getColectionByRecord($rsResultCartorio, false, false, true);
+  $aResult1 = db_utils::getCollectionByRecord($rsResultCartorio, false, false, true);
   $oJson    = new services_json();
   echo $oJson->encode($aResult1);
  

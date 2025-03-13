@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("e60_codemp");
@@ -306,10 +306,10 @@ function js_pesquisae60_codemp(mostra){
  var sUrl2          = 'func_empempenho.php?pesquisa_chave='+e60_codemp_ini+'&funcao_js=parent.js_mostracodemp';
   
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empempenho',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho',sUrl1,'Pesquisa',true);
   }else{
      if(e60_codemp_ini != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_empempenho',sUrl2,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho',sUrl2,'Pesquisa',false);
      }else{
        obj.e60_codemp_ini.value = ''; 
      }
@@ -335,10 +335,10 @@ function js_pesquisae50_codord(mostra){
  var sUrl2 = 'func_pagordem.php?pesquisa_chave='+e50_codord_ini+'&funcao_js=parent.js_mostracodordem';
  
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pagordem',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pagordem',sUrl1,'Pesquisa',true);
   }else{
      if(e50_codord_ini != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pagordem',sUrl2,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pagordem',sUrl2,'Pesquisa',false);
      }else{
        obj.e50_codord_ini.value = ''; 
      }

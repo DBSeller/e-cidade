@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $sql  =" select m61_descr from matmaterunisai ";
 $sql .="  inner join matunid on m61_codmatunid=m62_codmatunid ";
 $sql .="  inner join matmater on m61_codmatunid=matmater.m60_codmatunid ";
 $sql .="  where m60_codmater=$item ";
-$result=pg_query($sql);
+$result=db_query($sql);
 if (pg_num_rows($result)) {
 	
 	db_fieldsmemory($result,0);

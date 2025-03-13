@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,27 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_tarefa_lanc_classe.php");
-include("classes/db_tarefa_lancprorrog_classe.php");
-include("classes/db_tarefalog_classe.php");
-include("classes/db_tarefalogsituacao_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefamodulo_classe.php");
-include("classes/db_tarefaproced_classe.php");
-include("classes/db_tarefasituacao_classe.php");
-include("classes/db_tarefausu_classe.php");
-include("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefamotivo_classe.php");
-include("classes/db_tarefaclientes_classe.php");
-include("classes/db_tarefasyscadproced_classe.php");
-include("classes/db_tarefaitem_classe.php");
-include("classes/db_tarefaanexos_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tarefa_lanc_classe.php"));
+include(modification("classes/db_tarefa_lancprorrog_classe.php"));
+include(modification("classes/db_tarefalog_classe.php"));
+include(modification("classes/db_tarefalogsituacao_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefamodulo_classe.php"));
+include(modification("classes/db_tarefaproced_classe.php"));
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefausu_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefamotivo_classe.php"));
+include(modification("classes/db_tarefaclientes_classe.php"));
+include(modification("classes/db_tarefasyscadproced_classe.php"));
+include(modification("classes/db_tarefaitem_classe.php"));
+include(modification("classes/db_tarefaanexos_classe.php"));
 
 $cltarefa         	= new cl_tarefa;
 $cltarefamodulo   	= new cl_tarefamodulo;
@@ -74,7 +74,7 @@ $usuario = db_getsession("DB_id_usuario");
 // pegar todos os dados desta tarefa e incluir uma nova.
 $sqlerro ='false';
 $sqltarefa = "select * from tarefa where at40_sequencial = $tarefa ";
-$resulttarefa = pg_query($sqltarefa);
+$resulttarefa = db_query($sqltarefa);
 $linhatarefa = pg_num_rows($resulttarefa);
 if($linhatarefa>0){
 	db_fieldsmemory($resulttarefa, 0);
@@ -110,7 +110,7 @@ if($linhatarefa>0){
 }
 if($sqlerro=='false'){
 	$sqltarsyspro = "select * from tarefasyscadproced where at37_tarefa= $tarefa ";
-	$resulttarsyspro = pg_query($sqltarsyspro);
+	$resulttarsyspro = db_query($sqltarsyspro);
 	$linhatarsyspro = pg_num_rows($resulttarsyspro);
 	if($linhatarsyspro>0){
 		db_fieldsmemory($resulttarsyspro, 0); 
@@ -127,7 +127,7 @@ if($sqlerro=='false'){
 
 if($sqlerro=='false'){
 	$sqlmodulo = "select * from tarefamodulo where at49_tarefa= $tarefa ";
-	$resultmodulo = pg_query($sqlmodulo);
+	$resultmodulo = db_query($sqlmodulo);
 	$linhamodulo = pg_num_rows($resultmodulo);
 	if($linhamodulo>0){
 		db_fieldsmemory($resultmodulo, 0); 
@@ -144,7 +144,7 @@ if($sqlerro=='false'){
 
 if($sqlerro=='false'){
 	$sqlmotivo = "select * from tarefamotivo where at55_tarefa= $tarefa ";
-	$resultmotivo = pg_query($sqlmotivo);
+	$resultmotivo = db_query($sqlmotivo);
 	$linhamotivo = pg_num_rows($resultmotivo);
 	if($linhamotivo>0){
 		db_fieldsmemory($resultmotivo, 0);
@@ -162,7 +162,7 @@ if($sqlerro=='false'){
 if($sqlerro=='false'){
 	/*
 	$sqlsit = "select * from tarefasituacao where at47_tarefa= $tarefa ";
-	$resultsit = pg_query($sqlsit);
+	$resultsit = db_query($sqlsit);
 	$linhasit = pg_num_rows($resultsit);
 	if($linhasit>0){
 		db_fieldsmemory($resultsit, 0);
@@ -179,7 +179,7 @@ if($sqlerro=='false'){
 
 if($sqlerro=='false'){
 	$sqlitem = "select * from tarefaitem where at44_tarefa= $tarefa ";
-	$resultitem = pg_query($sqlitem);
+	$resultitem = db_query($sqlitem);
 	$linhaitem = pg_num_rows($resultitem);
 	if($linhaitem>0){
 		db_fieldsmemory($resultitem, 0);
@@ -195,7 +195,7 @@ if($sqlerro=='false'){
 }
 if($sqlerro=='false'){
 	$sqlusu= "select * from tarefausu where at42_tarefa= $tarefa ";
-	$resultusu = pg_query($sqlusu);
+	$resultusu = db_query($sqlusu);
 	$linhausu = pg_num_rows($resultusu);
 	if($linhausu>0){
 		db_fieldsmemory($resultusu, 0);
@@ -213,7 +213,7 @@ if($sqlerro=='false'){
 
 if($sqlerro=='false'){
 	$sqlcli= "select * from tarefaclientes where at70_tarefa= $tarefa ";
-	$resultcli = pg_query($sqlcli);
+	$resultcli = db_query($sqlcli);
 	$linhacli = pg_num_rows($resultcli);
 	if($linhacli>0){
 		db_fieldsmemory($resultcli, 0);
@@ -231,7 +231,7 @@ if($sqlerro=='false'){
 //varios
 if($sqlerro=='false'){
 	$sqlenvol= "select * from tarefaenvol where at45_tarefa= $tarefa ";
-	$resultenvol = pg_query($sqlenvol);
+	$resultenvol = db_query($sqlenvol);
 	$linhaenvol = pg_num_rows($resultenvol);
 	if($linhaenvol>0){
 		for($i = 0;$i < $linhaenvol; $i++){
@@ -252,7 +252,7 @@ if($sqlerro=='false'){
 
 if($sqlerro=='false'){
 	$sqllanc= "select * from tarefa_lanc where at36_tarefa= $tarefa ";
-	$resultlanc = pg_query($sqllanc);
+	$resultlanc = db_query($sqllanc);
 	$linhalanc = pg_num_rows($resultlanc);
 	if($linhalanc>0){
 		db_fieldsmemory($resultlanc, 0);
@@ -272,7 +272,7 @@ if($sqlerro=='false'){
 }
 if($sqlerro=='false'){
 	$sqllog= "select * from tarefalog where at43_tarefa= $tarefa ";
-	$resultlog = pg_query($sqllog);
+	$resultlog = db_query($sqllog);
 	$linhalog = pg_num_rows($resultlog);
 	if($linhalog>0){
 		for($i = 0;$i < $linhalog; $i++){
@@ -297,7 +297,7 @@ if($sqlerro=='false'){
 			}
 			$log = $cltarefalog ->at43_sequencial;
 			$sqllogsit= "select * from tarefalogsituacao where at48_tarefalog = $at43_sequencial";
-			$resultlogsit = pg_query($sqllogsit);
+			$resultlogsit = db_query($sqllogsit);
 			$linhalogsit = pg_num_rows($resultlogsit);
 			if($linhalogsit>0){
 				for($x = 0;$x < $linhalogsit; $x++){
@@ -318,7 +318,7 @@ if($sqlerro=='false'){
 
 if($sqlerro=='false'){
 	$sqlproced= "select * from tarefaproced where at41_tarefa =$tarefa ";
-	$resultproced = pg_query($sqlproced);
+	$resultproced = db_query($sqlproced);
 	$linhaproced = pg_num_rows($resultproced);
 	if($linhaproced>0){
 		db_fieldsmemory($resultproced, 0);
@@ -334,7 +334,7 @@ if($sqlerro=='false'){
 }
 if($sqlerro=='false'){
 	$sqlanexo= "select * from tarefaanexos where at25_tarefa = $tarefa ";
-	$resultanexo = pg_query($sqlanexo);
+	$resultanexo = db_query($sqlanexo);
 	$linhaanexo = pg_num_rows($resultanexo);
 	if($linhaanexo>0){
 		db_fieldsmemory($resultanexo, 0);
@@ -368,12 +368,12 @@ if($sqlerro=='false'){
 	    parent.document.formaba.tarefaobs.disabled=false;
 	    parent.document.formaba.tarefaanexos.disabled=false;
 		parent.document.formaba.tarefa.disabled=false;
-   		top.corpo.iframe_tarefa.location.href='ate1_tarefa005.php?at40_sequencial=".@$at40_sequencial."&aut=0&db_opcao=2&abrefunc=f';
-	    top.corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."';
-	    top.corpo.iframe_tarefaanexos.location.href='ate1_tarefaanexos001.php?at25_tarefa=".@$at40_sequencial."';
-	    top.corpo.iframe_tarefaobs.location.href='ate1_tarefaobs001.php?at02_codatend=".@$at02_codatend."&at05_seq=".@$at05_seq."&at42_tarefa=".@$at40_sequencial."';
-	    top.corpo.iframe_tarefaclientes.location.href='ate1_tarefaclientes001.php?at70_tarefa=".@$at40_sequencial."';
-		top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?at43_tarefa=".@$at40_sequencial."';
+   		(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefa.location.href='ate1_tarefa005.php?at40_sequencial=".@$at40_sequencial."&aut=0&db_opcao=2&abrefunc=f';
+	    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."';
+	    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaanexos.location.href='ate1_tarefaanexos001.php?at25_tarefa=".@$at40_sequencial."';
+	    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaobs.location.href='ate1_tarefaobs001.php?at02_codatend=".@$at02_codatend."&at05_seq=".@$at05_seq."&at42_tarefa=".@$at40_sequencial."';
+	    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaclientes.location.href='ate1_tarefaclientes001.php?at70_tarefa=".@$at40_sequencial."';
+		(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?at43_tarefa=".@$at40_sequencial."';
 	}
 	    js_db_libera();
 	  </script>\n

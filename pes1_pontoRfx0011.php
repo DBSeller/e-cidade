@@ -1,66 +1,73 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_rhpessoal_classe.php");
-require_once("classes/db_pessoal_classe.php");
-require_once("classes/db_pontofx_classe.php");
-require_once("classes/db_pontofs_classe.php");
-require_once("classes/db_pontofa_classe.php");
-require_once("classes/db_pontofe_classe.php");
-require_once("classes/db_pontofr_classe.php");
-require_once("classes/db_pontof13_classe.php");
-require_once("classes/db_pontocom_classe.php");
-require_once("classes/db_rhrubricas_classe.php");
-require_once("classes/db_lotacao_classe.php");
-require_once("dbforms/db_funcoes.php");
+use ECidade\Core\Helpers\HourHelper;
+use ECidade\RecursosHumanos\Pessoal\Model\ControleRubricasCalculoParametros;
+use ECidade\RecursosHumanos\Pessoal\Repository\ControleRubricasMatriculasRepository;
+use ECidade\RecursosHumanos\Pessoal\Repository\ControleRubricasParametrosRepository;
+use ECidade\RecursosHumanos\Pessoal\Repository\ControleRubricasParametrosRubricasRepository;
+use ECidade\RecursosHumanos\Pessoal\Service\ControleRubricasCalculoService;
 
-require_once 'libs/db_utils.php';
-require_once 'model/pessoal/ServidorRepository.model.php';
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_pessoal_classe.php"));
+require_once(modification("classes/db_pontofx_classe.php"));
+require_once(modification("classes/db_pontofs_classe.php"));
+require_once(modification("classes/db_pontofa_classe.php"));
+require_once(modification("classes/db_pontofe_classe.php"));
+require_once(modification("classes/db_pontofr_classe.php"));
+require_once(modification("classes/db_pontof13_classe.php"));
+require_once(modification("classes/db_pontocom_classe.php"));
+require_once(modification("classes/db_rhrubricas_classe.php"));
+require_once(modification("classes/db_lotacao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-db_postmemory($HTTP_POST_VARS);
-db_postmemory($HTTP_GET_VARS);
+require_once modification("libs/db_utils.php");
+require_once modification("model/pessoal/ServidorRepository.model.php");
 
-$clrhpessoal   = new cl_rhpessoal;
-$clpessoal   = new cl_pessoal;
-$clpontofx   = new cl_pontofx;
-$clpontofs   = new cl_pontofs;
-$clpontofa   = new cl_pontofa;
-$clpontofe   = new cl_pontofe;
-$clpontofr   = new cl_pontofr;
-$clpontof13  = new cl_pontof13;
-$clpontocom  = new cl_pontocom;
-$clrhrubricas= new cl_rhrubricas;
-$cllotacao   = new cl_lotacao;
-$db_opcao    = 1;
-$db_botao    = true;
+db_postmemory($_POST);
+db_postmemory($_GET);
+
+$clrhpessoal  = new cl_rhpessoal;
+$clpessoal    = new cl_pessoal;
+$clpontofx    = new cl_pontofx;
+$clpontofs    = new cl_pontofs;
+$clpontofa    = new cl_pontofa;
+$clpontofe    = new cl_pontofe;
+$clpontofr    = new cl_pontofr;
+$clpontof13   = new cl_pontof13;
+$clpontocom   = new cl_pontocom;
+$clrhrubricas = new cl_rhrubricas;
+$cllotacao    = new cl_lotacao;
+$db_opcao     = 1;
+$db_botao     = true;
 
 if(isset($ponto)){
   $ponto = strtolower($ponto);
@@ -75,7 +82,10 @@ if(!isset($r90_mesusu)){
 }
 ////////////
 
-if(isset($incluir)){
+if(isset($incluir)) {
+
+  // dump($_POST, $_GET);
+
   db_inicio_transacao();
   $sqlerro = false;
 
@@ -92,7 +102,12 @@ if(isset($incluir)){
 
   $q = count($arr_rubricas_que_serao_incluid);
 
-  for($i=0; $i<$q; $i++){
+  for ($i=0; $i<$q; $i++) {
+
+    if ($sqlerro) {
+        continue;
+    }
+
     $rubrica_cod_corrente = $arr_rubricas_que_serao_incluid[$i];
     $rubrica_qtd_corrente = $arr_rubricas_qtd_serao_incluid[$i];
     $rubrica_val_corrente = $arr_rubricas_val_serao_incluid[$i];
@@ -120,25 +135,38 @@ if(isset($incluir)){
       $rubrica_dat_corrente = "";
     }
 
+
     // Rotina que verifica se a rubrica será repassada ou não
     $repassa = false;
     if(in_array($rubrica_cod_corrente,$arr_rubricas_que_serao_repassa)){
       $repassa = true;
     }
 
-    $result_verifica_rubrica_com_formula = $clrhrubricas->sql_record($clrhrubricas->sql_query_file($rubrica_cod_corrente,null,"rh27_form,rh27_limdat as limdata_testa, rh27_propq as proporcionalizar"));
-    if($clrhrubricas->numrows > 0){
-      db_fieldsmemory($result_verifica_rubrica_com_formula,0);
-      if($limdata_testa == "t"){
-        if(isset($r90_datlim) && $r90_datlim == ""){
-          $sqlerro = true;
-          $erro_msg = "Rubrica ".$rubrica_cod_corrente.": \nAno/Mês não informado";
+    $sSql = $clrhrubricas->sql_query_file($rubrica_cod_corrente, db_getsession('DB_instit'), "rh27_form,rh27_limdat as limdata_testa, rh27_propq as proporcionalizar");
+    $result_verifica_rubrica_com_formula = db_query($sSql);
+
+    if ( !$result_verifica_rubrica_com_formula ) {
+
+      $sqlerro = true;
+      $erro_msg  = "Erro ao buscar dados da rubrica: ".$rubrica_cod_corrente;
+    }
+
+    if (pg_num_rows($result_verifica_rubrica_com_formula) > 0) {
+
+      db_fieldsmemory($result_verifica_rubrica_com_formula, 0);
+      if ($limdata_testa == "t") {
+
+        if (isset($r90_datlim) && $r90_datlim == "") {
+
+          $sqlerro   = true;
+          $erro_msg  = "Rubrica ".$rubrica_cod_corrente.": \nAno/Mês não informado";
           $campofoco = "datlim_".$rubrica_cod_corrente;
           break;
         }
-      }else if($limdata_testa == "f"){
+      } else if($limdata_testa == "f") {
         $rubrica_dat_corrente = "";
-      }else if(trim($rh27_form) != ""){
+      } else if(trim($rh27_form) != "") {
+
         if($rubrica_val_corrente != 0 && $rubrica_qtd_corrente == 0){
           $sqlerro = true;
           $erro_msg = "Rubrica ".$rubrica_cod_corrente.": \nQuantidade não informada";
@@ -194,7 +222,7 @@ if(isset($incluir)){
             $clpontofx->r90_valor  = "round($val_corrente,2)";
             $clpontofx->r90_quant  = "$qtd_corrente";
             $clpontofx->r90_datlim = $rubrica_dat_corrente;
-            $clpontofx->r90_lotac  = $lotacao_matricula_sera_incluid;    
+            $clpontofx->r90_lotac  = $lotacao_matricula_sera_incluid;
             $clpontofx->r90_instit = db_getsession("DB_instit");
             $clpontofx->incluir($r90_anousu,$r90_mesusu,$r90_regist,$rubrica_cod_corrente);
             $erro_msg = $clpontofx->erro_msg;
@@ -241,7 +269,7 @@ if(isset($incluir)){
             break;
           }
         }
-        
+
         // Rotina que incluirá na tabela PONTOFS caso a quantidade e o valor seja diferente de zero
         if($rubrica_qtd_corrente != 0 || $rubrica_val_corrente != 0){
           $clpontofs->r10_anousu = $r90_anousu;
@@ -277,7 +305,7 @@ if(isset($incluir)){
       }
 
     }else if($ponto == "fa" || $ponto == "Rfa"){
-      
+
       $opcaovalor = 0;
       $opcaoquant = 0;
       // Rotina que verifica se já existe, na tabela PONTOFA, algum registro com o mesmo anousu, mesusu e rubrica
@@ -318,9 +346,9 @@ if(isset($incluir)){
         }
       }
       //////////
-      
+
     }else if($ponto == "f13" || $ponto == "Rf13"){
-      
+
       $opcaovalor = 0;
       $opcaoquant = 0;
       // Rotina que verifica se já existe, na tabela PONTOF13, algum registro com o mesmo anousu, mesusu e rubrica
@@ -363,7 +391,7 @@ if(isset($incluir)){
         }
       }
       //////////
-      
+
     }else if($ponto == "com" || $ponto == "Rcom"){
 
       $opcaovalor = 0;
@@ -372,7 +400,7 @@ if(isset($incluir)){
       $result_pontocomplementar = $clpontocom->sql_record($clpontocom->sql_query_seleciona($r90_anousu,$r90_mesusu,$r90_regist,$rubrica_cod_corrente,"r47_valor as opcaovalor,r47_quant as opcaoquant"));
 
       if ($clpontocom->numrows > 0) {
-        
+
         db_fieldsmemory($result_pontocomplementar,0);
 
         if($rubrica_opc_corrente == "so"){
@@ -395,7 +423,7 @@ if(isset($incluir)){
         try {
 
           /**
-           * Cria servidor  
+           * Cria servidor
            */
           $oServidor = ServidorRepository::getInstanciaByCodigo( $r90_regist, $r90_anousu, $r90_mesusu );
           $oPontoComplementar = $oServidor->getPonto(Ponto::COMPLEMENTAR);
@@ -404,8 +432,8 @@ if(isset($incluir)){
           $oRubrica = RubricaRepository::getInstanciaByCodigo($rubrica_cod_corrente);
 
           $oRegistro = new RegistroPonto();
-          $oRegistro->setServidor($oServidor); 
-          $oRegistro->setRubrica($oRubrica); 
+          $oRegistro->setServidor($oServidor);
+          $oRegistro->setRubrica($oRubrica);
           $oRegistro->setQuantidade("$rubrica_qtd_corrente");
           $oRegistro->setValor( round($rubrica_val_corrente, 2) );
           $oPontoComplementar->adicionarRegistro($oRegistro);
@@ -425,7 +453,7 @@ if(isset($incluir)){
 
     // ESTE PROGRAMA NÃO USA FR E NEM FE, MAS DEIXEI O CÓDIGO PREVENDO UM DIA SER NECESSÁRIO
     }else if($ponto == "fe" || $ponto == "Rfe"){
-      
+
       $opcaovalor = 0;
       $opcaoquant = 0;
       // Rotina que verifica se já existe, na tabela PONTOFE, algum registro com o mesmo anousu, mesusu, rubrica e tipo
@@ -471,7 +499,7 @@ if(isset($incluir)){
       //////////
 
     }else if($ponto == "fr" || $ponto == "Rfr"){
-      
+
       $opcaovalor = 0;
       $opcaoquant = 0;
       // Rotina que verifica se já existe, na tabela PONTOFR, algum registro com o mesmo anousu, mesusu, rubrica e tipo
@@ -514,18 +542,60 @@ if(isset($incluir)){
       }
       //////////
     }
+      if (!in_array($ponto, ['fx', 'Rfx'])) {
+
+          try {
+              $service = new ControleRubricasCalculoService(
+                  new ControleRubricasMatriculasRepository(new cl_controlehorasextrasmatriculas()),
+                  new ControleRubricasParametrosRepository(new cl_controlehorasextras()),
+                  new ControleRubricasParametrosRubricasRepository(),
+                  new HourHelper()
+              );
+
+              $isAlteracao = true;
+              $quantidadeVerificacao = $rubrica_qtd_corrente;
+
+              if (isset($qtd_corrente)) {
+                  $quantidadeVerificacao = $qtd_corrente;
+              }
+
+              if ($quantidadeVerificacao > 0) {
+                  $calculoParametros = new ControleRubricasCalculoParametros(
+                      InstituicaoRepository::getInstituicaoSessao(),
+                      new DBCompetencia($r90_anousu, $r90_mesusu),
+                      ServidorRepository::getInstanciaByCodigo($r90_regist),
+                      RubricaRepository::getInstanciaByCodigo($rubrica_cod_corrente),
+                      $quantidadeVerificacao,
+                      $isAlteracao,
+                      Ponto::buscaTabelaPorSigla($ponto)
+                  );
+
+                  $permiteInclusao = $service->verificaInclusaoRubricaServidor($calculoParametros);
+
+                  if (!$permiteInclusao) {
+                      $mensagemErro = "Não foi possível incluir a rubrica {$rubrica} para o servidor.";
+                      $mensagemErro .= "\nQuantidade máxima excedida.";
+                      throw new Exception($mensagemErro);
+                  }
+              }
+          } catch (Exception $exception) {
+              $sqlerro = true;
+              $erro_msg = $exception->getMessage();
+          }
+      }
   }
 
   if($sqlerro == false){
     unset($r90_regist,$z01_nome);
   }
-  
+
+  $sMsgPos = "";
   if (!$sqlerro){
-    db_msgbox('Inclusão efetuada com sucesso.');
+    $sMsgPos = 'Inclusão efetuada com sucesso.';
   }
 
-
   db_fim_transacao($sqlerro);
+
 }
 ?>
 <html>
@@ -540,7 +610,7 @@ if(isset($incluir)){
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="document.form1.r90_regist.focus();" >
 <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
+  <tr>
     <td width="360" height="18">&nbsp;</td>
     <td width="263">&nbsp;</td>
     <td width="25">&nbsp;</td>
@@ -548,16 +618,26 @@ if(isset($incluir)){
   </tr>
 </table>
 
-<?php include("forms/db_frmpontoRfx0011.php"); ?>
+<?php
 
-<?php db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
+if (!empty($sMsgPos)){
+  db_msgbox($sMsgPos);
+}
+
+include(modification("forms/db_frmpontoRfx0011.php"));
+
+?>
+
+<?php db_menu(); ?>
 </body>
 </html>
 <script type="text/javascript">
 
-<?php 
+<?php
 
 if ( isset($incluir) ) {
+
+
 
   if ( isset($sqlerro) && $sqlerro == true) {
 

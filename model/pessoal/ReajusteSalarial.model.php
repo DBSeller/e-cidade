@@ -76,10 +76,7 @@ class ReajusteSalarial{
      */
     $iValor = $sSalarioAtual + ($sSalarioAtual * ($this->iPercentual / 100));
 
-    return $iValor;
+    return round($iValor, 2);
   }
-
-
-
 }
 

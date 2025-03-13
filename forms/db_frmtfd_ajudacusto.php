@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -264,12 +264,12 @@ function js_pesquisatf12_i_procedimento(mostra) {
   if (mostra) {
 
     sUrl += "funcao_js=parent.js_mostrasau_procedimento1|sd63_c_procedimento|sd63_c_nome|sd63_i_codigo";
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_sau_procedimento', sUrl, 'Pesquisa ', true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_sau_procedimento', sUrl, 'Pesquisa ', true);
   } else {
 
     sUrl += "pesquisa_chave=" + $F('sd63_c_procedimento') + "&funcao_js=parent.js_mostrasau_procedimento";
     if ($F('sd63_c_procedimento') != '') { 
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_sau_procedimento', sUrl, 'Pesquisa', false);
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_sau_procedimento', sUrl, 'Pesquisa', false);
     } else {
       
       $('sd63_c_nome').value         = ''; 
@@ -305,7 +305,7 @@ function js_mostrasau_procedimento1 (sProcedimento, sDescricao, iCodigoProcedime
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tfd_ajudacusto','func_tfd_ajudacusto.php?funcao_js=parent.js_preenchepesquisa|tf12_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tfd_ajudacusto','func_tfd_ajudacusto.php?funcao_js=parent.js_preenchepesquisa|tf12_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave) {
   
@@ -336,7 +336,7 @@ function js_buscaValorPadrao() {
 function js_retornoBuscaValorPadrao(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval ('(' + oAjax.responseText + ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 2) {
     

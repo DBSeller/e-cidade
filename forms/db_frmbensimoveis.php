@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: patrim
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clbensimoveis->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -85,10 +85,10 @@ db_textarea('t54_obs',3,30,$It54_obs,true,'text',$db_opcao,"")
 <script>
 function js_pesquisat54_idbql(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_bensimoveis','db_iframe_lote','func_lote.php?funcao_js=parent.js_mostralote1|j34_idbql','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_bensimoveis','db_iframe_lote','func_lote.php?funcao_js=parent.js_mostralote1|j34_idbql','Pesquisa',true);
   }else{
      if(document.form1.t54_idbql.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_bensimoveis','db_iframe_lote','func_lote.php?pesquisa_chave='+document.form1.t54_idbql.value+'&funcao_js=parent.js_mostralote','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_bensimoveis','db_iframe_lote','func_lote.php?pesquisa_chave='+document.form1.t54_idbql.value+'&funcao_js=parent.js_mostralote','Pesquisa',false);
      }
   }
 }
@@ -106,10 +106,10 @@ function js_mostralote1(chave1){
 if(isset($incluir) ||isset($excluir)){
   $clbensimoveis->sql_record($clbensimoveis->sql_query_file($t54_codbem));
   if($clbensimoveis->numrows > 0){
-    echo "top.corpo.iframe_bensmater.location.href='pat1_bensmater001.php?desabilita=true&t53_codbem=$t54_codbem';";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensmater.location.href='pat1_bensmater001.php?desabilita=true&t53_codbem=$t54_codbem';";
   }else{
     if(isset($excluir)){
-      echo "top.corpo.iframe_bensmater.location.href='pat1_bensmater001.php?t53_codbem=$t54_codbem';";
+      echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensmater.location.href='pat1_bensmater001.php?t53_codbem=$t54_codbem';";
     }
   } 
 }

@@ -1,3 +1,4 @@
 {
-  "falha_gerar_pdf" : "Falha ao gerar PDF."
+  "falha_gerar_pdf" : "Falha ao gerar PDF.",
+  "habite_cancelado": "Não é possível imprimir um habite-se cancelado."
 }

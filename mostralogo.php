@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,18 +26,18 @@
  */
 
 header("Content-type: image/jpg");	
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-pg_exec($conn, "begin");
+db_query($conn, "begin");
  
    $loid = pg_lo_open($conn, $db90_logo, "r");
    //echo "";
    pg_lo_read_all($loid);
    pg_lo_close($loid);
-pg_exec ($conn, "commit");
+db_query ($conn, "commit");
 
 
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -423,6 +423,7 @@ class cl_pagordemele {
      $sql .= " from pagordemele ";
      $sql .= "      inner join pagordem  on  pagordem.e50_codord = pagordemele.e53_codord";
      $sql .= "      inner join empempenho  on  empempenho.e60_numemp = pagordem.e50_numemp";
+     $sql .= "      inner join orcdotacao  on  orcdotacao.o58_anousu = empempenho.e60_anousu and  orcdotacao.o58_coddot = empempenho.e60_coddot";
      $sql .= "      inner join orcelemento  on  orcelemento.o56_codele = pagordemele.e53_codele and orcelemento.o56_anousu = empempenho.e60_anousu ";
      $sql2 = "";
      if($dbwhere==""){

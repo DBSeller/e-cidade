@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("classes/db_db_depusu_classe.php");
+require_once(modification("classes/db_db_depusu_classe.php"));
 $cldb_depusu = new cl_db_depusu;
 $clmatrequi->rotulo->label();
 $clrotulo = new rotulocampo;

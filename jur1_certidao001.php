@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
-  pg_exec($conn,"BEGIN");
-  $result = pg_exec("select max(v56_codigo) + 1 from cerjur");
+  db_query($conn,"BEGIN");
+  $result = db_query("select max(v56_codigo) + 1 from cerjur");
   $v56_codigo = pg_result($result,0,0);
   $v56_codigo = $v56_codigo==""?"1":$v56_codigo;
   $data = "$data_ano-$data_mes-$data_dia";
   $data = $data=="--"?"null":"'$data'";
-  pg_exec($conn,"BEGIN");
-  $result = pg_exec("INSERT INTO cerjur(v56_codigo,
+  db_query($conn,"BEGIN");
+  $result = db_query("INSERT INTO cerjur(v56_codigo,
 					                   v56_certid,
 									   v56_proces,
 									   v56_data,
@@ -55,7 +55,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 						   '$v56_endere',
 						   '$v56_movim',
 						   $db_vara)") or die("Erro(31) inserindo em cerjur");
-  pg_exec("commit");
+  db_query("commit");
   db_redireciona();
 }
 ?>
@@ -80,8 +80,8 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"><br><br>
 	<?
-      include("dbforms/db_funcoes.php");
-	  include("forms/db_frmjurcert.php");
+      include(modification("dbforms/db_funcoes.php"));
+	  include(modification("forms/db_frmjurcert.php"));
     ?>
 	</td>
   </tr>

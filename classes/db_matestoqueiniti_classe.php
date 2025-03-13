@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -110,7 +110,7 @@ class cl_matestoqueiniti {
        return false;
      }
      if($m85_codigo == "" || $m85_codigo == null ){
-       $result = @pg_query("select nextval('matestoqueiniti_m85_codigo_seq')"); 
+       $result = @db_query("select nextval('matestoqueiniti_m85_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: matestoqueiniti_m85_codigo_seq do campo: m85_codigo"; 
@@ -121,7 +121,7 @@ class cl_matestoqueiniti {
        }
        $this->m85_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from matestoqueiniti_m85_codigo_seq");
+       $result = @db_query("select last_value from matestoqueiniti_m85_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $m85_codigo)){
          $this->erro_sql = " Campo m85_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -153,7 +153,7 @@ class cl_matestoqueiniti {
                                ,$this->m85_codmatmater 
                                ,$this->m85_quant 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -179,13 +179,13 @@ class cl_matestoqueiniti {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->m85_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,6937,'$this->m85_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,1144,6937,'','".AddSlashes(pg_result($resaco,0,'m85_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1144,6938,'','".AddSlashes(pg_result($resaco,0,'m85_matestoqueini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1144,6939,'','".AddSlashes(pg_result($resaco,0,'m85_codmatmater'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1144,6940,'','".AddSlashes(pg_result($resaco,0,'m85_quant'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,6937,'$this->m85_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,1144,6937,'','".AddSlashes(pg_result($resaco,0,'m85_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1144,6938,'','".AddSlashes(pg_result($resaco,0,'m85_matestoqueini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1144,6939,'','".AddSlashes(pg_result($resaco,0,'m85_codmatmater'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1144,6940,'','".AddSlashes(pg_result($resaco,0,'m85_quant'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -253,20 +253,20 @@ class cl_matestoqueiniti {
      $resaco = $this->sql_record($this->sql_query_file($this->m85_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,6937,'$this->m85_codigo','A')");
+         $resac = db_query("insert into db_acountkey values($acount,6937,'$this->m85_codigo','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["m85_codigo"]))
-           $resac = pg_query("insert into db_acount values($acount,1144,6937,'".AddSlashes(pg_result($resaco,$conresaco,'m85_codigo'))."','$this->m85_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1144,6937,'".AddSlashes(pg_result($resaco,$conresaco,'m85_codigo'))."','$this->m85_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["m85_matestoqueini"]))
-           $resac = pg_query("insert into db_acount values($acount,1144,6938,'".AddSlashes(pg_result($resaco,$conresaco,'m85_matestoqueini'))."','$this->m85_matestoqueini',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1144,6938,'".AddSlashes(pg_result($resaco,$conresaco,'m85_matestoqueini'))."','$this->m85_matestoqueini',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["m85_codmatmater"]))
-           $resac = pg_query("insert into db_acount values($acount,1144,6939,'".AddSlashes(pg_result($resaco,$conresaco,'m85_codmatmater'))."','$this->m85_codmatmater',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1144,6939,'".AddSlashes(pg_result($resaco,$conresaco,'m85_codmatmater'))."','$this->m85_codmatmater',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["m85_quant"]))
-           $resac = pg_query("insert into db_acount values($acount,1144,6940,'".AddSlashes(pg_result($resaco,$conresaco,'m85_quant'))."','$this->m85_quant',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1144,6940,'".AddSlashes(pg_result($resaco,$conresaco,'m85_quant'))."','$this->m85_quant',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Itens transferidos nao Alterado. Alteracao Abortada.\\n";
@@ -307,13 +307,13 @@ class cl_matestoqueiniti {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,6937,'$m85_codigo','E')");
-         $resac = pg_query("insert into db_acount values($acount,1144,6937,'','".AddSlashes(pg_result($resaco,$iresaco,'m85_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1144,6938,'','".AddSlashes(pg_result($resaco,$iresaco,'m85_matestoqueini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1144,6939,'','".AddSlashes(pg_result($resaco,$iresaco,'m85_codmatmater'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1144,6940,'','".AddSlashes(pg_result($resaco,$iresaco,'m85_quant'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,6937,'$m85_codigo','E')");
+         $resac = db_query("insert into db_acount values($acount,1144,6937,'','".AddSlashes(pg_result($resaco,$iresaco,'m85_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1144,6938,'','".AddSlashes(pg_result($resaco,$iresaco,'m85_matestoqueini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1144,6939,'','".AddSlashes(pg_result($resaco,$iresaco,'m85_codmatmater'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1144,6940,'','".AddSlashes(pg_result($resaco,$iresaco,'m85_quant'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from matestoqueiniti
@@ -329,7 +329,7 @@ class cl_matestoqueiniti {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Itens transferidos nao Excluído. Exclusão Abortada.\\n";
@@ -363,7 +363,7 @@ class cl_matestoqueiniti {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 
-include("libs/db_liborcamento.php");
+include(modification("libs/db_liborcamento.php"));
 $qorgao = 0;
 $qunidade = 0;
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -68,7 +68,7 @@ if ($clselorcdotacao->recurso!="")
 
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -227,7 +227,7 @@ order by
 // echo $sql;
 // exit;
 //$result = db_dotacaosaldo(8,1,$opcao,true,$sele_work,$anousu,$dataini,$datafin,$grupoini,$grupofin);
-$result = pg_query($sql);
+$result = db_query($sql);
 //db_criatabela($result);exit;
 
 
@@ -450,7 +450,7 @@ $pdf->cell(18,$alt,db_formatar($totter,'f'),0,0,"R",0);
 $pdf->cell(18,$alt,db_formatar($totqua,'f'),0,0,"R",0);
 $pdf->cell(18,$alt,db_formatar($totpri+$totseg+$totter+$totqua,'f'),0,1,"R",0);
 
-// include("fpdf151/geraarquivo.php");
+// include(modification("fpdf151/geraarquivo.php"));
 
 $pdf->Output();
 

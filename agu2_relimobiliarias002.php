@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -51,20 +51,22 @@ if(isset($oGet->mes) and $oGet->mes != '') {
 
 $sSql = "
          select x01_matric as matricula, 
+                x54_sequencial as contrato, 
                 z01_nome as nome, 
                 z01_ender as endereco, 
                 k00_dtvenc as vencto, 
                 k00_numpar as parcela, 
-                to_char(valor_agua, '999,990.00') as agua,
-                to_char(valor_esgoto, '999,990.00') as esgoto, 
-                to_char(valor_excesso, '999,990.00') as excesso, 
-                to_char(valor_extras, '999,990.00') as extras,
-                to_char(valor_agua+valor_esgoto+valor_excesso+valor_extras, '999,990.00') as total
+                to_char(valor_serv_agua, '999,990.00') as valor_serv_agua,
+                to_char(valor_serv_esgoto, '999,990.00') as valor_serv_esgoto, 
+                to_char(valor_cons_agua, '999,990.00') as valor_cons_agua, 
+                to_char(valor_cole_esgoto, '999,990.00') as valor_cole_esgoto,
+                to_char(valor_extras, '999,990.00') as valor_extras,
+                to_char(valor_serv_agua+valor_serv_esgoto+valor_cons_agua+valor_cole_esgoto+valor_extras, '999,990.00') as valor_total
            from 
-                fc_agua_relatorio_imobiliaria(137, $iAno, $iMes, '$iZona') 
+                fc_agua_relatorio_imobiliaria(139, $iAno, $iMes, '$iZona') 
           order by nome";
 
-$rSql = pg_query($sSql);
+$rSql = db_query($sSql);
 
 $head2 = "FILTROS UTILIZADOS";
 $head4 = "EXERCÍCIO: $iAno";
@@ -87,33 +89,37 @@ for($i = 0; $i < pg_num_rows($rSql); $i++) {
   
   if ($oPdf->gety() > $oPdf->h - 30 || $troca != 0 ){
     $oPdf->addpage();
-    $oPdf->setfont('arial','b',8);
-    $oPdf->cell(20, $alt, 'Matricula'  , 1, 0, "C", 1);
-    $oPdf->cell(75, $alt, 'Nome'       , 1, 0, "C", 1); 
-    $oPdf->cell(70, $alt, 'Logradouro' , 1, 0, "C", 1);
-    $oPdf->cell(20, $alt, 'Vencimento' , 1, 0, "C", 1);
-    $oPdf->cell(15, $alt, 'Parcela'    , 1, 0, "C", 1);
+    $oPdf->setfont('arial','b',7);
+    $oPdf->cell(13, $alt, 'Contrato'   , 1, 0, "C", 1);
+    $oPdf->cell(13, $alt, 'Matricula'  , 1, 0, "C", 1);
+    $oPdf->cell(64, $alt, 'Nome'       , 1, 0, "C", 1); 
+    $oPdf->cell(64, $alt, 'Logradouro' , 1, 0, "C", 1);
+    $oPdf->cell(18, $alt, 'Vencimento' , 1, 0, "C", 1);
+    $oPdf->cell(12, $alt, 'Parcela'    , 1, 0, "C", 1);
     $oPdf->cell(15, $alt, 'Água'       , 1, 0, "C", 1);
     $oPdf->cell(15, $alt, 'Esgoto'     , 1, 0, "C", 1);
-    $oPdf->cell(15, $alt, 'Excesso'    , 1, 0, "C", 1);
+    $oPdf->cell(15, $alt, 'Consumo'    , 1, 0, "C", 1);
+    $oPdf->cell(15, $alt, 'Coleta'     , 1, 0, "C", 1);
     $oPdf->cell(15, $alt, 'Extras'     , 1, 0, "C", 1);    
-    $oPdf->cell(20, $alt, 'Total'      , 1, 1, "C", 1); 
+    $oPdf->cell(18, $alt, 'Total'      , 1, 1, "C", 1); 
     $troca = 0;
     $p=0;
   }
   
   $oPdf->setfont('arial','',7);
    
-  $oPdf->cell(20, $alt, $oRelatorio->matricula, 0, 0, "C", $p);
-  $oPdf->cell(75, $alt, $oRelatorio->nome     , 0, 0, "L", $p);
-  $oPdf->cell(70, $alt, $oRelatorio->endereco , 0, 0, "L", $p);
-  $oPdf->cell(20, $alt, $oRelatorio->vencto   , 0, 0, "C", $p);
-  $oPdf->cell(15, $alt, $oRelatorio->parcela  , 0, 0, "C", $p);
-  $oPdf->cell(15, $alt, $oRelatorio->agua     , 0, 0, "C", $p);
-  $oPdf->cell(15, $alt, $oRelatorio->esgoto   , 0, 0, "C", $p);
-  $oPdf->cell(15, $alt, $oRelatorio->excesso  , 0, 0, "C", $p);
-  $oPdf->cell(15, $alt, $oRelatorio->extras   , 0, 0, "C", $p);
-  $oPdf->cell(20, $alt, $oRelatorio->total    , 0, 1, "C", $p);
+  $oPdf->cell(13, $alt, $oRelatorio->contrato         , 0, 0, "C", $p);
+  $oPdf->cell(13, $alt, $oRelatorio->matricula        , 0, 0, "C", $p);
+  $oPdf->cell(64, $alt, $oRelatorio->nome             , 0, 0, "L", $p);
+  $oPdf->cell(64, $alt, $oRelatorio->endereco         , 0, 0, "L", $p);
+  $oPdf->cell(18, $alt, $oRelatorio->vencto           , 0, 0, "C", $p);
+  $oPdf->cell(12, $alt, $oRelatorio->parcela          , 0, 0, "C", $p);
+  $oPdf->cell(15, $alt, $oRelatorio->valor_serv_agua  , 0, 0, "C", $p);
+  $oPdf->cell(15, $alt, $oRelatorio->valor_serv_esgoto, 0, 0, "C", $p);
+  $oPdf->cell(15, $alt, $oRelatorio->valor_cons_agua  , 0, 0, "C", $p);
+  $oPdf->cell(15, $alt, $oRelatorio->valor_cole_esgoto, 0, 0, "C", $p);
+  $oPdf->cell(15, $alt, $oRelatorio->valor_extras     , 0, 0, "C", $p);
+  $oPdf->cell(18, $alt, $oRelatorio->valor_total      , 0, 1, "C", $p);
    
   if($p == 0) 
     $p = 1;

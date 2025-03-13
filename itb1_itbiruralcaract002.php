@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("classes/db_itbiruralcaract_classe.php");
-include("classes/db_paritbi_classe.php");
-include("classes/db_caracter_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_itbiruralcaract_classe.php"));
+include(modification("classes/db_paritbi_classe.php"));
+include(modification("classes/db_caracter_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oGet  = db_utils::postMemory($_GET);
 
@@ -56,7 +56,7 @@ $clparitbi		   = new cl_paritbi();
     <td> 
     <center>
 	<?
-	include("forms/db_frmitbiruralcaract.php");
+	include(modification("forms/db_frmitbiruralcaract.php"));
 	?>
     </center>
 	</td>

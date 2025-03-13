@@ -27,10 +27,10 @@
 
 // select k00_numpre,k00_numpar,k00_receit from arrecad where k00_numpre = 11111454;
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 $emrec = 't';
@@ -43,7 +43,7 @@ $inscr = $ver_inscr;
 
 //se for submit, ele cria o recibo
 //if(isset($HTTP_POST_VARS["ver_matric"])) {
-//  include("cai3_gerfinanc003.php");
+//  include(modification("cai3_gerfinanc003.php"));
 //}
 
 ?>

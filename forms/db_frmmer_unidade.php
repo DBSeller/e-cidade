@@ -58,7 +58,7 @@ $clmer_unidade->rotulo->label();
 <script>
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_unidade',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_unidade',
 		              'func_mer_unidade.php?funcao_js=parent.js_preenchepesquisa|me15_i_codigo','Pesquisa',true
 		             );
   

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 
 $clrotulo = new rotulocampo;
@@ -101,7 +101,7 @@ $sql = "select * from
 	as x inner join db_usuarios on db_usuarios.id_usuario=x.login1 where $txt_where
         order by x.data,x.hora";
 
-$result=pg_exec($sql);
+$result=db_query($sql);
 
 $head2 = "Movimentações dos Cgm's";
 $head3 = "Periodo $info";

@@ -90,10 +90,10 @@ db_select('sd27_b_principal',$x,true,$db_opcao,"");
 <script>
 function js_pesquisasd27_i_rhcbo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhcbo','func_rhcbo.php?funcao_js=parent.js_mostrarhcbo1|rh70_sequencial|rh70_sequencial','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhcbo','func_rhcbo.php?funcao_js=parent.js_mostrarhcbo1|rh70_sequencial|rh70_sequencial','Pesquisa',true);
   }else{
      if(document.form1.sd27_i_rhcbo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhcbo','func_rhcbo.php?pesquisa_chave='+document.form1.sd27_i_rhcbo.value+'&funcao_js=parent.js_mostrarhcbo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhcbo','func_rhcbo.php?pesquisa_chave='+document.form1.sd27_i_rhcbo.value+'&funcao_js=parent.js_mostrarhcbo','Pesquisa',false);
      }else{
        document.form1.rh70_sequencial.value = ''; 
      }
@@ -113,10 +113,10 @@ function js_mostrarhcbo1(chave1,chave2){
 }
 function js_pesquisasd27_i_undmed(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_unidademedicos','func_unidademedicos.php?funcao_js=parent.js_mostraunidademedicos1|sd04_i_codigo|sd04_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidademedicos','func_unidademedicos.php?funcao_js=parent.js_mostraunidademedicos1|sd04_i_codigo|sd04_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.sd27_i_undmed.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_unidademedicos','func_unidademedicos.php?pesquisa_chave='+document.form1.sd27_i_undmed.value+'&funcao_js=parent.js_mostraunidademedicos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidademedicos','func_unidademedicos.php?pesquisa_chave='+document.form1.sd27_i_undmed.value+'&funcao_js=parent.js_mostraunidademedicos','Pesquisa',false);
      }else{
        document.form1.sd04_i_codigo.value = ''; 
      }
@@ -135,7 +135,7 @@ function js_mostraunidademedicos1(chave1,chave2){
   db_iframe_unidademedicos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_especmedico','func_especmedico.php?funcao_js=parent.js_preenchepesquisa|sd27_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_especmedico','func_especmedico.php?funcao_js=parent.js_preenchepesquisa|sd27_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_especmedico.hide();

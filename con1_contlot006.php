@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_testada_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_testada_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cltestada = new cl_testada;
@@ -160,7 +160,7 @@ function js_label(liga,evt,descr,quant,vlr){
             </td>
           </tr>
         <?         
-	  $re=pg_query("select d03_tipos,d03_descr,d04_quant,d04_vlrcal,d04_vlrval,d04_mult from editalserv inner join editaltipo on d03_tipos=d04_tipos where d04_contri=$d02_contri");
+	  $re=db_query("select d03_tipos,d03_descr,d04_quant,d04_vlrcal,d04_vlrval,d04_mult from editalserv inner join editaltipo on d03_tipos=d04_tipos where d04_contri=$d02_contri");
           $numlinhas= pg_numrows($re);
 	    $dad="";
  	    for($f=0; $f<$numlinhas; $f++){

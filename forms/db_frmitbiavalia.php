@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,6 +29,7 @@ $clrotulo = new rotulocampo();
 
 $clrotulo->label("it06_matric");
 $clrotulo->label("it04_descr");
+$clrotulo->label("j40_refant");
 
 $clitbi->rotulo->label();
 $clitbidadosimovel->rotulo->label();
@@ -54,41 +55,90 @@ if (isset($it14_guia) && !empty($it14_guia)) {
   <table>
     <tr>
       <td>
-        <fieldset>
-          <legend>
-            <b>Liberação de ITBI</b>
-          </legend>
-          <table>
-		    <tr>
-			  <td title="<?=@$Tit14_guia?>">
-			    <?=@$Lit14_guia?>
-			  </td>
-			  <td>
-				<?
-				  db_input('it14_guia',10,$Iit14_guia,true,'text',3," onchange='js_pesquisait14_guia(false);'");
-				  db_input('tipo',10,"",true,'hidden',3);
-				  db_input('listaFormas',10,"",true,'hidden',3);
-				  db_input('desconto_avalia',10,"",true,'hidden',3);
-				?>
-			  </td>
-			  <td>
-			    <?=@$Lit01_data?>
-			  </td>
-			  <td>
-			    <?
-				  db_inputdata('it01_data',@$it01_data_dia,@$it01_data_mes,@$it01_data_ano,true,'text',3,"");
-			    ?>
-			  </td>
-			  <td>
-			    <?=@$Lit01_id_usuario?>
-			  </td>
-			  <td>
-			    <?
-				  db_input('it01_id_usuario',10,"",true,'hidden',3,"");
-				  db_input('nome',50,"",true,'text'  ,3,"");
-			    ?>
-			  </td>
-			</tr>
+          <fieldset>
+            <legend>
+              <b>Liberação de ITBI</b>
+            </legend>
+            <table>
+          <tr>
+          <td title="<?=@$Tit14_guia?>">
+            <?=@$Lit14_guia?>
+          </td>
+          <td>
+          <?
+            db_input('it14_guia',10,$Iit14_guia,true,'text',3," onchange='js_pesquisait14_guia(false);'");
+            db_input('tipo',10,"",true,'hidden',3);
+            db_input('listaFormas',10,"",true,'hidden',3);
+            db_input('desconto_avalia',10,"",true,'hidden',3);
+          ?>
+          </td>
+          <td>
+            <?=@$Lit01_data?>
+          </td>
+          <td>
+            <?
+            db_inputdata('it01_data',@$it01_data_dia,@$it01_data_mes,@$it01_data_ano,true,'text',3,"");
+            ?>
+          </td>
+          <td>
+            <?=@$Lit01_id_usuario?>
+          </td>
+          <td>
+            <?
+            db_input('it01_id_usuario',10,"",true,'hidden',3,"");
+            db_input('nome',50,"",true,'text'  ,3,"");
+            ?>
+          </td>
+        </td>
+    </tr>
+
+    <!-- PROCESSO -->
+        <tr>
+            <td title="<?=@$Tit01_processo?>">
+                <?=@$Lit01_processo?>
+            </td>
+            <td colspan="6">
+                <?
+                    db_input('it01_processo',10,$Lit01_processo,true,'text',3);
+                    db_input('it01_tituprocesso',50,"",true,'text'  ,3,"");
+                ?>
+            </td>
+        </tr>
+
+        <?php if (!empty($it01_dtprocesso)) : ?>
+            <tr>
+                <td title="<?=@$Tit01_processo?>">
+                    <?=@$Lit01_dtprocesso?>
+                </td>
+                <td>
+                    <?
+                        db_inputdata('it01_dtprocesso',@$it01_dtprocesso_dia,@$it01_dtprocesso_mes,@$it01_dtprocesso_ano,true,'text',3,"");
+                    ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+
+        <tr>
+                <td>
+                  <strong>Tipo:</strong>
+                </td>
+                <td>
+                  <select name="codigoTipoTaxa" id="tipoTaxa" onchange="js_buscarTaxaTipo(this.value)">
+                    <option value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                  </select>
+                </td>
+              </tr>
+        <tr>
+            <td>
+                <strong>Cartório:</strong>
+            </td>
+            <td colspan="6">
+                <?
+                    db_input('j167_descricao',50,"",true,'text'  ,3,"");
+                ?>
+            </td>
+        </tr>
+
 			<tr>
 			  <td colspan="6">
 			    <fieldset>
@@ -116,11 +166,11 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 			            <input type="button" name="verMatric" value="Ver" onClick="js_verMatric();" <?=($db_botao==false?"disabled":"")?>/>
 			          </td>
 			          <td>
-			            <b>Ref. Anterior:</b>
+                  <?=$Lj40_refant?>
 			          </td>
 			          <td align="right">
 			            <?
-				  	 	  db_input('j40_refant',10,"",true,'text',3,"");
+				  	 	  db_input('j40_refant',25,"",true,'text',3,"");
 			            ?>
 			          </td>
 			          <? } else { ?>
@@ -261,7 +311,7 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 					  </td>
 					  <td>
 					    <?
-					      db_input('it01_valorterreno',15,$Iit01_valorterreno,true,'text',3);
+					      db_input('it01_valorterreno',15,$Iit01_valorterreno,true,'text',3, "", "", "", "text-align:right");
 					    ?>
 					  </td>
 					  <td>
@@ -269,7 +319,7 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 					  </td>
 					  <td>
 					    <?
-					      db_input('it01_valorconstr',15,$Iit01_valorconstr,true,'text',3);
+					      db_input('it01_valorconstr',15,$Iit01_valorconstr,true,'text',3, "", "", "", "text-align:right");
 					    ?>
 					  </td>
 					  <td>
@@ -277,7 +327,7 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 					  </td>
 					  <td align="right">
 						<?
-						  db_input('it01_valortransacao',15,$Iit01_valortransacao,true,'text',3);
+						  db_input('it01_valortransacao',15,$Iit01_valortransacao,true,'text',3, "", "", "", "text-align:right");
 					    ?>
 					  </td>
 					</tr>
@@ -289,12 +339,60 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 			      </table>
 			    </fieldset>
 			  </td>
-			</tr>
-			<tr align="center">
-			  <td colspan="6">
-			    <input type="button" name="concordaValores" value="Concordar com Valores" onClick="js_concordaValores();" <?=($db_botao==false?"disabled":"")?>>
-			  </td>
-			</tr>
+      </tr>
+
+      <?php if(!((isset($it05_guia) && trim($it05_guia)) && $oParam->it24_comparavaloresavaliacao === 't') || $oParam->it24_comparavaloresavaliacao === 'f') : ?>
+        <tr align="center">
+          <td colspan="6">
+            <input type="button" name="concordaValores" value="Concordar com Valores" onClick="js_concordaValores();" <?=($db_botao==false?"disabled":"")?>>
+          </td>
+        </tr>
+      <tr>
+    <?php endif; ?>
+
+    <?php if((isset($it05_guia) && trim($it05_guia)) && $oParam->it24_comparavaloresavaliacao === 't') : ?>
+
+	          <td colspan="6">
+	            <fieldset>
+	              <legend>
+	                <b>Valores Venais</b>
+	              </legend>
+	              <table>
+                <tr>
+                <td colspan="1">
+                  <strong>Valor  <?=$sPrefix.$sTerraLabel?>:</strong>
+                </td>
+                <td colspan="1" width="165px">
+                  <?php
+                    db_input('j23_vlrter',20,$Ij23_vlrter,true,'text',3,"onchange='js_validaValores(this)'", "", "", "text-align:right");
+                  ?>
+                </td>
+                <td colspan="1" width="130px">
+                  <strong>Valor das Benfeitorias:</strong>
+                </td>
+                <td colspan="1" width="165px">
+                  <?php
+                    db_input('j22_valor',20,$Iit01_valorconstr,true,'text',3,"onchange='js_validaValores(this)'", "", "", "text-align:right");
+                  ?>
+                </td>
+                <td colspan="1" width="63px">
+                  <strong>Valor Total:</strong>
+                </td>
+                <td colspan="1">
+                  <?
+                    db_input('valorVenalTotal',20,$Iit01_valortransacao,true,'text',3,"onchange='js_validaValores(this)'", "", "", "text-align:right");
+                  ?>
+                </td>
+              </tr>
+	              </table>
+	            </fieldset>
+	          </td>
+	        </tr>
+          </table>
+        </fieldset>
+      </td>
+    </tr>
+    <?php endif; ?>
 			<tr>
 			  <td colspan="6">
 			    <fieldset>
@@ -305,13 +403,13 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 					<tr>
 					  <td title="<?=@$Tit01_tipotransacao?>">
 			      		<?
-			        	  db_ancora(@$Lit01_tipotransacao,"js_pesquisait01_tipotransacao(true);",$db_opcao);
+			        	  db_ancora(@$Lit01_tipotransacao,"js_pesquisait01_tipotransacao(true);",3);
 			      		?>
 					  </td>
 					  <td colspan="5">
 						<?
 						  db_input('it01_tipotransacao_avalia',20,"",true,'hidden',3);
-						  db_input('it04_descr_avalia',100,$Iit04_descr,true,'text',$db_opcao,'');
+						  db_input('it04_descr_avalia',100,$Iit04_descr,true,'text',3,'');
 					    ?>
 					  </td>
 					</tr>
@@ -321,7 +419,7 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 					  </td>
 					  <td>
 					    <?
-					      db_input('it01_valorterreno_avalia',15,$Iit01_valorterreno,true,'text',$db_opcao,"onChange='js_validaValores(this)'");
+					      db_input('it01_valorterreno_avalia',15,$Iit01_valorterreno,true,'text',$db_opcao_avaliados,"onkeyup='jsFormataMoeda(this, (nValor) => {js_validaValores(this);})'", "", "", "text-align:right", 50, true);
 					    ?>
 					  </td>
 					  <td>
@@ -329,7 +427,7 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 					  </td>
 					  <td>
 					    <?
-					      db_input('it01_valorconstr_avalia',15,$Iit01_valorconstr,true,'text',$db_opcao,"onChange='js_validaValores(this)'");
+					      db_input('it01_valorconstr_avalia',15,$Iit01_valorconstr,true,'text',$db_opcao_avaliados,"onkeyup='jsFormataMoeda(this, (nValor) => {js_validaValores(this);})'", "", "", "text-align:right", 50, true);
 					    ?>
 					  </td>
 					  <td>
@@ -337,7 +435,7 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 					  </td>
 					  <td align="right">
 						<?
-						  db_input('it01_valortransacao_avalia',15,$Iit01_valortransacao,true,'text',$db_opcao,"onChange='js_validaValores(this)'");
+						  db_input('it01_valortransacao_avalia',15,$Iit01_valortransacao,true,'text',$db_opcao_avaliados,"onkeyup='jsFormataMoeda(this, (nValor) => {js_validaValores(this);})'", "", "", "text-align:right", 50, true);
 					    ?>
 					  </td>
 					</tr>
@@ -345,20 +443,53 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 					  <td colspan="6">
 					    <div id="listaFormasPgtoAvalia"></div>
 					  </td>
-					</tr>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <fieldset>
+                                <legend>
+                                    <strong>Taxas</strong>
+                                </legend>
+                                <div id="ctnGridTaxas"></div>
+                            </fieldset>
+                        </td>
+                    </tr>
 			        <tr>
 					  <td>
 					    <b>Valor do Imposto R$:</b>
 					  </td>
 					  <td>
 					    <?
-					      db_input('imposto_avalia',15,"",true,'text',3,"");
+					      db_input('imposto_avalia',15,"",true,'text',3, "", "", "", "text-align:right");
 					    ?>
-					  </td>
-					  <td align="right" colspan="2">
+                      </td>
+                      <td>
+                          <b>Valor das Taxas R$:</b>
+                      </td>
+                      <td>
+                        <?
+					      db_input('taxas_avalia',15,"",true,'text',3, "", "", "", "text-align:right");
+					    ?>
+                      </td>
+                      <td>
+                          <b>Valor Total R$:</b>
+                      </td>
+                      <td>
+                        <?
+					      db_input('total_avalia',15,"",true,'text',3, "", "", "", "text-align:right");
+					    ?>
+                      </td>
+                    </tr>
+                    <tr>
+					  <td>
 					    <b>Vencimento:</b>
 					  </td>
-					  <td align="right" colspan="2">
+					  <td>
 						<?
 				 		  db_inputdata('it14_dtvenc',@$it14_dtvenc_dia,@$it14_dtvenc_mes,@$it14_dtvenc_ano,true,'text',$db_opcao,"");
 					    ?>
@@ -367,7 +498,7 @@ if (isset($it14_guia) && !empty($it14_guia)) {
 			      </table>
 			    </fieldset>
 			  </td>
-			</tr>
+      </tr>
 	        <tr>
 	          <td colspan="6">
 	            <fieldset>
@@ -392,19 +523,59 @@ if (isset($it14_guia) && !empty($it14_guia)) {
     </tr>
     <tr align="center">
       <td colspan="6">
-		 <input name="liberar"   type="submit" id="liberar"   value="Liberar Guia" <?=($db_botao==false?"disabled":"")?> onClick=" return js_validaCampos();">
-		 <input name="visualizar" type="button" id="visualizar" value="Visualizar Guia" onclick="js_visualizar(<?=$it14_guia?>);" <?=($db_botao==false?"disabled":"")?>>
-		 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+		 <input name="liberar"   type="submit" id="liberar"   value="Liberar Guia" <?=(($db_botao==false OR !$habilitaBotaoLiberar)?"disabled":"")?> onClick=" return js_validaCampos();">
+		 <input name="visualizar" type="button" id="visualizar" value="Visualizar Guia" onclick="js_visualizar(<?php echo !empty($it14_guia) ? $it14_guia : ''; ?>);" <?=($db_botao==false?"disabled":"")?>>
+         <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+         <?php //dd($oParam->it24_solicitanotificacao == "t" AND !$habilitaBotaoLiberar); ?>
+         <?php if ($oParam->it24_solicitanotificacao == "t" AND !$habilitaBotaoLiberar) : ?>
+            <input type="submit" name="notificacao" value="Notificação Enviada">
+         <?php  endif; ?>
       </td>
     </tr>
   </table>
+  <input type="hidden" name="aTaxas" id="aTaxas">
 </form>
 <script>
+document.getElementById("imposto_avalia").value = 0;
+document.getElementById("taxas_avalia").value = 0;
+
 function js_visualizar(guia) {
   var iGuia  = guia;
   var sParam = "toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,height="+
                 (screen.height-100)+",width="+(screen.width-100);
   window.open('reciboitbi.php?itbi='+iGuia,"",sParam);
+}
+
+js_buscaTipos();
+function js_buscaTipos()
+{
+  const tipo = document.getElementById("tipo").value;
+  const tipoTaxa = document.getElementById("tipoTaxa");
+
+  var oParam = new Object();
+  oParam.executa = "listarTipos";
+  oParam.tipo = tipo;
+
+  new AjaxRequest("itbi_taxasitbi001.RPC.php", oParam, function (oRetorno) {
+      if (oRetorno.erro) {
+        alert(oRetorno.mensagem);
+        return;
+      }
+
+      const aTipos = oRetorno.aTipos;
+
+      aTipos.forEach(function (oTipo){
+        const option = document.createElement("option");
+        option.setAttribute("value", oTipo.it36_sequencial);
+        option.innerHTML = oTipo.it36_descricao;
+        if (aTipos.length == 1 || oTipo.it36_sequencial == <?= ((isset($oDadosTaxaGuia->it38_taxasitbi) AND !empty($oDadosTaxaGuia->it38_taxasitbi)) ? $oDadosTaxaGuia->it38_taxasitbi : 0) ?>) {
+            option.setAttribute("selected", "selected");
+            js_buscarTaxaTipo(oTipo.it36_sequencial);
+        }
+
+        tipoTaxa.appendChild(option);
+      });
+  }).execute();
 }
 
 function js_somaValores(){
@@ -416,7 +587,7 @@ function js_somaValores(){
   for ( var iInd=0; iInd < aObjGrid.length; iInd++ ) {
 
 	var nValorAliquota    = js_strToFloat(aObjGrid[iInd].aCells[2].getValue());
-	var nValorForma       = new Number(aObjGrid[iInd].aCells[3].getValue());
+	var nValorForma       = new Number(aObjGrid[iInd].aCells[3].getValue().replaceAll(".", "").replace(",", "."));
 	var nValorImposto     = nValorForma * ( nValorAliquota / 100 );
 	var nValorDescImposto = nValorImposto * ( document.form1.desconto_avalia.value / 100 );
 			nValorImposto     = nValorImposto - nValorDescImposto;
@@ -424,8 +595,14 @@ function js_somaValores(){
 
   }
 
-  document.form1.imposto_avalia.value = new Number(nTotalImposto).toFixed(2);
+  document.form1.imposto_avalia.value = nTotalImposto.toLocaleString('pt-BR', {maximumFractionDigits: 2});
 
+  const imposto_avalia = document.form1.imposto_avalia.value.replaceAll(".", "").replace(",", ".");
+  const taxas_avalia = document.form1.taxas_avalia.value.replaceAll(".", "").replace(",", ".");
+
+  const valorTotal = parseFloat(imposto_avalia) + parseFloat(taxas_avalia);
+
+  document.form1.total_avalia.value = valorTotal.toLocaleString('pt-BR', {maximumFractionDigits: 2});
 }
 
 
@@ -443,7 +620,7 @@ function js_validaCampos(){
 
     var sPrefix = "";
     for ( var iInd=0; iInd < aObjFormasPgto.length; iInd++ ) {
-      sQuery += sPrefix+aObjFormasPgto[iInd].id+"X"+aObjFormasPgto[iInd].value;
+      sQuery += sPrefix+aObjFormasPgto[iInd].id+"X"+aObjFormasPgto[iInd].value.replaceAll(".", "").replace(",", ".");
       sPrefix = "|";
     }
 
@@ -451,6 +628,30 @@ function js_validaCampos(){
 
   }
 
+  //aqui
+  const aInputs = document.querySelectorAll("[isTaxa='true']");
+  const aTaxas = [];
+
+  aInputs.forEach(function (oInput){
+      const oTaxa = new Object();
+      oTaxa.codigo = oInput.getAttribute("codigoTaxa");
+      oTaxa.calculaSobre = oInput.getAttribute("calculaSobre");
+      oTaxa.aliquota = oInput.getAttribute("aliquota");
+      oTaxa.tipo = oInput.getAttribute("tipo");
+      oTaxa.valor = oInput.innerHTML.replaceAll(".", "").replace(",", ".");
+
+      aTaxas.push(oTaxa);
+  });
+
+  document.getElementById("aTaxas").value = JSON.stringify(aTaxas);
+
+  const it01_valorterreno_avalia = document.getElementById("it01_valorterreno_avalia");
+  const it01_valorconstr_avalia = document.getElementById("it01_valorconstr_avalia");
+  const it01_valortransacao_avalia = document.getElementById("it01_valortransacao_avalia");
+
+  it01_valorterreno_avalia.value = it01_valorterreno_avalia.value.replaceAll(".", "").replace(",", ".");
+  it01_valorconstr_avalia.value = it01_valorconstr_avalia.value.replaceAll(".", "").replace(",", ".");
+  it01_valortransacao_avalia.value = it01_valortransacao_avalia.value.replaceAll(".", "").replace(",", ".");
 }
 
 
@@ -458,21 +659,18 @@ function js_validaCampos(){
 function js_validaValores(obj){
 
   var sNomeCampo		= obj.name;
-      obj.value			= new String(obj.value).replace(",",".");
-      obj.value			= new Number(obj.value).toFixed(2);
   var doc				= document.form1;
-  var nValorTotal 	    = new Number(doc.it01_valortransacao_avalia.value);
-  var nValorTerreno 	= new Number(doc.it01_valorterreno_avalia.value);
-  var nValorBenfeitoria = new Number(doc.it01_valorconstr_avalia.value);
-
+  var nValorTotal 	    = new Number(doc.it01_valortransacao_avalia.value.replaceAll(".", "").replace(",", "."));
+  var nValorTerreno 	= new Number(doc.it01_valorterreno_avalia.value.replaceAll(".", "").replace(",", "."));
+  var nValorBenfeitoria = new Number(doc.it01_valorconstr_avalia.value.replaceAll(".", "").replace(",", "."));
 
   if ( nValorTerreno != 0 || nValorBenfeitoria != 0 ) {
 	doc.it01_valortransacao_avalia.disabled = true;
-    doc.it01_valortransacao_avalia.value    = new Number(nValorTerreno + nValorBenfeitoria).toFixed(2);
+    doc.it01_valortransacao_avalia.value    = new Number(nValorTerreno + nValorBenfeitoria).toLocaleString('pt-BR', {minimumFractionDigits: 2});
   } else if ( nValorTerreno == 0 && nValorBenfeitoria == 0 && sNomeCampo == "it01_valortransacao_avalia" && nValorTotal != 0) {
     doc.it01_valorterreno_avalia.disabled   = true;
     doc.it01_valorconstr_avalia.disabled    = true;
-  } else if ( nValorTerreno == 0 && nValorBenfeitoria == 0 && sNomeCampo != "it01_valortransacao_avalia") {
+  } else if ( nValorTerreno == 0 && nValorBenfeitoria == 0 && sNomeCampo != "it01_valortransacao_avalia" <?= ($oParam->it24_comparavaloresavaliacao == "t" ? " && false " : "") ?>) {
     doc.it01_valortransacao_avalia.value    = 0;
     doc.it01_valortransacao_avalia.disabled = false;
   } else {
@@ -481,11 +679,14 @@ function js_validaValores(obj){
     doc.it01_valortransacao_avalia.disabled = false;
   }
 
+  js_calculaTaxas(obj);
 
-  if ( doc.primeiro_avalia != undefined ) {
-    js_limpaValorFormaPgto();
-    doc.primeiro_avalia.value = new Number(doc.it01_valortransacao_avalia.value).toFixed(2);
-  }
+  <?php if (!isset($bValorInformadoMaior) || (isset($bValorInformadoMaior) && !$bValorInformadoMaior)) : ?>
+      if ( doc.primeiro_avalia != undefined ) {
+        js_limpaValorFormaPgto();
+        doc.primeiro_avalia.value = doc.it01_valortransacao_avalia.value;
+      }
+  <?php endif; ?>
 
   js_somaValores();
 }
@@ -494,7 +695,7 @@ function js_limpaValorFormaPgto(){
 
   var aObjFormasPgto = js_getElementbyClass(document.all,'formasPgto');
   for ( var iInd=0; iInd < aObjFormasPgto.length; iInd++ ) {
-     aObjFormasPgto[iInd].value = 0;
+     aObjFormasPgto[iInd].value = new Number(000).toLocaleString("pt-BR", {minimumFractionDigits: 2});
   }
 
 }
@@ -504,28 +705,36 @@ function js_concordaValores(){
 
   var doc = document.form1;
 
-  doc.it01_valortransacao_avalia.value = new Number(doc.it01_valortransacao.value).toFixed(2);
-  doc.it01_valorterreno_avalia.value   = new Number(doc.it01_valorterreno.value).toFixed(2);
-  doc.it01_valorconstr_avalia.value    = new Number(doc.it01_valorconstr.value).toFixed(2);
+  <?php  if ($oParam->it24_comparavaloresavaliacao === 'f') : ?>
+      doc.it01_valortransacao_avalia.value = doc.it01_valortransacao.value;
+      doc.it01_valorterreno_avalia.value   = doc.it01_valorterreno.value;
+      doc.it01_valorconstr_avalia.value    = doc.it01_valorconstr.value;
+  <?php endif; ?>
 
   js_consultaFormaPgtoCadastrada(document.form1.it14_guia.value,js_retornoFormaPgtoAvaliaCadastrada);
 
-  if ( doc.it01_valorterreno_avalia.value != 0 ){
+  const it01_valorterreno_avalia = js_removeMascaraMoeda(doc.it01_valorterreno_avalia.value);
+  const it01_valorconstr_avalia = js_removeMascaraMoeda(doc.it01_valorconstr_avalia.value);
+
+  if ( it01_valorterreno_avalia != 0 ){
 	js_validaValores(doc.it01_valorterreno_avalia);
 	doc.it01_valorterreno_avalia.focus();
-  } else if ( doc.it01_valorconstr_avalia.value != 0 ){
+  }
+
+  if ( it01_valorconstr_avalia != 0 ){
 	js_validaValores(doc.it01_valorconstr_avalia);
 	doc.it01_valorconstr_avalia.focus();
-  } else {
+  }
+
+  if ( it01_valorterreno_avalia == 0 && it01_valorconstr_avalia == 0 ){
   	js_validaValores(doc.it01_valortransacao_avalia);
   	doc.it01_valortransacao_avalia.focus();
   }
-
 }
 
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_itbi','func_itbinaoliberado.php?funcao_js=parent.js_preenchepesquisa|it01_guia','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbi','func_itbinaoliberado.php?funcao_js=parent.js_preenchepesquisa|it01_guia','Pesquisa',true);
 }
 
 
@@ -600,7 +809,7 @@ function js_consultaFormaPgtoCadastrada(iGuia,sCallback){
 
 function js_retornoFormaPgtoCadastrada(oAjax){
 
-  var objListaForma = eval("("+oAjax.responseText+")");
+  var objListaForma = JSON.parse(oAjax.responseText);
   var nValor		= 0;
 
   gridFormasPgto.clearAll(true);
@@ -622,7 +831,9 @@ function js_retornoFormaPgtoCadastrada(oAjax){
         var sNomeCampo = "";
       }
 
-      var sInputValor  = "<input type='text' id='teste_"+it25_sequencial.urlDecode()+"' value='"+it26_valor.urlDecode()+"'";
+      let nValor = new Number(it26_valor.urlDecode()).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+
+      var sInputValor  = "<input type='text' id='teste_"+it25_sequencial.urlDecode()+"' value='"+nValor+"'";
     	  sInputValor += "style='width:100%;text-align:right;height:100%;border:1px inset' "+sDisabled+" "+sNomeCampo+">";
 
       var aLinha	= new Array();
@@ -642,9 +853,7 @@ function js_retornoFormaPgtoCadastrada(oAjax){
 }
 
 function js_retornoFormaPgtoAvalia(oAjax){
-
-
-  var objListaForma = eval("("+oAjax.responseText+")");
+  var objListaForma = JSON.parse(oAjax.responseText);
   var nValor		= 0;
 
   gridFormasPgtoAvalia.clearAll(true);
@@ -660,9 +869,9 @@ function js_retornoFormaPgtoAvalia(oAjax){
     with (objListaForma[iInd]) {
 
       if ( new Number(document.form1.it01_valortransacao_avalia.value) != 0 && it28_sequencial == 1 ){
-		var nValor = new Number(document.form1.it01_valortransacao_avalia.value);
+		var nValor = document.form1.it01_valortransacao_avalia.value;
 	  } else {
-	    var nValor = 0;
+	    var nValor = new Number(000).toLocaleString("pt-BR", {minimumFractionDigits: 2});
 	  }
 
       if ( iInd == 0 ) {
@@ -675,7 +884,7 @@ function js_retornoFormaPgtoAvalia(oAjax){
 
       var sInputValor  = "<input type='text' id='"+it25_sequencial.urlDecode()+"' class='formasPgto' value='"+nValor+"'";
     	  sInputValor += "style='width:100%;text-align:right;height:100%;border:1px inset' "+sDisabled+" "+sNomeCampo+"";
-    	  sInputValor += " onChange='js_controlaValoresFormaPgto(this);'>";
+          sInputValor += "onkeyup='jsFormataMoeda(this, (nValor) => {js_controlaValoresFormaPgto(this);})'>";
 
       var aLinha	= new Array();
    	      aLinha[0] = it25_sequencial.urlDecode();
@@ -698,8 +907,7 @@ function js_retornoFormaPgtoAvalia(oAjax){
 function js_retornoFormaPgtoAvaliaCadastrada(oAjax){
 
 
-  var objListaForma = eval("("+oAjax.responseText+")");
-  var nValor		= 0;
+  var objListaForma = JSON.parse(oAjax.responseText);
 
   gridFormasPgtoAvalia.clearAll(true);
 
@@ -721,9 +929,11 @@ function js_retornoFormaPgtoAvaliaCadastrada(oAjax){
         var sNomeCampo = "";
       }
 
-      var sInputValor  = "<input type='text' id='"+it25_sequencial.urlDecode()+"' class='formasPgto' value='"+it26_valor.urlDecode()+"'";
+      let nValor = new Number(it26_valor.urlDecode()).toLocaleString("pt-BR", {minimumFractionDigits: 2});
+
+      var sInputValor  = "<input type='text' id='"+it25_sequencial.urlDecode()+"' class='formasPgto' value='"+nValor+"'";
     	  sInputValor += "style='width:100%;text-align:right;height:100%;border:1px inset' "+sDisabled+" "+sNomeCampo+"";
-    	  sInputValor += " onChange='js_controlaValoresFormaPgto(this);'>";
+    	  sInputValor += "onkeyup='jsFormataMoeda(this, (nValor) => {js_controlaValoresFormaPgto(this);})'>";
 
       var aLinha	= new Array();
    	      aLinha[0] = it25_sequencial.urlDecode();
@@ -748,17 +958,15 @@ function js_retornoFormaPgtoAvaliaCadastrada(oAjax){
 function js_controlaValoresFormaPgto(obj){
 
   var doc 	          = document.form1;
-      obj.value 	  = new String(obj.value).replace(",",".");
-      obj.value		  = new Number(obj.value).toFixed(2);
   var aObjFormasPgto  = js_getElementbyClass(document.all,'formasPgto');
-  var nValorTotal	  = new Number(doc.it01_valortransacao_avalia.value);
-  var nValorAlterado  = new Number(obj.value);
+  var nValorTotal	  = new Number(doc.it01_valortransacao_avalia.value.replaceAll(".", "").replace(",", "."));
+  var nValorAlterado  = new Number(obj.value.replaceAll(".", "").replace(",", "."));
   var nValorResto	  = new Number();
 
 
   for ( var iInd=0; iInd < aObjFormasPgto.length; iInd++ ) {
     if ( aObjFormasPgto[iInd].name != "primeiro_avalia" ) {
-     var nValLinha = new Number(aObjFormasPgto[iInd].value);
+     var nValLinha = new Number(aObjFormasPgto[iInd].value.replaceAll(".", "").replace(",", "."));
 	 nValorResto  += nValLinha;
 	}
   }
@@ -773,7 +981,7 @@ function js_controlaValoresFormaPgto(obj){
 
   }
 
-  doc.primeiro_avalia.value = new Number(nValorAvista).toFixed(2);
+  doc.primeiro_avalia.value = new Number(nValorAvista).toLocaleString("pt-BR", {minimumFractionDigits: 2});
 
   js_somaValores();
 
@@ -800,7 +1008,9 @@ function js_mostraitbitransacao(chave,erro){
     document.form1.it01_tipotransacao.focus();
     document.form1.it01_tipotransacao.value = '';
   } else {
-    js_consultaFormaPgto(document.form1.it01_tipotransacao.value);
+      <?php  if ($oParam->it24_comparavaloresavaliacao === 'f') : ?>
+            js_consultaFormaPgto(document.form1.it01_tipotransacao.value);
+      <?php endif; ?>
   }
 
 }
@@ -810,15 +1020,16 @@ function js_mostraitbitransacao1(chave1,chave2){
   document.form1.it01_tipotransacao.value = chave1;
   document.form1.it04_descr_avalia.value  = chave2;
   db_iframe_itbitransacao.hide();
-
-  js_consultaFormaPgto(chave1);
+    <?php  if ($oParam->it24_comparavaloresavaliacao === 'f') : ?>
+        js_consultaFormaPgto(chave1);
+    <?php endif; ?>
 
 }
 
 
 
 function js_verMatric(){
-  js_OpenJanelaIframe('top.corpo',"db_iframe_consulta",'cad3_conscadastro_002.php?cod_matricula='+document.form1.it06_matric.value,'Detalhes da Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo',"db_iframe_consulta",'cad3_conscadastro_002.php?cod_matricula='+document.form1.it06_matric.value,'Detalhes da Pesquisa',true);
 }
 
 js_criaGrid();
@@ -859,4 +1070,209 @@ function js_limpaForm(){
   //gridFormasPgto.renderRows();
 }
 
+var oGridTaxas = new DBGrid('gridTaxas');
+var aHeaders   = ["Código", "Descrição", "Tipo de Valor", "Calcula Sobre", "Aliquota %", "Faixa", "Valor"];
+var aCellWidth = ["10%", "25%", "15%", "15%", "7%", "18%", "10%"];
+var aCellAlign = ["center", "left", "center", "center", "center", "center", "right"];
+
+oGridTaxas.nameInstance = 'oGridTaxas';
+oGridTaxas.setCellWidth(aCellWidth);
+oGridTaxas.setCellAlign(aCellAlign);
+oGridTaxas.setHeader(aHeaders);
+oGridTaxas.setHeight(100);
+oGridTaxas.show($('ctnGridTaxas'));
+
+var aTaxas = [];
+
+function js_buscarTaxaTipo(codigo)
+{
+    oGridTaxas.clearAll(true);
+
+    if (codigo != "" && codigo != undefined) {
+        const tipo = document.getElementById("tipo").value;
+        const matricula = document.getElementById("it06_matric").value;
+
+        if (tipo == "urbano" && !matricula) {
+            return;
+        }
+
+        var oParam = new Object();
+        oParam.executa = "buscarTaxasTipo";
+        oParam.it36_sequencial = codigo;
+        oParam.tipo = tipo;
+        oParam.matricula = matricula;
+
+        new AjaxRequest("itbi_taxasitbi001.RPC.php", oParam, function (oRetorno) {
+          if (oRetorno.erro) {
+            alert(oRetorno.mensagem);
+            return;
+          }
+
+          aTaxas = oRetorno.aTaxas;
+
+          js_verificaTaxasFaixa();
+          js_montaGridTaxas(true);
+        }).execute();
+    }
+}
+
+function js_verificaTaxasFaixa()
+{
+    const it01_valorterreno = document.getElementById("it01_valorterreno_avalia").value.replaceAll(".", "").replace(",", ".");
+    const it01_valorconstr = document.getElementById("it01_valorconstr_avalia").value.replaceAll(".", "").replace(",", ".");
+    const it01_valortransacao = document.getElementById("it01_valortransacao_avalia").value.replaceAll(".", "").replace(",", ".");
+
+    aTaxas.forEach(function (oTaxa, key){
+        if (oTaxa.ar44_tipo == 3) {
+            if (oTaxa.it37_calculasobre == 1) {
+                if (!(parseFloat(it01_valorterreno) >= oTaxa.it37_iniciofaixa && parseFloat(it01_valorterreno) <= oTaxa.it37_fimfaixa)) {
+                    aTaxas[key].bMostra = false;
+                } else {
+                    aTaxas[key].bMostra = true;
+                }
+            } else if (oTaxa.it37_calculasobre == 2) {
+                if (!(parseFloat(it01_valorconstr) >= oTaxa.it37_iniciofaixa && parseFloat(it01_valorconstr) <= oTaxa.it37_fimfaixa)) {
+                    aTaxas[key].bMostra = false;
+                } else {
+                    aTaxas[key].bMostra = true;
+                }
+            } else if (oTaxa.it37_calculasobre == 3) {
+                if (!(parseFloat(it01_valortransacao) >= oTaxa.it37_iniciofaixa && parseFloat(it01_valortransacao) <= oTaxa.it37_fimfaixa)) {
+                    aTaxas[key].bMostra = false;
+                } else {
+                    aTaxas[key].bMostra = true;
+                }
+            }
+        }
+    });
+}
+
+function js_montaGridTaxas(bRequest = false)
+{
+    oGridTaxas.clearAll(true);
+
+    for (const oTaxa of aTaxas) {
+        if (!oTaxa.bMostra) {
+            continue;
+        }
+
+        var aLinha = [];
+        aLinha.push(oTaxa.ar44_sequencial);
+        aLinha.push(oTaxa.ar44_descricao);
+
+        if (oTaxa.ar44_tipo == 2 || oTaxa.ar44_tipo == 3) {
+            if (oTaxa.ar44_tipo == 3) {
+                aLinha.push("Fixo Sobre Faixa");
+            } else {
+                aLinha.push("Percentual");
+            }
+
+            if (oTaxa.it37_calculasobre == 1) {
+                aLinha.push("Valor do Terreno");
+            } else if (oTaxa.it37_calculasobre == 2) {
+                aLinha.push("Valor da Construção");
+            } else if (oTaxa.it37_calculasobre == 3) {
+                aLinha.push("Ambos");
+            }
+
+            aLinha.push(oTaxa.aliquota.toLocaleString('pt-BR', { maximumFractionDigits: 2}));
+
+            if (oTaxa.ar44_tipo == 3) {
+                aLinha.push(`${oTaxa.it37_iniciofaixa} à ${oTaxa.it37_fimfaixa}`);
+            } else {
+                aLinha.push("");
+            }
+        } else {
+            aLinha.push("Fixo");
+            aLinha.push("");
+            aLinha.push("");
+            aLinha.push("");
+        }
+
+        const span = document.createElement("span");
+        span.setAttribute("id", "id_"+oTaxa.ar44_sequencial);
+        span.setAttribute("isTaxa", "true");
+        span.setAttribute("codigoTaxa", oTaxa.ar44_sequencial);
+        span.setAttribute("calculaSobre", oTaxa.it37_calculasobre);
+        span.setAttribute("tipo", oTaxa.ar44_tipo);
+        span.setAttribute("aliquota", (oTaxa.aliquota != undefined ? oTaxa.aliquota.toLocaleString('pt-BR', { maximumFractionDigits: 2}) : 0));
+        span.innerHTML = oTaxa.i02_valor.toLocaleString('pt-BR', { maximumFractionDigits: 2});
+
+        aLinha.push(span.outerHTML);
+
+        oGridTaxas.addRow(aLinha);
+    }
+
+    oGridTaxas.renderRows();
+
+    if (bRequest) {
+        const it01_valorterreno_avalia = document.getElementById("it01_valorterreno_avalia");
+        const it01_valorconstr_avalia = document.getElementById("it01_valorconstr_avalia");
+
+        if (it01_valorterreno_avalia.value == 0 && it01_valorconstr_avalia.value == 0) {
+            js_validaValores(document.getElementById("it01_valortransacao_avalia"));
+        } else {
+            js_validaValores(it01_valorterreno_avalia);
+            js_validaValores(it01_valorconstr_avalia);
+        }
+    }
+}
+
+function js_calculaTaxas(oCampo)
+{
+    const aSpans = document.querySelectorAll("[isPercentual='true']");
+    const it01_valortransacao = document.getElementById("it01_valortransacao");
+
+    aSpans.forEach(function (aSpan){
+        if (aSpan.getAttribute("sobre") == 1) {
+            if (oCampo.name == "it01_valorterreno") {
+                const valorFinal = ((aSpan.getAttribute("percentual") / 100) * oCampo.value);
+
+                aSpan.innerHTML = valorFinal.toLocaleString('pt-BR', { maximumFractionDigits: 2});
+            }
+        } else if (aSpan.getAttribute("sobre") == 2) {
+            if (oCampo.name == "it01_valorconstr") {
+                const valorFinal = ((aSpan.getAttribute("percentual") / 100) * oCampo.value);
+
+                aSpan.innerHTML = valorFinal.toLocaleString('pt-BR', { maximumFractionDigits: 2});
+            }
+        } else if (aSpan.getAttribute("sobre") == 3) {
+            const valorFinal = ((aSpan.getAttribute("percentual") / 100) * it01_valortransacao.value);
+
+            aSpan.innerHTML = valorFinal.toLocaleString('pt-BR', { maximumFractionDigits: 2});
+        }
+    });
+
+    js_verificaTaxasFaixa();
+    js_montaGridTaxas();
+
+    js_atualizaValorTotal();
+}
+
+function js_atualizaValorTotal()
+{
+    const aInputs = document.querySelectorAll("[isTaxa='true']");
+    const taxas_avalia = document.getElementById("taxas_avalia");
+    var valor = 0;
+
+    aInputs.forEach(function (oInput){
+        const valorTaxa = oInput.innerHTML.replaceAll(".", "").replace(",", ".");
+        valor = valor + parseFloat(valorTaxa);
+    });
+
+    taxas_avalia.value = valor.toLocaleString('pt-BR', {maximumFractionDigits: 2});
+}
+
+<?php if (!empty($oDadosTaxaGuia)) : ?>
+    js_buscarTaxaTipo(<?= $oDadosTaxaGuia->it38_taxasitbi ?>);
+<?php endif; ?>
+
+<?php  if ($oParam->it24_comparavaloresavaliacao === 't') : ?>
+    js_concordaValores();
+<?php endif; ?>
+
+function js_removeMascaraMoeda(sValor)
+{
+    return sValor.replaceAll(".", "").replace(",", ".");
+}
 </script>

@@ -72,10 +72,10 @@ db_input('e04_destin',40,$Ie04_destin,true,'text',3,'')
 <script>
 function js_pesquisao83_codres(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcreserva','func_orcreserva.php?funcao_js=parent.js_mostraorcreserva1|o80_codres|o80_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcreserva','func_orcreserva.php?funcao_js=parent.js_mostraorcreserva1|o80_codres|o80_descr','Pesquisa',true);
   }else{
      if(document.form1.o83_codres.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_orcreserva','func_orcreserva.php?pesquisa_chave='+document.form1.o83_codres.value+'&funcao_js=parent.js_mostraorcreserva','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcreserva','func_orcreserva.php?pesquisa_chave='+document.form1.o83_codres.value+'&funcao_js=parent.js_mostraorcreserva','Pesquisa',false);
      }else{
        document.form1.o80_descr.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostraorcreserva1(chave1,chave2){
 }
 function js_pesquisao83_autori(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_autoriza','func_autoriza.php?funcao_js=parent.js_mostraautoriza1|e04_autori|e04_destin','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autoriza','func_autoriza.php?funcao_js=parent.js_mostraautoriza1|e04_autori|e04_destin','Pesquisa',true);
   }else{
      if(document.form1.o83_autori.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_autoriza','func_autoriza.php?pesquisa_chave='+document.form1.o83_autori.value+'&funcao_js=parent.js_mostraautoriza','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autoriza','func_autoriza.php?pesquisa_chave='+document.form1.o83_autori.value+'&funcao_js=parent.js_mostraautoriza','Pesquisa',false);
      }else{
        document.form1.e04_destin.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostraautoriza1(chave1,chave2){
   db_iframe_autoriza.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcreservaaut','func_orcreservaaut.php?funcao_js=parent.js_preenchepesquisa|o83_codres','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcreservaaut','func_orcreservaaut.php?funcao_js=parent.js_preenchepesquisa|o83_codres','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcreservaaut.hide();

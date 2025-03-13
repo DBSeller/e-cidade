@@ -288,7 +288,7 @@ function js_getLotacaoRetorno() {
 
 function js_retornoGetLotacaoRetorno(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   if (oRetorno.iStatus == 1) {
        
     document.form1.total.value     = oRetorno.iLotacao;

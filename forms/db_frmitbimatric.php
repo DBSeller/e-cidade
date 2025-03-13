@@ -72,10 +72,10 @@ db_input('j01_numcgm',6,$Ij01_numcgm,true,'text',3,'')
 <script>
 function js_pesquisait06_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubase.php?funcao_js=parent.js_mostraiptubase1|j01_matric|j01_numcgm','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubase','func_iptubase.php?funcao_js=parent.js_mostraiptubase1|j01_matric|j01_numcgm','Pesquisa',true);
   }else{
      if(document.form1.it06_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubase.php?pesquisa_chave='+document.form1.it06_matric.value+'&funcao_js=parent.js_mostraiptubase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubase','func_iptubase.php?pesquisa_chave='+document.form1.it06_matric.value+'&funcao_js=parent.js_mostraiptubase','Pesquisa',false);
      }else{
        document.form1.j01_numcgm.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostraiptubase1(chave1,chave2){
 }
 function js_pesquisait06_guia(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_itbi','func_itbi.php?funcao_js=parent.js_mostraitbi1|it01_guia|it01_guia','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbi','func_itbi.php?funcao_js=parent.js_mostraitbi1|it01_guia|it01_guia','Pesquisa',true);
   }else{
      if(document.form1.it06_guia.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_itbi','func_itbi.php?pesquisa_chave='+document.form1.it06_guia.value+'&funcao_js=parent.js_mostraitbi','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbi','func_itbi.php?pesquisa_chave='+document.form1.it06_guia.value+'&funcao_js=parent.js_mostraitbi','Pesquisa',false);
      }else{
        document.form1.it01_guia.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostraitbi1(chave1,chave2){
   db_iframe_itbi.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_itbimatric','func_itbimatric.php?funcao_js=parent.js_preenchepesquisa|it06_matric|it06_guia','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbimatric','func_itbimatric.php?funcao_js=parent.js_preenchepesquisa|it06_matric|it06_guia','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_itbimatric.hide();

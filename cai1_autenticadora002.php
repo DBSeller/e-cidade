@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if(isset($retorno)) {
-  $result = pg_exec("select * from cfautent where k11_id = $retorno and k11_instit = " . db_getsession("DB_instit"));
+  $result = db_query("select * from cfautent where k11_id = $retorno and k11_instit = " . db_getsession("DB_instit"));
   db_fieldsmemory($result,0);
 } 
 if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
-  /*$result = pg_exec("select k11_ipterm 
+  /*$result = db_query("select k11_ipterm 
                      from cfautent 
 	             where k11_instit = ".db_getsession("DB_instit")." and k11_ipterm = '".$k11_ipterm."'");
   if(pg_numrows($result) == 0) {
@@ -49,7 +49,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   }
 
   if ($flag==true){*/
-       pg_exec("update cfautent set  k11_ident1    = '$k11_ident1',
+       db_query("update cfautent set  k11_ident1    = '$k11_ident1',
                                      k11_ident2    = '$k11_ident2',
                                      k11_ident3    = '$k11_ident3',
                                      k11_ipterm    = '$k11_ipterm',
@@ -89,11 +89,11 @@ if(isset($HTTP_POST_VARS["enviar"])) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 	<?
     if(isset($HTTP_POST_VARS["procurar"]) || isset($HTTP_POST_VARS["priNoMe"]) || isset($HTTP_POST_VARS["antNoMe"]) || isset($HTTP_POST_VARS["proxNoMe"]) || isset($HTTP_POST_VARS["ultNoMe"])) {
-      include("cai1_autenticadora005.php");
+      include(modification("cai1_autenticadora005.php"));
     } else if(!isset($retorno)) {
-	  include("cai1_autenticadora004.php");
+	  include(modification("cai1_autenticadora004.php"));
     } else { 
-	  include("forms/db_frmautenticadora.php");
+	  include(modification("forms/db_frmautenticadora.php"));
     }
     ?>
 	</td>

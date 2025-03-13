@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cgmdoc_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgm_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cgmdoc_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgm_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcgmdoc = new cl_cgmdoc;
 $clcgm = new cl_cgm;
 $db_opcao = 1;
 $db_botao = true;
-$result = $clcgmdoc->sql_record($clcgmdoc->sql_query("","*","","z02_i_cgm = $z02_i_cgm"));
-if($clcgmdoc->numrows>0){
- db_fieldsmemory($result,0);
- $db_opcao = 2;
+
+if ( isset($z02_i_cgm) && $z02_i_cgm != '' ) {
+
+  $result = $clcgmdoc->sql_record($clcgmdoc->sql_query("","*","","z02_i_cgm = $z02_i_cgm"));
+  if( $clcgmdoc->numrows > 0 ){
+   db_fieldsmemory($result,0);
+   $db_opcao = 2;
+  }
 }
+
 if(isset($incluir)){
  db_inicio_transacao();
  $clcgmdoc->incluir($z02_i_sequencial);
@@ -59,6 +64,7 @@ if(isset($alterar)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/classes/saude/validaCNS.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -67,7 +73,7 @@ if(isset($alterar)){
   <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
    <br>
    <center>
-    <?include("forms/db_frmcgmdoc.php");?>
+    <?include(modification("forms/db_frmcgmdoc.php"));?>
    </center>
   </td>
  </tr>

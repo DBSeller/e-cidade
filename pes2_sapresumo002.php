@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);
@@ -152,7 +152,7 @@ if ($tipo == "L"){
 }
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
@@ -219,7 +219,7 @@ for($x = 0;$x < pg_numrows($result);$x++){
 				and ".$folha."_instit = ".db_getsession("DB_instit")."
 		    and ".$folha."_lotac = '$quebra' 
 		    $wherepes ";
-      $resultlota = pg_exec($sqllota);
+      $resultlota = db_query($sqllota);
       db_fieldsmemory($resultlota,0);
       $pdf->cell(20,$alt,$count,0,1,"R",0);
       $pdf->cell(60,$alt,'',0,0,"C",0);
@@ -260,7 +260,7 @@ for($x = 0;$x < pg_numrows($result);$x++){
 		          // ver esta caso depois
 			  //and ".$folha."_rubric in ('R990','R992') 
 			  
-      $resultprev = pg_exec($sqlprev);
+      $resultprev = db_query($sqlprev);
       db_fieldsmemory($resultprev,0);
       $pdf->ln(3);
       $pdf->cell(45,$alt,'BASE I.N.S.S  :'.db_formatar($prev1,'f'),0,0,"L",0);
@@ -352,7 +352,7 @@ if ($tipo == "L"){
      	    and ".$folha."_lotac = '$quebra'
 	    $wherepes 
 	    ";
-   $resultlota = pg_exec($sqllota);
+   $resultlota = db_query($sqllota);
    db_fieldsmemory($resultlota,0);
    $pdf->cell(20,$alt,$count,0,1,"R",0);
    $pdf->cell(60,$alt,'',0,0,"C",0);
@@ -393,7 +393,7 @@ if ($tipo == "L"){
       	";
 		          // ver esta caso depois
 			  //and ".$folha."_rubric in ('R990','R992') 
-   $resultprev = pg_exec($sqlprev);
+   $resultprev = db_query($sqlprev);
    db_fieldsmemory($resultprev,0);
    $pdf->ln(3);
    $pdf->cell(45,$alt,'BASE I.N.S.S. :'.db_formatar($prev1,'f'),0,0,"L",0);
@@ -437,7 +437,7 @@ if ($tipo == "L"){
 		 and ".$folha."_instit = ".db_getsession("DB_instit")."
 		 $wherepes
 		 ";
-   $resultlota = pg_exec($sqllota);
+   $resultlota = db_query($sqllota);
    db_fieldsmemory($resultlota,0);
    $pdf->cell(20,$alt,$count,0,1,"R",0);
    $pdf->cell(60,$alt,'',0,0,"C",0);
@@ -478,7 +478,7 @@ if ($tipo == "L"){
       	"; 
 	          // ver esta caso depois
      		  //and ".$folha."_rubric in ('R990','R992')
-   $resultprev = pg_exec($sqlprev);
+   $resultprev = db_query($sqlprev);
    db_fieldsmemory($resultprev,0);
    $pdf->ln(3);
    $pdf->cell(45,$alt,'BASE I.N.S.S. :'.db_formatar($prev1,'f'),0,0,"L",0);

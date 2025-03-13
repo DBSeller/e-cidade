@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_empautoriza_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_empautoriza_classe.php"));
 
 $clempautoriza = new cl_empautoriza;
 db_postmemory($HTTP_POST_VARS);
@@ -158,20 +158,20 @@ function js_autorizacao(tp, mostra) {
 
 	if(mostra==true){
 		if (tp == 1) {
-      js_OpenJanelaIframe('top.corpo','db_iframe_autoriza','func_empautoriza.php?funcao_js=parent.js_mostraempautorizacao1|e54_autori&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autoriza','func_empautoriza.php?funcao_js=parent.js_mostraempautorizacao1|e54_autori&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
 		} else {
-			js_OpenJanelaIframe('top.corpo','db_iframe_autoriza','func_empautoriza.php?funcao_js=parent.js_mostraempautorizacao2|e54_autori&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
+			js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autoriza','func_empautoriza.php?funcao_js=parent.js_mostraempautorizacao2|e54_autori&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
 		}	
   }else{
 	   if (tp == 1) {
        if(document.form1.autorizacao1.value != ''){
-          js_OpenJanelaIframe('top.corpo','db_iframe_autoriza','func_empautoriza.php?pesquisa_chave='+document.form1.autorizacao1.value+'&funcao_js=parent.js_mostraempautorizacao11&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',false);
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autoriza','func_empautoriza.php?pesquisa_chave='+document.form1.autorizacao1.value+'&funcao_js=parent.js_mostraempautorizacao11&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',false);
        }else{
          document.form1.autorizacao1.value = '';
        }
 	   } else {
 	     if(document.form1.autorizacao2.value != ''){
-	        js_OpenJanelaIframe('top.corpo','db_iframe_autoriza','func_empautoriza.php?pesquisa_chave='+document.form1.autorizacao2.value+'&funcao_js=parent.js_mostraempautorizacao21&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',false);
+	        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autoriza','func_empautoriza.php?pesquisa_chave='+document.form1.autorizacao2.value+'&funcao_js=parent.js_mostraempautorizacao21&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',false);
 	     }else{
 	       document.form1.autorizacao1ate.value = '';
 	     }		   
@@ -347,7 +347,7 @@ function js_pesquisar(){
 function js_retornoAutorizacoes(oAjax) {
     
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
    
   if (oRetorno.status == 1) {
 
@@ -406,7 +406,7 @@ function js_modificarReservas() {
 function js_retornoModificarAutorizacoes(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
   
     alert('Reservas de saldo canceladas com sucesso');
@@ -426,7 +426,7 @@ function js_saldoDotacao(iDotacao) {
 function js_pesquisaAutorizacao(iAutorizacao) {
   js_OpenJanelaIframe('',
                       'db_iframe_autorizacao',
-                      'func_empempenhoaut001.php?fechar=top.corpo.db_iframe_autorizacao&e54_autori='+iAutorizacao,
+                      'func_empempenhoaut001.php?fechar=parent.CurrentWindow.corpo.db_iframe_autorizacao&e54_autori='+iAutorizacao,
                       true
                      );
  $('Jandb_iframe_autorizacao').style.zIndex='100000';                     

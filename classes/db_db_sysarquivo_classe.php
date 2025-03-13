@@ -1,82 +1,82 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: configuracoes
 //CLASSE DA ENTIDADE db_sysarquivo
-class cl_db_sysarquivo { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $codarq = 0; 
-   var $nomearq = null; 
-   var $descricao = null; 
-   var $sigla = null; 
-   var $dataincl_dia = null; 
-   var $dataincl_mes = null; 
-   var $dataincl_ano = null; 
-   var $dataincl = null; 
-   var $tipotabela = 0; 
-   var $naolibclass = 'f'; 
-   var $naolibfunc = 'f'; 
-   var $naolibprog = 'f'; 
-   var $naolibform = 'f'; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_db_sysarquivo {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $codarq = 0;
+   var $nomearq = null;
+   var $descricao = null;
+   var $sigla = null;
+   var $dataincl_dia = null;
+   var $dataincl_mes = null;
+   var $dataincl_ano = null;
+   var $dataincl = null;
+   var $tipotabela = 0;
+   var $naolibclass = 'f';
+   var $naolibfunc = 'f';
+   var $naolibprog = 'f';
+   var $naolibform = 'f';
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 codarq = int4 = Codigo Arquivo 
-                 nomearq = char(40) = Nome do Arquivo 
-                 descricao = text = Descrição 
-                 sigla = char(4) = Sigla 
-                 dataincl = date = Data Inclusão 
-                 rotulo = varchar(50) = Rótulo 
-                 tipotabela = int4 = Tipo Tabela 
-                 naolibclass = bool = Não Lib. Classe 
-                 naolibfunc = bool = Não Lib. Função 
-                 naolibprog = bool = Não Lib. Prog. 
-                 naolibform = bool = Não Lib.. Form 
+                 codarq = int4 = Codigo Arquivo
+                 nomearq = char(40) = Nome do Arquivo
+                 descricao = text = Descrição
+                 sigla = char(4) = Sigla
+                 dataincl = date = Data Inclusão
+                 rotulo = varchar(50) = Rótulo
+                 tipotabela = int4 = Tipo Tabela
+                 naolibclass = bool = Não Lib. Classe
+                 naolibfunc = bool = Não Lib. Função
+                 naolibprog = bool = Não Lib. Prog.
+                 naolibform = bool = Não Lib.. Form
                  ";
-   //funcao construtor da classe 
-   function cl_db_sysarquivo() { 
+   //funcao construtor da classe
+   function cl_db_sysarquivo() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("db_sysarquivo"); 
+     $this->rotulo = new rotulo("db_sysarquivo");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -110,9 +110,9 @@ class cl_db_sysarquivo {
      }
    }
    // funcao para inclusao
-   function incluir ($codarq){ 
+   function incluir ($codarq){
       $this->atualizacampos();
-     if($this->nomearq == null ){ 
+     if($this->nomearq == null ){
        $this->erro_sql = " Campo Nome do Arquivo nao Informado.";
        $this->erro_campo = "nomearq";
        $this->erro_banco = "";
@@ -121,7 +121,7 @@ class cl_db_sysarquivo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->descricao == null ){ 
+     if($this->descricao == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "descricao";
        $this->erro_banco = "";
@@ -130,7 +130,7 @@ class cl_db_sysarquivo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->dataincl == null ){ 
+     if($this->dataincl == null ){
        $this->erro_sql = " Campo Data Inclusão nao Informado.";
        $this->erro_campo = "dataincl_dia";
        $this->erro_banco = "";
@@ -139,7 +139,7 @@ class cl_db_sysarquivo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rotulo == null ){ 
+     if($this->rotulo == null ){
        $this->erro_sql = " Campo Rótulo nao Informado.";
        $this->erro_campo = "rotulo";
        $this->erro_banco = "";
@@ -148,7 +148,7 @@ class cl_db_sysarquivo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->tipotabela == null ){ 
+     if($this->tipotabela == null ){
        $this->erro_sql = " Campo Tipo Tabela nao Informado.";
        $this->erro_campo = "tipotabela";
        $this->erro_banco = "";
@@ -157,7 +157,7 @@ class cl_db_sysarquivo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->naolibclass == null ){ 
+     if($this->naolibclass == null ){
        $this->erro_sql = " Campo Não Lib. Classe nao Informado.";
        $this->erro_campo = "naolibclass";
        $this->erro_banco = "";
@@ -166,7 +166,7 @@ class cl_db_sysarquivo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->naolibfunc == null ){ 
+     if($this->naolibfunc == null ){
        $this->erro_sql = " Campo Não Lib. Função nao Informado.";
        $this->erro_campo = "naolibfunc";
        $this->erro_banco = "";
@@ -175,7 +175,7 @@ class cl_db_sysarquivo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->naolibprog == null ){ 
+     if($this->naolibprog == null ){
        $this->erro_sql = " Campo Não Lib. Prog. nao Informado.";
        $this->erro_campo = "naolibprog";
        $this->erro_banco = "";
@@ -184,7 +184,7 @@ class cl_db_sysarquivo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->naolibform == null ){ 
+     if($this->naolibform == null ){
        $this->erro_sql = " Campo Não Lib.. Form nao Informado.";
        $this->erro_campo = "naolibform";
        $this->erro_banco = "";
@@ -194,16 +194,16 @@ class cl_db_sysarquivo {
        return false;
      }
      if($codarq == "" || $codarq == null ){
-       $result = db_query("select nextval('db_sysarquivo_codarq_seq')"); 
+       $result = db_query("select nextval('db_sysarquivo_codarq_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: db_sysarquivo_codarq_seq do campo: codarq"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: db_sysarquivo_codarq_seq do campo: codarq";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->codarq = pg_result($result,0,0); 
+       $this->codarq = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from db_sysarquivo_codarq_seq");
        if(($result != false) && (pg_result($result,0,0) < $codarq)){
@@ -214,10 +214,10 @@ class cl_db_sysarquivo {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->codarq = $codarq; 
+         $this->codarq = $codarq;
        }
      }
-     if(($this->codarq == null) || ($this->codarq == "") ){ 
+     if(($this->codarq == null) || ($this->codarq == "") ){
        $this->erro_sql = " Campo codarq nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -225,34 +225,34 @@ class cl_db_sysarquivo {
        $this->erro_status = "0";
        return false;
      }
-     $sql = "insert into db_sysarquivo(
-                                       codarq 
-                                      ,nomearq 
-                                      ,descricao 
-                                      ,sigla 
-                                      ,dataincl 
-                                      ,rotulo 
-                                      ,tipotabela 
-                                      ,naolibclass 
-                                      ,naolibfunc 
-                                      ,naolibprog 
-                                      ,naolibform 
+     $sql = "insert into db_sysarquivo (
+                                       codarq
+                                      ,nomearq
+                                      ,descricao
+                                      ,sigla
+                                      ,dataincl
+                                      ,rotulo
+                                      ,tipotabela
+                                      ,naolibclass
+                                      ,naolibfunc
+                                      ,naolibprog
+                                      ,naolibform
                        )
                 values (
-                                $this->codarq 
-                               ,'$this->nomearq' 
-                               ,'$this->descricao' 
-                               ,'$this->sigla' 
-                               ,".($this->dataincl == "null" || $this->dataincl == ""?"null":"'".$this->dataincl."'")." 
-                               ,'$this->rotulo' 
-                               ,$this->tipotabela 
-                               ,'$this->naolibclass' 
-                               ,'$this->naolibfunc' 
-                               ,'$this->naolibprog' 
-                               ,'$this->naolibform' 
+                                $this->codarq
+                               ,'$this->nomearq'
+                               ,'$this->descricao'
+                               ,'$this->sigla'
+                               ,".($this->dataincl == "null" || $this->dataincl == ""?"null":"'".$this->dataincl."'")."
+                               ,'$this->rotulo'
+                               ,$this->tipotabela
+                               ,'$this->naolibclass'
+                               ,'$this->naolibfunc'
+                               ,'$this->naolibprog'
+                               ,'$this->naolibform'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Tabela de Dados ($this->codarq) nao Incluído. Inclusao Abortada.";
@@ -294,19 +294,19 @@ class cl_db_sysarquivo {
        $resac = db_query("insert into db_acount values($acount,140,8928,'','".AddSlashes(pg_result($resaco,0,'naolibform'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($codarq=null) { 
+   function alterar ($codarq=null) {
       $this->atualizacampos();
      $sql = " update db_sysarquivo set ";
      $virgula = "";
-     if(trim($this->codarq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["codarq"])){ 
-        if(trim($this->codarq)=="" && isset($GLOBALS["HTTP_POST_VARS"]["codarq"])){ 
-           $this->codarq = "0" ; 
-        } 
+     if(trim($this->codarq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["codarq"])){
+        if(trim($this->codarq)=="" && isset($GLOBALS["HTTP_POST_VARS"]["codarq"])){
+           $this->codarq = "0" ;
+        }
        $sql  .= $virgula." codarq = $this->codarq ";
        $virgula = ",";
-       if(trim($this->codarq) == null ){ 
+       if(trim($this->codarq) == null ){
          $this->erro_sql = " Campo Codigo Arquivo nao Informado.";
          $this->erro_campo = "codarq";
          $this->erro_banco = "";
@@ -316,10 +316,10 @@ class cl_db_sysarquivo {
          return false;
        }
      }
-     if(trim($this->nomearq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["nomearq"])){ 
+     if(trim($this->nomearq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["nomearq"])){
        $sql  .= $virgula." nomearq = '$this->nomearq' ";
        $virgula = ",";
-       if(trim($this->nomearq) == null ){ 
+       if(trim($this->nomearq) == null ){
          $this->erro_sql = " Campo Nome do Arquivo nao Informado.";
          $this->erro_campo = "nomearq";
          $this->erro_banco = "";
@@ -329,10 +329,10 @@ class cl_db_sysarquivo {
          return false;
        }
      }
-     if(trim($this->descricao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descricao"])){ 
+     if(trim($this->descricao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descricao"])){
        $sql  .= $virgula." descricao = '$this->descricao' ";
        $virgula = ",";
-       if(trim($this->descricao) == null ){ 
+       if(trim($this->descricao) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "descricao";
          $this->erro_banco = "";
@@ -342,14 +342,14 @@ class cl_db_sysarquivo {
          return false;
        }
      }
-     if(trim($this->sigla)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sigla"])){ 
+     if(trim($this->sigla)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sigla"])){
        $sql  .= $virgula." sigla = '$this->sigla' ";
        $virgula = ",";
      }
-     if(trim($this->dataincl)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dataincl_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dataincl_dia"] !="") ){ 
+     if(trim($this->dataincl)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dataincl_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dataincl_dia"] !="") ){
        $sql  .= $virgula." dataincl = '$this->dataincl' ";
        $virgula = ",";
-       if(trim($this->dataincl) == null ){ 
+       if(trim($this->dataincl) == null ){
          $this->erro_sql = " Campo Data Inclusão nao Informado.";
          $this->erro_campo = "dataincl_dia";
          $this->erro_banco = "";
@@ -358,11 +358,11 @@ class cl_db_sysarquivo {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["dataincl_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["dataincl_dia"])){
          $sql  .= $virgula." dataincl = null ";
          $virgula = ",";
-         if(trim($this->dataincl) == null ){ 
+         if(trim($this->dataincl) == null ){
            $this->erro_sql = " Campo Data Inclusão nao Informado.";
            $this->erro_campo = "dataincl_dia";
            $this->erro_banco = "";
@@ -373,10 +373,10 @@ class cl_db_sysarquivo {
          }
        }
      }
-     if(trim($this->rotulo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rotulo"])){ 
+     if(trim($this->rotulo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rotulo"])){
        $sql  .= $virgula." rotulo = '$this->rotulo' ";
        $virgula = ",";
-       if(trim($this->rotulo) == null ){ 
+       if(trim($this->rotulo) == null ){
          $this->erro_sql = " Campo Rótulo nao Informado.";
          $this->erro_campo = "rotulo";
          $this->erro_banco = "";
@@ -386,10 +386,10 @@ class cl_db_sysarquivo {
          return false;
        }
      }
-     if(trim($this->tipotabela)!="" || isset($GLOBALS["HTTP_POST_VARS"]["tipotabela"])){ 
+     if(trim($this->tipotabela)!="" || isset($GLOBALS["HTTP_POST_VARS"]["tipotabela"])){
        $sql  .= $virgula." tipotabela = $this->tipotabela ";
        $virgula = ",";
-       if(trim($this->tipotabela) == null ){ 
+       if(trim($this->tipotabela) == null ){
          $this->erro_sql = " Campo Tipo Tabela nao Informado.";
          $this->erro_campo = "tipotabela";
          $this->erro_banco = "";
@@ -399,10 +399,10 @@ class cl_db_sysarquivo {
          return false;
        }
      }
-     if(trim($this->naolibclass)!="" || isset($GLOBALS["HTTP_POST_VARS"]["naolibclass"])){ 
+     if(trim($this->naolibclass)!="" || isset($GLOBALS["HTTP_POST_VARS"]["naolibclass"])){
        $sql  .= $virgula." naolibclass = '$this->naolibclass' ";
        $virgula = ",";
-       if(trim($this->naolibclass) == null ){ 
+       if(trim($this->naolibclass) == null ){
          $this->erro_sql = " Campo Não Lib. Classe nao Informado.";
          $this->erro_campo = "naolibclass";
          $this->erro_banco = "";
@@ -412,10 +412,10 @@ class cl_db_sysarquivo {
          return false;
        }
      }
-     if(trim($this->naolibfunc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["naolibfunc"])){ 
+     if(trim($this->naolibfunc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["naolibfunc"])){
        $sql  .= $virgula." naolibfunc = '$this->naolibfunc' ";
        $virgula = ",";
-       if(trim($this->naolibfunc) == null ){ 
+       if(trim($this->naolibfunc) == null ){
          $this->erro_sql = " Campo Não Lib. Função nao Informado.";
          $this->erro_campo = "naolibfunc";
          $this->erro_banco = "";
@@ -425,10 +425,10 @@ class cl_db_sysarquivo {
          return false;
        }
      }
-     if(trim($this->naolibprog)!="" || isset($GLOBALS["HTTP_POST_VARS"]["naolibprog"])){ 
+     if(trim($this->naolibprog)!="" || isset($GLOBALS["HTTP_POST_VARS"]["naolibprog"])){
        $sql  .= $virgula." naolibprog = '$this->naolibprog' ";
        $virgula = ",";
-       if(trim($this->naolibprog) == null ){ 
+       if(trim($this->naolibprog) == null ){
          $this->erro_sql = " Campo Não Lib. Prog. nao Informado.";
          $this->erro_campo = "naolibprog";
          $this->erro_banco = "";
@@ -438,10 +438,10 @@ class cl_db_sysarquivo {
          return false;
        }
      }
-     if(trim($this->naolibform)!="" || isset($GLOBALS["HTTP_POST_VARS"]["naolibform"])){ 
+     if(trim($this->naolibform)!="" || isset($GLOBALS["HTTP_POST_VARS"]["naolibform"])){
        $sql  .= $virgula." naolibform = '$this->naolibform' ";
        $virgula = ",";
-       if(trim($this->naolibform) == null ){ 
+       if(trim($this->naolibform) == null ){
          $this->erro_sql = " Campo Não Lib.. Form nao Informado.";
          $this->erro_campo = "naolibform";
          $this->erro_banco = "";
@@ -487,7 +487,7 @@ class cl_db_sysarquivo {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Tabela de Dados nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->codarq;
@@ -515,14 +515,14 @@ class cl_db_sysarquivo {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($codarq=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($codarq=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($codarq));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -558,7 +558,7 @@ class cl_db_sysarquivo {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Tabela de Dados nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$codarq;
@@ -586,11 +586,11 @@ class cl_db_sysarquivo {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -612,10 +612,10 @@ class cl_db_sysarquivo {
       }
      return $result;
    }
-   function sql_query ( $codarq=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $codarq=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -628,15 +628,15 @@ class cl_db_sysarquivo {
      $sql2 = "";
      if($dbwhere==""){
        if($codarq!=null ){
-         $sql2 .= " where db_sysarquivo.codarq = $codarq "; 
-       } 
+         $sql2 .= " where db_sysarquivo.codarq = $codarq ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -645,10 +645,10 @@ class cl_db_sysarquivo {
      }
      return $sql;
   }
-   function sql_query_arqmod ( $codarq=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_arqmod ( $codarq=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -663,15 +663,15 @@ class cl_db_sysarquivo {
      $sql2 = "";
      if($dbwhere==""){
        if($codarq!=null ){
-         $sql2 .= " where db_sysarquivo.codarq = $codarq "; 
-       } 
+         $sql2 .= " where db_sysarquivo.codarq = $codarq ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -680,10 +680,10 @@ class cl_db_sysarquivo {
      }
      return $sql;
   }
-   function sql_query_file ( $codarq=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $codarq=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -696,15 +696,15 @@ class cl_db_sysarquivo {
      $sql2 = "";
      if($dbwhere==""){
        if($codarq!=null ){
-         $sql2 .= " where db_sysarquivo.codarq = $codarq "; 
-       } 
+         $sql2 .= " where db_sysarquivo.codarq = $codarq ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -715,9 +715,9 @@ class cl_db_sysarquivo {
   }
 
   /**
-   * Busca todas tabela de um modulo e que tenha apenas uma PK 
-   * 
-   * @param int $iCodigoModulo 
+   * Busca todas tabela de um modulo e que tenha apenas uma PK
+   *
+   * @param int $iCodigoModulo
    * @access public
    * @return string
    */
@@ -739,8 +739,8 @@ class cl_db_sysarquivo {
 
     return $sSql;
   }
-  
-  
+
+
   /**
    * Busca nome dos campos e se e pk pelo código da tabela
    *
@@ -749,7 +749,7 @@ class cl_db_sysarquivo {
    * @return string
    */
   public function sql_query_buscaCamposPorTabela($iCodigoTabela) {
-    
+
     $sSql  =" select db_syscampo.nomecam   as nomecampo,                              ";
     $sSql .="   	   db_sysarquivo.nomearq as nometabela,                             ";
     $sSql .="   	  case                                                                        ";
@@ -763,8 +763,27 @@ class cl_db_sysarquivo {
     $sSql .="  inner join db_sysarquivo on db_sysarquivo.codarq = db_sysarqcamp.codarq          ";
     $sSql .="   	    left  join db_sysprikey  on db_sysprikey.codcam  = db_syscampo.codcam     ";
     $sSql .="  where  db_sysarqcamp.codarq = {$iCodigoTabela}                                   ";
-    
-    return $sSql;    
+
+    return $sSql;
+  }
+
+  /**
+   * Busca nome dos campos pk e sua referencia pelo código da tabela
+   *
+   * @param int $iCodigoTabela
+   * @access public
+   * @return string
+   */
+  public function sql_query_buscaCampoReferenciaPorTabela($iCodigoTabela) {
+
+    $sSql  = " select nomecam,                                                       ";
+    $sSql .= "       db_sysprikey.camiden as campo_referencia                        ";
+    $sSql .= " from db_sysarquivo                                                    ";
+    $sSql .= " inner join db_sysprikey ON db_sysprikey.codarq = db_sysarquivo.codarq ";
+    $sSql .= " inner join db_syscampo ON db_syscampo.codcam   = db_sysprikey.codcam  ";
+    $sSql .= " where db_sysarquivo.codarq = {$iCodigoTabela}                         ";
+
+    return $sSql;
   }
 
 }

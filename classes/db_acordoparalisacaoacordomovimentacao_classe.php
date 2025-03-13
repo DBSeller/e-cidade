@@ -370,8 +370,7 @@ class cl_acordoparalisacaoacordomovimentacao {
      $sql .= "      inner join acordoparalisacao  on  acordoparalisacao.ac47_sequencial = acordoparalisacaoacordomovimentacao.ac48_acordoparalisacao";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = acordomovimentacao.ac10_id_usuario";
      $sql .= "      inner join acordomovimentacaotipo  on  acordomovimentacaotipo.ac09_sequencial = acordomovimentacao.ac10_acordomovimentacaotipo";
-     $sql .= "      inner join acordo  on  acordo.ac16_sequencial = acordomovimentacao.ac10_acordo";
-     $sql .= "      inner join acordo  on  acordo.ac16_sequencial = acordoparalisacao.ac47_acordo";
+     $sql .= "      inner join acordo  on  acordo.ac16_sequencial = acordomovimentacao.ac10_acordo and  acordo.ac16_sequencial = acordoparalisacao.ac47_acordo";
      $sql2 = "";
      if($dbwhere==""){
        if($ac48_sequencial!=null ){

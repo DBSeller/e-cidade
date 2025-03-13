@@ -11,6 +11,7 @@
   <filtros>
     <filtro label="" condicao="COALESCE(z01_nomefanta, z01_nomefanta, z01_nome) is not null" obrigatorio="true" />
     <filtro label="" condicao="COALESCE(z01_nomefanta, z01_nomefanta, z01_nome) != ''"       obrigatorio="true" />
+    <filtro label="" condicao="(y20_datalimiteimpressao >= now() or y20_datalimiteimpressao is null)"       obrigatorio="true" />
   </filtros>
   <agrupamento />
   <ordenacao campos="nome_grafica ASC" />

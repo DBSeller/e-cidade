@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/db_stdClass.php");
-require_once("libs/JSON.php");
-require_once("model/contabilidade/ParametroIntegracaoPatrimonial.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("model/contabilidade/ParametroIntegracaoPatrimonial.model.php"));
+
+define("ENTRADA_DISPENSA_TOMBAMENTO", 25);
+define("ANULACAO_ENTRADA_DISPENSA_TOMBAMENTO", 26);
 
 $oJson       = new services_json();
 $oParametros = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -41,8 +44,8 @@ $oRetorno = new stdClass();
 $oRetorno->iStatus   = "1";
 $oRetorno->sMensagem = "";
 
-$oDaoEmpnotaitembenspendente = db_utils::getDao("empnotaitembenspendente");
-$oDaoBensDispensaTombamento  = db_utils::getDao("bensdispensatombamento");
+$oDaoEmpnotaitembenspendente = new cl_empnotaitembenspendente;
+$oDaoBensDispensaTombamento  = new cl_bensdispensatombamento;
 
 /**
  * Caminho das mensagens do programa
@@ -62,34 +65,43 @@ try {
     case 'processar':
 
       $oParametros->sJustificativa = db_stdClass::normalizeStringJsonEscapeString($oParametros->sJustificativa);
+      $iCodigoDocumento = 210;
 
       $sWhere               = "e137_empnotaitem = {$oParametros->iCodigoEmpNotaItem}";
       $sSqlBensNotaPendente = $oDaoEmpnotaitembenspendente->sql_query_file(null,"*",null,$sWhere);
       $rsBensNotaPendente   = db_query($sSqlBensNotaPendente);
-
       if (!$rsBensNotaPendente || pg_num_rows($rsBensNotaPendente) == 0 ) {
         throw new Exception (_M(MENSAGENS."nota_item_nao_encontrado"));
       }
-
       $oDadosEmpnotaitem = db_utils::fieldsMemory($rsBensNotaPendente,0);
-      $oDaoEmpnotaitembenspendente->excluir($oDadosEmpnotaitem->e137_sequencial);
 
+      $oEmpFinanceiro = new EmpenhoFinanceiro($oParametros->iNumeroEmpenho);
+      if($oEmpFinanceiro->isRestoAPagar(db_getsession('DB_anousu'))) {
+        $iCodigoDocumento = 212;
+      }
+
+      /**
+       * Cria o movimento no estoque antes de excluir o registro na empnotaitembenspendente,
+       * pois a função consulta o registro na tabela.
+       */
+      $oItemEstoque = new MaterialEstoqueItem($oDadosEmpnotaitem->e137_matestoqueitem);
+      $oItem = processarMovimentoEstoque($oDadosEmpnotaitem->e137_empnotaitem, $oItemEstoque, false);
+      $oDaoEmpnotaitembenspendente->excluir($oDadosEmpnotaitem->e137_sequencial);
       if ($oDaoEmpnotaitembenspendente->erro_status == "0") {
         throw new Exception (_M(MENSAGENS."nota_item_nao_excluindo"));
       }
 
       $oDaoBensDispensaTombamento->e139_empnotaitem    = $oDadosEmpnotaitem->e137_empnotaitem;
-      $oDaoBensDispensaTombamento->e139_matestoqueitem = $oDadosEmpnotaitem->e137_matestoqueitem;
+      $oDaoBensDispensaTombamento->e139_matestoqueitem = $oItem->getCodigo();
       $oDaoBensDispensaTombamento->e139_justificativa  = $oParametros->sJustificativa;
       $oDaoBensDispensaTombamento->incluir(null);
-
       if ($oDaoBensDispensaTombamento->erro_status == "0") {
 
         $oDadosErro = (object) array('sErroBanco' => $oDaoBensDispensaTombamento->erro_banco);
         throw new Exception (_M(MENSAGENS."dispensa_tombamento_nao_incluido", $oDadosErro));
       }
 
-      processarLancamento(210, $oDadosEmpnotaitem->e137_matestoqueitem, $oDadosEmpnotaitem->e137_empnotaitem, $oParametros);
+      processarLancamento($iCodigoDocumento, $oDadosEmpnotaitem->e137_matestoqueitem, $oDadosEmpnotaitem->e137_empnotaitem, $oParametros);
 
       $oRetorno->sMensagem = _M(MENSAGENS . 'processamento_efetuado_sucesso');
     break;
@@ -104,6 +116,7 @@ try {
       $sWhere = "e139_empnotaitem = {$oParametros->iCodigoEmpNotaItem}";
       $sSqlBensDispensaTombamento = $oDaoBensDispensaTombamento->sql_query_file(null,"*",null,$sWhere);
       $rsBensDispensaTombamento   = db_query($sSqlBensDispensaTombamento);
+      $iCodigoDocumento = 211;
 
       if (!$rsBensDispensaTombamento || pg_num_rows($rsBensDispensaTombamento) == 0 ){
 
@@ -130,7 +143,18 @@ try {
         throw new Exception (_M(MENSAGENS . "nota_item_nao_incluido", $oDadosErro));
       }
 
-      processarLancamento(211, $oDadosTombamento->e139_matestoqueitem, $oDadosTombamento->e139_empnotaitem, $oParametros);
+      $oEstoqueItem = new MaterialEstoqueItem($oDadosTombamento->e139_matestoqueitem);
+      if ($oEstoqueItem->getQuantidadeAtendida() > 0) {
+        throw new Exception("A entrada para esse item já possuí quantidades atendidas. Procedimento abortado.");
+      }
+
+      $oEmpFinanceiro = new EmpenhoFinanceiro($oParametros->iNumeroEmpenho);
+      if($oEmpFinanceiro->isRestoAPagar(db_getsession('DB_anousu'))) {
+        $iCodigoDocumento = 213;
+      }
+
+      $oMovimento = processarMovimentoEstoque($oDadosTombamento->e139_empnotaitem, $oEstoqueItem, true);
+      processarLancamento($iCodigoDocumento, $oMovimento->getCodigo(), $oDadosTombamento->e139_empnotaitem, $oParametros);
       $oRetorno->sMensagem = _M(MENSAGENS . 'estorno_efetuado_sucesso');
 
       break;
@@ -183,16 +207,15 @@ function processarLancamento($iCodigoDocumento, $iCodigoItemEstoque, $iCodigoIte
   /**
    * Busca codigo da nota de liquidacao pelo codigo do item
    */
-  $oDaoEmpnotaitem  = db_utils::getDao('empnotaitem');
+  $oDaoEmpnotaitem    = db_utils::getDao('empnotaitem');
   $sSqlNotaLiquidacao = $oDaoEmpnotaitem->sql_query_file($iCodigoItemNota);
-  $rsNotaLiquidacao = $oDaoEmpnotaitem->sql_record($sSqlNotaLiquidacao);
+  $rsNotaLiquidacao   = $oDaoEmpnotaitem->sql_record($sSqlNotaLiquidacao);
 
   if ( $oDaoEmpnotaitem->erro_status == "0" ) {
     throw new DBException("Erro ao buscar item da nota, item não encontrado: $iCodigoItemNota.");
   }
 
-  $iCodigoNotaLiquidacao = db_utils::fieldsMemory($rsNotaLiquidacao, 0)->e72_codnota;
-
+  $iCodigoNotaLiquidacao    = db_utils::fieldsMemory($rsNotaLiquidacao, 0)->e72_codnota;
   $oDaoMaterialEstoqueGrupo = db_utils::getDao('materialestoquegrupo');
   $sWhere                   = "m71_codlanc = {$iCodigoItemEstoque}";
   $sSqlMaterialGrupo        = $oDaoMaterialEstoqueGrupo->sql_query_grupoitem(null, 'm65_sequencial', null, $sWhere);
@@ -208,7 +231,7 @@ function processarLancamento($iCodigoDocumento, $iCodigoItemEstoque, $iCodigoIte
   $iCodigoGrupo       = $oDadosEstoqueGrupo->m65_sequencial;
 
   $oEmpenhoFinanceiro = new EmpenhoFinanceiro($oParametros->iNumeroEmpenho);
-  $aItensEmpenho = $oEmpenhoFinanceiro->getItens();
+  $aItensEmpenho      = $oEmpenhoFinanceiro->getItens();
 
   $oEventoContabil = new EventoContabil($iCodigoDocumento, db_getsession("DB_anousu"));
 
@@ -230,4 +253,83 @@ function processarLancamento($iCodigoDocumento, $iCodigoItemEstoque, $iCodigoIte
   $oEventoContabil->executaLancamento($oLancamentoAuxiliarEmLiquidacao);
 
   return true;
+}
+
+/**
+ * @param      $iEmpnotaitem
+ * @param null|MaterialEstoqueItem $oItemEstoque
+ *
+ * @return MaterialEstoqueItem|null
+ * @throws BusinessException
+ * @throws DBException
+ * @throws Exception
+ */
+function processarMovimentoEstoque($iEmpnotaitem, MaterialEstoqueItem $oEstoqueItem, $lEstorno = false) {
+
+  /**
+   * Pega os dados necessários para criar o movimento no estoque
+   */
+  $oDaoEmpnotaitembenspendente = new cl_empnotaitembenspendente;
+  $sCamposMovimento     = 'm70_codmatmater, m71_quantatend, m71_quant, m71_valor';
+  $sWhereDadosMovimento = "e137_empnotaitem = {$iEmpnotaitem}";
+  $sSqlDadosMovimento   = $oDaoEmpnotaitembenspendente->sql_query(null, $sCamposMovimento, null, $sWhereDadosMovimento);
+  $rsDadosMovimento     = $oDaoEmpnotaitembenspendente->sql_record($sSqlDadosMovimento);
+  if (!$rsDadosMovimento || $oDaoEmpnotaitembenspendente->numrows == 0) {
+    throw new BusinessException('Não foi possível criar o movimento no estoque.');
+  }
+  $oDadosMovimento = db_utils::fieldsMemory($rsDadosMovimento, 0);
+
+  $oDepartamento = DBDepartamentoRepository::getDBDepartamentoByCodigo(db_getsession('DB_coddepto'));
+  $oDepartamentoEntrada = $oEstoqueItem->getEstoque()->getDepartamento();
+
+  /**
+   * Compara o departamento do usuário logado com o departamento onde foi dada a Entrada da Ordem de Compra
+   */
+  $sNomeRotina = "a Dispensa de Tombamento";
+  if ($lEstorno) {
+    $sNomeRotina = "o Estorno da Dispensa de Tombamento";
+  }
+  if ($oDepartamento->getCodigo() != $oDepartamentoEntrada->getCodigo()) {
+
+    $sMensagem  = "Para efetuar {$sNomeRotina} é necessário estar no departamento ";
+    $sMensagem .= "{$oDepartamentoEntrada->getCodigo()} - {$oDepartamentoEntrada->getNomeDepartamento()}, ";
+    $sMensagem .= "onde foi feita a Entrada da Ordem de Compra.";
+    throw new BusinessException($sMensagem);
+  }
+
+  $iDataHoraAgora  = time();
+
+  $oMovimentacao = new MaterialEstoqueMovimentacao(null);
+  $oMovimentacao->setUsuario(new UsuarioSistema(db_getsession('DB_id_usuario')));
+  $oMovimentacao->setData(new DBDate(date('Y-m-d', $iDataHoraAgora)));
+  $oMovimentacao->setHora(date('H:i:s', $iDataHoraAgora));
+  $oMovimentacao->setDepartamento($oDepartamento);
+  $oMovimentacao->setObservacao("ENTRADA DE M.P. POR DISPENSA DE TOMBAMENTO");
+  $oMovimentacao->setMovimento(new TipoMovimentacaoEstoque(25));
+  if ($lEstorno) {
+
+    $oMovimentacao->setMovimento(new TipoMovimentacaoEstoque(26));
+    $oMovimentacao->setObservacao("ANULAÇÃO DA ENTRADA DE M.P. POR DISPENSA DE TOMBAMENTO");
+    $oEstoqueItem->setQuantidadeAtendida($oEstoqueItem->getQuantidade());
+    $oEstoqueItem->salvar();
+  }
+  $oMovimentacao->salvar();
+
+  if ( !$lEstorno) {
+
+    $oMaterial = new MaterialAlmoxarifado($oDadosMovimento->m70_codmatmater);
+    $oEstoque = MaterialEstoqueAlmoxarifado::getEstoquePorMaterialDepartamento($oMaterial, $oDepartamento);
+    $oEstoque->getCodigo();
+    $oItemEstoque = new MaterialEstoqueItem(null);
+    $oItemEstoque->setEstoque($oEstoque);
+    $oItemEstoque->setData(new DBDate(date('Y-m-d', $iDataHoraAgora)));
+    $oItemEstoque->setQuantidade($oEstoqueItem->getQuantidade());
+    $oItemEstoque->setValor($oEstoqueItem->getValor());
+    $oItemEstoque->setQuantidadeAtendida(0);
+    $oItemEstoque->setServico(false);
+    $oItemEstoque->salvar();
+    $oEstoqueItem = $oItemEstoque;
+  }
+  MaterialEstoqueItem::vincularMovimentacaoComItem($oEstoqueItem, $oMovimentacao, $oEstoqueItem->getQuantidade());
+  return $oEstoqueItem;
 }

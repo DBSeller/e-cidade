@@ -2,14 +2,20 @@
   set_time_limit(0);
   if(!defined('DB_BIBLIOT')){
      session_cache_limiter('none');
-     session_start();
-     require("libs/db_stdlib.php");
-     require("libs/db_conecta.php");
-     include("libs/db_sessoes.php");
-     include("libs/db_usuariosonline.php");
-     db_postmemory($HTTP_POST_VARS);
-     db_postmemory($HTTP_SERVER_VARS);
-     include('fpdf.php');
+     if (session_status() == PHP_SESSION_NONE) {
+      session_start();
+     }
+     require_once(modification("libs/db_stdlib.php"));
+     require_once(modification("libs/db_conecta.php"));
+     require_once(modification("libs/db_sessoes.php"));
+     //require_once(modification("libs/db_usuariosonline.php"));
+     if (!empty($HTTP_POST_VARS)) {
+      db_postmemory($HTTP_POST_VARS);
+     }
+     if (!empty($HTTP_SERVER_VARS)) {
+      db_postmemory($HTTP_SERVER_VARS);
+     }
+     require_once(modification('fpdf151/fpdf.php'));
   }
 
      define('FPDF_FONTPATH','fpdf151/font/');
@@ -151,8 +157,8 @@ function Footer() {
     * na base do relatório
     */         
       $sSqlMenuAcess = "SELECT fc_montamenu(funcao) as menu from db_itensmenu where id_item =".db_getsession("DB_itemmenu_acessado");
-      $rsMenuAcess   = db_query($conn,$sSqlMenuAcess);
-      $sMenuAcess    = substr(pg_result($rsMenuAcess,0,"menu"),0,50);	
+      $rsMenuAcess   = db_query($sSqlMenuAcess);
+      $sMenuAcess    = substr(pg_result($rsMenuAcess,0,"menu"),0,50);
 	
     $this->Cell(0,10,$url. '  '.$sMenuAcess.'  '.$nome.'  Emissor: '.substr(ucwords(strtolower($emissor)),0,30).'  Exercício: '.db_getsession("DB_anousu").
                          '   Data: '.date("d-m-Y",db_getsession("DB_datausu"))." - ".date("H:i:s"),"T",0,'L');    

@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,6 +24,10 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
+
+$oRotulo = new rotulocampo();
+$oRotulo->label("j131_obs");
+
 ?>
 <form name="form1" method="post" action="">
 <?php db_input('j131_sequencial',10,$Ij131_sequencial,true,'hidden',$db_opcao,""); ?>
@@ -38,9 +42,9 @@
       <?=@$Lj131_matric?>
     </td>
     <td>
-      <?
-         db_input('j131_matric',10,$Ij131_matric,true,'text',3,"");
-         db_input('z01_nome',45,0,true,'text',3,"");
+      <?php
+      db_input('j131_matric',10,$Ij131_matric,true,'text',3,"");
+      db_input('z01_nome',45,0,true,'text',3,"");
       ?>
     </td>
   </tr>
@@ -224,7 +228,7 @@
 
 
   <tr>
-  	<td nowrap title='<?=$j131_obs?>'>
+  	<td nowrap title='<?=$Tj131_obs?>'>
   		<?=$Lj131_obs?>
   	</td>
   	<td>
@@ -274,7 +278,6 @@
 </form>
 
 <script>
-
 function js_valida() {
 
   if (document.form1.j131_cadhab.value == "") {
@@ -286,8 +289,8 @@ function js_valida() {
   }
 }
 function js_cancelar(){
-    location.href='cad1_iptuconstrhabite001.php?j131_matric=<?=$j131_matric?>&z01_nome=<?=$z01_nome?>&j131_idcons=<?=$j131_idcons?>';
- }
+  location.href='cad1_iptuconstrhabite001.php?j131_matric='+$F('j131_matric')+'&z01_nome='+encodeURIComponent($F('z01_nome').urlEncode())+'&j131_idcons=<?=$j131_idcons?>';
+}
 
 function js_montaCampoProcesso() {
 

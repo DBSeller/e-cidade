@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-//include("classes/db_conarquivospad_classe.php");
+//include(modification("classes/db_conarquivospad_classe.php"));
 
 class uniorcam {
     var $arq=null;
@@ -71,6 +71,7 @@ class uniorcam {
   $it = $instit;
   $instit = " o58_instit in ($instit)";
 
+  $sql_not = "";
   if (!empty($exercicios)) {
 	  $sql_not = "  and not o58_anousu in ($exercicios) ";
   }
@@ -95,7 +96,7 @@ class uniorcam {
                    o41_descr,
                    o41_ident
             having count(distinct cgc) > 1";
-   $rs_verifica = pg_exec($sql_verifica) or die($sql_verifica);
+   $rs_verifica = db_query($sql_verifica) or die($sql_verifica);
    $rows = pg_numrows($rs_verifica);
    if ( $rows > 0 ) {
      echo "<br><b>PROVAVEIS ERROS NOS REGISTROS DA UNIORCAM:</b><br>";
@@ -129,7 +130,7 @@ class uniorcam {
        where $instit and o58_anousu <= $anousu $sql_not";
 
   // echo $sql;exit;
-   $res=pg_exec($sql);
+   $res=db_query($sql);
    $rows = pg_numrows($res);
    for ($x=0;$x < $rows;$x++){
       $anousu         = formatar(pg_result($res,$x,"anousu"),4,'n');

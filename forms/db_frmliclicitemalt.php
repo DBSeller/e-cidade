@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -35,7 +35,7 @@ $clrotulo->label("nome");
 <center>
 <table border="0">
   <tr colspan=2>
-    <td align="center"><iframe name="procs" id="procs" src="lic1_licprocs001.php?licitacao=<?=@$licitacao?>" width="1000" height="130" marginwidth="0" marginheight="0" frameborder="0">
+    <td align="center"><iframe name="procs" id="procs" src="lic1_licprocs001.php?licitacao=<?=@$licitacao?>" width="1000" height="150" marginwidth="0" marginheight="0" frameborder="0">
 	</iframe></td>
   </tr>
   <tr colspan=2 >
@@ -60,7 +60,7 @@ $clrotulo->label("nome");
       }
     }
      ?>
-    <iframe name="itens" id="itens" src="lic1_licitensifra.php?licitacao=<?=@$licitacao?>&tipojulg=<?=$tipojulg?>" width="1000" height="230" marginwidth="0" marginheight="0" frameborder="0">
+    <iframe name="itens" id="itens" src="lic1_licitensifra.php?licitacao=<?=@$licitacao?>&tipojulg=<?=$tipojulg?>&registroPreco=<?=$lRegistroPreco ? 1 : 0?>&formaControle=<?=$l20_formacontroleregistropreco?>" width="1000" height="230" marginwidth="0" marginheight="0" frameborder="0">
 	</iframe>
     </td>
   </tr>

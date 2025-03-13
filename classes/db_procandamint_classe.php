@@ -1,4 +1,4 @@
-<?
+<?php
 //MODULO: protocolo
 //CLASSE DA ENTIDADE procandamint
 class cl_procandamint {
@@ -73,13 +73,26 @@ class cl_procandamint {
        $this->p78_despacho = ($this->p78_despacho == ""?@$GLOBALS["HTTP_POST_VARS"]["p78_despacho"]:$this->p78_despacho);
        $this->p78_publico = ($this->p78_publico == "f"?@$GLOBALS["HTTP_POST_VARS"]["p78_publico"]:$this->p78_publico);
        $this->p78_transint = ($this->p78_transint == "f"?@$GLOBALS["HTTP_POST_VARS"]["p78_transint"]:$this->p78_transint);
+
+       if ($this->p78_publico == null) {
+         $this->p78_publico = 'f';
+       }
+
+       if ($this->p78_transint == null) {
+        $this->p78_transint = 'f';
+       }
+
+       if ($this->p78_usuario == null) {
+         $this->p78_usuario = 0;
+       }
+
        $this->p78_tipodespacho = ($this->p78_tipodespacho == ""?@$GLOBALS["HTTP_POST_VARS"]["p78_tipodespacho"]:$this->p78_tipodespacho);
      }else{
        $this->p78_sequencial = ($this->p78_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["p78_sequencial"]:$this->p78_sequencial);
      }
    }
    // funcao para inclusao
-   function incluir ($p78_sequencial){
+   function incluir ($p78_sequencial, $flagMensagemOuvidoria = false){
       $this->atualizacampos();
      if($this->p78_codandam == null ){
        $this->erro_sql = " Campo Código andamento não informado.";
@@ -108,7 +121,7 @@ class cl_procandamint {
        $this->erro_status = "0";
        return false;
      }
-     if($this->p78_usuario == null ){
+     if($this->p78_usuario == null  && !$flagMensagemOuvidoria){
        $this->erro_sql = " Campo Cod. Usuário não informado.";
        $this->erro_campo = "p78_usuario";
        $this->erro_banco = "";
@@ -547,7 +560,7 @@ class cl_procandamint {
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = procandamint.p78_usuario";
      $sql .= "      inner join procandam  on  procandam.p61_codandam = procandamint.p78_codandam";
      $sql .= "      inner join tipodespacho  on  tipodespacho.p100_sequencial = procandamint.p78_tipodespacho";
-     $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = procandam.p61_id_usuario";
+//     $sql .= "      inner join db_usuarios on  db_usuarios.id_usuario = procandam.p61_id_usuario";
      $sql .= "      inner join db_depart  on  db_depart.coddepto = procandam.p61_coddepto";
      $sql .= "      inner join protprocesso  on  protprocesso.p58_codproc = procandam.p61_codproc";
      $sql2 = "";
@@ -565,7 +578,7 @@ class cl_procandamint {
      return $sql;
   }
    // funcao do sql
-   public function sql_query_file ($p78_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
+  public function sql_query_file ($p78_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
 
      $sql  = "select {$campos} ";
      $sql .= "  from procandamint ";
@@ -587,7 +600,7 @@ class cl_procandamint {
    function sql_query_sim ( $p78_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -610,7 +623,7 @@ class cl_procandamint {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -622,7 +635,7 @@ class cl_procandamint {
    function sql_query_tran ( $p78_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -649,7 +662,7 @@ class cl_procandamint {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

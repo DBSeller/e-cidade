@@ -1,41 +1,41 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("model/cronogramaFinanceiro.model.php");
-require_once("model/cronogramaBaseReceita.model.php");
-require_once("model/cronogramaMetaReceita.model.php");
-require_once("model/cronogramaMetaDespesa.model.php");
-require_once("libs/db_liborcamento.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("model/cronogramaFinanceiro.model.php"));
+require_once(modification("model/cronogramaBaseReceita.model.php"));
+require_once(modification("model/cronogramaMetaReceita.model.php"));
+require_once(modification("model/cronogramaMetaDespesa.model.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 $oJson       = new services_json();
 $oParam            = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -71,11 +71,12 @@ switch (trim($oParam->exec)) {
 
       $iNumRegPagina = 16;
       db_inicio_transacao();
+      $oRetorno->perspectiva_bloqueada = false;
       if (!isset($_SESSION["cronogramabases"]) || $oParam->lClearSession) {
 
-        //die($oParam->sEstrutural.", ".$oParam->iRecurso);
+
         /**
-         * cronograma de receita
+         * Verificamos se a Perspectiva já possui um acompanhamento
          */
         if ($oParam->iTipo == 1 || $oParam->iTipo == 2) {
 
@@ -95,7 +96,7 @@ switch (trim($oParam->exec)) {
           $aDados      = $oCronograma->getMetasDespesa($oParam->iAgrupa, $oParam->sEstrutural, $oParam->iRecurso);
 
         }
-
+        $_SESSION["cronogramaPossuiAcompanhamento"] = $oCronograma->temAcompanhamento();
         $_SESSION["cronogramabases"]      = $aDados;
         $_SESSION["cronogramabasestotal"] = count($aDados);
         $_SESSION["cronogramabasespages"] = ceil(count($aDados)/$iNumRegPagina);
@@ -105,12 +106,15 @@ switch (trim($oParam->exec)) {
         $_SESSION["cronogramabasespages"] = ceil(count($aDados)/$iNumRegPagina);
 
       }
+      $oRetorno->perspectiva_bloqueada  = $_SESSION["cronogramaPossuiAcompanhamento"];
 
       $iFetch = 0;
       if ($oParam->iPagina > 1) {
         $iFetch = ($oParam->iPagina*$iNumRegPagina) - $iNumRegPagina;
       }
-      $iLimit = $iFetch+$iNumRegPagina;
+
+      $iLimit = $iFetch + $iNumRegPagina;
+
       $iRegistrosUltimasPagina = count($aDados) % $iNumRegPagina;
       $oRetorno->totalPaginas = $_SESSION["cronogramabasespages"];
       $oRetorno->fecth        = $iFetch;
@@ -118,18 +122,23 @@ switch (trim($oParam->exec)) {
 
          $oRetorno->pagina = $_SESSION["cronogramabasespages"];
          $iLimit = $_SESSION["cronogramabasestotal"];
-         $iFetch = $iLimit - $iRegistrosUltimasPagina;
          if ($_SESSION["cronogramabasestotal"] == $iNumRegPagina) {
            $iFetch = 0;
          }
       } else {
        $oRetorno->pagina = $oParam->iPagina;
       }
+      $aDadosFetch = array();
       for ($i = $iFetch; $i < $iLimit; $i++) {
 
-        if ($oParam->iTipo != 3 && ($aDados[$i]->o70_codrec == "" && count($aDados[$i]->aDesdobramentos) == 0)) {
+        if ($oParam->iTipo != 3 && (isset($aDados[$i]) && $aDados[$i]->o70_codrec == "" && count($aDados[$i]->aDesdobramentos) == 0)) {
           continue;
         }
+
+        if(!isset($aDados[$i])) {
+          $aDados[$i] = new stdClass();
+        }
+
         $aDados[$i]->index = $i;
         $aDadosFetch[]     = $aDados[$i];
 
@@ -202,6 +211,9 @@ switch (trim($oParam->exec)) {
 
     if (isset($_SESSION["cronogramabases"])) {
 
+      if ( $_SESSION["cronogramaPossuiAcompanhamento"]) {
+        break;
+      }
       try {
 
         db_inicio_transacao();
@@ -232,11 +244,13 @@ switch (trim($oParam->exec)) {
 
   case "alterarValorMes" :
 
+    if ( $_SESSION["cronogramaPossuiAcompanhamento"]) {
+      break;
+    }
+
     /**
      * Altera o valor do mes da previsaoou meta
      */
-//    print_r($oParam);
-//    exit;
     $nPercentual = 0;
     $oRetorno->iCodRec           = 0;
     $oRetorno->lDesdobra         = false;
@@ -264,8 +278,9 @@ switch (trim($oParam->exec)) {
          */
         $nValor = $oParam->valor;
         if (($oParam->iTipo == 2) && $oBaseCalculo->getPercentualDesbramento() > 0) {
-          $nValor = round(($oParam->valor * $oBaseCalculo->getPercentualDesbramento()) / 100, 0);
+          $nValor = round(($oParam->valor * $oBaseCalculo->getPercentualDesbramento()) / 100, 2);
         }
+
         $sMensagemValorMaior = urlencode("Você não pode prever para o mês um valor maior que o orçado para o ano.");
         if ($oParam->iTipo == 1 || $oParam->iTipo == 2) {
           if ($oBaseCalculo->isDeducao() && $nValor < $oBaseCalculo->getValorTotal() ||
@@ -323,6 +338,7 @@ switch (trim($oParam->exec)) {
              * Fizemos o arredondamento , caso necessário em Dezembro;
              */
             $nValorPrevisto = $oBaseCalculo->getValorTotal();
+
             if ((round($nPercentualTotal,2) < 100) || ($nValorTotalCalculado < $nValorPrevisto)) {
 
               $nPercentualDiferenca                 = (100 - $nPercentualTotal);
@@ -359,10 +375,10 @@ switch (trim($oParam->exec)) {
             $iSender                          = $oParam->iSender;
             if (count($_SESSION["cronogramabases"][$iSender]->aDesdobramentos) > 0) {
 
-               $oRetorno->nPercentual       = $nPercentual;
-               $oRetorno->nValor            += $nValor;
-               $oRetorno->nPercentualAjuste  =  $oBaseCalculo->dados[11]->percentual;
-               $oRetorno->nValorAjuste      +=  $oBaseCalculo->dados[11]->valor;
+              $oRetorno->nPercentual       = $nPercentual;
+              $oRetorno->nValor            += $nValor;
+              $oRetorno->nPercentualAjuste  =  $oBaseCalculo->dados[11]->percentual;
+              $oRetorno->nValorAjuste      +=  $oBaseCalculo->dados[11]->valor;
 
             }
             if (($oBaseCalculo->isDeducao() && $oBaseCalculo->dados[11]->valor > 0) ||
@@ -401,6 +417,7 @@ switch (trim($oParam->exec)) {
             }
           }
         }
+
         $oRetorno->sConcarpeculiar = '';
         if ($oParam->iTipo == 2) {
           $oRetorno->sConcarpeculiar = $_SESSION["cronogramabases"][$oParam->iSender]->o70_concarpeculiar;

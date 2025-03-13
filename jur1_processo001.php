@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
-  pg_exec($conn,"BEGIN");
-  $result = pg_exec("select max(v50_codigo) + 1 from juridico");
+  db_query($conn,"BEGIN");
+  $result = db_query("select max(v50_codigo) + 1 from juridico");
   $v50_codigo = pg_result($result,0,0);
   $v50_codigo = $v50_codigo==""?"1":$v50_codigo;
   $data = "$data_ano-$data_mes-$data_dia";
@@ -60,12 +60,12 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 					        $db_situacao,
 					        $data,
 					        '$v50_movim')";
-  $result = pg_exec($sql) or die("Erro(34) inserindo em juridico");
+  $result = db_query($sql) or die("Erro(34) inserindo em juridico");
   $aux_autor = split("#",$aux_autor);
   $tam = sizeof($aux_autor);
   for($i = 1;$i < $tam;$i++)
-    $result = pg_exec("INSERT INTO autproc VALUES($v50_codigo,'".$aux_autor[$i]."',$i)") or die("Erro(37) inserindo em autproc: $i");
-  pg_exec("commit");
+    $result = db_query("INSERT INTO autproc VALUES($v50_codigo,'".$aux_autor[$i]."',$i)") or die("Erro(37) inserindo em autproc: $i");
+  db_query("commit");
   db_redireciona();
 }
 ?>
@@ -90,8 +90,8 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"><br><br>
 	<?
-      include("dbforms/db_funcoes.php");
-	  include("forms/db_frmjurproc.php");
+      include(modification("dbforms/db_funcoes.php"));
+	  include(modification("forms/db_frmjurproc.php"));
     ?>
 	</td>
   </tr>

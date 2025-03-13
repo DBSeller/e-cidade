@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once ('libs/db_stdlib.php');
-require_once ('libs/db_conecta.php');
-require_once ('libs/db_sessoes.php');
-require_once ('libs/db_utils.php');
-require_once ('libs/db_app.utils.php');
-require_once ('dbforms/db_funcoes.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_app.utils.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+
+use ECidade\RecursosHumanos\Pessoal\Repository\TipoAgrupamentoRubricaRepository;
 
 $oRotulo  = new rotulocampo;
 $db_opcao = 2;
@@ -89,6 +91,21 @@ $oRotulo->label("rh27_descr");
         </select>
       </td>
     </tr>
+    <tr>
+      <td>
+        <?php echo $Lrh113_tipogrupo; ?>
+      </td>
+      <td nowrap title="<?php echo $Trh113_tipogrupo; ?>">
+          <select id="rh113_tipogrupo" disabled style="width:140px">
+              <?php
+              foreach (TipoAgrupamentoRubricaRepository::findAll() as $tipoAgrupamento) {
+                  echo "<option value='{$tipoAgrupamento->getSequencial()}'>{$tipoAgrupamento->getDescricao()}</option>";
+              }
+              ?>
+          </select>
+      </td>
+  </tr>
+    
 
   </table>
 
@@ -118,20 +135,20 @@ $oRotulo->label("rh27_descr");
 var sUrlRPC  = 'pes4_agrupamentorubrica.RPC.php';  
 
 js_pesquisar();
-js_montaGrid();
 
 function js_pesquisar() {
 
-  var sFuncaoPesquisa = 'func_agrupamentorubrica.php?funcao_js=parent.js_retornoPesquisaAgrupamento|rh113_sequencial|rh113_descricao|rh113_codigo';
+  var sFuncaoPesquisa = 'func_agrupamentorubrica.php?funcao_js=parent.js_retornoPesquisaAgrupamento|rh113_sequencial|rh113_descricao|rh113_codigo|rh113_tipogrupo';
 
   js_OpenJanelaIframe('', 'db_iframe_agrupamentorubrica', sFuncaoPesquisa, 'Pesquisa', true);
 }
 
-function js_retornoPesquisaAgrupamento(iAgrupamentoRubrica, sDescricaoAgrupamento, iCodigo) {
+function js_retornoPesquisaAgrupamento(iAgrupamentoRubrica, sDescricaoAgrupamento, iCodigo, iTipoGrupo) {
 
   $('rh113_sequencial').value = iAgrupamentoRubrica;
   $('rh113_descricao').value  = sDescricaoAgrupamento;
   $('rh113_codigo').value  = iCodigo; 
+  $('rh113_tipogrupo').value  = iTipoGrupo; 
 
   db_iframe_agrupamentorubrica.hide();
   js_getDadosAgrupamentoRubrica();
@@ -147,6 +164,7 @@ function js_getDadosAgrupamentoRubrica() {
 
   oParam.exec                = 'getRubricas';
   oParam.iAgrupamentoRubrica = $F('rh113_sequencial');
+  oParam.iTipoGrupo = $F('rh113_tipogrupo');
 
   var oAjax = new Ajax.Request(
     sUrlRPC,
@@ -162,7 +180,7 @@ function js_retornoGetDadosAgrupamentoRubrica(oAjax) {
 
   js_removeObj('divCarregando');
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode().replace(/\\n/g,'\n');
   
   /**
@@ -180,6 +198,14 @@ function js_retornoGetDadosAgrupamentoRubrica(oAjax) {
   $('rh113_tipo').value = oRetorno.iTipo;
 	$('rh113_tipo').style.background = '#DEB887';
 	$('rh113_tipo').style.color      = '#555';
+
+  /**
+   * Tipo Grupo agrupamento
+   */
+  $('rh113_tipogrupo').value = oRetorno.iTipoGrupo;
+	$('rh113_tipogrupo').style.background = '#DEB887';
+	$('rh113_tipogrupo').style.color      = '#555';
+
 
   /**
    * Percorre array de rubricas e adiciona na grid
@@ -209,6 +235,7 @@ function js_processar() {
 
   oParam.exec                = 'alterar';
 	oParam.iAgrupamentoRubrica = $F('rh113_sequencial');
+	oParam.iTipoGrupo = $F('rh113_tipogrupo');
 
 	oParam.aRubricas = new Array();
 	
@@ -233,7 +260,7 @@ function js_retornoProcessar(oAjax) {
 
   js_removeObj('divCarregando');
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode().replace(/\\n/g,'\n');
 
   if ( oRetorno.iStatus > 1 ) {
@@ -253,47 +280,42 @@ function js_retornoProcessar(oAjax) {
 
 
 
+
+var aAlinhamentos = new Array();
+var aHeader       = new Array();
+var aWidth        = new Array();
+
 /**
- * Monta grid 
- */   
-function js_montaGrid() {
+ * Array com headers
+ */
+aHeader[0] = 'Código';
+aHeader[1] = 'Descrição';
 
-  var aAlinhamentos = new Array();
-  var aHeader       = new Array();
-  var aWidth        = new Array();
+/**
+ * Tamanho das colunas
+ */
+aWidth[0] = '10%';  
+aWidth[1] = '90%';  
 
-  /**
-   * Array com headers
-   */
-  aHeader[0] = 'Código';
-  aHeader[1] = 'Descrição';
+/**
+ * Alinhamento das colunas
+ */
+aAlinhamentos[0] = 'center';
+aAlinhamentos[1] = 'left';
 
-  /**
-   * Tamanho das colunas
-   */
-  aWidth[0] = '10%';  
-  aWidth[1] = '90%';  
-
-  /**
-   * Alinhamento das colunas
-   */
-  aAlinhamentos[0] = 'center';
-  aAlinhamentos[1] = 'left';
-
-  /**
-   * Monta html da grid 
-   */
-  oGridRubricas 						 = new DBGrid('datagridRubricas');
-  oGridRubricas.sName 			 = 'datagridRubricas';
-  oGridRubricas.nameInstance = 'oGridRubricas';
-  oGridRubricas.setCheckbox(0);
-  oGridRubricas.setCellWidth( aWidth );
-  oGridRubricas.setCellAlign( aAlinhamentos );
-  oGridRubricas.setHeader( aHeader );
-  oGridRubricas.setHeight(270);
-  oGridRubricas.show( $('ctnGridRubricas') );
-  oGridRubricas.clearAll(true);
-}
+/**
+ * Monta html da grid 
+ */
+oGridRubricas 						 = new DBGrid('datagridRubricas');
+oGridRubricas.sName 			 = 'oGridRubricas';
+oGridRubricas.nameInstance = 'oGridRubricas';
+oGridRubricas.setCheckbox(0);
+oGridRubricas.setCellWidth( aWidth );
+oGridRubricas.setCellAlign( aAlinhamentos );
+oGridRubricas.setHeader( aHeader );
+oGridRubricas.setHeight(270);
+oGridRubricas.show( $('ctnGridRubricas') );
+oGridRubricas.clearAll(true);
 
 String.prototype.urlEncode = function() {
 
@@ -361,8 +383,7 @@ Rubricas = {
 				lChecked = false;
 			}
 
-      oGridRubricas.addRow(aLinha, true, null, lChecked);
-      
+      oGridRubricas.addRow(aLinha, false, null, lChecked);
     }
 
     oGridRubricas.renderRows(); 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $db_opcao = 1;
 $db_botao = true;
@@ -86,7 +86,7 @@ $db_botao = true;
      $sql = "select ed129_i_ultatualizes from escola_sequencias
              where ed129_i_escola = $escola
             ";
-     $result = pg_query($sql);
+     $result = db_query($sql);
      $ultima_atualizacaoes = trim(pg_result($result,0,'ed129_i_ultatualizes'));
      $array_arquivo = explode("_",$name);
      $escola_arquivo = trim($array_arquivo[0]);
@@ -121,7 +121,7 @@ $db_botao = true;
       $open = "tmp/".$arquivo_sql;
       $ponteiro = fopen($open, "r" );
       $erro = false;
-      pg_exec("begin");
+      db_query("begin");
       while (!feof($ponteiro)) {
        $linha = trim(fgets($ponteiro,3000));
        if(empty($linha)){
@@ -131,11 +131,11 @@ $db_botao = true;
         if(substr($linha,12,10)=="rechumano "){
          $cod_rh = str_replace(");","",trim(substr($linha,29)));
          $sql2 = "select * from rechumano where ed20_i_codigo = $cod_rh";
-         $result2 = pg_query($sql2);
+         $result2 = db_query($sql2);
          $linhas2 = pg_num_rows($result2);
          if($linhas2==0){
           $sql1 = $linha;
-          $result1 = pg_query($sql1);
+          $result1 = db_query($sql1);
          }
         }
         /*
@@ -147,13 +147,13 @@ $db_botao = true;
           echo ">>>>>>>>>>>>>".$cod_atest = $cod[0];
          }else{
           $sql1 = $linha;
-          $result1 = pg_query($sql1);
+          $result1 = db_query($sql1);
          }
         }
         */
         else{
          $sql1 = $linha;
-         $result1 = pg_query($sql1);
+         $result1 = db_query($sql1);
         }
         if(!$result1){
          $erro = true;
@@ -171,10 +171,10 @@ $db_botao = true;
        }
       }
       if($erro==true ){
-       pg_exec("rollback");
+       db_query("rollback");
        db_msgbox("Erro ao importar dados");
       }else{
-       pg_exec("commit");
+       db_query("commit");
        db_msgbox("Dados importados com sucesso!");
       }
       system("rm tmp/".$name);

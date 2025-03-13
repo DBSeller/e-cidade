@@ -31,122 +31,124 @@ $clrotulo = new rotulocampo;
 $clrotulo->label("j17_descr");
 $clrotulo->label("j17_descr");
 ?>
-<form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tj89_sequencial?>">
-       <?=@$Lj89_sequencial?>
-    </td>
-    <td> 
-<?
-db_input('j89_sequencial',10,$Ij89_sequencial,true,'text',3,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj89_codhis?>">
-       <?
-       db_ancora("<b>Historico:</b>","js_pesquisaj89_codhis(true);",$db_opcao);
-       ?>
-    </td>
-    <td> 
-<?
-db_input('j89_codhis',10,$Ij89_codhis,true,'text',$db_opcao," onchange='js_pesquisaj89_codhis(false);'")
-?>
-       <?
-db_input('j17_descr',40,$Ij17_descr,true,'text',3,'')
-       ?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj89_codhispai?>">
-       <?
-       db_ancora("<b>Historico pai:</b>","js_pesquisaj89_codhispai(true);",$db_opcao);
-       ?>
-    </td>
-    <td> 
-<?
-db_input('j89_codhispai',10,$Ij89_codhispai,true,'text',$db_opcao," onchange='js_pesquisaj89_codhispai(false);'")
-?>
-       <?
-db_input('j17_descr2',40,$Ij17_descr,true,'text',3,'')
-       ?>
-    </td>
-  </tr>
-  </table>
-  </center>
+<fieldset>
+    <legend>Configuração de Histórico de Cálculo</legend>
+    <form name="form1" method="post" action="">
+        <center>
+            <table border="0">
+                <tr>
+                    <td nowrap title="<?=@$Tj89_sequencial?>">
+                      <?=@$Lj89_sequencial?>
+                    </td>
+                    <td>
+                      <?
+                      db_input('j89_sequencial',10,$Ij89_sequencial,true,'text',3,"")
+                      ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td nowrap title="<?=@$Tj89_codhis?>">
+                      <?
+                      db_ancora("<b>Histórico:</b>","js_pesquisaj89_codhis(true);",$db_opcao);
+                      ?>
+                    </td>
+                    <td>
+                      <?
+                      db_input('j89_codhis',10,$Ij89_codhis,true,'text',$db_opcao," onchange='js_pesquisaj89_codhis(false);'")
+                      ?>
+                      <?
+                      db_input('j17_descr',40,$Ij17_descr,true,'text',3,'')
+                      ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td nowrap title="<?=@$Tj89_codhispai?>">
+                      <?
+                      db_ancora("<b>Histórico pai:</b>","js_pesquisaj89_codhispai(true);",$db_opcao);
+                      ?>
+                    </td>
+                    <td>
+                      <?
+                      db_input('j89_codhispai',10,$Ij89_codhispai,true,'text',$db_opcao," onchange='js_pesquisaj89_codhispai(false);'")
+                      ?>
+                      <?
+                      db_input('j17_descr2',40,$Ij17_descr,true,'text',3,'')
+                      ?>
+                    </td>
+                </tr>
+            </table>
+        </center>
+</fieldset>
 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
 <script>
 
-function js_pesquisaj89_codhis(mostra){
-  if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_iptucalh','func_iptucalh.php?funcao_js=parent.js_mostraiptucalh1|j17_codhis|j17_descr','Pesquisa',true);
-  }else{
-     if(document.form1.j89_codhis.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_iptucalh','func_iptucalh.php?pesquisa_chave='+document.form1.j89_codhis.value+'&funcao_js=parent.js_mostraiptucalh','Pesquisa',false);
-     }else{
-       document.form1.j17_descr.value = ''; 
-     }
-  }
-}
+    function js_pesquisaj89_codhis(mostra){
+        if(mostra==true){
+            js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptucalh','func_iptucalh.php?funcao_js=parent.js_mostraiptucalh1|j17_codhis|j17_descr','Pesquisa',true);
+        }else{
+            if(document.form1.j89_codhis.value != ''){
+                js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptucalh','func_iptucalh.php?pesquisa_chave='+document.form1.j89_codhis.value+'&funcao_js=parent.js_mostraiptucalh','Pesquisa',false);
+            }else{
+                document.form1.j17_descr.value = '';
+            }
+        }
+    }
 
-function js_mostraiptucalh(chave,erro){
-	alert(chave+' - '+erro);
-  document.form1.j17_descr.value = chave; 
-  if(erro==true){ 
-    document.form1.j89_codhis.focus(); 
-    document.form1.j89_codhis.value = ''; 
-  }
-}
+    function js_mostraiptucalh(chave,erro){
+        document.form1.j17_descr.value = chave;
+        if(erro==true){
+            document.form1.j89_codhis.focus();
+            document.form1.j89_codhis.value = '';
+        }
+    }
 
-function js_mostraiptucalh1(chave1,chave2){
+    function js_mostraiptucalh1(chave1,chave2){
 //	alert(chave1+' - '+chave2);
-  document.form1.j89_codhis.value = chave1;
-  document.form1.j17_descr.value = chave2;
-  db_iframe_iptucalh.hide();
-}
+        document.form1.j89_codhis.value = chave1;
+        document.form1.j17_descr.value = chave2;
+        db_iframe_iptucalh.hide();
+    }
 
-/*----------------------------------------------------------------------------------*/
+    /*----------------------------------------------------------------------------------*/
 
-function js_pesquisaj89_codhispai(mostra){
-  if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_iptucalhpai','func_iptucalh.php?funcao_js=parent.js_mostraiptucalhpai1|j17_codhis|j17_descr','Pesquisa',true);
-  }else{
-     if(document.form1.j89_codhispai.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_iptucalhpai','func_iptucalh.php?pesquisa_chave='+document.form1.j89_codhispai.value+'&funcao_js=parent.js_mostraiptucalhpai','Pesquisa',false);
-     }else{
-       document.form1.j17_descr2.value = ''; 
-     }
-  }
-}
+    function js_pesquisaj89_codhispai(mostra){
+        if(mostra==true){
+            js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptucalhpai','func_iptucalh.php?funcao_js=parent.js_mostraiptucalhpai1|j17_codhis|j17_descr','Pesquisa',true);
+        }else{
+            if(document.form1.j89_codhispai.value != ''){
+                js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptucalhpai','func_iptucalh.php?pesquisa_chave='+document.form1.j89_codhispai.value+'&funcao_js=parent.js_mostraiptucalhpai','Pesquisa',false);
+            }else{
+                document.form1.j17_descr2.value = '';
+            }
+        }
+    }
 
-function js_mostraiptucalhpai(chave,erro){
-  document.form1.j17_descr2.value = chave; 
-  if(erro==true){ 
-    document.form1.j89_codhispai.focus(); 
-    document.form1.j89_codhispai.value = ''; 
-  }
-}
+    function js_mostraiptucalhpai(chave,erro){
+        document.form1.j17_descr2.value = chave;
+        if(erro==true){
+            document.form1.j89_codhispai.focus();
+            document.form1.j89_codhispai.value = '';
+        }
+    }
 
-function js_mostraiptucalhpai1(chave1,chave2){
-  document.form1.j89_codhispai.value = chave1;
-  document.form1.j17_descr2.value = chave2;
-  db_iframe_iptucalhpai.hide();
-}
+    function js_mostraiptucalhpai1(chave1,chave2){
+        document.form1.j89_codhispai.value = chave1;
+        document.form1.j17_descr2.value = chave2;
+        db_iframe_iptucalhpai.hide();
+    }
 
-function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_iptucalhconf','func_iptucalhconf.php?funcao_js=parent.js_preenchepesquisa|j89_sequencial','Pesquisa',true);
-}
+    function js_pesquisa(){
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptucalhconf','func_iptucalhconf.php?funcao_js=parent.js_preenchepesquisa|j89_sequencial','Pesquisa',true);
+    }
 
-function js_preenchepesquisa(chave){
-  db_iframe_iptucalhconf.hide();
-  <?
-  if($db_opcao!=1){
-    echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
-  }
-  ?>
-}
+    function js_preenchepesquisa(chave){
+        db_iframe_iptucalhconf.hide();
+      <?
+      if($db_opcao!=1){
+        echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
+      }
+      ?>
+    }
 </script>

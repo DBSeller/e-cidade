@@ -1,6 +1,8 @@
 <?xml version='1.0' ?>
 <processamento>
-  
+
+  <transacao>true</transacao>
+
   <parametros>
      <parametro nome="inscricao"       obrigatorio="false" tipo="integer" />
      <parametro nome="numcgm"          obrigatorio="false" tipo="integer" />
@@ -9,7 +11,7 @@
      <parametro nome="data_pagamento"  obrigatorio="true" tipo="date"/>
      <parametro nome="planilhas_notas"  obrigatorio="false" tipo="string"/>
   </parametros>
-  
+
   <configuracoes>
     <classe nome="GeracaoGuiaPrestadorWebService"  parametros="" caminho="model/issqn/GeracaoGuiaPrestadorWebService.model.php">
       <metodos>

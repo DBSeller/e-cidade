@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,15 +26,15 @@
  */
 
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_liborcamento.php");
-require_once("fpdf151/assinatura.php");
-require_once("classes/db_orcparamrel_classe.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/db_libtxt.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("classes/db_orcparamrel_classe.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_libtxt.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -809,7 +809,7 @@ $pdf->cell(20, $alt, "", 1,0,"R");
 $pdf->cell(20, $alt, "", 1,1,"R");
 $pdf->ln();
 
-notasExplicativas(&$pdf,100000,$iNota,190,false);
+notasExplicativas($pdf,100000,$iNota,190,false);
 
 $pdf->Output();
 ?>

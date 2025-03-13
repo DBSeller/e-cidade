@@ -60,7 +60,7 @@ function splitCondHigh($text)
 /***********************************************************/
 function GetNumbers($string)
 {
-  return ereg_replace('[^0-9]','',$string);
+  return preg_replace('/[^0-9]/','',$string);
 }
 
 
@@ -188,7 +188,7 @@ function ArrayEreg($array, $string)
 {
     foreach ($array as $value)
     {
-        if (ereg($value, $string))
+        if (strpos($string, $value) !== FALSE)
             return true;
     }
     return false;
@@ -426,7 +426,7 @@ function HandlerFile($extras = null)
         $Mask = array($Mask);
     }
 
-    $FileSelection = &new FileDialog($Title, $Mask, $Buttons, $Path, $Action, $Parameter);
+    $FileSelection = new FileDialog($Title, $Mask, $Buttons, $Path, $Action, $Parameter);
 }
 
 function FormatMonetary($number, $precision, $thousep, $decsep)
@@ -613,7 +613,7 @@ function darkbox($widget, $width, $height, $color)
 
 function frame_title($text, $image)
 {
-    $box = &new GtkHBox;
+    $box = new GtkHBox;
     $dock1 = new GtkPixmap($image[0], $image[1]);
     $dock2 = new GtkLabel($text);
     $box->pack_start($dock1, false, false, 4);
@@ -701,7 +701,7 @@ function remove_table_from($string, $table)
 
 function MySerialize($string, $text)
 {
-    $text = ereg_replace("\n", "\n$string:", $text);
+    $text = str_replace("\n", "\n$string:", $text);
     return "$string:$text\n\n";
 }
 

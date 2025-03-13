@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  include("fpdf151/pdf.php");
+  include(modification("fpdf151/pdf.php"));
 
   ///////////////////////////////////////////////////////////////////////
   if ($opcaoRelatorio == "tabrec"){
@@ -57,7 +57,7 @@
     $pdf->Cell(40,4,"Descrição","LRBT",1,"C",0);
     $pdf->Cell(5,4,"Cod.Juros","LRBT",1,"C",0);
 
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     $num = pg_numrows($result);
     $pdf->SetFont('Arial','B',9);
 	for ($i=0;$i<$num;$i++) {
@@ -88,7 +88,7 @@
       $pdf->Cell(140,4,"Nome do bairro","LRBT",0,"C",0);
       $pdf->Cell(30,4,"Codigo","LRBT",0,"C",0);
       $pdf->Cell(30,4,"Codigo Anterior","LRBT",1,"C",0);
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $num = pg_numrows($result);
       $pdf->SetFont('Arial','B',9);
 	  for ($i=0;$i<$num;$i++) {
@@ -111,7 +111,7 @@
       $pdf->Cell(30,4,"Codigo","LRBT",0,"C",0);
       $pdf->Cell(140,4,"Nome do bairro","LRBT",0,"C",0);
       $pdf->Cell(30,4,"Codigo Anterior","LRBT",1,"C",0);
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $num = pg_numrows($result);
       $pdf->SetFont('Arial','B',9);
 	  for ($i=0;$i<$num;$i++) {
@@ -142,7 +142,7 @@
       $pdf->Cell(20,4,"Codigo","LRBT",0,"C",0);
       $pdf->Cell(20,4,"j30_alipre","LRBT",0,"C",0);
       $pdf->Cell(20,4,"j30_aliter","LRBT",1,"C",0);
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $num = pg_numrows($result);
       $pdf->SetFont('Arial','B',9);
 	  for ($i=0;$i<$num;$i++) {
@@ -167,7 +167,7 @@
       $pdf->Cell(140,4,"Setor","LRBT",0,"C",0);
       $pdf->Cell(20,4,"j30_alipre","LRBT",0,"C",0);
       $pdf->Cell(20,4,"j30_aliter","LRBT",1,"C",0);
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $num = pg_numrows($result);
       $pdf->SetFont('Arial','B',9);
 	  for ($i=0;$i<$num;$i++) {
@@ -198,7 +198,7 @@
       $pdf->Cell(140,4,"Característica","LRBT",0,"C",0);
       $pdf->Cell(20,4,"Grupo","LRBT",0,"C",0);
       $pdf->Cell(20,4,"Tipo","LRBT",1,"C",0);
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $num = pg_numrows($result);
       $pdf->SetFont('Arial','B',9);
 	  for ($i=0;$i<$num;$i++) {
@@ -221,7 +221,7 @@
       $pdf->Cell(20,4,"Grupo","LRBT",0,"C",0);
       $pdf->Cell(140,4,"Característica","LRBT",0,"C",0);
       $pdf->Cell(20,4,"Tipo","LRBT",1,"C",0);
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $num = pg_numrows($result);
       $pdf->SetFont('Arial','B',9);
 	  for ($i=0;$i<$num;$i++) {
@@ -252,7 +252,7 @@
       $pdf->Cell(20,4,"Grupo","LRBT",0,"C",0);
       $pdf->Cell(20,4,"Código","LRBT",0,"C",0);
       $pdf->Cell(20,4,"j31_pontos","LRBT",1,"C",0);
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $num = pg_numrows($result);
       $pdf->SetFont('Arial','B',9);
 	  for ($i=0;$i<$num;$i++) {
@@ -277,7 +277,7 @@
       $pdf->Cell(120,4,"Característica","LRBT",0,"C",0);
       $pdf->Cell(20,4,"Grupo","LRBT",0,"C",0);
       $pdf->Cell(20,4,"j31_pontos","LRBT",1,"C",0);
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $num = pg_numrows($result);
       $pdf->SetFont('Arial','B',9);
 	  for ($i=0;$i<$num;$i++) {
@@ -302,7 +302,7 @@
       $pdf->Cell(120,4,"Característica","LRBT",0,"C",0);
       $pdf->Cell(20,4,"Código","LRBT",0,"C",0);
       $pdf->Cell(20,4,"j31_pontos","LRBT",1,"C",0);
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $num = pg_numrows($result);
       $pdf->SetFont('Arial','B',9);
 	  for ($i=0;$i<$num;$i++) {
@@ -331,7 +331,7 @@ $pdf->AddPage();
                                   left outer join cgm c on j41_numcgm = c.z01_numcgm              
                                   left outer join cgm j on j44_numcgm = j.z01_numcgm              
  			                      where j01_matric = $parametro limit 1";
-  $matriculaSelecionada = pg_exec($sql);
+  $matriculaSelecionada = db_query($sql);
   $numMatriculaSelecionada = pg_numrows($matriculaSelecionada);
   if ($numMatriculaSelecionada == 0) {
 

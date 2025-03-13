@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 //MODULO: protocolo
 $clprocandamint->rotulo->label();
@@ -54,7 +54,7 @@ function js_submit_form(){
     	<?
     	$dis="";
 		$sql=$clsolicita->sql_query_andsol("distinct pc11_numero,pc11_codigo,pc11_quant,pc11_seq,pc11_vlrun,pc11_resum,pc01_codmater,pc01_descrmater,pc01_servico,pc17_unid,pc17_quant,m61_descr,m61_usaquant","where pc10_numero=$pc10_numero and  p64_codtran is not null and y.pc43_depto=".db_getsession("DB_coddepto"));
-		$result=pg_exec($sql);		
+		$result=db_query($sql);		
 		if (pg_numrows($result)==0){
 			$dis="disabled";
 		}
@@ -82,7 +82,7 @@ function js_submit_form(){
   	<tr>
   		<td colspan=4 align='center' >  		
 			<input name="incluir" type="submit" id="db_opcao" value="Incluir" <?=@$dis?> onclick="return js_submit_form();">
-			<input name="voltar" type="button" id="voltar" value="Voltar" onclick='top.corpo.location.href="com4_despsol001.php"' >
+			<input name="voltar" type="button" id="voltar" value="Voltar" onclick='(window.CurrentWindow || parent.CurrentWindow).corpo.location.href="com4_despsol001.php"' >
 		</td>
 	</tr>
 </table>

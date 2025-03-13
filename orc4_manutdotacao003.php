@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas     = new cl_criaabas;
 $db_opcao = 1;
 ?>
@@ -57,13 +57,15 @@ $db_opcao = 1;
      <?
 	 $clcriaabas->identifica = array (
 	                                   "orcdotacao"      => "Dotação",
-	                                   "orcdotacaocontr" => "Contra-Partida"
+	                                   "orcdotacaocontr" => "Contra-Partida",
+                                        'dotacaoplanoorcamentario' => 'Plano Orçamentário'
 	                                 ); 
-	 $clcriaabas->src        = array("orcdotacao"      => "orc4_manutdotacao006.php");
-	 $clcriaabas->disabled   = array("orcdotacaocontr" => "true"); 
+	 $clcriaabas->src        = array("orcdotacao"      => "orc4_manutdotacao006.php", 'dotacaoplanoorcamentario' => 'orc4_dotacaoplanoorcamentario001.php');
+	 $clcriaabas->disabled   = array("orcdotacaocontr" => "true", 'dotacaoplanoorcamentario' => 'true');
 	 $clcriaabas->sizecampo  = array(
 	                                "orcdotacao"      => 30,
-	                                "orcdotacaocontr" => 30
+	                                "orcdotacaocontr" => 30,
+	                                "dotacaoplanoorcamentario" => 30
 	                                );
 	 $clcriaabas->cria_abas(); 
        ?> 

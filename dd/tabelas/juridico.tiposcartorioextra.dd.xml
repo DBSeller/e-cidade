@@ -1,0 +1,50 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010621' name='juridico.tiposcartorioextra' description="Tabela de guarda os Tipos de Cartórios Extrajudiciais." prefix="j169" label="Tipos de Cartórios Extrajudiciais" type="0">
+  <fields>
+    <field codigo="1011834" 
+           campo_api='' 
+           name="j169_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela tiposcartorioextra." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='juridico.tiposcartorioextra_j169_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011835" 
+           campo_api='' 
+           name="j169_descricao" 
+           conteudo="text" 
+           description="Descrição do tipo de Cartório Extrajudicial" 
+           inivalue="" 
+           label="Tipo de Cartório Extrajudicial" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Tipo de Cartório Extrajudicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="j169_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

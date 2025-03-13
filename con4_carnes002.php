@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 db_postmemory($HTTP_POST_VARS);
 if(isset($txtexto)){
    if($txtexto!=""){
-     $result = pg_exec("select max(idtx)+1 as max from db_carnesdados");
+     $result = db_query("select max(idtx)+1 as max from db_carnesdados");
 	 db_fieldsmemory($result,0);
      if(empty($max)) $max = 1;
-     $result = pg_exec("insert into db_carnesdados values($max,'$txtexto')");
+     $result = db_query("insert into db_carnesdados values($max,'$txtexto')");
    }
 }
 
@@ -96,7 +96,7 @@ tr {
 		<select name="dados" size="1" onChange="js_inserircampo(this.form,this)">
             <option value="0">&nbsp;</option>
             <?
-		  $result = pg_exec("select distinct c.nomecam ,c.tamanho
+		  $result = db_query("select distinct c.nomecam ,c.tamanho
 		                     from db_syscampo c 
 							   inner join db_sysarqcamp a on a.codcam = c.codcam
 							   inner join db_sysarquivo t on a.codarq = t.codarq
@@ -113,7 +113,7 @@ tr {
         <td width="20%"> <select name="formulario" id="formulario" onChange="js_abririmagem(this)">
             <option>&nbsp;</option>
             <?
-			    $result = pg_exec("select codmodelo,nomemodelo from db_carnesimg");
+			    $result = db_query("select codmodelo,nomemodelo from db_carnesimg");
 				$numrows = pg_numrows($result);
 				for($i = 0;$i < $numrows;$i++) {
 				  echo "<option value=\"".pg_result($result,$i,"codmodelo")."\" ".(isset($HTTP_POST_VARS["formulario"])?($HTTP_POST_VARS["formulario"]==pg_result($result,$i,"codmodelo")?"selected":""):"").">".pg_result($result,$i,"nomemodelo")."</option>\n";
@@ -142,7 +142,7 @@ tr {
 		  <select name="texto" size="1" onChange="js_inserircampoa(this.form,this)">
             <option value="0">&nbsp;</option>
             <?
-		  $result = pg_exec("select idtx,txcampo
+		  $result = db_query("select idtx,txcampo
 		                     from db_carnesdados 
 							 order by txcampo");
 							 //where a.codarq = 204");

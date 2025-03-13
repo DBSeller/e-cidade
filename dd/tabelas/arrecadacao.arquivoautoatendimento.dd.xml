@@ -1,0 +1,145 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010435' name='arrecadacao.arquivoautoatendimento' description="Tabela que armazena os lotes de envios dos arquivos gerados." prefix="k182" label="arquivoautoatendimento" type="0">
+  <fields>
+    <field codigo="1010393" 
+           campo_api='' 
+           name="k182_codigo" 
+           conteudo="int8" 
+           description="Campo que armazena o sequencial da chave primária." 
+           inivalue="0" 
+           label="Campo código" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='arrecadacao.arquivoautoatendimento_k182_codigo_seq' />
+     
+    </field> 
+    <field codigo="1010395" 
+           campo_api='' 
+           name="k182_numero" 
+           conteudo="int8" 
+           description="Campo que armazena o numero da geração de arquivo." 
+           inivalue="0" 
+           label="Campo numero" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo numero" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010396" 
+           campo_api='' 
+           name="k182_tipo" 
+           conteudo="char(1)" 
+           description="Campo que armazena o tipo da geração de arquivo." 
+           inivalue="" 
+           label="Campo tipo" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Campo tipo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010394" 
+           campo_api='' 
+           name="k182_ano" 
+           conteudo="int8" 
+           description="Campo que armazena o ano da geração do arquivo." 
+           inivalue="0" 
+           label="Campo ano" 
+           size="2000000" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010398" 
+           campo_api='' 
+           name="k182_datavigenciainicial" 
+           conteudo="date" 
+           description="Campo que armazena a vigência inicial do arquivo." 
+           inivalue="null" 
+           label="Campo data" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo data" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010399" 
+           campo_api='' 
+           name="k182_datavigenciafinal" 
+           conteudo="date" 
+           description="Campo que armazena a data da vigência final do arquivo." 
+           inivalue="null" 
+           label="Campo data" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo data" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010397" 
+           campo_api='' 
+           name="k182_dataemissao" 
+           conteudo="date" 
+           description="Campo que armazena a data da geração do arquivo." 
+           inivalue="null" 
+           label="Campo data" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo data" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k182_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

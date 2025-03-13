@@ -58,7 +58,7 @@ db_input('ve20_descr',40,$Ive20_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veiccadtipo','func_veiccadtipo.php?funcao_js=parent.js_preenchepesquisa|ve20_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadtipo','func_veiccadtipo.php?funcao_js=parent.js_preenchepesquisa|ve20_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiccadtipo.hide();

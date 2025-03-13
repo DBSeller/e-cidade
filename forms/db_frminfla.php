@@ -1,32 +1,31 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-//MODULO: inflatores
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cliframe_alterar_excluir->strFormatar=null;
 $clinfla->rotulo->label();
@@ -43,7 +42,7 @@ if(isset($db_opcaoal)){
 }else if(isset($opcao) && $opcao=="excluir"){
     $db_opcao = 3;
     $db_botao=true;
-}else{  
+}else{
     $db_opcao = 1;
     $db_botao=true;
     if(isset($novo) || isset($alterar) ||   isset($excluir) || (isset($incluir) || isset($tod) && $sqlerro==false ) ){
@@ -51,22 +50,22 @@ if(isset($db_opcaoal)){
      $i02_valor = "";
    }
 $where = " 1 = 1 ";
-} 
+}
 ?>
 <form name="form1" method="post" action="">
 <center>
 <table border="0">
   <tr>
     <td nowrap title="<?=@$Ti02_codigo?>">
-       <?
+       <?php
        db_ancora(@$Li02_codigo,"js_pesquisai02_codigo(true);",$db_opcao);
        ?>
     </td>
-    <td> 
-	  <?
+    <td>
+	  <?php
 	   db_input('i02_codigo',5,$Ii02_codigo,true,'text',3," onchange='js_pesquisai02_codigo(false);'")
 	  ?>
-       <?
+       <?php
 		db_input('i01_descr',40,$Ii01_descr,true,'text',3,'')
        ?>
     </td>
@@ -75,40 +74,33 @@ $where = " 1 = 1 ";
     <td nowrap title="<?=@$Ti02_data?>">
        <?=@$Li02_data?>
     </td>
-    <td colspan=2> 
-	  <?
-//	 db_msgbox($i02_data);
-//	 echo "date - ".$i02_data."||".date('Y-m-d',$i02_data);
-//   db_msgbox(substr($i02_data,4,1)." aa  ".substr($i02_data,7,1));
+    <td colspan=2>
+	  <?php
+
      if(!(substr($i02_data,4,1) =='-') && !(substr($i02_data,7,1)=='-')) {
-    //   db_msgbox("if ".$i02_data);
+
 		  	 $data = split("/",$i02_data);
      	   $i02_data_dia = @$data[0];
   		   $i02_data_mes = @$data[1];
-	  	   $i02_data_ano = @$data[2];  
-			   $i02_data     = $i02_data_ano."-".$i02_data_mes."-".$i02_data_dia; 
+	  	   $i02_data_ano = @$data[2];
+			   $i02_data     = $i02_data_ano."-".$i02_data_mes."-".$i02_data_dia;
 		 }else if(substr($i02_data,4,1)=='-' && substr($i02_data,7,1)=='-') {
-	//     db_msgbox("else ".$i02_data);
+
 		  	 $data = split("-",$i02_data);
 				 $i02_data_dia = @$data[1];
   		   $i02_data_mes = @$data[2];
-	  	   $i02_data_ano = @$data[0]; 
-
-				 
-				// $i02_data_dia = $data[2];
-  		  // $i02_data_mes = $data[1];
-	  	  // $i02_data_ano = $data[0];  
-//			 db_msgbox("mes - $i02_data_mes ano - $i02_data_ano dia - $i02_data_dia");
-			   $i02_data     = $i02_data_ano."-".$i02_data_mes."-".$i02_data_dia; 
+	  	   $i02_data_ano = @$data[0];
+			   $i02_data     = $i02_data_ano."-".$i02_data_mes."-".$i02_data_dia;
      }else{
 
-         $i02_data = db_formatar($i02_data,"d"); 
+         $i02_data = db_formatar($i02_data,"d");
 		 }
 
 	   db_inputdata('i02_data',@$i02_data_dia,@$i02_data_mes,@$i02_data_ano,true,'text',3,"");
 
 	   echo "<b> Ano : </b>";
 	   if (isset($i02_codigo)){
+
            $i01_codigo = trim($i01_codigo);
            $result1    = $clinfla->sql_record($clinfla->sql_query("","","distinct substr(i02_data,1,4) as exerc ","exerc"," i02_codigo = '$i02_codigo'"));
            $xexerc     = array();
@@ -123,15 +115,15 @@ $where = " 1 = 1 ";
            db_select('exercicio',$xexerc,true,2," onchange='js_location();'");
        }
 	  ?>
-			   
+
 	</td>
   </tr>
   <tr>
     <td nowrap title="<?=@$Ti02_valor?>">
        <?=@$Li02_valor?>
     </td>
-    <td> 
-		<?
+    <td>
+		<?php
 			db_input('i02_valor',15,$Ii02_valor,true,'text',$db_opcao,"")
 		?>
     </td>
@@ -140,18 +132,18 @@ $where = " 1 = 1 ";
     <td colspan="2" align="center">
 			 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> onclick="js_limpavar();" >
 			 <input name="todos"  type="button" id="todos"    value="Lançar o valor para todos registros" onclick="js_todosreg();">
+       <input name="subsequentes"  type="button" id="subsequentes"    value="Lançar o valor para todos registros subsequentes" onclick="js_todosregsub('<?=date('Y-m-d', db_getsession('DB_datausu'))?>');" <?=($db_opcao==1||isset($db_opcaoal)?"style='visibility:hidden;'":"")?>>
 			 <input name="novo"   type="button" id="cancelar" value="Novo" onclick="js_cancelar();" <?=($db_opcao==1||isset($db_opcaoal)?"style='visibility:hidden;'":"")?> >
     </td>
   </tr>
   </table>
  <table>
   <tr>
-    <td valign="top" align="center">  
+    <td valign="top" align="center">
     <?
-//	 echo($clinflan->sql_query_file($i02_codigo," i01_dm "));
      $rsTipodm = $clinflan->sql_record($clinflan->sql_query_file($i02_codigo," i01_dm "));
 	 if ($clinflan->numrows > 0){
-	     db_fieldsmemory($rsTipodm,0); 
+	     db_fieldsmemory($rsTipodm,0);
 	 }
 	 if (isset($i01_dm) && $i01_dm == 1){
 	   //diario
@@ -189,20 +181,17 @@ $where = " 1 = 1 ";
 	 }
    $where .= " and infla.i02_codigo = '".$i02_codigo."'";
 	 if(isset($mes) && $mes != "" ){
-	   $where .= " and extract(month from i02_data) = $mes "; 
+	   $where .= " and extract(month from i02_data) = $mes ";
 	 }
    if(isset($exercicio) && $exercicio != ""){
      $where .= " and extract(year from i02_data) = $exercicio ";
    }
-	 
-// echo "<br><br>".$clinfla->sql_query_file($i02_codigo,"","*","",$where);
-// echo "<br><br>".$i01_dm."<br>";
 
    $chavepri = array("i02_codigo"=>@$i02_codigo,"i02_data"=>@$i02_data,"i02_valor"=>@$i02_valor);
-	 $cliframe_alterar_excluir->chavepri 	  = $chavepri;
-	 $cliframe_alterar_excluir->sql      	  = $clinfla->sql_query_file($i02_codigo,"","i02_codigo,to_char(i02_data,'dd/mm/YYYY') as i02_data,i02_valor::float","",$where);
-	 $cliframe_alterar_excluir->campos   	  = "i02_codigo,i02_data,i02_valor";
-	 $cliframe_alterar_excluir->legenda 	  = "Valores lançados";
+	 $cliframe_alterar_excluir->chavepri 	    = $chavepri;
+	 $cliframe_alterar_excluir->sql      	    = $clinfla->sql_query_file($i02_codigo,"","i02_codigo,to_char(i02_data,'dd/mm/YYYY') as i02_data,i02_valor::float","i02_data",$where);
+	 $cliframe_alterar_excluir->campos   	    = "i02_codigo,i02_data,i02_valor";
+	 $cliframe_alterar_excluir->legenda 	    = "Valores lançados";
 	 $cliframe_alterar_excluir->opcoes        = 2;
 	 $cliframe_alterar_excluir->iframe_height = "160";
 	 $cliframe_alterar_excluir->iframe_width  = "700";
@@ -217,12 +206,13 @@ $where = " 1 = 1 ";
  <input name="tod"    type="hidden" id=""    value="">
 </form>
 <script>
+
 function js_limpacampos(){
-   document.form1.i02_data_dia.value = ''; 	
-   document.form1.i02_data_mes.value = ''; 	
-   document.form1.i02_data_ano.value = ''; 	
-   document.form1.i02_valor.value = ''; 	
-	
+   document.form1.i02_data_dia.value = '';
+   document.form1.i02_data_mes.value = '';
+   document.form1.i02_data_ano.value = '';
+   document.form1.i02_valor.value = '';
+
 }
 
 
@@ -235,8 +225,8 @@ function js_location(){
     document.location.href='inf4_manvalores001.php?mesini='+document.form1.mes.value+'&i02_codigo='+document.form1.i02_codigo.value+'&exercicio='+document.form1.exercicio.value;
 }
 function js_todosreg(){
-   inflat = document.form1.i02_codigo.value; 
-// document.form1.mes.value = mes; 
+   inflat = document.form1.i02_codigo.value;
+// document.form1.mes.value = mes;
    ano    = document.form1.exercicio.value;
    i01_dm = document.form1.i01_dm.value;
    if(document.form1.mes.value != ''){
@@ -247,18 +237,51 @@ function js_todosreg(){
    if(document.form1.i02_valor.value != ''){
         valortodos = document.form1.i02_valor.value;
    }else{
-	    alert('Preencha o campo valor !'); 
+	    alert('Preencha o campo valor !');
    		return false;
-   }   
+   }
    if (confirm('Deseja mesmo lancar este valor para todos os registros?')){
         document.location.href = 'inf4_manvalores001.php?mesini='+mesini+'&i02_codigo='+inflat+'&exercicio='+ano+'&i01_dm='+i01_dm+'&tod=t&valortodos='+valortodos;
    }
 }
 
+function js_todosregsub(datasistema){
+   
+   inflat        = document.form1.i02_codigo.value;
+   data          = document.form1.i02_data.value;
+   if(document.form1.i02_data.value == ''){
+     
+     alert('Campo data não informado!');
+   	 return false;
+	 }
+   
+   let vetorInflator = data.split('/').reverse();
+       vetorInflator.pop();
+   let vetorAtual    = datasistema.split('-');
+       vetorAtual.pop();
+   let competenciaInflator = new Number(vetorInflator.join(''));
+   let competenciaAtual    = new Number(vetorAtual.join('')); 
+   if(competenciaInflator < competenciaAtual ) {
+
+     alert('Não é possível alterar inflator com competência menor que a atual');
+   	 return false;
+   }
+  
+   if(document.form1.i02_valor.value != ''){
+        valortodos = document.form1.i02_valor.value;
+   }else{
+	    alert('Preencha o campo valor !');
+   		return false;
+   }
+   if (confirm('Deseja mesmo lancar este valor para todos os registros subsequentes?')){
+        document.location.href = 'inf4_manvalores001.php?i02_data='+data+'&i02_codigo='+inflat+'&subsequentes=t&valortodos='+valortodos;
+   }
+}
+
 function js_dias(mes,ano){
-  //alert(mes);  
-  inflat = document.form1.i02_codigo.value; 
-  document.form1.mes.value    = mes; 
+  //alert(mes);
+  inflat = document.form1.i02_codigo.value;
+  document.form1.mes.value    = mes;
   document.location.href = 'inf4_manvalores001.php?mes='+mes+'&i02_codigo='+inflat+'&exercicio='+ano;
   //return false;
 }
@@ -272,35 +295,36 @@ function js_cancelar(){
   document.form1.appendChild(opcao);
   document.form1.submit();
 }
+
 function js_pesquisai02_codigo(mostra){
   if(mostra==true){
-     js_OpenJanelaIframe('top.corpo','db_iframe_inflan','func_inflan.php?funcao_js=parent.js_mostrainflan1|i01_codigo|i01_descr','Pesquisa',true);
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inflan','func_inflan.php?funcao_js=parent.js_mostrainflan1|i01_codigo|i01_descr','Pesquisa',true);
   }else{
-     if(document.form1.i02_codigo.value != ''){ 
+     if(document.form1.i02_codigo.value != ''){
         js_OpenJanelaIframe('','db_iframe_inflan','func_inflan.php?pesquisa_chave='+document.form1.i02_codigo.value+'&funcao_js=parent.js_mostrainflan','Pesquisa',false);
      }else{
-        document.form1.i01_descr.value = ''; 
+        document.form1.i01_descr.value = '';
      }
   }
 }
 
 function js_mostrainflan(chave,erro){
-  document.form1.i01_descr.value = chave; 
-  if(erro==true){ 
-     document.form1.i02_codigo.focus(); 
-     document.form1.i02_codigo.value = ''; 
+  document.form1.i01_descr.value = chave;
+  if(erro==true){
+     document.form1.i02_codigo.focus();
+     document.form1.i02_codigo.value = '';
   }else{
-     //document.location.href = 'inf4_manvalores001.php'; 
-     document.location.href = 'inf4_manvalores001.php?i02_codigo='+chave1; 
+     //document.location.href = 'inf4_manvalores001.php';
+     document.location.href = 'inf4_manvalores001.php?i02_codigo='+chave1;
   }
-  
+
 }
 
 function js_mostrainflan1(chave1,chave2){
   document.form1.i02_codigo.value = chave1;
   document.form1.i01_descr.value = chave2;
   db_iframe_inflan.hide();
-  document.location.href = 'inf4_manvalores001.php?i02_codigo='+chave1; 
+  document.location.href = 'inf4_manvalores001.php?i02_codigo='+chave1;
 }
 
 

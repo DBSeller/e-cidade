@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("classes/db_cgm_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_cgm_classe.php"));
 
 $oGet  = db_utils::postMemory($_GET);
+$sDataHoje = date('Y-m-d');
 $clcgm = new cl_cgm();
 
    if(!isset($oGet->numcgm) && !isset($oGet->matric) && !isset($oGet->inscr) && !isset($oGet->numpre)) {
@@ -63,34 +64,37 @@ $clcgm = new cl_cgm();
       
   }
 
-  $sSqlSusp  = " select distinct 																			  ";
-  $sSqlSusp .= "        arrenumcgm.k00_numcgm, 	   															  ";
-  $sSqlSusp .= "        arresusp.*, 		    															  ";
-  $sSqlSusp .= "	    suspensao.*,		    															  ";
-  $sSqlSusp .= "		k02_drecei,																		  	  ";
-  $sSqlSusp .= "		k01_descr,																		  	  ";
-  $sSqlSusp .= "		arrehist.k00_histtxt,															 	  ";
-  $sSqlSusp .= "		arrehist.k00_dtoper as dtlhist,													 	  ";
-  $sSqlSusp .= "		arrehist.k00_hora   as hrlhist,														  ";
-  $sSqlSusp .= "	  	db_usuarios.login																	  ";
-  $sSqlSusp .= "   from arresusp 																			  ";
-  $sSqlSusp .= "	    inner join arrenumcgm  on arrenumcgm.k00_numpre	    = arresusp.k00_numpre		      ";
-  $sSqlSusp .= "	    inner join suspensao   on suspensao.ar18_sequencial = arresusp.k00_suspensao	      ";
-  $sSqlSusp .= "	 	inner join db_usuarios on db_usuarios.id_usuario    = suspensao.ar18_usuario          ";
+  $sSqlSusp  = " select distinct 											      ";
+  $sSqlSusp .= "        arresusp.k00_numcgm, 	   									      ";
+  $sSqlSusp .= "        arresusp.*, 		    									      ";
+  $sSqlSusp .= "	    suspensao.*,		    								      ";
+  $sSqlSusp .= "		k02_drecei,										      ";
+  $sSqlSusp .= "		k01_descr,										      ";
+  $sSqlSusp .= "		arrehist.k00_histtxt,									      ";
+  $sSqlSusp .= "		arrehist.k00_dtoper as dtlhist,								      ";
+  $sSqlSusp .= "		arrehist.k00_hora   as hrlhist,								      ";
+  $sSqlSusp .= "	  	db_usuarios.login									      ";
+  $sSqlSusp .= "   from arresusp 											      ";
+  $sSqlSusp .= "	    inner join suspensao   on suspensao.ar18_sequencial = arresusp.k00_suspensao	              ";
+  $sSqlSusp .= "	 	inner join db_usuarios on db_usuarios.id_usuario    = suspensao.ar18_usuario                  ";
   $sSqlSusp .= "	 	inner join arreinstit  on arreinstit.k00_numpre     = arresusp.k00_numpre		      ";
   $sSqlSusp .= "	    				      and arreinstit.k00_instit     = ".db_getsession('DB_instit')."  ";
-  $sSqlSusp .= "	    left  join arrehist    on arrehist.k00_numpre		= arresusp.k00_numpre			  "; 
-  $sSqlSusp .= "                              and (    arresusp.k00_numpar  = arrehist.k00_numpar 			  ";
-  $sSqlSusp .= "									or arrehist.k00_numpar  = 0)			  				  ";
-  $sSqlSusp .= "		{$sSqlInnerSusp}																 	  "; 
-  $sSqlSusp .= "		inner join tabrec      on arresusp.k00_receit       = k02_codigo				 	  ";
-  $sSqlSusp .= "     	inner join tabrecjm    on tabrecjm.k02_codjm        = tabrec.k02_codjm			  	  ";
-  $sSqlSusp .= "		inner join histcalc    on arresusp.k00_hist 	    = k01_codigo 					  ";
-  $sSqlSusp .= "  where {$sSqlWhereSusp}																 	  ";
-  $sSqlSusp .= "  order by arresusp.k00_numpre,															 	  ";
-  $sSqlSusp .= "  	       arresusp.k00_numpar															 	  ";
-  
-  $rsDebitosSuspensos = pg_query($sSqlSusp);
+  $sSqlSusp .= "	    left  join arrehist    on arrehist.k00_numpre		= arresusp.k00_numpre		      "; 
+  $sSqlSusp .= "                              and (    arresusp.k00_numpar  = arrehist.k00_numpar 			      ";
+  $sSqlSusp .= "									or arrehist.k00_numpar  = 0)	      ";
+  $sSqlSusp .= "		{$sSqlInnerSusp}									      "; 
+  $sSqlSusp .= "		inner join tabrec      on arresusp.k00_receit       = k02_codigo			      ";
+  $sSqlSusp .= "		inner join cgm ON z01_numcgm = k00_numcgm				 	              ";
+  $sSqlSusp .= "     	inner join tabrecjm    on tabrecjm.k02_codjm        = tabrec.k02_codjm			  	      ";
+  $sSqlSusp .= "		inner join histcalc    on arresusp.k00_hist 	    = k01_codigo 			      ";
+  $sSqlSusp .= "  where {$sSqlWhereSusp}										      ";
+  $sSqlSusp .= "  and not exists (select 1
+                                  from suspensaofinaliza
+                                  where ar19_suspensao = ar18_sequencial
+                                  and ar19_data <=  '{$sDataHoje}')                                                           ";
+  $sSqlSusp .= "  order by arresusp.k00_numpre,										      ";
+  $sSqlSusp .= "  	       arresusp.k00_numpar									      ";
+  $rsDebitosSuspensos = db_query($sSqlSusp);
   $iLinhasDebitosSusp = pg_num_rows($rsDebitosSuspensos);
 
 

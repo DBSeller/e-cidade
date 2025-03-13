@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("model/ppaVersao.model.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/ppaVersao.model.php"));
 
 $oGet              = db_utils::postMemory($_GET);
 $oPPAVersao        = new ppaVersao($oGet->o05_ppaversao);
@@ -40,7 +40,7 @@ $sSqlIntegracoes   = $oDaoPPAintegracao->sql_query(null,"*", "o123_sequencial",
                                                   "o123_ppaversao = {$oGet->o05_ppaversao} 
                                                   and o123_tipointegracao = 1");
 $rsIntegracoes     = $oDaoPPAintegracao->sql_record($sSqlIntegracoes);
-$aIntegracoes      = db_utils::getColectionByRecord($rsIntegracoes);
+$aIntegracoes      = db_utils::getCollectionByRecord($rsIntegracoes);
 $pdf = new PDF("P", "mm", "A4"); 
 $pdf->Open(); 
 $pdf->AliasNbPages(); 

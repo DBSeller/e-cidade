@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,7 +28,7 @@
 <script>
 <?if(isset($j42_matric)){?>
 function js_trocaid(valor){
-  location.href="cad1_proprialt.php?j42_matric=<?=$j42_matric?>&j42_numcgm="+valor;
+  location.href="cad1_proprialt.php?j42_matric=<?=$j42_matric?>&j42_numcgm="+valor+"&j01_tipoimovel=<?=$j01_tipoimovel?>";
 }
 <?}?>
 function js_opcoes(){
@@ -80,6 +80,23 @@ function js_opcoes(){
 ?>
       </td>
     </tr>
+    <?php 
+    $j01_tipoimovel = isset($j01_tipoimovel) ? $j01_tipoimovel : $tipoImovel;
+    if ($j01_tipoimovel == "2") { 
+      if (empty($j166_sequencial)) {
+        $j166_sequencial="";
+      }
+    ?>
+    <tr>
+      <td><strong>Percentual de Posse (%):</strong></td>
+      <td>
+        <input type="hidden" name="j166_sequencial" id="j166_sequencial" value="<?=$j166_sequencial?>">
+        <?php
+        db_input('j166_percentual',10,$Ij166_percentual,true,'text',1,"","","","",5);
+        ?>
+      </td>
+    </tr>
+    <?php } ?>
     <tr>
       <td colspan="2">
       <center>
@@ -125,11 +142,21 @@ function js_opcoes(){
 <input name="atualizar" type="submit" id="atualizar" value="Atualizar" <?=(isset($j42_numalt)?"":"disabled")?> >               
 
 <script>
+
+$('j42_matric').classList.add('field-size2');
+$('z01_nomematri').classList.add('field-size9');
+$('j42_numcgm').classList.add('field-size2');
+$('z01_nome').classList.add('field-size9');
+<?php if ($j01_tipoimovel == 2) { ?>
+  $('j166_percentual').classList.add('field-size2');
+<?php } ?>
+
+
 function js_cgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_propri','func_nome','func_nome.php?funcao_js=parent.js_mostra1|0|1&testanome=true','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_propri','func_nome','func_nome.php?funcao_js=parent.js_mostra1|0|1&testanome=true','Pesquisa',true,0);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_propri','func_nome','func_nome.php?pesquisa_chave='+document.form1.j42_numcgm.value+'&funcao_js=parent.js_mostra','Pesquisa',false,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_propri','func_nome','func_nome.php?pesquisa_chave='+document.form1.j42_numcgm.value+'&funcao_js=parent.js_mostra','Pesquisa',false,0);
   }
 }
 function js_mostra1(chave1,chave2){

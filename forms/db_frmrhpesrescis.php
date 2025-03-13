@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: pessoal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrhpesrescisao->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -50,31 +50,42 @@ $clrotulo->label("rh02_codreg");
         <table width="100%">
           <tr>
             <td nowrap title="<?=@$Trh01_regist?>">
-	      <?
+	      <?php
               db_ancora(@$Lrh01_regist,"js_pesquisarh01_regist(true);",$db_opcao);
 	      ?>
             </td>
             <td>
-              <?
+              <?php
               db_input('rh01_regist',6,$Irh01_regist,true,'text',$db_opcao,"onchange='js_pesquisarh01_regist(false);'");
               db_input('rh02_seqpes',6,$Irh02_seqpes,true,'text',3,"");
-              db_input('rh02_codreg',6,$Irh02_codreg,true,'text',3,"");
               db_input('r59_aviso',6,$Ir59_aviso,true,'hidden',3,"");
               db_input('pagar_13_salario_na_rescisao',6,0,true,'hidden',3,"");
               ?>
-              <?
+              <?php
               db_input('z01_nome',40,$Iz01_nome,true,'text',3,"")
               ?>
             </td>
           </tr>
           <tr>
+            <td>
+              <b> Regime: </b>
+            </td>
+            <td>
+              <?php 
+                db_input('rh02_codreg',6,$Irh02_codreg,true,'text',3,""); 
+                db_input('rh30_descr',50,0,true,'text',3,""); 
+              ?>
+            </td>
+          </tr>
+        
+          <tr>
             <td nowrap title="<?=@$Trh01_admiss?>">
-              <?
+              <?php
               db_ancora(@$Lrh01_admiss,"",3);
               ?>
             </td>
             <td>
-              <?
+              <?php
               db_inputdata('rh01_admiss',@$rh01_admiss_dia,@$rh01_admiss_mes,@$rh01_admiss_ano,true,'text',3,"")
               ?>
             </td>
@@ -93,37 +104,37 @@ $clrotulo->label("rh02_codreg");
               <?=@$Lrh05_recis?>
             </td>
             <td>
-              <?
+              <?php
               db_inputdata('rh05_recis',@$rh05_recis_dia,@$rh05_recis_mes,@$rh05_recis_ano,true,'text',$db_opcao,"onchange='js_validarecis();'","","","parent.js_validarecis();")
               ?>
             </td>
           </tr>
           <tr>
             <td nowrap title="<?=@$Trh05_causa?>">
-              <?
+              <?php
               db_ancora(@$Lrh05_causa,"js_pesquisarh05_causa(true);",$db_opcao);
               ?>
             </td>
             <td>
-              <?
+              <?php
               db_input('rh05_causa',6,$Irh05_causa,true,'text',3,"")
               ?>
-              <?
+              <?php
               db_input('r59_descr',40,$Ir59_descr,true,'text',3,"")
               ?>
             </td>
           </tr>
           <tr>
             <td nowrap title="<?=@$Trh05_caub?>">
-              <?
+              <?php
               db_ancora(@$Lrh05_caub,"",3);
               ?>
             </td>
             <td>
-              <?
+              <?php
               db_input('rh05_caub',6,$Irh05_caub,true,'text',3,"")
               ?>
-              <?
+              <?php
               db_input('r59_descr1',40,$Ir59_descr1,true,'text',3,"");
               db_input('r59_menos1',4,$Ir59_menos1,true,'hidden',3,"");
               ?>
@@ -131,12 +142,12 @@ $clrotulo->label("rh02_codreg");
           </tr>
           <tr>
             <td nowrap title="<?=@$Trh05_taviso?>">
-              <?
+              <?php
               db_ancora(@$Lrh05_taviso,"",3);
               ?>
             </td>
             <td>
-              <?
+              <?php
               if(!isset($rh05_taviso)){
               	$rh05_taviso = 3;
               }
@@ -154,14 +165,36 @@ $clrotulo->label("rh02_codreg");
             </td>
           </tr>
 
+            <tr>
+                <td>
+                    <?php
+                    db_ancora(@$Lrh05_datapagamento,"",3);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    $diaPagamento = '';
+                    $mesPagamento = '';
+                    $anoPagamento = '';
+                    if (!empty($rh05_datapagamento)) {
+                        $dataPagamento = new \DateTime($rh05_datapagamento);
+                        $diaPagamento = $dataPagamento->format('d');
+                        $mesPagamento = $dataPagamento->format('m');
+                        $anoPagamento = $dataPagamento->format('Y');
+                    }
+                    db_inputdata('rh05_datapagamento', $diaPagamento, $mesPagamento, $anoPagamento, true, 'text', $db_opcao, "", "", "", "", "", "");
+                    ?>
+                </td>
+            </tr>
+
           <tr>
             <td nowrap title="<?=@$Trh05_mremun?>">
-              <?
+              <?php
               db_ancora(@$Lrh05_mremun,"",3);
               ?>
             </td>
             <td>
-              <?
+              <?php
               $rh05_mremun = 0;
               db_input('rh05_mremun', 10,$Irh05_mremun,true,'text',$db_opcao,"")
               ?>
@@ -192,25 +225,51 @@ $clrotulo->label("rh02_codreg");
             </td>
           </tr>
 
+          <tr>
+            <td nowrap title="Observações" colspan="2">
+              <table width="100%">
+                <tr>
+                  <td align="center">
+                    <fieldset>
+                      <legend><b>Observações:</b></legend>
+                       <?php
+                       db_textarea("rh05_observacao",5, 65,$Irh05_observacao, true,null, $db_opcao)
+                       ?>                      
+                    </fieldset>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>  
+          
+        
+            
         </table>
       </fieldset>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="button" id="db_opcao" value="<?=($db_opcao==1?"Processar":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?>  <?if($db_opcao!=3)echo "onclick='js_verificadados();'";?>>
+      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" 
+             type="button" 
+             id="db_opcao" 
+             value="<?=($db_opcao==1?"Processar":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" 
+             <?=($db_botao==false?"disabled":"")?>  
+             <?php if($db_opcao!=3)echo "onclick='js_verificadados();'"; ?> >
     </td>
   </tr>
 </table> 
 <script>
 function js_faltas(registro){
-	qry = 'opcao=enviarescis';
+  qry = 'opcao=enviarescis';
   qry+= '&causa='+document.form1.rh05_causa.value;
+  qry+= '&subcausa='+document.form1.rh05_caub.value;
+  qry+= '&menos1='+document.form1.r59_menos1.value;  
   qry+= '&regime='+document.form1.rh02_codreg.value;
   qry+= '&regist='+document.form1.rh01_regist.value;
   qry+= '&rh05_recis_ano='+document.form1.rh05_recis_ano.value;
   qry+= '&rh05_recis_mes='+document.form1.rh05_recis_mes.value;
-  js_OpenJanelaIframe('top.corpo','db_iframe_faltas','func_scriptsdb.php?'+qry,'Pesquisa',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_faltas','func_scriptsdb.php?'+qry,'Pesquisa',false);
 }
 function js_verificadados(){
   x = document.form1;
@@ -223,9 +282,12 @@ function js_verificadados(){
 //    x.rh05_recis_dia.select();
     x.rh05_recis.focus();
     x.rh05_recis.select();
-  }else if(x.rh05_causa.value == ""){
-    alert("Informe a causa da rescisão.");
-    x.rh05_causa.focus();
+  }else if(x.rh05_causa.value == "") {
+      alert("Informe a causa da rescisão.");
+      x.rh05_causa.focus();
+  } else if (!x.rh05_datapagamento.value) {
+      alert("Informe a data de pagamento.");
+      x.rh05_datapagamento.focus();
   }else{
     js_faltas(x.rh01_regist.value);
   }
@@ -287,7 +349,7 @@ function js_validarecis(){
       dtadmiss = new Date(x.rh01_admiss_ano.value,(x.rh01_admiss_mes.value - 1),x.rh01_admiss_dia.value);
       dtreciss = new Date(x.rh05_recis_ano.value,(x.rh05_recis_mes.value - 1),x.rh05_recis_dia.value);
       dtatualh = new Date(anoatual,mesatual,1);
-      if(dtreciss < dtadmiss){
+      if (dtreciss < dtadmiss) {
         alert("Data de rescisão não pode ser posterior à data de admissão. Verifique.");
         x.rh05_recis_dia.value = "";
         x.rh05_recis_mes.value = "";
@@ -296,11 +358,8 @@ function js_validarecis(){
         x.rh05_aviso_mes.value = "";
         x.rh05_aviso_ano.value = "";
         x.rh05_recis_dia.focus();
-      }else if(anoatual > anorecis){
+      } else if(anoatual > anorecis) {
         alert("ALERTA: Data da rescisão com ano anterior ao atual.");
-      }else if(anomesatual < anomesrecis){
-        alert("anomesatual :  "+anomesatual+"  anomesrecis : "+anomesrecis);
-        alert("ALERTA: Data da rescisão posterior ao ano / mês atual..");
       }
     }
   }else{
@@ -361,10 +420,10 @@ function js_disabdata(valor){
 }
 function js_pesquisarh05_causa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rescisao','func_rescisaoaviso.php?testarescisao=raf&funcao_js=parent.js_mostrarescisao1|r59_causa|r59_descr|r59_caub|r59_descr1|r59_aviso|r59_menos1&chave_r59_anousu=<?=$rh02_anousu?>&chave_r59_mesusu=<?=$rh02_mesusu?>&regime='+document.form1.rh02_codreg.value,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rescisao','func_rescisaoaviso.php?testarescisao=raf&funcao_js=parent.js_mostrarescisao1|r59_causa|r59_descr|r59_caub|r59_descr1|r59_aviso|r59_menos1&chave_r59_anousu=<?=$rh02_anousu?>&chave_r59_mesusu=<?=$rh02_mesusu?>&regime='+document.form1.rh02_codreg.value,'Pesquisa',true);
   }else{
     if(document.form1.rh05_causa.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_rescisao','func_rescisaoaviso.php?testarescisao=raf&pesquisa_chave='+document.form1.rh05_causa.value+'&funcao_js=parent.js_mostrarescisao&ano=<?=$rh02_anousu?>&mes=<?=$rh02_mesusu?>&regime='+document.form1.rh02_codreg.value,'Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rescisao','func_rescisaoaviso.php?testarescisao=raf&pesquisa_chave='+document.form1.rh05_causa.value+'&funcao_js=parent.js_mostrarescisao&ano=<?=$rh02_anousu?>&mes=<?=$rh02_mesusu?>&regime='+document.form1.rh02_codreg.value,'Pesquisa',false);
     }else{
       document.form1.rh05_caub.value  = '';
       document.form1.r59_descr.value  = '';
@@ -417,10 +476,10 @@ function js_mostrarescisao1(chave1,chave2,chave3,chave4,chave5,chave6){
 }
 function js_pesquisarh01_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoaladmiss.php?testarescisao=raf&funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome|rh01_admiss|rh02_seqpes|r30_proc1|r30_proc2|r30_per1f|r30_per2f|rh02_codreg|rh14_matipe|rh14_dtvinc&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoaladmiss.php?testarescisao=raf&funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome|rh01_admiss|rh02_seqpes|r30_proc1|r30_proc2|r30_per1f|r30_per2f|rh02_codreg|rh14_matipe|rh14_dtvinc|rh30_descr&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
   }else{
      if(document.form1.rh01_regist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoaladmiss.php?testarescisao=raf&pesquisa_chave='+document.form1.rh01_regist.value+'&funcao_js=parent.js_mostrarhpessoal&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoaladmiss.php?testarescisao=raf&pesquisa_chave='+document.form1.rh01_regist.value+'&funcao_js=parent.js_mostrarhpessoal&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = '';
        document.form1.rh01_admiss_dia.value = '';
@@ -445,7 +504,7 @@ function js_pesquisarh01_regist(mostra){
      }
   }
 }
-function js_mostrarhpessoal(chave,chave2,chave3,chave4,chave5,chave6,chave7,chave8,chave9,chave10,erro,temresci){
+function js_mostrarhpessoal(chave,chave2,chave3,chave4,chave5,chave6,chave7,chave8,chave9,chave10, rh05_observacao, erro,temresci){
   document.form1.z01_nome.value = chave;
   if(erro==true||temresci=='s'){ 
 		if (temresci=='s'){
@@ -464,6 +523,7 @@ function js_mostrarhpessoal(chave,chave2,chave3,chave4,chave5,chave6,chave7,chav
     document.form1.rh01_admiss.value = chave2.substring(8,10)+'/'+chave2.substring(5,7)+'/'+chave2.substring(0,4);
     document.form1.rh02_seqpes.value = chave3;
     document.form1.rh02_codreg.value = chave8;
+    document.form1.rh30_descr.value = rh05_observacao;
     per1f = new Date(chave6.substring(0,4),(chave6.substring(5,7) - 1), 1);
     per2f = new Date(chave7.substring(0,4),(chave7.substring(5,7) - 1), 1);
     subps = new Date("<?=db_anofolha()?>","<?=db_mesfolha() - 1?>", 1);
@@ -482,7 +542,7 @@ function js_mostrarhpessoal(chave,chave2,chave3,chave4,chave5,chave6,chave7,chav
     }
   }
 }
-function js_mostrarhpessoal1(chave1,chave2,chave3,chave4,chave5,chave6,chave7,chave8,chave9,chave10,chave11){
+function js_mostrarhpessoal1(chave1,chave2,chave3,chave4,chave5,chave6,chave7,chave8,chave9,chave10,chave11,rh05_observacao){
   document.form1.rh01_regist.value = chave1;
   document.form1.z01_nome.value = chave2;
   document.form1.rh01_admiss_ano.value = chave3.substring(0,4);
@@ -491,6 +551,7 @@ function js_mostrarhpessoal1(chave1,chave2,chave3,chave4,chave5,chave6,chave7,ch
   document.form1.rh01_admiss.value = chave3.substring(8,10)+'/'+chave3.substring(5,7)+'/'+chave3.substring(0,4);
   document.form1.rh02_seqpes.value = chave4;
   document.form1.rh02_codreg.value = chave9;
+  document.form1.rh30_descr.value = rh05_observacao;
 
   per1f = new Date(chave7.substring(0,4),(chave7.substring(5,7) - 1), 1);
   per2f = new Date(chave8.substring(0,4),(chave8.substring(5,7) - 1), 1);

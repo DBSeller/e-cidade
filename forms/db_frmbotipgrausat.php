@@ -58,7 +58,7 @@ db_input('bo02_descr',20,$Ibo02_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_botipgrausat','func_botipgrausat.php?funcao_js=parent.js_preenchepesquisa|bo02__codgrausat','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_botipgrausat','func_botipgrausat.php?funcao_js=parent.js_preenchepesquisa|bo02__codgrausat','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_botipgrausat.hide();

@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_restricao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_restricao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_restricao = new cl_mer_restricao;
@@ -53,9 +53,9 @@ if (isset($alterar)) {
   <script>
    parent.document.formaba.a2.disabled = false;
    parent.document.formaba.a3.disabled = false;   
-   top.corpo.iframe_a2.location.href   = 'mer1_mer_restriitem001.php?me25_i_restricao=<?=$chavepesquisa?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'mer1_mer_restriitem001.php?me25_i_restricao=<?=$chavepesquisa?>'+
 	                                     '&me24_i_aluno=<?=$me24_i_aluno?>&ed47_v_nome=<?=$ed47_v_nome?>';
-   top.corpo.iframe_a3.location.href   = 'mer1_mer_restricaointolerancia001.php?me34_i_restricao=<?=$chavepesquisa?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href   = 'mer1_mer_restricaointolerancia001.php?me34_i_restricao=<?=$chavepesquisa?>'+
                                          '&me24_i_aluno=<?=$me24_i_aluno?>&ed47_v_nome=<?=$ed47_v_nome?>';     
   </script>
   <?
@@ -77,7 +77,7 @@ if (isset($alterar)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Restrição</b></legend>
-    <?include("forms/db_frmmer_restricao.php");?>
+    <?include(modification("forms/db_frmmer_restricao.php"));?>
    </fieldset>
    </center>
   </td>

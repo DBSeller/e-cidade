@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -71,7 +71,7 @@ final class NotaLiquidacaoItem {
     $this->iCodigoNota = $iCodigoNota;
     if (!empty($iCodigoNota)) {
 
-      $oDaoEmpnotaItem = db_utils::getDao("empnotaitem");
+      $oDaoEmpnotaItem = new cl_empnotaitem();
       $sSqlDadosNota   = $oDaoEmpnotaItem->sql_query_ordemCompra($iCodigoNota);
       $rsDadosNota     = $oDaoEmpnotaItem->sql_record($sSqlDadosNota);
       if ($oDaoEmpnotaItem->numrows > 0) {
@@ -166,7 +166,7 @@ final class NotaLiquidacaoItem {
   public function getBensVinculados() {
 
     $aBensVinculados     = array();
-    $oDaoBensEmpNotaItem = db_utils::getDao('bensempnotaitem');
+    $oDaoBensEmpNotaItem = new cl_bensempnotaitem();
     $sWhereItem          = "e136_empnotaitem = {$this->getCodigoNota()}";
     $sSqlBuscaBensNota   = $oDaoBensEmpNotaItem->sql_query_file(null, "e136_bens", null, $sWhereItem);
     $rsBuscaBensNota     = $oDaoBensEmpNotaItem->sql_record($sSqlBuscaBensNota);

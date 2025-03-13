@@ -1,4 +1,30 @@
 <?
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
 class mail {
   
   public $sClass     = 0;
@@ -15,7 +41,7 @@ class mail {
     /**
      * Declaramos as variáveis da classe de acordo com o que está configurado no arquivo config.mail.php
      */
-     include_once('libs/config.mail.php');
+     include_once(modification('libs/config.mail.php'));
     
      $this->sUserMail        = $sUser;
      $this->sPassMail        = $sPass;
@@ -65,43 +91,49 @@ class mail {
   
   function Send() {
     
-    switch($this->sClass) {
-      
-      case 1:
-        include("mail/db_smtp1_class.php");
-        $oClassMail = new Smtp();
+  	try {
+  		
+      switch($this->sClass) {
         
-        try {
-          
+        case 1:
+        	
+          include(modification("libs/mail/db_smtp1_class.php"));
+          $oClassMail = new Smtp1();
           $oClassMail->Send($this->sEmailTo,$this->sEmailFrom,$this->sSubject,$this->sMsg);
-          return "Uma mensagem foi encaminha para o e-mail informado";
           
-        } catch (Exception $eException){
-          return "00 - Erro ao enviar E-mail. ".$eException->getMessage();
-        }
-      break;
-        
-      default:
-        include("mail/db_smtp2_class.php");
-        
-        try {
+        break;
           
-          $oClassMail = new Smtp();
+        case 2:
+        	
+          include(modification("libs/mail/db_smtp2_class.php"));
+          
+          $oClassMail = new SMTP();
           $oClassMail->Delivery('relay');
           $oClassMail->Relay($this->sHostMail, $this->sUserMail, $this->sPassMail, $this->sPortMail, 'login', false);
           $oClassMail->From($this->sEmailFrom);
           $oClassMail->AddTo($this->sEmailTo);
           $oClassMail->Html($this->sMsg);
           $oClassMail->Send($this->sSubject);
-          return "Uma mensagem foi encaminha para o e-mail informado"; 
-                    
-        } catch (Exception $eException){
-          return "01 - Erro ao enviar E-mail. ".$eException->getMessage();
-        }
+          
+        break;
         
-      break;
-            
-    }
+        default:
+        
+        	$sHeader = "From: {$this->sEmailFrom} <{$this->sEmailFrom}>";
+        	if ( !mail($this->sEmailTo,$this->sSubject,$this->sMsg, $sHeader) ) {
+        		throw Exception("Função mail");
+        	}
+        	
+        break;
+              
+      }
+    
+      return "Uma mensagem foi encaminha para o e-mail informado";
+      
+    } catch (Exception $eException) {
+    	return "01 - Erro ao enviar E-mail. ".$eException->getMessage();
+    }	
+    	
   }
   
   function Close($connection) {

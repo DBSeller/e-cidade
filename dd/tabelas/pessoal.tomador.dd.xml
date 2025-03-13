@@ -1,0 +1,78 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010293' name='pessoal.tomador' description="Tabela responsavel por guardar a empresa tomadora onde o servidor esta alocado" prefix="" label="Tomador" type="0">
+  <fields>
+    <field codigo="1009807" 
+           campo_api='' 
+           name="rh216_seqpes" 
+           conteudo="int8" 
+           description="Sequencial da tabela Rhpessoalmov" 
+           inivalue="0" 
+           label="rhpessoalmov" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009810" 
+           campo_api='' 
+           name="rh216_instit" 
+           conteudo="int8" 
+           description="Instituição do servidor" 
+           inivalue="0" 
+           label="z18_instit" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="z18_instit" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009809" 
+           campo_api='' 
+           name="rh216_numcgm" 
+           conteudo="int8" 
+           description="Numero do Cgm da tabela cgm" 
+           inivalue="0" 
+           label="numcgm" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="numcgm" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh216_seqpes"></fieldpk> 
+    <fieldpk name="rh216_instit"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="rh216_numcgm" reference="z01_numcgm" /> 
+    </foreignkey>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="rh216_instit" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="rhpessoalmov" inner='t'>
+      <fieldfk name="rh216_seqpes" reference="rh02_seqpes" /> 
+      <fieldfk name="rh216_instit" reference="rh02_instit" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

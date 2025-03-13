@@ -1,51 +1,52 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("libs/db_sql.php");
-include("classes/db_cadferia_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpessoalmov_classe.php");
-include("classes/db_rhpesdoc_classe.php");
-include("classes/db_rhpesfgts_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_rhdepend_classe.php");
-include("classes/db_afasta_classe.php");
-include("classes/db_vtffunc_classe.php");
-include("classes/db_vtfdias_classe.php");
-include("classes/db_vtfempr_classe.php");
-include("classes/db_rhpeslocaltrab_classe.php");
-include("classes/db_pesdiver_classe.php");
-include("classes/db_rhbases_classe.php");
-include("classes/db_rhemissaochequeitem_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_sql.php"));
+
+require_once(modification("classes/db_cadferia_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_rhpessoalmov_classe.php"));
+require_once(modification("classes/db_rhpesdoc_classe.php"));
+require_once(modification("classes/db_rhpesfgts_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_rhdepend_classe.php"));
+require_once(modification("classes/db_afasta_classe.php"));
+require_once(modification("classes/db_vtffunc_classe.php"));
+require_once(modification("classes/db_vtfdias_classe.php"));
+require_once(modification("classes/db_vtfempr_classe.php"));
+require_once(modification("classes/db_rhpeslocaltrab_classe.php"));
+require_once(modification("classes/db_pesdiver_classe.php"));
+require_once(modification("classes/db_rhbases_classe.php"));
+require_once(modification("classes/db_rhemissaochequeitem_classe.php"));
 
 $clrhemitechequeitem = new cl_rhemissaochequeitem();
 $clrhemitechequeitem->rotulo->label();
@@ -95,6 +96,7 @@ $clrhpeslocaltrab = new cl_rhpeslocaltrab;
 $clrhpeslocaltrab->rotulo->label();
 
 $clgera_sql_folha = new cl_gera_sql_folha;
+
 ?>
 <html>
 <head>
@@ -102,9 +104,12 @@ $clgera_sql_folha = new cl_gera_sql_folha;
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBHint.widget.js"></script>
+
+
 <style>
 .db_area {
-  font-family : courier; 
+  font-family : courier;
 }
 .bordasAqui{
   border: 1px solid #cccccc;
@@ -150,7 +155,7 @@ $clgera_sql_folha = new cl_gera_sql_folha;
         <legend><strong>Gozo de férias</strong></legend>
 	<table border=0>
 	  <tr>
-      <td align="left"   width="32%" class="bordasAqui" style="font-size:12px" nowrap colspan="2"><b><?=$RLr30_perai?> </b></td>
+        <td align="left"   width="32%" class="bordasAqui" style="font-size:12px" nowrap colspan="2"><b><?=$RLr30_perai?> </b></td>
 	    <td align="center" width="17%" class="bordasAqui" style="font-size:12px" nowrap colspan="2"><b><?=$RLr30_ndias?> </b></td>
 	    <td align="center" width="17%" class="bordasAqui" style="font-size:12px" nowrap            ><b><?=$RLr30_abono?> </b></td>
 	    <td align="center" width="17%" class="bordasAqui" style="font-size:12px" nowrap            ><b><?=$RLr30_faltas?></b></td>
@@ -168,7 +173,7 @@ $clgera_sql_folha = new cl_gera_sql_folha;
             <td align="center" class="bordasCor1" nowrap title="<?=$Tr30_tip2?>" ><?=$RLr30_tip2?> </td>
             <td align="center" class="bordasCor1" nowrap title="<?=$Tr30_tip2?>" ><?=$RLr30_paga13?> </td>
 	  </tr>
-          <?
+          <?php
           for($i=0; $i<$clcadferia->numrows; $i++){
             db_fieldsmemory($result,$i);
             $bordas = "bordasCor1";
@@ -182,95 +187,95 @@ $clgera_sql_folha = new cl_gera_sql_folha;
           ?>
 
           <tr><td <?=$taman?> colspan="8"><?=$value?></td></tr>
-          
-          <tr align="center"> 
-          
+
+          <tr align="center">
+
             <td align="left" class="bordasAqui" style="font-size:12px" nowrap colspan="2">
               <b><?=db_formatar($r30_perai,'d').' - '.db_formatar($r30_peraf,'d')?></b>
             </td>
-            
+
             <td align="center" class="bordasAqui" style="font-size:12px" nowrap colspan="2">
               <b><?=$r30_ndias?></b>
             </td>
-            
+
             <td align="center" class="bordasAqui" style="font-size:12px" nowrap>
               <b><?=$r30_abono?></b>
             </td>
-            
+
             <td align="center" class="bordasAqui" style="font-size:12px" nowrap>
               <b><?=$r30_faltas?></b>
             </td>
-            
+
             <td align="left" class="bordasAqui" style="font-size:12px" nowrap colspan="2">
               <b><?=($r30_ponto == "C"?"Complementar":"Salário")?></b>
             </td>
-            
+
             <td align="center" class="bordasAqui" style="font-size:12px" nowrap colspan="2">
               <b><?=$r30_vfgt1?></b>
             </td>
-            
+
             <td align="center" class="bordasAqui" style="font-size:12px" nowrap colspan="2">
               <b>Observações</b>
-            </td>    
-                    
+            </td>
+
 	  </tr>
 	  <tr>
-	  
-	  
-	  
+
+
+
             <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=db_formatar($r30_per1i,'d').' - '.db_formatar($r30_per1f,'d')?>
             </td>
-            
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r30_proc1?>
             </td>
-            
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r30_dias1?>
             </td>
-            
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r30_tip1?>
             </td>
-            
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=db_formatar($r30_per2i,'d').' - '.db_formatar($r30_per2f,'d')?>
             </td>
-            
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r30_proc2?>
             </td>
-            
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r30_dias2?>
             </td>
-            
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r30_tip2?>
             </td>
-            
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC" colspan="2"> 
+
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC" colspan="2">
               <?=($r30_paga13 == 't'?"Sim":"Não")?>
             </td>
-            
-            <td id='td_<?=$i ?>' align="center" class="<?=$bordas?>" onmouseover="oHint.showHint('td_<?=$i ?>', 'obs_<?=$i ?>')" nowrap bgcolor="#CCCCCC" > 
-              <? echo substr($r30_obs, 0, 25) ?>
-            </td>    
-      
+
+            <td id='td_<?=$i ?>' align="center" class="<?=$bordas?>" onmouseover="oHint.showHint('td_<?=$i ?>', 'obs_<?=$i ?>')" nowrap bgcolor="#CCCCCC" >
+              <?php echo substr($r30_obs, 0, 25) ?>
+            </td>
+
 				 </tr>
-				 
-				 
+
+
          <tr>
              <td align="right" nowrap bgcolor="#CCCCCC" colspan="11" >
               <div style="display: none; "  id="obsd_<?=$i ?>">
-                <textarea id='obs_<?=$i ?>'  readonly="readonly" rows="3" cols="50"><?=$r30_obs ?></textarea>   
+                <textarea id='obs_<?=$i ?>'  readonly="readonly" rows="3" cols="50"><?=$r30_obs ?></textarea>
               </div>
-            </td>   
+            </td>
           </tr>
-          
-          
-          <?
+
+
+          <?php
           }
           ?>
 	</table>
@@ -282,33 +287,33 @@ $clgera_sql_folha = new cl_gera_sql_folha;
 <script>
 
 /**
- * Cria uma div semelhante a um Hint contendo textos etc; 
+ * Cria uma div semelhante a um Hint contendo textos etc;
  * @param {STRING} sEstancia Nome da instancia do OBJ
 */
 oDbHint = function(sEstancia) {
 
   var me = this;
   me.sNameInstance  = sEstancia;
-  
+
  /*
   * ao instanciar o OBJ criamos uma div oculta com o text area que recebera o texto
- */ 
+ */
   var sHtmlDiv  = "<div id='div_hint' style='position:absolute; display:none; '>                          ";
-      sHtmlDiv += "  <textarea style='background-color: #6699CC;' readonly='readonly;'                    "; 
+      sHtmlDiv += "  <textarea style='background-color: #6699CC;' readonly='readonly;'                    ";
       sHtmlDiv += "    rows='5' cols='45' onmouseout='"+me.sNameInstance+".hideHint();' id='txt_obs' >    ";
       sHtmlDiv += "  </textarea>                                                                          ";
       sHtmlDiv += "</div>                                                                                 ";
       document.write(sHtmlDiv);
-      
+
  /*
   * função a ser chamada que mostra o hint
   * @param {string} sIdAlvo      id do elemeto onde devera aparecer o hint, geralmente um td da tabela
   * @param {string} sComponente  id do componente que contem o texto, algo como um text area oculto
       tratamos assim pois pode haver textos com quebras de linha \n logo daria problemas ao passar o texto
-      como parametro 
-  */      
+      como parametro
+  */
   me.showHint = function(sIdAlvo, sComponente){
-  
+
     var iAltura = $(sIdAlvo).offsetTop + "px";
     var iLeft   = ($(sIdAlvo).offsetLeft + 70 )+ "px";
     var sValor = $F(sComponente);
@@ -316,42 +321,43 @@ oDbHint = function(sEstancia) {
     $('div_hint').style.top     = iAltura;  // setamos a altura que o hint aparecera
     $('div_hint').style.left    = iLeft;    // setamos o left
     $('txt_obs').value          = sValor;   // definimos o valor
-    $("div_hint").style.display = 'inLine'; // mudamos o style para visivel 
+    $("div_hint").style.display = 'inLine'; // mudamos o style para visivel
   }
-  
+
   /*
    * função para ocultar a div no mouseout da div que contem o texto
    *
-  */ 
+  */
   me.hideHint = function(){
-  
+
     $('txt_obs').value          = '';     // limpamos o valor antigo
-    $("div_hint").style.display = 'none'; // ocultamos novamente o hint 
+    $("div_hint").style.display = 'none'; // ocultamos novamente o hint
   }
 
-      
+
 }
 
 oHint  = new oDbHint("oHint");
 
 
-</script>  
+</script>
 
-<?
+<?php
   }elseif ($solicitacao == "Efetividade") {
     $sql = $clrhpeslocaltrab->sql_query_rhpessoalmov(null,
                                         "distinct 
                                          rh56_localtrab, 
                                          rh55_estrut,
                                          rh55_descr,
-                                         case when rh56_princ = true then 'Sim' else 'Não' end as principal",
+                                         case when rh56_princ = true then 'Sim' else 'Não' end as principal,
+                                         rh56_datainicio,
+                                         rh56_datafim",
                                         "rh55_descr",
                                         "    rhpessoalmov.rh02_instit = ".db_getsession("DB_instit")."
                                          and rhpessoalmov.rh02_regist = ".$parametro."
                                          and rhpessoalmov.rh02_anousu = {$ano} 
-                                         and rhpessoalmov.rh02_mesusu = {$mes}
-                                         and rh56_princ is true");
-                                         
+                                         and rhpessoalmov.rh02_mesusu = {$mes}");
+
   $result = $clrhpeslocaltrab->sql_record($sql);
   /////////////////////////////////////////////////////////////////////////////////////////////////////
 ?>
@@ -366,27 +372,35 @@ oHint  = new oDbHint("oHint");
             <td align="center" class="bordasAqui" nowrap title="Estrutural do local de trabalho"><strong>Estrutural</strong></td>
             <td align="center" class="bordasAqui" nowrap title="Descrição"><strong>Descrição</strong></td>
             <td align="center" class="bordasAqui" nowrap title="Se local de trabalho é principal"><strong>Principal</strong></td>
+            <td align="center" class="bordasAqui" nowrap title="Data Inicial"><strong>Dt. Inicio</strong></td>
+            <td align="center" class="bordasAqui" nowrap title="Data Final"><strong>Dt. Fim</strong></td>
 	  </tr>
-	  <?
+	  <?php
           $bordas = "bordasCor1";
 	  for($i=0; $i<pg_numrows($result); $i++){
             db_fieldsmemory($result, $i);
 	  ?>
 	  <tr>
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$rh56_localtrab?>
             </td>
-            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$rh55_estrut?>
             </td>
-            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$rh55_descr?>
             </td>
-            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$principal?>
             </td>
+            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
+              <?=db_formatar($datainicio,"d")?>
+            </td>
+            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
+              <?=db_formatar($datafim,"d")?>
+            </td>            
           </tr>
-	  <?
+	  <?php
 	  }
 	  ?>
 	</table>
@@ -394,7 +408,7 @@ oHint  = new oDbHint("oHint");
     </td>
   </tr>
 </table>
-<?
+<?php
   }elseif ($solicitacao == "Dependentes") {
     $sql = $clrhdepend->sql_query_file(
                                        null,
@@ -463,32 +477,32 @@ oHint  = new oDbHint("oHint");
             <td align="center" class="bordasAqui" nowrap title="<?=$Trh31_irf?>"   ><strong><?=$RLrh31_irf?>   </strong></td>
             <td align="center" class="bordasAqui" nowrap title="<?=$Trh31_especi?>"><strong><?=$RLrh31_especi?></strong></td>
 	  </tr>
-	  <?
+	  <?php
           $bordas = "bordasCor1";
 	  for($i=0; $i<$clrhdepend->numrows; $i++){
             db_fieldsmemory($result, $i);
 	  ?>
 	  <tr>
-            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$rh31_nome?>
             </td>
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=db_formatar($rh31_dtnasc,"d")?>
             </td>
-            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$rh31_gparen?>
             </td>
-            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$rh31_depend?>
             </td>
-            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$rh31_irf?>
             </td>
-            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left"   class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$rh31_especi?>
             </td>
           </tr>
-	  <?
+	  <?php
 	  }
 	  ?>
 	</table>
@@ -496,7 +510,7 @@ oHint  = new oDbHint("oHint");
     </td>
   </tr>
 </table>
-<?
+<?php
   }elseif ($solicitacao == "Afastamentos") {
     $sql = $clafasta->sql_query_file(
                                      null,
@@ -508,6 +522,10 @@ oHint  = new oDbHint("oHint");
                                            when '5' then 'Licença Gestante'
                                            when '6' then 'Doença'
                                            when '7' then 'Sem Vencimentos/Sem Ônus'
+                                           when '8' then 'Doença'
+                                           when '9' then 'Prorrogação Licença Maternidade'
+                                           when '10' then 'Licença para cuidar de Familiar'
+                                           when '11' then 'Licença Prêmio'
                                       end as r45_situac,
                                       r45_dtafas,
                                       r45_dtreto,
@@ -528,6 +546,16 @@ oHint  = new oDbHint("oHint");
 <table  border="0" align="center" cellpadding="0" cellspacing="2">
   <tr>
     <td>
+   </td>
+  </tr> 
+  <tr>
+   <td align='center'>
+      <br><br>
+      <input type="button" onclick='imprimeAfastamento()' value='Imprimir'>
+   </td>
+  </tr>
+  <tr>
+    <td>
       <fieldset>
         <legend><strong>Afastamentos</strong></legend>
 	<table border=0>
@@ -539,37 +567,37 @@ oHint  = new oDbHint("oHint");
             <td align="center" class="bordasAqui" nowrap title="<?=$Tr45_dtlanc?>"                               ><strong><?=@$RLr45_dtlanc?></strong></td>
             <td align="center" class="bordasAqui" title="<?=$Tr45_obs?>"><strong><?=@$RLr45_obs?></strong></td>
 	  </tr>
-          <?
+          <?php
           for ($i = 0;$i < $clafasta->numrows;$i++){
             db_fieldsmemory($result,$i);
           ?>
 	  <tr>
-            <td align="center" valign="top" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="center" valign="top" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r45_situac?>
             </td>
-            <td align="center" valign="top" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="center" valign="top" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=db_formatar($r45_dtafas,"d")?>
             </td>
-            <td align="center" valign="top" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="center" valign="top" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=db_formatar($r45_dtreto,"d")?>
             </td>
             <td align="center" valign="top" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$dias?>
             </td>
-            <td align="center" valign="top" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="center" valign="top" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=db_formatar($r45_dtlanc,'d')?>
             </td>
             <td align="left" valign="top" class="<?=$bordas?>"  bgcolor="#CCCCCC">
               <?=nl2br($r45_obs)?>
-            </td>            
+            </td>
 	  </tr>
-          <?}?>
+          <?php } ?>
 	</table>
       </fieldset>
     </td>
   </tr>
 </table>
-<?
+<?php
   }else if($solicitacao == "Documentos" || $solicitacao == "Outros"){
     if($solicitacao == "Documentos"){
       $sql = $clrhpesdoc->sql_query_file($parametro);
@@ -650,7 +678,7 @@ oHint  = new oDbHint("oHint");
     </td>
   </tr>
 </table>
-    <?
+    <?php
       }
     }elseif($solicitacao == "Outros"){
       $clgera_sql_folha->usar_pes = true;
@@ -707,7 +735,7 @@ oHint  = new oDbHint("oHint");
 					      <strong><?=$RLrh02_instit?>:</strong>
 					    </td>
 				      <td align="left" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-				        <?
+				        <?php
 				          db_sel_instit($rh02_instit,"codigo, nomeinst");
 					        echo $codigo. " - " .$nomeinst;
 					      ?>
@@ -739,7 +767,7 @@ oHint  = new oDbHint("oHint");
     </td>
   </tr>
 </table>
-<? 
+<?php
     }
   }
   }elseif ($solicitacao == "Vale"){
@@ -772,31 +800,31 @@ oHint  = new oDbHint("oHint");
             <td align="center" class="bordasAqui" nowrap title="<?=$Tr17_situac?>"><strong><?=$RLr17_situac?></strong></td>
             <td align="center" class="bordasAqui" nowrap title="<?=$Tr17_tipo  ?>"><strong><?=$RLr17_tipo  ?></strong></td>
 	  </tr>
-          <?
+          <?php
           for ($i = 0;$i < $clvtffunc->numrows;$i++){
             db_fieldsmemory($result,$i);
           ?>
 	  <tr>
-            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="center" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r17_codigo?>
             </td>
-            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r16_descr?>
             </td>
-            <td align="right" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="right" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r17_quant?>
             </td>
             <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$arr_SorN[$r17_difere]?>
             </td>
-            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r17_situac?>
             </td>
-            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC"> 
+            <td align="left" class="<?=$bordas?>" nowrap bgcolor="#CCCCCC">
               <?=$r17_tipo?>
             </td>
 	  </tr>
-          <?}?>
+          <?php } ?>
 	</table>
       </fieldset>
     </td>
@@ -805,7 +833,7 @@ oHint  = new oDbHint("oHint");
 <?php
 }
 if($solicitacao == 'Variaveis'){
-  
+
   $oServidor = new Servidor($parametro, $ano, $mes);
   $oVariaveis = DBPessoal::getVariaveisCalculo($oServidor);
 
@@ -828,10 +856,10 @@ if($solicitacao == 'Variaveis'){
               <?php echo db_formatar(($oVariaveis->f001 + 0),"f"); ?>
             </td>
             <td align="left" class="bordasAqui" nowrap title="">
-      	      <strong>F010 - Salário base com progressão</strong>
-      	    </td>
+              <strong>F011 - Salário hora</strong>
+            </td>
             <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-              <?php echo db_formatar(($oVariaveis->f010 + 0),"f"); ?>
+              <?php echo db_formatar(($oVariaveis->f011 + 0),"f"); ?>
             </td>
       	  </tr>
 
@@ -843,10 +871,10 @@ if($solicitacao == 'Variaveis'){
               <?php echo db_formatar(($oVariaveis->f002 + 0),"f"); ?>
             </td>
             <td align="left" class="bordasAqui" nowrap title="">
-      	      <strong>F011 - Salário hora</strong>
-      	    </td>
+              <strong>F012 - Anos trabalhados</strong>
+            </td>
             <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-              <?php echo db_formatar(($oVariaveis->f011 + 0),"f"); ?>
+              <?php echo db_formatar(($oVariaveis->f012 + 0),"f"); ?>
             </td>
       	  </tr>
 
@@ -854,14 +882,14 @@ if($solicitacao == 'Variaveis'){
             <td align="left" class="bordasAqui" nowrap title="">
       	      <strong>F003 - Data de admissão</strong>
       	    </td>
-            <td align="center" class="bordasCor1" nowrap bgcolor="#CCCCCC">
+            <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
               <?php echo db_formatar($oVariaveis->f003,"d"); ?>
             </td>
             <td align="left" class="bordasAqui" nowrap title="">
-      	      <strong>F012 - Anos trabalhados</strong>
-      	    </td>
+              <strong>F013 - Qtd. de triênios</strong>
+            </td>
             <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-              <?php echo db_formatar(($oVariaveis->f012 + 0),"f"); ?>
+              <?php echo db_formatar(($oVariaveis->f013 + 0),"f"); ?>
             </td>
       	  </tr>
 
@@ -873,10 +901,10 @@ if($solicitacao == 'Variaveis'){
               <?php echo db_formatar(($oVariaveis->f004 + 0),"f"); ?>
             </td>
             <td align="left" class="bordasAqui" nowrap title="">
-      	      <strong>F013 - Qtd. de triênios</strong>
-      	    </td>
+              <strong>F014 - Qtd. de progressões</strong>
+            </td>
             <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-              <?php echo db_formatar(($oVariaveis->f013 + 0),"f"); ?>
+              <?php echo db_formatar(($oVariaveis->f014 + 0),"f"); ?>
             </td>
       	  </tr>
 
@@ -888,10 +916,10 @@ if($solicitacao == 'Variaveis'){
               <?php echo db_formatar(($oVariaveis->f005 + 0),"f"); ?>
             </td>
             <td align="left" class="bordasAqui" nowrap title="">
-      	      <strong>F014 - Qtd. de progressões</strong>
-      	    </td>
+              <strong>F015 - % de progressão</strong>
+            </td>
             <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-              <?php echo db_formatar(($oVariaveis->f014 + 0),"f"); ?>
+              <?php echo db_formatar(($oVariaveis->f015 + 0),"f"); ?>
             </td>
       	  </tr>
 
@@ -903,10 +931,10 @@ if($solicitacao == 'Variaveis'){
               <?php echo db_formatar(($oVariaveis->f006 + 0),"f"); ?>
             </td>
             <td align="left" class="bordasAqui" nowrap title="">
-      	      <strong>F015 - % de progressão</strong>
-      	    </td>
+              <strong>F022 - Qtd. de quinquênios</strong>
+            </td>
             <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-              <?php echo db_formatar(($oVariaveis->f015 + 0),"f"); ?>
+              <?php echo db_formatar(($oVariaveis->f022 + 0),"f"); ?>
             </td>
       	  </tr>
 
@@ -918,10 +946,10 @@ if($solicitacao == 'Variaveis'){
               <?php echo db_formatar(($oVariaveis->f007 + 0),"f"); ?>
             </td>
             <td align="left" class="bordasAqui" nowrap title="">
-      	      <strong>F022 - Qtd. de quinquênios</strong>
-      	    </td>
+              <strong>F024 - Meses para progressão</strong>
+            </td>
             <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-              <?php echo db_formatar(($oVariaveis->f022 + 0),"f"); ?>
+              <?php echo db_formatar(($oVariaveis->f024 + 0),"f"); ?>
             </td>
       	  </tr>
 
@@ -933,10 +961,10 @@ if($solicitacao == 'Variaveis'){
               <?php echo db_formatar(($oVariaveis->f008 + 0),"f"); ?>
             </td>
             <td align="left" class="bordasAqui" nowrap title="">
-      	      <strong>F024 - Meses para progressão</strong>
-      	    </td>
+              <strong>F025 - Dias no mês</strong>
+            </td>
             <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-              <?php echo db_formatar(($oVariaveis->f024 + 0),"f"); ?>
+              <?php echo db_formatar(($oVariaveis->f025 + 0),"f"); ?>
             </td>
       	  </tr>
 
@@ -948,28 +976,57 @@ if($solicitacao == 'Variaveis'){
               <?php echo db_formatar(($oVariaveis->f009 + 0),"f"); ?>
             </td>
             <td align="left" class="bordasAqui" nowrap title="">
-      	      <strong>F025 - Dias no mês</strong>
-      	    </td>
+              <strong>F030 - Padrão base de previdência</strong>
+            </td>
             <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
-              <?php echo db_formatar(($oVariaveis->f025 + 0),"f"); ?>
+              <?php echo db_formatar(($oVariaveis->f030 + 0),"f"); ?>
             </td>
       	  </tr>
 
-      	  <tr>
+          <tr>
+            <td align="left" class="bordasAqui" nowrap title="">
+              <strong>F010 - Salário base com progressão</strong>
+            </td>
+            <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
+              <?php echo db_formatar(($oVariaveis->f010 + 0),"f"); ?>
+            </td>
             <td align="left" class="bordasAqui" nowrap title="">
               <strong>Padrão atual</strong>
             </td>
-            <td colspan="3" align="left" class="bordasCor1" nowrap bgcolor="#CCCCCC">
+            <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
               <?php echo $oVariaveis->padrao; ?>
             </td>
-      	  </tr>
+          </tr>
+
+          <tr>
+            <td align="left" class="bordasAqui" nowrap>
+              <strong>F031 - Domingos no mês</strong>
+            </td>
+            <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
+              <?php echo $oVariaveis->f031 ?>
+            </td>
+            <td align="left" class="bordasAqui" nowrap>
+              <strong>F032 - Dias úteis do mês</strong>
+            </td>
+            <td align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
+              <?php echo $oVariaveis->f032 ?>
+            </td>
+          </tr>
+          <tr>
+            <td onmouseout="fecha_detalhe_f033()"  onmouseover="detalhe_f033()" id="f033" align="left" class="bordasAqui" nowrap>
+                  <strong>F033 - Dias trabalhados do mês</strong>
+            </td>
+            <td   align="right" class="bordasCor1" nowrap bgcolor="#CCCCCC">
+                  <?php echo $oVariaveis->f033 ?>
+            </td>
+          </tr>
 
       	</table>
       </fieldset>
     </td>
   </tr>
 </table>
-<?php  
+<?php
     }
   }
 if($solicitacao == 'Diversos'){
@@ -985,7 +1042,7 @@ if($solicitacao == 'Diversos'){
         <fieldset>
           <legend><strong>Diversos para Cálculo</strong></legend>
         	<table border=0>
-                <?
+                <?php
                  db_lovrot($sql,20,"()","");
                 ?>
         	</table>
@@ -996,7 +1053,7 @@ if($solicitacao == 'Diversos'){
 
 <?php
 }
-  
+
 if($solicitacao == 'Bases'){
   $campos = "rh32_base,rh32_descr,rh32_calqua,rh32_mesant,rh32_pfixo";
   $sql = $clrhbases->sql_query(null,$campos);
@@ -1008,7 +1065,7 @@ if($solicitacao == 'Bases'){
         <fieldset>
           <legend><strong>Bases para Cálculo</strong></legend>
         	<table border=0>
-                <?
+                <?php
                  db_lovrot($sql,20,"()","");
                 ?>
         	</table>
@@ -1021,13 +1078,13 @@ if($solicitacao == 'Bases'){
 }
 
 if( $solicitacao == 'ChequesEmitidos' ){
-	
+
   $sCampos = "r15_sequencial,r15_descricao,r18_anousu,r18_mesusu,r18_numcheque,r18_valor";
-  
+
   $sWhere   = "     r18_regist = {$parametro}";
   $sWhere  .= " and r18_anousu = {$ano}";
   $sWhere  .= " and r18_mesusu = {$mes}";
-  
+
   $sSql    = $clrhemitechequeitem->sql_query(null,$sCampos,"r18_sequencial",$sWhere);
 ?>
 
@@ -1037,7 +1094,7 @@ if( $solicitacao == 'ChequesEmitidos' ){
       <fieldset>
         <legend align="center"><strong>Cheques Emitidos</strong></legend>
         <table border=0>
-              <?
+              <?php
                db_lovrot($sSql,20,"()","");
               ?>
         </table>
@@ -1049,18 +1106,23 @@ if( $solicitacao == 'ChequesEmitidos' ){
 <?php
 }
 if ($solicitacao == "temposervico") {
-  
-  $sSqlTempoServicoAnterior  = "SELECT h16_assent,                                                                                ";
-  $sSqlTempoServicoAnterior .= "       h12_descr,                                                                                 ";
-  $sSqlTempoServicoAnterior .= "       (date_part('year', age(max(h16_dtterm), min(h16_dtconc)))||' anos '||                      ";
-  $sSqlTempoServicoAnterior .= "       date_part('month', age(max(h16_dtterm), min(h16_dtconc)))||' meses '||                     ";
-  $sSqlTempoServicoAnterior .= "       date_part('day', age(max(h16_dtterm+1), min(h16_dtconc)))||' dias ')::varchar as dl_tempo, ";
-  $sSqlTempoServicoAnterior .= "       sum(h16_quant) as dl_quantidade_dias                                                       ";
-  $sSqlTempoServicoAnterior .= "  from assenta                                                                                    ";
-  $sSqlTempoServicoAnterior .= "       inner join tipoasse on h16_assent = h12_codigo                                             ";
-  $sSqlTempoServicoAnterior .= " where h16_regist = {$parametro} AND H12_reltot >= 1                                              ";
-  $sSqlTempoServicoAnterior .= " group by h16_assent,                                                                             ";
-  $sSqlTempoServicoAnterior .= "       h12_descr                                                                                  ";
+
+  $sSqlTempoServicoAnterior  = " select h16_assent, h12_descr,";
+  $sSqlTempoServicoAnterior .= "   (CAST(TO_CHAR(AGE(now(), (now() - (dl_quantidade_dias  || ' DAY')::INTERVAL)),'YY') AS INTEGER) || ' anos ' || ";
+  $sSqlTempoServicoAnterior .= "   CAST(TO_CHAR(AGE(now(), (now() - (dl_quantidade_dias  || ' DAY')::INTERVAL)),'MM') AS INTEGER) ||' meses '||  ";
+  $sSqlTempoServicoAnterior .= "   CAST(TO_CHAR(AGE(now(), (now() - (dl_quantidade_dias  || ' DAY')::INTERVAL)),'DD') AS INTEGER) ||' dias ')::varchar as dl_tempo, ";
+  $sSqlTempoServicoAnterior .= "   dl_quantidade_dias ";
+  $sSqlTempoServicoAnterior .= " FROM( ";
+  $sSqlTempoServicoAnterior .= " SELECT h16_assent, ";
+  $sSqlTempoServicoAnterior .= "        h12_descr, ";
+  $sSqlTempoServicoAnterior .= "        sum(h16_quant) AS dl_quantidade_dias ";
+  $sSqlTempoServicoAnterior .= " FROM assenta ";
+  $sSqlTempoServicoAnterior .= " INNER JOIN tipoasse ON h16_assent = h12_codigo ";
+  $sSqlTempoServicoAnterior .= " WHERE h16_regist = {$parametro} ";
+  $sSqlTempoServicoAnterior .= "   AND H12_reltot >= 1 ";
+  $sSqlTempoServicoAnterior .= " GROUP BY h16_assent, ";
+  $sSqlTempoServicoAnterior .= "          h12_descr ";
+  $sSqlTempoServicoAnterior .= "          ) as x ";
 
 ?>
   <table  border="0" align="center" cellpadding="0" cellspacing="2">
@@ -1076,14 +1138,44 @@ if ($solicitacao == "temposervico") {
         </fieldset>
       </td>
     </tr>
-  </table>    
+  </table>
 
 <?php
 }
 ?>
 
 <center>
-  <input type="button" name="fechar" value="Fechar" onClick="top.corpo.func_pesquisa.hide();">
+  <input type="button" name="fechar" value="Fechar" onClick="(window.CurrentWindow || parent.CurrentWindow).corpo.func_pesquisa.hide();">
 </center>
 </body>
 </html>
+
+<script>
+    
+    function imprimeAfastamento() {
+
+      var iMatricula = '<?=$parametro?>';
+      var iAno       = '<?=$ano?>';
+      var iMes       = '<?=$mes?>';
+      
+      qry  = 'matricula='+iMatricula;
+      qry += '&ano='+iAno;
+      qry += '&mes='+iMes;
+      
+      jan = window.open('pes2_consafastamentofunc002.php?'+qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+      jan.moveTo(0,0);
+    }        
+        
+    function detalhe_f033() {
+        oDBHint = new DBHint('oDBHint');
+        oDBHint.setText("Dias trabalhados do ponto eletronico.");
+        oDBHint.setPosition("B", "L");
+        oDBHint.make($('f033'));
+        oDBHint.show($('f033'));
+    }
+
+    function fecha_detalhe_f033() {
+       document.getElementById('oDBHintdivDBhintExterno').style="display: none;";
+    }
+
+</script>

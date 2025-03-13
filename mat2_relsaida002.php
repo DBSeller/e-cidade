@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-include ("libs/db_sql.php");
-include ("classes/db_matestoque_classe.php");
-include ("classes/db_matestoqueitem_classe.php");
-include ("classes/db_db_almox_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
@@ -122,7 +122,7 @@ if (isset($listausu)&&trim($listausu)!=""&&isset($quebra_usu)&&$quebra_usu=="N")
      $sql       = "select id_usuario, nome 
                    from db_usuarios 
                    where id_usuario in ($listausu)";
-     $resultado = @pg_query($sql);
+     $resultado = @db_query($sql);
      $numrows   = 0;
      $numrows   = @pg_numrows($resultado);
 
@@ -241,7 +241,7 @@ if($listar_serv == "T") {
 //$result =$clmatmater->sql_record($sql);
 
 
-$res_saida_atend = @pg_query($sql);
+$res_saida_atend = @db_query($sql);
 $numrows_atend   = @pg_numrows($res_saida_atend);
 
 $pdf = new PDF();

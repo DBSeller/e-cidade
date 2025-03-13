@@ -1,43 +1,43 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_stdlib.php");
-require_once("std/db_stdClass.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("std/db_stdClass.php"));
 
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("model/aberturaRegistroPreco.model.php");
-require_once("model/estimativaRegistroPreco.model.php");
-require_once("model/compilacaoRegistroPreco.model.php");
-require_once("model/ItemEstimativa.model.php");
+require_once(modification("model/aberturaRegistroPreco.model.php"));
+require_once(modification("model/estimativaRegistroPreco.model.php"));
+require_once(modification("model/compilacaoRegistroPreco.model.php"));
+require_once(modification("model/ItemEstimativa.model.php"));
 
 db_postmemory($_POST);
 
@@ -88,9 +88,9 @@ $nQtdEmpenhada  = 0;
 $nQtdeExecedido = 0;
 $iAlt					  = 5;
 foreach ($aDados as $oIt) {
-	
+
   $oQtdDisponiveis       = $oIt->getMovimentacao();
-  
+
   $nQtdSaldo      += $oQtdDisponiveis->saldo;      // R
   $nQtdTotal      += $oQtdDisponiveis->quantidade; // R
   $nQtdCedida     += $oQtdDisponiveis->cedidas;    // R
@@ -100,26 +100,26 @@ foreach ($aDados as $oIt) {
   $nQtdeExecedido += $oQtdDisponiveis->execedente; // R*/
 
   $sDescricao = substr ( urldecode( $oIt->getDescricaoMaterial() ), 0, 50 );
-  
+
   $oPdf->cell(10, $iAlt, $iSequencial , 1, 0, "C", false);
   $oPdf->cell(20, $iAlt, $oIt->getCodigoMaterial()    , 1, 0, "C", false);
   $oPdf->cell(90, $iAlt, $sDescricao,   1, 0, "L", false);
-  $oPdf->cell(20, $iAlt, $oIt->getUnidade()   , 1, 0, "R", false);
+  $oPdf->cell(20, $iAlt, $oIt->getDescricaoUnidade($oIt->getUnidade())   , 1, 0, "C", false);
   $oPdf->cell(20, $iAlt, db_formatar($oIt->getQuantidade(),        'f'), 1, 0, "R", false);
-  
+
   $oPdf->cell(20, $iAlt, db_formatar($oQtdDisponiveis->cedidas,    'f'), 1, 0, "R", false);
   $oPdf->cell(20, $iAlt, db_formatar($oQtdDisponiveis->recebidas,  'f'), 1, 0, "R", false);
   $oPdf->cell(20, $iAlt, db_formatar($oQtdDisponiveis->solicitada, 'f'), 1, 0, "R", false);
   $oPdf->cell(20, $iAlt, db_formatar($oQtdDisponiveis->empenhada,  'f'), 1, 0, "R", false);
   $oPdf->cell(20, $iAlt, db_formatar($oQtdDisponiveis->execedente, 'f'), 1, 0, "R", false);
   $oPdf->cell(20, $iAlt, db_formatar($oQtdDisponiveis->saldo,      'f'), 1, 0, "R", false);
-  
+
   $oPdf->ln();
-  
+
   if( ($iSequencial % 29) == 0){
   	escreverCabecalho( $oPdf );
   }
-  
+
   $iSequencial++;
 }
 
@@ -140,7 +140,7 @@ $oPdf->ln();
 $oPdf->Output();
 
 function escreverCabecalho ( &$oPdf ){
-	
+
 	$iAlt = 5;
 	$oPdf->cell(10, $iAlt, 'Seq'       , 1, 0, "C", true);
 	$oPdf->cell(20, $iAlt, 'Código'    , 1, 0, "C", true);
@@ -153,7 +153,7 @@ function escreverCabecalho ( &$oPdf ){
 	$oPdf->cell(20, $iAlt, 'Empenhada ', 1, 0, "C", true);
 	$oPdf->cell(20, $iAlt, 'Exec.'     , 1, 0, "C", true);
 	$oPdf->cell(20, $iAlt, 'Saldo '    , 1, 0, "C", true);
-	
+
 	$oPdf->ln();
-	
+
 }

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_matestoque_classe.php");
-require_once("classes/db_matestoquedevitemmei_classe.php");
-require_once("classes/db_matestoquedevitem_classe.php");
-require_once("classes/db_matestoquedev_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_matestoque_classe.php"));
+require_once(modification("classes/db_matestoquedevitemmei_classe.php"));
+require_once(modification("classes/db_matestoquedevitem_classe.php"));
+require_once(modification("classes/db_matestoquedev_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmatestoque = new cl_matestoque;
@@ -293,7 +293,7 @@ if(isset($excluir)){
 <fieldset style="width: 600px">
 <legend><b>Zerar Estoque por Departamento</b></legend>
 	<?php
-	include("forms/db_frmzeraestdepto.php");
+	include(modification("forms/db_frmzeraestdepto.php"));
 	?>
 </fieldset>
 </center>

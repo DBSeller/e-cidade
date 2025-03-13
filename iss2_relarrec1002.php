@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 set_time_limit(0);
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
 if (isset($campo)){
@@ -96,6 +96,15 @@ if ($tipo == 'c'){
      where q05_ano||lpad(q05_mes,2,'0') between '".substr($datai,0,4).substr($datai,5,2)."' 
                                             and '".substr($dataf,0,4).substr($dataf,5,2)."' 
            $empr
+      and not exists(
+        select 1 from abatimentoutilizacaodestino
+          inner join abatimentoutilizacao on k170_utilizacao = k157_sequencial
+          inner join abatimento on k157_abatimento = k125_sequencial
+        where k170_numpre = c.k00_numpre
+          and k170_numpar = c.k00_numpar
+          and k125_tipoabatimento = 3
+        limit 1
+       )
      group by b.k00_inscr,z01_nome,ano,mes 
    order by b.k00_inscr,z01_nome,ano,mes ) as x ) as y group by k00_inscr,z01_nome";
 
@@ -121,6 +130,15 @@ if ($tipo == 'c'){
    where 
      c.k00_dtpaga between '$datai' and '$dataf' 
      $empr
+     and not exists(
+      select 1 from abatimentoutilizacaodestino
+        inner join abatimentoutilizacao on k170_utilizacao = k157_sequencial
+        inner join abatimento on k157_abatimento = k125_sequencial
+      where k170_numpre = c.k00_numpre
+        and k170_numpar = c.k00_numpar
+        and k125_tipoabatimento = 3
+      limit 1
+     )
    group by b.k00_inscr,z01_nome,ano,mes 
    order by b.k00_inscr,z01_nome,ano,mes ) as x ) as y group by k00_inscr,z01_nome";
 
@@ -128,7 +146,7 @@ if ($tipo == 'c'){
 
 }
 //echo $sql;exit;
-$result = pg_exec($sql) or die($sql);
+$result = db_query($sql) or die($sql);
 //db_criatabela($result);
 $num = pg_numrows($result);
 if ($num == 0 ){

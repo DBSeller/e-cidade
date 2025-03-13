@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_custocriteriorateio_classe.php");
-include("classes/db_custoplanoanaliticacriteriorateio_classe.php");
-include("classes/db_custocriteriopcmater_classe.php");
-include("classes/db_custocriteriorateiobens_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_custocriteriorateio_classe.php"));
+include(modification("classes/db_custoplanoanaliticacriteriorateio_classe.php"));
+include(modification("classes/db_custocriteriopcmater_classe.php"));
+include(modification("classes/db_custocriteriorateiobens_classe.php"));
 $clcustocriteriorateio = new cl_custocriteriorateio;
   /*
 $clcustoplanoanaliticacriteriorateio = new cl_custoplanoanaliticacriteriorateio;
@@ -72,7 +72,7 @@ if(isset($alterar)){
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
   <center>
 	<?
-	include("forms/db_frmcustocriteriorateio.php");
+	include(modification("forms/db_frmcustocriteriorateio.php"));
 	?>
     </center>
 </body>
@@ -94,9 +94,9 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.custoplanoanaliticacriteriorateio.disabled=false;
-         top.corpo.iframe_custoplanoanaliticacriteriorateio.location.href='Cus1_custoplanoanaliticacriteriorateio001.php?cc07_custocriteriorateio=".@$cc08_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_custoplanoanaliticacriteriorateio.location.href='Cus1_custoplanoanaliticacriteriorateio001.php?cc07_custocriteriorateio=".@$cc08_sequencial."';
          parent.document.formaba.custocriteriopcmater.disabled=false;
-         top.corpo.iframe_custocriteriopcmater.location.href='Cus1_custocriteriopcmater001.php?cc10_custocriteriorateio=".@$cc08_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_custocriteriopcmater.location.href='Cus1_custocriteriopcmater001.php?cc10_custocriteriorateio=".@$cc08_sequencial."';
 	     ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('custoplanoanaliticacriteriorateio');";

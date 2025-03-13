@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Que manipula a classificação de um bem
  * @author iuri@dbseller.com.br
  * @package patrimonio
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.15 $
  */
 class BemClassificacao {
 
@@ -91,58 +91,65 @@ class BemClassificacao {
    */
   protected $iVidaUtil;
 
-  
+  /**
+   * Valor Residual da classificação do bem
+   * @var integer
+   */
+  protected $iValorResidual;
+
+
   /**
    * Instituicão da Classificação
    * @var integer
    */
   protected $iInstituicao;
 
-  
+
   /**
    * Vinculo com as Contas (tabela clabensconplano)
    * @var Integer
    */
   protected $iVinculoContas;
-  
+
   /**
    * A que plano de contas a classificação está associada
    * @var integer
    */
   protected $iPlanoConta;
-  
+
   /**
    * Conta do plano de contas
    * @var ContaPlanoPCASP
    */
   protected $oContaPCASP;
-  
+
   /**
    * A que plano de contas a depreciação da classificação está associada
    * @var integer
    */
   protected $iContaDepreciacao;
-  
+
   /**
    * Conta Depreciacao do plano de contas
    * @var ContaPlanoPCASP
    */
   protected $oContaDepreciacao;
-  
+
   /**
    * Ano da Classificação (para vinculo com contas)
    * @var integer
    */
   protected $iAno;
-  
-  
-  /**
-   * Constroi objeto referente a classificação
-   * trazendo junto as contas vinculadas para o ano passado como parâmetro
-   * 
-   * @param integer $iCodigoClassificacao
-   * @param integer $iAno
-   */
+
+
+    /**
+     * Constroi objeto referente a classificação
+     * trazendo junto as contas vinculadas para o ano passado como parâmetro
+     *
+     * @param integer $iCodigoClassificacao
+     * @param integer $iAno
+     * @throws Exception
+     */
 
   public function __construct($iCodigoClassificacao = null, $iAno = null) {
 
@@ -153,14 +160,16 @@ class BemClassificacao {
 
     if ($iCodigoClassificacao != null) {
 
-      
-      
-      $oDaoClaBens          = db_utils::getDao("clabens");
+      $sCampos  = "t64_codcla, t64_class, t64_bemtipos, t24_descricao, t64_descr, t64_analitica, t64_valorresidual, ";
+      $sCampos .= "t64_benstipodepreciacao, t64_vidautil, t64_instit, t86_sequencial, t86_conplano, ";
+      $sCampos .= "t86_conplanodepreciacao ";
+
+      $oDaoClaBens          = new cl_clabens();
       $sWhere               = " clabens.t64_codcla = {$iCodigoClassificacao}";
       $sWhere              .= " and clabens.t64_instit = " . db_getsession("DB_instit");
-      $sSqlClassificacao    = $oDaoClaBens->sql_query_contas(null, "*", null, $sWhere);
+      $sSqlClassificacao    = $oDaoClaBens->sql_query_contas(null, $sCampos, null, $sWhere);
       $rsDadosClassificacao = $oDaoClaBens->sql_record($sSqlClassificacao);
-      
+
       if ($oDaoClaBens->numrows > 0) {
 
         $oDadosClassificacao        = db_utils::fieldsMemory($rsDadosClassificacao, 0);
@@ -172,15 +181,17 @@ class BemClassificacao {
         $this->lAnalitica           = $oDadosClassificacao->t64_analitica=='t'?true:false;
         $this->iTipoDepreciacao     = $oDadosClassificacao->t64_benstipodepreciacao;
         $this->iVidaUtil            = $oDadosClassificacao->t64_vidautil;
+        $this->iValorResidual       = $oDadosClassificacao->t64_valorresidual;
         $this->iInstituicao         = $oDadosClassificacao->t64_instit;
-        
+
+
         /**
-         * Dados retirados da tabela clabensconplano 
+         * Dados retirados da tabela clabensconplano
          */
         $this->iVinculoContas       = $oDadosClassificacao->t86_sequencial;
         $this->iPlanoConta          = $oDadosClassificacao->t86_conplano;
         $this->iContaDepreciacao    = $oDadosClassificacao->t86_conplanodepreciacao;
-        
+
         unset($oDadosClassificacao);
       }
     }
@@ -192,7 +203,7 @@ class BemClassificacao {
   public function getCodigo() {
     return $this->iCodigoClassificacao;
   }
-  
+
   /**
    * Retorna o código da Instituicao
    * @return integer
@@ -200,7 +211,7 @@ class BemClassificacao {
   public function getInstituicao() {
     return $this->iInstituicao;
   }
-  
+
   /**
    * Seta o código da Instituicao
    * @return integer
@@ -223,6 +234,22 @@ class BemClassificacao {
   */
   public function getVidaUtil() {
     return $this->iVidaUtil;
+  }
+
+  /**
+   * Seta valor na propriedade iValorResidual
+   * @param integer $iValorResidual
+   */
+  public function setValorResidual ($iValorResidual) {
+    $this->iValorResidual = $iValorResidual;
+  }
+
+  /**
+  * Retorna o Valor Residual
+  * @return float;
+  */
+  public function getValorResidual() {
+    return $this->iValorResidual;
   }
 
   /**
@@ -350,8 +377,8 @@ class BemClassificacao {
   public function getPlanoConta() {
     return $this->iPlanoConta;
   }
-  
-  
+
+
 
   /**
    * Seta valor da Conta de depreciacao
@@ -360,7 +387,7 @@ class BemClassificacao {
   public function setCodigoContaDepreciacao($iConta) {
     $this->iContaDepreciacao = $iConta;
   }
-  
+
   /**
    * Retorna valor na propriedade iContaDepreciacao
    * @return integer $iContaDepreciacao
@@ -368,8 +395,8 @@ class BemClassificacao {
   public function getCodigoContaDepreciacao() {
     return $this->iContaDepreciacao;
   }
-  
-  
+
+
 
   /**
    * Metodo que salva ou altera uma classificação de um bem.
@@ -390,9 +417,10 @@ class BemClassificacao {
     $oDaoClaBens->t64_bemtipos            = $this->getTipoBem();
     $oDaoClaBens->t64_benstipodepreciacao = $this->getTipoDepreciacao();
     $oDaoClaBens->t64_vidautil            = $this->getVidaUtil();
+    $oDaoClaBens->t64_valorresidual       = $this->getValorResidual();
     $oDaoClaBens->t64_instit              = db_getsession("DB_instit");
 
-    if (empty($oDaoClaBens->t64_codcla)) {
+      if (empty($oDaoClaBens->t64_codcla)) {
       $oDaoClaBens->incluir(null);
     } else {
       $oDaoClaBens->alterar($oDaoClaBens->t64_codcla);
@@ -404,11 +432,11 @@ class BemClassificacao {
       $sMsgErro .= "Erro Técnico 1: ".str_replace("\\n", "\n", $oDaoClaBens->erro_msg);
       throw new Exception($sMsgErro);
     }
-    
-    
-    
+
+
+
     $this->iCodigoClassificacao                   = $oDaoClaBens->t64_codcla;
-    
+
     $oDaoClaBensConplano                          = db_utils::getDao("clabensconplano");
     $oDaoClaBensConplano->t86_sequencial          = $this->iVinculoContas;
     $oDaoClaBensConplano->t86_clabens             = $this->iCodigoClassificacao;
@@ -416,20 +444,20 @@ class BemClassificacao {
     $oDaoClaBensConplano->t86_anousu              = $this->iAno;
     $oDaoClaBensConplano->t86_conplanodepreciacao = $this->iContaDepreciacao;
     $oDaoClaBensConplano->t86_anousudepreciacao   = $this->iAno;
-    
+
     if ($oDaoClaBensConplano->t86_sequencial == null) {
       $oDaoClaBensConplano->incluir(null);
     } else {
       $oDaoClaBensConplano->alterar($oDaoClaBensConplano->t86_sequencial);
     }
-    
+
     if ($oDaoClaBensConplano->erro_status == 0) {
-    
+
       $sMsgErro  = "Classificação não pode ser salva.\\n\\n";
       $sMsgErro .= "Erro Técnico 2: ".str_replace("\\n", "\n", $oDaoClaBensConplano->erro_msg);
       throw new Exception($sMsgErro);
     }
-    
+
     return true;
   }
 
@@ -444,19 +472,19 @@ class BemClassificacao {
     }
     return $this->oContaPCASP;
   }
-  
-  
+
+
   /**
    * Retorna a conta de devinculada a classificacao
    * @return ContaPlanoPCASP
    */
   public function getContaDepreciacao() {
-  
+
     if (empty($this->oContaDepreciacao)) {
       $this->oContaDepreciacao = new ContaPlanoPCASP($this->iContaDepreciacao, $this->iAno, null);
     }
     return $this->oContaDepreciacao;
   }
-  
+
 }
 ?>

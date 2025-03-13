@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,10 +30,10 @@
  * 
  * @author Iuri Guntchnigg <iuri@dbseller.com.br>
  *         Robson Inacio   <robson@dbseller.com.br> 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.7 $ 
  */
-require_once ('model/configuracao/notificacao/INotificacao.interface.php');
-require_once ('model/configuracao/notificacao/Notificacao.model.php');
+require_once(modification('model/configuracao/notificacao/INotificacao.interface.php'));
+require_once(modification('model/configuracao/notificacao/Notificacao.model.php'));
 
 final class NotificacaoSMS extends Notificacao implements INotificacao {
   

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_processosapensados_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_processosapensados_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $db_opcao  = 1;
 $clrotulo  = new rotulocampo;
@@ -125,7 +125,7 @@ function js_pesquisaProcesso(mostra, apensado) {
       sUrl     += '&apensado='+p58_codproc;
     }
     sUrl += '&funcao_js=parent.js_mostratipoproc1|0|3';
-    js_OpenJanelaIframe("top.corpo",'db_iframe_processo',sUrl,'Pesquisa',true);
+    js_OpenJanelaIframe("CurrentWindow.corpo",'db_iframe_processo',sUrl,'Pesquisa',true);
   } else {
 
     var sUrl = 'func_protprocesso.php?grupo=1';
@@ -141,7 +141,7 @@ function js_pesquisaProcesso(mostra, apensado) {
     
     sUrl += '&funcao_js=parent.js_mostratipoproc';    
     
-    js_OpenJanelaIframe("top.corpo",'db_iframe_processo',sUrl,'Pesquisa',false);
+    js_OpenJanelaIframe("CurrentWindow.corpo",'db_iframe_processo',sUrl,'Pesquisa',false);
   }
 }
 function js_mostratipoproc(chave1,chave2, erro) {
@@ -207,7 +207,7 @@ function buscaProcessosApensados(processo) {
 function js_retornoBuscaProcessoApensado(oJson) {
 
   js_removeObj("msgBox");  
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (oRetorno.status != 2) {
 
@@ -238,7 +238,7 @@ function js_apensar() {
 function js_retornoApensar(oJson) {
 
   js_removeObj("msgBox");  
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   alert(oRetorno.message.urlDecode());
   if (oRetorno.status != 2) {
@@ -270,7 +270,7 @@ function js_desvinculaProcessoApensado(iProcesso, iApensado) {
 function js_retornoDesvilculaApensado(oJson) {
 
   js_removeObj("msgBox");  
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   alert(oRetorno.message.urlDecode());
   js_preencheGrid(oRetorno.dados);

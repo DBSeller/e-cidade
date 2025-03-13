@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
-include("../libs/db_sessoes.php");
-include("../libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 ?>
 <html>
 <head>
@@ -66,7 +66,7 @@ echo $query;
   // se for a primeira vez que é rodado, pega o total de registros e guarda no campo hidden
   if(empty($$tot_registros)) {
     $Dd1 = "disabled";
-    //$tot = pg_exec("select count(*) from ($query) as temp");  
+    //$tot = db_query("select count(*) from ($query) as temp");  
 	$$tot_registros = 100;
 	//pg_result($tot,0,0);
   }
@@ -94,7 +94,7 @@ echo $query;
   }
   // executa a query e cria a tabela
   $query .= " limit $numlinhas offset ".$$offset;
-  $result = pg_exec($query);  
+  $result = db_query($query);  
   $NumRows = pg_numrows($result);
   $NumFields = pg_numfields($result);
   if($NumRows < $numlinhas)

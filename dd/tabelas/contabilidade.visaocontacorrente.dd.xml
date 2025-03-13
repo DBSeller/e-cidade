@@ -1,0 +1,91 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010425' name='visaocontacorrente' description="visaocontacorrente" prefix="c131" label="visaocontacorrente" type="0">
+  <fields>
+    <field codigo="1010359" 
+           campo_api='' 
+           name="c131_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='visaocontacorrente_c131_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010360" 
+           campo_api='' 
+           name="c131_db_itensmenu"
+           conteudo="int4" 
+           description="Item de menu gerado" 
+           inivalue="0" 
+           label="Código do Item de Menu" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Item de Menu" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010361" 
+           campo_api='' 
+           name="c131_nome" 
+           conteudo="varchar(100)" 
+           description="Nome do Relatório" 
+           inivalue="" 
+           label="Nome do Relatório" 
+           size="100" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nome do Relatório" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010362" 
+           campo_api='' 
+           name="c131_filtros" 
+           conteudo="text" 
+           description="JSON com os filtros" 
+           inivalue="" 
+           label="Filtros" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Filtros" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c131_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_itensmenu" inner='t'>
+      <fieldfk name="c121_db_itensmenu" reference="id_item" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_jsplibwebseller.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $oDaoAtestVaga = db_utils::getdao("atestvaga");
@@ -93,7 +93,7 @@ if (isset($excluir)) {
   $sSql         .= "                           AND ed56_c_situacao != 'CANDIDATO'";
   $sSql         .= "                           AND ed56_c_situacao != 'FALECIDO'";
   $sSql         .= "            )as x ORDER BY ed47_v_nome";
-  $rsAluno       = pg_query($sSql);
+  $rsAluno       = db_query($sSql);
   
   if (pg_num_rows($rsAluno) > 0) {
     db_fieldsmemory($rsAluno, 0); 	
@@ -127,7 +127,7 @@ if (isset($excluir)) {
      <br>
      <center>
       <fieldset style="width:95%"><legend><b>Exclusão de Atestado de Vaga</b></legend>
-       <?include("forms/db_frmatestvaga.php");?>
+       <?include(modification("forms/db_frmatestvaga.php"));?>
       </fieldset>
      </center>
     </td>

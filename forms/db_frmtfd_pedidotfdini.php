@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -34,259 +34,387 @@ $oRotulo->label("tf01_i_cgsund");
 $oRotulo->label("s115_c_cartaosus");
 $oRotulo->label("j13_codi");
 $oRotulo->label("z01_v_compl");
-$oRotulo->label("z01)i_numero");
+$oRotulo->label("z01_i_numero");
+
 ?>
+<style>
+  #z01_v_compl,
+  #z01_v_mae,
+  #z01_v_pai,
+  #z01_v_email {
+    width: 100%;
+  }
+</style>
 <form name="form1" method="post" action="">
-<center>
-  <table border="0" width="98%">
-    <tr>
-      <td nowrap title="<?php echo $Ttf30_i_encaminhamento;?>" style="width: 50px;">
-        <?php db_ancora(@$Ltf30_i_encaminhamento, 'js_pesquisatf30_i_encaminhamento(true);', $db_opcao);?>
-      </td>
-      <td>
-        <?php
-          db_input('tf30_i_encaminhamento', 15, $Itf30_i_encaminhamento, true, 'text', $db_opcao,
-                   'onchange="js_pesquisatf30_i_encaminhamento(false);"');
-        ?>
-      </td>
-    </tr>
-    <tr>
-      <td nowrap title="<?php echo $Ttf29_i_prontuario;?>">
-        <?php db_ancora(@$Ltf29_i_prontuario, 'js_pesquisatf29_i_prontuario(true);', $db_opcao); ?>
-      </td>
-      <td>
-        <?php
-        db_input('tf29_i_prontuario', 15, $Itf29_i_prontuario, true, 'text', $db_opcao,
-                 'onchange="js_pesquisatf29_i_prontuario(false);"');
-        ?>
-      </td>
-    </tr>
-    <tr>
-      <td nowrap title="<?php echo$Ts115_c_cartaosus;?>">
-        <?php echo $Ls115_c_cartaosus;?>
-      </td>
-      <td>
-        <?php db_input('s115_c_cartaosus2', 15, $Is115_c_cartaosus, true, 'text', $db_opcao,  ' onchange="js_getCgsCns();"'); ?>
-      </td>
-    </tr>
-    <tr>
-      <td nowrap title="<?php echo $Ttf01_i_cgsund;?>">
-        <?php db_ancora(@$Ltf01_i_cgsund, "js_pesquisatf01_i_cgsund(true);", $db_opcao); ?>
-      </td>
-      <td nowrap="nowrap">
-        <?php
-          db_input('tf01_i_cgsund', 15, $Itf01_i_cgsund, true, 'text', $db_opcao,
-                   ' onchange="js_pesquisatf01_i_cgsund(false); "');
-          db_input('z01_v_nome', 72, $Iz01_v_nome, true, 'text', 3, '');
-        ?>
-      </td>
-    </tr>
-  </table>
+  <div class="container">
+    <?php
+      db_input('s115_i_codigo', 10, 0, true, 'hidden');
+      db_input('z01_i_cgsund2', 10, 0, true, 'hidden');
+      db_input('j13_codi',      10, 0, true, 'hidden');
+    ?>
+    <fieldset>
+      <legend>Dados pessoais</legend>
+      <fieldset class="separator">
+        <legend>Filtros</legend>
+        <div id="status-microarea" class="alert-danger" style="text-align: center;" role="alert" hidden>
+          Paciente sem cadastro em uma microárea!
+        </div>
+        <table class="form-container">
 
-  <table border="0" width="90%">
-    <tr>
-      <td width="50%" valign="top">
-        <fieldset style="height: 165px;"> <legend><b>Endereço</b></legend>
-          <table width="100%">
-            <tr>
-              <td nowrap title="<?php echo $Tz01_v_ender;?>" width="62px">
-                <?php db_ancora(@$Lz01_v_ender, "js_ruas();", $db_opcao); ?>
-              </td>
-              <td nowrap>
-                <?php db_input('z01_v_ender', 36, $Iz01_v_ender, true, 'text', $db_opcao, 'onchange="js_change();"');?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title="<?php echo$Tz01_i_numero;?>|<?php echo$Tz01_v_compl;?>" colspan="2">
-                <label style="margin-right: 14px;"><b>Número:</b></label>
-                <?php db_input('z01_i_numero', 6, $Iz01_i_numero, true, 'text', $db_opcao, 'onchange="js_change();"');?>
-                <label style="margin-left: 10px;"><b>Complemento:</b></label>
-                <?php db_input('z01_v_compl', 12, $Iz01_v_compl, true, 'text', $db_opcao, 'onchange="js_change();"');?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title="<?php echo $Tz01_v_bairro;?>">
-                <?php db_ancora(@$Lz01_v_bairro, "js_bairro();", $db_opcao); ?>
-                &nbsp;
-              </td>
-              <td nowrap>
+          <tr>
+            <td title="<?php echo $Ttf30_i_encaminhamento;?>" style="width: 50px;">
+              <label for="tf30_i_encaminhamento">
                 <?php
-                  db_input('j13_codi', 10, $Ij13_codi, true, 'hidden', $db_opcao);
-                  db_input('z01_v_bairro', 36, $Iz01_v_bairro, true, 'text', 3, 'onchange="js_change();"');
+                db_ancora( $Ltf30_i_encaminhamento, 'js_pesquisatf30_i_encaminhamento(true);', $db_opcao);
                 ?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title="<?php echo $Tz01_v_munic;?>">
-                <?php db_ancora("Município:", "js_buscaMunicipio();", $db_opcao);?>
-              </td>
-              <td nowrap>
-                <?php db_input('z01_v_munic', 36, $Iz01_v_munic, true, 'text', 3, 'onchange="js_change();"'); ?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title="<?php echo $Tz01_codigoibge;?>" class='bold'>
-                IBGE&nbsp;
-              </td>
-              <td nowrap>
-                <?php db_input('z01_codigoibge', 36, $Iz01_codigoibge, true, 'text', 3); ?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title="<?php echo $Tz01_v_cep;?>">
-                <?php db_ancora(@$Lz01_v_cep, "js_cepcon(true);", $db_opcao); ?>
-                &nbsp;
-              </td>
-              <td nowrap>
-                <?php db_input('z01_v_cep', 10, $Iz01_v_cep, true, 'text', $db_opcao, 'onchange="js_change();"'); ?>
-                <input type="button" name="buscacep" value="Pesquisar" onclick="js_cepcon(false);">&nbsp;
-                &nbsp;&nbsp;
-                <label style="margin-left: 20px;" ><?php echo $Lz01_v_uf;?></label>
-                &nbsp;
-                <?php db_input('z01_v_uf', 2, $Iz01_v_uf, true, 'text', 3); ?>
-              </td>
-            </tr>
-          </table>
-        </fieldset>
-      </td>
-      <td width="50%" valign="top">
-        <fieldset style="height: 165px; padding-left: 3px;"> <legend><b>Dados Pessoais</b></legend>
-          <table width="100%">
-            <tr>
-              <td nowrap>
-                <b>Cartao SUS:</b>
-              </td>
-              <td nowrap>
-                <?php
-                  $z01_i_cgsund2 = '';
-                  db_input('s115_i_codigo', 1, '', true, 'hidden', 3);
-                  db_input('z01_i_cgsund2', 1, '', true, 'hidden', 3);
-             	    db_input('s115_c_cartaosus', 15, @$Is115_c_cartaosus, true, 'text', $db_opcao,
-                           'onchange="js_change();"' );
-                ?>
-               </td>
-               <td nowrap>
-                <b>Tipo:</b>
-               </td>
-               <td nowrap>
-                <?php
-  		            $x = array("D"=>"Definitivo", "P"=>"Provisório");
-                  db_select('s115_c_tipo', $x, true, $db_opcao, 'onchange="js_change();"');
-	              ?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title="<?php echo $Tz01_d_nasc;?>">
-                <?php echo $Lz01_d_nasc;?>
-              </td>
-              <td nowrap>
-                <?php
-                  db_inputdata('z01_d_nasc', @$z01_d_nasc_dia, @$z01_d_nasc_mes, @$z01_d_nasc_ano, true,
-                               'text', $db_opcao, 'onchange="js_change();"', '', '', 'parent.js_change();'
-                              );
-                ?>
-              </td>
-              <td nowrap>
-                <label style=""><?php echo $Lz01_v_sexo;?></label>
-              </td>
-              <td nowrap>
-                <?php
-                  $x = array("Masculino"=>"Masculino", "Feminino"=>"Feminino");
-                  db_select('z01_v_sexo', $x, true, $db_opcao, 'onchange="js_change();"');
-	              ?>
-              </td>
-            </tr>
-            <tr>
-              <td title='<?php echo $Tz01_i_cgsund;?>' nowrap>
-                <label><?php echo $Lz01_v_cgccpf;?></label>
-              </td>
-              <td nowrap>
-                <?php
-                  db_input('z01_v_cgccpf', 12, @$Iz01_v_cgccpf, true, 'text', $db_opcao,
-                           "onblur='js_verificaCGCCPF(this);' onchange=\"js_change();\"" );
-                ?>
-              </td>
-              <td nowrap>
-                <label><?php echo $Lz01_v_ident;?></label>
-              </td>
-              <td nowrap>
-                <?php db_input('z01_v_ident', 12, $Iz01_v_ident, true, 'text', $db_opcao, 'onchange="js_change();"'); ?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title=<?php echo $Tz01_v_mae;?> colspan="1">
-                <?php echo $Lz01_v_mae;?>
-              </td>
-              <td nowrap colspan="3">
-                <?php db_input('z01_v_mae', 41, $Iz01_v_mae, true, 'text', $db_opcao, 'onchange="js_change();"');?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title=<?php echo $Tz01_v_pai;?> colspan="1">
-                <?php echo $Lz01_v_pai;?>
-              </td>
-              <td nowrap colspan="3">
-                <?php
-                  db_input('z01_v_pai', 41, $Iz01_v_pai, true, 'text', $db_opcao, 'onchange="js_change();"');
-                ?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title="<?php echo $Tz01_v_email;?>" colspan="1">
-                <?php echo $Lz01_v_email;?>
-              </td>
-              <td nowrap colspan="3">
-                <?php db_input('z01_v_email', 41, $Iz01_v_email, true, 'text', $db_opcao, 'onchange="js_change();"');?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title="<?php echo $Tz01_v_telef?>">
-                <label><?php echo $Lz01_v_telef;?></label>
-              </td>
-              <td nowrap>
-                <?php db_input('z01_v_telef', 12, $Iz01_v_telef, true, 'text', $db_opcao, 'onchange="js_change();"'); ?>
-              </td>
-              <td nowrap>
-                <label><?php echo $Lz01_v_telcel;?></label>
-              </td>
-              <td nowrap>
-                <?php db_input('z01_v_telcel', 12, $Iz01_v_telcel, true, 'text', $db_opcao, 'onchange="js_change();"');?>
-              </td>
-            </tr>
-          </table>
-        </fieldset>
-      </td>
-    </tr>
-  </table>
+              </label>
+            </td>
+            <td>
+              <?php
+              db_input('tf30_i_encaminhamento', 15, $Itf30_i_encaminhamento, true, 'text', $db_opcao, 'onchange="js_pesquisatf30_i_encaminhamento(false);"');
+              ?>
+            </td>
+          </tr>
 
-  <table border="0" width="99%">
-    <tr>
-      <td align="right">
-        <input name="atualizar" type="button" id="atualizar" value="Atualizar CGS"
-               onclick="js_atualizarCgs();" disabled>
-        <input name="novo" type="button" id="novo" value="Novo Tratamento" onclick="js_novoTratamento();" disabled>
-      </td>
-    </tr>
-  </table>
+          <tr>
+            <td title="<?php echo $Ttf29_i_prontuario;?>">
+              <label for="tf29_i_prontuario">
+                <?php
+                db_ancora( $Ltf29_i_prontuario, 'js_pesquisatf29_i_prontuario(true);', $db_opcao);
+                ?>
+              </label>
+            </td>
+            <td>
+              <?php
+              db_input('tf29_i_prontuario', 15, $Itf29_i_prontuario, true, 'text', $db_opcao, 'onchange="js_pesquisatf29_i_prontuario(false);"');
+              ?>
+            </td>
+          </tr>
 
-  <table border="0" width="99%">
-    <tr>
-      <td>
-        <div id='grid_pedidostfd' style='width: 100%;'></div>
-      </td>
-    </tr>
-  </table>
+          <tr>
+            <td title="<?php echo$Ts115_c_cartaosus;?>">
+              <label for="s115_c_cartaosus2">
+                <?php
+                echo $Ls115_c_cartaosus;
+                ?>
+              </label>
+            </td>
+            <td>
+              <?php
+              db_input('s115_c_cartaosus2', 15, $Is115_c_cartaosus, true, 'text', $db_opcao,  ' onchange="js_getCgsCns();"');
+              ?>
+            </td>
+          </tr>
 
-</center>
+          <tr>
+            <td title="<?php echo $Ttf01_i_cgsund;?>">
+              <label for="tf01_i_cgsund">
+                <?php
+                db_ancora( $Ltf01_i_cgsund, "js_pesquisatf01_i_cgsund(true);", $db_opcao);
+                ?>
+              </label>
+            </td>
+            <td>
+              <?php
+              db_input('tf01_i_cgsund', 15, $Itf01_i_cgsund, true, 'text', $db_opcao, ' onchange="js_pesquisatf01_i_cgsund(false); "');
+              db_input('z01_v_nome', 72, $Iz01_v_nome, true, 'text', 3, '');
+              ?>
+            </td>
+          </tr>
+
+        </table>
+      </fieldset>
+      <table>
+        <tr>
+          <td width="50%" valign="top">
+            <fieldset class="separator">
+              <legend>Endereço</legend>
+              <table class="form-container" >
+
+                <tr>
+                  <td title="<?php echo $Tz01_v_ender;?>" width="62px">
+                    <label for="z01_v_ender">
+                      <?php
+                      db_ancora($Lz01_v_ender, "js_ruas();", $db_opcao);
+                      ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_v_ender', 36, $Iz01_v_ender, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td title="<?php echo$Tz01_i_numero;?>" >
+                    <label for="z01_i_numero">Número:</label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_i_numero', 6, $Iz01_i_numero, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <label for="z01_v_compl">Complemento:</label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_v_compl', 12, $Iz01_v_compl, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td title="<?php echo $Tz01_v_bairro;?>">
+                    <label for="z01_v_bairro">
+                    <?php
+                    db_ancora($Lz01_v_bairro, "js_bairro();", $db_opcao);
+                    ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_v_bairro', 36, $Iz01_v_bairro, true, 'text', 3, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td title="<?php echo $Tz01_v_munic;?>">
+                    <label for="z01_v_munic">
+                      <?php
+                      db_ancora("Município:", "js_buscaMunicipio();", $db_opcao);
+                      ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_v_munic', 27, $Iz01_v_munic, true, 'text', 3, 'onchange="js_change();"');
+                    db_input('z01_v_uf', 2, $Iz01_v_uf, true, 'text', 3);
+                    ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td title="<?php echo $Tz01_codigoibge;?>" class='bold'>
+                    <label for="z01_codigoibge">IBGE</label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_codigoibge', 36, $Iz01_codigoibge, true, 'text', 3);
+                    ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td title="<?php echo $Tz01_v_cep;?>">
+                    <label for="z01_v_cep">
+                      <?php
+                      db_ancora($Lz01_v_cep, "js_cepcon(true);", $db_opcao);
+                      ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_v_cep', 10, $Iz01_v_cep, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                    <input type="button" name="buscacep" value="Pesquisar" onclick="js_cepcon(false);">&nbsp;
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+          </td>
+          <td width="50%" valign="top" style="border-left: 1px groove white">
+            <fieldset class="separator">
+              <legend>Dados Pessoais</legend>
+              <table class="form-container">
+                <tr>
+                  <td>
+                    <label for="s115_c_cartaosus">Cartão SUS:</label>
+                  </td>
+                  <td colspan="3">
+                    <?php
+                      db_input('s115_c_cartaosus', 15, $Is115_c_cartaosus, true, 'text', $db_opcao, 'onchange="js_change();"' );
+                    ?>
+                   </td>
+                  </td>
+                </tr>
+                <tr>
+                  <td title="<?php echo $Tz01_d_nasc;?>">
+                    <label for="z01_d_nasc">
+                      <?php
+                      echo $Lz01_d_nasc;
+                      ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    db_inputdata('z01_d_nasc', $z01_d_nasc_dia, $z01_d_nasc_mes, $z01_d_nasc_ano, true,
+                                 'text', $db_opcao, 'onchange="js_change();"', '', '', 'parent.js_change();'
+                                );
+                    ?>
+                  </td>
+                  <td>
+                    <label for="z01_v_sexo">
+                      <?php
+                      echo $Lz01_v_sexo;
+                      ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    $x = array("Masculino"=>"Masculino", "Feminino"=>"Feminino");
+                    db_select('z01_v_sexo', $x, true, $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td title='<?php echo $Tz01_i_cgsund;?>'>
+                    <label for="z01_v_cgccpf">
+                      <?php
+                      echo $Lz01_v_cgccpf;
+                      ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_v_cgccpf', 12, $Iz01_v_cgccpf, true, 'text', $db_opcao,
+                             "onblur='js_verificaCGCCPF(this);' onchange=\"js_change();\"" );
+                    ?>
+                  </td>
+                  <td>
+                    <label for="z01_v_ident">
+                      <?php
+                      echo $Lz01_v_ident;
+                      ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_v_ident', 12, $Iz01_v_ident, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td title=<?php echo $Tz01_v_mae;?> colspan="1">
+                    <label for="z01_v_mae">
+                      <?php
+                      echo $Lz01_v_mae;
+                      ?>
+                    </label>
+                  </td>
+                  <td colspan="3">
+                    <?php
+                    db_input('z01_v_mae', 41, $Iz01_v_mae, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td title=<?php echo $Tz01_v_pai;?> colspan="1">
+                    <label for="z01_v_pai">
+                      <?php
+                      echo $Lz01_v_pai;
+                      ?>
+                    </label>
+                  </td>
+                  <td colspan="3">
+                    <?php
+                    db_input('z01_v_pai', 41, $Iz01_v_pai, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td title="<?php echo $Tz01_v_email;?>" colspan="1">
+                    <label for="z01_v_email">
+                      <?php
+                      echo $Lz01_v_email;
+                      ?>
+                    </label>
+                  </td>
+                  <td colspan="3">
+                    <?php
+                    db_input('z01_v_email', 41, $Iz01_v_email, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td title="<?php echo $Tz01_v_telef?>">
+                    <label for="z01_v_telef">
+                      <?php
+                      echo $Lz01_v_telef;
+                      ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_v_telef', 12, $Iz01_v_telef, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                  <td>
+                    <label for="z01_v_telcel">
+                      <?php
+                      echo $Lz01_v_telcel;
+                      ?>
+                    </label>
+                  </td>
+                  <td>
+                    <?php
+                    db_input('z01_v_telcel', 12, $Iz01_v_telcel, true, 'text', $db_opcao, 'onchange="js_change();"');
+                    ?>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+    <input name="atualizar" type="button" id="atualizar" value="Atualizar CGS"   onclick="js_atualizarCgs();"   disabled>
+    <input name="novo"      type="button" id="novo"      value="Novo Tratamento" onclick="js_novoTratamento();" disabled>
+    <input name="limpar"    type="button" id="limpar"    value="Limpar"          onclick="window.location.href = window.location.href + ' ' " >
+
+  </div>
+
+  <div class="container">
+    <fieldset style="width: 1200px;">
+      <legend>Pedidos Lançados</legend>
+      <div id='grid_pedidostfd'></div>
+    </fieldset>
+  </div>
 </form>
+<script rel="script" type="text/javascript" src="scripts/classes/saude/ValidaCgs.js"></script>
 <script>
 
+var lObrigarCNS = <?= $lObrigarCNS ? 1 : 0 ?>;
+
 const FRM_TFD_PEDIDO_INICIAL = "saude.tfd.db_frmtfd_pedidotfdini.";
-lPermissaoCgs                = <?php echo db_permissaomenu(db_getsession('DB_anousu'), 1000004, 1045411).';'; ?>
+lPermissaoCgs                = <?php echo db_permissaomenu(db_getsession('DB_anousu'), db_getsession('DB_modulo'), 10239).';'; ?>
 oDBGridPedidostfd            = js_cria_datagrid();
 sUrl                         = 'tfd4_pedidotfd.RPC.php';
+sCNSOriginal                 = null;
+
+const divAlert = document.getElementById('status-microarea');
+const inputCgs = {
+  id: document.getElementById('tf01_i_cgsund'),
+  nome: document.getElementById('z01_v_nome')
+};
+const validaCgs = new ValidaCgs(inputCgs);
+
+window.onload = () => {
+  validaCgs.cadastroMicroarea(inputCgs, divAlert)
+}
 
 function js_novoTratamento() {
+
+  if ( !validaCampos() ) {
+
+    alert( _M( FRM_TFD_PEDIDO_INICIAL + "atualize_cadastro" ) );
+    return false;
+  }
 
   if ( $F('tf01_i_cgsund') == '' ) {
 
@@ -307,7 +435,7 @@ function js_novoTratamento() {
   }
 
   parent.document.formaba.a2.disabled = false;
-  top.corpo.iframe_a2.location.href   = 'tfd4_tfd_pedidotfd002.php?tf01_i_cgsund='+$F('tf01_i_cgsund')+
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'tfd4_tfd_pedidotfd002.php?tf01_i_cgsund='+$F('tf01_i_cgsund')+
                                         '&z01_v_nome='+$F('z01_v_nome')+sEncaminhamento+sProntuario;
   parent.mo_camada('a2');
 }
@@ -415,7 +543,7 @@ function js_getCgsCns() {
 
 function js_retornogetCgsCns( oRetorno ) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if ( oRetorno.z01_i_cgsund == '' ) {
 
@@ -450,7 +578,7 @@ function js_alterarPedido( iPedido )  {
 
   sChave                              = 'chavepesquisa='+iPedido;
   parent.document.formaba.a2.disabled = false;
-  top.corpo.iframe_a2.location.href   = 'tfd4_tfd_pedidotfd002.php?'+sChave;
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'tfd4_tfd_pedidotfd002.php?'+sChave;
   parent.mo_camada('a2');
 }
 
@@ -470,8 +598,8 @@ function js_cria_datagrid() {
   oDBGrid                = new DBGrid('grid_pedidostfd');
   oDBGrid.nameInstance   = 'oDBGridPedidostfd';
   oDBGrid.hasTotalizador = false;
-  oDBGrid.setCellWidth(new Array('5%', '10%', '10%', '30%', '25%', '10%','10%'));
-  oDBGrid.setHeight(60);
+  oDBGrid.setCellWidth(new Array('3%', '6%', '6%', '40%', '30%', '10%', '5%'));
+  oDBGrid.setHeight(150);
   oDBGrid.allowSelectColumns(false);
 
   var aHeader = new Array();
@@ -488,12 +616,13 @@ function js_cria_datagrid() {
   aAligns[0]  = 'center';
   aAligns[1]  = 'center';
   aAligns[2]  = 'center';
-  aAligns[3]  = 'center';
+  aAligns[3]  = 'left';
   aAligns[4]  = 'center';
   aAligns[5]  = 'center';
   aAligns[6]  = 'center';
 
   oDBGrid.setCellAlign(aAligns);
+  oDBGrid.aHeaders[0].lDisplayed = false;
   oDBGrid.show($('grid_pedidostfd'));
   oDBGrid.clearAll(true);
 
@@ -522,7 +651,7 @@ function js_getPedidosTfdCgs() {
 
 function js_retornogetPedidosTfdCgs( oRetorno ) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if ( oRetorno.iStatus != 1 ) {
     return false;
@@ -533,16 +662,12 @@ function js_retornogetPedidosTfdCgs( oRetorno ) {
       function ( oPedidosTfd ) {
 
         var aLinha = new Array();
-        var sAcao  = '';
+        var sAcao  = ' ';
 
         if ( oPedidosTfd.iSituacaoPedido == 1 ) {
-
-          sAcao  = '<span onclick="js_alterarPedido('+oPedidosTfd.tf01_i_codigo+');"';
-          sAcao += ' style="color: blue; text-decoration: underline; cursor: pointer;"><b>A</b></span>&nbsp;';
+          sAcao  = ' <input type="button" onclick="js_alterarPedido('+oPedidosTfd.tf01_i_codigo+');" value="A" /> ';
         }
-
-        sAcao += '&nbsp;&nbsp;&nbsp;&nbsp;<span onclick="js_protocoloPedido('+oPedidosTfd.tf01_i_codigo+');"';
-        sAcao += ' style="color: blue; text-decoration: underline; cursor: pointer;"><b>P</b></span>';
+        sAcao += '<input type="button" onclick="js_protocoloPedido('+oPedidosTfd.tf01_i_codigo+');" value="P" /> ';
 
         aLinha[0] = oPedidosTfd.tf01_i_codigo;
         aLinha[1] = js_formataData(oPedidosTfd.tf16_d_dataagendamento);
@@ -557,6 +682,12 @@ function js_retornogetPedidosTfdCgs( oRetorno ) {
 
     oDBGridPedidostfd.renderRows();
   }
+
+  oRetorno.oPedidos.each(function(oPedido, iLinha) {
+
+    var oParametros = {iWidth:'300', oPosition : {sVertical : 'T', sHorizontal : 'R'}};
+    oDBGridPedidostfd.setHint(iLinha, 3, oPedido.rh70_estrutural + ' - ' + oPedido.rh70_descr.urlDecode(), oParametros);
+  });
 }
 
 /* Bloco de funções do grid fim *****/
@@ -582,7 +713,6 @@ function js_bairro() {
   js_OpenJanelaIframe('', 'db_iframe_bairro', 'func_bairro.php?rural=1&funcao_js='+
                       'parent.js_preenchebairro|j13_codi|j13_descr', 'Pesquisa', true
                      );
-
 }
 
 function js_preenchebairro( chave, chave1 ) {
@@ -638,7 +768,7 @@ function js_pesquisatf01_i_cgsund( mostra ) {
   if ( mostra == true ) {
 
     js_OpenJanelaIframe('', 'db_iframe_cgs_und', 'func_cgs_und.php?funcao_js=parent.js_mostracgs1|'+
-                        'z01_i_cgsund|z01_v_nome', 'Pesquisa', true
+                        'z01_i_cgsund|z01_v_nome&nome_social=true', 'Pesquisa', true
                        );
   } else {
 
@@ -646,7 +776,7 @@ function js_pesquisatf01_i_cgsund( mostra ) {
 
       js_OpenJanelaIframe('', 'db_iframe_cgs_und', 'func_cgs_und.php?pesquisa_chave='+
                           document.form1.tf01_i_cgsund.value+
-                          '&funcao_js=parent.js_mostracgs', 'Pesquisa', false
+                          '&funcao_js=parent.js_mostracgs&nome_social=true', 'Pesquisa', false
                          );
     } else {
 
@@ -679,6 +809,7 @@ function js_mostracgs1( chave1, chave2 ) {
   js_limpaInfoCgs();
   document.form1.tf01_i_cgsund.value = chave1;
   document.form1.z01_v_nome.value    = chave2;
+  document.form1.tf01_i_cgsund.dispatchEvent(new Event('change'));
   js_getInfoCgs();
   db_iframe_cgs_und.hide();
   js_change();
@@ -697,7 +828,7 @@ function js_getInfoCgs() {
 
 function js_retornogetInfoCgs( oRetorno ) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if ( oRetorno.z01_d_nasc != '' ) {
 
@@ -737,6 +868,7 @@ function js_retornogetInfoCgs( oRetorno ) {
   $('z01_v_mae').value         = oRetorno.z01_v_mae.urlDecode();
   $('z01_v_pai').value         = oRetorno.z01_v_pai.urlDecode();
   $('s115_c_cartaosus').value  = oRetorno.s115_c_cartaosus.urlDecode();
+  sCNSOriginal                 = oRetorno.s115_c_cartaosus.urlDecode();
   $('s115_c_cartaosus2').value = oRetorno.s115_c_cartaosus.urlDecode();
   $('s115_i_codigo').value     = oRetorno.s115_i_codigo.urlDecode();
   $('z01_codigoibge').value    = oRetorno.z01_codigoibge;
@@ -745,10 +877,12 @@ function js_retornogetInfoCgs( oRetorno ) {
     $('novo').disabled = false;
   }
 
-  if ( oRetorno.s115_c_tipo == 'D' ) {
-    $('s115_c_tipo').options[0].selected = true;
-  } else {
-    $('s115_c_tipo').options[1].selected = true;
+  if ($F('z01_v_telcel') != '') {
+    $('z01_v_telcel').value = tratamentoMascaraTelefone($F('z01_v_telcel'),  true );
+  }
+
+  if ($F('z01_v_telef') != '') {
+    $('z01_v_telef').value = tratamentoMascaraTelefone($F('z01_v_telef'),  true );
   }
 
   js_getPedidosTfdCgs();
@@ -779,7 +913,6 @@ function js_limpaInfoCgs() {
   $('s115_c_cartaosus2').value         = '';
   $('s115_c_cartaosus').value          = '';
   $('s115_i_codigo').value             = '';
-  $('s115_c_tipo').options[0].selected = true;
   $('atualizar').disabled              = true;
   $('novo').disabled                   = true;
   $('tf29_i_prontuario').value         = '';
@@ -793,6 +926,16 @@ function js_limpaInfoCgs() {
 
 function js_atualizarCgs() {
 
+  if ( lObrigarCNS && $F('s115_c_cartaosus') == '' ) {
+
+    alert ( _M(FRM_TFD_PEDIDO_INICIAL + "cns_nao_informado") );
+    return;
+  }
+
+  if ( !validaCampos() ) {
+    return false;
+  }
+
   oParam                  = new Object();
   oParam.exec             = 'atualizarCgs';
   oParam.iCgs             = $F('z01_i_cgsund2');
@@ -804,16 +947,19 @@ function js_atualizarCgs() {
   oParam.z01_v_cep        = $F('z01_v_cep');
   oParam.z01_v_uf         = $F('z01_v_uf');
   oParam.z01_v_email      = encodeURIComponent(tagString($F('z01_v_email')));
-  oParam.z01_v_telef      = $F('z01_v_telef');
+  oParam.z01_v_telef      = $F('z01_v_telef').replace(/[^0-9]/g,"") ;
+  oParam.z01_v_telcel     = $F('z01_v_telcel').replace(/[^0-9]/g,"");
   oParam.z01_v_sexo       = $F('z01_v_sexo').substring(0, 1);
-  oParam.z01_v_telcel     = $F('z01_v_telcel');
   oParam.z01_d_nasc       = $F('z01_d_nasc');
   oParam.z01_v_cgccpf     = $F('z01_v_cgccpf');
   oParam.z01_v_ident      = $F('z01_v_ident');
   oParam.z01_v_mae        = encodeURIComponent(tagString($F('z01_v_mae')));
   oParam.z01_v_pai        = encodeURIComponent(tagString($F('z01_v_pai')));
-  oParam.s115_c_cartaosus = $F('s115_c_cartaosus');
-  oParam.s115_c_tipo      = $F('s115_c_tipo');
+
+  if ( sCNSOriginal !=  $F('s115_c_cartaosus')) {
+    oParam.s115_c_cartaosus = $F('s115_c_cartaosus');
+  }
+
   oParam.s115_i_codigo    = $F('s115_i_codigo');
   oParam.z01_codigoibge   = $F('z01_codigoibge');
 
@@ -822,12 +968,13 @@ function js_atualizarCgs() {
 
 function js_retornoatualizarCgs( oRetorno ) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if ( oRetorno.iStatus != 1 ) {
     message_ajax(oRetorno.sMessage.urlDecode());
   } else {
 
+    sCNSOriginal = $F('s115_c_cartaosus');
     alert( _M(FRM_TFD_PEDIDO_INICIAL + "cgs_atualizado_sucesso") );
     $('atualizar').disabled = true;
   }
@@ -840,7 +987,6 @@ function js_change() {
     if (lPermissaoCgs) {
       $('atualizar').disabled = false;
     }
-
   }
 }
 
@@ -874,4 +1020,89 @@ $('z01_v_ident').observe('keyup', function () {
 });
 
 /* Bloco de funções dados do CGS fim ****/
+
+
+/**
+ * Aplica mascara nos campos de telefone
+ */
+$('z01_v_telef').onkeypress = function() {
+  mascaraTelefone(this);
+}
+
+$('z01_v_telcel').onkeypress = function() {
+  mascaraTelefone(this);
+}
+
+function validaCampos() {
+
+  if ( empty($F('tf01_i_cgsund')) ) {
+
+    alert( _M(FRM_TFD_PEDIDO_INICIAL + 'cgs_nao_informado') );
+    return false;
+  }
+
+  if ( empty($F('z01_v_ender')) ) {
+
+    alert( _M(FRM_TFD_PEDIDO_INICIAL + 'endereco_nao_informado') );
+    return false;
+  }
+
+  if ( empty($F('z01_v_bairro')) ) {
+
+    alert( _M(FRM_TFD_PEDIDO_INICIAL + 'bairro_nao_informado') );
+    return false;
+  }
+
+  if ( empty($F('z01_v_munic')) ) {
+
+    alert( _M(FRM_TFD_PEDIDO_INICIAL + 'municipio_nao_informado') );
+    return false;
+  }
+
+  if ( empty($F('z01_codigoibge')) ) {
+
+    alert( _M(FRM_TFD_PEDIDO_INICIAL + 'ibge_nao_informado') );
+    return false;
+  }
+
+  if ( empty($F('z01_v_uf')) ) {
+
+    alert( _M(FRM_TFD_PEDIDO_INICIAL + 'uf_nao_informada') );
+    return false;
+  }
+
+  if ( empty($F('z01_d_nasc')) ) {
+
+    alert( _M(FRM_TFD_PEDIDO_INICIAL + 'data_nascimento_nao_informada') );
+    return false;
+  }
+
+  if ( empty($F('z01_v_mae')) ) {
+
+    alert( _M(FRM_TFD_PEDIDO_INICIAL + 'mae_nao_informada') );
+    return false;
+  }
+
+  if ( $F('z01_v_telef') != '' ) {
+
+    var iTelefone = $F('z01_v_telef').replace(/[^0-9]/g,"");
+    if ( iTelefone.length < 10 ) {
+
+      alert( _M( FRM_TFD_PEDIDO_INICIAL + 'telefone_invalido'));
+      return false;
+    }
+  }
+
+  if ( $F('z01_v_telcel') != '' ) {
+
+    var iCelular = $F('z01_v_telcel').replace(/[^0-9]/g,"");
+    if ( iCelular.length < 10) {
+
+      alert( _M( FRM_TFD_PEDIDO_INICIAL + 'celular_invalido'));
+      return false;
+    }
+  }
+
+  return true;
+}
 </script>

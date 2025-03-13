@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 if(isset($libera)){
-$result = pg_exec("update db_dae set w04_enviado = 'f' where w04_codigo = $codigo");
+$result = db_query("update db_dae set w04_enviado = 'f' where w04_codigo = $codigo");
 echo "<script>parent.db_iframe.hide();</script>";
 echo "<script>parent.alert('DAI Liberada para alteração');</script>";
 }
-$result = pg_exec("select * from db_dae inner join issbase on q02_inscr = w04_inscr inner join cgm on z01_numcgm = q02_numcgm where w04_codigo = $codigo");
+$result = db_query("select * from db_dae inner join issbase on q02_inscr = w04_inscr inner join cgm on z01_numcgm = q02_numcgm where w04_codigo = $codigo");
 db_fieldsmemory($result,0);
 ?>
 <style>

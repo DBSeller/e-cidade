@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-//include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_prontuarios_classe.php");
-include("classes/db_agendamentos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+//include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_prontuarios_classe.php"));
+include(modification("classes/db_agendamentos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clprontuarios = new cl_prontuarios;
 $clagendamentos = new cl_agendamentos;
@@ -66,7 +66,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
 	<?
-	include("forms/db_frmprontuarios2.php");
+	include(modification("forms/db_frmprontuarios2.php"));
 	?>
     </center>
 	</td>
@@ -88,7 +88,7 @@ if(isset($incluir)){
 //    db_msgbox($clprontuarios->erro_msg);
     echo "<script>";
     echo " parent.document.formaba.a2.disabled=false;";
-    echo " top.corpo.iframe_a2.location.href='sau1_prontproced001.php?pront=".$clprontuarios->sd24_i_id."';";
+    echo " (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='sau1_prontproced001.php?pront=".$clprontuarios->sd24_i_id."';";
     echo " parent.mo_camada('a2');";
     echo "</script>";
   }

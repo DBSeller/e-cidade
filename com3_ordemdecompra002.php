@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,25 +25,29 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_app.utils.php");
-require_once('libs/db_utils.php');
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/verticalTab.widget.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
 
 
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
 $oGet = db_utils::postMemory($_GET);
-$oOrdemCompra = new OrdemDeCompra($oGet->m51_codordem);
 
-if ($oOrdemCompra->getEmpenhoFinanceiro()->getInstituicao()->getCodigo() != db_getsession('DB_instit')) {
+try {
 
-  db_msgbox("Esta ordem de compra pertence a outro departamento. Procedimento abortado.");
-  echo "<script>parent.db_iframe_ordemcompra002.hide();</script>";
+  $oOrdemCompra = new OrdemDeCompra($oGet->m51_codordem);
+  if ($oOrdemCompra->getEmpenhoFinanceiro()->getInstituicao()->getCodigo() != db_getsession('DB_instit')) {
+    throw new Exception("Esta ordem de compra pertence a outro departamento. Procedimento abortado.");
+  }
+} catch (Exception $e) {
+
+  db_redireciona('db_erros.php?fechar=true&db_erro='.$e->getMessage());
   exit;
 }
 ?>
@@ -163,13 +167,23 @@ if ($oOrdemCompra->getEmpenhoFinanceiro()->getInstituicao()->getCodigo() != db_g
         </td>
       </tr>
 
+      <tr>
+        <td class='negrito'>
+          Valor Anulado:
+        </td>
+        <td class='dados' colspan="3">
+          <label id='nValorAnulado'></label>
+        </td>
+      </tr>
+
+
 
       <tr id="trObservacaoInicial">
         <td class='negrito'>
           Observações:
         </td>
         <td class='dados' colspan="3">
-          <textarea id="textAreaObs" rows="3" style="resize:none;overflow:auto; width: 100%; border: none;" readonly="readonly">
+          <textarea id="textAreaObs" style="resize:none;overflow:auto; width: 100%; height: 90px; border: none;" readonly="readonly">
           </textarea>
         </td>
       </tr>
@@ -185,7 +199,7 @@ if ($oOrdemCompra->getEmpenhoFinanceiro()->getInstituicao()->getCodigo() != db_g
 
     $oTabDetalhes->add("itens", "Itens","com3_itemordemdecompra002.php?m51_codordem=".$oGet->m51_codordem);
 
-    $oTabDetalhes->add("entradaestoque", "Movimentações no Estoque","com3_entradaestoque002.php?m51_codordem=".$oGet->m51_codordem);
+    $oTabDetalhes->add("entradaestoque", "Movimentações","com3_entradaestoque002.php?m51_codordem=".$oGet->m51_codordem);
 
     $oTabDetalhes->show();
     ?>
@@ -219,7 +233,7 @@ function js_retornoDadosOrdem(oAjax){
 
   js_removeObj('msgBox');
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   var iTipoCompra = oRetorno.oDadosOrdem.iTipoCompra;
   var sTipoCompra = "";
@@ -244,6 +258,7 @@ function js_retornoDadosOrdem(oAjax){
   $("nTotalOrdem").innerHTML   = oRetorno.oDadosOrdem.nTotalOrdem;
   $("nValorLancado").innerHTML = oRetorno.oDadosOrdem.nValorLancado;
   $("nValorLancar").innerHTML  = oRetorno.oDadosOrdem.nValorLancar;
+  $("nValorAnulado").innerHTML = oRetorno.oDadosOrdem.nValorAnulado;
   $("textAreaObs").value       = oRetorno.oDadosOrdem.sObservacao.urlDecode();
 
 
@@ -300,7 +315,7 @@ function consultaLicitacao(iCodigoLicitacao) {
     return false;
   }
   var sURLLicitacao = "lic3_licitacao002.php?l20_codigo="+iCodigoLicitacao
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_licitacao'+iCodigoLicitacao, sURLLicitacao, 'Consulta de Licitação', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_licitacao'+iCodigoLicitacao, sURLLicitacao, 'Consulta de Licitação', true);
 }
 
 js_verificarResolucaoUsuario();

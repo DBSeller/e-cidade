@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_proctransfer_classe.php");
-include("classes/db_proctransferproc_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_proctransfer_classe.php"));
+include(modification("classes/db_proctransferproc_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clproctransfer = new cl_proctransfer;
@@ -46,14 +46,14 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Cancela
           where  (p62_coddepto = ".db_getsession("DB_coddepto")." ) 
           and    p62_codtran not in (select p64_codtran from proctransand)
           and    p62_codtran = $txtcodtran";
-  $rs1 = pg_exec($sql);
+  $rs1 = db_query($sql);
   if (pg_num_rows($rs1) > 0){       
      $sql1 = "delete from proctransferproc where p63_codtran = $txtcodtran";
-     $rs1  = pg_exec($sql1);
+     $rs1  = db_query($sql1);
      $sql2 = "delete from proctransfer where p62_codtran = $txtcodtran"; 
-     $rs2  = pg_exec($sql2);
+     $rs2  = db_query($sql2);
      if (!$rs2 or !$rs1){
-        pg_exec("ROLLBACK");
+        db_query("ROLLBACK");
      }else{
        echo "<script>alert('Transferencia excluida com sucesso!');</script>";
      } 

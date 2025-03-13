@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -224,7 +224,7 @@ db_inputdata('k60_datadeb',@$k60_datadeb_dia,@$k60_datadeb_mes,@$k60_datadeb_ano
 <script>
 function js_pesquisatipo(mostra){
   document.form1.lanca.onclick = "";
-  parent.bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
+  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
   if(mostra==true){
     db_iframe.jan.location.href = 'func_arretipo.php?funcao_js=parent.js_mostratipo1|k00_tipo|k00_descr';
     db_iframe.mostraMsg();
@@ -248,7 +248,7 @@ function js_mostratipo(chave,erro){
   }else{
     document.form1.lanca.onclick = js_insSelect;
   }
-    parent.bstatus.document.getElementById('st').innerHTML = "Configuração -> Tipos" ;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = "Configuração -> Tipos" ;
 
 }
 function js_pesquisa(){

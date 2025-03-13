@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -52,10 +52,10 @@ class cl_propricemit {
    var $cm28_d_aquisicao = null;
    // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 cm28_i_codigo = int4 = Código Ossoário/ Jazigo
+                 cm28_i_codigo = int4 = Código Ossário/ Jazigo
                  cm28_i_processo = int4 = Processo
                  cm28_i_proprietario = int4 = Proprietário
-                 cm28_i_ossoariojazigo = int4 = N Ossoário/ Jazigo
+                 cm28_i_ossoariojazigo = int4 = N Ossário/ Jazigo
                  cm28_d_aquisicao = date = Aquisição
                  ";
    //funcao construtor da classe
@@ -109,7 +109,7 @@ class cl_propricemit {
        return false;
      }
      if($this->cm28_i_ossoariojazigo == null ){
-       $this->erro_sql = " Campo N Ossoário/ Jazigo nao Informado.";
+       $this->erro_sql = " Campo N Ossário/ Jazigo nao Informado.";
        $this->erro_campo = "cm28_i_ossoariojazigo";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -176,12 +176,12 @@ class cl_propricemit {
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Proprietário Ossoário/Jazigo ($this->cm28_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Proprietário Ossário/Jazigo ($this->cm28_i_codigo) nao Incluído. Inclusao Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_banco = "Proprietário Ossoário/Jazigo já Cadastrado";
+         $this->erro_banco = "Proprietário Ossário/Jazigo já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Proprietário Ossoário/Jazigo ($this->cm28_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Proprietário Ossário/Jazigo ($this->cm28_i_codigo) nao Incluído. Inclusao Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -219,7 +219,7 @@ class cl_propricemit {
        $sql  .= $virgula." cm28_i_codigo = $this->cm28_i_codigo ";
        $virgula = ",";
        if(trim($this->cm28_i_codigo) == null ){
-         $this->erro_sql = " Campo Código Ossoário/ Jazigo nao Informado.";
+         $this->erro_sql = " Campo Código Ossário/ Jazigo nao Informado.";
          $this->erro_campo = "cm28_i_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -263,7 +263,7 @@ class cl_propricemit {
        $sql  .= $virgula." cm28_i_ossoariojazigo = $this->cm28_i_ossoariojazigo ";
        $virgula = ",";
        if(trim($this->cm28_i_ossoariojazigo) == null ){
-         $this->erro_sql = " Campo N Ossoário/ Jazigo nao Informado.";
+         $this->erro_sql = " Campo N Ossário/ Jazigo nao Informado.";
          $this->erro_campo = "cm28_i_ossoariojazigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -326,7 +326,7 @@ class cl_propricemit {
      $result = db_query($sql);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Proprietário Ossoário/Jazigo nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Proprietário Ossário/Jazigo nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->cm28_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -336,7 +336,7 @@ class cl_propricemit {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "Proprietário Ossoário/Jazigo nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Proprietário Ossário/Jazigo nao foi Alterado. Alteracao Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->cm28_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -391,7 +391,7 @@ class cl_propricemit {
      $result = db_query($sql.$sql2);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Proprietário Ossoário/Jazigo nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Proprietário Ossário/Jazigo nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$cm28_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -401,7 +401,7 @@ class cl_propricemit {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "Proprietário Ossoário/Jazigo nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Proprietário Ossário/Jazigo nao Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$cm28_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));

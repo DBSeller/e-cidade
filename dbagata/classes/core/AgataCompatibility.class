@@ -27,7 +27,7 @@
 
 class AgataCompatibility
 {
-    function readReport($FileName)
+    static function readReport($FileName)
     {
         $array = Xml2Array($FileName);
         # From 7.2 to 7.4

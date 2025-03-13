@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -446,6 +446,43 @@ class cl_sau_cotasagendamentoprofissional {
        if($s164_codigo!=null ){
          $sql2 .= " where sau_cotasagendamentoprofissional.s164_codigo = $s164_codigo "; 
        } 
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+
+  function sql_query_cotas_profissionais ( $s164_codigo = null, $campos = "*", $ordem = null, $dbwhere = "" ) {
+
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from sau_cotasagendamentoprofissional ";
+     $sql .= "      inner join sau_cotasagendamento  on  sau_cotasagendamento.s163_i_codigo = sau_cotasagendamentoprofissional.s164_cotaagendamento";
+     $sql2 = "";
+
+     if($dbwhere==""){
+       if($s164_codigo!=null ){
+         $sql2 .= " where sau_cotasagendamentoprofissional.s164_codigo = $s164_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

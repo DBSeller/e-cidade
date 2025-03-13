@@ -26,7 +26,7 @@
  */
 
 //MODULO: Biblioteca
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clautoracervo->rotulo->label();
 $db_botao1 = false;
@@ -98,10 +98,10 @@ if(isset($opcao) && $opcao=="alterar"){
 <script>
 function js_pesquisabi21_autor(mostra){
  if(mostra==true){
-  js_OpenJanelaIframe('','db_iframe_acervo','func_autor.php?funcao_js=parent.js_mostraautor1|bi01_codigo|bi01_nome','Pesquisa',true);
+  js_OpenJanelaIframe('','db_iframe_autor','func_autor.php?funcao_js=parent.js_mostraautor1|bi01_codigo|bi01_nome','Pesquisa',true);
  }else{
   if(document.form1.bi21_autor.value != ''){
-   js_OpenJanelaIframe('','db_iframe_acervo','func_autor.php?pesquisa_chave='+document.form1.bi21_autor.value+'&funcao_js=parent.js_mostraautor','Pesquisa',false);
+   js_OpenJanelaIframe('','db_iframe_autor','func_autor.php?pesquisa_chave='+document.form1.bi21_autor.value+'&funcao_js=parent.js_mostraautor','Pesquisa',false);
   }else{
    document.form1.bi01_nome.value = '';
   }
@@ -117,6 +117,6 @@ function js_mostraautor(chave,erro){
 function js_mostraautor1(chave1,chave2){
  document.form1.bi21_autor.value = chave1;
  document.form1.bi01_nome.value = chave2;
- db_iframe_acervo.hide();
+ db_iframe_autor.hide();
 }
 </script>

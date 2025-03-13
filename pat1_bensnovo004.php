@@ -1,42 +1,42 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_bensmedida_classe.php");
-require_once("classes/db_bensmodelo_classe.php");
-require_once("classes/db_bensmarca_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_bensmedida_classe.php"));
+require_once(modification("classes/db_bensmodelo_classe.php"));
+require_once(modification("classes/db_bensmarca_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -69,9 +69,13 @@ if (isset($oGet->iCodigoEmpNotaItem) && !empty($oGet->iCodigoEmpNotaItem)) {
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
+<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/Input/DBInput.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/Input/DBInputFoto.widget.js"></script>
 <?php
-  db_app::load("scripts.js, prototype.js, strings.js, DBToogle.widget.js, dbmessageBoard.widget.js");
+  db_app::load("strings.js, DBToogle.widget.js, dbmessageBoard.widget.js");
   db_app::load("estilos.css, grid.style.css, classes/DBViewNotasPendentes.classe.js, widgets/windowAux.widget.js, datagrid.widget.js");
 ?>
 <style type="text/css">
@@ -118,17 +122,24 @@ if (isset($oGet->iCodigoEmpNotaItem) && !empty($oGet->iCodigoEmpNotaItem)) {
     backgroud-color: #DEB887;
   }
 
+  .ctnFoto {
+
+    vertical-align: top;
+    display   : inline-block;
+  }
+
+  .ctnFoto img {
+
+    width:  70;
+    height: 85;
+  }
+
 </style>
 </head>
-<body bgcolor="#CCCCCC" onload="js_carregaDadosForm(<?=$db_opcao?>);" >
-<div style="margin-top: 25px;" ></div>
-<center>
-  <div align="center" style="width: 720px; display: block;">
-    <?php
-      include ("forms/db_frm_bensnovo.php");
-    ?>
-  </div>
-</center>
+<body class="body-default" onload="js_carregaDadosForm(<?=$db_opcao?>);" >
+  <?php
+    include(modification("forms/db_frm_bensnovo.php"));
+  ?>
 </body>
 </html>
 
@@ -164,6 +175,7 @@ if (isset($oGet->iCodigoEmpNotaItem) && !empty($oGet->iCodigoEmpNotaItem)) {
     var oDBViewNotasPendentes = new DBViewNotasPendentes('oDBViewNotasPendentes', <?php echo $lUsaPCASP;?>);
     oDBViewNotasPendentes.setCallBackDoubleClick(loadDadosBem);
     oDBViewNotasPendentes.setTextoRodape("<b>* Dois cliques sob a linha para carregar o bem</b>");
+    oDBViewNotasPendentes.exibirItemFracionado(false);
 	  oDBViewNotasPendentes.show();
 
   } else {
@@ -184,17 +196,19 @@ if (isset($oGet->iCodigoEmpNotaItem) && !empty($oGet->iCodigoEmpNotaItem)) {
   function js_preencheFormulario(oAjax) {
 
 		js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
-    
+    var oRetorno = JSON.parse(oAjax.responseText);
+
     if (oRetorno.status == 1) {
-      
-      $("t52_dtaqu").value   = js_formatar(oRetorno.e69_dtnota, 'd');
+
+      oRetorno = oRetorno.aNotas[0];
+
+      $("t52_dtaqu").value   = js_formatar(oRetorno.dataAquisicao, 'd');
       $("t52_numcgm").value  = oRetorno.e60_numcgm;
       $("z01_nome").value    = oRetorno.z01_nome;
-      $("vlAquisicao").value = oRetorno.e62_vlrun;
+      $("vlAquisicao").value = oRetorno.e72_valor;
       $("t52_descr").value   = oRetorno.pc01_descrmater;
       $("iCodigoItemNota").value = <?php echo $iCodigoNota;?>;
-      
+
       $("t52_dtaqu").style.backgroundColor   = '#DEB887';
       $("t52_numcgm").style.backgroundColor  = '#DEB887';
       $("z01_nome").style.backgroundColor    = '#DEB887';

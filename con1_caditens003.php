@@ -26,10 +26,10 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 echo($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -80,7 +80,7 @@ function js_envia_itens(){
 	    <td> <strong>M&oacute;dulo:</strong><br> 
 	  <select onDblClick="document.form1.mod.click()" name="modulos" size="18"  >
         <?
-	    $result = pg_exec("select id_item,nome_modulo,descr_modulo 
+	    $result = db_query("select id_item,nome_modulo,descr_modulo 
 	    from db_modulos 
 	    order by lower(nome_modulo)");
 	    $numrows = pg_numrows($result);
@@ -98,7 +98,7 @@ function js_envia_itens(){
 	  </table>
 	  <?
 	  } else if(isset($HTTP_POST_VARS["mod"])) {
-		  $result = pg_exec("select nome_modulo,descr_modulo from db_modulos where id_item = ".$HTTP_POST_VARS["modulos"]);
+		  $result = db_query("select nome_modulo,descr_modulo from db_modulos where id_item = ".$HTTP_POST_VARS["modulos"]);
 	      $mod = pg_result($result,0,0);
 	      $des = pg_result($result,0,1);
 	  ?>
@@ -141,7 +141,7 @@ function js_envia_itens(){
 			  global $wid;
 			  global $ambiente;
 			  global $HTTP_POST_VARS;
-              $sub = pg_exec("select m.id_item_filho,i.descricao,i.help,i.funcao,m.id_item,m.modulo 
+              $sub = db_query("select m.id_item_filho,i.descricao,i.help,i.funcao,m.id_item,m.modulo 
                               from db_menu m 
 			           inner join db_itensmenu i on i.id_item = m.id_item_filho 
                               where m.modulo = $mod  and m.id_item = $item 
@@ -171,7 +171,7 @@ function js_envia_itens(){
 	                           where m.modulo = ".$HTTP_POST_VARS["modulos"]."
 							   and i.itemativo = $ambiente							   
 							   and m.id_item = ".$HTTP_POST_VARS["modulos"];
-            $result = pg_exec($SQL);			
+            $result = db_query($SQL);			
             for($i = 0;$i < pg_numrows($result);$i++) {
 	      $valor = pg_result($result,$i,"id_item_filho");
 	      $objeto_conteudo = str_replace($objeto_conteudo,"-".$valor."-",'');

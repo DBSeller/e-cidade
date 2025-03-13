@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oDaoPermHerda = db_utils::getDao('db_permherda');
 
@@ -336,7 +336,7 @@ function js_marca(tag,inp) {
 	  db_postmemory($HTTP_POST_VARS);
           $sql = "select db_permherda.id_usuario from db_usuarios inner join db_permherda on db_usuarios.id_usuario = db_permherda.id_usuario where db_permherda.id_perfil = $usuario"; 
 	  $res = db_query($sql);
-	  $usuarios = "";
+	  $usuarios = array();
 	  $vir = "";
 	  if(pg_numrows($res) > 0){
             $usuarios[0] = "";
@@ -350,7 +350,7 @@ function js_marca(tag,inp) {
            <br> 
 	   <input type='hidden' name='perfil' value='<?=$usuario?>'>
             <td valign="top"><strong>Perfil: </strong><?=$perfil?><br>
-	      <select multiple onDblClick="document.form1.incluir.click()" name="usuario[]" size="18" onChange="js_msg_status(this.value.substr(this.value.search('##') + 2))" onBlur="js_lmp_status()">
+	      <select id="select-users" multiple name="usuario[]" size="18" onChange="js_msg_status(this.value.substr(this.value.search('##') + 2))" onBlur="js_lmp_status()">
 	        <optgroup style="text-align:center;color:#333333;background-color:#6699cc;letter-spacing:0.4em" label="Usuários">
 		<?
 		if(db_getsession("DB_id_usuario") == "1") {
@@ -393,8 +393,9 @@ function js_marca(tag,inp) {
 			 </td>
           </tr>
 		  <tr>
-		    <td>
-			  <input onClick="if(document.form1.usuario.selectedIndex == -1 ) { alert('Selecione um usuário!'); return false; }" name="incluir" type="submit" id="selecionar" value="Selecionar">
+		    <td style="padding-top:10px;">
+			  <input onClick="if(document.form1.usuario.selectedIndex == -1 ) { alert('Selecione um usuário!'); return false; }" name="incluir" type="submit" id="selecionar" value="Salvar">
+			  <input onClick="Array.prototype.slice.call(document.querySelectorAll('#select-users option')).forEach(function(obj) {obj.removeAttribute('selected')}); return false;" type="button" id="" value="Desmarcar todos">
 			</td>
 		  </tr>
 		 </table>
@@ -537,3 +538,31 @@ function js_marca(tag,inp) {
 </table>
 </body>
 </html>
+<script type="text/javascript">
+;(function() {
+
+  var select = document.querySelector('#select-users');
+
+  if (!select) return false;
+
+  var options = select.querySelectorAll('option');
+  
+  Array.prototype.slice.call(options).forEach(function(option) {
+    option.addEventListener('mousedown', mouseDownHandler);    
+  });
+
+  function mouseDownHandler(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    if (this.hasAttribute('selected')) {
+      this.removeAttribute('selected');
+    } else {
+      this.setAttribute('selected', true);
+    }
+
+    return false;
+  }
+
+})();
+</script>

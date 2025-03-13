@@ -9,6 +9,12 @@ var DBMask = function(options) {
     fade: true
   }
 
+  this.corpoMask = null;
+
+  this.topoMask = null;
+
+  this.bstatusMask = null;
+
   /**
    * jQuery.extend só que não
    */
@@ -24,9 +30,11 @@ var DBMask = function(options) {
 
 DBMask.prototype.__init = function() {
 
-  var oMask = this.oMaskElement = this.settings.context.document.createElement('DIV');
+  var _this = this
 
-  var zIndex = this.settings.zIndex || ( 10000 + (this.settings.context.document.getElementsByClassName('db-mask').length * 2) );
+  var oMask = _this.settings.context.document.createElement('DIV');
+
+  var zIndex = _this.settings.zIndex || ( 10000 + (_this.settings.context.document.getElementsByClassName('db-mask').length * 2) );
 
   oMask.setAttribute('class', 'db-mask');
   oMask.style.width           = '100%';
@@ -38,34 +46,87 @@ DBMask.prototype.__init = function() {
   oMask.style.zIndex          = zIndex;
   oMask.style.overflow        = 'auto';
 
-  if (this.settings.fade) {
+  if (_this.settings.fade) {
     oMask.style.opacity       = '0';
     oMask.style.MozTransition = 'opacity 0.25s';
+    oMask.style.webkitTransition = 'opacity 0.25s';
+    oMask.style.transition = 'opacity 0.25s';
   }
 
-  var topoMask    = oMask.cloneNode(true),
-      corpoMask   = oMask,
-      bstatusMask = oMask.cloneNode(true);
+  _this.oMasks = [];
 
-  this.oMasks = [topoMask, corpoMask, bstatusMask];
+  _this.insereMascaras(oMask);
 
-  if (this.settings.miniMask) {
-    this.settings.context.document.body.appendChild(corpoMask);
-    return;
-  }
+  _this.oMaskElement = _this.corpoMask
 
-  top.corpo.document.body.appendChild(corpoMask);
-  top.topo.document.body.appendChild(topoMask);
-  top.bstatus.document.body.appendChild(bstatusMask);
-
-  if (this.settings.fade) {
+  if (_this.settings.fade) {
 
     setTimeout(function() {
-      corpoMask.style.opacity   = 1;
-      topoMask.style.opacity    = 1;
-      bstatusMask.style.opacity = 1;
+
+      if (_this.corpoMask) _this.corpoMask.style.opacity   = 1;
+      if (_this.topoMask) _this.topoMask.style.opacity    = 1;
+      if (_this.bstatusMask) _this.bstatusMask.style.opacity = 1;
+
     }, 50)
   }
+}
+
+/**
+ * Método responsavel por colocar as mascaras na tela.
+ */
+DBMask.prototype.insereMascaras = function(oMaskBase) {
+
+  var CurrentWindow = top;
+
+  if (top.ECIDADE_DESKTOP) {
+    CurrentWindow = parent.CurrentWindow;
+  }
+
+  if (this.settings.miniMask) {
+
+    CurrentWindow.corpo.__DBMask = this.settings.context.document.importNode(oMaskBase, true);
+    CurrentWindow.corpo.document.body.appendChild(CurrentWindow.corpo.__DBMask);
+
+    this.corpoMask = CurrentWindow.corpo.__DBMask;
+    this.oMasks.push(this.corpoMask);
+
+  } else {
+
+    if (CurrentWindow.corpo) {
+
+      if (!CurrentWindow.corpo.__DBMask) {
+        CurrentWindow.corpo.__DBMask = CurrentWindow.corpo.document.importNode(oMaskBase, true)
+        CurrentWindow.corpo.document.body.appendChild(CurrentWindow.corpo.__DBMask);
+      }
+
+      this.corpoMask = CurrentWindow.corpo.__DBMask;
+      this.oMasks.push(this.corpoMask)
+    }
+
+    if (CurrentWindow.topo) {
+
+      if (!CurrentWindow.topo.__DBMask) {
+        CurrentWindow.topo.__DBMask = CurrentWindow.topo.document.importNode(oMaskBase, true)
+        CurrentWindow.topo.document.body.appendChild(CurrentWindow.topo.__DBMask);
+      }
+
+      this.topoMask = CurrentWindow.topo.__DBMask;
+      this.oMasks.push(this.topoMask)
+    }
+
+    if (CurrentWindow.bstatus) {
+
+      if (!CurrentWindow.bstatus.__DBMask) {
+        CurrentWindow.bstatus.__DBMask = CurrentWindow.bstatus.document.importNode(oMaskBase, true)
+        CurrentWindow.bstatus.document.body.appendChild(CurrentWindow.bstatus.__DBMask);
+      }
+
+      this.bstatusMask = CurrentWindow.bstatus.__DBMask;
+      this.oMasks.push(this.bstatusMask)
+    }
+
+  }
+
 }
 
 /**
@@ -74,7 +135,12 @@ DBMask.prototype.__init = function() {
 DBMask.prototype.destroy = function() {
 
   for (var indexMasks = 0; indexMasks < this.oMasks.length; indexMasks++ ) {
-    this.oMasks[indexMasks].outerHTML = '';
+
+    if (this.oMasks[indexMasks].parentNode.ownerDocument.defaultView.__DBMask) {
+      delete this.oMasks[indexMasks].parentNode.ownerDocument.defaultView.__DBMask;
+    }
+
+    this.oMasks[indexMasks].parentNode.removeChild(this.oMasks[indexMasks]);
     this.oMasks[indexMasks] = null;
   }
 

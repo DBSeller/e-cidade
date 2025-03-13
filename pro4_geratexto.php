@@ -25,38 +25,38 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 	db_postmemory($HTTP_SERVER_VARS);
 	db_postmemory($HTTP_POST_VARS);
 
 if (isset($alterar)){
 	if ((isset($instituicao))&&($conteudotexto!="")){
-		pg_exec("begin");
+		db_query("begin");
 		$sql = "
 			update db_textos
 			set id_instit = $instituicao,
 			conteudotexto = '$conteudotexto'
 			where descrtexto = '$descrtexto'
 		";
-		pg_exec($sql) or die ("Alteracao abortada. Erro (18).");
-		pg_exec("end");
+		db_query($sql) or die ("Alteracao abortada. Erro (18).");
+		db_query("end");
 		db_msgbox("Alterado com sucesso.");
 	}else{
 		db_msgbox("Alteracao abortada. Erro (20).");
 	}
 }else if(isset($incluir)){
 	if ((isset($instituicao))&&($conteudotexto!="")&&($descrtexto!="")){
-		pg_exec("begin");
+		db_query("begin");
 		$sql = "
 			insert into db_textos
 			values ($instituicao,'$descrtexto','$conteudotexto')
 		";
-		pg_exec($sql) or die ("Inclusão abortada. Erro (29).");
-		pg_exec("end");
+		db_query($sql) or die ("Inclusão abortada. Erro (29).");
+		db_query("end");
 		db_msgbox("Inclusão com sucesso.");
 	}else{
 		db_msgbox("Inclusão abortada. Erro (32).");
@@ -68,7 +68,7 @@ if (isset($db_opcao)) {
 	from db_textos
 	where descrtexto = '$db_opcao'
 	";//
-	$result_db_opcao = pg_exec($sql_db_opcao);
+	$result_db_opcao = db_query($sql_db_opcao);
 	$num_db_opcao = pg_numrows($result_db_opcao);
 	if ($num_db_opcao!=0){
 		$habilita_alteracao = true;
@@ -124,7 +124,7 @@ if (isset($db_opcao)){// parametro db_opcao responsavel por localizar qual o tex
 		select codigo, nomeinst
 		from db_config
 	";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	$num = pg_numrows($result);
 	for ($i=0;$i<$num;$i++){
   if(($num_db_opcao!=0)&&(pg_result($result,$i,"codigo")==pg_result($result_db_opcao,0,"id_instit"))){

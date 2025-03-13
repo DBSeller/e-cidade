@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_infnutricional_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_infnutricional_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_infnutricional = new cl_mer_infnutricional;
@@ -53,7 +53,7 @@ if (isset($alterar)) {
   <script>
    parent.document.formaba.a2.disabled    = false;
    parent.document.formaba.a2.style.color = "black";
-   top.corpo.iframe_a2.location.href      = 'mer1_mer_infnutricional002.php';
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'mer1_mer_infnutricional002.php';
   </script> 
 <?
 
@@ -74,7 +74,7 @@ if (isset($alterar)) {
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
 	<br><br>
     <fieldset style="width:97%"><legend><b>Alteração de Informações Nutricionais</b></legend>
-	<?include("forms/db_frmmer_infnutricional.php");?>
+	<?include(modification("forms/db_frmmer_infnutricional.php"));?>
 	</fieldset>
 	</td>
   </tr>

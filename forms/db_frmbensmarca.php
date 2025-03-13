@@ -68,7 +68,7 @@ $clbensmarca->rotulo->label();
 	</form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bensmarca','func_bensmarca.php?funcao_js=parent.js_preenchepesquisa|t65_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensmarca','func_bensmarca.php?funcao_js=parent.js_preenchepesquisa|t65_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bensmarca.hide();

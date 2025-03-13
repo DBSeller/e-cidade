@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_avaliacaoperguntaopcaolayoutcampo_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_avaliacaoperguntaopcaolayoutcampo_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $oDaoAvaliacaoPergunta = new cl_avaliacaoperguntaopcaolayoutcampo;
 $oDaoAvaliacaoPergunta->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -176,7 +176,7 @@ js_init();
  */
 function js_pesquisa_ed313_db_layoutcampo(mostra) {
   
-  js_OpenJanelaIframe('top.corpo', 
+  js_OpenJanelaIframe('CurrentWindow.corpo', 
                       'db_iframe_db_layoutcampo', 
                       'func_db_layoutcampos.php?funcao_js.parent.js_preenchepesquisaed313_db_layoutcampo|ed313_db_layoutcampo', 
                       'Pesquisa', 
@@ -198,7 +198,7 @@ function js_pesquisaed313_db_layoutcampo(mostra){
   
   if(mostra==true){
     
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_db_layoutcampo', 
                         'func_db_layoutcampos.php?funcao_js=parent.js_mostraed313_db_layoutcampo_true|db52_codigo|db52_descr', 
                         'Pesquisa', 
@@ -209,7 +209,7 @@ function js_pesquisaed313_db_layoutcampo(mostra){
     
      if(document.form1.ed313_db_layoutcampo.value != ''){ 
        
-       js_OpenJanelaIframe('top.corpo', 
+       js_OpenJanelaIframe('CurrentWindow.corpo', 
                            'db_iframe_db_layoutcampo', 
                            'func_db_layoutcampos.php?pesquisa_chave='+document.form1.ed313_db_layoutcampo.value+'&funcao_js=parent.js_mostraed313_db_layoutcampo_erro', 
                            'Pesquisa', 
@@ -247,7 +247,7 @@ function js_mostraed313_db_layoutcampo_true(chave1,chave2){
  */
 function js_pesquisa_ed313_avaliacaoperguntaopcao(mostra) {
   
-  js_OpenJanelaIframe('top.corpo', 
+  js_OpenJanelaIframe('CurrentWindow.corpo', 
                       'db_iframe_avaliacaoperguntaopcao', 
                       'func_avaliacaoperguntaopcap.php?funcao_js.parent.js_preenchepesquisaed313_avaliacaoperguntaopcao|ed313_avaliacaoperguntaopcao', 
                       'Pesquisa', 
@@ -269,7 +269,7 @@ function js_pesquisaed313_avaliacaoperguntaopcao(mostra){
   
   if(mostra==true){
     
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_avaliacaoperguntaopcao', 
                         'func_avaliacaoperguntaopcao.php?funcao_js=parent.js_mostraed313_avaliacaoperguntaopcao_true|db104_sequencial|db104_descricao', 
                         'Pesquisa', 
@@ -280,7 +280,7 @@ function js_pesquisaed313_avaliacaoperguntaopcao(mostra){
     
      if(document.form1.ed313_avaliacaoperguntaopcao.value != ''){ 
        
-       js_OpenJanelaIframe('top.corpo', 
+       js_OpenJanelaIframe('CurrentWindow.corpo', 
                            'db_iframe_avaliacaoperguntaopcao', 
                            'func_avaliacaoperguntaopcao.php?pesquisa_chave='+document.form1.ed313_avaliacaoperguntaopcao.value+'&funcao_js=parent.js_mostraed313_avaliacaoperguntaopcao_erro', 
                            'Pesquisa', 
@@ -402,7 +402,7 @@ function js_buscar () {
  */
 function js_preencheBusca (oResponse) {
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   oDataGridVinculo.clearAll(true);
   oRetorno.aDados.each(function (oLinha, iContador) {
 

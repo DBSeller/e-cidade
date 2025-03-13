@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_rhfolhapagamento_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhfolhapagamento_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulo = new rotulocampo();
 $oRotulo->label("rh141_sequencial");
@@ -41,7 +41,43 @@ $lExisteFolhaFechada = false;
 
 try {
 
+   /**
+   *  Verifica se o parametro r11_suplementar na tabela cfpess está ativo.
+   */
+  if (!DBPessoal::verificarUtilizacaoEstruturaSuplementar()){
+
+     /**
+     * Desativa o formulário
+     */
+    $lDisabled = true;
+    $db_opcao  = 3;
+
+    throw new BusinessException(_M(MENSAGEM . "rotina_desativada"));
+  }
+     
+} catch (Exception $eException) {
+     
+   db_msgbox($eException->getMessage()); 
+   db_redireciona('corpo.php');
+}
+
+try {
+
   db_inicio_transacao();
+
+   /**
+   *  Verifica se o parametro r11_suplementar na tabela cfpess está ativo.
+   */
+  if (!DBPessoal::verificarUtilizacaoEstruturaSuplementar()){
+
+     /**
+     * Desativa o formulário
+     */
+    $lDisabled = true;
+    $db_opcao  = 3;
+
+    throw new BusinessException(_M(MENSAGEM . "rotina_desativada"));
+  }
 
   $db_opcao        = 3;
   db_postmemory($_POST);
@@ -95,7 +131,7 @@ try {
 
       <fieldset>
         <legend>Cancelar Fechamento da Folha Suplementar</legend>
-        <?php require_once('forms/db_frmrhfolhapagamento.php'); ?>
+        <?php require_once(modification('forms/db_frmrhfolhapagamento.php')); ?>
       </fieldset>
 
       <?php 

@@ -1,0 +1,116 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010311' name='esocial.avaliacaogruporespostatsveinicial' description="Grupo de resposta do tsve inicial(trabalhador sem vínculo)" prefix="eso16" label="Grupo de resposta do tsve inicial" type="0">
+  <fields>
+    <field codigo="1009924" 
+           campo_api='' 
+           name="eso16_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="t" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.avaliacaogruporespostatsveinicial_eso16_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009925" 
+           campo_api='' 
+           name="eso16_avaliacaogruporesposta" 
+           conteudo="int4" 
+           description="Avaliação Grupo Resposta" 
+           inivalue="0" 
+           label="Avaliação Grupo Resposta" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Avaliação Grupo Resposta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009926" 
+           campo_api='' 
+           name="eso16_rhpessoal" 
+           conteudo="int4" 
+           description="Trabalhador" 
+           inivalue="0" 
+           label="Trabalhador" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Trabalhador" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+    </field>
+    <field codigo="1010310"
+           campo_api=''
+           name="eso16_empregador"
+           conteudo="int4"
+           description="Empregador"
+           inivalue="0"
+           label="Empregador"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Empregador"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+    <field codigo="1010311"
+           campo_api=''
+           name="eso16_avaliacao"
+           conteudo="int4"
+           description="Avaliação"
+           inivalue="0"
+           label="Avaliação"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Avaliação"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="eso16_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="eso16_rhpessoal" reference="rh01_regist" /> 
+    </foreignkey>
+    <foreignkey reference="avaliacaogrupoperguntaresposta" inner='t'>
+      <fieldfk name="eso16_avaliacaogruporesposta" reference="db108_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="eso16_empregador" reference="z01_numcgm" />
+    </foreignkey>
+    <foreignkey reference="avaliacao" inner='t'>
+      <fieldfk name="eso16_avaliacao" reference="db101_sequencial" />
+    </foreignkey>
+  </foreignkeys>
+</table>

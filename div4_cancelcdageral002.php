@@ -1,50 +1,51 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("libs/db_libpessoal.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_libpessoal.php"));
 
-require_once("classes/db_certid_classe.php");
-require_once("classes/db_certdiv_classe.php");
-require_once("classes/db_certter_classe.php");
-require_once("classes/db_arreforo_classe.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_inicialcert_classe.php");
-require_once("classes/db_acertid_classe.php");
-require_once("classes/db_acertdiv_classe.php");
-require_once("classes/db_acertter_classe.php");
-require_once("classes/db_listacda_classe.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/JSON.php");
+require_once(modification("classes/db_certid_classe.php"));
+require_once(modification("classes/db_certdiv_classe.php"));
+require_once(modification("classes/db_certter_classe.php"));
+require_once(modification("classes/db_arreforo_classe.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_inicialcert_classe.php"));
+require_once(modification("classes/db_acertid_classe.php"));
+require_once(modification("classes/db_acertdiv_classe.php"));
+require_once(modification("classes/db_acertter_classe.php"));
+require_once(modification("classes/db_listacda_classe.php"));
+require_once(modification("classes/db_desmembramentoinicialhistorico_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
 
 db_app::load('scripts.js, prototype.js, strings.js, datagrid.widget.js');
 db_app::load('estilos.css, grid.style.css');
@@ -63,6 +64,7 @@ $clacertdiv    = new cl_acertdiv;
 $clacertter    = new cl_acertter;
 $clrotulo      = new rotulocampo;
 $clListacda    = new cl_listacda();
+$cl_desmembramentoinicialhistorico = new cl_desmembramentoinicialhistorico();
 
 $oJson         = new services_json();
 
@@ -84,42 +86,60 @@ $processar     = true;
 $aMensagemErros = array();
 
 if (isset($processar)&&$processar!=""){
-  
+
   db_inicio_transacao();
-  
+
   $sqlerro  = false;
   $mensagem = "";
-  
+
 
   if ($v13_certidini == "") {
     $v13_certidini = $v13_certidfim;
   }
-  
+
   db_criatermometro("termometro", "Concluido...", "blue", 1);
   flush();
 
   $iContador = 0;
-  
+
   for ($certidao = $v13_certidini; $certidao <= $v13_certidfim; $certidao++) {
-    
-    
+
+
     db_atutermometro($iContador , ($v13_certidfim - $v13_certidini) + 1, "termometro", 1, "Processando certidão $certidao.");
-    
+
     $iContador++;
+
+    $oCertidao           = new Certidao( $certidao );
+    $iCertidaoSequencial = $oCertidao->getSequencial();
+
+    if ( !empty($iCertidaoSequencial) ) {
+
+      if ( $oCertidao->isCobrancaExtrajudicial() ) {
+
+        $oErro             = new stdClass();
+        $oErro->sTipo      = "ERRO";
+        $oErro->sDescricao = utf8_encode("CDA $certidao está sob Cobrança Extrajudicial.");
+
+        $aMensagemErros[]  = $oErro;
+
+        continue;
+      }
+    }
+
 
     $result_inicial=$clinicialcert->sql_record($clinicialcert->sql_query(null,null, "v51_inicial",null," v50_situacao = 1 and v51_certidao = $certidao "));
 
     if ($clinicialcert->numrows>0){
       db_fieldsmemory($result_inicial,0);
       $mensagem         .= "ERRO: CDA $certidao faz parte da inicial: $v51_inicial! ";
-      
+
       $oErro             =  new stdClass();
-      
+
       $oErro->sTipo      = "ERRO";
       $oErro->sDescricao = "CDA $certidao faz parte da inicial: $v51_inicial.";
-      
+
       $aMensagemErros[]  = $oErro;
-      
+
       continue;
     }
 
@@ -127,16 +147,16 @@ if (isset($processar)&&$processar!=""){
     if ($clarreforo->numrows > 0){
       db_fieldsmemory($result_forotip,0);
     } else {
-      
+
       $mensagem                   .= "INCONSIST&Ecirc;NCIA: CDA $certidao inconsistente! ";
-      
+
       $oInconsistencia             = new stdClass();
-      
+
       $oInconsistencia->sTipo      = "INCONSIST&Ecirc;NCIA";
       $oInconsistencia->sDescricao = "CDA $certidao inconsistente.";
-      
+
       $aMensagemErros[]            = $oInconsistencia;
-      
+
       continue;
     }
 
@@ -172,7 +192,6 @@ if (isset($processar)&&$processar!=""){
     }
 
     if($tipo=="divida"){
-
       for($w=0;$w<$quantcertdiv;$w++){
         db_fieldsmemory($result_certdiv,$w);
 
@@ -204,7 +223,7 @@ if (isset($processar)&&$processar!=""){
       }
 
       if ($sqlerro==false){
-        $clarrecad->k00_tipo=$k00_tipo;
+        $clarrecad->k00_tipo= $k00_tipo;
         for ($arreforo=0; $arreforo < pg_numrows($result_forotip); $arreforo++) {
           db_fieldsmemory($result_forotip,$arreforo);
           $clarrecad->alterar_arrecad("k00_numpre=$k00_numpre and k00_numpar=$k00_numpar");
@@ -228,6 +247,8 @@ if (isset($processar)&&$processar!=""){
         $sqlerro  = true;
         $erro_msg = $clListacda->erro_msg;
       }
+
+      $cl_desmembramentoinicialhistorico->deleteByQuery("v37_cda = $certidao or v37_cda_old = $certidao");
 
       $clcertid->excluir($certidao);
       if ($clcertid->erro_status==0){
@@ -270,7 +291,7 @@ if (isset($processar)&&$processar!=""){
       }
 
       if ($sqlerro==false){
-        $clarrecad->k00_tipo=$k00_tipo;
+        $clarrecad->k00_tipo= $k00_tipo;
 
         for ($arreforo=0; $arreforo < pg_numrows($result_forotip); $arreforo++) {
           db_fieldsmemory($result_forotip,$arreforo);
@@ -284,7 +305,7 @@ if (isset($processar)&&$processar!=""){
 
 
       }
-       
+
       $clarreforo->excluir(null,"k00_certidao=$certidao");
       if ($clarreforo->erro_status==0){
         $sqlerro=true;
@@ -297,6 +318,8 @@ if (isset($processar)&&$processar!=""){
         $sqlerro  = true;
         $erro_msg = $clListacda->erro_msg;
       }
+
+      $cl_desmembramentoinicialhistorico->deleteByQuery("v37_cda = $certidao or v37_cda_old = $certidao");
 
       $clcertid->excluir($certidao);
       if ($clcertid->erro_status==0){
@@ -311,7 +334,7 @@ if (isset($processar)&&$processar!=""){
     $erro_msg = $mensagem;
   }
   db_fim_transacao($sqlerro);
-  
+
 }
 
 if (isset($processar)&&$processar!=""){
@@ -341,13 +364,13 @@ if (isset($processar)&&$processar!=""){
 
 </form>
 
-<?php 
+<?php
 if (count($aMensagemErros) > 0) {
-  
+
 ?>
 <script>
 
-gridDebitos                      = new DBGrid("dataGridDebitos"); 
+gridDebitos                      = new DBGrid("dataGridDebitos");
 gridDebitos.nameInstance         = "gridDebitos";
 gridDebitos.setHeight            ( 200 );
 gridDebitos.setCellAlign         ( new Array("left", "left") );
@@ -365,7 +388,7 @@ aRetorno.each(function(oErro) {
 
 gridDebitos.renderRows();
 </script>
-<?php 
+<?php
 } else {
   db_msgbox("CDAs {$certidaoinicial} até {$certidaofinal} anuladas com sucesso.");
   echo "<script>";

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_relrub_classe.php");
-include("classes/db_relrubmov_classe.php");
-include("classes/db_selecao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_relrub_classe.php"));
+include(modification("classes/db_relrubmov_classe.php"));
+include(modification("classes/db_selecao_classe.php"));
 $clrelrub = new cl_relrub;
 $clrelrubmov = new cl_relrubmov;
 $clselecao = new cl_selecao;
@@ -97,7 +97,7 @@ $db_botao = true;
     <td colspan="2" align="center">
       <table width="100%">
 		<?
-		include("dbforms/db_classesgenericas.php");
+		include(modification("dbforms/db_classesgenericas.php"));
 		$geraform = new cl_formulario_rel_pes;
 
                 $geraform->manomes = true;
@@ -150,10 +150,10 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 
 function js_pesquisarh45_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_relrub','func_relrub.php?funcao_js=top.corpo.js_mostracodigo1|rh45_codigo|rh45_descr','Pesquisa',true,20);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_relrub','func_relrub.php?funcao_js=parent.CurrentWindow.corpo.js_mostracodigo1|rh45_codigo|rh45_descr','Pesquisa',true,20);
   }else{
      if(document.form1.rh45_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_relrub','func_relrub.php?pesquisa_chave='+document.form1.rh45_codigo.value+'&funcao_js=top.corpo.js_mostracodigo','Pesquisa',false,'0');
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_relrub','func_relrub.php?pesquisa_chave='+document.form1.rh45_codigo.value+'&funcao_js=parent.CurrentWindow.corpo.js_mostracodigo','Pesquisa',false,'0');
      }else{
        document.form1.rh45_descr.value = '';
      }
@@ -220,7 +220,7 @@ function js_retornacampos(){
     	jan = window.open(sUrl,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
     	jan.moveTo(0,0);
     } else {
-    	js_OpenJanelaIframe('top.corpo','db_iframe_emissao', sUrl,'Processando arquivo',true,'20', '0');	        
+    	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emissao', sUrl,'Processando arquivo',true,'20', '0');	        
     } 
   }
 }

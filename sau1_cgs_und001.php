@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,23 +26,22 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("classes/db_cgs_classe.php");
-require_once("classes/db_cgs_cartaosus_classe.php");
-require_once("classes/db_cgs_und_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("classes/db_cgs_classe.php"));
+require_once(modification("classes/db_cgs_cartaosus_classe.php"));
+require_once(modification("classes/db_cgs_und_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-db_postmemory($_POST);
-
+db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
-$clcgs           = new cl_cgs;
-$clcgs_und       = new cl_cgs_und;
-$clcgs_cartaosus = new cl_cgs_cartaosus;
+$clcgs              = new cl_cgs;
+$clcgs_und          = new cl_cgs_und;
+$clcgs_cartaosus    = new cl_cgs_cartaosus;
 
 $db_opcao  = 1;
 $db_opcao1 = 1;
@@ -67,6 +66,10 @@ if ( isset($incluir) || isset($alterar) ) {
     $lErro = true;
   }
 
+  if ( $lObrigarCns && empty($s115_c_cartaosus) ) {
+    $lErro = true;
+  }
+
   if(!$lErro && $s115_c_cartaosus != "" ) {
 
     $sWhere = " s115_c_cartaosus = '{$s115_c_cartaosus}' ";
@@ -77,7 +80,7 @@ if ( isset($incluir) || isset($alterar) ) {
 
       $clcgs_cartaosus->s115_i_cgs       = $clcgs->z01_i_numcgs;
       $clcgs_cartaosus->s115_c_cartaosus = $s115_c_cartaosus;
-      $clcgs_cartaosus->s115_c_tipo      = $s115_c_tipo;
+      $clcgs_cartaosus->s115_c_tipo      = 'D';
       $clcgs_cartaosus->s115_i_entrada   = 1;
       $clcgs_cartaosus->incluir(null);
 
@@ -95,9 +98,10 @@ if ( isset($incluir) || isset($alterar) ) {
 
   if ( !$lErro ) {
 
-    $clcgs_und->z01_i_cgsund = $clcgs->z01_i_numcgs;
-    $z01_i_cgsund            = $clcgs->z01_i_numcgs;
-    $clcgs_und->z01_i_login  = DB_getsession("DB_id_usuario");
+    $clcgs_und->z01_i_cgsund  = $clcgs->z01_i_numcgs;
+    $z01_i_cgsund             = $clcgs->z01_i_numcgs;
+    $clcgs_und->z01_i_login   = DB_getsession("DB_id_usuario");
+    $clcgs_und->z01_b_inativo = isset($z01_b_inativo) ? "true" : "false";
     $clcgs_und->incluir($clcgs->z01_i_numcgs);
 
     if ($clcgs_und->erro_status == 0) {
@@ -120,18 +124,18 @@ if ( isset($incluir) || isset($alterar) ) {
 ?>
 <html>
 <head>
-  <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta http-equiv="Expires" CONTENT="0">
-  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-  <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-  <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
-  <script language='JavaScript' type='text/javascript' src='scripts/classes/saude/validaCNS.js'></script>
-  <link href="estilos.css" rel="stylesheet" type="text/css">
+<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Expires" CONTENT="0">
+<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+<script language='JavaScript' type='text/javascript' src='scripts/classes/saude/validaCNS.js'></script>
+<link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body class='body-default'>
   <div class="container">
-    <?include("forms/db_frmcgs_und.php");?>
+    <?include(modification("forms/db_frmcgs_und.php"));?>
   </div>
 </body>
 </html>
@@ -193,14 +197,14 @@ if ( isset($incluir) ) {
       <script>
         parent.document.formaba.a2.disabled = false;
         parent.document.formaba.a2.style.color = "black";
-        parent.iframe_a1.location.href="sau1_cgs_und002.php?chavepesquisa=<?=$z01_i_cgsund?>";
-        parent.iframe_a2.location.href="sau1_cgs_undoutros002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Incluir&retornacgs=<?=$retornacgs?>&retornanome=<?=$retornanome?>&redireciona=<?=$redireciona?>";
+        parent.iframe_a1.location.href = "sau1_cgs_und002.php?chavepesquisa=<?=$z01_i_cgsund?>";
+        parent.iframe_a2.location.href = "sau1_cgs_undoutros002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Incluir&retornacgs=<?=$retornacgs?>&retornanome=<?=$retornanome?>&redireciona=<?=$redireciona?>";
         parent.mo_camada('a2');
         parent.document.formaba.a3.disabled = false;
         parent.document.formaba.a3.style.color = "black";
-        parent.iframe_a3.location.href="sau1_cgs_doc002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Incluir&retornacgs=<?=$retornacgs?>&retornanome=<?=$retornanome?>";
+        parent.iframe_a3.location.href = "sau1_cgs_doc002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Incluir&retornacgs=<?=$retornacgs?>&retornanome=<?=$retornanome?>";
       </script>
-      <?php
+    <?php
     }
   }
 }

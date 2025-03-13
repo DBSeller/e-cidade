@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -140,7 +140,7 @@ function js_getCgsCns() {
 
 function js_retornogetCgsCns(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if(oRetorno.z01_i_cgsund == '') {
 
@@ -241,7 +241,7 @@ function js_mostra_cgs(chave1, chave2, sexo, nasc, mae) {
 
 function js_retornoIdade(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
  
   if (oRetorno.iStatus == 1) {
     $('iIdade').value = oRetorno.iAnos+' anos, '+oRetorno.iMeses+' meses e '+oRetorno.iDias+' dias.';
@@ -394,7 +394,7 @@ function js_getDadosVacinas() {
 
 function js_retornoGetDadosVacinas(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
  
   if (oRetorno.iStatus == 1) {
 

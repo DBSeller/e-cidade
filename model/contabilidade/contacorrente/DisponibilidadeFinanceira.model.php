@@ -1,32 +1,32 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("interfaces/IContaCorrente.interface.php");
-require_once ("model/contabilidade/contacorrente/ContaCorrenteBase.model.php");
+require_once(modification("interfaces/IContaCorrente.interface.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteBase.model.php"));
 
 /**
  * Model responsavel pela disponibilidade financeira de contas correntes
@@ -76,35 +76,11 @@ class DisponibilidadeFinanceira extends ContaCorrenteBase implements IContaCorre
       throw new DBException("ERRO [1] - Não foi encontrado transação com o banco de dados. Procedimento abortado.");
     }
 
-    $sMetodoCaracteristicaPeculiar = "getCaracteristicaPeculiarCredito";
-    if ($this->sTipoLancamento == "D") {
-      $sMetodoCaracteristicaPeculiar = "getCaracteristicaPeculiarDebito";
-    }
-
-    if ($this->oLancamentoAuxiliar instanceof LancamentoAuxiliarEmpenhoPassivo ||
-        $this->oLancamentoAuxiliar instanceof LancamentoAuxiliarEmpenho ||
-        $this->oLancamentoAuxiliar instanceof LancamentoAuxiliarArrecadacaoReceita ||
-        $this->oLancamentoAuxiliar instanceof LancamentoAuxiliarArrecadacaoReceitaExtraOrcamentaria ||
-    		$this->oLancamentoAuxiliar instanceof LancamentoAuxiliarContaCorrente ) {
-        $sMetodoCaracteristicaPeculiar = "getCaracteristicaPeculiar";
-
-    }
-
-    $iCodigoRecurso = null;
-    $oReflexao      = new ReflectionClass($this->oLancamentoAuxiliar);
-    if ($oReflexao->hasMethod("getCodigoRecurso")) {
-      $iCodigoRecurso = $this->oLancamentoAuxiliar->getCodigoRecurso();
-    }
-
-    if (empty($iCodigoRecurso)) {
-      $iCodigoRecurso = $this->getContaPlano()->getRecurso();
-    }
-    $iAnoSessao               = db_getsession("DB_anousu");
-    $oDaoContaCorrenteDetalhe = db_utils::getDao('contacorrentedetalhe');
+    $oDaoContaCorrenteDetalhe = new cl_contacorrentedetalhe();
     $sWhereContaCorrente      = "     c19_contacorrente       = " . self::CONTA_CORRENTE;
-    $sWhereContaCorrente     .= " and c19_orctiporec          = {$iCodigoRecurso}";
+    $sWhereContaCorrente     .= " and c19_orctiporec          = {$this->defineRecurso()}";
     $sWhereContaCorrente     .= " and c19_instit              = {$this->getInstituicao()->getSequencial()}";
-    $sWhereContaCorrente     .= " and c19_concarpeculiar      = '{$this->oLancamentoAuxiliar->$sMetodoCaracteristicaPeculiar()}'";
+    $sWhereContaCorrente     .= " and c19_concarpeculiar      = '{$this->defineCaracteristicaPeculiar()}'";
     $sWhereContaCorrente     .= " and c19_reduz               = {$this->iCodigoReduzido}";
     $sWhereContaCorrente     .= " and c19_conplanoreduzanousu = {$this->getContaPlano()->getAno()}";
 
@@ -118,12 +94,12 @@ class DisponibilidadeFinanceira extends ContaCorrenteBase implements IContaCorre
       $this->vincularLancamentos($iContaCorrenteDetalheSequencial, $sTipoLancamento);
     } else {
 
-      $oDaoContaCorrenteDetalhe = db_utils::getDao("contacorrentedetalhe");
+      $oDaoContaCorrenteDetalhe = new cl_contacorrentedetalhe();
       $oDaoContaCorrenteDetalhe->c19_sequencial          = null;
       $oDaoContaCorrenteDetalhe->c19_contacorrente       = self::CONTA_CORRENTE;
-      $oDaoContaCorrenteDetalhe->c19_orctiporec          = $iCodigoRecurso;
+      $oDaoContaCorrenteDetalhe->c19_orctiporec          = $this->defineRecurso();
       $oDaoContaCorrenteDetalhe->c19_instit              = $this->getInstituicao()->getSequencial();
-      $oDaoContaCorrenteDetalhe->c19_concarpeculiar      = "'{$this->oLancamentoAuxiliar->$sMetodoCaracteristicaPeculiar()}'";
+      $oDaoContaCorrenteDetalhe->c19_concarpeculiar      = "'{$this->defineCaracteristicaPeculiar()}'";
       $oDaoContaCorrenteDetalhe->c19_reduz               = $this->getContaPlano()->getReduzido();
       $oDaoContaCorrenteDetalhe->c19_conplanoreduzanousu = $this->getContaPlano()->getAno();
       $oDaoContaCorrenteDetalhe->incluir(null);
@@ -169,5 +145,99 @@ class DisponibilidadeFinanceira extends ContaCorrenteBase implements IContaCorre
   public function setCaracteristicaPeculiar(CaracteristicaPeculiar $oCaracteristicaPeculiar) {
     $this->oCaracteristicaPeculiar = $oCaracteristicaPeculiar;
   }
+
+  /**
+   * Definição de onde pegar a caracteristica peculiar para o lançamento.
+   * @return string
+   */
+  protected function defineCaracteristicaPeculiar() {
+
+    $sMetodoCaracteristicaPeculiar = "getCaracteristicaPeculiarCredito";
+    if ($this->sTipoLancamento == "D") {
+      $sMetodoCaracteristicaPeculiar = "getCaracteristicaPeculiarDebito";
+    }
+
+
+    if ($this->oLancamentoAuxiliar instanceof LancamentoAuxiliarArrecadacaoReceita ||
+      $this->oLancamentoAuxiliar instanceof LancamentoAuxiliarArrecadacaoReceitaExtraOrcamentaria ||
+      $this->oLancamentoAuxiliar instanceof LancamentoAuxiliarContaCorrente ) {
+      $sMetodoCaracteristicaPeculiar = "getCaracteristicaPeculiar";
+    }
+
+    $sCaracteristicaPeculiar = '000';
+    if(method_exists($this->oLancamentoAuxiliar, $sMetodoCaracteristicaPeculiar)) {
+      $sCaracteristicaPeculiar = $this->oLancamentoAuxiliar->$sMetodoCaracteristicaPeculiar();
+    }
+
+    $oDetalhamento = $this->oLancamentoAuxiliar->getContaCorrenteDetalhe();
+    if (!empty($oDetalhamento) && $oDetalhamento instanceof ContaCorrenteDetalhe) {
+
+      $oEmpenho = $oDetalhamento->getEmpenho();
+      if (!empty($oEmpenho)) {
+        $sCaracteristicaPeculiar = $oEmpenho->getCaracteristicaPeculiar();
+      }
+    }
+
+    if (empty($sCaracteristicaPeculiar)) {
+      throw new Exception("Não foi possível definir a Característica Peculiar para o conta corrente.");
+    }
+    return $sCaracteristicaPeculiar;
+  }
+
+  /**
+   * Define que recurso utilizar para executar o conta corrente
+   * @return int
+   */
+  protected function defineRecurso() {
+
+    $oContaCorrenteDetalhe = $this->oLancamentoAuxiliar->getContaCorrenteDetalhe();
+    if (!empty($oContaCorrenteDetalhe)) {
+      if($oContaCorrenteDetalhe->getRecurso() instanceof Recurso){
+        $iCodigoRecurso = $oContaCorrenteDetalhe->getRecurso()->getCodigo();
+      }
+    }
+
+    if (in_array($this->getDocumentoEventoContabil()->getCodigo(), array(100,107,416,418,101,108,417,419))) {
+
+      $oReceitaContabil = ReceitaContabilRepository::getReceitaByCodigo($this->oLancamentoAuxiliar->getCodigoReceita(), $this->getContaPlano()->getAno());
+      $iCodigoRecurso = $oReceitaContabil->getRecurso()->getCodigo();
+    }
+
+		/**
+		 * Transferência Bancária (Documento 140)
+		 * Conta 82111 estiver lançando a credito, pegar o recurso da conta débito do primeiro lançamento do slip
+		 * quando a conta 82111 estiver lançando a debito, pegar o recurso da conta credito do primeiro lançamento do slip
+		 */
+    if (in_array($this->getDocumentoEventoContabil()->getCodigo(), array(140, 141))) {
+
+    	if (substr($this->oContaPlano->getEstrutural(), 0, 5) == "82111") {
+
+    		$oTransferencia = new TransferenciaBancaria($this->oLancamentoAuxiliar->getCodigoSlip());
+				if ($this->sTipoLancamento == 'C') {
+
+					$iCodigoRecurso = $oTransferencia->getContaPlanoDebito()->getRecurso();
+					if ($this->getDocumentoEventoContabil()->getCodigo() == 141) {
+						$iCodigoRecurso = $oTransferencia->getContaPlanoCredito()->getRecurso();
+					}
+				}
+
+				if ($this->sTipoLancamento == 'D') {
+
+					$iCodigoRecurso = $oTransferencia->getContaPlanoCredito()->getRecurso();
+					if ($this->getDocumentoEventoContabil()->getCodigo() == 141) {
+						$iCodigoRecurso = $oTransferencia->getContaPlanoDebito()->getRecurso();
+					}
+				}
+			}
+		}
+
+    /**
+     * Em último caso, pegamos o recurso do plano de contas
+     */
+    if (empty($iCodigoRecurso)) {
+      $iCodigoRecurso = $this->getContaPlano()->getRecurso();
+    }
+
+    return $iCodigoRecurso;
+  }
 }
-?>

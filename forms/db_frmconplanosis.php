@@ -66,7 +66,7 @@ db_input('c64_descr',60,$Ic64_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conplanosis','func_conplanosis.php?funcao_js=parent.js_preenchepesquisa|c64_codpla','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conplanosis','func_conplanosis.php?funcao_js=parent.js_preenchepesquisa|c64_codpla','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conplanosis.hide();

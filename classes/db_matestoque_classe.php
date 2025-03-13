@@ -1,53 +1,53 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: material
 //CLASSE DA ENTIDADE matestoque
-class cl_matestoque { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $m70_codigo = 0; 
-   var $m70_codmatmater = 0; 
-   var $m70_coddepto = 0; 
-   var $m70_quant = 0; 
-   var $m70_valor = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_matestoque {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $m70_codigo = 0;
+   var $m70_codmatmater = 0;
+   var $m70_coddepto = 0;
+   var $m70_quant = 0;
+   var $m70_valor = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  m70_codigo = int8 = Codigo sequencial do registro 
                  m70_codmatmater = int8 = Código do material 
@@ -55,14 +55,14 @@ class cl_matestoque {
                  m70_quant = float8 = Quantidade em estoque 
                  m70_valor = float8 = Valor em estoque 
                  ";
-   //funcao construtor da classe 
-   function cl_matestoque() { 
+   //funcao construtor da classe
+   function cl_matestoque() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("matestoque"); 
+     $this->rotulo = new rotulo("matestoque");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -83,9 +83,9 @@ class cl_matestoque {
      }
    }
    // funcao para inclusao
-   function incluir ($m70_codigo){ 
+   function incluir ($m70_codigo){
       $this->atualizacampos();
-     if($this->m70_codmatmater == null ){ 
+     if($this->m70_codmatmater == null ){
        $this->erro_sql = " Campo Código do material nao Informado.";
        $this->erro_campo = "m70_codmatmater";
        $this->erro_banco = "";
@@ -94,7 +94,7 @@ class cl_matestoque {
        $this->erro_status = "0";
        return false;
      }
-     if($this->m70_coddepto == null ){ 
+     if($this->m70_coddepto == null ){
        $this->erro_sql = " Campo Departamento nao Informado.";
        $this->erro_campo = "m70_coddepto";
        $this->erro_banco = "";
@@ -103,7 +103,7 @@ class cl_matestoque {
        $this->erro_status = "0";
        return false;
      }
-     if($this->m70_quant == null ){ 
+     if($this->m70_quant == null ){
        $this->erro_sql = " Campo Quantidade em estoque nao Informado.";
        $this->erro_campo = "m70_quant";
        $this->erro_banco = "";
@@ -112,7 +112,7 @@ class cl_matestoque {
        $this->erro_status = "0";
        return false;
      }
-     if($this->m70_valor == null ){ 
+     if($this->m70_valor == null ){
        $this->erro_sql = " Campo Valor em estoque nao Informado.";
        $this->erro_campo = "m70_valor";
        $this->erro_banco = "";
@@ -122,16 +122,16 @@ class cl_matestoque {
        return false;
      }
      if($m70_codigo == "" || $m70_codigo == null ){
-       $result = db_query("select nextval('matestoque_m70_codigo_seq')"); 
+       $result = db_query("select nextval('matestoque_m70_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: matestoque_m70_codigo_seq do campo: m70_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: matestoque_m70_codigo_seq do campo: m70_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->m70_codigo = pg_result($result,0,0); 
+       $this->m70_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from matestoque_m70_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $m70_codigo)){
@@ -142,10 +142,10 @@ class cl_matestoque {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->m70_codigo = $m70_codigo; 
+         $this->m70_codigo = $m70_codigo;
        }
      }
-     if(($this->m70_codigo == null) || ($this->m70_codigo == "") ){ 
+     if(($this->m70_codigo == null) || ($this->m70_codigo == "") ){
        $this->erro_sql = " Campo m70_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -167,8 +167,8 @@ class cl_matestoque {
                                ,$this->m70_quant 
                                ,$this->m70_valor 
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Estoque de materiais ($this->m70_codigo) nao Incluído. Inclusao Abortada.";
@@ -204,16 +204,16 @@ class cl_matestoque {
        $resac = db_query("insert into db_acount values($acount,1019,6273,'','".AddSlashes(pg_result($resaco,0,'m70_valor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($m70_codigo=null) { 
+   function alterar ($m70_codigo=null) {
       $this->atualizacampos();
      $sql = " update matestoque set ";
      $virgula = "";
-     if(trim($this->m70_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_codigo"])){ 
+     if(trim($this->m70_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_codigo"])){
        $sql  .= $virgula." m70_codigo = $this->m70_codigo ";
        $virgula = ",";
-       if(trim($this->m70_codigo) == null ){ 
+       if(trim($this->m70_codigo) == null ){
          $this->erro_sql = " Campo Codigo sequencial do registro nao Informado.";
          $this->erro_campo = "m70_codigo";
          $this->erro_banco = "";
@@ -223,10 +223,10 @@ class cl_matestoque {
          return false;
        }
      }
-     if(trim($this->m70_codmatmater)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_codmatmater"])){ 
+     if(trim($this->m70_codmatmater)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_codmatmater"])){
        $sql  .= $virgula." m70_codmatmater = $this->m70_codmatmater ";
        $virgula = ",";
-       if(trim($this->m70_codmatmater) == null ){ 
+       if(trim($this->m70_codmatmater) == null ){
          $this->erro_sql = " Campo Código do material nao Informado.";
          $this->erro_campo = "m70_codmatmater";
          $this->erro_banco = "";
@@ -236,10 +236,10 @@ class cl_matestoque {
          return false;
        }
      }
-     if(trim($this->m70_coddepto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_coddepto"])){ 
+     if(trim($this->m70_coddepto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_coddepto"])){
        $sql  .= $virgula." m70_coddepto = $this->m70_coddepto ";
        $virgula = ",";
-       if(trim($this->m70_coddepto) == null ){ 
+       if(trim($this->m70_coddepto) == null ){
          $this->erro_sql = " Campo Departamento nao Informado.";
          $this->erro_campo = "m70_coddepto";
          $this->erro_banco = "";
@@ -249,10 +249,10 @@ class cl_matestoque {
          return false;
        }
      }
-     if(trim($this->m70_quant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_quant"])){ 
+     if(trim($this->m70_quant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_quant"])){
        $sql  .= $virgula." m70_quant = $this->m70_quant ";
        $virgula = ",";
-       if(trim($this->m70_quant) == null ){ 
+       if(trim($this->m70_quant) == null ){
          $this->erro_sql = " Campo Quantidade em estoque nao Informado.";
          $this->erro_campo = "m70_quant";
          $this->erro_banco = "";
@@ -262,10 +262,10 @@ class cl_matestoque {
          return false;
        }
      }
-     if(trim($this->m70_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_valor"])){ 
+     if(trim($this->m70_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m70_valor"])){
        $sql  .= $virgula." m70_valor = $this->m70_valor ";
        $virgula = ",";
-       if(trim($this->m70_valor) == null ){ 
+       if(trim($this->m70_valor) == null ){
          $this->erro_sql = " Campo Valor em estoque nao Informado.";
          $this->erro_campo = "m70_valor";
          $this->erro_banco = "";
@@ -299,7 +299,7 @@ class cl_matestoque {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Estoque de materiais nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->m70_codigo;
@@ -327,14 +327,14 @@ class cl_matestoque {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($m70_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($m70_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($m70_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -364,7 +364,7 @@ class cl_matestoque {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Estoque de materiais nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$m70_codigo;
@@ -392,11 +392,11 @@ class cl_matestoque {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -422,75 +422,75 @@ class cl_matestoque {
     // Declara Variaveis
     $sErro = "";
     $lErro = false;
-    
+
     // Qual tipo de Atualizacao
     switch ($iCodMatTipo) {
-      
+
       //
       // ATENDIMENTO DE REQUISICAO
       //
       case 17:
-      $lErro = $this->atualizaEstoqueAtendRequi($iCodMater, $iCodDepto, $aAuxiliar["codatenditem"], $aAuxiliar["codmatestoqueini"], $nQuantidade, $dData, $nValor, &$sErro,$iCodMatestoqueitem, $iCodEstoque);
+      $lErro = $this->atualizaEstoqueAtendRequi($iCodMater, $iCodDepto, $aAuxiliar["codatenditem"], $aAuxiliar["codmatestoqueini"], $nQuantidade, $dData, $nValor, $sErro,$iCodMatestoqueitem, $iCodEstoque);
       break; // FIM ATENDIMENTO REQUISICAO
-      
+
       default:
       $sErro = "Tipo de Atualizacao de Estoque $iCodMatTipo não implementada! (Contate Suporte)";
       $lErro = true;
       break;
-      
+
     }
-    
+
     $sErroMsg = $sErro;
-    
+
     return $lErro;
-    
+
     //
   }
-   function atualizaEstoqueAtendRequi($iCodMater, $iCodDepto, $iCodAtendItem, $iCodMatEstoqueIni, $nQuantidade, $dData, $nValor, $sErro,$iCodMatestoqueitem, $iCodEstoque = '') {
+   function atualizaEstoqueAtendRequi($iCodMater, $iCodDepto, $iCodAtendItem, $iCodMatEstoqueIni, $nQuantidade, $dData, $nValor, &$sErro,$iCodMatestoqueitem, $iCodEstoque = '') {
     // Declara Variaveis
     $lErro  = false;
     $lDebug = false; // Para debugar metodo
-    
+
     // Instancia Classes
     $oMatEstoqueItem       = new cl_matestoqueitem;
     $oMatEstoqueIniMEI     = new cl_matestoqueinimei;
     $oMatEstoqueIniMeiARI  = new cl_matestoqueinimeiari;
     $oAtendRequiItemMEI    = new cl_atendrequiitemmei;
-    
+
     // Busca Estoque para Atualização
     $sCampos    = " distinct m70_codigo as codestoque, m70_quant as qtdestoque, m70_valor, matestoqueitem.*";
     $sWhere     = "m70_codmatmater=$iCodMater and m71_quantatend < m71_quant";
     if ($iCodMatestoqueitem!="" ){
       $sWhere  .= " and m71_codlanc = $iCodMatestoqueitem ";
     }
-    
+
     if ($iCodEstoque != null ){
       $sWhere  .= " and m70_coddepto = {$iCodEstoque}";
     }
-    
-    $sqlEstoque = $this->sql_query_retitem(null,$sCampos, "m71_data, m71_codlanc", $sWhere,$iCodDepto); 
+
+    $sqlEstoque = $this->sql_query_retitem(null,$sCampos, "m71_data, m71_codlanc", $sWhere,$iCodDepto);
     if($lDebug) {
       echo "Estoque 01: $sqlEstoque <br>";
     }
    //   echo "<br><br> $sqlEstoque <br>";
-    
+
     $resEstoque = $this->sql_record($sqlEstoque);
     $numrows    = $this->numrows;
     if ($numrows==0){
         $lErro = true;
         $sErro = "Estoque Nao Disponivel";
-    
+
     }
-    
+
     if($lDebug) {
       db_criatabela($resEstoque);
     }
-    
+
     $nQtdResta  = $nQuantidade;
     $nQtdInc    = 0;
     $lFim       = false;
     $nQuantReal = 0;
-    
+
     // Processa Entradas para abater a Saida da Requisicao (matestoqueitem)
     for ($w = 0; $w < $numrows; $w ++) {
       // Cria Variaveis do ResultSet
@@ -499,12 +499,12 @@ class cl_matestoque {
       $m71_quantatend = pg_result($resEstoque, $w, "m71_quantatend");
       $m71_valor      = pg_result($resEstoque, $w, "m71_valor");
       $m71_codlanc    = pg_result($resEstoque, $w, "m71_codlanc");
-      
+
       // Calcula Valor da MatEstoqueItem (QtdAtendida)
       $nValorInc    = 0;
       $nQuantAtual  = $m71_quant;                   // Salva Quantidade Atual
-      $nQuantReal   = $m71_quant - $m71_quantatend; // Calcula Quantidade Real 
-      
+      $nQuantReal   = $m71_quant - $m71_quantatend; // Calcula Quantidade Real
+
       // Se o primeiro lancamento pode ser atendida a quantidade, finaliza
       if($nQtdResta <= $nQuantReal) {
         $oMatEstoqueItem->m71_quantatend = $m71_quantatend + $nQtdResta;
@@ -518,25 +518,25 @@ class cl_matestoque {
         $nValorInc = $m71_valor / $nQuantAtual;
         $nQtdResta = $nQtdResta - $nQuantReal;
       }
-      
+
       if($lDebug) {
         echo "<br>Linha=$w<br>nValorInc=$nValorInc<br>nQuantAtual=$nQuantAtual<br>m71_quant=$m71_quant<br>nQtdInc=$nQtdInc<br>nQtdResta=$nQtdResta" ;
       }
-      
+
       // Atualiza MATESTOQUEITEM
       $oMatEstoqueItem->m71_valor   = $m71_valor;
       $oMatEstoqueItem->m71_quant   = $nQuantAtual;
       $oMatEstoqueItem->m71_codlanc = $m71_codlanc;
       $oMatEstoqueItem->alterar($m71_codlanc);
-      
+
       // Informacoes da Classe
       $sErro = $oMatEstoqueItem->erro_msg;
       $lErro = ($oMatEstoqueItem->erro_status == 0);
-      
+
       if($lErro) {
         break;
       }
-      
+
       // Gera AtentRequiItemMEI (Ligacao AtendRequiItem e MatEstoqueItem)
       if (!$lErro) {
         $oAtendRequiItemMEI->m44_codatendreqitem   = $iCodAtendItem;
@@ -546,12 +546,12 @@ class cl_matestoque {
         // Informacoes da Classe
         $sErro =  $oAtendRequiItemMEI->erro_msg;
         $lErro = ($oAtendRequiItemMEI->erro_status == 0);
-        
+
         if($lErro) {
           break;
         }
       }
-      
+
       // Gera MatEstoqueIniMEI (Ligacao MatEstoqueIni e MatEstoqueItem)
       if (!$lErro) {
         $oMatEstoqueIniMEI->m82_matestoqueitem = $m71_codlanc;
@@ -561,14 +561,14 @@ class cl_matestoque {
         // Informacoes da Classe
         $sErro =  $oMatEstoqueIniMEI->erro_msg;
         $lErro = ($oMatEstoqueIniMEI->erro_status == 0);
-        
+
         if($lErro) {
           break;
         }
-        
+
         $iCodMatEstoqueIniMei = $oMatEstoqueIniMEI->m82_codigo;
       }
-      
+
       // Gera MatEstoqueIniMeiARI (Ligacao MatEstoqueIniMei e AtendRequiItem)
       if (!$lErro) {
         $oMatEstoqueIniMeiARI->m49_codatendrequiitem   = $iCodAtendItem;
@@ -577,18 +577,18 @@ class cl_matestoque {
         // Informacoes da Classe
         $sErro =  $oMatEstoqueIniMeiARI->erro_msg;
         $lErro = ($oMatEstoqueIniMeiARI->erro_status == 0);
-        
+
         if($lErro) {
           break;
         }
       }
-      
+
       if ($lFim) {
         break;
       }
-      
+
     } // fim for
-    
+
     if(!$lErro) {
       //
       // Atualiza MATESTOQUE
@@ -597,48 +597,48 @@ class cl_matestoque {
       $sWhere        = "m71_codmatestoque = $codestoque";
       $sqlMatEstoque = $oMatEstoqueItem->sql_query(null, $sCampos, null, $sWhere);
       $resMatEstoque = db_query($sqlMatEstoque);
-      
+
       if($lDebug) {
         echo "<br>SqlMatEstoqueItem: $sqlMatEstoque<br>";
         db_criatabela($resMatEstoque);
-        
+
         echo "<br>Linhas:".pg_numrows($resMatEstoque)."<br>";
       }
-      
+
       if(pg_numrows($resMatEstoque) > 0) {
         $quantidade = pg_result($resMatEstoque, 0, "quantidade");
         $valor      = pg_result($resMatEstoque, 0, "valor");
         $quantatend = pg_result($resMatEstoque, 0, "quantatend");
-        
+
         // Calcula Quantidade Real Disponivel
         $nQtdReal   = $quantidade - $quantatend;
         $nValorReal = round($valor / $quantidade, 2) * $nQtdReal;
-        
+
         if($lDebug) {
           echo "<br>QTD REAL: $nQtdReal<br>";
         }
-        
+
         // Setando Valores
         $this->m70_codigo = "$codestoque";
         $this->m70_quant  = "$nQtdReal";
-        
+
         // Calcula novo Valor Financeiro em Estoque, considerando o novo atendimento
         $this->m70_valor  = "$nValorReal";
         $this->alterar($codestoque);
         // Informacoes da Classe
         $sErro =  $this->erro_msg;
         $lErro = ($this->erro_status == 0);
-        
+
         if($lDebug) {
           var_dump($this);
         }
-        
+
       } else {
         $lErro = true;
         $sErro = "Estoque Nao Disponivel";
       }
     }
-    
+
     if($lDebug) {
       echo "Erro $sErro<br>";
       $res = db_query("select * from matestoque where m70_codigo = $codestoque");
@@ -646,11 +646,11 @@ class cl_matestoque {
       db_fim_transacao(true);
       //die("<br><br>Estoque 01: $sqlEstoque");
     }
-    
+
     // Retorna mensagem de erro
     return $lErro;
   }
-      
+
    function sql_query($m70_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
     $sql = "select ";
     if ($campos != "*") {
@@ -688,8 +688,8 @@ class cl_matestoque {
     }
     return $sql;
   }
-  
-  
+
+
   function sql_query_pcmater($m70_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
     $sql = "select ";
     if ($campos != "*") {
@@ -728,20 +728,20 @@ class cl_matestoque {
       }
     }
     return $sql;
-  }  
-  
-  
-  
+  }
+
+
+
    function sql_query_almox($m70_codigo = null, $campos = "*", $ordem = null, $dbwhere = "", $group_by = "", $consulta = "",$departamento = "") {
-    
-    /* 
+
+    /*
     >> * É necessario declarar as classes no programa q usa este metodo
-    
-    include("db_matparam_classe.php");
-    include("db_db_departorg_classe.php");
-    include("db_db_almoxdepto_classe.php");
+
+    include(modification("db_matparam_classe.php"));
+    include(modification("db_db_departorg_classe.php"));
+    include(modification("db_db_almoxdepto_classe.php"));
     */
-    
+
     global $permissao;
     $clmatparam = new cl_matparam;
     $cldb_departorg = new cl_db_departorg;
@@ -766,10 +766,10 @@ class cl_matestoque {
       $sql .= "                                            db_departorg.db01_anousu   = ".db_getsession("DB_anousu");
 			$sql .= "      inner join orcunidade              on orcunidade.o41_orgao       = db_departorg.db01_orgao   and";
       $sql .= "                                            orcunidade.o41_unidade     = db_departorg.db01_unidade and";
-      $sql .= "                                            orcunidade.o41_anousu      = db_departorg.db01_anousu  and"; 
+      $sql .= "                                            orcunidade.o41_anousu      = db_departorg.db01_anousu  and";
       $sql .= "                                            orcunidade.o41_instit      = ".db_getsession("DB_instit");
       $sql .= "      inner join orcorgao                on orcorgao.o40_orgao         = orcunidade.o41_orgao";
-      $sql .= "                                        and orcorgao.o40_anousu        = orcunidade.o41_anousu"; 
+      $sql .= "                                        and orcorgao.o40_anousu        = orcunidade.o41_anousu";
     }
 
     $where = "";
@@ -798,11 +798,11 @@ class cl_matestoque {
           if ($cldb_departorg->numrows) {
             db_fieldsmemory($result_orgao, 0);
             $where = " db01_orgao = $db01_orgao";
-             $sql .= "      inner join db_departorg on db_departorg.db01_coddepto = matestoque.m70_coddepto and db_departorg.db01_anousu=".db_getsession("DB_anousu"); 
+             $sql .= "      inner join db_departorg on db_departorg.db01_coddepto = matestoque.m70_coddepto and db_departorg.db01_anousu=".db_getsession("DB_anousu");
             //$sql .= "      inner join orcorgao  on orcorgao.o40_orgao = db_departorg.db01_orgao and orcorgao.o40_anousu = db_departorg.db01_anousu";
           }
         } elseif ($m90_tipocontrol == 'G') {
-          $result_almox=$cldb_almoxdepto->sql_record($cldb_almoxdepto->sql_query_file(null,$depto_atual));	 
+          $result_almox=$cldb_almoxdepto->sql_record($cldb_almoxdepto->sql_query_file(null,$depto_atual));
           if ($cldb_almoxdepto->numrows>0){
             db_fieldsmemory($result_almox,0);
             $where = "m91_codigo = $m92_codalmox";
@@ -815,9 +815,9 @@ class cl_matestoque {
 
         	if (empty($depto_atual)) {
         		$depto_atual = db_getsession("DB_coddepto");
-        	}	
+        	}
           $where = " m70_coddepto = $depto_atual ";
-          
+
         } elseif ($m90_tipocontrol == 'F' and $depto_atual != "") {
             $where = " m70_coddepto = $depto_atual";
         } elseif ($m90_tipocontrol == 'F' and 1==2) {
@@ -830,7 +830,7 @@ class cl_matestoque {
           }else{
             $where = "1=2";
           }
-          
+
         }
       }
     }
@@ -868,15 +868,15 @@ class cl_matestoque {
     return $sql;
   }
    function sql_query_almoxitem($iCodMater = null, $campos = "*", $ordem = null, $dbwhere = "", $group_by = "", $consulta = "") {
-    
-    /* 
+
+    /*
     >> * É necessario declarar as classes no programa q usa este metodo
-    
-    include("db_matparam_classe.php");
-    include("db_db_departorg_classe.php");
-    include("db_db_almoxdepto_classe.php");
+
+    include(modification("db_matparam_classe.php"));
+    include(modification("db_db_departorg_classe.php"));
+    include(modification("db_db_almoxdepto_classe.php"));
     */
-    
+
     global $permissao;
     $clmatparam = new cl_matparam;
     $cldb_departorg = new cl_db_departorg;
@@ -898,8 +898,8 @@ class cl_matestoque {
     //$sql .= "      inner join matunid  on  matunid.m61_codmatunid = matmater.m60_codmatunid";
     $sql .= "      inner join db_depart  on  db_depart.coddepto = matestoque.m70_coddepto";
     //$sql .= "      inner join db_departorg  on db_departorg.db01_coddepto = db_depart.coddepto and db_departorg.db01_anousu=".db_getsession("DB_anousu");
-    //$sql .= "      inner join orcorgao  on orcorgao.o40_orgao = db_departorg.db01_orgao 
-    //and orcorgao.o40_anousu = db_departorg.db01_anousu 
+    //$sql .= "      inner join orcorgao  on orcorgao.o40_orgao = db_departorg.db01_orgao
+    //and orcorgao.o40_anousu = db_departorg.db01_anousu
     //and orcorgao.o40_instit = " . db_getsession("DB_instit");
     $where = "";
     $depto_atual = db_getsession("DB_coddepto");
@@ -924,10 +924,10 @@ class cl_matestoque {
             $where = "db_departorg.db01_orgao = $db01_orgao";
             $sql .= "      inner join db_departorg as db_deptoorg on db_deptoorg.db01_coddepto = db_depart.coddepto and db_deptoorg.db01_anousu=".db_getsession("DB_anousu");
             $sql .= "      inner join orcorgao     as orcorg      on orcorg.o40_orgao = db_deptoorg.db01_orgao and orcorg.o40_anousu = db_deptoorg.db01_anousu";
-            
+
           }
         } else if ($m90_tipocontrol == 'G') {
-          $result_almox=$cldb_almoxdepto->sql_record($cldb_almoxdepto->sql_query(null,$depto_atual));	 
+          $result_almox=$cldb_almoxdepto->sql_record($cldb_almoxdepto->sql_query(null,$depto_atual));
           if ($cldb_almoxdepto->numrows>0){
             db_fieldsmemory($result_almox,0);
             $where = " m91_codigo = $m92_codalmox";
@@ -950,14 +950,14 @@ class cl_matestoque {
           }else{
             $where = "1=2";
           }
-          
+
         }
       }
     }
     if ($where != "") {
       $sql2 = " where $where ";
     } else {
-      $sql2 = " where 1=1 "; //so para teste depois arrumar    
+      $sql2 = " where 1=1 "; //so para teste depois arrumar
     }
     if ($dbwhere == "") {
       if ($m70_codigo != null) {
@@ -1116,7 +1116,7 @@ class cl_matestoque {
     $sql .= "      inner join matmater        on  matmater.m60_codmater           = matestoque.m70_codmatmater				";
     $sql .= "      inner join matunid         on  matunid.m61_codmatunid          = matmater.m60_codmatunid						";
     $sql .= "      inner join matestoqueitem  on matestoqueitem.m71_codmatestoque = matestoque.m70_codigo             ";
-    $sql .= "      left  join matmatermaterialestoquegrupo on m68_matmater                          = m60_codmater    "; 
+    $sql .= "      left  join matmatermaterialestoquegrupo on m68_matmater                          = m60_codmater    ";
     $sql .= "      left  join materialestoquegrupo         on materialestoquegrupo.m65_sequencial   = matmatermaterialestoquegrupo.m68_materialestoquegrupo  ";
     $sql .= "      left  join materialestoquegrupoconta    on materialestoquegrupoconta. m66_materialestoquegrupo  = materialestoquegrupo.m65_sequencial     ";
     $sql .= "      left  join conplano                     on conplano.c60_codcon = materialestoquegrupoconta.m66_codcon                                     ";
@@ -1144,7 +1144,7 @@ class cl_matestoque {
     }
     return $sql;
   }
-  
+
    function sql_query_org($m70_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
     $sql = "select ";
     if ($campos != "*") {
@@ -1246,7 +1246,7 @@ class cl_matestoque {
     $sql .= "      inner join db_depart      on db_depart.coddepto     = matestoque.m70_coddepto";
     $sql .= "      inner join matmater       on matmater.m60_codmater  = matestoque.m70_codmatmater";
     $sql .= "      inner join matunid        on matunid.m61_codmatunid = matmater.m60_codmatunid";
-    $sql .= "      inner join matestoqueitem on matestoqueitem.m71_codmatestoque = matestoque.m70_codigo"; 
+    $sql .= "      inner join matestoqueitem on matestoqueitem.m71_codmatestoque = matestoque.m70_codigo";
     $sql .= "      inner join matestoqueinimei on matestoqueinimei.m82_matestoqueitem = matestoqueitem.m71_codlanc";
     $sql .= "      inner join matestoqueinimeipm on matestoqueinimeipm.m89_matestoqueinimei = matestoqueinimei.m82_codigo";
     $sql .= "      inner join matestoqueini    on matestoqueini.m80_codigo            = matestoqueinimei.m82_matestoqueini";
@@ -1294,7 +1294,7 @@ class cl_matestoque {
     if (!empty($sWhere)) {
       $sSql .= " where $sWhere ";
     }
-    
+
     if (!empty($sOrdem)) {
       $sSql .= " order by $sOrdem ";
     }

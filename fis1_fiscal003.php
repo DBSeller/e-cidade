@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,28 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_fiscal_classe.php");
-include("classes/db_fiscalusuario_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_fiscalocal_classe.php");
-include("classes/db_fiscexec_classe.php");
-include("classes/db_fiscalinscr_classe.php");
-include("classes/db_fiscalmatric_classe.php");
-include("classes/db_fiscalsanitario_classe.php");
-include("classes/db_fiscalcgm_classe.php");
-include("classes/db_fiscalrec_classe.php");
-include("classes/db_fiscalandam_classe.php");
-include("classes/db_fiscalultandam_classe.php");
-include("classes/db_fandam_classe.php");
-include("classes/db_fiscaltipo_classe.php");
-include("classes/db_fandamusu_classe.php");
-include("classes/db_fisctestem_classe.php");
-include("classes/db_fiscarquivos_classe.php");
-include("classes/db_fiscalvistorias_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_fiscal_classe.php"));
+include(modification("classes/db_fiscalusuario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_fiscalocal_classe.php"));
+include(modification("classes/db_fiscexec_classe.php"));
+include(modification("classes/db_fiscalinscr_classe.php"));
+include(modification("classes/db_fiscalmatric_classe.php"));
+include(modification("classes/db_fiscalsanitario_classe.php"));
+include(modification("classes/db_fiscalcgm_classe.php"));
+include(modification("classes/db_fiscalrec_classe.php"));
+include(modification("classes/db_fiscalandam_classe.php"));
+include(modification("classes/db_fiscalultandam_classe.php"));
+include(modification("classes/db_fandam_classe.php"));
+include(modification("classes/db_fiscaltipo_classe.php"));
+include(modification("classes/db_fandamusu_classe.php"));
+include(modification("classes/db_fisctestem_classe.php"));
+include(modification("classes/db_fiscarquivos_classe.php"));
+include(modification("classes/db_fiscalvistorias_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 if(!isset($abas)){
   echo "<script>location.href='fis1_fiscal005.php?db_opcao=3'</script>";
@@ -174,7 +174,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmfiscal.php");
+	include(modification("forms/db_frmfiscal.php"));
 	?>
     </center>
 	</td>

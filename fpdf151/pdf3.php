@@ -1,25 +1,35 @@
-<?
+<?php
 set_time_limit(0);
 if(!defined('DB_BIBLIOT')){
+
    session_cache_limiter('none');
-   session_start();
-   require("libs/db_stdlib.php");
-   require("libs/db_conecta.php");
-   include("libs/db_sessoes.php");
-   include("libs/db_usuariosonline.php");
-   db_postmemory($HTTP_POST_VARS);
-   db_postmemory($HTTP_SERVER_VARS);
-   include('fpdf.php');
+   if(!isset($_SESSION)){
+     session_start();
+   }
+   require_once(modification("libs/db_stdlib.php"));
+   require_once(modification("libs/db_conecta.php"));
+   include_once(modification("libs/db_sessoes.php"));
+   include_once(modification("libs/db_usuariosonline.php"));
+   if(isset($HTTP_POST_VARS)){
+     db_postmemory($HTTP_POST_VARS);
+   }
+   if(isset($HTTP_SERVER_VARS)){
+     db_postmemory($HTTP_SERVER_VARS);
+   }
+   require_once(modification('fpdf151/fpdf.php'));
 }
 
-   define('FPDF_FONTPATH','fpdf151/font/');
+  if(!defined('FPDF_FONTPATH')){
+    define('FPDF_FONTPATH', 'fpdf151/font/');
+  }
+
 class pdf3 extends fpdf {
 //|00|//pdf3
 //|10|//Esta classe é uma extensão da classe |fpdf| e difere da mesma pelo fato de que nesta  classe
 //|10|//foram alterados os métodos |header| (cabeçalho da página) de  |footer|  (rodapé)  para   que
 //|10|//atendessem as nossas necessidades, da seguinte maneira:
 //|10|//|header|     :    - O logotipo da prefeitura ficou centralizado;
-//|10|//                  - Os dados da prefeitura tais como: estado,nome e departamento ficaram 
+//|10|//                  - Os dados da prefeitura tais como: estado,nome e departamento ficaram
 //|10|//                    prefeitura;
 //|10|//               Contem ainda variáveis livres para o desenvolvedor as quais  serão  impressas
 //|10|//               na parte superior direita da tela, são elas:
@@ -49,12 +59,12 @@ class pdf3 extends fpdf {
     var $TagStyle; // Style for each tag
     var $Indent;
     var $Space; // Minimum space between words
-    var $PileStyle; 
+    var $PileStyle;
     var $Line2Print; // Line to display
-    var $NextLineBegin; // Buffer between lines 
+    var $NextLineBegin; // Buffer between lines
     var $TagName;
     var $Delta; // Maximum width minus width
-    var $StringLength; 
+    var $StringLength;
     var $LineLength;
     var $wTextLine; // Width minus paddings
     var $nbSpace; // Number of spaces in the line
@@ -76,7 +86,7 @@ class pdf3 extends fpdf {
 //global $ender;
 //$ender = pg_result($dados,0,"ender");
 $sql = "select nomeinst,bairro,cgc,trim(ender)||','||trim(cast(numero as text)) as ender,upper(munic) as munic,uf,telef,email,url,logo, db12_extenso
-		from db_config 
+		from db_config
 		inner join db_uf on db12_uf = uf
 		where codigo = ".db_getsession("DB_instit");
 
@@ -115,7 +125,7 @@ $this->Ln(1);
   $this->SetLeftMargin(10);
   global $url;
     //Position at 1.5 cm from bottom
-    
+
     $this->SetFont('Arial','',5);
     $this->text(10,289,'Base: '.@$GLOBALS["DB_NBASE"]);
     $this->SetFont('Arial','I',6);
@@ -130,7 +140,7 @@ $this->Ln(1);
 	   	$emissor = $nomeusu;
 	}else{
 	   	$emissor = @$GLOBALS["DB_login"];
-	}	
+	}
     $this->Cell(0,10,$url.'   '.$nome.'   Emissor: '.substr(ucwords(strtolower($emissor)),0,30).'   Exercício: '.db_getsession("DB_anousu").'   Data: '.date("d-m-Y",db_getsession("DB_datausu"))." - ".date("H:i:s"),"T",0,'L');
     $this->Cell(0,10,'Página '.$this->PageNo().' de {nb}',0,1,'R');
     $this->SetLeftMargin($S);
@@ -151,7 +161,7 @@ $this->Ln(1);
 
         $this->Xini=$this->GetX();
         $this->href="";
-        $this->PileStyle=array();        
+        $this->PileStyle=array();
         $this->TagHref=array();
         $this->LastLine=false;
 
@@ -303,7 +313,7 @@ $this->Ln(1);
                         $style['i']="I";
                     if(ereg("U",$style1))
                         $style['u']="U";
-                } 
+                }
             }
             $style=$style['b'].$style['i'].$style['u'];
         }
@@ -339,7 +349,7 @@ $this->Ln(1);
                 }
             }
         }
-         
+
         // Result
         $this->TagStyle[$ind]['family']=$family;
         $this->TagStyle[$ind]['style']=$style;
@@ -600,58 +610,58 @@ $this->Ln(1);
 
 
 function db_extenso($valor=0, $maiusculas=false) {
- 
+
     $rt = '';
-    $singular = array("centavo", "real", "mil", "milhão", "bilhão", "trilhão", "quatrilhão"); 
-    $plural = array("centavos", "reais", "mil", "milhões", "bilhões", "trilhões", 
-"quatrilhões"); 
+    $singular = array("centavo", "real", "mil", "milhão", "bilhão", "trilhão", "quatrilhão");
+    $plural = array("centavos", "reais", "mil", "milhões", "bilhões", "trilhões",
+"quatrilhões");
 
-    $c = array("", "cem", "duzentos", "trezentos", "quatrocentos", 
-"quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos"); 
-    $d = array("", "dez", "vinte", "trinta", "quarenta", "cinquenta", 
-"sessenta", "setenta", "oitenta", "noventa"); 
-    $d10 = array("dez", "onze", "doze", "treze", "quatorze", "quinze", 
-"dezesseis", "dezesete", "dezoito", "dezenove"); 
-    $u = array("", "um", "dois", "três", "quatro", "cinco", "seis", 
-"sete", "oito", "nove"); 
+    $c = array("", "cem", "duzentos", "trezentos", "quatrocentos",
+"quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos");
+    $d = array("", "dez", "vinte", "trinta", "quarenta", "cinquenta",
+"sessenta", "setenta", "oitenta", "noventa");
+    $d10 = array("dez", "onze", "doze", "treze", "quatorze", "quinze",
+"dezesseis", "dezesete", "dezoito", "dezenove");
+    $u = array("", "um", "dois", "três", "quatro", "cinco", "seis",
+"sete", "oito", "nove");
 
-    $z=0; 
+    $z=0;
 
-    $valor = number_format($valor, 2, ".", "."); 
-    $inteiro = explode(".", $valor); 
-    for($i=0;$i<count($inteiro);$i++) 
-        for($ii=strlen($inteiro[$i]);$ii<3;$ii++) 
-            $inteiro[$i] = "0".$inteiro[$i]; 
+    $valor = number_format($valor, 2, ".", ".");
+    $inteiro = explode(".", $valor);
+    for($i=0;$i<count($inteiro);$i++)
+        for($ii=strlen($inteiro[$i]);$ii<3;$ii++)
+            $inteiro[$i] = "0".$inteiro[$i];
 
-    $fim = count($inteiro) - ($inteiro[count($inteiro)-1] > 0 ? 1 : 2); 
-    for ($i=0;$i<count($inteiro);$i++) { 
-        $valor = $inteiro[$i]; 
-        $rc = (($valor > 100) && ($valor < 200)) ? "cento" : $c[$valor[0]]; 
-        $rd = ($valor[1] < 2) ? "" : $d[$valor[1]]; 
-        $ru = ($valor > 0) ? (($valor[1] == 1) ? $d10[$valor[2]] : $u[$valor[2]]) : ""; 
+    $fim = count($inteiro) - ($inteiro[count($inteiro)-1] > 0 ? 1 : 2);
+    for ($i=0;$i<count($inteiro);$i++) {
+        $valor = $inteiro[$i];
+        $rc = (($valor > 100) && ($valor < 200)) ? "cento" : $c[$valor[0]];
+        $rd = ($valor[1] < 2) ? "" : $d[$valor[1]];
+        $ru = ($valor > 0) ? (($valor[1] == 1) ? $d10[$valor[2]] : $u[$valor[2]]) : "";
 
-        $r = $rc.(($rc && ($rd || $ru)) ? " e " : "").$rd.(($rd && 
-$ru) ? " e " : "").$ru; 
-        $t = count($inteiro)-1-$i; 
-        $r .= $r ? " ".($valor > 1 ? $plural[$t] : $singular[$t]) : ""; 
-        if ($valor == "000")$z++; elseif ($z > 0) $z--; 
-        if (($t==1) && ($z>0) && ($inteiro[0] > 0)) $r .= (($z>1) ? " de " : "").$plural[$t]; 
+        $r = $rc.(($rc && ($rd || $ru)) ? " e " : "").$rd.(($rd &&
+$ru) ? " e " : "").$ru;
+        $t = count($inteiro)-1-$i;
+        $r .= $r ? " ".($valor > 1 ? $plural[$t] : $singular[$t]) : "";
+        if ($valor == "000")$z++; elseif ($z > 0) $z--;
+        if (($t==1) && ($z>0) && ($inteiro[0] > 0)) $r .= (($z>1) ? " de " : "").$plural[$t];
 //        $rt = '';
-        if ($r) $rt = $rt . ((($i > 0) && ($i <= $fim) && 
-($inteiro[0] > 0) && ($z < 1)) ? ( ($i < $fim) ? ", " : " e ") : " ") . $r; 
-    } 
+        if ($r) $rt = $rt . ((($i > 0) && ($i <= $fim) &&
+($inteiro[0] > 0) && ($z < 1)) ? ( ($i < $fim) ? ", " : " e ") : " ") . $r;
+    }
 
-         if(!$maiusculas){ 
-                          return($rt ? $rt : "zero"); 
+         if(!$maiusculas){
+                          return($rt ? $rt : "zero");
          } else { /*
-	                 Trocando o " E " por " e ", fica muito + apresentável! 
+	                 Trocando o " E " por " e ", fica muito + apresentável!
                      Rodrigo Cerqueira, rodrigobc@fte.com.br
                     */
 			  if ($rt) $rt=ereg_replace(" E "," e ",ucwords($rt));
-                          return (($rt) ? ($rt) : "Zero"); 
-         } 
+                          return (($rt) ? ($rt) : "Zero");
+         }
 
-} 
+}
 
 
 

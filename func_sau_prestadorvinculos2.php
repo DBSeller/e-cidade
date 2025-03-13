@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_sau_prestadorvinculos_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_sau_prestadorvinculos_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clsau_prestadorvinculos = new cl_sau_prestadorvinculos;
 $clsau_prestadorvinculos->rotulo->label();
 $clrotulo = new rotulocampo();
 $clrotulo->label("z01_nome");
+$clrotulo->label("s111_procedimento");
 ?>
 <html>
 <head>
@@ -61,12 +62,12 @@ $clrotulo->label("z01_nome");
             </td>
           </tr>
           <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Ts111_i_exame?>">
-              <?=$Ls111_i_exame?>
+            <td width="4%" align="right" nowrap title="<?=$Ts111_procedimento?>">
+              <?=$Ls111_procedimento?>
             </td>
             <td width="96%" align="left" nowrap> 
               <?
-		       db_input("s111_i_exame",10,$Is111_i_exame,true,"text",4,"","chave_s111_i_exame");
+		       db_input("s111_procedimento",10,$Is111_procedimento,true,"text",4,"","chave_s111_procedimento");
 		       ?>
             </td>
           </tr>
@@ -105,8 +106,8 @@ $clrotulo->label("z01_nome");
     <td align="center" valign="top"> 
       <?
       $where = " s111_c_situacao = 'A' ";
-      if( isset($chave_s111_i_exame) && (int)$chave_s111_i_exame != 0 ){
-         $where .= "and s111_i_exame = $chave_s111_i_exame";  
+      if( isset($chave_s111_procedimento) && (int)$chave_s111_procedimento != 0 ){
+         $where .= "and s111_procedimento = $chave_s111_procedimento";  
       }
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
@@ -133,7 +134,6 @@ $clrotulo->label("z01_nome");
         if(isset($chave_s111_i_codigo)){
           $repassa = array("chave_s111_i_codigo"=>$chave_s111_i_codigo,"chave_s111_i_codigo"=>$chave_s111_i_codigo);
         }
-        
         db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
@@ -164,4 +164,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_s111_i_codigo",true,1,"chave_s111_i_codigo",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

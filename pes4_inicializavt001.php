@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_vtffunc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_vtffunc_classe.php"));
 $clvtffunc = new cl_vtffunc;
 db_postmemory($HTTP_POST_VARS); 
 if(isset($processar)){
@@ -66,7 +66,7 @@ if(isset($processar)){
   $sql_vtffunc = $clvtffunc->sql_query_rhpessoal(null,null,null,null,null, " vtffunc.*, rh01_regist as r01_regist, rh05_recis as r01_recis, rh02_lota as r01_lotac ", " r17_regist, r17_codigo ", $dbwhere);
   db_selectmax("vtffuncant",$sql_vtffunc);
   if(count($vtffuncant) > 0){
-    include("pes4_inicializavt002.php");
+    include(modification("pes4_inicializavt002.php"));
     $sqlerro = false;
   }else{
     $sqlerro = true;
@@ -98,7 +98,7 @@ if(isset($processar)){
     $ano = db_anofolha();
     $mes = db_mesfolha();
 
-    include("dbforms/db_classesgenericas.php");
+    include(modification("dbforms/db_classesgenericas.php"));
     $geraform = new cl_formulario_rel_pes;
 
     $geraform->filtropadrao = $opcao_filtro;        // NOME DO DAS LOTAÇÕES SELECIONADAS

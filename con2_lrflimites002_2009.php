@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,19 +26,19 @@
  */
 
 set_time_limit(0);
-include("libs/db_utils.php");
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
-require_once("classes/db_empresto_classe.php");
-include_once("classes/db_db_config_classe.php");
-include_once("classes/db_orcparamelemento_classe.php");
-include_once("classes/db_conrelinfo_classe.php");
-include_once("classes/db_conrelvalor_classe.php");
+include(modification("libs/db_utils.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+require_once(modification("classes/db_empresto_classe.php"));
+include_once(modification("classes/db_db_config_classe.php"));
+include_once(modification("classes/db_orcparamelemento_classe.php"));
+include_once(modification("classes/db_conrelinfo_classe.php"));
+include_once(modification("classes/db_conrelvalor_classe.php"));
 
 
 $clconrelvalor      = new cl_conrelvalor;
@@ -73,7 +73,7 @@ $flag_abrev = false;
 $xinstit            = split("-",$db_selinstit);
 $aListaSelInstit    = $xinstit;
 
-$resultinst = pg_exec("select munic,db21_tipoinstit from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select munic,db21_tipoinstit from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
   db_fieldsmemory($resultinst,$xins);
@@ -146,31 +146,31 @@ $textodt = strtoupper(db_mes($dtd1[1]))." A ".strtoupper(db_mes($dtd2[1]))." DE 
 if ($v_receita_rcl=="s") {
   $executar = "con2_lrfreceitacorrente002";
   $executar = validaarquivo($executar,$anousu);
-  include($executar);
+  include(modification($executar));
 }
 
 if ($v_despesa_pessoal=="s") {
   $executar = "con2_lrfdesppessoal002";
   $executar = validaarquivo($executar,$anousu);
-  include($executar);
+  include(modification($executar));
 }
 
 if ($v_divida=="s"){
   $executar = "con2_lrfdivida002";
   $executar = validaarquivo($executar,$anousu);
-  include($executar);
+  include(modification($executar));
 }
 
 if ($v_garantias=="s"){
   $executar = "con2_lrfgarantias002";
   $executar = validaarquivo($executar,$anousu);
-  include($executar);
+  include(modification($executar));
 }
 
 if ($v_operacoes=="s"){
   $executar = "con2_opercredito002";
   $executar = validaarquivo($executar,$anousu);
-  include($executar);
+  include(modification($executar));
 
   $total_operacoes_credito 				= $aLinhasRelatorio[26]["nobim"];
   $perc_total_operacoes_credito		=	$aLinhasRelatorio[26]["atebim"];
@@ -188,7 +188,7 @@ if ($v_restos == "s"){
 
   $lGeraPDF = false;
   
-  include($executar);
+  include(modification($executar));
   
   $total_inscricao_rp_nao_processados = $nTotalEmpNaoLiq;
   $suficiencia_antes_incricao_rp_nao_processados = $nTotSufAntInscr;

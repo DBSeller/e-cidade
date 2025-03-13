@@ -62,7 +62,7 @@ db_fieldsmemory($result_obs,0);
            WHERE ed72_i_codigo = $ed93_i_diarioavaliacao
            ORDER BY ed59_i_ordenacao
           ";
-   $result = pg_query($sql);
+   $result = db_query($sql);
    $linhas = pg_num_rows($result);
    if($linhas>0){
     ?>

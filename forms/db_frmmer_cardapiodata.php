@@ -73,14 +73,14 @@ $clrotulo->label("me01_i_codigo");
 function js_pesquisame13_i_cardapio(mostra) {
 	
   if (mostra==true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapio',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapio',
     	                 'func_mer_cardapio.php?funcao_js=parent.js_mostramer_cardapio1|me01_i_codigo|me01_i_codigo',
     	                 'Pesquisa',true
     	               );
   } else {
 	  
     if (document.form1.me13_i_cardapio.value != '') { 
-      js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapio',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapio',
     	                  'func_mer_cardapio.php?pesquisa_chave='+document.form1.me13_i_cardapio.value+
     	                  '&funcao_js=parent.js_mostramer_cardapio','Pesquisa',false
     	                 );
@@ -110,7 +110,7 @@ function js_mostramer_cardapio1(chave1,chave2) {
 }
 
 function js_pesquisa() { 
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapiodata',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapiodata',
 		              'func_mer_cardapiodata.php?funcao_js=parent.js_preenchepesquisa|me13_i_codigo','Pesquisa',true
 		             );
 }

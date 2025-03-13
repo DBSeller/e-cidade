@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-//include("classes/db_cgs_und_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+//include(modification("classes/db_cgs_und_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 
 //$clcgs_und = new cl_cgs_und;
@@ -65,6 +65,9 @@ $clrotulo->label("fa06_i_matersaude");
       <tr>
         <td>
           <fieldset style="width:100%"><legend align='left'><b>Pacientes</b></legend>
+            <div id="status-microarea" class="alert-danger" style="text-align: center;" role="alert" hidden>
+              Paciente sem cadastro em uma microárea!
+            </div>
             <table  border="0"  align="center" width='100%'>
               <tr>
                 <td width='15%' align='right'>
@@ -146,7 +149,18 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 
 </body>
 </html>
+<script rel="script" type="text/javascript" src="scripts/classes/saude/ValidaCgs.js"></script>
 <script>
+const divAlert = document.getElementById('status-microarea');
+const inputCgs = {
+  id: document.getElementById('z01_i_cgsund'),
+  nome: document.getElementById('z01_v_nome')
+};
+const validaCgs = new ValidaCgs(inputCgs);
+
+window.onload = () => {
+  validaCgs.cadastroMicroarea(inputCgs, divAlert)
+}
 
 function js_incluir_item_medicamento(){
   var texto=document.form1.m60_descr.value;
@@ -305,10 +319,10 @@ function js_mostracgs_und(chave,erro){
 }
 function js_mostracgs_und1(chave1,chave2){
   document.form1.z01_i_cgsund.value = chave1;
-  document.form1.z01_v_nome.value = chave2;                                               
+  document.form1.z01_v_nome.value = chave2; 
+  document.form1.z01_i_cgsund.dispatchEvent(new Event('change'));                                              
   db_iframe_cgs_und.hide();
   document.form1.lancar_cgs.onclick = js_incluir_item_cgs;
-
 }
 
 function js_validadata(){

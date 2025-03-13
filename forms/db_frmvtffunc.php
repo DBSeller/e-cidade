@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: pessoal
-include ("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo = new rotulocampo;
 $clvtffunc->rotulo->label();
@@ -299,7 +299,7 @@ if(isset($opcao)){
       <?
       $ano = db_anofolha();
       $mes = db_mesfolha();
-      $res_cf = pg_query("select * from cfpess where r11_anousu = $ano and r11_mesusu = $mes and r11_instit = ".db_getsession('DB_instit'));
+      $res_cf = db_query("select * from cfpess where r11_anousu = $ano and r11_mesusu = $mes and r11_instit = ".db_getsession('DB_instit'));
       db_fieldsmemory($res_cf,0);
       $campo_quantidade = "";
       if($r11_vtprop == "t"){
@@ -307,6 +307,7 @@ if(isset($opcao)){
       }else{
   $campo_quantidade = "quantvale(r17_codigo,r17_regist,r17_anousu,r17_mesusu,0,r17_difere,".db_getsession("DB_instit").") as ";
       }
+      $campo_quantidade = "r17_quant";
       $dbwhere = "r17_anousu = $ano and r17_mesusu = $mes and r17_regist = ".@$r17_regist; 
       if(isset($codigo) && trim($codigo) != "" && isset($difere) && trim($difere) != ""){
         $dbwhere.= " and (r17_codigo <> '".$codigo."' or (r17_codigo = '".$codigo."' and r17_difere <> '".$difere."'))";
@@ -434,10 +435,10 @@ function js_verificatipo(valor){
 }
 function js_pesquisar17_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=raf&funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true,'20');
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=raf&funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true,'20');
   }else{
     if(document.form1.r17_regist.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=raf&pesquisa_chave='+document.form1.r17_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=raf&pesquisa_chave='+document.form1.r17_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
     }else{
       document.form1.z01_nome.value = '';
       document.form1.z01_numcgm.value = '';
@@ -472,10 +473,10 @@ function js_mostrapessoal1(chave1,chave2){
 }
 function js_pesquisar17_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_vtfempr','func_vtfempr.php?funcao_js=parent.js_mostravtfempr1|r16_codigo|r16_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vtfempr','func_vtfempr.php?funcao_js=parent.js_mostravtfempr1|r16_codigo|r16_descr','Pesquisa',true);
   }else{
     if(document.form1.r17_codigo.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_vtfempr','func_vtfempr.php?pesquisa_chave='+document.form1.r17_codigo.value+'&funcao_js=parent.js_mostravtfempr','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vtfempr','func_vtfempr.php?pesquisa_chave='+document.form1.r17_codigo.value+'&funcao_js=parent.js_mostravtfempr','Pesquisa',false);
     }else{
       document.form1.r16_descr.value = ''; 
     }
@@ -494,7 +495,7 @@ function js_mostravtfempr1(chave1,chave2){
   db_iframe_vtfempr.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_vtffunc','func_vtffunc.php?funcao_js=parent.js_preenchepesquisa|r17_anousu|r17_mesusu|r17_regist|r17_codigo|r17_difere','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vtffunc','func_vtffunc.php?funcao_js=parent.js_preenchepesquisa|r17_anousu|r17_mesusu|r17_regist|r17_codigo|r17_difere','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2,chave3,chave4){
   db_iframe_vtffunc.hide();

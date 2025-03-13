@@ -20,5 +20,7 @@
   "erro_numbanco_nao_encontrado_instit"    : "[2] Numbco [iNumBanco} não encontrado!",
   "erro_arrebanco_numbanco_nao_encontrado" : "[3] Numbco [iNumBanco] não encontrado (procurando arrebanco por [iNumBanco])!",
   "historico_recibo_taxa_bancaria"         : "Recibo avulso referente a taxa bancária do pagamento do numpre [numpre]",
-  "taxa_especifica_duplicada"              : "Existe mais de uma taxa específica configurada para o mesmo Banco!"
+  "taxa_especifica_duplicada"              : "Existe mais de uma taxa específica configurada para o mesmo Banco!",
+  "erro_forma_arrecadacao"                 : "Erro ao buscar a forma de arrecadação.",
+  "erro_inclusao_tarifa"                   : "Operação Abortada! \n Erro na inclusão da tarifa bancária \n Numpre: [iNumpre] \n Erro: [sMsgErro]"
 }

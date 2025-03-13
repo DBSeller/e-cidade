@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,29 +25,29 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
-require_once("model/patrimonio/Bem.model.php");
-require_once("model/patrimonio/BemCedente.model.php");
-require_once("model/patrimonio/BemClassificacao.model.php");
-require_once("model/patrimonio/PlacaBem.model.php");
-require_once("model/patrimonio/BemHistoricoMovimentacao.model.php");
-require_once("model/patrimonio/BemDadosMaterial.model.php");
-require_once("model/patrimonio/BemDadosImovel.model.php");
-require_once("model/patrimonio/BemTipoAquisicao.php");
-require_once("model/patrimonio/BemTipoDepreciacao.php");
-require_once("model/CgmFactory.model.php");
+require_once(modification("model/patrimonio/Bem.model.php"));
+require_once(modification("model/patrimonio/BemCedente.model.php"));
+require_once(modification("model/patrimonio/BemClassificacao.model.php"));
+require_once(modification("model/patrimonio/PlacaBem.model.php"));
+require_once(modification("model/patrimonio/BemHistoricoMovimentacao.model.php"));
+require_once(modification("model/patrimonio/BemDadosMaterial.model.php"));
+require_once(modification("model/patrimonio/BemDadosImovel.model.php"));
+require_once(modification("model/patrimonio/BemTipoAquisicao.php"));
+require_once(modification("model/patrimonio/BemTipoDepreciacao.php"));
+require_once(modification("model/CgmFactory.model.php"));
 
 $oGet              = db_utils::postMemory($_GET, false);
 $oBem              = new Bem($oGet->t52_bem);
 $oPlaca            = $oBem->getPlaca();
 
 $oDaoBensPlaca     = db_utils::getDao('bensplaca');
-$sCamposBuscaPlaca = " t41_data, t41_obs, descrdepto, t41_placa, t41_placaseq"; 
+$sCamposBuscaPlaca = " t41_data, t41_obs, descrdepto, t41_placa, t41_placaseq, t41_excluido"; 
 $sWhereBuscaPlaca  = " t41_bem = {$oGet->t52_bem} ";
 $sSqlBuscaPlaca    = $oDaoBensPlaca->sql_query(null, $sCamposBuscaPlaca, null, $sWhereBuscaPlaca);
 ?>
@@ -67,3 +67,9 @@ $sSqlBuscaPlaca    = $oDaoBensPlaca->sql_query(null, $sCamposBuscaPlaca, null, $
     </center>
   </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

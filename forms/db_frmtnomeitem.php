@@ -98,9 +98,9 @@ db_select('yx_tipo',$x,true,$db_opcao,"");
 <script>
 function js_pesquisayx_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tnomes','func_tnomes.php?funcao_js=parent.js_mostratnomes1|yy_codigo|yy_obs','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tnomes','func_tnomes.php?funcao_js=parent.js_mostratnomes1|yy_codigo|yy_obs','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_tnomes','func_tnomes.php?pesquisa_chave='+document.form1.yx_codigo.value+'&funcao_js=parent.js_mostratnomes','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tnomes','func_tnomes.php?pesquisa_chave='+document.form1.yx_codigo.value+'&funcao_js=parent.js_mostratnomes','Pesquisa',false);
   }
 }
 function js_mostratnomes(chave,erro){
@@ -116,7 +116,7 @@ function js_mostratnomes1(chave1,chave2){
   db_iframe_tnomes.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tnomeitem','func_tnomeitem.php?funcao_js=parent.js_preenchepesquisa|yx_coditem','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tnomeitem','func_tnomeitem.php?funcao_js=parent.js_preenchepesquisa|yx_coditem','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tnomeitem.hide();

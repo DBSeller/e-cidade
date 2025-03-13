@@ -72,13 +72,13 @@ function js_pesquisap58_codproc(mostra){
   var mostra = mostra;
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_vincatendproc',
                         'func_protprocessoarquivouvidoria.php?funcao_js=parent.js_mostra1|p58_codproc|p58_requer&grupo=2',
                         'Pesquisa',true);
   }else{
      if(document.form1.p58_codproc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_vincatendproc',
                             'func_protprocessoarquivouvidoria.php?pesquisa_chave='+document.form1.p58_codproc.value+'&funcao_js=parent.js_mostra&grupo=2',
                             'Pesquisa',false);

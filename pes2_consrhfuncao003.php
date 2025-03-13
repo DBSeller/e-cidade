@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,10 +26,10 @@
  */
 
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_rhfuncao_classe.php");
-include("classes/db_rhregime_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_rhfuncao_classe.php"));
+require_once(modification("classes/db_rhregime_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
@@ -44,6 +44,7 @@ if(!isset($mes)){
 }
 
 if(isset($funcao) && trim($funcao)!=""){
+
   $where = " ";
   
   if($colunas1!=""){
@@ -51,6 +52,32 @@ if(isset($funcao) && trim($funcao)!=""){
     $where = " and rh30_codreg in (".$colunas1.") ";
   }
   
+  if (isset($lotacao) && !empty($lotacao)){
+    $where .= " and rhlota.r70_codigo = $lotacao ";
+  }
+  
+  //verificamos se foi informada selecao, buscamos a condicao e aplicamos na consulta
+  if(isset($selecao) && !empty($selecao)) {
+      
+    $oSelecao = new Selecao($selecao);  
+    $where .= " and rhpessoalmov.rh02_regist in (select rhpessoalmov.rh02_regist 
+                                      from rhpessoal 
+                                           inner join rhpessoalmov   on rhpessoal.rh01_regist     = rhpessoalmov.rh02_regist 
+                                                                    and rhpessoalmov.rh02_anousu  = " . $ano. "
+                                                                    and rhpessoalmov.rh02_mesusu  = " . $mes . "
+                                                                    and rhpessoalmov.rh02_instit  = " . db_getsession("DB_instit") . "
+                                           left join  rhlota         on rhlota.r70_codigo         = rhpessoalmov.rh02_lota
+                                                                    and rhlota.r70_instit         = rhpessoalmov.rh02_instit
+                                           left join  rhregime       on rhregime.rh30_codreg      = rhpessoalmov.rh02_codreg
+                                           left join  rhpescargo     on rhpescargo.rh20_seqpes    = rhpessoalmov.rh02_seqpes
+                                           left join  rhpespadrao    on rhpespadrao.rh03_seqpes   = rhpessoalmov.rh02_seqpes             
+                                                                    and rhpespadrao.rh03_anousu   = rhpessoalmov.rh02_anousu             
+                                                                    and rhpespadrao.rh03_mesusu   = rhpessoalmov.rh02_mesusu
+                                           left join  rhpesrescisao  on rhpesrescisao.rh05_seqpes = rhpessoalmov.rh02_seqpes
+                                    where " . $oSelecao->getWhere() . ")";
+    
+  }
+
   $sql1  = "select rh37_funcao,                                                                              \n";
   $sql1 .= "       rh37_descr,                                                                               \n";
   $sql1 .= "       rh37_vagas,                                                                               \n";
@@ -77,7 +104,7 @@ if(isset($funcao) && trim($funcao)!=""){
   $sql1 .= "          rh30_vinculo,                                                                          \n";
   $sql1 .= "          rh37_vagas                                                                             \n";
   
-  $result_funcao = pg_query($sql1);
+  $result_funcao = db_query($sql1);
   
   if(pg_numrows($result_funcao) == 0){
     db_redireciona("db_erros.php?fechar=true&db_erro=Cargo não encontrado");
@@ -95,9 +122,37 @@ if(isset($funcao) && trim($funcao)!=""){
   }
   $ocupados = $ocup;
 }
+
 $where = " ";
+
 if($colunas1!=""){
    $where = " and rh30_codreg in (".$colunas1.")";
+}
+
+if (isset($lotacao) && !empty($lotacao)){
+  $where .= " and rhlota.r70_codigo = $lotacao ";
+}
+
+//verificamos se foi informada selecao, buscamos a condicao e aplicamos na consulta
+if(isset($selecao) && !empty($selecao)) {
+    
+  $oSelecao = new Selecao($selecao);  
+  $where .= " and rhpessoalmov.rh02_regist in (select rhpessoalmov.rh02_regist 
+                                    from rhpessoal 
+                                         inner join rhpessoalmov   on rhpessoal.rh01_regist     = rhpessoalmov.rh02_regist 
+                                                                  and rhpessoalmov.rh02_anousu  = " . $ano. "
+                                                                  and rhpessoalmov.rh02_mesusu  = " . $mes . "
+                                                                  and rhpessoalmov.rh02_instit  = " . db_getsession("DB_instit") . "
+                                         left join  rhlota         on rhlota.r70_codigo         = rhpessoalmov.rh02_lota
+                                                                  and rhlota.r70_instit         = rhpessoalmov.rh02_instit
+                                         left join  rhregime       on rhregime.rh30_codreg      = rhpessoalmov.rh02_codreg
+                                         left join  rhpescargo     on rhpescargo.rh20_seqpes    = rhpessoalmov.rh02_seqpes
+                                         left join  rhpespadrao    on rhpespadrao.rh03_seqpes   = rhpessoalmov.rh02_seqpes             
+                                                                  and rhpespadrao.rh03_anousu   = rhpessoalmov.rh02_anousu             
+                                                                  and rhpespadrao.rh03_mesusu   = rhpessoalmov.rh02_mesusu
+                                         left join  rhpesrescisao  on rhpesrescisao.rh05_seqpes = rhpessoalmov.rh02_seqpes
+                                  where " . $oSelecao->getWhere() . ")";
+  
 }
 
   $sql1  = "select rh01_regist as r01_regist,                                                                \n";
@@ -131,7 +186,7 @@ if($colunas1!=""){
   $sql1 .= "{$where}                                                                                         \n";
   $sql1 .= " order by z01_nome                                                                               \n";
 
-  $result_funcionarios = pg_query($sql1);
+  $result_funcionarios = db_query($sql1);
 
 $numrows = pg_numrows($result_funcionarios);
 if($numrows == 0){
@@ -164,37 +219,85 @@ $p = 1;
 $alt = 4;
 $pre = 1;
 
-for($x = 0; $x < $numrows; $x ++) {
-  db_fieldsmemory($result_funcionarios, $x);
+$linha = "";
+$separador = ";";
 
-  if($pdf->gety() > $pdf->h - 30 || $troca != 0 ){
-    $pdf->addpage();
-    $pdf->setfont('arial','b',8);
+if(isset($formato_emissao) && $formato_emissao == "csv" && isset($sNomeArquivo)){
 
-    $pdf->cell(15,$alt,"Registro","TBL",0,"C",1);
-    $pdf->cell(50,$alt,"Nome","TBL",0,"C",1);
-    $pdf->cell(20,$alt,"Lotação","TBL",0,"C",1);
-    $pdf->cell(60,$alt,"Descrição","TBL",0,"C",1);
-    $pdf->cell(45,$alt,"Vínculo","TBLR",1,"C",1);
+  $sArquivo     = "tmp/".$sNomeArquivo;
+  $fArquivo     = fopen($sArquivo, "w+");
 
-    $troca = 0;
-  }
-  if($pre == 0)
-    $pre = 1;
-  else
-    $pre = 0;
+  $linha  = "Registro".$separador;
+  $linha .= "Nome".$separador;
+  $linha .= "Lotação".$separador;
+  $linha .= "Descrição".$separador;
+  $linha .= "Vínculo".$separador;
 
-  $totalt++;  
-  $pdf->setfont('arial','',7);
+  fputs($fArquivo,$linha."\n"."\n");
 
-  $pdf->cell(15,$alt,$r01_regist,"T",0,"C",$pre);
-  $pdf->cell(50,$alt,$z01_nome,"T",0,"L",$pre);
-  $pdf->cell(20,$alt,$r70_codigo,"T",0,"C",$pre);
-  $pdf->cell(60,$alt,$r70_descr,"T",0,"L",$pre);
-  $pdf->cell(45,$alt,substr($rh30_codreg." - ".$rh30_descr,0,45),"T",1,"L",$pre);
 }
 
-$pdf->setfont('arial','b',7);
-$pdf->cell(230,$alt,"TOTAL DE REGISTROS  ".$totalt,"T",0,"L",0);
-$pdf->Output();
+for($x = 0; $x < $numrows; $x ++) {
+
+  db_fieldsmemory($result_funcionarios, $x);
+  $totalt++;  
+
+  if(isset($formato_emissao) && $formato_emissao == "pdf"){
+
+      if($pdf->gety() > $pdf->h - 30 || $troca != 0 ){
+        $pdf->addpage();
+        $pdf->setfont('arial','b',8);
+    
+        $pdf->cell(15,$alt,"Registro","TBL",0,"C",1);
+        $pdf->cell(50,$alt,"Nome","TBL",0,"C",1);
+        $pdf->cell(20,$alt,"Lotação","TBL",0,"C",1);
+        $pdf->cell(60,$alt,"Descrição","TBL",0,"C",1);
+        $pdf->cell(45,$alt,"Vínculo","TBLR",1,"C",1);
+    
+        $troca = 0;
+      }
+
+      if($pre == 0)
+        $pre = 1;
+      else
+        $pre = 0;
+    
+      
+      $pdf->setfont('arial','',7);
+    
+      $pdf->cell(15,$alt,$r01_regist,"T",0,"C",$pre);
+      $pdf->cell(50,$alt,$z01_nome,"T",0,"L",$pre);
+      $pdf->cell(20,$alt,$r70_codigo,"T",0,"C",$pre);
+      $pdf->cell(60,$alt,$r70_descr,"T",0,"L",$pre);
+      $pdf->cell(45,$alt,substr($rh30_codreg." - ".$rh30_descr,0,45),"T",1,"L",$pre);
+  }
+  else{
+
+    $linha  = $r01_regist.$separador;
+    $linha .= $z01_nome.$separador;
+    $linha .= $r70_codigo.$separador;
+    $linha .= $r70_descr.$separador;
+    $linha .= substr($rh30_codreg." - ".$rh30_descr,0,45).$separador;
+    fputs($fArquivo,$linha."\n");
+
+  }
+
+}
+
+if(isset($formato_emissao) && $formato_emissao == "pdf"){
+
+    $pdf->setfont('arial','b',7);
+    $pdf->cell(230,$alt,"TOTAL DE REGISTROS  ".$totalt,"T",0,"L",0);
+    $pdf->Output();
+}
+else{
+
+    $linha  = "TOTAL DE REGISTROS   ".$separador;
+    $linha .= $totalt.$separador;
+  
+    fputs($fArquivo,$linha."\n");    
+    fclose($fArquivo);
+
+}
+
 ?>

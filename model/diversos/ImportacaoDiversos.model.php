@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('libs/JSON.php');
-require_once('model/dataManager.php');
+use ECidade\Tributario\Divida\Termo\Repository\Termo as TermoRepository;
+
+require_once(modification('libs/JSON.php'));
+require_once(modification('model/dataManager.php'));
 /**
  * Classe responsavel pela importacao para diversos
  *
  * @author   André Ianzer Hertzog <andre.hertzog@dbseller.com.br>
  * @author   Everton Catto        <everton.heckler@dbseller.com.br>
  * @package  Diversos
- * @revision $Author: dbanderson $
- * @version $Revision: 1.20 $
+ * @revision $Author: dbroberto $
+ * @version $Revision: 1.28 $
  */
 class ImportacaoDiversos {
 
@@ -44,7 +46,24 @@ class ImportacaoDiversos {
   
   const CANCELAMENTO_COMPLETO    = 1;
   const CANCELAMENTO_PARCIAL     = 2;
-  
+
+  /**
+   * @type integer
+   */
+  const MENOR_DATA_VENCIMENTO = 1;
+
+  /**
+   * @type integer
+   */
+  const MAIOR_DATA_VENCIMENTO = 2;
+
+    /**
+     * @type integer
+     */
+    const ESCOLHA_DATA_VENCIMENTO = 3;
+
+    protected $oDadosDebitos = array();
+
   /**
    * Quantidade de Parcelas que a Importação Irá Gerar por Receita de Cada Parcela de Cada Débito. 
    * 
@@ -55,7 +74,7 @@ class ImportacaoDiversos {
   
   /**
    * 
-   * @var dataManager[]
+   * @var tableDataManager[]
    */
   protected $aDataManager        = array();
 
@@ -121,13 +140,25 @@ class ImportacaoDiversos {
   protected $iTipoOrigem;
   
   protected $iCodigoOrigem;
+
+    private $progressBar;
+
+    public function getProgressBar()
+    {
+        return $this->progressBar;
+    }
+
+    public function setProgressBar($progressBar)
+    {
+        $this->progressBar = $progressBar;
+    }
   
   /**
-   *  Construtor da classe
-   *
-   * @param integer ProcedenciaDiverso
+   * ImportacaoDiversos constructor.
+   * @param null $iCodigoImportacao
+   * @throws ParameterException
    */
-  function __construct( $iCodigoImportacao = null ) {
+  public function __construct( $iCodigoImportacao = null ) {
 
     global $conn;
 
@@ -148,6 +179,9 @@ class ImportacaoDiversos {
   /**
    * Salvar registro de criacao para importacao
    * @param $iTipo  integer - Tipo de importacao - 1 Parcial / 2 Geral
+   * @return int
+   * @throws BusinessException
+   * @throws DBException
    */
   protected function salvarDiverImporta($iTipo) {
     
@@ -173,12 +207,16 @@ class ImportacaoDiversos {
     return $oDaoDiverImporta->dv11_sequencial;
   }
   
-  /** 
+  /**
    * Salvar registro da diversos
-   * @param $iNumpre     integer
-   * @param $iNumpar     integer
-   * @param $iReceita    integer
-   * @param iProcedencia integer
+   * @param integer $iNumpre
+   * @param integer $iNumpar
+   * @param integer $iReceita
+   * @param integer $iProcedencia
+   * @param integer $iCodDiverImporta
+   * @return stdClass
+   * @throws BusinessException
+   * @throws DBException
    */
   protected function salvarDiversos($iNumpre, $iNumpar, $iReceita, $iProcedencia, $iCodDiverImporta) {
     
@@ -219,9 +257,9 @@ class ImportacaoDiversos {
     }
     
     $oDiverImporta = db_utils::fieldsMemory($rsDiverImporta, 0);
-    
+
     $iNumpreAdd    = $oDaoNumpref->sql_numpre();
-    
+
     $oDaoDiversos->dv05_numcgm    = $oDiverImporta->k00_numcgm;
     $oDaoDiversos->dv05_dtinsc    = $oDiverImporta->k00_dtoper;
     $oDaoDiversos->dv05_vlrhis    = $oDiverImporta->k00_valor;
@@ -234,8 +272,7 @@ class ImportacaoDiversos {
     $oDaoDiversos->dv05_provenc   = $oDiverImporta->k00_dtvenc;
     $oDaoDiversos->dv05_diaprox   = substr($oDiverImporta->k00_dtvenc,8,2);
     $oDaoDiversos->dv05_oper      = $oDiverImporta->k00_dtoper;
-    $oDaoDiversos->dv05_obs       = "Debito Importado para Diversos. Observações da Importação: ";
-    $oDaoDiversos->dv05_obs      .= pg_escape_string($this->sObservacoes);
+    $oDaoDiversos->dv05_obs       = pg_escape_string($this->sObservacoes);
     $oDaoDiversos->dv05_instit    = db_getsession('DB_instit');
     $oDaoDiversos->incluir(null);
     
@@ -249,20 +286,24 @@ class ImportacaoDiversos {
     
     if ($oDaoDiverImportaReg->erro_status == '0') {
       throw new DBException($oDaoDiverImportaReg->erro_msg);
-    }    
-    
-    $oDebito                 = new stdClass();
+    }
+
+    $oDiverso                = new stdClass();
     $oDiverso->iCodDiverso   = $oDaoDiversos->dv05_coddiver;
     $oDiverso->iNumpreGerado = $iNumpreAdd;
     
     return $oDiverso;
   }
 
-  /** 
+  /**
    * Adiciona um debito para ser processado
-   * @param $iNumpre  integer - Codigo do Debito
-   * @param $iNumpar  integer - Parcela do Debito
-   * @param $iReceita integer - Receita do debito
+   * @param integer $iNumpre
+   * @param integer $iNumpar
+   * @param integer $iReceita
+   * @param integer $iProcedencia
+   * @return bool
+   * @throws BusinessException
+   * @throws DBException
    */
   public function adicionarDebito($iNumpre, $iNumpar, $iReceita, $iProcedencia) {
     
@@ -296,6 +337,7 @@ class ImportacaoDiversos {
     $this->aBaseDebitos[$iNumpre]
                        [$iNumpar]
                        [$iReceita][]      = db_utils::getCollectionByRecord($rsDebitoArrecad);
+
     return true;
   }
   
@@ -341,14 +383,13 @@ class ImportacaoDiversos {
 
   /**
    * processa debitos na arrecad
-   *
-   * @param array $aDebito
+   * @param $aDebito
    * @param ProcedenciaDiversos $oProcedenciaDiversos
-   * @param integer $iMatricula
-   * @param integer $iNumpreGerado
-   * @param DBDate $oVencimento
-   * @access protected
-   * @return void
+   * @param null $iMatricula
+   * @param $iNumpreGerado
+   * @param DBDate|null $oVencimento
+   * @return bool
+   * @throws DBException
    */
   protected function processaArrecad($aDebito, ProcedenciaDiversos $oProcedenciaDiversos, $iMatricula = null, $iNumpreGerado, DBDate $oVencimento = null ) {
 
@@ -378,6 +419,7 @@ class ImportacaoDiversos {
 
     $iTipoDebitoProcedenciaDiverso = $oProcedenciaDiversos->getTipoDebito();
     $iReceitaProcedenciaDiverso    = $oProcedenciaDiversos->getReceita();
+    $iHistoricoProcedenciaDiverso  = $oProcedenciaDiversos->getHistoricoCalculo();
 
     for( $iParcelaDiversos = 1; $iParcelaDiversos <= $this->iQuantidadeParcelas; $iParcelaDiversos++ ){
 
@@ -434,7 +476,7 @@ class ImportacaoDiversos {
         $oDadosArrecad->k00_numcgm    = $aDebito->k00_numcgm;
         $oDadosArrecad->k00_dtoper    = date('Y-m-d', db_getsession('DB_datausu'));
         $oDadosArrecad->k00_receit    = $iReceitaProcedenciaDiverso;
-        $oDadosArrecad->k00_hist      = $aDebito->k00_hist;
+        $oDadosArrecad->k00_hist      = $iHistoricoProcedenciaDiverso;
         $oDadosArrecad->k00_valor     = $nValor;
         $oDadosArrecad->k00_dtvenc    = $oDataVencimento->getDate(DBDate::DATA_EN); 
         $oDadosArrecad->k00_numtot    = $aDebito->k00_numtot;
@@ -495,7 +537,7 @@ class ImportacaoDiversos {
    */
   public function processar ( $sObservacao ) {
     
-    require_once("std/db_stdClass.php");
+    require_once(modification("std/db_stdClass.php"));
     
     $this->sObservacoes = db_stdClass::normalizeStringJson($sObservacao);
     $iCodDiverImporta = $this->salvarDiverImporta(ImportacaoDiversos::PROCESSAMENTO_INDIVIDUAL);
@@ -712,4 +754,55 @@ class ImportacaoDiversos {
   	$this->iQuantidadeParcelas = $iQuantidade;
     return;
   }
+
+    protected function onProgressBarSetMessageLog($v)
+    {
+        if (!empty($this->progressBar)) {
+            $this->progressBar->setMessageLog($v);
+        }
+    }
+
+    protected function onProgressBarUpdateMaxProgress($v)
+    {
+        if (!empty($this->progressBar)) {
+            $this->progressBar->updateMaxProgress($v);
+        }
+    }
+
+    protected function onProgressBarUpdatePercentual($v)
+    {
+        if (!empty($this->progressBar)) {
+            $this->progressBar->updatePercentual($v);
+        }
+    }
+
+    /**
+     * @throws DBException
+     * @throws Exception
+     */
+    protected function adicionaObservacaoOrigemParcelamento()
+    {
+        $termoRepository = TermoRepository::getInstance();
+        $numpres = array_map(function($debito) {
+            return $debito->k00_numpre;
+        }, $this->oDadosDebitos);
+
+        $parcelamentos = $termoRepository->getParcelamentosPorNumpre($numpres);
+
+        $this->onProgressBarSetMessageLog("Adicionando observações nos débitos de origem (Etapa 4/11)");
+        $this->onProgressBarUpdateMaxProgress(count($parcelamentos));
+
+        $contadorRegistros = 0;
+
+        foreach ($parcelamentos as $parcelamento) {
+            $this->onProgressBarUpdatePercentual($contadorRegistros);
+            $persistiuObservacao = $termoRepository->adicionarObservacaoOrigem($parcelamento);
+            if ($persistiuObservacao === false) {
+                throw new Exception('Não foi adicionar as observações ao débito de origem.');
+            }
+            $contadorRegistros++;
+        }
+  }
+
+
 }

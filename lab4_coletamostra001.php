@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_lab_coletaitem_classe.php");
-include("classes/db_lab_requiitem_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_app.utils.php");
+
+use ECidade\Saude\Laboratorio\Repository\Parametros;
+
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lab_coletaitem_classe.php"));
+include(modification("classes/db_lab_requiitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_app.utils.php"));
 db_postmemory($HTTP_POST_VARS);
+
 $cllab_coletaitem = new cl_lab_coletaitem;
 $cllab_requiitem = new cl_lab_requiitem;
+$parametros = new Parametros();
+$parametroModel = $parametros->buscar();
 
 /**
  * Função para descobrir o laboratorio que o usuario esta logado
@@ -43,7 +49,7 @@ $cllab_requiitem = new cl_lab_requiitem;
  */
 function laboratorioLogado(){
   
-  require_once('libs/db_utils.php');
+  require_once(modification('libs/db_utils.php'));
   $iUsuario = db_getsession('DB_id_usuario');
   $iDepto = db_getsession('DB_coddepto');
   $oLab_labusuario = db_utils::getdao('lab_labusuario');
@@ -58,7 +64,7 @@ function laboratorioLogado(){
       	  return 0;
       }
   }
-  $oLab = db_utils::getColectionByRecord($rResult);
+  $oLab = db_utils::getCollectionByRecord($rResult);
   return $oLab[0]->la02_i_codigo;
   
 }
@@ -91,7 +97,7 @@ if((isset($incluir))||(isset($falta))){
      	 if(isset($falta)){
      	 	$cllab_requiitem->la21_c_situacao="f - falta material";
      	 }else{
-     	 	$cllab_requiitem->la21_c_situacao="6 - Coletado";
+     	 	$cllab_requiitem->la21_c_situacao="30 - Coletado";
      	 }
      	 
      	 $cllab_requiitem->la21_i_codigo=$rad_exame;
@@ -127,9 +133,12 @@ db_app::load("estilos.css");
 db_app::load("/widgets/dbautocomplete.widget.js");
 db_app::load("webseller.js");
 
-
+$parametroIntegracao = $parametroModel->getIntegracao();
 ?>
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript"
+            src="scripts/classes/saude/laboratorio/ViewNumeroControleInterno.classe.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -165,7 +174,7 @@ db_app::load("webseller.js");
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmlab_coletaitem.php");
+	include(modification("forms/db_frmlab_coletaitem.php"));
 	?>
     </center>
 	</td>

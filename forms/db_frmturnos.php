@@ -68,7 +68,7 @@ db_input('ed10_c_abrevia',3,$Ied10_c_abrevia,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_turnos','func_turnos.php?funcao_js=parent.js_preenchepesquisa|ed10_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_turnos','func_turnos.php?funcao_js=parent.js_preenchepesquisa|ed10_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_turnos.hide();

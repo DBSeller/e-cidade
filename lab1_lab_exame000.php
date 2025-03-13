@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,13 +26,13 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas = new cl_criaabas;
 if($db_opcao==1){
    $arquivo = "lab1_lab_exame001.php";
@@ -75,8 +75,8 @@ if($db_opcao==1){
    $clcriaabas->sizecampo  = array("a1"=>20,"a2"=>30,"a3"=>20,"a4"=>20,"a5"=>20,"a6"=>20);
    $clcriaabas->disabled   =  array("a1"=>"false","a2"=>"true","a3"=>"true","a4"=>"true","a5"=>"true","a6"=>"true");
    $clcriaabas->scrolling  = "no";
-   $clcriaabas->iframe_height= "100%";
-   $clcriaabas->iframe_width= "100%";
+   $clcriaabas->iframe_height= "110%";
+   $clcriaabas->iframe_width = "100%";
    $clcriaabas->cria_abas();
    ?>
   </td>

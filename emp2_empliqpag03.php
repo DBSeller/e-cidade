@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 $cliframe_seleciona = new cl_iframe_seleciona;
 $aux = new cl_arquivo_auxiliar;
@@ -158,12 +158,12 @@ function js_imprime(){
                       <option name="ordem" value="c">Credor</option>
                     </select>
 	       <br>
-               <b> Mostrar Historicos: </b>
+               <b> Mostrar Históricos: </b>
                <select name="com_mov">
                     <option name="com_mov" value="s">Sim</option>
                     <option name="com_mov" value="n">Não</option>
                </select><br>
-               <b> Mostrar Items: </b>
+               <b> Mostrar Itens: </b>
                <select name="mostraritem">
                     <option name="mostraritem" value="m">Sim</option>
                     <option name="mostraritem" value="n">Não</option>

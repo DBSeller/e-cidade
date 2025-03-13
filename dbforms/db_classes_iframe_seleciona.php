@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-chdir("../");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
 $clrotulo = new rotulocampo;
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 if(file_exists(base64_decode($arquivo))){
-  include(base64_decode($arquivo));
+  include(modification(base64_decode($arquivo)));
 }else{
   echo "
 
@@ -132,7 +132,7 @@ if($mostra_totalizador=="S"){
             $result  = db_query($sql);
             $numrows = pg_numrows($result);
             if($numrows > 0){
-	              $matriz_campos = split(",",$campos);
+                $matriz_campos = explode(",", $campos);
                 $numcolunas    = sizeof($matriz_campos);
 ?>
            <tr>
@@ -174,7 +174,7 @@ if(isset($sql) && $sql!=""){
           $db_opcao=3;
        }
        if($numrows>0){
-	         $matriz_campos=split(",",$campos);
+           $matriz_campos = explode(",", $campos);
            $numcolunas=sizeof($matriz_campos);
 
           echo "   <tr class='cabec'>";
@@ -194,11 +194,11 @@ if(isset($sql) && $sql!=""){
 
 	    if(substr($campo,0,3) == "db_"){
 	      $nomcampo = ucfirst(substr($campo,3));
-	      $$Tlabel   = ucfirst(substr($campo,3));
+	      ${$Tlabel}   = ucfirst(substr($campo,3));
 	    }else{
-	      $nomcampo = $$Llabel;
+	      $nomcampo = ${$Llabel};
 	    }
-	      echo " <td class='cabec' ".($corponowrap=="true"?"nowrap":"")." title='".$$Tlabel."'>".str_replace(":","",$nomcampo)."</td>\n";
+	      echo " <td class='cabec' ".($corponowrap=="true"?"nowrap":"")." title='".${$Tlabel}."'>".str_replace(":","",$nomcampo)."</td>\n";
 	  }
           echo "   </tr>";
           $cabec=true;
@@ -209,7 +209,7 @@ if(isset($sql) && $sql!=""){
 
        //rotina para marcar os campos
        if(isset($cabec) && $cabec==true){
-         $matriz02=split(",",$chaves);
+           $matriz02 = explode(",", $chaves);
          for($i=0; $i<$numrows; $i++){
            db_fieldsmemory($result,$i,true);
            $checa="";
@@ -217,8 +217,7 @@ if(isset($sql) && $sql!=""){
              for($s=0;$s<$numrows02;$s++){
                for($w=0; $w<sizeof($matriz02); $w++){
                  $campo=pg_result($result02,$s,$matriz02[$w]);
-	//	 echo "<br>".$matriz02[$w]."--".$campo."--".$$matriz02[$w].">>>>>>>>>>>>>>";
-                 if($campo==$$matriz02[$w]){
+                 if($campo==${$matriz02[$w]}){
                    $checa=" checked ";
                    $s=$numrows02;
 		   break;
@@ -242,7 +241,7 @@ if(isset($sql) && $sql!=""){
              for($s=0;$s<$numrows03;$s++){
                for($w=0; $w<sizeof($matriz02); $w++){
                  $campo=pg_result($result03,$s,$matriz02[$w]);
-                 if($campo==$$matriz02[$w]){
+                 if($campo==${$matriz02[$w]}){
                    $pode = " disabled   ";
 	           $cr= " style=\"background-color:#DEB887\"";
                    $s=$numrows03;
@@ -263,12 +262,12 @@ if(isset($sql) && $sql!=""){
            $li=$i+1;
            echo "   <tr id='linha_$li' >";
            if($db_opcao!=3){
-	     $matris=split(",",$chaves);
+               $matris = explode(",", $chaves);
 	     $valor='';
 	     $esp='';
 	     for($t=0; $t<count($matris); $t++){
 	       $rr=$matris[$t];
-	       $valor.=$esp.$$rr;
+	       $valor.=$esp.${$rr};
 	       $esp='_';
 	     }
 
@@ -288,21 +287,21 @@ if(isset($sql) && $sql!=""){
 	    if(substr($campo,0,3) == "db_"){
 	      $nomcampo = ucfirst(substr($campo,3));
 	    }else{
-	      $nomcampo = $$Llabel;
+	      $nomcampo = ${$Llabel};
 	    }
 
 
 
 
-	     if($$campo=="t"){
-                $$campo="Sim";
-	     }else if($$campo=="f"){
-                $$campo="Não";
+	     if(${$campo}=="t"){
+                ${$campo}="Sim";
+	     }else if(${$campo}=="f"){
+                ${$campo}="Não";
 	     }
 
-	     echo "   <td $cr id='".$campo."_".$li."' title='".@$$Tlabel."' ".($corponowrap=="true"?"nowrap":"")." class='corpo'>".stripslashes($$campo)."&nbsp;</td>";
+	     echo "   <td $cr id='".$campo."_".$li."' title='".@${$Tlabel}."' ".($corponowrap=="true"?"nowrap":"")." class='corpo'>".stripslashes(${$campo})."&nbsp;</td>";
 	    if(isset($input_hidden) && $input_hidden==true){
-             echo "   <input id='in_".$campo."_".$li."' name='in_".$campo."_".$li."' type='hidden'  value='".stripslashes($$campo)."'>";
+             echo "   <input id='in_".$campo."_".$li."' name='in_".$campo."_".$li."' type='hidden'  value='".stripslashes(${$campo})."'>";
 	    }
 	     if($w+1==$numcolunas){
 	       if($db_opcao==33){
@@ -323,7 +322,7 @@ if($mostra_totalizador=="S"){
             $result  = db_query($sql);
             $numrows = pg_numrows($result);
             if($numrows > 0){
-	              $matriz_campos = split(",",$campos);
+                $matriz_campos = explode(",", $campos);
                 $numcolunas    = sizeof($matriz_campos);
 ?>
            <tr>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matordem_classe.php");
-include("classes/db_matordemitem_classe.php");
-include("classes/db_matestoqueitemoc_classe.php");
-include("classes/db_matestoqueitem_classe.php");
-include("classes/db_transmater_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_matestoqueitemoc_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_transmater_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -239,7 +239,7 @@ function js_lanca(codele,valor,valoruni,numemp,matordemitem,i,codpcmater){
 }
 //-----------------------------------------------------------
 function js_novomatmater(cod,descr){
-  js_OpenJanelaIframe('top.corpo','iframe_material','mat1_matmater011.php?m63_codpcmater='+cod+'&pc01_descrmater='+descr,'Incluir Item de Entrada Novo',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','iframe_material','mat1_matmater011.php?m63_codpcmater='+cod+'&pc01_descrmater='+descr,'Incluir Item de Entrada Novo',true);
 }
 //-----------------------------------------------------------
 /*
@@ -268,7 +268,7 @@ function js_mostramatmater(chave,erro){
 }
 function js_mostramatmater1(chave1,chave2){
    eval("document.form1."+nome+".value") = chave1;  
-   top.corpo.db_iframe_matmater.hide();
+   (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_matmater.hide();
 }
 */
 //------------------------------------------------------

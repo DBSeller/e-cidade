@@ -1,0 +1,224 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010843' name='recursoshumanos.rhdeficiente' description="Tabela deficiente" prefix="rh253" label="Tabela dificiente" type="0">
+  <fields>
+    <field codigo="1013557" 
+           campo_api='' 
+           name="rh253_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.rhdeficiente_rh253_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013558" 
+           campo_api='' 
+           name="rh253_matricula" 
+           conteudo="int4" 
+           description="Matrícula do servidor" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013560" 
+           campo_api='' 
+           name="rh253_fisica" 
+           conteudo="bool" 
+           description="Deficiência física" 
+           inivalue="f" 
+           label="Física" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Física" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013561" 
+           campo_api='' 
+           name="rh253_instit" 
+           conteudo="int4" 
+           description="Código da instituição." 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013562" 
+           campo_api='' 
+           name="rh253_visual" 
+           conteudo="bool" 
+           description="Deficiência visual" 
+           inivalue="f" 
+           label="Visual" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Visual" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013563" 
+           campo_api='' 
+           name="rh253_auditiva" 
+           conteudo="bool" 
+           description="Deficiência auditiva" 
+           inivalue="f" 
+           label="auditiva" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="auditiva" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013564" 
+           campo_api='' 
+           name="rh253_mental" 
+           conteudo="bool" 
+           description="Deficiência mental." 
+           inivalue="f" 
+           label="Mental" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Mental" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013565" 
+           campo_api='' 
+           name="rh253_intelectual" 
+           conteudo="bool" 
+           description="Deficiência intelectual" 
+           inivalue="f" 
+           label="Intelectual" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Intelectual" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013566" 
+           campo_api='' 
+           name="rh253_reabilitado" 
+           conteudo="bool" 
+           description="Reabilitado" 
+           inivalue="f" 
+           label="Reabilitado" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Reabilitado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013567" 
+           campo_api='' 
+           name="rh253_cota" 
+           conteudo="bool" 
+           description="Cota" 
+           inivalue="f" 
+           label="Cota" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Cota" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013569" 
+           campo_api='' 
+           name="rh253_observacao" 
+           conteudo="varchar(255)" 
+           description="Observação" 
+           inivalue="" 
+           label="Observação" 
+           size="255" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Observação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh253_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="rh253_matricula" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

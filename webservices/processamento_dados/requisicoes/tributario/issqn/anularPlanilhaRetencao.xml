@@ -1,9 +1,13 @@
 <?xml version='1.0' ?>
 <processamento>
+
+  <transacao>true</transacao>
+
   <parametros>
     <parametro nome="motivo_anulacao"             obrigatorio="true" tipo="string"  />
     <parametro nome="codigo_planilha"             obrigatorio="true" tipo="integer" />
   </parametros>
+
   <configuracoes>
     <classe nome="PlanilhaRetencaoWebService"  parametros="" caminho="model/issqn/PlanilhaRetencaoWebService.model.php">
       <metodos>
@@ -13,4 +17,5 @@
       </metodos>
     </classe>
   </configuracoes>
+
 </processamento>

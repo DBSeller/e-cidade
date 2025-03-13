@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 
 $rotulo = new rotulocampo();
@@ -64,8 +64,8 @@ function js_emite(){
     	
 	  jan.moveTo(0,0);
   }else {
-		//js_OpenJanelaIframe('top.corpo','db_iframe_tarefa','ate2_contarefa001.php?menu=false&chavepesquisa='+tarefa,'Pesquisa',true,'30');
-		js_OpenJanelaIframe('top.corpo', 'db_iframe_arquivo', 'agu2_planilhaleitura002.php?anousu='+document.form1.x21_exerc.value+'&mesusu='+document.form1.x21_mes.value+'&lista='+lista+'&condicao='+document.form1.ver.value+'&tipodoc='+document.form1.tipoArquivo.value+'&filtro='+document.form1.filtro.value, 'Arquivo', false, 30);	
+		//js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefa','ate2_contarefa001.php?menu=false&chavepesquisa='+tarefa,'Pesquisa',true,'30');
+		js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_arquivo', 'agu2_planilhaleitura002.php?anousu='+document.form1.x21_exerc.value+'&mesusu='+document.form1.x21_mes.value+'&lista='+lista+'&condicao='+document.form1.ver.value+'&tipodoc='+document.form1.tipoArquivo.value+'&filtro='+document.form1.filtro.value, 'Arquivo', false, 30);	
   }	
 }
 </script>  

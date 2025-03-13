@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,26 +25,24 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("model/educacao/DBEducacaoTermo.model.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/educacao/DBEducacaoTermo.model.php"));
 
 $oDaoHistMpsDisc  = new cl_histmpsdisc();
 $oDaoHistoricoMps = new cl_historicomps();
 $oDaoAlunoCurso   = new cl_alunocurso();
 $oDaoDisciplina   = new cl_disciplina();
-
 parse_str( $_SERVER["QUERY_STRING"] );
 db_postmemory( $_POST );
 
 $db_opcao = 2;
 $db_botao = false;
-
 if (isset($registrodisc)) {
 
   $array_registro = explode("|",$registrodisc);
@@ -100,6 +98,7 @@ if (isset($registrodisc)) {
     $oDaoHistMpsDisc->ed65_c_situacao           = $array_campos[7];
     $oDaoHistMpsDisc->ed65_c_tiporesultado      = $array_campos[8];
     $oDaoHistMpsDisc->ed65_c_termofinal         = $array_campos[9];
+    $oDaoHistMpsDisc->ed65_tipobase             = $array_campos[10];
     $oDaoHistMpsDisc->ed65_lancamentoautomatico = 'false';
 
     if ($array_campos[0] == "true") {
@@ -165,6 +164,7 @@ if (isset($registrodisc)) {
   <meta http-equiv="Expires" CONTENT="0">
   <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
   <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/classes/educacao/escola/HistoricoEscolar.classe.js"></script>
   <link href="estilos.css" rel="stylesheet" type="text/css">
   <style>
    .titulo {
@@ -200,7 +200,7 @@ if (isset($registrodisc)) {
     <td align="left" valign="top" bgcolor="#CCCCCC">
      <center>
       <fieldset style="width:95%;"><legend><b>Disciplinas - Etapa cursada na Rede Municipal</b></legend>
-       <?include("forms/db_frmhistmpsdisc.php");?>
+       <?include(modification("forms/db_frmhistmpsdisc.php"));?>
       </fieldset>
      </center>
     </td>

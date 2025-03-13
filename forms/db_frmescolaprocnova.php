@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clescolaproc->rotulo->label();
 $db_botao1 = false;
@@ -286,9 +286,9 @@ var iDbOpcao = <?=$db_opcao;?>;
 
 function js_cep(abre){
  if(abre == true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cep','func_cep.php?funcao_js=parent.js_preenchecep|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa de Ruas',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cep','func_cep.php?funcao_js=parent.js_preenchecep|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa de Ruas',true);
  }else{
-  js_OpenJanelaIframe('top.corpo','db_iframe_cep','func_cep.php?pesquisa_chave='+document.form1.ed82_i_cep.value+'&funcao_js=parent.js_preenchecep|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cep','func_cep.php?pesquisa_chave='+document.form1.ed82_i_cep.value+'&funcao_js=parent.js_preenchecep|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa',false);
  }
 }
 function js_preenchecep(chave,chave1,chave2,chave3,chave4){

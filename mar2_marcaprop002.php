@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_marca_classe.php");
-include("classes/db_marcaloc_classe.php");
-include("classes/db_cgm_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_marca_classe.php"));
+include(modification("classes/db_marcaloc_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clmarca = new cl_marca;
 $clmarcaloc = new cl_marcaloc;
@@ -122,9 +122,9 @@ for($x=0;$x<$clmarca->numrows;$x++){
  if($tipo=="com"){
   if($ma01_o_imagem){
         $arquivo = "tmp/".$ma01_c_nomeimagem;
-   pg_exec("begin");
+   db_query("begin");
    pg_loexport($ma01_o_imagem,$arquivo);
-   pg_exec("end");
+   db_query("end");
   }else{
    $arquivo = "imagens/semmarca.jpg";
   }

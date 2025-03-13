@@ -73,7 +73,7 @@ db_input('s146_c_descr',50,$Is146_c_descr,true,'text',$db_opcao,"")
 </fieldset>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_procsemfatura','func_sau_procsemfatura.php?funcao_js=parent.js_preenchepesquisa|s146_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_procsemfatura','func_sau_procsemfatura.php?funcao_js=parent.js_preenchepesquisa|s146_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_procsemfatura.hide();

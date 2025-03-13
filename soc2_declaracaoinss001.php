@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("std/db_stdClass.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/db_stdClass.php"));
 $oDaoDocumento = db_utils::getDao('db_documentotemplate');
 $sCampos       = " db82_sequencial, db82_descricao";
 
@@ -106,7 +106,7 @@ limpaForm();
 function js_pesquisaNIS(lMostra) {
 
   if (lMostra) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                          'db_iframe_cadunico',
                          'func_cidadaocadastrounico.php?funcao_js=parent.js_mostraNIS|as02_nis|ov02_nome',
                          'Pesquisa NIS',true);
@@ -114,7 +114,7 @@ function js_pesquisaNIS(lMostra) {
 
     if ($F('nis') != '') {
 
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                              'db_iframe_cadunico',
                              'func_cidadaocadastrounico.php?lNis=true&pesquisa_chave='+$F('nis')+'&funcao_js=parent.js_mostraNIS2',
                              'Pesquisa NIS',
@@ -174,7 +174,7 @@ function validaImpressao() {
 function js_retornoAtendeCriteriosDeclaracaoINSS(oJson) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (oRetorno.lAtendeCriterioDeclaracaoINSS) {
       js_imprime();

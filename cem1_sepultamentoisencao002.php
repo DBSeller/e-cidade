@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require("libs/db_utils.php");
-include("classes/db_sepultamentoisencao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require(modification("libs/db_utils.php"));
+include(modification("classes/db_sepultamentoisencao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -95,7 +95,7 @@ if(isset($oPost->alterar)){
     <td> 
     <center>
 	<?
-	include("forms/db_frmsepultamentoisencao.php");
+	include(modification("forms/db_frmsepultamentoisencao.php"));
 	?>
     </center>
 	</td>

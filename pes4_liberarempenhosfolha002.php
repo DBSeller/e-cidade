@@ -1,46 +1,47 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
- * 
+ * Representa o Iframe da liberação do empenho/slip.
+ *
  * @author I
- * @revision $Author: dbalberto $
- * @version $Revision: 1.20 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.30 $
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_sql.php");
-require_once("libs/JSON.php");
-require_once("classes/db_rhempenhofolhaconfirma_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("classes/db_rhempenhofolhaconfirma_classe.php"));
 
 $oRotulo = new rotulocampo();
 $oRotulo->label("rh72_projativ");
@@ -74,21 +75,21 @@ if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
  * incluimos a liberacao
  */
 if (isset($oPost->liberar)) {
-  
+
   try {
-    
+
     db_inicio_transacao();
-    
+
     $oDaoRhEmpenhoConfirma->rh83_dataliberacao = date("Y-m-d", db_getsession("DB_datausu"));
     $oDaoRhEmpenhoConfirma->rh83_id_usuario    = db_getsession("DB_id_usuario");
     $oDaoRhEmpenhoConfirma->rh83_anousu        = $oParam->iAnoFolha;
     $oDaoRhEmpenhoConfirma->rh83_mesusu        = $oParam->iMesFolha;
     $oDaoRhEmpenhoConfirma->rh83_siglaarq      = $oParam->sSigla;
     $oDaoRhEmpenhoConfirma->rh83_instit        = db_getsession("DB_instit");
-    $oDaoRhEmpenhoConfirma->rh83_tabprev       = "0";    
+    $oDaoRhEmpenhoConfirma->rh83_tabprev       = "0";
     $oDaoRhEmpenhoConfirma->rh83_tipoempenho   = $oParam->iTipo;
     if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
-      
+
       foreach ($oParam->aRescisoes as $iRescisao) {
         $oDaoRhEmpenhoConfirma->rh83_complementar  = $iRescisao;
         $oDaoRhEmpenhoConfirma->incluir(null);
@@ -96,85 +97,85 @@ if (isset($oPost->liberar)) {
           throw new Exception("Liberação de Empenhos abortada!\n\n{$oDaoRhEmpenhoConfirma->erro_msg}");
         }
       }
-      
-    } else { 
-    
+
+    } else {
+
       $oDaoRhEmpenhoConfirma->rh83_complementar  = $oParam->sSemestre;
-      
+
       if ($oParam->iTipo == 2) {
-        
+
        /*
         * Caso esteja sendo liberada as tabelas da previdencia (iTipo == 2)
         * Incluímos uma liberação para cada tabela da previdencia
         */
         if (strpos($oParam->sPrevidencia, ",") ) {
-          $aPrevidencias = explode(",",$oParam->sPrevidencia);  
+          $aPrevidencias = explode(",",$oParam->sPrevidencia);
         } else {
           $aPrevidencias = array($oParam->sPrevidencia);
         }
         for ($iInd = 0; $iInd < count($aPrevidencias); $iInd++) {
-          
+
           $oDaoRhEmpenhoConfirma->rh83_tabprev = $aPrevidencias[$iInd];
           $oDaoRhEmpenhoConfirma->incluir(null);
           if ($oDaoRhEmpenhoConfirma->erro_status == "0") {
             throw new Exception("Liberação de Empenhos abortada!\n\n{$oDaoRhEmpenhoConfirma->erro_msg}");
           }
         }
-        
+
       } else {
-        
+
         $oDaoRhEmpenhoConfirma->incluir(null);
         if ($oDaoRhEmpenhoConfirma->erro_status == "0") {
           throw new Exception("Liberação de Empenhos abortada!\n\n{$oDaoRhEmpenhoConfirma->erro_msg}");
         }
-          
+
       }
-      
+
     }
-    
+
     db_fim_transacao(false);
-    
+
     db_msgbox("Liberação de Empenhos realizada com Sucesso!");
   } catch (Exception $oException) {
-    
+
     db_fim_transacao(true);
     db_msgbox($oException->getMessage());
-    
+
   }
-  
+
 } else if (isset($oPost->cancelar)) {
-  
+
   try {
-    
+
     db_inicio_transacao();
-    
-    $sWhereConfirma   = "rh83_anousu            = {$oParam->iAnoFolha}"; 
-    $sWhereConfirma  .= " and rh83_mesusu       = {$oParam->iMesFolha}"; 
+
+    $sWhereConfirma   = "rh83_anousu            = {$oParam->iAnoFolha}";
+    $sWhereConfirma  .= " and rh83_mesusu       = {$oParam->iMesFolha}";
     $sWhereConfirma  .= " and rh83_siglaarq     = '{$oParam->sSigla}'";
-     
+
     if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
-      $sWhereConfirma  .= "    and rh83_complementar in({$sListaRescisoes})"; 
+      $sWhereConfirma  .= "    and rh83_complementar in({$sListaRescisoes})";
     } else {
       if ($oParam->iTipo == 2) {
-        $sWhereConfirma  .= " and rh83_tabprev in ({$oParam->sPrevidencia})"; 
+        $sWhereConfirma  .= " and rh83_tabprev in ({$oParam->sPrevidencia})";
       }
       $sWhereConfirma  .= " and rh83_complementar = {$oParam->sSemestre}";
     }
-    
+
     $sWhereConfirma  .= " and rh83_tipoempenho  = {$oParam->iTipo}";
     $sWhereConfirma  .= " and rh83_instit       =  ".db_getsession("DB_instit");
     $oDaoRhEmpenhoConfirma->excluir(null, $sWhereConfirma);
     if ($oDaoRhEmpenhoConfirma->erro_status == 0) {
       throw new Exception("Cancelamento de Liberação de Empenho abortada!\n\n{$oDaoRhEmpenhoConfirma->erro_msg}");
     }
-    
+
     db_fim_transacao(false);
     db_msgbox("Liberação de Empenho cancelada com sucesso!");
   } catch (Exception $oException) {
     db_fim_transacao(true);
     db_msgbox($oException->getMessage());
   }
-  
+
 }
 
 $sSqlDadosFolha  = " select rh72_sequencial as codigo               ";
@@ -185,10 +186,10 @@ $sSqlDadosFolha .= "    and rh72_anousu      = {$oParam->iAnoFolha} ";
 $sSqlDadosFolha .= "    and rh72_mesusu      = {$oParam->iMesFolha} ";
 
 /**
- * Tipo de empenho = Previdencia 
+ * Tipo de empenho = Previdencia
  * String com o id dos empenhos selecionados
  */
-if ( $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
+if (isset($oParam->sPrevidencia) && $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
 	$sSqlDadosFolha .= "  and rh72_tabprev in ({$oParam->sPrevidencia}) ";
 }
 
@@ -198,11 +199,11 @@ $sSqlDadosFolha .= "   from rhslipfolha                             ";
 $sSqlDadosFolha .= "  where rh79_tipoempenho = {$oParam->iTipo}     ";
 $sSqlDadosFolha .= "    and rh79_siglaarq    = '{$oParam->sSigla}'  ";
 $sSqlDadosFolha .= "    and rh79_anousu      = {$oParam->iAnoFolha} ";
-$sSqlDadosFolha .= "    and rh79_mesusu      = {$oParam->iMesFolha} "; 
+$sSqlDadosFolha .= "    and rh79_mesusu      = {$oParam->iMesFolha} ";
 $sSqlDadosFolha .= "  limit 1 ";
 
 $rsDadosFolha      = db_query($sSqlDadosFolha);
-$iLinhasDadosFolha = pg_num_rows($rsDadosFolha);                          
+$iLinhasDadosFolha = pg_num_rows($rsDadosFolha);
 
 if ( $iLinhasDadosFolha > 0 ) {
 	$sDisabled = '';
@@ -211,26 +212,21 @@ if ( $iLinhasDadosFolha > 0 ) {
 }
 
 /**
- * Calculamos o total da folha de de pagamento do periodo 
+ * Calculamos o total da folha de de pagamento do periodo
  */
-$iDesconto = 2; 
-$iProvento = 1; 
+$iDesconto = 2;
+$iProvento = 1;
 if ($oParam->iTipo != 1) {
-  
+
   $iDesconto = 1;
-  $iProvento = 2; 
+  $iProvento = 2;
 }
-$sCampos  = "round(sum(case when {$oParam->sSigla}_pd = {$iDesconto} and rh23_rubric is not null 
+$sCampos  = "round(sum(case when {$oParam->sSigla}_pd = {$iDesconto} and rh23_rubric is not null
                        then {$oParam->sSigla}_valor end)
                        ,2) as totalempenhadodesconto,";
 $sCampos        .= "round(sum(case when {$oParam->sSigla}_pd = {$iProvento}  then {$oParam->sSigla}_valor else 0 end), 2) as total";
-$sWhere          = "{$oParam->sSigla}_pd = {$iProvento}";
-$sWhere = "";
 $sWhereRubrica   = "";
-if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
-  $sWhere .=" rh02_seqpes in({$sListaRescisoes}) and ";
-}
-if ($oParam->iTipo == 1) { 
+if ($oParam->iTipo == 1) {
   $sWhereRubrica  = " < 'R950'";
 } else if ($oParam->iTipo == 2) {
   $sWhereRubrica  = " = 'R992'";
@@ -238,55 +234,92 @@ if ($oParam->iTipo == 1) {
   $sWhereRubrica  = " = 'R991'";
 }
 
-if ($oParam->sSigla == 'r48' ) {
-  $sWhere .= " r48_semest = {$oParam->sSemestre} and ";
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar() &&
+    dadosEmpenhoFolha::verificarPermissaoFolha($oParam->sSigla)) {
+
+  $sWhere             = "";
+  $sWhereSuplementar  = "and rh141_codigo = {$oParam->sSemestre} ";
+  $sWhereSuplementar .= "and rh143_rubrica {$sWhereRubrica} ";
+
+} else {
+
+  $sWhere = "";
+  if ($oParam->sSigla == 'r48' ) {
+    $sWhere .= " r48_semest = {$oParam->sSemestre} and ";
+  }
+  if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
+    $sWhere .=" rh02_seqpes in({$sListaRescisoes}) and ";
+  }
+
+  $sWhere            = $sWhere." {$oParam->sSigla}_rubric {$sWhereRubrica}";
+  $sWhereSuplementar = "";
+
 }
+
 $iInstit = db_getsession("DB_instit");
 $sSqlTotalBrutoFolha = $oGeradorSql->gerador_sql($oParam->sSigla,
-		  			                             $oParam->iAnoFolha,
-						                         $oParam->iMesFolha,
-						                          "",
-						                          "",
-						                          $sCampos,
-												  "",
-						                          $sWhere." {$oParam->sSigla}_rubric {$sWhereRubrica}",
-						                          $iInstit
-						                          );
-						                          
+		  			                                     $oParam->iAnoFolha,
+						                                     $oParam->iMesFolha,
+						                                     "",
+						                                     "",
+						                                     $sCampos,
+												                         "",
+						                                     $sWhere,
+						                                     $iInstit,
+                                                 $sWhereSuplementar
+						                                    );
+
 $rsTotalFolha            = db_query($sSqlTotalBrutoFolha);
 $nToTalFolhaBruto        = db_utils::fieldsMemory($rsTotalFolha, 0)->total;
 $nTotalDescontoEmpenhado = db_utils::fieldsMemory($rsTotalFolha, 0)->totalempenhadodesconto;
-$sWhere  = "{$oParam->sSigla}_pd = {$iDesconto}";
-if ($oParam->sSigla == 'r48' ) {
-  $sWhere .= " and r48_semest = {$oParam->sSemestre} ";
-}
-if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
-  $sWhere .=" and rh02_seqpes in({$sListaRescisoes}) ";
+
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar() &&
+    dadosEmpenhoFolha::verificarPermissaoFolha($oParam->sSigla)) {
+
+  $sWhere             = "";
+  $sWhereSuplementar  = "and rh143_tipoevento = {$iDesconto}";
+  $sWhereSuplementar .= "and rh141_codigo = {$oParam->sSemestre} ";
+  $sWhereSuplementar .= "and rh143_rubrica {$sWhereRubrica} ";
+
+} else {
+
+  $sWhere  = "{$oParam->sSigla}_pd = {$iDesconto}";
+  if ($oParam->sSigla == 'r48' ) {
+    $sWhere .= " and r48_semest = {$oParam->sSemestre} ";
+  }
+  if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
+    $sWhere .=" and rh02_seqpes in({$sListaRescisoes}) ";
+  }
+
+  $sWhere            = $sWhere." and {$oParam->sSigla}_rubric {$sWhereRubrica}";
+  $sWhereSuplementar = "";
 }
 $sCampos  = "round(sum({$oParam->sSigla}_valor),2) as total";
 $sSqlTotalDescontoFolha = $oGeradorSql->gerador_sql($oParam->sSigla,
-		  			                                $oParam->iAnoFolha,
-						                            $oParam->iMesFolha,
-						                            "",
-						                            "",
-						                            $sCampos,
-									   			    "",
-						                            $sWhere." and {$oParam->sSigla}_rubric {$sWhereRubrica}",
-						                            $iInstit
-						                           );
+		  			                                        $oParam->iAnoFolha,
+						                                        $oParam->iMesFolha,
+						                                        "",
+						                                        "",
+						                                        $sCampos,
+									   			                          "",
+						                                        $sWhere,
+						                                        $iInstit,
+                                                    $sWhereSuplementar
+						                                       );
+
 $rsTotalDescontoFolha = db_query($sSqlTotalDescontoFolha);
-$nToTalFolhaDesconto  = db_utils::fieldsMemory($rsTotalDescontoFolha, 0)->total;
+$nToTalFolhaDesconto  = (float)db_utils::fieldsMemory($rsTotalDescontoFolha, 0)->total;
 /**
  * Calculamos o total dos Empenho
  */
 $sSqlEmpenhos     = "SELECT round(sum(case when rh73_pd = 2 then rh73_valor *-1 else rh73_valor end), 2) as rh73_valor";
-$sSqlEmpenhos    .= "  from rhempenhofolha "; 
-$sSqlEmpenhos    .= "       inner join rhempenhofolharhemprubrica        on rh81_rhempenhofolha = rh72_sequencial "; 
+$sSqlEmpenhos    .= "  from rhempenhofolha ";
+$sSqlEmpenhos    .= "       inner join rhempenhofolharhemprubrica        on rh81_rhempenhofolha = rh72_sequencial ";
 $sSqlEmpenhos    .= "       inner join rhempenhofolharubrica  on rh73_sequencial     = rh81_rhempenhofolharubrica ";
 $sSqlEmpenhos    .= "  where rh72_tipoempenho = {$oParam->iTipo}";
 $sSqlEmpenhos    .= "    and rh73_tiporubrica = 1";
-$sSqlEmpenhos    .= "    and rh72_anousu      = {$oParam->iAnoFolha}"; 
-$sSqlEmpenhos    .= "    and rh72_mesusu      = {$oParam->iMesFolha}"; 
+$sSqlEmpenhos    .= "    and rh72_anousu      = {$oParam->iAnoFolha}";
+$sSqlEmpenhos    .= "    and rh72_mesusu      = {$oParam->iMesFolha}";
 $sSqlEmpenhos    .= "    and rh72_siglaarq    = '{$oParam->sSigla}'";
 if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
   $sSqlEmpenhos    .= "    and rh73_seqpes     in({$sListaRescisoes})";
@@ -296,17 +329,17 @@ if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
 }
 
 /**
- * Tipo de empenho = Previdencia 
+ * Tipo de empenho = Previdencia
  * String com o id dos empenhos selecionados
  */
-if ( $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
+if (isset($oParam->sPrevidencia) && $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
 	$sSqlEmpenhos  .= "  and rh72_tabprev in ({$oParam->sPrevidencia}) ";
 }
 
 $sSqlEmpenhos    .= "    and rh73_instit      = {$iInstit}";
 $sSqlEmpenhos    .= "    and rh73_rubric {$sWhereRubrica}";
 $rsTotalEmpenhos  = db_query($sSqlEmpenhos);
-$nTotalLiquidoEmpenhos =  db_utils::fieldsMemory($rsTotalEmpenhos, 0)->rh73_valor;
+$nTotalLiquidoEmpenhos =  (float)db_utils::fieldsMemory($rsTotalEmpenhos, 0)->rh73_valor;
 
 /**
  * Calculamos o total do Desconto dos empenhos
@@ -324,50 +357,52 @@ $sSqlTotalDescontos     .= "  and rh72_anousu       = '{$oParam->iAnoFolha}'";
 if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
   $sSqlTotalDescontos    .= "    and rh73_seqpes     in({$sListaRescisoes})";
 } else {
-  $sSqlTotalDescontos     .= "  and rh72_seqcompl     = '{$oParam->sSemestre}'";  
+  $sSqlTotalDescontos     .= "  and rh72_seqcompl     = '{$oParam->sSemestre}'";
 }
 
 /**
- * Tipo de empenho = Previdencia 
+ * Tipo de empenho = Previdencia
  * String com o id dos empenhos selecionados
  */
-if ( $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
+if (isset($oParam->sPrevidencia) && $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
 	$sSqlTotalDescontos   .= "  and rh72_tabprev in ({$oParam->sPrevidencia}) ";
 }
 $sSqlTotalDescontos     .= "  and rh73_instit       = {$iInstit}";
 $sSqlTotalDescontos     .= "  and rh73_rubric {$sWhereRubrica}";
+$sSqlTotalDescontos     .= "  and rh73_rubric not in (select rh23_rubric from rhrubelemento where rh23_instit = ".db_getsession("DB_instit").")";
+
 $rsTotalDescontos        = db_query($sSqlTotalDescontos);
-$nTotalDescontosEmpenhos = db_utils::fieldsMemory($rsTotalDescontos, 0)->valor;
+$nTotalDescontosEmpenhos = (float)db_utils::fieldsMemory($rsTotalDescontos, 0)->valor;
 
 /**
  * Calculamos o total dos Slips
  */
 $sSqlSlipLiquido     = "SELECT sum(rh73_valor) as rh73_valor";
-$sSqlSlipLiquido    .= "  from rhslipfolha "; 
-$sSqlSlipLiquido    .= "       inner join rhslipfolharhemprubrica on rh80_rhslipfolha = rh79_sequencial "; 
+$sSqlSlipLiquido    .= "  from rhslipfolha ";
+$sSqlSlipLiquido    .= "       inner join rhslipfolharhemprubrica on rh80_rhslipfolha = rh79_sequencial ";
 $sSqlSlipLiquido    .= "       inner join rhempenhofolharubrica   on rh73_sequencial  = rh80_rhempenhofolharubrica ";
 $sSqlSlipLiquido    .= "  where rh79_tipoempenho = {$oParam->iTipo}";
 $sSqlSlipLiquido    .= "    and rh73_tiporubrica = 3";
-$sSqlSlipLiquido    .= "    and rh79_anousu      = {$oParam->iAnoFolha}"; 
-$sSqlSlipLiquido    .= "    and rh79_mesusu      = {$oParam->iMesFolha}"; 
+$sSqlSlipLiquido    .= "    and rh79_anousu      = {$oParam->iAnoFolha}";
+$sSqlSlipLiquido    .= "    and rh79_mesusu      = {$oParam->iMesFolha}";
 $sSqlSlipLiquido    .= "    and rh79_siglaarq    = '{$oParam->sSigla}'";
 if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
   $sSqlSlipLiquido    .= "    and rh73_seqpes     in({$sListaRescisoes})";
 } else {
-  $sSqlSlipLiquido    .= "    and rh79_seqcompl    = '{$oParam->sSemestre}'";  
+  $sSqlSlipLiquido    .= "    and rh79_seqcompl    = '{$oParam->sSemestre}'";
 }
 
 /**
- * Tipo de empenho = Previdencia 
+ * Tipo de empenho = Previdencia
  * String com o id dos empenhos selecionados
  */
-if ( $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
+if (isset($oParam->sPrevidencia) && $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
 	$sSqlSlipLiquido  .= "    and rh79_tabprev in ({$oParam->sPrevidencia}) ";
 }
 $sSqlSlipLiquido    .= "    and rh73_instit      = {$iInstit}";
 $sSqlSlipLiquido    .= "    and rh73_rubric {$sWhereRubrica}";
 $rsSlipLiquido       = db_query($sSqlSlipLiquido);
-$nTotalSlipLiquido   = db_utils::fieldsMemory($rsSlipLiquido, 0)->rh73_valor; 
+$nTotalSlipLiquido   = (float)db_utils::fieldsMemory($rsSlipLiquido, 0)->rh73_valor;
 
 /**
  * Calculamos o total do Desconto dos empenhos
@@ -389,30 +424,30 @@ if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
 $sSqlTotalDescontosSlip     .= "  and rh73_instit       = {$iInstit}";
 $sSqlTotalDescontosSlip     .= "  and rh73_rubric {$sWhereRubrica}";
 /**
- * Tipo de empenho = Previdencia 
+ * Tipo de empenho = Previdencia
  * String com o id dos empenhos selecionados
  */
-if ( $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
+if (isset($oParam->sPrevidencia) && $oParam->sPrevidencia != null && $oParam->iTipo == 2) {
 	$sSqlTotalDescontosSlip   .= " and rh79_tabprev in ({$oParam->sPrevidencia}) ";
 }
 $rsTotalDescontosSlip        = db_query($sSqlTotalDescontosSlip);
-$nTotalDescontosSlip         = db_utils::fieldsMemory($rsTotalDescontosSlip, 0)->valor;
+$nTotalDescontosSlip         = (float)db_utils::fieldsMemory($rsTotalDescontosSlip, 0)->valor;
 /**
  * Verificamos se já foi liberado o os empenhos para a folha
  */
-$sWhereConfirma   = " rh83_anousu           = {$oParam->iAnoFolha}"; 
-$sWhereConfirma  .= " and rh83_mesusu       = {$oParam->iMesFolha}"; 
+$sWhereConfirma   = " rh83_anousu           = {$oParam->iAnoFolha}";
+$sWhereConfirma  .= " and rh83_mesusu       = {$oParam->iMesFolha}";
 $sWhereConfirma  .= " and rh83_siglaarq     = '{$oParam->sSigla}'";
-if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) { 
+if ($oParam->sSigla == 'r20' && $oParam->iTipo == 1) {
   $sWhereConfirma  .= " and rh83_complementar in ({$sListaRescisoes})";
 } else {
   if ($oParam->iTipo == 2){
     $sWhereConfirma  .= " and rh83_tabprev in ({$oParam->sPrevidencia})";
   }
-  $sWhereConfirma  .= " and rh83_complementar = {$oParam->sSemestre}";  
+  $sWhereConfirma  .= " and rh83_complementar = {$oParam->sSemestre}";
 }
 
-$sWhereConfirma  .= " and rh83_tipoempenho  = {$oParam->iTipo}"; 
+$sWhereConfirma  .= " and rh83_tipoempenho  = {$oParam->iTipo}";
 $sWhereConfirma  .= " and rh83_tipoempenho  = {$oParam->iTipo}";
 $sWhereConfirma  .= " and rh83_instit       =  ".db_getsession("DB_instit");
 $sSqlConfirma    = $oDaoRhEmpenhoConfirma->sql_query_file(null,"*", null, $sWhereConfirma);
@@ -423,7 +458,7 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
 
   $sLabelBotao     = "Cancelar Liberação";
   $sNameBotao      = "cancelar";
-  
+
 }
 ?>
 <html>
@@ -448,7 +483,7 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
     font-weight: bold;
     text-align: center;
  }
- 
+
  .valores {
     color: black;
     font-weight: bold;
@@ -460,7 +495,7 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
 <body bgcolor="#cccccc" onload='js_init()'style="margin:0">
 <div style="border-bottom: 2px groove white; background-color: white;width: 100%;height: 50px;tex-align:left">
       <b>Confira os Valores para cada item da folha.</b>
-    </div> 
+    </div>
   <form name='form1' method="post">
    <table cellspacing="0" >
      <tr>
@@ -523,10 +558,10 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
                  Diferença
                </td>
              </tr>
-             <tr> 
+             <tr>
                <td class='valores' style='text-align:left'>
                  <b>Bruto:</b>
-                 
+
                </td>
                <td class='valores'>
                  <?=db_formatar($nToTalFolhaBruto, 'f');?>
@@ -537,15 +572,15 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
                <td class='valores'>
                  <?=db_formatar($nTotalDescontoEmpenhado, 'f');?>
                </td>
-               
+
                <td class='valores'>
                  <?=db_formatar($nTotalSlipLiquido, 'f');?>
                </td>
                <td class='valores'>
-                 <?=db_formatar(abs($nToTalFolhaBruto -  $nTotalDescontoEmpenhado-$nTotalLiquidoEmpenhos - $nTotalSlipLiquido), 'f');?>
-               </td> 
+                 <?=db_formatar(abs((float)$nToTalFolhaBruto - (float)$nTotalDescontoEmpenhado - (float)$nTotalLiquidoEmpenhos - (float)$nTotalSlipLiquido), 'f');?>
+               </td>
              </tr>
-             <tr> 
+             <tr>
                <td class='valores' style='text-align:left'>
                  <b>Descontos:</b>
                </td>
@@ -556,16 +591,17 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
                  <?=db_formatar($nTotalDescontosEmpenhos, 'f');?>
                </td>
                <td class='valores'>
-                 <?=db_formatar(0, 'f');?>
+                 <?=db_formatar($nTotalDescontoEmpenhado, 'f');?>
                </td>
                <td class='valores'>
                  <?=db_formatar($nTotalDescontosSlip, 'f');?>
                </td>
                <td class='valores'>
-                <?=db_formatar(abs($nToTalFolhaDesconto - $nTotalDescontosEmpenhos - $nTotalDescontosSlip) , 'f');?>
-               </td> 
+                <?=db_formatar(abs((float)$nToTalFolhaDesconto - (float)$nTotalDescontosEmpenhos - (float)$nTotalDescontoEmpenhado -
+                    (float)$nTotalDescontosSlip) , 'f');?>
+               </td>
              </tr>
-             <tr> 
+             <tr>
                <td class='valores' style='text-align:left'>
                  <b>Liquido:</b>
                </td>
@@ -583,12 +619,12 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
                </td>
                <td class='valores'>
                <?
-               echo db_formatar(abs(($nToTalFolhaBruto - $nToTalFolhaDesconto - $nTotalDescontoEmpenhado) -
-                                (($nTotalLiquidoEmpenhos - $nTotalDescontosEmpenhos) + 
+               echo db_formatar(abs(($nToTalFolhaBruto - $nToTalFolhaDesconto) -
+                                (($nTotalLiquidoEmpenhos - $nTotalDescontosEmpenhos) +
                                 ($nTotalSlipLiquido - $nTotalDescontosSlip))),
                                 "f");
-                ?>  
-               </td> 
+                ?>
+               </td>
              </tr>
            </table>
          </fieldset>
@@ -598,15 +634,15 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
        <td colspan="4" align="center">
          <?
            if (isset($oGet->lBotao)) {
-             echo "<input  type='submit' value='{$sLabelBotao}'  name='{$sNameBotao}' onclick='return js_liberar()' {$sDisabled} />";
+             echo "<input  type='submit' value='{$sLabelBotao}'  name='{$sNameBotao}' {$sDisabled} />";
            }
          ?>
        </td>
      </tr>
    </table>
-   <? 
+   <?
      if ($oParam->sSigla == "r20" && $oParam->iTipo == 1) {
-       
+
        $oDaoPessoalMov = db_utils::getDao("rhpessoal");
        $sSqlPessoal    = $oDaoPessoalMov->sql_query_cgmmov(null,
                                                    "z01_nome, rh02_regist",
@@ -614,7 +650,7 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
                                                    "rh02_seqpes in({$sListaRescisoes})"
                                                    );
        $rsPessoal = db_query($sSqlPessoal);
-       $aListaPessoas = db_utils::getColectionByRecord($rsPessoal);                                                   
+       $aListaPessoas = db_utils::getCollectionByRecord($rsPessoal);
        echo "<fieldset><legend><b>Rescisões Escolhidas</b></legend>";
        echo "  <table cellspacing = '0' style='width:80%;border:2px inset white'>";
        echo "    <tr>";
@@ -627,7 +663,7 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
        echo "    </tr>";
        echo "    <tbody style='height:150px;background-color:white;overflow:scroll; overflow-x:hidden'>";
        foreach ($aListaPessoas as $oPessoa) {
-         
+
          echo "<tr style='height:1em'>";
          echo "  <td class='linhagrid' style='text-align:right'>{$oPessoa->rh02_regist}</td>";
          echo "  <td class='linhagrid' style='text-align:left'>{$oPessoa->z01_nome}</td>";
@@ -639,13 +675,13 @@ if ($oDaoRhEmpenhoConfirma->numrows > 0) {
        echo "</fieldset>";
      }
    ?>
-   
+
  </form>
 </body>
 </html>
 <script>
 function js_init() {
-   
+
   /**
    * consultamos os empenhos que deve ser gerados
    */
@@ -654,31 +690,36 @@ function js_init() {
   $('anofolha').innerHTML = oParametros.iAnoFolha;
   var sNomeFolha = new String();
   switch (oParametros.sSigla) {
-    
+
     case 'r14' :
-      
-      sNomeFolha = 'Salário'; 
+
+      sNomeFolha = 'Salário';
       break;
-    
+
     case 'r48' :
-      
-      sNomeFolha = 'Complementar'; 
-      break;  
-    
-    case 'r35' :
-     
-      sNomeFolha = '13º Salário'; 
-      break;   
-    
-    case 'r20' :
-     
-      sNomeFolha = 'Rescisão'; 
+
+      sNomeFolha = 'Complementar';
       break;
-      
+
+    case 'r35' :
+
+      sNomeFolha = '13º Salário';
+      break;
+
+    case 'r20' :
+
+      sNomeFolha = 'Rescisão';
+      break;
+
     case 'r22' :
-     
-      sNomeFolha = 'Adiantamento'; 
-      break;     
+
+      sNomeFolha = 'Adiantamento';
+      break;
+
+    case 'sup' :
+
+      sNomeFolha = 'Suplementar';
+      break;
   }
   $('tipofolha').innerHTML = sNomeFolha;
 }

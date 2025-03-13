@@ -1,33 +1,33 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -76,7 +76,7 @@ $sSql .= "                         else ''                                      
 $sSql .= "                       end                                                                                                                                                    \n";
 $sSql .= "                end as tipo,                                                                                                                                                  \n";
 $sSql .= "                rh27_descr   as descricao,                                                                                                                                    \n";
-$sSql .= "                rh72_recurso as recurso,                                                                                                                                      \n";
+$sSql .= "                o15_recurso as recurso,                                                                                                                                      \n";
 $sSql .= "                o15_descr    as descr_recurso,                                                                                                                                \n";
 $sSql .= "                rh73_pd      as pd,                                                                                                                                           \n";
 $sSql .= "                rh73_valor   as valor                                                                                                                                         \n";
@@ -113,7 +113,7 @@ $sSql .= "                         else ''                                      
 $sSql .= "                       end                                                                                                                                                    \n";
 $sSql .= "                end as tipo,                                                                                                                                                  \n";
 $sSql .= "                rh27_descr   as descricao,                                                                                                                                    \n";
-$sSql .= "                rh79_recurso as recurso,                                                                                                                                      \n";
+$sSql .= "                o15_recurso as recurso,                                                                                                                                      \n";
 $sSql .= "                o15_descr    as descr_recurso,                                                                                                                                \n";
 $sSql .= "                rh73_pd      as pd,                                                                                                                                           \n";
 $sSql .= "                rh73_valor   as valor                                                                                                                                         \n";
@@ -146,7 +146,7 @@ if ($oGet->sPonto == 's') {
 	$sSql .= " select rh27_rubric,                                                               \n";
 	$sSql .= "        '',                                                                        \n";
 	$sSql .= "        rh27_descr,                                                                \n";
-	$sSql .= "        rh25_recurso,                                                              \n";
+	$sSql .= "        o15_recurso,                                                              \n";
 	$sSql .= "        o15_descr,                                                                 \n";
 	$sSql .= "        r14_pd,                                                                    \n";
 	$sSql .= "        r14_valor                                                                  \n";
@@ -168,7 +168,7 @@ if ($oGet->sPonto == 's') {
 	$sSql .= "    and r14_mesusu = {$oGet->iMes}                                                 \n";
 
 }
- 
+
 $sSql .= "           ) as x         \n";
 $sSql .= "  group by rubric,        \n";
 $sSql .= "           tipo,          \n";
@@ -208,13 +208,13 @@ $oPdf->setfillcolor(235);
 for ($iCont = 0; $iCont < pg_num_rows($rsResultado); $iCont++) {
 
 	db_fieldsmemory($rsResultado,$iCont);
-	 
+
 	if ($iContsec != $recurso) {
 
 		$iTroca = 1;
 		$iContsec = $recurso;
 		if ($iCont != 0 ) {
-			
+
 			$oPdf->setfont('arial','b',8);
 			$oPdf->ln(3);
 			$oPdf->cell(85,6,' ',"T",0,"L",0);
@@ -231,7 +231,7 @@ for ($iCont = 0; $iCont < pg_num_rows($rsResultado); $iCont++) {
 			$oPdf->cell(115,4,'TOTAL DE OUTROS :    '     ,0,0,"R",0);
 			$oPdf->cell(30,4,db_formatar($nOutros,'f')    ,0,1,"R",0);
 			$oPdf->cell(115,4,'LÍQUIDO :    '             ,0,0,"R",0);
-			$oPdf->cell(30,4,db_formatar( ( $nEmpenhos + $nPagamentos - $nRetencoes + $nOutros + $nDevolucoes ) ,'f'),0,1,"R",0);			
+			$oPdf->cell(30,4,db_formatar( ( $nEmpenhos + $nPagamentos - $nRetencoes + $nOutros + $nDevolucoes ) ,'f'),0,1,"R",0);
 			$nEmpenhos   = 0;
 			$nPagamentos = 0;
 			$nRetencoes  = 0;
@@ -239,13 +239,13 @@ for ($iCont = 0; $iCont < pg_num_rows($rsResultado); $iCont++) {
 			$nOutros     = 0;
 			$nProv       = 0;
 			$nDesconto   = 0;
-			
+
 		}
-		
+
 	}
-	
+
 	if ($oPdf->gety() > $oPdf->h - 30 || $iTroca != 0) {
-		
+
 		$oPdf->addpage();
 		$oPdf->setfont('arial','b',8);
 		$oPdf->cell(15,$iAltura,'RUBRICA'  ,1,0,"C",1);
@@ -257,21 +257,21 @@ for ($iCont = 0; $iCont < pg_num_rows($rsResultado); $iCont++) {
 		$iTroca = 0;
 		$iPre = 1;
 	}
-	
+
 	if ($iPre == 1) {
 		$iPre = 0;
 	} else {
 		$iPre = 1;
 	}
-	
+
 	$oPdf->setfont('arial','',7);
 	$oPdf->cell(15,$iAltura,$tipo.'-'.$rubric         ,0,0,"C",$iPre);
 	$oPdf->cell(70,$iAltura                ,$descricao,0,0,"L",$iPre);
 	$oPdf->cell(30,$iAltura,db_formatar($provento,'f'),0,0,"R",$iPre);
 	$oPdf->cell(30,$iAltura,db_formatar($desconto,'f'),0,1,"R",$iPre);
-	
+
 	if ($tipo == 'e') {
-		
+
 		if ($provento > 0) {
 			$nEmpenhos      += $provento;
 			$nTotalEmpenhos += $provento;
@@ -279,9 +279,9 @@ for ($iCont = 0; $iCont < pg_num_rows($rsResultado); $iCont++) {
 			$nEmpenhos      -= $desconto;
 			$nTotalEmpenhos -= $desconto;
 		}
-		
+
 	} elseif ($tipo == 'r') {
-		
+
 		if ($provento > 0) {
 			$nRetencoes      -= $provento;
 			$nTotalRetencoes -= $provento;
@@ -289,9 +289,9 @@ for ($iCont = 0; $iCont < pg_num_rows($rsResultado); $iCont++) {
 			$nRetencoes      += $desconto;
 			$nTotalRetencoes += $desconto;
 		}
-		
+
 	} elseif ($tipo == 'p') {
-		
+
 		if ($provento > 0) {
 			$nPagamentos      += $provento;
 			$nTotalPagamentos += $provento;
@@ -299,9 +299,9 @@ for ($iCont = 0; $iCont < pg_num_rows($rsResultado); $iCont++) {
 			$nPagamentos      -= $desconto;
 			$nTotalPagamentos -= $desconto;
 		}
-		
+
 	} elseif ($tipo == '') {
-		
+
 		if ($provento > 0) {
 			$nOutros      += $provento;
 			$nTotalOutros += $provento;
@@ -309,9 +309,9 @@ for ($iCont = 0; $iCont < pg_num_rows($rsResultado); $iCont++) {
 			$nOutros      -= $desconto;
 			$nTotalOutros -= $desconto;
 		}
-		
+
 	} elseif ($tipo == 'd') {
-		
+
 		if ($provento > 0) {
 			$nDevolucoes      += $provento;
 			$nTotalDevolucoes += $provento;
@@ -319,9 +319,9 @@ for ($iCont = 0; $iCont < pg_num_rows($rsResultado); $iCont++) {
 			$nDevolucoes      -= $desconto;
 			$nTotalDevolucoes -= $desconto;
 		}
-		
+
 	}
-	
+
 	$nProv     += $provento;
 	$nDesconto += $desconto;
 }
@@ -361,4 +361,3 @@ $oPdf->cell(115,4,'LÍQUIDO :    '                   ,0,0,"R",0);
 $oPdf->cell(30 ,4,db_formatar( ( $nTotalEmpenhos + $nTotalPagamentos - $nTotalRetencoes + $nTotalOutros + $nTotalDevolucoes ) ,'f'),0,1,"R",0);
 
 $oPdf->Output();
-?>

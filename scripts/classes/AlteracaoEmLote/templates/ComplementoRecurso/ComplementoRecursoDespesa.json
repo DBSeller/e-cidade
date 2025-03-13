@@ -1,0 +1,49 @@
+[
+    {
+        "label": "Seq. Empenho",
+        "width": "10",
+        "nome": "seq_empenho",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "seq_empenho"
+    },
+    {
+        "label": "Número do Empenho",
+        "width": "15",
+        "nome": "numero",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "numero"
+    },
+    {
+        "label": "Dotação",
+        "width": "40",
+        "nome": "dotacao",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "dotacao"
+    },
+    {
+        "label": "Valor",
+        "width": "10",
+        "nome": "valor",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "valor",
+        "align": "right"
+    },
+    {
+        "label": "Complemento",
+        "width": "40",
+        "nome": "complemento",
+        "tipo": "combo",
+        "lista": "\\ECidade\\Financeiro\\Orcamento\\Repository\\RecursoRepository::getComplementos",
+        "editavel": true,
+        "valor": "codigo",
+        "utilizaParametro": true
+    }
+]

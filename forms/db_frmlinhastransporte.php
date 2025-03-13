@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 ?>
 <div style="margin-top: 20px;"  id='ctnAbas'></div>
@@ -83,8 +83,9 @@
             </tr>
           </table>
         </fieldset>
-        <div style="padding-left: 700px;">
+        <div class="subcontainer">
           <input id="btnAdicionarLogradouro" type="button" value="Adicionar" />
+          <input id="btnGerarRetorno"        type="button" value="Gerar Retorno Automático" />
         </div>
         <fieldset id="fieldLogradouroItinerario">
           <legend class="bold">Logradouros do Itinerário</legend>
@@ -127,6 +128,7 @@
 <script>
 require_once('scripts/classes/transporteescolar/DBViewReordenacaoItinerario.classe.js');
 
+const MSG_FRMLINHASTRANSPORTE = 'educacao.transporteescolar.db_frmlinhastransporte.';
 var sUrlRpc = 'tre4_linhastransporte.RPC.php';
 var iOpcao  = <?=$iOpcao;?>;
 
@@ -234,7 +236,7 @@ function js_verificaPreenchimentoAbaLinha() {
 
   if (oInputNome.value == '') {
 
-    alert(_M('educacao.transporteescolar.db_frmlinhastransporte.input_nome_linha_vazio'));
+    alert(_M(MSG_FRMLINHASTRANSPORTE + 'input_nome_linha_vazio'));
     return false;
   }
   return true;
@@ -258,7 +260,7 @@ function js_salvarLinha() {
         oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
         oDadosRequisicao.onComplete = js_retornoSalvarLinha;
 
-    js_divCarregando(_M('educacao.transporteescolar.db_frmlinhastransporte.aguardando_salvar'), "msgBox");
+    js_divCarregando(_M(MSG_FRMLINHASTRANSPORTE + 'aguardando_salvar'), "msgBox");
     new Ajax.Request(sUrlRpc, oDadosRequisicao);
   }
 }
@@ -269,7 +271,7 @@ function js_salvarLinha() {
 function js_retornoSalvarLinha(oResponse) {
 
    js_removeObj("msgBox");
-   var oRetorno = eval('('+oResponse.responseText+')');
+   var oRetorno = JSON.parse(oResponse.responseText);
 
    alert(oRetorno.sMensagem.urlDecode());
    if (oRetorno.iStatus == 1) {
@@ -287,7 +289,7 @@ function js_pesquisaLinhas() {
   var sUrl  = 'func_linhatransporte.php';
       sUrl += '?funcao_js=parent.js_mostraLinhas|tre06_sequencial|tre06_nome|tre06_abreviatura';
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_linhatransporte', sUrl, 'Pesquisa Linhas de Transporte', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_linhatransporte', sUrl, 'Pesquisa Linhas de Transporte', true);
 }
 
 /**
@@ -319,7 +321,7 @@ function js_removerLinha() {
   var oLinha            = new Object();
       oLinha.sNomeLinha = oInputNome.value;
 
-  if (confirm(_M('educacao.transporteescolar.db_frmlinhastransporte.confirma_exclusao_linha', oLinha))) {
+  if (confirm(_M(MSG_FRMLINHASTRANSPORTE + 'confirma_exclusao_linha', oLinha))) {
 
     var oParametro              = new Object();
         oParametro.sExecucao    = 'removerLinha';
@@ -330,7 +332,7 @@ function js_removerLinha() {
         oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
         oDadosRequisicao.onComplete = js_retornoRemoverLinha;
 
-    js_divCarregando(_M('educacao.transporteescolar.db_frmlinhastransporte.aguardando_remover_linha'), "msgBox");
+    js_divCarregando(_M(MSG_FRMLINHASTRANSPORTE + 'aguardando_remover_linha'), "msgBox");
     new Ajax.Request(sUrlRpc, oDadosRequisicao);
   }
 }
@@ -341,7 +343,7 @@ function js_removerLinha() {
 function js_retornoRemoverLinha(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   alert(oRetorno.sMensagem.urlDecode());
 
   if (oRetorno.iStatus == 1) {
@@ -415,7 +417,7 @@ function js_abreViewReordenar() {
       js_buscaLogradourosItinerarios();
     });
   } else {
-    alert(_M('educacao.transporteescolar.db_frmlinhastransporte.nenhum_logradouro_para_reordenar'));
+    alert(_M(MSG_FRMLINHASTRANSPORTE + 'nenhum_logradouro_para_reordenar'));
   }
 }
 
@@ -426,6 +428,9 @@ var oLinkLogradouro                  = document.createElement('a');
     oLinkLogradouro.innerHTML        = 'Logradouro:';
     oLinkLogradouro.style.fontWeight = 'bold';
     oLinkLogradouro.href             = '#';
+    oLinkLogradouro.addClassName('DBAncora');
+    oLinkLogradouro.addClassName('dbancora');
+
     oLinkLogradouro.setAttribute('onclick', 'js_pesquisaLogradouro(true);');
 $('ctnLinkLogradouro').appendChild(oLinkLogradouro);
 
@@ -464,8 +469,8 @@ $('ctnDescricaoLogradouro').appendChild(oInputDescricaoLogradouro);
 var oGridItinerarios              = new DBGrid("gridItinerarios");
     oGridItinerarios.nameInstance = 'oGridItinerarios';
     oGridItinerarios.setCellAlign(new Array("center", "left", "left", "left", "center", "center"));
-    oGridItinerarios.setCellWidth(new Array("5%", "55%", "25%", "5%", "5%", "5%"));
-    oGridItinerarios.setHeader(new Array("Código", "Logradouro", "Bairro", "Ida", "Ordem", "Ação"));
+    oGridItinerarios.setCellWidth(new Array("5%", "53%", "25%", "7%", "5%", "5%"));
+    oGridItinerarios.setHeader(new Array("Código", "Logradouro", "Bairro", "Ida/Retorno", "Ordem", "Ação"));
     oGridItinerarios.setHeight(200);
     oGridItinerarios.aHeaders[0].lDisplayed = false;
     oGridItinerarios.show($('ctnGridItinerarioLogradouros'));
@@ -476,6 +481,7 @@ var oGridItinerarios              = new DBGrid("gridItinerarios");
 $('btnAdicionarLogradouro').observe("click", function(event) {
   js_adicionarLogradouro();
 });
+
 
 /**
  * Observamos o change do codigo do logradouro, chamando o metodo js_pesquisaLogradouro para retornar a descricao
@@ -499,7 +505,7 @@ function js_pesquisaLogradouro(lMostra) {
       sUrl += '&pesquisa_chave='+oInputCodigoLogradouro.value;
     }
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_bairrologradouro', sUrl, 'Pesquisa Logradouro', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_bairrologradouro', sUrl, 'Pesquisa Logradouro', lMostra);
 }
 
 /**
@@ -532,7 +538,7 @@ function js_adicionarLogradouro() {
 
   if (empty(oInputCodigoLogradouro.value)) {
 
-    alert(_M('educacao.transporteescolar.db_frmlinhastransporte.codigo_logradouro_vazio'));
+    alert(_M(MSG_FRMLINHASTRANSPORTE + 'codigo_logradouro_vazio'));
     return false;
   }
 
@@ -547,7 +553,7 @@ function js_adicionarLogradouro() {
       oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
       oDadosRequisicao.onComplete = js_retornoAdicionarLogradouro;
 
-  js_divCarregando(_M('educacao.transporteescolar.db_frmlinhastransporte.aguardando_adicionar_logradouro'), "msgBox");
+  js_divCarregando(_M(MSG_FRMLINHASTRANSPORTE + 'aguardando_adicionar_logradouro'), "msgBox");
   new Ajax.Request(sUrlRpc, oDadosRequisicao);
 }
 
@@ -557,7 +563,7 @@ function js_adicionarLogradouro() {
 function js_retornoAdicionarLogradouro(oResponse) {
 
    js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.sMensagem.urlDecode());
   if (oRetorno.iStatus == 1) {
@@ -584,7 +590,7 @@ function js_buscaLogradourosItinerarios() {
       oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
       oDadosRequisicao.onComplete = js_retornoBuscaLogradourosItinerarios;
 
-  js_divCarregando(_M('educacao.transporteescolar.db_frmlinhastransporte.aguardando_buscar_logradouros'), "msgBox");
+  js_divCarregando(_M(MSG_FRMLINHASTRANSPORTE + 'aguardando_buscar_logradouros'), "msgBox");
   new Ajax.Request(sUrlRpc, oDadosRequisicao);
 }
 
@@ -594,7 +600,7 @@ function js_buscaLogradourosItinerarios() {
 function js_retornoBuscaLogradourosItinerarios(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   oGridItinerarios.clearAll(true);
   if (oRetorno.aLogradouros.length > 0) {
@@ -627,7 +633,7 @@ function js_retornoBuscaLogradourosItinerarios(oResponse) {
  */
 function js_removerLogradouro(iCodigoLinhaLogradouro) {
 
-  if (confirm(_M('educacao.transporteescolar.db_frmlinhastransporte.remover_logradouro'))) {
+  if (confirm(_M(MSG_FRMLINHASTRANSPORTE + 'remover_logradouro'))) {
 
     var oParametro                        = new Object();
         oParametro.sExecucao              = 'removerLogradouro';
@@ -638,7 +644,7 @@ function js_removerLogradouro(iCodigoLinhaLogradouro) {
         oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
         oDadosRequisicao.onComplete = js_retornoRemoverLogradouro;
 
-    js_divCarregando(_M('educacao.transporteescolar.db_frmlinhastransporte.aguardando_remover_logradouro'), "msgBox");
+    js_divCarregando(_M(MSG_FRMLINHASTRANSPORTE + 'aguardando_remover_logradouro'), "msgBox");
     new Ajax.Request(sUrlRpc, oDadosRequisicao);
   }
 }
@@ -649,7 +655,7 @@ function js_removerLogradouro(iCodigoLinhaLogradouro) {
 function js_retornoRemoverLogradouro(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.sMensagem.urlDecode());
   if (oRetorno.iStatus == 1) {
@@ -723,7 +729,7 @@ function js_validaHora() {
 
   if (empty(oInputHoraPartida.value)) {
 
-    alert(_M('educacao.transporteescolar.db_frmlinhastransporte.hora_partida_vazio'));
+    alert(_M(MSG_FRMLINHASTRANSPORTE + 'hora_partida_vazio'));
     return false;
   }
 
@@ -732,7 +738,7 @@ function js_validaHora() {
 
   if (iHoraPartida > 23 || iMinutosPartida > 59) {
 
-    alert(_M('educacao.transporteescolar.db_frmlinhastransporte.formato_hora_partida_invalido'));
+    alert(_M(MSG_FRMLINHASTRANSPORTE + 'formato_hora_partida_invalido'));
     $('oInputHoraPartida').value = "00:00";
     $('oInputHoraPartida').focus();
     return false;
@@ -740,7 +746,7 @@ function js_validaHora() {
 
   if (empty(oInputHoraChegada.value)) {
 
-    alert(_M('educacao.transporteescolar.db_frmlinhastransporte.hora_chegada_vazio'));
+    alert(_M(MSG_FRMLINHASTRANSPORTE + 'hora_chegada_vazio'));
     return false;
   }
 
@@ -749,7 +755,7 @@ function js_validaHora() {
 
   if (iHoraChegada > 23 || iMinutosChegada > 59) {
 
-    alert(_M('educacao.transporteescolar.db_frmlinhastransporte.formato_hora_chegada_invalido'));
+    alert(_M(MSG_FRMLINHASTRANSPORTE + 'formato_hora_chegada_invalido'));
     $('oInputHoraChegada').value = "00:00";
     $('oInputHoraChegada').focus();
     return false;
@@ -759,7 +765,7 @@ function js_validaHora() {
       (iHoraChegada == iHoraPartida) && (iMinutosPartida > iMinutosChegada)
       ) {
 
-    alert(_M('educacao.transporteescolar.db_frmlinhastransporte.hora_partida_maior'));
+    alert(_M(MSG_FRMLINHASTRANSPORTE + 'hora_partida_maior'));
     return false;
   }
 
@@ -785,7 +791,7 @@ function js_adicionarHorario() {
         oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
         oDadosRequisicao.onComplete = js_retornoAdicionarHorario;
 
-    js_divCarregando(_M('educacao.transporteescolar.db_frmlinhastransporte.aguardando_adicionar_horario'), "msgBox");
+    js_divCarregando(_M(MSG_FRMLINHASTRANSPORTE + 'aguardando_adicionar_horario'), "msgBox");
     new Ajax.Request(sUrlRpc, oDadosRequisicao);
   }
 }
@@ -796,7 +802,7 @@ function js_adicionarHorario() {
 function js_retornoAdicionarHorario(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.sMensagem.urlDecode());
   if (oRetorno.iStatus == 1) {
@@ -829,7 +835,7 @@ function js_buscaHorariosItinerarios() {
       oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
       oDadosRequisicao.onComplete = js_retornoBuscaHorariosItinerarios;
 
-  js_divCarregando(_M('educacao.transporteescolar.db_frmlinhastransporte.aguardando_buscar_horarios'), "msgBox");
+  js_divCarregando(_M(MSG_FRMLINHASTRANSPORTE + 'aguardando_buscar_horarios'), "msgBox");
   new Ajax.Request(sUrlRpc, oDadosRequisicao);
 }
 
@@ -839,7 +845,7 @@ function js_buscaHorariosItinerarios() {
 function js_retornoBuscaHorariosItinerarios(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   oGridHorarios.clearAll(true);
   if (oRetorno.aHorariosItinerario.length > 0) {
@@ -871,7 +877,7 @@ function js_retornoBuscaHorariosItinerarios(oResponse) {
  */
 function js_removerHorario(iCodigoHorario) {
 
-  if (confirm(_M('educacao.transporteescolar.db_frmlinhastransporte.remover_itinerario'))) {
+  if (confirm(_M(MSG_FRMLINHASTRANSPORTE + 'remover_itinerario'))) {
 
     var oParametro                = new Object();
         oParametro.sExecucao      = 'removerHorario';
@@ -882,7 +888,7 @@ function js_removerHorario(iCodigoHorario) {
         oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
         oDadosRequisicao.onComplete = js_retornoRemoverHorario;
 
-    js_divCarregando(_M('educacao.transporteescolar.db_frmlinhastransporte.aguardando_remover_horario'), "msgBox");
+    js_divCarregando(_M(MSG_FRMLINHASTRANSPORTE + 'aguardando_remover_horario'), "msgBox");
     new Ajax.Request(sUrlRpc, oDadosRequisicao);
   }
 }
@@ -893,7 +899,7 @@ function js_removerHorario(iCodigoHorario) {
 function js_retornoRemoverHorario(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.sMensagem.urlDecode());
   if (oRetorno.iStatus == 1) {
@@ -924,4 +930,25 @@ if (iOpcao == 1) {
 var oDBAbaItinerario         = new DBAbas($('ctnAbasItinerario'));
 var oAbaItinerarioLogradouro = oDBAbaItinerario.adicionarAba("Logradouro", $('ctnItinerarioLogradouro'));
 var oAbaItinerarioHorario    = oDBAbaItinerario.adicionarAba("Horários", $('ctnItinerarioHorario'));
+
+
+/**********************************************************************************************************/
+/*########################## GERA O ITINERÁRIO DE RETORNO ATRAVÉS DA IDA #################################*/
+/**********************************************************************************************************/
+$('btnGerarRetorno').addEventListener('click', function () {
+
+  var oParametro = {
+    'sExecucao'    : 'gerarRetorno',
+    'iCodigoLinha' : oInputSequencial.value
+  };
+
+  new AjaxRequest(sUrlRpc, oParametro, function(oRetorno, lErro){
+
+    alert(oRetorno.sMensagem.urlDecode());
+    if ( lErro ) {
+      return;
+    }
+    js_buscaLogradourosItinerarios();
+  }).setMessage(_M(MSG_FRMLINHASTRANSPORTE + 'aguarde_gerando_retorno' )).execute();
+});
 </script>

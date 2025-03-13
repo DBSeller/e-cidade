@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -52,6 +52,10 @@ class cl_regracompensacao {
    var $k155_automatica = 'f'; 
    var $k155_permitetransferencia = 'f'; 
    var $k155_instit = 0; 
+   var $k155_database_dia = null;
+   var $k155_database_mes = null;
+   var $k155_database_ano = null;
+   var $k155_database = null;
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  k155_sequencial = int4 = Código 
@@ -64,6 +68,7 @@ class cl_regracompensacao {
                  k155_automatica = bool = Crédito Automático 
                  k155_permitetransferencia = bool = Permite Transferência 
                  k155_instit = int4 = Código Instituição 
+                 k155_database = date = Data base 
                  ";
    //funcao construtor da classe 
    function cl_regracompensacao() { 
@@ -93,6 +98,14 @@ class cl_regracompensacao {
        $this->k155_automatica = ($this->k155_automatica == "f"?@$GLOBALS["HTTP_POST_VARS"]["k155_automatica"]:$this->k155_automatica);
        $this->k155_permitetransferencia = ($this->k155_permitetransferencia == "f"?@$GLOBALS["HTTP_POST_VARS"]["k155_permitetransferencia"]:$this->k155_permitetransferencia);
        $this->k155_instit = ($this->k155_instit == ""?@$GLOBALS["HTTP_POST_VARS"]["k155_instit"]:$this->k155_instit);
+       if($this->k155_database == ""){
+         $this->k155_database_dia = ($this->k155_database_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["k155_database_dia"]:$this->k155_database_dia);
+         $this->k155_database_mes = ($this->k155_database_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["k155_database_mes"]:$this->k155_database_mes);
+         $this->k155_database_ano = ($this->k155_database_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["k155_database_ano"]:$this->k155_database_ano);
+         if($this->k155_database_dia != ""){
+            $this->k155_database = $this->k155_database_ano."-".$this->k155_database_mes."-".$this->k155_database_dia;
+         }
+       }
      }else{
        $this->k155_sequencial = ($this->k155_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["k155_sequencial"]:$this->k155_sequencial);
      }
@@ -163,6 +176,9 @@ class cl_regracompensacao {
        $this->erro_status = "0";
        return false;
      }
+     if($this->k155_database == null ){
+       $this->k155_database = "null";
+     }
      if($k155_sequencial == "" || $k155_sequencial == null ){
        $result = db_query("select nextval('regracompensacao_k155_sequencial_seq')"); 
        if($result==false){
@@ -206,6 +222,7 @@ class cl_regracompensacao {
                                       ,k155_automatica 
                                       ,k155_permitetransferencia 
                                       ,k155_instit 
+                                      ,k155_database 
                        )
                 values (
                                 $this->k155_sequencial 
@@ -218,6 +235,7 @@ class cl_regracompensacao {
                                ,'$this->k155_automatica' 
                                ,'$this->k155_permitetransferencia' 
                                ,$this->k155_instit 
+                               ,".($this->k155_database == "null" || $this->k155_database == ""?"null":"'".$this->k155_database."'")." 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -259,6 +277,7 @@ class cl_regracompensacao {
        $resac = db_query("insert into db_acount values($acount,3476,19568,'','".AddSlashes(pg_result($resaco,0,'k155_automatica'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,3476,19575,'','".AddSlashes(pg_result($resaco,0,'k155_permitetransferencia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,3476,19569,'','".AddSlashes(pg_result($resaco,0,'k155_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3476,1010005,'','".AddSlashes(pg_result($resaco,0,'k155_database'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -379,6 +398,15 @@ class cl_regracompensacao {
          return false;
        }
      }
+     if(trim($this->k155_database)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k155_database_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["k155_database_dia"] !="") ){
+       $sql  .= $virgula." k155_database = '$this->k155_database' ";
+       $virgula = ",";
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["k155_database_dia"])){
+         $sql  .= $virgula." k155_database = null ";
+         $virgula = ",";
+       }
+     }
      $sql .= " where ";
      if($k155_sequencial!=null){
        $sql .= " k155_sequencial = $this->k155_sequencial";
@@ -410,6 +438,8 @@ class cl_regracompensacao {
            $resac = db_query("insert into db_acount values($acount,3476,19575,'".AddSlashes(pg_result($resaco,$conresaco,'k155_permitetransferencia'))."','$this->k155_permitetransferencia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["k155_instit"]) || $this->k155_instit != "")
            $resac = db_query("insert into db_acount values($acount,3476,19569,'".AddSlashes(pg_result($resaco,$conresaco,'k155_instit'))."','$this->k155_instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["k155_database"]) || $this->k155_database != "")
+               $resac = db_query("insert into db_acount values($acount,3476,1010005,'".AddSlashes(pg_result($resaco,$conresaco,'k155_database'))."','$this->k155_database',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
@@ -467,6 +497,7 @@ class cl_regracompensacao {
          $resac = db_query("insert into db_acount values($acount,3476,19568,'','".AddSlashes(pg_result($resaco,$iresaco,'k155_automatica'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3476,19575,'','".AddSlashes(pg_result($resaco,$iresaco,'k155_permitetransferencia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3476,19569,'','".AddSlashes(pg_result($resaco,$iresaco,'k155_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac  = db_query("insert into db_acount values($acount,3476,1010005,'','".AddSlashes(pg_result($resaco,$iresaco,'k155_database'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from regracompensacao

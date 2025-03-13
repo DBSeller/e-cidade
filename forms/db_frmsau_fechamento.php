@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -193,7 +193,7 @@ function js_pesquisasd97_i_login(mostra) {
 
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_db_usuarios',
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_db_usuarios',
                         'func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome', 'Pesquisa',
                         true);
 
@@ -201,7 +201,7 @@ function js_pesquisasd97_i_login(mostra) {
 
      if (document.form1.sd97_i_login.value != '') {
 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios',
                             'func_db_usuarios.php?pesquisa_chave='+document.form1.sd97_i_login.value+
                             '&funcao_js=parent.js_mostradb_usuarios', 'Pesquisa', false);
 
@@ -231,7 +231,7 @@ function js_mostradb_usuarios1(chave1, chave2) {
 }
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_sau_fechamento',
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_sau_fechamento',
                       'func_sau_fechamento.php?funcao_js=parent.js_preenchepesquisa|sd97_i_codigo', 'Pesquisa' ,true);
 
 }

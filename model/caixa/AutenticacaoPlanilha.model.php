@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Classe para autenticar planilha de arrecadação
  * @author matheus.felini
  * @package caixa
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.32 $
  */
 class AutenticacaoPlanilha {
 
@@ -56,7 +56,7 @@ class AutenticacaoPlanilha {
    * @var integer
    */
   private $iCodigoUsuario;
-
+ 
   /**
    * Constrói o objeto para executar a autenticação da planilha passada pelo parâmetro ao construtor
    * @param  PlanilhaArrecadacao $oPlanilha
@@ -89,7 +89,7 @@ class AutenticacaoPlanilha {
 
     $rsAutenticacao    = db_query($sSqlAutenticacao);
     if (!$rsAutenticacao) {
-      throw new BusinessException("Não foi possível autenticar a planilha.");
+      throw new BusinessException("Não foi possível autenticar a planilha.\nPossível causa: Conciliação da conta bancária pode estar fechada. Verifique.");
     }
 
   	$sRetornoAutenticacao = db_utils::fieldsMemory($rsAutenticacao, 0)->fc_autenticaplanilha;
@@ -101,21 +101,87 @@ class AutenticacaoPlanilha {
   	}
 
   	$aAutenticacoes = explode(",", substr_replace($sRetornoAutenticacao, '', 0, 1));
-
-  	foreach ($aAutenticacoes as $iCodigoAutenticacao) {
-
+    $aReceitaPlanilha = $this->oPlanilha->getReceitasPlanilha();
+    foreach ($aAutenticacoes as $i => $iCodigoAutenticacao) {
+      /**
+       * Foi observado um sincronismo entre o  numero de autenticacoes e de receitas da planilha; alem disso o 
+       * codigo da autenticacao aponta para a mesma receita na mesma ordem obtida pelo array de ReceitaPlanilha 
+       * Por isso, a posicao referenciada no array.
+       */
+      $oReceitaPlanilha = $aReceitaPlanilha[$i];
   	  $oDadosAutenticacao  = self::getDadosAutenticacao(null);
-  	  $lReceita           = $this->executarLancamentoContabeis($iCodigoAutenticacao, false, $oDadosAutenticacao);
+  	  $lReceita           = $this->executarLancamentoContabeis($iCodigoAutenticacao, false, $oDadosAutenticacao,$oReceitaPlanilha);
   	  $lReceitaExtra      = $this->executarLancamentosReceitaExtraOrcamentaria($iCodigoAutenticacao, false, $oDadosAutenticacao);
 
   	  if (!$lReceita && !$lReceitaExtra) {
   	    throw new BusinessException("Não encontradas receitas para serem arrecadadas");
   	  }
-
   	}
 
+    if (slip::getParametroSlipAutomatico()) {
+      $this->gerarSlipDasReceitasExtras();
+    }
   	return true;
   }
+
+  /**
+   * verifica slips ja gerados para planilha
+   */
+  public function slipJaVinculado( $codigoReceita ){
+
+    $oDao = new cl_slipplacaixarec;
+    $sql = $oDao->sql_query_file(null, "*", null, "k207_placaixarec = {$codigoReceita}");
+    $oDao->sql_record($sql);
+    if ($oDao->numrows > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * gerar slip para as receitas extras da planilha
+   */
+   public function gerarSlipDasReceitasExtras()
+   {
+
+        $aReceitas = $this->oPlanilha->getReceitasPlanilha();
+        foreach($aReceitas as $oReceita){
+
+          if ($this->slipJaVinculado($oReceita->getCodigo())) {
+            continue;
+          }
+
+          if ( ReceitaExtraOrcamentaria::isExtra( $oReceita->getTipoReceita() )) {
+
+            $oReceitaExtra = new ReceitaExtraOrcamentaria($oReceita->getTipoReceita());
+
+            $iContaDebito = $oReceitaExtra->getContaPlanoPCASP()->getReduzido();
+            $iContaCredito = $oReceita->getContaTesouraria()->getCodigoConta();
+            if ( !empty($oReceita->getContaTesouraria()->getContaExtra()) ) {
+              $iContaCredito = $oReceita->getContaTesouraria()->getContaExtra();
+            }
+
+            $sObservacao  = "Correspondente ao recolhimento do valor apropriado através da planilha de lançamentos: ";
+            $sObservacao .= "{$this->oPlanilha->getCodigo()}:";
+            $oSlip = new slip();
+            $oSlip->setContaCredito($iContaCredito);
+            $oSlip->setContaDebito($iContaDebito);
+            $oSlip->setHistorico(9017);
+            $oSlip->setCaracteristicaPeculiarCredito("000");
+            $oSlip->setCaracteristicaPeculiarDebito("000");
+            $oSlip->setValor($oReceita->getValor());
+            $oSlip->setTipoPagamento(3);
+            $oSlip->setSituacao(1);
+            $oSlip->setNumCgm($oReceita->getCGM()->getCodigo());
+            $oSlip->setObservacoes($sObservacao);
+            $oSlip->save();
+            Slip::vincularTipoOperacaoSlip($oSlip->getSlip(), 13);
+            Slip::vincularSlipReceitaPlanilha($oSlip->getSlip(), $oReceita->getCodigo());
+
+          }
+
+        }
+   }
 
   /**
    * Estorna a autenticação da planilha
@@ -136,7 +202,7 @@ class AutenticacaoPlanilha {
     $rsEstorno = db_query($sSql);
 
     if (!$rsEstorno) {
-      throw new BusinessException("Não foi possível estornar a autenticação da planilha.");
+      throw new BusinessException("Não foi possível estornar a autenticação da planilha.\nPossível causa: Conciliação da conta bancária pode estar fechada. Verifique.");
     }
 
   	$sRetornoEstorno = db_utils::fieldsMemory($rsEstorno, 0)->fc_estornoplanilha;
@@ -148,47 +214,77 @@ class AutenticacaoPlanilha {
   	}
 
   	$aAutenticacoes = explode(",", substr_replace($sRetornoEstorno, '', 0, 1));
+    $aReceitaPlanilha = $this->oPlanilha->getReceitasPlanilha();
 
   	if ($this->oPlanilha->existeLancamentoContabil()) {
+    	foreach ($aAutenticacoes as $i => $iCodigoAutenticacao) {
+        /**
+         * Foi observado um sincronismo entre o  numero de autenticacoes e de receitas da planilha; alem disso o 
+         * codigo da autenticacao aponta para a mesma receita na mesma ordem obtida pelo array de ReceitaPlanilha 
+         * Por isso, a posicao referenciada no array.
+         */
+        $oReceitaPlanilha = $aReceitaPlanilha[$i];
+        $oDadoAutenticacao  = self::getDadosAutenticacao(null);
+    	  $lReceita           = $this->executarLancamentoContabeis($iCodigoAutenticacao, true, $oDadoAutenticacao,$oReceitaPlanilha);
+    	  $lReceitaExtra      = $this->executarLancamentosReceitaExtraOrcamentaria($iCodigoAutenticacao, true, $oDadoAutenticacao );
 
-    	foreach ($aAutenticacoes as $iCodigoAutenticacao) {
-
-    	  $oDadoAutenticacao  = self::getDadosAutenticacao(null);
-    		$lReceita           = $this->executarLancamentoContabeis($iCodigoAutenticacao, true, $oDadoAutenticacao );
-    		$lReceitaExtra      = $this->executarLancamentosReceitaExtraOrcamentaria($iCodigoAutenticacao, true, $oDadoAutenticacao );
-
-    		if (!$lReceita && !$lReceitaExtra) {
-    		  throw new BusinessException("Não encontradas receitas para serem arrecadadas");
-    		}
+    	  if (!$lReceita && !$lReceitaExtra) {
+    	    throw new BusinessException("Não encontradas receitas para serem arrecadadas");
+    	  }
     	}
   	}
+
+    if (slip::getParametroSlipAutomatico()) {
+      $this->estornarSlipsGeradosAutomaticos();
+    }
+
     return true;
   }
 
 
-  public function executarLancamentoContabeis($iCodigoAutenticacao, $lEstorno=false, $oDadoAutenticacao) {
+    /**
+     * estrna os slips gerados automaticamente para as receitas extras da planilha
+     */
+    public function estornarSlipsGeradosAutomaticos(){
+
+        $iCodigoPlanilha   = $this->oPlanilha->getCodigo();
+        // busca slips autenticados
+        $aSlipsAutomaticos = $this->oPlanilha->getSlipsAutomaticosDasExtras(2);
+        foreach ($aSlipsAutomaticos as $slip ){
+
+            $oTransferencia = TransferenciaFactory::getInstance( null, $slip);
+            $oTransferencia->anular("Estorno de Slip Gerado automaticamente da planilha {$iCodigoPlanilha}");
+            $oTransferencia->executarLancamentoContabil(null, true);
+        }
+    }
 
 
-    $oDaoCorrente           = db_utils::getDao('corrente');
+  public function executarLancamentoContabeis(
+      $iCodigoAutenticacao, 
+      $lEstorno=false, 
+      $oDadoAutenticacao,
+      $oReceitaPlanilha = null
+  ) {
+
+    $oDaoCorrente           = new cl_corrente;
     $sSqlBuscaDadosCorrente = $oDaoCorrente->sql_query_arrecadacao_receita($oDadoAutenticacao->k12_id,
                                                                            $oDadoAutenticacao->k12_data,
                                                                            $iCodigoAutenticacao,
                                                                            "xxx.*, orcreceita.o70_codigo");
 
-
     $rsBuscaDadosPlanilha   = db_query($sSqlBuscaDadosCorrente);
-
+   
     if ( !$rsBuscaDadosPlanilha) {
       $sMsgErro = "Não é possível buscar os dados da autenticação para executar os lançamentos contábeis.";
       throw new DBException($sMsgErro);
     }
 
     $iTotalReceitas = pg_num_rows($rsBuscaDadosPlanilha);
-
+    
     if ($iTotalReceitas == 0) {
       return false;
     }
-
+ 
     for ($iRowReceita = 0; $iRowReceita < $iTotalReceitas; $iRowReceita++) {
 
     	$oDadoSqlGeral = db_utils::fieldsMemory($rsBuscaDadosPlanilha, $iRowReceita);
@@ -197,7 +293,6 @@ class AutenticacaoPlanilha {
       $iAno              = db_getsession('DB_anousu');
     	$oReceitaContabil  = ReceitaContabilRepository::getReceitaByCodigo($oDadoSqlGeral->k02_codrec, $iAno);
       $iCodigoEstrutural = substr($oReceitaContabil->getContaOrcamento()->getEstrutural(), 0, 1);
-
       /**
        *
        *
@@ -253,32 +348,54 @@ class AutenticacaoPlanilha {
     	  $lEstorno = true;
     	}
 
-    	// @todo - revisar questao da receita (codrec) para mais de uma instituicao
-    	// @todo - arrumar nome para este metodo
-    	$oReceitaContabil->processaLancamentosReceita($oDadoSqlGeral->arrecada,
-    	                                              $oDadoAutenticacao->k12_id,
-    	                                              $oDadoAutenticacao->k12_data,
-    	                                              $oDadoSqlGeral->k12_autent,
-    	                                              $lEstorno,
-    	                                              $oDadoSqlGeral->k12_conta,
-    	                                              $oDadoSqlGeral->k12_histcor,
-    	                                              $this->oPlanilha->getCodigo());
+      $cp = null;
+      $cgm = null;
+
+      if (!empty($oReceitaPlanilha) && $oReceitaPlanilha instanceof ReceitaPlanilha) {
+        $cp =  $oReceitaPlanilha->getCaracteristicaPeculiar()->getSequencial();
+        $cgm = $oReceitaPlanilha->getCGM()->getCodigo();
+      }
+      
+      // @todo - revisar questao da receita (codrec) para mais de uma instituicao
+      // @todo - arrumar nome para este metodo
+      $oReceitaContabil->processaLancamentosReceita(
+          $oDadoSqlGeral->arrecada,
+          $oDadoAutenticacao->k12_id,
+          $oDadoAutenticacao->k12_data,
+          $oDadoSqlGeral->k12_autent,
+          $lEstorno,
+          $oDadoSqlGeral->k12_conta,
+          $oDadoSqlGeral->k12_histcor,
+          $this->oPlanilha->getCodigo(),
+          null,
+          null,
+          false,
+          null,
+          $cp,
+          $cgm
+      );
     }
     return true;
   }
 
-  /**
-   * Executa os lançamentos contábeis para receitas extras orçamentárias
-   * @param integer $iCodigoAutenticacao
-   * @param string $lEstorno
-   * @throws BusinessException
-   */
+    /**
+     * Executa os lançamentos contábeis para receitas extras orçamentárias
+     *
+     * @param      $iCodigoAutenticacao
+     * @param bool $lEstorno
+     * @param      $oDadoAutenticacao
+     * @return bool
+     * @throws BusinessException
+     * @throws Exception
+     */
   public function executarLancamentosReceitaExtraOrcamentaria($iCodigoAutenticacao, $lEstorno = false, $oDadoAutenticacao) {
 
     $sCamposExtra  = "corrente.k12_autent, corrente.k12_data, corrente.k12_id, k12_conta,";
     $sCamposExtra .= "tabrec.k02_codigo,";
     $sCamposExtra .= "k02_reduz,";
     $sCamposExtra .= "k81_concarpeculiar,";
+    $sCamposExtra .= "k81_codigo,";
+    $sCamposExtra .= "k81_numcgm,";
     $sCamposExtra .= "k12_histcor,";
     $sCamposExtra .= "corrente.k12_id,";
     $sCamposExtra .= "corrente.k12_autent,";
@@ -297,7 +414,7 @@ class AutenticacaoPlanilha {
     $sWhereExtra .= " and corrente.k12_autent = $iCodigoAutenticacao";
     $sWhereExtra .= " and corrente.k12_id     = {$oDadoAutenticacao->k12_id}";
 
-    $oDaoCorrente          = db_utils::getDao("corrente");
+    $oDaoCorrente          = new cl_corrente;
     $sSqlBuscaReceitaExtra = $oDaoCorrente->sql_query_autenticacao_receita_extra_planilha(null,
                                                                                           null,
                                                                                           null,
@@ -315,6 +432,14 @@ class AutenticacaoPlanilha {
       return false;
     }
 
+    $daoPlacaixaRecFolha = new cl_rhempenhofolharubricaplanilha();
+    $where = " rh111_placaixarec = ".$this->oPlanilha->getCodigo();
+    $sqlPlanilhaFolha  = $daoPlacaixaRecFolha->sql_query_file(null,"*",null,$where);
+    $rsPlanilhaFolha   = $daoPlacaixaRecFolha->sql_record($sqlPlanilhaFolha);
+    $planilhaFolha = false;
+    if ($rsPlanilhaFolha && pg_num_rows($rsPlanilhaFolha) > 0) {
+        $planilhaFolha = true;
+    }
     $iAnoSessao         = db_getsession("DB_anousu");
     $dtDataAutenticacao = $oDadoAutenticacao->k12_data;
     for ($iRowAutenticacao = 0; $iRowAutenticacao < $iTotalReceitasExtras; $iRowAutenticacao++) {
@@ -324,16 +449,24 @@ class AutenticacaoPlanilha {
       /**
        * Decidimos o tipo de documento aqui pois a receita pode ter sido lançada na planilha com valor negativo
        */
+
       $iCodigoDocumento = 160;
       $lEstorno         = false;
       if ($oDadoAutenticacao->k12_estorn == "t") {
-
         $lEstorno         = true;
         $iCodigoDocumento = 162;
       }
 
+      $oContaContabil = new ContaPlanoPCASP(null, $iAnoSessao, $oDadoAutenticacao->k02_reduz);
+      if ( substr($oContaContabil->getEstrutural(), 0, 4) != '2188' ) {
+        $iCodigoDocumento = ( $lEstorno? 152: 150 );
+        if( $planilhaFolha ){
+            $iCodigoDocumento = ( $lEstorno? 153: 151 );
+        }
+      }
 
-      $sObservacaoHistorico = "Planilha de Receita Extra-Orçamentária";
+
+        $sObservacaoHistorico = "Planilha de Receita Extra-Orçamentária";
       if ($oDadoAutenticacao->k12_histcor != "") {
         $sObservacaoHistorico = $oDadoAutenticacao->k12_histcor;
       }
@@ -345,11 +478,11 @@ class AutenticacaoPlanilha {
       $oLancamentoAuxiliar->setContaCredito($oDadoAutenticacao->k02_reduz);
       $oLancamentoAuxiliar->setContaDebito($oDadoAutenticacao->k12_conta);
       $oLancamentoAuxiliar->setEstorno($lEstorno);
+      $oLancamentoAuxiliar->setFavorecido($oDadoAutenticacao->k81_numcgm);
       $oLancamentoAuxiliar->setCaracteristicaPeculiar($oDadoAutenticacao->k81_concarpeculiar);
       $oLancamentoAuxiliar->setAutenticacao($oDadoAutenticacao->k12_id);
       $oLancamentoAuxiliar->setDataAutenticacao($oDadoAutenticacao->k12_data);
       $oLancamentoAuxiliar->setAutenticadora($iCodigoAutenticacao);
-
       $oEventoContabil = new EventoContabil($iCodigoDocumento, $iAnoSessao);
       $oEventoContabil->executaLancamento($oLancamentoAuxiliar, $dtDataAutenticacao);
     }
@@ -368,7 +501,7 @@ class AutenticacaoPlanilha {
     if (empty($dtAutenticacao)) {
       $dtDataBuscar = date("Y-m-d", db_getsession("DB_datausu"));
     }
-    $oDaoCorrenteAutenticacao     = db_utils::getDao("corautent");
+    $oDaoCorrenteAutenticacao     = new cl_corautent;
     $sCampoAutenticacao           = "max(k12_autent) as k12_autent, ";
     $sCampoAutenticacao          .= "k12_data, ";
     $sCampoAutenticacao          .= "k12_id ";
@@ -394,7 +527,7 @@ class AutenticacaoPlanilha {
    */
   private function verificaReceitasVinculadasEmSlip() {
 
-    $oDaoPlaCaixaRecSlip = db_utils::getDao('placaixarecslip');
+    $oDaoPlaCaixaRecSlip = new cl_placaixarecslip;
     $sWhereSlip          = "placaixa.k80_codpla = {$this->oPlanilha->getCodigo()}";
     $sSqlBuscaSlip       = $oDaoPlaCaixaRecSlip->sql_query_planilha_slip(null, "sliptipooperacaovinculo.*", null, $sWhereSlip);
     $rsBuscaSlip         = $oDaoPlaCaixaRecSlip->sql_record($sSqlBuscaSlip);

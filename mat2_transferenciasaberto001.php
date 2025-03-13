@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 list($iAno, $iMes, $iDia) = explode("-", date("Y-m-d", db_getsession("DB_datausu")));
 ?>
 <html>
@@ -51,13 +51,13 @@ list($iAno, $iMes, $iDia) = explode("-", date("Y-m-d", db_getsession("DB_datausu
           <td><b>Data Inicial:</b></td>
           <td>
             <?php
-              db_inputdata("dtInicial", $iDia, $iMes, $iAno, true, "text", 1);
+              db_inputdata("dtInicial", "", "", "", true, "text", 1);
             ?>
           </td>
           <td><b>Data Final:</b></td>
           <td>
             <?php
-              db_inputdata("dtFinal", "", "", "", true, "text", 1);
+              db_inputdata("dtFinal", $iDia, $iMes, $iAno, true, "text", 1);
             ?>
           </td>
         </tr>

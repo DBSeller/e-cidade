@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+
+db_postmemory($_POST);
+
 $gform = new cl_formulario_rel_pes;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
 $clrotulo->label('DBtxt27');
 $clrotulo->label('DBtxt28');
-db_postmemory($HTTP_POST_VARS);
 // relatório tambem serve para ver a pirâmide salarial.
 ?>
 <html>
@@ -62,48 +64,52 @@ function js_emite(){
     return false;
   }
 
+  if(document.form1.faixa1.value.trim().length==0 || document.form1.faixa2.value.trim().length==0){
+    alert('Informe valores inicial/final corretamente na faixa.');
+    return false;
+  }
+
   qry  = "?colunas="+selecionados;
   qry += '&ano='+document.form1.anofolha.value;
   qry += '&qtd='+document.form1.qtd.value;
   qry += '&mes='+document.form1.mesfolha.value;
   qry += '&func_lota='+document.form1.func_lota.value;
   qry += '&faixa1='+document.form1.faixa1.value;
-	qry += '&faixa2='+document.form1.faixa2.value;
+  qry += '&faixa2='+document.form1.faixa2.value;
   qry += '&tipo_faixa='+document.form1.tipo_faixa.value;
+  qry += '&selecao='+document.form1.selecao.value;
   
-  if(document.form1.func_lota.value == 'l'){
-     if(document.form1.sellotac){
-       valores = '';
-       virgula = '';
-       for(i=0; i < document.form1.sellotac.length; i++){
-         valores+= virgula+document.form1.sellotac.options[i].value;
-         virgula = ',';
-       }
-       document.form1.faixa_lotac.value = valores;
-       document.form1.sellotac.selected = 0;
-     qry  += '&faixa_lotac='+document.form1.faixa_lotac.value;
-     }else if(document.form1.lotaci){
-        qry += '&lotaci='+document.form1.lotaci.value;
-        qry += '&lotacf='+document.form1.lotacf.value;
-     }
-  }else{
-     if(document.form1.selregis){
-       valores = '';
-       virgula = '';
-       for(i=0; i < document.form1.selregis.length; i++){
-         valores+= virgula+document.form1.selregis.options[i].value;
-         virgula = ',';
-       }
-       document.form1.faixa_regis.value = valores;
-       document.form1.selregis.selected = 0;
-       qry += '&faixa_regis='+document.form1.faixa_regis.value;
-     }else if(document.form1.regisi){
-       qry += '&regisi='+document.form1.regisi.value;
-       qry += '&regisf='+document.form1.regisf.value;
-     }
-     qry += '&ordem='+document.form1.xordem.value;
-     qry += '&asc='+document.form1.xasc.value;
+  if(document.form1.sellotac){
+    valores = '';
+    virgula = '';
+    for(i=0; i < document.form1.sellotac.length; i++){
+      valores+= virgula+document.form1.sellotac.options[i].value;
+      virgula = ',';
+    }
+    document.form1.faixa_lotac.value = valores;
+    document.form1.sellotac.selected = 0;
+  qry  += '&faixa_lotac='+document.form1.faixa_lotac.value;
+  }else if(document.form1.lotaci){
+     qry += '&lotaci='+document.form1.lotaci.value;
+     qry += '&lotacf='+document.form1.lotacf.value;
   }
+  if(document.form1.selregis){
+    valores = '';
+    virgula = '';
+    for(i=0; i < document.form1.selregis.length; i++){
+      valores+= virgula+document.form1.selregis.options[i].value;
+      virgula = ',';
+    }
+    document.form1.faixa_regis.value = valores;
+    document.form1.selregis.selected = 0;
+    qry += '&faixa_regis='+document.form1.faixa_regis.value;
+  }else if(document.form1.regisi){
+    qry += '&regisi='+document.form1.regisi.value;
+    qry += '&regisf='+document.form1.regisf.value;
+  }
+  qry += '&ordem='+document.form1.xordem.value;
+  qry += '&asc='+document.form1.xasc.value;
+  
   jan = window.open('pes2_liquido002.php'+qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
 }
@@ -112,151 +118,123 @@ function js_emite(){
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
-  <table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr>
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-
+  <div class="container">
     <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap colspan="2">
-    <?
-  $gform->strngtipores = "gml";              // OPÇÕES PARA MOSTRAR NO TIPO DE RESUMO g - geral,
-//  $gform->filtropadrao = "i";                  // TIPO DE FILTRO PADRÃO
-  $gform->tipores = true;
-
-
-  $gform->usalota = true;                      // PERMITIR SELEÇÃO DE LOTAÇÕES
-  $gform->usaregi = true;                      // PERMITIR SELEÇÃO DE LOTAÇÕES
-
-  $gform->lo1nome = "lotaci";                  // NOME DO CAMPO DA LOTAÇÃO INICIAL
-  $gform->lo2nome = "lotacf";                  // NOME DO CAMPO DA LOTAÇÃO FINAL
-  $gform->lo3nome = "sellotac";
-
-  $gform->trenome = "func_lota";               // NOME DO CAMPO TIPO DE RESUMO
-  $gform->tfinome = "opcao_filtro";            // NOME DO CAMPO TIPO DE FILTRO
-
-  $gform->re1nome = "regisi";                  // NOME DO CAMPO DA MATRÍCULA INICIAL
-  $gform->re2nome = "regisf";                  // NOME DO CAMPO DA MATRÍCULA FINAL
-  $gform->re3nome = "selregis";
-
-  $gform->resumopadrao = "g";                  // TIPO DE RESUMO PADRÃO
-  $gform->tipresumo = "Filtro Por ";
-  $gform->campo_auxilio_lota = "faixa_lotac";  // NOME DO DAS LOTAÇÕES SELECIONADAS
-  $gform->campo_auxilio_regi = "faixa_regis";  // NOME DO DAS MATRÍCULAS SELECIONADAS
-
-  $gform->onchpad = true;                      // MUDAR AS OPÇÕES AO SELECIONAR OS TIPOS DE FILTRO OU RESUMO
-
-//  $gform->arr_tipores = Array("m"=>"Funcionarios", "l"=>"Lotacao");
-  $gform->desabam = false;
-  $gform->manomes = true;
-  $gform->gera_form(db_anofolha(),db_mesfolha());
-  ?>
-</table>
-</center>
-  <table  align="center">
-      <tr>
-         <td >&nbsp;</td>
-         <td >&nbsp;</td>
-      </tr>
-  <tr>
-    <td colspan="2" >
-          <fieldset>
-            <Legend align="left">
-              <b>Selecione as Colunas a imprimir</b>
-            </Legend>
-    <?
-    db_input("valor", 3, 0, true, 'hidden', 3);
-    db_input("colunas_sselecionados", 3, 0, true, 'hidden', 3);
-    db_input("colunas_nselecionados", 3, 0, true, 'hidden', 3);
-    $arr_colunas = Array( "l" =>"Liquido", "p" =>"Provento", "d" =>"Desconto");
-    $arr_colunas_final   = Array();
-    $arr_colunas_inicial = Array();
-    if(isset($colunas_sselecionados) && $colunas_sselecionados != ""){
-       $colunas_sselecionados = split(",",$colunas_sselecionados);
-       for($Ic=0;$Ic < count($colunas_sselecionados);$Ic++){
-          $arr_colunas_final[$colunas_sselecionados[$Ic]] = $arr_colunas[$colunas_sselecionados[$Ic]]; 
-       }
-    }
-    if(isset($colunas_nselecionados) && $colunas_nselecionados != ""){
-       $colunas_nselecionados = split(",",$colunas_nselecionados);
-       for($Ic=0;$Ic < count($colunas_nselecionados);$Ic++){
-          $arr_colunas_inicial[$colunas_nselecionados[$Ic]] = $arr_colunas[$colunas_nselecionados[$Ic]]; 
-       }
-    }
-    if(!isset($colunas_sselecionados) || !isset($colunas_sselecionados) || $colunas_sselecionados == ""){
-       $arr_colunas_final  = Array();
-       $arr_colunas_inicial = $arr_colunas;
-    }
-    db_multiploselect("valor","descr", "nselecionados", "sselecionados", $arr_colunas_inicial, $arr_colunas_final, 6, 250, "", "", true, "js_complementar('c');");
-	  ?>
-          </fieldset>
-    </td>
-  </tr>
-      <tr >
-        <td align="right" nowrap title="Tipo de de Faixa" ><strong>Tipo de Faixa :</strong>
-        </td>
-        <td align="left">
-          <?
+    <fieldset>
+    <legend>Faixa de Bruto/Líquido/Descontos</legend>
+    <table class="form-container">
+     <?php
+       $gform->strngtipores = "gml";              // OPÇÕES PARA MOSTRAR NO TIPO DE RESUMO g - geral,
+       $gform->tipores = true;
+     
+     
+       $gform->usalota = true;                      // PERMITIR SELEÇÃO DE LOTAÇÕES
+       $gform->usaregi = true;                      // PERMITIR SELEÇÃO DE LOTAÇÕES
+       $gform->selecao = true;                      // PERMITIR SELEÇÃO DE SELEÇÃO
+     
+       $gform->lo1nome = "lotaci";                  // NOME DO CAMPO DA LOTAÇÃO INICIAL
+       $gform->lo2nome = "lotacf";                  // NOME DO CAMPO DA LOTAÇÃO FINAL
+       $gform->lo3nome = "sellotac";
+     
+       $gform->trenome = "func_lota";               // NOME DO CAMPO TIPO DE RESUMO
+       $gform->tfinome = "opcao_filtro";            // NOME DO CAMPO TIPO DE FILTRO
+     
+       $gform->re1nome = "regisi";                  // NOME DO CAMPO DA MATRÍCULA INICIAL
+       $gform->re2nome = "regisf";                  // NOME DO CAMPO DA MATRÍCULA FINAL
+       $gform->re3nome = "selregis";
+     
+       $gform->resumopadrao = "g";                  // TIPO DE RESUMO PADRÃO
+       $gform->tipresumo = "Filtro Por ";
+       $gform->campo_auxilio_lota = "faixa_lotac";  // NOME DO DAS LOTAÇÕES SELECIONADAS
+       $gform->campo_auxilio_regi = "faixa_regis";  // NOME DO DAS MATRÍCULAS SELECIONADAS
+     
+       $gform->onchpad = true;                      // MUDAR AS OPÇÕES AO SELECIONAR OS TIPOS DE FILTRO OU RESUMO
+     
+       $gform->desabam = false;
+       $gform->manomes = true;
+       $gform->gera_form(db_anofolha(),db_mesfolha());
+     ?>
+     <tr>
+       <td colspan="2" >
+         <fieldset>
+            <legend>Selecione as Colunas a imprimir</legend>
+              <?php
+                db_input("valor", 3, 0, true, 'hidden', 3);
+                db_input("colunas_sselecionados", 3, 0, true, 'hidden', 3);
+                db_input("colunas_nselecionados", 3, 0, true, 'hidden', 3);
+                $arr_colunas = Array( "l" =>"Liquido", "p" =>"Provento", "d" =>"Desconto");
+                $arr_colunas_final   = Array();
+                $arr_colunas_inicial = Array();
+                if(isset($colunas_sselecionados) && $colunas_sselecionados != ""){
+                   $colunas_sselecionados = split(",",$colunas_sselecionados);
+                   for($Ic=0;$Ic < count($colunas_sselecionados);$Ic++){
+                      $arr_colunas_final[$colunas_sselecionados[$Ic]] = $arr_colunas[$colunas_sselecionados[$Ic]]; 
+                   }
+                }
+                if(isset($colunas_nselecionados) && $colunas_nselecionados != ""){
+                   $colunas_nselecionados = split(",",$colunas_nselecionados);
+                   for($Ic=0;$Ic < count($colunas_nselecionados);$Ic++){
+                      $arr_colunas_inicial[$colunas_nselecionados[$Ic]] = $arr_colunas[$colunas_nselecionados[$Ic]]; 
+                   }
+                }
+                if(!isset($colunas_sselecionados) || !isset($colunas_sselecionados) || $colunas_sselecionados == ""){
+                   $arr_colunas_final  = Array();
+                   $arr_colunas_inicial = $arr_colunas;
+                }
+                db_multiploselect("valor","descr", "nselecionados", "sselecionados", $arr_colunas_inicial, $arr_colunas_final, 6, 250, "", "", true, "js_complementar('c');");
+	          ?>
+         </fieldset>
+       </td>
+     </tr>
+     <tr>
+        <td title="Tipo de de Faixa" >Tipo de Faixa :</td>
+        <td>
+          <?php
           $xvx = $arr_colunas_final;
           db_select('tipo_faixa',$xvx,true,4,'');
           ?>
         </td>
       </tr>
-      <tr >
-        <td align="right" nowrap title="Faixa Inicial e Final" ><strong>Faixa :</strong>
-        </td>
-        <td align="left">
-          <?
+      <tr>
+        <td title="Faixa Inicial e Final" >Faixa :</td>
+        <td>
+          <?php
            if(!isset($faixa1)){
 	            $faixa1 = 0;
            }
 	         db_input("faixa1",10,"",true,3,'');
           ?>
 	         &nbsp;&nbsp;Até&nbsp;&nbsp;
-          <?
-           if(!isset($faixa1)){
-	            $faixa2 = 0;
+          <?php
+           if(!isset($faixa2)){
+	            $faixa2 = 9999999999;
            }
 	         db_input("faixa2",10,"",true,3,'');
           ?>
         </td>
       </tr>
       <tr>
-        <td align='right'><b>Quantidade de Registros : </b></td>
+        <td>Quantidade de Registros : </td>
         <td>
-        <?
+        <?php
          db_input("qtd",10,"",true,3,'');
         ?>
         </td>
       </tr>
-
-
-      <?
-      if(!isset($func_lota) || $func_lota == 'm'|| $func_lota == 'g'){
-      ?>
-      <tr >
-        <td align="right" nowrap title="Ordem do relatório" ><strong>Ordem :</strong>
-        </td>
-        <td align="left">
-          <?
+      <tr>
+        <td title="Ordem do relatório" >Ordem :</td>
+        <td>
+          <?php
           $v = array("a"=>"Alfabética", "n"=>"Numérica");
           $v = array_merge($v,$arr_colunas_final);
           db_select('xordem',$v,true,4,"");
           ?>
         </td>
       </tr>
-      <tr >
-        <td align="right" nowrap title="Tipo de Ordem do relatório" ><strong>Tipo  de Ordem :</strong>
-        </td>
-        <td align="left">
-          <?
+      <tr>
+        <td title="Tipo de Ordem do relatório" >Tipo  de Ordem :</td>
+        <td>
+          <?php
           if(!isset($xv)){
              $xv = array("a"=>"Ascendente", "d"=>"Descendente");
           }
@@ -264,30 +242,13 @@ function js_emite(){
           ?>
         </td>
       </tr>
-      <?
-      }
-      ?>
-      <tr>
-        <td >&nbsp;</td>
-        <td >&nbsp;</td>
-      </tr>
-      <tr>
-        <td colspan="2" align = "center"><font color="red"><b>Relatório emitido apartir da Geração em Disco!</b></font></td>
-      </tr>
-      <tr>
-        <td >&nbsp;</td>
-        <td >&nbsp;</td>
-      </tr>
-      <tr>
-        <td colspan="2" align = "center"> 
-          <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >
-        </td>
-      </tr>
-
     </table>
+    <font style="font-weight: bold; color:red;">Relatório emitido apartir da Geração em Disco!</b></font>
+    </fieldset>
+    <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >
   </form>
-<?
-  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+<?php
+  db_menu();
 ?>
 </body>
 </html>

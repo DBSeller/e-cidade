@@ -71,10 +71,10 @@ db_input('c20_descr',50,$Ic20_descr,true,'text',3,"")
 <script>
 function js_pesquisac20_sequencial(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_grupos','db_iframe_grupo','func_congrupo.php?funcao_js=parent.js_mostracongrupo1|c20_sequencial|c20_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_grupos','db_iframe_grupo','func_congrupo.php?funcao_js=parent.js_mostracongrupo1|c20_sequencial|c20_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.c20_sequencial.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_grupos','db_iframe_grupo','func_congrupo.php?pesquisa_chave='+document.form1.c20_sequencial.value+'&funcao_js=parent.js_mostracongrupo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_grupos','db_iframe_grupo','func_congrupo.php?pesquisa_chave='+document.form1.c20_sequencial.value+'&funcao_js=parent.js_mostracongrupo','Pesquisa',false);
      }else{
        document.form1.c20_descr.value = ''; 
      }

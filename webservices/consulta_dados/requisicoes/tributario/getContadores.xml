@@ -1,16 +1,20 @@
 <?xml version='1.0' ?>
 <consulta distinct="false">
   <campos>
+    <campo campo="z01_numcgm"   label="codigo"   />
+    <campo campo="z01_nome"     label="descricao" />
     <campo campo="z01_numcgm"   label="cgm"   />
     <campo campo="z01_nome"     label="nome" />
-    <campo campo="z01_cgccpf"   label="cnpj"           />
+    <campo campo="z01_cgccpf"   label="cnpj"  />
+    <campo campo="z01_telef"    label="telefone" />
+    <campo campo="z01_email"    label="email" />
   </campos>
   <from tabela="cadescrito" />
   <juncoes>
     <join tipo="inner" tabela="cgm"     condicao="q86_numcgm = z01_numcgm" />
   </juncoes>
   <filtros>
-    <!--    <filtro label=""     condicao="q86_datalimite is null"  obrigatorio="true" /> -->
+    <!--     <filtro label=""     condicao="q86_datalimite is null"  obrigatorio="true" /> -->
   </filtros>
   <agrupamento campos="" />
   <ordenacao   campos="z01_nome" />

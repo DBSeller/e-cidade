@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_iptunump_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_iptunump_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("libs/db_utils.php");
-require_once ("classes/db_recibounica_classe.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_recibounica_classe.php"));
 
 $oDaoReciboUnica = new cl_recibounica();
 
@@ -60,13 +60,13 @@ if(isset($calculaunica)){
     $erro = true;
     $descricao_erro =  "Não existe cálculo efetuado para esta Matrícula ($j01_matric).";
   }else{
-    $sqlunica = pg_query("BEGIN");
+    $sqlunica = db_query("BEGIN");
     
                  /*
                  * alteracao para incluir no cabeçalho criado para recibo unica
                  * recibounicageracao
                  */
-                require_once("classes/db_recibounicageracao_classe.php");
+                require_once(modification("classes/db_recibounicageracao_classe.php"));
                 $oDaoReciboUnicaGeracao = new cl_recibounicageracao();
                 
                 $oDaoReciboUnicaGeracao->ar40_db_usuarios        = db_getsession("DB_id_usuario");
@@ -87,7 +87,7 @@ if(isset($calculaunica)){
     
 	for($i=0;$i<$cliptunump->numrows;$i++){
       db_fieldsmemory($result,$i);
-      $sqlunica = pg_query("select k00_dtvenc,k00_percdes
+      $sqlunica = db_query("select k00_dtvenc,k00_percdes
 	                        from recibounica 
 	                        where k00_numpre = $j20_numpre and k00_dtvenc = '$k00_dtvenc_ano-$k00_dtvenc_mes-$k00_dtvenc_dia'");
       $erro = true;
@@ -95,13 +95,13 @@ if(isset($calculaunica)){
       if(pg_numrows($sqlunica)!=0){
         $perc = pg_result($sqlunica,0,'k00_percdes');
 	    $sqlresultunica = "delete from recibounica where k00_numpre = $j20_numpre and k00_dtvenc = '$k00_dtvenc_ano-$k00_dtvenc_mes-$k00_dtvenc_dia'";
-	    $resultunica = pg_query($sqlresultunica );
+	    $resultunica = db_query($sqlresultunica );
         $descricao_erro = "Vencimento Excluído.";
       }
       if(($perc!=$k00_percdes) || (pg_numrows($sqlunica)==0)){
       	
 		    //$sqlresultunica = "insert into recibounica values($j20_numpre,'$k00_dtvenc_ano-$k00_dtvenc_mes-$k00_dtvenc_dia','$k00_dtoper_ano-$k00_dtoper_mes-$k00_dtoper_dia',$k00_percdes)";
-		    //$resultunica = pg_query($sqlresultunica );
+		    //$resultunica = db_query($sqlresultunica );
 	
 	      $oDaoReciboUnica->k00_numpre             = $j20_numpre;
 	      $oDaoReciboUnica->k00_dtvenc             = "$k00_dtvenc_ano-$k00_dtvenc_mes-$k00_dtvenc_dia";
@@ -141,12 +141,12 @@ if(isset($calculaunica)){
 					      '$histd',
 					      nextval('arrehist_k00_idhist_seq'))";
 //	echo $sqlresultunica; exit;					      
-	  $resultunica = pg_query($sqlresultunica );
+	  $resultunica = db_query($sqlresultunica );
 	  if($resultunica==false){
         $descricao_erro = "Erro ao incluir no arquivo historicos";
 	  } 
 	}
-    $sqlunica = pg_query("COMMIT");
+    $sqlunica = db_query("COMMIT");
   }
 }
 
@@ -228,7 +228,7 @@ function js_verifica_campos(){
 
             <td height="25">
               <?
-	      $result=pg_query("select distinct j18_anousu from cfiptu order by j18_anousu desc");
+	      $result=db_query("select distinct j18_anousu from cfiptu order by j18_anousu desc");
 	      if(pg_numrows($result) > 0){
 		?>
 		<select name="anousu">

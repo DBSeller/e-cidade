@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,7 +24,7 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-
+use ECidade\Patrimonial\Compras\AutorizacaoEmpenho\Model\Autorizacao;
 
 /**
  * Classe repository para classe Dotacao
@@ -43,10 +43,15 @@ class DotacaoRepository {
    */
   private static $oInstance;
 
+  /*
+   * @var \cl_orcdotacao
+   * */
+  private $dao;
+
   /**
    * Construtor privado para não ser possível instanciar a classe
    */
-  private function __construct() {}
+  private function __construct(){}
 
   private function __clone() {}
 
@@ -71,7 +76,7 @@ class DotacaoRepository {
    *
    * @return DotacaoRepository
    */
-  protected static function getInstance() {
+  public static function getInstance() {
 
     if (self::$oInstance == null) {
       self::$oInstance = new DotacaoRepository();
@@ -79,4 +84,47 @@ class DotacaoRepository {
 
     return self::$oInstance;
   }
+    /**
+     * @param $codigo
+     * @param array $columns
+     * @return bool|Dotacao
+     * @throws \Exception
+     */
+    public function find($id, $dao, $columns = array('*'))
+    {
+        $sql = $dao->sql_query_file(null, $id, implode(', ', $columns));
+        $rs = db_query($sql);
+
+        if (!$rs) {
+            throw new \Exception("");
+        }
+
+        if (pg_num_rows($rs) === 0) {
+            return false;
+        }
+
+        $resultado = pg_fetch_array($rs);
+
+        return Dotacao::fromState($resultado);
+    }
+
+    /**
+     * @param \cl_empautidot $daoDotacaoAutorizacao
+     * @param Autorizacao $autorizacao
+     * @return Dotacao
+     * @throws \Exception
+     */
+    public function getDotacaoPorAutorizacao($daoDotacaoAutorizacao, Autorizacao $autorizacao)
+    {
+        $sql = $daoDotacaoAutorizacao->sql_query_file($autorizacao->getCodigoAutorizacao());
+        $rs = db_query($sql);
+
+        if (!$rs || pg_num_rows($rs) === 0) {
+            return null;
+        }
+
+        $dotacao = pg_fetch_object($rs);
+
+        return $this->find((int) $dotacao->e56_coddot, new \cl_orcdotacao);
+    }
 }

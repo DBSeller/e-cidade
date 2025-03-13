@@ -58,7 +58,7 @@ db_input('m81_descr',40,$Im81_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_matestoquetipo','func_matestoquetipo.php?funcao_js=parent.js_preenchepesquisa|m81_codtipo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoquetipo','func_matestoquetipo.php?funcao_js=parent.js_preenchepesquisa|m81_codtipo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_matestoquetipo.hide();

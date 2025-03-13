@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_app.utils.php"));
 db_app::import("estoque.MaterialGrupo");
 db_app::import("contabilidade.lancamento.*");
 db_app::import("contabilidade.*");
 db_app::import("exceptions.*");
 /**
  * Modelo para controle das requisições de saida de material
- * @author Iuri Guntchnigg $Author: dbiuri $
- * @version  $Revision: 1.47 $
+ * @author Iuri Guntchnigg $Author: dbjeferson.belmiro $
+ * @version  $Revision: 1.51 $
  */
 class RequisicaoMaterial {
 
@@ -125,9 +125,9 @@ class RequisicaoMaterial {
     if ($iCodigoMaterial != '') {
       $sWhere = " and m41_codmatmater = {$iCodigoMaterial}";
     }
-    $oDaoRequisicaoItens = db_utils::getDao("matrequiitem");
+    $oDaoRequisicaoItens = new cl_matrequiitem();
 
-    $sCampos  = " m41_codigo,m41_codmatmater,m60_descr,m61_descr,m41_quant,m91_depto, ";
+    $sCampos  = " m41_codigo,m41_codmatmater,m60_descr,unidade_saida.m61_descr,m41_quant,m91_depto, ";
     $sCampos .= " (select coalesce(sum(m43_quantatend),0)";
     $sCampos .= "  from atendrequiitem ";
     $sCampos .= "   left join matestoquedevitem on atendrequiitem.m43_codigo =  m46_codatendrequiitem ";
@@ -229,7 +229,7 @@ class RequisicaoMaterial {
      */
     if (! class_exists("materialEstoque")) {
 
-    	require 'classes/materialestoque.model.php';
+    	require modification("classes/materialestoque.model.php");
 
     }
 
@@ -370,7 +370,7 @@ class RequisicaoMaterial {
        * fazermos a baixa do estoque.
        */
       if (! class_exists("materialEstoque")) {
-        require 'classes/materialestoque.model.php';
+        require modification("classes/materialestoque.model.php");
       }
 
       $oMaterialEstoque = new materialEstoque($oItemAtual->m41_codmatmater);
@@ -427,7 +427,7 @@ class RequisicaoMaterial {
           if ($oDaoMatEstoqueIniMei->erro_status == '0') {
 
             $sMsgErro  = "Erro[6] - Não Foi possível atualizar saldo do estoque do ";
-            $sMsgErro .= "material({$aItensRequisicao->iCodMater}).\nErro Técnico: \n{$oDaoMatEstoqueIniMei->erro_msg}";
+            $sMsgErro .= "material({$oItemAtual->m41_codmatmater}).\nErro Técnico: \n{$oDaoMatEstoqueIniMei->erro_msg}";
             throw new Exception($sMsgErro);
           }
           /*
@@ -478,6 +478,7 @@ class RequisicaoMaterial {
             /**
              * Não efetuar lançamento contabil quando o valor do item for menor que 0.01 centavos
              */
+
             if ($nValorAtendimentoItem >= 0.01) {
               $this->processarLancamento($oMaterialEstoque, $oDaoMatEstoqueIniMei->m82_codigo, $nValorAtendimentoItem);
             }
@@ -567,7 +568,14 @@ class RequisicaoMaterial {
     $sCampos            .= "           from matanulitem ";
     $sCampos            .= "            left join matanulitemrequi on matanulitemrequi.m102_matanulitem =
                                        matanulitem.m103_codigo";
-    $sCampos            .= "           where  m102_matrequiitem = m41_codigo),0) as qtdanulada ";
+    $sCampos            .= "           where  m102_matrequiitem = m41_codigo),0) as qtdanulada, ";
+    $sCampos            .= " (select m103_motivo ";
+    $sCampos            .= "           from matanulitem ";
+    $sCampos            .= "            left join matanulitemrequi on matanulitemrequi.m102_matanulitem =
+                                       matanulitem.m103_codigo";
+    $sCampos            .= "           where  m102_matrequiitem = m41_codigo limit 1) as motivo ";
+
+
 
     $sGroupBy             = " group by m41_codigo, m41_codmatmater,m60_descr,m61_descr,m41_quant,m60_controlavalidade,";
     $sGroupBy            .= " m70_quant,cc08_sequencial, cc08_descricao";
@@ -654,7 +662,12 @@ class RequisicaoMaterial {
     $oLancamentoAuxiliarEstoque = new LancamentoAuxiliarMovimentacaoEstoque();
     $oLancamentoAuxiliarEstoque->setCodigoMovimentacaoEstoque($iCodigoMovimentacao);
     $oLancamentoAuxiliarEstoque->setValorTotal($nValorLancamento);
-    $sHistoricoLancamento = "Lançamento contábil referente a atendimento da requisição {$this->icodReq}";
+    $sHistoricoLancamento = sprintf(
+        "Lançamento contábil referente a atendimento da requisição %s, material %s.",
+        $this->icodReq,
+        $oMaterial->getcodMater()
+    );
+
     $oLancamentoAuxiliarEstoque->setObservacaoHistorico($sHistoricoLancamento);
     $oLancamentoAuxiliarEstoque->setHistorico($iCodigoHistorico);
     $oLancamentoAuxiliarEstoque->setMaterial($oMaterial);
@@ -665,12 +678,13 @@ class RequisicaoMaterial {
     $this->executarLancamentosContabeis(400, $oLancamentoAuxiliarEstoque, $dtLancamento);
   }
 
-  /**
-   * Realiza o estorno dos lancamentos do estorno
-   * @param MaterialEstoque $oMaterial Material do estoque
-   * @param integer $iCodigoMovimentacao codigo da movimentacao do estoque
-   * @param float $nValorLancamento valor do lancamento
-   */
+    /**
+     * Realiza o estorno dos lancamentos do estorno
+     * @param MaterialEstoque $oMaterial Material do estoque
+     * @param integer $iCodigoMovimentacao codigo da movimentacao do estoque
+     * @param float $nValorLancamento valor do lancamento
+     * @throws BusinessException
+     */
   public function estornarLancamento(MaterialEstoque $oMaterial, $iCodigoMovimentacao, $nValorLancamento, $dtLancamento=null) {
 
     if (empty($dtLancamento)) {
@@ -679,8 +693,8 @@ class RequisicaoMaterial {
 
     $oEventoContabil = new EventoContabil(400, db_getsession("DB_anousu"));
     $aLancamentos    = $oEventoContabil->getEventoContabilLancamento();
-    if (count($aLancamentos) == 0 ) {
 
+    if (count($aLancamentos) == 0 ) {
       $sMensagem = "Não existe lançamentos para o evento 400 - {$oEventoContabil->getDescricaoDocumento()}";
       throw new BusinessException($sMensagem);
     }
@@ -689,8 +703,12 @@ class RequisicaoMaterial {
     $oLancamentoAuxiliarEstoque->setCodigoMovimentacaoEstoque($iCodigoMovimentacao);
     $oLancamentoAuxiliarEstoque->setValorTotal($nValorLancamento);
 
-    $sHistoricoLancamento  = "Lançamento contábil referente a cancelamento ";
-    $sHistoricoLancamento .= "de atendimento de requisição {$this->icodReq}";
+      $sHistoricoLancamento = sprintf(
+          "Lançamento contábil referente a cancelamento de atendimento de requisição %s, material %s.",
+          $this->icodReq,
+          $oMaterial->getcodMater()
+      );
+
     $oLancamentoAuxiliarEstoque->setObservacaoHistorico($sHistoricoLancamento);
     $oLancamentoAuxiliarEstoque->setHistorico($iCodigoHistorico);
     $oLancamentoAuxiliarEstoque->setMaterial($oMaterial);

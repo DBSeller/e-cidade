@@ -1,0 +1,1 @@
+select fc_executa_ddl('alter table arreidret drop constraint arreidret_nump_nump_pk; alter table arreidret add  CONSTRAINT arreidret_nump_nump_idre_pk PRIMARY KEY (k00_numpre,k00_numpar,idret);');

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 ?>
 <html>
@@ -130,7 +130,7 @@ require_once("dbforms/db_funcoes.php");
   function js_retornoProfessorEscola(oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval( "(" + oAjax.responseText + ")" );
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     oRetorno.aProfessores.each( function (oProfessor) {
 
@@ -147,8 +147,8 @@ require_once("dbforms/db_funcoes.php");
 
     var oEscolaSelecionada = oEscola.getSelecionados();
 
-    var sUrl  = 'edu2_professor002.php?escola='+oEscolaSelecionada.codigo_escola;
-        sUrl += '&professor='+$F('professor');
+    var sUrl  = 'edu2_dadosprofessor002.php?iEscola='+oEscolaSelecionada.codigo_escola;
+        sUrl += '&iProfessor='+$F('professor');
     jan = window.open(sUrl, '', 'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
     jan.moveTo(0,0);
   });

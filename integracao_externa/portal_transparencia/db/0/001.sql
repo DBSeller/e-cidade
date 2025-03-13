@@ -1,3 +1,5 @@
+
+
 CREATE SEQUENCE dotacoes_id_seq;
 
 CREATE TABLE dotacoes (

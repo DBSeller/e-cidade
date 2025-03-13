@@ -1,0 +1,16 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+    <campos>
+        <campo campo="tipoproc.p51_codigo" label="id" />
+        <campo campo="tipoprocessoformulario.p108_formulario" label="formulario" />
+    </campos>
+    <from tabela="tipoproc" />
+    <juncoes>
+        <join tipo="inner" tabela="tipoprocessoformulario" condicao="p108_tipoproc = p51_codigo" />
+    </juncoes>
+    <filtros>
+        <filtro label="tipo_processo" condicao="p51_codigo = $tipo_processo" obrigatorio="true" />
+    </filtros>
+    <agrupamento />
+    <ordenacao />
+</consulta>

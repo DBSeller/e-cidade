@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_acordo_classe.php");
-require_once("model/Acordo.model.php");
-require_once("model/AcordoComissao.model.php");
-require_once("model/AcordoItem.model.php");
-require_once("model/AcordoPosicao.model.php");
-require_once("model/AcordoRescisao.model.php");
-require_once("model/AcordoMovimentacao.model.php");
-require_once("model/AcordoComissaoMembro.model.php");
-require_once("model/AcordoGarantia.model.php");
-require_once("model/AcordoHomologacao.model.php");
-require_once("model/MaterialCompras.model.php");
-require_once("model/CgmFactory.model.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_acordo_classe.php"));
+require_once(modification("model/Acordo.model.php"));
+require_once(modification("model/AcordoComissao.model.php"));
+require_once(modification("model/AcordoItem.model.php"));
+require_once(modification("model/AcordoPosicao.model.php"));
+require_once(modification("model/AcordoRescisao.model.php"));
+require_once(modification("model/AcordoMovimentacao.model.php"));
+require_once(modification("model/AcordoComissaoMembro.model.php"));
+require_once(modification("model/AcordoGarantia.model.php"));
+require_once(modification("model/AcordoHomologacao.model.php"));
+require_once(modification("model/MaterialCompras.model.php"));
+require_once(modification("model/CgmFactory.model.php"));
 
 $oPost               = db_utils::postMemory($_POST);
 $clacordo            = new cl_acordo;
+$instituicaoSessao = db_getsession('DB_instit');
 
-$sWhere              = '';
+$sWhere              = "";
 $sAnd                = '';
 $sOrder              = 'acordo.ac16_dataassinatura';
 
@@ -123,6 +124,7 @@ if(!empty($oPost->ac50_sequencial)) {
 /*$sWhere     .= "{$sAnd} ( ac16_coddepto = ".db_getsession("DB_coddepto");
 $sWhere     .= "          or ac16_deptoresponsavel = ".db_getsession("DB_coddepto")." ) ";*/
 
+$sWhere .= " and ac16_instit = {$instituicaoSessao} ";
 $sSqlAcordo  = $clacordo->sql_query_completo(null, "acordo.ac16_sequencial, acordotipo.ac04_descricao", $sOrder, $sWhere);
 $rsSqlAcordo = $clacordo->sql_record($sSqlAcordo);
 if ( $clacordo->numrows == 0  ) {

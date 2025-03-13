@@ -1,6 +1,6 @@
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -54,7 +54,7 @@ Laboratorio.departamentoIsLaboratorio = function () {
   oRequest.parameters = 'json='+Object.toJSON(oParametro);
   oRequest.onComplete = function(oAjax) {
 
-    var oRetorno = eval( "(" + oAjax.responseText + ")" );
+    var oRetorno = JSON.parse(oAjax.responseText);
     if ( oRetorno.lIsLaboratorio ) {
       oSelf.lIsLaboratorio = true;
     }
@@ -95,7 +95,7 @@ Laboratorio.usuarioIsTecnicoLaboratorio = function (iDepartamento, iUsuario) {
   oRequest.method     = 'post';
   oRequest.parameters = 'json='+Object.toJSON(oParametro);
   oRequest.onComplete = function(oAjax) {
-    var oRetorno = eval( "(" + oAjax.responseText + ")" );
+    var oRetorno = JSON.parse(oAjax.responseText);
     if ( oRetorno.lIsVinculado ) {
       oSelf.lIsTecnicoVinculado = true;
     }
@@ -131,7 +131,7 @@ Laboratorio.getLaboratorioByDepartamento = function() {
   oRequest.parameters = 'json='+Object.toJSON(oParametro);
   oRequest.onComplete = function(oAjax) {
 
-    var oRetorno = eval( "(" + oAjax.responseText + ")" );
+    var oRetorno = JSON.parse(oAjax.responseText);
     if ( parseInt(oRetorno.iStatus) == 1 ) {
 
       oSelf.iLaboratorio = oRetorno.iLaboratorio;

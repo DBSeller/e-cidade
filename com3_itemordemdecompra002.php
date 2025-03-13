@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_empelemento_classe.php");
-require_once("classes/db_conplanoreduz_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_empelemento_classe.php"));
+require_once(modification("classes/db_conplanoreduz_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 ?>
 <html>
@@ -69,26 +69,26 @@ var oGet = js_urlToObject();
 var sUrlRPC = 'com4_ordemdecompra001.RPC.php';
 js_gridItens();
 
- function js_gridItens() {
+function js_gridItens() {
 
-  oGridItens = new DBGrid('Itens');
-  oGridItens.nameInstance = 'oGridItens';
-  oGridItens.setCellWidth(['80px' ,
-                           '80px' ,
-                           '80px' ,
-                           '270px',
-                           '70px' ,
-                           '260px',
+    oGridItens = new DBGrid('Itens');
+    oGridItens.nameInstance = 'oGridItens';
+    oGridItens.setCellWidth(['80px',
+        '80px',
+        '80px',
+        '',
+        '70px',
+        '',
 //                           '270px',
-                           '70px',
-                           '80px',
-                           '80px',
-                           '80px']);
+        '70px',
+        '80px',
+        '80px',
+        '80px']);
 
-  oGridItens.setCellAlign(['center'  ,
-                           'center'  ,
-                           'center'  ,
-                           'left',
+    oGridItens.setCellAlign(['center',
+        'center',
+        'center',
+        'left',
                            'center'  ,
                            'left',
 //                           'left',
@@ -140,7 +140,7 @@ js_gridItens();
 
    js_removeObj('msgBox');
 
-   var oRetorno = eval("("+oAjax.responseText+")");
+   var oRetorno = JSON.parse(oAjax.responseText);
    oGridItens.clearAll(true);
 
    if (oRetorno.iStatus == 2 ) {

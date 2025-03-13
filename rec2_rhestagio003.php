@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/impcarne.php");
-include("fpdf151/scpdf.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/estagioAvaliacoes.classe.php");
+include(modification("fpdf151/impcarne.php"));
+include(modification("fpdf151/scpdf.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/estagioAvaliacoes.classe.php"));
 $oGet        = db_utils::postMemory($_GET);
 $iInstit     = db_getsession("DB_instit");
 $inner_join  = "";
 $sWhere = "";
 $sqlpref              = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref           = pg_exec($sqlpref);
+$resultpref           = db_query($sqlpref);
 $oInst                = db_utils::fieldsmemory($resultpref,0);
 switch ($oGet->avaliacao){
    case 'a' :
@@ -145,7 +145,7 @@ $sSQLRel .= "                              and rh02_mesusu = {$oGet->mesfolha}";
 $sSQLRel .= "                              and rh02_instit = {$iInstit}";
 $sSQLRel .= "       {$inner_join}";
 $sSQLRel .= " where {$sWhere}";
-$rsRel  = @pg_query($sSQLRel);
+$rsRel  = @db_query($sSQLRel);
 $iNumRows = pg_num_rows($rsRel);
 $pdf                  = new scpdf();
 $pdf->open();

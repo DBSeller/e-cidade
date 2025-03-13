@@ -14,11 +14,18 @@ class EncerramentoAvaliacao {
    * Situações de matriculas que devem ser canceladas
    * @var array
    */
-  private $aRemoveConclusaoMatricula = array('TRANSFERIDO FORA', 'TRANSFERIDO REDE', 'EVADIDO', 'MATRICULA TRANCADA',
-                                             'FALECIDO', 'MATRICULA INDEFERIDA', 'CANCELADO');
+    private $aRemoveConclusaoMatricula = array(
+        'TRANSFERIDO FORA',
+        'TRANSFERIDO REDE',
+        'EVADIDO',
+        'MATRICULA TRANCADA',
+        'FALECIDO',
+        'MATRICULA INDEFERIDA',
+        'CANCELADO',
+        'DESISTENTE'
+    );
 
   public function __construct(DBLogJSON $oLogger = null) {
-
     if (!empty($oLogger)) {
       $this->oLogger = $oLogger;
     }
@@ -27,7 +34,9 @@ class EncerramentoAvaliacao {
   /**
    * Encerra os dados da progressao parcial do aluno;
    * @param ProgressaoParcialAluno $oProgressaoParcial Progressao parcial que deve ser encerrada
-   * @return boolean
+   * @return bool
+   * @throws BusinessException
+   * @throws DBException
    */
   public function encerrarProgressaoParcial(ProgressaoParcialAluno $oProgressaoParcial) {
 
@@ -96,6 +105,12 @@ class EncerramentoAvaliacao {
    * @param ProgressaoParcialAluno $oProgressaoParcial progressao parcial encerrada
    * @return boolean
    */
+  /**
+   * @param ProgressaoParcialAluno $oProgressaoParcial
+   * @return bool
+   * @throws BusinessException
+   * @throws DBException
+   */
   public function cancelarEncerramentoProgressaoParcial (ProgressaoParcialAluno $oProgressaoParcial) {
 
     if (!db_utils::inTransaction()) {
@@ -106,6 +121,20 @@ class EncerramentoAvaliacao {
     $oMensagem->disciplina = $oProgressaoParcial->getDisciplina()->getNomeDisciplina();
     $oMensagem->etapa      = $oProgressaoParcial->getEtapa()->getNome();
     $oMensagem->aluno      = $oProgressaoParcial->getAluno()->getNome();
+
+    $oUltimaMatricula = MatriculaRepository::getUltimaMatriculaAluno( $oProgressaoParcial->getAluno() );
+
+    if(    $oUltimaMatricula->getEtapaDeOrigem()->getOrdem() != $oProgressaoParcial->getEtapa()->getOrdem()
+        && $oUltimaMatricula->isConcluida()
+      ) {
+
+      $sMensagem            = "A progressão Parcial / Dependência do {$oMensagem->aluno} ";
+      $sMensagem           .= "na disciplina {$oMensagem->disciplina} ({$oMensagem->etapa}), não pode ser encerrada,";
+      $sMensagem           .= " pois a matrícula do aluno na etapa posterior encontra-se concluída.";
+      $oMensagem->mensagem  = $sMensagem;
+      $this->informarErro($oMensagem);
+      return false;
+    }
 
     /**
      * caso a progressao parcial não esteja encerrada. devemos ignorar essa progressão.
@@ -150,41 +179,39 @@ class EncerramentoAvaliacao {
    * @throws DBException
    * @return Boolean
    */
-  public function encerrarAvaliacaoTurmaPorAluno($aMatriculas) {
-
-    if (!db_utils::inTransaction()) {
-      throw new DBException("Sem Transação com o banco de dados ativa.");
-    }
-
-    $oTurma = $oEtapa = null;
-
-    foreach ($aMatriculas as $oMatricula) {
-
-      if (empty($oTurma) && empty($oEtapa)) {
-
-        $oTurma = $oMatricula->getTurma();
-        $oEtapa = $oMatricula->getEtapaDeOrigem();
-
-        if ($this->semAulasDadas($oTurma, $oEtapa)) {
-          return false;
-        }
+  public function encerrarAvaliacaoTurmaPorAluno($aMatriculas)
+  {
+      if (!db_utils::inTransaction()) {
+          throw new DBException("Sem Transação com o banco de dados ativa.");
       }
 
-      if ( !$this->validaMatriculaParaEncerramento($oMatricula, $oEtapa)
-           || $this->alunoComMatriculaPosterior($oMatricula) ) {
+      $oTurma = $oEtapa = null;
 
-        MatriculaRepository::removerMatricula($oMatricula);
-        continue;
+      foreach ($aMatriculas as $oMatricula) {
+          if (empty($oTurma) && empty($oEtapa)) {
+              $oTurma = $oMatricula->getTurma();
+              $oEtapa = $oMatricula->getEtapaDeOrigem();
+
+              if ($this->semAulasDadas($oTurma, $oEtapa)) {
+                  $iQuantidadeMatriculasEncerradas = 0;
+                  return $iQuantidadeMatriculasEncerradas;
+              }
+          }
+
+          if (!$this->validaMatriculaParaEncerramento($oMatricula, $oEtapa)) {
+              MatriculaRepository::removerMatricula($oMatricula);
+              continue;
+          }
+
+          $this->encerrarMatriculaTurma($oTurma, $oEtapa, $oMatricula);
+          $iQuantidadeMatriculasEncerradas++;
       }
 
-      $this->encerrarMatriculaTurma($oTurma, $oEtapa, $oMatricula);
-    }
+      if ($iQuantidadeMatriculasEncerradas > 0 && !$oTurma->encerradaParcial($oEtapa)) {
+          $this->encerraRegenciasTurma($oTurma, $oEtapa);
+      }
 
-    if ( !$oTurma->encerradaParcial($oEtapa) ) {
-      $this->encerraRegenciasTurma($oTurma, $oEtapa);
-    }
-
-    return true;
+      return $iQuantidadeMatriculasEncerradas;
   }
 
   /**
@@ -203,6 +230,13 @@ class EncerramentoAvaliacao {
       throw new DBException("Sem Transação com o banco de dados ativa.");
     }
 
+    $aDisciplinas = $oTurma->getDisciplinasPorEtapa($oEtapa);
+
+    // Verifica se existem disciplinas vinculadas à turma
+    if ( empty($aDisciplinas) ) {
+      return false;
+    }
+
     /**
      * Se não tem aulas dadas lanca exception
      */
@@ -210,7 +244,6 @@ class EncerramentoAvaliacao {
       return false;
     }
 
-    $aDisciplinas          = $oTurma->getDisciplinasPorEtapa($oEtapa);
     $aMatriculas           = $oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa);
     $iTotalMatriculas      = count($aMatriculas);
     $iMatriculasEncerradas = 0;
@@ -255,17 +288,17 @@ class EncerramentoAvaliacao {
     return $lTurmaEncerradaCompleta;
   }
 
-
   /**
    * Encerra a matricula da Turma e etapa informada
    * @param  Turma     $oTurma
    * @param  Etapa     $oEtapa
    * @param  Matricula $oMatricula
-   * @return [type]             [description]
+   * @throws BusinessException
    */
   protected function encerrarMatriculaTurma($oTurma, $oEtapa, $oMatricula) {
 
     $oDiario = $oMatricula->getDiarioDeClasse();
+
     /**
      * Matriculas concluidas, ou matricula que nao estao ativas, devem contar no total de matriculas encerradas
      * na turma.
@@ -279,6 +312,8 @@ class EncerramentoAvaliacao {
           $this->atualizaConclusaoDiario($oDiarioDisciplina, $oMatricula->getAluno(), "S");
         }
       }
+
+
 
       MatriculaRepository::removerMatricula($oMatricula);
       return true;
@@ -307,6 +342,11 @@ class EncerramentoAvaliacao {
     foreach ($oDiario->getDisciplinas() as $oDiarioDisciplina) {
       $this->encerraDiario($oDiarioDisciplina, $oMatricula->getAluno());
     }
+
+      $diarioAlunoService = $oDiario->getDiarioAlunoService();
+      $diarioAlunoService->encerrar();
+      $resultadoFinal = $diarioAlunoService->getDiarioAluno()->getResultadoFinal();
+      $sResultadoFinal = $resultadoFinal->getResultadoFinal();
 
     /**
      * alunocurso, alunopossib
@@ -439,6 +479,9 @@ class EncerramentoAvaliacao {
       }
     }
 
+      $diarioAlunoService = $oDiario->getDiarioAlunoService();
+      $diarioAlunoService->cancelarEncerramento();
+
     /**
      * Após reativar matricula e diário de aluno com Situação != MATRICULADO devemos encerrar o processo
      */
@@ -504,6 +547,18 @@ class EncerramentoAvaliacao {
       return false;
     }
 
+    /**
+     * Valida se o aluno possui uma transferência após ter sido encerrado. Caso haja, não é permitido o cancelamento.
+     */
+    if ( $oMatricula->hasTransferenciaEncerrada() ) {
+
+      $oErroMensagem->mensagem = "Aluno {$sNomeAluno} possui uma transferência após o encerramento ";
+      $oErroMensagem->mensagem .= "e não poderá ser cancelado o encerramento de suas avaliações.";
+      $this->informarErro($oErroMensagem);
+      MatriculaRepository::removerMatricula($oMatricula);
+      return false;
+    }
+
     return true;
   }
 
@@ -523,13 +578,16 @@ class EncerramentoAvaliacao {
     $nPercentualFrequencia = '';
     if ( $oProcedimentoAvaliacao->getFormaCalculoFrequencia() == 2 ) {
 
-      $aDisciplina           = $oDiario->getDisciplinas();
-      $nPercentualFrequencia = $aDisciplina[0]->calcularPercentualFrequencia();
+      $aDisciplina = $oDiario->getDisciplinas();
+
+      if ( !empty($aDisciplina) ) {
+        $nPercentualFrequencia = $aDisciplina[0]->calcularPercentualFrequencia();
+      }
     }
 
     $sSituacao     = "CONCLUÍDO";
     $iHistoricoMps = null;
-    $iCargaHoraria = $oTurma->getCargaHoraria();
+    $iCargaHoraria = $oTurma->getCargaHoraria( $oEtapa );
     $iDiasLetivos  = $oTurma->getCalendario()->getDiasLetivos();
 
     /**
@@ -559,7 +617,7 @@ class EncerramentoAvaliacao {
 
     $oEtapaHistorico->setAnoCurso($oTurma->getCalendario()->getAnoExecucao());
     $oEtapaHistorico->setEscola(new Escola(db_getsession("DB_coddepto")));
-    $oEtapaHistorico->setMininoParaAprovacao($oProcedimentoAvaliacao->getFormaAvaliacao()->getAproveitamentoMinino());
+    $oEtapaHistorico->setMininoParaAprovacao($oDiario->getMinimoAprovacao());
     $oEtapaHistorico->setCargaHoraria($iCargaHoraria);
     $oEtapaHistorico->setDiasLetivos($iDiasLetivos);
     $oEtapaHistorico->setEtapa($oEtapa);
@@ -598,6 +656,17 @@ class EncerramentoAvaliacao {
 
     $sValorAproveitamento = ArredondamentoNota::formatar( $sAproveitamento, $oEtapaHistorico->getAnoCurso() );
 
+        if ($oDisciplina->getResultadoFinal()->getResultadoAvaliacao()->getFormaDeObtencao() == 'AP') {
+            $sResultado = $oDisciplina->getResultadoFinal()->getResultadoFinal();
+            $ensino = $oEtapaHistorico->getEtapa()->getEnsino();
+            $termoEncerramento = DBEducacaoTermo::getTermoEncerramento(
+                $ensino->getCodigo(),
+                $sResultado,
+                $oEtapaHistorico->getAnoCurso()
+            );
+            $sValorAproveitamento = $termoEncerramento[0]->sAbreviatura;
+        }
+
     $oDisciplinaHistorico = new DisciplinaHistoricoRede();
 
     if (!$oDisciplina->getRegencia()->isObrigatoria()) {
@@ -627,7 +696,10 @@ class EncerramentoAvaliacao {
     $oDisciplinaHistorico->setLancamentoAutomatico(true);
     $oDisciplinaHistorico->setOpcional(!$oDisciplina->getRegencia()->isObrigatoria());
     $oDisciplinaHistorico->setBaseComum($oDisciplina->getRegencia()->isBaseComum());
+    $oDisciplinaHistorico->setTipoBase($oDisciplina->getRegencia()->getTipoBase());
     $oDisciplinaHistorico->salvar($oEtapaHistorico->getCodigoEtapa());
+
+    return $oDisciplinaHistorico;
   }
 
   /**
@@ -637,6 +709,8 @@ class EncerramentoAvaliacao {
    * @return boolean
    */
   public function semAulasDadas ($oTurma, $oEtapa) {
+
+    $oTurma->getDisciplinas();
 
     $oDaoRegenciaPeriodo = db_utils::getDao("regenciaperiodo");
     /**
@@ -706,8 +780,9 @@ class EncerramentoAvaliacao {
 
   /**
    * Concluir a matricula do aluno
-   * @param integer $oMatricula matricula do aluno
-   * @param string $sConclusao Conclusao da matricula S para concluida N para nao concluida
+   * @param Matricula $oMatricula - matricula do aluno
+   * @param           $sConclusao - Conclusao da matricula S para concluida N para nao concluida
+   * @throws BusinessException
    */
   protected function atualizarConclusaoDaMatricula(Matricula $oMatricula, $sConclusao) {
 
@@ -723,19 +798,25 @@ class EncerramentoAvaliacao {
       throw new BusinessException($sErroMensagem);
     }
   }
+
   /**
    * Encerra os dados da matricula
-   * @param Matricula $oMatricula
+   * @param Matricula    $oMatricula
    * @param DiarioClasse $oDiario
+   * @param              $sResultadoFinal
+   * @throws BusinessException
    */
   protected function encerrarDadosMatricula(Matricula $oMatricula, DiarioClasse $oDiario, $sResultadoFinal) {
 
+      $areaProcedimetno = $oDiario->getAreaProcedimento();
     $oErroMensagem        = new stdClass();
     $oErroMensagem->etapa = $oMatricula->getEtapaDeOrigem()->getNome();
     $oErroMensagem->aluno = $oMatricula->getAluno()->getCodigoAluno() . " - " .$oMatricula->getAluno()->getNome();
 
     $iEscola  = db_getsession("DB_coddepto");
-    $oDiario->adicionarDisciplinasReprovadasComoProgressaoParcial();
+    if (is_null($areaProcedimetno)) {
+        $oDiario->adicionarDisciplinasReprovadasComoProgressaoParcial();
+    }
     $sSituacao           = '';
     $sSituacaoCursoAluno = "APROVADO";
     if ($sResultadoFinal == "R") {
@@ -745,8 +826,7 @@ class EncerramentoAvaliacao {
     }
 
 
-    if ($oDiario->aprovadoComProgressaoParcial()) {
-
+    if (is_null($areaProcedimetno) && $oDiario->aprovadoComProgressaoParcial()) {
       $sResultadoFinal     = "A";
       $sSituacaoCursoAluno = "APROVADO";
       $sSituacao           = "COM PROGRESSÃO PARCIAL/DEPENDÊNCIA";
@@ -793,6 +873,10 @@ class EncerramentoAvaliacao {
     $iBaseAnterior      = "";
     $iCodigoBase        = "";
     $oDadosAlunoCurso   = null;
+
+    if ($iLinhasAlunoPoss == 0) {
+        throw new BusinessException("Aluno :  {$oMatricula->getAluno()->getNome()} sem situação atual, cadastrado no sistema. Contate o Suporte!");
+    }
 
     if ($iLinhasAlunoPoss > 0) {
 
@@ -855,15 +939,24 @@ class EncerramentoAvaliacao {
       throw new BusinessException($sErroMensagem);
     }
 
-    $sSqlAlunoCurso     = " UPDATE alunocurso SET ";
-    $sSqlAlunoCurso    .= "                   ed56_c_situacao      = '{$sSituacaoCursoAluno}', ";
-    $sSqlAlunoCurso    .= "                   ed56_i_escola        = {$iEscola}, ";
-    $sSqlAlunoCurso    .= "                   ed56_i_base          = {$iProximaBase}, ";
-    $sSqlAlunoCurso    .= "                   ed56_i_calendario    = {$oDadosAlunoCurso->ed56_i_calendario}, ";
-    $sSqlAlunoCurso    .= "                   ed56_i_baseant       = {$iBaseAnterior}, ";
-    $sSqlAlunoCurso    .= "                   ed56_i_calendarioant = null, ";
-    $sSqlAlunoCurso    .= "                   ed56_c_situacaoant   = '{$oMatricula->getSituacao()}' ";
-    $sSqlAlunoCurso    .= "        WHERE ed56_i_codigo = {$oDadosAlunoCurso->ed56_i_codigo} ";
+      $sWhereBase = '';
+
+      if ($iProximaBase) {
+          $sWhereBase = "ed56_i_base = {$iProximaBase},";
+      }
+
+      $sSqlAlunoCurso = "
+        UPDATE alunocurso SET
+            ed56_c_situacao = '{$sSituacaoCursoAluno}',
+            ed56_i_escola = {$iEscola},
+            {$sWhereBase}
+            ed56_i_calendario = {$oDadosAlunoCurso->ed56_i_calendario},
+            ed56_i_baseant = {$iBaseAnterior},
+            ed56_i_calendarioant = NULL,
+            ed56_c_situacaoant = '{$oMatricula->getSituacao()}'
+        WHERE ed56_i_codigo = {$oDadosAlunoCurso->ed56_i_codigo}
+    ";
+
     $rsAlunoCurso        = db_query($sSqlAlunoCurso);
 
     if (!$rsAlunoCurso) {
@@ -953,6 +1046,7 @@ class EncerramentoAvaliacao {
    * Valida se a Matricula pode ser encerrada
    * @param Matricula $oMatricula
    * @param Etapa     $oEtapa
+   * @return bool
    */
   protected function validaMatriculaParaEncerramento (Matricula $oMatricula, Etapa $oEtapa) {
 
@@ -970,25 +1064,58 @@ class EncerramentoAvaliacao {
     return true;
   }
 
-  /**
-   * Retorna o Histórico do Aluno
-   * @param  Matricula $oMatricula
-   * @return HistoricoAluno
-   */
-  protected function getHistoricoAluno(Matricula $oMatricula) {
+    /**
+     * Retorna o Histórico do Aluno
+     * @param Matricula $oMatricula
+     * @return HistoricoAluno
+     * @throws Exception
+     */
+    protected function getHistoricoAluno(Matricula $oMatricula)
+    {
+        try {
+            $oTurma = $oMatricula->getTurma();
+            $iCodigoCurso = $oMatricula->getTurma()->getBaseCurricular()->getCurso()->getCodigo();
+            $oHistoricoAluno = $oMatricula->getAluno()->getHistoricoEscolar($iCodigoCurso);
 
-    $oTurma          = $oMatricula->getTurma();
-    $iCodigoCurso    = $oMatricula->getTurma()->getBaseCurricular()->getCurso()->getCodigo();
-    $oHistoricoAluno = $oMatricula->getAluno()->getHistoricoEscolar($iCodigoCurso);
+            if ($oHistoricoAluno->getCodigoHistorico() == "") {
+                $oHistoricoAluno->setCodigoCurso($oTurma->getBaseCurricular()->getCurso()->getCodigo());
+                $oHistoricoAluno->salvar();
+            }
 
-    if ($oHistoricoAluno->getCodigoHistorico() == "") {
+            return $oHistoricoAluno;
+        } catch (Exception $businessException) {
+            if ($businessException->getMessage() == "Foi encontrado mais de um histórico escolar para o aluno neste curso. É necessário remover um dos históricos.") {
+                $codigoTurma = $oMatricula->getTurma()->getCodigo();
+                $matriculas = $oMatricula->getTurma()->getAlunosMatriculados();
+                $oEtapa = $oMatricula->getEtapaDeOrigem();
 
-      $oHistoricoAluno->setCurso($oTurma->getBaseCurricular()->getCurso()->getCodigo());
-      $oHistoricoAluno->salvar();
+                $codigoAlunos = implode(',', array_map(function ($matricula) {
+                    return $matricula->getAluno()->getCodigoAluno();
+                }, $matriculas));
+
+                $daoHistoricos = new cl_historico();
+                $sqlHistoricos = $daoHistoricos->sql_query(
+                    null,
+                    'ed61_i_aluno, ed47_v_nome, count(*)',
+                    null,
+                    "ed61_i_aluno in ({$codigoAlunos}) and ed61_i_curso = {$iCodigoCurso}"
+                );
+                $sqlHistoricos .= " group by ed61_i_aluno, ed47_v_nome, ed61_i_curso having count(*) > 1 ";
+
+                $rsHistoricos = db_query($sqlHistoricos);
+
+                while ($historico = pg_fetch_object($rsHistoricos)) {
+                    $oErroHistorico = new stdClass();
+                    $oErroHistorico->turma = $codigoTurma;
+                    $oErroHistorico->etapa = $oEtapa->getNome();
+                    $oErroHistorico->aluno = "{$historico->ed61_i_aluno} - {$historico->ed47_v_nome}";
+                    $oErroHistorico->mensagem = "Aluno com histórico duplicado.";
+                    $this->informarErro($oErroHistorico);
+                }
+            }
+            throw new Exception($businessException->getMessage());
+        }
     }
-
-    return $oHistoricoAluno;
-  }
 
   /**
    * Encerra as regencias de uma turma
@@ -1032,7 +1159,7 @@ class EncerramentoAvaliacao {
 
     foreach ($oTurma->getDisciplinasPorEtapa($oEtapa) as $oRegencia) {
 
-      $oDaoRegencia = db_utils::getDao("regencia");
+      $oDaoRegencia = new cl_regencia();
       $oDaoRegencia->ed59_c_encerrada = 'N';
       $oDaoRegencia->ed59_lancarhistorico = $oRegencia->isLancadaNoHistorico() ? 't' : 'f';
       $oDaoRegencia->ed59_i_codigo    = $oRegencia->getCodigo();
@@ -1198,14 +1325,12 @@ class EncerramentoAvaliacao {
   }
 
   /**
-   *
+   * Verifica se existe uma matrícula posterior
    * @param Matricula $oMatricula
    * @return boolean
    */
   protected function alunoComMatriculaPosterior(Matricula $oMatricula) {
-
-    return trim(MatriculaPosterior($oMatricula->getTurma()->getCodigo(),
-                                   $oMatricula->getAluno()->getCodigoAluno())) == "SIM";
+    return MatriculaPosterior( $oMatricula->getCodigo() );
   }
 
   /**
@@ -1221,8 +1346,7 @@ class EncerramentoAvaliacao {
    */
   private function geraDadosHistoricoAluno(HistoricoAluno $oHistoricoAluno, Turma $oTurma, Etapa $oEtapa,
                                            $oProcedimentoAvaliacao, DiarioClasse $oDiario, $sResultadoFinal) {
-
-    $oEtapaHistorico = $this->adicionarEtapaHistorico($oHistoricoAluno,
+      $oEtapaHistorico = $this->adicionarEtapaHistorico($oHistoricoAluno,
                                                       $oTurma,
                                                       $oEtapa,
                                                       $sResultadoFinal,
@@ -1236,8 +1360,68 @@ class EncerramentoAvaliacao {
         if ($oTurma->getTipoDaTurma() == 1 || $oTurma->getTipoDaTurma() == 3) {
           $sResultadoFinal = $oDiarioDisciplina->getResultadoFinal()->getResultadoFinal();
         }
-        $this->adicionarDisciplinaEtapaHistorico($oEtapaHistorico, $oDiarioDisciplina,
+        $oDisciplinaHistorico = $this->adicionarDisciplinaEtapaHistorico($oEtapaHistorico, $oDiarioDisciplina,
                                                  $oProcedimentoAvaliacao, $sResultadoFinal);
+
+          $areaConhecimento = $oDiarioDisciplina->getRegencia()->getAreaConhecimento();
+
+        if (!is_null($areaConhecimento)) {
+            $areaHistoricoRedeRepository = new \ECidade\Educacao\Escola\Repository\AreaHistoricoRedeRepository();
+            $areaHistorico = $areaHistoricoRedeRepository
+                ->scopeHistoricoEtapaRede($oEtapaHistorico)
+                ->scopeAreaConhecimento($areaConhecimento)
+                ->first();
+
+            if (empty($areaHistorico)) {
+                $diarioAreaResultado = null;
+                $diarioAreasConhecimento = $oDiario->getDiarioAlunoService()->getDiarioAluno()->getDiarioAreasConhecimento();
+
+                if (empty($diarioAreasConhecimento)) {
+                    continue;
+                }
+
+                foreach ($diarioAreasConhecimento as $diarioArea) {
+                    if ($diarioArea->getAreaConhecimento() === $areaConhecimento) {
+                        $diarioAreaResultado = $diarioArea->getResultado();
+                    }
+                }
+
+                $areaHistorico = new \ECidade\Educacao\Escola\Model\AreaHistoricoRede();
+                $areaHistorico->setHistoricoEtapaRede($oEtapaHistorico);
+
+                $areaHistorico->setAreaConhecimento($areaConhecimento);
+
+                $resultadoArea = '';
+                if (is_null($diarioAreaResultado)) {
+                    continue;
+                }
+
+                $formaAvaliacao = $oDiarioDisciplina->getAvaliacoes()[0]->getValorAproveitamento() instanceof ValorAproveitamentoParecer
+                                  ? 'PARECER'
+                                  : $diarioAreaResultado->getAreaProcedimentoResultado()->getFormaAvaliacao()->getTipo();
+
+                switch ($formaAvaliacao) {
+                    case 'NIVEL':
+                        $resultadoArea = $diarioAreaResultado->getConceito();
+                        break;
+                    case 'PARECER':
+                        $resultadoArea = 'PD';
+                        break;
+                    case 'NOTA':
+                        $ano = $oDiario->getTurma()->getCalendario()->getAnoExecucao();
+                        $resultadoArea = ArredondamentoNota::formatar($diarioAreaResultado->getNota(), $ano);
+                        break;
+                }
+
+                $areaHistorico->setResultadoObtido($resultadoArea);
+                $areaHistorico->setResultadoFinal($diarioAreaResultado->getResultadoAvaliacao());
+
+                $areaHistorico = $areaHistoricoRedeRepository->salvar($areaHistorico);
+            }
+
+              $areaHistoricoRedeRepository->salvarAreaDisciplina($areaHistorico, $oDisciplinaHistorico);
+              $areaHistorico->addDisciplinaHistoricoRede($oDisciplinaHistorico);
+        }
       }
     }
     return $oEtapaHistorico;
@@ -1245,10 +1429,10 @@ class EncerramentoAvaliacao {
 
   /**
    * Encerra Diario do Aluno
-   * @param DiarioAvaliacaoDisciplina $oDiario
+   * @param DiarioAvaliacaoDisciplina $oDiarioDisciplina
    * @param Aluno                     $oAluno
+   * @return bool
    * @throws BusinessException
-   * @return boolean
    */
   private function encerraDiario(DiarioAvaliacaoDisciplina $oDiarioDisciplina, Aluno $oAluno) {
 
@@ -1270,10 +1454,15 @@ class EncerramentoAvaliacao {
          $oDiarioDisciplina->getResultadoFinal()->getResultadoFinal() == "A") {
 
       $oDisciplina = $oDiarioDisciplina->getDisciplina();
+
+      /**
+       * ATENCAO: PLUGIN ParametroProgressaoParcial - Código abaixo será substituido
+       */
       $oProgressao = ProgressaoParcialAlunoRepository::getProgressaoDoAlunoReprovadaNaDisciplina($oAluno, $oDisciplina);
       if (!empty($oProgressao)) {
-        $oProgressao->encerrarPorAprovacaoNaDisciplina($oDiarioDisciplina->getResultadoFinal());
+       $oProgressao->encerrarPorAprovacaoNaDisciplina($oDiarioDisciplina->getResultadoFinal());
       }
+
     }
 
     return true;
@@ -1436,12 +1625,13 @@ class EncerramentoAvaliacao {
     }
     return true;
   }
- /**
+
+  /**
    * Exclui do historico os dados da turma, etapa e disciplinas que estão sendo cursada
-   *
-   * @param Turma $oTurma
+   * @param Turma     $oTurma
    * @param Matricula $oMatricula
-   * @param Etapa $oEtapa
+   * @param Etapa     $oEtapa
+   * @return bool
    * @throws BusinessException
    */
   private function cancelaHistoricoTurmaEjaAprovacaoParcial (Turma $oTurma, Matricula $oMatricula, Etapa $oEtapa) {
@@ -1569,7 +1759,7 @@ class EncerramentoAvaliacao {
 
           $iDiasLetivosTurmas                      = $oTurma->getCalendario()->getDiasLetivos();
           $oDaoHistoricoMps->ed62_c_resultadofinal = 'P';
-          $oDaoHistoricoMps->ed62_i_qtdch          = $oDadosHistorico->ed62_i_qtdch - $oTurma->getCargaHoraria();
+          $oDaoHistoricoMps->ed62_i_qtdch          = $oDadosHistorico->ed62_i_qtdch - $oTurma->getCargaHoraria( $oEtapa );
           $oDaoHistoricoMps->ed62_i_diasletivos    = $oDadosHistorico->ed62_i_diasletivos - $iDiasLetivosTurmas;
           $oDaoHistoricoMps->ed62_i_codigo         = $iCodigoHistoricoMPS;
           $oDaoHistoricoMps->alterar($iCodigoHistoricoMPS);
@@ -1594,7 +1784,7 @@ class EncerramentoAvaliacao {
    */
   private function cancelaMovimentoAlunoNoCurso(Turma $oTurma, Matricula $oMatricula) {
 
-    $oDaoAlunoCurso = db_utils::getDao("alunocurso");
+    $oDaoAlunoCurso = new cl_alunocurso();
 
     $sCamposAlunoCurso  = " ed56_i_codigo , ed47_v_nome, ed56_c_situacao,  ";
     $sCamposAlunoCurso .= " ed56_i_base as base_atual, ed56_i_calendario as calendario_atual";
@@ -1606,42 +1796,42 @@ class EncerramentoAvaliacao {
     if ($oDaoAlunoCurso->numrows > 0) {
 
       $oDadosAlunoCurso = db_utils::fieldsMemory($rsAlunoCurso, 0);
+      $oTurmaAnterior   = $oMatricula->getTurmaAnterior();
+      $iTurmaAnterior   = "null";
 
-      if ($oDadosAlunoCurso->calendario_atual == $oTurma->getCalendario()->getCodigo()) {
+      if (!empty($oTurmaAnterior)) {
+        $iTurmaAnterior = $oMatricula->getTurmaAnterior()->getCodigo();
+      }
 
-        $oTurmaAnterior = $oMatricula->getTurmaAnterior();
-        $iTurmaAnterior = "null";
-        if (!empty($oTurmaAnterior)) {
+      $sSqlUpAlunoCurso  = " UPDATE alunocurso ";
+      $sSqlUpAlunoCurso .= "    SET ed56_i_base       = {$oTurma->getBaseCurricular()->getCodigoSequencial()}, ";
+      $sSqlUpAlunoCurso .= "        ed56_i_calendario = {$oTurma->getCalendario()->getCodigo()},  ";
+      $sSqlUpAlunoCurso .= "        ed56_c_situacao   = '{$oMatricula->getSituacao()}', ";
+      $sSqlUpAlunoCurso .= "        ed56_i_escola   = '{$oTurma->getEscola()->getCodigo()}' ";
+      $sSqlUpAlunoCurso .= "  WHERE ed56_i_codigo = {$oDadosAlunoCurso->ed56_i_codigo} ";
+      $rsUpAlunoCurso    = db_query($sSqlUpAlunoCurso);
 
-          $iTurmaAnterior = $oMatricula->getTurmaAnterior()->getCodigo();
-        }
+      if (!$rsUpAlunoCurso) {
 
-        $sSqlUpAlunoCurso  = " UPDATE alunocurso ";
-        $sSqlUpAlunoCurso .= "    SET ed56_i_base       = {$oTurma->getBaseCurricular()->getCodigoSequencial()}, ";
-        $sSqlUpAlunoCurso .= "        ed56_i_calendario = {$oTurma->getCalendario()->getCodigo()},  ";
-        $sSqlUpAlunoCurso .= "        ed56_c_situacao   = '{$oMatricula->getSituacao()}' ";
-        $sSqlUpAlunoCurso .= "  WHERE ed56_i_codigo = {$oDadosAlunoCurso->ed56_i_codigo} ";
-        $rsUpAlunoCurso    = db_query($sSqlUpAlunoCurso);
+        $sErroMensagem = "Erro ao cancelar dados do curso do aluno.";
+        throw new BusinessException($sErroMensagem);
+      }
 
-        if (!$rsUpAlunoCurso) {
+      $sSqlUpdAlunoPossib  = " UPDATE alunopossib                       ";
+      $sSqlUpdAlunoPossib .= "    SET ed79_i_serie    = {$oMatricula->getEtapaDeOrigem()->getCodigo()},  ";
+      $sSqlUpdAlunoPossib .= "        ed79_i_turno    = {$oTurma->getTurno()->getCodigoTurno()},  ";
+      $sSqlUpdAlunoPossib .= "        ed79_i_turmaant = $iTurmaAnterior,  ";
+      $sSqlUpdAlunoPossib .= "        ed79_c_resulant = '{$oMatricula->getResultadoFinalAnterior()}' ";
+      $sSqlUpdAlunoPossib .= "  WHERE ed79_i_alunocurso = {$oDadosAlunoCurso->ed56_i_codigo} ";
+      $rsUpAlunoPossib     = db_query($sSqlUpdAlunoPossib);
 
-          $sErroMensagem = "Erro ao cancelar dados do curso do aluno.";
-          throw new BusinessException($sErroMensagem);
-        }
-        $sSqlUpdAlunoPossib  = " UPDATE alunopossib                       ";
-        $sSqlUpdAlunoPossib .= "    SET ed79_i_serie    = {$oMatricula->getEtapaDeOrigem()->getCodigo()},  ";
-        $sSqlUpdAlunoPossib .= "        ed79_i_turno    = {$oTurma->getTurno()->getCodigoTurno()},  ";
-        $sSqlUpdAlunoPossib .= "        ed79_i_turmaant = $iTurmaAnterior,  ";
-        $sSqlUpdAlunoPossib .= "        ed79_c_resulant = '{$oMatricula->getResultadoFinalAnterior()}' ";
-        $sSqlUpdAlunoPossib .= "  WHERE ed79_i_alunocurso = {$oDadosAlunoCurso->ed56_i_codigo} ";
-        $rsUpAlunoPossib     = db_query($sSqlUpdAlunoPossib);
-        if (!$rsUpAlunoPossib) {
+      if (!$rsUpAlunoPossib) {
 
-          $sErroMensagem = "Erro ao cancelar dados da pre matricula do aluno";
-          throw new BusinessException($sErroMensagem);
-        }
+        $sErroMensagem = "Erro ao cancelar dados da pre matricula do aluno";
+        throw new BusinessException($sErroMensagem);
       }
     }
+
     return true;
   }
 
@@ -1669,15 +1859,23 @@ class EncerramentoAvaliacao {
                                                                                                $sWhereProgressao
                                                                                              );
 
-      $rsProgessao = $oDaoEncerramentoProgressaoParcial->sql_record($sSqlEncerramentoProgressao);
-      if ($oDaoEncerramentoProgressaoParcial->numrows > 0) {
+      $rsProgessao = db_query( $sSqlEncerramentoProgressao );
 
+      if ( !$rsProgessao ) {
+        throw new DBException("Falha ao buscar os dados da progressão parcial do aluno.\n{$oMatricula->getAluno()->getNome()}.");
+      }
+
+      if ( pg_num_rows($rsProgessao) > 0 ) {
+
+        /**
+         * ATENCAO: PLUGIN ParametroProgressaoParcial - Código abaixo será substituido
+         */
         $oDadosProgressao = db_utils::fieldsMemory($rsProgessao, 0);
         $oDaoEncerramentoProgressaoParcial->excluir($oDadosProgressao->ed151_sequencial);
 
         if ($oDaoEncerramentoProgressaoParcial->erro_status == 0) {
 
-          $sErroMensagem  = "Erro ao cancelar encerramento  dos dados de progressão parcial do aluno.\n{$oMatricula->getAluno()->getNome()}.";
+          $sErroMensagem  = "Erro ao cancelar encerramento dos dados de progressão parcial do aluno.\n{$oMatricula->getAluno()->getNome()}.";
           throw new BusinessException($sErroMensagem);
         }
 
@@ -1688,9 +1886,10 @@ class EncerramentoAvaliacao {
         $oDaoProgressaoParcialAluno->alterar($oDadosProgressao->ed114_sequencial);
         if ($oDaoProgressaoParcialAluno->erro_status == 0) {
 
-          $sErroMensagem  = "Erro ao cancelar encerramento  dos dados de progressão parcial do aluno.\n{$oMatricula->getAluno()->getNome()}.";
+          $sErroMensagem  = "Erro ao cancelar encerramento dos dados de progressão parcial do aluno.\n{$oMatricula->getAluno()->getNome()}.";
           throw new BusinessException($sErroMensagem);
         }
+
       }
     }
 

@@ -58,7 +58,7 @@ db_input('o104_descricao',50,$Io104_descricao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pactoatividade','func_pactoatividade.php?funcao_js=parent.js_preenchepesquisa|o104_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pactoatividade','func_pactoatividade.php?funcao_js=parent.js_preenchepesquisa|o104_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_pactoatividade.hide();

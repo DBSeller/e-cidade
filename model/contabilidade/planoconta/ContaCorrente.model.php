@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("model/contabilidade/planoconta/ContaPlanoPCASPRepository.model.php");
+require_once(modification("model/contabilidade/planoconta/ContaPlanoPCASPRepository.model.php"));
 /**
  * Model para Consulta as Contas Correntes
  * @author Andrio Costa
  * @package contabilidade
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.17 $
  */
 class ContaCorrente {
 
@@ -140,8 +140,8 @@ class ContaCorrente {
     $sWhereContas       = "    c60_estrut ilike '{$sEstrutural}%' ";
     $sWhereContas      .= "and c60_anousu = {$iAnoSessao} ";
     $sWhereContas      .= "and c61_instit = {$iInstituicaoSessao} ";
-    $sWhereContas      .= "and c18_sequencial is null";
-    $sSqlBuscaContas    = $oDaoConPlanoReduz->sql_query_analitica(null, null, 'c60_codcon', null, $sWhereContas);
+    $sWhereContas      .= "and (c18_sequencial is null or c18_contacorrente = {$this->iCodigo})";
+    $sSqlBuscaContas    = $oDaoConPlanoReduz->sql_query_analitica(null, null, 'c60_codcon, c18_contacorrente', null, $sWhereContas);
     $rsBuscaConta       = $oDaoConPlanoReduz->sql_record($sSqlBuscaContas);
 
     if ($oDaoConPlanoReduz->numrows == 0) {
@@ -150,10 +150,19 @@ class ContaCorrente {
       throw new BusinessException($sMensagem);
     }
 
+    $iTotalMesmaConta = 0;
     $iTotalLinhasContas = $oDaoConPlanoReduz->numrows;
     for ($iRowConta = 0; $iRowConta < $iTotalLinhasContas; $iRowConta++) {
 
-      $iCodigoConta = db_utils::fieldsMemory($rsBuscaConta, $iRowConta)->c60_codcon;
+      $oStdConta = db_utils::fieldsMemory($rsBuscaConta, $iRowConta);
+      $iCodigoConta = $oStdConta->c60_codcon;
+      $iContaCorrenteBusca = $oStdConta->c18_contacorrente;
+
+      if ($iContaCorrenteBusca == $this->getCodigo()) {
+
+        $iTotalMesmaConta++;
+        continue;
+      }
 
       $sWhereUltimoAno  = " c61_codcon =  {$iCodigoConta} ";
       $sWhereUltimoAno .= "and c61_instit = {$iInstituicaoSessao} ";
@@ -181,6 +190,12 @@ class ContaCorrente {
         }
         unset($oDaoContaCorrenteConPlano);
       }
+    }
+
+    if ($iTotalMesmaConta == $iTotalLinhasContas) {
+
+      $sMensagem = "A conta contábil {$sEstrutural} já está associada a conta corrente {$this->iCodigo}.";
+      throw new BusinessException($sMensagem);
     }
     return true;
   }
@@ -227,6 +242,11 @@ class ContaCorrente {
 
     $iAnoSessao = db_getsession('DB_anousu');
 
+    /*
+     * Ao desesvincular o conta corrente desta conta contabil é necessário
+     * reprocessar o saldo na rotina:
+     *
+     * */
     $sWhereExcluir  = "     c18_codcon = {$iCodigoConta}";
     $sWhereExcluir .= " and c18_anousu >= {$iAnoSessao}";
     $sWhereExcluir .= " and c18_contacorrente = {$this->getCodigo()}";
@@ -247,6 +267,7 @@ class ContaCorrente {
    */
   static function getAtributos($iContaCorrente) {
 
+    $aAtributos = array();
     /*
      * definição dos atributos
     */
@@ -312,8 +333,6 @@ class ContaCorrente {
     }
 
     return $aAtributos;
-
   }
-
 
 }

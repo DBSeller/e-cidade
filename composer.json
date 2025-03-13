@@ -1,0 +1,143 @@
+{
+    "name": "dbseller/e-cidade",
+    "description": "e-cidade GRP",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:DBSeller/Session.git"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.4",
+        "ext-bcmath": "*",
+        "ext-calendar": "*",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-fileinfo": "*",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-pgsql": "*",
+        "ext-simplexml": "*",
+        "ext-soap": "*",
+        "ext-xmlwriter": "*",
+        "ext-zip": "*",
+        "aferrandini/phpqrcode": "^1.0",
+        "barryvdh/laravel-ide-helper": "^2.4",
+        "dbseller/legacy": "^1.0",
+        "dbseller/phinx_postgres": "^1.3",
+        "dbseller/sdk-api-pix-bb": "^1.0",
+        "dbseller/session": "dev-master",
+        "doctrine/dbal": "2.*",
+        "dompdf/dompdf": "^0.8.3",
+        "guzzlehttp/guzzle": "^6.2",
+        "intervention/image": "^2.7",
+        "jeremeamia/superclosure": "^2.0",
+        "laravel/framework": "5.4.*",
+        "laravel/passport": "^4.0",
+        "laravel/tinker": "~1.0",
+        "lcobucci/jwt": "3.3.3",
+        "league/fractal": "0.11.0",
+        "michelf/php-markdown": "^1.6",
+        "mormat/php-formula-interpreter": "1.0.0",
+        "mpdf/mpdf": "v7.1.9",
+        "ncjoes/office-converter": "^1.0",
+        "nfephp-org/sped-common": "~5.0.40",
+        "phpmailer/phpmailer": "^6.5",
+        "phpoffice/phpspreadsheet": "^1.08",
+        "phpoffice/phpword": "v0.17.*",
+        "proner/phppimaco": "1.3.0",
+        "pusher/pusher-php-server": "~2.6",
+        "silex/silex": "^2.0",
+        "symfony/console": "~3.2",
+        "symfony/filesystem": "~3.2",
+        "symfony/polyfill-php56": "^1.1",
+        "symfony/polyfill-php70": "^1.1",
+        "symfony/process": "~3.2",
+        "symfony/validator": "~3.2",
+        "symfony/yaml": "~3.2",
+        "vlucas/valitron": "^1.4",
+        "zendframework/zend-eventmanager": "2.2.10"
+    },
+    "require-dev": {
+        "filp/whoops": "^2.5",
+        "fzaninotto/faker": "^1.9",
+        "mockery/mockery": "1.3.0",
+        "phpunit/phpunit": "^5.7",
+        "squizlabs/php_codesniffer": "^3.5"
+    },
+    "secure-http": false,
+    "autoload": {
+        "files": [
+            "app/Helpers/PostgresPls.php",
+            "app/Helpers/Functions.php",
+            "app/Helpers/Drive.php",
+            "app/Helpers/Orcamento/FiltrosOrcamento.php",
+            "app/Helpers/Orcamento/FuncoesOrcamento.php",
+            "app/Helpers/Planejamento/FiltrosDespesaPlanejamento.php",
+            "app/Helpers/Contabilidade/FuncoesContabilidade.php"
+        ],
+        "classmap": [
+            "database"
+        ],
+        "psr-4": {
+            "App\\": "app/",
+            "Fpdf\\": "fpdf/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "merge-ecidade-3": [
+            "$(which php5.6) bin/console modification:refresh-metadata",
+            "$(which php5.6) bin/console modification:refresh-cache",
+            "echo 'DONE!'"
+        ],
+        "install-desktop": [
+            "$(which php5.6) bin/console extension:pack Desktop",
+            "$(which php5.6) bin/console extension:unpack desktop-package.tar.gz --force",
+            "$(which php5.6) bin/console extension:install Desktop dbseller"
+        ],
+        "install-dbug": [
+            "$(which php5.6) bin/console extension:pack DBug",
+            "$(which php5.6) bin/console extension:unpack dbug-package.tar.gz --force",
+            "$(which php5.6) bin/console extension:install DBug"
+        ],
+
+        "sniff-check": [
+            "sniff_check() { $(which php) -d memory_limit=-1 vendor/bin/phpcs --standard=ci/phpcs/ruleset.xml --colors \"$@\"; }; sniff_check"
+        ],
+        "psrcheck": [
+            "ci/scripts/sniff.sh"
+        ],
+        "post-root-package-install": [
+            "$(which php5.6) -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "$(which php5.6) artisan key:generate"
+        ],
+        "post-install-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postInstall",
+            "$(which php5.6) artisan optimize"
+        ],
+        "post-update-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "$(which php5.6) artisan optimize",
+            "$(which php5.6) artisan ide-helper:generate",
+            "$(which php5.6) artisan ide-helper:meta"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
+        }
+    }
+}

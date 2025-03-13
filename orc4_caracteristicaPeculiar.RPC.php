@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_utils.php");
-  require_once("std/db_stdClass.php");
-  require_once("libs/db_app.utils.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_libcontabilidade.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("libs/JSON.php");
-  require_once("classes/db_orcparametro_classe.php");
-  require_once("classes/db_concarpeculiar_classe.php");
-  require_once("model/orcamento/CaracteristicaPeculiar.model.php");    
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("std/db_stdClass.php"));
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_libcontabilidade.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("libs/JSON.php"));
+  require_once(modification("classes/db_orcparametro_classe.php"));
+  require_once(modification("classes/db_concarpeculiar_classe.php"));
+  require_once(modification("model/orcamento/CaracteristicaPeculiar.model.php"));    
   
   db_app::import("configuracao.DBEstrutura");
   
@@ -55,7 +55,7 @@
       
       $oDaoOrcParametro       = new cl_orcparametro();
       $sSqlOrcParametro       = $oDaoOrcParametro->sql_query(db_getsession("DB_anousu"),"o50_estruturacp");
-      $oDadosRetorno          = db_utils::getColectionByRecord($oDaoOrcParametro->sql_record($sSqlOrcParametro));
+      $oDadosRetorno          = db_utils::getCollectionByRecord($oDaoOrcParametro->sql_record($sSqlOrcParametro));
       $oRetorno->iEstruturaCP = $oDadosRetorno[0]->o50_estruturacp;
     break;
     
@@ -95,10 +95,12 @@
       $oDaoCaractPeculiar->c58_sequencial = $oParam->iCodigo;
       
       $sSqlCaracteristica = $oDaoCaractPeculiar->buscaDadosCaracteristica($oDaoCaractPeculiar->c58_sequencial);
-      $rsExecutaQuery     = $oDaoCaractPeculiar->sql_record($sSqlCaracteristica);
-      
+      $rsExecutaQuery     = db_query($sSqlCaracteristica);
+      if (!$rsExecutaQuery) {
+          throw new DBException("Ocorreu um erro ao buscar as informações da característica peculiar.");
+      }
+
       $oDadosCaracteristica = db_utils::fieldsMemory($rsExecutaQuery,0);
-      
       $oRetorno->c58_sequencial  = $oDadosCaracteristica->c58_sequencial;
       $oRetorno->c58_descr       = urlencode($oDadosCaracteristica->c58_descr);
       $oRetorno->c58_tipo        = $oDadosCaracteristica->c58_tipo;

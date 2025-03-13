@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_liborcamento.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -433,7 +433,7 @@ $pdf->cell(30,$alt,db_formatar($res_con + $desp_cap + $desp_cor,'f'),"T",1,"R",0
 $pdf->ln(14);
 
 if($origem != "O"){
-  assinaturas(&$pdf,&$classinatura,'BG');
+  assinaturas($pdf,$classinatura,'BG');
 }
 
 db_query("commit");

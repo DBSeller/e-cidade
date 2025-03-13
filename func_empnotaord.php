@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empnotaord_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empnotaord_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clempnotaord = new cl_empnotaord;
@@ -119,7 +119,7 @@ $depart= db_getsession("DB_coddepto");
 
            if(file_exists("funcoes/db_func_empnotaord.php")==true){
 
-             include("funcoes/db_func_empnotaord.php");
+             include(modification("funcoes/db_func_empnotaord.php"));
              
            }else{
 
@@ -140,7 +140,7 @@ $depart= db_getsession("DB_coddepto");
 	         
         }else if(isset($chave_m72_codordem) && (trim($chave_m72_codordem)!="") ){
 
-	         $sql = $clempnotaord->sql_query_elemento("","",$campos,"m72_codordem"," m72_codordem like '$chave_m72_codordem%' and  matordem.m51_depto=$depart {$sWhere} and {$where_instit}");
+	         $sql = $clempnotaord->sql_query_elemento("","",$campos,"m72_codordem"," m72_codordem = $chave_m72_codordem and  matordem.m51_depto=$depart {$sWhere} and {$where_instit}");
 	         
         }else if(isset($chave_e69_dtnota) && (trim($chave_e69_dtnota)!="") ){
 
@@ -191,3 +191,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -110,7 +110,7 @@ class cl_escola_professores {
        return false;
      }
      if($ed04_i_codigo == "" || $ed04_i_codigo == null ){
-       $result = @pg_query("select nextval('escola_professores_ed04_i_codigo_seq')"); 
+       $result = @db_query("select nextval('escola_professores_ed04_i_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: escola_professores_ed04_i_codigo_seq do campo: ed04_i_codigo"; 
@@ -121,7 +121,7 @@ class cl_escola_professores {
        }
        $this->ed04_i_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from escola_professores_ed04_i_codigo_seq");
+       $result = @db_query("select last_value from escola_professores_ed04_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $ed04_i_codigo)){
          $this->erro_sql = " Campo ed04_i_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -153,7 +153,7 @@ class cl_escola_professores {
                                ,$this->ed04_i_escolas 
                                ,$this->ed04_f_ch 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -179,13 +179,13 @@ class cl_escola_professores {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->ed04_i_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,1006044,'$this->ed04_i_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,1005004,1006044,'','".AddSlashes(pg_result($resaco,0,'ed04_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1005004,1006056,'','".AddSlashes(pg_result($resaco,0,'ed04_i_professores'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1005004,1006054,'','".AddSlashes(pg_result($resaco,0,'ed04_i_escolas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1005004,1006042,'','".AddSlashes(pg_result($resaco,0,'ed04_f_ch'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,1006044,'$this->ed04_i_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,1005004,1006044,'','".AddSlashes(pg_result($resaco,0,'ed04_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1005004,1006056,'','".AddSlashes(pg_result($resaco,0,'ed04_i_professores'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1005004,1006054,'','".AddSlashes(pg_result($resaco,0,'ed04_i_escolas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1005004,1006042,'','".AddSlashes(pg_result($resaco,0,'ed04_f_ch'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -253,20 +253,20 @@ class cl_escola_professores {
      $resaco = $this->sql_record($this->sql_query_file($this->ed04_i_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,1006044,'$this->ed04_i_codigo','A')");
+         $resac = db_query("insert into db_acountkey values($acount,1006044,'$this->ed04_i_codigo','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["ed04_i_codigo"]))
-           $resac = pg_query("insert into db_acount values($acount,1005004,1006044,'".AddSlashes(pg_result($resaco,$conresaco,'ed04_i_codigo'))."','$this->ed04_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1005004,1006044,'".AddSlashes(pg_result($resaco,$conresaco,'ed04_i_codigo'))."','$this->ed04_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["ed04_i_professores"]))
-           $resac = pg_query("insert into db_acount values($acount,1005004,1006056,'".AddSlashes(pg_result($resaco,$conresaco,'ed04_i_professores'))."','$this->ed04_i_professores',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1005004,1006056,'".AddSlashes(pg_result($resaco,$conresaco,'ed04_i_professores'))."','$this->ed04_i_professores',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["ed04_i_escolas"]))
-           $resac = pg_query("insert into db_acount values($acount,1005004,1006054,'".AddSlashes(pg_result($resaco,$conresaco,'ed04_i_escolas'))."','$this->ed04_i_escolas',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1005004,1006054,'".AddSlashes(pg_result($resaco,$conresaco,'ed04_i_escolas'))."','$this->ed04_i_escolas',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["ed04_f_ch"]))
-           $resac = pg_query("insert into db_acount values($acount,1005004,1006042,'".AddSlashes(pg_result($resaco,$conresaco,'ed04_f_ch'))."','$this->ed04_f_ch',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1005004,1006042,'".AddSlashes(pg_result($resaco,$conresaco,'ed04_f_ch'))."','$this->ed04_f_ch',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Escola Professores nao Alterado. Alteracao Abortada.\\n";
@@ -307,13 +307,13 @@ class cl_escola_professores {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,1006044,'$ed04_i_codigo','E')");
-         $resac = pg_query("insert into db_acount values($acount,1005004,1006044,'','".AddSlashes(pg_result($resaco,$iresaco,'ed04_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1005004,1006056,'','".AddSlashes(pg_result($resaco,$iresaco,'ed04_i_professores'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1005004,1006054,'','".AddSlashes(pg_result($resaco,$iresaco,'ed04_i_escolas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1005004,1006042,'','".AddSlashes(pg_result($resaco,$iresaco,'ed04_f_ch'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,1006044,'$ed04_i_codigo','E')");
+         $resac = db_query("insert into db_acount values($acount,1005004,1006044,'','".AddSlashes(pg_result($resaco,$iresaco,'ed04_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1005004,1006056,'','".AddSlashes(pg_result($resaco,$iresaco,'ed04_i_professores'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1005004,1006054,'','".AddSlashes(pg_result($resaco,$iresaco,'ed04_i_escolas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1005004,1006042,'','".AddSlashes(pg_result($resaco,$iresaco,'ed04_f_ch'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from escola_professores
@@ -329,7 +329,7 @@ class cl_escola_professores {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Escola Professores nao Excluído. Exclusão Abortada.\\n";
@@ -363,7 +363,7 @@ class cl_escola_professores {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

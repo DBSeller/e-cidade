@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
 if(isset($HTTP_POST_VARS["atualizar"])) {
   @$ag40_horafimate = date("H:i");
   db_postmemory($HTTP_POST_VARS);
@@ -38,18 +38,18 @@ if(isset($HTTP_POST_VARS["atualizar"])) {
     $data = $ag40_data_ano."-".$ag40_data_mes."-".$ag40_data_dia;
 
   if(!empty($w03_codigo)) {
-    pg_exec("update depen set w03_obsmed = '$obsmed' where w03_codigo = '".db_formatar($w03_codigo,"s"," ",6)."'") or die("Erro(15) atualizando depen");
+    db_query("update depen set w03_obsmed = '$obsmed' where w03_codigo = '".db_formatar($w03_codigo,"s"," ",6)."'") or die("Erro(15) atualizando depen");
   } else {
-    pg_exec("update cadastro set w01_obsmed = '$obsmed' where w01_regist = '".db_formatar($w01_regist,"s"," ",6)."'") or die("Erro(17) atualizando cadastro");
+    db_query("update cadastro set w01_obsmed = '$obsmed' where w01_regist = '".db_formatar($w01_regist,"s"," ",6)."'") or die("Erro(17) atualizando cadastro");
   }
 
   $codmed = trim(db_getsession("codmed"));
   $codmed = db_formatar($codmed,"s"," ",6);
-  $result = pg_exec("select ag40_codigo from atendmed where ag40_codigo = $codigo");  
+  $result = db_query("select ag40_codigo from atendmed where ag40_codigo = $codigo");  
   if(pg_numrows($result) == 0) {    
-    $result = pg_exec("select nextval('atendmed_ag40_codate_seq')");
+    $result = db_query("select nextval('atendmed_ag40_codate_seq')");
 	$codate = pg_result($result,0,0);
-    pg_exec("insert into atendmed(ag40_codate,
+    db_query("insert into atendmed(ag40_codate,
 	                              ag40_codigo,
                                   ag40_data,
                                   ag40_hora,
@@ -81,7 +81,7 @@ if(isset($HTTP_POST_VARS["atualizar"])) {
 								 '".$ag40_horafimate."')") or die("Erro(43) inserindo em atendmed");
   } else {  
   @$ag40_horafimate = date("H:i");
-    pg_exec("update atendmed set  ag40_data = '$data',
+    db_query("update atendmed set  ag40_data = '$data',
                                   ag40_hora = '$ag40_hora',
                                   ag40_pressao = '$ag40_pressao',
                                   ag40_temperatura = '$ag40_temperatura',
@@ -219,7 +219,7 @@ function js_verificar() {
   <tr>
     <td height="330" valign="top" bgcolor="#FFFF64">	
 	<?
-	$result = pg_exec("select *,to_char(ag40_data,'DD') as ag40_data_dia,to_char(ag40_data,'MM') as ag40_data_mes,to_char(ag40_data,'YYYY') as ag40_data_ano 
+	$result = db_query("select *,to_char(ag40_data,'DD') as ag40_data_dia,to_char(ag40_data,'MM') as ag40_data_mes,to_char(ag40_data,'YYYY') as ag40_data_ano 
 	                   from atendmed 
 					   where ag40_codigo = ".db_getsession("COD_atendimento"));
 	if(pg_numrows($result) > 0)
@@ -230,16 +230,16 @@ function js_verificar() {
 	  $ag40_data_ano = date("Y");
 	  //$ag40_hora = date("H:i");
 	}
-	$result = pg_exec("select ag30_hora from agenate where ag30_codigo = ".db_getsession("COD_atendimento"));
+	$result = db_query("select ag30_hora from agenate where ag30_codigo = ".db_getsession("COD_atendimento"));
 	if(pg_numrows($result) > 0)
 	  $ag40_hora = pg_result($result,0,0);
 	if(db_getsession("w03_codigo") != "") {
 	  $sql = "select w03_obsmed from depen where w03_codigo = '".db_formatar(db_getsession("w03_codigo"),"s"," ",6)."'";
-	  $result = pg_exec($sql);
+	  $result = db_query($sql);
 	  if(pg_numrows($result) > 0)
 	    $obsmed = pg_result($result,0,0);
     } else if(db_getsession("w01_regist") != "") {
-	  $result = pg_exec("select w01_obsmed from cadastro where w01_regist = '".db_formatar(db_getsession("w01_regist"),"s"," ",6)."'");
+	  $result = db_query("select w01_obsmed from cadastro where w01_regist = '".db_formatar(db_getsession("w01_regist"),"s"," ",6)."'");
       if(pg_numrows($result) > 0)
 	    $obsmed = pg_result($result,0,0);
 	}

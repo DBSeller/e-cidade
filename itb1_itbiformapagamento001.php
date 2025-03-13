@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_itbiformapagamento_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_itbiformapagamento_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oPost = db_utils::postMemory($_POST);
 
@@ -76,7 +76,7 @@ if(isset($oPost->incluir)){
     <td> 
       <center>
 	    <?
-	  	  include("forms/db_frmitbiformapagamento.php");
+	  	  include(modification("forms/db_frmitbiformapagamento.php"));
 	    ?>
       </center>
 	</td>

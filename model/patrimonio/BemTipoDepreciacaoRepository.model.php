@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -33,12 +33,7 @@ class BemTipoDepreciacaoRepository {
   /**
    * @var array
    */
-  private $aItens = array();
-
-  /**
-   * @var BemTipoDepreciacaoRepository
-   */
-  private static $oInstance;
+  private static $aItens = array();
 
   /** */
   private function __construct() {}
@@ -51,20 +46,9 @@ class BemTipoDepreciacaoRepository {
    */
   public static function getPorCodigo($iCodigo) {
 
-    if (!array_key_exists($iCodigo, BemTipoDepreciacaoRepository::getInstancia()->aItens)) {
-      BemTipoDepreciacaoRepository::getInstancia()->aItens[$iCodigo] = new BemTipoDepreciacao($iCodigo);
+    if (!array_key_exists($iCodigo, self::$aItens)) {
+      self::$aItens[$iCodigo] = new BemTipoDepreciacao($iCodigo);
     }
-    return BemTipoDepreciacaoRepository::getInstancia()->aItens[$iCodigo];
-  }
-
-  /**
-   * @return BemTipoDepreciacaoRepository
-   */
-  public static function getInstancia() {
-
-    if ( !isset(self::$oInstance) ) {
-      self::$oInstance = new BemTipoDepreciacaoRepository();
-    }
-    return self::$oInstance;
+    return self::$aItens[$iCodigo];
   }
 }

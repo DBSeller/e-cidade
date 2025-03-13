@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_cadimobil_classe.php");
-include("classes/db_imobil_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_cadimobil_classe.php"));
+include(modification("classes/db_imobil_classe.php"));
 $clcadimobil = new cl_cadimobil;
 $climobil = new cl_imobil;
 $clcadimobil->rotulo->label();

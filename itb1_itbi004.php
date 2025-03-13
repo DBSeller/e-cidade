@@ -1,33 +1,34 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-
+require_once(modification("libs/db_conecta.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
+
 $db_botao=1;
 $db_opcao=1;
 $clrotulo = new rotulocampo;
@@ -42,7 +43,7 @@ $clrotulo->label("j01_matric");
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <style type="text/css">
-<!--
+/*
 td {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 12px;
@@ -53,63 +54,92 @@ input {
         height: 17px;
         border: 1px solid #999999;
 }
--->
+*/
 </style>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="790px" align="center" border="0" valign="top" cellspacing="0" cellpadding="0" bgcolor="#cccccc" style="padding-top:25px;">
-  <tr align="center">
-    <td>
-       <b>I.T.B.I.  <?=strtoupper($tipo)?></b>
-    </td>
-  </tr>
-  <tr> 
-    <td align="center" valign="top" bgcolor="#cccccc">     
-  	  <form name="form1" method="post" action="itb1_itbidadosimovel001.php?pri=true&abas=1&tipo=<?=@$tipo?>"  onSubmit="return js_verifica_campos_digitados();" >
-  		<fieldset>
-   		<table  height="100px;">
-     	  <tr>   
-       		<td>
-	      	  <?
-	       		db_ancora("<b>Matrícula :</b>",' js_matri(true); ',1);
-	      	  ?>
-	        </td>
-	        <td> 
-	      	  <?
-	       		db_input('j01_matric',10,$Ij01_matric,true,'text',1,"onchange='js_matri(false)'");
-	      		db_input('z01_nome',40,0,true,'text',3,"","z01_nomematri");
-	      	  ?>
-	       	</td>
-	      </tr>
-		  <script>
-		 
-			onLoad = document.form1.j01_matric.focus();
-			
-			function js_testacamp(){
-  			  var matri = document.form1.j01_matric.value;
-  			  
-  			  if ( matri == "" ) {
-            document.form1.fiscal.disabled = true;
-      			alert("Informe um campo para prosseguir!");
-      			return false;  
-  			  }
-  			  document.form1.submit();
-			}
-		 	   
-		  </script>
-     	  <tr>
-       		<td colspan="2" align="center">
-	   		  <input type="button"  name="fiscal" value="Pesquisar" disabled="disabled" onclick="return js_testacamp();" >
-       		</td>   	 
-     	  </tr>	 
-    	</table>
-    	</fieldset>
+<table width="0px" align="center" border="0" valign="top" cellspacing="0" cellpadding="0" bgcolor="#cccccc" style="padding-top:25px;">
+    <td align="center" valign="top" bgcolor="#cccccc">
+      <form name="form1" method="post" action=""  onSubmit="return js_verifica_campos_digitados();" >
+        <fieldset>
+          <legend>
+            <strong>I.T.B.I. <?php echo strtoupper($tipo); ?></strong>
+          </legend>
+       		<table>
+         	  <tr>
+              <input type="hidden" name="tipo" value="<?=@$tipo?>">
+           		<td>
+    	      	  <?php
+    	       		  db_ancora("<b>Matrícula :</b>",' js_matri(true); ',1);
+    	      	  ?>
+    	        </td>
+    	        <td>
+    	      	  <?php
+      	       		db_input('j01_matric',10,$Ij01_matric,true,'text',1,"onchange='js_matri(false)'");
+      	      		db_input('z01_nome',40,0,true,'text',3,"","z01_nomematri");
+    	      	  ?>
+    	       	</td>
+    	      </tr>
+    		  <script>
+
+    			onLoad = document.form1.j01_matric.focus();
+
+    			function js_testacamp(){
+      			  var matri = document.form1.j01_matric.value;
+
+      			  if ( matri == "" ) {
+                document.form1.fiscal.disabled = true;
+          			alert("Informe um campo para prosseguir!");
+          			return false;
+      			  }
+      			  document.form1.submit();
+    			}
+
+    		  </script>
+          </table>
+        </fieldset>
+   		  <br/>
+        <input type="button"  name="fiscal" value="Pesquisar" disabled="disabled" onclick="return js_testacamp();" >
   	  </form>
     </td>
   </tr>
 </table>
 </body>
 </html>
+<?php
+if (isset($_POST['tipo'])) {
+
+  $tipo = $_POST['tipo'];
+  $j01_matric = $_POST['j01_matric'];
+
+  if ($tipo == 'urbano') {
+    $tipoImovel = 1;
+  } else {
+    $tipoImovel = 2;
+  }
+
+  $sql = "SELECT * FROM iptubase WHERE j01_matric = $j01_matric AND j01_tipoimovel = $tipoImovel";
+  $result = db_query($sql);
+
+  if (pg_num_rows($result) > 0) {
+    $z01_nome = $_POST['z01_nome'];
+    echo "<script>
+      const obj = document.form1;
+      obj.action = 'itb1_itbidadosimovel001.php?pri=true&abas=1&tipo=$tipo';
+      obj.tipo.value = '$tipo';
+      obj.j01_matric.value = $j01_matric;
+      obj.submit();
+    </script>";
+  } else {
+    if ($tipoImovel == 1) {
+      db_msgbox("Matrícula de Imóvel Rural!");
+    } elseif ($tipoImovel == 2) {
+      db_msgbox("Matrícula de Imóvel Urbano!");
+    }
+  }
+}
+?>
+
 <script>
 function js_matri(mostra){
   var matri=document.form1.j01_matric.value;
@@ -130,12 +160,12 @@ function js_mostramatri1(chave,erro){
   if ( erro == true ) {
 
     document.form1.fiscal.disabled = true;
-    document.form1.j01_matric.focus(); 
-    document.form1.j01_matric.value = ''; 
+    document.form1.j01_matric.focus();
+    document.form1.j01_matric.value = '';
   } else {
 
     document.form1.fiscal.disabled = false;
-    document.form1.z01_nomematri.value = chave; 
+    document.form1.z01_nomematri.value = chave;
   }
 }
 </script>

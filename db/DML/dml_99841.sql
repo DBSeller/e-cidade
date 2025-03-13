@@ -1,0 +1,1 @@
+update db_itensmenu set descricao = 'Exportar' where id_item = 10235;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -482,7 +482,7 @@ function funcProcedimento($sOrigem, $sCompetencia) {
     $oDaoSauProcedimento->sd63_i_idademax      = $sCampo8;
     
     $fValor                                    = $sCampo9/100;  
-    $oDaoSauProcedimento->sd63_f_sh            = number_format($fValor,2,'.','');  
+    $oDaoSauProcedimento->sd63_f_sh            = '0';  
     $fValor                                    = $sCampo10/100;
     $oDaoSauProcedimento->sd63_f_sa            = number_format($fValor,2,'.','');  
     $fValor                                    = $sCampo11/100;

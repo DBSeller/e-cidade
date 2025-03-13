@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_divida_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_divida_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clrotulo = new rotulocampo;
 $cldivida = new cl_divida;
 $clrotulo->label("v01_exerc");
@@ -54,7 +54,7 @@ function termo(qual,total){
   document.getElementById('termometro').innerHTML='processando registro... '+qual+' de '+total;
 }
 function js_mostralivro(){	
-  js_OpenJanelaIframe('top.corpo','db_iframe_mostralivro','div4_mostralivro.php','Livros',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mostralivro','div4_mostralivro.php','Livros',true);
 }
 function js_trocalivro(valor){
   if (valor=='nao'){
@@ -69,7 +69,7 @@ function js_trocalivro(valor){
   document.form1.submit();
 }
 function  js_pesquisalivro(mostra){
-  js_OpenJanelaIframe('top.corpo','db_iframe_mostralivro','div4_mostralivro.php?exerc='+document.form1.v01_exerc.value+'&funcao_js=parent.js_preenchelivro|v01_livro|v01_folha','Livros',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mostralivro','div4_mostralivro.php?exerc='+document.form1.v01_exerc.value+'&funcao_js=parent.js_preenchelivro|v01_livro|v01_folha','Livros',true);
 }
 function js_preenchelivro(livro,folha){
   document.form1.v01_livro.value = livro;
@@ -210,7 +210,7 @@ function js_preenchelivro(livro,folha){
 		  $aux->sql_exec  = "";
 		  $aux->func_arquivo = "func_proced.php";
 		  $aux->nomeiframe = "ifr_procedencia";
-		  $aux->localjan = "top.corpo";
+		  $aux->localjan = "(window.CurrentWindow || parent.CurrentWindow).corpo";
 		  $aux->onclick = "";
 		  $aux->db_opcao = 2;
 		  $aux->tipo = 2;

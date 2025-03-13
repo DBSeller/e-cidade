@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_far_controlemed_classe.php");
-include("classes/db_far_controle_classe.php");
-include("classes/db_far_retirada_classe.php");
-include("classes/db_far_retiradaitens_classe.php");
-include("classes/db_far_parametros_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_far_controlemed_classe.php"));
+include(modification("classes/db_far_controle_classe.php"));
+include(modification("classes/db_far_retirada_classe.php"));
+include(modification("classes/db_far_retiradaitens_classe.php"));
+include(modification("classes/db_far_parametros_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clfar_controlemed = new cl_far_controlemed;
 $clfar_controle = new cl_far_controle;
 $clfar_retirada = new cl_far_retirada;
@@ -61,7 +61,7 @@ function somarDias($fa10_d_dataini ,$fa10_i_prazo){
 
 function db_datedif($pmktime=null,$smktime=null, $tipo='d'){
   if($tipo == 'd'){
-    return pg_result(pg_query("select '$pmktime'::date - '$smktime'::date as d"),0,'d');
+    return pg_result(db_query("select '$pmktime'::date - '$smktime'::date as d"),0,'d');
 //    return ceil((( mktime(0,0,0,substr($pmktime,5,2),substr($pmktime,8,2),substr($pmktime,0,4)) -
   //                  mktime(0,0,0,substr($smktime,5,2),substr($smktime,8,2),substr($smktime,0,4)))/86400));
   }else if($tipo == 'm'){

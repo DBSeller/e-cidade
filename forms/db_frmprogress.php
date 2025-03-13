@@ -141,10 +141,10 @@ function js_testarcampos(){
 }
 function js_pesquisar24_padrao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_padroes','func_padroes.php?funcao_js=parent.js_mostrapadrao1|r02_codigo|r02_descr&regime='+document.form1.r24_regime.value+'&chave_r02_anousu='+document.form1.r24_anousu.value+'&chave_r02_mesusu='+document.form1.r24_mesusu.value,'Pesquisa',true,'20');
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_padroes','func_padroes.php?funcao_js=parent.js_mostrapadrao1|r02_codigo|r02_descr&regime='+document.form1.r24_regime.value+'&chave_r02_anousu='+document.form1.r24_anousu.value+'&chave_r02_mesusu='+document.form1.r24_mesusu.value,'Pesquisa',true,'20');
   }else{
     if(document.form1.r24_padrao.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_padroes','func_padroes.php?pesquisa_chave='+document.form1.r24_padrao.value+'&funcao_js=parent.js_mostrapadrao&regime='+document.form1.r24_regime.value+'&chave_r02_anousu='+document.form1.r24_anousu.value+'&chave_r02_mesusu='+document.form1.r24_mesusu.value,'Pesquisa',false,'0');
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_padroes','func_padroes.php?pesquisa_chave='+document.form1.r24_padrao.value+'&funcao_js=parent.js_mostrapadrao&regime='+document.form1.r24_regime.value+'&chave_r02_anousu='+document.form1.r24_anousu.value+'&chave_r02_mesusu='+document.form1.r24_mesusu.value,'Pesquisa',false,'0');
     }else{
       document.form1.r24_padrao.value = '';
       document.form1.r02_descr.value  = '';
@@ -189,7 +189,7 @@ function js_calculaano(ano){
   }
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_progress','func_progress.php?funcao_js=parent.js_preenchepesquisa|r24_anousu|r24_mesusu|r24_regime|r24_padrao|r24_meses','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_progress','func_progress.php?funcao_js=parent.js_preenchepesquisa|r24_anousu|r24_mesusu|r24_regime|r24_padrao|r24_meses','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2,chave3,chave4){
   db_iframe_progress.hide();

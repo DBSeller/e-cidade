@@ -72,10 +72,10 @@ db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
 <script>
 function js_pesquisay95_codtiaf(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_mostratiaf1|y90_codtiaf|y90_codtiaf','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_mostratiaf1|y90_codtiaf|y90_codtiaf','Pesquisa',true);
   }else{
      if(document.form1.y95_codtiaf.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tiaf','func_tiaf.php?pesquisa_chave='+document.form1.y95_codtiaf.value+'&funcao_js=parent.js_mostratiaf','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiaf','func_tiaf.php?pesquisa_chave='+document.form1.y95_codtiaf.value+'&funcao_js=parent.js_mostratiaf','Pesquisa',false);
      }else{
        document.form1.y90_codtiaf.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostratiaf1(chave1,chave2){
 }
 function js_pesquisay95_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.y95_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.y95_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.y95_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostracgm1(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tiafcgm','func_tiafcgm.php?funcao_js=parent.js_preenchepesquisa|y95_codtiaf','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiafcgm','func_tiafcgm.php?funcao_js=parent.js_preenchepesquisa|y95_codtiaf','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tiafcgm.hide();

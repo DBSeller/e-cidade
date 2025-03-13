@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -525,7 +525,7 @@ class cl_progressaoparcialaluno {
    function sql_query ( $ed114_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -547,11 +547,9 @@ class cl_progressaoparcialaluno {
      $sql .= "      inner join censouf  on  censouf.ed260_i_codigo = escola.ed18_i_censouf";
      $sql .= "      inner join censomunic  on  censomunic.ed261_i_codigo = escola.ed18_i_censomunic";
      $sql .= "      inner join censodistrito  on  censodistrito.ed262_i_codigo = escola.ed18_i_censodistrito";
-
      $sql .= "      left  join censolinguaindig  on  censolinguaindig.ed264_i_codigo = escola.ed18_i_linguaindigena";
      $sql .= "      inner join caddisciplina  on  caddisciplina.ed232_i_codigo = disciplina.ed12_i_caddisciplina";
      $sql .= "      inner join ensino  on  ensino.ed10_i_codigo = disciplina.ed12_i_ensino";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = serie.ed11_i_codcenso";
      $sql .= "      inner join ensino  as a on   a.ed10_i_codigo = serie.ed11_i_ensino";
      $sql .= "      inner join pais  on  pais.ed228_i_codigo = aluno.ed47_i_pais";
      $sql .= "      left  join censouf  as b on   b.ed260_i_codigo = aluno.ed47_i_censoufnat and   b.ed260_i_codigo = aluno.ed47_i_censoufident and   b.ed260_i_codigo = aluno.ed47_i_censoufcert and   b.ed260_i_codigo = aluno.ed47_i_censoufend";
@@ -569,7 +567,7 @@ class cl_progressaoparcialaluno {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -582,7 +580,7 @@ class cl_progressaoparcialaluno {
    function sql_query_file ( $ed114_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -603,7 +601,7 @@ class cl_progressaoparcialaluno {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -617,7 +615,7 @@ class cl_progressaoparcialaluno {
     $sql = "select ";
     if ($campos != "*") {
 
-      $campos_sql = split("#", $campos);
+      $campos_sql = explode("#", $campos);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -650,7 +648,7 @@ class cl_progressaoparcialaluno {
     if ($ordem != null) {
 
       $sql .= " order by ";
-      $campos_sql = split("#", $ordem);
+      $campos_sql = explode("#", $ordem);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -673,7 +671,7 @@ class cl_progressaoparcialaluno {
     $sql = "select ";
     if ($sCampos != "*") {
 
-      $sCampos_sql = split("#", $sCampos);
+      $sCampos_sql = explode("#", $sCampos);
       $virgula = "";
       for ($i = 0; $i < sizeof($sCampos_sql); $i++) {
 
@@ -702,7 +700,7 @@ class cl_progressaoparcialaluno {
     if ($sOrdem != null) {
 
       $sql .= " order by ";
-      $sCampos_sql = split("#", $sOrdem);
+      $sCampos_sql = explode("#", $sOrdem);
       $virgula = "";
       for ($i = 0; $i < sizeof($sCampos_sql); $i++) {
 
@@ -717,7 +715,7 @@ class cl_progressaoparcialaluno {
     $sql = "select ";
     if ($campos != "*") {
 
-      $campos_sql = split("#", $campos);
+      $campos_sql = explode("#", $campos);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -743,7 +741,7 @@ class cl_progressaoparcialaluno {
     if ($ordem != null) {
 
       $sql .= " order by ";
-      $campos_sql = split("#", $ordem);
+      $campos_sql = explode("#", $ordem);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -758,7 +756,7 @@ class cl_progressaoparcialaluno {
     $sql = "select ";
     if ($campos != "*") {
 
-      $campos_sql = split("#", $campos);
+      $campos_sql = explode("#", $campos);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -769,9 +767,10 @@ class cl_progressaoparcialaluno {
       $sql .= $campos;
     }
     $sql .= " from progressaoparcialaluno ";
-    $sql .= "      inner join disciplina                          on ed114_disciplina                 = ed12_i_codigo";
-    $sql .= "      left join progressaoparcialalunomatricula      on ed114_sequencial                 = ed150_progressaoparcialaluno";
-    $sql .= "      left join progressaoparcialalunoturmaregencia  on ed115_progressaoparcialalunomatricula = ed150_sequencial";
+    $sql .= "      inner join disciplina                          on ed114_disciplina = ed12_i_codigo";
+    $sql .= "      inner join aluno                               on ed47_i_codigo    = ed114_aluno";
+    $sql .= "       left join progressaoparcialalunomatricula     on ed114_sequencial = ed150_progressaoparcialaluno";
+    $sql .= "       left join progressaoparcialalunoturmaregencia on ed115_progressaoparcialalunomatricula = ed150_sequencial";
     $sql2 = "";
     if ($dbwhere == "") {
 
@@ -785,7 +784,7 @@ class cl_progressaoparcialaluno {
     if ($ordem != null) {
 
       $sql .= " order by ";
-      $campos_sql = split("#", $ordem);
+      $campos_sql = explode("#", $ordem);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -800,7 +799,7 @@ class cl_progressaoparcialaluno {
     $sql = "select ";
     if ($campos != "*") {
 
-      $campos_sql = split("#", $campos);
+      $campos_sql = explode("#", $campos);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -826,7 +825,7 @@ class cl_progressaoparcialaluno {
     if ($ordem != null) {
 
       $sql .= " order by ";
-      $campos_sql = split("#", $ordem);
+      $campos_sql = explode("#", $ordem);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -842,7 +841,7 @@ class cl_progressaoparcialaluno {
     $sql = "select ";
     if ($campos != "*") {
 
-      $campos_sql = split("#", $campos);
+      $campos_sql = explode("#", $campos);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -852,11 +851,13 @@ class cl_progressaoparcialaluno {
     } else {
       $sql .= $campos;
     }
+
     $sql .= " from progressaoparcialaluno ";
     $sql .= "      inner join progressaoparcialalunomatricula      on ed114_sequencial = ed150_progressaoparcialaluno";
     $sql .= "      inner join progressaoparcialalunoturmaregencia  on ed115_progressaoparcialalunomatricula = ed150_sequencial";
     $sql .= "      inner join progressaoparcialalunoresultadofinal on ed150_sequencial = ed121_progressaoparcialalunomatricula";
     $sql2 = "";
+
     if ($dbwhere == "") {
 
       if ($ed114_sequencial != null) {
@@ -869,7 +870,52 @@ class cl_progressaoparcialaluno {
     if ($ordem != null) {
 
       $sql .= " order by ";
-      $campos_sql = split("#", $ordem);
+      $campos_sql = explode("#", $ordem);
+      $virgula = "";
+      for ($i = 0; $i < sizeof($campos_sql); $i++) {
+
+        $sql .= $virgula . $campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+  }
+
+  function sql_query_regencia_turma($ed114_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+    $sql = "select ";
+    if ($campos != "*") {
+
+      $campos_sql = explode("#", $campos);
+      $virgula = "";
+      for ($i = 0; $i < sizeof($campos_sql); $i++) {
+
+        $sql .= $virgula . $campos_sql[$i];
+        $virgula = ",";
+      }
+    } else {
+      $sql .= $campos;
+    }
+
+    $sql .= " from progressaoparcialaluno ";
+    $sql .= "      inner join progressaoparcialalunomatricula      on ed114_sequencial = ed150_progressaoparcialaluno";
+    $sql .= "      inner join progressaoparcialalunoturmaregencia  on ed115_progressaoparcialalunomatricula = ed150_sequencial";
+    $sql .= "      inner join regencia on ed59_i_codigo = ed115_regencia";
+    $sql2 = "";
+
+    if ($dbwhere == "") {
+
+      if ($ed114_sequencial != null) {
+        $sql2 .= " where progressaoparcialaluno.ed114_sequencial = $ed114_sequencial ";
+      }
+    } else if ($dbwhere != "") {
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if ($ordem != null) {
+
+      $sql .= " order by ";
+      $campos_sql = explode("#", $ordem);
       $virgula = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
 
@@ -880,4 +926,3 @@ class cl_progressaoparcialaluno {
     return $sql;
   }
 }
-?>

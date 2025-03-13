@@ -25,31 +25,31 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 //////////INCLUIR/////////////
 if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select max(codigo) + 1 from favoritos");
+  $result = db_query("select max(codigo) + 1 from favoritos");
   $codigo = pg_result($result,0,0);
   $codigo = $codigo==""?"1":$codigo;
-  pg_exec("insert into favoritos values($codigo,".db_getsession("DB_id_usuario").",'$descr')") or die("Erro(24) inserindo em favoritos");
+  db_query("insert into favoritos values($codigo,".db_getsession("DB_id_usuario").",'$descr')") or die("Erro(24) inserindo em favoritos");
   db_redireciona();
   exit;		   
 ////////////////ALTERAR////////////////  
 } else if(isset($HTTP_POST_VARS["alterar"])) {
   db_postmemory($HTTP_POST_VARS);
-  pg_exec("update favoritos set descr = '$descr'
+  db_query("update favoritos set descr = '$descr'
            where codigo = $codigo
 		   and codmed = ".db_getsession("DB_id_usuario")) or die("Erro(22) atualizando favoritos");
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
   exit;		     
 ////////////////EXCLUIR//////////////
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("delete from favoritos where codigo = ".$HTTP_POST_VARS["codigo"]) or die("Erro(15) deletando tabela favoritos");
+  db_query("delete from favoritos where codigo = ".$HTTP_POST_VARS["codigo"]) or die("Erro(15) deletando tabela favoritos");
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
   exit;  
 }

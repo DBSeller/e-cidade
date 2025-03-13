@@ -28,30 +28,30 @@
 
 define("TAREFA",true);
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/smtp.class.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_tarefa_lanc_classe.php");
-include("classes/db_tarefa_lancprorrog_classe.php");
-include("classes/db_tarefalog_classe.php");
-include("classes/db_tarefa_autcanc_classe.php");
-include("classes/db_tarefa_aut_classe.php");
-include("classes/db_tarefaparam_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefamodulo_classe.php");
-include("classes/db_tarefaproced_classe.php");
-include("classes/db_tarefasituacao_classe.php");
-include("classes/db_tarefausu_classe.php");
-include("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefamotivo_classe.php");
-include("classes/db_tarefaclientes_classe.php");
-include("classes/db_tarefa_agenda_classe.php");
-include("classes/db_tarefasyscadproced_classe.php");
-include("classes/db_tarefaprojetoativcli_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/smtp.class.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tarefa_lanc_classe.php"));
+include(modification("classes/db_tarefa_lancprorrog_classe.php"));
+include(modification("classes/db_tarefalog_classe.php"));
+include(modification("classes/db_tarefa_autcanc_classe.php"));
+include(modification("classes/db_tarefa_aut_classe.php"));
+include(modification("classes/db_tarefaparam_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefamodulo_classe.php"));
+include(modification("classes/db_tarefaproced_classe.php"));
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefausu_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefamotivo_classe.php"));
+include(modification("classes/db_tarefaclientes_classe.php"));
+include(modification("classes/db_tarefa_agenda_classe.php"));
+include(modification("classes/db_tarefasyscadproced_classe.php"));
+include(modification("classes/db_tarefaprojetoativcli_classe.php"));
 
 
 
@@ -83,7 +83,7 @@ if(@$tipotar=='T' and @$chavepesquisa!=""){
   <script>
   function js_db_libera(){
     parent.document.formaba.tarefa.disabled=false;
-    top.corpo.iframe_tarefa.location.href='ate1_tarefa010.php?tarefa=".$chavepesquisa."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefa.location.href='ate1_tarefa010.php?tarefa=".$chavepesquisa."';
   }  
   js_db_libera();
   </script>\n
@@ -228,7 +228,7 @@ if(isset($alterar)||isset($autorizar)) {
       // tem que pegar o motivo e area
       // pega a area.....
       $sqlteste = "select codarea from db_syscadproced where codproced = $codproced";
-      $resultteste = pg_query($sqlteste) or die($sqlteste);
+      $resultteste = db_query($sqlteste) or die($sqlteste);
       $linhasteste = pg_num_rows($resultteste);
       if ($linhasteste>0){
         db_fieldsmemory($resultteste, 0);
@@ -246,7 +246,7 @@ if(isset($alterar)||isset($autorizar)) {
         from tarefamotivoarea 
         where at33_tarefacadmotivo = $at54_sequencial 
         and at33_atendcadarea = $codarea";
-        $resultmotarea = pg_query($sqlmotarea) or die($sqlmotarea);
+        $resultmotarea = db_query($sqlmotarea) or die($sqlmotarea);
         $linhasmotarea = pg_num_rows($resultmotarea);
         if ($linhasmotarea>0){
           db_fieldsmemory($resultmotarea, 0);
@@ -459,7 +459,7 @@ if(isset($alterar)||isset($autorizar)) {
     if($sqlerro==false) {
       $sqlproced = "select * from tarefasyscadproced where at37_tarefa = $at40_sequencial";
       
-      $resultproced = pg_query($sqlproced);
+      $resultproced = db_query($sqlproced);
       $linhasproced = pg_num_rows($resultproced);
       if ($linhasproced>0){
         db_fieldsmemory($resultproced, 0);
@@ -486,7 +486,7 @@ if(isset($alterar)||isset($autorizar)) {
     
     if($sqlerro == false) {
       $cltarefa_agenda->excluir(null,"at13_tarefa=$at40_sequencial");
-      $sqlerro = $cltarefa_agenda->gera_agenda($cltarefaparam,$cltarefa,&$erro_msg);
+      $sqlerro = $cltarefa_agenda->gera_agenda($cltarefaparam,$cltarefa,$erro_msg);
     }
     
     if($sqlerro == false) {
@@ -691,7 +691,7 @@ if (isset ($chavepesquisa)) {
   $at40_autorizada = 'f';
 }
 
-include ("forms/db_frmtarefa.php");
+include(modification("forms/db_frmtarefa.php"));
 
 ?>
 </center>
@@ -720,7 +720,7 @@ if (isset($alterar)||isset($autorizar)||isset($cancelar)) {
     if(isset($cancelar)) {
       db_msgbox("Autorização ".$at39_sequencia." da Tarefa ".$at40_sequencial." cancelada");	
     }
-    echo "<script>top.corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."'</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."'</script>";
   }
 }
 if (isset ($chavepesquisa)) {
@@ -730,11 +730,11 @@ if (isset ($chavepesquisa)) {
   }else {
     /*$liberado = "	parent.document.formaba.tarefausu.disabled=false;
     parent.document.formaba.tarefaobs.disabled=false;
-    top.corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."';
     parent.document.formaba.tarefaanexos.disabled=false;
-    top.corpo.iframe_tarefaanexos.location.href='ate1_tarefaanexos001.php?at25_tarefa=".@$at40_sequencial."';
-    top.corpo.iframe_tarefaobs.location.href='ate1_tarefaobs001.php?at02_codatend=$at02_codatend&at05_seq=$at05_seq&at42_tarefa=".@$at40_sequencial."';
-    top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?at43_tarefa=".@$at40_sequencial."&at43_usuario=".db_getsession("DB_id_usuario")."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaanexos.location.href='ate1_tarefaanexos001.php?at25_tarefa=".@$at40_sequencial."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaobs.location.href='ate1_tarefaobs001.php?at02_codatend=$at02_codatend&at05_seq=$at05_seq&at42_tarefa=".@$at40_sequencial."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?at43_tarefa=".@$at40_sequencial."&at43_usuario=".db_getsession("DB_id_usuario")."';
     ";		*/		
   }
   //die($liberado);	
@@ -744,12 +744,12 @@ if (isset ($chavepesquisa)) {
     parent.document.formaba.tarefaclientes.disabled=false;
     parent.document.formaba.tarefausu.disabled=false;
     parent.document.formaba.tarefaobs.disabled=false;
-    top.corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at40_sequencial."';
     parent.document.formaba.tarefaanexos.disabled=false;
-    top.corpo.iframe_tarefaanexos.location.href='ate1_tarefaanexos001.php?at25_tarefa=".@$at40_sequencial."';
-    top.corpo.iframe_tarefaobs.location.href='ate1_tarefaobs001.php?at02_codatend=".@$at02_codatend."&at05_seq=".@$at05_seq."&at42_tarefa=".@$at40_sequencial."';
-    top.corpo.iframe_tarefaclientes.location.href='ate1_tarefaclientes001.php?at70_tarefa=".@$at40_sequencial."';
-    top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?at43_tarefa=".@$at40_sequencial."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaanexos.location.href='ate1_tarefaanexos001.php?at25_tarefa=".@$at40_sequencial."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaobs.location.href='ate1_tarefaobs001.php?at02_codatend=".@$at02_codatend."&at05_seq=".@$at05_seq."&at42_tarefa=".@$at40_sequencial."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaclientes.location.href='ate1_tarefaclientes001.php?at70_tarefa=".@$at40_sequencial."';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?at43_tarefa=".@$at40_sequencial."';
     ";
     if (isset ($liberaaba)) {
       if(isset($erro_horario)&&$erro_horario==false) {

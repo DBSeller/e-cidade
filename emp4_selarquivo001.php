@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_empagegera_classe.php");
-require_once("classes/db_empageconfgera_classe.php");
-require_once("classes/db_empagetipo_classe.php");
-require_once("classes/db_empagedadosret_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_empagegera_classe.php"));
+require_once(modification("classes/db_empageconfgera_classe.php"));
+require_once(modification("classes/db_empagetipo_classe.php"));
+require_once(modification("classes/db_empagedadosret_classe.php"));
 $clempagegera     = new cl_empagegera;
 $clempageconfgera = new cl_empageconfgera;
 $clempagetipo     = new cl_empagetipo;
@@ -135,7 +135,7 @@ if(isset($canc)){
   <tr>
     <td colspan="2" align="center"><br>
       <input name="act" type="button" <?=("onclick='js_geraact($db_passapar);'")?>  value="Mostrar retorno">
-      <input name="pes" type="button" onclick='js_OpenJanelaIframe("top.corpo","db_iframe_empagegera","func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera","Pesquisa",true);'  value="Pesquisar arquivos">
+      <input name="pes" type="button" onclick='js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_empagegera","func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera","Pesquisa",true);'  value="Pesquisar arquivos">
     </td>
   </tr>
 </table>
@@ -163,10 +163,10 @@ function js_pesquisa_gera(mostra){
     document.form1.e75_codret.value = "";
   }
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empagegera','func_empagegera.php?funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera','Pesquisa',true);
   }else{
      if(document.form1.e87_codgera.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?pesquisa_chave='+document.form1.e87_codgera.value+'&funcao_js=parent.js_mostragera','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empagegera','func_empagegera.php?pesquisa_chave='+document.form1.e87_codgera.value+'&funcao_js=parent.js_mostragera','Pesquisa',false);
      }else{
        document.form1.e87_descgera.value = ''; 
      }

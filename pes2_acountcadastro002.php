@@ -1,32 +1,32 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+require_once modification("fpdf151/pdf.php");
+require_once modification("libs/db_sql.php");
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -34,21 +34,25 @@ $clrotulo->label('r06_descr');
 $clrotulo->label('r06_elemen');
 $clrotulo->label('r06_pd');
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-//db_postmemory($HTTP_SERVER_VARS,2);exit;
+db_postmemory($_REQUEST);
+
+if ( !isset($datai) || empty($datai)) {
+  db_redireciona("db_erros.php?fechar=true&db_erro=".urlencode("Data Inicial deve ser informada."));
+}
+
+if ( !isset($dataf) || empty($dataf)) {
+  db_redireciona("db_erros.php?fechar=true&db_erro=".urlencode("Data Final deve ser informada."));
+}
 
 $where_usuarios = '';
 if(trim($colunas != '')){
   $where_usuarios = " and d.id_usuario in ($colunas)";
 }
-//$dataini = '2009-05-01';
-//$datafin = '2009-05-19';
 
+$head3   = "RELATÓRIO DAS ALTERAÇÕES CADASTRAIS DA FOLHA";
+$head5   = "PERÍODO : ".db_formatar($dataini,'d')." A ".db_formatar($datafin,'d');
 
-$head3 = "RELATÓRIO DAS ALTERAÇÕES CADASTRAIS DA FOLHA";
-$head5 = "PERÍODO : ".db_formatar($dataini,'d')." A ".db_formatar($datafin,'d');
-
-pg_query("create temporary table 
+$rsQuery = db_query("create temporary table
           ww_acount(
                     regist int,
                     nomefunc char(40),
@@ -60,45 +64,48 @@ pg_query("create temporary table
                     atual char(20),
                     usuario char(40)
                    )");
+if (!$rsQuery) {
+  db_redireciona("db_erros.php?fechar=true&db_erro=".urlencode("Erro ao criar estrutura para o relatório."));
+}
 
+$sDataInicial = mktime( 00, 00, 00, substr($dataini,5,2), substr($dataini,8,2), substr($dataini,0,4) );
+$sDataFinal   = mktime( 23, 59, 59, substr($datafin,5,2), substr($datafin,8,2), substr($datafin,0,4) );
 
-$sql1= "
-select distinct
-       actipo,
-       c.rotulo ,
-       z01_nome,
-       trim(campo.nomecam) as nomecam,
-       campotext,
-       d.*,
-       c.nomecam,
-       u.nome
-from db_acount d
-     inner join db_acountkey k on k.id_acount = d.id_acount
-     inner join db_syscampo c  on c.codcam = d.codcam
-     inner join db_usuarios u  on u.id_usuario = d.id_usuario
-     inner join db_syscampo campo on campo.codcam       = id_codcam
-     inner join rhpessoal      on campotext::int = rh01_regist
-     inner join cgm            on rh01_numcgm = z01_numcgm
-where d.codarq in (1153, 1168) 
-  $where_usuarios
-  and d.datahr between ".mktime(0,0,0,substr($dataini,5,2), substr($dataini,8,2),substr($dataini,0,4))." 
-                   and ".mktime(23,59,59,substr($datafin,5,2), substr($datafin,8,2),substr($datafin,0,4))." 
-  and  trim(contant) <> trim(contatu) 
-order by id_acount;
-       ";
+$sql1         =" select distinct                                                           ".PHP_EOL;
+$sql1        .="        actipo,                                                            ".PHP_EOL;
+$sql1        .="        c.rotulo,                                                          ".PHP_EOL;
+$sql1        .="        z01_nome,                                                          ".PHP_EOL;
+$sql1        .="        trim(campo.nomecam) as nomecam,                                    ".PHP_EOL;
+$sql1        .="        campotext,                                                         ".PHP_EOL;
+$sql1        .="        d.*,                                                               ".PHP_EOL;
+$sql1        .="        c.nomecam,                                                         ".PHP_EOL;
+$sql1        .="        u.nome                                                             ".PHP_EOL;
+$sql1        .="   from db_acount d                                                        ".PHP_EOL;
+$sql1        .="        inner join db_acountkey k    on k.id_acount    = d.id_acount       ".PHP_EOL;
+$sql1        .="        inner join db_syscampo  c    on c.codcam       = d.codcam          ".PHP_EOL;
+$sql1        .="        inner join db_usuarios  u    on u.id_usuario   = d.id_usuario      ".PHP_EOL;
+$sql1        .="        inner join db_syscampo campo on campo.codcam   = id_codcam         ".PHP_EOL;
+$sql1        .="        inner join rhpessoal         on campotext      = rh01_regist::text ".PHP_EOL;
+$sql1        .="        inner join cgm               on rh01_numcgm    = z01_numcgm        ".PHP_EOL;
+$sql1        .="  where d.codarq in (1153, 1168)                                           ".PHP_EOL;
+$sql1        .="    $where_usuarios                                                        ".PHP_EOL;
+$sql1        .="    and d.datahr between {$sDataInicial} and {$sDataFinal}                 ".PHP_EOL;
+$sql1        .="    and trim(contant) <> trim(contatu)                                     ".PHP_EOL;
+$sql1        .=" order by id_acount                                                        ".PHP_EOL;
 
+$result1 = db_query($sql1);
 
+if (!$result1) {
+  db_redireciona("db_erros.php?fechar=true&db_erro=".urlencode("Erro ao buscar os dados do account."));
+}
 
+$xxnum1  = pg_num_rows($result1);
 
-//echo $sql ; exit;
+for($xx = 0; $xx < pg_num_rows($result1);$xx++) {
 
-$result1 = pg_exec($sql1);
-$xxnum1  = pg_numrows($result1);
+  db_fieldsmemory($result1,$xx);
 
-
-for($xx = 0; $xx < pg_numrows($result1);$xx++){
-   db_fieldsmemory($result1,$xx);
-   $sql_ins1 = "insert into ww_acount values
+  $sql_ins1 = "insert into ww_acount values
                   (
                    $campotext,
                    '$z01_nome',
@@ -110,52 +117,46 @@ for($xx = 0; $xx < pg_numrows($result1);$xx++){
                    substr('".addslashes($contatu)."',1,20),
                    substr('$nome',1,40)
                   )";
-   $res_ins1 = pg_query($sql_ins1);
-   if($res_ins1 == false){
-     echo "Erro ao inserir na tabela temporária : $sql_ins1 ";exit;
-   }
-
+  $res_ins1 = db_query($sql_ins1);
+  if (!$res_ins1) {
+    db_redireciona("db_erros.php?fechar=true&db_erro=".urlencode("Erro ao criar estrutura para o relatório."));
+  }
 }
 
+$sDataInicial = mktime( 00, 00, 00, substr($dataini,5,2), substr($dataini,8,2), substr($dataini,0,4) );
+$sDataFinal   = mktime( 23, 59, 59, substr($datafin,5,2), substr($datafin,8,2), substr($datafin,0,4) );
 
+$sql2         = " select distinct                                                             ".PHP_EOL;
+$sql2        .= "        actipo,                                                              ".PHP_EOL;
+$sql2        .= "        c.rotulo ,                                                           ".PHP_EOL;
+$sql2        .= "        z01_nome,                                                            ".PHP_EOL;
+$sql2        .= "        trim(campo.nomecam) as nomecam,                                      ".PHP_EOL;
+$sql2        .= "        rh01_regist as campotext,                                            ".PHP_EOL;
+$sql2        .= "        d.*,                                                                 ".PHP_EOL;
+$sql2        .= "        c.nomecam,                                                           ".PHP_EOL;
+$sql2        .= "        u.nome                                                               ".PHP_EOL;
+$sql2        .= " from db_acount d                                                            ".PHP_EOL;
+$sql2        .= "      inner join db_acountkey k     on k.id_acount      = d.id_acount        ".PHP_EOL;
+$sql2        .= "      inner join db_syscampo  c     on c.codcam         = d.codcam           ".PHP_EOL;
+$sql2        .= "      inner join db_usuarios  u     on u.id_usuario     = d.id_usuario       ".PHP_EOL;
+$sql2        .= "      inner join db_syscampo  campo on campo.codcam     = id_codcam          ".PHP_EOL;
+$sql2        .= "      inner join rhpessoalmov       on campotext        = rh02_seqpes::text  ".PHP_EOL;
+$sql2        .= "      inner join rhpessoal          on rh02_regist      = rh01_regist        ".PHP_EOL;
+$sql2        .= "      inner join cgm                on rh01_numcgm      = z01_numcgm         ".PHP_EOL;
+$sql2        .= " where d.codarq in (1158, 1238, 1161)                                        ".PHP_EOL;
+$sql2        .= "   $where_usuarios                                                           ".PHP_EOL;
+$sql2        .= "   and k.id_codcam <> 9913                                                   ".PHP_EOL;
+$sql2        .= "   and d.datahr between {$sDataInicial} and {$sDataFinal}                    ".PHP_EOL;
+$sql2        .= "   and  trim(contant) <> trim(contatu)                                       ".PHP_EOL;
+$sql2        .= " order by id_acount                                                          ".PHP_EOL;
 
-$sql2 = "
-select distinct
-       actipo,
-       c.rotulo ,
-       z01_nome,
-       trim(campo.nomecam) as nomecam,
-       rh01_regist as campotext,
-       d.*,
-       c.nomecam,
-       u.nome
-from db_acount d
-     inner join db_acountkey k on k.id_acount = d.id_acount
-     inner join db_syscampo c  on c.codcam = d.codcam
-     inner join db_usuarios u  on u.id_usuario = d.id_usuario
-     inner join db_syscampo campo on campo.codcam       = id_codcam
-     inner join rhpessoalmov   on campotext::int = rh02_seqpes
-     inner join rhpessoal      on rh02_regist = rh01_regist
-     inner join cgm            on rh01_numcgm = z01_numcgm
-where d.codarq in (1158, 1238, 1161)
-  $where_usuarios
-  and k.id_codcam <> 9913 
-  and d.datahr between ".mktime(0,0,0,substr($dataini,5,2), substr($dataini,8,2),substr($dataini,0,4))." 
-                   and ".mktime(23,59,59,substr($datafin,5,2), substr($datafin,8,2),substr($datafin,0,4))." 
-  and  trim(contant) <> trim(contatu) 
-order by id_acount;
-       ";
+$result2 = db_query($sql2);
+if (!$result2) {
+  db_redireciona("db_erros.php?fechar=true&db_erro=".urlencode("Erro ao buscar os dados do account."));
+}
+$xxnum2 = pg_num_rows($result2);
 
-
-
-
-//echo $sql2 ; exit;
-
-$result2 = pg_exec($sql2);
-$xxnum2 = pg_numrows($result2);
-
-
-for($xx = 0; $xx < pg_numrows($result2);$xx++){
+for($xx = 0; $xx < pg_num_rows($result2);$xx++){
    db_fieldsmemory($result2,$xx);
    $sql_ins2 = "insert into ww_acount values
                   (
@@ -169,45 +170,47 @@ for($xx = 0; $xx < pg_numrows($result2);$xx++){
                    substr('".addslashes($contatu)."',1,20),
                    substr('$nome',1,40)
                   )";
-   $res_ins2 = pg_query($sql_ins2);
-   if($res_ins2 == false){
-     echo "Erro ao inserir na tabela temporária : $sql_ins2 ";exit;
+   $res_ins2 = db_query($sql_ins2);
+   if(!$res_ins2){
+     db_redireciona("db_erros.php?fechar=true&db_erro=".urlencode("Erro ao criar estrutura para o relatório."));
    }
 
 }
 
 $xordem = ' order by ';
 if($ordem == 'a'){
-  $xordem .= ' nomefunc'; 
+  $xordem .= ' nomefunc';
 }elseif($ordem == 'n'){
-  $xordem .= ' regist'; 
+  $xordem .= ' regist';
 }else{
-  $xordem .= ' data, hora'; 
+  $xordem .= ' data, hora';
 }
 
 $xtipo = '';
 if($tipo_alt == 'a'){
-  $xtipo = " where tipo = 'A'"; 
+  $xtipo = " where tipo = 'A'";
 }elseif($tipo_alt == 'e'){
-  $xtipo = " where tipo = 'E'"; 
+  $xtipo = " where tipo = 'E'";
 }elseif($tipo_alt == 'i'){
-  $xtipo = " where tipo = 'I'"; 
+  $xtipo = " where tipo = 'I'";
 }
 
 $sql_temp = "select * from ww_acount $xtipo $xordem";
-//echo $sql_temp;
-$res_temp = pg_query($sql_temp);
-$xxnum = pg_numrows($res_temp);
-//db_criatabela($res_temp);exit;
+$res_temp = db_query($sql_temp);
 
-if ($xxnum == 0){
-   db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);
-
+if (!$res_temp) {
+  db_redireciona("db_erros.php?fechar=true&db_erro=".urlencode("Erro ao criar estrutura para o relatório."));
 }
 
-$pdf = new PDF(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
+$xxnum = pg_num_rows($res_temp);
+
+if ($xxnum == 0){
+  db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);
+}
+
+$pdf = new PDF();
+$pdf->Open();
+$pdf->AliasNbPages();
 $total = 0;
 $pdf->setfillcolor(235);
 $pdf->setfont('arial','b',8);
@@ -249,13 +252,7 @@ for($x = 0; $x < $xxnum;$x++){
    $pdf->cell(25,$alt,db_formatar($data,'d').' - '.$hora,0,0,"L",$pre);
    $pdf->cell(70,$alt,$usuario,0,1,"L",$pre);
    $total += 1;
-//   $pdf->SetXY($pdf->lMargin,$pdf->gety() + $alt);
 }
 $pdf->setfont('arial','b',8);
 $pdf->cell(0,$alt,'TOTAL DE REGISTROS :  '.$total,"T",0,"C",0);
-//$pdf->cell(20,$alt,'',"T",0,"C",0);
-//$pdf->cell(30,$alt,db_formatar($total,'f'),"T",1,"R",0);
-
 $pdf->Output();
-   
-?>

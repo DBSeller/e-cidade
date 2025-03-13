@@ -1,0 +1,135 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010405' name='cadastro.iptutaxacalv' description="Tabela de calculo de taxa de iptu" prefix="j152" label="iptutaxacalv" type="0">
+  <fields>
+    <field codigo="1010290" 
+           campo_api='' 
+           name="j152_codigo" 
+           conteudo="int4" 
+           description="Código sequencia da tabela iptutaxacalv" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código"
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='cadastro.iptutaxacalv_j152_codigo_seq' />
+     
+    </field> 
+    <field codigo="1010291" 
+           campo_api='' 
+           name="j152_iptutaxanump" 
+           conteudo="int4" 
+           description="Código de vinculo com a iptutaxanump" 
+           inivalue="0" 
+           label="Código Iptutaxanump" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Iptutaxanump" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010292" 
+           campo_api='' 
+           name="j152_codhis" 
+           conteudo="int4" 
+           description="Código de vinculo com a iptucalh" 
+           inivalue="0" 
+           label="Código Iptucalh" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Iptucalh" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010293" 
+           campo_api='' 
+           name="j152_receit" 
+           conteudo="int4" 
+           description="Código de vinculo com a receita" 
+           inivalue="0" 
+           label="Código da Receita" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Receita" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010294" 
+           campo_api='' 
+           name="j152_valor" 
+           conteudo="float8" 
+           description="Valor" 
+           inivalue="0" 
+           label="Valor" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010326" 
+           campo_api='' 
+           name="j152_quant" 
+           conteudo="float8" 
+           description="Quantidade" 
+           inivalue="0" 
+           label="Quantidade" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Quantidade" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="j152_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="tabrec" inner='t'>
+      <fieldfk name="j152_receit" reference="k02_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="iptucalh" inner='t'>
+      <fieldfk name="j152_codhis" reference="j17_codhis" /> 
+    </foreignkey>
+    <foreignkey reference="iptutaxanump" inner='t'>
+      <fieldfk name="j152_iptutaxanump" reference="j151_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

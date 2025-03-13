@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,32 +25,32 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_liborcamento.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_pcorcamitem_classe.php");
-require_once("classes/db_pcorcamjulg_classe.php");
-require_once("classes/db_pcorcamval_classe.php");
-require_once("classes/db_orcreserva_classe.php");
-require_once("classes/db_orcreservasol_classe.php");
-require_once("classes/db_orcreservaaut_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_pcdotac_classe.php");
-require_once("classes/db_empautoriza_classe.php");
-require_once("classes/db_empautitem_classe.php");
-require_once("classes/db_empautidot_classe.php");
-require_once("classes/db_pcprocitem_classe.php");
-require_once("classes/db_solicitemprot_classe.php");
-require_once("classes/db_solandam_classe.php");
-require_once("classes/db_solandpadraodepto_classe.php");
-require_once("classes/db_proctransfer_classe.php");
-require_once("classes/db_proctransferproc_classe.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_solordemtransf_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_pcorcamitem_classe.php"));
+require_once(modification("classes/db_pcorcamjulg_classe.php"));
+require_once(modification("classes/db_pcorcamval_classe.php"));
+require_once(modification("classes/db_orcreserva_classe.php"));
+require_once(modification("classes/db_orcreservasol_classe.php"));
+require_once(modification("classes/db_orcreservaaut_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_pcdotac_classe.php"));
+require_once(modification("classes/db_empautoriza_classe.php"));
+require_once(modification("classes/db_empautitem_classe.php"));
+require_once(modification("classes/db_empautidot_classe.php"));
+require_once(modification("classes/db_pcprocitem_classe.php"));
+require_once(modification("classes/db_solicitemprot_classe.php"));
+require_once(modification("classes/db_solandam_classe.php"));
+require_once(modification("classes/db_solandpadraodepto_classe.php"));
+require_once(modification("classes/db_proctransfer_classe.php"));
+require_once(modification("classes/db_proctransferproc_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_solordemtransf_classe.php"));
 
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -159,7 +159,7 @@ if (isset($incluir)) {
       }
     }
 
-    $clempautoriza->sql_anulaautorizacao($dados[1],false,&$erro_msg,&$sqlerro,&$flag_saldo,$vetor_dotacao,$flag_reservar);
+    $clempautoriza->sql_anulaautorizacao($dados[1],false,$erro_msg,$sqlerro,$flag_saldo,$vetor_dotacao,$flag_reservar);
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
@@ -295,7 +295,7 @@ if (isset($e54_autori) && trim($e54_autori) != "") {
           db_fieldsmemory($result_conand, 0);
           if (isset ($pc30_contrandsol) && $pc30_contrandsol == 't') {
 
-            $result_testitem=pg_exec($sql_itens);
+            $result_testitem=db_query($sql_itens);
             $numrows_testitem=pg_numrows($result_testitem);
             for ($w = 0;$w < $numrows_testitem; $w++) {
 

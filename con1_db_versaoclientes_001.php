@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_versaoclientes_classe.php");
-include("classes/db_clientes_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_versaoclientes_classe.php"));
+include(modification("classes/db_clientes_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cldb_versaoclientes = new cl_db_versaoclientes;
@@ -43,7 +43,7 @@ $sql = " select clientes.*,db30_codver , '2.'||db30_codversao ||'.'|| db30_codre
                     left join db_versao on at01_codver = db30_codver 
                where at01_status = true and at01_base = true
                order by at01_cidade,at01_nomecli";
-$result = pg_query($sql);
+$result = db_query($sql);
 
 
 if(isset($atualiza)){
@@ -159,7 +159,7 @@ $sql = " select clientes.*,db30_codver , '2.'||db30_codversao ||'.'|| db30_codre
                     left join db_versao on at01_codver = db30_codver 
                where at01_status = true and at01_base = true
                order by at01_cidade,at01_nomecli";
-$result = pg_query($sql);
+$result = db_query($sql);
   
       //$result = $clclientes->sql_record($clclientes->sql_query(null,"at01_codcli,at01_nomecli,at01_cidade,at01_base,at01_obs","at01_nomecli"," at01_status = true"));
      //db_criatabela($result);
@@ -175,7 +175,7 @@ $result = pg_query($sql);
         echo "<td align=\left\" valign=\"top\">";
 
         $sql = "select db19_data,db19_obs from db_versaoclientes where db19_codver = $db29_codver and db19_codcli = $at01_codcli";
-        $resu = pg_query($sql);
+        $resu = db_query($sql);
         if(pg_numrows($resu)>0){
           db_fieldsmemory($resu,0);
           $data_ano = substr($db19_data,0,4);

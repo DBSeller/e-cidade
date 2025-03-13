@@ -1,30 +1,51 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <recursos>
- <recurso codigo="0" descricao="ORDINÁRIOS"/>
- <recurso codigo="1" descricao="Contribuição de Intervenção do Domínio Econômico - CIDE"/>
- <recurso codigo="2" descricao="Contribuição para o Custeio dos Serviços de Iluminação Pública - COSIP"/>
- <recurso codigo="3" descricao="Royalties - Lei 9478/97"/>
- <recurso codigo="4" descricao="Royalties 5% - Lei 7990/89"/>
- <recurso codigo="5" descricao="SALÁRIO EDUCAÇÃO"/>
- <recurso codigo="8" descricao="Operações de Crédito Internas para Programas de Educação Básica"/>
- <recurso codigo="9" descricao="Operações de Crédito Internas para Programas de Saúde"/>
- <recurso codigo="10" descricao="DIRETAM. ARRECADADO"/>
- <recurso codigo="11" descricao="Operações de Crédito Internas (outros Programas)"/>
- <recurso codigo="12" descricao="Convênios"/>
- <recurso codigo="13" descricao="Convênios Saúde"/>
- <recurso codigo="14" descricao="Convênios Educação"/>
- <recurso codigo="15" descricao="Transferências do FUNDEB"/>
- <recurso codigo="16" descricao="Transferência de Recursos do FNDE (Que não salário educação)"/>
- <recurso codigo="17" descricao="Operações de Crédito Externa"/>
- <recurso codigo="18" descricao="FNAS"/>
- <recurso codigo="19" descricao="REGIME PRÓPRIO(RPPS)"/>
- <recurso codigo="20" descricao="S.U.S."/>
- <recurso codigo="21" descricao="CONSORCIO SAÚDE"/>
- <recurso codigo="22" descricao="Outras Transferências Vinculadas a Programas de Saúde (que não SUS)"/>
- <recurso codigo="28" descricao="Alienação de Bens destinados a Programas de Educação Básica"/>
- <recurso codigo="29" descricao="Alienação de Bens destinados a Programas de Saúde"/>
- <recurso codigo="30" descricao="Alienação de Bens destinados a outros Programas"/>
- <recurso codigo="97" descricao="CONSERV. AMBIENTAL"/>
- <recurso codigo="98" descricao="Diversas - recursos vinculados"/>
- <recurso codigo="99" descricao="Diversas - recursos não vinculados"/>
+
+	<recurso codigo="10010000"  descricao="Recursos Ordinários" />
+	<recurso codigo="10900000"  descricao="Outros Recursos Não Vinculados" />
+	<recurso codigo="11110000"  descricao="Receitas de Impostos e de Transferência de Impostos - Educação" />
+	<recurso codigo="11120000"  descricao="Transferências do FUNDEB 60%" />
+	<recurso codigo="11130000"  descricao="Transferências do FUNDEB 40%" />
+	<recurso codigo="11160000"  descricao="Transferências do FUNDEB - Entrada de Recursos" />
+	<recurso codigo="11200000"  descricao="Transferência do Salário-Educação" />
+	<recurso codigo="11210000"  descricao="Transferências de Recursos do FNDE Referentes ao Programa Dinheiro Direto na Escola (PDDE)" />
+	<recurso codigo="11220000"  descricao="Transferências de Recursos do FNDE Referentes ao Programa Nacional de Alimentação Escolar (PNAE)" />
+	<recurso codigo="11230000"  descricao="Transferências de Recursos do FNDE Referentes ao Programa Nacional de Apoio ao Transporte Escolar (PNATE) " />
+	<recurso codigo="1124000"   descricao="Outras Transferências de Recursos do FNDE" />
+	<recurso codigo="11250000"  descricao="Transferências de Convênios ou de Contratos de Repasses vinculados à Educação" />
+	<recurso codigo="11300000"  descricao="Operações de Crédito Vinculadas à Educação" />
+	<recurso codigo="1140000"   descricao="Royalties do Petróleo Vinculados à Educação" />
+	<recurso codigo="11500000"  descricao="Receitas de Impostos e de Transferência de Impostos - Educação - Remuneração de Depósitos Bancários" />
+	<recurso codigo="11510000"  descricao="Transferências do FUNDEB - Remuneração de Depósitos Bancários" />
+	<recurso codigo="1190000"   descricao="Outros Recursos Vinculados à Educação" />
+	<recurso codigo="12110000"  descricao="Receitas de Impostos e de Transferência de Impostos - Saúde" />
+	<recurso codigo="12120000"  descricao="Transferências Fundo a Fundo de Recursos do SUS provenientes dos Governos Municipais" />
+	<recurso codigo="12130000"  descricao="Transferências Fundo a Fundo de Recursos do SUS provenientes do Governo Estadual " />
+	<recurso codigo="12140000"  descricao="Transferências Fundo a Fundo de Recursos do SUS provenientes do Governo Federal - Bloco de Custeio das Ações e Serviços Públicos de Saúde" />
+	<recurso codigo="12150000"  descricao="Transferências Fundo a Fundo de Recursos do SUS provenientes do Governo Federal - Bloco de Investimento na Rede de Serviços Públicos de Saúde" />
+	<recurso codigo="12200000"  descricao="Transferências de Convênios ou de Contratos de Repasse vinculados à Saúde" />
+	<recurso codigo="12300000"  descricao="Operações de Crédito vinculadas à Saúde" />
+	<recurso codigo="12400000"  descricao="Royalties do Petróleo vinculados à Saúde" />
+	<recurso codigo="12500000"  descricao="Receita de Impostos e de Transferência de Impostos - Saúde - Remuneração de Depósitos Bancários" />
+	<recurso codigo="12900000"  descricao="Outros Recursos Vinculados à Saúde " />
+	<recurso codigo="13110000"  descricao="Transferência de Recursos do Fundo Nacional de Assistência Social - FNAS" />
+	<recurso codigo="13120000"  descricao="Transferências de Convênios - Assistência Social" />
+	<recurso codigo="1390000"   descricao="Outros Recursos Vinculados à Assistência Social" />
+	<recurso codigo="14100000"  descricao="Recursos vinculados ao RPPS - Plano Previdenciário" />
+	<recurso codigo="14200000"  descricao="Recursos vinculados ao RPPS - Plano Financeiro" />
+	<recurso codigo="14300000"  descricao="Recursos vinculados ao RPPS - Taxa de Administração" />
+	<recurso codigo="15100000"  descricao="Outras Transferências de Convênios ou Contratos de Repasse da União" />
+	<recurso codigo="15303000"  descricao="Transferência da União-Royalties  Petróleo" />
+	<recurso codigo="15304000"  descricao="Transferência da União-Royalties  Petróleo" />
+	<recurso codigo="15306000"  descricao="Transferência da União-Royalties  Petróleo" />
+	<recurso codigo="15307000"  descricao="Transferência da União-Royalties  Petróleo" />
+	<recurso codigo="15400000"  descricao="Transferência dos Estados Referente a Royalties do Petróleo" />
+	<recurso codigo="16100000"  descricao="Contribuição de Intervenção no Domínio Econômico - CIDE" />
+	<recurso codigo="16200000"  descricao="Contribuição para o Custeio do Serviço de Iluminação Pública - COSIP" />
+	<recurso codigo="16300000"  descricao="Recursos Vinculados ao Trânsito" />
+	<recurso codigo="19100000"  descricao="Recursos próprios dos consórcios " />
+	<recurso codigo="19200000"  descricao="Recursos de Operações de Crédito " />
+	<recurso codigo="19300000"  descricao="Recursos de Alienação de Bens/Ativos" />
+	<recurso codigo="19900000"  descricao="Outros Recursos Vinculados" />
+
 </recursos>

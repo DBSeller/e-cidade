@@ -1,41 +1,45 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/verticalTab.widget.php");
+use App\Domain\Tributario\Arrecadacao\Repositories\OperacoesrealizadastefRepository;
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
 
 $k00_matric = null;
 $k00_inscr  = null;
+
+$oArrebanco = new stdClass;
 
 $mat_numpre = split("#",base64_decode(@$HTTP_SERVER_VARS['QUERY_STRING']));
 //var_dump(base64_decode(@$HTTP_SERVER_VARS['QUERY_STRING']));
@@ -48,7 +52,7 @@ $numpar = $mat_numpre[2];
 
 $iNumpreAbatimento = 0;
 if (!empty($mat_numpre[3])) {
-  
+
   $iNumpreAbatimento = $mat_numpre[3];
   $iNumpreOriginal   = $numpre;
 }
@@ -76,12 +80,12 @@ $rs_arrebanco_nbant = db_query($sql_arrebanco_nbant) or die($sql_arrebanco_nbant
 $oArrebanco->k00_nbant = pg_result($rs_arrebanco_nbant,0,0);
 
 /**
- * Legend dos fieldset 
+ * Legend dos fieldset
  */
 switch ( $k03_tipo ) {
 
   case 1 :
-    $sLegend = 'IPTU'; 
+    $sLegend = 'IPTU';
   break;
 
   case 2 :
@@ -91,11 +95,11 @@ switch ( $k03_tipo ) {
 	case 3 :
 		$sLegend = 'ISSQN VARIÁVEL';
 	break;
-	
+
   case 4 :
     $sLegend = 'Contribuição de melhoria';
   break;
-	
+
 	case 5 :
 		$sLegend = 'Divida ativa';
 	break;
@@ -127,7 +131,7 @@ switch ( $k03_tipo ) {
 
 /**
  * ------------------------------------------------------------------------------------------------
- * IPTU 
+ * IPTU
  * ------------------------------------------------------------------------------------------------
  */
 if ( $k03_tipo == 1 ) {
@@ -157,7 +161,7 @@ if ( $k03_tipo == 1 ) {
   $sql = "select diversos.*, z01_nome, k00_inscr,k00_matric , dv09_descr
           from diversos
           inner join arreinstit on arreinstit.k00_numpre = diversos.dv05_numpre
-                                and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
+                                and arreinstit.k00_instit = ".db_getsession('DB_instit')."
          left outer join arrematric on arrematric.k00_numpre = diversos.dv05_numpre
          left outer join arreinscr  on arreinscr.k00_numpre = diversos.dv05_numpre
          inner join procdiver       on procdiver.dv09_procdiver = diversos.dv05_procdiver
@@ -188,9 +192,9 @@ if ( $k03_tipo == 1 ) {
   if($k03_tipo==3){
     //db_msgbox("arreinscr");
     // variavel
-   
-    $sql = "select arrepaga.*, 
-                   issvar.*, 
+
+    $sql = "select arrepaga.*,
+                   issvar.*,
                    arreinscr.k00_inscr,
                    arrecant.k00_tipo,
                    issplan.*
@@ -198,37 +202,37 @@ if ( $k03_tipo == 1 ) {
                    inner join arrepaga   on arrepaga.k00_numpre   = arreinscr.k00_numpre
                    inner join arrecant   on arrecant.k00_numpre   = arreinscr.k00_numpre
                    inner join arreinstit on arreinstit.k00_numpre = arrepaga.k00_numpre
-                                         and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
+                                         and arreinstit.k00_instit = ".db_getsession('DB_instit')."
                    inner join issvar     on arrepaga.k00_numpre   = issvar.q05_numpre and arrepaga.k00_numpar = issvar.q05_numpar
                    left join issplan     on q05_numpre            = q20_numpre
                                         and arrepaga.k00_numcgm   = q20_numcgm
              where arreinscr.k00_numpre = $numpre";
-           
+
     $sql .= " union all ";
-    $sql .= "select distinct arrepaga.*, 
-                             issvar.*, 
+    $sql .= "select distinct arrepaga.*,
+                             issvar.*,
                              0 as k00_inscr,
                              arrecant.k00_tipo,
                              issplan.*
                         from arrenumcgm
                              inner join arrepaga   on arrepaga.k00_numpre   = arrenumcgm.k00_numpre
-                             inner join arrecant   on arrecant.k00_numpre   = arrenumcgm.k00_numpre            
-                             inner join arreinstit on arreinstit.k00_numpre = arrepaga.k00_numpre 
-                                                  and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
-                             inner join issvar     on arrepaga.k00_numpre   = issvar.q05_numpre 
+                             inner join arrecant   on arrecant.k00_numpre   = arrenumcgm.k00_numpre
+                             inner join arreinstit on arreinstit.k00_numpre = arrepaga.k00_numpre
+                                                  and arreinstit.k00_instit = ".db_getsession('DB_instit')."
+                             inner join issvar     on arrepaga.k00_numpre   = issvar.q05_numpre
                                                   and arrepaga.k00_numpar   = issvar.q05_numpar
                              left join issplan     on q05_numpre            = q20_numpre
                                                   and  arrepaga.k00_numcgm  = q20_numcgm
-                       where arrenumcgm.k00_numpre = $numpre";           
-           
-   
+                       where arrenumcgm.k00_numpre = $numpre";
+
+
   }else{
     $sql = "select *
           from arreinscr
            inner join arrepaga on arrepaga.k00_numpre = arreinscr.k00_numpre
            inner join arreinstit on arreinstit.k00_numpre = arrepaga.k00_numpre
-                                 and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
-         inner join isscalc on arrepaga.k00_numpre = isscalc.q01_numpre 
+                                 and arreinstit.k00_instit = ".db_getsession('DB_instit')."
+         inner join isscalc on arrepaga.k00_numpre = isscalc.q01_numpre
           where arreinscr.k00_numpre = $numpre";
   }
 
@@ -241,7 +245,7 @@ if ( $k03_tipo == 1 ) {
   }else{
     db_fieldsmemory($result,0,'1');
   }
-  
+
   if ( $k00_inscr > 0 ) {
     $sql = "select empresa.*
             from empresa
@@ -280,7 +284,7 @@ if ( $k03_tipo == 1 ) {
   $sql  = " select edital.d01_numero,contrib.d07_data,contrib.d07_contri,contrib.d07_valor,contr.j14_nome";
   $sql .= " from arrematric";
   $sql .= "      inner join arreinstit on arreinstit.k00_numpre = arrematric.k00_numpre   ";
-  $sql .= "                            and arreinstit.k00_instit = ".db_getsession('DB_instit'); 
+  $sql .= "                            and arreinstit.k00_instit = ".db_getsession('DB_instit');
   $sql .= "      left join contricalc on d09_numpre = k00_numpre \n";
   $sql .= "      left join contrib on d07_contri = d09_contri and d07_matric = d09_matric \n";
   $sql .= "      left join editalrua on d07_contri = d02_contri \n";
@@ -333,7 +337,7 @@ if ( $k03_tipo == 1 ) {
     db_fieldsmemory($result,0,true);
     $sql = "select distinct d.v01_proced,d.v01_exerc,k00_matric,k00_inscr, z01_nome, v03_descr
              from termodiv t
-            inner join divida d on d.v01_coddiv = t.coddiv and v01_instit = ".db_getsession('DB_instit')." 
+            inner join divida d on d.v01_coddiv = t.coddiv and v01_instit = ".db_getsession('DB_instit')."
             left outer join proced     p on p.v03_codigo = d.v01_proced
             left outer join cgm        c on d.v01_numcgm = c.z01_numcgm
                   left outer join arrematric a on d.v01_numpre = a.k00_numpre
@@ -409,8 +413,8 @@ if ( $k03_tipo == 1 ) {
   db_fieldsmemory($result,0,true);
 }else if($k03_tipo==14){
   $sql  = "select * from recibo
-                inner join arreinstit on arreinstit.k00_numpre = recibo.k00_numpre 
-                                     and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
+                inner join arreinstit on arreinstit.k00_numpre = recibo.k00_numpre
+                                     and arreinstit.k00_instit = ".db_getsession('DB_instit')."
                 inner join cgm on z01_numcgm = k00_numcgm
            where recibo.k00_numpre = $numpre";
   $result = db_query($sql);
@@ -419,8 +423,8 @@ if ( $k03_tipo == 1 ) {
   } else {
 
     $sql  = "select * from arrepaga
-                  inner join arreinstit on arreinstit.k00_numpre = arrepaga.k00_numpre 
-                                       and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
+                  inner join arreinstit on arreinstit.k00_numpre = arrepaga.k00_numpre
+                                       and arreinstit.k00_instit = ".db_getsession('DB_instit')."
                   inner join cgm on z01_numcgm = k00_numcgm
              where arrepaga.k00_numpre = $numpre";
 
@@ -439,8 +443,8 @@ if ( $k03_tipo == 1 ) {
 }else{
 
   $sql  = "select * from arrepaga
-                inner join arreinstit on arreinstit.k00_numpre = arrepaga.k00_numpre 
-                                     and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
+                inner join arreinstit on arreinstit.k00_numpre = arrepaga.k00_numpre
+                                     and arreinstit.k00_instit = ".db_getsession('DB_instit')."
                 inner join cgm on z01_numcgm = k00_numcgm
            where arrepaga.k00_numpre = $numpre";
 
@@ -483,7 +487,7 @@ if ( $k03_tipo == 1 ) {
       font-weight:bold;
       width:150px;
     }
-  </style>   
+  </style>
 </head>
 <body bgcolor="#cccccc">
 
@@ -594,7 +598,7 @@ if ( $k03_tipo == 1 ) {
       <tr>
         <td>Complemeto:</td>
         <td>&nbsp; <?=$j39_compl?></td>
-				
+
         <td>Bairro:</td>
         <td>&nbsp; <?=$j13_descr?></td>
       </tr>
@@ -614,11 +618,11 @@ if ( $k03_tipo == 1 ) {
         <td>Valor Lan&ccedil;ado:</td>
         <td>&nbsp; <?=$d07_valor?></td>
       </tr>
-    
+
     <?php
     /**
      * ------------------------------------------------------------------------------------------------
-     * DIVIDA ATIVA 
+     * DIVIDA ATIVA
      * ------------------------------------------------------------------------------------------------
      */
     } else if ( $k03_tipo == 5 ) { ?>
@@ -662,7 +666,7 @@ if ( $k03_tipo == 1 ) {
 
       <tr>
         <td>Inscri&ccedil;&atilde;o Alvar&aacute;:</td>
-        <td>&nbsp; 
+        <td>&nbsp;
           <?php
             if(pg_numrows($result)!=0){
 
@@ -673,8 +677,8 @@ if ( $k03_tipo == 1 ) {
                   echo $v01_inscr."<br>";
                 }
               }
-            } 
-          ?>      
+            }
+          ?>
         </td>
 
         <td>Livro/Folha:</td>
@@ -699,11 +703,11 @@ if ( $k03_tipo == 1 ) {
 
       <tr>
         <td>Observa&ccedil;&atilde;o:</td>
-        <td>&nbsp; 
+        <td>&nbsp;
           <?php
             echo substr($v01_obs, 0, 50)."<br>";
             echo substr($v01_obs, 50, 50)."<br>";
-            echo substr($v01_obs, 100, 17); 
+            echo substr($v01_obs, 100, 17);
           ?>
         </td>
       </tr>
@@ -763,20 +767,20 @@ if ( $k03_tipo == 1 ) {
      * ------------------------------------------------------------------------------------------------
      */
     } else if ( $k03_tipo == 16 ) {
-                                                                                                                             
+
       $sSqlParcelamentoDiversos = " select *                                                                                  ";
-      $sSqlParcelamentoDiversos = "   from termodiver                                                                         ";
-      $sSqlParcelamentoDiversos = "        inner join termo        on v07_parcel            = dv10_parcel                     ";    
-      $sSqlParcelamentoDiversos = "                                and v07_instit            = ".db_getsession('DB_instit')." ";    
-      $sSqlParcelamentoDiversos = "        inner join cgm          on v07_numcgm            = z01_numcgm                      ";             
-      $sSqlParcelamentoDiversos = "        inner join arrecad      on k00_numpre            = v07_numpre                      ";         
-      $sSqlParcelamentoDiversos = "        inner join arreinstit   on arreinstit.k00_numpre = arrecad.k00_numpre              ";
-      $sSqlParcelamentoDiversos = "                               and arreinstit.k00_instit = ".db_getsession('DB_instit')."  ";
-      $sSqlParcelamentoDiversos = "                                                                                           ";
-      $sSqlParcelamentoDiversos = "   left outer join arrematric a on v07_numpre            = a.k00_numpre                    ";
-      $sSqlParcelamentoDiversos = "   left outer join arreinscr  i on v07_numpre            = i.k00_numpre                    ";
-      $sSqlParcelamentoDiversos = " where v07_numpre = $numpre                                                                ";
-      
+      $sSqlParcelamentoDiversos .= "   from termodiver                                                                         ";
+      $sSqlParcelamentoDiversos .= "        inner join termo        on v07_parcel            = dv10_parcel                     ";
+      $sSqlParcelamentoDiversos .= "                                and v07_instit            = ".db_getsession('DB_instit')." ";
+      $sSqlParcelamentoDiversos .= "        inner join cgm          on v07_numcgm            = z01_numcgm                      ";
+      $sSqlParcelamentoDiversos .= "        inner join arrecad      on k00_numpre            = v07_numpre                      ";
+      $sSqlParcelamentoDiversos .= "        inner join arreinstit   on arreinstit.k00_numpre = arrecad.k00_numpre              ";
+      $sSqlParcelamentoDiversos .= "                               and arreinstit.k00_instit = ".db_getsession('DB_instit')."  ";
+      $sSqlParcelamentoDiversos .= "                                                                                           ";
+      $sSqlParcelamentoDiversos .= "   left outer join arrematric a on v07_numpre            = a.k00_numpre                    ";
+      $sSqlParcelamentoDiversos .= "   left outer join arreinscr  i on v07_numpre            = i.k00_numpre                    ";
+      $sSqlParcelamentoDiversos .= " where v07_numpre = $numpre                                                                ";
+
       $rsParcelamentoDeiversos = db_query($sSqlParcelamentoDiversos);
 
       if ( pg_numrows($rsParcelamentoDeiversos) == 0 ) {
@@ -815,7 +819,7 @@ if ( $k03_tipo == 1 ) {
           <td>Termo:</td>
           <form name="form1" method="post">
 						<td>
-							<input type="button" name="Submit3" value="Visualizar o Termo" onclick="js_AbreJanelaRelatorio();"> 
+							<input type="button" name="Submit3" value="Visualizar o Termo" onclick="js_AbreJanelaRelatorio();">
 							<input type="hidden" id="v07_parcel" name="v07_parcel" value="<?=$v07_parcel?>">
 						</td>
           </form>
@@ -839,8 +843,8 @@ if ( $k03_tipo == 1 ) {
           <td>Inscri&ccedil;&atilde;o Alvar&aacute;:</td>
           <td>&nbsp; <?php echo $k00_inscr; ?></td>
         </tr>
-        
-      <?php     
+
+      <?php
       } // fim else - possui parcelamento
 
     /**
@@ -853,7 +857,7 @@ if ( $k03_tipo == 1 ) {
       <tr>
         <td>C&oacute;digo do Parcelamento:</td>
         <td>&nbsp; <?=$v07_parcel?></td>
-				
+
         <td>Data Parcelamento:</td>
         <td>&nbsp; <?=$v07_dtlanc?></td>
       </tr>
@@ -877,7 +881,7 @@ if ( $k03_tipo == 1 ) {
       <tr>
         <td>Contribu&iacute;nte:</td>
         <td>&nbsp; <?=$z01_nome?></td>
-				
+
         <td>Nome Respons&aacute;vel:</td>
         <td>&nbsp; <?=$nome_resp?></td>
       </tr>
@@ -921,7 +925,7 @@ if ( $k03_tipo == 1 ) {
 
       <tr>
         <td>Inscri&ccedil;&atilde;o Alvar&aacute;:</td>
-				<td>&nbsp; 
+				<td>&nbsp;
 					<?php
 						if ( pg_numrows( $result ) != 0 ) {
 
@@ -942,7 +946,7 @@ if ( $k03_tipo == 1 ) {
      * ------------------------------------------------------------------------------------------------
      * ISSQN FIXO E ALVARÁ
      * ------------------------------------------------------------------------------------------------
-     */ 
+     */
     } else if ( $k03_tipo == 2 || $k03_tipo == 9 ) { ?>
 
       <tr>
@@ -979,7 +983,7 @@ if ( $k03_tipo == 1 ) {
 
 			<?php if (isset($k00_inscr) && $k00_inscr > 0) { ?>
 
-				<tr> 
+				<tr>
 					<td>Inscri&ccedil;&atilde;o:</td>
 					<td>&nbsp;<?php echo $k00_inscr; ?></td>
 
@@ -987,17 +991,17 @@ if ( $k03_tipo == 1 ) {
 					<td>&nbsp;<?php echo $q02_dtinic; ?></td>
 				</tr>
 
-				<tr> 
+				<tr>
 					<td>Nome/Empresa:</td>
 					<td>&nbsp;<?php echo $z01_nome; ?></td>
 				</tr>
 
-				<tr> 
+				<tr>
 
-			<?php  
-			} 
-			?>    
-      
+			<?php
+			}
+			?>
+
       <tr>
         <td>C&oacute;digo Arrecada&ccedil;&atilde;o:</td>
         <td>&nbsp;<?php echo $k00_numpre; ?></td>
@@ -1013,7 +1017,7 @@ if ( $k03_tipo == 1 ) {
 
       <?php if( $k00_tipo == 33 ) { ?>
 
-				<tr> 
+				<tr>
 					<td>Planilha:</td>
 					<td>&nbsp;<?php echo $q20_planilha; ?>
 					</td>
@@ -1023,16 +1027,16 @@ if ( $k03_tipo == 1 ) {
 					</td>
 				</tr>
 
-			<?php 
-			} 
+			<?php
+			}
 			?>
 
 			<tr>
 				<td>Observa&ccedil;&atilde;o:</td>
 				<td>&nbsp;<?php echo $q05_histor; ?></td>
 			</tr>
-      
-		<?php 
+
+		<?php
     /**
      * ------------------------------------------------------------------------------------------------
      * CERTIDÃO DO FORO
@@ -1046,13 +1050,6 @@ if ( $k03_tipo == 1 ) {
 
         <td>Data Emiss&atilde;o:</td>
         <td>&nbsp; <?=$v13_dtemis?></td>
-      </tr>
-
-      <tr>
-        <td>Certid&atilde;o:</td>
-				<td>
-					<input type="submit" name="Submit3" value="Visualizar a Certid&atilde;o">
-				</td>
       </tr>
 
       <tr>
@@ -1070,7 +1067,7 @@ if ( $k03_tipo == 1 ) {
      * ------------------------------------------------------------------------------------------------
      */
     } else if ( $k03_tipo == 14 || is_null($k03_tipo) ) {  ?>
-		
+
       <tr>
         <td>Nome :</td>
         <td>&nbsp; <?=$z01_nome?></td>
@@ -1099,43 +1096,89 @@ if ( $k03_tipo == 1 ) {
 	</table>
 </fieldset>
 
-<?php 
+<?php
 
 $oTabConsultaPagamentos = new verticalTab("consultapagamentos", 300);
 
 $oTabConsultaPagamentos->add(
-	"prorrogacoes", 
-	"Prorrogações de vencimentos efetuados", 
+	"prorrogacoes",
+	"Prorrogações de vencimentos efetuados",
 	"cai3_consultapagamentosefetuadosprorrogacoes.php?iNumpre=$numpre&iNumpar=$numpar"
-); 
+);
 
 
 $iNumpreConsultaBaixa = $numpre;
 $iNumparConsultaBaixa = $numpar;
 if (!empty($iNumpreAbatimento)) {
-  
+
   $iNumpreConsultaBaixa = $iNumpreAbatimento;
   $iNumparConsultaBaixa = 1;
 }
 
 $oTabConsultaPagamentos->add(
-	"dadosBaixa", 
-	"Dados da baixa", 
+	"dadosBaixa",
+	"Dados da baixa",
 	"cai3_consultapagamentosefetuadosdadosbaixa.php?iNumpre=$iNumpreConsultaBaixa&iNumpar=$iNumparConsultaBaixa"
-); 
+);
 
 $oTabConsultaPagamentos->add(
-	"historicos", 
-	"Históricos", 
+	"historicos",
+	"Históricos",
 	"cai3_consultapagamentosefetuadoshistoricos.php?iNumpre=$numpre&iNumpar=$numpar"
-); 
+);
 
 $oTabConsultaPagamentos->add(
-	"lancamentos", 
-	"Lançamentos efetuados", 
+	"lancamentos",
+	"Lançamentos efetuados",
 	"cai3_consultapagamentosefetuadoslancamentos.php?iNumpre=$numpre&iNumpar=$numpar"
-); 
+);
 
+$sSql = "SELECT DISTINCT arrecant.k00_tipo,
+                         arrecant.k00_numcgm,
+                         recibopaga.k00_numnov
+           FROM arrecant
+          INNER JOIN arrepaga
+             ON arrepaga.k00_numpre = arrecant.k00_numpre
+            AND arrepaga.k00_numpar = arrecant.k00_numpar
+          INNER JOIN recibopaga
+             ON recibopaga.k00_numpre = arrepaga.k00_numpre
+            AND recibopaga.k00_numpar = arrepaga.k00_numpar
+          INNER JOIN disbanco
+             ON disbanco.k00_numpre = recibopaga.k00_numnov
+          WHERE arrecant.k00_numpre = {$numpre}
+            AND arrecant.k00_numpar = {$numpar};";
+
+$rResult = db_query($sSql);
+
+if (!$rResult) {
+    throw new \Exception("Erro ao buscar o recibo pago. Erro: ".pg_last_error());
+}
+
+$oDados = \db_utils::fieldsMemory($rResult, 0);
+
+if (!empty($oDados->k00_numnov)) {
+    $operacoesrealizadastefRepository = new OperacoesrealizadastefRepository();
+    $aOperacoesRealizadas = $operacoesrealizadastefRepository->getAllConfirmadasAutorizadoraByNumnov($oDados->k00_numnov);
+
+    if (count($aOperacoesRealizadas) > 0) {
+        $aParams = [
+            "ver_numcgm={$oDados->k00_numcgm}",
+            "tipo={$oDados->k00_tipo}",
+            "tipo_debito={$oDados->k00_tipo}",
+            "reemite_recibo=true",
+            "forcarvencimento=false",
+            "k03_numpre={$oDados->k00_numnov}",
+            "k03_numnov={$oDados->k00_numnov}",
+            "iModeloRecibo=31"
+        ];
+
+        $oTabConsultaPagamentos->add(
+            "reemitirComprovante",
+            "Reemitir Comprovante",
+            "cai3_gerfinanc003.php?".implode("&", $aParams)
+        );
+    }
+}
 ?>
 
 <fieldset>
@@ -1151,7 +1194,7 @@ $oTabConsultaPagamentos->add(
 </center>
 
 <script type="text/javascript">
-function js_AbreJanelaRelatorio() { 
+function js_AbreJanelaRelatorio() {
   window.open('div2_termoparc_002.php?parcel='  + $F('v07_parcel'), '','width=790,height=530,scrollbars=1,location=0');
 }
 </script>

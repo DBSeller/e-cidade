@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_db_versao_classe.php");
-include("classes/db_db_versaoant_classe.php");
-include("classes/db_db_versaousutarefa_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_clientes_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_db_versao_classe.php"));
+include(modification("classes/db_db_versaoant_classe.php"));
+include(modification("classes/db_db_versaousutarefa_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_clientes_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -157,7 +157,7 @@ if(isset($id_item) && $id_item != 0){
 $sql .= "
         order by nome_modulo";
 
-$res = pg_exec($sql);
+$res = db_query($sql);
 
 $numrows = pg_numrows($res);
 
@@ -204,7 +204,7 @@ for($i=0;$i<$numrows;$i++){
                   where db30_codver >= $versao_inicial
                     $filtra_cliente
                     and db32_id_item = ".$impmat[$imp];
-          $resid = pg_exec($sql);
+          $resid = db_query($sql);
           if( pg_numrows($resid) > 0 ){
 
 
@@ -212,7 +212,7 @@ for($i=0;$i<$numrows;$i++){
             $sql = "select descricao 
                   from db_itensmenu
                   where id_item = ".$impmat[$imp];
-            $resi = pg_exec($sql);
+            $resi = db_query($sql);
             $descr = pg_result($resi,0,0);
 
             //$pdf->Cell($imp*5,4,$matriz_item_seleciona[$x],0,0,"L");
@@ -244,14 +244,14 @@ for($i=0;$i<$numrows;$i++){
                   where db30_codver >= $versao_inicial
                     $filtra_cliente
                     and db32_id_item = ".$impmat[$imp];
-          $resid = pg_exec($sql);
+          $resid = db_query($sql);
           if( pg_numrows($resid) > 0 ){
           
             $itens_listados[$impmat[$imp]] = $impmat[$imp] ;
             $sql = "select descricao 
                   from db_itensmenu
                   where id_item = ".$impmat[$imp];
-            $resi = pg_exec($sql);
+            $resi = db_query($sql);
             $descr = pg_result($resi,0,0);
 
             //$pdf->Cell($imp*5,4,$matriz_item_seleciona[$x],0,0,"L");
@@ -277,7 +277,7 @@ for($i=0;$i<$numrows;$i++){
                         db30_codversao = $db30_codversao and db30_codrelease = $db30_codrelease
                     $filtra_cliente
                     and db32_id_item = ".$impmat[$imp];
-              $residu = pg_exec($sql);
+              $residu = db_query($sql);
               if( pg_numrows($residu) > 0 ){
                 $tarefas = 'Tarefa(s): ';
                 $separador = "";

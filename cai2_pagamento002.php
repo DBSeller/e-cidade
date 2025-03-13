@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//include("libs/db_stdlib.php");
+//include(modification("libs/db_stdlib.php"));
 //    echo 'ala pucha';
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 db_postmemory($HTTP_POST_VARS);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 $where    = "";
@@ -38,7 +38,7 @@ $MSGhead5 = "TODAS AS CONTAS";
 $MSGhead6 = "PERÍODO NÃO INFORMADO";
 $msg_ERRO = "";
 if(isset($conta) && trim($conta)!="" && $conta!=0){
-  $result_contsaltes = pg_query("select k13_descr from saltes where k13_conta=$conta");
+  $result_contsaltes = db_query("select k13_descr from saltes where k13_conta=$conta");
   if(pg_numrows($result)>0 ){
     db_fieldsmemory($result_contsaltes,0);
   }
@@ -87,7 +87,7 @@ $sql = "
 	group by arrepaga.k00_conta,saltes.k13_descr
      ";
 //die($sql);
-$result_somaval = pg_query($sql);
+$result_somaval = db_query($sql);
 $numrows = pg_numrows($result_somaval);
 if($numrows == 0){
   db_redireciona("db_erros.php?fechar=true&db_erro=Não existem valores com os seguintes dados informados:<br> $msg_ERRO");

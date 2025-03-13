@@ -1,37 +1,37 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_parprojetos_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_parprojetos_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $oPost         = db_utils::postmemory($HTTP_POST_VARS);
 $clparprojetos = new cl_parprojetos;
 $db_opcao      = 22;
@@ -40,6 +40,50 @@ $iAnoUsu       = isset($oPost->ob21_anousu) ? $oPost->ob21_anousu : db_getsessio
 $rsParProjetos = $clparprojetos->sql_record($clparprojetos->sql_query_pesquisaParametros($iAnoUsu));
 
 if(isset($oPost->alterar) || isset($oPost->incluir)){
+
+	$diretorio = dirname(__FILE__)."/src/Tributario/Projetos/Obras/Sisobras/Webservice/Arquivo/";
+
+	// Filtra certificado formato .pem
+	if (empty($_FILES["file_certificadopem"]["name"])) {
+		if (empty($oPost->certificadopem)) {
+			$diretorioPem = "";
+		} else {
+			$diretorioPem = $diretorio . $oPost->certificadopem;
+		}
+	} else {
+		$diretorioPem = $diretorio . basename($_FILES["file_certificadopem"]["name"]);
+	}
+
+	// Filtra certificado formato .pfx
+	if (empty($_FILES["file_certificadopfx"]["name"])) {
+		if (empty($oPost->certificadopfx)) {
+			$diretorioPfx = "";
+		} else {
+			$diretorioPfx = $diretorio . $oPost->certificadopfx;
+		}
+	} else {
+		$diretorioPfx = $diretorio . basename($_FILES["file_certificadopfx"]["name"]);
+	}
+
+	// Efetua upload do certificado formato .pem
+	if (!empty($diretorioPem)) {
+		if (move_uploaded_file($_FILES["file_certificadopem"]["tmp_name"], $diretorioPem)) {
+			// db_msgbox("Foi efetuado upload do arquivo ". htmlspecialchars( basename( $_FILES["file_certificadopem"]["name"])));
+		} else {
+			db_msgbox("Ocorreu um erro ao fazer upload do certificado.");
+		}
+	}
+
+	// Efetua upload do certificado formato .pfx
+	if (!empty($diretorioPfx)) {
+		if (move_uploaded_file($_FILES["file_certificadopfx"]["tmp_name"], $diretorioPfx)) {
+			// db_msgbox("Foi efetuado upload do arquivo ". htmlspecialchars( basename( $_FILES["file_certificadopfx"]["name"])));
+		} else {
+			db_msgbox("Ocorreu um erro ao fazer upload do certificado.");
+		}
+	}
+
+	$clparprojetos->ob21_localcertificadoa1 = $diretorioPfx;
 
 	db_inicio_transacao();
 
@@ -74,8 +118,10 @@ if ( pg_num_rows($rsParProjetos) > 0 ) {
 	$ob21_tipocartahabite     = $oParProjetos->ob21_tipocartahabite;
 	$descr_tipoocupacao       = $oParProjetos->ocupacao_descricao;
 	$descr_tipoconstrucao     = $oParProjetos->construcao_descricao;
-  $descr_tipolancamento     = $oParProjetos->lancamento_descricao;
-  
+    $descr_tipolancamento     = $oParProjetos->lancamento_descricao;
+    $ob21_localcertificadoa1 = $oParProjetos->ob21_localcertificadoa1;
+    $ob21_senhacertificadoa1 = $oParProjetos->ob21_senhacertificadoa1;
+
 	if ($oParProjetos->ob21_numeracaohabite == 1){
 		$db_opcaoNumero	= 3;
 	}else{
@@ -104,7 +150,7 @@ $db_botao = true;
 </head>
 <body bgcolor=#CCCCCC>
 				<?
-					include("forms/db_frmparprojetos.php");
+					include(modification("forms/db_frmparprojetos.php"));
 				?>
 	<?
 	db_menu(db_getsession("DB_id_usuario"),

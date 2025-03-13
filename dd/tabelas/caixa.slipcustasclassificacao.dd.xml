@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010451' name='caixa.slipcustasclassificacao' description="slips de transferência das custas oriundas de uma classificação da baixa de banca" prefix="k190" label="slipcustasclassificacao" type="0">
+  <fields>
+    <field codigo="1010534" 
+           campo_api='' 
+           name="k190_sequencial" 
+           conteudo="int4" 
+           description="Código Sequencial" 
+           inivalue="" 
+           label="Código Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='caixa.slipcustasclassificacao_k190_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010535" 
+           campo_api='' 
+           name="k190_codcla" 
+           conteudo="int4" 
+           description="Código da Classificação" 
+           inivalue="" 
+           label="Código da Classificação" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Classificação" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010536" 
+           campo_api='' 
+           name="k190_slip" 
+           conteudo="int4" 
+           description="Código do Slip" 
+           inivalue="" 
+           label="Código do Slip" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Slip" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k190_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="slip" inner='t'>
+      <fieldfk name="k190_slip" reference="k17_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="discla" inner='t'>
+      <fieldfk name="k190_codcla" reference="codcla" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

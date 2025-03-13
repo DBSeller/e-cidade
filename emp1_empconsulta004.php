@@ -1,56 +1,59 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-
-include ("fpdf151/pdf.php");
-include ("fpdf151/assinatura.php");
-include ("libs/db_sql.php");
-include ("libs/db_libcontabilidade.php");
-include ("libs/db_liborcamento.php");
-include ("classes/db_orcparamrel_classe.php");
-include ("classes/db_conrelinfo_classe.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_pagordem_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("classes/db_orcparamrel_classe.php"));
+require_once(modification("classes/db_conrelinfo_classe.php"));
+require_once(modification("classes/db_empempenho_classe.php"));
+require_once(modification("classes/db_pagordem_classe.php"));
 
 $clempempenho = new cl_empempenho;
 $clpagordem   = new cl_pagordem;
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+parse_str($_SERVER['QUERY_STRING']);
+$oGet = db_utils::postMemory($_GET);
 
-//db_postmemory($HTTP_SERVER_VARS,2);
+if (!empty($oGet->dt1)) {
+    $data1 = $oGet->dt1;
+    $dta1 = explode("-", $oGet->dt1);
+    $head5 =  "De  : $dta1[2]/$dta1[1]/$dta1[0] ";
+}
 
-$data1 = 0;
-$data2 = 0;
-@ $data1 = "$dt1_ano-$dt1_mes-$dt1_dia";
-@ $data2 = "$dt2_ano-$dt2_mes-$dt2_dia"; 
-$dta1 = split("-",$data1);
-$dta2 = split("-",$data2);
-$head5 =  "De  : $dta1[2]/$dta1[1]/$dta1[0] ";  
-$head5 =  "Ate : $dta2[2]/$dta2[1]/$dta2[0] ";
+if (!empty($oGet->dt2)) {
+    $data2 = $oGet->dt2;
+    $dta2 = explode("-", $oGet->dt2);
+    $head5 =  "Ate : $dta2[2]/$dta2[1]/$dta2[0] ";
+}
+
+
 if (strlen($data1) < 3) {
 	unset ($data1);
 }
@@ -65,9 +68,10 @@ $sql        = "";
 $where_sql  = "";
 $where      = "";
 if (isset ($e60_numemp) and ($e60_numemp != "")) {
-	$where_sql .= " e60_numemp = $e60_numemp and ";  
+	$where_sql .= " e60_numemp = $e60_numemp and ";
 }
-if (isset($e60_codemp) and $e60_codemp != "" ) { 	  
+
+if (isset($e60_codemp) and $e60_codemp != "" ) {
 	  $arr = split("/",$e60_codemp);
 	  if(count($arr) == 2  && isset($arr[1]) && $arr[1] != '' ){
 	  	$where_sql .= " e60_codemp =  '".$arr[0]."' and e60_anousu = ".$arr[1]." and ";
@@ -90,14 +94,14 @@ if (isset($e53_codord) and $e53_codord !=""){
 
 $sql = $clempempenho->sql_query(null, $campos,"z01_nome", " $where_sql  e60_instit = ".db_getsession("DB_instit"));
 if ((isset ($dt1) and $dt1 != "") and (isset ($dt2) and $dt2 != "")){
-	$sql = $clempempenho->sql_query(null, $campos,"z01_nome", "$where_sql e60_emiss between '$dt1' and '$dt2' and e60_instit = ".db_getsession("DB_instit"));	
+	$sql = $clempempenho->sql_query(null, $campos,"z01_nome", "$where_sql e60_emiss between '$dt1' and '$dt2' and e60_instit = ".db_getsession("DB_instit"));
 }
 if (isset($pc01_codmater) and $pc01_codmater !=""){
    $campos .= ",pc01_descrmater";
    $sql = $clempempenho->sql_query_itemmaterial(null,$campos,"z01_nome"," $where_sql e60_instit = ".db_getsession("DB_instit"));
    if ((isset ($dt1) and $dt1 != "") and (isset ($dt2) and $dt2 != "")){
-      $sql = $clempempenho->sql_query_itemmaterial(null, $campos,"z01_nome", "$where_sql e60_emiss between '$dt1' and '$dt2' and e60_instit = ".db_getsession("DB_instit"));
-   }  
+	   $sql = $clempempenho->sql_query_itemmaterial(null, $campos,"z01_nome", "$where_sql e60_emiss between '$dt1' and '$dt2' and e60_instit = ".db_getsession("DB_instit"));
+   }
 }
 
 if (isset ($o50_estrutdespesa) && ($o50_estrutdespesa != "")) {
@@ -113,7 +117,7 @@ if (isset ($o50_estrutdespesa) && ($o50_estrutdespesa != "")) {
 			case 2 : //funcao
 				$o52_funcao = $matriz[$i];
 				break;
-			case 3 : //subfuncao	
+			case 3 : //subfuncao
 				$o53_subfuncao = $matriz[$i];
 				break;
 			case 4 : //programa
@@ -122,7 +126,7 @@ if (isset ($o50_estrutdespesa) && ($o50_estrutdespesa != "")) {
 			case 5 : //projativ
 				$o55_projativ = $matriz[$i];
 				break;
-			case 6 : //elemento de despesa	
+			case 6 : //elemento de despesa
 				$o56_elemento = $matriz[$i];
 				break;
 			case 7 : //tipo de  recurso
@@ -159,27 +163,58 @@ if (!empty ($o58_codigo)) {
 
 if (isset ($e53_codord) and $e53_codord != "") {
 	$sql = $clpagordem->sql_query(null, $campos, null, " e50_codord = $e53_codord and e60_instit = ".db_getsession("DB_instit"));
+
 }
 
 $sql1 = $sql.$where;
 
+if (!empty($oGet->e150_numeroprocesso)) {
+
+  $sSqlConsultaBase = $sql;
+  if (!empty($newsql) && $newsql == "true") {
+	$sSqlConsultaBase = $sql1;
+  }
+
+  $sSqlNovoSqlParaProcesso = "
+    select * 
+      from ({$sSqlConsultaBase}) as consulta_principal
+           inner join empempaut on empempaut.e61_numemp = consulta_principal.e60_numemp
+           inner join empautorizaprocesso on empautorizaprocesso.e150_empautoriza = empempaut.e61_autori
+     where empautorizaprocesso.e150_numeroprocesso ilike '{$oGet->e150_numeroprocesso}%'
+  ";
+  $sql1 = $sSqlNovoSqlParaProcesso;
+  $sql  = $sSqlNovoSqlParaProcesso;
+}
+
 if (isset ($newsql) && ($newsql == "true")) {
-	$result = pg_exec($sql1);
+	$result = db_query($sql1);
 } else {
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 }
 
 $head2 = "RELATÓRIO DE EMPENHOS";
 $head3 = "Dotação : ".$o58_coddot;
-if ($pc01_codmater != 0){
-  db_fieldsmemory($result,1);    
-  $head4 = "Material : ".$pc01_descrmater;
-}else{
-  $head4 = "Material : ".$pc01_codmater;
+
+db_fieldsmemory($result,1);
+
+$head4 = "Material : ".$pc01_codmater;
+$sqlDescricaoMaterial = "
+	select pc01_descrmater
+	from pcmater
+	where pc01_codmater = $pc01_codmater
+";
+
+$resultDescricaoMaterial = db_query($sqlDescricaoMaterial);
+db_fieldsmemory($resultDescricaoMaterial, 0);
+
+if (!empty($pc01_descrmater)) {
+	$head4 .= " - $pc01_descrmater";
 }
+	
 $head5 = "CGM : ".$z01_numcgm;
-$head6 =  "De  : $dta1[2]/$dta1[1]/$dta1[0] ";  
+$head6 =  "De  : $dta1[2]/$dta1[1]/$dta1[0] ";
 $head7 =  "Ate : $dta2[2]/$dta2[1]/$dta2[0] ";
+$head8 =  "Processo: {$oGet->e150_numeroprocesso}";
 
 $somaemp      = 0;
 $somaliq      = 0;
@@ -211,7 +246,7 @@ $pdf->cell(15, $alt, "Saldo liq.", 'TRB', 0, "C", 0);
 $pdf->cell(15, $alt, "Saldo", 'TB', 1, "C", 0);
 $pdf->setfont('arial', '', 6);
 for($i=0;$i< pg_numrows($result);$i++) {
-	db_fieldsmemory($result,$i);    
+	db_fieldsmemory($result,$i);
 	$pdf->cell(15, $alt,$e60_numemp, 'R', 0, "R", 0);
 	$pdf->cell(15, $alt,$e60_codemp, 'R', 0, "R", 0);
 	$pdf->cell(15, $alt,db_formatar($e60_emiss,"d"), 'R', 0, "C", 0);

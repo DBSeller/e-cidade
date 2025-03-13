@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
- //$rs = pg_exec($sql);
+include(modification("fpdf151/pdf.php"));
+ //$rs = db_query($sql);
  $pdf = new pdf();
  $head3 = 'Resumo dos acidentes Em sapiranga';
  $head4 = 'Acidentos por Dia da Semana';

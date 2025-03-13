@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -438,8 +438,7 @@ class cl_contrans {
   	$sql .= "      inner join conhistdoc   on  conhistdoc.c53_coddoc = contrans.c45_coddoc";
   	$sql .= "      inner join contranslan  on  contranslan.c46_seqtrans = contrans.c45_seqtrans";
   	$sql .= "      inner join conhist      on  conhist.c50_codhist = contranslan.c46_codhist";
-  	$sql .= "      left  join contranslr   on contranslr.c47_seqtranslan = contranslan.c46_seqtranslan";
-  	
+
   	$sql2 = "";
   	if($dbwhere==""){
   		if($c45_seqtrans!=null ){
@@ -533,6 +532,57 @@ class cl_contrans {
      }
      return $sql;
   }
+
+
+  /**
+   * metodo para buscar o vinculo do elemento do empenho com o desdobramento
+   * para saber o tipo do resto a pagar
+   */
+
+
+  function sql_queryVinculoEmpRestoTipoLiquidacao ( $c45_seqtrans=null,$campos="*",$ordem=null,$dbwhere=""){
+  	$sql = "select ";
+  	if($campos != "*" ){
+  		$campos_sql = split("#",$campos);
+  		$virgula = "";
+  		for($i=0;$i<sizeof($campos_sql);$i++){
+  			$sql .= $virgula.$campos_sql[$i];
+  			$virgula = ",";
+  		}
+  	}else{
+  		$sql .= $campos;
+  	}
+    $sql .= " from contrans ";
+    $sql .= " inner join contranslan on c46_seqtrans = c45_seqtrans";
+    $sql .= " inner join contranslr  on c47_seqtranslan = c46_seqtranslan";
+    $sql .= " inner join conhistdoc  on c45_coddoc = c53_coddoc";
+    $sql .= "                       and c53_tipo = 20"; // fixo documento 20 liquidacao
+    $sql .= " inner join contranslrelemento on  c114_contranslr = c47_seqtranslr ";
+    $sql .= " inner join conplanoreduz on c47_credito = c61_reduz";
+    $sql .= "                         and c61_anousu = c45_anousu";
+    $sql .= " inner join conplano on c60_codcon = c61_codcon ";
+    $sql .= "                    and c60_anousu = c61_anousu ";
+
+  	$sql2 = "";
+  	if($dbwhere==""){
+  		if($c45_seqtrans!=null ){
+  			$sql2 .= " where contrans.c45_seqtrans = $c45_seqtrans ";
+  		}
+  		}else if($dbwhere != ""){
+  		$sql2 = " where $dbwhere";
+  		}
+  		$sql .= $sql2;
+  		if($ordem != null ){
+  		$sql .= " order by ";
+  			$campos_sql = split("#",$ordem);
+  			$virgula = "";
+  			for($i=0;$i<sizeof($campos_sql);$i++){
+  			$sql .= $virgula.$campos_sql[$i];
+  			$virgula = ",";
+  			}
+  		}
+  		return $sql;
+   }
   
 
 

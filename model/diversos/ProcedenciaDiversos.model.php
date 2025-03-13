@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,8 +33,8 @@
  * @author André Ianzer Hertzog andre.hertzog@dbseller.com.br
  * @author Everton Catto everton.heckler@dbseller.com.br
  * @package Diversos
- * @revision $Author: dbeverton.heckler $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbanderson $
+ * @version $Revision: 1.3 $
  *
  */
 class ProcedenciaDiversos {

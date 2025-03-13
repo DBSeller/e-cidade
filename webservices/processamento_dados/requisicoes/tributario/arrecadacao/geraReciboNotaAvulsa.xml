@@ -1,0 +1,23 @@
+<?xml version='1.0' ?>
+<processamento>
+    <versao>1.2</versao>
+    <transacao>true</transacao>
+    <parametros>
+        <parametro nome="cgm" obrigatorio="true" tipo="integer"/>
+        <parametro nome="valor" obrigatorio="true" tipo="float"/>
+        <parametro nome="numeroNota" obrigatorio="true" tipo="string"/>
+    </parametros>
+    <configuracoes>
+        <classe referencia="ReciboNotaAvulsa"
+                nome="ECidade\Tributario\Arrecadacao\Webservice\ReciboNotaAvulsa"
+                caminho="src/Tributario/Arrecadacao/Webservice/ReciboNotaAvulsa.php"
+                parametros=""/>
+        <exec>
+            <metodo referencia="ReciboNotaAvulsa" nome="carregaContainer" parametros=""/>
+            <metodo referencia="ReciboNotaAvulsa" nome="setCgm" parametros="$cgm"/>
+            <metodo referencia="ReciboNotaAvulsa" nome="setValor" parametros="$valor"/>
+            <metodo referencia="ReciboNotaAvulsa" nome="setNumeroNota" parametros="$numeroNota"/>
+            <metodo referencia="ReciboNotaAvulsa" nome="gerar" parametros=""/>
+        </exec>
+    </configuracoes>
+</processamento>

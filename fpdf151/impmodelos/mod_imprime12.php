@@ -266,7 +266,7 @@
 	  
 	      if (@pg_numrows($resparag) > 0) {
 	        db_fieldsmemory($resparag,0);
-	  
+          /**[extensao ordenadordespesa] doc_usuario*/
 	        eval($db02_texto);
 	      } else {
 	        $sqlparagpadrao  = "select db61_texto ";
@@ -279,7 +279,8 @@
 	        $resparagpadrao = @db_query($sqlparagpadrao);
 	        if (@pg_numrows($resparagpadrao) > 0) {
 	          db_fieldsmemory($resparagpadrao,0);
-	  
+            /**[extensao ordenadordespesa] doc_padrao*/
+
 	          eval($db61_texto);
 	        }
 	      }
@@ -373,22 +374,7 @@
 	  $this->objpdf->text($xcol+159,$xlin+227,'T O T A L',0,1,'L',0);
 	  $this->objpdf->setxy($xcol+185,$xlin+222);
 	  $this->objpdf->cell(30,10,db_formatar($this->anulado,'f'),0,0,'f');
-          
-	  // rodape 
-	  
-	  /*
-$this->objpdf->SetFont('Arial','',7);
-$this->objpdf->text($xcol+5,$xlin+240,'Fundamento Legal: 8666/93');
-$this->objpdf->text($xcol+50,$xlin+240,'Data Fundamentação: 21/06/1993');
 
-$this->objpdf->line($xcol+5,$xlin+263,$xcol+60,$xlin+263);
-$this->objpdf->line($xcol+70,$xlin+263,$xcol+130,$xlin+263);
-$this->objpdf->line($xcol+140,$xlin+263,$xcol+200,$xlin+263);
-
-$this->objpdf->text($xcol+5,$xlin+266,'Encarregado do serviço');
-$this->objpdf->text($xcol+70,$xlin+266,'Contabilidade');
-$this->objpdf->text($xcol+140,$xlin+266,'Secretário Responsável');
-*/	  
     $sqlparag  = "select db02_texto   ";
     $sqlparag .= "  from db_documento ";
     $sqlparag .= "       inner join db_docparag on db03_docum    = db04_docum   ";
@@ -401,6 +387,8 @@ $this->objpdf->text($xcol+140,$xlin+266,'Secretário Responsável');
     if ( $resparag && pg_numrows($resparag) > 0) {
       
       db_fieldsmemory($resparag,0);
+      /**[extensao ordenadordespesa] doc_usuario*/
+
       eval($db02_texto);
     } else {
       
@@ -413,7 +401,9 @@ $this->objpdf->text($xcol+140,$xlin+266,'Secretário Responsável');
       $resparagpadrao = db_query($sqlparagpadrao);
       if ( $resparagpadrao && pg_numrows($resparagpadrao) > 0) {
         
-        db_fieldsmemory($resparagpadrao,0);        
+        db_fieldsmemory($resparagpadrao,0);
+        /**[extensao ordenadordespesa] doc_padrao*/
+
         eval($db61_texto);
       }
     }    

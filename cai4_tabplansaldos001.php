@@ -1,37 +1,37 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tabrec_classe.php");
-include("classes/db_tabplansaldorecurso_classe.php");
-include("dbforms/db_funcoes.php");
+require_once (modification("libs/db_stdlib.php"));
+require_once (modification("libs/db_conecta.php"));
+require_once (modification("libs/db_sessoes.php"));
+require_once (modification("libs/db_usuariosonline.php"));
+require_once (modification("classes/db_tabrec_classe.php"));
+require_once (modification("classes/db_tabplansaldorecurso_classe.php"));
+require_once (modification("dbforms/db_funcoes.php"));
 $cltabrec = new cl_tabrec;
 $cltabplansaldorecurso = new cl_tabplansaldorecurso;
 $db_opcao = 1;
@@ -43,7 +43,7 @@ db_postmemory($HTTP_POST_VARS);
 
 $codjmOK = true;
 if (isset($incluir)) {
-    
+
   $cltabplansaldorecurso->k111_creditoatualizado = $k111_creditoinicial;
   $cltabplansaldorecurso->k111_debitoatualizado  = $k111_debitoinicial;
   $cltabplansaldorecurso->k111_anousu            = db_getsession("DB_anousu");
@@ -52,7 +52,7 @@ if (isset($incluir)) {
   }
   $cltabplansaldorecurso->incluir(null);
 } else if(isset($alterar)){
-  
+
   db_inicio_transacao();
   $cltabplansaldorecurso->k111_creditoatualizado = $k111_creditoinicial;
   $cltabplansaldorecurso->k111_debitoatualizado  = $k111_debitoinicial;
@@ -61,7 +61,7 @@ if (isset($incluir)) {
     $cltabplansaldorecurso->k111_dataatualizacao   = implode("-", array_reverse(explode("/", $k111_dataimplantacao)));
   }
   $cltabplansaldorecurso->alterar($k111_sequencial);
-  db_fim_transacao();  
+  db_fim_transacao();
 }else if(isset($k04_sequencial) && trim($k04_sequencial) != ""){
   $result_tabplansaldorecurso = $cltabplansaldorecurso->sql_record($cltabplansaldorecurso->sql_query_tabrec($k04_sequencial," *, k04_codjm as testajuroemulta "));
   if($cltabplansaldorecurso->numrows > 0){
@@ -69,12 +69,12 @@ if (isset($incluir)) {
   }
 
   if($opcao == "alterar"){
-    $db_opcao = 2; 
+    $db_opcao = 2;
   }else{
-    $db_opcao = 3; 
+    $db_opcao = 3;
   }
 } else if(isset($k111_sequencial) && trim($k111_sequencial) != ""){
-  
+
   $sSqlSaldo = $cltabplansaldorecurso->sql_query($k111_sequencial,"*");
   $result_tabplansaldorecurso = $cltabplansaldorecurso->sql_record($sSqlSaldo);
   if($cltabplansaldorecurso->numrows > 0){
@@ -82,18 +82,18 @@ if (isset($incluir)) {
   }
 
   if($opcao == "alterar"){
-    $db_opcao = 2; 
+    $db_opcao = 2;
   }else{
-    $db_opcao = 3; 
-  }  
+    $db_opcao = 3;
+  }
 }else if(isset($k04_receit)){
-  
+
   $result = $cltabrec->sql_record($cltabrec->sql_query($k111_tabplan));
   db_fieldsmemory($result,0);
 
 }
 if ((isset($incluir) || isset($alterar) || isset($excluir)) && $cltabplansaldorecurso->erro_status != "0") {
-   
+
   $k111_sequencial          = "";
   $k111_dataimplantacao     = "";
   $k111_dataimplantacao_dia = "";
@@ -119,11 +119,11 @@ if ((isset($incluir) || isset($alterar) || isset($excluir)) && $cltabplansaldore
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
+  <tr>
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
       <center>
       <?
-      include("forms/db_frmtabplansaldorecurso.php");
+      include(modification("forms/db_frmtabplansaldorecurso.php"));
       ?>
       </center>
     </td>

@@ -1,31 +1,37 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+require(modification("libs/db_sql.php"));
 //echo($HTTP_SERVER_VARS['QUERY_STRING']);
 
 ?>
@@ -48,12 +54,13 @@ echo "<script>document.getElementById('vtcomdesconto').innerHTML = \"$valorcomde
 echo "<script>document.getElementById('temdesconto').innerHTML = \"$temdesconto\"</script>";
 ?>
 </td>
-</tr>  	
+</tr>
+
 <?
 
 echo "<tr bgcolor='#6699cc'> <pre>";
 $linha = -1;
-$tipo1 = split("-",$tiposparc);
+$tipo1 = explode("-",$tiposparc);
 
 //print_r($tipo1);
 //echo "<br><br>";
@@ -62,7 +69,7 @@ $ultmaxparc = null;
 $ultparc    = null;
 
 for ($contatipo1 = 0; $contatipo1 < sizeof($tipo1); $contatipo1++) {
-  $tipo2 = split("=",$tipo1[$contatipo1]);
+  $tipo2 = explode("=", $tipo1[$contatipo1]);
 
   $tipoparc = $tipo2[0];
   $maxparc  = $tipo2[1];
@@ -73,7 +80,8 @@ for ($contatipo1 = 0; $contatipo1 < sizeof($tipo1); $contatipo1++) {
   $vlrmin		= $tipo2[7];
   $tipovlr  = $tipo2[8];
   $minparc  = $tipo2[9];
-  
+  $cadtipoparc = $tipo2[10];
+
   if ($ultparc == null) {
     $ultparc  = $tipo2[9];
   }
@@ -82,7 +90,7 @@ for ($contatipo1 = 0; $contatipo1 < sizeof($tipo1); $contatipo1++) {
     $ultparc = 3;
   }
 
-	$registros=split("=", $valoresportipo);
+	$registros=explode("=", $valoresportipo);
 
 	$valtotal			= 0;
 
@@ -92,7 +100,7 @@ for ($contatipo1 = 0; $contatipo1 < sizeof($tipo1); $contatipo1++) {
 			continue;
 		}
 
-		$valores = split("-", $registros[$x]);
+		$valores = explode("-", $registros[$x]);
 	  $valdesconto	= 0;
 
 		$k03_tipo					= $valores[0];
@@ -114,7 +122,7 @@ for ($contatipo1 = 0; $contatipo1 < sizeof($tipo1); $contatipo1++) {
       }
 
 			$valdesconto	+= $valdescontocorrecao + ($k00_juros * $descjur / 100) + ($k00_multa * $descmul / 100);
-			
+
 			//echo "<br>Desconto: ".$valdescontocorrecao." + (".$k00_juros." * ".$descjur." / 100) + (".$k00_multa." * ".$descmul." / 100) - VALOR:".$k00_vlrcor." + (".$k00_juros." + ".$k00_multa.") - ".$valdesconto."<br>";
 			$valtotal			+= $k00_vlrcor + ($k00_juros + $k00_multa) - $valdesconto;
 
@@ -128,23 +136,48 @@ for ($contatipo1 = 0; $contatipo1 < sizeof($tipo1); $contatipo1++) {
     $ultmaxparc = $ultparc;
   }
 
-//echo "valtotal: $valtotal - maxparc: $maxparc - minparc: $minparc - vlrmin: $vlrmin - ultparc: $ultparc - ultmaxparc: $ultmaxparc - calculo: " . round($valtotal/$ultparc,2) . " ===<br> ";
+  // adiciona desconto de valor k42_minentrada, pois como é obrigado a dar essa entrada deve se descontar
+  // do resto da divida e entao gerar as parcelas respeitando as regras de parcelamento
+
+  $entradaminima = 0;
+
+  if ($tipo2[4] > 0) {
+    $entradaminima = $valtotal * $tipo2[4] / 100;
+  }
+
+  $valtotal = $valtotal - $entradaminima;
+
 
   if ( ( round($valtotal/$ultparc,2) >= $vlrmin ) and ( $ultparc >= $ultmaxparc ) ) {
 
+ $sSql = "select k40_controlavencimento
+          from cadtipoparc
+          inner join tipoparc on k40_codigo = cadtipoparc
+          where k40_codigo = $k00_cadtipoparc";
+
+  $result = db_query($sSql) or die($sSql);
+
+  db_fieldsmemory($result, 0);
+
+  if($k40_controlavencimento == 't'){
+    $mesesano = 12;
+    $mesatual = date('m');
+    $maxparc = $mesesano - ($mesatual - 1);
+  }
+
     for ($parcela = $ultparc; $parcela <= $maxparc; $parcela++) {
-      
+
       $i = $parcela;
-     // echo "Parc: $i MIN: $minparc<br>";
+
       if ($i < $minparc) {
       	continue;
       }
       if (round($valtotal/$i,2) < $vlrmin) {
-        //echo "<br>parou na parc: $i<br>";
+
         //exit;
         break;
       }
-      
+
       if($i%2 == 0){
         $cor='#6699cc';
       }else{
@@ -154,31 +187,32 @@ for ($contatipo1 = 0; $contatipo1 < sizeof($tipo1); $contatipo1++) {
         echo "</tr>";
         echo "<tr bgcolor='$cor'>";
       }
-      
+
       if ($tipo2[4] > 0) {
         $entradaminima = number_format($valtotal * $tipo2[4] / 100,2,",",".");
+
       } else {
         $entradaminima = number_format(($valtotal/$i),2,",",".");
       }
-      
+
       echo "<td nowrap align='left' valign='top'>
               <input type='radio' name='val' id='val$i' onClick=\"parent.document.form1.parc.value='".($i - 1)."';parent.js_valparc($i, $vlrmin,$temdesconto)\" value=''>$i X R$<font id='$i'></font>
             </td>";
-      if($linha == 2) {
+      if ($linha == 2) {
         $linha = 0;
-      }else{
+      } else{
         $linha +=1;
       }
-      
+
       echo "<script>document.getElementById('$i').innerHTML = \"".str_pad(number_format(($valtotal/$i),2,",","."),strlen(round($valtotal/$i)),",",STR_PAD_LEFT)."\"</script>";
-      
+
     }
-  
+
     $ultparc = $parcela;
     $ultmaxparc = $maxparc;
 
   }
-  
+
 }
 
 ?>

@@ -1,30 +1,4 @@
 <?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 //MODULO: prefeitura
 //CLASSE DA ENTIDADE configdbpref
 class cl_configdbpref { 
@@ -68,6 +42,8 @@ class cl_configdbpref {
    var $w13_msgaviso = 'f'; 
    var $w13_tipocodigocertidao = 0; 
    var $w13_uploadarquivos = null; 
+   var $w13_recaptcha_sitekey = null; 
+   var $w13_recaptcha_privatekey = null; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  w13_liberaatucgm = bool = Libera Atualização do CGM 
@@ -96,6 +72,8 @@ class cl_configdbpref {
                  w13_msgaviso = bool = Mostrar Mensagem de Aviso de Corte 
                  w13_tipocodigocertidao = int4 = Tipo de Codificação da certidão 
                  w13_uploadarquivos = text = Caminho da Pasta de Upload de Arquivos 
+                 w13_recaptcha_sitekey = varchar(200) = Captcha Chave Pública 
+                 w13_recaptcha_privatekey = varchar(200) = Captcha Chave Privada 
                  ";
    //funcao construtor da classe 
    function cl_configdbpref() { 
@@ -141,11 +119,13 @@ class cl_configdbpref {
        $this->w13_msgaviso = ($this->w13_msgaviso == "f"?@$GLOBALS["HTTP_POST_VARS"]["w13_msgaviso"]:$this->w13_msgaviso);
        $this->w13_tipocodigocertidao = ($this->w13_tipocodigocertidao == ""?@$GLOBALS["HTTP_POST_VARS"]["w13_tipocodigocertidao"]:$this->w13_tipocodigocertidao);
        $this->w13_uploadarquivos = ($this->w13_uploadarquivos == ""?@$GLOBALS["HTTP_POST_VARS"]["w13_uploadarquivos"]:$this->w13_uploadarquivos);
+       $this->w13_recaptcha_sitekey = ($this->w13_recaptcha_sitekey == ""?@$GLOBALS["HTTP_POST_VARS"]["w13_recaptcha_sitekey"]:$this->w13_recaptcha_sitekey);
+       $this->w13_recaptcha_privatekey = ($this->w13_recaptcha_privatekey == ""?@$GLOBALS["HTTP_POST_VARS"]["w13_recaptcha_privatekey"]:$this->w13_recaptcha_privatekey);
      }else{
        $this->w13_instit = ($this->w13_instit == ""?@$GLOBALS["HTTP_POST_VARS"]["w13_instit"]:$this->w13_instit);
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir ($w13_instit){ 
       $this->atualizacampos();
      if($this->w13_liberaatucgm == null ){ 
@@ -364,9 +344,27 @@ class cl_configdbpref {
        $this->erro_status = "0";
        return false;
      }
+     if($this->w13_recaptcha_sitekey == null ){ 
+       $this->erro_sql = " Campo Captcha Chave Pública não informado.";
+       $this->erro_campo = "w13_recaptcha_sitekey";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->w13_recaptcha_privatekey == null ){ 
+       $this->erro_sql = " Campo Captcha Chave Privada não informado.";
+       $this->erro_campo = "w13_recaptcha_privatekey";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
        $this->w13_instit = $w13_instit; 
      if(($this->w13_instit == null) || ($this->w13_instit == "") ){ 
-       $this->erro_sql = " Campo w13_instit nao declarado.";
+       $this->erro_sql = " Campo w13_instit não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -400,6 +398,8 @@ class cl_configdbpref {
                                       ,w13_msgaviso 
                                       ,w13_tipocodigocertidao 
                                       ,w13_uploadarquivos 
+                                      ,w13_recaptcha_sitekey 
+                                      ,w13_recaptcha_privatekey 
                        )
                 values (
                                 '$this->w13_liberaatucgm' 
@@ -428,17 +428,19 @@ class cl_configdbpref {
                                ,'$this->w13_msgaviso' 
                                ,$this->w13_tipocodigocertidao 
                                ,'$this->w13_uploadarquivos' 
+                               ,'$this->w13_recaptcha_sitekey' 
+                               ,'$this->w13_recaptcha_privatekey' 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "configdbpref ($this->w13_instit) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "configdbpref ($this->w13_instit) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "configdbpref já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "configdbpref ($this->w13_instit) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "configdbpref ($this->w13_instit) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -447,7 +449,7 @@ class cl_configdbpref {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->w13_instit;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -490,12 +492,14 @@ class cl_configdbpref {
          $resac = db_query("insert into db_acount values($acount,1383,15337,'','".AddSlashes(pg_result($resaco,0,'w13_msgaviso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1383,19218,'','".AddSlashes(pg_result($resaco,0,'w13_tipocodigocertidao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1383,20004,'','".AddSlashes(pg_result($resaco,0,'w13_uploadarquivos'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1383,1009742,'','".AddSlashes(pg_result($resaco,0,'w13_recaptcha_sitekey'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1383,1009740,'','".AddSlashes(pg_result($resaco,0,'w13_recaptcha_privatekey'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
    } 
    // funcao para alteracao
-   function alterar ($w13_instit=null) { 
+   public function alterar ($w13_instit=null) { 
       $this->atualizacampos();
      $sql = " update configdbpref set ";
      $virgula = "";
@@ -828,6 +832,32 @@ class cl_configdbpref {
        $sql  .= $virgula." w13_uploadarquivos = '$this->w13_uploadarquivos' ";
        $virgula = ",";
      }
+     if(trim($this->w13_recaptcha_sitekey)!="" || isset($GLOBALS["HTTP_POST_VARS"]["w13_recaptcha_sitekey"])){ 
+       $sql  .= $virgula." w13_recaptcha_sitekey = '$this->w13_recaptcha_sitekey' ";
+       $virgula = ",";
+       if(trim($this->w13_recaptcha_sitekey) == null ){ 
+         $this->erro_sql = " Campo Captcha Chave Pública não informado.";
+         $this->erro_campo = "w13_recaptcha_sitekey";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(trim($this->w13_recaptcha_privatekey)!="" || isset($GLOBALS["HTTP_POST_VARS"]["w13_recaptcha_privatekey"])){ 
+       $sql  .= $virgula." w13_recaptcha_privatekey = '$this->w13_recaptcha_privatekey' ";
+       $virgula = ",";
+       if(trim($this->w13_recaptcha_privatekey) == null ){ 
+         $this->erro_sql = " Campo Captcha Chave Privada não informado.";
+         $this->erro_campo = "w13_recaptcha_privatekey";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
      if($w13_instit!=null){
        $sql .= " w13_instit = $this->w13_instit";
@@ -837,92 +867,96 @@ class cl_configdbpref {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->w13_instit));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,9570,'$this->w13_instit','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_liberaatucgm"]) || $this->w13_liberaatucgm != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_liberaatucgm"]) || $this->w13_liberaatucgm != "")
              $resac = db_query("insert into db_acount values($acount,1383,8213,'".AddSlashes(pg_result($resaco,$conresaco,'w13_liberaatucgm'))."','$this->w13_liberaatucgm',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_liberapedsenha"]) || $this->w13_liberapedsenha != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_liberapedsenha"]) || $this->w13_liberapedsenha != "")
              $resac = db_query("insert into db_acount values($acount,1383,8214,'".AddSlashes(pg_result($resaco,$conresaco,'w13_liberapedsenha'))."','$this->w13_liberapedsenha',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_permfornsemlog"]) || $this->w13_permfornsemlog != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_permfornsemlog"]) || $this->w13_permfornsemlog != "")
              $resac = db_query("insert into db_acount values($acount,1383,8216,'".AddSlashes(pg_result($resaco,$conresaco,'w13_permfornsemlog'))."','$this->w13_permfornsemlog',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_permvarsemlog"]) || $this->w13_permvarsemlog != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_permvarsemlog"]) || $this->w13_permvarsemlog != "")
              $resac = db_query("insert into db_acount values($acount,1383,8215,'".AddSlashes(pg_result($resaco,$conresaco,'w13_permvarsemlog'))."','$this->w13_permvarsemlog',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_liberaescritorios"]) || $this->w13_liberaescritorios != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_liberaescritorios"]) || $this->w13_liberaescritorios != "")
              $resac = db_query("insert into db_acount values($acount,1383,8236,'".AddSlashes(pg_result($resaco,$conresaco,'w13_liberaescritorios'))."','$this->w13_liberaescritorios',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_liberaimobiliaria"]) || $this->w13_liberaimobiliaria != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_liberaimobiliaria"]) || $this->w13_liberaimobiliaria != "")
              $resac = db_query("insert into db_acount values($acount,1383,8235,'".AddSlashes(pg_result($resaco,$conresaco,'w13_liberaimobiliaria'))."','$this->w13_liberaimobiliaria',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_permconscgm"]) || $this->w13_permconscgm != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_permconscgm"]) || $this->w13_permconscgm != "")
              $resac = db_query("insert into db_acount values($acount,1383,8372,'".AddSlashes(pg_result($resaco,$conresaco,'w13_permconscgm'))."','$this->w13_permconscgm',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_aliqissretido"]) || $this->w13_aliqissretido != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_aliqissretido"]) || $this->w13_aliqissretido != "")
              $resac = db_query("insert into db_acount values($acount,1383,8664,'".AddSlashes(pg_result($resaco,$conresaco,'w13_aliqissretido'))."','$this->w13_aliqissretido',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_liberaissretido"]) || $this->w13_liberaissretido != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_liberaissretido"]) || $this->w13_liberaissretido != "")
              $resac = db_query("insert into db_acount values($acount,1383,8766,'".AddSlashes(pg_result($resaco,$conresaco,'w13_liberaissretido'))."','$this->w13_liberaissretido',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_utilizafolha"]) || $this->w13_utilizafolha != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_utilizafolha"]) || $this->w13_utilizafolha != "")
              $resac = db_query("insert into db_acount values($acount,1383,9569,'".AddSlashes(pg_result($resaco,$conresaco,'w13_utilizafolha'))."','$this->w13_utilizafolha',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_instit"]) || $this->w13_instit != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_instit"]) || $this->w13_instit != "")
              $resac = db_query("insert into db_acount values($acount,1383,9570,'".AddSlashes(pg_result($resaco,$conresaco,'w13_instit'))."','$this->w13_instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_libcertpos"]) || $this->w13_libcertpos != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_libcertpos"]) || $this->w13_libcertpos != "")
              $resac = db_query("insert into db_acount values($acount,1383,10725,'".AddSlashes(pg_result($resaco,$conresaco,'w13_libcertpos'))."','$this->w13_libcertpos',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_libcarnevariavel"]) || $this->w13_libcarnevariavel != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_libcarnevariavel"]) || $this->w13_libcarnevariavel != "")
              $resac = db_query("insert into db_acount values($acount,1383,10726,'".AddSlashes(pg_result($resaco,$conresaco,'w13_libcarnevariavel'))."','$this->w13_libcarnevariavel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_libsociosdai"]) || $this->w13_libsociosdai != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_libsociosdai"]) || $this->w13_libsociosdai != "")
              $resac = db_query("insert into db_acount values($acount,1383,10727,'".AddSlashes(pg_result($resaco,$conresaco,'w13_libsociosdai'))."','$this->w13_libsociosdai',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_libissprestado"]) || $this->w13_libissprestado != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_libissprestado"]) || $this->w13_libissprestado != "")
              $resac = db_query("insert into db_acount values($acount,1383,10728,'".AddSlashes(pg_result($resaco,$conresaco,'w13_libissprestado'))."','$this->w13_libissprestado',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_emailadmin"]) || $this->w13_emailadmin != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_emailadmin"]) || $this->w13_emailadmin != "")
              $resac = db_query("insert into db_acount values($acount,1383,12352,'".AddSlashes(pg_result($resaco,$conresaco,'w13_emailadmin'))."','$this->w13_emailadmin',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_liberalancisssemmov"]) || $this->w13_liberalancisssemmov != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_liberalancisssemmov"]) || $this->w13_liberalancisssemmov != "")
              $resac = db_query("insert into db_acount values($acount,1383,12612,'".AddSlashes(pg_result($resaco,$conresaco,'w13_liberalancisssemmov'))."','$this->w13_liberalancisssemmov',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_exigecpfcnpjmatricula"]) || $this->w13_exigecpfcnpjmatricula != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_exigecpfcnpjmatricula"]) || $this->w13_exigecpfcnpjmatricula != "")
              $resac = db_query("insert into db_acount values($acount,1383,13345,'".AddSlashes(pg_result($resaco,$conresaco,'w13_exigecpfcnpjmatricula'))."','$this->w13_exigecpfcnpjmatricula',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_exigecpfcnpjinscricao"]) || $this->w13_exigecpfcnpjinscricao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_exigecpfcnpjinscricao"]) || $this->w13_exigecpfcnpjinscricao != "")
              $resac = db_query("insert into db_acount values($acount,1383,20543,'".AddSlashes(pg_result($resaco,$conresaco,'w13_exigecpfcnpjinscricao'))."','$this->w13_exigecpfcnpjinscricao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_regracnd"]) || $this->w13_regracnd != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_regracnd"]) || $this->w13_regracnd != "")
              $resac = db_query("insert into db_acount values($acount,1383,14401,'".AddSlashes(pg_result($resaco,$conresaco,'w13_regracnd'))."','$this->w13_regracnd',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_permconsservdemit"]) || $this->w13_permconsservdemit != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_permconsservdemit"]) || $this->w13_permconsservdemit != "")
              $resac = db_query("insert into db_acount values($acount,1383,14548,'".AddSlashes(pg_result($resaco,$conresaco,'w13_permconsservdemit'))."','$this->w13_permconsservdemit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_tipocertidao"]) || $this->w13_tipocertidao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_tipocertidao"]) || $this->w13_tipocertidao != "")
              $resac = db_query("insert into db_acount values($acount,1383,14585,'".AddSlashes(pg_result($resaco,$conresaco,'w13_tipocertidao'))."','$this->w13_tipocertidao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_agrupadebrecibos"]) || $this->w13_agrupadebrecibos != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_agrupadebrecibos"]) || $this->w13_agrupadebrecibos != "")
              $resac = db_query("insert into db_acount values($acount,1383,14593,'".AddSlashes(pg_result($resaco,$conresaco,'w13_agrupadebrecibos'))."','$this->w13_agrupadebrecibos',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_msgaviso"]) || $this->w13_msgaviso != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_msgaviso"]) || $this->w13_msgaviso != "")
              $resac = db_query("insert into db_acount values($acount,1383,15337,'".AddSlashes(pg_result($resaco,$conresaco,'w13_msgaviso'))."','$this->w13_msgaviso',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_tipocodigocertidao"]) || $this->w13_tipocodigocertidao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_tipocodigocertidao"]) || $this->w13_tipocodigocertidao != "")
              $resac = db_query("insert into db_acount values($acount,1383,19218,'".AddSlashes(pg_result($resaco,$conresaco,'w13_tipocodigocertidao'))."','$this->w13_tipocodigocertidao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["w13_uploadarquivos"]) || $this->w13_uploadarquivos != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_uploadarquivos"]) || $this->w13_uploadarquivos != "")
              $resac = db_query("insert into db_acount values($acount,1383,20004,'".AddSlashes(pg_result($resaco,$conresaco,'w13_uploadarquivos'))."','$this->w13_uploadarquivos',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_recaptcha_sitekey"]) || $this->w13_recaptcha_sitekey != "")
+             $resac = db_query("insert into db_acount values($acount,1383,1009742,'".AddSlashes(pg_result($resaco,$conresaco,'w13_recaptcha_sitekey'))."','$this->w13_recaptcha_sitekey',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["w13_recaptcha_privatekey"]) || $this->w13_recaptcha_privatekey != "")
+             $resac = db_query("insert into db_acount values($acount,1383,1009740,'".AddSlashes(pg_result($resaco,$conresaco,'w13_recaptcha_privatekey'))."','$this->w13_recaptcha_privatekey',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "configdbpref nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "configdbpref não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->w13_instit;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "configdbpref nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "configdbpref não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->w13_instit;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->w13_instit;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -933,13 +967,13 @@ class cl_configdbpref {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($w13_instit=null,$dbwhere=null) { 
+   public function excluir ($w13_instit=null,$dbwhere=null) { 
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($w13_instit));
        } else { 
@@ -979,45 +1013,47 @@ class cl_configdbpref {
            $resac  = db_query("insert into db_acount values($acount,1383,15337,'','".AddSlashes(pg_result($resaco,$iresaco,'w13_msgaviso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1383,19218,'','".AddSlashes(pg_result($resaco,$iresaco,'w13_tipocodigocertidao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1383,20004,'','".AddSlashes(pg_result($resaco,$iresaco,'w13_uploadarquivos'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1383,1009742,'','".AddSlashes(pg_result($resaco,$iresaco,'w13_recaptcha_sitekey'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1383,1009740,'','".AddSlashes(pg_result($resaco,$iresaco,'w13_recaptcha_privatekey'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from configdbpref
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($w13_instit != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($w13_instit)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " w13_instit = $w13_instit ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "configdbpref nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "configdbpref não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$w13_instit;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "configdbpref nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "configdbpref não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$w13_instit;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$w13_instit;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -1028,9 +1064,9 @@ class cl_configdbpref {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -1039,8 +1075,8 @@ class cl_configdbpref {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:configdbpref";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -1051,72 +1087,42 @@ class cl_configdbpref {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $w13_instit=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from configdbpref ";
+   public function sql_query ($w13_instit = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from configdbpref ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($w13_instit!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($w13_instit)) {
          $sql2 .= " where configdbpref.w13_instit = $w13_instit "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $w13_instit=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from configdbpref ";
+   public function sql_query_file ($w13_instit = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from configdbpref ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($w13_instit!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($w13_instit)){
          $sql2 .= " where configdbpref.w13_instit = $w13_instit "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
+
 }
-?>

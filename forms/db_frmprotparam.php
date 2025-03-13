@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -139,7 +139,7 @@ $clrotulo->label("p90_db_documentotemplate");
 				?>
 		    </td>
 		  </tr>
-		    <tr>
+		  <tr>
 		    <td nowrap align="right" title="<?=@$Tp90_andatual?>">
 		       <?=@$Lp90_andatual?>
 		    </td>
@@ -169,29 +169,32 @@ $clrotulo->label("p90_db_documentotemplate");
 		    </td>
 		    <td> 
 				<?
-				$x = array('0'=>'Modelo Padrão',
-									 '1'=>'Modelo 1',
-									 '2'=>'Modelo 2',
-				           '3'=>'Documento Template');
+				$x = array(
+					'0' =>'Modelo Padrão',
+					'1'=>'Modelo 1',
+					'2'=>'Modelo 2',
+					'3'=>'Documento Template',
+					'4'=>'Modelo 3'
+				);
 				db_select('p90_modelcapaproc',$x,true,$db_opcao,"onchange='js_liberaDocumentoTemplate(this.value)'");
 				?>
 		    </td>
-		  </tr>
-   <tr id='documentoTemplate' style="display: <?=$templateOculta?>; text-align: right">
+		 </tr>
+		<tr id='documentoTemplate' style="display: <?=$templateOculta?>; text-align: right">
 
-      <td nowrap="nowrap" title="<?=@$Tp90_db_documentotemplate?>">
-        <?
-          db_ancora(@$Lp90_db_documentotemplate,"js_pesquisaDocumento(true);",$db_opcao);
-        ?>
-      </td>
-      <td nowrap="nowrap"> 
-        <?
-          db_input('p90_db_documentotemplate',10,$Ip90_db_documentotemplate,true,'text',$db_opcao,"onchange='js_pesquisaDocumento(false);'");
-          db_input('db82_descricao',50,$Idb82_descricao,true,'text',3,'');
-        ?>
-      </td>
-    </tr>  
-   <tr>
+			<td nowrap="nowrap" title="<?=@$Tp90_db_documentotemplate?>">
+				<?
+				db_ancora(@$Lp90_db_documentotemplate,"js_pesquisaDocumento(true);",$db_opcao);
+				?>
+			</td>
+			<td nowrap="nowrap"> 
+				<?
+				db_input('p90_db_documentotemplate',10,$Ip90_db_documentotemplate,true,'text',$db_opcao,"onchange='js_pesquisaDocumento(false);'");
+				db_input('db82_descricao',50,$Idb82_descricao,true,'text',3,'');
+				?>
+			</td>
+			</tr>  
+		<tr>
 	   <td nowrap align="right" title="<?=@$Tp90_imprimevar?>">
 		       <?=@$Lp90_imprimevar?>
 		    </td>
@@ -214,6 +217,20 @@ $clrotulo->label("p90_db_documentotemplate");
     </td>
   </tr>
   <tr>
+	<td nowrap align="right" title="<?=@$Tp90_depandamentopadrao?>">
+		<?php
+			db_ancora(@$Lp90_depandamentopadrao, "pesquisaDepartamento(true);", $db_opcao);
+		?>
+	</td>
+	<td>
+		<?php $departamentoPadrao = !empty($p90_depandamentopadrao) ? $p90_depandamentopadrao : ''; ?>
+		<input name="p90_depandamentopadrao" style="width:90px;" id="p90_depandamentopadrao" type="text" value="<?php echo $departamentoPadrao?>" onchange="pesquisaDepartamento(false);"/>
+		<?php
+			db_input('descricao_departamento', 50, $descricao_departamento, true, 'text', 3, '', '');
+		?>
+	</td>
+  </tr>
+  <tr>
   </table>
 </fieldset>
 </td></tr>
@@ -224,12 +241,40 @@ $clrotulo->label("p90_db_documentotemplate");
 </form>
 <script>
 
+function pesquisaDepartamento(mostra) 
+{
+	if (mostra) {
+        js_OpenJanelaIframe('','db_iframe_db_depart','func_db_depart_transferencias.php?todasinstit=1&funcao_js=parent.carregaDepartamentoDescricao|0|1','Pesquisa',true);
+
+    } else {
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart_transferencias.php?pesquisa_chave=' + $('p90_depandamentopadrao').value + '&funcao_js=parent.carregaDepartamento','Pesquisa',false);
+    }
+}
+
+function carregaDepartamento(chave, erro)
+{
+	$('descricao_departamento').value = chave;
+
+	if (erro == true) {
+		$('p90_depandamentopadrao').focus();
+		$('p90_depandamentopadrao').value = '';
+	}
+}
+
+function carregaDepartamentoDescricao(codigoDepartamento, descricaoDepartamento)
+{
+	$('p90_depandamentopadrao').value = codigoDepartamento;
+	$('descricao_departamento').value = descricaoDepartamento;
+	db_iframe_db_depart.hide();
+}
+
+
 function js_pesquisap90_taxagrupo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_taxagrupo','func_taxagrupo.php?funcao_js=parent.js_mostrataxagrupo1|k06_taxagrupo|k06_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_taxagrupo','func_taxagrupo.php?funcao_js=parent.js_mostrataxagrupo1|k06_taxagrupo|k06_descr','Pesquisa',true);
   }else{
      if(document.form1.p90_taxagrupo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_taxagrupo','func_taxagrupo.php?pesquisa_chave='+document.form1.p90_taxagrupo.value+'&funcao_js=parent.js_mostrataxagrupo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_taxagrupo','func_taxagrupo.php?pesquisa_chave='+document.form1.p90_taxagrupo.value+'&funcao_js=parent.js_mostrataxagrupo','Pesquisa',false);
      }else{
        document.form1.k06_descr.value = ''; 
      }
@@ -248,7 +293,7 @@ function js_mostrataxagrupo1(chave1,chave2){
   db_iframe_taxagrupo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_protparam','func_protparam.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protparam','func_protparam.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_protparam.hide();
@@ -272,10 +317,10 @@ function js_liberaDocumentoTemplate(modeloDoc) {
 
 function js_pesquisaDocumento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_documentotemplate','func_db_documentotemplate.php?funcao_js=parent.js_mostratemplatealvara1|db82_sequencial|db82_descricao&tipo=13','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_documentotemplate','func_db_documentotemplate.php?funcao_js=parent.js_mostratemplatealvara1|db82_sequencial|db82_descricao&tipo=13','Pesquisa',true);
   }else{
      if(document.form1.q60_templatealvara.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_documentotemplate','func_db_documentotemplate.php?pesquisa_chave='+document.form1.q60_templatealvara.value+'&funcao_js=parent.js_mostratemplatealvara&tipo=6','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_documentotemplate','func_db_documentotemplate.php?pesquisa_chave='+document.form1.q60_templatealvara.value+'&funcao_js=parent.js_mostratemplatealvara&tipo=6','Pesquisa',false);
      }else{
        document.form1.db82_descricao.value = ''; 
      }

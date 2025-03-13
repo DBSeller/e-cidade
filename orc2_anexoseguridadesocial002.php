@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("fpdf151/assinatura.php");
-require_once ("libs/db_sql.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_liborcamento.php");
-require_once ("libs/db_libcontabilidade.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
 
 db_app::import("contabilidade.relatorios.AnexoSeguridadeSocial");
 
@@ -48,7 +48,7 @@ $iAnoUsu          = db_getsession("DB_anousu");
 $sSqlInstit   = "select codigo,nomeinst, munic from db_config where codigo in ({$sInstituicao}) ";
 
 $rsInstit     = db_query($sSqlInstit);
-$oInstit      = db_utils::getColectionByRecord($rsInstit);
+$oInstit      = db_utils::getCollectionByRecord($rsInstit);
 
 $sCodInstit   = "";
 $sNomeInstit  = "";

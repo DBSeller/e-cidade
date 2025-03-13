@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -146,10 +146,10 @@ if($db_opcao==1){
 <script>
 function js_pesquisax22_codconsumo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguacalc','db_iframe_aguaconsumo','func_aguaconsumo.php?funcao_js=parent.js_mostraaguaconsumo1|x19_codconsumo|x19_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacalc','db_iframe_aguaconsumo','func_aguaconsumo.php?funcao_js=parent.js_mostraaguaconsumo1|x19_codconsumo|x19_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x22_codconsumo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguacalc','db_iframe_aguaconsumo','func_aguaconsumo.php?pesquisa_chave='+document.form1.x22_codconsumo.value+'&funcao_js=parent.js_mostraaguaconsumo','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacalc','db_iframe_aguaconsumo','func_aguaconsumo.php?pesquisa_chave='+document.form1.x22_codconsumo.value+'&funcao_js=parent.js_mostraaguaconsumo','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.x19_descr.value = ''; 
      }
@@ -169,10 +169,10 @@ function js_mostraaguaconsumo1(chave1,chave2){
 }
 function js_pesquisax22_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguacalc','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacalc','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x22_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguacalc','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x22_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacalc','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x22_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.x01_numcgm.value = ''; 
      }
@@ -191,7 +191,7 @@ function js_mostraaguabase1(chave1,chave2){
   db_iframe_aguabase.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_aguacalc','db_iframe_aguacalc','func_aguacalc.php?funcao_js=parent.js_preenchepesquisa|x22_codcalc','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacalc','db_iframe_aguacalc','func_aguacalc.php?funcao_js=parent.js_preenchepesquisa|x22_codcalc','Pesquisa',true,'0','1','775','390');
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguacalc.hide();

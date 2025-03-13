@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010669' name='cadastro.condominioprocesso' description="condominio
+condominio > condominiosgm
+condominio > condominioprocesso" prefix="j179" label="condominioprocesso" type="0">
+  <fields>
+    <field codigo="1012013" 
+           campo_api='' 
+           name="j179_sequencial" 
+           conteudo="int4" 
+           description="j179_sequencial" 
+           inivalue="0" 
+           label="j179_sequencial" 
+           size="20" 
+           null="f" 
+           uppercase="f" 
+           autocompl="t" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="j179_sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           <sequence name='cadastro.condominioprocesso_j179_sequencial_seq' ></sequence> 
+    </field> 
+    <field codigo="1012014" 
+           campo_api='' 
+           name="j179_condominio" 
+           conteudo="int4" 
+           description="j179_condominio" 
+           inivalue="0" 
+           label="j179_condominio" 
+           size="20" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="j179_condominio" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1012015" 
+           campo_api='' 
+           name="j179_processo" 
+           conteudo="int4" 
+           description="j179_processo" 
+           inivalue="0" 
+           label="j179_processo" 
+           size="20" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="j179_processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="j179_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="protprocesso" inner='t'>
+      <fieldfk name="j179_processo" reference="p58_codproc" /> 
+    </foreignkey>
+    <foreignkey reference="condominio" inner='t'>
+      <fieldfk name="j179_condominio" reference="j107_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

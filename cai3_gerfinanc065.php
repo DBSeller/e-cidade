@@ -1,42 +1,43 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-include ("dbforms/db_funcoes.php");
-require ("classes/db_cancdebitos_classe.php");
-require ("classes/db_cancdebitosreg_classe.php");
-require ("classes/db_cancdebitosprot_classe.php");
-require ("classes/db_cgm_classe.php");
-include ("classes/db_arrecad_classe.php");
-require ("classes/db_cancdebitosconcarpeculiar_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("classes/db_cancdebitos_classe.php"));
+require(modification("classes/db_cancdebitosreg_classe.php"));
+require(modification("classes/db_cancdebitosprot_classe.php"));
+require(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+require(modification("classes/db_cancdebitosconcarpeculiar_classe.php"));
+require_once(modification("classes/db_numpref_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -50,6 +51,7 @@ $clcancdebitosreg            = new cl_cancdebitosreg;
 $clcancdebitosprot           = new cl_cancdebitosprot;
 $clarrecad                   = new cl_arrecad;
 $clcancdebitosconcarpeculiar = new cl_cancdebitosconcarpeculiar;
+$clnumpref                   = new cl_numpref;
 $clcancdebitos->rotulo->label("k20_descr");
 $clrotulo = new rotulocampo;
 $clrotulo->label("k25_codproc");
@@ -60,13 +62,13 @@ $clrotulo->label("c58_sequencial");
 $db_opcao = 1;
 
 if (isset($oPost->H_DATAUSU)) {
-  $sDataVenc = date("Y-m-d",$oPost->H_DATAUSU); 
+  $sDataVenc = date("Y-m-d",$oPost->H_DATAUSU);
 }
 
 if ((isset ($ver_matric) or isset ($ver_inscr) or isset ($ver_numcgm)) && !isset ($k20_codigo)) {
-	
+
   if (!isset($inicial)) {
-    
+
     $vt = $HTTP_POST_VARS;
 
     $virgula = "";
@@ -74,51 +76,51 @@ if ((isset ($ver_matric) or isset ($ver_inscr) or isset ($ver_numcgm)) && !isset
     $numpar1 = "";
     $numpre1 = "";
     for ($i = 0; $i < count($vt); $i ++) {
-    	
+
       if (db_indexOf(key($vt), "CHECK") > 0) {
-      	
+
         $numpres = $vt[key($vt)];
         $mat = split("N", $numpres);
         if (isset($oPost->marcarvencidas) && isset($oPost->marcartodas)) {
-        	
+
         	if ($oPost->marcarvencidas == 'true' && $oPost->marcartodas == 'false') {
-        		
+
 			      for ($iInd = 0; $iInd < count($mat); $iInd++) {
-			          
+
 			        if ($mat[$iInd] == "") {
-			          continue;   
+			          continue;
 			        }
-			          
+
 	            $numpre = split("P", $mat[$iInd]);
 	            $numpar = split("P", strstr($mat[$iInd], "P"));
 	            $numpar = split("R",$numpar[1]);
 	            $receit = @$numpar[1];
 	            $numpar = $numpar[0];
 	            $numpre = $numpre[0];
-			        
+
 			        $sSqlArrecad  = "  select *                               ";
-			        $sSqlArrecad .= "    from arrecad                         "; 
-			        $sSqlArrecad .= "   where k00_numpre   = {$numpre}        "; 
+			        $sSqlArrecad .= "    from arrecad                         ";
+			        $sSqlArrecad .= "   where k00_numpre   = {$numpre}        ";
 			        $sSqlArrecad .= "     and k00_numpar   = {$numpar}        ";
 			        $sSqlArrecad .= "     and k00_dtvenc   > '{$sDataVenc}'   ";
-			        
+
 			        $rsSqlArrecad = db_query($sSqlArrecad);
 			        $iNumRows     = pg_num_rows($rsSqlArrecad);
 			        if ($iNumRows == 0) {
-			            
+
                 $receit1 .= $virgula.$receit;
                 $numpar1 .= $virgula.$numpar;
                 $numpre1 .= $virgula.$numpre;
                 $virgula = ",";
 			        }
-			      
+
 			      }
         	} else {
-        		
+
 	        	for ($j = 0; $j < count($mat); $j ++) {
-	            
+
 	            if ($mat[$j] == "") continue;
-	            
+
 	            $numpre = split("P", $mat[$j]);
 	            $numpar = split("P", strstr($mat[$j], "P"));
 	            $numpar = split("R",$numpar[1]);
@@ -130,15 +132,15 @@ if ((isset ($ver_matric) or isset ($ver_inscr) or isset ($ver_numcgm)) && !isset
 	            $numpar1 .= $virgula.$numpar;
 	            $numpre1 .= $virgula.$numpre;
 	            $virgula = ",";
-	  
+
 	          }
         	}
         } else {
-        	
+
 	        for ($j = 0; $j < count($mat); $j ++) {
-	        	
+
 	          if ($mat[$j] == "") continue;
-	          
+
 	          $numpre = split("P", $mat[$j]);
 	          $numpar = split("P", strstr($mat[$j], "P"));
 	          $numpar = split("R",$numpar[1]);
@@ -150,34 +152,34 @@ if ((isset ($ver_matric) or isset ($ver_inscr) or isset ($ver_numcgm)) && !isset
 	          $numpar1 .= $virgula.$numpar;
 	          $numpre1 .= $virgula.$numpre;
 	          $virgula = ",";
-	
+
 	        }
         }
-        
+
       }
       next($vt);
     }
-    
+
     $sqlconfplan    = "select * from db_confplan";
-    $resultconfplan = pg_query($sqlconfplan);
+    $resultconfplan = db_query($sqlconfplan);
     $linhasconfplan = pg_num_rows($resultconfplan);
     if($linhasconfplan== 0 ){
       db_msgbox("Falta parâmetros na configuração de planilhas.");
       echo "<script>parent.document.formatu.pesquisar.click();</script>";
     }
     db_fieldsmemory($resultconfplan,0);
-    
+
    $sqlverifica = "
-    select * from issvar 
+    select * from issvar
     inner join arrecad on k00_numpre = q05_numpre and k00_numpar = q05_numpar
     inner join arretipo on arrecad.k00_tipo = arretipo.k00_tipo
-    where     q05_numpre = $numpre 
-          and q05_numpar = $numpar 
-          and q05_valor = 0  
+    where     q05_numpre = $numpre
+          and q05_numpar = $numpar
+          and q05_valor = 0
           and k03_tipo   = 3 ";
-	
- 
-    $resultverifica = pg_query($sqlverifica);
+
+
+    $resultverifica = db_query($sqlverifica);
     $linhasverifica = pg_num_rows($resultverifica);
     if($linhasverifica > 0){
       db_msgbox(" Não é possivel efetuar cancelamento. \\n Deve utilizar a rotina Cancelamento de Issqn Variável.");
@@ -185,93 +187,93 @@ if ((isset ($ver_matric) or isset ($ver_inscr) or isset ($ver_numcgm)) && !isset
     }
 
   } else {
-   
+
     $vt = $HTTP_POST_VARS;
     $virgula = "";
     $numpar1 = "";
     $numpre1 = "";
     for ($i = 0; $i < count($vt); $i ++) {
-    	
+
       if (db_indexOf(key($vt), "CHECK") > 0) {
-      	
+
         $v50_inicial = $vt[key($vt)];
-        
+
         if (isset($oPost->marcarvencidas) && isset($oPost->marcartodas)) {
-          
+
           if ($oPost->marcarvencidas == 'true' && $oPost->marcartodas == 'false') {
-            
+
           	$mat = split("N", $v50_inicial);
             for ($iInd = 0; $iInd < count($mat); $iInd++) {
-                
+
               if ($mat[$iInd] == "") {
-                continue;   
+                continue;
               }
-                
+
               $numpre = split("P", $mat[$iInd]);
               $numpar = split("P", strstr($mat[$iInd], "P"));
               $numpar = split("R",$numpar[1]);
               $receit = @$numpar[1];
               $numpar = $numpar[0];
               $numpre = $numpre[0];
-              
+
               $sSqlArrecad  = "  select *                               ";
-              $sSqlArrecad .= "    from arrecad                         "; 
-              $sSqlArrecad .= "   where k00_numpre   = {$numpre}        "; 
+              $sSqlArrecad .= "    from arrecad                         ";
+              $sSqlArrecad .= "   where k00_numpre   = {$numpre}        ";
               $sSqlArrecad .= "     and k00_numpar   = {$numpar}        ";
               $sSqlArrecad .= "     and k00_dtvenc   > '{$sDataVenc}'   ";
-              
+
               $rsSqlArrecad = db_query($sSqlArrecad);
               $iNumRows     = pg_num_rows($rsSqlArrecad);
               if ($iNumRows == 0) {
-                  
+
                 $numpar1 .= $virgula.$numpar;
                 $numpre1 .= $virgula.$numpre;
                 $virgula = ",";
               }
-            
+
             }
           } else {
-          	
+
 	          $sqlinicial = "select distinct v59_numpre from inicialnumpre where v59_inicial = $v50_inicial";
-	          $resultinicial = pg_exec($sqlinicial) or die($sqlinicial);
-	          
+	          $resultinicial = db_query($sqlinicial) or die($sqlinicial);
+
 	          for ($x=0; $x < pg_numrows($resultinicial); $x++) {
 	            db_fieldsmemory($resultinicial,$x);
-	  
+
 	            $sqlarrecad = "select distinct k00_numpar from arrecad where k00_numpre = $v59_numpre";
-	            $resultarrecad = pg_exec($sqlarrecad) or die($sqlarrecad);
-	  
+	            $resultarrecad = db_query($sqlarrecad) or die($sqlarrecad);
+
 	            for ($y=0; $y < pg_numrows($resultarrecad ); $y++) {
 	              db_fieldsmemory($resultarrecad,$y);
-	  
+
 	              $numpar1 .= $virgula.$k00_numpar;
 	              $numpre1 .= $virgula.$v59_numpre;
 	              $virgula = ",";
-	  
+
 	            }
-	  
+
 	          }
           }
         } else {
-          
+
 	        $sqlinicial = "select distinct v59_numpre from inicialnumpre where v59_inicial = $v50_inicial";
-	        $resultinicial = pg_exec($sqlinicial) or die($sqlinicial);
-	        
+	        $resultinicial = db_query($sqlinicial) or die($sqlinicial);
+
 	        for ($x=0; $x < pg_numrows($resultinicial); $x++) {
 	          db_fieldsmemory($resultinicial,$x);
-	
+
 	          $sqlarrecad = "select distinct k00_numpar from arrecad where k00_numpre = $v59_numpre";
-	          $resultarrecad = pg_exec($sqlarrecad) or die($sqlarrecad);
-	
+	          $resultarrecad = db_query($sqlarrecad) or die($sqlarrecad);
+
 	          for ($y=0; $y < pg_numrows($resultarrecad ); $y++) {
 	            db_fieldsmemory($resultarrecad,$y);
-	
+
 	            $numpar1 .= $virgula.$k00_numpar;
 	            $numpre1 .= $virgula.$v59_numpre;
 	            $virgula = ",";
-	
+
 	          }
-	
+
 	        }
         }
       }
@@ -285,7 +287,7 @@ if ((isset ($ver_matric) or isset ($ver_inscr) or isset ($ver_numcgm)) && !isset
 //Novo Grupo
 
 if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
- 
+
   $sqlerro = false;
   db_inicio_transacao();
   if ($k25_codproc != "" && $k20_descr == "") {
@@ -300,12 +302,13 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
   $clcancdebitos->k20_data = date("Y-m-d", db_getsession("DB_datausu"));
   $clcancdebitos->k20_usuario = db_getsession("DB_id_usuario");
   $clcancdebitos->k20_instit  = db_getsession("DB_instit");
+  $clcancdebitos->k20_depart  = db_getsession("DB_coddepto");
   $clcancdebitos->incluir(null);
   if ($clcancdebitos->erro_status == 0) {
     $sqlerro = true;
   }
   $erro_msg = $clcancdebitos->erro_msg;
-  
+
   if ($sqlerro == false) {
   	if($tipoDebito == 2 ){
   		 if($c58_sequencial!=""){
@@ -321,11 +324,11 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
   		 	 $sqlerro = true;
          $erro_msg = "O campo Caracteristica Peculiar não foi informado.";
   		 }
-  		
+
   	}
-  
+
   }
-  
+
   if ($sqlerro == false) {
     if ($k25_codproc != "") {
       $clcancdebitosprot->k25_codproc = $k25_codproc;
@@ -337,7 +340,7 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
       }
     }
   }
-    
+
   if ($sqlerro == false) {
     $mat = split(",", $numpre);
     $mat1 = split(",", $numpar);
@@ -350,7 +353,7 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
       // SE RECEITA FOR IGUAL A ZERO
       if ($receit==0) {
         $sqlrec = "select distinct k00_receit from arrecad where k00_numpre =$numpre and k00_numpar = $numpar";
-        $resultrec= pg_query($sqlrec);
+        $resultrec= db_query($sqlrec);
         $linhasrec = pg_num_rows($resultrec);
         if ($resultrec>0) {
           for ($r=0; $r < $linhasrec; $r++) {
@@ -395,7 +398,7 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
     }
   //$sqlerro = true;
   }
-  
+
   db_fim_transacao($sqlerro);
   db_msgbox($erro_msg);
   if ($sqlerro == false) {
@@ -404,31 +407,31 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
   //Grupo selecionado
 } else if (isset ($envia) && $k20_codigo != 0) {
 	$sqlerro = false;
-	
-	$sqlTipoDeb = "select k20_codigo,k20_cancdebitostipo,k72_concarpeculiar,c58_descr 
-	                 from cancdebitos 
-					 left join cancdebitosconcarpeculiar on k72_cancdebitos = k20_codigo 
-					 left join concarpeculiar            on c58_sequencial  = k72_concarpeculiar 
+
+	$sqlTipoDeb = "select k20_codigo,k20_cancdebitostipo,k72_concarpeculiar,c58_descr
+	                 from cancdebitos
+					 left join cancdebitosconcarpeculiar on k72_cancdebitos = k20_codigo
+					 left join concarpeculiar            on c58_sequencial  = k72_concarpeculiar
 					 where k20_codigo = $k20_codigo";
-    $rsTipoDeb = pg_query($sqlTipoDeb);
-	$linhasDeb = pg_num_rows($rsTipoDeb);			 
+    $rsTipoDeb = db_query($sqlTipoDeb);
+	$linhasDeb = pg_num_rows($rsTipoDeb);
     if($rsTipoDeb>0){
     	db_fieldsmemory($rsTipoDeb,0);
-		
+
     }
-	
-	
+
+
   if(!isset($tipoDebito)){
   	$tipoDebito = $tipoDebitoAux;
   }
 	/*
 	echo "
 	<br> dados da tela
-	<br>codigo = $k20_codigo 
+	<br>codigo = $k20_codigo
 	<br>tipo   = $tipoDebito
 	<br>peculiar = $c58_sequencial
 	<br><br> dados do banco
-	<br>codigo = $k20_codigo 
+	<br>codigo = $k20_codigo
 	<br>tipo   = $k20_cancdebitostipo
 	<br>peculiar = $k72_concarpeculiar
 	";
@@ -436,7 +439,7 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
 	if($tipoDebito != $k20_cancdebitostipo){
 		$erro_msg = "Grupo debitos selecionado com tipo de cancelamento diferente.";
 		$sqlerro = true;
-				
+
 	}elseif($c58_sequencial != $k72_concarpeculiar){
 
         if($k72_concarpeculiar!=""){
@@ -444,10 +447,10 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
         }else{
         	$erro_msg ="Grupo debitos selecionado com caracteristica peculiar diferente.";
         }
-				
-			
+
+
 		$sqlerro = true;
-		
+
 	}
 
   if($sqlerro==false){
@@ -499,22 +502,22 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
       $sqlerro = true;
     }
   }
-		
+
   $mat = split(",", $numpre);
   $mat1 = split(",", $numpar);
   $mat2 = split(",", $receit);
-	
+
   for ($i = 0; $i < count($mat); $i ++) {
     $numpre = $mat[$i];
     $numpar = $mat1[$i];
     $receit = $mat2[$i];
-	
-	
+
+
     // SE RECEITA FOR IGUAL A ZERO
     if($receit==0){
       $sqlrec = "select k00_receit from arrecad where k00_numpre =$numpre and k00_numpar = $numpar";
-			
-      $resultrec= pg_query($sqlrec);
+
+      $resultrec= db_query($sqlrec);
       $linhasrec = pg_num_rows($resultrec);
       if($resultrec>0){
         for ($r=0; $r < $linhasrec; $r++) {
@@ -538,13 +541,13 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
         }// do for $r
       }
     } else {
-      
+
       // SE RECEITA FOR  <> DE ZERO
       $sWhere      = "     k21_codigo = {$k20_codigo} and k21_numpre = {$numpre} and k21_numpar = {$numpar} ";
       $sWhere     .= " and k21_receit = {$receit}";
       $result_reg  = $clcancdebitosreg->sql_record($clcancdebitosreg->sql_query_file(null, "*", null, $sWhere));
 	    if ($clcancdebitosreg->numrows == 0) {
-	      
+
 	      $clcancdebitosreg->k21_codigo = $k20_codigo;
 	      $clcancdebitosreg->k21_obs    = $k21_obs;
 	      $clcancdebitosreg->k21_receit = $receit;
@@ -563,7 +566,7 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
   $erro_msg = $clcancdebitosreg->erro_msg;
   db_fim_transacao($sqlerro);
   }
-  
+
   db_msgbox($erro_msg);
   if ($clcancdebitos->erro_status != 0) {
     echo "<script>";
@@ -594,7 +597,8 @@ if (isset ($envia) && (@$k20_codigo == 0 || @$k20_codigo == "")) {
 </head>
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"
 	onLoad="parent.document.getElementById('processando').style.visibility = 'hidden'; if(document.form1.tipoDebito.value == 2){ document.getElementById('renuncia').style.display = '' };">
-<form name="form1" method="POST"><?echo "<input type='hidden' name='tipo_filtro' value=''>\n";
+<form name="form1" method="POST"><?
+echo "<input type='hidden' name='tipo_filtro' value=''>\n";
 echo "<input type='hidden' name='cod_filtro' value=''>\n";
 echo "<input type='hidden' name='numpre' value='".@$numpre1."'>\n";
 echo "<input type='hidden' name='numpar' value='".@$numpar1."'>\n";
@@ -622,37 +626,41 @@ echo "<input type='hidden' name='k03_tipo' value='".@$k03_tipo."'>\n";
 			<tr>
 				<td colspan="2" ><b>Tipo de cancelamento:</b>
 				<?
-				$resulttipo = pg_query("select k73_sequencial,k73_descricao from cancdebitostipo order by k73_sequencial");
-				$linhasTipo = pg_num_rows($resulttipo);
-				$tipo = array(2 =>"Renuncia");
-				/*
-				if($linhasTipo > 0 ){
+        $rs = $clnumpref->sql_record($clnumpref->sql_query(db_getsession("DB_anousu"), db_getsession("DB_instit"), 'k03_apenastiporenuncia'));
+        $apenasTipoRenuncia = \db_utils::fieldsMemory($rs, 0)->k03_apenastiporenuncia;
+
+				if($apenasTipoRenuncia == 'f'){
+          $resulttipo = db_query("select k73_sequencial,k73_descricao from cancdebitostipo order by k73_sequencial");
+          $linhasTipo = pg_num_rows($resulttipo);
+          if($linhasTipo > 0 ){
 				    for($t=0;$t<$linhasTipo;$t++){
 				    	db_fieldsmemory($resulttipo, $t);
 						  $tipo[$k73_sequencial] = $k73_descricao;
-					
-				    }	
-				}
-					*/		
+				    }
+          }
+				} else {
+				  $tipo = array(2 =>"Renuncia");
+        }
+
 				db_select("tipoDebito",$tipo,true,1,"onChange='js_mostraRenuncia(document.form1.tipoDebito.value);'","tipoDebito");
 				if(isset($tipoDebito)){
 					$tipoDebitoAux = $tipoDebito;
 				}
-				
+
 				db_input("tipoDebitoAux",4,0,true,"hidden",3);
 				?>
 				</td>
 			</tr>
 			<tr id="renuncia" style="display:none" >
 				<td colspan="2" >
-					
+
 			    <b><? db_ancora("Caracteristica peculiar:","js_pesquisac58_sequencial(true);",$db_opcao,"","carac"); ?></b>
-				  
+
 				  <?
                   db_input("c58_sequencial",10,$Ic58_sequencial,true,"text",$db_opcao,"onChange='js_pesquisac58_sequencial(false);'","c58_sequencial");
                   db_input("c58_descr",40,0,true,"text",3);
                 ?>
-     
+
 				</td>
 			</tr>
 			<tr>
@@ -682,7 +690,7 @@ echo "<input type='hidden' name='k03_tipo' value='".@$k03_tipo."'>\n";
 			</tr>
 			<tr>
 				<td colspan="2" align="center">
-					<input type="button" name="envia" value="Confirmar" onClick="js_verifica()"> 
+					<input type="button" name="envia" value="Confirmar" onClick="js_verifica()">
 					<input type="hidden" name="envia" value="Confirmar">
 				</td>
 				</td>
@@ -695,7 +703,7 @@ echo "<input type='hidden' name='k03_tipo' value='".@$k03_tipo."'>\n";
 </form>
 <script>
 document.form1.tipo_filtro.value = parent.document.form2.tipo_filtro.value;
-document.form1.cod_filtro.value = parent.document.form2.cod_filtro.value; 
+document.form1.cod_filtro.value = parent.document.form2.cod_filtro.value;
 function js_pesquisacancdebitosreg(value){
   if(value!=0){
     js_OpenJanelaIframe('','db_iframe_cgm','func_cancdebitosregalt.php?pesquisa_chave=&pesquisa_chave2='+document.form1.k20_codigo.value+'&funcao_js=parent.js_mostracancdebitosreg','Pesquisa',false);
@@ -716,12 +724,12 @@ function js_pesquisacancdebitosreg(value){
 		document.getElementById("carac").onclick = function(){js_pesquisac58_sequencial(true)};
 		document.getElementById("carac").style.textDecoration='';
 		document.getElementById("carac").style.color='blue';
-		
+
   }
 }
 
 function js_mostracancdebitosreg(chave1,chave2,chave3,chave4,chave5,chave6,chave7){
-  
+
 	document.form1.k20_descr.value   = chave1;
   document.form1.k21_obs.value     = chave2;
   document.form1.k25_codproc.value = chave3;
@@ -731,7 +739,7 @@ function js_mostracancdebitosreg(chave1,chave2,chave3,chave4,chave5,chave6,chave
   document.getElementById("tipoDebito").disabled = true;
 	document.getElementById("k20_descr").readOnly = true;
 	document.getElementById("k20_descr").style.background="#DEB887";
- 
+
 	if(chave7 == 2){
 		document.form1.c58_sequencial.value = chave5;
 	  document.getElementById("c58_sequencial").readOnly = true;
@@ -744,7 +752,7 @@ function js_mostracancdebitosreg(chave1,chave2,chave3,chave4,chave5,chave6,chave
 	}else{
 		document.getElementById("renuncia").style.display = 'nome';
 	}
-	
+
 }
 
 function js_pesquisak25_codproc(mostra){
@@ -770,12 +778,12 @@ function js_verifica(){
   if (document.form1.tipoDebito.value == "2" && document.form1.c58_sequencial.value == "") {
      document.getElementById("renuncia").style.display = '';
      alert("O campo Caracteristica Peculiar não foi informado.");
-     return false; 
+     return false;
   }
    document.form1.submit();
 }
 function js_mostraRenuncia(id){
-	
+
 	if (id == 2) {
   	document.getElementById("renuncia").style.display = '';
   }
@@ -784,24 +792,24 @@ function js_mostraRenuncia(id){
   	document.form1.c58_sequencial.value = "";
   	document.form1.c58_descr.value = "";
   }
-	
+
 }
 function js_pesquisac58_sequencial(mostra){
   if(mostra==true){
     js_OpenJanelaIframe('','db_iframe_concarpeculiar','func_concarpeculiar.php?funcao_js=parent.js_mostraconcarpeculiar1|c58_sequencial|c58_descr&filtro=receita','Pesquisa',true,'0','1');
   }else{
-     if(document.form1.c58_sequencial.value != ''){ 
+     if(document.form1.c58_sequencial.value != ''){
         js_OpenJanelaIframe('','db_iframe_concarpeculiar','func_concarpeculiar.php?pesquisa_chave='+document.form1.c58_sequencial.value+'&funcao_js=parent.js_mostraconcarpeculiar&filtro=receita','Pesquisa',false);
      }else{
-       document.form1.c58_descr.value = ''; 
+       document.form1.c58_descr.value = '';
      }
   }
 }
 function js_mostraconcarpeculiar(chave,erro){
-  document.form1.c58_descr.value = chave; 
-  if(erro==true){ 
-    document.form1.c58_sequencial.focus(); 
-    document.form1.c58_sequencial.value = ''; 
+  document.form1.c58_descr.value = chave;
+  if(erro==true){
+    document.form1.c58_sequencial.focus();
+    document.form1.c58_sequencial.value = '';
   }
 }
 function js_mostraconcarpeculiar1(chave1,chave2){
@@ -811,8 +819,8 @@ function js_mostraconcarpeculiar1(chave1,chave2){
 }
 <?
 if(isset($tipoDebito) and $tipoDebito==2){
-	
-	echo "js_mostraRenuncia(2);";	
+
+	echo "js_mostraRenuncia(2);";
 }
 ?>
 

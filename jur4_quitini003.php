@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_sql.php"));
 
 $sql="select v50_inicial from inicial";
-$result=pg_exec($sql);
+$result=db_query($sql);
 for ($i=0;$i<pg_numrows($result);$i++){
 	db_fieldsmemory($result,$i);
 	$sql_mov="select max(v56_codmov)as codmov from inicialmov where v56_inicial = $v50_inicial";
-	$result_mov=pg_exec($sql_mov);
+	$result_mov=db_query($sql_mov);
 	if (pg_numrows($result_mov)>0){
 	   db_fieldsmemory($result_mov,0);
 	   if ($codmov!=""){
 	   $sql_altini="update inicial set v50_codmov = $codmov where v50_inicial = $v50_inicial ";
-	   $result_altini=pg_exec($sql_altini);
+	   $result_altini=db_query($sql_altini);
 	   }
 	}
 }

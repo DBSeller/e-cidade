@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -54,6 +54,11 @@ class cl_padroes {
    var $r02_tipo = null; 
    var $r02_form = null; 
    var $r02_minimo = null; 
+   var $r02_nivel = null; 
+   var $r02_classe = null; 
+   var $r02_padraopai_regime = 0; 
+   var $r02_padraopai_codigo = 0; 
+   var $r02_padraopai_instit = 0; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  r02_instit = int4 = Cod. Instituição 
@@ -61,13 +66,18 @@ class cl_padroes {
                  r02_mesusu = int4 = Mes do Exercicio 
                  r02_regime = int4 = Código do Regime 
                  r02_codigo = char(10) = Código de Identificação Padrão 
-                 r02_descr = char(    30) = Descricao do Padrao 
+                 r02_descr = char(30) = Descrição do Padrão 
                  r02_valor = float8 = Valor do Padrão 
                  r02_hrssem = int4 = Horas Semanais 
                  r02_hrsmen = float8 = Horas Mensais 
                  r02_tipo = char(1) = Tipo 
                  r02_form = varchar(40) = Fórmula 
                  r02_minimo = varchar(4) = Valor Mínimo 
+                 r02_nivel = varchar(250) = Nível 
+                 r02_classe = varchar(250) = Classe 
+                 r02_padraopai_regime = int4 = Padrão vinculado 
+                 r02_padraopai_codigo = int4 = Padrão vinculado 
+                 r02_padraopai_instit = int4 = Padrão vinculado 
                  ";
    //funcao construtor da classe 
    function cl_padroes() { 
@@ -99,6 +109,11 @@ class cl_padroes {
        $this->r02_tipo = ($this->r02_tipo == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_tipo"]:$this->r02_tipo);
        $this->r02_form = ($this->r02_form == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_form"]:$this->r02_form);
        $this->r02_minimo = ($this->r02_minimo == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_minimo"]:$this->r02_minimo);
+       $this->r02_nivel = ($this->r02_nivel == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_nivel"]:$this->r02_nivel);
+       $this->r02_classe = ($this->r02_classe == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_classe"]:$this->r02_classe);
+       $this->r02_padraopai_regime = ($this->r02_padraopai_regime == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_padraopai_regime"]:$this->r02_padraopai_regime);
+       $this->r02_padraopai_codigo = ($this->r02_padraopai_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_padraopai_codigo"]:$this->r02_padraopai_codigo);
+       $this->r02_padraopai_instit = ($this->r02_padraopai_instit == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_padraopai_instit"]:$this->r02_padraopai_instit);
      }else{
        $this->r02_instit = ($this->r02_instit == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_instit"]:$this->r02_instit);
        $this->r02_anousu = ($this->r02_anousu == ""?@$GLOBALS["HTTP_POST_VARS"]["r02_anousu"]:$this->r02_anousu);
@@ -127,6 +142,15 @@ class cl_padroes {
      }
      if($this->r02_hrsmen == null ){ 
        $this->r02_hrsmen = "0";
+     }
+     if($this->r02_padraopai_regime == null ){ 
+       $this->r02_padraopai_regime = "0";
+     }
+     if($this->r02_padraopai_codigo == null ){ 
+       $this->r02_padraopai_codigo = "0";
+     }
+     if($this->r02_padraopai_instit == null ){ 
+       $this->r02_padraopai_instit = "0";
      }
        $this->r02_anousu = $r02_anousu; 
        $this->r02_mesusu = $r02_mesusu; 
@@ -186,6 +210,11 @@ class cl_padroes {
                                       ,r02_tipo 
                                       ,r02_form 
                                       ,r02_minimo 
+                                      ,r02_nivel 
+                                      ,r02_classe 
+                                      ,r02_padraopai_regime 
+                                      ,r02_padraopai_codigo 
+                                      ,r02_padraopai_instit 
                        )
                 values (
                                 $this->r02_instit 
@@ -200,6 +229,11 @@ class cl_padroes {
                                ,'$this->r02_tipo' 
                                ,'$this->r02_form' 
                                ,'$this->r02_minimo' 
+                               ,'$this->r02_nivel' 
+                               ,'$this->r02_classe' 
+                               ,$this->r02_padraopai_regime 
+                               ,$this->r02_padraopai_codigo 
+                               ,$this->r02_padraopai_instit 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -225,7 +259,11 @@ class cl_padroes {
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
-     $resaco = $this->sql_record($this->sql_query_file($this->r02_anousu,$this->r02_mesusu,$this->r02_regime,$this->r02_codigo,$this->r02_instit));
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->r02_anousu,$this->r02_mesusu,$this->r02_regime,$this->r02_codigo,$this->r02_instit  ));
      if(($resaco!=false)||($this->numrows!=0)){
        $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
@@ -247,11 +285,17 @@ class cl_padroes {
        $resac = db_query("insert into db_acount values($acount,567,4082,'','".AddSlashes(pg_result($resaco,0,'r02_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,567,4600,'','".AddSlashes(pg_result($resaco,0,'r02_form'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,567,4601,'','".AddSlashes(pg_result($resaco,0,'r02_minimo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,567,1009703,'','".AddSlashes(pg_result($resaco,0,'r02_nivel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,567,1009704,'','".AddSlashes(pg_result($resaco,0,'r02_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,567,1009705,'','".AddSlashes(pg_result($resaco,0,'r02_padraopai_regime'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,567,1009706,'','".AddSlashes(pg_result($resaco,0,'r02_padraopai_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,567,1009707,'','".AddSlashes(pg_result($resaco,0,'r02_padraopai_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       }
      }
      return true;
    } 
    // funcao para alteracao
-   function alterar ($r02_anousu=null,$r02_mesusu=null,$r02_regime=null,$r02_codigo=null,$r02_instit=null) { 
+   public function alterar ($r02_anousu=null,$r02_mesusu=null,$r02_regime=null,$r02_codigo=null,$r02_instit=null) { 
       $this->atualizacampos();
      $sql = " update padroes set ";
      $virgula = "";
@@ -259,7 +303,7 @@ class cl_padroes {
        $sql  .= $virgula." r02_instit = $this->r02_instit ";
        $virgula = ",";
        if(trim($this->r02_instit) == null ){ 
-         $this->erro_sql = " Campo Cod. Instituição nao Informado.";
+         $this->erro_sql = " Campo Cod. Instituição não informado.";
          $this->erro_campo = "r02_instit";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -272,7 +316,7 @@ class cl_padroes {
        $sql  .= $virgula." r02_anousu = $this->r02_anousu ";
        $virgula = ",";
        if(trim($this->r02_anousu) == null ){ 
-         $this->erro_sql = " Campo Ano do Exercicio nao Informado.";
+         $this->erro_sql = " Campo Ano do Exercicio não informado.";
          $this->erro_campo = "r02_anousu";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -298,7 +342,7 @@ class cl_padroes {
        $sql  .= $virgula." r02_regime = $this->r02_regime ";
        $virgula = ",";
        if(trim($this->r02_regime) == null ){ 
-         $this->erro_sql = " Campo Código do Regime nao Informado.";
+         $this->erro_sql = " Campo Código do Regime não informado.";
          $this->erro_campo = "r02_regime";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -311,7 +355,7 @@ class cl_padroes {
        $sql  .= $virgula." r02_codigo = '$this->r02_codigo' ";
        $virgula = ",";
        if(trim($this->r02_codigo) == null ){ 
-         $this->erro_sql = " Campo Código de Identificação Padrão nao Informado.";
+         $this->erro_sql = " Campo Código de Identificação Padrão não informado.";
          $this->erro_campo = "r02_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -366,6 +410,35 @@ class cl_padroes {
        $sql  .= $virgula." r02_minimo = '$this->r02_minimo' ";
        $virgula = ",";
      }
+     if(trim($this->r02_nivel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r02_nivel"])){ 
+       $sql  .= $virgula." r02_nivel = '$this->r02_nivel' ";
+       $virgula = ",";
+     }
+     if(trim($this->r02_classe)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r02_classe"])){ 
+       $sql  .= $virgula." r02_classe = '$this->r02_classe' ";
+       $virgula = ",";
+     }
+     if(trim($this->r02_padraopai_regime)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r02_padraopai_regime"])){ 
+        if(trim($this->r02_padraopai_regime)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r02_padraopai_regime"])){ 
+           $this->r02_padraopai_regime = "0" ; 
+        } 
+       $sql  .= $virgula." r02_padraopai_regime = $this->r02_padraopai_regime ";
+       $virgula = ",";
+     }
+     if(trim($this->r02_padraopai_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r02_padraopai_codigo"])){ 
+        if(trim($this->r02_padraopai_codigo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r02_padraopai_codigo"])){ 
+           $this->r02_padraopai_codigo = "0" ; 
+        } 
+       $sql  .= $virgula." r02_padraopai_codigo = $this->r02_padraopai_codigo ";
+       $virgula = ",";
+     }
+     if(trim($this->r02_padraopai_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r02_padraopai_instit"])){ 
+        if(trim($this->r02_padraopai_instit)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r02_padraopai_instit"])){ 
+           $this->r02_padraopai_instit = "0" ; 
+        } 
+       $sql  .= $virgula." r02_padraopai_instit = $this->r02_padraopai_instit ";
+       $virgula = ",";
+     }
      $sql .= " where ";
      if($r02_anousu!=null){
        $sql .= " r02_anousu = $this->r02_anousu";
@@ -382,9 +455,15 @@ class cl_padroes {
      if($r02_instit!=null){
        $sql .= " and  r02_instit = $this->r02_instit";
      }
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
      $resaco = $this->sql_record($this->sql_query_file($this->r02_anousu,$this->r02_mesusu,$this->r02_regime,$this->r02_codigo,$this->r02_instit));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+       if ($this->numrows > 0) {
+
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
+
          $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
          $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
@@ -417,6 +496,17 @@ class cl_padroes {
            $resac = db_query("insert into db_acount values($acount,567,4600,'".AddSlashes(pg_result($resaco,$conresaco,'r02_form'))."','$this->r02_form',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["r02_minimo"]))
            $resac = db_query("insert into db_acount values($acount,567,4601,'".AddSlashes(pg_result($resaco,$conresaco,'r02_minimo'))."','$this->r02_minimo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["r02_nivel"]) || $this->r02_nivel != "")
+             $resac = db_query("insert into db_acount values($acount,567,1009703,'".AddSlashes(pg_result($resaco,$conresaco,'r02_nivel'))."','$this->r02_nivel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["r02_classe"]) || $this->r02_classe != "")
+             $resac = db_query("insert into db_acount values($acount,567,1009704,'".AddSlashes(pg_result($resaco,$conresaco,'r02_classe'))."','$this->r02_classe',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["r02_padraopai_regime"]) || $this->r02_padraopai_regime != "")
+             $resac = db_query("insert into db_acount values($acount,567,1009705,'".AddSlashes(pg_result($resaco,$conresaco,'r02_padraopai_regime'))."','$this->r02_padraopai_regime',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["r02_padraopai_codigo"]) || $this->r02_padraopai_codigo != "")
+             $resac = db_query("insert into db_acount values($acount,567,1009706,'".AddSlashes(pg_result($resaco,$conresaco,'r02_padraopai_codigo'))."','$this->r02_padraopai_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["r02_padraopai_instit"]) || $this->r02_padraopai_instit != "")
+             $resac = db_query("insert into db_acount values($acount,567,1009707,'".AddSlashes(pg_result($resaco,$conresaco,'r02_padraopai_instit'))."','$this->r02_padraopai_instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $result = db_query($sql);
@@ -452,8 +542,14 @@ class cl_padroes {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($r02_anousu=null,$r02_mesusu=null,$r02_regime=null,$r02_codigo=null,$r02_instit=null,$dbwhere=null) { 
-     if($dbwhere==null || $dbwhere==""){
+   public function excluir ($r02_anousu=null,$r02_mesusu=null,$r02_regime=null,$r02_codigo=null,$r02_instit=null,$dbwhere=null) { 
+
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       if (empty($dbwhere)) {
+
        $resaco = $this->sql_record($this->sql_query_file($r02_anousu,$r02_mesusu,$r02_regime,$r02_codigo,$r02_instit));
      }else{ 
        $resaco = $this->sql_record($this->sql_query_file(null,null,null,null,null,"*",null,$dbwhere));
@@ -480,6 +576,12 @@ class cl_padroes {
          $resac = db_query("insert into db_acount values($acount,567,4082,'','".AddSlashes(pg_result($resaco,$iresaco,'r02_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,567,4600,'','".AddSlashes(pg_result($resaco,$iresaco,'r02_form'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,567,4601,'','".AddSlashes(pg_result($resaco,$iresaco,'r02_minimo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,567,1009703,'','".AddSlashes(pg_result($resaco,$iresaco,'r02_nivel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,567,1009704,'','".AddSlashes(pg_result($resaco,$iresaco,'r02_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,567,1009705,'','".AddSlashes(pg_result($resaco,$iresaco,'r02_padraopai_regime'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,567,1009706,'','".AddSlashes(pg_result($resaco,$iresaco,'r02_padraopai_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,567,1009707,'','".AddSlashes(pg_result($resaco,$iresaco,'r02_padraopai_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $sql = " delete from padroes
@@ -504,19 +606,19 @@ class cl_padroes {
           }
           $sql2 .= " r02_regime = $r02_regime ";
         }
-        if($r02_codigo != ""){
-          if($sql2!=""){
+        if (!empty($r02_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " r02_codigo = '$r02_codigo' ";
         }
-        if($r02_instit != ""){
-          if($sql2!=""){
+        if (!empty($r02_instit)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " r02_instit = $r02_instit ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
@@ -836,6 +938,272 @@ class cl_padroes {
   }
    function atualiza_incluir (){
   	 $this->incluir($this->r02_anousu,$this->r02_mesusu,$this->r02_regime,$this->r02_codigo);
+  }
+
+
+  function sql_reajusteAposentados($iTipoReajuste, $sCampos="*", $sOrdem = null, $sWhere = ""){
+     
+    $sSql  = " select  $sCampos                                                           ";
+    $sSql .= "  from padroes                                                              ";
+    $sSql .= "   inner join rhpespadrao on rh03_anousu = r02_anousu                       ";
+    $sSql .= "                         and rh03_mesusu = r02_mesusu                       ";
+    $sSql .= "                         and rh03_padrao = r02_codigo                       ";
+    $sSql .= "                         and rh03_regime = r02_regime                       ";
+    $sSql .= "   where                                                                    ";
+    $sSql .= "        exists (select 1                                                    ";
+    $sSql .= "             from rhpespadrao                                               ";
+    $sSql .= "                  inner join rhpessoalmov on rh02_seqpes = rh03_seqpes      ";
+    $sSql .= "                  left join assenta      on h16_regist  = rh02_regist       ";
+    $sSql .= "                  left join tipoasse     on h12_codigo  = h16_assent        ";
+    $sSql .= "             where rh03_anousu = r02_anousu                                 ";
+    $sSql .= "               and rh03_mesusu = r02_mesusu                                 ";
+    $sSql .= "               and rh03_padrao = r02_codigo                                 ";
+    $sSql .= "               and rh03_regime = r02_regime                                 ";
+    $sSql .= "               and rh02_instit = r02_instit                                 ";
+    $sSql .= "               and (h12_tiporeajuste = {$iTipoReajuste}                     ";
+    if ($iTipoReajuste == 0) {
+      $sSql .= "               or h12_tiporeajuste is null                                ";
+    }
+    $sSql .= "                    ) )                                                     ";
+    $sSql .= "        and                                                                 ";
+    $sSql .= "        not exists (                                                        ";
+    $sSql .= "           select 1                                                         ";
+    $sSql .= "             from rhpespadrao                                               ";
+    $sSql .= "                  inner join rhpessoalmov on rh02_seqpes = rh03_seqpes      ";
+    $sSql .= "                  left join assenta      on h16_regist  = rh02_regist       ";
+    $sSql .= "                  left join tipoasse     on h12_codigo  = h16_assent        ";
+    $sSql .= "             where rh03_anousu = r02_anousu                                 ";
+    $sSql .= "               and rh03_mesusu = r02_mesusu                                 ";
+    $sSql .= "               and rh03_padrao = r02_codigo                                 ";
+    $sSql .= "               and rh03_regime = r02_regime                                 ";
+    $sSql .= "               and rh02_instit = r02_instit                                 ";
+    $sSql .= "               and (h12_tiporeajuste <> {$iTipoReajuste}                    ";
+    if ($iTipoReajuste == 0) {
+      $sSql .= "             and h12_tiporeajuste is not null                             ";
+    } else {
+      $sSql .= "             and (h12_tiporeajuste <> 0  or h12_tiporeajuste is null)     ";
+    }
+    $sSql .= "        ))                                                                  ";
+    
+    if (!empty($sWhere)) {      
+      $sSql .= " and {$sWhere}";
+    }
+
+    if (!empty($sOrdem)) {
+      $sSql .= " order by $sOrdem ";
+    }
+    return $sSql;   
+  }
+
+  /**
+   * Retornas os Padrões que possuem servidores inválidos para a Regra de reajuste salarial por Padrão. 
+   * Todos os servidores de um padrão devem possuir o mesmo Tipo de Reajuste, caso contrário é inválido.
+   * 
+   * @param  integer $iTipoReajuste Tipo de Reajuste
+   * @param  integer $iAnoUsu       Ano Competência
+   * @param  integer $iMesUsu       Mês Competência
+   * @param  integer $iInstituicao  Instituição
+   * @return string                 SQL.
+   */
+  function sql_padroesInvalidos($iTipoReajuste, $iAnoUsu, $iMesUsu, $iInstituicao){
+
+    $sSql  = "select  distinct padroes.*                                                   \n";
+    $sSql .= " from padroes                                                                \n";
+    $sSql .= "  inner join rhpespadrao as r2 on rh03_anousu = r02_anousu                   \n";
+    $sSql .= "                        and rh03_mesusu = r02_mesusu                         \n";
+    $sSql .= "                        and rh03_padrao = r02_codigo                         \n";
+    $sSql .= "                        and rh03_regime = r02_regime                         \n";
+    $sSql .= "  where                                                                      \n";
+    $sSql .= "      exists (select 1                                                       \n";
+    $sSql .= "            from rhpespadrao                                                 \n";
+    $sSql .= "                 inner join rhpessoalmov on rh02_seqpes = rh03_seqpes        \n";
+    $sSql .= "                 left join assenta      on h16_regist  = rh02_regist         \n";
+    $sSql .= "                 left join tipoasse     on h12_codigo  = h16_assent          \n";
+    $sSql .= "            where rh03_anousu = r02_anousu                                   \n";
+    $sSql .= "              and rh03_mesusu = r02_mesusu                                   \n";
+    $sSql .= "              and rh03_padrao = r02_codigo                                   \n";
+    $sSql .= "              and rh03_regime = r02_regime                                   \n";
+    $sSql .= "              and rh02_instit = r02_instit                                   \n";
+    $sSql .= "              and (h12_tiporeajuste = {$iTipoReajuste}                       \n";
+    $sSql .= "                   or (case when $iTipoReajuste = 0                          \n";
+    $sSql .= "                          then h12_tiporeajuste is null                      \n";
+    $sSql .= "                          else false                                         \n";
+    $sSql .= "                      end)                                                   \n";
+    $sSql .= "              )                                                              \n";
+    $sSql .= "          )                                                                  \n";
+    $sSql .= "       and                                                                   \n";
+    $sSql .= "       exists (                                                              \n";
+    $sSql .= "          select 1                                                           \n";
+    $sSql .= "            from rhpespadrao                                                 \n";
+    $sSql .= "                 inner join rhpessoalmov on rh02_seqpes = rh03_seqpes        \n";
+    $sSql .= "                 left join assenta      on h16_regist  = rh02_regist         \n";
+    $sSql .= "                 left join tipoasse     on h12_codigo  = h16_assent          \n";
+    $sSql .= "            where rh03_anousu = r02_anousu                                   \n";
+    $sSql .= "              and rh03_mesusu = r02_mesusu                                   \n";
+    $sSql .= "              and rh03_padrao = r02_codigo                                   \n";
+    $sSql .= "              and rh03_regime = r02_regime                                   \n";
+    $sSql .= "              and rh02_instit = r02_instit                                   \n";
+    $sSql .= "              and (h12_tiporeajuste <> {$iTipoReajuste}                      \n";
+    $sSql .= "                   or (case when $iTipoReajuste <> 0                         \n";
+    $sSql .= "                          then h12_tiporeajuste is null                      \n";
+    $sSql .= "                          else false                                         \n";
+    $sSql .= "                      end)                                                   \n";
+    $sSql .= "              )                                                              \n";
+  /*  $sSql .= "              and not exists (                                               \n";
+    $sSql .= "                  select 1                                                   \n";     
+    $sSql .= "                  from rhpespadrao                                           \n";   
+    $sSql .= "                       inner join rhpessoalmov on rh02_seqpes = rh03_seqpes  \n";   
+    $sSql .= "                       left join assenta      on h16_regist  = rh02_regist   \n";   
+    $sSql .= "                       left join tipoasse     on h12_codigo  = h16_assent    \n";   
+    $sSql .= "                  where rh03_anousu = r02_anousu                             \n";   
+    $sSql .= "                    and rh03_mesusu = r02_mesusu                             \n";   
+    $sSql .= "                    and rh03_padrao = r02_codigo                             \n";   
+    $sSql .= "                    and rh03_regime = r02_regime                             \n";   
+    $sSql .= "                    and rh02_instit = r02_instit                             \n";   
+    $sSql .= "                    and rh02_seqpes = r2.rh03_seqpes                         \n";
+    $sSql .= "                    and (h12_tiporeajuste = {$iTipoReajuste})                \n";
+    $sSql .= "              )                                                              \n";*/
+    $sSql .= "       )                                                                     \n";
+
+    if( $iTipoReajuste == 0 ){
+
+      $sSql .= "and exists (                                                                                                   ";
+      $sSql .= "      select h16_regist, count(distinct h12_tiporeajuste) from rhpespadrao                                     ";
+      $sSql .= "          inner join rhpessoalmov rhpm on rh02_seqpes = rh03_seqpes                                            ";
+      $sSql .= "             left join assenta      on h16_regist   = rh02_regist                                              ";
+      $sSql .= "             left join tipoasse     on h12_codigo   = h16_assent                                               ";
+      $sSql .= "        where rh03_anousu = r02_anousu                                                                         ";
+      $sSql .= "          and rh03_mesusu = r02_mesusu                                                                         ";
+      $sSql .= "          and rh03_padrao = r02_codigo                                                                         ";
+      $sSql .= "          and rh03_regime = r02_regime                                                                         ";
+      $sSql .= "          and rh02_instit = r02_instit                                                                         ";
+      $sSql .= "          and (                                                                                                ";
+      $sSql .= "              select distinct h12_tiporeajuste from rhpespadrao                                                ";
+      $sSql .= "                inner join rhpessoalmov on rh02_seqpes = rh03_seqpes                                           ";
+      $sSql .= "                   left join assenta      on h16_regist   = rh02_regist                                        ";
+      $sSql .= "                   left join tipoasse     on h12_codigo   = h16_assent                                         ";
+      $sSql .= "              where rh03_anousu = r02_anousu                                                                   ";
+      $sSql .= "                and rh03_mesusu = r02_mesusu                                                                   ";
+      $sSql .= "                and rh03_padrao = r02_codigo                                                                   ";
+      $sSql .= "                and rh03_regime = r02_regime                                                                   ";
+      $sSql .= "                and rh02_instit = r02_instit                                                                   ";
+      $sSql .= "                and rh02_regist = rhpm.rh02_regist                                                             ";
+      $sSql .= "                and (select count(distinct h12_tiporeajuste) from tipoasse                                     ";
+      $sSql .= "                        inner join assenta on h16_assent = h12_codigo where h16_regist = rhpm.rh02_regist) = 1 ";
+      $sSql .= "            ) = 0                                                                                              ";
+      $sSql .= "     group by h16_regist having count(distinct h12_tiporeajuste) = 1                                           ";
+      $sSql .= "   )                                                                                                           ";
+    }
+
+    $sSql .= "       and                                                                 \n";
+    $sSql .= "       exists (                                                            \n";
+    $sSql .= "          select 1                                                         \n";
+    $sSql .= "            from rhpespadrao                                               \n";
+    $sSql .= "                 inner join rhpessoalmov on rh02_seqpes = rh03_seqpes      \n";
+    $sSql .= "                 left join assenta       on h16_regist  = rh02_regist      \n";
+    $sSql .= "                 left join tipoasse      on h12_codigo  = h16_assent       \n";
+    $sSql .= "            where rh03_anousu = r02_anousu                                 \n";
+    $sSql .= "              and rh03_mesusu = r02_mesusu                                 \n";
+    $sSql .= "              and rh03_padrao = r02_codigo                                 \n";
+    $sSql .= "              and rh03_regime = r02_regime                                 \n";
+    $sSql .= "              and rh02_instit = r02_instit                                 \n";
+    $sSql .= "              and rh02_seqpes <> r2.rh03_seqpes                            \n";
+    $sSql .= "              and (h12_tiporeajuste <> {$iTipoReajuste}                    \n";
+    $sSql .= "                   or (case when {$iTipoReajuste} <> 0                     \n";
+    $sSql .= "                          then h12_tiporeajuste is null                    \n";
+    $sSql .= "                          else false                                       \n";
+    $sSql .= "                      end)                                                 \n";
+    $sSql .= "              )                                                            \n";
+    $sSql .= "       )                                                                   \n";
+    $sSql .= "  and r02_anousu = {$iAnoUsu}                                              \n"; 
+    $sSql .= "  and r02_mesusu = {$iMesUsu}                                              \n";  
+    $sSql .= "  and r02_instit = {$iInstituicao}                                         \n";
+    return $sSql;
+  }
+
+  /**
+   * Retorna os servidores que possuem o tipo de reajuste 
+   * diferente do informado no padrão informado.
+   * 
+   * @param  string  $sPadrao       Padrão
+   * @param  integer $iRegime       Regime
+   * @param  integer $iAnoUsu       Ano Competência
+   * @param  integer $iMesUsu       Mês Competência
+   * @param  integer $iTipoReajuste Tipo de Reajuste
+   * @return string                 SQL
+   */
+  function sql_ServidoresInvalidos($sPadrao, $iRegime, $iAnoUsu, $iMesUsu, $iTipoReajuste) {
+
+    $sSql  = " select distinct rh02_regist as matricula,                                 ";
+    $sSql .= "        z01_nome as nome                                                   ";
+    $sSql .= "   from rhpespadrao                                                        ";
+    $sSql .= "        inner join rhpessoalmov on rh02_seqpes = rh03_seqpes               ";
+    $sSql .= "        inner join rhpessoal    on rh01_regist = rh02_regist               ";
+    $sSql .= "        inner join cgm          on rh01_numcgm = z01_numcgm                ";
+    $sSql .= " where rh03_anousu =  {$iAnoUsu}                                           ";
+    $sSql .= "   and rh03_mesusu =  {$iMesUsu}                                           ";
+    $sSql .= "   and rh03_padrao = '{$sPadrao}'                                          ";
+    $sSql .= "   and rh03_regime = '{$iRegime}'                                          ";
+
+    if ($iTipoReajuste <> 0 ) {
+
+      $sSql .= "   and (                                                                   ";
+      $sSql .= "         select count(*)                                                   ";
+      $sSql .= "         from assenta                                                      ";
+      $sSql .= "              inner join tipoasse  on h12_codigo        = h16_assent       ";
+      $sSql .= "                                  and h12_tiporeajuste  = {$iTipoReajuste} ";
+      $sSql .= "         where h16_regist = rh02_regist                                    ";
+      $sSql .= "     ) = 0                                                                 ";
+    } else  {
+
+      $sSql .= " and exists(                                                      ";
+      $sSql .= "       select count(*)                                            ";
+      $sSql .= "         from assenta                                             ";
+      $sSql .= "              inner join tipoasse on  h12_codigo = h16_assent     ";
+      $sSql .= "                                and h12_tiporeajuste = 0          ";
+      $sSql .= "       where h16_regist = rh02_regist                             ";
+      $sSql .= "      )                                                           ";
+      $sSql .= " and exists(                                                      ";
+      $sSql .= "       select h16_regist                                          ";
+      $sSql .= "         from assenta                                             ";
+      $sSql .= "              inner join tipoasse on  h12_codigo = h16_assent     ";
+      $sSql .= "                                 and h12_tiporeajuste <> 0        ";
+      $sSql .= "       where h16_regist = rh02_regist                             ";
+      $sSql .= "     )                                                            ";
+    }
+    $sSql .= " order by z01_nome                                                  ";
+
+    return $sSql;
+  }
+
+   /**
+   * Retorna as matriculas que ocorreram reajuste do código de padrão e competência definidos
+   * 
+   * @param  string  $codigo       Padrão
+   * @param  integer $iAnoUsu       Ano Competência
+   * @param  integer $iMesUsu       Mês Competência
+   * @return string                 SQL
+   */
+  function sqlReajustePadraoByCompetencia($codigoPadrao, $anoUsu, $mesUsu) {
+    $sql = "
+    select
+      rh02_regist
+    from
+      pessoal.padroes
+    inner join rhpespadrao on
+      rh03_anousu = r02_anousu
+      and rh03_mesusu = r02_mesusu
+      and rh03_padrao = r02_codigo
+      and rh03_regime = r02_regime
+    inner join rhpessoalmov on
+        rh02_seqpes = rh03_seqpes
+    where
+      r02_codigo = '{$codigoPadrao}'
+      and r02_mesusu = {$mesUsu}
+      and r02_anousu = {$anoUsu}
+    order by rh02_regist;";
+
+    return $sql;
   }
 }
 ?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_progconvfaltas_classe.php");
-include("classes/db_progconvocacaores_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_progconvfaltas_classe.php"));
+include(modification("classes/db_progconvocacaores_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clprogconvfaltas = new cl_progconvfaltas;
 $clprogconvocacaores = new cl_progconvocacaores;
@@ -88,7 +88,7 @@ if(isset($excluir)){
  <tr>
   <td valign="top" bgcolor="#CCCCCC">
    <?
-   include("dbforms/db_classesgenericas.php");
+   include(modification("dbforms/db_classesgenericas.php"));
    $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
    $db_botao1 = false;
    if(isset($opcao) && $opcao=="alterar"){
@@ -202,7 +202,7 @@ if(isset($incluir)){
             ed127_i_nfaltanjust = $fnjust
            WHERE ed127_i_codigo = $ed128_i_progconvres
           ";
-  $result1 = pg_query($sql1);
+  $result1 = db_query($sql1);
   ?>
   <script>
    parent.location.href = "edu1_progconvocacaores002.php?chavepesquisa=<?=$ed128_i_progconvres?>";
@@ -242,7 +242,7 @@ if(isset($excluir)){
             ed127_i_nfaltanjust = $fnjust
            WHERE ed127_i_codigo = $ed128_i_progconvres
           ";
-  $result1 = pg_query($sql1);
+  $result1 = db_query($sql1);
   ?>
   <script>
    parent.location.href = "edu1_progconvocacaores002.php?chavepesquisa=<?=$ed128_i_progconvres?>";

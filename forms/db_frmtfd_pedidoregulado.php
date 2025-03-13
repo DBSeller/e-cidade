@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: TFD
@@ -43,13 +43,13 @@ $oRotulo->label("tf34_i_especmedico");
 ?>
 <form name="form1" method="post" action="">
 <center>
-<fieldset style='width: 92%;'> <legend><b>Pedidos de TFD</b></legend> 
+<fieldset class="separator" style='width: 92%;'> <legend><b>Pedidos de TFD</b></legend>
   <table border="0" width="90%">
     <tr>
     <td>
      <b>Início:</b>
     </td>
-      <td> 
+      <td>
         <?
         db_inputdata('data1', @$dia1, @$mes1, @$ano1, true, 'text', 1, "");
         ?>
@@ -59,7 +59,7 @@ $oRotulo->label("tf34_i_especmedico");
     <td>
       <b>Fim:</b>
     </td>
-      <td> 
+      <td>
         <?
         db_inputdata('data2', @$dia2, @$mes2, @$ano2, true, 'text', 1, "onchange=js_validaData();");
         ?>
@@ -71,9 +71,9 @@ $oRotulo->label("tf34_i_especmedico");
       db_ancora(@$Ltf01_i_rhcbo, "js_pesquisatf01_i_rhcbo(true);", $db_opcao);
       ?>
     </td>
-    <td colspan="2"> 
+    <td colspan="2">
       <?
-      db_input('rh70_estrutural', 10, @$Irh70_estrutural, true, 'text', $db_opcao, 
+      db_input('rh70_estrutural', 10, @$Irh70_estrutural, true, 'text', $db_opcao,
                " onchange='js_pesquisatf01_i_rhcbo(false);'"
               );
       db_input('tf01_i_rhcbo', 10, @$Itf01_i_rhcbo, true, 'hidden', 3);
@@ -82,29 +82,29 @@ $oRotulo->label("tf34_i_especmedico");
     </td>
   </tr>
     <tr>
-      <td>
+      <td colspan="2" align="center">
         <input name="pesquisar" type="button" id="pesquisar" value="Pesquisa" onclick="js_getPedidosTfdDataRhcbo();" >
       </td>
     </tr>
   </table>
   </fieldset>
-  <fieldset style='width: 92%;'> <legend><b>Pacientes</b></legend> 
-  <table border="0" width="90%">
+  <fieldset style='width: 92%;'> <legend><b>Pacientes</b></legend>
+  <table border="0" width="100%">
     <tr>
-      <td>      
+      <td>
         <div id='grid_pacientes' style='width: 100%;'></div>
       </td>
     </tr>
   </table>
  </fieldset>
 
-<fieldset style='width: 92%;'> <legend><b>Regulador</b></legend> 
+<fieldset class="separator" style='width: 92%;'> <legend><b>Regulador</b></legend>
   <table border="0" width="90%">
     <tr>
       <td>
         <b>Regulador:</b>
       </td>
-      <td> 
+      <td>
         <?
           db_input('sd03_i_codigo', 5, $Isd03_i_codigo, true, 'text', 3, " onchange='js_pesquisa_medico(false);'");
           db_input('z01_nome', 40, $Iz01_nome, true, 'text', 3, '');
@@ -117,13 +117,13 @@ $oRotulo->label("tf34_i_especmedico");
           db_ancora("<b>Especialidade:</b>", "js_pesquisa_especmedico(true); ","");
         ?>
       </td>
-      <td> 
+      <td>
         <?
           db_input('tf34_i_especmedico', 5, $Itf34_i_especmedico, true, 'hidden');
-          db_input('rh70_estrutural2', 5, $Irh70_estrutural, true, 'text', "", 
+          db_input('rh70_estrutural2', 5, $Irh70_estrutural, true, 'text', "",
                    " onchange='js_pesquisa_especmedico(false);' ");
           db_input('rh70_descr2', 40, $Irh70_descr, true, 'text', 3);
-        
+
           db_input('sPedidosSelecionados', 20, '', true, 'hidden', 1, '');
           db_input('sPedidosExcluidos', 20, '', true, 'hidden', 1, '');
           $sd03_i_codigo = $oDados->sd03_i_codigo;
@@ -138,8 +138,8 @@ $oRotulo->label("tf34_i_especmedico");
       <td><b>Unidade:</b></td>
       <td>
         <?
-          db_input ('sd02_i_codigo', 5, $Isd02_i_codigo, true, 'text', 3, ''); 
-          db_input ('descrdepto', 40, $Isd02_i_codigo, true, 'text', 3, ''); 
+          db_input ('sd02_i_codigo', 5, $Isd02_i_codigo, true, 'text', 3, '');
+          db_input ('descrdepto', 40, $Isd02_i_codigo, true, 'text', 3, '');
         ?>
       </td>
     </tr>
@@ -166,7 +166,7 @@ sUrl = 'tfd4_pedidotfd.RPC.php';
 function js_ajax(oParam, jsRetorno) {
 
 	var objAjax = new Ajax.Request(
-                         sUrl, 
+                         sUrl,
                          {
                           method    : 'post',
                           asynchronous: false,
@@ -181,7 +181,7 @@ function js_ajax(oParam, jsRetorno) {
 }
 
 function js_validaEnvio() {
-   
+
   if ($F('tf34_i_especmedico') == null || $F('tf34_i_especmedico') == '') {
 
     alert('Informe a especialidade do regulador.');
@@ -201,7 +201,7 @@ function js_validaEnvio() {
     for (iCont = 0; iCont < iTam; iCont++) {
 
       if ($("ckbox"+iCont).checked) {
-        
+
         iPedido = $F("ckbox"+iCont);
         sPedidosSelecionados += sSep+iPedido;
         sSep                  = ',';
@@ -210,7 +210,7 @@ function js_validaEnvio() {
       } else {
 
         if ($F('ckjasel'+iCont) == 'true') {
-          
+
           /* marco o check box para poder obter o valor dele */
           $("ckbox"+iCont).checked = true;
           iPedido = $F("ckbox"+iCont);
@@ -245,7 +245,7 @@ function js_validaEnvio() {
 }
 
 function js_formataData(dData) {
-  
+
   if (dData == undefined || dData.length != 10) {
     return dData;
   }
@@ -254,7 +254,7 @@ function js_formataData(dData) {
 }
 
 function js_getPedidosTfdDataRhcbo() {
-  
+
   oDBGrid.clearAll(true);
 
   if (!js_validaData()) {
@@ -275,8 +275,8 @@ function js_getPedidosTfdDataRhcbo() {
 }
 
 function js_retornogetPedidosTfdDataRhcbo(oRetorno) {
-  
-  oRetorno = eval("("+oRetorno.responseText+")");
+
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
 
@@ -288,12 +288,12 @@ function js_retornogetPedidosTfdDataRhcbo(oRetorno) {
     iCont = 0;
     oRetorno.oPedidos.each(
       function (oPedidosTfd) {
-        
+
         var aLinha         = new Array();
         var sDisabled      = '';
         var sChecked       = '';
         var sJaSelecionado = '';
-        
+
         // verifico se já foi agendada a saída. Se sim, o checkbox deve ficar desabilitado para não ser desmarcado
         if (oPedidosTfd.tf17_i_codigo != '') {
           sDisabled = ' disabled ';
@@ -320,6 +320,7 @@ function js_retornogetPedidosTfdDataRhcbo(oRetorno) {
         aLinha[6] += 'id="ckjasel'+iCont+'" name="ckboxjasel">';
 
         oDBGridPedidostfd.addRow(aLinha);
+        oDBGridPedidostfd.aRows[ iCont ].aCells[5].addClassName( 'elipse' );
         iCont++;
 
     });
@@ -336,7 +337,7 @@ function js_cria_datagrid() {
         oDBGrid = new DBGrid('grid_pacientes');
         oDBGrid.nameInstance = 'oDBGridPedidostfd';
         oDBGrid.hasTotalizador = false;
-        oDBGrid.setCellWidth(new Array('5%', '5%', '10%', '10%', '10%', '50%', '0%'));
+        oDBGrid.setCellWidth(new Array('7.5%', '7.5%', '12.5%', '10%', '12.5%', '35%', '15%'));
         oDBGrid.setHeight(180);
 
         var aHeader = new Array();
@@ -357,7 +358,7 @@ function js_cria_datagrid() {
         aAligns[4] = 'center';
         aAligns[5] = 'left';
         aAligns[6] = 'center';
-        
+
         oDBGrid.setCellAlign(aAligns);
         oDBGrid.show($('grid_pacientes'));
         oDBGrid.clearAll(true);
@@ -387,9 +388,9 @@ function js_pesquisatf01_i_rhcbo(mostra) {
 
     } else {
 
-      document.form1.tf01_i_rhcbo.value = ''; 
+      document.form1.tf01_i_rhcbo.value = '';
       document.form1.rh70_descr.value = '';
-     
+
     }
 
   }
@@ -398,12 +399,12 @@ function js_pesquisatf01_i_rhcbo(mostra) {
 
 function js_mostrarhcbo(chave1, chave2, chave3, erro) {
 
-  document.form1.rh70_estrutural.value = chave1; 
+  document.form1.rh70_estrutural.value = chave1;
   document.form1.rh70_descr.value      = chave2;
   document.form1.tf01_i_rhcbo.value    = chave3;
 
   if (erro==true) {
-    document.form1.rh70_estrutural.focus(); 
+    document.form1.rh70_estrutural.focus();
   }
 
 }
@@ -432,25 +433,25 @@ function js_validaData() {
 	  dFim = new Date(aFim[2], aFim[1], aFim[0]);
 
 	  if (dFim < dIni) {
-			
+
 	    alert("Data final nao pode ser menor que a data inicial.");
 	    document.form1.data2.value = '';
 	    return false;
 
 	  }
 	  return true;
-    
+
     } else{
 
 	    alert('Preencha o período.');
 	    return false
 
     }
-	
+
 }
 
 function js_verificaProcedimentos(oCheck, sJaSel) {
- 
+
   if (sJaSel == 'true' || !oCheck.checked) {
     return true;
   }
@@ -475,10 +476,10 @@ function js_verificaProcedimentos(oCheck, sJaSel) {
 
 function js_retornoVerificaProcedimentosEspecMedico(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
- 
+
     alert('Este pedido de TFD possui procedimentos que não são abrangidos pela '+
           'especialidade do regulador selecionada.'
          );
@@ -493,25 +494,25 @@ function js_mandaDados(iTipo) {
   if (!js_validaData()) {
 	  return false;
   }
-  
+
   sDataini = 'dataini='+$F('data1');
   sDatafim = '&datafim='+$F('data2');
   iRhcbo   = '&codigoespec='+$F('rh70_estrutural');
-  iRhdescr = '&especialidade='+$F('rh70_descr');    
+  iRhdescr = '&especialidade='+$F('rh70_descr');
 
   oJan = window.open('tfd2_pedidosregulados001.php?'+sDataini+sDatafim+iRhcbo+iRhdescr+'&iTipo='+iTipo,'',
                      'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 '
                     );
   oJan.moveTo(0,0);
-	 
+
 }
 
-function js_limpaGrid() { 
+function js_limpaGrid() {
   oDBGrid.clearAll(true);
 }
 
 function js_limpar() {
-  
+
   oDBGrid.clearAll(true);
   $('data1').value = '';
   $('data2').value = '';

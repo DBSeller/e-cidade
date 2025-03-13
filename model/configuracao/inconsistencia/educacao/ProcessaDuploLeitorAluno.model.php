@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once 'model/configuracao/inconsistencia/iExcecaoProcessamentoDependencias.interface.php';
+require_once modification("model/configuracao/inconsistencia/iExcecaoProcessamentoDependencias.interface.php");
 
 /**
  * Processa as exceções encontradas quando tentamos remover os duplos de leitoraluno
@@ -95,7 +95,30 @@ class ProcessaDuploLeitorAluno implements IExcecaoProcessamentoDependencias {
   		 
   		if ( $oDaoLeitorAlunoCorreto->numrows > 0 ) {
   			$iLeitorCorreto = db_utils::fieldsMemory($rsLeitorAlunoCorreto, 0)->bi11_leitor;
-  		}
+  		} else {
+        
+        // Insere aluno na tabela leitor caso ainda não possua registro
+        $oDaoLeitor = new cl_leitor();
+        $oDaoLeitor->incluir( null );
+        
+        if ( $oDaoLeitor->erro_status == "0" ) {
+	  			
+	  			$this->sMensagemErro = str_replace("\\n", "\n", $oDaoLeitor->erro_sql);
+	  			return false;
+	  		}
+        
+        $iLeitorCorreto = $oDaoLeitor->bi10_codigo;
+        
+        $oDaoLeitorAluno->bi11_leitor = $iLeitorCorreto;
+        $oDaoLeitorAluno->bi11_aluno  = $iChaveCorreta;
+        $oDaoLeitorAluno->incluir( null );
+        
+        if ( $oDaoLeitorAluno->erro_status == "0" ) {
+	  			
+	  			$this->sMensagemErro = str_replace("\\n", "\n", $oDaoLeitorAluno->erro_sql);
+	  			return false;
+	  		}
+      }
   		
   		/**
   		 * Caso o leitor possua carteira cadastrada, alteramos as informacoes desta

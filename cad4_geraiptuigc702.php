@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,28 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_iptucalc_classe.php");
-require_once("classes/db_iptunump_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_massamat_classe.php");
-require_once("classes/db_iptuender_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_db_docparag_classe.php");
-require_once("classes/db_arrematric_classe.php");
-require_once("classes/db_listadoc_classe.php");
-require_once("classes/db_db_layouttxtgeracao_classe.php");
-require_once("classes/db_cadconvenio_classe.php");
-require_once("model/convenio.model.php");
-require_once("model/regraEmissao.model.php");
-require_once("model/recibo.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_iptucalc_classe.php"));
+require_once(modification("classes/db_iptunump_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_massamat_classe.php"));
+require_once(modification("classes/db_iptuender_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_db_docparag_classe.php"));
+require_once(modification("classes/db_arrematric_classe.php"));
+require_once(modification("classes/db_listadoc_classe.php"));
+require_once(modification("classes/db_db_layouttxtgeracao_classe.php"));
+require_once(modification("classes/db_cadconvenio_classe.php"));
+require_once(modification("model/convenio.model.php"));
+require_once(modification("model/regraEmissao.model.php"));
+require_once(modification("model/recibo.model.php"));
 
 $cliptucalc      	     = new cl_iptucalc;
 $cliptuender     	     = new cl_iptuender;
@@ -100,11 +100,11 @@ aproveitei para colocar a barra de progresso no teu prog
 
 
     $modelo = 2;
-    $result = pg_exec("begin") or die("erro begin");
+    $result = db_query("begin") or die("erro begin");
     $sqlinst = "select * from db_config where codigo = ".db_getsession("DB_instit");
-    db_fieldsmemory(pg_exec($sqlinst),0,true);
+    db_fieldsmemory(db_query($sqlinst),0,true);
     $sqlvenc = "select current_date + '30 days'::interval as db_datausu";
-    $resultvenc = pg_exec($sqlvenc) or die($sqlvenc);
+    $resultvenc = db_query($sqlvenc) or die($sqlvenc);
     db_fieldsmemory($resultvenc, 0);
     
     $DB_DATACALC = mktime(0,0,0,substr($db_datausu,5,2),substr($db_datausu,8,2),substr($db_datausu,0,4));
@@ -114,7 +114,7 @@ aproveitei para colocar a barra de progresso no teu prog
     inner join cadvencdesc on q92_codigo = j18_vencim
     inner join arretipo on q92_tipo = k00_tipo
     where j18_anousu = $anousu";
-    $resulttipo = pg_exec($sqltipo) or die($sqltipo);
+    $resulttipo = db_query($sqltipo) or die($sqltipo);
     db_fieldsmemory($resulttipo, 0);
     
     $tipos			= $q92_tipo;
@@ -242,7 +242,7 @@ aproveitei para colocar a barra de progresso no teu prog
 							   inner join arrecad on j20_numpre = k00_numpre
 						 where j20_anousu = $anousu";
 						 
-		$resultparc = pg_exec($sqlparc) or die($sqlparc);
+		$resultparc = db_query($sqlparc) or die($sqlparc);
 
 		
 		$denominacaoexercicio = $anos;
@@ -268,7 +268,7 @@ aproveitei para colocar a barra de progresso no teu prog
 					  from cfiptu
 					  	   inner join cadvencdesc on q92_codigo = j18_vencim
 					 where j18_anousu = $anousu";
-		$resulttipo = pg_exec($sqltipo) or die($sqltipo);
+		$resulttipo = db_query($sqltipo) or die($sqltipo);
 		db_fieldsmemory($resulttipo, 0);
     
     
@@ -281,23 +281,23 @@ aproveitei para colocar a barra de progresso no teu prog
     $contador = 0;
     
     $identificacao = "0000";
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "A");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "A");
     $sequencialregistro++;
     
     $identificacao = "0000";
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "B");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "B");
     $sequencialregistro++;
     
     $identificacao = "0000";
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "C");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "C");
     $sequencialregistro++;
     
     $identificacao = "0000";
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "D");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "D");
     $sequencialregistro++;
     
     $identificacao = "0000";
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "E");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "E");
     $sequencialregistro++;
     
     // segmento F
@@ -310,19 +310,19 @@ aproveitei para colocar a barra de progresso no teu prog
     $tamanhoidentobj	=	17;
     $mascaraidentobj 	= str_repeat("9",$tamanhoidentobj);
     $titulocaractobj	= "EXERCICIOS ENVOLVIDOS";
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "F");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "F");
     $sequencialregistro++;
     
     $identificacao				= "0001";
     $numerocaractobj			= 1;
     $denominacaocaractobj = "INICIAL";
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "G");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "G");
     $sequencialregistro++;
     
     $identificacao				= "0002";
     $numerocaractobj			= 2;
     $denominacaocaractobj = "FINAL";
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "G");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "G");
     $sequencialregistro++;
     
     // primeira composicao
@@ -331,7 +331,7 @@ aproveitei para colocar a barra de progresso no teu prog
     $codigoreceita				= 1;
     $descricaoreceita			= "VALOR CORRIGIDO";
     $valorpercentualaliq	= 0;
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "K");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "K");
     $sequencialregistro++;
     
     // segunda composicao
@@ -340,7 +340,7 @@ aproveitei para colocar a barra de progresso no teu prog
     $codigoreceita				= 1;
     $descricaoreceita			= "ENCARGOS";
     $valorpercentualaliq	= 0;
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,1, "K");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,1, "K");
     $sequencialregistro++;
     
     db_preparageratxt($lista, $k00_tipo);
@@ -354,7 +354,7 @@ aproveitei para colocar a barra de progresso no teu prog
       db_atutermometro($x,$numrowslistadeb,'termometro');
       
       $sqlfin    = "select * from iptunump where j20_anousu = $anousu and j20_matric = $j23_matric";
-      $resultfin = pg_exec($sqlfin) or die($sqlfin);
+      $resultfin = db_query($sqlfin) or die($sqlfin);
 
   	  if (pg_numrows($resultfin) == 0) {
 		continue;
@@ -362,7 +362,7 @@ aproveitei para colocar a barra de progresso no teu prog
       db_fieldsmemory($resultfin, 0);
 
 	  $sql			  = "select * from arrecad where k00_numpre = $j20_numpre";
-	  $resulttipoparc = pg_exec($sql) or die($sql);
+	  $resulttipoparc = db_query($sql) or die($sql);
 	  
 	  if (pg_numrows($resulttipoparc) == 0){
 		continue;
@@ -404,7 +404,7 @@ aproveitei para colocar a barra de progresso no teu prog
       $nometransmitente			= "";
       $nomecartorio					= "";
       $identificacao				= "0000";
-      db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,3, "S");
+      db_setaPropriedadesLayoutTxt($cldb_layouttxr,3, "S");
       $sequencialregistro++;
       
       $nomecontrib					= $z01_nome;
@@ -422,7 +422,7 @@ aproveitei para colocar a barra de progresso no teu prog
       $cod2ativcontrib				= 0;
       $cod3ativcontrib				= 0;
       $identificacao					= "0000";
-      db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,3, "T");
+      db_setaPropriedadesLayoutTxt($cldb_layouttxr,3, "T");
       $sequencialregistro++;
       
       // segmento U //
@@ -434,16 +434,16 @@ aproveitei para colocar a barra de progresso no teu prog
       $valor2rec							= $k22_encargos;
       $aliq2rec								= 0;
       
-      db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,3, "U");
+      db_setaPropriedadesLayoutTxt($cldb_layouttxr,3, "U");
       $sequencialregistro++;
       
-      db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,3, "V");
+      db_setaPropriedadesLayoutTxt($cldb_layouttxr,3, "V");
       $sequencialregistro++;
       
       $identificacao					= "0001";
       $conteudo1caract				= $k22_exerc_ini;
       $conteudo2caract				= $k22_exerc_fim;
-      db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,3, "W");
+      db_setaPropriedadesLayoutTxt($cldb_layouttxr,3, "W");
       $sequencialregistro++;
       
       $mensagem1guia = "";
@@ -458,15 +458,15 @@ aproveitei para colocar a barra de progresso no teu prog
         db_fieldsmemory($resultparag, $parag);
         
         if ($db02_descr == "MENSAGEM1") {
-          db_separainstrucao($db02_texto, 0, &$cldb_layouttxr, 3, "X", 4, 0);
+          db_separainstrucao($db02_texto, 0, $cldb_layouttxr, 3, "X", 4, 0);
           $sequencialregistro++;
           $identificacao++;
         } elseif ($db02_descr == "MENSAGEM2") {
-          db_separainstrucao($db02_texto, 0, &$cldb_layouttxr, 3, "X", 4, 0);
+          db_separainstrucao($db02_texto, 0, $cldb_layouttxr, 3, "X", 4, 0);
           $sequencialregistro++;
           $identificacao++;
         } elseif ($db02_descr == "MENSAGEM3") {
-          db_separainstrucao($db02_texto, 0, &$cldb_layouttxr, 3, "X", 4, 0);
+          db_separainstrucao($db02_texto, 0, $cldb_layouttxr, 3, "X", 4, 0);
           $sequencialregistro++;
           $identificacao++;
         }
@@ -502,7 +502,7 @@ aproveitei para colocar a barra de progresso no teu prog
         db_fim_transacao();
         
         $sql = "select sum(k00_valor) as k00_valor from recibopaga where k00_numnov = $k03_numpre_calcula";
-        $resultrecibo = pg_exec($sql) or die($sql);
+        $resultrecibo = db_query($sql) or die($sql);
         db_fieldsmemory($resultrecibo, 0);
         
         $identificacao				= $processados;
@@ -519,7 +519,7 @@ aproveitei para colocar a barra de progresso no teu prog
         
         $sqlvalor = "select k00_tercdigrecnormal from arretipo 
 										 where k00_tipo = $k00_tipo";
-        $resultvalor = pg_exec($sqlvalor) or die($sqlvalor);
+        $resultvalor = db_query($sqlvalor) or die($sqlvalor);
         db_fieldsmemory($resultvalor,0);
         
         if(!isset($k00_tercdigrecnormal) || $k00_tercdigrecnormal == ""){
@@ -549,7 +549,7 @@ aproveitei para colocar a barra de progresso no teu prog
         $digitoverifparte4	= substr($barras, 47, 01);
         
         $identificacao = $contador2 + 1;
-        db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,3, "Y");
+        db_setaPropriedadesLayoutTxt($cldb_layouttxr,3, "Y");
         $sequencialregistro++;
         
       }
@@ -570,7 +570,7 @@ aproveitei para colocar a barra de progresso no teu prog
     
     $quantidaderegistros = $sequencialregistro;
     $identificacao = "9999";
-    db_setaPropriedadesLayoutTxt(&$cldb_layouttxr,5, "Z");
+    db_setaPropriedadesLayoutTxt($cldb_layouttxr,5, "Z");
 
     
     $gravarconteudo = file($nomearq);
@@ -592,7 +592,7 @@ aproveitei para colocar a barra de progresso no teu prog
     if ($sqlerro == true) {
       die("erro: " . $cldb_layouttxtgeracao->erro_msg);
     } else {
-      $result = pg_exec("commit") or die("erro ao comitar");
+      $result = db_query("commit") or die("erro ao comitar");
     }
 
     echo "<script>";

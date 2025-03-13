@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -262,7 +262,7 @@ function js_getEspecMed(){
 
 function js_retornoGetEspecMedico(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   if (oRetorno.iStatus != 1) {
 
     alert('Nenhuma especialidade encontrada.');
@@ -295,7 +295,7 @@ function js_verificaProcedimento() {
 
 function js_retornoVerificaProcedimentosEspecMedico(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   if (oRetorno.iStatus != 1) {
 	 
     alert('Este pedido de TFD possui procedimentos que não são abrangidos pelas '+

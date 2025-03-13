@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_liborcamento.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulo = new rotulocampo;
 $oRotulo->label("ac16_sequencial");
@@ -45,145 +45,145 @@ $oRotulo->label("descrdepto");
 $oRotulo->label("ac50_descricao");
 ?>
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<?php
-  db_app::load("scripts.js, strings.js, prototype.js,datagrid.widget.js, widgets/dbautocomplete.widget.js");
-  db_app::load("widgets/windowAux.widget.js");
-?>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
-<style>
- .fora {background-color: #d1f07c;}
-</style>
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
-  <center>
-    <form name="form1" method="post" action="con2_relatorioacordosavencer002.php" target='relatorioacordosavencer'>
-      <input type="hidden" id="listaacordogrupo"             name="listaacordogrupo"             value="" />
-      <input type="hidden" id="listacontratado"              name="listacontratado"              value="" />
-      <input type="hidden" id="ordemdescricao"               name="ordemdescricao"               value="" />
-      <input type="hidden" id="sDepartamentos"               name="sDepartamentos"               value="" />
-    <table style="margin-top: 20px;">
-      <tr>
-        <td>
-          <fieldset>
-            <legend>
-              <b>Filtro Acordos à Vencer</b>
-            </legend>
-            <table border="0" width="100%">
-            <tr>
-              <td>
-                <b>Filtrar por:</b>
-              </td>
-              <td>
-                <?php
-                  $aFiltros = array(1 => "Acordo", 2 => "Departamento");
-                  db_select("iAgrupamento", $aFiltros, true, 1, "class='select' onchange='js_verificaFiltro(this.value)'");
-                ?>
-              </td>
-            </tr>
-            <tr id="trDepartamentos" style="display:none;">
-              <td colspan="4">
-                <table>
-                  <tr>
-                    <td nowrap="nowrap"><?db_ancora('<b>Departamento:</b>', 'js_pesquisaDepartamento(true);', 1)?></td>
-                    <td nowrap="nowrap">
-                      <?php
-                        db_input('iCodigoDepartamento', 17, @$Icoddepto, true, 'text', 1, " onchange='js_pesquisaDepartamento(false);' ");
-                        db_input('sDescricaoDepartamento', 26, @$Idescrdepto, true, 'text', 3, "");
-                      ?>
-                    </td>
-                    <td>
-                      <input type="button" onClick="js_lancarDepartamento()" value="Lançar" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">
-                      <div id="ctnDepartamentos"></div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr id="trAcordos">
-              <td nowrap title="<?php echo $Tac16_sequencial; ?>" width="130">
-                 <?php
-                  db_ancora($Lac16_sequencial, "js_acordo(true);",1);
-                 ?>
-              </td>
-              <td colspan="3">
-                <?php
-                  db_input('ac16_sequencial', 10, $Iac16_sequencial, true, 'text', 1, "onchange='js_acordo(false);'");
-                  db_input('ac16_resumoobjeto', 40, $Iac16_resumoobjeto, true, 'text', 3);
-                ?>
-              </td>
-            </tr>
-            
-            <tr>
-              <td nowrap title="<?=@$Tac50_descricao?>">
-    		        <?php
-    		          db_ancora('<b>Categoria:</b>', "onchange=pesquisaCategoria(true)", 1);
-    		        ?>
-    		      </td>
-    		      <td colspan="3">
-    		        <?php
-    		          db_input('ac50_sequencial', 10, $Iac50_descricao, true, 'text', 1,
-    		                   "style='width: 90px;' onchange=pesquisaCategoria(false)");
-    		          ?>
-                <?php
-    		          db_input('ac50_descricao', 40, $Iac50_descricao, true, 'text', 3);
-    		        ?>
-    		      </td>
-    		    </tr>
-            
-            <tr>
-              <td align="left" title="<?=@$Tac16_datainicio?>">
-                <?=@$Lac16_datainicio?>
-              </td>
-              <td align="left">
-                <?php
-                  db_inputdata('ac16_datainicio',@$ac16_datainicio_dia,@$ac16_datainicio_mes,@$ac16_datainicio_ano,true,
-                               'text',1);
-                ?>
-              </td>
-              <td align="right" title="<?=@$Tac16_datafim?>">
-                <?=@$Lac16_datafim?>
-              </td>
-              <td align="right">
-                <?
-                  db_inputdata('ac16_datafim',@$ac16_datafim_dia,@$ac16_datafim_mes,@$ac16_datafim_ano,true,
-                               'text',1)
-                ?>
-              </td>
-            </tr>
-            <tr>
-              <td nowrap title="" width="100">
-                 <b>Ordem:</b>
-              </td>
-              <td colspan="3">
-                <?
-                  $aOrdem = array(1=>'Data de Vigência',
-                                  2=>'Contratado');
-                  db_select('ordem', $aOrdem, true, 1, "style='width: 100%;'");
-                ?>
-              </td>
-            </tr>
-          </table>
-          </fieldset>
-        </td>
-      </tr>
-      <tr>
-        <td style="text-align: center;">
-          <input type='submit' value='Gerar Relatório' onclick="return js_gerarRelatorio();">
-        </td>
-      </tr>
-    </table>
-    </form>
-  </center>
-</body>
+  <head>
+  <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+  <?php
+    db_app::load("scripts.js, strings.js, prototype.js,datagrid.widget.js, widgets/dbautocomplete.widget.js");
+    db_app::load("widgets/windowAux.widget.js");
+  ?>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Expires" CONTENT="0">
+  <link href="estilos.css" rel="stylesheet" type="text/css">
+  <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
+  <style>
+  .fora {background-color: #d1f07c;}
+  </style>
+  </head>
+  <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
+    <div class="container">
+      <form name="form1" method="post" action="con2_relatorioacordosavencer002.php" target='relatorioacordosavencer'>
+        <input type="hidden" id="listaacordogrupo"             name="listaacordogrupo"             value="" />
+        <input type="hidden" id="listacontratado"              name="listacontratado"              value="" />
+        <input type="hidden" id="ordemdescricao"               name="ordemdescricao"               value="" />
+        <input type="hidden" id="sDepartamentos"               name="sDepartamentos"               value="" />
+      <table style="margin-top: 20px;">
+        <tr>
+          <td>
+            <fieldset>
+              <legend>
+                <b>Filtro Acordos à Vencer</b>
+              </legend>
+              <table border="0" width="100%">
+              <tr>
+                <td>
+                  <b>Filtrar por:</b>
+                </td>
+                <td>
+                  <?php
+                    $aFiltros = array(1 => "Acordo", 2 => "Departamento");
+                    db_select("iAgrupamento", $aFiltros, true, 1, "class='select' onchange='js_verificaFiltro(this.value)'");
+                  ?>
+                </td>
+              </tr>
+              <tr id="trDepartamentos" style="display:none;">
+                <td colspan="4">
+                  <table>
+                    <tr>
+                      <td nowrap="nowrap"><?db_ancora('<b>Departamento:</b>', 'js_pesquisaDepartamento(true);', 1)?></td>
+                      <td nowrap="nowrap">
+                        <?php
+                          db_input('iCodigoDepartamento', 17, @$Icoddepto, true, 'text', 1, " onchange='js_pesquisaDepartamento(false);' ");
+                          db_input('sDescricaoDepartamento', 26, @$Idescrdepto, true, 'text', 3, "");
+                        ?>
+                      </td>
+                      <td>
+                        <input type="button" onClick="js_lancarDepartamento()" value="Lançar" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="3">
+                        <div id="ctnDepartamentos"></div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr id="trAcordos">
+                <td nowrap title="<?php echo $Tac16_sequencial; ?>" width="130">
+                  <?php
+                    db_ancora($Lac16_sequencial, "js_acordo(true);",1);
+                  ?>
+                </td>
+                <td colspan="3">
+                  <?php
+                    db_input('ac16_sequencial', 10, $Iac16_sequencial, true, 'text', 1, "onchange='js_acordo(false);'");
+                    db_input('ac16_resumoobjeto', 40, $Iac16_resumoobjeto, true, 'text', 3);
+                  ?>
+                </td>
+              </tr>
+              
+              <tr>
+                <td nowrap title="<?=@$Tac50_descricao?>">
+                  <?php
+                    db_ancora('<b>Categoria:</b>', "onchange=pesquisaCategoria(true)", 1);
+                  ?>
+                </td>
+                <td colspan="3">
+                  <?php
+                    db_input('ac50_sequencial', 10, $Iac50_descricao, true, 'text', 1,
+                            "style='width: 90px;' onchange=pesquisaCategoria(false)");
+                    ?>
+                  <?php
+                    db_input('ac50_descricao', 40, $Iac50_descricao, true, 'text', 3);
+                  ?>
+                </td>
+              </tr>
+              
+              <tr>
+                <td align="left" title="<?=@$Tac16_datainicio?>">
+                  <?=@$Lac16_datainicio?>
+                </td>
+                <td align="left">
+                  <?php
+                    db_inputdata('ac16_datainicio',@$ac16_datainicio_dia,@$ac16_datainicio_mes,@$ac16_datainicio_ano,true,
+                                'text',1);
+                  ?>
+                </td>
+                <td align="right" title="<?=@$Tac16_datafim?>">
+                  <?=@$Lac16_datafim?>
+                </td>
+                <td align="right">
+                  <?php
+                    db_inputdata('ac16_datafim',@$ac16_datafim_dia,@$ac16_datafim_mes,@$ac16_datafim_ano,true,
+                                'text',1)
+                  ?>
+                </td>
+              </tr>
+              <tr>
+                <td nowrap title="" width="100">
+                  <b>Ordem:</b>
+                </td>
+                <td colspan="3">
+                  <?php
+                    $aOrdem = array(1=>'Data de Vigência',
+                                    2=>'Contratado');
+                    db_select('ordem', $aOrdem, true, 1, "style='width: 100%;'");
+                  ?>
+                </td>
+              </tr>
+            </table>
+            </fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">
+            <input type='submit' value='Gerar Relatório' onclick="return js_gerarRelatorio();">
+          </td>
+        </tr>
+      </table>
+      </form>
+    </div>
+  </body>
 </html>
 <script type="text/javascript">
 function js_acordo(mostra){
@@ -237,7 +237,7 @@ function js_gerarRelatorio(){
         return false;
       }
     } else {
-      alert('Informe uma Date de Início e Data de Fim!');
+      alert('Informe uma Data de Início e Data de Fim!');
       return false;
     }
   }

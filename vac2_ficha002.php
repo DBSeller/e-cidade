@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('fpdf151/pdf.php');
-require_once('libs/db_utils.php');
-require_once('ext/php/adodb-time.inc.php');
-require_once('libs/db_stdlibwebseller.php');
+require_once(modification('fpdf151/pdf.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('ext/php/adodb-time.inc.php'));
+require_once(modification('libs/db_stdlibwebseller.php'));
 
 $oDaoCgsUnd        = db_utils::getdao('cgs_und');
 $oDaoVacVacinaDose = db_utils::getdao('vac_vacinadose');
@@ -92,7 +92,7 @@ function novoCabecalho($oPdf, $iCgs, $sNome, $dNasc, $sPai, $sMae, $sEndereco, $
 
 }
 
-function novoCalendario($oPdf, $sNome, $iX, &$iY) {
+function novoCalendario($oPdf, $sNome, &$iX, &$iY) {
 
   $oPdf->setfont('arial', 'B', 8);
   $oPdf->setXY($iX, $iY);
@@ -104,7 +104,7 @@ function novoCalendario($oPdf, $sNome, $iX, &$iY) {
 
 }
 
-function novaVacina($oPdf, $sNome, $iX, &$iY) {
+function novaVacina($oPdf, $sNome, &$iX, &$iY) {
   
   $oPdf->setfont('arial', 'B', 8);
   $oPdf->setXY($iX, $iY);
@@ -123,7 +123,7 @@ function novaVacina($oPdf, $sNome, $iX, &$iY) {
 
 }
 
-function novaDose($oPdf, $sNome, $dVencimento, $dAplicada, $iX, &$iY) {
+function novaDose($oPdf, $sNome, $dVencimento, $dAplicada, &$iX, &$iY) {
 
   $oPdf->setfont('arial', 'B', 6);
   $oPdf->setXY($iX, $iY);
@@ -261,19 +261,19 @@ $oDados          = db_utils::fieldsmemory($rsVacVacinaDose, 0);
 $iCalendario     = $oDados->vc05_i_codigo;
 $iVacina         = $oDados->vc06_i_codigo;
 $lFlagCalendario = false;
-novoCalendario($oPdf, $oDados->vc05_c_descr, &$iX, &$iY);
-novaVacina($oPdf, $oDados->vc06_c_descr, &$iX, &$iY);
+novoCalendario($oPdf, $oDados->vc05_c_descr, $iX, $iY);
+novaVacina($oPdf, $oDados->vc06_c_descr, $iX, $iY);
 for ($iCont = 0; $iCont < $iLinhas; $iCont++) {
   
   $oDados = db_utils::fieldsmemory($rsVacVacinaDose, $iCont);
   if ($iCalendario != $oDados->vc05_i_codigo) {
    
-    fechaVacina($oPdf, $iX, &$iY);
+    fechaVacina($oPdf, $iX, $iY);
     $iX         += 50;
     $iY          = $iYini;
     $iCalendario = $oDados->vc05_i_codigo;
     $iVacina     = -1;
-    novoCalendario($oPdf, $oDados->vc05_c_descr, &$iX, &$iY);
+    novoCalendario($oPdf, $oDados->vc05_c_descr, $iX, $iY);
     $lFlagCalendario = true;
 
   }
@@ -281,10 +281,10 @@ for ($iCont = 0; $iCont < $iLinhas; $iCont++) {
   if ($iVacina != $oDados->vc06_i_codigo) {
  
     if (!$lFlagCalendario) {
-      fechaVacina($oPdf, $iX, &$iY);
+      fechaVacina($oPdf, $iX, $iY);
     }
     $iVacina = $oDados->vc06_i_codigo;
-    novaVacina($oPdf, $oDados->vc06_c_descr, &$iX, &$iY);
+    novaVacina($oPdf, $oDados->vc06_c_descr, $iX, $iY);
     $lFlagCalendario = false;
 
   }
@@ -293,10 +293,10 @@ for ($iCont = 0; $iCont < $iLinhas; $iCont++) {
                                    $oDados->vc07_i_faixainidias + $oDados->vc07_i_diasatraso, 
                                    $oDados->vc07_i_faixainimes, $oDados->vc07_i_faixainiano
                                   );
-  novaDose($oPdf, $oDados->vc03_c_descr, $dVencimento, formataData($oDados->vc16_d_dataaplicada, 2), &$iX, &$iY);
+  novaDose($oPdf, $oDados->vc03_c_descr, $dVencimento, formataData($oDados->vc16_d_dataaplicada, 2), $iX, $iY);
 
 }
-fechaVacina($oPdf, $iX, &$iY);
+fechaVacina($oPdf, $iX, $iY);
 
 $oPdf->Output();
   

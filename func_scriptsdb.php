@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_classesgenericas.php");
-db_postmemory($HTTP_POST_VARS);
-db_postmemory($HTTP_GET_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
+db_postmemory($_POST);
+db_postmemory($_GET);
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+parse_str($_SERVER["QUERY_STRING"]);
+$debug = isset($debug) ? $debug : null;
 
 
 $subpes = db_anofolha()."/".db_mesfolha();
@@ -54,28 +55,52 @@ if($opcao == "avos"){
         </script>
        ";
 }else if($opcao == "vfalta"){
+
+  echo "<script>nDiasGozoFerias = null;</script>";
   
-	$vfal = tabela_gozo($nfalt,$navos);
+  $vfal = tabela_gozo($nfalt,$navos);
 
   if($difperaq < 24 ){
-  	
-  	if ( ($difperaq%2) == 0 ) {
-	    $vfal = ($difperaq/2) * 2.5; // Dois dias e meio
-  	}
+    
+    if ( ($difperaq%2) == 0 ) {
+      $vfal = ($difperaq/2) * 2.5; // Dois dias e meio
+    }
     $falant = $vfal;
     $vfal = (int)$vfal;
     if($falant > $vfal){
       $vfal ++;
     }
   }
-  if (!isset($iVfal)){
-  	
-  	$iVfal = "1";
+
+  if(isset($nDiasGozoFerias) && $nDiasGozoFerias > 30) {
+    $vfal = $nDiasGozoFerias;
+    echo "<script>
+            nDiasGozoFerias = $nDiasGozoFerias;
+          </script>";
   }
-	echo "
+
+  if (!isset($iVfal)){
+    
+    $iVfal = "1";
+  }
+  echo "
         <script>
           parent.document.form1.r30_ndias.value = '".$vfal."';
+          parent.document.form1.r30_ndias.readOnly                 = true;
+          parent.document.form1.r30_ndias.style.backgroundColor    = '#DEB887';
           parent.js_montaselect($vfal, false);
+          
+          if(nDiasGozoFerias > 30){
+
+            parent.document.form1.r30_ndias.readOnly              = false;
+            parent.document.form1.r30_ndias.style.backgroundColor = '#FFFFFF';
+              
+            /**
+             * Adicionao a função ao evento do elemento
+             */
+            parent.r30_ndias.addEventListener('change', parent.js_validamtipo);
+
+          }
           if($vfal == 0){
             if(confirm('Este funcionário perdeu o direito à férias - Motivo: faltas.\\n\\nConfirma gravação do período de Férias?')){
               obj = parent.document.createElement('input');
@@ -86,7 +111,7 @@ if($opcao == "avos"){
 
               parent.document.form1.action = 'pes4_cadferia004.php';
               parent.document.form1.submit();
-              
+
             }else{
               parent.location.href = 'pes4_cadferia001.php';
             }
@@ -110,8 +135,14 @@ if($opcao == "avos"){
   $nsaldo = dias_gozo("",$mtipo,$ndias);
   echo "
         <script>
-          parent.document.form1.nsaldo.value = '$nsaldo';
+
+          if(parent.document.form1.nDiasGozoFerias.value > 30 && parent.document.form1.mtipo.options[parent.document.form1.mtipo.selectedIndex].value == '12') {
+            parent.document.form1.nsaldo.value = parent.document.form1.r30_ndias.value;
+          } else {
+            parent.document.form1.nsaldo.value = '$nsaldo';
+          }
           parent.js_verificadataini(1);
+
         </script>
        ";
 }else if($opcao == "vafast"){
@@ -267,8 +298,8 @@ if($opcao == "avos"){
   }
 
 }else if($opcao == "enviarescis"){
-  include("classes/db_rhregime_classe.php");
-  include("classes/db_gerfs13_classe.php");
+  require_once(modification("classes/db_rhregime_classe.php"));
+  require_once(modification("classes/db_gerfs13_classe.php"));
   $clrhregime = new cl_rhregime;
   $clgerfs13 = new cl_gerfs13;
   echo "
@@ -276,7 +307,17 @@ if($opcao == "avos"){
           parent.document.form1.pagar_13_salario_na_rescisao.value = 'true';
         </script>
        ";
-  $result_rescisao = $clrhregime->sql_record($clrhregime->sql_query_rescisao(null,"distinct r59_13sal,r59_479clt,r59_mfgts","","rh30_codreg= $regime and r59_causa=$causa and r59_13sal='t'"));
+  $where  = " rh30_codreg = {$regime}";
+  $where .= " and r59_causa = {$causa}";
+  $where .= " and r59_13sal = 't'";
+  $where .= " and r59_instit = rh30_instit ";
+  $where .= " and r59_caub = '{$subcausa}'";
+  $where .= " and r59_menos1 = '{$menos1}'";
+  $sql = $clrhregime->sql_query_rescisao(null,
+                                         "distinct r59_13sal,r59_479clt,r59_mfgts",
+                                         "",
+                                         $where);
+  $result_rescisao = $clrhregime->sql_record($sql);
   if($clrhregime->numrows > 0){
     db_fieldsmemory($result_rescisao, 0);
     $mensagem = "";
@@ -289,7 +330,7 @@ if($opcao == "avos"){
     if($mensagem != ""){
       db_msgbox($mensagem);
     }
-    $result_gerfs13 = $clgerfs13->sql_record($clgerfs13->sql_query_file($rh05_recis_ano,$rh05_recis_mes,$regist,null,"*"));
+    $result_gerfs13 = $clgerfs13->sql_record($clgerfs13->sql_query_file(db_anofolha(),db_mesfolha(),$regist,null,"*"));
     if($clgerfs13->numrows > 0){
       
       echo "
@@ -307,7 +348,7 @@ if($opcao == "avos"){
         </script>
        ";
 }else if($opcao == "dadosrescis"){
-  include("classes/db_rhpesrescisao_classe.php");
+  require_once(modification("classes/db_rhpesrescisao_classe.php"));
   $clrhpesrescisao = new cl_rhpesrescisao;
   $result_dadosrescis = $clrhpesrescisao->sql_record($clrhpesrescisao->sql_query_rescisao($seqpes));
   if($clrhpesrescisao->numrows > 0){
@@ -336,9 +377,9 @@ if($opcao == "avos"){
 	 ";
   }
 }else if($opcao == "dadosdiversos"){
-  include("classes/db_pesdiver_classe.php");
+  require_once(modification("classes/db_pesdiver_classe.php"));
   $clpesdiver = new cl_pesdiver;
-  $arr_diversos = split(",",$div);
+  $arr_diversos = explode(",",$div);
   $erro = false;
   echo "
         <script>
@@ -389,3 +430,10 @@ if($opcao == "avos"){
        ";
 }
 ?>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

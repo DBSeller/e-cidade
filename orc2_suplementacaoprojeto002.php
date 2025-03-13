@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_liborcamento.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_libsys.php");
-require_once ("std/db_stdClass.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("dbagata/classes/core/AgataAPI.class");
-require_once ("model/documentoTemplate.model.php");
-require_once ("model/orcamento/suplementacao/SuplementacaoArquivoTemplate.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libsys.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbagata/classes/core/AgataAPI.class"));
+require_once(modification("model/documentoTemplate.model.php"));
+require_once(modification("model/orcamento/suplementacao/SuplementacaoArquivoTemplate.php"));
 
 $oGet              = db_utils::postMemory($_GET);
 $oDaoSuplementacao = db_utils::getDao('orcsuplem');
@@ -77,7 +77,15 @@ try {
 if ($oApiAgata->parseOpenOffice($oDocumentoTemplate->getArquivoTemplate())) {
 
   $sNomeRelatorio   = "tmp/suplementacao" . date('YmdHis') . "_" . db_getsession("DB_id_usuario") . ".pdf";
-  $lConversao       = db_stdClass::ex_oo2pdf($sCaminhoSalvoSxw, $sNomeRelatorio);
+  $sFormatoSaida    =  "docToPdf";
+
+  if ( isset($oGet->iFormatoSaida) &&  $oGet->iFormatoSaida == 2 ) {
+
+   $sNomeRelatorio   = "tmp/suplementacao" . date('YmdHis') . "_" . db_getsession("DB_id_usuario") . ".doc";
+   $sFormatoSaida    =  "docToOdt";
+  }
+  $lConversao       = DocumentConverter::$sFormatoSaida($sCaminhoSalvoSxw, $sNomeRelatorio); 
+
 
  	if (!$lConversao) {
  	  db_redireciona("db_erros.php?fechar=true&db_erro=[3]Falha ao gerar PDF !!!");

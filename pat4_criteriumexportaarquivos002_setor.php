@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -38,7 +38,7 @@ $sSqlSetor .= "  from departdiv                                    		";
 //$sSqlSetor .= "				left join departdiv on t33_divisao = t30_codigo";
 //$sSqlSetor .= " where t52_instit = $iIdDaEmpresa											";
 
-$rsSetor    		= pg_query($sSqlSetor);
+$rsSetor    		= db_query($sSqlSetor);
 $iNumeroLinhas 	= pg_num_rows($rsSetor);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {

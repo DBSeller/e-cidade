@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_editalrua_classe.php");
-include("classes/db_edital_classe.php");
-include("classes/db_editalproj_classe.php");
-include("classes/db_editalruaproj_classe.php");
-include("classes/db_contlot_classe.php");
-include("classes/db_contlotv_classe.php");
-include("classes/db_editalserv_classe.php");
-include("classes/db_projmelhoriasmatric_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_editalrua_classe.php"));
+include(modification("classes/db_edital_classe.php"));
+include(modification("classes/db_editalproj_classe.php"));
+include(modification("classes/db_editalruaproj_classe.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("classes/db_contlotv_classe.php"));
+include(modification("classes/db_editalserv_classe.php"));
+include(modification("classes/db_projmelhoriasmatric_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -189,7 +189,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
             $clcontlotv->d06_idbql=$j01_idbql;
             $clcontlotv->d06_tipos=$d04_tipos;
             $clcontlotv->d06_fracao=$d41_testada+$d41_eixo;
-	    $clcontlotv->d06_valor = $valor_contri;
+      	    $clcontlotv->d06_valor = $valor_contri;
             $clcontlotv->incluir($d02_contri,$j01_idbql,$d04_tipos);
             if($clcontlotv->erro_status=='0'){
               $clcontlotv->erro(true,false);
@@ -278,7 +278,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmeditalruaalt.php");
+	include(modification("forms/db_frmeditalruaalt.php"));
 	?>
     </center>
 	</td>

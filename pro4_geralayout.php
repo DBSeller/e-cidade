@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,28 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_obrasresp_classe.php");
-include("classes/db_obrastiporesp_classe.php");
-include("classes/db_obraspropri_classe.php");
-include("classes/db_obraslote_classe.php");
-include("classes/db_obraslotei_classe.php");
-include("classes/db_obrasender_classe.php");
-include("classes/db_obrasalvara_classe.php");
-include("classes/db_obrashabite_classe.php");
-include("classes/db_obrasconstr_classe.php");
-include("classes/db_obraslayout_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_obras_classe.php");
-include("classes/db_db_cepmunic_classe.php");
-include("classes/db_obrasenvio_classe.php");
-include("classes/db_obrasenvioreg_classe.php");
-include("classes/db_obrasenvioreghab_classe.php");
-include("classes/db_obrascaractarqsisobra_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_obrasresp_classe.php"));
+include(modification("classes/db_obrastiporesp_classe.php"));
+include(modification("classes/db_obraspropri_classe.php"));
+include(modification("classes/db_obraslote_classe.php"));
+include(modification("classes/db_obraslotei_classe.php"));
+include(modification("classes/db_obrasender_classe.php"));
+include(modification("classes/db_obrasalvara_classe.php"));
+include(modification("classes/db_obrashabite_classe.php"));
+include(modification("classes/db_obrasconstr_classe.php"));
+include(modification("classes/db_obraslayout_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_obras_classe.php"));
+include(modification("classes/db_db_cepmunic_classe.php"));
+include(modification("classes/db_obrasenvio_classe.php"));
+include(modification("classes/db_obrasenvioreg_classe.php"));
+include(modification("classes/db_obrasenvioreghab_classe.php"));
+include(modification("classes/db_obrascaractarqsisobra_classe.php"));
 
 $clobras								 = new cl_obras;
 $clobraslayout					 = new cl_obraslayout;
@@ -121,7 +121,7 @@ if(isset($reenviar)){
 									left join db_cepmunic on trim(db10_munic) = trim(upper(munic))
 									where upper(trim(munic)) like trim(db_cepmunic.db10_munic) and prefeitura is true";
   //$result = $cldb_config->sql_record($cldb_config->sql_query("","cgc,nomeinst,munic,db_cepmunic.db10_codibge","","upper(trim(munic)) like trim(db_cepmunic.db10_munic) and prefeitura is true"));
-	$result = pg_exec($sql_config) or die($sql_config);
+	$result = db_query($sql_config) or die($sql_config);
   @db_fieldsmemory($result,0);
 
   $resobras = $clobras->sql_record($clobras->sql_query("","*","ob01_codobra"));
@@ -140,13 +140,13 @@ if(isset($reenviar)){
 
    if (@$dtini == "" or !isset($dtini)) {
      $sql = "select min(ob04_data) as dtini from obrasalvara";
-     $result = pg_exec($sql);
+     $result = db_query($sql);
      db_fieldsmemory($result,0);
    }
 
    if (@$dtfim == "" or !isset($dtfim)) {
      $sql = "select max(ob04_data) as dtfim from obrasalvara";
-     $result = pg_exec($sql);
+     $result = db_query($sql);
      db_fieldsmemory($result,0);
    }
    
@@ -771,10 +771,10 @@ function teste(){
 }
 function js_pesquisaob04_codobra(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_obras','func_obrashabite.php?layout=true&funcao_js=parent.js_mostraobras1|ob01_codobra|ob01_nomeobra','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obras','func_obrashabite.php?layout=true&funcao_js=parent.js_mostraobras1|ob01_codobra|ob01_nomeobra','Pesquisa',true);
   }else{
      if(document.form1.ob01_codobra.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_obras','func_obrashabite.php?layout=true&pesquisa_chave='+document.form1.ob01_codobra.value+'&funcao_js=parent.js_mostraobras','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obras','func_obrashabite.php?layout=true&pesquisa_chave='+document.form1.ob01_codobra.value+'&funcao_js=parent.js_mostraobras','Pesquisa',false);
      }else{
        document.form1.ob01_nomeobra.value = ''; 
      }

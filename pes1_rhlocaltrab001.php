@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_utils.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-require("std/db_stdClass.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("classes/db_rhlocaltrab_classe.php");
-include("classes/db_rhlocaltrabcustoplano_classe.php");
-include("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+require(modification("std/db_stdClass.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("classes/db_rhlocaltrab_classe.php"));
+include(modification("classes/db_rhlocaltrabcustoplano_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrhlocaltrab = new cl_rhlocaltrab;
 $cldb_estrut = new cl_db_estrut;
@@ -103,7 +103,7 @@ if (isset($incluir)) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
       <center>
       <?
-      include("forms/db_frmrhlocaltrab.php");
+      include(modification("forms/db_frmrhlocaltrab.php"));
       ?>
       </center>
     </td>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_conlancamval_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conlancam_classe.php");
-include("classes/db_conlancamcompl_classe.php");
-include("classes/db_conlancamdig_classe.php");
-include("classes/db_conplano_classe.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_orcfontes_classe.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamcompl_classe.php"));
+include(modification("classes/db_conlancamdig_classe.php"));
+include(modification("classes/db_conplano_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_orcfontes_classe.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
 
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -199,7 +199,7 @@ function js_emite(opcao,origem){
 ?>
 <script>
 function js_pesquisa(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_conlancamrec','func_conlancamrec.php?funcao_js=parent.js_preenchepesquisa|o70_codrec|o57_descr|o57_fonte','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conlancamrec','func_conlancamrec.php?funcao_js=parent.js_preenchepesquisa|o70_codrec|o57_descr|o57_fonte','Pesquisa',true);
   
 }
 function js_preenchepesquisa(chave,chave2,chave3){

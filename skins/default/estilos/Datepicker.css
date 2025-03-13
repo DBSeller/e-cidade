@@ -1,29 +1,36 @@
 /**
  * "Datepicker"
  */
-.dbdatepicker .label {
-  color: #00598d;
-  font-weight: bold;
+
+.dbdatepicker {
+    border: 1px solid #326094;
+    border-radius: .3rem;
+    padding-top: 5px;
 }
 
-.dbdatepicker  tr td {
-  font-size:14px !important;
+.dbdatepicker .label {
+    color: #326094;
+    font-weight: bold;
+}
+
+.dbdatepicker tr td {
+    font-size: 14px !important;
 }
 
 .dbdatepicker a {
-  color: #00598d !important;
+    color: #326094 !important;
 }
 
 .dbdatepicker .zeraData {
-  padding-top: 5px !important;
-  padding-bottom: 10px !important;
-  display:block;
+    padding-top: 5px !important;
+    padding-bottom: 10px !important;
+    display: block;
 }
 
 .dbdatepicker .fimsemana {
-  background-color: #FFFFFF;
+    background-color: #FFFFFF;
 }
 
 .dbdatepicker .diaatual {
-  background-color: #90EE90;
+    background-color: #90EE90;
 }

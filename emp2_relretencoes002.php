@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-require("libs/db_utils.php");
-include("classes/db_cgm_classe.php");
+include(modification("fpdf151/pdf.php"));
+require(modification("libs/db_utils.php"));
+include(modification("classes/db_cgm_classe.php"));
 $oGet    = db_utils::postMemory($_GET);
 if ($oGet->dataini == '' || $oGet->datafim  == '' ){
    db_redireciona('db_erros.php?fechar=true&db_erro=Parametros informados incorretos.');
@@ -127,7 +127,7 @@ $sqlRet = "select distinct *
                      e50_data,
                      e50_codord";
 
-$rsOps       = pg_query($sqlRet) or die($sqlRet);
+$rsOps       = db_query($sqlRet) or die($sqlRet);
 $iNumRowsOps = pg_num_rows($rsOps);
 
 //die($sql1);
@@ -188,7 +188,7 @@ for ($i=0; $i < $iNumRowsOps; $i++) {
     $sql3           = " select k00_receit, k02_drecei, sum(k00_valor) as k00_valor ";
     $sql3          .= " from ({$sqlNumpres}) as x";
     $sql3          .= " group by k00_receit, k02_drecei ";
-		$rsNumpres      = pg_query($sql3) or die($sql3);
+		$rsNumpres      = db_query($sql3) or die($sql3);
     $iNumrowsNumpre = pg_num_rows($rsNumpres);
     
 		
@@ -279,7 +279,7 @@ for ($i=0; $i < $iNumRowsOps; $i++) {
     $sSQLTotRetencao .= " where k32_ordpag = {$oRetencoes->e50_codord}"; 
     $sSQLTotRetencao .="    and (arrepaga.k00_dtpaga between '{$dataini}' and '{$datafim}')";  
     $sSQLTotRetencao .="  ) as x ";
-    $oVlrRetido       = db_utils::fieldsMemory(pg_query($sSQLTotRetencao),0);
+    $oVlrRetido       = db_utils::fieldsMemory(db_query($sSQLTotRetencao),0);
 	  $pdf->SetFont('Arial','',$fonte);
 	  $pdf->Cell(22, $alt,$oRetencoes->e50_codord,0,0,"C",$fundln);
 		$pdf->Cell(22, $alt,$oRetencoes->e60_numcgm,0,0,"C",$fundln);
@@ -329,7 +329,7 @@ for ($i=0; $i < $iNumRowsOps; $i++) {
 													 inner join conlancampag on c80_codlan = c82_codlan
 			  			   	   where e53_codord = ".$oRetencoes->e50_codord;
 			 
-			 $rsPagOp = pg_query($sqlPagOp) or die($sqlPagOp);
+			 $rsPagOp = db_query($sqlPagOp) or die($sqlPagOp);
 			 $iNumRowsPagOp = pg_num_rows($rsPagOp); 
 			 
 			 for ($ii = 0; $ii < $iNumRowsPagOp; $ii++){

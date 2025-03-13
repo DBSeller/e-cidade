@@ -22,12 +22,98 @@
     </Footer>
     <DataSet>
         <DataSource>
-            <Name>dbseller</Name>
+            <Name>BASE_DEV</Name>
         </DataSource>
         <Query>
-            <Select>fc_startsession();     select certidaoexistencia.j133_sequencial                                 as numero_certidao,cgmproprietario.z01_nome                                           as proprietario_principal,cgmproprietario.z01_ender  ||', ' ||                    cgmproprietario.z01_numero ||', ' ||                    cgmproprietario.z01_compl  ||'. ' ||                    cgmproprietario.z01_bairro ||'. ' ||                    cgmproprietario.z01_munic  ||' / '||                    cgmproprietario.z01_uf     ||' '  ||                    cgmproprietario.z01_cep    ||'. '                                  as endereco_proprietario,cgmpromitente.z01_nome                                             as promitente_principal,cgmpromitente.z01_ender    ||', ' ||                    cgmpromitente.z01_numero   ||', ' ||                    cgmpromitente.z01_compl    ||'. ' ||                    cgmpromitente.z01_bairro   ||'. ' ||                    cgmpromitente.z01_munic    ||' / '||                    cgmpromitente.z01_uf       ||' '  ||                    cgmpromitente.z01_cep      ||'. '                                  as endereco_promitente,certidaoexistencia.j133_matric                                     as matricula_imovel,lote.j34_setor                                                     as setor_matricula,lote.j34_quadra                                                    as quadra_matricula,lote.j34_lote                                                      as lote_matricula,bairro.j13_descr                                                   as bairro_matricula,zonas.j50_descr                                                    as zona_matricula,setorfiscal.j90_descr                                              as setor_fiscal_matricula,setorloc.j05_descr                                                 as setor_localizacao_matricula,loteloc.j06_quadraloc                                              as quadra_localizacao_matricula,loteloc.j06_lote                                                   as lote_localizacao_matricula,ruastipoconstr.j88_sigla		||','  ||                    ruasconstrucao.j14_nome		||','  ||                    iptuconstr.j39_numero      ||','  ||                    iptuconstr.j39_compl       ||','  ||                    bairro.j13_descr                                                   as endereco_construcao,iptuant.j40_refant                                                 as ref_anterior_matricula,lote.j34_area                                                      as area_lote,(select j36_testad            from testpri           inner join testada on testada.j36_idbql = testpri.j49_idbql                             and testada.j36_face  = testpri.j49_face           where testpri.j49_idbql = iptubase.j01_idbql)                    as testada_lote,iptuconstr.j39_area                                                as area_construcao,iptuconstr.j39_idcons                                              as id_construcao,iptuconstr.j39_ano															                    as ano_construcao,(select array_to_string(array_accum(distinct j131_cadhab||'-'||j131_data), ', ')            from iptuconstrhabite           where iptuconstrhabite.j131_matric = certidaoexistencia.j133_matric             and iptuconstrhabite.j131_idcons = iptuconstr.j39_idcons)      as habitese_construcao,(select array_to_string(array_accum(distinct cargrup.j32_grupo||'-'||caracter.j31_descr), ', ')           from caracter           inner join cargrup   on cargrup.j32_grupo    = caracter.j31_grupo           inner join carconstr on carconstr.j48_caract = caracter.j31_codigo          where j32_tipo = 'C'             and carconstr.j48_matric = certidaoexistencia.j133_matric            and carconstr.j48_idcons = iptuconstr.j39_idcons )             as carac_construcao,(select sum(j39_area)            from iptuconstr           where j39_matric = certidaoexistencia.j133_matric)               as total_construido,(select j23_vlrter            from iptucalc            left join iptucale on iptucale.j22_matric = iptucalc.j23_matric             									and iptucale.j22_anousu = iptucalc.j23_anousu           where iptucalc.j23_matric = certidaoexistencia.j133_matric          order by j23_anousu desc          limit 1)                                                         as valor_venal_terreno,(select j22_valor           from iptucalc            left join iptucale on iptucale.j22_matric = iptucalc.j23_matric             									and iptucale.j22_anousu = iptucalc.j23_anousu           where iptucalc.j23_matric = certidaoexistencia.j133_matric          order by j23_anousu desc          limit 1)                                                         as valor_venal_construcoes,(select j23_anousu           from iptucalc            left join iptucale on iptucale.j22_matric = iptucalc.j23_matric             									and iptucale.j22_anousu = iptucalc.j23_anousu           where iptucalc.j23_matric = certidaoexistencia.j133_matric          order by j23_anousu desc          limit 1)                                                         as ano_calculo,(select array_to_string(array_accum(distinct z01_nome), ', ')            from propri           inner join cgm on cgm.z01_numcgm = propri.j42_numcgm           where propri.j42_matric = certidaoexistencia.j133_matric)        as outros_proprietarios,(select array_to_string(array_accum(distinct z01_nome), ', ')            from promitente           inner join cgm on cgm.z01_numcgm = promitente.j41_numcgm           where promitente.j41_matric = certidaoexistencia.j133_matric)    as outros_promitentes,db_usuarios.nome                                                   as usuario_geracao</Select>
-            <From>certidaoexistencia  inner join iptuconstr                   on iptuconstr.j39_matric      = certidaoexistencia.j133_matric                                         and iptuconstr.j39_idcons      = certidaoexistencia.j133_iptuconstr  inner join iptubase                     on iptubase.j01_matric        = certidaoexistencia.j133_matric  inner join cgm as cgmproprietario       on cgmproprietario.z01_numcgm = iptubase.j01_numcgm  left  join promitente                   on promitente.j41_matric      = certidaoexistencia.j133_matric                                         and j41_tipopro 							 is true  left  join cgm as cgmpromitente         on cgmpromitente.z01_numcgm   = promitente.j41_numcgm  inner join lote                         on lote.j34_idbql             = iptubase.j01_idbql  inner join bairro                       on bairro.j13_codi  					 = j34_bairro   left  join zonas                        on zonas.j50_zona             = lote.j34_zona  left  join loteloc                      on loteloc.j06_idbql 		     = lote.j34_idbql  left  join setorloc                     on setorloc.j05_codigo        = loteloc.j06_setorloc  inner join ruas as ruasconstrucao       on ruasconstrucao.j14_codigo  = iptuconstr.j39_codigo  inner join ruastipo as ruastipoconstr   on ruastipoconstr.j88_codigo  = ruasconstrucao.j14_tipo  left  join iptuant                      on iptuant.j40_matric         = certidaoexistencia.j133_matric  left  join lotesetorfiscal              on lotesetorfiscal.j91_idbql  = iptubase.j01_idbql  left  join setorfiscal                  on setorfiscal.j90_codigo     = lotesetorfiscal.j91_codigo  inner join db_usuarios                  on db_usuarios.id_usuario     = certidaoexistencia.j133_db_usuarios</From>
-            <Where>certidaoexistencia.j133_sequencial = $iCodigoCertidaoExistencia</Where>
+            <Select>fc_startsession();  SELECT *, (SELECT CASE tipo_processo 
+                                        WHEN 0 THEN NULL
+                                        WHEN 1 THEN j133_processo
+                                        WHEN 2 THEN processo
+                                     END) AS protocolo, 
+       CASE WHEN j133_arealote IS NOT NULL THEN 'Área do Lote: '||j133_arealote||' m2' ELSE NULL END AS arealote,
+       CASE WHEN j133_areareallote IS NOT NULL THEN 'Área Real do Lote: '||j133_areareallote||' m2' ELSE NULL END AS areareallote,
+       CASE WHEN j133_areaconstruida IS NOT NULL THEN 'Área Construída: '||j133_areaconstruida||' m2' ELSE NULL END AS areaconstruida ,
+       CASE WHEN j133_arearealconstruida IS NOT NULL THEN 'Área Real Construída: '||j133_arearealconstruida||' m2' ELSE NULL END AS arearealconstruida,
+       CASE WHEN j133_numhabite IS NOT NULL THEN 'Número Habite-se: '||j133_numhabite ELSE NULL END AS numhabite,
+       CASE WHEN j133_dathabite IS NOT NULL THEN 'Data do Habite-se: '||to_char(j133_dathabite,'DD/MM/YYYY') ELSE NULL END AS dathabite
+FROM (select certidaoexistencia.j133_sequencial as numero_certidao,
+       protprocesso.p58_numero||'/'||protprocesso.p58_ano as processo, 
+       cgmproprietario.z01_numcgm as cgm_proprietario, 
+       cgmproprietario.z01_nome as proprietario_principal,
+       cgmproprietario.z01_cgccpf as cgccpf_proprietario,
+       cgmproprietario.z01_ender||', '||cgmproprietario.z01_numero ||', '||cgmproprietario.z01_compl||'. '||cgmproprietario.z01_bairro ||'. '||cgmproprietario.z01_munic||' / '||cgmproprietario.z01_uf||' '||cgmproprietario.z01_cep||'. ' as endereco_proprietario,
+       cgmpromitente.z01_nome as promitente_principal,
+       cgmpromitente.z01_ender||', ' ||cgmpromitente.z01_numero||', '||cgmpromitente.z01_compl||'. '||cgmpromitente.z01_bairro||'. '||cgmpromitente.z01_munic||' / '||cgmpromitente.z01_uf||' '||cgmpromitente.z01_cep||'. ' as endereco_promitente,
+       certidaoexistencia.j133_matric as matricula_imovel,
+       lote.j34_setor as setor_matricula,
+       lote.j34_quadra as quadra_matricula,
+       lote.j34_lote as lote_matricula,
+       bairro.j13_descr as bairro_matricula,
+       zonas.j50_descr as zona_matricula,
+       setorfiscal.j90_descr as setor_fiscal_matricula,
+       setorloc.j05_descr as setor_localizacao_matricula,
+       loteloc.j06_quadraloc as quadra_localizacao_matricula,
+       loteloc.j06_lote as lote_localizacao_matricula,
+       ruastipoconstr.j88_sigla||','||ruasconstrucao.j14_nome||','||iptuconstr.j39_numero||','||iptuconstr.j39_compl as endereco_construcao,
+       bairro.j13_descr as bairro_construcao,
+       iptuant.j40_refant as ref_anterior_matricula,
+       lote.j34_area as area_lote,
+       (select j36_testad from testpri inner join testada on testada.j36_idbql = testpri.j49_idbql and testada.j36_face  = testpri.j49_face where testpri.j49_idbql = iptubase.j01_idbql) as testada_lote,
+       iptuconstr.j39_area as area_construcao,
+       iptuconstr.j39_idcons as id_construcao,
+       iptuconstr.j39_ano as ano_construcao,
+       (select array_to_string(array_accum(distinct j131_cadhab), ', ') from iptuconstrhabite where iptuconstrhabite.j131_matric = certidaoexistencia.j133_matric and iptuconstrhabite.j131_idcons = iptuconstr.j39_idcons) as habitese_construcao,
+       (select array_to_string(array_accum(distinct cargrup.j32_grupo||'-'||caracter.j31_descr), ', ') from caracter inner join cargrup on cargrup.j32_grupo = caracter.j31_grupo inner join carconstr on carconstr.j48_caract = caracter.j31_codigo where j32_tipo = 'C' and carconstr.j48_matric = certidaoexistencia.j133_matric and carconstr.j48_idcons = iptuconstr.j39_idcons ) as carac_construcao,
+       (select sum(j39_area) from iptuconstr where j39_matric = certidaoexistencia.j133_matric) as total_construido,
+       (select j23_vlrter from iptucalc left join iptucale on iptucale.j22_matric = iptucalc.j23_matric and iptucale.j22_anousu = iptucalc.j23_anousu where iptucalc.j23_matric = certidaoexistencia.j133_matric order by j23_anousu desc limit 1) as valor_venal_terreno,
+       (select j22_valor from iptucalc left join iptucale on iptucale.j22_matric = iptucalc.j23_matric and iptucale.j22_anousu = iptucalc.j23_anousu where iptucalc.j23_matric = certidaoexistencia.j133_matric order by j23_anousu desc limit 1) as valor_venal_construcoes,
+       (select j23_anousu from iptucalc left join iptucale on iptucale.j22_matric = iptucalc.j23_matric and iptucale.j22_anousu = iptucalc.j23_anousu where iptucalc.j23_matric = certidaoexistencia.j133_matric order by j23_anousu desc limit 1) as ano_calculo,
+       (select array_to_string(array_accum(distinct z01_nome), ', ') from propri inner join cgm on cgm.z01_numcgm = propri.j42_numcgm where propri.j42_matric = certidaoexistencia.j133_matric) as outros_proprietarios,
+       (select array_to_string(array_accum(distinct z01_nome), ', ') from promitente inner join cgm on cgm.z01_numcgm = promitente.j41_numcgm where promitente.j41_matric =certidaoexistencia.j133_matric) as outros_promitentes,db_usuarios.nome as usuario_geracao,
+       CASE
+          WHEN j133_processo IS NULL AND j134_certidaoexistencia IS NULL THEN 0
+          WHEN j133_processo IS NOT NULL AND j134_certidaoexistencia IS NULL THEN 1
+          WHEN j133_processo IS NOT NULL AND j134_certidaoexistencia IS NOT NULL THEN 2
+       END AS tipo_processo,
+       j133_processo,
+       j133_arealote,
+       j133_areareallote,
+       j133_areaconstruida,
+       j133_arearealconstruida,
+       j133_numhabite,
+       j133_dathabite,
+       j133_observacao as observacao,
+       proprietario.z01_cgmpri as cgm_contribuinte,
+       proprietario.z01_nome as nome_contribuinte,
+       proprietario.z01_cgccpf as cgccpf_contribuinte,
+       cgmproprietario.z01_ident as rg_contribuinte,
+       cgmproprietario.z01_incest as incest_contribuinte,
+       proprietario.z01_enderpri||', '||proprietario.z01_numeropri||' '||proprietario.z01_complpri as endereco_contribuinte,
+       proprietario.z01_bairropri as bairro_contribuinte,
+       proprietario.z01_municpri||'/'||proprietario.z01_ufpri as cidade_contribuinte,
+       proprietario.z01_ceppri as cep_contribuinte
+            </Select>
+            <From>certidaoexistencia  
+  inner join iptuconstr on iptuconstr.j39_matric = certidaoexistencia.j133_matric and iptuconstr.j39_idcons = certidaoexistencia.j133_iptuconstr  
+  inner join iptubase on iptubase.j01_matric = certidaoexistencia.j133_matric  
+  inner join cgm as cgmproprietario on cgmproprietario.z01_numcgm = iptubase.j01_numcgm  
+  left join promitente on promitente.j41_matric = certidaoexistencia.j133_matric and j41_tipopro is true 
+  left join cgm as cgmpromitente on cgmpromitente.z01_numcgm = promitente.j41_numcgm  
+  inner join lote on lote.j34_idbql = iptubase.j01_idbql  
+  inner join bairro on bairro.j13_codi = j34_bairro
+  left join zonas on zonas.j50_zona = lote.j34_zona 
+  left join loteloc on loteloc.j06_idbql = lote.j34_idbql
+  left join setorloc on setorloc.j05_codigo = loteloc.j06_setorloc
+  inner join ruas as ruasconstrucao on ruasconstrucao.j14_codigo = iptuconstr.j39_codigo  
+  inner join ruastipo as ruastipoconstr on ruastipoconstr.j88_codigo = ruasconstrucao.j14_tipo
+  left join iptuant on iptuant.j40_matric = certidaoexistencia.j133_matric  
+  left join lotesetorfiscal on lotesetorfiscal.j91_idbql = iptubase.j01_idbql  
+  left join setorfiscal on setorfiscal.j90_codigo = lotesetorfiscal.j91_codigo  
+  inner join db_usuarios on db_usuarios.id_usuario = certidaoexistencia.j133_db_usuarios 
+  left join certidaoexistenciaprotprocesso on j134_certidaoexistencia = j133_sequencial 
+  left join protprocesso on p58_codproc = j134_protprocesso
+  inner join proprietario on proprietario.j01_matric = iptubase.j01_matric</From>
+            <Where>certidaoexistencia.j133_sequencial = $iCodigoCertidaoExistencia) as x </Where>
             <GroupBy></GroupBy>
             <OrderBy></OrderBy>
         </Query>
@@ -322,7 +408,7 @@
                 <Points>26</Points>
                 <Align>left</Align>
                 <HeadAlign>left</HeadAlign>
-                <Mask>#R$-9.999,99s</Mask>
+                <Mask></Mask>
                 <Function></Function>
                 <Cross></Cross>
                 <Conditional></Conditional>
@@ -333,7 +419,7 @@
                 <Points>26</Points>
                 <Align>left</Align>
                 <HeadAlign>left</HeadAlign>
-                <Mask>#R$-9.999,99s</Mask>
+                <Mask></Mask>
                 <Function></Function>
                 <Cross></Cross>
                 <Conditional></Conditional>
@@ -366,7 +452,7 @@
                 <Points>26</Points>
                 <Align>left</Align>
                 <HeadAlign>left</HeadAlign>
-                <Mask></Mask>
+                <Mask>#R$-9.999,99s</Mask>
                 <Function></Function>
                 <Cross></Cross>
                 <Conditional></Conditional>
@@ -377,12 +463,331 @@
                 <Points>26</Points>
                 <Align>left</Align>
                 <HeadAlign>left</HeadAlign>
-                <Mask></Mask>
+                <Mask>#R$-9.999,99s</Mask>
                 <Function></Function>
                 <Cross></Cross>
                 <Conditional></Conditional>
                 <Hidden>0</Hidden>
             </Column31>
+            <Column32>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column32>
+            <Column33>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column33>
+            <Column34>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column34>
+            <Column35>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column35>
+            <Column36>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column36>
+            <Column37>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column37>
+            <Column38>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column38>
+            <Column39>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column39>
+            <Column40>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column40>
+            <Column41>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column41>
+            <Column42>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column42>
+            <Column43>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column43>
+            <Column44>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column44>
+            <Column45>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column45>
+            <Column46>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column46>
+            <Column47>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column47>
+            <Column48>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column48>
+            <Column49>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column49>
+            <Column50>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column50>
+            <Column51>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column51>
+            <Column52>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column52>
+            <Column53>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column53>
+            <Column54>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column54>
+            <Column55>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column55>
+            <Column56>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column56>
+            <Column57>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column57>
+            <Column58>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column58>
+            <Column59>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column59>
+            <Column60>
+                <Chars>30</Chars>
+                <Points>26</Points>
+                <Align>left</Align>
+                <HeadAlign>left</HeadAlign>
+                <Mask></Mask>
+                <Function></Function>
+                <Cross></Cross>
+                <Conditional></Conditional>
+                <Hidden>0</Hidden>
+            </Column60>
         </Fields>
     </DataSet>
     <PageSetup>

@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_matparam_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_matparam_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $clmatparam = new cl_matparam;
@@ -226,11 +226,11 @@ function js_excluir_item_material() {
 function js_pesquisam60_codmater(mostra) {
 
   if(mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_matmater','func_matmater.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matmater','func_matmater.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr','Pesquisa',true);
   } else {
 
     if(document.form1.m60_codmater.value != '') { 
-      js_OpenJanelaIframe('top.corpo','db_iframe_matmater','func_matmater.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostramatmater','Controle de Validade',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matmater','func_matmater.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostramatmater','Controle de Validade',false);
     } else {
       document.form1.m60_descr.value = ''; 
     }
@@ -327,7 +327,7 @@ function js_mandadados() {
 
     }
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_controlevalidade','mat3_controlevalidade002.php?'+departamento+datas+materiais+situacao+ordenacao+data_atual+m90_prazovenc+nome_departamento,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_controlevalidade','mat3_controlevalidade002.php?'+departamento+datas+materiais+situacao+ordenacao+data_atual+m90_prazovenc+nome_departamento,'Pesquisa',true);
 
   }
 

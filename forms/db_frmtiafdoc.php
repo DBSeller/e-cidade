@@ -112,10 +112,10 @@ db_textarea('y99_obs',0,0,$Iy99_obs,true,'text',$db_opcao,"")
 <script>
 function js_pesquisay99_codtiaf(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_mostratiaf1|y90_codtiaf|y90_codtiaf','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_mostratiaf1|y90_codtiaf|y90_codtiaf','Pesquisa',true);
   }else{
      if(document.form1.y99_codtiaf.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tiaf','func_tiaf.php?pesquisa_chave='+document.form1.y99_codtiaf.value+'&funcao_js=parent.js_mostratiaf','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiaf','func_tiaf.php?pesquisa_chave='+document.form1.y99_codtiaf.value+'&funcao_js=parent.js_mostratiaf','Pesquisa',false);
      }else{
        document.form1.y90_codtiaf.value = ''; 
      }
@@ -135,10 +135,10 @@ function js_mostratiaf1(chave1,chave2){
 }
 function js_pesquisay99_tiafdoc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tiafdoc','func_tiafdoc.php?funcao_js=parent.js_mostratiafdoc1|y99_coddoc|y99_coddoc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiafdoc','func_tiafdoc.php?funcao_js=parent.js_mostratiafdoc1|y99_coddoc|y99_coddoc','Pesquisa',true);
   }else{
      if(document.form1.y99_tiafdoc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tiafdoc','func_tiafdoc.php?pesquisa_chave='+document.form1.y99_tiafdoc.value+'&funcao_js=parent.js_mostratiafdoc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiafdoc','func_tiafdoc.php?pesquisa_chave='+document.form1.y99_tiafdoc.value+'&funcao_js=parent.js_mostratiafdoc','Pesquisa',false);
      }else{
        document.form1.y99_coddoc.value = ''; 
      }
@@ -157,7 +157,7 @@ function js_mostratiafdoc1(chave1,chave2){
   db_iframe_tiafdoc.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tiafdoc','func_tiafdoc.php?funcao_js=parent.js_preenchepesquisa|y99_coddoc','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiafdoc','func_tiafdoc.php?funcao_js=parent.js_preenchepesquisa|y99_coddoc','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tiafdoc.hide();

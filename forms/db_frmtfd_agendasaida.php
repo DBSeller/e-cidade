@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -588,7 +588,7 @@ function js_loadGridCgs() {
 
 function js_retornoGridCgs(oRetorno) {
 
-  oRetorno = eval("(" + oRetorno.responseText + ")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   if (oRetorno.iStatus == 1) {
 
     for (iCont = 0; iCont < oRetorno.aListaCgs.length; iCont++) {
@@ -715,7 +715,7 @@ function js_getLotacaoDataHora() {
 
 function js_retornogetLotacaoDataHora(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   if (oRetorno.iStatus == 1) {
          
     document.form1.numAcomp.value = oRetorno.iAcomp;
@@ -974,7 +974,7 @@ function js_retornogetHorariosData(oRetorno) {
 
   }
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   if (oRetorno.iStatus == 1) {
 
     iCont = 0;

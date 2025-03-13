@@ -153,10 +153,10 @@ function verifica_hora(x)
 
 function js_pesquisaed17_i_matricula(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matriculas','func_matriculas.php?funcao_js=parent.js_mostramatriculas1|ed09_i_codigo|ed09_c_situacao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matriculas','func_matriculas.php?funcao_js=parent.js_mostramatriculas1|ed09_i_codigo|ed09_c_situacao','Pesquisa',true);
   }else{
      if(document.form1.ed17_i_matricula.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matriculas','func_matriculas.php?pesquisa_chave='+document.form1.ed17_i_matricula.value+'&funcao_js=parent.js_mostramatriculas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matriculas','func_matriculas.php?pesquisa_chave='+document.form1.ed17_i_matricula.value+'&funcao_js=parent.js_mostramatriculas','Pesquisa',false);
      }else{
        document.form1.ed09_c_situacao.value = ''; 
      }
@@ -176,10 +176,10 @@ function js_mostramatriculas1(chave1,chave2){
 }
 function js_pesquisaed17_i_laboratorio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_laboratorios','func_laboratorios.php?funcao_js=parent.js_mostralaboratorios1|ed16_i_codigo|ed16_c_computador','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_laboratorios','func_laboratorios.php?funcao_js=parent.js_mostralaboratorios1|ed16_i_codigo|ed16_c_computador','Pesquisa',true);
   }else{
      if(document.form1.ed17_i_laboratorio.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_laboratorios','func_laboratorios.php?pesquisa_chave='+document.form1.ed17_i_laboratorio.value+'&funcao_js=parent.js_mostralaboratorios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_laboratorios','func_laboratorios.php?pesquisa_chave='+document.form1.ed17_i_laboratorio.value+'&funcao_js=parent.js_mostralaboratorios','Pesquisa',false);
      }else{
        document.form1.ed16_c_computador.value = ''; 
      }
@@ -198,7 +198,7 @@ function js_mostralaboratorios1(chave1,chave2){
   db_iframe_laboratorios.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_agendas','func_agendas.php?funcao_js=parent.js_preenchepesquisa|ed17_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_agendas','func_agendas.php?funcao_js=parent.js_preenchepesquisa|ed17_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_agendas.hide();

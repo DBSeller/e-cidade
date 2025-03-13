@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_obrastec_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_obrastec_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clobrastec = new cl_obrastec;
@@ -85,14 +85,18 @@ $clobrastec->rotulo->label("ob15_crea");
       <?
       if(!isset($pesquisa_chave)){
         
-				$campos  = " cgm.z01_nome,													";
-				$campos .= " obrastec.ob15_crea,										";
-				$campos .= " obrastec.ob15_numcgm,									";
-				$campos .= " ob15_sequencial,												";
-				$campos .= " case																		";
-				$campos .= "	 when ob15_tipo = 1 then 'Obra'				";
-				$campos .= "	 when ob15_tipo = 2 then 'Prefeitura' ";
-				$campos .= " end as ob15_tipo												";
+				$campos  = " cgm.z01_nome,													     ";
+				$campos .= " obrastec.ob15_crea,										     ";
+				$campos .= " obrastec.ob15_numcgm,									     ";
+				$campos .= " ob15_sequencial,												     ";
+        $campos .= " case																		     ";
+				$campos .= "	 when ob15_profissao = 1 then 'Arquiteto'	 ";
+				$campos .= "	 when ob15_profissao = 2 then 'Engenheiro' ";
+				$campos .= " end as ob15_profissao,											 ";
+				$campos .= " case																		     ";
+				$campos .= "	 when ob15_tipo = 1 then 'Obra'				     ";
+				$campos .= "	 when ob15_tipo = 2 then 'Prefeitura'      ";
+				$campos .= " end as ob15_tipo												     ";
         
 				if(isset($chave_ob15_numcgm) && (trim($chave_ob15_numcgm)!="") ){
 	         $sql = $clobrastec->sql_query($chave_ob15_numcgm,$campos,"ob15_numcgm");
@@ -138,3 +142,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

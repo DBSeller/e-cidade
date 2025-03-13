@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -49,10 +49,7 @@ if(isset($pesquisar)){
 
     echo "<script>
         function js_mostradados(codret){
-      disbanco.jan.location.href='cai4_baixabanco003.php?codret='+codret;
-      disbanco.mostraMsg();
-      disbanco.show();
-      disbanco.focus();
+          js_OpenJanelaIframe('', 'db_iframe_mostradados', 'cai4_baixabanco003.php?codret='+codret, 'Dados', true);
     }
         </script>";
 
@@ -60,10 +57,7 @@ if(isset($pesquisar)){
 
     echo "<script>
         function js_verificar(codret){
-      disbanco.jan.location.href='cai4_baixabanco004.php?codret='+codret;
-      disbanco.mostraMsg();
-      disbanco.show();
-      disbanco.focus();
+          js_OpenJanelaIframe('', 'db_iframe_verificar', 'cai4_baixabanco004.php?codret='+codret, 'Dados', true);
     }
         </script>";
 
@@ -71,10 +65,7 @@ if(isset($pesquisar)){
 
     echo "<script>
         function js_classifica(codcla){
-      disbanco.jan.location.href='cai4_baixabanco007.php?codcla='+codcla;
-      disbanco.mostraMsg();
-      disbanco.show();
-      disbanco.focus();
+          js_OpenJanelaIframe('', 'db_iframe_classifica', 'cai4_baixabanco007.php?codcla='+codcla, 'Registros', true);
     }
         </script>";
 
@@ -82,10 +73,7 @@ if(isset($pesquisar)){
 
     echo "<script>
         function js_inclusao(banco,agencia,conta){
-      disbanco.jan.location.href='cai4_baixabanco010.php?codbco='+banco+'&codage='+agencia+'&conta='+conta;
-      disbanco.mostraMsg();
-      disbanco.show();
-      disbanco.focus();
+          js_OpenJanelaIframe('', 'db_iframe_inclusao', 'cai4_baixabanco010.php?codbco='+banco+'&codage='+agencia+'&conta='+conta, 'Inclusão', true);
     }
         </script>";
 
@@ -114,11 +102,6 @@ if(isset($pesquisar)){
     $instit      = db_getsession("DB_instit");
     $whereinstit = " and disarq.instit = $instit ";
 
-    $disbanco = new janela("disbanco","");
-    $disbanco->iniciarVisivel = false;
-    $disbanco->largura = "700";
-    $disbanco->altura = "400";
-    $disbanco->mostrar();
     $xwhere = "";
     $sAnd = "";
 
@@ -148,27 +131,43 @@ if(isset($pesquisar)){
 
     if ($db_opcao == 1) {
 
-       $sql = "select disarq.codret,arqret,disarq.k15_codbco,disarq.k15_codage,dtarquivo,k00_conta,substr(k13_descr,1,20) as k13_descr,sum(vlrtot) as vlrtot
-                 from disarq
+       $sql = "select disarq.codret,arqret,disarq.k15_codbco,disarq.k15_codage,cadban.k15_local,dtarquivo,k00_conta,substr(k13_descr,1,20) as k13_descr,sum(vlrtot) as vlrtot
+		 from disarq
+                      left  join cadban      on disarq.k15_codbco = cadban.k15_codbco and
+                                                disarq.k15_codage = cadban.k15_codage
                       inner join disbanco    on disbanco.codret = disarq.codret
                       left outer join saltes on k13_conta       = k00_conta
                 where disbanco.classi = false
                 ".(empty($xwhere)?"":" and ".$xwhere)." $whereinstit
-                group by disarq.codret,arqret,disarq.k15_codbco,disarq.k15_codage,dtarquivo,k00_conta,substr(k13_descr,1,20) order by disarq.codret desc";
+                group by disarq.codret,arqret,disarq.k15_codbco,disarq.k15_codage,cadban.k15_local,dtarquivo,k00_conta,substr(k13_descr,1,20) order by disarq.codret desc";
        $varrep = array("db_opcao"=>"1","pesquisar"=>"pesquisar");
        db_lovrot($sql,15,"()","","js_mostradados|0","","NoMe",$varrep);
 
     } else if ($db_opcao == 3) {
 
        // Verifica classificacoes executas para um arquivo
-       $sql = "select disarq.codret,discla.codcla,arqret,disarq.k15_codbco,disarq.k15_codage,dtarquivo ,k00_conta,substr(k13_descr,1,20) as k13_descr,sum(vlrrec) as vlrrec,discla.dtaute
+       $sql = "select disarq.codret,
+                      discla.codcla,
+                      arqret,
+                      disarq.k15_codbco,
+                      disarq.k15_codage,
+                      (select distinct cadban.k15_local 
+                         from cadban 
+                        where cadban.k15_codbco = disarq.k15_codbco 
+                          and cadban.k15_codage = disarq.k15_codage
+                          limit 1) as k15_local,
+                      dtarquivo,
+                      k00_conta,
+                      substr(k13_descr,1,20) as k13_descr,
+                      sum(vlrrec) as vlrrec,
+                      discla.dtaute
                  from disarq
                       left outer join saltes on k13_conta     = k00_conta
                       inner join discla      on discla.codret = disarq.codret
-                      left outer join disrec on disrec.codcla = discla.codcla
+		      left outer join disrec on disrec.codcla = discla.codcla
            ".(empty($xwhere)?"":"where ".$xwhere). " ".
              (empty($xwhere)?"where disarq.instit = {$instit}":"and disarq.instit={$instit}")
-           . " group by disarq.codret,discla.codcla,arqret,disarq.k15_codbco,disarq.k15_codage,dtarquivo ,k00_conta,substr(k13_descr,1,20),discla.dtaute order by disarq.codret desc";
+           . " group by disarq.codret,discla.codcla,arqret,disarq.k15_codbco,disarq.k15_codage, k15_local,dtarquivo ,k00_conta,substr(k13_descr,1,20),discla.dtaute order by disarq.codret desc";
          $varrep = array("db_opcao"=>"3","pesquisar"=>"pesquisar");
 
          db_lovrot($sql,15,"()","","js_classifica|1","","NoMe",$varrep);
@@ -178,7 +177,8 @@ if(isset($pesquisar)){
        // Inclusão manual de movimentação
          $sql = "select disarq.k15_codbco,
                         disarq.k15_codage,
-                        disarq.k15_conta,
+			disarq.k15_conta,
+                        disarq.k15_local,
                         z01_nome
                    from cadban as disarq
                         inner join cgm on disarq.k15_numcgm = z01_numcgm
@@ -192,12 +192,14 @@ if(isset($pesquisar)){
      } else {
 
       // Verifica classificacoes executadas para um arquivo
-      $sql = "select disarq.codret,disarq.arqret,disarq.k15_codbco,disarq.k15_codage,disarq.dtarquivo,k00_conta,substr(k13_descr,1,20) as k13_descr,sum(vlrtot) as vlrtot
-                from disarq
-                     inner join disbanco    on disbanco.codret = disarq.codret
-                     left outer join saltes on k13_conta       = k00_conta
+      $sql = "select disarq.codret,disarq.arqret,disarq.k15_codbco,disarq.k15_codage,cadban.k15_local,disarq.dtarquivo,k00_conta,substr(k13_descr,1,20) as k13_descr,sum(vlrtot) as vlrtot
+		from disarq
+                     left  join cadban      on disarq.k15_codbco = cadban.k15_codbco and
+                                               disarq.k15_codage = cadban.k15_codage
+                     inner join disbanco    on disbanco.codret   = disarq.codret
+                     left outer join saltes on k13_conta         = k00_conta
                where disbanco.classi = false ".(empty($xwhere)?"":" and ".$xwhere)." ".$whereinstit ."
-               group by disarq.codret,disarq.arqret,disarq.k15_codbco,disarq.k15_codage,disarq.dtarquivo,k00_conta,substr(k13_descr,1,20) order by disarq.codret desc";
+               group by disarq.codret,disarq.arqret,disarq.k15_codbco,disarq.k15_codage,cadban.k15_local,disarq.dtarquivo,k00_conta,substr(k13_descr,1,20) order by disarq.codret desc";
 
          if ($db_opcao == 2) {
 
@@ -211,7 +213,7 @@ if(isset($pesquisar)){
      }
 
 } else {
-  include("forms/db_caiarq004.php");
+  include(modification("forms/db_caiarq004.php"));
 }
 ?>
   </center>

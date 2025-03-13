@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -526,8 +526,9 @@ function sql_query_estoque ( $m98_sequencial=null,$campos="*",$ordem=null,$dbwhe
      }
      $sql .= " from matpedidoitem ";
      $sql .= "      inner join matpedido  on  matpedido.m97_sequencial = matpedidoitem.m98_matpedido";     
-     $sql .= "      inner join matmater  on  matmater.m60_codmater = matpedidoitem.m98_matmater";     
-     $sql .= "      inner join matunid  on  matunid.m61_codmatunid = matmater.m60_codmatunid";
+     $sql .= "      inner join matmater  on  matmater.m60_codmater = matpedidoitem.m98_matmater";
+     $sql .= "      left  join matmaterunisai on matmater.m60_codmater = m62_codmater";
+     $sql .= "      left  join matunid        on  matunid.m61_codmatunid = m62_codmatunid";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = matpedido.m97_login";
      $sql .= "      inner join db_depart  on  db_depart.coddepto = matpedido.m97_coddepto";    
      $sql .= "      inner join db_almox on  db_almox.m91_codigo = matpedido.m97_db_almox";    
@@ -573,9 +574,10 @@ function sql_query_anulacao ( $m98_sequencial=null,$campos="*",$ordem=null,$dbwh
        $sql .= $campos;
      }
      $sql .= " from matpedidoitem ";
-     $sql .= "      inner join matpedido  on  matpedido.m97_sequencial = matpedidoitem.m98_matpedido";     
-     $sql .= "      inner join matmater  on  matmater.m60_codmater = matpedidoitem.m98_matmater";     
-     $sql .= "      inner join matunid  on  matunid.m61_codmatunid = matmater.m60_codmatunid";
+     $sql .= "      inner join matpedido      on matpedido.m97_sequencial = matpedidoitem.m98_matpedido";
+     $sql .= "      inner join matmater       on matmater.m60_codmater = matpedidoitem.m98_matmater";
+     $sql .= "      left  join matmaterunisai on matmater.m60_codmater = m62_codmater";
+     $sql .= "      left  join matunid        on  matunid.m61_codmatunid = m62_codmatunid";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = matpedido.m97_login";
      $sql .= "      inner join db_depart  on  db_depart.coddepto = matpedido.m97_coddepto";    
      $sql .= "      left join matestoqueinimeimatpedidoitem  on  matestoqueinimeimatpedidoitem.m99_matpedidoitem = matpedidoitem.m98_sequencial";

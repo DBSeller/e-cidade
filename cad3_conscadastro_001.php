@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_app.utils.php");
-include("classes/db_iptubaseregimovel_classe.php");
-include("classes/db_setorloc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_app.utils.php"));
+include(modification("classes/db_iptubaseregimovel_classe.php"));
+include(modification("classes/db_setorloc_classe.php"));
 $cliptubaseregimovel = new cl_iptubaseregimovel;
 
 $clsetorloc = new cl_setorloc();
@@ -161,7 +161,7 @@ $rsSetorLoc = $clsetorloc->sql_record($clsetorloc->sql_query_file(null, 'j05_cod
 	  $VisualizacaoNomeBairro->mostrar();
   
 ?>
-<? include("forms/db_frmconsultacadastro.php"); ?>
+<? include(modification("forms/db_frmconsultacadastro.php")); ?>
     </td>
   </tr>
 </table>

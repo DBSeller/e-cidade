@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_orctiporec_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcorgao_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcorgao_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -645,7 +645,7 @@ if ($quebra=="o" and $tipo=="s"){
      }  
 }/* fim orgao sintetico */
 
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf->output();
 
 ?>

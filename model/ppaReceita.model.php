@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -55,7 +55,7 @@ class ppaReceita {
    */
   public function processaBaseCalculo($iAno) {
 
-    require_once("libs/db_liborcamento.php");
+    require_once(modification("libs/db_liborcamento.php"));
     $dtDataInicial   = "{$iAno}-01-01";
     $dtDataFinal     = "{$iAno}-12-31";
     $lMediaPonderada = false;
@@ -101,9 +101,9 @@ class ppaReceita {
       $sMsg .= db_stdClass::getCaminhoMenu(8833).".";
       throw new Exception($sMsg);
     }
-    require_once("libs/db_libpostgres.php");
+    require_once(modification("libs/db_libpostgres.php"));
     if (PostgreSQLUtils::isTableExists("work_receita")) {
-      db_query("drop table work_receita");
+      db_query("drop table if exists work_receita");
     }
     $rsReceita = db_receitasaldo(11,1,3,true,
                                  "o70_instit = ".db_getsession("DB_instit"),
@@ -119,96 +119,99 @@ class ppaReceita {
     $oDaoPppaEstimativa        = db_utils::getDao("ppaestimativa");
     $oDaoPppaEstimativaReceita = db_utils::getDao("ppaestimativareceita");
     $aReceitasAno              = db_utils::getCollectionByRecord($rsReceita);
+
     if (PostgreSQLUtils::isTableExists("work_receita")) {
-      db_query("drop table work_receita");
+      db_query("drop table if exists work_receita");
     }
     foreach ($aReceitasAno as $oReceitaAno) {
-
-      $sSql = "select o57_codfon
+        if (!empty($oReceitaAno->o57_fonte)) {
+            $sSql = "select o57_codfon
                  from  orcfontes
-                where  o57_fonte = '{$oReceitaAno->o57_fonte}'
+                where  rpad(o57_fonte, 20, '0') = rpad('{$oReceitaAno->o57_fonte}', 20, '0')
                   and  o57_anousu = {$iAno}";
-      $rsCodfon = db_query($sSql);
-      if (!$rsCodfon) {
-        throw new Exception("Erro ao Processar receita {$oReceitaAno->o57_fonte}", 1);
-      }
+            $rsCodfon = db_query($sSql);
+            if (!$rsCodfon) {
+                throw new Exception("Erro ao Processar receita {$oReceitaAno->o57_fonte}", 1);
+            }
 
-      if (pg_num_rows($rsCodfon) == 0) {
-        throw new Exception("Não foi encontrado fonte de receita para o estrutural {$oReceitaAno->o57_fonte} no ano de {$iAno}.");
-      }
+            if (pg_num_rows($rsCodfon) == 0) {
+                throw new Exception("Não foi encontrado fonte de receita para o estrutural {$oReceitaAno->o57_fonte} no ano de {$iAno}.");
+            }
 
-      $iCodigoFonte  = db_utils::fieldsMemory($rsCodfon, 0)->o57_codfon;
-      $nValorReceita = $oReceitaAno->saldo_arrecadado_acumulado;
-      if ($lMediaPonderada) {
-        $nValorReceita =  round((($oReceitaAno->saldo_arrecadado_acumulado/$mesAnterior)*12),2);
-      }
+            $iCodigoFonte  = db_utils::fieldsMemory($rsCodfon, 0)->o57_codfon;
+            $nValorReceita = $oReceitaAno->saldo_arrecadado_acumulado;
+            if ($lMediaPonderada) {
+                $nValorReceita =  round((($oReceitaAno->saldo_arrecadado_acumulado/$mesAnterior)*12),2);
+            }
 
-      if ($oReceitaAno->o70_codrec == 0){
-        $nValorReceita = 0;
-      }
+            if ($oReceitaAno->o70_codrec == 0){
+                $nValorReceita = 0;
+            }
 
-      /*
-       * Verificamos se a Receita já foi processada.
-       * caso seje, apenas atualizamos o seu valor.
-       */
-      $iConcarpeculiar = $oDadosEstrutura->db77_estrut;
-     if (isset($oReceitaAno->o70_concarpeculiar)) {
-        $iConcarpeculiar = $oReceitaAno->o70_concarpeculiar;
-      }
-      if ($iConcarpeculiar == '0') {
-        $iConcarpeculiar = $oDadosEstrutura->db77_estrut;
-      }
-      $sSqlReceita =  $oDaoPppaEstimativaReceita->sql_query_analitica(null,
-                                                                 "*",
-                                                                 null,
-                                                                "o06_codrec             = {$iCodigoFonte}
+            /*
+             * Verificamos se a Receita já foi processada.
+             * caso seje, apenas atualizamos o seu valor.
+             */
+            $iConcarpeculiar = $oDadosEstrutura->db77_estrut;
+            if (isset($oReceitaAno->o70_concarpeculiar)) {
+                $iConcarpeculiar = $oReceitaAno->o70_concarpeculiar;
+            }
+            if ($iConcarpeculiar == '0') {
+                $iConcarpeculiar = $oDadosEstrutura->db77_estrut;
+            }
+            $sSqlReceita =  $oDaoPppaEstimativaReceita->sql_query_analitica(null,
+                "*",
+                null,
+                "o06_codrec             = {$iCodigoFonte}
                                                                  and o06_anousu         = {$iAno}
                                                                  and o05_ppaversao      = {$this->iCodigoVersao}
                                                                  and o06_ppaversao      = {$this->iCodigoVersao}
                                                                  and o06_concarpeculiar = '{$iConcarpeculiar}'
                                                                  and c61_instit         = ".db_getsession("DB_instit")
-                                                                );
+            );
 
 
-      $rsReceita                             = $oDaoPppaEstimativaReceita->sql_record($sSqlReceita);
-      if ($oDaoPppaEstimativaReceita->numrows > 0 ) {
+            $rsReceita                             = $oDaoPppaEstimativaReceita->sql_record($sSqlReceita);
+            if ($oDaoPppaEstimativaReceita->numrows > 0 ) {
 
-        $oReceita = db_utils::fieldsMemory($rsReceita, 0);
-        $oDaoPppaEstimativa->o05_sequencial  = $oReceita->o06_ppaestimativa;
-        $oDaoPppaEstimativa->o05_valor       = "$nValorReceita";
-        $oDaoPppaEstimativa->alterar($oReceita->o06_ppaestimativa);
+                $oReceita = db_utils::fieldsMemory($rsReceita, 0);
+                $oDaoPppaEstimativa->o05_sequencial  = $oReceita->o06_ppaestimativa;
+                $oDaoPppaEstimativa->o05_valor       = "$nValorReceita";
+                $oDaoPppaEstimativa->alterar($oReceita->o06_ppaestimativa);
 
-        if ($oDaoPppaEstimativa->erro_status == 0 ){
-           throw new Exception("Erro ao processar Receita {$oReceitaAno->o57_codfon} erro ao incluir estimativa.
+                if ($oDaoPppaEstimativa->erro_status == 0 ){
+                    throw new Exception("Erro ao processar Receita {$oReceitaAno->o57_codfon} erro ao incluir estimativa.
            \n$oDaoPppaEstimativaReceita->erro_msg",2);
-        }
+                }
 
-      } else {
+            } else {
 
-        $oDaoPppaEstimativa->o05_base          = "true";
-        $oDaoPppaEstimativa->o05_anoreferencia = $iAno;
-        $oDaoPppaEstimativa->o05_ppaversao     = $this->iCodigoVersao;
-        $oDaoPppaEstimativa->o05_valor         = "$nValorReceita";
-        $oDaoPppaEstimativa->incluir(null);
-        if ($oDaoPppaEstimativa->erro_status == 0 ) {
+                $oDaoPppaEstimativa->o05_base          = "true";
+                $oDaoPppaEstimativa->o05_anoreferencia = $iAno;
+                $oDaoPppaEstimativa->o05_ppaversao     = $this->iCodigoVersao;
+                $oDaoPppaEstimativa->o05_valor         = "$nValorReceita";
+                $oDaoPppaEstimativa->incluir(null);
+                if ($oDaoPppaEstimativa->erro_status == 0 ) {
 
-          $sMsgErro  = "Erro ao processar Receita {$oReceitaAno->o57_fonte} erro ao incluir estimativa.\n";
-          $sMsgErro .= $oDaoPppaEstimativa->erro_msg;
-          throw new Exception($sMsgErro,2);
-        }
+                    $sMsgErro  = "Erro ao processar Receita {$oReceitaAno->o57_fonte} erro ao incluir estimativa.\n";
+                    $sMsgErro .= $oDaoPppaEstimativa->erro_msg;
+                    throw new Exception($sMsgErro,2);
+                }
 
-        $oDaoPppaEstimativaReceita->o06_anousu         = $iAno;
-        $oDaoPppaEstimativaReceita->o06_ppaversao      = $this->iCodigoVersao;
-        $oDaoPppaEstimativaReceita->o06_codrec         = $iCodigoFonte;
-        $oDaoPppaEstimativaReceita->o06_concarpeculiar = "{$iConcarpeculiar}";
-        $oDaoPppaEstimativaReceita->o06_ppaestimativa  = $oDaoPppaEstimativa->o05_sequencial;
-        $oDaoPppaEstimativaReceita->incluir(null);
-        if ($oDaoPppaEstimativaReceita->erro_status == 0) {
+                $oDaoPppaEstimativaReceita->o06_anousu         = $iAno;
+                $oDaoPppaEstimativaReceita->o06_ppaversao      = $this->iCodigoVersao;
+                $oDaoPppaEstimativaReceita->o06_codrec         = $iCodigoFonte;
+                $oDaoPppaEstimativaReceita->o06_concarpeculiar = "{$iConcarpeculiar}";
+                $oDaoPppaEstimativaReceita->o06_ppaestimativa  = $oDaoPppaEstimativa->o05_sequencial;
+                $oDaoPppaEstimativaReceita->incluir(null);
+                if ($oDaoPppaEstimativaReceita->erro_status == 0) {
 
-           throw new Exception("Erro ao processar Receita {$iCodigoFonte}-{$oReceitaAno->o57_fonte} erro ao incluir estimativa\n
+                    throw new Exception("Erro ao processar Receita {$iCodigoFonte}-{$oReceitaAno->o57_fonte} erro ao incluir estimativa\n
            {$oDaoPppaEstimativaReceita->erro_msg}",3);
+                }
+            }
         }
-      }
+
     }
 
     return true;
@@ -536,12 +539,15 @@ class ppaReceita {
     $sSqlFonte      = " SELECT distinct o57_codfon,";
     $sSqlFonte     .= "        c60_estrut,";
     $sSqlFonte     .= "        c61_reduz,";
-    $sSqlFonte     .= "        coalesce(o06_concarpeculiar, '0') as o70_concarpeculiar,";
+    $sSqlFonte     .= "        coalesce(o06_concarpeculiar, '000') as o70_concarpeculiar,";
     $sSqlFonte     .= "        o57_descr,";
     $sSqlFonte     .= "        o15_descr,";
     $sSqlFonte     .= "        c61_codigo,";
     $sSqlFonte     .= "        o60_codfon,";
-    $sSqlFonte     .= "        fc_conplano_grupo(o57_anousu,substring(o57_fonte,1,1)||'%','9000') as deducao";
+    $sSqlFonte     .= "        fonterecurso.codigo_siconfi as siconfi,";
+    $sSqlFonte     .= "        fontesiconfi.descricao as siconfi_descricao,";
+    $sSqlFonte     .= "        fc_conplano_grupo(o57_anousu,substring(o57_fonte,1,1)||'%','9000') as deducao,";
+    $sSqlFonte     .= "        gestao";
     $sSqlFonte     .= "   from orcfontes   ";
     $sSqlFonte     .= "        left join  ppaestimativareceita  on o57_anousu = o06_anousu ";
     $sSqlFonte     .= "                                        and o57_codfon = o06_codrec";
@@ -551,6 +557,8 @@ class ppaReceita {
     $sSqlFonte     .= "                                  and conplanoreduz.c61_anousu = conplano.c60_anousu";
     $sSqlFonte     .= "                                  and conplanoreduz.c61_instit in(".$this->getInstituicoes().")";
     $sSqlFonte     .= "        left join orctiporec       on o15_codigo = c61_codigo";
+    $sSqlFonte     .= "        left join fonterecurso on orctiporec_id = o15_codigo and exercicio = o06_anousu";
+    $sSqlFonte     .= "        left join fontesiconfi on fontesiconfi.codigo_siconfi = fonterecurso.codigo_siconfi";
     $sSqlFonte     .= "        left join orcfontesdes     on o60_codfon = o57_codfon";
     $sSqlFonte     .= "                                  and o60_anousu = o57_anousu";
     $sSqlFonte     .= "  where {$sWhere}";
@@ -573,10 +581,11 @@ class ppaReceita {
         $oLinhaQuadro                    = new stdClass();
         $oLinhaQuadro->iCodigo           = $oFonteDados->o57_codfon;
         $oLinhaQuadro->sDescricao        = urlencode($oFonteDados->o57_descr);
-        $oLinhaQuadro->iRecurso          = $oFonteDados->c61_codigo;
+        $oLinhaQuadro->iRecurso          = $oFonteDados->siconfi;
+        $oLinhaQuadro->iGestao           = $oFonteDados->gestao;
         $oLinhaQuadro->iEstrutural       = $oFonteDados->c60_estrut;
         $oLinhaQuadro->lDeducao          = $oFonteDados->deducao;
-        $oLinhaQuadro->sDescricaoRecurso = urlencode($oFonteDados->o15_descr);
+        $oLinhaQuadro->sDescricaoRecurso = urlencode($oFonteDados->siconfi_descricao);
         $oLinhaQuadro->iReduz            = $oFonteDados->c61_reduz;
         $oLinhaQuadro->iConcarPeculiar   = "{$oFonteDados->o70_concarpeculiar}";
         if ($oFonteDados->o70_concarpeculiar == 0) {
@@ -587,6 +596,7 @@ class ppaReceita {
         if ($oFonteDados->o70_concarpeculiar != 0) {
           $oLinhaQuadro->lDesdobra = false;
         }
+
         /*
          * Caso o estrutural seja um desdobramento, acrescentamos ele na linha do quadro
          * que representa seu estrutural pai.
@@ -594,8 +604,8 @@ class ppaReceita {
         if ($oLinhaQuadro->lDesdobra) {
 
           $sEstruturalNivel = db_le_mae_rec($oFonteDados->c60_estrut);
-          if (isset($aQuadroEstimativa[$aEstruturaisPai[$sEstruturalNivel]])) {
-            $aQuadroEstimativa[$aEstruturaisPai[$sEstruturalNivel]]->aDesdobramentos[] = $oFonteDados->c60_estrut;
+          if (array_key_exists($sEstruturalNivel, $aEstruturaisPai) && isset($aQuadroEstimativa[$aEstruturaisPai[$sEstruturalNivel]])) {
+              $aQuadroEstimativa[$aEstruturaisPai[$sEstruturalNivel]]->aDesdobramentos[] = $oFonteDados->c60_estrut;
           }
         }
 

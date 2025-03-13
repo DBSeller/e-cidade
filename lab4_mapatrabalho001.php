@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once('libs/db_utils.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification('libs/db_utils.php'));
 
 $cllab_labsetor   = new cl_lab_labsetor;
 $cllab_requisicao = new cl_lab_requisicao;
@@ -67,29 +67,36 @@ $iDepto   = db_getsession('DB_coddepto');
       <fieldset style="width: 540px">
         <legend>Mapa de Trabalho</legend>
         <table class="form-container">
-
           <tr>
-            <td class="bold" >
-              Filtrar:
+            <td colspan="2">
+              <fieldset style="width: 540px">
+                <legend>Data</legend>
+                <table class="form-container">
+                  <tr>
+                    <td class="bold">
+                      Filtrar:
+                    </td>
+                    <td>
+                      <select id='filtrarRelatorio'>
+                        <option value='1' >POR AGENDAMENTO</option>
+                        <option value='2' >POR COLETA</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="bold">
+                      Período:
+                    </td>
+                    <td>
+                      <?php db_inputdata( 'data1', @$dia1, @$mes1, @$ano1, true, 'text', 1 );?>
+                        A
+                      <?php db_inputdata( 'data2', @$dia2, @$mes2, @$ano2, true, 'text', 1 )?>
+                    </td>
+                  </tr>              
+                </table>
+              </fieldset>
             </td>
-            <td>
-              <select id='filtrarRelatorio'>
-                <option value='1' >Por Agendamento</option>
-                <option value='2' >Por Coleta</option>
-              </select>
-            </td>
-          </tr>
-
-          <tr>
-            <td align="left" >
-              <strong> Período:</strong>
-            </td>
-            <td>
-              <?php db_inputdata( 'data1', @$dia1, @$mes1, @$ano1, true, 'text', 1 );?>
-               A
-              <?php db_inputdata( 'data2', @$dia2, @$mes2, @$ano2, true, 'text', 1 )?>
-            </td>
-          </tr>
+          </tr>        
           <tr>
             <td nowrap title="Laborat&oacute;rio">
                <?php
@@ -143,12 +150,18 @@ $iDepto   = db_getsession('DB_coddepto');
           </tr>
           <tr>
             <td>
-                <strong>Atributos:</strong>
+                <strong>Modelos:</strong>
             </td>
             <td>
             <?php
-              $aParam = Array( "2" => "NÃO", "1" => "SIM" );
-              db_select( "atributos", $aParam, "", 1 );
+              $aParam = Array(
+                "0" => "SELECIONE",
+                "1" => "PADRÂO COM ATRIBUTOS",
+                "2" => "PADRÂO SEM ATRIBUTOS",
+                "3" => "AGRUPADO POR PACIENTE",
+                "4" => "AGRUPADO POR EXAME",
+              );
+              db_select( 'atributos', $aParam, "", 1 );
             ?>
             </td>
           </tr>
@@ -158,9 +171,8 @@ $iDepto   = db_getsession('DB_coddepto');
             </td>
             <td>
               <select id='ordenacaoFiltros'>
-                <option selected="selected" value='0'>Selecione</option>
-                <option value='1'>Data</option>
-                <option value='2'>Requisição</option>
+                <option value='1' selected>DATA</option>
+                <option value='2'>REQUISIÇÂO</option>
               </select>
             </td>
           </tr>
@@ -419,6 +431,11 @@ function js_mandaDados() {
     document.form1.la02_i_codigo.focus();
     return false;
   }
+  
+  if (document.form1.atributos.value == '0') {
+    alert('Selecione um Modelo')
+    return false
+  }
 
   var sDatas = '';
   if ($F('data1') != "" && $F('data2') != "" ) {
@@ -435,8 +452,6 @@ function js_mandaDados() {
       break;
   }
 
-
-
   oF               = document.form1;
   var sParametros  = '';
       sParametros += 'filtrarRelatorio='+$F('filtrarRelatorio');
@@ -447,13 +462,34 @@ function js_mandaDados() {
       sParametros += '&exame='+oF.la09_i_exame.value;
       sParametros += '&nomesetor='+oF.la23_c_descr.value;
       sParametros += '&iAtributo='+oF.atributos.value;
-      sParametros += sFiltroOrdem;
-  jan = window.open(
-                     'lab4_mapatrabalho002.php?' + sParametros,
-                     '',
-                     'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0'
-                   );
-  jan.moveTo( 0, 0 );
+      sParametros += sFiltroOrdem;      
+  
+  if (document.form1.atributos.value == '1' || document.form1.atributos.value == '2') {
+    jan = window.open(
+                  'lab4_mapatrabalho002.php?' + sParametros,
+                  '',
+                  'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0'
+                );
+    jan.moveTo( 0, 0 );
+  }
+
+  if (document.form1.atributos.value == '3') {
+    jan = window.open(
+                  'lab4_mapatrabalhoAgrupadoPaciente.php?' + sParametros,
+                  '',
+                  'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0'
+                );
+    jan.moveTo( 0, 0 );
+  }
+
+  if (document.form1.atributos.value == '4') {
+    jan = window.open(
+                  'lab4_mapatrabalhoAgrupadoExame.php?' + sParametros,
+                  '',
+                  'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0'
+                );
+    jan.moveTo( 0, 0 );
+  }
 }
 
 function js_validadata() {

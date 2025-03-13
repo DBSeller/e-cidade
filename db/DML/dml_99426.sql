@@ -1,0 +1,1 @@
+update db_syscampo set rotulo = 'Total Rendimentos Tributáveis', rotulorel='Total Rendimentos Tributáveis' where nomecam = 'r11_baserrarendimentostributaveis';

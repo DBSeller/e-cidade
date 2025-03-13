@@ -44,7 +44,7 @@ class IList
         $this->window->set_policy(false, true, false);
         $this->window->set_modal(true);
         $this->window->realize();
-        $this->window->connect_object('key_press_event', array(&$this,'KeyTest'));
+        $this->window->connect_object('key_press_event', array($this,'KeyTest'));
         $this->pixmaps['ok']     = Gdk::pixmap_create_from_xpm($this->window->window, null, images . 'ico_ok.xpm');
         $this->pixmaps['cancel'] = Gdk::pixmap_create_from_xpm($this->window->window, null, images . 'ico_cancel.xpm');
         $this->items = $items;
@@ -65,8 +65,8 @@ class IList
         }
 
         $vbox->pack_start($scroll, true, true);
-        $button1 = new Button(array(&$this, 'Execute'), _a('OK'), $this->pixmaps['ok'], IMAGEBUTTON);
-        $button2 = new Button(array(&$this->window, 'hide'), _a('Cancel'), $this->pixmaps['cancel'], IMAGEBUTTON);
+        $button1 = new Button(array($this, 'Execute'), _a('OK'), $this->pixmaps['ok'], IMAGEBUTTON);
+        $button2 = new Button(array($this->window, 'hide'), _a('Cancel'), $this->pixmaps['cancel'], IMAGEBUTTON);
         $button1->set_relief(GTK_RELIEF_NONE);
         $button2->set_relief(GTK_RELIEF_NONE);
         $hbox = new GtkHBox;

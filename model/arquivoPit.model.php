@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -254,7 +254,7 @@ abstract class arquivoPit {
      
     $sSqlNotas = $oDaoEmpnotasDadosPit->sql_query_notas(null, $sCampos, null, $sWhere.$sGroupBy." order by {$sOrder}");
     $rsNotas   = $oDaoEmpnotasDadosPit->sql_record($sSqlNotas);
-    $aNotas    = db_utils::getColectionByRecord($rsNotas, false, false, $this->getEncode());
+    $aNotas    = db_utils::getCollectionByRecord($rsNotas, false, false, $this->getEncode());
     return $aNotas;
     
   }
@@ -314,7 +314,7 @@ abstract class arquivoPit {
      
     $sSqlNotas = $oDaoEmpnotasDadosPit->sql_query_notas(null, $sCampos, null, $sWhere.$sGroupBy." order by {$sOrder}");
     $rsNotas   = $oDaoEmpnotasDadosPit->sql_record($sSqlNotas);
-    $aNotas    = db_utils::getColectionByRecord($rsNotas, false, false, $this->getEncode());
+    $aNotas    = db_utils::getCollectionByRecord($rsNotas, false, false, $this->getEncode());
     return $aNotas;
     
   }
@@ -504,7 +504,7 @@ abstract class arquivoPit {
      
     $sSqlNotas = $oDaoEmpnotasDadosPit->sql_query_notas(null, $sCampos, null, $sWhere.$sGroupBy." order by {$sOrder}");
     $rsNotas   = $oDaoEmpnotasDadosPit->sql_record($sSqlNotas);
-    $aNotas    = db_utils::getColectionByRecord($rsNotas, false, false, $this->getEncode());
+    $aNotas    = db_utils::getCollectionByRecord($rsNotas, false, false, $this->getEncode());
     return $aNotas;
     
   }

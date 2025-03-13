@@ -63,7 +63,7 @@ db_input('o09_descricao',40,$Io09_descricao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcindicaperiodicidade','func_orcindicaperiodicidade.php?funcao_js=parent.js_preenchepesquisa|o09_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcindicaperiodicidade','func_orcindicaperiodicidade.php?funcao_js=parent.js_preenchepesquisa|o09_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcindicaperiodicidade.hide();

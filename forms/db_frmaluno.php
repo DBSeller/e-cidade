@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,16 +26,18 @@
  */
 
 //MODULO: educação
+use App\Domain\Configuracao\Helpers\StorageHelper;
+
 $oDaoAluno->rotulo->label();
 $oClRotulo = new rotulocampo;
 $iEscola   = db_getsession("DB_coddepto");
 
 if ($db_opcao != 1 && $chavepesquisa != "") {
-	
+
   $sql     = "SELECT ed56_i_escola as cod_escola FROM alunocurso WHERE ed56_i_aluno = $chavepesquisa";
   $query   = db_query($sql);
   $linhas4 = pg_num_rows($query);
-  
+
   if ($linhas4 == 0) {
     $db_botao = true;
   } elseif ($iEscola != pg_result($query,0,0)) {
@@ -73,7 +75,7 @@ if ($ed47_i_nacion == 3) {
                 <?=@$Led47_certidaomatricula?>
               </td>
               <td>
-                <input type="text" id="matri_cartorio" name="matri_cartorio" tabindex="1" 
+                <input type="text" id="matri_cartorio" name="matri_cartorio" tabindex="1"
                        onchange="js_buscaCartorioMatricula();" onkeyup="js_mudafoco(this, 6, event);"
                        onkeypress="return js_checaSomenteNumero(event);"
                        size="6" maxlength="6" title="Cartório" />
@@ -105,14 +107,14 @@ if ($ed47_i_nacion == 3) {
                        onchange="js_checaTermoMatricula();" onkeyup="js_mudafoco(this, 7, event);"
                        onkeypress="return js_checaSomenteNumero(event);"
                        size="7" maxlength="7" title="Termo" />
-                <input type="text" id="matri_codverificador" name="matri_codverificador" tabindex="9" 
+                <input type="text" id="matri_codverificador" name="matri_codverificador" tabindex="9"
                        onchange="js_checaCodVerifMatricula();" onkeyup="js_mudafoco(this, 2, event);"
                        onkeypress="return js_checaSomenteNumero(event);"
                        size="2" maxlength="2" title="Código Verificador" />
 
                 <input type="hidden" name="ed47_certidaomatricula" id="ed47_certidaomatricula" value="" />
 
-                <input type="button" onclick="js_habilitaMatriculaManual();" value="Limpar Matrícula" 
+                <input type="button" onclick="js_habilitaMatriculaManual();" value="Limpar Matrícula"
                        id="btnMatricula" name="btnMatricula" title="Limpar Matrícula" tabindex="10" />
 
               </td>
@@ -146,32 +148,32 @@ if ($ed47_i_nacion == 3) {
                                 @$ed47_c_certidaodata_ano, true, 'text', $db_opcao1, "");
                 ?>
               </td>
-            </tr>           
+            </tr>
             <tr>
               <td>
-                <?=@$Led47_i_censoufcert?>  
+                <?=@$Led47_i_censoufcert?>
               </td>
-              <td>        
-                <?
+              <td>
+                <?php
                   $sSqlUf    = $oDaoCensoUf->sql_query_file("", "ed260_i_codigo,ed260_c_nome", "ed260_c_nome");
-                  $result_uf = $oDaoCensoUf->sql_record($sSqlUf); 
-                ?>  
+                  $result_uf = $oDaoCensoUf->sql_record($sSqlUf);
+                ?>
                 <select name="ed47_i_censoufcert" id="uf" onChange="js_uf(this.value);"
                         style="height:18px;font-size:10px;">
                   <option value=""></option>
-                  <? 
+                  <?php
                     for ($t = 0; $t < $oDaoCensoUf->numrows; $t++) {
-        
+
                       db_fieldsmemory($result_uf,$t);
-                
+
                   ?>
                   <option value="<?=$ed260_i_codigo?>"><?=$ed260_c_nome?></option>
-      
-                <? } ?>
+
+                <?php } ?>
                 </select>
 
                 <?=@$Led47_i_censomuniccert?>
-                <select name="ed47_i_censomuniccert" id="select_municipio" onchange="js_cartorio(this.value)" 
+                <select name="ed47_i_censomuniccert" id="select_municipio" onchange="js_cartorio(this.value)"
                         style="width:150px;height:18px;font-size:10px;;" >
                 </select>
               </td>
@@ -181,11 +183,58 @@ if ($ed47_i_nacion == 3) {
                 <?=@$Led47_i_censocartorio?>
               </td>
               <td>
+                  <input type="text" id="nome_cartorio" name="nome_cartorio"  placeholder="Digite o nome do cartório"
+                         style="display:none;width:500px;height:30px;font-size:12px;;" />
                 <select name="ed47_i_censocartorio" id="select_cartorio"
-                        style="width:500px;height:18px;font-size:10px;;" >
+                        style="display:block;width:500px;height:18px;font-size:12px;;" >
                 </select>
               </td>
-            </tr>       
+            </tr>
+            <tr>
+              <td>
+                <br>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b>Anexo da Certidão:</b>
+              </td>
+              <td>
+                <div style="display: flex; align-items: center; width:100%;">
+                <iframe name="frame_imagemCertidao" id="frame_imagemCertidao" src="edu4_alunodocumentocertidao.php" width="56" height="40" frameborder="1" scrolling="no"></iframe>
+                <?php
+                  $rs = db_query($oDaoAluno->sql_query_file(null,"ed47_i_certidado_estorage  as idCertidao",null, "ed47_i_codigo = $chavepesquisa"));
+                  $dados = db_utils::fieldsMemory($rs, 0);
+                  $arquivo = "";
+                  $arquivocertidao = "";
+                  if ((isset($chavepesquisa) || isset($alterar)) && isset($dados->idcertidao)) {
+                    $arquivo = !empty($dados->idcertidao) ? StorageHelper::downloadArquivo($dados->idcertidao): "" ;
+                    $arquivocertidao = basename($arquivo);
+                    //dd("Aqui", $arquivocertidao, $arquivo);
+                  }
+                ?>
+                  <script>
+                  frame_imagemCertidao.location.href="edu4_alunodocumentocertidao.php?imagem_gerada=<?php echo $arquivocertidao?>";
+                  </script>
+                   <?php 
+                   if ($db_botao == true) {
+                  ?>
+                  <div style="display: flex;margin-top: -5px;flex-direction: column;width:100%;">
+                    <iframe name="frame_certidao" id="frame_certidao" src="edu1_framealunodocumentocertidao.php" width="100%" height="31" frameborder="0" scrolling="no" style="margin-bottom: 0px;margin-top:2px;"></iframe>
+                    <input type="button" value="Excluir Imagem"
+                     onclick="location.href='edu1_aluno002.php?excluircertidao&chavepesquisa=<?php echo $chavepesquisa?>'"
+                     style="font-size: 9px;padding: 0px;margin-left: 3px;width:82px;">
+                  </div>
+                  <?php } ?>
+                  <input name="oid_arquivoCertidao" type="hidden" id="oid_arquivoCertidao" value="<?php echo @$arquivo?>" size="30">
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br>
+              </td>
+            </tr>
           </table>
         </fieldset>
       </td>
@@ -273,7 +322,7 @@ if ($ed47_i_nacion == 3) {
 
                   db_inputdata('ed47_d_dtvencimento', @$ed47_d_dtvencimento_dia, @$ed47_d_dtvencimento_mes,
                                 @$ed47_d_dtvencimento_ano, true, 'text', $db_opcao1
-                               ); 
+                               );
                 ?>
               </td>
             </tr>
@@ -291,9 +340,9 @@ if ($ed47_i_nacion == 3) {
               </td>
               <td>
                 <?php
-                  db_input('ed47_v_cpf', 11, @$Ied47_v_cpf, true, 'text', $db_opcao1,
-                            "onChange='js_verificacpf(this);'"
-                           );
+                  db_input('ed47_v_cpf', 11, 3, true, 'text',1,
+                           "onChange='js_verificacpf(this);'","","","",15
+                  );
                   $desabpassaporte = $ed47_i_nacion != 3 ? "readOnly style='background:#DEB887'" : "";
                   echo @$Led47_c_passaporte;
                   db_input('ed47_c_passaporte', 20, $Ied47_c_passaporte, true, 'text',
@@ -303,6 +352,59 @@ if ($ed47_i_nacion == 3) {
                 db_input( 'ed47_cartaosus', 20, $Ied47_cartaosus, true, 'text', $db_opcao );
                 ?>
               </td>
+            </tr>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+                <b>Anexo do CPF:</b>
+              </td>
+              <td>
+                <div style="display: flex; align-items: center; width:100%;">
+
+                <iframe name="frame_imagemCPF" id="frame_imagemCPF" src="edu4_alunodocumentocpf.php" width="56" height="40" frameborder="1" scrolling="no"></iframe>
+                <?php
+                  $rs = db_query($oDaoAluno->sql_query_file(null,"ed47_i_cpf_estorage  as idCpf",null, "ed47_i_codigo = $chavepesquisa"));
+                  $dados = db_utils::fieldsMemory($rs, 0);
+                  $arquivo = "";
+                  $arquivocpf = "";
+                  if ((isset($chavepesquisa) || isset($alterar)) && isset($dados->idcpf)) {
+                    $arquivo = !empty($dados->idcpf) ? StorageHelper::downloadArquivo($dados->idcpf): "" ;
+                    $arquivocpf = basename($arquivo);
+                  }
+                ?>
+                  <script>
+                  frame_imagemCPF.location.href="edu4_alunodocumentocpf.php?imagem_gerada=<?php echo $arquivocpf?>";
+                  </script>
+                <?php 
+                   if ($db_botao == true) {
+                  ?>
+                  <div style="display: flex;margin-top: -5px;flex-direction: column;width:100%;">
+                    <iframe name="frame_cpf" id="frame_cpf" src="edu1_framealunodocumentocpf.php" width="100%" height="31" frameborder="0" scrolling="no" style="margin-bottom: 0px;margin-top:2px;"></iframe>
+                    <input type="button" value="Excluir Imagem"
+                           onclick="location.href='edu1_aluno002.php?excluircpf&chavepesquisa=<?php echo $chavepesquisa?>'"
+                           style="font-size: 9px;padding: 0px;margin-left: 3px;width:82px;">
+                  </div>
+                  <?php } ?>
+                  <input name="oid_arquivoCPF" type="hidden" id="oid_arquivoCPF" value="<?php echo @$arquivo?>" size="30">
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br>
+              </td>
+            </tr>
+            <tr>
+                <td><?php echo $Led47_rnm; ?></td>
+                <td>
+                    <?php
+                    db_input( 'ed47_rnm', 20, $Ied47_rnm, true, 'text', $db_opcao );
+                    echo $Led47_visto;
+                    db_input( 'ed47_visto', 20, $Ied47_visto, true, 'text', $db_opcao );
+                    ?>
+                </td>
             </tr>
           </table>
         </fieldset>
@@ -327,7 +429,7 @@ if ($ed47_i_nacion == 3) {
     </tr>
   </table>
 </center>
-<input id="alterar" name="alterar" type="submit" value="Alterar" <?=($db_botao == false ? "disabled" : "")?> 
+<input id="alterar" name="alterar" type="submit" value="Alterar" <?=($db_botao == false ? "disabled" : "")?>
        onclick="return js_valida();">
 </form>
 <script>
@@ -361,16 +463,32 @@ function js_buscaCartorioMatricula() {
   }
 }
 
+function js_cadastroManualCartorio () {
+    $('select_cartorio').style.display = "none";
+    $('nome_cartorio').style.display= "block";
+}
+
 function js_retornoBuscaCartorio(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
+      if (confirm('Não foi encontrada nenhum cartório com o código digitado. ' +
+          'Deseja prosseguir para cadastrar um novo cartório com esse código?')) {
 
-    alert(oRetorno.sMessage.urlDecode());
-    $('matri_cartorio').value = "";
-    $('matri_cartorio').focus();
+          js_cadastroManualCartorio();
+
+      } else {
+          $('select_cartorio').style.display = "block";
+          $('nome_cartorio').style.display= "none";
+          alert(oRetorno.sMessage.urlDecode());
+          $('matri_cartorio').value = "";
+          $('matri_cartorio').focus();
+      }
   } else {
+      $('select_cartorio').style.display = "block";
+      $('nome_cartorio').style.display= "none";
+
 
     $('uf').innerHTML               = "";
     sHtml                           = "<option value='"+oRetorno.ed260_i_codigo+"'>"+
@@ -455,18 +573,17 @@ function js_checaTpLivroMatricula() {
 
   var iTipoLivro = $('matri_tipolivro').value;
 
+    $('matri_tipolivro').style.backgroundColor = '#FFFFFF';
   if (iTipoLivro == 1) {
-
-    $('ed47_c_certidaotipo').innerHTML         = "";
-    $('ed47_c_certidaotipo').innerHTML         = "<option value='N'>NASCIMENTO</option>";
-    $('matri_tipolivro').style.backgroundColor = '#FFFFFF';
+      $('ed47_c_certidaotipo').options.length = 0;
+      $('ed47_c_certidaotipo').add(new Option('NASCIMENTO', 'N'));
   } else if (iTipoLivro == 2) {
-
-    $('ed47_c_certidaotipo').innerHTML         = "";
-    $('ed47_c_certidaotipo').innerHTML         = "<option value='C'>CASAMENTO</option>";
-    $('matri_tipolivro').style.backgroundColor = '#FFFFFF';
+      $('ed47_c_certidaotipo').options.length = 0;
+      $('ed47_c_certidaotipo').add(new Option('CASAMENTO', 'C'));
+  } else if (iTipoLivro == 7) {
+      $('ed47_c_certidaotipo').options.length = 0;
+      $('ed47_c_certidaotipo').add(new Option('ESPECIAL', 'E'));
   } else {
-
     alert('Tipo do livro não é válido, verifique!');
     $('matri_tipolivro').style.backgroundColor = '#99A9AE';
     $('matri_tipolivro').value                 = "";
@@ -481,7 +598,7 @@ function js_checaNumLivroMatricula() {
 
   if (   numLivro == ""
       || numLivro.length < 5) {
-    
+
     alert('Número do livro não é válido, verifique!');
     $('matri_numlivro').style.backgroundColor = '#99A9AE';
     $('matri_numlivro').value                 = "";
@@ -501,7 +618,7 @@ function js_checaFolhaMatricula() {
 
   if (   iNumFolha == ""
       || iNumFolha.length < 3) {
-    
+
     alert('Número da folha não é válido, verifique!');
     $('matri_numfolha').style.backgroundColor = '#99A9AE';
     $('matri_numfolha').value                 = "";
@@ -657,86 +774,86 @@ function js_valida() {
     alert("Campo matrícula inválido, verifique o número da matrícula antes de processeguir!");
     return false;
   } else if (js_valEnvMatricula()) {
-  
-    $('ed47_certidaomatricula').value = iCartorio + iTpAcervo + iNumServico + iAnoRegistro + sTipoLivro + 
+
+    $('ed47_certidaomatricula').value = iCartorio + iTpAcervo + iNumServico + iAnoRegistro + sTipoLivro +
                                         iNumLivro + iNumFolha + iTermo + iCodVerif;
   } else if (nacion != 3) {
-	  
+
     identnum  = document.form1.ed47_v_ident.value;
     identcomp = document.form1.ed47_v_identcompl.value;
     identorg  = document.form1.ed47_i_censoorgemissrg.value;
     identuf   = document.form1.ed47_i_censoufident.value;
     identdata = document.form1.ed47_d_identdtexp.value;
-    
+
     if (   nacion == 3
-        && (identnum != "" 
-            || identcomp != "" 
-            || identorg != " " 
-            || identuf != " " 
+        && (identnum != ""
+            || identcomp != ""
+            || identorg != " "
+            || identuf != " "
             || identdata != "")) {
 
       sMsg  = " Aluno com nacionalidade Estrangeira (Aba Dados Pessoais).\nCampos referente";
-      sMsg += " a Identidade NÃO devem ser informados!";       
+      sMsg += " a Identidade NÃO devem ser informados!";
       alert(sMsg);
       return false;
     }
-    
+
     if (   identnum == ""
-        && (identcomp != "" 
-            || identorg != " " 
-            || identuf != " " 
+        && (identcomp != ""
+            || identorg != " "
+            || identuf != " "
             || identdata != "")) {
 
       sMsgIdent  = " Campo N° Identidade deve ser informado quando\num dos campos abaixo estiverem ";
-      sMsgIdent += " informados:\n\nComplemento\nUF Identidade\nÓrgao Emissor\nData Expedição Identidade";  
+      sMsgIdent += " informados:\n\nComplemento\nUF Identidade\nÓrgao Emissor\nData Expedição Identidade";
       alert(sMsgIdent);
       return false;
     }
-    
+
     if (   identorg == " "
-        && (identnum != "" 
+        && (identnum != ""
             || identuf != " ")) {
 
       sMsgOrg  = " Campo Órgão Emissor deve ser informado quando\num dos campos abaixo";
-      sMsgOrg += " estiverem informados:\n\nN° Identidade\nUF Identidade"; 
+      sMsgOrg += " estiverem informados:\n\nN° Identidade\nUF Identidade";
       alert(sMsgOrg);
       return false;
     }
-    
+
     if (   identuf == " "
-        && (identnum != "" 
+        && (identnum != ""
             || identorg != " ")) {
 
       sMsgUf  = " Campo UF Identidade deve ser informado quando\num dos campos abaixo";
-      sMsgUf += " estiverem informados:\n\nN° Identidade\nÓrgão Emissor"; 
+      sMsgUf += " estiverem informados:\n\nN° Identidade\nÓrgão Emissor";
       alert(sMsgUf);
       return false;
     }
-    
+
     if (   identcomp != ""
-        && identnum == "" 
-        && identorg == " " 
+        && identnum == ""
+        && identorg == " "
         && identuf == " ") {
 
       sMsgComp  = " Campo Complemento só pode ser informado quando\num dos campos abaixo estiverem";
-      sMsgComp += " informados:\n\nN° Identidade\nÓrgão Emissor\nUF Identidade"; 
+      sMsgComp += " informados:\n\nN° Identidade\nÓrgão Emissor\nUF Identidade";
       alert(sMsgComp);
       return false;
     }
-    
+
     if (   identdata != ""
-        && identnum == "" 
-        && identorg == " " 
+        && identnum == ""
+        && identorg == " "
         && identuf == " ") {
 
       sMsgData  = " Campo Data Expedição Identidade só pode ser informado quando\num dos campos abaixo estiverem";
-      sMsgData += " informados:\n\nN° Identidade\nÓrgão Emissor\nUF Identidade"; 
+      sMsgData += " informados:\n\nN° Identidade\nÓrgão Emissor\nUF Identidade";
       alert(sMsgData);
       return false;
     }
-    
+
     if (identdata != "") {
-        
+
       diaident = identdata.substr(0,2);
       mesident = identdata.substr(3,2);
       anoident = identdata.substr(6,4);
@@ -744,22 +861,22 @@ function js_valida() {
       mesnasc  = datanasc.substr(5,2);
       anonasc  = datanasc.substr(0,4);
       data_hj  = <?=date("Y").date("m").date("d")?>;
-      
+
       if (anoident < 1900) {
-          
+
         alert("Ano da Data de Expedição deve ser maior que 1899!");
         return false;
       }
-      
+
       data_ident = anoident+""+mesident+""+diaident;
       data_nasc  = anonasc+""+mesnasc+""+dianasc;
-      
+
       if (parseInt(data_ident) >= parseInt(data_hj)) {
-          
+
         alert("Campo Data de Expedição deve ser menor que a data corrente!");
         return false;
       }
-      
+
       if (parseInt(data_ident) <= parseInt(data_nasc)) {
 
         sMsgNasc  = " Campo Data de Expedição deve ser maior que a data de";
@@ -768,7 +885,7 @@ function js_valida() {
         return false;
       }
     }
-    
+
     certtip       = document.form1.ed47_c_certidaotipo.value;
     certnum       = document.form1.ed47_c_certidaonum.value;
     certfol       = document.form1.ed47_c_certidaofolha.value;
@@ -780,13 +897,13 @@ function js_valida() {
     censocartorio = document.form1.ed47_i_censocartorio.value;
 
     if (   nacion == 3
-        && (certtip != "" 
-            || certnum != "" 
-            || certfol != "" 
-            || certliv != "" 
-            || certcar != "" 
-            || certdat != "" 
-            || certuf != "" 
+        && (certtip != ""
+            || certnum != ""
+            || certfol != ""
+            || certliv != ""
+            || certcar != ""
+            || certdat != ""
+            || certuf != ""
             || certmun != "")) {
 
       sMsgNacion  = " Aluno com nacionalidade Estrangeira (Aba Dados Pessoais).\nCampos ";
@@ -794,89 +911,89 @@ function js_valida() {
       alert(sMsgNacion);
       return false;
     }
-    
+
     if (   certtip == ""
-        && (certnum != "" 
-            || certfol != "" 
-            || certliv != "" 
-            || certdat != "" 
-            || certuf != "" 
-            || certcar != "" 
+        && (certnum != ""
+            || certfol != ""
+            || certliv != ""
+            || certdat != ""
+            || certuf != ""
+            || certcar != ""
             || certmun != "" )) {
 
       sMsgCert  = " Campo Tipo de Certidão deve ser informado quando\num dos campos abaixo estiverem";
-      sMsgCert += " informados:\n\nNúmero do Termo\nFolha\nLivro\nData da Emissão\nUF Cartório\nCartório\nMunicípio"; 
+      sMsgCert += " informados:\n\nNúmero do Termo\nFolha\nLivro\nData da Emissão\nUF Cartório\nCartório\nMunicípio";
       alert(sMsgCert);
       return false;
     }
 
     if (   censocartorio == ""
-        && (certnum != "" 
-            || certfol != "" 
-            || certliv != "" 
-            || certdat != "" 
-            || certuf != "" 
-            || certcar != "" 
+        && (certnum != ""
+            || certfol != ""
+            || certliv != ""
+            || certdat != ""
+            || certuf != ""
+            || certcar != ""
             || certmun != "" )) {
 
       sMsgCartorio  = " Campo Cartório deve ser informado quando\num dos campos abaixo estiverem";
-      sMsgCartorio += " informados:\n\nNúmero do Termo\nFolha\nLivro\nData da Emissão\nUF Cartório\nMunicípio"; 
+      sMsgCartorio += " informados:\n\nNúmero do Termo\nFolha\nLivro\nData da Emissão\nUF Cartório\nMunicípio";
       alert();
       return false;
     }
-    
+
     if (   certnum == ""
-        && (certtip != "" 
-            || certuf != "" 
-            || certcar != "" 
+        && (certtip != ""
+            || certuf != ""
+            || certcar != ""
             || certmun != "" )) {
 
       sMsgNum  = " Campo Número do Termo deve ser informado quando\num dos campos abaixo estiverem ";
-      sMsgNum += " informados:\n\nTipo de Certidão\nUF Cartório\nCartório\nMunicípio"; 
+      sMsgNum += " informados:\n\nTipo de Certidão\nUF Cartório\nCartório\nMunicípio";
       alert(sMsgNum);
       return false;
     }
-    
+
     if (   certcar == ""
-        && (certtip != "" 
-            || certuf != "" 
-            || certnum != "" 
+        && (certtip != ""
+            || certuf != ""
+            || certnum != ""
             || certmun != "" )) {
 
       sMsgCar  = " Campo Cartório deve ser informado quando\num dos campos abaixo";
-      sMsgCar += " estiverem informados:\n\nTipo de Certidão\nUF Cartório\nNúmero do Termo\nMunicípio"; 
+      sMsgCar += " estiverem informados:\n\nTipo de Certidão\nUF Cartório\nNúmero do Termo\nMunicípio";
       alert(sMsgCar);
       return false;
     }
-    
+
     if (   certuf == ""
-        && (certtip != "" 
-            || certcar != "" 
-            || certnum != "" 
-            || certmun != "" )) {        
+        && (certtip != ""
+            || certcar != ""
+            || certnum != ""
+            || certmun != "" )) {
 
       sMsgCertUf  = " Campo UF Cartório deve ser informado quando\num dos campos abaixo estiverem";
-      sMsgCertUf += " informados:\n\nTipo de Certidão\nCartório\nNúmero do Termo\nMunicípio";   
+      sMsgCertUf += " informados:\n\nTipo de Certidão\nCartório\nNúmero do Termo\nMunicípio";
       alert(sMsgCertUf);
       return false;
     }
-    
+
     if (   certfol != ""
-        && certtip == "" 
-        && certnum == "" 
-        && certuf == "" 
+        && certtip == ""
+        && certnum == ""
+        && certuf == ""
         && certcar == "") {
 
       sMsgFol  = " Campo Folha só pode ser informado quando\num dos campos abaixo";
-      sMsgFol += " estiverem informados:\n\nTipo de Certidão\nNúmero do Termo\nUF Cartório\nCartório"; 
+      sMsgFol += " estiverem informados:\n\nTipo de Certidão\nNúmero do Termo\nUF Cartório\nCartório";
       alert(sMsgFol);
       return false;
     }
-    
+
     if (   certliv != ""
-        && certtip == "" 
-        && certnum == "" 
-        && certuf == "" 
+        && certtip == ""
+        && certnum == ""
+        && certuf == ""
         && certcar == "") {
 
       sMsgLiv  = " Campo Livro só pode ser informado quando\num dos campos abaixo estiverem";
@@ -884,21 +1001,21 @@ function js_valida() {
       alert(sMsgLiv);
       return false;
     }
-    
+
     if (   certdat != ""
-        && certtip == "" 
-        && certnum == "" 
-        && certuf == "" 
+        && certtip == ""
+        && certnum == ""
+        && certuf == ""
         && certcar == "") {
 
       sMsgFim  = " Campo Data de Emissão só pode ser informado quando\num dos campos abaixo ";
-      sMsgFim += " estiverem informados:\n\nTipo de Certidão\nNúmero do Termo\nUF Cartório\nCartório"; 
+      sMsgFim += " estiverem informados:\n\nTipo de Certidão\nNúmero do Termo\nUF Cartório\nCartório";
       alert(sMsgFim);
       return false;
     }
-    
+
     if (certdat != "") {
-        
+
       diacert   = certdat.substr(0,2);
       mescert   = certdat.substr(3,2);
       anocert   = certdat.substr(6,4);
@@ -908,40 +1025,40 @@ function js_valida() {
       data_hj   = <?=date("Y").date("m").date("d")?>;
       data_cert = anocert+""+mescert+""+diacert;
       data_nasc = anonasc+""+mesnasc+""+dianasc;
-      
+
       if (parseInt(data_cert) >= parseInt(data_hj)) {
-          
+
         alert("Campo Data de Emissão deve ser menor que a data corrente!");
         return false;
       }
-      
+
       if (certtip == "N") {
-          
+
         if (parseInt(data_cert) < parseInt(data_nasc)) {
 
           sMsgTip  = " Campo Data de Emissão deve ser maior ou igual a data de";
-          sMsgTip += " nascimento do aluno ("+dianasc+"/"+mesnasc+"/"+anonasc+")!"; 
+          sMsgTip += " nascimento do aluno ("+dianasc+"/"+mesnasc+"/"+anonasc+")!";
           alert(sMsgTip);
           return false;
         }
       } else if(certtip == "C") {
-          
+
         if (parseInt(data_cert) <= parseInt(data_nasc)) {
 
           sMsgCertTip  = " Campo Data de Emissão deve ser maior que a data de nascimento";
-          sMsgCertTip += " do aluno ("+dianasc+"/"+mesnasc+"/"+anonasc+")!";  
+          sMsgCertTip += " do aluno ("+dianasc+"/"+mesnasc+"/"+anonasc+")!";
           alert(sMsgCertTip);
           return false;
         }
       }
     }
   }
-  
+
   if (   nacion != 3
       && document.form1.ed47_c_passaporte.value != "") {
 
     sMsgPass  = " Campo N° Passaporte só pode ser informado quando nacionalidade do";
-    sMsgPass += " aluno for Estrangeira (Aba Dados Pessoais).";   
+    sMsgPass += " aluno for Estrangeira (Aba Dados Pessoais).";
     alert(sMsgPass);
     return false;
   }
@@ -950,21 +1067,21 @@ function js_valida() {
 }
 
 function js_TestaNi(cNI) {
-	
+
   var NI;
   NI = js_LimpaCampo(cNI.value,10);
-  
+
   if (NI.length != 11) {
-	  
+
     alert('O número do CPF informado está incorreto');
     cNI.value = "";
     cNI.select();
     cNI.focus();
     return(false);
   }
-  
+
   if (NI.substr(9, 2) != js_CalculaDV(NI.substr(0, 9), 11)) {
-	  
+
     alert('O número do CPF informado está incorreto');
     cNI.value = "";
     cNI.select();
@@ -975,23 +1092,36 @@ function js_TestaNi(cNI) {
   return (true);
 }
 
+function js_processacpf(cpf){
+  
+  // Substitui o formato 000.000.000-00 por 00000000000
+  for(var i = 0;i<2;i++){
+    cpf = cpf.replace('\.', '');
+    cpf = cpf.replace('-', '');
+  }
+ 
+  return cpf;
+}
+
 function js_verificacpf(obcgc) {
-	
+
+ obcgc.value = js_processacpf(obcgc.value);
+ 
  if (   obcgc.value == 00000000000
      || obcgc.value == 00000000191) {
-	 
+
    alert('Valor Informado não é Válido para CPF.');
    obcgc.value = "";
    obcgc.select();
    obcgc.focus();
  }
- 
+
  if (obcgc.value.length == 11) {
    return js_TestaNi(obcgc);
  }
- 
+
  if (obcgc.value != "") {
-	 
+
    alert('Valor Informado não é Válido para CPF.');
    obcgc.value = "";
    obcgc.select();
@@ -1002,7 +1132,6 @@ function js_verificacpf(obcgc) {
 }
 
 function js_uf(uf) {
-
   js_divCarregando("Aguarde, carregando registro(s)","msgBox");
   var sAction = 'PesquisaMunicipio';
   var url     = 'edu1_aluno.RPC.php';
@@ -1015,23 +1144,23 @@ function js_uf(uf) {
                                  onComplete: js_retornoPesquisaMunicipio
                                }
                               );
-	    
+
 }
 
 function js_retornoPesquisaMunicipio(oAjax) {
-	    
+
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   sHtml = '';
   if (oRetorno.length == 0) {
-    
+
     sHtml += '<option value="">Selecione o Estado</option>';
     $('select_municipio').innerHTML = sHtml;
   } else {
-	          
+
     sHtml += '<option value=""></option>';
     for (var i = 0;i < oRetorno.length; i++) {
-	            
+
       with (oRetorno[i]) {
         sHtml += '<option value="'+ed261_i_codigo+'">'+ed261_c_nome.urlDecode()+'</option>';
       }
@@ -1044,9 +1173,9 @@ function js_retornoPesquisaMunicipio(oAjax) {
 
   $('select_municipio').disabled  = false;
 }
-	
+
 function js_cartorio(municipio) {
-	    
+
   $('select_cartorio').innerHTML      = "";
   $('select_cartorio').disabled       = true;
 
@@ -1064,18 +1193,18 @@ function js_cartorio(municipio) {
 }
 
 function js_retornoPesquisaCartorio(oAjax) {
-	    
+
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   sHtml = '';
 
   if (oRetorno.length==0) {
     sHtml += '<option value="">Não há cartório</option>';
   } else {
-      
+
     sHtml += '<option value=""></option>';
     for (var i = 0;i < oRetorno.length; i++) {
-	        
+
       with (oRetorno[i]) {
 
         if ( oRetorno[i] != "" ) {
@@ -1105,7 +1234,7 @@ function js_matricula() {
 
 function js_retornoMatricula(oResponse) {
 
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.iStatus != 1) {
 
@@ -1147,7 +1276,7 @@ function js_initMatricula() {
 
 function js_retornoInitMatricula(oResponse) {
 
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.iStatus == 1) {
 
@@ -1160,10 +1289,10 @@ function js_retornoInitMatricula(oResponse) {
 function js_init() {
 
   js_initMatricula();
-		    
+
   if (   <?=isset($ed47_i_censoufcert)
       && !empty($ed47_i_censoufcert) ? 'true' : 'false'?>) {
-		      
+
     var oUf = $('uf');
     for (var iCont = 0; iCont < oUf.length; iCont++) {
 
@@ -1184,7 +1313,7 @@ function js_init() {
     for (var iCont = 0; iCont < oMunicipio.length; iCont++) {
 
       if (oMunicipio.options[iCont].value == '<?=$ed47_i_censomuniccert?>') {
-	                  
+
         oMunicipio.selectedIndex = iCont;
         break;
       }
@@ -1195,12 +1324,12 @@ function js_init() {
 
   if (   <?=isset($ed47_i_censocartorio)
       && !empty($ed47_i_censocartorio) ? 'true' : 'false'?>) {
-		      
+
 	  var oCartorio = $('select_cartorio');
     for (var iCont = 0; iCont < oCartorio.length; iCont++) {
 
       if (oCartorio.options[iCont].value == '<?=$ed47_i_censocartorio?>') {
-                    
+
         oCartorio.selectedIndex = iCont;
         break;
       }
@@ -1257,16 +1386,16 @@ function js_habilitaMatriculaManual() {
       check2 = "selected";
     }
 
-    $('ed47_c_certidaotipo').innerHTML = "";
-    sHtml  = "<option value=''></option><option value='N' "+check1+">NASCIMENTO</option>";
-    sHtml += "<option value='C' "+check2+">CASAMENTO</option>";
-    $('ed47_c_certidaotipo').innerHTML = sHtml;
+      $('ed47_c_certidaotipo').options.length = 0;
+      $('ed47_c_certidaotipo').add(new Option('NASCIMENTO', 'N'));
+      $('ed47_c_certidaotipo').add(new Option('CASAMENTO', 'C'));
+      $('ed47_c_certidaotipo').add(new Option('ESPECIAL', 'E'));
   }
 }
 
 function js_retornoGetUf(oRetorno) {
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
 
@@ -1282,7 +1411,7 @@ function js_retornoGetUf(oRetorno) {
     } else {
 
       sHtml = "<option value=''></option>";
-      
+
       for (var iCont = 0; iCont < oRetorno.aResultado.length; iCont++) {
 
         sHtml += "<option value='"+oRetorno.aResultado[iCont].ed260_i_codigo+"'>"+

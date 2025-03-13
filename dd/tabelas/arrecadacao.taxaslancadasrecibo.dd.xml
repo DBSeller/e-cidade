@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010549' name='arrecadacao.taxaslancadasrecibo' description="Guarda os recibos que foram gerados para a taxa de expediente." prefix="ar46" label="Taxas Lançadas Recibo" type="0">
+  <fields>
+    <field codigo="1011195" 
+           campo_api='' 
+           name="ar46_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela taxaslancadasrecibo." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='arrecadacao.taxaslancadasrecibo_ar46_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011196" 
+           campo_api='' 
+           name="ar46_taxaslancadas" 
+           conteudo="int4" 
+           description="Código da taxa." 
+           inivalue="0" 
+           label="Código Taxa" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Taxa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011197" 
+           campo_api='' 
+           name="ar46_numnov" 
+           conteudo="int4" 
+           description="Código do recibo que foi gerado para determinada taxa." 
+           inivalue="0" 
+           label="Código do Recibo" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Recibo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011241" 
+           campo_api='' 
+           name="ar46_tipoemissao" 
+           conteudo="int4" 
+           description="Seta onde o recibo está sendo emitido (e-Cidade ou DBPref)" 
+           inivalue="0" 
+           label="Tipo de Emissão" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Emissão" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011643" 
+           campo_api='' 
+           name="ar46_departamento" 
+           conteudo="int4" 
+           description="Departamento em que a taxa foi gerada." 
+           inivalue="0" 
+           label="Departamento" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Departamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="ar46_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="taxaslancadas" inner='t'>
+      <fieldfk name="ar46_taxaslancadas" reference="ar44_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

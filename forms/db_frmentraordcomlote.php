@@ -1,32 +1,32 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
  *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
  *  detalhes.                                                         
  *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
  *  02111-1307, USA.                                                  
  *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
 
-include ("classes/db_db_depusu_classe.php");
-include ("classes/db_db_almoxdepto_classe.php");
+include(modification("classes/db_db_depusu_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
 
 $cldb_depusu     = new cl_db_depusu;
 $cldb_almoxdepto = new cl_db_almoxdepto;
@@ -485,15 +485,15 @@ db_input("codunidade", 100, 0, true, "hidden", 3);
   }
   //----------------------------------------------------------
   function js_consultaordem(codordem){
-    js_OpenJanelaIframe('top.corpo','db_iframe_ordemcompra002','com3_ordemdecompra002.php?m51_codordem='+codordem,'Consulta Ordem de Compra',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ordemcompra002','com3_ordemdecompra002.php?m51_codordem='+codordem,'Consulta Ordem de Compra',true);
   }
   //---------------------------------------------------------
   function js_pesquisae69_id_usuario(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
     }else{
       if(document.form1.e69_id_usuario.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.e69_id_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.e69_id_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
       }else{
         document.form1.nome.value = ''; 
       }
@@ -617,11 +617,11 @@ db_input("codunidade", 100, 0, true, "hidden", 3);
     //---------------------------------------------------------------------
     function js_atualizaquant(condicao,codordem ){
       if (condicao==false){
-        js_OpenJanelaIframe('top.corpo','db_iframe_lanca','mat1_lancaitens.php?atualizaquant=atualizaquant&excluir=excluir','Pesquisa',false,'0','0','0','0');
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lanca','mat1_lancaitens.php?atualizaquant=atualizaquant&excluir=excluir','Pesquisa',false,'0','0','0','0');
         //itens.document.form1.submit();
         itens.location.href = 'mat1_entraordcomitemiframenota.php?m51_codordem='+codordem;
       }else if (condicao == true){
-        js_OpenJanelaIframe('top.corpo','db_iframe_lanca','mat1_lancaitens.php?atualizaquant=atualizaquant&excluir=excluir','Pesquisa',false,'0','0','0','0');
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lanca','mat1_lancaitens.php?atualizaquant=atualizaquant&excluir=excluir','Pesquisa',false,'0','0','0','0');
         obj= itens.document.form1;
         for (i=0;i<obj.elements.length;i++){
           if (obj.elements[i].name.substr(0,6)=="quant_"){

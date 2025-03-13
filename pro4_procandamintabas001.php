@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clcriaabas = new cl_criaabas;
@@ -59,17 +59,20 @@ $clcriaabas = new cl_criaabas;
   <tr> 
      <td>
      <?
-       $clcriaabas->identifica = array( "g1" => "Despacho Atual",
-                                        "g2" => "Despacho Anterior", 
-                                        "g3" => "Anexar Documentos");
+       $clcriaabas->identifica = array("g1" => "Despacho Atual",
+                                       "g2" => "Despacho Anterior", 
+                                       "g3" => "Anexar Documentos");
 
-      $clcriaabas->title = array("g1" => "Incluir Despacho interno",
-                                 "g2" => "Ver Despachos Anteriores",
-                                 "g3" => "Anexar Documentos");
+       $clcriaabas->title = array("g1" => "Incluir Despacho interno",
+                                  "g2" => "Ver Despachos Anteriores",
+                                  "g3" => "Anexar Documentos");
 
        $clcriaabas->src = array("g1" => "pro4_procandamint011.php?p58_codproc=".$p58_codproc ,
                                 "g2" => "pro4_procandamintant001.php?p58_codproc=".$p58_codproc,
                                 "g3" => "prot4_processodocumento001.php?iCodigoProcesso=".$p58_codproc);
+       
+       $clcriaabas->disabled = array("g3" => "true");
+      
        $clcriaabas->cria_abas();    
      ?> 
      </td>

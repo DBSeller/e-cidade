@@ -1,0 +1,66 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010260' name='cadastro.civitasinfoscomplementar' description="Tabela que guarda informacoes complementares." prefix="" label="" type="0">
+  <fields>
+    <field codigo="991" 
+           campo_api='' 
+           name="matricula" 
+           conteudo="varchar(8)" 
+           description="Log da matrícula" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="8" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009638" 
+           campo_api='' 
+           name="codigo_api" 
+           conteudo="varchar(200)" 
+           description="Codigo unico recebido pela webservice do civitas na carga de dados" 
+           inivalue="0" 
+           label="" 
+           size="200" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009669" 
+           campo_api='' 
+           name="nova_matricula" 
+           conteudo="int8" 
+           description="Campo para guardar o vinculo da matricula temporaria com matricula oficial gerada" 
+           inivalue="0" 
+           label="" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

@@ -1,75 +1,77 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: patrim
 //CLASSE DA ENTIDADE bensplaca
-class cl_bensplaca { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $t41_codigo = 0; 
-   var $t41_bem = 0; 
-   var $t41_placa = null; 
-   var $t41_placaseq = 0; 
-   var $t41_obs = null; 
-   var $t41_data_dia = null; 
-   var $t41_data_mes = null; 
-   var $t41_data_ano = null; 
-   var $t41_data = null; 
-   var $t41_usuario = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_bensplaca {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $t41_codigo = 0;
+   var $t41_bem = 0;
+   var $t41_placa = null;
+   var $t41_placaseq = 0;
+   var $t41_obs = null;
+   var $t41_data_dia = null;
+   var $t41_data_mes = null;
+   var $t41_data_ano = null;
+   var $t41_data = null;
+   var $t41_usuario = 0;
+   var $t41_excluido = 'f';
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 t41_codigo = int4 = Código 
-                 t41_bem = int8 = Código do bem 
-                 t41_placa = varchar(20) = Placa 
-                 t41_placaseq = int4 = Nº sequencial da placa 
-                 t41_obs = text = Observação referente a placa 
-                 t41_data = date = Data Placa 
-                 t41_usuario = int4 = Cod. Usuário 
+                 t41_codigo = int4 = Código
+                 t41_bem = int8 = Código do bem
+                 t41_placa = varchar(20) = Placa
+                 t41_placaseq = int4 = Nº sequencial da placa
+                 t41_obs = text = Observação referente a placa
+                 t41_data = date = Data Placa
+                 t41_usuario = int4 = Cod. Usuário
+                 t41_excluido = boolean = Indica se histórico de placa foi excluído
                  ";
-   //funcao construtor da classe 
-   function cl_bensplaca() { 
+   //funcao construtor da classe
+   function cl_bensplaca() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("bensplaca"); 
+     $this->rotulo = new rotulo("bensplaca");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -94,14 +96,15 @@ class cl_bensplaca {
          }
        }
        $this->t41_usuario = ($this->t41_usuario == ""?@$GLOBALS["HTTP_POST_VARS"]["t41_usuario"]:$this->t41_usuario);
+       $this->t41_excluido = ($this->t41_excluido == "f"?@$GLOBALS["HTTP_POST_VARS"]["t41_excluido"]:$this->t41_excluido);
      }else{
        $this->t41_codigo = ($this->t41_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["t41_codigo"]:$this->t41_codigo);
      }
    }
    // funcao para inclusao
-   function incluir ($t41_codigo){ 
+   function incluir ($t41_codigo){
       $this->atualizacampos();
-     if($this->t41_bem == null ){ 
+     if($this->t41_bem == null ){
        $this->erro_sql = " Campo Código do bem nao Informado.";
        $this->erro_campo = "t41_bem";
        $this->erro_banco = "";
@@ -110,7 +113,7 @@ class cl_bensplaca {
        $this->erro_status = "0";
        return false;
      }
-     if($this->t41_placaseq == null ){ 
+     if($this->t41_placaseq == null ){
        $this->erro_sql = " Campo Nº sequencial da placa nao Informado.";
        $this->erro_campo = "t41_placaseq";
        $this->erro_banco = "";
@@ -119,7 +122,7 @@ class cl_bensplaca {
        $this->erro_status = "0";
        return false;
      }
-     if($this->t41_data == null ){ 
+     if($this->t41_data == null ){
        $this->erro_sql = " Campo Data Placa nao Informado.";
        $this->erro_campo = "t41_data_dia";
        $this->erro_banco = "";
@@ -128,7 +131,7 @@ class cl_bensplaca {
        $this->erro_status = "0";
        return false;
      }
-     if($this->t41_usuario == null ){ 
+     if($this->t41_usuario == null ){
        $this->erro_sql = " Campo Cod. Usuário nao Informado.";
        $this->erro_campo = "t41_usuario";
        $this->erro_banco = "";
@@ -137,17 +140,20 @@ class cl_bensplaca {
        $this->erro_status = "0";
        return false;
      }
+
+     $this->t41_excluido = 'f';
+
      if($t41_codigo == "" || $t41_codigo == null ){
-       $result = db_query("select nextval('bensplaca_t41_codigo_seq')"); 
+       $result = db_query("select nextval('bensplaca_t41_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: bensplaca_t41_codigo_seq do campo: t41_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: bensplaca_t41_codigo_seq do campo: t41_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->t41_codigo = pg_result($result,0,0); 
+       $this->t41_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from bensplaca_t41_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $t41_codigo)){
@@ -158,10 +164,10 @@ class cl_bensplaca {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->t41_codigo = $t41_codigo; 
+         $this->t41_codigo = $t41_codigo;
        }
      }
-     if(($this->t41_codigo == null) || ($this->t41_codigo == "") ){ 
+     if(($this->t41_codigo == null) || ($this->t41_codigo == "") ){
        $this->erro_sql = " Campo t41_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -170,25 +176,27 @@ class cl_bensplaca {
        return false;
      }
      $sql = "insert into bensplaca(
-                                       t41_codigo 
-                                      ,t41_bem 
-                                      ,t41_placa 
-                                      ,t41_placaseq 
-                                      ,t41_obs 
-                                      ,t41_data 
-                                      ,t41_usuario 
+                                       t41_codigo
+                                      ,t41_bem
+                                      ,t41_placa
+                                      ,t41_placaseq
+                                      ,t41_obs
+                                      ,t41_data
+                                      ,t41_usuario
+                                      ,t41_excluido
                        )
                 values (
-                                $this->t41_codigo 
-                               ,$this->t41_bem 
-                               ,'$this->t41_placa' 
-                               ,$this->t41_placaseq 
-                               ,'$this->t41_obs' 
-                               ,".($this->t41_data == "null" || $this->t41_data == ""?"null":"'".$this->t41_data."'")." 
-                               ,$this->t41_usuario 
+                                $this->t41_codigo
+                               ,$this->t41_bem
+                               ,'$this->t41_placa'
+                               ,$this->t41_placaseq
+                               ,'$this->t41_obs'
+                               ,".($this->t41_data == "null" || $this->t41_data == ""?"null":"'".$this->t41_data."'")."
+                               ,$this->t41_usuario
+                               ,'$this->t41_excluido'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Placa referente a um bem. ($this->t41_codigo) nao Incluído. Inclusao Abortada.";
@@ -224,18 +232,19 @@ class cl_bensplaca {
        $resac = db_query("insert into db_acount values($acount,1523,8909,'','".AddSlashes(pg_result($resaco,0,'t41_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,1523,8910,'','".AddSlashes(pg_result($resaco,0,'t41_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,1523,8911,'','".AddSlashes(pg_result($resaco,0,'t41_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1523,1013423,'','".AddSlashes(pg_result($resaco,0,'t41_excluido'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($t41_codigo=null) { 
+   function alterar ($t41_codigo=null) {
       $this->atualizacampos();
      $sql = " update bensplaca set ";
      $virgula = "";
-     if(trim($this->t41_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_codigo"])){ 
+     if(trim($this->t41_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_codigo"])){
        $sql  .= $virgula." t41_codigo = $this->t41_codigo ";
        $virgula = ",";
-       if(trim($this->t41_codigo) == null ){ 
+       if(trim($this->t41_codigo) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "t41_codigo";
          $this->erro_banco = "";
@@ -245,10 +254,10 @@ class cl_bensplaca {
          return false;
        }
      }
-     if(trim($this->t41_bem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_bem"])){ 
+     if(trim($this->t41_bem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_bem"])){
        $sql  .= $virgula." t41_bem = $this->t41_bem ";
        $virgula = ",";
-       if(trim($this->t41_bem) == null ){ 
+       if(trim($this->t41_bem) == null ){
          $this->erro_sql = " Campo Código do bem nao Informado.";
          $this->erro_campo = "t41_bem";
          $this->erro_banco = "";
@@ -258,14 +267,14 @@ class cl_bensplaca {
          return false;
        }
      }
-     if(trim($this->t41_placa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_placa"])){ 
+     if(trim($this->t41_placa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_placa"])){
        $sql  .= $virgula." t41_placa = '$this->t41_placa' ";
        $virgula = ",";
      }
-     if(trim($this->t41_placaseq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_placaseq"])){ 
+     if(trim($this->t41_placaseq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_placaseq"])){
        $sql  .= $virgula." t41_placaseq = $this->t41_placaseq ";
        $virgula = ",";
-       if(trim($this->t41_placaseq) == null ){ 
+       if(trim($this->t41_placaseq) == null ){
          $this->erro_sql = " Campo Nº sequencial da placa nao Informado.";
          $this->erro_campo = "t41_placaseq";
          $this->erro_banco = "";
@@ -275,14 +284,14 @@ class cl_bensplaca {
          return false;
        }
      }
-     if(trim($this->t41_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_obs"])){ 
+     if(trim($this->t41_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_obs"])){
        $sql  .= $virgula." t41_obs = '$this->t41_obs' ";
        $virgula = ",";
      }
-     if(trim($this->t41_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["t41_data_dia"] !="") ){ 
+     if(trim($this->t41_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["t41_data_dia"] !="") ){
        $sql  .= $virgula." t41_data = '$this->t41_data' ";
        $virgula = ",";
-       if(trim($this->t41_data) == null ){ 
+       if(trim($this->t41_data) == null ){
          $this->erro_sql = " Campo Data Placa nao Informado.";
          $this->erro_campo = "t41_data_dia";
          $this->erro_banco = "";
@@ -291,11 +300,11 @@ class cl_bensplaca {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["t41_data_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["t41_data_dia"])){
          $sql  .= $virgula." t41_data = null ";
          $virgula = ",";
-         if(trim($this->t41_data) == null ){ 
+         if(trim($this->t41_data) == null ){
            $this->erro_sql = " Campo Data Placa nao Informado.";
            $this->erro_campo = "t41_data_dia";
            $this->erro_banco = "";
@@ -306,10 +315,10 @@ class cl_bensplaca {
          }
        }
      }
-     if(trim($this->t41_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_usuario"])){ 
+     if(trim($this->t41_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_usuario"])){
        $sql  .= $virgula." t41_usuario = $this->t41_usuario ";
        $virgula = ",";
-       if(trim($this->t41_usuario) == null ){ 
+       if(trim($this->t41_usuario) == null ){
          $this->erro_sql = " Campo Cod. Usuário nao Informado.";
          $this->erro_campo = "t41_usuario";
          $this->erro_banco = "";
@@ -319,6 +328,12 @@ class cl_bensplaca {
          return false;
        }
      }
+
+     if(trim($this->t41_excluido)!="" || isset($GLOBALS["HTTP_POST_VARS"]["t41_excluido"])){
+      $sql  .= $virgula." t41_excluido = '$this->t41_excluido' ";
+      $virgula = ",";
+     }
+
      $sql .= " where ";
      if($t41_codigo!=null){
        $sql .= " t41_codigo = $this->t41_codigo";
@@ -344,10 +359,12 @@ class cl_bensplaca {
            $resac = db_query("insert into db_acount values($acount,1523,8910,'".AddSlashes(pg_result($resaco,$conresaco,'t41_data'))."','$this->t41_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["t41_usuario"]))
            $resac = db_query("insert into db_acount values($acount,1523,8911,'".AddSlashes(pg_result($resaco,$conresaco,'t41_usuario'))."','$this->t41_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["t41_excluido"]))
+           $resac = db_query("insert into db_acount values($acount,1523,1013423,'".AddSlashes(pg_result($resaco,$conresaco,'t41_excluido'))."','$this->t41_excluido',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Placa referente a um bem. nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->t41_codigo;
@@ -375,14 +392,14 @@ class cl_bensplaca {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($t41_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($t41_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($t41_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -398,6 +415,7 @@ class cl_bensplaca {
          $resac = db_query("insert into db_acount values($acount,1523,8909,'','".AddSlashes(pg_result($resaco,$iresaco,'t41_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1523,8910,'','".AddSlashes(pg_result($resaco,$iresaco,'t41_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1523,8911,'','".AddSlashes(pg_result($resaco,$iresaco,'t41_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1523,1013423,'','".AddSlashes(pg_result($resaco,$iresaco,'t41_excluido'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from bensplaca
@@ -414,7 +432,7 @@ class cl_bensplaca {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Placa referente a um bem. nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$t41_codigo;
@@ -442,11 +460,11 @@ class cl_bensplaca {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -468,7 +486,7 @@ class cl_bensplaca {
       }
      return $result;
    }
-   function sql_query ( $t41_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $t41_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -489,8 +507,8 @@ class cl_bensplaca {
      $sql2 = "";
      if($dbwhere==""){
        if($t41_codigo!=null ){
-         $sql2 .= " where bensplaca.t41_codigo = $t41_codigo "; 
-       } 
+         $sql2 .= " where bensplaca.t41_codigo = $t41_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -506,7 +524,7 @@ class cl_bensplaca {
      }
      return $sql;
   }
-   function sql_query_file ( $t41_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $t41_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -522,8 +540,8 @@ class cl_bensplaca {
      $sql2 = "";
      if($dbwhere==""){
        if($t41_codigo!=null ){
-         $sql2 .= " where bensplaca.t41_codigo = $t41_codigo "; 
-       } 
+         $sql2 .= " where bensplaca.t41_codigo = $t41_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -540,30 +558,30 @@ class cl_bensplaca {
      return $sql;
    }
    /**
-    * Seleciona um item e da um lock na tabela para novos updates 
+    * Seleciona um item e da um lock na tabela para novos updates
     * @return string
     */
    function sql_query_fileLockInLine ($t41_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ) {
-       
+
        $campos_sql = split("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++) {
-         
+
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
        }
      }else {
        $sql .= $campos;
      }
-     
+
      $sql .= " from bensplaca ";
      $sql .= "      inner join bens on bens.t52_bem = bensplaca.t41_bem ";
-     
+
      $sql2 = "";
      if($dbwhere=="") {
-       
+
        if($t41_codigo!=null ){
          $sql2 .= " where bensplaca.t41_codigo = $t41_codigo ";
        }
@@ -572,19 +590,19 @@ class cl_bensplaca {
      }
      $sql .= $sql2;
      if($ordem != null ) {
-       
+
        $sql .= " order by ";
        $campos_sql = split("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++) {
-         
+
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
        }
      }
      return $sql;
-   }   
-  
+   }
+
   /**
    * Busca as placas do Bem
    * @param intger $t41_codigo
@@ -594,15 +612,15 @@ class cl_bensplaca {
    * @return string
    */
   function sql_query_placa_bem($t41_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
-  	
+
    	$sql = "select ";
    	if ($campos != "*" ) {
-   		
+
    		$campos_sql = split("#",$campos);
    		$virgula    = "";
-   		
+
    		for ($i = 0;$i < sizeof($campos_sql); $i++) {
-   			
+
    			$sql    .= $virgula.$campos_sql[$i];
    			$virgula = ",";
    		}
@@ -613,7 +631,7 @@ class cl_bensplaca {
    	$sql .= "      inner join bens  on  bens.t52_bem = bensplaca.t41_bem";
    	$sql2 = "";
    	if ($dbwhere == "") {
-   		
+
    		if ($t41_codigo != null) {
    			$sql2 .= " where bensplaca.t41_codigo = $t41_codigo ";
    		}
@@ -622,18 +640,98 @@ class cl_bensplaca {
    	}
    	$sql .= $sql2;
    	if ($ordem != null) {
-   		
+
    		$sql       .= " order by ";
    		$campos_sql = split("#",$ordem);
    		$virgula    = "";
-   		
+
    		for ($i = 0; $i < sizeof($campos_sql); $i++) {
-   			
+
    			$sql .= $virgula.$campos_sql[$i];
    			$virgula = ",";
    		}
    	}
    	return $sql;
  	}
+
+  public function sqlQueryPlacasParaExclusao($idBem = null, $sequencialPlaca = null)
+  {
+    $whereIdBem = !empty($idBem) ? "t41_bem = {$idBem}" : '';
+    $whereSequencialPlaca = !empty($sequencialPlaca) ? "t41_placaseq = {$sequencialPlaca}" : '';
+
+    if (!empty($whereSequencialPlaca)) {
+      $whereSequencialPlaca = $whereIdBem ? "AND {$whereSequencialPlaca}" : $whereSequencialPlaca;
+    }
+
+    $sql = "
+      SELECT
+        t41_codigo,
+        t41_bem,
+        CASE
+          WHEN t41_placaseq = 0 THEN t41_placa::INTEGER ELSE t41_placaseq
+        END t41_placaseq,
+        t41_obs,
+        t41_data,
+        t41_usuario
+      FROM
+        bensplaca
+      INNER JOIN bens
+        ON t52_bem = t41_bem
+      WHERE
+        {$whereIdBem}
+        {$whereSequencialPlaca}
+        AND t52_ident::INTEGER <> t41_placaseq
+        AND t52_ident <> t41_placa
+        AND t41_excluido = 'f'
+      ORDER
+        BY t41_data desc
+    ";
+
+    return $sql;
+  }
+
+  public function sqlQueryValidaPlacasExclusao($ids)
+  {
+    $sql = "
+      SELECT
+        t41_codigo,
+        t41_placaseq,
+        CASE
+            WHEN (t52_ident::INTEGER = t41_placaseq OR t52_ident = t41_placa) THEN 'f'
+            ELSE 't'
+        END pode_excluir
+      FROM
+        bensplaca
+      INNER JOIN bens
+        ON t41_bem = t52_bem
+      WHERE
+        t41_excluido = 'f'
+        AND t41_codigo IN ({$ids})
+    ";
+
+    return $sql;
+  }
+
+  public function sqlQueryIsPlacaDisponivel($sequencialPlaca)
+  {
+    $sql = "
+      SELECT
+        t52_bem as bem,
+        CASE
+            WHEN t41_placaseq = 0 THEN t41_placa
+            ELSE t41_placaseq::VARCHAR(20)
+        END historico
+      FROM
+        bensplaca
+      LEFT JOIN bens
+        ON bens.t52_ident = t41_placaseq::VARCHAR(20) OR bens.t52_ident = t41_placa
+      WHERE
+        t41_excluido = 'f'
+        AND (t41_placaseq = {$sequencialPlaca} OR t41_placa = '{$sequencialPlaca}')
+        AND (select count(t52_bem) from bens where t52_bem = bensplaca.t41_bem and bens.t52_instit = ".db_getsession('DB_instit')." ) > 0
+        and t52_instit = ".db_getsession('DB_instit')."
+    ";
+
+    return $sql;
+  }
 }
-?>

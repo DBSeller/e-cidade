@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -50,7 +50,7 @@ class cl_lab_metodologia {
    var $campos = "
                  la16_i_codigo = int4 = Código 
                  la16_i_materialcoleta = int4 = Material Coleta 
-                 la16_c_descr = char(100) = Descrição 
+                 la16_c_descr = char(50) = Descrição 
                  la16_t_preparo = text = Preparo 
                  ";
    //funcao construtor da classe 

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -90,7 +90,7 @@ class CandidatoHabitacao {
                                                       "ht20_habitcandidato = {$this->getCodigo()}");
                                                           
       $rsInteresse   = $oDaoInteresse->sql_record($sSqlInteresse);
-      $aInteresse    = db_utils::getColectionByRecord($rsInteresse);
+      $aInteresse    = db_utils::getCollectionByRecord($rsInteresse);
          
       foreach ($aInteresse as $oInteresse) {
         $this->aInteresse[$oInteresse->ht20_sequencial] = new InteresseHabitacao($oInteresse->ht20_sequencial);

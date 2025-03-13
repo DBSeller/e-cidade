@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//MODULO: Arrecadação
+//MODULO: arrecadacao
 $clcadconveniomodalidade->rotulo->label();
 ?>
 <form name="form1" method="post" action="">
@@ -58,7 +58,7 @@ db_input('ar15_nome',50,$Iar15_nome,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadconveniomodalidade','func_cadconveniomodalidade.php?funcao_js=parent.js_preenchepesquisa|ar15_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadconveniomodalidade','func_cadconveniomodalidade.php?funcao_js=parent.js_preenchepesquisa|ar15_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadconveniomodalidade.hide();

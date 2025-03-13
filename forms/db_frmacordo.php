@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_libdicionario.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_libdicionario.php"));
+require_once(modification("libs/db_utils.php"));
 
 //MODULO: Acordos
 $clacordo->rotulo->label();
@@ -62,6 +62,46 @@ if ($oDaoAcordoClassificacao->numrows > 0) {
 
 db_app::load("dbtextFieldData.widget.js");
 
+$sTipoFiltro       = isset($sTipoFiltro) ? $sTipoFiltro : '1';
+$db_opcao_editavel = !empty($db_opcao_editavel) ? $db_opcao_editavel : $db_opcao;
+
+$Tac16_sequencial          = isset($Tac16_sequencial) ? $Tac16_sequencial : null;
+$Lac16_sequencial          = isset($Lac16_sequencial) ? $Lac16_sequencial : null;
+$Tac16_origem              = isset($Tac16_origem) ? $Tac16_origem : null;
+$Lac16_origem              = isset($Lac16_origem) ? $Lac16_origem : null;
+$Tac16_acordoclassificacao = isset($Tac16_acordoclassificacao) ? $Tac16_acordoclassificacao : null;
+$Tac16_acordogrupo         = isset($Tac16_acordogrupo) ? $Tac16_acordogrupo : null;
+$Lac16_acordogrupo         = isset($Lac16_acordogrupo) ? $Lac16_acordogrupo : null;
+$Tac16_numero              = isset($Tac16_numero) ? $Tac16_numero : null;
+$Lac16_numero              = isset($Lac16_numero) ? $Lac16_numero : null;
+$Tac16_contratado          = isset($Tac16_contratado) ? $Tac16_contratado : null;
+$Lac16_contratado          = isset($Lac16_contratado) ? $Lac16_contratado : null;
+$Tac16_deptoresponsavel    = isset($Tac16_deptoresponsavel) ? $Tac16_deptoresponsavel : null;
+$Tac16_acordocomissao      = isset($Tac16_acordocomissao) ? $Tac16_acordocomissao : null;
+$Tac16_lei                 = isset($Tac16_lei) ? $Tac16_lei : null;
+$Lac16_lei                 = isset($Lac16_lei) ? $Lac16_lei : null;
+$Tac16_numeroprocesso      = isset($Tac16_numeroprocesso) ? $Tac16_numeroprocesso : null;
+$Lac16_numeroprocesso      = isset($Lac16_numeroprocesso) ? $Lac16_numeroprocesso : null;
+$Tac16_qtdrenovacao        = isset($Tac16_qtdrenovacao) ? $Tac16_qtdrenovacao : null;
+$Iac16_qtdrenovacao        = isset($Iac16_qtdrenovacao) ? $Iac16_qtdrenovacao : null;
+$Tac16_dataassinatura      = isset($Tac16_dataassinatura) ? $Tac16_dataassinatura : null;
+$Lac16_dataassinatura      = isset($Lac16_dataassinatura) ? $Lac16_dataassinatura : null;
+$ac16_dataassinatura_dia   = isset($ac16_dataassinatura_dia) ? $ac16_dataassinatura_dia : null;
+$ac16_dataassinatura_ano   = isset($ac16_dataassinatura_ano) ? $ac16_dataassinatura_ano : null;
+$ac16_dataassinatura_mes   = isset($ac16_dataassinatura_mes) ? $ac16_dataassinatura_mes : null;
+$Tac50_descricao           = isset($Tac50_descricao) ? $Tac50_descricao : null;
+$Tac50_descricao           = isset($Tac50_descricao) ? $Tac50_descricao : null;
+$ac16_datainicio_dia       = isset($ac16_datainicio_dia) ? $ac16_datainicio_dia : null;
+$ac16_datainicio_ano       = isset($ac16_datainicio_ano) ? $ac16_datainicio_ano : null;
+$ac16_datainicio_mes       = isset($ac16_datainicio_mes) ? $ac16_datainicio_mes : null;
+$ac16_datafim_dia          = isset($ac16_datafim_dia) ? $ac16_datafim_dia : null;
+$ac16_datafim_mes          = isset($ac16_datafim_mes) ? $ac16_datafim_mes : null;
+$ac16_datafim_ano          = isset($ac16_datafim_ano) ? $ac16_datafim_ano : null;
+$Iac16_qtdperiodo          = isset($Iac16_qtdperiodo) ? $Iac16_qtdperiodo : null;
+$Tac16_objeto              = isset($Tac16_objeto) ? $Tac16_objeto : null;
+$Lac16_objeto              = isset($Lac16_objeto) ? $Lac16_objeto : null;
+$Tac16_resumoobjeto        = isset($Tac16_resumoobjeto) ? $Tac16_resumoobjeto : null;
+$Lac16_resumoobjeto        = isset($Lac16_resumoobjeto) ? $Lac16_resumoobjeto : null;
 ?>
 <style>
 .fieldsetinterno {
@@ -102,27 +142,26 @@ td {
               <fieldset style='border:0px'>
                 <table border="0" cellpadding="0" width="100%">
                   <tr>
-                    <td nowrap title="<?=@$Tac16_sequencial?>">
-                      <?=@$Lac16_sequencial?>
+                    <td nowrap title="<?=$Tac16_sequencial?>">
+                      <?=$Lac16_sequencial?>
                     </td>
                     <td>
-			                <?
+			                <?php
 			                  db_input('ac16_sequencial', 10, $Iac16_sequencial, true, 'text', 3, "");
 			                ?>
                     </td>
                   </tr>
                   <tr>
-                    <td nowrap title="<?=@$Tac16_origem?>">
-                      <?=@$Lac16_origem?>
+                    <td nowrap title="<?=$Tac16_origem?>">
+                      <?=$Lac16_origem?>
                     </td>
 	                  <td>
-				              <?
+				              <?php
 				                $aValores = array(
 				                  0 => 'Selecione',
 				                  1 => 'Processo de Compras',
 				                  2 => 'Licitação',
 				                  3 => 'Manual' ,
-				                  6 => 'Empenho'
 				                );
                         db_select('ac16_origem', $aValores, true, $db_opcao,
                         " onchange='js_desabilitaselecionar();js_exibeBotaoJulgamento();js_validaCampoValor();' style='width:100%;'");
@@ -132,11 +171,11 @@ td {
                   </tr>
 
                   <tr>
-                    <td nowrap title="<?=@$Tac16_acordoclassificacao?>">
+                    <td nowrap title="<?=$Tac16_acordoclassificacao?>">
                       <strong>Classificação:</strong>
                     </td>
 	                  <td>
-				              <?
+				              <?php
 
 				                db_select('ac16_acordoclassificacao', $aClassificacao, true, $db_opcao,
 				                          " style='width:100%;'");
@@ -146,13 +185,13 @@ td {
 
 
 			            <tr>
-			              <td nowrap title="<?=@$Tac16_acordogrupo?>">
-			                <?
-			                  db_ancora(@$Lac16_acordogrupo, "js_pesquisaac16_acordogrupo(true);", $db_opcao);
+			              <td nowrap title="<?=$Tac16_acordogrupo?>">
+			                <?php
+			                  db_ancora($Lac16_acordogrupo, "js_pesquisaac16_acordogrupo(true);", $db_opcao);
 			                ?>
 			              </td>
 			              <td>
-			                <?
+			                <?php
 			                  db_input('ac16_acordogrupo', 10, $Iac16_acordogrupo, true, 'text', $db_opcao,
 			                           "onchange='js_pesquisaac16_acordogrupo(false);'");
 			                  db_input('ac02_descricao', 30, $Iac02_sequencial, true, 'text', 3);
@@ -160,23 +199,23 @@ td {
 			              </td>
 			            </tr>
 				          <tr>
-				            <td nowrap title="<?=@$Tac16_numero?>">
-				              <?=@$Lac16_numero?>
+				            <td nowrap title="<?=$Tac16_numero?>">
+				              <?=$Lac16_numero?>
 				            </td>
 				            <td>
-				              <?
-				                db_input('ac16_numero', 10, $Iac16_numero, true, 'text', $db_opcao);
+				              <?php
+				                db_input('ac16_numero', 10, $Iac16_numero, true, 'text', 1);
 				              ?>
 				            </td>
 				          </tr>
 				          <tr>
-				            <td  nowrap title="<?=@$Tac16_contratado?>">
-				              <?
-				                db_ancora(@$Lac16_contratado, "js_pesquisaac16_contratado(true);", $db_opcao);
+				            <td  nowrap title="<?=$Tac16_contratado?>">
+				              <?php
+				                db_ancora($Lac16_contratado, "js_pesquisaac16_contratado(true);", $db_opcao);
 				              ?>
 				            </td>
 				            <td>
-				              <?
+				              <?php
 				                db_input('ac16_contratado', 10, $Iac16_contratado, true, 'text', $db_opcao,
 				                         "onchange='js_pesquisaac16_contratado(false);'");
 				                db_input('nomecontratado', 30, $Iz01_nome, true, 'text', 3);
@@ -184,14 +223,14 @@ td {
 				            </td>
 				          </tr>
 		              <tr>
-		                <td nowrap title="<?=@$Tac16_deptoresponsavel?>">
-		                  <?
+		                <td nowrap title="<?=$Tac16_deptoresponsavel?>">
+		                  <?php
 		                    db_ancora("<b>Depto Responsável: </b>", "js_pesquisaac16_deptoresponsavel(true);",
 		                              $db_opcao);
 		                  ?>
 		                </td>
 		                <td>
-		                  <?
+		                  <?php
 		                    db_input('ac16_deptoresponsavel', 10, $Iac16_deptoresponsavel, true, 'text',
 		                             $db_opcao, "onchange='js_pesquisaac16_deptoresponsavel(false)';");
 		                    db_input('descrdepto', 30, $Idescrdepto, true, 'text', 3);
@@ -199,47 +238,47 @@ td {
 		                </td>
 		              </tr>
 		              <tr>
-		                <td nowrap title="<?=@$Tac16_acordocomissao?>">
-		                  <?
+		                <td nowrap title="<?=$Tac16_acordocomissao?>">
+		                  <?php
 		                    db_ancora('<b>Comissão:</b>', "onchange=js_pesquisaac16_acordocomissao(true)",
 		                              $db_opcao);
 		                  ?>
 		                </td>
 		                <td>
-		                  <?
+		                  <?php
 		                    db_input('ac16_acordocomissao', 10, $Iac16_acordocomissao, true, 'text', $db_opcao,
 		                             "onchange=js_pesquisaac16_acordocomissao(false)");
 		                    db_input('ac08_descricao', 30, $Iac08_descricao, true, 'text', 3);
 		                  ?>
 		                </td>
 		              </tr>
-		              <tr>
-		                <td nowrap title="<?=@$Tac16_lei?>">
-		                   <?=@$Lac16_lei?>
+		              <tr id="trLei">
+		                <td nowrap title="<?=$Tac16_lei?>">
+		                   <?=$Lac16_lei?>
 		                </td>
 		                <td>
-		                  <?
+		                  <?php
 		                    db_input('ac16_lei', 50, $Iac16_lei, true, 'text', $db_opcao);
 		                  ?>
 		                </td>
 		              </tr>
 		              <tr>
-		                <td nowrap title="<?=@$Tac16_numeroprocesso?>">
-		                  <?=@$Lac16_numeroprocesso?>
+		                <td nowrap title="<?=$Tac16_numeroprocesso?>">
+		                  <?=$Lac16_numeroprocesso?>
 		                </td>
 		                <td>
-		                  <?
-		                    db_input('ac16_numeroprocesso', 50, $Iac16_numeroprocesso, true, 'text', $db_opcao);
+		                  <?php
+		                    db_input('ac16_numeroprocesso', 50, $Iac16_numeroprocesso, true, 'text', $db_opcao_editavel, " placeholder='Número/Ano' ");
 		                  ?>
 		                </td>
 		              </tr>
 		              <tr>
-		                <td nowrap title="<?=@$Tac16_qtdrenovacao?>">
+		                <td nowrap title="<?=$Tac16_qtdrenovacao?>">
 		                  <?=$Lac16_qtdrenovacao;?>
 		                </td>
 		                <td>
-		                  <?
-		                    db_input('ac16_qtdrenovacao', 2, @$Iac16_qtdrenovacao, true, 'text', $db_opcao,
+		                  <?php
+		                    db_input('ac16_qtdrenovacao', 2, $Iac16_qtdrenovacao, true, 'text', $db_opcao,
 		                             "", "", "");
 		                    db_select("ac16_tipounidtempo", getValoresPadroesCampo("ac16_tipounidtempo"),
 		                              true, $db_opcao);
@@ -251,7 +290,7 @@ td {
 		                   <b>Contrato Emergencial:</b>
 		                </td>
 		                <td>
-		                  <?
+		                  <?php
 		                    $aEmergencial = array("f" => "Não", "t" => "Sim");
 		                    db_select("ac26_emergencial", $aEmergencial, true, $db_opcao, "style='width:100%'");
 		                  ?>
@@ -259,14 +298,14 @@ td {
 		              </tr>
 
 		              <tr>
-		                <td nowrap title="<?=@$Tac16_dataassinatura?>">
-		                  <?=@$Lac16_dataassinatura?>
+		                <td nowrap title="<?=$Tac16_dataassinatura?>">
+		                  <?=$Lac16_dataassinatura?>
 		                </td>
 
 		                <td>
-		                  <?
-		                    db_inputdata('ac16_dataassinatura', @$ac16_dataassinatura_dia, @$ac16_dataassinatura_mes,
-		                                 @$ac16_dataassinatura_ano, true, 'text', $db_opcao);
+		                  <?php
+		                    db_inputdata('ac16_dataassinatura', $ac16_dataassinatura_dia, $ac16_dataassinatura_mes,
+		                                 $ac16_dataassinatura_ano, true, 'text', $db_opcao);
 		                  ?>
 		                </td>
 		              </tr>
@@ -276,7 +315,7 @@ td {
 		              		<b>Períodos por Mês Comercial:</b>
 		              	</td>
 		              	<td>
-		              		<?
+		              		<?php
 		              		$iCampo    = 1;
 		              		$sDisabled = ($db_opcao != 1 || $db_opcao != "1") ? " disabled " : "";
 		              		if ($db_opcao == 2 || $db_opcao == 22) {
@@ -288,14 +327,15 @@ td {
 		              		?>
 		              	</td>
 		              </tr>
+
 		              <tr>
-		                <td nowrap title="<?=@$Tac50_descricao?>">
-		                  <?
+		                <td nowrap title="<?=$Tac50_descricao?>">
+		                  <?php
 		                    db_ancora('<b>Categoria:</b>', "onchange=js_pesquisaac50_descricao(true)", $db_opcao);
 		                  ?>
 		                </td>
 		                <td>
-		                  <?
+		                  <?php
 		                    db_input('ac50_sequencial', 10, $Iac50_descricao, true, 'text', $db_opcao,
 		                             "onchange=js_pesquisaac50_descricao(false)");
 		                    db_input('ac50_descricao', 30, $Iac50_descricao, true, 'text', 3);
@@ -303,8 +343,37 @@ td {
 		                </td>
 		              </tr>
 
+                  <tr>
+                    <td>
+                      <label for="ac16_tipoinstrumento" class="bold">Tipo de Instrumento:</label>
+                    </td>
+
+                    <td>
+                      <?php
+                      $aTipoInstrumento = Acordo::getTiposInstrumento();
+                      db_select('ac16_tipoinstrumento', $aTipoInstrumento, true, $db_opcao_editavel);
+                      ?>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <label for="ac16_dependeordeminicio" class="bold">Depende da Ordem de Início:</label>
+                    </td>
+
+                    <td>
+                      <?php
+                      $aValores = array(
+                        'f' => 'Não',
+                        't' => 'Sim',
+                      );
+                      db_select('ac16_dependeordeminicio', $aValores, true, $db_opcao_editavel);
+                      ?>
+                    </td>
+                  </tr>
+
 		              <tr id='trValorAcordo'>
-		                <td nowrap title="<?=@$Tac50_descricao?>">
+		                <td nowrap title="<?=$Tac50_descricao?>">
 		                  <strong>Valor do Acordo:</strong>
 		                </td>
 		                <td>
@@ -328,18 +397,18 @@ td {
                 <table cellpadding="0" border="0" width="100%" class="table-vigencia">
 		              <tr>
 		                <td width="1%">
-		                  <b>Inicio:</b>
+		                  <b>Início:</b>
 		                </td>
 		                <td>
-		                  <?
+		                  <?php
 			                $iCampo = 1;
 
 			                if ($db_opcao == 2 || $db_opcao == 22){
 			                	$iCampo = 3;
 			                }
 
-		                    db_inputdata('ac16_datainicio', @$ac16_datainicio_dia, @$ac16_datainicio_mes,
-		                                 @$ac16_datainicio_ano, true, 'text', $iCampo,
+		                    db_inputdata('ac16_datainicio', $ac16_datainicio_dia, $ac16_datainicio_mes,
+		                                 $ac16_datainicio_ano, true, 'text', $iCampo,
 		                                 "onchange='return js_somardias();'", "", "",
 		                                 "return parent.js_somardias();");
 		                  ?>
@@ -348,9 +417,9 @@ td {
 		                  <b>Fim:</b>
 		                </td>
 		                <td>
-		                  <?
+		                  <?php
 
-		                  db_inputdata('ac16_datafim', @$ac16_datafim_dia, @$ac16_datafim_mes, @$ac16_datafim_ano,
+		                  db_inputdata('ac16_datafim', $ac16_datafim_dia, $ac16_datafim_mes, $ac16_datafim_ano,
 		                                 true, 'text', $iCampo, "onchange='return js_somardias();'",
 		                                 "", "", "return parent.js_somardias();");
 		                  ?>
@@ -359,7 +428,7 @@ td {
 		                  <b>Dias:</b>
 		                </td>
 		                <td>
-		                  <?
+		                  <?php
 		                    db_input('diasvigencia', 10, "", true, 'text', 3);
 		                  ?>
 		                </td>
@@ -369,8 +438,8 @@ td {
 		                  <strong>Período:</strong>
 		                </td>
 		                <td>
-		                  <?
-		                    db_input('ac16_qtdperiodo', 2, @$Iac16_qtdperiodo, true, 'text', $db_opcao,
+		                  <?php
+		                    db_input('ac16_qtdperiodo', 2, $Iac16_qtdperiodo, true, 'text', $db_opcao,
 		                             "", "", "");
 		                    db_select("ac16_tipounidtempoperiodo", getValoresPadroesCampo("ac16_tipounidtempoperiodo"),
 		                              true, $db_opcao);
@@ -385,26 +454,27 @@ td {
 		        <td>&nbsp;</td>
 		      </tr>
 		      <tr>
-		        <td nowrap title="<?=@$Tac16_objeto?>" colspan="2">
+		        <td nowrap title="<?=$Tac16_objeto?>" colspan="2">
 		          <fieldset>
-		            <legend><?=@$Lac16_objeto?></legend>
-		            <?
+		            <legend><?=$Lac16_objeto?></legend>
+		            <?php
 		              db_textarea('ac16_objeto', 3, 58, $Iac16_objeto, true, 'text', $db_opcao, "");
 		            ?>
 		          </fieldset>
 		        </td>
 		      </tr>
 		      <tr>
-		        <td nowrap title="<?=@$Tac16_resumoobjeto?>" colspan="2">
+		        <td nowrap title="<?=$Tac16_resumoobjeto?>" colspan="2">
 		          <fieldset>
-		            <legend><?=@$Lac16_resumoobjeto?></legend>
-					        <?
+		            <legend><?=$Lac16_resumoobjeto?></legend>
+					        <?php
 					          db_input('ac16_resumoobjeto', 40, $Iac16_resumoobjeto, true, 'text', $db_opcao, "", "",
-					                   "", "width:100%");
+                             "", "width:100%");
 					        ?>
 		          </fieldset>
 		        </td>
 		      </tr>
+              <!-- ContratosPADRS: base legal de contratacao -->
         </table>
       </fieldset>
     </td>
@@ -431,19 +501,24 @@ td {
 
 </center>
 </form>
-
 <style>
   .filtroEmpenho {
 
      width : 91px;
   }
 </style>
-
 <script>
 
 var sCaminhoMensagens = "patrimonial.contratos.db_frmacordo";
 
 $('trValorAcordo').style.display = 'none';
+
+/**
+ * Processo Administrativo
+ */
+$("ac16_numeroprocesso").addEventListener("input", function() {
+  this.value = this.value.replace(/[^0-9\/]/g, '').replace(/(\/?)([0-9]*)(\/?)([0-9]{0,4})(.*)(\/?)/, '$2$3$4')
+});
 
 function js_validaCampoValor() {
 
@@ -465,7 +540,7 @@ function js_validaCampoValor() {
  */
 $('ac16_valor').onpaste = function(event) {
   return /^[0-9|.]+$/.test(event.clipboardData.getData('text/plain'));
-}
+};
 
 
 /*
@@ -498,7 +573,7 @@ function js_retornoVincularEmpenhos(oAjax){
 
   oGridEmpenhos.clearAll(true);
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.iStatus == 2) {
     alert(oRetorno.sMessage.urlDecode());
@@ -588,7 +663,7 @@ function js_getEmpenhos(iNumCgm) {
 
 
    js_removeObj('msgBox');
-   var oRetorno = eval("("+oAjax.responseText+")");
+   var oRetorno = JSON.parse(oAjax.responseText);
 
 
    if (oRetorno.iStatus == 1) {
@@ -851,7 +926,7 @@ function js_pesquisaac16_acordogrupo(mostra) {
   if (mostra == true) {
 
     var sUrl = 'func_acordogrupo.php?funcao_js=parent.js_mostraacordogrupo1|ac02_sequencial|ac02_descricao';
-    js_OpenJanelaIframe('top.corpo.iframe_acordo',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                         'db_iframe_acordogrupo',
                         sUrl,
                         'Pesquisar Grupos de Acordo',
@@ -861,7 +936,7 @@ function js_pesquisaac16_acordogrupo(mostra) {
 
     if ($('ac16_acordogrupo').value != '') {
 
-      js_OpenJanelaIframe('top.corpo.iframe_acordo',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                           'db_iframe_acordogrupo',
                           'func_acordogrupo.php?pesquisa_chave='+$('ac16_acordogrupo').value+
                           '&funcao_js=parent.js_mostraacordogrupo',
@@ -920,22 +995,22 @@ function js_mostraacordogrupo1(chave1,chave2) {
 
 function js_pesquisa() {
 
-  var sUrl = 'func_acordo.php?funcao_js=parent.js_preenchepesquisa|ac16_sequencial'+
-                            '&iTipoFiltro=1,4&lAtivo=1&lComExecucao=false';
-  js_OpenJanelaIframe('top.corpo.iframe_acordo',
-                      'db_iframe_acordo',
-                      sUrl,
-                      'Pesquisar Acordos',
-                      true,
-                      '0',
-                      '1'
-                      );
+  var sUrlLookup  = 'func_acordo.php';
+  var aParametros = [
+    'funcao_js=parent.js_preenchepesquisa|ac16_sequencial',
+    'iTipoFiltro=<?php echo $sTipoFiltro ?>',
+    'lAtivo=1',
+    'lComExecucao=false'
+  ];
+  var sUrl = sUrlLookup + '?' + aParametros.join('&');
+
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo', 'db_iframe_acordo', sUrl, 'Pesquisar Acordos', true, '0', '1');
 }
 
 function js_preenchepesquisa(chave) {
 
   db_iframe_acordo.hide();
-  <?
+  <?php
     if($db_opcao!=1){
       echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
     }
@@ -947,7 +1022,7 @@ function js_pesquisaac16_contratado(mostra) {
 
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo.iframe_acordo',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                         'db_iframe_contratado',
                         'func_nome.php?funcao_js=parent.js_mostracontratado1|z01_nome|z01_numcgm',
                         'Pesquisar CGM',
@@ -957,7 +1032,7 @@ function js_pesquisaac16_contratado(mostra) {
 
     if ($('ac16_contratado').value != '') {
 
-      js_OpenJanelaIframe('top.corpo.iframe_acordo',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                           'db_iframe_acordogrupo',
                           'func_nome.php?pesquisa_chave='+$F('ac16_contratado')+
                           '&funcao_js=parent.js_mostracontratado',
@@ -1005,7 +1080,7 @@ function js_pesquisaac16_deptoresponsavel(mostra) {
   if (mostra == true) {
 
     var sUrl = 'func_db_depart.php?funcao_js=parent.js_mostradeptoresponsavel1|coddepto|descrdepto';
-    js_OpenJanelaIframe('top.corpo.iframe_acordo',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                         'db_iframe_deptoresponsavel',
                         sUrl,
                         'Pesquisar CGM',
@@ -1015,7 +1090,7 @@ function js_pesquisaac16_deptoresponsavel(mostra) {
 
     if ($('ac16_deptoresponsavel').value != '') {
 
-      js_OpenJanelaIframe('top.corpo.iframe_acordo',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                           'db_iframe_acordogrupo',
                           'func_db_depart.php?pesquisa_chave='+$F('ac16_deptoresponsavel')+
                           '&funcao_js=parent.js_mostradeptoresponsavel',
@@ -1051,7 +1126,7 @@ function js_pesquisaac16_acordocomissao(mostra) {
 
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo.iframe_acordo',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                         'db_iframe_comissao',
                         'func_acordocomissao.php?funcao_js=parent.js_mostracomissao1|'+
                         'ac08_sequencial|ac08_descricao',
@@ -1062,7 +1137,7 @@ function js_pesquisaac16_acordocomissao(mostra) {
 
     if ($('ac16_acordocomissao').value != '') {
 
-      js_OpenJanelaIframe('top.corpo.iframe_acordo',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                           'db_iframe_comissao',
                           'func_acordocomissao.php?pesquisa_chave='+$F('ac16_acordocomissao')+
                           '&funcao_js=parent.js_mostracomissao',
@@ -1098,7 +1173,7 @@ function js_pesquisaac50_descricao(mostra) {
 
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo.iframe_acordo',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                         'db_iframe_acordocategoria',
                         'func_acordocategoria.php?funcao_js=parent.js_mostraacordocategoria1|'+
                         'ac50_sequencial|ac50_descricao',
@@ -1109,7 +1184,7 @@ function js_pesquisaac50_descricao(mostra) {
 
     if ($('ac50_sequencial').value != '') {
 
-      js_OpenJanelaIframe('top.corpo.iframe_acordo',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                           'db_iframe_acordocategoria',
                           'func_acordocategoria.php?pesquisa_chave='+$F('ac50_sequencial')+
                           '&funcao_js=parent.js_mostraacordocategoria',
@@ -1145,7 +1220,7 @@ var iContrato   = $('ac16_sequencial').value;
 var iTipoOrigem = $('ac16_origem').value;
 
 var sUrl = 'aco2_impressaoacordo001.php?iContrato='+iContrato+'&iTipoOrigem='+iTipoOrigem;
-js_OpenJanelaIframe('top.corpo.iframe_acordo',
+js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acordo',
                     'db_iframe_impressaocontrato',
                     sUrl,
                     'Impressão do Contrato',
@@ -1154,8 +1229,8 @@ js_OpenJanelaIframe('top.corpo.iframe_acordo',
 }
 
 $('db_opcao').onclick = oContrato.saveContrato;
-<?
-  if ($db_opcao == 2) {
+<?php
+  if ($db_opcao == 2 || $db_opcao == 3) {
     echo "\noContrato.getContrato({$chavepesquisa});\n";
   } else {
   	echo "\njs_somardias();\n";

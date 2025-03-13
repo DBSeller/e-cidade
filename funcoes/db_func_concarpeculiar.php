@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "concarpeculiar.c58_sequencial,concarpeculiar.c58_descr,case concarpeculiar.c58_tipo when 1 then 'Despesa' when 2 then 'Receita' end as DL_Tipo_de_Conta";
+$campos = "concarpeculiar.c58_sequencial,concarpeculiar.c58_descr, c09_descricao as DL_Classificação";
 ?>

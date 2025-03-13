@@ -29,14 +29,14 @@
 if (@$k11_local == "") {
 
   $sql = "select nome from db_usuarios where id_usuario = ".db_getsession("DB_id_usuario");
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if (pg_numrows($result) > 0) {
     db_fieldsmemory($result,0);
     $k11_local = "MICRO DO USUARIO " . $nome;
   }
 
   $sql = "select nomeinst from db_config where codigo = " . db_getsession("DB_instit");
-  $result = pg_exec($sql) or die($sql);
+  $result = db_query($sql) or die($sql);
   if (pg_numrows($result) > 0) {
     db_fieldsmemory($result,0);
     $palavras = split(" ",$nomeinst);

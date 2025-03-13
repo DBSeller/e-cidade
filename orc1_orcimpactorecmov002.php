@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
-include("classes/db_orcimpactorecmov_classe.php");
+include(modification("classes/db_orcimpactorecmov_classe.php"));
 
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
 
@@ -78,15 +78,15 @@ $clorcimpactorecmov     = new cl_orcimpactorecmov;
 		    
 		    echo "<script>";
 		    echo "
-			top.corpo.iframe_orcimpactorecmov.document.form1.o69_codperiodo.value = $o69_codperiodo;
-			top.corpo.iframe_orcimpactorecmov.document.form1.o69_proces.value = $o69_proces;
+			(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactorecmov.document.form1.o69_codperiodo.value = $o69_codperiodo;
+			(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactorecmov.document.form1.o69_proces.value = $o69_proces;
 
-			obj=top.corpo.iframe_orcimpactorecmov.document.createElement('input');
+			obj=(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactorecmov.document.createElement('input');
 			obj.setAttribute('name','opcao');
 			obj.setAttribute('type','hidden');
 			obj.setAttribute('value','$opcao');
-			top.corpo.iframe_orcimpactorecmov.document.form1.appendChild(obj);
-			top.corpo.iframe_orcimpactorecmov.document.form1.submit();
+			(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactorecmov.document.form1.appendChild(obj);
+			(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactorecmov.document.form1.submit();
                         parent.mo_camada('orcimpactorecmov');
 		         ";
 		    echo "</script>";

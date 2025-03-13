@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_libpessoal.php");
-include("libs/db_utils.php");
-include("classes/db_rhpessoal_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
   
 $oGet            = db_utils::postMemory($_GET);
 $cl_rhpessoal    = new cl_rhpessoal();
@@ -176,7 +176,7 @@ foreach (array_reverse($oGet->objeto2) as $sTipoFolha){
   }
 
   if($lErro) {
-     db_redireciona('db_erros?fechar=true&db_erro=Nenhum resultado encontrado.');
+     db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum resultado encontrado.');
   }
 
 	if($iNumRows > 0 ) {

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,7 +33,7 @@ $sSqlMarca .= "       t65_sequencial as id_da_marca, ";
 $sSqlMarca .= "       t65_descricao as nome_da_marca";
 $sSqlMarca .= "     from bensmarca";
 
-$rsMarca   			= pg_query($sSqlMarca);
+$rsMarca   			= db_query($sSqlMarca);
 $iNumeroLinhas 	= pg_num_rows($rsMarca);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-include ("libs/db_utils.php");
-include ("libs/db_sql.php");
-require_once("classes/db_ppadotacao_classe.php");
-require_once("classes/db_ppaestimativa_classe.php");
-require_once("classes/db_db_config_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_sql.php"));
+require_once(modification("classes/db_ppadotacao_classe.php"));
+require_once(modification("classes/db_ppaestimativa_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
 
 //Modificação T25780
-require_once("model/ppaVersao.model.php");
+require_once(modification("model/ppaVersao.model.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -133,7 +133,7 @@ for ( $iInd=0; $iInd < $iLinhasEstimativa; $iInd++ ) {
   $sSqlindicadores .= "       left join orcindicaindiceesperado on orcindicaindiceesperado.o25_orcindica = orcindica.o10_indica";
   $sSqlindicadores .= " where o18_orcprograma = {$oDados->iPrograma} and o18_anousu = ".db_getsession('DB_anousu');
   $rsIndicadores    = db_query($sSqlindicadores);
-  $aIndicadores     = db_utils::getColectionByRecord($rsIndicadores);
+  $aIndicadores     = db_utils::getCollectionByRecord($rsIndicadores);
   $aIndicadorAnos					 = array();
   
   if (count($aIndicadores) > 0)  {
@@ -162,6 +162,7 @@ for ( $iInd=0; $iInd < $iLinhasEstimativa; $iInd++ ) {
 
 //Modificação T25780
    $sSqlindicadores .= "      and o08_instit in({$sListaInstit})";
+   $sSqlindicadores .= "      order by o25_anousu";
 
       $rsConsultaIndicador 			 = db_query($sSqlindicadores);  
       $iLinhasIndicador	  			 = pg_num_rows($rsConsultaIndicador);
@@ -487,14 +488,26 @@ foreach ( $aEstimativa as $iInd => $oEstimativa ) {
     }
 	  $pdf->Cell(32,$alt,"Função"   												                          ,"TB",0,"L",0);
 	  $pdf->Cell(0 ,$alt,":  {$oEstimativa->iFuncao} - {$oEstimativa->sFuncao}" 	    ,"TB",1,"L",0);
-	  $pdf->Cell(32,$alt,"Subfunção"											  	                        ,"TB",0,"L",0);
-	  $pdf->Cell(0 ,$alt,":  {$oEstimativa->iSubFuncao} - {$oEstimativa->sSubFuncao}" ,"TB",1,"L",0);
+		if ((int)$oInstituicao->getCodigoCliente() != 19985) {
+  	  $pdf->Cell(32,$alt,"Subfunção"											  	                        ,"TB",0,"L",0);
+      $pdf->Cell(0 ,$alt,":  {$oEstimativa->iSubFuncao} - {$oEstimativa->sSubFuncao}" ,"TB",1,"L",0);
+    }
 	  $pdf->Cell(32,$alt,"Programa do Governo"								 		                    ,"TB",0,"L",0);
 	  $pdf->Cell(0 ,$alt,":  ".str_pad($oEstimativa->iPrograma,4,"0",STR_PAD_LEFT)." - {$oEstimativa->sPrograma}"   ,"TB",1,"L",0);
 	
 	  $pdf->Cell(32,$alt,"Objetivos "                           ,"T",0,"L",0);
 	  $pdf->setfont('arial','' , 8);
-	  $pdf->multicell(0,$alt,": ".$oEstimativa->sObjetivo 		  ,"TB","L",1);
+
+      $texto = $oEstimativa->sObjetivo;
+
+       while ( ! empty($texto) ) {
+
+           $pdf->SetX(42);
+           $texto = $pdf->Row_multicell(array('', '', '', $texto, '', ''),
+          $alt-1, false, 5, 0, true, true, 3, ($pdf->h - 20));
+           validaNovaPagina($pdf);
+       }
+
 	  $pdf->setfont('arial','B', 8);
 	  $pdf->Cell(32,$alt,"Público Alvo"                         ,"TB",0,"L",0);
 	  $pdf->setfont('arial','' , 8);

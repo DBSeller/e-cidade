@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,10 +26,10 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -41,7 +41,7 @@ $sqlperfil = "select distinct id_perfil ,u.nome
 							where db_usuarios.id_usuario = $id_usuario
 							     and s.anousu= $ano";
 
-$resultperfil = pg_query($sqlperfil);
+$resultperfil = db_query($sqlperfil);
 $linhasperfil = pg_num_rows($resultperfil);
 ?>
 <html>

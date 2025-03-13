@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,22 +26,22 @@
  */
 
 //echo ($HTTP_SERVER_VARS['QUERY_STRING']);exit;
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-require("libs/db_utils.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_db_almoxdepto_classe.php");
-include("classes/db_matordem_classe.php");
-include("classes/db_matordemanu_classe.php");
-include("classes/db_matparam_classe.php");
-include("classes/db_matordemitem_classe.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_matestoqueitemoc_classe.php");
+require(modification("libs/db_utils.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemanu_classe.php"));
+include(modification("classes/db_matparam_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_matestoqueitemoc_classe.php"));
 
 $clmatordem					= new cl_matordem;
 $clmatparam					= new cl_matparam;
@@ -182,7 +182,7 @@ for ($i=1;$i<sizeof($dados);$i++){
   <tr>
     <td height="430" valign="top" bgcolor="#CCCCCC">
       <center>
-       <?include("forms/db_frmmatordemaltera.php");?>
+       <?include(modification("forms/db_frmmatordemaltera.php"));?>
       </center>
     </td>
   </tr>
@@ -197,7 +197,7 @@ if (isset($altera)){
       echo "<script> document.form1.".$clmatordem->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clmatordem->erro_campo.".focus();</script>";
     }else{
-      echo"<script>top.corpo.location.href='emp1_ordemcompraaltera001.php';</script>";
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='emp1_ordemcompraaltera001.php';</script>";
     }
 }
 ?>

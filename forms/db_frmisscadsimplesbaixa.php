@@ -76,7 +76,7 @@ db_inputdata('q39_dtbaixa',@$q39_dtbaixa_dia,@$q39_dtbaixa_mes,@$q39_dtbaixa_ano
     </td>
     <td> 
        <?
-       include("classes/db_issmotivobaixa_classe.php");
+       include(modification("classes/db_issmotivobaixa_classe.php"));
        $clissmotivobaixa = new cl_issmotivobaixa;
        $result = $clissmotivobaixa->sql_record($clissmotivobaixa->sql_query("","*"));
        db_selectrecord("q39_issmotivobaixa",$result,true,$db_opcao);
@@ -102,10 +102,10 @@ db_textarea('q39_obs',8,60,$Iq39_obs,true,'text',$db_opcao,"")
 <script>
 function js_pesquisaq39_isscadsimples(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_isscadsimples','func_isscadsimples.php?sbaixa=1&funcao_js=parent.js_mostraisscadsimples1|q38_sequencial|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_isscadsimples','func_isscadsimples.php?sbaixa=1&funcao_js=parent.js_mostraisscadsimples1|q38_sequencial|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.q39_isscadsimples.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_isscadsimples','func_isscadsimples.php?sbaixa=1&pesquisa_chave='+document.form1.q39_isscadsimples.value+'&funcao_js=parent.js_mostraisscadsimples','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_isscadsimples','func_isscadsimples.php?sbaixa=1&pesquisa_chave='+document.form1.q39_isscadsimples.value+'&funcao_js=parent.js_mostraisscadsimples','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -125,10 +125,10 @@ function js_mostraisscadsimples1(chave1,chave2){
 }
 function js_pesquisaq39_issmotivobaixa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issmotivobaixa','func_issmotivobaixa.php?funcao_js=parent.js_mostraissmotivobaixa1|q42_sequencial|q42_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issmotivobaixa','func_issmotivobaixa.php?funcao_js=parent.js_mostraissmotivobaixa1|q42_sequencial|q42_descr','Pesquisa',true);
   }else{
      if(document.form1.q39_issmotivobaixa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_issmotivobaixa','func_issmotivobaixa.php?pesquisa_chave='+document.form1.q39_issmotivobaixa.value+'&funcao_js=parent.js_mostraissmotivobaixa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issmotivobaixa','func_issmotivobaixa.php?pesquisa_chave='+document.form1.q39_issmotivobaixa.value+'&funcao_js=parent.js_mostraissmotivobaixa','Pesquisa',false);
      }else{
        document.form1.q42_descr.value = ''; 
      }
@@ -147,7 +147,7 @@ function js_mostraissmotivobaixa1(chave1,chave2){
   db_iframe_issmotivobaixa.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_isscadsimplesbaixa','func_isscadsimplesbaixa.php?funcao_js=parent.js_preenchepesquisa|q39_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_isscadsimplesbaixa','func_isscadsimplesbaixa.php?funcao_js=parent.js_preenchepesquisa|q39_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_isscadsimplesbaixa.hide();

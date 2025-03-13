@@ -1,32 +1,34 @@
-<?
-//MODULO: escola
-//CLASSE DA ENTIDADE atividaderh
-class cl_atividaderh { 
+<?php
+
+class cl_atividaderh
+{
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ed01_i_codigo = 0; 
-   var $ed01_c_descr = null; 
-   var $ed01_c_regencia = null; 
-   var $ed01_c_atualiz = null; 
-   var $ed01_c_docencia = null; 
-   var $ed01_c_exigeato = null; 
-   var $ed01_c_efetividade = null; 
-   var $ed01_i_funcaoadmin = 0; 
-   var $ed01_funcaoatividade = 0; 
+    public $rotulo = null; 
+    public $query_sql = null; 
+    public $numrows = 0; 
+    public $numrows_incluir = 0; 
+    public $numrows_alterar = 0; 
+    public $numrows_excluir = 0; 
+    public $erro_status = null; 
+    public $erro_sql = null; 
+    public $erro_banco = null;  
+    public $erro_msg = null;  
+    public $erro_campo = null;  
+    public $pagina_retorno = null; 
+    /* Variáveis do Arquivo */
+    public $ed01_i_codigo = 0; 
+    public $ed01_c_descr = null; 
+    public $ed01_c_regencia = null; 
+    public $ed01_c_atualiz = null; 
+    public $ed01_c_docencia = null; 
+    public $ed01_c_exigeato = null; 
+    public $ed01_c_efetividade = null; 
+    public $ed01_i_funcaoadmin = 0; 
+    public $ed01_funcaoatividade = 0; 
+    public $ed01_atividadeescolar = 'f'; 
+    public $ed01_permissao_diario = 0; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+    public $campos = "
                  ed01_i_codigo = int8 = Código 
                  ed01_c_descr = char(25) = Descrição 
                  ed01_c_regencia = char(1) = Regência 
@@ -36,24 +38,28 @@ class cl_atividaderh {
                  ed01_c_efetividade = char(4) = Efetividade 
                  ed01_i_funcaoadmin = int4 = Função Administrativa 
                  ed01_funcaoatividade = int4 = Função 
+                 ed01_atividadeescolar = bool = Atividade Escolar sem Regência 
+                 ed01_permissao_diario = int4 = Permissão acesso ao diário 
                  ";
-   //funcao construtor da classe 
-   function cl_atividaderh() { 
-     //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("atividaderh"); 
-     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+
+    public function __construct()
+    {
+        $this->rotulo = new rotulo("atividaderh"); 
+        $this->pagina_retorno = basename($_SERVER['PHP_SELF']);
+    }
+
+    public function erro($mostra, $retorna)
+    {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
-        echo "<script>alert(\"".$this->erro_msg."\");</script>";
+        echo "<script>alert(\"".$this->erro_msg."\")</script>";
         if($retorna==true){
            echo "<script>location.href='".$this->pagina_retorno."'</script>";
         }
      }
    }
-   // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+
+    public function atualizacampos($exclusao = false)
+    {
      if($exclusao==false){
        $this->ed01_i_codigo = ($this->ed01_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed01_i_codigo"]:$this->ed01_i_codigo);
        $this->ed01_c_descr = ($this->ed01_c_descr == ""?@$GLOBALS["HTTP_POST_VARS"]["ed01_c_descr"]:$this->ed01_c_descr);
@@ -64,12 +70,15 @@ class cl_atividaderh {
        $this->ed01_c_efetividade = ($this->ed01_c_efetividade == ""?@$GLOBALS["HTTP_POST_VARS"]["ed01_c_efetividade"]:$this->ed01_c_efetividade);
        $this->ed01_i_funcaoadmin = ($this->ed01_i_funcaoadmin == ""?@$GLOBALS["HTTP_POST_VARS"]["ed01_i_funcaoadmin"]:$this->ed01_i_funcaoadmin);
        $this->ed01_funcaoatividade = ($this->ed01_funcaoatividade == ""?@$GLOBALS["HTTP_POST_VARS"]["ed01_funcaoatividade"]:$this->ed01_funcaoatividade);
+       $this->ed01_atividadeescolar = ($this->ed01_atividadeescolar == ""?@$GLOBALS["HTTP_POST_VARS"]["ed01_atividadeescolar"]:$this->ed01_atividadeescolar);
+       $this->ed01_permissao_diario = ($this->ed01_permissao_diario == ""?@$GLOBALS["HTTP_POST_VARS"]["ed01_permissao_diario"]:$this->ed01_permissao_diario);
      }else{
        $this->ed01_i_codigo = ($this->ed01_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed01_i_codigo"]:$this->ed01_i_codigo);
      }
    }
-   // funcao para inclusao
-   function incluir ($ed01_i_codigo){ 
+
+    public function incluir($ed01_i_codigo)
+    {
       $this->atualizacampos();
      if($this->ed01_c_descr == null ){ 
        $this->erro_sql = " Campo Descrição não informado.";
@@ -143,6 +152,24 @@ class cl_atividaderh {
        $this->erro_status = "0";
        return false;
      }
+     if($this->ed01_atividadeescolar == null ){ 
+       $this->erro_sql = " Campo Atividade Escolar sem Regência não informado.";
+       $this->erro_campo = "ed01_atividadeescolar";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->ed01_permissao_diario == null ){ 
+       $this->erro_sql = " Campo Permissão acesso ao diário não informado.";
+       $this->erro_campo = "ed01_permissao_diario";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
      if($ed01_i_codigo == "" || $ed01_i_codigo == null ){
        $result = db_query("select nextval('atividaderh_ed01_i_codigo_seq')"); 
        if($result==false){
@@ -168,7 +195,7 @@ class cl_atividaderh {
        }
      }
      if(($this->ed01_i_codigo == null) || ($this->ed01_i_codigo == "") ){ 
-       $this->erro_sql = " Campo ed01_i_codigo nao declarado.";
+       $this->erro_sql = " Campo ed01_i_codigo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -185,6 +212,8 @@ class cl_atividaderh {
                                       ,ed01_c_efetividade 
                                       ,ed01_i_funcaoadmin 
                                       ,ed01_funcaoatividade 
+                                      ,ed01_atividadeescolar 
+                                      ,ed01_permissao_diario 
                        )
                 values (
                                 $this->ed01_i_codigo 
@@ -196,17 +225,19 @@ class cl_atividaderh {
                                ,'$this->ed01_c_efetividade' 
                                ,$this->ed01_i_funcaoadmin 
                                ,$this->ed01_funcaoatividade 
+                               ,'$this->ed01_atividadeescolar' 
+                               ,$this->ed01_permissao_diario 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Cadastro de Atividades ($this->ed01_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Cadastro de Atividades ($this->ed01_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Cadastro de Atividades já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Cadastro de Atividades ($this->ed01_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Cadastro de Atividades ($this->ed01_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -215,7 +246,7 @@ class cl_atividaderh {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->ed01_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -241,12 +272,15 @@ class cl_atividaderh {
          $resac = db_query("insert into db_acount values($acount,1010095,14582,'','".AddSlashes(pg_result($resaco,0,'ed01_c_efetividade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010095,18535,'','".AddSlashes(pg_result($resaco,0,'ed01_i_funcaoadmin'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010095,20597,'','".AddSlashes(pg_result($resaco,0,'ed01_funcaoatividade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010095,22090,'','".AddSlashes(pg_result($resaco,0,'ed01_atividadeescolar'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010095,1013651,'','".AddSlashes(pg_result($resaco,0,'ed01_permissao_diario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
    } 
-   // funcao para alteracao
-   function alterar ($ed01_i_codigo=null) { 
+
+    public function alterar($ed01_i_codigo=null)
+    {
       $this->atualizacampos();
      $sql = " update atividaderh set ";
      $virgula = "";
@@ -367,6 +401,32 @@ class cl_atividaderh {
          return false;
        }
      }
+     if(trim($this->ed01_atividadeescolar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed01_atividadeescolar"])){ 
+       $sql  .= $virgula." ed01_atividadeescolar = '$this->ed01_atividadeescolar' ";
+       $virgula = ",";
+       if(trim($this->ed01_atividadeescolar) == null ){ 
+         $this->erro_sql = " Campo Atividade Escolar sem Regência não informado.";
+         $this->erro_campo = "ed01_atividadeescolar";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(trim($this->ed01_permissao_diario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed01_permissao_diario"])){ 
+       $sql  .= $virgula." ed01_permissao_diario = $this->ed01_permissao_diario ";
+       $virgula = ",";
+       if(trim($this->ed01_permissao_diario) == null ){ 
+         $this->erro_sql = " Campo Permissão acesso ao diário não informado.";
+         $this->erro_campo = "ed01_permissao_diario";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
      if($ed01_i_codigo!=null){
        $sql .= " ed01_i_codigo = $this->ed01_i_codigo";
@@ -376,58 +436,62 @@ class cl_atividaderh {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->ed01_i_codigo));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,1008539,'$this->ed01_i_codigo','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed01_i_codigo"]) || $this->ed01_i_codigo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_i_codigo"]) || $this->ed01_i_codigo != "")
              $resac = db_query("insert into db_acount values($acount,1010095,1008539,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_i_codigo'))."','$this->ed01_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_descr"]) || $this->ed01_c_descr != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_descr"]) || $this->ed01_c_descr != "")
              $resac = db_query("insert into db_acount values($acount,1010095,1008540,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_c_descr'))."','$this->ed01_c_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_regencia"]) || $this->ed01_c_regencia != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_regencia"]) || $this->ed01_c_regencia != "")
              $resac = db_query("insert into db_acount values($acount,1010095,1008541,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_c_regencia'))."','$this->ed01_c_regencia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_atualiz"]) || $this->ed01_c_atualiz != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_atualiz"]) || $this->ed01_c_atualiz != "")
              $resac = db_query("insert into db_acount values($acount,1010095,1008542,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_c_atualiz'))."','$this->ed01_c_atualiz',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_docencia"]) || $this->ed01_c_docencia != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_docencia"]) || $this->ed01_c_docencia != "")
              $resac = db_query("insert into db_acount values($acount,1010095,19584,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_c_docencia'))."','$this->ed01_c_docencia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_exigeato"]) || $this->ed01_c_exigeato != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_exigeato"]) || $this->ed01_c_exigeato != "")
              $resac = db_query("insert into db_acount values($acount,1010095,14572,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_c_exigeato'))."','$this->ed01_c_exigeato',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_efetividade"]) || $this->ed01_c_efetividade != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_c_efetividade"]) || $this->ed01_c_efetividade != "")
              $resac = db_query("insert into db_acount values($acount,1010095,14582,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_c_efetividade'))."','$this->ed01_c_efetividade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed01_i_funcaoadmin"]) || $this->ed01_i_funcaoadmin != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_i_funcaoadmin"]) || $this->ed01_i_funcaoadmin != "")
              $resac = db_query("insert into db_acount values($acount,1010095,18535,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_i_funcaoadmin'))."','$this->ed01_i_funcaoadmin',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed01_funcaoatividade"]) || $this->ed01_funcaoatividade != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_funcaoatividade"]) || $this->ed01_funcaoatividade != "")
              $resac = db_query("insert into db_acount values($acount,1010095,20597,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_funcaoatividade'))."','$this->ed01_funcaoatividade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_atividadeescolar"]) || $this->ed01_atividadeescolar != "")
+             $resac = db_query("insert into db_acount values($acount,1010095,22090,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_atividadeescolar'))."','$this->ed01_atividadeescolar',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed01_permissao_diario"]) || $this->ed01_permissao_diario != "")
+             $resac = db_query("insert into db_acount values($acount,1010095,1013651,'".AddSlashes(pg_result($resaco,$conresaco,'ed01_permissao_diario'))."','$this->ed01_permissao_diario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Cadastro de Atividades nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Cadastro de Atividades não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed01_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Cadastro de Atividades nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Cadastro de Atividades não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed01_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->ed01_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -437,14 +501,14 @@ class cl_atividaderh {
        } 
      } 
    } 
-   // funcao para exclusao 
-   function excluir ($ed01_i_codigo=null,$dbwhere=null) { 
 
+    public function excluir($ed01_i_codigo=null, $dbwhere = null)
+    {
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($ed01_i_codigo));
        } else { 
@@ -467,45 +531,47 @@ class cl_atividaderh {
            $resac  = db_query("insert into db_acount values($acount,1010095,14582,'','".AddSlashes(pg_result($resaco,$iresaco,'ed01_c_efetividade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010095,18535,'','".AddSlashes(pg_result($resaco,$iresaco,'ed01_i_funcaoadmin'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010095,20597,'','".AddSlashes(pg_result($resaco,$iresaco,'ed01_funcaoatividade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010095,22090,'','".AddSlashes(pg_result($resaco,$iresaco,'ed01_atividadeescolar'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010095,1013651,'','".AddSlashes(pg_result($resaco,$iresaco,'ed01_permissao_diario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from atividaderh
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($ed01_i_codigo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($ed01_i_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " ed01_i_codigo = $ed01_i_codigo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Cadastro de Atividades nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Cadastro de Atividades não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed01_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Cadastro de Atividades nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Cadastro de Atividades não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$ed01_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$ed01_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -515,10 +581,11 @@ class cl_atividaderh {
        } 
      } 
    } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+
+    public function sql_record($sql)
+    {
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -527,8 +594,8 @@ class cl_atividaderh {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:atividaderh";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -538,74 +605,44 @@ class cl_atividaderh {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $ed01_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from atividaderh ";
+
+    public function sql_query($ed01_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from atividaderh ";
      $sql .= "      inner join funcaoatividade  on  funcaoatividade.ed119_sequencial = atividaderh.ed01_funcaoatividade";
      $sql2 = "";
-     if($dbwhere==""){
-       if($ed01_i_codigo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($ed01_i_codigo)) {
          $sql2 .= " where atividaderh.ed01_i_codigo = $ed01_i_codigo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $ed01_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from atividaderh ";
+
+    public function sql_query_file($ed01_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from atividaderh ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($ed01_i_codigo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($ed01_i_codigo)){
          $sql2 .= " where atividaderh.ed01_i_codigo = $ed01_i_codigo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
+
 }
-?>

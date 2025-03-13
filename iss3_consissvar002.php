@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_issvar_classe.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_arreinscr_classe.php");
-include("classes/db_arrenumcgm_classe.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_issvar_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arreinscr_classe.php"));
+include(modification("classes/db_arrenumcgm_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas     = new cl_criaabas;
 $clissvar = new cl_issvar;
 $clissbase = new cl_issbase;
@@ -155,7 +155,7 @@ function js_voltar(){
    location.href="iss3_consissvar001.php";
 }
 function js_planit(codigo){
-      js_OpenJanelaIframe('top.corpo','db_iframe_planit','iss3_consissvar005.php?q21_planilha='+codigo,'Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_planit','iss3_consissvar005.php?q21_planilha='+codigo,'Pesquisa',true);
 }
 function js_label(liga,evt,codigo,numpre,parcela){
   evt= (evt)?evt:(window.event)?window.event:""; 

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,28 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-require("libs/db_app.utils.php");
-include("libs/db_jsplibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_sau_lote_classe.php");
-include("classes/db_sau_lotepront_classe.php");
-include("classes/db_sau_lotepront_ext_classe.php");
-include("classes/db_prontuarios_ext_classe.php");
-include("classes/db_prontproced_classe.php");
-include("classes/db_prontcid_classe.php");
-include("classes/db_unidades_ext_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("classes/db_sau_config_ext_classe.php");
+db_postmemory($_POST);
 
-include("dbforms/db_funcoes.php");
-
-
-db_postmemory($HTTP_POST_VARS);
 $clsau_lote      = new cl_sau_lote;
 $clsau_lotepront = new cl_sau_lotepront_ext;
 $clprontuarios   = new cl_prontuarios_ext;
@@ -68,73 +57,84 @@ $resSau_config = $clsau_config->sql_record($clsau_config->sql_query_ext());
 $objSau_config = db_utils::fieldsMemory($resSau_config,0 );
 
 //Pesquisas
-if(isset($chavepesquisaprontuario)&&(int)$chavepesquisaprontuario != 0){
+if ( isset($chavepesquisaprontuario) && (int)$chavepesquisaprontuario != 0) {
+
 	$result = $clprontuarios->sql_record($clprontuarios->sql_query_ext($chavepesquisaprontuario));
-	if( $clprontuarios->numrows > 0){
+	if ( $clprontuarios->numrows > 0) {
+
 		db_fieldsmemory($result,0);
-		if( $sd24_c_digitada == 'N'){
+		if ( $sd24_c_digitada == 'N') {
+
 			$result = $clsau_lotepront->sql_record($clsau_lotepront->sql_query_ext("","*","", "sd59_i_prontuario = $chavepesquisaprontuario  and sd59_i_lote <> ".(int)$sd58_i_codigo));
-	   		if( $clsau_lotepront->numrows > 0 ){
-	   			$obj_lotepront = db_utils::fieldsMemory($result, 0);
-	   			db_msgbox("FAA foi lançada no lote {$obj_lotepront->sd59_i_lote}.");
-	   			db_redireciona("sau1_sau_lote001.php?sd58_i_codigo=".$sd58_i_codigo."&idarq=".$idarq);
-	   		}else{
+	   	if ( $clsau_lotepront->numrows > 0 ) {
+
+	   		$obj_lotepront = db_utils::fieldsMemory($result, 0);
+	   		db_msgbox("FAA foi lançada no lote {$obj_lotepront->sd59_i_lote}.");
+	   		db_redireciona("sau1_sau_lote001.php?sd58_i_codigo=".$sd58_i_codigo."&idarq=".$idarq);
+   		} else {
+
 				$result = $clprontcid->sql_record($clprontcid->sql_query("","prontcid.*, sau_cid.*", ""," sd55_i_prontuario = $chavepesquisaprontuario "));
-				if( $clprontcid->numrows > 0){
+				if ( $clprontcid->numrows > 0) {
 					db_fieldsmemory($result,0);
 				}
-	   		}
-		}else{
-	   		db_msgbox('FAA já digitada.');
-	   		db_redireciona("sau1_sau_lote001.php?sd58_i_codigo=".$sd58_i_codigo."&idarq=".$idarq);
-		}
-	}else{
-	   	db_msgbox('FAA não localizada.');
+   		}
+		} else {
+
+	   	db_msgbox('FAA já digitada.');
 	   	db_redireciona("sau1_sau_lote001.php?sd58_i_codigo=".$sd58_i_codigo."&idarq=".$idarq);
+		}
+	} else {
+
+   	db_msgbox('FAA não localizada.');
+   	db_redireciona("sau1_sau_lote001.php?sd58_i_codigo=".$sd58_i_codigo."&idarq=".$idarq);
 	}
 }
-if(isset($chavepesquisacgs)&&(int)$chavepesquisacgs != 0){
+if ( isset($chavepesquisacgs) && (int)$chavepesquisacgs != 0) {
+
    $result = $clcgs_und->sql_record($clcgs_und->sql_query($chavepesquisacgs));
    db_fieldsmemory($result,0);
-}else if(isset($chavepesquisalote)){
+} else if(isset($chavepesquisalote)) {
+
 	//$result = $clsau_lote->sql_record($clsau_lote->sql_query($chavepesquisalote));
 	$result = $clsau_lotepront->sql_record($clsau_lotepront->sql_query_ext(null, "sau_lote.*, db_usuarios.*, sd24_i_unidade", "", "sd59_i_lote = $chavepesquisalote"));
 	db_fieldsmemory($result,0);
 	$idarq=22;
-}else if(isset($chavepesquisalotepront)&&(int)$chavepesquisalotepront != 0){
+} else if ( isset($chavepesquisalotepront) && (int)$chavepesquisalotepront != 0) {
+
 	$result = $clsau_lotepront->sql_record( $clsau_lotepront->sql_query_ext($chavepesquisalotepront) );
-   db_fieldsmemory($result,0);
-   $db_opcao = 2;
+  db_fieldsmemory($result,0);
+  $db_opcao = 2;
 }
-
-
 
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<?php
-try{
-	db_app::load("scripts.js");
-	db_app::load("prototype.js");
-	db_app::load("datagrid.widget.js");
-	db_app::load("strings.js");
-	db_app::load("webseller.js");
-	db_app::load("grid.style.css");
-	db_app::load("estilos.css");
-}catch (Exception $eException){
-	die( $eException->getMessage() );
-}
-?></head>
+	<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Expires" CONTENT="0">
+	<?php
+		try{
+			db_app::load("scripts.js");
+			db_app::load("prototype.js");
+			db_app::load("datagrid.widget.js");
+			db_app::load("strings.js");
+			db_app::load("webseller.js");
+			db_app::load("grid.style.css");
+			db_app::load("estilos.css");
+		}catch (Exception $eException){
+			die( $eException->getMessage() );
+		}
+	?>
+	<script type="text/javascript" language="JavaScript" src="scripts/AjaxRequest.js"></script>
+
+</head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="js_init()">
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC" id="idTD">
     <center>
-	<?
-	include("forms/db_frmsau_lote.php");
+	<?php
+	include(modification("forms/db_frmsau_lote.php"));
 	?>
     </center>
 	</td>
@@ -147,7 +147,7 @@ try{
 
 </script>
 
-<?
+<?php
 if(isset($chavepesquisalotepront)&&(int)$chavepesquisalotepront != 0){
 	echo "<script>
 		focoInclusao   = $('sd70_c_cid');
@@ -165,7 +165,7 @@ if(isset($chavepesquisalotepront)&&(int)$chavepesquisalotepront != 0){
 		$('sd24_i_unidade').focus();
 		$('sd24_i_unidade').select();
 	}
-	</script><?
+	</script><?php
 }
 ?>
 
@@ -192,7 +192,7 @@ function js_retorna(){
 }
 
 </script>
-<?
+<?php
 if(isset($incluir) || isset($alterar) ){
   if($clsau_lote->erro_status=="0"){
     $clsau_lote->erro(true,false);
@@ -238,11 +238,10 @@ if(isset($incluir) || isset($alterar) ){
   }
 }
 
-if(isset($idarq)&&$idarq==2 ){
+if ( isset($idarq) && $idarq == 2 ) {
 	echo "<script>js_pesquisalote();</script>";
-}else if( $idarq==22 && $sd58_c_digitada == 'S' ){
+} else if ( $idarq == 22 && $sd58_c_digitada == 'S' ) {
 	db_msgbox('Lote ja foi digitado.');
-		//db_redireciona("sau1_sau_lote001.php?idarq=".$idarq);
 }
 
 ?>

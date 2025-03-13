@@ -106,7 +106,7 @@ $clissbaselogtipo->rotulo->label();
 <script>
 function js_pesquisa(){
   var sUrl = 'func_issbaselogtipo.php?funcao_js=parent.js_preenchepesquisa|q103_sequencial';
-  js_OpenJanelaIframe('top.corpo','db_iframe_issbaselogtipo',sUrl,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issbaselogtipo',sUrl,'Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_issbaselogtipo.hide();

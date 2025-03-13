@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,22 +26,22 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_jsplibwebseller.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_jsplibwebseller.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
 
-include("classes/db_prontuarios_classe.php");
-include("classes/db_prontproced_classe.php");
-include("classes/db_prontproced_ext_classe.php");
-include("classes/db_prontagendamento_classe.php");
-include("classes/db_tmp_prontproced_classe.php");
-include("classes/db_cgs_und_classe.php");
+include(modification("classes/db_prontuarios_classe.php"));
+include(modification("classes/db_prontproced_classe.php"));
+include(modification("classes/db_prontproced_ext_classe.php"));
+include(modification("classes/db_prontagendamento_classe.php"));
+include(modification("classes/db_tmp_prontproced_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $sd24_i_unidade = db_getsession("DB_coddepto");
@@ -100,7 +100,7 @@ if(isset($opcao)){
 if(isset($incluir)){
      //$clprontproced->sd29_i_prontuario = $chavepesquisaprontuario;
      db_inicio_transacao();
-     //$clcgs_und->alterar($z01_i_cgsund);
+
      $clprontproced->sd29_i_prontuario = $sd24_i_codigo;
      $clprontproced->sd29_i_usuario = DB_getsession("DB_id_usuario");
      $clprontproced->sd29_d_cadastro = date("Y-m-d",db_getsession("DB_datausu"));
@@ -109,7 +109,7 @@ if(isset($incluir)){
      db_fim_transacao();
 }else if(isset($alterar)){
      db_inicio_transacao();
-     //$clcgs_und->alterar($z01_i_cgsund);
+
      $clprontproced->sd29_i_usuario = DB_getsession("DB_id_usuario");
      $clprontproced->alterar($sd29_i_codigo);
      db_fim_transacao();
@@ -181,7 +181,7 @@ try{
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
         <?
-        include("forms/db_frmsau_individualproced001.php");
+        include(modification("forms/db_frmsau_individualproced001.php"));
         ?>
     </center>
     </td>

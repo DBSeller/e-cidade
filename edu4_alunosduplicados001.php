@@ -1,38 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 ?>
 <html>
 <head>
@@ -47,11 +47,11 @@ require_once("dbforms/db_classesgenericas.php");
   #ctnGridOpcoesPesquisa td {
     padding: 3px;
   }
-  
+
   .camposGrid {
     display: block;
   }
-  
+
   </style>
 </head>
 <body bgcolor="#CCCCCC" style="margin: 25px auto 10px auto;">
@@ -97,11 +97,11 @@ require_once("dbforms/db_classesgenericas.php");
 				    <div id='ctnAlunosRetornados'></div>
 			    </fieldset>
 			    <div style="text-align: center;">
-			      <input type='button' 
-			             id='btnProcessar' 
-			             name='btnProcessar' 
-			             value='Processar' 
-			             onclick='js_incluirInconsistencia()' 
+			      <input type='button'
+			             id='btnProcessar'
+			             name='btnProcessar'
+			             value='Processar'
+			             onclick='js_incluirInconsistencia()'
 			             disabled='disabled' />
 			    </div>
 		    </div>
@@ -115,16 +115,16 @@ require_once("dbforms/db_classesgenericas.php");
 
 var sRPCAluno          = 'edu4_aluno.RPC.php';
 var sRPCInconsistencia = 'con4_registrosinconsistentes.RPC.php';
-		            
+
 /**
  * Monta a grid dos alunos
  */
 function js_montaGrid() {
 
   var aCabecalho   = new Array( 'Correto', 'Errado', 'Código', 'Nome do Aluno', 'Nome da Mãe', 'Data de Nascimento' );
-  var aAlinhamento = new Array( 'center', 'center', 'right', 'left', 'left', 'left' );
-  var aLargura     = new Array( '5%', '5%', '5%', '40%', '40%', '10%' );
-  
+  var aAlinhamento = new Array( 'center', 'center', 'left', 'left', 'left', 'left' );
+  var aLargura     = new Array( '4%', '4%', '5%', '30%', '30%', '10%' );
+
   oGridAlunosRetornados              = new DBGrid('gridAlunosRetornados');
   oGridAlunosRetornados.nameInstance = 'oGridAlunosRetornados';
   oGridAlunosRetornados.setHeader(aCabecalho);
@@ -136,7 +136,7 @@ function js_montaGrid() {
 }
 
 /**
- * Busca os alunos de acordo com o nome informado, e caso tenha sido informado o nome da mae e data de nascimento, 
+ * Busca os alunos de acordo com o nome informado, e caso tenha sido informado o nome da mae e data de nascimento,
  * utiliza estes campos nas busca
  */
 function js_buscarAlunos() {
@@ -146,7 +146,7 @@ function js_buscarAlunos() {
     alert('Deve ser informado o nome do aluno.');
     return false;
   }
-  
+
   var oParametro              = new Object();
       oParametro.exec         = 'buscaAlunos';
       oParametro.sNomeAluno   = encodeURIComponent(tagString($F('nomeAluno')));
@@ -168,12 +168,12 @@ function js_buscarAlunos() {
 function js_retornoBuscaAlunos( oResponse ) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if ( oRetorno.aAlunos.length > 0 ) {
 
     var iContador = 0;
-    
+
     oGridAlunosRetornados.clearAll(true);
     oRetorno.aAlunos.each(function( oAluno, iAluno ) {
 
@@ -197,7 +197,7 @@ function js_retornoBuscaAlunos( oResponse ) {
 }
 
 /**
- * Verificamos qual item foi marcado como correto e desabilitamos o checkbox do errado 
+ * Verificamos qual item foi marcado como correto e desabilitamos o checkbox do errado
  */
 function js_verificaMarcado() {
 
@@ -205,27 +205,27 @@ function js_verificaMarcado() {
   var aCorretos = document.getElementsByName('correto');
 
   for(var iIndiceErrados = 0; iIndiceErrados < aErrados.length; iIndiceErrados++) {
-    $('errado_'+iIndiceErrados).disabled = false;          
-  } 
+    $('errado_'+iIndiceErrados).disabled = false;
+  }
 
   for(var iIndiceCorretos = 0; iIndiceCorretos < aErrados.length; iIndiceCorretos++) {
 
     if ( $('correto_'+iIndiceCorretos).checked ) {
-            
-      $('errado_'+iIndiceCorretos).disabled = true;    
-      $('errado_'+iIndiceCorretos).checked = false;      
+
+      $('errado_'+iIndiceCorretos).disabled = true;
+      $('errado_'+iIndiceCorretos).checked = false;
     }
   }
-  $('btnProcessar').disabled = false; 
+  $('btnProcessar').disabled = false;
 }
 
 /**
  * Chama a consulta do aluno clicado
  */
 function js_consultaAluno( iCodigoAluno ) {
-  
+
   js_OpenJanelaIframe(
-                       'top.corpo',
+                       'CurrentWindow.corpo',
                        'db_iframe_aluno',
                        'edu3_alunos001.php?chavepesquisa='+iCodigoAluno+'&lAlunosDuplos',
                        'Consulta do Aluno',
@@ -245,14 +245,14 @@ function js_incluirInconsistencia() {
       oParametro.aCampos       = new Array();
 
   $$('.camposGrid').each(function(oElemento) {
-    
+
     if (!oElemento.checked) {
       return;
     }
 
     var aIdLinhaCampo    = oElemento.id.split('_');
     var iSequencialCampo = $('gridAlunosRetornadosrow'+aIdLinhaCampo[1]+'cell2').innerHTML;
-    
+
     var oCampo                  = new Object();
         oCampo.iSequencialCampo = iSequencialCampo;
         oCampo.lExcluir         = true;
@@ -260,7 +260,7 @@ function js_incluirInconsistencia() {
     if (oElemento.type == 'radio') {
 
       oParametro.iCorreto = iSequencialCampo;
-      return; 
+      return;
     }
 
     oParametro.aCampos.push(oCampo);
@@ -278,7 +278,7 @@ function js_incluirInconsistencia() {
 		  oDadosRequest.method     = 'post';
 		  oDadosRequest.parameters = 'json='+Object.toJSON(oParametro);
 		  oDadosRequest.onComplete = js_retornoIncluirInconsistencia;
-  
+
   new Ajax.Request( sRPCInconsistencia, oDadosRequest );
 }
 
@@ -288,7 +288,7 @@ function js_incluirInconsistencia() {
 function js_retornoIncluirInconsistencia( oResponse ) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.sMessage.urlDecode());
 

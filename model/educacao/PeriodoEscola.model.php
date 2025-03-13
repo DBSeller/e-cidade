@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -32,7 +32,7 @@ define( 'MENSAGEM_PERIODOESCOLA_MODEL', 'educacao.escola.PeriodoEscola.' );
  *
  * @package    Educacao
  * @author     Andrio Costa - andrio.costa@dbseller.com.br
- * @version    $Revision: 1.7 $
+ * @version    $Revision: 1.8 $
  */
 class PeriodoEscola {
 
@@ -90,6 +90,11 @@ class PeriodoEscola {
    */
   private $sDuracao;
 
+  /**
+   * Turno Referente ao periodo
+   * @var array
+   */
+  private $aTurnoReferentePeriodo = array();
   /**
    * Constutor
    * @param int $iCodigo
@@ -301,6 +306,28 @@ class PeriodoEscola {
       $oErro->sErro = $oDaoPeriodoEscola->erro_msg;
       throw new DBException( _M( MENSAGEM_PERIODOESCOLA_MODEL . 'erro_salvar', $oErro ) );
     }
+
+
+
+    $oDaoPeriodoEscolaTurnoReferente = new cl_periodoescolaturnoreferente();
+    $oDaoPeriodoEscolaTurnoReferente->excluir(null, "ed143_periodoescola = {$oDaoPeriodoEscola->ed17_i_codigo}");
+
+    if ( $oDaoPeriodoEscolaTurnoReferente->erro_status == 0 ) {
+      throw new DBException( "Erro ao excluir a referência do turno do perído da escola." );
+    }
+
+    foreach ($this->aTurnoReferentePeriodo as $iTurnoReferentePeriodo ) {
+
+      $oDaoPeriodoEscolaTurnoReferente->ed143_sequencial     = null;
+      $oDaoPeriodoEscolaTurnoReferente->ed143_periodoescola  = $oDaoPeriodoEscola->ed17_i_codigo;
+      $oDaoPeriodoEscolaTurnoReferente->ed143_turnoreferente = $this->oTurno->getCodigoTurnoReferente($iTurnoReferentePeriodo);
+      $oDaoPeriodoEscolaTurnoReferente->incluir(null);
+
+      if($oDaoPeriodoEscolaTurnoReferente->erro_status == 0) {
+        throw new DBException("Erro ao incluir a referência do turno do perído da escola.");
+      }
+
+    }
   }
 
   /**
@@ -358,6 +385,13 @@ class PeriodoEscola {
 
     }
 
+    $oDaoPeriodoEscolaTurnoReferente = new cl_periodoescolaturnoreferente();
+    $oDaoPeriodoEscolaTurnoReferente->excluir(null, "ed143_periodoescola = {$this->iCodigo}");
+
+    if ( $oDaoPeriodoEscolaTurnoReferente->erro_status == 0 ) {
+      throw new DBException( "Erro ao excluir a referência do turno do período da escola." );
+    }
+
     $oDaoPeriodoEscola->excluir( $this->iCodigo );
 
     if ( $oDaoPeriodoEscola->erro_status == 0 ) {
@@ -366,5 +400,33 @@ class PeriodoEscola {
       $oErro->sErro = $oDaoPeriodoEscola->erro_msg;
       throw new DBException( _M( MENSAGEM_PERIODOESCOLA_MODEL . 'erro_remover', $oErro) );
     }
+  }
+
+  public function setTurnoReferentePeriodo($aTurnoReferentePeriodo) {
+    $this->aTurnoReferentePeriodo = $aTurnoReferentePeriodo;
+  }
+
+  public function getTurnoReferentePeriodo() {
+
+    if ( count($this->aTurnoReferentePeriodo) > 0 ) {
+      return $this->aTurnoReferentePeriodo;
+    }
+
+    $oDaoPeriodoEscolaTurnoReferente = new cl_periodoescolaturnoreferente();
+    $sWherePeriodoEscola             = "ed143_periodoescola = {$this->iCodigo}";
+    $sSqlPeriodoEscolaTurnoReferente = $oDaoPeriodoEscolaTurnoReferente->sql_query(null, "ed231_i_referencia", null, $sWherePeriodoEscola);
+    $rsPeriodoEscolaTurnoReferente   = db_query($sSqlPeriodoEscolaTurnoReferente);
+
+    if ( !$rsPeriodoEscolaTurnoReferente ) {
+      throw new DBException("Erro ao buscar a(s) referência(s) do turno do período da escola.");
+    }
+
+    for ( $iTurnosReferentes = 0; $iTurnosReferentes < pg_num_rows( $rsPeriodoEscolaTurnoReferente ); $iTurnosReferentes ++ ) {
+
+      $iReferencia = db_utils::fieldsMemory($rsPeriodoEscolaTurnoReferente, $iTurnosReferentes)->ed231_i_referencia;
+      $this->aTurnoReferentePeriodo[] = $iReferencia;
+    }
+
+    return $this->aTurnoReferentePeriodo;
   }
 }

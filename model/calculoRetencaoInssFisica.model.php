@@ -1,92 +1,95 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
+use App\Domain\Patrimonial\Protocolo\Model\Cgm;
 
-require_once ('interfaces/calculoRetencao.interface.php');
+require_once(modification('interfaces/calculoRetencao.interface.php'));
 /**
  * realizada o calculo de retencoes do tipo pessoa fisica
  * @package empenho
  */
 class calculoRetencaoInssFisica implements iCalculoRetencao {
-  
+
   /**
    * tipo do calculo
    * @var integer
    */
   private $iTipo = 3;
-  
+
   /**
    * Valor da base de calculo
    *
    * @var float
    */
   private $nValorBaseCalculo = 0;
-  
+
   /** Valor da Dedução informado pelo usuário.
    *
    * @var float
-   */ 
+   */
   private $nValorDeducao = 0;
-  
+
   /**
    * cpf ou cnpj a calcular o imposto.
    *
    * @var integer
    */
   private $iCgcCpf = null;
-  
+
   /**
    * Tabela do IRRF a ser usada
    *
    * @var object
    */
   private $oTabelaInss = null;
-  
+
   /**
    * Valor da Aliquota
    *
    * @var float
    */
   private $nAliquota  = 0;
-  
+
   /**
    * Valor a ser adicionado da nota
    *
    * @var float
    */
   private $nValorNota = 0;
-  
+
+  public $cgm;
+
   /**
-   * Códigos Auxiliares doe Movimentos 
+   * Códigos Auxiliares doe Movimentos
    *
    * @var array
    */
   private $aCodigoMovimentos = array();
-  
+
   /** metodo construtor da classe
    * @param integer $iTipo tipo do calculo 1 - pessoa fisica
    */
@@ -94,37 +97,38 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
 
     $this->iTipo   = $iTipo;
     $this->iCgcCpf = (string)$iCgcCpf;
-    
+    $this->cgm = CgmFactory::getInstanceByCnpjCpf($this->iCgcCpf);
+
   }
-  
+
   /**
-   * 
+   *
    * @see iCalculoRetencao::calculaBasedeCalculo()
    */
   function calculaBasedeCalculo() {
 
-    /* 
+    /*
      * calculo da base calculo;
      * 1 - Buscamos todos as notas liquidadas do CGM(cpf) dentro do mes e
      *     somamos todas elas, e usamos como base de calculo inicial.
      * 2 - depois deduzimos as deducoes já cadastradas.
      */
-    
+
     $nValorBaseCalculo = 0;
     if (empty($this->iCgcCpf)) {
       throw new Exception("Erro [2] CPF/CNPJ não Informado!\nOperação cancelada");
     }
-    
-    $oDaoNota   = db_utils::getDao("empnota");
+
+    $oDaoNota   = new cl_empnota;
     $iMesBase   = date("m", db_getsession("DB_datausu"));
     $iAnoBase   = db_getsession("DB_anousu");
     $iInstit    = db_getsession("DB_instit");
     if ($this->dtBaseCalculo != "") {
-      
-      
+
+
       $iMesBase  = date("m", strtotime($this->dtBaseCalculo));
       $iAnoBase  = date("Y", strtotime($this->dtBaseCalculo));
-      
+
     }
     /*
      * Buscamos nessa consulta, todos os valores pagos no mes ao credor.
@@ -139,7 +143,7 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
     $sSqlNotas .= "       left  join pagordemconta    on e49_codord           = e50_codord  ";
     $sSqlNotas .= "       left  join cgm cgmordem     on e49_numcgm           = cgmordem.z01_numcgm  ";
     $sSqlNotas .= " where extract (year from c70_data)  = {$iAnoBase}        ";
-    $sSqlNotas .= "   and extract (month from c70_data)  = {$iMesBase}        "; 
+    $sSqlNotas .= "   and extract (month from c70_data)  = {$iMesBase}        ";
     $sSqlNotas .= "   and (case when e49_numcgm is null then cgm.z01_cgccpf = '{$this->iCgcCpf}'  ";
     $sSqlNotas .= "        else cgmordem.z01_cgccpf = '{$this->iCgcCpf}' end)                      ";
     $rsNotas    = $oDaoNota->sql_record($sSqlNotas);
@@ -147,19 +151,19 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
 
       $oNotas            = db_utils::fieldsMemory($rsNotas, 0);
       $nValorBaseCalculo = $oNotas->total - $this->nValorDeducao;
-      
+
     }
     if ($nValorBaseCalculo < 0) {
       $nValorBaseCalculo = 0;
     }
-    
+
     $this->nValorBaseCalculo = ($nValorBaseCalculo+$this->nValorNota)-$this->nValorDeducao;
     return $this->nValorBaseCalculo;
-  
+
   }
-  
+
   /**
-   * 
+   *
    * @see iCalculoRetencao::calcularRetencao()
    */
   function calcularRetencao() {
@@ -167,6 +171,8 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
     $this->nValorBaseCalculo = $this->calculaBasedeCalculo();
     $this->getTabelaInss();
     $this->nAliquota = $this->oTabelaInss->r33_perc;
+    $produtoresRurais = array(35, 4120);
+
     $nValorRetido = 0;
     /**
      * Calculamos o valor da retencao, multiplicando  a base de calculo pela aliquota;
@@ -174,14 +180,28 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
     if ($this->nValorBaseCalculo > $this->oTabelaInss->teto) {
       $this->nValorBaseCalculo = $this->oTabelaInss->teto;
     }
-   
-    $nValorRetido = $this->nValorBaseCalculo * ($this->oTabelaInss->r33_perc/100);
+
+    /**
+     * vamos verificar se o fornecedor é uma pessoa juridica
+     * se tem o tipoempresa = 35 - produtor rural
+     * a aliquota deverá ser a mesma do cadastro
+     * e o valor base será o valor da nota
+     */
+    $oFornecedor = new fornecedor($this->cgm->getCodigo());
+
+    if ( in_array($oFornecedor->getCgm()->getTipoEmpresa()[0]->z03_tipoempresa, $produtoresRurais) ) {
+
+        $this->nAliquota = $this->nValorAliquota;
+        $this->nValorBaseCalculo = $this->nValorNota;
+    }
+    //$nValorRetido = $this->nValorBaseCalculo * ($this->oTabelaInss->r33_perc/100);
+    $nValorRetido = $this->nValorBaseCalculo * ($this->nAliquota / 100);
     $n2 = $nValorRetido;
 
     /**
      * Buscamos o valor já retido no mes e deduzimos do valor retido.
      */
-    $oDaoNota         = db_utils::getDao("empnota");
+    $oDaoNota         = new cl_empnota;
     $iMesBase         = date("m", db_getsession("DB_datausu"));
     $iAnoBase         = db_getsession("DB_anousu");
     $iInstit          = db_getsession("DB_instit");
@@ -201,20 +221,20 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
     $sSqlValorRetido .= "   and e71_anulado  is false                                               ";
     $sSqlValorRetido .= "   and e21_retencaotipocalc = {$this->iTipo}                               ";
     $rsValorRetido    = $oDaoNota->sql_record($sSqlValorRetido);
-    
+
     if ($oDaoNota->numrows > 0) {
-      
-      $nValorJaRetido = db_utils::fieldsMemory($rsValorRetido, 0)->valorretido;
+
+      $nValorJaRetido = (float)db_utils::fieldsMemory($rsValorRetido, 0)->valorretido;
       $nValorRetido  -= $nValorJaRetido;
-      
+
     }
     /**
-     * caso o usuário marcou alguma outra retencao, e caso ela possuir retencao, 
+     * caso o usuário marcou alguma outra retencao, e caso ela possuir retencao,
      * calculamos o valor ja retido desses calculos
      * Buscamos o valor já retido no mes e deduzimos do valor retido.
      */
     if (count($this->aCodigoMovimentos) > 0) {
-    
+
       $sWhereIn         = implode(",",$this->aCodigoMovimentos);
       $sSqlValorRetido  = "select sum(e23_valorretencao) as valorRetido                               ";
       $sSqlValorRetido .= "  from retencaoreceitas                                                    ";
@@ -236,65 +256,65 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
       $sSqlValorRetido .= "   and e27_empagemov in({$sWhereIn})                                        ";
       $rsValorRetido    = $oDaoNota->sql_record($sSqlValorRetido);
       if ($oDaoNota->numrows > 0) {
-      
+
         $nValorJaRetido = db_utils::fieldsMemory($rsValorRetido, 0)->valorretido;
         $nValorRetido  -= $nValorJaRetido;
-      
+
       }
     }
     if ($nValorRetido < 0) {
       $nValorRetido = 0;
     }
-    
+
     return $nValorRetido;
   }
-  
+
   /**
-   * 
+   *
    * @see iCalculoRetencao::getAliquota()
    */
   function getAliquota() {
     return $this->nAliquota;
   }
-  
+
   /**
-   * 
+   *
    * @see iCalculoRetencao::getValorBaseCalculo()
    */
   function getValorBaseCalculo() {
     return $this->nValorBaseCalculo;
   }
-  
+
   /**
-   * 
-   * @param float $nValorAliquota 
+   *
+   * @param float $nValorAliquota
    * @see iCalculoRetencao::setAliquota()
    */
   function setAliquota($nValorAliquota) {
-    $this->nValorAliquota = $nValorAliquota; 
+    $this->nValorAliquota = $nValorAliquota;
   }
-  
+
   /**
-   * 
-   * @param $nValorDeducao 
+   *
+   * @param $nValorDeducao
    * @see iCalculoRetencao::setDeducao()
    */
   function setDeducao($nValorDeducao) {
     $this->nValorDeducao = $nValorDeducao;
   }
-  
-  /** Retorna a tabela de Inss conforme base de calculo  
+
+  /** Retorna a tabela de Inss conforme base de calculo
    * @return boolean;
    */
   function getTabelaInss() {
-  	
+
     /*
      * Buscamos o codigo da tabela a ser Deduzida
      * devemos somar +2 no codigo da tabela encontrada,
      * sempre pegando o ultimo registro
-     * 
+     *
      */
-     $oDaoCfPess    = db_utils::getDao("cfpess");
+     $oDaoCfPess    = new cl_cfpess;
      $sSqlCodTabela = $oDaoCfPess->sql_query(null,
                                              null,
                                              null,
@@ -309,7 +329,7 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
 
       throw new Exception("Não há nenhuma configuracao de tabela de Inss!\nConfira.");
     }
-    
+
     $iCodigoTabelaInss = (db_utils::fieldsMemory($rsCodTabela,0)->r11_tbprev+2);
     /*
      * Retorna a tabela do imposto de renda que devemos usar.
@@ -318,17 +338,17 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
     if ($nBaseCalculo > 3038.99) {
       $nBaseCalculo = 3038.99;
     }
-    $oDaoInssIrf     = db_utils::getDao("inssirf");
+    $oDaoInssIrf     = new cl_inssirf;
     $sSqlTabelaINSS  = "select r33_inic,                                               ";
     $sSqlTabelaINSS .= "       r33_fim,                                                ";
     $sSqlTabelaINSS .= "       r33_deduzi,                                             ";
     $sSqlTabelaINSS .= "       r33_perc,                                               ";
     $sSqlTabelaINSS .= "       (select max(r33_fim)                                    ";
-    $sSqlTabelaINSS .= "          from inssirf  a                                      ";  
-    $sSqlTabelaINSS .= "         where a.r33_anousu = inssirf.r33_anousu               ";  
-    $sSqlTabelaINSS .= "           and a.r33_mesusu = inssirf.r33_mesusu               ";  
+    $sSqlTabelaINSS .= "          from inssirf  a                                      ";
+    $sSqlTabelaINSS .= "         where a.r33_anousu = inssirf.r33_anousu               ";
+    $sSqlTabelaINSS .= "           and a.r33_mesusu = inssirf.r33_mesusu               ";
     $sSqlTabelaINSS .= "           and a.r33_instit = inssirf.r33_instit               ";
-    $sSqlTabelaINSS .= "           and a.r33_codtab = {$iCodigoTabelaInss}) as teto    ";  
+    $sSqlTabelaINSS .= "           and a.r33_codtab = {$iCodigoTabelaInss}) as teto    ";
     $sSqlTabelaINSS .= "  from inssirf                                                 ";
     $sSqlTabelaINSS .= " where {$nBaseCalculo} between r33_inic and r33_fim ";
     $sSqlTabelaINSS .= "   and r33_codtab = {$iCodigoTabelaInss}                       ";
@@ -337,18 +357,18 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
     $sSqlTabelaINSS .= "          r33_mesusu desc  limit 1                             ";
     $rsTabelaInss    = $oDaoInssIrf->sql_record($sSqlTabelaINSS);
     if ($oDaoInssIrf->numrows == 1) {
-      
+
       $this->oTabelaInss = db_utils::fieldsMemory($rsTabelaInss, 0);
-      
+
     } else {
-      
+
       $this->oTabelaInss = new stdClass();
       $this->oTabelaInss->r33_perc = 0;
       $this->oTabelaInss->teto     = 0;
     }
     return true;
   }
-  
+
   /**
    * Seta o valor da base de calculo
    *
@@ -357,27 +377,27 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
   function setBaseCalculo($nValorBaseCalculo) {
     $this->nValorBaseCalculo = $nValorBaseCalculo;
   }
-  
+
   /**
    * Define o valor da nota
    *
    * @param float $nValorNota valor da nota a ser contabilizado na retencao.
    */
   function setValorNota($nValorNota) {
-    
+
     $this->nValorNota = $nValorNota;
   }
-  
+
   /**
    * Define a data base para calculo das retencoes;
    *
    * @param string $dtDataBase data base para caculo formato dd/mm/YYY
    */
   function setDataBase($dtDataBase) {
-    
+
     $dtDataBase = implode("-", array_reverse(explode("/", $dtDataBase)));
     $this->dtBaseCalculo = $dtDataBase;
-    
+
   }
  /**
    * Define  o Codigo dos Movimentos
@@ -385,7 +405,7 @@ class calculoRetencaoInssFisica implements iCalculoRetencao {
    * @param unknown_type $aCodigosMovimentos
    */
   function setCodigoMovimentos($aCodigosMovimentos) {
-     $this->aCodigoMovimentos = $aCodigosMovimentos;  
+     $this->aCodigoMovimentos = $aCodigosMovimentos;
   }
 }
 

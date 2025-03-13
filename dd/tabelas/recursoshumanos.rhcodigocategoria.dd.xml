@@ -1,0 +1,48 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010857' name='recursoshumanos.rhcodigocategoria' description="Código Categoria Trabalhador/eSocial" prefix="rh255" label="Código categoria" type="0">
+  <fields>
+    <field codigo="1013654" 
+           campo_api='' 
+           name="rh255_codigo" 
+           conteudo="int4" 
+           description="Código de categoria do trabalhador." 
+           inivalue="0" 
+           label="Códgio Categoria" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Códgio Categoria" 
+           reference="" 
+           ispk="t" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013655" 
+           campo_api='' 
+           name="rh255_descricao" 
+           conteudo="varchar(500)" 
+           description="Descrição categoria do trabalhador" 
+           inivalue="" 
+           label="Descrição Categoria" 
+           size="500" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição Categoria" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh255_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

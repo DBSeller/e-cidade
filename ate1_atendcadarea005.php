@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_atendcadarea_classe.php");
-include("classes/db_atendcadareamod_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_atendcadarea_classe.php"));
+include(modification("classes/db_atendcadareamod_classe.php"));
 $clatendcadarea = new cl_atendcadarea;
   /*
 $clatendcadareamod = new cl_atendcadareamod;
@@ -100,7 +100,7 @@ if(isset($alterar)){
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmatendcadarea.php");
+	include(modification("forms/db_frmatendcadarea.php"));
 	?>
     </center>
 	</td>
@@ -125,7 +125,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.atendcadareamod.disabled=false;
-         top.corpo.iframe_atendcadareamod.location.href='ate1_atendcadareamod001.php?at26_codarea=".@$at26_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_atendcadareamod.location.href='ate1_atendcadareamod001.php?at26_codarea=".@$at26_sequencial."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('atendcadareamod');";

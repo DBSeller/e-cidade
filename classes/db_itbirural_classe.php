@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -148,15 +148,15 @@ class cl_itbirural {
                                       ,it18_coordenadas 
                        )
                 values (
-                                $this->it18_guia 
-                               ,$this->it18_frente 
-                               ,$this->it18_fundos 
-                               ,$this->it18_prof 
-                               ,'$this->it18_localimovel' 
-                               ,$this->it18_distcidade 
-                               ,'$this->it18_nomelograd' 
-                               ,$this->it18_area 
-                               ,'$this->it18_coordenadas' 
+                                $this->it18_guia
+                               ,$this->it18_frente
+                               ,$this->it18_fundos
+                               ,$this->it18_prof
+                               ,".(empty($this->it18_localimovel) ? "NULL" : "'{$this->it18_localimovel}'")."
+                               ,$this->it18_distcidade
+                               ,'$this->it18_nomelograd'
+                               ,$this->it18_area
+                               ,'$this->it18_coordenadas'
                       )";
      $result = db_query($sql); 
      if($result==false){ 

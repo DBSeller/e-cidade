@@ -82,9 +82,9 @@ db_input('q95_perc',15,$Iq95_perc,true,'text',$db_opcao,"")
 <script>
 function js_pesquisaq95_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.q95_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.q95_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
   }
 }
 function js_mostracgm(erro,chave){
@@ -101,9 +101,9 @@ function js_mostracgm1(chave1,chave2){
 }
 function js_pesquisaq95_cgmpri(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.q95_cgmpri.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.q95_cgmpri.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
   }
 }
 function js_mostracgm(chave,erro){
@@ -119,7 +119,7 @@ function js_mostracgm1(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_socios','func_socios.php?funcao_js=parent.js_preenchepesquisa|q95_numcgm|1','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_socios','func_socios.php?funcao_js=parent.js_preenchepesquisa|q95_numcgm|1','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_socios.hide();

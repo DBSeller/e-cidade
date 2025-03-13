@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgm_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgm_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clcgm = new cl_cgm;
@@ -39,9 +39,15 @@ if(isset($campos)==false){
     cgm.z01_numcgm, z01_nome, z01_ender, z01_munic, z01_uf, z01_cep, z01_email
   ";
 }
+
+$sAndNumCgm = "";
+if(@$numcgm != ""){
+  $sAndNumCgm = " and cgm.z01_numcgm <> ".$numcgm;
+}
+
 if(@$z01_cgc != ""){
   $clnome = new cl_cgm;
-  $sql = $clnome->sql_query("",$campos,""," z01_cgccpf = '".$z01_cgc."' and z01_numcgm<>$numcgm and z01_cgccpf <> '00000000000000' ");
+  $sql = $clnome->sql_query("",$campos,""," z01_cgccpf = '".$z01_cgc."' and z01_cgccpf <> '00000000000000' $sAndNumCgm");
   $result = $clnome->sql_record($sql);
   if($clnome->numrows > 0){
     db_fieldsmemory($result,0);
@@ -55,7 +61,7 @@ if(@$z01_cgc != ""){
 } 
 if(@$z01_cpf != ""){
   $clnome = new cl_cgm;
-  $sql = $clnome->sql_query("",$campos,""," z01_cgccpf = '".$z01_cpf."' and z01_cgccpf <> '00000000000' and z01_numcgm<>$numcgm");
+  $sql = $clnome->sql_query("",$campos,""," z01_cgccpf = '".$z01_cpf."' and z01_cgccpf <> '00000000000' $sAndNumCgm");
   $result = $clnome->sql_record($sql);
   if($clnome->numrows > 0){
     db_fieldsmemory($result,0);
@@ -67,14 +73,9 @@ if(@$z01_cpf != ""){
     exit;
   }
 } 
-if(@$numcgm != ""){
-  $and = " and cgm.z01_numcgm <> ".$numcgm;
-}else{
-  $and = "";
-}
 if(@$nome != ""){
   $clnome = new cl_cgm;
-  $sql = $clnome->sql_query("",$campos,""," z01_nome = '$nome' $and");
+  $sql = $clnome->sql_query("",$campos,""," z01_nome = '$nome' $sAndNumCgm");
   $result = $clnome->sql_record($sql);
   if($clnome->numrows > 0){
     db_fieldsmemory($result,0);

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -474,7 +474,7 @@ class cl_inicialmov {
      return $result;
    }
 	 
-   function atuinicialmov($inicial,$codsit) {
+   function atuinicialmov($inicial,$codsit,$iCodSitInicial=null) {
    	
       $clinicial   				= new cl_inicial;
       $v56_usuario 				= db_getsession("DB_id_usuario");
@@ -525,6 +525,9 @@ class cl_inicialmov {
         unset($GLOBALS["HTTP_POST_VARS"]["v50_data"]);
       }
 
+       if ( $iCodSitInicial != null ){
+          $clinicial->v50_situacao = $iCodSitInicial;
+       }
        $clinicial->v50_codmov  = $codmov;
        $clinicial->v50_inicial = $inicial;
        $clinicial->alterar($inicial);

@@ -109,7 +109,7 @@ db_inputdata('k80_dtaut',@$k80_dtaut_dia,@$k80_dtaut_mes,@$k80_dtaut_ano,true,'t
     <td> 
 <?
 if ($db_opcao == 3 and isset($k80_codpla)) {
-  $result = pg_exec("select sum(k81_valor) from placaixarec where k81_codpla = $k80_codpla");
+  $result = db_query("select sum(k81_valor) from placaixarec where k81_codpla = $k80_codpla");
   db_fieldsmemory($result,0,true);
   echo "<b>" . db_formatar($sum,'f') . "</b>";
 }
@@ -136,10 +136,10 @@ if(!isset($autenticar) && !isset($autenticar_estorno)){
 <script>
 function js_pesquisak80_instit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_placaixa','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_placaixa','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true,'0','1');
   }else{
      if(document.form1.k80_instit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_placaixa','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.k80_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false,'0','1');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_placaixa','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.k80_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false,'0','1');
      }else{
        document.form1.nomeinst.value = ''; 
      }
@@ -161,15 +161,15 @@ function js_pesquisa(){
   <?
   if(!isset($autenticar) && !isset($autenticar_estorno)){
     ?>
-    js_OpenJanelaIframe('top.corpo.iframe_placaixa','db_iframe_placaixa','func_placaixaaut.php?funcao_js=parent.js_preenchepesquisa|k80_codpla','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_placaixa','db_iframe_placaixa','func_placaixaaut.php?funcao_js=parent.js_preenchepesquisa|k80_codpla','Pesquisa',true,'0','1');
     <?
   }else if(isset($autenticar_estorno)){
     ?>
-    js_OpenJanelaIframe('top.corpo.iframe_placaixa','db_iframe_placaixa','func_placaixaest.php?funcao_js=parent.js_preenchepesquisa|k80_codpla','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_placaixa','db_iframe_placaixa','func_placaixaest.php?funcao_js=parent.js_preenchepesquisa|k80_codpla','Pesquisa',true,'0','1');
     <?
   }else{
     ?>
-    js_OpenJanelaIframe('top.corpo.iframe_placaixa','db_iframe_placaixa','func_placaixaaut.php?funcao_js=parent.js_preenchepesquisa|k80_codpla','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_placaixa','db_iframe_placaixa','func_placaixaaut.php?funcao_js=parent.js_preenchepesquisa|k80_codpla','Pesquisa',true,'0','1');
     <?
   }
   ?>

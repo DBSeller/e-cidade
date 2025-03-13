@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sql.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_procandamint_classe.php");
-include("classes/db_procandamintusu_classe.php");
-include("classes/db_protprocesso_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_procandamint_classe.php"));
+include(modification("classes/db_procandamintusu_classe.php"));
+include(modification("classes/db_protprocesso_classe.php"));
 
 $clprocandamint = new cl_procandamint;
 $clprocandamintusu = new cl_procandamintusu;
@@ -166,7 +166,7 @@ db_textarea('p78_despacho',0,80,$Ip78_despacho,true,'text',1,"")
 					  left join arqproc on arqproc.p68_codproc = protprocesso.p58_codproc
 				   where ( p61_coddepto = ".db_getsession("DB_coddepto").")  ) as x																	                   
 				   where   x.p68_codproc is null";
-       $result=pg_exec($sql);
+       $result=db_query($sql);
        $numrows=pg_numrows($result);
        if($numrows>0){ 
           echo "
@@ -239,7 +239,7 @@ if (isset($incluir)){
       echo "<script> document.form1.".$clprocandamint->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clprocandamint->erro_campo.".focus();</script>";
     }else{ 
-      echo"<script>top.corpo.location.href='pro4_procandaminttrans001.php';</script>";
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='pro4_procandaminttrans001.php';</script>";
     }
 }
 ?>

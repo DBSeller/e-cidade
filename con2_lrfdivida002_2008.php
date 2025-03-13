@@ -28,15 +28,15 @@
 
 if (! isset($arqinclude)) {
   
-  include ("fpdf151/pdf.php");
-  include ("fpdf151/assinatura.php");
-  include ("libs/db_sql.php");
-  include ("libs/db_libcontabilidade.php");
-  include ("libs/db_liborcamento.php");
-  include ("classes/db_orcparamrel_classe.php");
-  include ("classes/db_conrelinfo_classe.php");
-  include ("classes/db_db_config_classe.php");
-  include ("dbforms/db_funcoes.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("classes/db_db_config_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
   
   $classinatura = new cl_assinatura();
   $orcparamrel = new cl_orcparamrel();
@@ -180,7 +180,7 @@ if ($clconrelinfo->numrows > 0) {
 $anousu = db_getsession("DB_anousu");
 $xinstit = split("-", $db_selinstit);
 
-$resultinst = pg_exec("select codigo,munic,db21_tipoinstit from db_config where codigo in (" . str_replace('-', ', ', $db_selinstit) . ") ");
+$resultinst = db_query("select codigo,munic,db21_tipoinstit from db_config where codigo in (" . str_replace('-', ', ', $db_selinstit) . ") ");
 $numrowsinstit = pg_num_rows($resultinst);
 
 $instit_rpps = "";
@@ -348,20 +348,20 @@ for($linha = 1; $linha <= 20; $linha ++) {
 if ($instituicao != '') {
   $sele_work = "c61_instit in ({$instituicao})";
   $result_01 = db_planocontassaldo_matriz($anousu, $dtini_01, $dtfin_01, false, $sele_work, "", "true", "false", "", $aOrcParametro);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
   
   //$sele_work = ' c61_instit in (' . $instituicao . ')';
   $result_02 = db_planocontassaldo_matriz($anousu, $dtini_02, $dtfin_02, false, $sele_work, "", "true", "false", "", $aOrcParametro);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
 }
 if (trim($instit_rpps) != "") {
   $sele_work = ' c61_instit in (' . $instit_rpps . ')';
   $result_01_rpps = db_planocontassaldo_matriz($anousu, $dtini_01, $dtfin_01, false, $sele_work, "", "true", "false", "", $aOrcParametro_rpps);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
   
   $sele_work = ' c61_instit in (' . $instit_rpps . ')';
   $result_02_rpps = db_planocontassaldo_matriz($anousu, $dtini_02, $dtfin_02, false, $sele_work, "", "true", "false", "", $aOrcParametro_rpps);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
 }
 
 //db_criatabela($result_02_rpps); exit;

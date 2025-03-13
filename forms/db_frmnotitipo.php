@@ -69,7 +69,7 @@ db_select('k51_confirma',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_notitipo','func_notitipo.php?funcao_js=parent.js_preenchepesquisa|k51_procede','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_notitipo','func_notitipo.php?funcao_js=parent.js_preenchepesquisa|k51_procede','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_notitipo.hide();

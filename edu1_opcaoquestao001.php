@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_opcaoquestao_classe.php");
-include("classes/db_progconfig_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_opcaoquestao_classe.php"));
+include(modification("classes/db_progconfig_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clopcaoquestao = new cl_opcaoquestao;
 $clprogconfig = new cl_progconfig;
@@ -88,7 +88,7 @@ if(isset($excluir)){
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Cadastro de Opções de Respostas</b></legend>
-    <?include("forms/db_frmopcaoquestao.php");?>
+    <?include(modification("forms/db_frmopcaoquestao.php"));?>
    </fieldset>
    </center>
   </td>

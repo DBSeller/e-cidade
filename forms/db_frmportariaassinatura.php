@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -91,7 +91,7 @@ if ($db_opcao == 1) {
   <script>
 
     function js_pesquisa() {
-      js_OpenJanelaIframe( 'top.corpo', 
+      js_OpenJanelaIframe( '(window.CurrentWindow || parent.CurrentWindow).corpo', 
                            'db_iframe_portariaassinatura', 
                            'func_portariaassinatura.php?funcao_js=parent.js_preenchepesquisa|rh136_sequencial', 
                            'Pesquisa', true);

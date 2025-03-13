@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -37,9 +37,9 @@ $clrotulo->label("cm31_i_sepultamento");
 $clrotulo->label("cm01_i_declarante");
 $clrotulo->label("cm11_f_valor");
 
-$dia     = date('d',db_getsession("DB_datausu"));
-$mes     = date('m',db_getsession("DB_datausu"));
-$ano     = date('Y',db_getsession("DB_datausu"));
+$dia = date('d',db_getsession("DB_datausu"));
+$mes = date('m',db_getsession("DB_datausu"));
+$ano = date('Y',db_getsession("DB_datausu"));
 
 $dtAtual = date('Y-m-d',db_getsession("DB_datausu"));
 
@@ -80,10 +80,6 @@ if( isset($cm31_i_sepultamento) ){
  <input type="hidden" name="cm10_i_numpre" value="<?=@$cm10_i_numpre?>">
 <center>
 <table border="0">
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
   <tr>
     <td nowrap title="<?=@$Tcm10_i_codigo?>">
        <?=@$Lcm10_i_codigo?>
@@ -134,13 +130,9 @@ if( isset($cm31_i_sepultamento) ){
 			?>
     </td>
   </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-  </tr>
 </table>
 <fieldset style="width: 600">
- <legend><b>Valores</b></legend>
+ <legend>Valores</legend>
 <table>
   <tr>
     <td nowrap title="<?=@$Tcm10_i_taxaserv?>">
@@ -217,20 +209,10 @@ if( isset($cm31_i_sepultamento) ){
   </tr>
  </table>
  </fieldset>
-</center>
-<table>
-  <tr>
-    <td>
-      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>"
-             type="submit" id="db_opcao"
-             value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"
-             <?=($db_botao==false?"disabled":"")?> onclick="return js_validar();">
-    </td>
-    <td>
-      <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();">
-    </td>
-  </tr>
-</table>
+  <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>"
+         type="submit" id="db_opcao"
+         value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"
+         <?=($db_botao==false?"disabled":"")?> onclick="return js_validar();">
 </form>
 <script>
 function js_validar() {
@@ -293,24 +275,22 @@ function js_retornoPesquisaTaxaServicos(oAjax) {
 
   js_removeObj('msgBoxTaxaServicos');
 
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
+
+  $('cm10_f_valor').value = "";
 
   if ( aRetorno.numrows == 0 ) {
 
     alert('Nenhum valor cadastrado para taxa!');
     $('cm10_f_valortaxa').value = "";
-    $('cm10_f_valor').value     = "";
     js_habilitabotaocalcular();
-
   } else {
 
     if ( aRetorno.oValorTaxa == 0 ) {
 
       alert('Nenhum valor cadastrado para taxa!');
       $('cm10_f_valortaxa').value = "";
-      $('cm10_f_valor').value     = "";
       js_habilitabotaocalcular();
-
     } else {
 
       $('cm10_f_valortaxa').value = js_formatar(aRetorno.oValorTaxa,'f');
@@ -362,7 +342,7 @@ function js_retornoCalcularValores(oAjax) {
 
   js_removeObj('msgBoxCalcular');
 
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
 
   if ( aRetorno.numrows == 0 ) {
     alert('Nenhum valor cadastrado para taxa!');
@@ -465,12 +445,6 @@ function js_mostradeclarante1(chave1,chave2) {
   $('cm01_i_declarante').value = chave1;
   $('cm01_c_declarante').value = chave2;
   db_iframe_declarante.hide();
-}
-
-function js_pesquisa() {
-
-  var sUrl = 'func_itenserv.php?funcao_js=parent.js_preenchepesquisa|cm10_i_codigo';
-  js_OpenJanelaIframe('','db_iframe_itenserv',sUrl,'Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave) {

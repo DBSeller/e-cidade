@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $rotulocampo = new rotulocampo;
 $rotulocampo->label("codtrib");
@@ -49,7 +49,7 @@ if (isset($excluir)) {
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if (isset($retorno)) {
   $sql = "select *,to_char(dtcont,'DD') as dtcont_dia,to_char(dtcont,'MM') as dtcont_mes,to_char(dtcont,'YYYY') as dtcont_ano from db_config where codigo = $retorno";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 }
 
@@ -65,7 +65,7 @@ if (isset($HTTP_POST_VARS["incluir"])) {
   
   db_getfile("db_figura",$dbh_figura);
   db_getfile("db_logo",$dbh_logo);
-  $result = pg_exec("select max(codigo) + 1 from db_config");
+  $result = db_query("select max(codigo) + 1 from db_config");
   $codigo = pg_result($result,0,0);
   $codigo = $codigo==""?"1":$codigo;
 	$insert = "insert into db_config
@@ -127,7 +127,7 @@ if (isset($HTTP_POST_VARS["incluir"])) {
 					'$numero',
 					'$db21_codigomunicipoestado'
 					)";
-					pg_exec($insert) or die("Erro(23) inserindo em db_config: ".pg_errormessage());
+					db_query($insert) or die("Erro(23) inserindo em db_config: ".pg_errormessage());
 					db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
 				exit;
 				////////////////ALTERAR////////////////
@@ -141,8 +141,8 @@ if (isset($HTTP_POST_VARS["incluir"])) {
   $tx_banc = $tx_banc == ""?"null":$tx_banc;
   $ident = $ident == ""?"null":$ident;
   
-  $result = pg_exec("select figura,logo from db_config where codigo = $codigo ");
-  pg_exec("update db_config set
+  $result = db_query("select figura,logo from db_config where codigo = $codigo ");
+  db_query("update db_config set
 nomeinst = '$nomeinst',
 nomeinstabrev = '$nomeinstabrev',
 ender = '$ender',
@@ -174,8 +174,8 @@ where codigo = $codigo") or die("Erro(38) alterando db_config: ".pg_errormessage
   exit;
   ////////////////EXCLUIR//////////////
 } else if (isset($HTTP_POST_VARS["excluir"])) {
-  $result = pg_exec("select figura,logo from db_config where codigo = ".$HTTP_POST_VARS["codigo"]);
-  pg_exec("delete from db_config where codigo = ".$HTTP_POST_VARS["codigo"]) or die("Erro(43) excluindo db_usuarios: ".pg_errormessage());
+  $result = db_query("select figura,logo from db_config where codigo = ".$HTTP_POST_VARS["codigo"]);
+  db_query("delete from db_config where codigo = ".$HTTP_POST_VARS["codigo"]) or die("Erro(43) excluindo db_usuarios: ".pg_errormessage());
   system("rm -f $DB_FILES/".pg_result($result,0,0));
   system("rm -f $DB_FILES/".pg_result($result,0,1));
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,28 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefa_lanc_classe.php");
-include("classes/db_tarefa_lancprorrog_classe.php");
-include("classes/db_tarefalog_classe.php");
-include("classes/db_tarefalido_classe.php");
-include("classes/db_tarefalidolog_classe.php");
-include("classes/db_clientes_classe.php");
-include("classes/db_db_proced_classe.php");
-include("classes/db_db_sysmodulo_classe.php");
-include("classes/db_db_syscadproced_classe.php");
-include("classes/db_atendcadarea_classe.php");
-include("classes/db_db_procedcadgrupos_classe.php");
-include("classes/db_tarefacadmotivo_classe.php");
-include("classes/db_tarefacadsituacao_classe.php");
-include("classes/db_db_versaotarefa_classe.php");
-include("classes/db_db_depart_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefa_lanc_classe.php"));
+include(modification("classes/db_tarefa_lancprorrog_classe.php"));
+include(modification("classes/db_tarefalog_classe.php"));
+include(modification("classes/db_tarefalido_classe.php"));
+include(modification("classes/db_tarefalidolog_classe.php"));
+include(modification("classes/db_clientes_classe.php"));
+include(modification("classes/db_db_proced_classe.php"));
+include(modification("classes/db_db_sysmodulo_classe.php"));
+include(modification("classes/db_db_syscadproced_classe.php"));
+include(modification("classes/db_atendcadarea_classe.php"));
+include(modification("classes/db_db_procedcadgrupos_classe.php"));
+include(modification("classes/db_tarefacadmotivo_classe.php"));
+include(modification("classes/db_tarefacadsituacao_classe.php"));
+include(modification("classes/db_db_versaotarefa_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -85,11 +85,11 @@ $clrotulo->label('at40_diafim');
 function js_enviar_agenda(){
   usuario = document.form1.at40_responsavel.value;
   nome    = document.form1.at40_responsaveldescr.options[document.form1.at40_responsaveldescr.selectedIndex].text;
-  js_OpenJanelaIframe('top.corpo.iframe_tarefa','db_iframe_tarefa_agenda_geral','func_calendario_atendimento_consulta.php?tecnico_solicitado='+usuario+'&tecnico_solicitado_nome='+nome,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefa','db_iframe_tarefa_agenda_geral','func_calendario_atendimento_consulta.php?tecnico_solicitado='+usuario+'&tecnico_solicitado_nome='+nome,'Pesquisa',true);
 }
 
 function js_abre_agendamento(tarefa){
-  js_OpenJanelaIframe('top.corpo.iframe_tarefa','db_iframe_tarefa_agenda','func_calendario_atendimento.php?tarefa='+tarefa,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefa','db_iframe_tarefa_agenda','func_calendario_atendimento.php?tarefa='+tarefa,'Pesquisa',true);
 }
 
 function js_enviar() {
@@ -723,9 +723,9 @@ if(!isset($pesquisa_chave)){
   }
   
   $opcoes ="'x=1" . (@$at40_sequencial == ""?"":"\&at40_sequencial=" . @$at40_sequencial) . (@$leitura == ""?"":"\&leitura=" . @$leitura) . (@$at40_autoriza == ""?"":"\&at40_autoriza=" . @$at40_autoriza) . (@$at40_responsavel == ""?"":"\&at40_responsavel=" . @$at40_responsavel) . (@$at40_cliente == ""?"":"\&at40_cliente=" . @$at40_cliente) . (@$at40_progressoini == ""?"":"\&at40_progressoini=" . @$at40_progressoini) . (@$at40_progressofim == ""?"":"\&at40_progressofim=" . @$at40_progressofim) . (@$ordem == ""?"":"\&ordem=" . @$ordem) . (@$at40_grupoproced == ""?"":"\&at40_grupoproced=" . @$at40_grupoproced). (@$at40_proced == ""?"":"\&at40_proced=" . @$at40_proced) . (@$at40_area == ""?"":"\&at40_area=" . @$at40_area) . (@$at40_modulo == ""?"":"\&at40_modulo=" . @$at40_modulo) . (@$at40_syscadproced == ""?"":"\&at40_syscadproced=" . @$at40_syscadproced) . (@$at40_situacao == ""?"":"\&at40_situacao=" . @$at40_situacao) . (@$at40_diaini_ano == ""?"":"\&at40_diaini_ano=" . @$at40_diaini_ano . "\&at40_diaini_mes=" . @$at40_diaini_mes . "\&at40_diaini_dia=" . @$at40_diaini_dia) . (@$at40_diafim_ano == ""?"":"\&at40_diafim_ano=" . @$at40_diafim_ano . "\&at40_diafim_mes=" . @$at40_diafim_mes . "\&at40_diafim_dia=" . @$at40_diafim_dia) . (@$tipo_rel == ""?"":"\&tipo_rel=" . @$tipo_rel) . (@$opcao_rel == ""?"":"\&opcao_rel=" . @$opcao_rel) .  (@$todasprocedencias == ""?"":"\&todasprocedencias=" . @$todasprocedencias).  (@$at40_motivo == ""?"":"\&at40_motivo=" . @$at40_motivo) .  (@$tipodatafinal == ""?"":"\&tipodatafinal=" . @$tipodatafinal) . (isset($semagenda)?"\&semagenda=$semagenda":""). (isset($coddepto)?"\&coddepto=$coddepto":"")."'"; 
-  //echo "<tr><td>Em <blink><b><font color=red>verde</font></b></blink>, tarefas com mais de 3 dias sem registros...</td><td><b>Total de " . pg_numrows(pg_exec("select distinct at40_sequencial from ($sql) as xxx")) . " registros...</b></td></tr>";
+  //echo "<tr><td>Em <blink><b><font color=red>verde</font></b></blink>, tarefas com mais de 3 dias sem registros...</td><td><b>Total de " . pg_numrows(db_query("select distinct at40_sequencial from ($sql) as xxx")) . " registros...</b></td></tr>";
   
-//  $totalderegistros=pg_numrows(pg_exec("select distinct at40_sequencial from ($sql) as xxx"));
+//  $totalderegistros=pg_numrows(db_query("select distinct at40_sequencial from ($sql) as xxx"));
   
   echo "<tr><td>Em <blink><b><font color=green>verde</font></b></blink>, tarefas com mais de 3 dias sem registros...       <b>Total de ";
   ?> 
@@ -779,7 +779,7 @@ if(!isset($pesquisa_chave)){
 global $semagenda;
 
 function db_grid($sql, $leitura, $opcoes, $funcao_js,$todasprocedencias) {
-  $result    = pg_exec($sql) or die($sql);
+  $result    = db_query($sql) or die($sql);
   $NumRows   = pg_numrows($result);
   $NumFields = pg_numfields($result);
   $codtarefa = 0;
@@ -800,9 +800,9 @@ function db_grid($sql, $leitura, $opcoes, $funcao_js,$todasprocedencias) {
   
   function js_pesquisa_usuario(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo.iframe_tarefa','db_iframe_usuario','func_tarefa.php?funcao_js=parent.db_iframe_tarefa.jan.js_mostratarefa1|at40_sequencial','Pesquisa',true,'20');
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefa','db_iframe_usuario','func_tarefa.php?funcao_js=parent.db_iframe_tarefa.jan.js_mostratarefa1|at40_sequencial','Pesquisa',true,'20');
     }else{
-      js_OpenJanelaIframe('top.corpo.iframe_tarefa','db_iframe_usuario','func_tarefa.php?pesquisa_chave='+document.form1.at40_sequencial.value+'&funcao_js=parent.db_iframe_tarefa.jan.js_mostratarefa1','Pesquisa',true,'20');
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefa','db_iframe_usuario','func_tarefa.php?pesquisa_chave='+document.form1.at40_sequencial.value+'&funcao_js=parent.db_iframe_tarefa.jan.js_mostratarefa1','Pesquisa',true,'20');
     }
   }
   
@@ -1024,7 +1024,7 @@ function db_grid($sql, $leitura, $opcoes, $funcao_js,$todasprocedencias) {
                where at77_tarefa = $at40_sequencial
                  and at77_datavalidade is null 
                  and at77_id_usuario = ".db_getsession("DB_id_usuario");
-      $result_agenda = pg_exec($sqla);
+      $result_agenda = db_query($sqla);
   
       global $semagenda;
       if( isset($semagenda) && $semagenda == '1' && pg_numrows($result_agenda) > 0 ){
@@ -1041,7 +1041,7 @@ function db_grid($sql, $leitura, $opcoes, $funcao_js,$todasprocedencias) {
         $sql = "select * 
         from tarefaproced 
         where at41_tarefa = $at40_sequencial and at41_proced in (9,16,17)";
-        $rest = pg_exec($sql);
+        $rest = db_query($sql);
         if(pg_numrows($rest)>0){
           continue;
         }
@@ -1059,10 +1059,10 @@ function db_grid($sql, $leitura, $opcoes, $funcao_js,$todasprocedencias) {
       group by at43_tarefa) as x 
       left join tarefa on at40_sequencial = at43_tarefa
       where at40_diafim < '" . date("Y-m-d",db_getsession("DB_datausu")) . "'";
-      $result_reg = pg_exec($sqlreg) or die($sqlreg);
+      $result_reg = db_query($sqlreg) or die($sqlreg);
       if (pg_numrows($result_reg) == 0) {
         $sqlreg = "select at40_diafim as at40_diafimreg, current_date - at40_diafim as tempo from tarefa where at40_sequencial = $at40_sequencial";
-        $result_reg = pg_exec($sqlreg) or die($sqlreg);
+        $result_reg = db_query($sqlreg) or die($sqlreg);
         db_fieldsmemory($result_reg, 0);
       } else {
         db_fieldsmemory($result_reg, 0);
@@ -1083,7 +1083,7 @@ function db_grid($sql, $leitura, $opcoes, $funcao_js,$todasprocedencias) {
       $sql = "select at47_tarefa
       from tarefasituacao
       where at47_tarefa = $at40_sequencial and at47_situacao = 4";
-      $rest = pg_exec($sql);
+      $rest = db_query($sql);
       if(pg_numrows($rest)>0){
         $corfundo = "yellow";
       }    
@@ -1110,7 +1110,7 @@ function db_grid($sql, $leitura, $opcoes, $funcao_js,$todasprocedencias) {
 					if (substr($leitura,0,1) == "N" and strlen($leitura) == 2) {
 						$dias=(int) substr($leitura,1,1);
 						$sqlsoma = "select '$datalido'::date - '$dias day'::interval as datalido";
-						$resultsoma = pg_exec($sqlsoma) or die($sqlsoma);
+						$resultsoma = db_query($sqlsoma) or die($sqlsoma);
 						$datalido = pg_result($resultsoma,0,0);
 						$where_datalido = " at36_data >= '$datalido'";
 					}
@@ -1224,7 +1224,7 @@ function db_grid($sql, $leitura, $opcoes, $funcao_js,$todasprocedencias) {
           where  at18_tarefa = $at40_sequencial
           
           ";
-          $rest = pg_exec($sql) or die($sql);
+          $rest = db_query($sql) or die($sql);
           if(pg_numrows($rest)>0){
             echo "<td title='".pg_result($rest,0,1)."'>".pg_result($rest,0,0)."</td>";
           }else{
@@ -1377,3 +1377,9 @@ function db_grid($sql, $leitura, $opcoes, $funcao_js,$todasprocedencias) {
   }
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

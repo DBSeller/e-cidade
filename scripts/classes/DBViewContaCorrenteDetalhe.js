@@ -31,7 +31,7 @@ var DBViewContaCorrenteDetalhe = function(sInstance) {
   this.js_retornoDetalhes = function (oAjax) {
 
 	js_removeObj('msgBox');
-	var oRetorno = eval("("+oAjax.responseText+")");
+	var oRetorno = JSON.parse(oAjax.responseText);
 	
     $('ctnSequencial_new').innerHTML             = oRetorno.aDados.c19_sequencial;
     $('ctnContaCorrente_new').innerHTML          = oRetorno.aDados.c17_descricao;

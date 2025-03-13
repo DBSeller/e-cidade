@@ -1,0 +1,111 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010363' name='empenho.prestadorprocessoefd' description="Vinculo do Prestador com o Processo R-1070 do EFD" prefix="e287" label="Prestador Processo EFD" type="0">
+  <fields>
+    <field codigo="1010229" 
+           campo_api='' 
+           name="e287_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='empenho.prestadorprocessoefd_e287_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010230" 
+           campo_api='' 
+           name="e287_cgmprestador" 
+           conteudo="int4" 
+           description="CGM do Prestador" 
+           inivalue="0" 
+           label="CGM do Prestador" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="CGM do Prestador" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010231" 
+           campo_api='' 
+           name="e287_cgmcontribuinte" 
+           conteudo="int4" 
+           description="CGM do Contribuinte" 
+           inivalue="0" 
+           label="CGM do Contribuinte" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="CGM do Contribuinte" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010232" 
+           campo_api='' 
+           name="e287_numprocesso" 
+           conteudo="varchar(100)" 
+           description="Numero do Processo R1070" 
+           inivalue="" 
+           label="Numero do Processo R1070" 
+           size="100" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Numero do Processo R1070" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010233" 
+           campo_api='' 
+           name="e287_valorprocesso" 
+           conteudo="float4" 
+           description="Valor do Processo R1070" 
+           inivalue="0" 
+           label="Valor do Processo R1070" 
+           size="25" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor do Processo R1070" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="e287_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="e287_cgmprestador" reference="z01_numcgm" /> 
+      <fieldfk name="e287_cgmcontribuinte" reference="z01_numcgm" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

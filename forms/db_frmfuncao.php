@@ -119,7 +119,7 @@ db_input('r37_class',5,$Ir37_class,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_funcao','func_funcao.php?funcao_js=parent.js_preenchepesquisa|r37_anousu|r37_mesusu|r37_funcao','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_funcao','func_funcao.php?funcao_js=parent.js_preenchepesquisa|r37_anousu|r37_mesusu|r37_funcao','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_funcao.hide();

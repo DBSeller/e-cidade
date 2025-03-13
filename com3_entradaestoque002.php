@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_empelemento_classe.php");
-require_once("classes/db_conplanoreduz_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_empelemento_classe.php"));
+require_once(modification("classes/db_conplanoreduz_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 
 ?>
@@ -72,33 +72,36 @@ var oGet = js_urlToObject();
 var sUrlRPC = 'com4_ordemdecompra001.RPC.php';
 js_gridEntrada();
 
- function js_gridEntrada() {
+function js_gridEntrada() {
 
-  oGridEntrada = new DBGrid('Entradas');
-  oGridEntrada.nameInstance = 'oGridEntrada';
-  //oGridInteressados.setCheckbox(0);
-  //oGridItens.allowSelectColumns(true);
-  oGridEntrada.setCellWidth(new Array('50px', 
-		                                  '180px',
-                                      '70px' ,
-                                      '80px' ,
-                                      '70px' ,
-                                      '180px',
-                                      '180px'
-                                     ));
+    oGridEntrada = new DBGrid('Entradas');
+    oGridEntrada.nameInstance = 'oGridEntrada';
+    //oGridInteressados.setCheckbox(0);
+    //oGridItens.allowSelectColumns(true);
+    oGridEntrada.setCellWidth(new Array('70px',
+        '60px',
+        '200px',
+        '70px',
+        '120px',
+        '100px',
+        '',
+        ''
+    ));
 
-  oGridEntrada.setCellAlign(new Array('right',
-		                                'left' ,
-                                    'right' ,
-                                    'right' ,
-                                    'right' ,
-                                    'left' ,
-                                    'left'
+    oGridEntrada.setCellAlign(new Array('center',
+        'center',
+        'left',
+        'right',
+        'right',
+        'right',
+        'left',
+        'left'
                                     ));
 
 
-  oGridEntrada.setHeader(new Array( 'Cód.Mat.',
-		                                'Material',
+  oGridEntrada.setHeader(new Array( 'Data',
+                                    'Cód.Mat.',
+		                            'Material',
                                     'Quantidade',
                                     'Quantidade Entrada',
                                     'Valor',
@@ -137,23 +140,21 @@ js_gridEntrada();
 
    js_removeObj('msgBox');
 
-   var oRetorno = eval("("+oAjax.responseText+")");
-
-
+   var oRetorno = JSON.parse(oAjax.responseText);
    oGridEntrada.clearAll(true);
-
    oRetorno.aEntradas.each(
 
      function (oDado, iInd) {
 
        var aRow     = new Array();
-           aRow[0]  = oDado.iMaterial;
-           aRow[1]  = oDado.sMaterial.urlDecode()     ;
-           aRow[2]  = oDado.iQuantidade               ;
-           aRow[3]  = oDado.iQuantidadeEntrada        ;
-           aRow[4]  = oDado.iValor                    ;
-           aRow[5]  = oDado.sAlmoxarifado.urlDecode() ;
-           aRow[6]  = oDado.sTipoMovimentacao.urlDecode() ;
+           aRow[0]  = oDado.dMovimentacao;
+           aRow[1]  = oDado.iMaterial;
+           aRow[2]  = oDado.sMaterial.urlDecode();
+           aRow[3]  = oDado.iQuantidade;
+           aRow[4]  = oDado.iQuantidadeEntrada;
+           aRow[5]  = oDado.iValor;
+           aRow[6]  = oDado.sAlmoxarifado.urlDecode();
+           aRow[7]  = oDado.sTipoMovimentacao.urlDecode();
            oGridEntrada.addRow(aRow);
 
    });

@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_protprocesso_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_protprocesso_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clprotprocesso = new cl_protprocesso;
@@ -119,7 +119,7 @@ $clprotprocesso->rotulo->label("p58_requer");
 					  left join arqproc on arqproc.p68_codproc = protprocesso.p58_codproc
 				   where ( p61_coddepto = ".db_getsession("DB_coddepto").") $where ) as x																	                   
 				   where   x.p68_codproc is null";
-	  $result = pg_exec($sql);		   
+	  $result = db_query($sql);		   
           if(pg_numrows($result)!=0){
             db_fieldsmemory($result,0);
             echo "<script>".$funcao_js."('$p58_numcgm','$z01_nome',false);</script>";
@@ -146,3 +146,9 @@ document.form2.chave_p58_codproc.select();
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($_POST);
 
@@ -141,7 +141,7 @@ if( !isset( $larg_obj ) ) {
       <td align="center" width="<?=$larg_dia?>" style="background:#444444;color:#DEB887">
         <b><?=$ed32_c_descr?></b>
       </td>
-    <?
+    <?php
     }
     ?>
   </tr>
@@ -154,6 +154,7 @@ if( !isset( $larg_obj ) ) {
        cellpadding="0">
   <?php
   for( $x = 0; $x < $qtd_hora; $x++ ) {
+
     ?>
     <tr bgcolor="#f3f3f3">
       <td align="center"
@@ -168,7 +169,9 @@ if( !isset( $larg_obj ) ) {
         &nbsp;
       </td>
     </tr>
-  <?}?>
+  <?php
+  }
+  ?>
 </table>
 <?php
 /**
@@ -233,7 +236,7 @@ for( $x = 0; $x < $cldiasemana->numrows + 1; $x++ ) {
       <td width="1" bgcolor="#000000" height="<?=$alt_tab_hora?>"></td>
     </tr>
   </table>
-  <?
+  <?php
   $left_ini += $larg_dia;
 }
 /**
@@ -258,7 +261,8 @@ for( $x = 0; $x < $cldiasemana->numrows + 1; $x++ ) {
         $sCamposRecHumanoHoraDisp    .= " then 'Matrícula: '||rechumanopessoal.ed284_i_rhpessoal";
         $sCamposRecHumanoHoraDisp    .= " else 'CGM: '||rechumanocgm.ed285_i_cgm end as identificacao";
         $sCamposRecHumanoHoraDisp    .= ", ed33_i_codigo, ed08_c_descr, ed18_c_nome, ed15_c_nome, ed17_h_inicio";
-        $sCamposRecHumanoHoraDisp    .= ", ed17_h_fim, ed18_i_codigo as ed17_i_escola";
+        $sCamposRecHumanoHoraDisp    .= ", ed17_h_fim, ed18_i_codigo as ed17_i_escola, ed128_abreviatura";
+        $sCamposRecHumanoHoraDisp    .= ", ed33_horaatividade";
         $sOrdenacaoRecHumanoHoraDisp  = "ed75_i_codigo, ed33_i_diasemana, ed17_h_inicio asc, ed17_h_fim asc";
         $sWhereRecHumanoHoraDisp      = "{$where} AND ed33_i_diasemana = {$ed32_i_codigo}";
 
@@ -266,12 +270,12 @@ for( $x = 0; $x < $cldiasemana->numrows + 1; $x++ ) {
           $sWhereRecHumanoHoraDisp .= " AND ed75_i_codigo = {$oGet->iHorarioDisponivel}";
         }
 
-        $sSqlRecHumanoHoraDisp = $clrechumanohoradisp->sql_query_disponibilidade(
-                                                                                  "",
-                                                                                  $sCamposRecHumanoHoraDisp,
-                                                                                  $sOrdenacaoRecHumanoHoraDisp,
-                                                                                  $sWhereRecHumanoHoraDisp
-                                                                                );
+        $sSqlRecHumanoHoraDisp = $clrechumanohoradisp->sql_query_tipohoratrabalho(
+                                                                                   "",
+                                                                                   $sCamposRecHumanoHoraDisp,
+                                                                                   $sOrdenacaoRecHumanoHoraDisp,
+                                                                                   $sWhereRecHumanoHoraDisp
+                                                                                 );
         $result1 = $clrechumanohoradisp->sql_record( $sSqlRecHumanoHoraDisp );
         $tt      = 0;
 
@@ -287,10 +291,17 @@ for( $x = 0; $x < $cldiasemana->numrows + 1; $x++ ) {
               db_fieldsmemory( $result1, $y );
               if( trim( $hora ) == trim( $ed17_h_inicio ) ) {
 
-                $tempo_ini = mktime( substr( $ed17_h_inicio, 0, 2), substr( $ed17_h_inicio, 3, 2 ), 0, 1, 1, 1999 );
-                $tempo_fim = mktime( substr( $ed17_h_fim, 0, 2 ), substr( $ed17_h_fim, 3, 2 ), 0, 1, 1, 1999 );
-                $difermin  = ($tempo_fim - $tempo_ini) / 60;
-                $difer     = ceil( $difermin / 2 );
+                $tempo_ini      = mktime( substr( $ed17_h_inicio, 0, 2), substr( $ed17_h_inicio, 3, 2 ), 0, 1, 1, 1999 );
+                $tempo_fim      = mktime( substr( $ed17_h_fim, 0, 2 ), substr( $ed17_h_fim, 3, 2 ), 0, 1, 1, 1999 );
+                $difermin       = ($tempo_fim - $tempo_ini) / 60;
+                $difer          = ceil( $difermin / 2 );
+                $sHoraAtividade = $ed33_horaatividade == 't' ? 'SIM' : 'NÃO';
+                $sCor           = "none repeat scroll 0 0 #FFCC99";
+
+                if( isset( $_SESSION["sess_cordisp"] ) && isset( $_SESSION["sess_cordisp"][$ed17_i_escola] ) ) {
+                  $sCor = $_SESSION["sess_cordisp"][$ed17_i_escola];
+                }
+
                 ?>
                 <table id="tab<?=$ed33_i_codigo?>"
                        width="<?=$larg_dia?>"
@@ -300,7 +311,7 @@ for( $x = 0; $x < $cldiasemana->numrows + 1; $x++ ) {
                        cellspacing="0"
                        cellpadding="0">
                   <tr>
-                    <td style="font-size:9px;background:<?=isset( $_SESSION["sess_cordisp"] ) ? $_SESSION["sess_cordisp"][$ed17_i_escola] : "none repeat scroll 0 0 #FFCC99"?>"
+                    <td style="font-size:9px;background:<?=$sCor?>"
                         align="center"
                         onmouseover="js_Mover(
                                                'tab<?=$ed33_i_codigo?>',
@@ -310,15 +321,17 @@ for( $x = 0; $x < $cldiasemana->numrows + 1; $x++ ) {
                                                '<?=$ed18_c_nome?>',
                                                '<?=$ed08_c_descr?>',
                                                '<?=$ed15_c_nome?>',
-                                               '<?=isset( $_SESSION["sess_cordisp"] ) ? $_SESSION["sess_cordisp"][$ed17_i_escola] : "none repeat scroll 0 0 #FFCC99"?>',
-                                               '<?=$identificacao?>'
+                                               '<?=$sCor?>',
+                                               '<?=$identificacao?>',
+                                               '<?=$ed128_abreviatura?>',
+                                               '<?=$sHoraAtividade?>'
                                              )"
                         onmouseout="js_Mout( 'tab<?=$ed33_i_codigo?>', '<?=$ed17_h_inicio?>', '<?=$ed17_h_fim?>' )">
                       <?=$ed17_i_escola?> -> <?=$ed17_h_inicio?> às <?=$ed17_h_fim?>
                     </td>
                   </tr>
                 </table>
-              <?
+              <?php
               }
             }
           }
@@ -339,8 +352,8 @@ for( $x = 0; $x < $cldiasemana->numrows + 1; $x++ ) {
   </tr>
   </tbody>
 </table>
-<table width="100"
-       style="position:absolute;top:<?=$tabela1_top+20?>px;left:<?=$larg_obj-100?>px;"
+<table width="200"
+       style="position:absolute;top:<?=$tabela1_top+20?>px;left:<?=$larg_obj-200?>px;"
        cellspacing="2"
        cellpadding="4">
   <tr>
@@ -351,11 +364,13 @@ for( $x = 0; $x < $cldiasemana->numrows + 1; $x++ ) {
 </body>
 </html>
 <script>
-  function js_Mover( quadro, horaini, horafim, escola, nomeescola, periodo, turno, cor, matricula ) {
+  function js_Mover( quadro, horaini, horafim, escola, nomeescola, periodo, turno, cor, matricula, tipohora, horaatividade ) {
 
-    texto  = "<b>" + matricula + "</b><br>Turno: <b>" + turno + "</b><br>Período: <b>" + periodo
-    texto += "</b><br>Hora Inicial: <b>" + horaini + "</b><br>Hora Final: <b>" + horafim + "</b><br>Escola: <b>" + escola
+    texto  = "<b>" + matricula + "</b><br>Turno: <b>" + turno + "</b><br>Período: <b>" + periodo;
+    texto += "</b><br>Hora Inicial: <b>" + horaini + "</b><br>Hora Final: <b>" + horafim + "</b><br>Escola: <b>" + escola;
     texto += " - " + nomeescola + "</b><br>";
+    texto += "Tipo de Hora: <b>" + tipohora + "</b><br>";
+    texto += "Hora Atividade: <b>" + horaatividade + "</b>";
 
     document.getElementById("tab_descr").style.visibility = "visible";
     document.getElementById("tab_descr").style.background = cor;

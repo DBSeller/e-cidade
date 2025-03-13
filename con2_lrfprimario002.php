@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,13 +27,13 @@
 
 if (!isset($arqinclude)){ // se este arquivo não esta incluido por outro
 
- include("fpdf151/pdf.php");
- include("fpdf151/assinatura.php");
- include("dbforms/db_funcoes.php");
- include("classes/db_orcparamrel_classe.php");
- include("libs/db_libcontabilidade.php");
- include("libs/db_liborcamento.php");
- include("classes/db_conrelinfo_classe.php");
+ include(modification("fpdf151/pdf.php"));
+ include(modification("fpdf151/assinatura.php"));
+ include(modification("dbforms/db_funcoes.php"));
+ include(modification("classes/db_orcparamrel_classe.php"));
+ include(modification("libs/db_libcontabilidade.php"));
+ include(modification("libs/db_liborcamento.php"));
+ include(modification("classes/db_conrelinfo_classe.php"));
  
  parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
  db_postmemory($HTTP_SERVER_VARS);
@@ -239,7 +239,7 @@ for($x=1;$x<=21;$x++){
  
 $db_filtro  = ' o70_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
 $result_rec = db_receitasaldo(11,1,3,true,$db_filtro,$anousu,$dt_ini,$dt_fin,false);
-@pg_exec("drop table work_receita");
+@db_query("drop table work_receita");
 
 for($x=0;$x< pg_numrows($result_rec);$x++){
     db_fieldsmemory($result_rec,$x);
@@ -257,7 +257,7 @@ for($x=0;$x< pg_numrows($result_rec);$x++){
  
 $db_filtro  = ' o70_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
 $result_rec = db_receitasaldo(11,1,3,true,$db_filtro,$anousu_ant,$dt_ini_ant,$dt_fin_ant,false);
-@pg_exec("drop table work_receita"); 
+@db_query("drop table work_receita"); 
 for($x=0;$x< pg_numrows($result_rec);$x++){
     db_fieldsmemory($result_rec,$x);
     $elemento = $o57_fonte;
@@ -283,7 +283,7 @@ for($x=0;$x< pg_numrows($result_rec);$x++){
 if (!isset($arqinclude)){ 
 
  $xinstit = split("-",$db_selinstit);
- $resultinst = pg_exec("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+ $resultinst = db_query("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
  db_fieldsmemory($resultinst,0);
  $descr_inst = $munic;
 

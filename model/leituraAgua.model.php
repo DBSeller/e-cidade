@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -158,7 +158,7 @@ class leituraAgua {
      $this->iMes              = $iMes;
      $this->iExercicio        = $iAno;
       
-     require_once ('classes/db_agualeitura_classe.php');
+     require_once(modification('classes/db_agualeitura_classe.php'));
      $oDaoAguaLeitura         = new cl_agualeitura();
      $sWhere                  = "x21_codhidrometro = '$iCodigoHidrometro' and x21_mes = '$iMes' and x21_exerc= '$iAno'";
      $campos                  = "x21_codleitura, x21_codhidrometro, x21_exerc, x21_mes, x21_situacao,  x21_numcgm, x21_dtleitura, ";

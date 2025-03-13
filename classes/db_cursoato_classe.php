@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -52,13 +52,13 @@ class cl_cursoato {
                  ed215_i_atolegal = int8 = Ato Legal 
                  ";
    //funcao construtor da classe 
-   function cl_cursoato() { 
+  public function __construct() { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("cursoato"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
    //funcao erro 
-   function erro($mostra,$retorna) { 
+  public function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -67,7 +67,7 @@ class cl_cursoato {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+  public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->ed215_i_codigo = ($this->ed215_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed215_i_codigo"]:$this->ed215_i_codigo);
        $this->ed215_i_cursoescola = ($this->ed215_i_cursoescola == ""?@$GLOBALS["HTTP_POST_VARS"]["ed215_i_cursoescola"]:$this->ed215_i_cursoescola);
@@ -77,7 +77,7 @@ class cl_cursoato {
      }
    }
    // funcao para inclusao
-   function incluir ($ed215_i_codigo){ 
+  public function incluir ($ed215_i_codigo){ 
       $this->atualizacampos();
      if($this->ed215_i_cursoescola == null ){ 
        $this->erro_sql = " Campo Curso nao Informado.";
@@ -176,7 +176,7 @@ class cl_cursoato {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($ed215_i_codigo=null) { 
+  public function alterar ($ed215_i_codigo=null) { 
       $this->atualizacampos();
      $sql = " update cursoato set ";
      $virgula = "";
@@ -271,7 +271,7 @@ class cl_cursoato {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($ed215_i_codigo=null,$dbwhere=null) { 
+  public function excluir ($ed215_i_codigo=null,$dbwhere=null) { 
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ed215_i_codigo));
      }else{ 
@@ -334,7 +334,7 @@ class cl_cursoato {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+  public function sql_record($sql) { 
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -357,10 +357,10 @@ class cl_cursoato {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $ed215_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  public function sql_query ( $ed215_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -386,7 +386,7 @@ class cl_cursoato {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -396,10 +396,10 @@ class cl_cursoato {
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $ed215_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  public function sql_query_file ( $ed215_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -420,7 +420,7 @@ class cl_cursoato {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

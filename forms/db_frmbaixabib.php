@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: biblioteca
@@ -53,7 +53,7 @@ if($clexemplar->numrows==0){
  <table border="0">
   <tr>
    <td nowrap title="<?=@$Tbi23_codigo?>">
-   <?=@$Lbi23_codigo?>
+      <label for="bi08_exemplar"><?=@$Lbi23_codigo?></label>
    </td>
    <td>
     <?db_input('bi08_exemplar',10,@$Ibi08_exemplar,true,'text',3,"")?>
@@ -62,7 +62,7 @@ if($clexemplar->numrows==0){
   </tr>
   <tr>
    <td nowrap title="<?=@$Tbi08_descr?>">
-    <?=@$Lbi08_descr?>
+     <label for="bi08_descr"><?=@$Lbi08_descr?></label>
    </td>
    <td>
     <?db_textarea('bi08_descr',5,50,$Ibi08_descr,true,'text',$db_opcao,"")?>
@@ -70,7 +70,7 @@ if($clexemplar->numrows==0){
   </tr>
   <tr>
    <td nowrap title="<?=@$Tbi08_inclusao?>">
-    <?=@$Lbi08_inclusao?>
+     <label for="bi08_inclusao"><?=@$Lbi08_inclusao?></label>
    </td>
    <td>
     <?db_inputdata('bi08_inclusao',@$bi08_inclusao_dia,@$bi08_inclusao_mes,@$bi08_inclusao_ano,true,'text',3,"")?>

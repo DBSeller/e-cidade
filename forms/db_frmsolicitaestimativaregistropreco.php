@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 $clsolicita->rotulo->label();
@@ -49,7 +49,7 @@ $clrotulo->label("o74_descricao");
               <td nowrap title="Código da Abertura">
                  <b>Código da Estimativa:</b>
               </td>
-              <td> 
+              <td>
                 <?
                 db_input('pc10_numero',10,$Ipc10_numero,true,'text',3)
                 ?>
@@ -72,18 +72,18 @@ $clrotulo->label("o74_descricao");
                 @$pc10_dataano = $arr_data[0];
                 db_inputdata('pc10_data', $pc10_datadia, $pc10_datames, $pc10_dataano,true,'text',3);
                 ?>
-              </td> 
+              </td>
             <tr>
               <td nowrap title="<?=@$Tpc10_resumo?>">
                 <b>Resumo:</b>
               </td>
-              <td> 
+              <td>
               <?
                @$pc10_resumo = stripslashes($pc10_resumo);
-               db_textarea("pc10_resumo",10,120,"",true,"text",$db_opcao,"","","",735); 
+               db_textarea("pc10_resumo",10,120,"",true,"text",$db_opcao,"","","",735);
               ?>
               </td>
-            </tr> 
+            </tr>
             <tr>
               <td>
                  <?
@@ -95,7 +95,7 @@ $clrotulo->label("o74_descricao");
                  db_input('pc54_solicita', 8, $Ipc54_solicita, true, 'text', 3, "");
                 ?>
               </td>
-            </tr> 
+            </tr>
           </table>
         </fieldset>
       </td>
@@ -106,12 +106,12 @@ $clrotulo->label("o74_descricao");
         <input type='button' value='Imprimir' id='btnImprimir'>
         <?
           if ($lBtnShowBtnConsulta) {
-           echo "<input type='button' value='Pesquisar' id='btnConsultar'>"; 
+           echo "<input type='button' value='Pesquisar' id='btnConsultar'>";
           }
         ?>
       </td>
     </tr>
-  </table>        
+  </table>
 </center>
 </form>
 <script>
@@ -123,19 +123,19 @@ function js_salvarEstimativa() {
    * as Datas devem ser preenchidas.
    */
    if ($F('pc10_data') == '') {
-   
+
      alert('Informe a data.');
      $('pc10_data').focus();
      return false;
-    
+
    }
-   
+
    if ($F('pc54_solicita') == "") {
-     
+
      alert('Informe a Abertura de Preços.');
      $('pc54_solicita').focus();
      return false;
-     
+
    }
    js_divCarregando("Aguarde, salvando estimativa de Registro de Preço.","msgBox");
    var oParam  = new Object();
@@ -154,16 +154,20 @@ function js_salvarEstimativa() {
 }
 
 function js_retornoSalvarabertura(oAjax) {
-  
+
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
-     
+
      $('pc10_numero').value = oRetorno.iCodigoSolicita;
+     //var resumo = decodeURIComponent(oRetorno.resumo.replace(/\+/g, " "));
+     var resumo = oRetorno.resumo.urlDecode();
+     $('pc10_resumo').value = resumo.replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(n); });
+
      parent.iframe_itens.js_preencheGrid(oRetorno.itens);
      parent.mo_camada('itens');
      parent.iframe_itens.$('frmItens').enable();
-     
+
   } else {
    alert(oRetorno.message.urlDecode());
   }
@@ -174,7 +178,7 @@ function js_pesquisar() {
   js_OpenJanelaIframe('',
                       'db_iframe_solicita',
                       'func_solicitaestimativa.php?funcao_js=parent.js_completaPesquisa|pc10_numero&departamento=true'+
-                      '&anuladas=1&comcompilacao=1',
+                      '&anuladas=1&comcompilacao=1&formacontrole=1',
                       'Estimativas de Registro de Preço',
                       true,
                       0);
@@ -197,15 +201,18 @@ function js_completaPesquisa(iSolicitacao) {
 
 function js_retornoCompletaPesquisa(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
-  
+
     $('pc10_data').value     = oRetorno.datasolicitacao;
-    $('pc10_resumo').value   = oRetorno.resumo.urlDecode();
+
+    var resumo = oRetorno.resumo.urlDecode();
+    $('pc10_resumo').value = resumo.replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(n); });
+
     $('pc10_numero').value   = oRetorno.solicitacao;
     $('pc54_solicita').value = oRetorno.codigoabertura;
     if (!oRetorno.lCorreto) {
-    
+
      var sMessage  = "Aviso: foram feitas atualizações nos itens do registro deste registro de preço.\n";
          sMessage += "Favor revisar as modificações com o departamento responsável.";
      alert(sMessage);
@@ -213,15 +220,15 @@ function js_retornoCompletaPesquisa(oAjax) {
     }
     parent.iframe_itens.js_preencheGrid(oRetorno.itens);
     parent.iframe_itens.$('frmItens').enable();
-    
+
   } else {
     alert(oRetorno.message.urlDecode());
   }
-  
+
 }
 
 function js_pesquisaaberturaprecos(mostra) {
-  
+
    js_OpenJanelaIframe('',
                       'db_iframe_registropreco',
                       'func_solicitaregistropreco.php?funcao_js=parent.js_preenche|pc54_solicita&liberado=true'+
@@ -229,13 +236,13 @@ function js_pesquisaaberturaprecos(mostra) {
                       'Abertura de Registro de Preço',
                       true,
                       0);
-} 
+}
 
 function js_preenche(solicita) {
-  
+
   $('btnSalvar').disabled  = true;
   $('pc54_solicita').value = solicita;
-  js_validarEstimativaDepto(solicita) 
+  js_validarEstimativaDepto(solicita)
   db_iframe_registropreco.hide();
 }
 
@@ -259,7 +266,7 @@ function js_retornoEstimativaDepartamento(oAjax) {
 
   js_removeObj("msgBox");
   $('btnSalvar').disabled = false;
-  var oRetorno            = eval("("+oAjax.responseText+")");
+  var oRetorno            = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 2) {
 
     alert(oRetorno.message.urlDecode());
@@ -272,26 +279,26 @@ function js_retornoEstimativaDepartamento(oAjax) {
 function js_imprimir() {
 
   if ($F('pc10_numero') == "") {
-  
+
     alert('Estimativa não está salva.\nPara Emitir, salve a abertura.');
     return false;
   }
   var query  = " ini="+$F('pc10_numero');
   query     += "&fim="+$F('pc10_numero');
   query     += "&departamento=<?=db_getsession("DB_coddepto")?>";
-   jan = window.open('com2_estimativaregistro002.php?'+query,'', 
+   jan = window.open('com2_estimativaregistro002.php?'+query,'',
                      'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
-}  
+}
 $('btnSalvar').observe("click", js_salvarEstimativa);
 $('btnImprimir').observe("click", js_imprimir);
 <?
 if ($lBtnShowBtnConsulta) {
-  
+
   echo "\$('btnConsultar').observe('click', js_pesquisar);\n";
   echo "parent.iframe_itens.location.href='com4_solicitaestimativaitens.php'";
-   
+
 } else {
   echo "js_pesquisaaberturaprecos(true);\n";
 }
-?> 
+?>
 </script>

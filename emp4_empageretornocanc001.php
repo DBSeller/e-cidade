@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_empagegera_classe.php");
-require_once("classes/db_empagemov_classe.php");
-require_once("classes/db_empageconf_classe.php");
-require_once("classes/db_empageconfgera_classe.php");
-require_once("classes/db_empageconfcanc_classe.php");
-require_once("classes/db_db_bancos_classe.php");
-require_once("classes/db_empagedadosret_classe.php");
-require_once("classes/db_empagedadosretmov_classe.php");
-require_once("classes/db_errobanco_classe.php");
-require_once("classes/db_empord_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_empagegera_classe.php"));
+require_once(modification("classes/db_empagemov_classe.php"));
+require_once(modification("classes/db_empageconf_classe.php"));
+require_once(modification("classes/db_empageconfgera_classe.php"));
+require_once(modification("classes/db_empageconfcanc_classe.php"));
+require_once(modification("classes/db_db_bancos_classe.php"));
+require_once(modification("classes/db_empagedadosret_classe.php"));
+require_once(modification("classes/db_empagedadosretmov_classe.php"));
+require_once(modification("classes/db_errobanco_classe.php"));
+require_once(modification("classes/db_empord_classe.php"));
 
 $clempagegera        = new cl_empagegera;
 $clempagemov         = new cl_empagemov;

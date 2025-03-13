@@ -76,7 +76,7 @@ $clrotulo->label("c60_descr");
 </form>
 <script>
 function js_contas(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conplanoreduz','func_conplanoreduz002.php?funcao_js=parent.js_mostraconta|c61_reduz|c60_descr','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conplanoreduz','func_conplanoreduz002.php?funcao_js=parent.js_mostraconta|c61_reduz|c60_descr','Pesquisa',true);
 }
 function js_mostraconta(chave1,chave2){
     document.form1.c62_reduz.value = chave1;
@@ -86,10 +86,10 @@ function js_mostraconta(chave1,chave2){
 
 function js_pesquisac62_codrec(mostra){
    if(mostra==true){
-       js_OpenJanelaIframe('top.corpo','db_iframe_orctiporec','func_orctiporec.php?funcao_js=parent.js_mostraorctiporec1|o15_codigo|o15_descr','Pesquisa',true);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orctiporec','func_orctiporec.php?funcao_js=parent.js_mostraorctiporec1|o15_codigo|o15_descr','Pesquisa',true);
    }else{
        if(document.form1.c62_codrec.value != ''){ 
-           js_OpenJanelaIframe('top.corpo','db_iframe_orctiporec','func_orctiporec.php?pesquisa_chave='+document.form1.c62_codrec.value+'&funcao_js=parent.js_mostraorctiporec','Pesquisa',false);
+           js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orctiporec','func_orctiporec.php?pesquisa_chave='+document.form1.c62_codrec.value+'&funcao_js=parent.js_mostraorctiporec','Pesquisa',false);
        }else{
            document.form1.o15_descr.value = ''; 
        }
@@ -108,8 +108,8 @@ function js_mostraorctiporec1(chave1,chave2){
     db_iframe_orctiporec.hide();
 }
 function js_pesquisa(){
- js_OpenJanelaIframe('top.corpo','db_iframe_conplanoexe','func_conplanogeral.php?funcao_js=parent.js_preenchepesquisa|c61_reduz','Pesquisa',true);
- //  js_OpenJanelaIframe('top.corpo','db_iframe_conplanoexe','func_conplanoexe.php?funcao_js=parent.js_preenchepesquisa|c61_reduz','Pesquisa',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conplanoexe','func_conplanogeral.php?funcao_js=parent.js_preenchepesquisa|c61_reduz','Pesquisa',true);
+ //  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conplanoexe','func_conplanoexe.php?funcao_js=parent.js_preenchepesquisa|c61_reduz','Pesquisa',true);
 
 }
 function js_preenchepesquisa(chave){

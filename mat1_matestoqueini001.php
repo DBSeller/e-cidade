@@ -1,56 +1,56 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_matestoque_classe.php");
-require_once("classes/db_matestoqueitem_classe.php");
-require_once("classes/db_matestoqueini_classe.php");
-require_once("classes/db_matestoqueinimei_classe.php");
-require_once("classes/db_db_depart_classe.php");
-require_once("classes/db_transmater_classe.php");
-require_once("classes/db_empempitem_classe.php");
-require_once("classes/db_empparametro_classe.php");
-require_once("classes/db_matestoqueitemnotafiscalmanual_classe.php");
-require_once("classes/materialestoque.model.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_matestoque_classe.php"));
+require_once(modification("classes/db_matestoqueitem_classe.php"));
+require_once(modification("classes/db_matestoqueini_classe.php"));
+require_once(modification("classes/db_matestoqueinimei_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
+require_once(modification("classes/db_transmater_classe.php"));
+require_once(modification("classes/db_empempitem_classe.php"));
+require_once(modification("classes/db_empparametro_classe.php"));
+require_once(modification("classes/db_matestoqueitemnotafiscalmanual_classe.php"));
+require_once(modification("classes/materialestoque.model.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
-require_once("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteBase.model.php");
-require_once("model/financeiro/ContaBancaria.model.php");
-require_once("model/contabilidade/planoconta/ContaPlano.model.php");
-require_once("model/contabilidade/planoconta/ClassificacaoConta.model.php");
-require_once("model/contabilidade/planoconta/ContaCorrente.model.php");
-require_once("model/contabilidade/planoconta/ContaOrcamento.model.php");
-require_once("model/contabilidade/planoconta/ContaPlanoPCASP.model.php");
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteBase.model.php"));
+require_once(modification("model/financeiro/ContaBancaria.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlano.model.php"));
+require_once(modification("model/contabilidade/planoconta/ClassificacaoConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaCorrente.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaOrcamento.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlanoPCASP.model.php"));
 
 db_app::import("exceptions.*");
 db_app::import("contabilidade.*");
@@ -108,17 +108,27 @@ if (isset($incluir)) {
 			$sqlerro = true;
 			$erro_msg = "Valores zerados!";
 		} else {
-			$sqlerro = false;
-			db_inicio_transacao();
-			$result_matestoque = $clmatestoque->sql_record($clmatestoque->sql_query_file(null,"m70_codigo,m70_quant,m70_valor","","m70_codmatmater=$m60_codmater and m70_coddepto=$coddepto"));
-			if($clmatestoque->numrows>0){
-				db_fieldsmemory($result_matestoque,0);
-				$quant = 0;
-				$valor = 0;
-				$quant = $m70_quant+$m71_quant;
-				if ($quant > 0){
-					$valor = $m70_valor+$m71_valor;
-				}
+            $sqlerro = false;
+            db_inicio_transacao();
+            $daoDeposito = new cl_db_almox();
+            $sqlDeposito = $daoDeposito->sql_query_file($m91_codigo);
+            $rsDeposito = db_query($sqlDeposito);
+            if (!$rsDeposito) {
+                $sqlerro = true;
+                $erro_msg = "Erro ao buscar depósito {$m91_codigo}.";
+            }
+
+            $coddepto = pg_fetch_array($rsDeposito)['m91_depto'];
+
+            $result_matestoque = $clmatestoque->sql_record($clmatestoque->sql_query_file(null, "m70_codigo,m70_quant,m70_valor", "", "m70_codmatmater=$m60_codmater and m70_coddepto=$coddepto"));
+            if ($clmatestoque->numrows > 0) {
+                db_fieldsmemory($result_matestoque, 0);
+                $quant = 0;
+                $valor = 0;
+                $quant = $m70_quant + $m71_quant;
+                if ($quant > 0) {
+                    $valor = $m70_valor + $m71_valor;
+                }
 				$clmatestoque->m70_valor = "$valor";
 				$clmatestoque->m70_quant = "$quant";
 				$clmatestoque->m70_codigo= $m70_codigo;
@@ -233,7 +243,7 @@ if (isset($incluir)) {
 			if ($sqlerro==false){
 				$passou=true;
 			}
-      
+
       if ($sqlerro == false) {
 
         $oDataImplantacao = new DBDate(date("Y-m-d", db_getsession('DB_datausu')));
@@ -271,6 +281,13 @@ if (isset($incluir)) {
 
             $sqlerro  = true;
             $erro_msg = ($eErro->getMessage());
+            /**
+             * Erro Originado por conta corrente:
+             */
+            if ($eErro->getCode() == '1010') {
+
+              $erro_msg .= "\nDicas: Verifique o cadastro das contas do grupo do material.";
+            }
 
           } catch (Exception $eErro) {
 
@@ -280,7 +297,7 @@ if (isset($incluir)) {
 
         }
       }
-       
+
 			db_fim_transacao($sqlerro);
 			//exit;
 		}
@@ -296,25 +313,27 @@ if (!isset($coddepto)||$coddepto==""){
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/fontawesome/css/all.min.css">
+    <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="document.form1.m60_codmater.focus();" >
+<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"
+      onLoad="document.form1.m60_codmater.focus();">
 <table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-<tr>
-<td width="360" height="18">&nbsp;</td>
-<td width="263">&nbsp;</td>
-<td width="25">&nbsp;</td>
-<td width="140">&nbsp;</td>
-</tr>
+    <tr>
+        <td width="360" height="18">&nbsp;</td>
+        <td width="263">&nbsp;</td>
+        <td width="25">&nbsp;</td>
+        <td width="140">&nbsp;</td>
+    </tr>
 </table>
 <center>
 <?
-  include("forms/db_frmmatestoqueini.php");
+  include(modification("forms/db_frmmatestoqueini.php"));
 ?>
 </center>
 <?

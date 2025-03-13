@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,88 +25,111 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_iptucadtaxaexe_classe.php");
-include("classes/db_iptucadtaxa_classe.php");
-include("dbforms/db_funcoes.php");
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_iptucadtaxaexe_classe.php"));
+require_once(modification("classes/db_iptucadtaxa_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+parse_str($_SERVER["QUERY_STRING"]);
+db_postmemory($_POST);
 $cliptucadtaxaexe = new cl_iptucadtaxaexe;
 $cliptucadtaxa = new cl_iptucadtaxa;
 $db_opcao = 22;
 $db_botao = false;
-if(isset($alterar) || isset($excluir) || isset($incluir)){
-  $sqlerro = false;
+
+if (isset($alterar) || isset($excluir) || isset($incluir)) {
+    $sqlerro = false;
 }
-if(isset($incluir)){
-  if($sqlerro==false){
-    db_inicio_transacao();
-    $cliptucadtaxaexe->incluir($j08_iptucadtaxaexe);
-    $erro_msg = $cliptucadtaxaexe->erro_msg;
-    if($cliptucadtaxaexe->erro_status==0){
-      $sqlerro=true;
+
+if (isset($incluir)) {
+
+    if ($sqlerro == false) {
+
+        db_inicio_transacao();
+        $cliptucadtaxaexe->incluir($j08_iptucadtaxaexe);
+        $erro_msg = $cliptucadtaxaexe->erro_msg;
+
+        if ($cliptucadtaxaexe->erro_status == 0) {
+            $sqlerro = true;
+        }
+
+        db_fim_transacao($sqlerro);
     }
-    db_fim_transacao($sqlerro);
-  }
-}else if(isset($alterar)){
-  if($sqlerro==false){
-    db_inicio_transacao();
-    $cliptucadtaxaexe->alterar($j08_iptucadtaxaexe);
-    $erro_msg = $cliptucadtaxaexe->erro_msg;
-    if($cliptucadtaxaexe->erro_status==0){
-      $sqlerro=true;
+} else {
+    if (isset($alterar)) {
+
+        if ($sqlerro == false) {
+
+            db_inicio_transacao();
+
+            $cliptucadtaxaexe->alterar($j08_iptucadtaxaexe);
+            $erro_msg = $cliptucadtaxaexe->erro_msg;
+
+            if ($cliptucadtaxaexe->erro_status == 0) {
+                $sqlerro = true;
+            }
+
+            db_fim_transacao($sqlerro);
+        }
+
+    } else {
+        if (isset($excluir)) {
+
+            if ($sqlerro == false) {
+
+                db_inicio_transacao();
+                $cliptucadtaxaexe->excluir($j08_iptucadtaxaexe);
+                $erro_msg = $cliptucadtaxaexe->erro_msg;
+
+                if ($cliptucadtaxaexe->erro_status == 0) {
+                    $sqlerro = true;
+                }
+
+                db_fim_transacao($sqlerro);
+            }
+
+        } else {
+            if (isset($opcao)) {
+
+                $sql = $cliptucadtaxaexe->sql_vinculos($j08_iptucadtaxaexe);
+                $result = $cliptucadtaxaexe->sql_record($sql);
+
+                if ($result != false && $cliptucadtaxaexe->numrows > 0) {
+                    db_fieldsmemory($result, 0);
+                }
+            }
+        }
     }
-    db_fim_transacao($sqlerro);
-  }
-}else if(isset($excluir)){
-  if($sqlerro==false){
-    db_inicio_transacao();
-    $cliptucadtaxaexe->excluir($j08_iptucadtaxaexe);
-    $erro_msg = $cliptucadtaxaexe->erro_msg;
-    if($cliptucadtaxaexe->erro_status==0){
-      $sqlerro=true;
-    }
-    db_fim_transacao($sqlerro);
-  }
-}else if(isset($opcao)){
-//   echo ($cliptucadtaxaexe->sql_query($j08_iptucadtaxaexe));
-   $result = $cliptucadtaxaexe->sql_record($cliptucadtaxaexe->sql_query($j08_iptucadtaxaexe));
-   if($result!=false && $cliptucadtaxaexe->numrows>0){
-     db_fieldsmemory($result,0);
-   }
 }
 ?>
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+    <head>
+        <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Expires" CONTENT="0">
+        <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/widgets/DBLookUp.widget.js"></script>
+        <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmiptucadtaxaexe.php");
-	?>
-    </center>
-	</td>
-  </tr>
-</table>
+<body class="body-default" onLoad="a=1">
+    <?php
+    include(modification("forms/db_frmiptucadtaxaexe.php"));
+    ?>
 </body>
 </html>
-<?
-if(isset($alterar) || isset($excluir) || isset($incluir)){
+<?php
+if (isset($alterar) || isset($excluir) || isset($incluir)) {
+
     db_msgbox($erro_msg);
-    if($cliptucadtaxaexe->erro_campo!=""){
-        echo "<script> document.form1.".$cliptucadtaxaexe->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-        echo "<script> document.form1.".$cliptucadtaxaexe->erro_campo.".focus();</script>";
+
+    if ($cliptucadtaxaexe->erro_campo != "") {
+        echo "<script> document.form1." . $cliptucadtaxaexe->erro_campo . ".style.backgroundColor='#99A9AE';</script>";
+        echo "<script> document.form1." . $cliptucadtaxaexe->erro_campo . ".focus();</script>";
     }
 }
 ?>

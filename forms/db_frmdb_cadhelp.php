@@ -108,9 +108,9 @@ db_textarea('dhelp',15,110,$Idhelp,true,'text',$db_opcao,"")
 <script>
 function js_pesquisaid_codtipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_tipohelp','func_db_tipohelp.php?funcao_js=parent.js_mostradb_tipohelp1|id_codtipo|descrtipohelp','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_tipohelp','func_db_tipohelp.php?funcao_js=parent.js_mostradb_tipohelp1|id_codtipo|descrtipohelp','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_tipohelp','func_db_tipohelp.php?pesquisa_chave='+document.form1.id_codtipo.value+'&funcao_js=parent.js_mostradb_tipohelp','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_tipohelp','func_db_tipohelp.php?pesquisa_chave='+document.form1.id_codtipo.value+'&funcao_js=parent.js_mostradb_tipohelp','Pesquisa',false);
   }
 }
 function js_mostradb_tipohelp(chave,erro){
@@ -144,7 +144,7 @@ function js_linca_procedimento(chave){
 
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_cadhelp','func_db_cadhelp.php?funcao_js=parent.js_preenchepesquisa|id_help','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_cadhelp','func_db_cadhelp.php?funcao_js=parent.js_preenchepesquisa|id_help','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_cadhelp.hide();
@@ -155,13 +155,13 @@ function js_preenchepesquisa(chave){
   ?>
 }
 function js_pesquisaid_item(chave){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_cadhelp','con1_caditens002.php','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_cadhelp','con1_caditens002.php','Pesquisa',true);
 }
 
 function js_pesquisaitemcad(item,modulo){
   db_iframe_db_cadhelp.hide();
   document.form1.id_item.value = item;
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_cadhelp','func_db_itensmenu.php?pesquisa_chave='+item+'&funcao_js=parent.js_mostradb_iditem','Pesquisa',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_cadhelp','func_db_itensmenu.php?pesquisa_chave='+item+'&funcao_js=parent.js_mostradb_iditem','Pesquisa',false);
 }
 function js_mostradb_iditem(chave,erro){
   document.form1.descricao.value = chave;

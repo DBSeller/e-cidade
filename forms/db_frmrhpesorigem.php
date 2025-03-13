@@ -58,7 +58,7 @@ db_input('rh21_regpri',6,$Irh21_regpri,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpesorigem','func_rhpesorigem.php?funcao_js=parent.js_preenchepesquisa|rh21_regist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpesorigem','func_rhpesorigem.php?funcao_js=parent.js_preenchepesquisa|rh21_regist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpesorigem.hide();

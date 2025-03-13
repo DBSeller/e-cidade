@@ -1,0 +1,14 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="cp03_sigla"   label="codigo"   />
+    <campo campo="cp03_estado"    label="descricao"   />
+  </campos>
+  <from tabela="cepestados" />
+  <juncoes>
+  </juncoes>
+  <filtros>
+  </filtros>
+  <agrupamento campos="" />
+  <ordenacao   campos="descricao" />
+</consulta>

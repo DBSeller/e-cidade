@@ -82,10 +82,10 @@ db_input('pc11_numero',10,$Ipc11_numero,true,'text',3,'')
 <script>
 function js_pesquisapc17_unid(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matunid','func_matunid.php?funcao_js=parent.js_mostramatunid1|m61_codmatunid|m61_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matunid','func_matunid.php?funcao_js=parent.js_mostramatunid1|m61_codmatunid|m61_descr','Pesquisa',true);
   }else{
      if(document.form1.pc17_unid.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matunid','func_matunid.php?pesquisa_chave='+document.form1.pc17_unid.value+'&funcao_js=parent.js_mostramatunid','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matunid','func_matunid.php?pesquisa_chave='+document.form1.pc17_unid.value+'&funcao_js=parent.js_mostramatunid','Pesquisa',false);
      }else{
        document.form1.m61_descr.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostramatunid1(chave1,chave2){
 }
 function js_pesquisapc17_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_solicitem','func_solicitem.php?funcao_js=parent.js_mostrasolicitem1|pc11_codigo|pc11_numero','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicitem','func_solicitem.php?funcao_js=parent.js_mostrasolicitem1|pc11_codigo|pc11_numero','Pesquisa',true);
   }else{
      if(document.form1.pc17_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_solicitem','func_solicitem.php?pesquisa_chave='+document.form1.pc17_codigo.value+'&funcao_js=parent.js_mostrasolicitem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicitem','func_solicitem.php?pesquisa_chave='+document.form1.pc17_codigo.value+'&funcao_js=parent.js_mostrasolicitem','Pesquisa',false);
      }else{
        document.form1.pc11_numero.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostrasolicitem1(chave1,chave2){
   db_iframe_solicitem.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_solicitemunid','func_solicitemunid.php?funcao_js=parent.js_preenchepesquisa|pc17_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicitemunid','func_solicitemunid.php?funcao_js=parent.js_preenchepesquisa|pc17_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_solicitemunid.hide();

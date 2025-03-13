@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-require("libs/db_app.utils.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+require(modification("libs/db_app.utils.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_app::load("estilos.css");
 
@@ -185,7 +185,7 @@ $sSQL = "select m60_codmater,
 
 //echo $sSQL;
 //exit;
-$rs= pg_query($sSQL);
+$rs= db_query($sSQL);
 $iLinhas = pg_num_rows($rs);
 
 if($iLinhas == 0)

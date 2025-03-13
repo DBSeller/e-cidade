@@ -1,297 +1,450 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once('classes/db_db_cadattdinamicoatributosvalor_classe.php');
-require_once('classes/db_db_cadattdinamicovalorgrupo_classe.php');
+require_once(modification('classes/db_db_cadattdinamicoatributosvalor_classe.php'));
+require_once(modification('classes/db_db_cadattdinamicovalorgrupo_classe.php'));
 
-require_once('model/DBAttDinamico.model.php');
-require_once('model/DBAttDinamicoAtributo.model.php');
+require_once(modification('model/DBAttDinamico.model.php'));
+require_once(modification('model/DBAttDinamicoAtributo.model.php'));
 
-$oJson    = new services_json();
-$oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
+$oJson = \JSON::create();
+$oParam = $oJson->parse(str_replace("\\", "", $_POST["json"]), \JSON::UTF8_DECODE);
 
 $oRetorno = new stdClass();
 $oRetorno->iStatus = 1;
-$oRetorno->sMsg    = '';
+$oRetorno->sMsg = '';
+$oRetorno->erro = false;
+$oRetorno->iGrupoAtt = null;
 
 try {
-	
-  /**
-   * 
-   * Consulta todos atributos cadastrados a partir do código agrupador de atributos
-   *  
-   */
-  if ( $oParam->sMethod == 'consultarAtributos' ) {
 
-    $oDBAttDinamico = new DBAttDinamico($oParam->iGrupoAtt);
-    
-    $oRetorno->iGrupoAtt  = $oDBAttDinamico->getCodigo();
-    $oRetorno->sTitulo    = $oDBAttDinamico->getDescricao();
-    $oRetorno->aAtributos = array();
-    
-    foreach ($oDBAttDinamico->getAtributos() as $oAtributo ) {
-      
-      if ($oAtributo->getCampo()) {
-        $oAtributo->iCodCampo   = $oAtributo->getCampo()->iCodigo; 
-        $oAtributo->sDescrCampo = urlencode($oAtributo->getCampo()->sDescricao);
-      } else {
-        $oAtributo->iCodCampo   = ''; 
-        $oAtributo->sDescrCampo = '';        
-      }      
-      
-      $oRetorno->aAtributos[] = $oAtributo;
+    switch ($oParam->sMethod) {
+
+        /**
+         * Consulta todos atributos cadastrados a partir do código agrupador de atributos
+         */
+        case "consultarAtributos":
+
+            if (!empty($oParam->iCodigoArquivo)) {
+                $oParam->iGrupoAtt = DBAttDinamico::getCodigoPorArquivo((int)$oParam->iCodigoArquivo);
+            }
+
+            $oDBAttDinamico = new DBAttDinamico($oParam->iGrupoAtt);
+
+            $oRetorno->iGrupoAtt = $oDBAttDinamico->getCodigo();
+            $oRetorno->sTitulo = urlencode($oDBAttDinamico->getDescricao());
+            $oRetorno->aAtributos = array();
+
+            foreach ($oDBAttDinamico->getAtributos() as $oAtributo) {
+
+                $oStdAtributo = new stdClass;
+                $oStdAtributo->oOpcoes = array();
+
+                if ($oAtributo->getCampo()) {
+
+                    $oStdAtributo->iCodCampo = $oAtributo->getCampo()->iCodigo;
+                    $oStdAtributo->sDescrCampo = $oAtributo->getCampo()->sDescricao;
+                } else {
+
+                    $oStdAtributo->iCodCampo = '';
+                    $oStdAtributo->sDescrCampo = '';
+                }
+
+                $oStdAtributo->iCodigo = $oAtributo->getCodigo();
+                $oStdAtributo->iTipo = $oAtributo->getTipo();
+                $oStdAtributo->sNome = $oAtributo->getNome();
+                $oStdAtributo->sDescricao = $oAtributo->getDescricao();
+                $oStdAtributo->oCampoReferencia = $oAtributo->getCampo();
+                $oStdAtributo->lObrigatorio = $oAtributo->isObrigatorio();
+                $oStdAtributo->sValorDefault = $oAtributo->getValorDefault();
+                $oStdAtributo->lAtivo = $oAtributo->ativo();
+                $oStdAtributo->lFixo = $oAtributo->isFixo();
+                $oStdAtributo->formula = $oAtributo->getFormula();
+
+                $aOpcoes = $oAtributo->getOpcoes();
+                if ($oAtributo->getNome() == 'codigofundamentacao') {
+                    usort($aOpcoes,
+                      function (DBAttDinamicoAtributoOpcao $oOpcao1, DBAttDinamicoAtributoOpcao $oOpcao2) {
+                          return strnatcmp($oOpcao1->getOpcao(), $oOpcao2->getOpcao());
+                      });
+                }
+                foreach ($aOpcoes as $oOpcao) {
+                    $oStdAtributo->oOpcoes[$oOpcao->getOpcao()] = urlencode($oOpcao->getValor());
+                }
+
+                $oRetorno->aAtributos[] = $oStdAtributo;
+            }
+
+            $_SESSION['oDBAttDinamico'] = serialize($oDBAttDinamico);
+
+            break;
+
+        /**
+         * Salva as informações do objeto em sessão na base de dados
+         */
+        case "confirmar":
+
+            if (isset($_SESSION['oDBAttDinamico'])) {
+                $oDBAttDinamico = unserialize($_SESSION['oDBAttDinamico']);
+            } else {
+                $oDBAttDinamico = new DBAttDinamico($oParam->iGrupoAtt);
+            }
+
+            if ($oDBAttDinamico->getDescricao() == '') {
+                $oDBAttDinamico->setDescricao('Grupo de Atributos Dinâmicos');
+            }
+            db_inicio_transacao();
+
+            $oDBAttDinamico->salvar();
+
+            $oRetorno->iGrupoAtt = $oDBAttDinamico->getCodigo();
+
+            db_fim_transacao(false);
+
+            break;
+
+        /**
+         * Adiciona ou altera os atributos do objeto em sessão
+         */
+        case "salvarAtributo":
+
+            if (isset($_SESSION['oDBAttDinamico'])) {
+                $oDBAttDinamico = unserialize($_SESSION['oDBAttDinamico']);
+            } else {
+
+                $oDBAttDinamico = new DBAttDinamico($oParam->iGrupoAtt);
+                $oDBAttDinamico->setDescricao($oParam->sTitulo);
+            }
+
+            $oDBAttDinamicoAtributo = new DBAttDinamicoAtributo();
+            $oDBAttDinamicoAtributo->setCodigo($oParam->iCodigo);
+            $oDBAttDinamicoAtributo->setDescricao($oParam->sDescricao);
+            $oDBAttDinamicoAtributo->setCampo($oParam->iCampo);
+            $oDBAttDinamicoAtributo->setGrupoAtributo($oParam->iGrupoAtt);
+            $oDBAttDinamicoAtributo->setTipo($oParam->iTipo);
+            $oDBAttDinamicoAtributo->setValorDefault($oParam->sValorDefault);
+            $oDBAttDinamicoAtributo->setObrigatorio($oParam->lObrigatorio);
+            $oDBAttDinamicoAtributo->setAtivo($oParam->lAtivo);
+
+            if (isset($oParam->iIndAtributo) && trim($oParam->iIndAtributo) != '') {
+
+                if (!empty($oParam->iCodigo)) {
+                    $oParam->iIndAtributo = $oParam->iCodigo;
+                }
+                $oDBAttDinamico->alterarAtributo($oParam->iIndAtributo, $oDBAttDinamicoAtributo);
+            } else {
+                $oDBAttDinamico->adicionarAtributo($oDBAttDinamicoAtributo);
+            }
+
+            $oRetorno->aAtributos = array();
+
+            foreach ($oDBAttDinamico->getAtributos() as $oAtributo) {
+
+                $oStdAtributo = new stdClass;
+
+                if ($oAtributo->getCampo()) {
+                    $oStdAtributo->iCodCampo = $oAtributo->getCampo()->iCodigo;
+                    $oStdAtributo->sDescrCampo = urlencode($oAtributo->getCampo()->sDescricao);
+                } else {
+                    $oStdAtributo->iCodCampo = '';
+                    $oStdAtributo->sDescrCampo = '';
+                }
+
+                $oStdAtributo->iCodigo = $oAtributo->getCodigo();
+                $oStdAtributo->iTipo = $oAtributo->getTipo();
+                $oStdAtributo->sNome = $oAtributo->getNome();
+                $oStdAtributo->sDescricao = urlencode($oAtributo->getDescricao());
+                $oStdAtributo->oCampoReferencia = $oAtributo->getCampo();
+                $oStdAtributo->lObrigatorio = $oAtributo->isObrigatorio();
+                $oStdAtributo->lAtivo = $oAtributo->ativo();
+                $oStdAtributo->sValorDefault = urlencode($oAtributo->getValorDefault());
+                $oStdAtributo->lFixo = $oAtributo->isFixo();
+                $oRetorno->aAtributos[] = $oStdAtributo;
+            }
+
+            $_SESSION['oDBAttDinamico'] = serialize($oDBAttDinamico);
+
+            break;
+
+        /**
+         * Remove os atributos do objeto em sessão
+         */
+        case "removerAtributo":
+
+            $oDBAttDinamico = unserialize($_SESSION['oDBAttDinamico']);
+
+            db_inicio_transacao();
+
+            try {
+
+                $oRetorno->aAtributos = array();
+
+                foreach ($oDBAttDinamico->getAtributos() as $oAtributo) {
+
+                    if ($oAtributo->getCodigo() == $oParam->iIndAtributo) {
+
+                        $oAtributo->excluir();
+
+                    } else {
+
+                        $oStdAtributo = new stdClass;
+
+                        if ($oAtributo->getCampo()) {
+
+                            $oStdAtributo->iCodCampo = $oAtributo->getCampo()->iCodigo;
+                            $oStdAtributo->sDescrCampo = urlencode($oAtributo->getCampo()->sDescricao);
+                        } else {
+
+                            $oStdAtributo->iCodCampo = '';
+                            $oStdAtributo->sDescrCampo = '';
+                        }
+
+                        $oStdAtributo->iCodigo = $oAtributo->getCodigo();
+                        $oStdAtributo->iTipo = $oAtributo->getTipo();
+                        $oStdAtributo->sNome = $oAtributo->getNome();
+                        $oStdAtributo->sDescricao = urlencode($oAtributo->getDescricao());
+                        $oStdAtributo->oCampoReferencia = $oAtributo->getCampo();
+                        $oStdAtributo->lObrigatorio = $oAtributo->isObrigatorio();
+                        $oStdAtributo->lAtivo = $oAtributo->ativo();
+                        $oStdAtributo->sValorDefault = urlencode($oAtributo->getValorDefault());
+                        $oStdAtributo->lFixo = $oAtributo->isFixo();
+
+                        $oRetorno->aAtributos[] = $oStdAtributo;
+                    }
+                }
+
+                $oDBAttDinamico->removerAtributo($oParam->iIndAtributo);
+
+                db_fim_transacao(false);
+
+            } catch (Exception $e) {
+
+                $_SESSION['oDBAttDinamico'] = serialize($oDBAttDinamico);
+
+                db_fim_transacao(true);
+                throw new Exception($e->getMessage());
+            }
+
+            $_SESSION['oDBAttDinamico'] = serialize($oDBAttDinamico);
+
+            break;
+
+        /**
+         * Salva os valores informados na tela
+         */
+        case "salvarValorAtributo":
+
+            $clCadAttValor = new cl_db_cadattdinamicoatributosvalor();
+            $clCadAttValorGrupo = new cl_db_cadattdinamicovalorgrupo();
+
+            $iGrupoAtributos = $oParam->iGrupoAtributos;
+
+            db_inicio_transacao();
+
+            /**
+             * Caso não exista valor para o agrupador de registros então gerado um novo
+             */
+            if ($oParam->iGrupoValor == null) {
+
+                $clCadAttValorGrupo->db120_sequencial = $oParam->iGrupoValor;
+                $clCadAttValorGrupo->incluir($oParam->iGrupoValor);
+
+                $iGrupoValor = $clCadAttValorGrupo->db120_sequencial;
+            } else {
+                $iGrupoValor = $oParam->iGrupoValor;
+            }
+
+            $oRetorno->iGrupoValor = $iGrupoValor;
+
+            /**
+             * Exclui todos os valores já lançados para o agrupador de valor informado
+             */
+            $clCadAttValor->excluir(null, " db110_cadattdinamicovalorgrupo = {$iGrupoValor} ");
+
+            if ($clCadAttValor->erro_status == 0) {
+                throw new Exception($clCadAttValor->erro_msg);
+            }
+
+            /**
+             * Inclui na base de dados todos os valores informados na tela
+             */
+            foreach ($oParam->aAtributos as $oAtributo) {
+
+                $clCadAttValor->db110_cadattdinamicovalorgrupo = $iGrupoValor;
+                $clCadAttValor->db110_db_cadattdinamicoatributos = $oAtributo->iCodigoAtributo;
+                $clCadAttValor->db110_valor = $oAtributo->sValor;
+
+                $clCadAttValor->incluir(null);
+
+                if ($clCadAttValor->erro_status == 0) {
+                    throw new Exception($clCadAttValor->erro_msg);
+                }
+            }
+
+            db_fim_transacao(false);
+            break;
+
+        /**
+         *  Consulta os valores lançados a partir de um agrupador de valores lançados
+         */
+        case "consultaAtributosValor":
+
+            if (empty($oParam->iGrupoValor)) {
+                throw new ParameterException('O grupo de valores não foi informado.');
+            }
+
+            $oRetorno->aValoresAtributos = array();
+            $oRetorno->aAtributos = array();
+
+            $clCadAttValorGrupo = new cl_db_cadattdinamicovalorgrupo();
+
+            $rsDadosAtributosValor = $clCadAttValorGrupo->sql_record($clCadAttValorGrupo->sql_query($oParam->iGrupoValor));
+
+            if ($clCadAttValorGrupo->numrows > 0) {
+
+                $oRetorno->aValoresAtributos = db_utils::getCollectionByRecord($rsDadosAtributosValor, false, false,
+                  true);
+
+                $iGrupoAtributos = $oRetorno->aValoresAtributos[0]->db109_db_cadattdinamico;
+
+                $oDBAttDinamico = new DBAttDinamico($iGrupoAtributos);
+
+                foreach ($oDBAttDinamico->getAtributos() as $oAtributo) {
+
+                    $oStdAtributo = new stdClass;
+
+                    $oStdAtributo->iCodigo = $oAtributo->getCodigo();
+                    $oStdAtributo->iTipo = $oAtributo->getTipo();
+                    $oStdAtributo->sNome = $oAtributo->getNome();
+                    $oStdAtributo->sDescricao = urlencode($oAtributo->getDescricao());
+                    $oStdAtributo->oCampoReferencia = $oAtributo->getCampo();
+                    $oStdAtributo->lObrigatorio = $oAtributo->isObrigatorio();
+                    $oStdAtributo->sValorDefault = urlencode($oAtributo->getValorDefault());
+
+                    $aOpcoes = $oAtributo->getOpcoes();
+                    if ($oAtributo->getNome() == 'codigofundamentacao') {
+                        usort($aOpcoes,
+                          function (DBAttDinamicoAtributoOpcao $oOpcao1, DBAttDinamicoAtributoOpcao $oOpcao2) {
+                              return strnatcmp($oOpcao1->getOpcao(), $oOpcao2->getOpcao());
+                          });
+                    }
+                    foreach ($aOpcoes as $oOpcao) {
+                        $oStdAtributo->oOpcoes[$oOpcao->getOpcao()] = urlencode($oOpcao->getValor());
+                    }
+
+                    $oRetorno->aAtributos[] = $oStdAtributo;
+                }
+
+            } else {
+                throw new Exception('Nenhum valor encontrado para os atributos informados!');
+            }
+            break;
+
+
+        case "getTiposAtributos":
+
+            $tiposAtributos = array(
+              (object)array('codigo' => 1, 'nome' => 'Texto'),
+              (object)array('codigo' => 2, 'nome' => 'Número sem casas decimais'),
+              (object)array('codigo' => 3, 'nome' => 'Data'),
+              (object)array('codigo' => 4, 'nome' => 'Número com casas decimais'),
+              (object)array('codigo' => 5, 'nome' => 'Verdadeiro / Falso'),
+              (object)array('codigo' => 6, 'nome' => 'Combo')
+            );
+            $usuarioSistema = UsuarioSistemaRepository::getPorCodigo(db_getsession('DB_id_usuario'));
+            if ($usuarioSistema->isAdministrador()) {
+                $tiposAtributos[] = (object)array('codigo' => 7, 'nome' => 'Hidden');
+            }
+            $oRetorno->tipoAtributos = $tiposAtributos;
+
+            break;
+
+        case "finalizarSessao":
+
+            unset($_SESSION['oDBAttDinamico']);
+            break;
+
+        case "executarFormula":
+
+            $nome = str_replace(" ", "_", $oParam->nome);
+            $nome = strtoupper($nome);
+
+            $formula = new DBFormulaCGM(new CgmFisico());
+            $formula->adicionar($nome, $oParam->valor);
+
+            $oParam->formulario = (array) $oParam->formulario;
+
+            foreach ($oParam->formulario as $indice => $elemento) {
+                $indice = str_replace(" ", "_", $indice);
+                $indice = strtoupper($indice);
+
+                $formula->adicionar($indice, $elemento);
+            }
+
+            $daoFormula = new cl_db_formulas();
+            $sql = $daoFormula->sql_query_file($oParam->formula);
+            $rsDaoFormula = $daoFormula->sql_record($sql);
+
+            if (empty($rsDaoFormula)) {
+                throw new DBException("Erro ao consultar dados da fórmula vinculada a este atributo dinâmico.");
+            }
+
+            $dadosFormula = db_utils::fieldsMemory($rsDaoFormula, 0);
+
+            $sqlFormula = $formula->parse("select * from [{$dadosFormula->db148_nome}] as retorno");
+            $rsFormula = db_query($sqlFormula);
+
+            if (empty($rsFormula)) {
+                throw new DBException("Erro ao executar a fórmula vinculada a este atributo.");
+            }
+
+            $resultado = db_utils::fieldsMemory($rsFormula, 0);
+            $resultado->mensagem = urlencode($resultado->mensagem);
+            $oRetorno->resultado = $resultado;
+
+            break;
     }
-    
-    $_SESSION['oDBAttDinamico'] = serialize($oDBAttDinamico);
 
-    
-  /**
-   * 
-   * Salva as informações do objeto em sessão na base de dados 
-   * 
-   */            
-  } else if ( $oParam->sMethod == 'confirmar' ) {
-
-    if (isset($_SESSION['oDBAttDinamico'])) {
-      
-      $oDBAttDinamico = unserialize($_SESSION['oDBAttDinamico']);
-    } else {
-      
-      $oDBAttDinamico = new DBAttDinamico($oParam->iGrupoAtt);
-    }    
-    
-    db_inicio_transacao();
-    
-    $oDBAttDinamico->salvar();
-    
-    $oRetorno->iGrupoAtt = $oDBAttDinamico->getCodigo();
-    
-    db_fim_transacao(false);
-    
-    
-  /**
-   * 
-   * Adiciona ou altera os atributos do objeto em sessão 
-   * 
-   */        
-  } else if ( $oParam->sMethod == 'salvarAtributo' ) {
-    
-    
-    if (isset($_SESSION['oDBAttDinamico'])) {
-      
-      $oDBAttDinamico = unserialize($_SESSION['oDBAttDinamico']);
-    } else {
-      
-      $oDBAttDinamico = new DBAttDinamico($oParam->iGrupoAtt);
-      $oDBAttDinamico->setDescricao($oParam->sTitulo);
-    }
-
-    $oDBAttDinamicoAtributo = new DBAttDinamicoAtributo();
-    $oDBAttDinamicoAtributo->setCodigo       ($oParam->iCodigo);
-    $oDBAttDinamicoAtributo->setDescricao    ($oParam->sDescricao);
-    $oDBAttDinamicoAtributo->setCampo        ($oParam->iCampo);
-    $oDBAttDinamicoAtributo->setGrupoAtributo($oParam->iGrupoAtt);
-    $oDBAttDinamicoAtributo->setTipo         ($oParam->iTipo);
-    $oDBAttDinamicoAtributo->setValorDefault ($oParam->sValorDefault);
-
-    if (isset($oParam->iIndAtributo) && trim($oParam->iIndAtributo) != '') {
-      $oDBAttDinamico->alterarAtributo($oParam->iIndAtributo,$oDBAttDinamicoAtributo);
-    } else {
-      $oDBAttDinamico->adicionarAtributo($oDBAttDinamicoAtributo);
-    }
-    
-    $oRetorno->aAtributos = array();
-    
-    foreach ($oDBAttDinamico->getAtributos() as $oAtributo ) {
-      
-      if ($oAtributo->getCampo()) {
-        $oAtributo->iCodCampo   = $oAtributo->getCampo()->iCodigo; 
-        $oAtributo->sDescrCampo = urlencode($oAtributo->getCampo()->sDescricao);
-      } else {
-        $oAtributo->iCodCampo   = ''; 
-        $oAtributo->sDescrCampo = '';        
-      }
-      
-      $oRetorno->aAtributos[] = $oAtributo;
-    }
-    
-    $_SESSION['oDBAttDinamico'] = serialize($oDBAttDinamico);
-
-    
-  /**
-   * 
-   * Remove os atributos do objeto em sessão 
-   * 
-   */    
-  } else if ( $oParam->sMethod == 'removerAtributo' ) {
-    
-    $oDBAttDinamico = unserialize($_SESSION['oDBAttDinamico']);
-    
-    $oDBAttDinamico->removerAtributo($oParam->iIndAtributo);
-    
-    $oRetorno->aAtributos = array();
-    
-    foreach ($oDBAttDinamico->getAtributos() as $oAtributo ) {
-      
-      if ($oAtributo->getCampo()) {
-        $oAtributo->iCodCampo   = $oAtributo->getCampo()->iCodigo; 
-        $oAtributo->sDescrCampo = urlencode($oAtributo->getCampo()->sDescricao);
-      } else {
-        $oAtributo->iCodCampo   = ''; 
-        $oAtributo->sDescrCampo = '';        
-      }      
-      
-      $oRetorno->aAtributos[] = $oAtributo;
-    }    
-    
-    $_SESSION['oDBAttDinamico'] = serialize($oDBAttDinamico);
-
-    
-    
-  /**
-   * 
-   * Salva os valores informados na tela
-   * 
-   */    
-  } else if ( $oParam->sMethod == 'salvarValorAtributo' ) {
-    
-
-    $clCadAttValor      = new cl_db_cadattdinamicoatributosvalor();    
-    $clCadAttValorGrupo = new cl_db_cadattdinamicovalorgrupo();
-    
-    $iGrupoAtributos    = $oParam->iGrupoAtributos;
-    
-    
-    db_inicio_transacao();
-    
-    /**
-     * Caso não exista valor para o agrupador de registros então gerado um novo 
-     */
-    if ($oParam->iGrupoValor == null) {
-
-      $clCadAttValorGrupo->db120_sequencial = $oParam->iGrupoValor; 
-      $clCadAttValorGrupo->incluir($oParam->iGrupoValor);
-      
-      $iGrupoValor = $clCadAttValorGrupo->db120_sequencial;
-    } else {
-      $iGrupoValor = $oParam->iGrupoValor;
-    }
-    
-    $oRetorno->iGrupoValor = $iGrupoValor;
-    
-    /**
-     * Exclui todos os valores já lançados para o agrupador de valor informado 
-     */    
-    $clCadAttValor->excluir(null," db110_cadattdinamicovalorgrupo = {$iGrupoValor} ");
-    
-    if ($clCadAttValor->erro_status == 0) {
-      throw new Exception($clCadAttValor->erro_msg);
-    }
-
-    
-    /**
-     * Inclui na base de dados todos os valores informados na tela
-     */
-    foreach ($oParam->aAtributos as $oAtributo) {
-      
-      $clCadAttValor->db110_cadattdinamicovalorgrupo   = $iGrupoValor;
-      $clCadAttValor->db110_db_cadattdinamicoatributos = $oAtributo->iCodigoAtributo;
-      $clCadAttValor->db110_valor                      = $oAtributo->sValor;
-      
-      $clCadAttValor->incluir(null);
-      
-      if ($clCadAttValor->erro_status == 0) {
-        throw new Exception($clCadAttValor->erro_msg);
-      }
-    }
-    
-    db_fim_transacao(false);
-    
-  /**
-   * 
-   *  Consulta os valores lançados a partir de um agrupador de valores lançados
-   * 
-   */    
-  } else if ( $oParam->sMethod == 'consultaAtributosValor' ) {
-    
-
-    $oRetorno->aValoresAtributos  = array();
-    $oRetorno->aAtributos         = array();
-    
-    $clCadAttValorGrupo    = new cl_db_cadattdinamicovalorgrupo();
-    
-    $rsDadosAtributosValor = $clCadAttValorGrupo->sql_record($clCadAttValorGrupo->sql_query($oParam->iGrupoValor)); 
-    
-    if ($clCadAttValorGrupo->numrows > 0) {
-          
-      $oRetorno->aValoresAtributos = db_utils::getColectionByRecord($rsDadosAtributosValor,false,false,true);
-      
-      $iGrupoAtributos = $oRetorno->aValoresAtributos[0]->db109_db_cadattdinamico; 
-
-      $oDBAttDinamico = new DBAttDinamico($iGrupoAtributos);
-
-      foreach ($oDBAttDinamico->getAtributos() as $oAtributo) {
-        $oRetorno->aAtributos[] = $oAtributo;
-      }
-      
-    } else {
-      throw new Exception('Nenhum valor encontrado para os atributos informados!');
-    }
-
-    
-  /**
-   * 
-   *  Apaga o objeto em sessão
-   * 
-   */    
-  } else if ( $oParam->sMethod == 'finalizarSessao' ) {
-
-    unset($_SESSION['oDBAttDinamico']);
-    
-  }  
-  
 } catch (Exception $eException) {
 
-	if ( db_utils::inTransaction() ) {
-		db_fim_transacao(true);
-	}
-	
-  $oRetorno->iStatus  = 2;
-  $oRetorno->sMsg     = urlencode(str_replace("\\n","\n",$eException->getMessage()));	
-	
+    if (db_utils::inTransaction()) {
+        db_fim_transacao(true);
+    }
+
+    $oRetorno->iStatus = 2;
+    $oRetorno->erro = true;
+    $oRetorno->sMsg = urlencode(str_replace("\\n", "\n", $eException->getMessage()));
 }
 
-
-echo $oJson->encode($oRetorno);   
-?>
+echo $oJson->stringify($oRetorno);

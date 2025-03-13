@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,7 +30,7 @@
  * Classe com os dados de uma Familia
  * @author Andrio Costa
  * @package social
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.24 $
  */
 class Familia {
   

@@ -1,39 +1,39 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-  
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("classes/db_issbase_classe.php");
-  include("classes/db_isscadsimples_classe.php");
-  include("classes/db_histocorrenciainscr_classe.php");
-  include("classes/db_db_config_classe.php");
-  include("libs/db_utils.php");
+
+  require(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("classes/db_issbase_classe.php"));
+  require_once(modification("classes/db_isscadsimples_classe.php"));
+  require_once(modification("classes/db_histocorrenciainscr_classe.php"));
+  require_once(modification("classes/db_db_config_classe.php"));
+  require_once(modification("libs/db_utils.php"));
 
 ?>
 <html>
@@ -55,16 +55,16 @@
   if ($solicitacao == "Atividades") {
     //echo "Atividades";
 
-	  $sql = " select q07_ativ as dl_Cod, q03_descr, q03_atmemo, q12_descr as dl_Classe, rh70_estrutural, q71_estrutural, db121_estrutural as dl_Codigo116, q07_datain, q07_datafi, q07_databx, q07_quant as dl_QTD, 
-              case when q88_inscr is null then 'S'::char(1) else 'P'::char(1) end as q88_tipo, 
-              q07_horaini, q07_horafim, 
-              q11_processo as dl_Processo, case when q11_oficio = 'true' then 'NORMAL' when q11_oficio = 'false' then 'OFICIO' else '' end as q11_oficio ";
+	  $sql = " select q07_ativ as dl_Cod, q07_val_ativ_int, q07_imprimealvara as dl_Imprime_Alvará, q03_descr, q03_atmemo, q12_descr as dl_Classe, rh70_estrutural, q71_estrutural, db121_estrutural as dl_Codigo116,
+	           q07_datain, q07_datafi, q07_databx, q07_quant as dl_QTD, case when q88_inscr is null then 'S'::char(1) else 'P'::char(1) end as q88_tipo,
+               q07_horaini, q07_horafim, q11_processo as dl_Processo,
+               case when q11_oficio = 'true' then 'NORMAL' when q11_oficio = 'false' then 'OFICIO' else '' end as q11_oficio ";
 
     if ($oDBConfig->db21_codcli == 19985) {
       $sql .= ", q07_processo, q07_dtprocesso";
     }
 
-    $sql .= "              
+    $sql .= "
 		  	      from tabativ
                    left  join clasativ      on q07_ativ                       = q82_ativ
                    left  join classe        on q82_classe                     = q12_classe
@@ -85,14 +85,14 @@
   } else if ($solicitacao == "Socios") {
      $clissbase = new cl_issbase;
      if ($oDBConfig->db21_codcli == 19985) {
-       $sql = $clissbase->sqlinscricoes_socios($inscricao,0,"cgmsocio.z01_numcgm#cgmsocio.z01_cgccpf,cgmsocio.z01_nome#cgmsocio.z01_ender#cgmsocio.z01_numero#cgmsocio.z01_compl#cgmsocio.z01_bairro#cgmsocio.z01_munic#cgmsocio.z01_uf#q95_perc#q95_datainc");
+       $sql = $clissbase->sqlinscricoes_socios($inscricao,0,"cgmsocio.z01_numcgm#cgmsocio.z01_cgccpf,cgmsocio.z01_nome#cgmsocio.z01_ender#cgmsocio.z01_numero#cgmsocio.z01_compl#cgmsocio.z01_bairro#cgmsocio.z01_munic#cgmsocio.z01_uf#q95_perc#q95_datainc", ' inner ', null);
      } else {
-       $sql = $clissbase->sqlinscricoes_socios($inscricao,0,"cgmsocio.z01_numcgm#cgmsocio.z01_cgccpf,cgmsocio.z01_nome#cgmsocio.z01_ender#cgmsocio.z01_numero#cgmsocio.z01_compl#cgmsocio.z01_bairro#cgmsocio.z01_munic#cgmsocio.z01_uf#q95_perc");
+       $sql = $clissbase->sqlinscricoes_socios($inscricao,0,"cgmsocio.z01_numcgm#cgmsocio.z01_cgccpf,cgmsocio.z01_nome#cgmsocio.z01_ender#cgmsocio.z01_numero#cgmsocio.z01_compl#cgmsocio.z01_bairro#cgmsocio.z01_munic#cgmsocio.z01_uf#q95_perc", ' inner ', null);
      }
 	   $pesquisaLocalizada = true;
   } else if ($solicitacao == "Simples") {
      $clisscadsimples = new cl_isscadsimples;
-     $sql = $clisscadsimples->sql_query_baixa(null,"q38_sequencial, q38_dtinicial, q38_categoria, case when q38_categoria = 1 then 'Micro Empresa' when q38_categoria = 2 then 'Empresa de pequeno porte' when q38_categoria = 3 then 'MEI'end as categoria, q39_dtbaixa, q39_issmotivobaixa, q39_obs",null," q38_inscr = $inscricao");
+     $sql = $clisscadsimples->sql_query_baixa(null,"q38_sequencial, q38_dtinicial, q38_categoria, case when q38_categoria = 1 then 'Micro Empresa' when q38_categoria = 2 then 'Empresa de pequeno porte' when q38_categoria = 3 then 'MEI' when q38_categoria = 4 then 'EIRELI' when q38_categoria = 5 then 'Soc. Profissionais' end as categoria, q39_dtbaixa, q39_issmotivobaixa, q39_obs",null," q38_inscr = $inscricao");
 	   $pesquisaLocalizada = true;
   } else if ($solicitacao == "Calculo###") {
     echo "Calculo ainda não implementado";
@@ -101,19 +101,33 @@
   } else if ($solicitacao == "TiposDeCalculo") {
     //echo "TiposDeCalculo";
    	$sql = "
-          select distinct q81_codigo, q81_abrev,q81_qiexe,q81_qfexe,q81_valexe 
+          select distinct q81_codigo, q81_abrev,q81_qiexe,q81_qfexe,q81_valexe
             from tabativ
-           left  join tabativbaixa on q11_inscr   = q07_inscr 
-                                  and q11_seq     = q07_seq 
+           left  join tabativbaixa on q11_inscr   = q07_inscr
+                                  and q11_seq     = q07_seq
            inner join ativtipo     on q80_ativ    = q07_ativ
            inner join tipcalc      on q80_tipcal  = q81_codigo
            inner join cadcalc      on q81_cadcalc = q85_codigo
-          where (q11_inscr is null and q11_seq is null) and q07_inscr = $inscricao ";
+	  where (q11_inscr is null and q11_seq is null) and 
+                q07_inscr = $inscricao
+
+         union all
+
+         select distinct q81_codigo, q81_abrev,q81_qiexe,q81_qfexe,q81_valexe
+            from issbase 
+               left join issbaseporte on q02_inscr      = q45_inscr 
+               left join tabativ      on q02_inscr      = q07_inscr and 
+                                         q02_dtbaix     is null 
+               left join clasativ     on q07_ativ       = q82_ativ 
+               left join issportetipo on q41_codporte   = q45_codporte and 
+                                         q41_codclasse  = q82_classe 
+               left join tipcalc      on q41_codtipcalc = q81_codigo 
+            where q02_inscr = $inscricao ";
   	$pesquisaLocalizada = true;
 
   } else if ($solicitacao == "Quantidades") {
      //echo "Quantidades";
-     $sql = " select q30_anousu, q30_quant, q30_area, q30_mult 
+     $sql = " select q30_anousu, q30_quant, q30_area, q30_mult, q30_tempofuncionamento, q30_areapublicidade
                 from issquant
                where q30_inscr = $inscricao ";
      $pesquisaLocalizada = true;
@@ -150,7 +164,7 @@
     $campos .= "db_modulos.nome_modulo ";
     $clhistocorrenciainscr = new cl_histocorrenciainscr;
     $sql = $clhistocorrenciainscr->sql_query("", "$campos", "histocorrencia.ar23_data", "histocorrenciainscr.ar26_inscr = " . $inscricao . " and ar23_instit = ". db_getsession("DB_instit"));
-    
+
 	  $pesquisaLocalizada = true;
 
   } else if ($solicitacao == "Manual") {
@@ -173,20 +187,34 @@
    	 <textarea class="db_area" rows="13" cols="90"><?=@$q01_manual?></textarea>
     </td>
   </tr>
-  
-<?
 
+<?
+  } else if ($solicitacao == "Paralisacoes") {
+      
+      $sql = "select
+                q140_datainicio as dl_Data_Inicial,
+                q140_datafim as dl_Data_Final,
+                q140_usuario as dl_Usuário,
+                q141_descricao as dl_Motivo,
+                q140_observacao as dl_Observação
+              from 
+                issbaseparalisacao
+              inner join issmotivoparalisacao on
+                q141_sequencial = q140_issmotivoparalisacao
+              where q140_issbase = $inscricao";
+      $pesquisaLocalizada = true;
+  
   } else if ($solicitacao == "Baixa") {
     $sql    = "select * from tabativbaixa where q11_inscr=$inscricao";
     $result = db_query($sql);
     $iLinhas = pg_numrows($result);
-    
+
     if($iLinhas > 0) {
 
       echo "<table>";
       for ($i = 0; $i < $iLinhas; $i++) {
 
-        db_fieldsmemory($result, $i);      
+        db_fieldsmemory($result, $i);
 
         $tipo = "Normal";
         if ($q11_oficio=='t'){
@@ -209,7 +237,7 @@
     }
 
   } else if ($solicitacao == 'OptanteSimples') {
-  	
+
   	/*
 	 * SQL que busca as informações sobre a opção de simples da inscrição
 	 */
@@ -217,8 +245,10 @@
     $sql .= "       isscadsimples.q38_dtinicial,                                                                           ";
   	$sql .= "       CASE                                                                                                   ";
   	$sql .= "         WHEN isscadsimples.q38_categoria = 1 THEN 'Micro Empresa'                                            ";
-	  $sql .= "		      WHEN isscadsimples.q38_categoria = 2 THEN 'Empresa de pequeno porte'                                 ";
-	  $sql .= "		      WHEN isscadsimples.q38_categoria = 3 THEN 'MEI'                                                      ";
+   	$sql .= "		      WHEN isscadsimples.q38_categoria = 2 THEN 'Empresa de pequeno porte'                                 ";
+  	$sql .= "		      WHEN isscadsimples.q38_categoria = 3 THEN 'MEI'                                                      ";
+    $sql .= "		      WHEN isscadsimples.q38_categoria = 4 THEN 'EIRELI'                                                   ";
+    $sql .= "		      WHEN isscadsimples.q38_categoria = 5 THEN 'Soc. Profissionais'                                       ";
   	$sql .= "       END AS q38_categoria,                                                                                  ";
     $sql .= "       isscadsimplesbaixa.q39_dtbaixa,                                                                        ";
     $sql .= "       issmotivobaixa.q42_descr,                                                                              ";
@@ -228,7 +258,7 @@
     $sql .= "       LEFT JOIN issmotivobaixa     ON issmotivobaixa.q42_sequencial = isscadsimplesbaixa.q39_issmotivobaixa  ";
     $sql .= " WHERE isscadsimples.q38_inscr = {$inscricao}                                                                 ";
 	  $pesquisaLocalizada = true;
-	  
+
   	/*
   	 * analiza se a inscrição informada é optante do simples ou não
   	 */
@@ -236,8 +266,31 @@
     if (pg_num_rows($result) == 0) {
       echo '<p style="text-align:center; margin-top:40px;">Sem lançamentos de optante do simples para essa inscrição</p>';
     }
-      
-  }
+  } else if ($solicitacao == 'Caracteristicas') {
+
+  	/*
+	 * SQL que busca as informações de caracteristicas da inscrição
+	 */
+    $sql  = "select db139_sequencial,                            ";
+    $sql .= "       db139_descricao,                             ";
+    $sql .= "       db140_sequencial,                            ";
+    $sql .= "       db140_descricao                              ";
+    $sql .= "  from issbasecaracteristica                        ";
+    $sql .= " inner join caracteristica                          ";
+    $sql .= "    on q138_caracteristica = db140_sequencial       ";
+    $sql .= " inner join grupocaracteristica                     ";
+    $sql .= "    on db140_grupocaracteristica = db139_sequencial ";
+    $sql .= " where q138_inscr = {$inscricao}                    ";
+    $sql .= " order by db139_sequencial,db140_sequencial         ";
+                                      
+	  $pesquisaLocalizada = true;
+
+  	$result = db_query($sql) or die($sql);
+    if (pg_num_rows($result) == 0) {
+      echo '<p style="text-align:center; margin-top:40px;">Sem lançamentos de caracteristicas para essa inscrição</p>';
+    }
+ 
+  } 
 
   if ($pesquisaLocalizada) {
 

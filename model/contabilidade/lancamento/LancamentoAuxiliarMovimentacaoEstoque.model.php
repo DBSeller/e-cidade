@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("interfaces/ILancamentoAuxiliar.interface.php");
-require_once ("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
 
 /**
  * Model que executa os lancamentos auxiliares dos Movimentos do estoque
  * @author Andrio Costa andrio.costa@dbseller.com.br
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 class LancamentoAuxiliarMovimentacaoEstoque extends LancamentoAuxiliarBase implements ILancamentoAuxiliar {
 

@@ -58,7 +58,7 @@ db_input('h05_descr',25,$Ih05_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_areas','func_areas.php?funcao_js=parent.js_preenchepesquisa|h05_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_areas','func_areas.php?funcao_js=parent.js_preenchepesquisa|h05_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_areas.hide();

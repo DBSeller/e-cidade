@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,6 +24,4 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-
-$campos = "tfd_veiculodestino.tf18_i_codigo,tfd_veiculodestino.tf18_i_veiculo,tfd_veiculodestino.tf18_i_destino,tfd_destino.tf03_c_descr,tfd_veiculodestino.tf18_i_motorista,tfd_veiculodestino.tf18_c_localsaida,tfd_veiculodestino.tf18_d_datasaida,tfd_veiculodestino.tf18_c_horasaida";
-?>
+$campos = "tfd_veiculodestino.tf18_i_codigo,tfd_veiculodestino.tf18_i_veiculo,tfd_veiculodestino.tf18_i_destino,tfd_destino.tf03_c_descr,tfd_veiculodestino.tf18_i_motorista,tfd_veiculodestino.tf18_d_datasaida,tfd_veiculodestino.tf18_c_horasaida";

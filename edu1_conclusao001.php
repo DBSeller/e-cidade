@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("classes/db_base_classe.php");
-require_once ("classes/db_aluno_classe.php");
-require_once ("classes/db_alunopossib_classe.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-db_app::import("educacao.*");
-db_app::import("educacao/progressaoparcial.*");
+db_postmemory( $_POST );
 
-db_postmemory($HTTP_POST_VARS);
 $clbase        = new cl_base;
 $claluno       = new cl_aluno;
 $clalunopossib = new cl_alunopossib;
@@ -50,47 +45,58 @@ $escola        = db_getsession("DB_coddepto");
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+  <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Expires" CONTENT="0">
+  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="100%" height="18"  border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
- <tr>
-  <td>&nbsp;</td>
- </tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
- <tr>
-  <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-   <?MsgAviso(db_getsession("DB_coddepto"),"escola");?>
-   <br>
-   <center>
-   <fieldset style="width:95%"><legend><b>Conclusão de Curso</b></legend>
-    <?include("forms/db_frmconclusao.php");?>
-   </fieldset>
-   </center>
-  </td>
- </tr>
-</table>
-<?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
+  <table width="100%" height="18"  border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
+    <tr>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
+        <?php
+        MsgAviso(db_getsession("DB_coddepto"),"escola");
+        ?>
+        <br>
+        <center>
+        <fieldset style="width:95%">
+          <legend>
+            <label class="bold">Conclusão de Curso</label>
+          </legend>
+          <?php
+          include(modification("forms/db_frmconclusao.php"));
+          ?>
+        </fieldset>
+        </center>
+      </td>
+    </tr>
+  </table>
+  <?php
+  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+  ?>
 </body>
 </html>
-<?
-if(isset($concluir)){
- $tam = sizeof($alunos);
- $alunoselec = "";
- $sep = "";
- for($x=0;$x<$tam;$x++){
-  $alunoselec .= $sep.$alunos[$x];
-  $sep = ",";
- }
- ?>
- <script>
-  js_OpenJanelaIframe('','db_iframe_concluir','edu1_conclusao002.php?curso=<?=$curso?>&alunos=<?=$alunoselec?>','Conclusão de Curso',true);
- </script>
- <?
+<?php
+if( isset( $concluir ) ) {
+
+  $tam        = sizeof($alunos);
+  $alunoselec = "";
+  $sep        = "";
+
+  for( $x = 0; $x < $tam; $x++ ) {
+
+    $alunoselec .= $sep.$alunos[$x];
+    $sep         = ",";
+  }
+  ?>
+  <script>
+    js_OpenJanelaIframe('','db_iframe_concluir','edu1_conclusao002.php?curso=<?=$curso?>&alunos=<?=$alunoselec?>','Conclusão de Curso',true);
+  </script>
+  <?php
 }
-?>

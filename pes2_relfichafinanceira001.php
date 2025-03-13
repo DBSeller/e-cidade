@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php") ;
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php")) ;
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -44,7 +44,7 @@ $clrotulo->label('rh01_regist');
 $clrotulo->label('r44_selec');
 $clrotulo->label('r44_descr');
 
-db_postmemory($HTTP_POST_VARS);
+db_postmemory($_POST);
 
 if(!isset($anof)){
   $anof = db_anofolha();
@@ -185,7 +185,7 @@ if(!isset($anof)){
           </td>
         </tr>
 
-      <tr id="quebrapg" style='display:<?=$display?>'>
+      <tr id="quebrapg" style='display:<?php isset($display) ? $display : '';?>'>
         <td>
           <strong>Quebrar por Servidor:</strong>
         </td>
@@ -325,11 +325,11 @@ function js_pesquisaSelecao(lMostra) {
   if(lMostra){
 
     sUrl = 'func_selecao.php?funcao_js=parent.js_mostraSelecao|r44_selec|r44_descr&instit='+iCodigoInstituicao;
-    js_OpenJanelaIframe('top.corpo','db_iframe_selecao', sUrl, 'Pesquisa', lMostra);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao', sUrl, 'Pesquisa', lMostra);
   }else{
 
     sUrl = 'func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostraSelecaoHidden&instit='+iCodigoInstituicao;
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_selecao', sUrl, 'Pesquisa', lMostra);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_selecao', sUrl, 'Pesquisa', lMostra);
   }
 }
 

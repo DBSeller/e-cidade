@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_conrelinfo_classe.php");
-include("classes/db_conrelvalor_classe.php");
-include("classes/db_db_config_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_conrelinfo_classe.php"));
+include(modification("classes/db_conrelvalor_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
 
 $clconrelinfo = new cl_conrelinfo;
 $classinatura = new cl_assinatura;
@@ -58,7 +58,7 @@ $anousu_ant = (db_getsession("DB_anousu")-1);
 $orcparamrel = new cl_orcparamrel;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -126,23 +126,23 @@ $dtd1 = split('-',$dt_ini);
 $dtd2 = split('-',$dt_fin);
 
 if ($v_receita_rcl=="s") {
-  include("con2_lrfreceitacorrente002.php");
+  include(modification("con2_lrfreceitacorrente002.php"));
 }
 
 if ($v_despesa_pessoal=="s") {
-  include((db_getsession("DB_anousu")<2007?"con2_lrfdesppessoal002.php":"con2_lrfdesppessoal002_2007.php"));
+  include(modification((db_getsession("DB_anousu"))<2007?"con2_lrfdesppessoal002.php":"con2_lrfdesppessoal002_2007.php"));
 }
 
 if ($v_divida=="s"){
-  include("con2_lrfdivida002.php");
+  include(modification("con2_lrfdivida002.php"));
 }
 
 if ($v_garantias=="s"){
-  include("con2_lrfgarantias002.php");
+  include(modification("con2_lrfgarantias002.php"));
 }
 
 if ($v_operacoes=="s"){
-  include("con2_opercredito002.php");
+  include(modification("con2_opercredito002.php"));
 }
 
 //$head4 = "PERÍODO SELECIONADO  $dtd1[2]/$dtd1[1]/$dtd1[0] à  $dtd2[2]/$dtd2[1]/$dtd2[0]  ";

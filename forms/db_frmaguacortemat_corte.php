@@ -26,7 +26,7 @@
  */
 
 //MODULO: agua
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $claguacortemat->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -153,10 +153,10 @@ function js_cancelar(){
 }
 function js_pesquisax41_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguacortemat','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacortemat','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x41_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguacortemat','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x41_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacortemat','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x41_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false);
      }else{
        document.form1.x01_numcgm.value = ''; 
      }
@@ -176,10 +176,10 @@ function js_mostraaguabase1(chave1,chave2){
 }
 function js_pesquisax41_codcorte(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguacortemat','db_iframe_aguacorte','func_aguacorte.php?funcao_js=parent.js_mostraaguacorte1|x40_codcorte|x40_dtinc','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacortemat','db_iframe_aguacorte','func_aguacorte.php?funcao_js=parent.js_mostraaguacorte1|x40_codcorte|x40_dtinc','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x41_codcorte.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguacortemat','db_iframe_aguacorte','func_aguacorte.php?pesquisa_chave='+document.form1.x41_codcorte.value+'&funcao_js=parent.js_mostraaguacorte','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacortemat','db_iframe_aguacorte','func_aguacorte.php?pesquisa_chave='+document.form1.x41_codcorte.value+'&funcao_js=parent.js_mostraaguacorte','Pesquisa',false);
      }else{
        document.form1.x40_dtinc.value = ''; 
      }

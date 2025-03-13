@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("classes/db_tarefa_classe.php");
+include(modification("classes/db_tarefa_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -193,7 +193,7 @@ if (isset ($incluir)) {
 	<?
 
 
-include ("forms/db_frmtarefaanexos.php");
+include(modification("forms/db_frmtarefaanexos.php"));
 ?>
     </center>
 	</td>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("libs/db_conecta.php");
-include("libs/db_stdlib.php");
+include(modification("libs/db_stdlib.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_conecta.php"));
 if(isset($verifica) && @$verifica != ""){
-  include("classes/db_db_certidaoweb_classe.php");
+  include(modification("classes/db_db_certidaoweb_classe.php"));
   $t1 = $verifica;
   $t = strrev($t1);
   $cod = substr($t,0,7);

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
-include ("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_app.utils.php"));
 
 db_postmemory($HTTP_GET_VARS);
 
@@ -95,7 +95,7 @@ function js_pesquisa(t52_depart,t30_codigo,t52_beminicial,t52_bemfinal){
 function js_retornoPesquisaBens(oAjax){
 	js_removeObj("msgBox");
 	//alert(oAjax.responseText);	
-	var aRetorno = eval("("+oAjax.responseText+")");
+	var aRetorno = JSON.parse(oAjax.responseText);
 	
 	var sExpReg  = new RegExp('\\\\n','g');
   if(aRetorno.status == 2 ){
@@ -178,7 +178,7 @@ function js_retornoImprimirEtiqueta(oAjax){
   
   js_removeObj("msgBox");
     
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   var sExpReg  = new RegExp('\\\\n','g');
   if(aRetorno.status == 2 ){
     alert(aRetorno.message.urlDecode().replace(sExpReg,'\n'));

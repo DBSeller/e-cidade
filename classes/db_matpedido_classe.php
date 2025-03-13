@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -576,7 +576,7 @@ class cl_matpedido {
     $sql .= "      inner join matmater   on  matmater.m60_codmater = matpedidoitem.m98_matmater";
     $sql .= "      inner join matunid a  on  a.m61_codmatunid = matmater.m60_codmatunid";
     $sql .= "      left join matmaterunisai on matmaterunisai.m62_codmater = matmater.m60_codmater";
-    $sql .= "      left join matunid b  on  b.m61_codmatunid = matmater.m60_codmatunid";
+    $sql .= "      left join matunid b  on  b.m61_codmatunid = matmaterunisai.m62_codmatunid";
     //$sql .= "      left  join atendrequiitem on atendrequiitem.m43_codmatrequiitem = matrequiitem.m41_codigo";
     $sql2 = "";
     if ($dbwhere=="") {
@@ -616,7 +616,7 @@ class cl_matpedido {
     $sql .= "      inner join matmater   on  matmater.m60_codmater = matpedidoitem.m98_matmater";
     $sql .= "      inner join matunid a  on  a.m61_codmatunid = matmater.m60_codmatunid";
     $sql .= "      left join matmaterunisai on matmaterunisai.m62_codmater = matmater.m60_codmater";
-    $sql .= "      left join matunid b  on  b.m61_codmatunid = matmater.m60_codmatunid";
+     $sql .= "      left join matunid b  on  b.m61_codmatunid = matmaterunisai.m62_codmatunid";
     $sql .= "      left join matestoqueinimeimatpedidoitem on matestoqueinimeimatpedidoitem.m99_matpedidoitem = matpedidoitem.m98_sequencial";
     $sql .= "      left join matestoqueinimei on matestoqueinimei.m82_codigo = matestoqueinimeimatpedidoitem.m99_matestoqueinimei";    
     $sql2 = "";
@@ -657,7 +657,7 @@ class cl_matpedido {
     $sql .= "      inner join matmater   on  matmater.m60_codmater = matpedidoitem.m98_matmater";
     $sql .= "      inner join matunid a  on  a.m61_codmatunid = matmater.m60_codmatunid";
     $sql .= "      left join matmaterunisai on matmaterunisai.m62_codmater = matmater.m60_codmater";
-    $sql .= "      left join matunid b  on  b.m61_codmatunid = matmater.m60_codmatunid";
+    $sql .= "      left join matunid b  on  b.m61_codmatunid = matmaterunisai.m62_codmatunid";
     $sql .= "      left join matanulitempedido on matanulitempedido.m101_matpedidoitem = matpedidoitem.m98_sequencial";    
     $sql .= "      left join matanulitem on matanulitem.m103_codigo = matanulitempedido.m101_matanulitem";    
 

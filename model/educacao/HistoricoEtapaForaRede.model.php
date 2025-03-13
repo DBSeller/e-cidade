@@ -1,32 +1,34 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
-require_once ('model/educacao/HistoricoEtapa.model.php');
+use ECidade\Educacao\Escola\Model\AreaHistoricoFora;
+
+require_once(modification('model/educacao/HistoricoEtapa.model.php'));
 
 class HistoricoEtapaForaRede extends HistoricoEtapa {
 
@@ -39,24 +41,27 @@ class HistoricoEtapaForaRede extends HistoricoEtapa {
 
       $oDaoHistoricoEtapa = db_utils::getDao("historicompsfora");
       $sSqlDadosEtapa     = $oDaoHistoricoEtapa->sql_query_file($iCodigoEtapa);
+   //   echo $sSqlDadosEtapa . '<br>';
       $rsEtapa            = $oDaoHistoricoEtapa->sql_record($sSqlDadosEtapa);
       if ($oDaoHistoricoEtapa->numrows > 0) {
 
-        $oDadosEtapa        = db_utils::fieldsMemory($rsEtapa, 0);
+        $oDadosEtapa = pg_fetch_assoc($rsEtapa);
         $this->iCodigoEtapa = $iCodigoEtapa;
-        $this->iCodigoHistorico = $oDadosEtapa->ed99_i_historico;
-        $this->setAnoCurso($oDadosEtapa->ed99_i_anoref);
-        $this->setCargaHoraria($oDadosEtapa->ed99_i_qtdch);
-        $this->setDiasLetivos($oDadosEtapa->ed99_i_diasletivos);
-        $this->setEscola(new EscolaProcedencia($oDadosEtapa->ed99_i_escolaproc));
-        $this->setEtapa(new Etapa($oDadosEtapa->ed99_i_serie));
-        $this->setJustificativa($oDadosEtapa->ed99_i_justificativa);
-        $this->setMininoParaAprovacao($oDadosEtapa->ed99_c_minimo);
-        $this->setResultadoAno($oDadosEtapa->ed99_c_resultadofinal);
-        $this->setSituacaoEtapa($oDadosEtapa->ed99_c_situacao);
-        $this->setTurma($oDadosEtapa->ed99_c_turma);
-        $this->setTermoFinal($oDadosEtapa->ed99_c_termofinal);
-        $this->setObservacao($oDadosEtapa->ed99_observacao);
+        $this->iCodigoHistorico = $oDadosEtapa['ed99_i_historico'];
+        $this->setAnoCurso($oDadosEtapa['ed99_i_anoref']);
+        $this->setCargaHoraria($oDadosEtapa['ed99_i_qtdch']);
+        $this->setDiasLetivos($oDadosEtapa['ed99_i_diasletivos']);
+        $this->setEscola(new EscolaProcedencia($oDadosEtapa['ed99_i_escolaproc']));
+        $this->setEtapa(new Etapa($oDadosEtapa['ed99_i_serie']));
+        $this->setJustificativa($oDadosEtapa['ed99_i_justificativa']);
+        $this->setMininoParaAprovacao($oDadosEtapa['ed99_c_minimo']);
+        $this->setResultadoAno($oDadosEtapa['ed99_c_resultadofinal']);
+        $this->setSituacaoEtapa($oDadosEtapa['ed99_c_situacao']);
+        $this->setPeriodoReferencia($oDadosEtapa['ed99_i_periodoref']);
+        $this->setTurma($oDadosEtapa['ed99_c_turma']);
+        $this->setTermoFinal($oDadosEtapa['ed99_c_termofinal']);
+        $this->setObservacao($oDadosEtapa['ed99_observacao']);
+        $this->setPercentualFrequencia($oDadosEtapa['ed99_percentualfrequencia']);
         unset($oDadosEtapa);
       }
     }
@@ -69,9 +74,9 @@ class HistoricoEtapaForaRede extends HistoricoEtapa {
   function salvar($iCodigoHistorico = '') {
 
     if (!($this->getEscola() instanceof EscolaProcedencia )) {
-      throw new BussinesException("Escola informado nao é uma escola de procedencia.");
+      throw new BusinessException("Escola informado nao é uma escola de procedencia.");
     }
-    $oDaoHistorico = db_utils::getDao("historicompsfora");
+    $oDaoHistorico = new cl_historicompsfora;
     $oDaoHistorico->ed99_c_minimo         = $this->getMininoParaAprovacao();
     $oDaoHistorico->ed99_c_resultadofinal = $this->getResultadoAno();
     $oDaoHistorico->ed99_c_situacao       = $this->getSituacaoEtapa();
@@ -84,7 +89,7 @@ class HistoricoEtapaForaRede extends HistoricoEtapa {
     $oDaoHistorico->ed99_i_serie          = $this->getEtapa()->getCodigo();
     $oDaoHistorico->ed99_c_turma          = $this->getTurma();
     $oDaoHistorico->ed99_observacao       = $this->getObservacao();
-
+    
     /**
      * @todo fazer salvar o ed62_c_termofinal
      */
@@ -103,17 +108,18 @@ class HistoricoEtapaForaRede extends HistoricoEtapa {
     }
 
     if ($oDaoHistorico->erro_status == 0) {
-      throw new BussinesException($oDaoHistorico->erro_msg);
+      throw new BusinessException($oDaoHistorico->erro_msg);
     }
     foreach ($this->aDisciplinas as $oDisciplina) {
       $oDisciplina->salvar($this->iCodigoEtapa);
     }
   }
 
-  /**
-  * Adiciona uma Disciplina no Historico
-  * @param DisciplinaHistoricoRede $oDisciplina Disciplina Cursada na Rede
-  */
+    /**
+     * Adiciona uma Disciplina no Historico
+     * @param DisciplinaHistoricoRede $oDisciplina Disciplina Cursada na Rede
+     * @throws BusinessException
+     */
   public function adicionarDisciplina(DisciplinaHistoricoForaRede $oDisciplina) {
 
     $aDisciplinas = $this->getDisciplinas();
@@ -121,7 +127,7 @@ class HistoricoEtapaForaRede extends HistoricoEtapa {
 
       if ($oDisciplina->getDisciplina()->getCodigoDisciplina() ==
           $oDisciplinaLancada->getDisciplina()->getCodigoDisciplina()) {
-        throw new BussinesException("Disciplina {$oDisciplina->getDisciplina()->getNomeDisciplina()} já lançada para essa Etapa.");
+        throw new BusinessException("Disciplina {$oDisciplina->getDisciplina()->getNomeDisciplina()} já lançada para essa Etapa.");
       }
     }
     $this->aDisciplinas[] = $oDisciplina;
@@ -166,6 +172,16 @@ class HistoricoEtapaForaRede extends HistoricoEtapa {
     }
     return $oDisciplinaRetorno;
   }
-}
 
-?>
+    /**
+     * @return AreaHistoricoFora[]
+     * @throws Exception
+     */
+    public function getAreasConhecimento()
+    {
+        $areaHistoricoForaRepository = new \ECidade\Educacao\Escola\Repository\AreaHistoricoForaRepository();
+        return $areaHistoricoForaRepository
+            ->scopeHistoricoEtapaForaRede(new HistoricoEtapaForaRede($this->iCodigoEtapa))
+            ->get();
+    }
+}

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 /**
  * Busca todos os arquivos disponiveis
@@ -105,7 +105,7 @@ $diasExpiracaoToken  = $oPreferenciaCliente->getDiasExpiraToken();
             <table>
               <tr>
                <td nowrap title="Tentativas de Login" class="field-size3">
-                 <label class="bold" for="tentativasLogin" id="lbl_tentativasLogin">Tentativas de Login:</label>
+                 <label class="bold" for="tentativasLogin" id="lbl_tentativasLogin">Número de Tentativas de Login para Bloqueio do Usuário:</label>
                </td>
                <td>
                  <?php db_input('tentativasLogin', 5, 4, true, 'text', 1, ''); ?>
@@ -149,13 +149,13 @@ $diasExpiracaoToken  = $oPreferenciaCliente->getDiasExpiraToken();
      * Salvamos os parametros
      */
     function js_processar() {
-       
+
       if ( $F('tentativasLogin') == '') {
 
         alert( _M( sCaminhoMensagem + 'preenchimento_tentativasLogin_obrigatorio') );
         return false;
       }
-      
+
       if ( $F('tentativasLogin') == 0) {
 
         alert( _M( sCaminhoMensagem + 'valida_zero', {'sCampo' : 'Tentativas de Login'}));
@@ -169,7 +169,7 @@ $diasExpiracaoToken  = $oPreferenciaCliente->getDiasExpiraToken();
       }
 
       if ( $F('diasExpiracaoToken') == 0) {
-        
+
         alert( _M( sCaminhoMensagem + 'valida_zero', {'sCampo' : 'Dias para expirar link de ativação'}));
         return false;
       }
@@ -186,7 +186,7 @@ $diasExpiracaoToken  = $oPreferenciaCliente->getDiasExpiraToken();
       oDadosRequisicao.parameters   = 'json='+Object.toJSON(oParametros);
       oDadosRequisicao.onComplete   = function(oAjax){
 
-        var oRetorno = eval("("+oAjax.responseText+")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.iStatus == "2") {
 
           alert( oRetorno.sMessage.urlDecode() );
@@ -219,7 +219,7 @@ $diasExpiracaoToken  = $oPreferenciaCliente->getDiasExpiraToken();
       oDadosRequisicao.parameters   = 'json='+Object.toJSON(oParametros);
       oDadosRequisicao.onComplete   = function(oAjax){
 
-        var oRetorno = eval("("+oAjax.responseText+")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.iStatus == "2") {
 
           alert( oRetorno.sMessage.urlDecode() );

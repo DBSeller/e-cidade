@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_projetos_classe.php");
-include("classes/db_db_projetosclientes_classe.php");
-include("classes/db_db_projetosgrupos_classe.php");
-include("classes/db_db_projetosusu_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_projetos_classe.php"));
+include(modification("classes/db_db_projetosclientes_classe.php"));
+include(modification("classes/db_db_projetosgrupos_classe.php"));
+include(modification("classes/db_db_projetosusu_classe.php"));
 $cldb_projetos = new cl_db_projetos;
   /*
 $cldb_projetosclientes = new cl_db_projetosclientes;
@@ -96,7 +96,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_projetos.php");
+	include(modification("forms/db_frmdb_projetos.php"));
 	?>
     </center>
 	</td>
@@ -129,11 +129,11 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_projetosgrupos.disabled=false;
-         top.corpo.iframe_db_projetosgrupos.location.href='ate1_db_projetosgrupos001.php?db_opcaoal=33&at63_projeto=".@$at60_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_projetosgrupos.location.href='ate1_db_projetosgrupos001.php?db_opcaoal=33&at63_projeto=".@$at60_codigo."';
          parent.document.formaba.db_projetosusu.disabled=false;
-         top.corpo.iframe_db_projetosusu.location.href='ate1_db_projetosusu001.php?db_opcaoal=33&at65_projeto=".@$at60_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_projetosusu.location.href='ate1_db_projetosusu001.php?db_opcaoal=33&at65_projeto=".@$at60_codigo."';
          parent.document.formaba.db_projetosclientes.disabled=false;
-         top.corpo.iframe_db_projetosclientes.location.href='ate1_db_projetosclientes001.php?db_opcaoal=33&at64_projeto=".@$at60_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_projetosclientes.location.href='ate1_db_projetosclientes001.php?db_opcaoal=33&at64_projeto=".@$at60_codigo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_projetosgrupos');";

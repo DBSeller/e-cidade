@@ -1,62 +1,64 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
 //CLASSE DA ENTIDADE regimetrabalho
-class cl_regimetrabalho { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ed24_i_codigo = 0; 
-   var $ed24_c_descr = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_regimetrabalho {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ed24_i_codigo = 0;
+   var $ed24_c_descr = null;
+   var $ed24_horas = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 ed24_i_codigo = int8 = Código 
-                 ed24_c_descr = char(30) = Descrição 
+                 ed24_i_codigo = int8 = Código
+                 ed24_c_descr = char(30) = Descrição
+                 ed24_horas = char(10) = Horas
                  ";
-   //funcao construtor da classe 
-   function cl_regimetrabalho() { 
+   //funcao construtor da classe
+   function cl_regimetrabalho() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("regimetrabalho"); 
+     $this->rotulo = new rotulo("regimetrabalho");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -69,14 +71,15 @@ class cl_regimetrabalho {
      if($exclusao==false){
        $this->ed24_i_codigo = ($this->ed24_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed24_i_codigo"]:$this->ed24_i_codigo);
        $this->ed24_c_descr = ($this->ed24_c_descr == ""?@$GLOBALS["HTTP_POST_VARS"]["ed24_c_descr"]:$this->ed24_c_descr);
+       $this->ed24_horas = ($this->ed24_horas == ""?@$GLOBALS["HTTP_POST_VARS"]["ed24_horas"]:$this->ed24_horas);
      }else{
        $this->ed24_i_codigo = ($this->ed24_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed24_i_codigo"]:$this->ed24_i_codigo);
      }
    }
    // funcao para inclusao
-   function incluir ($ed24_i_codigo){ 
+   function incluir ($ed24_i_codigo){
       $this->atualizacampos();
-     if($this->ed24_c_descr == null ){ 
+     if($this->ed24_c_descr == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "ed24_c_descr";
        $this->erro_banco = "";
@@ -86,16 +89,16 @@ class cl_regimetrabalho {
        return false;
      }
      if($ed24_i_codigo == "" || $ed24_i_codigo == null ){
-       $result = db_query("select nextval('regimetrabalho_ed24_i_codigo_seq')"); 
+       $result = db_query("select nextval('regimetrabalho_ed24_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: regimetrabalho_ed24_i_codigo_seq do campo: ed24_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: regimetrabalho_ed24_i_codigo_seq do campo: ed24_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->ed24_i_codigo = pg_result($result,0,0); 
+       $this->ed24_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from regimetrabalho_ed24_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $ed24_i_codigo)){
@@ -106,10 +109,10 @@ class cl_regimetrabalho {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->ed24_i_codigo = $ed24_i_codigo; 
+         $this->ed24_i_codigo = $ed24_i_codigo;
        }
      }
-     if(($this->ed24_i_codigo == null) || ($this->ed24_i_codigo == "") ){ 
+     if(($this->ed24_i_codigo == null) || ($this->ed24_i_codigo == "") ){
        $this->erro_sql = " Campo ed24_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -118,15 +121,17 @@ class cl_regimetrabalho {
        return false;
      }
      $sql = "insert into regimetrabalho(
-                                       ed24_i_codigo 
-                                      ,ed24_c_descr 
+                                       ed24_i_codigo
+                                      ,ed24_c_descr
+                                      ,ed24_horas
                        )
                 values (
-                                $this->ed24_i_codigo 
-                               ,'$this->ed24_c_descr' 
+                                $this->ed24_i_codigo
+                               ,'$this->ed24_c_descr'
+                               ,'$this->ed24_horas'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Cadastro de Regimes de Trabalho ($this->ed24_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -157,18 +162,19 @@ class cl_regimetrabalho {
        $resac = db_query("insert into db_acountkey values($acount,1008534,'$this->ed24_i_codigo','I')");
        $resac = db_query("insert into db_acount values($acount,1010093,1008534,'','".AddSlashes(pg_result($resaco,0,'ed24_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,1010093,1008535,'','".AddSlashes(pg_result($resaco,0,'ed24_c_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1010093,1013273,'','".AddSlashes(pg_result($resaco,0,'ed24_horas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($ed24_i_codigo=null) { 
+   function alterar ($ed24_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update regimetrabalho set ";
      $virgula = "";
-     if(trim($this->ed24_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed24_i_codigo"])){ 
+     if(trim($this->ed24_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed24_i_codigo"])){
        $sql  .= $virgula." ed24_i_codigo = $this->ed24_i_codigo ";
        $virgula = ",";
-       if(trim($this->ed24_i_codigo) == null ){ 
+       if(trim($this->ed24_i_codigo) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "ed24_i_codigo";
          $this->erro_banco = "";
@@ -178,10 +184,10 @@ class cl_regimetrabalho {
          return false;
        }
      }
-     if(trim($this->ed24_c_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed24_c_descr"])){ 
+     if(trim($this->ed24_c_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed24_c_descr"])){
        $sql  .= $virgula." ed24_c_descr = '$this->ed24_c_descr' ";
        $virgula = ",";
-       if(trim($this->ed24_c_descr) == null ){ 
+       if(trim($this->ed24_c_descr) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "ed24_c_descr";
          $this->erro_banco = "";
@@ -191,6 +197,19 @@ class cl_regimetrabalho {
          return false;
        }
      }
+       if(trim($this->ed24_horas)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed24_horas"])){
+           $sql  .= $virgula." ed24_horas = '$this->ed24_horas' ";
+           $virgula = ",";
+           if(trim($this->ed24_horas) == null ){
+               $this->erro_sql = " Campo Descrição nao Informado.";
+               $this->erro_campo = "ed24_horas";
+               $this->erro_banco = "";
+               $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+               $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+               $this->erro_status = "0";
+               return false;
+           }
+       }
      $sql .= " where ";
      if($ed24_i_codigo!=null){
        $sql .= " ed24_i_codigo = $this->ed24_i_codigo";
@@ -206,10 +225,12 @@ class cl_regimetrabalho {
            $resac = db_query("insert into db_acount values($acount,1010093,1008534,'".AddSlashes(pg_result($resaco,$conresaco,'ed24_i_codigo'))."','$this->ed24_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["ed24_c_descr"]))
            $resac = db_query("insert into db_acount values($acount,1010093,1008535,'".AddSlashes(pg_result($resaco,$conresaco,'ed24_c_descr'))."','$this->ed24_c_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["ed24_horas"]))
+           $resac = db_query("insert into db_acount values($acount,1010093,1013273,'".AddSlashes(pg_result($resaco,$conresaco,'ed24_horas'))."','$this->ed24_horas',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cadastro de Regimes de Trabalho nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed24_i_codigo;
@@ -237,14 +258,14 @@ class cl_regimetrabalho {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($ed24_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($ed24_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ed24_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -255,6 +276,7 @@ class cl_regimetrabalho {
          $resac = db_query("insert into db_acountkey values($acount,1008534,'$ed24_i_codigo','E')");
          $resac = db_query("insert into db_acount values($acount,1010093,1008534,'','".AddSlashes(pg_result($resaco,$iresaco,'ed24_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010093,1008535,'','".AddSlashes(pg_result($resaco,$iresaco,'ed24_c_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010093,1013273,'','".AddSlashes(pg_result($resaco,$iresaco,'ed24_horas'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from regimetrabalho
@@ -271,7 +293,7 @@ class cl_regimetrabalho {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cadastro de Regimes de Trabalho nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed24_i_codigo;
@@ -299,11 +321,11 @@ class cl_regimetrabalho {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -325,7 +347,7 @@ class cl_regimetrabalho {
       }
      return $result;
    }
-   function sql_query ( $ed24_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $ed24_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -341,8 +363,8 @@ class cl_regimetrabalho {
      $sql2 = "";
      if($dbwhere==""){
        if($ed24_i_codigo!=null ){
-         $sql2 .= " where regimetrabalho.ed24_i_codigo = $ed24_i_codigo "; 
-       } 
+         $sql2 .= " where regimetrabalho.ed24_i_codigo = $ed24_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -358,7 +380,7 @@ class cl_regimetrabalho {
      }
      return $sql;
   }
-   function sql_query_file ( $ed24_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $ed24_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -374,8 +396,8 @@ class cl_regimetrabalho {
      $sql2 = "";
      if($dbwhere==""){
        if($ed24_i_codigo!=null ){
-         $sql2 .= " where regimetrabalho.ed24_i_codigo = $ed24_i_codigo "; 
-       } 
+         $sql2 .= " where regimetrabalho.ed24_i_codigo = $ed24_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

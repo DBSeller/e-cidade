@@ -1,43 +1,43 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("classes/db_turmaac_classe.php");
-require_once ("classes/db_turmaacmatricula_classe.php");
-require_once ("classes/db_escola_classe.php");
-require_once ("classes/db_escolaestrutura_classe.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_jsplibwebseller.php");
-require_once ("model/educacao/Escola.model.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_turmaac_classe.php"));
+require_once(modification("classes/db_turmaacmatricula_classe.php"));
+require_once(modification("classes/db_escola_classe.php"));
+require_once(modification("classes/db_escolaestrutura_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+require_once(modification("model/educacao/Escola.model.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -54,7 +54,7 @@ $codigoescola       = db_getsession("DB_coddepto");
 $oEscola            = new Escola($codigoescola);
 
 $ed255_i_ativcomplementar = $oEscola->ofereceAtividadeComplementar();
-$ed255_i_aee              = $oEscola->ofereceEducacaoEspecializada();  
+$ed255_i_aee              = $oEscola->ofereceEducacaoEspecializada();
 
 /**
  * Verificamos a mensagem a ser apresentada de acordo com a opcao de atividade complementar configurada para a escola
@@ -64,21 +64,21 @@ $ed255_i_aee              = $oEscola->ofereceEducacaoEspecializada();
  */
 $sMensagemAtividadeComplementar = '';
 switch($ed255_i_ativcomplementar) {
-  
+
   case 1:
-    
+
     $sMensagemAtividadeComplementar  = "<b>* Escola oferece EXCLUSIVAMENTE Atividade Complementar (Cadastros -> ";
     $sMensagemAtividadeComplementar .= "Dados da Escola -> Aba Infra Estrutura)</b>";
     break;
-    
+
   case 2:
-    
+
     $sMensagemAtividadeComplementar  = "<b>* Escola oferece Atividade Complementar (Cadastros -> ";
     $sMensagemAtividadeComplementar .= "Dados da Escola -> Aba Infra Estrutura)</b>";
     break;
-    
+
   case 3:
-  
+
     $sMensagemAtividadeComplementar  = "<b>* Escola NÃO oferece Atividade Complementar (Cadastros -> ";
     $sMensagemAtividadeComplementar .= "Dados da Escola -> Aba Infra Estrutura)</b>";
     break;
@@ -118,28 +118,28 @@ echo $sMensagemEducacaoEspecializada."<br>";
 echo "</div>";
 
 if ($ed255_i_aee == 3 && $ed255_i_ativcomplementar == 3) {
-  
+
   $db_botao  = false;
   $db_botao2 = false;
-  
+
 }
 
 function PegaValores($array,$tamanho) {
-	
+
   $retorno = "";
   for ($x = 1; $x <= $tamanho; $x++) {
-  	
+
     $tem = false;
     for ($y = 0; $y < count($array); $y++) {
-    	
+
       if ($array[$y] == $x) {
-      	
+
         $retorno .= "1";
         $tem      = true;
         break;
-        
+
       }
-      
+
     }
     if ($tem == false) {
       $retorno .= "0";
@@ -149,19 +149,18 @@ function PegaValores($array,$tamanho) {
 }
 
 if (isset($alterar)) {
-	
+
   $db_opcao  = 2;
   $db_opcao1 = 3;
   db_inicio_transacao();
-  
+
+  $ed268_c_aee = PegaValores($ed268_c_aee,15);
   if ($ed268_i_tipoatend == 5) {
-    
-    $ed268_c_aee                = PegaValores($ed268_c_aee,12);
     $ed268_programamaiseducacao = null;
   } else {
     $ed268_c_aee = "";
   }
-  
+
   $clturmaac->ed268_programamaiseducacao = $ed268_programamaiseducacao;
   $clturmaac->ed268_c_aee                = $ed268_c_aee;
   $clturmaac->ed268_i_numvagas           = $ed268_i_numvagas;
@@ -169,9 +168,9 @@ if (isset($alterar)) {
   $clturmaac->alterar($ed268_i_codigo);
   db_fim_transacao();
   $db_botao = true;
-  
+
 } else if(isset($chavepesquisa)) {
-  
+
   $db_opcao    = 2;
   $db_opcao1   = 3;
   $sSqlTurmaAc = $clturmaac->sql_query($chavepesquisa);
@@ -185,20 +184,21 @@ if (isset($alterar)) {
    <?if ($ed268_i_tipoatend == 4) {?>
        parent.document.formaba.a2.disabled    = false;
        parent.document.formaba.a2.style.color = "black";
-       top.corpo.iframe_a2.location.href      = 'edu1_turmaacativ001.php?ed267_i_turmaac=<?=$ed268_i_codigo?>'+
-                                                '&ed268_c_descr=<?=$ed268_c_descr?>';  
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'edu1_turmaacativ001.php?ed267_i_turmaac=<?=$ed268_i_codigo?>'+
+                                                '&ed268_c_descr=<?=$ed268_c_descr?>'+
+                                                '&iCalendario=<?=$ed268_i_calendario?>';
        parent.document.formaba.a5.disabled    = false;
        parent.document.formaba.a5.style.color = "black";
-       top.corpo.iframe_a5.location.href      = 'edu1_turmaachorarioprofissional001.php?ed270_i_turmaac=<?=$ed268_i_codigo?>&ed268_i_tipoatend=<?=$ed268_i_tipoatend?> ';
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a5.location.href      = 'edu1_turmaachorarioprofissional001.php?ed270_i_turmaac=<?=$ed268_i_codigo?>&ed268_i_tipoatend=<?=$ed268_i_tipoatend?> ';
    <?}?>
   parent.document.formaba.a4.disabled    = false;
   parent.document.formaba.a4.style.color = "black";
-  top.corpo.iframe_a4.location.href      = 'edu1_turmaacmatricula001.php?ed269_i_turmaac=<?=$ed268_i_codigo?>'+
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href      = 'edu1_turmaacmatricula001.php?ed269_i_turmaac=<?=$ed268_i_codigo?>'+
                                            '&ed268_c_descr=<?=$ed268_c_descr?>&ed268_i_calendario=<?=$ed268_i_calendario?>'+
                                            '&ed268_i_tipoatend=<?=$ed268_i_tipoatend?>';
   parent.document.formaba.a5.disabled    = false;
   parent.document.formaba.a5.style.color = "black";
-  top.corpo.iframe_a5.location.href      = 'edu1_turmaachorarioprofissional001.php?ed270_i_turmaac=<?=$ed268_i_codigo?>&ed268_i_tipoatend=<?=$ed268_i_tipoatend?>';
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a5.location.href      = 'edu1_turmaachorarioprofissional001.php?ed270_i_turmaac=<?=$ed268_i_codigo?>&ed268_i_tipoatend=<?=$ed268_i_tipoatend?>';
  </script>
  <?
 }
@@ -221,7 +221,7 @@ if (isset($alterar)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Turma com Atividade Complementar / AEE</b></legend>
-    <?include("forms/db_frmturmaac.php");?>
+    <?include(modification("forms/db_frmturmaac.php"));?>
    </fieldset>
    </center>
   </td>
@@ -250,24 +250,24 @@ if (isset($alterar)) {
    <?if ($ed268_i_tipoatend == 4) {?>
        parent.document.formaba.a2.disabled    = false;
        parent.document.formaba.a2.style.color = "black";
-       top.corpo.iframe_a2.location.href      = 'edu1_turmaacativ001.php?ed267_i_turmaac=<?=$ed268_i_codigo?>'+
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'edu1_turmaacativ001.php?ed267_i_turmaac=<?=$ed268_i_codigo?>'+
                                                 '&ed268_c_descr=<?=$ed268_c_descr?>';
        parent.document.formaba.a5.disabled    = false;
        parent.document.formaba.a5.style.color = "black";
-       top.corpo.iframe_a5.location.href      = 'edu1_turmaachorario001.php?ed222_i_turmaac=<?=$ed268_i_codigo?>'+
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a5.location.href      = 'edu1_turmaachorario001.php?ed222_i_turmaac=<?=$ed268_i_codigo?>'+
                                                 '&ed268_c_descr=<?=$ed268_c_descr?>';
-   <?}?>   
+   <?}?>
     parent.document.formaba.a4.disabled    = false;
     parent.document.formaba.a4.style.color = "black";
-    top.corpo.iframe_a4.location.href      = 'edu1_turmaacmatricula001.php?ed269_i_turmaac=<?=$ed268_i_codigo?>'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href      = 'edu1_turmaacmatricula001.php?ed269_i_turmaac=<?=$ed268_i_codigo?>'+
                                              '&ed268_c_descr=<?=$ed268_c_descr?>&ed52_c_descr=<?=$ed52_c_descr?>'+
                                              '&codcalendario=<?=$ed268_i_calendario?>'+
                                              '&ed268_i_tipoatend=<?=$ed268_i_tipoatend?>';
     parent.document.formaba.a5.disabled    = false;
     parent.document.formaba.a5.style.color = "black";
-    top.corpo.iframe_a5.location.href      = 'edu1_turmaachorario001.php?ed270_i_turmaac=<?=$ed268_i_codigo?>'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a5.location.href      = 'edu1_turmaachorario001.php?ed270_i_turmaac=<?=$ed268_i_codigo?>'+
                                              '&ed268_c_descr=<?=$ed268_c_descr?>&ed268_i_turno=<?=$ed268_i_turno?>'+
-                                             '&codcalendario=<?=$ed268_i_calendario?>';   
+                                             '&codcalendario=<?=$ed268_i_calendario?>';
    </script>
    <?
   };?>

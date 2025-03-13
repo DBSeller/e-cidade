@@ -101,7 +101,7 @@ DBViewSolicitacaoDotacao = function(iCodigoSolicitacao, sNameInstance) {
   this.retornoGetDotacoes = function (oAjax) {
   
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");  
+    var oRetorno = JSON.parse(oAjax.responseText);  
     me.iAnoSessao      = oRetorno.iAnoSessao; 
     me.aDotacoes       = oRetorno.aDotacoes;
     me.renderizaLinhasGrid();
@@ -381,7 +381,7 @@ DBViewSolicitacaoDotacao = function(iCodigoSolicitacao, sNameInstance) {
     
     js_removeObj('msgBox');
     
-    var oRetorno = eval("("+oAjax.responseText+")"); 
+    var oRetorno = JSON.parse(oAjax.responseText); 
     if (oRetorno.status == 2) {
       alert(oRetorno.message.urlDecode());
     } else {

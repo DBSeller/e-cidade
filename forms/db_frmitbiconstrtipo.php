@@ -58,7 +58,7 @@ db_input('it10_caract',4,$Iit10_caract,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_itbiconstrtipo','func_itbiconstrtipo.php?funcao_js=parent.js_preenchepesquisa|it10_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbiconstrtipo','func_itbiconstrtipo.php?funcao_js=parent.js_preenchepesquisa|it10_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_itbiconstrtipo.hide();

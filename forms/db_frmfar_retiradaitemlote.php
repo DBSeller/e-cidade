@@ -92,10 +92,10 @@ db_input('fa09_f_quant',5,$Ifa09_f_quant,true,'text',$db_opcao,"")
 <script>
 function js_pesquisafa09_i_retiradaitens(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_far_retiradaitens','func_far_retiradaitens.php?funcao_js=parent.js_mostrafar_retiradaitens1|fa06_i_codigo|fa06_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_retiradaitens','func_far_retiradaitens.php?funcao_js=parent.js_mostrafar_retiradaitens1|fa06_i_codigo|fa06_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.fa09_i_retiradaitens.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_far_retiradaitens','func_far_retiradaitens.php?pesquisa_chave='+document.form1.fa09_i_retiradaitens.value+'&funcao_js=parent.js_mostrafar_retiradaitens','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_retiradaitens','func_far_retiradaitens.php?pesquisa_chave='+document.form1.fa09_i_retiradaitens.value+'&funcao_js=parent.js_mostrafar_retiradaitens','Pesquisa',false);
      }else{
        document.form1.fa06_i_codigo.value = ''; 
      }
@@ -115,10 +115,10 @@ function js_mostrafar_retiradaitens1(chave1,chave2){
 }
 function js_pesquisafa09_i_matestoqueitem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?funcao_js=parent.js_mostramatestoqueitem1|m71_codlanc|m71_codmatestoque','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?funcao_js=parent.js_mostramatestoqueitem1|m71_codlanc|m71_codmatestoque','Pesquisa',true);
   }else{
      if(document.form1.fa09_i_matestoqueitem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?pesquisa_chave='+document.form1.fa09_i_matestoqueitem.value+'&funcao_js=parent.js_mostramatestoqueitem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?pesquisa_chave='+document.form1.fa09_i_matestoqueitem.value+'&funcao_js=parent.js_mostramatestoqueitem','Pesquisa',false);
      }else{
        document.form1.m71_codmatestoque.value = ''; 
      }
@@ -137,7 +137,7 @@ function js_mostramatestoqueitem1(chave1,chave2){
   db_iframe_matestoqueitem.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_retiradaitemlote','func_far_retiradaitemlote.php?funcao_js=parent.js_preenchepesquisa|fa09_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_retiradaitemlote','func_far_retiradaitemlote.php?funcao_js=parent.js_preenchepesquisa|fa09_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_retiradaitemlote.hide();

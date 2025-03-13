@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,27 +25,38 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orctiporec_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt21');
 $clrotulo->label('DBtxt22');
 db_postmemory($HTTP_POST_VARS);
-?>
+$display = "display: none";
+$displayRecursoAntigo = "";
+if ( FONTE_RECURSO_UNIAO ) {
+    $displayRecursoAntigo = "display: none";
+    $display = "";
+}
 
+?>
 <html>
 <head>
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/windowAux.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/classes/DBViewFiltroRecursos.classe.js"></script>
 
 <script>
+
+
 function js_emite(opcao,origem){
   sel_instit  = new Number(document.form1.db_selinstit.value);
   if(sel_instit == 0){
@@ -87,8 +98,11 @@ function js_emite(opcao,origem){
      perini = <?=db_getsession("DB_anousu")?>+'-01-01';
      perfin = <?=db_getsession("DB_anousu")?>+'-01-01';
   }
-		      
-  jan = window.open('con2_balancrece006.php?&perfin='+perfin+'&perini='+perini+'&opcao='+opcao+'&origem='+origem+'&db_selinstit='+document.form1.db_selinstit.value+'&recurso='+document.form1.recurso.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+  var recursos_selecionados = '';
+  if (filtroRecursos !== false) {
+      recursos_selecionados = filtroRecursos.getListaRecursos();
+  }
+  jan = window.open('con2_balancrece006.php?recursos_selecionados='+recursos_selecionados+'&perfin='+perfin+'&perini='+perini+'&opcao='+opcao+'&origem='+origem+'&db_selinstit='+document.form1.db_selinstit.value+'&recurso='+document.form1.recurso.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
 }
 
@@ -118,7 +132,15 @@ function js_emite(opcao,origem){
          ?>
          </td>
       </tr>
-      <tr>
+
+      <tr style="<?php echo $display; ?>">
+         <td colspan="1" align="right"><strong>Fonte de Recursos:&nbsp;</strong></td>
+         <td colspan=2>
+             <input type="button" name="gerar" id="gerar" value="Selecionar Recursos" onclick="abrirJanela()" />
+         </td>
+      </tr>
+
+      <tr style="<?php echo $displayRecursoAntigo; ?>">
         <td colspan="3" align="center"><strong>Recurso:&nbsp;</strong>
 	<?
         $clorctiporec = new cl_orctiporec;
@@ -136,4 +158,14 @@ function js_emite(opcao,origem){
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
+<script>
+    var filtroRecursos = false;
+    function abrirJanela() {
+        if ( ! filtroRecursos) {
+            filtroRecursos = new DBViewFiltroRecursos();
+            filtroRecursos.construirJanela();
+        }
+        filtroRecursos.show();
+    }
+</script>
 </html>

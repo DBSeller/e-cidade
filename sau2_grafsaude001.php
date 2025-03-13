@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_medicos_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_medicos_classe.php"));
 $cl_medicos = new cl_medicos;
 $clrotulo = new rotulocampo;
 $clrotulo->label("sd03_i_codigo");
@@ -101,7 +101,7 @@ $clrotulo->label("sd03_c_nome");
     </form>
     <script>
     function js_pesquisa_cid(){
-       js_OpenJanelaIframe('top.corpo','db_iframe_cids','func_cids.php?funcao_js=parent.js_mostracids|sd22_c_codigo|sd22_c_descr','Pesquisa',true);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cids','func_cids.php?funcao_js=parent.js_mostracids|sd22_c_codigo|sd22_c_descr','Pesquisa',true);
     }
     function js_mostracids(chave1,chave2){
       document.form1.extra.value = chave1;
@@ -110,7 +110,7 @@ $clrotulo->label("sd03_c_nome");
     }
     
     function js_pesquisa_bairro(){
-     js_OpenJanelaIframe('top.corpo','db_iframe_cids','func_bairro.php?funcao_js=parent.js_mostrabairro|j13_codi|j13_descr','Pesquisa',true);
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cids','func_bairro.php?funcao_js=parent.js_mostrabairro|j13_codi|j13_descr','Pesquisa',true);
     }
     function js_mostrabairro(chave1,chave2){
       document.form1.bairro.value = chave2;

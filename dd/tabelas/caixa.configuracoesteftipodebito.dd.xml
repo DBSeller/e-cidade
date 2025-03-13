@@ -1,0 +1,129 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010787' name='caixa.configuracoesteftipodebito' description="Salvar as configurações para TEF pot tipo de débito" prefix="k196" label="Configurações TEF Tipo Débito" type="0">
+  <fields>
+    <field codigo="1013173" 
+           campo_api='' 
+           name="k196_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela configuracoesteftipodebito." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='caixa.configuracoesteftipodebito_k196_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013174" 
+           campo_api='' 
+           name="k196_tipo" 
+           conteudo="int8" 
+           description="Guarda o tipo do débito" 
+           inivalue="0" 
+           label="Tipo Débito" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo Débito" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013175" 
+           campo_api='' 
+           name="k196_aceitatef" 
+           conteudo="text" 
+           description="Informa se o tipo de débito aceita TEF ou não" 
+           inivalue="" 
+           label="Aceita TEF" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Aceita TEF" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013176" 
+           campo_api='' 
+           name="k196_maximoparcelas" 
+           conteudo="int8" 
+           description="Campo com o número máximo de parcelas o débito pode ser parcelado." 
+           inivalue="0" 
+           label="Máximo de Parcelas" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Máximo de Parcelas" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013177" 
+           campo_api='' 
+           name="k196_valorminimoparcelafisica" 
+           conteudo="float8" 
+           description="Campo com o valor mínimo que cada parcela pode ter para pessoa física." 
+           inivalue="0" 
+           label="Valor Mínimo da Parcela PF" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor Mínimo da Parcela PF" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013279" 
+           campo_api='' 
+           name="k196_valorminimoparcelajuridica" 
+           conteudo="float4" 
+           description="Valor mínimo da parcela para pessoa jurídica." 
+           inivalue="0" 
+           label="Valor Mínimo da Parcela PJ" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor Mínimo da Parcela PJ" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k196_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="arretipo" inner='t'>
+      <fieldfk name="k196_tipo" reference="k00_tipo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

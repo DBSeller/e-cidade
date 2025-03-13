@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulos = new rotulocampo;
 $oRotulos->label('c53_coddoc');
@@ -69,11 +69,11 @@ function js_pesquisaDocumento(mostra) {
 
   if (mostra) {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_documento', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_documento', 
                         'func_conhistdoc.php?funcao_js=parent.js_mostraDocumento|c53_coddoc|c53_descr', 
                         'Pesquisa Documentos', true);
   } else {
-		js_OpenJanelaIframe('top.corpo', 'db_iframe_documento',
+		js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_documento',
 				                'func_conhistdoc.php?funcao_js=parent.js_mostraDocumento1&pesquisa_chave='+$F('c53_coddoc'),
 				                'Pesquisa Documentos', false);
   }
@@ -104,7 +104,7 @@ function js_abreTelaOrdenacao() {
 		return false;
 	}
 
-	js_OpenJanelaIframe('top.corpo', 'db_iframe_ordenatransacoes',
+	js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_ordenatransacoes',
 	  	                'con1_ordenartransacao002.php?c53_coddoc='+$F('c53_coddoc'),
 	  	                'Ordenar Transações', true);
 }

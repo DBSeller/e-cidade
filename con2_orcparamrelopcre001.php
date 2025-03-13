@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcparamrelopcre_classe.php");
-include("classes/db_orcparamseq_classe.php");
-include("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcparamrelopcre_classe.php"));
+include(modification("classes/db_orcparamseq_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oGet                     = db_utils::postmemory($_GET);
 $oPost                    = db_utils::postmemory($_POST);
@@ -129,7 +129,7 @@ if ($lLimpar){
 </table>
  <center>
 	<?
-	include("forms/db_frmorcparamrelopcre.php");
+	include(modification("forms/db_frmorcparamrelopcre.php"));
 	?>
   </center>
 </body>

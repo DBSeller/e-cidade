@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_matricula_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_matricula_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $iEscola = db_getsession("DB_coddepto");
 ?>
@@ -86,6 +86,9 @@ $iEscola = db_getsession("DB_coddepto");
               </select>
             </td>
           </tr>
+
+          <!--PLUGIN RelatorioRendimentoEscolar - Adiciona linha para Segmento(Anos Iniciais/Finais) -->
+
           <tr>
             <td colspan="2" rel="ignore-css">
               <fieldset class="separator" style="min-width: 600px;">
@@ -143,6 +146,7 @@ var fChangeCalendario = function() {
   if( sCalendarioSelecionado != '' ) {
 
     oTurma.setEscola(iEscola);
+    oTurma.setTipoTurmaFora([6]);
     oTurma.setCalendario(sCalendarioSelecionado);
     oTurma.getTurmas();
   }
@@ -248,6 +252,8 @@ $('btnProcessar').onclick = function() {
       sParametros += '&iEtapa='            + oTurma.getSelecionados().codigo_etapa;
       sParametros += '&aRegencias='        + aRegencias;
       sParametros += '&lExibirTrocaTurma=' + $F('exibirTrocaTurma');
+
+  // PLUGIN RelatorioRendimentoEscolar - Altera relatório chamado e passa novo parâmetro de segmento
 
   oDBFormCache.save();
 

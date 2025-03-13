@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010456' name='arrecadacao.honorariosparcelamento' description="Tabela responsável por armazenar as informações de parcelamento honorario" prefix="ar43" label="honorariosparcelamento" type="0">
+  <fields>
+    <field codigo="1010595" 
+           campo_api='' 
+           name="ar43_sequencial" 
+           conteudo="int8" 
+           description="Campo responsavel por armazenar o numero sequencial dos registros da tabela" 
+           inivalue="0" 
+           label="sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='arrecadacao.honorariosparcelamento_ar43_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010596" 
+           campo_api='' 
+           name="ar43_processoforo" 
+           conteudo="int4" 
+           description="Campo responsavel por armazenar o numero do processo do foro" 
+           inivalue="0" 
+           label="processoforo" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="processoforo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010597" 
+           campo_api='' 
+           name="ar43_inicial" 
+           conteudo="int4" 
+           description="Campo responsavel por armazenar o numero da inicial" 
+           inivalue="0" 
+           label="inicial" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="inicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010598" 
+           campo_api='' 
+           name="ar43_numeroparcelas" 
+           conteudo="int4" 
+           description="Campo responsavel por armazenar a quantidade de parcelas" 
+           inivalue="0" 
+           label="numeroparcelas" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="numeroparcelas" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="ar43_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="inicial" inner='f'>
+      <fieldfk name="ar43_inicial" reference="v50_inicial" /> 
+    </foreignkey>
+    <foreignkey reference="processoforo" inner='f'>
+      <fieldfk name="ar43_processoforo" reference="v70_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

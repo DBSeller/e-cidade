@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,166 +25,186 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhrubricas_classe.php");
+use ECidade\RecursosHumanos\Pessoal\Service\RubricasUsuarioService;
+
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhrubricas_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clrhrubricas = new cl_rhrubricas;
 $clrhrubricas->rotulo->label("rh27_rubric");
 $clrhrubricas->rotulo->label("rh27_descr");
 
+$service = new RubricasUsuarioService();
+
+$usuario = UsuarioSistemaRepository::getPorCodigo(db_getsession('DB_id_usuario'));
+$instituicao = InstituicaoRepository::getInstituicaoSessao();
+
+$dao = new cl_rhrubricas();
+$where = array();
+// agora por default devemos validar as rubricas configuradas por usuário se houver.
+// Se não devemos buscar todas as rubricas
+if ($service->possuiConfiguracao($usuario, $instituicao)) {
+    $dao = new cl_rubricasusuario();
+    $where = array(
+        "rh219_usuario = {$usuario->getCodigo()}",
+        "rh219_instituicao = {$instituicao->getCodigo()}"
+    );
+}
+
+if (isset($_GET['naoFiltraUsuario']) && $_GET['naoFiltraUsuario '] == 'true') {
+    $dao = new cl_rhrubricas();
+    $where = array();
+}
+
+$where[] = "rh27_instit = {$instituicao->getCodigo()}";
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
 <body>
 <style type="text/css">
-  #chave_rh27_rubric, #opcao{
-    width: 80px;
-  }
+    #chave_rh27_rubric, #opcao {
+        width: 80px;
+    }
 
 </style>
-  <form name="form2" class="container"  method="post" action="">
+<form name="form2" class="container" method="post" action="">
     <fieldset>
-      <legend>Pesquisa de Rubricas</legend>
-      <table class="form-container" width="35%" border="0" align="center" cellspacing="3">
-        <tr>
-          <td>
-            <label>
-              <?=$Lrh27_rubric?>
-            </label>
-          </td>
-          <td>
-            <?php db_input("rh27_rubric",4,$Irh27_rubric,true,"text",4,"","chave_rh27_rubric"); ?>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label>
-              Seleção por:
-            </label>
-          </td>
-          <td>
-            <?php
-            if(!isset($opcao)){
-              $opcao = "t";
-            }
+        <legend>Pesquisa de Rubricas</legend>
+        <table class="form-container" width="35%" border="0" align="center" cellspacing="3">
+            <tr>
+                <td>
+                    <label>
+                        <?= $Lrh27_rubric ?>
+                    </label>
+                </td>
+                <td>
+                    <?php db_input("rh27_rubric", 4, $Irh27_rubric, true, "text", 4, "", "chave_rh27_rubric"); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        Seleção por:
+                    </label>
+                </td>
+                <td>
+                    <?php
+                    if (!isset($opcao)) {
+                        $opcao = "t";
+                    }
 
-            if(!isset($opcao_bloq)){
-              $opcao_bloq = 1;
-            }
+                    if (!isset($opcao_bloq)) {
+                        $opcao_bloq = 1;
+                    }
 
-            $arr_opcao = array(
-              "i" => "Todos",
-              "t" => "Ativos",
-              "f" => "Inativos"
-            );
+                    $arr_opcao = array(
+                        "i" => "Todos",
+                        "t" => "Ativos",
+                        "f" => "Inativos"
+                    );
 
-            db_select('opcao',$arr_opcao,true,$opcao_bloq); 
-            ?>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label>
-              <?=$Lrh27_descr?>
-            </label>
-          </td>
-          <td>
-            <?php db_input("rh27_descr",30,$Irh27_descr,true,"text",4,"","chave_rh27_descr"); ?>
-          </td>
-        </tr>
-      </table>
-      
+                    db_select('opcao', $arr_opcao, true, $opcao_bloq);
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <?= $Lrh27_descr ?>
+                    </label>
+                </td>
+                <td>
+                    <?php db_input("rh27_descr", 30, $Irh27_descr, true, "text", 4, "", "chave_rh27_descr"); ?>
+                </td>
+            </tr>
+        </table>
+
     </fieldset>
-    <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-    <input name="limpar" type="reset" id="limpar" value="Limpar" >
+    <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
+    <input name="limpar" type="reset" id="limpar" value="Limpar">
     <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_rhrubricas.hide();">
-  </form>
-        <?php
-        $dbwhere = "";
+</form>
+<?php
+if (isset($opcao) && !empty($opcao)) {
+    $where[] = "rh27_ativo='{$opcao}'";
+}
 
-        if (isset($instit) && !empty($instit)) {
-          $dbwhere = " and rh27_instit = $instit ";
+if (!isset($pesquisa_chave)) {
+
+    if (!isset($campos)) {
+
+        if (file_exists("funcoes/db_func_rhrubricas.php")) {
+            include(modification("funcoes/db_func_rhrubricas.php"));
+        } else {
+            $campos = "rhrubricas.*";
         }
+    }
 
-        $dbwhere = " and rh27_instit = ".db_getsession("DB_instit");
-        $where_ativo = "";
+    if (isset($chave_rh27_rubric) && !empty($chave_rh27_rubric)) {
+        $where[] = " rh27_rubric = '{$chave_rh27_rubric}' ";
+    } elseif (isset($chave_rh27_descr) && !empty($chave_rh27_descr)) {
+        $where[] = " rh27_descr like '{$chave_rh27_descr}%' ";
+    }
+    $sql = $dao->sqlRubricas($campos, $where, array('rh27_rubric'));
 
-        if (isset($opcao) && !empty($opcao)) {
-          $where_ativo = " and rh27_ativo='$opcao' ";
-        }
+    echo "<div class='container'>";
+    echo "  <fieldset>";
+    echo "    <legend>Resultado da Pesquisa</legend>";
 
-        if (!isset($pesquisa_chave)) {
+    db_lovrot($sql, 15, "()", "", $funcao_js);
 
-          if (!isset($campos)) {
+    echo "  </fieldset>";
+    echo "</div>";
 
-            if (file_exists("funcoes/db_func_rhrubricas.php")) {
-              include("funcoes/db_func_rhrubricas.php");
+} else {
+    if (!is_null($pesquisa_chave) && !empty($pesquisa_chave)) {
+        $where[] = " rh27_rubric = '$pesquisa_chave' ";
+        $sql = $dao->sqlRubricas("*,case when trim(rh27_form)='' then 'f' else 't' end as formula ", $where);
+        $result = $clrhrubricas->sql_record($sql);
+
+        if ($clrhrubricas->numrows) {
+            db_fieldsmemory($result, 0);
+            $rh27_obs = str_replace(array("\n", "\r"), ' ', $rh27_obs);
+
+            if (!isset($ret)) {
+                echo "<script>" . $funcao_js . "('$rh27_descr','$rh27_limdat','$formula','$rh27_obs','$rh27_presta',false, '$rh27_periodolancamento');</script>";
+
             } else {
-              $campos = "rhrubricas.*";
+                echo "<script>" . $funcao_js . "('$rh27_descr','$rh27_limdat','$formula','$rh27_obs','$rh27_pd','$rh27_presta',false, '$rh27_periodolancamento');</script>";
             }
+        } else {
+            if (!isset($ret)) {
+                echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true,true,true,true,true);</script>";
 
-          }
-
-          if (isset($chave_rh27_rubric) && !empty($chave_rh27_rubric)) {
-            $sql = $clrhrubricas->sql_query(null,null,$campos,"rh27_rubric"," rh27_rubric = '$chave_rh27_rubric' ".$dbwhere.$where_ativo);
-
-          } elseif (isset($chave_rh27_descr) && !empty($chave_rh27_descr)) {
-            $sql = $clrhrubricas->sql_query("",null,$campos,"rh27_descr"," rh27_descr like '$chave_rh27_descr%' ".$dbwhere.$where_ativo);
-
-          } else {
-             $sql = $clrhrubricas->sql_query("",null,$campos,"rh27_rubric"," 1=1 ".$dbwhere.$where_ativo);
-          }
-
-        echo "<div class='container'>";
-        echo "  <fieldset>";
-        echo "    <legend>Resultado da Pesquisa</legend>";
-
-        db_lovrot($sql,15,"()","",$funcao_js);
-
-        echo "  </fieldset>";
-        echo "</div>";
+            } else {
+                echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true,true,true,true,true,true);</script>";
+            }
+        }
+    } else {
+        if (!isset($ret)) {
+            echo "<script>" . $funcao_js . "('',true,true,true,false);</script>";
 
         } else {
-          if (!is_null($pesquisa_chave) && !empty($pesquisa_chave)) {
-            $result = $clrhrubricas
-              ->sql_record($clrhrubricas
-              ->sql_query(null,null,"*,case when trim(rh27_form)='' then 'f' else 't' end as formula ",""," rh27_rubric = '$pesquisa_chave' ".$dbwhere));
-
-            if ($clrhrubricas->numrows) {
-              db_fieldsmemory($result, 0);
-
-              if (!isset($ret)) {
-                echo "<script>".$funcao_js."('$rh27_descr','$rh27_limdat','$formula','$rh27_obs','$rh27_presta',false);</script>";
-
-              } else {
-                echo "<script>".$funcao_js."('$rh27_descr','$rh27_limdat','$formula','$rh27_obs','$rh27_pd','$rh27_presta',false);</script>";
-              }
-            } else {
-              if (!isset($ret)) {
-                echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true,true,true,true,true);</script>";
-
-              } else {
-                echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true,true,true,true,true,true);</script>";
-              }
-            }
-          } else {
-            if (!isset($ret)) {
-              echo "<script>".$funcao_js."('',true,true,true,false);</script>";
-
-            } else {
-              echo "<script>".$funcao_js."('',true,true,true,true,false);</script>";
-            }
-          }
+            echo "<script>" . $funcao_js . "('',true,true,true,true,false);</script>";
         }
-        ?>
+    }
+}
+?>
 </body>
 </html>
+<script type="text/javascript">
+    (function() {
+        var query = frameElement.getAttribute('name').replace('IF', ''),
+            input = document.querySelector('input[value="Fechar"]');
+        input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+    })();
+</script>

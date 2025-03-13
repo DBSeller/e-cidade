@@ -1,32 +1,32 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("interfaces/ILancamentoAuxiliar.interface.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
 
 define("URL_LANCAMENTO_AUXILIAR_SLIP", "financeiro.contabilidade.LancamentoAuxiliarSlip.");
 
@@ -35,7 +35,7 @@ define("URL_LANCAMENTO_AUXILIAR_SLIP", "financeiro.contabilidade.LancamentoAuxil
  * @author Matheus Felini
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.20 $
  */
 class LancamentoAuxiliarSlip  extends LancamentoAuxiliarBase implements ILancamentoAuxiliar {
 
@@ -110,8 +110,20 @@ class LancamentoAuxiliarSlip  extends LancamentoAuxiliarBase implements ILancame
    * @var string
    */
   private $sDataAutenticacao;
+  private $retencao;
+  private $tipoCalculoRetencao;
+
+  private $empenho;
 
   /**
+   * @var Recurso
+   */
+  private $recurso;
+
+  private $codigoOrdemPagamento = null;
+
+
+    /**
    * Executa o lancamento de registros em tabelas auxiliares da contabilidade
    * @see ILancamentoAuxiliar::executaLancamentoAuxiliar()
    */
@@ -119,17 +131,44 @@ class LancamentoAuxiliarSlip  extends LancamentoAuxiliarBase implements ILancame
 
     $this->setCodigoLancamento($iCodigoLancamento);
     $this->setDataLancamento($dtLancamento);
-    $this->iFavorecido = $this->getFavorecido();    
+    $this->iFavorecido = $this->getFavorecido();
 
     $this->salvarVinculoSlip();
     $this->salvarVinculoComplemento();
-    $this->salvarVinculoCgm();  
+    $this->salvarVinculoCgm();
 
     $this->salvarVinculoPagamento();
     $this->salvarVinculoCorrente();
+    $this->salvarVinculoRetencao();
+    if (!empty($this->empenho)) {
+        $this->salvarVinculoEmpenho();
+    }
+
+    $this->salvarVinculoOrdemPagamento();
 
     return true;
   }
+
+
+    /**
+     *  Incluindo vinculo do Lançamento com Empenho [conlancamemp]
+     */
+    protected function salvarVinculoEmpenho() {
+
+        $oDaoConLanCamEmp = new cl_conlancamemp();
+        $oDaoConLanCamEmp->c75_codlan = $this->iCodigoLancamento ;
+        $oDaoConLanCamEmp->c75_numemp = $this->empenho;
+        $oDaoConLanCamEmp->c75_data   = $this->dtLancamento;
+        $oDaoConLanCamEmp->incluir($this->iCodigoLancamento);
+
+        if ($oDaoConLanCamEmp->erro_status == 0) {
+
+            $sErroMsg  = "Não foi possível vincular Lançamento e Empenho.\n\n";
+            $sErroMsg .= "Erro Técnico : {$oDaoConLanCamEmp->erro_msg}";
+            throw new BusinessException($sErroMsg);
+        }
+        unset($oDaoConLanCamEmp);
+    }
 
   /**
    * Retorna a instância do lançamento pelo código
@@ -145,11 +184,11 @@ class LancamentoAuxiliarSlip  extends LancamentoAuxiliarBase implements ILancame
     if ($oDaoLancamentoSlip->erro_status == "0") {
       throw new BusinessException (_M (URL_LANCAMENTO_AUXILIAR_SLIP. "erro_lancamento_slip"));
     }
-    
+
     $oLancamentoSlip         = db_utils::fieldsMemory($rsLancamentoSlip, 0);
     $oLancamentoAuxiliarSlip = new LancamentoAuxiliarSlip();
-    $oSlisp                  = new slip($oLancamentoSlip->k17_codigo); 
-    
+    $oSlisp                  = new slip($oLancamentoSlip->k17_codigo);
+
     $oLancamentoAuxiliarSlip->setIDTerminal($oLancamentoSlip->c86_id);
     $oLancamentoAuxiliarSlip->setDataAutenticacao($oLancamentoSlip->c86_data);
     $oLancamentoAuxiliarSlip->setNumeroAutenticacao($oLancamentoSlip->c86_autent);
@@ -347,7 +386,7 @@ class LancamentoAuxiliarSlip  extends LancamentoAuxiliarBase implements ILancame
    */
   static function vinculaSlipInscricao ($iCodigoSlip, $iCodigoInscricao) {
 
-    $oDaoInscricaopassivoslip = db_utils::getDao('inscricaopassivoslip');
+    $oDaoInscricaopassivoslip = new cl_inscricaopassivoslip();
     $oDaoInscricaopassivoslip->c109_slip             = $iCodigoSlip;
     $oDaoInscricaopassivoslip->c109_inscricaopassiva = $iCodigoInscricao;
     $oDaoInscricaopassivoslip->incluir(null);
@@ -439,4 +478,117 @@ class LancamentoAuxiliarSlip  extends LancamentoAuxiliarBase implements ILancame
   public function getIDTerminal() {
     return $this->iIDTerminal;
   }
+
+
+    /**
+     * Vincula a caracteristica peculiar de um empenho
+     * @throws BusinessException
+     * @return boolean true
+     */
+    protected function salvarVinculoRetencao()
+    {
+
+        if (empty($this->retencao)) {
+            return true;
+        }
+        $daoConlancamRetencao = new cl_conlancamretencao;
+        $daoConlancamRetencao->c127_sequencial = null;
+        $daoConlancamRetencao->c127_conlancam   = $this->iCodigoLancamento;
+        $daoConlancamRetencao->c127_retencaotiporec = $this->retencao;
+        $daoConlancamRetencao->incluir(null);
+        if ($daoConlancamRetencao->erro_status == "0") {
+            throw new BusinessException("Não foi possível vincular a retenção do empenho ao lançamento");
+        }
+        return true;
+    }
+
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    protected function salvarVinculoOrdemPagamento()
+    {
+
+        if (empty($this->codigoOrdemPagamento)) {
+            return true;
+        }
+
+        $daoConlancamOrd = new cl_conlancamord();
+        $daoConlancamOrd->c80_codlan = $this->iCodigoLancamento;
+        $daoConlancamOrd->c80_data = $this->dtLancamento;
+        $daoConlancamOrd->c80_codord = $this->codigoOrdemPagamento;
+        $daoConlancamOrd->incluir($this->iCodigoLancamento);
+        if ($daoConlancamOrd->erro_status === "0") {
+            throw new Exception("Ocorreu um erro ao vincular a ordem de pagamento com o lançamento contábil.");
+        }
+        return true;
+    }
+
+    public function setTipoCalculoRetencao($tipoCalculo)
+    {
+        $this->tipoCalculoRetencao = $tipoCalculo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTipoCalculoRetencao()
+    {
+        return $this->tipoCalculoRetencao;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRetencao()
+    {
+        return $this->retencao;
+    }
+
+    /**
+     * @param mixed $retencao
+     */
+    public function setRetencao($retencao)
+    {
+        $this->retencao = $retencao;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmpenho()
+    {
+        return $this->empenho;
+    }
+
+    /**
+     * @param mixed $empenho
+     */
+    public function setEmpenho($empenho)
+    {
+        $this->empenho = $empenho;
+    }
+
+
+    /**
+     * @param Recurso $recurso
+     */
+    public function setRecurso(Recurso $recurso) {
+        $this->recurso = $recurso;
+    }
+
+    /**
+     * @return Recurso
+     */
+    public function getRecurso() {
+        return $this->recurso;
+    }
+
+    /**
+     * @param $codigoOrdemPagamento
+     */
+    public function setCodigoOrdemPagamento($codigoOrdemPagamento) {
+        $this->codigoOrdemPagamento = $codigoOrdemPagamento;
+    }
 }

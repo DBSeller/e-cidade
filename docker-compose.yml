@@ -1,0 +1,22 @@
+version: '2'
+services:
+
+  apache:
+    image: "registry.dbseller.com.br:5000/ecidade-apache:latest"
+    build: ./docker/apache
+
+    ports:
+     - "8053:8053"
+     - "8056:8056"
+    volumes:
+        - .:/var/www/html/
+
+  fpm56:
+    image: "registry.dbseller.com.br:5000/ecidade-fpm56:latest"
+    build:
+      context: ./docker/fpm56
+      args:
+        http_proxy: "http://proxy.dbseller.com.br:3128"
+        https_proxy: "http://proxy.dbseller.com.br:3128"
+    volumes:
+        - .:/var/www/html/

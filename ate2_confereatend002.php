@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ('fpdf151/pdf.php');
+require(modification('fpdf151/pdf.php'));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 /*
@@ -124,7 +124,7 @@ $where
 order by at02_datafim, nome, at05_horaini
 ";
 //die($sql);
-$result = pg_query($sql) or die($sql);
+$result = db_query($sql) or die($sql);
 $linhas  = pg_num_rows($result);
 if($linhas>0){
   $total = 0;

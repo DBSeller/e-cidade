@@ -1,6 +1,6 @@
 <?
-//include("cabec_rodape.php");
-include("assinatura.php");
+//include(modification("cabec_rodape.php"));
+include(modification("fpdf151/assinatura.php"));
 
 //========================================================================================//
 //       ALTERAÇÕES NA CLASSE impcarne                                                    //
@@ -302,7 +302,7 @@ class db_impcarne extends cl_assinatura {
   }
   
   function imprime(){
-  	include("impmodelos/mod_imprime".$this->impmodelo.".php");
+  	include(modification("fpdf151/impmodelos/mod_imprime".$this->impmodelo.".php"));
   }
  }
 ?>

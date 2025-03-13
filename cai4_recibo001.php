@@ -1,45 +1,45 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_cairetordem_classe.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_procrec_classe.php");
-require_once("classes/db_orctiporec_classe.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_taxagruporeg_classe.php");
-require_once("classes/db_numpref_classe.php");
-require_once("classes/db_db_config_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cairetordem_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_procrec_classe.php"));
+require_once(modification("classes/db_orctiporec_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_taxagruporeg_classe.php"));
+require_once(modification("classes/db_numpref_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
 
 $clcairetordem  = new cl_cairetordem;
 $clcgm          = new cl_cgm;
@@ -69,25 +69,25 @@ db_postmemory($HTTP_SERVER_VARS);
 
 /*
  * Esta variável controla onde serão mostradas as LookUp's.
- * 
- * Por padrão ela é setada com top.corpo, mas se estiver dentro de outro iframe, deve ser passado o nome deste frame
+ *
+ * Por padrão ela é setada com (window.CurrentWindow || parent.CurrentWindow).corpo, mas se estiver dentro de outro iframe, deve ser passado o nome deste frame
  * para que a lookup abra corretamente dentro deste iframe.
- * 
- * Um exemplo é o cadastro de protocolo, que após incluir ou alterar o processo redireciona para este arquivo passando o 
+ *
+ * Um exemplo é o cadastro de protocolo, que após incluir ou alterar o processo redireciona para este arquivo passando o
  * nome do iframe para abrir as LookUp's
- * 
+ *
  */
-$sIframeLocation = "top.corpo"; 
+$sIframeLocation = "(window.CurrentWindow || parent.CurrentWindow).corpo";
 if (isset($sIframe)) {
-  $sIframeLocation .= ".".$sIframe;  
+  $sIframeLocation .= ".".$sIframe;
 }
 
 /**
- * Verifica se foi passado por parametro no menu a variavel reciboRetencao 
+ * Verifica se foi passado por parametro no menu a variavel reciboRetencao
  * para saber se esconde ou nao os dados do cgm
  */
 if (isset($reciboRetencao) && $reciboRetencao == 'sim') {
-  $lEmissaoReciboRetencao = true; 
+  $lEmissaoReciboRetencao = true;
 } else {
   $lEmissaoReciboRetencao = false;
 }
@@ -97,7 +97,7 @@ $result        = $cldb_config->sql_record($cldb_config->sql_query_file($iInstitS
 db_fieldsmemory($result, 0);
 
 if (isset($mostramenu)&& $mostramenu == 't') {
-  
+
   $historico    = $textarea;
   $p58_codproc  = $codproc;
   $dbopcao      = 3;
@@ -110,7 +110,7 @@ if (isset($mostramenu)&& $mostramenu == 't') {
     $q02_inscr = $origem;
   }
 } else {
-  
+
   $dbopcao  = 4;
   $disabled = '';
 }
@@ -121,8 +121,9 @@ if (isset($mostramenu)&& $mostramenu == 't') {
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <?
-db_app::load("scripts.js, strings.js, prototype.js");
+db_app::load("scripts.js, strings.js, prototype.js, AjaxRequest.js");
 db_app::load("estilos.css, grid.style.css");
+
 ?>
 <style type="text/css">
 .nomerecibo {
@@ -144,19 +145,19 @@ db_app::load("estilos.css, grid.style.css");
 }
 
 #DBF_ender, #DBF_munic, #DBF_cep, #DBF_uf, #valor, #k02_drecei, #historico {
- width: 100%; 
+ width: 100%;
 }
 
 #nomeemp {
- width: 77%; 
+ width: 77%;
 }
 
-#o15_codigo {
+#o15_recurso {
  width: 22%;
 }
 
-#o15_codigodescr {
- width: 78%; 
+#o15_recursodescr {
+ width: 78%;
 }
 
 .table-box {
@@ -164,9 +165,9 @@ db_app::load("estilos.css, grid.style.css");
   border-right:1px inset black;
   border-bottom:1px inset black;
   border-bottom:1px outset white;
-  border-right:1px outset white;           
-  background-color:#FFFFFF;    
-  cursor: default;  
+  border-right:1px outset white;
+  background-color:#FFFFFF;
+  cursor: default;
   empty-cells: show;
 }
 </style>
@@ -188,45 +189,41 @@ function js_gravareceita() {
 
   // primeira fez q grava a taxa... anterior nullo
   if (document.form1.arretipoant.value == '') {
-  
+
     document.form1.arretipoant.value = document.form1.arretipo.value;
     document.form1.descrarretipoant.value = document.form1.descrarretipo.value;
   } else if (document.form1.arretipoant.value != document.form1.arretipo.value) {
-  
+
     alert('Taxa ou receitacom tipo de débito diferente do já selecionado');
     document.form1.arretipo.value            = document.form1.arretipoant.value;
     document.form1.descrarretipo.value       = document.form1.descrarretipoant.value;
     document.form1.k02_codigo.value          = '';
     document.form1.k02_drecei.value          = '';
-    document.form1.o15_codigo.value          = '';
+    document.form1.o15_recurso.value          = '';
+    document.form1.selectComplementoFonte.value  = '';
     document.form1.valor.value               = '';
     document.form1.k130_concarpeculiar.value = '';
     processa = false;
     return;
   }
-  
 
   if (document.form1.k130_concarpeculiar.value == '') {
-    
     alert('Você deve selecionar uma C.Peculiar/Cod de Aplicação antes de emitir o Recibo.');
     processa = false;
     return false;
-       
   }
 
   if ( document.form1.k02_codigo.value == '') {
-  
     alert('Receita não Selecionada. Verifique!');
     processa = false;
     document.form1.k02_codigo.focus();
     return;
   }
-  
+
   if (processa == true) {
-  
     var vlr = new Number(document.form1.valor.value);
     if (isNaN(vlr) || vlr == 0) {
-    
+
        //if( document.form1.valor.value == '' && document.form1.valor.value == '0'){
        alert('Valor digitado nao esta correto. Verifique!');
        document.form1.valor.focus();
@@ -235,27 +232,27 @@ function js_gravareceita() {
     }
   }
 
-  
+
   for (i = 1; i < tab.rows.length; i++) {
-  
-    if (  document.form1.o15_codigo.value != tab.rows[i].cells[2].innerHTML) {
-      
+
+    if (document.form1.o15_recurso.value != tab.rows[i].cells[2].innerHTML) {
+
       alert('Recurso diferente. Faça outro recibo.');
       return;
     }
-  
+
     if (document.form1.k02_codigo.value == tab.rows[i].cells[0].innerHTML) {
-    
+
       if (document.form1.codsubrec.value == tab.rows[i].cells[3].innerHTML) {
-      
+
         if (confirm('Receita e taxa já Digitada. Valor : '+tab.rows[i].cells[5].innerHTML+' \n Somar ao valor?')==true ) {
-        
+
           var soma = new Number(tab.rows[i].cells[5].innerHTML) + Number(document.form1.valor.value);
           tab.rows[i].cells[5].innerHTML = soma;
           processa = false;
           break;
         } else {
-          
+
           processa = true;
           if (document.form1.k130_concarpeculiar.value == tab.rows[i].cells[6].innerHTML) {
             var processa = false;
@@ -263,17 +260,17 @@ function js_gravareceita() {
           break;
         }
       } else {
-      
+
         if (document.form1.codsubrec.value == tab.rows[i].cells[2].innerHTML) {
-        
+
           if (confirm('Receita já Digitada. Valor : '+tab.rows[i].cells[5].innerHTML+' \n Somar ao valor?')==true ) {
-          
+
             var soma = new  Number(tab.rows[i].cells[5].innerHTML) + Number(document.form1.valor.value);
             tab.rows[i].cells[5].innerHTML = soma;
             processa = false;
             break;
           } else {
-          
+
             processa = true;
 	          if (document.form1.k130_concarpeculiar.value == tab.rows[i].cells[6].innerHTML) {
 	            var processa = false;
@@ -287,7 +284,7 @@ function js_gravareceita() {
 
 
   if (processa == true) {
-  
+
     var NovaLinha             = tab.insertRow(tab.rows.length);
     NovaLinha.id              = 'id_'+tab.rows.length;
 
@@ -304,7 +301,7 @@ function js_gravareceita() {
     NovaColuna                = NovaLinha.insertCell(2);
     NovaColuna.align          = 'left';
     NovaColuna.style.border   = '1px outset white';
-    NovaColuna.innerHTML      = document.form1.o15_codigo.value;
+    NovaColuna.innerHTML      = document.form1.o15_recurso.value;
 
     NovaColuna                = NovaLinha.insertCell(3);
     NovaColuna.align          = 'left';
@@ -326,32 +323,37 @@ function js_gravareceita() {
     NovaColuna.style.border   = '1px outset white';
     NovaColuna.innerHTML      = document.form1.k130_concarpeculiar.value;
 
-    NovaColuna                = NovaLinha.insertCell(7);
-    NovaColuna.align          = 'center';
-    NovaColuna.style.border   = '1px outset white';
-    NovaColuna.innerHTML      = '<input value="Excluir" type="button" onclick="js_removelinha(\'id_'+tab.rows.length+'\')">';
+      NovaColuna                = NovaLinha.insertCell(7);
+      NovaColuna.align          = 'left';
+      NovaColuna.style.border   = '1px outset white';
+      NovaColuna.innerHTML      = document.form1.selectComplementoFonte.value;
+
+      NovaColuna                = NovaLinha.insertCell(8);
+      NovaColuna.align          = 'center';
+      NovaColuna.style.border   = '1px outset white';
+      NovaColuna.innerHTML      = '<input value="Excluir" type="button" onclick="js_removelinha(\'id_'+tab.rows.length+'\')">';
   }
-  
+
   document.form1.k02_codigo.value          = '';
   document.form1.k02_drecei.value          = '';
   document.form1.codsubrec.value           = '';
   document.form1.k07_descr.value           = '';
   document.form1.valor.value               = '';
-  document.form1.o15_codigo.value          = '';
+  document.form1.o15_recurso.value          = '';
   document.form1.k130_concarpeculiar.value = '';
   document.form1.c58_descr.value           = '';
-  document.form1.o15_codigo.onchange();
+  document.form1.o15_recurso.onchange();
   document.form1.k02_codigo.focus();
-  
+
   js_desabilitaConCarPeculiar(false);
 }
 
-function js_processarecibo(hist) {
+function js_processarecibo(isTEF = false) {
 
   var tab = document.getElementById('tab');
   var processa = true;
   if (tab.rows.length==1) {
-  
+
     alert("Receitas nao Digitadas.");
     processa = false;
   }
@@ -359,7 +361,7 @@ function js_processarecibo(hist) {
   if (processa == true) {
 
     if(document.form1.reciboRetencao.value == 'sim' && document.form1.k32_ordpag.value == "" ){
-      
+
       alert("Selecione a Ordem de pagamento .");
       processa = false;
     } else if (document.form1.z01_numcgm.value =="" && document.form1.q02_inscr.value =="" && document.form1.j01_matric.value =="") {
@@ -370,35 +372,38 @@ function js_processarecibo(hist) {
   }
 
   if (processa == true) {
-  
+
     if (confirm('Confirma Emissao do Recibo?')==true) {
-    
-      var query_string = 'z01_numcgm='+document.form1.z01_numcgm.value+'&';
-      query_string    += 'j01_matric='+document.form1.j01_matric.value+'&';
-      query_string    += 'q02_inscr='+document.form1.q02_inscr.value+'&';
-      query_string    += 'p58_codproc='+document.form1.p58_codproc.value+'&';
-      
+
+      var query_string = 'cai4_recibo003.php?';
+      query_string     += 'z01_numcgm='+document.form1.z01_numcgm.value+'&';
+      query_string     += 'j01_matric='+document.form1.j01_matric.value+'&';
+      query_string     += 'q02_inscr='+document.form1.q02_inscr.value+'&';
+      query_string     += 'p58_codproc='+document.form1.p58_codproc.value+'&';
+
       var codrece = '';
       var vlrrece = '';
       var bota    = '';
       var codtaxa = '';
       var codrecu = '';
       var codcpca = '';
-  
+      var codcomplemento = '';
+
       for (i = 1; i < tab.rows.length; i++) {
-        
+
         codrece += bota+tab.rows[i].cells[0].innerHTML;
         codtaxa += bota+tab.rows[i].cells[3].innerHTML;
         vlrrece += bota+tab.rows[i].cells[5].innerHTML;
         codrecu += bota+tab.rows[i].cells[2].innerHTML;
         codcpca += bota+tab.rows[i].cells[6].innerHTML;
-        bota = 'YY'; 
+        codcomplemento += bota+tab.rows[i].cells[7].innerHTML;
+        bota = 'YY';
       }
-        
+
       if (document.form1.historico.value == '') {
-        document.form1.historico.value = ' ';     
+        document.form1.historico.value = ' ';
       }
-        
+
       query_string += '&historico='+escape(document.form1.historico.value);
       query_string += '&tipocert='+document.form1.tipo.value;
       query_string += '&mostramenu='+document.form1.mostramenu.value;
@@ -410,15 +415,43 @@ function js_processarecibo(hist) {
       query_string += '&db_datausu='+document.form1.k00_dtoper_ano.value+'-'+document.form1.k00_dtoper_mes.value+'-'+document.form1.k00_dtoper_dia.value;
       query_string += '&k32_ordpag='+document.form1.k32_ordpag.value;
       query_string += '&codrecu='+codrecu;
+      query_string += '&codcomplemento='+codcomplemento;
       query_string += '&arretipo='+document.form1.arretipo.value;
-        
-      jan = window.open('cai4_recibo003.php?'+query_string,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-      jan.moveTo(0,0); 
+
+      if (isTEF) {
+          const sParametrosTef = js_ajustaParametrosTelaTef(query_string, vlrrece);
+
+          query_string += '&isTef=true';
+          query_string += '&tipoEmissao=1';
+          query_string += '&parametrosTef='+sParametrosTef;
+
+          document.location.href = query_string;
+          return;
+      }
+
+      jan = window.open(query_string,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+      jan.moveTo(0,0);
       if (document.form1.incproc.value!=""&&document.form1.incproc.value=='true') {
         parent.location.href='pro4_protprocesso001.php';
       }
     }
   }
+}
+
+function js_ajustaParametrosTelaTef(sUrlGeraRecibo, nValor) {
+    let valor = 0;
+    nValor.split("YY").forEach((value) => {
+        valor += Number(value);
+    });
+
+    const oParam = new Object;
+    oParam.sValor = valor;
+    oParam.sUrlGeraRecibo = sUrlGeraRecibo;
+    oParam.iContaAutenticadora = contaAutenticadora;
+    oParam.idAutenticadora = idAutenticadora;
+    oParam.iTipoDebito = tipoDebitoTef;
+
+    return encodeURIComponent(JSON.stringify(oParam));
 }
 
 function js_vertaxas() {
@@ -429,9 +462,9 @@ function js_removelinha(linha) {
 
   var tab = (document.all)?document.all.tab:document.getElementById('tab');
   for (i = 0; i < tab.rows.length; i++) {
-  
+
     if(linha == tab.rows[i].id) {
-    
+
       tab.deleteRow(i);
 	    break;
 	  }
@@ -445,7 +478,7 @@ function js_removelinha(linha) {
 <?
   if (!isset($mostramenu) || $mostramenu == 'f') {
 ?>
-  <tr> 
+  <tr>
     <td width="360">&nbsp;</td>
     <td width="263">&nbsp;</td>
     <td width="25">&nbsp;</td>
@@ -453,7 +486,7 @@ function js_removelinha(linha) {
   </tr>
 <?
   }
-?>  
+?>
 </table>
 <br>
 <center>
@@ -462,8 +495,8 @@ function js_removelinha(linha) {
     <strong>Recibo de Receita</strong>
   </legend>
   <table width="100%" border="0" cellpadding="0" cellspacing="0">
-    <?  
-      db_input('reciboRetencao', 10, '', true, 'hidden', 3); 
+    <?php
+      db_input('reciboRetencao', 10, '', true, 'hidden', 3);
     ?>
     <tr id="infContr">
       <td nowrap="nowrap">
@@ -480,15 +513,15 @@ function js_removelinha(linha) {
                   <td nowrap="nowrap" width="60px">
                     <?
                       if ( ( isset($p58_codproc) && $p58_codproc!="" ) && ( isset($incproc) && $incproc==true) ) {
-                        
+
                         $result_prot = $clprotprocesso->sql_record($clprotprocesso->sql_query($p58_codproc, "p58_numcgm,z01_nome,p58_obs as historico"));
                         if ($clprotprocesso->numrows > 0) {
-                          
+
                           db_fieldsmemory($result_prot,0);
                           $z01_numcgm = $p58_numcgm;
                         }
                       }
-                      
+
                       db_input('incproc', 10, '', true, 'hidden', 3);
                       db_input('z01_numcgm', 10, $Iz01_numcgm, true, 'text', $dbopcao, ' onchange="js_mostranomes(false);"');
                     ?>
@@ -553,7 +586,7 @@ function js_removelinha(linha) {
                         $k00_dtoper_mes = date('m',db_getsession("DB_datausu"));
                         $k00_dtoper_ano = date('Y',db_getsession("DB_datausu"));
                       }
-                      
+
                       $Ik00_dtoper = '9';
                       db_inputdata('k00_dtoper', $k00_dtoper_dia, $k00_dtoper_mes, $k00_dtoper_ano, true, 'text', $dbopcao);
                     ?>
@@ -563,10 +596,10 @@ function js_removelinha(linha) {
             </td>
             <td nowrap="nowrap" valign="top">
               <table border="0" width="100%">
-                <tr> 
+                <tr>
                   <td nowrap="nowrap" colspan="4">&nbsp;</td>
                 </tr>
-                <tr> 
+                <tr>
                   <td nowrap="nowrap">
                     <?=$Lz01_ender?>
                   </td>
@@ -576,7 +609,7 @@ function js_removelinha(linha) {
                     ?>
                   </td>
                 </tr>
-                <tr> 
+                <tr>
                   <td nowrap="nowrap">
                     <?=$Lz01_munic?>
                   </td>
@@ -586,7 +619,7 @@ function js_removelinha(linha) {
                     ?>
                   </td>
                 </tr>
-                <tr> 
+                <tr>
                   <td nowrap="nowrap">
                     <?=$Lz01_cep?>
                   </td>
@@ -604,7 +637,7 @@ function js_removelinha(linha) {
                     ?>
                   </td>
                 </tr>
-                <tr> 
+                <tr>
                   <td nowrap="nowrap" colspan="4">&nbsp;</td>
                 </tr>
               </table>
@@ -617,7 +650,7 @@ function js_removelinha(linha) {
       /**
        * Só mostra campo ordem de pagamento se for emissão de recibo de retenção.
        */
-      if ($lEmissaoReciboRetencao) { 
+      if ($lEmissaoReciboRetencao) {
     ?>
     <tr>
       <td nowrap="nowrap" valign="top">
@@ -654,7 +687,7 @@ function js_removelinha(linha) {
         </table>
       </td>
     </tr>
-    <? 
+    <?
       } else {
         db_input('k32_ordpag', 10, $Ik32_ordpag, true, 'hidden', 3);
       }
@@ -664,7 +697,7 @@ function js_removelinha(linha) {
         <fieldset class="fieldsetinterno">
           <legend>
             <b>Dados da Receita/Taxas</b>
-          </legend>  
+          </legend>
             <table border="0" width="100%" height="100%">
               <tr>
                 <td nowrap="nowrap" width="130px">
@@ -680,15 +713,15 @@ function js_removelinha(linha) {
                 <td nowrap="nowrap">
                   <?
                     db_input('codsubrec', 40, $Icodsubrec, true, 'hidden', 3);
-                    db_input('k07_descr', 100, $Ik07_descr,true, 'hidden', 3);          
+                    db_input('k07_descr', 100, $Ik07_descr,true, 'hidden', 3);
                     db_input('k02_drecei', 40, $Ik02_drecei, true, 'text', 3);
-                  ?>  
+                  ?>
                 </td>
                 <td nowrap="nowrap" width="20px">
                   <input name="taxa" value='Taxas' type="button" id="taxa" onclick="js_vertaxas()">
                 </td>
                 <td nowrap="nowrap" width="244px">
-                  <input name="valor" type="text" id="valor" size="10" maxlength="10" onBlur="js_valor(this);" 
+                  <input name="valor" type="text" id="valor" size="10" maxlength="10" onBlur="js_valor(this);"
                          onKeyUp="this.value = this.value.replace(',','.')">
                 </td>
                 <td nowrap="nowrap">
@@ -698,30 +731,40 @@ function js_removelinha(linha) {
                   <input name="gravar" type="button" id="gravar" value="Gravar" onClick="js_gravareceita();">
                 </td>
               </tr>
-              <tr>
+                <tr>
                 <td nowrap="nowrap">
                   <b>Recurso:</b>
                 </td>
                 <td nowrap="nowrap" colspan="2">
-                  <?
+                  <?php
                     $dbwhere = " o15_datalimite is null or o15_datalimite > '".date('Y-m-d',db_getsession('DB_datausu'))."'";
-                    $rs = $clorctiporec->sql_record($clorctiporec->sql_query(null,"o15_codigo,o15_descr","o15_codigo", $dbwhere));
-                    db_selectrecord('o15_codigo', $rs, true, 2,'','','','0-Nenhum');       
+                    $rs = $clorctiporec->sql_record($clorctiporec->sql_query(null,"distinct o15_recurso, o15_descr","o15_recurso", $dbwhere));
+                    db_selectrecord('o15_recurso', $rs, true, 2,"","","","","pesquisaComplementos()");
                   ?>
                 </td>
                 <td nowrap="nowrap" align="center">
                   <b>Tipo:</b>
                 </td>
                 <td nowrap="nowrap" colspan="4">
-                  <input name="arretipo" type="text" value="<?=@$arretipo?>" size="10" 
+                  <input name="arretipo" type="text" value="<?=@$arretipo?>" size="10"
                          readonly style="background-color:#DEB887">
-                  <input name="descrarretipo" type="text" value="<?=@$descrarretipo?>" size="30" 
+                  <input name="descrarretipo" type="text" value="<?=@$descrarretipo?>" size="30"
                          readonly style="background-color:#DEB887">
                   <input name="arretipoant" type="hidden" value="<?=@$arretipoant?>" size="10">
                   <input name="descrarretipoant" type="hidden" value="<?=@$descrarretipoant?>" size="20">
                 </td>
               </tr>
-              <tr id="boxConCarPeculiar">
+                <tr>
+                    <td class="bold">
+                        <label for="selectComplementoFonte">Complemento do Recurso:</label>
+                    </td>
+                    <td>
+                        <select id="selectComplementoFonte">
+                            <option value="0">0 - NÃO SE APLICA</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="boxConCarPeculiar">
                 <td nowrap="nowrap" width="130px" id="lnkConcarpeculiar">
                   <?
                     db_ancora(@$Lk130_concarpeculiar, "js_pesquisak130_concarpeculiar(true);", $dbopcao);
@@ -733,9 +776,9 @@ function js_removelinha(linha) {
                   ?>
                 </td>
                 <td nowrap="nowrap">
-                  <?         
+                  <?
                     db_input('c58_descr', 40, $Ic58_descr, true, 'text', 3);
-                  ?>  
+                  ?>
                 </td>
                 <td nowrap="nowrap" colspan="2">&nbsp;</td>
               </tr>
@@ -751,7 +794,7 @@ function js_removelinha(linha) {
             <b>Receitas Lançadas</b>
           </legend>
             <table width="100%" border="0" cellpadding="0" cellspacing="0" id="tab" align="center" class="table-box">
-              <tr class="table_header"> 
+              <tr class="table_header">
                 <th class="linhagrid" width="46" align="center" nowrap>Receita</th>
                 <th class="linhagrid" width="240" align="center" nowrap>Descri&ccedil;&atilde;o</th>
                 <th class="linhagrid" width="15" align="center" nowrap>Rec</th>
@@ -759,6 +802,7 @@ function js_removelinha(linha) {
                 <th class="linhagrid" width="177" align="center" nowrap>Descri&ccedil;&atilde;o</th>
                 <th class="linhagrid" width="109" align="center" nowrap>Valor</th>
                 <th class="linhagrid" width="109" align="center" nowrap>CP/CA</th>
+                <th class="linhagrid" width="109" align="center" nowrap>Comp. Rec.</th>
                 <th class="linhagrid" width="67" align="center" nowrap>Cancela</th>
               </tr>
             </table>
@@ -771,7 +815,7 @@ function js_removelinha(linha) {
           <legend>
             <b>Histórico</b>
           </legend>
-          <textarea name="historico" cols="100" rows="5" id="historico" nowrap 
+          <textarea name="historico" cols="100" rows="5" id="historico" nowrap
                     onkeyup='js_controlatextarea(this.name, 900, "r");'><?=@$historico?></textarea>
         </fieldset>
       </td>
@@ -785,14 +829,15 @@ function js_removelinha(linha) {
   <tr>
     <td nowrap="nowrap" align="center">
       <input name="confirma" type="button" id="confirma" value="Confirmar"   onClick="js_processarecibo()">
-      <input name="cancela"  type="button" id="cancela"  value="Limpa"       onclick="document.form1.historico.value=''"> 
+      <input name="cancela"  type="button" id="cancela"  value="Limpa"       onclick="document.form1.historico.value=''">
       <input name="novo"     type="button" id="novo"     value="Novo Recibo" onclick="js_novo()">
+      <input name="btnTef" id="btnTef" type="button" id="btnTef" value="TEF" onClick="js_processarecibo(true)" style="display: none">
     </td>
   </tr>
 </table>
 </center>
 </form>
-<? 
+<?
  if (!isset($mostramenu) || $mostramenu == 'f') {
     db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
  }
@@ -805,7 +850,22 @@ function js_removelinha(linha) {
     echo " document.getElementById('infContr').style.display = 'none'; ";
   }
 ?>
+var complementoAlterado = null;
 
+function pesquisaComplementos() {
+
+    var combo = $('selectComplementoFonte');
+    AjaxRequest.create(
+        'con4_complementoFonte001.RPC.php',
+        {'exec': 'getComplementosPorRecurso', 'codigo_recurso' : $F('o15_recurso') },
+        function (retorno, erro) {
+            combo.options.length = 0;
+            retorno.complementos.each( (complemento) => {
+                combo.add(new Option(complemento.descricao, complemento.codigo));
+            });
+        }
+    ).setMessage('Aguarde, carregando complementos do recurso...').execute();
+}
 
 
 /*
@@ -818,14 +878,14 @@ function js_removelinha(linha) {
   var iReceita         = $F("k02_codigo");
 	var oParametros      = new Object();
  	var msgDiv           = "Verificando grupo receita selecionado \n Aguarde ...";
-                       
+
  	oParametros.exec     = 'verificaGrupoReceita';
  	oParametros.iReceita = iReceita;
 
   if (iReceita == '' || iReceita == null) {
     return false;
 	}
- 	
+
  	js_divCarregando(msgDiv,'msgBox');
 
  	new Ajax.Request(sRPC,
@@ -838,7 +898,9 @@ function js_removelinha(linha) {
  function js_retornoVerificacaoReceita(oAjax) {
 
  	js_removeObj('msgBox');
- 	var oRetorno = eval("(" + oAjax.responseText + ")");
+ 	var oRetorno = JSON.parse(oAjax.responseText);
+
+     pesquisaComplementos();
 
  	if (oRetorno.iStatus == '2') {
 
@@ -848,22 +910,14 @@ function js_removelinha(linha) {
  	  $('k07_descr') .value = '';
     $('codsubrec') .value = '';
 
- 	  
+
  	  return false;
  	}
  }
- 
+
  $('k02_codigo').observe("change", function() {
 	 js_verificaReceita();
  });
-
-
-
-
-
-
-
-
 
 var sUrlRpc = 'cai4_recibo.RPC.php';
 
@@ -879,7 +933,7 @@ function js_pesquisae60_codemp(mostra) {
   if (mostra==true) {
     js_OpenJanelaIframe("<?=$sIframeLocation?>",'db_iframe_empempenho02','func_empempenho.php?funcao_js=parent.js_mostraempempenho2|e60_codemp','Pesquisa',true);
   } else {
-     // js_OpenJanelaIframe('top.corpo','db_iframe_empempenho02','func_empempenho.php?pesquisa_chave='+document.form1.e60_numemp.value+'&funcao_js=parent.js_mostraempempenho','Pesqui
+     // js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho02','func_empempenho.php?pesquisa_chave='+document.form1.e60_numemp.value+'&funcao_js=parent.js_mostraempempenho','Pesqui
   }
 }
 
@@ -888,13 +942,13 @@ function js_controlatextarea(objt, max, dv) {
   obj = eval('document.form1.'+objt);
   atu = max-obj.value.length;
   if (obj.value.length > max) {
-  
+
     alert('A mensagem pode ter no máximo '+max+' caracteres !');
     obj.value = obj.value.substr(0,max);
     obj.select();
     obj.focus();
   }
-  
+
   if (obj.value.length == 0) {
     document.getElementById(eval('dv')).innerHTML = '';
   }
@@ -904,7 +958,7 @@ function js_linha(evt,val){
   if(evt.keyCode==13){
      return false;
   }
-   
+
 }
 
 function js_mostraordpag(mostra) {
@@ -917,7 +971,7 @@ function js_mostraordpag(mostra) {
   }
 }
 
-function js_mostraordpag1(chave,emp,ano,cgm,nome){  
+function js_mostraordpag1(chave,emp,ano,cgm,nome){
 var codemp = emp+'/'+ano;
   document.form1.k32_ordpag.value = chave;
   document.form1.codempenho.value = codemp;
@@ -944,56 +998,69 @@ function js_dadosCgm(cgm,nome,munic,cep,uf,ender,erro){
 
   if (!erro) {
 
-    document.form1.z01_numcgm.value = cgm;  
-    document.form1.z01_nome.value   = nome; 
-    document.form1.DBF_munic.value  = munic; 
-    document.form1.DBF_cep.value    = cep; 
-    document.form1.DBF_uf.value     = uf; 
-    document.form1.DBF_ender.value  = ender; 
-    
+    document.form1.z01_numcgm.value = cgm;
+    document.form1.z01_nome.value   = nome;
+    document.form1.DBF_munic.value  = munic;
+    document.form1.DBF_cep.value    = cep;
+    document.form1.DBF_uf.value     = uf;
+    document.form1.DBF_ender.value  = ender;
+
   }
 }
 
-function js_mostracodproc(mostra){
- if(mostra==true){
-    js_OpenJanelaIframe("<?=$sIframeLocation?>",'db_iframe_proc','func_protprocesso.php?funcao_js=parent.js_mostraproc1|p58_codproc|p58_numcgm|z01_nome','Pesquisa',true);
-  }else{
+function js_mostracodproc(mostra) {
+
+  if(mostra==true) {
+
+    js_OpenJanelaIframe(
+      "<?=$sIframeLocation?>",
+      'db_iframe_proc',
+      'func_protprocesso.php?funcao_js=parent.js_mostraproc1|p58_codproc|p58_numcgm|z01_nome',
+      'Pesquisa',
+      mostra
+    );
+  } else {
+
     if(document.form1.p58_codproc.value != '') {
-        js_OpenJanelaIframe('','db_iframe_proc','func_protprocesso.php?pesquisa_chave='+document.form1.p58_codproc.value+'&funcao_js=parent.js_mostraproc','Pesquisa',false);
+
+      js_OpenJanelaIframe(
+        '',
+        'db_iframe_proc',
+        'func_protprocesso.php?pesquisa_chave='+document.form1.p58_codproc.value+'&funcao_js=parent.js_mostraproc',
+        'Pesquisa',
+        mostra
+      );
     }
   }
 }
 
-function js_mostraproc(chave,obs,erro){
-  if(erro==true){ 
-    document.form1.p58_codproc.focus(); 
-    document.form1.p58_codproc.value = ''; 
-  }else{
-     document.form1.z01_numcgm.value = chave; 
-     document.form1.z01_nome.value = obs; 
-     document.form1.historico.value = ''; 
-  }   
+function js_mostraproc(chave, obs, erro) {
+
+  if(erro === true) {
+
+    document.form1.p58_codproc.focus();
+
+    document.form1.p58_codproc.value = '';
+    document.form1.z01_numcgm.value  = '';
+    document.form1.z01_nome.value    = '';
+  } else {
+
+     document.form1.z01_numcgm.value = arguments[3];
+     document.form1.z01_nome.value   = arguments[1];
+     document.form1.historico.value  = '';
+  }
 }
 
-function js_mostraproc1(chave1,n,z,f){  
+function js_mostraproc1(chave1,n,z,f){
   document.form1.z01_numcgm.value = n;
   document.form1.z01_nome.value = z;
   document.form1.p58_codproc.value = chave1;
-  //document.form1.historico.value = f;
   db_iframe_proc.hide();
 }
 
 function js_mostranomes(mostra){
   if(mostra==true){
     js_OpenJanelaIframe("<?=$sIframeLocation?>",'db_iframe_nome','func_nome.php?testanome=true&funcao_js=parent.js_preenche|0|1','Pesquisa',true);
-    /*
-    func_iframe.jan.location.href = 'func_nome.php?testanome=true&funcao_js=parent.js_preenche|0|1';
-    func_iframe.setLargura(770);
-    func_iframe.setAltura(430);
-    func_iframe.mostraMsg();
-    func_iframe.show();
-    func_iframe.focus();
-    */
   }else{
     js_OpenJanelaIframe("<?=$sIframeLocation?>",'db_iframe_nome','func_nome.php?testanome=true&pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_preenche1','Pesquisa',false);
   }
@@ -1023,56 +1090,60 @@ function js_preenche(chave,chave1){
 */
 function js_pesquisatabrec(mostra) {
 
-  if (mostra==true) {
-  
-    js_OpenJanelaIframe("<?=$sIframeLocation?>", 
-                        'db_iframe_tabrec',
-                        'func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_drecei|recurso|arretipo|k00_descr',
-                        'Pesquisa',true);
-  } else {
-  
-    if (document.form1.k02_codigo.value != '') {
-    
-      js_OpenJanelaIframe("<?=$sIframeLocation?>",
-                          'db_iframe_tabrec',
-                          'func_tabrec.php?pesquisa_chave='+
-                          document.form1.k02_codigo.value+'&funcao_js=parent.js_mostratabrec',
-                          'Pesquisa',false);
+    if (mostra) {
+        js_OpenJanelaIframe(
+            "<?=$sIframeLocation?>",
+            'db_iframe_tabrec',
+            'func_tabrec_fonte_recurso.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_drecei|dl_Recurso|dl_Tipo_Debito|k00_descr',
+            'Pesquisa',
+            true
+        );
     } else {
-     
-      document.form1.k02_drecei.value = '';
-      js_desabilitaConCarPeculiar(false);
+        const receita = document.form1.k02_codigo.value;
+
+        if (!empty(receita)) {
+            js_OpenJanelaIframe(
+                "<?=$sIframeLocation?>",
+                'db_iframe_tabrec',
+                `func_tabrec_fonte_recurso.php?pesquisa_chave=${receita}&funcao_js=parent.js_mostratabrec`,
+                'Pesquisa',
+                false
+            );
+        } else {
+            document.form1.k02_drecei.value = '';
+            js_desabilitaConCarPeculiar(false);
+        }
     }
-  }
 }
 
 function js_mostratabrec(chave2,erro,chave3,chave4,chave5){
-  
- // document.form1.k02_codigo.value = chave1;
-  document.form1.k02_drecei.value  = chave2;
-  document.form1.o15_codigo.value  = chave3;
-  document.form1.arretipo.value    = chave4;
-  document.form1.descrarretipo.value = chave5;
-  document.form1.o15_codigo.onchange();
-  
-  if(erro==true){
-     document.form1.k02_codigo.focus();
-     document.form1.k02_codigo.value = '';
-  } else {
-    js_buscaConCarPeculiar();
-    js_verificaReceita();
-  }
+
+    document.form1.k02_drecei.value = chave2;
+    document.form1.o15_recurso.value = chave3;
+    document.form1.arretipo.value = chave4;
+    document.form1.descrarretipo.value = chave5;
+    document.form1.o15_recurso.onchange();
+
+    if (erro) {
+        document.form1.k02_codigo.focus();
+        document.form1.k02_codigo.value = '';
+    } else {
+        js_ajustaBotaoTef(chave4);
+        js_buscaConCarPeculiar();
+        js_verificaReceita();
+    }
 }
 
 function js_mostratabrec1(chave1,chave2,chave3,chave4,chave5) {
      document.form1.k02_codigo.value = chave1;
      document.form1.k02_drecei.value = chave2;
-     document.form1.o15_codigo.value = chave3;
+     document.form1.o15_recurso.value = chave3;
      document.form1.arretipo.value   = chave4;
      document.form1.descrarretipo.value = chave5;
-     document.form1.o15_codigo.onchange();
-     
+     document.form1.o15_recurso.onchange();
+
      db_iframe_tabrec.hide();
+     js_ajustaBotaoTef(chave4);
      js_buscaConCarPeculiar();
      js_verificaReceita();
 }
@@ -1139,11 +1210,11 @@ function js_gravarec(cod,descr,valor) {
 function js_iframeok(){
   //FUNCAO PARA PARAR A EXECUÇÃO DO PROGRAMA ATEH Q SEJA CRIADO O IFRAME
    while (!carregado){
-    /* 
-     FICA DENTRO DO WHILE ATEH O INPUT HIDDEN CARREGADO seja CRIADO 
-     QUE ESTA NO FINAL DO IFRAME  
+    /*
+     FICA DENTRO DO WHILE ATEH O INPUT HIDDEN CARREGADO seja CRIADO
+     QUE ESTA NO FINAL DO IFRAME
     */
-   }  
+   }
 }
 
 function js_pesquisak130_concarpeculiar(mostra) {
@@ -1151,7 +1222,7 @@ function js_pesquisak130_concarpeculiar(mostra) {
  if (mostra == true) {
     js_OpenJanelaIframe('','db_iframe_concarpeculiar','func_concarpeculiar.php?funcao_js=parent.js_mostraconcarpeculiar1|c58_sequencial|c58_descr','Pesquisa',true);
   } else {
-    
+
     if ($('k130_concarpeculiar').value != '') {
       js_OpenJanelaIframe('','db_iframe_concarpeculiar','func_concarpeculiar.php?pesquisa_chave='+$('k130_concarpeculiar').value+'&funcao_js=parent.js_mostraconcarpeculiar','Pesquisa',false);
     } else {
@@ -1161,7 +1232,7 @@ function js_pesquisak130_concarpeculiar(mostra) {
 }
 
 function js_mostraconcarpeculiar(chave1, erro) {
- 
+
   if (erro == true) {
 
     $('k130_concarpeculiar').value = '';
@@ -1169,10 +1240,10 @@ function js_mostraconcarpeculiar(chave1, erro) {
     $('k130_concarpeculiar').focus;
   } else {
     $('c58_descr').value           = chave1;
-  }   
+  }
 }
 
-function js_mostraconcarpeculiar1(chave1, chave2) {  
+function js_mostraconcarpeculiar1(chave1, chave2) {
 
   $('k130_concarpeculiar').value = chave1;
   $('c58_descr').value           = chave2;
@@ -1185,9 +1256,9 @@ function js_mostraconcarpeculiar1(chave1, chave2) {
 function js_buscaConCarPeculiar() {
 
   if ($('k02_codigo').value != "") {
-    
+
     js_divCarregando('Aguarde pesquisando...', 'msgBox');
-    
+
     var oParam            = new Object();
     oParam.exec           = 'getConCarPeculiar';
     oParam.iCodigoReceita = $('k02_codigo').value;
@@ -1204,18 +1275,18 @@ function js_buscaConCarPeculiar() {
 function js_retornoConCarPeculiar(oAjax) {
 
   js_removeObj("msgBox");
-  
-  var oRetorno = eval("("+oAjax.responseText+")");
+
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 2) {
-  
+
     alert(oRetorno.message.urlDecode());
     js_desabilitaConCarPeculiar(false);
     return false;
   } else {
-  
+
     $('k130_concarpeculiar').value = oRetorno.o70_concarpeculiar.replace(/\./g,"");
     js_pesquisak130_concarpeculiar(false);
-    
+
     if ($('k130_concarpeculiar').value != 0) {
       js_desabilitaConCarPeculiar(true);
     } else {
@@ -1226,33 +1297,55 @@ function js_retornoConCarPeculiar(oAjax) {
 }
 
 function js_desabilitaConCarPeculiar(lMudar) {
-  
+
   if (lMudar) {
-  
+
     $('k130_concarpeculiar').style.backgroundColor = "#DEB887";
     $('k130_concarpeculiar').setAttribute("readonly", "readonly");
-    
+
     var sContent = "  <strong>C.Peculiar/C.Aplicação:</strong>";
   } else {
-  
+
     $('k130_concarpeculiar').style.backgroundColor = "#FFFFFF";
     $('k130_concarpeculiar').removeAttribute("readonly");
-  
+
     var sContent  = "<a href='#' class='dbancora' style='text-decoration:underline;'";
         sContent += "   onclick='js_pesquisak130_concarpeculiar(true);'>";
         sContent += "  <strong>C.Peculiar/C.Aplicação:</strong>";
         sContent += "</a>";
-  } 
-  
+  }
+
   $('lnkConcarpeculiar').innerHTML = sContent;
+}
+
+let contaAutenticadora = null;
+let tipoDebitoTef = null;
+let idAutenticadora = null;
+
+function js_ajustaBotaoTef(tipoDebito) {
+    console.log("okok");
+    new AjaxRequest("cai3_gerfinanc.RPC.php", {sExecucao: "verificaLiberaTef", tipoDebito}, (oRetorno, lErro) => {
+        if (!lErro) {
+            if (oRetorno.liberaTef) {
+                $("btnTef").show();
+                contaAutenticadora = oRetorno.contaAutenticadora;
+                tipoDebitoTef = tipoDebito;
+                idAutenticadora = oRetorno.idAutenticadora;
+            } else {
+                $("btnTef").hide();
+            }
+        } else {
+            $("btnTef").hide();
+        }
+    }).execute();
 }
 </script>
 <?
 if ((isset($codtipo)&&$codtipo!="")&&(isset($incproc)&&$incproc==true)) {
-  
+
   $result_procrec=$clprocrec->sql_record($clprocrec->sql_query($codtipo));
   for ($w=0;$w<$clprocrec->numrows;$w++) {
-    
+
     db_fieldsmemory($result_procrec,$w);
     echo "<script>js_gravarec($p52_codrec,'$k02_drecei',$p52_valor);</script>";
     flush();
@@ -1260,8 +1353,8 @@ if ((isset($codtipo)&&$codtipo!="")&&(isset($incproc)&&$incproc==true)) {
 }
 
 if (isset($mostramenu)&&$mostramenu=='t') {
-  
-  sleep(2); 
+
+  sleep(2);
   echo "<script>js_iframeok();</script>";
   echo "<script>document.form1.mostramenu.value = 't';</script>";
   echo "<script>js_mostranomes(false);</script>";
@@ -1278,7 +1371,7 @@ if (isset($mostramenu)&&$mostramenu=='t') {
   $rsTaxagruporeg = $cltaxagruporeg->sql_record($sTaxaGrupoReq);
   $numrows = $cltaxagruporeg->numrows;
   for ($w=0;$w<$numrows;$w++) {
-    
+
     db_fieldsmemory($rsTaxagruporeg,$w);
     echo "<script>js_gravarec($k02_codigo,'$k02_drecei',$k07_valorf);</script>";
   }

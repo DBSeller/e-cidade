@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,22 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cargrup_classe.php");
-include("dbforms/db_funcoes.php");
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_cargrup_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+parse_str($_SERVER["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clcargrup = new cl_cargrup;
-$db_opcao = 3;
-$db_botao = false;
-if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir"){
+$db_opcao  = 3;
+$db_botao  = false;
+
+if ((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"]) == "Excluir") {
+  
   db_inicio_transacao();
   $clcargrup->excluir($j32_grupo);
   db_fim_transacao();
-}else if(isset($chavepesquisa)){
+
+} else if (isset($chavepesquisa)) {
+
    $result = $clcargrup->sql_record($clcargrup->sql_query($chavepesquisa)); 
    db_fieldsmemory($result,0);
    $db_botao = true;
@@ -54,50 +59,26 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
-function js_load_cargrup(){
-  <?
-    if(!isset($chavepesquisa)){
+function js_load_cargrup() {
+  <?php
+    if (!isset($chavepesquisa)) {
        echo "js_pesquisa()";
-
     }
-
-
   ?>
 }
 </script>
-
-
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="js_load_cargrup();" >
-
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmcargrup.php");
-	?>
-    </center>
-	</td>
-  </tr>
-</table>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
+<body class="body-default" onLoad="js_load_cargrup();" >
+	<?php
+    include(modification("forms/db_frmcargrup.php"));
+    db_menu();
+  ?>
 </body>
 </html>
-<?
-if($clcargrup->erro_status=="0"){
+<?php
+if ($clcargrup->erro_status == "0") {
   $clcargrup->erro(true,false);
-}else{
+} else {
   $clcargrup->erro(true,true);
-};
+}
 ?>

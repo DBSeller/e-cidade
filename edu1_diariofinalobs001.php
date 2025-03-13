@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_diariofinal_classe.php");
-require_once("classes/db_diario_classe.php");
-require_once("classes/db_diarioavaliacao_classe.php");
-require_once("classes/db_regencia_classe.php");
-require_once("classes/db_periodoavaliacao_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_diariofinal_classe.php"));
+require_once(modification("classes/db_diario_classe.php"));
+require_once(modification("classes/db_diarioavaliacao_classe.php"));
+require_once(modification("classes/db_regencia_classe.php"));
+require_once(modification("classes/db_periodoavaliacao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $resultedu          = eduparametros(db_getsession("DB_coddepto"));
 $cldiariofinal      = new cl_diariofinal;
@@ -52,7 +52,7 @@ if (isset($alterar)) {
   $sql_reg   .= " FROM diariofinal ";
   $sql_reg   .= "  inner join diario on ed95_i_codigo = ed74_i_diario ";
   $sql_reg   .= " WHERE ed74_i_codigo = $ed93_i_diarioavaliacao ";
-  $result_reg = pg_query($sql_reg);
+  $result_reg = db_query($sql_reg);
   db_fieldsmemory($result_reg,0);
   $cldiariofinal->ed74_t_obs           = $ed74_t_obs;
   $cldiariofinal->ed74_i_codigo        = $ed93_i_diarioavaliacao;
@@ -93,7 +93,7 @@ if (isset($alterar)) {
  <tr>
   <td valign="top" bgcolor="#CCCCCC">
    <center>
-    <?include("forms/db_frmdiariofinalobs.php");?>
+    <?include(modification("forms/db_frmdiariofinalobs.php"));?>
    </center>
   </td>
  </tr>

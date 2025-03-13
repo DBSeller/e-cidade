@@ -1,0 +1,1 @@
+select fc_set_pg_search_path();

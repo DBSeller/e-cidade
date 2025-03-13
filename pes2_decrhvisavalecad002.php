@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/scpdf.php");
-include("fpdf151/assinatura.php");
-include("classes/db_rhvisavale_classe.php");
-include("classes/db_rhvisavalecad_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_db_docparag_classe.php");
+include(modification("fpdf151/scpdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("classes/db_rhvisavale_classe.php"));
+include(modification("classes/db_rhvisavalecad_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_db_docparag_classe.php"));
 $classinatura = new cl_assinatura;
 $clrhvisavale = new cl_rhvisavale;
 $clrhvisavalecad = new cl_rhvisavalecad;

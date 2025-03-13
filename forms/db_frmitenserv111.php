@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -103,7 +103,7 @@ db_inputdata('cm10_d_data',@$cm10_d_data_dia,@$cm10_d_data_mes,@$cm10_d_data_ano
     </td>
     <td>
        <?
-       include("classes/db_taxaserv_classe.php");
+       include(modification("classes/db_taxaserv_classe.php"));
        $cltaxaserv = new cl_taxaserv;
        $clrotulo->label("cm11_f_valor");
 
@@ -190,10 +190,10 @@ db_textarea('cm10_t_obs',3,50,$Icm10_t_obs,true,'text',$db_opcao,"")
 <script>
 function js_pesquisacm10_i_taxaserv(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_taxaserv','func_taxaserv.php?funcao_js=parent.js_mostrataxaserv1|cm11_i_codigo|cm11_c_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_taxaserv','func_taxaserv.php?funcao_js=parent.js_mostrataxaserv1|cm11_i_codigo|cm11_c_descr','Pesquisa',true);
   }else{
      if(document.form1.cm10_i_taxaserv.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_taxaserv','func_taxaserv.php?pesquisa_chave='+document.form1.cm10_i_taxaserv.value+'&funcao_js=parent.js_mostrataxaserv','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_taxaserv','func_taxaserv.php?pesquisa_chave='+document.form1.cm10_i_taxaserv.value+'&funcao_js=parent.js_mostrataxaserv','Pesquisa',false);
      }else{
        document.form1.cm11_c_descr.value = '';
      }
@@ -213,10 +213,10 @@ function js_mostrataxaserv1(chave1,chave2){
 }
 function js_pesquisacm10_i_sepultamento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_sepultamentos','func_sepultamentos.php?funcao_js=parent.js_mostrasepultamentos1|cm01_i_codigo|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sepultamentos','func_sepultamentos.php?funcao_js=parent.js_mostrasepultamentos1|cm01_i_codigo|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.cm10_i_sepultamento.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_sepultamentos','func_sepultamentos.php?pesquisa_chave='+document.form1.cm10_i_sepultamento.value+'&funcao_js=parent.js_mostrasepultamentos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sepultamentos','func_sepultamentos.php?pesquisa_chave='+document.form1.cm10_i_sepultamento.value+'&funcao_js=parent.js_mostrasepultamentos','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = '';
      }
@@ -236,10 +236,10 @@ function js_mostrasepultamentos1(chave1,chave2){
 }
 function js_pesquisacm10_i_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
      if(document.form1.cm10_i_usuario.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.cm10_i_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.cm10_i_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
      }else{
        document.form1.nome.value = '';
      }
@@ -258,7 +258,7 @@ function js_mostradb_usuarios1(chave1,chave2){
   db_iframe_db_usuarios.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_itenserv','func_itenserv.php?funcao_js=parent.js_preenchepesquisa|cm10_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itenserv','func_itenserv.php?funcao_js=parent.js_preenchepesquisa|cm10_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_itenserv.hide();

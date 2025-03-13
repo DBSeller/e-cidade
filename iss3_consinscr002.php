@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
 ?>
 <html>
   <head>
@@ -52,15 +52,16 @@
 		                                    q02_dtbaix
 		                     from issbase 
                    inner join cgm on issbase.q02_numcgm = z01_numcgm 
-                   left  join issruas on issruas.q02_inscr = issbase.q02_inscr ";
+                   left  join issruas on issruas.q02_inscr = issbase.q02_inscr 
+                   left join issveiculo on issveiculo.q172_issbase = issbase.q02_inscr";
 
               if (isset($pesquisaPorNome)) {
               	// a variavel $pesquisaPorNome retorna com o numro do cgm do registro selecionado 
-                $sql .= " where issbase.q02_numcgm = $pesquisaPorNome ";
+                $sql .= " where issbase.q02_numcgm = $pesquisaPorNome and q172_sequencial is null";
                 db_lovrot($sql,15,"()",$pesquisaPorNome,$funcao_js);
               
               } else if (isset($pesquisaEscritorio)) {
-                $sql .= "  inner join escrito on q10_inscr = issbase.q02_inscr where q10_numcgm = $pesquisaEscritorio	";
+                $sql .= "  inner join escrito on q10_inscr = issbase.q02_inscr where q10_numcgm = $pesquisaEscritorio	and q172_sequencial is null";
                 db_lovrot($sql,15,"()",$pesquisaEscritorio,$funcao_js);
               
               }else if (isset($pesquisaRua)) {
@@ -69,7 +70,7 @@
                   $numero = " and q02_numero = $pesqnum";
                 }  
                 
-                $sql .= " where issruas.j14_codigo = $pesquisaRua $numero	order by q02_numero, q02_compl ";
+                $sql .= " where issruas.j14_codigo = $pesquisaRua $numero	and q172_sequencial is null order by q02_numero, q02_compl ";
 	 	            echo "
 							 	<form name='form1' method='post' action=''>
 							 	  Número:
@@ -80,19 +81,19 @@
 						    db_lovrot($sql,15,"()",$pesquisaRua,$funcao_js);
 						  
               }else if (isset($pesquisaAtividade)) { 	
-						  	$sql .= " inner join tabativ on q07_inscr = issbase.q02_inscr where q07_ativ = $pesquisaAtividade	";
+						  	$sql .= " inner join tabativ on q07_inscr = issbase.q02_inscr where q07_ativ = $pesquisaAtividade	and q172_sequencial is null";
                 db_lovrot($sql,15,"()",$pesquisaAtividade,$funcao_js);
 						  
 						  }else if (isset($pesquisaSocios)) {						   	
-						  	$sql .= " inner join socios on q95_cgmpri = q02_numcgm where q95_tipo = 1 and q95_numcgm = $pesquisaSocios "; 
+						  	$sql .= " inner join socios on q95_cgmpri = q02_numcgm where q95_tipo = 1 and q95_numcgm = $pesquisaSocios and q172_sequencial is null"; 
 						    db_lovrot($sql,15,"()",$pesquisaSocios,$funcao_js);
 						  
 						  }else if (isset($pesquisaBairro)) {						   	
-						  	$sql .= " inner join issbairro on q13_inscr = issbase.q02_inscr where q13_bairro = $pesquisaBairro";
+						  	$sql .= " inner join issbairro on q13_inscr = issbase.q02_inscr where q13_bairro = $pesquisaBairro and q172_sequencial is null";
 						    db_lovrot($sql,15,"()",$pesquisaBairro,$funcao_js);
 
 						  }else if (isset($pesquisaMatriculaImovel)) { 							  	
-						  	$sql .= " inner join issmatric on q05_inscr = issbase.q02_inscr where q05_matric = $pesquisaMatriculaImovel";
+						  	$sql .= " inner join issmatric on q05_inscr = issbase.q02_inscr where q05_matric = $pesquisaMatriculaImovel and q172_sequencial is null";
 						  	db_lovrot($sql,15,"()",$pesquisaMatriculaImovel,$funcao_js);
 						  
 						  }

@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_caddocumentoatributovalor_classe.php");
-require_once("classes/db_cgmdocumento_classe.php");
-require_once("classes/db_db_sysarqcamp_classe.php");
+require_once(modification("classes/db_caddocumentoatributovalor_classe.php"));
+require_once(modification("classes/db_cgmdocumento_classe.php"));
+require_once(modification("classes/db_db_sysarqcamp_classe.php"));
 
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
-require_once("model/Documento.model.php");
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/Documento.model.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -67,7 +67,7 @@ try {
         
     $sSqlCgmDocumento = $clCgmDocumento->sql_query_file(null, "*", "", "z06_numcgm={$iNumCgm}");
     $rsCgmDocumento   = $clCgmDocumento->sql_record($sSqlCgmDocumento);
-    $aCgmDocumento    = db_utils::getColectionByRecord($rsCgmDocumento);
+    $aCgmDocumento    = db_utils::getCollectionByRecord($rsCgmDocumento);
        
     $aDocumentos = array();
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("classes/db_db_cgmatualiza_classe.php");
-include("classes/db_db_cgmatualizaliga_classe.php");
-include("classes/db_cgm_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("classes/db_db_cgmatualiza_classe.php"));
+include(modification("classes/db_db_cgmatualizaliga_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
 $cldb_cgmatualiza = new cl_db_cgmatualiza;
 $cldb_cgmatualizaliga = new cl_db_cgmatualizaliga;
 $cl_cgm = new cl_cgm;
@@ -101,7 +101,7 @@ input {
         $emailc = @$HTTP_POST_VARS["ck_emailc"]=="1"?@$HTTP_POST_VARS["emailc"]:@$HTTP_POST_VARS["z01_emailc"];
 
         if(!empty($numcgm)){
-         $result = pg_exec("UPDATE db_cgmatualiza SET w11_revisado = 't' WHERE w11_sequencial = $retorno") or die("Erro(53) atualizando tabela db_cgmatualiza");
+         $result = db_query("UPDATE db_cgmatualiza SET w11_revisado = 't' WHERE w11_sequencial = $retorno") or die("Erro(53) atualizando tabela db_cgmatualiza");
          if(pg_cmdtuples($result) <= 0)
           db_erro("Erro atualizando tabela db_cgmatualiza.");
            $sql = "UPDATE cgm SET
@@ -126,7 +126,7 @@ input {
                        z01_celcon = '$celcon',
                        z01_emailc = '$emailc'
                    WHERE z01_numcgm = $retorno";
-         $result = pg_query($sql) or die("Erro atualizando CGM $retorno.");
+         $result = db_query($sql) or die("Erro atualizando CGM $retorno.");
          $email_usu = $email;
          $msg = "Seus dados do CGM foram atualizados. Utilize seu login e senha para acessar suas informações.";
         }else{
@@ -156,7 +156,7 @@ input {
          @$cl_cgm->erro();
          $email_usu = $cl_cgm->z01_email;
          ///insert em db_cgmatualizaliga
-         $result = pg_exec("UPDATE db_cgmatualiza SET w11_revisado = 't' WHERE w11_sequencial = $retorno") or die("Erro(54) atualizando tabela db_cgmatualiza no insert");
+         $result = db_query("UPDATE db_cgmatualiza SET w11_revisado = 't' WHERE w11_sequencial = $retorno") or die("Erro(54) atualizando tabela db_cgmatualiza no insert");
          ///grava db_cgmatualizaliga
          $cldb_cgmatualizaliga->w12_cgmatualiza = $retorno;
          $cldb_cgmatualizaliga->w12_numcgm      = $numcgm;
@@ -169,7 +169,7 @@ input {
          }
    }
    ///buscar dados da prefeitura
-   $result = pg_exec("select * from db_config order by codigo")or die("Erro buscando dados da prefeitura.");
+   $result = db_query("select * from db_config order by codigo")or die("Erro buscando dados da prefeitura.");
    db_fieldsmemory($result,0);
    /////
    //encaminhar email
@@ -200,13 +200,13 @@ input {
                 WHERE w11_sequencial = $retorno
                   and w11_revisado = 'f'
                ";
-        $result = pg_exec($sql);
+        $result = db_query($sql);
         if(pg_numrows($result) > 0)
           db_fieldsmemory($result,0);
         else
           db_erro("Erro no select da tabela db_cgmatualizaliga.");
         /*
-        $result = pg_exec("SELECT * FROM cgm WHERE w11_sequencial = $retorno and w11_revisado = 'f'");
+        $result = db_query("SELECT * FROM cgm WHERE w11_sequencial = $retorno and w11_revisado = 'f'");
         if(pg_numrows($result) > 0)
           db_fieldsmemory($result,0);
         else

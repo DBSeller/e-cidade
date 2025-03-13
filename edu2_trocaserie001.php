@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $escola = db_getsession("DB_coddepto");
 ?>
 <html>
@@ -97,26 +97,47 @@ $escola = db_getsession("DB_coddepto");
  <?if(isset($tipo)){?>
  <tr>
   <td valign="top">
-   <?
-   $sql = "SELECT DISTINCT
-            ed47_i_codigo,
-            ed47_v_nome,
-            (select ed11_c_descr
+   <?php
+   if ($tipo == "A") {
+       $sub = " (select ed11_c_descr
              from serie
               inner join matriculaserie on ed221_i_serie = ed11_i_codigo
               inner join matricula on ed60_i_codigo = ed221_i_matricula
              where ed60_i_turma = turmaorig.ed57_i_codigo
-             and ed60_c_situacao = 'AVANÇADO'
-             and ed60_i_aluno = ed47_i_codigo
-             and ed221_c_origem = 'S') as descrorig,
+       and ed60_c_situacao = 'AVANÇADO'
+       and ed60_i_aluno = ed47_i_codigo
+       and ed221_c_origem = 'S') as descrorig,
             (select ed11_c_descr
              from serie
               inner join matriculaserie on ed221_i_serie = ed11_i_codigo
               inner join matricula on ed60_i_codigo = ed221_i_matricula
              where ed60_i_turma = turmadest.ed57_i_codigo
-             and ed60_c_situacao != 'AVANÇADO'
-             and ed60_i_aluno = ed47_i_codigo
-             and ed221_c_origem = 'S') as descrdest
+       and ed60_c_situacao != 'AVANÇADO'
+       and ed60_i_aluno = ed47_i_codigo
+       and ed221_c_origem = 'S') as descrdest ";
+   } else {
+       $sub = " (select ed11_c_descr
+             from serie
+              inner join matriculaserie on ed221_i_serie = ed11_i_codigo
+              inner join matricula on ed60_i_codigo = ed221_i_matricula
+             where ed60_i_turma = turmaorig.ed57_i_codigo
+       and ed60_c_situacao = 'CLASSIFICADO'
+       and ed60_i_aluno = ed47_i_codigo
+       and ed221_c_origem = 'S') as descrorig,
+            (select ed11_c_descr
+             from serie
+              inner join matriculaserie on ed221_i_serie = ed11_i_codigo
+              inner join matricula on ed60_i_codigo = ed221_i_matricula
+             where ed60_i_turma = turmadest.ed57_i_codigo
+       and ed60_c_situacao != 'CLASSIFICADO'
+       and ed60_i_aluno = ed47_i_codigo
+       and ed221_c_origem = 'S') as descrdest ";
+   }
+
+   $sql = "SELECT DISTINCT
+            ed47_i_codigo,
+            ed47_v_nome,
+            {$sub}
            FROM trocaserie
             inner join aluno on ed47_i_codigo = ed101_i_aluno
             inner join turma as turmaorig on turmaorig.ed57_i_codigo = ed101_i_turmaorig

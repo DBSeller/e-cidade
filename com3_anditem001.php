@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_solicitemprot_classe.php");
-include("classes/db_procandamint_classe.php");
-include("classes/db_proctransand_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_solicitemprot_classe.php"));
+include(modification("classes/db_procandamint_classe.php"));
+include(modification("classes/db_proctransand_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clsolicitemprot = new cl_solicitemprot;
@@ -106,14 +106,14 @@ if (isset($codigo) && $codigo!= "") {
 			<td class='bordas' align='center'><b><small>Depart. Destino</small></b></td>
 			<td class='bordas' align='center'><b><small>Recebida</small></b></td>
 			<td class='bordas' align='center'><b><small>Despacho</small></b></td>
-   	       ";
+			<td class='bordas' align='center'><b><small>Andamento</small></b></td>";
      }else echo"<b>Nenhum registro encontrado...</b>";
 	 	 echo " </tr>";
          for($i=0; $i<$numrows; $i++){
 	    	db_fieldsmemory($result,$i);
 	    	
 	    	$result_trans=$clproctransand->sql_record($clproctransand->sql_query_proc(null,"*","p61_dtandam,p61_hora","p64_codtran=$p62_codtran"));
-//	    	echo $clproctransand->sql_query_proc(null,"*","p62_dttran,p62_hora","p64_codtran=$p62_codtran").";<br>";
+//	    	echo($clproctransand->sql_query_proc(null,"*","p61_dtandam,p61_hora","p64_codtran=$p62_codtran")."<br>");
 	    	if ($clproctransand->numrows>0){	    	
 	    		db_fieldsmemory($result_trans,0);
 	    		$rec="Sim";
@@ -122,6 +122,7 @@ if (isset($codigo) && $codigo!= "") {
 	    		$rec="Não";
 	    		$despacho=$p58_despacho;
 	    	}	    		    	
+
 	       	echo " 
               <tr>	    
    	            <td	 class='bordas_corp' align='center'><small>$p62_codtran</small></td>
@@ -130,6 +131,7 @@ if (isset($codigo) && $codigo!= "") {
    	            <td	 class='bordas_corp' align='left'><small>$p62_coddeptorec-$descrdepto</small></td>
 				<td	 class='bordas_corp' align='center'><small>$rec</small></td>
    	            <td	 class='bordas_corp' align='left'><small>$despacho&nbsp;</small></td>
+   	            <td	 class='bordas_corp' align='left'><small>".@$pc44_descr."&nbsp;</small></td>
 	           </tr> ";
 	          if ($clproctransand->numrows>0){
 	        	$result_desp=$clprocandamint->sql_record($clprocandamint->sql_query_file(null,"*","p78_data,p78_hora"," p78_codandam=$p64_codandam "));

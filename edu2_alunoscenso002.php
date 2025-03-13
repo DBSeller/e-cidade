@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,295 +25,353 @@
  *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_matricula_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_matricula_classe.php"));
 
 /**
  * Caso exista os parametros, decodifica o base64 por causa do SQL's passados
  * pelo edu2_alunoscenso001.php
  */
-if (isset($campos)) {
-  $campos = base64_decode($campos);
+db_postmemory($_GET);
+
+$oDadosRelatorio             = new stdClass();
+$oDadosRelatorio->sEnsino    = "TODOS";
+$oDadosRelatorio->sEtapa     = "TODOS";
+$oDadosRelatorio->dtCenso    = null;
+$oDadosRelatorio->aAlunos    = array();
+$oDadosRelatorio->aCabecalho = array();
+$oDadosRelatorio->aColunas   = array();
+
+$oDadosRelatorio->iLarguraLinha = 6;
+
+try {
+
+  if (isset($campos)) {
+    $campos = base64_decode($campos);
+  }
+
+  if (isset($cabecalho)) {
+    $cabecalho = base64_decode($cabecalho);
+  }
+
+  if (isset($colunas)) {
+    $colunas = base64_decode($colunas);
+  }
+
+  if (isset($alinhamento)) {
+    $alinhamento = base64_decode($alinhamento);
+  }
+
+  if ( empty($cabecalho) ) {
+    throw new ParameterException("Não foi informado o cabeçalho.");
+  }
+
+  if ( empty($colunas) ) {
+    throw new ParameterException("Não foi informado as colunas.");
+  }
+  if ( empty($alinhamento) ) {
+    throw new ParameterException("Não foi informado o alinhamento das colunas.");
+  }
+
+  $oDadosRelatorio->aCabecalho   = explode('|', $cabecalho);
+  $oDadosRelatorio->aColunas     = explode('|', $colunas);
+  $oDadosRelatorio->aAlinhamento = explode('|', $alinhamento);
+
+  $oDadosRelatorio->iLarguraLinha += array_sum($oDadosRelatorio->aColunas);
+
+  $oDaoMatricula = new cl_matricula;
+  $iEscola       = db_getsession("DB_coddepto");
+
+  $aWhere   = array("calendario.ed52_i_ano = $ano_censo");
+  $aWhere[] = " turma.ed57_i_escola = {$iEscola} ";
+
+  if ( !empty($ensino) ) {
+   $aWhere[] = " ensino.ed10_i_codigo = {$ensino}";
+  }
+
+  if ( !empty($serie) ) {
+    $aWhere[] = " serie.ed11_i_codigo = {$serie}";
+  }
+
+  $oDataCenso               = new DBDate($data_censo);
+  $oDadosRelatorio->dtCenso = $oDataCenso;
+
+  $campos   = str_replace(chr(92), "", $campos);
+  $aWhere[] = " ed60_d_datamatricula <= '{$oDataCenso->getDate()}' ";
+  $aWhere[] = " ((ed60_c_situacao = 'MATRICULADO' and ed60_d_datasaida is null) OR
+                (ed60_c_situacao != 'MATRICULADO' and ed60_d_datasaida > '{$oDataCenso->getDate()}')) ";
+
+  $campos  .= ",turma.ed57_i_codigo, ensino.ed10_i_codigo, ensino.ed10_c_descr, serie.ed11_i_codigo, serie.ed11_c_descr,";
+  $campos  .= " ed60_c_situacao, ed60_matricula, ";
+  $campos  .= " ed60_d_datamatricula as dt_matricula, "; // precisamos da data para tratar os alunos
+  $campos  .= " ed60_d_datasaida as dt_saida "; // precisamos da data para tratar os alunos
+  $sOrdem   = " ensino.ed10_ordem, serie.ed11_i_sequencia, ensino.ed10_i_tipoensino, ensino.ed10_c_descr,  ";
+  $sOrdem  .= " turma.ed57_c_descr, ed60_i_numaluno, to_ascii(ed47_v_nome), ed60_c_ativa ";
+
+  $sSqlAlunos = $oDaoMatricula->sql_query("", $campos, $sOrdem,  implode(" and ", $aWhere));
+  $rsAlunos   = db_query($sSqlAlunos);
+
+  if (!$rsAlunos) {
+    throw new DBException("Erro ao buscar alunos.");
+  }
+
+  if ( pg_num_rows($rsAlunos) == 0 ) {
+    throw new DBException("Nenhum aluno encontrado.");
+  }
+
+  $oDados  = db_utils::fieldsMemory($rsAlunos, 0);
+  if ( !empty($ensino) ) {
+    $oDadosRelatorio->sEnsino = $oDados->ed10_c_descr;
+  }
+  if ( !empty($serie) ) {
+    $oDadosRelatorio->sEtapa  = $oDados->ed11_c_descr;
+  }
+  $iLinhas = pg_num_rows($rsAlunos);
+
+  /**
+   * Filtra os alunos que possam estar "duplicados" (ter mais de uma matrícula).
+   * Como exemplo, podemos ressaltar alunos com troca de turma com movimentação. Dentre estes, devemos localizar e
+   * apresentar a matricula que realmente foi no arquivo do censo.
+   */
+  $aAlunosFiltrados = array();
+  for ($i = 0; $i < $iLinhas; $i++) {
+
+    $oDados = db_utils::fieldsMemory($rsAlunos, $i);
+    if ( !array_key_exists($oDados->ed60_matricula, $aAlunosFiltrados) ) {
+
+      $aAlunosFiltrados[$oDados->ed60_matricula] = $oDados;
+      continue;
+    }
+
+    /**
+     * Dados do aluno ja adicionado no array
+     */
+    $oDadosAlunoAdicionado  = $aAlunosFiltrados[$oDados->ed60_matricula];
+    $oDtSaidaAdicionado     = null;
+    if ( !empty($oDadosAlunoAdicionado->dt_saida) )  {
+      $oDtSaidaAdicionado = new DBDate ($oDadosAlunoAdicionado->dt_saida);
+    }
+
+    $oDtMatricula = new DBDate ($oDados->dt_matricula);
+    $oDtSaida     = null;
+    if ( !empty($oDados->dt_saida) ) {
+      $oDtSaida = new DBDate ($oDados->dt_saida);
+    }
+
+    // se a matrícula adicionada possui data de saída maior que a data do censo, esta deve estar no relatório
+    if ( !is_null($oDtSaidaAdicionado) && $oDtSaidaAdicionado->getTimeStamp() >= $oDataCenso->getTimeStamp() ) {
+      continue;
+    }
+
+    /**
+     *  Se a outra matricula não tem data de saida e a data de saída da matricula adicionada no array possui uma
+     *  saída inferior a data do censo, devemos verificar se a nova matrícula possui a data inferior a data de fechamento
+     *  do censo. Se sim, esta substitui a outra.
+     */
+    if (    is_null( $oDtSaida )
+         && (!is_null($oDtSaidaAdicionado) && $oDtSaidaAdicionado->getTimeStamp() < $oDataCenso->getTimeStamp())
+         && $oDtMatricula->getTimeStamp() <= $oDataCenso->getTimeStamp()) {
+      $aAlunosFiltrados[$oDados->ed60_matricula] = $oDados;
+    }
+
+    /**
+     * Se a matrícula que estamos percorrendo possui uma data de saída, e esta data é maior que a data do censo e a
+     * data de matrícula inferior a data do censo. Esta é que deve ser apresentada
+     */
+    if (    !is_null( $oDtSaida )
+         && $oDtSaida->getTimeStamp() >= $oDataCenso->getTimeStamp()
+         && $oDtMatricula->getTimeStamp() <= $oDataCenso->getTimeStamp()) {
+      $aAlunosFiltrados[$oDados->ed60_matricula] = $oDados;
+    }
+  }
+
+  /**
+   * Filtra e totaliza os alunos por ensino e etapa
+   */
+  foreach ($aAlunosFiltrados as $oDadosAlunos) {
+
+    if ( !array_key_exists($oDadosAlunos->ed10_i_codigo, $oDadosRelatorio->aAlunos) ) {
+
+      $oEnsino             = new stdClass();
+      $oEnsino->lTotaliza  = $tt_ensino     == 'yes';
+      $oEnsino->lApresenta = $titulo_ensino == 'yes';
+      $oEnsino->sDescricao = $oDadosAlunos->ed10_c_descr;
+      $oEnsino->iTotal     = 0;
+      $oEnsino->aEtapas    = array();
+
+      $oDadosRelatorio->aAlunos[$oDadosAlunos->ed10_i_codigo] = $oEnsino;
+    }
+
+    $oEnsino = $oDadosRelatorio->aAlunos[$oDadosAlunos->ed10_i_codigo];
+    if ( !array_key_exists($oDadosAlunos->ed11_i_codigo, $oEnsino->aEtapas) ) {
+
+      $oEtapa             = new stdClass();
+      $oEtapa->lTotaliza  = $tt_serie     == 'yes';
+      $oEtapa->lApresenta = $titulo_serie == 'yes';
+      $oEtapa->sDescricao = $oDadosAlunos->ed11_c_descr;
+      $oEtapa->iTotal     = 0;
+      $oEtapa->aTurmas    = array();
+
+      $oEnsino->aEtapas[$oDadosAlunos->ed11_i_codigo] = $oEtapa;
+    }
+
+    $oEtapa = $oEnsino->aEtapas[$oDadosAlunos->ed11_i_codigo];
+    if ( !array_key_exists($oDadosAlunos->ed57_i_codigo, $oEtapa->aTurmas ) ) {
+
+      $oTuma          = new stdClass();
+      $oTuma->aAlunos = array();
+
+      $oEtapa->aTurmas[$oDadosAlunos->ed57_i_codigo] = $oTuma;
+    }
+
+    $oEnsino->iTotal ++;
+    $oEnsino->aEtapas[$oDadosAlunos->ed11_i_codigo]->iTotal ++;
+    $oEnsino->aEtapas[$oDadosAlunos->ed11_i_codigo]->aTurmas[$oDadosAlunos->ed57_i_codigo]->aAlunos[] = $oDadosAlunos;
+  }
+} catch (Exception $e) {
+
+  $sMsg = urlencode($e->getMessage());
+  db_redireciona('db_erros.php?fechar=true&db_erro=' . $sMsg);
 }
 
-if (isset($cabecalho)) {
-  $cabecalho = base64_decode($cabecalho);
-}
+$oPdf = new PDF($orientacao);
+$oPdf->Open();
+$oPdf->AliasNbPages();
+$oPdf->SetAutoPageBreak(true, 15);
 
-if (isset($colunas)) {
-  $colunas = base64_decode($colunas);
-}
-
-if (isset($alinhamento)) {
-  $alinhamento = base64_decode($alinhamento);
-}
-
-
-$clmatricula = new cl_matricula;
-$escola = db_getsession("DB_coddepto");
-$where = "";
-if($ensino!=""){
- $where .= " AND ensino.ed10_i_codigo = $ensino";
-}
-if($serie!=""){
- $where .= " AND serie.ed11_i_codigo = $serie";
-}
-$campos = str_replace(chr(92),"",$campos);
-$data_matricula = substr($data_censo,6,4)."-".substr($data_censo,3,2)."-".substr($data_censo,0,2);
-$cond = "calendario.ed52_i_ano = $ano_censo
-         AND turma.ed57_i_escola = $escola $where
-         AND (
-         (ed60_d_datamatricula <= '$data_matricula' AND ed60_c_situacao = 'MATRICULADO')
-          OR
-         (ed60_d_datamatricula <= '$data_matricula' AND ed60_d_datasaida > '$data_matricula' AND ed60_c_situacao != 'MATRICULADO')
-         )";
-$result = $clmatricula->sql_record($clmatricula->sql_query("",$campos.",turma.ed57_i_codigo,ensino.ed10_i_codigo,ensino.ed10_c_descr,serie.ed11_i_codigo,serie.ed11_c_descr,ed60_c_situacao","ensino.ed10_i_tipoensino,ensino.ed10_c_descr,serie.ed11_i_sequencia,turma.ed57_c_descr,ed60_i_numaluno,to_ascii(ed47_v_nome),ed60_c_ativa"," $cond "));
-$linhas = $clmatricula->numrows;
-if($linhas==0){?>
- <table width='100%'>
-  <tr>
-   <td align='center'>
-    <font color='#FF0000' face='arial'>
-     <b>Nenhuma registro encontrado.<br>
-     <input type='button' value='Fechar' onclick='window.close()'></b>
-    </font>
-   </td>
-  </tr>
- </table>
- <?
- exit;
-}
-$pdf = new PDF();
-$pdf->Open();
-$pdf->AliasNbPages();
-$head1 = "CENSO $ano_censo";
-$head2 = "Alunos ativos em: $data_censo";
-$head3 = "Filtro por Ensino: ".($ensino==""?"TODOS":trim(pg_result($result,0,'ed10_c_descr')));
-$head4 = "Filtro por Etapa: ".($serie==""?"TODOS":trim(pg_result($result,0,'ed11_c_descr')));
+$head1 = "CENSO {$oDadosRelatorio->dtCenso->getAno()}";
+$head2 = "Alunos ativos em: {$oDadosRelatorio->dtCenso->getDate(DBDate::DATA_PTBR)}";
+$head3 = "Filtro por Ensino: {$oDadosRelatorio->sEnsino}";
+$head4 = "Filtro por Etapa:  {$oDadosRelatorio->sEtapa}";
 $head5 = "Data: ".date("d/m/Y");
-$cabecalho_campos = explode("|",$cabecalho);
-$largura_campos = explode("|",$colunas);
-$somacampos = 5;
-for($t=0;$t<count($cabecalho_campos);$t++){
- $somacampos += $largura_campos[$t];
+
+adicionarHeader($oPdf, $oDadosRelatorio);
+
+foreach ($oDadosRelatorio->aAlunos as $oDadosEnsino) {
+
+  separadorPorEnsino($oPdf, $oDadosEnsino, $oDadosRelatorio->iLarguraLinha);
+  foreach ($oDadosEnsino->aEtapas as $oDadosEtapa) {
+
+    separadorPorEtapa($oPdf, $oDadosEtapa, $oDadosRelatorio->iLarguraLinha);
+
+    $lPinta = true;
+    $oPdf->SetFont('arial','', 7);
+
+    foreach ($oDadosEtapa->aTurmas as $iTurma => $oAlunos) {
+
+      $lAdicionaCabecalho = true;
+      foreach ($oAlunos->aAlunos as $iSeq => $oDadosAluno) {
+
+        if ($oPdf->GetY() > ($oPdf->h - 20) )  {
+
+          adicionarHeader($oPdf, $oDadosRelatorio);
+
+          $lAdicionaCabecalho = true;
+          separadorPorEnsino($oPdf, $oDadosEnsino, $oDadosRelatorio->iLarguraLinha);
+          separadorPorEtapa($oPdf, $oDadosEtapa, $oDadosRelatorio->iLarguraLinha);
+        }
+
+        $lPinta = !$lPinta;
+        if ($lAdicionaCabecalho) {
+
+          adicionaCabecalhoAlunos($oPdf, $oDadosRelatorio);
+          $lAdicionaCabecalho = false;
+        }
+
+        $oPdf->SetFillColor(240);
+        $oPdf->Cell(6, 4, ($iSeq + 1), "LR", 0, "C", $lPinta);
+        /**
+         * Transforma o objeto com os dados do aluno em um array indexado numericamente.
+         */
+        $aAluno = array_values((array) $oDadosAluno);
+        foreach ($oDadosRelatorio->aColunas as $i => $iTamanho) {
+
+          $sDado = $aAluno[$i];
+
+          if ( !!preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $sDado, $matches) ) {
+            $sDado = db_formatar($sDado, 'd');
+          }
+
+          $oPdf->Cell($iTamanho, 4, $sDado, "LR", 0, $oDadosRelatorio->aAlinhamento[$i], $lPinta);
+        }
+
+        $oPdf->ln();
+      }
+    }
+  }
 }
-$cor1 = "0";
-$cor2 = "1";
-$cor = "";
-$limite = $orientacao=="P"?60:38;
-$cont = 0;
-$alinhamento_campos = explode("|",$alinhamento);
-$pri_ensino = "";
-$pri_serie = "";
-$pri_turma = "";
-$pdf->addpage($orientacao);
-$pdf->setfont('arial','b',6);
-$pdf->cell($somacampos,4,"T=Transporte Escolar Z=Zona(R=RURAL U=URBANA)  NE=Necessidades Especiais  R=Rendimento Anterior(A=APROV R=REPROV S=SEM INFORMAÇÕES)  Sx=Sexo  St= Situação",0,1,"L",0);
-$cont++;
-$pdf->setfont('arial','b',7);
-for($x=0;$x<$linhas;$x++){
- db_fieldsmemory($result,$x);
- if($cor==$cor1){
-  $cor = $cor2;
- }else{
-  $cor = $cor1;
- }
- if($pri_turma!=$ed57_i_codigo){
-  $camposeq = 1;
-  $pri_turma = $ed57_i_codigo;
- }
- $pdf->setfont('arial','b',7);
- if($pri_ensino!=$ed10_i_codigo && $titulo_ensino=="yes"){
-  $pdf->setfillcolor(210);
-  $pdf->cell($somacampos,4,$ed10_c_descr,1,1,"L",1);
-  $cont++;
-  $pri_ensino = $ed10_i_codigo;
-  if($limite==$cont){
-   $cont = 0;
-   $pdf->cell($somacampos,0,"",1,1,"C",0);
-   $pdf->addpage($orientacao);
-   $pdf->setfont('arial','b',6);
-   $pdf->cell($somacampos,4,"T=Transporte Escolar Z=Zona(R=RURAL U=URBANA)  NE=Necessidades Especiais  R=Rendimento Anterior(A=APROV R=REPROV S=SEM INFORMAÇÕES)  Sx=Sexo  St= Situação",0,1,"L",0);
-   $pdf->setfont('arial','b',7);
-   $cont++;
-   $pdf->setfillcolor(210);
-   $pdf->cell($somacampos,4,$ed10_c_descr,1,1,"L",1);
-   $cont++;
+
+
+$iTotalGeral = 0;
+$oPdf->SetFillColor(210);
+$oPdf->SetFont('arial', 'B', 7);
+$oPdf->Cell($oDadosRelatorio->iLarguraLinha, 4, "TOTALIZADORES", 1, 1, "L", 1);
+
+$iColunaTotal     = $oDadosRelatorio->iLarguraLinha / 3;
+$iColunaDescricao = $oDadosRelatorio->iLarguraLinha - $iColunaTotal;
+
+foreach ($oDadosRelatorio->aAlunos as $oDadosEnsino) {
+
+  $iTotalGeral += $oDadosEnsino->iTotal;
+  $oPdf->SetFillColor(225);
+  if ( $oDadosEnsino->lTotaliza ) {
+
+    $oPdf->Cell($iColunaDescricao, 4, $oDadosEnsino->sDescricao, 1, 0, "L", 1);
+    $oPdf->Cell($iColunaTotal,     4, $oDadosEnsino->iTotal, 1, 1, "R", 1);
   }
- }
- if($pri_serie!=$ed11_i_codigo && $titulo_serie=="yes"){
-  $pdf->setfillcolor(225);
-  $pdf->cell($somacampos,4,$ed11_c_descr,1,1,"L",1);
-  $cont++;
-  if($limite==$cont){
-   $cont = 0;
-   $pdf->cell($somacampos,0,"",1,1,"C",0);
-   $pdf->addpage($orientacao);
-   $pdf->setfont('arial','b',6);
-   $pdf->cell($somacampos,4,"T=Transporte Escolar Z=Zona(R=RURAL U=URBANA)  NE=Necessidades Especiais  R=Rendimento Anterior(A=APROV R=REPROV S=SEM INFORMAÇÕES)  Sx=Sexo  St= Situação",0,1,"L",0);
-   $cont++;
-   $pdf->setfont('arial','b',7);
-   if($titulo_ensino=="yes"){
-    $pdf->setfillcolor(210);
-    $pdf->cell($somacampos,4,$ed10_c_descr,1,1,"L",1);
-    $cont++;
-   }
-   $pdf->setfillcolor(225);
-   $pdf->cell($somacampos,4,$ed11_c_descr,1,1,"L",1);
-   $cont++;
+  foreach ($oDadosEnsino->aEtapas as $oDadosEtapa) {
+    if ( $oDadosEtapa->lTotaliza ) {
+
+      $oPdf->Cell(5, 4, "", "LBT", 0);
+      $oPdf->Cell($iColunaDescricao - 5,  4, $oDadosEtapa->sDescricao, "RTB", 0, "L");
+      $oPdf->Cell($iColunaTotal, 4, $oDadosEtapa->iTotal, 1, 1, "R");
+    }
   }
-  $pri_serie = $ed11_i_codigo;
-  $cor = "0";
- }
- if($cont<2 || ($cont<3 && $titulo_serie=="yes") || $x==0){
-  //cabeçalho
-  for($t=0;$t<count($cabecalho_campos);$t++){
-   if($t==0){
-    $pdf->cell(5,4,"Seq",1,0,"C",0);
-   }
-   if($t==(count($cabecalho_campos)-1)){
-    $next = 1;
-   }else{
-    $next = 0;
-   }
-   $pdf->cell($largura_campos[$t],4,$cabecalho_campos[$t],1,$next,"C",0);
-  }
-  $cont++;
- }
- if($limite==$cont){
-  $cont = 0;
-  $pdf->cell($somacampos,0,"",1,1,"C",0);
-  $pdf->addpage($orientacao);
-  $pdf->setfont('arial','b',6);
-  $pdf->cell($somacampos,4,"T=Transporte Escolar Z=Zona(R=RURAL U=URBANA)  NE=Necessidades Especiais  R=Rendimento Anterior(A=APROV R=REPROV S=SEM INFORMAÇÕES)  Sx=Sexo  St= Situação",0,1,"L",0);
-  $cont++;
-  $pdf->setfont('arial','b',7);
-  if($titulo_ensino=="yes"){
-   $pdf->setfillcolor(210);
-   $pdf->cell($somacampos,4,$ed10_c_descr,1,1,"L",1);
-   $cont++;
-  }
-  if($titulo_serie=="yes"){
-   $pdf->setfillcolor(225);
-   $pdf->cell($somacampos,4,$ed11_c_descr,1,1,"L",1);
-   $cont++;
-  }
-  //cabeçalho
-  for($t=0;$t<count($cabecalho_campos);$t++){
-   if($t==0){
-    $pdf->cell(5,4,"Seq",1,0,"C",0);
-   }
-   if($t==(count($cabecalho_campos)-1)){
-    $next = 1;
-   }else{
-    $next = 0;
-   }
-   $pdf->cell($largura_campos[$t],4,$cabecalho_campos[$t],1,$next,"C",0);
-  }
-  $cont++;
-  $cor = "0";
- }
- $pdf->setfillcolor(240);
- $pdf->setfont('arial','',$tamfonte);
- //dados
- for($t=0;$t<count($cabecalho_campos);$t++){
-  if($t==0){
-   $pdf->cell(5,4,$camposeq,"LR",0,"C",$cor);
-  }
-  if($t==(count($cabecalho_campos)-1)){
-   $next = 1;
-  }else{
-   $next = 0;
-  }
-  $pdf->cell($largura_campos[$t],4,(pg_field_type($result,$t)=="date"?db_formatar(pg_result($result,$x,$t),'d'):pg_result($result,$x,$t)),"LR",$next,$alinhamento_campos[$t],$cor);
- }
- $cont++;
- if($limite==$cont){
-  $cont = 0;
-  $pdf->cell($somacampos,0,"",1,1,"C",0);
-  $pdf->addpage($orientacao);
-  $pdf->setfont('arial','b',6);
-  $pdf->cell($somacampos,4,"T=Transporte Escolar Z=Zona(R=RURAL U=URBANA)  NE=Necessidades Especiais  R=Rendimento Anterior(A=APROV R=REPROV S=SEM INFORMAÇÕES)  Sx=Sexo  St= Situação",0,1,"L",0);
-  $cont++;
-  $pdf->setfont('arial','b',7);
-  if($titulo_ensino=="yes"){
-   $pdf->setfillcolor(210);
-   $pdf->cell($somacampos,4,$ed10_c_descr,1,1,"L",1);
-   $cont++;
-  }
-  if($titulo_serie=="yes"){
-   $pdf->setfillcolor(225);
-   $pdf->cell($somacampos,4,$ed11_c_descr,1,1,"L",1);
-   $cont++;
-  }
-  $pdf->setfont('arial','b',7);
-  for($t=0;$t<count($cabecalho_campos);$t++){
-   if($t==0){
-    $pdf->cell(5,4,"Seq",1,0,"C",0);
-   }
-   if($t==(count($cabecalho_campos)-1)){
-    $next = 1;
-   }else{
-    $next = 0;
-   }
-   $pdf->cell($largura_campos[$t],4,$cabecalho_campos[$t],1,$next,"C",0);
-  }
-  $cor = "1";
-  $pdf->setfillcolor(240);
-  $pdf->setfont('arial','',$tamfonte);
-  $cont++;
- }
- $camposeq++;
 }
-$pdf->line(10,$pdf->getY(),$somacampos+10,$pdf->getY());
-$pdf->setfont('arial','b',7);
-$pdf->setfillcolor(210);
-$pdf->cell($somacampos,4,"Totalizadores",1,1,"L",1);
-if($tt_ensino=="yes" || $tt_serie=="yes"){
- $campos = "count(*) as totalserie,ensino.ed10_i_codigo,ensino.ed10_c_abrev,ensino.ed10_c_descr,serie.ed11_i_codigo,serie.ed11_c_descr,serie.ed11_i_sequencia";
- $result = $clmatricula->sql_record($clmatricula->sql_query("",$campos,"ensino.ed10_i_tipoensino,ensino.ed10_c_descr,serie.ed11_i_sequencia"," calendario.ed52_i_ano = $ano_censo AND turma.ed57_i_escola = $escola $where AND ((ed60_d_datamatricula <= '$data_matricula' AND ed60_c_situacao = 'MATRICULADO') OR ( ed60_d_datamatricula <= '$data_matricula' AND ed60_d_datasaida > '$data_matricula' AND ed60_c_situacao != 'MATRICULADO')) GROUP BY ensino.ed10_i_codigo,ensino.ed10_c_abrev,ensino.ed10_c_descr,serie.ed11_i_codigo,serie.ed11_c_descr,serie.ed11_i_sequencia,ensino.ed10_i_tipoensino"));
- $pri_ensino = pg_result($result,0,'ed10_i_codigo');
- $pri_ensinodescr = pg_result($result,0,'ed10_c_descr');
- $pri_serie = "";
- $soma_ensino = 0;
- $pdf->setfillcolor(235);
- for($x=0;$x<$clmatricula->numrows;$x++){
-  db_fieldsmemory($result,$x);
-  if($pri_ensino!=$ed10_i_codigo && $tt_ensino=="yes"){
-   $pdf->cell(70,4,$pri_ensinodescr,1,0,"L",1);
-   $pdf->setfont('arial','b',10);
-   $pdf->cell(15,4,$soma_ensino,"LBT",0,"R",0);
-   $pdf->cell($somacampos-85,4,"","RBT",1,"L",0);
-   $pdf->cell($somacampos,2,"",1,1,"L",1);
-   $pdf->setfont('arial','b',7);
-   $soma_ensino = 0;
-   $pri_ensino = $ed10_i_codigo;
-   $pri_ensinodescr = $ed10_c_descr;
-  }
-  if($tt_serie=="yes"){
-   $pdf->cell(10,4,"",1,0,"L",0);
-   $pdf->cell(60,4,$ed11_c_descr,1,0,"L",1);
-   $pdf->setfont('arial','b',8);
-   $pdf->cell(15,4,$totalserie,"LBT",0,"R",0);
-   $pdf->cell($somacampos-85,4,"","RBT",1,"L",0);
-   $pdf->setfont('arial','b',7);
-  }
-  $soma_ensino += $totalserie;
- }
- if($tt_ensino=="yes"){
-  $pdf->cell(70,4,$pri_ensinodescr,1,0,"L",1);
-  $pdf->setfont('arial','b',10);
-  $pdf->cell(15,4,$soma_ensino,"LBT",0,"R",0);
-  $pdf->cell($somacampos-85,4,"","RBT",1,"L",0);
-  $pdf->cell($somacampos,2,"",1,1,"L",1);
- }
+$oPdf->Cell($iColunaDescricao, 4, "TOTAL GERAL", 1, 0, "L", 1);
+$oPdf->Cell($iColunaTotal,      4, $iTotalGeral, 1, 1, "L", 1);
+
+$oPdf->Output();
+
+function adicionarHeader(FPDF $oPdf, $oDadosRelatorio) {
+
+  $sLegenda  = "T=Transporte Escolar Z=Zona(R=RURAL U=URBANA)  NE=Necessidades Especiais  ";
+  $sLegenda .= "R=Rendimento Anterior(A=APROV R=REPROV S=SEM INFORMAÇÕES)  Sx=Sexo  St= Situação";
+  $oPdf->AddPage();
+  $oPdf->SetFont('arial','b',6);
+  $oPdf->Cell(193, 4, $sLegenda, 0, 1, "L", 0);
+  $oPdf->SetFont('arial', '', 7);
 }
-$pdf->setfont('arial','b',7);
-$pdf->setfillcolor(210);
-$pdf->cell(70,4,"TOTAL GERAL",1,0,"L",1);
-$pdf->setfont('arial','b',10);
-$pdf->cell(15,4,$linhas,"LTB",0,"R",1);
-$pdf->cell($somacampos-85,4,"","RTB",1,"L",1);
-$pdf->line(10,$pdf->getY(),$somacampos+10,$pdf->getY());
-$pdf->Output();
-?>
+
+function adicionaCabecalhoAlunos(FPDF $oPdf, $oDadosRelatorio) {
+
+  $oPdf->SetFont('arial', 'B', 6);
+  $oPdf->Cell(6, 4, "Seq", 1, 0, "L");
+
+  foreach ($oDadosRelatorio->aCabecalho as $i => $sCabecalho) {
+    $oPdf->Cell($oDadosRelatorio->aColunas[$i], 4, $sCabecalho, 1, 0, $oDadosRelatorio->aAlinhamento[$i]);
+  }
+  $oPdf->ln();
+  $oPdf->SetFont('arial', '', 6);
+}
+
+function separadorPorEnsino( $oPdf, $oDadosEnsino, $iLinha) {
+
+  if ( $oDadosEnsino->lApresenta ) {
+
+    $oPdf->SetFont('arial', 'B', 7);
+    $oPdf->SetFillColor(210);
+    $oPdf->Cell($iLinha, 4, $oDadosEnsino->sDescricao, 1, 1, "L", 1);
+    $oPdf->SetFont('arial', '', 7);
+  }
+}
+function separadorPorEtapa( $oPdf, $oDadosEtapa, $iLinha) {
+
+  if ( $oDadosEtapa->lApresenta ) {
+
+    $oPdf->SetFont('arial', 'B', 7);
+    $oPdf->SetFillColor(225);
+    $oPdf->Cell($iLinha, 4, $oDadosEtapa->sDescricao, 1, 1, "L", 1);
+    $oPdf->SetFont('arial', '', 7);
+  }
+}

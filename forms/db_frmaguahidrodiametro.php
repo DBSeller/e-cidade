@@ -58,7 +58,7 @@ db_input('x15_diametro',10,$Ix15_diametro,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguahidrodiametro','func_aguahidrodiametro.php?funcao_js=parent.js_preenchepesquisa|x15_coddiametro','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguahidrodiametro','func_aguahidrodiametro.php?funcao_js=parent.js_preenchepesquisa|x15_coddiametro','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguahidrodiametro.hide();

@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_conrelinfo_classe.php");
-include("classes/db_conrelvalor_classe.php");
-include("classes/db_orcparamrel_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_conrelinfo_classe.php"));
+include(modification("classes/db_conrelvalor_classe.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
 
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clconrelinfo  = new cl_conrelinfo;

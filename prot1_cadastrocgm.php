@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -34,6 +34,9 @@
 //$func_iframe->iniciarVisivel = false;
 //$func_iframe->mostrar();
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+if (!isset($pesa)) {
+	$pesa = '';
+}
 ?>
 <script>
 function js_ValidaOperacao(municipio){
@@ -76,7 +79,7 @@ function js_ruacorreta(){
 //    document.form1.z01_ender.value = '';
     document.form1.z01_ender.select();
     document.form1.z01_ender.focus();
-    js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_ruas','func_ruas_alt.php?nomerua='+ document.form1.z01_ender.value+'&rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome|cep','Pesquisa',true);
+    js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_ruas','func_ruas_alt.php?nomerua='+ document.form1.z01_ender.value+'&rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome|cep','Pesquisa',true);
     return false;
   }else{
     if(nome == "" || nome == 'undefined'){
@@ -132,7 +135,7 @@ function js_preenche(chave){
 }
 function js_func_nome(){
 
-  js_OpenJanelaIframe("top.corpo",'func_nome','func_nome.php?funcao_js=parent.js_preenche|0','Pesquisa',true);
+  js_OpenJanelaIframe("CurrentWindow.corpo",'func_nome','func_nome.php?funcao_js=parent.js_preenche|0','Pesquisa',true);
 
 //  func_nome.jan.location.href = 'func_nome.php?funcao_js=parent.js_preenche|0';
 //  func_nome.mostraMsg();
@@ -311,14 +314,14 @@ if(isset($pessoa)){
 				if(empty($z01_cgccpfi))
 	  			$z01_cgccpf = $cpf;
 	  			
-				include("prot1_pfisica.php");
+				include(modification("prot1_pfisica.php"));
       }else if (isset($cnpj) && $cnpj != ""){
 				$cnpj = str_replace(".","",$cnpj);
 				$cnpj = str_replace("/","",$cnpj);
 				$cnpj = str_replace("-","",$cnpj); 
 				if(empty($z01_cgccpf))
 				  $z01_cgccpf = $cnpj;
-				include("prot1_pjuridica.php");
+				include(modification("prot1_pjuridica.php"));
       }
     }else if($db_opcao == 2){
       if (isset($autoinfra)&&trim($autoinfra)!=""){
@@ -386,13 +389,13 @@ if(isset($pessoa)){
 	      $municipio = "t";
 	    elseif(!isset($municipio))
 	      $municipio = "f";
-	    include("prot1_pfisica.php");
+	    include(modification("prot1_pfisica.php"));
 	  }elseif($pessoa == "juridica"){
 	    if(strtoupper($z01_munic) == strtoupper($munic) && !isset($municipio))
 	      $municipio = "t";
 	    elseif(!isset($municipio))
 	      $municipio = "f";
-	    include("prot1_pjuridica.php");
+	    include(modification("prot1_pjuridica.php"));
 	  }
 	}elseif($z01_cgccpf != ""){
 	  if(strlen($z01_cgccpf) == 14){
@@ -402,7 +405,7 @@ if(isset($pessoa)){
 	      $municipio = "t";
 	    elseif(!isset($municipio))
 	      $municipio = "f";
-	    include("prot1_pjuridica.php");
+	    include(modification("prot1_pjuridica.php"));
 	  }elseif(strlen($z01_cgccpf) == 11){
 	    $result = $clcgm->sql_record($clcgm->sql_query($z01_numcgm,"*"));
 	    db_fieldsmemory($result,0);
@@ -410,7 +413,7 @@ if(isset($pessoa)){
 	      $municipio = "t";
 	    elseif(!isset($municipio))
 	      $municipio = "f";
-	    include("prot1_pfisica.php");
+	    include(modification("prot1_pfisica.php"));
 	  }else{
 	    ?>
 	      <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -532,9 +535,9 @@ function js_cep(abre){
   //if(document.form1.z01_cep.value != "")
     //document.getElementById('teste').style.visibility = 'visible';
   if(abre == true){
-    js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_cep','func_cep.php?funcao_js=parent.js_preenchecep|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa',true);
+    js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_cep','func_cep.php?funcao_js=parent.js_preenchecep|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_cep','func_cep.php?<?=($municipio == 't'?"municipio=sim&":"")?>pesquisa_chave='+document.form1.z01_cep.value+'&funcao_js=parent.js_preenchecep|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro|codigo','Pesquisa',false);
+    js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_cep','func_cep.php?<?=($municipio == 't'?"municipio=sim&":"")?>pesquisa_chave='+document.form1.z01_cep.value+'&funcao_js=parent.js_preenchecep|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro|codigo','Pesquisa',false);
   }
 }
 function js_preenchecep(chave,chave1,chave2,chave3,chave4){
@@ -957,7 +960,7 @@ function js_preenchecep(chave,chave1,chave2,chave3,chave4){
 if(!isset($testanome)){
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 }
-//include("db_divbalao.php");
+//include(modification("db_divbalao.php"));
 ?>
 </form>
 <script>
@@ -965,16 +968,16 @@ function js_MICidadao(ov02_sequencial,ov02_seq,ov03_numcgm){
 	var ov02_sequencial = ov02_sequencial;
 	var ov02_seq				=	ov02_seq;
 	var ov03_numcgm			=	ov03_numcgm;
-	js_OpenJanelaIframe('top.corpo','db_iframe','ouv4_cidadaocgmdetalhe.php?importa=true&ov02_sequencial='+ov02_sequencial+'&ov02_seq='+ov02_seq+'&ov03_numcgm='+ov03_numcgm,'Pesquisa',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','ouv4_cidadaocgmdetalhe.php?importa=true&ov02_sequencial='+ov02_sequencial+'&ov02_seq='+ov02_seq+'&ov03_numcgm='+ov03_numcgm,'Pesquisa',true);
 }
 
 
 function js_logradcep(){
-  js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_ruas','func_ruas_alt.php?rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome|cep|','Pesquisa',true);
+  js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_ruas','func_ruas_alt.php?rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome|cep|','Pesquisa',true);
 }
 
 function js_ruas(){
-  js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_ruas','func_ruas.php?rural=1&funcao_js=parent.js_preenchepesquisaruas|j14_codigo|j14_nome','Pesquisa',true);
+  js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_ruas','func_ruas.php?rural=1&funcao_js=parent.js_preenchepesquisaruas|j14_codigo|j14_nome','Pesquisa',true);
 }
 
 function js_preenchepesquisaruas(chave,chave1){
@@ -993,7 +996,7 @@ function js_preenchepesquisa(chave,chave1,chave2){
 function js_bairro(){
   //if(document.form1.z01_cep.value != "")
     //document.getElementById('teste').style.visibility = 'visible';
-  js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_bairro','func_bairro.php?rural=1&funcao_js=parent.js_preenchebairro|j13_codi|j13_descr','Pesquisa',true);
+  js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_bairro','func_bairro.php?rural=1&funcao_js=parent.js_preenchebairro|j13_codi|j13_descr','Pesquisa',true);
 }
 function js_preenchebairro(chave,chave1){
 //  setInterval("document.getElementById('teste').style.visibility = 'hidden'",2000);
@@ -1020,9 +1023,9 @@ function js_cepcon(abre){
   //if(document.form1.z01_cep.value != "")
     //document.getElementById('teste').style.visibility = 'visible';
   if(abre == true){
-    js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_cep','func_cep.php?funcao_js=parent.js_preenchecepcon|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa',true);
+    js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_cep','func_cep.php?funcao_js=parent.js_preenchecepcon|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_cep','func_cep.php?pesquisa_chave='+document.form1.z01_cepcon.value+'&funcao_js=parent.js_preenchecepcon|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa',false);
+    js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_cep','func_cep.php?pesquisa_chave='+document.form1.z01_cepcon.value+'&funcao_js=parent.js_preenchecepcon|cep|cp06_logradouro|cp05_localidades|cp05_sigla|cp01_bairro','Pesquisa',false);
   }
 }
 function js_preenchecepcon(chave,chave1,chave2,chave3,chave4){
@@ -1115,7 +1118,7 @@ function js_retornoVincularDados(oAjax){
 	
 	js_removeObj("msgBox");
   
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   
   var sExpReg  = new RegExp('\\\\n','g');
     

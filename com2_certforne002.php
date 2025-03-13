@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("fpdf151/pdf1.php");
-require_once("classes/db_liccomissaocgm_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_pcfornecertifrenovacao_classe.php");
-require_once("classes/db_pcfornecertif_classe.php");
-require_once("classes/db_pctipodoccertif_classe.php");
-require_once("classes/db_pcfornecertifdoc_classe.php");
-require_once("classes/db_pcfornesubgrupo_classe.php");
-require_once("classes/db_pctipocertifcom_classe.php");
-require_once("classes/db_pctipocertif_classe.php");
-require_once("libs/db_libdocumento.php");
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("fpdf151/pdf1.php"));
+require_once(modification("classes/db_liccomissaocgm_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_pcfornecertifrenovacao_classe.php"));
+require_once(modification("classes/db_pcfornecertif_classe.php"));
+require_once(modification("classes/db_pctipodoccertif_classe.php"));
+require_once(modification("classes/db_pcfornecertifdoc_classe.php"));
+require_once(modification("classes/db_pcfornesubgrupo_classe.php"));
+require_once(modification("classes/db_pctipocertifcom_classe.php"));
+require_once(modification("classes/db_pctipocertif_classe.php"));
+require_once(modification("libs/db_libdocumento.php"));
 
 $clpcfornecertif    = new cl_pcfornecertif;
 $clpctipodoccertif  = new cl_pctipodoccertif;

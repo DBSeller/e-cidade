@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -110,7 +110,7 @@ $ob29_data_ano = date('Y', db_getsession('DB_datausu'));
 function js_pesquisaob29_obras( mostra ) {
 
   if ( mostra == true ) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_obras',
                         'func_obras.php?funcao_js=parent.js_mostraobras1|ob01_codobra|ob01_nomeobra',
                         'Pesquisa',
@@ -118,7 +118,7 @@ function js_pesquisaob29_obras( mostra ) {
   } else {
 
     if ( document.form1.ob29_obras.value != '' ) { 
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_obras',
                           'func_obras.php?pesquisa_chave='+document.form1.ob29_obras.value+'&funcao_js=parent.js_mostraobras',
                           'Pesquisa',
@@ -151,7 +151,7 @@ function js_pesquisaob29_obrassituacao(mostra) {
 
   if ( mostra == true ) {
 
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_obrassituacao',
                         'func_obrassituacao.php?funcao_js=parent.js_mostraobrassituacao1|ob28_sequencial|ob28_descricao',
                         'Pesquisa',
@@ -159,7 +159,7 @@ function js_pesquisaob29_obrassituacao(mostra) {
   } else {
 
     if(document.form1.ob29_obrassituacao.value != ''){ 
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_obrassituacao',
                           'func_obrassituacao.php?pesquisa_chave='+document.form1.ob29_obrassituacao.value+'&funcao_js=parent.js_mostraobrassituacao',
                           'Pesquisa',
@@ -189,7 +189,7 @@ function js_mostraobrassituacao1( chave1, chave2 ) {
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_obrassituacaolog',
                       'func_obrassituacaolog.php?funcao_js=parent.js_preenchepesquisa|ob29_sequencial',
                       'Pesquisa',

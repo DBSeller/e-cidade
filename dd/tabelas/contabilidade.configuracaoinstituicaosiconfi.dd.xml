@@ -1,0 +1,53 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010265' name='contabilidade.configuracaoinstituicaosiconfi' description="Configuração de Instituições que devem prestar contas para o Siconfi." prefix="c125" label="Configuração de Instituições do Siconfi" type="0">
+  <fields>
+    <field codigo="1009650" 
+           campo_api='' 
+           name="c125_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='contabilidade.configuracaoinstituicaosiconfi_c125_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009651" 
+           campo_api='' 
+           name="c125_db_config" 
+           conteudo="int4" 
+           description="Vínculo com a instituição." 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c125_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="c125_db_config" reference="codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

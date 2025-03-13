@@ -1,53 +1,72 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_libpessoal.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhpesrescisao_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_selecao_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhpesrescisao_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_selecao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
+
 $clrhpesrescisao = new cl_rhpesrescisao;
-$clrhpessoal = new cl_rhpessoal;
-$clselecao = new cl_selecao;
-$db_opcao = 1;
-$db_botao = true;
+$clrhpessoal     = new cl_rhpessoal;
+$clselecao       = new cl_selecao;
+$db_opcao        = 1;
+$db_botao        = true;
 $exclusao_ferias = true;
-if(isset($excluir)){
-  $anofolha = db_anofolha();
-  $mesfolha = db_mesfolha();
+
+// Bloqueio da liberação do contracheque no DBPref
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+
+  try {
+    FolhaPagamentoRescisao::verificaLiberacaoDBPref();
+  } catch (Exception $e) {
+
+    $db_opcao = 3;
+    $db_botao = false;
+    db_msgbox($e->getMessage());
+  }
+}
+
+if (isset($excluir)) {
+
+  $anofolha    = DBPessoal::getAnoFolha();
+  $mesfolha    = DBPessoal::getMesFolha();
   $whereestrut = " rh05_seqpes is not null";
-  if($selecao != 0){
-    $result_sel = pg_exec("select r44_where from selecao where r44_selec = ".$selecao);
+
+  if ($selecao != 0) {
+    $result_sel = db_query("select r44_where from selecao where r44_selec = ".$selecao);
     if(pg_numrows($result_sel) > 0){
       db_fieldsmemory($result_sel, 0, 1);
       $whereestrut .= " and ".$r44_where;
@@ -56,7 +75,9 @@ if(isset($excluir)){
       echo "<script>location.href = 'pes4_rhpesrescislote001.php';</script>";
     }
   }
-  if ($tipo == "l"){
+
+  if ($tipo == "l") {
+
     if(isset($flt) && $flt != "") {
        $whereestrut .= " and r70_estrut in ('".str_replace(",","','",$flt)."') ";
     }elseif((isset($lti) && $lti != "" ) && (isset($ltf) && $ltf != "")){
@@ -66,7 +87,7 @@ if(isset($excluir)){
     }else if(isset($ltf) && $ltf != ""){
        $whereestrut .= " and r70_estrut <= '$ltf' ";
     }
-  }else if($tipo == "m"){
+  } else if ($tipo == "m") {
     if(isset($fre) && $fre != "") {
        $whereestrut .= " and rh02_regist in ('".str_replace(",","','",$fre)."') ";
     }elseif((isset($rei) && $rei != "" ) && (isset($ref) && $ref != "")){
@@ -78,7 +99,8 @@ if(isset($excluir)){
     }
   }
    
-  include("libs/db_sql.php");
+  require_once(modification("libs/db_sql.php"));
+
   $clsql = new cl_gera_sql_folha;
   $clsql->usar_pes = true;
   $clsql->usar_pad = true;
@@ -99,11 +121,12 @@ if(isset($excluir)){
 
   $sql = $clsql->gerador_sql("", $anofolha, $mesfolha, null, null, "rh02_seqpes as seqpes, rh01_regist as matric,rh01_numcgm,rh02_tbprev", "rh02_seqpes", $whereestrut);
   $result = $clsql->sql_record($sql);
-  if($clsql->numrows_exec > 0){
+  if ($clsql->numrows_exec > 0) {
 
     db_inicio_transacao();
 
-    for($i=0; $i<$clsql->numrows_exec; $i++){
+    for ($i=0; $i<$clsql->numrows_exec; $i++) {
+
       db_fieldsmemory($result, $i);
 
       $subpes = db_anofolha()."/".db_mesfolha();
@@ -147,6 +170,7 @@ if(isset($excluir)){
         $erro_msg = "Erro ao excluir ajuste do IR. Contate o suporte.";
         $erro = true;
       }
+
       global $pensao;
         $condicaoaux  = " and  rh05_recis is null ";
         $condicaoaux .= " and r52_regist = ".db_sqlformat($matric);
@@ -181,8 +205,10 @@ if(isset($excluir)){
            $retornar = db_update("pensao", $matriz1, $matriz2, bb_condicaosubpes("r52_").$condicaoaux );
        }
     }
+
     db_fim_transacao();
   }else{
+
     db_msgbox("Funcionário(s) não encontrados. Verifique.");
     echo "<script>location.href = 'pes4_rhpesrescislote003.php';</script>";
   }
@@ -202,20 +228,18 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
     <br><br>
-    <? 
-    include("forms/db_frmrhpesrescislote3.php");
-    ?>
+    <?php include(modification("forms/db_frmrhpesrescislote3.php")); ?>
     </center>
     </td>
   </tr>
 </table>
-<?
+<?php
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
 </html>
 <script>
-<?
+<?php
 if(isset($excluir)){
     db_msgbox("Processamento concluído.");
     if(trim($erro_msg) != ""){

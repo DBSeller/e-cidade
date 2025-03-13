@@ -1,42 +1,44 @@
 <?PHP
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_conlancamval_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_conlancam_classe.php");
-require_once("classes/db_conlancamcompl_classe.php");
-require_once("classes/db_conlancamdig_classe.php");
-require_once("classes/db_conlancamdoc_classe.php");
-require_once("classes/db_conplano_classe.php");
-require_once("libs/db_utils.php");
+use ECidade\Financeiro\Contabilidade\ContaCorrente\Services\Processamento;
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_conlancamval_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_conlancam_classe.php"));
+require_once(modification("classes/db_conlancamcompl_classe.php"));
+require_once(modification("classes/db_conlancamdig_classe.php"));
+require_once(modification("classes/db_conlancamdoc_classe.php"));
+require_once(modification("classes/db_conplano_classe.php"));
+require_once(modification("libs/db_utils.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -51,149 +53,201 @@ $db_botao = false;
 $db_opcao = 33;
 if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir"){
 
-$sql1="select c71_codlan from conlancamdoc where c71_codlan=$c70_codlan";
-$result1=db_query($sql1);
-$linhas1=pg_numrows($result1);
+    $sql1="select c71_codlan from conlancamdoc where c71_codlan=$c70_codlan";
+    $result1=db_query($sql1);
+    $linhas1=pg_numrows($result1);
 
-if ($linhas1 > 0){
+    if ($linhas1 > 0){
 
-     $sql2="select * from conlancamdoc inner join conhistdoc on c71_coddoc=c53_coddoc where c71_codlan=$c70_codlan";
-     $result2=db_query($sql2);
-     $linhas2=pg_numrows($result2);
-     if ($linhas2>0){
-       
-       $oResultado  = db_utils::fieldsMemory($result2, 0);
-       if ($oResultado->c53_coddoc == 1000 or $oResultado->c53_coddoc == 2000 or $oResultado->c53_tipo == 3000) {
-               $alt=true;
-               }
-           else{
+        $sql2="select * from conlancamdoc inner join conhistdoc on c71_coddoc=c53_coddoc where c71_codlan=$c70_codlan";
+        $result2=db_query($sql2);
+        $linhas2=pg_numrows($result2);
+        if ($linhas2>0){
+
+            $oResultado  = db_utils::fieldsMemory($result2, 0);
+            if ($oResultado->c53_coddoc == 1000 or $oResultado->c53_coddoc == 2000 or $oResultado->c53_tipo == 3000) {
+                $alt=true;
+            }
+            else{
                 $alt=false;
                 db_msgbox('Não é permitido excluir lançamentos contábeis automáticos (conhistdoc <>1000 e <>2000)');
-               }
-     }
-     else{
-          $alt=false;
-          db_msgbox('Não é permitido excluir lançamentos contábeis automáticos. (conhistdoc 1000 e 2000)');
-         }
-}
-else{
-      $alt=true;
-}
+            }
+        }
+        else{
+            $alt=false;
+            db_msgbox('Não é permitido excluir lançamentos contábeis automáticos. (conhistdoc 1000 e 2000)');
+        }
+    }
+    else{
+        $alt=true;
+    }
 
 
 
-if ($alt==true){
+    if ($alt==true){
 
-       db_inicio_transacao();
+        db_inicio_transacao();
         $db_opcao = 3;
-      	$erro = false;
+        $erro = false;
         $msg_erro = '';
         $resdoc = $clconlancamdoc->sql_record($clconlancamdoc->sql_query($c70_codlan));
         if($clconlancamdoc->numrows>0){
-          
-          $clconlancamdoc = db_utils::fieldsMemory($resdoc,0);
-          
-          if ($clconlancamdoc->c53_tipo=1000 || $clconlancamdoc->c53_tipo=2000) {
-            
-            $clconlancamdoc   = new cl_conlancamdoc;
-            $clconlancamdoc->excluir($c70_codlan);
-          } else {
-          	$erro = true;
-          	$msg_erro = 'Lançamento com documento. Exclusão não permitida';
-          }
+
+            $clconlancamdoc = db_utils::fieldsMemory($resdoc,0);
+
+            if ($clconlancamdoc->c53_tipo=1000 || $clconlancamdoc->c53_tipo=2000) {
+
+                $clconlancamdoc   = new cl_conlancamdoc;
+                $clconlancamdoc->excluir($c70_codlan);
+            } else {
+                $erro = true;
+                $msg_erro = 'Lançamento com documento. Exclusão não permitida';
+            }
         }
-        
+
         if($erro==false){
-          $clconlancamcompl->excluir($c70_codlan);
-          if($clconlancamcompl->erro_status == '0'){
-            $erro = true;
-            $msg_erro = $clconlancamcompl->msg_erro;
-          }
-        }
-        if($erro==false){
-          $clconlancamdig->excluir($c70_codlan);
-          if($clconlancamdig->erro_status == '0'){
-            $erro = true;
-            $msg_erro = $clconlancamdig->msg_erro;
-          }
+            $clconlancamcompl->excluir($c70_codlan);
+            if($clconlancamcompl->erro_status == '0'){
+                $erro = true;
+                $msg_erro = $clconlancamcompl->msg_erro;
+            }
         }
         if($erro==false){
-          $clconlancamval->excluir($c69_sequen);
-          if($clconlancamval->erro_status == '0'){
+            $clconlancamdig->excluir($c70_codlan);
+            if($clconlancamdig->erro_status == '0'){
+                $erro = true;
+                $msg_erro = $clconlancamdig->msg_erro;
+            }
+        }
+
+
+
+        try {
+
+            $buscaLancamento = db_query($clconlancamval->sql_query_file($c69_sequen));
+            $contasLancamento = db_utils::fieldsMemory($buscaLancamento, 0);
+            Processamento::atualizarSaldoPorContaLancamento($contasLancamento->c69_debito,  ($contasLancamento->c69_valor * -1), $c70_codlan, new DBDate($contasLancamento->c69_data));
+            Processamento::atualizarSaldoPorContaLancamento($contasLancamento->c69_credito, ($contasLancamento->c69_valor),      $c70_codlan, new DBDate($contasLancamento->c69_data));
+            $daoAtributoLancamento = new cl_conplanoatributolancamentos();
+            $buscaCodigos = $daoAtributoLancamento->sql_query_file(null, "array_to_string(array_accum(c124_sequencial), ',') as codigos", null, "c124_lancamento = {$c70_codlan}");
+            $buscaCodigos = db_query($buscaCodigos);
+            if (!$buscaCodigos) {
+                throw new DBException("Erro.");
+            }
+
+            $codigos = db_utils::fieldsMemory($buscaCodigos, 0)->codigos;
+            if (!empty($codigos)) {
+                $daoInfoComplementarValor = new cl_infocomplementarvalor();
+                $daoInfoComplementarValor->excluir(null, "c123_conplanoatributolancamentos in ( {$codigos} )");
+                $daoAtributoLancamento->excluir(null, "c124_lancamento = {$c70_codlan}");
+            }
+
+        } catch (Exception $e) {
+
             $erro = true;
-            $msg_erro = $clconlancamval->msg_erro;
-          }
+            $msg_erro = $e->getMessage();
+        }
+
+
+        if($erro==false){
+            $clconlancamval->excluir($c69_sequen);
+            if($clconlancamval->erro_status == '0'){
+                $erro = true;
+                $msg_erro = $clconlancamval->msg_erro;
+            }
         }
         if ($erro == false) {
 
-          $oDaoConlancamInstit = new cl_conlancaminstit();
-          $oDaoConlancamInstit->excluir(null, "c02_codlan = {$c70_codlan}");
-          if ($oDaoConlancamInstit->erro_status == '0') {
+            $oDaoConlancamInstit = new cl_conlancaminstit();
+            $oDaoConlancamInstit->excluir(null, "c02_codlan = {$c70_codlan}");
+            if ($oDaoConlancamInstit->erro_status == '0') {
 
-            $erro = true;
-            $msg_erro = $oDaoConlancamInstit->msg_erro;
-          }
+                $erro = true;
+                $msg_erro = $oDaoConlancamInstit->msg_erro;
+            }
         }
 
         if ($erro == false) {
 
-          $oDaoConlancamOrdem = new cl_conlancamordem();
-          $oDaoConlancamOrdem->excluir(null, "c03_codlan = {$c70_codlan}");
-          if ($oDaoConlancamOrdem->erro_status == '0') {
+            $oDaoConlancamOrdem = new cl_conlancamordem();
+            $oDaoConlancamOrdem->excluir(null, "c03_codlan = {$c70_codlan}");
+            if ($oDaoConlancamOrdem->erro_status == '0') {
 
+                $erro = true;
+                $msg_erro = $oDaoConlancamOrdem->msg_erro;
+            }
+        }
+
+        if ($erro == false) {
+
+            $daoConlancamDepartamento = new cl_conlancamdepartamento();
+            $daoConlancamDepartamento->excluir(null, "c128_conlancam = {$c70_codlan}");
+            if ($daoConlancamDepartamento->erro_status == '0') {
+
+                $erro = true;
+                $msg_erro = $daoConlancamDepartamento->msg_erro;
+            }
+        }
+
+
+        $daoRecurso = new cl_conlancamrecurso();
+        $daoRecurso->excluir(null, "c130_conlancam = {$c70_codlan}");
+        if ($daoRecurso->erro_status === '') {
             $erro = true;
-            $msg_erro = $oDaoConlancamOrdem->msg_erro;
-          }
+            $msg_erro = $daoRecurso->msg_erro;
         }
 
         if($erro==false){
-          $clconlancam->excluir($c70_codlan);
-          if($clconlancam->erro_status == '0'){
-            $erro = true;
-            $msg_erro = $clconlancam->msg_erro;
-          }
+            $clconlancam->excluir($c70_codlan);
+            if($clconlancam->erro_status == '0'){
+                $erro = true;
+                $msg_erro = $clconlancam->msg_erro;
+            }
         }
+
         db_fim_transacao($erro);
-}
+    }
 }else if(isset($chavepesquisa)){
-       $db_opcao = 3;
-       $result = $clconlancamval->sql_record($clconlancamval->sql_query($chavepesquisa)); 
-       db_fieldsmemory($result,0);
-       $db_botao = true;
+    $db_opcao = 3;
+    $result = $clconlancamval->sql_record($clconlancamval->sql_query($chavepesquisa));
+    db_fieldsmemory($result,0);
+    $db_botao = true;
 }
 ?>
-<html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
+    <html>
+    <head>
+        <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Expires" CONTENT="0">
+        <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/classes/AtributosLancamento.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+        <link href="estilos.css" rel="stylesheet" type="text/css">
+    </head>
+    <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 
-<center>
-    	<?PHP
-    	if (USE_PCASP) {
-    	  require_once("forms/db_frmconlancamval.php");
-    	  } else {
-require_once("forms/db_frmconlancamval_old.php");
-}
-    	?>
-</center>
-<?PHP db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
-</body>
-</html>
+    <center>
+        <?PHP
+        if (USE_PCASP) {
+            require_once(modification("forms/db_frmconlancamval.php"));
+        } else {
+            require_once(modification("forms/db_frmconlancamval_old.php"));
+        }
+        ?>
+    </center>
+    <?PHP db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
+    </body>
+    </html>
 <?PHP
 if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir"){
     if($erro==true){
         db_msgbox($msg_erro);
     }else{
-       $clconlancam->erro(true,true);
+        $clconlancam->erro(true,true);
     }
 }
 if($db_opcao==33){
-   echo "<script>document.form1.pesquisar.click();</script>";
+    echo "<script>document.form1.pesquisar.click();</script>";
 }
 ?>

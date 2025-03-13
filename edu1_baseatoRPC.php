@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_serie_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_serie_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clserie = new cl_serie;
 $escola = db_getsession("DB_coddepto");
 
@@ -43,7 +43,7 @@ if($oPost->sAction == 'PesquisaSerie') {
   $sql1="SELECT a.ed11_i_sequencia as seq, b.ed11_i_sequencia as seqs from baseserie 
          inner join serie as a on a.ed11_i_codigo = baseserie. ed87_i_serieinicial  
          inner join serie as b on b.ed11_i_codigo = baseserie. ed87_i_seriefinal where ed87_i_codigo= {$oPost->base}";
-  $result1 = pg_query($sql1);
+  $result1 = db_query($sql1);
   $inicial = pg_result($result1,0,0);
   $final = pg_result($result1,0,1);
   //die($sql1);
@@ -62,8 +62,8 @@ if($oPost->sAction == 'PesquisaSerie') {
          ORDER BY ed11_i_sequencia
         ";
          //die($sql);
- $result_serie = pg_query($sql);
- $aResult = db_utils::getColectionByRecord($result_serie, false, false, true);
+ $result_serie = db_query($sql);
+ $aResult = db_utils::getCollectionByRecord($result_serie, false, false, true);
  $oJson = new services_json();
  echo $oJson->encode($aResult);
 }
@@ -71,7 +71,7 @@ if($oPost->sAction == 'PesquisaSerieIncluida') {
    $sql2="SELECT a.ed11_i_sequencia as seq, b.ed11_i_sequencia as seqs from baseserie 
          inner join serie as a on a.ed11_i_codigo = baseserie. ed87_i_serieinicial  
          inner join serie as b on b.ed11_i_codigo = baseserie. ed87_i_seriefinal where ed87_i_codigo= {$oPost->base}";
-  $result2 = pg_query($sql2);
+  $result2 = db_query($sql2);
   $seqinicial = pg_result($result2,0,0);
   $seqfinal = pg_result($result2,0,1);
 
@@ -92,8 +92,8 @@ if($oPost->sAction == 'PesquisaSerieIncluida') {
          ORDER BY ed11_i_sequencia
         ";
          //die($sql);
- $result_serie = pg_query($sql);
- $aResult = db_utils::getColectionByRecord($result_serie, false, false, true);
+ $result_serie = db_query($sql);
+ $aResult = db_utils::getCollectionByRecord($result_serie, false, false, true);
  $oJson = new services_json();
  echo $oJson->encode($aResult);
 }

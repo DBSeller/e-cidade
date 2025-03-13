@@ -70,7 +70,7 @@ function js_getVersoesPPA(iCodigoLei, iTipoConsulta, oFunction) {
 
 function js_retornoGetVersoesPPA (oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   /**
    * Quando não for encontrado Perspectiva, limpamos o combobox e adicionamos um novo Option padrão.
@@ -213,7 +213,7 @@ function js_validaLeiPPAPeriodo(iCodigoLei, oCallBack) {
 											                          method    : 'post', 
 											                          parameters: 'json='+js_objectToJson(oParam), 
 											                          onComplete: function (oAjax) {
-											                            var oRetorno = eval("("+oAjax.responseText+")");
+											                            var oRetorno = JSON.parse(oAjax.responseText);
  											                            oCallBack(oRetorno.leivalida, oRetorno.message.urlDecode())
 											                          }
 											                          });

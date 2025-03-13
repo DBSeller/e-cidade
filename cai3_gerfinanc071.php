@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,18 +26,18 @@
  */
 
 set_time_limit(0);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-require("dbforms/db_funcoes.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_propri_classe.php");
-include("classes/db_promitente_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+require(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_propri_classe.php"));
+include(modification("classes/db_promitente_classe.php"));
 
-include("classes/db_termoanu_classe.php");
+include(modification("classes/db_termoanu_classe.php"));
 
 $cltermoanu = new cl_termoanu;
 
@@ -54,7 +54,7 @@ $objGet  = db_utils::postmemory($_GET);
 <script>
 
 function js_mostraParcelamento(parcelamento){
-  js_OpenJanelaIframe('top.corpo','db_iframe_consultaparc'+parcelamento,'div3_consultaParcelamento.php?parcelamento='+parcelamento,'Consulta Pacelamentos anulados',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consultaparc'+parcelamento,'div3_consultaParcelamento.php?parcelamento='+parcelamento,'Consulta Pacelamentos anulados',true);
 }
 
 </script>
@@ -114,7 +114,7 @@ MM_reloadPage(true);
     $campos    .= "          v09_motivo ";
     
     //                               echo($cltermoanu->sqlQueryTermoOrigem (null,$campos,null,"termo.v07_instit = ".db_getsession('DB_instit')." ".$where));
-    $rsTermoAnu = $cltermoanu->sql_record($cltermoanu->sqlQueryTermoOrigem (null,$campos,null,"termo.v07_instit = ".db_getsession('DB_instit')." ".$where));
+    $rsTermoAnu = $cltermoanu->sql_record($cltermoanu->sqlQueryTermoOrigem (null,$campos,"v09_data#v09_hora","termo.v07_instit = ".db_getsession('DB_instit')." ".$where));
 
     if ($cltermoanu->numrows == 0) {
       db_msgbox("Não existem parcelamentos para a origem selecionada.");

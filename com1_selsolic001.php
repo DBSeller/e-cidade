@@ -1,39 +1,36 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_solicita_classe.php");
-include("classes/db_pcsugforn_classe.php");
-include("classes/db_pcorcamitem_classe.php");
-include("classes/db_pcorcamitemsol_classe.php");
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("dbforms/db_funcoes.php");
+
 $clsolicita = new cl_solicita;
 $clpcsugforn = new cl_pcsugforn;
 $clpcorcamitem = new cl_pcorcamitem;
@@ -64,7 +61,7 @@ if($op == "alterar"){
       <td ></td>
       <td ></td>
     </tr>
-    <tr> 
+    <tr>
       <td  align="left" nowrap title="<?=$Tpc10_numero?>"> <? db_ancora(@$Lpc10_numero,"js_pesquisapc10_numero(true);",1);?></td>
       <td align="left" nowrap>
     <?
@@ -93,7 +90,7 @@ $clickaut = false;
 if ( !empty($pc22_codorc) ) {
 
 	$result_solic = $clpcorcamitemsol->sql_record($clpcorcamitemsol->sql_query(null,null,"pc22_orcamitem","","pc22_codorc=".@$pc22_codorc));
-	
+
 	if($clpcorcamitemsol->numrows>0){
 	  $clickaut = true;
 	}
@@ -109,15 +106,15 @@ if ( !empty($pc22_codorc) ) {
 }
 function js_pesquisapc10_numero(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_orcam','db_iframe_solicita','func_solicitaorcam.php?funcao_js=parent.js_mostrapcorcamitem1|pc10_numero&orc=<?=(@$pc22_codorc)?>&departamento=<?=db_getsession("DB_coddepto")?>','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcam','db_iframe_solicita','func_solicitaorcam.php?funcao_js=parent.js_mostrapcorcamitem1|pc10_numero&orc=<?=(@$pc22_codorc)?>&departamento=<?=db_getsession("DB_coddepto")?>','Pesquisa',true,'0');
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_orcam','db_iframe_solicita','func_solicitaorcam.php?funcao_js=parent.js_mostrapcorcamitem1|pc10_numero&orc=<?=(@$pc22_codorc)?>&departamento=<?=db_getsession("DB_coddepto")?>','Pesquisa',false,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcam','db_iframe_solicita','func_solicitaorcam.php?funcao_js=parent.js_mostrapcorcamitem1|pc10_numero&orc=<?=(@$pc22_codorc)?>&departamento=<?=db_getsession("DB_coddepto")?>','Pesquisa',false,'0');
   }
 }
 function js_mostrapcorcamitem1(chave1,chave2){
   document.form1.pc10_numero.value = chave1;
   db_iframe_solicita.hide();
-  top.corpo.iframe_orcam.location.href = 'com1_selsolic001.php?numerodesolicita='+chave1+'&op=<?=$op?>';
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_selsolic001.php?numerodesolicita='+chave1+'&op=<?=$op?>';
 }
 <?
 if($clickaut == true){

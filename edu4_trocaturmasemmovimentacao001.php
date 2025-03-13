@@ -1,38 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulo = new rotulocampo();
 $oRotulo->label("ed60_matricula");
@@ -57,156 +56,148 @@ $oRotulo->label("ed52_c_descr");
     db_app::load("DBViewConsultaAvaliacoesAluno.classe.js, dbcomboBox.widget.js");
     db_app::load("estilos.css, grid.style.css");
     ?>
+
+    <script type="text/javascript" src="scripts/AjaxRequest.js"></script>
     <script type="text/javascript" src="scripts/classes/educacao/DBViewFormularioEducacao.classe.js"></script>
     <script type="text/javascript" src="scripts/classes/educacao/escola/TurmaTurnoReferente.classe.js"></script>
-    <style>
-      fieldset.separador {
-
-        border: 0px;
-        border-top: 2px groove white;
-      }
-
-      fieldset.separador table tr td:first-child {
-
-        white-space: nowrap;
-        width: 135px;
-      }
-
-    </style>
   </head>
-  <body bgcolor="#CCCCCC" style='margin-top: 25px'>
-    <form id='frmTrocaTurma'>
-      <?php
-        if (db_getsession("DB_modulo") == 1100747) {
-          MsgAviso(db_getsession("DB_coddepto"),"escola");
-        }
-      ?>
-      <center>
-        <div style="display:table;">
-          <fieldset>
-            <legend><b>Troca de Turma Sem Registro de Movimentação</b></legend>
-            <fieldset class="separador">
-              <legend><b>Dados da Matrícula</b></legend>
-              <table>
-                <tr>
-                  <td>
-                  <?
-                    db_ancora("Matrícula:", "js_pesquisaMatricula();", 1);
+  <body class="body_default">
+    <div class="container">
+      <form id='frmTrocaTurma'>
+        <?php
+          if (db_getsession("DB_modulo") == 1100747) {
+            MsgAviso(db_getsession("DB_coddepto"),"escola");
+          }
+        ?>
+        <fieldset>
+          <legend>Troca de Turma Sem Registro de Movimentação</legend>
+          <fieldset class="separator">
+            <legend>Dados da Matrícula</legend>
+            <table class="form-container">
+              <tr>
+                <td>
+                <?php
+                  db_ancora("Matrícula:", "js_pesquisaMatricula();", 1);
+                ?>
+                </td>
+                <td>
+                <?php
+                  db_input("ed60_matricula", 10, $Ied60_matricula, true, "text", 3);
+                  db_input("ed60_i_codigo", 10, $Ied60_i_codigo, true, "hidden", 3);
+                ?>
+                </td>
+                <td colspan="2">
+                <?php
+                  db_input("ed47_v_nome", 60, $Ied47_v_nome, true, "text", 3);
+                ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label>Turma:</label>
+                </td>
+                <td>
+                <?php
+                  db_input("ed60_i_turma", 10, $Ied60_i_turma, true, "text", 3);
+                  db_input("ed11_i_codigo", 10, $Ied11_i_codigo, true, "hidden", 3);
+                ?>
+                </td>
+                <td  colspan="2" >
+                <?php
+                  db_input("ed57_c_descr", 40, $Ied57_c_descr, true, "text", 3, "", "", "", "width: 100%");
+                ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label>Ensino: </label>
+                </td>
+                <td colspan="3">
+                  <?php
+                    db_input("ed10_c_descr", 50, $Ied10_c_descr, true, "text", 3, "", "", "", "width: 100%");
                   ?>
-                  </td>
-                  <td>
-                  <?
-                    db_input("ed60_matricula", 10, $Ied60_matricula, true, "text", 3);
-                    db_input("ed60_i_codigo", 10, $Ied60_i_codigo, true, "hidden", 3);
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label><?=$Led11_c_descr?></label>
+                </td>
+                <td>
+                  <?php
+                    db_input("ed11_c_descr", 10, $Ied11_c_descr, true, "text", 3, "", "", "", "width: 100%");
                   ?>
-                  </td>
-                  <td colspan="2">
-                  <?
-                    db_input("ed47_v_nome", 60, $Ied47_v_nome, true, "text", 3);
+                </td>
+                <td style="text-align: right">
+                  <b><?=$Led60_d_datamatricula?> </b>
+                </td>
+                <td>
+                  <?php
+                    db_inputdata("ed60_d_datamatricula", '', '', '',true, "text", 3);
                   ?>
-                  </td>
-                </tr>
-                <tr>
-                  <td><b>Turma:</b></td>
-                  <td>
-                  <?
-                    db_input("ed60_i_turma", 10, $Ied60_i_turma, true, "text", 3);
-                    db_input("ed11_i_codigo", 10, $Ied11_i_codigo, true, "hidden", 3);
+                </td>
+              </tr>
+               <tr>
+                <td>
+                  <label><?=$Led52_c_descr?></label>
+                </td>
+                <td colspan="3">
+                  <?php
+                    db_input("ed52_c_descr", 50, $Ied52_c_descr, true, "text", 3, "", "", "", "width: 100%");
                   ?>
-                  </td>
-                  <td  colspan="2" >
-                  <?
-                    db_input("ed57_c_descr", 40, $Ied57_c_descr, true, "text", 3, "", "", "", "width: 100%");
-                  ?>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <b>Ensino: </b>
-                  </td>
-                  <td colspan="3">
-                    <?
-                      db_input("ed10_c_descr", 50, $Ied10_c_descr, true, "text", 3, "", "", "", "width: 100%");
-                    ?>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <b><?=$Led11_c_descr?> </b>
-                  </td>
-                  <td>
-                    <?
-                      db_input("ed11_c_descr", 10, $Ied11_c_descr, true, "text", 3, "", "", "", "width: 100%");
-                    ?>
-                  </td>
-                  <td style="text-align: right">
-                    <b><?=$Led60_d_datamatricula?> </b>
-                  </td>
-                  <td>
-                    <?
-                      db_inputdata("ed60_d_datamatricula", '', '', '',true, "text", 3);
-                    ?>
-                  </td>
-                </tr>
-                 <tr>
-                  <td>
-                    <b><?=$Led52_c_descr?> </b>
-                  </td>
-                  <td colspan="3">
-                    <?
-                      db_input("ed52_c_descr", 50, $Ied52_c_descr, true, "text", 3, "", "", "", "width: 100%");
-                    ?>
-                  </td>
-                </tr>
-              </table>
-            </fieldset>
-            <fieldset class="separador">
-              <legend><b>Turma de Destino</b></legend>
-              <table>
-                <tr id="linhaTurmaDestino">
-                  <td>
-                  <?
-                    db_ancora("Turma:", "js_pesquisaTurma();", 1);
-                  ?>
-                  </td>
-                  <td>
-                  <?
-                    db_input("ed60_i_turma", 10, $Ied60_i_turma, true, "text", 3, "", "turma_destino");
-                    db_input("ed57_c_descr", 60, $Ied57_c_descr, true, "text", 3, "", "nome_turma_destino");
-                  ?>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <b>Ensino: </b>
-                  </td>
-                  <td colspan="3">
-                    <?
-                      db_input("ed10_c_descr", 50, $Ied10_c_descr, true, "text", 3, "", "ensino_destino", "", "width: 100%");
-                    ?>
-                  </td>
-                </tr>
-              </table>
-            </fieldset>
+                </td>
+              </tr>
+            </table>
           </fieldset>
-              <div style="text-align: center;padding-top: 4px">
-                <input type="button" id="btnAvaliacoes" name="btnAvaliacoes" value="Avaliações" >
-              </div>
-          <fieldset>
-            <legend>
-              <b>Disciplina(s) inconsistente(s) entre as turmas</b>
-            </legend>
-            <div id="ctnGridConflitos">
-            </div>
+          <fieldset class="separator">
+            <legend>Turma de Destino</legend>
+            <table class="form-container">
+              <tr id="linhaTurmaDestino">
+                <td>
+                <?php
+                  db_ancora("Turma:", "js_pesquisaTurma();", 1);
+                ?>
+                </td>
+                <td>
+                <?php
+                  db_input("ed60_i_turma", 10, $Ied60_i_turma, true, "text", 3, "", "turma_destino");
+                  db_input("ed57_c_descr", 60, $Ied57_c_descr, true, "text", 3, "", "nome_turma_destino");
+                  db_input("etapa_destino", 10, '', false, "hidden", 3, "" );
+                ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label>Ensino:</label>
+                </td>
+                <td colspan="3">
+                  <?php
+                    db_input("ed10_c_descr", 50, $Ied10_c_descr, true, "text", 3, "", "ensino_destino", "", "width: 100%");
+                  ?>
+                </td>
+              </tr>
+            </table>
           </fieldset>
-        </div>
+        </fieldset>
+        <input type="button" id="btnAvaliacoes" name="btnAvaliacoes" value="Avaliações" >
+        <fieldset>
+          <legend>
+            Disciplina(s) inconsistente(s) entre as turmas
+          </legend>
+          <div id="ctnGridConflitos">
+          </div>
+        </fieldset>
         <input type="button" id="btnSalvar" name="btnSalvar" value="Salvar" >
-      </center>
-    </form>
+      </form>
+    </div>
   </body>
-  <?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
+  <?php
+  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+  ?>
 </html>
 <script>
+  const MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 = 'educacao.escola.edu4_trocaturmasemmovimentacao001.';
+
+  $('btnSalvar').disabled               = true;
   $('ed60_d_datamatricula').style.width = '100%';
 
   var sUrlRpc                         = 'edu4_turmas.RPC.php';
@@ -228,7 +219,7 @@ $oRotulo->label("ed52_c_descr");
   function js_pesquisaMatricula() {
 
     js_OpenJanelaIframe(
-                        'top.corpo',
+                        'CurrentWindow.corpo',
                         'db_iframe_matricula',
                         'func_matriculatransf.php?funcao_js=parent.js_mostraMatricula|ed60_i_codigo'
                                                                                    +'|ed47_v_nome'
@@ -268,17 +259,13 @@ $oRotulo->label("ed52_c_descr");
 
     if ($F('ed60_i_turma') != '' && $F('ed11_i_codigo') != '') {
 
-      js_OpenJanelaIframe(
-                          'top.corpo',
-                          'db_iframe_turma',
-                          'func_turmatransf.php?turmasprogressao=f'
-                                             +'&apenasensinodaturma=1'
-                                             +'&turma='+$F('ed60_i_turma')
-                                             +'&etapaorig='+$F('ed11_i_codigo')
-                                             +'&funcao_js=parent.js_mostraTurma|ed57_i_codigo|ed57_c_descr|ed10_c_descr',
-                          'Escolha Nova Turma do Aluno',
-                          true
-                         );
+      var sUrl  = 'func_turmatransf.php?turmasprogressao=f';
+          sUrl += '&apenasensinodaturma=1';
+          sUrl += '&turma='+$F('ed60_i_turma');
+          sUrl += '&etapaorig='+$F('ed11_i_codigo');
+          sUrl += '&funcao_js=parent.js_mostraTurma|ed57_i_codigo|ed57_c_descr|ed10_c_descr|codetapa';
+
+      js_OpenJanelaIframe( 'CurrentWindow.corpo', 'db_iframe_turma', sUrl, 'Escolha Nova Turma do Aluno', true );
     }
   }
 
@@ -287,9 +274,12 @@ $oRotulo->label("ed52_c_descr");
     $('turma_destino').value      = arguments[0];
     $('nome_turma_destino').value = arguments[1];
     $('ensino_destino').value     = arguments[2];
+    $('etapa_destino').value      = arguments[3];
+
     db_iframe_turma.hide();
+
     carregaTurno();
-    js_getRegenciasInconsistentes();
+    js_comparaRegenciasEntreTurmas();
   }
 
   /**
@@ -309,6 +299,38 @@ $oRotulo->label("ed52_c_descr");
   });
 
   /**
+   * Compara entre duas Turmas se suas Disciplinas possuem o mesmo Procedimento de Avaliação vinculados há Regência
+   */
+  function js_comparaRegenciasEntreTurmas() {
+
+    var oParametros              = new Object();
+      oParametros.exec           = "comparaRegenciasEntreTurmas";
+      oParametros.iTurmaAtual    = $F('ed60_i_turma');
+      oParametros.iTurmaDestino  = $F('turma_destino');
+      oParametros.sEtapasDestino = $F('etapa_destino');
+      oParametros.iEtapaOrigem   = $F('ed11_i_codigo');
+
+
+    var oAjaxRequest = new AjaxRequest( sUrlRpc, oParametros, retornoCompararRegenciasEntreTurmas );
+      oAjaxRequest.setMessage( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'verificando_inconsistencias' ) );
+      oAjaxRequest.execute();
+  }
+
+  function retornoCompararRegenciasEntreTurmas( oRetorno, lErro ) {
+
+    $('btnSalvar').disabled = true;
+    oGridConflitos.clearAll(true);
+    oGridConflitos.setStatus('');
+    if ( oRetorno.lPossuiMesmoProcedimentos == false ) {
+
+      alert( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'disciplinas_procedimentos_diferentes' ) );
+      return;
+    }
+
+    js_getRegenciasInconsistentes();
+  }
+
+  /**
    * Busca as regencias que possuem inconsistencia com as regencias da turma de destino
    */
   function js_getRegenciasInconsistentes() {
@@ -318,29 +340,34 @@ $oRotulo->label("ed52_c_descr");
     oParametro.iMatricula    = $F('ed60_i_codigo');
     oParametro.iTurmaDestino = $F('turma_destino');
 
-    js_divCarregando('Aguarde. Verificando possíveis inconsistências entre as disciplinas das turmas.', 'msgBox');
-    var oAjax = new Ajax.Request(
-                                 sUrlRpc,
-                                 {
-                                   method:     'post',
-                                   parameters: 'json='+Object.toJSON(oParametro),
-                                   onComplete: js_retornaRegenciasInconsistentes
-                                 }
-                                );
+    new Ajax.Request(
+                     sUrlRpc,
+                     {
+                       method:     'post',
+                       parameters: 'json='+Object.toJSON(oParametro),
+                       onComplete: js_retornaRegenciasInconsistentes
+                     }
+                    );
   }
 
   function js_retornaRegenciasInconsistentes(oResponse) {
 
-    js_removeObj("msgBox");
-    var oRetorno = eval('('+oResponse.responseText+')');
+
+    var oRetorno = JSON.parse(oResponse.responseText);
+
+    $('btnSalvar').disabled = true;
 
     oGridConflitos.clearAll(true);
     oGridConflitos.setStatus('');
     lTurmaProcedimentoInconsistente = oRetorno.lPeriodosInconsistentes;
 
     if (oRetorno.lPeriodosInconsistentes) {
+
+      alert( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'disciplinas_procedimentos_diferentes' ) );
       return false;
     }
+
+    $('btnSalvar').disabled = false;
 
     if (oRetorno.aRegenciasInconsistentes.length > 0) {
 
@@ -359,8 +386,9 @@ $oRotulo->label("ed52_c_descr");
       oGridConflitos.renderRows();
     }
 
+
     if (oRetorno.aRegenciasInconsistentes.length == 0) {
-      oGridConflitos.setStatus('Sem disciplinas Inconsistentes.');
+      oGridConflitos.setStatus( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'sem_disciplinas_inconsistentes' ) );
     }
   }
 
@@ -386,14 +414,16 @@ $oRotulo->label("ed52_c_descr");
     var sNomeTurmaDestino = $F('nome_turma_destino').trim();
     if ($F('ed60_i_codigo') == '') {
 
-      alert('Escolha um aluno para realizar a troca de turma.');
+      alert( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'selecione_aluno' ) );
       js_pesquisaMatricula();
       return false;
     }
 
     if ($F('turma_destino') == '') {
 
-      alert('Escolha uma nova turma para o aluno '+sNomeAluno+'.');
+      var oMensagem            = {};
+          oMensagem.sNomeAluno = sNomeAluno;
+      alert( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'selecione_nova_turma', oMensagem ) );
       js_pesquisaTurma();
       return false;
     }
@@ -409,10 +439,11 @@ $oRotulo->label("ed52_c_descr");
       if (oCombo.nodeName != 'SELECT') {
         oDadosVinculo.iCodigoDestino = '';
       }
-      if (oDadosVinculo.iCodigoDestino == '') {
 
+      if (oDadosVinculo.iCodigoDestino == '') {
         sMensagemDisciplinasSemVinculo += "  "+oLinha.aCells[0].getValue().trim()+"\n";
       }
+
       aDisciplinasVinculadas.push(oDadosVinculo);
     });
 
@@ -449,9 +480,9 @@ $oRotulo->label("ed52_c_descr");
 
       if (lVinculoDuplo) {
 
-        var sMensagemVinculoDuplo  = 'A disciplina '+sNomeDisciplina+' não pode ser vinculada a mais de uma disciplina ';
-        sMensagemVinculoDuplo     += 'da turma origem';
-        alert(sMensagemVinculoDuplo);
+        var oMensagem                 = {};
+            oMensagem.sNomeDisciplina = sNomeDisciplina;
+        alert( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'vinculo_unico_disciplina', oMensagem ) );
         return false;
       }
     }
@@ -466,7 +497,7 @@ $oRotulo->label("ed52_c_descr");
 
     if (lTurmaProcedimentoInconsistente) {
 
-      var sMensagemProcedimento       = '\nO sistema não permitira a importação das avaliações do aluno, pois o procedimento ';
+      var sMensagemProcedimento       = '\nO sistema não permitirá a importação das avaliações do aluno, pois o procedimento ';
       sMensagemProcedimento          += 'de avaliação da turma de origem difere do procedimento da turma de destino.';
       sMensagemConfirmacaoTrocaTurma += sMensagemProcedimento;
     }
@@ -486,28 +517,44 @@ $oRotulo->label("ed52_c_descr");
     oParametro.aDisciplinasVinculadas = aDisciplinasVinculadas;
     oParametro.sTurno                 = aTurnosSelecionados.join( "," );
 
-    var sMensagemSalvando = 'Aguarde, realizando a troca de turma do aluno '+sNomeAluno+' para a turma '+sNomeTurmaDestino;
-    js_divCarregando(sMensagemSalvando, "msgBox");
+    var oMensagem                   = {};
+        oMensagem.sNomeAluno        = sNomeAluno;
+        oMensagem.sNomeTurmaDestino = sNomeTurmaDestino;
+    js_divCarregando( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'aguarde_realizando_troca', oMensagem ), "msgBox");
     $('btnSalvar').disabled = true;
-    var oAjax = new Ajax.Request(
-                                 sUrlRpc,
-                                 {
-                                   method:     'post',
-                                   parameters: 'json='+Object.toJSON(oParametro),
-                                   onComplete: js_retornoSalvarVinculos
-                                 }
-                                );
+    new Ajax.Request(
+                     sUrlRpc,
+                     {
+                       method:     'post',
+                       parameters: 'json='+Object.toJSON(oParametro),
+                       onComplete: js_retornoSalvarVinculos
+                     }
+                    );
   });
 
   function js_retornoSalvarVinculos(oResponse) {
 
     js_removeObj("msgBox");
     $('btnSalvar').disabled = false;
-    var oRetorno = eval('('+oResponse.responseText+')');
+    var oRetorno = JSON.parse(oResponse.responseText);
+
+    if( oRetorno.lProcedimentosInconsistentes ) {
+
+      var aDisciplinas = [];
+      for( var iContador = 0; iContador < oRetorno.aDisciplinasProcedimentoDiferente.length; iContador++ ) {
+        aDisciplinas.push( oRetorno.aDisciplinasProcedimentoDiferente[iContador].urlDecode() );
+      }
+
+      var oMensagem = {};
+          oMensagem.sDisciplinas = aDisciplinas.join( ', ' );
+
+      alert( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'disciplinas_procedimentos_diferentes_destino', oMensagem ) );
+      return false;
+    }
 
     if (oRetorno.status == 1) {
 
-      alert("Troca de Turma realizada com sucesso.");
+      alert( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'troca_turma_realizada' ) );
       $('frmTrocaTurma').reset();
       oGridConflitos.clearAll(true);
       js_pesquisaMatricula();
@@ -553,7 +600,7 @@ $oRotulo->label("ed52_c_descr");
     if ( !oTurmaTurno.temVagasDisponiveis() ) {
 
       $( 'btnSalvar' ).disabled = true;
-      alert( "Turma sem vagas disponíveis." );
+      alert( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'turma_sem_vagas' ) );
       return false;
     }
   }
@@ -566,7 +613,7 @@ $oRotulo->label("ed52_c_descr");
 
     if ( !oTurmaTurno.temTurnoSelecionado() ) {
 
-      alert( "Nenhum turno foi selecionado." );
+      alert( _M( MENSAGENS_EDU4_TROCATURMASEMMOVIMENTACAO001 + 'nenhum_turno_selecionado' ) );
       return false;
     }
 

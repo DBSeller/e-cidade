@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("std/db_stdClass.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oDaoDocumento = db_utils::getDao('db_documentotemplate');
 $sCampos       = " db82_sequencial, db82_descricao";
@@ -132,7 +132,7 @@ limpaForm();
    if (lMostra == true) {
 
      sUrl += 'funcao_js=parent.js_mostraFamilia|as04_sequencial|ov02_nome|as15_codigofamiliarcadastrounico|as02_nis';
-   	js_OpenJanelaIframe('top.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisar Código da Família', true);
+   	js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisar Código da Família', true);
    } else {
      
      sUrl += 'funcao_js=parent.js_mostraFamilia2';
@@ -151,7 +151,7 @@ limpaForm();
    	  sUrl += '&pesquisa_chave='+$F('as02_nis');
      }
 
-   	js_OpenJanelaIframe('top.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisar Código da Família', false);
+   	js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisar Código da Família', false);
    }
  }
  
@@ -212,7 +212,7 @@ function js_retornoAtendeCriterioTarifaSocial(oJson) {
 
   $('btnImprimir').disabled = false;
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (!oRetorno.lAtendeCriterioTarifaSocial) {
     

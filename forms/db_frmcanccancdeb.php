@@ -33,7 +33,7 @@ $clrotulo = new rotulocampo;
 $clrotulo->label("k23_obs");
 $clrotulo->label("nome"); 
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 
 ?>
@@ -159,7 +159,7 @@ function js_submit(){
 		return true;
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cancdebitos','func_canccancdeb.php?funcao_js=parent.js_preenchepesquisa|k20_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cancdebitos','func_canccancdeb.php?funcao_js=parent.js_preenchepesquisa|k20_codigo','Pesquisa',true);
 //document.form1.submit();
 }
 function js_preenchepesquisa(chave){

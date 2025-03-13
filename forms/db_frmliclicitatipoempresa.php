@@ -77,7 +77,7 @@ db_input('l32_percentual',10,$Il32_percentual,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_liclicitatipoempresa','func_liclicitatipoempresa.php?funcao_js=parent.js_preenchepesquisa|l32_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_liclicitatipoempresa','func_liclicitatipoempresa.php?funcao_js=parent.js_preenchepesquisa|l32_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_liclicitatipoempresa.hide();

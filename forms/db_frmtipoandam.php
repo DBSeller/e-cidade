@@ -79,7 +79,7 @@ db_select('y41_permcalc',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipoandam','func_tipoandam.php?funcao_js=parent.js_preenchepesquisa|y41_codtipo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoandam','func_tipoandam.php?funcao_js=parent.js_preenchepesquisa|y41_codtipo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tipoandam.hide();

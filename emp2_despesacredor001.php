@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("classes/db_lote_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_empempenho_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_empempenho_classe.php"));
 
 //---  parser POST/GET
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -137,10 +137,8 @@ if (!isset($testdt)){
         </tr>
       </table>
       <?
-      $resultmin = pg_exec("select e54_emiss from empautoriza where e54_anulad is null order by e54_emiss limit 1");
-      if (pg_numrows($resultmin) > 0) {
-	      db_fieldsmemory($resultmin,0);
-      }
+      $resultmin = db_query("select e54_emiss from empautoriza where e54_anulad is null order by e54_emiss limit 1");
+	  db_fieldsmemory($resultmin,0);
       $dia=substr($e54_emiss,8,2);
       $mes=substr($e54_emiss,5,2);
       $ano=substr($e54_emiss,0,4);

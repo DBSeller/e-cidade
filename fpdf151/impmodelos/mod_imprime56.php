@@ -82,6 +82,13 @@ $this->objpdf->setx(12);
 $this->objpdf->Cell(35,3,$this->dados6,0,0,"L",0);
 $this->objpdf->Cell(35,3,$this->dados7,0,1,"L",0);
 $this->objpdf->setx(12);
+
+if ( !empty($this->sPromitente) ) {
+
+  $this->objpdf->Cell(35,3,$this->sPromitente,0,0,"L",0);
+  $this->objpdf->setx(12);
+}
+
 $this->objpdf->Cell(35,3,$this->dados8,0,0,"L",0);
 $this->objpdf->Cell(35,3,$this->dados9,0,1,"L",0);
 $this->objpdf->setx(12);

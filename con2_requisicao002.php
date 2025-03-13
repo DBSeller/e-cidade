@@ -26,7 +26,7 @@
  */
  
 
- include("fpdf151/pdf.php");
+ include(modification("fpdf151/pdf.php"));
 
   // variaveis de cabeçalho;
   db_postmemory($HTTP_SERVER_VARS);
@@ -47,7 +47,7 @@
           order by e54_emiss		
 		";
 
-  $res = pg_exec($sql) ;
+  $res = db_query($sql) ;
   if (pg_numrows($res) == 0 ){
     db_redireciona("db_erros.php?fechar=true&db_erro=Nenhum registro encontrado");
   } 

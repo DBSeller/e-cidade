@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("classes/db_tipofiscaliza_classe.php");
-require_once("classes/db_db_depart_classe.php");
+require_once(modification("classes/db_tipofiscaliza_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
 $cltipofiscaliza = new cl_tipofiscaliza;
 $cldb_depart     = new cl_db_depart;
 $clauto->rotulo->label();
@@ -76,7 +76,7 @@ if(isset($y50_codauto) && $y50_codauto != "" && $db_opcao != 1){
 if(isset($z01_numcgm) && $z01_numcgm != ""){
 
   db_input('z01_numcgm',5,$Iz01_numcgm,true,'hidden',1,"");
-  include("classes/db_cgm_classe.php");
+  include(modification("classes/db_cgm_classe.php"));
   $clcgm  = new cl_cgm;
 	$get    = "&tipo=y101_numcgm&valor=$z01_numcgm";
   $result = $clcgm->sql_record($clcgm->sql_query_ender($z01_numcgm));
@@ -92,7 +92,7 @@ if(isset($z01_numcgm) && $z01_numcgm != ""){
 }elseif(isset($j01_matric) && $j01_matric != ""){
 
   db_input('j01_matric',5,$Ij01_matric,true,'hidden',1,"");
-  include("classes/db_iptubase_classe.php");
+  include(modification("classes/db_iptubase_classe.php"));
   $cliptubase = new cl_iptubase;
 	$get        = "&tipo=y102_matric&valor=$j01_matric";
   $result     = $cliptubase->sql_record($cliptubase->proprietario_query($j01_matric));
@@ -108,7 +108,7 @@ if(isset($z01_numcgm) && $z01_numcgm != ""){
 }elseif(isset($q02_inscr)  && $q02_inscr  != ""){
 
   db_input('q02_inscr',5,$Iq02_inscr,true,'hidden',1,"");
-  include("classes/db_issbase_classe.php");
+  include(modification("classes/db_issbase_classe.php"));
   $clissbase = new cl_issbase;
 	$get       = "&tipo=y103_inscr&valor=$q02_inscr";
   $result    = $clissbase->sql_record($clissbase->empresa_query($q02_inscr));
@@ -120,7 +120,7 @@ if(isset($z01_numcgm) && $z01_numcgm != ""){
     $numero=$z01_numero;
     $compl=$z01_compl;
 
-    include("classes/db_cgm_classe.php");
+    include(modification("classes/db_cgm_classe.php"));
     $clcgm = new cl_cgm;
     $result = $clcgm->sql_record($clcgm->sql_query($q02_numcgm));
     if($clcgm->numrows > 0){
@@ -131,7 +131,7 @@ if(isset($z01_numcgm) && $z01_numcgm != ""){
 }elseif(isset($y80_codsani)  && $y80_codsani  != ""){
 
   db_input('y80_codsani',5,$Iy80_codsani,true,'hidden',1,"");
-  include("classes/db_sanitario_classe.php");
+  include(modification("classes/db_sanitario_classe.php"));
   $clsanitario = new cl_sanitario;
 	$get         = "&tipo=y104_codsani&valor=$y80_codsani";
   $result      = $clsanitario->sql_record($clsanitario->sql_query($y80_codsani));
@@ -143,7 +143,7 @@ if(isset($z01_numcgm) && $z01_numcgm != ""){
     $numero=$y80_numero;
     $compl=$y80_compl;
 
-    include("classes/db_cgm_classe.php");
+    include(modification("classes/db_cgm_classe.php"));
     $clcgm = new cl_cgm;
     $result = $clcgm->sql_record($clcgm->sql_query($y80_numcgm));
     if($clcgm->numrows > 0){
@@ -154,7 +154,7 @@ if(isset($z01_numcgm) && $z01_numcgm != ""){
 }elseif(isset($y30_codnoti)  && $y30_codnoti  != ""){
 
   db_input('y30_codnoti',5,$Iy30_codnoti,true,'hidden',1,"");
-  include("classes/db_fiscal_classe.php");
+  include(modification("classes/db_fiscal_classe.php"));
   $clfiscal = new cl_fiscal;
   $sqlnot = "
   			select
@@ -191,31 +191,31 @@ if(isset($z01_numcgm) && $z01_numcgm != ""){
       $naotemnot = 1;
     }
 
-  include_once("classes/db_fiscalcgm_classe.php");
+  include_once(modification("classes/db_fiscalcgm_classe.php"));
   $clfiscalcgm = new cl_fiscalcgm;
   $result = $clfiscalcgm->sql_record($clfiscalcgm->sql_query(null,"*",null," y36_codnoti = {$y30_codnoti} and y30_instit = ".db_getsession('DB_instit') ));
   if($clfiscalcgm->numrows > 0){
     db_fieldsmemory($result,0);
   }
-  include_once("classes/db_fiscalinscr_classe.php");
+  include_once(modification("classes/db_fiscalinscr_classe.php"));
   $clfiscalinscr = new cl_fiscalinscr;
   $result = $clfiscalinscr->sql_record($clfiscalinscr->sql_query(null,"*",null," y34_codnoti = {$y30_codnoti} and y30_instit = ".db_getsession('DB_instit')));
   if($clfiscalinscr->numrows > 0){
     db_fieldsmemory($result,0);
   }
-  include_once("classes/db_fiscalmatric_classe.php");
+  include_once(modification("classes/db_fiscalmatric_classe.php"));
   $clfiscalmatric = new cl_fiscalmatric;
   $result = $clfiscalmatric->sql_record($clfiscalmatric->sql_query(null,"*",null," y35_codnoti = {$y30_codnoti} and y30_instit = ".db_getsession('DB_instit')));
   if($clfiscalmatric->numrows > 0){
     db_fieldsmemory($result,0);
   }
-  include_once("classes/db_fiscalsanitario_classe.php");
+  include_once(modification("classes/db_fiscalsanitario_classe.php"));
   $clfiscalsanitario = new cl_fiscalsanitario;
   $result = $clfiscalsanitario->sql_record($clfiscalsanitario->sql_query(null,"*",null," y37_codnoti = {$y30_codnoti} and y30_instit = ".db_getsession('DB_instit')));
   if($clfiscalsanitario->numrows > 0){
     db_fieldsmemory($result,0);
   }
-  include("classes/db_cgm_classe.php");
+  include(modification("classes/db_cgm_classe.php"));
   $clcgm = new cl_cgm;
   $result = $clcgm->sql_record($clcgm->sql_query(@$z01_numcgm));
   if($clcgm->numrows > 0){

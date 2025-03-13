@@ -1,13 +1,13 @@
 /*
- * @access public 
+ * @access public
  * @author Adriano Quilião de Oliveira <adriano.oliveira@dbseller.com.br>
- * @copyright 
+ * @copyright
  * @example db_frmsau_lote001.php
  * @param  string $sDateIn
  * @param  int    $iDayIn
  * @param  string $iMonthIn
  * @param  string $iYearIn
- * @return object $wsDate 
+ * @return object $wsDate
  */
 function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
 
@@ -16,7 +16,7 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
   this.iDay   = new Number(0);
   this.iMonth = new Number(0);
   this.iYear  = new Number(0);
-  
+
   /* Functions */
   this.setDate                 = setDate;
   this.getDate                 = getDate;
@@ -28,7 +28,7 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
   this.toString                = toString;
   this.isValidDate             = isValidDate;
   this.getDateInAmericanFormat = getDateInAmericanFormat;
-  this.getDateInDatabaseFormat = getDateInDatabaseFormat; 
+  this.getDateInDatabaseFormat = getDateInDatabaseFormat;
   this.compareTo               = compareTo;
   this.thisHigher              = thisHigher;
   this.otherHigher             = otherHigher;
@@ -40,106 +40,106 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
 
   /* constructor this class */
   if (typeof(sDateIn) != undefined && sDateIn != null && sDateIn != ""
-      || typeof(iYearIn) != undefined && iYearIn != null && iYearIn != "") { 
-	
+      || typeof(iYearIn) != undefined && iYearIn != null && iYearIn != "") {
+
     if (typeof(iDayIn) != undefined && typeof(iMonthIn) != undefined && typeof(iYearIn) != undefined
         && isValidDate(iDayIn, iMonthIn, iYearIn)) {
-      
+
       sDateIn = iDayIn + "/" + iMonthIn + "/" + iYearIn;
-     
+
     }
     sDateIn = this.formatDate(sDateIn);
-    if (typeof(sDateIn) != undefined 
+    if (typeof(sDateIn) != undefined
         && this.isValidDate(sDateIn.split('/')[0], sDateIn.split('/')[1] , sDateIn.split('/')[2])) {
-         
+
       this.iDay   = sDateIn.split('/')[0];
       this.iMonth = sDateIn.split('/')[1];
       this.iYear  = sDateIn.split('/')[2];
       this.sDate  = sDateIn;
-      
+
     }
 
   }
 
   /* Functions Implemented */
-  /*  
+  /*
    * @access public
    * @param void
-   * @return string $sDate representa uma da no formato dd/mm/aaaa  
-   * 
+   * @return string $sDate representa uma da no formato dd/mm/aaaa
+   *
    */
   function getDate() {
-    return this.sDate;  
+    return this.sDate;
   }
 
-  /*  
+  /*
    * @access public
-   * @param string $sDateIn 
-   * @return int $iDay dia de uma determinada data  
-   * 
+   * @param string $sDateIn
+   * @return int $iDay dia de uma determinada data
+   *
    */
   function getDay(sDateIn) {
-  
+
     if (typeof(sDateIn) != undefined) {
-  
+
       sDateIn = this.formatDate(sDateIn);
       if (sDateIn != undefined && sDateIn.split('/').length == 3
           && this.isValidDate(sDateIn.split('/')[0], sDateIn.split('/')[1], sDateIn.split('/')[2])) {
         return sDateIn.split('/')[0];
       }
-    
+
     }
     return this.iDay;
-  
+
   }
-  
-  /*  
+
+  /*
    * @access public
-   * @param string $sDateIn 
-   * @return int $iMonth mês de uma determinada data  
-   * 
+   * @param string $sDateIn
+   * @return int $iMonth mês de uma determinada data
+   *
    */
   function getMonth(sDateIn) {
-    
+
     if (sDateIn != undefined) {
-            
+
       sDateIn = this.formatDate(sDateIn);
       if (sDateIn != undefined && sDateIn.split('/').length == 3
           && this.isValidDate(sDateIn.split('/')[0], sDateIn.split('/')[1], sDateIn.split('/')[2])) {
         return sDateIn.split('/')[1];
       }
-            
+
     }
-    return this.iMonth; 
-    
+    return this.iMonth;
+
   }
-  
-  /*  
+
+  /*
    * @access public
-   * @param string $sDateIn 
-   * @return int $iYear ano de uma determinada data  
-   * 
+   * @param string $sDateIn
+   * @return int $iYear ano de uma determinada data
+   *
    */
   function getYear(sDateIn) {
-   
+
     if (typeof(sDateIn) != undefined) {
-          
+
       sDateIn = this.formatDate(sDateIn);
-      if (sDateIn != undefined && sDateIn.split('/').length == 3 
+      if (sDateIn != undefined && sDateIn.split('/').length == 3
           && this.isValidDate(sDateIn.split('/')[0], sDateIn.split('/')[1], sDateIn.split('/')[2])) {
         return sDateIn.split('/')[2];
       }
-              
+
     }
-    return this.iYear; 
-  
+    return this.iYear;
+
   }
-  
-  /*  
+
+  /*
    * @access public
-   * @param void 
-   * @return string $sDate data descrita por extenso  
-   * 
+   * @param void
+   * @return string $sDate data descrita por extenso
+   *
    */
   function toString() {
 
@@ -147,19 +147,19 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
       return "Dia " + this.iDay + " de " + getNameMonth(this.iMonth)  + " de " + this.iYear;
     }
     return 'undefined';
-  
-  } 
-  
-  /*  
+
+  }
+
+  /*
    * @access public
    * @param int $iIndex valor entre 1 e 12 que representa o mês
    * @param void
    * @return string $aMonth[iIndex] nome do mês correspondente ao valor informado
-   * @return array $aMonth representando todos os meses   
-   * 
+   * @return array $aMonth representando todos os meses
+   *
    */
   function getNameMonth(iIndex) {
-  
+
     var aMonth = new Array(12);
     aMonth[0]  = "Janeiro";
     aMonth[1]  = "Fevereiro";
@@ -178,18 +178,18 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
     } else {
       return aMonth;
     }
-      
+
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param int $iIndex valor entre 1 e 12 que representa o mês
    * @param void
    * @return string $aMonth[iIndex] nome do mês correspondente ao valor informado em inglês
-   * @return array $aMonth representando todos os meses em inglês   
+   * @return array $aMonth representando todos os meses em inglês
    */
   function getNameMonthEnglish(iIndex) {
-  
+
     var aMonth = new Array(12);
     aMonth[0]  = "January";
     aMonth[1]  = "February";
@@ -208,50 +208,50 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
     } else {
       return aMonth;
     }
-        
+
   }
-  
-  /*  
+
+  /*
    * @access public
-   * @param int $iDayIn 
+   * @param int $iDayIn
    * @param int $iMonthIn
-   * @param int $iYearIn 
-   * @return boolean $isValid true caso valida e false caso inválida  
+   * @param int $iYearIn
+   * @return boolean $isValid true caso valida e false caso inválida
    */
   function isValidDate(iDayIn, iMonthIn, iYearIn) {
-    
+
     if (!isNumber(iDayIn) || !isNumber(iMonthIn) || !isNumber(iYearIn)) {
       return false;
     }
     if (iMonthIn > 12 || iMonthIn < 1) {
-      return false;  
+      return false;
     }
     if (iYearIn < 1800) {
       return false;
     }
     if (iDayIn < 1) {
-      return false;  
+      return false;
     }
-    if ((iDayIn > 31) && (iMonthIn == 1 || iMonthIn == 3 || iMonthIn == 5 || iMonthIn == 7 || iMonthIn == 8 
+    if ((iDayIn > 31) && (iMonthIn == 1 || iMonthIn == 3 || iMonthIn == 5 || iMonthIn == 7 || iMonthIn == 8
         || iMonthIn == 10 || iMonthIn == 12)) {
     	return false;
     } else if ((iDayIn > 30) && (iMonthIn == 4 || iMonthIn == 6 || iMonthIn == 9 || iMonthIn == 11)) {
     	return false;
     } else if (iMonthIn == 2
                && (((iDayIn > 29 && (parseInt(iYearIn / 4, 10) == iYearIn / 4)))
-               || ((iDayIn >= 29 && (parseInt(iYearIn / 4, 10) != iYearIn / 4))))) {    
+               || ((iDayIn >= 29 && (parseInt(iYearIn / 4, 10) != iYearIn / 4))))) {
     	return false;
     }
     return true;
 
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param string $iDateIn
-   * @return void  
+   * @return void
    */
-  function setDate(sDateIn) { 
+  function setDate(sDateIn) {
 
     sDateIn = this.formatDate(sDateIn);
     if (sDateIn.split('/').length == 3 && sDateIn != undefined
@@ -263,25 +263,25 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
       this.sDate  = sDateIn;
 
     } else {
-      
+
       this.iDay   = 0;
       this.iMonth = 0;
       this.iYear  = 0;
       this.sDate  = undefined;
-    
+
     }
-                
+
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param string $iDateIn
-   * @return $sDate data no formato dd/mm/aaaa  
+   * @return $sDate data no formato dd/mm/aaaa
    */
   function formatDate(sDateIn) {
-  
+
     if (sDateIn != null && typeof(sDateIn) != undefined && sDateIn != "") {
-   
+
       if (sDateIn.split('/').length == 3) {
         return sDateIn;
       } else if (sDateIn.split('-').length == 3) {
@@ -291,35 +291,35 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
         sNewdate += sDateIn.split('-')[1] + "/";
         sNewdate += sDateIn.split('-')[0];
         return sNewdate;
-      
+
       } else {
-        return undefined;  
+        return undefined;
       }
-      
+
     }
-  
+
   }
-  
-  /*  
+
+  /*
    * @access private
    * @param string $iValue
-   * @return boolean $isNumeric true se for numérico e false caso contrário   
+   * @return boolean $isNumeric true se for numérico e false caso contrário
    */
   function isNumber(iValue) {
-    
+
     var nonNumbers = /\D/;
     if (nonNumbers.test(iValue)) {
       return false;
     } else {
       return true;
     }
-      
+
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param string $iDateIn
-   * @return string $sDate data no formato aaaa-mm-dd 
+   * @return string $sDate data no formato aaaa-mm-dd
    */
   function getDateInDatabaseFormat(sDateIn) {
 
@@ -330,16 +330,16 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
     } else if (this.iYear > 0) {
       return this.iYear + "-" + this.iMonth + "-" + this.iDay;
     }
-    
+
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param string $iDateIn
-   * @return string $sDate data formatada como o seguinte exemplo June 10 2011  
+   * @return string $sDate data formatada como o seguinte exemplo June 10 2011
    */
   function getDateInAmericanFormat(sDateIn) {
-    
+
     sDateIn = this.formatDate(sDateIn);
     if (sDateIn != undefined && sDateIn != ""
         && this.isValidDate(sDateIn.split('/')[0], sDateIn.split('/')[1], sDateIn.split('/')[2])) {
@@ -351,69 +351,69 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
       return this.getNameMonthEnglish(this.iMonth) + ' ' + this.iDay + ' ' + this.iYear;
     }
     return undefined;
-  
+
   }
 
-  /*  
+  /*
    * @access public
    * @param string $iDateIn
-   * @return boolean $lIsEqual true se iguais as datas ou false caso contrario  
+   * @return boolean $lIsEqual true se iguais as datas ou false caso contrario
    */
   function compareTo(sDateIn) {
-    
+
     sDateIn = this.formatDate(sDateIn);
     if (typeof(sDateIn) != undefined
         && this.isValidDate(sDateIn.split('/')[0], sDateIn.split('/')[1], sDateIn.split('/')[2])) {
-     
-      return (this.iYear == sDateIn.split('/')[2] && this.iMonth == sDateIn.split('/')[1] 
-              && this.iDay == sDateIn.split('/')[0])? true : false;     
-        
-    } 
-    return false; 
+
+      return (this.iYear == sDateIn.split('/')[2] && this.iMonth == sDateIn.split('/')[1]
+              && this.iDay == sDateIn.split('/')[0])? true : false;
+
+    }
+    return false;
 
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param string $iDateIn
-   * @return boolean $lIsHigher Se a data do objeto for maior que a informada true e em caso contrário false 
+   * @return boolean $lIsHigher Se a data do objeto for maior que a informada true e em caso contrário false
    */
   function thisHigher(sDateIn) {
-	
+
     sDateIn = this.formatDate(sDateIn);
     if (typeof(sDateIn) != undefined
         && this.isValidDate(sDateIn.split('/')[0], sDateIn.split('/')[1], sDateIn.split('/')[2])) {
-            
+
       var dThis  = new Date(this.iYear, (this.iMonth -1), this.iDay);
       var dOther = new Date(sDateIn.split('/')[2], (sDateIn.split('/')[1] - 1), sDateIn.split('/')[0]);
-      return dOther < dThis ? true : false;     
-                
+      return dOther < dThis ? true : false;
+
     }
-    return false;   
-  
+    return false;
+
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param string $iDateIn
-   * @return boolean $lIsSmaller se a data do objeto for menor que a informada true caso contrario false 
+   * @return boolean $lIsSmaller se a data do objeto for menor que a informada true caso contrario false
    */
   function otherHigher(sDateIn) {
-     
+
     sDateIn = this.formatDate(sDateIn);
 	if (typeof(sDateIn) != undefined
 	    && this.isValidDate(sDateIn.split('/')[0], sDateIn.split('/')[1], sDateIn.split('/')[2])) {
-	            
+
 	  var dThis  = new Date(this.iYear, (this.iMonth - 1), this.iDay);
 	  var dOther = new Date(sDateIn.split('/')[2], (sDateIn.split('/')[1] - 1), sDateIn.split('/')[0]);
-	  return dOther > dThis ? true : false;     
-	                
+	  return dOther > dThis ? true : false;
+
 	}
-	return false;  
-    
+	return false;
+
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param string $iDateIn
    * @return boolean $lIsInThisInterval true se a data informada estiver no intervalo da do objeto caso contrario false
@@ -421,62 +421,62 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
   function thisInInterval(sDateIn) {
     return this.thisHigher(sDateIn);
   }
-  
-  /*  
+
+  /*
    * @access public
-   * @param int $iDaysIns 
+   * @param int $iDaysIns
    * @param int $iMonthsIns
    * @param int $iiYearIns
-   * @return void 
+   * @return void
    */
   function sum(iDayIns, iMonthIns, iYearIns) {
-    
+
     var dThis = new Date(this.iYear, (this.iMonth-1), this.iDay);
     if (isNumber(iDayIns)) {
       dThis.setDate(dThis.getDate() + iDayIns);
     }
     if (isNumber(iMonthIns)) {
-      dThis.setMonth(dThis.getMonth() + iMonthIns);  
+      dThis.setMonth(dThis.getMonth() + iMonthIns);
     }
     if (isNumber(iYearIns)) {
-      dThis.setFullYear(dThis.getFullYear() + iYearIns);  
+      dThis.setFullYear(dThis.getFullYear() + iYearIns);
     }
     this.iDay   = dThis.getDate();
-    this.iMonth = (dThis.getMonth() + 1); 
+    this.iMonth = (dThis.getMonth() + 1);
     this.iYear  = dThis.getFullYear();
     this.sDate  = dThis.getDate() + "/" + (dThis.getMonth() + 1) + "/" + dThis.getFullYear();
-      
+
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param string $iDateIn
-   * @return int $iDaysInInterval retorna a quantidade de dias do intervalo entre a data informada e a do objeto  
+   * @return int $iDaysInInterval retorna a quantidade de dias do intervalo entre a data informada e a do objeto
    */
   function countDaysInInterval(sDateIn) {
-    
+
     sDateIn = this.formatDate(sDateIn);
     if (typeof(sDateIn) != undefined
         && this.isValidDate(sDateIn.split('/')[0], sDateIn.split('/')[1], sDateIn.split('/')[2])) {
-          
+
       sDateIni  = this.getNameMonthEnglish(this.iMonth) + ' ' + this.iDay + ' ' + this.iYear;
       sDateEnd  = this.getNameMonthEnglish(sDateIn.split('/')[1]) + ' ';
       sDateEnd += sDateIn.split('/')[0] + ' ' + sDateIn.split('/')[2];
       iInterval = ((Date.parse(sDateEnd) - Date.parse(sDateIni)) / (24 * 60 * 60 * 1000)).toFixed(0);
       return iInterval < 0 ? (iInterval * -1) : iInterval;
-      
+
     }
     return false;
-     
+
   }
-  
-  /*  
+
+  /*
    * @access public
    * @param void
-   * @return string $iAgeThis retorna a idade que é o valor entre a data atual e a do objeto  
+   * @return string $iAgeThis retorna a idade que é o valor entre a data atual e a do objeto
    */
   function getAge() {
-    
+
     var sDateNow  = new Date().getDate() + "/" + (new Date().getMonth() + 1) + "/" + new Date().getFullYear();
     var iDaysCnt  = this.countDaysInInterval(sDateNow);
     var iYearIni  = new Date().getFullYear();
@@ -487,64 +487,64 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
       return "Data maior que a data do sistema";
     }
     if (iDaysCnt != false && iDaysCnt > 0) {
-        
+
       while (true) {
-      
+
         if ((parseInt(iYearIni, 10) / 4) == (iYearIni / 4) && (iDaysCnt - 366) >= 0) {
-            
+
           iDaysCnt -= 366;
           iYearIns++;
           iYearIni--;
-          
+
         } else if ((iDaysCnt - 365) >= 0) {
-          
+
           iDaysCnt -= 365;
           iYearIns++;
           iYearIni--;
-          
+
         } else if ((iMonthIni == 1 || iMonthIni == 3 || iMonthIni == 5 || iMonthIni == 7 || iMonthIni == 8
                    || iMonthIni == 10 || iMonthIni == 12) && iDaysCnt >= 31) {
-          
+
           iDaysCnt -= 31;
           iMonthIns++;
           if (iMonthIni != 1) {
             iMonthIni--;
           } else {
-            iMonthIni = 12;  
+            iMonthIni = 12;
           }
-            
+
         } else if ((iMonthIni == 4 || iMonthIni == 6 || iMonthIni == 9 || iMonthIni == 11) && iDaysCnt >= 30) {
-          
+
           iDaysCnt -= 30;
           iMonthIns++;
           iMonthIni--;
-          
+
         } else if ((iMonthIni == 2 && parseInt(iYearIni / 4, 10) == iYearIni / 4) && iDaysCnt >= 29) {
-          
+
           iDaysCnt -= 29;
           iMonthIns++;
           iMonthIni--;
-          
+
         } else if (iMonthIni == 2 && parseInt(iYearIni / 4, 10) != iYearIni / 4  && iDaysCnt >= 28) {
-        
+
           iDaysCnt -= 28;
           iMonthIns++;
           iMonthIni--;
-          
+
         } else {
           return iYearIns + " ano(s), " + iMonthIns + " mese(s) e " + iDaysCnt + " dia(s)";
         }
-    
+
       }
-    
-    } 
+
+    }
     return undefined;
-      
+
   }
- 
+
 }
 /*
- * =========================================================== 
+ * ===========================================================
  *                  END CLASS WSDATE
  * ===========================================================
  */
@@ -553,7 +553,7 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
 
 
 /**
- * Função que executa a requisição AJAX 
+ * Função que executa a requisição AJAX
  * @param oParam    Objeto com os parametros
  * @param jsRetorno String com o nome da função retorno
  * @param sUrl      String com o arquivo RPC
@@ -563,29 +563,29 @@ function wsDate(sDateIn, iDayIn, iMonthIn, iYearIn) {
 function js_webajax(oParam, jsRetorno, sUrl, lAsync, sMessage) {
 
   var mRetornoAjax;
-  
+
   if (lAsync == undefined) {
     lAsync = false;
   }
-  
+
   if (typeof(sMessage) == 'undefined') {
     sMessage = 'Aguarde, Carregando...';
   }
-  
-  var oAjax = new Ajax.Request(sUrl, 
+
+  var oAjax = new Ajax.Request(sUrl,
                                {
-                                 method: 'post', 
+                                 method: 'post',
                                  asynchronous: lAsync,
                                  parameters: 'json='+Object.toJSON(oParam),
                                  onCreate  : function(){
 		                                       js_divCarregando(sMessage, 'msgbox');
-	                                         }, 
+	                                         },
                                  onComplete: function(oAjax) {
-                                               
+
                                                var evlJS           = jsRetorno+'(oAjax);';
                                                js_removeObj('msgbox');
                                                return mRetornoAjax = eval(evlJS);
-                                               
+
                                            }
                                }
                               );
@@ -596,15 +596,15 @@ function js_webajax(oParam, jsRetorno, sUrl, lAsync, sMessage) {
 
 
 /**
- * 
+ *
  * Arruma \n vindo do ajax para apresentar no alert
- * 
+ *
  * @param strMessage
  * @return
  */
 function message_ajax( strMessage ) {
 
-  var strNew = strMessage.replace(/\\n/g, "\n");  
+  var strNew = strMessage.replace(/\\n/g, "\n");
   alert( strNew );
 
 }
@@ -622,7 +622,7 @@ function somaDataDiaMesAno(data, iDiaSomar, iMesSomar, iAnoSomar) {
 /*
  * Class Ajax orientado objeto Objetivo: Simplificar o uso do ajax e reduzir o
  * codigo
- * 
+ *
  * ->Atributos url = string com o nome do arquivo RPC param = Objeto que ira
  * receber os parametros
  */
@@ -660,7 +660,7 @@ ws_ajax.prototype = {
                           );
     },
     monta: function(obj_ajax){
-         return eval("("+obj_ajax.responseText+")");
+         return JSON.parse(obj_ajax.responseText);
     },
     clear: function(){
         this.param = new Object();
@@ -713,27 +713,43 @@ function rand(min, max) {
 }
 
 
-function show_calendarsaude(obj,shutdown_function,especmed) {
-// #01#//show_calendar
-// #10#//Funcão para mostrar o calendário do sistema
-// #20#// shutdown_function: função ao ser executada no final da execução do
-// calendário
-// #15#//show_calendar()
+function show_calendarsaude(obj, shutdown_function, especmed, iUpsSolicitante, iUpsPrestadora) {
+
+  // #01#//show_calendar
+  // #10#//Funcão para mostrar o calendário do sistema
+  // #20#// shutdown_function: função ao ser executada no final da execução do
+  // calendário
+  // #15#//show_calendar()
 
   if(PosMouseY >= 270) {
     PosMouseY = 270;
   }
-  
+
   if(PosMouseX >= 600) {
     PosMouseX = 600;
-  }  
+  }
 
-  js_OpenJanelaIframe('','iframe_data_'+obj,'func_calendariosaude2.php?nome_objeto_data='+obj+'&shutdown_function='+shutdown_function+'&sd27_i_codigo='+especmed+'&fechar=true','Calendário',true,PosMouseY,PosMouseX,600,270);
+  js_OpenJanelaIframe(
+    '',
+    'iframe_data_'+obj,
+    'func_calendariosaude2.php?nome_objeto_data='+obj
+                            +'&shutdown_function='+shutdown_function
+                            +'&sd27_i_codigo='+especmed
+                            +'&upssolicitante='+iUpsSolicitante
+                            +'&upsprestadora='+iUpsPrestadora
+                            +'&fechar=true',
+    'Calendário',
+    true,
+    PosMouseY,
+    PosMouseX,
+    600,
+    270
+  );
 
 }
 
 function show_calendariolaboratorio(nome_obj,function_retorno,SetorExame,iQuantidade) {
-  
+
   //#01#//show_calendar
   //#10#//Funcão para mostrar o calendário do sistema
   //#20#// shutdown_function: função ao ser executada no final da execução do calendário
@@ -819,8 +835,8 @@ function mascara_hora(hora,x,event,verhora){
    }
  }
  if(verhora==true){
-  if(myhora.length == 5){   
-   verifica_hora(x);  
+  if(myhora.length == 5){
+   verifica_hora(x);
   }
  }
 }
@@ -829,7 +845,7 @@ function mascara_hora(hora,x,event,verhora){
 function verifica_hora(x){
  hrs = document.form1[x].value.slice(0,2);
  min = document.form1[x].value.slice(3,5);
- 
+
  situacao = "";
  // verifica hora
  if ( (hrs < 00 ) || (hrs > 23) || ( min < 00) || ( min > 59) ) {
@@ -844,24 +860,24 @@ function verifica_hora(x){
  */
 
 function js_verifica_hora_webseller(valor,campo){
-  
+
   var erro = 0;
   var ms   = "";
   var hs   = "";
-  
+
   var tam  = "";
   var pos  = "";
   var tam  = valor.length;
   var pos  = valor.indexOf(":");
-  
+
   if (pos != -1) {
-	  
+
     if (pos == 0 || pos > 2) {
-      
+
       erro++;
-    
+
     } else {
-    	
+
       if (pos == 1) {
 
         hs = "0" + valor.substr(0, 1);
@@ -876,67 +892,67 @@ function js_verifica_hora_webseller(valor,campo){
       if (ms == "") {
         ms = "00";
       } else if (ms.length == 1) {
-        ms = ms+"0";        
+        ms = ms+"0";
       }
-      
+
     }
-    
+
   } else {
-	  
+
     if (tam >= 4) {
-    	
+
       hs = valor.substr(0, 2);
       ms = valor.substr(2, 2);
-    
+
     } else if (tam == 3) {
-    	
+
       hs = "0" + valor.substr(0, 1);
       ms = valor.substr(1, 2);
-      
+
     } else if (tam == 2) {
-      
+
       hs = valor;
       ms = "00";
-    
+
     } else if (tam == 1) {
-    	
+
       hs = "0" + valor;
       ms = "00";
-    
+
     } else {
-    	
+
       var objData = new Date();
       var hs      = "" + objData.getHours();
       var ms      = "" + objData.getMinutes();
       if (hs.length == 1) {
-    	hs = '0' + hs;  
+    	hs = '0' + hs;
       }
       if (ms.length == 1) {
-    	ms = '0' + ms;  
+    	ms = '0' + ms;
       }
       valor  = hs + ":" + ms;
 
     }
-    
+
   }
   if (ms != "" && hs != "") {
-	  
+
     var reDigits = /^\d+$/;
     if (!reDigits.test(ms + hs)) {
-        
+
     	erro++;
         valor = '0';
         hora  = '';
         minu  = '';
-        
+
     } else {
-      
+
       if (hs > 24 || hs < 0 || ms > 60 || ms < 0) {
-    	  
+
         erro++;
-        
+
       } else {
-    	  
+
         if (ms == 60) {
           ms = "59";
         }
@@ -945,21 +961,21 @@ function js_verifica_hora_webseller(valor,campo){
         }
         hora = hs;
         minu = ms;
-      
+
       }
-      
+
     }
-    
+
   }
 
   if (erro > 0) {
     alert("Informe uma hora válida.");
   }
   if (valor != "") {
-	  
+
     eval("document.form1." + campo + ".focus();");
     if (hora != '') {
-      
+
       if (hora.length == 1) {
         hora = '0' + hora;
       }
@@ -967,11 +983,11 @@ function js_verifica_hora_webseller(valor,campo){
         minu = '0' + minu;
       }
       eval("document.form1." + campo + ".value='" + hora + ":" + minu + "';");
-    
+
     } else {
       eval("document.form1." + campo + ".value='';");
     }
-    
+
   }
 
 }
@@ -991,7 +1007,7 @@ function js_mascara_hora_webseller(sValor,campo){
         sNovoValor = '';
       }
     } else if(tam==2) {
-    
+
       if (!reDigits.test(sValor[1]) && (sValor[1] != ':')) {
         sNovoValor = sValor[0];
       }else{
@@ -1009,7 +1025,7 @@ function js_mascara_hora_webseller(sValor,campo){
           }
         }
       }
-        
+
     } else if(tam==3) {
       hh = parseInt(sValor[0]+sValor[1],10);
       if (sValor[2]!=':') {
@@ -1065,7 +1081,7 @@ function preenche( str, caracter, tamanho, direcao ){
  * tipo:data @fim tipo:data Formato de entrada da data= YYYY-MM-DD
  * @deprecated
  * @See date.js
- * 
+ *
  */
 function js_validata(datamat, inicio, fim) {
 
@@ -1105,13 +1121,13 @@ function RetiraAcentos(string){
      leterro = acentos.substr(w,1);
      letcerto = letras.substr(w,1);
      if(let==leterro){
-      let = letcerto;    
-     }   
+      let = letcerto;
+     }
     }
     new_string = new_string+let;
    }
    return new_string;
-  
+
 }
 
 function js_ValidaCamposEdu(obj, tipo, nome, aceitanulo, maiusculo, evt) {
@@ -1248,12 +1264,12 @@ function show_calendarmerenda(obj,shutdown_function) {
  * Função para mascaramento das avaliacoes
  */
 function js_observeMascaraNota(oInput, sMascara) {
-     
+
      oInput.setAttribute('mascara', sMascara);
      oInput.maxLength = sMascara.length;
      oInput.value  = js_mascaraNota(oInput.value, sMascara);
      oInput.observe('keydown', function (Event) {
-      
+
       var iTeclaPressionada = document.all ? Event.keyCode : Event.which;
       oInput.setAttribute('especialEvents', '0');
       var aTeclasEventos  = new Array(8, 46, 40, 39, 38, 37, 13, 17, 9, 32);
@@ -1261,51 +1277,51 @@ function js_observeMascaraNota(oInput, sMascara) {
         oInput.setAttribute('especialEvents', '1');
        }
      });
-     
+
      oInput.observe('change', function (Event) {
-        
+
         var sMascara = oInput.getAttribute('mascara');
         sValor       = oInput.value.replace(/,/g,'.');
-        oInput.value = js_mascaraNota(sValor, sMascara); 
+        oInput.value = js_mascaraNota(sValor, sMascara);
      });
-     
-     
+
+
      oInput.observe('keypress', function (Event) {
-       
+
        var iTeclaPressionada = document.all ? Event.keyCode : Event.which;
        var sValorTecla       =  String.fromCharCode(iTeclaPressionada);
        if ((sValorTecla == '.' && hasPoint(oInput.value)) || sValorTecla == ' ') {
-         
+
          Event.preventDefault();
          Event.stopPropagation();
          return false;
        }
-       
+
        var aStringsValidas = new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
        if (hasPoint(oInput.getAttribute('mascara'))) {
          aStringsValidas.push('.', ',');
-       } 
-       
+       }
+
        if (!js_search_in_array(aStringsValidas, sValorTecla) && oInput.getAttribute('especialEvents') == '1') {
-       
+
          Event.preventDefault();
          Event.stopPropagation();
          return false;
        }
-       
+
      });
    }
-   
+
    function hasPoint(sValor) {
-     
+
      if (sValor.indexOf(".") > -1) {
       return true;
      }
      return false;
    }
-   
+
    function js_mascaraNota(sNota, sMascara) {
-     
+
      if (sNota == "") {
        return sNota;
      }
@@ -1315,27 +1331,27 @@ function js_observeMascaraNota(oInput, sMascara) {
      sParteInteira      = aPartesMascara[0];
      sParteDecimal      = '';
      if (aPartesNota[0]) {
-      
+
        sParteInteira   = aPartesNota[0];
        if (aPartesNota[0].length < aPartesMascara[0].length) {
          sParteInteira = aPartesNota[0];
        } else {
-         sParteInteira = aPartesNota[0].substr(0, aPartesMascara[0].length); 
-       } 
-     } 
+         sParteInteira = aPartesNota[0].substr(0, aPartesMascara[0].length);
+       }
+     }
      if (aPartesMascara[1]) {
-      
+
        sParteInteira += ".";
        sParteDecimal  =  aPartesMascara[1];
        if (aPartesNota[1]) {
-        
+
          sParteDecimal = aPartesNota[1];
          if (aPartesNota[1].length < aPartesMascara[1].length) {
            sParteDecimal = js_strPadRight(aPartesNota[1], aPartesMascara[1].length, '0');
          } else {
            sParteDecimal = aPartesNota[1].substr(0, aPartesMascara[1].length);
          }
-       }  
+       }
      }
      sNota = sParteInteira+sParteDecimal;
      return sNota;

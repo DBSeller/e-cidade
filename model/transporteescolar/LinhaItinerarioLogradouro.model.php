@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
  * Linha Itinerário Logradouro
  * @author Trucolo <trucolo@dbseller.com.br>
  * @package transporteescolar
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.16 $
  */
 
 class LinhaItinerarioLogradouro {

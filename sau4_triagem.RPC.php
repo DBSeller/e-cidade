@@ -1,39 +1,42 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/JSON.php");
-require_once ("std/db_stdClass.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
+use ECidade\Saude\Ambulatorial\Service\ProntuarioService;
+use ECidade\Saude\Ambulatorial\Repository\ProntuarioRepository;
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
 $oJson             = new Services_JSON();
 $oParam            = $oJson->decode(str_replace("\\", "", $_POST["json"]));
@@ -56,157 +59,211 @@ try {
 
   db_inicio_transacao();
 
-	switch($oParam->exec) {
+  switch($oParam->exec) {
 
-		/**
-		 * Retorna os procedimentos de triagem configurados
-		 * @return array $oRetorno->aProcedimentos
-		 */
-		case 'getProcedimentosConfigurados':
-			
-			$oRetorno->aProcedimentos   = array();
-			$oDaoProcedimentoTriagem    = db_utils::getDao("parametroprocedimentotriagem");
-			$sCamposProcedimentoTriagem = "s166_sau_procedimento, sd63_c_procedimento, sd63_c_nome";
-			$sSqlProcedimentoTriagem    = $oDaoProcedimentoTriagem->sql_query(
-				                                                               	null, 
-				                                                               	$sCamposProcedimentoTriagem
-				                                                               );
-			$rsProcedimentoTriagem      = $oDaoProcedimentoTriagem->sql_record($sSqlProcedimentoTriagem);
-			$iTotalProcedimentoTriagem  = $oDaoProcedimentoTriagem->numrows;
-			
-			if ( $iTotalProcedimentoTriagem > 0 ) {
-				
-				for ( $iContador = 0; $iContador < $iTotalProcedimentoTriagem; $iContador++ ) {
-					
-					$oDadosProcedimentosTriagem                 = db_utils::fieldsMemory($rsProcedimentoTriagem, $iContador);
-					$oRetornoProcedimentoTriagem                = new stdClass();
-					$oRetornoProcedimentoTriagem->iCodigo       = $oDadosProcedimentosTriagem->s166_sau_procedimento;
-					$oRetornoProcedimentoTriagem->iProcedimento = urlencode($oDadosProcedimentosTriagem->sd63_c_procedimento);
-					$oRetornoProcedimentoTriagem->sDescricao    = urlencode($oDadosProcedimentosTriagem->sd63_c_nome);
-					$oRetorno->aProcedimentos[]                 = $oRetornoProcedimentoTriagem;
-					unset($oRetornoProcedimentoTriagem);
-				}
-			}
-			break;
-			
-	  /**
-	   * Salva os procedimentos de triagem configurados
-	   * @param integer $oParam->iProcedimento
-	   */
-		case 'salvarProcedimentos':
-			
+    /**
+     * Retorna os procedimentos de triagem configurados
+     * @return array $oRetorno->aProcedimentos
+     */
+    case 'getProcedimentosConfigurados':
+
+      $oRetorno->aProcedimentos   = array();
+      $oDaoProcedimentoTriagem    = db_utils::getDao("parametroprocedimentotriagem");
+      $sCamposProcedimentoTriagem = "s166_sau_procedimento, sd63_c_procedimento, sd63_c_nome";
+      $sSqlProcedimentoTriagem    = $oDaoProcedimentoTriagem->sql_query(
+                                                                        null,
+                                                                        $sCamposProcedimentoTriagem
+                                                                       );
+      $rsProcedimentoTriagem      = $oDaoProcedimentoTriagem->sql_record($sSqlProcedimentoTriagem);
+      $iTotalProcedimentoTriagem  = $oDaoProcedimentoTriagem->numrows;
+
+      if ( $iTotalProcedimentoTriagem > 0 ) {
+
+        for ( $iContador = 0; $iContador < $iTotalProcedimentoTriagem; $iContador++ ) {
+
+          $oDadosProcedimentosTriagem                 = db_utils::fieldsMemory($rsProcedimentoTriagem, $iContador);
+          $oRetornoProcedimentoTriagem                = new stdClass();
+          $oRetornoProcedimentoTriagem->iCodigo       = $oDadosProcedimentosTriagem->s166_sau_procedimento;
+          $oRetornoProcedimentoTriagem->iProcedimento = urlencode($oDadosProcedimentosTriagem->sd63_c_procedimento);
+          $oRetornoProcedimentoTriagem->sDescricao    = urlencode($oDadosProcedimentosTriagem->sd63_c_nome);
+          $oRetorno->aProcedimentos[]                 = $oRetornoProcedimentoTriagem;
+          unset($oRetornoProcedimentoTriagem);
+        }
+      }
+      break;
+
+    /**
+     * Salva os procedimentos de triagem configurados
+     * @param integer $oParam->iProcedimento
+     */
+    case 'salvarProcedimentos':
+
       $oDaoProcedimentoTriagem   = new cl_parametroprocedimentotriagem();
-			$sWhereProcedimentoTriagem = "s166_sau_procedimento = {$oParam->iProcedimento}";
-			$sSqlProcedimentoTriagem   = $oDaoProcedimentoTriagem->sql_query(
-				                                                              	null, 
-				                                                              	"s166_sequencial, sd63_c_nome",
-				                                                              	null,
-				                                                              	$sWhereProcedimentoTriagem
-				                                                              );
-			$rsProcedimentoTriagem     = $oDaoProcedimentoTriagem->sql_record($sSqlProcedimentoTriagem);
+      $sWhereProcedimentoTriagem = "s166_sau_procedimento = {$oParam->iProcedimento}";
+      $sSqlProcedimentoTriagem   = $oDaoProcedimentoTriagem->sql_query(
+                                                                        null,
+                                                                        "s166_sequencial, sd63_c_nome",
+                                                                        null,
+                                                                        $sWhereProcedimentoTriagem
+                                                                      );
+      $rsProcedimentoTriagem     = $oDaoProcedimentoTriagem->sql_record($sSqlProcedimentoTriagem);
       $oRetorno->message         = urlencode( _M(ARQUIVO_MENSAGEM . 'procedimento_salvo_parametros') );
-			
-			if ( $oDaoProcedimentoTriagem->numrows > 0 ) {
-				
-				$oDadosProcedimentosTriagem = db_utils::fieldsMemory($rsProcedimentoTriagem, 0);
-				$oRetorno->status           = 2;
-				$oErro                      = new stdClass();
-				$oErro->sErro               = $oDadosProcedimentosTriagem->sd63_c_nome;
-        $oRetorno->message          = urlencode( _M(ARQUIVO_MENSAGEM . 'procedimento_ja_cadastrado', $oErro) );
-				unset($oDadosProcedimentosTriagem);
-			} else {
-				
-				$oDaoProcedimentoTriagem->s166_sau_procedimento = $oParam->iProcedimento;
-				$oDaoProcedimentoTriagem->incluir(null);
-				
-				if ( $oDaoProcedimentoTriagem->erro_status == "0" ) {
-					throw new DBException($oDaoProcedimentoTriagem->erro_msg);
-				}
-			}
-			
-			break;
-			
-		/**
-		 * Exclui um ou mais procedimentos de triagem
-		 * @param array $oParam->aProcedimentos
-		 */
-		case 'excluirProcedimentos':
-			
-			if ( isset($oParam->aProcedimentos) && count($oParam->aProcedimentos) > 0 ) {
 
-				$oDaoProcedimentoTriagem   = new cl_parametroprocedimentotriagem();
-				$sWhereProcedimentoTriagem = "s166_sau_procedimento in (" . implode(", ", $oParam->aProcedimentos) . ")";
-					
-				$oDaoProcedimentoTriagem->excluir(null, $sWhereProcedimentoTriagem);
-					
-				if ( $oDaoProcedimentoTriagem->erro_status == "0" ) {
-					throw new DBException($oDaoProcedimentoTriagem->erro_msg);
-				}
+      if ( $oDaoProcedimentoTriagem->numrows > 0 ) {
+
+        $oDadosProcedimentosTriagem = db_utils::fieldsMemory($rsProcedimentoTriagem, 0);
+        $oRetorno->status           = 2;
+        $oErro                      = new stdClass();
+        $oErro->sErro               = $oDadosProcedimentosTriagem->sd63_c_nome;
+        $oRetorno->message          = urlencode( _M(ARQUIVO_MENSAGEM . 'procedimento_ja_cadastrado', $oErro) );
+        unset($oDadosProcedimentosTriagem);
+      } else {
+
+        $oDaoProcedimentoTriagem->s166_sau_procedimento = $oParam->iProcedimento;
+        $oDaoProcedimentoTriagem->incluir(null);
+
+        if ( $oDaoProcedimentoTriagem->erro_status == "0" ) {
+          throw new DBException($oDaoProcedimentoTriagem->erro_msg);
+        }
+      }
+
+      break;
+
+    /**
+     * Exclui um ou mais procedimentos de triagem
+     * @param array $oParam->aProcedimentos
+     */
+    case 'excluirProcedimentos':
+
+      if ( isset($oParam->aProcedimentos) && count($oParam->aProcedimentos) > 0 ) {
+
+        $oDaoProcedimentoTriagem   = new cl_parametroprocedimentotriagem();
+        $sWhereProcedimentoTriagem = "s166_sau_procedimento in (" . implode(", ", $oParam->aProcedimentos) . ")";
+
+        $oDaoProcedimentoTriagem->excluir(null, $sWhereProcedimentoTriagem);
+
+        if ( $oDaoProcedimentoTriagem->erro_status == "0" ) {
+          throw new DBException($oDaoProcedimentoTriagem->erro_msg);
+        }
 
         $oRetorno->message = urlencode( _M(ARQUIVO_MENSAGEM . 'procedimento_excluido') );
-			}
+      }
 
-			break;
+      break;
 
-		/**
-		 * Salva ou altera uma Triagem
-		 */
-		case 'salvarTriagem':
+    /**
+     * Salva ou altera uma Triagem
+     */
+    case 'salvarTriagem':
 
-			validaDados( $oParam );
-			buscaProfissionalSaude( $oRetorno );
+      validaDados( $oParam );
+      buscaProfissionalSaude( $oRetorno );
 
-			$iCbosProfissional = verificaCbosProfissional( $oParam );
-			$oDataSistema      = new DBDate( date("Y-m-d", db_getSession("DB_datausu")) );
+      $iCbosProfissional = verificaCbosProfissional( $oParam );
 
-			$oTriagemAvulsa = new TriagemAvulsa( $oParam->iTriagem );
-			$oTriagemAvulsa->setCboProfissional( $iCbosProfissional );
-			$oTriagemAvulsa->setCgsUnd( $oParam->iCgsUnd );
-			$oTriagemAvulsa->setLogin( db_getSession("DB_id_usuario") );
-			$oTriagemAvulsa->setPressaoSistolica( $oParam->iPressaoSistolica);
-			$oTriagemAvulsa->setPressaoDiastolica( $oParam->iPressaoDiastolica);
-			$oTriagemAvulsa->setCintura( $oParam->iCintura );
-			$oTriagemAvulsa->setPeso( $oParam->nPeso );
-			$oTriagemAvulsa->setAltura( $oParam->iAltura );
-			$oTriagemAvulsa->setGlicemia( $oParam->iGlicemia == '' ? '0' : $oParam->iGlicemia );
-      $iAlimentacaoExameGlicose = $oParam->iAlimentacaoExameGlicose == '' ? '0' : $oParam->iAlimentacaoExameGlicose;
-			$oTriagemAvulsa->setAlimentacaoExameGlicose( $iAlimentacaoExameGlicose );
-			$oTriagemAvulsa->setDataConsulta( new DBDate( $oParam->dtDataConsulta ) );
-			$oTriagemAvulsa->setDataSistema( $oDataSistema );
-			$oTriagemAvulsa->setHoraSistema( date("H:i") );
-			$oTriagemAvulsa->setTemperatura( $oParam->nTemperatura );
-			$oTriagemAvulsa->salvar();
+      if ( empty($iCbosProfissional) ) {
+        throw new ParameterException( _M(ARQUIVO_MENSAGEM . 'profissional_sem_cbos') );
+      }
 
-			$oRetorno->iTriagemAvulsa = $oTriagemAvulsa->getCodigo();
-			$oRetorno->message        = _M(ARQUIVO_MENSAGEM . 'triagem_salva');
-			break;
+      $oDataSistema   = new DBDate( date("Y-m-d", db_getSession("DB_datausu")) );
+      $oTriagemAvulsa = new TriagemAvulsa( $oParam->iTriagem );
+      $oTriagemAvulsa->setCboProfissional($iCbosProfissional);
+      $oTriagemAvulsa->setCgsUnd($oParam->iCgsUnd);
+      $oTriagemAvulsa->setLogin(db_getSession("DB_id_usuario"));
+      $oTriagemAvulsa->setPressaoSistolica($oParam->iPressaoSistolica);
+      $oTriagemAvulsa->setPressaoDiastolica($oParam->iPressaoDiastolica);
+      $oTriagemAvulsa->setCintura($oParam->iCintura);
+      $oTriagemAvulsa->setPeso($oParam->nPeso);
+      $oTriagemAvulsa->setAltura($oParam->iAltura);
+      $oTriagemAvulsa->setGlicemia($oParam->iGlicemia == '' ? '0' : $oParam->iGlicemia);
+      $oTriagemAvulsa->setAlimentacaoExameGlicose($oParam->iMomentoColeta);
+      $oTriagemAvulsa->setDataConsulta(new DBDate( $oParam->dtDataConsulta ));
+      $oTriagemAvulsa->setDataSistema($oDataSistema);
+      $oTriagemAvulsa->setHoraSistema(date("H:i"));
+      $oTriagemAvulsa->setTemperatura($oParam->nTemperatura);
+      $oTriagemAvulsa->setObjetivo(db_stdClass::normalizeStringJsonEscapeString( $oParam->sTextObjetivo ));
+      $oTriagemAvulsa->setPerimetroCefalico($oParam->iPerimetroCefalico);
+      $oTriagemAvulsa->setFrequenciaRespiratoria($oParam->iFrequenciaRespiratoria);
+      $oTriagemAvulsa->setFrequenciaCardiaca($oParam->iFrequenciaCardiaca);
+      $oTriagemAvulsa->setSaturacao($oParam->iSaturacao);
+      $oTriagemAvulsa->setSubjetivo(db_stdClass::normalizeStringJsonEscapeString($oParam->sTextSubjetivo));
+      $oTriagemAvulsa->salvar();
 
-		/**
-		 * Verifica se o CGS tem triagem mas ainda não consultou e retornar os dados da triagem
-		 */
-		case 'buscaTriagemValida':
+      if ( !empty($oParam->iPrioridade) && !empty($oParam->iProntuario) ) {
+
+        $oDaoProntuariosRisco   = new cl_prontuariosclassificacaorisco();
+        $sWhereProntuariosRisco = "sd101_prontuarios = {$oParam->iProntuario}";
+        $sSqlProntuariosRisco   = $oDaoProntuariosRisco->sql_query_file(null, 'sd101_codigo', null, $sWhereProntuariosRisco);
+        $rsProntuariosRisco     = db_query( $sSqlProntuariosRisco );
+
+        if ( !$rsProntuariosRisco ) {
+
+          $oErro->sErro = pg_last_error();
+          throw new DBException(  _M(ARQUIVO_MENSAGEM . "erro_buscar_classificacao_risco", $oErro) );
+        }
+
+        $oDaoProntuariosRisco->sd101_classificacaorisco = $oParam->iPrioridade;
+
+        if ( pg_num_rows( $rsProntuariosRisco ) > 0 ) {
+
+          $iProntuariosRisco                  = db_utils::fieldsMemory( $rsProntuariosRisco, 0)->sd101_codigo;
+          $oDaoProntuariosRisco->sd101_codigo = $iProntuariosRisco;
+          $oDaoProntuariosRisco->alterar($iProntuariosRisco);
+        } else {
+
+          $oDaoProntuariosRisco->sd101_codigo      = null;
+          $oDaoProntuariosRisco->sd101_prontuarios = $oParam->iProntuario;
+          $oDaoProntuariosRisco->incluir(null);
+        }
+
+      }
+
+      $oRetorno->iTriagemAvulsa = $oTriagemAvulsa->getCodigo();
+      $oRetorno->message        = _M(ARQUIVO_MENSAGEM . 'triagem_salva');
+      break;
+
+    /**
+     * Verifica se o CGS tem triagem mas ainda não consultou e retornar os dados da triagem
+     */
+    case 'buscaTriagemValida':
 
       $oRetorno->lTemTriagem     = false;
       $oRetorno->lSomenteTriagem = false;
 
-			if ( !isset($oParam->iCgsUnd) || $oParam->iCgsUnd == "" ) {
-				throw new DBException( _M( ARQUIVO_MENSAGEM . "informe_cgs") );
-			}
+      if ( !isset($oParam->iCgsUnd) || $oParam->iCgsUnd == "" ) {
+        throw new DBException( _M( ARQUIVO_MENSAGEM . "informe_cgs") );
+      }
 
-			$oCgs                 = new Cgs( $oParam->iCgsUnd );
-			$oRetorno->sSexo      = $oCgs->getSexo();
-			$oRetorno->iCgsUnd    = $oCgs->getCodigo();
+      $oCgs                 = new Cgs( $oParam->iCgsUnd );
+      $oRetorno->sSexo      = $oCgs->getSexo();
+      $oRetorno->iCgsUnd    = $oCgs->getCodigo();
 
-      $sCartaoSus = isset( $oParam->iCartaoSus ) && !empty( $oParam->iCartaoSus ) ? $oParam->iCartaoSus : $oCgs->getCartaoSus();
-			$oRetorno->sCartaoSus = $sCartaoSus;
 
-			$iUsuarioLogado = db_getSession("DB_id_usuario");
-			$dtDataSistema  = date("Y-m-d", db_getSession("DB_datausu"));
+      $sCartaoSus = "";
+      if ( !isset( $oParam->iCartaoSus ) || empty( $oParam->iCartaoSus ) ) {
 
-			$oDaoTriagemAvulsa    = new cl_sau_triagemavulsa();
-      $sCamposTriagem       = "s152_i_codigo, s155_i_codigo, sd29_i_codigo";
-			$sOrderBy             = "1 desc limit 1";
-			$sWhereTriagem        = "     s152_i_cgsund      = {$oParam->iCgsUnd} ";
+        $aCartoesSus = $oCgs->getCartaoSus();
+        foreach ($aCartoesSus as $oCartaoSus ) {
+
+          $sCartaoSus = $oCartaoSus->sCartaoSus;
+
+          if ( $oCartaoSus->sTipoCartaoSus == 'D') {
+            break;
+          }
+        }
+      } else {
+        $sCartaoSus = $oParam->iCartaoSus;
+      }
+
+      $oRetorno->sCartaoSus = $sCartaoSus;
+
+      $iUsuarioLogado = db_getSession("DB_id_usuario");
+      $dtDataSistema  = date("Y-m-d", db_getSession("DB_datausu"));
+
+      $oDaoTriagemAvulsa    = new cl_sau_triagemavulsa();
+      $sCamposTriagem       = "s152_i_codigo, s155_i_codigo, sd29_i_codigo, sd101_classificacaorisco, sd24_idadegestacional, sd24_dum";
+      $sOrderBy             = "1 desc limit 1";
+      $sWhereTriagem        = "     s152_i_cgsund      = {$oParam->iCgsUnd} ";
       $sWhereTriagem       .= " and s152_i_login       = {$iUsuarioLogado} ";
       $sWhereTriagem       .= " and s152_d_datasistema = '{$dtDataSistema}' ";
 
@@ -214,49 +271,63 @@ try {
         $sWhereTriagem = " s155_i_prontuario = {$oParam->iProntuario}";
       }
 
-			$sSqlTriagemConsulta  = $oDaoTriagemAvulsa->sql_query_consulta(null, $sCamposTriagem, $sOrderBy, $sWhereTriagem);
-			$rsTriagemConsulta    = db_query( $sSqlTriagemConsulta );
+      if ( isset($oParam->iTriagem) && !empty($oParam->iTriagem) ) {
+        $sWhereTriagem = " s152_i_codigo = {$oParam->iTriagem} ";
+      }
 
-			if ( !$rsTriagemConsulta ) {
+      $sSqlTriagemConsulta  = $oDaoTriagemAvulsa->sql_query_consulta(null, $sCamposTriagem, $sOrderBy, $sWhereTriagem);
+      $rsTriagemConsulta    = db_query( $sSqlTriagemConsulta );
 
-				$oErro = new stdClass();
-				$oErro->sErro = $oDaoTriagemAvulsa->erro_msg;
-				throw new DBException( _M( ARQUIVO_MENSAGEM . "erro_buscar_triagem", $oErro) );
-			}
+      if ( !$rsTriagemConsulta ) {
 
-			if ( pg_num_rows($rsTriagemConsulta) > 0 ) {
+        $oErro = new stdClass();
+        $oErro->sErro = $oDaoTriagemAvulsa->erro_msg;
+        throw new DBException( _M( ARQUIVO_MENSAGEM . "erro_buscar_triagem", $oErro) );
+      }
+
+      if ( pg_num_rows($rsTriagemConsulta) > 0 ) {
 
         $oRetorno->lTemTriagem = true;
-				$oDadosRetorno         = db_utils::fieldsMemory($rsTriagemConsulta, 0);
-				$oTriagemAvulsa        = new TriagemAvulsa( $oDadosRetorno->s152_i_codigo );
+        $oDadosRetorno         = db_utils::fieldsMemory($rsTriagemConsulta, 0);
+        $oTriagemAvulsa        = new TriagemAvulsa( $oDadosRetorno->s152_i_codigo );
 
-				$oRetorno->iCodigo                  = $oTriagemAvulsa->getCodigo();
-				$oRetorno->iCbosProfissional        = $oTriagemAvulsa->getCboProfissional();
-				$oRetorno->iLogin                   = $oTriagemAvulsa->getLogin();
-				$oRetorno->iPressaoSistolica        = $oTriagemAvulsa->getPressaoSistolica();
-				$oRetorno->iPressaoDiastolica       = $oTriagemAvulsa->getPressaoDiastolica();
-				$oRetorno->iCintura                 = $oTriagemAvulsa->getCintura();
-				$oRetorno->nPeso                    = intval ($oTriagemAvulsa->getPeso() );
-				$oRetorno->iAltura                  = $oTriagemAvulsa->getAltura();
-				$oRetorno->iGlicemia                = $oTriagemAvulsa->getGlicemia() == 0 ? '' : $oTriagemAvulsa->getGlicemia();
-				$oRetorno->iAlimentacaoExameGlicose = $oTriagemAvulsa->getAlimentacaoExameGlicose();
-				$oRetorno->dtDataConsulta           = urlencode( $oTriagemAvulsa->getDataConsulta() );
-				$oRetorno->dtDataSistema            = urlencode( $oTriagemAvulsa->getDataSistema() );
-				$oRetorno->dtHoraSistema            = urlencode( $oTriagemAvulsa->getHoraSistema() );
+        $oRetorno->iCodigo                  = $oTriagemAvulsa->getCodigo();
+        $oRetorno->iCbosProfissional        = $oTriagemAvulsa->getCboProfissional();
+        $oRetorno->iLogin                   = $oTriagemAvulsa->getLogin();
+        $oRetorno->iPressaoSistolica        = $oTriagemAvulsa->getPressaoSistolica();
+        $oRetorno->iPressaoDiastolica       = $oTriagemAvulsa->getPressaoDiastolica();
+        $oRetorno->iCintura                 = $oTriagemAvulsa->getCintura();
+        $oRetorno->nPeso                    = $oTriagemAvulsa->getPeso() != null ? $oTriagemAvulsa->getPeso() : null;
+        $oRetorno->iAltura                  = $oTriagemAvulsa->getAltura();
+        $oRetorno->iGlicemia                = $oTriagemAvulsa->getGlicemia() == 0 ? '' : $oTriagemAvulsa->getGlicemia();
+        $oRetorno->iAlimentacaoExameGlicose = $oTriagemAvulsa->getAlimentacaoExameGlicose();
+        $oRetorno->dtDataConsulta           = urlencode($oTriagemAvulsa->getDataConsulta());
+        $oRetorno->dtDataSistema            = urlencode($oTriagemAvulsa->getDataSistema());
+        $oRetorno->dtHoraSistema            = urlencode($oTriagemAvulsa->getHoraSistema());
+        $oRetorno->sObjetivo                = urlencode($oTriagemAvulsa->getObjetivo());
+        $oRetorno->iPerimetroCefalico       = urlencode($oTriagemAvulsa->getPerimetroCefalico());
+        $oRetorno->iFrequenciaRespiratoria  = urlencode($oTriagemAvulsa->getFrequenciaRespiratoria());
+        $oRetorno->iFrequenciaCardiaca      = urlencode($oTriagemAvulsa->getFrequenciaCardiaca());
+        $oRetorno->dtDUM                    = $oDadosRetorno->sd24_dum;
+        $oRetorno->iSaturacao               = urlencode($oTriagemAvulsa->getSaturacao());
+        $oRetorno->sSubjetivo               = urlencode($oTriagemAvulsa->getSubjetivo());
+        $oRetorno->sIdadeGestacional        = $oDadosRetorno->sd24_idadegestacional;
 
-        $nTemperatura = $oTriagemAvulsa->getTemperatura() == '' ? $oTriagemAvulsa->getTemperatura() : intval ($oTriagemAvulsa->getTemperatura() );
-				$oRetorno->nTemperatura = $nTemperatura;
-
-				$oMedico           = $oTriagemAvulsa->getMedico();
-				$oRetorno->iMedico = $oMedico->getCodigo();
-				$oRetorno->sMedico = urlencode($oMedico->getNome());
+        $nTemperatura = $oTriagemAvulsa->getTemperatura() == '' ? $oTriagemAvulsa->getTemperatura()
+                                                                : intval ($oTriagemAvulsa->getTemperatura() );
+        $oRetorno->nTemperatura   = $nTemperatura;
+        $oMedico                  = $oTriagemAvulsa->getMedico();
+        $oRetorno->iMedico        = $oMedico->getCodigo();
+        $oRetorno->sMedico        = urlencode($oMedico->getNome());
 
         if( empty( $oDadosRetorno->s155_i_codigo ) ) {
           $oRetorno->lSomenteTriagem = true;
         }
-			}
 
-			break;
+        $oRetorno->iClassificacaoRisco = $oDadosRetorno->sd101_classificacaorisco;
+      }
+
+      break;
 
     case 'buscaCBOS':
 
@@ -323,11 +394,30 @@ try {
         throw new DBException( _M( ARQUIVO_MENSAGEM . 'erro_buscar_cbos', $oErro ) );
       }
 
+      $oRetorno->aEspecialidades = array();
+
       if( pg_num_rows( $rsUnidadeMedicos ) > 0 ) {
 
         $oDadosCbos                = db_utils::fieldsMemory( $rsUnidadeMedicos, 0 );
         $oRetorno->iUnidadeMedicos = $oDadosCbos->sd04_i_codigo;
         $oRetorno->iCbos           = $oDadosCbos->fa54_i_cbos;
+
+        $oDaoEspecmedico = new cl_especmedico();
+        $sListaCampos    = "sd27_i_codigo as codigo, rh70_sequencial as codigo_especialidade, rh70_estrutural as estrutural, rh70_descr as descricao, sd27_b_principal as principal";
+        $sWhereEspecialidades = "sd27_i_undmed = {$oDadosCbos->sd04_i_codigo} AND sd27_c_situacao = 'A'";
+        $sSqlEspecMedico = $oDaoEspecmedico->sql_query_especmedico(null, $sListaCampos, "rh70_descr", $sWhereEspecialidades);
+
+        $rsEspecialidadeMedico = $oDaoEspecmedico->sql_record($sSqlEspecMedico);
+
+        if ( $oDaoEspecmedico->numrows > 0) {
+
+          for ( $iEspecialidade = 0; $iEspecialidade < $oDaoEspecmedico->numrows; $iEspecialidade++ ) {
+
+            $oEspecialidade              = db_utils::fieldsMemory($rsEspecialidadeMedico, $iEspecialidade, false, false, true);
+            $oEspecialidade->principal   = $oEspecialidade->principal == 't';
+            $oRetorno->aEspecialidades[] = $oEspecialidade;
+          }
+        }
       }
 
       break;
@@ -351,51 +441,47 @@ try {
         }
       }
 
+
       break;
 
     case 'salvarEspecialidadeProcedimentos':
 
-      $oDaoEspecmedico    = new cl_especmedico();
-      $sWhereEspecMedico  = "     sd27_i_rhcbo   = {$oParam->iEspecialidade}";
-      $sWhereEspecMedico .= " and sd04_i_unidade = {$iDepartamento}";
-      $sWhereEspecMedico .= " and sd04_i_medico  = {$oRetorno->iMedico}";
-      $sSqlEspecMedico    = $oDaoEspecmedico->sql_query(null, 'sd27_i_codigo', null, $sWhereEspecMedico);
-      $rsEspecMedico      = db_query($sSqlEspecMedico);
+      if( !empty($oParam->iEspecialidade) ) {
 
-      if ( !$rsEspecMedico ) {
 
-        $oErro->sErro = pg_last_error( $rsEspecMedico );
-        throw new DBException( _M(ARQUIVO_MENSAGEM . "erro_buscar_especialidade_medico", $oErro) );
-      }
-
-      if( pg_num_rows( $rsEspecMedico ) > 0 ) {
-
-        $iEspecialidadeMedico = db_utils::fieldsmemory( $rsEspecMedico, 0 )->sd27_i_codigo;
-        $oDaoProntproced      = new cl_prontproced();
+        $oDaoProntproced = new cl_prontproced();
 
         foreach ( $oParam->aProcedimentosTriagem as $iProcedimento ) {
 
+          $sWhere  = "     sd29_i_prontuario = {$oParam->iProntuario} ";
+          $sWhere .= " and sd29_i_procedimento = $iProcedimento";
+
+          $rsExisteProcedimento = db_query($oDaoProntproced->sql_query_file(null, "1", null, $sWhere));
+          if ($rsExisteProcedimento && pg_num_rows($rsExisteProcedimento) > 0) {
+            continue;
+          }
+
           $oDaoProntproced->sd29_i_prontuario   = $oParam->iProntuario;
           $oDaoProntproced->sd29_i_procedimento = $iProcedimento;
-          $oDaoProntproced->sd29_i_profissional = $iEspecialidadeMedico;
+          $oDaoProntproced->sd29_i_profissional = $oParam->iEspecialidade;
           $oDaoProntproced->sd29_i_usuario      = DB_getsession("DB_id_usuario");
-          $oDaoProntproced->sd29_d_cadastro     = date("Y-m-d",db_getsession("DB_datausu"));
           $oDaoProntproced->sd29_d_data         = date("Y-m-d",db_getsession("DB_datausu"));
-          $oDaoProntproced->sd29_c_hora         = date('H:i');
-          $oDaoProntproced->sd29_c_cadastro     = date("H",db_getsession("DB_datausu")).":".date("m",db_getsession("DB_datausu"));
+          $oDaoProntproced->sd29_c_hora         = db_hora();
+          $oDaoProntproced->sd29_d_cadastro     = date("Y-m-d");
+          $oDaoProntproced->sd29_c_cadastro     = date("H:i");
           $oDaoProntproced->sd29_t_diagnostico  = '';
+          $oDaoProntproced->sd29_sigilosa       = "false";
           $oDaoProntproced->incluir( null );
 
           if( $oDaoProntproced->erro_status == '0' ) {
 
-            $oErro->sErro = $oDaoSauTriagemAvulsa->erro_msg;
+            $oErro->sErro = $oDaoProntproced->erro_msg;
             throw new DBException( _M(ARQUIVO_MENSAGEM . "erro_incluir_procedimento", $oErro) );
           }
         }
 
         $oRetorno->message = _M( ARQUIVO_MENSAGEM . "procedimento_salvo" );
       }
-
       break;
 
     case 'buscaCgs':
@@ -407,6 +493,26 @@ try {
       $oCgs           = new Cgs( $oParam->iCgs );
       $oRetorno->iCgs = $oCgs->getCodigo();
       $oRetorno->sCgs = urlencode( $oCgs->getNome() );
+
+      $oDaoTriagem   = new cl_sau_triagemavulsa();
+      $sWhereTriagem = "s152_i_cgsund = {$oParam->iCgs} AND s152_dum is not null";
+      $sSqlTriagem   = $oDaoTriagem->sql_query_file(null, 's152_dum', 's152_i_codigo desc', $sWhereTriagem);
+      $rsTriagem     = db_query($sSqlTriagem);
+
+      if(!$rsTriagem) {
+        throw new DBException(_M(ARQUIVO_MENSAGEM . 'erro_buscar_dum'));
+      }
+
+      if(pg_num_rows($rsTriagem) == 0) {
+        $oRetorno->dtUltimaDUM = null;
+      }
+
+      if(!empty($oRetorno->dtUltimaDUM)) {
+
+        $oDataDUM              = new DBDate(db_utils::fieldsMemory($rsTriagem, 0)->s152_dum);
+        $oRetorno->dtUltimaDUM = $oDataDUM->getDate(DBDate::DATA_PTBR);
+      }
+
       break;
 
     case 'salvarTriagemProntuario':
@@ -460,158 +566,153 @@ try {
       }
 
       break;
-	}
+
+    case 'buscaPrioridadesAtendimento':
+
+      $oDaoClassificacaoRisco  = new cl_classificacaorisco();
+      $sSqlClassificacaoRisco  = $oDaoClassificacaoRisco->sql_query_file(null, '*', 'sd78_peso desc', null);
+      $rsClassificacaoRisco    = db_query( $sSqlClassificacaoRisco );
+
+      if ( !$rsClassificacaoRisco ) {
+
+        $oErro->sErro = pg_last_error();
+        throw new DBException(  _M(ARQUIVO_MENSAGEM . "erro_buscar_classificacao_risco", $oErro) );
+      }
+
+      $oRetorno->aClassificacoesRisco = array();
+
+      $iTotalClassificacaoRisco = pg_num_rows( $rsClassificacaoRisco );
+      for( $iContador = 0; $iContador < $iTotalClassificacaoRisco;  $iContador++ ) {
+
+        $oDadosClassificacaoRisco        = db_utils::fieldsMemory( $rsClassificacaoRisco, $iContador );
+        $oClassificacaoRisco             = new stdClass();
+        $oClassificacaoRisco->iCodigo    = $oDadosClassificacaoRisco->sd78_codigo;
+        $oClassificacaoRisco->sDescricao = urlencode( $oDadosClassificacaoRisco->sd78_descricao );
+        $oClassificacaoRisco->sCor       = $oDadosClassificacaoRisco->sd78_cor;
+
+        $oRetorno->aClassificacoesRisco[] = $oClassificacaoRisco;
+      }
+
+    break;
+
+    case 'buscaDadosGestante':
+        $prontuarioService = new ProntuarioService(new ProntuarioRepository(new \cl_prontuarios()));
+        $dadosGestante = $prontuarioService->buscaDadosGestante($oParam->iProntuario);
+        $data = $dadosGestante[0]['sd24_dum'] ? date("d/m/Y", strtotime(str_replace("-", "/", $dadosGestante[0]['sd24_dum']))) : "";
+        $oRetorno->idadeGestacional = $dadosGestante[0]['sd24_idadegestacional'] ? $dadosGestante[0]['sd24_idadegestacional'] : "";
+        $oRetorno->dum = $data;
+    break;
+  }
 
   db_fim_transacao();
 } catch ( Exception $oErro ) {
 
-	db_fim_transacao(true);
-	$oRetorno->status  = 2;
-	$oRetorno->message = urlencode($oErro->getMessage());
+  db_fim_transacao(true);
+  $oRetorno->status  = 2;
+  $oRetorno->message = urlencode($oErro->getMessage());
 }
 
 /**
  * Valida os dados enviados por parâmetros
- * @param  Object $oParam 
+ * @param  Object $oParam
  */
 function validaDados( $oParam ) {
+  // Plugin Esf - Operation 11 - valida ciap2
 
-	if ( !isset($oParam->iCgsUnd) || $oParam->iCgsUnd == '' ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "informe_cgs") );
-	}
+  /**
+   * Valida quantidade de números decimais do peso informado
+   */
+  $aPeso = explode(".", $oParam->nPeso);
+  if ( count($aPeso) == 2 ) {
 
-	if ( !isset($oParam->iPressaoSistolica) || $oParam->iPressaoSistolica == '' ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "informe_pressao_sistolica") );
-	}
+    if ( count($aPeso[1]) > 3) {
+      throw new Exception( _M( ARQUIVO_MENSAGEM . "peso_acima_casa_decimais") );
+    }
+  }
 
-	if ( !isset($oParam->iPressaoDiastolica) || $oParam->iPressaoDiastolica == '' ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "informe_pressao_diastolica") );	
-	}
+  if ( $oParam->nPeso > 999.999 ) {
+    throw new Exception( _M( ARQUIVO_MENSAGEM . "peso_superior") );
+  }
 
-	if ( !isset($oParam->iCintura) || $oParam->iCintura == '' ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "informe_cintura") );
-	}
+  if ( $oParam->iAltura > 250 ) {
+    throw new Exception( _M( ARQUIVO_MENSAGEM . "altura_superior") );
+  }
 
-	if ( !isset($oParam->nPeso) || $oParam->nPeso == '' ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "informe_peso") );
-	}
+  if ( !isset($oParam->iProfissional) || $oParam->iProfissional == '' ) {
+    throw new Exception( _M( ARQUIVO_MENSAGEM . "selecione_profissional") );
+  }
 
-	/**
-	 * Valida quantidade de números decimais do peso informado
-	 */
-	$aPeso = explode(".", $oParam->nPeso);
-	if ( count($aPeso) == 2 ) {
+  if ( !isset($oParam->iCbos) || $oParam->iCbos == '' ) {
+    throw new Exception( _M( ARQUIVO_MENSAGEM . "selecione_cbos" ) );
+  }
 
-		if ( count($aPeso[1]) > 3) {
-			throw new Exception( _M( ARQUIVO_MENSAGEM . "peso_acima_casa_decimais") );		
-		}
-	}
+  if ( !isset($oParam->dtDataConsulta) || $oParam->dtDataConsulta == '' ) {
+    throw new Exception( _M( ARQUIVO_MENSAGEM . "informe_data_consulta" ) );
+  }
 
-	if ( $oParam->nPeso > 999.999 ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "peso_superior") );		
-	}
 
-	if ( !isset($oParam->iAltura) || $oParam->iAltura == '' ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "informe_altura") );			
-	}
-
-	if ( $oParam->iAltura > 250 ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "altura_superior") );			
-	}
-
-	if ( $oParam->iGlicemia != "" && $oParam->iGlicemia > 0 && $oParam->iAlimentacaoExameGlicose == '') {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "selecione_forma_alimentacao") );
-	}
-
-	if ( !isset($oParam->iProfissional) || $oParam->iProfissional == '' ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "selecione_profissional") );	
-	}
-
-	if ( !isset($oParam->iCbos) || $oParam->iCbos == '' ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "selecione_cbos" ) );
-	}
-
-	if ( !isset($oParam->dtDataConsulta) || $oParam->dtDataConsulta == '' ) {
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "informe_data_consulta" ) );
-	}
 }
 
 /**
  * Verifica se profissional logado é um profissional da saude e retorna o código, o nome do médico e uma flag
  * dizendo que é um profissional da saude
- * @param stdClass $oRetorno 
+ * @param stdClass $oRetorno
  */
 function buscaProfissionalSaude( $oRetorno ) {
 
-	$oRetorno->lProfissionalSaude = false;
+  $oRetorno->lProfissionalSaude = false;
 
-	$oDaoMedicos     = new cl_medicos();
-	$sCamposMedicos  = "z01_nome, sd03_i_codigo";
-	$sWhereMedicos   = " sd02_i_codigo = ".db_getsession("DB_coddepto");
-	$sWhereMedicos  .= " and db_usuacgm.id_usuario = ".db_getsession("DB_id_usuario");
-	$sSqlMedicos     = $oDaoMedicos->sql_query_profissional_saude(null, $sCamposMedicos, null, $sWhereMedicos);
-	$rsMedicos       = db_query( $sSqlMedicos );
+  $oDaoMedicos     = new cl_medicos();
+  $sCamposMedicos  = "z01_nome, sd03_i_codigo";
+  $sWhereMedicos   = " sd02_i_codigo = ".db_getsession("DB_coddepto");
+  $sWhereMedicos  .= " and db_usuacgm.id_usuario = ".db_getsession("DB_id_usuario");
+  $sSqlMedicos     = $oDaoMedicos->sql_query_profissional_saude(null, $sCamposMedicos, null, $sWhereMedicos);
+  $rsMedicos       = db_query( $sSqlMedicos );
 
-	if ( !$rsMedicos ) {
+  if ( !$rsMedicos ) {
 
-		$oErro        = new stdClass();
-		$oErro->sErro = $oDaoMedicos->erro_msg;
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "erro_buscar_medico", $oErro ) );
-	}
+    $oErro        = new stdClass();
+    $oErro->sErro = $oDaoMedicos->erro_msg;
+    throw new Exception( _M( ARQUIVO_MENSAGEM . "erro_buscar_medico", $oErro ) );
+  }
 
-	if ( pg_num_rows($rsMedicos) > 0 ) {
+  if ( pg_num_rows($rsMedicos) > 0 ) {
 
-  	$oProfissional     = db_utils::fieldsmemory($rsMedicos, 0);
-  	$oRetorno->sMedico = urlencode($oProfissional->z01_nome);
-  	$oRetorno->iMedico = $oProfissional->sd03_i_codigo;
-  	$oRetorno->lProfissionalSaude = true;
+    $oProfissional     = db_utils::fieldsmemory($rsMedicos, 0);
+    $oRetorno->sMedico = urlencode($oProfissional->z01_nome);
+    $oRetorno->iMedico = $oProfissional->sd03_i_codigo;
+    $oRetorno->lProfissionalSaude = true;
   }
 
   return $oRetorno;
 }
 
 /**
- * Verifica se existe CBO Profissional através da unidademedicos e cbos informados. 
- * Caso não haja, inclui um novo CBO Profissional.
+ * Verifica se existe CBO Profissional através da unidademedicos e cbos informados.
  * Retorna o código do CBO Profissional.
  * @param  Object $oParam
  * @return integer
  */
 function verificaCbosProfissional( $oParam ) {
 
-	$oDaoCbosProfissional    = new cl_far_cbosprofissional();
-	$sWhereCbosProfissional  = "     fa54_i_unidademedico = {$oParam->iUnidadeMedicos}";
-	$sWhereCbosProfissional .= " and fa54_i_cbos = {$oParam->iCbos}";
-	$sSqlCbosProfissional    = $oDaoCbosProfissional->sql_query_file(null, "fa54_i_codigo", null, $sWhereCbosProfissional);
-	$rsCbosProfissional      = db_query( $sSqlCbosProfissional );
+  $oDaoCbosProfissional    = new cl_far_cbosprofissional();
+  $sWhereCbosProfissional  = "     fa54_i_unidademedico = {$oParam->iUnidadeMedicos}";
+  $sWhereCbosProfissional .= " and fa54_i_cbos = {$oParam->iCbos}";
+  $sSqlCbosProfissional    = $oDaoCbosProfissional->sql_query_file(null, "fa54_i_codigo", null, $sWhereCbosProfissional);
+  $rsCbosProfissional      = db_query( $sSqlCbosProfissional );
+  $iCbosProfissional       = null;
 
-	if ( !$rsCbosProfissional ) {
+  if ( !$rsCbosProfissional ) {
 
-		$oErro        = new stdClass();
-		$oErro->sErro = $oDaoCbosProfissional->erro_msg;
-		throw new Exception( _M( ARQUIVO_MENSAGEM . "erro_buscar_cbos_profissional", $oErro ) );
-	}
+    $oErro        = new stdClass();
+    $oErro->sErro = $oDaoCbosProfissional->erro_msg;
+    throw new Exception( _M( ARQUIVO_MENSAGEM . "erro_buscar_cbos_profissional", $oErro ) );
+  }
 
-	if ( pg_num_rows($rsCbosProfissional) > 0 ) {
-		$iCbosProfissional = db_utils::fieldsmemory($rsCbosProfissional, 0)->fa54_i_codigo;
-	} else {
+  if ( pg_num_rows($rsCbosProfissional) > 0 ) {
+    $iCbosProfissional = db_utils::fieldsmemory($rsCbosProfissional, 0)->fa54_i_codigo;
+  }
 
-		$oDaoCbosProfissional->fa54_i_unidademedico = $oParam->iUnidadeMedicos;
-		$oDaoCbosProfissional->fa54_i_cbos          = $oParam->iCbos;
-		$oDaoCbosProfissional->incluir(null);
-		
-		if ( $oDaoCbosProfissional->erro_status == '0' ) {
-
-				$oErro        = new stdClass();
-				$oErro->sErro = $oDaoCbosProfissional->erro_msg;
-				throw new Exception( _M( ARQUIVO_MENSAGEM . "erro_incluir_cbos_profissional", $oErro ) );
-		}
-
-		$iCbosProfissional = $oDaoCbosProfissional->fa54_i_codigo;
-	}
-
-	return $iCbosProfissional;
+  return $iCbosProfissional;
 }
-
 echo $oJson->encode($oRetorno);
-?>

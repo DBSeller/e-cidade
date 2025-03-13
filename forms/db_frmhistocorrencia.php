@@ -1,34 +1,30 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-
-
-
-//MODULO: Arrecadacao
 $clhistocorrencia->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("nome");
@@ -40,24 +36,22 @@ $clrotulo->label('j01_matric');
 $clrotulo->label('q02_inscr');
 $clrotulo->label('z01_numcgm');
 $clrotulo->label('z01_nome');
-
-
 ?>
 
 <form name="form1" method="post" action="">
 <center>
 <table border="0" align="center" style="margin-top: 50px">
-<?
-//gerar historico pelo cgm
+<?php
+
+//Gerar historico pelo cgm
 if((isset($z01_numcgm)) and ($z01_numcgm != '')) {
   ?>
 	<tr>
 		<td align="left" valign="top" bgcolor="#CCCCCC"><?=$Lz01_nome?></td>
 		<td>
 		<?
-		  db_input("z01_numcgm", 10, $Iz01_numcgm, true, 'text', 3, " onchange='js_mostranomes(false);'")?>
-		<?
-		  db_input("z01_nome", 40, $Iz01_nome, true, 'text', 3)
+		  db_input("z01_numcgm", 10, $Iz01_numcgm, true, 'text', 3, " onchange='js_mostranomes(false);'");
+		  db_input("z01_nome", 40, $Iz01_nome, true, 'text', 3);
 		?>
 		</td>
 	</tr>
@@ -71,14 +65,13 @@ else if((isset($j01_matric)) and ($j01_matric != '')){
 		<td>
 		<?
   		db_input("j01_matric", 10, $Ij01_matric, true, 'text', 3);
-  
   		db_input("z01_nome", 40, $Iz01_nome, true, 'text', 3);
 		?>
 		</td>
 	</tr>
 	<?
 }
-else if((isset($q02_inscr)) and ($q02_inscr != '')) {
+else if((isset($q02_inscr)) && ($q02_inscr != '')) {
   ?>
 	<tr>
 		<td><?=$Lq02_inscr?></td>
@@ -91,10 +84,7 @@ else if((isset($q02_inscr)) and ($q02_inscr != '')) {
 	</tr>
 	<?
 }
-?>
-
-<?
-  if(!$mostra_input) {?>
+  if($db_opcao != 1) {?>
     <tr>
       <td nowrap title="<?=@$Tar23_sequencial?>"><?=@$Lar23_sequencial?></td>
       <td>
@@ -107,7 +97,7 @@ else if((isset($q02_inscr)) and ($q02_inscr != '')) {
 	<?
 	}
 	?>
-	
+
 	<tr>
 		<td nowrap title="<?=@$Tar23_data?>"><?=@$Lar23_data?></td>
 		<td>
@@ -127,12 +117,11 @@ else if((isset($q02_inscr)) and ($q02_inscr != '')) {
 	<tr>
 		<td nowrap title="<?=@$Tar23_tipo?>"><?=@$Lar23_tipo?></td>
 		<td>
-		<?
+		<?php
 		  $ar23_tipo = 1;
 		  db_input('ar23_tipo', 10, $Iar23_tipo, true, 'hidden', 3);
 		  $ar23_tipo_nome = "Manual";
-		  db_input('ar23_tipo_nome', 10, $Iar23_tipo_nome, true, 'text', 3);
-
+		  db_input('ar23_tipo_nome', 10, 1, true, 'text', 3);
 		?>
 		</td>
 	</tr>
@@ -154,8 +143,8 @@ else if((isset($q02_inscr)) and ($q02_inscr != '')) {
 	</tr>
 </table>
 </center>
-	
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"	<?=($db_botao==false?"disabled":"")?>> 
+
+<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"	<?=($db_botao==false?"disabled":"")?>>
 <?
   if($db_opcao != 1){ ?>
 	<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();">
@@ -167,15 +156,14 @@ else if((isset($q02_inscr)) and ($q02_inscr != '')) {
   }
 ?>
 </form>
-<script>
-function js_voltar() {
+<script type="text/javascript">
 
-	 window.location = "arr3_histocorrencia001.php"; 
+function js_voltar() {
+	window.location = "arr3_histocorrencia001.php";
 }
 
 function js_pesquisa(){
-//	js_OpenJanelaIframe('top.corpo','db_iframe_histocorrencia','func_histocorrencia.php?funcao_js=parent.js_preenchepesquisa|ar23_sequencial','Pesquisa',true);
-	js_OpenJanelaIframe('top.corpo','db_iframe_histocorrencia','func_histocorrencia.php','Pesquisa',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_histocorrencia','func_histocorrencia.php','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave){

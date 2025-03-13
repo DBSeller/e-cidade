@@ -1,0 +1,1 @@
+alter table cgs_undalt alter COLUMN z33_v_nome type varchar(255);

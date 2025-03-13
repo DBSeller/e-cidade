@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: contabilidade
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_app.utils.php"));
 $clcontacorrenteregravinculo->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("c17_descricao");
@@ -109,10 +109,10 @@ db_app::load("windowAux.widget.js");
 <script>
 function js_pesquisac27_contacorrente(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_contacorrente','func_contacorrente.php?funcao_js=parent.js_mostracontacorrente1|c17_sequencial|c17_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contacorrente','func_contacorrente.php?funcao_js=parent.js_mostracontacorrente1|c17_sequencial|c17_descricao','Pesquisa',true);
   }else{
      if(document.form1.c27_contacorrente.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_contacorrente','func_contacorrente.php?pesquisa_chave='+document.form1.c27_contacorrente.value+'&funcao_js=parent.js_mostracontacorrente','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contacorrente','func_contacorrente.php?pesquisa_chave='+document.form1.c27_contacorrente.value+'&funcao_js=parent.js_mostracontacorrente','Pesquisa',false);
      }else{
        document.form1.c17_descricao.value = ''; 
      }
@@ -131,7 +131,7 @@ function js_mostracontacorrente1(chave1,chave2){
   db_iframe_contacorrente.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_contacorrenteregravinculo','func_contacorrenteregravinculo.php?funcao_js=parent.js_preenchepesquisa|c27_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contacorrenteregravinculo','func_contacorrenteregravinculo.php?funcao_js=parent.js_preenchepesquisa|c27_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_contacorrenteregravinculo.hide();

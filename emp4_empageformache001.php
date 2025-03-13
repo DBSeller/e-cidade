@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,30 +25,30 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_utils.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-require ("std/db_stdClass.php");
-require ("libs/db_app.utils.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("libs/db_libtxt.php");
-include ("classes/db_empagetipo_classe.php");
-include ("classes/db_empage_classe.php");
-include ("classes/db_empagemov_classe.php");
-include ("classes/db_empagegera_classe.php");
-include ("classes/db_empageconf_classe.php");
-include ("classes/db_empageconfche_classe.php");
-include ("classes/db_empageconfgera_classe.php");
-include ("classes/db_conplanoconta_classe.php");
-include ("classes/db_empagepag_classe.php");
-include ("classes/db_pagordem_classe.php");
-include ("classes/db_db_config_classe.php");
-include ("classes/db_cfautent_classe.php");
-include ("classes/db_db_bancos_classe.php");
-include ("classes/db_caiparametro_classe.php");
-include("libs/db_libcaixa.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_app.utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libtxt.php"));
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("classes/db_empage_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("classes/db_empagegera_classe.php"));
+include(modification("classes/db_empageconf_classe.php"));
+include(modification("classes/db_empageconfche_classe.php"));
+include(modification("classes/db_empageconfgera_classe.php"));
+include(modification("classes/db_conplanoconta_classe.php"));
+include(modification("classes/db_empagepag_classe.php"));
+include(modification("classes/db_pagordem_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_cfautent_classe.php"));
+include(modification("classes/db_db_bancos_classe.php"));
+include(modification("classes/db_caiparametro_classe.php"));
+include(modification("libs/db_libcaixa.php"));
 $clempage = new cl_empage;
 $clconplanoconta = new cl_conplanoconta;
 $clempagetipo = new cl_empagetipo;
@@ -141,7 +141,7 @@ db_app::load("estilos.css");
       $clrotulo->label("e80_data");
 
      // Sempre que ja existir agenda entra nesta opcao  
-     include ("forms/db_frmempageformache.php");
+     include(modification("forms/db_frmempageformache.php"));
     db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>

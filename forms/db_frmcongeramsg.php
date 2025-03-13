@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -87,10 +87,10 @@ if ($iTipo == "pad") {
 <td valign=top rowspan=2>
  <table border="0">
    <tr><td colspan=2> ARQUIVOS PRINCIPAIS   </td></tr>
-   <tr><td><input type=checkbox name="empenho">  </td><td>Empenhos   </td></tr>
-   <tr><td><input type=checkbox name="pagament"> </td><td>Pagamento  </td></tr>
-   <tr><td><input type=checkbox name="bal_rec"> </td><td>Balancete de Receita  </td></tr>
-   <tr><td><input type=checkbox name="receita"> </td><td>Receita  </td></tr>
+   <tr><td><input type=checkbox name="padEmpenho"> </td><td>Empenhos   </td></tr>
+   <tr><td><input type=checkbox name="pagament"></td><td>Pagamento  </td></tr>
+   <tr><td><input type=checkbox name="bal_rec"></td><td>Balancete de Receita  </td></tr>
+   <tr><td><input type=checkbox name="receita"></td><td>Receita  </td></tr>
  </table>
 </td>
 <td valign=top rowspan=2>

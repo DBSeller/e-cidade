@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -50,7 +50,7 @@ class cl_obstransferencia {
    var $campos = "
                  ed283_i_codigo = int4 = Código 
                  ed283_t_mensagem = text = Mensagem 
-                 ed283_c_bolsafamilia = char(1) = Bolsa Família 
+                 ed283_c_bolsafamilia = char(1) = Auxílio Brasil 
                  ed283_i_escola = int4 = Escola 
                  ";
    //funcao construtor da classe 
@@ -83,7 +83,7 @@ class cl_obstransferencia {
    function incluir ($ed283_i_codigo){ 
       $this->atualizacampos();
      if($this->ed283_c_bolsafamilia == null ){ 
-       $this->erro_sql = " Campo Bolsa Família nao Informado.";
+       $this->erro_sql = " Campo Auxílio Brasil nao Informado.";
        $this->erro_campo = "ed283_c_bolsafamilia";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -208,7 +208,7 @@ class cl_obstransferencia {
        $sql  .= $virgula." ed283_c_bolsafamilia = '$this->ed283_c_bolsafamilia' ";
        $virgula = ",";
        if(trim($this->ed283_c_bolsafamilia) == null ){ 
-         $this->erro_sql = " Campo Bolsa Família nao Informado.";
+         $this->erro_sql = " Campo Auxílio Brasil nao Informado.";
          $this->erro_campo = "ed283_c_bolsafamilia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";

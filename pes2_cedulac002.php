@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_cfpess_classe.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_cfpess_classe.php"));
 
 $oDaoCfpess = new cl_cfpess;
 
@@ -41,8 +41,9 @@ if(!$iTipoRelatorio) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Modelo de impressão invalido, verifique parametros.');
 }
 
-$oPost  = db_utils::postMemory($_POST);
-$sOrdem = '';
+$oPost   = db_utils::postMemory($_POST);
+$sOrdem  = '';
+$iInstit = db_getsession('DB_instit');
 
 $sSqlDbConfig  = " select z01_cgccpf as cgc,                                                   ";
 $sSqlDbConfig .= "                         z01_nome as nomeinst,                               ";
@@ -59,6 +60,11 @@ $sSqlDbConfig .= "							     where o41_cnpj   = trim('{$oPost->cnpj}')         
 $sSqlDbConfig .= "							       and z01_cgccpf = trim('{$oPost->cnpj}')                 ";
 
 $rsSqlDbConfig    = db_query($sSqlDbConfig);
+if (!$rsSqlDbConfig) {
+
+  db_redireciona('db_erros.php?fechar=true&db_erro=não foi possível pesquisar os dados para geração do comprovante.');
+  exit;
+}
 $iNumRowsDbConfig = pg_num_rows($rsSqlDbConfig);
 if ($iNumRowsDbConfig > 0) {
 
@@ -336,18 +342,72 @@ $sSqlRendimento .= "                      and rh98_mes between 1 and 12         
 $sSqlRendimento .= "                  ),0) as molestia_grave_inativos,                                                                                                                      \n";
 $sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
 $sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
+$sSqlRendimento .= "                    where rh98_rhdirftipovalor = 11                                                                                                                     \n";
+$sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
+$sSqlRendimento .= "                      and rh98_mes = 13                                                                                                                                 \n";
+$sSqlRendimento .= "                  ),0) as molestia_grave_inativos_13,                                                                                                                   \n";
+$sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
+$sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
 $sSqlRendimento .= "                    where rh98_rhdirftipovalor = 12                                                                                                                     \n";
 $sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
 $sSqlRendimento .= "                      and rh98_mes between 1 and 12                                                                                                                     \n";
 $sSqlRendimento .= "                ),0) as molestia_grave_ativos,                                                                                                                          \n";
 $sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
 $sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
+$sSqlRendimento .= "                    where rh98_rhdirftipovalor = 12                                                                                                                     \n";
+$sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
+$sSqlRendimento .= "                      and rh98_mes = 13                                                                                                                                 \n";
+$sSqlRendimento .= "                ),0) as molestia_grave_ativos_13,                                                                                                                       \n";
+$sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
+$sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
 $sSqlRendimento .= "                    where rh98_rhdirftipovalor IN (13,14)                                                                                                               \n";
 $sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
 $sSqlRendimento .= "                      and rh98_mes between 1 and 12                                                                                                                     \n";
-$sSqlRendimento .= "                 ),0) as plano_saude                                                                                                                                    \n";
+$sSqlRendimento .= "                 ),0) as plano_saude,                                                                                                                                   \n";
+$sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
+$sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
+$sSqlRendimento .= "                    where rh98_rhdirftipovalor = 17                                                                                                                     \n";
+$sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
+$sSqlRendimento .= "                      and rh98_mes between 1 and 12                                                                                                                     \n";
+$sSqlRendimento .= "                 ),0) as rra_rendimentos_tributaveis,                                                                                                                   \n";
+$sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
+$sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
+$sSqlRendimento .= "                    where rh98_rhdirftipovalor = 18                                                                                                                     \n";
+$sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
+$sSqlRendimento .= "                      and rh98_mes between 1 and 12                                                                                                                     \n";
+$sSqlRendimento .= "                 ),0) as rra_previdencia,                                                                                                                               \n";
+$sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
+$sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
+$sSqlRendimento .= "                    where rh98_rhdirftipovalor = 19                                                                                                                     \n";
+$sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
+$sSqlRendimento .= "                      and rh98_mes between 1 and 12                                                                                                                     \n";
+$sSqlRendimento .= "                 ),0) as rra_pensao,                                                                                                                                    \n";
+$sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
+$sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
+$sSqlRendimento .= "                    where rh98_rhdirftipovalor = 20                                                                                                                     \n";
+$sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
+$sSqlRendimento .= "                      and rh98_mes between 1 and 12                                                                                                                     \n";
+$sSqlRendimento .= "                 ),0) as rra_irrf,                                                                                                                                      \n";
+$sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
+$sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
+$sSqlRendimento .= "                    where rh98_rhdirftipovalor = 21                                                                                                                     \n";
+$sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
+$sSqlRendimento .= "                      and rh98_mes between 1 and 12                                                                                                                     \n";
+$sSqlRendimento .= "                 ),0) as rra_despesa_acao,                                                                                                                              \n";
+$sSqlRendimento .= "        coalesce(( select sum(round(rh98_valor, 1))                                                                                                                               \n";
+$sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
+$sSqlRendimento .= "                    where rh98_rhdirftipovalor = 22                                                                                                                     \n";
+$sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
+$sSqlRendimento .= "                      and rh98_mes between 1 and 12                                                                                                                     \n";
+$sSqlRendimento .= "                 ),0) as rra_quantidade_meses,                                                                                                                          \n";
+$sSqlRendimento .= "        coalesce(( select sum(rh98_valor)                                                                                                                               \n";
+$sSqlRendimento .= "                     from rhdirfgeracaodadospessoalvalor                                                                                                                \n";
+$sSqlRendimento .= "                    where rh98_rhdirftipovalor = 23                                                                                                                     \n";
+$sSqlRendimento .= "                      and rh98_rhdirfgeracaodadospessoal = x.rh96_sequencial                                                                                            \n";
+$sSqlRendimento .= "                      and rh98_mes between 1 and 12                                                                                                                     \n";
+$sSqlRendimento .= "                 ),0) as rra_isentos                                                                                                                                    \n";
 $sSqlRendimento .= "   from ( select distinct                                                                                                                                               \n";
-$sSqlRendimento .= "                 rh96_sequencial,                                                                                                                                       \n";
+$sSqlRendimento .= "                 max(rh96_sequencial) as rh96_sequencial,                                                                                                                                       \n";
 $sSqlRendimento .= "                 rh96_numcgm,                                                                                                                                           \n";
 $sSqlRendimento .= "                 z01_nome,                                                                                                                                              \n";
 $sSqlRendimento .= "                 rh96_cpfcnpj,                                                                                                                                          \n";
@@ -367,10 +427,23 @@ $sSqlRendimento .= "                                                          an
 $sSqlRendimento .= "                 inner join rhlota                         on rhlota.r70_codigo                                             = rhpessoalmov.rh02_lota                    \n";
 $sSqlRendimento .= "                                                          and rhlota.r70_instit                                             = rhpessoalmov.rh02_instit                  \n";
 $sSqlRendimento .= "         {$sWhere}                                                                                                                                                      \n";
+$sSqlRendimento .= "        group by
+                                   rh96_numcgm,
+                                   z01_nome,
+                                   rh96_cpfcnpj,
+                                   rh96_regist,
+                                   r70_codigo,
+                                   r70_estrut,
+                                   r70_descr ";
 $sSqlRendimento .= "        ) as x                                                                                                                                                          \n";
-$sSqlRendimento .= " order by {$sOrdem}                                                                                                                                                       \n";
+$sSqlRendimento .= " order by {$sOrdem}                                                                                                                                                     \n";
 
 $rsSqlRendimento = db_query($sSqlRendimento);
+if (!$rsSqlRendimento) {
+
+  db_redireciona('db_erros.php?fechar=true&db_erro=Não foi possível pesquisar os dados para a geração do comprovantes');
+  exit;
+}
 $iNumRows        = pg_num_rows($rsSqlRendimento);
 
 if ($iNumRows == 0) {
@@ -382,29 +455,34 @@ if ($iNumRows == 0) {
 $pdf = new scpdf();
 $pdf->Open();
 $pdf1 = new db_impcarne($pdf, $iTipoRelatorio);
+$oDirf = new Dirf2012($oPost->anobase, $oPost->cnpj);
 
 for ($iInd = 0; $iInd < $iNumRows; $iInd++) {
 
-	$oRendimento = db_utils::fieldsMemory($rsSqlRendimento, $iInd);
+  $oRendimento = db_utils::fieldsMemory($rsSqlRendimento, $iInd);
+  $nome_pens   = $oDirf->getInformacoesComplementares($oRendimento->rh96_numcgm, true);
+  $sMatricula  = str_replace('}','',str_replace('{','',$oRendimento->regist));
+  $aRubricas   = array();
 
-  $nome_pens = '';
-  if ($oRendimento->pensao > 0) {
+  $sSqlRubricasBase  = "SELECT array_to_string(array_agg('\'' || r09_rubric || '\''), ',') as rubricas ";
+  $sSqlRubricasBase .= " FROM rhrubricas ";
+  $sSqlRubricasBase .= " LEFT JOIN basesr ON rh27_rubric = r09_rubric and r09_base in ('B912','B915') and r09_anousu = {$oPost->anofolha} and r09_mesusu = {$oPost->mesfolha} and r09_instit =  $iInstit";
+  $sSqlRubricasBase .= " WHERE rh27_instit = $iInstit and r09_base is not null";
+  $rsSqlRubricasBase = db_query($sSqlRubricasBase);
+  $sRubricas = db_utils::fieldsMemory($rsSqlRubricasBase, 0)->rubricas;
 
-  	$sSqlPensao   = " select z01_nome as pensionista                    ";
-    $sSqlPensao  .= "   from pensao                                     ";
-    $sSqlPensao  .= "        inner join cgm on r52_numcgm = z01_numcgm  ";
-    $sSqlPensao  .= "  where r52_anousu = {$oPost->anofolha}            ";
-    $sSqlPensao  .= "    and r52_mesusu = {$oPost->mesfolha}            ";
-    $sSqlPensao  .= "    and r52_regist in(".str_replace('}','',str_replace('{','',$oRendimento->regist)).") ";
-    $rsSqlPensao  = db_query($sSqlPensao);
-    $virg         = '';
+  $oCompetencia = new DBCompetencia($oPost->anobase, 12);
+  $oDaoGeracaoDrif = new cl_rhdirfgeracao();
+  $sSqlRubricasValores = $oDaoGeracaoDrif->sql_query_comprovante_rendimentos_rubricas_valores($oCompetencia, null, null, $sMatricula, $sRubricas);
 
-    for ($iPensao = 0; $iPensao < pg_numrows($rsSqlPensao); $iPensao++) {
+  $rsSqlRubricasValores = db_query($sSqlRubricasValores);
+  $iNumRowsRubricasVal  = pg_num_rows($rsSqlRubricasValores);
 
-       $oPensao    = db_utils::fieldsMemory($rsSqlPensao, $iPensao);
-       $nome_pens .= $virg.$oPensao->pensionista;
-       $virg = ', ';
-    }
+  for($i=0;$i < $iNumRowsRubricasVal;$i++){
+    $oRubricasValores = db_utils::fieldsMemory($rsSqlRubricasValores, $i);
+    $aRubricas[$i]['rubrica'] = $oRubricasValores->descricao;
+    $aRubricas[$i]['valor']   = $oRubricasValores->valor;
+
   }
 
   /**
@@ -431,17 +509,15 @@ for ($iInd = 0; $iInd < $iNumRows; $iInd++) {
   /**
    * Informações Bloco Rendimentos Isentos e Não Tributáveis
    */
-  $oRendimento->rendimento -= ($oRendimento->aposentadoria_65 + $oRendimento->molestia_grave_inativos +
-                               $oRendimento->molestia_grave_ativos
-                              );
+
   $pdf1->w_salario       = ($oRendimento->rendimento < 0 ?0:$oRendimento->rendimento);
   $pdf1->w_contr         = $oRendimento->prev_oficial;
   $pdf1->w_privad        = $oRendimento->prev_privada;
-  $pdf1->w_pensao        = $oRendimento->pensao + $oRendimento->pensao_13;
+  $pdf1->w_pensao        = $oRendimento->pensao;
   $pdf1->w_irfonte       = $oRendimento->irrf;
   $pdf1->w_parte         = $oRendimento->aposentadoria_65 + $oRendimento->aposentadoria_65_13;
   $pdf1->w_diaria        = $oRendimento->diaria;
-  $pdf1->w_aviso         = $oRendimento->molestia_grave_inativos+$oRendimento->molestia_grave_ativos;
+  $pdf1->w_aviso         = $oRendimento->molestia_grave_inativos+$oRendimento->molestia_grave_inativos_13+$oRendimento->molestia_grave_ativos+$oRendimento->molestia_grave_ativos_13;
   $pdf1->w_vlresc_ntrib  = $oRendimento->ind_rescisao;
   $pdf1->w_abono         = $oRendimento->abono;
   $pdf1->w_outros5       = $oRendimento->outros5;
@@ -460,7 +536,6 @@ for ($iInd = 0; $iInd < $iNumRows; $iInd++) {
                             - $oRendimento->prev_oficial_13
                             - $oRendimento->prev_privada_13
                             - $oRendimento->depend_13
-                            - $oRendimento->aposentadoria_65_13
                             - $oRendimento->pensao_13
                             - $oRendimento->irrf_13);
   if ($n13Salario < 0) {
@@ -468,6 +543,7 @@ for ($iInd = 0; $iInd < $iNumRows; $iInd++) {
   }
 
   $pdf1->w_sal13         = $n13Salario;
+  $pdf1->w_irrf13        = $oRendimento->irrf_13;
   $pdf1->w_outros6       = 0;
 
   /**
@@ -475,6 +551,19 @@ for ($iInd = 0; $iInd < $iNumRows; $iInd++) {
    */
   $pdf1->w_dmedic        = $oRendimento->plano_saude;
 
+  /**
+   * Informações RRA
+   */
+  $pdf1->nRRARentimentosTributaveis = $oRendimento->rra_rendimentos_tributaveis;
+  $pdf1->nRRAPrevidencia            = $oRendimento->rra_previdencia;
+  $pdf1->nRRAPensao                 = $oRendimento->rra_pensao;
+  $pdf1->nRRAIRRF                   = $oRendimento->rra_irrf;
+  $pdf1->nRRADespesasAcaoJudicial   = $oRendimento->rra_despesa_acao;
+  $pdf1->iRRAQuantidadeMeses        = $oRendimento->rra_quantidade_meses;
+  $pdf1->nRRARendimentosIsentos     = $oRendimento->rra_isentos;
+
+
+  $pdf1->aRubricas = $aRubricas;
   $pdf1->imprime();
 }
 

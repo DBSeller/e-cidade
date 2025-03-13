@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010257' name='conplanosistema' description="Sistema que utiliza as informações complementares no e-cidade" prefix="c122" label="Sistema" type="0">
+  <fields>
+    <field codigo="1009608" 
+           campo_api='' 
+           name="c122_sequencial" 
+           conteudo="int4" 
+           description="Sequencial do campo" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='conplanosistema_c122_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010079" 
+           campo_api='' 
+           name="c122_tipo" 
+           conteudo="int4" 
+           description="Tipo de sistema. 1 - SICONF, 2 - Conta Corrente" 
+           inivalue="0" 
+           label="Tipo de sistema" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de sistema" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1009609" 
+           campo_api='' 
+           name="c122_descricao" 
+           conteudo="varchar(20)" 
+           description="Descrição do campo" 
+           inivalue="" 
+           label="Descrição" 
+           size="20" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c122_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

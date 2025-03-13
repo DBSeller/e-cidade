@@ -1,35 +1,35 @@
-<?
+<?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //includes da função
-require_once("libs/db_utils.php");
-require_once("classes/requisicaoMaterial.model.php");
-require_once("classes/materialestoque.model.php");
-require_once "libs/db_app.utils.php";
+require_once(modification("libs/db_utils.php"));
+require_once modification("libs/db_app.utils.php");
+require_once(modification("classes/requisicaoMaterial.model.php"));
+require_once(modification("classes/materialestoque.model.php"));
 /*
 * Function Devolv_material
 *
@@ -88,7 +88,7 @@ require_once "libs/db_app.utils.php";
     $sql               = $oDaoAtendrequiitem->sql_query(null, 'm40_codigo', null, "m43_codatendrequi = $m42_codigo");
     $result_m40_codigo = $oDaoAtendrequiitem->sql_record($sql);
     $linhas_m40_codigo = $oDaoAtendrequiitem->numrows;
-    
+
     if ($linhas_m40_codigo != 0) {
       $obj1 = db_utils::fieldsmemory($result_m40_codigo, 0);
     } else {
@@ -96,7 +96,7 @@ require_once "libs/db_app.utils.php";
       $oDaoAtendrequiitem->erro(true, false);
       return true;
     }
-    
+
     $iCodigoRequisicao                    = $obj1->m40_codigo;;
     $oDaoMatestoquedev->m45_depto         = db_getsession('DB_coddepto');
     $oDaoMatestoquedev->m45_login         = db_getsession('DB_id_usuario');
@@ -107,13 +107,13 @@ require_once "libs/db_app.utils.php";
     $oDaoMatestoquedev->m45_codatendrequi = $m42_codigo;
     $oDaoMatestoquedev->incluir(null);
     $erro_msg                             = $oDaoMatestoquedev->erro_msg;
-    
+
     if ($oDaoMatestoquedev->erro_status == '0') {
 
       $oDaoMatestoquedev->erro(true, false);
       return true;
     }
-    
+
     $codigo = $oDaoMatestoquedev->m45_codigo;
   } else {
 
@@ -127,7 +127,7 @@ require_once "libs/db_app.utils.php";
   $oDaoMatestoqueini->m80_obs      = @$m45_obs;
   $oDaoMatestoqueini->m80_codtipo  = '18';
   $oDaoMatestoqueini->m80_coddepto = db_getsession('DB_coddepto');
-  $oDaoMatestoqueini->incluir(@$m80_codigo);
+  $oDaoMatestoqueini->incluir(null);
 
   if ($oDaoMatestoqueini->erro_status == '0') {
 
@@ -136,12 +136,12 @@ require_once "libs/db_app.utils.php";
   }
 
   $m82_matestoqueini = $oDaoMatestoqueini->m80_codigo;
-  $dados             = split("quant_","$valores");
+      $dados = explode("quant_", "$valores");
 
   for ($y = 1; $y < count($dados); $y++) {
 
-    $info            = split('_', $dados[$y]);
-    $atendrequiitem  = $info[0];
+      $info = explode('_', $dados[$y]);
+      $atendrequiitem = $info[0];
     $codmatmater     = $info[1];
     $matrequiitem    = $info[2];
     $quant_devolvida = $info[3];
@@ -155,7 +155,7 @@ require_once "libs/db_app.utils.php";
 
     $sSql            = $oDaoAtendrequiitem->sql_query_file($atendrequiitem);
     $result_atend    = $oDaoAtendrequiitem->sql_record($sSql);
-    
+
     if ($oDaoAtendrequiitem->numrows != '0') {
 
       $obj4           = db_utils::fieldsmemory($result_atend,0);
@@ -174,10 +174,10 @@ require_once "libs/db_app.utils.php";
                                                             "cc12_matestoqueinimei = {$iCodigoIniMei}"
                                                             );
     $rsCustoApropriado = $oDaoCustoAproria->sql_record($sSqlCustoAproriado);
-    
+
     if ($oDaoCustoAproria->numrows > 0) {
 
-      $aCustosApropriados = db_utils::getColectionByRecord($rsCustoApropriado);
+      $aCustosApropriados = db_utils::getCollectionByRecord($rsCustoApropriado);
       foreach ($aCustosApropriados as $oCustoApropriado) {
 
         $nNovaQuantidade = $oCustoApropriado->cc12_qtd - $quant_devolvida;
@@ -192,7 +192,7 @@ require_once "libs/db_app.utils.php";
         } else {
           $oDaoCustoAproria->excluir(null,"cc12_matestoqueinimei = {$iCodigoIniMei}");
         }
-        
+
         if ($oDaoCustoAproria->erro_status == '0') {
 
           $oDaoCustoAproria->erro(true, false);
@@ -208,7 +208,7 @@ require_once "libs/db_app.utils.php";
     $oDaoMatestoquedevitem->m46_quantdev          = $quant_devolvida;
     $oDaoMatestoquedevitem->m46_quantexistia      = $m43_quantatend;
     $oDaoMatestoquedevitem->incluir(null);
-    
+
     if ($oDaoMatestoquedevitem->erro_status == '0') {
 
       $oDaoMatestoquedevitem->erro(true, false);
@@ -234,14 +234,15 @@ require_once "libs/db_app.utils.php";
         if ($quant_devolvida == $obj2->m44_quant) {
 
           $quant_altera = abs($quant_devolvida - $obj3->m71_quantatend);
-          $devolver     = $quant_devolvida;
+            $devolver = $quant_devolvida;
+            $acaba = true;
         } else {
 
           $quant_altera    = $obj3->m71_quantatend - $obj2->m44_quant; // 0
           $devolver        = $obj2->m44_quant; // 20
           $quant_devolvida = $quant_devolvida - $obj2->m44_quant; // 20
         }
-        
+
         $oDaoMatestoqueitem->m71_quantatend = "$quant_altera";
       } else {
 
@@ -255,7 +256,7 @@ require_once "libs/db_app.utils.php";
       $valordev                        = $valor_uni * $devolver;
       $oDaoMatestoqueitem->m71_codlanc = $obj3->m71_codlanc;
       $oDaoMatestoqueitem->alterar($obj3->m71_codlanc);
-      
+
       if ($oDaoMatestoqueitem->erro_status == '0') {
 
         $oDaoMatestoqueitem->erro(true, false);
@@ -265,7 +266,7 @@ require_once "libs/db_app.utils.php";
       $oDaoAtendrequiitemmei->m44_quant  = "$quant_altera";
       $oDaoAtendrequiitemmei->m44_codigo = $obj2->m44_codigo;
       $oDaoAtendrequiitemmei->alterar($obj2->m44_codigo);
-      
+
       if ($oDaoAtendrequiitemmei->erro_status == '0') {
 
         $oDaoAtendrequiitemmei->erro(true, false);
@@ -276,7 +277,7 @@ require_once "libs/db_app.utils.php";
       $oDaoMatestoquedevitemmei->m47_codmatestoqueitem    = $obj3->m71_codlanc;
       $oDaoMatestoquedevitemmei->m47_codmatestoquedevitem = $codigodevitem;
       $oDaoMatestoquedevitemmei->incluir(null);
-      
+
       if ($oDaoMatestoquedevitemmei->erro_status == '0') {
 
         $oDaoMatestoquedevitemmei->erro(true, false);
@@ -286,20 +287,21 @@ require_once "libs/db_app.utils.php";
       $oDaoMatestoqueinimei->m82_matestoqueitem = $obj3->m71_codlanc;
       $oDaoMatestoqueinimei->m82_matestoqueini  = $m82_matestoqueini;
       $oDaoMatestoqueinimei->m82_quant          = $devolver;
-      $oDaoMatestoqueinimei->incluir(@$m82_codigo);
-      
+      $oDaoMatestoqueinimei->m82_matestoqueinimeiorigem = $iCodigoIniMei;
+      $oDaoMatestoqueinimei->incluir(null);
+
       if ($oDaoMatestoqueinimei->erro_status == '0') {
 
         $oDaoMatestoqueinimei->erro(true, false);
         return true;
       }
-      
+
       $codigo_inimei = $oDaoMatestoqueinimei->m82_codigo;
 
       $oDaoMatestoqueinimeimdi->m50_codmatestoquedevitem = $codigodevitem;
       $oDaoMatestoqueinimeimdi->m50_codmatestoqueinimei  = $codigo_inimei;
       $oDaoMatestoqueinimeimdi->incluir(null);
-      
+
       if ($oDaoMatestoqueinimeimdi->erro_status == '0') {
 
         $oDaoMatestoqueinimeimdi->erro(true, false);
@@ -312,7 +314,7 @@ require_once "libs/db_app.utils.php";
       $oDaoMatestoque->m70_valor  = "$v";
       $oDaoMatestoque->m70_codigo = $obj3->m70_codigo;
       $oDaoMatestoque->alterar($obj3->m70_codigo);
-      
+
       if ($oDaoMatestoque->erro_status == '0') {
 
         $oDaoMatestoque->erro(true, false);
@@ -324,7 +326,7 @@ require_once "libs/db_app.utils.php";
       }
     } // fim for
   } // fim for
-  
+
   /**
    * escrituramos a saida dos materiais
    */
@@ -334,12 +336,18 @@ require_once "libs/db_app.utils.php";
     foreach ($aItens as $oItem) {
 
       $oMaterial        = new MaterialEstoque($oItem->iCodigoMaterial);
-      
-      if (USE_PCASP) {
-        
+      $oDataImplantacao         = new DBDate(date("Y-m-d", db_getsession('DB_datausu')));
+      $oInstituicao             = new Instituicao(db_getsession('DB_instit'));
+      $lIntegracaoContabilidade = ParametroIntegracaoPatrimonial::possuiIntegracaoMaterial($oDataImplantacao, $oInstituicao);
+
+      if (USE_PCASP && $lIntegracaoContabilidade) {
+
         $nValorPrecoMedio = $oMaterial->getPrecoMedio();
         $nValorLancamento = round($nValorPrecoMedio * $oItem->nQuantidade , 2);
-        $oRequisicao->estornarLancamento($oMaterial, $codigo_inimei, $nValorLancamento);
+
+        if (round($nValorLancamento, 2) >= 0.01) {
+          $oRequisicao->estornarLancamento($oMaterial, $codigo_inimei, $nValorLancamento);
+        }
       }
     }
   } catch (BusinessException $eException) {
@@ -353,7 +361,6 @@ require_once "libs/db_app.utils.php";
     db_msgbox($erro_msg);
     return true;
   }
-  
+
   return false;
 }
-?>

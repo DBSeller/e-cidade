@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -27,102 +27,102 @@
 
 /**
  * Classe é responsável por trazer as informações do relatório do modelo 21 do bens almoxarifado
- * 
- * @author $Author: dbmarcos $
- * @version $Revision: 1.2 $
+ *
+ * @author $Author: dbigor.cemim $
+ * @version $Revision: 1.4 $
  */
 class ModeloBensAlmoxarifado {
-  
+
   const CAMINHO_MENSAGEM = 'patrimonial.material.ModeloBensAlmoxarifado.';
-  
+
   /**
    * Representa o almoxarifado
-   * 
+   *
    * @var Almoxarifado
    */
   private $oAlmoxarifado;
-  
+
   /**
    * Representa a competência
-   * 
+   *
    * @var DBCompetencia
    */
   private $oCompetencia;
-  
+
   /**
    * Representa o tipo do grupo dos materiais
-   * 
+   *
    * @var int
    */
   private $iTipoEmissao;
-  
+
   /**
    * Saldo do mês anterior
-   * 
+   *
    * @var float
    */
   private $fSaldoAnterior = 0;
-  
+
   /**
    * Entrada do estoque - Valor da compra
-   * 
+   *
    * @var float
    */
   private $fValorCompra = 0;
-  
+
   /**
    * Entrada do estoque - Valor da doação
-   * 
+   *
    * @var float
    */
   private $fValorDoacao = 0;
-  
+
   /**
    * Entrada do estoque - Valor da transferência
    *
    * @var float
    */
   private $fValorTransferencia = 0;
-  
+
   /**
    * Entrada do estoque - Valor da devolução
-   * 
+   *
    * @var float
    */
   private $fValorDevolucao = 0;
-  
+
   /**
    *
    * Saída do estoque - Valor da requisição
    * @var float
    */
   private $fValorRequisicao = 0;
-  
+
   /**
    * Saída do estoque - Valor da baixa
-   * 
+   *
    * @var float
    */
   private $fValorBaixa = 0;
-  
+
   /**
    * Construtor da classe
-   * 
+   *
    * @param Almoxarifado $oAlmoxarifado
    * @param DBCompetencia $oCompetencia
    * @param int $iTipoEmissao
    */
   function __construct(Almoxarifado $oAlmoxarifado, DBCompetencia $oCompetencia, $iTipoEmissao) {
-    
+
     $this->setAlmoxarifado($oAlmoxarifado);
     $this->setCompetencia($oCompetencia);
     $this->setTipoEmissao($iTipoEmissao);
     $this->processar();
   }
-  
+
   /**
    * Retorna o almoxarifado informada
-   * 
+   *
    * @access public
    * @return Almoxarifado
    */
@@ -132,27 +132,27 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Retorna a competência informada
-   * 
+   *
    * @access public
    * @return DBCompetencia
    */
   public function getCompetencia() {
     return $this->oCompetencia;
   }
-  
+
   /**
    * Retorna o tipo do grupo dos materiais
-   * 
+   *
    * @access public
    * @return int
    */
   public function getTipoEmissao() {
     return $this->iTipoEmissao;
   }
-  
+
   /**
    * Retorna o saldo do mês anterior
-   * 
+   *
    * @access public
    * @return float
    */
@@ -162,7 +162,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Retorna o valor da compra
-   * 
+   *
    * @access public
    * @return float
    */
@@ -172,7 +172,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Retorna o valor da doação
-   * 
+   *
    * @access public
    * @return float
    */
@@ -182,7 +182,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Retorna o valor da transferência
-   * 
+   *
    * @access public
    * @return float
    */
@@ -192,7 +192,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Retorna o valor da devolução
-   * 
+   *
    * @access public
    * @return float
    */
@@ -202,7 +202,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Retorna o valor da requisição
-   * 
+   *
    * @access public
    * @return float
    */
@@ -212,7 +212,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Retorna o valor da baixa
-   * 
+   *
    * @access public
    * @return float
    */
@@ -222,7 +222,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Seta o almoxarifado
-   * 
+   *
    * @access private
    * @param Almoxarifado $oAlmoxarifado
    */
@@ -232,27 +232,27 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Seta a competência
-   * 
+   *
    * @access private
    * @param DBCompetencia $oCompetencia
    */
   private function setCompetencia(DBCompetencia $oCompetencia) {
     $this->oCompetencia = $oCompetencia;
   }
-  
+
   /**
    * Seta o tipo do grpo dos materiais
-   * 
+   *
    * @access private
    * @param int $iTipoEmissao
    */
   private function setTipoEmissao($iTipoEmissao) {
     $this->iTipoEmissao = $iTipoEmissao;
   }
-  
+
   /**
    * Seta o saldo do mês anterior do mês que foi informado
-   * 
+   *
    * @access private
    * @param float $fSaldoAnterior
    */
@@ -262,7 +262,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Seta o valor da compra
-   * 
+   *
    * @access private
    * @param float $fValorCompra
    */
@@ -272,7 +272,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Seta o valor da doação
-   * 
+   *
    * @access private
    * @param float $fValorDoacao
    */
@@ -282,7 +282,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Seta o valor da tranferência
-   * 
+   *
    * @access private
    * @param float $fValorTransferencia
    */
@@ -292,7 +292,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Seta o valor da devolução
-   * 
+   *
    * @access private
    * @param float $fValorDevolucao
    */
@@ -302,7 +302,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Seta o valor da requisição
-   * 
+   *
    * @access private
    * @param float $fValorRequisicao
    */
@@ -312,7 +312,7 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Seta o valor da baixa
-   * 
+   *
    * @access private
    * @param float $fValorBaixa
    */
@@ -322,21 +322,21 @@ class ModeloBensAlmoxarifado {
 
   /**
    * Popula a classe com os dados do relatório
-   * 
+   *
    * @access private
    * @throws BusinessException
    */
   private function processar() {
-    
+
     $oDaoMovimentacaoEstoque = new cl_matestoqueini();
-    
+
     $iAno = $this->getCompetencia()->getAno();
     $iMes = $this->getCompetencia()->getMes();
     $iDia = cal_days_in_month(CAL_GREGORIAN, $iMes, $iAno);
-     
+
     $sDataInicialMes  = "{$iAno}-{$iMes}-01";
     $sDataFinalMes    = "{$iAno}-{$iMes}-{$iDia}";
-    
+
     $sCampo  = "coalesce(sum(case when m81_codtipo in (1, 3, 12) and m80_data >= '{$sDataInicialMes}' ";
     $sCampo .= "           then m89_valorfinanceiro else 0 end), 0) as compras, ";
     $sCampo .= "coalesce(sum(case when m81_codtipo in (8) and m80_data >= '{$sDataInicialMes}' ";
@@ -345,30 +345,31 @@ class ModeloBensAlmoxarifado {
     $sCampo .= "           then m89_valorfinanceiro else 0 end), 0) as devolucoes, ";
     $sCampo .= "coalesce(sum(case when m81_codtipo in (17, 21) and m80_data >= '{$sDataInicialMes}' ";
     $sCampo .= "           then m89_valorfinanceiro else 0 end), 0) as requisicoes, ";
-    $sCampo .= "coalesce(sum(case when m81_codtipo in (5, 19) and m80_data >= '{$sDataInicialMes}' ";
+    $sCampo .= "coalesce(sum(case when m81_codtipo in (5) and m80_data >= '{$sDataInicialMes}' ";
     $sCampo .= "           then m89_valorfinanceiro else 0 end), 0) as baixas, ";
     $sCampo .= "coalesce(sum(case when m81_tipo = 1 and m80_data < '{$sDataInicialMes}' ";
     $sCampo .= "           then m89_valorfinanceiro ";
     $sCampo .= "         when m81_tipo = 2 and m80_data < '{$sDataInicialMes}' ";
     $sCampo .= "           then m89_valorfinanceiro * -1 else 0 end), 0) as saldo_anterior ";
-    
-    $sWhere  = "m80_coddepto = {$this->getAlmoxarifado()->getCodigo()}";
+
+    $sWhere  = "      m80_coddepto = {$this->getAlmoxarifado()->getCodigo()}";
     $sWhere .= "  and m80_data <= '{$sDataFinalMes}'";
     $sWhere .= "  and m71_servico is false";
     $sWhere .= "  and m04_materialtipogrupo = {$this->getTipoEmissao()}";
-    
-    
-    $sSqlDadosMovimentacao =  $oDaoMovimentacaoEstoque->sql_query_movimentacoes_por_tipo_grupo(null, 
-                                                                                               $sCampo, 
-                                                                                               null, 
+    $sWhere .= "  and matestoqueinil.m86_codigo is null";
+
+
+    $sSqlDadosMovimentacao =  $oDaoMovimentacaoEstoque->sql_query_movimentacoes_por_tipo_grupo(null,
+                                                                                               $sCampo,
+                                                                                               null,
                                                                                                $sWhere
                                                                                               );
     $rsDadosMovimentacao   = db_query($sSqlDadosMovimentacao);
-    
+
     if (!$rsDadosMovimentacao) {
       throw new BusinessException(_M(self::CAMINHO_MENSAGEM . "erro_consultar_movimentos_estoque"));
     }
-    
+
     if (pg_num_rows($rsDadosMovimentacao) > 0) {
 
       $oDadosEstoque = db_utils::fieldsMemory($rsDadosMovimentacao, 0);

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
  * Classe modelo para carteira de identificacao
  * @package   Educacao
  * @author    Robson Inacio - robson@dbseller.com.br 
- * @version   $Revision: 1.4 $ 
+ * @version   $Revision: 1.6 $ 
  */
 class CarteiraIdentificacao {
 	

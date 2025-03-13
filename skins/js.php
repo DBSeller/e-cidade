@@ -24,10 +24,9 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-chdir('..');
 
-require_once("libs/db_autoload.php");
-require_once("libs/db_stdlib.php");
+
+require_once(modification("libs/db_stdlib.php"));
 
 $oGet        = db_utils::postMemory($_GET);
 $oSkin       = new SkinService();
@@ -40,5 +39,5 @@ if ( !$sActiveSkin ) {
   $sActiveSkin = $oSkin->getActiveSkin();
 }
 
-header("Location: ../" . $oSkin->getPathFile("js/{$oGet->file}", $sActiveSkin));
-?>
+header('Content-Type: text/javascript');
+header("Location: " . ECIDADE_REQUEST_PATH . $oSkin->getPathFile("js/{$oGet->file}", $sActiveSkin));

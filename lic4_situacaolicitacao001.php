@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("model/licitacao.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("model/licitacao.model.php"));
 
 $oRotulo = new rotulocampo;
 $oRotulo->label("l20_codigo");
@@ -180,7 +180,7 @@ if (iOpcao > 1) {
 
   sPesquisaTipo     = "situacao="+iTipoSituacao+"&";
   var sUrlLicitacao = "func_liclicita.php?"+sPesquisaTipo+"funcao_js=parent.js_getDadosSituacaoLicitacao|l11_sequencial";
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_liclicitasituacao', sUrlLicitacao, 'Pesquisa Licitações', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_liclicitasituacao', sUrlLicitacao, 'Pesquisa Licitações', true);
 }
 
 function js_getDadosSituacaoLicitacao(iCodigoAlteracao) {
@@ -200,7 +200,7 @@ function js_getDadosSituacaoLicitacao(iCodigoAlteracao) {
                                     onComplete: function (oAjax) {
 
                                       js_removeObj("msgBox");
-                                      var oRetorno = eval("("+oAjax.responseText+")");
+                                      var oRetorno = JSON.parse(oAjax.responseText);
 
                                       if (oRetorno.status == 1) {
 
@@ -222,12 +222,12 @@ function js_pequisaLicitacao(iOpcao) {
     
     sPesquisaTipo     = "situacao="+iTipoSituacao+"&";
     var sUrlLicitacao = "func_liclicita.php?"+sPesquisaTipo+"funcao_js=parent.js_getDadosSituacaoLicitacao|l11_sequencial";
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_liclicitasituacao', sUrlLicitacao, 'Pesquisa Licitações', true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_liclicitasituacao', sUrlLicitacao, 'Pesquisa Licitações', true);
     
   } else {
 
   var sUrlLicitacao = "func_liclicita.php?"+sPesquisaTipo+"funcao_js=parent.js_preencheDados|l20_codigo|l20_edital"
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_liclicita', sUrlLicitacao, 'Pesquisa Licitações', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_liclicita', sUrlLicitacao, 'Pesquisa Licitações', true);
   }
 }
 
@@ -303,7 +303,7 @@ function js_salvarOperacao() {
 function js_retornaLicitacao(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
   $("form1").reset();
 }

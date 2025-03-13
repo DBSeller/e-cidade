@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 set_time_limit(0);
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
  $unidade = str_replace("X",",",$unidades);
  $data1   = str_replace("X","-",$data1);
@@ -48,7 +48,7 @@ $SQL= "  SELECT sd02_i_codigo,
        ORDER BY sd02_i_codigo, sd23_i_medico
       ";
 
-$Query = @pg_query($SQL);
+$Query = @db_query($SQL);
 $Linhas = @pg_num_rows($Query);
 if($Linhas == 0){
  echo "<table width='100%'>

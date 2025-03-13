@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -183,7 +183,7 @@ class cl_tmp_far_retirada {
      }
      
      if($fa04_i_codigo == "" || $fa04_i_codigo == null ){
-       $result = @pg_query("select nextval('farretirada_fa04_i_codigo_seq')"); 
+       $result = @db_query("select nextval('farretirada_fa04_i_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: farretirada_fa04_i_codigo_seq do campo: fa04_i_codigo"; 
@@ -194,7 +194,7 @@ class cl_tmp_far_retirada {
        }
        $this->fa04_i_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from farretirada_fa04_i_codigo_seq");
+       $result = @db_query("select last_value from farretirada_fa04_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $fa04_i_codigo)){
          $this->erro_sql = " Campo fa04_i_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -239,7 +239,7 @@ class cl_tmp_far_retirada {
                                
                       )";
 
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -265,18 +265,18 @@ class cl_tmp_far_retirada {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->fa04_i_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,12143,'$this->fa04_i_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,2106,12143,'','".AddSlashes(pg_result($resaco,0,'fa04_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2106,12144,'','".AddSlashes(pg_result($resaco,0,'fa04_c_numeroreceita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2106,12147,'','".AddSlashes(pg_result($resaco,0,'fa04_d_dtvalidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2106,12148,'','".AddSlashes(pg_result($resaco,0,'fa04_i_unidades'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2106,12149,'','".AddSlashes(pg_result($resaco,0,'fa04_i_cgsund'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2106,12150,'','".AddSlashes(pg_result($resaco,0,'fa04_i_tiporeceita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2106,12187,'','".AddSlashes(pg_result($resaco,0,'fa04_i_dbusuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2106,12186,'','".AddSlashes(pg_result($resaco,0,'fa04_d_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2106,12188,'','".AddSlashes(pg_result($resaco,0,'fa04_i_profissional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,12143,'$this->fa04_i_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,2106,12143,'','".AddSlashes(pg_result($resaco,0,'fa04_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2106,12144,'','".AddSlashes(pg_result($resaco,0,'fa04_c_numeroreceita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2106,12147,'','".AddSlashes(pg_result($resaco,0,'fa04_d_dtvalidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2106,12148,'','".AddSlashes(pg_result($resaco,0,'fa04_i_unidades'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2106,12149,'','".AddSlashes(pg_result($resaco,0,'fa04_i_cgsund'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2106,12150,'','".AddSlashes(pg_result($resaco,0,'fa04_i_tiporeceita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2106,12187,'','".AddSlashes(pg_result($resaco,0,'fa04_i_dbusuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2106,12186,'','".AddSlashes(pg_result($resaco,0,'fa04_d_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2106,12188,'','".AddSlashes(pg_result($resaco,0,'fa04_i_profissional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
       
      }
      return true;
@@ -439,31 +439,31 @@ class cl_tmp_far_retirada {
      $resaco = $this->sql_record($this->sql_query_file($this->fa04_i_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,12143,'$this->fa04_i_codigo','A')");
+         $resac = db_query("insert into db_acountkey values($acount,12143,'$this->fa04_i_codigo','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_codigo"]))
-           $resac = pg_query("insert into db_acount values($acount,2106,12143,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_codigo'))."','$this->fa04_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2106,12143,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_codigo'))."','$this->fa04_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_c_numeroreceita"]))
-           $resac = pg_query("insert into db_acount values($acount,2106,12144,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_c_numeroreceita'))."','$this->fa04_c_numeroreceita',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2106,12144,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_c_numeroreceita'))."','$this->fa04_c_numeroreceita',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_dtvalidade"]))
-           $resac = pg_query("insert into db_acount values($acount,2106,12147,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_d_dtvalidade'))."','$this->fa04_d_dtvalidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2106,12147,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_d_dtvalidade'))."','$this->fa04_d_dtvalidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_unidades"]))
-           $resac = pg_query("insert into db_acount values($acount,2106,12148,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_unidades'))."','$this->fa04_i_unidades',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2106,12148,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_unidades'))."','$this->fa04_i_unidades',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_cgsund"]))
-           $resac = pg_query("insert into db_acount values($acount,2106,12149,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_cgsund'))."','$this->fa04_i_cgsund',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2106,12149,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_cgsund'))."','$this->fa04_i_cgsund',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_tiporeceita"]))
-           $resac = pg_query("insert into db_acount values($acount,2106,12150,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_tiporeceita'))."','$this->fa04_i_tiporeceita',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2106,12150,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_tiporeceita'))."','$this->fa04_i_tiporeceita',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_dbusuario"]))
-           $resac = pg_query("insert into db_acount values($acount,2106,12187,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_dbusuario'))."','$this->fa04_i_dbusuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2106,12187,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_dbusuario'))."','$this->fa04_i_dbusuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_d_data"]))
-           $resac = pg_query("insert into db_acount values($acount,2106,12186,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_d_data'))."','$this->fa04_d_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2106,12186,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_d_data'))."','$this->fa04_d_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa04_i_profissional"]))
-           $resac = pg_query("insert into db_acount values($acount,2106,12188,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_profissional'))."','$this->fa04_i_profissional',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2106,12188,'".AddSlashes(pg_result($resaco,$conresaco,'fa04_i_profissional'))."','$this->fa04_i_profissional',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "far_retirada nao Alterado. Alteracao Abortada.\\n";
@@ -504,18 +504,18 @@ class cl_tmp_far_retirada {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,12143,'$fa04_i_codigo','E')");
-         $resac = pg_query("insert into db_acount values($acount,2106,12143,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2106,12144,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_c_numeroreceita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2106,12147,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_d_dtvalidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2106,12148,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_unidades'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2106,12149,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_cgsund'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2106,12150,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_tiporeceita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2106,12187,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_dbusuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2106,12186,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_d_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2106,12188,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_profissional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");        
+         $resac = db_query("insert into db_acountkey values($acount,12143,'$fa04_i_codigo','E')");
+         $resac = db_query("insert into db_acount values($acount,2106,12143,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2106,12144,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_c_numeroreceita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2106,12147,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_d_dtvalidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2106,12148,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_unidades'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2106,12149,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_cgsund'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2106,12150,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_tiporeceita'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2106,12187,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_dbusuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2106,12186,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_d_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2106,12188,'','".AddSlashes(pg_result($resaco,$iresaco,'fa04_i_profissional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");        
        }
      }
      $sql = " delete from ".$this->tmp_far_retirada." 
@@ -531,7 +531,7 @@ class cl_tmp_far_retirada {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "far_retirada nao Excluído. Exclusão Abortada.\\n";
@@ -565,7 +565,7 @@ class cl_tmp_far_retirada {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

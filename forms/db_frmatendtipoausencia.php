@@ -69,7 +69,7 @@ db_select('at71_tipo',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_atendtipoausencia','func_atendtipoausencia.php?funcao_js=parent.js_preenchepesquisa|at71_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atendtipoausencia','func_atendtipoausencia.php?funcao_js=parent.js_preenchepesquisa|at71_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_atendtipoausencia.hide();

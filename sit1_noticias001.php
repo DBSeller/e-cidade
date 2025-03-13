@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
 //retorno da funcao db_lov
 if(isset($retorno)) {
-  $result = pg_exec("select s_codigo as codigo,s_tit as tit,to_char(s_data,'YYYY') as data_ano,to_char(s_data,'MM') as data_mes,to_char(s_data,'DD') as data_dia,s_texto as texto,s_im_men as im_men,s_im_mai as im_mai from db_noticias where s_codigo = $retorno");
+  $result = db_query("select s_codigo as codigo,s_tit as tit,to_char(s_data,'YYYY') as data_ano,to_char(s_data,'MM') as data_mes,to_char(s_data,'DD') as data_dia,s_texto as texto,s_im_men as im_men,s_im_mai as im_mai from db_noticias where s_codigo = $retorno");
   db_fieldsmemory($result,0);
 }
 
@@ -42,7 +42,7 @@ if(isset($retorno)) {
 if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS);
   db_postmemory($_FILES["im_menA"]);
- pg_exec("begin");
+ db_query("begin");
   if($name != "") {
     if($size == 0) {
       echo "O arquivo $name não foi encontrado ou ele está vazio. Verifique o seu caminho e o seu tamanho e tente novamente.<Br>";
@@ -64,33 +64,33 @@ if(isset($HTTP_POST_VARS["incluir"])) {
    //copy($tmp_name,"$caminho/$im_mai");
   } else
     $oid2 = "null";
-  $result = pg_exec("select max(s_codigo) from db_noticias");
+  $result = db_query("select max(s_codigo) from db_noticias");
   $codigo = pg_result($result,0,0)==""?0:(integer)pg_result($result,0,0) + 1;
-  pg_exec("insert into db_noticias(s_codigo,s_tit,s_data,s_texto,s_im_men,s_im_mai) 
+  db_query("insert into db_noticias(s_codigo,s_tit,s_data,s_texto,s_im_men,s_im_mai) 
   values($codigo,'$tit','$data_ano-$data_mes-$data_dia','$texto',$oid1,$oid2)") or die(pg_errormessage($result));
-  pg_exec("commit");
+  db_query("commit");
   db_redireciona();
   exit;
 } else if(isset($HTTP_POST_VARS["alterar"])) {
   db_postmemory($HTTP_POST_VARS);
   if($not_destaque == 1) {    
-    pg_exec("begin");
-	$result = pg_exec("select max(s_codigo) + 1 from db_noticias");
+    db_query("begin");
+	$result = db_query("select max(s_codigo) + 1 from db_noticias");
 	$aux = pg_result($result,0,0);
-	pg_exec("update db_noticias set s_codigo = $aux where s_codigo = 0") or die(pg_errormessage());	
-    pg_exec("update db_noticias set s_codigo = 0 where s_codigo = $codigo") or die(pg_errormessage());
-	pg_exec("update db_noticias set s_codigo = $codigo where s_codigo = $aux") or die(pg_errormessage());
-	pg_exec("COMMIT");
+	db_query("update db_noticias set s_codigo = $aux where s_codigo = 0") or die(pg_errormessage());	
+    db_query("update db_noticias set s_codigo = 0 where s_codigo = $codigo") or die(pg_errormessage());
+	db_query("update db_noticias set s_codigo = $codigo where s_codigo = $aux") or die(pg_errormessage());
+	db_query("COMMIT");
     $codigo = 0;
   }  
-  //$result = pg_exec("select s_im_men,s_im_mai from db_noticias where s_codigo = $codigo");
-  pg_exec("begin");
+  //$result = db_query("select s_im_men,s_im_mai from db_noticias where s_codigo = $codigo");
+  db_query("begin");
   db_postmemory($_FILES["im_menA"]);
   if($name != "") {
     //system("rm -f $caminho/".pg_result($result,0,"s_im_men"));
     //copy($tmp_name,"$caminho/$im_men");
     $oid1 = pg_loimport($tmp_name);
-    pg_exec("update db_noticias set s_im_men = $oid1 where s_codigo = $codigo") or die(pg_errormessage($result));
+    db_query("update db_noticias set s_im_men = $oid1 where s_codigo = $codigo") or die(pg_errormessage($result));
   } 
   /*
   else if($im_men != "") {
@@ -102,24 +102,24 @@ if(isset($HTTP_POST_VARS["incluir"])) {
     //system("rm -f $caminho/".pg_result($result,0,"s_im_mai"));  
     //copy($tmp_name,"$caminho/$im_mai"); 
     $oid2 = pg_loimport($tmp_name);
-	pg_exec("update db_noticias set s_im_mai = $oid2 where s_codigo = $codigo") or die(pg_errormessage($result));
+	db_query("update db_noticias set s_im_mai = $oid2 where s_codigo = $codigo") or die(pg_errormessage($result));
   } 
   /*
   else if($im_mai != "") {
     if($im_mai != pg_result($result,0,"s_im_mai"))
 	  system("mv $caminho/".pg_result($result,0,"s_im_mai")." $caminho/$im_mai");
   }*/
-  pg_exec("update db_noticias set 
+  db_query("update db_noticias set 
              s_tit = '$tit',
 			 s_data = '$data_ano-$data_mes-$data_dia',
 			 s_texto = '$texto'
 		   where s_codigo = $codigo") or die(pg_errormessage($result));		   
-  pg_exec("commit");		   
+  db_query("commit");		   
   db_redireciona();
   exit;
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-//  $result = pg_exec("select s_im_men,s_im_mai from db_noticias where s_codigo = ".$HTTP_POST_VARS["codigo"]);
-  pg_exec("delete from db_noticias where s_codigo = ".$HTTP_POST_VARS["codigo"])  or die(pg_errormessage($result));
+//  $result = db_query("select s_im_men,s_im_mai from db_noticias where s_codigo = ".$HTTP_POST_VARS["codigo"]);
+  db_query("delete from db_noticias where s_codigo = ".$HTTP_POST_VARS["codigo"])  or die(pg_errormessage($result));
   //system("rm -f $caminho/".pg_result($result,0,"s_im_men"));
   //system("rm -f $caminho/".pg_result($result,0,"s_im_mai"));  
   db_redireciona();
@@ -184,7 +184,7 @@ input {
         <td><strong>Data:</strong></td>
         <td>
 		<?
-		  include("dbforms/db_funcoes.php");
+		  include(modification("dbforms/db_funcoes.php"));
 		  db_data("data",@$data_dia,@$data_mes,@$data_ano);
 		?>
 		  <!--input name="data_dia" type="text" id="data_dia" value="<?=@$data_dia?>" size="2" maxlength="2"> 

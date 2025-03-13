@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r01_regist');
@@ -64,7 +64,7 @@ order by z01_nome;
        ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_cgmtipoempresa_classe.php");
-require_once("classes/db_tipoempresa_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_cgmtipoempresa_classe.php"));
+require_once(modification("classes/db_tipoempresa_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $db_opcao = 33;
@@ -50,68 +50,53 @@ $clcgmtipoempresa->rotulo->label();
 
 $lPessoaFisica = true;
 
-if(isset($chavepesquisa)){
-  
-   $result = $clcgm->sql_record($clcgm->sql_query($chavepesquisa));
-   if ($result !== false && $result != 0) {
+if (isset($chavepesquisa)) {
+
+  $result = $clcgm->sql_record($clcgm->sql_query($chavepesquisa));
+  if ($result !== false && $result != 0) {
     $db_opcao = 3;
     $db_botao = true;
-    $oCgm = db_utils::fieldsMemory($result,0);
-    
-    if (strlen($oCgm->z01_cgccpf) == 14){
+    $oCgm = db_utils::fieldsMemory($result, 0);
+
+    if (strlen($oCgm->z01_cgccpf) == 14) {
       $lPessoaFisica = false;
     }
-   } else {
-      //Exibir mensagem de erro
-   }
+  }
 }
 
 ?>
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<?
-  db_app::load("scripts.js, prototype.js, widgets/windowAux.widget.js,strings.js,widgets/dbtextField.widget.js,
-               dbViewCadEndereco.classe.js,dbmessageBoard.widget.js,dbautocomplete.widget.js,dbcomboBox.widget.js,
-               datagrid.widget.js");
-  db_app::load("estilos.css");
-?>
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-		<?
-		  require_once("forms/db_frmcadgeralmunic.php");
-		?>
-    </center>
-	</td>
-  </tr>
-</table>
-</body>
-</html>
-<?
 
-if(isset($chavepesquisa)){
- echo "
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
+
+  <div class="container">
+    <?php
+    require_once(modification("forms/db_frmcadgeralmunic.php"));
+    ?>
+  </div>
+
+</body>
+
+</html>
+<?php
+
+if (isset($chavepesquisa)) {
+  echo "
   <script>
       function js_db_libera(){
          parent.document.formaba.documentos.disabled=false;
-         top.corpo.iframe_documentos.location.href='prot1_cadgeraldocumentos001.php?z01_numcgm=".$chavepesquisa."&opcao=3';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_documentos.location.href='prot1_cadgeraldocumentos001.php?z01_numcgm=" . $chavepesquisa . "&opcao=3';
      ";
-         if(isset($liberaaba)){
-           echo "  parent.mo_camada('documentos');";
-         }
- echo"}\n
+  if (isset($liberaaba)) {
+    echo "  parent.mo_camada('documentos');";
+  }
+  echo "}\n
     js_db_libera();
     js_findCgm($chavepesquisa);
   </script>\n
  ";
 }
- if($db_opcao==22||$db_opcao==33){
-    echo "<script>document.form1.pesquisar.click();</script>";
- }
+if ($db_opcao == 22 || $db_opcao == 33) {
+  echo "<script>document.form1.pesquisar.click();</script>";
+}
 ?>

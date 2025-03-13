@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_issnotaavulsanumpre_classe.php");
-include("classes/db_issnotaavulsa_classe.php");
-include("classes/db_recibopaga_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_parissqn_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_issnotaavulsanumpre_classe.php"));
+include(modification("classes/db_issnotaavulsa_classe.php"));
+include(modification("classes/db_recibopaga_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_parissqn_classe.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label("q51_numnota");
 $clrotulo->label("q63_issnotaavulsa");
@@ -157,10 +157,10 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 function js_pesquisaq63_issnotaavulsa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issnotaavulsa','func_issnotaavulsacancelados.php?filtrabaixa=&funcao_js=parent.js_mostraissnotaavulsa1|q51_sequencial|z01_nome|q51_numnota','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issnotaavulsa','func_issnotaavulsacancelados.php?filtrabaixa=&funcao_js=parent.js_mostraissnotaavulsa1|q51_sequencial|z01_nome|q51_numnota','Pesquisa',true);
   }else{
      if(document.form1.q51_numnota.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_issnotaavulsa','func_issnotaavulsacancelados.php?filtrabaixa=1&filtranumpre=1&pesquisa_chave='+document.form1.q51_numnota.value+'&funcao_js=parent.js_mostraissnotaavulsa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issnotaavulsa','func_issnotaavulsacancelados.php?filtrabaixa=1&filtranumpre=1&pesquisa_chave='+document.form1.q51_numnota.value+'&funcao_js=parent.js_mostraissnotaavulsa','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,51 +25,51 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
   //Inicio excluir registro
   if(isset($HTTP_POST_VARS["excluir"])) {
-    pg_exec("BEGIN");
-    $result = pg_exec("DELETE db_cgm WHERE numcgm = $numcgm");
+    db_query("BEGIN");
+    $result = db_query("DELETE db_cgm WHERE numcgm = $numcgm");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro deletando tabela tb_cgm.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }	
-    $result = pg_exec("DELETE tb_cgmcpf WHERE numcgm = $numcgm");
-    $result = pg_exec("DELETE tb_cgmcgc WHERE numcgm = $numcgm");    
-    $result = pg_exec("DELETE tb_cgmlog WHERE numcgm = $numcgm");
+    $result = db_query("DELETE tb_cgmcpf WHERE numcgm = $numcgm");
+    $result = db_query("DELETE tb_cgmcgc WHERE numcgm = $numcgm");    
+    $result = db_query("DELETE tb_cgmlog WHERE numcgm = $numcgm");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro deletando tabela tb_cgmlog.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }					
-    $result = pg_exec("DELETE tb_cgmendlog WHERE codigo = $numcgm");
+    $result = db_query("DELETE tb_cgmendlog WHERE codigo = $numcgm");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro deletando tabela tb_cgmendlog.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }					
-    $result = pg_exec("DELETE tb_cgmend WHERE numcgm = $numcgm");
+    $result = db_query("DELETE tb_cgmend WHERE numcgm = $numcgm");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro deletando tabela tb_cgmend.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }					 
-	pg_exec("COMMIT");	
+	db_query("COMMIT");	
   //Inicio alterar registro
   } else if(isset($HTTP_POST_VARS["alterar"])) {
     postmemory($HTTP_POST_VARS);
-    $result = pg_exec("select numcgm from tb_cgm where numcgm = $numcgm");
+    $result = db_query("select numcgm from tb_cgm where numcgm = $numcgm");
 	if(pg_numrows($result) == 0) {
 	  echo "<script>alert('Codigo $numcgm não encontrado')</script>\n";
 	} else {
-	  pg_exec("BEGIN");
- 	  $result = pg_exec("UPDATE tb_cgm SET
+	  db_query("BEGIN");
+ 	  $result = db_query("UPDATE tb_cgm SET
 						nome = '$nome',
 						endereco = '$endereco',
 						municipio = '$municipio',
@@ -85,48 +85,48 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
                         email = '$email'
 					WHERE numcgm = $numcgm");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro alterando tabela tb_cgm.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }
 	
     if(!empty($cpf)) {
-      $result = pg_exec("UPDATE tb_cgmcpf SET
+      $result = db_query("UPDATE tb_cgmcpf SET
                          cpf = '$cpf'
 						 WHERE numcgm = $numcgm");
 	  if(pg_cmdtuples($result) == 0) {
-        pg_exec("ROLLBACK");
+        db_query("ROLLBACK");
 	    echo "Erro alterando tabela tb_cgmcpf.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	    exit;
       }
     } else if(!empty($cgc)) {
-      $result = pg_exec("UPDATE tb_cgmcgc SET
+      $result = db_query("UPDATE tb_cgmcgc SET
 	                 cgc = '$cgc',
 					 tipocredor = $tipocredor
 					 WHERE numcgm = $numcgm");
       if(pg_cmdtuples($result) == 0) {
-        pg_exec("ROLLBACK");
+        db_query("ROLLBACK");
 	    echo "Erro alterando tabela tb_cgmcgc.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
         exit;
       }
     }
-    $result = pg_exec("UPDATE tb_cgmlog set
+    $result = db_query("UPDATE tb_cgmlog set
 	                   codlog = $logend
 					   WHERE numcgm = $numcgm");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro alterando tabela tb_cgmlog.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }					
-    $result = pg_exec("UPDATE tb_cgmendlog SET
+    $result = db_query("UPDATE tb_cgmendlog SET
                        codlog = $logendcon
 					   WHERE codigo = $numcgm");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro alterando tabela tb_cgmendlog.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }					
-    $result = pg_exec("UPDATE tb_cgmend SET
+    $result = db_query("UPDATE tb_cgmend SET
 					   endcon = '$endcon',
                        muncon = '$muncon',
 					   baicon = '$baicon',
@@ -137,19 +137,19 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
                        emailc = '$emailc'
 					   WHERE numcgm = $numcgm");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro alterando tabela tb_cgmend.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }					 
-	pg_exec("COMMIT");
+	db_query("COMMIT");
 	}
   //Inicio incluir registro
   } else if(isset($HTTP_POST_VARS["salvar"])) {
     postmemory($HTTP_POST_VARS);
-    $result = pg_exec("select max(numcgm) from tb_cgm");
+    $result = db_query("select max(numcgm) from tb_cgm");
 	$numcgm = pg_result($result,0,0) == ""?1:((integer)pg_result($result,0,0) + 1);
-	pg_exec("BEGIN");
-	$result = pg_exec("INSERT INTO tb_cgm VALUES(
+	db_query("BEGIN");
+	$result = db_query("INSERT INTO tb_cgm VALUES(
 	                    $numcgm,
 						'$nome',
 						'$endereco',
@@ -166,51 +166,51 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
                         '$email')
 				      ");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro Inserindo na tabela tb_cgm.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }
 	
     if(!empty($cpf)) {
-      $result = pg_exec("INSERT INTO tb_cgmcpf VALUES(
+      $result = db_query("INSERT INTO tb_cgmcpf VALUES(
                          '$cpf',
 						 $numcgm)           
 				      ");
 	  if(pg_cmdtuples($result) == 0) {
-        pg_exec("ROLLBACK");
+        db_query("ROLLBACK");
 	    echo "Erro Inserindo na tabela tb_cgmcpf.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	    exit;
       }
     } else if(!empty($cgc)) {
-      $result = pg_exec("INSERT INTO tb_cgmcgc VALUES(
+      $result = db_query("INSERT INTO tb_cgmcgc VALUES(
 	                 '$cgc',
 	  				 $numcgm,
 					 $tipocredor)
 		             ");
       if(pg_cmdtuples($result) == 0) {
-        pg_exec("ROLLBACK");
+        db_query("ROLLBACK");
 	    echo "Erro Inserindo na tabela tb_cgmcgc.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
         exit;
       }
     }
-    $result = pg_exec("INSERT INTO tb_cgmlog VALUES($numcgm,$logend)");
+    $result = db_query("INSERT INTO tb_cgmlog VALUES($numcgm,$logend)");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro Inserindo na tabela tb_cgmlog.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }					
-    $result = pg_exec("INSERT INTO tb_cgmendlog VALUES(
+    $result = db_query("INSERT INTO tb_cgmendlog VALUES(
                        $numcgm,
                        $logendcon)
                     ");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro Inserindo na tabela tb_cgmendlog.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }					
-    $result = pg_exec("select max(codigo) from tb_cgmend");
+    $result = db_query("select max(codigo) from tb_cgmend");
     $codigo = pg_result($result,0,0) == ""?1:((integer)pg_result($result,0,0) + 1);
-    $result = pg_exec("INSERT INTO tb_cgmend VALUES(
+    $result = db_query("INSERT INTO tb_cgmend VALUES(
                        $codigo,
 					   $numcgm,
 					   '$endcon',
@@ -223,11 +223,11 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
                        '$emailc')
 					 ");
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
 	  echo "Erro Inserindo na tabela tb_cgmend.<a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	  exit;
     }					 
-	pg_exec("COMMIT");
+	db_query("COMMIT");
   }
 /*
   //Fim incluir registro
@@ -258,7 +258,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 	<?
-    include("forms/db_frmcgm.php"); 
+    include(modification("forms/db_frmcgm.php")); 
     ?>
 	</td>
   </tr>

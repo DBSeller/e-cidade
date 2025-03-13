@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,12 +24,13 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+define( 'MENSAGENS_LINHAITINERARIOHORARIO', 'educacao.transporteescolar.LinhaItinerarioHorario.' );
 
 /**
  * Linha Itinerário Horário
  * @author Trucolo <trucolo@dbseller.com.br>
  * @package transporteescolar
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.10 $
  */
 
 class LinhaItinerarioHorario {
@@ -83,9 +84,8 @@ class LinhaItinerarioHorario {
       if ($oDaoLinhaItinerarioHorario->numrows == 0) {
 
         $oVariaveis         = new stdClass();
-        $sMensagem          = 'educacao.transporteescolar.LinhaItinerarioHorario.linhaitinerariohorario_nao_cadastrado';
         $oVariaveis->codigo = $iCodigo;
-        throw new BusinessException(_M($sMensagem, $oVariaveis));
+        throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'linhaitinerariohorario_nao_cadastrado', $oVariaveis ) );
       }
 
       $oLinhaItinerarioHorario = db_utils::fieldsMemory($rsLinhaItinerarioHorario, 0);
@@ -178,15 +178,15 @@ class LinhaItinerarioHorario {
   public function salvar() {
 
     if (!db_utils::inTransaction()) {
-      throw new DBException(_M('educacao.transporteescolar.LinhaItinerarioHorario.sem_transacao'));
+      throw new DBException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'sem_transacao' ) );
     }
 
     if (trim($this->sHoraSaida) == '') {
-      throw new BusinessException(_M('educacao.transporteescolar.LinhaItinerarioHorario.hora_nao_informada'));
+      throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'hora_nao_informada' ) );
     }
 
     if ($this->oLinhaItinerario == null) {
-      throw new BusinessException(_M('educacao.transporteescolar.LinhaItinerarioHorario.linhatransporteitinerario_nao_informada'));
+      throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'linhatransporteitinerario_nao_informada' ) );
     }
 
     $oDaoLinhaTransporteHorario = new cl_linhatransportehorario();
@@ -211,7 +211,7 @@ class LinhaItinerarioHorario {
       $sHoraChegada = db_utils::fieldsMemory($rsLinhaTransporteHorario, 0)->tre07_horachegada;
 
       if ($this->getHoraSaida() <= $sHoraChegada) {
-        throw new BusinessException(_M('educacao.transporteescolar.LinhaItinerarioHorario.hora_partida_menor_ultima_chegada'));
+        throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'hora_partida_menor_ultima_chegada' ) );
       }
     }
 
@@ -231,12 +231,10 @@ class LinhaItinerarioHorario {
 
     if ($oDaoLinhaTransporteHorario->erro_status == 0) {
 
-      $sMensagem            = 'educacao.transporteescolar.LinhaItinerarioHorario.erro_persitir_dados_itinerariohorario';
       $oVariaveis           = new stdClass();
       $oVariaveis->erro_dao = $oDaoLinhaTransporteHorario->erro_msg;
-      throw new BusinessException(_M($sMensagem, $oVariaveis));
+      throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'erro_persitir_dados_itinerariohorario', $oVariaveis ) );
     }
-
   }
 
   /**
@@ -245,16 +243,14 @@ class LinhaItinerarioHorario {
   public function remover() {
 
     if (!db_utils::inTransaction()) {
-      throw new DBException(_M('educacao.transporteescolar.LinhaItinerarioHorario.sem_transacao'));
+      throw new DBException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'sem_transacao' ) );
     }
 
     /**
      * Verificamos se existem veiculos de transporte municipal vinculados ao horario, nao permitindo a exclusao
      */
     if (count($this->getTransportes()) > 0) {
-      
-      $sMensagem = 'educacao.transporteescolar.LinhaItinerarioHorario.transporte_vinculado_horario';
-      throw new BusinessException(_M($sMensagem));
+      throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'transporte_vinculado_horario' ) );
     }
     
     $oDaoLinhaTransporteHorario = db_utils::getDao('linhatransportehorario');
@@ -262,10 +258,9 @@ class LinhaItinerarioHorario {
 
     if ($oDaoLinhaTransporteHorario->erro_status == 0) {
 
-      $sMensagem            = 'educacao.transporteescolar.LinhaItinerarioHorario.erro_remover_dados_itinerariohorario';
       $oVariaveis           = new stdClass();
       $oVariaveis->erro_dao = $oDaoLinhaTransporteHorario->erro_msg;
-      throw new BusinessException(_M($sMensagem, $oVariaveis));
+      throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'erro_remover_dados_itinerariohorario', $oVariaveis ) );
     }
   }
 
@@ -286,6 +281,16 @@ class LinhaItinerarioHorario {
    */
   public function removerTransporte(VeiculoTransporte $oVeiculoTransporte) {
 
+    $oDaoVinculoAluno    = new cl_linhatransportepontoparadaaluno();
+    $sWhereVinculoAluno  = "     tre08_veiculotransportemunicipal = {$oVeiculoTransporte->getCodigo()}";
+    $sWhereVinculoAluno .= " AND tre08_linhatransportehorario     = {$this->getCodigo()}";
+    $sSqlVinculoAluno    = $oDaoVinculoAluno->sql_query_aluno_vinculado( null, '1', null, $sWhereVinculoAluno );
+    $rsVinculoAluno      = db_query( $sSqlVinculoAluno );
+
+    if( $rsVinculoAluno && pg_num_rows( $rsVinculoAluno ) > 0 ) {
+      throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'aluno_vinculado') );
+    }
+
     if (in_array($oVeiculoTransporte, $this->aVeiculosTransporte)) {
 
       $iIndice = array_search($oVeiculoTransporte, $this->aVeiculosTransporte);
@@ -295,7 +300,7 @@ class LinhaItinerarioHorario {
 
   /**
    * Busca todos veículos vinculados ao horário.
-   * @return array VeiculoTransporte
+   * @return VeiculoTransporte[]
    */
   public function getTransportes() {
 
@@ -321,19 +326,18 @@ class LinhaItinerarioHorario {
   public function salvarVeiculo() {
 
     if (!db_utils::inTransaction()) {
-      throw new DBException(_M('educacao.transporteescolar.LinhaItinerarioHorario.sem_transacao'));
+      throw new DBException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'sem_transacao' ) );
     }
-    
+
     $oDaoLinhaTransporteHorarioVeiculo   = new cl_linhatransportehorarioveiculo();
     $sWhereLinhaTransporteHorarioVeiculo = "tre08_linhatransportehorario = {$this->getCodigo()}";
     $oDaoLinhaTransporteHorarioVeiculo->excluir(null, $sWhereLinhaTransporteHorarioVeiculo);
     
     if ($oDaoLinhaTransporteHorarioVeiculo->erro_status == 0) {
       
-      $sMensagem            = 'educacao.transporteescolar.LinhaItinerarioHorario.erro_excluir_vinculo_veiculo';
       $oVariaveis           = new stdClass();
       $oVariaveis->erro_dao = $oDaoLinhaTransporteHorarioVeiculo->erro_msg;
-      throw new BusinessException(_M($sMensagem, $oVariaveis));
+      throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'erro_excluir_vinculo_veiculo', $oVariaveis ) );
     }
 
     foreach ($this->getTransportes() as $oVeiculoTransporte) {
@@ -344,12 +348,10 @@ class LinhaItinerarioHorario {
       
       if ($oDaoLinhaTransporteHorarioVeiculo->erro_status == 0) {
       
-        $sMensagem            = 'educacao.transporteescolar.LinhaItinerarioHorario.erro_incluir_vinculo_veiculo';
         $oVariaveis           = new stdClass();
         $oVariaveis->erro_dao = $oDaoLinhaTransporteHorarioVeiculo->erro_msg;
-        throw new BusinessException(_M($sMensagem, $oVariaveis));
+        throw new BusinessException( _M( MENSAGENS_LINHAITINERARIOHORARIO . 'erro_incluir_vinculo_veiculo', $oVariaveis ) );
       }
     }
   }
 }
-?>

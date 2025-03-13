@@ -169,7 +169,7 @@ db_input('r13_rpaina',4,$Ir13_rpaina,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lotacao','func_lotacao.php?funcao_js=parent.js_preenchepesquisa|r13_anousu|r13_mesusu|r13_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotacao','func_lotacao.php?funcao_js=parent.js_preenchepesquisa|r13_anousu|r13_mesusu|r13_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_lotacao.hide();

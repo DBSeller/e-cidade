@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -39,8 +39,8 @@ require_once ('interfaces/iTarefa.interface.php');
  * Classe de Integração de Pagamento do Processos do Foro
  * @author  Rafael Serpa Nery <rafael.nery@dbseller.com.br>
  * @package Jobs/Juridico
- * @revision $Author: dbrafael.nery $
- * @version $Revision: 1.4 $
+ * @revision $Author: dbanderson $
+ * @version $Revision: 1.6 $
  */
 class IntegracaoWebServiceTJ extends Task implements iTarefa {
 

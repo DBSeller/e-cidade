@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_cidadao_classe.php");
-require_once("classes/db_cidadaofamilia_classe.php");
-require_once("classes/db_cidadaofamiliavisita_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cidadao_classe.php"));
+require_once(modification("classes/db_cidadaofamilia_classe.php"));
+require_once(modification("classes/db_cidadaofamiliavisita_classe.php"));
 
 $oRotuloCampos = new rotulocampo();
 $oRotuloCampos->label("as05_sequencial");
@@ -246,7 +246,7 @@ function js_pesquisaCidadao(lMostra, lNis) {
   if (lMostra) {
 
     sUrl += 'funcao_js=parent.js_mostraCidadao|ov02_sequencial|ov02_nome|as02_nis|as04_sequencial'; 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisa Cidadão',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisa Cidadão',true);
   } else {
 
     if ($F('as02_nis') != '' && lNis) {
@@ -268,7 +268,7 @@ function js_pesquisaCidadao(lMostra, lNis) {
     sUrl += '&funcao_js=parent.js_mostraCidadao2';
 
     if ($F('as02_nis') != '' || $F('codigoCidadao') != '') {
-     js_OpenJanelaIframe('top.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisa Cidadão', false);
+     js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisa Cidadão', false);
     } else {
       
       $('codigoCidadao').value = "";
@@ -320,7 +320,7 @@ function js_pesquisaProfissionalVisita(lMostra) {
 
   if (lMostra) {
 
-  	js_OpenJanelaIframe('top.corpo', 
+  	js_OpenJanelaIframe('CurrentWindow.corpo', 
   	  	                'db_iframe_cgm', 
   	  	                'func_cgm.php?'+
   	  	                'funcao_js=parent.js_mostraProfissionalVisita1|z01_numcgm|z01_nome', 
@@ -331,7 +331,7 @@ function js_pesquisaProfissionalVisita(lMostra) {
 
   	if (document.form1.as05_profissional.value != '') {
 
-    	js_OpenJanelaIframe('top.corpo', 
+    	js_OpenJanelaIframe('CurrentWindow.corpo', 
                           'db_iframe_cgm', 
                           'func_cgm.php?pesquisa_chave='+document.form1.as05_profissional.value+
                                       '&funcao_js=parent.js_mostraProfissionalVisita', 
@@ -377,7 +377,7 @@ function js_pesquisaTipoVisita(lMostra) {
   if (lMostra) {
     
     sUrl += 'funcao_js=parent.js_mostraTipoVisita|as13_sequencial|as13_descricao|as13_exigeencaminhamento'; 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_visitatipo', sUrl, 'Pesquisa Tipo de Visita',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_visitatipo', sUrl, 'Pesquisa Tipo de Visita',true);
   } else {
 
     sUrl += 'pesquisa_chave='+$F('iTipoVisita');
@@ -385,7 +385,7 @@ function js_pesquisaTipoVisita(lMostra) {
 
     if ($F('iTipoVisita') != '') {
 
-     js_OpenJanelaIframe('top.corpo', 'db_iframe_visitatipo', sUrl, 'Pesquisa Cidadão', false);
+     js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_visitatipo', sUrl, 'Pesquisa Cidadão', false);
     } else {
       
       $('iTipoVisita').value = "";
@@ -441,13 +441,13 @@ function js_pesquisaLocalEncaminhamento(lMostra) {
   if (lMostra) {
 
     sUrl += 'funcao_js=parent.js_mostraLocalEncaminhamento|z01_numcgm|z01_nome';
-  	js_OpenJanelaIframe('top.corpo', 'db_iframe_local', sUrl, 'Pesquisar local de encaminhamento', true );
+  	js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_local', sUrl, 'Pesquisar local de encaminhamento', true );
   } else if ($F('iCgmEncaminhamento') != '') {
 
     sUrl += 'pesquisa_chave='+$F('iCgmEncaminhamento');
     sUrl += '&funcao_js=parent.js_mostraLocalEncaminhamento1';
     
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_local', sUrl, 'Pesquisar local de encaminhamento', false);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_local', sUrl, 'Pesquisar local de encaminhamento', false);
     
 	} else {
 		
@@ -481,7 +481,7 @@ function js_pesquisaProfissionalContato(lMostra) {
 
   if (lMostra == true) {
 
-  	js_OpenJanelaIframe('top.corpo', 
+  	js_OpenJanelaIframe('CurrentWindow.corpo', 
   	  	                'db_iframe_cgm', 
   	  	                'func_cgm.php?'+
   	  	                'funcao_js=parent.js_mostraProfissionalContato1|z01_numcgm|z01_nome',
@@ -492,7 +492,7 @@ function js_pesquisaProfissionalContato(lMostra) {
 
   	if (document.form1.as10_profissionalcontato.value != '') {
 
-    	js_OpenJanelaIframe('top.corpo', 
+    	js_OpenJanelaIframe('CurrentWindow.corpo', 
                           'db_iframe_cgm', 
                           'func_cgm.php?pesquisa_chave='+document.form1.as10_profissionalcontato.value+
                                       '&funcao_js=parent.js_mostraProfissionalContato', 
@@ -591,7 +591,7 @@ function js_salvarVisita(iOpcao) {
 function js_retornoSalvarVisita(oResponse) {
 
 	js_removeObj("msgBox");
-	var oRetorno = eval("("+oResponse.responseText+")");
+	var oRetorno = JSON.parse(oResponse.responseText);
 
 	if (oRetorno.status == 1) {
 
@@ -657,7 +657,7 @@ function js_excluirVisita() {
 function js_retornaExcluirVisita(oResponse) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.status == 1) {
 
@@ -813,7 +813,7 @@ function js_pesquisaVisita(lMostra) {
 
   if (lMostra == true) {
 
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_cidadaofamiliavisita',
                         'func_cidadaofamiliavisita.php?'+
                         'funcao_js=parent.js_mostraVisita1|as05_sequencial|as05_cidadaofamilia',
@@ -850,7 +850,7 @@ function js_mostraVisita1(chave1, chave2) {
 function js_retornaDadosVisita(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.status == 1) {
 

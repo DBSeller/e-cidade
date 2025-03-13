@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_empage_classe.php");
-include("classes/db_empagedadosret_classe.php");
-include("classes/db_empagedadosretmov_classe.php");
-include("classes/db_errobanco_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_empage_classe.php"));
+include(modification("classes/db_empagedadosret_classe.php"));
+include(modification("classes/db_empagedadosretmov_classe.php"));
+include(modification("classes/db_errobanco_classe.php"));
 $clempage = new cl_empage;
 $clempagedadosret = new cl_empagedadosret;
 $clempagedadosretmov = new cl_empagedadosretmov;
@@ -198,7 +198,7 @@ for($i=0;$i<$numrows_valores;$i++){
     $pdf->addpage();
     $pdf->setfont('arial','b',8);
 
-    $pdf->cell(15,$alt,$RLe60_codemp,1,0,"C",1);
+    $pdf->cell(15,$alt,"Núm Emp",1,0,"C",1);
     $pdf->cell(15,$alt,$RLe82_codord,1,0,"C",1);
     $pdf->cell(15,$alt,$RLz01_numcgm,1,0,"C",1);
     $pdf->cell(70,$alt,$RLz01_nome,1,0,"C",1);

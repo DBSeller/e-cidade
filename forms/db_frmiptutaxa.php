@@ -93,10 +93,10 @@ db_input('nomefuncao',100,$Inomefuncao,true,'text',3,'')
 <script>
 function js_pesquisaj19_receit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true);
   }else{
      if(document.form1.j19_receit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.j19_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.j19_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
      }else{
        document.form1.k02_descr.value = ''; 
      }
@@ -116,10 +116,10 @@ function js_mostratabrec1(chave1,chave2){
 }
 function js_pesquisaj19_funcao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?funcao_js=parent.js_mostradb_sysfuncoes1|codfuncao|nomefuncao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?funcao_js=parent.js_mostradb_sysfuncoes1|codfuncao|nomefuncao','Pesquisa',true);
   }else{
      if(document.form1.j19_funcao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?pesquisa_chave='+document.form1.j19_funcao.value+'&funcao_js=parent.js_mostradb_sysfuncoes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?pesquisa_chave='+document.form1.j19_funcao.value+'&funcao_js=parent.js_mostradb_sysfuncoes','Pesquisa',false);
      }else{
        document.form1.nomefuncao.value = ''; 
      }
@@ -138,7 +138,7 @@ function js_mostradb_sysfuncoes1(chave1,chave2){
   db_iframe_db_sysfuncoes.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_iptutaxa','func_iptutaxa.php?funcao_js=parent.js_preenchepesquisa|j19_anousu|j19_receit','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptutaxa','func_iptutaxa.php?funcao_js=parent.js_preenchepesquisa|j19_anousu|j19_receit','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_iptutaxa.hide();

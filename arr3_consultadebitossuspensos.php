@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,68 +25,71 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_utils.php"));
 
 $oGet = db_utils::postmemory($_GET);
 
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
-    <td align="center" valign="top"> 
-      <?    
-				$sSqlSusp  = " select distinct 										                                    									          ";
-				$sSqlSusp .= "        arresusp.k00_numpre, 		                                        													  ";
-				$sSqlSusp .= "        arresusp.k00_numpar, 		                                        													  ";
-				$sSqlSusp .= "        arresusp.k00_receit, 		                                        													  ";
-				$sSqlSusp .= "   		  k02_drecei,					                                    													          ";
-				$sSqlSusp .= "		    k00_descr,			                                     															          ";
-				$sSqlSusp .= "        case                                                                                        ";
-				$sSqlSusp .= "          when v01_numpre is not null then v01_exerc                                                ";
-				$sSqlSusp .= "          else cast(extract(year from k00_dtoper) as int4 )                                         ";
-				$sSqlSusp .= "        end as dl_Ano,                                                                              ";
-				$sSqlSusp .= "        arresusp.k00_valor, 		                                         													  ";
-				$sSqlSusp .= "        arresusp.k00_vlrcor, 		                                         													  ";
-				$sSqlSusp .= "        arresusp.k00_vlrjur, 		                                         													  ";
-				$sSqlSusp .= "        arresusp.k00_vlrmul, 		                                        													  ";
-				$sSqlSusp .= "        arresusp.k00_vlrdes, 		    	                                    												  ";
-				$sSqlSusp .= "        (k00_vlrcor+coalesce(k00_vlrjur,0)+coalesce(k00_vlrmul,0)-coalesce(k00_vlrdes,0) ) as total ";
-				$sSqlSusp .= "	 from arresusp 																			                                              ";
-				$sSqlSusp .= "	 	  inner join suspensao   on suspensao.ar18_sequencial = arresusp.k00_suspensao	                ";
-				$sSqlSusp .= "	 	  inner join arreinstit  on arreinstit.k00_numpre     = arresusp.k00_numpre		                  ";
-				$sSqlSusp .= "	       				       	    and arreinstit.k00_instit     = ".db_getsession('DB_instit')."          ";
-        $sSqlSusp .= "      left  join divida      on divida.v01_numpre         = arresusp.k00_numpre                     ";    				
-        $sSqlSusp .= "                            and divida.v01_numpar         = arresusp.k00_numpar                     ";        
-				$sSqlSusp .= "		  inner join tabrec      on arresusp.k00_receit       = k02_codigo				 	                    ";
-				$sSqlSusp .= "      inner join tabrecjm    on tabrecjm.k02_codjm        = tabrec.k02_codjm			                  ";
-				$sSqlSusp .= "		  inner join arretipo    on arresusp.k00_tipo 	      = arretipo.k00_tipo   		                ";
-				$sSqlSusp .= "	where ar18_sequencial = {$oGet->suspensao}		 									 	                                ";
-		    $sSqlSusp .= "  order by arresusp.k00_numpre,															                                        ";
-		    $sSqlSusp .= "  		 arresusp.k00_numpar															                                            ";
-	    
-		    $arrayTot["k00_valor"]  = "k00_valor";
-		    $arrayTot["k00_vlrcor"] = "k00_vlrcor";
-		    $arrayTot["k00_vlrjur"] = "k00_vlrjur";
-		    $arrayTot["k00_vlrmul"] = "k00_vlrmul";
-	    	$arrayTot["k00_vlrdes"] = "k00_vlrdes";
-	      $arrayTot["total"] 		  = "total";
+<table height="100%" border="0" align="center" cellspacing="0" bgcolor="#CCCCCC">
+    <tr>
+        <td align="center" valign="top">
+            <?
+            $sSqlSusp = " select distinct 										                                    									          ";
+            $sSqlSusp .= "        arresusp.k00_numpre, 		                                        													  ";
+            $sSqlSusp .= "        arresusp.k00_numpar, 		                                        													  ";
+            $sSqlSusp .= "        arresusp.k00_receit, 		                                        													  ";
+            $sSqlSusp .= "   		  k02_drecei,					                                    													          ";
+            $sSqlSusp .= "		    k00_descr,			                                     															          ";
+            $sSqlSusp .= "        case                                                                                        ";
+            $sSqlSusp .= "          when v01_numpre is not null then v01_exerc                                                ";
+            $sSqlSusp .= "          when q05_numpre is not null then q05_ano                                                ";
+            $sSqlSusp .= "          else cast(extract(year from k00_dtoper) as int4 )                                         ";
+            $sSqlSusp .= "        end as dl_Exercício,                                                                              ";
+            $sSqlSusp .= "        arresusp.k00_valor, 		                                         													  ";
+            $sSqlSusp .= "        arresusp.k00_vlrcor, 		                                         													  ";
+            $sSqlSusp .= "        arresusp.k00_vlrjur, 		                                         													  ";
+            $sSqlSusp .= "        arresusp.k00_vlrmul, 		                                        													  ";
+            $sSqlSusp .= "        arresusp.k00_vlrdes, 		    	                                    												  ";
+            $sSqlSusp .= "        (k00_vlrcor+coalesce(k00_vlrjur,0)+coalesce(k00_vlrmul,0)-coalesce(k00_vlrdes,0) ) as total ";
+            $sSqlSusp .= "	 from arresusp 																			                                              ";
+            $sSqlSusp .= "	 	  inner join suspensao   on suspensao.ar18_sequencial = arresusp.k00_suspensao	                ";
+            $sSqlSusp .= "	 	  inner join arreinstit  on arreinstit.k00_numpre     = arresusp.k00_numpre		                  ";
+            $sSqlSusp .= "	       				       	    and arreinstit.k00_instit     = " . db_getsession('DB_instit') . "          ";
+            $sSqlSusp .= "      left  join divida      on divida.v01_numpre         = arresusp.k00_numpre                     ";
+            $sSqlSusp .= "                            and divida.v01_numpar         = arresusp.k00_numpar                     ";
+            $sSqlSusp .= "      left join issvar       on issvar.q05_numpre = arresusp.k00_numpre                      ";
+            $sSqlSusp .= "                            and issvar.q05_numpar = arresusp.k00_numpar                     ";
+            $sSqlSusp .= "		  inner join tabrec      on arresusp.k00_receit       = k02_codigo				 	                    ";
+            $sSqlSusp .= "      inner join tabrecjm    on tabrecjm.k02_codjm        = tabrec.k02_codjm			                  ";
+            $sSqlSusp .= "		  inner join arretipo    on arresusp.k00_tipo 	      = arretipo.k00_tipo   		                ";
+            $sSqlSusp .= "	where ar18_sequencial = {$oGet->suspensao}		 									 	                                ";
+            $sSqlSusp .= "  order by arresusp.k00_numpre,															                                        ";
+            $sSqlSusp .= "  		 arresusp.k00_numpar															                                            ";
 
-        db_lovrot($sSqlSusp,50,"()","","","","NoMe", array(),false, $arrayTot);
+            $arrayTot["k00_valor"] = "k00_valor";
+            $arrayTot["k00_vlrcor"] = "k00_vlrcor";
+            $arrayTot["k00_vlrjur"] = "k00_vlrjur";
+            $arrayTot["k00_vlrmul"] = "k00_vlrmul";
+            $arrayTot["k00_vlrdes"] = "k00_vlrdes";
+            $arrayTot["total"] = "total";
 
-      ?>
-     </td>
-   </tr>
+            db_lovrot($sSqlSusp, 50, "()", "", "", "", "NoMe", array(), false, $arrayTot);
+
+            ?>
+        </td>
+    </tr>
 </table>
 </body>
 </html>

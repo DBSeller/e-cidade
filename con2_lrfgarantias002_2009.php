@@ -28,17 +28,17 @@
 
 if (!isset($arqinclude)) {
   
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_liborcamento.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("classes/db_db_config_classe.php");
-  include_once("classes/db_conrelinfo_classe.php");
-  include_once("classes/db_conrelvalor_classe.php");
-  require_once("libs/db_utils.php"); 
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_db_config_classe.php"));
+  include_once(modification("classes/db_conrelinfo_classe.php"));
+  include_once(modification("classes/db_conrelvalor_classe.php"));
+  require_once(modification("libs/db_utils.php")); 
   $clconrelinfo  = new cl_conrelinfo;
   $clconrelvalor = new cl_conrelvalor;
   $classinatura  = new cl_assinatura;
@@ -53,7 +53,7 @@ if (!isset($arqinclude)) {
 
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $lTem1Quad = false;
 $lTem2Quad = false;
 $lTem3Quad = false;
@@ -156,7 +156,7 @@ $aOrcParametro = array_merge(
 );
 $where  = "  c61_instit in (".str_replace('-',', ',$db_selinstit).") "; 
 $result_ant = db_planocontassaldo_matriz($anousu_ant,$dt_ini_ant,$dt_fim_ant,false,$where,"","true","true","",$aOrcParametro);
-@pg_exec("drop table work_pl");
+@db_query("drop table work_pl");
 
 //--------- // ------------- // ------------- // ---------------
 $texto[0]  = 'EXTERNAS(I)';
@@ -190,7 +190,7 @@ if ($lTem1Quad){
   $cont = 1;
   $p = 0;   
   $result1Q = db_planocontassaldo_matriz($anousu,"{$anousu}-01-01",$dDataFim1Q,false,$where,"","true","false","",$aOrcParametro);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
   for ($x=0; $x < 17;$x++) {
     if ($cont==3){
      $cont = 4;
@@ -236,7 +236,7 @@ if ($lTem2Quad){
   $cont = 1;
   $p = 0;
   $result2Q = db_planocontassaldo_matriz($anousu,"{$anousu}-01-01",$dDataFim2Q,false,$where,"","true","false","",$aOrcParametro);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
   for ($x=0; $x < 17;$x++) {
    if ($cont==3){
      $cont = 4;
@@ -282,7 +282,7 @@ if ($lTem3Quad){
   $cont = 1;
   $p = 0;
   $result3Q = db_planocontassaldo_matriz($anousu,"{$anousu}-01-01",$dDataFim3Q,false,$where,"","true","false","",$aOrcParametro);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
   for ($x=0; $x < 17;$x++) {
     if ($cont==3){
      $cont = 4;

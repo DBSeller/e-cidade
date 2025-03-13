@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("classes/db_contrib_classe.php");
-include("classes/db_editalrua_classe.php");
-include("classes/db_editalproj_classe.php");
-include("classes/db_editalruaproj_classe.php");
-include("classes/db_contlot_classe.php");
-include("classes/db_contlotv_classe.php");
-include("classes/db_testada_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("classes/db_contrib_classe.php"));
+include(modification("classes/db_editalrua_classe.php"));
+include(modification("classes/db_editalproj_classe.php"));
+include(modification("classes/db_editalruaproj_classe.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("classes/db_contlotv_classe.php"));
+include(modification("classes/db_testada_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $cleditalrua = new cl_editalrua;
 $cleditalproj = new cl_editalproj;
 $cleditalruaproj = new cl_editalruaproj;
@@ -124,7 +124,7 @@ db_inicio_transacao();
 	$numrows=$this->numrows;
 	if($numrows>0){
 	  static $pri=true;
-	  $re=pg_query("select d03_tipos,d03_descr,d04_quant,d04_vlrcal,d04_vlrval from editalserv inner join editaltipo on d03_tipos=d04_tipos where d04_contri=$numcontri");  
+	  $re=db_query("select d03_tipos,d03_descr,d04_quant,d04_vlrcal,d04_vlrval from editalserv inner join editaltipo on d03_tipos=d04_tipos where d04_contri=$numcontri");  
 	  $numlinhas= pg_numrows($re);
 	  if($pri){
 	    echo "
@@ -172,7 +172,7 @@ db_inicio_transacao();
 	      $d04_vlrval=$GLOBALS["d04_vlrval"];
 	      $d03_descr=$GLOBALS["d03_descr"];
 	      
-	      $resultis=pg_exec("select d06_fracao from contlotv where d06_contri=$numcontri and d06_idbql=$j34_idbql and d06_tipos=$d03_tipos;");   
+	      $resultis=db_query("select d06_fracao from contlotv where d06_contri=$numcontri and d06_idbql=$j34_idbql and d06_tipos=$d03_tipos;");   
 	      db_fieldsmemory($resultis,0);
 	      $d06_fracao=$GLOBALS["d06_fracao"];
 

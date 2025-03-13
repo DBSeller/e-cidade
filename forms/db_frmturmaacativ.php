@@ -1,46 +1,48 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Escola
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clturmaacativ->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("ed268_i_codigo");
 $clrotulo->label("ed274_c_nome");
+
 $db_botao1 = false;
-if(isset($opcao) && $opcao=="alterar"){
- $db_opcao = 2;
- $db_botao1 = true;
- $sql0 = "SELECT ed274_i_codigo,ed274_c_nome FROM turmaacativnova WHERE ed274_i_turmaacativ = $ed267_i_codigo";
- $result0 = db_query($sql0);
- if(pg_num_rows($result0)>0){
-  db_fieldsmemory($result0,0);
- }
+if (isset($opcao) && $opcao=="alterar") {
+  $db_opcao = 2;
+  $db_botao1 = true;
+  $sql0 = "SELECT ed274_i_codigo,ed274_c_nome FROM turmaacativnova WHERE ed274_i_turmaacativ = $ed267_i_codigo";
+  $result0 = db_query($sql0);
+  if (pg_num_rows($result0)>0) {
+
+    db_fieldsmemory($result0,0);
+  }
 }elseif(isset($opcao) && $opcao=="excluir" || isset($db_opcao) && $db_opcao==3){
  $db_botao1 = true;
  $db_opcao = 3;
@@ -142,19 +144,31 @@ if(isset($opcao) && $opcao=="alterar"){
 </table>
 </form>
 <script>
-function js_pesquisaed267_i_censoativcompl(mostra){
- if(mostra==true){
-  js_OpenJanelaIframe('','db_iframe_censoativcompl','func_censoativcompl.php?funcao_js=parent.js_mostracensoativcompl1|ed133_i_codigo|ed133_c_descr','Pesquisa',true);
- }else{
-  if(document.form1.ed267_i_censoativcompl.value != ''){
-   js_OpenJanelaIframe('','db_iframe_censoativcompl','func_censoativcompl.php?pesquisa_chave='+document.form1.ed267_i_censoativcompl.value+'&funcao_js=parent.js_mostracensoativcompl','Pesquisa',false);
-  }else{
-   document.form1.ed133_c_descr.value = '';
-   document.getElementById("outraativ").style.visibility = 'hidden';
-   document.form1.ed274_c_nome.value = '';
-   document.form1.ed274_i_codigo.value = '';
+
+var oGet = js_urlToObject();
+
+function js_pesquisaed267_i_censoativcompl(mostra) {
+
+  var sUrl = 'func_censoativcompl.php?';
+  sUrl += 'iCalendario='+oGet.iCalendario;
+  if (mostra) {
+
+    sUrl += '&funcao_js=parent.js_mostracensoativcompl1|ed133_i_codigo|ed133_c_descr';
+    js_OpenJanelaIframe('','db_iframe_censoativcompl',sUrl ,'Pesquisa atividades complementares',true);
+  } else {
+
+    if ( $F('ed267_i_censoativcompl') != '' ) {
+
+      sUrl += '&pesquisa_chave='+$F('ed267_i_censoativcompl')+'&funcao_js=parent.js_mostracensoativcompl';
+      js_OpenJanelaIframe('','db_iframe_censoativcompl',sUrl , 'Pesquisa atividades complementares',false);
+    } else {
+
+      document.form1.ed133_c_descr.value = '';
+      document.getElementById("outraativ").style.visibility = 'hidden';
+      document.form1.ed274_c_nome.value = '';
+      document.form1.ed274_i_codigo.value = '';
+    }
   }
- }
 }
 function js_mostracensoativcompl(chave,erro){
  document.form1.ed133_c_descr.value = chave;

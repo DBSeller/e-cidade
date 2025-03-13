@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-	require_once ("libs/db_stdlib.php");
-	require_once ("libs/db_conecta.php");
-	require_once ("libs/db_sessoes.php");
-	require_once ("libs/db_usuariosonline.php");
-	require_once ("libs/db_app.utils.php");
-	require_once ("libs/db_utils.php");
-	require_once ("dbforms/db_funcoes.php");
+	require_once(modification("libs/db_stdlib.php"));
+	require_once(modification("libs/db_conecta.php"));
+	require_once(modification("libs/db_sessoes.php"));
+	require_once(modification("libs/db_usuariosonline.php"));
+	require_once(modification("libs/db_app.utils.php"));
+	require_once(modification("libs/db_utils.php"));
+	require_once(modification("dbforms/db_funcoes.php"));
 
 	$oDaoConfiguracaoCar = new cl_configuracaogrupocaracteristicas();
 	$oDaoCargrup         = new cl_cargrup();
@@ -182,13 +182,13 @@
 		if ( lMostra == true ) {
 
 				sUrlFuncao += "&funcao_js=parent.js_mostraRetornoIframe_" + sCampo + "|j32_descr|j32_grupo";
-		    js_OpenJanelaIframe('top.corpo', 'db_iframe', sUrlFuncao, 'Pesquisa', true);
+		    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe', sUrlFuncao, 'Pesquisa', true);
 	  } else {
 
 	    if ( oCampo.value != '' ) {
 
 		    sUrlFuncao += '&funcao_js=parent.js_mostraRetornoDireto_' + sCampo + '&pesquisa_chave=' + oCampo.value
-	      js_OpenJanelaIframe('top.corpo', 'db_iframe', sUrlFuncao, 'Pesquisa', false);
+	      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe', sUrlFuncao, 'Pesquisa', false);
 	    } else {
 	      document.form1['j32_descr_' + sCampo].value = '';
 	    }

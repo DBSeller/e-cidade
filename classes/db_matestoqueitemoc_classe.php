@@ -1,64 +1,64 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: material
 //CLASSE DA ENTIDADE matestoqueitemoc
-class cl_matestoqueitemoc { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $m73_codmatestoqueitem = 0; 
-   var $m73_codmatordemitem = 0; 
-   var $m73_cancelado = 'f'; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_matestoqueitemoc {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $m73_codmatestoqueitem = 0;
+   var $m73_codmatordemitem = 0;
+   var $m73_cancelado = 'f';
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 m73_codmatestoqueitem = int8 = Código sequencial do lançamento 
-                 m73_codmatordemitem = int8 = Código sequencial do lançamento 
-                 m73_cancelado = bool = Movimento Cancelado 
+                 m73_codmatestoqueitem = int8 = Código sequencial do lançamento
+                 m73_codmatordemitem = int8 = Código sequencial do lançamento
+                 m73_cancelado = bool = Movimento Cancelado
                  ";
-   //funcao construtor da classe 
-   function cl_matestoqueitemoc() { 
+   //funcao construtor da classe
+   function cl_matestoqueitemoc() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("matestoqueitemoc"); 
+     $this->rotulo = new rotulo("matestoqueitemoc");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -78,14 +78,14 @@ class cl_matestoqueitemoc {
      }
    }
    // funcao para inclusao
-   function incluir ($m73_codmatestoqueitem,$m73_codmatordemitem){ 
+   function incluir ($m73_codmatestoqueitem,$m73_codmatordemitem){
       $this->atualizacampos();
-     if($this->m73_cancelado == null ){ 
+     if($this->m73_cancelado == null ){
        $this->m73_cancelado = "false";
      }
-       $this->m73_codmatestoqueitem = $m73_codmatestoqueitem; 
-       $this->m73_codmatordemitem = $m73_codmatordemitem; 
-     if(($this->m73_codmatestoqueitem == null) || ($this->m73_codmatestoqueitem == "") ){ 
+       $this->m73_codmatestoqueitem = $m73_codmatestoqueitem;
+       $this->m73_codmatordemitem = $m73_codmatordemitem;
+     if(($this->m73_codmatestoqueitem == null) || ($this->m73_codmatestoqueitem == "") ){
        $this->erro_sql = " Campo m73_codmatestoqueitem nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -93,7 +93,7 @@ class cl_matestoqueitemoc {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->m73_codmatordemitem == null) || ($this->m73_codmatordemitem == "") ){ 
+     if(($this->m73_codmatordemitem == null) || ($this->m73_codmatordemitem == "") ){
        $this->erro_sql = " Campo m73_codmatordemitem nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -102,17 +102,17 @@ class cl_matestoqueitemoc {
        return false;
      }
      $sql = "insert into matestoqueitemoc(
-                                       m73_codmatestoqueitem 
-                                      ,m73_codmatordemitem 
-                                      ,m73_cancelado 
+                                       m73_codmatestoqueitem
+                                      ,m73_codmatordemitem
+                                      ,m73_cancelado
                        )
                 values (
-                                $this->m73_codmatestoqueitem 
-                               ,$this->m73_codmatordemitem 
-                               ,'$this->m73_cancelado' 
+                                $this->m73_codmatestoqueitem
+                               ,$this->m73_codmatordemitem
+                               ,'$this->m73_cancelado'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Ordens de compra por item do estoque ($this->m73_codmatestoqueitem."-".$this->m73_codmatordemitem) nao Incluído. Inclusao Abortada.";
@@ -147,16 +147,16 @@ class cl_matestoqueitemoc {
        $resac = db_query("insert into db_acount values($acount,1022,14498,'','".AddSlashes(pg_result($resaco,0,'m73_cancelado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($m73_codmatestoqueitem=null,$m73_codmatordemitem=null) { 
+   function alterar ($m73_codmatestoqueitem = null, $m73_codmatordemitem = null) {
       $this->atualizacampos();
      $sql = " update matestoqueitemoc set ";
      $virgula = "";
-     if(trim($this->m73_codmatestoqueitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m73_codmatestoqueitem"])){ 
+     if(trim($this->m73_codmatestoqueitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m73_codmatestoqueitem"])){
        $sql  .= $virgula." m73_codmatestoqueitem = $this->m73_codmatestoqueitem ";
        $virgula = ",";
-       if(trim($this->m73_codmatestoqueitem) == null ){ 
+       if(trim($this->m73_codmatestoqueitem) == null ){
          $this->erro_sql = " Campo Código sequencial do lançamento nao Informado.";
          $this->erro_campo = "m73_codmatestoqueitem";
          $this->erro_banco = "";
@@ -166,10 +166,10 @@ class cl_matestoqueitemoc {
          return false;
        }
      }
-     if(trim($this->m73_codmatordemitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m73_codmatordemitem"])){ 
+     if(trim($this->m73_codmatordemitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m73_codmatordemitem"])){
        $sql  .= $virgula." m73_codmatordemitem = $this->m73_codmatordemitem ";
        $virgula = ",";
-       if(trim($this->m73_codmatordemitem) == null ){ 
+       if(trim($this->m73_codmatordemitem) == null ){
          $this->erro_sql = " Campo Código sequencial do lançamento nao Informado.";
          $this->erro_campo = "m73_codmatordemitem";
          $this->erro_banco = "";
@@ -179,7 +179,7 @@ class cl_matestoqueitemoc {
          return false;
        }
      }
-     if(trim($this->m73_cancelado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m73_cancelado"])){ 
+     if(trim($this->m73_cancelado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m73_cancelado"])){
        $sql  .= $virgula." m73_cancelado = '$this->m73_cancelado' ";
        $virgula = ",";
      }
@@ -188,7 +188,13 @@ class cl_matestoqueitemoc {
        $sql .= " m73_codmatestoqueitem = $this->m73_codmatestoqueitem";
      }
      if($m73_codmatordemitem!=null){
-       $sql .= " and  m73_codmatordemitem = $this->m73_codmatordemitem";
+
+       $this->m73_codmatordemitem = $m73_codmatordemitem;
+       $sAnd = " ";
+       if (!empty($m73_codmatestoqueitem)) {
+         $sAnd = " and ";
+       }
+       $sql .= " {$sAnd}  m73_codmatordemitem = {$m73_codmatordemitem}";
      }
      $resaco = $this->sql_record($this->sql_query_file($this->m73_codmatestoqueitem,$this->m73_codmatordemitem));
      if($this->numrows>0){
@@ -207,7 +213,7 @@ class cl_matestoqueitemoc {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Ordens de compra por item do estoque nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->m73_codmatestoqueitem."-".$this->m73_codmatordemitem;
@@ -235,14 +241,14 @@ class cl_matestoqueitemoc {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($m73_codmatestoqueitem=null,$m73_codmatordemitem=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($m73_codmatestoqueitem=null,$m73_codmatordemitem=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($m73_codmatestoqueitem,$m73_codmatordemitem));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -277,7 +283,7 @@ class cl_matestoqueitemoc {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Ordens de compra por item do estoque nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$m73_codmatestoqueitem."-".$m73_codmatordemitem;
@@ -305,11 +311,11 @@ class cl_matestoqueitemoc {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -331,8 +337,8 @@ class cl_matestoqueitemoc {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $m73_codmatestoqueitem=null,$m73_codmatordemitem=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $m73_codmatestoqueitem=null,$m73_codmatordemitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -352,16 +358,16 @@ class cl_matestoqueitemoc {
      $sql2 = "";
      if($dbwhere==""){
        if($m73_codmatestoqueitem!=null ){
-         $sql2 .= " where matestoqueitemoc.m73_codmatestoqueitem = $m73_codmatestoqueitem "; 
-       } 
+         $sql2 .= " where matestoqueitemoc.m73_codmatestoqueitem = $m73_codmatestoqueitem ";
+       }
        if($m73_codmatordemitem!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " matestoqueitemoc.m73_codmatordemitem = $m73_codmatordemitem "; 
-       } 
+         }
+         $sql2 .= " matestoqueitemoc.m73_codmatordemitem = $m73_codmatordemitem ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -377,8 +383,8 @@ class cl_matestoqueitemoc {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $m73_codmatestoqueitem=null,$m73_codmatordemitem=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $m73_codmatestoqueitem=null,$m73_codmatordemitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -394,16 +400,16 @@ class cl_matestoqueitemoc {
      $sql2 = "";
      if($dbwhere==""){
        if($m73_codmatestoqueitem!=null ){
-         $sql2 .= " where matestoqueitemoc.m73_codmatestoqueitem = $m73_codmatestoqueitem "; 
-       } 
+         $sql2 .= " where matestoqueitemoc.m73_codmatestoqueitem = $m73_codmatestoqueitem ";
+       }
        if($m73_codmatordemitem!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " matestoqueitemoc.m73_codmatordemitem = $m73_codmatordemitem "; 
-       } 
+         }
+         $sql2 .= " matestoqueitemoc.m73_codmatordemitem = $m73_codmatordemitem ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -419,7 +425,7 @@ class cl_matestoqueitemoc {
      }
      return $sql;
   }
-   function sql_query_OC_Nota ( $m73_codmatestoqueitem=null,$m73_codmatordemitem=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_OC_Nota ( $m73_codmatestoqueitem=null,$m73_codmatordemitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -441,16 +447,16 @@ class cl_matestoqueitemoc {
      $sql2 = "";
      if($dbwhere==""){
        if($m73_codmatestoqueitem!=null ){
-         $sql2 .= " where matestoqueitemoc.m73_codmatestoqueitem = $m73_codmatestoqueitem "; 
-       } 
+         $sql2 .= " where matestoqueitemoc.m73_codmatestoqueitem = $m73_codmatestoqueitem ";
+       }
        if($m73_codmatordemitem!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " matestoqueitemoc.m73_codmatordemitem = $m73_codmatordemitem "; 
-       } 
+         }
+         $sql2 .= " matestoqueitemoc.m73_codmatordemitem = $m73_codmatordemitem ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -465,6 +471,24 @@ class cl_matestoqueitemoc {
        }
      }
      return $sql;
+  }
+
+  public function sql_query_nota_ordem ($sCampos = "*", $sWhere = null){
+
+    $sql  = " select {$sCampos}";
+    $sql .= "  from matestoqueitemoc ";
+    $sql .= "       inner join matordemitem  on  matordemitem.m52_codlanc = matestoqueitemoc.m73_codmatordemitem";
+    $sql .= "       inner join matestoqueitem  on  matestoqueitem.m71_codlanc = matestoqueitemoc.m73_codmatestoqueitem";
+    $sql .= "       inner join empempitem  on  empempitem.e62_numemp = matordemitem.m52_numemp and  empempitem.e62_sequen = matordemitem.m52_sequen";
+    $sql .= "       inner join matordem  on  matordem.m51_codordem = matordemitem.m52_codordem";
+    $sql .= "       inner join matestoque  as a on   a.m70_codigo = matestoqueitem.m71_codmatestoque";
+    $sql .= "       inner join matestoqueitemnota   on   m73_codmatestoqueitem = m74_codmatestoqueitem ";
+
+    $sWhere = trim($sWhere);
+    if (!empty($sWhere)) {
+      $sql .= " where {$sWhere} ";
+    }
+    return $sql;
   }
 }
 ?>

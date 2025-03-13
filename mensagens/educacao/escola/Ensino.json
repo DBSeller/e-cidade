@@ -6,5 +6,6 @@
   "ensino_com_turma_ativa"                   : "[sNomeEnsino] possui turma ativa.",
   "erro_excluir_vinculo"                     : "Erro ao excluir vínculo do ensino infantil [sNomeEnsino].",
   "erro_verificar_ensino_infantil"           : "Erro ao verificar ensino infantil:\n[sErro]",
-  "erro_buscar_termos"                       : "Erro ao buscar os termos de resultado final:\n[sErro]"
+  "erro_buscar_termos"                       : "Erro ao buscar os termos de resultado final:\n[sErro]",
+  "erro_buscar_etapas"                       : "Não foi possível buscar as etapas do ensino."
 }

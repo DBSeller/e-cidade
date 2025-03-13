@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_sql.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhpessoal_classe.php");
-db_postmemory($HTTP_POST_VARS);
-db_postmemory($HTTP_GET_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+
+db_postmemory($_POST);
+db_postmemory($_GET);
+parse_str($_SERVER["QUERY_STRING"]);
+
 $clrhpessoal = new cl_rhpessoal;
 $clgersubsql = new cl_gera_sql_folha;
 $clrotulo = new rotulocampo;
+
 $clrhpessoal->rotulo->label("rh01_regist");
 $clrhpessoal->rotulo->label("rh01_numcgm");
 $clrotulo->label("z01_nome");
+
 if(isset($valor_testa_rescisao)){
   $chave_rh01_regist = $valor_testa_rescisao;
   $retorno = db_alerta_dados_func($testarescisao,$valor_testa_rescisao,$anofolha, $mesfolha);
@@ -55,7 +59,7 @@ if(isset($valor_testa_rescisao)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<?
+<?php
 if(!isset($pesquisa_chave)){
   ?>
   <script>
@@ -77,7 +81,7 @@ if(!isset($pesquisa_chave)){
     document.form2.submit();
   }
   </script>
-  <?
+  <?php
 }
 ?>
 </head>
@@ -92,7 +96,7 @@ if(!isset($pesquisa_chave)){
 <?=$Lrh01_regist?>
 </td>
 <td width="96%" align="left" nowrap> 
-<?
+<?php
 db_input("rh01_regist",10,$Irh01_regist,true,"text",4,"","chave_rh01_regist");
 ?>
 </td>
@@ -102,7 +106,7 @@ db_input("rh01_regist",10,$Irh01_regist,true,"text",4,"","chave_rh01_regist");
 <?=$Lrh01_numcgm?>
 </td>
 <td width="96%" align="left" nowrap> 
-<?
+<?php
 db_input("rh01_numcgm",10,$Irh01_numcgm,true,"text",4,"","chave_rh01_numcgm");
 ?>
 </td>
@@ -112,7 +116,7 @@ db_input("rh01_numcgm",10,$Irh01_numcgm,true,"text",4,"","chave_rh01_numcgm");
 <?=$Lz01_nome?>
 </td>
 <td width="96%" align="left" nowrap colspan='3'> 
-<?
+<?php
 db_input("z01_nome",80,$Iz01_nome,true,"text",4,"","chave_z01_nome");
 ?>
 </td>
@@ -130,10 +134,16 @@ db_input("z01_nome",80,$Iz01_nome,true,"text",4,"","chave_z01_nome");
 </tr>
 <tr> 
 <td align="center" valign="top"> 
-<?
+<?php
 $anofolha = db_anofolha();
 $mesfolha = db_mesfolha();
 $dbwhere = " and rh02_anousu = ".$anofolha." and rh02_mesusu = ".$mesfolha;
+
+if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+    $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+    $dbwhere .= " and rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+}
+
 if(isset($instit)){
   $dbwhere.= " and rh01_instit = ".$instit;
 }
@@ -211,3 +221,9 @@ if(!isset($pesquisa_chave)){
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

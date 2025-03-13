@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_fiscal_classe.php");
-require_once("classes/db_fiscalocal_classe.php");
-require_once("classes/db_fiscexec_classe.php");
-require_once("classes/db_fiscalinscr_classe.php");
-require_once("classes/db_fiscalmatric_classe.php");
-require_once("classes/db_fiscalvistorias_classe.php");
-require_once("classes/db_fiscalsanitario_classe.php");
-require_once("classes/db_fiscalcgm_classe.php");
-require_once("classes/db_procfiscalnotificacao_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_fiscal_classe.php"));
+require_once(modification("classes/db_fiscalocal_classe.php"));
+require_once(modification("classes/db_fiscexec_classe.php"));
+require_once(modification("classes/db_fiscalinscr_classe.php"));
+require_once(modification("classes/db_fiscalmatric_classe.php"));
+require_once(modification("classes/db_fiscalvistorias_classe.php"));
+require_once(modification("classes/db_fiscalsanitario_classe.php"));
+require_once(modification("classes/db_fiscalcgm_classe.php"));
+require_once(modification("classes/db_procfiscalnotificacao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 if (!isset($abas)) {
@@ -194,7 +194,7 @@ if ((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Inclui
 
 if (!isset($pri)) {
 	
-  include("fis1_fiscal004.php");
+  include(modification("fis1_fiscal004.php"));
   exit;
 }
 ?>
@@ -212,7 +212,7 @@ if (!isset($pri)) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 			<?
-			  include("forms/db_frmfiscal.php");
+			  include(modification("forms/db_frmfiscal.php"));
 			?>
     </center>
 	</td>

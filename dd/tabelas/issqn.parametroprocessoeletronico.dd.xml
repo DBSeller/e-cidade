@@ -1,0 +1,202 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010473' name='issqn.parametroprocessoeletronico' description="Tabela que guarda os parametros do processo eletronico" prefix="" label="Parametros do processo eletronico" type="0">
+  <fields>
+    <field codigo="1010762"
+           campo_api=''
+           name="q150_sequencial"
+           conteudo="int8"
+           description="Sequecial da tabela"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='issqn.parametroprocessoeletronico_q150_sequencial_seq' />
+
+    </field>
+    <field codigo="1010759"
+           campo_api=''
+           name="q150_alvaraautonomo"
+           conteudo="int8"
+           description="Código do processo de alvará autonomo"
+           inivalue=""
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010760"
+           campo_api=''
+           name="q150_alvaraempresa"
+           conteudo="int8"
+           description="Código do processo de alvara empresa"
+           inivalue=""
+           label=""
+           size="1"
+           null="f"
+           uppercase="t"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010761"
+           campo_api=''
+           name="q150_alvaramei"
+           conteudo="int8"
+           description="Código do processo de alvara mei"
+           inivalue=""
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+     <field codigo="1010765"
+           campo_api=''
+           name="q150_alvarabaixorisco"
+           conteudo="int8"
+           description="Alvara de Baixo Risco"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+     <field codigo="1010766"
+           campo_api=''
+           name="q150_alvaramediorisco"
+           conteudo="int8"
+           description="Código do alvara de médio risco"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+     <field codigo="1010767"
+           campo_api=''
+           name="q150_alvaraaltorisco"
+           conteudo="int8"
+           description="Código do alvará de alto risco"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1011804" 
+           campo_api='' 
+           name="q150_alvaraautonomo_processoeletronico" 
+           conteudo="int4" 
+           description="Código do processo de alvará de empresa da aplicação Processo Eletrônico" 
+           inivalue="0" 
+           label="Processo Eletrônico Alvará Autonomo" 
+           size="19" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo Eletrônico Alvará Autonomo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011805" 
+           campo_api='' 
+           name="q150_alvaraempresa_processoeletronico" 
+           conteudo="int4" 
+           description="Código do processo de alvará de empresa da aplicação Processo Eletrônico" 
+           inivalue="0" 
+           label="Processo Eletrônico Alvará Empresa" 
+           size="19" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo Eletrônico Alvará Empresa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011806" 
+           campo_api='' 
+           name="q150_alvaramei_processoeletronico" 
+           conteudo="int4" 
+           description="Código do processo de alvará MEI da aplicação Processo Eletrônico" 
+           inivalue="0" 
+           label="Processo Eletrônico Alvará MEI" 
+           size="19" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo Eletrônico Alvará MEI" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q150_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

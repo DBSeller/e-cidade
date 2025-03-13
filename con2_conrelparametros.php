@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_utils.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("libs/db_liborcamento.php");
-include ("classes/db_conrelinfo_classe.php");
-include ("classes/db_conrelvalor_classe.php");
-include ("classes/db_orcparamrel_classe.php");
-include ("classes/db_orcparamseq_classe.php");
-include ("classes/db_orcparamelemento_classe.php");
-include ("classes/db_orcparamrecurso_classe.php");
-include ("classes/db_orcparamsubfunc_classe.php");
-include ("classes/db_orcparamnivel_classe.php");
-include ("classes/db_orcparamfunc_classe.php");
-include ("model/linhaRelatorioContabil.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_conrelinfo_classe.php"));
+include(modification("classes/db_conrelvalor_classe.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_orcparamseq_classe.php"));
+include(modification("classes/db_orcparamelemento_classe.php"));
+include(modification("classes/db_orcparamrecurso_classe.php"));
+include(modification("classes/db_orcparamsubfunc_classe.php"));
+include(modification("classes/db_orcparamnivel_classe.php"));
+include(modification("classes/db_orcparamfunc_classe.php"));
+include(modification("model/linhaRelatorioContabil.model.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -133,7 +133,7 @@ function atualiza_nivel_exclusao($rel,$linha,$valor){
   	return $msg;    		
 }
 
-include("dbforms/Sajax.php");  // inclusão da biblioteda ajax
+include(modification("dbforms/Sajax.php"));  // inclusão da biblioteda ajax
 sajax_init();// Inicializar o sajax
 $sajax_debug_mode = 0;// para Debugar o sajax = 0 desligado 1 = ligado
 sajax_export("atualiza_nivel");// função exportada !
@@ -509,7 +509,7 @@ function mensagem(retorno){
 
 function js_editar_colunas(iCodRel, iLinha, iAnoPesquisa) {
     
-    var iPeriodo = top.corpo.iframe_relatorio.document.getElementById('o116_periodo').value;
+    var iPeriodo = (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_relatorio.document.getElementById('o116_periodo').value;
     if (iPeriodo == '0') {
     
       alert('Para Configurar os valores das colunas, escolha um periodo');

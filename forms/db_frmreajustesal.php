@@ -1,28 +1,29 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 $clrotulo = new rotulocampo;
@@ -97,7 +98,9 @@ $clrotulo->label("rh30_vinculo");
           <td id="containerTipoReajuste"></td>
         </tr>
         <tr>
-          <td>Tipo de Lançamento: </td>
+          <td>
+            <label>Tipo de Lançamento: </label>
+          </td>
           <td>
             <select id="tipoLancamento" name="lancar">
               <option value="a">Automático</option>
@@ -125,6 +128,47 @@ $clrotulo->label("rh30_vinculo");
           </td>
         </tr>
     </table>
+  </fieldset>
+
+  <fieldset>
+    <legend>Dados do Reajuste Salarial eSocial</legend>
+
+    <table border="0" class="form-container">
+        <tr>
+          <td width="120">
+            <label>Data efeitos remuneratórios do reajuste / Data assinatura acordo </label>
+          </td>
+          <td>
+            <input type="date" name="dataefeito" id="idDataEfeito" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label>Tipo de Insturmento: </label>
+          </td>
+          <td>
+              <select name="tipoInstrumento" id="idTipoInsturmento" style=" width : 250px;">
+              <option value="A"> A - Acordo Coletivo de Trabalho</option>
+              <option value="B"> B - Legislação federal, estadual, municipal ou distrital</option>
+              <option value="C"> C - Convenção Coletiva de Trabalho</option>
+              <option value="D"> D - Sentença normativa - Dissídio</option>
+              <option value="E"> E - Conversão de licença saúde em acidente de trabalho</option>
+              <option value="F"> F - Outras verbas de natureza salarial ou não salarial devidas após o desligamento</option>
+              <option value="G"> G - Antecipação de diferenças de acordo, convenção ou dissídio coletivo</option>
+              <option value="H"> H - Recolhimento mensal de FGTS anterior ao início de obrigatoriedade dos eventos periódicos</option>
+              </select>
+          </td>
+        </tr>
+        </tr>
+          <tr colspan="2">
+            <td colspan="5">
+              <fieldset>
+                <legend><b>Descricao da alteração ou do instrumento que a gerou:</b></legend>
+                <textarea id="idDescricao" name="descricao" rows="4" cols="50"></textarea>
+              </fieldset>
+          </td>
+        </tr>
+      </table>
   </fieldset>
 
   <table>
@@ -157,7 +201,6 @@ var oTiposFiltrosFolha = null;
   oTiposFiltrosFolha.sInstancia = 'oTiposFiltrosFolha';
   oTiposFiltrosFolha.show($('containnerTipoFiltrosFolha'));
 
-  $('tiporeajuste').hide();
   $('para').disable();
   js_comportamentoCampos();
 
@@ -172,7 +215,7 @@ var oTiposFiltrosFolha = null;
   $('percentual').onkeyup =  function(event){
 
     var lValidou = js_ValidaCampos(this, 4, 'Percentual', false, false, event);
-     
+
     if (!lValidou) {
       event.preventDefault();
       return false;
@@ -189,7 +232,7 @@ function js_comportamentoCampos(){
   $('tipoLancamento').observe('change', function(){
 
     /**
-     * Quando for automatico(a) desabilita o campo 'para' 
+     * Quando for automatico(a) desabilita o campo 'para'
      * e habilita o campo 'percentual'
      */
     if (this.value == 'a') {
@@ -202,7 +245,7 @@ function js_comportamentoCampos(){
     }
 
     /**
-     * Quando for manual(m) habilita o campo 'para' 
+     * Quando for manual(m) habilita o campo 'para'
      * e desabilita o campo 'percentual'
      */
     if (this.value == 'm') {
@@ -214,20 +257,6 @@ function js_comportamentoCampos(){
       $('percentuallinha').hide();
     }
   });
-
-  /**
-   * Quando for alterado o tipo de Vínculo no campo irá verificar se o novo 
-   * vínculo selecionado é Inativo(Aposentado) ou Pensionista, se for uma das 2 opções exibe 
-   * o campo Tipo de Reajuste
-   */
-  $('Vinculo').observe('change', function(){
-
-    if (this.value == 'a') {
-      $('tiporeajuste').hide();
-    } else {
-      $('tiporeajuste').show();
-    }
-  })
 }
 
 function js_processar(){
@@ -269,6 +298,14 @@ function js_processar(){
   }
 
   /**
+   * Verifica se a data efeitos remuneratórios do reajuste foi preenchida
+   */
+  if ( $F('idDataEfeito') == ''  ) {
+    alert('Data efeitos remuneratórios do reajuste é obrigatória.');
+    return false;
+  }
+
+  /**
    * Se o tipo de relatorio difrente de geral e tipo de filtro igual a selecionado,
    * obrigar o lançamento de 1 registro no respectivo lançador.
    */
@@ -276,12 +313,12 @@ function js_processar(){
   var oTipoFiltro    = $F('oCboTipoFiltro');
 
   if (oTipoRelatorio != 0 && oTipoFiltro == 2) {
-      
+
     var oLancadorSelecionado = oTiposFiltrosFolha.getLancadorAtivo().getRegistros();
     if (oLancadorSelecionado.length == 0) {
 
       alert('Por favor, realize ao menos o lançamento de um registro.');
-      return false 
+      return false
     }
   }
 
@@ -297,7 +334,7 @@ function js_processar(){
     };
 
     if ($F('InputIntervaloInicial') == '' || $F('InputIntervaloFinal') == '') {
- 
+
       alert('Por favor, informe um intervalo para o tipo de resumo selecionado.');
       return false;
     }
@@ -329,19 +366,16 @@ function enviaDados(){
   oQuery.sTipoLancamento = $F('tipoLancamento');
   oQuery.sPara           = $F('para');
   oQuery.iPercentual     = $F('percentual');
+  oQuery.sTipoReajuste   = $F('tipoReajuste');
+  oQuery.dataEfeito      = $F('idDataEfeito');
+  oQuery.tipoInstrumento = $F('idTipoInsturmento');
+  oQuery.descricao       = $F('idDescricao');
 
   /**
-   * Verifica se deve ser informado o tipo de reajuste
-   */
-  if ($F('Vinculo') !=  'a') {
-    oQuery.sTipoReajuste = $F('tipoReajuste');
-  }
-
-  /**
-   * Verifica se o tipo escolhido foi intervalo 
+   * Verifica se o tipo escolhido foi intervalo
    */
   if ($F('oCboTipoFiltro') == 1) {
-   
+
     oQuery.iIntervaloInicial = $F('InputIntervaloInicial');
     oQuery.iIntervaloFinal   = $F('InputIntervaloFinal');
   }
@@ -350,7 +384,7 @@ function enviaDados(){
    * Verifica se o tipo escolhido foi seleção
    */
   if ($F('oCboTipoFiltro') == 2 ) {
-   
+
     var aSelecionados = [];
     var oTipoFiltros = oTiposFiltrosFolha.getLancadorAtivo().getRegistros();
 
@@ -360,15 +394,15 @@ function enviaDados(){
     oTipoFiltros.each (function(oFiltro, iIndice) {
       aSelecionados[iIndice] = oFiltro.sCodigo;
     });
-   
+
     oQuery.aRegistros = aSelecionados;
   }
 
   var sUrl = 'pes1_reajustesalarial.RPC.php';
 
   var oAjax = new Ajax.Request( sUrl, {
-                                        method: 'post', 
-                                        parameters: "json=" + Object.toJSON(oQuery), 
+                                        method: 'post',
+                                        parameters: "json=" + Object.toJSON(oQuery),
                                         onComplete: js_retornoReajuste
                                       }
                                     );
@@ -378,7 +412,7 @@ function js_retornoReajuste(sRetorno) {
 
   js_removeObj("msgBox");
 
-  var oRetorno = eval("("+sRetorno.responseText+")");
+  var oRetorno = JSON.parse(sRetorno.responseText);
 
   if ( oRetorno.redireciona ) {
 

@@ -26,7 +26,7 @@
  */
 
 //MODULO: configuracoes
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_sysprocedarq->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -127,10 +127,10 @@ function js_cancelar(){
 }
 function js_pesquisacodarq(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_sysprocedarq','db_iframe_db_sysarquivo','func_db_sysarquivo.php?funcao_js=parent.js_mostradb_sysarquivo1|codarq|nomearq','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_sysprocedarq','db_iframe_db_sysarquivo','func_db_sysarquivo.php?funcao_js=parent.js_mostradb_sysarquivo1|codarq|nomearq','Pesquisa',true,'0');
   }else{
      if(document.form1.codarq.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_sysprocedarq','db_iframe_db_sysarquivo','func_db_sysarquivo.php?pesquisa_chave='+document.form1.codarq.value+'&funcao_js=parent.js_mostradb_sysarquivo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_sysprocedarq','db_iframe_db_sysarquivo','func_db_sysarquivo.php?pesquisa_chave='+document.form1.codarq.value+'&funcao_js=parent.js_mostradb_sysarquivo','Pesquisa',false);
      }else{
        document.form1.nomearq.value = ''; 
      }
@@ -150,10 +150,10 @@ function js_mostradb_sysarquivo1(chave1,chave2){
 }
 function js_pesquisacodproced(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_sysprocedarq','db_iframe_db_syscadproced','func_db_syscadproced.php?funcao_js=parent.js_mostradb_syscadproced1|codproced|descrproced','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_sysprocedarq','db_iframe_db_syscadproced','func_db_syscadproced.php?funcao_js=parent.js_mostradb_syscadproced1|codproced|descrproced','Pesquisa',true,'0');
   }else{
      if(document.form1.codproced.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_sysprocedarq','db_iframe_db_syscadproced','func_db_syscadproced.php?pesquisa_chave='+document.form1.codproced.value+'&funcao_js=parent.js_mostradb_syscadproced','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_sysprocedarq','db_iframe_db_syscadproced','func_db_syscadproced.php?pesquisa_chave='+document.form1.codproced.value+'&funcao_js=parent.js_mostradb_syscadproced','Pesquisa',false);
      }else{
        document.form1.descrproced.value = ''; 
      }

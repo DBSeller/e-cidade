@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_serie_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_serie_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clserie = new cl_serie;
 $escola = db_getsession("DB_coddepto");
 
@@ -52,8 +52,8 @@ if($oPost->sAction == 'PesquisaSerie') {
          WHERE ed29_i_codigo = {$oPost->curso}
          ORDER BY ed11_i_sequencia
         ";
- $result_serie = pg_query($sql);
- $aResult = db_utils::getColectionByRecord($result_serie, false, false, true);
+ $result_serie = db_query($sql);
+ $aResult = db_utils::getCollectionByRecord($result_serie, false, false, true);
  $oJson = new services_json();
  echo $oJson->encode($aResult);
 }
@@ -73,8 +73,8 @@ if($oPost->sAction == 'PesquisaSerieIncluida') {
          WHERE ed29_i_codigo = {$oPost->curso}
          ORDER BY ed11_i_sequencia
         ";
- $result_serie = pg_query($sql);
- $aResult = db_utils::getColectionByRecord($result_serie, false, false, true);
+ $result_serie = db_query($sql);
+ $aResult = db_utils::getCollectionByRecord($result_serie, false, false, true);
  $oJson = new services_json();
  echo $oJson->encode($aResult);
 }

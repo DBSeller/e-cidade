@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -642,7 +642,7 @@ class cl_vistorias {
    function sql_calculo ( $y70_codvist=""){
    	
    	$sSqlCalculo = "select fc_vistorias($y70_codvist)";
-    $result      =  pg_query($sSqlCalculo) or die ($sSqlCalculo);
+    $result      =  db_query($sSqlCalculo) or die ($sSqlCalculo);
     return $result;
     
    }

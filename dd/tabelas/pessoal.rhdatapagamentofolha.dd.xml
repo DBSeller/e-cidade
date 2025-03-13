@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010398' name='pessoal.rhdatapagamentofolha' description="Guarda em qual data foi realizado o pagamento da folha para o eSocial." prefix="rh225" label="Data de Pagamento da Folha" type="0">
+  <fields>
+    <field codigo="1010253" 
+           campo_api='' 
+           name="rh225_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='pessoal.rhdatapagamentofolha_rh225_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010254" 
+           campo_api='' 
+           name="rh225_instituicao" 
+           conteudo="int4" 
+           description="Código da instituição." 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010255" 
+           campo_api='' 
+           name="rh225_ano" 
+           conteudo="int4" 
+           description="Ano da competência na qual se refere a data de pagamento." 
+           inivalue="0" 
+           label="Ano" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010256" 
+           campo_api='' 
+           name="rh225_mes" 
+           conteudo="int4" 
+           description="Mês da competência na qual se refere a data de pagamento." 
+           inivalue="0" 
+           label="Mês" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Mês" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010257" 
+           campo_api='' 
+           name="rh225_datapagamento" 
+           conteudo="date" 
+           description="Data de pagamento da folha." 
+           inivalue="null" 
+           label="Data de Pagamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data de Pagamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh225_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="rh225_instituicao" reference="codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

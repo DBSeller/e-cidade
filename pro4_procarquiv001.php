@@ -1,106 +1,149 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_procandam_classe.php");
-require_once("classes/db_proctransfer_classe.php");
-require_once("classes/db_proctransferproc_classe.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_proctransand_classe.php");
-require_once("classes/db_procarquiv_classe.php");
-require_once("classes/db_arqproc_classe.php");
-require_once("classes/db_arqandam_classe.php");
-require_once("classes/db_ouvidoriaatendimento_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_procandam_classe.php"));
+require_once(modification("classes/db_proctransfer_classe.php"));
+require_once(modification("classes/db_proctransferproc_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_proctransand_classe.php"));
+require_once(modification("classes/db_procarquiv_classe.php"));
+require_once(modification("classes/db_arqproc_classe.php"));
+require_once(modification("classes/db_arqandam_classe.php"));
+require_once(modification("classes/db_ouvidoriaatendimento_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($_POST);
 db_postmemory($_GET);
 
-$clprocarquiv           = new cl_procarquiv;
-$clprocandam            = new cl_procandam;
-$clarqproc              = new cl_arqproc;
-$clarqandam             = new cl_arqandam;
-$clproctransfer         = new cl_proctransfer;
-$clproctransand         = new cl_proctransand;
-$clprotprocesso         = new cl_protprocesso;
-$clOuvidoriaAtendimento = new cl_ouvidoriaatendimento();
 
 $db_opcao = 1;
 $db_botao = true;
 $sqlerro  = false;
 
-$hoje = date('d/m/y');
-if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir"){
-	
-  db_inicio_transacao();
-  $p67_codproc = $p58_codproc;
-  $p67_dtarq = implode("-", array_reverse(explode("/", $p67_dtarq)));
-  $clprocarquiv->p67_id_usuario = db_getsession("DB_id_usuario");
-  $clprocarquiv->p67_coddepto = db_getsession("DB_coddepto");
-  $clprocarquiv->p67_codproc = $p67_codproc;
-  $clprocarquiv->incluir(null);
-  $clarqproc->incluir($clprocarquiv->p67_codarquiv, $p67_codproc); 
-  if ($clarqproc->erro_status == 0) {
-  	
+$clprocarquiv = new cl_procarquiv;
+$clprotprocesso = new cl_protprocesso;
+function arquivamento($p58_codproc, $p67_dtarq, $p67_historico, $grupo)
+{
+	$sqlerro = false;
+	$clprocarquiv           = new cl_procarquiv;
+	$clprocandam            = new cl_procandam;
+	$clarqproc              = new cl_arqproc;
+	$clarqandam             = new cl_arqandam;
+	$clproctransfer         = new cl_proctransfer;
+	$clproctransand         = new cl_proctransand;
+	$clOuvidoriaAtendimento = new cl_ouvidoriaatendimento();
+
+	db_inicio_transacao();
+
+	$p67_codproc = $p58_codproc;
+	$p67_dtarq             = implode("-", array_reverse(explode("/", $p67_dtarq)));
+
+	$oDaoProcAndam         = new cl_protprocesso;
+	$campos = "p58_codandam, p61_dtandam, p61_hora, p58_numero";
+	$sSqlBuscaProcAndam = $oDaoProcAndam->sql_query_andam($p58_codproc, $campos);
+    $rsBuscaProcAndam      = $oDaoProcAndam->sql_record($sSqlBuscaProcAndam);
+    $oProcAndam            = db_utils::fieldsMemory($rsBuscaProcAndam, 0);
+
+
+    $dDataProcAndam        = $oProcAndam->p61_dtandam;
+    $dHoraProcAndam        = $oProcAndam->p61_hora;
+
+    $oDaoProcAndamInt      = db_utils::getDao('procandamint');
+    $sSqlBuscaProcAndamInt = "select p78_data, p78_hora
+                                from procandamint
+                               where p78_codandam = {$oProcAndam->p58_codandam}
+                               order by p78_sequencial desc limit 1";
+
+    $rsBuscaProcAndamInt   = $oDaoProcAndamInt->sql_record($sSqlBuscaProcAndamInt);
+
+    if($oDaoProcAndamInt->numrows > 0) {
+
+      $oProcAndamInt       = db_utils::fieldsMemory($rsBuscaProcAndamInt, 0);
+      $dDataProcAndam      = $oProcAndamInt->p78_data;
+      $dHoraProcAndam      = $oProcAndamInt->p78_hora;
+    }
+
+    if ( $dDataProcAndam > $p67_dtarq ||
+        ( $dDataProcAndam == $p67_dtarq
+        && $dHoraProcAndam > db_hora() ) )
+    {
+
+      $sqlerro             = true;
+      $erro_msg            = "A data para o arquivamento é maior que a data da última movimentação. Verifique a data da sessão!";
+	  throw new Exception($erro_msg);
+    }
+
+	$clprocarquiv->p67_id_usuario = db_getsession("DB_id_usuario");
+	$clprocarquiv->p67_coddepto   = db_getsession("DB_coddepto");
+	$clprocarquiv->p67_codproc    = $p67_codproc;
+	$clprocarquiv->p67_historico  = $p67_historico;
+	$clprocarquiv->incluir(null);
+
+	$clarqproc->incluir($clprocarquiv->p67_codarquiv, $p67_codproc);
+
+	if ($clarqproc->erro_status == 0) {
 		$sqlerro  = true;
 		$erro_msg = $clarqproc->erro_msg;
+		throw new Exception($erro_msg);
 	} else {
-		
+
 		$clproctransfer->p62_coddepto    = db_getsession("DB_coddepto");
 		$clproctransfer->p62_dttran      = $p67_dtarq;
 		$clproctransfer->p62_coddeptorec = db_getsession("DB_coddepto");
 		$clproctransfer->p62_id_usorec   = db_getsession("DB_id_usuario");
 		$clproctransfer->p62_id_usuario  = db_getsession("DB_id_usuario");
 		$clproctransfer->p62_hora        = db_hora();
+
 		$clproctransfer->incluir(null);
+
 		if ($clproctransfer->erro_status == 0) {
-			
 			$sqlerro  = true;
 			$erro_msg = $clproctransfer->erro_msg;
+			throw new Exception($erro_msg);
 		} else {
-			
 			$cod  = $clproctransfer->p62_codtran;
-			
+
 			$sqli = "insert into proctransferproc values($cod,$p67_codproc)";
 			$rsi  =  db_query($sqli) or die($sqli);
-			
+
 			if ($clproctransfer->erro_status == "1" or !$rsi ){
-				 $erro = 0;
+				$erro = 0;
 			} else {
-				
 				$clproctransfer->erro(true,false);
-				$sqlerro = true;	
+				$sqlerro = true;
+				throw new Exception($erro_msg);
 			}
-			
+
 			//inclusão do andamento
 			$clprocandam->p61_despacho   = $clprocarquiv->p67_historico;
 			$clprocandam->p61_dtandam    = $p67_dtarq;
@@ -110,11 +153,13 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
 			$clprocandam->p61_coddepto   = db_getsession("DB_coddepto");
 			$clprocandam->p61_publico    = 'true';
 			$clprocandam->incluir(null);
+
 			$erro_msg = $clprocandam->erro_msg;
 			if ($clprocandam->erro_status==0){
-				 $sqlerro=true;
+				$sqlerro=true;
+				throw new Exception($erro_msg);
 			}
-		//  $clprocandam->erro(true,false);
+		  	//  $clprocandam->erro(true,false);
 
 			//inclui  a transferencia. e o andamento do processo na tabela proctransand;
 			$clproctransand->p64_codtran  = $clproctransfer->p62_codtran;
@@ -122,10 +167,10 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
 			$clproctransand->incluir();
 
 			if ($clproctransand->erro_status == "1"){
-				 $erro = 0;
+				$erro = 0;
 			}else{
-				 $clproctransand->erro(true,false);
-				 $sqlerro = true;
+				$clproctransand->erro(true,false);
+				$sqlerro = true;
 			}
 
 			if ($sqlerro == false) {
@@ -134,37 +179,96 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
 				$clarqandam->p69_arquivado = 'true';
 				$clarqandam->incluir();
 				$erro_msg = $clarqandam->erro_msg;
-				if ($clarqandam->erro_status==0){
-					 $sqlerro=true;
-				} else {
-					if ( $grupo == 2 ) {
-					  $sWhereAtendimento = " ov09_protprocesso = {$p67_codproc} ";
-				    $sSqlAtendimento   = $clOuvidoriaAtendimento->sql_query_proc(null,"distinct ov01_sequencial",null,$sWhereAtendimento);
-				    $rsAtendimento     = $clOuvidoriaAtendimento->sql_record($sSqlAtendimento);
-				    $iNroAtendimento   = $clOuvidoriaAtendimento->numrows;
-				    
-				    if ( $iNroAtendimento > 0 ) {
-				      for ( $iInd=0; $iInd < $iNroAtendimento; $iInd++ ) {
-				        $oAtendimento = db_utils::fieldsMemory($rsAtendimento,$iInd);
-				        $clOuvidoriaAtendimento->ov01_sequencial = $oAtendimento->ov01_sequencial;
-				        $clOuvidoriaAtendimento->ov01_situacaoouvidoriaatendimento = 3;
-				        $clOuvidoriaAtendimento->alterar($oAtendimento->ov01_sequencial);
-				        if ( $clOuvidoriaAtendimento->erro_status == 0 ) {
-				          $sqlerro = true;
-				          break;
-				        }
-				      }
-				    }				
-					}	
-				}
-			}
-		}
-	}
 
-  db_fim_transacao($sqlerro);
+				if ($clarqandam->erro_status==0){
+					$sqlerro=true;
+					throw new Exception($erro_msg);
+				} else {
+					$oDaoProcAndam->p58_codandam = $clarqandam->p69_codandam;
+					$oDaoProcAndam->p58_numero = $oProcAndam->p58_numero;
+					$oDaoProcAndam->alterar($p58_codproc);
+					if ($grupo == 2) {
+						$sWhereAtendimento = " ov09_protprocesso = {$p67_codproc} ";
+						$sSqlAtendimento   = $clOuvidoriaAtendimento->sql_query_proc(null,"distinct ov01_sequencial",null,$sWhereAtendimento);
+						$rsAtendimento     = $clOuvidoriaAtendimento->sql_record($sSqlAtendimento);
+						$iNroAtendimento   = $clOuvidoriaAtendimento->numrows;
+
+						if ($iNroAtendimento > 0) {
+							for ($iInd=0; $iInd < $iNroAtendimento; $iInd++) {
+								$oAtendimento = db_utils::fieldsMemory($rsAtendimento,$iInd);
+								$clOuvidoriaAtendimento->ov01_sequencial = $oAtendimento->ov01_sequencial;
+								$clOuvidoriaAtendimento->ov01_situacaoouvidoriaatendimento = 3;
+								$clOuvidoriaAtendimento->alterar($oAtendimento->ov01_sequencial);
+
+								if ( $clOuvidoriaAtendimento->erro_status == 0 ) {
+									$sqlerro = true;
+									throw new Exception($erro_msg);
+									break;
+								}
+							}
+						}
+					}
+				}
+			  }
+		  }
+	  }
+
+    $processo = new processoProtocolo($p58_codproc);
+    if ($processo->isEletronico()) {
+        $eauth = new \ECidade\Lib\Request\EAuth\EAuth();
+        $titular = \CgmFactory::getInstanceByCgm($processo->getCgm());
+
+        if (empty($titular->getNome())) {
+            throw new \Exception("Titular não encontrado!");
+        }
+
+        $atendimentoProcesso = $processo->getProcessoAtendimento();
+        if (empty($atendimentoProcesso)) {
+            throw new \Exception("Atendimento do processo não encontrado!");
+        }
+
+        $atendimentoCidadao = $atendimentoProcesso->getAtendimentoCidadao();
+        if(empty($atendimentoCidadao)){
+            throw new \Exception("Atendimento ao Cidadão não encontrado!");
+        }
+
+        $cidadao = $atendimentoCidadao->getCidadao();
+        if (empty($cidadao)) {
+            throw new \Exception("Cidadão não encontrado!");
+        }
+
+        $atendimentoProcessoEletronico = $atendimentoProcesso->getAtendimentoProcessoEletronico();
+        if (empty($atendimentoProcessoEletronico)) {
+            throw new \Exception("Informações do processo eletronico não encontrado!");
+        }
+
+        $message = "O processo {$processo->getNumeroProcesso()}/{$processo->getAnoProcesso()} ";
+        $message .= "do titular {$titular->getNome()}, foi arquivado.";
+
+        $eauth->sendMessage(
+            $cidadao->getCnpjCpf(),
+            $atendimentoProcessoEletronico->getClientAtendimentoId(),
+            $message
+        );
+    }
+        db_fim_transacao($sqlerro);
+
 }
 
 
+$hoje = date('d/m/y');
+if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir"){
+	try {
+		arquivamento($p58_codproc, $p67_dtarq, $p67_historico, $grupo);
+		if (isset($volume)) {
+			foreach($volume as $v) {
+				arquivamento($v, $p67_dtarq, $p67_historico, $grupo);
+			}
+		}
+	} catch(Exception $e) {
+		$mensagemErro = $e->getMessage();
+	}
+}
 
 ?>
 <html>
@@ -174,18 +278,33 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+<script type="text/javascript" src="scripts/datagrid.widget.js"></script>
+<script type="text/javascript" src="scripts/widgets/Collection.widget.js"></script>
+<script type="text/javascript" src="scripts/widgets/DatagridCollection.widget.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" style="margin-top:25px;">
-	<?
-	include("forms/db_frmprocarquiv.php");
-	?>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+<?php
+include(modification("forms/db_frmprocarquiv.php"));
+?>
+<?php
+db_menu(
+    db_getsession("DB_id_usuario"),
+    db_getsession("DB_modulo"),
+    db_getsession("DB_anousu"),
+    db_getsession("DB_instit")
+);
 ?>
 </body>
 </html>
-<?
+<?php
+	if (isset($mensagemErro)) {
+		echo '<script>alert(\''. $mensagemErro .'\')</script>';
+	}
+?>
+
+<?php
 if($clprocarquiv->erro_status=="0"){
   $clprocarquiv->erro(true,false);
   $db_botao=true;

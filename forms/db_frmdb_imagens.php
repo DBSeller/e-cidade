@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -126,7 +126,7 @@
   </fieldset>
 
   <div class="form-container">
-    <p><strong>Apenas serão aceitas imagens nos formatos "JPG", "PNG" e "GIF", com tamanho máximo de <span style="color:blue">100 KB</span>.</strong></p>
+    <p><strong>Apenas serão aceitas imagens nos formatos "JPG" e "PNG", com tamanho máximo de <span style="color:blue">100 KB</span>.</strong></p>
     <input type="submit" id='btnSalvar' name="btnSalvar" Value='Salvar' onclick="return js_validaForm();" />
   </div>
 

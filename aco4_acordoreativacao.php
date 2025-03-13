@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_acordo_classe.php");
-require_once("classes/db_acordoparalisacao_classe.php");
-require_once("classes/db_acordomovimentacao_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_acordo_classe.php"));
+require_once(modification("classes/db_acordoparalisacao_classe.php"));
+require_once(modification("classes/db_acordomovimentacao_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -102,7 +102,7 @@ $oRotuloCampo->label("ac10_obs");
         <tr>
           <td><strong>Data Retorno:</strong></td>
           <td>
-            <?php db_inputdata('ac47_datafim', null, null, null, true, 'text', $oGet->dbopcao == 2 ? 3 : $oGet->dbopcao, "onChange='js_buscarPeriodos();'","","","parent.js_buscarPeriodos();"); ?>
+            <?php db_inputdata('ac47_datafim', null, null, null, true, 'text', $oGet->dbopcao == 2 ? 3 : $oGet->dbopcao); ?>
           </td>
         </tr>
 
@@ -115,20 +115,11 @@ $oRotuloCampo->label("ac10_obs");
           </td>
         </tr> 
 
-        <tr>
-          <td colspan="2">
-            <fieldset class="subcontainer">
-              <legend><strong id="tituloPeriodos">Períodos Paralisados</strong></legend>
-              <div id="ctnPeriodos"></div>
-            </fieldset>
-          </td>
-        </tr> 
-
       </table>
       
     </fieldset>
           
-    <input type="button" value="Processar" disabled id="processar" onClick="return js_processar();" />
+    <input type="button" value="Processar" id="processar" onClick="return js_processar();" />
     <!-- <input type="button" value="Pesquisar Acordos" id="pesquisar" onClick="return js_pesquisar();" />-->
     
     <input type="button" value="Consultar Acordo" id="pesquisar" onClick="return js_verAcordo();" />
@@ -145,17 +136,6 @@ const MENSSAGENS = "patrimonial.contratos.aco4_acordoreativacao.";
 const RPC        = 'aco4_acordo.RPC.php';
 const DB_OPCAO   = js_urlToObject().dbopcao;
 
-var oGridPeriodos = new DBGrid('gridPeriodos');
-oGridPeriodos.nameInstance = 'oGridPeriodos';
-oGridPeriodos.setCellAlign(['center', 'center', 'center', 'center', 'center']);
-oGridPeriodos.setCellWidth(['1%', '14%', '35%', '25%', '25%']);
-oGridPeriodos.setHeader(['codigo', 'Período', 'Descrição', 'Data inicial', 'Data final']);
-oGridPeriodos.setHeight(100);
-oGridPeriodos.aHeaders[0].lDisplayed = false;
-oGridPeriodos.show($('ctnPeriodos'));
-oGridPeriodos.clearAll(true); 
-
-
 switch ( DB_OPCAO ) {
 
   case '1' :
@@ -166,7 +146,6 @@ switch ( DB_OPCAO ) {
   case '2' :
 
     $('descricaoRotina').innerHTML = 'Cancelar Reativação de Acordo';
-    $('tituloPeriodos').innerHTML  = 'Períodos Reativados';
     $('processar').value           = 'Cancelar Reativação';
     js_pesquisaac16_sequencial(true);
   break;  
@@ -183,7 +162,7 @@ function js_pesquisaac16_sequencial(lMostrar) {
   if (lMostrar == true) {
     
     var sUrl = 'func_acordo.php?funcao_js=parent.js_mostraacordo1|ac16_sequencial|ac16_resumoobjeto&iTipoFiltro=4';
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_acordo', 
                         sUrl,
                         sTituloJanela,
@@ -195,7 +174,7 @@ function js_pesquisaac16_sequencial(lMostrar) {
       var sUrl = 'func_acordo.php?descricao=true&pesquisa_chave='+$('ac16_sequencial').value+
                  '&funcao_js=parent.js_mostraacordo&iTipoFiltro=4';
                  
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_acordo',
                           sUrl,
                           sTituloJanela,
@@ -248,7 +227,7 @@ function js_pesquisaParalisacao(lMostrar) {
   if (lMostrar == true) {
     
     var sUrl = 'func_acordo.php?funcao_js=parent.js_mostraParalisacao1|ac16_sequencial|ac16_resumoobjeto&iTipoFiltro=5';
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_acordoParalisado', 
                         sUrl,
                         sTituloJanela,
@@ -260,7 +239,7 @@ function js_pesquisaParalisacao(lMostrar) {
       var sUrl = 'func_acordo.php?descricao=true&pesquisa_chave='+$('ac16_sequencial').value+
                  '&funcao_js=parent.js_mostraParalisacao&iTipoFiltro=5';
                  
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_acordoParalisado',
                           sUrl,
                           sTituloJanela,
@@ -315,7 +294,7 @@ function js_buscarDadosParalisacao() {
   function retorno(oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     var sMensagem = oRetorno.message.urlDecode();
 
     if (oRetorno.status > 1) {
@@ -324,7 +303,6 @@ function js_buscarDadosParalisacao() {
 
     $('ac47_datainicio').value = oRetorno.oDados.dtInicial;
     $('ac47_datafim').value = oRetorno.oDados.dtTermino; 
-    js_buscarPeriodos();
   }
 } 
 
@@ -336,100 +314,29 @@ function js_verAcordo() {
     return alert(_M(MENSSAGENS + 'acordo_nao_selecionado'));
   }
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_consultaacordo', 'con4_consacordos003.php?ac16_sequencial=' + iAcordo, 'Consulta Dados Acordo', true);
-}
-
-
-
-function js_buscarPeriodos() {
-
-  /**
-   * Limpa grid dos periodos
-   */
-  oGridPeriodos.clearAll(true);
-
-  var dtInicial = js_formatar($('ac47_datainicio').value, 'd');
-  var dtTermino = js_formatar($('ac47_datafim').value, 'd');
-
-  if ( empty(dtInicial) || empty(dtTermino) ) {
-    return false;
-  }
-  
-  /**
-   * Valida se data de retorno e maior que a de inicio da paralisacao
-   * retorn 'i' quando datas são iguais
-   */
-  var mDiferenca = js_diferenca_datas(dtInicial, dtTermino, 3);
-
-  if (mDiferenca && mDiferenca != 'i') {
-
-    alert(_M(MENSSAGENS + 'data_retorno_menor_inicial'));
-    $('ac47_datafim').value = '';
-    return false;
-  }
-
-  var oParametros       = new Object();
-  oParametros.exec      =  DB_OPCAO == 1 ? "buscarPeriodos" : "getPeriodosReativados";
-  oParametros.iAcordo   = $("ac16_sequencial").value;
-  oParametros.dtInicial = js_formatar($("ac47_datainicio").value, 'd');
-  oParametros.dtTermino = js_formatar($("ac47_datafim").value, 'd');
-
-  js_divCarregando(_M(MENSSAGENS + 'buscando_periodos'), 'msgBox');
-
-  var oRequisicao = {method: 'post', parameters: 'json=' + js_objectToJson(oParametros), onComplete: retorno};
-  var oAjax       = new Ajax.Request(RPC, oRequisicao);
-
-  function retorno(oAjax) {
-
-    js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
-    var sMensagem = oRetorno.message.urlDecode();
-
-    if (oRetorno.status > 1) {
-      return alert(sMensagem + '\nOu sem reativação a cancelar. ');
-    } 
-    
-    oRetorno.aPeriodos.each(function(oPeriodo, iIndice) {
-
-      var aColunas = [];
-      aColunas[0] = oPeriodo.iCodigo;
-      aColunas[1] = oPeriodo.iNumero;
-      aColunas[2] = oPeriodo.sDescricao.urlDecode();
-      aColunas[3] = oPeriodo.dtInicial.urlDecode();
-      aColunas[4] = oPeriodo.dtTermino.urlDecode();
-      oGridPeriodos.addRow(aColunas, null, false, true);
-    });
-
-    $('processar').disabled = false;
-    oGridPeriodos.renderRows();
-  }
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_consultaacordo', 'con4_consacordos003.php?ac16_sequencial=' + iAcordo, 'Consulta Dados Acordo', true);
 }
 
 function js_processar() {
-
+  if ( DB_OPCAO == 2) {
+      if (!confirm('A reativação e o evento criado automaticamente serão excluidos. Deseja prosseguir com a exclusão?')) {
+          return;
+      };
+  }
   var iAcordo = $("ac16_sequencial").value;
   var sObservacao = $("ac10_obs").value;
+  if ( DB_OPCAO != 2) {
+      if (empty(iAcordo)) {
+        return alert(_M(MENSSAGENS + 'paralisacao_nao_selecionada'));
+      }
 
-  if (empty(iAcordo)) {
-    return alert(_M(MENSSAGENS + 'paralisacao_nao_selecionada'));
-  }
+      if (empty($('ac47_datafim').value)) {
+        return alert(_M(MENSSAGENS + 'data_termino_paralisacao_nao_informada'));
+      }
 
-  if (empty($('ac47_datafim').value)) {
-    return alert(_M(MENSSAGENS + 'data_termino_paralisacao_nao_informada'));
-  }
-
-  if (empty(sObservacao)) {
-    return alert(_M(MENSSAGENS + 'observacao_nao_informada'));
-  }
-
-  var aCodigoPeriodos = [];
-
-  oGridPeriodos.aRows.each(function(oLinha, iLinha) {
-    aCodigoPeriodos.push(oLinha.aCells[0].getValue());
-  });
-
-  if (aCodigoPeriodos.length == 0) {
-    return alert(_M(MENSSAGENS + 'nenhum_periodo_processar'));
+      if (empty(sObservacao)) {
+        return alert(_M(MENSSAGENS + 'observacao_nao_informada'));
+      }
   }
 
   var oParametros         = new Object();
@@ -437,7 +344,6 @@ function js_processar() {
   oParametros.iAcordo     = iAcordo;
   oParametros.dtRetorno   = js_formatar($("ac47_datafim").value, 'd');
   oParametros.sObservacao = sObservacao; 
-  oParametros.aPeriodos   = aCodigoPeriodos;
 
   js_divCarregando(_M(MENSSAGENS + (DB_OPCAO == 1 ? 'reativando_acordo' : 'cancelando_reativacao')), 'msgBox');
   
@@ -447,7 +353,7 @@ function js_processar() {
   function retorno(oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     var sMensagem = oRetorno.message.urlDecode();
 
     if (oRetorno.status > 1) {

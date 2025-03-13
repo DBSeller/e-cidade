@@ -108,7 +108,7 @@ db_input('rh15_contac_d',1,$Irh15_contac_d,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpesfgts','func_rhpesfgts.php?funcao_js=parent.js_preenchepesquisa|rh15_regist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpesfgts','func_rhpesfgts.php?funcao_js=parent.js_preenchepesquisa|rh15_regist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpesfgts.hide();

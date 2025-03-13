@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,8 +28,9 @@
 /**
  * 
  * @author Iuri Guntchnigg
- * @revision $Author: dbiuri $
- * @version $Revision: 1.2 $
+ * @revision $Author: dbanderson $
+ * @version $Revision: 1.5 $
+ * @package empenho
  */
 class itemPacto {
   
@@ -276,7 +277,7 @@ class itemPacto {
   }
 
   /**
-   * O metodo Vincula um item da Solicitação ao 
+   * O metodo Vincula um item da Solicitação ao pacto
    *
    * @param float   $nQuantidade       Quantidade de Itens
    * @param float   $nValor            valor Total
@@ -356,6 +357,11 @@ class itemPacto {
     }
   }
   
+  /**
+   * Cancela as movimentações de saldo o item 
+   *
+   * @param unknown_type $iItemSolicitacao código do item da solicitação
+   */
   public function excluirSaldoSolicitacao($iItemSolicitacao) {
     
     $oDaoPactoValorMov         = db_utils::getDao("pactovalormov");
@@ -413,6 +419,13 @@ class itemPacto {
     
   }
   
+  /**
+   * Atualiza os valores realizados para o item 
+   *
+   * @param float $nValor valor realizado
+   * @param integer $iConta  conta da contrapartida contrapartida
+   * @param integer $iOrdem Código da ordem de pagamento
+   */
   public function atualizaSaldoRealizado($nValor, $iConta, $iOrdem = null) {
     
     $oDaoPactoSaldo =db_utils::getDao("pactovalorsaldo"); 

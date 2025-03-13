@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
  *  Copyright (C) 2014  DBSeller Servicos de Informatica
@@ -25,14 +25,28 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/JSON.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+use ECidade\Library\File\File;
+use ECidade\Saude\Laboratorio\Integracao\Luckmann\Collection\TagsXML as TagsXMLCollection;
+use ECidade\Saude\Laboratorio\Integracao\Luckmann\Enum\Parametros as ParametrosEnum;
+use ECidade\Saude\Laboratorio\Integracao\Luckmann\Service\TagXML;
+use ECidade\Saude\Laboratorio\Integracao\Luckmann\Converter\Pedido;
+use ECidade\Saude\Laboratorio\Integracao\Luckmann\Service\Pedido as PedidoService;
+use ECidade\Saude\Laboratorio\Integracao\Luckmann\Service\IntegraPedidos;
+use ECidade\Saude\Laboratorio\Integracao\Luckmann\Service\Parametros as ParametrosService;
+use ECidade\Saude\Laboratorio\Model\Parametros as ParametrosLaboratorio;
+use ECidade\Saude\Laboratorio\Service\LaboratorioService;
+use ECidade\Saude\Laboratorio\Repository\LaboratorioRepository;
+use ECidade\Saude\Laboratorio\Model\Laboratorio;
+
 
 $oJson               = new services_json();
 $oParam              = $oJson->decode( str_replace( "\\", "", $_POST["json"] ) );
@@ -84,6 +98,15 @@ try {
       $oDaoLabColetaItem->la32_c_horaentrega   = $oParam->sHoraEntrega;
 
       /**
+       * Verifica se os exames estão autorizados
+       */
+      foreach($oParam->aSituacaoRequisicao as $situacao) {
+        if($situacao != '20 - Autorizado' && $situacao != 'f - falta material') {
+          throw new DBException('Apenas exames com a situação "Autorizado" ou "falta de material" podem realizar este procedimento.');
+        }
+      }
+
+      /**
        * Percorre os itens da requisição para salvá-los na tabela lab_coletaitem
        */
       foreach ( $oParam->aItemRequisicao as $iRequisicaoItem ) {
@@ -101,7 +124,7 @@ try {
         /**
          * Caso os dados na tabela lab_coletaitem tenham sido salvos, salva os registros em lab_requiitem
          */
-        $oDaoLabRequiItem->la21_c_situacao = "6 - Coletado";
+        $oDaoLabRequiItem->la21_c_situacao = "30 - Coletado";
         if ( isset( $oParam->lFalta ) && $oParam->lFalta ) {
           $oDaoLabRequiItem->la21_c_situacao = "f - falta material";
         }
@@ -115,6 +138,46 @@ try {
           $oMensagem->sErro = $oDaoLabRequiItem->erro_msg;
           throw new DBException( _M( MENSAGENS_COLETAEXAME_RPC . "erro_incluir_requiitem", $oMensagem ) );
         }
+      }
+
+      $laboratorioService = new LaboratorioService(new LaboratorioRepository(new cl_lab_laboratorio()));
+      $interfaceado = $laboratorioService->verificaLaboratorioInterfaceadoRequisicao($oParam->codigoRequisicao);   
+
+      if((int) $oParam->parametroIntegracao === ParametrosLaboratorio::INTEGRACAO_LUCKMANN && !$oParam->lFalta && $interfaceado == 't') {
+          $tagXmlService = new TagXML(new TagsXMLCollection(), new File(), ParametrosEnum::PEDIDOS);
+          $tagsXmlCollection = $tagXmlService->criarInstancias();
+
+          $pedidoService = new PedidoService(new RequisicaoLaboratorial($oParam->codigoRequisicao));
+          $dados = $pedidoService->getDados($oParam->aItemRequisicao);
+
+          $dados_outros = $dados;
+          $dados_outros["Exames"] = [];
+          $dados_hemato = $dados;
+          $dados_hemato["Exames"] = [];
+          foreach($dados["Exames"] as $exame){
+            if(substr($exame["Amostra"], -2) == "06"){
+              $dados_hemato["Exames"][] = $exame;
+            }else{
+              $dados_outros["Exames"][] = $exame;
+            }
+          }
+          $pedidoConverter = new Pedido($tagsXmlCollection);
+          if(count($dados_outros["Exames"])){
+            $arquivo_outros = $pedidoConverter->gerarArquivoPedidos($dados_outros, false);
+          }
+          if(count($dados_hemato["Exames"])){
+            $arquivo_hemato = $pedidoConverter->gerarArquivoPedidos($dados_hemato, true);
+          }
+          $parametrosService = new ParametrosService(ParametrosEnum::JSON_CONFIGURACOES);
+          $parametrosModel = $parametrosService->getParametros();
+          $integra = new IntegraPedidos($parametrosModel, ParametrosEnum::PEDIDOS);
+          if(isset($arquivo_outros)){
+            $integra->enviarArquivo($arquivo_outros);
+          }
+          if(isset($arquivo_hemato)){
+            $integra->enviarArquivo($arquivo_hemato);
+          }
+
       }
 
       $oRetorno->sMensagem = urlencode( _M( MENSAGENS_COLETAEXAME_RPC . "exames_salvos" ) );

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_matestoquetipo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_matestoquetipo_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $cliframe_seleciona     = new cl_iframe_seleciona;
@@ -64,7 +64,7 @@ $clmatestoquetipo       = new cl_matestoquetipo;
       $anousu=db_getsession("DB_anousu");
       $cliframe_seleciona->chaves = "o40_orgao";
       $cliframe_seleciona->campos  = "o40_orgao,o40_descr";
-      $cliframe_seleciona->legenda="Órgãos";
+      $cliframe_seleciona->legenda="Órgãos - Departamento de Destino";
       $cliframe_seleciona->sql=$clorcorgao->sql_query_orgao(null,null,"distinct o40_orgao,o40_descr","o40_descr","o40_instit=$instit and  o40_anousu=$anousu");
       $cliframe_seleciona->iframe_height ="300";
       $cliframe_seleciona->iframe_width  ="400";

@@ -1,0 +1,47 @@
+root = true
+
+[*]
+charset = latin1
+indent_style = space
+indent_size = 4
+tab_width = 4
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[extension/**]
+charset = utf-8
+
+[extension/modification/data/cache/**]
+charset = latin1
+
+[extension/modification/data/cache/**/src/V3/**]
+charset = utf-8
+
+[src/V3/**]
+charset = utf-8
+
+[bin/**]
+charset = utf-8
+
+[src/Console/**]
+charset = utf-8
+
+[src/Core/**]
+charset = utf-8
+
+[docker/**]
+charset = utf-8
+
+[docker-compose.yml]
+charset = utf-8
+
+[dd/tabelas/**]
+charset = utf-8
+
+[tests/**]
+charset = utf-8
+
+[*.md]
+insert_final_newline = false
+trim_trailing_whitespace = false

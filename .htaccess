@@ -1,3 +1,19 @@
-php_value upload_max_filesize 200M
-php_value post_max_size 200M
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  RewriteCond %{REQUEST_URI} !=/server-status
+  RewriteCond %{REQUEST_URI} !=/server-status-php-fpm
+  RewriteRule ^(.*)$ FrontController.php?_path=$1 [QSA]
+  # Handle Authorization Header
+  RewriteCond %{HTTP:Authorization} .
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
 
+<filesMatch "\.(htaccess|htpasswd|ini|sh|env)$">
+ Order Allow,Deny
+ Deny from all
+</filesMatch>
+
+<filesMatch "\.yml">
+ Order Allow,Deny
+ Deny from all
+</filesMatch>

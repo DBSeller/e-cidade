@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//require("libs/db_stdlib.php");
-require("fpdf151/scpdf.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
+//require(modification("libs/db_stdlib.php"));
+require(modification("fpdf151/scpdf.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_debcontapedido_classe.php");
-include("classes/db_debcontaarquivo_classe.php");
-include("classes/db_debcontaarquivotipo_classe.php");
-include("classes/db_db_config_classe.php");
+include(modification("classes/db_debcontapedido_classe.php"));
+include(modification("classes/db_debcontaarquivo_classe.php"));
+include(modification("classes/db_debcontaarquivotipo_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
 
 $cldebcontapedido = new cl_debcontapedido;
 $cldebcontaarquivo = new cl_debcontaarquivo;
@@ -58,28 +58,19 @@ db_postmemory($HTTP_POST_VARS);
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
 function js_geraarquivo() {
-  js_OpenJanelaIframe('top.corpo','db_iframe','cai2_geradebconta002.php?anovenc='+document.form1.anovenc.value+'&mesvenc='+document.form1.mesvenc.value+'&d72_data_ano='+document.form1.d72_data_ano.value+'&d72_data_mes='+document.form1.d72_data_mes.value+'&d72_data_dia='+document.form1.d72_data_dia.value+'&tipodebito='+document.form1.tipodebito.value+'&banco='+document.form1.banco.value+'&numpar='+document.form1.numpar.value+'&formatoArq='+document.form1.formatoArq.value+'&linhasBranco='+document.form1.linhasBranco.value,'Gera Remessa para Débito em Conta',true,20);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','cai2_geradebconta002.php?anovenc='+document.form1.anovenc.value+'&mesvenc='+document.form1.mesvenc.value+'&d72_data_ano='+document.form1.d72_data_ano.value+'&d72_data_mes='+document.form1.d72_data_mes.value+'&d72_data_dia='+document.form1.d72_data_dia.value+'&tipodebito='+document.form1.tipodebito.value+'&banco='+document.form1.banco.value+'&numpar='+document.form1.numpar.value+'&formatoArq='+document.form1.formatoArq.value+'&linhasBranco='+document.form1.linhasBranco.value,'Gera Remessa para Débito em Conta',true,20);
 }
 </script>
 </head>
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#CCCCCC" >
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table width="790" height="100%" border="0" cellspacing="0" cellpadding="0">
+<table width="790" height="100%" border="0" cellspacing="0" cellpadding="0" align="center">
   <tr> 
     <td height="100%" align="center" valign="top" bgcolor="#CCCCCC">
    <form name="form1" action="" method="post" >
+      <fieldset style="margin: 40px auto 10px; width: 700px;">
+      <legend>Geração Arquivo Banco</legend>
       <table border="0" cellpadding="0" cellspacing="0">
 
-
-  <br><br><br>
-  
   </tr>
 	<tr>
           <td height="25">&nbsp;</td>
@@ -103,7 +94,7 @@ function js_geraarquivo() {
 	          <td height="25">Tipo de débito:</td>
             <td height="25">
               <?
-                $resulttipodebito = pg_query("
+                $resulttipodebito = db_query("
                   select distinct 
                          d66_arretipo, 
                          k00_descr 
@@ -150,7 +141,7 @@ function js_geraarquivo() {
                         and d66_arretipo = $d66_arretipo
                         and d63_instit   = ".db_getsession("DB_instit")."
                    order by k00_numpar";
-                 $resultnumpar = pg_query($sqlnumpar);
+                 $resultnumpar = db_query($sqlnumpar);
 
                  if (pg_numrows($resultnumpar) > 0) {
                    ?>
@@ -216,7 +207,7 @@ function js_geraarquivo() {
             <td height="25">Banco:</td>
             <td height="25">
               <?
-	              $resultbanco = pg_query("
+	              $resultbanco = db_query("
                   select distinct 
                          d62_banco,
                          nomebco
@@ -286,6 +277,7 @@ function js_geraarquivo() {
             </td>
           </tr>
         </table>
+        </fieldset>
       </form>
      </td>
   </tr>

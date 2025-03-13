@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
  * Vínculo entre Itinerário e Aluno
  * @author André Mello
  * @package transporteescolar
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 Class ItinerarioVinculoAluno{
   
@@ -206,6 +206,19 @@ Class ItinerarioVinculoAluno{
    * Método responsável por salvar o vínculo de Itinerário e Aluno
    */
   public function salvar() {
+
+    /**
+     * Verifica se o aluno possui vínculo para o itinerário, ponto de parada e linha selecionados
+     */
+    $oDaoVerificaVinculo    = new cl_linhatransportepontoparadaaluno();
+    $sWhereVerificaVinculo  = "     tre12_linhatransportepontoparada = {$this->oItinerarioPontoParada->getCodigo()} ";
+    $sWhereVerificaVinculo .= " AND tre12_aluno = {$this->oAluno->getCodigoAluno()} ";
+    $sSqlVerificaVinculo    = $oDaoVerificaVinculo->sql_query_file( null, '1', null, $sWhereVerificaVinculo );
+    $rsVerificaVinculo      = db_query( $sSqlVerificaVinculo );
+
+    if( $rsVerificaVinculo && pg_num_rows( $rsVerificaVinculo ) > 0 ) {
+      throw new BusinessException( "Aluno já vinculado a linha, ponto de parada e itinerário selecionados." );
+    }
 
     $oDaoVinculoAluno                                      = new cl_linhatransportepontoparadaaluno();
     $oDaoVinculoAluno->tre12_sequencial                    = $this->iCodigo;

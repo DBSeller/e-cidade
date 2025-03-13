@@ -20,5 +20,7 @@
   "navegador_5_5"               : "Atualize seu Navegador. Utilize versões acima de 5.5!",
   "navegador_nao_autorizado"    : "Este Navegador não esta autorizado. Utilize Netscape 7.?, Explorer 5.5??, FireBird, Mozilla ??",
   "excedeu_tentativas_acesso"   : "Você excedeu o número de tentativas de acesso, seu usuário foi bloqueado. Contate Administrador.",
-  "codigo_seguranca_invalido"   : "Código de segurança digitado inválido."
+  "codigo_seguranca_invalido"   : "Código de segurança digitado inválido.",
+  "logs_data_expira"            : "Data para login expirou - Login: [sCampo]",
+  "data_expira"                 : "Data limite para login expirou"
 }

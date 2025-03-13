@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
 $clrotulo->label("ed52_i_ano");
@@ -41,7 +41,7 @@ function SiglaUF($uf) {
 	
   if ($uf != "") {
   	
-    $result = pg_query("SELECT ed260_c_sigla FROM censouf WHERE ed260_i_codigo = $uf");
+    $result = db_query("SELECT ed260_c_sigla FROM censouf WHERE ed260_i_codigo = $uf");
     return trim(pg_result($result,0,0));
     
   } else {
@@ -53,7 +53,7 @@ function Municipio($municipio) {
 	
   if ($municipio != "") {
   	
-    $result = pg_query("SELECT ed261_c_nome FROM censomunic WHERE ed261_i_codigo = $municipio");
+    $result = db_query("SELECT ed261_c_nome FROM censomunic WHERE ed261_i_codigo = $municipio");
     return trim(pg_result($result,0,0));
     
   } else {
@@ -65,7 +65,7 @@ function Distrito($distrito,$municipio) {
 	
   if ($distrito != "" && $municipio != "") {
   	
-    $result = pg_query("SELECT ed262_c_nome FROM censodistrito 
+    $result = db_query("SELECT ed262_c_nome FROM censodistrito 
                         WHERE ed262_i_censomunic = $municipio AND ed262_i_coddistrito = $distrito");
     return trim(pg_result($result,0,0));
     
@@ -78,7 +78,7 @@ function OrgaoEnsino($orgao,$uf) {
 
   if ($orgao != "" && $uf != "") { 	 
 
-    $result = pg_query("SELECT ed263_c_nome FROM censoorgreg WHERE ed263_i_censouf = $uf 
+    $result = db_query("SELECT ed263_c_nome FROM censoorgreg WHERE ed263_i_censouf = $uf 
                                AND ed263_i_codigocenso = '$orgao'");
     return trim(pg_result($result,0,0));
     
@@ -91,7 +91,7 @@ function EtapaTurma($etapa) {
 	
   if ($etapa != "") {
   	
-    $result = pg_query("SELECT ed266_c_descr FROM censoetapa WHERE ed266_i_codigo = $etapa");
+    $result = db_query("SELECT ed266_c_descr FROM censoetapa WHERE ed266_i_codigo = $etapa");
     return trim(pg_result($result,0,0));
     
   } else {
@@ -103,7 +103,7 @@ function AtivCompl($atividade) {
 	
   if ($atividade != "") {
   	
-    $result = pg_query("SELECT ed133_c_descr FROM censoativcompl WHERE ed133_i_codigo = $atividade");   
+    $result = db_query("SELECT ed133_c_descr FROM censoativcompl WHERE ed133_i_codigo = $atividade");   
     return trim(pg_result($result,0,0));
     
   } else {
@@ -115,7 +115,7 @@ function NomeAluno($aluno) {
 	
   if ($aluno != "") {
   	
-    $result = pg_query("SELECT ed47_v_nome FROM aluno WHERE ed47_i_codigo = $aluno");
+    $result = db_query("SELECT ed47_v_nome FROM aluno WHERE ed47_i_codigo = $aluno");
     return trim(pg_result($result,0,0));
     
   } else {
@@ -127,7 +127,7 @@ function NomeDocente($docente) {
 	
   if ($docente != "") {
   	
-    $result = pg_query("SELECT z01_nome FROM cgm WHERE z01_numcgm = $docente");
+    $result = db_query("SELECT z01_nome FROM cgm WHERE z01_numcgm = $docente");
     return trim(pg_result($result,0,0));
     
   } else {
@@ -139,7 +139,7 @@ function Pais($pais) {
 	
   if ($pais != "") {
   	
-    $result = pg_query("SELECT ed228_c_descr FROM pais WHERE ed228_i_codigo = $pais");
+    $result = db_query("SELECT ed228_c_descr FROM pais WHERE ed228_i_codigo = $pais");
     return trim(pg_result($result,0,0));
     
   } else {
@@ -151,7 +151,7 @@ function OrgaoRG($orgao) {
 	
   if ($orgao != "") {
   	
-    $result = pg_query("SELECT ed132_c_descr FROM censoorgemissrg WHERE ed132_i_codigo = $orgao");
+    $result = db_query("SELECT ed132_c_descr FROM censoorgemissrg WHERE ed132_i_codigo = $orgao");
     return trim(pg_result($result,0,0));
     
   } else {
@@ -163,7 +163,7 @@ function CursoSup($curso) {
 	
   if ($curso != "") {
   	
-    $result = pg_query("SELECT ed94_c_descr FROM cursoformacao WHERE ed94_c_codigocenso = '$curso'");
+    $result = db_query("SELECT ed94_c_descr FROM cursoformacao WHERE ed94_c_codigocenso = '$curso'");
     return trim(pg_result($result,0,0));
     
   } else {
@@ -175,7 +175,7 @@ function InstSup($inst) {
 	
   if ($inst != "") {
   	
-    $result = pg_query("SELECT ed257_c_nome FROM censoinstsuperior WHERE ed257_i_codigo = $inst");
+    $result = db_query("SELECT ed257_c_nome FROM censoinstsuperior WHERE ed257_i_codigo = $inst");
     return trim(pg_result($result,0,0));
     
   } else {
@@ -187,10 +187,10 @@ function NomeTurma($turma) {
 	
   if ($turma != "") {
   	
-    $result = pg_query("SELECT ed57_c_descr FROM turma WHERE ed57_i_codigo = $turma");
+    $result = db_query("SELECT ed57_c_descr FROM turma WHERE ed57_i_codigo = $turma");
     if (pg_num_rows($result) > 0) {
     	
-      $result1 = pg_query("SELECT ed11_i_codcenso
+      $result1 = db_query("SELECT ed11_i_codcenso
                                 FROM serie
                                      inner join serieregimemat on ed223_i_serie = ed11_i_codigo
                                      inner join turmaserieregimemat on ed220_i_serieregimemat = ed223_i_codigo
@@ -199,7 +199,7 @@ function NomeTurma($turma) {
       
     } else {
     	
-      $result1 = pg_query("SELECT ed268_c_descr,ed268_i_tipoatend FROM turmaac WHERE ed268_i_codigo = $turma");
+      $result1 = db_query("SELECT ed268_c_descr,ed268_i_tipoatend FROM turmaac WHERE ed268_i_codigo = $turma");
       if (pg_num_rows($result1) > 0) {
         return trim(pg_result($result1,0,0))." / ".(trim(pg_result($result1,0,1))==4?"ATIVIDADE COMPLEMENTAR":"AEE");
       }

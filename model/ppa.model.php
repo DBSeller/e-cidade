@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -94,12 +94,12 @@ class ppa {
 
       if ($iTipo == 1) {
 
-         require_once("model/ppaReceita.model.php");
+         require_once(modification("model/ppaReceita.model.php"));
          $this->oObjeto =  new ppaReceita($iVersao);
 
       } else if ($iTipo == 2) {
 
-         require_once("model/ppadespesa.model.php");
+         require_once(modification("model/ppadespesa.model.php"));
          $this->oObjeto =  new ppaDespesa($iVersao);
       }
     }
@@ -204,7 +204,7 @@ class ppa {
    */
   public function getVersoes($iTipoConsulta, $lAtivas = null) {
 
-    require_once ('classes/db_ppaversao_classe.php');
+    require_once(modification('classes/db_ppaversao_classe.php'));
     $oDaoPPaVersao = new cl_ppaversao;
     $sWhere        = "";
     switch ($iTipoConsulta) {

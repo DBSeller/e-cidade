@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -182,7 +182,7 @@ function js_retornoPesquisaDepartamentos(oAjax) {
   $('listaDptos').innerHTML         = "";
   $('dptosSelecionados').innerHTML  = "";
   
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   
   $('listaDptos').innerHTML  = js_carregaGridDeptos(aRetorno.aItensDptos);
 
@@ -233,7 +233,7 @@ function js_retornoAtualizaDepartamentos(oAjax) {
   js_removeObj('msgBoxAtualizaDepartamentos');
 
   var iCodUsuario = $F('id_usuario'); 
-  var aRetorno    = eval("("+oAjax.responseText+")");
+  var aRetorno    = JSON.parse(oAjax.responseText);
   
   if (aRetorno.erro == 1) {
   

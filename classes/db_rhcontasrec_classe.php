@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -564,7 +564,7 @@ class cl_rhcontasrec {
      $sql .= "      inner join db_config  on  db_config.codigo = rhcontasrec.rh41_instit";
      $sql .= "      inner join saltes  on  saltes.k13_conta = rhcontasrec.rh41_conta";
      $sql .= "      inner join conplanoreduz on conplanoreduz.c61_reduz = saltes.k13_reduz and c61_anousu=".db_getsession("DB_anousu");
-     $sql .= "      inner join conplanoconta on conplanoconta.c63_codcon = conplanoreduz.c61_codcon and c63_anousu=c61_anousu ";
+     $sql .= "      inner join conplanoconta on conplanoconta.c63_codcon = conplanoreduz.c61_codcon and c63_anousu=c61_anousu and conplanoconta.c63_reduz = conplanoreduz.c61_reduz ";
      $sql .= "      inner join orctiporec  on  orctiporec.o15_codigo = rhcontasrec.rh41_codigo";
      $sql .= "      inner join db_bancos  on  db_bancos.db90_codban = conplanoconta.c63_banco ";
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = db_config.numcgm";

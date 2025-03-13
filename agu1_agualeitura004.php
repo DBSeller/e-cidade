@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_agualeitura_classe.php");
-include("classes/db_ruas_classe.php");
-include("classes/db_cgm_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_agualeitura_classe.php"));
+include(modification("classes/db_ruas_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clagualeitura = new cl_agualeitura;
 $clruas = new cl_ruas;
@@ -97,7 +97,7 @@ if(isset($lancar) || isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmagualeitura.php");
+	include(modification("forms/db_frmagualeitura.php"));
 	?>
     </center>
 	</td>

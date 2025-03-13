@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -60,8 +60,8 @@ if (isset($chave_pesquisa)) {
   <tr> 
      <td>
      <?
-	     $clcriaabas->identifica = array("taxa"=>"Cadastro de Taxas","favorecido"=>"Favorecidos");//nome do iframe e o label    
-	     $clcriaabas->title      = array("taxa"       => "Cadastro de Taxas",
+	     $clcriaabas->identifica = array("taxa"=>"Cadastro de Taxas / Custas","favorecido"=>"Favorecidos");//nome do iframe e o label
+	     $clcriaabas->title      = array("taxa"       => "Cadastro de Taxas / Custas",
 	                                     "favorecido" => "Favorecidos");    
 	     $clcriaabas->src        = array("taxa"=>"arr1_taxa003.php", 
 	                                     "favorecido"=>"arr1_taxaFavorecido001.php");  

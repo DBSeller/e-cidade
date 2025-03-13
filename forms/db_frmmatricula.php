@@ -1,28 +1,28 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
@@ -97,7 +97,7 @@ if ($db_opcao == 2) {
                   <?db_input( 'ed15_c_nome', 20, @$Ied15_c_nome, true, 'text', 3 );?>
                 </td>
               </tr>
-              
+
             </table>
           </fieldset>
         </td>
@@ -112,7 +112,7 @@ if ($db_opcao == 2) {
             $sSql     = $clturma->sql_query( "", $sCampos, "", "ed57_i_codigo = {$ed60_i_turma}" );
             $rs       = $clturma->sql_record( $sSql );
             db_fieldsmemory( $rs, 0 );
-      
+
             $sSqlCal = $clcalendario->sql_query_file(
                                                       "",
                                                       "ed52_i_calendant,ed52_i_periodo as periodo",
@@ -121,11 +121,11 @@ if ($db_opcao == 2) {
                                                     );
             $rsCal   = $clcalendario->sql_record( $sSqlCal );
             db_fieldsmemory( $rsCal, 0 );
-      
+
             $ed52_i_calendant = $ed52_i_calendant == "" ? "0" : $ed52_i_calendant;
-      
+
             if ($ed52_i_calendant != "0") {
-      
+
             	$sSqlCalend = $clcalendario->sql_query_file(
             	                                             "",
             	                                             "ed52_i_ano as anoanterior",
@@ -137,21 +137,21 @@ if ($db_opcao == 2) {
             } else {
               $anoanterior = 0;
             }
-      
+
             $sSqlSerieEquiv  = " SELECT ARRAY(SELECT ed234_i_serieequiv FROM serieequiv ";
             $sSqlSerieEquiv .= " WHERE ed234_i_serie in ({$serie})) as seriesequivalentes";
             $rsSerieEquiv    = db_query( $sSqlSerieEquiv );
             db_fieldsmemory( $rsSerieEquiv, 0 );
-      
+
             $seriesequivalentes = str_replace( "{", "", $seriesequivalentes );
             $seriesequivalentes = str_replace( "}", "", $seriesequivalentes );
-      
+
             if ( $seriesequivalentes == "" ) {
               $seriesequivalentes = "({$serie})";
             } else {
               $seriesequivalentes = "({$serie},{$seriesequivalentes})";
             }
-      
+
             $sCamposAluno  = " DISTINCT            \n";
             $sCamposAluno .= " ed47_i_codigo,      \n";
             $sCamposAluno .= " ed47_v_nome,        \n";
@@ -162,21 +162,22 @@ if ($db_opcao == 2) {
          		$sCamposAluno .= " ed79_i_turmaant,    \n";
          		$sCamposAluno .= " ed79_c_resulant,    \n";
          		$sCamposAluno .= " ed79_i_serie        \n";
-            
+
             $sCondicao     = "     ed56_i_escola = {$escola}                                                         \n";
             $sCondicao    .= " AND ed79_i_serie in {$seriesequivalentes}                                             \n";
-            $sCondicao    .= " AND (                                                                                 \n";
-            $sCondicao    .= "          (ed52_i_ano = {$anoatual} AND ed56_c_situacao = 'CANDIDATO' )                \n";
-            $sCondicao    .= "       OR                                                                              \n";
-            $sCondicao    .= "          ((  ed56_c_situacao = 'APROVADO' OR ed56_c_situacao = 'MATRICULA TRANCADA'   \n";
-            $sCondicao    .= "            OR ed56_c_situacao = 'APROVADO PARCIAL' OR ed56_c_situacao = 'REPETENTE')) \n";
+            $sCondicao    .= " AND (    (ed52_i_ano = {$anoatual} AND ed56_c_situacao = 'CANDIDATO' )                \n";
+            $sCondicao    .= "       OR (     ed56_c_situacao = 'APROVADO'                                           \n";
+            $sCondicao    .= "             OR ed56_c_situacao = 'MATRICULA TRANCADA'                                 \n";
+            $sCondicao    .= "             OR ed56_c_situacao = 'APROVADO PARCIAL'                                   \n";
+            $sCondicao    .= "             OR ed56_c_situacao = 'REPETENTE'                                          \n";
+            $sCondicao    .= "             OR ( ed56_c_situacao = 'CONCLUÍDO' AND alunocurso.ed56_i_base = {$base})  \n";
+            $sCondicao    .= "          )                                                                            \n";
             $sCondicao    .= "     )                                                                                 \n";
-            $sCondicao    .= " AND (                                                                                 \n";
-            $sCondicao    .= "          ( ed56_i_calendario = {$calendario} AND ed56_c_situacao = 'CANDIDATO' )      \n";
-            $sCondicao    .= "       OR                                                                              \n";
-            $sCondicao    .= "          (     ed56_i_calendario   = {$ed52_i_calendant}                              \n";
+            $sCondicao    .= " AND (    ( ed56_i_calendario = {$calendario} AND ed56_c_situacao = 'CANDIDATO' )      \n";
+            $sCondicao    .= "       OR (     ed56_i_calendario   = {$ed52_i_calendant}                              \n";
             $sCondicao    .= "            AND ( ed56_c_situacao   = 'APROVADO' OR ed56_c_situacao = 'REPETENTE' )    \n";
-            $sCondicao    .= "             OR (ed56_c_situacao = 'APROVADO PARCIAL')                                 \n";
+            $sCondicao    .= "             OR ed56_c_situacao = 'APROVADO PARCIAL'                                   \n";
+            $sCondicao    .= "             OR ( ed56_c_situacao = 'CONCLUÍDO' AND alunocurso.ed56_i_base = {$base})  \n";
             $sCondicao    .= "          )                                                                            \n";
             $sCondicao    .= "     )                                                                                 \n";
             $sCondicao    .= " AND not exists( select *                                                              \n";
@@ -185,24 +186,24 @@ if ($db_opcao == 2) {
             $sCondicao    .= "                    and alunocurso2.ed56_i_base    != '{$base}'                        \n";
             $sCondicao    .= "                    and alunocurso2.ed56_c_situacao = 'MATRICULADO'                    \n";
             $sCondicao    .= "              )                                                                        \n";
-            
+
             $sSqlAluno    = $claluno->sql_query_matricula( "", $sCamposAluno, "ed47_v_nome", $sCondicao );
             $rsAluno      = $claluno->sql_record( $sSqlAluno );
             $iLinhasAluno = $claluno->numrows;
           ?>
           <b>Alunos em condição de matrícula:</b><br>
           <select name="alunospossib" id="alunospossib" size="10" onclick="js_desabinc()"
-                  style="font-size:9px;width:430px;height:180px" multiple> 
+                  style="font-size:9px;width:430px;height:180px" multiple>
             <?
                if ($iLinhasAluno > 0) {
-        
+
                  for ($i = 0; $i < $iLinhasAluno; $i++) {
-        
+
                    db_fieldsmemory($rsAluno,$i);
                    $mostra = true;
-        
+
                    if ($parametroatual == $ed29_i_avalparcial && $ed29_i_avalparcial == 2) {
-        
+
                      $sSqlReg  = " SELECT * ";
                      $sSqlReg .= "   FROM histmpsdisc";
                      $sSqlReg .= "        inner join historicomps on ed62_i_codigo = ed65_i_historicomps";
@@ -222,7 +223,7 @@ if ($db_opcao == 2) {
                        $mostra = false;
                      }
                    }
-                   
+
                    if ($ed56_c_situacao == "APROVADO") {
                      $sitdescr = "APROVADO (PARA {$ed11_c_descr} - {$ed10_c_abrev})";
                    } else if ($ed56_c_situacao == "APROVADO PARCIAL") {
@@ -234,7 +235,7 @@ if ($db_opcao == 2) {
                    } else {
                      $sitdescr = "CANDIDATO (NA {$ed11_c_descr} - {$ed10_c_abrev})";
                    }
-                   
+
                    if ($mostra == true) {
                      echo "<option value='{$ed47_i_codigo}'> {$ed47_i_codigo} - {$ed47_v_nome} ---> {$sitdescr}</option>\n";
                    }
@@ -433,7 +434,7 @@ if ($db_opcao == 2) {
                 <td>
                   <?
                     $x = array();
-                    db_select('ed60_c_situacao', 
+                    db_select('ed60_c_situacao',
                               $x,
                               true,
                               $db_opcao,
@@ -485,9 +486,9 @@ if ($db_opcao == 2) {
         <td nowrap title="<?=@$Ted60_d_datamatricula?>" colspan="2">
           <?php
             echo @$Led60_d_datamatricula;
-            db_inputdata( 
-                          'ed60_d_datamatricula', 
-                          @$ed60_d_datamatricula_dia, 
+            db_inputdata(
+                          'ed60_d_datamatricula',
+                          @$ed60_d_datamatricula_dia,
                           @$ed60_d_datamatricula_mes,
                           @$ed60_d_datamatricula_ano,
                           true,
@@ -501,7 +502,7 @@ if ($db_opcao == 2) {
 
       <?if ($db_opcao == 2) { ?>
       <tr>
-        <td nowrap title="<?=@$Ted60_d_datamodif?>">
+        <td nowrap title="<?=@$Ted60_d_datamodif?>" style="padding-left: 12px; width: 125px">
           <?=@$Led60_d_datamodif?>
         </td>
         <td>
@@ -521,19 +522,19 @@ if ($db_opcao == 2) {
 
       <?
           if (isset($chavepesquisa)) {
-        
+
             $data      = @$ed60_d_datamatricula_ano."-".@$ed60_d_datamatricula_mes."-".@$ed60_d_datamatricula_dia;
             $datamodif = @$ed60_d_datamodif_ano."-".@$ed60_d_datamodif_mes."-".@$ed60_d_datamodif_dia;
             $inicio    = @$ed52_d_inicio;
             $fim       = @$ed52_d_fim;
-        
+
           } else {
-        
+
             $data      = @$ed60_d_datamatricula_ano."-".@$ed60_d_datamatricula_mes."-".@$ed60_d_datamatricula_dia;
             $datamodif = @$ed60_d_datamodif_ano."-".@$ed60_d_datamodif_mes."-".@$ed60_d_datamodif_dia;
             $inicio    = @$ed60_d_datamatricula_ano."-".@$ed60_d_datamatricula_mes."-".@$ed60_d_datamatricula_dia;
             $fim       = @$ed60_d_datamatricula_ano."-".@$ed60_d_datamatricula_mes."-".@$ed60_d_datamatricula_dia;
-        
+
         }
       ?>
       <tr>
@@ -546,11 +547,11 @@ if ($db_opcao == 2) {
     </table>
     <?
       if (isset($ed60_i_turma)) {
-      
+
         $sSqlTurmaSerieRegimeMat = $clturmaserieregimemat->sql_query( "", "ed220_i_codigo", "", " ed220_i_turma = {$ed60_i_turma}");
         $rsTurmaSerieRegimeMat   = $clturmaserieregimemat->sql_record($sSqlTurmaSerieRegimeMat);
         $iNumEtapas              = $clturmaserieregimemat->numrows;
-      
+
       } else {
         $iNumEtapas = 0;
       }
@@ -578,8 +579,9 @@ if ($db_opcao == 2) {
 </script>
 <script>
 
-var oGet = js_urlToObject();
-var oTurmaTurno = null;
+var oGet                    = js_urlToObject();
+var oTurmaTurno             = null;
+const MENSAGEM_FRMMATRICULA = "educacao.escola.db_frmmatricula.";
 
 if (oGet.chavepesquisa && oGet.chavepesquisa != "") {
 
@@ -738,6 +740,7 @@ function js_pesquisaed60_i_alunoexc(mostra) {
                            );
       } else {
         document.form1.ed47_v_nome.value = '';
+        document.form1.excluir.disabled = true;
       }
     }
   }
@@ -749,7 +752,6 @@ function js_mostraalunoexc(chave1, chave2, chave3, erro) {
   document.form1.ed60_matricula.value = chave2;
 
   if (erro == true) {
-
     document.form1.ed60_i_aluno.focus();
     document.form1.ed60_i_aluno.value = '';
     document.form1.excluir.disabled   = true;
@@ -760,6 +762,9 @@ function js_mostraalunoexc(chave1, chave2, chave3, erro) {
                                                           +"&aluno="+document.form1.ed60_i_aluno.value
                                                           +"&turma="+document.form1.ed60_i_turma.value;
   }
+    if (empty(chave2)) {
+        document.form1.excluir.disabled   = true;
+    }
 }
 
 function js_mostraalunoexc1(chave1, chave2, chave3, chave4) {
@@ -801,29 +806,32 @@ function js_situacao(atual) {
   for (var i = 0; i < F.length; i++) {
     F.options[i] = null;
   }
-  
+
   atual = atual.replace(/^\s+|\s+$/g, '');
 
   if (atual == "MATRICULADO") {
     opcoes = new Array("CANCELADO|CANCELADO",
                        "EVADIDO|EVADIDO",
+                       "DESISTENTE|DESISTENTE",
                        "FALECIDO|FALECIDO",
                        "MATRICULA TRANCADA|MATRICULA TRANCADA",
                        "MATRICULA INDEFERIDA|MATRICULA INDEFERIDA",
-                        "MATRICULA INDEVIDA|MATRICULA INDEVIDA"
+                       "MATRICULA INDEVIDA|MATRICULA INDEVIDA"
                        );
   } else if (atual == "CANCELADO") {
-    opcoes = new Array("MATRICULADO|RETORNO","EVADIDO|EVADIDO","FALECIDO|FALECIDO");
+      opcoes = new Array("MATRICULADO|RETORNO","EVADIDO|EVADIDO", "DESISTENTE|DESISTENTE", "FALECIDO|FALECIDO");
   } else if (atual == "EVADIDO") {
-    opcoes = new Array("MATRICULADO|RETORNO","FALECIDO|FALECIDO");
+      opcoes = new Array("MATRICULADO|RETORNO", "FALECIDO|FALECIDO", "DESISTENTE|DESISTENTE");
+  } else if (atual = "DESISTENTE") {
+      opcoes = new Array("MATRICULADO|RETORNO", "FALECIDO|FALECIDO", "EVADIDO|EVADIDO");
   } else if (atual == "FALECIDO") {
-    opcoes = new Array("MATRICULADO|RETORNO","CANCELADO|CANCELADO","EVADIDO|EVADIDO");
+      opcoes = new Array("MATRICULADO|RETORNO","CANCELADO|CANCELADO","EVADIDO|EVADIDO", "DESISTENTE|DESISTENTE");
   } else if (atual == "MATRICULA TRANCADA") {
-    opcoes = new Array("MATRICULADO|RETORNO","EVADIDO|EVADIDO","FALECIDO|FALECIDO");
+      opcoes = new Array("MATRICULADO|RETORNO","EVADIDO|EVADIDO", "DESISTENTE|DESISTENTE", "FALECIDO|FALECIDO");
   } else if (atual == "MATRICULA INDEFERIDA") {
-    opcoes = new Array("MATRICULADO|RETORNO","EVADIDO|EVADIDO","FALECIDO|FALECIDO");
+      opcoes = new Array("MATRICULADO|RETORNO","EVADIDO|EVADIDO", "DESISTENTE|DESISTENTE", "FALECIDO|FALECIDO");
   } else if (atual == "MATRICULA INDEVIDA") {
-    opcoes = new Array("CANCELADO|CANCELADO", "EVADIDO|EVADIDO", "FALECIDO|FALECIDO");
+      opcoes = new Array("CANCELADO|CANCELADO", "EVADIDO|EVADIDO", "DESISTENTE|DESISTENTE", "FALECIDO|FALECIDO");
   }
 
   for (i = 0; i < opcoes.length; i++) {
@@ -867,7 +875,7 @@ function js_alunospossib() {
       x--;
     }
   }
-  
+
   if (document.form1.alunospossib.length > 0) {
     document.form1.alunospossib.options[0].selected = true;
   } else {
@@ -893,7 +901,7 @@ function js_incluirtodos() {
     F.alunospossib.options[0] = null;
 
   }
-  
+
   document.form1.incluirum.disabled = true;
   document.form1.incluirtodos.disabled = true;
   document.form1.excluirtodos.disabled = false;
@@ -957,6 +965,12 @@ function js_excluirtodos() {
 }
 
 function js_selecionar(data,inicio,fim,numetapas) {
+
+  if ( $$("input.TurmaTurnoReferente:checked" ).length == 0 ) {
+
+    alert( _M( MENSAGEM_FRMMATRICULA + 'selecione_turno')  );
+    return false;
+  }
 
   if (document.form1.ed60_d_datamatricula.value == "") {
 
@@ -1155,23 +1169,6 @@ function js_eliminamov(valor) {
     }
 
 <?}?>
-
-
-if ( <?=$db_opcao?> == 1 && oGet.chavepesquisa && oGet.chavepesquisa != '') {
-
-  if ( !oTurmaTurno.temVagasDisponiveis() ) {
-
-    alert( _M('educacao.escola.db_frmmatricula.nao_ha_vagas_disponiveis') );
-    document.form1.incluirtodos.disabled         = true;
-    document.form1.alunospossib.disabled         = true;
-    document.form1.alunos.disabled               = true;
-    document.form1.alunospossib.style.background = "#CCCCCC";
-    document.form1.alunos.style.background       = "#CCCCCC";
-  }
-
-}
-
-
 function js_confirmarExclusao() {
 
   var sMensagem  = "A classificação da turma terá sua sequência reiniciada caso a numeração já tenha sido gerada";
@@ -1241,7 +1238,7 @@ if ( $("ed60_d_datamatricula") ) {
 	$("ed60_d_datamatricula").addClassName("field-size2");
 }
 
-<?php 
+<?php
 if ($db_opcao == 2) {?>
 
   $("ed60_matricula").addClassName("field-size9");
@@ -1289,9 +1286,11 @@ function carregaTurno() {
     }
   }
 
+  $('db_opcao').removeAttribute('disabled');
   if ( !oTurmaTurno.temVagasDisponiveis() ) {
 
     alert( "Turma sem vagas disponíveis." );
+    $('db_opcao').setAttribute( 'disabled', 'disabled' );
     return false;
   }
 
@@ -1304,9 +1303,13 @@ function carregaTurno() {
  */
 function validacoesTurno() {
 
+  $('db_opcao').removeAttribute('disabled');
+
   if ( !oTurmaTurno.temTurnoSelecionado() ) {
 
     alert( "Nenhum turno foi selecionado." );
+    $('sTurno').value = '';
+    $('db_opcao').setAttribute( 'disabled', 'disabled' );
     return false;
   }
 

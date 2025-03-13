@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,43 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhrubricas_classe.php");
+use ECidade\RecursosHumanos\Pessoal\Service\RubricasUsuarioService;
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhrubricas_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clrhrubricas = new cl_rhrubricas;
 $clrhrubricas->rotulo->label("rh27_rubric");
 $clrhrubricas->rotulo->label("rh27_descr");
 
-if ( isset($chave_rh27_rubric) && !DBNumber::isInteger($chave_rh27_rubric) ) {
-  $chave_rh27_rubric = '';
+$service = new RubricasUsuarioService();
+
+$usuario = UsuarioSistemaRepository::getPorCodigo(db_getsession('DB_id_usuario'));
+$instituicao = InstituicaoRepository::getInstituicaoSessao();
+
+$dao = new cl_rhrubricas();
+$where = array();
+// agora por default devemos validar as rubricas configuradas por usuário se houver.
+// Se não devemos buscar todas as rubricas
+if ($service->possuiConfiguracao($usuario, $instituicao)) {
+    $dao = new cl_rubricasusuario();
+    $where = array(
+        "rh219_usuario = {$usuario->getCodigo()}",
+        "rh219_instituicao = {$instituicao->getCodigo()}"
+    );
 }
 
-$chave_rh27_descr = isset($chave_rh27_descr) ? stripslashes($chave_rh27_descr) : '';
+if (isset($_GET['naoFiltraUsuario']) && $_GET['naoFiltraUsuario '] == 'true') {
+    $dao = new cl_rhrubricas();
+    $where = array();
+}
 
+$where[] = "rh27_instit = {$instituicao->getCodigo()}";
 ?>
 <html>
 <head>
@@ -100,16 +119,10 @@ $chave_rh27_descr = isset($chave_rh27_descr) ? stripslashes($chave_rh27_descr) :
        <input name="limpar" type="reset" id="limpar" value="Limpar" >
        <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_rubrica.hide();">
    </form>
-      <?
-      $dbwhere = "";
-      if(isset($instit) && trim($instit)!=""){
-      	$dbwhere = " and rh27_instit = $instit ";
-      }
-      $dbwhere = " and rh27_instit = ".db_getsession("DB_instit");
+        <?php
 
-      $where_ativo = "";
       if(isset($opcao) && trim($opcao)!="i"){
-        $where_ativo = " and rh27_ativo='$opcao' ";
+          $where[] = " rh27_ativo='$opcao' ";
       }
 
       $chave_rh27_descr = addslashes($chave_rh27_descr);
@@ -117,26 +130,19 @@ $chave_rh27_descr = isset($chave_rh27_descr) ? stripslashes($chave_rh27_descr) :
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
           if(file_exists("funcoes/db_func_rhrubricas.php")==true){
-            include("funcoes/db_func_rhrubricas.php");
+            include(modification("funcoes/db_func_rhrubricas.php"));
           }else{
             $campos = "rhrubricas.*";
           }
         }
 
-       if( isset($chave_rh27_rubric) ) {
-          if (  !DBNumber::isInteger($chave_rh27_rubric) ) {
-            $chave_rh27_rubric = '';
-          }
-        }
-
-        if(isset($chave_rh27_rubric) && (trim($chave_rh27_rubric)!="") && DBNumber::isInteger($chave_rh27_rubric) ){
-	       $sql = $clrhrubricas->sql_query(null,null,$campos,"rh27_rubric"," rh27_rubric = '$chave_rh27_rubric' ".$dbwhere.$where_ativo);
+          if (isset($chave_rh27_rubric) && (trim($chave_rh27_rubric) != "") && DBNumber::isInteger($chave_rh27_rubric)) {
+              $where[] = " rh27_rubric = '{$chave_rh27_rubric}' ";
         }else if(isset($chave_rh27_descr) && (trim($chave_rh27_descr)!="") ){
-	       $sql = $clrhrubricas->sql_query("",null,$campos,"rh27_descr"," rh27_descr like '$chave_rh27_descr%' ".$dbwhere.$where_ativo);
-        }else{
-           $sql = $clrhrubricas->sql_query("",null,$campos,"rh27_rubric"," 1=1 ".$dbwhere.$where_ativo);
+              $where[] = " rh27_descr like '{$chave_rh27_descr}%' ";
         }
 
+          $sql = $dao->sqlRubricas($campos, $where, array('rh27_rubric'));
         if( isset($chave_rh27_descr) ){
           $chave_rh27_descr = str_replace("\\", "", $chave_rh27_descr);
         }
@@ -146,13 +152,16 @@ $chave_rh27_descr = isset($chave_rh27_descr) ? stripslashes($chave_rh27_descr) :
         echo "</fieldset>                              \n";
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clrhrubricas->sql_record($clrhrubricas->sql_query(null,null,"*,case when trim(rh27_form)='' then 'f' else 't' end as formula ",""," rh27_rubric = '$pesquisa_chave' ".$dbwhere));
+
+            $where[] = " rh27_rubric = '{$pesquisa_chave}' ";
+            $sql = $dao->sqlRubricas("*,case when trim(rh27_form)='' then 'f' else 't' end as formula ", $where);
+            $result = $clrhrubricas->sql_record($sql);
           if($clrhrubricas->numrows!=0){
             db_fieldsmemory($result,0);
 	    if(!isset($ret)){
-              echo "<script>".$funcao_js."('$rh27_descr','$rh27_limdat','$formula','$rh27_obs','$rh27_presta','$rh27_tipo',false);</script>";
+              echo "<script>".$funcao_js."('$rh27_descr','$rh27_limdat','$formula','$rh27_obs','$rh27_presta','$rh27_tipo',false,$rh27_valorlimite,$rh27_quantidadelimite,'$rh27_tipobloqueio');</script>";
 	    }else{
-              echo "<script>".$funcao_js."('$rh27_descr','$rh27_limdat','$formula','$rh27_obs','$rh27_pd','$rh27_presta','$rh27_tipo',false);</script>";
+              echo "<script>".$funcao_js."('$rh27_descr','$rh27_limdat','$formula','$rh27_obs','$rh27_pd','$rh27_presta','$rh27_tipo',$rh27_valorlimite,$rh27_quantidadelimite,'$rh27_tipobloqueio',false);</script>";
 	    }
           }else{
 	    if(!isset($ret)){
@@ -198,4 +207,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_rh27_descr",true,1,"chave_rh27_descr",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

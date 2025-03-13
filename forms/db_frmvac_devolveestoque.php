@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -132,7 +132,7 @@ function js_CarregaLotes() {
 }
 
 function js_RetornoCarregaLotes(oAjax) {
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   
   if (oRetorno.iStatus == 1) {
 
@@ -235,7 +235,7 @@ function js_pesquisavc06_i_codigo(mostra) {
 
 	  if (mostra == true) {
 
-	    js_OpenJanelaIframe('top.corpo',
+	    js_OpenJanelaIframe('CurrentWindow.corpo',
 	                        'db_iframe_vac_vacina',
 	                        'func_vac_vacina.php?funcao_js=parent.js_mostravac_vacina1|vc06_i_codigo|vc06_c_descr',
 	                        'Pesquisa',
@@ -246,7 +246,7 @@ function js_pesquisavc06_i_codigo(mostra) {
 
 	    if (document.form1.vc13_i_vacina.value != '') {  
 
-	      js_OpenJanelaIframe('top.corpo',
+	      js_OpenJanelaIframe('CurrentWindow.corpo',
 	                          'db_iframe_vac_vacina',
 	                          'func_vac_vacina.php?pesquisa_chave='+document.form1.vc13_i_vacina.value+
 	                          '&funcao_js=parent.js_mostravac_vacina',

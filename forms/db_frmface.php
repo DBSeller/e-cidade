@@ -1,72 +1,62 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-//MODULO: cadastro
 $clface->rotulo->label();
 $clcarface->rotulo->tlabel();
 $clrotulo = new rotulocampo;
 $clrotulo->label("j30_descr");
 $clrotulo->label("j14_nome");
 ?>
-<form
-	name="form1" method="post" action=""><input name="deuok" type="hidden"
-	id="" value=""> <input name="alterarface" type="hidden" id="" value="">
-<center>
+<fieldset>
+ <legend>Face</legend>
+<form	name="form1" method="post" action="">
+  <input name="deuok"       type="hidden" id="" value="" />
+  <input name="alterarface" type="hidden" id="" value="" />
+
 <table border="0">
 	<tr>
 		<td nowrap title="<?=@$Tj37_face?>"><?=@$Lj37_face?></td>
 		<td><?
 		db_input('j37_face',4,$Ij37_face,true,'text',"3","")
 		?>
-		
-		
 		<td>
-	
-	
-	<tr>
-	
-	
+	</tr>
+
 	<tr>
 		<td nowrap title="<?=@$Tj37_setor?>"><?
 		db_ancora(@$Lj37_setor,"js_pesquisaj37_setor(true);",$db_opcao);
 		?></td>
 		<td><?
-		db_input('j37_setor',4,$Ij37_setor,true,'text',$db_opcao," onchange='js_pesquisaj37_setor(false);'")
-		?> <?
-		db_input('j30_descr',40,$Ij30_descr,true,'text',3,'')
+		db_input('j37_setor',4,$Ij37_setor,true,'text',$db_opcao," onchange='js_pesquisaj37_setor(false);'");
+		db_input('j30_descr',40,$Ij30_descr,true,'text',3,'');
 		?>
-		
-		
-		<td>
-	
-	
-	<tr>
-	
-	
+		</td>
+	</tr>
+
 	<tr>
 		<td nowrap title="<?=@$Tj37_quadra?>"><?=@$Lj37_quadra?></td>
 		<td><?
@@ -82,124 +72,84 @@ $clrotulo->label("j14_nome");
 		}
 		db_input('j37_quadra',4,$val,true,'text',$db_opcao,"");
 		?>
-		
-		
-		<td>
-	
-	
-	<tr>
-	
-	
+		</td>
+	</tr>
+
 	<tr>
 		<td nowrap title="<?=@$Tj37_codigo?>"><?
 		db_ancora(@$Lj37_codigo,"js_pesquisaj37_codigo(true);",$db_opcao);
 		?></td>
 		<td><?
-		db_input('j37_codigo',4,$Ij37_codigo,true,'text',$db_opcao," onchange='js_pesquisaj37_codigo(false);'")
-		?> <?
-		db_input('j14_nome',40,$Ij14_nome,true,'text',3,'')
+		db_input('j37_codigo',4,$Ij37_codigo,true,'text',$db_opcao," onchange='js_pesquisaj37_codigo(false);'");
+		db_input('j14_nome',40,$Ij14_nome,true,'text',3,'');
 		?>
-		
-		
-		<td>
-	
-	
-	<tr>
-	
-	
+		</td>
+	</tr>
+
 	<tr>
 		<td nowrap title="<?=@$Tj37_lado?>"><?=@$Lj37_lado?></td>
 		<td><?
 		$matriz = array('I'=>"Impar",'P'=>"Par");
 		db_select('j37_lado',$matriz,true,$db_opcao);
-		//db_input('j37_lado',1,$Ij37_lado,true,'text',$db_opcao,"")
 		?>
-		
-		
-		<td>
-	
-	
+		</td>
+	</tr>
 	<tr>
-		<!--
-  <tr>
-    <td nowrap title="<?=@$Tj37_valor?>">
-       <?=@$Lj37_valor?>
-    </td>
-    <td> 
-<?
-db_input('j37_valor',15,$Ij37_valor,true,'text',$db_opcao,"")
-?>
+		<td>
+			<b>Sequência: </b>
+		</td>
+		<td>
+			<? db_input('j37_sequencia', 4, $Tj37_sequencia, true, 'text',$db_opcao, '');?>
+			<b style="margin-left: 5px">Segmento: </b>
+			<?db_input('j37_segmento', 4, $Tj37_segmento, true, 'text',$db_opcao, '');?>
+			</td>
+		</tr>
+    <?php
+    db_input('j37_valor',15,$Ij37_valor,true,'hidden',$db_opcao,"");
+    db_input('j37_vlcons',15,$Ij37_vlcons,true,'hidden',$db_opcao,"");
+    ?>
     <td>
-  <tr>
-  <tr>
-    <td nowrap title="<?=@$Tj37_vlcons?>">
-       <?=@$Lj37_vlcons?>
-    </td>
-    <td> 
-<?
-db_input('j37_vlcons',15,$Ij37_vlcons,true,'text',$db_opcao,"")
-?>
-    <td>
-  <tr>
--->
-	
-	
+  </tr>
+
 	<tr>
 		<td nowrap title="<?=@$Tj37_exten?>"><?=@$Lj37_exten?></td>
 		<td><?
 		db_input('j37_exten',15,$Ij37_exten,true,'text',$db_opcao,"")
 		?>
-		
-		
-		<td>
-	
-	
-	<tr>
-	
-	
+		</td>
+	</tr>
+
 	<tr>
 		<td nowrap title="<?=@$Tj37_profr?>"><?=@$Lj37_profr?></td>
 		<td><?
 		db_input('j37_profr',15,$Ij37_profr,true,'text',$db_opcao,"")
 		?>
-		
-		
-		<td>
-	
-	
-	<tr>
-	
-	
+		</td>
+	</tr>
+
 	<tr>
 		<td nowrap title="<?=@$Tj37_outros?>"><?=@$Lj37_outros?></td>
 		<td><?
 		db_input('j37_outros',40,$Ij37_outros,true,'text',$db_opcao,"")
 		?>
-		
-		
-		<td>
-	
-	
-	<tr>
-	
-	
+		</td>
+	</tr>
+
 	<tr>
 		<td nowrap><?
 		db_ancora(@$Lcarface,"js_carface();",$db_opcao);
-  echo "</td><td>";
-  db_input('caracteristica',15,0,true,'hidden',$db_opcao)
+    echo "</td><td>";
+    db_input('caracteristica',15,0,true,'hidden',$db_opcao)
   ?>
-		
-		
-		<td>
-	
-	
-	<tr>
-
+		</td>
+	</tr>
 </table>
-</center>
-  <?$sql="select * from caracter inner join cargrup on j32_grupo=j31_grupo where j32_tipo='F'";
-  $result= pg_exec($sql);
+
+</fieldset>
+
+  <?php
+  $sql="select * from caracter inner join cargrup on j32_grupo=j31_grupo where j32_tipo='F'";
+  $result= db_query($sql);
   if (pg_numrows($result)!=0){
     ?> <input
 	name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>"
@@ -212,40 +162,25 @@ db_input('j37_vlcons',15,$Ij37_vlcons,true,'text',$db_opcao,"")
 	type="submit" id="db_opcao"
 	value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"
 	<?=($db_botao==false?"disabled":"")?>> <!--<input name="db_opcao" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >-->
-	<?}?> <input name="pesquisar" type="button" id="pesquisar"
-	value="Pesquisar" onclick="js_pesquisa();"></form>
-<script>
+	<?}?>
+  <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();">
+
+</form>
+<script type="text/javascript">
 
 function js_confirma(numerotestadas){
   if(numerotestadas != '0'){
-    var confirmacao = confirm('A face selecionada esta ligada a '+numerotestadas+' testadas deseja realmente alterar?');     
+    var confirmacao = confirm('A face selecionada esta ligada a '+numerotestadas+' testadas deseja realmente alterar?');
     if(confirmacao){
       document.form1.alterarface.value='t';
       document.form1.submit();
     }
-  
+
   }else{
      document.form1.alterarface.value='t';
      document.form1.submit();
   }
 }
-/*
-function js_verificarTestada(){
-
-  var face = document.form1.j37_face.value;
-  var rua  = document.form1.j37_codigo.value;
-
-  //parent.js_confirma(face,rua,numero)
-
-    1 - abrir um iframe oculto passando o codigo da face e rua (executar o select 
-    passado para verificar quantas testadas serao alteradas recursivamente)
-    2 - o iframe vai retornar o numero de testadas da pesquisa, se for diferente de 0 pergunta para 
-    o usuario se deseja realmente alterar a face "A face selecionada esta ligada a x testadas deseja realmente alterar?"
-    3 - bloquear no gerador as tabelas face e face valor para nao gerar mais formulario programa de cadastro
-
-   
-}
-*/
 
 function testacar(){
   if(document.form1.caracteristica.value == ""){
@@ -261,6 +196,7 @@ function testacar(){
   }
   return false
 }
+
 function js_carface(){
 
   caracteristica=document.form1.caracteristica.value;
@@ -273,8 +209,7 @@ function js_carface(){
     db_iframe.mostraMsg();
     db_iframe.show();
     db_iframe.focus();
-} 
-
+}
 
 function js_pesquisaj37_setor(mostra){
   if(mostra==true){
@@ -286,11 +221,12 @@ function js_pesquisaj37_setor(mostra){
     db_iframe.jan.location.href = 'func_setor.php?pesquisa_chave='+document.form1.j37_setor.value+'&funcao_js=parent.js_mostrasetor';
   }
 }
+
 function js_mostrasetor(chave,erro){
-  document.form1.j30_descr.value = chave; 
-  if(erro==true){ 
-    document.form1.j37_setor.focus(); 
-    document.form1.j37_setor.value = ''; 
+  document.form1.j30_descr.value = chave;
+  if(erro==true){
+    document.form1.j37_setor.focus();
+    document.form1.j37_setor.value = '';
   }
 }
 function js_mostrasetor1(chave1,chave2){
@@ -309,10 +245,10 @@ function js_pesquisaj37_codigo(mostra){
   }
 }
 function js_mostraruas(chave,erro){
-  document.form1.j14_nome.value = chave; 
-  if(erro==true){ 
-    document.form1.j37_codigo.focus(); 
-    document.form1.j37_codigo.value = ''; 
+  document.form1.j14_nome.value = chave;
+  if(erro==true){
+    document.form1.j37_codigo.focus();
+    document.form1.j37_codigo.value = '';
   }
 }
 function js_mostraruas1(chave1,chave2){
@@ -331,7 +267,7 @@ function js_preenchepesquisa(chave){
   location.href = '<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>'+"?chavepesquisa="+chave;
 }
 </script>
-	<?
+	<?php
 	$func_iframe = new janela('db_iframe','');
 	$func_iframe->posX=1;
 	$func_iframe->posY=20;

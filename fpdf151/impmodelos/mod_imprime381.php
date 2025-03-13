@@ -69,10 +69,14 @@ $this->objpdf->text($xcol +2, $xlin +95, 'RECURSOS');
        $sp = split('#',$recurso);
        $this->objpdf->Setfont('Arial','', 9);     
        $this->objpdf->setXY($xcol + 6,$altura_topo);
-       
-       $this->objpdf->Cell(10,4,$sp[0],'0');        
-       $this->objpdf->Cell(100,4,$sp[1],'0');        
-       $this->objpdf->Cell(10,4,"R$",'0'); 
+
+       if ( FONTE_RECURSO_UNIAO ) {
+           $this->objpdf->Cell(110,4,$sp[1],'0');
+       }else {
+           $this->objpdf->Cell(10, 4, $sp[0], '0');
+           $this->objpdf->Cell(100, 4, $sp[1], '0');
+       }
+       $this->objpdf->Cell(10,4,"R$",'0');
        $this->objpdf->Cell(20, 4, db_formatar($sp[2],'f'),'0','0','R'); 
 
   }

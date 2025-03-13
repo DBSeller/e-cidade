@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,19 +26,19 @@
  */
 
 //echo ($HTTP_SERVER_VARS['QUERY_STRING']);exit;
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empempitem_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_matordem_classe.php");
-include("classes/db_matordemitem_classe.php");
-include("classes/db_empempenho_classe.php");
-include("libs/db_libdocumento.php");
-include("libs/db_utils.php");
-include("classes/db_pcparam_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empempitem_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("libs/db_libdocumento.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_pcparam_classe.php"));
 
 $clmatordem     = new cl_matordem;
 $clmatordemitem = new cl_matordemitem;
@@ -163,7 +163,7 @@ if (isset($valores)&&isset($incluir)){
 													inner join db_usuarios u on c.id_usuario =  u.id_usuario
 			              where z01_numcgm = ".$clmatordem->m51_numcgm."
 										  and usuext = 1";
-			$rsCgm    = pg_query($sqlCgm);
+			$rsCgm    = db_query($sqlCgm);
 			if (pg_num_rows($rsCgm) > 0 ){
          	
 					db_fieldsmemory($rsCgm,0);
@@ -211,7 +211,7 @@ if (isset($valores)&&isset($incluir)){
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <?
-    include("forms/db_frmordemcompra.php");
+    include(modification("forms/db_frmordemcompra.php"));
     ?>
     </td>
   </tr>

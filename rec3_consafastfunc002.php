@@ -1,39 +1,39 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_assenta_classe.php");
-db_postmemory($HTTP_POST_VARS);
-//db_postmemory($HTTP_SERVER_VARS,2);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
+
 $classenta = new cl_assenta;
 
 $oGet = db_utils::postMemory($_GET);
@@ -84,7 +84,36 @@ $oGet = db_utils::postMemory($_GET);
 	      }
       }
 
-      $sql = $classenta->sql_query_tipo(null,"h12_assent, h12_descr, h16_dtconc, h16_dtterm, h16_quant, h16_nrport, h16_anoato, h16_atofic, h16_histor","h16_dtconc desc ",$dbwhere);
+      if(!empty($dbwhere)) {
+        $dbwhere .= " and h16_codigo in (select distinct rh193_assentamento_funcional from assentamentofuncional)";
+      }
+
+      $campoSituacao = "
+        (select 
+            case 
+                when rh236_situacao = 'C' then 'Criada'
+                when rh236_situacao = 'O' then 'Conferido'
+                when rh236_situacao = 'D' then 'Devolvido para abertura'
+                when rh236_situacao = 'A' then 'Aguarda assinatura'
+                when rh236_situacao = 'F' then 'Devolvido para conferência'
+                when rh236_situacao = 'S' then 'Assinado'
+                when rh236_situacao = 'I' then 'Impresso'
+                else '---'
+             end as rh236_situacao 
+           from (select 
+                    (    select coalesce(rh236_situacao, 'C')
+                           from assenta as a
+                     inner join portariaassenta on h33_assenta = h16_codigo
+                      left join portariaassentasituacao on rh236_portariaassenta = h33_sequencial
+                          where a.h16_codigo = assenta.h16_codigo
+                       order by rh236_momento desc
+                          limit 1
+                    ) as rh236_situacao 
+                ) as x
+        ) as rh236_situacao
+      ";
+
+      $sql = $classenta->sql_query_tipo(null,"h12_assent, h12_descr, h16_dtconc, h16_dtterm, h16_quant, h16_nrport, h16_anoato, h16_atofic, {$campoSituacao}, h16_histor","h16_dtconc desc ",$dbwhere);
       db_lovrot($sql,20,"()","","","","NoMe",$repassa);
       ?>
      </td>

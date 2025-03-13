@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 
 
@@ -47,7 +47,7 @@ $clrotulo->label("y08_codigo");
 <script>
 function js_emite(){
   if (document.form1.y08_codigo.value!=""){
-    js_OpenJanelaIframe('top.corpo','db_iframe_aidof','func_aidof.php?pesquisa_chave='+document.form1.y08_codigo.value+'&funcao_js=parent.js_testacod','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aidof','func_aidof.php?pesquisa_chave='+document.form1.y08_codigo.value+'&funcao_js=parent.js_testacod','Pesquisa',false);
   }else{
   alert("Campo vazio!!");
   document.form1.y08_codigo.focus();
@@ -111,10 +111,10 @@ function js_testacod(cod,erro){
 
 function js_pesquisa_aidof(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_aidof','func_aidof.php?funcao_js=parent.js_mostraaidof1|y08_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aidof','func_aidof.php?funcao_js=parent.js_mostraaidof1|y08_codigo','Pesquisa',true);
   }else{
      if(document.form1.y08_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_aidof','func_aidof.php?pesquisa_chave='+document.form1.y08_codigo.value+'&funcao_js=parent.js_mostraaidof','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aidof','func_aidof.php?pesquisa_chave='+document.form1.y08_codigo.value+'&funcao_js=parent.js_mostraaidof','Pesquisa',false);
      }else{
        document.form1.y08_codigo.value = ''; 
      }

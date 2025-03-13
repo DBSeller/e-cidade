@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,57 +25,42 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_conecta.php');
-require_once('dbforms/db_funcoes.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/db_usuariosonline.php');
-require_once('libs/db_utils.php');
-require_once('std/db_stdClass.php');
-require_once('libs/db_libsys.php');
-require_once('dbagata/classes/core/AgataAPI.class');
-require_once('model/documentoTemplate.model.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_usuariosonline.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('std/db_stdClass.php'));
+require_once(modification('libs/db_libsys.php'));
+require_once(modification('dbagata/classes/core/AgataAPI.class'));
+require_once(modification('model/documentoTemplate.model.php'));
+require_once(modification("classes/db_obrasalvara_classe.php"));
+use App\Domain\Configuracao\DocumentosTemplate\Reports\Projetos\CartaAlvara;
 
 $oGet = db_utils::postMemory($_GET);
-
-ini_set("error_reporting","E_ALL & ~NOTICE");
-
-$clagata = new cl_dbagata("projetos/modelo_alvara.agt");
-
-$api     = $clagata->api;
-
-$sCaminhoSalvoSxw = "tmp/carta_alvara_" . date('YmdHis') . db_getsession("DB_id_usuario") . ".sxw";
-
-$api->setOutputPath($sCaminhoSalvoSxw);
-
-$api->setParameter('$codigo_obra', $oGet->codigo);
-$api->setParameter('$codigo_instituicao', db_getsession('DB_instit'));
-$api->setParameter('$codigo_usuario', db_getsession('DB_id_usuario'));
+$codigo_obra   = $oGet->codigo;
+$clobrasalvara = new cl_obrasalvara;
 
 try {
-	$oDocumentoTemplate = new documentoTemplate(14);
-} catch (Exception $eException){
 
-	$sErroMsg  = $eException->getMessage();
-	db_redireciona("db_erros.php?fechar=true&db_erro={$sErroMsg}");
-}
+    $sCampos       = "obrasalvara.ob04_ativo";
+    $rsObrasAlvara = $clobrasalvara->sql_record($clobrasalvara->sql_query_cartaAlvara($sCampos, $oGet->codigo));
+	db_fieldsmemory($rsObrasAlvara, 0, true);
 
-if($api->parseOpenOffice($oDocumentoTemplate->getArquivoTemplate())){
-
-	if ($api->getRowNum() == 0){
-
-		$sMsg = _M('tributario.projetos.pro2_execobra003.dados_insuficientes');
-		db_redireciona("db_erros.php?fechar=true&db_erro={$sMsg}");
-	}
-
-	$sNomeRelatorio   = "tmp/carta_alvara_" . date('YmdHis') . db_getsession("DB_id_usuario") . ".pdf";
-	$sComandoConverte = db_stdClass::ex_oo2pdf($sCaminhoSalvoSxw, $sNomeRelatorio);
-
-	if (!$sComandoConverte) {
-
-	  $sMsg = _M('tributario.projetos.pro2_execobra003.falha_gerar_pdf');
-		db_redireciona("db_erros.php?fechar=true&db_erro={$sMsg}");
-	} else {
-		db_redireciona($sNomeRelatorio);
-	}
+    if ($ob04_ativo == 'f') {
+        $oParms = new stdClass();
+        $oParms->iCodigo = $oGet->codigo;
+        $sMsg = _M('tributario.projetos.pro2_execobra002.alvara_cancelado', $oParms);
+        db_redireciona("db_erros.php?fechar=true&db_erro={$sMsg}");
+        exit;
+    }
+    
+    $oDocumentoTemplateCartaAlvara = new CartaAlvara($codigo_obra);
+    $oDocumentoTemplateCartaAlvara->configuraDadosVariaveis();
+    $pathDocumento                 = $oDocumentoTemplateCartaAlvara->processaTemplate();
+    db_redireciona($pathDocumento);
+} catch (Exception $eException) {
+    $sErroMsg  = $eException->getMessage();
+    db_redireciona("db_erros.php?fechar=true&db_erro={$sErroMsg}");
 }

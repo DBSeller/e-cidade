@@ -66,9 +66,9 @@ db_input('q03_descr',40,$Iq03_descr,true,'text',3,'')
 <script>
 function js_pesquisaq80_ativ(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_ativid','func_ativid.php?funcao_js=parent.js_mostraativid1|q03_ativ|q03_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ativid','func_ativid.php?funcao_js=parent.js_mostraativid1|q03_ativ|q03_descr','Pesquisa',true);
     }else{
-      js_OpenJanelaIframe('top.corpo','db_iframe_ativid','func_ativid.php?pesquisa_chave='+document.form1.q80_ativ.value+'&funcao_js=parent.js_mostraativid','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ativid','func_ativid.php?pesquisa_chave='+document.form1.q80_ativ.value+'&funcao_js=parent.js_mostraativid','Pesquisa',false);
     }
   if(document.form1.q80_ativ.value!=""){
     document.form1.atualizar.disabled=false;

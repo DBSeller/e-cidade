@@ -1,12 +1,10 @@
 /**
- * @fileoverview Define um objeto do tipo DBAbasItem
+ * Constroi um componente aba para compor o componente DBAbas
  *
  * @author Rafael Nery
  * @author Alberto Ferri
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.5 $
  *
- * Constroi um componente aba para compor o componente DBAbas
- * @class DBAbasItem
  * @constructor
  * @return void
  */
@@ -141,7 +139,7 @@ DBAbasItem.prototype.criarElementos = function () {
   oElementoSeletor.id        = this.sId;
   oElementoSeletor.innerHTML = this.sNome;
 
-  oElementoSeletor.className = 'aba';
+  oElementoSeletor.classList.add('aba');
 
   oElementoSeletor.onclick   = function () {
 
@@ -157,7 +155,7 @@ DBAbasItem.prototype.criarElementos = function () {
   };
 
   oElementoConteudo           = document.createElement('div');
-  oElementoConteudo.className = 'abaInativaConteudo';
+  oElementoConteudo.classList.add('abaInativaConteudo');
 
 
   this.setElementoSeletor ( oElementoSeletor  );
@@ -173,13 +171,16 @@ DBAbasItem.prototype.setVisibilidade = function( lVisivel ) {
   var oElementoSeletor = this.getSeletor();
   var oElementoConteudo= this.getConteudo();
 
+  oElementoSeletor.classList.remove('abaAtiva');
+
+
   if ( lVisivel ) {
-    oElementoSeletor.className  = 'abaAtiva';
-    oElementoConteudo.className = '';
+    oElementoSeletor.classList.add('abaAtiva');
+    oElementoConteudo.classList.remove('abaInativaConteudo');
     return true;
   }
-  oElementoSeletor.className  = 'aba';
-  oElementoConteudo.className = 'abaInativaConteudo';
+  oElementoSeletor.classList.add('aba');
+  oElementoConteudo.classList.add('abaInativaConteudo');
   return false;
 
 };

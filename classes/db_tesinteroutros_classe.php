@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -44,10 +44,12 @@ class cl_tesinteroutros {
    // cria variaveis do arquivo 
    var $j84_tesintertipo = 0; 
    var $j84_tesinter = 0; 
+   var $j84_observacao = ''; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  j84_tesintertipo = int4 = Codigo 
                  j84_tesinter = int4 = Codigo 
+                 j84_observacao = varchar(255) = Observação 
                  ";
    //funcao construtor da classe 
    function cl_tesinteroutros() { 
@@ -69,6 +71,7 @@ class cl_tesinteroutros {
      if($exclusao==false){
        $this->j84_tesintertipo = ($this->j84_tesintertipo == ""?@$GLOBALS["HTTP_POST_VARS"]["j84_tesintertipo"]:$this->j84_tesintertipo);
        $this->j84_tesinter = ($this->j84_tesinter == ""?@$GLOBALS["HTTP_POST_VARS"]["j84_tesinter"]:$this->j84_tesinter);
+       $this->j84_observacao = ($this->j84_observacao == ""?@$GLOBALS["HTTP_POST_VARS"]["j84_observacao"]:$this->j84_observacao);
      }else{
      }
    }
@@ -93,13 +96,24 @@ class cl_tesinteroutros {
        $this->erro_status = "0";
        return false;
      }
+     if($this->j84_observacao == null ){ 
+       $this->erro_sql = " Campo Observação nao Informado.";
+       $this->erro_campo = "j84_observacao";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
      $sql = "insert into tesinteroutros(
                                        j84_tesintertipo 
                                       ,j84_tesinter 
+                                      ,j84_observacao 
                        )
                 values (
                                 $this->j84_tesintertipo 
                                ,$this->j84_tesinter 
+                               ,'$this->j84_observacao'
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -157,8 +171,22 @@ class cl_tesinteroutros {
          return false;
        }
      }
+     if(trim($this->j84_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j84_observacao"])){ 
+       $sql  .= $virgula." j84_observacao = '$this->j84_observacao' ";
+       $virgula = ",";
+       if(trim($this->j84_observacao) == null ){ 
+         $this->erro_sql = " Campo Observação nao Informado.";
+         $this->erro_campo = "j84_observacao";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
 $sql .= "oid = '$oid'";     $result = db_query($sql);
+
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "tesinteroutros nao Alterado. Alteracao Abortada.\\n";
@@ -188,15 +216,13 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      } 
    } 
    // funcao para exclusao 
-   function excluir ( $oid=null ,$dbwhere=null) { 
-     $sql = " delete from tesinteroutros
-                    where ";
+   function excluir ($dbwhere=null) {
+     $sql = " delete from tesinteroutros ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-       $sql2 = "oid = '$oid'";
-     }else{
-       $sql2 = $dbwhere;
+     if($dbwhere !=null || $dbwhere !=""){
+       $sql2 = " and ".$dbwhere;
      }
+
      $result = db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
@@ -249,10 +275,10 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
       }
      return $result;
    }
-   function sql_query ( $oid = null,$campos="tesinteroutros.oid,*",$ordem=null,$dbwhere=""){ 
+   function sql_query ($campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -267,17 +293,13 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      $sql .= "      inner join lote  on  lote.j34_idbql = tesinter.j39_idbql";
      $sql .= "      inner join orientacao  on  orientacao.j64_sequencial = tesinter.j39_orientacao";
      $sql2 = "";
-     if($dbwhere==""){
-       if( $oid != "" && $oid != null){
-          $sql2 = " where tesinteroutros.oid = '$oid'";
-       }
-     }else if($dbwhere != ""){
+     if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -285,11 +307,11 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
        }
      }
      return $sql;
-  }
-   function sql_query_file ( $oid = null,$campos="*",$ordem=null,$dbwhere=""){ 
+   }
+   function sql_query_file ($campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -300,14 +322,13 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      }
      $sql .= " from tesinteroutros ";
      $sql2 = "";
-     if($dbwhere==""){
-     }else if($dbwhere != ""){
+     if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -317,4 +338,3 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      return $sql;
   }
 }
-?>

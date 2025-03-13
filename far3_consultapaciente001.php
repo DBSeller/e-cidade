@@ -26,12 +26,12 @@
  */
 
 //MODULO: educação
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_far_retirada_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_far_retirada_classe.php"));
 
 
 db_postmemory($HTTP_POST_VARS);
@@ -72,6 +72,9 @@ $clfar_retirada->rotulo->label();
  <tr>
   <td align="center" valign="top">
   	<fieldset style="width:67%"><legend><b>Consulta por Paciente</b></legend>
+      <div id="status-microarea" class="alert-danger" style="text-align: center;" role="alert" hidden>
+        Paciente sem cadastro em uma microárea!
+      </div>
    <table width="100%" border="0" align="center" cellspacing="0">
     <form name="form1" method="post" action="" >
     <tr>
@@ -144,7 +147,20 @@ $clfar_retirada->rotulo->label();
 </body>
 </html>
 <?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
+<script rel="script" type="text/javascript" src="scripts/classes/saude/ValidaCgs.js"></script>
 <script>
+
+const divAlert = document.getElementById('status-microarea');
+const inputCgs = {
+  id: document.getElementById('fa04_i_cgsund'),
+  nome: document.getElementById('z01_v_nome')
+};
+const validaCgs = new ValidaCgs(inputCgs);
+
+window.onload = () => {
+  validaCgs.cadastroMicroarea(inputCgs, divAlert)
+}
+
 function js_pesquisafa04_i_cgsund(mostra){
   if(mostra==true){
     js_OpenJanelaIframe('','db_iframe_cgs_und','func_cgs_und.php?funcao_js=parent.js_mostracgs_und1|z01_i_cgsund|z01_v_nome','Pesquisa',true);
@@ -166,6 +182,7 @@ function js_mostracgs_und(chave,erro){
 function js_mostracgs_und1(chave1,chave2){
   document.form1.fa04_i_cgsund.value = chave1;
   document.form1.z01_v_nome.value = chave2;
+  document.form1.fa04_i_cgsund.dispatchEvent(new Event('change'));
   db_iframe_cgs_und.hide();
 }  
 function js_botao(){                                 

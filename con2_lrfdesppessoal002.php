@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,14 +27,14 @@
 
 
 if (!isset($arqinclude)){
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_liborcamento.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("classes/db_conrelinfo_classe.php");
-  include("dbforms/db_funcoes.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
 
   $classinatura = new cl_assinatura;
   $orcparamrel = new cl_orcparamrel;
@@ -85,7 +85,7 @@ if ($dtfin!=''){
 ////////////////////////////////////////////////////////////////////
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -156,7 +156,7 @@ if ($clconrelinfo->numrows > 0 ){
 $sele_work  = 'c61_instit in ('.str_replace('-',', ',$db_selinstit).') ';
 $result_bal     =  db_planocontassaldo_completo($anousu,$dt_ini,$dt_fin,false,$sele_work);
 // calculo do periodo anterior ao exercicio
-@ pg_exec("drop table work_pl");
+@ db_query("drop table work_pl");
 $result_bal_ant =  db_planocontassaldo_completo($anousu_ant,$dt_ini_ant,$dt_fin_ant,false,$sele_work);
 
 /*
@@ -343,7 +343,7 @@ $cl_res->instit = "".str_replace('-',', ',$db_selinstit)." ";
 $cl_res->sql_record();
 $result_rec_ant = $cl_res->result;
 
-@ pg_exec("drop table work_plano");
+@ db_query("drop table work_plano");
 $result_rec  = new cl_receita_saldo_mes;
 $result_rec->anousu = $anousu ;
 $result_rec->dtini = $dt_ini;

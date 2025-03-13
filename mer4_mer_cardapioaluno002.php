@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_stdlibwebseller.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_mer_cardapioaluno_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_stdlibwebseller.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_mer_cardapioaluno_classe.php"));
 $escola              = db_getsession("DB_coddepto");
 db_postmemory($HTTP_POST_VARS);
 $clmer_cardapioaluno = new cl_mer_cardapioaluno;
@@ -83,7 +83,7 @@ $clmer_cardapioaluno = new cl_mer_cardapioaluno;
                             $sql   .= "             inner join matricula on ed60_i_aluno=ed47_i_codigo ";
 				            $sql   .= "             inner join turma on ed60_i_turma=ed57_i_codigo ";			   
 				            $sql   .= "             WHERE ed60_i_codigo=$alunos[$x]";
-                            $result = pg_query($sql);
+                            $result = db_query($sql);
                             if (pg_num_rows($result)>0) {
                           	  db_fieldsmemory($result,0);
                             }

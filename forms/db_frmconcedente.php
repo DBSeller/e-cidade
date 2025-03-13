@@ -82,10 +82,10 @@ db_input('o37_descricao',50,$Io37_descricao,true,'text',3,'')
 <script>
 function js_pesquisao108_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.o108_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.o108_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.o108_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostracgm1(chave1,chave2){
 }
 function js_pesquisao108_tipoconcedente(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tipoconcedente','func_tipoconcedente.php?funcao_js=parent.js_mostratipoconcedente1|o37_sequencial|o37_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoconcedente','func_tipoconcedente.php?funcao_js=parent.js_mostratipoconcedente1|o37_sequencial|o37_descricao','Pesquisa',true);
   }else{
      if(document.form1.o108_tipoconcedente.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tipoconcedente','func_tipoconcedente.php?pesquisa_chave='+document.form1.o108_tipoconcedente.value+'&funcao_js=parent.js_mostratipoconcedente','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoconcedente','func_tipoconcedente.php?pesquisa_chave='+document.form1.o108_tipoconcedente.value+'&funcao_js=parent.js_mostratipoconcedente','Pesquisa',false);
      }else{
        document.form1.o37_descricao.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostratipoconcedente1(chave1,chave2){
   db_iframe_tipoconcedente.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_concedente','func_concedente.php?funcao_js=parent.js_preenchepesquisa|o108_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_concedente','func_concedente.php?funcao_js=parent.js_preenchepesquisa|o108_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_concedente.hide();

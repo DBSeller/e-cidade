@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_varfix_classe.php");
-include("classes/db_varfixval_classe.php");
-include("classes/db_varfixproc_classe.php");
-include("classes/db_varfixnotifica_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_varfix_classe.php"));
+include(modification("classes/db_varfixval_classe.php"));
+include(modification("classes/db_varfixproc_classe.php"));
+include(modification("classes/db_varfixnotifica_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clvarfix = new cl_varfix;
@@ -127,7 +127,7 @@ if (isset($excluir)) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmvarfix.php");
+	include(modification("forms/db_frmvarfix.php"));
 	?>
     </center>
 	</td>

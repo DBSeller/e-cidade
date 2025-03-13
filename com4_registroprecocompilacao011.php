@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,37 +25,37 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("std/db_stdClass.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_liborcamento.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_solicita_classe.php");
-require_once ("classes/db_solicitem_classe.php");
-require_once ("classes/db_solicitemele_classe.php");
-require_once ("classes/db_solicitemunid_classe.php");
-require_once ("classes/db_solicitempcmater_classe.php");
-require_once ("classes/db_pcdotac_classe.php");
-require_once ("classes/db_pcdotaccontrapartida_classe.php");
-require_once ("classes/db_solicitatipo_classe.php");
-require_once ("classes/db_orcreserva_classe.php");
-require_once ("classes/db_orcreservasol_classe.php");
-require_once ("classes/db_db_config_classe.php");
-require_once ("classes/db_pctipocompra_classe.php");
-require_once ("classes/db_db_depart_classe.php");
-require_once ("classes/db_pcsugforn_classe.php");
-require_once ("classes/db_pcparam_classe.php");
-require_once ("classes/db_protprocesso_classe.php");
-require_once ("classes/db_solicitemprot_classe.php");
-require_once ("classes/db_pcproc_classe.php");
-require_once ("classes/db_liclicitem_classe.php");
-require_once ("classes/db_pactovalormov_classe.php");
-require_once ("classes/db_pactovalormovsolicitem_classe.php");
-require_once ("classes/db_orctiporecconveniosolicita_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_solicita_classe.php"));
+require_once(modification("classes/db_solicitem_classe.php"));
+require_once(modification("classes/db_solicitemele_classe.php"));
+require_once(modification("classes/db_solicitemunid_classe.php"));
+require_once(modification("classes/db_solicitempcmater_classe.php"));
+require_once(modification("classes/db_pcdotac_classe.php"));
+require_once(modification("classes/db_pcdotaccontrapartida_classe.php"));
+require_once(modification("classes/db_solicitatipo_classe.php"));
+require_once(modification("classes/db_orcreserva_classe.php"));
+require_once(modification("classes/db_orcreservasol_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_pctipocompra_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
+require_once(modification("classes/db_pcsugforn_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_solicitemprot_classe.php"));
+require_once(modification("classes/db_pcproc_classe.php"));
+require_once(modification("classes/db_liclicitem_classe.php"));
+require_once(modification("classes/db_pactovalormov_classe.php"));
+require_once(modification("classes/db_pactovalormovsolicitem_classe.php"));
+require_once(modification("classes/db_orctiporecconveniosolicita_classe.php"));
 
 $oGet = db_utils::postmemory($_GET);
 db_postmemory($HTTP_POST_VARS);
@@ -104,7 +104,7 @@ db_app::load("scripts.js, strings.js, prototype.js");
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <?
- include ("forms/db_frmsolicitacompilacaoregistropreco.php");
+ include(modification("forms/db_frmsolicitacompilacaoregistropreco.php"));
 ?>
 </body>
 </html>

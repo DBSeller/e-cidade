@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,15 +28,15 @@
 
 if (!isset($arqinclude)){ // se este arquivo no esta incluido por outro
   
-  include("libs/db_liborcamento.php");
-  include("libs/db_libcontabilidade.php");
-  include("fpdf151/pdf.php");
-  include("libs/db_sql.php");
-  include("libs/db_utils.php");
-  include("fpdf151/assinatura.php");
-  include("classes/db_empresto_classe.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_orcparamrelnota_classe.php");
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("fpdf151/pdf.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_utils.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("classes/db_empresto_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_orcparamrelnota_classe.php"));
   
   parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
   db_postmemory($HTTP_POST_VARS);
@@ -50,7 +50,7 @@ if (!isset($arqinclude)){ // se este arquivo no esta incluido por outro
 if (!isset($arqinclude)) { // se este arquivo no esta incluido por outro
   
   $xinstit    = split("-",$db_selinstit);
-  $rsMunic    = pg_exec("select munic,codigo,nomeinst,nomeinstabrev from db_config where prefeitura is true");
+  $rsMunic    = db_query("select munic,codigo,nomeinst,nomeinstabrev from db_config where prefeitura is true");
   $oMunic     = db_utils::fieldsMemory($rsMunic,0);
   $descr_inst = '';
   $xvirg      = '';
@@ -124,7 +124,7 @@ $head6 = "$txt";
   
 }
 
-$Param_NotaLiquidacao = pg_result(pg_query("select e30_notaliquidacao from empparametro where e39_anousu = ".db_getsession("DB_anousu")),0,0);
+$Param_NotaLiquidacao = pg_result(db_query("select e30_notaliquidacao from empparametro where e39_anousu = ".db_getsession("DB_anousu")),0,0);
 
 $sqlperiodo = $clempresto->sql_rp2(db_getsession("DB_anousu"), $instit, $perini, $perfin, $where,$order);
 //die($sqlperiodo);
@@ -168,7 +168,7 @@ $sSQLPeriodo .= "        order by db21_tipoinstit,o58_orgao";
 
 //die($sSQLPeriodo);
 
-$result = pg_query($sSQLPeriodo) or die($sSQLPeriodo);
+$result = db_query($sSQLPeriodo) or die($sSQLPeriodo);
 
 /*RPS de receita intra-Orçamentaria*/
 $sqlPeriodoIntra  = "select *"; 
@@ -205,7 +205,7 @@ $sqlPeriodoIntra .= "         where substr(o56_elemento,4,2) = '91'";
 $sqlPeriodoIntra .= "         group by e60_instit,db21_tipoinstit,nomeinst,o58_orgao,o40_descr";
 $sqlPeriodoIntra .= "       ) as foo ";
 $sqlPeriodoIntra .= "  order by db21_tipoinstit,o58_orgao";
-$result_intra     = pg_query($sqlPeriodoIntra) or die($sqlPeriodoIntra);
+$result_intra     = db_query($sqlPeriodoIntra) or die($sqlPeriodoIntra);
 
 // db_criatabela($result);
 // exit;

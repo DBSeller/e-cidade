@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -27,7 +27,7 @@
 
 header("Content-type: image/png");
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-$img = imagecreatefromjpeg("logomodulo.jpg");
+$img = imagecreatefromjpeg(__DIR__ . "/logomodulo.jpg");
 $preto = imagecolorallocate($img,0,0,0);
 
 $nome = urldecode(base64_decode($nome));

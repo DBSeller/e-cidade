@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -652,10 +652,10 @@ $clrotulo->label("rh74_tipofolha");
 
     function js_pesquisarh74_rubric(mostra) {
       if (mostra == true) {
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_rhrubricas', 'func_rhrubricas.php?funcao_js=parent.js_mostrarhrubricas1|rh27_rubric|rh27_descr', 'Pesquisa', true);
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_rhrubricas', 'func_rhrubricas.php?funcao_js=parent.js_mostrarhrubricas1|rh27_rubric|rh27_descr', 'Pesquisa', true);
       } else {
         if (document.form1.rh74_rubric.value != '') {
-          js_OpenJanelaIframe('top.corpo', 'db_iframe_rhrubricas', 'func_rhrubricas.php?pesquisa_chave=' + document.form1.rh74_rubric.value + '&funcao_js=parent.js_mostrarhrubricas', 'Pesquisa', false);
+          js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_rhrubricas', 'func_rhrubricas.php?pesquisa_chave=' + document.form1.rh74_rubric.value + '&funcao_js=parent.js_mostrarhrubricas', 'Pesquisa', false);
         } else {
           document.form1.rh27_descr.value = '';
         }
@@ -673,10 +673,10 @@ $clrotulo->label("rh74_tipofolha");
       }
 
       if (mostra == true) {
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_orcunidade', 'func_orcunidade.php?orgao=' + document.form1.rh74_orgao.value + '&funcao_js=parent.js_mostraunidade1|o41_unidade|o41_descr', 'Pesquisa', true);
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orcunidade', 'func_orcunidade.php?orgao=' + document.form1.rh74_orgao.value + '&funcao_js=parent.js_mostraunidade1|o41_unidade|o41_descr', 'Pesquisa', true);
       } else {
         if (document.form1.rh74_unidade.value != '') {
-          js_OpenJanelaIframe('top.corpo', 'db_iframe_orcunidade', 'func_orcunidade.php?orgao=' + document.form1.rh74_orgao.value + '&pesquisa_chave=' + document.form1.rh74_unidade.value + '&funcao_js=parent.js_mostraunidade', 'Pesquisa', false);
+          js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orcunidade', 'func_orcunidade.php?orgao=' + document.form1.rh74_orgao.value + '&pesquisa_chave=' + document.form1.rh74_unidade.value + '&funcao_js=parent.js_mostraunidade', 'Pesquisa', false);
         } else {
           document.form1.o41_descr.value = '';
         }
@@ -699,10 +699,10 @@ $clrotulo->label("rh74_tipofolha");
 
     function js_pesquisarh74_orgao(mostra) {
       if (mostra == true) {
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_orcorgao', 'func_orcorgao.php?funcao_js=parent.js_mostraorcorgao1|o40_orgao|o40_descr', 'Pesquisa', true);
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orcorgao', 'func_orcorgao.php?funcao_js=parent.js_mostraorcorgao1|o40_orgao|o40_descr', 'Pesquisa', true);
       } else {
         if (document.form1.rh74_orgao.value != '') {
-          js_OpenJanelaIframe('top.corpo', 'db_iframe_orcorgao', 'func_orcorgao.php?pesquisa_chave=' + document.form1.rh74_orgao.value + '&funcao_js=parent.js_mostraorcorgao', 'Pesquisa', false);
+          js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orcorgao', 'func_orcorgao.php?pesquisa_chave=' + document.form1.rh74_orgao.value + '&funcao_js=parent.js_mostraorcorgao', 'Pesquisa', false);
         } else {
           document.form1.o40_descr.value = '';
         }
@@ -729,10 +729,10 @@ $clrotulo->label("rh74_tipofolha");
 
     function js_pesquisarh74_projativ(mostra) {
       if (mostra == true) {
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_orcprojativ', 'func_orcprojativ.php?funcao_js=parent.js_mostraorcprojativ1|o55_projativ|o55_descr', 'Pesquisa', true);
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orcprojativ', 'func_orcprojativ.php?funcao_js=parent.js_mostraorcprojativ1|o55_projativ|o55_descr', 'Pesquisa', true);
       } else {
         if (document.form1.rh74_projativ.value != '') {
-          js_OpenJanelaIframe('top.corpo', 'db_iframe_orcprojativ', 'func_orcprojativ.php?pesquisa_chave=' + document.form1.rh74_projativ.value + '&funcao_js=parent.js_mostraorcprojativ', 'Pesquisa', false);
+          js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orcprojativ', 'func_orcprojativ.php?pesquisa_chave=' + document.form1.rh74_projativ.value + '&funcao_js=parent.js_mostraorcprojativ', 'Pesquisa', false);
         } else {
           document.form1.o55_descr.value = '';
         }
@@ -755,10 +755,10 @@ $clrotulo->label("rh74_tipofolha");
 
     function js_pesquisarh74_recurso(mostra) {
       if (mostra == true) {
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_orctiporec', 'func_orctiporec.php?funcao_js=parent.js_mostraorctiporec1|o15_codigo|o15_descr', 'Pesquisa', true);
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orctiporec', 'func_orctiporec.php?funcao_js=parent.js_mostraorctiporec1|o15_codigo|o15_descr', 'Pesquisa', true);
       } else {
         if (document.form1.rh74_recurso.value != '') {
-          js_OpenJanelaIframe('top.corpo', 'db_iframe_orctiporec', 'func_orctiporec.php?pesquisa_chave=' + document.form1.rh74_recurso.value + '&funcao_js=parent.js_mostraorctiporec', 'Pesquisa', false);
+          js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orctiporec', 'func_orctiporec.php?pesquisa_chave=' + document.form1.rh74_recurso.value + '&funcao_js=parent.js_mostraorctiporec', 'Pesquisa', false);
         } else {
           document.form1.o15_descr.value = '';
         }

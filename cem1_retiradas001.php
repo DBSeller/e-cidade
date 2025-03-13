@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_ossoario_classe.php");
-include("classes/db_ossoariopart_classe.php");
-include("classes/db_gavetas_classe.php");
-include("classes/db_restos_classe.php");
-include("classes/db_retiradas_classe.php");
-include("classes/db_sepulturas_classe.php");
-include("classes/db_sepultamentos_classe.php");
-include("classes/db_sepulthist_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_ossoario_classe.php"));
+include(modification("classes/db_ossoariopart_classe.php"));
+include(modification("classes/db_gavetas_classe.php"));
+include(modification("classes/db_restos_classe.php"));
+include(modification("classes/db_retiradas_classe.php"));
+include(modification("classes/db_sepulturas_classe.php"));
+include(modification("classes/db_sepultamentos_classe.php"));
+include(modification("classes/db_sepulthist_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clossoario = new cl_ossoario;
 $clossoariopart = new cl_ossoariopart;
@@ -97,7 +97,7 @@ $result = $clsepultamento->sql_record($clsepultamento->sql_query($sepultamento,"
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmretiradas.php");
+	include(modification("forms/db_frmretiradas.php"));
 	?>
     </center>
 	</td>
@@ -118,7 +118,7 @@ if(isset($incluir)){
   }else{
    db_msgbox($clretiradas->erro_msg);
    echo "<script>";
-    echo " top.corpo.iframe_a1.location.href='cem1_transacao001.php';";
+    echo " (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href='cem1_transacao001.php';";
     echo " parent.document.formaba.a6.disabled=true;";
     echo " parent.mo_camada('a1'); ";
     echo "</script>";

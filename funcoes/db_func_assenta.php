@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,5 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "assenta.h16_codigo as db_h16_codigo,assenta.h16_regist,cgm.z01_nome,tipoasse.h12_assent,assenta.h16_dtconc,assenta.h16_dtterm,assenta.h16_quant,assenta.h16_nrport,assenta.h16_atofic";
-?>
+$campos = "assenta.h16_codigo as db_h16_codigo,h12_codigo as db_h12_codigo,assenta.h16_regist,cgm.z01_nome,tipoasse.h12_assent,assenta.h16_dtconc,assenta.h16_dtterm,assenta.h16_quant,assenta.h16_nrport,assenta.h16_atofic
+
+			,assenta.h16_histor,
+    (select rh213_horainicio from assentamentoabonofalta where rh213_codigo = h16_codigo) as dl_Hora_Inicial,
+    (select rh213_horafim from assentamentoabonofalta where rh213_codigo = h16_codigo) as dl_Hora_Final";

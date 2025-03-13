@@ -1,0 +1,151 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010845' name='recursoshumanos.rhservidorcontratojornada' description="Jornada contratual do servidor" prefix="rh254" label="Jornada contratual do servidor" type="0">
+  <fields>
+    <field codigo="1013582" 
+           campo_api='' 
+           name="rh254_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial único" 
+           inivalue="0" 
+           label="Código sequencial único" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código sequencial único" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.rhservidorcontratojornada_rh254_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013583" 
+           campo_api='' 
+           name="rh254_matricula" 
+           conteudo="int4" 
+           description="Código de matrícula do servidor" 
+           inivalue="0" 
+           label="Código de matrícula do servidor" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código de matrícula do servidor" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013584" 
+           campo_api='' 
+           name="rh254_instit" 
+           conteudo="int4" 
+           description="Código de instituição" 
+           inivalue="0" 
+           label="Código de instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código de instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013585" 
+           campo_api='' 
+           name="rh254_tipojornada" 
+           conteudo="int4" 
+           description="Tipo de jornada" 
+           inivalue="0" 
+           label="Tipo de jornada" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de jornada" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013586" 
+           campo_api='' 
+           name="rh254_tempoparcial" 
+           conteudo="int4" 
+           description="Código relativo ao tipo de contrato em tempo parcial" 
+           inivalue="0" 
+           label="Tipo de contrato em tempo parcial" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de contrato em tempo parcial" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013587" 
+           campo_api='' 
+           name="rh254_horarionoturno" 
+           conteudo="varchar(1)" 
+           description="Indicar se a jornada semanal possui horário noturno (no todo ou em parte)." 
+           inivalue="" 
+           label="Possui horário noturno" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Possui horário noturno" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013588" 
+           campo_api='' 
+           name="rh254_descricaojornada" 
+           conteudo="varchar(255)" 
+           description="Descrição da jornada semanal contratual, contendo os dias da semana e os respectivos horários contratuais (entrada, saída e intervalos)" 
+           inivalue="" 
+           label="Descrição da jornada semanal contratual" 
+           size="255" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição da jornada semanal contratual" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh254_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="rh254_instit" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="rh254_matricula" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

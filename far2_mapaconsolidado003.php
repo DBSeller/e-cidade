@@ -26,15 +26,15 @@
  */
 
 //MODULO: educação
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_stdlibwebseller.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_far_modelolivro_classe.php");
-include("classes/db_far_fechalivro_classe.php");
-include("classes/db_far_farmacia_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_stdlibwebseller.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_far_modelolivro_classe.php"));
+include(modification("classes/db_far_fechalivro_classe.php"));
+include(modification("classes/db_far_farmacia_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -51,7 +51,7 @@ if (isset($_POST['lv'])) {
   $colname_v = (get_magic_quotes_gpc()) ? $_POST['lv'] : addslashes($_POST['lv']);
 }  
 $sql = "SELECT * FROM far_modelolivro WHERE fa16_i_codigo = '$lv' ";
-$qr = pg_query($sql) ;
+$qr = db_query($sql) ;
 
 
 

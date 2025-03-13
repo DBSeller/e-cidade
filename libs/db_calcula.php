@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -67,7 +67,7 @@
 * sides.
 * 
 * Usage:
-* require_once 'Crypt/HCEMD5.php';
+* require_once modification("Crypt/HCEMD5.php");
 * $key = 'my secret key';
 * srand((double)microtime()*32767);
 * $rand = rand(1, 32767);
@@ -90,7 +90,7 @@
 * $new_hcemd5 = new Crypt_HCEMD5($key, '');
 * $cleartext = $new_hcemd5->DecodeMimeSelfRand($ciphertext);
 *
-* @version $Id: db_calcula.php,v 1.1 2010/02/01 18:51:23 dbfabrizio Exp $
+* @version $Id: db_calcula.php,v 1.4 2015/09/05 02:19:26 dbjeferson.belmiro Exp $
 * @access public
 * @package Crypt
 */

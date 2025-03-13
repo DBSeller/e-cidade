@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -34,7 +34,7 @@ define("URL_MENSAGEM_SITUACAOALUNO", "educacao.escola.SituacaoAluno.");
  * @package educacao
  * @subpackage classificacao
  * @author Trucolo <trucolo@dbseller.com.br>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.6 $
  *
  */
 

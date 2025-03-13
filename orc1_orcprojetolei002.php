@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcprojetolei_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcprojetolei_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clorcprojetolei = new cl_orcprojetolei;
@@ -67,7 +67,7 @@ if(isset($alterar)){
 </table>
     <center>
 	<?
-	include("forms/db_frmorcprojetolei.php");
+	include(modification("forms/db_frmorcprojetolei.php"));
 	?>
     </center>
 <?

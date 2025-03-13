@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcsuplem_classe.php");
-include("dbforms/db_funcoes.php");
-require("classes/db_conhistdoc_classe.php");
-include("classes/db_orcsuplemtipo_classe.php");
-include("classes/db_orcsuplemval_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcsuplem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("classes/db_conhistdoc_classe.php"));
+include(modification("classes/db_orcsuplemtipo_classe.php"));
+include(modification("classes/db_orcsuplemval_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -115,7 +115,7 @@ if (isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-            include("forms/db_frmorcsuplem.php");
+            include(modification("forms/db_frmorcsuplem.php"));
         ?>
 
     </center>
@@ -132,14 +132,14 @@ if (isset($o46_codsup) && ($o46_codsup!="")){
 	    echo "<script>
       	          // libera suplementação
 	          parent.document.formaba.orcsuplemrec.disabled=false;\n
-	          top.corpo.iframe_orcsuplemrec.location.href='orc1_orcsuplemrec007.php?o85_codsup=$o46_codsup';\n
+	          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcsuplemrec.location.href='orc1_orcsuplemrec007.php?o85_codsup=$o46_codsup';\n
 		  </script>
                   ";
 	 }   
          echo "<script>
       	       // libera suplementação
 	       parent.document.formaba.orcsuplemval.disabled=false;\n
-	       top.corpo.iframe_orcsuplemval.location.href='orc1_orcsuplemval007.php?o47_codsup=$o46_codsup';\n
+	       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcsuplemval.location.href='orc1_orcsuplemval007.php?o47_codsup=$o46_codsup';\n
 	       // envia para reducao
                parent.mo_camada('orcsuplemval');    //envia direto para outra aba     
                </script>";    
@@ -149,17 +149,17 @@ if (isset($o46_codsup) && ($o46_codsup!="")){
 	    echo "<script>
       	          // libera suplementação
 	          parent.document.formaba.orcsuplemrec.disabled=false;\n
-	          top.corpo.iframe_orcsuplemrec.location.href='orc1_orcsuplemrec007.php?o85_codsup=$o46_codsup';\n
+	          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcsuplemrec.location.href='orc1_orcsuplemrec007.php?o85_codsup=$o46_codsup';\n
 		  </script>
                   ";
 	 }    
          echo "<script>
   	       // libera reducao	         
                parent.document.formaba.reducao.disabled=false;\n
-               top.corpo.iframe_reducao.location.href='orc1_orcsuplemval001.php?o47_codsup=$o46_codsup';\n
+               (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_reducao.location.href='orc1_orcsuplemval001.php?o47_codsup=$o46_codsup';\n
                // libera suplementação
 	       parent.document.formaba.orcsuplemval.disabled=false;\n
-	       top.corpo.iframe_orcsuplemval.location.href='orc1_orcsuplemval007.php?o47_codsup=$o46_codsup';\n
+	       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcsuplemval.location.href='orc1_orcsuplemval007.php?o47_codsup=$o46_codsup';\n
 	       // envia para reducao
                parent.mo_camada('reducao');    //envia direto para outra aba     
           </script>";

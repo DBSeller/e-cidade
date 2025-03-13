@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_portariatipo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_portariatipo_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clportariatipo = new cl_portariatipo;
-$clportariatipo->rotulo->label("h30_sequencial");
-$clportariatipo->rotulo->label("h30_sequencial");
+$cltipoasse     = new cl_tipoasse;
+$clportariatipo->rotulo->label();
+$cltipoasse->rotulo->label();
 ?>
 <html>
 <head>
@@ -60,12 +61,12 @@ $clportariatipo->rotulo->label("h30_sequencial");
             </td>
           </tr>
           <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Th30_sequencial?>">
-              <?=$Lh30_sequencial?>
+            <td width="4%" align="right" nowrap title="<?=$Th12_assent?>">
+              <?=$Lh12_assent?>
             </td>
             <td width="96%" align="left" nowrap> 
               <?
-		       db_input("h30_sequencial",10,$Ih30_sequencial,true,"text",4,"","chave_h30_sequencial");
+		       db_input("h12_assent",10,$Ih12_assent,true,"text",4,"","chave_h12_assent");
 		       ?>
             </td>
           </tr>
@@ -92,12 +93,16 @@ $clportariatipo->rotulo->label("h30_sequencial");
         $campos .= "portariatipo.h30_portariatipoato, ";
         $campos .= "portariatipo.h30_portariaproced,  ";
         $campos .= "portariatipo.h30_amparolegal,     ";
-        $campos .= "h41_descr                         ";
+        $campos .= "h41_descr,                        ";
+        $campos .= "h12_natureza,                     ";
+        $campos .= "h12_codigo                      ";
 
         if(isset($chave_h30_sequencial) && (trim($chave_h30_sequencial)!="") ){
 	         $sql = $clportariatipo->sql_query_func($chave_h30_sequencial,$campos,"h30_sequencial",'');
         }else if(isset($chave_h30_sequencial) && (trim($chave_h30_sequencial)!="") ){
 	         $sql = $clportariatipo->sql_query_func("",$campos,"h30_sequencial"," h30_sequencial like '$chave_h30_sequencial%' ");
+        }else if(isset($chave_h12_assent) && (trim($chave_h12_assent)!="") ){
+           $sql = $clportariatipo->sql_query_func("",$campos,"h12_assent"," h12_assent like '$chave_h12_assent%' ");
         }else{
            $sql = $clportariatipo->sql_query_func("",$campos,"h30_sequencial","");
         }
@@ -109,7 +114,7 @@ $clportariatipo->rotulo->label("h30_sequencial");
           $result = $clportariatipo->sql_record($clportariatipo->sql_query_func($pesquisa_chave));
           if($clportariatipo->numrows!=0){
             db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$h30_sequencial',false,'$h12_descr','$h30_amparolegal','$h41_descr');</script>";
+            echo "<script>".$funcao_js."('$h30_sequencial',false,'$h12_descr','$h30_amparolegal','$h41_descr','$h12_natureza','$h12_codigo');</script>";
           }else{
 	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
           }
@@ -133,4 +138,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_h30_sequencial",true,1,"chave_h30_sequencial",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,22 +26,22 @@
  */
 
 //ac4_acordoinclusao.rpc.php
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("libs/exceptions/BusinessException.php");
-require_once("libs/exceptions/DBException.php");
-require_once("libs/exceptions/ParameterException.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libdicionario.php");
-require_once("model/Acordo.model.php");
-require_once("model/AcordoComissao.model.php");
-require_once("model/CgmFactory.model.php");
-require_once("model/AcordoPosicao.model.php");
-require_once("model/AcordoComissaoMembro.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
+require_once(modification("libs/exceptions/DBException.php"));
+require_once(modification("libs/exceptions/ParameterException.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libdicionario.php"));
+require_once(modification("model/Acordo.model.php"));
+require_once(modification("model/AcordoComissao.model.php"));
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification("model/AcordoPosicao.model.php"));
+require_once(modification("model/AcordoComissaoMembro.model.php"));
 
 $oJson                  = new services_json();
 $oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -129,8 +129,8 @@ try {
 
         $sCamposDesvincular  = "ac26_sequencial as acordoposicao, ";
         $sCamposDesvincular .= "ac20_sequencial as acordoitem     ";
-        $sWhereDesvincular   = "and ac16_sequencial = {$iAcordo}";
-        $sSqlDesvincularEmpenhos = $oDaoAcordo->sql_queryEmpenhosVinculadosContrato(null, $sCamposDesvincular, null, $sWhereDesvincular);
+        $sWhereDesvincular   = "ac16_sequencial = {$iAcordo} and e100_numemp = {$oDadosDesvincular->e100_numemp}";
+        $sSqlDesvincularEmpenhos = $oDaoAcordo->sql_queryItensEmpenhoContrato(null, $sCamposDesvincular, null, $sWhereDesvincular);
         $rsDesvincularEmpenhos   = $oDaoAcordo->sql_record($sSqlDesvincularEmpenhos);
 
         if ($oDaoAcordo->numrows > 0) {
@@ -216,7 +216,7 @@ try {
         $nValorTotalEmpenhos += $oEmpenhoFinanceiro->getValorEmpenho();
       }
       // como dito comparamos os 2 valores
-      if ( $nValorTotalEmpenhos > $nValorAcordo) {
+      if ( round($nValorTotalEmpenhos, 2) > round($nValorAcordo, 2)) {
         throw new Exception(_M($sCaminhoMensagens."valor_total_empenhos_maior_valor_acordo"));
       }
 
@@ -403,7 +403,7 @@ try {
           $sSqlJaVinculados  = $oDaoEmpEmpenhoContrato->sql_query_file(null, $sCampoJaVinculado, null, "e100_acordo = {$iAcordo}");
           $rsJaVinculados    = $oDaoEmpEmpenhoContrato->sql_record($sSqlJaVinculados);
           $sVinculados       = db_utils::fieldsMemory($rsJaVinculados, 0)->e100_numemp;
-          $sVinculados = $sVinculados . ", ". $iCodigoEmpenho;
+          $sVinculados       = $sVinculados . (!empty($sVinculados) ? ", " : '' ) . $iCodigoEmpenho;
         } else {
           $sVinculados = $iCodigoEmpenho;
         }

@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orcparamrel_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $classinatura = new cl_assinatura;
 
@@ -46,7 +46,7 @@ $dt_fin= $dt[1]; // data final do período
 $orcparamrel = new cl_orcparamrel;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -163,7 +163,7 @@ for($i=0;$i< pg_numrows($result_plano);$i++) {
    	   $soma_repasses += $valor_desp;
    } 
 }
-//  include("dados_2004.php");
+//  include(modification("dados_2004.php"));
 
 
 $deducoes = $soma_indenizacoes +$soma_judicial+$soma_desp_anteriores+$soma_pensionistas;

@@ -1,36 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-  /**
-   * Classe repository para classes ProcedimentoAvaliacao
-   * @author Iuri Guntchnigg <iuri@dbseller.com.br>
-   * @package
-   */
-  class ProcedimentoAvaliacaoRepository {
+/**
+ * Classe repository para classes ProcedimentoAvaliacao
+ * @author Iuri Guntchnigg <iuri@dbseller.com.br>
+ * @package
+ */
+class ProcedimentoAvaliacaoRepository
+{
 
     /**
      * Collection de ProcedimentoAvaliacao
@@ -39,15 +40,30 @@
     private $aProcedimentoAvaliacao = array();
 
     /**
+     * Array de vinculos com o resultado
+     * @var array
+     */
+    private $aVinculosResultado = array();
+
+    /**
+     * Array de vinculos do período de avaliacao
+     * @var array
+     */
+    private $aVinculosProcedimentoAvaliacao = array();
+
+    /**
      * Instancia da classe
      * @var ProcedimentoAvaliacaoRepository
      */
     private static $oInstance;
 
-    private function __construct() {
+    private function __construct()
+    {
 
     }
-    private function __clone() {
+
+    private function __clone()
+    {
 
     }
 
@@ -56,25 +72,27 @@
      * @param integer $iCodigo Codigo do ProcedimentoAvaliacao
      * @return ProcedimentoAvaliacao
      */
-    public static function getProcedimentoByCodigo($iCodigoProcedimentoAvaliacao) {
+    public static function getProcedimentoByCodigo($iCodigoProcedimentoAvaliacao)
+    {
 
-      if (!array_key_exists($iCodigoProcedimentoAvaliacao, ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao)) {
-        ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao[$iCodigoProcedimentoAvaliacao] = new ProcedimentoAvaliacao($iCodigoProcedimentoAvaliacao);
-      }
-      return ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao[$iCodigoProcedimentoAvaliacao];
+        if (!array_key_exists($iCodigoProcedimentoAvaliacao, ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao)) {
+            ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao[$iCodigoProcedimentoAvaliacao] = new ProcedimentoAvaliacao($iCodigoProcedimentoAvaliacao);
+        }
+        return ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao[$iCodigoProcedimentoAvaliacao];
     }
 
     /**
      * Retorna a instancia da classe
      * @return ProcedimentoAvaliacaoRepository
      */
-    protected static function getInstance() {
+    protected static function getInstance()
+    {
 
-      if (self::$oInstance == null) {
+        if (self::$oInstance == null) {
 
-        self::$oInstance = new ProcedimentoAvaliacaoRepository();
-      }
-      return self::$oInstance;
+            self::$oInstance = new ProcedimentoAvaliacaoRepository();
+        }
+        return self::$oInstance;
     }
 
     /**
@@ -82,12 +100,13 @@
      * @param ProcedimentoAvaliacao $oProcedimentoAvaliacao Instancia do ProcedimentoAvaliacao
      * @return boolean
      */
-    public static function adicionarProcedimentoAvaliacao(ProcedimentoAvaliacao $oProcedimentoAvaliacao) {
+    public static function adicionarProcedimentoAvaliacao(ProcedimentoAvaliacao $oProcedimentoAvaliacao)
+    {
 
-      if (!array_key_exists($oProcedimentoAvaliacao->getCodigo(), ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao)) {
-        ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao[$oProcedimentoAvaliacao->getCodigo()] = $oProcedimentoAvaliacao;
-      }
-      return true;
+        if (!array_key_exists($oProcedimentoAvaliacao->getCodigo(), ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao)) {
+            ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao[$oProcedimentoAvaliacao->getCodigo()] = $oProcedimentoAvaliacao;
+        }
+        return true;
     }
 
     /**
@@ -95,21 +114,107 @@
      * @param ProcedimentoAvaliacao $oProcedimentoAvaliacao
      * @return boolean
      */
-    public static function removerProcedimentoAvaliacao(ProcedimentoAvaliacao $oProcedimentoAvaliacao) {
-       /**
-        *
-        */
-      if (array_key_exists($oProcedimentoAvaliacao->getCodigo(), ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao)) {
-        unset(ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao[$oProcedimentoAvaliacao->getCodigo()]);
-      }
-      return true;
+    public static function removerProcedimentoAvaliacao(ProcedimentoAvaliacao $oProcedimentoAvaliacao)
+    {
+        /**
+         *
+         */
+        if (array_key_exists($oProcedimentoAvaliacao->getCodigo(), ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao)) {
+            unset(ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao[$oProcedimentoAvaliacao->getCodigo()]);
+        }
+        return true;
     }
 
     /**
      * Retorna o total de cidadoes existentes no repositorio;
      * @return integer;
      */
-    public static function getTotalProcedimentoAvaliacao() {
-      return count(ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao);
+    public static function getTotalProcedimentoAvaliacao()
+    {
+        return count(ProcedimentoAvaliacaoRepository::getInstance()->aProcedimentoAvaliacao);
     }
-  }
+
+    /**
+     * Retorna o vínculo com o resultado
+     * @param IElementoAvaliacao $oElementoAvaliacao
+     * @return integer/null
+     */
+    public static function getVinculoResultado(IElementoAvaliacao $oElementoAvaliacao)
+    {
+
+        $iCodigoElementoAvaliacao = $oElementoAvaliacao->getCodigo();
+
+        if (!array_key_exists($iCodigoElementoAvaliacao, ProcedimentoAvaliacaoRepository::getInstance()->aVinculosResultado)) {
+
+            $oDaoProcavaliacao = new cl_procavaliacao();
+            $sWhere = " ed41_i_procresultvinc = {$iCodigoElementoAvaliacao} ";
+            $sSqlQueryAvaliacaoPeriodica = $oDaoProcavaliacao->sql_query_file(null, 'ed41_i_codigo', null, $sWhere);
+            $rsPeriodoAvaliacao = $oDaoProcavaliacao->sql_record($sSqlQueryAvaliacaoPeriodica);
+            $iCodigoProcavaliacao = null;
+
+            if ($oDaoProcavaliacao->numrows > 0) {
+                $iCodigoProcavaliacao = db_utils::fieldsMemory($rsPeriodoAvaliacao, 0)->ed41_i_codigo;
+            }
+
+            ProcedimentoAvaliacaoRepository::getInstance()->aVinculosResultado[$iCodigoElementoAvaliacao] = $iCodigoProcavaliacao;
+        }
+
+        return ProcedimentoAvaliacaoRepository::getInstance()->aVinculosResultado[$iCodigoElementoAvaliacao];
+    }
+
+    /**
+     * Retorna o vínculo com o período de avaliação
+     * @param IElementoAvaliacao $oElementoAvaliacao
+     * @return integer/null
+     */
+    public static function getVinculoPeriodoAvaliacao(IElementoAvaliacao $oElementoAvaliacao)
+    {
+
+        $iCodigoElementoAvaliacao = $oElementoAvaliacao->getCodigo();
+
+        if (!array_key_exists($iCodigoElementoAvaliacao, ProcedimentoAvaliacaoRepository::getInstance()->aVinculosProcedimentoAvaliacao)) {
+
+            $oDaoProcavaliacao = new cl_procavaliacao();
+            $sWhere = " ed41_i_procavalvinc = {$iCodigoElementoAvaliacao} ";
+            $sSqlQueryAvaliacaoPeriodica = $oDaoProcavaliacao->sql_query_file(null, 'ed41_i_codigo', null, $sWhere);
+            $rsPeriodoAvaliacao = $oDaoProcavaliacao->sql_record($sSqlQueryAvaliacaoPeriodica);
+            $iCodigoProcavaliacao = null;
+
+            if ($oDaoProcavaliacao->numrows > 0) {
+                $iCodigoProcavaliacao = db_utils::fieldsMemory($rsPeriodoAvaliacao, 0)->ed41_i_codigo;
+            }
+
+            ProcedimentoAvaliacaoRepository::getInstance()->aVinculosProcedimentoAvaliacao[$iCodigoElementoAvaliacao] = $iCodigoProcavaliacao;
+        }
+
+        return ProcedimentoAvaliacaoRepository::getInstance()->aVinculosProcedimentoAvaliacao[$iCodigoElementoAvaliacao];
+    }
+
+    /**
+     * @param Escola $escola
+     * @return array
+     * @throws Exception
+     */
+    public static function getProcedimentoEscola(Escola $escola)
+    {
+        $where = [
+            "ed86_i_escola = {$escola->getCodigo()}",
+            "ed40_desativado is false"
+        ];
+
+        $dao = new cl_procescola();
+        $sql = $dao->sql_query(null, "ed86_i_procedimento", null, implode(' and ', $where));
+        $rs = db_query($sql);
+
+        if (!$rs) {
+            throw new Exception("Erro ao buscar procedimentos da escola.");
+        }
+
+        $procedimentos = [];
+        while ($state = pg_fetch_object($rs)) {
+            $procedimentos[] = self::getProcedimentoByCodigo($state->ed86_i_procedimento);
+        }
+
+        return $procedimentos;
+    }
+}

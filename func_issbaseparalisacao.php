@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_issbaseparalisacao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_issbaseparalisacao_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clissbaseparalisacao = new cl_issbaseparalisacao;
@@ -74,13 +74,13 @@ $clissbaseparalisacao->rotulo->label("q140_sequencial");
     <td align="center" valign="top">
       <?php
 
-      $sWhere = ' q140_datafim >= \'' . date('Y-m-d')  . '\' ';
+      $sWhere = ' (q140_datafim is null or q140_datafim >= \'' . date('Y-m-d')  . '\' )';
 
       if(!isset($pesquisa_chave)){
 
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_issbaseparalisacao.php")==true){
-             include("funcoes/db_func_issbaseparalisacao.php");
+             include(modification("funcoes/db_func_issbaseparalisacao.php"));
            }else{
            $campos = "issbaseparalisacao.*";
            }
@@ -134,4 +134,10 @@ function js_valida(event) {
 }
 
 js_tabulacaoforms("form2","chave_q140_sequencial",true,1,"chave_q140_sequencial",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

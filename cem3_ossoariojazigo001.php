@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_ossoariojazigo_classe.php");
-require_once("classes/db_propricemit_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_ossoariojazigo_classe.php"));
+require_once(modification("classes/db_propricemit_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -63,7 +63,7 @@ $db_botao = false;
          ?>
           <form name="form1">
             <fieldset>
-              <legend>Ossoários / Jazigos</legend>
+              <legend>Ossários / Jazigos</legend>
               <table>
                <tr>
                 <td nowrap title="<?=@$Tcm25_i_codigo?>">
@@ -102,24 +102,24 @@ $db_botao = false;
 
                 db_fieldsmemory($result,0);
                 $z01_nome = $nome_proprietario;
-                include("forms/db_frmpropricemit.php");
+                include(modification("forms/db_frmpropricemit.php"));
 
                 if( $cm25_c_tipo == 'J' ){
 
                      echo "<script>";
                      echo " parent.document.formaba.a2.disabled=false; ";
-                     echo " top.corpo.iframe_a2.location.href='cem3_proprijazigo001.php?cm28_i_codigo=$cm28_i_codigo&cm28_i_ossoariojazigo=$cm28_i_ossoariojazigo&cm28_i_proprietario=$cm28_i_proprietario&z01_nome=$z01_nome&chavepesquisa=$cm28_i_codigo';";
+                     echo " (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='cem3_proprijazigo001.php?cm28_i_codigo=$cm28_i_codigo&cm28_i_ossoariojazigo=$cm28_i_ossoariojazigo&cm28_i_proprietario=$cm28_i_proprietario&z01_nome=$z01_nome&chavepesquisa=$cm28_i_codigo';";
                      echo "</script>";
                 }
 
                 echo "<script>";
                 echo " parent.document.formaba.a3.disabled=false; ";
-                echo " top.corpo.iframe_a3.location.href='cem3_sepultados001.php?chavepesquisa=$cm25_i_codigo&tipo=$cm25_c_tipo';";
+                echo " (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href='cem3_sepultados001.php?chavepesquisa=$cm25_i_codigo&tipo=$cm25_c_tipo';";
                 echo "</script>";
 
                 echo "<script>";
                 echo " parent.document.formaba.a4.disabled=false; ";
-                echo " top.corpo.iframe_a4.location.href='cem3_taxas001.php?chavepesquisa=$cm25_i_codigo';";
+                echo " (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href='cem3_taxas001.php?chavepesquisa=$cm25_i_codigo';";
                 echo "</script>";
 
             }

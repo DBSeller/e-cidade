@@ -1,85 +1,85 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: biblioteca
 //CLASSE DA ENTIDADE reserva
-class cl_reserva { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $bi14_codigo = 0; 
-   var $bi14_carteira = 0; 
-   var $bi14_usuario = 0; 
-   var $bi14_acervo = 0; 
-   var $bi14_data_dia = null; 
-   var $bi14_data_mes = null; 
-   var $bi14_data_ano = null; 
-   var $bi14_data = null; 
-   var $bi14_datareserva_dia = null; 
-   var $bi14_datareserva_mes = null; 
-   var $bi14_datareserva_ano = null; 
-   var $bi14_datareserva = null; 
-   var $bi14_hora = null; 
-   var $bi14_retirada_dia = null; 
-   var $bi14_retirada_mes = null; 
-   var $bi14_retirada_ano = null; 
-   var $bi14_retirada = null; 
-   var $bi14_situacao = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_reserva {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $bi14_codigo = 0;
+   var $bi14_carteira = 0;
+   var $bi14_usuario = 0;
+   var $bi14_acervo = 0;
+   var $bi14_data_dia = null;
+   var $bi14_data_mes = null;
+   var $bi14_data_ano = null;
+   var $bi14_data = null;
+   var $bi14_datareserva_dia = null;
+   var $bi14_datareserva_mes = null;
+   var $bi14_datareserva_ano = null;
+   var $bi14_datareserva = null;
+   var $bi14_hora = null;
+   var $bi14_retirada_dia = null;
+   var $bi14_retirada_mes = null;
+   var $bi14_retirada_ano = null;
+   var $bi14_retirada = null;
+   var $bi14_situacao = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 bi14_codigo = int8 = Código da Reserva 
-                 bi14_carteira = int8 = Carteira 
-                 bi14_usuario = int8 = Usuário 
-                 bi14_acervo = int8 = Código do Acervo 
-                 bi14_data = date = Data 
-                 bi14_datareserva = date = Reservar para 
-                 bi14_hora = char(5) = Hora da Reserva 
-                 bi14_retirada = date = Data da Retirada 
-                 bi14_situacao = char(1) = Situação 
+                 bi14_codigo = int8 = Código da Reserva
+                 bi14_carteira = int8 = Carteira
+                 bi14_usuario = int8 = Usuário
+                 bi14_acervo = int8 = Código do Acervo
+                 bi14_data = date = Data
+                 bi14_datareserva = date = Reservar para
+                 bi14_hora = char(5) = Hora da Reserva
+                 bi14_retirada = date = Data da Retirada
+                 bi14_situacao = char(1) = Situação
                  ";
-   //funcao construtor da classe 
-   function cl_reserva() { 
+   //funcao construtor da classe
+   function cl_reserva() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("reserva"); 
+     $this->rotulo = new rotulo("reserva");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -125,9 +125,9 @@ class cl_reserva {
      }
    }
    // funcao para inclusao
-   function incluir ($bi14_codigo){ 
+   function incluir ($bi14_codigo){
       $this->atualizacampos();
-     if($this->bi14_carteira == null ){ 
+     if($this->bi14_carteira == null ){
        $this->erro_sql = " Campo Carteira nao Informado.";
        $this->erro_campo = "bi14_carteira";
        $this->erro_banco = "";
@@ -136,7 +136,7 @@ class cl_reserva {
        $this->erro_status = "0";
        return false;
      }
-     if($this->bi14_usuario == null ){ 
+     if($this->bi14_usuario == null ){
        $this->erro_sql = " Campo Usuário nao Informado.";
        $this->erro_campo = "bi14_usuario";
        $this->erro_banco = "";
@@ -145,7 +145,7 @@ class cl_reserva {
        $this->erro_status = "0";
        return false;
      }
-     if($this->bi14_acervo == null ){ 
+     if($this->bi14_acervo == null ){
        $this->erro_sql = " Campo Código do Acervo nao Informado.";
        $this->erro_campo = "bi14_acervo";
        $this->erro_banco = "";
@@ -154,7 +154,7 @@ class cl_reserva {
        $this->erro_status = "0";
        return false;
      }
-     if($this->bi14_data == null ){ 
+     if($this->bi14_data == null ){
        $this->erro_sql = " Campo Data nao Informado.";
        $this->erro_campo = "bi14_data_dia";
        $this->erro_banco = "";
@@ -163,7 +163,7 @@ class cl_reserva {
        $this->erro_status = "0";
        return false;
      }
-     if($this->bi14_datareserva == null ){ 
+     if($this->bi14_datareserva == null ){
        $this->erro_sql = " Campo Reservar para nao Informado.";
        $this->erro_campo = "bi14_datareserva_dia";
        $this->erro_banco = "";
@@ -172,7 +172,7 @@ class cl_reserva {
        $this->erro_status = "0";
        return false;
      }
-     if($this->bi14_hora == null ){ 
+     if($this->bi14_hora == null ){
        $this->erro_sql = " Campo Hora da Reserva nao Informado.";
        $this->erro_campo = "bi14_hora";
        $this->erro_banco = "";
@@ -181,20 +181,20 @@ class cl_reserva {
        $this->erro_status = "0";
        return false;
      }
-     if($this->bi14_retirada == null ){ 
+     if($this->bi14_retirada == null ){
        $this->bi14_retirada = "null";
      }
      if($bi14_codigo == "" || $bi14_codigo == null ){
-       $result = db_query("select nextval('reserva_bi14_codigo_seq')"); 
+       $result = db_query("select nextval('reserva_bi14_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: reserva_bi14_codigo_seq do campo: bi14_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: reserva_bi14_codigo_seq do campo: bi14_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->bi14_codigo = pg_result($result,0,0); 
+       $this->bi14_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from reserva_bi14_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $bi14_codigo)){
@@ -205,10 +205,10 @@ class cl_reserva {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->bi14_codigo = $bi14_codigo; 
+         $this->bi14_codigo = $bi14_codigo;
        }
      }
-     if(($this->bi14_codigo == null) || ($this->bi14_codigo == "") ){ 
+     if(($this->bi14_codigo == null) || ($this->bi14_codigo == "") ){
        $this->erro_sql = " Campo bi14_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -217,29 +217,29 @@ class cl_reserva {
        return false;
      }
      $sql = "insert into reserva(
-                                       bi14_codigo 
-                                      ,bi14_carteira 
-                                      ,bi14_usuario 
-                                      ,bi14_acervo 
-                                      ,bi14_data 
-                                      ,bi14_datareserva 
-                                      ,bi14_hora 
-                                      ,bi14_retirada 
-                                      ,bi14_situacao 
+                                       bi14_codigo
+                                      ,bi14_carteira
+                                      ,bi14_usuario
+                                      ,bi14_acervo
+                                      ,bi14_data
+                                      ,bi14_datareserva
+                                      ,bi14_hora
+                                      ,bi14_retirada
+                                      ,bi14_situacao
                        )
                 values (
-                                $this->bi14_codigo 
-                               ,$this->bi14_carteira 
-                               ,$this->bi14_usuario 
-                               ,$this->bi14_acervo 
-                               ,".($this->bi14_data == "null" || $this->bi14_data == ""?"null":"'".$this->bi14_data."'")." 
-                               ,".($this->bi14_datareserva == "null" || $this->bi14_datareserva == ""?"null":"'".$this->bi14_datareserva."'")." 
-                               ,'$this->bi14_hora' 
-                               ,".($this->bi14_retirada == "null" || $this->bi14_retirada == ""?"null":"'".$this->bi14_retirada."'")." 
-                               ,'$this->bi14_situacao' 
+                                $this->bi14_codigo
+                               ,$this->bi14_carteira
+                               ,$this->bi14_usuario
+                               ,$this->bi14_acervo
+                               ,".($this->bi14_data == "null" || $this->bi14_data == ""?"null":"'".$this->bi14_data."'")."
+                               ,".($this->bi14_datareserva == "null" || $this->bi14_datareserva == ""?"null":"'".$this->bi14_datareserva."'")."
+                               ,'$this->bi14_hora'
+                               ,".($this->bi14_retirada == "null" || $this->bi14_retirada == ""?"null":"'".$this->bi14_retirada."'")."
+                               ,'$this->bi14_situacao'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Reservas de Acervos ($this->bi14_codigo) nao Incluído. Inclusao Abortada.";
@@ -279,16 +279,16 @@ class cl_reserva {
        $resac = db_query("insert into db_acount values($acount,1010150,1008925,'','".AddSlashes(pg_result($resaco,0,'bi14_situacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($bi14_codigo=null) { 
+   function alterar ($bi14_codigo=null) {
       $this->atualizacampos();
      $sql = " update reserva set ";
      $virgula = "";
-     if(trim($this->bi14_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_codigo"])){ 
+     if(trim($this->bi14_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_codigo"])){
        $sql  .= $virgula." bi14_codigo = $this->bi14_codigo ";
        $virgula = ",";
-       if(trim($this->bi14_codigo) == null ){ 
+       if(trim($this->bi14_codigo) == null ){
          $this->erro_sql = " Campo Código da Reserva nao Informado.";
          $this->erro_campo = "bi14_codigo";
          $this->erro_banco = "";
@@ -298,10 +298,10 @@ class cl_reserva {
          return false;
        }
      }
-     if(trim($this->bi14_carteira)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_carteira"])){ 
+     if(trim($this->bi14_carteira)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_carteira"])){
        $sql  .= $virgula." bi14_carteira = $this->bi14_carteira ";
        $virgula = ",";
-       if(trim($this->bi14_carteira) == null ){ 
+       if(trim($this->bi14_carteira) == null ){
          $this->erro_sql = " Campo Carteira nao Informado.";
          $this->erro_campo = "bi14_carteira";
          $this->erro_banco = "";
@@ -311,10 +311,10 @@ class cl_reserva {
          return false;
        }
      }
-     if(trim($this->bi14_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_usuario"])){ 
+     if(trim($this->bi14_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_usuario"])){
        $sql  .= $virgula." bi14_usuario = $this->bi14_usuario ";
        $virgula = ",";
-       if(trim($this->bi14_usuario) == null ){ 
+       if(trim($this->bi14_usuario) == null ){
          $this->erro_sql = " Campo Usuário nao Informado.";
          $this->erro_campo = "bi14_usuario";
          $this->erro_banco = "";
@@ -324,10 +324,10 @@ class cl_reserva {
          return false;
        }
      }
-     if(trim($this->bi14_acervo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_acervo"])){ 
+     if(trim($this->bi14_acervo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_acervo"])){
        $sql  .= $virgula." bi14_acervo = $this->bi14_acervo ";
        $virgula = ",";
-       if(trim($this->bi14_acervo) == null ){ 
+       if(trim($this->bi14_acervo) == null ){
          $this->erro_sql = " Campo Código do Acervo nao Informado.";
          $this->erro_campo = "bi14_acervo";
          $this->erro_banco = "";
@@ -337,10 +337,10 @@ class cl_reserva {
          return false;
        }
      }
-     if(trim($this->bi14_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["bi14_data_dia"] !="") ){ 
+     if(trim($this->bi14_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["bi14_data_dia"] !="") ){
        $sql  .= $virgula." bi14_data = '$this->bi14_data' ";
        $virgula = ",";
-       if(trim($this->bi14_data) == null ){ 
+       if(trim($this->bi14_data) == null ){
          $this->erro_sql = " Campo Data nao Informado.";
          $this->erro_campo = "bi14_data_dia";
          $this->erro_banco = "";
@@ -349,11 +349,11 @@ class cl_reserva {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["bi14_data_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["bi14_data_dia"])){
          $sql  .= $virgula." bi14_data = null ";
          $virgula = ",";
-         if(trim($this->bi14_data) == null ){ 
+         if(trim($this->bi14_data) == null ){
            $this->erro_sql = " Campo Data nao Informado.";
            $this->erro_campo = "bi14_data_dia";
            $this->erro_banco = "";
@@ -364,10 +364,10 @@ class cl_reserva {
          }
        }
      }
-     if(trim($this->bi14_datareserva)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_datareserva_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["bi14_datareserva_dia"] !="") ){ 
+     if(trim($this->bi14_datareserva)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_datareserva_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["bi14_datareserva_dia"] !="") ){
        $sql  .= $virgula." bi14_datareserva = '$this->bi14_datareserva' ";
        $virgula = ",";
-       if(trim($this->bi14_datareserva) == null ){ 
+       if(trim($this->bi14_datareserva) == null ){
          $this->erro_sql = " Campo Reservar para nao Informado.";
          $this->erro_campo = "bi14_datareserva_dia";
          $this->erro_banco = "";
@@ -376,11 +376,11 @@ class cl_reserva {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["bi14_datareserva_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["bi14_datareserva_dia"])){
          $sql  .= $virgula." bi14_datareserva = null ";
          $virgula = ",";
-         if(trim($this->bi14_datareserva) == null ){ 
+         if(trim($this->bi14_datareserva) == null ){
            $this->erro_sql = " Campo Reservar para nao Informado.";
            $this->erro_campo = "bi14_datareserva_dia";
            $this->erro_banco = "";
@@ -391,10 +391,10 @@ class cl_reserva {
          }
        }
      }
-     if(trim($this->bi14_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_hora"])){ 
+     if(trim($this->bi14_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_hora"])){
        $sql  .= $virgula." bi14_hora = '$this->bi14_hora' ";
        $virgula = ",";
-       if(trim($this->bi14_hora) == null ){ 
+       if(trim($this->bi14_hora) == null ){
          $this->erro_sql = " Campo Hora da Reserva nao Informado.";
          $this->erro_campo = "bi14_hora";
          $this->erro_banco = "";
@@ -404,16 +404,16 @@ class cl_reserva {
          return false;
        }
      }
-     if(trim($this->bi14_retirada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_retirada_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["bi14_retirada_dia"] !="") ){ 
+     if(trim($this->bi14_retirada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_retirada_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["bi14_retirada_dia"] !="") ){
        $sql  .= $virgula." bi14_retirada = '$this->bi14_retirada' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["bi14_retirada_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["bi14_retirada_dia"])){
          $sql  .= $virgula." bi14_retirada = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->bi14_situacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_situacao"])){ 
+     if(trim($this->bi14_situacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bi14_situacao"])){
        $sql  .= $virgula." bi14_situacao = '$this->bi14_situacao' ";
        $virgula = ",";
      }
@@ -449,7 +449,7 @@ class cl_reserva {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Reservas de Acervos nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->bi14_codigo;
@@ -477,14 +477,14 @@ class cl_reserva {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($bi14_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($bi14_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($bi14_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -518,7 +518,7 @@ class cl_reserva {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Reservas de Acervos nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$bi14_codigo;
@@ -546,11 +546,11 @@ class cl_reserva {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -572,7 +572,7 @@ class cl_reserva {
       }
      return $result;
    }
-   function sql_query ( $bi14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $bi14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -609,8 +609,8 @@ class cl_reserva {
      $sql2 = "";
      if($dbwhere==""){
        if($bi14_codigo!=null ){
-         $sql2 .= " where reserva.bi14_codigo = $bi14_codigo "; 
-       } 
+         $sql2 .= " where reserva.bi14_codigo = $bi14_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -626,7 +626,7 @@ class cl_reserva {
      }
      return $sql;
   }
-   function sql_query_file ( $bi14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $bi14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -642,8 +642,8 @@ class cl_reserva {
      $sql2 = "";
      if($dbwhere==""){
        if($bi14_codigo!=null ){
-         $sql2 .= " where reserva.bi14_codigo = $bi14_codigo "; 
-       } 
+         $sql2 .= " where reserva.bi14_codigo = $bi14_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -659,23 +659,23 @@ class cl_reserva {
      }
      return $sql;
   }
-  
+
   function sql_query_acervo_leitorcidadao ( $bi14_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
-    
+
     $sql = "select ";
     if ($campos != "*" ) {
-      
+
       $campos_sql = split("#",$campos);
       $virgula    = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
-        
+
         $sql     .= $virgula.$campos_sql[$i];
         $virgula  = ",";
       }
     } else {
       $sql .= $campos;
     }
-    
+
     $sql .= " from reserva ";
     $sql .= "      inner join acervo           on  acervo.bi06_seq             = reserva.bi14_acervo                   \n";
     $sql .= "      inner join editora          on  editora.bi02_codigo         = acervo.bi06_editora                   \n";
@@ -690,9 +690,9 @@ class cl_reserva {
     $sql .= "      left  join cidadao          on cidadao.ov02_sequencial      = leitorcidadao.bi28_cidadao_sequencial \n";
     $sql .= "                                 and cidadao.ov02_seq             = leitorcidadao.bi28_cidadao_seq        \n";
     $sql2 = "";
-    
+
     if ($dbwhere == "") {
-      
+
       if ($bi14_codigo != null ) {
         $sql2 .= " where reserva.bi14_codigo = $bi14_codigo ";
       }
@@ -701,15 +701,36 @@ class cl_reserva {
     }
     $sql .= $sql2;
     if ($ordem != null ) {
-      
+
       $sql        .= " order by ";
       $campos_sql  = split("#",$ordem);
       $virgula     = "";
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
-        
+
         $sql     .= $virgula.$campos_sql[$i];
         $virgula  = ",";
       }
+    }
+    return $sql;
+  }
+
+  public function sql_query_reserva( $bi14_codigo = null, $campos = "*", $ordem = null, $dbwhere = "" ) {
+
+    $sql  = "select {$campos} ";
+    $sql .= "  from reserva ";
+    $sql .= "      inner join acervo    on acervo.bi06_seq      = reserva.bi14_acervo ";
+    $sql .= "      inner join exemplar  on exemplar.bi23_acervo = acervo.bi06_seq ";
+    $sql2 = "";
+    if (empty($dbwhere)) {
+      if (!empty($bi14_codigo)){
+        $sql2 .= " where reserva.bi14_codigo = $bi14_codigo ";
+      }
+    } else if (!empty($dbwhere)) {
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
     }
     return $sql;
   }

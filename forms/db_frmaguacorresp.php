@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -138,13 +138,13 @@
     
 	  if (mostra == true) {
     
-	    js_OpenJanelaIframe('top.corpo', 'db_iframe_bairro',
+	    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_bairro',
 	    	'func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr', 'Pesquisa', true);
     } else {
     
       if (document.form1.x02_codbairro.value != '') {
    
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_bairro', 
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_bairro', 
           'func_bairro.php?pesquisa_chave=' + document.form1.x02_codbairro.value +
           '&funcao_js=parent.js_mostrabairro', 'Pesquisa', false);
       } else {
@@ -176,12 +176,12 @@
 
 	  if (mostra == true) {
 
-	    js_OpenJanelaIframe('top.corpo', 'db_iframe_ruas',
+	    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_ruas',
 	    	'func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome', 'Pesquisa', true);
     } else {
 
       if (document.form1.x02_codrua.value != '') { 
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_ruas',
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_ruas',
           'func_ruas.php?pesquisa_chave=' + document.form1.x02_codrua.value + '&funcao_js=parent.js_mostraruas',
           'Pesquisa', false);
       } else {
@@ -212,7 +212,7 @@
   
   function js_pesquisa() {
 	  
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_aguacorresp', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguacorresp', 
     	'func_aguacorresp.php?funcao_js=parent.js_preenchepesquisa|x02_codcorresp', 'Pesquisa', true);
   }
   
@@ -259,7 +259,7 @@
     
 	  js_removeObj('msgbox');
       
-	  var oRetorno = eval("("+oAjax.responseText+")");
+	  var oRetorno = JSON.parse(oAjax.responseText);
 
 	  sValida = false;
 	  
@@ -301,7 +301,7 @@
 
 	function js_retorna_rota(oAjax) {
 	
-	 var oRetorno =  eval("(" + oAjax.responseText + ")");
+	 var oRetorno =  JSON.parse(oAjax.responseText);
 
 	 if (oRetorno.status == 1) {
 

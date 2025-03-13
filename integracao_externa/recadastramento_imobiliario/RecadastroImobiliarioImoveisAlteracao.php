@@ -1,4 +1,30 @@
 <?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
 require_once(PATH_IMPORTACAO . "RecadastroImobiliarioImoveis.interface.php");
 require_once(PATH_IMPORTACAO . "libs/caracteristicas_imovel.php");
 
@@ -8,8 +34,8 @@ require_once(PATH_IMPORTACAO . "libs/caracteristicas_imovel.php");
  * @uses     RecadastroImobiliarioImoveisInterface
  * @package  Recadastro Imobiliario
  * @author   Rafael Serpa Nery <rafael.nery@dbseller.com.br> 
- * @revision $Author: dbalberto $
- * @version  $Revision: 1.11 $
+ * @revision $Author: dbanderson $
+ * @version  $Revision: 1.15 $
  */
 class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImoveisInterface {
 
@@ -164,7 +190,7 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
     }
 
     $sSqlLogradouro = "Select 1 from ruas where j14_codigo = {$this->oRegistro->iCodigoLogradouroNovo}"; 
-    $rsRuas         = pg_query($sSqlLogradouro); 
+    $rsRuas         = db_query($sSqlLogradouro); 
     $oComparacoes                                                     = new stdClass();
     $oComparacoes->{"Logradouro Inexistente"}                         = pg_num_rows($rsRuas) > 0;
     $oComparacoes->codigo_logradouro_lote                             = $oDadosImovel->codigo_logradouro_lote                          == $this->oRegistro->iCodigoLogradouroAnterior;
@@ -300,7 +326,7 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
     $sInsertHistocorrencia .= "         '$sMensagemOcorrencia.',                             ";
     $sInsertHistocorrencia .= "         '$sMensagemOcorrencia.')                             ";
 
-    if (pg_query ($sInsertHistocorrencia)) {
+    if (db_query ($sInsertHistocorrencia)) {
 
       $sInsertHistocorrenciaMatric  = "insert into histocorrenciamatric                            ";
       $sInsertHistocorrenciaMatric .= "       (ar25_sequencial   ,                                 ";
@@ -310,7 +336,7 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
       $sInsertHistocorrenciaMatric .= "        {$this->iMatricula},                                ";
       $sInsertHistocorrenciaMatric .= "        currval('histocorrencia_ar23_sequencial_seq'))      ";
 
-      if (pg_query($sInsertHistocorrenciaMatric)) {
+      if (db_query($sInsertHistocorrenciaMatric)) {
         return true;
       }
     }
@@ -380,7 +406,7 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
   private function getCodigoConstrucaoByReferenciaAnterior( $sReferenciaAnterior ) {
 
     $sSql     = "select j39_matric, j39_idcons from iptuconstr where j39_obs ~ '{$sReferenciaAnterior}'";
-    $rsCodigo = pg_query($sSql);
+    $rsCodigo = db_query($sSql);
 
     if (!$rsCodigo) {
       throw new Exception("Erro ao buscar os dados da Construcao");
@@ -425,7 +451,7 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
     $sQueryValidacao.= "                              and j48_idcons = j39_idcons                            ";
     $sQueryValidacao.= "   where j01_matric = {$this->iMatricula}                                            ";
     $sQueryValidacao.= "group by j01_matric                                                                  ";
-    $oDados          = db_utils::fieldsMemory( pg_query( $sQueryValidacao ), 0);
+    $oDados          = db_utils::fieldsMemory( db_query( $sQueryValidacao ), 0);
 
 
     if ( $oDados->construcoes == 0 ) {
@@ -489,9 +515,11 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
     $sWhereExclusao                  .= "                                 from caracter        ";
     $sWhereExclusao                  .= "                                where j31_grupo = 44) ";
     
-    $rsRemocaoCaracteristicas         = RecadastramentoSQLUtils::excluir("carlote", "", $sWhereExclusao);
+    if ( !$this->lUnidadeSecundaria ) {
+      $rsRemocaoCaracteristicas         = RecadastramentoSQLUtils::excluir("carlote", "", $sWhereExclusao);
+    }
 
-    if ( !$rsRemocaoCaracteristicas ) {
+    if ( isset($rsRemocaoCaracteristicas) and !$rsRemocaoCaracteristicas ) {
 
       $sMensagem = "Erro ao Remover as Caracteristicas do Lote. Detalhe:".Conexao::getInstancia()->getLastError();
       $this->logBanco($sMensagem,DBLog::LOG_ERROR);
@@ -542,7 +570,7 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
     $sFaceQuadra      .= " where j37_setor  = '{$this->oRegistro->sSetorCartograficoNovo}'  \n";
     $sFaceQuadra      .= "   and j37_quadra = '{$this->oRegistro->sQuadraCartograficaNovo}' \n";
     $sFaceQuadra      .= "   and j37_codigo = '{$this->oRegistro->iCodigoLogradouroNovo}'   \n";
-    $rsFaceQuadra      = pg_query($sFaceQuadra);
+    $rsFaceQuadra      = db_query($sFaceQuadra);
 
     /**
      * Caso houver erro de query
@@ -753,7 +781,7 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
     $sSqlLoteamento = "select j34_loteam                                                      ";
     $sSqlLoteamento.= "  from loteam                                                 ";
     $sSqlLoteamento.= " where j34_descr ~ '{$this->oRegistro->iPlantaLoteamentoNovo}'";
-    $rsLoteamento   = pg_query($sSqlLoteamento);
+    $rsLoteamento   = db_query($sSqlLoteamento);
 
     if ( !$rsLoteamento ) { //Erro de Query
 
@@ -798,7 +826,7 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
     $sSqlLoteLoc  = "select j05_codigo                                                      \n";
     $sSqlLoteLoc .= "  from setorloc                                                        \n";
     $sSqlLoteLoc .= " where j05_codigoproprio ~ '{$this->oRegistro->iPlantaLoteamentoNovo}' \n";
-    $rsLoteLoc    = pg_query($sSqlLoteLoc);
+    $rsLoteLoc    = db_query($sSqlLoteLoc);
 
     if ( !$rsLoteLoc ) { ///Erro de Query
 
@@ -859,7 +887,7 @@ class RecadastroImobiliarioImoveisAlteracao  implements RecadastroImobiliarioImo
     /**
      * Gravar Matric OBS
      **/
-    $rsSql = pg_query("select j26_obs from matricobs where j26_matric = {$this->iMatricula}");
+    $rsSql = db_query("select j26_obs from matricobs where j26_matric = {$this->iMatricula}");
 
     if (!$rsSql ) {
 

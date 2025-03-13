@@ -107,10 +107,10 @@ db_input('o125_valor',10,$Io125_valor,true,'text',$db_opcao,"")
 <script>
 function js_pesquisao125_cronogramaperspectiva(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cronogramaperspectiva','func_cronogramaperspectiva.php?funcao_js=parent.js_mostracronogramaperspectiva1|o124_sequencial|o124_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cronogramaperspectiva','func_cronogramaperspectiva.php?funcao_js=parent.js_mostracronogramaperspectiva1|o124_sequencial|o124_descricao','Pesquisa',true);
   }else{
      if(document.form1.o125_cronogramaperspectiva.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cronogramaperspectiva','func_cronogramaperspectiva.php?pesquisa_chave='+document.form1.o125_cronogramaperspectiva.value+'&funcao_js=parent.js_mostracronogramaperspectiva','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cronogramaperspectiva','func_cronogramaperspectiva.php?pesquisa_chave='+document.form1.o125_cronogramaperspectiva.value+'&funcao_js=parent.js_mostracronogramaperspectiva','Pesquisa',false);
      }else{
        document.form1.o124_descricao.value = ''; 
      }
@@ -129,7 +129,7 @@ function js_mostracronogramaperspectiva1(chave1,chave2){
   db_iframe_cronogramaperspectiva.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cronogramabasecalculo','func_cronogramabasecalculo.php?funcao_js=parent.js_preenchepesquisa|o125_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cronogramabasecalculo','func_cronogramabasecalculo.php?funcao_js=parent.js_preenchepesquisa|o125_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cronogramabasecalculo.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_termo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_termo_classe.php"));
 
 $cltermo   = new cl_termo();
 $oGet    = db_utils::postmemory($_GET);
@@ -184,11 +184,11 @@ function js_pesquisaNome(codigoOrigem){
   var parametros = '';
   var nomeIframe = '';
 
-  arquivo    = 'prot3_conscgm002.php';
+  arquivo    = 'prot3_consultacgmnovo002.php';
   parametros = 'numcgm='+codigoOrigem+'&fechar=db_iframe_consultacgm';    
   nomeIframe = 'db_iframe_consultacgm';
 
-  js_OpenJanelaIframe('top.corpo',nomeIframe,arquivo+'?'+parametros,'Detalhes da Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo',nomeIframe,arquivo+'?'+parametros,'Detalhes da Pesquisa',true);
 
 }
 </script>

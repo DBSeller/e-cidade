@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -321,14 +321,14 @@ function js_atualiza(){
 }
 function js_pesquisao60_codfon(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostraorcfontes1|o57_fonte|o57_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostraorcfontes1|o57_fonte|o57_descr','Pesquisa',true);
   }else{
     fonte=document.form1.o50_estrutreceita.value;
     while(fonte.search(/\./)!='-1'){
 	 fonte=fonte.replace(/\./,''); 
     }  
     if(fonte!=''){
-      js_OpenJanelaIframe('top.corpo','db_iframe_orcfontes','func_orcfontes.php?pesquisa_chave='+fonte+'&funcao_js=parent.js_mostraorcfontes','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcfontes','func_orcfontes.php?pesquisa_chave='+fonte+'&funcao_js=parent.js_mostraorcfontes','Pesquisa',false);
     }else{
       document.form1.o50_estrutreceita.value='';
     }  
@@ -352,7 +352,7 @@ function js_mostraorcfontes1(chave1,chave2){
   js_atualiza();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcfontesdes','func_orcfontesdes.php?funcao_js=parent.js_preenchepesquisa|o60_codfon|o60_anousu','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcfontesdes','func_orcfontesdes.php?funcao_js=parent.js_preenchepesquisa|o60_codfon|o60_anousu','Pesquisa',true);
 }
 function js_preenchepesquisa(chave1,chave){
   db_iframe_orcfontesdes.hide();
@@ -373,6 +373,6 @@ if(isset($fonts) && $fonts!=''){
   ";
 }else  if(isset($testa) && $testa=='nops'){
     db_msgbox("A fonte selecionada está incorreta!");
-    echo "<script>js_OpenJanelaIframe('top.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostraorcfontes1|o57_fonte|o57_descr','Pesquisa',true);</script>";
+    echo "<script>js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostraorcfontes1|o57_fonte|o57_descr','Pesquisa',true);</script>";
 }    
 ?>

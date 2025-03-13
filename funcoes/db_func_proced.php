@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "proced.v03_codigo,proced.v03_descr,proced.v03_dcomp,proced.v03_receit,proced.k00_hist,proced.v03_tributaria,proced.v03_instit,proced.v03_procedtipo";
+$campos = "proced.v03_codigo,proced.v03_descr,proced.v03_dcomp,proced.v03_receit,proced.v03_tributaria,proced.v03_instit,proced.v03_procedtipo,proced.v03_limite";
 ?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -587,7 +587,7 @@ class cl_issnotaavulsa {
    }
    function emiteNotaAvulsa($q51_sequencial){
      if (!class_exists("cl_issnotaavulsaemissao")){
-        require "classes/db_issnotaavulsaemissao_classe.php";
+        require modification("classes/db_issnotaavulsaemissao_classe.php");
      }
      $clissnotaavulsaemissao = new cl_issnotaavulsaemissao();
      (bool)$lCommit = true;
@@ -627,21 +627,21 @@ class cl_issnotaavulsa {
 
         $clparissqn = new cl_parissqn;
       }else{
-         require ("classes/db_parissqn_classe.php");
+         require(modification("classes/db_parissqn_classe.php"));
          $clparissqn = new cl_parissqn;
       }
       if (class_exists("cl_issnotaavulsaservico")){
 
         $clissnotaavulsaservico = new cl_issnotaavulsaservico;
       }else{
-         require ("classes/db_issnotaavulsaservico_classe.php");
+         require(modification("classes/db_issnotaavulsaservico_classe.php"));
          $clissnotaavulsaservico = new cl_issnotaavulsaservico;
       }
       if (class_exists("cl_issnotaavulsatomador")){
 
         $clissnotaavulsatomador = new cl_issnotaavulsatomador;
       }else{
-         require ("classes/db_issnotaavulsastomador_classe.php");
+         require(modification("classes/classes/db_issnotaavulsastomador_classe.php"));
          $clissnotaavulsatomador = new cl_issnotaavulsatomador;
       }
       $rsPar     = $clparissqn->sql_record($clparissqn->sql_query(null,"*"));
@@ -654,10 +654,10 @@ class cl_issnotaavulsa {
           db_inicio_transacao();
          $clarrecad  = new cl_arrecad();
           $clarrehist = new cl_arrehist();
-          $rsNum      = pg_exec("select nextval('numpref_k03_numpre_seq') as k03_numpre");
+          $rsNum      = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
           $oNum       = db_utils::fieldsMemory($rsNum,0);
           //Codigo numpre do Recibo
-          $rsNumnov   = pg_exec("select nextval('numpref_k03_numpre_seq') as k03_numnov");
+          $rsNumnov   = db_query("select nextval('numpref_k03_numpre_seq') as k03_numnov");
           $oNumnov    = db_utils::fieldsMemory($rsNumnov,0);
           $aDataPgto  = explode("-",$oNot->q51_dtemiss);
           $dataPagto  = date("Y-m-d",mktime(0,0,0,$aDataPgto[1],$aDataPgto[2]+$oPar->q60_notaavulsadiasprazo,$aDataPgto[0]));
@@ -772,7 +772,7 @@ class cl_issnotaavulsa {
       $sql  = "select sum(q62_vlrissqn) as totalissqn";
       $sql .= " from issnotaavulsaservico
                   where q62_issnotaavulsa = ".$q51_sequencial;
-      $oTotal = db_utils::fieldsMemory(pg_query($sql),0);
+      $oTotal = db_utils::fieldsMemory(db_query($sql),0);
       $totalissqn = $oTotal->totalissqn;
       return $totalissqn;
   }

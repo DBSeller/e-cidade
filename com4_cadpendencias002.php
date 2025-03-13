@@ -1,40 +1,40 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Carregamos as libs necessárias
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/verticalTab.widget.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
 
 /**
  * Intância da classe que tras as informações da validação do campos pc10_numero ($Ipc10_numero)
@@ -58,7 +58,7 @@ if (!isset($oGet->pc10_numero) || trim($oGet->pc10_numero) == "") {
 }
 
 /**
- * Carregamos a DAO necessária, efetuamos a busca da solicitação e carregamos as 
+ * Carregamos a DAO necessária, efetuamos a busca da solicitação e carregamos as
  * informações no objeto $oSolicitacao. Caso a pesquisa não retorne nada, redirecionamos para
  * uma página de erro informando que a solicitação informada não existe
  */
@@ -102,14 +102,14 @@ if ($oDaoSolicita->numrows > 0) {
   		<tr>
   			<td><strong>Solicitação: </strong></td>
   			<td>
-  				<?php 
+  				<?php
   				  $pc10_numero = $oGet->pc10_numero;
   				  db_input('pc10_numero', 8, $Ipc10_numero, true, "text", 3);
   				?>
   			</td>
   			<td><strong>Data: </strong></td>
   			<td>
-  				<?php 
+  				<?php
   				  $aData = explode('/', date('d/m/Y', db_getsession('DB_datausu')));
   				  db_inputdata('pc91_datainclusao', $aData[0], $aData[1], $aData[2]);
   				?>
@@ -173,13 +173,13 @@ js_atualizaGrid();
 
 /**
  * Função que busca as pendências cadastradas para a solicitação atual e chama a
- * função "js_populaGrid" para exibir os resultados na grid de pendências 
+ * função "js_populaGrid" para exibir os resultados na grid de pendências
  */
 function js_atualizaGrid() {
 
   js_divCarregando('Aguarde, pesquisando pendencias', 'msgBox'); // exibimos o gif de status da pesquisa
   $('pc91_pendencia').value = '';
-  
+
   var oParam              = new Object();
       oParam.sExec        = 'getPendenciasSolicitacao';
       oParam.iSolicitacao = $F('pc10_numero');
@@ -199,7 +199,8 @@ function js_atualizaGrid() {
 function js_populaGrid(oAjax) {
 
   js_removeObj('msgBox'); // ocultamos o gif de status da pesquisa
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
+
   if (oRetorno.status === 1 && oRetorno.aDados !== null) {
 
   	dbGrid.clearAll(true);
@@ -217,8 +218,10 @@ function js_populaGrid(oAjax) {
 
   		dbGrid.aRows[iInd].sEvents = 'ondblclick="js_exibeDetalhesPendencia('+oDado.pc91_sequencial+');"';
     });
-    
+
   	dbGrid.renderRows();
+  } else {
+      dbGrid.clearAll(true);
   }
 }
 
@@ -242,13 +245,13 @@ function js_exibeDetalhesPendencia(iIdPendencia) {
 }
 
 /**
- * Função que exibe em uma windowaux o retorno da função js_exibeDetalhesPendencia 
+ * Função que exibe em uma windowaux o retorno da função js_exibeDetalhesPendencia
  */
 function js_exibePendenciaIndividualmente(oAjax) {
 
   js_removeObj('msgBox'); // ocultamos o gif de status da pesquisa
 
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   var sConteudoJanela              = '<div id="containerMessageBoard"></div>';
       sConteudoJanela             += '<fieldset><legend><strong>Pendência</strong></legend>';
@@ -257,7 +260,7 @@ function js_exibePendenciaIndividualmente(oAjax) {
       sConteudoJanela             += '</fieldset>';
   var sConteudoMessageBoardJanela  = 'Pendência '+oRetorno.aDados[0].pc91_sequencial
                                      +' da Solicitação '+oRetorno.aDados[0].pc91_solicita;
-  
+
   var oWindowAux = new windowAux('oWindowAux',
                                  'Pendência',
                                  700, 400);
@@ -280,7 +283,7 @@ function js_exibePendenciaIndividualmente(oAjax) {
 function js_incluirPendencia() {
 
   js_divCarregando('Aguarde, cadastrando pendencia', 'msgBox'); // exibimos o gif de status da requisição
-  
+
   var oParam               = new Object();
       oParam.sExec         = 'incluirPendencia';
       oParam.iSolicitacao  = $F('pc10_numero');
@@ -302,9 +305,9 @@ function js_incluirPendencia() {
 function js_retornoInclusaoPendencia(oAjax) {
 
   js_removeObj('msgBox'); // ocultamos o gif de status da requisição
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status === 1) {
-    
+
     alert('Pendência inclusa com sucesso.');
     js_atualizaGrid();
     if (lCadastroprocessodecompras == 'true') {
@@ -327,7 +330,8 @@ function js_excluiPendencia(iIdPendencia) {
   if (confirm('Deseja realmente excluir a pendência?')) {
 
     js_divCarregando('Aguarde, excluindo pendencia', 'msgBox'); // exibimos o gif de status da requisição
-    
+
+
     var oParam              = new Object();
         oParam.sExec        = 'excluirPendencia';
         oParam.iIdPendencia = iIdPendencia;
@@ -337,6 +341,7 @@ function js_excluiPendencia(iIdPendencia) {
                               onComplete: js_retornoExcluiPendencia
                              }
                             );
+
   } else {
   	return false;
   }
@@ -349,7 +354,7 @@ function js_excluiPendencia(iIdPendencia) {
 function js_retornoExcluiPendencia(oAjax) {
 
   js_removeObj('msgBox'); // ocultamos o gif de status da requisição
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status === 1) {
 
     alert('Pendência excluída com sucesso.');
@@ -382,7 +387,7 @@ function js_alteraPendencia(iIdPendencia) {
 function js_retornoAlteraPendencia(oAjax) {
 
   js_removeObj('msgBox'); // ocultamos o gif de status da requisição
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status === 1) {
 
 		/**
@@ -415,7 +420,7 @@ function js_salvarAlteracaoPendencia(iIdPendencia) {
 function js_retornoSalvarAlteracaoPendencia(oAjax) {
 
   js_removeObj('msgBox'); // ocultamos o gif de status da requisição
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status === 1) {
 
     alert('Pendência alterada com sucesso.');

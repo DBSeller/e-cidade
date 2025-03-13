@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -277,97 +277,80 @@ class cl_lotesetorfiscal {
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
        } 
-     } 
-   } 
+     }
+   }
+
    // funcao do recordset 
-   function sql_record($sql) { 
+   function sql_record($sql)
+   { 
      $result = db_query($sql);
-     if($result==false){
-       $this->numrows    = 0;
-       $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Erro ao selecionar os registros.";
+     if ($result == false) {
+        $this->numrows    = 0;
+        $this->erro_banco = str_replace("\n","",@pg_last_error());
+        $this->erro_sql   = "Erro ao selecionar os registros.";
+        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+        $this->erro_status = "0";
+        return false;
+     }
+     $this->numrows = pg_numrows($result);
+     if($this->numrows == 0) {
+       $this->erro_banco = "";
+       $this->erro_sql   = "Record Vazio na Tabela:lotesetorfiscal";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
-        $this->erro_banco = "";
-        $this->erro_sql   = "Record Vazio na Tabela:lotesetorfiscal";
-        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-        $this->erro_status = "0";
-        return false;
-      }
      return $result;
    }
-   function sql_query ( $oid = null,$campos="lotesetorfiscal.oid,*",$ordem=null,$dbwhere=""){ 
+
+   function sql_query ($idbql=null,$campos="*",$ordem=null,$dbwhere="")
+   {
      $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
+     $sql .= $campos;
      $sql .= " from lotesetorfiscal ";
      $sql .= "      inner join lote  on  lote.j34_idbql = lotesetorfiscal.j91_idbql";
      $sql .= "      inner join setorfiscal  on  setorfiscal.j90_codigo = lotesetorfiscal.j91_codigo";
      $sql .= "      inner join bairro  on  bairro.j13_codi = lote.j34_bairro";
      $sql .= "      inner join setor  as a on   a.j30_codi = lote.j34_setor";
      $sql2 = "";
-     if($dbwhere==""){
-       if( $oid != "" && $oid != null){
-          $sql2 = " where lotesetorfiscal.oid = '$oid'";
-       }
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
+
+     if ($dbwhere == "") {
+        if ($idbql != "" && $idbql != null) {
+           $sql2 = " where lotesetorfiscal.j91_idbql = {$idbql}";
+        }
+     } else if ($dbwhere != "") {
+        $sql2 = " where {$dbwhere}";
      }
+
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+
+     if ($ordem != null ) {
+        $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-   function sql_query_file ( $oid = null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+  function sql_query_file ($idbql=null,$campos="*",$ordem=null,$dbwhere="")
+  {
      $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
+     $sql .= $campos;
      $sql .= " from lotesetorfiscal ";
      $sql2 = "";
-     if($dbwhere==""){
+     if ($dbwhere == "") {
+        if ($idbql != "" && $idbql != null) {
+           $sql2 = " where lotesetorfiscal.j91_idbql = {$idbql}";
+        }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
+
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+
+     if ($ordem != null ) {
+        $sql .= " order by {$ordem}";
      }
      return $sql;
   }
 }
-?>

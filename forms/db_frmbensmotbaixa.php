@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: patrim
-include("classes/db_bensbaix_classe.php");
+include(modification("classes/db_bensbaix_classe.php"));
 global $t51_motivo;
 $clMotbaixa     = new cl_bensbaix();
 
@@ -59,6 +59,15 @@ if(isset($incluir) || isset($alterar) || isset($excluir)){
           <?
             db_input('t51_descr',40,$It51_descr,true,'text',$db_opcao,"")
           ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tt51_anexoobrigatorio?>">
+            <?=@$Lt51_anexoobrigatorio?>
+        </td>
+        <td> 
+           <input name="t51_anexoobrigatorio" type="checkbox" <?php echo $t51_anexoobrigatorio == 't' ? 'checked' : '' ?>
+              <?php if ($db_opcao == 3 || $db_opcao == 33) { echo 'onclick="return false"'; } ?> />
         </td>
       </tr>
     </table>
@@ -103,7 +112,7 @@ if(isset($incluir) || isset($alterar) || isset($excluir)){
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bensmotbaixa','func_bensmotbaixa.php?funcao_js=parent.js_preenchepesquisa|t51_motivo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensmotbaixa','func_bensmotbaixa.php?funcao_js=parent.js_preenchepesquisa|t51_motivo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bensmotbaixa.hide();

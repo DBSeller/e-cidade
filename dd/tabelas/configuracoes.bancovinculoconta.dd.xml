@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010420' name='configuracoes.bancovinculoconta' description="Vinculo de Contas Bancarias com contabilidade" prefix="db502" label="Vinculo de Contas Bancarias com contabilidade" type="0">
+  <fields>
+    <field codigo="1010331" 
+           campo_api='' 
+           name="db502_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='configuracoes.bancovinculoconta_db502_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010332" 
+           campo_api='' 
+           name="db502_db_bancos" 
+           conteudo="varchar(10)" 
+           description="Código do Banco" 
+           inivalue="" 
+           label="Código do Banco" 
+           size="10" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Código do Banco" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010333" 
+           campo_api='' 
+           name="db502_reduz" 
+           conteudo="int4" 
+           description="Código do Banco" 
+           inivalue="" 
+           label="Codigo Reduzido" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Codigo Reduzido" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010334" 
+           campo_api='' 
+           name="db502_bancovinculocontatipo" 
+           conteudo="int4" 
+           description="Tipo do Vinculo" 
+           inivalue="" 
+           label="Tipo do Vinculo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo do Vinculo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db502_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_bancos" inner='t'>
+      <fieldfk name="db502_db_bancos" reference="db90_codban" /> 
+    </foreignkey>
+    <foreignkey reference="bancovinculocontatipo" inner='t'>
+      <fieldfk name="db502_bancovinculocontatipo" reference="db501_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

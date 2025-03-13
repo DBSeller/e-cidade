@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("classes/db_turma_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("classes/db_turma_classe.php"));
 $resultedu= eduparametros(db_getsession("DB_coddepto"));
 $decimais = $resultedu=="N"?0:2;
 //seleciona medias

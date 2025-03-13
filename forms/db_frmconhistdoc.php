@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -93,9 +93,9 @@ db_select('c53_tipo', $x, true, $db_opcao, "");
 
 function js_pesquisarh01_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tipodoc','func_conhistdoctipo.php?funcao_js=parent.js_mostratipo1|c57_sequencial|c57_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipodoc','func_conhistdoctipo.php?funcao_js=parent.js_mostratipo1|c57_sequencial|c57_descricao','Pesquisa',true);
   }else{
-      js_OpenJanelaIframe('top.corpo','db_iframe_tipodoc','func_conhistdoctipo.php?pesquisa_chave='+document.form1.c53_tipo.value+'&funcao_js=parent.js_mostratipo','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipodoc','func_conhistdoctipo.php?pesquisa_chave='+document.form1.c53_tipo.value+'&funcao_js=parent.js_mostratipo','Pesquisa',false);
   }
 }
 
@@ -117,7 +117,7 @@ function js_mostratipo1(chave1,chave2){
 
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conhistdoc','func_conhistdoc.php?funcao_js=parent.js_preenchepesquisa|c53_coddoc','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conhistdoc','func_conhistdoc.php?funcao_js=parent.js_preenchepesquisa|c53_coddoc','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conhistdoc.hide();
@@ -135,7 +135,7 @@ if ($db_opcao != 1) {
 if($db_opcao==2||$db_opcao==22 || $db_opcao==3||$db_opcao==33){
   
   echo "<script>";
-  echo "js_OpenJanelaIframe('top.corpo','db_iframe_tipodoc','func_conhistdoctipo.php?pesquisa_chave='+document.form1.c53_tipo.value+'&funcao_js=parent.js_mostratipo','Pesquisa',false);";
+  echo "js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipodoc','func_conhistdoctipo.php?pesquisa_chave='+document.form1.c53_tipo.value+'&funcao_js=parent.js_mostratipo','Pesquisa',false);";
   echo "</script>";
 }
 

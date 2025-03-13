@@ -1,69 +1,69 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Cemiterio
 //CLASSE DA ENTIDADE sepulta
-class cl_sepulta { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $cm24_i_codigo = 0; 
-   var $cm24_i_sepultura = 0; 
-   var $cm24_i_sepultamento = 0; 
-   var $cm24_d_entrada_dia = null; 
-   var $cm24_d_entrada_mes = null; 
-   var $cm24_d_entrada_ano = null; 
-   var $cm24_d_entrada = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_sepulta {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $cm24_i_codigo = 0;
+   var $cm24_i_sepultura = 0;
+   var $cm24_i_sepultamento = 0;
+   var $cm24_d_entrada_dia = null;
+   var $cm24_d_entrada_mes = null;
+   var $cm24_d_entrada_ano = null;
+   var $cm24_d_entrada = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 cm24_i_codigo = int4 = Código 
-                 cm24_i_sepultura = int4 = Sepultura 
-                 cm24_i_sepultamento = int4 = Sepultamento 
-                 cm24_d_entrada = date = Entrada 
+                 cm24_i_codigo = int4 = Código
+                 cm24_i_sepultura = int4 = Sepultura
+                 cm24_i_sepultamento = int4 = Sepultamento
+                 cm24_d_entrada = date = Entrada
                  ";
-   //funcao construtor da classe 
-   function cl_sepulta() { 
+   //funcao construtor da classe
+   function cl_sepulta() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("sepulta"); 
+     $this->rotulo = new rotulo("sepulta");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -90,9 +90,9 @@ class cl_sepulta {
      }
    }
    // funcao para inclusao
-   function incluir ($cm24_i_codigo){ 
+   function incluir ($cm24_i_codigo){
       $this->atualizacampos();
-     if($this->cm24_i_sepultura == null ){ 
+     if($this->cm24_i_sepultura == null ){
        $this->erro_sql = " Campo Sepultura nao Informado.";
        $this->erro_campo = "cm24_i_sepultura";
        $this->erro_banco = "";
@@ -101,7 +101,7 @@ class cl_sepulta {
        $this->erro_status = "0";
        return false;
      }
-     if($this->cm24_i_sepultamento == null ){ 
+     if($this->cm24_i_sepultamento == null ){
        $this->erro_sql = " Campo Sepultamento nao Informado.";
        $this->erro_campo = "cm24_i_sepultamento";
        $this->erro_banco = "";
@@ -110,7 +110,7 @@ class cl_sepulta {
        $this->erro_status = "0";
        return false;
      }
-     if($this->cm24_d_entrada == null ){ 
+     if($this->cm24_d_entrada == null ){
        $this->erro_sql = " Campo Entrada nao Informado.";
        $this->erro_campo = "cm24_d_entrada_dia";
        $this->erro_banco = "";
@@ -120,16 +120,16 @@ class cl_sepulta {
        return false;
      }
      if($cm24_i_codigo == "" || $cm24_i_codigo == null ){
-       $result = db_query("select nextval('sepulta_cm24_i_codigo_seq')"); 
+       $result = db_query("select nextval('sepulta_cm24_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: sepulta_cm24_i_codigo_seq do campo: cm24_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: sepulta_cm24_i_codigo_seq do campo: cm24_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->cm24_i_codigo = pg_result($result,0,0); 
+       $this->cm24_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from sepulta_cm24_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $cm24_i_codigo)){
@@ -140,10 +140,10 @@ class cl_sepulta {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->cm24_i_codigo = $cm24_i_codigo; 
+         $this->cm24_i_codigo = $cm24_i_codigo;
        }
      }
-     if(($this->cm24_i_codigo == null) || ($this->cm24_i_codigo == "") ){ 
+     if(($this->cm24_i_codigo == null) || ($this->cm24_i_codigo == "") ){
        $this->erro_sql = " Campo cm24_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -152,19 +152,19 @@ class cl_sepulta {
        return false;
      }
      $sql = "insert into sepulta(
-                                       cm24_i_codigo 
-                                      ,cm24_i_sepultura 
-                                      ,cm24_i_sepultamento 
-                                      ,cm24_d_entrada 
+                                       cm24_i_codigo
+                                      ,cm24_i_sepultura
+                                      ,cm24_i_sepultamento
+                                      ,cm24_d_entrada
                        )
                 values (
-                                $this->cm24_i_codigo 
-                               ,$this->cm24_i_sepultura 
-                               ,$this->cm24_i_sepultamento 
-                               ,".($this->cm24_d_entrada == "null" || $this->cm24_d_entrada == ""?"null":"'".$this->cm24_d_entrada."'")." 
+                                $this->cm24_i_codigo
+                               ,$this->cm24_i_sepultura
+                               ,$this->cm24_i_sepultamento
+                               ,".($this->cm24_d_entrada == "null" || $this->cm24_d_entrada == ""?"null":"'".$this->cm24_d_entrada."'")."
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Sepulta ($this->cm24_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -199,16 +199,16 @@ class cl_sepulta {
        $resac = db_query("insert into db_acount values($acount,1803,10434,'','".AddSlashes(pg_result($resaco,0,'cm24_d_entrada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($cm24_i_codigo=null) { 
+   function alterar ($cm24_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update sepulta set ";
      $virgula = "";
-     if(trim($this->cm24_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cm24_i_codigo"])){ 
+     if(trim($this->cm24_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cm24_i_codigo"])){
        $sql  .= $virgula." cm24_i_codigo = $this->cm24_i_codigo ";
        $virgula = ",";
-       if(trim($this->cm24_i_codigo) == null ){ 
+       if(trim($this->cm24_i_codigo) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "cm24_i_codigo";
          $this->erro_banco = "";
@@ -218,10 +218,10 @@ class cl_sepulta {
          return false;
        }
      }
-     if(trim($this->cm24_i_sepultura)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cm24_i_sepultura"])){ 
+     if(trim($this->cm24_i_sepultura)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cm24_i_sepultura"])){
        $sql  .= $virgula." cm24_i_sepultura = $this->cm24_i_sepultura ";
        $virgula = ",";
-       if(trim($this->cm24_i_sepultura) == null ){ 
+       if(trim($this->cm24_i_sepultura) == null ){
          $this->erro_sql = " Campo Sepultura nao Informado.";
          $this->erro_campo = "cm24_i_sepultura";
          $this->erro_banco = "";
@@ -231,10 +231,10 @@ class cl_sepulta {
          return false;
        }
      }
-     if(trim($this->cm24_i_sepultamento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cm24_i_sepultamento"])){ 
+     if(trim($this->cm24_i_sepultamento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cm24_i_sepultamento"])){
        $sql  .= $virgula." cm24_i_sepultamento = $this->cm24_i_sepultamento ";
        $virgula = ",";
-       if(trim($this->cm24_i_sepultamento) == null ){ 
+       if(trim($this->cm24_i_sepultamento) == null ){
          $this->erro_sql = " Campo Sepultamento nao Informado.";
          $this->erro_campo = "cm24_i_sepultamento";
          $this->erro_banco = "";
@@ -244,10 +244,10 @@ class cl_sepulta {
          return false;
        }
      }
-     if(trim($this->cm24_d_entrada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cm24_d_entrada_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["cm24_d_entrada_dia"] !="") ){ 
+     if(trim($this->cm24_d_entrada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cm24_d_entrada_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["cm24_d_entrada_dia"] !="") ){
        $sql  .= $virgula." cm24_d_entrada = '$this->cm24_d_entrada' ";
        $virgula = ",";
-       if(trim($this->cm24_d_entrada) == null ){ 
+       if(trim($this->cm24_d_entrada) == null ){
          $this->erro_sql = " Campo Entrada nao Informado.";
          $this->erro_campo = "cm24_d_entrada_dia";
          $this->erro_banco = "";
@@ -256,11 +256,11 @@ class cl_sepulta {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["cm24_d_entrada_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["cm24_d_entrada_dia"])){
          $sql  .= $virgula." cm24_d_entrada = null ";
          $virgula = ",";
-         if(trim($this->cm24_d_entrada) == null ){ 
+         if(trim($this->cm24_d_entrada) == null ){
            $this->erro_sql = " Campo Entrada nao Informado.";
            $this->erro_campo = "cm24_d_entrada_dia";
            $this->erro_banco = "";
@@ -293,7 +293,7 @@ class cl_sepulta {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Sepulta nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->cm24_i_codigo;
@@ -321,14 +321,14 @@ class cl_sepulta {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($cm24_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($cm24_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($cm24_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -357,7 +357,7 @@ class cl_sepulta {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Sepulta nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$cm24_i_codigo;
@@ -385,11 +385,11 @@ class cl_sepulta {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -411,7 +411,7 @@ class cl_sepulta {
       }
      return $result;
    }
-   function sql_query ( $cm24_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $cm24_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -428,11 +428,11 @@ class cl_sepulta {
      $sql .= "      inner join sepulturas  on  sepulturas.cm05_i_codigo = sepulta.cm24_i_sepultura";
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = sepultamentos.cm01_i_codigo";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = sepultamentos.cm01_i_funcionario";
-     $sql .= "      inner join legista       on  legista.cm32_i_codigo = sepultamentos.cm01_i_medico";
+     $sql .= "      left join legista       on  legista.cm32_i_codigo = sepultamentos.cm01_i_medico";
      $sql .= "      inner join causa  on  causa.cm04_i_codigo = sepultamentos.cm01_i_causa";
      $sql .= "      inner join cemiterio  on  cemiterio.cm14_i_codigo = sepultamentos.cm01_i_cemiterio";
-     $sql .= "      inner join funerarias  on  funerarias.cm17_i_funeraria = sepultamentos.cm01_i_funeraria";
-     $sql .= "      inner join hospitais  on  hospitais.cm18_i_hospital = sepultamentos.cm01_i_hospital";
+     $sql .= "      left  join funerarias  on  funerarias.cm17_i_funeraria = sepultamentos.cm01_i_funeraria";
+     $sql .= "      left join hospitais  on  hospitais.cm18_i_hospital = sepultamentos.cm01_i_hospital";
      $sql .= "      inner join campas  on  campas.cm19_i_codigo = sepulturas.cm05_i_campa";
      $sql .= "      inner join lotecemit  on  lotecemit.cm23_i_codigo = sepulturas.cm05_i_lotecemit";
 
@@ -443,12 +443,12 @@ class cl_sepulta {
      $sql .= " left join cgm cgmcemit        on cgmcemit.z01_numcgm = cm15_i_cgm";
 
 
-     
+
      $sql2 = "";
      if($dbwhere==""){
        if($cm24_i_codigo!=null ){
-         $sql2 .= " where sepulta.cm24_i_codigo = $cm24_i_codigo "; 
-       } 
+         $sql2 .= " where sepulta.cm24_i_codigo = $cm24_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -464,7 +464,7 @@ class cl_sepulta {
      }
      return $sql;
   }
-   function sql_query_file ( $cm24_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $cm24_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -480,8 +480,8 @@ class cl_sepulta {
      $sql2 = "";
      if($dbwhere==""){
        if($cm24_i_codigo!=null ){
-         $sql2 .= " where sepulta.cm24_i_codigo = $cm24_i_codigo "; 
-       } 
+         $sql2 .= " where sepulta.cm24_i_codigo = $cm24_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

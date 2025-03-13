@@ -1,66 +1,72 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
+
+require_once('model/protocolo/ProcessoProtocoloNumeracao.model.php');
 
 //MODULO: protocolo
 //CLASSE DA ENTIDADE protprocessonumeracao
-class cl_protprocessonumeracao { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $p07_sequencial = 0; 
-   var $p07_instit = 0; 
-   var $p07_ano = 0; 
-   var $p07_proximonumero = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_protprocessonumeracao {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $p07_sequencial = 0;
+   var $p07_instit = 0;
+   var $p07_ano = 0;
+   var $p07_proximonumero = 0;
+   var $p07_orgao = 0;
+   var $p07_prottipodocumentoprocesso = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 p07_sequencial = int4 = Sequencial 
-                 p07_instit = int4 = Instituição 
-                 p07_ano = int4 = Ano do Processo 
-                 p07_proximonumero = int4 = Próximo Número 
+                 p07_sequencial = int4 = Sequencial
+                 p07_instit = int4 = Instituição
+                 p07_ano = int4 = Ano do Processo
+                 p07_proximonumero = int4 = Próximo Número
+                 p07_orgao = Órgão
+                 p07_prottipodocumentoprocesso = Tipo de Documento
                  ";
-   //funcao construtor da classe 
-   function cl_protprocessonumeracao() { 
+   //funcao construtor da classe
+   function cl_protprocessonumeracao() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("protprocessonumeracao"); 
+     $this->rotulo = new rotulo("protprocessonumeracao");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -75,14 +81,16 @@ class cl_protprocessonumeracao {
        $this->p07_instit = ($this->p07_instit == ""?@$GLOBALS["HTTP_POST_VARS"]["p07_instit"]:$this->p07_instit);
        $this->p07_ano = ($this->p07_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["p07_ano"]:$this->p07_ano);
        $this->p07_proximonumero = ($this->p07_proximonumero == ""?@$GLOBALS["HTTP_POST_VARS"]["p07_proximonumero"]:$this->p07_proximonumero);
+       $this->p07_orgao = ($this->p07_orgao == ""?@$GLOBALS["HTTP_POST_VARS"]["p07_orgao"]:$this->p07_orgao);
+       $this->p07_prottipodocumentoprocesso = ($this->p07_prottipodocumentoprocesso == ""?@$GLOBALS["HTTP_POST_VARS"]["p07_prottipodocumentoprocesso"]:$this->p07_prottipodocumentoprocesso);
      }else{
        $this->p07_sequencial = ($this->p07_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["p07_sequencial"]:$this->p07_sequencial);
      }
    }
    // funcao para inclusao
-   function incluir ($p07_sequencial){ 
+   function incluir ($p07_sequencial){
       $this->atualizacampos();
-     if($this->p07_instit == null ){ 
+     if($this->p07_instit == null ){
        $this->erro_sql = " Campo Instituição nao Informado.";
        $this->erro_campo = "p07_instit";
        $this->erro_banco = "";
@@ -91,7 +99,7 @@ class cl_protprocessonumeracao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->p07_ano == null ){ 
+     if($this->p07_ano == null ){
        $this->erro_sql = " Campo Ano do Processo nao Informado.";
        $this->erro_campo = "p07_ano";
        $this->erro_banco = "";
@@ -100,7 +108,7 @@ class cl_protprocessonumeracao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->p07_proximonumero == null ){ 
+     if($this->p07_proximonumero == null ){
        $this->erro_sql = " Campo Próximo Número nao Informado.";
        $this->erro_campo = "p07_proximonumero";
        $this->erro_banco = "";
@@ -110,16 +118,16 @@ class cl_protprocessonumeracao {
        return false;
      }
      if($p07_sequencial == "" || $p07_sequencial == null ){
-       $result = db_query("select nextval('protprocessonumeracao_p07_sequencial_seq')"); 
+       $result = db_query("select nextval('protprocessonumeracao_p07_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: protprocessonumeracao_p07_sequencial_seq do campo: p07_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: protprocessonumeracao_p07_sequencial_seq do campo: p07_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->p07_sequencial = pg_result($result,0,0); 
+       $this->p07_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from protprocessonumeracao_p07_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $p07_sequencial)){
@@ -130,20 +138,20 @@ class cl_protprocessonumeracao {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->p07_sequencial = $p07_sequencial; 
+         $this->p07_sequencial = $p07_sequencial;
        }
      }
      if($p07_sequencial == "" || $p07_sequencial == null ){
-       $result = db_query("select nextval('protprocessonumeracao_p07_sequencial_seq')"); 
+       $result = db_query("select nextval('protprocessonumeracao_p07_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: protprocessonumeracao_p07_sequencial_seq do campo: p07_proximonumero"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: protprocessonumeracao_p07_sequencial_seq do campo: p07_proximonumero";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->p07_sequencial = pg_result($result,0,0); 
+       $this->p07_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from protprocessonumeracao_p07_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $p07_proximonumero)){
@@ -154,10 +162,10 @@ class cl_protprocessonumeracao {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->p07_proximonumero = $p07_proximonumero; 
+         $this->p07_proximonumero = $p07_proximonumero;
        }
      }
-     if(($this->p07_sequencial == null) || ($this->p07_sequencial == "") ){ 
+     if(($this->p07_sequencial == null) || ($this->p07_sequencial == "") ){
        $this->erro_sql = " Campo p07_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -165,19 +173,27 @@ class cl_protprocessonumeracao {
        $this->erro_status = "0";
        return false;
      }
+
+    $this->p07_orgao = !$this->p07_orgao ? 0 : $this->p07_orgao;
+    $this->p07_prottipodocumentoprocesso = !$this->p07_prottipodocumentoprocesso ? 0 : $this->p07_prottipodocumentoprocesso;
+
      $sql = "insert into protprocessonumeracao(
-                                       p07_sequencial 
-                                      ,p07_instit 
-                                      ,p07_ano 
-                                      ,p07_proximonumero 
+                                       p07_sequencial
+                                      ,p07_instit
+                                      ,p07_ano
+                                      ,p07_proximonumero
+                                      ,p07_orgao
+                                      ,p07_prottipodocumentoprocesso
                        )
                 values (
-                                $this->p07_sequencial 
-                               ,$this->p07_instit 
-                               ,$this->p07_ano 
-                               ,$this->p07_proximonumero 
+                                $this->p07_sequencial
+                               ,$this->p07_instit
+                               ,$this->p07_ano
+                               ,$this->p07_proximonumero
+                               ,$this->p07_orgao
+                               ,$this->p07_prottipodocumentoprocesso
                       )";
-     $result = db_query($sql); 
+     $result = db_query($sql);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -211,18 +227,20 @@ class cl_protprocessonumeracao {
        $resac = db_query("insert into db_acount values($acount,3216,18210,'','".AddSlashes(pg_result($resaco,0,'p07_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,3216,18209,'','".AddSlashes(pg_result($resaco,0,'p07_ano'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,3216,18211,'','".AddSlashes(pg_result($resaco,0,'p07_proximonumero'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3216,1699,'','".AddSlashes(pg_result($resaco,0,'p07_orgao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3216,1011787,'','".AddSlashes(pg_result($resaco,0,'p07_prottipodocumentoprocesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($p07_sequencial=null) { 
+   function alterar($p07_sequencial=null, $where=null) {
       $this->atualizacampos();
      $sql = " update protprocessonumeracao set ";
      $virgula = "";
-     if(trim($this->p07_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p07_sequencial"])){ 
+     if(trim($this->p07_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p07_sequencial"])){
        $sql  .= $virgula." p07_sequencial = $this->p07_sequencial ";
        $virgula = ",";
-       if(trim($this->p07_sequencial) == null ){ 
+       if(trim($this->p07_sequencial) == null ){
          $this->erro_sql = " Campo Sequencial nao Informado.";
          $this->erro_campo = "p07_sequencial";
          $this->erro_banco = "";
@@ -232,10 +250,10 @@ class cl_protprocessonumeracao {
          return false;
        }
      }
-     if(trim($this->p07_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p07_instit"])){ 
+     if(trim($this->p07_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p07_instit"])){
        $sql  .= $virgula." p07_instit = $this->p07_instit ";
        $virgula = ",";
-       if(trim($this->p07_instit) == null ){ 
+       if(trim($this->p07_instit) == null ){
          $this->erro_sql = " Campo Instituição nao Informado.";
          $this->erro_campo = "p07_instit";
          $this->erro_banco = "";
@@ -245,10 +263,10 @@ class cl_protprocessonumeracao {
          return false;
        }
      }
-     if(trim($this->p07_ano)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p07_ano"])){ 
+     if(trim($this->p07_ano)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p07_ano"])){
        $sql  .= $virgula." p07_ano = $this->p07_ano ";
        $virgula = ",";
-       if(trim($this->p07_ano) == null ){ 
+       if(trim($this->p07_ano) == null ){
          $this->erro_sql = " Campo Ano do Processo nao Informado.";
          $this->erro_campo = "p07_ano";
          $this->erro_banco = "";
@@ -258,10 +276,10 @@ class cl_protprocessonumeracao {
          return false;
        }
      }
-     if(trim($this->p07_proximonumero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p07_proximonumero"])){ 
+     if(trim($this->p07_proximonumero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p07_proximonumero"])){
        $sql  .= $virgula." p07_proximonumero = $this->p07_proximonumero ";
        $virgula = ",";
-       if(trim($this->p07_proximonumero) == null ){ 
+       if(trim($this->p07_proximonumero) == null ){
          $this->erro_sql = " Campo Próximo Número nao Informado.";
          $this->erro_campo = "p07_proximonumero";
          $this->erro_banco = "";
@@ -274,6 +292,12 @@ class cl_protprocessonumeracao {
      $sql .= " where ";
      if($p07_sequencial!=null){
        $sql .= " p07_sequencial = $this->p07_sequencial";
+     }
+     if($this->p07_instit!=null){
+      $sql .= " p07_instit = $this->p07_instit";
+     }
+     if (!empty($where)) {
+         $sql .= " and {$where}";
      }
      $resaco = $this->sql_record($this->sql_query_file($this->p07_sequencial));
      if($this->numrows>0){
@@ -290,10 +314,15 @@ class cl_protprocessonumeracao {
            $resac = db_query("insert into db_acount values($acount,3216,18209,'".AddSlashes(pg_result($resaco,$conresaco,'p07_ano'))."','$this->p07_ano',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["p07_proximonumero"]) || $this->p07_proximonumero != "")
            $resac = db_query("insert into db_acount values($acount,3216,18211,'".AddSlashes(pg_result($resaco,$conresaco,'p07_proximonumero'))."','$this->p07_proximonumero',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["p07_orgao"]) || $this->p07_orgao != "")
+           $resac = db_query("insert into db_acount values($acount,3216,1699,'".AddSlashes(pg_result($resaco,$conresaco,'p07_orgao'))."','$this->p07_orgao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["p07_prottipodocumentoprocesso"]) || $this->p07_orgao != "")
+           $resac = db_query("insert into db_acount values($acount,3216,1011787,'".AddSlashes(pg_result($resaco,$conresaco,'p07_prottipodocumentoprocesso'))."','$this->p07_orgao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Númeração do Protocolo nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->p07_sequencial;
@@ -321,14 +350,14 @@ class cl_protprocessonumeracao {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($p07_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($p07_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($p07_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -341,6 +370,8 @@ class cl_protprocessonumeracao {
          $resac = db_query("insert into db_acount values($acount,3216,18210,'','".AddSlashes(pg_result($resaco,$iresaco,'p07_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3216,18209,'','".AddSlashes(pg_result($resaco,$iresaco,'p07_ano'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3216,18211,'','".AddSlashes(pg_result($resaco,$iresaco,'p07_proximonumero'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3216,1699,'','".AddSlashes(pg_result($resaco,$iresaco,'p07_orgao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3216,1011787,'','".AddSlashes(pg_result($resaco,$iresaco,'p07_prottipodocumentoprocesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from protprocessonumeracao
@@ -357,7 +388,7 @@ class cl_protprocessonumeracao {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Númeração do Protocolo nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$p07_sequencial;
@@ -385,11 +416,11 @@ class cl_protprocessonumeracao {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -411,11 +442,11 @@ class cl_protprocessonumeracao {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $p07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $p07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -431,15 +462,15 @@ class cl_protprocessonumeracao {
      $sql2 = "";
      if($dbwhere==""){
        if($p07_sequencial!=null ){
-         $sql2 .= " where protprocessonumeracao.p07_sequencial = $p07_sequencial "; 
-       } 
+         $sql2 .= " where protprocessonumeracao.p07_sequencial = $p07_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -448,11 +479,11 @@ class cl_protprocessonumeracao {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $p07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $p07_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -462,18 +493,30 @@ class cl_protprocessonumeracao {
        $sql .= $campos;
      }
      $sql .= " from protprocessonumeracao ";
+
+
+     $sqlParametro = 'SELECT p06_tipo FROM protparamglobal WHERE p06_instituicao = ' . db_getsession('DB_instit');
+     $parametro = pg_fetch_assoc(db_query($sqlParametro));
+     $tipoControle = $parametro['p06_tipo'];
+
+     if ($tipoControle == ProcessoProtocoloNumeracao::TIPOORGAO) {
+      $sql .= " INNER JOIN prottipodocumentoprocesso ON p91_sequencial = p07_prottipodocumentoprocesso";
+      $sql .= " INNER JOIN orcorgao ON o40_orgao = p07_orgao AND o40_anousu = " . db_getsession('DB_anousu');
+     }
+
+
      $sql2 = "";
      if($dbwhere==""){
        if($p07_sequencial!=null ){
-         $sql2 .= " where protprocessonumeracao.p07_sequencial = $p07_sequencial "; 
-       } 
+         $sql2 .= " where protprocessonumeracao.p07_sequencial = $p07_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -481,6 +524,56 @@ class cl_protprocessonumeracao {
        }
      }
      return $sql;
+  }
+
+  function get_row_max_numeracao_orgao()
+  {
+    $sql = '
+      SELECT
+        p07_sequencial,
+        p07_proximonumero AS maiorNumeroOrgao
+      FROM
+        protprocessonumeracao
+      WHERE
+        p07_orgao != 0
+        AND p07_prottipodocumentoprocesso != 0
+        AND p07_instit = '. db_getsession('DB_instit') .'
+        AND p07_ano = '. db_getsession('DB_anousu') .'
+      order by p07_proximonumero
+      desc limit 1;
+    ';
+
+    $postgresObject = db_query($sql);
+
+    if (pg_num_rows($postgresObject) > 0) {
+      return pg_fetch_assoc($postgresObject);
+    } else {
+      return null;
+    }
+  }
+
+  function get_row_numeracao_sequencial()
+  {
+    $sql = '
+      SELECT
+        p07_sequencial,
+        p07_proximonumero
+      FROM
+        protprocessonumeracao
+      WHERE
+        p07_orgao = 0
+        AND p07_instit = '. db_getsession('DB_instit') .'
+        AND p07_prottipodocumentoprocesso = 0
+        AND p07_ano = '. db_getsession('DB_anousu') .';
+    ';
+
+    $postgresObject = db_query($sql);
+
+    if (pg_num_rows($postgresObject) > 0) {
+      return pg_fetch_assoc($postgresObject);
+    } else {
+      return null;
+    }
   }
 }
 ?>

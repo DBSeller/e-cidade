@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -33,11 +33,15 @@
  */
 class MovimentoArquivoTransmissao {
 
+    private $iRecurso;
   /**
    * Código de Barra
    * @var String
    */
   private $sCodigoBarra;
+
+  /* [Inicio plugin GeracaoArquivoOBN  - processamento arquivo OBN - parte1] */
+  /* [Fim plugin GeracaoArquivoOBN  - processamento arquivo OBN - parte1] */
 
   /**
    * Valor Nominal da movimentação
@@ -216,6 +220,12 @@ class MovimentoArquivoTransmissao {
   private $sNome;
 
   /**
+   * Código Cnpj da Instituição
+   * @var string
+   */
+  private $sCnpjInstit;
+
+  /**
    * Código Cnpj do favorecido
    * @var string
    */
@@ -293,6 +303,30 @@ class MovimentoArquivoTransmissao {
    */
   private $lProcessado;
 
+  /**
+   * @type string
+   */
+  private $sLinhaDigitavel;
+
+  /* [Inicio plugin GeracaoArquivoOBN  - processamento arquivo OBN - parte2] */
+  /* [Fim plugin GeracaoArquivoOBN  - processamento arquivo OBN - parte2] */
+
+
+    /**
+     * @return integer
+     */
+    public function getRecurso()
+    {
+        return $this->iRecurso;
+    }
+
+    /**
+     * @param integer $iRecurso
+     */
+    public function setRecurso($iRecurso)
+    {
+        $this->iRecurso = $iRecurso;
+    }
 
   public function getCodigoBarra() {
       return $this->sCodigoBarra;
@@ -534,6 +568,14 @@ class MovimentoArquivoTransmissao {
     $this->sNome = $sNome;
   }
 
+  public function getCnpjPagador() {
+    return $this->sCnpjPagador;
+  }
+
+  public function setCnpjPagador($sCnpjPagador) {
+    $this->sCnpjPagador = $sCnpjPagador;
+  }
+
   public function getCnpj() {
     return $this->sCnpj;
   }
@@ -641,26 +683,58 @@ class MovimentoArquivoTransmissao {
   /**
    * @return boolean
    */
+  public function getContaDebitoPagto() {
+    return $this->lContaDebitoPagto;
+  }
+
+  /**
+   * @param boolean $lContaDebitoPagto
+   * @return self
+   */
+  public function setContaDebitoPagto($lContaDebitoPagto) {
+    $this->lContaDebitoPagto = $lContaDebitoPagto;
+    return $this;
+  }
+
+  /**
+   * @return boolean
+   */
   public function getProcessado() {
     return $this->lProcessado;
   }
-  
+
   /**
    * @param boolean $lProcessado
    * @return self
    */
   public function setProcessado($lProcessado) {
-
     $this->lProcessado = $lProcessado;
     return $this;
   }
 
   /**
+   * @param string $sLinha
+   */
+  public function setLinhaDigitavel($sLinha) {
+    $this->sLinhaDigitavel = $sLinha;
+  }
+
+  /**
+   * @return string
+   */
+  public function getLinhaDigitavel() {
+    return $this->sLinhaDigitavel;
+  }
+
+  /**
    * Constrói um objeto do tipo MovimentoArquivoTransmissao de acordo com codigo e ano
+   *
    * @param    integer $iCodigoMovimento
    * @param    integer $iAno
-   * @throws   BusinessException
-   * @return   MovimentoArquivoTransmissao
+   * @param    integer $iInstituicao
+   *
+   * @return MovimentoArquivoTransmissao
+   * @throws BusinessException
    */
   public static function getInstance($iCodigoMovimento, $iAno, $iInstituicao) {
 
@@ -683,10 +757,16 @@ class MovimentoArquivoTransmissao {
 
     $oDadosLinha = new MovimentoArquivoTransmissao();
     $oDadosLinha->setCodigoBarra($oStdResultadoQuery->e74_codigodebarra);
+    $oDadosLinha->setLinhaDigitavel($oStdResultadoQuery->e74_linhadigitavel);
+
+    /* [Inicio plugin GeracaoArquivoOBN  - processamento arquivo OBN - parte3] */
+    /* [Fim plugin GeracaoArquivoOBN  - processamento arquivo OBN - parte3] */
+
+    $oDadosLinha->setRecurso($oStdResultadoQuery->recurso);
     $oDadosLinha->setValorNominal($oStdResultadoQuery->e74_valornominal);
     $oDadosLinha->setDataVencimento($oStdResultadoQuery->e74_datavencimento);
     $oDadosLinha->setValorJuros($oStdResultadoQuery->e74_valorjuros);
-    $oDadosLinha->setValorDesconto($oStdResultadoQuery->e74_valordesconto);
+    $oDadosLinha->setValorDesconto(empty($oStdResultadoQuery->e74_valordesconto) ? '0' : $oStdResultadoQuery->e74_valordesconto);
     $oDadosLinha->setTipoFatura($oStdResultadoQuery->e74_tipofatura);
     $oDadosLinha->setCodigoBancoFornecedor($oStdResultadoQuery->banco_fornecedor);
     $oDadosLinha->setCodigoArquivoSistema($oStdResultadoQuery->e90_codgera);
@@ -699,6 +779,7 @@ class MovimentoArquivoTransmissao {
     $oDadosLinha->setDigitoVerificadorAgenciaPagadora($oStdResultadoQuery->c63_dvagencia);
     $oDadosLinha->setContaPagadora($oStdResultadoQuery->c63_conta);
     $oDadosLinha->setDigitoVerificadorContaPagadora($oStdResultadoQuery->c63_dvconta);
+    $oDadosLinha->setCnpjPagador($oStdResultadoQuery->cnpj_pagador);
 
     $oDadosLinha->setCodigoBancoFavorecido($oStdResultadoQuery->pc63_banco);
     $oDadosLinha->setCodigoAgenciaFavorecida($oStdResultadoQuery->pc63_agencia);
@@ -733,6 +814,7 @@ class MovimentoArquivoTransmissao {
     $oDadosLinha->setFinalidadePagamentoFundeb($oStdResultadoQuery->finalidadepagamento);
 
     $oDadosLinha->setProcessado(($oStdResultadoQuery->processado == 't'));
+    $oDadosLinha->setContaDebitoPagto($oStdResultadoQuery->contadebitopagto);
 
     return $oDadosLinha;
   }
@@ -740,11 +822,20 @@ class MovimentoArquivoTransmissao {
 
   /**
    * Méotodo que constrói string para buscar dados de movimento associado a um arquivo
+   *
+   * @param string  $sCodigoGeracao
+   * @param integer $iInstituicao
+   * @param integer $iAno
+   * @param integer $iCodigoMovimento
+   *
    * @return string
    */
   public static function getSqlDadosMovimentacao($sCodigoGeracao, $iInstituicao, $iAno, $iCodigoMovimento = null) {
 
-    $sWhere         = "1=1";
+    /* [Inicio plugin GeracaoArquivoOBN  - processamento arquivo OBN - parte4] */
+    /* [Fim plugin GeracaoArquivoOBN  - processamento arquivo OBN - parte4] */
+
+    $sWhere         = "1 = 1 ";
     $sInner         = "left";
     $sWhereArquivo  = " e80_instit      = {$iInstituicao}   ";
     $sWhereArquivo .= " and e90_codgera = {$sCodigoGeracao} ";
@@ -767,71 +858,121 @@ class MovimentoArquivoTransmissao {
                         null::integer as slip,
                         e82_codord as ordem,
                         pc63_banco as banco_fornecedor,
-	                      e90_codgera,
-	                      e81_codmov,
-	                      e87_data,
-	                      e87_dataproc,
-	                      c63_banco,
-	                      c63_agencia,
-	                      coalesce(c63_dvagencia,'0') as c63_dvagencia,
-	                      c63_conta,
-	                      coalesce(c63_dvconta,'0') as c63_dvconta,
-	                      pc63_agencia::varchar,
+	                e90_codgera,
+	                e81_codmov,
+	                e87_data,
+	                e87_dataproc,
+	                c63_banco,
+	                c63_agencia,
+	                coalesce(c63_dvagencia,'0') as c63_dvagencia,
+	                c63_conta,
+	                coalesce(c63_dvconta,'0') as c63_dvconta,
+                        case when conplanoconta.c63_reduz is null then true
+                             else false
+                        end as contadebitopagto,
+	                pc63_agencia::varchar,
                         coalesce(pc63_agencia_dig,'0') as pc63_agencia_dig,
-	                      pc63_conta::varchar,
+	                pc63_conta::varchar,
                         coalesce(pc63_conta_dig,'0') as pc63_conta_dig,
                         pc63_codigooperacao::varchar,
                         conplanoconta.c63_codigooperacao::varchar,
                         pc63_tipoconta,
-	                      translate(to_char(round(e81_valor- coalesce(fc_valorretencaomov(e81_codmov,false),0),2),'99999999999.99'),'.','') as valor,
-	                      e81_valor- coalesce(fc_valorretencaomov(e81_codmov,false),0) as valorori,
-	                      case when  pc63_banco = c63_banco then '01' else '03' end as  lanc,
-	                      coalesce(pc63_banco,'000') as pc63_banco,
-	                      e83_convenio as convenio,
-	                      z01_numcgm as numcgm,
-	                      substr(z01_nome,1,40) as z01_nome,
-	                      case when trim(pc63_cnpjcpf) = '0' or trim(pc63_cnpjcpf) = '' or pc63_cnpjcpf is null then length(trim(z01_cgccpf)) else length(trim(pc63_cnpjcpf)) end as tam,
-	                      case when trim(pc63_cnpjcpf) = '0' or trim(pc63_cnpjcpf) = '' or pc63_cnpjcpf is null then z01_cgccpf else pc63_cnpjcpf end as z01_cgccpf,
+	                translate(to_char(round(e81_valor - coalesce(fc_valorretencaomov(e81_codmov,false),0),2),'99999999999.99'),'.','') as valor,
+	                round(e81_valor - coalesce(fc_valorretencaomov(e81_codmov,false),0),2) as valorori,
+	                case when  pc63_banco = c63_banco then '01' else '03' end as  lanc,
+	                coalesce(pc63_banco,'000') as pc63_banco,
+	                e83_convenio as convenio,
+                        case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                             then cgmpagordem.z01_numcgm
+                             else cgm.z01_numcgm
+                        end as numcgm,
+                        case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                             then substr(cgmpagordem.z01_nome,1,40)
+                             else substr(cgm.z01_nome,1,40)
+                        end as z01_nome,
+	                case when trim(pc63_cnpjcpf) = '0' or trim(pc63_cnpjcpf) = '' or pc63_cnpjcpf is null
+                             then case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                                       then length(trim(cgmpagordem.z01_cgccpf))
+                                       else length(trim(cgm.z01_cgccpf))
+                                  end
+                             else length(trim(pc63_cnpjcpf))
+                        end as tam,
+                        case when trim(pc63_cnpjcpf) = '0' or trim(pc63_cnpjcpf) = '' or pc63_cnpjcpf is null
+                             then case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                                       then cgmpagordem.z01_cgccpf
+                                       else cgm.z01_cgccpf
+                                  end
+                             else pc63_cnpjcpf
+                        end as z01_cgccpf,
 	                      e88_codmov as cancelado,
-	                      z01_ender,
-	                      z01_numero,
-	                      z01_compl,
-	                      z01_bairro,
-	                      z01_munic,
-	                      z01_cep,
-	                      z01_uf,
-	                      fc_validaretencoesmesanterior(e81_codmov,null) as validaretencao,
-	                      e83_codigocompromisso,
+                        case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                             then cgmpagordem.z01_ender
+                             else cgm.z01_ender
+                        end as z01_ender,
+                        case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                             then cgmpagordem.z01_numero
+                             else cgm.z01_numero
+                        end as z01_numero,
+                        case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                             then cgmpagordem.z01_compl
+                             else cgm.z01_compl
+                        end as z01_compl,
+                        case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                             then cgmpagordem.z01_bairro
+                             else cgm.z01_bairro
+                        end as z01_bairro,
+                        case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                             then cgmpagordem.z01_munic
+                             else cgm.z01_munic
+                        end as z01_munic,
+                        case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                             then cgmpagordem.z01_cep
+                             else cgm.z01_cep
+                        end as z01_cep,
+                        case when (e45_codmov is null and e49_numcgm is not null) or (e45_codmov is not null and e45_tipo <> 4 and e49_numcgm is not null)
+                             then cgmpagordem.z01_uf
+                             else cgm.z01_uf
+                        end as z01_uf,
+	                fc_validaretencoesmesanterior(e81_codmov,null) as validaretencao,
+	                e83_codigocompromisso,
                         empagemovdetalhetransmissao.*,
                         (select e152_finalidadepagamentofundeb from empempenhofinalidadepagamentofundeb where e152_numemp = empempenho.e60_numemp) as finalidadepagamento,
                         exists(select * 
                                  from empagedadosretmov 
                                       inner join empagedadosret on e76_codret = e75_codret 
+                                                               and e75_codgera = e90_codgera
                                                                and e75_ativo is true
-                                where e76_codmov = e81_codmov) as processado
+                                where e76_codmov = e81_codmov) as processado,
+                                o58_codigo as recurso,
+                        cgc as cnpj_pagador
                    from empagemov
-            	          {$sInner} join empageconfgera               on e90_codmov = e81_codmov
-            	          {$sInner} join empagegera                   on e90_codgera=e87_codgera
-                        {$sInner} join empage                       on  empage.e80_codage = empagemov.e81_codage
-            	          {$sInner} join empempenho                   on e60_numemp = e81_numemp
-            	          {$sInner} join empagepag                    on e81_codmov = e85_codmov
-            	          {$sInner} join empagetipo                   on e85_codtipo = e83_codtipo
-              	        {$sInner} join empord                       on empord.e82_codmov         = empagemov.e81_codmov
+            	          {$sInner} join empageconfgera              on e90_codmov  = e81_codmov
+            	          {$sInner} join empagegera                  on e90_codgera = e87_codgera
+                         {$sInner} join empage                      on empage.e80_codage = empagemov.e81_codage
+                         {$sInner} join db_config                   on db_config.codigo  = empage.e80_instit
+            	          {$sInner} join empempenho                  on e60_numemp = e81_numemp
+            	          {$sInner} join orcdotacao                  on o58_anousu = e60_anousu                                                                                      
+                                                                    and o58_coddot = e60_coddot
+            	          {$sInner} join empagepag                   on e81_codmov = e85_codmov
+            	          {$sInner} join empagetipo                  on e85_codtipo = e83_codtipo
+              	          {$sInner} join empord                      on empord.e82_codmov         = empagemov.e81_codmov
+                         left      join pagordemconta               on e49_codord = e82_codord
+                         left      join cgm as cgmpagordem          on cgmpagordem.z01_numcgm = e49_numcgm
+                         left      join emppresta                   on e45_codmov = e82_codmov
             	          left      join empageslip                  on e81_codmov = e89_codmov
-            	          left      join conplanoreduz               on e83_conta = c61_reduz and c61_anousu = ".$iAno."
-              	        left      join conplanoconta               on c63_codcon = c61_codcon and c63_anousu = c61_anousu
-              	        left      join slip                        on slip.k17_codigo = e89_codigo
-              	        left      join slipnum                     on slipnum.k17_codigo = slip.k17_codigo
-              	        left      join empageconfcanc              on e88_codmov = e90_codmov
-              	        left      join empagemovconta              on e90_codmov = e98_codmov
-              	        left      join pcfornecon                  on pc63_contabanco = e98_contabanco
-              	        left      join cgm                         on z01_numcgm = pc63_numcgm
-              	        left      join empagemovtipotransmissao    on empagemovtipotransmissao.e25_empagemov = empagemov.e81_codmov
-              	        left      join empagemovdetalhetransmissao on  empagemovdetalhetransmissao.e74_empagemov = empagemov.e81_codmov
+            	          left      join conplanoreduz               on e83_conta = c61_reduz and c61_anousu = {$iAno}
+              	          left      join conplanoconta               on c63_codcon = c61_codcon and c63_anousu = c61_anousu and c63_reduz = c61_reduz
+              	          left      join slip                        on slip.k17_codigo = e89_codigo
+              	          left      join slipnum                     on slipnum.k17_codigo = slip.k17_codigo
+              	          left      join empageconfcanc              on e88_codmov = e90_codmov
+              	          left      join empagemovconta              on e90_codmov = e98_codmov
+              	          left      join pcfornecon                  on pc63_contabanco = e98_contabanco
+              	          left      join cgm                         on cgm.z01_numcgm = e60_numcgm
+              	          left      join empagemovtipotransmissao    on empagemovtipotransmissao.e25_empagemov = empagemov.e81_codmov
+              	          left      join empagemovdetalhetransmissao on empagemovdetalhetransmissao.e74_empagemov = empagemov.e81_codmov
 
       	          where
       	              {$sWhere} ";
-      	              //"and empagemovtipotransmissao.e25_empagetipotransmissao = 2";
 
     $sqlSlip = "select
                       distinct
@@ -848,42 +989,52 @@ class MovimentoArquivoTransmissao {
 	                    coalesce(conplanoconta.c63_dvagencia,'0') as c63_dvagencia,
 	                    conplanoconta.c63_conta,
 	                    coalesce(conplanoconta.c63_dvconta,'0') as c63_dvconta,
+                      case when contadebito.c63_reduz is null then true
+                           else false
+                      end as contadebitopagto,                      
                       (case
-                          when pc63_agencia is null or k17_numcgm = (select numcgm from db_config where codigo = ".$iInstituicao.")
+                          when pc63_agencia is null or (k17_numcgm = (select numcgm from db_config where codigo = {$iInstituicao}) and
+                                                        k153_slipoperacaotipo = 5 )
               	              then contadebito.c63_agencia
                           else pc63_agencia
                       end )::varchar as pc63_agencia,
 
-                        coalesce((case when pc63_agencia_dig is null or k17_numcgm = (select numcgm from db_config where codigo = ".$iInstituicao.")
+                        coalesce((case when pc63_agencia_dig is null or (k17_numcgm = (select numcgm from db_config where codigo = {$iInstituicao}) and
+                                                                         k153_slipoperacaotipo = 5)
               	                 then contadebito.c63_dvagencia
                          else pc63_agencia_dig end ),'0')::varchar as pc63_agencia_dig,
-                      (case when pc63_conta is null or slipnum.k17_numcgm = (select numcgm from db_config where codigo = ".$iInstituicao.")
+                      (case when pc63_conta is null or (slipnum.k17_numcgm = (select numcgm from db_config where codigo = {$iInstituicao}) and
+                                                        k153_slipoperacaotipo = 5)
               	                   then contadebito.c63_conta
                             else pc63_conta
                        end)::varchar as pc63_conta,
-                        coalesce((case when pc63_conta_dig is null or k17_numcgm = (select numcgm from db_config where codigo = ".$iInstituicao.")
+                        coalesce((case when pc63_conta_dig is null or (k17_numcgm = (select numcgm from db_config where codigo = {$iInstituicao}) and
+                                                                       k153_slipoperacaotipo = 5)
               	                         then contadebito.c63_dvconta
                          else pc63_conta_dig end ),'0')::varchar as pc63_conta_dig,
                       (case
-                         when pc63_codigooperacao is null or k17_numcgm = (select numcgm from db_config where codigo = ".$iInstituicao.")
+                         when pc63_codigooperacao is null or (k17_numcgm = (select numcgm from db_config where codigo = {$iInstituicao}) and
+                                                              k153_slipoperacaotipo = 5)
               	                             then contadebito.c63_codigooperacao
                          else pc63_codigooperacao
                        end )::varchar as pc63_codigooperacao,
                        conplanoconta.c63_codigooperacao::varchar,
                        (case
-                         when pc63_tipoconta is null or k17_numcgm = (select numcgm from db_config where codigo = ".$iInstituicao.")
+                         when pc63_tipoconta is null or (k17_numcgm = (select numcgm from db_config where codigo = {$iInstituicao}) and
+                                                         k153_slipoperacaotipo = 5)
                            then contadebito.c63_tipoconta
                          else pc63_tipoconta
                        end ) as pc63_tipoconta,
 	                    translate(to_char(round(e81_valor - coalesce(fc_valorretencaomov(e81_codmov,false),0),2),'99999999999.99'),'.','') as valor,
-	                    e81_valor - coalesce(fc_valorretencaomov(e81_codmov,false),0) as valorori,
+	                    round(e81_valor - coalesce(fc_valorretencaomov(e81_codmov,false),0),2) as valorori,
 	                    case
                         when  ((case when pc63_banco is not null then pc63_banco else contadebito.c63_banco end ) = conplanoconta.c63_banco
                                 or descrconta.c63_banco = conplanoconta.c63_banco )
                            then '01'
                         else '03'
                       end as  lanc,
-                      ( case when pc63_banco is null and k17_numcgm = (select numcgm from db_config where codigo = ".$iInstituicao.")
+                      ( case when pc63_banco is null and (k17_numcgm = (select numcgm from db_config where codigo = {$iInstituicao}) and
+                                                          k153_slipoperacaotipo = 5)
                         then contadebito.c63_banco
                              else pc63_banco
                         end ) as pc63_banco,
@@ -913,44 +1064,51 @@ class MovimentoArquivoTransmissao {
                       exists(select * 
                                  from empagedadosretmov 
                                       inner join empagedadosret on e76_codret = e75_codret 
+                                                               and e75_codgera = e90_codgera
                                                                and e75_ativo is true
-                                where e76_codmov = e81_codmov) as processado
+                                where e76_codmov = e81_codmov) as processado,
+                      case when (select k153_slipoperacaotipo from sliptipooperacaovinculo where k153_slip = slip.k17_codigo) in (1, 5, 9, 13) 
+                           then cre.c61_codigo else reduzdebito.c61_codigo
+                      end as recurso,
+                      cgc as cnpj_pagador
                   from empagemov
 	                    {$sInner} join empageconfgera    on e90_codmov         = e81_codmov
 	                    {$sInner} join empagegera        on e90_codgera        = e87_codgera
-                      {$sInner} join empage            on  empage.e80_codage = empagemov.e81_codage
+                            {$sInner} join empage            on empage.e80_codage  = empagemov.e81_codage
+                            {$sInner} join db_config         on db_config.codigo   = empage.e80_instit
 	                    {$sInner} join empagepag         on e81_codmov         = e85_codmov
 	                    {$sInner} join empagetipo        on e85_codtipo        = e83_codtipo
 	                    {$sInner} join empageslip        on e81_codmov         = e89_codmov
-	                    {$sInner} join conplanoreduz     on e83_conta          = c61_reduz and c61_anousu = ".$iAno."
-                      {$sInner} join conplanoconta     on c63_codcon         = c61_codcon and c63_anousu = c61_anousu
+	                    {$sInner} join conplanoreduz     on e83_conta          = c61_reduz and c61_anousu = {$iAno}
+                            {$sInner} join conplanoconta     on c63_codcon         = c61_codcon and c63_anousu = c61_anousu and c63_reduz = c61_reduz
 	                    {$sInner} join slip              on slip.k17_codigo    = e89_codigo
 	                    {$sInner} join slipnum           on slipnum.k17_codigo = slip.k17_codigo
+                            {$sInner} join sliptipooperacaovinculo ON k153_slip    = slip.k17_codigo
 
-	                    left join conplanoreduz reduzdebito on reduzdebito.c61_reduz   = k17_debito
-                      left join conplano      planodebito on planodebito.c60_codcon  = reduzdebito.c61_codcon
-                                                          and planodebito.c60_anousu = {$iAno}
-                      left join conplanoconta contadebito on contadebito.c63_codcon  = reduzdebito.c61_codcon
-                                                          and contadebito.c63_anousu = {$iAno}
-                      left join saltes                    on saltes.k13_reduz        = reduzdebito.c61_reduz
-                      left join empageconfcanc on e88_codmov   = e90_codmov
-                      left join empagemovconta on e90_codmov   = e98_codmov
-                      left join pcfornecon on pc63_contabanco  = e98_contabanco
-                      left join cgm cgmslip on cgmslip.z01_numcgm = slipnum.k17_numcgm
-                      left join cgm on cgm.z01_numcgm              = cgmslip.z01_numcgm
-                      left join conplanoreduz cre on cre.c61_reduz   = k17_debito and cre.c61_anousu = ".$iAno."
-  	                  left join conplano concre on concre.c60_codcon = cre.c61_codcon and concre.c60_anousu = cre.c61_anousu
-                      left join conplanoconta descrconta on concre.c60_codcon = descrconta.c63_codcon and concre.c60_anousu = descrconta.c63_anousu
-                      left join empagemovtipotransmissao on empagemovtipotransmissao.e25_empagemov = empagemov.e81_codmov
-                      left join empagemovdetalhetransmissao on  empagemovdetalhetransmissao.e74_empagemov = empagemov.e81_codmov
+  	                    left join conplanoreduz reduzdebito on reduzdebito.c61_reduz   = k17_debito
+                                                               and reduzdebito.c61_anousu  = {$iAno}
+                                                               and reduzdebito.c61_instit  = e80_instit
+                            left join conplano      planodebito on planodebito.c60_codcon  = reduzdebito.c61_codcon
+                                                               and planodebito.c60_anousu  = {$iAno}
+                            left join conplanoconta contadebito on contadebito.c63_codcon  = reduzdebito.c61_codcon
+                                                               and contadebito.c63_anousu = {$iAno}
+                                                               and contadebito.c63_reduz  = reduzdebito.c61_reduz
+                            left join saltes                    on saltes.k13_reduz        = reduzdebito.c61_reduz
+                            left join empageconfcanc on e88_codmov   = e90_codmov
+                            left join empagemovconta on e90_codmov   = e98_codmov
+                            left join pcfornecon on pc63_contabanco  = e98_contabanco
+                            left join cgm cgmslip on cgmslip.z01_numcgm = slipnum.k17_numcgm
+                            left join cgm on cgm.z01_numcgm              = cgmslip.z01_numcgm
+                            left join conplanoreduz cre on cre.c61_reduz   = k17_credito and cre.c61_anousu = {$iAno}
+  	                    left join conplano concre on concre.c60_codcon = cre.c61_codcon and concre.c60_anousu = cre.c61_anousu
+                            left join conplanoconta descrconta on concre.c60_codcon = descrconta.c63_codcon and concre.c60_anousu = descrconta.c63_anousu and cre.c61_reduz = descrconta.c63_reduz 
+                            left join empagemovtipotransmissao on empagemovtipotransmissao.e25_empagemov = empagemov.e81_codmov
+                            left join empagemovdetalhetransmissao on  empagemovdetalhetransmissao.e74_empagemov = empagemov.e81_codmov
   	                  where
-                        {$sWhere}".
-  	                  " --order by c63_conta,lanc,e81_codmov";
+                        {$sWhere}";
 
-    	  $sqlMov = $sqlOrdem." union ".$sqlSlip;
+        $sqlMov = 'select * from (' . $sqlOrdem . " union " . $sqlSlip . ') as x order by ordem' ;
 
     	  return $sqlMov;
       }
 }
-
-?>

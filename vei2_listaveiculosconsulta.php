@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,19 +26,19 @@
  */
 
 
-require_once "libs/db_stdlib.php";
-require_once "libs/db_utils.php";
-require_once "libs/db_conecta.php";
-require_once "libs/db_sessoes.php";
-require_once "libs/db_usuariosonline.php";
-require_once "dbforms/db_funcoes.php";
-require_once "classes/db_veiculos_classe.php";
-require_once "classes/db_veicresp_classe.php";
-require_once "classes/db_veicpatri_classe.php";
-require_once "classes/db_veicparam_classe.php";
-require_once "classes/db_veicbaixa_classe.php";
-require_once "classes/db_veiculoscomb_classe.php";
-require_once "classes/db_veictipoabast_classe.php";
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_utils.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("classes/db_veiculos_classe.php");
+require_once modification("classes/db_veicresp_classe.php");
+require_once modification("classes/db_veicpatri_classe.php");
+require_once modification("classes/db_veicparam_classe.php");
+require_once modification("classes/db_veicbaixa_classe.php");
+require_once modification("classes/db_veiculoscomb_classe.php");
+require_once modification("classes/db_veictipoabast_classe.php");
 
 $oDaoVeiculos = new cl_veiculos;
 $oGet         = db_utils::postMemory($_GET);
@@ -85,7 +85,7 @@ $sSqlVeiculos  = $oDaoVeiculos->sql_query(null, $slistaCampos, 've01_codigo', $s
     var sUrl = 'vei3_veiculos002.php?veiculo='+iCod;
 
 	  parent.func_veiculo.hide();
-    js_OpenJanelaIframe('top.corpo','func_veiculo_detalhes', sUrl,'Consulta de Veículos',true, 20, 0, iWidth);
+    js_OpenJanelaIframe('CurrentWindow.corpo','func_veiculo_detalhes', sUrl,'Consulta de Veículos',true, 20, 0, iWidth);
   }
 </script>
 </head>

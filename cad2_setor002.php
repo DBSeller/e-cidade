@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -75,14 +75,14 @@ $sSql = " select distinct j34_setor,
         				";
         					
 //die($sSql);
-$rsSql = pg_query($sSql);
+$rsSql = db_query($sSql);
 $iNumRows = pg_num_rows($rsSql);
 if ($iNumRows == 0){
 	db_redireciona("db_erros.php?fechar=true&db_erro=Nenhum registro encontrado com os dados informados.");	       					
 }
 
 if($iNumRows > 0){
-	$oRelatorio = db_utils::getColectionByRecord($rsSql);
+	$oRelatorio = db_utils::getCollectionByRecord($rsSql);
 }
 
 $oTotal = new stdClass();

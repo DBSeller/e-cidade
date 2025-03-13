@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_orctiporec_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcorgao_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conlancamcgm_classe.php");
-include("classes/db_conlancamval_classe.php");
-include("classes/db_conlancam_classe.php");
-include("classes/db_orcsuplem_classe.php");
-include("classes/db_conlancamrec_classe.php");
-include("classes/db_conlancamemp_classe.php");
-include("classes/db_conlancamdot_classe.php");
-include("classes/db_conlancamdig_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("classes/db_empempenho_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_orctiporec_classe.php"));
+require_once(modification("classes/db_orcdotacao_classe.php"));
+require_once(modification("classes/db_orcorgao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_conlancamcgm_classe.php"));
+require_once(modification("classes/db_conlancamval_classe.php"));
+require_once(modification("classes/db_conlancam_classe.php"));
+require_once(modification("classes/db_orcsuplem_classe.php"));
+require_once(modification("classes/db_conlancamrec_classe.php"));
+require_once(modification("classes/db_conlancamemp_classe.php"));
+require_once(modification("classes/db_conlancamdot_classe.php"));
+require_once(modification("classes/db_conlancamdig_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -64,7 +64,7 @@ $clrotulo->label("c53_descr");
 $clrotulo->label("c53_coddoc");
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $numero_instit = pg_numrows($resultinst);
@@ -116,6 +116,8 @@ if(isset($pag)){
 }
 $xtipo .= ')';
 
+$filtroPeriodo = " and c70_data between '$data1' and '$data2'";
+
 if($credor == 's'){
   $yordem = ' order by e60_numcgm,e60_anousu,e60_codemp,c70_codlan';
 }else{
@@ -143,14 +145,13 @@ from conlancam
      				and e60_anousu = o58_anousu 
      inner join orcelemento 	on o58_codele = o56_codele and o56_anousu = o58_anousu
      inner join cgm 		on z01_numcgm = e60_numcgm
-where $txt_where $xtipo
- and orcdotacao.o58_instit in $instits 
+where $xtipo
+ and orcdotacao.o58_instit in $instits $filtroPeriodo
 $yordem
 ";
 
 //echo $sql ; exit;
-
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 //db_criatabela($result);exit;
 $xxnum = pg_numrows($result);
@@ -255,7 +256,7 @@ $cgm = 0;
    }
 
 
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf->output();
 
 ?>

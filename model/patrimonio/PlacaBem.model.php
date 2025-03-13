@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -74,12 +74,14 @@ class PlacaBem {
    * @var booleam
    */
   protected $lPlacaImpressa = null;
-  
+
   /**
    * Instituicao do bem da placa
    * @var Instituicao
    */
   protected $oInstituicao;
+
+
 
   /**
    *
@@ -91,7 +93,7 @@ class PlacaBem {
     if (!empty($iCodigoPlaca)) {
 
       $oPlaca = $this->getPlacaDados($iCodigoPlaca, '*');
-      
+
       if ($oPlaca != null) {
 
         $this->iCodigoPlaca   = $iCodigoPlaca;
@@ -99,7 +101,7 @@ class PlacaBem {
         $this->sPlaca         = $oPlaca->t41_placa;
         $this->sPlacaSeq      = $oPlaca->t41_placaseq;
         $this->sData          = $oPlaca->t41_data;
-        $this->sObservacao    = $oPlaca->t41_obs;
+        $this->sObservacao    = pg_escape_string($oPlaca->t41_obs);
         $this->iCodigoUsuario = $oPlaca->t41_usuario;
         $this->oInstituicao   = new Instituicao($oPlaca->t52_instit);
         unset($oPlaca);
@@ -119,15 +121,15 @@ class PlacaBem {
   protected function getPlacaDados($iCodigo=null, $sCampos="*", $sOrder=null, $sWhere="") {
 
     $oDaoBensPlaca = db_utils::getDao("bensplaca");
-    $sSql          = $oDaoBensPlaca->sql_query_fileLockInLine($iCodigo, $sCampos, $sOrder, $sWhere);      
+    $sSql          = $oDaoBensPlaca->sql_query_fileLockInLine($iCodigo, $sCampos, $sOrder, $sWhere);
     $rsBensPlaca   = $oDaoBensPlaca->sql_record($sSql);
-    
+
     if ($oDaoBensPlaca->numrows == 1) {
       return  db_utils::fieldsMemory($rsBensPlaca, 0);
     } else if ($oDaoBensPlaca->numrows == 0 ) {
       return null;
     } else if ($oDaoBensPlaca->numrows > 1) {
-      return  db_utils::getColectionByRecord($rsBensPlaca);
+      return  db_utils::getCollectionByRecord($rsBensPlaca);
     }
   }
 
@@ -159,21 +161,21 @@ class PlacaBem {
 
     switch ($this->iTipoPlaca) {
 
-      case 1:  // SEQUENCIAL AUTOMÁTICO
+      case BensParametroPlaca::PLACA_SEQUENCIAL_AUTOMATICO:  // SEQUENCIAL AUTOMÁTICO
 
         return BensParametroPlaca::getSequencial();
         break;
-      case 2:  //	CLASSIFICAÇÃO + SEQUENCIAL
+      case BensParametroPlaca::PLACA_CLASSIFICACAO_SEQUENCIAL:  //	CLASSIFICAÇÃO + SEQUENCIAL
 
 
         return  $this->buscaSequencialMaximoPeloTipo($mParam);
         break;
-      case 3:  // TEXTO + SEQUENCIAL
+      case BensParametroPlaca::PLACA_TEXTO_SEQUENCIAL:  // TEXTO + SEQUENCIAL
 
         return  $this->buscaSequencialMaximoPeloTipo($mParam);
         break;
 
-      case 4:  // SEQUENCIAL DIGITADO
+      case BensParametroPlaca::PLACA_SEQUENCIAL_DIGITADO:  // SEQUENCIAL DIGITADO
 
         return true;
         break;
@@ -190,42 +192,54 @@ class PlacaBem {
   public function salvar() {
 
     if (empty($this->iCodigoPlaca)) {
-      
+
       $this->iTipoPlaca = BensParametroPlaca::getCodigoParametro();
 
       switch ($this->iTipoPlaca) {
 
-        case 1 : // SEQUENCIAL AUTOMÁTICO
+        case BensParametroPlaca::PLACA_SEQUENCIAL_AUTOMATICO : // SEQUENCIAL AUTOMÁTICO
 
           if ($this->pesquisaSeSequencialExiste()) {
-            throw new Exception("Não foi possível incluir pois a placa já existe em nosso sistema");
+            throw new Exception("Não foi possível incluir pois a placa já existe no sistema.");
           }
           break;
-        case 2: // CLASSIFICAÇÃO + SEQUENCIAL
+        case BensParametroPlaca::PLACA_CLASSIFICACAO_SEQUENCIAL: // CLASSIFICAÇÃO + SEQUENCIAL
 
           $sPlaca = " {$this->sPlaca} ";
           if ($this->pesquisaSeSequencialExiste($sPlaca)) {
-            throw new Exception("Não foi possível incluir pois a placa já existe em nosso sistema");
+            throw new Exception("Não foi possível incluir pois a placa já existe no sistema.");
           }
           break;
-        case 3: // TEXTO + SEQUENCIAL
+        case BensParametroPlaca::PLACA_TEXTO_SEQUENCIAL: // TEXTO + SEQUENCIAL
 
           $sPlaca = " {$this->sPlaca} ";
           if ($this->pesquisaSeSequencialExiste($sPlaca)) {
-            throw new Exception("Não foi possível incluir pois a placa já existe em nosso sistema");
+            throw new Exception("Não foi possível incluir pois a placa já existe no sistema.");
           }
           break;
 
-        case 4: // SEQUENCIAL DIGITADO
+        case BensParametroPlaca::PLACA_SEQUENCIAL_DIGITADO: // SEQUENCIAL DIGITADO
 
           if ($this->pesquisaSeSequencialExiste(null)) {
-            throw new Exception("Não foi possível incluir pois a placa já existe em nosso sistema");
+            throw new Exception("Não foi possível incluir pois a placa já existe no sistema.");
           }
           break;
       }
     }
     $this->persistirDados();
   }
+
+    public function getInfoPlacaDisponivel()
+    {
+        $dados = ['bem' => '', 'historico' => ''];
+        $dao = new \cl_bensplaca();
+        $sql = $dao->sqlQueryIsPlacaDisponivel(!empty($this->sPlaca) ? $this->sPlaca : $this->sPlacaSeq);
+        $rs = $dao->sql_record($sql);
+        if ($rs !== false && $dao->numrows > 0) {
+            $dados = pg_fetch_assoc($rs);
+        }
+        return $dados;
+    }
 
   /**
    *
@@ -234,10 +248,11 @@ class PlacaBem {
    */
   protected function persistirDados() {
 
-    $oDaoBensPlaca = db_utils::getDao("bensplaca");
+    $oDaoBensPlaca = new cl_bensplaca;
     $oDaoBensPlaca->t41_bem      = $this->iCodigoBem;
     $oDaoBensPlaca->t41_placa    = $this->sPlaca;
     $oDaoBensPlaca->t41_placaseq = $this->sPlacaSeq;
+    $oDaoBensPlaca->t41_obs      = $this->sObservacao;
     $oDaoBensPlaca->t41_obs      = $this->sObservacao;
     $oDaoBensPlaca->t41_data     = $this->sData;
     $oDaoBensPlaca->t41_usuario  = db_getsession("DB_id_usuario");
@@ -256,11 +271,11 @@ class PlacaBem {
         $oDaoPatriPlaca = db_utils::getDao("cfpatriplaca");
         $oDaoPatriPlaca->t07_instit     = db_getsession("DB_instit");
         $oDaoPatriPlaca->t07_sequencial = str_replace(".", "", ($this->sPlacaSeq+1));
-        
+
         if ($this->iTipoPlaca == 4) {
         	$oDaoPatriPlaca->t07_sequencial = str_replace(".", "", ($this->sPlacaSeq));
         }
-        
+
         $oDaoPatriPlaca->alterar(db_getsession("DB_instit"));
 
         if ($oDaoPatriPlaca->erro_status == 0) {
@@ -285,10 +300,9 @@ class PlacaBem {
   }
   public function setObservacao($sObservacao) {
 
+    $this->sObservacao = '';
     if (!empty($sObservacao)) {
       $this->sObservacao = $sObservacao;
-    } else {
-      $this->sObservacao = '';
     }
   }
   public function setPlacaSeq($sPlacaSeq) {
@@ -296,12 +310,12 @@ class PlacaBem {
   }
   public function setPlaca($sPlaca) {
 
+    $this->sPlaca = '';
     if (!empty($sPlaca)) {
       $this->sPlaca = $sPlaca;
-    } else {
-      $this->sPlaca = '';
     }
   }
+
   public function setData($sData) {
     $this->sData = implode('-', array_reverse(explode("/",  $sData)));
   }
@@ -317,15 +331,15 @@ class PlacaBem {
     if (empty($mParam)) {
       throw new Exception("Você tem que passar a classe por parâmetro.");
     }
-    
+
     $mParam  = strtoupper($mParam);
     $sCampos = "max(t41_placaseq) as placa";
     $sWhere  = "t41_placa = '{$mParam}' ";
-    
+
     if (BensParametroPlaca::controlaPlacaPorInstituicao()) {
       $sWhere  .= " and t52_instit = ".db_getsession("DB_instit");
     }
-    
+
     $oParametro = $this->getPlacaDados(null, $sCampos, null, $sWhere);
     if ($oParametro == null) {
       return 1;
@@ -346,24 +360,27 @@ class PlacaBem {
 
     $sWHereInstituicao         = null;
     $lControlaPlacaInstituicao = BensParametroPlaca::controlaPlacaPorInstituicao();
-    
+
     if ($lControlaPlacaInstituicao) {
       $sWHereInstituicao = ' and t52_instit = ' .db_getsession('DB_instit');
     }
-    
+
     $lExiste = true;
-    $sWhere  =  " exists (select 1 from bens where t52_bem = t41_bem $sWHereInstituicao) and t41_placaseq = {$this->sPlacaSeq} ";
-    
+    $sWhere  =  "
+      exists (select 1 from bens where t52_bem = t41_bem $sWHereInstituicao)
+      and t41_placaseq = {$this->sPlacaSeq}
+      and t41_excluido = 'f'
+    ";
+
     if ($sPlaca != null) {
       $sWhere .= " and t41_placa = '{$sPlaca}'";
     }
-    
+
     $oParametro = $this->getPlacaDados(null, "*", null, $sWhere);
 
     if ($oParametro == null) {
       $lExiste = false;
     }
-
     return $lExiste;
   }
 
@@ -378,6 +395,9 @@ class PlacaBem {
     return $this->sPlaca.$this->sPlacaSeq;
   }
 
+  /**
+   * @return boolean
+   */
   public function isPlacaImpressa() {
 
     if (empty($this->lPlacaImpressa) && !empty($this->iCodigoBem)) {
@@ -397,7 +417,23 @@ class PlacaBem {
     }
 
     return $this->lPlacaImpressa;
-
   }
+
+  /**
+   * @throws DBException
+   * @return void
+   */
+  public static function bloqueiaManutencao() {
+
+    $oDaoBensPlaca            = new cl_bensplaca();
+    $sSqlBloqueiaMovimentacao = $oDaoBensPlaca->sql_query_file(null, "*") . " for update ";
+    $rsBloqueiaMovimentacao   = db_query($sSqlBloqueiaMovimentacao);
+
+    if (!$rsBloqueiaMovimentacao) {
+      throw new DBException('Não foi possível bloquear a movimentação da tabela bensplaca.');
+    }
+  }
+
+
 
 }

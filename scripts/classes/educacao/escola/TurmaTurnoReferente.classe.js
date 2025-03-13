@@ -1,23 +1,23 @@
 require_once("scripts/classes/educacao/DBViewFormularioEducacao.classe.js");
 
 /**
- * Monta as linhas com as vagas disponíveis/ocupadas referentes ao ensino e turno da turma 
+ * Monta as linhas com as vagas disponíveis/ocupadas referentes ao ensino e turno da turma
  * -> Para turmas onde o curso é infantil e o turno é integral, cria uma visão alitica separando
  *    as vagas dos turnos referente ao qual o turno integral é composto;
  * -> Para turma onde curso não é infantíl, cria uma visão sintética;
- * 
+ *
  * @dependency Utiliza DBViewFormularioEducacao.classe.js
  * @autor Andrio Costa <andrio.costa@dbseller.com.br>
  * @autor Andre Mello <andre.mello@dbseller.com.br>
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.8 $
  * @package Educacao
- * @subpackage Escola 
- * @example 
- *       
+ * @subpackage Escola
+ * @example
+ *
  *       var oTurmaTurno = new DBViewFormularioEducacao.TurmaTurnoReferente($('linhaAnterior'), 151);
  *       oTurmaTurno.setInputSize(4);
  *       oTurmaTurno.show();
- * 
+ *
  * @returns {void}
  */
 
@@ -30,7 +30,7 @@ DBViewFormularioEducacao.TurmaTurnoReferente = function (oLinhaReferencia, iTurm
   this.oLinhaReferencia = oLinhaReferencia;
 
   /**
-   * Código da turma 
+   * Código da turma
    * @type {integer} Turma
    */
   this.iTurma = iTurma;
@@ -38,11 +38,11 @@ DBViewFormularioEducacao.TurmaTurnoReferente = function (oLinhaReferencia, iTurm
   this.sRpc = '';
 
   /**
-   * Linha dos checkbox 
+   * Linha dos checkbox
    * @type {ElementHTML} tr
    */
   this.oLinhaCheck   = new Element('tr');
-  
+
   /**
    * Coluna referente ao label do checkbox
    * @type {ElementHTML} td
@@ -107,8 +107,8 @@ DBViewFormularioEducacao.TurmaTurnoReferente = function (oLinhaReferencia, iTurm
     oRequest.asynchronous = false;
     oRequest.parameters   = 'json='+Object.toJSON(oParametro);
     oRequest.onComplete   = function(oAjax) {
-                         
-      var oRetorno = eval('(' + oAjax.responseText + ')' );
+
+      var oRetorno = JSON.parse(oAjax.responseText);
       oSelf.lEnsinoInfantil = oRetorno.lEnsinoInfantil;
       oSelf.lTurnoIntegral  = oRetorno.lTurnoIntegral;
 
@@ -133,16 +133,16 @@ DBViewFormularioEducacao.TurmaTurnoReferente = function (oLinhaReferencia, iTurm
     oRequest.asynchronous = false;
     oRequest.parameters   = 'json='+Object.toJSON(oParametros);
     oRequest.onComplete   = function (oAjax) {
-      
+
       js_removeObj('msgBoxA');
-      var oRetorno      = eval('(' + oAjax.responseText + ')' );
+      var oRetorno      = JSON.parse(oAjax.responseText);
       oSelf.oVagasTurma = oRetorno.aVagasTurma;
     }
 
     js_divCarregando( "Aguarde, buscando as vagas da turma...", "msgBoxA" );
     new Ajax.Request("edu4_turmas.RPC.php", oRequest);
   }
-  
+
   buscaVagasTurma(this);
 
 }
@@ -175,7 +175,7 @@ DBViewFormularioEducacao.TurmaTurnoReferente.prototype.criaLinhasTurnoTurma = fu
     var oLabelVagas        = new Element('label', {'class':'bold'}).update('Vagas ' + this.aLegendaTurno[iTurnoReferente] + ': ');
     var oLabelMatriculados = new Element('label', {'class':'bold'}).update(' Alunos matriculados: ');
     var oLabelDisponivel   = new Element('label', {'class':'bold'}).update(' Vagas disponíveis: ');
-    var oLabelCheckbox     = new Element('label', {'class':'bold'}).update(this.aLegendaTurno[iTurnoReferente].toUpperCase());
+    var oLabelCheckbox     = new Element('label', {'class':'bold', 'for' : sIdCheckbox}).update(this.aLegendaTurno[iTurnoReferente].toUpperCase());
 
     var oInputVagas        = new Element('input', {'type' : 'text', 'name' : sIdVagas ,  'id' : sIdVagas, 'size' : this.iInputSize,
                                                    'class' : 'readonly', 'readonly' : 'readonly', 'value' : this.oVagasTurma[iTurnoReferente].iVagas});
@@ -214,7 +214,7 @@ DBViewFormularioEducacao.TurmaTurnoReferente.prototype.criaLinhasTurnoTurma = fu
       oNodeIrmao = $(sIdLinha);
     }
 
-    sIdLinha = "linhaTurnoReferente" + iTurnoReferente; 
+    sIdLinha = "linhaTurnoReferente" + iTurnoReferente;
     oLinha.setAttribute("id", sIdLinha);
 
     this.aLinhasCriadas.push(oLinha);
@@ -241,7 +241,7 @@ DBViewFormularioEducacao.TurmaTurnoReferente.prototype.criaLinhasTurnoTurma = fu
  * @return {void}
  */
 DBViewFormularioEducacao.TurmaTurnoReferente.prototype.show = function() {
-  
+
   this.criaLinhasTurnoTurma();
   if ( !this.lEnsinoInfantil || !this.lTurnoIntegral) {
 
@@ -249,6 +249,7 @@ DBViewFormularioEducacao.TurmaTurnoReferente.prototype.show = function() {
     this.criaLinhaTurnoTurmaAgrupado();
   }
 
+  this.getVagasDisponiveis();
 };
 
 /**
@@ -258,7 +259,7 @@ DBViewFormularioEducacao.TurmaTurnoReferente.prototype.show = function() {
 DBViewFormularioEducacao.TurmaTurnoReferente.prototype.limpaLinhasCriadas = function () {
 
   if ( this.oLinhaCheck.parentNode == null) {
-    return; 
+    return;
   }
   this.oLinhaCheck.parentNode.removeChild(this.oLinhaCheck);
   this.aLinhasCriadas.each( function (oElement) {
@@ -283,7 +284,7 @@ DBViewFormularioEducacao.TurmaTurnoReferente.prototype.escondeLinhasTurnoTurma =
 
 /**
  * Cria uma visão sintética das vagas da turma considerando o turno como um todo
- * @return {void} 
+ * @return {void}
  */
 DBViewFormularioEducacao.TurmaTurnoReferente.prototype.criaLinhaTurnoTurmaAgrupado = function () {
 
@@ -335,7 +336,7 @@ DBViewFormularioEducacao.TurmaTurnoReferente.prototype.criaLinhaTurnoTurmaAgrupa
 
 /**
  * Atribui um novo tamanho aos inputs
- * @param {Number} iTamanho 
+ * @param {Number} iTamanho
  */
 DBViewFormularioEducacao.TurmaTurnoReferente.prototype.setInputSize = function (iTamanho) {
 
@@ -346,22 +347,22 @@ DBViewFormularioEducacao.TurmaTurnoReferente.prototype.setInputSize = function (
 
 
 DBViewFormularioEducacao.TurmaTurnoReferente.prototype.temVagasDisponiveis = function() {
-
   return this.getVagasDisponiveis().length > 0;
 }
 
 DBViewFormularioEducacao.TurmaTurnoReferente.prototype.getVagasDisponiveis = function(iReferencia) {
 
-  var oSelf = this;
-
-  var aTurnoReferencia = new Array();  
+  var oSelf            = this;
+  var aVagas           = [];
+  var aTurnoReferencia = new Array();
   var lTurmaSemVagas   = false;
+
   $$("input.TurmaTurnoReferente:checked").each( function(oElement) {
 
     if (oElement == 'function') {
       return;
     }
-    
+
     var iTurnoReferente = oElement.value;
 
     // Se informado um turno de referência, so verificamos as vagas do turno informado
@@ -369,29 +370,18 @@ DBViewFormularioEducacao.TurmaTurnoReferente.prototype.getVagasDisponiveis = fun
       return;
     }
 
-    // Se não tem vagas, continua
-    if ($("disponiveis"+iTurnoReferente) && $F("disponiveis"+iTurnoReferente) < 1 ) {
+    $("check_turno"+iTurnoReferente).setAttribute('disabled', 'disabled');
+    $("check_turno"+iTurnoReferente).checked = false;
 
-      sMensagem = "Esta turma não tem mais vagas para o turno selecionado:" + oSelf.aLegendaTurno[iTurnoReferente];
-      if ( !oSelf.lEnsinoInfantil ) {
-        sMensagem = "Turma sem vagas.";
-      }
-      lTurmaSemVagas = true;
-      $break;
+    // Se há vagas, libera o checkbox do turno para selecão e desbloqueio o mesmo
+    if ($("disponiveis"+iTurnoReferente) && $F("disponiveis"+iTurnoReferente) > 0 ) {
+
+      $("check_turno"+iTurnoReferente).removeAttribute('disabled');
+      $("check_turno"+iTurnoReferente).checked = true;
+
+      aVagas.push( {iTurnoReferente:iTurnoReferente, iVagasDisponiveis:$F('disponiveis'+iTurnoReferente)});
     }
-
-    aTurnoReferencia.push( iTurnoReferente );
   });
-
-  // Se a turma não tem vagas retorna um array vazio
-  var aVagas = [];
-  if ( lTurmaSemVagas ) {
-    return aVagas;
-  }
-
-  aTurnoReferencia.each ( function ( iTurnoReferente) {
-    aVagas.push( {iTurnoReferente:iTurnoReferente, iVagasDisponiveis:$F('disponiveis'+iTurnoReferente)});
-  }); 
 
   return aVagas;
 };

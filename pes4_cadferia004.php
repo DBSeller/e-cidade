@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cadferia_classe.php");
-include("classes/db_selecao_classe.php");
-include("classes/db_cfpess_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpesrescisao_classe.php");
-include("classes/db_rhcadastroferiaslote_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libpessoal.php");
-include ("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cadferia_classe.php"));
+include(modification("classes/db_selecao_classe.php"));
+include(modification("classes/db_cfpess_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhpesrescisao_classe.php"));
+include(modification("classes/db_rhcadastroferiaslote_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("libs/db_utils.php"));
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
 
-//die();
 $clcadferia             = new cl_cadferia;
 $clselecao              = new cl_selecao;
 $clcfpess               = new cl_cfpess;
@@ -132,6 +131,32 @@ if(isset($semdireito)){
 if((isset($r30_regist) && !isset($semdireito)) || isset($enviar_selecao) || (isset($campomatriculas) && 
                                                 trim($campomatriculas) != "") || isset($ultmatric) || isset($proximo)) {
   
+
+
+   $oCompetencia = DBPessoal::getCompetenciaFolha();
+   $oInstituicao = InstituicaoRepository::getInstituicaoByCodigo(db_getsession("DB_instit"));
+
+   /**
+    * Retornar todas as rubricas especiais relacionadas a férias
+    */
+   $oDaoRubricaEspecial         = new cl_cfpess();
+   $sCampos                     = "r11_feradi";
+   $sSqlRubricasEspeciaisFerias = $oDaoRubricaEspecial->sql_query_file($oCompetencia->getAno(), 
+                                                                       $oCompetencia->getMes(), 
+                                                                       $oInstituicao->getCodigo(), 
+                                                                       $sCampos);
+   $rsRubricasEspeciaisFerias    = $oDaoRubricaEspecial->sql_record($sSqlRubricasEspeciaisFerias);
+   
+   if ($rsRubricasEspeciaisFerias && $oDaoRubricaEspecial->numrows > 0) {
+     $oDadosRubricasFerias = db_utils::fieldsMemory($rsRubricasEspeciaisFerias, 0);
+
+     if (empty($oDadosRubricasFerias->r11_feradi)) {
+       db_msgbox("Rubrica de Adiantamento de Férias não configurada. \n Acesse Procedimentos > Manutenção de Parâmetros > Rubricas Especiais.");
+       db_redireciona('pes4_cadferia001.php');
+     }
+   }
+ 
+
   if((isset($enviar_selecao) && !isset($campomatriculas)) || isset($ultmatric) || isset($proximo)) {
     $retorno = 'true';
     if (isset($proximo)) {
@@ -147,7 +172,7 @@ if((isset($r30_regist) && !isset($semdireito)) || isset($enviar_selecao) || (iss
       if(isset($ultmatric) && trim($ultmatric) != ""){
         $r44_where .= " and rh01_regist > $ultmatric";
       }
-      
+
       $sMensagem = "";
       if (isset($filtraferiasprocessadas) && $filtraferiasprocessadas == 2) {
         $sMensagem = "- Não estão sendo considerados servidores que já possuem cadastro de férias em Lote.";
@@ -221,7 +246,7 @@ if((isset($r30_regist) && !isset($semdireito)) || isset($enviar_selecao) || (iss
        */
       if (isset($ultmatric) && trim($ultmatric) != "") {
         
-        $sWhere      = " and rh93_mesusu = {$mesfolha} and rh93_anousu = {$anofolha} and rh93_regist = {$ultmatric}";
+        $sWhere      = "rh93_mesusu = {$mesfolha} and rh93_anousu = {$anofolha} and rh93_regist = {$ultmatric}";
         $sSqlNoLote  = $oDaoFeriasLote->sql_query_file(null,"rh93_sequencial", null, $sWhere);
         $rsNoLote    = $oDaoFeriasLote->sql_record($sSqlNoLote);
         if ($oDaoFeriasLote->numrows == 0) {
@@ -234,7 +259,7 @@ if((isset($r30_regist) && !isset($semdireito)) || isset($enviar_selecao) || (iss
           
         }
       }
-      include("libs/db_sql.php");
+      include(modification("libs/db_sql.php"));
       $clsql = new cl_gera_sql_folha;
       $clsql->usar_pes = true;
       $clsql->usar_pad = true;
@@ -254,7 +279,6 @@ if((isset($r30_regist) && !isset($semdireito)) || isset($enviar_selecao) || (iss
       $virgumatriculas = "";
       
       $sql = $clsql->gerador_sql("", $anofolha, $mesfolha, null, null, " rh01_regist ", "rh01_regist", $r44_where.$sWereListaFuncionarios);
-      die($sql);
 
       $result = $clsql->sql_record($sql) or die("Erro no SQL: $sql");
       if ($clsql->numrows_exec > 0) {
@@ -272,10 +296,13 @@ if((isset($r30_regist) && !isset($semdireito)) || isset($enviar_selecao) || (iss
         }
       } else {
       	
-      	db_msgbox("Aviso:\\nNão foram encontradas matriculas para cadastrar as férias em lote.\\n\\n$sMensagem");
+        if(!isset($ultmatric)) {
+      	  db_msgbox("Aviso:\\nNão foram encontradas matriculas para cadastrar as férias em lote.\\n\\n$sMensagem");
+        }
+
       	db_redireciona("pes4_cadferialote001.php");  
       }
-      
+
     } else {
     	
       $r30_regist = "";
@@ -436,7 +463,7 @@ if((isset($r30_regist) && !isset($semdireito)) || isset($enviar_selecao) || (iss
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
       <center>
         <?
-        include("forms/db_frmcadferia001.php");
+        include(modification("forms/db_frmcadferia001.php"));
         ?>
       </center>
     </td>
@@ -449,7 +476,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 </html>
 <?
 if(isset($semdireito)){
-  if($result_insert == true && trim($retorno) == ""){
+  if( ($result_insert == true && trim($retorno) == "") || ($result_insert == true && isset($campomatriculas) )){
     db_msgbox("Inclusão efetuada com sucesso.");
     echo "<script>location.href = 'pes4_cadferia001.php';</script>";
   }else if($result_insert == true){

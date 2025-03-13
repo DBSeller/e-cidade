@@ -62,7 +62,7 @@ $clrotulo->label("m60_descr");
 <script>
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_nutriente',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_nutriente',
 		              'func_mer_nutriente.php?funcao_js=parent.js_preenchepesquisa|me09_i_codigo','Pesquisa',true
 		             );
   

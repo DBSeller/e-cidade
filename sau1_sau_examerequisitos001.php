@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_sau_examerequisitos_classe.php");
-include("classes/db_sau_exames_classe.php");
-include("classes/db_sau_requisitos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_sau_examerequisitos_classe.php"));
+include(modification("classes/db_sau_exames_classe.php"));
+include(modification("classes/db_sau_requisitos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clsau_examerequisitos = new cl_sau_examerequisitos;
 $clsau_exames = new cl_sau_exames;
@@ -78,7 +78,7 @@ if(isset($incluir)){
   <tr> 
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
     <fieldset style="width:95%"><legend><b>Inclusão de Exames Requisitos</b></legend>
-	<? include("forms/db_frmsau_examerequisitos.php");?>
+	<? include(modification("forms/db_frmsau_examerequisitos.php"));?>
 	</fieldset>
 	</td>
   </tr>

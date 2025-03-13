@@ -13,5 +13,8 @@
   "profissional_fora_rede"           : "Profissional selecionado não é um profissional de fora da rede.",
   "saldo_excedido"                   : "Saldo excedido! \nDeseja liberar a realização de exames mesmo excedendo o saldo?",
   "selecione_exame"                  : "Selecione ao menos um exame para autorizá-lo.",
-  "autorizando_exames"               : "Aguarde, autorizando exames..."
+  "autorizando_exames"               : "Aguarde, autorizando exames...",
+  "verifica_uso_cotas"               : "Verificando se possuí controle de cotas.",
+  "validando_cota"                   : "Validando atendimento diário.",
+  "exame_desativado"                 : "Este exame encontra-se desativado."
 }

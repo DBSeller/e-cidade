@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/impcarne.php");
-include("fpdf151/scpdf.php");
-include("libs/db_sql.php");
-include("classes/db_empparametro_classe.php");
-include("classes/db_db_config_classe.php");
+include(modification("fpdf151/impcarne.php"));
+include(modification("fpdf151/scpdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_empparametro_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
 
 
 $clempparametro	 = new  cl_empparametro;
@@ -43,7 +43,7 @@ db_fieldsmemory($result_instit,0);
 
 
 $sqlpref = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 db_fieldsmemory($resultpref,0);
 
 if(isset($codlan)){
@@ -132,7 +132,7 @@ $sqlemp = "
     $dbwhere
 	";
 
-$result = pg_exec($sqlemp);	
+$result = db_query($sqlemp);	
 //db_criatabela($result);exit;
 
 if (pg_numrows($result)==0){
@@ -222,7 +222,7 @@ for($i = 0;$i < pg_numrows($result);$i++){
    $pdf1->data_est         = $c70_data;
    $pdf1->descr_anu        = @$matrizdados[0];
 
-   $sQueryConta  = "select c61_codcon ";
+   $sQueryConta  = "select c61_codcon, c61_reduz ";
    $sQueryConta .= "  from conplanoreduz ";
    $sQueryConta .= "       inner join conplano on c60_codcon = c61_codcon and c60_anousu = c61_anousu  "; 
    $sQueryConta .= "       inner join consistema on c52_codsis = c60_codsis ";
@@ -232,7 +232,7 @@ for($i = 0;$i < pg_numrows($result);$i++){
    $result_conta = db_query(analiseQueryPlanoOrcamento($sQueryConta));
    if ($result_conta != false && (pg_numrows($result_conta) > 0 && pg_numrows($result_conta) <= 2)) {
      db_fieldsmemory($result_conta,0);
-     $result_conta = db_query("select * from conplanoconta where c63_codcon = $c61_codcon and c63_anousu = ".db_getsession("DB_anousu"));
+     $result_conta = db_query("select * from conplanoconta where c63_reduz = {$c61_reduz} and c63_codcon = $c61_codcon and c63_anousu = ".db_getsession("DB_anousu"));
      if (pg_result($result_conta,0) > 0) {
        db_fieldsmemory($result_conta,0);
        $pdf1->banco            = $c63_banco;
@@ -250,7 +250,7 @@ for($i = 0;$i < pg_numrows($result);$i++){
                      inner join db_docparag on db03_docum = db04_docum
                      inner join db_paragrafo on db04_idparag = db02_idparag
                 where db03_descr like '%ASSINATURAS EMPENHO%' and db02_descr like '%ASSINATURA 1%' and db03_instit = " . db_getsession("DB_instit");
-   $resparag = pg_query($sqlparag);
+   $resparag = db_query($sqlparag);
 //   db_criatabela($resparag);
    if ( pg_numrows($resparag) > 0 ) {
       db_fieldsmemory($resparag,0);
@@ -264,7 +264,7 @@ for($i = 0;$i < pg_numrows($result);$i++){
                      inner join db_docparag on db03_docum = db04_docum
                      inner join db_paragrafo on db04_idparag = db02_idparag
                 where db03_descr like '%ASSINATURAS EMPENHO%' and db02_descr like '%ASSINATURA 2%' and db03_instit = " . db_getsession("DB_instit");
-   $resparag = pg_query($sqlparag);
+   $resparag = db_query($sqlparag);
 
    if ( pg_numrows($resparag) > 0 ) {
       db_fieldsmemory($resparag,0);
@@ -279,7 +279,7 @@ for($i = 0;$i < pg_numrows($result);$i++){
                      inner join db_docparag on db03_docum = db04_docum
                      inner join db_paragrafo on db04_idparag = db02_idparag
                 where db03_descr like '%ASSINATURAS EMPENHO%' and db02_descr like '%ASSINATURA 3%' and db03_instit = " . db_getsession("DB_instit");
-   $resparag = pg_query($sqlparag);
+   $resparag = db_query($sqlparag);
 
    if ( pg_numrows($resparag) > 0 ) {
       db_fieldsmemory($resparag,0);
@@ -293,7 +293,7 @@ for($i = 0;$i < pg_numrows($result);$i++){
                      inner join db_docparag on db03_docum = db04_docum
                      inner join db_paragrafo on db04_idparag = db02_idparag
                 where db03_descr like '%ASSINATURA PREFEITO%' and db02_descr like '%PREFEITO%' and db03_instit = " . db_getsession("DB_instit");
-   $resparag = pg_query($sqlparag);
+   $resparag = db_query($sqlparag);
 
    if ( pg_numrows($resparag) > 0 ) {
       db_fieldsmemory($resparag,0);
@@ -303,7 +303,7 @@ for($i = 0;$i < pg_numrows($result);$i++){
 			  
    $pdf1->imprime();
 }
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf1->objpdf->Output();
 
    

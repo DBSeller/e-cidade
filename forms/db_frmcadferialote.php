@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,7 +33,7 @@ $clrotulo->label("z01_nome");
 $clrotulo->label("DBtxt23");
 $clrotulo->label("DBtxt25");
 
-$result_cfpess = $clcfpess->sql_record($clcfpess->sql_query_file(db_anofolha(),db_mesfolha(),"r11_pagarferias as pontofer,r11_13ferias as pagafer13"));
+$result_cfpess = $clcfpess->sql_record($clcfpess->sql_query_file(db_anofolha(),db_mesfolha(),db_getsession("DB_instit"),"r11_pagarferias as pontofer,r11_13ferias as pagafer13"));
 if($clcfpess->numrows > 0){
   db_fieldsmemory($result_cfpess, 0);
 }
@@ -314,10 +314,10 @@ function js_verificacampos(){
 }
 function js_pesquisar44_selec(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_mostraselecao1|r44_selec|r44_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_mostraselecao1|r44_selec|r44_descr','Pesquisa',true);
   }else{
     if(document.form1.r44_selec.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostraselecao','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostraselecao','Pesquisa',false);
     }else{
       document.form1.r44_descr.value = '';
     }

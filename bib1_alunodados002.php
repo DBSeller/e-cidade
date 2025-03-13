@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_aluno_classe.php");
-include("classes/db_alunoaltera_classe.php");
-include("classes/db_alunobairro_classe.php");
-include("classes/db_alunoprimat_classe.php");
-include("classes/db_pais_classe.php");
-include("classes/db_censouf_classe.php");
-include("classes/db_censomunic_classe.php");
-include("classes/db_censoorgemissrg_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_aluno_classe.php"));
+include(modification("classes/db_alunoaltera_classe.php"));
+include(modification("classes/db_alunobairro_classe.php"));
+include(modification("classes/db_alunoprimat_classe.php"));
+include(modification("classes/db_pais_classe.php"));
+include(modification("classes/db_censouf_classe.php"));
+include(modification("classes/db_censomunic_classe.php"));
+include(modification("classes/db_censoorgemissrg_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $claluno = new cl_aluno;
@@ -94,9 +94,9 @@ if(isset($alterar)){
    $ed47_c_foto = @trim($GLOBALS["HTTP_POST_VARS"]["ed47_o_oid"]);
    $ed47_o_oid = "tmp/".@trim($GLOBALS["HTTP_POST_VARS"]["ed47_o_oid"]);
    if($ed47_c_foto!=""){
-    pg_exec("begin");
+    db_query("begin");
     $oid_imagem = pg_loimport($conn,$ed47_o_oid) or die("Erro(15) importando imagem");
-    pg_exec("end");
+    db_query("end");
     $ed47_o_oid = $oid_imagem;
    }else{
     $oid_imagem = "0";
@@ -147,9 +147,9 @@ if(isset($alterar)){
   $ed47_c_foto = @trim($GLOBALS["HTTP_POST_VARS"]["ed47_o_oid"]);
   $ed47_o_oid = "tmp/".@trim($GLOBALS["HTTP_POST_VARS"]["ed47_o_oid"]);
   if($ed47_c_foto!=""){
-   pg_exec("begin");
+   db_query("begin");
    $oid_imagem = pg_loimport($conn,$ed47_o_oid) or die("Erro(15) importando imagem");
-   pg_exec("end");
+   db_query("end");
    $ed47_o_oid = $oid_imagem;
   }else{
    $oid_imagem = "0";
@@ -247,7 +247,7 @@ if(isset($alterar)){
                  AND ed47_i_codigo = $chavepesquisa
 	         ORDER BY ed18_c_nome
 	        ";
- $result_vinculo = pg_query($sql_vinculo);
+ $result_vinculo = db_query($sql_vinculo);
  $linhas_vinculo = pg_num_rows($result_vinculo);
  if($linhas_vinculo>0){
   $db_botao = false;
@@ -259,7 +259,7 @@ if(isset($excluirfoto)){
           ed47_o_oid = 0
          WHERE ed47_i_codigo = $chavepesquisa
         ";
- $result = pg_query($sql);
+ $result = db_query($sql);
   ?>
   <script>
    parent.parent.db_iframe_alteradados.hide();
@@ -282,7 +282,7 @@ if(isset($excluirfoto)){
   <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Aluno</b></legend>
-    <?include("forms/db_frmbibalunodados.php");?>
+    <?include(modification("forms/db_frmbibalunodados.php"));?>
    </fieldset>
    </center>
   </td>

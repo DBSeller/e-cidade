@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-include_once("libs/db_utils.php");
-include_once("dbforms/db_funcoes.php");
-require_once("libs/db_libpostgres.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("libs/db_utils.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libpostgres.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -64,424 +64,498 @@ if (count($clpostgresqlutils->getTableIndexes('debitos')) == 0) {
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<script>
-function js_sobe() {
-  var F = document.getElementById("campos");
-  if(F.selectedIndex != -1 && F.selectedIndex > 0) {
-    var SI = F.selectedIndex - 1;
-    var auxText = F.options[SI].text;
-	var auxValue = F.options[SI].value;
-	F.options[SI] = new Option(F.options[SI + 1].text,F.options[SI + 1].value);
-	F.options[SI + 1] = new Option(auxText,auxValue);
-	js_trocacordeselect();
-	F.options[SI].selected = true;
-  }
-}
-
-function js_desce() {
-  var F = document.getElementById("campos");
-  if(F.selectedIndex != -1 && F.selectedIndex < (F.length - 1)) {
-    var SI = F.selectedIndex + 1;
-    var auxText = F.options[SI].text;
-	var auxValue = F.options[SI].value;
-	F.options[SI] = new Option(F.options[SI - 1].text,F.options[SI - 1].value);
-	F.options[SI - 1] = new Option(auxText,auxValue);
-	js_trocacordeselect();
-	F.options[SI].selected = true;
-  }
-}
-function js_excluir() {
-  var F = document.getElementById("campos");
-  var SI = F.selectedIndex;
-  if(F.selectedIndex != -1 && F.length > 0) {
-    F.options[SI] = null;
-	js_trocacordeselect();
-    if(SI <= (F.length - 1))
-      F.options[SI].selected = true;
-  }
-}
-function js_insSelect() {
-  var texto=document.form1.descr.value;
-  var valor=document.form1.codigo.value;
-
-  if(texto != "" && valor != ""){
-    var F = document.getElementById("campos");
-    var testa = false;
-
-    for(var x = 0; x < F.length; x++){
-      if(F.options[x].valor == valor){
-        testa = true;
-	break;
-      }
-    }
-    if(testa == false){
-      F.options[F.length] = new Option(texto,valor);
-      js_trocacordeselect();
-    }
- }
-   texto=document.form1.descr.value="";
-   valor=document.form1.codigo.value="";
- document.form1.lanca.onclick = '';
-}
-function js_verifica(){
-    var val1 = new Number(document.form1.k60_codigo.value);
-    if( val1.valueOf() < 1 ) {
-
-       alert(_M('tributario.notificacoes.cai2_emitenotif001.selecione_lista'));
-       return false;
-    }
-    var F = document.getElementById("campos").options;
-    for(var i = 0;i < F.length;i++) {
-      F[i].selected = true;
-    }
-    return true;
-}
-
-function js_emiteseed(){
-
-    var val1 = new Number(document.form1.k60_codigo.value);
-    if(val1.valueOf() < 1){
-       alert(_M('tributario.notificacoes.cai2_emitenotif001.selecione_lista'));
-       return false;
-    }
-    var F = document.getElementById("campos").options;
-    for(var i = 0;i < F.length;i++) {
-      F[i].selected = true;
-    }
-
-   var H = document.getElementById("campos").options;
-   if(H.length > 0){
-      campo = 'campo=';
-      virgula = '';
-      for(var i = 0;i < H.length;i++) {
-         campo += virgula+H[i].value;
-         virgula = '-';
-      }
-   }else{
-      campo = '';
-   }
-
-
-
-  jan = window.open('cai2_emitenotif004.php?lista='+document.form1.k60_codigo.value+
-                    '&'+campo+
-                    '&tipo='+document.form1.tipo.value,
-                    '',
-                    'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-  jan.moveTo(0,0);
-}
-
-function js_emitear(){
-
-    var val1 = new Number(document.form1.k60_codigo.value);
-    if(val1.valueOf() < 1){
-       alert(_M('tributario.notificacoes.cai2_emitenotif001.selecione_lista'));
-       return false;
-    }
-    var F = document.getElementById("campos").options;
-    for(var i = 0;i < F.length;i++) {
-      F[i].selected = true;
-    }
-
-   var H = document.getElementById("campos").options;
-   if(H.length > 0){
-      campo = 'campo=';
-      virgula = '';
-      for(var i = 0;i < H.length;i++) {
-         campo += virgula+H[i].value;
-         virgula = '-';
-      }
-   }else{
-      campo = '';
-   }
-
-  jan = window.open('cai2_emitenotif005.php?lista='+document.form1.k60_codigo.value+
-                    '&'+campo+
-                    '&tipo='+document.form1.tipo.value+
-                    '&intervalo='+document.form1.intervalo.value+
-                    '&fonte='+document.form1.fonte.value+
-                    '&inicio='+document.form1.DBtxt10.value+
-                    '&fim='+document.form1.DBtxt11.value+
-                    '&ordem='+document.form1.ordem.value+
-                    '&tratamento='+document.form1.tratamento.value+
-                    '&imprimirmesmoembranco='+document.form1.imprimirmesmoembranco.value+
-                    '&datavenc='+document.form1.datavenc_ano.value+
-                    '-'+document.form1.datavenc_mes.value+
-                    '-'+document.form1.datavenc_dia.value,
-                    '',
-                    'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-  jan.moveTo(0,0);
-
-}
-
-function js_emite(tiporel){
-
-    var valini = new Number(document.form1.DBtxt10.value);
-    var valfin = new Number(document.form1.DBtxt11.value);
-    if(valfin.valueOf() < valini.valueOf() ){
-       alert(_M('tributario.notificacoes.cai2_emitenotif001.numero_inicial_maior_numero_final'));
-       return false;
-    }
-    var val1 = new Number(document.form1.k60_codigo.value);
-    if(val1.valueOf() < 1){
-       alert(_M('tributario.notificacoes.cai2_emitenotif001.selecione_lista'));
-       return false;
-    }
-    var F = document.getElementById("campos").options;
-    for(var i = 0;i < F.length;i++) {
-      F[i].selected = true;
-    }
-
-   var H = document.getElementById("campos").options;
-   if(H.length > 0){
-      campo = 'campo=';
-      virgula = '';
-      for(var i = 0;i < H.length;i++) {
-         campo += virgula+H[i].value;
-         virgula = '-';
-      }
-   }else{
-      campo = '';
-   }
-
-  var sQuery  = 'intervalo='+document.form1.intervalo.value;
-  	  sQuery += '&inicio='+document.form1.DBtxt10.value;
-  	  sQuery +=	'&fim='+document.form1.DBtxt11.value;
-  	  sQuery +=	'&ordem='+document.form1.ordem.value;
-  	  sQuery +=	'&fonte='+document.form1.fonte.value;
-  	  sQuery +=	'&tiporel='+tiporel;
-  	  sQuery +=	'&lista='+document.form1.k60_codigo.value;
-  	  sQuery +=	'&'+campo;
-  	  sQuery +=	'&tipo='+document.form1.tipo.value;
-	    sQuery +=	'&tratamento='+document.form1.tratamento.value;
-  	  sQuery += '&imprimirmesmoembranco='+document.form1.imprimirmesmoembranco.value;
-  	  sQuery +=	'&datavenc='+document.form1.datavenc_ano.value+
-  	            '-'+document.form1.datavenc_mes.value+'-'+document.form1.datavenc_dia.value;
-      sQuery +=	'&imprimirtimbre='+document.form1.imprimirtimbre.value;
-
- 	 jan = window.open('cai2_emitenotif002.php?'+sQuery,
- 	                   '',
- 	                   'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-	 jan.moveTo(0,0);
-}
-</script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body onLoad="a=1" bgcolor="#cccccc">
+<body class="body-default">
 
-<form class="container" name="form1" method="post" action="" >
+<div class="container">
+
+ <form name="form1" method="post" action="" >
+
   <fieldset>
-    <legend>Relatórios - Emissão de Notificações - Notificação</legend>
+    <legend>Emissão de Notificação</legend>
+
     <table class="form-container">
       <tr>
-        <td nowrap title="<?=@$Tk60_codigo?>" >
-          <?
-	   		db_ancora(@$Lk60_codigo,"js_pesquisalista(true);",$db_opcao)
+        <td nowrap title="<?=@$Tk60_codigo?>">
+          <?php
+	   		    db_ancora(@$Lk60_codigo,"js_pesquisalista(true);",$db_opcao)
           ?>
         </td>
         <td>
-          <?
-	        db_input('k60_codigo',10,$Ik60_codigo,true,'text',$db_opcao,"onchange='js_pesquisalista(false);'");
+          <?php
+
+	          db_input('k60_codigo',10,$Ik60_codigo,true,'text',$db_opcao,"onchange='js_pesquisalista(false);'");
             db_input('k60_descr',40,$Ik60_descr,true,'text',3,'');
           ?>
         </td>
       </tr>
       <tr>
-        <td nowrap title="Ordem para a emissão da lista" >
-          Ordem:
-        </td>
+        <td nowrap title="Ordem para a emissão da lista"><label for="ordem">Ordem:</label></td>
         <td>
-          <?
-            $xx = array("a"=>"Alfabética",
-          	 	 	        "n"=>"Numérica",
-          			        "t"=>'Notificação',
-	 	    			          "e"=>"Endereço de Entrega",
-           	 	    	    "c"=>"Cidade/CEP" );
-			db_select('ordem',$xx,true,$db_opcao,"");
+          <?php
+
+            $aOrdem = array( "a" => "Alfabética",
+              	 	 	         "n" => "Numérica",
+              			         "t" => "Notificação",
+    	 	    			           "e" => "Endereço de Entrega",
+               	 	    	     "c" => "Cidade/CEP" );
+			      db_select('ordem', $aOrdem, true, $db_opcao, "");
           ?>
         </td>
       </tr>
       <tr>
-        <td nowrap>Tratamento endereço segunda página:</td>
+        <td nowrap><label for"tratamento">Tratamento endereço segunda página:</label></td>
         <td>
-          <?
-	        $xxx = array();
-	        if ( isset($k60_codigo) && trim($k60_codigo) != "" ) {
+          <?php
 
-	          $sSqlLista  = " select k60_tipo					          ";
-	          $sSqlLista .= "   from lista					            ";
-	          $sSqlLista .= "  where k60_codigo = {$k60_codigo} ";
+  	        $aOpcoesTratamento = array();
+  	        if ( isset($k60_codigo) && trim($k60_codigo) != "" ) {
 
-	          $rsConsultaLista = db_query($sSqlLista);
-	          $iLinhasConsulta = pg_num_rows($rsConsultaLista);
+  	          $sSqlLista  = " select k60_tipo					          ";
+  	          $sSqlLista .= "   from lista					            ";
+  	          $sSqlLista .= "  where k60_codigo = {$k60_codigo} ";
 
-	          $oLista = db_utils::fieldsMemory($rsConsultaLista,0);
+  	          $rsConsultaLista = db_query($sSqlLista);
+  	          $iLinhasConsulta = pg_num_rows($rsConsultaLista);
 
-	          $xxx["1"] = "Sempre do CGM";
+  	          $oLista = db_utils::fieldsMemory($rsConsultaLista,0);
 
-	          if ( $oLista->k60_tipo == "M") {
+  	          $aOpcoesTratamento["0"] = "Sempre do CGM";
 
-	            $sqlordendent    = "select defcampo, defdescr from db_syscampodef where codcam = 9856";
-	            $resultordendent = db_query($sqlordendent) or die($sqlordendent);
-	            for ($xord=0; $xord < pg_numrows($resultordendent); $xord++) {
-	              db_fieldsmemory($resultordendent, $xord);
-	              $defcampo+=10;
-	              $xxx["$defcampo"] = "$defdescr";
-	            }
-	          }
-	        }
-	        db_select('tratamento',$xxx,true,$db_opcao,"");
+  	          if ( $oLista->k60_tipo == "M") {
+
+  	            $sSqlOrdendent   = "select defcampo, defdescr from db_syscampodef where codcam = 9856";
+  	            $resultordendent = db_query($sSqlOrdendent);
+  	            for ($xord=0; $xord < pg_numrows($resultordendent); $xord++) {
+
+  	              db_fieldsmemory($resultordendent, $xord);
+  	              $aOpcoesTratamento["$defcampo"] = "$defdescr";
+  	            }
+  	          }
+  	        }
+  	        db_select('tratamento', $aOpcoesTratamento, true, $db_opcao);
           ?>
         </td>
       </tr>
       <tr>
-        <td nowrap title="Utilizar endereço do CGM quando estiver em branco" >
-          Utilizar end. do CGM quando estiver em branco:
-        </td>
+        <td nowrap title="Utilizar endereço do CGM quando estiver em branco"><label for="imprimirmesmoembranco">Utilizar endereço do CGM quando estiver em branco:</label></td>
         <td>
-          <?
-            $xx = array("n"=>"Não","s"=>'Sim');
-            db_select('imprimirmesmoembranco',$xx,true,$db_opcao,"");
+          <?php
+
+            $aOpcoes = array( "n" => "Não", "s" => "Sim" );
+            db_select('imprimirmesmoembranco', $aOpcoes, true, $db_opcao );
           ?>
         </td>
       </tr>
       <tr>
-        <td nowrap title="Escolha o intervalo das notificações a serem impressas ou deixe em branco para todas.">
-          Intervalo:
-        </td>
+        <td nowrap title="Escolha o intervalo das notificações a serem impressas ou deixe em branco para todas."><label for="intervalo">Intervalo:</label></td>
         <td>
-          <?
-	        $xy = array("q"=>"Quantidade","n"=>'Notificação');
-			db_select('intervalo',$xy,true,$db_opcao,"");
-	      ?>
-	      &nbsp;<strong>De</strong>&nbsp;
-          <?
-            db_input('DBtxt10',8,'',true,'text',$db_opcao,"");
+          <?php
+
+	         $aIntervalo = array( "q" => "Quantidade", "n" => "Notificação" );
+			     db_select('intervalo', $aIntervalo, true, $db_opcao);
+	        ?>
+	        &nbsp;<strong>De</strong>&nbsp;
+          <?php
+            db_input('DBtxt10', 8, '', true, 'text', $db_opcao);
           ?>
           &nbsp;<strong>até</strong>&nbsp;
-          <?
+          <?php
             $DBtxt11 = 0;
-            db_input('DBtxt11',8,'',true,'text',$db_opcao,"");
+            db_input('DBtxt11', 8, '', true,'text', $db_opcao);
           ?>
         </td>
       </tr>
       <tr>
-        <td nowrap title="Emissão do Timbre" >
-          Emissão do Timbre:
-        </td>
+        <td nowrap title="Emissão do Timbre"><label for="imprimirtimbre">Emissão do Timbre:</label></td>
         <td>
-          <?
-            //(Emitir Ambos/Somente Interno/Somente Externo/Sem Timbre)
-            $timbre = array("1"=>"Emitir Ambos","2"=>"Somente Interno","3"=>"Somente Externo","4"=>"Sem Timbre");
-            db_select('imprimirtimbre',$timbre,true,$db_opcao,"");
+          <?php
+
+            $aTimbre = array( "1" => "Emitir Ambos",
+                              "2" => "Somente Interno",
+                              "3" => "Somente Externo",
+                              "4" => "Sem Timbre" );
+            db_select('imprimirtimbre', $aTimbre, true, $db_opcao);
           ?>
         </td>
       </tr>
       <tr>
-		<td nowrap title="Data para vencimento do recibo">
-		  Data para vencimento do recibo:
-		<td>
-		  <?
-      		db_inputdata('datavenc', @$data_dia, @$data_mes, @$data_ano, true, 'text', $db_opcao)
+		<td nowrap title="Data para vencimento do recibo"><label for="datavenc">Data para vencimento do recibo:</label><td>
+		  <?php
+        db_inputdata('datavenc', @$data_dia, @$data_mes, @$data_ano, true, 'text', $db_opcao, "onchange=js_validaDataVenc(datavenc);");
 		  ?>
 		</td>
 	  </tr>
       <tr>
-     	<td nowrap title="<?=@$Tk22_exerc?>">
-	      Tamanho da fonte do texto:
-	  	</td>
+     	<td nowrap title="<?=@$Tk22_exerc?>"><label for="fonte">Tamanho da fonte do texto:</label></td>
 	  	<td>
-		  <?
-			$fonte=10;
-			db_input('fonte', 10, "Tamanho da fonte do texto", true, 'text', @$db_opcao);
+		  <?php
+
+  			$fonte = 10;
+  			db_input('fonte', 10, 1, true, 'text', @$db_opcao);
 		  ?>
     	</td>
+      		  
+		  <tr>
+		  	<td nowrap title="Remetente (Girar 180 Graus)">
+	        	<label for="selRotateRemetente">Remetente (Girar 180 Graus)</label>
+        </td>
+  			<td>
+	          <?php
+	          	$aRotateRemetente= array("n"=>"Não","s"=>'Sim');
+	          	db_select('selRotateRemetente',$aRotateRemetente,false,4,"style='width:83;'");
+	          ?>
+	        </td>
+		  </tr>
+
    	  </tr>
       <tr>
+        <td><label for="tipo">Opção de Seleção:</label></td>
         <td>
-          Opção de Seleção :
-        </td>
-        <td>
-          <?
-			       $x = array("2"=>"Somente Selecionados","3"=>"Menos os Selecionados");
-			       db_select('tipo',$x,true,$db_opcao);
+          <?php
+
+			      $aTipo = array("2" => "Somente Selecionados", "3" => "Menos os Selecionados");
+			      db_select('tipo', $aTipo, true, $db_opcao);
           ?>
         </td>
       </tr>
 	</table>
+
     <fieldset class="separator">
       <Legend>Selecione as Notificações</legend>
       <table class="form-container">
         <tr>
           <td nowrap title="<?=@$Tk00_tipo?>" colspan="2">
-            <?
-              db_ancora('Nº da Notificação :',"js_pesquisadb02_idparag(true);",$db_opcao);
+            <?php
+
+              db_ancora('Nº da Notificação:', "js_pesquisadb02_idparag(true);", $db_opcao);
+              db_input('codigo', 8, '', true, 'text', $db_opcao, " onchange='js_pesquisadb02_idparag(false);'");
+              db_input('descr', 25, '', true, 'text', $db_opcao);
             ?>
-            <?
-              db_input('codigo',8,'',true,'text',$db_opcao," onchange='js_pesquisadb02_idparag(false);'");
-              db_input('descr',25,'',true,'text',$db_opcao,'');
-            ?>
-	        <input name="lanca" type="button" value="Lançar" >
+	        <input name="lanca" type="button" value="Lançar"/>
           </td>
-	 	</tr>
+	 	    </tr>
         <tr>
 	   	  <td>
             <select name="campos[]" id="campos" size="7" style="width:250px" multiple>
-              <?
+            <?php
                 if(isset($chavepesquisa)){
-	         	  $sql = "select matric as codigo,
-                                           numcgm,
-                                	       z01_nome as descr,
-                                	       sum(valor_vencidos)
-                          from listadeb a
-                          inner join debitos b on a.k61_numpre = b.k22_numpre
-                                                and k22_instit   = $instit
-                          inner join cgm on z01_numcgm = b.k22_numcgm
-                         where k61_codigo = $k60_codigo and matric = $codigo
-                         group by matric,numcgm,z01_nome";
-				  die($sql);
-	         	  $resulta = db_query($sql);
-		 		  if(pg_numrows($resulta)!=0){
+
+    	         	  $sSql = "select matric as codigo,
+                                  numcgm,
+                                  z01_nome as descr,
+                                  sum(valor_vencidos)
+                             from listadeb a
+                                  inner join debitos b on a.k61_numpre = b.k22_numpre
+                                                      and k22_instit   = $instit
+                                  inner join cgm       on z01_numcgm   = b.k22_numcgm
+                            where k61_codigo = $k60_codigo and matric = $codigo
+                         group by matric, numcgm, z01_nome";
+
+	         	      $resulta = db_query($sSql);
+
+                  if(pg_numrows($resulta) != 0){
+
                     $numrows = pg_numrows($resulta);
-		    		for($i = 0;$i < $numrows;$i++) {
-		      		  db_fieldsmemory($resulta,$i);
+                    for($i = 0;$i < $numrows;$i++) {
+
+                      db_fieldsmemory($resulta,$i);
                       echo "<option value=\"$codigo \">$descr</option>";
-                   	}
-		 		  }
+                    }
+                  }
               	}
               ?>
             </select>
 	   	  </td>
         <td align="center" valign="middle" width="9%">
- 	    	 <img style="cursor:hand" onClick="js_sobe();return false;" src="skins/img.php?file=Controles/seta_up.png" />
+ 	    	 <img style="cursor:hand" onClick="js_manipulaNotificacoes('up');return false;" src="skins/img.php?file=Controles/seta_up.png" />
           <br/><br/>
-         <img style="cursor:hand" onClick="js_desce()" src="skins/img.php?file=Controles/seta_down.png" />
+         <img style="cursor:hand" onClick="js_manipulaNotificacoes('down')" src="skins/img.php?file=Controles/seta_down.png" />
           <br/><br/>
-	       <img style="cursor:hand" onClick="js_excluir()" src="skins/img.php?file=Controles/bt_excluir.png" />
+	       <img style="cursor:hand" onClick="js_manipulaNotificacoes()" src="skins/img.php?file=Controles/bt_excluir.png" />
 	   	  </td>
         </tr>
       </table>
     </fieldset>
-	</fieldset>
-    <input name="db_opcao"  type="button" id="db_opcao" value="Imprimir Notificação" onClick="js_emite(1);"
-           <?=($db_botao ? '' : 'disabled')?>>
-    <input name="db_opcao3" type="button" id="db_opcao" value="Aviso Débito" onClick="js_emite(3);"
-           <?=($db_botao ? '' : 'disabled')?>>
-    <input name="db_opcao1" type="button" id="db_opcao" value="Lista" onClick="js_emite(2);"
-           <?=($db_botao ? '' : 'disabled')?>>
-</form>
 
-<?
+	</fieldset>
+
+  <input name="db_opcao"  type="button" id="db_opcao" value="Emitir Notificação" onClick="js_emite(1);" <?=($db_botao ? '' : 'disabled')?> />
+  <input name="db_opcao3" type="button" id="db_opcao" value="Aviso de Débito" onClick="js_emite(3);" <?=($db_botao ? '' : 'disabled')?> />
+  <input name="db_opcao1" type="button" id="db_opcao" value="Lista" onClick="js_emite(2);" <?=($db_botao ? '' : 'disabled')?> />
+
+</form>
+</div>
+<?php
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
 </html>
-<script>
+<script type="text/javascript">
+
+$("ordem").setAttribute("rel","ignore-css");
+$("intervalo").setAttribute("rel","ignore-css");
+$("imprimirtimbre").setAttribute("rel","ignore-css");
+
+$("k60_codigo").addClassName("field-size2");
+$("k60_descr").addClassName("field-size7");
+$("ordem").addClassName("field-size4");
+$("imprimirmesmoembranco").setAttribute("rel","ignore-css");
+$("imprimirmesmoembranco").addClassName("field-size2");
+$("intervalo").addClassName("field-size4");
+$("DBtxt10").addClassName("field-size2");
+$("DBtxt11").addClassName("field-size2");
+$("imprimirtimbre").addClassName("field-size4");
+$("datavenc").addClassName("field-size2");
+$("fonte").addClassName("field-size2");
+$("selRotateRemetente").addClassName("field-size2");
+
+$("codigo").addClassName("field-size2");
+$("descr").style.width = "61%";
+$("campos").setAttribute("rel","ignore-css");
+$("campos").style.width = "100%";
+
+function js_manipulaNotificacoes( sOpcao ){
+
+  var oCampos = document.getElementById("campos");
+
+  switch (sOpcao) {
+
+    case 'up':
+
+      if(oCampos.selectedIndex != -1 && oCampos.selectedIndex > 0) {
+
+        var SI                  = oCampos.selectedIndex - 1;
+        var auxText             = oCampos.options[SI].text;
+        var auxValue            = oCampos.options[SI].value;
+        oCampos.options[SI]     = new Option( oCampos.options[SI + 1].text, oCampos.options[SI + 1].value );
+        oCampos.options[SI + 1] = new Option( auxText, auxValue );
+        js_trocacordeselect();
+        oCampos.options[SI].selected = true;
+      }
+    break;
+
+    case 'down':
+
+      if(oCampos.selectedIndex != -1 && oCampos.selectedIndex < (oCampos.length - 1)) {
+
+        var SI                  = oCampos.selectedIndex + 1;
+        var auxText             = oCampos.options[SI].text;
+        var auxValue            = oCampos.options[SI].value;
+        oCampos.options[SI]     = new Option( oCampos.options[SI - 1].text, oCampos.options[SI - 1].value );
+        oCampos.options[SI - 1] = new Option( auxText, auxValue );
+        js_trocacordeselect();
+        oCampos.options[SI].selected = true;
+      }
+    break;
+
+    default:
+
+      var SI = oCampos.selectedIndex;
+      if(oCampos.selectedIndex != -1 && oCampos.length > 0) {
+
+        oCampos.options[SI] = null;
+        js_trocacordeselect();
+        if(SI <= (oCampos.length - 1)){
+          oCampos.options[SI].selected = true;
+        }
+      }
+    break;
+  }
+}
+
+function js_insSelect() {
+
+  var texto = document.form1.descr.value;
+  var valor = document.form1.codigo.value;
+
+  if(texto != "" && valor != ""){
+
+    var F = document.getElementById("campos");
+    var testa = false;
+
+    for(var x = 0; x < F.length; x++){
+
+      if(F.options[x].valor == valor){
+
+        testa = true;
+        break;
+      }
+    }
+
+    if(testa == false){
+
+      F.options[F.length] = new Option(texto,valor);
+      js_trocacordeselect();
+    }
+ }
+
+ texto=document.form1.descr.value  = "";
+ valor=document.form1.codigo.value = "";
+ document.form1.lanca.onclick      = "";
+}
+
+function js_verifica(){
+
+  var val1 = new Number(document.form1.k60_codigo.value);
+  if( val1.valueOf() < 1 ) {
+
+    alert(_M('tributario.notificacoes.cai2_emitenotif001.selecione_lista'));
+    return false;
+  }
+
+  var F = document.getElementById("campos").options;
+  for(var i = 0;i < F.length;i++) {
+    F[i].selected = true;
+  }
+  return true;
+}
+
+function js_emiteseed(){
+
+  var val1 = new Number(document.form1.k60_codigo.value);
+  if(val1.valueOf() < 1){
+
+    alert(_M('tributario.notificacoes.cai2_emitenotif001.selecione_lista'));
+    return false;
+  }
+
+  var F = document.getElementById("campos").options;
+  for(var i = 0;i < F.length;i++) {
+    F[i].selected = true;
+  }
+
+  var H = document.getElementById("campos").options;
+  if(H.length > 0){
+
+    campo   = 'campo=';
+    virgula = '';
+    for(var i = 0;i < H.length;i++) {
+
+      campo += virgula+H[i].value;
+      virgula = '-';
+    }
+  }else{
+    campo = '';
+  }
+
+  jan = window.open('cai2_emitenotif004.php?lista=' + document.form1.k60_codigo.value +
+                    '&' + campo +
+                    '&tipo=' + document.form1.tipo.value,
+                    '',
+                    'width=' + (screen.availWidth - 5) + ',height=' + (screen.availHeight - 40) + ',scrollbars=1,location=0');
+  jan.moveTo(0, 0);
+}
+
+function js_emitear(){
+
+  var val1 = new Number(document.form1.k60_codigo.value);
+  if(val1.valueOf() < 1){
+
+    alert(_M('tributario.notificacoes.cai2_emitenotif001.selecione_lista'));
+    return false;
+  }
+
+  var F = document.getElementById("campos").options;
+  for(var i = 0;i < F.length;i++) {
+    F[i].selected = true;
+  }
+
+  campo = '';
+  var H = document.getElementById("campos").options;
+  if(H.length > 0){
+
+    campo   = 'campo=';
+    virgula = '';
+    for(var i = 0;i < H.length;i++) {
+
+      campo += virgula+H[i].value;
+      virgula = '-';
+    }
+  }
+
+  var sQuery  = 'lista='                  + $F('k60_codigo');
+      sQuery += '&tipo='                  + $F('tipo');
+      sQuery += '&intervalo='             + $F('intervalo');
+      sQuery += '&fonte='                 + $F('fonte');
+      sQuery += '&inicio='                + $F('DBtxt10');
+      sQuery += '&fim='                   + $F('DBtxt11');
+      sQuery += '&ordem='                 + $F('ordem');
+      sQuery += '&tratamento='            + $F('tratamento');
+      sQuery += '&imprimirmesmoembranco=' + $F('imprimirmesmoembranco');
+      sQuery += '&datavenc='              + $F('datavenc_ano') + '-' + $F('datavenc_mes') + '-' + $F('datavenc_dia');
+      sQuery += '&'                       + campo;
+
+   jan = window.open('cai2_emitenotif005.php?' + sQuery,
+                     '',
+                     'width=' + (screen.availWidth - 5) + ',height=' + (screen.availHeight - 40) + ',scrollbars=1,location=0');
+   jan.moveTo(0, 0);
+}
+
+function js_emite(tiporel){
+
+  var valini = new Number(document.form1.DBtxt10.value);
+  var valfin = new Number(document.form1.DBtxt11.value);
+  if( valfin.valueOf() < valini.valueOf() ){
+
+    alert(_M('tributario.notificacoes.cai2_emitenotif001.numero_inicial_maior_numero_final'));
+    return false;
+  }
+
+  var val1 = new Number(document.form1.k60_codigo.value);
+  if(val1.valueOf() < 1){
+
+    alert(_M('tributario.notificacoes.cai2_emitenotif001.selecione_lista'));
+    return false;
+  }
+
+  campo = '';
+  var F = document.getElementById("campos").options;
+  for(var i = 0;i < F.length;i++) {
+    F[i].selected = true;
+  }
+
+  var H = document.getElementById("campos").options;
+  if(H.length > 0){
+
+    campo   = 'campo=';
+    virgula = '';
+
+    for(var i = 0;i < H.length;i++) {
+
+      campo += virgula+H[i].value;
+      virgula = '-';
+    }
+  }
+
+  var sQuery  = 'intervalo='              + $F('intervalo');
+      sQuery += '&inicio='                + $F('DBtxt10');
+      sQuery += '&fim='                   + $F('DBtxt11');
+      sQuery += '&ordem='                 + $F('ordem');
+      sQuery += '&fonte='                 + $F('fonte');
+      sQuery += '&lista='                 + $F('k60_codigo');
+      sQuery += '&tipo='                  + $F('tipo');
+      sQuery += '&tratamento='            + $F('tratamento');
+      sQuery += '&imprimirmesmoembranco=' + $F('imprimirmesmoembranco');
+      sQuery += '&datavenc='              + $F('datavenc_ano') + '-' + $F('datavenc_mes') + '-' + $F('datavenc_dia');
+      sQuery += '&imprimirtimbre='        + $F('imprimirtimbre');
+      sQuery += '&rotateremetente='       + $F('selRotateRemetente');
+      sQuery += '&tiporel='               + tiporel;
+      sQuery += '&'                       + campo;
+
+   jan = window.open('cai2_emitenotif002.php?' + sQuery,
+                     '',
+                     'width=' + (screen.availWidth - 5) + ',height=' + (screen.availHeight - 40) + ',scrollbars=1,location=0');
+   jan.moveTo(0, 0);
+}
 
 function js_pesquisadb02_idparag(mostra){
+
   document.form1.lanca.onclick = "";
-  parent.bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
+  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '<font size="2" color="darkblue"><b>Processando<blink>...</blink></b></font>' ;
   if(mostra==true){
+
     db_iframe.jan.location.href = 'cai2_emitenotif0033.php?lista='+document.form1.k60_codigo.value+'&funcao_js=parent.js_mostradb_paragrafo1|0|z01_nome';
     db_iframe.mostraMsg();
     db_iframe.show();
@@ -495,112 +569,135 @@ function js_mostradb_paragrafo(chave,erro){
 
   document.form1.descr.value = chave;
   if(erro==true){
+
     document.form1.codigo.focus();
     document.form1.codigo.value = '';
   }else{
     document.form1.lanca.onclick = js_insSelect;
   }
-    parent.bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
-
+  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = "Configuração -> Documentos" ;
 }
+
 function js_mostradb_paragrafo1(chave1,chave2){
+
   document.form1.codigo.value = chave1;
-  document.form1.descr.value = chave2;
+  document.form1.descr.value  = chave2;
   db_iframe.hide();
   document.form1.lanca.onclick = js_insSelect;
 }
+
 function js_pesquisa(){
+
   db_iframe.mostraMsg();
   db_iframe.show();
   db_iframe.focus();
 }
+
 function js_preenchepesquisa(chave){
+
   db_iframe.hide();
   location.href = '<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>'+"?chavepesquisa="+chave;
 }
 
 function js_pesquisanotitipo(mostra){
-     if(mostra==true){
-       db_iframe.jan.location.href = 'func_notitipo.php?funcao_js=parent.js_mostranotitipo1|k51_procede|k51_descr';
-       db_iframe.mostraMsg();
-       db_iframe.show();
-       db_iframe.focus();
-     }else{
-       db_iframe.jan.location.href = 'func_notitipo.php?pesquisa_chave='+document.form1.k51_procede.value+'&funcao_js=parent.js_mostranotitipo';
-     }
-}
-function js_mostranotitipo(chave,erro){
-  document.form1.k51_descr.value = chave;
-  if(erro==true){
-     document.form1.k51_descr.focus();
-     document.form1.k51_descr.value = '';
+
+  if(mostra==true){
+
+    db_iframe.jan.location.href = 'func_notitipo.php?funcao_js=parent.js_mostranotitipo1|k51_procede|k51_descr';
+    db_iframe.mostraMsg();
+    db_iframe.show();
+    db_iframe.focus();
+  }else{
+    db_iframe.jan.location.href = 'func_notitipo.php?pesquisa_chave='+document.form1.k51_procede.value+'&funcao_js=parent.js_mostranotitipo';
   }
 }
+
+function js_mostranotitipo(chave,erro){
+
+  document.form1.k51_descr.value = chave;
+  if(erro==true){
+
+    document.form1.k51_descr.focus();
+    document.form1.k51_descr.value = '';
+  }
+}
+
 function js_mostranotitipo1(chave1,chave2){
-     document.form1.k51_procede.value = chave1;
-     document.form1.k51_descr.value = chave2;
-     db_iframe.hide();
+
+  document.form1.k51_procede.value = chave1;
+  document.form1.k51_descr.value   = chave2;
+  db_iframe.hide();
 }
 function js_pesquisalista(mostra){
-     if(mostra==true){
-       db_iframe.jan.location.href = 'func_lista.php?funcao_js=parent.js_mostralista1|k60_codigo|k60_descr';
-       db_iframe.mostraMsg();
-       db_iframe.show();
-       db_iframe.focus();
-     }else{
-       db_iframe.jan.location.href = 'func_lista.php?pesquisa_chave='+document.form1.k60_codigo.value+'&funcao_js=parent.js_mostralista';
-     }
+
+  if(mostra==true){
+
+    db_iframe.jan.location.href = 'func_lista.php?funcao_js=parent.js_mostralista1|k60_codigo|k60_descr';
+    db_iframe.mostraMsg();
+    db_iframe.show();
+    db_iframe.focus();
+  }else{
+    db_iframe.jan.location.href = 'func_lista.php?pesquisa_chave='+document.form1.k60_codigo.value+'&funcao_js=parent.js_mostralista';
+  }
 }
+
 function js_mostralista(chave,erro){
 
   document.form1.k60_descr.value = chave;
 
   if(erro==true){
-     document.form1.k60_descr.focus();
-     document.form1.k60_descr.value = '';
+
+    document.form1.k60_descr.focus();
+    document.form1.k60_descr.value = '';
   } else {
     document.form1.submit();
   }
-
 }
+
 function js_mostralista1(chave1,chave2){
 
-     document.form1.k60_codigo.value = chave1;
-     document.form1.k60_descr.value = chave2;
-     db_iframe.hide();
-     document.form1.submit();
+  document.form1.k60_codigo.value = chave1;
+  document.form1.k60_descr.value = chave2;
+  db_iframe.hide();
+  document.form1.submit();
 }
+
+function js_validaDataVenc(datavenc) {
+  if (!datavenc) {
+    return true
+  }
+
+  var dataPart = datavenc.value.split("/");
+  if (isNaN(dataPart[0]) || isNaN(dataPart[1]) || isNaN(dataPart[2])) {
+    return false;
+  }
+  var data1 = parseInt(dataPart[2] + dataPart[1] + dataPart[0]);
+  var data2 = new Date();
+  var dd   = String(data2.getDate()).padStart(2, '0');
+  var mm   = String(data2.getMonth() + 1, 2, '0').padStart(2, '0'); //Janeiro = 0, por isso somamos 1.
+  var yyyy = String(data2.getFullYear());
+  data2 = parseInt(yyyy+mm+dd);
+
+  if (data1 < data2) {
+    alert(_M('tributario.notificacoes.cai2_emitenotif001.data_menor_que_atual'));
+    document.form1.datavenc.focus();
+    document.form1.datavenc.value = '';
+    return false;
+  }
+
+  return true;
+
+}
+
 </script>
-<?
-$func_iframe = new janela('db_iframe','');
-$func_iframe->posX=1;
-$func_iframe->posY=20;
-$func_iframe->largura=780;
-$func_iframe->altura=430;
-$func_iframe->titulo='Pesquisa';
-$func_iframe->iniciarVisivel = false;
-$func_iframe->mostrar();
+<?php
+
+  $func_iframe = new janela('db_iframe','');
+  $func_iframe->posX=1;
+  $func_iframe->posY=20;
+  $func_iframe->largura=780;
+  $func_iframe->altura=430;
+  $func_iframe->titulo='Pesquisa';
+  $func_iframe->iniciarVisivel = false;
+  $func_iframe->mostrar();
 ?>
-<script>
-
-$("k60_codigo").addClassName("field-size2");
-$("k60_descr").addClassName("field-size7");
-$("ordem").setAttribute("rel","ignore-css");
-$("ordem").addClassName("field-size4");
-$("imprimirmesmoembranco").setAttribute("rel","ignore-css");
-$("imprimirmesmoembranco").addClassName("field-size2");
-$("intervalo").setAttribute("rel","ignore-css");
-$("intervalo").addClassName("field-size4");
-$("DBtxt10").addClassName("field-size2");
-$("DBtxt11").addClassName("field-size2");
-$("imprimirtimbre").setAttribute("rel","ignore-css");
-$("imprimirtimbre").addClassName("field-size4");
-$("datavenc").addClassName("field-size2");
-$("fonte").addClassName("field-size2");
-
-$("codigo").addClassName("field-size2");
-$("descr").style.width = "61%";
-$("campos").setAttribute("rel","ignore-css");
-$("campos").style.width = "100%";
-
-</script>

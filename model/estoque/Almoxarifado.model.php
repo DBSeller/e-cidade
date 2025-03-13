@@ -1,31 +1,31 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("model/configuracao/DBDepartamento.model.php");
+require_once(modification("model/configuracao/DBDepartamento.model.php"));
 
 /**
  * Classe para controle de almoxarifado
@@ -45,11 +45,11 @@ class Almoxarifado extends DBDepartamento {
   public function __construct($iCodigoDepartamento) {
 
     parent::__construct($iCodigoDepartamento);
-    
+
     $oDaoDBAlmox           = db_utils::getDao('db_almox');
     $sSqlBuscaAlmoxarifado = $oDaoDBAlmox->sql_query_file(null, "m91_codigo", null, "m91_depto = {$this->iCodigoDepartamento}");
     $rsBuscaAlmoxarifado   = $oDaoDBAlmox->sql_record($sSqlBuscaAlmoxarifado);
-    
+
     if ($oDaoDBAlmox->erro_status == "0") {
 
       $sMensagemErro  = "Não foi possível localizar o código do almoxarifado para o departamento ";
@@ -94,7 +94,13 @@ class Almoxarifado extends DBDepartamento {
                                                                    m70_valor,
                                                                    m71_codlanc,
                                                                    m71_quant,
-                                                                   (m71_valor/m71_quant) as valorunitarioitem,
+                                                                   (select round(m85_precomedio, 5)
+                                                                     from matmaterprecomedio
+                                                                    where m85_matmater = m70_codmatmater
+                                                                      and m85_coddepto = m70_coddepto
+                                                                      and to_timestamp(m85_data || ' ' || m85_hora, 'YYYY-MM-DD HH24:MI:SS') <= to_timestamp(matestoqueini.m80_data || ' ' || matestoqueini.m80_hora, 'YYYY-MM-DD HH24:MI:SS')
+                                                                    order by to_timestamp(m85_data || ' ' || m85_hora, 'YYYY-MM-DD HH24:MI:SS') desc limit 1
+                                                                                ) AS valorunitarioitem,
                                                                    m71_quantatend,
                                                                    m82_quant,
                                                                    m77_lote,
@@ -435,9 +441,14 @@ class Almoxarifado extends DBDepartamento {
     $aLancanmentos   = $oEventoContabil->getEventoContabilLancamento();
     $oMaterial       = new MaterialEstoque($oDadosEntrada->iCodigoMaterial);
 
+      $observacao = sprintf(
+          "Lançamento de entrada manual do estoque. Material: %s - %s.",
+          $oDadosEntrada->iCodigoMaterial,
+          $oDadosEntrada->sObservacaoHistorico
+      );
     $oLancamentoAuxiliar = new LancamentoAuxiliarMovimentacaoEstoque();
     $oLancamentoAuxiliar->setCodigoMovimentacaoEstoque($oDadosEntrada->iMovimentoEstoque);
-    $oLancamentoAuxiliar->setObservacaoHistorico($oDadosEntrada->sObservacaoHistorico);
+    $oLancamentoAuxiliar->setObservacaoHistorico($observacao);
     $oLancamentoAuxiliar->setValorTotal($oDadosEntrada->nValorLancamento);
     $oLancamentoAuxiliar->setContaPcasp($oDadosEntrada->iContaPCASP);
     $oLancamentoAuxiliar->setHistorico($aLancanmentos[0]->getHistorico());
@@ -463,9 +474,15 @@ class Almoxarifado extends DBDepartamento {
     $aLancanmentos   = $oEventoContabil->getEventoContabilLancamento();
     $oMaterial       = new MaterialEstoque($oDadosEntrada->iCodigoMaterial);
 
+    $observacao = sprintf(
+        "Lançamento de implantação do estoque. Material: %s - %s.",
+        $oDadosEntrada->iCodigoMaterial,
+        $oDadosEntrada->sObservacaoHistorico
+    );
+
     $oLancamentoAuxiliar = new LancamentoAuxiliarMovimentacaoEstoque();
     $oLancamentoAuxiliar->setCodigoMovimentacaoEstoque($oDadosEntrada->iMovimentoEstoque);
-    $oLancamentoAuxiliar->setObservacaoHistorico($oDadosEntrada->sObservacaoHistorico);
+    $oLancamentoAuxiliar->setObservacaoHistorico($observacao);
     $oLancamentoAuxiliar->setValorTotal($oDadosEntrada->nValorLancamento);
     $oLancamentoAuxiliar->setContaPcasp($oDadosEntrada->iContaPCASP);
     $oLancamentoAuxiliar->setHistorico($aLancanmentos[0]->getHistorico());
@@ -490,9 +507,14 @@ class Almoxarifado extends DBDepartamento {
     $aLancanmentos   = $oEventoContabil->getEventoContabilLancamento();
     $oMaterial       = new MaterialEstoque($oDadosEntrada->iCodigoMaterial);
 
+      $observacao = sprintf(
+          "Lançamento de saida manual do estoque. Material: %s - %s.",
+          $oDadosEntrada->iCodigoMaterial,
+          $oDadosEntrada->sObservacaoHistorico
+      );
     $oLancamentoAuxiliar = new LancamentoAuxiliarMovimentacaoEstoque();
     $oLancamentoAuxiliar->setCodigoMovimentacaoEstoque($oDadosEntrada->iMovimentoEstoque);
-    $oLancamentoAuxiliar->setObservacaoHistorico($oDadosEntrada->sObservacaoHistorico);
+    $oLancamentoAuxiliar->setObservacaoHistorico($observacao);
     $oLancamentoAuxiliar->setValorTotal($oDadosEntrada->nValorLancamento);
     $oLancamentoAuxiliar->setContaPcasp($oDadosEntrada->iContaPCASP);
     $oLancamentoAuxiliar->setHistorico($aLancanmentos[0]->getHistorico());
@@ -510,32 +532,32 @@ class Almoxarifado extends DBDepartamento {
   public function getCodigoAlmoxarifado() {
     return $this->iAlmoxarifado;
   }
-  
+
   /**
    * function para retornar todos departamentos que sao almoxarifados
    * @return ArrayObject
    */
   public static function getListaAlmoxarifados(){
-    
+
     $aListaAlmoxarifados = array();
     $oDaoDb_depart       = new cl_db_almox();
     $iInstituicao        = db_getsession("DB_instit");
     $sWhereLista         = "m91_depto <> 0 and db_depart.instit = {$iInstituicao}";
-    
+
     $sSqlLista = $oDaoDb_depart->sql_query(null,"m91_depto", "m91_depto", $sWhereLista);
     $rsLista   = $oDaoDb_depart->sql_record($sSqlLista);
-    
+
     if ($oDaoDb_depart->numrows > 0) {
-      
+
       for ($iAlmox = 0; $iAlmox < $oDaoDb_depart->numrows; $iAlmox++) {
-        
+
         $iAlmoxarifado         = db_utils::fieldsMemory($rsLista, $iAlmox)->m91_depto;
         $oAlmoxarifado         = new Almoxarifado( $iAlmoxarifado );
-        
+
         $aListaAlmoxarifados[] = $oAlmoxarifado;
       }
     }
     return $aListaAlmoxarifados;
   }
-  
+
 }

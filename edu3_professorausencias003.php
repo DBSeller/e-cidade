@@ -1,57 +1,47 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("std/DBDate.php");
-require_once("model/educacao/avaliacao/iElementoAvaliacao.interface.php");
-require_once("model/educacao/avaliacao/iFormaObtencao.interface.php");
-require_once("model/educacao/censo/DadosCenso.model.php");
-require_once("classes/db_cursoedu_classe.php");
-require_once("model/CgmFactory.model.php");
-
-
-db_app::import("exceptions.*");
-db_app::import("educacao.avaliacao.*");
-db_app::import("educacao.censo.*");
-db_app::import("educacao.ausencia.*");
-db_app::import("educacao.*");
-db_app::import("configuracao.UsuarioSistema");
-
-
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("model/educacao/avaliacao/iElementoAvaliacao.interface.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
+require_once(modification("model/educacao/censo/DadosCenso.model.php"));
+require_once(modification("classes/db_cursoedu_classe.php"));
+require_once(modification("model/CgmFactory.model.php"));
 
 $oGet          = db_utils::postMemory($_GET);
-$oDaoRecHumano = db_utils::getDao('rechumano');
+$oDaoRecHumano = new cl_rechumano();
 
 $sSqlMovimentacao = $oDaoRecHumano->sql_query_movimentacao_professor_cgm($oGet->cgm);
 $rsMovimentacao   = $oDaoRecHumano->sql_record($sSqlMovimentacao);
@@ -66,28 +56,33 @@ if ($iRegistro == 0) {
 $aMovimentos = array();
 
 for ($i = 0; $i < $iRegistro; $i++) {
-	
+
 	$oMovimento = db_utils::fieldsMemory($rsMovimentacao, $i);
-	
+
 	if ($oMovimento->tipo == 'A') {
-		
+
 		$oAusencia            = new AusenciaDocente($oMovimento->codigo);
 		$oMovimento->dtInicio = $oAusencia->getDataInicial()->getDate(DBDate::DATA_PTBR);
-		
+
 		$oMovimento->dtFinal  = '';
 		if ($oAusencia->getDataFinal() != null) {
 			$oMovimento->dtFinal  = $oAusencia->getDataFinal()->getDate(DBDate::DATA_PTBR);
 		}
-		
-		$sMsg  = "Ausente, Tipo: {$oAusencia->getTipoAusencia()->getDescricao()}";
+
+		$sTipo = "Ausência ";
+    if ( $oAusencia->getTipoAusencia()->isLicenca() ) {
+      $sTipo = "Licença ";
+    }
+
+		$sMsg  = "{$sTipo} -  Tipo: {$oAusencia->getTipoAusencia()->getDescricao()}";
 		if ($oAusencia->getObservacao() != '') {
-			$sMsg .= " Observação: {$oAusencia->getObservacao()}"; 
+			$sMsg .= " Observação: {$oAusencia->getObservacao()}";
 		}
-		
+
 		$oMovimento->sMessage = $sMsg;
-		
+
 	} elseif ($oMovimento->tipo == 'S') {
-		
+
 		$oSubstituicao        = new DocenteSubstituto($oMovimento->codigo);
 		$oMovimento->dtInicio = $oSubstituicao->getPeriodoInicial()->getDate(DBDate::DATA_PTBR);
 		$oMovimento->dtFinal  = '';
@@ -96,11 +91,11 @@ for ($i = 0; $i < $iRegistro; $i++) {
 		}
 
 		$sTipo = $oSubstituicao->getTipoVinculo() == 2 ? "PERMANENTE" : "TEMPORARIO";
-		
+
 		$sMsg  = "Professor Substituido : {$oSubstituicao->getAusente()->getDocente()->getProfessor()->getNome()}, ";
 		$sMsg .= "Disciplina: {$oSubstituicao->getRegencia()->getDisciplina()->getNomeDisciplina()} ";
-		$sMsg .= "Substituição: {$sTipo}"; 
-		
+		$sMsg .= "Substituição: {$sTipo}";
+
 		$oMovimento->sMessage = $sMsg;
 	}
 	$aMovimentos[] = $oMovimento;
@@ -112,7 +107,7 @@ for ($i = 0; $i < $iRegistro; $i++) {
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-<?
+<?php
   db_app::load("scripts.js, prototype.js, strings.js, datagrid.widget.js");
   db_app::load("estilos.css, grid.style.css");
 ?>
@@ -139,7 +134,7 @@ for ($i = 0; $i < $iRegistro; $i++) {
 </head>
 <body style=" background-color: #f3f3f3">
 	<fieldset style="border: 2px solid">
-		<legend class='bold'>Ausências / Substituições</legend>
+		<legend class='bold'>Ausências / Licenças / Substituições</legend>
 		<table bgcolor="#f3f3f3" border='1' style="width: 100%" cellspacing="0" cellpading="0">
 			<tr class="titulo">
 				<td>
@@ -152,9 +147,9 @@ for ($i = 0; $i < $iRegistro; $i++) {
 					Ação Executada
 				</td>
 			</tr>
-			<?php 
+			<?php
 			foreach ($aMovimentos as $oMovimento) {
-				
+
 				echo "<tr class='aluno'>";
 				echo "  <td>";
 				echo "    {$oMovimento->dtInicio} ";
@@ -166,7 +161,6 @@ for ($i = 0; $i < $iRegistro; $i++) {
 				echo "    {$oMovimento->sMessage} ";
 				echo "  </td>";
 				echo "</tr>";
-	
 			}
 			?>
 		</table>

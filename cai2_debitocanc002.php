@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
 
 $oGet                             = db_utils::postmemory($_GET);
 
@@ -126,6 +126,9 @@ $sSqlCancProc .= "         cgm.z01_telef,                                       
 $sSqlCancProc .= "         k00_matric,                                                                         ";
 $sSqlCancProc .= "         k00_inscr,                                                                          ";
 
+$sSqlCancProc .= "         k02_estorc,                                                                         ";
+$sSqlCancProc .= "         o57_descr,                                                                          ";
+
 $sSqlCancProc .= "         cadtipo.k03_tipo,                                                                   ";
 $sSqlCancProc .= "         cadtipo.k03_descr,                                                                  ";
 $sSqlCancProc .= "         tipoproced.v07_sequencial,                                                          ";
@@ -150,14 +153,16 @@ $sSqlCancProc .= "         end as exerc,                                        
 $sSqlCancProc .= "         k24_desconto,                                                                       ";
 $sSqlCancProc .= "         k24_vlrcor+k24_juros+k24_multa-k24_desconto as total,                               ";
 $sSqlCancProc .= "         k00_descr,                                                                          ";
-$sSqlCancProc .= "         k02_codigo,                                                                         ";
+$sSqlCancProc .= "         tabrec.k02_codigo,                                                                         ";
 $sSqlCancProc .= "         k02_drecei,                                                                         ";
 $sSqlCancProc .= "         k23_codigo,                                                                         ";
 $sSqlCancProc .= "         login,                                                                              ";
 $sSqlCancProc .= "         k23_data,                                                                           ";
 $sSqlCancProc .= "         {$campo}                                                                            ";
-$sSqlCancProc .= "         k23_obs,                                                                            ";
-$sSqlCancProc .= "         k21_codigo                                                                          ";
+$sSqlCancProc .= "         coalesce('- '||nullif(trim(k23_obs), ''), '') as k23_obs,                                             ";
+$sSqlCancProc .= "         k21_codigo,                                                                         ";
+$sSqlCancProc .= "         coalesce(trim(k20_descr), '') as k20_descr,                                         ";
+$sSqlCancProc .= "         coalesce('- Processo: '||p58_numero||'/'||p58_ano,'') as obsprocesso               ";
 $sSqlCancProc .= "    from cancdebitosproc                                                                     ";
 $sSqlCancProc .= "         {$sSqlLeftCarPerculiar}                                                             ";
 $sSqlCancProc .= "         inner join cancdebitosprocreg on k23_codigo                = k24_codigo             ";
@@ -174,28 +179,36 @@ $sSqlCancProc .= "         inner join arreinstit a       on a.k00_numpre        
 $sSqlCancProc .= "                                      and a.k00_instit              = {$iDBinstit}           ";
 $sSqlCancProc .= "         inner join arretipo           on arretipo.k00_tipo         = arrecant.k00_tipo      ";
 $sSqlCancProc .= "         inner join cadtipo            on arretipo.k03_tipo         = cadtipo.k03_tipo       ";
-$sSqlCancProc .= "         inner join cgm                on z01_numcgm                = arrecant.k00_numcgm    ";
 
-$sSqlCancProc .= "         left  join arrenumcgm         on arrenumcgm.k00_numpre     = arrecant.k00_numpre    ";
-$sSqlCancProc .= "                                      and arrenumcgm.k00_numcgm     = arrecant.k00_numcgm    ";
+$sSqlCancProc .= "         inner join arrenumcgm         on arrenumcgm.k00_numpre     = arrecant.k00_numpre    ";
+$sSqlCancProc .= "         inner join cgm                on z01_numcgm                = arrenumcgm.k00_numcgm  ";
 
 $sSqlCancProc .= "         left  join arrematric         on arrematric.k00_numpre     = arrecant.k00_numpre    ";
 $sSqlCancProc .= "         left  join arreinscr          on arreinscr.k00_numpre      = arrecant.k00_numpre    ";
 $sSqlCancProc .= "         inner join tabrec             on k02_codigo                = arrecant.k00_receit    ";
-$sSqlCancProc .= "         inner join db_usuarios        on id_usuario                = k23_usuario            ";
+$sSqlCancProc .= "         left  join taborc             on taborc.k02_codigo     = tabrec.k02_codigo           ";
+$sSqlCancProc .= "                                      and taborc.k02_anousu     = " . db_getsession("DB_anousu");
+$sSqlCancProc .= "           left join orcreceita        on taborc.k02_anousu = o70_anousu                      ";
+$sSqlCancProc .= "                                      and k02_codrec = o70_codrec                             ";
+$sSqlCancProc .= "           left join orcfontes         on o57_anousu = o70_anousu                             ";
+$sSqlCancProc .= "                                      and o57_codfon = o70_codfon                             ";
+$sSqlCancProc .= "         left join cancdebitos         on k21_codigo                = k20_codigo             ";
+$sSqlCancProc .= "                                      AND cancdebitos.k20_instit    = a.k00_instit           ";
+$sSqlCancProc .= "         inner join db_usuarios        on id_usuario                = k20_usuario            ";
 $sSqlCancProc .= "         left join divida              on divida.v01_numpre         = arrecant.k00_numpre    ";
 $sSqlCancProc .= "                                      and divida.v01_numpar         = arrecant.k00_numpar    ";
 $sSqlCancProc .= "         left join proced              on proced.v03_codigo         = divida.v01_proced      ";
 $sSqlCancProc .= "         left join tipoproced          on tipoproced.v07_sequencial = proced.v03_tributaria  ";
 $sSqlCancProc .= "         left join issvar              on issvar.q05_numpre         = arrecant.k00_numpre    ";
 $sSqlCancProc .= "                                      and issvar.q05_numpar         = arrecant.k00_numpar    ";
-
+$sSqlCancProc .= "         left join cancdebitosprot     on k20_codigo                = k25_cancdebitos        ";
+$sSqlCancProc .= "         left join protprocesso        on  k25_codproc              = p58_codproc            ";
 $sSqlCancProc .= "   where k23_data between '{$dtIni}' and '{$dtFim}'                                          ";
 $sSqlCancProc .= "     and k00_valor <> 0                                                                      ";
 $sSqlCancProc .= "  {$sSqlWhereCarPerculiar}                                                                   ";
 $sSqlCancProc .= "  {$where}                                                                                   ";
 $sSqlCancProc .= "  {$orderby}                                                                                 ";
-//dieSql($sSqlCancProc);
+//die$sSqlCancProc);
 $rsCancProc  = db_query($sSqlCancProc);
 $iCancProc   = pg_num_rows($rsCancProc);
 
@@ -276,7 +289,7 @@ $aDadosResTipoDeb    = array();
 $aDadosResTipoProced = array();
 $aDadosResTipoReceit = array();
 $aCanceladoTotalGeral =array();
-
+$aAgrupaEstrutural    = array();
 $sPeculiar           = "";
 
 $codProc             = null;
@@ -341,7 +354,7 @@ for( $iInd = 0; $iInd < $iCancProc; $iInd++ ) {
   }
 
   if($codProc != $oCancProc->k23_codigo){
-    $obsCancProc  = $oCancProc->k23_obs;
+    $obsCancProc  = substr($oCancProc->k20_descr.' '.$oCancProc->obsprocesso.' '.$oCancProc->k23_obs, 0, 500);
     $codProc      = $oCancProc->k23_codigo;
   }
 
@@ -476,6 +489,29 @@ for( $iInd = 0; $iInd < $iCancProc; $iInd++ ) {
     }
   }
 
+  if (isset($aAgrupaEstrutural[$oCancProc->k02_estorc])) {
+
+    if (!in_array(array($oDadosItens->iCodCancelado, $oDadosItens->iNumPre, $oDadosItens->iNumPar, $oDadosItens->iReceit), $aCanceladoTotalGeral)) {
+
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['valor'] += $oCancProc->k00_valor;
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['vlrcor'] += $oCancProc->k24_vlrcor;
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['multa'] += $oCancProc->k24_multa;
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['juros'] += $oCancProc->k24_juros;
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['total'] += $oCancProc->total;
+    }
+  } else {
+
+    if (!in_array(array($oDadosItens->iCodCancelado, $oDadosItens->iNumPre, $oDadosItens->iNumPar, $oDadosItens->iReceit), $aCanceladoTotalGeral)) {
+
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['valor']  = $oCancProc->k00_valor;
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['vlrcor']  = $oCancProc->k24_vlrcor;
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['multa']  = $oCancProc->k24_multa;
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['juros']  = $oCancProc->k24_juros;
+      $aAgrupaEstrutural[$oCancProc->k02_estorc][$oCancProc->o57_descr]['total']  = $oCancProc->total;
+    }
+  }
+
+  
   if(isset($aAgrupaTipo[$oCancProc->k00_descr])){
 
     if(!in_array(array($oDadosItens->iCodCancelado, $oDadosItens->iNumPre, $oDadosItens->iNumPar, $oDadosItens->iReceit), $aCanceladoTotalGeral)){
@@ -743,8 +779,8 @@ foreach ( $aDadosCancProc as $iInd => $aDados ) {
           }
         }
         $aCanceladoTotalGeral[] = array($oDadosItens->iCodCancelado, $oDadosItens->iNumPre, $oDadosItens->iNumPar, $oDadosItens->iReceit);
-      }
-
+      // }
+      
       if($lImprimeCab == true){
 
         if( $oGet->selhist == "s" && $oGet->seltipo != "rc" ){
@@ -760,12 +796,12 @@ foreach ( $aDadosCancProc as $iInd => $aDados ) {
           }
 
           $iTam = strlen($obsCancProc);
-          if ($iTam > 185) {
-            $obsCancProc = substr($obsCancProc,0,181)."...";
-          }
+          //if ($iTam > 185) {
+          //  $obsCancProc = substr($obsCancProc,0,181)."...";
+          //}
 
           $pdf->setfont('arial','i',7);
-          $pdf->cell(277,$alt,"Histórico : ".$obsCancProc ,0,1,"L",$iList);
+          $pdf->MultiCell(277,$alt,"Histórico : ".$obsCancProc ,0,1,"L",0);
           $pdf->setfont('arial','',$fonte);
         }
 
@@ -828,8 +864,8 @@ foreach ( $aDadosCancProc as $iInd => $aDados ) {
 
         }
       }
+  }
 }
-
 if ($lImprimeCab == true) {
 
   // imprime o TOTAL geral
@@ -944,16 +980,67 @@ foreach($aAgrupaRec as $Cod => $aRec ){
 
 }
 
-$pdf->setfont('arial','b',$fonte);
+$pdf->setfont('arial', 'b', $fonte);
 $pdf->setx(45);
-$pdf->cell(15,"",0,1,"R",0);
-$pdf->cell(70,"",0,1,"R",0);
-$pdf->cell(22,$alt,db_formatar($ValorRec ,"f"),"T",0,"R",0);
-$pdf->cell(22,$alt,db_formatar($VlrCorRec,"f"),"T",0,"R",0);
-$pdf->cell(22,$alt,db_formatar($MultaRec ,"f"),"T",0,"R",0);
-$pdf->cell(22,$alt,db_formatar($JurosRec ,"f"),"T",0,"R",0);
-$pdf->cell(22,$alt,db_formatar($TotalRec ,"f"),"T",1,"R",0);
+$pdf->cell(15, "", 0, 1, "R", 0);
+$pdf->cell(70, "", 0, 1, "R", 0);
+$pdf->cell(22, $alt, db_formatar($ValorRec, "f"), "T", 0, "R", 0);
+$pdf->cell(22, $alt, db_formatar($VlrCorRec, "f"), "T", 0, "R", 0);
+$pdf->cell(22, $alt, db_formatar($MultaRec, "f"), "T", 0, "R", 0);
+$pdf->cell(22, $alt, db_formatar($JurosRec, "f"), "T", 0, "R", 0);
+$pdf->cell(22, $alt, db_formatar($TotalRec, "f"), "T", 1, "R", 0);
 $pdf->ln();
+
+$pdf->setfont('arial', 'b', $fonte);
+$pdf->cell(60, $alt, "", "T", 0, "C", 0);
+$pdf->cell(140, $alt, "TOTAL DE DÉBITOS CANCELADOS DETALHADO POR ESTRUTURAL DA RECEITA ORÇAMENTÁRIA", "T", 0, "C", 0);
+$pdf->cell(0, $alt, "", "T", 1, "C", 0);
+$pdf->cell(45, $alt, "", "T", 0, "C", 1);
+$pdf->cell(15, $alt, "Estrutural", "T", 0, "C", 1);
+$pdf->cell(75, $alt, "Descrição", "T", 0, "C", 1);
+$pdf->cell(22, $alt, "Vlr Hist", "T", 0, "C", 1);
+$pdf->cell(22, $alt, "Vlr Corr", "T", 0, "C", 1);
+$pdf->cell(22, $alt, "Multa", "T", 0, "C", 1);
+$pdf->cell(22, $alt, "Juros", "T", 0, "C", 1);
+$pdf->cell(22, $alt, "Total", "T", 0, "C", 1);
+$pdf->cell(0, $alt, "", "T", 1, "C", 1);
+$pdf->ln(2);
+
+foreach ($aAgrupaEstrutural as $Cod => $aDados) {
+
+  $pdf->setfont('arial', '', $fonte);
+  $pdf->setx(45);
+  $pdf->cell(25, $alt, $Cod, 0, 0, "C", 0);
+
+  foreach ($aDados as $Descr => $nValores) {
+
+    $pdf->cell(70, $alt, $Descr, 0, 0, "L", 0);
+    $pdf->cell(22, $alt, db_formatar($nValores['valor'], "f"), 0, 0, "R", 0);
+    $pdf->cell(22, $alt, db_formatar($nValores['vlrcor'], "f"), 0, 0, "R", 0);
+    $pdf->cell(22, $alt, db_formatar($nValores['multa'], "f"), 0, 0, "R", 0);
+    $pdf->cell(22, $alt, db_formatar($nValores['juros'], "f"), 0, 0, "R", 0);
+    $pdf->cell(22, $alt, db_formatar($nValores['total'], "f"), 0, 1, "R", 0);
+
+    $ValorEstrutural  += $nValores['valor'];
+    $VlrCorEstrutural += $nValores['vlrcor'];
+    $MultaEstrutural  += $nValores['multa'];
+    $JurosEstrutural  += $nValores['juros'];
+    $TotalEstrutural  += $nValores['total'];
+  }
+}
+
+$pdf->setfont('arial', 'b', $fonte);
+$pdf->setx(45);
+$pdf->cell(25, "", 0, 1, "R", 0);
+$pdf->cell(70, "", 0, 1, "R", 0);
+$pdf->cell(22, $alt, db_formatar($ValorEstrutural, "f"), "T", 0, "R", 0);
+$pdf->cell(22, $alt, db_formatar($VlrCorEstrutural, "f"), "T", 0, "R", 0);
+$pdf->cell(22, $alt, db_formatar($MultaEstrutural, "f"), "T", 0, "R", 0);
+$pdf->cell(22, $alt, db_formatar($JurosEstrutural, "f"), "T", 0, "R", 0);
+$pdf->cell(22, $alt, db_formatar($TotalEstrutural, "f"), "T", 1, "R", 0);
+$pdf->ln();
+
+
 
 $pdf->setfont('arial','b',$fonte);
 $pdf->cell(60,$alt,"","T",0,"C",0);

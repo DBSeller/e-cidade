@@ -5,25 +5,25 @@ require_once("scripts/classes/educacao/DBViewFormularioEducacao.classe.js");
  * Monta um select com uma lista de escolas
  * @dependency Utiliza DBViewFormularioEducacao.classe.js
  * @autor Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.15 $
  * @package Educacao
- * @subpackage Escola 
- * @example 
+ * @subpackage Escola
+ * @example
  *         var oTurma = new DBViewFormularioEducacao.ListaTurma();
- *        
+ *
  *         var fFuncaoLoad = function() {
  *           alert('Chamei após carregar');
  *         };
- *        
+ *
  *         var fFuncaoChange = function () {
- *           alert(oTurma.getSelecionados().toSource());
+ *           alert(JSON.stringify(oTurma.getSelecionados()));
  *         };
- *         
+ *
  *         oTurma.setCallBackLoad(fFuncaoLoad);       // Opcional
- *         oTurma.setCallbackOnChange(fFuncaoChange); // Opcional 
- *         oTurma.habilitarOpcaoTodas(true);          // Opcional 
+ *         oTurma.setCallbackOnChange(fFuncaoChange); // Opcional
+ *         oTurma.habilitarOpcaoTodas(true);          // Opcional
  *         oTurma.show($('listaTurma'));
- * 
+ *
  * @returns {void}
  */
 DBViewFormularioEducacao.ListaTurma = function() {
@@ -32,8 +32,8 @@ DBViewFormularioEducacao.ListaTurma = function() {
    * Nome do arquivo RPC para as requisições ajax
    * @var string
    */
-  this.sUrlRPC = "edu_educacaobase.RPC.php";
-  
+  this.sUrlRPC = "edu4_turmas.RPC.php";
+
   /**
    * Função callback ao carregar os dados
    * @var function
@@ -41,9 +41,9 @@ DBViewFormularioEducacao.ListaTurma = function() {
   this.fCallBackLoad = function () {
     return true;
   };
-  
+
   /**
-   * Função callback ao selecionar um option do select 
+   * Função callback ao selecionar um option do select
    * @var function
    */
   this.fCallbackOnChange = function () {
@@ -67,7 +67,7 @@ DBViewFormularioEducacao.ListaTurma = function() {
    * Código do calendário que devemos buscar as etapas
    * OBS.: Se 0, busca de todos os calendários
    *       Pode ser uma lista separada por ", "
-   *         exemplo : 123,124,125 
+   *         exemplo : 123,124,125
    * @var integer
    */
   this.iCalendario = 0;
@@ -79,18 +79,32 @@ DBViewFormularioEducacao.ListaTurma = function() {
    */
   this.iEtapa = 0;
 
+    /**
+     * Array com os turnos e períodos das turmas. onde os indices do array são o código da turma.
+     * @type {any[]}
+     */
+  this.turnoPeriodoEscola = new Array();
+
+    /**
+     * Array com as regencias da turma e etapa no formato regenciasTurma[codigoTurma][codigoEtapa].
+     * @type {any[][]}
+     */
+  this.regenciasTurma = new Array();
+
   /**
    * Elemento select das turmas
    * @var HTMLElement
    */
-  this.oCboTurma = document.createElement("select");
+  this.oCboTurma             = document.createElement("select");
   this.oCboTurma.id          = 'cboTurma';
   this.oCboTurma.style.width = "100%";
   this.oCboTurma.add(new Option("Selecione uma Turma", ""));
 
-  this.lSomenteComCriterioAvaliacao = false;
+  this.lSomenteComCriterioAvaliacao  = false;
+  this.lSomenteComAlunosMatriculados = true;
+  this.lSomenteAtivas                = false;
+  this.aTipoTurmaFora                = new Array();
 };
-
 
 /**
  * Define uma função para ser executada após o carregamento dos dados
@@ -98,9 +112,8 @@ DBViewFormularioEducacao.ListaTurma = function() {
  * @return {void}
  */
 DBViewFormularioEducacao.ListaTurma.prototype.setCallBackLoad = function (fFunction) {
-  
   this.fCallBackLoad = fFunction;
-}; 
+};
 
 /**
  * Define uma função para ser executada ao mudar a seleção no combobox
@@ -108,7 +121,7 @@ DBViewFormularioEducacao.ListaTurma.prototype.setCallBackLoad = function (fFunct
  * @return {void}
  */
 DBViewFormularioEducacao.ListaTurma.prototype.setCallbackOnChange = function (fFunction) {
-  
+
   this.fCallbackOnChange = fFunction;
   this.oCboTurma.stopObserving('change');
   this.oCboTurma.observe('change', function() {
@@ -121,7 +134,7 @@ DBViewFormularioEducacao.ListaTurma.prototype.setCallbackOnChange = function (fF
  * @param boolean lHabilta
  */
 DBViewFormularioEducacao.ListaTurma.prototype.habilitarOpcaoTodas = function (lHabilta) {
-  
+
   this.lHabilitaOpcaoTodas = lHabilta;
 };
 
@@ -130,7 +143,7 @@ DBViewFormularioEducacao.ListaTurma.prototype.habilitarOpcaoTodas = function (lH
  * @returns Object
  */
 DBViewFormularioEducacao.ListaTurma.prototype.getSelecionados = function () {
-  
+
   var oRetorno          = {};
   oRetorno.codigo_turma = this.oCboTurma.value;
   oRetorno.turma        = this.oCboTurma.options[this.oCboTurma.selectedIndex].innerHTML;
@@ -141,10 +154,9 @@ DBViewFormularioEducacao.ListaTurma.prototype.getSelecionados = function () {
 /**
  * Define uma escola para ser buscada as turmas
  * @param  {integer} iEscola Código da escola
- * @return {void}         
+ * @return {void}
  */
 DBViewFormularioEducacao.ListaTurma.prototype.setEscola = function (iEscola) {
-
   this.iEscola = iEscola;
 };
 
@@ -155,7 +167,6 @@ DBViewFormularioEducacao.ListaTurma.prototype.setEscola = function (iEscola) {
  * @return {void}
  */
 DBViewFormularioEducacao.ListaTurma.prototype.setCalendario = function (iCalendario) {
-
   this.iCalendario = iCalendario;
 };
 
@@ -165,8 +176,15 @@ DBViewFormularioEducacao.ListaTurma.prototype.setCalendario = function (iCalenda
  * @return {void}
  */
 DBViewFormularioEducacao.ListaTurma.prototype.setEtapa = function (iEtapa) {
-
   this.iEtapa = iEtapa;
+};
+
+/**
+ * Define os tipos de turma que não devem retornar
+ * @param {array} aTipoTurmaFora
+ */
+DBViewFormularioEducacao.ListaTurma.prototype.setTipoTurmaFora = function (aTipoTurmaFora) {
+  this.aTipoTurmaFora = aTipoTurmaFora;
 };
 
 /**
@@ -174,16 +192,19 @@ DBViewFormularioEducacao.ListaTurma.prototype.setEtapa = function (iEtapa) {
  * @returns {void}
  */
 DBViewFormularioEducacao.ListaTurma.prototype.getTurmas = function () {
-  
+
   var oSelf = this;
-  
-  var oParametro                          = new Object();
-  oParametro.exec                         = 'pesquisaTurmaEtapa';
-  oParametro.iEscola                      = this.iEscola;
-  oParametro.iCalendario                  = this.iCalendario;
-  oParametro.iEtapa                       = this.iEtapa;
-  oParametro.lSomenteComCriterioAvaliacao = this.lSomenteComCriterioAvaliacao;
-  
+
+  var oParametro                           = new Object();
+  oParametro.exec                          = 'buscaTurmasPorCalendarioEscola';
+  oParametro.iEscola                       = this.iEscola;
+  oParametro.iCalendario                   = this.iCalendario;
+  oParametro.iEtapa                        = this.iEtapa;
+  oParametro.lSomenteComCriterioAvaliacao  = this.lSomenteComCriterioAvaliacao;
+  oParametro.lSomenteComAlunosMatriculados = this.lSomenteComAlunosMatriculados;
+  oParametro.lSomenteAtivas                = this.lSomenteAtivas;
+  oParametro.aTipoTurmaFora                = this.aTipoTurmaFora;
+
   js_divCarregando(_M("educacao.escola.ListaTurma.pesquisando_turmas"), "msgBox");
 
   var oObjeto        = {};
@@ -193,20 +214,20 @@ DBViewFormularioEducacao.ListaTurma.prototype.getTurmas = function () {
                        oSelf.retornoTurma(oAjax);
                      };
   oObjeto.asynchronous = false;
-  
+
   new Ajax.Request(oSelf.sUrlRPC, oObjeto);
 };
 
 /**
  * Trata o retorno das turmas buscadas pelo metodo getTurmas()
- * @param  {Object} oAjax 
- * @return {void}         
+ * @param  {Object} oAjax
+ * @return {void}
  */
 DBViewFormularioEducacao.ListaTurma.prototype.retornoTurma = function (oAjax) {
 
   js_removeObj("msgBox");
   var oSelf    = this;
-  var oRetorno = eval("(" + oAjax.responseText + ")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status != 1) {
 
@@ -216,21 +237,26 @@ DBViewFormularioEducacao.ListaTurma.prototype.retornoTurma = function (oAjax) {
 
   this.limpar();
 
-  var iContadorTurma = oRetorno.dados.length;
+  var iContadorTurma = oRetorno.aTurmas.length;
 
   if (oSelf.lHabilitaOpcaoTodas && iContadorTurma > 1) {
     this.oCboTurma.add(new Option("Todas", 0));
   }
 
-  oRetorno.dados.each( function (oTurma) {
-    
-    var oOption = new Option(oTurma.ed57_c_descr.urlDecode(), oTurma.ed57_i_codigo);
-    oOption.setAttribute("etapa", oTurma.codigo_etapa);
+  oRetorno.aTurmas.each( function (oTurma) {
+    var sDescricao = oTurma.sTurma.urlDecode() + ' - ' + oTurma.sEtapa.urlDecode();
+    var oOption = new Option( sDescricao, oTurma.iTurma );
+    oOption.setAttribute("etapa", oTurma.iEtapa);
     oSelf.oCboTurma.add(oOption);
+
+    if (oSelf.turnoPeriodoEscola[oTurma.iTurma] == undefined) {
+        oSelf.turnoPeriodoEscola[oTurma.iTurma] = oTurma.turno;
+        oSelf.turnoPeriodoEscola[oTurma.iTurma].descricao = oSelf.turnoPeriodoEscola[oTurma.iTurma].descricao.urlDecode();
+    }
   });
 
   if (iContadorTurma == 1) {
-    oSelf.oCboTurma.value = oRetorno.dados[0].ed57_i_codigo;
+    oSelf.oCboTurma.value = oRetorno.aTurmas[0].iTurma;
   }
 
   oSelf.fCallBackLoad();
@@ -239,17 +265,16 @@ DBViewFormularioEducacao.ListaTurma.prototype.retornoTurma = function (oAjax) {
 /**
  * Renderiza o comboBox com a lista de turmas
  * @param  {HTMLElement} oElement Node onde será renderizado o comboBox
- * @return {void}          
+ * @return {void}
  */
 DBViewFormularioEducacao.ListaTurma.prototype.show = function (oElement) {
-
   oElement.appendChild(this.oCboTurma);
 };
 
 
 /**
  * Limpa as informações da lista de Turmas
- * @return {void} 
+ * @return {void}
  */
 DBViewFormularioEducacao.ListaTurma.prototype.limpar = function () {
 
@@ -259,4 +284,46 @@ DBViewFormularioEducacao.ListaTurma.prototype.limpar = function () {
 
 DBViewFormularioEducacao.ListaTurma.prototype.somenteComCriterioAvaliacao = function( lSomenteComCriterioAvaliacao ) {
   this.lSomenteComCriterioAvaliacao = lSomenteComCriterioAvaliacao;
+};
+
+/**
+ * Seta se devem ser pesquisadas turmas somente com alunos matriculados
+ * @param {bool} lSomenteComAlunosMatriculados
+ */
+DBViewFormularioEducacao.ListaTurma.prototype.somenteComAlunosMatriculados = function( lSomenteComAlunosMatriculados ) {
+  this.lSomenteComAlunosMatriculados = lSomenteComAlunosMatriculados;
+};
+
+/**
+ * Seta se devem ser apresentadas somente turmas ativas
+ * @param {bool} lSomenteAtivas
+ */
+DBViewFormularioEducacao.ListaTurma.prototype.somenteAtivas = function( lSomenteAtivas ) {
+  this.lSomenteAtivas = lSomenteAtivas;
+};
+
+/**
+ * Atualiza o componente de turmas de acordo com o código da escola e calendário.
+ * @param {int} codigoEscola
+ * @param {int} codigoCalendario
+ */
+DBViewFormularioEducacao.ListaTurma.prototype.atualizarComponenete = function (codigoEscola, codigoCalendario) {
+    this.limpar();
+
+    if (empty(codigoEscola) || empty(codigoCalendario)) {
+        return;
+    }
+
+    this.setEscola(codigoEscola);
+    this.setCalendario(codigoCalendario);
+    this.getTurmas();
+};
+
+/**
+ * Retorna os periodos de uma turma
+ * @param {int} codigoTurma
+ * @return {any}
+ */
+DBViewFormularioEducacao.ListaTurma.prototype.getTurnoTurma = function (codigoTurma) {
+    return this.turnoPeriodoEscola[codigoTurma];
 };

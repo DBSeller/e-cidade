@@ -177,7 +177,7 @@ $clrotulo->label("z01_nome");
 function js_novo() {
 
   parent.document.formaba.a2.disabled = true;
-  top.corpo.iframe_a1.location.href   = 'tfd1_tfd_centralagendamento001.php';
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href   = 'tfd1_tfd_centralagendamento001.php';
   parent.mo_camada('a1');
 
 }

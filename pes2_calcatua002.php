@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_libpessoal.php");
-include("classes/db_selecao_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("classes/db_selecao_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clselecao = new cl_selecao();
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -94,8 +94,8 @@ function calcatua_bb($anofolha,$mesfolha,$where){
   $arq = '/tmp/calc_ativos.txt';
   $arquivo = fopen($arq,'w');  
 
-pg_query("drop sequence layout_ati_seq");
-pg_query("create sequence layout_ati_seq");
+db_query("drop sequence layout_ati_seq");
+db_query("create sequence layout_ati_seq");
 
 $sql = " select rh01_regist as matricula,
        lpad(nextval('layout_ati_seq')::text,5,'0')
@@ -138,7 +138,7 @@ where rh30_vinculo = 'A'
   $where ";
   
 //  echo $sql;exit;
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $num = pg_numrows($result);
   for($x = 0;$x < pg_numrows($result);$x++){
 //    echo 'Total de : '.$num.' / '.$x."\r";
@@ -155,7 +155,7 @@ where rh30_vinculo = 'A'
 	       and rh31_regist = $matric 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       $dtconj  = pg_result($res1,0,'nasc');
@@ -173,7 +173,7 @@ where rh30_vinculo = 'A'
 	             and rh31_regist = $matric 
 	          ";
 				 
-    $res2 = pg_query($sql2);
+    $res2 = db_query($sql2);
     
     if(pg_numrows($res2) > 0){
       $numfilhos = pg_result($res2,0,'soma_filhos');
@@ -191,7 +191,7 @@ where rh30_vinculo = 'A'
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       $cacula = pg_result($res3,0,'nasc');
@@ -216,8 +216,8 @@ where rh30_vinculo = 'A'
 
   $arquivo = fopen($arq1,'w');  
 
-pg_query("drop sequence layout_ina_seq");
-pg_query("create sequence layout_ina_seq");
+db_query("drop sequence layout_ina_seq");
+db_query("create sequence layout_ina_seq");
 //echo "entrou no select"."\n\n";
 
 $sql = "select rh01_regist as matricula,
@@ -260,7 +260,7 @@ where rh30_vinculo = 'I'
   $where ";
   
 //  echo $sql;
-  $result = pg_query($sql);
+  $result = db_query($sql);
 //  echo "gerou o result"."\n\n";
   $num = pg_numrows($result);
   for($x = 0;$x < pg_numrows($result);$x++){
@@ -279,7 +279,7 @@ where rh30_vinculo = 'I'
 	       and rh31_regist = $matric 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       $dtconj  = pg_result($res1,0,'nasc');
@@ -297,7 +297,7 @@ where rh30_vinculo = 'I'
 	             and rh31_regist = $matric 
 	          ";
 				 
-    $res2 = pg_query($sql2);
+    $res2 = db_query($sql2);
     
     if(pg_numrows($res2) > 0){
       $numfilhos = pg_result($res2,0,'soma_filhos');
@@ -315,7 +315,7 @@ where rh30_vinculo = 'I'
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       $cacula = pg_result($res3,0,'nasc');
@@ -345,8 +345,8 @@ where rh30_vinculo = 'I'
 
   $arquivo = fopen($arq2,'w');  
 
-pg_query("drop sequence layout_pen_seq");
-pg_query("create sequence layout_pen_seq");
+db_query("drop sequence layout_pen_seq");
+db_query("create sequence layout_pen_seq");
 
 //echo "entrou no select"."\n\n";
 
@@ -397,7 +397,7 @@ where rh30_vinculo = 'P'
   $where ";
   
 //  echo $sql;
-  $result = pg_query($sql);
+  $result = db_query($sql);
 //  echo "gerou o result"."\n\n";
   $num = pg_numrows($result);
   for($x = 0;$x < pg_numrows($result);$x++){
@@ -416,7 +416,7 @@ where rh30_vinculo = 'P'
 	       and rh31_regist = $matric 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       $dtconj  = pg_result($res1,0,'nasc');
@@ -434,7 +434,7 @@ where rh30_vinculo = 'P'
 	             and rh31_regist = $matric 
 	          ";
 				 
-    $res2 = pg_query($sql2);
+    $res2 = db_query($sql2);
     
     if(pg_numrows($res2) > 0){
       $numfilhos = pg_result($res2,0,'soma_filhos');
@@ -452,7 +452,7 @@ where rh30_vinculo = 'P'
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       $cacula = pg_result($res3,0,'nasc');
@@ -526,7 +526,7 @@ where rh30_vinculo = 'A'
 ";
 
 //  echo $sql;
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $num = pg_numrows($result);
   for($x = 0;$x < pg_numrows($result);$x++){
 //    echo 'Total de : '.$num.' / '.$x."\r";
@@ -544,7 +544,7 @@ where rh30_vinculo = 'A'
 	       and rh31_regist = $matric 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       $dtconj  = pg_result($res1,0,'nasc');
@@ -565,7 +565,7 @@ where rh30_vinculo = 'A'
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res2 = pg_query($sql2);
+    $res2 = db_query($sql2);
     
     if(pg_numrows($res2) > 0){
       $dtespec = pg_result($res2,0,'nasc');
@@ -584,7 +584,7 @@ where rh30_vinculo = 'A'
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       $dtnespec = pg_result($res3,0,'nasc');
@@ -641,7 +641,7 @@ where rh30_vinculo = 'I'
 ";
   
 //  echo $sql;
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $num = pg_numrows($result);
   for($x = 0;$x < pg_numrows($result);$x++){
     //echo 'Total de : '.$num.' / '.$x."\r";
@@ -659,7 +659,7 @@ where rh30_vinculo = 'I'
 	       and rh31_regist = $matric 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       $dtconj  = pg_result($res1,0,'nasc');
@@ -680,7 +680,7 @@ where rh30_vinculo = 'I'
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res2 = pg_query($sql2);
+    $res2 = db_query($sql2);
     
     if(pg_numrows($res2) > 0){
       $dtespec = pg_result($res2,0,'nasc');
@@ -699,7 +699,7 @@ where rh30_vinculo = 'I'
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       $dtnespec = pg_result($res3,0,'nasc');
@@ -763,7 +763,7 @@ where rh30_vinculo = 'P'
 ";
   
 //  echo $sql;
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $num = pg_numrows($result);
   for($x = 0;$x < pg_numrows($result);$x++){
   //  echo 'Total de : '.$num.' / '.$x."\r";
@@ -781,7 +781,7 @@ where rh30_vinculo = 'P'
 	       and rh31_regist = $matric 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       $dtconj  = pg_result($res1,0,'nasc');
@@ -802,7 +802,7 @@ where rh30_vinculo = 'P'
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res2 = pg_query($sql2);
+    $res2 = db_query($sql2);
     
     if(pg_numrows($res2) > 0){
       $dtespec = pg_result($res2,0,'nasc');
@@ -821,7 +821,7 @@ where rh30_vinculo = 'P'
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       $dtnespec = pg_result($res3,0,'nasc');

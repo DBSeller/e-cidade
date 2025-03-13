@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 //db_postmemory($HTTP_POST_VARS,2);
 $db_opcao = 1;
 $db_botao = true;
@@ -97,7 +97,7 @@ $db_botao = true;
              from escola_sequencias
              where ed129_i_escola = $escola
             ";
-     $result = pg_query($sql);
+     $result = db_query($sql);
      $ultima_atualizacaose = trim(pg_result($result,0,'ed129_i_ultatualizse'));
      $ultima_transacao = trim(pg_result($result,0,'ed129_c_ulttransacao'));
      $array_arquivo = explode("_",$name);
@@ -155,7 +155,7 @@ $db_botao = true;
      system("bunzip2 tmp/".$name);
      system("tar -xvf tmp/".$arquivo_tar);
      $sql1 = "create database $base_destino";
-     $result1 = pg_query($sql1);
+     $result1 = db_query($sql1);
      if(!$result1){
       echo "Erro criando base de dados!";
       system("rm tmp/".$arquivo_tar);
@@ -172,7 +172,7 @@ $db_botao = true;
      system("rm tmp/".$arquivo_tar);
      system("rm tmp/".$arquivo_sql);
      system("rm tmp/_educodigofonte.tar");
-     //include("edu4_update_dbconn.php");
+     //include(modification("edu4_update_dbconn.php"));
      //////////////////////////////////////////
      pg_close($conn);
      if(!($conn1=pg_connect("host=$DB_SERVIDOR dbname=$base_destino port=$DB_PORTA user=$DB_USUARIO password=$DB_SENHA"))){
@@ -180,7 +180,7 @@ $db_botao = true;
       exit;
      }
      $sql1 = "drop database $baseatual";
-     $result1 = pg_query($conn1,$sql1);
+     $result1 = db_query($conn1,$sql1);
      if(!$result1){
       echo "Erro apagando base de dados!";
       exit;

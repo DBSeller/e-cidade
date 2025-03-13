@@ -56,7 +56,7 @@ $clrotulo->label("ed06_i_codigo");
            AND ed95_c_encerrado = 'N'
            ORDER BY ed47_v_nome
           ";
-   $result = pg_query($sql);
+   $result = db_query($sql);
    $linhas = pg_num_rows($result);
    ?>
    <b>Alunos:</b><br>
@@ -125,7 +125,7 @@ $clrotulo->label("ed06_i_codigo");
             inner join periodoavaliacao on ed09_i_codigo = ed41_i_periodoavaliacao
            WHERE ed95_i_regencia = $regencia
           ";
-   $result1 = pg_query($sql1);
+   $result1 = db_query($sql1);
    $linhas1 = pg_num_rows($result1);
    ?>
    <b>Períodos:</b><br>

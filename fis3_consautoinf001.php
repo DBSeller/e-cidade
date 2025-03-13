@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_autotipo_classe.php");
-include("classes/db_autotipobaixaproc_classe.php");
-include("classes/db_autotipobaixa_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_autotipo_classe.php"));
+include(modification("classes/db_autotipobaixaproc_classe.php"));
+include(modification("classes/db_autotipobaixa_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 $clautotipo= new cl_autotipo;
 $clautotipobaixaproc = new cl_autotipobaixaproc;
@@ -58,18 +58,18 @@ db_postmemory($HTTP_POST_VARS);
 function js_consulta(){
    if (document.form1.y50_codauto.value==""){
    	if (document.form1.y50_numbloco.value!=""){   		      
-   	  js_OpenJanelaIframe('top.corpo','db_iframe_auto','func_autoalt.php?chave_y50_numbloco='+document.form1.y50_numbloco.value+'&funcao_js=parent.js_consulta2|dl_Auto','Pesquisa',true);   	  
+   	  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_auto','func_autoalt.php?chave_y50_numbloco='+document.form1.y50_numbloco.value+'&funcao_js=parent.js_consulta2|dl_Auto','Pesquisa',true);   	  
    	}else{
      alert('Informe um Auto de Infração!!Campo vazio!!');
      document.form1.y50_codauto.focus();
    	}
    }else{
-     js_OpenJanelaIframe('top.corpo','db_iframe','fis3_consautoinf002.php?codauto='+document.form1.y50_codauto.value,'Consulta Auto de Infração',true);
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','fis3_consautoinf002.php?codauto='+document.form1.y50_codauto.value,'Consulta Auto de Infração',true);
    }
 }
 function js_consulta2(y50_codauto){	
 	db_iframe_auto.hide();
-	js_OpenJanelaIframe('top.corpo','db_iframe','fis3_consautoinf002.php?codauto='+y50_codauto,'Consulta Auto de Infração',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','fis3_consautoinf002.php?codauto='+y50_codauto,'Consulta Auto de Infração',true);
 }
 </script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
@@ -133,10 +133,10 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 function js_inscr(mostra){
   var inscr=document.form1.y50_codauto.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_inscr','func_autoalt.php?funcao_js=parent.js_mostrainscr|dl_Auto|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inscr','func_autoalt.php?funcao_js=parent.js_mostrainscr|dl_Auto|z01_nome','Pesquisa',true);
   }else{
     if(inscr!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe_inscr','func_autoalt.php?pesquisa_chave='+inscr+'&funcao_js=parent.js_mostrainscr1','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inscr','func_autoalt.php?pesquisa_chave='+inscr+'&funcao_js=parent.js_mostrainscr1','Pesquisa',false);
     }else{
       document.form1.z01_nome.value="";
       document.form1.submit();  

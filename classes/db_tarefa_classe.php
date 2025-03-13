@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -841,7 +841,7 @@ class cl_tarefa {
      }
      return $sql;
   }
-   function sql_query_file ( $at40_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  function sql_query_file ( $at40_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -874,5 +874,110 @@ class cl_tarefa {
      }
      return $sql;
   }
+
+   function sql_query_previsao( $at40_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+     $sCamposPadrao  = " ( select min(at43_diafim) ";
+     $sCamposPadrao .= "     from tarefalog ";
+     $sCamposPadrao .= "          inner join tarefalogsituacao on tarefalogsituacao.at48_tarefalog = tarefalog.at43_sequencial ";
+     $sCamposPadrao .= "          inner join tarefacadsituacao on tarefacadsituacao.at46_codigo    = tarefalogsituacao.at48_situacao ";
+     $sCamposPadrao .= "    where tarefacadsituacao.at46_codigo = 4 ";
+     $sCamposPadrao .= "      and at43_tarefa = at40_sequencial ";
+     $sCamposPadrao .= " ) as inicio_teste, ";
+     $sCamposPadrao .= " ( select min(at43_horafim) ";
+     $sCamposPadrao .= "     from tarefalog ";
+     $sCamposPadrao .= "          inner join tarefalogsituacao on tarefalogsituacao.at48_tarefalog = tarefalog.at43_sequencial ";
+     $sCamposPadrao .= "          inner join tarefacadsituacao on tarefacadsituacao.at46_codigo    = tarefalogsituacao.at48_situacao ";
+     $sCamposPadrao .= "    where tarefacadsituacao.at46_codigo = 4 ";
+     $sCamposPadrao .= "      and at43_tarefa = at40_sequencial ";
+     $sCamposPadrao .= " ) as horaini_teste, ";
+     $sCamposPadrao .= " ( select min(at43_diafim) ";
+     $sCamposPadrao .= "     from tarefalog ";
+     $sCamposPadrao .= "          inner join tarefalogsituacao on tarefalogsituacao.at48_tarefalog = tarefalog.at43_sequencial ";
+     $sCamposPadrao .= "          inner join tarefacadsituacao on tarefacadsituacao.at46_codigo    = tarefalogsituacao.at48_situacao ";
+     $sCamposPadrao .= "    where tarefacadsituacao.at46_codigo = 5 ";
+     $sCamposPadrao .= "      and at43_tarefa = at40_sequencial ";
+     $sCamposPadrao .= " ) as data_fecha, ";
+     $sCamposPadrao .= " ( select min(at43_horafim) ";
+     $sCamposPadrao .= "     from tarefalog ";
+     $sCamposPadrao .= "          inner join tarefalogsituacao on tarefalogsituacao.at48_tarefalog = tarefalog.at43_sequencial ";
+     $sCamposPadrao .= "          inner join tarefacadsituacao on tarefacadsituacao.at46_codigo    = tarefalogsituacao.at48_situacao ";
+     $sCamposPadrao .= "    where tarefacadsituacao.at46_codigo = 5 ";
+     $sCamposPadrao .= "      and at43_tarefa = at40_sequencial ";
+     $sCamposPadrao .= " ) as hora_fecha, ";
+     $sCamposPadrao .= " ( select at46_descr ";
+     $sCamposPadrao .= "     from tarefalog ";
+     $sCamposPadrao .= "          inner join tarefalogsituacao on tarefalogsituacao.at48_tarefalog = tarefalog.at43_sequencial ";
+     $sCamposPadrao .= "          inner join tarefacadsituacao on tarefacadsituacao.at46_codigo    = tarefalogsituacao.at48_situacao ";
+     $sCamposPadrao .= "    where tarefalog.at43_sequencial = (select max(at43_sequencial) from tarefalog where at43_tarefa = at40_sequencial) ";
+     $sCamposPadrao .= " ) as situacao_atual, ";
+     $sCamposPadrao .= " ( select tarefalogsituacao.at48_situacao ";
+     $sCamposPadrao .= "     from tarefalog ";
+     $sCamposPadrao .= "          inner join tarefalogsituacao on tarefalogsituacao.at48_tarefalog = tarefalog.at43_sequencial ";
+     $sCamposPadrao .= "    where tarefalog.at43_sequencial = (select max(at43_sequencial) from tarefalog where at43_tarefa = at40_sequencial) ";
+     $sCamposPadrao .= " ) as cod_situacao ";
+
+     $sql  = " select $campos, $sCamposPadrao";
+     $sql .= "   from tarefa ";
+     $sql .= "        inner join tarefaprevisao on tarefaprevisao.at81_tarefa = tarefa.at40_sequencial ";
+     $sql .= "        inner join db_usuarios    on db_usuarios.id_usuario   = tarefa.at40_responsavel  ";
+     $sql .= "        inner join tarefamotivo   on tarefamotivo.at55_tarefa = tarefa.at40_sequencial   ";
+ //    $sql .= "        inner join tarefa_aut     on tarefa_aut.at39_tarefa   = tarefa.at40_sequencial   ";
+ //    $sql .= "                                 and tarefa_aut.at39_cancelada is false ";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($at40_sequencial!=null ){
+         $sql2 .= " where tarefa.at40_sequencial = $at40_sequencial "; 
+       } 
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+
+
+   function sql_query_semprevisao( $at40_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+     $sql  = " select $campos";
+     $sql .= "   from tarefa ";
+     $sql .= "        inner join tarefaprevisao     on tarefaprevisao.at81_tarefa     = tarefa.at40_sequencial   ";
+     $sql .= "        inner join db_usuarios        on db_usuarios.id_usuario         = tarefa.at40_responsavel  ";
+     $sql .= "        left  join tarefaprevisaofase on tarefaprevisaofase.at82_tarefaprevisao = tarefaprevisao.at81_sequencial ";
+     $sql .= "  where tarefaprevisaofase.at82_sequencial is null";
+
+     $sql2 = "";
+     
+     if($dbwhere==""){
+       if($at40_sequencial!=null ){
+         $sql2 .= " and tarefa.at40_sequencial = $at40_sequencial "; 
+       } 
+     }else if($dbwhere != ""){
+       $sql2 = " and $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }  
+
+
+
 }
 ?>

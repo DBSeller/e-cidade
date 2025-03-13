@@ -73,10 +73,10 @@ db_input('j34_setor',4,$Ij34_setor,true,'text',3,'')
 <script>
 function js_pesquisaj69_tesinter(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tesinter','func_tesinter.php?funcao_js=parent.js_mostratesinter1|j39_sequencial|j39_idbql','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tesinter','func_tesinter.php?funcao_js=parent.js_mostratesinter1|j39_sequencial|j39_idbql','Pesquisa',true);
   }else{
      if(document.form1.j69_tesinter.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tesinter','func_tesinter.php?pesquisa_chave='+document.form1.j69_tesinter.value+'&funcao_js=parent.js_mostratesinter','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tesinter','func_tesinter.php?pesquisa_chave='+document.form1.j69_tesinter.value+'&funcao_js=parent.js_mostratesinter','Pesquisa',false);
      }else{
        document.form1.j39_idbql.value = ''; 
      }
@@ -96,10 +96,10 @@ function js_mostratesinter1(chave1,chave2){
 }
 function js_pesquisaj69_idbql(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_lote','func_lote.php?funcao_js=parent.js_mostralote1|j34_idbql|j34_setor','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lote','func_lote.php?funcao_js=parent.js_mostralote1|j34_idbql|j34_setor','Pesquisa',true);
   }else{
      if(document.form1.j69_idbql.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_lote','func_lote.php?pesquisa_chave='+document.form1.j69_idbql.value+'&funcao_js=parent.js_mostralote','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lote','func_lote.php?pesquisa_chave='+document.form1.j69_idbql.value+'&funcao_js=parent.js_mostralote','Pesquisa',false);
      }else{
        document.form1.j34_setor.value = ''; 
      }
@@ -118,7 +118,7 @@ function js_mostralote1(chave1,chave2){
   db_iframe_lote.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tesinterlote','func_tesinterlote.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tesinterlote','func_tesinterlote.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tesinterlote.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_pcorcam_classe.php");
-include("classes/db_pcorcamitem_classe.php");
-include("classes/db_pcorcamitemproc_classe.php");
-include("classes/db_pcorcamforne_classe.php");
-include("classes/db_pcorcamval_classe.php");
-include("classes/db_pcorcamjulg_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_pcorcam_classe.php"));
+include(modification("classes/db_pcorcamitem_classe.php"));
+include(modification("classes/db_pcorcamitemproc_classe.php"));
+include(modification("classes/db_pcorcamforne_classe.php"));
+include(modification("classes/db_pcorcamval_classe.php"));
+include(modification("classes/db_pcorcamjulg_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -74,28 +74,37 @@ if(isset($alterar) || isset($incluir)){
   if(isset($dataval) && trim($dataval)!=""){
     $arrdat = split("#",$dataval);
   }
+  if(isset($valoresbdi) && trim($valoresbdi)!=""){
+    $arrbdi = split("bdi_",$valoresbdi);
+  }
+  if(isset($valoresencargos) && trim($valoresencargos)!=""){
+    $arrencargos = split("encargossociais_",$valoresencargos);
+  }
+  if (isset($taxasestimadas) && trim($taxasestimadas)!="") {
+    $arrtaxasestimadas = split("taxaestimada_", $taxasestimadas);
+  }
 
-  
+
   if(sizeof($arrval)>0 && $sqlerro == false){
-  	
+
   	if($sqlerro==false){
   		
-  	  $validadorc = $pc21_validadorc_ano."-".$pc21_validadorc_mes."-".$pc21_validadorc_dia;		
-	  $prazoent   = $pc21_prazoent_ano."-".$pc21_prazoent_mes."-".$pc21_prazoent_dia ;
-		
-	  if ($prazoent=="--" || trim($prazoent)==""){
-  		$prazoent=null;
-	  }
-	  
-	  if ($validadorc=="--" || trim($validadorc)==""){
-	  	$validadorc=null;
-	  }
+      $validadorc = $pc21_validadorc_ano."-".$pc21_validadorc_mes."-".$pc21_validadorc_dia;		
+      $prazoent   = $pc21_prazoent_ano."-".$pc21_prazoent_mes."-".$pc21_prazoent_dia ;
 
-	  $clpcorcamforne->pc21_validadorc = $validadorc;
-	  $clpcorcamforne->pc21_prazoent   = $prazoent;
-  	  $clpcorcamforne->pc21_orcamforne = $pc21_orcamforne;
-  	  $clpcorcamforne->alterar($pc21_orcamforne);
-  		
+      if ($prazoent=="--" || trim($prazoent)==""){
+       $prazoent=null;
+      }
+
+      if ($validadorc=="--" || trim($validadorc)==""){
+        $validadorc=null;
+      }
+
+      $clpcorcamforne->pc21_validadorc = $validadorc;
+      $clpcorcamforne->pc21_prazoent   = $prazoent;
+      $clpcorcamforne->pc21_orcamforne = $pc21_orcamforne;
+      $clpcorcamforne->alterar($pc21_orcamforne);
+
   	  if($clpcorcamforne->erro_status==0){
   		$sqlerro=true;
   	    $erro_msg=$clpcorcamforne->erro_msg;
@@ -105,12 +114,15 @@ if(isset($alterar) || isset($incluir)){
     db_inicio_transacao();
     
     for($i=1;$i<sizeof($arrval);$i++){
-    	
-      $codvalun = split("_",$arrvalun[$i]);
-      $codval   = split("_",$arrval[$i]);
-      $codqtd   = split("_",$arrqtd[$i]);
-      $desmrk   = split("_",$arrmrk[$i]);
-      
+
+      $codvalun     = split("_", $arrvalun[$i]);
+      $codval       = split("_", $arrval[$i]);
+      $codqtd       = split("_", $arrqtd[$i]);
+      $desmrk       = split("_", $arrmrk[$i]);
+      $bdi          = split("_", $arrbdi[$i]);
+      $encargos     = split("_", $arrencargos[$i]);
+      $taxaestimada = split("_", $arrtaxasestimadas[$i]);
+
       if (trim(@$arrdat[$i])!=""){
         $validmin = $arrdat[$i];
       } else {
@@ -134,89 +146,98 @@ if(isset($alterar) || isset($incluir)){
       $valorunit  = $codvalun[1];
       
       if(isset($alterar) && $sqlerro==false){
-	    $clpcorcamval->excluir($pc21_orcamforne,$orcamitem);
-		
-		if($clpcorcamval->erro_status==0){
-	  	  $erro_msg = $clpcorcamval->erro_msg;
-	  	  $sqlerro=true;
-	  	  unset($incluir);
-	    }else{
-	      $incluir="incluir";
-	    }
+        $clpcorcamval->excluir($pc21_orcamforne,$orcamitem);
+		  
+        if($clpcorcamval->erro_status==0){
+
+          $erro_msg = $clpcorcamval->erro_msg;
+          $sqlerro=true;
+          unset($incluir);
+        } else {
+          $incluir="incluir";
+        }
 	    
       }
       if(isset($incluir) && $sqlerro==false && $orcamval!=0 ) {
 
-		$pc23_valor = $orcamval;
-		
-		$clpcorcamval->pc23_orcamforne = $pc21_orcamforne;
-		$clpcorcamval->pc23_orcamitem  = $orcamitem;
-		$clpcorcamval->pc23_valor      = $orcamval;
-		$clpcorcamval->pc23_quant      = $orcamqtd;
-		$clpcorcamval->pc23_obs        = $orcammrk;
+        $pc23_valor = $orcamval;
 
-		if (isset($validmin) && trim(@$validmin)!="" && $validmin != null){
-		  $arr_d	= split("-",$validmin);		
-		  $validmin = $arr_d[2]."-".$arr_d[1]."-".$arr_d[0];
-		}else{
-		  $validmin = "null";
-	    }	
+        $clpcorcamval->pc23_orcamforne        = $pc21_orcamforne;
+        $clpcorcamval->pc23_orcamitem         = $orcamitem;
+        $clpcorcamval->pc23_valor             = $orcamval;
+        $clpcorcamval->pc23_quant             = $orcamqtd;
+        $clpcorcamval->pc23_obs               = $orcammrk;
+        $clpcorcamval->pc23_bdi               = isset($bdi[1]) ? $bdi[1] : null;
+        $clpcorcamval->pc23_encargossociais   = isset($encargos[1]) ? $encargos[1] : null;
+        $clpcorcamval->pc23_taxaestimada      = isset($taxaestimada[1]) ? $taxaestimada[1] : null;
 
-		$clpcorcamval->pc23_validmin  = $validmin; 
-		$clpcorcamval->pc23_vlrun     = $valorunit;
-		$clpcorcamval->incluir($pc21_orcamforne,$orcamitem);
-		
-		$erro_msg = $clpcorcamval->erro_msg;
+        if (isset($validmin) && trim(@$validmin)!="" && $validmin != null){
+          $arr_d	= split("-",$validmin);		
+          $validmin = $arr_d[2]."-".$arr_d[1]."-".$arr_d[0];
+        } else {
+          $validmin = "null";
+        }	
 
-		if($clpcorcamval->erro_status==0){
-		  $sqlerro=true;
-		  break;
-		}
-		
+        $clpcorcamval->pc23_validmin  = $validmin; 
+        $clpcorcamval->pc23_vlrun     = $valorunit;
+        $clpcorcamval->incluir($pc21_orcamforne,$orcamitem);
+
+        $erro_msg = $clpcorcamval->erro_msg;
+
+        if($clpcorcamval->erro_status==0){
+          $sqlerro=true;
+          break;
+        }
+  		
       }
       
       if($sqlerro == false){
-		$clpcorcamjulg->excluir($orcamitem);
+		    $clpcorcamjulg->excluir($orcamitem);
 		
-		if($clpcorcamjulg->erro_status==0){
-		  $erro_msg = $clpcorcamjulg->erro_msg;
-		  $sqlerro=true;
-		}
+        if($clpcorcamjulg->erro_status==0){
+          $erro_msg = $clpcorcamjulg->erro_msg;
+          $sqlerro=true;
+        }
 
-    /**
-     * @todo passar para Classes
-     * Aqui Começa o Julgamento por item
-     */
-		$result_itemfornec  = $clpcorcamval->sql_record($clpcorcamval->sql_query_file(null,null,"pc23_orcamforne,pc23_orcamitem,pc23_valor,pc23_quant","pc23_valor"," pc23_orcamitem=$orcamitem and pc23_valor<>0 and trim(pc23_valor::text) <> ''"));
-		$numrows_itemfornec = $clpcorcamval->numrows;
+        /**
+        * @todo passar para Classes
+        * Aqui Começa o Julgamento por item
+        */
+        $result_itemfornec  = $clpcorcamval->sql_record($clpcorcamval->sql_query_file(null,null,"pc23_orcamforne,pc23_orcamitem,pc23_valor,pc23_quant","pc23_valor"," pc23_orcamitem=$orcamitem and pc23_valor<>0 and trim(pc23_valor::text) <> ''"));
+        $numrows_itemfornec = $clpcorcamval->numrows;
 		
-		if(isset($sol) && $sol=="true"){
-		  $result_lancitem = $clpcorcamitem->sql_record($clpcorcamitem->sql_query_pcmatersol($orcamitem,"pc11_quant"));	
-		}else if(isset($sol) && $sol=="false"){
-		  $result_lancitem = $clpcorcamitem->sql_record($clpcorcamitem->sql_query_pcmaterproc($orcamitem,"pc11_quant"));
-		}
-		
-		db_fieldsmemory($result_lancitem,0);      
-		$pontuacao = 1;
+        if(isset($sol) && $sol=="true"){
+
+          $result_lancitem = $clpcorcamitem->sql_record($clpcorcamitem->sql_query_pcmatersol($orcamitem,"pc11_quant"));	
+        } elseif(isset($sol) && $sol=="false"){
+
+          $result_lancitem = $clpcorcamitem->sql_record($clpcorcamitem->sql_query_pcmaterproc($orcamitem,"pc11_quant"));
+        }
+
+        db_fieldsmemory($result_lancitem,0);      
+        $pontuacao = 1;
 	
-		for ($ii = 0; $ii < $numrows_itemfornec; $ii++) {
-		
-		  db_fieldsmemory($result_itemfornec, $ii);
-		  if ($pc11_quant==$pc23_quant && $pc23_valor!=0) {
+    		for ($ii = 0; $ii < $numrows_itemfornec; $ii++) {
 
-		    $clpcorcamjulg->pc24_orcamitem  = $pc23_orcamitem;
-		    $clpcorcamjulg->pc24_orcamforne = $pc23_orcamforne;
-		    $clpcorcamjulg->pc24_pontuacao  = $pontuacao;
-		    $clpcorcamjulg->incluir($pc23_orcamitem,$pc23_orcamforne);
-		    if ($clpcorcamjulg->erro_status == 0) {
+          db_fieldsmemory($result_itemfornec, $ii);
 
-		      $erro_msg = $clpcorcamjulg->erro_msg;
-		      $sqlerro=true;
-		      break;
-		    }
-		    $pontuacao++;
-		  }
-		}
+          if ($pc11_quant==$pc23_quant && $pc23_valor!=0) {
+
+            $clpcorcamjulg->pc24_orcamitem  = $pc23_orcamitem;
+            $clpcorcamjulg->pc24_orcamforne = $pc23_orcamforne;
+            $clpcorcamjulg->pc24_pontuacao  = $pontuacao;
+            $clpcorcamjulg->incluir($pc23_orcamitem,$pc23_orcamforne);
+
+            if ($clpcorcamjulg->erro_status == 0) {
+
+              $erro_msg = $clpcorcamjulg->erro_msg;
+              $sqlerro=true;
+              break;
+            }
+
+            $pontuacao++;
+          }
+    		}
       }
     }
 
@@ -260,7 +281,7 @@ if(isset($alterar) || isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcamlancval.php");
+	include(modification("forms/db_frmorcamlancval.php"));
 	?>
     </center>
     </td>

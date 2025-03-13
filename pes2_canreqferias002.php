@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf2.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf2.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -39,7 +39,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_POST_VARS,2);exit;
 
 $sqlpref = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 db_fieldsmemory($resultpref,0);
 
 $xwhere = '';
@@ -83,7 +83,7 @@ order by r70_estrut, z01_nome ;
        ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result); exit;
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){

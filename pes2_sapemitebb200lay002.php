@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_layouttxt.php");
-include("classes/db_folha_classe.php");
-include("classes/db_rharqbanco_classe.php");
-include("classes/db_orctiporec_classe.php");
-
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_layouttxt.php"));
+include(modification("classes/db_folha_classe.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($HTTP_POST_VARS);
 
+$rh34_where    = ''; 
 $clfolha       = new cl_folha;
 $clrharqbanco  = new cl_rharqbanco;
 $clorctiporec  = new cl_orctiporec;
@@ -99,7 +99,10 @@ if($sqlerro == false){
     }
     $rh34_where .= " rh25_recurso = ".$rh41_codigo;
   }
-
+  if (!empty($rh34_where)) {
+    $rh34_where .= ' and ';
+  }
+  $rh34_where .= " r38_liq > 0";
   if($sqlerro == false){
     $sql = $clfolha->sql_query_gerarq(null,"folha.*,cgm.*,
                                             length(trim(z01_cgccpf)) as tam,
@@ -115,6 +118,7 @@ if($sqlerro == false){
                                            "",
                                            " $rh34_where order by rh25_recurso,r38_nome");
 
+    
     $result  =  $clfolha->sql_record($sql);
     $numrows =  $clfolha->numrows;
 
@@ -154,7 +158,7 @@ if($sqlerro == false){
 
         if($entrar == true){
           $db_layouttxt = new db_layouttxt(7,$nomearquivotxt);
-          db_setaPropriedadesLayoutTxt(&$db_layouttxt,1);
+          db_setaPropriedadesLayoutTxt($db_layouttxt,1);
 	}
 
         if($entrar == true || $pdf->gety() > $pdf->h - 30){
@@ -226,7 +230,7 @@ if($sqlerro == false){
         $agenciafunc   = substr($r38_agenc,0,(strlen($r38_agenc) - 1));
 	$rh01_regist   = $r38_regist;
 
-        db_setaPropriedadesLayoutTxt(&$db_layouttxt,3);
+        db_setaPropriedadesLayoutTxt($db_layouttxt,3);
       }
 
       $sequencialbb120 ++;
@@ -244,7 +248,7 @@ if($sqlerro == false){
       $pdf->cell(20,$alt,db_formatar($totalvalor,"f"),"TB",0,"C",1);
       $pdf->cell(50,$alt,"","RTB",1,"C",1);
 
-      db_setaPropriedadesLayoutTxt(&$db_layouttxt,5);
+      db_setaPropriedadesLayoutTxt($db_layouttxt,5);
 
       //////////////////////////////////
       $pdf->Output($nomearquivopdf,false,true);

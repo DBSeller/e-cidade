@@ -1,34 +1,34 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-
+require_once(modification("libs/db_conecta.php"));
 db_app::import('pessoal.CalculoFolhaRescisao');
 db_app::import('pessoal.CalculoFolhaSalario');
-db_app::import('pessoal.Servidor');  
-db_app::import('pessoal.Rubrica');  
+db_app::import('pessoal.Servidor');
+db_app::import('pessoal.Rubrica');
 db_app::import('CgmFactory');
 db_app::import('DBDate');
 db_app::import('exceptions.*');
@@ -36,7 +36,7 @@ db_app::import('exceptions.*');
 define('RESULTADO_POR_MATRICULA', 'm');
 define('SELECAO_DE_MATRICULAS',   's');
 define('INTERVALO_DE_MATRICULAS', 'i');
-                               
+
 $oPost                         = db_utils::postMemory($_POST);
 $oDaoRescisao                  = db_utils::getDao('rescisao');
 $oDaoRhdepend                  = db_utils::getDao('rhdepend');
@@ -63,7 +63,7 @@ $iMesFolha      = $oPost->mesfolha;
 
 /**
  * Usa homolognet
- */ 
+ */
 if ( !empty($oPost->homolognet) ) {
   $lHomolognet = true;
 }
@@ -81,8 +81,8 @@ if ( !empty($oPost->selregist) ) {
 
 /**
  * CNAE
- * Procura o codigo da atividade economica 
- */   
+ * Procura o codigo da atividade economica
+ */
 $sSqlCodigoAtividade = $oDaoCfpess->sql_query_file($iAnoFolha, $iMesFolha, $iInstituicao, 'r11_codaec');
 $rsCodigoAtividade   = $oDaoCfpess->sql_record($sSqlCodigoAtividade);
 
@@ -94,11 +94,11 @@ $iCodigoAtividade = db_utils::fieldsMemory($rsCodigoAtividade, 0)->r11_codaec;
 
 /**
  * StdClass com todas as informacoes da instituicao
- */   
-$oInstituicao = $oDaoDBConfig->getParametrosInstituicao($iInstituicao); 
+ */
+$oInstituicao = $oDaoDBConfig->getParametrosInstituicao($iInstituicao);
 
 /**
- * StdClass com as informacoes da instituicao usadas no relatorio 
+ * StdClass com as informacoes da instituicao usadas no relatorio
  */
 $oDadosInstituicao             = new StdClass();
 $oDadosInstituicao->logo       = $oInstituicao->logo;
@@ -115,36 +115,42 @@ $oDadosInstituicao->iCnae      = $iCodigoAtividade;
 
 /**
  * Monta array com os filtros de pesquisa para pesquisar na tabela de calculo de rescisao
- */   
+ */
 if ( $sTipoResultado == RESULTADO_POR_MATRICULA ) {
 
   if ( $sTipoFiltro == SELECAO_DE_MATRICULAS ) {
 
     $sMatriculas = implode("','", $aMatriculas);
     $aWhere[]    = "rh01_regist in ('{$sMatriculas}')";
-  } 
+  }
 
   if ( $sTipoFiltro == INTERVALO_DE_MATRICULAS ) {
 
     /**
      * Primeira matricula
-     */   
+     */
     if ( !empty($oPost->registro1) ) {
       $aWhere[] = 'rh01_regist >= ' . $oPost->registro1;
     }
 
     /**
      * Ultima matricula
-     */   
+     */
     if ( !empty($oPost->registro2) ) {
       $aWhere[] = 'rh01_regist <= ' . $oPost->registro2;
     }
   }
-} 
+}
 
 $aWhere[] = 'gerfres.r20_anousu = ' . $iAnoFolha;
 $aWhere[] = 'gerfres.r20_mesusu = ' . $iMesFolha;
 $aWhere[] = 'gerfres.r20_instit = ' . $iInstituicao;
+
+if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+    $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+    $aWhere[] = " rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+}
+
 $sWhere   = implode(' and ', $aWhere);
 
 $sSqlRescisao    = $oDaoRescisao->sql_query_termoRescisao($iInstituicao, $sWhere);
@@ -159,7 +165,7 @@ $oPdf = new scpdf();
 $oPdf->Open();
 
 for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
-                  
+
   $aAnexos = array();
   $sNomeMae             = "";
   $nRemuneracaoAnterior = "";
@@ -168,7 +174,7 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
 
   /**
    * Busca mes anterior a rescisao
-   */   
+   */
   $tPeriodoAnterior  = strtotime('-1 month', strtotime($oDadosServidor->rh05_recis));
   $iMesFolhaAnterior = date('m', $tPeriodoAnterior);
   $iAnoFolhaAnterior = date('Y', $tPeriodoAnterior);
@@ -177,7 +183,7 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
    * ---------------------------------------------
    * Inicio das movimentções
    */
-  
+
   $oServidor             = new Servidor($oDadosServidor->rh01_regist,$oPost->anofolha,$oPost->mesfolha);
   $oCalculoFolhaRescisao = new CalculoFolhaRescisao($oServidor);
 
@@ -197,7 +203,7 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
   }
 
   /**
-   * Nao encontrou remuneracao para o mes anterior a rescisao entao buscar base, rubrica R992  
+   * Nao encontrou remuneracao para o mes anterior a rescisao entao buscar base, rubrica R992
    */
   if ( $nRemuneracaoAnterior == 0 ) {
 
@@ -208,7 +214,7 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
   }
 
   $nRemuneracaoAnterior = trim(db_formatar($nRemuneracaoAnterior, 'f'));
-  
+
   $oDocumentos = $oServidor->getDocumentos();
   $oCgm        = $oServidor->getCGM();
 
@@ -216,8 +222,8 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
   $aRubricas = array();
 
   $oGrupoPadrao               = new StdClass;
-  $oGrupoPadrao->sDescricao   = "Outras Verbas Devidas"; 
-  $oGrupoPadrao->iCodigoGrupo = "00"; 
+  $oGrupoPadrao->sDescricao   = "Outras Verbas Devidas";
+  $oGrupoPadrao->iCodigoGrupo = "00";
   $oGrupoPadrao->iTipoGrupo   = Rubrica::TIPO_PROVENTO;
   $oGrupoPadrao->nValor       = 0;
   $oGrupoPadrao->aRubricas    = array();
@@ -231,12 +237,12 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
   $dFeriaVencidaFinal  = '';
   $aFeriasVencidas = array();
 
-  $sCamposRhpesrescisao = 'rh05_codigoseguranca, rh05_trct, rh05_feriasavos, rh05_feriasvencidas, rh05_13salarioavos'; 
+  $sCamposRhpesrescisao = 'rh05_codigoseguranca, rh05_trct, rh05_feriasavos, rh05_feriasvencidas, rh05_13salarioavos';
   $sSqlRhpesrescisao    = $oDaoRhpesrescisao->sql_query_file($oDadosServidor->rh02_seqpes, $sCamposRhpesrescisao);
   $rsRhpesrescisao      = $oDaoRhpesrescisao->sql_record($sSqlRhpesrescisao);
 
   /**
-   * Informacoes da rescisao, tabela rhpesresciao 
+   * Informacoes da rescisao, tabela rhpesresciao
    */
   if ( $oDaoRhpesrescisao->numrows > 0 ) {
 
@@ -251,7 +257,7 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
      * Servidor com ferias vencidas - Busca periodo de ferias vencidas
      */
     if ( $iFeriasVencidas > 0 ) {
-    
+
       $sCamposCadferia = "r30_perai, r30_peraf, r30_faltas";
       $sOrderCadferia  = "r30_perai desc, r30_peraf desc";
       $sWhereCadferia  = "r30_regist = {$oDadosServidor->rh01_regist} and r30_anousu = {$iAnoFolha} and r30_mesusu = {$iMesFolha}";
@@ -261,8 +267,8 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
       if ( $oDaoCadferia->numrows > 0 ) {
 
         $oCadferia = db_utils::fieldsMemory($rsCadferia, 0);
-        $dFeriaVencidaInicio = date('d/m/Y', strtotime($oCadferia->r30_peraf));                        
-        $dFeriaVencidaFinal  = date('d/m/Y', strtotime('+1 year', strtotime($oCadferia->r30_peraf)));  
+        $dFeriaVencidaInicio = date('d/m/Y', strtotime($oCadferia->r30_peraf));
+        $dFeriaVencidaFinal  = date('d/m/Y', strtotime('+1 year', strtotime($oCadferia->r30_peraf)));
       }
     }
 
@@ -274,15 +280,15 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
 
     /**
      *  Caso não encontre grupo passa para o proximo registro
-     */ 
+     */
     if ( empty($oDadosGrupo) ) {
 
-      $oGrupoPadrao->aRubricas[] = $oDadosMovimentacao;     
+      $oGrupoPadrao->aRubricas[] = $oDadosMovimentacao;
       continue;
-    }  
+    }
 
     /**
-     * Reescreve descricao de alguns grupos 
+     * Reescreve descricao de alguns grupos
      */
     switch( $oDadosGrupo->rh113_codigo ) {
 
@@ -292,7 +298,7 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
        *
        * 'Saldo líquido de xx/dias Salário (líquido de xx/faltas e DSR)';
        * Calcular nº dias trabalhados no mes, faltas e afastamentos
-       */   
+       */
       case '50' :
 
         $iDiasTrabalhadosMesRescisao = date('d', strtotime($oDadosServidor->rh05_recis));
@@ -304,7 +310,7 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
        *
        * 'Adic. Insal xx%'
        * Na coluna valor, informar o valor referente ao adicional de insalubridade devido no mes do afastamento  do trabalhador
-       */   
+       */
       case '53' :
 
       /**
@@ -312,38 +318,38 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
        *
        * 'Adic. Periculosidade xx%'
        * Na coluna valor, informar o valor referente ao adicional de pericuosidade devido no mes do afastamento do trabalhador
-       */   
+       */
       case '54' :
-        
+
       /**
        * Busca descricao da rubrica
        *
        * 'Adic. noturno Horas a 5%'
        * Informar o total de horas noturnas trabalhadas no mês e o percentual incidetne sobre estas horas noturnas.
-       * na coluna valor, informar o vlaor referente total de horas extras trabalhadas no mês do afastamento do trabalhador. 
-       */   
+       * na coluna valor, informar o vlaor referente total de horas extras trabalhadas no mês do afastamento do trabalhador.
+       */
       case '55' :
         $sDescricao = $oDadosMovimentacao->oRubrica->getDescricao();
       break;
 
       /**
-       * Na coluna valor, informar o valor referente ao decimo terceiro salario proporcional devido no mes do afastamento do trabalhador. 
-       */   
+       * Na coluna valor, informar o valor referente ao decimo terceiro salario proporcional devido no mes do afastamento do trabalhador.
+       */
       case '63' :
         $sDescricao = '13º Salário Proporcional '. $i13SalarioAvos .'/12 avos';
       break;
-        
+
       /**
        * Na coluna valor, informar o valor referente a ferias proporcionais devidas ao trabalhador.
-       */   
+       */
       case '65' :
         $sDescricao = 'Férias proporcionais '. $iFeriasAvos .'/12 avos';
       break;
 
       /**
-       * Informar o periodo aquisitivo a que se refere as ferias vencidas, no formato dd/mm/aaaa. caso exista mais de um exercicio devido, 
+       * Informar o periodo aquisitivo a que se refere as ferias vencidas, no formato dd/mm/aaaa. caso exista mais de um exercicio devido,
        * poderao ser criados os subitens 66.2, 66.3... na coluna valor, informar o valor devido ao trabalhador
-       */   
+       */
       case '66.1' :
         $sDescricao = 'Férias vencidas Per. Aquis. '. $dFeriaVencidaInicio .' a '. $dFeriaVencidaFinal;
       break;
@@ -355,9 +361,9 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
     }
 
     $oStdGrupo               = new StdClass;
-    $oStdGrupo->sDescricao   = $oDadosGrupo->rh113_codigo . ' - ' .$sDescricao; 
-    $oStdGrupo->iCodigoGrupo = $oDadosGrupo->rh113_codigo; 
-    $oStdGrupo->iTipoGrupo   = $oDadosGrupo->rh113_tipo; 
+    $oStdGrupo->sDescricao   = $oDadosGrupo->rh113_codigo . ' - ' .$sDescricao;
+    $oStdGrupo->iCodigoGrupo = $oDadosGrupo->rh113_codigo;
+    $oStdGrupo->iTipoGrupo   = $oDadosGrupo->rh113_tipo;
     $oStdGrupo->nValor       = 0;
     $oStdGrupo->aRubricas    = array();
 
@@ -368,8 +374,8 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
   unset($oDadosGrupo);
 
   /**
-   * Percorrendo os grupos encontrados e soma o valor das rubricas e colocando as rubricas em cada grupo 
-   */   
+   * Percorrendo os grupos encontrados e soma o valor das rubricas e colocando as rubricas em cada grupo
+   */
   foreach ( $aGrupos as $iCodigoGrupo => $oDadosGrupo ) {
 
     foreach ( $aRubricas[$iCodigoGrupo] as $oDadosMovimentacao) {
@@ -393,7 +399,7 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
       $oGrupoPadrao->nValor -= $oDadosMovimentacao->nValor;
     } elseif ( $oDadosMovimentacao->oRubrica->getTipo() == Rubrica::TIPO_PROVENTO) {
       $oGrupoPadrao->nValor += $oDadosMovimentacao->nValor;
-    } 
+    }
   }
 
   /**
@@ -404,10 +410,10 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
   }
 
   /**
-   * Fim das movimentções  
+   * Fim das movimentções
    * ---------------------------------------------
    */
-  
+
   $oServidorRelatorio->sNomeMae             = $oCgm->getNomeMae();
   $oServidorRelatorio->sNome                = $oCgm->getNome();
   $oServidorRelatorio->sPis                 = $oDocumentos->sPIS;
@@ -421,11 +427,11 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
   $oServidorRelatorio->dNascimento          = date('d/m/Y', strtotime($oDadosServidor->rh01_nasc));
   $oServidorRelatorio->dAdmissao            = date('d/m/Y', strtotime($oDadosServidor->rh01_admiss));
   $oServidorRelatorio->dRescisao            = date('d/m/Y', strtotime($oDadosServidor->rh05_recis));
-  $oServidorRelatorio->dAvisoPrevio         = $oDadosServidor->rh05_aviso; 
+  $oServidorRelatorio->dAvisoPrevio         = $oDadosServidor->rh05_aviso;
   $oServidorRelatorio->sTipoContrato        = $oDadosServidor->h13_descr;
   $oServidorRelatorio->sCausaRescisao       = $oDadosServidor->rh115_descricao;
   $oServidorRelatorio->sCodigoAfastamento   = $oDadosServidor->rh115_sigla;
-  $oServidorRelatorio->sCategoria           = $oDadosServidor->rh52_descr; 
+  $oServidorRelatorio->sCategoria           = $oDadosServidor->rh52_descr;
   $oServidorRelatorio->iRegime              = $oDadosServidor->rh30_regime;
   $oServidorRelatorio->iProjetosAtividades  = $oDadosServidor->o55_projativ;
   $oServidorRelatorio->sProjetosAtividades  = $oDadosServidor->o55_descr;
@@ -433,29 +439,29 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
   $oServidorRelatorio->nRemuneracaoAnterior = $nRemuneracaoAnterior;
 
   /**
-   * Titulo do anexo I 
+   * Titulo do anexo I
    */
   $oServidorRelatorio->sTituloRelatorio = 'TERMO DE RESCISÃO DO CONTRATO DE TRABALHO';
 
   /**
-   * Titulo do anexo para estatutario 
+   * Titulo do anexo para estatutario
    */
   if ( $oDadosServidor->rh30_regime == 1 ) {
     $oServidorRelatorio->sTituloRelatorio = 'TERMO DE EXONERAÇÃO';
   }
 
   /**
-   * Data de aviso previo 
+   * Data de aviso previo
    * Caso campo rh05_aviso estiver vazio, pega data da rescisao
    */
   if ( !empty($oDadosServidor->rh05_aviso) ) {
-    $oServidorRelatorio->dAvisoPrevio = date('d/m/Y', strtotime($oDadosServidor->rh05_aviso)); 
+    $oServidorRelatorio->dAvisoPrevio = date('d/m/Y', strtotime($oDadosServidor->rh05_aviso));
   } else {
-    $oServidorRelatorio->dAvisoPrevio = date('d/m/Y', strtotime($oDadosServidor->rh05_recis)); 
+    $oServidorRelatorio->dAvisoPrevio = date('d/m/Y', strtotime($oDadosServidor->rh05_recis));
   }
 
   /**
-   * Se servidor nao possuir sindicato informar valores padrao 
+   * Se servidor nao possuir sindicato informar valores padrao
    */
   $oServidorRelatorio->sCodigoSindical = '999.000.000.00000-3';
   $oServidorRelatorio->sCnpjSindical   = '37.115.367/0035-00';
@@ -484,8 +490,8 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
    */
   $oDadosRelatorio = new stdClass();
   $oDadosRelatorio->oDadosServidor    = $oServidorRelatorio;
-  $oDadosRelatorio->oDadosInstituicao = $oDadosInstituicao; 
-  $oDadosRelatorio->aGruposRubricas   = $aGrupos; 
+  $oDadosRelatorio->oDadosInstituicao = $oDadosInstituicao;
+  $oDadosRelatorio->aGruposRubricas   = $aGrupos;
 
   $oImpCarne = new db_impcarne($oPdf, $iTipoRelatorio);
   $oImpCarne->oDadosRelatorio = $oDadosRelatorio;
@@ -495,40 +501,40 @@ for ( $iIndice = 0; $iIndice < $iTotalRescisoes; $iIndice++ ) {
    * Não é estatutário - inclui anexos
    * Regime:
    * 1 - Estatutário
-   * 2 - CLT 
+   * 2 - CLT
    * 3 - Extra quadro
-   */   
+   */
   if ( $oDadosServidor->rh30_regime != 1 ) {
-  
+
     /**
      * Nao usa homolognet
-     */   
+     */
     if ( !$lHomolognet ) {
 
       /**
        * Calcula numero de dias entre data de admissao e de rescisao
        */
       $iDias = strtotime($oDadosServidor->rh05_recis) - strtotime($oDadosServidor->rh01_admiss);
-      $iDias = (int) floor( $iDias / (60 * 60 * 24)); 
+      $iDias = (int) floor( $iDias / (60 * 60 * 24));
 
       /**
        * Menos de um ano
-       */   
+       */
       if ( $iDias < 365 ) {
         $aAnexos = array(5, 6);
       } else {
         $aAnexos = array(5, 7);
-      } 
+      }
 
     } else {
-      $aAnexos = array(2, 3, 4, 5);  
+      $aAnexos = array(2, 3, 4, 5);
     }
 
     /**
      * Inclui anexos de acordo com tempo de contrato e se usa homolognet
-     */   
+     */
     foreach ( $aAnexos as $iAnexo ) {
-      include 'fpdf151/impmodelos/mod_imprime80_' . $iAnexo . '.php';
+      include modification("fpdf151/impmodelos/mod_imprime80_") . $iAnexo . '.php';
     }
   }
 
@@ -540,20 +546,20 @@ class PDFHelper {
 
   /**
    * Cores
-   */   
+   */
   const PDF_BRANCO = 245;
   const PDF_CINZA  = 200;
 
   /**
    * Fontes
-   */   
+   */
   const FONTE_TITULO        = 9;
   const FONTE_TITULO_COLUNA = 8;
   const FONTE_TEXTO         = 10;
 
   /**
    * Alturas
-   */   
+   */
   const ALTURA_LINHA                    = 8;
   const ALTURA_LINHA_VERBAS_RESCISORIAS = 7.5;
   const ALTURA_LINHA_TITULOS            = 3.5;
@@ -561,19 +567,19 @@ class PDFHelper {
 
   /**
    * Largura maxima do documento sem contar as margins
-   */   
+   */
   const LARGURA_MAXIMA = 180;
 
   /**
    * Margins
-   */   
+   */
   const MARGIN_LEFT  = 15;
   const MARGIN_RIGHT = 15;
   const MARGIN_TOP   = 10;
 
   /**
    * Margin top
-   * 
+   *
    * @var float
    * @access public
    */
@@ -581,20 +587,20 @@ class PDFHelper {
 
   /**
    * Percentual do espacamento da esquerda
-   */   
+   */
   public $nPercentualMarginLeft = 0;
 
   public static $nTotalLiquido = 0;
 
   /**
    * Objeto pdf db_impcarne
-   */   
+   */
   public $oPdf;
 
   /**
-   * __construct 
-   * 
-   * @param FPDF $oPdf 
+   * __construct
+   *
+   * @param FPDF $oPdf
    * @access public
    * @return void
    */
@@ -603,11 +609,11 @@ class PDFHelper {
   }
 
   /**
-   * Adciona uma coluna 
-   * 
+   * Adciona uma coluna
+   *
    * @param string $sTitulo - texto do titulo
    * @param string $sValor  - texto da coluna
-   * @param float $nPercentualLargura - percentual da largura da coluna 
+   * @param float $nPercentualLargura - percentual da largura da coluna
    * @param float $nAltura  - altura da coluna em mm
    * @access public
    * @return void
@@ -616,30 +622,30 @@ class PDFHelper {
 
     /**
      * Escreve retangulo
-     */   
+     */
     $this->oPdf->rect( $this->marginLeft(), $this->marginTop(), $this->larguraColuna($nPercentualLargura), $this->alturaColuna($nAltura) );
 
     /**
      * Escreve titulo da coluna
-     */   
+     */
     $this->oPdf->Setfont('Arial', '', PDFHelper::FONTE_TITULO_COLUNA);
     $this->oPdf->text( $this->marginLeft('t'), $this->marginTop('h'), $sTitulo );
 
     /**
      * Escreve texto da coluna
-     */   
+     */
     $this->oPdf->Setfont('Arial', '', PDFHelper::FONTE_TEXTO);
     $this->oPdf->text( $this->marginLeft('t'), $this->marginTop('t'), $sValor );
 
     /**
      * Soma a percentual da largura do campo ao percentual da margin left para escrever o proxima coluna do lado
-     */   
+     */
     $this->nPercentualMarginLeft += $nPercentualLargura;
   }
 
   /**
-   * Escreve uma celula 
-   * 
+   * Escreve uma celula
+   *
    * @param string $sConteudo - Texto da celula
    * @param float $nLargura   - Percentual da largura da celula
    * @param float $nAltura    - Altura da coluna em mm
@@ -709,8 +715,8 @@ class PDFHelper {
   }
 
   /**
-   * Escre uma linha 
-   * 
+   * Escre uma linha
+   *
    * @param float $nPercentualMarginTop - Percentual da margin top
    * @access public
    * @return void
@@ -720,7 +726,7 @@ class PDFHelper {
     $this->nMarginTop += $nPercentualMarginTop;
     $this->oPdf->setY($this->nMarginTop);
     $this->oPdf->SetLeftMargin(PDFHelper::MARGIN_LEFT);
-    
+
     $this->nPercentualMarginLeft = 0;
   }
 
@@ -729,7 +735,7 @@ class PDFHelper {
     $this->oPdf->AliasNbPages();
     $this->oPdf->AddPage();
     $this->oPdf->setfillcolor(PDFHelper::PDF_CINZA);
-    
+
     $this->oPdf->SetX(PDFHelper::MARGIN_LEFT);
     $this->oPdf->SetY(PDFHelper::MARGIN_TOP);
 
@@ -742,8 +748,8 @@ class PDFHelper {
   }
 
   /**
-   * Escre um titulo 
-   * 
+   * Escre um titulo
+   *
    * @param string $sTitulo - texto do titulo
    *
    * @param int $sBorda
@@ -774,16 +780,16 @@ class PDFHelper {
     $this->oPdf->Setfont('Arial', 'B', $nTamanhoFonte);
     $this->oPdf->setXY($this->marginLeft(), $this->marginTop());
     $this->oPdf->Cell(PDFHelper::LARGURA_MAXIMA, $nAlturaLinha, $sTitulo, $sBorda, 1, $sAlinhamento, $lPreenchimento);
-    
+
     $this->oPdf->Setfont('Arial', '', PDFHelper::FONTE_TEXTO);
     $this->novaLinha($nAlturaLinha);
   }
 
   /**
-   * Margin top, eixo y 
-   * 
+   * Margin top, eixo y
+   *
    * @param string $sTipo
-   * tipo: 
+   * tipo:
    *  r - rect
    *  t - text
    *  h - header/titulo
@@ -793,13 +799,13 @@ class PDFHelper {
    * @return float
    */
   public function marginTop($sTipo = null, $nAltura = 0) {
-    
+
     if ( $nAltura > 0 ) {
 
       $this->nMarginTop += $nAltura;
       $this->oPdf->setY($this->nMarginTop);
-    }          
-    
+    }
+
     if ( $sTipo == 'h' ) {
       return ($this->nMarginTop + 3);
     }
@@ -812,13 +818,13 @@ class PDFHelper {
   }
 
   /**
-   * Espacamento esquerdo 
-   * 
+   * Espacamento esquerdo
+   *
    * @param string $sTipo
-   * tipo: 
+   * tipo:
    *  r - rect
    *  t - text
-   * @param float $nPorcentagem 
+   * @param float $nPorcentagem
    * @access public
    * @return float - margin left em mm
    */
@@ -828,19 +834,19 @@ class PDFHelper {
 
     if ( $this->nPercentualMarginLeft > 0 ) {
       $nPorcentagem = $this->nPercentualMarginLeft;
-    } 
+    }
 
     if ( $nPorcentagem > 0 ) {
-    
+
       $iTotalLinha = PDFHelper::LARGURA_MAXIMA;
       $iColuna     = $nPorcentagem / 100 * $iTotalLinha;
     }
 
     switch ( $sTipo ) {
-    
+
       /**
        * Margin left para texto
-       */   
+       */
       case 't' :
         $iColuna += 0.5;
       break;
@@ -850,15 +856,15 @@ class PDFHelper {
   }
 
   /**
-   * Largura da coluna 
-   * 
-   * @param string $sTipo 
+   * Largura da coluna
+   *
+   * @param string $sTipo
    * @param float $nPorcentagem - Porcentagem que a coluna ocupara na linha
    * @access public
    * @return float
    */
   public function larguraColuna($nPorcentagem = 0) {
-    
+
     $iColuna = 0;
 
     if ( $nPorcentagem > 0 ) {
@@ -873,8 +879,8 @@ class PDFHelper {
   }
 
   /**
-   * Algura da coluna 
-   * 
+   * Algura da coluna
+   *
    * @param float $nAltura - altura da coluna em mm
    * @access public
    * @return float
@@ -893,15 +899,15 @@ class PDFHelper {
 
     foreach ( $aConteudos as $oConteudo ) {
       $aAltura[] = $this->oPdf->NbLines($iLarguraDescricao, $oConteudo->sDescricao) * $iAlturaLinha;
-    }  
+    }
 
     $iAltura = max($aAltura);
     return $iAltura;
   }
 
   /**
-   * Escreve o cabecalho usado para verbas rescisoarias 
-   * 
+   * Escreve o cabecalho usado para verbas rescisoarias
+   *
    * @param integer $iTipoGrupo
    * Tipo de grupo:
    *  1 - Provento
@@ -924,10 +930,10 @@ class PDFHelper {
 
     $this->addCelula($sTitulo, $iPercentualDescricao, PDFHelper::ALTURA_LINHA_TITULOS, false, 0.5);
     $this->addCelula("Valor", $iPercentualValor     , PDFHelper::ALTURA_LINHA_TITULOS, false, 0.5);
-    
+
     $this->addCelula($sTitulo, $iPercentualDescricao, PDFHelper::ALTURA_LINHA_TITULOS, false, 0.5);
     $this->addCelula("Valor", $iPercentualValor     , PDFHelper::ALTURA_LINHA_TITULOS, false, 0.5);
-    
+
     $this->addCelula($sTitulo, $iPercentualDescricao, PDFHelper::ALTURA_LINHA_TITULOS, false, 0.5);
     $this->addCelula("Valor", $iPercentualValor     , PDFHelper::ALTURA_LINHA_TITULOS, false, 0.5);
 
@@ -937,8 +943,8 @@ class PDFHelper {
   }
 
   /**
-   * Escreve as celular das vebas rescisorias para o anexo I 
-   * 
+   * Escreve as celular das vebas rescisorias para o anexo I
+   *
    * @param array $aGrupoRubricas - array com os grupos de rubricas
    * @access public
    * @return void
@@ -950,7 +956,7 @@ class PDFHelper {
     $this->oPdf->SetLeftMargin(PDFHelper::MARGIN_LEFT);
 
     foreach ( $aGrupoRubricas as $oDadosGrupo ) {
-      
+
       $oStdGrupoRubrica             = new StdClass;
       $oStdGrupoRubrica->sDescricao = $oDadosGrupo->sDescricao;
       $oStdGrupoRubrica->nValor     = $oDadosGrupo->nValor;
@@ -966,15 +972,15 @@ class PDFHelper {
 
     $this->addTitulo('VERBAS RESCISÓRIAS', 1, false, 'L');
     $this->escreverCabecalhoVerbasRescisorias(Rubrica::TIPO_PROVENTO);
-    $nTotalProventos = $this->escreverDadosVerbasRescisorias($aProventos, Rubrica::TIPO_PROVENTO); 
-    
+    $nTotalProventos = $this->escreverDadosVerbasRescisorias($aProventos, Rubrica::TIPO_PROVENTO);
+
     $this->addTitulo('DEDUÇÕES', 1, false, 'L');
     $this->escreverCabecalhoVerbasRescisorias(Rubrica::TIPO_DESCONTO);
 
     $nTotalDescontos = $this->escreverDadosVerbasRescisorias($aDescontos, Rubrica::TIPO_DESCONTO);
 
     /**
-     * quando valor total das rubricas do grupo de proventos é negativo  
+     * quando valor total das rubricas do grupo de proventos é negativo
      * atualmente converte numero para positivo para nao somar errado total liquido
      */
     if ( $nTotalDescontos < 0 ) {
@@ -984,23 +990,23 @@ class PDFHelper {
     /**
      * Escreve Totalizador
      */
-    $lPreenchimento = false;  
-    $sConteudo      = trim(db_formatar($nTotalProventos - $nTotalDescontos, 'f'));     
+    $lPreenchimento = false;
+    $sConteudo      = trim(db_formatar($nTotalProventos - $nTotalDescontos, 'f'));
     $sTitulo        = "TOTAL LÍQUIDO";
 
     $this->addCelula("", 22.2222, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);
-    $this->addCelula("", 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);  
+    $this->addCelula("", 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);
 
     $this->addCelula("", 22.2222, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);
-    $this->addCelula("", 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);   
+    $this->addCelula("", 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);
 
-    $lPreenchimento = true;               
+    $lPreenchimento = true;
 
     $this->oPdf->Setfont('Arial', 'B', PDFHelper::FONTE_TITULO);
     $this->addCelula($sTitulo,   22.2222, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento, 2.5);
 
     $this->oPdf->Setfont('Arial', '', PDFHelper::FONTE_TEXTO);
-    $this->addCelula($sConteudo, 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento, 2.5);     
+    $this->addCelula($sConteudo, 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento, 2.5);
 
     $this->novaLinha(PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS);
 
@@ -1008,8 +1014,8 @@ class PDFHelper {
   }
 
   /**
-   * Escreve as celular das vebas rescisorias para o anexo I 
-   * 
+   * Escreve as celular das vebas rescisorias para o anexo I
+   *
    * @param array $aGrupoRubricas - array com os grupos de rubricas
    * @access public
    * @return void
@@ -1021,7 +1027,7 @@ class PDFHelper {
     $this->oPdf->SetLeftMargin(PDFHelper::MARGIN_LEFT);
 
     foreach ( $aGrupoRubricas as $oDadosGrupo ) {
-      
+
       $oStdGrupoRubrica             = new StdClass;
       $oStdGrupoRubrica->sDescricao = $oDadosGrupo->sDescricao;
       $oStdGrupoRubrica->nValor     = $oDadosGrupo->nValor;
@@ -1037,8 +1043,8 @@ class PDFHelper {
 
     $this->addTitulo('VERBAS RESCISÓRIAS', 1, false, 'L');
     $this->escreverCabecalhoVerbasRescisorias(Rubrica::TIPO_PROVENTO);
-    $nTotalProventos = $this->escreverDadosVerbasRescisorias($aProventos, Rubrica::TIPO_PROVENTO); 
-    
+    $nTotalProventos = $this->escreverDadosVerbasRescisorias($aProventos, Rubrica::TIPO_PROVENTO);
+
     $this->novaLinha(5);
     $this->addTitulo('DISCRIMINAÇÃO DAS DEDUÇÕES', 1, true, 'C');
     $this->addTitulo('DEDUÇÕES', 1, false, 'L');
@@ -1048,32 +1054,32 @@ class PDFHelper {
     /**
      * Escreve Totalizador
      */
-    $lPreenchimento = false;  
-    $sConteudo      = trim(db_formatar($nTotalProventos - $nTotalDescontos, 'f'));     
+    $lPreenchimento = false;
+    $sConteudo      = trim(db_formatar($nTotalProventos - $nTotalDescontos, 'f'));
     $sTitulo        = "TOTAL LÍQUIDO";
 
     $this->addCelula("", 22.2222, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);
-    $this->addCelula("", 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);  
+    $this->addCelula("", 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);
 
     $this->addCelula("", 22.2222, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);
-    $this->addCelula("", 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);   
+    $this->addCelula("", 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento);
 
-    $lPreenchimento = true;               
+    $lPreenchimento = true;
 
     $this->oPdf->Setfont('Arial', 'B', PDFHelper::FONTE_TITULO);
     $this->addCelula($sTitulo,   22.2222, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento, 2.5);
 
     $this->oPdf->Setfont('Arial', '', PDFHelper::FONTE_TEXTO);
-    $this->addCelula($sConteudo, 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento, 2.5);     
+    $this->addCelula($sConteudo, 11.1111, PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS, $lPreenchimento, 2.5);
 
     $this->novaLinha(PDFHelper::ALTURA_LINHA_VERBAS_RESCISORIAS);
   }
 
-  
+
   /**
-   * Escreve as celulas dos grupos de verbas rescisórias  
-   * 
-   * @param mixed $aGrupoRubricas 
+   * Escreve as celulas dos grupos de verbas rescisórias
+   *
+   * @param mixed $aGrupoRubricas
    * @param integer $iTipoGrupo
    * Tipo de grupo:
    *  1 - Provento
@@ -1111,7 +1117,7 @@ class PDFHelper {
       $iContadorInternoCelula = 0;
 
       foreach ( $aLinha as $oCelula ) {
-      
+
         $iContadorInternoCelula++;
         $this->addCelula($oCelula->sDescricao, $iPercentualDescricao, $iAlturaCelula, false, 1.3, PDFHelper::FONTE_TITULO_COLUNA);
         $this->addCelula(trim(db_formatar($oCelula->nValor, 'f')), $iPercentualValor, $iAlturaCelula);
@@ -1120,7 +1126,7 @@ class PDFHelper {
       }
 
       if ($iContadorInternoCelula == 3) {
-        $this->novaLinha($iAlturaCelula); 
+        $this->novaLinha($iAlturaCelula);
       }
     }
 
@@ -1130,7 +1136,7 @@ class PDFHelper {
     for ($iCelulaExtra = $iContadorCelulas; $iCelulaExtra <= 2; $iCelulaExtra++) {
 
       $this->addCelula("", $iPercentualDescricao, $iAlturaCelula);
-      $this->addCelula("", $iPercentualValor    , $iAlturaCelula); 
+      $this->addCelula("", $iPercentualValor    , $iAlturaCelula);
       if ($iCelulaExtra == 2) {
         $this->novaLinha($iAlturaCelula);
       }
@@ -1146,16 +1152,16 @@ class PDFHelper {
       $sTitulo        = "";
 
       if ( $iCelulaTotalizador == 2 ) {
-      
-        $lPreenchimento = true;  
-        $sConteudo      = trim(db_formatar($nTotalVerbasRescisorias, 'f'));     
+
+        $lPreenchimento = true;
+        $sConteudo      = trim(db_formatar($nTotalVerbasRescisorias, 'f'));
         $sTitulo        =  $iTipoGrupo == Rubrica::TIPO_PROVENTO ? "TOTAL BRUTO" : "TOTAL DEDUÇÕES";
       }
 
       $this->oPdf->Setfont('Arial', 'B', PDFHelper::FONTE_TITULO);
        $this->addCelula($sTitulo,   $iPercentualDescricao, $iAlturaPadrao, $lPreenchimento, 2.5);
       $this->oPdf->Setfont('Arial', '', PDFHelper::FONTE_TEXTO);
-      $this->addCelula($sConteudo, $iPercentualValor    , $iAlturaPadrao, $lPreenchimento, 2.5);  
+      $this->addCelula($sConteudo, $iPercentualValor    , $iAlturaPadrao, $lPreenchimento, 2.5);
     }
 
     $this->novaLinha($iAlturaPadrao);

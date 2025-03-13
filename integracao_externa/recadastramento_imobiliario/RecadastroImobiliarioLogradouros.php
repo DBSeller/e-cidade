@@ -1,10 +1,36 @@
 <?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
 /**
  * Classe para RecadastroImobiliarioLogradouros do Recadastramento Imobiliario
  * 
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.6 $
  * @author   Rafael Serpa Nery <rafael.nery@dbseller.com.br>
- * @revision $Author: dbrafael.nery $
+ * @revision $Author: dbanderson $
  */
 class RecadastroImobiliarioLogradouros {
 
@@ -27,7 +53,7 @@ class RecadastroImobiliarioLogradouros {
     $this->oConfiguracao  = (object)parse_ini_file( PATH_IMPORTACAO . "libs/configuracoes_importacao.ini",true);
     $this->oArquivo       = fopen($sCaminhoArquivo, 'r');
     $this->oLog           = new DBLog("TXT", PATH_IMPORTACAO . "log/log_logradouros_" . str_ireplace("/", "_",$sCaminhoArquivo) . date("Y_m_d"));
-    $rsTiposLogradouro    = pg_query(Conexao::getInstancia()->getConexao(), "select * from cadastro.ruastipo;");
+    $rsTiposLogradouro    = db_query(Conexao::getInstancia()->getConexao(), "select * from cadastro.ruastipo;");
 
     if ( !$rsTiposLogradouro ) {
 
@@ -293,7 +319,7 @@ class RecadastroImobiliarioLogradouros {
     $iCodigoImportacao   = $this->salvar();
     
     $sSqlDadosImportados = "select * from recadastroimobiliariologradouros where  ie25_recadastroimobiliarioarquivos = {$iCodigoImportacao}";
-    $rsDadosImportados   = pg_query( Conexao::getInstancia()->getConexao(), " $sSqlDadosImportados" );
+    $rsDadosImportados   = db_query( Conexao::getInstancia()->getConexao(), " $sSqlDadosImportados" );
 
     if (!$rsDadosImportados) {
 
@@ -372,7 +398,7 @@ class RecadastroImobiliarioLogradouros {
         $sSqlAlteracao.= "       j14_dtlei  =  {$sDataLei}, \n";
         $sSqlAlteracao.= "       j14_bairro = '{$oDadosNovosLogradouro->j14_bairro}' \n";
         $sSqlAlteracao.= " where j14_codigo =  {$oDadosNovosLogradouro->j14_codigo}; \n";
-        $rsAlteracao   = pg_query(Conexao::getInstancia()->getConexao(), $sSqlAlteracao);
+        $rsAlteracao   = db_query(Conexao::getInstancia()->getConexao(), $sSqlAlteracao);
 
         if ( !$rsAlteracao ) {
 
@@ -421,7 +447,7 @@ class RecadastroImobiliarioLogradouros {
   public function validarExistencialogradouro( $iCodigoLogradouro ) {
     
     $sSqlDadosLogradouro = "select * from cadastro.ruas where  j14_codigo = {$iCodigoLogradouro}";
-    $rsDadosLogradouro   = pg_query( Conexao::getInstancia()->getConexao(),  $sSqlDadosLogradouro );
+    $rsDadosLogradouro   = db_query( Conexao::getInstancia()->getConexao(),  $sSqlDadosLogradouro );
 
     if (!$rsDadosLogradouro) {
 
@@ -455,4 +481,3 @@ function validarUltimaLinhaArquivo($pArquivo) {
   fseek($pArquivo, $iPosicaoCorrente);
   return $lSemLinhasApos;
 }
-

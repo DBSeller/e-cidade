@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $db_opcao = 1;
 $db_botao = true;
@@ -107,7 +107,7 @@ $escola = db_getsession("DB_coddepto");
 </html>
 <script>
  function js_pesquisatransf(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_transfescolafora','func_transfescolafora.php?funcao_js=parent.js_mostraaluno|ed104_i_aluno|ed47_v_nome|ed104_i_escolaorigem|ed18_c_nome|ed104_i_escoladestino|ed82_c_nome|matricula|turmaorigem|turmadestino','Pesquisa de alunos transferidos para fora da rede atualmente matriculados nesta escola',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_transfescolafora','func_transfescolafora.php?funcao_js=parent.js_mostraaluno|ed104_i_aluno|ed47_v_nome|ed104_i_escolaorigem|ed18_c_nome|ed104_i_escoladestino|ed82_c_nome|matricula|turmaorigem|turmadestino','Pesquisa de alunos transferidos para fora da rede atualmente matriculados nesta escola',true);
  }
  function js_mostraaluno(chave1,chave2,chave3,chave4,chave5,chave6,chave7,chave8,chave9){
   document.form1.ed104_i_aluno.value = chave1;

@@ -1,32 +1,33 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_conecta.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
@@ -44,13 +45,13 @@ $clrotulo->label("ed79_i_turno");
 $db_botao1 = false;
 
 if (isset($opcao) && $opcao == "alterar") {
-  
+
   $db_opcao  = 2;
   $db_botao1 = true;
   $situacao  = $ed56_c_situacao." no calendário ".$ed52_c_descr;
-  
+
   if ($escolaatual != db_getsession("DB_coddepto")) {
-  
+
     $ed56_i_base       = "";
     $ed31_c_descr      = "";
     $ed56_i_calendario = "";
@@ -61,7 +62,7 @@ if (isset($opcao) && $opcao == "alterar") {
     $ed79_i_turno      = "";
     $ed15_c_nome       = "";
   }
-} else if (    isset($opcao) && $opcao == "excluir" 
+} else if (    isset($opcao) && $opcao == "excluir"
             || isset($db_opcao) && $db_opcao == 3) {
 
   $db_botao1 = true;
@@ -70,7 +71,7 @@ if (isset($opcao) && $opcao == "alterar") {
 } else {
 
   if (isset($alterar)) {
-    
+
     $db_opcao  = 2;
     $db_botao1 = true;
   } else {
@@ -94,11 +95,11 @@ $aEtapas = array();
 $sEtapas = "";
 
 foreach ( $oAluno->getProgressaoParcial() as $oProgressaoParcial ) {
-  
+
   if ( !$oProgressaoParcial->isAtiva() || $oProgressaoParcial->isConcluida() ) {
     continue;
   }
-  
+
   $aEtapas[] = $oProgressaoParcial->getEtapa()->getCodigo();
 }
 
@@ -195,7 +196,7 @@ $sEtapas = implode( ", ", $aEtapas );
                 <b>Situação:</b>
               </td>
               <td>
-                <input name="situacao" value="<?=@$situacao?>" type="text" size="41" disabled 
+                <input name="situacao" value="<?=@$situacao?>" type="text" size="41" disabled
                    style='background:#DEB887'>
               </td>
             </tr>
@@ -212,9 +213,9 @@ $sEtapas = implode( ", ", $aEtapas );
           <br>
           <input name="ed56_i_codigo" type="hidden" value="<?=@$ed56_i_codigo?>">
           <input name="ed79_i_codigo" type="hidden" value="<?=@$ed79_i_codigo?>">
-          
-          <input name="<?=($db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir"))?>" 
-                 type="submit" id="db_opcao" value="<?=($db_opcao == 1 ? "Incluir" : ($db_opcao == 2 || 
+
+          <input name="<?=($db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir"))?>"
+                 type="submit" id="db_opcao" value="<?=($db_opcao == 1 ? "Incluir" : ($db_opcao == 2 ||
                  $db_opcao == 22 ? "Alterar" : "Excluir"))?>" <?=($db_botao == false ? "disabled" : "")?> >
 
           <input name="cancelar" type="submit" value="Cancelar" <?=($db_botao1 == false ? "disabled" : "")?> >
@@ -226,7 +227,7 @@ $sEtapas = implode( ", ", $aEtapas );
           <table width="100%">
             <tr>
               <td valign="top">
-                <?
+                <?php
                   $campos_ac = "ed56_i_codigo,ed79_i_codigo,ed56_i_escola,
                                 case when ed56_c_situacao = 'TRANSFERIDO REDE'
                                      then
@@ -262,32 +263,32 @@ $sEtapas = implode( ", ", $aEtapas );
                                     "ed79_i_turno"      => @$ed79_i_turno,
                                     "ed15_c_nome"       => @$ed15_c_nome
                                    );
-      
+
                   $cliframe_alterar_excluir->chavepri     = $chavepri;
                   $cliframe_alterar_excluir->sql          = $oDaoAlunoCurso->sql_query("",
                                                                                        $campos_ac,
                                                                                        "ed29_i_codigo",
                                                                                        " ed56_i_aluno = $ed56_i_aluno");
-                  
+
                   $sWhere  = " (ed56_i_escola != $ed56_i_escola AND ed56_i_aluno = $ed56_i_aluno ";
                   $sWhere .= "   AND trim(ed56_c_situacao) != 'CANDIDATO'";
                   $sWhere .= "   AND trim(ed56_c_situacao) != 'APROVADO'";
-                  $sWhere .= "   AND trim(ed56_c_situacao) != 'APROVADO PARCIAL'";                  
+                  $sWhere .= "   AND trim(ed56_c_situacao) != 'APROVADO PARCIAL'";
                   $sWhere .= "   AND trim(ed56_c_situacao) != 'REPETENTE'";
                   $sWhere .= "   AND trim(ed56_c_situacao) != 'EVADIDO'";
+                  $sWhere .= "   AND trim(ed56_c_situacao) != 'DESISTENTE'";
                   $sWhere .= "   AND trim(ed56_c_situacao) != 'CANCELADO'";
-                  $sWhere .= "   AND trim(ed56_c_situacao) != 'ENCERRADO')";
+                  $sWhere .= "   AND trim(ed56_c_situacao) != 'ENCERRADO'";
+                  $sWhere .= "   AND trim(ed56_c_situacao) != 'CONCLUÍDO')";
                   $sWhere .= " OR (ed56_i_aluno = $ed56_i_aluno AND ";
                   $sWhere .= "   (trim(ed56_c_situacao) = 'MATRICULADO'";
                   $sWhere .= " OR trim(ed56_c_situacao) = 'TRANSFERIDO REDE'";
                   $sWhere .= " OR trim(ed56_c_situacao) = 'TRANSFERIDO FORA'";
-                  $sWhere .= " OR trim(ed56_c_situacao) = 'FALECIDO'";
-                  $sWhere .= " OR trim(ed56_c_situacao) = 'CONCLUÍDO') )";
-                  $cliframe_alterar_excluir->sql_disabled = $oDaoAlunoCurso->sql_query("", 
-                                                                                       $campos_ac, 
-                                                                                       "ed29_i_codigo", 
-                                                                                       $sWhere
-                                                                                      );
+                  $sWhere .= " OR trim(ed56_c_situacao) = 'FALECIDO') )";
+
+                  $sSqlDisabled = $oDaoAlunoCurso->sql_query("", $campos_ac, "ed29_i_codigo",  $sWhere );
+
+                  $cliframe_alterar_excluir->sql_disabled  = $sSqlDisabled;
                   $cliframe_alterar_excluir->campos        = "ed18_c_nome,ed29_c_descr,ed31_c_descr,ed52_c_descr, ".
                                                              "ed56_c_situacao,ed11_c_descr,ed15_c_nome";
                   $cliframe_alterar_excluir->legenda       = "Registros";
@@ -343,15 +344,15 @@ function js_pesquisaed31_i_curso(mostra) {
 }
 
 function js_mostracurso(chave, erro) {
-  
+
   document.form1.ed29_c_descr.value = chave;
-  
+
   if (erro == true) {
 
     document.form1.ed31_i_curso.focus();
     document.form1.ed31_i_curso.value = '';
   }
-  
+
   document.form1.ed56_i_base.value  = '';
   document.form1.ed31_c_descr.value = '';
   document.form1.ed79_i_serie.value = '';
@@ -361,7 +362,7 @@ function js_mostracurso(chave, erro) {
 }
 
 function js_mostracurso1(chave1, chave2) {
-  
+
   document.form1.ed31_i_curso.value = chave1;
   document.form1.ed29_c_descr.value = chave2;
   document.form1.ed56_i_base.value  = '';
@@ -370,14 +371,14 @@ function js_mostracurso1(chave1, chave2) {
   document.form1.ed11_c_descr.value = '';
   document.form1.ed79_i_turno.value = '';
   document.form1.ed15_c_nome.value  = '';
-  
+
   db_iframe_curso.hide();
 }
 
 function js_pesquisaed56_i_base(mostra, curso) {
-  
+
   if(curso == "") {
-  
+
     alert( _M( sCaminhoMensagens + 'informe_curso'));
     document.form1.ed56_i_base.value                  = '';
     document.form1.ed31_i_curso.style.backgroundColor = '#99A9AE';
@@ -386,7 +387,7 @@ function js_pesquisaed56_i_base(mostra, curso) {
 
     if (mostra == true) {
       js_OpenJanelaIframe(
-                           '', 
+                           '',
                            'db_iframe_base',
                            'func_baseescola.php?curso='+curso
                                              +'&funcao_js=parent.js_mostrabase1|ed31_i_codigo|ed31_c_descr',
@@ -394,7 +395,7 @@ function js_pesquisaed56_i_base(mostra, curso) {
                            true
                          );
     } else {
-      
+
       if (document.form1.ed56_i_base.value != '') {
         js_OpenJanelaIframe(
                              '',
@@ -413,11 +414,11 @@ function js_pesquisaed56_i_base(mostra, curso) {
 }
 
 function js_mostrabase(chave, erro) {
-  
+
   document.form1.ed31_c_descr.value = chave;
-  
+
   if (erro == true) {
-  
+
     document.form1.ed56_i_base.focus();
     document.form1.ed56_i_base.value = '';
   }
@@ -427,12 +428,12 @@ function js_mostrabase(chave, erro) {
 }
 
 function js_mostrabase1(chave1, chave2) {
-  
+
   document.form1.ed56_i_base.value  = chave1;
   document.form1.ed31_c_descr.value = chave2;
   document.form1.ed79_i_serie.value = '';
   document.form1.ed11_c_descr.value = '';
-  
+
   db_iframe_base.hide();
 }
 
@@ -447,7 +448,7 @@ function js_pesquisaed56_i_calendario(mostra) {
                          true
                        );
   } else {
-    
+
     if(document.form1.ed56_i_calendario.value != ''){
       js_OpenJanelaIframe(
                            '',
@@ -464,11 +465,11 @@ function js_pesquisaed56_i_calendario(mostra) {
 }
 
 function js_mostracalendario(chave, erro) {
-  
+
   document.form1.ed52_c_descr.value = chave;
-  
+
   if (erro == true) {
-    
+
     document.form1.ed56_i_calendario.focus();
     document.form1.ed56_i_calendario.value = '';
   }
@@ -478,7 +479,7 @@ function js_mostracalendario1(chave1, chave2) {
 
   document.form1.ed56_i_calendario.value = chave1;
   document.form1.ed52_c_descr.value      = chave2;
-  
+
   db_iframe_calendario.hide();
 }
 
@@ -487,7 +488,7 @@ function js_pesquisaed79_i_serie(mostra, base) {
   if (base == "") {
 
     alert( _M( sCaminhoMensagens + 'informe_base_curricular' ) );
-    
+
     document.form1.ed79_i_serie.value                = '';
     document.form1.ed56_i_base.style.backgroundColor = '#99A9AE';
     document.form1.ed56_i_base.focus();
@@ -529,9 +530,9 @@ function js_pesquisaed79_i_serie(mostra, base) {
 }
 
 function js_mostraserie(chave, erro) {
-  
+
   document.form1.ed11_c_descr.value = chave;
-  
+
   if (erro == true) {
 
     document.form1.ed79_i_serie.focus();
@@ -543,21 +544,21 @@ function js_mostraserie1(chave1, chave2) {
 
   document.form1.ed79_i_serie.value = chave1;
   document.form1.ed11_c_descr.value = chave2;
-  
+
   db_iframe_serie.hide();
 }
 
 function js_pesquisaed79_i_turno(mostra) {
-  
+
   if (document.form1.ed31_i_curso.value == "") {
-  
+
     alert(_M(sCaminhoMensagens + 'informe_curso_turno'));
-    
+
     document.form1.ed79_i_turno.value                 = '';
     document.form1.ed31_i_curso.style.backgroundColor = '#99A9AE';
     document.form1.ed31_i_curso.focus();
   } else {
-    
+
     if (mostra == true) {
       js_OpenJanelaIframe(
                            '',
@@ -568,7 +569,7 @@ function js_pesquisaed79_i_turno(mostra) {
                            true
                          );
     } else {
-   
+
       if(document.form1.ed79_i_turno.value != ''){
         js_OpenJanelaIframe(
                              '',
@@ -589,7 +590,7 @@ function js_pesquisaed79_i_turno(mostra) {
 function js_mostraturno(chave, erro) {
 
   document.form1.ed15_c_nome.value = chave;
-  
+
   if (erro == true) {
 
     document.form1.ed79_i_turno.focus();
@@ -601,7 +602,7 @@ function js_mostraturno1(chave1, chave2) {
 
   document.form1.ed79_i_turno.value = chave1;
   document.form1.ed15_c_nome.value  = chave2;
-  
+
   db_iframe_turno.hide();
 }
 

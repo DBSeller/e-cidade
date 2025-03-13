@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -28,13 +28,13 @@
 /**
 * Carregamos as libs necessárias
 */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/verticalTab.widget.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
 
 /**
  * Carregamos no objeto $oGet o valor do $_GET e validamos se a propriedade pc10_numero foi setada.
@@ -54,27 +54,41 @@ if (!isset($oGet->pc10_numero) || trim($oGet->pc10_numero) == "") {
  * informações no objeto $oSolicitacao. Caso a pesquisa não retorne nada, redirecionamos para
  * uma página de erro informando que a solicitação informada não existe
  */
-$oDaoSolicita          = db_utils::getDao('solicita');
-$sCamposBuscaSolicita  = "pc10_numero, pc10_depto, descrdepto, pc10_login, nome, pc10_data, pc10_instit, ";
-$sCamposBuscaSolicita .= "nomeinst, pc10_solicitacaotipo, pc52_descricao, pc10_resumo, ";
+$oDaoSolicita          = new cl_solicita();
+$sCamposBuscaSolicita  = "pc10_numero, pc10_depto, descrdepto, pc10_login, nome, pc10_correto, pc10_data, pc10_instit, ";
+$sCamposBuscaSolicita .= "nomeinst, (pc11_quant * pc11_vlrun ) as valortotal, pc10_solicitacaotipo, pc52_descricao, pc10_resumo, ";
+$sCamposBuscaSolicita .= "pc50_descr, ";
 $sCamposBuscaSolicita .= "case when  ";
 $sCamposBuscaSolicita .= "     (select pc11_liberado from solicitem where pc11_numero = {$oGet->pc10_numero} limit 1) = 't'";
 $sCamposBuscaSolicita .= "      then 'Liberado'";
-$sCamposBuscaSolicita .= " else 'Não Liberado' end as situacao";
+$sCamposBuscaSolicita .= " else 'Não Liberado' end as situacao,pc67_sequencial,";
+$sCamposBuscaSolicita .= "case when pc67_sequencial is null then 'Não' else 'Sim' end as anulada ";
 $sWhereBuscaSolicita   = " pc10_numero = {$oGet->pc10_numero} ";
 
 $sSqlBuscaSolicita     = $oDaoSolicita->sql_query_consulta(null, $sCamposBuscaSolicita, null, $sWhereBuscaSolicita);
 $rsBuscaSolicita       = $oDaoSolicita->sql_record($sSqlBuscaSolicita);
 
+
+$vlrtotalaprox = 0;
+
 if ($oDaoSolicita->numrows > 0) {
 
   $oSolicita = db_utils::fieldsMemory($rsBuscaSolicita, 0);
-
   if ($oSolicita->pc10_instit != db_getsession('DB_instit')) {
 
     db_msgbox("Solicitação {$oGet->pc10_numero} pertence a instituição: {$oSolicita->nomeinst}. Procedimento abortado.");
     echo "<script>parent.db_iframe_consulta_solicitacao.hide();</script>";
     exit;
+  }
+
+  if ($oSolicita->pc10_correto == "t") {
+      $oSolicita->pc10_correto = "Sim";
+  } else {
+      $oSolicita->pc10_correto = "Não";
+  }
+  for ($i = 0; $i < $oDaoSolicita->numrows; $i++) {
+      $valortotalitem = db_utils::fieldsMemory($rsBuscaSolicita, $i)->valortotal;
+      $vlrtotalaprox += $valortotalitem;
   }
 
 } else {
@@ -95,7 +109,6 @@ $sProcessoAdministrativo      = "";
 if ($oDaoProcessoAdministrativo->numrows > 0) {
   $sProcessoAdministrativo = db_utils::fieldsMemory($rsProcessoAdministrativo, 0)->pc90_numeroprocesso;
 }
-
 
 $sTipoSolicitacao = $oSolicita->pc52_descricao;
 
@@ -118,6 +131,26 @@ if ($oSolicita->pc10_solicitacaotipo == 5) {
   }
 }
 
+// Busca fornecedor sugerido
+$fornecedorSugerido = '';
+
+$sSql = "
+	SELECT
+		z01_nome
+	FROM
+		pcsugforn
+	INNER JOIN cgm
+		ON pc40_numcgm = z01_numcgm
+	WHERE
+		pc40_solic ={$oSolicita->pc10_numero}
+";
+
+$oPostgresResource = db_query($sSql);
+if (pg_num_rows($oPostgresResource) > 0) {
+	$rs = pg_fetch_assoc($oPostgresResource, 0);
+	$fornecedorSugerido = $rs['z01_nome'];
+}
+
 ?>
 <html>
 <head>
@@ -134,7 +167,7 @@ if ($oSolicita->pc10_solicitacaotipo == 5) {
 .valores {background-color:#FFFFFF}
 </style>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<body style="background-color: #CCCCCC;" >
 
 	<fieldset>
 		<legend><strong>Dados da Solicitação</strong></legend>
@@ -198,10 +231,34 @@ if ($oSolicita->pc10_solicitacaotipo == 5) {
 					<?php echo $oSolicita->pc10_resumo; ?>
 				</td>
 			</tr>
-			<tr>
+            <?php if ($oSolicita->pc50_descr != ""): ?>
+            <tr>
+                <td><strong>Tipo de Compra: </strong></td>
+                <td class="valores" colspan="7" align="left" width="100">
+                    <?php echo $oSolicita->pc50_descr; ?>
+                </td>
+            </tr>
+            <?php endif ?>
+            <?php if (!empty($fornecedorSugerido)) { ?>
+            <tr>
+                <td><b>Fornecedor Sugerido: </b></td>
+                <td class="valores" colspan="7"><?php echo $fornecedorSugerido;?></td>
+            </tr>
+            <?php } ?>
+            <tr>
 				<td><b>Situação:</b></td>
-				<td class="valores" colspan="7"><?=$oSolicita->situacao;?></td>
+				<td class="valores" colspan="3"><?=$oSolicita->situacao;?></td>
+				<td><strong>Anulada: </strong></td>
+				<td class="valores" colspan="3"><?php echo $oSolicita->anulada; ?></td>
+
 			</tr>
+            <tr>
+                <td><b>Correta: </b></td>
+                <td class="valores"colspan="3"><?php echo $oSolicita->pc10_correto ?></td>
+                <td><b>Valor Total Aprox: </b></td>
+                <td class="valores" colspan="3"><?php echo "R$" . db_formatar($vlrtotalaprox,'f') ?></td>
+            </tr>
+
 		</table>
 	</fieldset>
 
@@ -209,7 +266,7 @@ if ($oSolicita->pc10_solicitacaotipo == 5) {
 	  /**
 	   * Configuramos e exibimos as "abas verticais" (componente verticalTab)
 	   */
-	  $oVerticalTab = new verticalTab('detalhesSolicitacao', 350);
+	  $oVerticalTab = new verticalTab('detalhesSolicitacao', 500);
 	  $sGetUrl      = "&numero={$oGet->pc10_numero}";
 
 	  $oVerticalTab->add('dadosItensDotacoes', 'Itens/Dotações',
@@ -232,6 +289,14 @@ if ($oSolicita->pc10_solicitacaotipo == 5) {
 
     $oVerticalTab->add('dadosPendecias', 'Pendências',
                        "com3_consultapendencias001.php?pc10_numero={$oGet->pc10_numero}");
+
+    if (!empty($oSolicita->pc67_sequencial)) {
+
+      $oVerticalTab->add(
+        'dadosAnulacao',
+        'Dados da Anulação',
+        "com3_consultanulacao001.php?pc10_numero={$oGet->pc10_numero}");
+    }
 
 	  $oVerticalTab->show();
 	?>
@@ -266,7 +331,7 @@ function js_exibeDetalhesPendencia(iIdPendencia) {
 function js_exibePendenciaIndividualmente(oAjax) {
 
 
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   var sConteudoJanela              = '<div id="containerMessageBoard"></div>';
       sConteudoJanela             += '<fieldset><legend><strong>Pendência</strong></legend>';

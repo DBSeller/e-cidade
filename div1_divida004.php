@@ -1,46 +1,37 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_divida_classe.php");
-require_once("classes/db_divmatric_classe.php");
-require_once("classes/db_divinscr_classe.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_numpref_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_proced_classe.php");
-require_once("classes/db_arrematric_classe.php");
-require_once("classes/db_arreinscr_classe.php");
-require_once("dbforms/db_funcoes.php");
+use ECidade\Tributario\Divida\Service\TermoInscricaoService;
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -51,6 +42,8 @@ $clcgm        = new cl_cgm;
 $cliptubase   = new cl_iptubase;
 $clissbase    = new cl_issbase;
 $cldivida     = new cl_divida;
+$cldivimporta           = new cl_divimporta;
+$cldivimportareg	= new cl_divimportareg;
 $cldivmatric  = new cl_divmatric;
 $cldivinscr   = new cl_divinscr;
 $clnumpref    = new cl_numpref;
@@ -68,7 +61,7 @@ if(empty($incluir) && empty($alterar) && empty($excluir)){
       $v01_numcgm=$z01_numcgm;
       db_fieldsmemory($result04,0);
     }else{
-       db_redireciona("div1_divida001.php?dado=numcgm");      
+       db_redireciona("div1_divida001.php?dado=numcgm");
        exit;
     }
   }else if(isset($j01_matric) && $j01_matric!=""){
@@ -76,10 +69,10 @@ if(empty($incluir) && empty($alterar) && empty($excluir)){
     if($cliptubase->numrows>0){
       db_fieldsmemory($result05,0);
       $v01_numcgm=$j01_numcgm;
-      $tipo="matric"; 
+      $tipo="matric";
       $valor=$j01_matric;
     }else{
-       db_redireciona("div1_divida001.php?dado=matric");      
+       db_redireciona("div1_divida001.php?dado=matric");
        exit;
     }
   }else if(isset($q02_inscr) && $q02_inscr!=""){
@@ -87,10 +80,10 @@ if(empty($incluir) && empty($alterar) && empty($excluir)){
     if($clissbase->numrows>0){
       db_fieldsmemory($result06,0);
       $v01_numcgm=$q02_numcgm;
-      $tipo="inscr"; 
+      $tipo="inscr";
       $valor=$q02_inscr;
     }else{
-       db_redireciona("div1_divida001.php?dado=inscr");      
+       db_redireciona("div1_divida001.php?dado=inscr");
        exit;
     }
   }
@@ -98,8 +91,8 @@ if(empty($incluir) && empty($alterar) && empty($excluir)){
 
 if(isset($incluir)){
   db_inicio_transacao();
-  
-  $v01_dtinsc = $v01_dtinsc_ano."-".$v01_dtinsc_mes."-".$v01_dtinsc_dia; 
+
+  $v01_dtinsc = $v01_dtinsc_ano."-".$v01_dtinsc_mes."-".$v01_dtinsc_dia;
   $sqlerro=false;
   $numpre               = $clnumpref->sql_numpre();
   $cldivida->v01_numcgm = $v01_numcgm;
@@ -118,41 +111,80 @@ if(isset($incluir)){
   $cldivida->v01_instit = db_getsession('DB_instit');
   $cldivida->v01_dtinclusao = date('Y-m-d',db_getsession('DB_datausu'));
 
-  
   if (isset($oPost->lProcessoSistema) && (int)$oPost->lProcessoSistema == 0) {
-  
+
       $cldivida->v01_processo   = $v01_processoExterno;
       $cldivida->v01_dtprocesso = $v01_dtprocesso;
       $cldivida->v01_titular    = $v01_titular;
-    } 
+    }
 
   $cldivida->incluir($v01_coddiv);
-  
+  //----FINAL DIVIDA-----------------------------------------------------------------
+
+  //------- INCLUSÃO NO DIVIMPORTA ( redmine #13406 )--------------------------------------
+  $dataini = date("Y-m-d", db_getsession('DB_datausu') );
+  $horaini = date("H:i");
+  $cldivimporta->v02_usuario    = db_getsession('DB_id_usuario');
+  $cldivimporta->v02_instit     = db_getsession('DB_instit');
+  $cldivimporta->v02_data       = $dataini;
+  $cldivimporta->v02_hora       = $horaini;
+  $cldivimporta->v02_tipo       = 1;
+  $cldivimporta->v02_datafim    = $dataini;
+  $cldivimporta->v02_horafim    = $horaini;
+  $cldivimporta->incluir(null);
+
+  if ($cldivimporta->erro_status == 0) {
+      db_msgbox($cldivimporta->erro_msg);
+      $sqlerro = true;
+  }
+  //----FINAL DIVIMPORTA-----------------------------------------------------------------
+
+  //------- INCLUSÃO NO DIVIMPORTAREG ( redmine #13406 )-----------------------------------------------
+  $cldivimportareg->v04_divimporta = $cldivimporta->v02_divimporta;
+  $cldivimportareg->v04_coddiv     = $cldivida->v01_coddiv;
+  $cldivimportareg->incluir();
+
+  if ($cldivimportareg->erro_status == 0) {
+      $sqlerro = true;
+  }
+  //----FINAL DIVIMPORTAREG-----------------------------------------------------------------
+
   if($cldivida->erro_status == '0'){
 		$cldivida->erro_msg = $cldivida->erro_msg;
     $sqlerro=true;
-  } 
+  }
+
+  //Insere na termoinscr e termoinscrrreg
+
+  if ($sqlerro == false) {
+		
+    $v03_receit = '';
+    $dataInsc = date("Y-m-d",db_getsession('DB_datausu'));					
+    $usuario = db_getsession('DB_id_usuario');
+    $instit = db_getsession('DB_instit');
+    TermoInscricaoService::salvar($numpre, $cldivida, $v03_receit, $dataInsc, $usuario, $instit);
+  }
 
   if (isset($oPost->lProcessoSistema) && (int)$oPost->lProcessoSistema == 1 && isset($v01_processo) && $v01_processo != null) {      // PROCESSO INTERNO
-  
+
     /**
      * se o processo for interno inserimos na tabela de ligação dividaprotprocesso
      */
-    
-    require_once("classes/db_dividaprotprocesso_classe.php");
+
+    require_once(modification("classes/db_dividaprotprocesso_classe.php"));
     $oDaoDividaprotprocesso = new cl_dividaprotprocesso();
     $oDaoDividaprotprocesso->v88_divida       = $cldivida->v01_coddiv;
     $oDaoDividaprotprocesso->v88_protprocesso = $v01_processo;
     $oDaoDividaprotprocesso->incluir(null);
-    
+
     if($oDaoDividaprotprocesso->erro_status == '0'){
       $oDaoDividaprotprocesso->erro_msg = $oDaoDividaprotprocesso->erro_msg;
       $sqlerro=true;
     }
-    
-  }  
-  
-  
+
+  }
+
+
   if (isset($j01_matric)) {
     if ($j01_matric != "") {
       $clarrematric->k00_numpre = $numpre;
@@ -162,14 +194,14 @@ if(isset($incluir)){
       if($clarrematric->erro_status == '0'){
 		    $cldivida->erro_msg = $clarrematric->erro_msg;
       	$sqlerro=true;
-      } 
+      }
       $cldivmatric->v01_coddiv = $cldivida->v01_coddiv;
       $cldivmatric->v01_matric = $j01_matric;
       $cldivmatric->incluir($cldivida->v01_coddiv);
       if($cldivmatric->erro_status == '0'){
 		    $cldivida->erro_msg = $cldivmatric->erro_msg;
       	$sqlerro=true;
-      } 
+      }
     }
   }
 
@@ -182,26 +214,27 @@ if(isset($incluir)){
       if($clarreinscr->erro_status == '0'){
 		    $cldivida->erro_msg = $clarreinscr->erro_msg;
     	  $sqlerro=true;
-      } 
+      }
       $cldivinscr->v01_coddiv = $cldivida->v01_coddiv;
       $cldivinscr->v01_inscr = $q02_inscr;
       $cldivinscr->incluir($cldivida->v01_coddiv);
       if($cldivinscr->erro_status=='0'){
 		    $cldivida->erro_msg = $cldivinscr->erro_msg;
       	$sqlerro=true;
-      } 
+      }
     }
   }
 
-  
+
   if (!$sqlerro){
     $sqlGeraArrecad = "select fc_geraarrecad($k00_tipo,$numpre,true) as retorno";
     $result09       = db_query($sqlGeraArrecad) or die("Erro ao incluir em arrecad.");
     db_fieldsmemory($result09,0);
 	}
   db_fim_transacao($sqlerro);
-  
+
 }
+
 ?>
 <html>
 <head>
@@ -210,21 +243,20 @@ if(isset($incluir)){
 <meta http-equiv="Expires" CONTENT="0">
   <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
   <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-  <script language="JavaScript" type="text/javascript" src="scripts/libJsonJs.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC onLoad="a=1" >
-
-	<?
-	  require_once("forms/db_frmdivida.php");
-	?>
-
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
+<body class="body-default">
+  <div class="container">
+  	<?php
+  	  require_once(modification("forms/db_frmdivida.php"));
+  	?>
+  </div>
+  <?
+  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+  ?>
 </body>
 </html>
-<?
+<?php
 if(isset($incluir)){
   if($cldivida->erro_status=="0"){
     $cldivida->erro(true,false);

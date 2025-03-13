@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,19 +26,19 @@
  */
 
 //MODULO: educação
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_cardapiodia_classe.php");
-include("classes/db_mer_cardapiodata_classe.php");
-include("classes/db_mer_cardapio_classe.php");
-include("classes/db_mer_tprefeicao_classe.php");
-include("classes/db_mer_tipocardapio_classe.php");
-include("classes/db_diasemana_classe.php");
-include("classes/db_feriado_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("classes/db_mer_cardapiodata_classe.php"));
+include(modification("classes/db_mer_cardapio_classe.php"));
+include(modification("classes/db_mer_tprefeicao_classe.php"));
+include(modification("classes/db_mer_tipocardapio_classe.php"));
+include(modification("classes/db_diasemana_classe.php"));
+include(modification("classes/db_feriado_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clmer_cardapiodia  = new cl_mer_cardapiodia;
 $clmer_cardapiodata = new cl_mer_cardapiodata;
 $clmer_cardapio     = new cl_mer_cardapio;
@@ -456,7 +456,7 @@ if (isset($semana)) {?>
 }?>
   <center>
    <br>
-   <input name="lista_include" id="lista_include" type="hidden" valor="">
+   <input name="lista_include modification(" id=")lista_include modification(" type=")hidden" valor="">
    <input name="lista_exclude" id="lista_exclude" type="hidden" valor="">
    <br><br>
   </center>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt
  */
 
-$clparfiscal->rotulo->label();
+$oDaoParfiscal->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("k00_descr");
 $clrotulo->label("k01_descr");
@@ -34,6 +34,8 @@ $clrotulo->label("v03_descr");
 $clrotulo->label("nomeinst");
 $clrotulo->label("p51_descr");
 $clrotulo->label("db82_descricao");
+
+$aOpcaoLogica = array('f'=>'Não', 't'=>'Sim');
 ?>
 <form name="form1" method="post" action="">
   <fieldset>
@@ -41,9 +43,9 @@ $clrotulo->label("db82_descricao");
 
     <table>
       <tr>
-        <td nowrap title="<?php echo @$Ty32_instit; ?>">
+        <td nowrap title="<?php echo $Ty32_instit; ?>">
           <?php
-            db_ancora(@$Ly32_instit, "js_pesquisay32_instit(true);", 3);
+            db_ancora($Ly32_instit, "js_pesquisay32_instit(true);", 3);
           ?>
         </td>
         <td>
@@ -55,9 +57,9 @@ $clrotulo->label("db82_descricao");
       </tr>
 
       <tr>
-        <td nowrap title="<?php echo @$Ty32_tipoprocpadrao; ?>">
+        <td nowrap title="<?php echo $Ty32_tipoprocpadrao; ?>">
           <?php
-            db_ancora(@$Ly32_tipoprocpadrao,"js_pesquisay32_tipoprocpadrao(true);",$db_opcao);
+            db_ancora($Ly32_tipoprocpadrao,"js_pesquisay32_tipoprocpadrao(true);",$db_opcao);
           ?>
         </td>
         <td>
@@ -69,13 +71,13 @@ $clrotulo->label("db82_descricao");
       </tr>
 
       <tr>
-        <td nowrap title="<?php echo @$Ty32_modaidof; ?>">
-          <?php echo @$Ly32_modaidof; ?>
+        <td nowrap title="<?php echo $Ty32_modaidof; ?>">
+          <label for="y32_modaidof"><?php echo $Ly32_modaidof; ?></label>
         </td>
         <td>
           <?php
-            $x = array('1'=>'AIDOF Padrão','2'=>'AIDOF sem Pedido');
-            db_select('y32_modaidof',$x,true,$db_opcao,"");
+            $aOpcoes = array('1'=>'AIDOF Padrão', '2'=>'AIDOF sem Pedido');
+            db_select('y32_modaidof',$aOpcoes, true,$db_opcao);
           ?>
         </td>
       </tr>
@@ -86,9 +88,9 @@ $clrotulo->label("db82_descricao");
 
       <table>
         <tr>
-          <td nowrap title="<?php echo @$Ty32_tipo; ?>">
+          <td nowrap title="<?php echo $Ty32_tipo; ?>">
             <?php
-              db_ancora(@$Ly32_tipo, "js_pesquisay32_tipo(true);", $db_opcao);
+              db_ancora($Ly32_tipo, "js_pesquisay32_tipo(true);", $db_opcao);
             ?>
           </td>
           <td>
@@ -100,9 +102,9 @@ $clrotulo->label("db82_descricao");
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_hist; ?>">
+          <td nowrap title="<?php echo $Ty32_hist; ?>">
             <?php
-              db_ancora(@$Ly32_hist,"js_pesquisay32_hist(true);",$db_opcao);
+              db_ancora($Ly32_hist,"js_pesquisay32_hist(true);",$db_opcao);
             ?>
           </td>
           <td>
@@ -114,39 +116,37 @@ $clrotulo->label("db82_descricao");
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_procprotbaixaauto; ?>">
-            <?php echo @$Ly32_procprotbaixaauto; ?>
+          <td nowrap title="<?php echo $Ty32_procprotbaixaauto; ?>">
+            <label for="y32_procprotbaixaauto"><?php echo $Ly32_procprotbaixaauto; ?></label>
           </td>
           <td>
             <?php
-              $aProcProtBaixaAuto = array('1'=>'Sim','2'=>'Não');
+
+              $aProcProtBaixaAuto = array('1'=>'Sim', '2'=>'Não');
               db_select('y32_procprotbaixaauto',$aProcProtBaixaAuto,true,$db_opcao,"");
             ?>
           </td>
         </tr>
 
        <tr>
-        <td><strong>Utiliza Documento Padrão:</strong>
-        </td>
+        <td nowrap><label for="utilizadocpadrao"><strong>Utiliza Documento Padrão:</strong></label></td>
         <td align="left">
           <?php
 
-            $aOpcoes = array( "0" => "Sim",
-                               "1" =>"Não"
-                             );
+            $aOpcoes = array( "0" => "Sim", "1" =>"Não");
             db_select("utilizadocpadrao",$aOpcoes,true,$db_opcao, "onchange='js_templateAutodeInfracao(this.value);'");
           ?>
         <td>
        </tr>
        <tr id="linhaTemplate" style="display:none;">
-         <td nowrap="nowrap" title="<?=@$Tp90_db_documentotemplate?>">
-           <?
+         <td nowrap="nowrap" title="<? echo $Tp90_db_documentotemplate; ?>">
+           <?php
              db_ancora("<strong>Documento Template:</strong>","js_pesquisaDocumentoAutodeInfracao(true);",$db_opcao);
            ?>
          </td>
          <td nowrap="nowrap">
-           <?
-             db_input('y32_templateautoinfracao',10,@$Iy32_templateautoinfracao,true,'text',$db_opcao,'onchange="js_pesquisaDocumentoAutodeInfracao(false);"');
+           <?php
+             db_input('y32_templateautoinfracao',10,$Iy32_templateautoinfracao,true,'text',$db_opcao,'onchange="js_pesquisaDocumentoAutodeInfracao(false);"');
              db_input('db82_descricaoautodeinfracao',50,$Idb82_descricao,true,'text',3,'','db82_descricaoautodeinfracao');
            ?>
          </td>
@@ -159,9 +159,9 @@ $clrotulo->label("db82_descricao");
 
       <table>
         <tr>
-          <td nowrap title="<?php echo @$Ty32_receit; ?>">
+          <td nowrap title="<?php echo $Ty32_receit; ?>">
             <?php
-              db_ancora(@$Ly32_receit,"js_pesquisay32_receit(true);",$db_opcao);
+              db_ancora($Ly32_receit,"js_pesquisay32_receit(true);",$db_opcao);
             ?>
           </td>
           <td>
@@ -173,9 +173,9 @@ $clrotulo->label("db82_descricao");
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_receitexp; ?>">
+          <td nowrap title="<?php echo $Ty32_receitexp; ?>">
             <?php
-              db_ancora(@$Ly32_receitexp,"js_pesquisay32_receitexp(true);",$db_opcao);
+              db_ancora($Ly32_receitexp,"js_pesquisay32_receitexp(true);",$db_opcao);
             ?>
           </td>
           <td>
@@ -187,9 +187,9 @@ $clrotulo->label("db82_descricao");
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_proced; ?>">
+          <td nowrap title="<?php echo $Ty32_proced; ?>">
             <?php
-              db_ancora(@$Ly32_proced,"js_pesquisay32_proced(true);",$db_opcao);
+              db_ancora($Ly32_proced,"js_pesquisay32_proced(true);",$db_opcao);
             ?>
           </td>
           <td>
@@ -201,9 +201,9 @@ $clrotulo->label("db82_descricao");
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_procedexp; ?>">
+          <td nowrap title="<?php echo $Ty32_procedexp; ?>">
             <?php
-              db_ancora(@$Ly32_procedexp,"js_pesquisay32_procedexp(true);",$db_opcao);
+              db_ancora($Ly32_procedexp,"js_pesquisay32_procedexp(true);",$db_opcao);
             ?>
           </td>
           <td>
@@ -213,6 +213,41 @@ $clrotulo->label("db82_descricao");
             ?>
           </td>
         </tr>
+
+        <tr>
+          <td nowrap title="<?php echo $Ty32_tipodataoperacao; ?>">
+            <label for="y32_tipodataoperacao"><?php echo $Ly32_tipodataoperacao; ?></label>
+          </td>
+          <td>
+            <?php
+
+              $aOpcoes = array(
+                  '1' => 'Data operação igual a data de vencimento',
+                  '2' => 'Data operação igual a data do levantamento',
+                );
+
+              db_select('y32_tipodataoperacao', $aOpcoes, true, $db_opcao, "");
+            ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td nowrap title="<?php echo $Ty32_tipodatavencimento; ?>">
+            <label for="y32_tipodatavencimento"><?php echo $Ly32_tipodatavencimento; ?></label>
+          </td>
+          <td>
+            <?php
+
+              $aOpcoes = array(
+                  '1' => 'Utiliza data de vencimento do levantamento',
+                  '2' => 'Utiliza data de vencimento do auto de infração',
+                );
+
+              db_select('y32_tipodatavencimento', $aOpcoes, true, $db_opcao, "");
+            ?>
+          </td>
+        </tr>
+
       </table>
     </fieldset>
 
@@ -221,44 +256,41 @@ $clrotulo->label("db82_descricao");
 
       <table>
         <tr>
-          <td nowrap title="<?php echo @$Ty32_impdatas; ?>">
-            <?php echo @$Ly32_impdatas; ?>
+          <td nowrap title="<?php echo $Ty32_impdatas; ?>">
+            <label for="y32_impdatas"><?php echo $Ly32_impdatas; ?></label>
           </td>
           <td>
             <?php
-              $x = array('f'=>'Não','t'=>'Sim');
-              db_select('y32_impdatas', $x, true, $db_opcao, "");
+              db_select('y32_impdatas', $aOpcaoLogica, true, $db_opcao);
             ?>
           </td>
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_impcodativ; ?>">
-            <?php echo @$Ly32_impcodativ; ?>
+          <td nowrap title="<?php echo $Ty32_impcodativ; ?>">
+            <label for="y32_impcodativ"><?php echo $Ly32_impcodativ; ?></label>
           </td>
           <td>
             <?php
-              $x = array('f'=>'Não','t'=>'Sim');
-              db_select('y32_impcodativ', $x, true, $db_opcao, "");
+              db_select('y32_impcodativ', $aOpcaoLogica, true, $db_opcao);
             ?>
           </td>
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_impobs; ?>">
-            <?php echo @$Ly32_impobs; ?>
+          <td nowrap title="<?php echo $Ty32_impobs; ?>">
+            <label for="y32_impobs"><?php echo $Ly32_impobs; ?></label>
           </td>
           <td>
             <?php
-              $x = array('f'=>'Não','t'=>'Sim');
-              db_select('y32_impobs',$x,true,$db_opcao,"");
+              db_select('y32_impobs', $aOpcaoLogica,true,$db_opcao,"");
             ?>
           </td>
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_modalvara; ?>">
-            <?php echo @$Ly32_modalvara; ?>
+          <td nowrap title="<?php echo $Ty32_modalvara; ?>">
+            <label for="y32_modalvara"><?php echo $Ly32_modalvara; ?></label>
           </td>
           <td>
             <?php
@@ -277,7 +309,7 @@ $clrotulo->label("db82_descricao");
         <tr>
           <td nowrap="nowrap">
             <?php
-              db_ancora(@$Ly32_templatealvarasanitarioprovisorio, "js_pesquisaTemplateAlvaraSanitarioProvisorio(true);", $db_opcao);
+              db_ancora($Ly32_templatealvarasanitarioprovisorio, "js_pesquisaTemplateAlvaraSanitarioProvisorio(true);", $db_opcao);
             ?>
           </td>
 
@@ -285,7 +317,7 @@ $clrotulo->label("db82_descricao");
             <?php
               db_input( "y32_templatealvarasanitarioprovisorio",
                         10,
-                        @$Iy32_templatealvarasanitarioprovisorio,
+                        $Iy32_templatealvarasanitarioprovisorio,
                         true,
                         "text",
                         $db_opcao,
@@ -298,14 +330,14 @@ $clrotulo->label("db82_descricao");
         <tr>
           <td nowrap="nowrap">
             <?php
-              db_ancora(@$Ly32_templatealvarasanitariopermanente, "js_pesquisaTemplateAlvaraSanitarioPermanente(true);", $db_opcao);
+              db_ancora($Ly32_templatealvarasanitariopermanente, "js_pesquisaTemplateAlvaraSanitarioPermanente(true);", $db_opcao);
             ?>
           </td>
           <td nowrap="nowrap">
             <?php
               db_input( "y32_templatealvarasanitariopermanente",
                         10,
-                        @$Iy32_templatealvarasanitariopermanente,
+                        $Iy32_templatealvarasanitariopermanente,
                         true,
                         "text",
                         $db_opcao,
@@ -316,37 +348,36 @@ $clrotulo->label("db82_descricao");
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_impobslanc; ?>">
-            <?php echo @$Ly32_impobslanc; ?>
+          <td nowrap title="<?php echo $Ty32_impobslanc; ?>">
+            <label for="y32_impobslanc"><?php echo $Ly32_impobslanc; ?></label>
           </td>
           <td>
             <?php
-              $x = array('f'=>'Não','t'=>'Sim');
-              db_select('y32_impobslanc',$x,true,$db_opcao,"");
+              db_select('y32_impobslanc',$aOpcaoLogica,true,$db_opcao);
             ?>
           </td>
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_sanidepto; ?>">
-             <?php echo @$Ly32_sanidepto; ?>
+          <td nowrap title="<?php echo $Ty32_sanidepto; ?>">
+             <label for="y32_sanidepto"><?php echo $Ly32_sanidepto; ?></label>
           </td>
           <td>
             <?php
-              $x = array('0'=>'Não','1'=>'Sim');
-              db_select('y32_sanidepto',$x,true,$db_opcao,"");
+              $aOpcoes = array('0'=>'Não', '1'=>'Sim');
+              db_select('y32_sanidepto',$aOpcoes,true,$db_opcao,"");
             ?>
           </td>
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_sanbaixadiv; ?>">
-            <?php echo @$Ly32_sanbaixadiv; ?>
+          <td nowrap title="<?php echo $Ty32_sanbaixadiv; ?>">
+            <label for="y32_sanbaixadiv"><?php echo $Ly32_sanbaixadiv; ?></label>
           </td>
           <td>
             <?php
-              $x = array('0'=>'Não','1'=>'Sim');
-              db_select('y32_sanbaixadiv',$x,true,$db_opcao,"");
+              $aOpcoes = array('0'=>'Não', '1'=>'Sim');
+              db_select('y32_sanbaixadiv',$aOpcoes,true,$db_opcao,"");
             ?>
           </td>
         </tr>
@@ -358,8 +389,8 @@ $clrotulo->label("db82_descricao");
 
       <table>
         <tr>
-          <td nowrap title="<?php echo @$Ty32_formvist; ?>">
-            <?php echo @$Ly32_formvist; ?>
+          <td nowrap title="<?php echo $Ty32_formvist; ?>">
+            <label for="y32_formvist"><?php echo $Ly32_formvist; ?></label>
           </td>
           <td>
             <?php
@@ -369,8 +400,8 @@ $clrotulo->label("db82_descricao");
         </tr>
 
         <tr>
-          <td nowrap title="<?php echo @$Ty32_calcvistanosanteriores; ?>">
-             <?php echo @$Ly32_calcvistanosanteriores; ?>
+          <td nowrap title="<?php echo $Ty32_calcvistanosanteriores; ?>">
+             <label for="y32_calcvistanosanteriores"><?php echo $Ly32_calcvistanosanteriores; ?></label>
           </td>
           <td>
             <?php
@@ -382,12 +413,26 @@ $clrotulo->label("db82_descricao");
 
         <tr>
           <td nowrap title="<?php echo $Ty32_utilizacalculoporteatividade; ?>">
-            <?php echo $Ly32_utilizacalculoporteatividade; ?>
+            <label for="y32_utilizacalculoporteatividade"><?php echo $Ly32_utilizacalculoporteatividade; ?></label>
           </td>
           <td>
             <?php
-              $aUtilizaCalculoPorteAtividade = array('t'=>'Sim','f'=>'Não');
+
+              $aUtilizaCalculoPorteAtividade = array('t'=>'Sim', 'f'=>'Não');
               db_select('y32_utilizacalculoporteatividade', $aUtilizaCalculoPorteAtividade, true, $db_opcao, "");
+            ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td nowrap title="<?php echo $Ty32_calculavistoriamei; ?>">
+            <label for="y32_calculavistoriamei"><?php echo $Ly32_calculavistoriamei; ?></label>
+          </td>
+          <td>
+            <?php
+
+              $aCalculaVistoriaMei = array('t'=>'Sim', 'f'=>'Não');
+              db_select('y32_calculavistoriamei', $aCalculaVistoriaMei, true, $db_opcao);
             ?>
           </td>
         </tr>
@@ -469,7 +514,7 @@ $clrotulo->label("db82_descricao");
      sArquivoPesquisa = 'func_db_documentotemplate.php?pesquisa_chave=' + $F('y32_templateautoinfracao') + '&funcao_js=parent.js_mostraDocumentoDigitacaoAutodeInfracao&tipo=51';
    }
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_db_documentotemplate', sArquivoPesquisa, 'Pesquisa', lMostra);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_db_documentotemplate', sArquivoPesquisa, 'Pesquisa', lMostra);
   }
 
   function js_mostraDocumentoDigitacaoAutodeInfracao(sRetorno, lErro){
@@ -518,7 +563,7 @@ $clrotulo->label("db82_descricao");
       sArquivoPesquisa = 'func_db_documentotemplate.php?pesquisa_chave=' + $F('y32_templatealvarasanitarioprovisorio') + '&funcao_js=parent.js_mostraDigitacaoAlvaraSanitarioProvisorio&tipo=47';
     }
 
-    js_OpenJanelaIframe( 'top.corpo',
+    js_OpenJanelaIframe( 'CurrentWindow.corpo',
                          'db_iframe_db_documentotemplate',
                          sArquivoPesquisa,
                          'Pesquisa Documentos Template Alvará Sanitario Provisório',
@@ -555,7 +600,7 @@ $clrotulo->label("db82_descricao");
       sArquivoPesquisa = 'func_db_documentotemplate.php?pesquisa_chave=' + $F('y32_templatealvarasanitariopermanente') + '&funcao_js=parent.js_mostraDigitacaoAlvaraSanitarioPermanente&tipo=47';
     }
 
-    js_OpenJanelaIframe( 'top.corpo',
+    js_OpenJanelaIframe( 'CurrentWindow.corpo',
                          'db_iframe_db_documentotemplate',
                          sArquivoPesquisa,
                          'Pesquisa Documentos Template Alvará Sanitario Permanente',
@@ -583,10 +628,10 @@ $clrotulo->label("db82_descricao");
 
   function js_pesquisay32_tipo(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true);
     }else{
        if(document.form1.y32_tipo.value != ''){
-          js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.y32_tipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.y32_tipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
        }else{
          document.form1.k00_descr.value = '';
        }
@@ -606,10 +651,10 @@ $clrotulo->label("db82_descricao");
   }
   function js_pesquisay32_hist(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true);
     }else{
        if(document.form1.y32_hist.value != ''){
-          js_OpenJanelaIframe('top.corpo','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.y32_hist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false);
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.y32_hist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false);
        }else{
          document.form1.k01_descr.value = '';
        }
@@ -630,10 +675,10 @@ $clrotulo->label("db82_descricao");
 
   function js_pesquisay32_receit(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true);
     }else{
        if(document.form1.y32_receit.value != ''){
-          js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.y32_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.y32_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
        }else{
          document.form1.k02_descr.value = '';
        }
@@ -653,10 +698,10 @@ $clrotulo->label("db82_descricao");
   }
   function js_pesquisay32_proced(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_proced','func_proced.php?funcao_js=parent.js_mostraproced1|v03_codigo|v03_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_proced','func_proced.php?funcao_js=parent.js_mostraproced1|v03_codigo|v03_descr','Pesquisa',true);
     }else{
        if(document.form1.y32_proced.value != ''){
-          js_OpenJanelaIframe('top.corpo','db_iframe_proced','func_proced.php?pesquisa_chave='+document.form1.y32_proced.value+'&funcao_js=parent.js_mostraproced','Pesquisa',false);
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_proced','func_proced.php?pesquisa_chave='+document.form1.y32_proced.value+'&funcao_js=parent.js_mostraproced','Pesquisa',false);
        }else{
          document.form1.v03_descr.value = '';
        }
@@ -676,10 +721,10 @@ $clrotulo->label("db82_descricao");
   }
   function js_pesquisay32_instit(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
     }else{
        if(document.form1.y32_instit.value != ''){
-          js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.y32_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.y32_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
        }else{
          document.form1.nomeinst.value = '';
        }
@@ -699,10 +744,10 @@ $clrotulo->label("db82_descricao");
   }
   function js_pesquisay32_tipoprocpadrao(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_tipoproc','func_tipoproc.php?funcao_js=parent.js_mostratipoproc1|p51_codigo|p51_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoproc','func_tipoproc.php?funcao_js=parent.js_mostratipoproc1|p51_codigo|p51_descr','Pesquisa',true);
     }else{
        if(document.form1.y32_tipoprocpadrao.value != ''){
-          js_OpenJanelaIframe('top.corpo','db_iframe_tipoproc','func_tipoproc.php?pesquisa_chave='+document.form1.y32_tipoprocpadrao.value+'&funcao_js=parent.js_mostratipoproc','Pesquisa',false);
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoproc','func_tipoproc.php?pesquisa_chave='+document.form1.y32_tipoprocpadrao.value+'&funcao_js=parent.js_mostratipoproc','Pesquisa',false);
        }else{
          document.form1.p51_descr.value = '';
        }
@@ -721,11 +766,11 @@ $clrotulo->label("db82_descricao");
     db_iframe_tipoproc.hide();
   }
   function js_pesquisa(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_parfiscal','func_parfiscal.php?funcao_js=parent.js_preenchepesquisa|y32_instit','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_parfiscal','func_parfiscal.php?funcao_js=parent.js_preenchepesquisa|y32_instit','Pesquisa',true);
   }
   function js_preenchepesquisa(chave){
     db_iframe_parfiscal.hide();
-    <?
+    <?php
     if($db_opcao!=1){
       echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
     }
@@ -733,10 +778,10 @@ $clrotulo->label("db82_descricao");
   }
   function js_pesquisay32_receitexp(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_tabrecexp','func_tabrec.php?funcao_js=parent.js_mostratabrec1exp|k02_codigo|k02_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrecexp','func_tabrec.php?funcao_js=parent.js_mostratabrec1exp|k02_codigo|k02_descr','Pesquisa',true);
     }else{
        if(document.form1.y32_receit.value != ''){
-          js_OpenJanelaIframe('top.corpo','db_iframe_tabrecexp','func_tabrec.php?pesquisa_chave='+document.form1.y32_receitexp.value+'&funcao_js=parent.js_mostratabrecexp','Pesquisa',false);
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrecexp','func_tabrec.php?pesquisa_chave='+document.form1.y32_receitexp.value+'&funcao_js=parent.js_mostratabrecexp','Pesquisa',false);
        }else{
          document.form1.k02_descrexp.value = '';
        }
@@ -757,10 +802,10 @@ $clrotulo->label("db82_descricao");
 
   function js_pesquisay32_procedexp(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_procedexp','func_proced.php?funcao_js=parent.js_mostraproced1exp|v03_codigo|v03_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedexp','func_proced.php?funcao_js=parent.js_mostraproced1exp|v03_codigo|v03_descr','Pesquisa',true);
     }else{
        if(document.form1.y32_proced.value != ''){
-          js_OpenJanelaIframe('top.corpo','db_iframe_procedexp','func_proced.php?pesquisa_chave='+document.form1.y32_procedexp.value+'&funcao_js=parent.js_mostraprocedexp','Pesquisa',false);
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedexp','func_proced.php?pesquisa_chave='+document.form1.y32_procedexp.value+'&funcao_js=parent.js_mostraprocedexp','Pesquisa',false);
        }else{
          document.form1.v03_descrexp.value = '';
        }

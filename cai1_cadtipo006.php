@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cadtipo_classe.php");
-include("classes/db_cadtipoorigem_classe.php");
-include("classes/db_cadtipoitem_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cadtipo_classe.php"));
+include(modification("classes/db_cadtipoorigem_classe.php"));
+include(modification("classes/db_cadtipoitem_classe.php"));
 $clcadtipo = new cl_cadtipo;
   /*
 $clcadtipoorigem = new cl_cadtipoorigem;
@@ -87,7 +87,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcadtipo.php");
+	include(modification("forms/db_frmcadtipo.php"));
 	?>
     </center>
 	</td>
@@ -120,9 +120,9 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.cadtipoorigem.disabled=false;
-         top.corpo.iframe_cadtipoorigem.location.href='cai1_cadtipoorigem001.php?db_opcaoal=33&k14_sequencial=".@$k03_tipo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_cadtipoorigem.location.href='cai1_cadtipoorigem001.php?db_opcaoal=33&k14_sequencial=".@$k03_tipo."';
          parent.document.formaba.cadtipoitem.disabled=false;
-         top.corpo.iframe_cadtipoitem.location.href='cai1_cadtipoitem001.php?db_opcaoal=33&k09_sequencial=".@$k03_tipo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_cadtipoitem.location.href='cai1_cadtipoitem001.php?db_opcaoal=33&k09_sequencial=".@$k03_tipo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('cadtipoorigem');";

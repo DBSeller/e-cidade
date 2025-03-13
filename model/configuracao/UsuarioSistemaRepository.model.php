@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -64,8 +64,50 @@ class UsuarioSistemaRepository {
   }
 
   /**
+   * Retorna as Lotações que o Usuário do sistema ãinda não possuí vínculo.
+   * 
+   * @param  UsuarioSistema   $oUsuarioSistema 
+   * @param  Instituicao|null $oInstituicao    
+   * @return Array Toddas as Lotações ainda disponíveis para o usuário.
+   */
+  public static function getLotacoesPermitidas(UsuarioSistema $oUsuarioSistema, Instituicao $oInstituicao = null) {
+
+    if (is_null($oInstituicao)) {
+      $oInstituicao = InstituicaoRepository::getInstituicaoSessao();
+    }
+
+    $aLotacoesIntituicao      = LotacaoRepository::getLotacoesByInstituicao($oInstituicao, true);
+    $aLotacoesUsuario         = LotacaoRepository::getLotacoesByUsuario($oUsuarioSistema, $oInstituicao);
+    $iTotalLotacaoInstituicao = count($aLotacoesIntituicao);
+
+    for ($iLotacaoInstituicao = 0; $iLotacaoInstituicao < $iTotalLotacaoInstituicao; $iLotacaoInstituicao++) {
+
+      $oLotacaoInstituicao = $aLotacoesIntituicao[$iLotacaoInstituicao];
+      for ($iLotacoesUsuario = 0; $iLotacoesUsuario < count($aLotacoesUsuario); $iLotacoesUsuario++) {
+
+        $oLotacaoUsuario = $aLotacoesUsuario[$iLotacoesUsuario];
+
+        if ($oLotacaoInstituicao->getCodigoLotacao() == $oLotacaoUsuario->getCodigoLotacao()) {
+          unset($aLotacoesIntituicao[$iLotacaoInstituicao]);
+        }
+      }
+    }
+    sort($aLotacoesIntituicao);
+
+    return $aLotacoesIntituicao;
+  }
+
+  /**
    * Impossibilita instancia
    */
   private function __construct() {}
   private function __clone() {}
+
+    /**
+     * @return UsuarioSistema
+     */
+    public static function getUsuarioSessao()
+    {
+        return static::getPorCodigo(db_getsession('DB_id_usuario'));
+    }
 }

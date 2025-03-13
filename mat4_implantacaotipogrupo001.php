@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("model/configuracao/UsuarioSistema.model.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/configuracao/UsuarioSistema.model.php"));
 
 $oRotuloImplantacao = new rotulo('matimplantacaotipogrupo');
 $oRotuloImplantacao->label();
@@ -111,7 +111,7 @@ $oUsuarioSistema = new UsuarioSistema(db_getsession("DB_id_usuario"));
   function js_concluirImplantacao(oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     alert(oRetorno.message.urlDecode());
     if (oRetorno.status == 1) {
       $('btnProcessar').disabled = true;

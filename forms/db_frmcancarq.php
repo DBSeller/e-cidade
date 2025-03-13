@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -99,10 +99,10 @@ function js_cancelar(){
 }
 function js_pesquisa_gera(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?lCancelado=0&funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empagegera','func_empagegera.php?lCancelado=0&funcao_js=parent.js_mostragera1|e87_codgera|e87_descgera','Pesquisa',true);
   }else{
     if(document.form1.e87_codgera.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_empagegera','func_empagegera.php?lCancelado=0&pesquisa_chave='+document.form1.e87_codgera.value+'&funcao_js=parent.js_mostragera','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empagegera','func_empagegera.php?lCancelado=0&pesquisa_chave='+document.form1.e87_codgera.value+'&funcao_js=parent.js_mostragera','Pesquisa',false);
     }else{
       document.form1.e87_descgera.value = ''; 
     }

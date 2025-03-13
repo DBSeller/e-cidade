@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oJson    = new services_json();
 
@@ -50,7 +50,7 @@ if( $oParam->exec == "getLinhasArquivo" ){
 	$sSqlArquivo .= " order by db_layoutlinha.db51_codigo ";
   $rsLinhas     = db_query($sSqlArquivo);
 	$aDadosArquivo = array();
-	$aDadosArquivo = db_utils::getColectionByRecord($rsLinhas,false,false,true);
+	$aDadosArquivo = db_utils::getCollectionByRecord($rsLinhas,false,false,true);
 	echo $oJson->encode($aDadosArquivo);
 
 }

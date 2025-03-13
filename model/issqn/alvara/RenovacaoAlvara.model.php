@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/issqn/alvara/MovimentacaoAlvara.model.php");
+require_once(modification("model/issqn/alvara/MovimentacaoAlvara.model.php"));
 
 /**
  * @fileoverview - Classe de Modelo para movimentações da Renovação do Alvará
  * @author    Vinicius Silva  - vinicius.silva@dbseller.com.br	
  * @package   ISSQN
  * @revision  $Author: dbjeferson.belmiro $
- * @version   $Revision: 1.1 $
+ * @version   $Revision: 1.4 $
  */
 class RenovacaoAlvara extends MovimentacaoAlvara {
 

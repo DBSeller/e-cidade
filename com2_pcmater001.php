@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 
 $clrotulo = new rotulocampo;
@@ -118,10 +118,10 @@ function js_emite(){
 <script>
 function js_elemento(mostra){
   if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_elemento','func_pcmaterele.php?funcao_js=parent.js_mostraelemento1|o56_elemento|o56_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_elemento','func_pcmaterele.php?funcao_js=parent.js_mostraelemento1|o56_elemento|o56_descr','Pesquisa',true);
   }else{
     if (document.form1.o56_elemento.value != "") {
-	   js_OpenJanelaIframe('top.corpo','db_iframe_elemento','func_pcmaterele.php?pesquisa_chave=xx&chave_o56_elem='+document.form1.o56_elemento.value+'&funcao_js=parent.js_mostraelemento','Pesquisa',false);
+	   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_elemento','func_pcmaterele.php?pesquisa_chave=xx&chave_o56_elem='+document.form1.o56_elemento.value+'&funcao_js=parent.js_mostraelemento','Pesquisa',false);
     }	 
   }
 }

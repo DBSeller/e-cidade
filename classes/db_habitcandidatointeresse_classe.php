@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -406,7 +406,7 @@ class cl_habitcandidatointeresse {
      $sql .= "      inner join habitgrupoprograma              on habitgrupoprograma.ht03_sequencial                           = habitcandidatointeresse.ht20_habitgrupoprograma    ";
      $sql .= "      left  join habitcandidatointeresseprograma on habitcandidatointeresseprograma.ht13_habitcandidatointeresse = habitcandidatointeresse.ht20_sequencial            ";
      $sql .= "      left  join cgmsituacaocpf                  on cgmsituacaocpf.z17_numcgm                                    = cgm.z01_numcgm                                     ";
-     $sql .= "      left  join habitprograma                   on habitprograma.ht01_habitgrupoprograma                        = habitcandidatointeresseprograma.ht13_habitprograma ";
+     $sql .= "      left  join habitprograma                   on habitprograma.ht01_sequencial                                = habitcandidatointeresseprograma.ht13_habitprograma ";
      $sql2 = "";
      
      if($dbwhere==""){

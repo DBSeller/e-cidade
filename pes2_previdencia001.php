@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_inssirf_classe.php");
-include("classes/db_rhcadregime_classe.php");
-include("classes/db_rhrubricas_classe.php");
-include("classes/db_rhregime_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_inssirf_classe.php"));
+require_once(modification("classes/db_rhcadregime_classe.php"));
+require_once(modification("classes/db_rhrubricas_classe.php"));
+require_once(modification("classes/db_rhregime_classe.php"));
+
 $clrotulo = new rotulocampo;
 $clinssirf = new cl_inssirf;
 $clrhregime = new cl_rhregime;
 $clrhcadrefime = new cl_rhcadregime;
 $clrhrubricas = new cl_rhrubricas;
-db_postmemory($HTTP_POST_VARS);
+
+db_postmemory($_POST);
 ?>
 <html>
 <head>
@@ -47,6 +49,7 @@ db_postmemory($HTTP_POST_VARS);
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBToogle.widget.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <style type="text/css">
   fieldset table tr td:first-child {
@@ -54,10 +57,10 @@ db_postmemory($HTTP_POST_VARS);
   }
 </style>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
-
+<body>
+<div class="container">
 <form name="form1" method="post" action="">
-  <fieldset style="width:640px;margin:25px auto 0 auto;">
+  <fieldset>
 
     <legend><strong>Relação da previdência</strong></legend>
 
@@ -76,7 +79,7 @@ db_postmemory($HTTP_POST_VARS);
       if(!isset($mesfolha) || (isset($mesfolha) && trim($mesfolha) == "")){
         $mesfolha = db_mesfolha();
       }
-      include("dbforms/db_classesgenericas.php");
+      include(modification("dbforms/db_classesgenericas.php"));
       $geraform = new cl_formulario_rel_pes;
 
       $geraform->usalota = true;                      // PERMITIR SELEÇÃO DE LOTAÇÕES
@@ -112,7 +115,7 @@ db_postmemory($HTTP_POST_VARS);
       $geraform->gera_form($anofolha,$mesfolha);
       ?>
       <tr>
-        <td nowrap title="Tabela de Previdência">
+        <td title="Tabela de Previdência">
         <strong>Tabela de Previdência:</strong>
         </td>
         <td>
@@ -123,7 +126,7 @@ db_postmemory($HTTP_POST_VARS);
         </td>
       </tr>
       <tr>
-        <td nowrap title="Cálculo">
+        <td title="Cálculo">
         <strong>Cálculo:</strong>
         </td>
         <td>
@@ -134,7 +137,7 @@ db_postmemory($HTTP_POST_VARS);
         </td>
       </tr>
       <tr>
-        <td nowrap title="Filtro">
+        <td title="Filtro">
         <strong>Filtro:</strong>
         </td>
         <td>
@@ -148,7 +151,7 @@ db_postmemory($HTTP_POST_VARS);
         </td>
       </tr>  
       <tr>
-        <td nowrap title="Troca de Página">
+        <td title="Troca de Página">
         <strong>Quebra Página:</strong>
         </td>
         <td>
@@ -178,13 +181,13 @@ db_postmemory($HTTP_POST_VARS);
                   $arr_colunas_final   = Array();
                   $arr_colunas_inicial = Array();
                   if(isset($colunas_sselecionados) && $colunas_sselecionados != ""){
-                     $colunas_sselecionados = split(",",$colunas_sselecionados);
+                     $colunas_sselecionados = explode(",",$colunas_sselecionados);
                      for($Ic=0;$Ic < count($colunas_sselecionados);$Ic++){
                         $arr_colunas_final[$colunas_sselecionados[$Ic]] = $arr_colunas[$colunas_sselecionados[$Ic]]; 
                      }
                   }
                   if(isset($colunas_nselecionados) && $colunas_nselecionados != ""){
-                     $colunas_nselecionados = split(",",$colunas_nselecionados);
+                     $colunas_nselecionados = explode(",",$colunas_nselecionados);
                      for($Ic=0;$Ic < count($colunas_nselecionados);$Ic++){
                         $arr_colunas_inicial[$colunas_nselecionados[$Ic]] = $arr_colunas[$colunas_nselecionados[$Ic]]; 
                      }
@@ -203,7 +206,7 @@ db_postmemory($HTTP_POST_VARS);
           <fieldset>
             <legend><b>Salário família para dedução</b></legend>
               <table>
-                <?
+                <?php
                 $result_dados_rubricas = $clrhrubricas->sql_record($clrhrubricas->sql_query_file(null,db_getsession('DB_instit'),"rh27_rubric, rh27_descr","rh27_rubric"," rh27_rubric in ('R918','R919','R920') and rh27_instit = ".db_getsession('DB_instit')));
                 if($clrhrubricas->numrows > 0){
                   for($i=0; $i<$clrhrubricas->numrows; $i++){
@@ -217,28 +220,70 @@ db_postmemory($HTTP_POST_VARS);
                          ";
                   }
                 }
-          ?>
-        </table>
+                ?>
+              </table>
           </fieldset>
         </td>
       </tr>
+      <tr>
+        <td colspan="2">
+          <fieldset id="fieldsetFiltroFaixaValor">
+            <legend><b>Filtro por faixa de valor</b></legend>
+              <table>
+                <tr>
+                  <td>
+                    <input type='checkbox' name='faixa1' id='faixa1' value='faixa1'> 1ª Faixa de R$ 0,00 até R$ 2.424,00
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type='checkbox' name='faixa2' id='faixa2' value='faixa2'> 2ª Faixa de R$ 2.424,01 até R$ 3.636,00
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type='checkbox' name='faixa3' id='faixa3' value='faixa3'> 3ª Faixa de R$ 3.636,01 até R$ 4.848,00
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type='checkbox' name='faixa4' id='faixa4' value='faixa4'> 4ª Faixa de R$ 4.848,01 até R$ 6.060,00
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type='checkbox' name='faixa5' id='faixa5' value='faixa5'> 5ª Faixa de R$ 6.060,01 até R$ 7.087,22
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type='checkbox' name='faixa6' id='faixa6' value='faixa6'> 6ª Faixa de R$ 7.087,23 até R$ 12.120,00
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type='checkbox' name='faixa7' id ='faixa7' value='faixa7'> 7ª Faixa acima de R$ 12.120,01
+                  </td>
+                </tr>
+              </table>
+          </fieldset>
+        </td>
+      </tr>      
     </table>
-
   </fieldset>
-
-  <br />
-  <center>
-    <input name="emite" id="emite" type="button" value="Processar" onclick="js_emite();" >
-  </center>
-
+  <input name="emite" id="emite" type="button" value="Processar" onclick="js_emite();" >
 </form>
-
+</div>
 <?php
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+db_menu();
 ?>
 </body>
 </html>
 <script type="text/javascript">
+
+var oToogle1 = new DBToogle('fieldsetFiltroFaixaValor', false);
+
+
 function js_emite() {
 
   if(document.form1.anofolha.value == ""){
@@ -284,18 +329,33 @@ function js_emite() {
       qry+= "&R920=true";
     }
 
+    qry+= "&faixa1="+$("faixa1").checked;
+    qry+= "&faixa2="+$("faixa2").checked;
+    qry+= "&faixa3="+$("faixa3").checked;
+    qry+= "&faixa4="+$("faixa4").checked;
+    qry+= "&faixa5="+$("faixa5").checked;
+    qry+= "&faixa6="+$("faixa6").checked;
+    qry+= "&faixa7="+$("faixa7").checked;
+
     /**
      * se folha for complementar passamos o numero da complementar, o r48_semest
      */
     if ( document.form1.tipofol.value == 'r48' ) {
-      qry += '&complementar=' + document.form1.complementar.value;
+      var sComplementar = 0;
+      if (document.form1.complementar) {
+        sComplementar = document.form1.complementar.value;
+      }
+      qry += '&complementar=' + sComplementar;
     }
 
     jan = window.open('pes2_previdencia002.php'+qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
     jan.moveTo(0,0);
   }
 }
-function js_complementar(opcao){
+
+
+function js_complementar(opcao) {
+
   selecionados = "";
   virgula_ssel = "";
 

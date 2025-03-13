@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 ?>
 <html>
 <head>
@@ -167,7 +167,7 @@ input {
                      on a.codarq = am.codarq
                      ".$qr."
                      order by codmod";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $numrows = pg_numrows($result);
   $RecordsetTabMod = $result;
   if($numrows == 0) {
@@ -179,7 +179,7 @@ input {
   } else {
   //cria drop table
     for($i = 0;$i < $numrows;$i++) {
-	  $campo = pg_exec("select c.nomecam
+	  $campo = db_query("select c.nomecam
 	                    from db_syscampo c
 				 inner join db_sysarqcamp ac
 				 on ac.codcam = c.codcam 
@@ -191,7 +191,7 @@ input {
 	//cria drop sequence
     fputs($fd,"\n\n\n"); 		
 	for($i = 0;$i < $numrows;$i++) {
-	  $seq = pg_exec("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
+	  $seq = db_query("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
 	                  from db_syssequencia s
 					  inner join db_sysarqcamp a
 					  on a.codsequencia = s.codsequencia
@@ -203,7 +203,7 @@ input {
 	//cria sequencias
     fputs($fd,"\n\n\n"); 	
 	for($i = 0;$i < $numrows;$i++) {
-	  $seq = pg_exec("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
+	  $seq = db_query("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
 	                  from db_syssequencia s
 					  inner join db_sysarqcamp a
 					  on a.codsequencia = s.codsequencia
@@ -222,7 +222,7 @@ input {
     fputs($fd,"\n\n\n"); 
 	//cria tabelas
     for($i = 0;$i < $numrows;$i++) {
-        $campo = pg_exec("select c.nomecam,c.conteudo,c.valorinicial,s.nomesequencia,s.codsequencia
+        $campo = db_query("select c.nomecam,c.conteudo,c.valorinicial,s.nomesequencia,s.codsequencia
                           from db_syscampo c
                           inner join db_sysarqcamp a
                              on a.codcam = c.codcam
@@ -238,7 +238,7 @@ input {
           if($j == $Ncampos - 1) {
             // Chave Primaria
             if(isset($pk)) {
-              $pk = pg_exec("select a.nomearq,c.nomecam,p.sequen,c.conteudo
+              $pk = db_query("select a.nomearq,c.nomecam,p.sequen,c.conteudo
                              from db_sysprikey p
                                   inner join db_sysarquivo a on a.codarq = p.codarq
                                   inner join db_syscampo c on c.codcam = p.codcam
@@ -305,13 +305,13 @@ input {
 if(isset($fk)) {
   fputs($fd,"\n\n\n-- CHAVE ESTRANGEIRA\n\n\n");
   for($i = 0;$i < $numrows;$i++) {
-    $grupo = pg_exec("select count(referen),referen
+    $grupo = db_query("select count(referen),referen
                       from db_sysforkey
                       where codarq = ".pg_result($result,$i,"codarq")."
                       group by referen");
     $Ngrupo = pg_numrows($grupo);
     for($j = 0;$j < $Ngrupo;$j++) {
-      $fk = pg_exec("select pai.nomearq as t_pai,c.nomecam
+      $fk = db_query("select pai.nomearq as t_pai,c.nomecam
                      from db_sysforkey f
                      inner join db_sysarquivo pai
                      on pai.codarq = f.referen
@@ -353,14 +353,14 @@ if(isset($fk)) {
 if(isset($indice)) {
   fputs($fd,"\n\n\n-- INDICES\n\n\n");
   for($i = 0;$i < $numrows;$i++) {
-    $ind = pg_exec("select i.codind,i.nomeind,i.campounico
+    $ind = db_query("select i.codind,i.nomeind,i.campounico
                     from db_sysindices i
                     inner join db_sysarquivo a
                     on a.codarq = i.codarq
                     where a.codarq = ".pg_result($result,$i,"codarq"));
     if(($Ni = pg_numrows($ind)) > 0) {
       for($j = 0;$j < $Ni;$j++) {
-        $Ncam = pg_exec("select c.nomecam
+        $Ncam = db_query("select c.nomecam
                          from db_syscampo c
                          inner join db_syscadind ci
                          on ci.codcam = c.codcam
@@ -384,7 +384,7 @@ if(isset($indice)) {
 //Funções
 if(isset($funcoes)) {
   fputs($fd,"\n\n\n-- FUNÇÕES\n\n\n");
-  $result = pg_exec("select triggerfuncao,nomefuncao,corpofuncao from db_sysfuncoes where triggerfuncao = '0'");
+  $result = db_query("select triggerfuncao,nomefuncao,corpofuncao from db_sysfuncoes where triggerfuncao = '0'");
   $numrows = pg_numrows($result);
   for($i = 0;$i < $numrows;$i++) {
     fputs($fd,"DROP FUNCTION ".trim(pg_result($result,$i,"nomefuncao")).";\n");	
@@ -397,7 +397,7 @@ if(isset($funcoes)) {
 //Views
 if(isset($views)) {
   fputs($fd,"\n\n\n-- VISÕES\n\n\n");
-  $result = pg_exec("select triggerfuncao,nomefuncao,corpofuncao from db_sysfuncoes where triggerfuncao = '2'");
+  $result = db_query("select triggerfuncao,nomefuncao,corpofuncao from db_sysfuncoes where triggerfuncao = '2'");
   $numrows = pg_numrows($result);
   for($i = 0;$i < $numrows;$i++) {
     fputs($fd,"DROP VIEW ".trim(pg_result($result,$i,"nomefuncao")).";\n");
@@ -417,7 +417,7 @@ if(isset($triggers)) {
     $str .= $c.pg_result($RecordsetTabMod,$i,"codarq");
 	$c = ",";
   }
-  $result = pg_exec("select f.corpofuncao,f.nomefuncao,t.nometrigger,t.quandotrigger,t.eventotrigger,tab.nomearq
+  $result = db_query("select f.corpofuncao,f.nomefuncao,t.nometrigger,t.quandotrigger,t.eventotrigger,tab.nomearq
                      from db_sysfuncoes f
 					 inner join db_systriggers t
 					 on t.codfuncao = f.codfuncao

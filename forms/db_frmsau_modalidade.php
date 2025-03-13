@@ -79,7 +79,7 @@ db_input('sd82_i_mescomp',2,$Isd82_i_mescomp,true,'text',$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_modalidade','func_sau_modalidade.php?funcao_js=parent.js_preenchepesquisa|sd82_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_modalidade','func_sau_modalidade.php?funcao_js=parent.js_preenchepesquisa|sd82_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_modalidade.hide();

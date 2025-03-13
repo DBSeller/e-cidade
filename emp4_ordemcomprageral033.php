@@ -26,23 +26,23 @@
  */
 
 //echo ($HTTP_SERVER_VARS['QUERY_STRING']);exit;
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empempitem_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_matordem_classe.php");
-include("classes/db_db_almox_classe.php");
-include("classes/db_db_almoxdepto_classe.php");
-include("classes/db_matparam_classe.php");
-include("classes/db_matordemitem_classe.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_empparametro_classe.php");
-include("libs/db_libdocumento.php");
-include("libs/db_utils.php");
-include("classes/db_pcparam_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empempitem_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
+include(modification("classes/db_matparam_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_empparametro_classe.php"));
+include(modification("libs/db_libdocumento.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_pcparam_classe.php"));
 
 $clmatordem      = new cl_matordem;
 $clmatparam      = new cl_matparam;
@@ -189,7 +189,7 @@ if (isset($oPost->incluir)) {
         inner join db_usuarios u on c.id_usuario =  u.id_usuario
         where z01_numcgm = ".$clmatordem->m51_numcgm."
         and usuext = 1";
-      $rsCgm    = pg_query($sqlCgm);
+      $rsCgm    = db_query($sqlCgm);
       if (pg_num_rows($rsCgm) > 0 ){
 
         db_fieldsmemory($rsCgm,0);
@@ -230,7 +230,7 @@ if (isset($oPost->incluir)) {
 </tr>
 </table>
 <?
-include("forms/db_frmordemcomprageral.php");
+include(modification("forms/db_frmordemcomprageral.php"));
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 <?

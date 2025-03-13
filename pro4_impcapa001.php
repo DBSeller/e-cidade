@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulo = new rotulocampo();
 $oRotulo->label("p58_codproc");
@@ -84,7 +84,7 @@ function abre() {
                 <?=db_ancora('Processo:',"js_pesquisaprotocolo(true, 'p58_codproc');",1); ?>
               </td>
               <td>
-                <input type="text" size="10" id='p58_codproc' name="p58_codproc" onChange="js_pesquisaprotocolo(false, 'p58_codproc');">
+                <input type="text" size="20" id='p58_codproc' name="p58_codproc" onChange="js_pesquisaprotocolo(false, 'p58_codproc');">
               </td>
               <td>
                 <!-- <b>Até</b> -->
@@ -96,7 +96,7 @@ function abre() {
                 <?=db_ancora("Até:","js_pesquisaprotocolo(true, 'p58_codprocfin');",1);?>
               </td>
               <td>
-                <input type="text" size="10" id='p58_codprocfin' name="p58_codprocfin" onChange="js_pesquisaprotocolo(false, 'p58_codprocfin');">
+                <input type="text" size="20" id='p58_codprocfin' name="p58_codprocfin" onChange="js_pesquisaprotocolo(false, 'p58_codprocfin');">
               </td>
             </tr>
           </table>
@@ -130,7 +130,7 @@ function js_pesquisaprotocolo(mostra, campo) {
   }
   if(mostra==true) {
   
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_despint',
                         //'func_procdespint.php?reimprime=1&grupo=1&funcao_js=parent.'+sFuncaoRetorno+'|p58_codproc|p58_requer',
                         'func_procdespint.php?reimprime=1&grupo=1&funcao_js=parent.'+sFuncaoRetorno+'|dl_processo|p58_requer',
@@ -138,7 +138,7 @@ function js_pesquisaprotocolo(mostra, campo) {
                         true);
   } else {
      if (sCampo.value != '') {
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_despint',
                             'func_procdespint.php?reimprime=1&grupo=1&pesquisa_chave='+sCampo.value+
                             '&funcao_js=parent.'+sFuncaoRetornoChange ,'Pesquisar Protocolo',

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -30,7 +30,7 @@
  * @package    Educacao
  * @subpackage Relatorio
  * @author     André Mello - andre.mello@dbseller.com.br
- * @version    $Revision: 1.7 $
+ * @version    $Revision: 1.8 $
  */
 class EstatisticaAlunosMatriculados {
 
@@ -124,6 +124,12 @@ class EstatisticaAlunosMatriculados {
    */
   private function getCalculosTurma ( Turma $oTurma, $iCodigoEtapa ) {
 
+/* FHSYS Capacidade da Turma (Sala) */
+    $sSqlCapac = "select ed16_i_capacidade from turma inner join sala on ed57_i_sala = ed16_i_codigo where ed57_i_codigo = ".$oTurma->getCodigo();
+    $rSqlCapac = db_query($sSqlCapac);
+    $capac     = pg_result($rSqlCapac,0,0);
+/* FHSYS Capacidade da Turma (Sala) */
+
     $oEtapa       = EtapaRepository::getEtapaByCodigo($iCodigoEtapa);
 
     $oDadosTurma                          = new stdClass();
@@ -132,19 +138,30 @@ class EstatisticaAlunosMatriculados {
     $oDadosTurma->iCodigo                 = $oTurma->getCodigo();
     $oDadosTurma->lTurnoIntegral          = $oTurma->getTurno()->isIntegral();
     $oDadosTurma->lIsInfantil             = $oTurma->getBaseCurricular()->getCurso()->getEnsino()->isInfantil();
+    $oDadosTurma->sAbreviaturaEnsino      = $oTurma->getBaseCurricular()->getCurso()->getEnsino()->getAbreviatura();
+    $oDadosTurma->sBaseCurricular         = $oTurma->getBaseCurricular()->getDescricao();
     $oDadosTurma->matricula_inicial       = "0";
     $oDadosTurma->matriculas_evadidas     = "0";
     $oDadosTurma->matriculas_canceladas   = "0";
     $oDadosTurma->matriculas_transferidas = "0";
+    $oDadosTurma->matriculas_trocas       = "0";
     $oDadosTurma->matriculas_progredidas  = "0";
     $oDadosTurma->matriculas_falecidas    = "0";
+    $oDadosTurma->matriculas_nee          = "0"; /* FHSYS */
     $oDadosTurma->matriculas_efetivas     = "0";
     $oDadosTurma->total_vagas             = "0";
     $oDadosTurma->total_disponiveis       = "0";
+    $oDadosTurma->total_capacidade        = "0"; /* FHSYS */
 
     $aVagas            = $oTurma->getVagas();
     $aVagasDisponiveis = $oTurma->getVagasDisponiveis();
+/* FHSYS Capacidade da Turma (Sala) */
+    $aCapacidade       = $capac;
+/* FHSYS Capacidade da Turma (Sala) */
 
+$oRetorno          = new stdClass();
+$oRetorno->status  = 1;
+$oRetorno->message = '';
     /**
      * Valida se o ensino é infantil de turno integral.
      * Se for verifica as vagas da turma, vagas disponiveis e turnos da turma de acordo com os turnos de referencia
@@ -181,6 +198,11 @@ class EstatisticaAlunosMatriculados {
       foreach ($aVagasDisponiveis as $iVagasDisponiveis) {
         $oDadosTurma->total_disponiveis += "$iVagasDisponiveis";
       }
+      /* FHSYS Capacidade da Turma (Sala) */
+      foreach ($aCapacidade as $iCapacidade) {
+        $oDadosTurma->total_capacidade += "$iCapacidade";
+      }
+      /* FHSYS Capacidade da Turma (Sala) */
     } else {
 
       /**
@@ -195,6 +217,11 @@ class EstatisticaAlunosMatriculados {
         $oDadosTurma->total_disponiveis = "$iVagasDisponiveis";
         break;
       }
+
+      /* FHSYS Capacidade da Turma (Sala) */
+      $oDadosTurma->total_capacidade = $aCapacidade;
+
+      /* FHSYS Capacidade da Turma (Sala) */
     }
 
 
@@ -217,6 +244,11 @@ class EstatisticaAlunosMatriculados {
           $oDadosTurma->matriculas_transferidas++;
           break;
 
+        /* FHSYS - CONTABILIZA TROCA DE TURMA */
+        case 'TROCA DE TURMA':
+          $oDadosTurma->matriculas_trocas++;
+          break;
+
         case 'AVANÇADO':
         case 'RECLASSIFICADO':
         case 'CLASSIFICADO':
@@ -229,6 +261,11 @@ class EstatisticaAlunosMatriculados {
 
         case 'MATRICULADO':
           $oDadosTurma->matriculas_efetivas ++;
+          /* FHSYS - CONTABILIZA NEE */
+          $oAluno = AlunoRepository::getAlunoByCodigo($oMatricula->getAluno()->getCodigoAluno());
+          if (count($oAluno->getNecessidadesEspeciais()) > 0) {
+             $oDadosTurma->matriculas_nee ++;
+          }
           break;
       }
     }
@@ -261,11 +298,14 @@ class EstatisticaAlunosMatriculados {
         $oEnsino->iTotalEvadidos         = 0;
         $oEnsino->iTotalCancelados       = 0;
         $oEnsino->iTotalTransferidos     = 0;
+        $oEnsino->iTotalTrocas           = 0; /* FHSYS */
         $oEnsino->iTotalProgredidos      = 0;
         $oEnsino->iTotalObitos           = 0;
         $oEnsino->iTotalMatriculaEfetiva = 0;
+        $oEnsino->iTotalMatriculaNEE     = 0; /* FHSYS */
         $oEnsino->iTotalVagas            = 0;
         $oEnsino->iTotalVagasDisponiveis = 0;
+        $oEnsino->iTotalCapacidade       = 0; /* FHSYS */
         $this->aEnsino[$iCodigoEnsino]   = $oEnsino;
       }
 
@@ -277,11 +317,14 @@ class EstatisticaAlunosMatriculados {
       $oEtapaDados->iTotalEvadidos         = 0;
       $oEtapaDados->iTotalCancelados       = 0;
       $oEtapaDados->iTotalTransferidos     = 0;
+      $oEtapaDados->iTotalTrocas           = 0; /* FHSYS */
       $oEtapaDados->iTotalProgredidos      = 0;
       $oEtapaDados->iTotalObitos           = 0;
       $oEtapaDados->iTotalMatriculaEfetiva = 0;
+      $oEtapaDados->iTotalMatriculaNEE     = 0; /* FHSYS */
       $oEtapaDados->iTotalVagas            = 0;
       $oEtapaDados->iTotalVagasDisponiveis = 0;
+      $oEtapaDados->iTotalCapacidade       = 0; /* FHSYS */
 
       $this->aEnsino[$iCodigoEnsino]->aEtapa[$oEtapa->getOrdem()] = $oEtapaDados;
 
@@ -304,14 +347,17 @@ class EstatisticaAlunosMatriculados {
         $oEtapaDados->iTotalEvadidos         += $oTurma->matriculas_evadidas;
         $oEtapaDados->iTotalCancelados       += $oTurma->matriculas_canceladas;
         $oEtapaDados->iTotalTransferidos     += $oTurma->matriculas_transferidas;
+        $oEtapaDados->iTotalTrocas           += $oTurma->matriculas_trocas; /* FHSYS */
         $oEtapaDados->iTotalProgredidos      += $oTurma->matriculas_progredidas;
         $oEtapaDados->iTotalObitos           += $oTurma->matriculas_falecidas;
         $oEtapaDados->iTotalMatriculaEfetiva += $oTurma->matriculas_efetivas;
+        $oEtapaDados->iTotalMatriculaNEE     += $oTurma->matriculas_nee; /* FHSYS */
 
         if( !in_array($oTurma->iCodigo, $aTurmasPercorridas) ){
 
           $oEtapaDados->iTotalVagas            += $oTurma->total_vagas;
           $oEtapaDados->iTotalVagasDisponiveis += $oTurma->total_disponiveis;
+          $oEtapaDados->iTotalCapacidade       += $oTurma->total_capacidade; /* FHSYS */
           $aTurmasPercorridas[] = $oTurma->iCodigo;
         }
       }
@@ -329,11 +375,14 @@ class EstatisticaAlunosMatriculados {
         $oEnsino->iTotalEvadidos         += $oEtapa->iTotalEvadidos        ;
         $oEnsino->iTotalCancelados       += $oEtapa->iTotalCancelados      ;
         $oEnsino->iTotalTransferidos     += $oEtapa->iTotalTransferidos    ;
+        $oEnsino->iTotalTrocas           += $oEtapa->iTotalTrocas          ; /* FHSYS */
         $oEnsino->iTotalProgredidos      += $oEtapa->iTotalProgredidos     ;
         $oEnsino->iTotalObitos           += $oEtapa->iTotalObitos          ;
         $oEnsino->iTotalMatriculaEfetiva += $oEtapa->iTotalMatriculaEfetiva;
-        $oEnsino->iTotalVagas            += $oEtapa->iTotalVagas;
+        $oEnsino->iTotalMatriculaNEE     += $oEtapa->iTotalMatriculaNEE    ; /* FHSYS */
+        $oEnsino->iTotalVagas            += $oEtapa->iTotalVagas           ;
         $oEnsino->iTotalVagasDisponiveis += $oEtapa->iTotalVagasDisponiveis;
+        $oEnsino->iTotalCapacidade       += $oEtapa->iTotalCapacidade      ; /* FHSYS */
       }
     }
 
@@ -351,9 +400,11 @@ class EstatisticaAlunosMatriculados {
       $oEnsino->iPercentualEvadidos         = 0;
       $oEnsino->iPercentualCancelados       = 0;
       $oEnsino->iPercentualTransferidos     = 0;
+      $oEnsino->iPercentualTrocas           = 0; /* FHSYS */
       $oEnsino->iPercentualProgredidos      = 0;
       $oEnsino->iPercentualObitos           = 0;
       $oEnsino->iPercentualMatriculaEfetiva = 0;
+      $oEnsino->iPercentualMatriculaNEE     = 0; /* FHSYS */
       $oEnsino->iPercentualVagasDisponiveis = 0;
 
       if ($oEnsino->iTotalMatriculaInicial != 0 ) {
@@ -361,9 +412,11 @@ class EstatisticaAlunosMatriculados {
         $oEnsino->iPercentualEvadidos         = round (($oEnsino->iTotalEvadidos / $oEnsino->iTotalMatriculaInicial) * 100, 2);
         $oEnsino->iPercentualCancelados       = round (($oEnsino->iTotalCancelados / $oEnsino->iTotalMatriculaInicial) * 100, 2);
         $oEnsino->iPercentualTransferidos     = round (($oEnsino->iTotalTransferidos / $oEnsino->iTotalMatriculaInicial) * 100, 2);
+        $oEnsino->iPercentualTrocas           = round (($oEnsino->iTotalTrocas / $oEnsino->iTotalMatriculaInicial) * 100, 2); /* FHSYS */
         $oEnsino->iPercentualProgredidos      = round (($oEnsino->iTotalProgredidos / $oEnsino->iTotalMatriculaInicial) * 100, 2);
         $oEnsino->iPercentualObitos           = round (($oEnsino->iTotalObitos / $oEnsino->iTotalMatriculaInicial) * 100, 2);
         $oEnsino->iPercentualMatriculaEfetiva = round (($oEnsino->iTotalMatriculaEfetiva / $oEnsino->iTotalMatriculaInicial) * 100, 2);
+        $oEnsino->iPercentualMatriculaNEE     = round (($oEnsino->iTotalMatriculaNEE / $oEnsino->iTotalMatriculaInicial) * 100, 2); /* FHSYS */
         $oEnsino->iPercentualVagasDisponiveis = round (($oEnsino->iTotalVagasDisponiveis / $oEnsino->iTotalVagas) * 100, 2);
       }
 
@@ -372,9 +425,11 @@ class EstatisticaAlunosMatriculados {
         $oEtapa->iPercentualEvadidos         = 0;
         $oEtapa->iPercentualCancelados       = 0;
         $oEtapa->iPercentualTransferidos     = 0;
+        $oEtapa->iPercentualTrocas           = 0; /* FHSYS */
         $oEtapa->iPercentualProgredidos      = 0;
         $oEtapa->iPercentualObitos           = 0;
         $oEtapa->iPercentualMatriculaEfetiva = 0;
+        $oEtapa->iPercentualMatriculaNEE     = 0; /* FHSYS */
         $oEtapa->iPercentualVagasDisponiveis = 0;
 
         if ( $oEtapa->iTotalMatriculaInicial != 0 ) {
@@ -382,9 +437,11 @@ class EstatisticaAlunosMatriculados {
           $oEtapa->iPercentualEvadidos         = round (($oEtapa->iTotalEvadidos / $oEtapa->iTotalMatriculaInicial) * 100, 2);
           $oEtapa->iPercentualCancelados       = round (($oEtapa->iTotalCancelados / $oEtapa->iTotalMatriculaInicial) * 100, 2);
           $oEtapa->iPercentualTransferidos     = round (($oEtapa->iTotalTransferidos / $oEtapa->iTotalMatriculaInicial) * 100, 2);
+          $oEtapa->iPercentualTrocas           = round (($oEtapa->iTotalTrocas / $oEtapa->iTotalMatriculaInicial) * 100, 2); /* FHSYS */
           $oEtapa->iPercentualProgredidos      = round (($oEtapa->iTotalProgredidos / $oEtapa->iTotalMatriculaInicial) * 100, 2);
           $oEtapa->iPercentualObitos           = round (($oEtapa->iTotalObitos / $oEtapa->iTotalMatriculaInicial) * 100, 2);
           $oEtapa->iPercentualMatriculaEfetiva = round (($oEtapa->iTotalMatriculaEfetiva / $oEtapa->iTotalMatriculaInicial) * 100, 2);
+          $oEtapa->iPercentualMatriculaNEE     = round (($oEtapa->iTotalMatriculaNEE / $oEtapa->iTotalMatriculaInicial) * 100, 2); /* FHSYS */
 
           if( !empty($oEtapa->iTotalVagasDisponiveis) && !empty($oEtapa->iTotalVagas) ){
             $oEtapa->iPercentualVagasDisponiveis = round (($oEtapa->iTotalVagasDisponiveis / $oEtapa->iTotalVagas)  * 100, 2) ;
@@ -401,29 +458,46 @@ class EstatisticaAlunosMatriculados {
   protected function getTotalGeral() {
 
     $oTotalGeral = new stdClass();
-
+    $oTotalGeral->iTotalMatriculaInicial = 0;
+    $oTotalGeral->iTotalEvadidos         = 0;
+    $oTotalGeral->iTotalCancelados       = 0;
+    $oTotalGeral->iTotalTransferidos     = 0;
+    $oTotalGeral->iTotalTrocas           = 0; /* FHSYS */
+    $oTotalGeral->iTotalProgredidos      = 0;
+    $oTotalGeral->iTotalObitos           = 0;
+    $oTotalGeral->iTotalMatriculaEfetiva = 0;
+    $oTotalGeral->iTotalMatriculaNEE     = 0; /* FHSYS */
+    $oTotalGeral->iTotalVagas            = 0;
+    $oTotalGeral->iTotalVagasDisponiveis = 0;
+    $oTotalGeral->iTotalCapacidade       = 0; /* FHSYS */
     foreach ( $this->aEnsino as $oEnsino ) {
 
       $oTotalGeral->iTotalMatriculaInicial += $oEnsino->iTotalMatriculaInicial;
       $oTotalGeral->iTotalEvadidos         += $oEnsino->iTotalEvadidos        ;
       $oTotalGeral->iTotalCancelados       += $oEnsino->iTotalCancelados      ;
       $oTotalGeral->iTotalTransferidos     += $oEnsino->iTotalTransferidos    ;
+      $oTotalGeral->iTotalTrocas           += $oEnsino->iTotalTrocas          ; /* FHSYS */
       $oTotalGeral->iTotalProgredidos      += $oEnsino->iTotalProgredidos     ;
       $oTotalGeral->iTotalObitos           += $oEnsino->iTotalObitos          ;
       $oTotalGeral->iTotalMatriculaEfetiva += $oEnsino->iTotalMatriculaEfetiva;
+      $oTotalGeral->iTotalMatriculaNEE     += $oEnsino->iTotalMatriculaNEE    ; /* FHSYS */
       $oTotalGeral->iTotalVagas            += $oEnsino->iTotalVagas           ;
       $oTotalGeral->iTotalVagasDisponiveis += $oEnsino->iTotalVagasDisponiveis;
+      $oTotalGeral->iTotalCapacidade       += $oEnsino->iTotalCapacidade      ; /* FHSYS */
     }
 
     $oTotalGeral->iPercentualEvadidos         = round (($oTotalGeral->iTotalEvadidos         / $oTotalGeral->iTotalMatriculaInicial) * 100, 2);
     $oTotalGeral->iPercentualCancelados       = round (($oTotalGeral->iTotalCancelados       / $oTotalGeral->iTotalMatriculaInicial) * 100, 2);
     $oTotalGeral->iPercentualTransferidos     = round (($oTotalGeral->iTotalTransferidos     / $oTotalGeral->iTotalMatriculaInicial) * 100, 2);
+    $oTotalGeral->iPercentualTrocas           = round (($oTotalGeral->iTotalTrocas           / $oTotalGeral->iTotalMatriculaInicial) * 100, 2);
     $oTotalGeral->iPercentualProgredidos      = round (($oTotalGeral->iTotalProgredidos      / $oTotalGeral->iTotalMatriculaInicial) * 100, 2);
     $oTotalGeral->iPercentualObitos           = round (($oTotalGeral->iTotalObitos           / $oTotalGeral->iTotalMatriculaInicial) * 100, 2);
     $oTotalGeral->iPercentualMatriculaEfetiva = round (($oTotalGeral->iTotalMatriculaEfetiva / $oTotalGeral->iTotalMatriculaInicial) * 100, 2);
+    $oTotalGeral->iPercentualMatriculaNEE     = round (($oTotalGeral->iTotalMatriculaNEE     / $oTotalGeral->iTotalMatriculaInicial) * 100, 2); /* FHSYS */
     $oTotalGeral->iPercentualVagasDisponiveis = round (($oTotalGeral->iTotalVagasDisponiveis / $oTotalGeral->iTotalVagas)            * 100, 2);
 
     return $oTotalGeral;
   }
 
 }
+

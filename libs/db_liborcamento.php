@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -31,7 +31,8 @@ class cl_permissaodotacao {
   var $campos = " fc_estruturaldotacao(o58_anousu,o58_coddot) as o50_estrutdespesa, o58_coddot ";
   var $result = null;
 
-  function cl_permissaodotacao($anousu, $id_usuario) {
+    public function __construct($anousu, $id_usuario)
+    {
     global $db20_orgao, $db20_unidade, $db20_funcao, $db20_subfuncao, $db20_programa, $db20_projativ, $db20_codele, $db20_codigo;
     $sql ="select 'usuario' as tipo ,p.*
     from db_permemp p
@@ -149,68 +150,68 @@ class cl_estrutura {
     if ($this->mascara == true) {
       ?>
       <tr>
-      <td nowrap title="Máscara do campo <?=@$picture?>">
-      <b>Máscara:</b>
-      </td>
-      <td>
+        <td nowrap title="Máscara do campo <?=@$picture?>">
+          <b>Máscara:</b>
+        </td>
+        <td>
 
-      <input name="mascara"  readonly disabled size='<?=$this->size?>' type="text"  value="<?=$mascara?>"    >
-      </td>
+          <input name="mascara"  readonly disabled size='<?=$this->size?>' type="text"  value="<?=$mascara?>"    >
+        </td>
       </tr>
       <?
 
 
     }
-    if ($this->input == false) {
-      ?>
-      <tr>
+  if ($this->input == false) {
+    ?>
+    <tr>
       <td nowrap title="<?=@$$title?>">
-      <?=@$$label?>
+        <?=@$$label?>
       </td>
       <td>
-      <?
+        <?
 
 
-    }
-    ?>
-    <input title="<?=@$$title?>" name="<?=$picture?>" maxlength='<?=$tamanho?>' size='<?=$this->size?>' type="text"  value="<?=@$$picture?>" onKeyPress="return js_mascara01_<?=$picture?>(event,this.value);"  <?=$funcao?> <?=($this->db_opcao==22||$this->db_opcao==33||$this->db_opcao==3?"readonly style=\"background-color:#DEB887\" ":"")?> >
+        }
+        ?>
+        <input title="<?=@$$title?>" name="<?=$picture?>" maxlength='<?=$tamanho?>' size='<?=$this->size?>' type="text"  value="<?=@$$picture?>" onKeyPress="return js_mascara01_<?=$picture?>(event,this.value);"  <?=$funcao?> <?=($this->db_opcao==22||$this->db_opcao==33||$this->db_opcao==3?"readonly style=\"background-color:#DEB887\" ":"")?> >
+        <?
+
+        if ($this->input == false) {
+        ?>
+      </td>
+    </tr>
     <?
 
-    if ($this->input == false) {
-      ?>
-      </td>
-      </tr>
-      <?
 
-
-    }
+  }
     ?>
     <script>
-    function js_mascara01_<?=$picture?>(evt,obj){
-      var evt = (evt) ? evt : (window.event) ? window.event : "";
-      if(evt.charCode >47 && evt.charCode <58 ){//8:backspace|46:delete|190:.
-        str='<?=$mascara?>';
-        tam=obj.length;
-        dig=str.substr(tam,1);
-        if(dig=="."){
-          document.<?=$this->nomeform?>.<?=$picture?>.value=obj+".";
+      function js_mascara01_<?=$picture?>(evt,obj){
+        var evt = (evt) ? evt : (window.event) ? window.event : "";
+        if(evt.charCode >47 && evt.charCode <58 ){//8:backspace|46:delete|190:.
+          str='<?=$mascara?>';
+          tam=obj.length;
+          dig=str.substr(tam,1);
+          if(dig=="."){
+              document.<?=$this->nomeform?>.<?=$picture?>.value = obj + ".";
+          }
+          return true;
+        }else if(evt.charCode=='0'){
+          return true;
+        }else{
+          return false;
         }
-        return true;
-      }else if(evt.charCode=='0'){
-        return true;
-      }else{
-        return false;
       }
-    }
-    function js_mascara02_<?=$picture?>(obj){
-      obj=document.<?=$this->nomeform?>.<?=$picture?>.value;
-      while(obj.search(/\./)!='-1'){
-        obj=obj.replace(/\./,'');
-      }
-      <?
+      function js_mascara02_<?=$picture?>(obj){
+          obj = document.<?php echo $this->nomeform; ?>.<?php echo $picture; ?>.value;
+        while(obj.search(/\./)!='-1'){
+          obj=obj.replace(/\./,'');
+        }
+        <?
 
 
-      if ($this->autocompletar == true) {
+        if ($this->autocompletar == true) {
         ?>
         tam = <?=strlen(str_replace(".","",$mascara))?>;
         for(i=obj.length; i<tam; i++){
@@ -219,49 +220,41 @@ class cl_estrutura {
         <?
 
 
-      }
-      ?>
-      //analise da estrutura passada
-      str='<?=$mascara?>';
-      nada='';
-      matriz=str.split(nada);
-      tam=matriz.length;
-      arr=new Array();
-      cont=0;
-      for(i=0; i<tam; i++){
-        if(matriz[i]=='.'){
-          arr[cont]=i;
-          cont++;
         }
-      }
-      //fim
-      for(i=0; i<arr.length; i++){
-        pos=arr[i];
-        strpos=obj.substr(pos,1);
-        if(strpos!='' && strpos!='.'){
-          ini=obj.slice(0,pos);
-          fim=obj.slice(pos);
-          obj=ini+"."+fim;
-        }
-      }
-      document.<?=$this->nomeform?>.<?=$picture?>.value=obj;
-      <?
-
-
-      if ($this->reload == true) {
         ?>
+        //analise da estrutura passada
+        str='<?=$mascara?>';
+        nada='';
+        matriz=str.split(nada);
+        tam=matriz.length;
+          arr = [];
+        cont=0;
+        for(i=0; i<tam; i++){
+          if(matriz[i]=='.'){
+            arr[cont]=i;
+            cont++;
+          }
+        }
+        //fim
+        for(i=0; i<arr.length; i++){
+          pos=arr[i];
+          strpos=obj.substr(pos,1);
+          if(strpos!='' && strpos!='.'){
+            ini=obj.slice(0,pos);
+            fim=obj.slice(pos);
+            obj=ini+"."+fim;
+          }
+        }
+          document.<?php echo $this->nomeform; ?>.<?php echo $picture; ?>.value = obj;
+          <?php if ($this->reload == true) { ?>
         obj=document.createElement('input');
         obj.setAttribute('name','atualizar');
         obj.setAttribute('type','hidden');
         obj.setAttribute('value',"atualizar");
         document.<?=$this->nomeform?>.appendChild(obj);
         document.<?=$this->nomeform?>.submit();
-        <?
-
-
+          <?php } ?>
       }
-      ?>
-    }
     </script>
     <?
 
@@ -655,31 +648,31 @@ function db_le_mae($codigo, $nivel = false) {
 
 function estruturalNivel($sEstrutural) {
 
-    $iNiveis = array();
-    $iAux    = 1;
-    $iNiveis = explode(".", $sEstrutural);
-    $iLaco   = count($iNiveis);
+  $iNiveis = array();
+  $iAux    = 1;
+  $iNiveis = explode(".", $sEstrutural);
+  $iLaco   = count($iNiveis);
 
-    for ($i = 1; $i < $iLaco; $i++) {
+  for ($i = 1; $i < $iLaco; $i++) {
 
-      if ($iNiveis[$i] != 0 ) {
-        $iAux = $i+1;
-      }
+    if ($iNiveis[$i] != 0 ) {
+      $iAux = $i+1;
     }
-    return $iAux;
+  }
+  return $iAux;
 }
 
 function criaContaMae($string) {
 
-  	$string = db_formatar($string,"sistema");
-  	$iNivel = estruturalNivel($string);
-  	$stringnova = "";
-  	$aNiveis = explode(".", $string);
-    for ($i = 0;  $i < $iNivel; $i++) {
+  $string = db_formatar($string,"sistema");
+  $iNivel = estruturalNivel($string);
+  $stringnova = "";
+  $aNiveis = explode(".", $string);
+  for ($i = 0;  $i < $iNivel; $i++) {
 
-      $stringnova .=  $aNiveis[$i];
-    }
-    return $stringnova;
+    $stringnova .=  $aNiveis[$i];
+  }
+  return $stringnova;
 }
 
 ///////// cria estrutura de balancete para as receitas do ppa
@@ -757,6 +750,8 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
   GLOBAL $estrut;
   GLOBAL $descr_rece;
   GLOBAL $recurso;
+  GLOBAL $complementoRecurso;
+  GLOBAL $filtroLoaComplemento;
   GLOBAL $descr_recu;
   GLOBAL $a1;
   GLOBAL $a2;
@@ -778,69 +773,69 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
 
   for ($i = 0; $i < pg_numrows($result); $i ++) {
     //  for($i = 0;$i < 20;$i++){
-      db_fieldsmemory($result, $i);
+    db_fieldsmemory($result, $i);
 
-      $tot_a1 = $a1;
-      $tot_a2 = $a2;
-      $tot_a3 = $a3;
-      $tot_a4 = $a4;
+    $tot_a1 = $a1;
+    $tot_a2 = $a2;
+    $tot_a3 = $a3;
+    $tot_a4 = $a4;
 
-      $key = array_search("$estrut_mae", $work_planomae);
-      if ($key === false) { // não achou
-        $work_planomae[$seq] = $estrut_mae;
-        $work_planoestrut[$seq] = $estrut;
-        $work_plano[$seq] = array (0 => "$descr_rece", 1 => "$recurso   ", 2 => "$descr_recu", 3 => "$a1        ", 4 => "$a2        ", 5 => "$a3        ", 6 => "$a4        ");
-        $seq = $seq +1;
-      } else {
-        $work_plano[$key][3] += $a1;
-        $work_plano[$key][4] += $a2;
-        $work_plano[$key][5] += $a3;
-        $work_plano[$key][6] += $a4;
-      }
-      $estrutural = $estrut;
-      for ($ii = 1; $ii < 10; $ii ++) {
-        $estrutural = db_le_mae_conplano($estrutural);
-        $nivel = db_le_mae_conplano($estrutural, true);
-
-        $key = array_search("$estrutural", $work_planomae);
-        if ($key === false) { // não achou
-          // busca no banco e inclui
-          //echo "\n".$estrutural;
-          //echo "\n".$descr_rece;exit;
-          $res = db_query("select c60_descr as descr_rece,c60_finali,c60_codcon from conplano where c60_anousu = ".db_getsession("DB_anousu")." and c60_estrut = '$estrutural'");
-          if ($res == false || pg_numrows($res) == 0) {
-            db_redireciona("db_erros.php?fechar=true&db_erro=Está faltando cadastrar esse estrutural na contabilidade. Nível : $nivel  Estrutural : $estrutural - ano: " + db_getsession("DB_anousu"));
-            exit;
-          }
-          db_fieldsmemory($res, 0);
-
-          $work_planomae[$seq] = $estrutural;
-          $work_planoestrut[$seq] = '';
-          $work_plano[$seq] = (array (0 => $descr_rece, 1 => $recurso, 2 => $descr_recu, 3 => $a1, 4 => $a2, 5 => $a3, 6 => $a4));
-          $seq ++;
-        } else {
-          $work_plano[$key][3] += $tot_a1;
-          $work_plano[$key][4] += $tot_a2;
-          $work_plano[$key][5] += $tot_a3;
-          $work_plano[$key][6] += $tot_a4;
-        }
-        if ($nivel == 1)
-        break;
-      }
+    $key = array_search("$estrut_mae", $work_planomae);
+    if ($key === false) { // não achou
+      $work_planomae[$seq] = $estrut_mae;
+      $work_planoestrut[$seq] = $estrut;
+      $work_plano[$seq] = array (0 => "$descr_rece", 1 => "$recurso   ", 2 => "$descr_recu", 3 => "$a1        ", 4 => "$a2        ", 5 => "$a3        ", 6 => "$a4        ");
+      $seq = $seq +1;
+    } else {
+      $work_plano[$key][3] += $a1;
+      $work_plano[$key][4] += $a2;
+      $work_plano[$key][5] += $a3;
+      $work_plano[$key][6] += $a4;
     }
+    $estrutural = $estrut;
+    for ($ii = 1; $ii < 10; $ii ++) {
+      $estrutural = db_le_mae_conplano($estrutural);
+      $nivel = db_le_mae_conplano($estrutural, true);
 
-    for ($i = 0; $i < sizeof($work_planomae); $i ++) {
-      $mae = $work_planomae[$i];
-      $estrut = $work_planoestrut[$i];
-      $descr_rece = $work_plano[$i][0];
-      $recurso = $work_plano[$i][1];
-      $descr_recu = $work_plano[$i][2];
-      $a1 = $work_plano[$i][3];
-      $a2 = $work_plano[$i][4];
-      $a3 = $work_plano[$i][5];
-      $a4 = $work_plano[$i][6];
+      $key = array_search("$estrutural", $work_planomae);
+      if ($key === false) { // não achou
+        // busca no banco e inclui
+        //echo "\n".$estrutural;
+        //echo "\n".$descr_rece;exit;
+        $res = db_query("select c60_descr as descr_rece,c60_finali,c60_codcon from conplano where c60_anousu = ".db_getsession("DB_anousu")." and c60_estrut = '$estrutural'");
+        if ($res == false || pg_numrows($res) == 0) {
+          db_redireciona("db_erros.php?fechar=true&db_erro=Está faltando cadastrar esse estrutural na contabilidade. Nível : $nivel  Estrutural : $estrutural - ano: " + db_getsession("DB_anousu"));
+          exit;
+        }
+        db_fieldsmemory($res, 0);
 
-      $sql = "insert into work_pl
+        $work_planomae[$seq] = $estrutural;
+        $work_planoestrut[$seq] = '';
+        $work_plano[$seq] = (array (0 => $descr_rece, 1 => $recurso, 2 => $descr_recu, 3 => $a1, 4 => $a2, 5 => $a3, 6 => $a4));
+        $seq ++;
+      } else {
+        $work_plano[$key][3] += $tot_a1;
+        $work_plano[$key][4] += $tot_a2;
+        $work_plano[$key][5] += $tot_a3;
+        $work_plano[$key][6] += $tot_a4;
+      }
+      if ($nivel == 1)
+        break;
+    }
+  }
+
+  for ($i = 0; $i < sizeof($work_planomae); $i ++) {
+    $mae = $work_planomae[$i];
+    $estrut = $work_planoestrut[$i];
+    $descr_rece = $work_plano[$i][0];
+    $recurso = $work_plano[$i][1];
+    $descr_recu = $work_plano[$i][2];
+    $a1 = $work_plano[$i][3];
+    $a2 = $work_plano[$i][4];
+    $a3 = $work_plano[$i][5];
+    $a4 = $work_plano[$i][6];
+
+    $sql = "insert into work_pl
       values ('$mae',
       '$estrut',
       '$descr_rece',
@@ -852,29 +847,29 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       $a4)
 
       ";
-      db_query($sql);
-    }
+    db_query($sql);
+  }
 
-    $sql = "select *
+  $sql = "select *
     from work_pl
     order by estrut_mae,estrut";
 
-    if ($retsql == false) {
-      $result_final = db_query($sql);
-      //      db_criatabela($result_final); exit;
-      return $result_final;
-    } else {
-      return $sql;
-    }
+  if ($retsql == false) {
+    $result_final = db_query($sql);
+    //      db_criatabela($result_final); exit;
+    return $result_final;
+  } else {
+    return $sql;
   }
+}
 
-  //#00#// db_rpsaldo()
-  //#10#// Esta funcao retorna o recordset dos restos a Pagar, reclamações > Carlos
-  //#15#// db_rpsaldo($anousu,$w_instit,$dt_ini,$dt_fin)
-  //#20#//  $anousu  $w_instit  $dt_ini   $dt_fim
-  //#20#//  $where = exemplo ->  " and o58_funcao=10"
-  function db_rpsaldo($anousu = "", $w_instit = "=1", $dt_ini = "", $dt_fin = "", $where = "1=1", $coddoc = "") {
-    $sql = "
+//#00#// db_rpsaldo()
+//#10#// Esta funcao retorna o recordset dos restos a Pagar, reclamações > Carlos
+//#15#// db_rpsaldo($anousu,$w_instit,$dt_ini,$dt_fin)
+//#20#//  $anousu  $w_instit  $dt_ini   $dt_fim
+//#20#//  $where = exemplo ->  " and o58_funcao=10"
+function db_rpsaldo($anousu = "", $w_instit = "=1", $dt_ini = "", $dt_fin = "", $where = "1=1", $coddoc = "") {
+  $sql = "
     select
     e91_codtipo,
     e90_descr,
@@ -953,120 +948,121 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
 
     ";
 
-    $result = db_query($sql);
-    return $result;
-  }
+  $result = db_query($sql);
+  return $result;
+}
 
-  /////////////////////////
+/////////////////////////
 
-  // funcao copiada por causa do codigo do programa em carazinho que é zero (0)
-  // quando for zero o sistema trata como se não existisse e portanto da erro nos relatorios
-  // tive que colocar em vez de zero, -1 para nao ficar fora de ordem
-  // para funcionar corretamente deverá ser alterado todos os relatorios que utilizam esta funcao
-  function db_dotacaosaldo($nivel = 8, $tipo_nivel = 1, $tipo_saldo = 2, $descr = true, $where = '', $anousu = null, $dataini = null, $datafim = null, $primeiro_fim = 8, $segundo_inicio = 0, $retsql = false, $tipo_balanco = 1, $desmembra_segundo_inicio = true, $subelemento = 'nao') {
+// funcao copiada por causa do codigo do programa em carazinho que é zero (0)
+// quando for zero o sistema trata como se não existisse e portanto da erro nos relatorios
+// tive que colocar em vez de zero, -1 para nao ficar fora de ordem
+// para funcionar corretamente deverá ser alterado todos os relatorios que utilizam esta funcao
+function db_dotacaosaldo($nivel = 8, $tipo_nivel = 1, $tipo_saldo = 2, $descr = true, $where = '', $anousu = null, $dataini = null, $datafim = null, $primeiro_fim = 8, $segundo_inicio = 0, $retsql = false, $tipo_balanco = 1, $desmembra_segundo_inicio = true, $subelemento = 'nao') {
 
-    if ($anousu == null)
+  if ($anousu == null)
     $anousu = db_getsession("DB_anousu");
 
-    if ($dataini == null)
+  if ($dataini == null)
     $dataini = date('Y-m-d', db_getsession('DB_datausu'));
 
-    if ($datafim == null)
+  if ($datafim == null)
     $datafim = date('Y-m-d', db_getsession('DB_datausu'));
 
-    if ($where != '') {
-      $condicao = " and ".$where;
-    } else {
-      $condicao = "";
-    }
+  if ($where != '') {
+    $condicao = " and ".$where;
+  } else {
+    $condicao = "";
+  }
 
-    if ($tipo_balanco == 1) {
-      $tipo_pa = 'dot_ini';
-    }elseif ($tipo_balanco == 2) {
-      $tipo_pa = 'empenhado - anulado';
-    } elseif ($tipo_balanco == 3) {
-      $tipo_pa = 'liquidado';
-    } else {
-      $tipo_pa = 'pago';
-    }
+  if ($tipo_balanco == 1) {
+    $tipo_pa = 'dot_ini';
+  }elseif ($tipo_balanco == 2) {
+    $tipo_pa = 'empenhado - anulado';
+  } elseif ($tipo_balanco == 3) {
+    $tipo_pa = 'liquidado';
+  } else {
+    $tipo_pa = 'pago';
+  }
 
-    //#00#//db_dotacaosaldo
-    //#10#//Esta funcao retorna o recordset do saldo das dotações
-    //#15#//db_dotacaosaldo($nivel=8, $tipo_nivel=1, $tipo_saldo=2, $descr=true, $where='', $anousu=null, $dataini=null, $datafim=null)
-    //#20#//$nivel      : Até qual o nível será apurado o saldo, pode ser:
-    //#20#//              1 - órgão
-    //#20#//              2 - unidade
-    //#20#//              3 - função
-    //#20#//              4 - subfuncao
-    //#20#//              5 - programa
-    //#20#//              6 - projeto de atividade
-    //#20#//              7 - elemento
-    //#20#//              8 - recurso
-    //#20#//
-    //#20#//              ex. quando solicitar nivel=8 usar tipo_nivel=2 para evitar duplicação de valores
-    //#20#//
-    //#20#//$tipo_nivel : especifica a maneira de como será apurado o resultado, pode ser:
-    //#20#//              1 - traz a árvore de elementos até o nível solicitado
-    //#20#//                  Ex.: 01                  300
-    //#20#//                       01.01               100
-    //#20#//                       01.01.01             50
-    //#20#//              2 - traz o saldo do nível escolhido
-    //#20#//                  Ex.: 01.01.01             50
-    //#20#//              3 - totaliza o saldo pelo nível escolhido
-    //#20#//                  Ex.: 00.00.01           1000
-    //#20#//
-    //#20#//
-    //#20#//$tipo_saldo : 1 - dotação inicial
-    //#20#//              2 - saldo no mes da dataini
-    //#20#//              3 - saldo por período
-    //#20#//              4 - saldo por período + acumulado do período
-    //#20#//
-    //#20#//$descr      : retorna o record set com as descrições ou não, o default é 'true'
-    //#20#//
-    //#20#//$where      : condição
-    //#20#//
-    //#20#//$anousu     : ano do orçamento
-    //#20#//
-    //#20#//$dataini    : data inicial do intervalo
-    //#20#//
-    //#20#//$datafim    : data final do intervalo
-    //#20#//
-    //#20#//$subelemento : algumas funcoes do pad usam esse parametro como "sim",para orcamentos no desdobramento
-    //#20#//
-    //#20#//
-    //#20#//
-    //#99#//
-    //#99#//  dot_ini   			: datacao inicial (valor do orcamento)
-    //#99#//  saldo_anterior		: saldo anterior ao intervalo de tempo
-    //#99#//  empenhado			: empenhado no intervalo
-    //#99#//  anulado			: anulado no intervalo
-    //#99#//  liquidado			: liquidado no intervalo
-    //#99#//  pago				: pago no intervalo
-    //#99#//  suplementado			: suplementado no intervalo
-    //#99#//  reduzido			: reduzido no intervalo
-    //#99#//  atual				: saldo atual
-    //#99#//  reservado			: reservado
-    //#99#//  atual_menos_reservado		: saldo atual menos o reservado
-    //#99#//  atual_a_pagar			:
-    //#99#//  atual_a_pagar_liquidado
-    //#99#//  empenhado_acumulado
-    //#99#//  anulado_acumulado
-    //#99#//  liquidado_acumulado
-    //#99#//  pago_acumulado
-    //#99#//  suplementado_acumulado
-    //#99#//  reduzido_acumulado
-    //#99#//
-    //#99#//
-    //#99#//
-    //#99#//
-    //#99#//
-    //#99#//
-    // funcao para gerar work
-    // db_query('begin');
-    //   substr(o56_elemento,1,7) as o58_elemento,
-    //   9999999 as o58_coddot,
+  //#00#//db_dotacaosaldo
+  //#10#//Esta funcao retorna o recordset do saldo das dotações
+  //#15#//db_dotacaosaldo($nivel=8, $tipo_nivel=1, $tipo_saldo=2, $descr=true, $where='', $anousu=null, $dataini=null, $datafim=null)
+  //#20#//$nivel      : Até qual o nível será apurado o saldo, pode ser:
+  //#20#//              1 - órgão
+  //#20#//              2 - unidade
+  //#20#//              3 - função
+  //#20#//              4 - subfuncao
+  //#20#//              5 - programa
+  //#20#//              6 - projeto de atividade
+  //#20#//              7 - elemento
+  //#20#//              8 - recurso
+  //#20#//
+  //#20#//              ex. quando solicitar nivel=8 usar tipo_nivel=2 para evitar duplicação de valores
+  //#20#//
+  //#20#//$tipo_nivel : especifica a maneira de como será apurado o resultado, pode ser:
+  //#20#//              1 - traz a árvore de elementos até o nível solicitado
+  //#20#//                  Ex.: 01                  300
+  //#20#//                       01.01               100
+  //#20#//                       01.01.01             50
+  //#20#//              2 - traz o saldo do nível escolhido
+  //#20#//                  Ex.: 01.01.01             50
+  //#20#//              3 - totaliza o saldo pelo nível escolhido
+  //#20#//                  Ex.: 00.00.01           1000
+  //#20#//
+  //#20#//
+  //#20#//$tipo_saldo : 1 - dotação inicial
+  //#20#//              2 - saldo no mes da dataini
+  //#20#//              3 - saldo por período
+  //#20#//              4 - saldo por período + acumulado do período
+  //#20#//
+  //#20#//$descr      : retorna o record set com as descrições ou não, o default é 'true'
+  //#20#//
+  //#20#//$where      : condição
+  //#20#//
+  //#20#//$anousu     : ano do orçamento
+  //#20#//
+  //#20#//$dataini    : data inicial do intervalo
+  //#20#//
+  //#20#//$datafim    : data final do intervalo
+  //#20#//
+  //#20#//$subelemento : algumas funcoes do pad usam esse parametro como "sim",para orcamentos no desdobramento
+  //#20#//
+  //#20#//
+  //#20#//
+  //#99#//
+  //#99#//  dot_ini   			: datacao inicial (valor do orcamento)
+  //#99#//  saldo_anterior		: saldo anterior ao intervalo de tempo
+  //#99#//  empenhado			: empenhado no intervalo
+  //#99#//  anulado			: anulado no intervalo
+  //#99#//  liquidado			: liquidado no intervalo
+  //#99#//  pago				: pago no intervalo
+  //#99#//  suplementado			: suplementado no intervalo
+  //#99#//  reduzido			: reduzido no intervalo
+  //#99#//  atual				: saldo atual
+  //#99#//  reservado			: reservado
+  //#99#//  atual_menos_reservado		: saldo atual menos o reservado
+  //#99#//  atual_a_pagar			:
+  //#99#//  atual_a_pagar_liquidado
+  //#99#//  empenhado_acumulado
+  //#99#//  anulado_acumulado
+  //#99#//  liquidado_acumulado
+  //#99#//  pago_acumulado
+  //#99#//  suplementado_acumulado
+  //#99#//  reduzido_acumulado
+  //#99#//
+  //#99#//
+  //#99#//
+  //#99#//
+  //#99#//
+  //#99#//
+  // funcao para gerar work
+  // db_query('begin');
+  //   substr(o56_elemento,1,7) as o58_elemento,
+  //   9999999 as o58_coddot,
 
-   $sql = "
+  db_query("drop table if exists work_dotacao;");
+  $sql = "
      CREATE TEMP TABLE IF NOT EXISTS work_dotacao (
        o58_anousu integer,
        o58_orgao integer,
@@ -1106,6 +1102,9 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
        transfsup_acumulado double precision,
        transfred double precision,
        transfred_acumulado double precision,
+       reservado_manual_ate_data double precision,
+       reservado_automatico_ate_data double precision,
+       reservado_ate_data double precision,
        o55_tipo integer,
        o15_tipo integer,
        proj double precision,
@@ -1117,15 +1116,16 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
      TRUNCATE work_dotacao;
    ";
 
-    $sql.="INSERT INTO work_dotacao
-    select *,
+  $sql.="INSERT INTO work_dotacao
+
+    select  *,
     (case when o55_tipo  = 1 then $tipo_pa else 0 end) as proj,
     (case when o55_tipo  = 2 then $tipo_pa else 0 end) as ativ,
     (case when o55_tipo  = 3 then $tipo_pa else 0 end) as oper,
     (case when o15_tipo  =  1 then $tipo_pa else 0 end) as ordinario,
     (case when o15_tipo  <> 1 then $tipo_pa else 0 end) as vinculado
     from
-    (select o58_anousu,
+    (select distinct o58_anousu,
     o58_orgao,
     o58_unidade,
     o58_funcao,
@@ -1169,6 +1169,9 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
 		substr(fc_dotacaosaldo,316,12)::float8 as transfsup_acumulado,
 		substr(fc_dotacaosaldo,329,12)::float8 as transfred,
 		substr(fc_dotacaosaldo,342,12)::float8 as transfred_acumulado,
+		substr(fc_dotacaosaldo,355,12)::float8 as reservado_manual_ate_data,
+		substr(fc_dotacaosaldo,368,12)::float8 as reservado_automatico_ate_data,
+		substr(fc_dotacaosaldo,381,12)::float8 as reservado_ate_data,
 		o55_tipo,
     o15_tipo
     from(select *, fc_dotacaosaldo($anousu,o58_coddot,$tipo_saldo,'$dataini','$datafim')
@@ -1179,6 +1182,16 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     inner join orcprojativ ope on w.o58_projativ = ope.o55_projativ
                               and ope.o55_anousu = w.o58_anousu
     inner join orctiporec      on orctiporec.o15_codigo = w.o58_codigo
+
+    /**
+      * Comentado pois era utilizado pelo balancete da despesa e gera lentidão
+      * Importante verificar o campo o206_numero pois ele depende do campo o206_origem para saber com qual tabela ligar
+      *
+      * left join empempenho on e60_coddot = o58_coddot
+      *                    and e60_anousu = o58_anousu
+      * left join origemcomplementorecurso on o58_codigo = o206_recurso
+      *                                  and o206_numero = e60_numemp
+      */
 
     where o58_anousu = $anousu
     $condicao
@@ -1196,18 +1209,17 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     ) as x
     ) as xxx
     ";
-    //echo "<br><br>".$sql;
-    $result1 = db_query($sql);
-    // $result1 = db_query("select * from work_dotacao");
-    // db_criatabela($result1);exit;
 
-    /////// nivel 8 ///////////////
 
-    if (8 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 8 || $desmembra_segundo_inicio == false && $segundo_inicio == 8)) {
-      $xnivel8 = '';
-      if ($nivel >= 8) {
-        if ($tipo_nivel == 1 || $tipo_nivel == 2) {
-          $xnivel8 ="o58_orgao,
+  $result1 = db_query($sql);
+
+  /////// nivel 8 ///////////////
+
+  if (8 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 8 || $desmembra_segundo_inicio == false && $segundo_inicio == 8)) {
+    $xnivel8 = '';
+    if ($nivel >= 8) {
+      if ($tipo_nivel == 1 || $tipo_nivel == 2) {
+        $xnivel8 ="o58_orgao,
           o58_unidade,
           o58_funcao,
           o58_subfuncao,
@@ -1216,9 +1228,9 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
           o58_codele,
           o58_elemento,
           o58_coddot, ";
-        }
-        elseif ($tipo_nivel == 3) {
-          $xnivel8 = "   -1 as o58_orgao,
+      }
+      elseif ($tipo_nivel == 3) {
+        $xnivel8 = "   -1 as o58_orgao,
           -1 as o58_unidade,
           -1 as o58_funcao,
           -1 as o58_subfuncao,
@@ -1227,9 +1239,9 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
           -1 as o58_codele,
           ''::varchar as o58_elemento,
           -1 as o58_coddot, ";
-        }
       }
-      $nivel8 = "select
+    }
+    $nivel8 = "select
       $xnivel8
       o58_codigo,
       dot_ini,
@@ -1259,7 +1271,10 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       suplemen,
       suplemen_acumulado,
       especial,
-      especial_acumulado
+      especial_acumulado,
+      reservado_manual_ate_data,
+      reservado_automatico_ate_data,
+      reservado_ate_data
       from (
       select
       $xnivel8
@@ -1291,11 +1306,14 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       sum(suplemen+transfsup)													as suplemen,
       sum(suplemen_acumulado+transfsup_acumulado)		  as suplemen_acumulado,
       sum(especial)																		as especial,
-      sum(especial_acumulado)													as especial_acumulado
+      sum(especial_acumulado)													as especial_acumulado,
+      sum(reservado_manual_ate_data)									as reservado_manual_ate_data,
+      sum(reservado_automatico_ate_data)							as reservado_automatico_ate_data,
+      sum(reservado_ate_data)                         as reservado_ate_data
       from work_dotacao
       group by ";
-      if ($tipo_nivel != 3) {
-        $nivel8 .= "o58_orgao,
+    if ($tipo_nivel != 3) {
+      $nivel8 .= "o58_orgao,
         o58_unidade,
         o58_funcao,
         o58_subfuncao,
@@ -1304,37 +1322,37 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
         o58_codele,
         o58_elemento,
         o58_coddot ,";
-      }
-      $nivel8 .= "o58_codigo
+    }
+    $nivel8 .= "o58_codigo
       ) as i";
 
-    } else {
-      $nivel8 = '';
-    }
+  } else {
+    $nivel8 = '';
+  }
 
-    /////// nivel 7 ///////////////
+  /////// nivel 7 ///////////////
 
-    if (7 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 7 || $desmembra_segundo_inicio == false && $segundo_inicio == 7)) {
-      $xnivel7 = '';
-      if ($nivel >= 7) {
-        if ($tipo_nivel == 1 || $tipo_nivel == 2) {
-          $xnivel7 = " o58_orgao,
+  if (7 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 7 || $desmembra_segundo_inicio == false && $segundo_inicio == 7)) {
+    $xnivel7 = '';
+    if ($nivel >= 7) {
+      if ($tipo_nivel == 1 || $tipo_nivel == 2) {
+        $xnivel7 = " o58_orgao,
           o58_unidade,
           o58_funcao,
           o58_subfuncao,
           o58_programa,
           o58_projativ,";
-        }
-        elseif ($tipo_nivel == 3) {
-          $xnivel7 = "   -1 as o58_orgao,
+      }
+      elseif ($tipo_nivel == 3) {
+        $xnivel7 = "   -1 as o58_orgao,
           -1 as o58_unidade,
           -1 as o58_funcao,
           -1 as o58_subfuncao,
           -1 as o58_programa,
           -1 as o58_projativ,";
-        }
       }
-      $nivel7 = "select
+    }
+    $nivel7 = "select
       $xnivel7
       o58_codele,
       o58_elemento,
@@ -1367,8 +1385,10 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       suplemen,
       suplemen_acumulado,
       especial,
-      especial_acumulado
-
+      especial_acumulado,
+      reservado_manual_ate_data,
+      reservado_automatico_ate_data,
+      reservado_ate_data
       from (
       select
       $xnivel7
@@ -1401,46 +1421,49 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       sum(suplemen+transfsup)												  as suplemen,
       sum(suplemen_acumulado+transfsup_acumulado)			as suplemen_acumulado,
       sum(especial)																		as especial,
-      sum(especial_acumulado)													as especial_acumulado
+      sum(especial_acumulado)													as especial_acumulado,
+      sum(reservado_manual_ate_data)									as reservado_manual_ate_data,
+      sum(reservado_automatico_ate_data)              as reservado_automatico_ate_data,
+      sum(reservado_ate_data)                         as reservado_ate_data
       from work_dotacao
       group by ";
-      if ($tipo_nivel != 3) {
-        $nivel7 .= "o58_orgao,
+    if ($tipo_nivel != 3) {
+      $nivel7 .= "o58_orgao,
         o58_unidade,
         o58_funcao,
         o58_subfuncao,
         o58_programa,
         o58_projativ,";
-      }
-      $nivel7 .= "   o58_codele,
+    }
+    $nivel7 .= "   o58_codele,
       o58_elemento
       ) as g";
 
-    } else {
-      $nivel7 = '';
-    }
+  } else {
+    $nivel7 = '';
+  }
 
-    /////// nivel 6 ///////////////
+  /////// nivel 6 ///////////////
 
-    if (6 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 6 || $desmembra_segundo_inicio == false && $segundo_inicio == 6)) {
-      $xnivel6 = '';
-      if ($nivel >= 6) {
-        if ($tipo_nivel == 1 || $tipo_nivel == 2) {
-          $xnivel6 = " o58_orgao,
+  if (6 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 6 || $desmembra_segundo_inicio == false && $segundo_inicio == 6)) {
+    $xnivel6 = '';
+    if ($nivel >= 6) {
+      if ($tipo_nivel == 1 || $tipo_nivel == 2) {
+        $xnivel6 = " o58_orgao,
           o58_unidade,
           o58_funcao,
           o58_subfuncao,
           o58_programa,";
-        }
-        elseif ($tipo_nivel == 3) {
-          $xnivel6 = "-1 as o58_orgao,
+      }
+      elseif ($tipo_nivel == 3) {
+        $xnivel6 = "-1 as o58_orgao,
           -1 as o58_unidade,
           -1 as o58_funcao,
           -1 as o58_subfuncao,
           -1 as o58_programa,";
-        }
       }
-      $nivel6 = "select
+    }
+    $nivel6 = "select
       $xnivel6
       o58_projativ,
       -1 as o58_codele,
@@ -1474,75 +1497,80 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       suplemen,
       suplemen_acumulado,
       especial,
-      especial_acumulado
-
+      especial_acumulado,
+      reservado_manual_ate_data,
+      reservado_automatico_ate_data,
+      reservado_ate_data
       from (
       select
       $xnivel6
       o58_projativ,
-      sum(dot_ini)                 as dot_ini,
-      sum(saldo_anterior)          as saldo_anterior,
-      sum(empenhado)               as empenhado,
-      sum(anulado)                 as anulado,
-      sum(liquidado)               as liquidado,
-      sum(pago)                    as pago,
-      sum(suplementado)            as suplementado,
-      sum(reduzido)                as reduzido,
-      sum(atual)                   as atual,
-      sum(reservado)               as reservado,
-      sum(atual_menos_reservado)   as atual_menos_reservado,
-      sum(atual_a_pagar)           as atual_a_pagar,
-      sum(atual_a_pagar_liquidado) as atual_a_pagar_liquidado,
-      sum(empenhado_acumulado)     as empenhado_acumulado,
-      sum(anulado_acumulado)       as anulado_acumulado,
-      sum(liquidado_acumulado)     as liquidado_acumulado,
-      sum(pago_acumulado)          as pago_acumulado,
-      sum(suplementado_acumulado)  as suplementado_acumulado,
-      sum(reduzido_acumulado)      as reduzido_acumulado,
-      sum(proj)                    as proj,
-      sum(ativ)                    as ativ,
-      sum(oper)                    as oper,
-      sum(ordinario)               as ordinario,
-      sum(vinculado)               as vinculado,
-      sum(suplemen)                as suplemen,
-      sum(suplemen_acumulado)      as suplemen_acumulado,
-      sum(especial)                as especial,
-      sum(especial_acumulado)      as especial_acumulado
+      sum(dot_ini)                       as dot_ini,
+      sum(saldo_anterior)                as saldo_anterior,
+      sum(empenhado)                     as empenhado,
+      sum(anulado)                       as anulado,
+      sum(liquidado)                     as liquidado,
+      sum(pago)                          as pago,
+      sum(suplementado)                  as suplementado,
+      sum(reduzido)                      as reduzido,
+      sum(atual)                         as atual,
+      sum(reservado)                     as reservado,
+      sum(atual_menos_reservado)         as atual_menos_reservado,
+      sum(atual_a_pagar)                 as atual_a_pagar,
+      sum(atual_a_pagar_liquidado)       as atual_a_pagar_liquidado,
+      sum(empenhado_acumulado)           as empenhado_acumulado,
+      sum(anulado_acumulado)             as anulado_acumulado,
+      sum(liquidado_acumulado)           as liquidado_acumulado,
+      sum(pago_acumulado)                as pago_acumulado,
+      sum(suplementado_acumulado)        as suplementado_acumulado,
+      sum(reduzido_acumulado)            as reduzido_acumulado,
+      sum(proj)                          as proj,
+      sum(ativ)                          as ativ,
+      sum(oper)                          as oper,
+      sum(ordinario)                     as ordinario,
+      sum(vinculado)                     as vinculado,
+      sum(suplemen)                      as suplemen,
+      sum(suplemen_acumulado)            as suplemen_acumulado,
+      sum(especial)                      as especial,
+      sum(especial_acumulado)            as especial_acumulado,
+      sum(reservado_manual_ate_data)     as reservado_manual_ate_data,
+      sum(reservado_automatico_ate_data) as reservado_automatico_ate_data,
+      sum(reservado_ate_data)            as reservado_ate_data
       from work_dotacao
       group by ";
-      if ($tipo_nivel != 3) {
-        $nivel6 .= "o58_orgao,
+    if ($tipo_nivel != 3) {
+      $nivel6 .= "o58_orgao,
         o58_unidade,
         o58_funcao,
         o58_subfuncao,
         o58_programa, ";
-      }
-      $nivel6 .= "   o58_projativ
+    }
+    $nivel6 .= "   o58_projativ
       ) as f";
 
-    } else {
-      $nivel6 = '';
-    }
+  } else {
+    $nivel6 = '';
+  }
 
-    /////// nivel 5 ///////////////
+  /////// nivel 5 ///////////////
 
-    if (5 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 5 || $desmembra_segundo_inicio == false && $segundo_inicio == 5)) {
-      $xnivel5 = '';
-      if ($nivel >= 5) {
-        if ($tipo_nivel == 1 || $tipo_nivel == 2) {
-          $xnivel5 = "o58_orgao,
+  if (5 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 5 || $desmembra_segundo_inicio == false && $segundo_inicio == 5)) {
+    $xnivel5 = '';
+    if ($nivel >= 5) {
+      if ($tipo_nivel == 1 || $tipo_nivel == 2) {
+        $xnivel5 = "o58_orgao,
           o58_unidade,
           o58_funcao,
           o58_subfuncao,";
-        }
-        elseif ($tipo_nivel == 3) {
-          $xnivel5 ="-1 as o58_orgao,
+      }
+      elseif ($tipo_nivel == 3) {
+        $xnivel5 ="-1 as o58_orgao,
           -1 as o58_unidade,
           -1 as o58_funcao,
           -1 as o58_subfuncao,";
-        }
       }
-      $nivel5 = "select
+    }
+    $nivel5 = "select
       $xnivel5
       o58_programa,
       -1 as o58_projativ,
@@ -1577,72 +1605,77 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       suplemen,
       suplemen_acumulado,
       especial,
-      especial_acumulado
-
+      especial_acumulado,
+      reservado_manual_ate_data,
+      reservado_automatico_ate_data,
+      reservado_ate_data
       from (
       select
       $xnivel5
       o58_programa,
-      sum(dot_ini)                 as dot_ini,
-      sum(saldo_anterior)          as saldo_anterior,
-      sum(empenhado)               as empenhado,
-      sum(anulado)                 as anulado,
-      sum(liquidado)               as liquidado,
-      sum(pago)                    as pago,
-      sum(suplementado)            as suplementado,
-      sum(reduzido)                as reduzido,
-      sum(atual)                   as atual,
-      sum(reservado)               as reservado,
-      sum(atual_menos_reservado)   as atual_menos_reservado,
-      sum(atual_a_pagar)           as atual_a_pagar,
-      sum(atual_a_pagar_liquidado) as atual_a_pagar_liquidado,
-      sum(empenhado_acumulado)     as empenhado_acumulado,
-      sum(anulado_acumulado)       as anulado_acumulado,
-      sum(liquidado_acumulado)     as liquidado_acumulado,
-      sum(pago_acumulado)          as pago_acumulado,
-      sum(suplementado_acumulado)  as suplementado_acumulado,
-      sum(reduzido_acumulado)      as reduzido_acumulado,
-      sum(proj)                    as proj,
-      sum(ativ)                    as ativ,
-      sum(oper)                    as oper,
-      sum(ordinario)               as ordinario,
-      sum(vinculado)               as vinculado,
-      sum(suplemen)                as suplemen,
-      sum(suplemen_acumulado)      as suplemen_acumulado,
-      sum(especial)                as especial,
-      sum(especial_acumulado)      as especial_acumulado
+      sum(dot_ini)                       as dot_ini,
+      sum(saldo_anterior)                as saldo_anterior,
+      sum(empenhado)                     as empenhado,
+      sum(anulado)                       as anulado,
+      sum(liquidado)                     as liquidado,
+      sum(pago)                          as pago,
+      sum(suplementado)                  as suplementado,
+      sum(reduzido)                      as reduzido,
+      sum(atual)                         as atual,
+      sum(reservado)                     as reservado,
+      sum(atual_menos_reservado)         as atual_menos_reservado,
+      sum(atual_a_pagar)                 as atual_a_pagar,
+      sum(atual_a_pagar_liquidado)       as atual_a_pagar_liquidado,
+      sum(empenhado_acumulado)           as empenhado_acumulado,
+      sum(anulado_acumulado)             as anulado_acumulado,
+      sum(liquidado_acumulado)           as liquidado_acumulado,
+      sum(pago_acumulado)                as pago_acumulado,
+      sum(suplementado_acumulado)        as suplementado_acumulado,
+      sum(reduzido_acumulado)            as reduzido_acumulado,
+      sum(proj)                          as proj,
+      sum(ativ)                          as ativ,
+      sum(oper)                          as oper,
+      sum(ordinario)                     as ordinario,
+      sum(vinculado)                     as vinculado,
+      sum(suplemen)                      as suplemen,
+      sum(suplemen_acumulado)            as suplemen_acumulado,
+      sum(especial)                      as especial,
+      sum(especial_acumulado)            as especial_acumulado,
+      sum(reservado_manual_ate_data)     as reservado_manual_ate_data,
+      sum(reservado_automatico_ate_data) as reservado_automatico_ate_data,
+      sum(reservado_ate_data)            as reservado_ate_data
       from work_dotacao
       group by ";
-      if ($tipo_nivel != 3) {
-        $nivel5 .= "o58_orgao,
+    if ($tipo_nivel != 3) {
+      $nivel5 .= "o58_orgao,
         o58_unidade,
         o58_funcao,
         o58_subfuncao, ";
-      }
-      $nivel5 .= " o58_programa
+    }
+    $nivel5 .= " o58_programa
       ) as e";
 
-    } else {
-      $nivel5 = '';
-    }
+  } else {
+    $nivel5 = '';
+  }
 
-    /////// nivel 4 ///////////////
+  /////// nivel 4 ///////////////
 
-    if (4 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 4 || $desmembra_segundo_inicio == false && $segundo_inicio == 4)) {
-      $xnivel4 = '';
-      if ($nivel >= 4) {
-        if ($tipo_nivel == 1 || $tipo_nivel == 2) {
-          $xnivel4 = "o58_orgao,
+  if (4 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 4 || $desmembra_segundo_inicio == false && $segundo_inicio == 4)) {
+    $xnivel4 = '';
+    if ($nivel >= 4) {
+      if ($tipo_nivel == 1 || $tipo_nivel == 2) {
+        $xnivel4 = "o58_orgao,
           o58_unidade,
           o58_funcao,";
-        }
-        elseif ($tipo_nivel == 3) {
-          $xnivel4 = "-1 as o58_orgao,
+      }
+      elseif ($tipo_nivel == 3) {
+        $xnivel4 = "-1 as o58_orgao,
           -1 as o58_unidade,
           -1 as o58_funcao,";
-        }
       }
-      $nivel4 = "select
+    }
+    $nivel4 = "select
       $xnivel4
       o58_subfuncao,
       -1 as o58_programa,
@@ -1678,68 +1711,73 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       suplemen,
       suplemen_acumulado,
       especial,
-      especial_acumulado
-
+      especial_acumulado,
+      reservado_manual_ate_data,
+      reservado_automatico_ate_data,
+      reservado_ate_data
       from (
       select
       $xnivel4
       o58_subfuncao,
-      sum(dot_ini)                 as dot_ini,
-      sum(saldo_anterior)          as saldo_anterior,
-      sum(empenhado)               as empenhado,
-      sum(anulado)                 as anulado,
-      sum(liquidado)               as liquidado,
-      sum(pago)                    as pago,
-      sum(suplementado)            as suplementado,
-      sum(reduzido)                as reduzido,
-      sum(atual)                   as atual,
-      sum(reservado)               as reservado,
-      sum(atual_menos_reservado)   as atual_menos_reservado,
-      sum(atual_a_pagar)           as atual_a_pagar,
-      sum(atual_a_pagar_liquidado) as atual_a_pagar_liquidado,
-      sum(empenhado_acumulado)     as empenhado_acumulado,
-      sum(anulado_acumulado)       as anulado_acumulado,
-      sum(liquidado_acumulado)     as liquidado_acumulado,
-      sum(pago_acumulado)          as pago_acumulado,
-      sum(suplementado_acumulado)  as suplementado_acumulado,
-      sum(reduzido_acumulado)      as reduzido_acumulado,
-      sum(proj)                    as proj,
-      sum(ativ)                    as ativ,
-      sum(oper)                    as oper,
-      sum(ordinario)               as ordinario,
-      sum(vinculado)               as vinculado,
-      sum(suplemen)                as suplemen,
-      sum(suplemen_acumulado)      as suplemen_acumulado,
-      sum(especial)                as especial,
-      sum(especial_acumulado)      as especial_acumulado
+      sum(dot_ini)                       as dot_ini,
+      sum(saldo_anterior)                as saldo_anterior,
+      sum(empenhado)                     as empenhado,
+      sum(anulado)                       as anulado,
+      sum(liquidado)                     as liquidado,
+      sum(pago)                          as pago,
+      sum(suplementado)                  as suplementado,
+      sum(reduzido)                      as reduzido,
+      sum(atual)                         as atual,
+      sum(reservado)                     as reservado,
+      sum(atual_menos_reservado)         as atual_menos_reservado,
+      sum(atual_a_pagar)                 as atual_a_pagar,
+      sum(atual_a_pagar_liquidado)       as atual_a_pagar_liquidado,
+      sum(empenhado_acumulado)           as empenhado_acumulado,
+      sum(anulado_acumulado)             as anulado_acumulado,
+      sum(liquidado_acumulado)           as liquidado_acumulado,
+      sum(pago_acumulado)                as pago_acumulado,
+      sum(suplementado_acumulado)        as suplementado_acumulado,
+      sum(reduzido_acumulado)            as reduzido_acumulado,
+      sum(proj)                          as proj,
+      sum(ativ)                          as ativ,
+      sum(oper)                          as oper,
+      sum(ordinario)                     as ordinario,
+      sum(vinculado)                     as vinculado,
+      sum(suplemen)                      as suplemen,
+      sum(suplemen_acumulado)            as suplemen_acumulado,
+      sum(especial)                      as especial,
+      sum(especial_acumulado)            as especial_acumulado,
+      sum(reservado_manual_ate_data)     as reservado_manual_ate_data,
+      sum(reservado_automatico_ate_data) as reservado_automatico_ate_data,
+      sum(reservado_ate_data)            as reservado_ate_data
       from work_dotacao
       group by ";
-      if ($tipo_nivel != 3) {
-        $nivel4 .= "o58_orgao,
+    if ($tipo_nivel != 3) {
+      $nivel4 .= "o58_orgao,
         o58_unidade,
         o58_funcao, ";
-      }
-      $nivel4 .= "o58_subfuncao
+    }
+    $nivel4 .= "o58_subfuncao
       ) as d";
 
-    } else {
-      $nivel4 = '';
-    }
+  } else {
+    $nivel4 = '';
+  }
 
-    if (3 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 3 || $desmembra_segundo_inicio == false && $segundo_inicio == 3)) {
+  if (3 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 3 || $desmembra_segundo_inicio == false && $segundo_inicio == 3)) {
 
-      $xnivel3 = '';
-      if ($nivel >= 3) {
-        if ($tipo_nivel == 1 || $tipo_nivel == 2) {
-          $xnivel3 = " o58_orgao,
+    $xnivel3 = '';
+    if ($nivel >= 3) {
+      if ($tipo_nivel == 1 || $tipo_nivel == 2) {
+        $xnivel3 = " o58_orgao,
           o58_unidade,";
-        }
-        elseif ($tipo_nivel == 3) {
-          $xnivel3 = " -1 as o58_orgao,
-          -1 as o58_unidade,";
-        }
       }
-      $nivel3 = "select
+      elseif ($tipo_nivel == 3) {
+        $xnivel3 = " -1 as o58_orgao,
+          -1 as o58_unidade,";
+      }
+    }
+    $nivel3 = "select
       $xnivel3
       o58_funcao,
       -1 as o58_subfuncao,
@@ -1776,60 +1814,66 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       suplemen,
       suplemen_acumulado,
       especial,
-      especial_acumulado
+      especial_acumulado,
+      reservado_manual_ate_data,
+      reservado_automatico_ate_data,
+      reservado_ate_data
       from (
       select
       $xnivel3
       o58_funcao,
-      sum(dot_ini)                 as dot_ini,
-      sum(saldo_anterior)          as saldo_anterior,
-      sum(empenhado)               as empenhado,
-      sum(anulado)                 as anulado,
-      sum(liquidado)               as liquidado,
-      sum(pago)                    as pago,
-      sum(suplementado)            as suplementado,
-      sum(reduzido)                as reduzido,
-      sum(atual)                   as atual,
-      sum(reservado)               as reservado,
-      sum(atual_menos_reservado)   as atual_menos_reservado,
-      sum(atual_a_pagar)           as atual_a_pagar,
-      sum(atual_a_pagar_liquidado) as atual_a_pagar_liquidado,
-      sum(empenhado_acumulado)     as empenhado_acumulado,
-      sum(anulado_acumulado)       as anulado_acumulado,
-      sum(liquidado_acumulado)     as liquidado_acumulado,
-      sum(pago_acumulado)          as pago_acumulado,
-      sum(suplementado_acumulado)  as suplementado_acumulado,
-      sum(reduzido_acumulado)      as reduzido_acumulado,
-      sum(proj)                    as proj,
-      sum(ativ)                    as ativ,
-      sum(oper)                    as oper,
-      sum(ordinario)               as ordinario,
-      sum(vinculado)               as vinculado,
-      sum(suplemen)                as suplemen,
-      sum(suplemen_acumulado)      as suplemen_acumulado,
-      sum(especial)                as especial,
-      sum(especial_acumulado)      as especial_acumulado
+      sum(dot_ini)                       as dot_ini,
+      sum(saldo_anterior)                as saldo_anterior,
+      sum(empenhado)                     as empenhado,
+      sum(anulado)                       as anulado,
+      sum(liquidado)                     as liquidado,
+      sum(pago)                          as pago,
+      sum(suplementado)                  as suplementado,
+      sum(reduzido)                      as reduzido,
+      sum(atual)                         as atual,
+      sum(reservado)                     as reservado,
+      sum(atual_menos_reservado)         as atual_menos_reservado,
+      sum(atual_a_pagar)                 as atual_a_pagar,
+      sum(atual_a_pagar_liquidado)       as atual_a_pagar_liquidado,
+      sum(empenhado_acumulado)           as empenhado_acumulado,
+      sum(anulado_acumulado)             as anulado_acumulado,
+      sum(liquidado_acumulado)           as liquidado_acumulado,
+      sum(pago_acumulado)                as pago_acumulado,
+      sum(suplementado_acumulado)        as suplementado_acumulado,
+      sum(reduzido_acumulado)            as reduzido_acumulado,
+      sum(proj)                          as proj,
+      sum(ativ)                          as ativ,
+      sum(oper)                          as oper,
+      sum(ordinario)                     as ordinario,
+      sum(vinculado)                     as vinculado,
+      sum(suplemen)                      as suplemen,
+      sum(suplemen_acumulado)            as suplemen_acumulado,
+      sum(especial)                      as especial,
+      sum(especial_acumulado)            as especial_acumulado,
+      sum(reservado_manual_ate_data)     as reservado_manual_ate_data,
+      sum(reservado_automatico_ate_data) as reservado_automatico_ate_data,
+      sum(reservado_ate_data)            as reservado_ate_data
       from work_dotacao
       group by ";
-      if ($tipo_nivel != 3) {
-        $nivel3 .= "      o58_orgao,
+    if ($tipo_nivel != 3) {
+      $nivel3 .= "      o58_orgao,
         o58_unidade,";
-      }
-      $nivel3 .= "	      o58_funcao
+    }
+    $nivel3 .= "	      o58_funcao
       ) as c";
 
-    } else {
-      $nivel3 = '';
-    }
+  } else {
+    $nivel3 = '';
+  }
 
-    /////// nivel 2 ///////////////
+  /////// nivel 2 ///////////////
 
-    if (2 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 2 || $desmembra_segundo_inicio == false && $segundo_inicio == 2)) {
+  if (2 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 2 || $desmembra_segundo_inicio == false && $segundo_inicio == 2)) {
 
-      $nivel2 = "  select ";
-      $nivel2 .= "   o58_orgao,
+    $nivel2 = "  select ";
+    $nivel2 .= "   o58_orgao,
       o58_unidade,";
-      $nivel2 .= "
+    $nivel2 .= "
       -1 as o58_funcao,
       -1 as o58_subfuncao,
       -1 as o58_programa,
@@ -1865,55 +1909,60 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       suplemen,
       suplemen_acumulado,
       especial,
-      especial_acumulado
-
+      especial_acumulado,
+      reservado_manual_ate_data,
+      reservado_automatico_ate_data,
+      reservado_ate_data
       from (
       select
       o58_orgao,
       o58_unidade,
-      sum(dot_ini)                 as dot_ini,
-      sum(saldo_anterior)          as saldo_anterior,
-      sum(empenhado)               as empenhado,
-      sum(anulado)                 as anulado,
-      sum(liquidado)               as liquidado,
-      sum(pago)                    as pago,
-      sum(suplementado)            as suplementado,
-      sum(reduzido)                as reduzido,
-      sum(atual)                   as atual,
-      sum(reservado)               as reservado,
-      sum(atual_menos_reservado)   as atual_menos_reservado,
-      sum(atual_a_pagar)           as atual_a_pagar,
-      sum(atual_a_pagar_liquidado) as atual_a_pagar_liquidado,
-      sum(empenhado_acumulado)     as empenhado_acumulado,
-      sum(anulado_acumulado)       as anulado_acumulado,
-      sum(liquidado_acumulado)     as liquidado_acumulado,
-      sum(pago_acumulado)          as pago_acumulado,
-      sum(suplementado_acumulado)  as suplementado_acumulado,
-      sum(reduzido_acumulado)      as reduzido_acumulado,
-      sum(proj)                    as proj,
-      sum(ativ)                    as ativ,
-      sum(oper)                    as oper,
-      sum(ordinario)               as ordinario,
-      sum(vinculado)               as vinculado,
-      sum(suplemen)                as suplemen,
-      sum(suplemen_acumulado)      as suplemen_acumulado,
-      sum(especial)                as especial,
-      sum(especial_acumulado)      as especial_acumulado
+      sum(dot_ini)                       as dot_ini,
+      sum(saldo_anterior)                as saldo_anterior,
+      sum(empenhado)                     as empenhado,
+      sum(anulado)                       as anulado,
+      sum(liquidado)                     as liquidado,
+      sum(pago)                          as pago,
+      sum(suplementado)                  as suplementado,
+      sum(reduzido)                      as reduzido,
+      sum(atual)                         as atual,
+      sum(reservado)                     as reservado,
+      sum(atual_menos_reservado)         as atual_menos_reservado,
+      sum(atual_a_pagar)                 as atual_a_pagar,
+      sum(atual_a_pagar_liquidado)       as atual_a_pagar_liquidado,
+      sum(empenhado_acumulado)           as empenhado_acumulado,
+      sum(anulado_acumulado)             as anulado_acumulado,
+      sum(liquidado_acumulado)           as liquidado_acumulado,
+      sum(pago_acumulado)                as pago_acumulado,
+      sum(suplementado_acumulado)        as suplementado_acumulado,
+      sum(reduzido_acumulado)            as reduzido_acumulado,
+      sum(proj)                          as proj,
+      sum(ativ)                          as ativ,
+      sum(oper)                          as oper,
+      sum(ordinario)                     as ordinario,
+      sum(vinculado)                     as vinculado,
+      sum(suplemen)                      as suplemen,
+      sum(suplemen_acumulado)            as suplemen_acumulado,
+      sum(especial)                      as especial,
+      sum(especial_acumulado)            as especial_acumulado,
+      sum(reservado_manual_ate_data)     as reservado_manual_ate_data,
+      sum(reservado_automatico_ate_data) as reservado_automatico_ate_data,
+      sum(reservado_ate_data)            as reservado_ate_data
       from work_dotacao
       group by
       o58_orgao,
       o58_unidade
       ) as b";
 
-    } else {
-      $nivel2 = '';
-    }
+  } else {
+    $nivel2 = '';
+  }
 
-    ///////  nivel 1  /////////////////
+  ///////  nivel 1  /////////////////
 
-    if (1 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 1 || $desmembra_segundo_inicio == false && $segundo_inicio == 1)) {
-      $nivel1 = " select ";
-      $nivel1.= "  o58_orgao,
+  if (1 <= $primeiro_fim || ($desmembra_segundo_inicio == true && $segundo_inicio <= 1 || $desmembra_segundo_inicio == false && $segundo_inicio == 1)) {
+    $nivel1 = " select ";
+    $nivel1.= "  o58_orgao,
       -1 as o58_unidade,
       -1 as o58_funcao,
       -1 as o58_subfuncao,
@@ -1950,119 +1999,125 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       suplemen,
       suplemen_acumulado,
       especial,
-      especial_acumulado
+      especial_acumulado,
+      reservado_manual_ate_data,
+      reservado_automatico_ate_data,
+      reservado_ate_data
       from (
       select o58_orgao,
-      sum(dot_ini)                 as dot_ini,
-      sum(saldo_anterior)          as saldo_anterior,
-      sum(empenhado)               as empenhado,
-      sum(anulado)                 as anulado,
-      sum(liquidado)               as liquidado,
-      sum(pago)                    as pago,
-      sum(suplementado)            as suplementado,
-      sum(reduzido)                as reduzido,
-      sum(atual)                   as atual,
-      sum(reservado)               as reservado,
-      sum(atual_menos_reservado)   as atual_menos_reservado,
-      sum(atual_a_pagar)           as atual_a_pagar,
-      sum(atual_a_pagar_liquidado) as atual_a_pagar_liquidado,
-      sum(empenhado_acumulado)     as empenhado_acumulado,
-      sum(anulado_acumulado)       as anulado_acumulado,
-      sum(liquidado_acumulado)     as liquidado_acumulado,
-      sum(pago_acumulado)          as pago_acumulado,
-      sum(suplementado_acumulado)  as suplementado_acumulado,
-      sum(reduzido_acumulado)      as reduzido_acumulado,
-      sum(proj)                    as proj,
-      sum(ativ)                    as ativ,
-      sum(oper)                    as oper,
-      sum(ordinario)               as ordinario,
-      sum(vinculado)               as vinculado,
-      sum(suplemen)                as suplemen,
-      sum(suplemen_acumulado)      as suplemen_acumulado,
-      sum(especial)                as especial,
-      sum(especial_acumulado)      as especial_acumulado
+      sum(dot_ini)                       as dot_ini,
+      sum(saldo_anterior)                as saldo_anterior,
+      sum(empenhado)                     as empenhado,
+      sum(anulado)                       as anulado,
+      sum(liquidado)                     as liquidado,
+      sum(pago)                          as pago,
+      sum(suplementado)                  as suplementado,
+      sum(reduzido)                      as reduzido,
+      sum(atual)                         as atual,
+      sum(reservado)                     as reservado,
+      sum(atual_menos_reservado)         as atual_menos_reservado,
+      sum(atual_a_pagar)                 as atual_a_pagar,
+      sum(atual_a_pagar_liquidado)       as atual_a_pagar_liquidado,
+      sum(empenhado_acumulado)           as empenhado_acumulado,
+      sum(anulado_acumulado)             as anulado_acumulado,
+      sum(liquidado_acumulado)           as liquidado_acumulado,
+      sum(pago_acumulado)                as pago_acumulado,
+      sum(suplementado_acumulado)        as suplementado_acumulado,
+      sum(reduzido_acumulado)            as reduzido_acumulado,
+      sum(proj)                          as proj,
+      sum(ativ)                          as ativ,
+      sum(oper)                          as oper,
+      sum(ordinario)                     as ordinario,
+      sum(vinculado)                     as vinculado,
+      sum(suplemen)                      as suplemen,
+      sum(suplemen_acumulado)            as suplemen_acumulado,
+      sum(especial)                      as especial,
+      sum(especial_acumulado)            as especial_acumulado,
+      sum(reservado_manual_ate_data)     as reservado_manual_ate_data,
+      sum(reservado_automatico_ate_data) as reservado_automatico_ate_data,
+      sum(reservado_ate_data)            as reservado_ate_data
       from work_dotacao
       group by o58_orgao) as a ";
-    } else {
-      $nivel1 = '';
-    }
-    $sql = '';
+  } else {
+    $nivel1 = '';
+  }
+  $sql = '';
 
-    if ($nivel >= 1) {
-      if ($nivel1 != '') {
-        $sql .= $nivel1;
-        if ($tipo_nivel > 1)
+  if ($nivel >= 1) {
+    if ($nivel1 != '') {
+      $sql .= $nivel1;
+      if ($tipo_nivel > 1)
         $sql = $nivel1;
-      }
     }
+  }
 
-    if ($nivel >= 2) {
-      if ($nivel2 != '') {
-        if ($sql != '')
+  if ($nivel >= 2) {
+    if ($nivel2 != '') {
+      if ($sql != '')
         $sql .= " union all ";
-        $sql .= $nivel2;
-        if ($tipo_nivel > 1)
+      $sql .= $nivel2;
+      if ($tipo_nivel > 1)
         $sql = $nivel2;
-      }
     }
+  }
 
-    if ($nivel >= 3) {
-      if ($nivel3 != '') {
-        if ($sql != '')
+  if ($nivel >= 3) {
+    if ($nivel3 != '') {
+      if ($sql != '')
         $sql .= " union all ";
-        $sql .= $nivel3;
-        if ($tipo_nivel > 1)
+      $sql .= $nivel3;
+      if ($tipo_nivel > 1)
         $sql = $nivel3;
-      }
     }
-    if ($nivel >= 4) {
-      if ($nivel4 != '') {
-        if ($sql != '')
+  }
+  if ($nivel >= 4) {
+    if ($nivel4 != '') {
+      if ($sql != '')
         $sql .= " union all ";
-        $sql .= $nivel4;
-        if ($tipo_nivel > 1)
+      $sql .= $nivel4;
+      if ($tipo_nivel > 1)
         $sql = $nivel4;
-      }
     }
-    if ($nivel >= 5) {
-      if ($nivel5 != '') {
-        if ($sql != '')
+  }
+  if ($nivel >= 5) {
+    if ($nivel5 != '') {
+      if ($sql != '')
         $sql .= " union all ";
-        $sql .= $nivel5;
-        if ($tipo_nivel > 1)
+      $sql .= $nivel5;
+      if ($tipo_nivel > 1)
         $sql = $nivel5;
-      }
     }
-    if ($nivel >= 6) {
-      if ($nivel6 != '') {
-        if ($sql != '')
+  }
+  if ($nivel >= 6) {
+    if ($nivel6 != '') {
+      if ($sql != '')
         $sql .= " union all ";
-        $sql .= $nivel6;
-        if ($tipo_nivel > 1)
+      $sql .= $nivel6;
+      if ($tipo_nivel > 1)
         $sql = $nivel6;
-      }
     }
-    if ($nivel >= 7) {
-      if ($nivel7 != '') {
-        if ($sql != '')
+  }
+  if ($nivel >= 7) {
+    if ($nivel7 != '') {
+      if ($sql != '')
         $sql .= " union all ";
-        $sql .= $nivel7;
-        if ($tipo_nivel > 1)
+      $sql .= $nivel7;
+      if ($tipo_nivel > 1)
         $sql = $nivel7;
-      }
     }
-    if ($nivel >= 8) {
-      if ($nivel8 != '') {
-        if ($sql != '')
+  }
+  if ($nivel >= 8) {
+    if ($nivel8 != '') {
+      if ($sql != '')
         $sql .= " union all ";
-        $sql .= $nivel8;
-        if ($tipo_nivel > 1)
+      $sql .= $nivel8;
+      if ($tipo_nivel > 1)
         $sql = $nivel8;
-      }
-
     }
 
-    $sql .= " order by
+  }
+
+  $sql .= " order by
     o58_orgao,
     o58_unidade,
     o58_funcao,
@@ -2073,152 +2128,155 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     o58_coddot
     ";
 
-    //$sql = " select * from ( $sql ) as l $condicao ";
-    //echo $sql;
-    //$result = db_query($sql);
-    //db_criatabela($result);exit;
+  //$sql = " select * from ( $sql ) as l $condicao ";
+  //echo $sql;
+  //$result = db_query($sql);
+  //db_criatabela($result);exit;
 
-    $xordem = '';
-    $junta = '';
-    // pesquisa as despesas
-    if ($primeiro_fim >= 1) {
-      $junta .= "case when o58_orgao = -1 then 0 else o58_orgao end as o58_orgao,o40_descr,";
-      $xordem .= "o58_orgao,o40_descr,";
-    }
-    if ($primeiro_fim >= 2) {
-      $junta .= "case when o58_unidade = -1 then 0 else o58_unidade end as o58_unidade,o41_descr,";
-      $xordem .= "o58_unidade,o41_descr,";
-    }
-    if ($primeiro_fim >= 3) {
-      $junta .= "case when o58_funcao = -1 then 0 else o58_funcao end as o58_funcao,o52_descr,";
-      $xordem .= "o58_funcao,o52_descr,";
-    }
-    if ($primeiro_fim >= 4) {
-      $junta .= "case when o58_subfuncao = -1 then 0 else o58_subfuncao end as o58_subfuncao,o53_descr,";
-      $xordem .= "o58_subfuncao,o53_descr,";
-    }
-    if ($primeiro_fim >= 5) {
-      $junta .= "case when o58_programa = -1 then 0 else o58_programa end as o58_programa,o54_descr,";
-      $xordem .= "o58_programa,o54_descr,";
-    }
-    if ($primeiro_fim >= 6) {
-      $junta .= "case when o58_projativ = -1 then 0 else o58_projativ end as o58_projativ,o55_descr,o55_finali,";
-      $xordem .= "o58_projativ,o55_descr,o55_finali,";
-    }
-    if ($primeiro_fim >= 7) {
-      $junta .= "o58_elemento,o56_descr,";
-      $xordem .= "o58_elemento,o56_descr,";
-    }
-    if ($primeiro_fim >= 8) {
-      $junta .= "case when o58_coddot = -1 then 0 else o58_coddot end as o58_coddot,case when o58_codigo = -1 then 0 else o58_codigo end as o58_codigo,o15_descr,";
-      $xordem .= "o58_codigo,o15_descr,o58_coddot ";
-    }
+  $xordem = '';
+  $junta = '';
+  // pesquisa as despesas
+  if ($primeiro_fim >= 1) {
+    $junta .= "case when o58_orgao = -1 then 0 else o58_orgao end as o58_orgao,o40_descr,";
+    $xordem .= "o58_orgao,o40_descr,";
+  }
+  if ($primeiro_fim >= 2) {
+    $junta .= "case when o58_unidade = -1 then 0 else o58_unidade end as o58_unidade,o41_descr,";
+    $xordem .= "o58_unidade,o41_descr,";
+  }
+  if ($primeiro_fim >= 3) {
+    $junta .= "case when o58_funcao = -1 then 0 else o58_funcao end as o58_funcao,o52_descr,";
+    $xordem .= "o58_funcao,o52_descr,";
+  }
+  if ($primeiro_fim >= 4) {
+    $junta .= "case when o58_subfuncao = -1 then 0 else o58_subfuncao end as o58_subfuncao,o53_descr,";
+    $xordem .= "o58_subfuncao,o53_descr,";
+  }
+  if ($primeiro_fim >= 5) {
+    $junta .= "case when o58_programa = -1 then 0 else o58_programa end as o58_programa,o54_descr,";
+    $xordem .= "o58_programa,o54_descr,";
+  }
+  if ($primeiro_fim >= 6) {
+    $junta .= "case when o58_projativ = -1 then 0 else o58_projativ end as o58_projativ,o55_descr,o55_finali,";
+    $xordem .= "o58_projativ,o55_descr,o55_finali,";
+  }
+  if ($primeiro_fim >= 7) {
+    $junta .= "o58_elemento,o56_descr,";
+    $xordem .= "o58_elemento,o56_descr,";
+  }
+  if ($primeiro_fim >= 8) {
+    $junta .= "case when o58_coddot = -1 then 0 else o58_coddot end as o58_coddot,case when o58_codigo = -1 then 0 else o58_codigo end as o58_codigo,o15_descr,";
+    $xordem .= "o58_codigo,o15_descr,o58_coddot ";
+  }
 
-    $virg = '';
-    if ($primeiro_fim < 8) {
-      $tu_para = false;
-      if ($segundo_inicio <= 1) {
-        $junta .= $virg."case when o58_orgao = -1 then 0 else o58_orgao end::integer as o58_orgao,o40_descr";
-        $xordem .= "o58_orgao,o40_descr";
-        if ($desmembra_segundo_inicio == false) {
-          $tu_para = true;
-        }
-        $virg = ',';
+  $virg = '';
+  if ($primeiro_fim < 8) {
+    $tu_para = false;
+    if ($segundo_inicio <= 1) {
+      $junta .= $virg."case when o58_orgao = -1 then 0 else o58_orgao end::integer as o58_orgao,o40_descr";
+      $xordem .= "o58_orgao,o40_descr";
+      if ($desmembra_segundo_inicio == false) {
+        $tu_para = true;
       }
-      if ($segundo_inicio <= 2 && $tu_para == false) {
-        $junta .= $virg."case when o58_unidade = -1 then 0 else o58_unidade end::integer as o58_unidade,o41_descr";
-        $xordem .= $virg."o58_unidade,o41_descr";
-        if ($desmembra_segundo_inicio == false) {
-          $tu_para = true;
-        }
-        $virg = ',';
-
+      $virg = ',';
+    }
+    if ($segundo_inicio <= 2 && $tu_para == false) {
+      $junta .= $virg."case when o58_unidade = -1 then 0 else o58_unidade end::integer as o58_unidade,o41_descr";
+      $xordem .= $virg."o58_unidade,o41_descr";
+      if ($desmembra_segundo_inicio == false) {
+        $tu_para = true;
       }
-      if ($segundo_inicio <= 3 && $tu_para == false) {
-        $junta .= $virg."case when o58_funcao = -1 then 0 else o58_funcao end::integer as o58_funcao,o52_descr";
-        $xordem .= $virg."o58_funcao,o52_descr";
-        if ($desmembra_segundo_inicio == false) {
-          $tu_para = true;
-        }
-        $virg = ',';
-
-      }
-      if ($segundo_inicio <= 4 && $tu_para == false) {
-        $junta .= $virg."case when o58_subfuncao = -1 then 0 else o58_subfuncao end::integer as o58_subfuncao,o53_descr";
-        $xordem .= $virg."o58_subfuncao,o53_descr";
-        if ($desmembra_segundo_inicio == false) {
-          $tu_para = true;
-        }
-        $virg = ',';
-
-      }
-      if ($segundo_inicio <= 5 && $tu_para == false) {
-        $junta .= $virg."case when o58_programa = -1 then 0 else o58_programa end::integer as o58_programa,o54_descr";
-        $xordem .= $virg."o58_programa,o54_descr";
-        if ($desmembra_segundo_inicio == false) {
-          $tu_para = true;
-        }
-        $virg = ',';
-
-      }
-      if ($segundo_inicio <= 6 && $tu_para == false) {
-        $junta .= $virg."case when o58_projativ = -1 then 0 else o58_projativ end::integer as o58_projativ,o55_descr,o55_finali";
-        $xordem .= $virg."o58_projativ,o55_descr,o55_finali";
-        if ($desmembra_segundo_inicio == false) {
-          $tu_para = true;
-        }
-        $virg = ',';
-
-      }
-      if ($segundo_inicio <= 7 && $tu_para == false) {
-        $junta .= $virg."o58_elemento,o56_descr";
-        $xordem .= $virg."o58_elemento,o56_descr";
-        if ($desmembra_segundo_inicio == false) {
-          $tu_para = true;
-        }
-        $virg = ',';
-      }
-      if ($segundo_inicio <= 8 && $tu_para == false) {
-        $junta .= $virg."case when o58_coddot = -1 then 0 else o58_coddot end::integer as o58_coddot,case when o58_codigo = -1 then 0 else o58_codigo end::integer as o58_codigo,o15_descr";
-        $xordem .= $virg."o58_codigo,o15_descr,o58_coddot ";
-        if ($desmembra_segundo_inicio == false) {
-          $tu_para = true;
-        }
-        $virg = ',';
-      }
+      $virg = ',';
 
     }
-    $junta .= $virg;
+    if ($segundo_inicio <= 3 && $tu_para == false) {
+      $junta .= $virg."case when o58_funcao = -1 then 0 else o58_funcao end::integer as o58_funcao,o52_descr";
+      $xordem .= $virg."o58_funcao,o52_descr";
+      if ($desmembra_segundo_inicio == false) {
+        $tu_para = true;
+      }
+      $virg = ',';
 
-    $sql2 = "select ".$junta."
-    sum(dot_ini)                as dot_ini,
-    sum(saldo_anterior)         as saldo_anterior,
-    sum(empenhado)              as empenhado,
-    sum(anulado)                as anulado,
-    sum(liquidado)              as liquidado,
-    sum(pago)                   as pago,
-    sum(suplementado)           as suplementado,
-    sum(reduzido)               as reduzido,
-    sum(atual)                  as atual,
-    sum(reservado)              as reservado,
-    sum(atual_menos_reservado)  as atual_menos_reservado,
-    sum(atual_a_pagar)          as atual_a_pagar,
-    sum(atual_a_pagar_liquidado)as atual_a_pagar_liquidado,
-    sum(empenhado_acumulado)    as empenhado_acumulado,
-    sum(anulado_acumulado)      as anulado_acumulado,
-    sum(liquidado_acumulado)    as liquidado_acumulado,
-    sum(pago_acumulado)         as pago_acumulado,
-    sum(suplementado_acumulado) as suplementado_acumulado,
-    sum(reduzido_acumulado)     as reduzido_acumulado,
-    sum(proj)                   as proj,
-    sum(ativ)                   as ativ,
-    sum(oper)                   as oper,
-    sum(ordinario)              as ordinario,
-    sum(vinculado)              as vinculado,
-    sum(suplemen)                as suplemen,
-    sum(suplemen_acumulado)      as suplemen_acumulado,
-    sum(especial)                as especial,
-    sum(especial_acumulado)      as especial_acumulado
+    }
+    if ($segundo_inicio <= 4 && $tu_para == false) {
+      $junta .= $virg."case when o58_subfuncao = -1 then 0 else o58_subfuncao end::integer as o58_subfuncao,o53_descr";
+      $xordem .= $virg."o58_subfuncao,o53_descr";
+      if ($desmembra_segundo_inicio == false) {
+        $tu_para = true;
+      }
+      $virg = ',';
+
+    }
+    if ($segundo_inicio <= 5 && $tu_para == false) {
+      $junta .= $virg."case when o58_programa = -1 then 0 else o58_programa end::integer as o58_programa,o54_descr";
+      $xordem .= $virg."o58_programa,o54_descr";
+      if ($desmembra_segundo_inicio == false) {
+        $tu_para = true;
+      }
+      $virg = ',';
+
+    }
+    if ($segundo_inicio <= 6 && $tu_para == false) {
+      $junta .= $virg."case when o58_projativ = -1 then 0 else o58_projativ end::integer as o58_projativ,o55_descr,o55_finali";
+      $xordem .= $virg."o58_projativ,o55_descr,o55_finali";
+      if ($desmembra_segundo_inicio == false) {
+        $tu_para = true;
+      }
+      $virg = ',';
+
+    }
+    if ($segundo_inicio <= 7 && $tu_para == false) {
+      $junta .= $virg."o58_elemento,o56_descr";
+      $xordem .= $virg."o58_elemento,o56_descr";
+      if ($desmembra_segundo_inicio == false) {
+        $tu_para = true;
+      }
+      $virg = ',';
+    }
+    if ($segundo_inicio <= 8 && $tu_para == false) {
+      $junta .= $virg."case when o58_coddot = -1 then 0 else o58_coddot end::integer as o58_coddot,case when o58_codigo = -1 then 0 else o58_codigo end::integer as o58_codigo,o15_descr";
+      $xordem .= $virg."o58_codigo,o15_descr,o58_coddot ";
+      if ($desmembra_segundo_inicio == false) {
+        $tu_para = true;
+      }
+      $virg = ',';
+    }
+
+  }
+  $junta .= $virg;
+
+  $sql2 = "select ".$junta."
+    sum(dot_ini)                       as dot_ini,
+    sum(saldo_anterior)                as saldo_anterior,
+    sum(empenhado)                     as empenhado,
+    sum(anulado)                       as anulado,
+    sum(liquidado)                     as liquidado,
+    sum(pago)                          as pago,
+    sum(suplementado)                  as suplementado,
+    sum(reduzido)                      as reduzido,
+    sum(atual)                         as atual,
+    sum(reservado)                     as reservado,
+    sum(atual_menos_reservado)         as atual_menos_reservado,
+    sum(atual_a_pagar)                 as atual_a_pagar,
+    sum(atual_a_pagar_liquidado)       as atual_a_pagar_liquidado,
+    sum(empenhado_acumulado)           as empenhado_acumulado,
+    sum(anulado_acumulado)             as anulado_acumulado,
+    sum(liquidado_acumulado)           as liquidado_acumulado,
+    sum(pago_acumulado)                as pago_acumulado,
+    sum(suplementado_acumulado)        as suplementado_acumulado,
+    sum(reduzido_acumulado)            as reduzido_acumulado,
+    sum(proj)                          as proj,
+    sum(ativ)                          as ativ,
+    sum(oper)                          as oper,
+    sum(ordinario)                     as ordinario,
+    sum(vinculado)                     as vinculado,
+    sum(suplemen)                      as suplemen,
+    sum(suplemen_acumulado)            as suplemen_acumulado,
+    sum(especial)                      as especial,
+    sum(especial_acumulado)            as especial_acumulado,
+    sum(reservado_manual_ate_data)     as reservado_manual_ate_data,
+    sum(reservado_automatico_ate_data) as reservado_automatico_ate_data,
+    sum(reservado_ate_data)            as reservado_ate_data
     from( ( $sql ) as xx
     left  outer join orcorgao      o on o40_anousu 	 = $anousu and o.o40_orgao = o58_orgao
     left  outer join orcunidade    u on o41_anousu 	 = $anousu and u.o41_orgao = o58_orgao and u.o41_unidade= o58_unidade
@@ -2233,112 +2291,107 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     group by ".$xordem."
     order by ".$xordem;
 
-    //db_query('commit');
-
-    //echo $sql;
-    //exit;
-
-    if ($descr == true) {
-      if ($retsql == false) {
-        $resultdotacao = db_query($sql2);
-      } else {
-        $resultdotacao = $sql2;
-      }
+  if ($descr == true) {
+    if ($retsql == false) {
+      $resultdotacao = db_query($sql2);
     } else {
-      if ($retsql == false) {
-        $resultdotacao = db_query($sql);
-      } else {
-        $resultdotacao = $sql;
-      }
+      $resultdotacao = $sql2;
     }
-
-    return $resultdotacao;
-
+  } else {
+    if ($retsql == false) {
+      $resultdotacao = db_query($sql);
+    } else {
+      $resultdotacao = $sql;
+    }
   }
 
-  function db_receitasaldo($nivel = 11, $tipo_nivel = 1, $tipo_saldo = 2, $descr = true, $where = '', $anousu = null, $dataini = null, $datafim = null, $query = false, $campos = ' * ', $comit = true,$nivel_agrupar=0) {
+  return $resultdotacao;
 
-    if ($anousu == null || $anousu == "")
+}
+
+function db_receitasaldo($nivel = 11, $tipo_nivel = 1, $tipo_saldo = 2, $descr = true, $where = '', $anousu = null, $dataini = null, $datafim = null, $query = false, $campos = ' * ', $comit = true,$nivel_agrupar=0) {
+
+  if ($anousu == null || $anousu == "")
     $anousu = db_getsession("DB_anousu");
 
-    if ($dataini == null)
+  if ($dataini == null)
     $dataini = date('Y-m-d', db_getsession('DB_datausu'));
 
-    if ($datafim == null)
+  if ($datafim == null)
     $datafim = date('Y-m-d', db_getsession('DB_datausu'));
 
-    if ($where != '') {
-      $condicao = " and ".$where;
-    } else {
-      $condicao = "";
-    }
+  if ($where != '') {
+    $condicao = " and ".$where;
+  } else {
+    $condicao = "";
+  }
 
-    //$instit = db_getsession("DB_instit");
+  //$instit = db_getsession("DB_instit");
 
-    //#00#//db_receitaosaldo
-    //#10#//Esta funcao retorna o recordset do saldo das receitas
-    //#15#//db_receitasaldo($nivel=8, $tipo_nivel=1, $tipo_saldo=2, $descr=true, $where='', $anousu=null, $dataini=null, $datafim=null,$query=false)
-    //#20#//$nivel      : Até qual o nível será apurado o saldo, pode ser:
-    //#20#//              1 - classe
-    //#20#//              2 - grupo
-    //#20#//              3 - subgrupo
-    //#20#//              4 - elemento
-    //#20#//              5 - subelemento
-    //#20#//              6 - item
-    //#20#//              7 - subitem
-    //#20#//              8 - desdobramento1
-    //#20#//              9 - desdobramento2
-    //#20#//             10 - desdobramento3
-    //#20#//             11 - recurso
-    //#20#//
-    //#20#//$tipo_nivel : especifica a maneira de como será apurado o resultado, pode ser:
-    //#20#//              1 - traz a árvore de elementos até o nível solicitado
-    //#20#//                  Ex.: 4.1                  200
-    //#20#//                       4.1.1                100
-    //#20#//                       4.1.1.1               50
-    //#20#//                       4.1.1.2               50
-    //#20#//                       4.1.2                100
-    //#20#//                       4.1.2.1               50
-    //#20#//                       4.1.2.2               50
-    //#20#//              2 - traz o saldo do nível escolhido
-    //#20#//                  Ex.: 4.1.1.1               50
-    //#20#//              3 - totaliza o saldo pelo nível escolhido
-    //#20#//                  Ex.: 0.0.0.1             1000
-    //#20#//
-    //#20#//$tipo_saldo :
-    //#20#//	      1 - SALDO INICIAL DA RECEITA - ORCAMENTO
-    //#20#//	      2 - SALDO DA RECEITA  MENOS O ARRECADADO
-    //#20#//   	      3 - SALDO DA RECEITA  PELA CONTABILIDADE ...
-    //#20#//   	      4 - SALDO ACUMULADO POR MES
-    //#20#//
-    //#20#//$descr         : retorna o record set com as descrições ou não, o default é 'true'
-    //#20#//
-    //#20#//$where         : condição
-    //#20#//
-    //#20#//$anousu        : ano do orçamento
-    //#20#//
-    //#20#//$dataini       : data inicial do intervalo
-    //#20#//
-    //#20#//$datafim       : data final do intervalo
-    //#20#//
-    //#20#//$query         : retorna somente o sql, o default é retornar o recordset
-    //#20#//
-    //#20#//$nivel_agrupar : 0 - normal
-    //#20#//                 1 - agrupa na receita
-    //#20#//                 2 - nao agrupa na receita
+  //#00#//db_receitaosaldo
+  //#10#//Esta funcao retorna o recordset do saldo das receitas
+  //#15#//db_receitasaldo($nivel=8, $tipo_nivel=1, $tipo_saldo=2, $descr=true, $where='', $anousu=null, $dataini=null, $datafim=null,$query=false)
+  //#20#//$nivel      : Até qual o nível será apurado o saldo, pode ser:
+  //#20#//              1 - classe
+  //#20#//              2 - grupo
+  //#20#//              3 - subgrupo
+  //#20#//              4 - elemento
+  //#20#//              5 - subelemento
+  //#20#//              6 - item
+  //#20#//              7 - subitem
+  //#20#//              8 - desdobramento1
+  //#20#//              9 - desdobramento2
+  //#20#//             10 - desdobramento3
+  //#20#//             11 - recurso
+  //#20#//
+  //#20#//$tipo_nivel : especifica a maneira de como será apurado o resultado, pode ser:
+  //#20#//              1 - traz a árvore de elementos até o nível solicitado
+  //#20#//                  Ex.: 4.1                  200
+  //#20#//                       4.1.1                100
+  //#20#//                       4.1.1.1               50
+  //#20#//                       4.1.1.2               50
+  //#20#//                       4.1.2                100
+  //#20#//                       4.1.2.1               50
+  //#20#//                       4.1.2.2               50
+  //#20#//              2 - traz o saldo do nível escolhido
+  //#20#//                  Ex.: 4.1.1.1               50
+  //#20#//              3 - totaliza o saldo pelo nível escolhido
+  //#20#//                  Ex.: 0.0.0.1             1000
+  //#20#//
+  //#20#//$tipo_saldo :
+  //#20#//	      1 - SALDO INICIAL DA RECEITA - ORCAMENTO
+  //#20#//	      2 - SALDO DA RECEITA  MENOS O ARRECADADO
+  //#20#//   	      3 - SALDO DA RECEITA  PELA CONTABILIDADE ...
+  //#20#//   	      4 - SALDO ACUMULADO POR MES
+  //#20#//
+  //#20#//$descr         : retorna o record set com as descrições ou não, o default é 'true'
+  //#20#//
+  //#20#//$where         : condição
+  //#20#//
+  //#20#//$anousu        : ano do orçamento
+  //#20#//
+  //#20#//$dataini       : data inicial do intervalo
+  //#20#//
+  //#20#//$datafim       : data final do intervalo
+  //#20#//
+  //#20#//$query         : retorna somente o sql, o default é retornar o recordset
+  //#20#//
+  //#20#//$nivel_agrupar : 0 - normal
+  //#20#//                 1 - agrupa na receita
+  //#20#//                 2 - nao agrupa na receita
 
 
-    //$nivel      = 2;
-    //$tipo_nivel = 1;
-    //$dataini    = date('Y-m-d',db_getsession("DB_datausu"));
-    //$datafim    = date('Y-m-d',db_getsession("DB_datausu"));
-    //$anousu     = db_getsession("DB_anousu");
+  //$nivel      = 2;
+  //$tipo_nivel = 1;
+  //$dataini    = date('Y-m-d',db_getsession("DB_datausu"));
+  //$datafim    = date('Y-m-d',db_getsession("DB_datausu"));
+  //$anousu     = db_getsession("DB_anousu");
 
-    // funcao para gerar work
+  // funcao para gerar work
 
-    if ($comit == true) {
-      db_query('begin');
-    }
+  if ($comit == true) {
+    db_query('begin');
+  }
 
 
   if( $anousu > 2007 ){
@@ -2438,7 +2491,9 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       ";
     }
 
+    db_query("drop table if exists work_receita");
     $result = db_query($sql);
+
     //$result = db_query("select * from work_receita");
     //db_criatabela($result);exit;
 
@@ -2524,8 +2579,8 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     ) as m
      ";
 
-//$result = db_query($nivel11);
-//db_criatabela($result);exit;
+    //$result = db_query($nivel11);
+    //db_criatabela($result);exit;
 
     ///////// Nivel 10 /////////////
 
@@ -2664,7 +2719,7 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       subitem,
       desdobramento1,";
     }
-      $nivel9 .= "	      desdobramento2
+    $nivel9 .= "	      desdobramento2
     ) as i";
 
     ///////// Nivel 8 //////////////
@@ -3117,63 +3172,63 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     if ($nivel >= 1) {
       $sql .= $nivel1;
       if ($tipo_nivel > 1)
-      $sql = $nivel1;
+        $sql = $nivel1;
     }
     if ($nivel >= 2) {
       $sql .= " union all ";
       $sql .= $nivel2;
       if ($tipo_nivel > 1)
-      $sql = $nivel2;
+        $sql = $nivel2;
     }
     if ($nivel >= 3) {
       $sql .= " union all ";
       $sql .= $nivel3;
       if ($tipo_nivel > 1)
-      $sql = $nivel3;
+        $sql = $nivel3;
     }
     if ($nivel >= 4) {
       $sql .= " union all ";
       $sql .= $nivel4;
       if ($tipo_nivel > 1)
-      $sql = $nivel4;
+        $sql = $nivel4;
     }
     if ($nivel >= 5) {
       $sql .= " union all ";
       $sql .= $nivel5;
       if ($tipo_nivel > 1)
-      $sql = $nivel5;
+        $sql = $nivel5;
     }
     if ($nivel >= 6) {
       $sql .= " union all ";
       $sql .= $nivel6;
       if ($tipo_nivel > 1)
-      $sql = $nivel6;
+        $sql = $nivel6;
     }
     if ($nivel >= 7) {
       $sql .= " union all ";
       $sql .= $nivel7;
       if ($tipo_nivel > 1)
-      $sql = $nivel7;
+        $sql = $nivel7;
     }
     if ($nivel >= 8) {
       $sql .= " union all ";
       $sql .= $nivel8;
       if ($tipo_nivel > 1)
-      $sql = $nivel8;
+        $sql = $nivel8;
 
     }
     if ($nivel >= 9) {
       $sql .= " union all ";
       $sql .= $nivel9;
       if ($tipo_nivel > 1)
-      $sql = $nivel9;
+        $sql = $nivel9;
 
     }
     if ($nivel >= 10) {
       $sql .= " union all ";
       $sql .= $nivel10;
       if ($tipo_nivel > 1)
-      $sql = $nivel10;
+        $sql = $nivel10;
 
     }
 
@@ -3203,8 +3258,8 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     o70_concarpeculiar,
     o70_codigo";
     //echo $sql;
- //   $result = db_query($sql);
-  //  db_criatabela($result);exit;
+    //   $result = db_query($sql);
+    //  db_criatabela($result);exit;
 
     if ($nivel == 11 && $tipo_nivel == 3) {
       $demaiscampos = '';
@@ -3285,7 +3340,7 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     ) as xx";
 
     if ($nivel == 11) {
-			$sql2 .=" union all
+      $sql2 .=" union all
 								select $demaiscampos
 											 o70_codrec,
 											 o70_codigo,
@@ -3314,15 +3369,15 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
 											 and o57_anousu = $anousu
 											 left outer join orctiporec on o70_codigo = o15_codigo";
 
-		}
+    }
 
-		if ( $demaiscampos != ""){
+    if ( $demaiscampos != ""){
       $sql2 .= " order by o57_fonte";
     }
 
-//    echo $sql2;
-//    $res =  db_query($sql2);
-//    db_criatabela($res);exit;
+    //    echo $sql2;
+    //    $res =  db_query($sql2);
+    //    db_criatabela($res);exit;
 
 
 
@@ -4021,70 +4076,70 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     if ($nivel >= 1) {
       $sql .= $nivel1;
       if ($tipo_nivel > 1)
-      $sql = $nivel1;
+        $sql = $nivel1;
     }
     if ($nivel >= 2) {
       $sql .= " union all ";
       $sql .= $nivel2;
       if ($tipo_nivel > 1)
-      $sql = $nivel2;
+        $sql = $nivel2;
     }
     if ($nivel >= 3) {
       $sql .= " union all ";
       $sql .= $nivel3;
       if ($tipo_nivel > 1)
-      $sql = $nivel3;
+        $sql = $nivel3;
     }
     if ($nivel >= 4) {
       $sql .= " union all ";
       $sql .= $nivel4;
       if ($tipo_nivel > 1)
-      $sql = $nivel4;
+        $sql = $nivel4;
     }
     if ($nivel >= 5) {
       $sql .= " union all ";
       $sql .= $nivel5;
       if ($tipo_nivel > 1)
-      $sql = $nivel5;
+        $sql = $nivel5;
     }
     if ($nivel >= 6) {
       $sql .= " union all ";
       $sql .= $nivel6;
       if ($tipo_nivel > 1)
-      $sql = $nivel6;
+        $sql = $nivel6;
     }
     if ($nivel >= 7) {
       $sql .= " union all ";
       $sql .= $nivel7;
       if ($tipo_nivel > 1)
-      $sql = $nivel7;
+        $sql = $nivel7;
     }
     if ($nivel >= 8) {
       $sql .= " union all ";
       $sql .= $nivel8;
       if ($tipo_nivel > 1)
-      $sql = $nivel8;
+        $sql = $nivel8;
 
     }
     if ($nivel >= 9) {
       $sql .= " union all ";
       $sql .= $nivel9;
       if ($tipo_nivel > 1)
-      $sql = $nivel9;
+        $sql = $nivel9;
 
     }
     if ($nivel >= 10) {
       $sql .= " union all ";
       $sql .= $nivel10;
       if ($tipo_nivel > 1)
-      $sql = $nivel10;
+        $sql = $nivel10;
 
     }
     if ($nivel >= 11) {
       $sql .= " union all ";
       $sql .= $nivel11;
       if ($tipo_nivel > 1)
-      $sql = $nivel11;
+        $sql = $nivel11;
 
     }
 
@@ -4168,116 +4223,126 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
     desdobramento3,
     o70_codrec desc)as yy) as xx";
 
-  // aqui termina o codigo de 2007
+    // aqui termina o codigo de 2007
   }
 
 
-    //db_criatabela(db_query($sql2));
-    //exit;
-    if ($comit == true) {
-      db_query('commit');
+  //db_criatabela(db_query($sql2));
+  //exit;
+  if ($comit == true) {
+    db_query('commit');
+  }
+
+  /**
+   * Validacao geracao do pad, quando pcasp ativo e rodar o balancete em ano anterior
+   */
+  $iAnoPcasp = 2013;
+  if ( file_exists("config/pcasp.txt") ) {
+
+    $aArquivo  = file("config/pcasp.txt");
+    if ($aArquivo[0] != '' && $aArquivo[0] > 2013) {
+      $iAnoPcasp = $aArquivo[0];
     }
+  }
 
-    /**
-     * Validacao geracao do pad, quando pcasp ativo e rodar o balancete em ano anterior
-     */
-    $iAnoPcasp = 2013;
-    if ( file_exists("config/pcasp.txt") ) {
+  $_SESSION["DB_ano_pcasp"] = $iAnoPcasp;
+  $sControlePcasp = $_SESSION["DB_use_pcasp"];
+  if ($anousu < intval($iAnoPcasp) ) {
+    $_SESSION["DB_use_pcasp"] = 'f';
+  }
 
-      $aArquivo  = file("config/pcasp.txt");
-      if ($aArquivo[0] != '' && $aArquivo[0] > 2013) {
-        $iAnoPcasp = $aArquivo[0];
-      }
-    }
+  /**
+   * Adicionado validação para que só realize o parse caso o ano desejado seja superior ao ano de inicio do PCASP.
+   * Essa validação foi criada devido a criação do arquivo do PAD BALREC_ANT estava dando problema
+   */
+  if ((int)$anousu >= (int)$iAnoPcasp) {
 
-    $_SESSION["DB_ano_pcasp"] = $iAnoPcasp;
-    $sControlePcasp = $_SESSION["DB_use_pcasp"];
-    if ($anousu < intval($iAnoPcasp) ) {
-      $_SESSION["DB_use_pcasp"] = 'f';
-    }
-
-    /**
-     * Adicionado validação para que só realize o parse caso o ano desejado seja superior ao ano de inicio do PCASP.
-     * Essa validação foi criada devido a criação do arquivo do PAD BALREC_ANT estava dando problema
-     */
-    if ((int)$anousu >= (int)$iAnoPcasp) {
-
-      $sql2 = analiseQueryPlanoOrcamento($sql2, $anousu);
-      $sql  = analiseQueryPlanoOrcamento($sql, $anousu);
-    }
+    $sql2 = analiseQueryPlanoOrcamento($sql2, $anousu);
+    $sql  = analiseQueryPlanoOrcamento($sql, $anousu);
+  }
 
 
-    if ($descr == true) {
-      if ($query == false) {
-         $resultreceita = db_query($sql2);
-      } else {
-         $resultreceita = $sql2;
-      }
+  if ($descr == true) {
+    if ($query == false) {
+      $resultreceita = db_query($sql2);
     } else {
-      if ($query == false) {
-         $resultreceita = db_query($sql);
-      } else {
-        $resultreceita = $sql;
-      }
+      $resultreceita = $sql2;
     }
-    $_SESSION["DB_use_pcasp"] = $sControlePcasp;
-    return $resultreceita;
-
-
+  } else {
+    if ($query == false) {
+      $resultreceita = db_query($sql);
+    } else {
+      $resultreceita = $sql;
+    }
   }
+  $_SESSION["DB_use_pcasp"] = $sControlePcasp;
+  return $resultreceita;
 
-  class cl_permusuario_dotacao {
-    var $recordset = null;
-    var $numrows = null;
-    var $sql = null;
-    var $orgaos = null;
-    var $depart = null;
-    var $secretaria = null;
-    var $departamento = null;
-    var $msg_erro = null;
-    function cl_permusuario_dotacao($anousu, $idusuario, $elemento = null, $secretaria = null, $departamento = null,$tipoperm='M', $instit="", $sWhere =null) {
-      global $db20_orgao, $db20_unidade, $db20_funcao, $db20_subfuncao, $db20_programa, $db20_projativ, $db20_codele, $db20_codigo;
 
-      $instituicoes = empty($instit)?db_getsession("DB_instit"):$instit;
+}
 
-      if ($secretaria != null) {
-        $this->secretaria = $secretaria;
-      }
-      if ($departamento != null) {
-        $this->departamento = $departamento;
-      }
-      if ($tipoperm!=""){
-        $tipoperm = "db20_tipoperm='$tipoperm' and";
-      } else {
-        $tipoperm = "";
-      }
-      $sqle = " SELECT o50_subelem
+class cl_permusuario_dotacao {
+  var $recordset = null;
+  var $numrows = null;
+  var $sql = null;
+  var $orgaos = null;
+  var $depart = null;
+  var $secretaria = null;
+  var $departamento = null;
+  var $msg_erro = null;
+
+    public function __construct(
+        $anousu,
+        $idusuario,
+        $elemento = null,
+        $secretaria = null,
+        $departamento = null,
+        $tipoperm = 'M',
+        $instit = "",
+        $sWhere = null
+    ) {
+    global $db20_orgao, $db20_unidade, $db20_funcao, $db20_subfuncao, $db20_programa, $db20_projativ, $db20_codele, $db20_codigo;
+
+    $instituicoes = empty($instit)?db_getsession("DB_instit"):$instit;
+
+    if ($secretaria != null) {
+      $this->secretaria = $secretaria;
+    }
+    if ($departamento != null) {
+      $this->departamento = $departamento;
+    }
+    if ($tipoperm!=""){
+      $tipoperm = "db20_tipoperm='$tipoperm' and";
+    } else {
+      $tipoperm = "";
+    }
+    $sqle = " SELECT o50_subelem
       FROM orcparametro
       WHERE o50_anousu = $anousu	";
 
-      $result = db_query($sqle);
-      if (pg_numrows($result) == 0) {
-        $this->msg_erro = "Parametro do orçamento não encontrado para o exercício: $anousu";
-        return false;
-      }
-      $subele = pg_result($result, 0, 0);
-      if ($subele == 'f') {
-        $elemento = substr($elemento, 0, 7);
-      }
-      $sqle = " SELECT 'USUARIO' AS TIPO ,DB_PERMEMP.*
+    $result = db_query($sqle);
+    if (pg_numrows($result) == 0) {
+      $this->msg_erro = "Parametro do orçamento não encontrado para o exercício: $anousu";
+      return false;
+    }
+    $subele = pg_result($result, 0, 0);
+    if ($subele == 'f') {
+      $elemento = substr($elemento, 0, 7);
+    }
+    $sqle = " SELECT 'USUARIO' AS TIPO ,DB_PERMEMP.*
       FROM DB_PERMEMP
       INNER JOIN DB_USUPERMEMP U ON U.DB21_CODPERM = DB20_CODPERM AND U.DB21_ID_USUARIO = $idusuario
       LEFT OUTER JOIN DB_DEPARTORG D ON DB20_ORGAO = D.DB01_ORGAO AND D.DB01_ANOUSU = ".db_getsession("DB_anousu")."
       WHERE $tipoperm DB20_ANOUSU = $anousu
       ";
-      if (isset ($secretaria)) {
-        $sqle .= " and DB20_ORGAO = $secretaria ";
-      }
-      if (isset ($departamento)) {
-        $sqle .= " and db01_coddepto = $departamento ";
-      }
+    if (isset ($secretaria)) {
+      $sqle .= " and DB20_ORGAO = $secretaria ";
+    }
+    if (isset ($departamento)) {
+      $sqle .= " and db01_coddepto = $departamento ";
+    }
 
-      $sqle .= "
+    $sqle .= "
       UNION
       SELECT 'SETOR' AS TIPO ,DB_PERMEMP.*
       FROM DB_PERMEMP
@@ -4291,18 +4356,18 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
       LEFT OUTER JOIN DB_DEPART  ON DB20_ORGAO = DB01_ORGAO AND DB01_ANOUSU = ".db_getsession("DB_anousu")."
       WHERE $tipoperm DB20_ANOUSU = $anousu
       ";
-      if(isset($secretaria)){
-        $sqle .= " and DB20_ORGAO = $secretaria ";
-      }
-      if(isset($departamento)){
-        $sqle .= " and db01_coddepto = $departamento ";
-      }
+    if(isset($secretaria)){
+      $sqle .= " and DB20_ORGAO = $secretaria ";
+    }
+    if(isset($departamento)){
+      $sqle .= " and db01_coddepto = $departamento ";
+    }
 
-      $result = db_query($sqle);
+    $result = db_query($sqle);
 
-      if ($result != false && pg_numrows($result) > 0) {
-        $tem_and = "";
-        $dotacoes = " select fc_estruturaldotacao(o58_anousu,o58_coddot) as o50_estrutdespesa,
+    if ($result != false && pg_numrows($result) > 0) {
+      $tem_and = "";
+      $dotacoes = " select fc_estruturaldotacao(o58_anousu,o58_coddot) as o50_estrutdespesa,
         o58_coddot,
         o41_unidade,o41_descr,
         o55_descr,
@@ -4318,13 +4383,13 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
         inner join orcprojativ on o58_projativ = o55_projativ
         and o58_anousu = o55_anousu
         where (( ";
-        $secretar = " select distinct o40_orgao,o40_descr
+      $secretar = " select distinct o40_orgao,o40_descr
         from orcdotacao
         inner join orcorgao on o40_anousu = ".db_getsession("DB_anousu")." and o40_orgao = o58_orgao
         inner join orcelemento on o56_codele = o58_codele and
         o56_anousu = o58_anousu
         where ( (  ";
-        $departam = " select distinct coddepto,descrdepto
+      $departam = " select distinct coddepto,descrdepto
         from orcdotacao
         inner join orcorgao on o40_anousu = ".db_getsession("DB_anousu")." and o40_orgao = o58_orgao
         inner join db_departorg on db01_orgao    = o40_orgao and db01_anousu = o40_anousu
@@ -4333,263 +4398,331 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
         inner join orcelemento on o56_codele = o58_codele and
         o56_anousu = o58_anousu
         where ( ( ";
-        $sql_dotacoes = "";
-        for ($i = 0; $i < pg_numrows($result); $i ++) {
-          db_fieldsmemory($result, $i);
-          if (!empty ($tem_and)) {
-            $sql_dotacoes .= " OR ( ";
-            $tem_and = "";
-          }
-          if ($db20_orgao > 0) {
-            $sql_dotacoes .= $tem_and." o58_orgao = $db20_orgao ) ";
-            $tem_and = " and ";
-          }
-          if ($db20_unidade > 0) {
-            $sql_dotacoes .= $tem_and." o58_unidade = $db20_unidade ";
-            $tem_and = " and ";
-          }
-          if ($db20_funcao > 0) {
-            $sql_dotacoes .= $tem_and." o58_funcao = $db20_funcao ";
-            $tem_and = " and ";
-          }
-          if ($db20_subfuncao > 0) {
-            $sql_dotacoes .= $tem_and." o58_subfuncao = $db20_subfuncao ";
-            $tem_and = " and ";
-          }
-          if ($db20_programa > 0) {
-            $sql_dotacoes .= $tem_and." o58_programa = $db20_programa ";
-            $tem_and = " and ";
-          }
-          if ($db20_projativ > 0) {
-            $sql_dotacoes .= $tem_and." o58_projativ = $db20_projativ ";
-            $tem_and = " and ";
-          }
-          if ($db20_codele > 0) {
-            $sql_dotacoes .= $tem_and." o58_codele = $db20_codele ";
-            $tem_and = " and ";
-          }
-          if ($db20_codigo > 0) {
-            $sql_dotacoes .= $tem_and." o58_codigo = $db20_codigo ";
-            $tem_and = " and ";
-          }
-          $sql_dotacoes .= " ";
+      $sql_dotacoes = "";
+      for ($i = 0; $i < pg_numrows($result); $i ++) {
+        db_fieldsmemory($result, $i);
+        if (!empty ($tem_and)) {
+          $sql_dotacoes .= " OR ( ";
+          $tem_and = "";
         }
-        $dotacoes .= $sql_dotacoes;
-        $secretar .= $sql_dotacoes;
-        $departam .= $sql_dotacoes;
+        if ($db20_orgao > 0) {
+          $sql_dotacoes .= $tem_and." o58_orgao = $db20_orgao ) ";
+          $tem_and = " and ";
+        }
+        if ($db20_unidade > 0) {
+          $sql_dotacoes .= $tem_and." o58_unidade = $db20_unidade ";
+          $tem_and = " and ";
+        }
+        if ($db20_funcao > 0) {
+          $sql_dotacoes .= $tem_and." o58_funcao = $db20_funcao ";
+          $tem_and = " and ";
+        }
+        if ($db20_subfuncao > 0) {
+          $sql_dotacoes .= $tem_and." o58_subfuncao = $db20_subfuncao ";
+          $tem_and = " and ";
+        }
+        if ($db20_programa > 0) {
+          $sql_dotacoes .= $tem_and." o58_programa = $db20_programa ";
+          $tem_and = " and ";
+        }
+        if ($db20_projativ > 0) {
+          $sql_dotacoes .= $tem_and." o58_projativ = $db20_projativ ";
+          $tem_and = " and ";
+        }
+        if ($db20_codele > 0) {
+          $sql_dotacoes .= $tem_and." o58_codele = $db20_codele ";
+          $tem_and = " and ";
+        }
+        if ($db20_codigo > 0) {
+          $sql_dotacoes .= $tem_and." o58_codigo = $db20_codigo ";
+          $tem_and = " and ";
+        }
+        $sql_dotacoes .= " ";
+      }
+      $dotacoes .= $sql_dotacoes;
+      $secretar .= $sql_dotacoes;
+      $departam .= $sql_dotacoes;
 
-        if ($dotacoes != "") {
-          $dotacoes .= " ) ";
-          $secretar .= " ) ";
-          $departam .= " ) ";
-          if ($elemento != null || $elemento != "") {
-            $dotacoes .= " and o56_elemento like '$elemento%'";
-            $secretar .= " and o56_elemento like '$elemento%'";
-            $departam .= " and o56_elemento like '$elemento%'";
-          }
+      if ($dotacoes != "") {
+        $dotacoes .= " ) ";
+        $secretar .= " ) ";
+        $departam .= " ) ";
+        if ($elemento != null || $elemento != "") {
+          $dotacoes .= " and o56_elemento like '$elemento%'";
+          $secretar .= " and o56_elemento like '$elemento%'";
+          $departam .= " and o56_elemento like '$elemento%'";
+        }
 
-          //$dotacoes .= " and o58_anousu = $anousu and o58_instit = ".db_getsession("DB_instit");
-          $dotacoes .= " and o58_anousu = $anousu and o58_instit in ($instituicoes) ";
-          if ($sWhere != null) {
+        //$dotacoes .= " and o58_anousu = $anousu and o58_instit = ".db_getsession("DB_instit");
+        $dotacoes .= " and o58_anousu = $anousu and o58_instit in ($instituicoes) ";
+        if ($sWhere != null) {
 
-            $dotacoes .= " and {$sWhere}";
-          }
-          require_once("std/db_stdClass.php");
-          $aParametroCompras = db_stdClass::getParametro("pcparam", array(db_getsession("DB_instit")));
-          if ($this->departamento != "" && isset($aParametroCompras[0]->pc30_dotacaopordepartamento)
-             && $aParametroCompras[0]->pc30_dotacaopordepartamento == 't') {
+          $dotacoes .= " and {$sWhere}";
+        }
+        require_once(modification("std/db_stdClass.php"));
+        $aParametroCompras = db_stdClass::getParametro("pcparam", array(db_getsession("DB_instit")));
+        if ($this->departamento != "" && isset($aParametroCompras[0]->pc30_dotacaopordepartamento)
+          && $aParametroCompras[0]->pc30_dotacaopordepartamento == 't') {
 
-            $sSqlUnidade = "select * from db_departorg where db01_coddepto= $this->departamento and db01_anousu = {$anousu}";
-            $rsUnidade   = db_query($sSqlUnidade);
-            require_once("libs/db_utils.php");
-            if (pg_num_rows($rsUnidade) > 0) {
+          $sSqlUnidade = "select * from db_departorg where db01_coddepto= $this->departamento and db01_anousu = {$anousu}";
+          $rsUnidade   = db_query($sSqlUnidade);
+          require_once(modification("libs/db_utils.php"));
+          if (pg_num_rows($rsUnidade) > 0) {
 
-              $iCodigoUnidade = db_utils::fieldsMemory($rsUnidade, 0)->db01_unidade;
-              if ($iCodigoUnidade != "") {
-                $dotacoes .= " and o58_unidade = {$iCodigoUnidade}";
-              }
+            $iCodigoUnidade = db_utils::fieldsMemory($rsUnidade, 0)->db01_unidade;
+            if ($iCodigoUnidade != "") {
+              $dotacoes .= " and o58_unidade = {$iCodigoUnidade}";
             }
           }
-          $dotacoes .= " ORDER BY O50_ESTRUTDESPESA ";
-          //$secretar .= " and o58_anousu = $anousu and o58_instit = ".db_getsession("DB_instit");
-          $secretar .= " and o58_anousu = $anousu and o58_instit in ($instituicoes) ";
-          $secretar .= " ORDER BY O40_ORGAO ";
-          //$departam .= " and o58_anousu = $anousu and o58_instit = ".db_getsession("DB_instit");
-          $departam .= " and o58_anousu = $anousu and o58_instit in ($instituicoes)";
-          $departam .= " ORDER BY CODDEPTO ";
-//echo $dotacoes;
-          $result = db_query($dotacoes);
-          if ($result == false || pg_numrows($result) == 0) {
-            return false;
-          } else {
-            $this->recordset = $result;
-            $this->numrows = pg_numrows($result);
-            $this->sql = $dotacoes;
-            $this->orgaos = $secretar;
-            $this->depart = $departam;
-            return true;
-          }
-        } else {
-          return false;
         }
+        $dotacoes .= " ORDER BY O50_ESTRUTDESPESA ";
+        //$secretar .= " and o58_anousu = $anousu and o58_instit = ".db_getsession("DB_instit");
+        $secretar .= " and o58_anousu = $anousu and o58_instit in ($instituicoes) ";
+        $secretar .= " ORDER BY O40_ORGAO ";
+        //$departam .= " and o58_anousu = $anousu and o58_instit = ".db_getsession("DB_instit");
+        $departam .= " and o58_anousu = $anousu and o58_instit in ($instituicoes)";
+        $departam .= " ORDER BY CODDEPTO ";
+        //echo $dotacoes;
+        $result = db_query($dotacoes);
+        if ($result == false || pg_numrows($result) == 0) {
+          return false;
+        } else {
+          $this->recordset = $result;
+          $this->numrows = pg_numrows($result);
+          $this->sql = $dotacoes;
+          $this->orgaos = $secretar;
+          $this->depart = $departam;
+          return true;
+        }
+      } else {
+        return false;
       }
     }
   }
-  /**
-  *  usada para gerar a condição de pesquisa
-  *  retornada pela func_selorcdotacao_aba.php
-  *
-  */
-  class cl_selorcdotacao {
-    var $filtra_despesa = null;
-    var $instit = null;
-    var $orgao = null;
-    var $unidade = null;
-    var $funcao = null;
-    var $subfuncao = null;
-    var $programa = null;
-    var $projativ = null;
-    var $elemento = null;
-    var $desdobramento = null;
-    var $recurso = null;
+}
+/**
+ *  usada para gerar a condição de pesquisa
+ *  retornada pela func_selorcdotacao_aba.php
+ *
+ */
+class cl_selorcdotacao {
+  var $filtra_despesa = null;
+  var $instit = null;
+  var $orgao = null;
+  var $unidade = null;
+  var $funcao = null;
+  var $subfuncao = null;
+  var $programa = null;
+  var $projativ = null;
+  var $elemento = null;
+  var $desdobramento = null;
+  var $recurso = null;
 
-    /* gets */
-    function getInstit() {
-      return $this->instit;
-    }
-    function getElemento() {
-      return $this->elemento;
-    }
-    function getDesdobramento() {
-      return $this->desdobramento;
-    }
-    function getDadosReceita($alias = true) {
-      $txt = "1=1";
-      if ($alias == true) {
-        if ($this->recurso != null)
+  /* gets */
+  function getInstit() {
+    return $this->instit;
+  }
+  function getElemento() {
+    return $this->elemento;
+  }
+  function getDesdobramento() {
+    return $this->desdobramento;
+  }
+  function getDadosReceita($alias = true) {
+    $txt = "1=1";
+    if ($alias == true) {
+      if ($this->recurso != null)
         $txt .= " and d.o70_codigo in ".$this->recurso;
-      } else {
-        if ($this->recurso != null)
+    } else {
+      if ($this->recurso != null)
         $txt .= " and o70_codigo in ".$this->recurso;
-      }
-      return $txt;
     }
-    //00//
-    //10// se $elemento = true default, retorna elemento, caso contratio nao retorna, nesse caso use o getElemento() para obte-lo
-    //10//
-    function getDados($alias = true, $ret_elemento=true) {
-      $txt = "1=1";
-      if ($alias == true) {
-        if ($this->orgao != null)
+    return $txt;
+  }
+  //00//
+  //10// se $elemento = true default, retorna elemento, caso contratio nao retorna, nesse caso use o getElemento() para obte-lo
+  //10//
+  function getDados($alias = true, $ret_elemento=true) {
+    $txt = "1=1";
+    if ($alias == true) {
+      if ($this->orgao != null)
         $txt .= " and w.o58_orgao in".$this->orgao;
-        if ($this->unidade != null)
+      if ($this->unidade != null)
         $txt .= " and ".$this->unidade;
-        if ($this->funcao != null)
+      if ($this->funcao != null)
         $txt .= " and w.o58_funcao in".$this->funcao;
-        if ($this->subfuncao != null)
+      if ($this->subfuncao != null)
         $txt .= " and w.o58_subfuncao in".$this->subfuncao;
-        if ($this->programa != null)
+      if ($this->programa != null)
         $txt .= " and w.o58_programa in".$this->programa;
-        if ($this->projativ != null)
+      if ($this->projativ != null)
         $txt .= " and w.o58_projativ in".$this->projativ;
-/*
-        if ($this->elemento != null && $ret_elemento ==true)
-        $txt .= " and e.o56_codele in".$this->elemento;
-*/
-        if ($this->elemento != null  && $ret_elemento ==true)
-          if (trim($this->elemento)!=""){
-            $vet_elementos = split(",",$this->elemento);
-            $and           = " and ";
-            $or            = " or ";
-            $elementos     = "e.o56_elemento like ";
-            $str           = "";
-            for ($xx = 0; $xx < count($vet_elementos); $xx++){
-               if ($xx == 0){
-                 $str .= $and."(".$elementos."'".trim($vet_elementos[$xx])."%'";
-               } else {
-                 $str .= $or.$elementos."'".trim($vet_elementos[$xx])."%'";
-               }
-            }
-            $str .= ")";
-            $txt .= $str;
-          }
-        if ($this->recurso != null)
-        $txt .= " and w.o58_codigo in".$this->recurso;
-      } else {
-        if ($this->orgao != null)
-        $txt .= " and o58_orgao in".$this->orgao;
-        if ($this->unidade != null)
-        $txt .= " and ".$this->unidade;
-        if ($this->funcao != null)
-        $txt .= " and o58_funcao in".$this->funcao;
-        if ($this->subfuncao != null)
-        $txt .= " and o58_subfuncao in".$this->subfuncao;
-        if ($this->programa != null)
-        $txt .= " and o58_programa in".$this->programa;
-        if ($this->projativ != null)
-        $txt .= " and o58_projativ in ".$this->projativ;
-        if ($this->elemento != null  && $ret_elemento ==true)
-          if (trim($this->elemento)!=""){
-            $vet_elementos = split(",",$this->elemento);
-            $and           = " and ";
-            $or            = " or ";
-            $elementos     = "o56_elemento like ";
-            $str           = "";
-            for ($xx = 0; $xx < count($vet_elementos); $xx++){
-               if ($xx == 0){
-                 $str .= $and."(".$elementos."'".trim($vet_elementos[$xx])."%'";
-               } else {
-                 $str .= $or.$elementos."'".trim($vet_elementos[$xx])."%'";
-               }
-            }
-            $str .= ")";
-            $txt .= $str;
-          }
-        if ($this->recurso != null)
-        $txt .= " and o58_codigo in ".$this->recurso;
-      }
-      return $txt;
-    }
-    function getParametros($nomes = false) {
-      global $nomeinst, $o40_descr, $o41_unidade, $o41_descr, $o15_descr;
-      if ($nomes == true) {
-        $txt = "Instituição : ".$this->instit."\n";
-        $txt .= "Orgao : ".$this->orgao."\n";
-        $txt .= "Unidade: ".$this->unidade."\n";
-        $txt .= "Função: ".$this->funcao."\n";
-        $txt .= "Sub-Função: ".$this->subfuncao."\n";
-        $txt .= "Programa: ".$this->programa."\n";
-        $txt .= "Proj-Ativ: ".$this->projativ."\n";
-        $txt .= "Elemento: ".$this->elemento."\n";
-        $txt .= "Desdobramentos: ".$this->desdobramento."\n";
-        $txt .= "Recurso: ".$this->recurso."\n";
-        return $txt;
-      } else {
-        $it = "";
-        $og = "";
-        $un = "";
-        $rec = "";
 
-        $sql = "select nomeinst from db_config where codigo in ".$this->instit;
-        $rr = db_query($sql);
+      if ($this->elemento != null  && $ret_elemento ==true)
+        if (trim($this->elemento)!="") {
+            $elementos = explode(',', trim($this->elemento));
+
+            $filtro = [];
+            foreach ($elementos as $elemento) {
+                $filtro[] = "e.o56_elemento ilike '{$elemento}%'";
+            }
+
+            $filtroElemento = "(" . implode(' or ', $filtro) . ")";
+            $txt .= " and {$filtroElemento} ";
+        }
+      if ($this->recurso != null)
+          $txt .= " and w.o58_codigo in".$this->recurso;
+    } else {
+      if ($this->orgao != null)
+        $txt .= " and o58_orgao in".$this->orgao;
+      if ($this->unidade != null)
+        $txt .= " and ".$this->unidade;
+      if ($this->funcao != null)
+        $txt .= " and o58_funcao in".$this->funcao;
+      if ($this->subfuncao != null)
+        $txt .= " and o58_subfuncao in".$this->subfuncao;
+      if ($this->programa != null)
+        $txt .= " and o58_programa in".$this->programa;
+      if ($this->projativ != null)
+        $txt .= " and o58_projativ in ".$this->projativ;
+      if ($this->elemento != null  && $ret_elemento ==true)
+        if (trim($this->elemento)!=""){
+            $elementos = explode(',', trim($this->elemento));
+
+            $filtro = [];
+            foreach ($elementos as $elemento) {
+                $filtro[] = "o56_elemento ilike '{$elemento}%'";
+            }
+
+            $filtroElemento = "(" . implode(' or ', $filtro) . ")";
+            $txt .= " and {$filtroElemento} ";
+        }
+      if ($this->recurso != null)
+          $txt .= " and o58_codigo in".$this->recurso;
+    }
+
+    return $txt;
+  }
+
+  //00 //
+  //10 // se $elemento = true default, retorna elemento, caso contratio nao retorna, nesse caso use o getElemento() para obte-lo
+  //10 //
+  function getDadosComplemento($alias = true, $ret_elemento=true) {
+    $txt = "1=1";
+    if ($alias == true) {
+      if ($this->orgao != null)
+        $txt .= " and w.o58_orgao in".$this->orgao;
+      if ($this->unidade != null)
+        $txt .= " and ".$this->unidade;
+      if ($this->funcao != null)
+        $txt .= " and w.o58_funcao in".$this->funcao;
+      if ($this->subfuncao != null)
+        $txt .= " and w.o58_subfuncao in".$this->subfuncao;
+      if ($this->programa != null)
+        $txt .= " and w.o58_programa in".$this->programa;
+      if ($this->projativ != null)
+        $txt .= " and w.o58_projativ in".$this->projativ;
+
+      if ($this->elemento != null  && $ret_elemento ==true)
+        if (trim($this->elemento)!=""){
+          $vet_elementos = split(",",$this->elemento);
+          $and           = " and ";
+          $or            = " or ";
+          $elementos     = "e.o56_elemento like ";
+          $str           = "";
+          for ($xx = 0; $xx < count($vet_elementos); $xx++){
+            if ($xx == 0){
+              $str .= $and."(".$elementos."'".trim($vet_elementos[$xx])."%'";
+            } else {
+              $str .= $or.$elementos."'".trim($vet_elementos[$xx])."%'";
+            }
+          }
+          $str .= ")";
+          $txt .= $str;
+        }
+
+      if ($this->recurso != null) {
+        $txt .= " and o15_codigo in".$this->recurso;
+      }
+
+    } else {
+      if ($this->orgao != null)
+        $txt .= " and o58_orgao in".$this->orgao;
+      if ($this->unidade != null)
+        $txt .= " and ".$this->unidade;
+      if ($this->funcao != null)
+        $txt .= " and o58_funcao in".$this->funcao;
+      if ($this->subfuncao != null)
+        $txt .= " and o58_subfuncao in".$this->subfuncao;
+      if ($this->programa != null)
+        $txt .= " and o58_programa in".$this->programa;
+      if ($this->projativ != null)
+        $txt .= " and o58_projativ in ".$this->projativ;
+      if ($this->elemento != null  && $ret_elemento ==true)
+        if (trim($this->elemento)!=""){
+          $vet_elementos = split(",",$this->elemento);
+          $and           = " and ";
+          $or            = " or ";
+          $elementos     = "o56_elemento like ";
+          $str           = "";
+          for ($xx = 0; $xx < count($vet_elementos); $xx++){
+            if ($xx == 0){
+              $str .= $and."(".$elementos."'".trim($vet_elementos[$xx])."%'";
+            } else {
+              $str .= $or.$elementos."'".trim($vet_elementos[$xx])."%'";
+            }
+          }
+          $str .= ")";
+          $txt .= $str;
+        }
+      if ($this->recurso != null) {
+          $txt .= " and o15_codigo in".$this->recurso;
+      }
+    }
+
+    return $txt;
+  }
+
+  function getParametros($nomes = false) {
+    global $nomeinst, $o40_descr, $o41_unidade, $o41_descr, $o15_descr;
+    if ($nomes == true) {
+      $txt = "Instituição : ".$this->instit."\n";
+      $txt .= "Orgao : ".$this->orgao."\n";
+      $txt .= "Unidade: ".$this->unidade."\n";
+      $txt .= "Função: ".$this->funcao."\n";
+      $txt .= "Sub-Função: ".$this->subfuncao."\n";
+      $txt .= "Programa: ".$this->programa."\n";
+      $txt .= "Proj-Ativ: ".$this->projativ."\n";
+      $txt .= "Elemento: ".$this->elemento."\n";
+      $txt .= "Desdobramentos: ".$this->desdobramento."\n";
+      $txt .= "Recurso: ".$this->recurso."\n";
+      return $txt;
+    } else {
+      $it = "";
+      $og = "";
+      $un = "";
+      $rec = "";
+
+      $sql = "select nomeinst from db_config where codigo in ".$this->instit;
+      $rr = db_query($sql);
+      $sp = "";
+      for ($x = 0; $x < pg_numrows($rr); $x ++) {
+        db_fieldsmemory($rr, $x);
+        $it = $it.$sp.$nomeinst;
+        $sp = ", ";
+      }
+      $sql = "select o40_descr from orcorgao where o40_anousu=".db_getsession("DB_anousu")." and o40_orgao in ".$this->orgao;
+      $rr = @ db_query($sql);
+      if ($rr != false) {
         $sp = "";
-        for ($x = 0; $x < pg_numrows($rr); $x ++) {
+        for ($x = 0; $x < @ pg_numrows($rr); $x ++) {
           db_fieldsmemory($rr, $x);
-          $it = $it.$sp.$nomeinst;
+          $og = $og.$sp.$o40_descr;
           $sp = ", ";
         }
-        $sql = "select o40_descr from orcorgao where o40_anousu=".db_getsession("DB_anousu")." and o40_orgao in ".$this->orgao;
-        $rr = @ db_query($sql);
-        if ($rr != false) {
-          $sp = "";
-          for ($x = 0; $x < @ pg_numrows($rr); $x ++) {
-            db_fieldsmemory($rr, $x);
-            $og = $og.$sp.$o40_descr;
-            $sp = ", ";
-          }
-        }
+      }
 
-        $sql = "select distinct o41_descr
+      $sql = "select distinct o41_descr
                   from orcunidade
                  inner join orcdotacao on o58_unidade = o41_unidade
                                       and o58_orgao   = o41_orgao
@@ -4597,159 +4730,186 @@ function db_receitappa($anoini, $db_where = false, $retsql = false) {
                  where o41_anousu = ".db_getsession("DB_anousu")."
                    and ".$this->unidade;
 
-        $rr = @ db_query($sql);
-        if ($rr != false) {
-          $sp = "";
-          for ($x = 0; $x < @ pg_numrows($rr); $x ++) {
-            db_fieldsmemory($rr, $x);
-            $un = $un.$sp.$o41_descr;
-            $sp = ", ";
-          }
+      $rr = @ db_query($sql);
+      if ($rr != false) {
+        $sp = "";
+        for ($x = 0; $x < @ pg_numrows($rr); $x ++) {
+          db_fieldsmemory($rr, $x);
+          $un = $un.$sp.$o41_descr;
+          $sp = ", ";
         }
-        $sql = "select o15_descr from orctiporec
+      }
+      $sql = "select o15_descr from orctiporec
         where o15_codigo in ".$this->recurso;
-        $rr = @ db_query($sql);
-        if ($rr != false) {
-          $sp = "";
-          for ($x = 0; $x < @ pg_numrows($rr); $x ++) {
-            db_fieldsmemory($rr, $x);
-            $rec = $rec.$sp.$o15_descr;
-            $sp = ", ";
-          }
+      $rr = @ db_query($sql);
+      if ($rr != false) {
+        $sp = "";
+        for ($x = 0; $x < @ pg_numrows($rr); $x ++) {
+          db_fieldsmemory($rr, $x);
+          $rec = $rec.$sp.$o15_descr;
+          $sp = ", ";
         }
-
-        $txt = "Instituição : ".$it."\n";
-        $txt .= "Orgao : ".$og."\n";
-        $txt .= "Unidade: ".$un."\n";
-        $txt .= "Função: ".$this->funcao."\n";
-        $txt .= "Sub-Função: ".$this->subfuncao."\n";
-        $txt .= "Programa: ".$this->programa."\n";
-        $txt .= "Proj-Ativ: ".$this->projativ."\n";
-        $txt .= "Elemento: ".$this->elemento."\n";
-        $txt .= "Recurso: ".$rec."\n";
-        return $txt;
       }
-    }
-    /* sets */
-    function setDados($filtro) {
-      $this->filtra_despesa = $filtro;
-      $this->processa();
-    }
-    function processa() {
-      // executa
-      $sele_work = "";
-      $sepi = "";
-      $sep = "";
-      $sepu = "";
-      $sepf = "";
-      $sepsf = "";
-      $sepo = "";
-      $sepp = "";
-      $sepe = "";
-      $sepc = "";
-      $sepdes = ""; // separador do desdobramento
-      $sele_work_instit = " ( ";
-      $sele_work_orgao = " ( ";
-      $sele_work_unidade = " ( ";
-      $sele_work_funcao = " ( ";
-      $sele_work_subfuncao = " ( ";
-      $sele_work_programa = " ( ";
-      $sele_work_projativ = " ( ";
-      $sele_work_elemento = " ";
-      $sele_work_desdobramento = " ( ";
-      $sele_work_recurso = " ( ";
-      $condicao_uniao = " ";
-      $estrut    = "";
-      if ($this->filtra_despesa != "geral") {
-        $qual_filtro = split('-', $this->filtra_despesa);
-        for ($f = 0; $f < sizeof($qual_filtro); $f ++) {
-          $ver = split("_", $qual_filtro[$f]);
 
-          if ($ver[0] == "instit") {
-            $sele_work_instit .= $sepi.$ver[1];
-            $sepi = ",";
-          }
-          if ($ver[0] == "orgao") {
-            $sele_work_orgao .= $sep.$ver[1];
-            $sep = ",";
-          }
-          if ($ver[0] == "unidade") {
-            $sele_work_unidade .= $sepu." ( o58_orgao = ".$ver[1]." and o58_unidade = ".$ver[2]." ) ";
-            $sepu = " or ";
-          }
-          if ($ver[0] == "funcao") {
-            $sele_work_funcao .= $sepf.$ver[1];
-            $sepf = ",";
-          }
-          if ($ver[0] == "subfuncao") {
-            $sele_work_subfuncao .= $sepsf.$ver[1];
-            $sepsf = ",";
-          }
-          if ($ver[0] == "programa") {
-            $sele_work_programa .= $sepo.$ver[1];
-            $sepo = ",";
-          }
-          if ($ver[0] == "projativ") {
-            $sele_work_projativ .= $sepp.$ver[1];
-            $sepp = ",";
-          }
-          if ($ver[0] == "des") {
-            $sele_work_desdobramento .= $sepdes.$ver[1];
-            $sepdes = ",";
-          }
-          if ($ver[0] == "ele") {
-            $sql_elem = "select o56_elemento from orcelemento where o56_anousu = ".db_getsession("DB_anousu")." and
-                                                                    o56_codele = ".$ver[1];
-            $rr       = @ db_query($sql_elem);
-            $numrows  = @ pg_numrows($rr);
-            if ($rr != false) {
-              for ($xx = 0; $xx < $numrows; $xx++){
-                 $estrut = substr(pg_result($rr,$xx,"o56_elemento"),0,7);
-                 $sele_work_elemento .= $sepe.$estrut;
-                 $sepe = ",";
-              }
-            }
-          }
-          if ($ver[0] == "recurso") {
-            $sele_work_recurso .= $sepc.$ver[1];
-            $sepc = ",";
-          }
-          $condicao_uniao = " and ";
-        }
-
-        $sele_work_instit .= ")";
-        $sele_work_orgao .= ")";
-        $sele_work_unidade .= ")";
-        $sele_work_funcao .= ")";
-        $sele_work_subfuncao .= ")";
-        $sele_work_programa .= ")";
-        $sele_work_projativ .= ")";
-//        $sele_work_elemento .= ")";
-        $sele_work_desdobramento .= ")";
-        $sele_work_recurso .= ")";
-        //echo $sele_work_elemento; exit;
-      }
-      // atualiza instituição
-      if ($sepi != "")
-      $this->instit = $sele_work_instit;
-      if ($sep != "")
-      $this->orgao = $sele_work_orgao;
-      if ($sepu != "")
-      $this->unidade = $sele_work_unidade;
-      if ($sepf != "")
-      $this->funcao = $sele_work_funcao;
-      if ($sepsf != "")
-      $this->subfuncao = $sele_work_subfuncao;
-      if ($sepo != "")
-      $this->programa = $sele_work_programa;
-      if ($sepp != "")
-      $this->projativ = $sele_work_projativ;
-      if ($sepe != "")
-      $this->elemento = $sele_work_elemento;
-      if ($sepdes != "")
-      $this->desdobramento = $sele_work_desdobramento;
-      if ($sepc != "")
-      $this->recurso = $sele_work_recurso;
+      $txt = "Instituição : ".$it."\n";
+      $txt .= "Orgao : ".$og."\n";
+      $txt .= "Unidade: ".$un."\n";
+      $txt .= "Função: ".$this->funcao."\n";
+      $txt .= "Sub-Função: ".$this->subfuncao."\n";
+      $txt .= "Programa: ".$this->programa."\n";
+      $txt .= "Proj-Ativ: ".$this->projativ."\n";
+      $txt .= "Elemento: ".$this->elemento."\n";
+      $txt .= "Recurso: ".$rec."\n";
+      return $txt;
     }
   }
-  ?>
+  /* sets */
+  function setDados($filtro) {
+    $this->filtra_despesa = $filtro;
+    $this->processa();
+  }
+  function processa() {
+    // executa
+    $sele_work = "";
+    $sepi = "";
+    $sep = "";
+    $sepu = "";
+    $sepf = "";
+    $sepsf = "";
+    $sepo = "";
+    $sepp = "";
+    $sepe = "";
+    $sepc = "";
+    $sepdes = ""; // separador do desdobramento
+    $sele_work_instit = " ( ";
+    $sele_work_orgao = " ( ";
+    $sele_work_unidade = " ( ";
+    $sele_work_funcao = " ( ";
+    $sele_work_subfuncao = " ( ";
+    $sele_work_programa = " ( ";
+    $sele_work_projativ = " ( ";
+    $sele_work_elemento = " ";
+    $sele_work_desdobramento = " ( ";
+    $sele_work_recurso = " ( ";
+    $condicao_uniao = " ";
+    $estrut    = "";
+    if ($this->filtra_despesa != "geral") {
+      $qual_filtro = split('-', $this->filtra_despesa);
+      for ($f = 0; $f < sizeof($qual_filtro); $f ++) {
+        $ver = split("_", $qual_filtro[$f]);
+
+        if ($ver[0] == "instit") {
+          $sele_work_instit .= $sepi.$ver[1];
+          $sepi = ",";
+        }
+        if ($ver[0] == "orgao") {
+          $sele_work_orgao .= $sep.$ver[1];
+          $sep = ",";
+        }
+        if ($ver[0] == "unidade") {
+          $sele_work_unidade .= $sepu." ( o58_orgao = ".$ver[1]." and o58_unidade = ".$ver[2]." ) ";
+          $sepu = " or ";
+        }
+        if ($ver[0] == "funcao") {
+          $sele_work_funcao .= $sepf.$ver[1];
+          $sepf = ",";
+        }
+        if ($ver[0] == "subfuncao") {
+          $sele_work_subfuncao .= $sepsf.$ver[1];
+          $sepsf = ",";
+        }
+        if ($ver[0] == "programa") {
+          $sele_work_programa .= $sepo.$ver[1];
+          $sepo = ",";
+        }
+        if ($ver[0] == "projativ") {
+          $sele_work_projativ .= $sepp.$ver[1];
+          $sepp = ",";
+        }
+        if ($ver[0] == "des") {
+          $sele_work_desdobramento .= $sepdes.$ver[1];
+          $sepdes = ",";
+        }
+        if ($ver[0] == "ele") {
+          $sql_elem = "select o56_elemento from orcelemento where o56_anousu = ".db_getsession("DB_anousu")." and
+                                                                    o56_codele = ".$ver[1];
+          $rr       = @ db_query($sql_elem);
+          $numrows  = @ pg_numrows($rr);
+          if ($rr != false) {
+            for ($xx = 0; $xx < $numrows; $xx++){
+              $estrut = substr(pg_result($rr,$xx,"o56_elemento"),0,7);
+              $sele_work_elemento .= $sepe.$estrut;
+              $sepe = ",";
+            }
+          }
+        }
+        if ($ver[0] == "recurso") {
+          $sele_work_recurso .= $sepc.$ver[1];
+          $sepc = ",";
+        }
+        $condicao_uniao = " and ";
+      }
+
+      $sele_work_instit .= ")";
+      $sele_work_orgao .= ")";
+      $sele_work_unidade .= ")";
+      $sele_work_funcao .= ")";
+      $sele_work_subfuncao .= ")";
+      $sele_work_programa .= ")";
+      $sele_work_projativ .= ")";
+      //        $sele_work_elemento .= ")";
+      $sele_work_desdobramento .= ")";
+      $sele_work_recurso .= ")";
+      //echo $sele_work_elemento; exit;
+    }
+    // atualiza instituição
+    if ($sepi != "")
+      $this->instit = $sele_work_instit;
+    if ($sep != "")
+      $this->orgao = $sele_work_orgao;
+    if ($sepu != "")
+      $this->unidade = $sele_work_unidade;
+    if ($sepf != "")
+      $this->funcao = $sele_work_funcao;
+    if ($sepsf != "")
+      $this->subfuncao = $sele_work_subfuncao;
+    if ($sepo != "")
+      $this->programa = $sele_work_programa;
+    if ($sepp != "")
+      $this->projativ = $sele_work_projativ;
+    if ($sepe != "")
+      $this->elemento = $sele_work_elemento;
+    if ($sepdes != "")
+      $this->desdobramento = $sele_work_desdobramento;
+    if ($sepc != ""){
+        $this->recurso = $sele_work_recurso;
+    }
+  }
+}
+
+/**
+ * Realiza o calculo do saldo da linnha de pacto
+ * @param $linhaPacto
+ * @param null $ateData
+ * @return int
+ */
+function getSaldoPactoLinhaOrcamento($linhaPacto, $ateData = null) {
+
+    $saldoLinhaPacto = 0;
+    $where = array(
+        "o161_linhapacto = {$linhaPacto}"
+    );
+    if (!empty($ateData)) {
+        $where[] = "o161_data= '".date("Y-m-d", db_getSession("DB_datausu"))."'";
+    }
+    $sWhere = implode(" and ", $where );
+    $sqlSaldoPacto = "select coalesce(sum(o161_saldo), 0) as saldo
+                        from linhapactosaldo
+                       where {$sWhere}";
+
+    $rsConsultaSaldo = db_query($sqlSaldoPacto);
+    if (pg_num_rows($rsConsultaSaldo) > 0) {
+        $saldoLinhaPacto = db_utils::fieldsMemory($rsConsultaSaldo, 0)->saldo;
+    }
+    return $saldoLinhaPacto;
+}

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once ("dbforms/db_funcoes.php");
-require("libs/db_stdlibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_stdlibwebseller.php"));
 
 ?>
 <html>
@@ -61,6 +61,7 @@ require("libs/db_stdlibwebseller.php");
 	  db_app::load("estilos.css, grid.style.css, DBFormularios.css, DBViewLancamentoAvaliacao.css ");
 	?>
   <script type="text/javascript" src="scripts/widgets/datagrid/plugins/DBHint.plugin.js"></script>
+  <script type="text/javascript" src="scripts/AjaxRequest.js"></script>
 	<style>
 	</style>
 </head>
@@ -84,7 +85,7 @@ oFiltro.show($('ctnView'));
 
 js_clearSession =  function() {
 
-  var oParam  = new Object();
+  var oParam  = {};
   oParam.exec = "destroySession";
   var oAjax   = new Ajax.Request('edu4_lancamentoavaliacaonota.RPC.php',
                                  {
@@ -94,4 +95,8 @@ js_clearSession =  function() {
                                 });
   return true;
 };
+
+CurrentWindow.corpo.addEventListener('beforeunload', function(event) {
+  js_clearSession();
+});
 </script>

@@ -26,7 +26,7 @@
  */
 
 //MODULO: recursoshumanos
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrhestagioagendadata->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -55,7 +55,7 @@ if(isset($db_opcaoal)){
 if ($db_opcao == 33 or $db_opcao == 3){
  
    $btnOkonClick = "onclick='return confirm (\"A exclusão do agendamento ira excluir também as avaliacoes.\\nConfirmar?\")'";
-   $db_botao     = false;
+   $db_botao     = true;
 }else{
    $btnOkonClick = '';
 }
@@ -121,8 +121,8 @@ db_inputdata('h64_data',@$h64_data_dia,@$h64_data_mes,@$h64_data_ano,true,'text'
   <tr>
   
     <td colspan="2" align="center">
- <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> <?=$btnOkonClick ?> >
- <input name="novo" type="button" id="cancelar" value="Novo" onclick="js_cancelar();" <?=($db_opcao==1||isset($db_opcaoal)?"style='visibility:hidden;'":"")?> >
+      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao == false) ? "disabled" : ""?> <?=$btnOkonClick ?> >
+      <input name="novo" type="button" id="cancelar" value="Novo" onclick="js_cancelar();" <?=($db_opcao==1||isset($db_opcaoal)?"style='visibility:hidden;'":"")?> >
     </td>
   </tr>
   </table>
@@ -155,10 +155,10 @@ function js_cancelar(){
 }
 function js_pesquisah64_estagioagenda(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhestagioagendadata','db_iframe_rhestagioagenda','func_rhestagioagenda.php?funcao_js=parent.js_mostrarhestagioagenda1|h57_sequencial|z01_nome','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagioagendadata','db_iframe_rhestagioagenda','func_rhestagioagenda.php?funcao_js=parent.js_mostrarhestagioagenda1|h57_sequencial|z01_nome','Pesquisa',true,'0');
   }else{
      if(document.form1.h64_estagioagenda.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhestagioagendadata','db_iframe_rhestagioagenda','func_rhestagioagenda.php?pesquisa_chave='+document.form1.h64_estagioagenda.value+'&funcao_js=parent.js_mostrarhestagioagenda','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagioagendadata','db_iframe_rhestagioagenda','func_rhestagioagenda.php?pesquisa_chave='+document.form1.h64_estagioagenda.value+'&funcao_js=parent.js_mostrarhestagioagenda','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }

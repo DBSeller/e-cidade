@@ -1,7 +1,7 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,27 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_prontuarios_classe.php");
-include("classes/db_cgs_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("classes/db_medicocid_classe.php");
-include("classes/db_prontcid_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_utils.php");
-include("libs/db_stdlibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 
-$z01_d_cadast_dia = date("d",db_getsession("DB_datausu"));
-$z01_d_cadast_mes = date("m",db_getsession("DB_datausu"));
-$z01_d_cadast_ano = date("Y",db_getsession("DB_datausu"));
-$z01_i_login = DB_getsession("DB_id_usuario");
+$z01_d_cadast_dia = date( "d", db_getsession("DB_datausu") );
+$z01_d_cadast_mes = date( "m", db_getsession("DB_datausu") );
+$z01_d_cadast_ano = date( "Y", db_getsession("DB_datausu") );
+$z01_i_login      = DB_getsession("DB_id_usuario");
 
 $oSauConfig = loadConfig("sau_config");
 
-db_postmemory($HTTP_POST_VARS);
+db_postmemory( $_POST );
 
 $clprontuarios = new cl_prontuarios;
 $clmedicocid   = new cl_medicocid;
@@ -53,43 +48,50 @@ $clprontcid    = new cl_prontcid;
 
 $db_opcao = !isset($sd24_t_diagnostico)||empty($sd24_t_diagnostico)?1:2;
 $db_botao = true;
-if(isset($lancar)){
 
-	$clprontcid->sql_record( $clprontcid->sql_query("","*","sd55_i_codigo","sd55_i_prontuario = $chavepesquisaprontuario") );
-	
+if( isset( $lancar ) ) {
 
-	if( isset($sd55_b_principal) && $sd55_b_principal == 'true' && $clprontcid->numrows > 0){
-		$clprontcid->sql_record( "update prontcid set sd55_b_principal = false where sd55_i_prontuario = $chavepesquisaprontuario" );	
-	}else if( !isset($sd55_b_principal) && $clprontcid->numrows == 0 ){
+  $sSqlProntCid = $clprontcid->sql_query( "", "*", "sd55_i_codigo", "sd55_i_prontuario = {$chavepesquisaprontuario}" );
+	$clprontcid->sql_record( $sSqlProntCid );
+
+	if( isset($sd55_b_principal) && $sd55_b_principal == 'true' && $clprontcid->numrows > 0 ) {
+
+    $sSqlProntCid = "update prontcid set sd55_b_principal = false where sd55_i_prontuario = {$chavepesquisaprontuario}";
+		$clprontcid->sql_record( $sSqlProntCid );
+	} else if( !isset($sd55_b_principal) && $clprontcid->numrows == 0 ) {
 		$sd55_b_principal = "true";
 	}
-	
-	
-  	$clprontcid->sd55_i_prontuario = $chavepesquisaprontuario;
-  	$clprontcid->sd55_b_principal = isset($sd55_b_principal)?'true':'false';
 
-	  db_inicio_transacao();
+  $clprontcid->sd55_i_prontuario = $chavepesquisaprontuario;
+  $clprontcid->sd55_b_principal  = isset( $sd55_b_principal ) ? 'true' : 'false';
 
-  	$clprontcid->incluir("");
-  	$incluir=true;
+  db_inicio_transacao();
 
-  	db_fim_transacao();
+  $clprontcid->incluir("");
+  $incluir = true;
+
+  db_fim_transacao();
   
-	if( isset( $chaveprofissional ) ){
-  		$clmedicocid->sql_record( $clmedicocid->sql_query("","*","sd56_i_codigo","sd56_i_profissional = $chaveprofissional and sd56_i_cid = $sd55_i_cid") );
-	  	if(  $clmedicocid->numrows == 0 && (int)$sd55_i_cid != 0){
-	  		$clmedicocid->sd56_i_profissional = $chaveprofissional;
-	  		$clmedicocid->sd56_i_cid = $sd55_i_cid;
+	if( isset( $chaveprofissional ) ) {
 
-        db_inicio_transacao();
+    $sWhereMedicoCid = "sd56_i_profissional = {$chaveprofissional} and sd56_i_cid = {$sd55_i_cid}";
+    $sSqlMedicoCid   = $clmedicocid->sql_query( "", "*", "sd56_i_codigo", $sWhereMedicoCid );
+    $clmedicocid->sql_record( $sSqlMedicoCid );
 
-	  		$clmedicocid->incluir("");
+    if(  $clmedicocid->numrows == 0 && (int)$sd55_i_cid != 0 ) {
 
-       	db_fim_transacao();
-	  	}
+      $clmedicocid->sd56_i_profissional = $chaveprofissional;
+      $clmedicocid->sd56_i_cid          = $sd55_i_cid;
+
+      db_inicio_transacao();
+
+      $clmedicocid->incluir("");
+
+      db_fim_transacao();
+    }
 	}
-
 }
+
 if( isset( $opcao ) && $opcao == "excluir" ){
 
   db_inicio_transacao();
@@ -103,32 +105,28 @@ if( isset( $opcao ) && $opcao == "excluir" ){
   	                                                      and sd55_i_codigo != $sd55_i_codigo 
   	                                                    limit 1 ) ");	
   }
+
   $clprontcid->excluir( $sd55_i_codigo );
   db_fim_transacao();
-	
 }
 
+if( isset( $incluir ) || isset( $alterar ) ) {
 
-if(isset($incluir)||isset($alterar)){
   db_inicio_transacao();
   
-  //$clprontuarios->sd24_i_numcgs = $cgs;
-  if( empty( $chavepesquisaprontuario ) ){
-    //die("esta funcionando na aba 001")  ;
-  }else{
-     $clprontuarios->sd24_i_codigo = $chavepesquisaprontuario;
-     $clprontuarios->alterar($chavepesquisaprontuario);
+  if( !empty( $chavepesquisaprontuario ) ) {
+
+    $clprontuarios->sd24_i_codigo = $chavepesquisaprontuario;
+    $clprontuarios->alterar($chavepesquisaprontuario);
   }
 
   db_fim_transacao();
-}else if(isset($chavepesquisaprontuario) && !empty($chavepesquisaprontuario)){
+} else if( isset( $chavepesquisaprontuario ) && !empty( $chavepesquisaprontuario ) ) {
 
-   $result = $clprontuarios->sql_record($clprontuarios->sql_query($chavepesquisaprontuario));
-   db_fieldsmemory($result,0);
+  $result = $clprontuarios->sql_record($clprontuarios->sql_query($chavepesquisaprontuario));
+  db_fieldsmemory($result,0);
 }
-
 ?>
-
 
 <html>
 <head>
@@ -147,7 +145,7 @@ if(isset($incluir)||isset($alterar)){
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
         <?
-        include("forms/db_frmfichaatenddiag.php");
+        include(modification("forms/db_frmfichaatenddiag.php"));
         ?>
     </center>
     </td>
@@ -157,58 +155,55 @@ if(isset($incluir)||isset($alterar)){
 </html>
 <script>
   js_tabulacaoforms("form1","sd70_c_cid",true,1,"sd70_c_cid",true);
-  //document.form1.sd24_i_unidade.value = parent.iframe_a1.document.form1.sd24_i_unidade.value;
-
 </script>
-<?
-if(isset($lancar)){
-  if($clprontcid->erro_status=="0"){
-    $clprontcid->erro(true,false);
-    $db_botao=true;
+<?php
+if( isset( $lancar ) ) {
+
+  if( $clprontcid->erro_status == "0" ) {
+
+    $clprontcid->erro( true, false );
+    $db_botao = true;
+
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if($clprontcid->erro_campo!=""){
+    if( $clprontcid->erro_campo != "" ) {
+
       echo "<script> document.form1.".$clprontcid->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clprontcid->erro_campo.".focus();</script>";
     }
-  }else{
-    $clprontcid->erro(true,false);
-
+  } else {
+    $clprontcid->erro( true, false );
   }
 }
 
+if( isset( $incluir ) || isset( $alterar ) ) {
 
-if(isset($incluir) || isset($alterar)){
-  if($clprontuarios->erro_status=="0"){
-    $clprontuarios->erro(true,false);
-    $db_botao=true;
+  if( $clprontuarios->erro_status == "0" ) {
+
+    $clprontuarios->erro( true, false );
+    $db_botao = true;
+
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if($clprontuarios->erro_campo!=""){
+    if( $clprontuarios->erro_campo != "" ) {
+
       echo "<script> document.form1.".$clprontuarios->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clprontuarios->erro_campo.".focus();</script>";
     }
-  }else{
-    //$clprontuarios->erro(true,false);
-    if( $clprontuarios->sd24_c_digitada == "S"){
+  } else {
+
+    if( $clprontuarios->sd24_c_digitada == "S" ) {
+
     	echo "<script>
     	        parent.document.formaba.a4.disabled = true;
-				if(parent.iframe_a4 == undefined){
-					//Consulta médica
-					parent.mo_camada('a1');					
-				}else{
-					//FAA
-					js_novaficha();
-				}			    	
-    	     </script>";    	
+              if( parent.iframe_a4 == undefined ) {
+
+                //Consulta médica
+                parent.mo_camada('a1');
+              } else {
+
+                //FAA
+                js_novaficha();
+              }
+    	     </script>";
     }
-    ?>
-     <script>
-       //parent.document.formaba.a3.disabled = false;
-       //parent.iframe_a4.location.href='sau4_fichaatendabas003.php?chavepesquisaprontuario=<?=$chavepesquisaprontuario?>'
-       //parent.mo_camada('a4');
-     </script>
-    <?
   }
-
-
 }
-?>

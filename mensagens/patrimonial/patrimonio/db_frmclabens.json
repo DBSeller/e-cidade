@@ -6,5 +6,6 @@
   "informe_tipo_bem"         : "Informe o tipo do bem.",
   "informe_tipo_depreciacao" : "Informe o tipo de depreciação.",
   "informe_vida_util"        : "Informe a vida útil.",
-  "classificacao_salva"      : "Classificação salva com sucesso."
+  "classificacao_salva"      : "Classificação salva com sucesso.",
+  "informe_valor_residual"   : "Informe o percentual para o valor residual!"
 }

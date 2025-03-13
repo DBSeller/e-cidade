@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ('classes/db_orcparamseqfiltroorcamento_classe.php');
-require_once ('classes/db_orcparamseqfiltropadrao_classe.php');
+require_once(modification('classes/db_orcparamseqfiltroorcamento_classe.php'));
+require_once(modification('classes/db_orcparamseqfiltropadrao_classe.php'));
 
 $oCl_orcparamseqfiltroorcamento = new cl_orcparamseqfiltroorcamento();
 $oCl_orcparamseqfiltropadrao    = new cl_orcparamseqfiltropadrao();

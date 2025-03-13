@@ -1,0 +1,91 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010492' name='recursoshumanos.portariaassentasituacao' description="Tabela para guarda a situação de uma portaria" prefix="rh236" label="Portaria assentamento situcao" type="0">
+  <fields>
+    <field codigo="1010857" 
+           campo_api='' 
+           name="rh236_codigo" 
+           conteudo="int8" 
+           description="Código sequencial da tabela" 
+           inivalue="0" 
+           label="Código" 
+           size="34" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.portariaassentasituacao_rh236_codigo_seq' />
+     
+    </field> 
+    <field codigo="1010860" 
+           campo_api='' 
+           name="rh236_portariaassenta" 
+           conteudo="int8" 
+           description="Vinculo da situação com a portaria" 
+           inivalue="0" 
+           label="Portaria" 
+           size="34" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Portaria" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010858" 
+           campo_api='' 
+           name="rh236_situacao" 
+           conteudo="char(1)" 
+           description="Campo que contém a situação da assinatura do documento default C (C-Criada; - O-Conferido / D-Devolvido para abertura; - A-Aguarda assinatura / F-Devolvido para conferência; - S-Assinado; I-Impresso)" 
+           inivalue="" 
+           label="Situação" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Situação" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010859" 
+           campo_api='' 
+           name="rh236_momento" 
+           conteudo="int8" 
+           description="Momento em que ocorreu a troca de situação, data e hora" 
+           inivalue="0" 
+           label="Momento da movimentação" 
+           size="34" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Momento da movimentação" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh236_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="portariaassenta" inner='t'>
+      <fieldfk name="rh236_portariaassenta" reference="h33_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

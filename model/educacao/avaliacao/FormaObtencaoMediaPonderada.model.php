@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,24 +31,27 @@
  * @package educacao
  * @subpackage avaliacao
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.14 $
  */
-require_once("model/educacao/avaliacao/FormaObtencao.model.php");
-require_once("model/educacao/avaliacao/iFormaObtencao.interface.php");
+require_once(modification("model/educacao/avaliacao/FormaObtencao.model.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
 class FormaObtencaoMediaPonderada extends FormaObtencao implements IFormaObtencao {
 
 
   /**
    * Define as notas que ira ser usaddo no calculo
    * Deverá ser instancias de AvaliacaoAproveitamento
+   *
    * @see IFormaObtencao::processarResultado()
    * @param array $aAproveitamentos
+   * @throws ParameterException
+   * @return \ValorAproveitamentoNota
    */
-  public function processarResultado($aAproveitamentos) {
+  public function processarResultado( $aAproveitamentos, $iAno ) {
 
     $mAproveitamento = '';
     $iTotalPeriodos  = 0;
-    $aNotasPeriodos  = $this->getElementosParaCalculo($aAproveitamentos);
+    $aNotasPeriodos  = $this->getElementosParaCalculo( $aAproveitamentos, $iAno );
     $aElementos      = $this->getResultadoAvaliacao()->getElementosComposicaoResultado();
 
     foreach ($aNotasPeriodos as $oNotaDoAproveitamento) {
@@ -75,18 +78,26 @@ class FormaObtencaoMediaPonderada extends FormaObtencao implements IFormaObtenca
         $iTotalPeriodos  += $oElemento->getPeso();
       }
     }
+
     if ($iTotalPeriodos > 0) {
-      $mAproveitamento = $mAproveitamento / $iTotalPeriodos;
+      $mAproveitamento = ArredondamentoNota::arredondar( $mAproveitamento / $iTotalPeriodos, $iAno );
     }
+
     if (is_object($mAproveitamento)) {
-      throw new ParameterException("Erro no calculo da media pondera {mAproveitamento é um objeto {$mAproveitamento->getAproveitamento}}");
+      throw new ParameterException("Erro no cálculo da média pondera {mAproveitamento é um objeto {$mAproveitamento->getAproveitamento}}");
     }
+
+    /**
+     * Devolvemos as notas Originais
+     */
+    $this->acertaNotasSubstituidasParaCalculo($aNotasPeriodos);
     return new ValorAproveitamentoNota($mAproveitamento);
   }
 
   /**
    * Calcula a nota projetada
-   * @param AvaliacaoAproveitamento[] $aAvaliacaoAproveitamento
+   *
+   * @param AvaliacaoAproveitamento[] $aElementosAvaliacoes
    * @return string
    */
   public function calcularNotaProjetada(array $aElementosAvaliacoes) {
@@ -117,4 +128,3 @@ class FormaObtencaoMediaPonderada extends FormaObtencao implements IFormaObtenca
     return $nNotaProjetada < 0 ? '' : $nNotaProjetada;
   }
 }
-?>

@@ -25,102 +25,138 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
+
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+	<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Expires" CONTENT="0">
+	<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+	<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+	<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBLancador.widget.js"></script>
+	<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBAncora.widget.js"></script>
+	<link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
-  <table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-    <tr>
-      <td width="360" height="18">&nbsp;</td>
-      <td width="263">&nbsp;</td>
-      <td width="25">&nbsp;</td>
-      <td width="140">&nbsp;</td>
-    </tr>
+	<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
+		<tr>
+			<td width="360" height="18">&nbsp;</td>
+			<td width="263">&nbsp;</td>
+			<td width="25">&nbsp;</td>
+			<td width="140">&nbsp;</td>
+		</tr>
 	</table>
 	<table align="center" border="0">
 		<tr>
 			<td>&nbsp;</td>
-		</tr>  
+		</tr>
 		<tr>
 			<td>
-		    <form name="form1" method="post" action="">
-					<fieldset><legend><b> Período de Pagamento  </b></legend>
-					  <table align="center" > 
-								  <?
+				<form name="form1" method="post" action="">
+					<fieldset>
+						<legend><b> Período de Pagamento </b></legend>
+						<table align="center">
+							<?
 										$dtd = date("d",db_getsession("DB_datausu"));
 										$dtm = date("m",db_getsession("DB_datausu"));
 										$dta = date("Y",db_getsession("DB_datausu"));
-									?>		
+									?>
 							<tr>
-							  <td align="right">
-							 	 <b>Data Inicial :</b>
-							  </td>  
-							  <td>	
-							 		 <?
+								<td align="right">
+									<b>Data Inicial :</b>
+								</td>
+								<td>
+									<?
 							 				db_inputdata("datai","$dtd","$dtm","$dta","true","text",2);
-							 		 ?>   
-							  </td>
+							 		 ?>
+								</td>
 							</tr>
 							<tr>
-							  <td align="right">
-							 	 <b>Data Final &nbsp; :</b>  
-							  </td>
-							  <td>
-							 		 <?
+								<td align="right">
+									<b>Data Final &nbsp; :</b>
+								</td>
+								<td>
+									<?
 							 				db_inputdata("dataf","$dtd","$dtm","$dta","true","text",2);      
-							 		 ?> 
-							  </td>
+							 		 ?>
+								</td>
 							</tr>
-						</table> 
+							<tr>
+								<td colspan="6">
+									<div style="margin-top: 20px;" id='ctnTipoDebito'> </div>
+								</td>
+							</tr>
+						</table>
 					</fieldset>
 					<table align="center">
 						<tr>
-						  <td align="left" nowrap title="" >
+							<td align="left" nowrap title="">
 								<strong>Tipo : </strong>
-              </td>
-              <td align="left">
-							  <?
+							</td>
+							<td align="left">
+								<?
                   $xx = array("a"=>"Analítico","s"=>"Sintético");
 								  db_select('seltipo',$xx,true,4,"");
                 ?>&nbsp;&nbsp;&nbsp;
-              </td>
-					  </tr> 
+							</td>
+						</tr>
 					</table>
-            <tr>
-              <td colspan="2" align = "center"> 
-                <input  name="emite2" id="emite2" type="button" value="Emitir Relatório" onclick="js_emite();" >
-              </td>
-            </tr>
-        </form>
-      </td>
-    </tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input name="emite2" id="emite2" type="button" value="Emitir Relatório" onclick="js_emite();">
+			</td>
+		</tr>
+		</form>
+		</td>
+		</tr>
 	</table>
-	 <?
+	<?
 			db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 	 ?>
 </body>
+
 </html>
 <script>
-	function js_emite(){
- 
-		qry  =	'?seltipo='+document.form1.seltipo.value;
-	  qry +=	'&datai='+document.form1.datai_ano.value+'-'+document.form1.datai_mes.value+'-'+document.form1.datai_dia.value;
-	  qry +=  '&dataf='+document.form1.dataf_ano.value+'-'+document.form1.dataf_mes.value+'-'+document.form1.dataf_dia.value;
-    
-		jan = window.open('cai2_reldescontos002.php'+qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-	  jan.moveTo(0,0);
+	var alturaGrid = "150px";
+	/**
+	 * Cria o lançador para os Documentos
+	 */
+	function js_criarLancadorTipoDebito() {
+		oLancadorTipoDebito = new DBLancador("oLancadorTipoDebito");
+		oLancadorTipoDebito.setNomeInstancia("oLancadorTipoDebito");
+		oLancadorTipoDebito.setLabelAncora("Tipos de Débitos: ");
+		oLancadorTipoDebito.setTextoFieldset("Filtro de Tipos de Débitos");
+		oLancadorTipoDebito.setParametrosPesquisa("func_arretipo.php", ['k00_tipo', 'k00_descr']);
+		oLancadorTipoDebito.setGridHeight(alturaGrid);
+		oLancadorTipoDebito.setTituloJanela("Pesquisar Documentos");
+		oLancadorTipoDebito.show($("ctnTipoDebito"));
+	}
+
+	js_criarLancadorTipoDebito();
+	
+	function js_emite() {
+	
+		var aListaDebitosSelecionados = oLancadorTipoDebito.getRegistros();
+		var aTipoDebito = [];
+		aListaDebitosSelecionados.each(function(oValores, iIndice) {
+
+			aTipoDebito.push(oValores.sCodigo);
+		});
+
+		qry = '?seltipo=' + document.form1.seltipo.value;
+		qry += '&datai=' + document.form1.datai_ano.value + '-' + document.form1.datai_mes.value + '-' + document.form1.datai_dia.value;
+		qry += '&dataf=' + document.form1.dataf_ano.value + '-' + document.form1.dataf_mes.value + '-' + document.form1.dataf_dia.value;
+		qry += '&aTipoDebito=' + aTipoDebito;
+
+		jan = window.open('cai2_reldescontos002.php' + qry, '', 'width=' + (screen.availWidth - 5) + ',height=' + (screen.availHeight - 40) + ',scrollbars=1,location=0 ');
+		jan.moveTo(0, 0);
 
 	}
 </script>

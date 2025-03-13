@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -523,6 +523,7 @@ class cl_corlanc {
      $sql2 .= "        left join conlancamcorrente      on conlancamcorrente.c86_id     = corrente.k12_id";
      $sql2 .= "                                        and conlancamcorrente.c86_data   = corrente.k12_data";
      $sql2 .= "                                        and conlancamcorrente.c86_autent = corrente.k12_autent";
+     $sql2 .= "  inner join conlancaminstit on c02_codlan = c86_conlancam and c02_instit = ".db_getsession("DB_instit");
 
      $sql .= $sql2;
 

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -541,10 +541,10 @@ function js_mostrasau_orgaoemissor1(chave1,chave2){
 }
 function js_pesquisasd04_i_medico(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_medicos','func_medicos.php?funcao_js=parent.js_mostramedicos1|sd03_i_codigo|sd03_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_medicos','func_medicos.php?funcao_js=parent.js_mostramedicos1|sd03_i_codigo|sd03_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.sd04_i_medico.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_medicos','func_medicos.php?pesquisa_chave='+document.form1.sd04_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_medicos','func_medicos.php?pesquisa_chave='+document.form1.sd04_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
      }else{
        document.form1.sd03_i_codigo.value = ''; 
      }
@@ -563,7 +563,7 @@ function js_mostramedicos1(chave1,chave2){
   db_iframe_medicos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_unidademedicos','func_unidademedicos.php?funcao_js=parent.js_preenchepesquisa|sd04_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidademedicos','func_unidademedicos.php?funcao_js=parent.js_preenchepesquisa|sd04_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_unidademedicos.hide();

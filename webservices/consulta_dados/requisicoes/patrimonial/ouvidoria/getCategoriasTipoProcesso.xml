@@ -1,0 +1,52 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="codigo" label="instituicao_codigo" />
+        <campo campo="nomeinst" label="instituicao_nome" />
+        <campo campo="o40_orgao"           label="orgao_codigo"       />
+        <campo campo="trim(o40_descr)"     label="orgao_nome"         />
+        <campo campo="''" label="categoria_descricao"     />
+        <campo campo="'/storage/2020/4/28/1588080821.png'"    label="categoria_logo_url" />
+        <campo campo="db_depart.coddepto"    label="tipoprocesso_depto_id"        />
+        <campo campo="db_depart.descrdepto"  label="tipoprocesso_depto_descricao" />
+        <campo campo="tipoproc.p51_codigo"   label="tipoprocesso_codigo"    />
+        <campo campo="tipoproc.p51_descr"    label="tipoprocesso_descricao" />
+        <campo campo="tipoproc.p51_linksaibamais"    label="linksaibamais" />
+        <campo campo="tipoproc.p51_itemmenu"    label="item_menu" />
+        <campo campo="tipoproc.p51_dtlimite"    label="p51_dtlimite" />
+        <campo campo="tipoprocformareclamacao.p43_formareclamacao"   label="tipoprocesso_formareclamacao" />
+        <campo campo="tipoprocessoformulario.p108_rota"    label="rota" />
+    </campos>
+    <from tabela="tipoproc"/>
+    <juncoes>
+        <join tipo="inner"  tabela="tipoprocformareclamacao" condicao="p43_tipoproc  = p51_codigo"     />
+        <join tipo="inner"  tabela="tipoprocdepto"           condicao="p41_tipoproc  = p51_codigo"     />
+        <join tipo="inner"  tabela="db_depart"               condicao="coddepto      = p41_coddepto"   />
+        <join tipo="inner"  tabela="db_departorg"            condicao="db01_coddepto = coddepto"       />
+        <join tipo="inner"  tabela="orcorgao"                condicao="o40_orgao     = db01_orgao and o40_instit = p51_instit and o40_anousu = db01_anousu" />
+        <join tipo="inner"  tabela="db_config"                condicao="codigo  = p51_instit" />
+        <join tipo="left"  tabela="tipoprocessoformulario"   condicao="p108_tipoproc = p51_codigo"       />
+    </juncoes>
+    <filtros>
+        <filtro label="identificacao"   condicao="tipoproc.p51_identificado::int = $identificacao"  obrigatorio="false" />
+        <filtro label="formareclamacao" condicao="tipoprocformareclamacao.p43_formareclamacao IN ($formareclamacao)"  obrigatorio="false" />
+        <filtro label="instituicao"     condicao="tipoproc.p51_instit IN  ($instituicao)"               obrigatorio="true" />
+        <filtro label="ano"             condicao="o40_anousu = $ano"                                obrigatorio="true" />
+        <filtro condicao="(p51_dtlimite IS NULL OR p51_dtlimite >= now())" />
+    </filtros>
+    <agrupamento campos="instituicao_codigo,
+                         instituicao_nome,
+                         orgao_codigo,
+                         orgao_nome,
+                         tipoprocesso_codigo,
+                         categoria_logo_url,
+                         tipoprocesso_depto_id,
+                         tipoprocesso_depto_descricao,
+                         tipoprocesso_formareclamacao,
+                         linksaibamais,
+                         item_menu,
+                         rota,
+                         p51_dtlimite"
+    />
+    <ordenacao   campos="categoria_descricao , tipoprocesso_descricao "/>
+</consulta>

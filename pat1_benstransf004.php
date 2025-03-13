@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_benstransf_classe.php");
-include("classes/db_benstransfdes_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_db_depusu_classe.php");
-include("classes/db_benstransfcodigo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_benstransf_classe.php"));
+include(modification("classes/db_benstransfdes_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_db_depusu_classe.php"));
+include(modification("classes/db_benstransfcodigo_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 $clbenstransfcodigo = new cl_benstransfcodigo;
@@ -69,9 +69,9 @@ if(isset($incluir)){
   if($t93_data_dia!="" && $t93_data_mes!="" && $t93_data_ano!=""){
     $data = $t93_data_ano."-".$t93_data_mes."-".$t93_data_dia;
 //    db_msgbox($data.'-------------'.date("Y-m-d"));
-    if($data<date("Y-m-d")){
+    if ($data > date('Y-m-d', db_getsession('DB_datausu'))) {
       $sqlerro = true;
-      $erro_msg = _M("patrimonial.patrimonio.db_frmbenstransf.data_invalida");
+      $erro_msg = _M("patrimonial.patrimonio.db_frmbenstransf.inclusao_nao_efetuada_data_maior");
       $clapolice->erro_campo = "t93_data_dia";
     }
   }  
@@ -107,7 +107,7 @@ if(isset($incluir)){
 <body bgcolor=#CCCCCC>
 
 	<?
-	include("forms/db_frmbenstransf.php");
+	include(modification("forms/db_frmbenstransf.php"));
 	?>
 
 </body>

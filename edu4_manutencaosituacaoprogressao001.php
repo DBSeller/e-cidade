@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 $oRotulo = new rotulo('aluno');
 $oRotulo->label();
 ?>
@@ -105,7 +105,7 @@ $oRotulo->label();
 
     var sFiltroProgressao  = '&listar_apenas_progressao_parcial=1&listar_situacao_progressao_parcial=1,2';
         sFiltroProgressao += '&lMatriculaEscola';
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_aluno',
                         'func_aluno.php?funcao_js=parent.js_preencheAluno|ed47_i_codigo|ed47_v_nome'+sFiltroProgressao,
                         'Pesquisar Alunos com Progressão Parcial',
@@ -136,7 +136,7 @@ $oRotulo->label();
                       onComplete: function (oResponse) {
 
                         js_removeObj('msgBox');
-                        var oRetorno = eval("("+oResponse.responseText+")");
+                        var oRetorno = JSON.parse(oResponse.responseText);
                         agruparProgressoesPorEtapa(oRetorno.aProgressoes);
                         preencheDataGrid();
                      }
@@ -252,7 +252,7 @@ $oRotulo->label();
   function retornoAtualizarSituacaoProgressao( oResposta ) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval( '('+oResposta.responseText+')' );
+    var oRetorno = JSON.parse(oResposta.responseText);
 
     alert( oRetorno.message.urlDecode() );
 

@@ -1,0 +1,56 @@
+table#dadosCalculo td:nth-child(2n+2) {
+    /*width: 20%;*/
+    text-align: right;
+}
+
+.aviso {
+
+    font-weight: bold;
+    text-align: left;
+    background-color: #fcf8e3 !important;
+    border: 1px solid #fcc888 !important;
+    padding: 10px
+}
+
+.caracteristica_alterada {
+
+    font-weight: bold;
+    background-color: #ffeb82 !important;
+}
+
+.linha_alterada {
+
+    font-weight: bold;
+    background-color: #ffeb82 !important;
+}
+
+table.caracteristicas {
+    border-collapse: collapse;
+}
+
+table#dadosCalculo th,
+table#lote th,
+table#construcoes th,
+table.caracteristicas th
+{
+    border: 1px solid #000000;
+    font-weight: bold;
+    background-color: #999999;
+    color: #000000;
+}
+
+table#dadosCalculo td,
+table#lote td,
+table#construcoes td,
+table.caracteristicas td {
+    border: 1px solid #000000;
+    color: #000000;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.collapse-border {
+    border-collapse: collapse;
+}

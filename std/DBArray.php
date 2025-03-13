@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -62,6 +62,22 @@ abstract class DBArray {
     $aArray = $aRetorno;
 
     return $aRetorno;
+  }
+
+  public static function merge(array &$array1, array &$array2) {
+
+    $merged = $array1;
+
+    foreach($array2 as $key => &$value) {
+
+      if ( is_array($value) && isset($merged[$key]) && is_array($merged[$key]) ) {
+        $merged[$key] = static::merge($merged[$key], $value);
+      } else {
+        $merged[$key] = $value;
+      }
+    }
+
+    return $merged;
   }
 
 }

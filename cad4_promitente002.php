@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_promitente_classe.php");
-include("classes/db_iptubase_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_promitente_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $db_botao=1;
@@ -55,14 +55,14 @@ if(isset($incluir)){
    $result = $clpromitente->sql_record($clpromitente->sql_query($j41_matric,"","j41_tipopro as tipopro#j41_promitipo as promitipo","",""));
    $num=$clpromitente->numrows;
    if($num!=0){  
-     pg_exec("update promitente set j41_promitipo= '$j41_promitipo' where j41_matric='$j41_matric'"); 
+     db_query("update promitente set j41_promitipo= '$j41_promitipo' where j41_matric='$j41_matric'"); 
 
      $num=$clpromitente->numrows;
      if($num!=0){  
        for($i=0;$i<$num;$i++){
            db_fieldsmemory($result,$i);
   	   if($tipopro=="t" && $j41_tipopro=="t"){
-             pg_exec("update promitente set j41_tipopro= false"); 
+             db_query("update promitente set j41_tipopro= false"); 
     	     $verifica="true";
    	     break;
            }  
@@ -92,14 +92,14 @@ if(isset($incluir)){
    $verifica="false";
    $result = $clpromitente->sql_record($clpromitente->sql_query($j41_matric,"","j41_tipopro as tipopro#j41_promitipo as promitipo","",""));
    
-   pg_exec("update promitente set j41_promitipo= '$j41_promitipo' where j41_matric='$j41_matric'"); 
+   db_query("update promitente set j41_promitipo= '$j41_promitipo' where j41_matric='$j41_matric'"); 
    
    $num=$clpromitente->numrows;
    if($num!=0){  
        for($i=0;$i<$num;$i++){
 	   db_fieldsmemory($result,$i);
 	   if($tipopro=="t" && $j41_tipopro=="t"){
-	     pg_exec("update promitente set j41_tipopro= false"); 
+	     db_query("update promitente set j41_tipopro= false"); 
 	     $verifica="true";
 	     break;
 	   }  

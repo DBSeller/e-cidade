@@ -1,39 +1,39 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * EventoContabilLancamento
  * Model para controle dos Lancamentos de uma transação
  * @author  matheus.felini@dbseller.com.br
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.29 $
  * @package contabilidade
  */
 
-require_once ("contacorrente/ContaCorrenteFactory.model.php");
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php"));
 
 class EventoContabilLancamento {
 
@@ -98,7 +98,12 @@ class EventoContabilLancamento {
   protected $aRegrasLancamento = array();
 
   static $iTotalInstancias = 0;
-  
+
+  /**
+   * @var EventoContabil
+   */
+  private $evento;
+
   const CAMINHO_MENSAGEM = 'financeiro.contabilidade.EventoContabilLancamento.';
 
   /**
@@ -129,6 +134,7 @@ class EventoContabilLancamento {
       $this->setSequencialLancamento($oDadoLancamento->c46_seqtranslan);
       $this->setValor($oDadoLancamento->c46_valor);
       $this->setSequencialTransacao($oDadoLancamento->c46_seqtrans);
+      $this->evento = EventoContabilRepository::getPorCodigo($oDadoLancamento->c46_seqtrans);
       unset($oDadoLancamento);
     }
     return true;
@@ -218,7 +224,7 @@ class EventoContabilLancamento {
     if ($oDaoTranslan->numrows == 0) {
       $iProximaOrdem = 1;
     } else {
-      $iProximaOrdem = (db_utils::fieldsMemory($rsOrdemLancamento, 0)->c46_ordem + 1);
+      $iProximaOrdem = ((int)db_utils::fieldsMemory($rsOrdemLancamento, 0)->c46_ordem + 1);
     }
     return $iProximaOrdem;
   }
@@ -383,9 +389,9 @@ class EventoContabilLancamento {
 
     if (count($this->aRegrasLancamento) == 0) {
 
-      $oDaoLancamento = db_utils::getDao("contranslan");
+      $oDaoLancamento = new cl_contranslan();
       $sWhereRegras   = "c47_seqtranslan = {$this->getSequencialLancamento()}";
-      $sSqlRegras     = $oDaoLancamento->sql_query_lr(null, "c47_seqtranslr", null, $sWhereRegras);
+      $sSqlRegras     = $oDaoLancamento->sql_query_lr(null, "c47_seqtranslr", 'c47_seqtranslr', $sWhereRegras, $this->evento->getInstituicao());
       $rsRegras       = $oDaoLancamento->sql_record($sSqlRegras);
 
       if ($oDaoLancamento->numrows > 0) {
@@ -423,14 +429,22 @@ class EventoContabilLancamento {
 
   }
 
+
   /**
-   *
-   * @param integer $iDocumento
-   * @param integer $iLancamento
+   * @param integer             $iCodigoLancamento
+   * @param integer             $iDocumento
    * @param ILancamentoAuxiliar $oLancamentoAuxiliar
+   * @param string              $dtLancamento
+   * @param integer             $instituicaoLancamento
+   *
+   * @return bool
+   * @throws BusinessException
+   * @throws Exception
+   * @throws DBException
+   * @throws ParameterException
    */
   public function executa ($iCodigoLancamento, $iDocumento, ILancamentoAuxiliar $oLancamentoAuxiliar,
-                           $dtLancamento = null) {
+                           $dtLancamento = null, $instituicaoLancamento = null) {
 
     $iAnoUsu   = db_getsession("DB_anousu");
     $dtDataUsu = $dtLancamento;
@@ -448,28 +462,53 @@ class EventoContabilLancamento {
     $oStdMensagem    = new stdClass();
     $oStdMensagem->iDocumento           = $oEventoContabil->getCodigoDocumento();
     $oStdMensagem->sDescricaoDocumento  = $oEventoContabil->getDescricaoDocumento();
-    $oStdMensagem->sDescricaoLancamento = $this->getDescricao(); 
-    
+    $oStdMensagem->sDescricaoLancamento = $this->getDescricao();
+
     /**
      * Alteração na regra dos lancamentos para validarmos a opção lObrigatorio da regra
      * - caso a regra retorne false e o lançamento seja obrigatório $this->lObrigatorio, lançar excessão
      */
     if ($oContaContabil === false) {
-    	
+
       if ($this->lObrigatorio === true) {
     	  throw new BusinessException(_M( EventoContabilLancamento::CAMINHO_MENSAGEM . "sem_regra", $oStdMensagem));
       }
-      
+
       /**
        * Caso a regra retorne false e o lançamento não seja obrigatório, apenas return true;
        */
       return true;
     }
-    
+
+    if (!empty($instituicaoLancamento)) {
+        $contaCreditoAtual = ContaPlanoPCASPRepository::getContaPorReduzido($oContaContabil->getContaCredito(), $iAnoUsu);
+        $contaCreditoDestino = ContaPlanoPCASPRepository::getReduzidoPorContaInstituicao($contaCreditoAtual->getCodigoConta(), $iAnoUsu, $instituicaoLancamento);
+        if (empty($contaCreditoDestino)) {
+
+            $instituicao = InstituicaoRepository::getInstituicaoByCodigo($instituicaoLancamento);
+            $mensagem  = "Não foi encontrado reduzido para a instituição {$instituicao->getDescricao()} ";
+            $mensagem .= "na conta {$contaCreditoAtual->getEstrutural()}.";
+            throw new Exception($mensagem);
+        }
+        $oContaContabil->setContaCredito($contaCreditoDestino->getReduzido());
+
+        $contaDebitoAtual = ContaPlanoPCASPRepository::getContaPorReduzido($oContaContabil->getContaDebito(), $iAnoUsu);
+        $contaDebitoDestino = ContaPlanoPCASPRepository::getReduzidoPorContaInstituicao($contaDebitoAtual->getCodigoConta(), $iAnoUsu, $instituicaoLancamento);
+
+        if (empty($contaDebitoDestino)) {
+            $instituicao = InstituicaoRepository::getInstituicaoByCodigo($instituicaoLancamento);
+            $mensagem  = "Não foi encontrado reduzido para a instituição {$instituicao->getDescricao()} ";
+            $mensagem .= "na conta {$contaDebitoAtual->getEstrutural()}.";
+            throw new Exception($mensagem);
+        }
+
+        $oContaContabil->setContaDebito($contaDebitoDestino->getReduzido());
+    }
+
     /**
      * Valida se as contas estão disponiveis para lançamento no ano atual
      */
-    $oDaoComplanoReduz = db_utils::getDao("conplanoreduz");
+    $oDaoComplanoReduz = new cl_conplanoreduz();
     $sSqlCreditoReduz  = $oDaoComplanoReduz->sql_query_file($oContaContabil->getContaCredito(), $iAnoUsu, 'c61_codcon');
     $rsCreditoReduz    = $oDaoComplanoReduz->sql_record($sSqlCreditoReduz);
 
@@ -490,16 +529,44 @@ class EventoContabilLancamento {
      * Conta debito não encontrada
      */
     if ($oDaoComplanoReduz->numrows == 0) {
-      
+
       $oStdMensagem->sTipoConta = 'debito';
       $oStdMensagem->iConta     = $oContaContabil->getContaDebito();
       throw new BusinessException(_M( EventoContabilLancamento::CAMINHO_MENSAGEM . "conta_nao_encontrada_exercicio", $oStdMensagem));
     }
 
+    $instituticao = db_getsession('DB_instit');
+
+    if ($oContaContabil->getContaCredito() == $oContaContabil->getContaDebito()) {
+        throw new Exception(sprintf(
+            "Conta crédito %s e débito %s não podem ser iguais. %s",
+            $oContaContabil->getContaCredito(),
+            $oContaContabil->getContaDebito(),
+            "Contate o suporte técnico para resolver o problema."
+        ));
+    }
+
+    $sql = "
+    select 1
+      from contabilidade.conplanoreduz
+     where c61_instit != {$instituticao}
+       and c61_anousu = {$iAnoUsu}
+       and (c61_reduz = {$oContaContabil->getContaCredito()} or c61_reduz = {$oContaContabil->getContaDebito()})
+    ";
+    $rs = db_query($sql);
+    if (pg_num_rows($rs) > 0) {
+        throw new Exception(sprintf(
+            "Não foi possível concluir o lançamento porque a conta crédito %s ou débito %s não pertence à instituição. %s",
+            $oContaContabil->getContaCredito(),
+            $oContaContabil->getContaDebito(),
+            "Contate o suporte técnico para resolver o problema."
+        ));
+    }
+
     /**
      * Inclui os valores do lançamento contábil para a conta débito/crédito do lançamento
      */
-    $oDaoValorLancamento              = db_utils::getDao('conlancamval');
+    $oDaoValorLancamento              = new cl_conlancamval();
     $oDaoValorLancamento->c69_codlan  = $iCodigoLancamento;
     $oDaoValorLancamento->c69_credito = $oContaContabil->getContaCredito();
     $oDaoValorLancamento->c69_debito  = $oContaContabil->getContaDebito();
@@ -512,6 +579,7 @@ class EventoContabilLancamento {
     $oDaoValorLancamento->c69_valor   = $oLancamentoAuxiliar->getValorTotal();
     $oDaoValorLancamento->c69_data    = $dtDataUsu;
     $oDaoValorLancamento->c69_anousu  = $iAnoUsu;
+    $oDaoValorLancamento->c69_ordem  = $this->getOrdem();
     $oDaoValorLancamento->incluir(null);
 
     if ($oDaoValorLancamento->erro_status == 0) {

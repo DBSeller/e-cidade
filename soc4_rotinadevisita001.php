@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_cidadao_classe.php");
-require_once("classes/db_cidadaofamilia_classe.php");
-require_once("classes/db_cidadaofamiliavisita_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cidadao_classe.php"));
+require_once(modification("classes/db_cidadaofamilia_classe.php"));
+require_once(modification("classes/db_cidadaofamiliavisita_classe.php"));
 
 $db_opcao = 1;
 ?>
@@ -55,7 +55,7 @@ $db_opcao = 1;
           <fieldset>
             <legend><b>Rotina de Visita</b></legend>
             <?php 
-              require_once('forms/db_frmrotinavisita.php');
+              require_once(modification('forms/db_frmrotinavisita.php'));
             ?>
           </fieldset>
         </div>

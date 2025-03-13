@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,10 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_autoload.php");
-require_once("libs/db_conn.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/smtp.class.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conn.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/smtp.class.php"));
 
 $conn = @pg_connect(  "host={$DB_SERVIDOR} "
                      ."dbname={$DB_BASE} "
@@ -70,7 +69,7 @@ if (isset($oGet->_)) {
   if (!$rsDbUsuarios) {
 
     $sErro = _M("configuracao.configuracao.primeiroAcesso.token_invalido");
-    include("forms/db_frmTemplatePrimeiroAcesso.php");
+    include(modification("forms/db_frmTemplatePrimeiroAcesso.php"));
     return false;
   }
 
@@ -88,7 +87,7 @@ if (isset($oGet->_)) {
   if (!$lFound) {
 
     $sErro = _M("configuracao.configuracao.primeiroAcesso.token_invalido");
-    include("forms/db_frmTemplatePrimeiroAcesso.php");
+    include(modification("forms/db_frmTemplatePrimeiroAcesso.php"));
     return false;
   }
 
@@ -97,12 +96,12 @@ if (isset($oGet->_)) {
   } catch (Exception $e) {
 
     $sErro = $e->getMessage();
-    include("forms/db_frmTemplatePrimeiroAcesso.php");
+    include(modification("forms/db_frmTemplatePrimeiroAcesso.php"));
     return false;
   }
 
   $sFormulario = "forms/db_frmprimeiroAcessoSenha.php";
-  include("forms/db_frmTemplatePrimeiroAcesso.php");
+  include(modification("forms/db_frmTemplatePrimeiroAcesso.php"));
 
 } else {
 
@@ -115,6 +114,6 @@ if (isset($oGet->_)) {
     header('Location: login.php');
   } catch(Exception $e) {
 
-    include("forms/db_frmTemplatePrimeiroAcesso.php");
+    include(modification("forms/db_frmTemplatePrimeiroAcesso.php"));
   }
 }

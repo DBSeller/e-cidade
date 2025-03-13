@@ -72,9 +72,9 @@ db_input('y70_id_usuario',5,$Iy70_id_usuario,true,'text',3,'')
 <script>
 function js_pesquisay21_codnoti(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.y21_codnoti.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.y21_codnoti.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
   }
 }
 function js_mostrafiscal(chave,erro){
@@ -91,9 +91,9 @@ function js_mostrafiscal1(chave1,chave2){
 }
 function js_pesquisay21_codvist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_vistorias','func_vistorias.php?funcao_js=parent.js_mostravistorias1|y70_codvist|y70_id_usuario','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistorias','func_vistorias.php?funcao_js=parent.js_mostravistorias1|y70_codvist|y70_id_usuario','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_vistorias','func_vistorias.php?pesquisa_chave='+document.form1.y21_codvist.value+'&funcao_js=parent.js_mostravistorias','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistorias','func_vistorias.php?pesquisa_chave='+document.form1.y21_codvist.value+'&funcao_js=parent.js_mostravistorias','Pesquisa',false);
   }
 }
 function js_mostravistorias(chave,erro){
@@ -109,7 +109,7 @@ function js_mostravistorias1(chave1,chave2){
   db_iframe_vistorias.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_fiscalvistorias','func_fiscalvistorias.php?funcao_js=parent.js_preenchepesquisa|y21_codnoti|1','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscalvistorias','func_fiscalvistorias.php?funcao_js=parent.js_preenchepesquisa|y21_codnoti|1','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_fiscalvistorias.hide();

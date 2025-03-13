@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_issnotaavulsa_classe.php");
-include("classes/db_issnotaavulsaservico_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_issnotaavulsa_classe.php"));
+include(modification("classes/db_issnotaavulsaservico_classe.php"));
 $clissnotaavulsa = new cl_issnotaavulsa;
 db_postmemory($HTTP_POST_VARS);
 $db_opcao = 22;
@@ -68,7 +68,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmissnotaavulsaalt.php");
+	include(modification("forms/db_frmissnotaavulsaalt.php"));
 	?>
     </center>
 	</td>
@@ -94,8 +94,8 @@ if(isset($chavepesquisa)){
       function js_db_libera(){
          parent.document.formaba.issnotaavulsaservico.disabled=false;
          parent.document.formaba.issnotaavulsatomador.disabled=false;
-         top.corpo.iframe_issnotaavulsaservico.location.href='iss1_issnotaavulsaservico001.php?q51_sequencial=".@$chavepesquisa."';
-         top.corpo.iframe_issnotaavulsatomador.location.href='iss1_issnotaavulsatomador001.php?q51_sequencial=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_issnotaavulsaservico.location.href='iss1_issnotaavulsaservico001.php?q51_sequencial=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_issnotaavulsatomador.location.href='iss1_issnotaavulsatomador001.php?q51_sequencial=".@$chavepesquisa."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('issnotaavulsatomador');";

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_andpadrao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_andpadrao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clandpadrao = new cl_andpadrao;
 $db_opcao = 33;
 $db_botao = false;
+file_put_contents('tmp/debug', print_r($HTTP_POST_VARS, true), FILE_APPEND);
 if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir"){
   db_inicio_transacao();
   $sqlerro=false;
@@ -51,7 +52,10 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir
   		if ($sqlerro==false){
   			$ordem=$p53_ordem;
   			$p53_ordem=$p53_ordem+100;
-  			$result_alt=pg_exec("update andpadrao set p53_ordem = $p53_ordem where p53_codigo = $p53_codigo and p53_ordem=$ordem");  			
+        $result_alt=db_query("insert into andpadrao select p53_codigo, p53_coddepto, p53_dias, {$p53_ordem} from andpadrao where p53_codigo = $p53_codigo and p53_ordem=$ordem");
+  			$result_alt_tabela_filha=db_query("update camposandpadrao set p110_andpadrao_ordem = $p53_ordem where p110_andpadrao_codigo = $p53_codigo and p110_andpadrao_ordem=$ordem");  			
+        $result_alt=db_query("delete from camposandpadrao where p110_andpadrao_codigo = $p53_codigo and p110_andpadrao_ordem=$ordem");        
+        $result_alt=db_query("delete from andpadrao where p53_codigo = $p53_codigo and p53_ordem=$ordem");        
   		}
   	}
   }
@@ -63,7 +67,10 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir
   		if ($sqlerro==false){
   			$ordem=$p53_ordem;
   			$p53_ordem=$w+1;
-  			$result_alt=pg_exec("update andpadrao set p53_ordem = $p53_ordem where p53_codigo = $p53_codigo and p53_ordem=$ordem");
+  			$result_alt=db_query("insert into andpadrao select p53_codigo, p53_coddepto, p53_dias, {$p53_ordem} from andpadrao where p53_codigo = $p53_codigo and p53_ordem=$ordem");
+        $result_alt_tabela_filha=db_query("update camposandpadrao set p110_andpadrao_ordem = $p53_ordem where p110_andpadrao_codigo = $p53_codigo and p110_andpadrao_ordem=$ordem");       
+        $result_alt=db_query("delete from camposandpadrao where p110_andpadrao_codigo = $p53_codigo and p110_andpadrao_ordem = $ordem");        
+        $result_alt=db_query("delete from andpadrao where p53_codigo = $p53_codigo and p53_ordem=$ordem");        
   			/*
   			$clandpadrao->alterar($p53_codigo,$ordem);
   			if ($clandpadrao->erro_status==0){
@@ -105,7 +112,7 @@ $db_opcao = 3;
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmandpadrao.php");
+	include(modification("forms/db_frmandpadrao.php"));
 	?>
     </center>
 	</td>

@@ -1,7 +1,7 @@
 <?php
-/*
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhpesrescisao_classe.php"));
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_rhpesrescisao_classe.php");
-
-db_postmemory($HTTP_POST_VARS);
+db_postmemory($_POST);
 
 $clrhpesrescisao = new cl_rhpesrescisao;
 $rotulocampo = new rotulocampo;
@@ -237,16 +236,16 @@ if (isset($rh01_regist) && !empty($rh01_regist)) {
     function js_pesquisaemissor(mostra){
 
       if (mostra == true) {
-        js_OpenJanelaIframe( 'top.corpo',
+        js_OpenJanelaIframe( 'CurrentWindow.corpo',
                              'db_iframe_rhpessoal',
-                             'func_rhpessoal.php?funcao_js=parent.js_mostraemissor1|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>',
+                             'func_rhpessoal.php?filtro_lotacao=true&funcao_js=parent.js_mostraemissor1|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>',
                              'Pesquisa',
                              true );
       } else {
 
-          js_OpenJanelaIframe( 'top.corpo',
+          js_OpenJanelaIframe( 'CurrentWindow.corpo',
                                'db_iframe_rhpessoal',
-                               'func_rhpessoal.php?pesquisa_chave=' + document.form1.emissor.value
+                               'func_rhpessoal.php?filtro_lotacao=true&pesquisa_chave=' + document.form1.emissor.value
                                + '&funcao_js=parent.js_mostraemissor&instit=<?=(db_getsession("DB_instit"))?>',
                                'Pesquisa',
                                false );
@@ -273,17 +272,17 @@ if (isset($rh01_regist) && !empty($rh01_regist)) {
     function js_pesquisarh01_regist(mostra) {
 
       if (mostra == true) {
-        js_OpenJanelaIframe( 'top.corpo',
+        js_OpenJanelaIframe( 'CurrentWindow.corpo',
                              'db_iframe_rhpessoal',
-                             'func_rhpessoal.php?funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>',
+                             'func_rhpessoal.php?filtro_lotacao=true&funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>',
                              'Pesquisa',
                              true );
       } else {
 
         if (document.form1.rh01_regist.value != '') {
-          js_OpenJanelaIframe( 'top.corpo',
+          js_OpenJanelaIframe( 'CurrentWindow.corpo',
                                'db_iframe_rhpessoal',
-                               'func_rhpessoal.php?testarescisao=true&pesquisa_chave=' + document.form1.rh01_regist.value
+                               'func_rhpessoal.php?filtro_lotacao=true&testarescisao=true&pesquisa_chave=' + document.form1.rh01_regist.value
                                + '&funcao_js=parent.js_mostrapessoal&instit=<?=(db_getsession("DB_instit"))?>',
                                'Pesquisa',
                                false );

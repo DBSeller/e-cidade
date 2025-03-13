@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 
-require_once ('model/PadArquivoSigap.model.php');
+require_once(modification('model/PadArquivoSigap.model.php'));
 /**
  * Prove dados para a geração do arquivo de subsidio dos Vereadores
  * do municipio para o SIGAP
  * @package Pad
  * @author  Iuri Guncthnigg
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.4 $
  */
 final class PadArquivoSigapSubsidioVereadores extends PadArquivoSigap {
   

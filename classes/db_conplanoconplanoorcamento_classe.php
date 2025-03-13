@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: contabilidade
@@ -178,16 +178,6 @@ class cl_conplanoconplanoorcamento {
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->c72_sequencial));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,18497,'$this->c72_sequencial','I')");
-       $resac = db_query("insert into db_acount values($acount,3270,18497,'','".AddSlashes(pg_result($resaco,0,'c72_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,3270,18498,'','".AddSlashes(pg_result($resaco,0,'c72_conplano'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,3270,18499,'','".AddSlashes(pg_result($resaco,0,'c72_conplanoorcamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,3270,18500,'','".AddSlashes(pg_result($resaco,0,'c72_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-     }
      return true;
    }
    // funcao para alteracao
@@ -252,22 +242,6 @@ class cl_conplanoconplanoorcamento {
        $sql .= " c72_sequencial = $this->c72_sequencial";
      }
      $resaco = $this->sql_record($this->sql_query_file($this->c72_sequencial));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,18497,'$this->c72_sequencial','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["c72_sequencial"]) || $this->c72_sequencial != "")
-           $resac = db_query("insert into db_acount values($acount,3270,18497,'".AddSlashes(pg_result($resaco,$conresaco,'c72_sequencial'))."','$this->c72_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["c72_conplano"]) || $this->c72_conplano != "")
-           $resac = db_query("insert into db_acount values($acount,3270,18498,'".AddSlashes(pg_result($resaco,$conresaco,'c72_conplano'))."','$this->c72_conplano',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["c72_conplanoorcamento"]) || $this->c72_conplanoorcamento != "")
-           $resac = db_query("insert into db_acount values($acount,3270,18499,'".AddSlashes(pg_result($resaco,$conresaco,'c72_conplanoorcamento'))."','$this->c72_conplanoorcamento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["c72_anousu"]) || $this->c72_anousu != "")
-           $resac = db_query("insert into db_acount values($acount,3270,18500,'".AddSlashes(pg_result($resaco,$conresaco,'c72_anousu'))."','$this->c72_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
-     }
      $result = db_query($sql);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
@@ -306,18 +280,6 @@ class cl_conplanoconplanoorcamento {
        $resaco = $this->sql_record($this->sql_query_file($c72_sequencial));
      }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
-     }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,18497,'$c72_sequencial','E')");
-         $resac = db_query("insert into db_acount values($acount,3270,18497,'','".AddSlashes(pg_result($resaco,$iresaco,'c72_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,3270,18498,'','".AddSlashes(pg_result($resaco,$iresaco,'c72_conplano'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,3270,18499,'','".AddSlashes(pg_result($resaco,$iresaco,'c72_conplanoorcamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,3270,18500,'','".AddSlashes(pg_result($resaco,$iresaco,'c72_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
      }
      $sql = " delete from conplanoconplanoorcamento
                     where ";
@@ -391,7 +353,7 @@ class cl_conplanoconplanoorcamento {
    function sql_query ( $c72_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -420,7 +382,7 @@ class cl_conplanoconplanoorcamento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -433,7 +395,7 @@ class cl_conplanoconplanoorcamento {
    function sql_query_file ( $c72_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -454,7 +416,7 @@ class cl_conplanoconplanoorcamento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -466,7 +428,7 @@ class cl_conplanoconplanoorcamento {
  function sql_query_pcasp_analitica ( $c72_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -495,7 +457,7 @@ class cl_conplanoconplanoorcamento {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

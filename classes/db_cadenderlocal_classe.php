@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -345,7 +345,7 @@ class cl_cadenderlocal {
    function sql_query ( $db75_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -369,7 +369,7 @@ class cl_cadenderlocal {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -382,7 +382,7 @@ class cl_cadenderlocal {
    function sql_query_file ( $db75_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -403,7 +403,7 @@ class cl_cadenderlocal {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -415,7 +415,7 @@ class cl_cadenderlocal {
    function sql_query_completo ( $db75_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -424,22 +424,25 @@ class cl_cadenderlocal {
      }else{
        $sql .= $campos;
      }
-     $sql .= " from cadenderlocal                                                                            ";
-     $sql .= "      inner join cadenderbairrocadenderrua on db87_sequencial = db75_cadenderbairrocadenderrua ";
-     $sql .= "      inner join cadenderbairro     on  db73_sequencial  = db87_cadenderbairro                 ";
-     $sql .= "      inner join cadenderrua        on  db74_sequencial  = db87_cadenderrua                    ";
-     $sql .= "      inner join cadendermunicipio  on  db72_sequencial  = db73_cadendermunicipio              ";
-     $sql .= "      inner join cadendermunicipio  as a on a.db72_sequencial = db74_cadendermunicipio         ";
-     $sql .= "      inner join cadenderestado     on  db71_sequencial  = a.db72_cadenderestado  ";
-     $sql .= "      inner join cadenderpais       on  db70_sequencial  = db71_cadenderpais                   ";
-     $sql .= "      inner join endereco           on  db76_cadenderlocal = db75_sequencial                   ";
-     $sql .= "      inner join cadenderruaruastipo on db85_cadenderrua = db74_sequencial                     ";
-     $sql .= "      inner join ruastipo           on  j88_codigo       = db85_ruastipo                       ";
-     $sql .= "      left  join cadenderruacep     on  db86_cadenderrua = db74_sequencial                      ";
+     $sql .= "  from endereco                    ";
+
+     $sql .= " inner join cadenderlocal                            on db76_cadenderlocal      = db75_sequencial         ";
+     $sql .= "      inner join cadenderbairrocadenderrua on db87_sequencial         = db75_cadenderbairrocadenderrua    ";
+     $sql .= "      inner join cadenderbairro            on db73_sequencial         = db87_cadenderbairro               ";
+     $sql .= "      inner join cadenderrua               on db74_sequencial         = db87_cadenderrua                  ";
+     $sql .= "      inner join cadendermunicipio         on db72_sequencial         = db73_cadendermunicipio            ";
+     $sql .= "      inner join cadendermunicipio  as a   on a.db72_sequencial       = db74_cadendermunicipio            ";
+     $sql .= "      inner join cadenderestado            on db71_sequencial         = a.db72_cadenderestado             ";
+     $sql .= "      inner join cadenderpais              on db70_sequencial         = db71_cadenderpais                 ";
+     $sql .= "      inner join cadenderruaruastipo       on db85_cadenderrua        = db74_sequencial                   ";
+     $sql .= "      inner join ruastipo                  on j88_codigo              = db85_ruastipo                     ";
+     $sql .= "      left  join cadenderruacep            on db86_cadenderrua        = db74_sequencial                   ";
+     $sql .= "      left  join cadendermunicipiosistema  on db125_cadendermunicipio = cadendermunicipio.db72_sequencial ";
+     $sql .= "                                          and db125_db_sistemaexterno = 4                                 ";
      $sql2 = "";
      if($dbwhere==""){
        if($db75_sequencial!=null ){
-         $sql2 .= " where cadenderlocal.db75_sequencial = $db75_sequencial                                   "; 
+         $sql2 .= " where cadenderlocal.db75_sequencial = $db75_sequencial ";
        } 
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
@@ -447,7 +450,7 @@ class cl_cadenderlocal {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -459,7 +462,7 @@ class cl_cadenderlocal {
    function sql_query_local ( $db75_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -485,7 +488,7 @@ class cl_cadenderlocal {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -498,7 +501,7 @@ class cl_cadenderlocal {
   function sql_query_cgmendereco ( $db75_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -528,7 +531,7 @@ class cl_cadenderlocal {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -538,4 +541,3 @@ class cl_cadenderlocal {
      return $sql;
   }
 }
-?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -316,7 +316,7 @@ class cl_empautret {
      return $result;
    }
    function db_deleteEmpAutRet($autorizacao){
-     $result_exclusoes = @pg_exec("select distinct e66_seqretencao from empautret where e66_autori = " .$autorizacao);
+     $result_exclusoes = @db_query("select distinct e66_seqretencao from empautret where e66_autori = " .$autorizacao);
      $numrows_exclusoes = pg_num_rows($result_exclusoes);
      if($result_exclusoes==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
@@ -327,7 +327,7 @@ class cl_empautret {
        $this->numrows_excluir = 0;
        return false;
      }else if($numrows_exclusoes > 0){
-       $excluir_empautret = @pg_exec("delete from empautret where e66_autori = " .$autorizacao);
+       $excluir_empautret = @db_query("delete from empautret where e66_autori = " .$autorizacao);
        if($excluir_empautret==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Problemas ao excluir da tabela empautret. Exclusão Abortada.\\n";
@@ -340,7 +340,7 @@ class cl_empautret {
          for($i=0; $i<$numrows_exclusoes; $i++){
            global $e66_seqretencao;
            db_fieldsmemory($result_exclusoes, $i);
-           $excluir_empretencao = @pg_exec("delete from empretencao where e65_seq = " .$e66_seqretencao);
+           $excluir_empretencao = @db_query("delete from empretencao where e65_seq = " .$e66_seqretencao);
            if($excluir_empautret==false){
              $this->erro_banco = str_replace("\n","",@pg_last_error());
              $this->erro_sql   = "Problemas ao excluir da tabela empretencao. Exclusão Abortada.\\n";

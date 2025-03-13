@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -85,7 +85,7 @@ if ($db_opcao == 1) {
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_documento','db_iframe_documento','func_caddocumento.php?funcao_js=parent.js_preenchepesquisa|db44_sequencial','Pesquisa',true,'0','1');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_documento','db_iframe_documento','func_caddocumento.php?funcao_js=parent.js_preenchepesquisa|db44_sequencial','Pesquisa',true,'0','1');
 }
 function js_preenchepesquisa(chave){
   db_iframe_documento.hide();
@@ -99,7 +99,7 @@ function js_preenchepesquisa(chave){
 function js_pesquisadb123_sequencial(mostra) {
 
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo.iframe_documento',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_documento',
                         'db_iframe_tipodocumento',
                         'func_cadtipodocumento.php?funcao_js=parent.js_mostradb123_sequencial1|db123_sequencial|db123_tipo',
                         'Pesquisa',
@@ -109,7 +109,7 @@ function js_pesquisadb123_sequencial(mostra) {
                        );
   }else{
      if(document.form1.db123_sequencial.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_documento',
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_documento',
                             'db_iframe_tipodocumento',
                             'func_cadtipodocumento.php?pesquisa_chave='+document.form1.db123_sequencial.value+'&funcao_js=parent.js_mostradb123_sequencial',
                             'Pesquisa',

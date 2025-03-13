@@ -1,40 +1,40 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_retencaotiporec_classe.php");
-require("model/agendaPagamento.model.php");
-require("model/retencaoNota.model.php");
-require("classes/empenho.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_retencaotiporec_classe.php"));
+require_once(modification(Modification::getFile('model/agendaPagamento.model.php')));
+require(modification("model/retencaoNota.model.php"));
+require(modification("classes/empenho.php"));
 
 $oGet = db_utils::postMemory($_GET);
 $clrotulo        = new rotulocampo;
@@ -58,7 +58,7 @@ $sAno      = date("Y",db_getsession("DB_datausu"));
  if (isset($oGet->iTipoCalculo)) {
 
    if ($oGet->iTipoCalculo == 1) {
-     
+
      $sSqlNotas  = "select e50_codord, ";
      $sSqlNotas .= "       e50_data,   ";
      $sSqlNotas .= "       e69_numero, ";
@@ -71,10 +71,10 @@ $sAno      = date("Y",db_getsession("DB_datausu"));
      $sSqlNotas .= "       inner join pagordemnota on e53_codord  = e71_codord  ";
      $sSqlNotas .= "       inner join empnota      on e71_codnota = e69_codnota ";
      $sSqlNotas .= " where e50_codord = {$oGet->sValorFiltro}                   ";
-          
+
 
    } else if ($oGet->iTipoCalculo == 2) {
-     
+
      $sSqlNotas  = "select distinct e50_codord,";
      $sSqlNotas .= "       e50_data,   ";
      $sSqlNotas .= "       e69_numero, ";
@@ -98,12 +98,12 @@ $sAno      = date("Y",db_getsession("DB_datausu"));
      $sSqlNotas .= "  or (extract( year from e50_data) = {$sAno}";
      $sSqlNotas .= "      and extract (month from e50_data) = {$sMes})";
      $sSqlNotas .= "     or e69_codnota = {$oGet->iCodNota})";
-     
+
    }
    $oDaoPagOrdem = db_utils::getDao("pagordem");
    $rsNotas      = $oDaoPagOrdem->sql_record($sSqlNotas);
    if ($oDaoPagOrdem->numrows > 0) {
-     $aNotas = db_utils::getColectionByRecord($rsNotas);
+     $aNotas = db_utils::getCollectionByRecord($rsNotas);
    }
  }
  $oRetencao->aMovimentos = array();
@@ -153,12 +153,12 @@ $sAno      = date("Y",db_getsession("DB_datausu"));
       $sJoin    = " left join empagenotasordem  on e81_codmov         = e43_empagemov   ";
       $sJoin   .= " left join empageordem       on e43_ordempagamento = e42_sequencial  ";
       if (isset($aNotas)) {
-        
+
         $nValorPago        = 0;
         $nValorAcrescentar = 0;
         $nValorNota        = 0;
         for ($iNota = 0; $iNota < count($aNotas); $iNota++) {
-          
+
           //$nValorRetencao = 0;
           $oAgenda = new agendaPagamento();
           $sWhere  = " e50_codord= {$aNotas[$iNota]->e50_codord} ";
@@ -169,15 +169,15 @@ $sAno      = date("Y",db_getsession("DB_datausu"));
           $sWhere .= " and (e81_cancelado is null and case when k12_data is not null then k105_corgrupotipo = 1 else true end)";
           $aMovimentos = $oAgenda->getMovimentosAgenda($sWhere, $sJoin, false, false);
           for ($iMov = 0; $iMov < count($aMovimentos); $iMov++) {
-            
-            
+
+
             $oRetencaoNota = new retencaoNota($aNotas[$iNota]->e69_codnota);
             /*
              * Verificamos se o movimento já possui retencoes para o mes corrente, ou se já foi usado em outra retencao
              */
             $lRecolhido = false;
             if ($aMovimentos[$iMov]->k12_data != "") {
-              
+
               $lRecolhido = true;
             }
             $oRetencaoMovimento = $oRetencaoNota->getRetencoesByMovimento($aMovimentos[$iMov]->e81_codmov,
@@ -191,25 +191,25 @@ $sAno      = date("Y",db_getsession("DB_datausu"));
              * Não podemos usar esse movimento como base de calculo novamente.
              */
             if ($oRetencaoMovimento && $oGet->iTipoCalculo == 1) {
-              
+
               $sChecked       = " checked disabled ";
               //$nValorRetencao = $oRetencaoMovimento->e23_valorretencao;
-              
+
             }
             if ($oRetencaoMovimento) {
               $nValorRetencao = $oRetencaoMovimento->e23_valorretencao;
             }
-            
+
             if (is_object($oRetencao->aMovimentos) && in_array($aMovimentos[$iMov]->e81_codmov, $oRetencao->aMovimentos)) {
-              
+
               $sChecked = " checked ";
               $nValorAcrescentar += $aMovimentos[$iMov]->e81_valor;
-              
+
             }
             if ($aMovimentos[$iMov]->k12_data != "") {
               $nValorPago+= $aMovimentos[$iMov]->e81_valor;
               echo "  <tr style='background-color: #FFFFCC'>";
-              
+
             } else {
               echo "<tr>";
             }
@@ -218,28 +218,28 @@ $sAno      = date("Y",db_getsession("DB_datausu"));
             echo "  <td style='text-align:right;border-right:1px solid black'>{$aMovimentos[$iMov]->e81_valor}</td>";
             echo "  <td style='text-align:center;border-right:1px solid black'>".db_formatar($aMovimentos[$iMov]->e80_data,"d")."</td>";
             if ($aMovimentos[$iMov]->k12_data != "" && $iTipoCalculo != 5) {
-              
+
               echo "  <td id='valorpago{$aMovimentos[$iMov]->e81_codmov}'";
               echo "   style='text-align:right;border-right:1px solid black'>{$aMovimentos[$iMov]->e81_valor}</td>";
               $sChecked = " checked disabled ";
-              
+
             } else {
-              
+
               $nValor = $aMovimentos[$iMov]->e81_valor;
               if ($aMovimentos[$iMov]->e43_valor > 0) {
                 $nValor = $aMovimentos[$iMov]->e43_valor;
               }
-              echo "  <td id='valorpago{$aMovimentos[$iMov]->e81_codmov}'"; 
+              echo "  <td id='valorpago{$aMovimentos[$iMov]->e81_codmov}'";
               echo "      style='text-align:right;border-right:1px solid black'>{$nValor}</td>";
             }
             if ($aMovimentos[$iMov]->e81_codmov == $oGet->iCodMov) {
-              
+
               $nValorAcrescentar += $aMovimentos[$iMov]->e81_valor;
               $nValorNota         = $aMovimentos[$iMov]->e81_valor;
               $sChecked = " checked disabled ";
-              
+
             }
-            
+
             echo "<td style='text-align:right;border-right:1px solid black'>{$nValorRetencao}</td>";
             echo "  <td class=''>";
             echo "     <input class='retencao' type='checkbox' onclick='calculaValor(this.checked,this.value,{$nValorRetencao})'";
@@ -274,13 +274,13 @@ $sAno      = date("Y",db_getsession("DB_datausu"));
     <?
 
       if ($oGet->iTipoCalculo == 2) {
-      
+
         echo "** O cálculo de retenção para pessoa física, considera como padrão os valores pagos dentro do mês.<br>";
         echo "Caso necessário, podem ser acrescentadas à base de cálculo as demais notas disponíveis nesta tela.";
-      
+
       }
     ?>
-    
+
     <div style='text-align:left'>
        <fieldset><legend><b>Legenda</b></legend>
        <span style='background-color: #FFFFCC'>&nbsp;&nbsp;</span> Valores Pagos<br>
@@ -293,40 +293,40 @@ $sAno      = date("Y",db_getsession("DB_datausu"));
 <script>
 
   function calculaValor(lSomar, iChave, nJaRetido) {
-  
+
     var nValor      = new Number($('valorpago'+iChave).innerHTML);
-    var nValorTotal = new Number($('valorTotal').innerHTML); 
-    var nValorBase  = new Number($('valorbase').innerHTML); 
+    var nValorTotal = new Number($('valorTotal').innerHTML);
+    var nValorBase  = new Number($('valorbase').innerHTML);
     if (lSomar) {
-      
+
       nValorTotal  = nValorTotal+nValor;
       nValorBase  += nValor;
-      
+
     } else {
-    
+
       nValorTotal  = nValorTotal-nValor;
       nValorBase  -= nValor;
-      
+
     }
-    $('valorTotal').innerHTML = nValorTotal.toFixed(2);  
-    $('valorbase').innerHTML  = nValorBase.toFixed(2);  
-  } 
-  
+    $('valorTotal').innerHTML = nValorTotal.toFixed(2);
+    $('valorbase').innerHTML  = nValorBase.toFixed(2);
+  }
+
   function js_setValorBase() {
-  
+
     var aBaseDeCalculo = new Array();
     var aMov = js_getElementbyClass(form1,"retencao");
     for ( var i = 0; i < aMov.length; i++) {
-    
+
       if (aMov[i].checked && !aMov[i].disabled) {
         aBaseDeCalculo.push(aMov[i].value);
       }
     }
-    parent.setBaseDeCaculo(aBaseDeCalculo, <?=$oGet->iCodRetencao?>);  
+    parent.setBaseDeCaculo(aBaseDeCalculo, <?=$oGet->iCodRetencao?>);
     parent.$('e23_valorbase').value = $('valorTotal').innerHTML;
     parent.$('valorpagar').value    = $('valorTotal').innerHTML;
     parent.js_calculaRetencao();
     parent.db_iframe_inforetencao.hide();
-  
+
   }
 </script>

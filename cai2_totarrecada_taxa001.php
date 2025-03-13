@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,11 +26,11 @@
  */
 
 set_time_limit(0);
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -77,7 +77,7 @@ include ("dbforms/db_funcoes.php");
 <td align='right' >Receita:</td>
 <td align='left'> 
 <?
-  $result = pg_exec("select k02_codigo,k02_drecei from tabrec where k02_limite is null order by k02_codigo ");
+  $result = db_query("select k02_codigo,k02_drecei from tabrec where k02_limite is null order by k02_codigo ");
   db_selectrecord("receita",$result,true,2,'','','','0');
 ?>
 </td>
@@ -87,7 +87,7 @@ include ("dbforms/db_funcoes.php");
 <td align='left'> 
 <?
 
-  $result = pg_exec("select codsubrec,k07_descr from tabdesc order by codsubrec");
+  $result = db_query("select codsubrec,k07_descr from tabdesc order by codsubrec");
   db_selectrecord("taxa",$result,true,2,'','','','0');
 ?>
 </td>

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_veicmotoristas_classe.php");
-include("classes/db_veicparam_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_veicmotoristas_classe.php"));
+require_once(modification("classes/db_veicparam_classe.php"));
 
-db_postmemory($HTTP_POST_VARS);
+db_postmemory($_POST);
 
 $clveicmotoristas = new cl_veicmotoristas;
 $clveicparam      = new cl_veicparam;
 
 $db_opcao = 1;
 $db_botao = true;
-if(isset($incluir)){
+if (isset($incluir)) {
   $sqlerro  = false;
   $erro_msg = "";
 
@@ -48,7 +48,7 @@ if(isset($incluir)){
 
   $clveicmotoristas->incluir($ve05_codigo);
   $erro_msg = $clveicmotoristas->erro_msg;
-  if ($clveicmotoristas->erro_status == 0){
+  if ($clveicmotoristas->erro_status == 0) {
     $sqlerro = true;
   } else {
     $ve05_codigo = $clveicmotoristas->ve05_codigo;
@@ -56,43 +56,24 @@ if(isset($incluir)){
 
   db_fim_transacao($sqlerro);
 }
+
+include(modification("forms/db_frmveicmotoristas.php"));
 ?>
-<html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmveicmotoristas.php");
-	?>
-    </center>
-	</td>
-  </tr>
-</table>
-</body>
-</html>
+
 <script>
-js_tabulacaoforms("form1","ve05_numcgm",true,1,"ve05_numcgm",true);
+  js_tabulacaoforms("form1", "ve05_numcgm", true, 1, "ve05_numcgm", true);
 </script>
-<?
-if(isset($incluir)){
-  if($clveicmotoristas->erro_status=="0"||$sqlerro==true){
+<?php
+if (isset($incluir)) {
+  if ($clveicmotoristas->erro_status == "0" || $sqlerro == true) {
     db_msgbox($erro_msg);
-    $db_botao=true;
+    $db_botao = true;
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if($clveicmotoristas->erro_campo!=""){
-      echo "<script> document.form1.".$clveicmotoristas->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$clveicmotoristas->erro_campo.".focus();</script>";
+    if ($clveicmotoristas->erro_campo != "") {
+      echo "<script> document.form1." . $clveicmotoristas->erro_campo . ".style.backgroundColor='#99A9AE';</script>";
+      echo "<script> document.form1." . $clveicmotoristas->erro_campo . ".focus();</script>";
     }
-  }else{
+  } else {
     db_msgbox($erro_msg);
     db_redireciona("vei1_veicmotoristas005.php?chavepesquisa=$ve05_codigo&liberaaba=true");
   }

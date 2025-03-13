@@ -109,10 +109,10 @@ db_input('sd77_i_mescomp',2,$Isd77_i_mescomp,true,'text',$db_opcao,"");
 <script>
 function js_pesquisasd77_i_habilitacao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_sau_habilitacao','func_sau_habilitacao.php?funcao_js=parent.js_mostrasau_habilitacao1|sd75_i_codigo|sd75_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_habilitacao','func_sau_habilitacao.php?funcao_js=parent.js_mostrasau_habilitacao1|sd75_i_codigo|sd75_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd77_i_habilitacao.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_sau_habilitacao','func_sau_habilitacao.php?pesquisa_chave='+document.form1.sd77_i_habilitacao.value+'&funcao_js=parent.js_mostrasau_habilitacao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_habilitacao','func_sau_habilitacao.php?pesquisa_chave='+document.form1.sd77_i_habilitacao.value+'&funcao_js=parent.js_mostrasau_habilitacao','Pesquisa',false);
      }else{
        document.form1.sd75_c_nome.value = '';
      }
@@ -132,10 +132,10 @@ function js_mostrasau_habilitacao1(chave1,chave2){
 }
 function js_pesquisasd77_i_grupohabilitacao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_sau_grupohabilitacao','func_sau_grupohabilitacao.php?funcao_js=parent.js_mostrasau_grupohabilitacao1|sd76_i_codigo|sd76_c_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_grupohabilitacao','func_sau_grupohabilitacao.php?funcao_js=parent.js_mostrasau_grupohabilitacao1|sd76_i_codigo|sd76_c_descricao','Pesquisa',true);
   }else{
      if(document.form1.sd77_i_grupohabilitacao.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_sau_grupohabilitacao','func_sau_grupohabilitacao.php?pesquisa_chave='+document.form1.sd77_i_grupohabilitacao.value+'&funcao_js=parent.js_mostrasau_grupohabilitacao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_grupohabilitacao','func_sau_grupohabilitacao.php?pesquisa_chave='+document.form1.sd77_i_grupohabilitacao.value+'&funcao_js=parent.js_mostrasau_grupohabilitacao','Pesquisa',false);
      }else{
        document.form1.sd76_c_descricao.value = '';
      }
@@ -155,10 +155,10 @@ function js_mostrasau_grupohabilitacao1(chave1,chave2){
 }
 function js_pesquisasd77_i_procedimento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_sau_procedimento','func_sau_procedimento.php?funcao_js=parent.js_mostrasau_procedimento1|sd63_i_codigo|sd63_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_procedimento','func_sau_procedimento.php?funcao_js=parent.js_mostrasau_procedimento1|sd63_i_codigo|sd63_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd77_i_procedimento.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_sau_procedimento','func_sau_procedimento.php?pesquisa_chave='+document.form1.sd77_i_procedimento.value+'&funcao_js=parent.js_mostrasau_procedimento','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_procedimento','func_sau_procedimento.php?pesquisa_chave='+document.form1.sd77_i_procedimento.value+'&funcao_js=parent.js_mostrasau_procedimento','Pesquisa',false);
      }else{
        document.form1.sd63_c_nome.value = '';
      }
@@ -177,7 +177,7 @@ function js_mostrasau_procedimento1(chave1,chave2){
   db_iframe_sau_procedimento.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_prochabilitacao','func_sau_prochabilitacao.php?funcao_js=parent.js_preenchepesquisa|sd77_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_prochabilitacao','func_sau_prochabilitacao.php?funcao_js=parent.js_preenchepesquisa|sd77_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_prochabilitacao.hide();

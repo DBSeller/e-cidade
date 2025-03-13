@@ -1,0 +1,70 @@
+Bom dia prof Stemmer.
+voce poderia me dar uma dica?
+É assim:
+Eu estou fazendo um driverzinho pra poder imprimir em uma impressora autenticadora
+em C no linux.
+Que é alguma coisa assim:
+
+void strobe() {
+  unsigned char ch;
+  ch = inb(REGS3);  
+  ch |= STROBE;
+  outb(ch,REGS3);    
+  usleep(5);
+  ch &= STROBE_OUT;
+  outb(ch,REGS3);
+}
+
+int imprimir(const char *str) {
+  int ret;  
+  if(!offLine() && !erro() && !semPapel()) {    
+    while(ocupada())
+      usleep(5);      
+    while(*str) {
+      outb(*(str++),PORTA);      
+      usleep(5);
+      strobe();          
+    }    
+    ret = 1;
+  } else
+    ret = 0;
+  outb(0x03,PORTA);  
+  delay();
+  strobe();
+  return ret;
+}
+
+int main() {
+  if(ioperm(PORTA,3,1)) {
+      fprintf(stderr,"ERRO abrindo endereco: %s\n",strerror(errno));
+      exit(-1);
+  } 
+
+  imprimir("isto e um teste\n");
+
+  if(ioperm(PORTA,3,1)) {
+      fprintf(stderr,"ERRO fechando endereco: %s\n",strerror(errno));
+      exit(-1);
+  }  
+}
+
+
+
+A cada byte que eu boto na paralela(funcao imprimir), eu tenho que dar um delay, e depois tenho que
+dar um pulso no pino de strobe pra impressora aceitar o byte. Pra isso eu usei a função
+usleep(5). Funciona blz, mas fica muito lento! Eu já tentei mudar o valor da funcao usleep() de
+tudo que é jeito, mas não deu certo.
+Daí, eu troquei o usleep() pro uma função que usar um for pra dar o atrraso:
+void delay() {
+  int i,j;
+  for(i = 0;i < 100;i++)
+    for(j = 0;j < 1000;j++);
+}
+
+Funcionou super bem! A impressora ficou rápida, tudo blz, mas essa função delay() dá
+uma atolada no processador. Como eu poderia fazer essa função delay() mais esperta?
+Isto é dar um atraso bem pequeno, mas sem atolar o processador?
+
+
+
+

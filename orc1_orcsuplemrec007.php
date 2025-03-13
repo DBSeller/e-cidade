@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_orcsuplemrec_classe.php");
-include("classes/db_orcsuplemval_classe.php");
-include("classes/db_orcprojeto_classe.php");
-include("classes/db_orcreceita_classe.php"); 
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_orcsuplemrec_classe.php"));
+include(modification("classes/db_orcsuplemval_classe.php"));
+include(modification("classes/db_orcprojeto_classe.php"));
+include(modification("classes/db_orcreceita_classe.php")); 
 db_app::import("orcamento.suplementacao.*");
 db_postmemory($HTTP_POST_VARS);
 
@@ -153,7 +153,7 @@ $soma_receitas  = $oSuplementacao->getValorReceita();
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	   include("forms/db_frmorcsuplemrec.php");
+	   include(modification("forms/db_frmorcsuplemrec.php"));
 	?>
     </center>
 	</td>

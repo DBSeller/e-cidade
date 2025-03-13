@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -35,6 +35,10 @@ $oDaoCadVencDesc                 = db_utils::getDao("cadvencdesc");
 $oDaoCadCalc                     = db_utils::getDao("cadcalc");
 $oDaoTipCalcExe                  = db_utils::getDao("tipcalcexe");
 $oDaoIssConfiguracaoGrupoServico = db_utils::getDao("issconfiguracaogruposervico");
+$oDaoConfVencISSQNVariavel       = db_utils::getDao("confvencissqnvariavel");
+$oDaoConfIssqnRetidoPublica      = db_utils::getDao("confissqnretidopublica");
+$oDaoConfIssqnRetidoPublicaTipoEmpresa = db_utils::getDao("confissqnretidopublicatipoempresa");
+$oDaoConfVencIssqnAvulso         = db_utils::getDao("confvencissqnavulso");
 
 db_atutermometro(1, 2, 'termometroitem', 1, $sMensagemTermometroItem);
 
@@ -61,6 +65,7 @@ if ($sqlerro == false) {
 		$sWhere                  = "q81_tipo = 1 and q85_var is false";
 		$sSqlQuantVencAtualFixo  = $oDaoTipCalc->sql_query_virada_issqn(null, "count(distinct q83_codven)", null, $sWhere);
 		$rsSqlQuantVencAtualFixo = $oDaoTipCalc->sql_record($sSqlQuantVencAtualFixo);
+
 	  if ($oDaoTipCalc->numrows != 1) {
 
 	    $sMensagem = "Quantidade de vencimentos do fixo diferente de 1!  \\n\\nContate suporte!";
@@ -335,6 +340,14 @@ if ($sqlerro == false) {
 	  $oDaoArreTipo->k00_instit              = $oArreTipoTipoAtualFixo->k00_instit;
 	  $oDaoArreTipo->k00_formemissao         = $oArreTipoTipoAtualFixo->k00_formemissao;
 	  $oDaoArreTipo->k00_receitacredito      = $oArreTipoTipoAtualFixo->k00_receitacredito;
+	  $oDaoArreTipo->k00_exercicioscarne     = $oArreTipoTipoAtualFixo->k00_exercicioscarne;
+	  $oDaoArreTipo->k00_dtvencimento        = $oArreTipoTipoAtualFixo->k00_dtvencimento;
+	  $oDaoArreTipo->k00_horainicial         = $oArreTipoTipoAtualFixo->k00_horainicial;
+	  $oDaoArreTipo->k00_horafinal           = $oArreTipoTipoAtualFixo->k00_horafinal;
+	  $oDaoArreTipo->k00_bloqnutil           = $oArreTipoTipoAtualFixo->k00_bloqnutil;
+	  $oDaoArreTipo->k00_taxaespecifica      = ($oArreTipoTipoAtualFixo->k00_taxaespecifica==null?'null':$oArreTipoTipoAtualFixo->k00_taxaespecifica);
+
+
 	  $oDaoArreTipo->incluir(null);
 	  if ($oDaoArreTipo->erro_status == 0) {
 	    throw new Exception($oDaoArreTipo->erro_msg, 82);
@@ -391,6 +404,13 @@ if ($sqlerro == false) {
 	  $oDaoArreTipo->k00_recibodbpref        = $oArreTipoTipoAtualVistLoc->k00_recibodbpref;
 	  $oDaoArreTipo->k00_instit              = $oArreTipoTipoAtualVistLoc->k00_instit;
 	  $oDaoArreTipo->k00_formemissao         = $oArreTipoTipoAtualVistLoc->k00_formemissao;
+	  $oDaoArreTipo->k00_receitacredito      = $oArreTipoTipoAtualVistLoc->k00_receitacredito;
+	  $oDaoArreTipo->k00_exercicioscarne     = $oArreTipoTipoAtualVistLoc->k00_exercicioscarne;
+	  $oDaoArreTipo->k00_dtvencimento        = $oArreTipoTipoAtualVistLoc->k00_dtvencimento;
+	  $oDaoArreTipo->k00_horainicial         = $oArreTipoTipoAtualVistLoc->k00_horainicial;
+	  $oDaoArreTipo->k00_horafinal           = $oArreTipoTipoAtualVistLoc->k00_horafinal;
+	  $oDaoArreTipo->k00_bloqnutil           = $oArreTipoTipoAtualVistLoc->k00_bloqnutil;
+	  $oDaoArreTipo->k00_taxaespecifica      = ($oArreTipoTipoAtualVistLoc->k00_taxaespecifica==null?'null':$oArreTipoTipoAtualVistLoc->k00_taxaespecifica);
 	  $oDaoArreTipo->incluir(null);
 	  if ($oDaoArreTipo->erro_status == 0) {
 	    throw new Exception($oDaoArreTipo->erro_msg, 82);
@@ -446,6 +466,13 @@ if ($sqlerro == false) {
 	  $oDaoArreTipo->k00_recibodbpref        = $oArreTipoTipoAtualVistSani->k00_recibodbpref;
 	  $oDaoArreTipo->k00_instit              = $oArreTipoTipoAtualVistSani->k00_instit;
 	  $oDaoArreTipo->k00_formemissao         = $oArreTipoTipoAtualVistSani->k00_formemissao;
+	  $oDaoArreTipo->k00_receitacredito      = $oArreTipoTipoAtualVistSani->k00_receitacredito;
+	  $oDaoArreTipo->k00_exercicioscarne     = $oArreTipoTipoAtualVistSani->k00_exercicioscarne;
+	  $oDaoArreTipo->k00_dtvencimento        = $oArreTipoTipoAtualVistSani->k00_dtvencimento;
+	  $oDaoArreTipo->k00_horainicial         = $oArreTipoTipoAtualVistSani->k00_horainicial;
+	  $oDaoArreTipo->k00_horafinal           = $oArreTipoTipoAtualVistSani->k00_horafinal;
+	  $oDaoArreTipo->k00_bloqnutil           = $oArreTipoTipoAtualVistSani->k00_bloqnutil;
+      $oDaoArreTipo->k00_taxaespecifica      = ($oArreTipoTipoAtualVistSani->k00_taxaespecifica==null?'null':$oArreTipoTipoAtualVistSani->k00_taxaespecifica);
 	  $oDaoArreTipo->incluir(null);
 	  if ($oDaoArreTipo->erro_status == 0) {
 	    throw new Exception($oDaoArreTipo->erro_msg, 82);
@@ -1167,6 +1194,8 @@ if ($sqlerro == false) {
 	      $oDaoIssConfiguracaoGrupoServico->q136_tipotributacao  = $oIssConfiguracaoGrupoServico->q136_tipotributacao ;
 	      $oDaoIssConfiguracaoGrupoServico->q136_valor           = $oIssConfiguracaoGrupoServico->q136_valor          ;
 	      $oDaoIssConfiguracaoGrupoServico->q136_localpagamento  = $oIssConfiguracaoGrupoServico->q136_localpagamento ;
+          $oDaoIssConfiguracaoGrupoServico->q136_deducao         = $oIssConfiguracaoGrupoServico->q136_deducao        ;
+          $oDaoIssConfiguracaoGrupoServico->q136_retencao        = $oIssConfiguracaoGrupoServico->q136_retencao       ;
 	      $oDaoIssConfiguracaoGrupoServico->incluir(null);
 
 	      if ($oDaoIssConfiguracaoGrupoServico->erro_status == '0') {
@@ -1175,31 +1204,159 @@ if ($sqlerro == false) {
 	                              ERRO: ' . $oDaoIssConfiguracaoGrupoServico->erro_msg);
 
 	      }
-
-
 	    }
-
 	  }
 
+    $sWhere                       = "q144_ano = {$anodestino} AND q144_codvenc = {$oCodigoVencimento->issqnVariavel}";
+    $sSqlConfVencISSQNVariavel    = $oDaoConfVencISSQNVariavel->sql_query_file(null, "*", null, $sWhere);
+    $rsSqlConfVencISSQNVariavel   = $oDaoConfVencISSQNVariavel->sql_record($sSqlConfVencISSQNVariavel);
+    $iLinhasConfVencISSQNVariavel = $oDaoConfVencISSQNVariavel->numrows;
+    if ($iLinhasConfVencISSQNVariavel == 0) {
 
-		$sqlerro = false;
+      // Busca pemo maior dia de vencimento cadastrado no vencimento atual
+      $iDiaVencimento = $oDaoConfVencISSQNVariavel->getISSQNVariavelMaiorVencimento($oCodigoVencimento->issqnVariavel);
+
+      /**
+       * Buscamos a receita configurada anteriormente, para utilizarmos na nova configuração
+       */
+      $sWhere                           = "q144_ano = {$anoorigem}";
+      $sSqlConfVencISSQNVariavelOrigem  = $oDaoConfVencISSQNVariavel->sql_query_file(null, "q144_receita", null, $sWhere);
+      $rsSqlConfVencISSQNVariavelOrigem = $oDaoConfVencISSQNVariavel->sql_record($sSqlConfVencISSQNVariavelOrigem);
+
+      if ( empty($rsSqlConfVencISSQNVariavelOrigem) ) {
+      	throw new DBException("Erro ao buscar a configuração de vencimento do exercício de origem para ISSQN variável.");
+      }
+
+      $oConfVencISSQNVariavelOrigem = db_utils::fieldsMemory($rsSqlConfVencISSQNVariavelOrigem, 0);
+
+      // Inclui registro das novas configurações para issqn variavel
+      $oDaoConfVencISSQNVariavel->q144_ano     = $anodestino;
+      $oDaoConfVencISSQNVariavel->q144_codvenc = $oCodigoVencimento->issqnVariavel;
+      $oDaoConfVencISSQNVariavel->q144_receita = $oConfVencISSQNVariavelOrigem->q144_receita;
+      $oDaoConfVencISSQNVariavel->q144_tipo    = $oTipoAtualVariavel->k00_tipovariavel;
+      $oDaoConfVencISSQNVariavel->q144_hist    = $oCodigoVencimento->issqnVariavelHist;
+      $oDaoConfVencISSQNVariavel->q144_diavenc = $iDiaVencimento;
+      $oDaoConfVencISSQNVariavel->q144_valor   = 0.00;
+      $oDaoConfVencISSQNVariavel->incluir(null);
+      if ($oDaoConfVencISSQNVariavel->erro_status == '0') {
+        throw new Exception($oDaoConfVencISSQNVariavel->erro_msg, 54);
+      }
+    }
+
+    /*
+     * Inclui registro da confissqnretidopublica para o próximo ano
+     */
+
+    $sSqlConfIssqnReteidoPublica = $oDaoConfIssqnRetidoPublica->sql_query_file(null,
+        "*",
+        null,
+        "j170_anousu = {$anoorigem}");
+
+    $rsConfIssqnRetidoPublica = $oDaoConfIssqnRetidoPublica->sql_record($sSqlConfIssqnReteidoPublica);
+
+    if (pg_num_rows($rsConfIssqnRetidoPublica) > 0) {
+
+        $aConfIssqnRetidoPublica = db_utils::getCollectionByRecord($rsConfIssqnRetidoPublica);
+
+        foreach ($aConfIssqnRetidoPublica as $oConfIssqnRetidoPublica) {
+
+            $oDaoConfIssqnRetidoPublica->j170_receit   = $oConfIssqnRetidoPublica->j170_receit  ;
+            $oDaoConfIssqnRetidoPublica->j170_anousu   = $anodestino                            ;
+            $oDaoConfIssqnRetidoPublica->j170_hist     = $oConfIssqnRetidoPublica->j170_hist    ;
+            $oDaoConfIssqnRetidoPublica->j170_tipo     = $oConfIssqnRetidoPublica->j170_tipo    ;
+            $oDaoConfIssqnRetidoPublica->incluir(null);
+
+            if ($oDaoConfIssqnRetidoPublica->erro_status == '0') {
+
+                throw new Exception ('Erro ao incluir na tabela confissqnretidopublica. \n
+                ERRO: ' . $oDaoConfIssqnRetidoPublica->erro_msg);
+
+            }
+
+            //abaixo o j170_sequencial é do exercicio de origem
+            $sSqlConfIssqnRetidoPublicaTipoEmpresa = $oDaoConfIssqnRetidoPublicaTipoEmpresa->sql_query_file(null,
+            "*",
+            null,
+            "j171_confissqnretidopublica = {$oConfIssqnRetidoPublica->j170_sequencial}");
+
+            $rsConfIssqnRetidoPublicaTipoEmpresa = $oDaoConfIssqnRetidoPublicaTipoEmpresa->sql_record($sSqlConfIssqnRetidoPublicaTipoEmpresa);
+
+            //abaixo o j170_sequencial é o novo sequencial para o exercício destino
+            if (pg_num_rows($rsConfIssqnRetidoPublicaTipoEmpresa) > 0) {
+
+				$aConfIssqnRetidoPublicaTipoEmpresa = db_utils::getCollectionByRecord($rsConfIssqnRetidoPublicaTipoEmpresa);
+
+				foreach ($aConfIssqnRetidoPublicaTipoEmpresa as $oConfIssqnRetidoPublicaTipoEmpresa) {
+
+					$oDaoConfIssqnRetidoPublicaTipoEmpresa->j171_confissqnretidopublica = $oDaoConfIssqnRetidoPublica->j170_sequencial;
+					$oDaoConfIssqnRetidoPublicaTipoEmpresa->j171_tipoempresa            = $oConfIssqnRetidoPublicaTipoEmpresa->j171_tipoempresa;
+					$oDaoConfIssqnRetidoPublicaTipoEmpresa->incluir(null);
+
+					if ($oDaoConfIssqnRetidoPublicaTipoEmpresa->erro_status == '0') {
+
+						throw new Exception ('Erro ao incluir na tabela confissqnretidopublicatipoempresa. \n
+						ERRO: ' . $oDaoConfIssqnRetidoPublicaTipoEmpresa->erro_msg);
+					}
+				}
+            }
+
+        }
+    }
+
+    /*
+     * Inclui registro da confissqnretidopublica para o próximo ano
+     */
+
+    $sSqlConfVencIssqnAvulso = $oDaoConfVencIssqnAvulso->sql_query_file(null,
+        "*",
+        null,
+        "j178_anousu = {$anoorigem}");
+
+    $rsConfVencIssqnAvulso = $oDaoConfVencIssqnAvulso->sql_record($sSqlConfVencIssqnAvulso);
+
+    if (pg_num_rows($rsConfVencIssqnAvulso) > 0) {
+
+        $aConfVencIssqnAvulso = db_utils::getCollectionByRecord($rsConfVencIssqnAvulso);
+
+        foreach ($aConfVencIssqnAvulso as $oConfVencIssqnAvulso) {
+            $oDaoConfVencIssqnAvulso->j178_receita     = $oConfVencIssqnAvulso->j178_receita    ;
+            $oDaoConfVencIssqnAvulso->j178_histdebito  = $oConfVencIssqnAvulso->j178_histdebito ;
+            $oDaoConfVencIssqnAvulso->j178_tipodebito  = $oConfVencIssqnAvulso->j178_tipodebito ;
+            $oDaoConfVencIssqnAvulso->j178_diavenc     = $oConfVencIssqnAvulso->j178_diavenc    ;
+            $oDaoConfVencIssqnAvulso->j178_anousu      = $anodestino                            ;
+            $oDaoConfVencIssqnAvulso->incluir(null);
+            if ($oDaoConfVencIssqnAvulso->erro_status == '0') {
+                throw new Exception ('Erro ao incluir na tabela confvencissqnavulso. \n
+                ERRO: ' . $oDaoConfVencIssqnAvulso->erro_msg);
+            }
+        }
+    }
+
+    $sqlerro = false;
+
 	} catch (Exception $eErro) {
 
-	  $sWhere            = "codarq = {$eErro->getCode()}";
-	  $sSqlDbSysArquivo  = $oDaoDbSysArquivo->sql_query_file(null, "nomearq", null, $sWhere);
-	  $rsSqlDbSysArquivo = $oDaoDbSysArquivo->sql_record($sSqlDbSysArquivo);
-	  if ($oDaoDbSysArquivo->numrows > 0) {
-	  	$oDbSysArquivo = db_utils::fieldsMemory($rsSqlDbSysArquivo, 0);
-	  }
+		$iCodigoErro = $eErro->getCode();
+        $sMsg        = "Usuário: \\n\\n ".$eErro->getMessage()." \\n\\n";
 
-	  $sMsgAdmin = "Erro: Verificar tabela {$oDbSysArquivo->nomearq}!";
-	  $sMsg      = "Usuário: \\n\\n ".$eErro->getMessage()." \\n\\n";
-    $sMsg     .= str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$sMsgAdmin." \\n"));
+		if ( !empty($iCodigoErro) ) {
 
-	  $sqlerro = true;
-    //db_msgbox($sMsg);
+            $sWhere            = "codarq = {$iCodigoErro}";
+            $sSqlDbSysArquivo  = $oDaoDbSysArquivo->sql_query_file(null, "nomearq", null, $sWhere);
+            $rsSqlDbSysArquivo = $oDaoDbSysArquivo->sql_record($sSqlDbSysArquivo);
+                $sMsgAdmin = '';
+
+            if ($oDaoDbSysArquivo->numrows > 0) {
+                $oDbSysArquivo = db_utils::fieldsMemory($rsSqlDbSysArquivo, 0);
+                $sMsgAdmin = "Erro: Verificar tabela {$oDbSysArquivo->nomearq}!";
+            }
+
+            $sMsg     .= str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$sMsgAdmin." \\n"));
+		}
+
+      $erro_msg = $sMsg;
+	  $sqlerro  = true;
 	}
 }
 
 db_atutermometro(1, 2, 'termometroitem', 1, $sMensagemTermometroItem);
-?>

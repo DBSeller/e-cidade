@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tesinteroutros_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_tesinteroutros_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
 db_postmemory($HTTP_POST_VARS);
 $cltesinteroutros = new cl_tesinteroutros;
 $db_opcao = 1;
 $db_botao = true;
+
 if(isset($incluir)){
   db_inicio_transacao();
   $cltesinteroutros->incluir();
@@ -63,14 +65,14 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmtesinteroutros.php");
+	require_once(modification("forms/db_frmtesinteroutros.php"));
 	?>
     </center>
 	</td>
   </tr>
 </table>
 <?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+db_menu();
 ?>
 </body>
 </html>

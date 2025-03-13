@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: saude
@@ -33,6 +33,7 @@ $oRotulo->label('z01_nome');
 $oRotulo->label('s154_c_cns');
 $oRotulo->label('s154_c_nome');
 $oRotulo->label('s154_i_codigo');
+$oRotulo->label('z01_nomecomple');
 ?>
 <form name="form1" method="post" action="">
 <center>
@@ -58,7 +59,7 @@ $oRotulo->label('s154_i_codigo');
       db_input('s154_i_codigo', 10, $Is154_i_codigo, true, 'hidden', 3, "");
 
       // Utilizadao para manter a variável $lBotao, quando aberto em um iframe
-      db_input('lBotao', 10, '', true, 'hidden', 3, ""); 
+      db_input('lBotao', 10, '', true, 'hidden', 3, "");
       ?>
     </td>
   </tr>
@@ -90,7 +91,7 @@ $oRotulo->label('s154_i_codigo');
       <?
       if (isset($s154_c_nome)) {
 
-        $aOrig = array('á', 'é', 'í', 'ó', 'ú', 'â', 'ê', 'ô', 'ã', 'õ', 'à', 'è', 'ì', 'ò', 'ù', 'ç'); 
+        $aOrig = array('á', 'é', 'í', 'ó', 'ú', 'â', 'ê', 'ô', 'ã', 'õ', 'à', 'è', 'ì', 'ò', 'ù', 'ç');
         $aDest = array('Á', 'É', 'Í', 'Ó', 'Ú', 'Â', 'Ê', 'Ô', 'Ã', 'Õ', 'À', 'È', 'Ì', 'Ò', 'Ù', 'Ç');
         $s154_c_nome = str_replace($aOrig, $aDest, strtoupper($s154_c_nome));
 
@@ -116,9 +117,9 @@ $oRotulo->label('s154_i_codigo');
   </tr>
 </table>
 </center>
-<input name="<?=($db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir"))?>" 
-   type="submit" id="db_opcao" 
-   value="<?=($db_opcao == 1 ? "Incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "Alterar" : "Excluir"))?>" 
+<input name="<?=($db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir"))?>"
+   type="submit" id="db_opcao"
+   value="<?=($db_opcao == 1 ? "Incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "Alterar" : "Excluir"))?>"
    <?=($db_botao == false ? "disabled" : "")?>
    <?=($db_opcao == 3 ? '' : 'onclick="return js_validaEnvio();"')?>>
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();">
@@ -169,6 +170,16 @@ if (isset($lBotao) && $lBotao == 'true') {
         <?
         $z01_nome2 = @$z01_nome;
         db_input('z01_nome2', 40, $Iz01_nome, true, 'text', 3, "");
+        ?>
+      </td>
+    </tr>
+    <tr>
+      <td nowrap title="<?=@$Tz01_nomecomple?>">
+        <?=@$Lz01_nomecomple?>
+      </td>
+      <td nowrap title="<?=@$Tz01_nomecomple?>">
+        <?
+        db_input('z01_nomecomple', 40, $Iz01_nomecomple, true, 'text', 3, "");
         ?>
       </td>
     </tr>
@@ -351,7 +362,7 @@ if (isset($lBotao) && $lBotao == 'true') {
   </table>
 </fieldset>
 </form>
-   
+
 <script>
 document.form1.z01_nome.style.width = '300px';
 
@@ -360,11 +371,11 @@ oAutoComplete.setTxtFieldId(document.getElementById('sd03_i_cgm'));
 oAutoComplete.setHeightList(180);
 oAutoComplete.show();
 oAutoComplete.setCallBackFunction(function(id, label) {
-	
+
                                      document.form1.sd03_i_cgm.value = id;
                                      document.form1.z01_nome.value   = label;
                                      js_getInfoCgm();
-                                       
+
                                    });
 
 js_tipo();
@@ -376,7 +387,7 @@ function js_ajax(oParam, jsRetorno, sUrl) {
   if (sUrl == undefined) {
     sUrl = 'sau4_ambulatorial.RPC.php';
   }
-	var objAjax = new Ajax.Request(sUrl, 
+	var objAjax = new Ajax.Request(sUrl,
                                  {
                                   method: 'post',
                                   asynchronous: false,
@@ -407,7 +418,7 @@ function js_tipo() {
       oLinhasForaRede[iCont].style.display = 'none';
 
     }
-    
+
     iTam    = oLinhasRede.length;
     // Torno visíveis as linhas de médicos da rede
     for (var iCont = 0; iCont < iTam; iCont++) {
@@ -425,7 +436,7 @@ function js_tipo() {
       oLinhasRede[iCont].style.display = 'none';
 
     }
-    
+
     iTam    = oLinhasForaRede.length;
     // Torno visíveis as linhas de médicos fora da rede
     for (var iCont = 0; iCont < iTam; iCont++) {
@@ -476,24 +487,24 @@ function js_validaEnvio() {
 function js_pesquisasd03_i_cgm(mostra) {
 
   if (mostra == true) {
- 
-    js_OpenJanelaIframe('', 'func_nome', 'func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome', 
+
+    js_OpenJanelaIframe('', 'func_nome', 'func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome',
                         'Pesquisa', true
                        );
- 
+
   } else {
- 
+
     if (document.form1.sd03_i_cgm.value != '') {
-    
+
      js_OpenJanelaIframe('', 'func_nome', 'func_cgm.php?pesquisa_chave='+
-                         document.form1.sd03_i_cgm.value+'&funcao_js=parent.js_mostracgm', 
+                         document.form1.sd03_i_cgm.value+'&funcao_js=parent.js_mostracgm',
                          'Pesquisa', false
                         );
-    
+
     } else {
       document.form1.z01_nome.value = '';
     }
- 
+
   }
 
 }
@@ -501,10 +512,10 @@ function js_mostracgm(erro, chave) {
 
   document.form1.z01_nome.value = chave;
   if (erro == true) {
- 
+
     document.form1.sd03_i_cgm.focus();
     document.form1.sd03_i_cgm.value = '';
-  
+
    } else {
      js_getInfoCgm();
    }
@@ -516,12 +527,12 @@ function js_mostracgm1(chave1, chave2) {
   document.form1.z01_nome.value = chave2;
   func_nome.hide();
   js_getInfoCgm();
-  
-} 
+
+}
 function js_pesquisa() {
 
   js_OpenJanelaIframe('', 'db_iframe_medicos', 'func_medicos.php?funcao_js='+
-                      'parent.js_preenchepesquisa|sd03_i_codigo', 
+                      'parent.js_preenchepesquisa|sd03_i_codigo',
                       'Pesquisa', true
                      );
 
@@ -538,7 +549,7 @@ function js_preenchepesquisa(chave) {
 }
 
 function js_formataData(dData) {
-  
+
   if (dData == undefined || dData.length != 10) {
     return dData;
   }
@@ -560,7 +571,7 @@ function js_getInfoCgm() {
 
 function js_retornoGetInfoCgm(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   dNasc    = js_formataData(oRetorno.z01_nasc);
   dCadast  = js_formataData(oRetorno.z01_cadast);
@@ -570,14 +581,15 @@ function js_retornoGetInfoCgm(oRetorno) {
   $('z01_ident').value             = oRetorno.z01_ident.urlDecode();
   $('z01_numcgm').value            = oRetorno.z01_numcgm.urlDecode();
   $('z01_nome2').value             = oRetorno.z01_nome.urlDecode();
+  $('z01_nomecomple').value        = oRetorno.z01_nomecomple.urlDecode();
   $('z01_pai').value               = oRetorno.z01_pai.urlDecode();
   $('z01_mae').value               = oRetorno.z01_mae.urlDecode();
   $('z01_nasc').value              = dNasc;
   $('z01_sexo_select_descr').value = oRetorno.z01_sexo.urlDecode();
   $('z01_estciv').value            = js_estadoCivil(parseInt(oRetorno.z01_estciv.urlDecode(), 10));
-  $('z01_ender').value             = oRetorno.z01_ender.urlDecode(); 
-  $('z01_numero').value            = oRetorno.z01_numero.urlDecode(); 
-  $('z01_compl').value             = oRetorno.z01_compl.urlDecode(); 
+  $('z01_ender').value             = oRetorno.z01_ender.urlDecode();
+  $('z01_numero').value            = oRetorno.z01_numero.urlDecode();
+  $('z01_compl').value             = oRetorno.z01_compl.urlDecode();
   $('z01_munic').value             = oRetorno.z01_munic.urlDecode();
   $('z01_uf').value                = oRetorno.z01_uf.urlDecode();
   $('z01_bairro').value            = oRetorno.z01_bairro.urlDecode();
@@ -612,8 +624,8 @@ function js_limpaInfoCgm() {
   $('z01_nome2').value             = '';
   $('z01_sexo_select_descr').value = '';
   $('z01_estciv').value            = '';
-  $('z01_numero').value            = ''; 
-  $('z01_compl').value             = ''; 
+  $('z01_numero').value            = '';
+  $('z01_compl').value             = '';
   $('z01_cxpostal').value          = '';
   $('z01_cadast').value            = '';
   $('z01_ultalt').value            = '';

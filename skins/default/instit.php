@@ -164,39 +164,24 @@
 
   <style type="text/css">
 
-  #db-release-note-help {
-    height: 35px;
-    float:rigth;
-    top: 0;
-    right: 2%;
-    position: absolute;
-    background: -moz-linear-gradient(to bottom, #2f5b8c, #234368);
-    background: linear-gradient(to bottom, #2f5b8c, #234368);
-  }
+    #db-release-note-help {
+      background: -moz-linear-gradient(to bottom, #2f5b8c, #234368);
+      background: linear-gradient(to bottom, #2f5b8c, #234368);
+    }    
 
-  #db-release-note-help a {
-    display: block;
-    height: 25px;
-    font-size: 12px;
-    font-weight: normal;
-    text-transform: uppercase;
-    color: #FFF;
-    padding: 5px 10px;
-    line-height: 25px;
-  }
+    #db-release-note-help a {
+      color: #FFF;
+    }
 
-  #db-release-note-help a:active {
-    color: #CCC;
-  }
-
-  #db-release-note-help a:active,#db-release-note-help a:focus {
-    outline: none;
-  }
-
+    #db-release-note-help a:active {
+      color: #CCC;
+    }
   </style>
 
-  <div id="db-release-note-help">
-    <a href="#" onclick="javascritp: require_once('scripts/classes/configuracao/DBViewReleaseNote.classe.js'); DBViewReleaseNote.build();">O que mudou?</a>
+  <div class="db-tooltip">
+    <div class="db-release-note-button" id="db-release-note-help">
+      <a href="#" onclick="require_once('scripts/classes/configuracao/DBViewReleaseNote.classe.js'); DBViewReleaseNote.build();">O que mudou?</a>
+    </div>
   </div>
 </body>
 

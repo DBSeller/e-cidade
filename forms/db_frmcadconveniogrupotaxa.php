@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -82,10 +82,10 @@ db_input('ar37_sequencial',10,$Iar37_sequencial,true,'text',3,'')
 <script>
 function js_pesquisaar39_cadconvenio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadconvenio','func_cadconvenio.php?funcao_js=parent.js_mostracadconvenio1|ar11_sequencial|ar11_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadconvenio','func_cadconvenio.php?funcao_js=parent.js_mostracadconvenio1|ar11_sequencial|ar11_nome','Pesquisa',true);
   }else{
      if(document.form1.ar39_cadconvenio.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cadconvenio','func_cadconvenio.php?pesquisa_chave='+document.form1.ar39_cadconvenio.value+'&funcao_js=parent.js_mostracadconvenio','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadconvenio','func_cadconvenio.php?pesquisa_chave='+document.form1.ar39_cadconvenio.value+'&funcao_js=parent.js_mostracadconvenio','Pesquisa',false);
      }else{
        document.form1.ar11_nome.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostracadconvenio1(chave1,chave2){
 }
 function js_pesquisaar39_grupotaxa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_grupotaxa','func_grupotaxa.php?funcao_js=parent.js_mostragrupotaxa1|ar37_sequencial|ar37_sequencial','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_grupotaxa','func_grupotaxa.php?funcao_js=parent.js_mostragrupotaxa1|ar37_sequencial|ar37_sequencial','Pesquisa',true);
   }else{
      if(document.form1.ar39_grupotaxa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_grupotaxa','func_grupotaxa.php?pesquisa_chave='+document.form1.ar39_grupotaxa.value+'&funcao_js=parent.js_mostragrupotaxa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_grupotaxa','func_grupotaxa.php?pesquisa_chave='+document.form1.ar39_grupotaxa.value+'&funcao_js=parent.js_mostragrupotaxa','Pesquisa',false);
      }else{
        document.form1.ar37_sequencial.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostragrupotaxa1(chave1,chave2){
   db_iframe_grupotaxa.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadconveniogrupotaxa','func_cadconveniogrupotaxa.php?funcao_js=parent.js_preenchepesquisa|ar39_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadconveniogrupotaxa','func_cadconveniogrupotaxa.php?funcao_js=parent.js_preenchepesquisa|ar39_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadconveniogrupotaxa.hide();

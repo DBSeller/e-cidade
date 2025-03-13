@@ -1,42 +1,42 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require ("libs/db_stdlib.php");
-require ("std/db_stdClass.php");
-include("libs/db_app.utils.php");
-require ("libs/db_utils.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $oGet = db_utils::postMemory($_GET);
 
 if ($oGet->iForma == 1) {
-  
+
   $sCaption = "Pagamento em Dinheiro";
 } else if ($oGet->iForma == 2){
   $sCaption = "Pagamento em Cheque";
@@ -53,7 +53,6 @@ if (count($aParametrosEmpenho) > 0) {
 <head>
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
 <?php
 db_app::load("scripts.js");
 db_app::load("prototype.js");
@@ -69,7 +68,7 @@ db_app::load("estilos.css");
 </style>
 </head>
 <body bgcolor='#CCCCCC' leftmargin="0" id='body' topmargin="0" marginwidth="0" marginheight="0" onLoad="js_init()" >
-  
+
   <fieldset>
     <legend><b><?=$sCaption?></b></legend>
     <div style='position:fixed;
@@ -77,21 +76,21 @@ db_app::load("estilos.css");
               background-color: #CCCCCC;
               z-index:0;
               visibility:hidden;' id='digitarHistorico'>
-              
+
        <div style='padding:0px;text-align:right;border-bottom: 2px outset white;background-color: #2C7AFE;color:white'>
          <span style='float:left'><b>Histórico</b></span>
          <img src='imagens/jan_fechar_on.gif' border='0' onclick="$('digitarHistorico').style.visibility='hidden';">
        </div>
-       
+
        <div style='padding:3px ;border: 1px inset white'>
          <textarea id='historicoAnulacao' rows="10" cols="30">
          </textarea>
          <center>
            <input value='Confirma' type='button' id='atualizarHistorico' onclick='js_atualizaHistorico'>
-         </center>          
-       </div> 
+         </center>
+       </div>
     </div>
-    
+
     <div id='gridNotas' style='z-index:0'>
     </div>
   </fieldset>
@@ -113,7 +112,7 @@ db_app::load("estilos.css");
 iForma                           = <?=$oGet->iForma?>;
 iTipoControleRetencaoMesAnterior = <?=$iTipoControleRetencaoMesAnterior?>;
 function js_init() {
- 
+
   gridNotas              = new DBGrid("gridNotas");
   gridNotas.nameInstance = "gridNotas";
 
@@ -137,7 +136,7 @@ function js_init() {
 
     /**
      * Atualiza inputs com total e registros
-     * com total dos itens selecionados 
+     * com total dos itens selecionados
      */
     var aSelecionados = this.getSelection('object');
     var iSelecionados = aSelecionados.length;
@@ -148,7 +147,7 @@ function js_init() {
       var oLinha = aSelecionados[iLinha];
       var nValor = js_strToFloat(oLinha.aCells[11].content);
       nTotal += nValor;
-    } 
+    }
 
     parent.document.form1.tot.value = js_formatar(nTotal, 'f');
     parent.document.form1.registros.value = iSelecionados;
@@ -156,12 +155,12 @@ function js_init() {
 
   gridNotas.setCheckbox(0);
   gridNotas.allowSelectColumns(true);
-  gridNotas.setCellAlign(new Array("right", 
+  gridNotas.setCellAlign(new Array("right",
                                     "center",
                                     "left",
-                                    "Right", 
-                                    "left", 
-                                    "left", 
+                                    "Right",
+                                    "left",
+                                    "left",
                                     "left",
                                     "right",
                                     "right",
@@ -178,18 +177,18 @@ function js_init() {
                                 "Cheque"
                                 )
                      );
-  gridNotas.aHeaders[2].lDisplayed  = false; 
+  gridNotas.aHeaders[2].lDisplayed  = false;
   if (iForma != 2) {
    gridNotas.aHeaders[13].lDisplayed  = false;
-  }                  
+  }
   gridNotas.show(document.getElementById('gridNotas'));
   js_getNotas(iForma);
- 
+
 }
 sUrlRPC = "emp4_pagarpagamentoRPC.php";
 function js_getNotas(iForma) {
-   
-  parent.js_divCarregando("Aguarde, consultando Movimentos.","msgBox"); 
+
+  parent.js_divCarregando("Aguarde, consultando Movimentos.","msgBox");
   var oParam           = new Object();
   oParam.iOrdemIni     = parent.$F('e50_codord');
   oParam.iOrdemFim     = parent.$F('e50_codord02');
@@ -201,45 +200,45 @@ function js_getNotas(iForma) {
   oParam.dtChequeFim   = parent.$F('dtchequefim');
   oParam.iCtaPagadora  = parent.$F('e83_codtipo');
   oParam.iNumCgm       = parent.$F('z01_numcgm');
-  oParam.iRecurso      = parent.$F('o15_codigo');
+  oParam.fonteRecurso      = parent.$F('o15_recurso');
   oParam.sNumeroCheque = parent.$F('cheque');
   oParam.sDtAut        = parent.$F('e42_dtpagamento');
   oParam.iOPauxiliar   = parent.$F('e42_sequencial');
   oParam.iForma        = iForma;
   var sParam           = js_objectToJson(oParam);
-  var sJson = '{"exec":"getNotas","params":['+sParam+']}'; 
+  var sJson = '{"exec":"getNotas","params":['+sParam+']}';
   var oAjax   = new Ajax.Request(
-                         sUrlRPC, 
+                         sUrlRPC,
                          {
-                          method    : 'post', 
-                          parameters: 'json='+sJson, 
+                          method    : 'post',
+                          parameters: 'json='+sJson,
                           onComplete: js_retornoGetNotas
                           }
                         );
 }
 
 function js_retornoGetNotas(oAjax) {
-  
+
   parent.js_removeObj("msgBox");
-  var oResponse = eval("("+oAjax.responseText+")");
+  var oResponse = JSON.parse(oAjax.responseText);
   gridNotas.clearAll(true);
   var iRowAtiva = 0;
   $('gridNotasstatus').innerHTML = "";
   if (oResponse.status == 1) {
 
     for (var iNotas = 0; iNotas < oResponse.aNotasLiquidacao.length; iNotas++) {
-     
+
       with (oResponse.aNotasLiquidacao[iNotas]) {
-         
+
          var nValor = 0;
-         if (iForma == 1 || iForma == 4) { 
+         if (iForma == 1 || iForma == 4) {
            if (e81_valor == 0) {
              nValor = valorretencao;
            } else {
-             nValor   =  e81_valor - valorretencao;
+             nValor   =  (e81_valor - valorretencao - e53_vlranu);
            }
          } else {
-           nValor = e91_valor;       
+           nValor = e91_valor;
          }
          var lDisabled = false;
          var sDisabled = "";
@@ -248,12 +247,12 @@ function js_retornoGetNotas(oAjax) {
          aLinha[1]   = e91_codcheque;
          aLinha[2]   = "<a onclick='js_JanelaAutomatica(\"empempenho\","+e60_numemp+");return false;' href='#'>";
          aLinha[2]  += e60_codemp+"/"+e60_anousu+"</a>";
-         aLinha[3]    = o15_codigo,
+         aLinha[3]    = o15_recurso,
          aLinha[4]   = e50_codord ;
          aLinha[5]   = e83_conta+"<span> - "+e83_descr.urlDecode().substring(0,15)+"</span>";
          aLinha[6]   = z01_nome.urlDecode().substring(0,30);
          aLinha[7]   = js_formatar(e50_data,'d');
-         aLinha[8]   = js_formatar(e81_valor,"f");
+         aLinha[8]   = js_formatar(e81_valor ,"f");
          aLinha[9]   = js_formatar(valorretencao,"f");
          aLinha[10]  = js_formatar(nValor,"f");
          aLinha[11]  = "<div style='overflow:hidden;width:50px'>";
@@ -272,7 +271,7 @@ function js_retornoGetNotas(oAjax) {
            gridNotas.aRows[iRowAtiva].setClassName("soRetencao");
          }
          iRowAtiva++;
-          
+
       }
     }
     gridNotas.renderRows();
@@ -294,16 +293,16 @@ function js_createComboContasPag(iCodMov, aContas, iContaConfig, lDisabled) {
   sCombo     += " onchange='js_getSaldos(this)' "+sDisabled+">";
   sCombo     += "<option value=''>Selecione</option>";
   if (aContas != null) {
-    
+
     for (var i = 0; i < aContas.length; i++) {
-       
+
       var sSelected = "";
       if (iContaConfig == aContas[i].e83_codtipo) {
         sSelected = " selected ";
-      } 
+      }
       var sDescrConta =  aContas[i].e83_conta+" - "+aContas[i].e83_descr.urlDecode()+" - "+aContas[i].c61_codigo;
       sCombo += "<option "+sSelected+" value = "+aContas[i].e83_codtipo+">"+sDescrConta+"</option>";
-      
+
     }
   }
   sCombo  += "</select>";
@@ -312,8 +311,8 @@ function js_createComboContasPag(iCodMov, aContas, iContaConfig, lDisabled) {
 function js_setAjuda(sTexto,lShow) {
 
   if (lShow) {
-  
-    el =  $('gridNotas'); 
+
+    el =  $('gridNotas');
     var x = 0;
     var y = el.offsetHeight;
     while (el.offsetParent && el.tagName.toUpperCase() != 'BODY') {
@@ -329,15 +328,15 @@ function js_setAjuda(sTexto,lShow) {
    $('ajudaItem').style.display = '';
    $('ajudaItem').style.top     = y+10;
    $('ajudaItem').style.left    = x;
-   
+
   } else {
    $('ajudaItem').style.display = 'none';
   }
-  
-  
+
+
 }
 function js_calculaValor(oTextObj, nMaxVal) {
-  
+
   if (new Number(oTextObj.value) > new Number(nMaxVal).toFixed(2)) {
      oTextObj.value  = nMaxVal;
   }
@@ -345,18 +344,18 @@ function js_calculaValor(oTextObj, nMaxVal) {
 
 function js_showHistorico(iCodMov) {
 
-  var el =  $('gridNotas'); 
+  var el =  $('gridNotas');
   var x  = el.scrollWidth/2;
   var y  = el.offsetTop;
-  
-  
+
+
   $('digitarHistorico').style.top     = (y)+"px";
   $('digitarHistorico').style.left    = (x)+"px";
   $('digitarHistorico').style.visibility = 'visible';
   $('historicoAnulacao').value = $('historico'+iCodMov).innerHTML;
   $('historicoAnulacao').focus();
   $('atualizarHistorico').onclick = function() {
-    
+
     $('digitarHistorico').style.visibility ='hidden';
     $('historico'+iCodMov).innerHTML       = $('historicoAnulacao').value;
     $('historicoAnulacao').value           = '';
@@ -364,23 +363,18 @@ function js_showHistorico(iCodMov) {
 }
 
 function js_objectToJson(oObject) {
-  
-   var sJson = oObject.toSource();
-   sJson     = sJson.replace("(","");
-   sJson     = sJson.replace(")","");
-   return sJson;
-   
+  return JSON.stringify(oObject);
 }
 
 function js_pagarEmpenhos() {
 
   var aMovimentos =  gridNotas.getSelection("object");
-  
+
   if (aMovimentos.length == 0) {
-    
+
     alert('Nenhum Movimento Selecionado');
     return false;
-    
+
   }
   oRequisicao             = new Object();
   oRequisicao.exec            = "pagarMovimento";
@@ -388,35 +382,35 @@ function js_pagarEmpenhos() {
   var lMostraMsgErroRetencao  = false;
   var sMsgRetencaoMesAnterior = "Atenção:\n";
   var sVirgula                = "";
-  
+
   for (var i = 0; i < aMovimentos.length; i++) {
-  
-    var oMovimento           = new Object(); 
+
+    var oMovimento           = new Object();
     oMovimento.iCodMov       = aMovimentos[i].aCells[0].getValue();
     oMovimento.sHistorico    = encodeURIComponent($('historico'+oMovimento.iCodMov).innerHTML);
     oMovimento.iNotaLiq      = aMovimentos[i].aCells[5].getValue();
     var lRetencaoMesAnterior = $('validarretencao'+oMovimento.iCodMov).innerHTML;
-    
+
     if (js_strToFloat(aMovimentos[i].aCells[9].getValue()) == 0 ) {
       oMovimento.nValorPagar = 0;
     } else {
      oMovimento.nValorPagar  = js_strToFloat(aMovimentos[i].aCells[11].getValue()).valueOf();
     }
-    
+
     if (lRetencaoMesAnterior == "true") {
-    
+
       lMostraMsgErroRetencao   = true;
       sMsgRetencaoMesAnterior += sVirgula+"Movimento "+oMovimento.iCodMov+" da OP ";
       sMsgRetencaoMesAnterior += oMovimento.iNotaLiq+" possui retenções configuradas em meses anteriores.\n";
       sVirgula = ", ";
-      
+
     }
-    
+
     oMovimento.iConta       = aMovimentos[i].aCells[6].getValue();
     oMovimento.iCodCheque   = aMovimentos[i].aCells[2].getValue().trim();
     oMovimento.iCheque      = new Number(aMovimentos[i].aCells[13].getValue()).valueOf();
     oRequisicao.aMovimentos.push(oMovimento);
-    
+
   }
   /**
      * verificamos o parametro para controle de retencões em meses anteriores.
@@ -426,7 +420,7 @@ function js_pagarEmpenhos() {
      */
   var sMsgConfirmaPagamento = "Deseja realmente efetuar pagamento para os movimentos selecionados?";
   if (iTipoControleRetencaoMesAnterior == 1) {
-      
+
     if (lMostraMsgErroRetencao) {
 
       sMsgConfirmaPagamento  =  sMsgRetencaoMesAnterior;
@@ -434,112 +428,121 @@ function js_pagarEmpenhos() {
       sMsgConfirmaPagamento += "Deseja realmente efetuar pagamento para os movimentos selecionados?";
       if (!confirm(sMsgConfirmaPagamento)) {
          return false;
-      }        
+      }
     }
   } else if (iTipoControleRetencaoMesAnterior == 2) {
-    
+
     if (lMostraMsgErroRetencao) {
-        
+
       sMsgConfirmaPagamento    =  sMsgRetencaoMesAnterior;
       sMsgRetencaoMesAnterior += "Recalcule as Retenções do movimento.";
       alert(sMsgRetencaoMesAnterior);
       return false;
-        
+
     }
   }
-  
+
   parent.js_divCarregando("Aguarde, pagando movimentos.","msgBox")
   var sJson = js_objectToJson(oRequisicao);
   var oAjax = new Ajax.Request(
-                         sUrlRPC, 
+                         sUrlRPC,
                          {
-                          method    : 'post', 
-                          parameters: 'json='+sJson, 
+                          method    : 'post',
+                          parameters: 'json='+sJson,
                           onComplete: js_retornoPagarEmpenho
                           }
-                        );  
+                        );
   return false;
 }
 
 function js_retornoPagarEmpenho(oAjax) {
-  
+
   parent.js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
-  
+  var oRetorno = JSON.parse(oAjax.responseText);
+
   if (oRetorno.iItipoAutent != 3 && oRetorno.status == 1) {
 
     if ($('autenticar').checked) {
-      
+
       aAutenticacoes = oRetorno.aAutenticacoes;
       iIndice     = 0;
       js_autenticar(oRetorno.aAutenticacoes[0],false);
+
     } else {
-      
+
       js_emiterelpagamento();
       js_emiteRecibo();
       js_getNotas(iForma);
-            
+
     }
-    
+
+    if (oRetorno.sSlipsGeradoAutomatico != "") {
+      if ( confirm("Foram Gerados Slips para as Retenções, Deseja Imprimir ?") ) {
+        window.open('cai1_slip003.php?numslip=' + oRetorno.sSlipsGeradoAutomatico, '', 'location=0');
+    }
+
+}
+
+
   } else {
    alert(oRetorno.message.urlDecode());
   }
 
 }
 function js_autenticar(oAutentica, lReautentica) {
-    
-    var sPalavra = 'Autenticar'; 
+
+    var sPalavra = 'Autenticar';
     if (lReautentica) {
       var sPalavra = "Autenticar novamente";
     }
     if (confirm(sPalavra+' a Nota '+oAutentica.iNota+'?')) {
-    
+
       var oRequisicaoAut      = new Object();
       oRequisicaoAut.exec     = "Autenticar";
       oRequisicaoAut.sString  = oAutentica.sAutentica;
       var sJson            = js_objectToJson(oRequisicaoAut);
       var oAjax = new Ajax.Request(
-                         sUrlRPC, 
+                         sUrlRPC,
                          {
-                          method    : 'post', 
-                          parameters: 'json='+sJson, 
+                          method    : 'post',
+                          parameters: 'json='+sJson,
                           onComplete: js_retornoAutenticacao
                           }
                         );
-      
+
     } else {
-      
+
       iIndice++;
       if (aAutenticacoes[iIndice]) {
         js_autenticar(aAutenticacoes[iIndice],false);
       } else {
-       
+
         js_emiterelpagamento();
         js_emiteRecibo();
         js_getNotas(iForma);
-        
+
       }
-    } 
-  
+    }
+
 }
 function js_retornoAutenticacao(oAjax) {
-  
-  var oRetorno = eval("("+oAjax.responseText+")");
+
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
-    
+
     js_autenticar(aAutenticacoes[iIndice], true);
-    
+
   } else {
-  
+
     js_emiterelpagamento();
     js_emiteRecibo();
     js_getNotas(iForma);
-    
+
   }
 }
 
 function js_emiterelpagamento() {
-  
+
   var sData = "<?=date("Y-m-d",db_getsession("DB_datausu")) ?>";
   if ($('emiterelatorio').checked) {
     jan = window.open('cai2_emppago002.php?filtraemp=0&quebra=s&ordem=a&cod=&data='+sData+'&data1='+sData+'&z01_numcgm=',
@@ -551,18 +554,18 @@ function js_emiterelpagamento() {
 function js_emiteRecibo() {
 
   var aListaRequisicao = "";
-  var sVirgula = ""; 
+  var sVirgula = "";
   for (var i =  0;  i < oRequisicao.aMovimentos.length; i++) {
-    
+
     with (oRequisicao.aMovimentos[i]) {
-    
+
       aListaRequisicao += sVirgula+iCodMov;
       sVirgula = ",";
-      
+
     }
   }
   if ($('emiterecibo').checked) {
-     jan = window.open('emp4_emitereciboretencao002?listaordens='+aListaRequisicao,
+     jan = window.open('emp4_emitereciboretencao002.php?listaordens='+aListaRequisicao,
                       '',
                       'height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   }

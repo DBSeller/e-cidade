@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -420,34 +420,11 @@ class cl_divida {
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
-     $resaco = $this->sql_record($this->sql_query_file($this->v01_coddiv));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,508,'$this->v01_coddiv','I')");
-       $resac = db_query("insert into db_acount values($acount,96,508,'','".AddSlashes(pg_result($resaco,0,'v01_coddiv'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,509,'','".AddSlashes(pg_result($resaco,0,'v01_numcgm'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,510,'','".AddSlashes(pg_result($resaco,0,'v01_dtinsc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,511,'','".AddSlashes(pg_result($resaco,0,'v01_exerc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,512,'','".AddSlashes(pg_result($resaco,0,'v01_numpre'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,513,'','".AddSlashes(pg_result($resaco,0,'v01_numpar'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,514,'','".AddSlashes(pg_result($resaco,0,'v01_numtot'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,516,'','".AddSlashes(pg_result($resaco,0,'v01_vlrhis'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,517,'','".AddSlashes(pg_result($resaco,0,'v01_proced'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,519,'','".AddSlashes(pg_result($resaco,0,'v01_livro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,520,'','".AddSlashes(pg_result($resaco,0,'v01_folha'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,521,'','".AddSlashes(pg_result($resaco,0,'v01_dtvenc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,522,'','".AddSlashes(pg_result($resaco,0,'v01_dtoper'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,523,'','".AddSlashes(pg_result($resaco,0,'v01_valor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,518,'','".AddSlashes(pg_result($resaco,0,'v01_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,515,'','".AddSlashes(pg_result($resaco,0,'v01_numdig'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,10572,'','".AddSlashes(pg_result($resaco,0,'v01_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,15195,'','".AddSlashes(pg_result($resaco,0,'v01_dtinclusao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,18801,'','".AddSlashes(pg_result($resaco,0,'v01_processo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,18802,'','".AddSlashes(pg_result($resaco,0,'v01_titular'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,96,18803,'','".AddSlashes(pg_result($resaco,0,'v01_dtprocesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-     }
+     
+     $sql = $this->sql_account($this);
+
+     db_query($sql);
+
      return true;
    }
    // funcao para alteracao
@@ -1023,7 +1000,8 @@ class cl_divida {
      $sql .= "      inner join histcalc        on  histcalc.k01_codigo = proced.k00_hist";
      $sql .= "      inner join tabrec          on  tabrec.k02_codigo = proced.v03_receit";
      $sql .= "      inner join db_config  as a on  a.codigo = proced.v03_instit";
-     $sql .= "      left join tipoproced      on  tipoproced.v07_sequencial = proced.v03_codigo";
+     $sql .= "      left join tipoproced       on  tipoproced.v07_sequencial = proced.v03_codigo";
+     $sql .= "      left join termoinscrreg    on  termoinscrreg.v93_coddiv = v01_coddiv";
      $sql2 = "";
      if($dbwhere==""){
        if($v01_coddiv!=null ){
@@ -1432,7 +1410,7 @@ class cl_divida {
 
       case 2 : //iss fixo        isscalc
 
-        require_once("classes/db_isscalc_classe.php");
+        require_once(modification("classes/db_isscalc_classe.php"));
         $oDaoIssCalc   = db_utils::getDao("isscalc");
         $sSqlExercicio = $oDaoIssCalc->sql_query_file(null, null, null, null, $iNumpre, "q01_anousu as exercicio");
       break;
@@ -1440,7 +1418,7 @@ class cl_divida {
 
       case 3 : // iss variavel   issvar
 
-        require_once("classes/db_issvar_classe.php");
+        require_once(modification("classes/db_issvar_classe.php"));
         $oDaoIssVar = new cl_issvar();
         $sSqlExercicio = $oDaoIssVar->sql_query_file(null, "q05_ano as exercicio", null, "q05_numpre = {$iNumpre}");
       break;
@@ -1448,7 +1426,7 @@ class cl_divida {
 
       case 7 : //diversos        diversos
 
-        require_once("classes/db_diversos_classe.php");
+        require_once(modification("classes/db_diversos_classe.php"));
         $oDaoDiversos  = new cl_diversos;
         $sSqlExercicio = $oDaoDiversos->sql_query_file(null, "dv05_exerc as exercicio", null, "dv05_numpre = {$iNumpre}");
       break;
@@ -1456,7 +1434,7 @@ class cl_divida {
 
       case 9 : //alvara          isscalc
 
-        require_once("classes/db_isscalc_classe.php");
+        require_once(modification("classes/db_isscalc_classe.php"));
         $oDaoIssCalc   = db_utils::getDao("isscalc");
         $sSqlExercicio = $oDaoIssCalc->sql_query_file(null, null, null, null, $iNumpre, "q01_anousu as exercicio");
       break;
@@ -1464,7 +1442,7 @@ class cl_divida {
 
       case 19 : //vistorias      vistoria
 
-        require_once("classes/db_vistorianumpre_classe.php");
+        require_once(modification("classes/db_vistorianumpre_classe.php"));
         $oDaoVistoria  = new cl_vistorianumpre;
         $sSqlExercicio = $oDaoVistoria->sql_query(null, "extract (year from y70_data) as exercicio", null, "y69_numpre = {$iNumpre}") ;
       break;
@@ -2612,5 +2590,60 @@ class cl_divida {
     return $aDados;
   }
 
+  public function sql_account($divida)
+  {
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+       $acount = pg_result($resac, 0, 0);
+
+       $ano = db_getsession('DB_datausu');
+       $usuario = db_getsession('DB_id_usuario');
+
+       $codigoDivida = is_null($divida->v01_coddiv) ? "currval('divida_v01_coddiv_seq')" : "'{AddSlashes($divida->v01_coddiv)}'";
+
+       $sql = "
+          insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ");
+          insert into db_acountkey values($acount, 508, '{$divida->v01_coddiv}', 'I');
+
+          insert into db_acount values
+            ($acount,96,508,''," . $codigoDivida . ",{$ano}, {$usuario}),
+            ($acount,96,509,'','" . AddSlashes($divida->v01_numcgm) . "',{$ano}, {$usuario}),
+            ($acount,96,510,'','" . AddSlashes($divida->v01_dtinsc) . "',{$ano}, {$usuario}),
+            ($acount,96,511,'','" . AddSlashes($divida->v01_exerc) . "',{$ano}, {$usuario}),
+            ($acount,96,512,'','" . AddSlashes($divida->v01_numpre) . "',{$ano}, {$usuario}),
+            ($acount,96,513,'','" . AddSlashes($divida->v01_numpar) . "',{$ano}, {$usuario}),
+            ($acount,96,514,'','" . AddSlashes($divida->v01_numtot) . "',{$ano}, {$usuario}),
+            ($acount,96,516,'','" . AddSlashes($divida->v01_vlrhis) . "',{$ano}, {$usuario}),
+            ($acount,96,517,'','" . AddSlashes($divida->v01_proced) . "',{$ano}, {$usuario}),
+            ($acount,96,519,'','" . AddSlashes($divida->v01_livro) . "',{$ano}, {$usuario}),
+            ($acount,96,520,'','" . AddSlashes($divida->v01_folha) . "',{$ano}, {$usuario}),
+            ($acount,96,521,'','" . AddSlashes($divida->v01_dtvenc) . "',{$ano}, {$usuario}),
+            ($acount,96,522,'','" . AddSlashes($divida->v01_dtoper) . "',{$ano}, {$usuario}),
+            ($acount,96,523,'','" . AddSlashes($divida->v01_valor) . "',{$ano}, {$usuario}),
+            ($acount,96,518,'','" . AddSlashes($divida->v01_obs) . "',{$ano}, {$usuario}),
+            ($acount,96,515,'','" . AddSlashes($divida->v01_numdig) . "',{$ano}, {$usuario}),
+            ($acount,96,10572,'','" . AddSlashes($divida->v01_instit) . "',{$ano}, {$usuario}),
+            ($acount,96,15195,'','" . AddSlashes($divida->v01_dtinclusao) . "',{$ano}, {$usuario}),
+            ($acount,96,18801,'','" . AddSlashes($divida->v01_processo) . "',{$ano}, {$usuario}),
+            ($acount,96,18802,'','" . AddSlashes($divida->v01_titular) . "',{$ano}, {$usuario}),
+            ($acount,96,18803,'','" . AddSlashes($divida->v01_dtprocesso) . "',{$ano}, {$usuario});
+       ";
+
+       return $sql;
+       
+   }
+
+   public function sql_query_auto($campos = "*", $where)
+   {
+       $sqlAutoNumpre  = " select distinct k00_auto, v01_numpre ";
+       $sqlAutoNumpre .= "   from divida ";
+       $sqlAutoNumpre .= "        inner join divold on k10_coddiv = v01_coddiv ";
+       $sqlAutoNumpre .= "        inner join diversos on k10_numpre = dv05_numpre ";
+       $sqlAutoNumpre .= "        inner join diverimportaold on dv05_coddiver = dv13_diversos ";
+       $sqlAutoNumpre .= "        inner join arreauto on arreauto.k00_numpre = dv13_numpre ";
+
+       $sqlAutoNumpre .= "  where $where";
+
+       return $sqlAutoNumpre;
+   }
 }
 ?>

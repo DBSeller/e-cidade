@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/impcarne.php");
-include("fpdf151/scpdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/impcarne.php"));
+include(modification("fpdf151/scpdf.php"));
+include(modification("libs/db_sql.php"));
 
 $classinatura = new cl_assinatura;
 
@@ -39,7 +39,7 @@ db_postmemory($HTTP_POST_VARS);
 //historico anular   text     Historico
 
 $sqlpref = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 db_fieldsmemory($resultpref,0);
 
 if(isset($e60_numemp) && $e60_numemp != ''){
@@ -65,7 +65,7 @@ $sqlemp = "
 
  //echo "<br>".$sqlemp; exit;
 
-$result = pg_exec($sqlemp);	
+$result = db_query($sqlemp);	
 // db_criatabela($result);exit;
 
 if (pg_numrows($result)==0){
@@ -114,7 +114,7 @@ $pdf1->assinatura3      = $ass_sec;
 $pdf1->assinatura4      = $ass_pref;
 
 $pdf1->imprime();
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf1->objpdf->Output();
 
    

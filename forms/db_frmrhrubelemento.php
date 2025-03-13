@@ -26,7 +26,7 @@
  */
 
 //MODULO: pessoal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrhrubelemento->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -149,10 +149,10 @@ function js_cancelar(){
 }
 function js_pesquisarh23_rubric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhrubelemento','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarhrubricas1|rh27_rubric|rh27_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhrubelemento','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarhrubricas1|rh27_rubric|rh27_descr','Pesquisa',true,'0');
   }else{
     if(document.form1.rh23_rubric.value != ''){ 
-      js_OpenJanelaIframe('top.corpo.iframe_rhrubelemento','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh23_rubric.value+'&funcao_js=parent.js_mostrarhrubricas','Pesquisa',false,0);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhrubelemento','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh23_rubric.value+'&funcao_js=parent.js_mostrarhrubricas','Pesquisa',false,0);
     }else{
       document.form1.rh27_descr.value = ''; 
     }
@@ -172,10 +172,10 @@ function js_mostrarhrubricas1(chave1,chave2){
 }
 function js_pesquisarh23_codele(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhrubelemento','db_iframe_orcelemento','func_orcelementosub.php?funcao_js=parent.js_mostraorcelemento1|o56_codele|o56_elemento','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhrubelemento','db_iframe_orcelemento','func_orcelementosub.php?funcao_js=parent.js_mostraorcelemento1|o56_codele|o56_elemento','Pesquisa',true,'0');
   }else{
     if(document.form1.rh23_codele.value != ''){ 
-      js_OpenJanelaIframe('top.corpo.iframe_rhrubelemento','db_iframe_orcelemento','func_orcelementosub.php?pesquisa_chave='+document.form1.rh23_codele.value+'&funcao_js=parent.js_mostraorcelemento','Pesquisa',false,0);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhrubelemento','db_iframe_orcelemento','func_orcelementosub.php?pesquisa_chave='+document.form1.rh23_codele.value+'&funcao_js=parent.js_mostraorcelemento','Pesquisa',false,0);
     }else{
       document.form1.o56_elemento.value = ''; 
     }

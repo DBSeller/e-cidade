@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "empresto.e91_anousu,empresto.e91_numemp,empresto.e91_vlremp,empresto.e91_vlranu,empresto.e91_vlrliq,empresto.e91_vlrpag,empresto.e91_elemento,empresto.e91_recurso,empresto.e91_codtipo,empresto.e91_anousu as db_e91_anousu";
+$campos = "empresto.e91_numemp,empresto.e91_vlremp,empresto.e91_vlranu,empresto.e91_vlrliq,empresto.e91_vlrpag,empresto.e91_elemento,empresto.e91_recurso,empresto.e91_codtipo,empresto.e91_rpcorreto,empresto.e91_anousu as db_e91_anousu";
 ?>

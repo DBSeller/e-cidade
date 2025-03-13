@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/smtp.class.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_tarefausu_classe.php");
-include("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefa_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/smtp.class.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_tarefausu_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cltarefausu   = new cl_tarefausu;
@@ -149,7 +149,7 @@ if(isset($incluir)){
 				$cltarefaenvol->at45_perc       = $at42_perc;
 				$cltarefaenvol->at45_sequencial = $at45_sequencial;
 				$cltarefaenvol->alterar($at45_sequencial);
-				echo "<script>top.corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at42_tarefa."'</script>";
+				echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at42_tarefa."'</script>";
 			}
 	    }
 	}
@@ -190,7 +190,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmtarefausu.php");
+	include(modification("forms/db_frmtarefausu.php"));
 	?>
     </center>
 	</td>

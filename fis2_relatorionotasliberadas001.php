@@ -40,13 +40,13 @@
 
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_aidof_classe.php");
-include("classes/db_issbase_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_aidof_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -132,10 +132,10 @@ function js_consultaNotasLiberadas(){
 
 function js_pesquisaq02_inscr(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_q02_inscr','func_issbase.php?funcao_js=parent.js_mostraq02_inscr1|q02_inscr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_q02_inscr','func_issbase.php?funcao_js=parent.js_mostraq02_inscr1|q02_inscr','Pesquisa',true);
   }else{
      if(document.form1.q02_inscr.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_q02_inscr','func_issbase.php?pesquisa_chave='+document.form1.q02_inscr.value+'&funcao_js=parent.js_mostraq02_inscr','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_q02_inscr','func_issbase.php?pesquisa_chave='+document.form1.q02_inscr.value+'&funcao_js=parent.js_mostraq02_inscr','Pesquisa',false);
      }else{
        document.form1.q02_inscr.value = '';
      }

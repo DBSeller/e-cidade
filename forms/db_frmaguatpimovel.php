@@ -58,7 +58,7 @@ db_input('x07_nometpimovel',50,$Ix07_nometpimovel,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguatpimovel','func_aguatpimovel.php?funcao_js=parent.js_preenchepesquisa|x07_codtpimovel','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguatpimovel','func_aguatpimovel.php?funcao_js=parent.js_preenchepesquisa|x07_codtpimovel','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguatpimovel.hide();

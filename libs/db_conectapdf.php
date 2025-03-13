@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,14 +24,8 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-if(!session_id())
-  session_start();
-if(!session_is_registered("DB_login") || !session_is_registered("DB_id_usuario")) {
-  session_destroy();
-  header("Location: db_erros.php?db_erro=Você esta acessando uma página que não possui sessão aberta com o servidor. Contate Administrador.");
-  exit;
-}
-require("db_conn.php");
+
+require(modification("libs/db_conn.php"));
 if(!($conn = pg_connect("host=$DB_SERVIDOR dbname=$DB_BASE port=$DB_PORTA user=$DB_USUARIO password=$DB_SENHA"))) {
   $pdf->Cell(200,4,"Erro ao conectar","LRBT",1,"C",0);
   exit;

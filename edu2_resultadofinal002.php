@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-include("fpdf151/pdf.php");
-include("classes/db_turma_classe.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_regenciaperiodo_classe.php");
+require(modification("libs/db_stdlibwebseller.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_regenciaperiodo_classe.php"));
 $resultedu= eduparametros(db_getsession("DB_coddepto"));
 $clturma = new cl_turma;
 $clmatricula = new cl_matricula;
@@ -167,7 +167,7 @@ for($x=0;$x<$clturma->numrows;$x++){
            AND ed95_i_regencia in ($reg_pagina)
            ORDER BY ed95_i_regencia
          ";
-  $result5 = pg_query($sql5);
+  $result5 = db_query($sql5);
   $linhas5 = pg_num_rows($result5);
   $cont3 = 0;
   if($linhas5>0){
@@ -206,7 +206,7 @@ for($x=0;$x<$clturma->numrows;$x++){
            AND ed95_i_regencia in (select ed59_i_codigo from regencia where ed59_i_turma = $ed57_i_codigo)
            AND ed74_c_resultadofinal = 'R'
           ";
-  $result6 = pg_query($sql6);
+  $result6 = db_query($sql6);
   $linhas6 = pg_num_rows($result6);
   //db_criatabela($result4);
   if($linhas6==0){
@@ -459,7 +459,7 @@ for($x=0;$x<$clturma->numrows;$x++){
             AND ed95_i_regencia in ($reg_pagina)
             ORDER BY ed95_i_regencia
           ";
-   $result5 = pg_query($sql5);
+   $result5 = db_query($sql5);
    $linhas5 = pg_num_rows($result5);
    $cont3 = 0;
    if($linhas5>0){
@@ -498,7 +498,7 @@ for($x=0;$x<$clturma->numrows;$x++){
             AND ed95_i_regencia in (select ed59_i_codigo from regencia where ed59_i_turma = $ed57_i_codigo)
             AND ed74_c_resultadofinal = 'R'
            ";
-   $result6 = pg_query($sql6);
+   $result6 = db_query($sql6);
    $linhas6 = pg_num_rows($result6);
    //db_criatabela($result4);
    if($linhas6==0){

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -130,7 +130,7 @@ function js_submit(){
            <?=$Lp58_codproc;?>
           </td>
           <td>
-          <?db_input("p58_codproc",15,$Ip58_codproc,true,"text",3);?>
+          <?db_input("p58_codproc",25,$Ip58_codproc,true,"text",3);?>
           </td>
         </tr>
         <tr>
@@ -138,7 +138,7 @@ function js_submit(){
            <?=$Lp58_numero;?>
           </td>
           <td>
-          <?db_input("p58_numero",15,$Ip58_numero,true,"text",3);?>
+          <?db_input("p58_numero",25,$Ip58_numero,true,"text",3);?>
           </td>
           <td title="<?=$Tp58_codigo?>" align='left'>
           <?=$Lp58_codigo?>
@@ -225,15 +225,6 @@ function js_submit(){
           </td>
         </tr>
 
-        <tr<?php if (count($aTipos) < 2) { echo ' style="display:none;"'; } ?>>
-          <td nowrap title="<?php echo $Tp78_tipodespacho; ?>" >
-            <?php echo $Lp78_tipodespacho; ?>
-          </td>
-          <td>
-            <?php db_select('p78_tipodespacho', $aTipos, true, 1, ""); ?>
-          </td>
-        </tr>
-
         <tr>
           <td nowrap title="<?=@$Tp78_despacho?>" colspan="4" >
           <fieldset>
@@ -300,7 +291,7 @@ function js_submit(){
       }
       ?>
       <input name="incluir" type="submit" id="db_opcao" value="Incluir" <?=($db_botao==false?"disabled":"") ?> onclick='return js_submit();' >
-      <input name="voltar" type="button" id="voltar" value="Voltar" onclick='top.corpo.location.href="pro4_procandamint001.php"' >
+      <input name="voltar" type="button" id="voltar" value="Voltar" onclick='(window.CurrentWindow || parent.CurrentWindow).corpo.location.href="pro4_procandamint001.php"' >
       <?
       if (isset($incluir) && $sqlerro == false){
         ?>

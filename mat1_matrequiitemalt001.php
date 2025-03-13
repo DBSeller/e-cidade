@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("std/db_stdClass.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matrequiitem_classe.php");
-include("classes/db_matrequi_classe.php");
-include("classes/db_db_almox_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matrequiitem_classe.php"));
+include(modification("classes/db_matrequi_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -55,11 +55,11 @@ if (isset($m40_codigo)&&trim($m40_codigo)!=""){
 
   $res_matrequi = $clmatrequi->sql_record($clmatrequi->sql_query_file($m40_codigo,"m40_auto"));
 
-  if ($clmatrequi->numrows > 0){
+  if ($clmatrequi->numrows > 0) {
 
     db_fieldsmemory($res_matrequi,0);
 
-    if ($m40_auto == "t"){
+    if ($m40_auto == "t") {
       $db_opcao = 3;
     }
   }
@@ -67,13 +67,15 @@ if (isset($m40_codigo)&&trim($m40_codigo)!=""){
 
 $db_botao = true;
 
-if ( isset($incluir) ) {
+if (isset($incluir)) {
 
-   $sqlerro=false;
+   $sqlerro = false;
    db_inicio_transacao();
-
-   $result_mat = $clmatrequiitem->sql_record($clmatrequiitem->sql_query(null,'*',null,"m41_codmatrequi = $m40_codigo and m41_codmatmater = $m41_codmatmater "));
-   if ( $clmatrequiitem->numrows > 0 ) {
+   
+   $where = "m41_codmatrequi = $m40_codigo and m41_codmatmater = $m41_codmatmater ";
+   $sql = $clmatrequiitem->sql_query(null,'*',null, $where);
+   $result_mat = $clmatrequiitem->sql_record($sql);
+   if ($clmatrequiitem->numrows > 0) {
 
      $erro_msg        = "Material ja incluido nesta requisicao!!";
      $m41_codmatmater = "";
@@ -81,9 +83,9 @@ if ( isset($incluir) ) {
      $sqlerro         = true;
   }
 
-	 if ($sqlerro==false){
+	 if ($sqlerro == false) { 
 
-		 $clmatrequiitem->m41_codunid=$codunid;
+		 $clmatrequiitem->m41_codunid = $codunid;
 		 $clmatrequiitem->m41_codmatrequi=$m40_codigo;
 		 $clmatrequiitem->incluir(null);
 		 $erro_msg=$clmatrequiitem->erro_msg;
@@ -91,7 +93,6 @@ if ( isset($incluir) ) {
 			 $sqlerro=true;
 		 }
 	 }
-
 	 if (!$sqlerro) {
 
 		 if (isset($cc08_sequencial) && $cc08_sequencial != "") {
@@ -111,7 +112,7 @@ if ( isset($incluir) ) {
 
   db_fim_transacao($sqlerro);
 
-} elseif ( isset($alterar) ) {
+} elseif (isset($alterar)) {
   
   $sqlerro=false;
   db_inicio_transacao();
@@ -193,7 +194,7 @@ if ( !empty($m41_codigo) ) {
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
-			<?php include("forms/db_frmmatrequiitemalt.php"); ?>
+			<?php include(modification("forms/db_frmmatrequiitemalt.php")); ?>
     </center>
   </td>
   </tr>

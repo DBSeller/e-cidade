@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_prontuarios_classe.php");
-include("classes/db_unidades_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_prontuarios_classe.php"));
+include(modification("classes/db_unidades_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $clprontuarios = new cl_prontuarios;
@@ -43,37 +43,40 @@ $ordercid = @trim($ordercid);
 $orderpac = @trim($orderpac);
 $posto = @$posto;
 //Monta SQL
- $sql = "SELECT count(sd70_c_cid),
-               sd70_c_cid,
-               sd70_c_nome
-         FROM prontcid
-        INNER JOIN prontuarios 	on prontuarios.sd24_i_codigo = prontcid.sd55_i_prontuario
-        INNER JOIN unidades    	on unidades.sd02_i_codigo = prontuarios.sd24_i_unidade
-        INNER JOIN db_depart   	on db_depart.coddepto = unidades.sd02_i_codigo
-        INNER JOIN sau_cid     	on sau_cid.sd70_i_codigo = prontcid.sd55_i_cid
-        INNER JOIN cgs    		on cgs.z01_i_numcgs = prontuarios.sd24_i_numcgs
-         LEFT JOIN cgs_cgm 		on cgs_cgm.z01_i_cgscgm = cgs.z01_i_numcgs
-         LEFT JOIN cgm     		on cgm.z01_numcgm       = cgs_cgm.z01_i_numcgm
-         LEFT JOIN cgs_und 		on cgs_und.z01_i_cgsund = cgs.z01_i_numcgs
-        INNER JOIN prontproced 	on prontproced.sd29_i_prontuario = prontuarios.sd24_i_codigo
-        WHERE prontproced.sd29_d_data BETWEEN '$data1' AND '$data2'
-        ";
-        if($posto != ""){
-          $sql.="AND unidades.sd02_i_codigo = $posto ";
-        }
-        if($bairro != ""){
-          $sql.="AND (trim(z01_bairro) = '$bairro' OR trim(z01_v_bairro) = '$bairro') ";
-        }
-        if($cid != ""){
-          $sql.="AND sau_cid.sd70_c_cid = '$cid' ";
-        }
-        $sql .= "
-        GROUP BY sd70_c_cid,
-                 sd70_c_nome
-        ORDER BY $ordercid
-       ";
 
-$query = pg_query($sql);
+$where = [];
+$where[] = "prontproced.sd29_d_data BETWEEN '{$data1}' AND '{$data2}'";
+if($posto != ""){
+  $where[] = "unidades.sd02_i_codigo = {$posto}";
+}
+if($bairro != ""){
+  $where[] = "(trim(z01_bairro) = '{$bairro}' OR trim(z01_v_bairro) = '{$bairro}')";
+}
+if($cid != ""){
+  $where[] = "sau_cid.sd70_c_cid = '{$cid}'";
+}
+
+$where = implode(' AND ', $where);
+$sql = "SELECT 
+    count(sd70_c_cid),
+    sd70_c_cid,
+    sd70_c_nome
+  FROM prontprocedcid
+  INNER JOIN prontproced  on prontproced.sd29_i_codigo = prontprocedcid.s135_i_prontproced
+  INNER JOIN prontuarios ON prontuarios.sd24_i_codigo = prontproced.sd29_i_prontuario
+  INNER JOIN unidades ON unidades.sd02_i_codigo = prontuarios.sd24_i_unidade
+  INNER JOIN db_depart ON db_depart.coddepto = unidades.sd02_i_codigo
+  INNER JOIN sau_cid ON sau_cid.sd70_i_codigo = prontprocedcid.s135_i_cid
+  INNER JOIN cgs ON cgs.z01_i_numcgs = prontuarios.sd24_i_numcgs
+  LEFT JOIN cgs_cgm ON cgs_cgm.z01_i_cgscgm = cgs.z01_i_numcgs
+  LEFT JOIN cgm ON cgm.z01_numcgm = cgs_cgm.z01_i_numcgm
+  LEFT JOIN cgs_und ON cgs_und.z01_i_cgsund = cgs.z01_i_numcgs
+  WHERE {$where}
+  GROUP BY sd70_c_cid,
+            sd70_c_nome
+  ORDER BY {$ordercid}";
+
+$query = db_query($sql);
 $linhas = pg_num_rows($query);
 //db_criatabela($query);
 //exit;
@@ -173,49 +176,47 @@ for ($i = 0;$i < $linhas;$i++){
    $pdf->cell(30,4,"Qtd.:",0,1,"L",0);
   }
   $pdf->setfillcolor(200);
-  $sql1 = "SELECT
-                  count(*) as qtdpaciente,
-                  case when cgm.z01_numcgm is null then
-                   z01_v_nome
-                  else
-                   z01_nome
-                  end as z01_nome,
-                  case when cgm.z01_numcgm is null then
-                   z01_v_bairro
-                  else
-                   z01_bairro
-                  end as z01_bairro,
-                  sd02_i_codigo,
-                  descrdepto,
-                  case when cgm.z01_numcgm is null then
-                   z01_d_nasc
-                  else
-                   z01_nasc
-                  end as z01_nasc,
-                  sd29_d_data
-	         FROM prontcid
-	        INNER JOIN prontuarios 	on prontuarios.sd24_i_codigo = prontcid.sd55_i_prontuario
-	        INNER JOIN unidades    	on unidades.sd02_i_codigo = prontuarios.sd24_i_unidade
-	        INNER JOIN db_depart   	on db_depart.coddepto = unidades.sd02_i_codigo
-	        INNER JOIN sau_cid     	on sau_cid.sd70_i_codigo = prontcid.sd55_i_cid
-	        INNER JOIN cgs    		on cgs.z01_i_numcgs = prontuarios.sd24_i_numcgs
-	         LEFT JOIN cgs_cgm 		on cgs_cgm.z01_i_cgscgm = cgs.z01_i_numcgs
-	         LEFT JOIN cgm     		on cgm.z01_numcgm       = cgs_cgm.z01_i_numcgm
-	         LEFT JOIN cgs_und 		on cgs_und.z01_i_cgsund = cgs.z01_i_numcgs
-	        INNER JOIN prontproced 	on prontproced.sd29_i_prontuario = prontuarios.sd24_i_codigo
-            WHERE prontproced.sd29_d_data BETWEEN '$data1' AND '$data2'
-              AND sau_cid.sd70_c_cid = '$Array[1]'";
-           if($posto != ""){
-            $sql1.="AND unidades.sd02_i_codigo = $posto ";
-           }
-           if($bairro != ""){
-            $sql1.="AND (trim(z01_bairro) = '$bairro' OR trim(z01_v_bairro) = '$bairro')";
-           }
-           $sql1.="GROUP BY z01_numcgm,z01_v_nome,z01_nome,z01_d_nasc, z01_nasc, sd29_d_data, z01_v_bairro,z01_bairro,sd02_i_codigo,descrdepto
-                   ORDER BY $orderpac
-                  ";
-                   
-  $result1 = pg_query($sql1);
+  $where = [];
+  $where[] = "prontproced.sd29_d_data BETWEEN '{$data1}' AND '{$data2}'";
+  $where[] = "sau_cid.sd70_c_cid = '{$Array[1]}'";
+  if($posto != ""){
+    $where[] = "unidades.sd02_i_codigo = $posto";
+  }
+  if($bairro != ""){
+    $where[] = "(trim(z01_bairro) = '$bairro' OR trim(z01_v_bairro) = '$bairro')";
+  }
+
+  $where = implode(' AND ', $where);
+
+  $sql1 = "SELECT 
+      count(*) AS qtdpaciente,
+      z01_v_nome AS z01_nome,
+      z01_v_bairro as z01_bairro,
+      sd02_i_codigo,
+      descrdepto,
+      z01_d_nasc as z01_nasc,
+      sd29_d_data
+    FROM prontprocedcid
+    INNER JOIN prontproced  on prontproced.sd29_i_codigo = prontprocedcid.s135_i_prontproced
+    INNER JOIN prontuarios ON prontuarios.sd24_i_codigo = prontproced.sd29_i_prontuario
+    INNER JOIN unidades ON unidades.sd02_i_codigo = prontuarios.sd24_i_unidade
+    INNER JOIN db_depart ON db_depart.coddepto = unidades.sd02_i_codigo
+    INNER JOIN sau_cid ON sau_cid.sd70_i_codigo = prontprocedcid.s135_i_cid
+    INNER JOIN cgs ON cgs.z01_i_numcgs = prontuarios.sd24_i_numcgs
+    INNER JOIN cgs_und ON cgs_und.z01_i_cgsund = cgs.z01_i_numcgs
+    WHERE {$where}
+    GROUP BY z01_i_numcgs,
+             z01_v_nome,
+             z01_v_nome,
+             z01_d_nasc,
+             z01_d_nasc,
+             sd29_d_data,
+             z01_v_bairro,
+             sd02_i_codigo,
+             descrdepto
+    ORDER BY {$orderpac}";
+  
+  $result1 = db_query($sql1);
   $linhas1 = pg_num_rows($result1);
   $cont = 0;
   $cor1 = "1";

@@ -1,57 +1,57 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tarefaparam_classe.php");
-include("classes/db_atendimentomod_classe.php");
-include("classes/db_db_usuclientes_classe.php");
-include("classes/db_atendimento_classe.php");
-include("classes/db_atenditem_classe.php");
-include("classes/db_atenditemmod_classe.php");
-include("classes/db_atenditemusu_classe.php");
-include("classes/db_tecnico_classe.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefa_agenda_classe.php");
-include("classes/db_tarefaproced_classe.php");
-include("classes/db_db_proced_classe.php");
-include("classes/db_tarefausu_classe.php");
-include("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefa_lanc_classe.php");
-include("classes/db_tarefaclientes_classe.php");
-include("classes/db_tarefamodulo_classe.php");
-include("classes/db_tarefamotivo_classe.php");
-include("classes/db_tarefasituacao_classe.php");
-include("classes/db_tarefaitem_classe.php");
-include("classes/db_tarefalog_classe.php");
-include("classes/db_tarefalogsituacao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tarefaparam_classe.php"));
+include(modification("classes/db_atendimentomod_classe.php"));
+include(modification("classes/db_db_usuclientes_classe.php"));
+include(modification("classes/db_atendimento_classe.php"));
+include(modification("classes/db_atenditem_classe.php"));
+include(modification("classes/db_atenditemmod_classe.php"));
+include(modification("classes/db_atenditemusu_classe.php"));
+include(modification("classes/db_tecnico_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefa_agenda_classe.php"));
+include(modification("classes/db_tarefaproced_classe.php"));
+include(modification("classes/db_db_proced_classe.php"));
+include(modification("classes/db_tarefausu_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefa_lanc_classe.php"));
+include(modification("classes/db_tarefaclientes_classe.php"));
+include(modification("classes/db_tarefamodulo_classe.php"));
+include(modification("classes/db_tarefamotivo_classe.php"));
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefaitem_classe.php"));
+include(modification("classes/db_tarefalog_classe.php"));
+include(modification("classes/db_tarefalogsituacao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -96,7 +96,7 @@ if (isset($incluir)&&$incluir!=""){
 	$clatenditem->at05_tipo=1;
 	if(isset($at05_data_dia)&&$at05_data_dia!="") {
 		$clatenditem->at05_data=$at05_data_ano."-".$at05_data_mes."-".$at05_data_dia;
-	}	
+	}
 	$clatenditem->incluir(null,$codatend);
 	$erro_msg=$clatenditem->erro_msg;
 	if ($clatenditem->erro_status=="0"){
@@ -113,9 +113,9 @@ if (isset($incluir)&&$incluir!=""){
 			$sqlerro=true;
 			$erro_msg=$clatenditemmod->erro_msg;
 		}
-		
+
 		if($sqlerro==false) {
-		    $clatendimentomod->at08_atend=$codatend; 			
+		    $clatendimentomod->at08_atend=$codatend;
 		    $clatendimentomod->at08_modulo=$modulo;
 		    $clatendimentomod->incluir();
 			if ($clatendimentomod->erro_status=="0"){
@@ -141,11 +141,11 @@ if (isset($incluir)&&$incluir!=""){
 				}
 				}
 			}
-			next($usuorigem);	
-		}		
-	}	
+			next($usuorigem);
+		}
+	}
 	if ($at05_perc == 100 and $sqlerro == false) {
-		
+
 		if (isset($at41_proced) and ($at41_proced == "0") and $sqlerro == false) {
 			$sqlerro = true;
 			$erro_msg = "Preencha o procedimento!";
@@ -157,7 +157,7 @@ if (isset($incluir)&&$incluir!=""){
 				db_fieldsmemory($result,0);
 			}
 		}
-		
+
     if ($sqlerro == false) {
 			$cltarefa->at40_responsavel		= db_getsession("DB_id_usuario");
 			$cltarefa->at40_descr					= $at05_solicitado;
@@ -178,7 +178,7 @@ if (isset($incluir)&&$incluir!=""){
 				$erro_banco = $cltarefa->erro_msg;
 			}
 		}
-		
+
 		if ($sqlerro == false) {
 		  $cltarefaproced->incluir($cltarefa->at40_sequencial,$at41_proced);
 			if($cltarefaproced->erro_status==0) {
@@ -186,7 +186,7 @@ if (isset($incluir)&&$incluir!=""){
 				$erro_msg = $cltarefaproced->erro_msg;
 			}
 		}
-				
+
 	  if (isset($modulo)&&$modulo!="" and $sqlerro == false) {
       $cltarefamodulo->at49_tarefa = $cltarefa->at40_sequencial;
 			$cltarefamodulo->at49_modulo = $modulo;
@@ -272,13 +272,13 @@ if (isset($incluir)&&$incluir!=""){
 			if($cltarefa_lanc->erro_status==0) {
 				$sqlerro = true;
 				$erro_msg = $cltarefa_lanc->erro_msg;
-			}	  	  
+			}
 		}
-   
+
 		if($sqlerro==false) {
-		  $sqlerro = $cltarefa_agenda->gera_agenda($cltarefaparam,$cltarefa,&$erro_msg);
+		  $sqlerro = $cltarefa_agenda->gera_agenda($cltarefaparam,$cltarefa,$erro_msg);
 		}
-		
+
 		if($sqlerro==false) {
 			$cltarefalog->at43_tarefa			= $cltarefa->at40_sequencial;
 			$cltarefalog->at43_descr			= $at05_solicitado;
@@ -295,7 +295,7 @@ if (isset($incluir)&&$incluir!=""){
 			if($cltarefalog->erro_status==0) {
 				$sqlerro = true;
 				$erro_msg = $cltarefalog->erro_msg;
-			}	  	  
+			}
 
 		  if($sqlerro==false) {
 				$cltarefalogsituacao->at48_tarefalog = $cltarefalog->at43_sequencial;
@@ -308,7 +308,7 @@ if (isset($incluir)&&$incluir!=""){
 			}
 
 		}
-		
+
 	}
 	db_fim_transacao($sqlerro);
 	if($sqlerro) {
@@ -324,7 +324,7 @@ if (isset($alterar)&&$alterar!=""){
 	$sqlerro=false;
 	if($sqlerro==false){
 	$rs_atenditem = $clatenditem->sql_record($clatenditem->sql_query(null,"at05_seq","at05_seq","at05_codatend=$codatend"));
-	
+
 	if($clatenditem->numrows > 0) {
 		db_fieldsmemory($rs_atenditem,0);
 		$clatenditem->at05_seq=$at05_seq;
@@ -333,7 +333,7 @@ if (isset($alterar)&&$alterar!=""){
 		$clatenditem->at05_tipo=1;
 		if(isset($at05_data_dia)&&$at05_data_dia!="") {
 			$clatenditem->at05_data=$at05_data_ano."-".$at05_data_mes."-".$at05_data_dia;
-		}	
+		}
 		$clatenditem->alterar($at05_seq);
 		$erro_msg=$clatenditem->erro_msg;
 		if ($clatenditem->erro_status==0){
@@ -346,7 +346,7 @@ if (isset($alterar)&&$alterar!=""){
 		$clatenditem->at05_tipo=1;
 		if(isset($at05_data_dia)&&$at05_data_dia!="") {
 			$clatenditem->at05_data=$at05_data_ano."-".$at05_data_mes."-".$at05_data_dia;
-		}	
+		}
 		$clatenditem->incluir(null,$codatend);
 		$erro_msg=$clatenditem->erro_msg;
 		if($clatenditem->erro_status==0){
@@ -370,7 +370,7 @@ if (isset($alterar)&&$alterar!=""){
 				}
 				if($sqlerro==false) {
 					$rs_modulo = $clatendimentomod->sql_record($clatendimentomod->sql_query($codatend));
-				    $clatendimentomod->at08_atend=$codatend; 			
+				    $clatendimentomod->at08_atend=$codatend;
 				    $clatendimentomod->at08_modulo=$modulo;
 					if($clatendimentomod->numrows > 0) {
 					    $clatendimentomod->alterar($codatend);
@@ -394,7 +394,7 @@ if (isset($alterar)&&$alterar!=""){
 					$erro_msg=$clatenditemmod->erro_msg;
 				}
 				if($sqlerro==false) {
-				    $clatendimentomod->at08_atend=$codatend; 			
+				    $clatendimentomod->at08_atend=$codatend;
 				    $clatendimentomod->at08_modulo=$modulo;
 				    $clatendimentomod->incluir();
 					if ($clatendimentomod->erro_status=="0"){
@@ -402,7 +402,7 @@ if (isset($alterar)&&$alterar!=""){
 						$erro_msg=$clatendimentomod->erro_msg;
 					}
 				}
-			} 
+			}
 		}
 	}
 
@@ -428,14 +428,14 @@ if (isset($chavepesquisa)&&$chavepesquisa!=""){
 		$codatend=$at02_codatend;
 		$clientes=$at02_codcli;
 	}
-	
+
 	if($db_opcao==2) {
 		$rs_atenditem = $clatenditem->sql_record($clatenditem->sql_query(null,"*","","at05_codatend=$at02_codatend"));
 		if($clatenditem->numrows > 0) {
 			db_fieldsmemory($rs_atenditem,0);
 		}
 	}
-	
+
 	$rs_tecnico= $cltecnico->sql_record($cltecnico->sql_query($chavepesquisa,null,"at03_id_usuario",null,""));
 	if ($cltecnico->numrows>0){
 		db_fieldsmemory($rs_tecnico,0);
@@ -445,7 +445,7 @@ if (isset($chavepesquisa)&&$chavepesquisa!=""){
 	if ($clatendimentomod->numrows>0){
 		db_fieldsmemory($rs_modulo,0);
 	}
-	
+
 }
 ?>
 <html>
@@ -465,9 +465,9 @@ if (isset($chavepesquisa)&&$chavepesquisa!=""){
     <td width="140">&nbsp;</td>
   </tr>
 <table align=center>
-  <tr> 
+  <tr>
     <td  align="left" valign="top" bgcolor="#CCCCCC">
-    <br><br> 
+    <br><br>
     <center>
     <?
     imprime_cabecalho(@$codatend);
@@ -501,15 +501,15 @@ if (isset($chavepesquisa)&&$chavepesquisa!=""){
 					}
 				}
 
-        $codatenditem=$clatenditem->at05_seq;
+        @$codatenditem=$clatenditem->at05_seq;
        ?>
        <tr>
-         <td align = center><input type='button' name='reset' value='Voltar' onclick="location.href='ate4_atend002.php';" >&nbsp;</td>         
+         <td align = center><input type='button' name='reset' value='Voltar' onclick="location.href='ate4_atend002.php';" >&nbsp;</td>
          <td align = center><input type='button' name='processa' value='Incluir Tarefa' onclick="location.href='ate1_tarefa001.php?tipo=A&at05_seq=<?=$codatenditem?><?if(isset($tecnico)&&$tecnico!="") { ?>&at40_responsavel=<? echo $tecnico; } ?><?if(isset($at08_modulo)&&$at08_modulo!="") { ?>&at49_modulo=<? echo $at08_modulo; } ?>';" <? if(isset($at05_perc)&&$at05_perc!="") { if($at05_perc == 100) { echo "disabled"; } }?>>&nbsp;</td>
       </tr>
        <?
       }else{
-	include("forms/db_frmatend.php");
+	include(modification("forms/db_frmatend.php"));
     }
 	?>
     </center>
@@ -526,26 +526,26 @@ if ($db_opcao==11||$db_opcao==22){
 	echo "<script>js_pesquisa();</script>";
 }
 function imprime_cabecalho($codatend=null) {
-	global $at02_codatend, $at01_codcli, 
-	       $at01_nomecli,  $at04_codtipo, 
-	       $at04_descr,    $id_usuario, 
-	       $nome,          $at10_usuario,  $at10_nome; 
+	global $at02_codatend, $at01_codcli,
+	       $at01_nomecli,  $at04_codtipo,
+	       $at04_descr,    $id_usuario,
+	       $nome,          $at10_usuario,  $at10_nome;
 
 	if($codatend != null) {
 	    $clatendimento = new cl_atendimento;
-		$result        = $clatendimento->sql_record($clatendimento->sql_query_inc(null,"at02_codatend,at01_codcli,at01_nomecli,at04_codtipo,at04_descr,id_usuario,nome,at10_usuario,at10_nome","at02_codatend desc","at02_codatend = $codatend"));
+		$result        = @$clatendimento->sql_record($clatendimento->sql_query_inc(null,"at02_codatend,at01_codcli,at01_nomecli,at04_codtipo,at04_descr,id_usuario,nome,at10_usuario,at10_nome","at02_codatend desc","at02_codatend = $codatend"));
 		if($clatendimento->numrows > 0) {
 			db_fieldsmemory($result,0);
-			
+
    			echo "<tr>
        				<td colspan=3 align=left><b>Atendimento Nº&nbsp;&nbsp;$at02_codatend</b></td>
    		  	  	  </tr>";
    		  	echo "<tr>
        				<td colspan=3 align=left><b>Cliente:&nbsp;&nbsp;$at01_codcli&nbsp;&nbsp;-&nbsp;&nbsp;$at01_nomecli</b></td>
-				  </tr>";	  	  
+				  </tr>";
    		  	echo "<tr>
        				<td colspan=3 align=left><b>Solicitado pelo usuário:&nbsp;&nbsp;$at10_usuario&nbsp;&nbsp;-&nbsp;&nbsp;".strtoupper($at10_nome)."</b></td>
-				  </tr>";	  	  
+				  </tr>";
    		  	echo "<tr>
        				<td colspan=3 align=left><b>Tipo de atendimento:&nbsp;&nbsp;$at04_codtipo&nbsp;&nbsp;-&nbsp;&nbsp;$at04_descr</b></td>
 				  </tr>";
@@ -553,8 +553,9 @@ function imprime_cabecalho($codatend=null) {
 	   		  	echo "<tr>
 	       				<td colspan=3 align=left><b>Técnico:&nbsp;&nbsp;$id_usuario&nbsp;&nbsp;-&nbsp;&nbsp;$nome</b></td>
 					  </tr>";
-			}	  	  
+			}
 		}
 	}
 }
+@$xx;
 ?>

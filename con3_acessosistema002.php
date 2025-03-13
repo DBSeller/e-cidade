@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 ?>
@@ -53,7 +53,7 @@ $sql = "select ip,nome_modulo,case when l.id_item != 0 then fc_montamenu(l.id_it
              left join db_modulos m on m.id_item = l.id_modulo
         where codsequen = $codacessa
        ";
-$result = pg_query($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 echo " <td >IP:$ip</td> ";
 echo " <td >Modulo:$nome_modulo</td> ";
@@ -84,7 +84,7 @@ $sql = "select distinct d.*,c.nomecam, u.nome
         where a.codsequen = $codacessa 
         order by id_acount ";
 
-$result = pg_query($sql);
+$result = db_query($sql);
 
 if ( pg_numrows($result) > 0 ) {
   $id_acount_ant = pg_result($result,0,"id_acount");
@@ -108,7 +108,7 @@ for($x=0;$x<pg_numrows($result);$x++){
                     from db_acountkey y
                          inner join db_syscampo c on codcam = id_codcam
                     where id_acount = $id_acount";
-   $res = pg_query($sql);
+   $res = db_query($sql);
    if($res!=false){
       for($ii=0;$ii<pg_numrows($res);$ii++){  
          db_fieldsmemory($res,$ii);

@@ -4,5 +4,10 @@
   "preencha_observacao"        : "Campo observação obrigatório quando tipo lançamento for igual a isento.",
   "informe_data_pagamento"     : "Campo Data do Pagamento obrigatório quando tipo lançamento for igual a manual.",
   "cadastro_efetuado_sucesso"  : "Cadastro Efetuado com Sucesso!",
-  "alteracao_efetuada_sucesso" : "Alteração Efetuada com Sucesso!"
+  "alteracao_efetuada_sucesso" : "Alteração Efetuada com Sucesso!",
+  "tipolancamento_obrigatorio" : "Campo Tipo de Lançamento é de preenchimento obrigatório.",
+  "datapagamento_obrigatorio"  : "Campo Data do Pagamento é de preenchimento obrigatório quando tipo de lançamento for igual a Pagamento.",
+  "observacao_obrigatorio"     : "Campo Observação é de preenchimento obrigatório quando tipo de lançamento for igual a isento.",
+  "custa_obrigatorio"          : "Deve ser selecionada ao menos uma custa.",
+  "limite_observacao"          : "O campo Observação não deve possuir mais do que 400 caracteres."
 }

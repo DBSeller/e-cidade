@@ -1,39 +1,39 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("interfaces/ILancamentoAuxiliar.interface.php");
-require_once ("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
 
 /**
  * Model reponsavel por realizar os lancamentos auxiliares para um empenho
  * @author     Matheus Felini <matheus.felini@dbseller.com.br>
  * @package    contabilidade
  * @subpackage lancamento
- * @version    $Revision: 1.21 $
+ * @version    $Revision: 1.22 $
  */
 class LancamentoAuxiliarEmpenho extends LancamentoAuxiliarBase implements ILancamentoAuxiliar {
 
@@ -149,9 +149,9 @@ class LancamentoAuxiliarEmpenho extends LancamentoAuxiliarBase implements ILanca
    */
   protected function salvarVinculoCaracteristicaPeculiar() {
 
-    $oDaoLancamentoCaracteristica                     = db_utils::getDao("conlancamconcarpeculiar");
-    $oDaoLancamentoCaracteristica->c08_sequencial     = null;
-    $oDaoLancamentoCaracteristica->c08_codlan         = $this->iCodigoLancamento;
+    $oDaoLancamentoCaracteristica = new cl_conlancamconcarpeculiar();
+    $oDaoLancamentoCaracteristica->c08_sequencial = null;
+    $oDaoLancamentoCaracteristica->c08_codlan = $this->iCodigoLancamento;
     $oDaoLancamentoCaracteristica->c08_concarpeculiar = $this->sCaracteristicaPeculiar;
     $oDaoLancamentoCaracteristica->incluir(null);
     if ($oDaoLancamentoCaracteristica->erro_status == "0") {
@@ -168,10 +168,10 @@ class LancamentoAuxiliarEmpenho extends LancamentoAuxiliarBase implements ILanca
    */
   protected function salvarVinculoOrdemDePagamento() {
 
-    $oDaoLancamentoOrdemPagamento             = db_utils::getDao('conlancamord');
+    $oDaoLancamentoOrdemPagamento = new cl_conlancamord();
     $oDaoLancamentoOrdemPagamento->c80_codlan = $this->iCodigoLancamento;
     $oDaoLancamentoOrdemPagamento->c80_codord = $this->iCodigoOrdemPagamento;
-    $oDaoLancamentoOrdemPagamento->c80_data   = $this->dtLancamento;
+    $oDaoLancamentoOrdemPagamento->c80_data = $this->dtLancamento;
     $oDaoLancamentoOrdemPagamento->incluir($this->iCodigoLancamento);
     if ($oDaoLancamentoOrdemPagamento->erro_status == "0") {
       throw new BusinessException("Não foi possível vincular o lançamento com a ordem de pagamento.");
@@ -200,6 +200,8 @@ class LancamentoAuxiliarEmpenho extends LancamentoAuxiliarBase implements ILanca
    * @return float $nValorTotal
    */
   public function getValorTotal() {
+
+
     return $this->nValorTotal;
   }
 
@@ -420,9 +422,14 @@ class LancamentoAuxiliarEmpenho extends LancamentoAuxiliarBase implements ILanca
    */
   public static function getInstance($iCodigoLancamento) {
 
-    $oDaoConlancamEmp = db_utils::getDao("conlancamemp");
-    $sSql             = $oDaoConlancamEmp->sql_query_dadoslancamento(null, "*", null, "c70_codlan = {$iCodigoLancamento}");
-    $rsEmpenho        = $oDaoConlancamEmp->sql_record($sSql);
+    $oDaoConlancamEmp = new cl_conlancamemp();
+    $sSql = $oDaoConlancamEmp->sql_query_dadoslancamento(
+        null,
+        "*",
+        null,
+        "c70_codlan = {$iCodigoLancamento}"
+    );
+    $rsEmpenho = $oDaoConlancamEmp->sql_record($sSql);
 
     if ($oDaoConlancamEmp->numrows == 0) {
       throw new BusinessException("Vinculo do lançamento {$iCodigoLancamento} com o suprimento não encontrado.");
@@ -462,5 +469,4 @@ class LancamentoAuxiliarEmpenho extends LancamentoAuxiliarBase implements ILanca
 
     return $oLancamentoAuxiliar;
   }
-
 }

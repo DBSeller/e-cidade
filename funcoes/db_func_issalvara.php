@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,6 +28,7 @@
 $campos = "issalvara.q123_sequencial,
             issalvara.q123_inscr,
             cgm.z01_nome,
+            cgm.z01_cgccpf,
             isstipoalvara.q98_descricao,
             issalvara.q123_dtinclusao
           ";

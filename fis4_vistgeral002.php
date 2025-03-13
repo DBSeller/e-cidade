@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tabrec_classe.php");
-include("classes/db_proced_classe.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_arrematric_classe.php");
-include("classes/db_arreinscr_classe.php");
-include("classes/db_arreold_classe.php");
-include("classes/db_divida_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tabrec_classe.php"));
+include(modification("classes/db_proced_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arrematric_classe.php"));
+include(modification("classes/db_arreinscr_classe.php"));
+include(modification("classes/db_arreold_classe.php"));
+include(modification("classes/db_divida_classe.php"));
 			
-include("classes/db_divimporta_classe.php");
-include("classes/db_divimportareg_classe.php");
+include(modification("classes/db_divimporta_classe.php"));
+include(modification("classes/db_divimportareg_classe.php"));
 
-include("classes/db_divold_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("classes/db_divold_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 /*
 db_postmemory($HTTP_POST_VARS,2);
 db_postmemory($HTTP_SERVER_VARS,2);
@@ -81,7 +81,7 @@ $hoje = $datavenc;
 /*
 //die ("select * from reg_a_importar".db_getsession("DB_id_usuario").db_getsession("DB_datausu"));
 $sqlWhere = "select * from reg_a_importar".db_getsession("DB_id_usuario").db_getsession("DB_datausu").";";
-$rsWhere = pg_query($sqlWhere) or die($sqlWhere);
+$rsWhere = db_query($sqlWhere) or die($sqlWhere);
 //db_criatabela($rsWhere);exit;
 $intContwhere = pg_numrows($rsWhere);
 
@@ -179,8 +179,8 @@ if(isset($chave_origem) && trim($chave_origem)!="" && isset($chave_destino) && t
             parent.document.form1.gerar.disabled=true;
 			    alert('Nenhum tipo de débito encontrado com este código');
           </script>";
-    echo "<script>top.corpo.db_iframe.hide();</script>";
-    echo "<script>top.corpo.location.href='div4_importadivida001.php'</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe.hide();</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='div4_importadivida001.php'</script>";
   }
   $sql1 = " select v03_codigo, v03_descr from proced inner join tabrec on k02_codigo = v03_codigo ";
   $result1 = $clproced->sql_record($sql1);
@@ -364,7 +364,7 @@ if(isset($procreg) && $procreg == 't'){
 				     	   $ek00_numpar
 					       k00_receit ";
 //  die($sql_pesq);
-    $result_pesq_divida = pg_query($sql_pesq);
+    $result_pesq_divida = db_query($sql_pesq);
     $numrows = pg_numrows($result_pesq_divida);
     if (isset($numrows) && $numrows == 0 ){
 	 db_msgbox("Nenhum registro para o filtro selecionado !");	
@@ -393,7 +393,7 @@ if(isset($procreg) && $procreg == 't'){
     for($i=0;$i<$numrows;$i++){
 //    echo "Processando registro ".($i+1)." de $numrows<BR>";
       db_fieldsmemory($result_pesq_divida,$i,true);
-      $rsArrecad = pg_query(" select * from arrecad 
+      $rsArrecad = db_query(" select * from arrecad 
                                  where k00_numpre = $k00_numpre 
 				   ".(isset($$andnumpar)&&$$andnumpar!=""?$$andnumpar:"")."
 				   and k00_receit = $k00_receit 
@@ -415,7 +415,7 @@ if(isset($procreg) && $procreg == 't'){
 
 	if($k00_receit == $cod_k02_codigo && $sqlerro==false){
 	  if ($numpre_par_rec <> str_pad($k00_numpre,10,"0",STR_PAD_LEFT) . str_pad($k00_receit,5,"0",STR_PAD_LEFT)){
-	    $nextval_numpre=pg_exec("select nextval('numpref_k03_numpre_seq') as numpre_novo");
+	    $nextval_numpre=db_query("select nextval('numpref_k03_numpre_seq') as numpre_novo");
 	    db_fieldsmemory($nextval_numpre,0);
 	    $numpre_par_rec = str_pad($k00_numpre,10,"0",STR_PAD_LEFT) . str_pad($k00_receit,5,"0",STR_PAD_LEFT);
 	    $result_arrematric=$clarrematric->sql_record($clarrematric->sql_query_file($k00_numpre,0,"k00_matric"));
@@ -479,7 +479,7 @@ if(isset($procreg) && $procreg == 't'){
 	  $cldivida->v01_valor   = $val;
 	  
 	  $sqlcoddiv = "select nextval('divida_v01_coddiv_seq') as v01_coddiv"; 
-	  $resultcoddiv = pg_exec($sqlcoddiv) or die($sqlcoddiv);
+	  $resultcoddiv = db_query($sqlcoddiv) or die($sqlcoddiv);
 	  db_fieldsmemory($resultcoddiv,0);
       $cldivida->incluir(null);
   	  $erro_msg = $cldivida->erro_msg."--- Inclusão Divida";
@@ -556,7 +556,7 @@ if(isset($procreg) && $procreg == 't'){
 	    if($sqlerro==false){
 //           se agrupar por numpre,  receita
 //                          die("select * from arrecad where k00_numpre = $k00_numpre ".(isset($$andnumpar)&& $$andnumpar!=""?$$andnumpar:"")." and k00_receit = $k00_receit");
-          $rsArreold = pg_query("select * from arrecad where k00_numpre = $k00_numpre ".(isset($$andnumpar)&& $$andnumpar!=""?$$andnumpar:"")." and k00_receit = $k00_receit");
+          $rsArreold = db_query("select * from arrecad where k00_numpre = $k00_numpre ".(isset($$andnumpar)&& $$andnumpar!=""?$$andnumpar:"")." and k00_receit = $k00_receit");
 	      $numrowsArreold = pg_numrows($rsArreold);
           for ($iarreold=0;$iarreold<$numrowsArreold;$iarreold++){
 				db_fieldsmemory($rsArreold,$iarreold);
@@ -618,14 +618,14 @@ if(isset($procreg) && $procreg == 't'){
 	  $sub = 'f';
 	}
 	
-//    pg_query(" drop table reg_a_importar".db_getsession("DB_id_usuario").db_getsession("DB_datausu").";");
+//    db_query(" drop table reg_a_importar".db_getsession("DB_id_usuario").db_getsession("DB_datausu").";");
 	if($teste==true){
 	  if($erro_msg!=""){
 		echo "<script>parent.document.getElementById('process').style.visibility='hidden';</script>";
 		db_msgbox($erro_msg);
 	//  db_msgbox('Processo concluído com sucesso!');
-		echo "<script>top.corpo.db_iframe.hide();</script>";
-		echo "<script>top.corpo.location.href='div4_importadivida001.php'</script>";
+		echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe.hide();</script>";
+		echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='div4_importadivida001.php'</script>";
 	  }
 	}
 ?>

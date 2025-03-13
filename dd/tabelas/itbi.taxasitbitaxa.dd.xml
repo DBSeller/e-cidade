@@ -1,0 +1,132 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010600' name='itbi.taxasitbitaxa' description="Salva o vincula do grupo de taxas com a taxa." prefix="it37" label="taxasitbitaxa" type="0">
+  <fields>
+    <field codigo="1011681" 
+           campo_api='' 
+           name="it37_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela taxaitbitaxa." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='itbi.taxasitbitaxa_it37_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011673" 
+           campo_api='' 
+           name="it37_taxasitbi" 
+           conteudo="int4" 
+           description="Código do grupo de taxas de ITBI." 
+           inivalue="0" 
+           label="Código" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011674" 
+           campo_api='' 
+           name="it37_taxaslancadas" 
+           conteudo="int4" 
+           description="Código da taxa cadastrada no Lançamento de taxas." 
+           inivalue="0" 
+           label="Código da Taxa" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Taxa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011680" 
+           campo_api='' 
+           name="it37_calculasobre" 
+           conteudo="int4" 
+           description="Define sobre o que deve ser calculado o valor da taxa." 
+           inivalue="0" 
+           label="Calcula Sobre" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Calcula Sobre" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011828" 
+           campo_api='' 
+           name="it37_iniciofaixa" 
+           conteudo="float4" 
+           description="Valor que inicia a faixa para o cálculo." 
+           inivalue="0" 
+           label="Inicio Faixa" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Inicio Faixa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011829" 
+           campo_api='' 
+           name="it37_fimfaixa" 
+           conteudo="float4" 
+           description="Valor final da faixa" 
+           inivalue="0" 
+           label="Fim Faixa" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Fim Faixa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="it37_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="taxaslancadas" inner='t'>
+      <fieldfk name="it37_taxaslancadas" reference="ar44_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="taxasitbi" inner='t'>
+      <fieldfk name="it37_taxasitbi" reference="it36_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

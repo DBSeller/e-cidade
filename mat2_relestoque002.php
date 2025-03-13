@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_sql.php");
-require_once ("libs/db_utils.php");
-require_once ("classes/db_matestoque_classe.php");
-require_once ("classes/db_matestoqueitem_classe.php");
-require_once ("classes/db_matmaterestoque_classe.php");
-require_once "classes/materialestoque.model.php";
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_matestoque_classe.php"));
+require_once(modification("classes/db_matestoqueitem_classe.php"));
+require_once(modification("classes/db_matmaterestoque_classe.php"));
+require_once modification("classes/materialestoque.model.php");
 parse_str($HTTP_SERVER_VARS ['QUERY_STRING']);
 
 $clmatestoque = new cl_matestoque();

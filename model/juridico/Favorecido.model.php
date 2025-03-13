@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/financeiro/ContaBancaria.model.php");
+require_once(modification("model/financeiro/ContaBancaria.model.php"));
 /**
  * 
  * Classe para cadastro de Favorecido de custas da cobrança registrada
  * @author Rafael Serpa Nery rafael.nery@dbseller.com.br
  * @package Configuração
- * @revision $Author: dbrafael.nery $
- * @version $Revision: 1.4 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.7 $
  *
  */
 class Favorecido extends ContaBancaria{

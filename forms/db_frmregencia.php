@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clregencia->rotulo->label();
@@ -363,7 +363,7 @@ function js_validaDocente() {
 
 function js_retornaValidaDocente(oResponse) {
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.lTemDocenteAusente) {
 

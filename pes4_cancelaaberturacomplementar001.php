@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_rhfolhapagamento_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhfolhapagamento_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 define("MENSAGEM", 'recursoshumanos.pessoal.pes4_cancelaaberturacomplementar001.');
 
@@ -43,6 +43,28 @@ $lProcessado = false;
 if ( isset($_GET['cancelado']) ) {
   $lProcessado = true;
 }     
+
+try {
+
+   /**
+   *  Verifica se o parametro r11_suplementar na tabela cfpess está ativo.
+   */
+  if (!DBPessoal::verificarUtilizacaoEstruturaSuplementar()){
+
+     /**
+     * Desativa o formulário
+     */
+    $lDisabled = true;
+    $db_opcao  = 3;
+
+    throw new BusinessException(_M(MENSAGEM . "rotina_desativada"));
+  }
+     
+} catch (Exception $eException) {
+     
+   db_msgbox($eException->getMessage()); 
+   db_redireciona('corpo.php');
+}
 
 try {
 
@@ -92,20 +114,19 @@ try {
   <form name="form1" method="post" class="container" action="">
     <fieldset>
       <legend>Cancelar Abertura da Folha Complementar</legend>
-      <?php include 'forms/db_frmrhfolhapagamento.php'; ?>
+      <?php include modification("forms/db_frmrhfolhapagamento.php"); ?>
     </fieldset>
 
     <?php
-
-    if ($lExisteFolhaAberta && !$lProcessado) {  
-      echo '<input type="submit" name="submit" value="Processar" />';
-    } elseif (!$lExisteFolhaAberta && !$lProcessado) {
-      echo '<input type="submit" name="submit" value="Processar" disabled />';
-      db_msgbox(_M(MENSAGEM . "folha_nao_aberta"));
-    } else {
-      echo '<input type="submit" name="submit" value="Processar" disabled />';
-      db_msgbox(_M(MENSAGEM . 'cancelado_com_sucesso'));
-    }
+      if ($lExisteFolhaAberta && !$lProcessado) {  
+        echo '<input type="submit" name="submit" value="Processar" />';
+      } elseif (!$lExisteFolhaAberta && !$lProcessado) {
+        echo '<input type="submit" name="submit" value="Processar" disabled />';
+        db_msgbox(_M(MENSAGEM . "folha_nao_aberta"));
+      } else {
+        echo '<input type="submit" name="submit" value="Processar" disabled />';
+        db_msgbox(_M(MENSAGEM . 'cancelado_com_sucesso'));
+      }
     ?>
   </form>
   <?php db_menu(); ?>

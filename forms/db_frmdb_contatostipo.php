@@ -58,7 +58,7 @@ db_input('g02_descr',40,$Ig02_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_contatostipo','func_db_contatostipo.php?funcao_js=parent.js_preenchepesquisa|g02_tipocon','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_contatostipo','func_db_contatostipo.php?funcao_js=parent.js_preenchepesquisa|g02_tipocon','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_contatostipo.hide();

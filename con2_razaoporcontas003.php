@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_app.utils.php");
-require_once ("std/DBDate.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/DBDate.php"));
 
 $oGet               = db_utils::postMemory($_GET);
 $iAnoSessao         = db_getsession("DB_anousu");
@@ -91,6 +91,8 @@ $sSqlBuscaLancamentos .= "             inner join conhistdoc     on conhistdoc.c
 $sSqlBuscaLancamentos .= "       where conplanoreduz.c61_anousu = {$iAnoSessao}";
 $sSqlBuscaLancamentos .= "         and conplano.c60_anousu      = {$iAnoSessao}";
 $sSqlBuscaLancamentos .= "         and conlancamval.c69_data between '{$oDataInicial->getDate()}' and '{$oDataFinal->getDate()}'";
+$sSqlBuscaLancamentos .= "         and c61_instit = {$iInstituicaoSessao} ";
+
 if (trim($oGet->sDocumentos) != "") {
   $sSqlBuscaLancamentos .= "       and conhistdoc.c53_coddoc in ({$oGet->sDocumentos})";
 }

@@ -13,7 +13,6 @@
   "peso_superior"                    : "O peso do paciente deve ser menor que 1000 kg.",
   "informe_altura"                   : "Altura não informada.",
   "altura_superior"                  : "A altura do paciente não pode ser maior que 250 cm.",
-  "selecione_forma_alimentacao"      : "Informe o tipo de alimentação utilizada para o exame de Glicemia",
   "selecione_profissional"           : "Profissional não informado.",
   "selecione_unidade"                : "Unidade não informada.",
   "selecione_cbos"                   : "CBOS não informado.",
@@ -27,5 +26,8 @@
   "procedimento_salvo"               : "Procedimento(s) salvo(s) com sucesso.",
   "triagem_nao_encontrado"           : "Triagem não encontrada.",
   "prontuario_nao_encontrado"        : "Prontuário não encontrado.",
-  "erro_incluir_triagem_prontuario"  : "Erro ao incluir o vínculo da triagem com o prontuário:\n[sErro]"
+  "erro_incluir_triagem_prontuario"  : "Erro ao incluir o vínculo da triagem com o prontuário:\n[sErro]",
+  "profissional_sem_cbos"            : "Profissional não possui vínculo com esta unidade.",
+  "erro_buscar_classificacao_risco"  : "Erro ao buscar as classificações de risco:\n[sErro]",
+  "erro_buscar_dum"                  : "Erro ao buscar última DUM registrada para o CGS."
 }

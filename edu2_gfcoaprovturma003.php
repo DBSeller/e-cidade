@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_turma_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_turma_classe.php"));
 $clturma = new cl_turma;
 $sql = $clturma->sql_query("","ed52_c_descr,ed57_c_descr,fc_nomeetapaturma(ed57_i_codigo) as ed11_c_descr",""," ed57_i_codigo = $turma");
 $result = $clturma->sql_record($sql);

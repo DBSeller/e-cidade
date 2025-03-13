@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,5 +25,4 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "bensmotbaixa.t51_motivo,bensmotbaixa.t51_descr";
-?>
+$campos = "bensmotbaixa.t51_motivo, bensmotbaixa.t51_descr, bensmotbaixa.t51_anexoobrigatorio";

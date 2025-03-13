@@ -1,42 +1,42 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_matricula_classe.php");
-require_once("classes/db_matriculamov_classe.php");
-require_once("classes/db_logmatricula_classe.php");
-require_once("classes/db_turma_classe.php");
-require_once("classes/db_turmaserieregimemat_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_matricula_classe.php"));
+require_once(modification("classes/db_matriculamov_classe.php"));
+require_once(modification("classes/db_logmatricula_classe.php"));
+require_once(modification("classes/db_turma_classe.php"));
+require_once(modification("classes/db_turmaserieregimemat_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
   <head>
@@ -81,7 +81,7 @@ require_once("dbforms/db_funcoes.php");
                 <b>Lista de Turmas</b>
               </legend>
               <div id='ctnDataGridTurmas' style="width: 100%;">
-              </div> 
+              </div>
             </fieldset>
           </div>
         </fieldset>
@@ -91,8 +91,8 @@ require_once("dbforms/db_funcoes.php");
       <input type="button" value='Proximo Dia' id='btnProximoDia'>
     </center>
   </body>
-</html>  
-<?db_menu(db_getsession("DB_id_usuario"),
+</html>
+<?php db_menu(db_getsession("DB_id_usuario"),
           db_getsession("DB_modulo"),
           db_getsession("DB_anousu"),
           db_getsession("DB_instit")
@@ -101,7 +101,7 @@ require_once("dbforms/db_funcoes.php");
 <script>
   var sUrlRpc = 'edu04_controleacessofrequencia.RPC.php';
   function js_init() {
-  
+
      oTxtData = new DBTextFieldData('oTxtData', 'oTxtData');
      oTxtData.show($('ctninputdata'));
      oGridTurmas              = new DBGrid('oGridTurmas');
@@ -110,9 +110,9 @@ require_once("dbforms/db_funcoes.php");
      oGridTurmas.setCellWidth(new Array("10%", "25%", "30%", "5%", "15%", "15%"));
      oGridTurmas.setCellAlign(new Array("Left", "left", "left", "center"));
      oGridTurmas.setHeight(document.body.clientHeight/1.6);
-     var aHeaders = new Array("Turma", 
-                              "Disciplina", 
-                              "Professor", 
+     var aHeaders = new Array("Turma",
+                              "Disciplina",
+                              "Professor",
                               "Chamada",
                               "Presente Escola c/Falta",
                               "Presente Em Aula s/ Leitura",
@@ -124,25 +124,25 @@ require_once("dbforms/db_funcoes.php");
      js_getTurmasDoDia();
   }
   js_init();
-  
-  
+
+
   /**
    * Cria a janela com os alunos faltantes
    */
   function js_visualizarAlunos() {
-     
+
     var aTurmasSelecionadas = oGridTurmas.getSelection('object');
     if (aTurmasSelecionadas.length == 0) {
-    
+
       alert('Selecione uma turma.');
       return false;
-    } 
+    }
     var iWidth         = document.body.getWidth() - 10;
-    var iHeight        = document.body.getHeight(); 
+    var iHeight        = document.body.getHeight();
     oWindowListaAlunos = new windowAux('wndListaAlunos', 'Lista de Alunos' , iWidth, iHeight);
     oWindowListaAlunos.setShutDownFunction(function(){
       oWindowListaAlunos.destroy();
-    }); 
+    });
     var sConteudo = '<div>';
         sConteudo += '<fieldset><legend><b>Alunos</b></legend>';
         sConteudo += '  <div id="ctnGridAlunos" style="width:100%">';
@@ -155,12 +155,12 @@ require_once("dbforms/db_funcoes.php");
         sConteudo += '  </div>';
         sConteudo += '  <div style="float:left;">';
         sConteudo += '     <span><b>Modelo:</b></span>';
-        sConteudo += '     <span id="ctnCboModelos"></span>'; 
+        sConteudo += '     <span id="ctnCboModelos"></span>';
         sConteudo += '     <span><b>Mostrar Alunos:</b>';
-        sConteudo += '     <span id="ctnCboMostrarAlunos"></span>'; 
+        sConteudo += '     <span id="ctnCboMostrarAlunos"></span>';
         sConteudo += '  </div>'
         sConteudo += '    <input type="button" value="imprimir" onclick="js_impressaoAlunos();">';
-        sConteudo += '  </center>'; 
+        sConteudo += '  </center>';
         sConteudo += '</div>';
     oWindowListaAlunos.setContent(sConteudo);
     var sMessagemImpressao = 'Caso deseje imprimir a listagem dos alunos, escolha os filtros,  e clique em imprimir';
@@ -170,14 +170,14 @@ require_once("dbforms/db_funcoes.php");
                                                 oWindowListaAlunos.getContentContainer()
                                                 );
    oWindowListaAlunos.show();
-   
+
    oDataGridAlunos             = new DBGrid('dbGridAlunos');
    oDataGridAlunos.nameInstance = 'oDataGridAlunos';
-   oDataGridAlunos.setHeight(iHeight/1.9); 
+   oDataGridAlunos.setHeight(iHeight/1.9);
    var aWidths                  = new Array("5%", "21%", "5%", "22%", "22%", "10%", "10%");
-   var aHeaders                 = new Array("cod.Aluno", 
-                                           "Nome", 
-                                           "Turma", 
+   var aHeaders                 = new Array("cod.Aluno",
+                                           "Nome",
+                                           "Turma",
                                            "Pai",
                                            "Resp. Legal",
                                            "Fone Cel.",
@@ -185,59 +185,59 @@ require_once("dbforms/db_funcoes.php");
                                            "PS",
                                            "PE"
                              );
-     oDataGridAlunos.setCellWidth(aWidths);                             
+     oDataGridAlunos.setCellWidth(aWidths);
      oDataGridAlunos.setHeader(aHeaders);
-     oDataGridAlunos.show($('ctnGridAlunos'));          
-     
-     
+     oDataGridAlunos.show($('ctnGridAlunos'));
+
+
      oCboModelo = new DBComboBox('oCboModelo', 'oCboModelo');
      oCboModelo.addItem(1, 'Simplificado');
      oCboModelo.addItem(2, 'Completo');
      oCboModelo.addStyle("width", "150");
      oCboModelo.show($('ctnCboModelos'));
-     
+
      oCboMostrarAlunos = new DBComboBox('oCboMostrarAlunos', 'oCboMostrarAlunos');
      oCboMostrarAlunos.addItem(1, 'Todos');
      oCboMostrarAlunos.addItem(2, 'Presentes na Escola com Falta');
      oCboMostrarAlunos.addItem(3, 'Sem Leitura/Presente em Aula');
      oCboMostrarAlunos.addStyle("width", "150");
-     oCboMostrarAlunos.show($('ctnCboMostrarAlunos'));  
-     
-     js_getAlunosTurmas();                                            
+     oCboMostrarAlunos.show($('ctnCboMostrarAlunos'));
+
+     js_getAlunosTurmas();
   }
-  
+
   /**
    * Pesquisa as turmas por dia
    */
   function js_getTurmasDoDia() {
-  
+
     var oParametro     = new Object();
     oParametro.exec    = 'getControleAcessoFrequencia';
-    oParametro.datadia = oTxtData.getValue(); 
-    oParametro.mostrar = 'turma'; 
+    oParametro.datadia = oTxtData.getValue();
+    oParametro.mostrar = 'turma';
     js_divCarregando('Aguarde, carregando as turmas do dia', 'msgBox');
-    var oAjax = new Ajax.Request(sUrlRpc, 
+    var oAjax = new Ajax.Request(sUrlRpc,
                                  {method:'post',
                                  parameters:'json='+Object.toJSON(oParametro),
                                  onComplete: js_retornogetTurmasDoDia
                                  }
-                                ); 
-  
+                                );
+
   }
-  
+
   /**
    * Preenche a lista de turmas
    */
   function js_retornogetTurmasDoDia(oResponse) {
-  
+
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
     var aDataPartes = oRetorno.datadia.split("/");
     oTxtData.setData(aDataPartes[0], aDataPartes[1], aDataPartes[2]);
     oGridTurmas.clearAll(true);
     oRetorno.linhas.each(function(oTurma, iSeq) {
-      
-      var lLinhaBloqueada = oTurma.chamadafechada?false:true; 
+
+      var lLinhaBloqueada = oTurma.chamadafechada?false:true;
       var aLinha = new Array();
       aLinha[0]  = oTurma.ed57_c_descr.urlDecode();
       aLinha[1]  = oTurma.ed232_c_descr.urlDecode();
@@ -249,26 +249,26 @@ require_once("dbforms/db_funcoes.php");
       oGridTurmas.addRow(aLinha, false, lLinhaBloqueada);
     });
     oGridTurmas.renderRows();
-  
+
   }
-  
-  
+
+
   $('btnFiltrar').observe("click", function() {
-  
+
      if (oTxtData.getValue() != "") {
-       js_getTurmasDoDia();       
+       js_getTurmasDoDia();
      }
   });
-  
+
   $('btnFiltrar').observe("click", function() {
-  
+
      if (oTxtData.getValue() != "") {
-       js_getTurmasDoDia();       
+       js_getTurmasDoDia();
      }
   });
-  
+
   $('btnProximoDia').observe("click", function (){
-    
+
     var aDataPartes = oTxtData.getValue().split("/");
     var oNovaData   = new Date(aDataPartes[2], new Number(aDataPartes[1]) -1, new Number(aDataPartes[0])+1);
     var sMes = new String(oNovaData.getMonth()+1);
@@ -276,12 +276,12 @@ require_once("dbforms/db_funcoes.php");
       sMes = "0"+sMes;
     }
     oTxtData.setData(oNovaData.getDate(), sMes, oNovaData.getFullYear());
-    js_getTurmasDoDia(); 
+    js_getTurmasDoDia();
   });
-  
-  
+
+
   $('btnDiaAnterior').observe("click", function (){
-    
+
     var aDataPartes = oTxtData.getValue().split("/");
     var oNovaData   = new Date(aDataPartes[2], new Number(aDataPartes[1]) -1, new Number(aDataPartes[0])-1);
     var sMes = new String(oNovaData.getMonth()+1);
@@ -289,41 +289,41 @@ require_once("dbforms/db_funcoes.php");
       sMes = "0"+sMes;
     }
     oTxtData.setData(oNovaData.getDate(), sMes, oNovaData.getFullYear());
-    js_getTurmasDoDia(); 
+    js_getTurmasDoDia();
   });
-  
+
   /**
    * Realiza a pesquisa dos alunos faltantes nas turmas selecionadas
    */
   js_getAlunosTurmas = function() {
-  
+
     var aTurmasSelecionadas = oGridTurmas.getSelection('object');
     var aListaTurmas        = new Array();
     aTurmasSelecionadas.each(function(oTurma, iSeq) {
        aListaTurmas.push(oTurma.aCells[7].getValue());
     });
-     
+
     var oParam  = new Object();
     oParam.exec    = 'getControleAcessoFrequencia';
     oParam.mostrar = 'aluno'
     oParam.turmas  = aListaTurmas;
     oParam.datadia = oTxtData.getValue();
     js_divCarregando('Aguarde, carregando a lista de Alunos das turmas selecionadas', 'msgBox');
-    var oAjax = new Ajax.Request(sUrlRpc, 
+    var oAjax = new Ajax.Request(sUrlRpc,
                                  {method:'post',
                                  parameters:'json='+Object.toJSON(oParam),
                                  onComplete: js_retornoGetAlunosTurmas
                                  }
-                                ); 
+                                );
   }
-  
+
   function js_retornoGetAlunosTurmas (oResponse) {
-  
+
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
     oDataGridAlunos.clearAll(true);
     oRetorno.linhas.each(function(oAluno, iSeq) {
-      
+
       if (new Number(oAluno.semLeiuturaPresente) == 0 && new Number(oAluno.comLeiuturaFalta) == 0) {
        return false;
       }
@@ -341,13 +341,13 @@ require_once("dbforms/db_funcoes.php");
     });
     oDataGridAlunos.renderRows();
   }
-  
+
   function js_impressaoAlunos() {
-    
+
     var sUrl  = 'edu02_controleacessofrequencia002.php?iModelo='+oCboModelo.getValue();
     sUrl     += '&iFiltroAluno='+oCboMostrarAlunos.getValue();
     sUrl     += '&data='+oTxtData.getValue();
-    
+
     var aTurmasSelecionadas = oGridTurmas.getSelection('object');
     var aListaTurmas        = new Array();
     aTurmasSelecionadas.each(function(oTurma, iSeq) {
@@ -355,7 +355,7 @@ require_once("dbforms/db_funcoes.php");
     });
     delete aTurmasSelecionadas;
     delete aListaTurmas;
-    sUrl += '&sListaTurmas='+aListaTurmas.implode(","); 
+    sUrl += '&sListaTurmas='+aListaTurmas.implode(",");
     window.open(sUrl, '', 'location=0');
   }
   </script>

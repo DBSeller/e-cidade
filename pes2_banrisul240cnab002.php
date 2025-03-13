@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libcaixa_ze.php");
-include("libs/db_libgertxtfolha.php");
-include("classes/db_folha_classe.php");
-include("classes/db_pensao_classe.php");
-include("classes/db_rharqbanco_classe.php");
-include("classes/db_orctiporec_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libcaixa_ze.php"));
+include(modification("libs/db_libgertxtfolha.php"));
+include(modification("classes/db_folha_classe.php"));
+include(modification("classes/db_pensao_classe.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 
-require_once 'libs/db_utils.php';
+require_once modification("libs/db_utils.php");
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_GET_VARS);
 
-$cllayouts_bb  = new cl_layouts_bb;
-$cllayout_BBBS = new cl_layout_BBBS;
+$cllayouts_bb  = new LayoutBB;
+$cllayout_BBBS = new LayoutBBBSFolha;
 $clfolha       = new cl_folha;
 $clpensao      = new cl_pensao;
 $clrharqbanco  = new cl_rharqbanco;
@@ -63,6 +63,13 @@ db_sel_instit();
 
 //die($clrharqbanco->sql_query($rh34_codarq));
 $result_arqbanco=$clrharqbanco->sql_record($clrharqbanco->sql_query($rh34_codarq));
+
+if(!$result_arqbanco || pg_num_rows($result_arqbanco) == 0) {
+  $sqlerro = true;
+  $erro_msg = "Arquivo não encontrado";
+}
+$clrharqbanco->numrows = pg_num_rows($result_arqbanco);
+
 if($clrharqbanco->numrows>0){
 
   db_fieldsmemory($result_arqbanco,0);
@@ -127,9 +134,6 @@ if($clrharqbanco->numrows>0){
 
   }
 
-}else{
-  $sqlerro = true;
-  $erro_msg = "Arquivo não encontrado";
 }
 
 if(!isset($rh34_where) || (isset($rh34_where) && trim($rh34_where) == "")){
@@ -140,7 +144,8 @@ if(!isset($rh34_where) || (isset($rh34_where) && trim($rh34_where) == "")){
   $rh34_wherepensa = '' ;
 }
 
-$rh34_wherefolha.= " r38_banco = '$rh34_codban' ";
+$rh34_wherefolha.= " r38_banco = '$rh34_codban' and ";
+$rh34_wherefolha.= " r38_liq > 0 ";
 $rh34_wherepensa.= " r52_codbco = '$rh34_codban' and r52_anousu = ".db_anofolha()." and r52_mesusu = ".db_mesfolha();
 $titrelatorio = "Todos os funcionários";
 $titarquivo   = "pagtofuncionarios";
@@ -158,11 +163,17 @@ if($sqlerro == false){
                                               "r38_banco,r38_nome",
                                               "$rh34_wherefolha");
     $result  = $clfolha->sql_record($sql);
-    $numrows = $clfolha->numrows;
+
+    if(!$result || pg_num_rows($result) == 0) {
+      $sqlerro = true;
+      $erro_msg = 'Não foram encontrados pagamentos para tipo de arquivo selecionado.';
+    }
+
+    $numrows = pg_num_rows($result);
   } else {
 
-      $titarquivo = "pensaojudicial";
-      $titrelatorio = "PENSÃO JUDICIAL";
+    $titarquivo = "pensaojudicial";
+    $titrelatorio = "PENSÃO JUDICIAL";
     if($qfolha == 1){
       $campovalor = " r52_valor+r52_valfer ";
       $rh34_wherepensa .= " and (r52_valor > 0 or r52_valfer > 0 ) ";
@@ -181,9 +192,9 @@ if($sqlerro == false){
                                                r52_numcgm as r38_regist,
                                                r52_codbco as r38_banco,
                                                r52_regist,
-	                                             trim(r52_conta)||trim(coalesce(r52_dvconta,'')) as r38_conta,
-	                                             trim(r52_codage)||trim(coalesce(r52_dvagencia,'')) as r38_agenc,
-	                                             cgm.*,func.z01_nome as nomefuncionario,
+                                               trim(r52_conta)||trim(coalesce(r52_dvconta,'')) as r38_conta,
+                                               trim(r52_codage)||trim(coalesce(r52_dvagencia,'')) as r38_agenc,
+                                               cgm.*,func.z01_nome as nomefuncionario,
                                                r70_descr,
                                                length(trim(cgm.z01_cgccpf)) as tam,
                                                $campovalor as valorori",
@@ -192,11 +203,18 @@ if($sqlerro == false){
 
     $lPensionista = true;
     $result      = $clpensao->sql_record($sql);
-    $numrows     = $clpensao->numrows;
+
+    if(!$result || pg_num_rows($result) == 0) {
+      $sqlerro = true;
+      $erro_msg = 'Não foram encontrados pagamentos para tipo de arquivo selecionado.';
+    }
+
+    $numrows     = pg_num_rows($result);
   }
+
   if ($numrows > 0 && $rh34_codban == "041") {
 
-    $nomearquivo_impressao = "/tmp/".$titarquivo.".pdf";
+    $nomearquivo_impressao = "tmp/".$titarquivo.".pdf";
     $nomearquivo = $titarquivo.".txt";
     $cllayouts_bb->nomearq  = "tmp/$nomearquivo";
     $cllayout_BBBS->nomearq = "tmp/$nomearquivo";
@@ -269,13 +287,13 @@ if($sqlerro == false){
           $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
           $pdf->cell(65,$alt,$RLz01_nome,1,0,"C",1);
           $pdf->cell(65,$alt,$RLr70_descr,1,0,"C",1);
-	       } else {
+         } else {
 
            $pdf->cell(65,$alt,"Pensionista",1,0,"C",1);
            $pdf->cell(65,$alt,"Funcionário",1,0,"C",1);
            $pdf->cell(20,$alt,$RLz01_numcgm,1,0,"C",1);
            $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
-	       }
+         }
         $pdf->cell(20,$alt,$RLr38_liq,1,0,"C",1);
         $pdf->cell(15,$alt,"Cod.Pgto.",1,0,"C",1);
         $pdf->cell(15,$alt,$RLr38_banco,1,0,"C",1);
@@ -304,13 +322,13 @@ if($sqlerro == false){
 
         $bancoanterior = $r38_banco;
 
-	      if($acodigodobanco == '041'){
-	        $tiposerv = "30";
-	        $tipopaga = "01";
-	      }else{
-	        $tiposerv = "12";
-	        $tipopaga = "03";
-	      }
+        if($acodigodobanco == '041'){
+          $tiposerv = "30";
+          $tipopaga = "01";
+        }else{
+          $tiposerv = "12";
+          $tipopaga = "03";
+        }
 
         if ($seq_header != 0) {
 
@@ -319,28 +337,28 @@ if($sqlerro == false){
           $cllayout_BBBS->BBBStraillerL_018_023 = $seq_detalhe;
           $cllayout_BBBS->BBBStraillerL_024_041 = $valor_header;
           $cllayout_BBBS->geraTRAILLERLote();
-	        $valor_header = 0;
-	        $registro ++;
-	      }
+          $valor_header = 0;
+          $registro ++;
+        }
 
         $seq_header ++;
-	      $seq_detalhe = 0;
-	      $registro ++;
+        $seq_detalhe = 0;
+        $registro ++;
 
-	      $cllayout_BBBS->BSheaderL_001_003 = $acodigodobanco;
-	      $cllayout_BBBS->BSheaderL_004_007 = $seq_header;
-	      $cllayout_BBBS->BSheaderL_010_011 = $tiposerv;
-	      $cllayout_BBBS->BSheaderL_012_013 = $tipopaga;
-	      $cllayout_BBBS->BSheaderL_019_032 = $inscricaoprefa;
-	      $cllayout_BBBS->BSheaderL_033_037 = $aconveniobanco;
-	      $cllayout_BBBS->BSheaderL_053_057 = $agenciadobanco;
-	      $cllayout_BBBS->BSheaderL_062_071 = $dacontadobanco;
-	      $cllayout_BBBS->BSheaderL_073_102 = $nomeprefeitura;
-	      $cllayout_BBBS->BSheaderL_143_172 = $ender;
-	      $cllayout_BBBS->BSheaderL_193_212 = $munic;
-	      $cllayout_BBBS->BSheaderL_213_220 = $cep;
-	      $cllayout_BBBS->BSheaderL_221_222 = $uf;
-	      $cllayout_BBBS->geraHEADERLoteBS();
+        $cllayout_BBBS->BSheaderL_001_003 = $acodigodobanco;
+        $cllayout_BBBS->BSheaderL_004_007 = $seq_header;
+        $cllayout_BBBS->BSheaderL_010_011 = $tiposerv;
+        $cllayout_BBBS->BSheaderL_012_013 = $tipopaga;
+        $cllayout_BBBS->BSheaderL_019_032 = $inscricaoprefa;
+        $cllayout_BBBS->BSheaderL_033_037 = $aconveniobanco;
+        $cllayout_BBBS->BSheaderL_053_057 = $agenciadobanco;
+        $cllayout_BBBS->BSheaderL_062_071 = $dacontadobanco;
+        $cllayout_BBBS->BSheaderL_073_102 = $nomeprefeitura;
+        $cllayout_BBBS->BSheaderL_143_172 = $ender;
+        $cllayout_BBBS->BSheaderL_193_212 = $munic;
+        $cllayout_BBBS->BSheaderL_213_220 = $cep;
+        $cllayout_BBBS->BSheaderL_221_222 = $uf;
+        $cllayout_BBBS->geraHEADERLoteBS();
       }
 
       $compensacao = "   ";
@@ -348,9 +366,9 @@ if($sqlerro == false){
         $compensacao = "010";
       }else {
 
-	      if($r38_liq>=5000){
-	        $compensacao = "018";
-	      }
+        if($r38_liq>=5000){
+          $compensacao = "018";
+        }
       }
 
       $contasapagarT = str_replace('.','',str_replace('-','',$r38_conta));
@@ -358,7 +376,7 @@ if($sqlerro == false){
 
       $contasapagarT+= 0;
       if($contasapagarT == 0){
-      	continue;
+        continue;
       }
       $contasapagarT = db_formatar($contasapagarT,'s','0',10,'e',0);
 
@@ -394,7 +412,7 @@ if($sqlerro == false){
         $sSqlPensao = $oDaoPensao->sql_query_file(null, null, null, null, $sCampos, null, $sWhere);
         $rsAgencia  = $oDaoPensao->sql_record($sSqlPensao);
 
-        if ($oDaoPensao->numrows != 1) {
+        if (!$rsAgencia || pg_num_rows($rsAgencia) != 1) {
 
           $sMsgErro  = "Não foi encontrada a agencia do pensionista: ";
           $sMsgErro .= "{$r38_regist} - {$sNomeServidor}.\\nFavor verificar.";
@@ -414,7 +432,7 @@ if($sqlerro == false){
         $sSqlAgencia = $oDaoPesMov->sql_query_dados_bancario(null, null, $sCampos, null, $sWhere);
         $rsAgencia   = $oDaoPesMov->sql_record($sSqlAgencia);
 
-        if ($oDaoPesMov->numrows != 1) {
+        if (!$rsAgencia || pg_num_rows($rsAgencia) != 1) {
 
           $sMsgErro  = "Não foi encontrada a agencia do servidor: ";
           $sMsgErro .= "{$r38_regist} - {$r38_nome}.\\nFavor verificar.";
@@ -425,7 +443,7 @@ if($sqlerro == false){
 
       $oDadosAgencia  = db_utils::fieldsMemory($rsAgencia, 0);
       $iAgencia       = (int) $oDadosAgencia->agencia;
-      $iDigitoAgencia = (int) $oDadosAgencia->digito;
+      $iDigitoAgencia = $oDadosAgencia->digito;
 
       if (strlen($iAgencia) > 5) {
 

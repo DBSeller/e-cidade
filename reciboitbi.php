@@ -1,80 +1,62 @@
 <?php
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_barras.php");
-require_once("fpdf151/impcarne.php");
-require_once("fpdf151/scpdf.php");
+require_once(modification("libs/db_barras.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
+use \ECidade\Tributario\Arrecadacao\CobrancaRegistrada\CobrancaRegistrada;
+use ECidade\Tributario\ITBI\Repository\ItbitaxasavaliaRepository;
+use ECidade\Tributario\ITBI\Model\Itbitaxasavalia;
+use ECidade\Tributario\Arrecadacao\Model\TaxaEspecifica as TaxaEspecificaModel;
+use ECidade\Tributario\Arrecadacao\Repository\TaxaEspecifica as TaxaEspecificaRepository;
+use ECidade\Tributario\Arrecadacao\Service\TaxaEspecifica as TaxaEspecificaService;
 
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_itbiavalia_classe.php");
-require_once("classes/db_itbi_classe.php");
-require_once("classes/db_itbidadosimovel_classe.php");
-require_once("classes/db_itbimatric_classe.php");
-require_once("classes/db_itbilogin_classe.php");
-require_once("classes/db_itburbano_classe.php");
-require_once("classes/db_itbirural_classe.php");
-require_once("classes/db_itbiruralcaract_classe.php");
-require_once("classes/db_itbinumpre_classe.php");
-require_once("classes/db_itbinome_classe.php");
-require_once("classes/db_itbinomecgm_classe.php");
-require_once("classes/db_itbipropriold_classe.php");
-require_once("classes/db_itbicgm_classe.php");
-require_once("classes/db_itbiconstr_classe.php");
-require_once("classes/db_numpref_classe.php");
-require_once("classes/db_itbiconstrespecie_classe.php");
-require_once("classes/db_itbiconstrtipo_classe.php");
-require_once("classes/db_parreciboitbi_classe.php");
-require_once("classes/db_histcalc_classe.php");
-require_once("classes/db_recibo_classe.php");
-require_once("classes/db_arrenumcgm_classe.php");
-require_once("classes/db_arrematric_classe.php");
-require_once("classes/db_db_bancos_classe.php");
-require_once("classes/db_paritbi_classe.php");
-require_once("model/regraEmissao.model.php");
-require_once("model/convenio.model.php");
-require_once("classes/db_itbiretificacao_classe.php");
-
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+parse_str($_SERVER['QUERY_STRING']);
 
 try {
+
   $oRegraEmissao = new regraEmissao(29,3,db_getsession('DB_instit'),date("Y-m-d", db_getsession("DB_datausu")),db_getsession('DB_ip'));
   $pdf1          = $oRegraEmissao->getObjPdf();
 
 } catch (Exception $eExeption){
+
   db_redireciona("db_erros.php?fechar=true&db_erro={$eExeption->getMessage()}");
   exit;
 }
 
 $clitbiavalia        = new cl_itbiavalia;
 $clitbi              = new cl_itbi;
-$clitbidadosimovel   = new cl_itbidadosimovel();
+$oDaoItbiCancela     = new cl_itbicancela;
+$clitbidadosimovel   = new cl_itbidadosimovel;
 $clitbirural         = new cl_itbirural;
 $clitbiruralcaract   = new cl_itbiruralcaract;
 $clitbimatric        = new cl_itbimatric;
@@ -95,9 +77,11 @@ $clrecibo            = new cl_recibo;
 $clarrenumcgm        = new cl_arrenumcgm;
 $clarrematric        = new cl_arrematric;
 $clparitbi           = new cl_paritbi;
-$clitbiretificacao   = new cl_itbiretificacao();
-$clhistcalc          = new cl_histcalc();
-$cl_db_usuacgm       = new cl_db_usuacgm();
+$clitbiretificacao   = new cl_itbiretificacao;
+$clhistcalc          = new cl_histcalc;
+$cl_db_usuacgm       = new cl_db_usuacgm;
+$oItbiIntermediador  = new cl_itbiintermediador;
+$cliptuant  = new cl_iptuant;
 
 $compradoresm        = 0;
 $compradoresf        = 0;
@@ -125,12 +109,15 @@ $it14_desc                  = 0;
 
 $p                          = 0;
 
+
 $config = db_query("select * from db_config where codigo = ".db_getsession("DB_instit"));
 db_fieldsmemory($config,0);
 
+$oStdInstituicao = db_utils::fieldsMemory($config, 0);
+
 $iNumprePago = 0;
 
-if ( $db21_codcli == 19985 or $db21_codcli == 18 or $db21_codcli == 74 or $db21_codcli == 15) {
+if($db21_codcli == 19985 or $db21_codcli == 18 or $db21_codcli == 74 or $db21_codcli == 15){
 
   $rsItbiNumpre = $clitbinumpre->sql_record($clitbinumpre->sql_query_recibo($itbi,"itbinumpre.it15_numpre, arrepaga.k00_dtpaga, arrepaga.k00_valor,
                                                                                    case when disbanco.dtpago is null
@@ -148,12 +135,14 @@ if ( $db21_codcli == 19985 or $db21_codcli == 18 or $db21_codcli == 74 or $db21_
   }
 
   if (isset($tipoguia) && $tipoguia == "n" and $dk00_dtpaga_testa != "" ) {
-    db_msgbox ('Sistema nao permite reemitir guia paga. Utiliza a opção [declaração de quitação].');
-    echo "<script>window.close()</script>";
+
+    $sMensagemErro = 'Sistema nao permite reemitir guia paga. Utiliza a opção [declaração de quitação].';
+    db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
     exit;
   } elseif ( isset($tipoguia) && $tipoguia == "q" and $dk00_dtpaga_testa == "" ) {
-    db_msgbox ('Guia não está paga!');
-    echo "<script>window.close()</script>";
+
+    $sMensagemErro = 'Guia não está paga!';
+    db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
     exit;
   }
 
@@ -162,7 +151,7 @@ if ( $db21_codcli == 19985 or $db21_codcli == 18 or $db21_codcli == 74 or $db21_
 $sSqlRetificacao = $clitbiretificacao->sql_query_file(null,"*",null," it32_itbi = {$itbi}");
 $rsretificado    = $clitbiretificacao->sql_record($sSqlRetificacao);
 
-if ( $clitbiretificacao->numrows > 0 ) {
+if($clitbiretificacao->numrows > 0){
 
   $lRetificado     = true;
   $oItbiRetificada = db_utils::fieldsMemory($rsretificado,0);
@@ -172,7 +161,6 @@ $rsParItbi = $clparitbi->sql_record($clparitbi->sql_query($iAnoUsu,"*",null,""))
 if ($clparitbi->numrows > 0) {
   db_fieldsmemory($rsParItbi,0);
 }
-
 
 $rsItbiAvalia = $clitbiavalia->sql_record($clitbiavalia->sql_query($itbi));
 if ($clitbiavalia->numrows > 0) {
@@ -189,28 +177,51 @@ if ($clitbiavalia->numrows > 0) {
     $codigoUsuarioLiberado = $rh01_regist;
   }
 
-  $dataLiberado          = $it14_dtliber;
-  $lLiberado = true;
+  $dataLiberado = $it14_dtliber;
+  $lLiberado    = true;
 }
 
-$rsItbi = $clitbi->sql_record($clitbi->sql_query( null, 
-                                                  "*", 
-                                                  null, 
+$rsItbi = $clitbi->sql_record($clitbi->sql_query( null,
+                                                  "*",
+                                                  null,
                                                   "it01_guia = {$itbi}"
                                                   . " and it01_coddepto = " . db_getsession("DB_coddepto") ));
 
 if ($clitbi->numrows == 0) {
 
-  db_msgbox ('ITBI não encontrada para o departamento!');
-  echo "<script>window.close()</script>";
+  $sMensagemErro = 'ITBI não encontrada para o departamento!';
+  db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
+  exit;
+}
+
+
+
+
+/**
+ * Valida se a guia esta cancelada não deve permitir emissão
+ */
+$sSqlVerificaItbiCancelada = $oDaoItbiCancela->sql_query( $itbi );
+$rsVerificaItbiCancelada   = $oDaoItbiCancela->sql_record( $sSqlVerificaItbiCancelada );
+
+if ($oDaoItbiCancela->numrows != 0) {
+
+  $sMensagemErro = 'ITBI cancelada, emissão não permitida!';
+  db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
   exit;
 }
 
 if ($clitbi->numrows > 0) {
+
   db_fieldsmemory($rsItbi,0);
   $nomeUsuarioIncluido = $nome;
   $nomeDepartamento = $descrdepto;
 }
+
+
+
+$pdf1->processo = $it01_processo;
+$pdf1->titularProcesso = $it01_tituprocesso;
+$pdf1->dataProcesso = $it01_dtprocesso;
 
 $areaterreno = $it01_areaterreno;
 $areatran = $it01_areatrans;
@@ -226,10 +237,28 @@ if($clitbirural->numrows > 0){
   db_fieldsmemory($rsItbiRural,0);
   $tipo = "rural";
 }
+//kill(pg_fetch_all($rsItbiRural));
 
 $rsItbiMatric = $clitbimatric->sql_record($clitbimatric->sql_query($itbi));
 if($clitbimatric->numrows > 0){
   db_fieldsmemory($rsItbiMatric,0);
+}
+
+if (!empty($j01_matric)) {
+    
+    $iRefant = null; 
+    $rIptuant = $cliptuant->sql_record($cliptuant->sql_query_file($j01_matric));
+    if($rIptuant && $cliptuant->numrows > 0) {
+      $iRefant = \db_utils::fieldsMemory($rIptuant, 0)->j40_refant;
+    }
+    $pdf1->refant = $iRefant; 
+    if (!empty($iRefant)) {
+        $pdf1->pretitulo8 = $iRefant;
+    } else {
+        $pdf1->pretitulo8 = $j01_matric;
+    }
+} else {
+    $pdf1->pretitulo8 = "";
 }
 
 /*
@@ -240,8 +269,8 @@ $sSqlParametroparreciboitbi = $clparreciboitbi->sql_query();
 $clparreciboitbi->sql_record($sSqlParametroparreciboitbi);
 if ($clparreciboitbi->numrows == 0) {
 
-  db_msgbox ('Parâmetros de CGM e Código  da Receita não cadastrado ! ');
-  echo "<script>window.close()</script>";
+  $sMensagemErro = 'Parâmetros de CGM e Código da Receita não cadastrado ! ';
+  db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
   exit;
 
 }
@@ -254,17 +283,17 @@ $sSQLParametroHistcalc707 = $clhistcalc->sql_query("","k01_codigo","","k01_codig
 $clhistcalc->sql_record($sSQLParametroHistcalc707);
 if ($clhistcalc->numrows == 0) {
 
-  db_msgbox ('Histórico 707 Não Cadastrado ! ');
-  echo "<script>window.close()</script>";
+  $sMensagemErro = 'Histórico 707 Não Cadastrado ! ';
+  db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
   exit;
-
 }
+
 $sSQLParametroHistcalc807 = $clhistcalc->sql_query("","k01_codigo","","k01_codigo = 807 ");
 $clhistcalc->sql_record($sSQLParametroHistcalc807);
 if ($clhistcalc->numrows == 0) {
 
-  db_msgbox ('Histórico 807 Não Cadastrado ! ');
-  echo "<script>window.close()</script>";
+  $sMensagemErro = 'Histórico 807 Não Cadastrado ! ';
+  db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
   exit;
 }
 
@@ -279,7 +308,6 @@ $proprietarios = "";
 /*===================================  COM A NOVA EXTRUTURA BUSCA OS DADOS DE TRANSMISSORES E ADQUIRENTES NA TABELA ITBINOME ===================================================*/
 
 /* AQUI PEGA SO O ADQUIRENTE PRINCIPAL E SEUS DADOS */
-
 $rscompprinc = $clitbinome->sql_record($clitbinome->sql_query("","
                                    it03_nome     as nomecompprinc,
                                    it03_mail     as mailcomprador,
@@ -292,16 +320,18 @@ $rscompprinc = $clitbinome->sql_record($clitbinome->sql_query("","
                                    it03_cep      as cepcomprador,
                                    it03_sexo     as sexocomprador,
                                    it03_princ    as principalcomprador,
-                                   it03_bairro   as bairrocomprador",
-""," it03_guia = $itbi
+                                   it03_bairro   as bairrocomprador,
+                                   it21_numcgm   as cgmcompprinc",
+                                   ""," it03_guia = $itbi
                                    and upper(it03_tipo)  = 'C'
                                    and it03_princ = 't' "));
 
 if($clitbinome->numrows  > 0){
   db_fieldsmemory($rscompprinc,$p);
 }else{
-  db_msgbox ('Adquirente principal não encontrado ! ');
-  echo "<script>window.close()</script>";
+
+  $sMensagemErro = 'Adquirente principal não encontrado ! ';
+  db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
   exit;
 
 }
@@ -348,26 +378,44 @@ if($clitbiconstr->numrows  > 0){
   $areatotal = 0;
   $areatrans = 0;
   for ($p = 0;$p < $num;$p++){
+
     db_fieldsmemory($resultcons,$p);
     $areatrans += $it08_areatrans;
-    //$areatotal += $it08_area; antes eu somava a area total para aparecer na guia, agora na linha de baixo
-    //eu apenas coloco a primeira area total de uma das construcoes para aprecer na guia, conforme solicitado
     $areatotal += $it08_area;
   }
+}
+
+$pdf1->intermediadorNome  = null;
+$pdf1->intermediadorCpf   = null;
+$pdf1->intermediadorCreci = null;
+
+// Intermediador
+$sSqlItbiIntermediador   = $oItbiIntermediador->sql_get_principal($itbi);
+$resultItbiIntermediador = $oItbiIntermediador->sql_record($sSqlItbiIntermediador);
+
+if($oItbiIntermediador->numrows > 0){
+
+  db_fieldsmemory($resultItbiIntermediador, 0);
+  $pdf1->intermediadorNome  = utf8_decode($it35_nome);
+  $pdf1->intermediadorCpf   = $it35_cnpj_cpf;
+  $pdf1->intermediadorCreci = $it35_creci;
 }
 
 /*============================================================================================================================================================================*/
 /********************************************************** T R A N S M I T E N T E S *****************************************************************************************/
 /*============================================================================================================================================================================*/
 
-//die($clitbinome->sql_queryguia("","it03_nome as z01_nome,it03_sexo,it03_cpfcnpj as z01_cgccpf,it03_endereco as z01_ender,it03_numero,it03_compl,it03_cxpostal,it03_bairro as z01_bairro,it03_munic as z01_munic,it03_uf as z01_uf,it03_cep as z01_cep,it03_mail,it22_itbi,it22_setor as j34_setor,it22_quadra as j34_quadra,it22_lote as j34_lote,it22_descrlograd as j14_nome,it22_numero as j39_numero,it22_compl,it06_matric,it04_codigo,it04_descr,it04_desconto,it04_obs,it04_aliquota,itbi.*,itburbano.*,itbirural.*,itbiavalia.*",""," it03_guia  = $itbi and upper(it03_tipo)  = 'T' and it03_princ = 't' "));
-
 $result1 = $clitbinome->sql_record($clitbinome->sql_queryguia("","z01_numcgm,it03_nome as z01_nome,z01_telef as fonetransmitente,it03_mail as mailtransmitente ,it03_sexo,it03_cpfcnpj as z01_cgccpf,it03_endereco as z01_ender,it03_numero,it03_compl,it03_cxpostal,it03_bairro as z01_bairro,it03_munic as z01_munic,it03_uf as z01_uf,it03_cep as z01_cep,it03_mail,it22_itbi,it22_setor as j34_setor,it22_quadra as j34_quadra,it22_lote as j34_lote,it22_descrlograd as j14_nome,j13_descr,it22_numero as j39_numero,it22_compl as j39_compl,it06_matric,it04_codigo,it04_descr,it04_desconto,it04_obs,itbi.*,itburbano.*,itbirural.*,itbiavalia.*",""," it03_guia  = $itbi and upper(it03_tipo)  = 'T' and it03_princ = 't' "));
-
+//kill(pg_fetch_all($result1));
 if($clitbinome->numrows  > 0){
-  //db_criatabela($result1);exit;
   db_fieldsmemory($result1,0);
 }
+$transmitente = $z01_nome;
+
+$pdf1->transmitente = $transmitente;
+
+/** Extensao : Inicio [guia-itbi-setor-quadra-lote-localizacao] */
+/** Extensao : Fim [guia-itbi-setor-quadra-lote-localizacao] */
 
 $propri = "";
 
@@ -381,7 +429,6 @@ if($clitbinome->numrows  > 0){
   $num = pg_numrows($result);
 
   // acumula o numero compradores homens e mulheres para colocar na observação da guia
-
   for ($p = 0;$p < $num;$p++){
     db_fieldsmemory($result,$p);
     if(strtoupper($it03_sexo)== 'M'){
@@ -405,7 +452,6 @@ if($clitbinome->numrows  > 0){
 
 }
 
-//
 /*================================================  B U S C A   O   C G M   D O   D E V E D O R   =======================================================================*/
 
 $result = $clparreciboitbi->sql_record($clparreciboitbi->sql_query_file());
@@ -425,12 +471,30 @@ if($clitbinomecgm->numrows > 0){
   }
 }
 if(!isset($cgmdevedor) || $cgmdevedor == ""){
-  echo "<script>alert('Parâmetros do recibo não configurados! \\n Contate suporte!')</script>";
-  echo "<script>window.close()</script>";
+
+  $sMensagemErro = 'Parâmetros do recibo não configurados! \n Contate suporte!';
+  db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
   exit;
 }
 
 $pdf1->cgc = $cgc;
+
+/**
+ * Busca a mensagem do recibo e a taxa específica configurada no débito 29
+ */
+$taxaExpediente = 0;
+$taxaEspecifica = null;
+$k00_msgrecibo = '';
+$oDaoArreTipo  = new cl_arretipo();
+$sSqlArreTipo  = $oDaoArreTipo->sql_query_file(null, "k00_msgrecibo, k00_taxaespecifica", null, "k00_tipo = 29");
+$rsArreTipo    = $oDaoArreTipo->sql_record($sSqlArreTipo);
+
+if ($oDaoArreTipo->numrows > 0) {
+    $dadoArretipo = db_utils::fieldsMemory($rsArreTipo, 0);
+
+    $k00_msgrecibo = $dadoArretipo->k00_msgrecibo;
+    $taxaEspecifica = $dadoArretipo->k00_taxaespecifica;
+}
 
 /**
  * Verifica se a guia está liberada para emissão
@@ -442,20 +506,74 @@ if ($lLiberado and $tipoguia != "q") {
 // Não Insere Recibo quando não estiver liberada
   $sqlerro = false;
   db_inicio_transacao();
+
+  $sCamposPgto = "it27_descricao, it27_aliquota, it28_descricao,it24_valor, it04_desconto";
+  $sSqlFormaPagto = $clitbiavalia->sql_query_pag($itbi,$sCamposPgto,"it28_sequencial");
+  $rsDadosFormaPgto = $clitbiavalia->sql_record($sSqlFormaPagto);
+
+  $iLinhasFormaPgto = $clitbiavalia->numrows;
+  $aDadosFormasPgto = array();
+
+  $iForma = 0;
+
+  $pdf1->sFormaPagamento = "I S E N T O";
+
+  if ( $iLinhasFormaPgto > 0 ) {
+
+    for ( $iInd=0; $iInd < $iLinhasFormaPgto; $iInd++) {
+
+      $oDadosFormasPgto = db_utils::fieldsMemory($rsDadosFormaPgto,$iInd);
+
+      $nValorImposto = $oDadosFormasPgto->it24_valor * ($oDadosFormasPgto->it27_aliquota / 100);
+      $nDescImposto  = $nValorImposto * ( $oDadosFormasPgto->it04_desconto / 100 );
+      $nTotalImposto = $nValorImposto - $nDescImposto;
+
+      if ($nTotalImposto >= 0) {
+
+        $aDadosFormasPgto[$iForma]["Descricao"] = $oDadosFormasPgto->it27_descricao;
+        $aDadosFormasPgto[$iForma]["Aliquota"]  = $oDadosFormasPgto->it27_aliquota;
+        $aDadosFormasPgto[$iForma]["Valor"]     = $oDadosFormasPgto->it24_valor;
+        $aDadosFormasPgto[$iForma]["Imposto"]   = $nTotalImposto;
+
+        $pdf1->desconto_abatimento += $nDescImposto;
+        $pdf1->sFormaPagamento = $oDadosFormasPgto->it28_descricao;
+
+        $iForma++;
+      }
+    }
+  }
+
+  if ( $iForma < 2 ) {
+
+      for ( $iFormaNova=$iForma;$iFormaNova<=1;$iFormaNova++) {
+
+        $aDadosFormasPgto[$iFormaNova]["Descricao"] = "";
+        $aDadosFormasPgto[$iFormaNova]["Aliquota"]  = "";
+        $aDadosFormasPgto[$iFormaNova]["Valor"]     = "";
+        $aDadosFormasPgto[$iFormaNova]["Imposto"]   = "";
+      }
+  }
+
+  $pdf1->desconto_abatimento = db_formatar($pdf1->desconto_abatimento, "f");
+
   $numpre       = $clnumpref->sql_numpre();
   $numpre_ficha = $numpre;
   $resnumpre    = $clitbinumpre->sql_record($clitbinumpre->sql_query(null,"*",""," it15_guia = {$itbi}"));
+
   /**
    * Se existirem guias emitidas altera a situação de ultima emitida para false
    */
   if ($clitbinumpre->numrows > 0) {
 
     $aItbiNumpre  = db_utils::getCollectionByRecord($resnumpre);
+
+    $pdf1->numero_emissoes = count($aItbiNumpre);
+
     foreach ($aItbiNumpre as $oItbiNumpre) {
 
       $clitbinumpre->it15_sequencial = $oItbiNumpre->it15_sequencial;
       $clitbinumpre->it15_ultimaguia = 'f';
-    	$clitbinumpre->alterar($oItbiNumpre->it15_sequencial);
+      $clitbinumpre->alterar($oItbiNumpre->it15_sequencial);
     }
   }
   $clitbinumpre->it15_guia       = $itbi;
@@ -464,27 +582,137 @@ if ($lLiberado and $tipoguia != "q") {
   $clitbinumpre->incluir(null);
 
   $numpre = $clitbinumpre->it15_numpre;
+  
+  $aInserirRecibos = array();
+  $oInserirRecibos = new \stdClass();
+  $oInserirRecibos->receita = $it17_codigo;
+  $oInserirRecibos->descricao = "ITBI";
+  $oInserirRecibos->valor = $it14_valorpaga;
 
-  $clrecibo->k00_numcgm    = $cgmdevedor;
-  $clrecibo->k00_dtoper    = date("Y-m-d",db_getsession("DB_datausu"));
-  $clrecibo->k00_receit    = $it17_codigo;
-  $clrecibo->k00_hist      = 707;
-  $clrecibo->k00_valor     = $it14_valorpaga;
-  $clrecibo->k00_dtvenc    = $it14_dtvenc;
-  $clrecibo->k00_numpre    = $numpre;
-  $clrecibo->k00_numpar    = 1;
-  $clrecibo->k00_numtot    = 1;
-  $clrecibo->k00_numdig    = '0';
-  $clrecibo->k00_tipo      = 29;
-  $clrecibo->k00_tipojm    = '0';
-  $clrecibo->k00_numnov    = 0;
-  $clrecibo->k00_codsubrec = '0';
-  $clrecibo->incluir();
-  if($clrecibo->erro_status == 0){
+  $aInserirRecibos[] = $oInserirRecibos;
+    
+    
+    $itbitaxasavaliaRepository = ItbitaxasavaliaRepository::getInstance();
+    $itbitaxasavalia           = new Itbitaxasavalia();
+    $itbitaxasavalia->setGuia($itbi);
 
-    $sqlerro = true;
-    $erromsg = "Erro recibo ".$clrecibo->erro_msg;
+    $aTaxas = $itbitaxasavaliaRepository->getDadosTaxas($itbitaxasavalia);  
+    foreach ($aTaxas as $oTaxas) {
+
+        $objectoTaxas = new \stdClass();
+        $oInserirRecibos = new \stdClass();
+        $objectoTaxas->descricao = $oTaxas->ar44_descricao;
+
+        if ($oTaxas->ar44_tipo != 0 AND $oTaxas->ar44_tipo != 1) {
+            if ($oTaxas->it39_calculasobre == 1) {
+                $calculaSobre = "Terreno";
+            } else if ($oTaxas->it39_calculasobre == 2) {
+                $calculaSobre = "Construção";
+            } else if ($oTaxas->it39_calculasobre == 3) {
+                $calculaSobre = "Ambos";
+            }
+        } else {
+            $calculaSobre = "Valor Fixo";
+        }
+
+        $objectoTaxas->calculaSobre = $calculaSobre;
+
+        $objectoTaxas->aliquota = $oTaxas->it39_aliquota;
+        $objectoTaxas->valor = $oTaxas->it39_valor;
+
+        $pdf1->aTaxas[] = $objectoTaxas;
+
+        $oInserirRecibos->receita = $oTaxas->ar44_receita;
+        $oInserirRecibos->descricao = $oTaxas->ar44_descricao;
+        $oInserirRecibos->valor = $oTaxas->it39_valor;
+
+        $aInserirRecibos[] = $oInserirRecibos;
+
+        $it14_valorpaga += $oTaxas->it39_valor;
+    }
+    
+    $it14_valorpaga -= $pdf1->desconto_abatimento;
+    
+    if (!empty($taxaEspecifica) && $it14_valorpaga > 0 ) {
+      
+      $taxaService = new TaxaEspecificaService(TaxaEspecificaRepository::getInstance());
+      $taxaModel = $taxaService->getByCodigoSubReceita($taxaEspecifica);
+      $taxaExpediente = $taxaService->calculaInflator($taxaModel);
+       
+      $oInserirRecibosTaxaExpediente = new \stdClass();
+      $oInserirRecibosTaxaExpediente->receita = $taxaModel->getCodigoReceita();
+      $oInserirRecibosTaxaExpediente->descricao = "TAXA DE EXPEDIENTE";
+      $oInserirRecibosTaxaExpediente->valor = $taxaExpediente;
+      $oInserirRecibosTaxaExpediente->codHistorico = TaxaEspecificaModel::CODIGO_HISTORICO;
+      $oInserirRecibosTaxaExpediente->isTaxaExpediente = true;
+
+      $objectoTaxas = new \stdClass();
+      $objectoTaxas->descricao = "TAXA DE EXPEDIENTE";
+      $objectoTaxas->calculaSobre = '';
+      $objectoTaxas->aliquota = '';
+      $objectoTaxas->valor = $taxaExpediente;
+
+      $it14_valorpaga += $oInserirRecibosTaxaExpediente->valor;
+
+      $pdf1->aTaxas[] = $objectoTaxas;
+      $aInserirRecibos[] = $oInserirRecibosTaxaExpediente;
+    }
+
+    $pdf1->aTaxas2 = $aInserirRecibos;
+    
+    foreach ($aInserirRecibos as $oDados) {
+        $codHist = 707;
+
+        if (isset($oDados->isTaxaExpediente)) {
+            $codHist = $oDados->codHistorico;
+        }
+
+        $clrecibo->k00_numcgm    = $cgmdevedor;
+        $clrecibo->k00_dtoper    = date("Y-m-d",db_getsession("DB_datausu"));
+        $clrecibo->k00_receit    = $oDados->receita;
+        $clrecibo->k00_hist      = $codHist;
+        $clrecibo->k00_valor     = $oDados->valor;
+        $clrecibo->k00_dtvenc    = $it14_dtvenc;
+        $clrecibo->k00_numpre    = $numpre;
+        $clrecibo->k00_numpar    = 1;
+        $clrecibo->k00_numtot    = 1;
+        $clrecibo->k00_numdig    = '0';
+        $clrecibo->k00_tipo      = 29;
+        $clrecibo->k00_tipojm    = '0';
+        $clrecibo->k00_numnov    = 0;
+        $clrecibo->k00_codsubrec = '0';
+        $clrecibo->incluir();
+        if($clrecibo->erro_status == 0){
+
+            $sqlerro = true;
+            $erromsg = "Erro recibo ".$clrecibo->erro_msg;
+        }
+    }
+
+    $cl_reciboavulsoboleto = new \cl_reciboavulsoboleto();
+
+    $cl_reciboavulsoboleto->k201_numpre = $numpre;
+    $cl_reciboavulsoboleto->k201_data = date("Y-m-d H:i:s");
+    $cl_reciboavulsoboleto->k201_usuario = db_getsession("DB_id_usuario");
+    $cl_reciboavulsoboleto->k201_ip = db_getsession("DB_ip");
+
+    $cl_reciboavulsoboleto->incluir();
+
+    if ($cl_reciboavulsoboleto->erro_status == "0") {
+        throw new \Exception($cl_reciboavulsoboleto->erro_msg);
+    }
+
+  $oRecibo = new recibo(1);
+  $oRecibo->setNumnov($numpre);
+  $lConvenioCobrancaValido = CobrancaRegistrada::validaConvenioCobranca($oRegraEmissao->getConvenio());
+
+  //@TODO validação para  não fazer requisição para webservice SIGCB  quando valor da guia for zerado.
+  $lExisteValor =  $it14_valorpaga  !=  "0" || $it14_valorpaga != 0 ;
+
+  if ($lConvenioCobrancaValido && !CobrancaRegistrada::utilizaIntegracaoWebService($oRegraEmissao->getConvenio()) && $lExisteValor) {
+    CobrancaRegistrada::adicionarRecibo($oRecibo, $oRegraEmissao->getConvenio());
   }
+
 
   if( isset($it06_matric) && $it06_matric != "" ) {
     if ($sqlerro == false) {
@@ -508,11 +736,12 @@ if ($lLiberado and $tipoguia != "q") {
           $erromsg = "Erro arrenumcgm ".$clarrenumcgm->erro_msg;
       }
   }
-  
-  if ($sqlerro == true) { 
-    db_msgbox($erromsg);
-    echo "<script>window.close()</script>";
-     exit;
+
+  if ($sqlerro == true) {
+
+    $sMensagemErro = $erromsg;
+    db_redireciona("db_erros.php?fechar=true&db_erro={$sMensagemErro}");
+    exit;
   }
   db_fim_transacao($sqlerro);
 
@@ -541,27 +770,27 @@ $pdf1->agenciapagamento = "";
 
 if ( $tipoguia == "q" ) {
 
-	$sCamposItbiNumpre  = "arrepaga.k00_dtpaga,                    ";
-	$sCamposItbiNumpre .= "arrepaga.k00_valor,                     ";
-	$sCamposItbiNumpre .= "case                                    ";
-	$sCamposItbiNumpre .= "  when disbanco.dtpago is null          ";
-	$sCamposItbiNumpre .= "    then arrepaga.k00_dtpaga            ";
-	$sCamposItbiNumpre .= "  else disbanco.dtpago                  ";
-	$sCamposItbiNumpre .= "end as datapagamento,                   ";
-	$sCamposItbiNumpre .= "disbanco.k15_codbco as bancopagamento,  ";
-	$sCamposItbiNumpre .= "disbanco.k15_codage as agenciapagamento,";
-	$sCamposItbiNumpre .= "itbi.it01_data                          ";
+  $sCamposItbiNumpre  = "arrepaga.k00_dtpaga,                    ";
+  $sCamposItbiNumpre .= "arrepaga.k00_valor,                     ";
+  $sCamposItbiNumpre .= "case                                    ";
+  $sCamposItbiNumpre .= "  when disbanco.dtpago is null          ";
+  $sCamposItbiNumpre .= "    then arrepaga.k00_dtpaga            ";
+  $sCamposItbiNumpre .= "  else disbanco.dtpago                  ";
+  $sCamposItbiNumpre .= "end as datapagamento,                   ";
+  $sCamposItbiNumpre .= "disbanco.k15_codbco as bancopagamento,  ";
+  $sCamposItbiNumpre .= "disbanco.k15_codage as agenciapagamento,";
+  $sCamposItbiNumpre .= "itbi.it01_data                          ";
   $rsItbiNumpre = $clitbinumpre->sql_record($clitbinumpre->sql_query_recibo($itbi,$sCamposItbiNumpre));
 
-  for ( $x=0; $x < $clitbinumpre->numrows; $x++ ) {
+  for($x = 0; $x < $clitbinumpre->numrows; $x++){
     $oItbiNumpre = db_utils::fieldsMemory($rsItbiNumpre, $x);
 
       if ( $oItbiNumpre->datapagamento != "" ) {
-      	
-      	$iAnoPagamento = date( 'Y', strtotime($oItbiNumpre->it01_data) );
-      	$rsTxParItbi   = db_query($clparitbi->sql_query($iAnoPagamento, 'it24_taxabancaria '));
-      	$oParItbi      = db_utils::fieldsMemory($rsTxParItbi, 0);
-      	
+
+        $iAnoPagamento = date( 'Y', strtotime($oItbiNumpre->it01_data) );
+        $rsTxParItbi   = db_query($clparitbi->sql_query($iAnoPagamento, 'it24_taxabancaria '));
+        $oParItbi      = db_utils::fieldsMemory($rsTxParItbi, 0);
+
         $pdf1->datapagamento    = $oItbiNumpre->datapagamento;
         $pdf1->valorpagamento   = $oItbiNumpre->k00_valor;
         $pdf1->bancopagamento   = $oItbiNumpre->bancopagamento;
@@ -598,10 +827,18 @@ if($oRegraEmissao->isCobranca()){
 
 }
 
+$pdf1->agencia_cedente = null;
+$pdf1->nosso_numero    = null;
+$pdf1->carteira        = null;
+
 if ($lLiberado) {
   // Nao gera código de barras quando não estiver liberada
   try {
-     $oConvenio = new convenio($oRegraEmissao->getConvenio(),$numpre,1,$it14_valorpaga,$vlrbar,$datavencimento,6);
+    $oConvenio = new convenio($oRegraEmissao->getConvenio(),$numpre,1,$it14_valorpaga,$vlrbar,$datavencimento,6);
+
+    if ($lConvenioCobrancaValido && CobrancaRegistrada::utilizaIntegracaoWebService($oRegraEmissao->getConvenio()) && $lExisteValor) {
+      CobrancaRegistrada::registrarReciboWebservice($numpre, $oRegraEmissao->getConvenio(), $it14_valorpaga);
+    }
   } catch (Exception $eExeption){
      db_redireciona("db_erros.php?fechar=true&db_erro={$eExeption->getMessage()}");
      exit;
@@ -610,19 +847,16 @@ if ($lLiberado) {
   $codigo_barras   = $oConvenio->getCodigoBarra();
   $linha_digitavel = $oConvenio->getLinhaDigitavel();
 
-  if ($oRegraEmissao->isCobranca()) {
-
-    $pdf1->agencia_cedente = $oConvenio->getAgenciaCedente();
-    $pdf1->carteira        = $oConvenio->getCarteira();
-
-  }
+  $pdf1->agencia_cedente = $oConvenio->getAgenciaCedente();
+  $pdf1->carteira        = $oConvenio->getCarteira();
+  $pdf1->nosso_numero    = $oConvenio->getNossoNumero();
 
   $pdf1->tipo_convenio = $oConvenio->getTipoConvenio();
   /// Fim código barras
 }
 
-$areaterrenomat = split('\.',$areatran);
-$areaedificadamat = split('\.',@$areatotal);
+$areaterrenomat   = explode('\.',$areatran);
+$areaedificadamat = explode('\.',@$areatotal);
 
 $result = $clitbiruralcaract->sql_record($clitbiruralcaract->sql_query($itbi,"","*","j31_codigo"));
 $linhasitbiruralcaract = $clitbiruralcaract->numrows;
@@ -667,6 +901,7 @@ if($linhasresultcons > 0){
 }
 
 if($oRegraEmissao->isCobranca()){
+
   $sqltipo= "select k00_tipo,k03_tipo,k00_descr from arretipo where k03_tipo = 8";
   $resulttipo = db_query($sqltipo);
   $linhastipo = pg_num_rows($resulttipo);
@@ -681,25 +916,23 @@ if($oRegraEmissao->isCobranca()){
     $historico = "
   ITBI N".chr(176)." ".db_formatar($itbi,'s','0',5)."/".db_getsession('DB_anousu')."    Tipo: $tipo
   Setor/Quadra/Lote: ".@$j34_setor."/".@$j34_quadra."/".@$j34_lote."
-	Endereço: ".@$j14_tipo." ".@$j14_nome." ".@$j39_numero.(@$j39_compl!=""?"/".@$j39_compl:"")."
-  Bairro:".@$j13_descr."
+  Endereço: ".@$j14_tipo." ".@$j14_nome." ".@$j39_numero.(@$j39_compl!=""?"/".@$j39_compl:"")."
+  Bairro:   ".@$j13_descr."
   Transmitente: $z01_nome
   ";
   }else{
 
     $historico = "
-  ITBI N".chr(176)." ".db_formatar($itbi,'s','0',5)."/".db_getsession('DB_anousu')."    Tipo: $tipo
-	Endereço: ".@$j14_tipo." ".@$j14_nome." ".@$j39_numero.(@$j39_compl!=""?"/".@$j39_compl:"")."
+  ITBI N".chr(176)." ".db_formatar($itbi,'s','0',5)."/".db_getsession('DB_anousu')."   Tipo: $tipo
+  Endereço: ".@$j14_tipo." ".@$j14_nome." ".@$j39_numero.(@$j39_compl!=""?"/".@$j39_compl:"")."
   Bairro:".@$j13_descr."
   Transmitente: ".@$z01_nome;
   }
 
-  // variaveis para ficha
+  $historico .= $proprietarios;
 
   $pdf1->valor_documento  =@$valor_documento;
   $pdf1->especie          =@$especie;
-  $pdf1->agencia_cedente  =@$agencia_cedente;
-  $pdf1->carteira         =@$carteira;
   $pdf1->valor_cobrado    =@$valor_cobrado;
   $pdf1->valtotal         =@$valor_documento;
   $pdf1->descr10          = "1 / 1";
@@ -707,6 +940,7 @@ if($oRegraEmissao->isCobranca()){
   $pdf1->data_processamento = date('d/m/Y',db_getsession('DB_datausu'));
   $pdf1->descr11_1        = @$nomecompprinc;                          // nome sacado
   $pdf1->descr11_2        = @$enderecocomprador."-".@$bairrocomprador;// endereço sacado
+  $pdf1->numcgm = @$cgmcompprinc;
   $pdf1->cep              = @$cepcomprador;
   $pdf1->munic            = @$municipiocomprador;
   $pdf1->descr9           = @$numpre_ficha."001";
@@ -714,51 +948,6 @@ if($oRegraEmissao->isCobranca()){
   $pdf1->tipo_exerc       = @$tipo_exerc;
   $pdf1->prefeitura       = @$nomeinst;
 }
-
-  $rsDadosFormaPgto = $clitbiavalia->sql_record($clitbiavalia->sql_query_pag($itbi,"it27_descricao, it27_aliquota, it24_valor, it04_desconto","it28_sequencial"));
-
-  $iLinhasFormaPgto = $clitbiavalia->numrows;
-  $aDadosFormasPgto = array();
-
-  $iForma=0;
-
-  if ( $iLinhasFormaPgto > 0 ) {
-    for ( $iInd=0; $iInd < $iLinhasFormaPgto; $iInd++) {
-      $oDadosFormasPgto = db_utils::fieldsMemory($rsDadosFormaPgto,$iInd);
-
-      $nValorImposto = $oDadosFormasPgto->it24_valor * ($oDadosFormasPgto->it27_aliquota/100);
-      $nDescImposto  = $nValorImposto * ( $oDadosFormasPgto->it04_desconto/100 );
-      $nTotalImposto = $nValorImposto - $nDescImposto;
-
-      if ($nTotalImposto > 0) {
-
-        $aDadosFormasPgto[$iForma]["Descricao"] = $oDadosFormasPgto->it27_descricao;
-        $aDadosFormasPgto[$iForma]["Aliquota"]  = $oDadosFormasPgto->it27_aliquota;
-        $aDadosFormasPgto[$iForma]["Valor"] 	  = $oDadosFormasPgto->it24_valor;
-        $aDadosFormasPgto[$iForma]["Imposto"]   = $nTotalImposto;
-
-        $iForma++;
-
-      }
-
-    }
-
-  }
-
-  if ( $iForma < 2 ) {
-
-      for ( $iFormaNova=$iForma;$iFormaNova<=1;$iFormaNova++) {
-
-      $aDadosFormasPgto[$iFormaNova]["Descricao"] = "";
-      $aDadosFormasPgto[$iFormaNova]["Aliquota"]  = "";
-      $aDadosFormasPgto[$iFormaNova]["Valor"]     = "";
-      $aDadosFormasPgto[$iFormaNova]["Imposto"]   = "";
-
-    }
-
-  }
-
-// die("iForma: $iForma - " . sizeof($aDadosFormasPgto) );
 
   $sWhere  = "     it19_guia    = {$itbi}";
   $sWhere .= " and it19_tipocaract = 1     ";
@@ -768,6 +957,7 @@ if($oRegraEmissao->isCobranca()){
   $aDadosCaractDistr  = array();
 
   if ( $iLinhasCaractDistr > 0 ) {
+
     for ( $iInd=0; $iInd < $iLinhasCaractDistr; $iInd++){
       $oDadosCaractDistr = db_utils::fieldsMemory($rsBuscaCaractDistr,$iInd);
       $aDadosCaractDistr[$iInd]['Descricao'] = $oDadosCaractDistr->j31_descr;
@@ -810,8 +1000,6 @@ if($oRegraEmissao->isCobranca()){
 
       $rsNumPref = $clnumpref->sql_record($clnumpref->sql_query($iAnoUsu,$iInstit,"numpref.k03_regracnd",null,""));
 
-
-
       if ( $clnumpref->numrows > 0 ) {
         db_fieldsmemory($rsNumPref,0);
       }
@@ -848,52 +1036,48 @@ if($oRegraEmissao->isCobranca()){
 
   $sMsgObs = @$it01_obs;
   if ( $lRetificado ) {
-  	
-  	// Pega o ano da itbi retificada
-  	$rsItbiRetificativa = db_query($clitbi->sql_query($oItbiRetificada->it32_itbiretif));
-  	$oItbiRetificativa  = db_utils::fieldsMemory($rsItbiRetificativa, 0);
-  	
-  	// Repassa a qual guia a atual é retificativa
-  	$pdf1->sOrigemRetificacaoNumero = $oItbiRetificada->it32_itbiretif;
-  	$pdf1->sOrigemRetificacaoAno    = date('Y', strtotime($oItbiRetificativa->it01_data));
-  	
-  	// Se for de Araruama, não escreve esta observação, pois é escrita em outra parte do relatório
-  	if ($db21_codcli != 74) {
+
+    // Pega o ano da itbi retificada
+    $rsItbiRetificativa = db_query($clitbi->sql_query($oItbiRetificada->it32_itbiretif));
+    $oItbiRetificativa  = db_utils::fieldsMemory($rsItbiRetificativa, 0);
+
+    // Repassa a qual guia a atual é retificativa
+    $pdf1->sOrigemRetificacaoNumero = $oItbiRetificada->it32_itbiretif;
+    $pdf1->sOrigemRetificacaoAno    = date('Y', strtotime($oItbiRetificativa->it01_data));
+
+    // Se for de Araruama, não escreve esta observação, pois é escrita em outra parte do relatório
+    if ($db21_codcli != 74) {
       $sMsgObs .= " GUIA RETIFICATIVA À GUIA DE NÚMERO {$oItbiRetificada->it32_itbiretif}";
-  	}
+    }
   }
 
-  $sUsuarioAtual  = " ";
-  $sUsuarioAtual .= " select rh01_regist, z01_nome, rh37_descr ";
+  $sUsuarioAtual  = " select rh01_regist, z01_nome, rh37_descr                                                                     ";
   $sUsuarioAtual .= " from db_usuarios ";
   $sUsuarioAtual .= " left join db_usuacgm on db_usuarios.id_usuario = db_usuacgm.id_usuario ";
   $sUsuarioAtual .= " left join pessoal.rhpessoal on cgmlogin = rh01_numcgm ";
   $sUsuarioAtual .= " left join protocolo.cgm on rh01_numcgm = z01_numcgm ";
-  $sUsuarioAtual .= " left join pessoal.rhpessoalmov on rh01_regist = rh02_regist and rh02_anousu = fc_anofolha(rhpessoalmov.rh02_instit) and rhpessoalmov.rh02_mesusu = fc_mesfolha(rhpessoalmov.rh02_instit) ";
-  $sUsuarioAtual .= " left join pessoal.rhfuncao on rh37_funcao = rh02_funcao and rh37_instit = rh02_instit ";
+  $sUsuarioAtual .= "        left join pessoal.rhpessoalmov on rh01_regist              = rh02_regist
+                                                           and rh02_anousu              = fc_anofolha(rhpessoalmov.rh02_instit)
+                                                           and rhpessoalmov.rh02_mesusu = fc_mesfolha(rhpessoalmov.rh02_instit)    ";
+  $sUsuarioAtual .= "        left join pessoal.rhfuncao      on rh37_funcao = rh02_funcao
+                                                            and rh37_instit = rh02_instit                                          ";
   $sUsuarioAtual .= " left join pessoal.rhpesrescisao on rhpesrescisao.rh05_seqpes = rhpessoalmov.rh02_seqpes ";
   $sUsuarioAtual .= " where db_usuarios.id_usuario = " . db_getsession("DB_id_usuario") . " and rhpesrescisao.rh05_seqpes is null ";
   $rsUsuarioAtual = db_query($sUsuarioAtual) or die($sUsuarioAtual);
   if ( pg_numrows($rsUsuarioAtual) > 0 ) {
-  	 $oUsuarioAtual = db_utils::fieldsMemory($rsUsuarioAtual,0);
+     $oUsuarioAtual = db_utils::fieldsMemory($rsUsuarioAtual,0);
   } else {
+
     $oUsuarioAtual->rh01_regist = "";
     $oUsuarioAtual->z01_nome    = "";
     $oUsuarioAtual->rh37_descr  = "";
   }
 
-/**
- * Busca a mensagem do recibo configurada no débito 29
- */
-$k00_msgrecibo = '';
-$oDaoArreTipo  = new cl_arretipo();
-$sSqlArreTipo  = $oDaoArreTipo->sql_query_file(null, "k00_msgrecibo", null, "k00_tipo = 29");
-$rsArreTipo    = $oDaoArreTipo->sql_record($sSqlArreTipo);
 
-if ($oDaoArreTipo->numrows > 0) {
-  $k00_msgrecibo = db_utils::fieldsMemory($rsArreTipo, 0)->k00_msgrecibo;
-}
-  
+
+/** Extensao : Inicio [guia-itbi-remove-informacao-transmitente-usucapiao] */
+/** Extensao : Fim [guia-itbi-remove-informacao-transmitente-usucapiao] */
+
 $pdf1->usuario_atual_regist = $oUsuarioAtual->rh01_regist;
 $pdf1->usuario_atual_nome   = $oUsuarioAtual->z01_nome;
 $pdf1->usuario_atual_funcao = $oUsuarioAtual->rh37_descr;
@@ -944,6 +1128,7 @@ $pdf1->it18_frente               =@$it18_frente;
 $pdf1->it18_fundos               =@$it18_fundos;
 $pdf1->it18_prof                 =@$it18_prof;
 $pdf1->it18_nomelograd           =@$it18_nomelograd;
+$pdf1->it18_localimovel          =@$it18_localimovel;
 $pdf1->areaterreno               =@$areaterreno;
 $pdf1->areatran                  =@$areatran;
 $pdf1->areaterrenomat            =@$areaterrenomat;
@@ -982,7 +1167,7 @@ $pdf1->linha_digitavel           =@$linha_digitavel;
 $pdf1->codigo_barras             =@$codigo_barras;
 $pdf1->outrostransmitentes       =@$outrostransmitentes;
 $pdf1->linhasitbiruralcaract     =@$linhasitbiruralcaract;
-$pdf1->it01_obs                  =@$sMsgObs;
+$pdf1->it01_obs                  =mb_strtoupper(@$sMsgObs);
 $pdf1->arrayj13_descr            =@$arrayj13_descr;
 $pdf1->arrayit19_valor           =@$arrayit19_valor;
 $pdf1->aDadosRuralCaractDist     =$aDadosCaractDistr;
@@ -992,14 +1177,15 @@ $pdf1->it18_distcidade           =@$it18_distcidade;
 $pdf1->it22_matricri             =@$iMatricri;
 $pdf1->it22_quadrari             =@$iQuadrari;
 $pdf1->it22_loteri               =@$iLoteri;
+$pdf1->it22_descrlograd          =@$it22_descrlograd;
 $pdf1->lLiberado                 =@$lLiberado;
 $pdf1->dataemissao               =@$dtEmissao;
 $pdf1->sMsgSituacaoImovel        =@$sMsgSituacao;
 $pdf1->sMensagemRecibo           = $k00_msgrecibo;
+$pdf1->sMensagemCaixa            = null;
 
 $pdf1->lFrenteVia                =(isset($it18_nomelograd)&&trim($it18_nomelograd)!=""?"Sim":"Não");
 
-//Adicionado por Wendel Cavalcanti na terefa 45401
 $pdf1->mailcomprador             =@$mailcomprador;
 $pdf1->mailtransmitente          =@$mailtransmitente;
 $pdf1->usuarioNomeIncluido       =@$nomeUsuarioIncluido;
@@ -1008,19 +1194,42 @@ $pdf1->usuarioCodigoLiberado     =@$codigoUsuarioLiberado;
 $pdf1->nomeDepartamento          =@$nomeDepartamento;
 $pdf1->dataLiberado              =@ db_formatar($dataLiberado , "d");
 
+$pdf1->cnpjBeneficiario          = db_formatar($oStdInstituicao->cgc, 'cnpj');
+$pdf1->enderecoInstituicao       = "{$oStdInstituicao->ender} - {$oStdInstituicao->munic}/{$oStdInstituicao->uf} - CEP: {$oStdInstituicao->cep}  ";
+
 $pdf1->observacaoIncluido        =@ $sMsgObs;
 $pdf1->observacaoLiberado        =@ $it14_obs;
+$pdf1->descr12_1 = "  {$pdf1->observacaoLiberado}  {$pdf1->descr12_1}";
 
 $pdf1->adquirintes               = @$proprietarios;
 $pdf1->transmitentes             = @$propri;
 
 $pdf1->tipoguia                  = @$tipoguia;
 
-$pdf1->lRetificado 				 = $lRetificado;
+$pdf1->lRetificado         = $lRetificado;
+$pdf1->Rhora = @$it01_hora;
+
+
+if ($tipo === 'urbano') {
+  $sql = "SELECT * FROM iptuant where j40_matric = $it06_matric";
+  $rsMatricIptuant = db_query($sql);
+  $pdf1->matricIptuant = "";
+  if (pg_num_rows($rsMatricIptuant) > 0) {
+    $oMatricIptuant = db_utils::fieldsMemory($rsMatricIptuant, 0);
+    $pdf1->matricIptuant = $oMatricIptuant->j40_matric;
+  }
+
+}
 
 // ###################### BUSCA OS DADOS PARA IMPRIMIR O LOGO DO BANCO #########################
+// Verifica se existe data de pagamento ou valor a pagar para emitir com a ficha de compensação
+$pdf1->imprimefichacompensacao = true;
+if (!empty($dk00_dtpaga_testa) || empty($pdf1->it14_valorpaga)) {
+  $pdf1->imprimefichacompensacao = false;
+  $pdf1->codigo_barras           = null;
+}
 //verifica se é ficha e busca o codigo do banco
-
+ 
 if ($lLiberado and $tipoguia != "q") {
 
   // Não imprime ficha compensação quando não estiver liberada
@@ -1040,11 +1249,24 @@ if ($lLiberado and $tipoguia != "q") {
   }
 }
 
-//#############################################################
-if ( $db21_codcli == 19985 or $db21_codcli == 18 or $db21_codcli == 74 or $db21_codcli == 15 ) {
-	$pdf1->lUtilizaModeloDefault = false;
+// propriedades referentes ao modelo 48
+if(!empty($pdf1->it14_valorpaga)){
+  $pdf1->valor_cobrado = db_formatar($pdf1->it14_valorpaga, "f");
 }
 
+if(!empty($pdf1->z01_cgccpf)){
+  $pdf1->cgccpf = $pdf1->z01_cgccpf;
+}
+if(!empty($pdf1->z01_uf)){
+  $pdf1->ufcgm = $pdf1->z01_uf;
+}
+
+//#############################################################
+if ( $db21_codcli == 19985 or $db21_codcli == 18 or $db21_codcli == 74 or $cgc == '05903125000145' /*or $db21_codcli == 15 OR $cgc == '05903125000145' */) {
+  $pdf1->lUtilizaModeloDefault = false;
+}
+
+$resultFracaoIdeal = db_query("select rnfracao AS fracaoideal from fc_iptu_fracionalote({$it06_matric}, {$iAnoUsu}, false, false);");
+$pdf1->fracaoIdeal = \db_utils::fieldsMemory($resultFracaoIdeal, 0)->fracaoideal;
 $pdf1->imprime();
 $pdf1->objpdf->output();
-?>

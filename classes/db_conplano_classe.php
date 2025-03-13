@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: contabilidade
@@ -53,12 +53,13 @@ class cl_conplano {
 	var $c60_identificadorfinanceiro = null;
 	var $c60_naturezasaldo = 0;
 	var $c60_funcao = null;
+	var $c60_saldocontinuo = false;
 	// cria propriedade com as variaveis do arquivo
 	var $campos = "
 	c60_codcon = int4 = Código
 	c60_anousu = int4 = Exercício
 	c60_estrut = varchar(15) = Estrutural
-	c60_descr = varchar(50) = Descrição da conta
+	c60_descr = varchar(200) = Descrição da conta
 	c60_finali = text = Finalidade
 	c60_codsis = int4 = Sistema
 	c60_codcla = int4 = Classificação
@@ -66,6 +67,7 @@ class cl_conplano {
 	c60_identificadorfinanceiro = char(1) = Identificador financeiro
 	c60_naturezasaldo = int4 = naturezasaldo
 	c60_funcao = text = Função
+	c60_saldocontinuo = bool = Saldo Contínuo
 	";
 	//funcao construtor da classe
 	function cl_conplano() {
@@ -96,6 +98,7 @@ class cl_conplano {
 			$this->c60_identificadorfinanceiro = ($this->c60_identificadorfinanceiro == ""?@$GLOBALS["HTTP_POST_VARS"]["c60_identificadorfinanceiro"]:$this->c60_identificadorfinanceiro);
 			$this->c60_naturezasaldo = ($this->c60_naturezasaldo == ""?@$GLOBALS["HTTP_POST_VARS"]["c60_naturezasaldo"]:$this->c60_naturezasaldo);
 			$this->c60_funcao = ($this->c60_funcao == ""?@$GLOBALS["HTTP_POST_VARS"]["c60_funcao"]:$this->c60_funcao);
+			$this->c60_saldocontinuo = ($this->c60_saldocontinuo == ""?@$GLOBALS["HTTP_POST_VARS"]["c60_funcao"]:$this->c60_saldocontinuo);
 		}else{
 			$this->c60_codcon = ($this->c60_codcon == ""?@$GLOBALS["HTTP_POST_VARS"]["c60_codcon"]:$this->c60_codcon);
 			$this->c60_anousu = ($this->c60_anousu == ""?@$GLOBALS["HTTP_POST_VARS"]["c60_anousu"]:$this->c60_anousu);
@@ -207,6 +210,12 @@ class cl_conplano {
 			$this->erro_status = "0";
 			return false;
 		}
+
+		if (empty($this->c60_saldocontinuo) || $this->c60_saldocontinuo == 'false' || $this->c60_saldocontinuo == false) {
+		    $this->c60_saldocontinuo = 'false';
+        } else {
+		    $this->c60_saldocontinuo = 'true';
+        }
 		$sql = "insert into conplano(
 		c60_codcon
 		,c60_anousu
@@ -219,6 +228,7 @@ class cl_conplano {
 		,c60_identificadorfinanceiro
 		,c60_naturezasaldo
 		,c60_funcao
+		,c60_saldocontinuo
 		)
 		values (
 		$this->c60_codcon
@@ -232,6 +242,7 @@ class cl_conplano {
 		,'$this->c60_identificadorfinanceiro'
 		,$this->c60_naturezasaldo
 		,'$this->c60_funcao'
+		,'$this->c60_saldocontinuo'
 		)";
 		$result = db_query($sql);
 		if($result==false){
@@ -258,28 +269,10 @@ class cl_conplano {
 		$this->erro_status = "1";
 		$this->numrows_incluir= pg_affected_rows($result);
 		$resaco = $this->sql_record($this->sql_query_file($this->c60_codcon,$this->c60_anousu));
-		if(($resaco!=false)||($this->numrows!=0)){
-			$resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-			$acount = pg_result($resac,0,0);
-			$resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-			$resac = db_query("insert into db_acountkey values($acount,5220,'$this->c60_codcon','I')");
-			$resac = db_query("insert into db_acountkey values($acount,8059,'$this->c60_anousu','I')");
-			$resac = db_query("insert into db_acount values($acount,774,5220,'','".AddSlashes(pg_result($resaco,0,'c60_codcon'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,8059,'','".AddSlashes(pg_result($resaco,0,'c60_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,5221,'','".AddSlashes(pg_result($resaco,0,'c60_estrut'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,5222,'','".AddSlashes(pg_result($resaco,0,'c60_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,5223,'','".AddSlashes(pg_result($resaco,0,'c60_finali'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,5224,'','".AddSlashes(pg_result($resaco,0,'c60_codsis'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,5225,'','".AddSlashes(pg_result($resaco,0,'c60_codcla'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,18504,'','".AddSlashes(pg_result($resaco,0,'c60_consistemaconta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,18505,'','".AddSlashes(pg_result($resaco,0,'c60_identificadorfinanceiro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,18506,'','".AddSlashes(pg_result($resaco,0,'c60_naturezasaldo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			$resac = db_query("insert into db_acount values($acount,774,18534,'','".AddSlashes(pg_result($resaco,0,'c60_funcao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-		}
 		return true;
 	}
 	// funcao para alteracao
-	function alterar ($c60_codcon=null,$c60_anousu=null) {
+	function alterar ($c60_codcon=null,$c60_anousu=null, $sWhere = null) {
 		$this->atualizacampos();
 		$sql = " update conplano set ";
 		$virgula = "";
@@ -417,6 +410,14 @@ class cl_conplano {
 				return false;
 			}
 		}
+
+        if (empty($this->c60_saldocontinuo) || $this->c60_saldocontinuo == 'false' || $this->c60_saldocontinuo == false) {
+            $this->c60_saldocontinuo = 'false';
+        } else {
+            $this->c60_saldocontinuo = 'true';
+        }
+        $sql .= " {$virgula} c60_saldocontinuo = '{$this->c60_saldocontinuo}' ";
+
 		$sql .= " where ";
 		if($c60_codcon!=null){
 			$sql .= " c60_codcon = $this->c60_codcon";
@@ -424,39 +425,13 @@ class cl_conplano {
 		if($c60_anousu!=null){
 			$sql .= " and  c60_anousu = $this->c60_anousu";
 		}
+
+		if (!empty($sWhere)) {
+		  $sql .= $sWhere;
+    }
+
 		$resaco = $this->sql_record($this->sql_query_file($this->c60_codcon,$this->c60_anousu));
-		if($this->numrows>0){
-			for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-				$resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-				$acount = pg_result($resac,0,0);
-				$resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-				$resac = db_query("insert into db_acountkey values($acount,5220,'$this->c60_codcon','A')");
-				$resac = db_query("insert into db_acountkey values($acount,8059,'$this->c60_anousu','A')");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_codcon"]) || $this->c60_codcon != "")
-					$resac = db_query("insert into db_acount values($acount,774,5220,'".AddSlashes(pg_result($resaco,$conresaco,'c60_codcon'))."','$this->c60_codcon',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_anousu"]) || $this->c60_anousu != "")
-					$resac = db_query("insert into db_acount values($acount,774,8059,'".AddSlashes(pg_result($resaco,$conresaco,'c60_anousu'))."','$this->c60_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_estrut"]) || $this->c60_estrut != "")
-					$resac = db_query("insert into db_acount values($acount,774,5221,'".AddSlashes(pg_result($resaco,$conresaco,'c60_estrut'))."','$this->c60_estrut',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_descr"]) || $this->c60_descr != "")
-					$resac = db_query("insert into db_acount values($acount,774,5222,'".AddSlashes(pg_result($resaco,$conresaco,'c60_descr'))."','$this->c60_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_finali"]) || $this->c60_finali != "")
-					$resac = db_query("insert into db_acount values($acount,774,5223,'".AddSlashes(pg_result($resaco,$conresaco,'c60_finali'))."','$this->c60_finali',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_codsis"]) || $this->c60_codsis != "")
-					$resac = db_query("insert into db_acount values($acount,774,5224,'".AddSlashes(pg_result($resaco,$conresaco,'c60_codsis'))."','$this->c60_codsis',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_codcla"]) || $this->c60_codcla != "")
-					$resac = db_query("insert into db_acount values($acount,774,5225,'".AddSlashes(pg_result($resaco,$conresaco,'c60_codcla'))."','$this->c60_codcla',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_consistemaconta"]) || $this->c60_consistemaconta != "")
-					$resac = db_query("insert into db_acount values($acount,774,18504,'".AddSlashes(pg_result($resaco,$conresaco,'c60_consistemaconta'))."','$this->c60_consistemaconta',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_identificadorfinanceiro"]) || $this->c60_identificadorfinanceiro != "")
-					$resac = db_query("insert into db_acount values($acount,774,18505,'".AddSlashes(pg_result($resaco,$conresaco,'c60_identificadorfinanceiro'))."','$this->c60_identificadorfinanceiro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_naturezasaldo"]) || $this->c60_naturezasaldo != "")
-					$resac = db_query("insert into db_acount values($acount,774,18506,'".AddSlashes(pg_result($resaco,$conresaco,'c60_naturezasaldo'))."','$this->c60_naturezasaldo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				if(isset($GLOBALS["HTTP_POST_VARS"]["c60_funcao"]) || $this->c60_funcao != "")
-					$resac = db_query("insert into db_acount values($acount,774,18534,'".AddSlashes(pg_result($resaco,$conresaco,'c60_funcao'))."','$this->c60_funcao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			}
-		}
-		$result = db_query($sql);
+		$result = @db_query($sql);
 		if($result==false){
 			$this->erro_banco = str_replace("\n","",@pg_last_error());
 			$this->erro_sql   = "Plano de Contas nao Alterado. Alteracao Abortada.\\n";
@@ -494,26 +469,6 @@ class cl_conplano {
 			$resaco = $this->sql_record($this->sql_query_file($c60_codcon,$c60_anousu));
 		}else{
 			$resaco = $this->sql_record($this->sql_query_file(null,null,"*",null,$dbwhere));
-		}
-		if(($resaco!=false)||($this->numrows!=0)){
-			for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-				$resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-				$acount = pg_result($resac,0,0);
-				$resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-				$resac = db_query("insert into db_acountkey values($acount,5220,'$c60_codcon','E')");
-				$resac = db_query("insert into db_acountkey values($acount,8059,'$c60_anousu','E')");
-				$resac = db_query("insert into db_acount values($acount,774,5220,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_codcon'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,8059,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,5221,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_estrut'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,5222,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,5223,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_finali'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,5224,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_codsis'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,5225,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_codcla'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,18504,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_consistemaconta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,18505,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_identificadorfinanceiro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,18506,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_naturezasaldo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-				$resac = db_query("insert into db_acount values($acount,774,18534,'','".AddSlashes(pg_result($resaco,$iresaco,'c60_funcao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-			}
 		}
 		$sql = " delete from conplano
 		where ";
@@ -593,7 +548,7 @@ class cl_conplano {
 	function sql_query ( $c60_codcon=null,$c60_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
 		$sql = "select ";
 		if($campos != "*" ){
-			$campos_sql = split("#",$campos);
+			$campos_sql = explode("#",$campos);
 			$virgula = "";
 			for($i=0;$i<sizeof($campos_sql);$i++){
 				$sql .= $virgula.$campos_sql[$i];
@@ -626,7 +581,7 @@ class cl_conplano {
 		$sql .= $sql2;
 		if($ordem != null ){
 			$sql .= " order by ";
-			$campos_sql = split("#",$ordem);
+			$campos_sql = explode("#",$ordem);
 			$virgula = "";
 			for($i=0;$i<sizeof($campos_sql);$i++){
 				$sql .= $virgula.$campos_sql[$i];
@@ -639,7 +594,7 @@ class cl_conplano {
 	function sql_query_file ( $c60_codcon=null,$c60_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
 		$sql = "select ";
 		if($campos != "*" ){
-			$campos_sql = split("#",$campos);
+			$campos_sql = explode("#",$campos);
 			$virgula = "";
 			for($i=0;$i<sizeof($campos_sql);$i++){
 				$sql .= $virgula.$campos_sql[$i];
@@ -668,7 +623,7 @@ class cl_conplano {
 		$sql .= $sql2;
 		if($ordem != null ){
 			$sql .= " order by ";
-			$campos_sql = split("#",$ordem);
+			$campos_sql = explode("#",$ordem);
 			$virgula = "";
 			for($i=0;$i<sizeof($campos_sql);$i++){
 				$sql .= $virgula.$campos_sql[$i];
@@ -677,508 +632,478 @@ class cl_conplano {
 		}
 		return $sql;
 	}
+
 	function db_verifica_conplano($conplano,$anousu){
+
 		$nivel = db_le_mae_conplano($conplano,true);
 		if($nivel == 1){
 			return true;
 		}
+
 		$cod_mae = db_le_mae_conplano($conplano,false);
 		$this->sql_record($this->sql_query_file("","","c60_estrut",""," c60_anousu=$anousu and  c60_estrut='$cod_mae'"));
+
 		if($this->numrows<1){
-			$this->erro_msg = 'Inclusï¿½o abortada. Estrutural  acima nï¿½o encontrado!';
+
+				$this->erro_msg = 'Procedimento abortado. Estrutural acima não encontrado!';
 			return false;
 		}
+
+		$this->erro_msg = 'Conplano válido!';
+		return true;
+	}
+
+
+	function sql_query_geral ( $c60_codcon=null,$c60_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
+		$sql = "select ";
+		if($campos != "*" ){
+			$campos_sql = explode("#",$campos);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}else{
+			$sql .= $campos;
+		}
+		$sql .= " from conplano ";
+		$sql .= "      inner join conclass  on  conclass.c51_codcla = conplano.c60_codcla";
+		$sql .= "      inner join consistema  on  consistema.c52_codsis = conplano.c60_codsis";
+		$sql .= "      left join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c61_anousu = c60_anousu";
+		$sql2 = "";
+		if($dbwhere==""){
+			if($c60_codcon!=null && $c60_anousu!=null){
+				$sql2 .= " where conplano.c60_codcon = $c60_codcon and c60_anousu=".$c60_anousu;
+			} else {
+				$sql2 .= " where conplano.c60_anousu=".db_getsession("DB_anousu");
+			}
+		}else if($dbwhere != ""){
+			$sql2 = " where $dbwhere  ";
+		}
+		$x      = @db_query("select prefeitura from db_config where codigo=".db_getsession("DB_instit"));
+		$libera = @pg_result($x,0,0);
+		$dbw = '';
+		if($libera == "t"){
+			//$dbw = " c61_instit is null or ";
+		} else {
+			//$sql2 .= ($sql2!=""?" and ":" where ") . " ( $dbw ( c61_instit is not null and c61_instit = " . db_getsession("DB_instit")." ))";
+		}
+		$sql .= $sql2;
+		if($ordem != null ){
+			$sql .= " order by ";
+			$campos_sql = explode("#",$ordem);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}
+		return $sql;
+	}
+	function sql_vs_planocontas ( $c60_codcon=null,$campos="*",$ordem=null,$dbwhere=""){
+		$sql = "select ";
+		if($campos != "*" ){
+			$campos_sql = explode("#",$campos);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}else{
+			$sql .= $campos;
+		}
+		$sql .= " from vs_planocontas ";
+		$sql2 = "";
+		if($dbwhere==""){
+			if($c60_codcon!=null ){
+				$sql2 .= " where conplano.c60_codcon = $c60_codcon ";
+			}
+		}else if($dbwhere != ""){
+			$sql2 = " where $dbwhere";
+		}
+		//$sql2 .= ($sql2!=""?" and ":" where ") . " c61_instit = " . db_getsession("DB_instit");
+		$sql .= $sql2;
+		if($ordem != null ){
+			$sql .= " order by ";
+			$campos_sql = explode("#",$ordem);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}
+		return $sql;
+	}
+	function db_verifica_conplano_exclusao($conplano,$anousu){
+		$nivel = db_le_mae_conplano($conplano,true);
+		$cod_mae = db_le_mae_conplano($conplano,false);
+
+		$this->erro_status=1;
 		if($nivel==9){
 			return true;
 		}
 		if($nivel==8){
-			$codigo = substr($conplano,0,9)."00";
+			$codigo = substr($conplano,0,11);
 			$where="substr(c60_estrut,1,11)='$codigo' and substr(c60_estrut,12,4)<>'0000' ";
 		}
 		if($nivel==7){
-			$codigo = substr($conplano,0,7)."00";
+			$codigo = substr($conplano,0,7);
 			$where="substr(c60_estrut,1,9)='$codigo' and substr(c60_estrut,10,6)<>'000000' ";
 		}
 		if($nivel==6){
-			$codigo = substr($conplano,0,5)."00";
+			$codigo = substr($conplano,0,7);
 			$where="substr(c60_estrut,1,7)='$codigo' and substr(c60_estrut,8,8)<>'00000000' ";
 		}
 		if($nivel==5){
-			$codigo = substr($conplano,0,5)."0";
+			$codigo = substr($conplano,0,5);
 			$where="substr(c60_estrut,1,5)='$codigo' and substr(c60_estrut,6,10)<>'0000000000' ";
 		}
 		if($nivel==4){
-			$codigo = substr($conplano,0,3)."0";
+			$codigo = substr($conplano,0,4);
 			$where="substr(c60_estrut,1,4)='$codigo' and substr(c60_estrut,5,11)<>'00000000000' ";
 		}
 		if($nivel==3){
-			$codigo = substr($conplano,0,2)."0";
+			$codigo = substr($conplano,0,3);
 			$where="substr(c60_estrut,1,3)='$codigo' and substr(c60_estrut,4,12)<>'000000000000' ";
 		}
 		if($nivel==2){
-			$codigo = substr($conplano,0,1)."0";
+			$codigo = substr($conplano,0,2);
 			$where="substr(c60_estrut,1,2)='$codigo' and substr(c60_estrut,3,13)<>'0000000000000' ";
 		}
-		// $result= $this->sql_record($this->sql_query_file("","","c60_estrut","",$where." and c60_anousu=$anousu "));
-		// if($this->numrows>0){
-		//     $this->erro_msg = 'Inclusão abortada. Existe uma conta de nível inferior cadastrada!';
-			//     return false;
-			// }
-			$this->erro_msg = 'Conplano válido!';
-			return true;
+		if($nivel==1){
+			$codigo = substr($conplano,0,1);
+			$where="substr(c60_estrut,1,1)='$codigo' and substr(c60_estrut,2,14)<>'00000000000000' ";
 		}
-		function sql_query_geral ( $c60_codcon=null,$c60_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
-			$sql = "select ";
-			if($campos != "*" ){
-				$campos_sql = split("#",$campos);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}else{
-				$sql .= $campos;
+		$result= $this->sql_record($this->sql_query_file("","","c60_estrut","",$where." and c60_anousu=$anousu "));
+		if($this->numrows>0){
+			$this->erro_status=0;
+			$this->erro_msg = 'Exclusï¿½o abortada. Existe uma conta de nï¿½vel inferior cadastrada!';
+			return false;
+		}
+		$this->erro_msg = 'Conplano com  permissão de exclusão!';
+		$this->erro_status=1;
+		return true;
+	}
+	function sql_query_ele( $c60_codcon=null,$campos="*",$ordem=null,$dbwhere=""){
+		$sql = "select ";
+		if($campos != "*" ){
+			$campos_sql = explode("#",$campos);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
 			}
-			$sql .= " from conplano ";
-			$sql .= "      inner join conclass  on  conclass.c51_codcla = conplano.c60_codcla";
-			$sql .= "      inner join consistema  on  consistema.c52_codsis = conplano.c60_codsis";
-			$sql .= "      left join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c61_anousu = c60_anousu";
-			$sql2 = "";
-			if($dbwhere==""){
-				if($c60_codcon!=null && $c60_anousu!=null){
-					$sql2 .= " where conplano.c60_codcon = $c60_codcon and c60_anousu=".$c60_anousu;
-				} else {
-					$sql2 .= " where conplano.c60_anousu=".db_getsession("DB_anousu");
-				}
-			}else if($dbwhere != ""){
-				$sql2 = " where $dbwhere  ";
+		}else{
+			$sql .= $campos;
+		}
+		$sql .= " from conplano ";
+		$sql .= "      inner join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c60_anousu=c61_anousu";
+		$sql .= "      inner join conplanoexe  on  conplanoexe.c62_reduz   = conplanoreduz.c61_reduz and conplano.c60_anousu = conplanoreduz.c61_anousu";
+		if (!USE_PCASP) {
+			$sql .= "      inner join orcelemento  on  orcelemento.o56_codele     = conplano.c60_codcon and conplano.c60_anousu = orcelemento.o56_anousu";
+		}
+		$sql2 = "";
+		if($dbwhere==""){
+			if($c60_codcon!=null ){
+				$dbwhere = "  conplano.c60_codcon = $c60_codcon";
+
 			}
-			$x      = @db_query("select prefeitura from db_config where codigo=".db_getsession("DB_instit"));
-			$libera = @pg_result($x,0,0);
-			$dbw = '';
-			if($libera == "t"){
-				//$dbw = " c61_instit is null or ";
+		}
+		if($dbwhere!=""){
+			$dbwhere .=" and ";
+		}
+		$sql2 .= " where $dbwhere  c62_anousu= ".db_getsession("DB_anousu");
+		$sql2 .= " and c61_instit = " . db_getsession("DB_instit");
+
+		$sql .= $sql2;
+		if($ordem != null ){
+			$sql .= " order by ";
+			$campos_sql = explode("#",$ordem);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}
+		return $sql;
+	}
+	function sql_query_reduz ( $c60_codcon=null,$campos="*",$ordem=null,$dbwhere=""){
+		$sql = "select ";
+		if($campos != "*" ){
+			$campos_sql = explode("#",$campos);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}else{
+			$sql .= $campos;
+		}
+		$sql .= " from conplano ";
+		$sql .= "      inner join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c60_anousu=c61_anousu";
+		$sql .= "      inner join conplanoexe     on  conplanoexe.c62_reduz   = conplanoreduz.c61_reduz and c61_anousu=c62_anousu";
+		$sql .= "      inner join conclass  on  conclass.c51_codcla           = conplano.c60_codcla";
+		$sql .= "      inner join consistema  on  consistema.c52_codsis       = conplano.c60_codsis";
+		$sql2 = "";
+		if($dbwhere==""){
+			if($c60_codcon!=null ){
+				$dbwhere = "  conplano.c60_codcon = $c60_codcon";
+
+			}
+		}
+		if($dbwhere!=""){
+			$dbwhere .=" and ";
+		}
+		$sql2 .= " where $dbwhere  c62_anousu= ".db_getsession("DB_anousu");
+		$sql2 .= " and c61_instit = " . db_getsession("DB_instit");
+
+		$sql .= $sql2;
+		if($ordem != null ){
+			$sql .= " order by ";
+			$campos_sql = explode("#",$ordem);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}
+		return $sql;
+	}
+	function sql_query2 ( $c60_codcon=null,$c60_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
+		$sql = "select ";
+		if($campos != "*" ){
+			$campos_sql = explode("#",$campos);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}else{
+			$sql .= $campos;
+		}
+		$sql .= " from conplano ";
+		$sql .= "      inner join conclass  on  conclass.c51_codcla = conplano.c60_codcla";
+		$sql .= "      inner join consistema  on  consistema.c52_codsis = conplano.c60_codsis";
+		$sql .= "      inner join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c61_anousu=c60_anousu ";
+		$sql2 = "";
+		if($dbwhere==""){
+			if($c60_codcon!=null ){
+				$sql2 .= " where conplano.c60_codcon = $c60_codcon ";
+				if ($c60_anousu!=null){
+					$sql2 .= "  and c60_anousu=$c60_anousu";
+				}
+			} elseif($c60_anousu!=null ){
+				$sql2 .= " where conplano.c60_anousu = $c60_anousu ";
+			}
+		}else if($dbwhere != ""){
+			$sql2 = " where $dbwhere";
+		}
+
+		$sql2 .= ($sql2!=""?" and ":" where ") . " c60_anousu=".db_getsession("DB_anousu")." and c61_instit = " . db_getsession("DB_instit");
+
+		$sql .= $sql2;
+		if($ordem != null ){
+			$sql .= " order by ";
+			$campos_sql = explode("#",$ordem);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}
+		return $sql;
+	}
+	/**
+	 * Busca Plano de Contas
+	 * @param Integer $c60_anousu
+	 * @param String $campos
+	 * @param String $ordem
+	 * @param String $dbwhere
+	 * @return string
+	 */
+	function sql_query_planocontas ( $c60_anousu=null, $campos="*",$ordem=null,$dbwhere="") {
+		$sql = "select ";
+		if($campos != "*" ){
+			$campos_sql = explode("#",$campos);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}else{
+			$sql .= $campos;
+		}
+		$sql .= " from conplano																									            ";
+		$sql .= "      left join conplanoreduz on conplano.c60_codcon       =  conplanoreduz.c61_codcon  ";
+		$sql .= "                             and conplano.c60_anousu	      = conplanoreduz.c61_anousu  ";
+		//$sql .= "                             and conplanoreduz.c61_instit  = ".db_getsession("DB_instit");
+		$sql .= "      left join conplanoconta on conplanoreduz.c61_anousu	= conplanoconta.c63_anousu                        ";
+		$sql .= "                             and conplanoreduz.c61_reduz	= conplanoconta.c63_reduz                        ";
+		$sql .= "      left join orcfontes   	 on conplanoreduz.c61_anousu	= orcfontes.o57_anousu      ";
+		$sql .= "                             and conplanoreduz.c61_codcon = orcfontes.o57_codfon                             ";
+		$sql .= "      left join orcelemento 	 on conplanoreduz.c61_anousu	= orcelemento.o56_anousu    ";
+		$sql .= "                             and conplanoreduz.c61_codcon = orcelemento.o56_codele                           ";
+		$sql2 = "";
+		if($dbwhere==""){
+			if($c60_anousu!=null ){
+				$sql2 .= " where conplano.c60_anousu = $c60_anousu ";
+			}
+		}else if($dbwhere != ""){
+			$sql2 = " where $dbwhere";
+		}
+		//$sql2 .= ($sql2!=""?" and ":" where ") . " c61_instit = " . db_getsession("DB_instit");
+		$sql .= $sql2;
+		if($ordem != null ){
+			$sql .= " order by ";
+			$campos_sql = explode("#",$ordem);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}
+		return $sql;
+	}
+	/**
+	 *
+	 * Busca o Plano PCASP
+	 * @return string
+	 */
+	function sql_query_dados_plano ( $c60_anousu=null, $campos="*",$ordem=null,$dbwhere="") {
+		$sql = "select ";
+		if($campos != "*" ){
+			$campos_sql = explode("#",$campos);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}else{
+			$sql .= $campos;
+		}
+		$sql .= " from conplano																									                                          ";
+		$sql .= "      left join conplanoreduz         on conplano.c60_codcon         =  conplanoreduz.c61_codcon         ";
+		$sql .= "                                     and conplano.c60_anousu	        = conplanoreduz.c61_anousu          ";
+		$sql .= "      left join conplanocontabancaria on conplano.c60_anousu	        = conplanocontabancaria.c56_anousu  ";
+		$sql .= "                                     and conplanoreduz.c61_reduz	    = conplanocontabancaria.c56_reduz    ";
+		$sql .= "      inner join conclass   	         on conplano.c60_codcla         = conclass.c51_codcla 							";
+		$sql2 = "";
+		if($dbwhere==""){
+			if($c60_anousu!=null ){
+				$sql2 .= " where conplano.c60_anousu = $c60_anousu ";
+			}
+		}else if($dbwhere != ""){
+			$sql2 = " where $dbwhere";
+		}
+
+		//$sql2 .= ($sql2!=""?" and ":" where ") . " c61_instit = " . db_getsession("DB_instit");
+		$sql .= $sql2;
+		if($ordem != null ){
+			$sql .= " order by ";
+			$campos_sql = explode("#",$ordem);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}
+		return $sql;
+	}
+
+	function sql_query_pcasp_orcamento_analitico ( $c60_anousu=null, $campos="*",$ordem=null,$dbwhere="") {
+		$sql = "select ";
+		if($campos != "*" ){
+			$campos_sql = explode("#",$campos);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}else{
+			$sql .= $campos;
+		}
+		$sql .= " from conplano																									                                          ";
+		$sql .= "      inner join conplanoreduz              on conplano.c60_codcon         =  conplanoreduz.c61_codcon         ";
+		$sql .= "                                           and conplano.c60_anousu	        = conplanoreduz.c61_anousu          ";
+		$sql .= "      inner join conplanoconplanoorcamento  on conplanoconplanoorcamento.c72_conplano = conplano.c60_codcon ";
+		$sql .= "                                           and conplanoconplanoorcamento.c72_anousu   = conplano.c60_anousu ";
+		$sql .= "      inner join conplanoorcamento          on conplanoorcamento.c60_codcon           = conplanoconplanoorcamento.c72_conplanoorcamento";
+		$sql .= "                                           and conplanoorcamento.c60_anousu           = conplanoconplanoorcamento.c72_anousu";
+		$sql .= "      inner join conplanoorcamentoanalitica on conplanoorcamentoanalitica.c61_codcon  = conplanoorcamento.c60_codcon";
+		$sql .= "                                           and conplanoorcamentoanalitica.c61_anousu  = conplanoorcamento.c60_anousu ";
+
+
+		$sql2 = "";
+		if($dbwhere==""){
+			if($c60_anousu!=null ){
+				$sql2 .= " where conplano.c60_anousu = $c60_anousu ";
+			}
+		}else if($dbwhere != ""){
+			$sql2 = " where $dbwhere";
+		}
+
+		//$sql2 .= ($sql2!=""?" and ":" where ") . " c61_instit = " . db_getsession("DB_instit");
+		$sql .= $sql2;
+		if($ordem != null ){
+			$sql .= " order by ";
+			$campos_sql = explode("#",$ordem);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}
+		return $sql;
+	}
+
+
+	function sql_query_dados_banco ( $c60_codcon=null,$c60_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
+		$sql = "select ";
+		if($campos != "*" ){
+			$campos_sql = explode("#",$campos);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
+			}
+		}else{
+			$sql .= $campos;
+		}
+		$sql .= " from conplano ";
+		$sql .= "      inner join conclass  on  conclass.c51_codcla = conplano.c60_codcla";
+		$sql .= "      inner join consistema  on  consistema.c52_codsis = conplano.c60_codsis";
+		$sql .= "      left join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c61_anousu = c60_anousu";
+		$sql .= "      left join conplanoconta  on  c63_anousu = c60_anousu and c63_reduz = c61_reduz";
+		$sql .= "      left join conplanocontabancaria  on c56_anousu = c60_anousu and c56_reduz = c61_reduz";
+		$sql2 = "";
+		if($dbwhere==""){
+			if($c60_codcon!=null && $c60_anousu!=null){
+				$sql2 .= " where conplano.c60_codcon = $c60_codcon and c60_anousu=".$c60_anousu;
 			} else {
-				//$sql2 .= ($sql2!=""?" and ":" where ") . " ( $dbw ( c61_instit is not null and c61_instit = " . db_getsession("DB_instit")." ))";
+				$sql2 .= " where conplano.c60_anousu=".db_getsession("DB_anousu");
 			}
-			$sql .= $sql2;
-			if($ordem != null ){
-				$sql .= " order by ";
-				$campos_sql = split("#",$ordem);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}
-			return $sql;
+		}else if($dbwhere != ""){
+			$sql2 = " where $dbwhere  ";
 		}
-		function sql_vs_planocontas ( $c60_codcon=null,$campos="*",$ordem=null,$dbwhere=""){
-			$sql = "select ";
-			if($campos != "*" ){
-				$campos_sql = split("#",$campos);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}else{
-				$sql .= $campos;
-			}
-			$sql .= " from vs_planocontas ";
-			$sql2 = "";
-			if($dbwhere==""){
-				if($c60_codcon!=null ){
-					$sql2 .= " where conplano.c60_codcon = $c60_codcon ";
-				}
-			}else if($dbwhere != ""){
-				$sql2 = " where $dbwhere";
-			}
-			//$sql2 .= ($sql2!=""?" and ":" where ") . " c61_instit = " . db_getsession("DB_instit");
-			$sql .= $sql2;
-			if($ordem != null ){
-				$sql .= " order by ";
-				$campos_sql = split("#",$ordem);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}
-			return $sql;
+		$x      = @db_query("select prefeitura from db_config where codigo=".db_getsession("DB_instit"));
+		$libera = @pg_result($x,0,0);
+		$dbw = '';
+		if($libera == "t"){
+			//$dbw = " c61_instit is null or ";
+		} else {
+			//$sql2 .= ($sql2!=""?" and ":" where ") . " ( $dbw ( c61_instit is not null and c61_instit = " . db_getsession("DB_instit")." ))";
 		}
-		function db_verifica_conplano_exclusao($conplano,$anousu){
-			$nivel = db_le_mae_conplano($conplano,true);
-			$cod_mae = db_le_mae_conplano($conplano,false);
-
-			$this->erro_status=1;
-			if($nivel==9){
-				return true;
+		$sql .= $sql2;
+		if($ordem != null ){
+			$sql .= " order by ";
+			$campos_sql = explode("#",$ordem);
+			$virgula = "";
+			for($i=0;$i<sizeof($campos_sql);$i++){
+				$sql .= $virgula.$campos_sql[$i];
+				$virgula = ",";
 			}
-			if($nivel==8){
-				$codigo = substr($conplano,0,11);
-				$where="substr(c60_estrut,1,11)='$codigo' and substr(c60_estrut,12,4)<>'0000' ";
-			}
-			if($nivel==7){
-				$codigo = substr($conplano,0,7);
-				$where="substr(c60_estrut,1,9)='$codigo' and substr(c60_estrut,10,6)<>'000000' ";
-			}
-			if($nivel==6){
-				$codigo = substr($conplano,0,7);
-				$where="substr(c60_estrut,1,7)='$codigo' and substr(c60_estrut,8,8)<>'00000000' ";
-			}
-			if($nivel==5){
-				$codigo = substr($conplano,0,5);
-				$where="substr(c60_estrut,1,5)='$codigo' and substr(c60_estrut,6,10)<>'0000000000' ";
-			}
-			if($nivel==4){
-				$codigo = substr($conplano,0,4);
-				$where="substr(c60_estrut,1,4)='$codigo' and substr(c60_estrut,5,11)<>'00000000000' ";
-			}
-			if($nivel==3){
-				$codigo = substr($conplano,0,3);
-				$where="substr(c60_estrut,1,3)='$codigo' and substr(c60_estrut,4,12)<>'000000000000' ";
-			}
-			if($nivel==2){
-				$codigo = substr($conplano,0,2);
-				$where="substr(c60_estrut,1,2)='$codigo' and substr(c60_estrut,3,13)<>'0000000000000' ";
-			}
-			if($nivel==1){
-				$codigo = substr($conplano,0,1);
-				$where="substr(c60_estrut,1,1)='$codigo' and substr(c60_estrut,2,14)<>'00000000000000' ";
-			}
-			$result= $this->sql_record($this->sql_query_file("","","c60_estrut","",$where." and c60_anousu=$anousu "));
-			if($this->numrows>0){
-				$this->erro_status=0;
-				$this->erro_msg = 'Exclusï¿½o abortada. Existe uma conta de nï¿½vel inferior cadastrada!';
-				return false;
-			}
-			$this->erro_msg = 'Conplano com  permissão de exclusão!';
-			$this->erro_status=1;
-			return true;
 		}
-		function sql_query_ele( $c60_codcon=null,$campos="*",$ordem=null,$dbwhere=""){
-			$sql = "select ";
-			if($campos != "*" ){
-				$campos_sql = split("#",$campos);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}else{
-				$sql .= $campos;
-			}
-			$sql .= " from conplano ";
-			$sql .= "      inner join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c60_anousu=c61_anousu";
-			$sql .= "      inner join conplanoexe  on  conplanoexe.c62_reduz   = conplanoreduz.c61_reduz and conplano.c60_anousu = conplanoreduz.c61_anousu";
-			if (!USE_PCASP) {
-				$sql .= "      inner join orcelemento  on  orcelemento.o56_codele     = conplano.c60_codcon and conplano.c60_anousu = orcelemento.o56_anousu";
-			}
-			$sql2 = "";
-			if($dbwhere==""){
-				if($c60_codcon!=null ){
-					$dbwhere = "  conplano.c60_codcon = $c60_codcon";
-
-				}
-			}
-			if($dbwhere!=""){
-				$dbwhere .=" and ";
-			}
-			$sql2 .= " where $dbwhere  c62_anousu= ".db_getsession("DB_anousu");
-			$sql2 .= " and c61_instit = " . db_getsession("DB_instit");
-
-			$sql .= $sql2;
-			if($ordem != null ){
-				$sql .= " order by ";
-				$campos_sql = split("#",$ordem);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}
-			return $sql;
-		}
-		function sql_query_reduz ( $c60_codcon=null,$campos="*",$ordem=null,$dbwhere=""){
-			$sql = "select ";
-			if($campos != "*" ){
-				$campos_sql = split("#",$campos);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}else{
-				$sql .= $campos;
-			}
-			$sql .= " from conplano ";
-			$sql .= "      inner join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c60_anousu=c61_anousu";
-			$sql .= "      inner join conplanoexe     on  conplanoexe.c62_reduz   = conplanoreduz.c61_reduz and c61_anousu=c62_anousu";
-			$sql .= "      inner join conclass  on  conclass.c51_codcla           = conplano.c60_codcla";
-			$sql .= "      inner join consistema  on  consistema.c52_codsis       = conplano.c60_codsis";
-			$sql2 = "";
-			if($dbwhere==""){
-				if($c60_codcon!=null ){
-					$dbwhere = "  conplano.c60_codcon = $c60_codcon";
-
-				}
-			}
-			if($dbwhere!=""){
-				$dbwhere .=" and ";
-			}
-			$sql2 .= " where $dbwhere  c62_anousu= ".db_getsession("DB_anousu");
-			$sql2 .= " and c61_instit = " . db_getsession("DB_instit");
-
-			$sql .= $sql2;
-			if($ordem != null ){
-				$sql .= " order by ";
-				$campos_sql = split("#",$ordem);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}
-			return $sql;
-		}
-		function sql_query2 ( $c60_codcon=null,$c60_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
-			$sql = "select ";
-			if($campos != "*" ){
-				$campos_sql = split("#",$campos);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}else{
-				$sql .= $campos;
-			}
-			$sql .= " from conplano ";
-			$sql .= "      inner join conclass  on  conclass.c51_codcla = conplano.c60_codcla";
-			$sql .= "      inner join consistema  on  consistema.c52_codsis = conplano.c60_codsis";
-			$sql .= "      inner join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c61_anousu=c60_anousu ";
-			$sql2 = "";
-			if($dbwhere==""){
-				if($c60_codcon!=null ){
-					$sql2 .= " where conplano.c60_codcon = $c60_codcon ";
-					if ($c60_anousu!=null){
-						$sql2 .= "  and c60_anousu=$c60_anousu";
-					}
-				} elseif($c60_anousu!=null ){
-					$sql2 .= " where conplano.c60_anousu = $c60_anousu ";
-				}
-			}else if($dbwhere != ""){
-				$sql2 = " where $dbwhere";
-			}
-
-			$sql2 .= ($sql2!=""?" and ":" where ") . " c60_anousu=".db_getsession("DB_anousu")." and c61_instit = " . db_getsession("DB_instit");
-
-			$sql .= $sql2;
-			if($ordem != null ){
-				$sql .= " order by ";
-				$campos_sql = split("#",$ordem);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}
-			return $sql;
-		}
-		/**
-		 * Busca Plano de Contas
-		 * @param Integer $c60_anousu
-		 * @param String $campos
-		 * @param String $ordem
-		 * @param String $dbwhere
-		 * @return string
-		 */
-		function sql_query_planocontas ( $c60_anousu=null, $campos="*",$ordem=null,$dbwhere="") {
-			$sql = "select ";
-			if($campos != "*" ){
-				$campos_sql = split("#",$campos);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}else{
-				$sql .= $campos;
-			}
-			$sql .= " from conplano																									            ";
-			$sql .= "      left join conplanoreduz on conplano.c60_codcon       =  conplanoreduz.c61_codcon  ";
-			$sql .= "                             and conplano.c60_anousu	      = conplanoreduz.c61_anousu  ";
-			//$sql .= "                             and conplanoreduz.c61_instit  = ".db_getsession("DB_instit");
-			$sql .= "      left join conplanoconta on conplanoreduz.c61_codcon = conplanoconta.c63_codcon  ";
-			$sql .= "                             and conplanoreduz.c61_anousu	= conplanoconta.c63_anousu                        ";
-			$sql .= "      left join orcfontes   	 on conplanoreduz.c61_anousu	= orcfontes.o57_anousu      ";
-			$sql .= "                             and conplanoreduz.c61_codcon = orcfontes.o57_codfon                             ";
-			$sql .= "      left join orcelemento 	 on conplanoreduz.c61_anousu	= orcelemento.o56_anousu    ";
-			$sql .= "                             and conplanoreduz.c61_codcon = orcelemento.o56_codele                           ";
-			$sql2 = "";
-			if($dbwhere==""){
-				if($c60_anousu!=null ){
-					$sql2 .= " where conplano.c60_anousu = $c60_anousu ";
-				}
-			}else if($dbwhere != ""){
-				$sql2 = " where $dbwhere";
-			}
-			//$sql2 .= ($sql2!=""?" and ":" where ") . " c61_instit = " . db_getsession("DB_instit");
-			$sql .= $sql2;
-			if($ordem != null ){
-				$sql .= " order by ";
-				$campos_sql = split("#",$ordem);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}
-			return $sql;
-		}
-		/**
-		 *
-		 * Busca o Plano PCASP
-		 * @return string
-		 */
-		function sql_query_dados_plano ( $c60_anousu=null, $campos="*",$ordem=null,$dbwhere="") {
-			$sql = "select ";
-			if($campos != "*" ){
-				$campos_sql = split("#",$campos);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}else{
-				$sql .= $campos;
-			}
-			$sql .= " from conplano																									                                          ";
-			$sql .= "      left join conplanoreduz         on conplano.c60_codcon         =  conplanoreduz.c61_codcon         ";
-			$sql .= "                                     and conplano.c60_anousu	        = conplanoreduz.c61_anousu          ";
-			$sql .= "      left join conplanoconta         on conplano.c60_codcon         = conplanoconta.c63_codcon          ";
-			$sql .= "                                     and conplano.c60_anousu	        = conplanoconta.c63_anousu          ";
-			$sql .= "      left join conplanocontabancaria on conplano.c60_codcon         = conplanocontabancaria.c56_codcon  ";
-			$sql .= "                                     and conplano.c60_anousu	        = conplanocontabancaria.c56_anousu  ";
-			$sql .= "      inner join conclass   	         on conplano.c60_codcla         = conclass.c51_codcla 							";
-			$sql2 = "";
-			if($dbwhere==""){
-				if($c60_anousu!=null ){
-					$sql2 .= " where conplano.c60_anousu = $c60_anousu ";
-				}
-			}else if($dbwhere != ""){
-				$sql2 = " where $dbwhere";
-			}
-
-			//$sql2 .= ($sql2!=""?" and ":" where ") . " c61_instit = " . db_getsession("DB_instit");
-			$sql .= $sql2;
-			if($ordem != null ){
-				$sql .= " order by ";
-				$campos_sql = split("#",$ordem);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}
-			return $sql;
-		}
-
-		function sql_query_pcasp_orcamento_analitico ( $c60_anousu=null, $campos="*",$ordem=null,$dbwhere="") {
-			$sql = "select ";
-			if($campos != "*" ){
-				$campos_sql = split("#",$campos);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}else{
-				$sql .= $campos;
-			}
-			$sql .= " from conplano																									                                          ";
-			$sql .= "      inner join conplanoreduz              on conplano.c60_codcon         =  conplanoreduz.c61_codcon         ";
-			$sql .= "                                           and conplano.c60_anousu	        = conplanoreduz.c61_anousu          ";
-			$sql .= "      inner join conplanoconplanoorcamento  on conplanoconplanoorcamento.c72_conplano = conplano.c60_codcon ";
-			$sql .= "                                           and conplanoconplanoorcamento.c72_anousu   = conplano.c60_anousu ";
-			$sql .= "      inner join conplanoorcamento          on conplanoorcamento.c60_codcon           = conplanoconplanoorcamento.c72_conplanoorcamento";
-			$sql .= "                                           and conplanoorcamento.c60_anousu           = conplanoconplanoorcamento.c72_anousu";
-			$sql .= "      inner join conplanoorcamentoanalitica on conplanoorcamentoanalitica.c61_codcon  = conplanoorcamento.c60_codcon";
-			$sql .= "                                           and conplanoorcamentoanalitica.c61_anousu  = conplanoorcamento.c60_anousu ";
-
-
-			$sql2 = "";
-			if($dbwhere==""){
-				if($c60_anousu!=null ){
-					$sql2 .= " where conplano.c60_anousu = $c60_anousu ";
-				}
-			}else if($dbwhere != ""){
-				$sql2 = " where $dbwhere";
-			}
-
-			//$sql2 .= ($sql2!=""?" and ":" where ") . " c61_instit = " . db_getsession("DB_instit");
-			$sql .= $sql2;
-			if($ordem != null ){
-				$sql .= " order by ";
-				$campos_sql = split("#",$ordem);
-				$virgula = "";
-				for($i=0;$i<sizeof($campos_sql);$i++){
-					$sql .= $virgula.$campos_sql[$i];
-					$virgula = ",";
-				}
-			}
-			return $sql;
-		}
-		
-		
-		function sql_query_dados_banco ( $c60_codcon=null,$c60_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
-		  $sql = "select ";
-		  if($campos != "*" ){
-		    $campos_sql = split("#",$campos);
-		    $virgula = "";
-		    for($i=0;$i<sizeof($campos_sql);$i++){
-		      $sql .= $virgula.$campos_sql[$i];
-		      $virgula = ",";
-		    }
-		  }else{
-		    $sql .= $campos;
-		  }
-		  $sql .= " from conplano ";
-		  $sql .= "      inner join conclass  on  conclass.c51_codcla = conplano.c60_codcla";
-		  $sql .= "      inner join consistema  on  consistema.c52_codsis = conplano.c60_codsis";
-		  $sql .= "      left join conplanoreduz  on  conplanoreduz.c61_codcon = conplano.c60_codcon and c61_anousu = c60_anousu";
-		  $sql .= "      left join conplanoconta  on  conplanoconta.c63_codcon = conplano.c60_codcon and c63_anousu = c60_anousu";
-		  $sql .= "      left join conplanocontabancaria  on c56_codcon = conplano.c60_codcon and c56_anousu = c60_anousu";
-		  $sql2 = "";
-		  if($dbwhere==""){
-		    if($c60_codcon!=null && $c60_anousu!=null){
-		      $sql2 .= " where conplano.c60_codcon = $c60_codcon and c60_anousu=".$c60_anousu;
-		    } else {
-		      $sql2 .= " where conplano.c60_anousu=".db_getsession("DB_anousu");
-		    }
-		  }else if($dbwhere != ""){
-		    $sql2 = " where $dbwhere  ";
-		  }
-		  $x      = @db_query("select prefeitura from db_config where codigo=".db_getsession("DB_instit"));
-		  $libera = @pg_result($x,0,0);
-		  $dbw = '';
-		  if($libera == "t"){
-		    //$dbw = " c61_instit is null or ";
-		  } else {
-		    //$sql2 .= ($sql2!=""?" and ":" where ") . " ( $dbw ( c61_instit is not null and c61_instit = " . db_getsession("DB_instit")." ))";
-		  }
-		  $sql .= $sql2;
-		  if($ordem != null ){
-		    $sql .= " order by ";
-		    $campos_sql = split("#",$ordem);
-		    $virgula = "";
-		    for($i=0;$i<sizeof($campos_sql);$i++){
-		      $sql .= $virgula.$campos_sql[$i];
-		      $virgula = ",";
-		    }
-		  }
-		  return $sql;
-		}
+		return $sql;
+	}
 }
 ?>

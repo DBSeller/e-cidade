@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-include_once("dbforms/db_funcoes.php");
-include_once("libs/db_liborcamento.php");
-require_once("model/relatorioContabil.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+include_once(modification("libs/db_liborcamento.php"));
+require_once(modification("model/relatorioContabil.model.php"));
 
 $oGet       = db_utils::postMemory($_GET);
 db_postmemory($HTTP_POST_VARS);
@@ -53,6 +53,10 @@ $iAnoUsu    = db_getsession("DB_anousu");
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script> 
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/datagrid.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBViewInstituicao.widget.js"></script>
 <style>
 #o116_periodo, #emissao {
   width: 100%;
@@ -72,8 +76,8 @@ $iAnoUsu    = db_getsession("DB_anousu");
           <fieldset>
             <table align="center" border="0">
               <tr>
-                <td align="center" colspan="2">
-                  <? db_selinstit('', 300, 100); ?>
+                <td id="ctnInstituicao" align="center" colspan="3">
+                  <input type="hidden" name="db_selinstit" id="db_selinstit" value="">
                 </td>
               </tr>
               <tr colspan="2" nowrap>&nbsp;</tr>
@@ -113,7 +117,7 @@ $iAnoUsu    = db_getsession("DB_anousu");
                 </td>
               </tr>
               <?php
-                if  ($iAnoUsu >= 2011) {
+                if  ($iAnoUsu >= 2011 && $iAnoUsu <= 2017) {
               ?>
 				      <tr>
 				        <td nowrap>
@@ -144,6 +148,9 @@ $iAnoUsu    = db_getsession("DB_anousu");
   </form>
 </body>
 <script>
+var oViewInstituicao = new DBViewInstituicao('oViewInstituicao', $('ctnInstituicao'));
+oViewInstituicao.show();
+
 function js_buscaEdicaoLrf(iAnousu,sFontePadrao) {
   
   var url       = 'con4_lrfbuscaedicaoRPC.php';
@@ -161,10 +168,9 @@ function js_setNomeArquivo(oResposta) {
 js_buscaEdicaoLrf(<?=$iAnoUsu?>,'con2_lrfdesppessoal002');
 
 function js_emite(sFonte) {
-  
   var oDocument     = document.form1;
   var iPeriodo      = $('o116_periodo').value;
-  var iSelInstit    = new Number(oDocument.db_selinstit.value);
+  var iSelInstit    = oViewInstituicao.getInstituicoesSelecionadas(true).join('-');
   var sDataIni      = '';
   var sDataFim      = '';
   var iFormaEmissao = 1;
@@ -173,7 +179,7 @@ function js_emite(sFonte) {
   }
   var sNomeArquivo  = sNomeArquivoEdicao;
   var sUrl          = sNomeArquivo+'?db_selinstit='+
-                      oDocument.db_selinstit.value+
+                      iSelInstit+
                       '&dtfin='+sDataFim+
                       '&periodo='+iPeriodo+
                       '&emissao='+iFormaEmissao;

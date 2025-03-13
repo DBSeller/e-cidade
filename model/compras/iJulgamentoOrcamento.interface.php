@@ -1,7 +1,7 @@
 <?php
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou

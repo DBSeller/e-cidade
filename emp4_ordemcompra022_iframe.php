@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sql.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_matordemitem_classe.php");
-include("classes/db_matordemanu_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_matordemanu_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clempempenho   = new cl_empempenho;
 $clmatordemitem = new cl_matordemitem;
@@ -110,7 +110,7 @@ background-color:#ccddcc;
   <? 
     db_input("processar","10","",true,"hidden",3);
     db_input("emitir","10","",true,"hidden",3);  
-  $txt_where = " e60_instit = ".db_getsession("DB_instit");
+  $txt_where = " e60_anousu = ".db_getsession("DB_anousu")." and e60_instit = ".db_getsession("DB_instit");
 	$ordem     = "";
 	//$data=$data_ano."-".$data_mes."-".$data_dia;  
 	//$data1=$data1_ano."-".$data1_mes."-".$data1_dia; 
@@ -151,28 +151,13 @@ background-color:#ccddcc;
        for($i=0; $i<$numrows; $i++){
          db_fieldsmemory($result,$i);
 	 $somaval=0;
-	 $result_matordemitem=$clmatordemitem->sql_record($clmatordemitem->sql_query_ordem(null,"distinct m51_codordem,m51_valortotal",null,"m52_numemp=$e60_numemp")); 
-	 for ($y=0;$y<$clmatordemitem->numrows;$y++ ){
-	   db_fieldsmemory($result_matordemitem,$y);
-	   $somaval+=$m51_valortotal;
-	 }
-	 $flag_anu = false;
-	 for ($ii = 0; $ii < $clmatordemitem->numrows; $ii++){
-	       db_fieldsmemory($result_matordemitem,$ii);
-               $result_matordemanu = $clmatordemanu->sql_record($clmatordemanu->sql_query($m51_codordem));
-	       if ($clmatordemanu->numrows > 0){
-		    $flag_anu = true;
-		    break;
-	       }
-	 }
+	 $result_matordemitem=$clmatordemitem->sql_record($clmatordemitem->sql_query_ordem(null,"distinct m51_codordem,m51_valortotal",null,"m52_numemp=$e60_numemp and m53_codordem is null")); 
 
-	 if ($flag_anu==false&&$clmatordemitem->numrows>0){	// Existe ordem de compra e nao foi anulada
+	 if ($clmatordemitem->numrows>0){	
 	      continue;
+	      
 	 }
 
-	 if ($somaval > $e60_vlremp){	    
-	   continue;
-	 }else{
   	   echo"
 		   <tr>
 		      <td  class='corpo' title='Inverte a marcação' align='center'><input type='checkbox' name='CHECK_$e60_numemp' id='CHECK_".$e60_numemp."'></td>
@@ -181,7 +166,7 @@ background-color:#ccddcc;
 		      <td  class='corpo'  align='center' title='$Tz01_nome'><label style=\"cursor: hand\"><small>$z01_nome</small></label></td>
 		      <td  class='corpo'  align='center' title='$Te60_emiss'><label style=\"cursor: hand\"><small>".db_formatar($e60_emiss,'d')."</small></label></td>
 		   </tr>";
-	 }
+	 
        }
            echo"
 	   </table>";	        

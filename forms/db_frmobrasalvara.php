@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -117,7 +117,7 @@ function js_retornaConstrucoes(oAjax) {
 
 	js_removeObj('msgbox');
 	
-	var oRetorno        = eval("("+oAjax.responseText+")");
+	var oRetorno        = JSON.parse(oAjax.responseText);
 
 	if (oRetorno.iStatus == 1) {
 
@@ -232,16 +232,16 @@ function js_fechar_janela(){
 
 function js_numero(){
   if(document.form1.ob04_codobra.value != ''){
-    js_OpenJanelaIframe('top.corpo','db_iframe_numero','pro1_obrasconstr001.php?func_alvara=1&ob08_codobra='+document.form1.ob04_codobra.value,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_numero','pro1_obrasconstr001.php?func_alvara=1&ob08_codobra='+document.form1.ob04_codobra.value,'Pesquisa',true);
   }
   return false;
 }
 function js_pesquisaob04_codobra(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_obras','func_obras.php?funcao_js=parent.js_mostraobras1|ob01_codobra|ob01_nomeobra','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obras','func_obras.php?funcao_js=parent.js_mostraobras1|ob01_codobra|ob01_nomeobra','Pesquisa',true);
   }else{
      if(document.form1.ob04_codobra.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_obras','func_obras.php?pesquisa_chave='+document.form1.ob04_codobra.value+'&funcao_js=parent.js_mostraobras','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obras','func_obras.php?pesquisa_chave='+document.form1.ob04_codobra.value+'&funcao_js=parent.js_mostraobras','Pesquisa',false);
      }else{
        document.form1.ob01_nomeobra.value = ''; 
      }
@@ -260,7 +260,7 @@ function js_mostraobras1(chave1,chave2){
   db_iframe_obras.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_obrasalvara','func_obrasalvara.php?funcao_js=parent.js_preenchepesquisa|ob04_codobra','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obrasalvara','func_obrasalvara.php?funcao_js=parent.js_preenchepesquisa|ob04_codobra','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_obrasalvara.hide();

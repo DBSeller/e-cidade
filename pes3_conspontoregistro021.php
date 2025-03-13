@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,20 +26,20 @@
  */
 
 set_time_limit(0);
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_sql.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 /*
-include("classes/db_gerfsal_classe.php");
-include("classes/db_gerfadi_classe.php");
-include("classes/db_gerffx_classe.php");
-include("classes/db_gerfcom_classe.php");
-include("classes/db_gerffer_classe.php");
-include("classes/db_gerfs13_classe.php");
-include("classes/db_gerfres_classe.php");
+include(modification("classes/db_gerfsal_classe.php"));
+include(modification("classes/db_gerfadi_classe.php"));
+include(modification("classes/db_gerffx_classe.php"));
+include(modification("classes/db_gerfcom_classe.php"));
+include(modification("classes/db_gerffer_classe.php"));
+include(modification("classes/db_gerfs13_classe.php"));
+include(modification("classes/db_gerfres_classe.php"));
 */
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);

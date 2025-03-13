@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,23 +28,23 @@
 /**
  * Carregamos as libs necessárias
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once ("libs/db_app.utils.php");
-require_once("libs/JSON.php");
-require_once("std/db_stdClass.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
 
-require_once("model/CgmFactory.model.php");
-require_once("model/MaterialCompras.model.php");
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification("model/MaterialCompras.model.php"));
 
-require_once("model/contabilidade/EventoContabil.model.php");
-require_once("model/contabilidade/EventoContabilLancamento.model.php");
+require_once(modification("model/contabilidade/EventoContabil.model.php"));
+require_once(modification("model/contabilidade/EventoContabilLancamento.model.php"));
 
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
-require_once("model/contabilidade/lancamento/LancamentoAuxiliarReconhecimentoReceitaFatoGerador.model.php");
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarReconhecimentoReceitaFatoGerador.model.php"));
 
 $oJson  = new services_json();
 $oParam = $oJson->decode(str_replace("\\", "", $_POST['json']));
@@ -103,7 +103,7 @@ switch ($oParam->exec) {
   case "getLancamentosEventoContabil":
 
   	try {
-	  	$oEventoContabil            = new EventoContabil($oParam->iCodigoDocumento, $iAnoUsoSessao);
+	  	$oEventoContabil            = new EventoContabil($oParam->iCodigoDocumento, $iAnoUsoSessao, $iInstituicaoSessao, false);
 	  	$oRetorno->iCodigoDocumento = $oParam->iCodigoDocumento;
 	  	$oRetorno->iAnoUso          = $iAnoUsoSessao;
 	  	$oRetorno->iTransacao       = $oEventoContabil->getSequencialTransacao();
@@ -112,7 +112,7 @@ switch ($oParam->exec) {
 	  	foreach ($aLancamentos as $oLancamento) {
 	  		
 	  		$oStdClass = new stdClass();
-				$oStdClass->c46_seqtranslan = $oLancamento->getSequencialLancamento();
+            $oStdClass->c46_seqtranslan = $oLancamento->getSequencialLancamento();
 	  		$oStdClass->c46_seqtrans    = $oEventoContabil->getSequencialTransacao();
 	  		$oStdClass->c46_descricao   =	urlencode($oLancamento->getDescricao());
 	  		$oStdClass->c46_ordem       = $oLancamento->getOrdem();
@@ -149,7 +149,7 @@ switch ($oParam->exec) {
   		$oEventoContabilLancamento = new EventoContabilLancamento($oParam->iCodigoLancamento);
   		$oEventoContabilLancamento->excluir();
   		
-  		$oEventoContabil   = new EventoContabil($oParam->iCodigoDocumento, $iAnoUsoSessao);
+  		$oEventoContabil   = new EventoContabil($oParam->iCodigoDocumento, $iAnoUsoSessao, $iInstituicaoSessao, false);
   		$iTotalLancamentos = count($oEventoContabil->getEventoContabilLancamento());
   		if ($iTotalLancamentos == 0) {
   			$oEventoContabil->excluir();

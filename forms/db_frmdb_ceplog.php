@@ -116,9 +116,9 @@ db_input('db11_cep',8,$Idb11_cep,true,'text',$db_opcao,"")
 <script>
 function js_pesquisadb11_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_cepmunic','func_db_cepmunic.php?funcao_js=parent.js_mostradb_cepmunic1|db10_codigo|db10_munic','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_cepmunic','func_db_cepmunic.php?funcao_js=parent.js_mostradb_cepmunic1|db10_codigo|db10_munic','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_cepmunic','func_db_cepmunic.php?pesquisa_chave='+document.form1.db11_codigo.value+'&funcao_js=parent.js_mostradb_cepmunic','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_cepmunic','func_db_cepmunic.php?pesquisa_chave='+document.form1.db11_codigo.value+'&funcao_js=parent.js_mostradb_cepmunic','Pesquisa',false);
   }
 }
 function js_mostradb_cepmunic(chave,erro){
@@ -134,7 +134,7 @@ function js_mostradb_cepmunic1(chave1,chave2){
   db_iframe_db_cepmunic.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_ceplog','func_db_ceplog.php?funcao_js=parent.js_preenchepesquisa|db11_codlog','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_ceplog','func_db_ceplog.php?funcao_js=parent.js_preenchepesquisa|db11_codlog','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_ceplog.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_acervo_classe.php");
-include("classes/db_tipoitem_classe.php");
-include("classes/db_editora_classe.php");
-include("classes/db_classiliteraria_classe.php");
-include("classes/db_localizacao_classe.php");
-include("classes/db_aquisicao_classe.php");
-include("classes/db_biblioteca_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_acervo_classe.php"));
+include(modification("classes/db_tipoitem_classe.php"));
+include(modification("classes/db_editora_classe.php"));
+include(modification("classes/db_classiliteraria_classe.php"));
+include(modification("classes/db_localizacao_classe.php"));
+include(modification("classes/db_aquisicao_classe.php"));
+include(modification("classes/db_biblioteca_classe.php"));
 $clbiblioteca = new cl_biblioteca;
 $clacervo = new cl_acervo;
 $cltipoitem = new cl_tipoitem;
@@ -63,7 +63,7 @@ $sql = "SELECT bi06_seq,bi06_titulo,bi06_edicao,bi06_volume,bi06_tipoitem,bi05_n
         GROUP BY bi06_seq,bi06_titulo,bi06_edicao,bi06_volume,bi06_tipoitem,bi05_nome
         ORDER BY count desc
         LIMIT $quant";
-@$result = pg_exec($sql);
+@$result = db_query($sql);
 @$linhas = pg_numrows($result);
 //db_criatabela($result);
 //exit;

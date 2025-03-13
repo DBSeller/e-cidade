@@ -694,7 +694,7 @@ select ed47_i_codigo,
                       );
 
                       
-/*******************************************  Tarefa 14637 - INÍCIO **************************************************
+/*******************************************  Tarefa 14637 - INÍCIO **************************************************/
                       
 CREATE SEQUENCE pontoparada_tre04_sequencial_seq
 INCREMENT 1
@@ -968,7 +968,7 @@ CREATE  INDEX linhatransportepontoparadaaluno_aluno_in ON linhatransportepontopa
 
 CREATE  INDEX linhatransportepontoparadaaluno_linhatransportepontoparada_in ON linhatransportepontoparadaaluno(tre12_linhatransportepontoparada);
 
-*******************************************  Tarefa 14637 - FIM ******************************************************/
+/*******************************************  Tarefa 14637 - FIM ******************************************************/
 
 
 

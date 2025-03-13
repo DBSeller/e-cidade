@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libpessoal.php");
-include("pes4_avaliaferiasrescisao.php");
-include("pes4_gerafolha003.php");
-include("pes4_gerafolha004.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("pes4_avaliaferiasrescisao.php"));
+include(modification("pes4_gerafolha003.php"));
+include(modification("pes4_gerafolha004.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -62,7 +62,7 @@ $db_botao = true;
     <td height="430" align="left" style="top:15px" valign="top" bgcolor="#CCCCCC"> 
     <center>
     <?
-      include("forms/db_frmrhpontoprovisao.php");
+      include(modification("forms/db_frmrhpontoprovisao.php"));
       if(isset($processar) && $processar == "Processar"){
         db_criatermometro('calculo_folha1','Concluido...','blue',1,'Efetuando a geracao do Ponto ...');
         db_criatermometro('calculo_folha','Concluido...','blue',1,'Efetuando Calculo do Ponto ...');
@@ -79,25 +79,32 @@ $db_botao = true;
 </html>
 <?
 
-if(isset($processar) && $processar == "Processar"){
+if(isset($processar) && $processar == "Processar" || isset($db_debug) ) {
    global $pessoal, $Ipessoal,$cfpess;
-   global $db21_codcli , $rubricas, $pontofx, $matriz1, $matriz2, $subpes;
-   
+   global $d08_carnes, $db21_codcli, $rubricas, $pontofx, $matriz1, $matriz2, $subpes;
    global $m_rubr, $m_tipo, $m_media , $m_valor , $m_quant, $qten , $vlrn, $r01_taviso,$subpes_original;
-   
    global $datainicio, $datafim, $max, $gerfsal, $gerffer, $gerfcom, $rescisao, $qmeses;
-   
    global $r30_perai,$ponto,$r30_peraf, $r30_faltas, $r30_peri,$r30_perf;
-  
-  
    global $ns13,$lotacaoatual,$anousu,$mesusu;
-
+   global $db_config;
+   global $db_debug;
+   global $pessoal,$cadferia,$prevfer13;
+   
+   if (isset($db_debug)) {
+   	$db_debug = true;
+   }
+      
    $subpes = db_str($anousu,4)."/".db_str($mesusu,2,0,"0");
    $subpes_original = $subpes;   
 
-   global $db_config;
-   db_selectmax("db_config","select db21_codcli , cgc from db_config where codigo = ".db_getsession("DB_instit"));
-  
+   db_selectmax("db_config","select lower(trim(munic)) as d08_carnes , cgc, db21_codcli from db_config where codigo = ".db_getsession("DB_instit"));
+   
+   if(trim($db_config[0]["cgc"]) == "90940172000138"){
+      $d08_carnes = "daeb";
+   }else{
+      $d08_carnes = $db_config[0]["d08_carnes"];
+   }
+   $d08_carnes = strtolower(trim($d08_carnes)); 
    $db21_codcli = $db_config[0]["db21_codcli"];
    
    db_selectmax("cfpess","select * from cfpess where r11_anousu=".db_substr($subpes,1,4)." and r11_mesusu=".db_substr($subpes,-2)." and r11_instit = ".db_getsession("DB_instit") );
@@ -115,66 +122,91 @@ if(isset($processar) && $processar == "Processar"){
    $vlrn   = array();
    $nsaldo = 30; 
         
-   $sql = " select rh01_regist as r01_regist,
-                   rh01_numcgm as r01_numcgm, 
-                   rh01_admiss as r01_admiss, 
-                   rh02_tbprev as r01_tbprev,
-                   rh30_regime as r01_regime, 
-                   rh02_hrsmen as r01_hrsmen,
-                   trim(TO_CHAR(RH02_LOTA,'9999')) as r01_lotac " ; 
-  if($tipoger == "F"){
-     $sql .= "     ,case when r30_perai is null then rh01_admiss else r30_peraf+1 end as r30_perai,
-                   (rh02_anousu::char(4)||'-'||lpad(rh02_mesusu::char(2),2,'0')||'-'||ndias($anousu,$mesusu)::char(2)) as r30_peraf ";
-  }           
-     $sql .= " from rhpessoalmov
-               inner join rhlota       on  r70_codigo = rh02_lota
-                                      and  r70_instit = rh02_instit
-               inner join rhpessoal    on rh01_regist = rh02_regist
-               left outer join cgm     on z01_numcgm = rh01_numcgm
-               left join rhregime      on rh30_codreg = rhpessoalmov.rh02_codreg
-                                      and rh30_instit = rhpessoalmov.rh02_instit
-               left join rhpesrescisao on rh05_seqpes = rhpessoalmov.rh02_seqpes ";
-             
-  if($tipoger == "F"){
-      $sql .= "left join
-                ( select distinct on (r30_regist ) r30_regist,r30_perai,r30_peraf
-                  from cadferia
-                  where r30_anousu= $anousu
-                    and r30_mesusu= $mesusu
-                    and (r30_ndias = r30_dias1 + r30_dias2 + r30_abono)
-                  order by r30_regist, r30_perai desc )
-                as cadf on r30_regist = rh01_regist ";
-  }             
-  $sql .= " where rh02_anousu = $anousu
-              and rh02_mesusu = $mesusu
-              and rh02_instit = ".DB_getsession("DB_instit")." 
-              and rh05_recis is null ";
+   $sql  = " select rh01_regist as r01_regist,                                    \n";
+   $sql .= "        rh01_numcgm as r01_numcgm,                                    \n";
+   $sql .= "        rh01_admiss as r01_admiss,                                    \n";
+   $sql .= "        rh02_tbprev as r01_tbprev,                                    \n";
+   $sql .= "        rh30_regime as r01_regime,                                    \n";
+   $sql .= "        rh02_hrsmen as r01_hrsmen,                                    \n";
+   $sql .= "        trim(TO_CHAR(RH02_LOTA,'9999')) as r01_lotac                  \n"; 
+   if($tipoger == "F"){
+     $sql .= "     ,case when r30_perai is null then rh01_admiss else r30_peraf+1 end as r30_perai,                                 \n";
+     $sql .= "     (rh02_anousu::char(4)||'-'||lpad(rh02_mesusu::char(2),2,'0')||'-'||ndias($anousu,$mesusu)::char(2)) as r30_peraf \n"; 
+   }           
+   $sql .= " from rhpessoalmov                                                    \n";
+   $sql .= " inner join rhlota       on  r70_codigo = rh02_lota                   \n";
+   $sql .= "                        and  r70_instit = rh02_instit                 \n";
+   $sql .= " inner join rhpessoal    on rh01_regist = rh02_regist                 \n";
+   $sql .= " left outer join cgm     on z01_numcgm = rh01_numcgm                  \n";
+   $sql .= " left join rhregime      on rh30_codreg = rhpessoalmov.rh02_codreg    \n";
+   $sql .= "                        and rh30_instit = rhpessoalmov.rh02_instit    \n";
+   $sql .= " left join rhpesrescisao on rh05_seqpes = rhpessoalmov.rh02_seqpes    \n";
+           
+   if ($tipoger == "F") {
+     $sql .= "left join                                                           \n";
+     $sql .= "  ( select distinct on (r30_regist ) r30_regist,r30_perai,r30_peraf \n";
+     $sql .= "    from cadferia                                                   \n";
+     $sql .= "    where r30_anousu= $anousu                                       \n";
+     $sql .= "      and r30_mesusu= $mesusu                                       \n";
+     $sql .= "      and (r30_ndias = r30_dias1 + r30_dias2 + r30_abono)           \n";
+     $sql .= "    order by r30_regist, r30_perai desc )                           \n";
+     $sql .= "  as cadf on r30_regist = rh01_regist                               \n";
+   }
+                
+   $sql .= " where rh02_anousu = $anousu                                          \n";
+   $sql .= "   and rh02_mesusu = $mesusu                                          \n";
+   $sql .= "   and rh02_instit = ".DB_getsession("DB_instit"); 
+   $sql .= "   and rh05_recis is null                                             \n"; 
+   //$sql .= "   and rh02_regist = 334 \n";
    
   
-  if($tipoger == "F"){
-     $sql .= " and rh30_vinculo = 'A'";
-     $condicaoaux = " where r91_anousu = $anousu 
-                      and   r91_mesusu = $mesusu 
-                      and   r91_instit = ".DB_getsession("DB_instit");
-     db_delete( "pontoprovfe", $condicaoaux );
-
-     $condicaoaux = " where r93_anousu = $anousu 
-                      and   r93_mesusu = $mesusu 
-                      and   r93_instit = ".DB_getsession("DB_instit");
-     db_delete( "gerfprovfer", $condicaoaux );
-  }else{
-     $condicaoaux = " where r92_anousu = $anousu 
-                      and   r92_mesusu = $mesusu 
-                      and   r92_instit = ".DB_getsession("DB_instit");
-     db_delete( "pontoprovf13", $condicaoaux );
-     $condicaoaux = " where r94_anousu = $anousu 
-                      and   r94_mesusu = $mesusu 
-                      and   r94_instit = ".DB_getsession("DB_instit");
-     db_delete( "gerfprovs13", $condicaoaux );
+   if ($tipoger == "F") {
+   	
+      $sql .= " and rh30_vinculo = 'A'";
+      $condicaoaux = " where r91_anousu = $anousu 
+                       and   r91_mesusu = $mesusu 
+                       and   r91_instit = ".DB_getsession("DB_instit");
+      if ($db_debug) {
+      	echo "Excluindo dados da tabela pontoprovfe quando $condicaoaux <br>";
+      }
+      db_delete( "pontoprovfe", $condicaoaux );
+   
+      $condicaoaux = " where r93_anousu = $anousu 
+                       and   r93_mesusu = $mesusu 
+                       and   r93_instit = ".DB_getsession("DB_instit");
+      if ($db_debug) {
+      	echo "Excluindo dados da tabela gerfprovfer quando $condicaoaux<br>";
+      }
+      db_delete( "gerfprovfer", $condicaoaux );
+      
+   } else { 
+   	
+      $condicaoaux = " where r92_anousu = $anousu 
+                       and   r92_mesusu = $mesusu 
+                       and   r92_instit = ".DB_getsession("DB_instit");
+      if ($db_debug) {
+      	echo "Excluindo dados da tabela pontoprovf13 quando $condicaoaux<br>";
+      }      
+      db_delete( "pontoprovf13", $condicaoaux );
+      
+      $condicaoaux = " where r94_anousu = $anousu 
+                       and   r94_mesusu = $mesusu 
+                       and   r94_instit = ".DB_getsession("DB_instit");
+      if ($db_debug) {
+      	echo "Excluindo dados da tabela gerfprovs13 quando $condicaoaux<br>";
+      }      
+      db_delete( "gerfprovs13", $condicaoaux );
+      
+   }
+  
+  if ($db_debug) {
+  	echo "Buscando dados para processamento... <br>";
+  	echo "SQL: <pre>{$sql}</pre><br>";
   }
-  global $pessoal,$cadferia,$prevfer13;
-  if( db_selectmax( "prevfer13", $sql)){
-	   for($Iprevfer13=0;$Iprevfer13<count($prevfer13);$Iprevfer13++){
+  
+  if ( db_selectmax( "prevfer13", $sql)) {
+  	
+	for ($Iprevfer13=0;$Iprevfer13<count($prevfer13);$Iprevfer13++) {
 
         db_atutermometro($Iprevfer13,count($prevfer13),'calculo_folha1',1);
 
@@ -183,107 +215,193 @@ if(isset($processar) && $processar == "Processar"){
 
         db_selectmax( "pessoal", $sql." and rh02_regist = $matric");
 
-    //echo "<BR> matric --> $matric r30_perai --> $r30_perai r30_peraf --> $r30_peraf  lotacaoatual --> $lotacaoatual";    
-        if($tipoger == "F"){
+        if ($db_debug) {
+          echo "Processando matricula $matric  <br>"; 
+          echo "r30_perai    --> $r30_perai    <br>";
+          echo "r30_peraf    --> $r30_peraf    <br>";
+          echo "lotacaoatual --> $lotacaoatual <br>";
+          echo "tipoger      --> $tipoger      <br><br>";
+        } 
+        
+        if ($tipoger == "F") {
 
            $r30_perai    = $prevfer13[$Iprevfer13]["r30_perai"] ;
            $datainicio   = $prevfer13[$Iprevfer13]["r30_perai"] ;
            $r30_peraf    = $prevfer13[$Iprevfer13]["r30_peraf"] ;
       
             // limpa o ponto
-     
             $max = 0;
             
-      
-         // Paga ferias vencidas ou Paga ferias Proporcionais
-                  
+            // Paga ferias vencidas ou Paga ferias Proporcionais
             $datarescisao = $anousu."-".$mesusu."-".ndias($mesusu."/".$anousu);
-       //echo "<BR> datarescisao --> $datarescisao";
-	          $tipoferias = " ";
-	          $dias_diferenca_ferias = 0;
-          	$condicaoaux =  " and r30_regist = ".db_sqlformat( $matric );
+            
+            //echo "<BR> datarescisao --> $datarescisao";
+	        $tipoferias = " ";
+	        $dias_diferenca_ferias = 0;
+	        $condicaoaux =  " and r30_regist = ".db_sqlformat( $matric );
            	$condicaoaux .= " order by r30_perai desc";
-          	if( !db_selectmax( "cadferia", "select * from cadferia ".bb_condicaosubpes("r30_").$condicaoaux )){
-	             if( $cadferia[0]["r30_ndias"] > ($cadferia[0]["r30_dias1"] + $cadferia[0]["r30_dias2"] + $cadferia[0]["r30_abono"]) ){
-	               $dias_diferenca_ferias = $cadferia[0]["r30_ndias"] - ($cadferia[0]["r30_dias1"] + $cadferia[0]["r30_dias2"] + $cadferia[0]["r30_abono"] );
-	               $tipoferias = "D";
-	            }
-	          }
-	    
-          	if( strtolower($tipoferias) != "d"){
-	            if( db_substr(db_dtoc($datainicio),1,2) > "28" && db_substr(db_dtoc($datainicio),4,2) == "02"){
-	              $dataconsiderar = "28/02/";
-	            }else{
-	              $dataconsiderar = db_substr(db_dtoc($datainicio),1,6);
-	            }
-        //echo "<BR> 1 datafim --> $datafim";
-	      // echo "<BR> ".db_ctod($dataconsiderar.db_str((db_year($datainicio)+1),4,0,"0"));
-	            $datafim = date("Y-m-d",db_mktime(db_ctod($dataconsiderar.db_str((db_year($datainicio)+1),4,0,"0"))) - 86400);
-	            if( db_mktime($datafim) > db_mktime($datarescisao)){
-	              $datafim = $datarescisao       ;
-	            }
+           	
+           	if ($db_debug) {
+           	  echo "Buscando cadferia quando ".bb_condicaosubpes("r30_").$condicaoaux."<br>";	
+           	}
+           	if ( !db_selectmax( "cadferia", "select * from cadferia ".bb_condicaosubpes("r30_").$condicaoaux )) {
+          		
+          	   if ($db_debug) {
+          	     echo "não encontrou cadferia... <br>";	
+          	     echo "calculando diferença de férias <br>";
+          	   }
+          	   	
+	           if ( $cadferia[0]["r30_ndias"] > ($cadferia[0]["r30_dias1"] + $cadferia[0]["r30_dias2"] + $cadferia[0]["r30_abono"]) ){
+	              $dias_diferenca_ferias = $cadferia[0]["r30_ndias"] - ($cadferia[0]["r30_dias1"] + $cadferia[0]["r30_dias2"] + $cadferia[0]["r30_abono"] );
+	              if ($db_debug) {
+	                echo " dias_diferenca_ferias = r30_ndias - (r30_dias1 + r30_dias2 + r30_abono) = ".$cadferia[0]["r30_ndias"]." - (".$cadferia[0]["r30_dias1"]." + ".$cadferia[0]["r30_dias2"]." + ".$cadferia[0]["r30_abono"].")<br>";
+	                echo " dias_diferenca_ferias = {$dias_diferenca_ferias} <br>";
+	                echo " tipoferias = D <br>";
+	              }
+	              $tipoferias = "D";
+	           }
+	        }
+	        
+	        if ($db_debug) {
+	          echo "<br>";
+	          echo "Verificando a data final(datafim) considerar... <br>";	
+	        }
+          	if ( strtolower($tipoferias) != "d") {
+          		
+	          if( db_substr(db_dtoc($datainicio),1,2) > "28" && db_substr(db_dtoc($datainicio),4,2) == "02"){
+	            $dataconsiderar = "28/02/";
 	          }else{
-         	    $datafim = $r30_peraf;
+	            $dataconsiderar = db_substr(db_dtoc($datainicio),1,6);
 	          }
-        //echo "<BR> datafim --> $datafim";exit;
+	          
+	          $datafim = date("Y-m-d",db_mktime(db_ctod($dataconsiderar.db_str((db_year($datainicio)+1),4,0,"0"))) - 86400);
+	          if( db_mktime($datafim) > db_mktime($datarescisao)) {
+	            $datafim = $datarescisao       ;
+	          }
+	            
+	        } else {
+         	  $datafim = $r30_peraf;
+	        }
+	        if ($db_debug) {
+	        	echo "data final (datafim): $datafim<br><br>";
+	        	echo "<br>-----------------------------------------------------------------------------------------------------<br>";
+	        	echo "iniciando loop enquanto a data de inicio ($datainicio) for menor que a data de rescisão($datarescisao)...<br>";
+	        }	        
+	        
+	        
           	$qtdvencidas = 0;
-	    			while (db_mktime($datainicio) < db_mktime($datarescisao)){
-               //echo "<BR> datarescisao 1.1 --> $datarescisao";
-               //echo "<BR> datainicio   1.1 --> $datainicio";
-               //echo "<BR> datafim      1.1 --> $datafim";
-	    			   $lancarferias = true;
-	    			   if( strtolower($tipoferias) != "d"){
-	    			      if( bcdiv(db_datedif($datafim,$datainicio),30,0) == 12){
-	    				       $tipoferias = "V";
-          
-                 //echo "<BR> tipoferias 1.1 --> $tipoferias";
-	    			      }else{
-	    				       $tipoferias = "P";
-                 //echo "<BR> tipoferias 1.2 --> $tipoferias";
-	    			      }
-	    			   }
-	    			   if( strtolower($tipoferias) == "d"){
-	    			      $tipoferias = " ";
-	    			   }
-	    			   // Paga ferias Vencidas
-	    			   if( strtolower($tipoferias) == "v"){
-	    			      if( afas_periodo_aquisitivo( $datainicio,$datafim ) <= 180){
-                     //echo "<BR> afas_periodo_aquisitivo Ã© menor que 180";
-	    	      			  ferias_para_rescisao( $datainicio, $datafim, $tipoferias,"r91");
-	    			      }else{
-	    				        $lancarferias = false;
-	    			      }
-	    			      $qtdvencidas += 1;
-	    			   }
-	    			   // Paga ferias Proporcional
-	    			   if( strtolower($tipoferias) == "p"){
-	    			      ferias_para_rescisao( $datainicio, $datafim, $tipoferias,"r91");
-	    			   }
-	    			   $datainicio = date("Y-m-d",(db_mktime($datafim) + 86400));
-	    			   $datafim = date("Y-m-d",db_mktime(db_ctod(db_substr(db_dtoc($datainicio),1,6).db_str((db_year($datainicio)+1),4,0,"0"))) - 86400);
-               //echo "<BR> datainicio   1.2 --> $datainicio";
-               //echo "<BR> datafim      1.2 --> $datafim";
-	    			   if( db_mktime($datafim) > db_mktime($datarescisao)){
-	    			      $datafim = $datarescisao;
-                 //echo "<BR> datafim      1.3 --> $datafim";
-	    			   }
-	    			}
+	    	while (db_mktime($datainicio) < db_mktime($datarescisao)) {
+	    		
+	    	  if ($db_debug) {
+	    	  	echo "<br>";
+                echo "datarescisao 1.1 --> $datarescisao <br>";
+                echo "datainicio   1.1 --> $datainicio <br>";
+                echo "datafim      1.1 --> $datafim <br><br>";
+	    	  }
+	    	   	
+	    	  $lancarferias = true;
+	    	  if ( strtolower($tipoferias) != "d") {
+	    	  	
+	    		if (bcdiv(db_datedif($datafim,$datainicio),30,0) == 12) {
+	    		  $tipoferias = "V";
+	    		  if ($db_debug) {
+                    echo "tipoferias 1.1 --> $tipoferias <br>";
+	    		  }
+                } else {
+                  $tipoferias = "P";
+                  if ($db_debug) {
+                    echo "tipoferias 1.2 --> $tipoferias <br>";
+                  }  
+	    	    }
+	    	    
+	    	  }
+	    	  
+	    	  if ( strtolower($tipoferias) == "d") {
+                $tipoferias = " ";
+              }
+              
+	    	  // Paga ferias Vencidas
+              if ( strtolower($tipoferias) == "v") {
+              	
+              	if ($db_debug) {
+              		echo "Pagando ferias vencidas... <br>";
+              	}
+              	if ( afas_periodo_aquisitivo( $datainicio,$datafim ) <= 180){
+              		
+                   if ($db_debug) {
+                   	echo "afas_periodo_aquisitivo({$datainicio},{$datafim}) menor que 180 <br><br>";
+                   	echo "-----------------------------------------------------------------------------------------------------<br>";
+                   	echo "1 - Chamando função ferias_para_rescisao( $datainicio, $datafim, $tipoferias,'r91')... <br>"; 
+                   }
+                   ferias_para_rescisao( $datainicio, $datafim, $tipoferias,"r91");
+                   if ($db_debug) {
+                   	echo "1- Fim do processamento da função ferias_para_rescisao...<br>";
+                   	echo "-----------------------------------------------------------------------------------------------------<br><br>";
+                   }
+                   
+                } else {
+	    		  $lancarferias = false;
+	    	    }
+	    	    
+	    		$qtdvencidas += 1;
+              }
+              
+	    	  // Paga ferias Proporcional
+	    	  if ( strtolower($tipoferias) == "p") {
+	    	  	
+	    	  	if ($db_debug) {
+	    	  	  echo "Pagando ferias proporcionalmente...<br><br>";
+	    	  	  echo "-----------------------------------------------------------------------------------------------------<br>";
+	    	  	  echo "2 - chamando função ferias_para_rescisao( $datainicio, $datafim, $tipoferias,'r91')... <br>";
+	    	  	}	    	  	
+	    		ferias_para_rescisao( $datainicio, $datafim, $tipoferias,"r91");
+	    		if ($db_debug) {
+	    		  echo "2 - Fim do processamento da função ferias_para_rescisao...<br>";
+	    		  echo "-----------------------------------------------------------------------------------------------------<br><br>";
+	    		}	    		
+	    		
+	    	  }
+	    	  
+              $datainicio = date("Y-m-d",(db_mktime($datafim) + 86400));
+              $datafim = date("Y-m-d",db_mktime(db_ctod(db_substr(db_dtoc($datainicio),1,6).db_str((db_year($datainicio)+1),4,0,"0"))) - 86400);
+              
+              if ($db_debug) {
+               echo "datainicio   1.2 --> $datainicio <br>";
+               echo "datafim      1.2 --> $datafim <br>";
+               echo "datafim($datafim) maior que datarescisao($datarescisao), datafim passa a ser $datarescisao... <br>";
+              }
+	    	  if ( db_mktime($datafim) > db_mktime($datarescisao)) {
+	    		$datafim = $datarescisao;
+	    	  }
+	    	  
+	    	}
+	    	
+	    	if ($db_debug) {
+	    	echo "<br>Fim do loop... <br>";	
+	    	echo "-----------------------------------------------------------------------------------------------------<br>";
+	    	}
+	    	
             $subpes = $subpes_original;
 
-        }else{
+        } else {
+        	
            // limpa o ponto
-     
-
            $subpes = $anousu."/".$mesusu;
            $datafim = $anousu."-".$mesusu."-".ndias($mesusu."/".$anousu);
            //echo "<BR> subpes --> $subpes datafim --> $datafim";
+           
+           if ($db_debug) {
+           	 echo "<br>chamando a função gera_13_salario($datafim,'r92')... <br>";
+           }
            gera_13_salario($datafim,"r92");
+           if ($db_debug) {
+           	echo "fim do processamento da função gera_13_salario($datafim,'r92')... <br><br>";
+           }
         }
     }
            
   }
-
-
+  
   db_inicio_transacao();
 
   global $r110_lotaci, $r110_lotacf, $r110_regisi, $r110_regisf,$opcao_gml,$opcao_geral,$faixa_lotac,$faixa_regis;
@@ -342,9 +460,21 @@ if(isset($processar) && $processar == "Processar"){
 	   $carregarubricas_geral[$carregarubricas[$Icarregar]["rh27_rubric"]] = $r10_form;
   }
       
+  if ($db_debug) {
+  	echo "<br>-----------------------------------------------------------------------------------------------------<br>";
+  	echo "<br>Chamando a função pes4_geracalculo003()... <br>";
+  }
   pes4_geracalculo003();
-  //exit;
-  //echo "<BR> antes do fim db_fim_transacao()";
+  
+  
+  if ($db_debug) {
+  	echo " <br><br> ";
+  	echo " <b>Fim do Calculo com Debug. <br>";
+  	echo " Calculo não foi gravado na base.</b> ";
+  	db_fim_transacao(true);
+  	exit;
+  }
+  
   flush();
   db_fim_transacao();
   flush();

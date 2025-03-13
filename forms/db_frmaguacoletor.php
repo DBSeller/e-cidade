@@ -68,7 +68,7 @@ db_textarea('x46_observacao',15,48,$Ix46_observacao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguacoletor','func_aguacoletor.php?funcao_js=parent.js_preenchepesquisa|x46_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguacoletor','func_aguacoletor.php?funcao_js=parent.js_preenchepesquisa|x46_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguacoletor.hide();

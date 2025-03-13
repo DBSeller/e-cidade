@@ -1,42 +1,50 @@
 <?php
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_assenta_classe.php");
-require_once("classes/db_tipoasse_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("std/DBDate.php");
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_usuariosonline.php');
+require_once modification('classes/db_assenta_classe.php');
+require_once modification('classes/db_tipoasse_classe.php');
+require_once modification('dbforms/db_funcoes.php');
+require_once modification('libs/db_utils.php');
+require_once modification('std/DBDate.php');
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+use ECidade\RecursosHumanos\RH\PontoEletronico\Calculo\Horas\BaseHora;
+use ECidade\RecursosHumanos\RH\Assentamento\AssentamentoHoraExtraManual;
+
+parse_str($HTTP_SERVER_VARS['QUERY_STRING'], $queryString);
+
+foreach ($queryString as $key => $value) {
+    ${$key} = $value;
+}
+
+db_postmemory($_POST);
 
 $classenta          = new cl_assenta;
 $cltipoasse         = new cl_tipoasse;
@@ -44,193 +52,134 @@ $cltipoasse         = new cl_tipoasse;
 $db_opcao = 22;
 $db_botao = false;
 
-/**
- * Alterar assentamento/afastamento
- */
-if ( isset($alterar) ) {
-
-  db_inicio_transacao();
-
-  $db_botao = true;
-  $db_opcao = 2;
-
-  try {
-
-    /**
-     * h12_assent, no formulario esta como h12_codigo
-     */
-    $sCodigoAfastamento = trim($h12_codigo);
-
-    /**
-     * Campo com codigo do afastamento nao informado
-     */
-    if ( empty($sCodigoAfastamento) ){
-      throw new Exception("Campo assentamento/afastamento não informado.");
-    }
-
-    $oDataInicial = new DBDate($h16_dtconc);
-    $dDataInicial = $oDataInicial->getDate();
-
-    /**
-     * Campo data final no formulario vazia
-     * - procura afastamentos com data inicial maior ou igual e com data final menor ou igual
-     * - ou com data final vazia(afastamento em aberto)
-     * - ou com data inicial do formulario menor ou igual a do banco (afastamento com data posterior ja cadastrado)
-     */
-    $sWhereDatas  = " (                                                                                      ";
-    $sWhereDatas .= "     ('{$dDataInicial}'::date >= h16_dtconc and '{$dDataInicial}'::date <= h16_dtterm ) ";
-    $sWhereDatas .= "  or (h16_dtterm is null)                                                               ";
-    $sWhereDatas .= "  or ( '{$dDataInicial}'::date <= h16_dtconc )                                          ";
-    $sWhereDatas .= " )                                                                                      ";
-
-    /**
-     * Caso campo com data final nao estiver vazio procura afastamento entre data inicial e final
-     * ou com data final vazia(afastamento em aberto)
-     */
-    if ( !empty($h16_dtterm) ) {
-
-      $oDataFinal  = new DBDate($h16_dtterm);
-      $dDataFinal  = $oDataFinal->getDate();
-      $sWhereDatas = " (h16_dtconc, case when h16_dtterm is null then '3000-12-31'::date else h16_dtterm+1 end) overlaps ('{$dDataInicial}'::date, '{$dDataFinal}'::date) ";
-    }
-
-    /**
-     * Antes de alterar verifica se já nao tem afastamento cadastrado para o servidor no mesmo periodo
-     *
-     * h16_dtterm - data de termino
-     * h16_dtconc - data concessao
-     */
-    $sWhereValidacao  = " case                                                              ";
-    $sWhereValidacao .= "   when exists ( select 1                                          ";
-    $sWhereValidacao .= "                   from tipoasse                                   ";
-    $sWhereValidacao .= "                  where trim(h12_assent) = '{$sCodigoAfastamento}' ";
-    $sWhereValidacao .= "                  and h12_tipo = 'A'                               ";
-    $sWhereValidacao .= "               )                                                   ";
-    $sWhereValidacao .= "     then (     h16_regist  = {$h16_regist}                        ";
-    $sWhereValidacao .= "            and h12_tipo    = 'A'                                  ";
-    $sWhereValidacao .= "            and h16_codigo != {$h16_codigo}                        ";
-    $sWhereValidacao .= "            and ({$sWhereDatas})                                   ";
-    $sWhereValidacao .= "          )                                                        ";
-    $sWhereValidacao .= "     else false                                                    ";
-    $sWhereValidacao .= " end                                                               ";
-    $sSqlValidacao    = $classenta->sql_query(null, '*', 'h16_dtconc', $sWhereValidacao);
-    $rsValidacao      = $classenta->sql_record($sSqlValidacao);
-
-    /**
-     * Econtrou afastamento para o periodo informado no formulario
-     * Lanca excessao
-     */
-    if ( $classenta->numrows > 0 && $h12_vinculaperiodoaquisitivo == 'f') {
-
-      $sMensagemErro  = "Assentamento já cadastrado para este tipo no mesmo período.";
-      $aAssentamentos = db_utils::getCollectionByRecord($rsValidacao);
-
-      /**
-       * Percorre assentamentos encontrados para montar mensagem de erro
-       */
-      foreach( $aAssentamentos as $oAssentamento ) {
-
-        /**
-         * Encontrou afastamento em aberto
-         */
-        if ( $oAssentamento->h16_dtterm == '' ) {
-          $sMensagemErro = "Servidor com afastamento em aberto.";
-        }
-
-        $oDataInicial = new DBDate($oAssentamento->h16_dtconc);
-        $sDataInicial = $oDataInicial->getDate(DBDate::DATA_PTBR);
-
-        $sDataFinal   = null;
-
-        if ( !empty($oAssentamento->h16_dtterm) ) {
-
-          $oDataFinal = new DBDate($oAssentamento->h16_dtterm);
-          $sDataFinal = $oDataFinal->getDate(DBDate::DATA_PTBR);
-        }
-
-        $sMensagemErro .= "\n\nAfastamento encontrado: {$oAssentamento->h12_assent}";
-        $sMensagemErro .= "\nData inicial: {$sDataInicial}";
-        $sMensagemErro .= "\nData final  : {$sDataFinal}";
-      }
-
-      throw new Exception($sMensagemErro);
-    }
-
-    /**
-     * Altera Assentamento/afastamento
-     */
-    $classenta->h16_assent = $h16_assent;
-    $classenta->alterar($h16_codigo);
-
-    /**
-     * Erro ao alterar assentamento/afastamento
-     */
-    if ( $classenta->erro_status == "0" ) {
-      throw new Exception($classenta->erro_msg);
-    }
-
-    if ($h12_vinculaperiodoaquisitivo == 't') {
-      $oPeriodoAquisitivoAssentamento = PeriodoAquisitivoAssentamento::getPeriodoAquisitivoAssentamento(
-                                            new Assentamento( $classenta->h16_codigo ));
-
-      if ($oPeriodoAquisitivoAssentamento) {
-        $oPeriodoAquisitivoAssentamento->excluir();
-      } else {
-        $oPeriodoAquisitivoAssentamento = new PeriodoAquisitivoAssentamento();
-      }
-
-      $oPeriodoAquisitivoAssentamento->setAssentamento(new Assentamento( $classenta->h16_codigo ));
-      $oPeriodoAquisitivoAssentamento->setPeriodoAquisitivo(new PeriodoAquisitivoFerias( $iPeriodoAquisitivo ));
-
-      $oPeriodoAquisitivoAssentamento->salvar();
-    }else{
-
-      /**
-       * Remove vinculo da rhferiasassenta
-       */
-     $oDaoRhFeriasAssenta = db_utils::getDao("rhferiasassenta");
-
-     $sSqlRhFeriasAssenta = $oDaoRhFeriasAssenta->sql_query(null, 'rh131_sequencial', null, 'rh131_assenta = ' . $h16_codigo );
-     $rsRhFeriasAssenta   = $oDaoRhFeriasAssenta->sql_record($sSqlRhFeriasAssenta);
-
-     if( !empty($rsRhFeriasAssenta) ){
-
-       $oRhFeriasAssenta    = db_utils::fieldsMemory($rsRhFeriasAssenta, 0);
-       $oDaoRhFeriasAssenta->rh131_assenta  = $oRhFeriasAssenta->rh131_sequencial;
-       $oDaoRhFeriasAssenta->excluir( $oRhFeriasAssenta->rh131_sequencial );
-
-        if ($oDaoRhFeriasAssenta->erro_status == "0") {
-
-          throw new DBException( "Erro ao excluir assentamento." );
-        }
-     }
-    }
-
-    /**
-     * commit
-     */
-    db_fim_transacao();
-
-    /**
-     * Alert com mensagem de alteracao e atualizado tela
-     */
-    $classenta->erro(true, true);
-
-  } catch(Exception $oErro) {
-
-    /**
-     * Exibe alert com mensagem de erro e da rollback
-     */
-    db_msgbox(str_replace("\n", '\n', $oErro->getMessage()));
-    db_fim_transacao(true);
-  }
-
-} else if(isset($chavepesquisa)) {
+ if (isset($chavepesquisa)) {
 
   $db_opcao = 2;
   $result = $classenta->sql_record($classenta->sql_query($chavepesquisa));
+  $classentamentofuncional = new cl_assentamentofuncional;
+  $rsAssentamentoFuncional = db_query($classentamentofuncional->sql_query($chavepesquisa));
+  $sOpcaoAssentamento      = 1;
+
+  if($rsAssentamentoFuncional && pg_num_rows($rsAssentamentoFuncional) > 0) {
+    $sOpcaoAssentamento    = 2;
+  }
   db_fieldsmemory($result,0);
+
+  $periodoJustificativa1 = null;
+  $periodoJustificativa2 = null;
+  $periodoJustificativa3 = null;
+
+  switch ($h12_natureza) {
+
+    case Assentamento::NATUREZA_JUSTIFICATIVA:
+      $oDaoAssentamentoJustificativa = new cl_assentamentojustificativaperiodo;
+      $rsAssentamentoJustificativa   = $oDaoAssentamentoJustificativa->sql_record($oDaoAssentamentoJustificativa->sql_query_file($h16_codigo));
+
+      if($rsAssentamentoJustificativa && $oDaoAssentamentoJustificativa->numrows > 0) {
+
+        db_utils::makeCollectionFromRecord($rsAssentamentoJustificativa, function($oRetornoJustificativasPeriodo) use (&$periodoJustificativa1, &$periodoJustificativa2, &$periodoJustificativa3) {
+
+          switch ($oRetornoJustificativasPeriodo->rh206_periodo) {
+            case 1:
+              $periodoJustificativa1 = $oRetornoJustificativasPeriodo->rh206_periodo;
+              break;
+
+            case 2:
+              $periodoJustificativa2 = $oRetornoJustificativasPeriodo->rh206_periodo;
+              break;
+
+            case 3:
+              $periodoJustificativa3 = $oRetornoJustificativasPeriodo->rh206_periodo;
+              break;
+          }
+        });
+      }
+      break;
+
+    case Assentamento::NATUREZA_HE_MANUAL:
+      $oDaoAssentamentoHoraExtraManual  = new cl_assentamentohoraextra;
+      $whereAssentamentoHoraExtraManual = "h17_assenta = {$chavepesquisa}";
+      $sqlAssentamentoHoraExtraManual   = $oDaoAssentamentoHoraExtraManual->sql_query_file(null, "*", 'h17_tipo', $whereAssentamentoHoraExtraManual);;
+      $rsAssentamentoHoraExtraManual    = db_query($sqlAssentamentoHoraExtraManual);
+
+      if($rsAssentamentoHoraExtraManual && pg_num_rows($rsAssentamentoHoraExtraManual) > 0) {
+        db_utils::makeCollectionFromRecord($rsAssentamentoHoraExtraManual, function($oRetornoHorasExtrasManuais) use (
+          &$horaExtraManual50Diurna,
+          &$horaExtraManual50Noturna,
+          &$horaExtraManual75Diurna,
+          &$horaExtraManual75Noturna,
+          &$horaExtraManual100Diurna,
+          &$horaExtraManual100Noturna
+        ){
+          switch ($oRetornoHorasExtrasManuais->h17_tipo) {
+            case BaseHora::HORAS_EXTRA50:
+              $horaExtraManual50Diurna  = $oRetornoHorasExtrasManuais->h17_hora;
+              break;
+
+            case BaseHora::HORAS_EXTRA75:
+              $horaExtraManual75Diurna  = $oRetornoHorasExtrasManuais->h17_hora;
+              break;
+
+            case BaseHora::HORAS_EXTRA100:
+              $horaExtraManual100Diurna  = $oRetornoHorasExtrasManuais->h17_hora;
+              break;
+
+            case BaseHora::HORAS_EXTRA50_NOTURNA:
+              $horaExtraManual50Noturna = $oRetornoHorasExtrasManuais->h17_hora;
+              break;
+
+            case BaseHora::HORAS_EXTRA75_NOTURNA:
+              $horaExtraManual75Noturna  = $oRetornoHorasExtrasManuais->h17_hora;
+              break;
+
+            case BaseHora::HORAS_EXTRA100_NOTURNA:
+              $horaExtraManual100Noturna = $oRetornoHorasExtrasManuais->h17_hora;
+              break;
+
+          }
+        });
+      }
+      break;
+      case Assentamento::NATUREZA_CONTROLE_MEDICO:
+          $controleMedico = new \ECidade\RecursosHumanos\RH\Assentamento\Model\ControleMedico($chavepesquisa);
+          $h26_sequencial = $controleMedico->getCodigo();
+          $h26_dataatestado = $controleMedico->getDataAtestado();
+          $h26_resultadoatestado = $controleMedico->getResultadoAtestado();
+          $h26_nomemedico = $controleMedico->getNomeMedico();
+          $h26_crmmedico = $controleMedico->getCrmMedico();
+          $h26_ufcrm = $controleMedico->getUfCrm();
+          $h26_cpfresponsavel = $controleMedico->getCpfResponsavel();
+          $h26_nomeresponsavel = $controleMedico->getNomeResponsavel();
+          $h26_crmresponsavel = $controleMedico->getCrmResponsavel();
+          $h26_ufcrmresponsavel = $controleMedico->getUfCrmResponsavel();
+          $h26_tipoexameocupacional = $controleMedico->getTipoExameOcupacional();
+          $aExames = [];
+          $count = 0;
+          foreach ($controleMedico->getExames() as $exame) {
+              $count += 1;
+              $std = new stdClass();
+              $std->sequencial = $count;
+              $std->codigoProcedimento = $exame->getProcedimento();
+              $std->codigoOrdem = $exame->getOrdem();
+              $std->observacao = $exame->getObservacao();
+              $std->data = \DBDate::format($exame->getData());
+              $std->codigoResultado = $exame->getResultado();
+              $std->descricaoProcedimento = utf8_encode($exame->getDescricaoProcedimento());
+              $aExames[] = $std;
+          }
+
+          break;
+  }
+
+  $oDaoAssentaAttr = new cl_assentadb_cadattdinamicovalorgrupo();
+  $rsComplemento   = db_query($oDaoAssentaAttr->sql_query_file(null,null, "h80_db_cadattdinamicovalorgrupo", null, "h80_assenta = $h16_codigo"));
+
+  if (pg_num_rows($rsComplemento) > 0) {
+    db_fieldsmemory($rsComplemento,0);
+  }
+
   $db_botao = true;
+
 }
 ?>
 <html>
@@ -241,6 +190,12 @@ if ( isset($alterar) ) {
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/dates.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/widgets/Input/DBInput.widget.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/widgets/Input/DBInputDate.widget.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/widgets/DBInputHora.widget.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+<script language="javascript" type="text/javascript" src="scripts/classes/http/http.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -257,7 +212,7 @@ if ( isset($alterar) ) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
   <?
-  include("forms/db_frmassenta.php");
+  include(modification("forms/db_frmassenta.php"));
   ?>
     </center>
   </td>
@@ -269,12 +224,11 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 </body>
 </html>
 <?php
+if(isset($msg)) {
+  db_msgbox($msg);
+}
 if($db_opcao==22){
   echo "<script>document.form1.pesquisar.click();</script>";
-}
-if(isset($h16_conver) && trim($h16_conver) == "t"){
-  db_msgbox("Assentamento gerado a partir de dois assentamentos de meio dia. \\nAlteração não permitida.");
-  echo "<script>location.href = 'rec1_assenta002.php'</script>";
 }
 ?>
 <script>

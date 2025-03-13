@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/JSON.php");
-require_once("std/db_stdClass.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
 
 $oJson  = new services_json();
 $oParametro = $oJson->decode(str_replace("\\", "", $_POST['json']));
 
 $oRetorno            = new stdClass();
-$oRetorno->lErro     = false;
+$oRetorno->erro      = false;
 $oRetorno->sMensagem = "";
 
 try {
@@ -52,12 +52,16 @@ try {
 
       $iAnoSessao     = db_getsession("DB_anousu");
       $aDadosProcesso = explode("/", $oParametro->sNumeroProcesso);
-
+      
       if (count($aDadosProcesso) == 2) {
         $iAnoSessao = $aDadosProcesso[1];
       }
       $oInstituicao       = InstituicaoRepository::getInstituicaoByCodigo(db_getsession('DB_instit'));
-      $oProcessoProtocolo = processoProtocolo::getInstanciaPorNumeroEAno($aDadosProcesso[0], $iAnoSessao, $oInstituicao);
+      $oProcessoProtocolo = processoProtocolo::getInstanciaPorNumeroEAno($aDadosProcesso[0], $iAnoSessao, $oInstituicao); 
+      if(isset($oParametro->sCodigoProcesso)) {
+
+        $oProcessoProtocolo = new processoProtocolo($oParametro->sCodigoProcesso);
+      }
 
       if ( !$oProcessoProtocolo ) {
         throw new Exception("Processo de protocolo ({$aDadosProcesso[0]}/{$iAnoSessao}) não encontrado.");
@@ -72,7 +76,7 @@ try {
 
     case 'getMovimentacoesProcesso' :
 
-      require_once 'model/protocolo/RefactorConsultaProcessoProtocolo.model.php';
+      require_once modification("model/protocolo/RefactorConsultaProcessoProtocolo.model.php");
 
       $oRefactorProcessoProtocolo = new RefactorConsultaProcessoProtocolo($oParametro->iCodigoProcesso);
       $aMovimentacoes = $oRefactorProcessoProtocolo->getMovimentacoes();
@@ -95,6 +99,28 @@ try {
 
     break;
 
+    case 'carregarDocumentosDespacho' :
+
+      $oRetorno->aDocumentosDespacho = array();
+      $oDaoProtProcessoDocumento = new cl_protprocessodocumento();
+      $sWhere                    = "p01_procandamint = $oParametro->iCodigoDespacho";
+      $sSqlProcessoDocumento     = $oDaoProtProcessoDocumento->sql_query_file(null, '*', 'p01_sequencial', $sWhere );
+      $rsProcessoDocumento       = db_query($sSqlProcessoDocumento);
+
+      if(!$rsProcessoDocumento) {
+        throw new Exception('Erro ao consultar os documentos anexados ao despacho.');
+      }
+
+      $oRetorno->aDocumentosDespacho = \db_utils::makeCollectionFromRecord($rsProcessoDocumento, function($oDados){
+          $oDocumentosDespacho = new stdClass();
+          $oDocumentosDespacho->descricao     = urlEncode($oDados->p01_descricao);
+          $oDocumentosDespacho->codigoArquivo = $oDados->p01_sequencial;
+          $oDocumentosDespacho->nomeDocumento = $oDados->p01_nomedocumento;
+          return $oDocumentosDespacho;
+       });
+
+    break;
+
     default :
       throw new Exception("Parâmetro inválido");
     break;
@@ -104,7 +130,7 @@ try {
 } catch (Exception $oErro) {
 
   db_fim_transacao(true);
-  $oRetorno->lErro     = true;
+  $oRetorno->erro     = true;
   $oRetorno->sMensagem = $oErro->getMessage();
 }
 

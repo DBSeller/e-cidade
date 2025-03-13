@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,10 +26,12 @@
  */
 
 //MODULO: patrimonio
+
 $clcfpatriinstituicao->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("nomeinst");
 ?>
+
 <form class="container" name="form1" method="post" action="">
   <fieldset>
     <legend>Parâmetro de depreciação por instituição</legend>
@@ -80,50 +82,47 @@ $clrotulo->label("nomeinst");
   </fieldset>
   <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
   <!-- <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" > -->
-  <?php
-    if ($db_opcao == 22) {
-      db_redireciona("pat1_cfpatriinstituicao002.php?chavepesquisa=".$t59_sequencial);
-    }
-  ?>
+
 </form>
 <script>
-function js_pesquisat59_instituicao(mostra){
-  if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
-  }else{
-     if(document.form1.t59_instituicao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.t59_instituicao.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
-     }else{
-       document.form1.nomeinst.value = ''; 
-     }
+  function js_pesquisat59_instituicao(mostra) {
+    if (mostra==true) {
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
+    } else {
+      if(document.form1.t59_instituicao.value != '') { 
+          js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.t59_instituicao.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
+      } else {
+        document.form1.nomeinst.value = ''; 
+      }
+    }
   }
-}
-function js_mostradb_config(chave,erro){
-  document.form1.nomeinst.value = chave; 
-  if(erro==true){ 
-    document.form1.t59_instituicao.focus(); 
-    document.form1.t59_instituicao.value = ''; 
-  }
-}
-function js_mostradb_config1(chave1,chave2){
-  document.form1.t59_instituicao.value = chave1;
-  document.form1.nomeinst.value = chave2;
-  db_iframe_db_config.hide();
-}
-function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cfpatriinstituicao','func_cfpatriinstituicao.php?funcao_js=parent.js_preenchepesquisa|t59_sequencial','Pesquisa',true);
-}
-function js_preenchepesquisa(chave){
-  db_iframe_cfpatriinstituicao.hide();
-  <?
-  if($db_opcao!=1){
-    echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
-  }
-  ?>
-}
-</script>
-<script>
 
-$("t59_dataimplanatacaodepreciacao").addClassName("field-size2");
+  function js_mostradb_config(chave,erro) {
+    document.form1.nomeinst.value = chave; 
+    if (erro==true){ 
+      document.form1.t59_instituicao.focus(); 
+      document.form1.t59_instituicao.value = ''; 
+    }
+  }
 
+  function js_mostradb_config1(chave1,chave2) {
+    document.form1.t59_instituicao.value = chave1;
+    document.form1.nomeinst.value = chave2;
+    db_iframe_db_config.hide();
+  }
+
+  function js_pesquisa() {
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cfpatriinstituicao','func_cfpatriinstituicao.php?funcao_js=parent.js_preenchepesquisa|t59_sequencial','Pesquisa',true);
+  }
+
+  function js_preenchepesquisa(chave) {
+    db_iframe_cfpatriinstituicao.hide();
+    <?
+    if($db_opcao!=1) {
+      echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
+    }
+    ?>
+  }
+
+  $("t59_dataimplanatacaodepreciacao").addClassName("field-size2");
 </script>

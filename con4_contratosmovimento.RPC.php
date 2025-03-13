@@ -25,28 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("std/db_stdClass.php");
-require_once("dbforms/db_funcoes.php");
-require_once("model/Acordo.model.php");
-require_once("model/CgmBase.model.php");
-require_once("model/CgmFactory.model.php");
-require_once("model/CgmFisico.model.php");
-require_once("model/CgmJuridico.model.php");
-require_once("model/AcordoHomologacao.model.php");
-require_once("model/AcordoComissao.model.php");
-require_once("model/AcordoComissaoMembro.model.php");
-require_once("model/AcordoAssinatura.model.php");
-require_once("model/AcordoRescisao.model.php");
-require_once("model/AcordoAnulacao.model.php");
-require_once("model/AcordoPosicao.model.php");
-require_once("model/AcordoItem.model.php");
-require_once("model/Dotacao.model.php");
-require_once("model/MaterialCompras.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("model/Acordo.model.php"));
+require_once(modification("model/CgmBase.model.php"));
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification("model/CgmFisico.model.php"));
+require_once(modification("model/CgmJuridico.model.php"));
+require_once(modification("model/AcordoHomologacao.model.php"));
+require_once(modification("model/AcordoComissao.model.php"));
+require_once(modification("model/AcordoComissaoMembro.model.php"));
+require_once(modification("model/AcordoAssinatura.model.php"));
+require_once(modification("model/AcordoRescisao.model.php"));
+require_once(modification("model/AcordoAnulacao.model.php"));
+require_once(modification("model/AcordoPosicao.model.php"));
+require_once(modification("model/AcordoItem.model.php"));
+require_once(modification("model/Dotacao.model.php"));
+require_once(modification("model/MaterialCompras.model.php"));
 
 $oJson    = new services_json();
 $oRetorno = new stdClass();
@@ -92,7 +92,7 @@ switch($oParam->exec) {
   
         $oHomologacao = new AcordoHomologacao();
         $oHomologacao->setAcordo($oParam->acordo);
-        $oHomologacao->setObservacao($sObservacao);
+        $oHomologacao->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
         $oHomologacao->save();
         
         db_fim_transacao(false);
@@ -115,7 +115,7 @@ switch($oParam->exec) {
         db_inicio_transacao();
  
         $oHomologacao = new AcordoHomologacao($oParam->codigo);
-        $oHomologacao->setObservacao($sObservacao);
+        $oHomologacao->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
         $oHomologacao->cancelar();
         
         db_fim_transacao(false);
@@ -164,7 +164,7 @@ switch($oParam->exec) {
       	$oAssinatura->setAcordo($oParam->acordo);
       	$dtMovimento = implode("-", array_reverse(explode("/", $oParam->dtmovimentacao)));
       	$oAssinatura->setDataMovimento($dtMovimento);
-      	$oAssinatura->setObservacao($sObservacao);
+      	$oAssinatura->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
       	$oAssinatura->save();
       	
         db_fim_transacao(false);
@@ -189,7 +189,7 @@ switch($oParam->exec) {
         
         $oAssinatura = new AcordoAssinatura($oParam->codigo);
         $oAssinatura->setDataMovimento();
-        $oAssinatura->setObservacao($sObservacao);
+        $oAssinatura->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
         $oAssinatura->cancelar();
         
         db_fim_transacao(false);
@@ -238,7 +238,7 @@ switch($oParam->exec) {
         $oRecisao->setAcordo($oParam->acordo);
         $dtMovimento = implode("-", array_reverse(explode("/", $oParam->dtmovimentacao)));
         $oRecisao->setDataMovimento($dtMovimento);
-        $oRecisao->setObservacao($sObservacao);
+        $oRecisao->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
         $oRecisao->save();
         
         db_fim_transacao(false);
@@ -263,7 +263,7 @@ switch($oParam->exec) {
         
         $oRecisao = new AcordoRescisao($oParam->codigo);
         $oRecisao->setDataMovimento();
-        $oRecisao->setObservacao($sObservacao);
+        $oRecisao->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
         $oRecisao->cancelar();
         
         db_fim_transacao(false);
@@ -286,7 +286,7 @@ switch($oParam->exec) {
         db_inicio_transacao();
         
         $oRecisao = new AcordoRescisao($oParam->codigo);
-        $oRecisao->setObservacao($sObservacao);
+        $oRecisao->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
         $oRecisao->setDataMovimento();
         $oRecisao->desfazerCancelamento();
         
@@ -336,7 +336,7 @@ switch($oParam->exec) {
         $oAnulacao->setAcordo($oParam->acordo);
         $dtMovimento = implode("-", array_reverse(explode("/", $oParam->dtmovimentacao)));
         $oAnulacao->setDataMovimento($dtMovimento);
-        $oAnulacao->setObservacao($sObservacao);
+        $oAnulacao->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
         $oAnulacao->save();
         
         db_fim_transacao(false);
@@ -360,7 +360,7 @@ switch($oParam->exec) {
         
         $oAnulacao = new AcordoAnulacao($oParam->codigo);
         $oAnulacao->setDataMovimento();
-        $oAnulacao->setObservacao($sObservacao);
+        $oAnulacao->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
         $oAnulacao->cancelar();
         
         db_fim_transacao(false);
@@ -383,7 +383,7 @@ switch($oParam->exec) {
         db_inicio_transacao();
         
         $oAnulacao = new AcordoAnulacao($oParam->codigo);
-        $oAnulacao->setObservacao($sObservacao);
+        $oAnulacao->setObservacao(db_stdClass::normalizeStringJsonEscapeString($sObservacao));
         $oAnulacao->setDataMovimento();
         $oAnulacao->desfazerCancelamento();
         

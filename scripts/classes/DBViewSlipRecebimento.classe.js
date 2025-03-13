@@ -51,6 +51,8 @@ DBViewSlipRecebimento = function(sNomeInstancia, iTipoTransferencia, oDivDestino
     break;
   }
 
+  /* [Extensão] - Filtro da Despesa - parte 1 */
+
   /**
    * Código Slip
    */
@@ -458,7 +460,7 @@ DBViewSlipRecebimento = function(sNomeInstancia, iTipoTransferencia, oDivDestino
   me.completaSalvar = function (oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if (oRetorno.status == 1) {
 
@@ -473,6 +475,9 @@ DBViewSlipRecebimento = function(sNomeInstancia, iTipoTransferencia, oDivDestino
       }
 
       me.clearAllFields();
+      me.oDivContainerCampos.style.display = 'none';
+      me.oDivGeralGrid.style.display       = '';
+      me.pesquisaTranferenciaRecebimento();
     } else {
       alert(oRetorno.message.urlDecode());
     }
@@ -509,7 +514,7 @@ DBViewSlipRecebimento = function(sNomeInstancia, iTipoTransferencia, oDivDestino
    */
   me.preencheComboContasDebito = function(oAjax) {
 
-    var oRetorno = eval ("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 2) {
 
       alert(oRetorno.message.urlDecode());
@@ -553,7 +558,7 @@ DBViewSlipRecebimento = function(sNomeInstancia, iTipoTransferencia, oDivDestino
    */
   me.preencheComboContasCredito = function(oAjax) {
 
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 2) {
 
       alert(oRetorno.message.urlDecode());
@@ -785,7 +790,7 @@ DBViewSlipRecebimento = function(sNomeInstancia, iTipoTransferencia, oDivDestino
     me.oDivGeralGrid.style.display       = 'none';
     me.oDivContainerCampos.style.display = '';
 
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     me.oTxtInstituicaoOrigemCodigo.setValue(oRetorno.iInstituicaoOrigem);
     $('oTxtDescricaoInstituicaoOrigem').value = oRetorno.sDescricaoInstituicaoOrigem.urlDecode();
     $('oTxtCNPJInstituicaoOrigem').value = oRetorno.sCNPJ.urlDecode();
@@ -813,13 +818,15 @@ DBViewSlipRecebimento = function(sNomeInstancia, iTipoTransferencia, oDivDestino
     var sObjetoTxtConta = "me.oTxtConta" + sFunctionCompleta + "Codigo";
     var oTxtConta       = eval(sObjetoTxtConta);
 
-    var sUrlSaltes = "func_saltesreduz.php?pesquisa_chave="+oTxtConta.getValue()+"&funcao_js=parent."+me.sNomeInstancia+".preenche"+sFunctionCompleta;
+    var sUrlSaltes = "func_saltesreduz.php?ver_datalimite=1&pesquisa_chave="+oTxtConta.getValue()+"&funcao_js=parent."+me.sNomeInstancia+".preenche"+sFunctionCompleta;
     if (lMostra) {
-      sUrlSaltes = "func_saltesreduz.php?funcao_js=parent."+me.sNomeInstancia+".completa"+sFunctionCompleta+"|k13_reduz|k13_descr";
+      sUrlSaltes = "func_saltesreduz.php?ver_datalimite=1&funcao_js=parent."+me.sNomeInstancia+".completa"+sFunctionCompleta+"|k13_reduz|k13_descr";
     }
 
     js_OpenJanelaIframe("", 'db_iframe_'+sIframe, sUrlSaltes, "Pesquisa Contas", lMostra);
   };
+
+  /* [Extensão] - Filtro da Despesa - parte 2 */
 
   me.pesquisaContaEventoContabil = function(lMostra, lCredito) {
 
@@ -1046,6 +1053,11 @@ DBViewSlipRecebimento = function(sNomeInstancia, iTipoTransferencia, oDivDestino
     me.oTxtInstituicaoOrigemCodigo.setValue('');
     me.oTxtDescricaoInstituicaoOrigem.setValue('');
     me.oTxtCNPJInstituicaoOrigem.setValue('');
+    me.oTxtContaDebitoDescricao.setValue('');
+    me.oTxtContaDebitoCodigo.setValue('');
+    me.oTxtContaCreditoDescricao.setValue('');
+    me.oTxtContaCreditoCodigo.setValue('');
+    me.oTxtProcessoInput.setValue('');
 
     /**
      * Trazer por padrão o campo caracteristica peculiar 000

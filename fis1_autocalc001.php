@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,21 +25,23 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
 $oDaoAuto       = db_utils::getDao('auto');
 $oDaoArrecad    = db_utils::getDao('arrecad');
+$oDaoArrecadOld = new  \cl_arreold();
 $oDaoArrecant   = db_utils::getDao('arrecant');
 $oDaoAutonumpre = db_utils::getDao('autonumpre');
 
-if( isset($calcular) ){
+if (isset($calcular) ){
+
 
   /**
    * Chama pl do calculo
@@ -49,24 +51,30 @@ if( isset($calcular) ){
   echo "<script>parent.iframe_calculo.location.href='fis1_autocalc001.php?y50_codauto=".$y50_codauto."&info1=$sInfo';</script>";
   exit;
 
-}elseif( !isset($info1) ){
+} elseif( !isset($info1) ){
 
     $info   = "Auto não calculado.";
     $result = $oDaoAutonumpre->sql_record($oDaoAutonumpre->sql_query(null,"*",null,"y50_codauto = {$y50_codauto}"));
-    if($oDaoAutonumpre->numrows > 0){
-
+    if ($oDaoAutonumpre->numrows > 0){
       db_fieldsmemory($result,0);
       $result  = $oDaoArrecad->sql_record($oDaoArrecad->sql_query("","arrecad.*",""," arrecad.k00_numpre = $y17_numpre and arreinstit.k00_instit = ".db_getsession('DB_instit') ));
       $result1 = $oDaoArrecant->sql_record($oDaoArrecant->sql_query("","*",""," arrecant.k00_numpre = $y17_numpre"));
+      $result2 = $oDaoArrecadOld->sql_record($oDaoArrecadOld->sql_query("","*",""," arreold.k00_numpre = $y17_numpre" ));
 
-      if($oDaoArrecad->numrows > 0){
+      if ($oDaoArrecad->numrows > 0) {
+        $desabilita = false;
         $info = "Auto já calculado. Numpre = $y17_numpre";
-      }elseif($oDaoArrecant->numrows > 0){
+      } elseif($oDaoArrecant->numrows > 0) {
+        $desabilita = false;
         $info = "Auto já Pago. Numpre = $y17_numpre";
+      } elseif($oDaoArrecadOld->numrows > 0) {
+        $desabilita = false;
+        $info = " Auto de infração já importado para  dívida . Numpre = $y17_numpre";
       }
+
     }
 
-}else{
+} else{
 
   $info       = $info1;
   $desabilita = true;

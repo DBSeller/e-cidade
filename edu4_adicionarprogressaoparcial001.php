@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulo = new rotulocampo();
 $oRotulo->label("ed29_i_codigo");
@@ -40,9 +40,18 @@ $oRotulo->label("ed11_i_codigo");
 
 ?>
 
-<html>  <head>    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />    <meta http-equiv="Expires" CONTENT="0" />    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-    <script language="JavaScript" type="text/javascript" src="scripts/classes/educacao/escola/DadosAluno.classe.js"></script>    <script language="JavaScript" type="text/javascript" src="scripts/datagrid.widget.js"></script>
-    <link href="estilos.css" rel="stylesheet" type="text/css">  </head>  <body bgcolor=#CCCCCC >
+<html>
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="Expires" CONTENT="0" />
+    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/classes/educacao/escola/DadosAluno.classe.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/datagrid.widget.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+  </head>
+  <body bgcolor=#CCCCCC >
     <?php
       /**
        * Validamos se estamos no módulo escola
@@ -111,8 +120,7 @@ $oRotulo->label("ed11_i_codigo");
             </table>
             
             <input type="button" value='Adicionar Disciplina' name='adicionar' id='adicionarDisciplina'  />
-            
-            <br /> 
+
             <div id='ctnGridDisciplinaLancada'> </div>
             
           </fieldset>
@@ -644,7 +652,7 @@ function js_removeLinhaGrid(indexLinha) {
   oRequest.asynchronous = true;
   oRequest.onComplete   = function (oAjax) {
     
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     oParametrosProgressao                   = {};
     oParametrosProgressao.lHabilitado       = oRetorno.dados.lHabilitado;      
@@ -729,7 +737,7 @@ $('salvarProgressao').observe( 'click', function () {
   oRequest.onComplete = function (oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     alert(oRetorno.message.urlDecode());
     if ( parseInt(oRetorno.status) == 2 ) {
@@ -761,7 +769,7 @@ function js_buscaProgressoesJaInclusas( iAluno ) {
   oRequest.onComplete = function (oAjax) {
 
     js_removeObj('msgBoxB');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if ( parseInt( oRetorno.status ) == 2 ) {
 

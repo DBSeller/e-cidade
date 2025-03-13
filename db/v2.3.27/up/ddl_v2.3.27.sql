@@ -65,81 +65,6 @@ alter table afasta add constraint afasta_rhpessoal_fk foreign key (r45_regist) r
 
 alter table rhpessoal add column rh01_reajusteparidade bool default 'false';
 
-
-/**
- * TIME TRIBUTARIO
- *
- * 10395 - Calculo IPTU ALEGRETE
- */
-insert into db_sysfuncoes( codfuncao , nomefuncao , nomearquivo , obsfuncao , corpofuncao , triggerfuncao )
-values ( 161, 'fc_calculoiptu_ale_2015', 'calculoiptu_ale_2015.sql', 'Calculo do iptu de alegrete','.' ,'0' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 790, 161, 1, 'iMatricula'    ,'int4', 0, 0, '0', 'MATRICULA' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 791, 161, 2, 'iAnousu'       ,'int4', 0, 0, '0', 'ANO DE CALCULO' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 792, 161, 3, 'bGerafinanc'   ,'bool', 0, 0, '0', 'SE GERA FINANCEIRO' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 793, 161, 4, 'bAtualizap'    ,'bool', 0, 0, '0', 'ATUALIZA PARCELAS ' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 794, 161, 5, 'bNovonumpre'   ,'bool', 0, 0, '0', 'SE GERA UM NOVO NUMPRE ' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 795, 161, 6, 'bCalculogeral' ,'bool', 0, 0, '0', 'SE CALCULO GERAL' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 796, 161, 7, 'bDemo'         ,'bool', 0, 0, '0', 'SE E DEMONSTRATIVO' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 797, 161, 8, 'iParcelaini'   ,'int4', 0, 0, '0', 'PARCELA INICIAL' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 798, 161, 9, 'iParcelafim'   ,'int4', 0, 0, '0', 'PARCELA FINAL' );
-
-/**
- * Taxa de Limpeza
- */
-insert into db_sysfuncoes ( codfuncao, nomefuncao, nomearquivo, obsfuncao, corpofuncao, triggerfuncao )
-                   values ( 162, 'fc_iptu_taxalimpeza_ale_2015', 'iptu_taxalimpeza_ale_2015.sql', 'Calculo da taxa de limpeza', '.', '0' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 799, 162, 1 ,'iReceita'  ,'int4'    ,0, 0, '0', 'RECEITA' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 800, 162, 2 ,'iAliquota' ,'numeric' ,0, 0, '0', 'ALIQUOTA' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 801, 162, 3 ,'iHistCalc' ,'int4'    ,0, 0, '0', 'HISTORICO DE CALCULO' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 802, 162, 4 ,'iPercIsen' ,'numeric' ,0, 0, '0', 'PERCENTUAL DE ISENCAO' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 803, 162, 5 ,'nValpar'   ,'numeric' ,0, 0, '0', 'VALOR POR PARAMETRO' );
-
-insert into db_sysfuncoesparam( db42_sysfuncoesparam, db42_funcao, db42_ordem, db42_nome, db42_tipo,
-                                db42_tamanho, db42_precisao, db42_valor_default, db42_descricao )
-     values ( 804, 162, 6 ,'bRaise'    ,'bool'    ,0, 0, '0', 'DEBUG' );
-
 /**
  * Time Financeiro - OBN
  */
@@ -196,10 +121,10 @@ REFERENCES empagetipotransmissao;
 CREATE  INDEX empagemovtipotransmissao_empagetipotransmissao_in ON empagemovtipotransmissao(e25_empagetipotransmissao);
 CREATE  INDEX empagemovtipotransmissao_empagemov_in ON empagemovtipotransmissao(e25_empagemov);
 
-insert into empagemovtipotransmissao select nextval('empagemovtipotransmissao_e25_sequencial_seq'), 
-                                            e97_codmov, 
-                                            1 
-                                       from empagemovforma 
+insert into empagemovtipotransmissao select nextval('empagemovtipotransmissao_e25_sequencial_seq'),
+                                            e97_codmov,
+                                            1
+                                       from empagemovforma
                                       where e97_codforma = 3;
 
 
@@ -299,11 +224,3 @@ CREATE UNIQUE INDEX empempenhofinalidadepagamentofundeb_numemp_in ON empempenhof
 /**
  * Time Financeiro - FIM
  */
-
-
-/**
- * Acertos por release
- */
-update db_layoutcampos set db52_nome = 'brancos_1' where db52_codigo = 11062;
-update db_layoutcampos set db52_nome = 'brancos_2' where db52_codigo = 11083;
-update db_itensmenu set libcliente = true where id_item in (9755, 9786, 9787);

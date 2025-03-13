@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_listacda_classe.php");
-require_once("classes/db_certdiv_classe.php");
-require_once("classes/db_certter_classe.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_inicialcert_classe.php");
-require_once("classes/db_certidarqremessa_classe.php");
-require_once("classes/db_certidarqretorno_classe.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("classes/db_parjuridico_classe.php");
-require_once("classes/db_cgm_classe.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_listacda_classe.php"));
+require_once(modification("classes/db_certdiv_classe.php"));
+require_once(modification("classes/db_certter_classe.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_inicialcert_classe.php"));
+require_once(modification("classes/db_certidarqremessa_classe.php"));
+require_once(modification("classes/db_certidarqretorno_classe.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("classes/db_parjuridico_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
 
 $oJson                 = new services_json();
 $oPost                 = db_utils::postMemory($_POST);
@@ -401,7 +401,7 @@ switch($oParam->exec) {
       $sSqlDados .= " order by v50_inicial,k00_numcgm,v13_certid";
 
       $rsDados   = $oListaCda->sql_record($sSqlDados);
-      $aDados    = db_utils::getColectionByRecord($rsDados, false, false, true);
+      $aDados    = db_utils::getCollectionByRecord($rsDados, false, false, true);
       
      // echo "<pre>";
      // print_r($aDados);
@@ -635,7 +635,7 @@ switch($oParam->exec) {
           $rsAuto = db_query($sSqlAuto);
           $iLinhasAuto = pg_num_rows($rsAuto); 
           if ($iLinhasAuto > 0) {
-            $oDadosAuto = db_utils::getColectionByRecord($rsAuto);
+            $oDadosAuto = db_utils::getCollectionByRecord($rsAuto);
           }
         }
         /**
@@ -850,7 +850,7 @@ switch($oParam->exec) {
 	      $sSqlNaoProcessados .= " where $sWhere ";
 	       
 	      $rsNaoProcessados    = $oCertidArqremessa->sql_record($sSqlNaoProcessados);
-	      $aNaoProcessados     = db_utils::getColectionByRecord($rsNaoProcessados, false, false, true);
+	      $aNaoProcessados     = db_utils::getCollectionByRecord($rsNaoProcessados, false, false, true);
 	      foreach ($aNaoProcessados as $oDadosNaoProcessados) {
 	      	
           $oDados                 = new stdClass(); 
@@ -915,7 +915,7 @@ switch($oParam->exec) {
 	      
 	      $sSqlProcessados     = $oCertidarqRetorno->sql_query(null,"{$sCamposProcessados}", null, "{$sWereProcessados}");
 	      $rsProcessados       = $oCertidarqRetorno->sql_record($sSqlProcessados);
-	      $aProcessados        = db_utils::getColectionByRecord($rsProcessados, false, false, true);
+	      $aProcessados        = db_utils::getCollectionByRecord($rsProcessados, false, false, true);
 	      foreach ($aProcessados as $oDadosProcessados) {
 	      	
           $oDados                 = new stdClass(); 

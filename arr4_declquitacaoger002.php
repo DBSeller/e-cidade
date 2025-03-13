@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,20 +26,20 @@
  */
 
 set_time_limit(0);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require("libs/db_utils.php");
-include("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require("libs/db_libsys.php");
-require("dbagata/classes/core/AgataAPI.class");
-require("model/documentoTemplate.model.php");
-require("model/DeclaracaoQuitacao.model.php");
-require("model/DeclaracaoQuitacaoExporta.model.php");
-require("dbforms/db_layouttxt.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require(modification("libs/db_utils.php"));
+include(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require(modification("libs/db_libsys.php"));
+require(modification("dbagata/classes/core/AgataAPI.class"));
+require(modification("model/documentoTemplate.model.php"));
+require(modification("model/DeclaracaoQuitacao.model.php"));
+require(modification("model/DeclaracaoQuitacaoExporta.model.php"));
+require(modification("dbforms/db_layouttxt.php"));
 
 $oPost = db_utils::postMemory($_POST);
 

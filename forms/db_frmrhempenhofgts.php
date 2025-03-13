@@ -112,7 +112,7 @@ $clrotulo->label('DBtxt25');
    js_removeObj("msgBox");
    js_bloqueiaTela(false);
   
-   var aRetorno = eval("("+oAjax.responseText+")");
+   var aRetorno = JSON.parse(oAjax.responseText);
    var sExpReg  = new RegExp('\\\\n','g');
   
    if ( aRetorno.lErro ) {
@@ -154,7 +154,7 @@ $clrotulo->label('DBtxt25');
    js_removeObj("msgBox");
    js_bloqueiaTela(false);
   
-   var aRetorno = eval("("+oAjax.responseText+")");
+   var aRetorno = JSON.parse(oAjax.responseText);
    var sExpReg  = new RegExp('\\\\n','g');
     
   

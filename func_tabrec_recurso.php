@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_tabrec_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tabrec_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cltabrec = new cl_tabrec;
@@ -128,9 +128,9 @@ $clrotulo->label("c61_reduz");
         $result = $cltabrec->sql_record($cltabrec->sql_query_inst($pesquisa_chave));
         if($cltabrec->numrows!=0){
           db_fieldsmemory($result,0);
-          echo "<script>".$funcao_js."('$k02_codigo','$k02_drecei','$recurso','$k02_estorc',false,'$k02_tipo');</script>";
+          echo "<script>".$funcao_js."($k02_codigo,'$k02_drecei','$recurso','$k02_estorc',false,'$k02_tipo');</script>";
         }else{
-	       echo "<script>".$funcao_js."('','Chave(".$pesquisa_chave.") não Encontrado','','',true);</script>";
+	       echo "<script>".$funcao_js."(null,'Chave(".$pesquisa_chave.") não Encontrado','','',true);</script>";
         }
       }
       ?>
@@ -149,3 +149,9 @@ document.form2.chave_k02_codigo.select();
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

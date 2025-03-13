@@ -65,7 +65,7 @@ $clcustotipoconta->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_custotipoconta','func_custotipoconta.php?funcao_js=parent.js_preenchepesquisa|cc02_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_custotipoconta','func_custotipoconta.php?funcao_js=parent.js_preenchepesquisa|cc02_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_custotipoconta.hide();

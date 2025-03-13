@@ -1,7 +1,8 @@
-<?
-/*
+<?php
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +26,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_bancoagencia_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_bancoagencia_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clbancoagencia = new cl_bancoagencia;
@@ -55,46 +56,53 @@ $sWhere = implode(" and ", $aWhereBancos);
 <table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
   <tr>
     <td height="63" align="center" valign="top">
+      <form name="form2" method="post" action="" >
+        <fieldset style="width: 35%">
+          <legend>Pesquisa de Agência</legend>
+          <table width="35%" border="0" align="center" cellspacing="0">
+            <tr>
+              <td width="4%" align="left" nowrap title="<?=$Tdb89_sequencial?>">
+                <?=$Ldb89_sequencial?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?
+             db_input("db89_sequencial",10,$Idb89_sequencial,true,"text",4,"","chave_db89_sequencial");
+             ?>
+              </td>
+            </tr>
+            <tr>
+              <td width="4%" align="left" nowrap title="<?=$Tdb89_codagencia?>">
+                <?=$Ldb89_codagencia?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?
+             db_input("db89_codagencia",10,$Idb89_codagencia,true,"text",4,"","chave_db89_codagencia");
+             ?>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
         <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
-          <tr>
-            <td width="4%" align="left" nowrap title="<?=$Tdb89_sequencial?>">
-              <?=$Ldb89_sequencial?>
-            </td>
-            <td width="96%" align="left" nowrap>
-              <?
-		       db_input("db89_sequencial",10,$Idb89_sequencial,true,"text",4,"","chave_db89_sequencial");
-		       ?>
-            </td>
-          </tr>
-          <tr>
-            <td width="4%" align="left" nowrap title="<?=$Tdb89_codagencia?>">
-              <?=$Ldb89_codagencia?>
-            </td>
-            <td width="96%" align="left" nowrap>
-              <?
-		       db_input("db89_codagencia",5,$Idb89_codagencia,true,"text",4,"","chave_db89_codagencia");
-		       ?>
-            </td>
-          </tr>
           <tr>
             <td colspan="2" align="center">
               <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
               <input name="limpar" type="reset" id="limpar" value="Limpar" >
               <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_bancoagencia.hide();">
-             </td>
+            </td>
           </tr>
-        </form>
         </table>
-      </td>
+      </form>
+    </td>
   </tr>
   <tr>
     <td align="center" valign="top">
-      <?
+      <fieldset>
+        <legend>Resultado da Pesquisa</legend>
+      <?php
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_bancoagencia.php")==true){
-             include("funcoes/db_func_bancoagencia.php");
+             include(modification("funcoes/db_func_bancoagencia.php"));
            }else{
             $campos = "bancoagencia.*";
            }
@@ -140,6 +148,7 @@ $sWhere = implode(" and ", $aWhereBancos);
 
       }
       ?>
+      </fieldset>
      </td>
    </tr>
 </table>
@@ -155,4 +164,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_db89_codagencia",true,1,"chave_db89_codagencia",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

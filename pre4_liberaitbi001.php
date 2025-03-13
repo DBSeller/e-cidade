@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 ?>
 <html>
 <head>
@@ -124,18 +124,18 @@ input {
 <?	
 	
 	if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("BEGIN");
-  pg_exec("delete from db_caritbilan where id_itbi = ".$HTTP_POST_VARS["itbi"]);
-  $result = pg_exec("delete from db_itbi where id_itbi = ".$HTTP_POST_VARS["itbi"]);
+  db_query("BEGIN");
+  db_query("delete from db_caritbilan where id_itbi = ".$HTTP_POST_VARS["itbi"]);
+  $result = db_query("delete from db_itbi where id_itbi = ".$HTTP_POST_VARS["itbi"]);
   if(pg_cmdtuples($result) > 0) {
-    pg_exec("COMMIT");
+    db_query("COMMIT");
     echo "<script>
 	        alert('itbi excluido.');
 			location.href='liberaitbi.php';
 	      </script>";
     exit;
   } else {
-    pg_exec("ROLLBACK");
+    db_query("ROLLBACK");
     echo "<script>
 	        alert('Erro excluindo itbi.');
 			location.href='liberaitbi.php';
@@ -150,8 +150,8 @@ input {
      $valorapagar = $HTTP_POST_VARS["valorapagar"];
 	 $obsliber = $HTTP_POST_VARS["obsliber"];
      $data = $HTTP_POST_VARS["data_ano"]."-".$HTTP_POST_VARS["data_mes"]."-".$HTTP_POST_VARS["data_dia"];
-     pg_exec("BEGIN");
-     $result = pg_exec("UPDATE db_itbi SET dataliber = CURRENT_DATE,
+     db_query("BEGIN");
+     $result = db_query("UPDATE db_itbi SET dataliber = CURRENT_DATE,
                                            valoravterr = $valoravterr,
                                            valoravconst = $valoravconst,
                                            valoravaliacao = $valoravaliacao,
@@ -162,11 +162,11 @@ input {
 										 obsliber = '$obsliber' 
 				         WHERE id_itbi = $itbi");
      if(pg_cmdtuples($result) <= 0) {
-	    pg_exec("ROLLBACK");
+	    db_query("ROLLBACK");
 	    echo "Erro atualizando tabela db_itbi. <a href=\"\" onclick=\"history.back();return false\">Voltar</a><br>\n";
 	    exit;
      } else {
-	    pg_exec("COMMIT");
+	    db_query("COMMIT");
 		
 		echo "<script>
                window.open('reciboitbi.php?itbi=".$itbi."&itbinumpre=',\"\",\"toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,height=\"+(screen.height-100)+\",width=\"+(screen.width-100));
@@ -176,7 +176,7 @@ input {
 	    exit;
      } 
   } else if(isset($retorno)) {
-	  $result = pg_exec("SELECT *,to_char(datasolicitacao,'DD-MM-YYYY') as datasolicit FROM db_itbi WHERE id_itbi = $retorno");
+	  $result = db_query("SELECT *,to_char(datasolicitacao,'DD-MM-YYYY') as datasolicit FROM db_itbi WHERE id_itbi = $retorno");
 	  if(pg_numrows($result) > 0) {
 	    db_fieldsmemory($result,0);
 	   /* $sql = "select z01_cgccpf,z01_nome,z01_ender,z01_munic,z01_uf,z01_cep,
@@ -187,11 +187,11 @@ input {
 						 where trim(v11_matric) = trim('$matricula')";
 		*/
 		$sql = "select * from proprietario where j01_matric = $matricula";
-	    $dadosp = pg_exec($sql);
+	    $dadosp = db_query($sql);
 	    if(pg_numrows($dadosp) > 0)
 	      db_fieldsmemory($dadosp,0);
 		 // printfieldsmemory($dadosp,0);
-        //$predterr = pg_exec("select v12_matric from edifica where trim(v12_matric) = '$matricula' limit 1");	  
+        //$predterr = db_query("select v12_matric from edifica where trim(v12_matric) = '$matricula' limit 1");	  
 	    //$predterr = (pg_numrows($predterr) > 0)?"Predial":"Territorial";
 		$predterr = $j01_tipoimp;
 	  } else {
@@ -364,7 +364,7 @@ input {
     </table>
     <table width="90%" border="1" cellpadding="0" cellspacing="0">
 	<?
-    $CAR = pg_exec("select c.descricao,i.area,i.descrcar,i.anoconstr
+    $CAR = db_query("select c.descricao,i.area,i.descrcar,i.anoconstr
                     from db_caritbi c,db_caritbilan i
                     where c.codcaritbi = i.codcaritbi
                     and i.area <> 0
@@ -406,7 +406,7 @@ input {
           /
           <input name="ano" type="text" class="campos" id="ano" size="4" maxlength="4"-->
 		  <?
-		  include("dbforms/db_funcoes.php");
+		  include(modification("dbforms/db_funcoes.php"));
                   $dia = date("d");
                   $mes = db_formatar(date("m")+1,'s','0',2);
                   $ano = date("Y");
@@ -431,7 +431,7 @@ input {
 } else {
 /*
   if(!isset($offset)) {
-  	$result = pg_exec("SELECT id_itbi as Numero, nomecomprador as Comprador FROM db_itbi WHERE datavencimento is null order by id_itbi");
+  	$result = db_query("SELECT id_itbi as Numero, nomecomprador as Comprador FROM db_itbi WHERE datavencimento is null order by id_itbi");
   	if(pg_numrows($result) <= 0) {
   	  echo "<br><Br><Br><Br><br><br><br>Nenhuma Solicitação de ITBI pendente.";
   	  db_menu($id_usuario);

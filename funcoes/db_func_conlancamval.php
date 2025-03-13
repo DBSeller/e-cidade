@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -32,4 +32,3 @@ $campos = "conlancamval.c69_sequen,
 	   conlancamval.c69_debito,
 	   conlancamval.c69_valor,
 	   conlancamval.c69_anousu as db_c69_anousu  ";
-?>

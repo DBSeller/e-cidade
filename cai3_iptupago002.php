@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf1.php");
+include(modification("fpdf151/pdf1.php"));
 $pdf = new PDF1(); 
 $pdf->Open(); 
 $pdf->AliasNbPages(); 
@@ -77,7 +77,7 @@ from iptucalv
      inner join tabrec on j21_receit = k02_codigo
 group by j21_receit,k02_drecei) as y on x.rec_pago = y.rec_calc
        ";
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 // j23_matric, z01_nome, percentual, valordb, valorsap, diferenca
 $linha = 60;

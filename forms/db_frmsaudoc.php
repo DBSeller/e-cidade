@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -46,61 +46,61 @@ $clrotulo->label("DBtxt5");
               <legend>Gerais</legend>
               <table>
                 <tr>
-                  <td nowrap title="<?=@$Tz01_c_pis?>">
-                    <?=@$Lz01_c_pis?>
+                  <td nowrap title="<?=$Tz01_c_pis?>">
+                    <?=$Lz01_c_pis?>
                   </td>
-                  <td nowrap title="<?=@$Tz01_c_pis?>">
+                  <td nowrap title="<?=$Tz01_c_pis?>">
                     <?php
                     db_input( 'z01_c_pis', 10, $Iz01_c_pis, true, 'text', $db_opcao );
                     ?>
                   </td>
-                  <td nowrap title="<?=@$Tz01_v_uf?>">
-                    <?=@$Lz01_v_uf?>
+                  <td nowrap title="<?=$Tz01_v_uf?>">
+                    <?=$Lz01_v_uf?>
                   </td>
-                  <td nowrap title="<?=@$Tz01_v_uf?>">
+                  <td nowrap title="<?=$Tz01_v_uf?>">
                     <?php
-                    db_input( 'z01_v_uf', 5, @$Iz01_v_uf, true, 'text', $db_opcao );
+                    db_input( 'z01_v_uf', 5, $Iz01_v_uf, true, 'text', $db_opcao );
                     ?>
                   </td>
                 </tr>
                 <tr>
-                  <td nowrap title="<?=@$Tz01_c_naturalidade?>">
-                    <?=@$Lz01_c_naturalidade?>
-                  </td>
-                  <td nowrap colspan="4" title="<?=@$Tz01_c_naturalidade?>">
-                    <?php
-                    db_input( 'z01_c_naturalidade', 56, @$Iz01_c_naturalidade, true, 'text', $db_opcao );
-                    ?>
-                  </td>
-                </tr>
-                <tr>
-                  <td nowrap title="<?=@$Ted228_c_descr?>">
-                    <label class="bold">País Origem:</label>
-                  </td>
-                  <td nowrap colspan="3" title="<?=@$Ted228_c_descr?>">
-                    <?php
-                    db_input( 'ed228_c_descr', 56, @$Ied228_c_descr, true, 'text', $db_opcao );
-                    ?>
-                  </td>
-                </tr>
-                <tr>
-                  <td nowrap title="<?=@$Tz01_c_datapais?>">
+                  <td nowrap title="<?=$Tz01_d_datapais?>">
                     <label class="bold">Data Entrada:</label>
                   </td>
-                  <td nowrap title="<?=@$Tz01_c_datapais?>">
+                  <td nowrap title="<?=$Tz01_d_datapais?>">
                     <?php
                     db_inputdata( 'z01_d_datapais', @$z01_d_datapais_dia, @$z01_d_datapais_mes, @$z01_d_datapais_ano, true, 'text', $db_opcao );
                     ?>
                   </td>
                 </tr>
                 <tr>
-                  <td nowrap title="<?=@$Tz01_c_escolaridade?>">
-                    <?=@$Lz01_c_escolaridade?>
+                  <td nowrap title="<?=$Tz01_c_escolaridade?>">
+                    <?=$Lz01_c_escolaridade?>
                   </td>
-                  <td nowrap colspan="3" title="<?=@$Tz01_c_escolaridade?>">
-                    <?php
-                    db_input( 'z01_c_escolaridade', 56, @$Iz01_c_escolaridade, true, 'text', $db_opcao );
-                    ?>
+                  <td nowrap colspan="3" title="<?=$Tz01_c_escolaridade?>">
+                    <select id="z01_c_escolaridade" name="z01_i_escolaridade">
+                      <option value="">Selecione</option>
+                      <option value="51">Creche</option>
+                      <option value="52">Pré-escola (exceto CA)</option>
+                      <option value="53">Classe Alfabetizada - CA</option>
+                      <option value="54">Ensino Fundamental 1ª a 4ª séries</option>
+                      <option value="55">Ensino Fundamental 5ª a 8ª séries</option>
+                      <option value="56">Ensino Fundamental Completo</option>
+                      <option value="61">Ensino Fundamental Especial</option>
+                      <option value="58">Ensino Fundamental EJA - séries iniciais (Supletivo 1ª a 4ª)</option>
+                      <option value="59">Ensino Fundamental EJA - séries iniciais (Supletivo 5ª a 8ª)</option>
+                      <option value="60">Ensino Médio, Médio 2º Ciclo (Científico, Técnico e etc)</option>
+                      <option value="57">Ensino Médio Especial</option>
+                      <option value="62">Ensino Médio EJA (Supletivo)</option>
+                      <option value="63">Superior, Aperfeiçoamento, Especialização, Mestrado, Doutorado</option>
+                      <option value="64">Alfabetização para Adultos (Mobral, etc)</option>
+                      <option value="65">Nenhum</option>
+                    </select>
+                    <?php if(isset($GLOBALS['z01_i_escolaridade'])): ?>
+                    <script>
+                      document.form1.z01_i_escolaridade.value ='<?=$GLOBALS['z01_i_escolaridade']?>';
+                    </script>
+                    <?php endif; ?>
                   </td>
                 </tr>
               </table>
@@ -289,24 +289,15 @@ $clrotulo->label("DBtxt5");
                   </td>
                   <td nowrap title="<?=@$Tz01_c_certidaodata?>">
                     <?php
-                    if( isset( $z01_c_certidaodata ) && !empty( $z01_c_certidaodata ) ) {
-
-                      $dAux = explode('-', $z01_c_certidaodata);
-
-                      $z01_c_certidaodata_dia = $dAux[2];
-                      $z01_c_certidaodata_mes = $dAux[1];
-                      $z01_c_certidaodata_ano = $dAux[0];
-                    }
-
                     db_inputdata(
-                      'z01_c_certidaodata',
-                      @$z01_c_certidaodata_dia,
-                      @$z01_c_certidaodata_mes,
-                      @$z01_c_certidaodata_ano,
-                      true,
-                      'text',
-                      $db_opcao
-                    );
+                                  'z01_c_certidaodata',
+                                  @$z01_c_certidaodata_dia,
+                                  @$z01_c_certidaodata_mes,
+                                  @$z01_c_certidaodata_ano,
+                                  true,
+                                  'text',
+                                  $db_opcao
+                                );
                     ?>
                   </td>
                 </tr>
@@ -561,8 +552,6 @@ function js_novo() {
 
 $('z01_c_pis').className           = 'field-size2';
 $('z01_v_uf').className            = 'field-size2';
-$('z01_c_naturalidade').className  = 'field-size-max';
-$('ed228_c_descr').className       = 'field-size-max';
 $('z01_d_datapais').className      = 'field-size2';
 $('z01_c_escolaridade').className  = 'field-size-max';
 

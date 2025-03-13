@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("std/db_stdClass.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_layouttxt.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_layouttxt.php"));
 
 $oGet                   = db_utils::postMemory($_GET);
 $oClassesPit50          = new stdClass;
 $oClassesPit50->arquivo = "arquivoPit50";
 $aClasses[50]           = $oClassesPit50;
 
-require_once("model/{$aClasses[$oGet->tipodocumento]->arquivo}.model.php");
+require_once(modification("model/{$aClasses[$oGet->tipodocumento]->arquivo}.model.php"));
 $oArquivoPit   = new arquivoPit50();
 $sArquivoPit   = "tmp/arquivo_pit_".date("Ymd",db_getsession("DB_datausu")).".txt"; 
 $oLayoutPIT    = new db_layouttxt($oArquivoPit->getCodigoLayout(), $sArquivoPit);

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
 $clrotulo->label("ve05_veiccadcategcnh");
@@ -60,10 +60,10 @@ function js_emite(){
 }
 function js_pesquisave05_veiccadcategcnh(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_veiccadcategcnh','func_veiccadcategcnh.php?funcao_js=parent.js_mostraveiccadcategcnh1|ve30_codigo|ve30_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadcategcnh','func_veiccadcategcnh.php?funcao_js=parent.js_mostraveiccadcategcnh1|ve30_codigo|ve30_descr','Pesquisa',true);
   }else{
      if(document.form1.ve05_veiccadcategcnh.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_veiccadcategcnh','func_veiccadcategcnh.php?pesquisa_chave='+document.form1.ve05_veiccadcategcnh.value+'&funcao_js=parent.js_mostraveiccadcategcnh','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadcategcnh','func_veiccadcategcnh.php?pesquisa_chave='+document.form1.ve05_veiccadcategcnh.value+'&funcao_js=parent.js_mostraveiccadcategcnh','Pesquisa',false);
      }else{
        document.form1.ve30_descr.value = ''; 
      }
@@ -83,10 +83,10 @@ function js_mostraveiccadcategcnh1(chave1,chave2){
 }
 function js_pesquisave05_veiccadmotoristasit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_veiccadmotoristasit','func_veiccadmotoristasit.php?funcao_js=parent.js_mostraveiccadmotoristasit1|ve33_codigo|ve33_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadmotoristasit','func_veiccadmotoristasit.php?funcao_js=parent.js_mostraveiccadmotoristasit1|ve33_codigo|ve33_descr','Pesquisa',true);
   }else{
      if(document.form1.ve05_veiccadmotoristasit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_veiccadmotoristasit','func_veiccadmotoristasit.php?pesquisa_chave='+document.form1.ve05_veiccadmotoristasit.value+'&funcao_js=parent.js_mostraveiccadmotoristasit','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadmotoristasit','func_veiccadmotoristasit.php?pesquisa_chave='+document.form1.ve05_veiccadmotoristasit.value+'&funcao_js=parent.js_mostraveiccadmotoristasit','Pesquisa',false);
      }else{
        document.form1.ve33_descr.value = ''; 
      }

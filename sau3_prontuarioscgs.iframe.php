@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once('libs/db_utils.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification('libs/db_utils.php'));
 
 if (isset($z01_i_cgsund)) {
 	
-	$oDaoProntProced = db_utils::getdao('prontproced');
+  $oDaoProntProced = db_utils::getdao('prontproced');
+  //Plugin Esf - Operation 0 - Inicio comentario
   $sCampos         = ' sd24_i_codigo, s102_i_agendamento as dl_Codigo_agenda, sd29_d_data as dl_data_Consulta, ';
-  $sCampos        .= ' sd29_c_hora, coddepto as dl_codigo, ';
-  $sCampos        .= ' descrdepto as dl_ups, sd03_i_codigo as dl_codigo, z01_nome as dl_profissional, '; 
+  //Plugin Esf - Operation 1 - Fim comentario
+  $sCampos        .= ' sd29_c_hora, coddepto as coddepto, ';
+  $sCampos        .= ' descrdepto as dl_ups, medicos.sd03_i_codigo as dl_codigo, cgm.z01_nome as dl_profissional, '; 
   $sCampos        .= ' rh70_estrutural as dl_codigo, rh70_descr as dl_especialidade, ';
   $sCampos        .= ' login as dl_usuario, sd29_d_cadastro as dl_data, sd29_c_cadastro as dl_hora ';
   $sOrderBy        = ' sd29_d_data desc, sd29_c_hora desc, sd24_i_codigo desc';

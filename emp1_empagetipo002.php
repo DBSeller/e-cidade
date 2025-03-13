@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_empagetipo_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conplanoconta_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_conplanoconta_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+db_postmemory($_POST);
 
 $clempagetipo    = new cl_empagetipo;
 $clconplanoconta = new cl_conplanoconta;
@@ -46,19 +46,44 @@ if (isset($alterar)) {
   $db_opcao = 2;
   $lErro    = false;
 
-  db_inicio_transacao();
+  $sCampos = " e83_codtipo, e83_conta ";
+  $sWhere  = " e83_conta = {$e83_conta} ";
+  $sSql    = $clempagetipo->sql_query(null, $sCampos, null, $sWhere);
 
-  $clempagetipo->e83_codigocompromisso = str_pad($e83_codigocompromisso, 4,"0",STR_PAD_LEFT);
-  $clempagetipo->e83_codtipo = $e83_codtipo;
-  $clempagetipo->e83_codmod  = 3;
-  $clempagetipo->e83_sequencia = $e83_sequencia;
-  $clempagetipo->alterar($e83_codtipo);
-  $sMsgErro = $clempagetipo->erro_msg;
-  if ($clempagetipo->erro_status == "0") {
-  	$lErro = true;
+  $rsContas = $clempagetipo->sql_record($sSql);
+  if ($clempagetipo->numrows > 0) {
+
+    $lErro     = true;
+    for ($iIndice = 0; $iIndice < $clempagetipo->numrows; $iIndice++) {
+
+      $oConta = db_utils::fieldsMemory($rsContas, $iIndice);
+      if ($oConta->e83_codtipo == $e83_codtipo && $oConta->e83_conta == $e83_conta) {
+
+        $lErro = false;
+        break;
+      }
+    }
+
+    $sMsgErro  = "A Conta informada já está vinculada a uma Conta Pagadora. \n";
+    $sMsgErro .= "Não é possível vincular uma Conta a mais de uma Conta Pagadora.";
   }
-  $chavepesquisa = $e83_codtipo;
-  db_fim_transacao($lErro);
+
+  if (!$lErro) {
+
+    db_inicio_transacao();
+
+    $clempagetipo->e83_codigocompromisso = str_pad($e83_codigocompromisso, 4, "0", STR_PAD_LEFT);
+    $clempagetipo->e83_codtipo           = $e83_codtipo;
+    $clempagetipo->e83_codmod            = 3;
+    $clempagetipo->e83_sequencia         = $e83_sequencia;
+    $clempagetipo->alterar($e83_codtipo);
+    $sMsgErro = $clempagetipo->erro_msg;
+    if ($clempagetipo->erro_status == "0") {
+      $lErro = true;
+    }
+    $chavepesquisa = $e83_codtipo;
+    db_fim_transacao($lErro);
+  }
 }
 
 if (isset($chavepesquisa)) {
@@ -96,7 +121,7 @@ if (isset($chavepesquisa)) {
   <tr>
     <td valign="top">
       <?
-        include("forms/db_frmempagetipo.php");
+        include(modification("forms/db_frmempagetipo.php"));
       ?>
     </td>
   </tr>

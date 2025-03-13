@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -706,6 +706,7 @@ function sql_query_cbr_bpa($oDados, $sSql) {
     
                       /* dados atendimento */
     $sSql .= "        unidades.sd02_i_codigo                as unidade,                   ";
+    $sSql .= "        prontproced.sd29_i_codigo             as procedimento_prontuario,   ";
     $sSql .= "        unidades.sd02_v_cnes                  as cnes_unidade,              ";
     $sSql .= "        prontuarios.sd24_i_codigo             as faa,                       ";
     $sSql .= "        prontproced.sd29_d_data               as data_atendimento,          ";
@@ -745,7 +746,9 @@ function sql_query_cbr_bpa($oDados, $sSql) {
     $sSql .= "        cgs_und.z01_v_bairro                  as bairro_end_paciente,       ";
     $sSql .= "        cgs_und.z01_v_cep                     as cep_paciente,              ";
     $sSql .= "        cgs_und.z01_v_telef                   as telefone_paciente,         ";
-    $sSql .= "        etnia.s200_identificador              as etinia                     ";
+    $sSql .= "        etnia.s200_identificador              as etinia,                    ";
+    /** PLUGIN ESF MODIFICANDO LINHA ABAIXO */
+    $sSql .= "        medicos.sd03_i_tipo                   as tipo_profissional          ";
 
     $sSql .= "   FROM sau_fechapront                                                                                  ";
     $sSql .= "        inner join prontproced       ON sau_fechapront.sd98_i_prontproced = prontproced.sd29_i_codigo   ";
@@ -775,8 +778,8 @@ function sql_query_cbr_bpa($oDados, $sSql) {
       $sSql .= " and {$sWhere} " ;
     }
     
-    $sSql .= "  order by cnsmedico,cnes_unidade, cbo, procedimento, codigo_procedimento, idade_atendimento";
-    
+    $sSql .= "  order by codigo_medico, cnsmedico, cnes_unidade, cbo, procedimento, codigo_procedimento, idade_atendimento";
+
     return $sSql;
   }
 }

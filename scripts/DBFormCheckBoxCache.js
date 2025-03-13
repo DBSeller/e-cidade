@@ -1,5 +1,5 @@
 /**
- * Cria um objeto de cache para um elemento 'textarea' do formulario 
+ * Cria um objeto de cache para um elemento 'checkbox' do formulario 
  * @class DBFormCheckBoxCache
  * @param {Element/Object} oElement Elemento HTML ou um Objeto com as propriedades  
  * @return void  

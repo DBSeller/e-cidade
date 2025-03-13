@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2014  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhlocaltrab_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhlocaltrab_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clrhlocaltrab = new cl_rhlocaltrab;
@@ -55,7 +55,7 @@ $clrhlocaltrab->rotulo->label("rh55_estrut");
               <?=$Lrh55_codigo?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
+              <?php
 		       db_input("rh55_codigo",5,$Irh55_codigo,true,"text",4,"","chave_rh55_codigo");
 		       ?>
             </td>
@@ -65,7 +65,7 @@ $clrhlocaltrab->rotulo->label("rh55_estrut");
               <?=$Lrh55_estrut?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
+              <?php
 		       db_input("rh55_estrut",20,$Irh55_estrut,true,"text",4,"","chave_rh55_estrut");
 		       ?>
             </td>
@@ -75,7 +75,7 @@ $clrhlocaltrab->rotulo->label("rh55_estrut");
               <?=$Lrh55_descr?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
+              <?php
 		       db_input("rh55_descr",40,$Irh55_descr,true,"text",4,"","chave_rh55_descr");
 		       ?>
             </td>
@@ -93,23 +93,112 @@ $clrhlocaltrab->rotulo->label("rh55_estrut");
   </tr>
   <tr> 
     <td align="center" valign="top"> 
-      <?
+      <?php
+      
+      if (isset($filtro_lotacao) && $filtro_lotacao) {
+          $sSql = "select count(*) as qtde_usuarios_permissao from db_usuariosrhlota";
+          $rsSqlUsaFiltroLotacao = db_query($sSql);
+          
+          if (is_resource($rsSqlUsaFiltroLotacao) && db_utils::fieldsMemory($rsSqlUsaFiltroLotacao, 0)->qtde_usuarios_permissao > 0) {
+          
+             try {
+                 
+                 $oDaoCfpess           = new cl_cfpess();
+                 $oDaoDbUsuarioLotacao = new cl_db_usuariosrhlota();
+                 $aEstruturais         = array();
+                 $aResultados          = array();
+                 $iInstit              = db_getsession('DB_instit');
+                 $iAno                 = DBPessoal::getAnoFolha();
+                 $iMes                 = DBPessoal::getMesFolha();
+                 $iCodigoUsuario       = db_getsession('DB_id_usuario');
+                 
+                 $sSqlMascaraLotacao = $oDaoCfpess->sql_query($iAno, $iMes, $iInstit, "db77_estrut");
+                 $rsMascaraLotacao   = db_query($sSqlMascaraLotacao);
+                 
+                 if (!$rsMascaraLotacao) {
+                     throw new DBException("Erro ao buscar a mascara da lotação.");
+                 }
+                 
+                 if (pg_num_rows($rsMascaraLotacao) == 0) {
+                     throw new BusinessException("Nenhuma lotação configurada para esta competência. Por favor verificar manutenção de parâmetros.");
+                 }
+                 
+                 $sMascara = db_utils::fieldsMemory($rsMascaraLotacao,0)->db77_estrut;
+                 
+                 $sSqlLotacoesUsuario = $oDaoDbUsuarioLotacao->sql_query(null, "r70_estrut", null, "rh157_usuario = {$iCodigoUsuario}");
+                 $rsLotacoesUsuario   = db_query($sSqlLotacoesUsuario);
+                 
+                 if (!$rsLotacoesUsuario) {
+                     throw new DBException("Erro ao buscar lotações do usuário.");
+                 }
+                 
+                 if (pg_num_rows($rsLotacoesUsuario) == 0) {
+                     throw new BusinessException("Nenhuma lotação vinculada à este usuário.");
+                 }
+                 
+                 $aEstruturais = db_utils::getCollectionByRecord($rsLotacoesUsuario);
+                 
+                 foreach ($aEstruturais as $oEstrutural) {
+                     $iLocal = substr(trim($oEstrutural->r70_estrut),0,2);
+                     if (!in_array($iLocal, $aResultados)) {
+                       $aResultados[] = substr(trim($oEstrutural->r70_estrut),0,2);
+                     }
+                 }
+                 
+                 $sWhereEstrutural = "substr(rh55_estrut,1,2) ~ '^(".implode('|',$aResultados).")'";
+                 
+             } catch (Exception $oErro) {
+                 
+                 db_msgbox($oErro->getMessage());
+                 return true;
+             }
+             
+          }
+      }        
+
+      
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_rhlocaltrab.php")==true){
-             include("funcoes/db_func_rhlocaltrab.php");
+             include(modification("funcoes/db_func_rhlocaltrab.php"));
            }else{
            $campos = "rhlocaltrab.*";
            }
         }
+        $aWhere = array();
+        if(isset($mInstituicoes) && !empty($mInstituicoes)) {
+          if(is_array($mInstituicoes)) {
+            $aWhere[] = " rh55_instit IN (". implode(", ", $mInstituicoes) .")";
+          }
+          if(!is_array($mInstituicoes)) {
+            $aWhere[] = " rh55_instit IN (". $mInstituicoes .")";
+          }
+        } else {
+          $aWhere[] = " rh55_instit = ".db_getsession("DB_instit");
+        }
+
+        if(isset($chave_rh55_estrut) && (trim($chave_rh55_estrut)!="") ){
+          $aWhere[] = " rh55_estrut like '$chave_rh55_estrut%'";
+        }
+
+        if(isset($chave_rh55_descr) && (trim($chave_rh55_descr)!="") ){
+          $aWhere[] = " rh55_descr like '$chave_rh55_descr%'";
+        }
+        
+        if (isset($sWhereEstrutural)) {
+            $aWhere[] = $sWhereEstrutural;
+        }
+
+        $dbwhere = implode(" AND ", $aWhere);
+        
         if(isset($chave_rh55_codigo) && (trim($chave_rh55_codigo)!="") ){
-	         $sql = $clrhlocaltrab->sql_query($chave_rh55_codigo,db_getsession("DB_instit"),$campos,"rh55_codigo");
+           $sql = $clrhlocaltrab->sql_query($chave_rh55_codigo,null,$campos,"rh55_codigo", $dbwhere);
         }else if(isset($chave_rh55_estrut) && (trim($chave_rh55_estrut)!="") ){
-	         $sql = $clrhlocaltrab->sql_query("",db_getsession("DB_instit"),$campos,"rh55_estrut"," rh55_estrut like '$chave_rh55_estrut%' and rh55_instit =".db_getsession("DB_instit"));
+           $sql = $clrhlocaltrab->sql_query("",null,$campos,"rh55_estrut", $dbwhere);
         }else if(isset($chave_rh55_descr) && (trim($chave_rh55_descr)!="") ){
-	         $sql = $clrhlocaltrab->sql_query("",db_getsession("DB_instit"),$campos,"rh55_descr"," rh55_descr like '$chave_rh55_descr%' and rh55_instit =".db_getsession("DB_instit"));
+	         $sql = $clrhlocaltrab->sql_query("",null,$campos,"rh55_descr", $dbwhere);
         }else{
-           $sql = $clrhlocaltrab->sql_query("",db_getsession("DB_instit"),$campos,"rh55_codigo");
+           $sql = $clrhlocaltrab->sql_query("",null,$campos,"rh55_codigo", $dbwhere);
         }
         $repassa = array();
         if(isset($chave_rh55_descr)){
@@ -118,7 +207,16 @@ $clrhlocaltrab->rotulo->label("rh55_estrut");
         db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clrhlocaltrab->sql_record($clrhlocaltrab->sql_query($pesquisa_chave,db_getsession("DB_instit")));
+          
+          $aWhere = array();
+          $aWhere[] = "rh55_codigo = {$pesquisa_chave}";
+          $aWhere[] = "rh55_instit = ".db_getsession("DB_instit");
+          if (isset($sWhereEstrutural)) {
+              $aWhere[] = $sWhereEstrutural;
+          }
+          $sWhere = implode(" and ", $aWhere);
+          $result = $clrhlocaltrab->sql_record($clrhlocaltrab->sql_query(null, null, "*", null, $sWhere));
+          
           if($clrhlocaltrab->numrows!=0){
             db_fieldsmemory($result,0);
             if ( isset($lRetornaEstrutural) ) {
@@ -139,7 +237,7 @@ $clrhlocaltrab->rotulo->label("rh55_estrut");
 </table>
 </body>
 </html>
-<?
+<?php
 if(!isset($pesquisa_chave)){
   ?>
   <script>
@@ -149,4 +247,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_rh55_descr",true,1,"chave_rh55_descr",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

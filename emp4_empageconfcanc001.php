@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_empageconf_classe.php");
-include("classes/db_empageconfche_classe.php");
-include("classes/db_empageconfchecanc_classe.php");
-include("classes/db_empageconfgera_classe.php");
-include("classes/db_empageconfcanc_classe.php");
-include("classes/db_corconf_classe.php");
-include("classes/db_empagenotasordem_classe.php");
+include(modification("classes/db_empageconf_classe.php"));
+include(modification("classes/db_empageconfche_classe.php"));
+include(modification("classes/db_empageconfchecanc_classe.php"));
+include(modification("classes/db_empageconfgera_classe.php"));
+include(modification("classes/db_empageconfcanc_classe.php"));
+include(modification("classes/db_corconf_classe.php"));
+include(modification("classes/db_empagenotasordem_classe.php"));
 $clcorconf = new cl_corconf;
 $clempageconf = new cl_empageconf;
 $clempageconfche = new cl_empageconfche;

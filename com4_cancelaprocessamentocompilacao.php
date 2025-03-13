@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_utils.php");
-require ("libs/db_app.utils.php");
-require ("std/db_stdClass.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_liborcamento.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $db_opcao = 3;
 $clrotulo->label("descrdepto");
@@ -181,10 +181,10 @@ function js_completaPesquisa(iSolicitacao) {
                                           onComplete: js_retornoCompletaPesquisa
                                          });
 }
-
+iFormaControle = 1;
 function js_retornoCompletaPesquisa(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
   
     $('pc54_datainicio').value  = oRetorno.datainicio;
@@ -194,7 +194,7 @@ function js_retornoCompletaPesquisa(oAjax) {
     $('pc54_solicita').value = oRetorno.codigoabertura;
     js_preencheGrid(oRetorno.itens);
     $('btnProcessar').disabled = false;
-    
+    iFormaControle             = oRetorno.formacontrole;
   } else {
     alert(oRetorno.message.urlDecode());
   }
@@ -203,56 +203,80 @@ function js_retornoCompletaPesquisa(oAjax) {
 
 function js_init() {
 
-  windowAuxiliar = new windowAux('wndAuxiliar', 'itens', 600, 400);
+  windowAuxiliar = new windowAux('wndAuxiliar', 'itens', screen.availWidth - 50,  screen.availHeight - 200);
   windowAuxiliar.setContent("<fieldset><legend>Itens da Compilação</legend><div  id='griditens'></div></fieldset>");
   windowAuxiliar.hide();
   $('btnProcessar').disabled = true;
   oGridItens     = new DBGrid('gridItens');
   oGridItens.nameInstance = "oGridItens";
-  oGridItens.setHeight(200);
-  oGridItens.setCellAlign(new Array("right","right","Left","left","center","right","right", "right"));
-  oGridItens.setCellWidth(new Array("4%","10%","45%",'10%', "5%","10%",'16%','16%','16%'));
-  oGridItens.setHeader(new Array("Seq","Codigo","Descrição","Unidade(Qtd)","Out.Inf.","Qtde","Qtd. Min.","Qtd. Min.",
-                                 "Ativo"));
-  oGridItens.show($('griditens')); 
-  
+  oGridItens.setHeight(screen.availHeight - 400);
+  oGridItens.setCellAlign(new Array("right","right","Left","left","center", "right", "right","right", "right"));
+  oGridItens.setCellWidth(new Array("4%", "10%","45%",'10%', "5%","10%", '16%', '16%','16%','16%'));
+  oGridItens.setHeader(["Seq",
+      "Codigo",
+      "Descrição",
+      "Unidade(Qtd)",
+      "Out.Inf.",
+      "Qtde",
+      "Valor",
+      "Qtd. Min.",
+      "Qtd. Min.",
+      "Ativo"]
+  );
+
+  oGridItens.show($('griditens'));
+
 }
 
 function js_preencheGrid(aItens) {
-  
+
   oGridItens.clearAll(true);
   for(var i = 0; i < aItens.length; i++) {
-    
+
     with (aItens[i]) {
-    
+
       var aLinha = new Array();
       aLinha[0]  = i+1;
       aLinha[1]  = codigoitem;
       aLinha[2]  = descricaoitem.urlDecode();
-      aLinha[3]  = "<span id='unidade"+indice+"'>"+unidade+"</span>";  
-      aLinha[3] += "<span id='quantunid"+indice+"' style='display:none'>"+quantidadeunid+"</span>("+quantidadeunid+")";  
-      aLinha[4]  = "<span id='justificativa"+indice+"' style='display:none'>"+justificativa.urlDecode()+"</span>";  
-      aLinha[4] += "<span id='resumo"+indice+"'        style='display:none'>"+resumo.urlDecode()+"</span>";  
-      aLinha[4] += "<span id='pgto"+indice+"'          style='display:none'>"+pagamento.urlDecode()+"</span>";  
-      aLinha[4] += "<span id='prazo"+indice+"'         style='display:none'>"+prazo.urlDecode()+"</span>";  
+      aLinha[3]  = "<span id='unidade"+indice+"'>"+unidade+"</span>";
+      aLinha[3] += "<span id='quantunid"+indice+"' style='display:none'>"+quantidadeunid+"</span>("+quantidadeunid+")";
+      aLinha[4]  = "<span id='justificativa"+indice+"' style='display:none'>"+justificativa.urlDecode()+"</span>";
+      aLinha[4] += "<span id='resumo"+indice+"'        style='display:none'>"+resumo.urlDecode()+"</span>";
+      aLinha[4] += "<span id='pgto"+indice+"'          style='display:none'>"+pagamento.urlDecode()+"</span>";
+      aLinha[4] += "<span id='prazo"+indice+"'         style='display:none'>"+prazo.urlDecode()+"</span>";
       aLinha[4] += "<span><a href='#' ></a></span>";
-      aLinha[5] = js_formatar(aItens[i].quantidade,'f');
-      aLinha[6] = js_formatar(aItens[i].qtdemin,'f');
-      aLinha[7] = js_formatar(aItens[i].qtdemax,'f');
-      aLinha[8] = ativo?"Sim":"Não";
+      aLinha[5] = js_formatar(aItens[i].quantidade, 'f');
+      aLinha[6] = js_formatar(aItens[i].valor_unitario, 'f');
+      aLinha[7] = js_formatar(aItens[i].qtdemin, 'f');
+      aLinha[8] = js_formatar(aItens[i].qtdemax, 'f');
+      aLinha[9] = ativo?"Sim":"Não";
       oGridItens.addRow(aLinha);
       if (!automatico) {
-         oGridItens.aRows[i].setClassName("fora");
+        oGridItens.aRows[i].setClassName("fora");
       }
       //oGridItens.aRows[i].aCells[0].sStyle +="background-color:#DED5CB;font-weight:bold;padding:1px";
-      
     }
   }
   oGridItens.renderRows();
 }
 js_init();
 function js_showItens() {
-  windowAuxiliar.show(100,10); 
+
+  windowAuxiliar.show(30, 10);
+  oGridItens.clearAll();
+  oGridItens.renderRows();
+  switch  (iFormaControle) {
+
+    case '1':
+      oGridItens.showColumn(false, 7);
+      break;
+    case '2':
+      oGridItens.showColumn(false, 6);
+      oGridItens.showColumn(false, 8);
+      oGridItens.showColumn(false, 9);
+      break;
+  }
 }
 
 function js_processarCompilacao() {
@@ -284,7 +308,7 @@ function js_processarCompilacao() {
 function js_retornoProcessarCompilacao(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
   
    alert('Cancelamento do processamento da compilacao realizada com sucesso!');    
@@ -304,4 +328,5 @@ function js_limpar() {
 $('btnConsultar').observe('click', js_pesquisar);
 $('btnProcessar').observe('click', js_processarCompilacao);
 $('btnVisualizarItens').observe('click', js_showItens);
+js_pesquisar();
 </script>

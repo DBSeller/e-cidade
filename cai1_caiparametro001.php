@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,84 +25,92 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_caiparametro_classe.php");
-require_once("dbforms/db_funcoes.php");
-db_postmemory($HTTP_SERVER_VARS);
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_caiparametro_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+db_postmemory($_SERVER);
+db_postmemory($_POST);
 
-$clcaiparametro             = new cl_caiparametro;
-$db_opcao                   = 22;
-$db_botao                   = false;
-$k29_instit                 = db_getsession("DB_instit");
+$clcaiparametro = new cl_caiparametro;
+$db_opcao = 22;
+$db_botao = false;
+$k29_instit = db_getsession("DB_instit");
 $clcaiparametro->k29_instit = db_getsession("DB_instit");
 
-if(isset($alterar)){
+if (isset($alterar)) {
+    db_inicio_transacao();
 
-   db_inicio_transacao();
+    if (empty($k29_contapadraoslip)) {
+        $clcaiparametro->k29_contapadraoslip = 'null';
+    }
 
-   $sSql   = $clcaiparametro->sql_query(db_getsession("DB_instit"));
-   $result = $clcaiparametro->sql_record($sSql);
+    $sSql = $clcaiparametro->sql_query(db_getsession("DB_instit"));
+    $result = $clcaiparametro->sql_record($sSql);
+    if ($result == false || $clcaiparametro->numrows == 0) {
+        $clcaiparametro->incluir($k29_instit);
+    } else {
+        $clcaiparametro->alterar($k29_instit);
+    }
 
-   if ($result == false || $clcaiparametro->numrows == 0) {
-     $clcaiparametro->incluir($k29_instit);
-   } else {
-     $clcaiparametro->alterar($k29_instit);
-   }
+    $tipo_transmissao = $_POST['tipo_transmissao'];
+    $sConvenioBanco = $_POST['convenio_banco'];
 
-   db_fim_transacao();
+    $oParametrosCaixa = new ParametroCaixa();
+    $oParametrosCaixa->setConvenioBanco($sConvenioBanco);
+    $oParametrosCaixa->setTipoTramissaoPadrao($tipo_transmissao);
+    $oParametrosCaixa->salvar();
+
+    db_fim_transacao();
 }
 
 $db_opcao = 2;
-$result   = $clcaiparametro->sql_record($clcaiparametro->sql_query(db_getsession("DB_instit")));
-if($result != false && $clcaiparametro->numrows > 0 ) {
-  db_fieldsmemory($result,0);
+$result = $clcaiparametro->sql_record($clcaiparametro->sql_query(db_getsession("DB_instit")));
+if ($result != false && $clcaiparametro->numrows > 0) {
+    db_fieldsmemory($result, 0);
 }
 $db_botao = true;
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/widgets/DBLookUp.widget.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<center>
-	<?	require_once("forms/db_frmcaiparametro.php"); ?>
-</center>
+<body style="background-color: #CCCCCC;">
+<div class="container">
+    <?php
+    require_once(modification("forms/db_frmcaiparametro.php"));
+    ?>
+</div>
 
-
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+<?php
+db_menu();
 ?>
 </body>
 </html>
-<?
+<?php
 if (isset($alterar)) {
-
-  if ($clcaiparametro->erro_status == "0" ) {
-
-    $clcaiparametro->erro(true,false);
-    $db_botao = true;
-    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if($clcaiparametro->erro_campo!=""){
-      echo "<script> document.form1.".$clcaiparametro->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$clcaiparametro->erro_campo.".focus();</script>";
+    if ($clcaiparametro->erro_status == "0") {
+        $clcaiparametro->erro(true, false);
+        $db_botao = true;
+        echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+        if ($clcaiparametro->erro_campo != "") {
+            echo "<script> document.form1." . $clcaiparametro->erro_campo . ".style.backgroundColor='#99A9AE';</script>";
+            echo "<script> document.form1." . $clcaiparametro->erro_campo . ".focus();</script>";
+        }
+    } else {
+        $clcaiparametro->erro(true, true);
     }
-  }else{
-    $clcaiparametro->erro(true,true);
-  }
-}
-if($db_opcao == 22){
-  echo "<script>document.form1.pesquisar.click();</script>";
-}
-if (isset($k29_orctiporecfundeb) && $k29_orctiporecfundeb != null) {
-
-  echo "<script>js_pesquisaRecurso(false);</script>";
 }
 
-?>
+if ($db_opcao == 22) {
+    echo "<script>document.form1.pesquisar.click();</script>";
+}

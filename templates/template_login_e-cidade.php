@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,6 +24,12 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
+
+use ECidade\V3\Extension\Registry;
+
+$clientId = Registry::get('app.config')->get('api.client.id');
+$clientSecret = Registry::get('app.config')->get('api.client.secret');
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -35,6 +41,7 @@
     <link href="imagens/ecidade/favicon.png" rel="icon"  type="image/png" />
     <link href="estilos/jQueryUI/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css"/>
     <link href="estilos/login.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/fontawesome/css/all.min.css" rel="stylesheet" type="text/css"/>
 
     <script language="JavaScript" type="text/javascript" src="scripts/md5.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
@@ -52,7 +59,8 @@
 
         <div class="access-fields">
 
-          <?php if (isset($DB_CONEXAO)) { ?>
+          <?php if (isset($DB_CONEXAO)) {
+            ?>
 
              <input id="servidor" name="servidor"  type="hidden" value="<?=@$servidor?>"/>
              <input id="port"     name="port"      type="hidden" value="<?=@$port?>"/>
@@ -65,9 +73,11 @@
             <select name="serv" id="serv">
               <option name="condicaoservidor" value="">Selecione um servidor</option>
 
-              <?php for( $iInd = 0; $iInd < count( $DB_CONEXAO ); $iInd++) { ?>
+              <?php for ($iInd = 0; $iInd < count($DB_CONEXAO); $iInd++) {
+                ?>
                       <option name="condicaoservidor" value="<?=$iInd?>"><?=$DB_CONEXAO[$iInd]["SERVIDOR"].":".$DB_CONEXAO[$iInd]["PORTA"] ?></option>
-              <?php } ?>
+              <?php
+            } ?>
             </select>
 
             <label>Base:</label>
@@ -77,7 +87,8 @@
               <input type="hidden" name="idbasename" id="idbasename"/>
             </div>
 
-          <?php } ?>
+          <?php
+        } ?>
 
           <label>Login:</label>
           <input name="login" id="usu_login" type="text" placeholder="Informe seu login"/>
@@ -85,15 +96,20 @@
           <label>Senha:</label>
           <input name="senha" id="usu_senha" type="password" placeholder="Informe sua senha"/>
 
-          <div id="captcha" class="container-captcha <?php echo ($lCaptcha ? '' : 'container-captcha-hide'); ?>">
+          <div id="captcha" class="container-captcha <?php echo($lCaptcha ? '' : 'container-captcha-hide'); ?>">
             <?php include('captcha.php'); ?>
           </div>
 
           <input name="btnlogar" id="btnlogar" type="button" value="Entrar"/>
+
+          <button name="btnloading" id="btnloading" class="btn-login" disabled style="display: none">
+              <i class="fa fa-spinner fa-spin"></i>
+          </button>
+
         </div>
 
         <div class="link-acesso">
-          <?php echo ($lMostraLinkPrimeiroAcesso ? '<a href="primeiroAcesso.php">Primeiro acesso</a>' : ''); ?>
+          <?php echo($lMostraLinkPrimeiroAcesso ? '<a href="primeiroAcesso.php">Primeiro acesso</a>' : ''); ?>
         </div>
 
         <span id="testaLogin"></span>
@@ -110,7 +126,13 @@
 
     </div>
   </body>
+  <script src="scripts/classes/http/http.js"></script>
   <script type="text/javascript">
+
+  const btnLogar = document.getElementById('btnlogar');
+  const btnLoading = document.getElementById('btnloading');
+  btnLoading.style.backgroundColor = "#cacaca";
+  btnLoading.style.borderColor = "#cacaca";
 
   $( "#basename" ).autocomplete({
     source: function( request, response ) {
@@ -160,34 +182,76 @@
 
   function js_acessar_dbportal() {
 
-    /**
-     * Limpa status de retorno
-     */
-    $('#testaLogin').html('');
+      btnLogar.style.display = 'none';
+      btnLoading.style.display = '';
 
-    var sLogin = $('#usu_login').val();
-    var sSenha = calcMD5( $('#usu_senha').val() );
-    var wname  = 'wname' + Math.floor(Math.random() * 10000);
-    var sQuery = "";
+      const login = document.getElementById('usu_login').value;
+      const senha = document.getElementById('usu_senha').value;
 
-    if ( $('#servidor').length && $('#servidor').val() != "" ){
+      const formData = new FormData();
+      formData.append('username', login);
+      formData.append('password', senha ? senha : '');
+      formData.append('client_id', '<?php echo $clientId; ?>');
+      formData.append('client_secret', '<?php echo $clientSecret; ?>');
+      formData.append('grant_type', 'password');
 
-      sQuery += "&servidor=" + $('#servidor').val();
-      sQuery += "&base="     + $('#base').val();
-      sQuery += "&user="     + $('#user').val();
-      sQuery += "&port="     + $('#port').val();
-      sQuery += "&senha="    + $('#senh').val();
+      generateDatabase().then(response => {
+        HttpClient.post('v4/oauth/token', {body: formData, reportProgress: false})
+          .then(response => {
+              localStorage.setItem('access_token', response.access_token);
+
+              $('#testaLogin').html('');
+
+              const sSenha = calcMD5(senha);
+              const wname = `wname${Math.floor(Math.random() * 10000)}`;
+
+              var sQuery = '';
+
+              if ($('#servidor').length && $('#servidor').val() !== '') {
+                  sQuery += "&servidor=" + $('#servidor').val();
+                  sQuery += "&base=" + $('#base').val();
+                  sQuery += "&user=" + $('#user').val();
+                  sQuery += "&port=" + $('#port').val();
+                  sQuery += "&senha=" + $('#senh').val();
+              }
+
+              const oCaptcha = $('#captcha');
+              const sAuth = btoa(`DB_login=${login}&DB_senha=${sSenha}`).urlEncode();
+              const sUrl = 'abrir.php?sAuth=' + sAuth
+                  + ((oCaptcha) ? '&conteudoCaptcha=' + $('#ct_captcha').val() : '')
+                  + sQuery;
+
+              $('#usu_senha').val('');
+
+              window.open(sUrl, wname, `width=${screen.availWidth},height=${screen.availHeight}`);
+              btnLogar.style.display = '';
+              btnLoading.style.display = 'none';
+          })
+          .catch(response => {
+            alert("Houve um erro ao se autenticar.");
+              btnLogar.style.display = '';
+              btnLoading.style.display = 'none';
+          });
+      });
+  }
+
+  // Função criada para popular o database com a base selecionada no login
+  function generateDatabase(){
+    const formData = new FormData();
+    if ($('#servidor').length && $('#servidor').val() !== '') {
+
+      formData.append('exec', 'setCookieDatabase');
+      formData.append('servidor', $('#servidor').val());
+      formData.append('base', $('#base').val());
+      formData.append('port', $('#port').val());
+
+      return HttpClient.post('login.rpc.php', {body: formData, reportProgress: false});
+    } else {
+
+      formData.append('exec', 'destroyCookieDatabase');
+
+      return HttpClient.post('login.rpc.php', {body: formData, reportProgress: false});
     }
-
-    var oCaptcha = $('#captcha');
-    var sAuth = btoa("DB_login="+sLogin+"&DB_senha="+sSenha).urlEncode();
-    sUrl  = "abrir.php?sAuth=" + sAuth
-            + ((oCaptcha) ?  '&conteudoCaptcha=' + $('#ct_captcha').val() : '')
-            + sQuery;
-
-    $('#usu_senha').val('')
-
-    var jan  = window.open(sUrl,wname,'width=1,height=1');
   }
 
   $(document).ready(function() {

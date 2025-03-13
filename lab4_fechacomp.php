@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("dbforms/db_classesgenericas.php");
-require ("libs/db_stdlibwebseller.php");
-require ("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_utils.php"));
 db_postmemory ( $HTTP_POST_VARS );
 $oDaoLabFechamento        = db_utils::getdao("lab_fechamento");
 $cllab_bpamagnetico       = db_utils::getdao("lab_bpamagnetico");
@@ -118,7 +118,7 @@ if (isset ($incluir)) {
       if ($la54_i_financiamento != "0") {
         $sQl .= " and  sd65_c_financiamento=(select sd65_c_financiamento from sau_financiamento where sd65_i_codigo=$la54_i_financiamento)";
       }
-      $rsResult = pg_query($sQl);
+      $rsResult = db_query($sQl);
       if (pg_affected_rows($rsResult) == 0 || pg_affected_rows($rsResult) == false) {
 
         $oDaoLabFechamento->erro_msg    = " Nenhum registro encontrado![2] ";
@@ -178,7 +178,7 @@ if (isset ($incluir)) {
           $sQl .= " (select sd65_c_financiamento from sau_financiamento where sd65_i_codigo=$la54_i_financiamento) ";
           
         }
-        $rsResult = pg_query($sQl);
+        $rsResult = db_query($sQl);
         if (pg_affected_rows($rsResult) == 0 || pg_affected_rows($rsResult) == false) {
           
           $oDaoLabFechamento->erro_msg    = " Nenhum registro de produção adicionado! ";
@@ -266,7 +266,7 @@ if (isset ($incluir)) {
     <br>
     <br>
     <?
-      include ("forms/db_frmlab_fechamento.php");
+      include(modification("forms/db_frmlab_fechamento.php"));
     ?>
   </td>
   </tr>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r14_rubric');
@@ -105,19 +105,22 @@ $sql = "
 	                                      from basesr 
 					      where r09_base = '$base1' 
 					        and r09_anousu = ".db_anofolha()."
-						and r09_mesusu = ".db_mesfolha()."
+						      and r09_mesusu = ".db_mesfolha()."
+						      and r09_instit = ".db_getsession("DB_instit")."
 					      ) then ".$sigla."valor else 0 end),2) as remuneracao,
                round(sum(case when ".$sigla."rubric in (select r09_rubric 
 	                                      from basesr 
 					      where r09_base = '$base2' 
 					        and r09_anousu = ".db_anofolha()."
-						and r09_mesusu = ".db_mesfolha()."
+						      and r09_mesusu = ".db_mesfolha()."
+						      and r09_instit = ".db_getsession("DB_instit")."
 					      ) then ".$sigla."valor else 0 end),2) as desc_obrigatorios,
                round(sum(case when ".$sigla."rubric in (select r09_rubric 
 	                                      from basesr 
 					      where r09_base = '$base3' 
 					        and r09_anousu = ".db_anofolha()."
-						and r09_mesusu = ".db_mesfolha()."
+						      and r09_mesusu = ".db_mesfolha()."
+						      and r09_instit = ".db_getsession("DB_instit")."
 					      ) then ".$sigla."valor else 0 end),2) as comprometido
       	from ".$arquivo." 
              inner join rhpessoalmov on ".$sigla."regist = rh02_regist 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcprojeto_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");            // iframe 
-include("classes/db_orcsuplem_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcprojeto_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));            // iframe 
+include(modification("classes/db_orcsuplem_classe.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir; // iframe
 
 db_postmemory($HTTP_POST_VARS);
@@ -56,10 +56,10 @@ $clrotulo->label("o39_codlei");
 <script>
  function js_suplem(chave){
   // alert(chave);
-    js_OpenJanelaIframe('top.corpo','db_iframe_','orc1_orcsuplem009.php?chavepesquisa='+chave,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_','orc1_orcsuplem009.php?chavepesquisa='+chave,'Pesquisa',true);
  }  
  function js_cadsuplem(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_funcsuplem','orc1_orcsuplem001.php','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_funcsuplem','orc1_orcsuplem001.php','Pesquisa',true);
  }  
 </script>
 </head>
@@ -87,7 +87,7 @@ $clrotulo->label("o39_codlei");
     </center>
    </form>
    <center>
-   <?  // include("forms/db_frmorcprojeto.php"); 
+   <?  // include(modification("forms/db_frmorcprojeto.php")); 
        // lista todas as suplementações do projeto
        $sql = $clorcsuplem->sql_query_file(null,"*",null,"o46_codlei=$o39_codproj");
        $res = $clorcsuplem->sql_record($sql);
@@ -119,7 +119,7 @@ if(isset($incluir)){
        echo "<script>
  	       // libera segunda aba
                parent.document.formaba.suplem.disabled=false;\n
-               top.corpo.iframe_suplem.location.href='orc1_orcprojeto0012.php?o39_codproj=$o39_codproj';\n
+               (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_suplem.location.href='orc1_orcprojeto0012.php?o39_codproj=$o39_codproj';\n
                parent.mo_camada('suplem');    //envia direto para outra aba     
            </script>";
 

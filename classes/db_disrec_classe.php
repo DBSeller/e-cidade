@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: caixa
@@ -402,12 +402,12 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      return $sql;
   }
 
-  function sql_query_receitas_autenticadas ($oid = null,$campos="disrec.oid,*",$ordem=null,$dbwhere="") {
+  function sql_query_receitas_autenticadas ($oid = null,$campos="disrec.oid,*",$ordem=null,$dbwhere="", $sGroupBy = "") {
 
 
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -418,22 +418,26 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
     }
 
     $sql .= "  from corcla ";
+    $sql .= "       inner join discla         on discla.codcla   = corcla.k12_codcla";
+    $sql .= "       inner join disrec         on disrec.codcla   = discla.codcla";
+//    $sql .= "       inner join arreidret      on arreidret.idret = disrec.idret ";
+
     $sql .= "       inner join cornump        on corcla.k12_id = cornump.k12_id ";
     $sql .= "                                and corcla.k12_data = cornump.k12_data ";
     $sql .= "                                and corcla.k12_autent = cornump.k12_autent ";
-    $sql .= "       inner join corrente       on corcla.k12_id = corrente.k12_id ";
-    $sql .= "                                and corcla.k12_data = corrente.k12_data ";
-    $sql .= "                                and corcla.k12_autent = corrente.k12_autent ";
+    $sql .= "                                and disrec.k00_receit  = cornump.k12_receit ";
+    $sql .= "       inner join corrente       on cornump.k12_id = corrente.k12_id ";
+    $sql .= "                                and cornump.k12_data = corrente.k12_data ";
+    $sql .= "                                and cornump.k12_autent = corrente.k12_autent ";
     $sql .= "       inner join tabrec         on cornump.k12_receit = tabrec.k02_codigo ";
     $sql .= "       inner join taborc         on tabrec.k02_codigo = taborc.k02_codigo ";
     $sql .= "       inner join orcreceita     on taborc.k02_codrec = orcreceita.o70_codrec ";
     $sql .= "                                and taborc.k02_anousu = orcreceita.o70_anousu ";
-    $sql .= " where not exists (select 1 ";
+    $sql .= " where not exists (select * ";
     $sql .= "                     from empprestarecibo";
-    $sql .= "                          inner join arreidret on empprestarecibo.e170_numpre = arreidret.k00_numpre ";
-    $sql .= "                                              and empprestarecibo.e170_numpar = arreidret.k00_numpar";
-    $sql .= "                          inner join disrec    on arreidret.idret = disrec.idret";
-    $sql .= "                    where disrec.codcla = corcla.k12_codcla limit 1)";
+    $sql .= "                          inner join arreidret on empprestarecibo.e170_numpre = arreidret.k00_numpre  ";
+    $sql .= "                      and empprestarecibo.e170_numpar = arreidret.k00_numpar ";
+    $sql .= "                    where arreidret.idret = disrec.idret)";
 
     $sql2 = "";
     if($dbwhere==""){
@@ -444,22 +448,28 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
       $sql2 = " and $dbwhere";
     }
     $sql .= $sql2;
+
+    if (!empty($sGroupBy)) {
+      $sql .= " group by {$sGroupBy} ";
+    }
+
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
         $virgula = ",";
       }
     }
+
     return $sql;
   }
 
-  function sql_query_receitas_autenticadas_desconto ($oid = null,$campos="disrec.oid,*",$ordem=null,$dbwhere="") {
+  function sql_query_receitas_autenticadas_desconto ($oid = null,$campos="disrec.oid,*",$ordem=null,$dbwhere="", $sGroupBy = "") {
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -489,6 +499,11 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
       $sql2 = " where $dbwhere";
     }
     $sql .= $sql2;
+
+    if (!empty($sGroupBy)) {
+      $sql .= " group by {$sGroupBy} ";
+    }
+
     if($ordem != null ){
       $sql .= " order by ";
       $campos_sql = split("#",$ordem);
@@ -504,7 +519,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
   function sql_query_receita_extra ($oid = null,$campos="disrec.oid,*",$ordem=null,$dbwhere="") {
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -517,9 +532,14 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
     $iAnoSessao = db_getsession("DB_anousu");
 
     $sql .= " from corcla";
+    $sql .= "      inner join discla         on discla.codcla   = corcla.k12_codcla";
+    $sql .= "      inner join disrec         on disrec.codcla   = discla.codcla";
+    $sql .= "      inner join arreidret      on arreidret.idret = disrec.idret ";
+
     $sql .= "      inner join cornump    on corcla.k12_id      = cornump.k12_id";
     $sql .= "                           and corcla.k12_data    = cornump.k12_data";
     $sql .= "                           and corcla.k12_autent  = cornump.k12_autent";
+    $sql .= "                           and disrec.k00_receit  = cornump.k12_receit";
     $sql .= "      inner join corrente   on corcla.k12_id      = corrente.k12_id";
     $sql .= "                           and corcla.k12_data    = corrente.k12_data";
     $sql .= "                           and corcla.k12_autent  = corrente.k12_autent";
@@ -530,12 +550,10 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
     $sql .= "                                and conplanoexe.c62_anousu   = {$iAnoSessao}           ";
     $sql .= "      inner join conplanoreduz   on conplanoexe.c62_reduz    = conplanoreduz.c61_reduz ";
     $sql .= "                                and conplanoreduz.c61_anousu = conplanoexe.c62_anousu  ";
-    $sql .= " where not exists (select 1 ";
+    $sql .= " where not exists (select * ";
     $sql .= "                     from empprestarecibo";
-    $sql .= "                          inner join arreidret on empprestarecibo.e170_numpre = arreidret.k00_numpre ";
-    $sql .= "                                              and empprestarecibo.e170_numpar = arreidret.k00_numpar";
-    $sql .= "                          inner join disrec    on arreidret.idret = disrec.idret";
-    $sql .= "                    where disrec.codcla = corcla.k12_codcla limit 1)";
+    $sql .= "                    where empprestarecibo.e170_numpre = arreidret.k00_numpre  ";
+    $sql .= "                      and empprestarecibo.e170_numpar = arreidret.k00_numpar )";
 
 
     $sql2 = "";
@@ -563,7 +581,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
   function sql_query_receita_extra_prestacao_conta ($oid = null,$campos="disrec.oid,*",$ordem=null,$dbwhere="") {
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -573,19 +591,25 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
       $sql .= $campos;
     }
 
-    $iAnoSessao = db_getsession("DB_anousu");
+    $iAnoSessao   = db_getsession("DB_anousu");
+    $iInstituicao = db_getsession("DB_instit");
 
     $sql .= " from corcla";
     $sql .= "      inner join discla     on discla.codcla      = corcla.k12_codcla";
     $sql .= "      inner join disrec     on disrec.codcla      = discla.codcla";
     $sql .= "      inner join arreidret  on arreidret.idret    = disrec.idret ";
 
+    $sql .= "      inner join empprestarecibo on empprestarecibo.e170_numpre = arreidret.k00_numpre";
+    $sql .= "                                and empprestarecibo.e170_numpar  = arreidret.k00_numpar";
+    $sql .= "      inner join emppresta       on emppresta.e45_sequencial = empprestarecibo.e170_emppresta";
+
     $sql .= "      inner join cornump    on corcla.k12_id      = cornump.k12_id";
     $sql .= "                           and corcla.k12_data    = cornump.k12_data";
     $sql .= "                           and corcla.k12_autent  = cornump.k12_autent";
-    $sql .= "      inner join corrente   on corcla.k12_id      = corrente.k12_id";
-    $sql .= "                           and corcla.k12_data    = corrente.k12_data";
-    $sql .= "                           and corcla.k12_autent  = corrente.k12_autent";
+    $sql .= "                           and disrec.k00_receit  = cornump.k12_receit";
+    $sql .= "      inner join corrente   on cornump.k12_id      = corrente.k12_id";
+    $sql .= "                           and cornump.k12_data    = corrente.k12_data";
+    $sql .= "                           and cornump.k12_autent  = corrente.k12_autent";
     $sql .= "      inner join tabrec     on cornump.k12_receit = tabrec.k02_codigo";
     $sql .= "      inner join tabplan    on tabplan.k02_codigo       = tabrec.k02_codigo       ";
     $sql .= "                           and tabplan.k02_anousu       = {$iAnoSessao}           ";
@@ -593,13 +617,6 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
     $sql .= "                                and conplanoexe.c62_anousu   = {$iAnoSessao}           ";
     $sql .= "      inner join conplanoreduz   on conplanoexe.c62_reduz    = conplanoreduz.c61_reduz ";
     $sql .= "                                and conplanoreduz.c61_anousu = conplanoexe.c62_anousu  ";
-
-    $sql .= "      inner join empprestarecibo on empprestarecibo.e170_numpre = arreidret.k00_numpre";
-    $sql .= "                                and empprestarecibo.e170_numpar  = arreidret.k00_numpar";
-    $sql .= "      inner join emppresta       on emppresta.e45_sequencial = empprestarecibo.e170_emppresta";
-
-
-
 
     $sql2 = "";
     if($dbwhere==""){
@@ -625,7 +642,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
 function sql_query_prestacao_conta ($oid = null,$campos="disrec.oid,*",$ordem=null,$dbwhere="") {
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -640,19 +657,25 @@ function sql_query_prestacao_conta ($oid = null,$campos="disrec.oid,*",$ordem=nu
     $sql .= "      inner join disrec     on disrec.codcla      = discla.codcla";
     $sql .= "      inner join arreidret  on arreidret.idret    = disrec.idret ";
 
+    $sql .= "      inner join empprestarecibo on empprestarecibo.e170_numpre = arreidret.k00_numpre";
+    $sql .= "                               and empprestarecibo.e170_numpar  = arreidret.k00_numpar";
+
+    $sql .= "      inner join emppresta       on emppresta.e45_sequencial    = empprestarecibo.e170_emppresta";
+
     $sql .= "      inner join cornump    on corcla.k12_id      = cornump.k12_id";
     $sql .= "                           and corcla.k12_data    = cornump.k12_data";
     $sql .= "                           and corcla.k12_autent  = cornump.k12_autent";
-    $sql .= "      inner join corrente   on corcla.k12_id      = corrente.k12_id";
-    $sql .= "                           and corcla.k12_data    = corrente.k12_data";
-    $sql .= "                           and corcla.k12_autent  = corrente.k12_autent";
+    $sql .= "                           and disrec.k00_receit  = cornump.k12_receit";
+
+    $sql .= "      inner join corrente   on cornump.k12_id      = corrente.k12_id";
+    $sql .= "                           and cornump.k12_data    = corrente.k12_data";
+    $sql .= "                           and cornump.k12_autent  = corrente.k12_autent";
+
     $sql .= "      inner join tabrec     on cornump.k12_receit = tabrec.k02_codigo";
     $sql .= "      inner join taborc     on tabrec.k02_codigo  = taborc.k02_codigo";
     $sql .= "      inner join orcreceita on taborc.k02_codrec  = orcreceita.o70_codrec";
     $sql .= "                           and taborc.k02_anousu  = orcreceita.o70_anousu";
 
-    $sql .= "      inner join empprestarecibo on empprestarecibo.e170_numpre = arreidret.k00_numpre";
-    $sql .= "                               and empprestarecibo.e170_numpar  = arreidret.k00_numpar";
 
     $sql2 = "";
     if($dbwhere==""){

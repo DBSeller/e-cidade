@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_conlancamval_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_conlancam_classe.php");
-require_once("classes/db_conlancamcompl_classe.php");
-require_once("classes/db_conlancamdig_classe.php");
-require_once("classes/db_conplano_classe.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_conlancamval_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_conlancam_classe.php"));
+require_once(modification("classes/db_conlancamcompl_classe.php"));
+require_once(modification("classes/db_conlancamdig_classe.php"));
+require_once(modification("classes/db_conplano_classe.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -141,10 +141,10 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 </html>
 <script>
  function js_conlancam(codlan,sequen){
-      js_OpenJanelaIframe('top.corpo','db_conlancamval','func_conlancamval002.php?chavepesquisa='+codlan+'&sequen='+sequen,'Pesquisa');
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_conlancamval','func_conlancamval002.php?chavepesquisa='+codlan+'&sequen='+sequen,'Pesquisa');
  }  
  function js_pesquisa(){
-      js_OpenJanelaIframe('top.corpo','db_iframe_conlancamemp','func_conlancamemp.php?funcao_js=parent.js_preenchepesquisa|c75_numemp','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conlancamemp','func_conlancamemp.php?funcao_js=parent.js_preenchepesquisa|c75_numemp','Pesquisa',true);
   }
  function js_preenchepesquisa(chave){
      db_iframe_conlancamemp.hide();

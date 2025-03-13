@@ -1,0 +1,19 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="true" label="optante_simples" />
+  </campos>
+  <from tabela="isscadsimples" />
+  <juncoes>
+      <join tipo="left" tabela="isscadsimplesbaixa" condicao="q38_sequencial = q39_isscadsimples" />
+  </juncoes>
+  <filtros>
+    <filtro label="inscricao_municipal" condicao="q38_inscr = '$inscricao_municipal'" obrigatorio="true" />
+    <filtro label="data"
+            condicao="(('$data' &gt;= EXTRACT(YEAR FROM q38_dtinicial)::VARCHAR  || lpad(EXTRACT(MONTH FROM q38_dtinicial)::VARCHAR, 2, '0') and '$data' &lt;= EXTRACT(YEAR FROM q39_dtbaixa)::VARCHAR || lpad(EXTRACT(MONTH FROM q39_dtbaixa)::VARCHAR, 2, '0') and q39_dtbaixa is not null) or 
+                       ('$data' &gt;= EXTRACT(YEAR FROM q38_dtinicial)::VARCHAR || lpad(EXTRACT(MONTH FROM q38_dtinicial)::VARCHAR, 2, '0') and q39_dtbaixa is null))"
+            obrigatorio="true" />
+  </filtros>
+  <agrupamento />
+  <ordenacao />
+</consulta>

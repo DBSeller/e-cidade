@@ -1,33 +1,33 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
 
 $oGet          = db_utils::postMemory($_GET);
 $iInstituicao  = db_getsession("DB_instit");
@@ -37,17 +37,18 @@ $dtDataFinal   = date("d-m-Y",strtotime($oGet->dtDataFinal));
 list($iAnoInicial, $iMesInicial, $iDiaInicial) = explode('-', $oGet->dtDataInicial);
 
 /**
- * Realiza consulta das contas e seus respectivos itens 
+ * Realiza consulta das contas e seus respectivos itens
  * Filtro com uma data mínima  e máxima, o período de aquisição do Bem, e pelo anousu a Conta
  */
 $oDaoBens = db_utils::getDao('bens');
 $sCampos  = " c60_codcon, c60_estrut, c60_descr";
-$sCampos .= ", sum(case when t52_dtaqu between '{$oGet->dtDataInicial}' and '{$oGet->dtDataFinal}'";
+$sCampos .= ", sum(case when t52_dtinclusao between '{$oGet->dtDataInicial}' and '{$oGet->dtDataFinal}'";
 $sCampos .= " then t52_valaqu else 0 end) as total_aquisicao, c60_anousu";
 
-$sWhere   = "     t52_dtaqu  <= '{$oGet->dtDataFinal}' ";
+$sWhere   = "     t52_dtinclusao  <= '{$oGet->dtDataFinal}' ";
 $sWhere  .= " and c60_anousu = {$iAnoInicial}";
 $sWhere  .= " and t52_instit = {$iInstituicao}";
+
 $sOrder   = " c60_estrut ";
 $sGroup   = " group by c60_codcon,c60_estrut,c60_descr,c60_anousu";
 
@@ -58,7 +59,7 @@ unset($oDaoBens);
 
 
 if ($iTotalBens == 0) {
-  
+
   $sMsg = _M('patrimonial.patrimonio.pat2_relatoriolegalanexodoze002.nenhum_bem_cadastrado');
   db_redireciona("db_erros.php?fechar=true&db_erro={$sMsg}");
 }
@@ -69,9 +70,9 @@ $aContas = array();
  * Para cada Acumulado de entrada, agrupado por conta, verificar o saldo anterior e gravar em um array
  */
 for ($iRowBens = 0; $iRowBens < $iTotalBens; $iRowBens++) {
-  
+
   $oDadoBem = db_utils::fieldsMemory($rsBuscaBens, $iRowBens);
-  
+
   $oStdBem                 = new stdClass();
   $oStdBem->sEstrutural    = $oDadoBem->c60_estrut;
   $oStdBem->sDescricao     = $oDadoBem->c60_descr;
@@ -82,27 +83,40 @@ for ($iRowBens = 0; $iRowBens < $iTotalBens; $iRowBens++) {
   $oStdBem->nSaldoGeral    = $oDadoBem->total_aquisicao;
 
   /**
-   * Verifica Saldo acumulado anterior da conta 
+   * Verifica Saldo acumulado anterior da conta
    */
   $iCodigoConta         = $oDadoBem->c60_codcon;
   $oDaoBens             = db_utils::getDao('bens');
-  $sWhere               = " t52_dtaqu < '{$oGet->dtDataInicial}' and c60_codcon = {$iCodigoConta}";
+  $sWhere               = " t52_dtinclusao < '{$oGet->dtDataInicial}' and c60_codcon = {$iCodigoConta}";
   $sWhere              .= "  and c60_anousu = {$iAnoInicial}";
-  $sWhere              .= "  and (t55_baixa is null or t55_baixa > '{$oGet->dtDataInicial}') ";
-  $sWhere               .= " and t52_instit = {$iInstituicao}";
+  $sWhere              .= " and t52_instit = {$iInstituicao}";
   $sCamposSaldoInicial  = "sum(t52_valaqu) as total_aquisicao";
   $sSqlBuscaBens        = $oDaoBens->sql_query_bensContasAnexo(null, $sCamposSaldoInicial, $sOrder,$sWhere.$sGroup);
   $rsBuscaBensSaldo     = $oDaoBens->sql_record($sSqlBuscaBens);
-
-  
-  
   $oStdBem->nSaldoAnterior = 0;
   if ($oDaoBens->numrows == 1) {
-    
+
     $oContaSaldoAnterior     = db_utils::fieldsMemory($rsBuscaBensSaldo, 0);
     $oStdBem->nSaldoAnterior = $oContaSaldoAnterior->total_aquisicao;
   }
-  
+
+  /**
+   * Buscamos as saídas realizadas anteriores ao período selecionado.
+   */
+  $oDaoBens             = new cl_bens();
+  $sWhere               = "      t52_dtinclusao < '{$oGet->dtDataInicial}' and c60_codcon = {$iCodigoConta}";
+  $sWhere              .= "  and c60_anousu = {$iAnoInicial}";
+  $sWhere              .= "  and t55_baixa < '{$oGet->dtDataInicial}' ";
+  $sWhere               .= " and t52_instit = {$iInstituicao}";
+  $sCamposSaldoInicial  = "sum(t52_valaqu) as total_saida";
+  $sSqlBuscaSaidaBens   = $oDaoBens->sql_query_bensContasAnexo(null, $sCamposSaldoInicial, $sOrder,$sWhere.$sGroup);
+  $rsBuscaSaidaBens     = $oDaoBens->sql_record($sSqlBuscaSaidaBens);
+  $oStdBem->nTotalSaidaAnterior = 0;
+  if ($oDaoBens->numrows == 1) {
+    $oStdBem->nTotalSaidaAnterior = db_utils::fieldsMemory($rsBuscaSaidaBens, 0)->total_saida;
+  }
+  $oStdBem->nSaldoAnterior -= $oStdBem->nTotalSaidaAnterior;
+
   /**
    * Verifica Saídas acumuladas dos bens, no periodo selecionado
    */
@@ -113,14 +127,14 @@ for ($iRowBens = 0; $iRowBens < $iTotalBens; $iRowBens++) {
   $sCamposSaldoSaida          = "sum(t52_valaqu) as total_aquisicao";
   $sSqlBuscaBensSaidaPeriodo  = $oDaoBens->sql_query_bensContasAnexo(null, $sCamposSaldoSaida, $sOrder,$sWhere.$sGroup);
   $rsBuscaBensSaidaPeriodo    = $oDaoBens->sql_record($sSqlBuscaBensSaidaPeriodo);
-  
+
   $oStdBem->nTotalSaidas = 0;
   if ($oDaoBens->numrows == 1) {
-  
+
     $oContaBensSaidaPeriodo = db_utils::fieldsMemory($rsBuscaBensSaidaPeriodo, 0);
     $oStdBem->nTotalSaidas  = $oContaBensSaidaPeriodo->total_aquisicao;
   }
-  
+
   $oStdBem->nSaldoGeral = ($oStdBem->nSaldoAnterior + $oStdBem->nTotalEntrada) - $oStdBem->nTotalSaidas;
   $aContas[] = $oStdBem;
 }
@@ -175,20 +189,20 @@ $oStdTotal->nSaldoGeral    = 0;
 foreach ($aContas as $iIndiceContas => $oConta) {
 
   if ( $oPdf->GetY() > $oPdf->h - 32 || $lImprime ) {
-    
+
     if (!$lImprime) {
-      
+
       imprimirRodape($oPdf, $iAlturalinha, $oStdTotal);
       $oStdTotal->nSaldoAnterior = 0;
       $oStdTotal->nTotalEntrada  = 0;
       $oStdTotal->nTotalSaidas   = 0;
       $oStdTotal->nSaldoGeral    = 0;
-      
+
     }
     imprimirCabecalho($oPdf, $iAlturalinha, $dtDataInicial, $dtDataFinal);
     $lImprime = false;
   }
-  
+
   $oPdf->setfont('arial','',6);
   $oPdf->cell(30 ,  $iAlturalinha, $oConta->sEstrutural                     , 1, 0, "C", 0); // classificacao        || codigo plano contas
   $oPdf->cell(60 ,  $iAlturalinha, substr($oConta->sDescricao ,0 , 40)      , 1, 0, "L", 0); // classificacao        || interpretação
@@ -196,12 +210,12 @@ foreach ($aContas as $iIndiceContas => $oConta) {
   $oPdf->cell(45 ,  $iAlturalinha, db_formatar($oConta->nTotalEntrada,"f")  , 1, 0, "R", 0); // movimentacao periodo || Entradas
   $oPdf->cell(45 ,  $iAlturalinha, db_formatar($oConta->nTotalSaidas,"f")   , 1, 0, "R", 0); // movimentacao periodo || Saidas
   $oPdf->cell(50 ,  $iAlturalinha, db_formatar($oConta->nSaldoGeral,"f")    , 1, 1, "R", 0); // saldo em             || __/__/ (R$)
-  
+
   $oStdTotal->nSaldoAnterior += $oConta->nSaldoAnterior;
   $oStdTotal->nTotalEntrada  += $oConta->nTotalEntrada;
   $oStdTotal->nTotalSaidas   += $oConta->nTotalSaidas;
   $oStdTotal->nSaldoGeral    += $oConta->nSaldoGeral;
-  
+
 }
 
   imprimirRodape($oPdf, $iAlturalinha, $oStdTotal);
@@ -213,26 +227,26 @@ foreach ($aContas as $iIndiceContas => $oConta) {
   $oPdf->cell(90,  $iAlturalinha, "Conferido por" , "LBTR",  0, "C", 0);
   $oPdf->cell(70,  $iAlturalinha, "Visto"         , "LBTR",  0, "C", 0);
   $oPdf->cell(30,  $iAlturalinha, "Data"          , "LBTR",  1, "C", 0);
-  
+
   $oPdf->cell(90,  $iAlturalinha, "Nome", "LR",  0, "L", 0);
   $oPdf->cell(90,  $iAlturalinha, ""    , "R" ,  0, "C", 0);
   $oPdf->cell(70,  $iAlturalinha, ""    , "R" ,  0, "C", 0);
   $oPdf->cell(30,  $iAlturalinha, ""    , "R" ,  1, "C", 0);
-  
+
   $oPdf->cell(90,  $iAlturalinha, "Matrícula", "LR",  0, "L", 0);
   $oPdf->cell(90,  $iAlturalinha, ""         , "R" ,  0, "C", 0);
   $oPdf->cell(70,  $iAlturalinha, ""         , "R" ,  0, "C", 0);
   $oPdf->cell(30,  $iAlturalinha, ""         , "R" ,  1, "C", 0);
-  
+
   $oPdf->cell(90,  $iAlturalinha, "Assinatura", "LRB",  0, "L", 0);
   $oPdf->cell(90,  $iAlturalinha, ""          , "RB" ,  0, "C", 0);
   $oPdf->cell(70,  $iAlturalinha, ""          , "RB" ,  0, "C", 0);
   $oPdf->cell(30,  $iAlturalinha, ""          , "RB" ,  1, "C", 0);
-  
-  $oPdf->cell(280,  $iAlturalinha, "Correspondente ao modelo IGF/65" , "",  0, "R", 0);  
+
+  $oPdf->cell(280,  $iAlturalinha, "Correspondente ao modelo IGF/65" , "",  0, "R", 0);
 
 function imprimirCabecalho ($oPdf, $iAlturalinha,$dtDataInicial, $dtDataFinal ) {
-  
+
     $oPdf->AddPage("L");
     $oPdf->SetFont('arial', 'b', 6);
     //Primeira linha cabeçalho
@@ -241,7 +255,7 @@ function imprimirCabecalho ($oPdf, $iAlturalinha,$dtDataInicial, $dtDataFinal ) 
     $oPdf->cell(50 ,  $iAlturalinha, "Saldo Anterior em"       , "LTR" ,  0, "C", 1); // saldo anterior
     $oPdf->cell(90 ,  $iAlturalinha, "Movimentação Período"    , "LTR" ,  0, "C", 1); // movimentacao periodo
     $oPdf->cell(50 ,  $iAlturalinha, "Saldo em "               , "LTR" ,  1, "C", 1); // saldo em
-    
+
     //Segunda Linha cabeçalho
 
     $oPdf->setfont('arial','b',8);
@@ -251,7 +265,7 @@ function imprimirCabecalho ($oPdf, $iAlturalinha,$dtDataInicial, $dtDataFinal ) 
     $oPdf->cell(45 ,  $iAlturalinha, "Entradas"             , "LBTR" ,  0, "C", 1); // movimentacao periodo || Entradas
     $oPdf->cell(45 ,  $iAlturalinha, "Saídas"               , "LBTR" ,  0, "C", 1); // movimentacao periodo || Saidas
     $oPdf->cell(50 ,  $iAlturalinha, "{$dtDataFinal}(R$)"   , "LBR"  ,  1, "C", 1); // saldo em             || __/__/ (R$)
-    
+
 }
 
 //=========  RODAPÉ COM TOTAL POR PAGINA
@@ -263,6 +277,6 @@ function imprimirRodape($oPdf,$iAlturalinha, $oStdTotal) {
   $oPdf->cell(45 , $iAlturalinha, db_formatar($oStdTotal->nTotalEntrada , "f") , "LBT"  , 0, "R", 0);
   $oPdf->cell(45 , $iAlturalinha, db_formatar($oStdTotal->nTotalSaidas  , "f") , "LBRT" , 0, "R", 0);
   $oPdf->cell(50 , $iAlturalinha, db_formatar($oStdTotal->nSaldoGeral   , "f") , "TBR"  , 1, "R", 0);
-}  
+}
 $oPdf->Output();
 ?>

@@ -1,77 +1,77 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: cadastro
 //CLASSE DA ENTIDADE ruas
-class cl_ruas { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $j14_codigo = 0; 
-   var $j14_nome = null; 
-   var $j14_tipo = null; 
-   var $j14_rural = 'f'; 
-   var $j14_lei = null; 
-   var $j14_dtlei_dia = null; 
-   var $j14_dtlei_mes = null; 
-   var $j14_dtlei_ano = null; 
-   var $j14_dtlei = null; 
+class cl_ruas {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $j14_codigo = 0;
+   var $j14_nome = null;
+   var $j14_tipo = null;
+   var $j14_rural = 'f';
+   var $j14_lei = null;
+   var $j14_dtlei_dia = null;
+   var $j14_dtlei_mes = null;
+   var $j14_dtlei_ano = null;
+   var $j14_dtlei = null;
    var $j14_bairro = null;
-   var $j14_obs   = null;                                  
-   // cria propriedade com as variaveis do arquivo 
+   var $j14_obs   = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 j14_codigo = int4 = cód. Logradouro 
-                 j14_nome = char(40) = Logradouro 
-                 j14_tipo = char(1) = Tipo da Rua 
-                 j14_rural = bool = Rural 
-                 j14_lei = varchar(20) = Lei 
-                 j14_dtlei = date = Data Lei 
-                 j14_bairro = varchar(30) = Bairro        
+                 j14_codigo = int4 = cód. Logradouro
+                 j14_nome = char(40) = Logradouro
+                 j14_tipo = char(1) = Tipo da Rua
+                 j14_rural = bool = Rural
+                 j14_lei = varchar(20) = Lei
+                 j14_dtlei = date = Data Lei
+                 j14_bairro = varchar(30) = Bairro
                  j14_obs = text = Observação
                  ";
-   //funcao construtor da classe 
-   function cl_ruas() { 
+   //funcao construtor da classe
+   function cl_ruas() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("ruas"); 
+     $this->rotulo = new rotulo("ruas");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -102,9 +102,9 @@ class cl_ruas {
      }
    }
    // funcao para inclusao
-   function incluir ($j14_codigo){ 
+   function incluir ($j14_codigo){
       $this->atualizacampos();
-     if($this->j14_nome == null ){ 
+     if($this->j14_nome == null ){
        $this->erro_sql = " Campo Logradouro nao Informado.";
        $this->erro_campo = "j14_nome";
        $this->erro_banco = "";
@@ -113,7 +113,7 @@ class cl_ruas {
        $this->erro_status = "0";
        return false;
      }
-     if($this->j14_tipo == null ){ 
+     if($this->j14_tipo == null ){
        $this->erro_sql = " Campo Tipo da Rua nao Informado.";
        $this->erro_campo = "j14_tipo";
        $this->erro_banco = "";
@@ -122,7 +122,7 @@ class cl_ruas {
        $this->erro_status = "0";
        return false;
      }
-     if($this->j14_rural == null ){ 
+     if($this->j14_rural == null ){
        $this->erro_sql = " Campo Rural nao Informado.";
        $this->erro_campo = "j14_rural";
        $this->erro_banco = "";
@@ -140,11 +140,11 @@ class cl_ruas {
         $this->erro_status = "0";
         return false;
       }
-     if($this->j14_dtlei == null ){ 
+     if($this->j14_dtlei == null ){
        $this->j14_dtlei = "null";
      }
-       $this->j14_codigo = $j14_codigo; 
-     if(($this->j14_codigo == null) || ($this->j14_codigo == "") ){ 
+       $this->j14_codigo = $j14_codigo;
+     if(($this->j14_codigo == null) || ($this->j14_codigo == "") ){
        $this->erro_sql = " Campo j14_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -153,27 +153,27 @@ class cl_ruas {
        return false;
      }
      $sql = "insert into ruas(
-                                       j14_codigo 
-                                      ,j14_nome 
-                                      ,j14_tipo 
-                                      ,j14_rural 
-                                      ,j14_lei 
-                                      ,j14_dtlei 
-                                      ,j14_bairro 
+                                       j14_codigo
+                                      ,j14_nome
+                                      ,j14_tipo
+                                      ,j14_rural
+                                      ,j14_lei
+                                      ,j14_dtlei
+                                      ,j14_bairro
                                       ,j14_obs
                        )
                 values (
-                                $this->j14_codigo 
-                               ,'$this->j14_nome' 
-                               ,'$this->j14_tipo' 
-                               ,'$this->j14_rural' 
-                               ,'$this->j14_lei' 
-                               ,".($this->j14_dtlei == "null" || $this->j14_dtlei == ""?"null":"'".$this->j14_dtlei."'")." 
-                               ,'$this->j14_bairro' 
+                                $this->j14_codigo
+                               ,'$this->j14_nome'
+                               ,'$this->j14_tipo'
+                               ,'$this->j14_rural'
+                               ,'$this->j14_lei'
+                               ,".($this->j14_dtlei == "null" || $this->j14_dtlei == ""?"null":"'".$this->j14_dtlei."'")."
+                               ,'$this->j14_bairro'
                                ,'$this->j14_obs'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Ruas/Avenida ($this->j14_codigo) nao Incluído. Inclusao Abortada.";
@@ -213,16 +213,16 @@ class cl_ruas {
 
 }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($j14_codigo=null) { 
+   function alterar ($j14_codigo=null) {
       $this->atualizacampos();
      $sql = " update ruas set ";
      $virgula = "";
-     if(trim($this->j14_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_codigo"])){ 
+     if(trim($this->j14_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_codigo"])){
        $sql  .= $virgula." j14_codigo = $this->j14_codigo ";
        $virgula = ",";
-       if(trim($this->j14_codigo) == null ){ 
+       if(trim($this->j14_codigo) == null ){
          $this->erro_sql = " Campo cód. Logradouro nao Informado.";
          $this->erro_campo = "j14_codigo";
          $this->erro_banco = "";
@@ -232,10 +232,10 @@ class cl_ruas {
          return false;
        }
      }
-     if(trim($this->j14_nome)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_nome"])){ 
+     if(trim($this->j14_nome)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_nome"])){
        $sql  .= $virgula." j14_nome = '$this->j14_nome' ";
        $virgula = ",";
-       if(trim($this->j14_nome) == null ){ 
+       if(trim($this->j14_nome) == null ){
          $this->erro_sql = " Campo Logradouro nao Informado.";
          $this->erro_campo = "j14_nome";
          $this->erro_banco = "";
@@ -245,10 +245,10 @@ class cl_ruas {
          return false;
        }
      }
-     if(trim($this->j14_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_tipo"])){ 
+     if(trim($this->j14_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_tipo"])){
        $sql  .= $virgula." j14_tipo = '$this->j14_tipo' ";
        $virgula = ",";
-       if(trim($this->j14_tipo) == null ){ 
+       if(trim($this->j14_tipo) == null ){
          $this->erro_sql = " Campo Tipo da Rua nao Informado.";
          $this->erro_campo = "j14_tipo";
          $this->erro_banco = "";
@@ -258,10 +258,10 @@ class cl_ruas {
          return false;
        }
      }
-     if(trim($this->j14_rural)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_rural"])){ 
+     if(trim($this->j14_rural)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_rural"])){
        $sql  .= $virgula." j14_rural = '$this->j14_rural' ";
        $virgula = ",";
-       if(trim($this->j14_rural) == null ){ 
+       if(trim($this->j14_rural) == null ){
          $this->erro_sql = " Campo Rural nao Informado.";
          $this->erro_campo = "j14_rural";
          $this->erro_banco = "";
@@ -271,20 +271,20 @@ class cl_ruas {
          return false;
        }
      }
-     if(trim($this->j14_lei)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_lei"])){ 
+     if(trim($this->j14_lei)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_lei"])){
        $sql  .= $virgula." j14_lei = '$this->j14_lei' ";
        $virgula = ",";
      }
-     if(trim($this->j14_dtlei)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_dtlei_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["j14_dtlei_dia"] !="") ){ 
+     if(trim($this->j14_dtlei)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_dtlei_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["j14_dtlei_dia"] !="") ){
        $sql  .= $virgula." j14_dtlei = '$this->j14_dtlei' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["j14_dtlei_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["j14_dtlei_dia"])){
          $sql  .= $virgula." j14_dtlei = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->j14_bairro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_bairro"])){ 
+     if(trim($this->j14_bairro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j14_bairro"])){
        $sql  .= $virgula." j14_bairro = '$this->j14_bairro' ";
        $virgula = ",";
      }
@@ -322,7 +322,7 @@ class cl_ruas {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Ruas/Avenida nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->j14_codigo;
@@ -350,14 +350,14 @@ class cl_ruas {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($j14_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($j14_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($j14_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -390,7 +390,7 @@ class cl_ruas {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Ruas/Avenida nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$j14_codigo;
@@ -418,11 +418,11 @@ class cl_ruas {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -444,10 +444,10 @@ class cl_ruas {
       }
      return $result;
    }
-   function sql_query ( $j14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $j14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -458,18 +458,19 @@ class cl_ruas {
      }
      $sql .= " from ruas ";
      $sql .= " left join ruastipo on j88_codigo = j14_tipo";
+     $sql .= " left join ruascep  on j29_codigo = j14_codigo";
      $sql2 = "";
      if($dbwhere==""){
        if($j14_codigo!=null ){
-         $sql2 .= " where ruas.j14_codigo = $j14_codigo "; 
-       } 
+         $sql2 .= " where ruas.j14_codigo = $j14_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -478,10 +479,10 @@ class cl_ruas {
      }
      return $sql;
   }
-   function sql_query_ruastipo ( $j14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_ruastipo ( $j14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -495,15 +496,15 @@ class cl_ruas {
      $sql2 = "";
      if($dbwhere==""){
        if($j14_codigo!=null ){
-         $sql2 .= " where ruas.j14_codigo = $j14_codigo "; 
-       } 
+         $sql2 .= " where ruas.j14_codigo = $j14_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -512,10 +513,10 @@ class cl_ruas {
      }
      return $sql;
   }
-   function sql_query_file ( $j14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $j14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -528,15 +529,15 @@ class cl_ruas {
      $sql2 = "";
      if($dbwhere==""){
        if($j14_codigo!=null ){
-         $sql2 .= " where ruas.j14_codigo = $j14_codigo "; 
-       } 
+         $sql2 .= " where ruas.j14_codigo = $j14_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -545,10 +546,18 @@ class cl_ruas {
      }
      return $sql;
   }
+
+  function sqlRuasPorLogradouro($logradouro) {
+
+    $where    = "j14_nome = '{$logradouro}'";
+    $sSqlRua  = $this->sql_query_file(null, "j14_codigo", '', $where);
+    return $sSqlRua;
+  }
+
    function sql_query_lograd ( $j14_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -572,7 +581,7 @@ class cl_ruas {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -581,10 +590,10 @@ class cl_ruas {
      }
      return $sql;
   }
-  
+
   /**
    * Método buscarRuasBairro
-   * 
+   *
    * Executa um left-join com as tabelas ruas bairro e bairro
    * @param integer $j14_codigo
    * @param string $campos
@@ -593,10 +602,10 @@ class cl_ruas {
    * @return string
    */
   public function buscaRuasBairro($j14_codigo = null, $campos = "*", $ordem = null, $dbwhere="") {
-    
+
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -609,7 +618,7 @@ class cl_ruas {
      $sql .= " left join ruastipo on j88_codigo = j14_tipo";
      $sql .= "      left join ruasbairro on ruas.j14_codigo = ruasbairro.j16_lograd ";
      $sql .= "      left join bairro     on bairro.j13_codi = ruasbairro.j16_bairro ";
-     
+
      $sql2 = "";
      if($dbwhere==""){
        if($j14_codigo!=null ){
@@ -621,16 +630,16 @@ class cl_ruas {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
          $virgula = ",";
        }
      }
-     return $sql;  
-  
+     return $sql;
+
   }
-  
+
 }
 ?>

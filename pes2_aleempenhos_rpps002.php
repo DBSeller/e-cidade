@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -38,6 +38,12 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 //$ano = 2006;
 //$mes = 3;
+
+/**
+ * Percentual de Patronal
+ * $id: $
+ */
+$fPercentualPatronal = 15.24;
 
 $head3 = "EMPENHOS DO RPPS";
 $head5 = "PERÍODO : ".$mes." / ".$ano;
@@ -169,7 +175,7 @@ order by
        ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
@@ -232,7 +238,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
 //     if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){ 
 //       $pat = $inss / 100 * 20;
 //     }else{
-       $pat = round($inss / 100 * 16,2);
+       $pat = round($inss / 100 * $fPercentualPatronal, 2);
 //     }
      $pdf->cell(10,$alt,'',0,0,"C",0);
      $pdf->cell(15,$alt,$rh25_recurso,0,0,"C",0);
@@ -245,11 +251,10 @@ for($x = 0; $x < pg_numrows($result);$x++){
 //   if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){ 
 //     $val_pat      += (($inss+$sub)/100)*20;
 //   }else{
-   $val_pat      += round((($inss)/100)*16,2);
+   $val_pat      += round((($inss) / 100) * $fPercentualPatronal, 2);
    $val_fgts     += $inss;
    $val_ded      += $ded;
    }
-
 
 //echo $teste;exit;
    $pdf->setfont('arial','B',8);
@@ -260,5 +265,3 @@ for($x = 0; $x < pg_numrows($result);$x++){
    $pdf->cell(20,$alt,db_formatar($val_pat - $val_ded,'f'),0,1,"R",0);
 
 $pdf->Output();
-   
-?>

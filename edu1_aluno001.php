@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_aluno_classe.php");
-include("classes/db_alunocurso_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_aluno_classe.php"));
+include(modification("classes/db_alunocurso_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $claluno = new cl_aluno;
 $clalunocurso = new cl_alunocurso;
@@ -85,7 +85,7 @@ if(isset($incluir)){
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Inclusão de Aluno</b></legend>
-    <?include("forms/db_frmaluno.php");?>
+    <?include(modification("forms/db_frmaluno.php"));?>
    </fieldset>
    </center>
   </td>
@@ -107,7 +107,7 @@ if(isset($incluir)){
   $claluno->erro(true,false);
   ?>
   <script>
-   top.corpo.iframe_a1.location.href='edu1_aluno002.php?chavepesquisa=<?=$ed47_i_codigo?>';
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href='edu1_aluno002.php?chavepesquisa=<?=$ed47_i_codigo?>';
   </script>
   <?
  };

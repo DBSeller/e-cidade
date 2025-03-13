@@ -1,39 +1,40 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_iptubaixa_classe.php");
-$cliptubase = new cl_iptubase;
+require(modification("libs/db_stdlib.php"));
+require(modification ("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_iptubaixa_classe.php"));
+$cliptubase  = new cl_iptubase;
 $cliptubaixa = new cl_iptubaixa;
+$cliptuant   = new cl_iptuant;
 
 $verilote          = false;
 $verimatricula     = false;
@@ -41,15 +42,15 @@ $j18_utidadosdiver = false;
 
 db_postmemory($HTTP_POST_VARS);
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+parse_str($HTTP_SERVER_VARS['QUERY_STRING'], $queryString);
+
 if(isset($testaentra)&& $testaentra=="true"){
   $result = $cliptubase->sql_record($cliptubase->sql_query($j01_matric,"z01_nome",""));
   if($cliptubase->numrows==0 || !isset($j01_matric) || isset($j01_matric) && $j01_matric==""){
-    db_redireciona("cad1_iptubase002.php?invalido=true");   
+    db_redireciona("cad1_iptubase002.php?invalido=true");
   }
 }
 $sqlcfiptu = "select * from cfiptu where j18_anousu = ".db_getsession('DB_anousu');
-//die($sqlcfiptu);
 $rsparametro = db_query($sqlcfiptu);
 $numrows     = pg_numrows($rsparametro);
 if($numrows > 0){
@@ -65,8 +66,18 @@ if($cliptubaixa->numrows > 0){
 	$matriculaBaixada = 'false';
 }
 
+// Busca tipoimovel dentro de um lote rural se existir uma matrícula
+if (isset($j01_matric)) {
+    $j01_tipoimovel = 1;
+    $buscaLoteRural = db_query("SELECT j01_tipoimovel FROM iptubase WHERE j01_idbql = 1000000000 and j01_matric = $j01_matric");
+    if ($buscaLoteRural && pg_num_rows($buscaLoteRural) > 0) {
+      $j01_tipoimovel = db_utils::fieldsMemory($buscaLoteRural, 0)->j01_tipoimovel;
+      $j01_tipoimovel = ($j01_tipoimovel != 2) ? 1 : $j01_tipoimovel;
+    }    
+}
 ?>
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/classes/http/http.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/JavaScript">
   <?
@@ -75,7 +86,6 @@ if($cliptubaixa->numrows > 0){
   }else{
     $alterando=false;
   }
-//db_msgbox("1");
   ?>
   function js_consultabaixa(matric){
    alert('Matricula baixada !');
@@ -99,13 +109,10 @@ if($cliptubaixa->numrows > 0){
    document.formaba.matricula.disabled = true;
    iframe_lote.location.href="cad1_lotealt.php?idmatricu="+idmatricul+"&j34_setor="+setor+"&j34_quadra="+quadra+"&j34_bairro="+bairro+"&j34_loteam="+loteam+"&j34_zona="+zona+"&caracteristica="+caract+"&j30_descr="+setor1+"&j13_descr="+bairro1+"&j34_descr="+loteam1;
  }
-/*function js_novolote2(idmatricul){
-   document.formaba.matricula.disabled = true;
-   iframe_lote.location.href="cad1_lotealt.php?idmatricu="+idmatricul;
- }*/
-
 
  function js_parentiframe(iframe,confere) {
+  isPB = '<?php echo isParaiba() ?>';
+
   if (iframe=="alterando" && confere==true) {
 
   } else if (iframe=="lote" && confere==true) {
@@ -114,22 +121,45 @@ if($cliptubaixa->numrows > 0){
     document.formaba.lote.style.fontWeight = "normal";
     document.formaba.matricula.disabled = false;
     mo_camada('matricula',true,'Iframe2');
+
+    if(isPB) {
+        const parametros = new FormData();
+        parametros.append('matricula', iframe_iptubase.document.form1.j01_matric.value)
+        parametros.append('sExec', 'buscarInscricaoImobiliaria');
+        HttpClient.post(
+            'cad4_iptuconstr.RPC.php',
+            { body: parametros }
+        )
+        .then((response) => {
+            if (response.erro) {
+                alert(response.message);
+                return;
+            }
+              iframe_iptubase.document.form1.j40_refant.value = response.j40_refant;
+            });
+    }
     
     iframe_iptubase.document.form1.j01_idbql.value=document.form1.idlote.value;
-    
+
     if (document.form1.liberaconstrescr.value=="ok") {
       iframe_constrescr.document.form1.id_setor.value=document.form1.idsetor.value;
       iframe_constrescr.document.form1.id_quadra.value=document.form1.idquadra.value;
     }
-    
+
     if (document.form1.liberaiptuconstr.value=="ok") {
       iframe_iptuconstr.document.form1.id_setor2.value=document.form1.idsetor.value;
       iframe_iptuconstr.document.form1.id_quadra2.value=document.form1.idquadra.value;
     }
-    
-    
-    
+
+
+
   } else if (iframe=="matricula" && confere==true) {
+
+    const tipoImovel = <?=$tipoImovel?>;
+    if (tipoImovel == "2") {
+      return;
+    }
+
     document.formaba.constr.disabled = false;
     document.formaba.escrit.disabled = false;
     document.formaba.imobiliaria.disabled = false;
@@ -137,14 +167,14 @@ if($cliptubaixa->numrows > 0){
     document.formaba.outros.disabled = false;
     document.formaba.dadosdiver.disabled = false;
     document.formaba.ender.disabled = false;
-    
-    
+
+
     iframe_lote.document.form1.idmatricu.value=document.form1.idmatricula.value;
-    
+
     if (document.form1.liberadadosdiver.value=="ok") {
       iframe_dadosdiver.document.form1.j80_matric.value = document.form1.idmatricula.value;
     }
-    
+
     if (document.form1.liberaiptuconstr.value=="ok") {
       iframe_iptuconstr.document.form1.j39_matric.value=document.form1.idmatricula.value;
       iframe_iptuconstr.document.form1.z01_nome.value=document.form1.nomematricula.value;
@@ -156,20 +186,20 @@ if($cliptubaixa->numrows > 0){
       iframe_constrescr.document.form1.id_setor.value=document.form1.idsetor.value;
       iframe_constrescr.document.form1.id_quadra.value=document.form1.idquadra.value;
     }
-    
+
     iframe_imobil.document.form1.j44_matric.value=document.form1.idmatricula.value;
     iframe_imobil.document.form1.z01_nomematri.value=document.form1.nomematricula.value;
-    
+
     iframe_promitente.document.form1.j41_matric.value=document.form1.idmatricula.value;
     iframe_promitente.document.form1.z01_nomematri.value=document.form1.nomematricula.value;
-    
+
     iframe_propri.document.form1.j42_matric.value=document.form1.idmatricula.value;
     iframe_propri.document.form1.z01_nomematri.value=document.form1.nomematricula.value;
-    
-    
+
+
     iframe_iptuender.document.form1.j43_matric.value=document.form1.idmatricula.value;
     iframe_iptuender.document.form1.z01_nome.value=document.form1.nomematricula.value;
-    
+
     mo_camada('constr',true,'Iframe3');
   }
 }
@@ -187,16 +217,16 @@ function mo_camada(idtabela,mostra,camada) {
         divs[j].style.zIndex = 99;
         divs[j].style.width = screen.availWidth;
         divs[j].style.height = screen.availHeight;
-        
+
         if (divs[j].id == "Iframe3") {
           var tt = document.getElementById(divs[j].id+"_iframe").src;
           if (tt=="") {
             document.getElementById(divs[j].id+"_iframe").src = "cad1_iptuconstralt.php?alterando=true&id_setor=&j01_matric=<?=$j01_matric?>";
             document.form1.liberaiptuconstr.value="ok";
-            
+
           }
         }
-        
+
         if (divs[j].id == "Iframe4") {
           var tt = document.getElementById(divs[j].id+"_iframe").src;
           if (tt=="") {
@@ -204,14 +234,14 @@ function mo_camada(idtabela,mostra,camada) {
             document.form1.liberaconstrescr.value="ok";
           }
         }
-        
+
       } else {
         if (divs[j].className == 'tabela') {
           divs[j].style.visibility = "hidden";
           divs[j].style.zIndex = 98;
           divs[j].style.width = screen.availWidth;
           divs[j].style.height = screen.availHeight;
-          
+
         }
       }
     } else {
@@ -219,7 +249,7 @@ function mo_camada(idtabela,mostra,camada) {
         divs[j].stlert(dadosveri[1]);
         divs[j].style.width = screen.availWidth;
         divs[j].style.height = screen.availHeight;
-        
+
       }
     }
   }
@@ -228,28 +258,63 @@ function mo_camada(idtabela,mostra,camada) {
       for (y=0; y < document.forms['formaba'].length; y++) {
         tab[x].style.border = "1px outset #cccccc";
         tab[x].style.borderBottomColor = "#000000";
-        document.formaba.lote.style.color = "#666666";
-        document.formaba.lote.style.fontWeight = "normal";
+
+        if (document.formaba.lote) {
+          document.formaba.lote.style.color = "#666666";
+          document.formaba.lote.style.fontWeight = "normal";
+        }
         
-        document.formaba.matricula.style.color = "#666666";
-        document.formaba.matricula.style.fontWeight = "normal";
-        document.formaba.constr.style.color = "#666666";
-        document.formaba.constr.style.fontWeight = "normal";
-        document.formaba.escrit.style.color = "#666666";
-        document.formaba.escrit.style.fontWeight = "normal";
-        document.formaba.imobiliaria.style.color = "#666666";
-        document.formaba.imobiliaria.style.fontWeight = "normal";
-        document.formaba.promitente.style.color = "#666666";
-        document.formaba.promitente.style.fontWeight = "normal";
-        document.formaba.outros.style.color = "#666666";
-        document.formaba.outros.style.fontWeight = "normal";
-        document.formaba.ender.style.color = "#666666";
-        document.formaba.ender.style.fontWeight = "normal";
-        document.formaba.isencao.style.color = "#666666";
-        document.formaba.isencao.style.fontWeight = "normal";
-        document.formaba.dadosdiver.style.color = "#666666";
-        document.formaba.dadosdiver.style.fontWeight = "normal";
+        if (document.formaba.matricula) {
+          document.formaba.matricula.style.color = "#666666";
+          document.formaba.matricula.style.fontWeight = "normal";
+        }
+        
+        if (document.formaba.constr) {
+          document.formaba.constr.style.color = "#666666";
+          document.formaba.constr.style.fontWeight = "normal";
+        }
+        
+        if (document.formaba.escrit) {
+          document.formaba.escrit.style.color = "#666666";
+          document.formaba.escrit.style.fontWeight = "normal";
+        }
+        
+        if (document.formaba.imobiliaria) {
+          document.formaba.imobiliaria.style.color = "#666666";
+          document.formaba.imobiliaria.style.fontWeight = "normal";
+        }
+        
+        if (document.formaba.promitente) {
+          document.formaba.promitente.style.color = "#666666";
+          document.formaba.promitente.style.fontWeight = "normal";
+        }
+        
+        if (document.formaba.outros) {
+          document.formaba.outros.style.color = "#666666";
+          document.formaba.outros.style.fontWeight = "normal";
+        }
+
+        if (document.formaba.ender) {
+          document.formaba.ender.style.color = "#666666";
+          document.formaba.ender.style.fontWeight = "normal";
+        }
+        
+        if (document.formaba.isencao) {
+          document.formaba.isencao.style.color = "#666666";
+          document.formaba.isencao.style.fontWeight = "normal";
+        }
+        
+        if (document.formaba.dadosdiver) {
+          document.formaba.dadosdiver.style.color = "#666666";
+          document.formaba.dadosdiver.style.fontWeight = "normal";
+        }  
+        
+        if (document.formaba.anexos) {
+          document.formaba.anexos.style.color = "#666666";
+          document.formaba.anexos.style.fontWeight = "normal";
+        }
       }
+
       if (aba == tab[x].id) {
         tab[x].style.border = "3px outset #999999";
         tab[x].style.borderBottomWidth = "0px";
@@ -263,17 +328,17 @@ function mo_camada(idtabela,mostra,camada) {
       input.style.fontWeight = "bold";
     }
   }
-  
+
 }
 
 function js_veripros(nome) {
   cgm_iptubase = iframe_iptubase.document.form1.j01_numcgm.value;
   cgm_propri = iframe_propri.document.form1.j42_numcgm.value;
   cgm_promitente = iframe_promitente.document.form1.j41_numcgm.value;
-  
+
   cgm_selpropri = iframe_propri.document.form1.cgmpropri.value;
   cgm_selpromitente = iframe_promitente.document.form1.cgmpromi.value;
-  
+
   proprimatriz="";
   promimatriz="";
   proprimatriz=cgm_selpropri.split("#");
@@ -300,16 +365,16 @@ function js_veripros(nome) {
         return false;
         break;
       }
-      
+
     }
     if (cgm_iptubase==cgm_propri) {
       alert("Nome já cadastrado como proprietário principal! Verifique!");
       return false;
     }
   }
-  
+
   return true;
-  
+
 }
 
 function js_pripromi(){
@@ -328,8 +393,8 @@ function js_pripromi(){
  }
  a:active {
   color: black;
-  font-weight: bold; 
-}  
+  font-weight: bold;
+}
 .nomes {background-color: transparent;
   border:none;
   text-align: center;
@@ -345,7 +410,7 @@ function js_pripromi(){
  color: darkblue;
  font-weight:bold;
  cursor: hand;
- height:14px; 
+ height:14px;
 }
 .bordas{border: 1px outset #cccccc;
   border-bottom-color: #000000;
@@ -361,7 +426,7 @@ function js_pripromi(){
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad=" js_trocacordeselect();">
   <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-    <tr> 
+    <tr>
       <td width="360" height="18">&nbsp;</td>
       <td width="263">&nbsp;</td>
       <td width="25">&nbsp;</td>
@@ -369,22 +434,23 @@ function js_pripromi(){
     </tr>
   </table>
   <table valign="top" width="100%" border="1" cellspacing="0" cellpadding="0">
-    <tr> 
+    <tr>
       <form name="formaba" method="post" id="formaba" >
         <td height="" align="left" valign="top" bgcolor="#CCCCCC">
          <table border="0" cellpadding="0" cellspacing="0" marginwidth="0">
            <tr>
-             <td>
-              <table class="bordas" border="0" style="border: 3px outset #666666; border-bottom-width: 0px; border-right-width: 1px ;border-right-color: #000000; border-top-color: #3c3c3c; border-right-style: inset; " id="lote"  cellpadding="3" cellspacing="0" width="12%"> 
+            <?php if ($j01_tipoimovel == "2") : ?>
+             <td style="display:none;">
+              <table class="bordas" border="0" style="border: 3px outset #666666; border-bottom-width: 0px; border-right-width: 1px ;border-right-color: #000000; border-top-color: #3c3c3c; border-right-style: inset; " id="lote"  cellpadding="3" cellspacing="0" width="12%">
                 <tr>
                   <td nowrap>
-                    <input readonly name="lote" class="nomes" style="font-weight:bold; color:black" type="text" value="Lote" title="Cadastro de Lote" size="4" maxlength="7" onClick="mo_camada('lote',true,'Iframe1');"> 
+                  <input <?= $j01_tipoimovel != "2" ? "":"disabled" ?> readonly name="lote" class="nomes" style="font-weight:bold; color:black" type="text" value="Lote" title="Cadastro de Lote" size="4" maxlength="7" onClick="mo_camada('lote',true,'Iframe1'); atualizaLote();">
                   </td>
                 </tr>
               </table>
             </td>
             <td>
-              <table border="0" class="bordas" id="matricula" cellpadding="3" cellspacing="0" width="12%"> 
+              <table border="0" class="bordas" id="matricula" cellpadding="3" cellspacing="0" width="12%">
                 <tr>
                   <td  id="link_matric" nowrap>
                     <input <?=($alterando==false?"disabled":"")?> readonly name="matricula" type="text" value="Matrícula" size="10" maxlength="10"  class="nomes"  title="Matrícula do Proprietario"  onClick="mo_camada('matricula',true,'Iframe2');">
@@ -393,17 +459,75 @@ function js_pripromi(){
               </table>
             </td>
             <td>
-              <table border="0" class="bordas" id="constr" cellpadding="3" cellspacing="0" width="12%"> 
+              <table border="0" class="bordas" id="ender" cellpadding="3" cellspacing="0" width="12%">
                 <tr>
-                  <td nowrap id="link_constr">
-                    <input <?=($alterando==false?"disabled":"")?>  readonly type="text" value="Construções" size="12" maxlength="12"  class="nomes"  name="constr" title="Construções" onClick="mo_camada('constr',true,'Iframe3');">
-                    <input type="hidden" name="ve_constr" value="false">
+                  <td id="link_entreg" nowrap>
+                    <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="End.Entrega" size="11" maxlength="11"  class="nomes"  name="ender" title="Manutenção de Endereços de Entrega" onClick="mo_camada('ender',true,'Iframe8');">
                   </td>
                 </tr>
               </table>
             </td>
             <td>
-              <table border="0" class="bordas" id="escrit" cellpadding="3" cellspacing="0" width="12%"> 
+              <table border="0" class="bordas" id="isencao" cellpadding="3" cellspacing="0" width="12%">
+                <tr>
+                  <td id="link_isencao" nowrap>
+                    <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="Isenção" size="11" maxlength="11" class="nomes" name="isencao" title="Isenção" onClick="mo_camada('isencao', true, 'Iframe10')" />
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td>
+              <table border="0" class="bordas" id="anexos" cellpadding="3" cellspacing="0" width="12%">
+                <tr>
+                  <td id="link_anexos" nowrap>
+                    <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="Anexos" size="11" maxlength="11"  class="nomes"  name="anexos" title="Documentos anexos" onClick="mo_camada('anexos',true,'Iframe11');">
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td>
+              <table border="0" class="bordas" id="outros" cellpadding="3" cellspacing="0" width="12%">
+                <tr>
+                  <td id="link_propri" nowrap >
+                    <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="Outros Propr" size="12" maxlength="12"  class="nomes"  name="outros"  title="Outros Proprietários"  onClick="mo_camada('outros',true,'Iframe7');">
+                  </td>
+                </tr>
+              </table>
+            </td>
+
+            <?php endif ?>
+
+            <?php if ($j01_tipoimovel != "2") : ?>
+            <td>
+              <table class="bordas" border="0" style="border: 3px outset #666666; border-bottom-width: 0px; border-right-width: 1px ;border-right-color: #000000; border-top-color: #3c3c3c; border-right-style: inset; " id="lote"  cellpadding="3" cellspacing="0" width="12%">
+                <tr>
+                  <td nowrap>
+                  <input <?= $j01_tipoimovel != "2" ? "":"disabled" ?> readonly name="lote" class="nomes" style="font-weight:bold; color:black" type="text" value="Lote" title="Cadastro de Lote" size="4" maxlength="7" onClick="mo_camada('lote',true,'Iframe1'); atualizaLote();">
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td>
+              <table border="0" class="bordas" id="matricula" cellpadding="3" cellspacing="0" width="12%">
+                <tr>
+                  <td id="link_matric" nowrap>
+                    <input <?=($alterando==false?"disabled":"")?> readonly name="matricula" type="text" value="Matrícula" size="10" maxlength="10"  class="nomes"  title="Matrícula do Proprietario"  onClick="mo_camada('matricula',true,'Iframe2');">
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td>
+              <table border="0" class="bordas" id="constr" cellpadding="3" cellspacing="0" width="12%">
+              <tr>
+                <td nowrap id="link_constr">
+                  <input <?=($alterando==false?"disabled":"")?>  readonly type="text" value="Construções" size="12" maxlength="12"  class="nomes"  name="constr" title="Construções" onClick="mo_camada('constr',true,'Iframe3');">
+                  <input type="hidden" name="ve_constr" value="false">
+                </td>
+              </tr>
+              </table>
+            </td>
+            <td>
+              <table border="0" class="bordas" id="escrit" cellpadding="3" cellspacing="0" width="12%">
                 <tr>
                   <td id="link_constrescr" nowrap>
                     <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="Escrituradas" size="12" maxlength="12"  class="nomes"  name="escrit" title="Construções Escrituradas" onClick="mo_camada('escrit',true,'Iframe4');">
@@ -413,7 +537,7 @@ function js_pripromi(){
               </table>
             </td>
             <td>
-              <table border="0" class="bordas" id="imobiliaria" cellpadding="3" cellspacing="0" width="12%"> 
+              <table border="0" class="bordas" id="imobiliaria" cellpadding="3" cellspacing="0" width="12%">
                 <tr>
                   <td id="link_imobil" nowrap>
                     <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="Imobiliária" size="11" maxlength="11"  class="nomes"  name="imobiliaria" title="Manutenção de Imobiliária"  onClick="mo_camada('imobiliaria',true,'Iframe5');">
@@ -422,7 +546,7 @@ function js_pripromi(){
               </table>
             </td>
             <td>
-              <table border="0" class="bordas" id="promitente" cellpadding="3" cellspacing="0" width="12%"> 
+              <table border="0" class="bordas" id="promitente" cellpadding="3" cellspacing="0" width="12%">
                 <tr>
                   <td id="link_promit" nowrap>
                     <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="Promitente" size="10" maxlength="10"  class="nomes"  name="promitente" title="Manutenção de Promitente Comprador" onClick="mo_camada('promitente',true,'Iframe6');">
@@ -431,7 +555,7 @@ function js_pripromi(){
               </table>
             </td>
             <td>
-              <table border="0" class="bordas" id="outros" cellpadding="3" cellspacing="0" width="12%"> 
+              <table border="0" class="bordas" id="outros" cellpadding="3" cellspacing="0" width="12%">
                 <tr>
                   <td id="link_propri" nowrap >
                     <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="Outros Propr" size="12" maxlength="12"  class="nomes"  name="outros"  title="Outros Proprietários"  onClick="mo_camada('outros',true,'Iframe7');">
@@ -440,17 +564,14 @@ function js_pripromi(){
               </table>
             </td>
             <td>
-
-              <table border="0" class="bordas" id="ender" cellpadding="3" cellspacing="0" width="12%"> 
+              <table border="0" class="bordas" id="ender" cellpadding="3" cellspacing="0" width="12%">
                 <tr>
                   <td id="link_entreg" nowrap>
                     <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="End.Entrega" size="11" maxlength="11"  class="nomes"  name="ender" title="Manutenção de Endereços de Entrega" onClick="mo_camada('ender',true,'Iframe8');">
                   </td>
                 </tr>
               </table>
-
             </td>
-
             <td>
               <table border="0" class="bordas" id="isencao" cellpadding="3" cellspacing="0" width="12%">
                 <tr>
@@ -459,18 +580,29 @@ function js_pripromi(){
                   </td>
                 </tr>
               </table>
-            </td>            
-
+            </td>
             <td>
               <!-- criado por robson -->
               <table border="0" class="bordas" id="dadosdiver" cellpadding="<?=($j18_utidadosdiver=='t'?"3":"0")?>" cellspacing="0" width="12%">
+                <tr>
+                  <td id="link_dadosdiver" nowrap>
+                    <input <?=($alterando==false?"disabled":"")?> readonly type="<?=($j18_utidadosdiver=='t'?"text":"hidden")?>" value="Dados diversos" size="11" maxlength="11"  class="nomes"  name="dadosdiver" title="Manutenção de dados diversos" onClick="mo_camada('dadosdiver',true,'Iframe9');">
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td>
+              <table border="0" class="bordas" id="anexos" cellpadding="3" cellspacing="0" width="12%">
                <tr>
-                 <td id="link_dadosdiver" nowrap>
-                   <input <?=($alterando==false?"disabled":"")?> readonly type="<?=($j18_utidadosdiver=='t'?"text":"hidden")?>" value="Dados diversos" size="11" maxlength="11"  class="nomes"  name="dadosdiver" title="Manutenção de dados diversos" onClick="mo_camada('dadosdiver',true,'Iframe9');">
+                 <td id="link_anexos" nowrap>
+                   <input <?=($alterando==false?"disabled":"")?> readonly type="text" value="Anexos" size="11" maxlength="11"  class="nomes"  name="anexos" title="Documentos anexos" onClick="mo_camada('anexos',true,'Iframe11');">
                  </td>
                </tr>
              </table>
            </td>
+
+           <?php endif ?>
+
          </tr>
        </table>
      </td>
@@ -478,19 +610,19 @@ function js_pripromi(){
  </tr>
  <tr>
   <form name="form1" method="post" id="form1" >
-    <td nowrap>  
-      <input name="idlote"           type="hidden" value="<?=@$idlote?>" > 
-      <input name="idmatricula"      type="hidden" value="" /> 
-      <input name="nomematricula"    type="hidden" value="" /> 
-      <input name="idsetor"          type="hidden" value="" /> 
-      <input name="idquadra"         type="hidden" value="" /> 
-      <input name="liberaconstrescr" type="hidden" value="" /> 
-      <input name="liberaiptuconstr" type="hidden" value="" /> 
-      <input name="liberadadosdiver" type="hidden" value="" /> 
+    <td nowrap>
+      <input name="idlote"           type="hidden" value="<?=@$idlote?>" >
+      <input name="idmatricula"      type="hidden" value="" />
+      <input name="nomematricula"    type="hidden" value="" />
+      <input name="idsetor"          type="hidden" value="" />
+      <input name="idquadra"         type="hidden" value="" />
+      <input name="liberaconstrescr" type="hidden" value="" />
+      <input name="liberaiptuconstr" type="hidden" value="" />
+      <input name="liberadadosdiver" type="hidden" value="" />
     </td>
     <td>
      <div class="tabela" id="Iframe2" style="position:absolute; left:0px; top:47px; z-index:99; visibility: <?=($alterando==false?"hidden":"visible")?>;">
-       <iframe id="Iframe2_iframe" id="iptubase" frameborder="0" name="iframe_iptubase"  src="cad1_iptubasealt.php?alterando=true&j01_matric=<?=$j01_matric?>" scrolling="no" height=100% width="100%"></iframe> 
+       <iframe id="Iframe2_iframe" id="iptubase" frameborder="0" name="iframe_iptubase"  src="cad1_iptubasealt.php?alterando=true&j01_matric=<?=$j01_matric?>&j01_tipoimovel=<?=$j01_tipoimovel?>" scrolling="no" height=100% width="100%"></iframe>
      </div>
 
      <div class="tabela" id="Iframe3" style="position:absolute; left:0px; top:47px; z-index:99; visibility: <?=($alterando==false?"hidden":"visible")?>;">
@@ -510,8 +642,8 @@ function js_pripromi(){
   </div>
 
   <div class="tabela" id="Iframe7" style="position:absolute; left:0px; top:47px; z-index:99; visibility: <?=($alterando==false?"hidden":"visible")?>;">
-    <iframe id="Iframe7_iframe" name="iframe_propri" frameborder="0"  src="cad1_proprialt.php?alterando=true&j01_matric=<?=$j01_matric?>" scrolling="no" height="100%" width="100%"></iframe>
-  </div> 
+    <iframe id="Iframe7_iframe" name="iframe_propri" frameborder="0"  src="cad1_proprialt.php?alterando=true&j01_matric=<?=$j01_matric?>&j01_tipoimovel=<?=$j01_tipoimovel?>" scrolling="no" height="100%" width="100%"></iframe>
+  </div>
   <div class="tabela" id="Iframe8" style="position:absolute; left:0px; top:47px;  z-index:99; visibility: <?=($alterando==false?"hidden":"visible")?>;">
     <iframe id="Iframe8_iframe" name="iframe_iptuender" frameborder="0"  src="cad1_iptuenderalt.php?alterando=true&j01_matric=<?=$j01_matric?>"  scrolling="no" height="100%" width="100%"></iframe>
   </div>
@@ -525,8 +657,11 @@ function js_pripromi(){
  <iframe name="iframe_isencao"  frameborder="0"  class="bordasi"  leftmargin="0" topmargin="0"  src="cad4_iptuisen002.php?alterando=true&j46_matric=<?=$j01_matric?>"  scrolling="no" height="100%" width="100%"></iframe>
 </div>
 
+ <div class="tabela" id="Iframe11" style="position:absolute; left:0px; top:47px;  z-index:99; visibility: hidden;">
+ <iframe name="iframe_anexo"  frameborder="0"  class="bordasi"  leftmargin="0" topmargin="0"  src="cad4_iptuarquivo001.php?alterando=true&j01_matric=<?=$j01_matric?>&z01_nome=<?=$z01_nome?>"  scrolling="no" height="100%" width="100%"></iframe>
+</div>
 <div class="tabela" id="Iframe1" style="position:absolute; left:0px; top:47px; z-index:99; visibility: visible;">
-  <iframe name="iframe_lote" frameborder="0"  src="cad1_lotealt.php?alterando=true&j01_matric=<?=$j01_matric?>" height="100%" scrolling="no"   width="100%"></iframe>
+  <iframe name="iframe_lote" frameborder="0"  src="cad1_lotealt.php?alterando=true&j01_matric=<?=$j01_matric?>&tipoImovel=<?=$tipoImovel?>" height="100%" scrolling="no"   width="100%"></iframe>
 </div>
 <div id="load"  style="position:absolute; left:300px; top:167px; z-index:99;visibility: visible;">
   <b> Processando.&nbsp;Aguarde...</b>
@@ -536,18 +671,23 @@ function js_pripromi(){
 </form>
 </tr>
 </table>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
+<?php db_menu(); ?>
 
 </body>
 </html>
 <script>
+<?php if ($j01_tipoimovel == "2") {?>
+ mo_camada('matricula',true,'Iframe2');
+<?php }else{?>
  mo_camada('lote',true,'Iframe1');
+ <?php }?>
+ function atualizaLote()
+ {
+     iframe_lote.location.reload();
+ }
 </script>
-<?
+<?php
 if($matriculaBaixada == 'true'){
   echo "<script> js_consultabaixa(".$j01_matric."); </script>";
-//	exit;
 }
 ?>

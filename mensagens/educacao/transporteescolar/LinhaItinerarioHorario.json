@@ -8,5 +8,6 @@
   "transporte_vinculado_horario"            : "Exclusão do horário não permitida. Existem veículos vinculados ao horário selecionado.",
   "sem_transacao"                           : "Não existe transação com o banco de dados.",
   "erro_excluir_vinculo_veiculo"            : "Não foi possível remover registro. \nErro Técnico:[erro_dao]",
-  "erro_incluir_vinculo_veiculo"            : "Não foi possível remover registro. \nErro Técnico:[erro_dao]"
+  "erro_incluir_vinculo_veiculo"            : "Não foi possível remover registro. \nErro Técnico:[erro_dao]",
+  "aluno_vinculado"                         : "Não é possível excluir o itinerário com alunos vinculados."
 }

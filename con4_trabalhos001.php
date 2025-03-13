@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,8 +28,8 @@
 /**
  * Implementação basica da classe JOB
  */
-require_once("libs/db_app.utils.php");
-require_once("model/configuracao/Job.model.php");
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("model/configuracao/Job.model.php"));
 
 $oJob = new Job();
 

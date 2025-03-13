@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
 
 //arquivo db_frmagualeiturista.php
 
@@ -39,9 +39,9 @@ if ($oPost->sAction == 'pesquisaSenhaHash') {
   
   $sql   = "select count(*) from agualeiturista where x16_numcgm = {$oPost->cgm} and x16_senha = '".md5($oPost->s)."'";
   
-  $rsSql = pg_query($sql);
+  $rsSql = db_query($sql);
   
-  $aSql  = db_utils::getColectionByRecord($rsSql, false, false, true);
+  $aSql  = db_utils::getCollectionByRecord($rsSql, false, false, true);
   
   $oJson = new services_json();
   

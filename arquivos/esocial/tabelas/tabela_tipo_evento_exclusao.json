@@ -1,0 +1,137 @@
+[
+  {
+    "id": "1200",
+    "value": "S-1200",
+    "label": "S-1200 - Remuneração do Trabalhador vinculado ao Regime Geral de Previdência Social - RGPS"
+  },
+  {
+    "id": "1202",
+    "value": "S-1202",
+    "label": "S-1202 - Remuneração do Trabalhador vinculado a Regime Próprio de Previdência Social - RPPS"
+  },
+  {
+    "id": "1207",
+    "value": "S-1207",
+    "label": "S-1207 - Benefícios Previdenciários - RPPS"
+  },
+  {
+    "id": "1210",
+    "value": "S-1210",
+    "label": "S-1210 - Pagamentos de Rendimentos do Trabalho"
+  },
+  {
+    "id": "1260",
+    "value": "S-1260",
+    "label": "S-1260 - Comercialização da Produção Rural Pessoa Física"
+  },
+  {
+    "id": "1270",
+    "value": "S-1270",
+    "label": "S-1270 - Contratação de Trabalhadores Avulsos Não Portuários"
+  },
+  {
+    "id": "1280",
+    "value": "S-1280",
+    "label": "S-1280 - Informações Complementares aos Eventos Periódicos"
+  },
+  {
+    "id": "2190",
+    "value": "S-2190",
+    "label": "S-2190 - Admissão de Trabalhador - Registro Preliminar"
+  },
+  {
+    "id": "2200",
+    "value": "S-2200",
+    "label": "S-2200 - Admissão / Ingresso de Trabalhador"
+  },
+  {
+    "id": "2205",
+    "value": "S-2205",
+    "label": "S-2205 - Alteração de Dados Cadastrais do Trabalhador"
+  },
+  {
+    "id": "2206",
+    "value": "S-2206",
+    "label": "S-2206 - Alteração de Contrato de Trabalho"
+  },
+  {
+    "id": "2210",
+    "value": "S-2210",
+    "label": "S-2210 - Comunicação de Acidente de Trabalho"
+  },
+  {
+    "id": "2220",
+    "value": "S-2220",
+    "label": "S-2220 - Monitoramento da saúde do trabalhador"
+  },
+  {
+    "id": "2230",
+    "value": "S-2230",
+    "label": "S-2230 - Afastamento Temporário"
+  },
+  {
+    "id": "2231",
+    "value": "S-2231",
+    "label": "S-2231 - Cessão/Exercício em Outro Órgão"
+  },
+  {
+    "id": "2240",
+    "value": "S-2240",
+    "label": "S-2240 - Condições Ambientais do Trabalho - Fatores de Risco"
+  },
+  {
+    "id": "2298",
+    "value": "S-2298",
+    "label": "S-2298 - Reintegração"
+  },
+  {
+    "id": "2299",
+    "value": "S-2299",
+    "label": "S-2299 - Desligamento"
+  },
+  {
+    "id": "2300",
+    "value": "S-2300",
+    "label": "S-2300 - Trabalhador Sem Vínculo de Emprego/Estatutário - Início"
+  },
+  {
+    "id": "2306",
+    "value": "S-2306",
+    "label": "S-2306 - Trabalhador Sem Vínculo de Emprego/Estatutário - Alteração Contratual"
+  },
+  {
+    "id": "2399",
+    "value": "S-2399",
+    "label": "S-2399 - Trabalhador Sem Vínculo de Emprego/Estatutário - Término"
+  },
+  {
+    "id": "2400",
+    "value": "S-2400",
+    "label": "S-2400 - Cadastro de Beneficios Previdenciários - RPPS"
+  },
+  {
+    "id": "2405",
+    "value": "S-2405",
+    "label": "S-2405 - Cadastro de Beneficiário - Entes Públicos Alteração"
+  },
+  {
+    "id": "2410",
+    "value": "S-2410",
+    "label": "S-2410 - Cadastro de Benefício - Entes Públicos Início"
+  },
+  {
+    "id": "2416",
+    "value": "S-2416",
+    "label": "S-2416 - Cadastro de Benefício - Entes Públicos -Alteração"
+  },
+  {
+    "id": "2418",
+    "value": "S-2418",
+    "label": "S-2418 - Reativação de Benefício -Entes Públicos -Alteração"
+  },
+  {
+    "id": "2420",
+    "value": "S-2420",
+    "label": "S-2420 - Cadastro de Benefício - Entes Públicos - Término"
+  }
+]

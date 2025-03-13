@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 //MODULO: empenho
 $clpagordem->rotulo->label();
@@ -444,7 +444,7 @@ db_input('e50_numemp',13,$Ie50_numemp,true,'text',3);
        <?
        echo "<script>
              function js_retornaliq(){
-	       top.corpo.location.href = 'emp1_empliquida001.php';
+	       (window.CurrentWindow || parent.CurrentWindow).corpo.location.href = 'emp1_empliquida001.php';
 	     }
 	     </script>";
        if(isset($emite_automatico) || isset($retornaliq)){
@@ -543,10 +543,10 @@ function js_imprimeincalt(opcao){
 }
 function js_pesquisa_cgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_pagordem','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pagordem','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true,0);
   }else{
      if(document.form1.z01_numcgm2.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_pagordem','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.z01_numcgm2.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pagordem','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.z01_numcgm2.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome2.value = ''; 
      }
@@ -597,7 +597,7 @@ function js_verif(){
 
 function js_verifica_receita(){
    vlrpag = document.form1.vlrpag.value;
-   js_OpenJanelaIframe('top.corpo.iframe_pagordem','db_iframe_veri','emp1_pagordem007.php?db_opcao=<?=$db_opcao?>&e50_codord=<?=$e50_codord?>&vlranu='+vlrpag,'Pesquisa',false);
+   js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pagordem','db_iframe_veri','emp1_pagordem007.php?db_opcao=<?=$db_opcao?>&e50_codord=<?=$e50_codord?>&vlranu='+vlrpag,'Pesquisa',false);
    return false;
 }
 function js_confere(pode){
@@ -811,13 +811,13 @@ function js_calcula(campo){
   
 ?>
 function js_pesquisa_emp(){
-  js_OpenJanelaIframe('top.corpo.iframe_pagordem','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true,0);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pagordem','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true,0);
 }
 function js_pesquisa_ordem(){
  <? if(isset($procedimento) && $procedimento=="anulacao"){?>//variavel procedimento, é para indicar quando esta anulando, dae abre uma func que tras só as ordens com saldo
-     js_OpenJanelaIframe('top.corpo.iframe_pagordem','db_iframe_pagordem','func_pagordem_anula.php?funcao_js=parent.js_preenchepesquisa|e50_codord','Pesquisa',true,0);
+     js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pagordem','db_iframe_pagordem','func_pagordem_anula.php?funcao_js=parent.js_preenchepesquisa|e50_codord','Pesquisa',true,0);
  <? }else{?>
-     js_OpenJanelaIframe('top.corpo.iframe_pagordem','db_iframe_pagordem','func_pagordem.php?funcao_js=parent.js_preenchepesquisa|e50_codord','Pesquisa',true,0);
+     js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pagordem','db_iframe_pagordem','func_pagordem.php?funcao_js=parent.js_preenchepesquisa|e50_codord','Pesquisa',true,0);
  <? }?>
 }
 function js_preenchepesquisa(chave){

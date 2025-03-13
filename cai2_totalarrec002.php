@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,9 +26,9 @@
  */
 
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 db_postmemory($HTTP_POST_VARS);
-include("libs/db_sql.php");
+include(modification("libs/db_sql.php"));
 db_postmemory($HTTP_SERVER_VARS);
 
 $pdf = new PDF(); 
@@ -90,7 +90,7 @@ from (select k15_codbco,k15_codage,codret,count(*) as total
 where dtarquivo between '$datai' and '$dataf'
 order by $data a.k15_codbco,k15_codage,codret";
 //die($sql);
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 if ( $num == 0 )
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existe movimento para o período '.db_formatar($datai,'d').' a '.db_formatar($dataf,'d'));

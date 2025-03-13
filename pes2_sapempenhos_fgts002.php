@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -178,7 +178,7 @@ order by rh26_orgao,
 ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
@@ -272,7 +272,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
    }else{
      $pdf->cell(25,$alt,'',0,0,"C",0);
      $pat60 = $fund60 /100 * 21;
-     $pdf->cell(80,$alt,'FUNDEB 60%',0,0,"L",0);
+     $pdf->cell(80,$alt,'FUNDEB 70%',0,0,"L",0);
      $pdf->cell(20,$alt,db_formatar($fund60,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar(($fund60/100*8),'f'),0,1,"R",0);
 //     $pdf->cell(20,$alt,db_formatar(($fund60/100*0.5),'f'),0,0,"R",0);
@@ -280,7 +280,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
      
      $pdf->cell(25,$alt,'',0,0,"C",0);
      $pat40 = $fund40 / 100 * 21;
-     $pdf->cell(80,$alt,'FUNDEB 40%',0,0,"L",0);
+     $pdf->cell(80,$alt,'FUNDEB 30%',0,0,"L",0);
      $pdf->cell(20,$alt,db_formatar($fund40,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar(($fund40/100*8),'f'),0,1,"R",0);
 //     $pdf->cell(20,$alt,db_formatar(($fund40/100*0.5),'f'),0,0,"R",0);

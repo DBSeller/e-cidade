@@ -1,0 +1,222 @@
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("fpdf151/pdf.php"));
+
+$oJson = new services_json();
+$oParam = $oJson->decode(str_replace("\\", "", $_POST["json"]));
+$oRetorno = new stdClass();
+
+$oRetorno->status  = 1;
+$oRetorno->message = '';
+$sMsg = '';
+$lErro = false;
+
+db_inicio_transacao();
+try {
+    switch ($oParam->exec) {
+    case 'getExercicioMatriculas':
+        if (empty($oParam->matricula)) {
+            throw new BussinesException("Matrícula não informada.");   
+        }
+
+        $oRetorno = buscaInformacoes($oParam);
+        $sql      = <<<SQL
+            select
+                rh217_mesusu as mes,
+                rh217_anousu as exercicio,
+                rh217_informacao as valor,
+                'slag' as addres
+            from
+                servidorrelatorioarquivogenerico
+            where
+                rh217_regist = {$oParam->matricula}
+                and rh217_arquivorelatorio = 'portaria154AnexoII'
+            union all
+            select
+                r14_mesusu as mes,
+                r14_anousu as exercicio,
+                round(r14_valor, 2)::varchar as valor,
+                'gerfsal' as addres
+            from
+                gerfsal
+            where
+                r14_rubric = 'R992'
+                and r14_regist = {$oParam->matricula}
+            union all
+            select
+                r35_mesusu as mes,
+                r35_anousu as exercicio,
+                round(r35_valor, 2)::varchar as valor,
+                'gerfs13' as addres
+            from
+                gerfs13
+            where
+                r35_rubric = 'R992'
+                and r35_regist = {$oParam->matricula}
+            order by exercicio asc, mes asc;     
+SQL;
+
+        $rs = db_query($sql);
+
+        $oRetorno->possuiDados = false;
+        if (!$rs) {
+            throw new DBException("Erro ao buscar informacoes na base de dados para a matrícula " . $oParam->matricula . ".");                
+        }       
+
+        if (pg_num_rows($rs) > 0) {
+            $oRetorno->possuiDados = true;
+            $aExercicioAnterior    = array();
+            $contador              = pg_num_rows($rs);
+
+            for ($i = 0; $i < $contador; $i++) {
+                $dado = db_utils::fieldsMemory($rs, $i);
+
+                if (trim($dado->addres) == 'gerfs13') {
+                    $dado->mes = 13; 
+                }
+
+                if (empty($aExercicioAnterior[$dado->exercicio])) {
+                    $aExercicioAnterior[$dado->exercicio] = array();
+                    $aExercicioAnterior[$dado->exercicio]['exercicio'] = $dado->exercicio;
+                    $aExercicioAnterior[$dado->exercicio]['mes'] = array();
+                }
+                
+                $aExercicioAnterior[$dado->exercicio]['mes'][$dado->mes] = $dado->valor;
+                if ($dado->addres == 'gerfs13') {
+                    $dado->mes = 13; 
+                }
+
+            } 
+
+            $oRetorno->dados = inserirDecimoEmExerciciosZerados($aExercicioAnterior);
+        }
+        break;
+    case 'salvarExercicios':
+        if (empty($oParam->matricula)) {
+            throw new BusinnesException("Matrícula não informada.");
+        }
+
+        if (empty($oParam->dados) || sizeof($oParam->dados) == 0) {
+            throw new BusinessException("Nenhuma informação informada.");
+        }
+        $oPeriodo = $oRetorno = buscaInformacoes($oParam);
+        foreach ($oParam->dados as $dado) {
+            $atualiza = false;
+            $sql = "select * from servidorrelatorioarquivogenerico where rh217_regist = " . $oParam->matricula 
+                    . " and rh217_anousu = " . $dado->exercicio . " and rh217_mesusu = " .  $dado->mes . " and rh217_arquivorelatorio = 'portaria154AnexoII'";
+            
+            $rs = db_query($sql);
+
+            if (!$rs) {
+                throw new DBException("Erro ao buscar informacoes na base de dados para a matrícula " . $oParam->matricula . ".");                
+            }                 
+
+            if (pg_num_rows($rs) > 0) {
+                $atualiza = true;
+            }   
+
+            if (empty($dado->valor)) {
+                $dado->valor = 0.00;
+            }
+            $informacoes = new \cl_servidorrelatorioarquivogenerico();
+            $informacoes->rh217_anousu = $dado->exercicio;
+            $informacoes->rh217_mesusu = $dado->mes;
+            $informacoes->rh217_regist = $oParam->matricula;
+            $informacoes->rh217_arquivorelatorio = "portaria154AnexoII";
+            $informacoes->rh217_informacao = (string)$dado->valor;
+            if ($atualiza) {
+                $informacoes->alterar();
+            } else {
+                $informacoes->incluir();
+            }
+        }
+        $oRetorno->message = utf8_encode('Informações dos exercicios salvas com sucesso.');
+        break;
+    }
+    db_fim_transacao();
+} catch (Exception $e) {
+    $oRetorno->status = 2;
+    db_fim_transacao(true);
+    $oRetorno->erro = utf8_encode($e->getMessage());
+}
+echo $oJson->encode($oRetorno);
+
+function buscaInformacoes($oParam) {
+    $oRetorno = new \stdClass();
+    $oRetorno->status  = 1;
+    $oRetorno->message = '';
+    $oServidor = \ServidorRepository::getServidoresByMatriculas(\DBPessoal::getAnoFolha(), \DBPessoal::getMesFolha(), array($oParam->matricula));
+    $oServidor = $oServidor[$oParam->matricula];
+    $oRetorno->anoInicial = date('Y', $oServidor->getDataAdmissao()->getTimestamp());
+    $oRetorno->mesInicial = date('m', $oServidor->getDataAdmissao()->getTimestamp());
+    $oRetorno->exercicio = date('Y', $oServidor->getDataAdmissao()->getTimestamp());
+    $sql = "select r14_anousu, r14_mesusu, 'gerfsal' as addres from gerfsal where r14_rubric = 'R992' and r14_regist = {$oParam->matricula} order by r14_anousu asc, r14_mesusu asc limit 1";
+    $rs  = db_query($sql);
+    $oRetorno->anoBloqueio = \DBPessoal::getAnoFolha();
+    $oRetorno->mesBloqueio = \DBPessoal::getMesFolha();
+    $possuiRescisao = $oServidor->getDataRescisao(); 
+    if (!empty($possuiRescisao)) {
+        $oRetorno->anoBloqueio = date('Y', $oServidor->getDataRescisao()->getTimestamp());
+        $oRetorno->mesBloqueio = date('m', $oServidor->getDataRescisao()->getTimestamp());
+    }
+    if ($rs) {
+        if (pg_num_rows($rs) > 0) {
+            $bloqueio = db_utils::fieldsMemory($rs, 0);
+            if ($bloqueio->r14_mesusu == 1) {
+                $bloqueio->r14_mesusu = 12;
+                $bloqueio->r14_anousu -= 1;
+            }
+            $oRetorno->mesBloqueio = $bloqueio->r14_mesusu;
+            $oRetorno->anoBloqueio = $bloqueio->r14_anousu;
+        }
+    }
+
+    $oRetorno->status  = 1;
+    return $oRetorno;
+}
+
+
+function inserirDecimoEmExerciciosZerados($exercicios){
+    foreach($exercicios as $key => $exercicio){
+        if(empty($exercicio["mes"][13])){
+            $exercicio["mes"][13] = "0,00";
+        }
+
+        $exercicios[$key] = $exercicio;
+        
+    }
+    
+    return $exercicios;
+}

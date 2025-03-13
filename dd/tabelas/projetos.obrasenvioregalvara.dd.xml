@@ -1,0 +1,87 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010799' name='obrasenvioregalvara' description="armazena as obras enviadas ,seus registros e alvarás" prefix="ob31" label="Obras enviadas registro com alvarás" type="0">
+  <fields>
+    <field codigo="1013246"
+           campo_api=''
+           name="ob31_sequencial"
+           conteudo="int4"
+           description="Sequencial tabela obrasenvioregalvara"
+           inivalue="0"
+           label="Sequencial tabela obrasenvioregalvara"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sequencial tabela obrasenvioregalvara"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+      <sequence name='obrasenvioregalvara_ob31_sequencial_seq' />
+    </field>
+    <field codigo="1013247"
+           campo_api=''
+           name="ob31_obrasenvioreg"
+           conteudo="int8"
+           description="Referencia obrasenvioreg"
+           inivalue="0"
+           label="Referencia obrasenvioreg"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Referencia obrasenvioreg"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+    </field>
+    <field codigo="1013248"
+           campo_api=''
+           name="ob31_codalvara"
+           conteudo="int4"
+           description="Código alvará"
+           inivalue="0"
+           label="Código alvará"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código alvará"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+    </field>
+    <field codigo="1013250"
+           campo_api=''
+           name="ob31_protocolo"
+           conteudo="int8"
+           description="Código protocolo retorno alvará"
+           inivalue="0"
+           label="Código protocolo retorno alvará"
+           size="20"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código protocolo retorno alvará"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="ob31_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="obrasenvioreg" inner='t'>
+      <fieldfk name="ob31_obrasenvioreg" reference="ob17_codobrasenvioreg" />
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 session_register("COD_atendimento");
 db_putsession("COD_atendimento","$codigo");
@@ -110,7 +110,7 @@ $sql = "select dependente.w03_codigo,w01_regist,dependente.w03_nome as conjuge,f
 		                         and ag30_codigo = $codigo 
 					 and ag30_data = '$dataini'
 					 ";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	db_fieldsmemory($result,0);
 	db_putsession("w03_codigo","".@$w03_codigo."");
         db_putsession("w01_regist","".@$w01_regist."");

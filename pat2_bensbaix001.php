@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_bensbaix_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_bensbaix_classe.php"));
 $clbensbaix = new cl_bensbaix;
 $clrotulo = new rotulocampo;
 $clbensbaix->rotulo->label();
@@ -186,12 +186,12 @@ function js_pesquisaPlacaInicial(mostra) {
   
   if (mostra == true) {
 
-    var sUrlOpenInicial = "func_bens.php?funcao_js=parent.js_preenchePlacaInicial|t52_ident";
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_bens', sUrlOpenInicial, 'Pesquisa', true);
+    var sUrlOpenInicial = "func_bens.php?funcao_js=parent.js_preenchePlacaInicial|t52_ident&opcao=baixados";
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_bens', sUrlOpenInicial, 'Pesquisa', true);
   } else {
   
     var sUrlOpenInicial = "func_bens.php?funcao_js=parent.js_preenchePlacaInicial|t52_ident";
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_bens', sUrlOpenInicial, 'Pesquisa', false);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_bens', sUrlOpenInicial, 'Pesquisa', false);
   }
 }
 
@@ -210,14 +210,14 @@ function js_pesquisaPlacaFinal(mostra) {
   
   if (mostra == true) {
 
-    var sUrlOpenFinal = "func_bens.php?funcao_js=parent.js_mostraplacafim1|t52_ident";
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_bens', sUrlOpenFinal, 'Pesquisa', true);
+    var sUrlOpenFinal = "func_bens.php?funcao_js=parent.js_mostraplacafim1|t52_ident&opcao=baixados";
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_bens', sUrlOpenFinal, 'Pesquisa', true);
   } else {
 
      if (document.form1.placafim.value != '') { 
         
        var sUrlOpenFinal = "func_bens.php?pesquisa_chave="+document.form1.placafim.value+"&lRetornoPlaca=true&funcao_js=parent.js_mostraplacafim";
-       js_OpenJanelaIframe('top.corpo', 'db_iframe_bens', sUrlOpenFinal, 'Pesquisa', false);
+       js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_bens', sUrlOpenFinal, 'Pesquisa', false);
      } else {
        document.form1.placafim.value = ''; 
      }

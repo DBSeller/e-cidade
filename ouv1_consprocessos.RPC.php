@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("std/db_stdClass.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
 
 $oJson             = new services_json();
 $oParam            = $oJson->decode(str_replace("\\","",$_POST["dados"]));
@@ -175,10 +175,10 @@ if($oParam->acao == 'pesquisar'){
 		$sQueryProcessos .=	$sWhere;
 
 		
-		$rsQueryProcessos	= pg_query($sQueryProcessos);
+		$rsQueryProcessos	= db_query($sQueryProcessos);
 		if (pg_num_rows($rsQueryProcessos) > 0) {
 			
-			$oRetorno->processos = db_utils::getColectionByRecord($rsQueryProcessos, false, false, true);
+			$oRetorno->processos = db_utils::getCollectionByRecord($rsQueryProcessos, false, false, true);
 			$oRetorno->status = 1;
 		} else {
 			
@@ -240,10 +240,10 @@ if($oParam->acao == 'pesquisar'){
 		
 		$sQueryProcessos .= " group by p58_codproc, p58_codigo, p58_requer, p58_dtproc, p61_dtandam, p51_descr, diasatraso, deptoatual"; 
 		
-		$rsQueryProcessos	= pg_query($sQueryProcessos);
+		$rsQueryProcessos	= db_query($sQueryProcessos);
 		if (pg_num_rows($rsQueryProcessos)>0) {
 			
-			$oRetorno->processos = db_utils::getColectionByRecord($rsQueryProcessos, false, false, true);
+			$oRetorno->processos = db_utils::getCollectionByRecord($rsQueryProcessos, false, false, true);
 			$oRetorno->status    = 1;
 		} else {
 			
@@ -381,10 +381,10 @@ if($oParam->acao == 'pesquisar'){
     //
     $sQueryProcessos .=												$sWhere;
 		
-   	$rsQueryProcessos	= pg_query($sQueryProcessos);
+   	$rsQueryProcessos	= db_query($sQueryProcessos);
 		
 		if(pg_num_rows($rsQueryProcessos)>0){
-			$oRetorno->processos = db_utils::getColectionByRecord($rsQueryProcessos,false,false,true);
+			$oRetorno->processos = db_utils::getCollectionByRecord($rsQueryProcessos,false,false,true);
 			$oRetorno->status = 1;
 		}else{
 			$oRetorno->status = 0;

@@ -26,7 +26,7 @@
  */
 
 //MODULO: atendimento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clatendcadareamod->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -134,10 +134,10 @@ function js_cancelar(){
 }
 function js_pesquisaat26_codarea(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_atendcadareamod','db_iframe_atendcadarea','func_atendcadarea.php?funcao_js=parent.js_mostraatendcadarea1|at26_sequencial|at25_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_atendcadareamod','db_iframe_atendcadarea','func_atendcadarea.php?funcao_js=parent.js_mostraatendcadarea1|at26_sequencial|at25_descr','Pesquisa',true);
   }else{
      if(document.form1.at26_codarea.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_atendcadareamod','db_iframe_atendcadarea','func_atendcadarea.php?pesquisa_chave='+document.form1.at26_codarea.value+'&funcao_js=parent.js_mostraatendcadarea','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_atendcadareamod','db_iframe_atendcadarea','func_atendcadarea.php?pesquisa_chave='+document.form1.at26_codarea.value+'&funcao_js=parent.js_mostraatendcadarea','Pesquisa',false);
      }else{
        document.form1.at25_descr.value = ''; 
      }
@@ -157,10 +157,10 @@ function js_mostraatendcadarea1(chave1,chave2){
 }
 function js_pesquisaat26_id_item(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_atendcadareamod','db_iframe_db_modulos','func_db_modulos.php?funcao_js=parent.js_mostradb_modulos1|id_item|nome_modulo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_atendcadareamod','db_iframe_db_modulos','func_db_modulos.php?funcao_js=parent.js_mostradb_modulos1|id_item|nome_modulo','Pesquisa',true);
   }else{
      if(document.form1.at26_id_item.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_atendcadareamod','db_iframe_db_modulos','func_db_modulos.php?pesquisa_chave='+document.form1.at26_id_item.value+'&funcao_js=parent.js_mostradb_modulos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_atendcadareamod','db_iframe_db_modulos','func_db_modulos.php?pesquisa_chave='+document.form1.at26_id_item.value+'&funcao_js=parent.js_mostradb_modulos','Pesquisa',false);
      }else{
        document.form1.nome_modulo.value = ''; 
      }

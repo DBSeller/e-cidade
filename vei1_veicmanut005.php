@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,23 +24,13 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("dbforms/db_funcoes.php");
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_veicmanut_classe.php");
-include("classes/db_veicmanutitem_classe.php");
-include("classes/db_veicmanutoficina_classe.php");
-include("classes/db_veicmanutretirada_classe.php");
-include("classes/db_veiculos_classe.php");
-include("classes/db_veictipoabast_classe.php");
-include("classes/db_veicretirada_classe.php");
-db_app::import("veiculos.*");
-db_postmemory($HTTP_POST_VARS);
+db_postmemory($_POST);
 
 $clveicmanut         = new cl_veicmanut;
 $clveicmanutoficina  = new cl_veicmanutoficina;
@@ -51,38 +41,96 @@ $clveicretirada      = new cl_veicretirada;
 
 $db_opcao = 22;
 $db_botao = false;
-$sqlerro=false;
+$sqlerro  = false;
+
+$clveicmanut->ve62_vlrmobra = null;
+$clveicmanut->ve62_vlrpecas = null;
 
 if (isset($alterar)) {
 
-  /*
-   -- Codigo Comentado pois foi efetuada toda validacao necessaria na interface (em Javascript)
-  $result_retirada=$clveicretirada->sql_record($clveicretirada->sql_query_file(null,"ve60_medidasaida",null,"ve60_veiculo=$ve62_veiculos order by ve60_codigo desc limit 1 "));
-  if ($clveicretirada->numrows>0) {
-    $oRetirada=db_utils::fieldsMemory($result_retirada,0);
-    if ($oRetirada->ve60_medidasaida>$ve62_medida) {
-      $sqlerro=true;
-      $erro_msg="Medida ($ve62_medida) menor que última medida de retirada ($oRetirada->ve60_medidasaida) ";
-    }
+  if (isset($ve62_codigo)) {
+    $oManutencao = VeiculoManutencao::getInstanciaPorCodigo($ve62_codigo);
   }
 
-  $result_proximamedida = $clveiculos->sql_record($clveiculos->sql_query_proximamedida(@$ve62_veiculos,@$ve62_dtmanut,''));
-  if($clveiculos->numrows>0) {
-   $oRetirada = db_utils::fieldsMemory($result_proximamedida,0);
-   if($oRetirada->proximamedida < $ve62_medida){
-    $sqlerro  = true;
-    $erro_msg = "Medida ($ve62_medida) maior que última medida ($oRetirada->proximamedida) ";
-   }
-  }
-  */
-  if ($sqlerro==false){
+  if ($sqlerro == false) {
+
     db_inicio_transacao();
-    $clveicmanut->alterar($ve62_codigo);
+
+    if (!empty($ve65_veicretirada)) {
+
+      $clveicmanut->ve62_veicmotoristas = null;
+      $ve62_veicmotoristas              = null;
+    }
+
+    if (empty($ve62_veicmotoristas)) {
+      $clveicmanut->ve62_veicmotoristas = "null";
+    }
+
+    $lFksValidas = true;
+    if(!empty($ve62_veicmotoristas) && $ve62_veicmotoristas !== "null") {
+
+      $sSqlFk = "select ve05_codigo from veicmotoristas where ve05_codigo = {$ve62_veicmotoristas}";
+      $rsFk   = db_query($sSqlFk);
+      if (pg_num_rows($rsFk) == 0) {
+
+        $erro_msg    = "O valor informado para o campo Motorista é inválido.";
+        $lFksValidas = false;
+      }
+    }
+    if(!empty($ve62_veiccadtiposervico)) {
+
+      $sSqlFk = "select ve28_codigo from veiccadtiposervico where ve28_codigo = {$ve62_veiccadtiposervico}";
+      $rsFk   = db_query($sSqlFk);
+      if (pg_num_rows($rsFk) == 0) {
+
+        $erro_msg    = "O valor informado para o campo Tipo de Serviço é inválido.";
+        $lFksValidas = false;
+      }
+    }
+    if(!empty($ve62_veiculos)) {
+
+      $sSqlFk = "select ve01_codigo from veiculos where ve01_codigo = {$ve62_veiculos}";
+      $rsFk   = db_query($sSqlFk);
+      if (pg_num_rows($rsFk) == 0) {
+
+        $ve62_veiculos = $oManutencao->getCodigoVeiculo();
+        $erro_msg      = "O valor informado para o campo Veículo é inválido.";
+        $lFksValidas   = false;
+      }
+    }
+    if(!empty($ve66_veiccadoficinas)) {
+
+      $sSqlFk = "select ve27_codigo from veiccadoficinas where ve27_codigo = {$ve66_veiccadoficinas}";
+      $rsFk   = db_query($sSqlFk);
+      if (pg_num_rows($rsFk) == 0) {
+
+        $erro_msg    = "O valor informado para o campo Oficina é inválido.";
+        $lFksValidas = false;
+      }
+    }
+    if(!empty($ve65_veicretirada)) {
+
+      $sSqlFk = "select ve60_codigo from veicretirada where ve60_codigo = {$ve65_veicretirada}";
+      $rsFk   = db_query($sSqlFk);
+      if (pg_num_rows($rsFk) == 0) {
+
+        $erro_msg    = "O valor informado para o campo Retirada é inválido.";
+        $lFksValidas = false;
+      }
+    }
+
+    if ($lFksValidas) {
+      $clveicmanut->alterar($ve62_codigo);
+    }
+
     if($clveicmanut->erro_status==0){
       $sqlerro=true;
     }
-    $erro_msg = $clveicmanut->erro_msg;
-    if ($sqlerro==false){
+
+    if (!empty($clveicmanut->erro_msg)) {
+      $erro_msg = $clveicmanut->erro_msg;
+    }
+    if ($lFksValidas && $sqlerro==false){
       $result_oficina=$clveicmanutoficina->sql_record($clveicmanutoficina->sql_query(null,"ve66_codigo",null,"ve66_veicmanut=$ve62_codigo"));
       if (isset($ve66_veiccadoficinas)&&$ve66_veiccadoficinas!=""){
         if($clveicmanutoficina->numrows>0){
@@ -111,7 +159,7 @@ if (isset($alterar)) {
         }
       }
     }
-    if ($sqlerro==false){
+    if ($lFksValidas && $sqlerro==false){
       $result_retirada=$clveicmanutretirada->sql_record($clveicmanutretirada->sql_query(null,"ve65_codigo",null,"ve65_veicmanut=$ve62_codigo"));
       if (isset($ve65_veicretirada)&&$ve65_veicretirada!=""){
         if($clveicmanutretirada->numrows>0){
@@ -144,45 +192,59 @@ if (isset($alterar)) {
   }
   $db_opcao = 2;
   $db_botao = true;
-}else if(isset($chavepesquisa)){
+} else if (isset($chavepesquisa) && $chavepesquisa != "0") {
+
   $db_opcao = 2;
   $db_botao = true;
-  $result = $clveicmanut->sql_record($clveicmanut->sql_query($chavepesquisa));
-  db_fieldsmemory($result,0);
-  $result_oficina=$clveicmanutoficina->sql_record($clveicmanutoficina->sql_query(null,"*",null,"ve66_veicmanut=$chavepesquisa"));
-  if($clveicmanutoficina->numrows>0){
-  	db_fieldsmemory($result_oficina,0);
-  }
-  $result_retirada=$clveicmanutretirada->sql_record($clveicmanutretirada->sql_query(null,"*",null,"ve65_veicmanut=$ve62_codigo"));
-  if($clveicmanutretirada->numrows>0){
-  	db_fieldsmemory($result_retirada,0);
+  $sCampos  = " *, motorista.z01_nome as descricao_motorista ";
+  $result   = $clveicmanut->sql_record($clveicmanut->sql_query($chavepesquisa, $sCampos));
+  if ($result != false && $clveicmanut->numrows > 0) {
+
+    db_fieldsmemory($result, 0);
+
+    $result_oficina = $clveicmanutoficina->sql_record($clveicmanutoficina->sql_query(null, "*", null, " ve66_veicmanut = {$chavepesquisa} "));
+    if ($result_oficina != false && $clveicmanutoficina->numrows > 0) {
+      db_fieldsmemory($result_oficina, 0);
+    }
+
+    $result_retirada = $clveicmanutretirada->sql_record($clveicmanutretirada->sql_query(null, "*", null, " ve65_veicmanut = {$ve62_codigo} "));
+    if ($result_retirada != false && $clveicmanutretirada->numrows > 0) {
+      db_fieldsmemory($result_retirada, 0);
+    }
+
+    $result = $clveiculos->sql_record($clveiculos->sql_query($ve62_veiculos, "ve01_veictipoabast"));
+    if ($result != false && $clveiculos->numrows > 0) {
+      db_fieldsmemory($result, 0);
+    }
+
+    $result_veictipoabast = $clveictipoabast->sql_record($clveictipoabast->sql_query($ve01_veictipoabast, "ve07_sigla"));
+    if ($result_veictipoabast != false && $clveictipoabast->numrows > 0) {
+      db_fieldsmemory($result_veictipoabast, 0);
+    }
+  } else {
+
+    $erro_msg = "A Manutenção de Veículo informada é inválida.";
+    $alterar  = false;
+    $db_botao = false;
+    $db_opcao = 22;
   }
 
-  $result = $clveiculos->sql_record($clveiculos->sql_query($ve62_veiculos,"ve01_veictipoabast"));
-  db_fieldsmemory($result,0);
-
-  $result_veictipoabast = $clveictipoabast->sql_record($clveictipoabast->sql_query($ve01_veictipoabast,"ve07_sigla"));
-  if ($clveictipoabast->numrows > 0){
-    db_fieldsmemory($result_veictipoabast,0);
-  }
 }
 ?>
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC style='margin-top: 25px;' leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-	<?
-	include("forms/db_frmveicmanut.php");
-	?>
-</body>
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+  </head>
+  <body class="body-default">
+  	<?php include modification("forms/db_frmveicmanut.php"); ?>
+  </body>
 </html>
-<?
+<?php
 if(isset($alterar)){
   if($sqlerro==true){
     db_msgbox($erro_msg);
@@ -194,7 +256,7 @@ if(isset($alterar)){
    db_msgbox($erro_msg);
   }
 }
-if(isset($chavepesquisa)){
+if(isset($chavepesquisa) && $chavepesquisa != "0"){
  echo "
   <script>
 
@@ -202,7 +264,7 @@ if(isset($chavepesquisa)){
 
       function js_db_libera(){
          parent.document.formaba.veicmanutitem.disabled=false;
-         top.corpo.iframe_veicmanutitem.location.href='vei1_veicmanutitem001.php?ve63_veicmanut=".@$ve62_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_veicmanutitem.location.href='vei1_veicmanutitem001.php?ve63_veicmanut=".@$ve62_codigo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('veicmanutitem');";

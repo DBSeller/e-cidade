@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: Ambulatorial
 //CLASSE DA ENTIDADE sau_unidadecentral
-require("db_sau_unidadecentral_classe.php");
+require(modification("classes/db_sau_unidadecentral_classe.php"));
 class cl_sau_unidadecentral_ext extends cl_sau_unidadecentral  {
 	/**
 	 * Inclui unidades repassada pelo parametro

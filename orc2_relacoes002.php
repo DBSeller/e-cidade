@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_utils.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_libsys.php");
-include_once 'dbagata/classes/core/AgataAPI.class';
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libsys.php"));
+include_once modification("dbagata/classes/core/AgataAPI.class");
 
 ini_set("error_reporting","E_ALL & ~NOTICE");
 

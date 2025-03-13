@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -29,53 +29,58 @@
 $clveictipoabast->rotulo->label();
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tve07_sequencial?>">
-       <?=@$Lve07_sequencial?>
-    </td>
-    <td> 
-<?
-db_input('ve07_sequencial',10,$Ive07_sequencial,true,'text',3,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tve07_descr?>">
-       <?=@$Lve07_descr?>
-    </td>
-    <td> 
-<?
-db_input('ve07_descr',40,$Ive07_descr,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tve07_sigla?>">
-       <?=@$Lve07_sigla?>
-    </td>
-    <td> 
-<?
-db_input('ve07_sigla',3,$Ive07_sigla,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  </table>
-  </center>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+  <div class="container">
+    <fieldset>
+      <legend>Tipo de Abastecimento de Veículo</legend>
+      <table border="0">
+        <tr>
+          <td nowrap title="<?=@$Tve07_sequencial?>">
+            <?=@$Lve07_sequencial?>
+          </td>
+          <td> 
+            <?php
+            db_input('ve07_sequencial',10,$Ive07_sequencial,true,'text',3,"")
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$Tve07_descr?>">
+            <?=@$Lve07_descr?>
+          </td>
+          <td> 
+            <?php
+            db_input('ve07_descr',40,$Ive07_descr,true,'text',$db_opcao,"")
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$Tve07_sigla?>">
+            <?=@$Lve07_sigla?>
+          </td>
+          <td> 
+            <?php
+            db_input('ve07_sigla',3,$Ive07_sigla,true,'text',$db_opcao,"")
+            ?>
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+  </div>
+  <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
+  <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
+
 <script>
-function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veictipoabast','func_veictipoabast.php?funcao_js=parent.js_preenchepesquisa|ve07_sequencial','Pesquisa',true);
-}
-function js_preenchepesquisa(chave){
-  db_iframe_veictipoabast.hide();
-  <?
-  if($db_opcao!=1){
-    echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
+  function js_pesquisa(){
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veictipoabast','func_veictipoabast.php?funcao_js=parent.js_preenchepesquisa|ve07_sequencial','Pesquisa',true);
   }
-  ?>
-}
+  function js_preenchepesquisa(chave){
+    db_iframe_veictipoabast.hide();
+    <?php
+
+    if($db_opcao!=1){
+      echo " location.href = '".basename($_SERVER['PHP_SELF'])."?chavepesquisa='+chave";
+    }
+    ?>
+  }
 </script>

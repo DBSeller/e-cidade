@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_modulos_classe.php");
-include("classes/db_db_versao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_modulos_classe.php"));
+include(modification("classes/db_db_versao_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -66,7 +66,7 @@ $sqlmodulo = "select distinct db_modulos.id_item,nome_modulo
                    inner join db_itensmenu on db_itensmenu.id_item = db_modulos.id_item
               where db_itensmenu.libcliente is true and id_usuario = $id_usuario
                 and anousu= $ano ";
-$res = pg_query($sqlmodulo);
+$res = db_query($sqlmodulo);
 
 db_selectrecord('id_item',$res,true,2,'','','','0-Todos',' js_pesquisa();');
 ?>
@@ -96,7 +96,7 @@ function monta_menu_func_contarefa($item_modulo,$id_modulo,$id_usuario,$espacos,
           order by menusequencia
            ";
   //echo "<br><br>menu pai == $sql <br> ";
-  $res = pg_exec($sql) or die($sql);
+  $res = db_query($sql) or die($sql);
 
   if(pg_numrows($res)>0){
 
@@ -120,7 +120,7 @@ function monta_menu_func_contarefa($item_modulo,$id_modulo,$id_usuario,$espacos,
                      inner join db_syscadproced p on p.codproced = i.codproced 
                 where id_item = $item_filho";
       //  echo "<br><br> menu filho == $sql <br> ";
-        $resproced = pg_exec($sql);
+        $resproced = db_query($sql);
         if(pg_numrows($resproced)>0){
           global $codproced,$descrproced;
           db_fieldsmemory($resproced,0);
@@ -138,7 +138,7 @@ function monta_menu_func_contarefa($item_modulo,$id_modulo,$id_usuario,$espacos,
             $sql = "select descrproced 
                 from db_syscadproced  
                 where codproced = $procedimento";
-            $resproced = pg_exec($sql);
+            $resproced = db_query($sql);
             global $descrproced;
             db_fieldsmemory($resproced,0);
             echo "$espacos  $descricao <br>";
@@ -161,7 +161,7 @@ function monta_menu_func_contarefa($item_modulo,$id_modulo,$id_usuario,$espacos,
                      inner join db_syscadproced p on p.codproced = i.codproced 
                 where id_item = $item_filho";
       //  echo "<br><br> menu filho else== $sql <br> ";
-        $resproced = pg_exec($sql);
+        $resproced = db_query($sql);
 
         if(pg_numrows($resproced)>0){
           global $codproced;
@@ -234,4 +234,10 @@ function js_busca_procedimento(coditem,descrmenu,codproced,descrproced){
 
 }
 
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

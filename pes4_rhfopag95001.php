@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rharqbanco_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
@@ -184,7 +184,7 @@ function js_emite(){
   qry += "&fopag_geracao="+document.form1.datagera_dia.value+'-'+document.form1.datagera_mes.value+'-'+document.form1.datagera_ano.value;
   qry+= "&fopag_convenio="+document.form1.rh34_convenio.value;
   qry+= "&fopag_sequen="+document.form1.rh34_sequencial.value;
- js_OpenJanelaIframe('top.corpo','db_iframe_gerarhpasep','pes4_rhfopag95002.php?'+qry,'Gerando Arquivo',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_gerarhpasep','pes4_rhfopag95002.php?'+qry,'Gerando Arquivo',true);
 
 }
 function js_verificar(){
@@ -197,11 +197,11 @@ function js_verificar(){
 }
 function js_pesquisarh27_rubric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
   }else{
        if(document.form1.rh27_rubric.value != ''){
          js_completa_rubricas(document.form1.rh27_rubric);
-         js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh27_rubric.value+'&funcao_js=parent.js_mostrarubricas&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+         js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh27_rubric.value+'&funcao_js=parent.js_mostrarubricas&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
        }else{
          document.form1.rh27_rubric.value = '';
          document.form1.rh27_descr.value  = '';
@@ -221,7 +221,7 @@ function js_mostrarubricas1(chave1,chave2){
   db_iframe_rhrubricas.hide();
 }
 function js_erro(msg){
-  top.corpo.db_iframe_gerarhpasep.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_gerarhpasep.hide();
   if(msg.substr(0,6) == 'Existe'){
     if(confirm(msg)){
       js_emite();    
@@ -234,14 +234,14 @@ function js_limpa(){
   document.form1.reset();
 }
 function js_detectaarquivo(arquivo,pdf){
-  top.corpo.db_iframe_gerarhpasep.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_gerarhpasep.hide();
   listagem = arquivo+"#Download arquivo TXT |";
   listagem+= pdf+"#Download relatório";
   js_montarlista(listagem,"form1");
 }
 
 function js_erro(msg){
-  top.corpo.db_iframe_gerarhpasep.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_gerarhpasep.hide();
   alert(msg);
 }
 </script>

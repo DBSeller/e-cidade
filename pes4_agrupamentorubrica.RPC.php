@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/JSON.php"));
 
-require_once("std/db_stdClass.php");
-require_once("std/DBNumber.php");
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBNumber.php"));
 
-require_once("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oJson             = new services_json();
 $oParametros       = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -83,6 +83,7 @@ try {
   			$aRubricas[] = $oStdRubrica;
   		}
   		
+		$oRetorno->iTipoGrupo = $oParametros->iTipoGrupo;
   		$oRetorno->aRubricas = $aRubricas;
   		
   	break;
@@ -93,7 +94,7 @@ try {
     case 'getDadosAgrupamentoRubrica' : 
       
       $sWhere  = "rh113_sequencial = {$oParametros->iAgrupamentoRubrica}";
-      $sCampos = 'rh27_rubric, rh27_descr, rh113_tipo, rh113_codigo, rh113_descricao';
+      $sCampos = 'rh27_rubric, rh27_descr, rh113_tipo, rh113_codigo, rh113_descricao, rh113_tipogrupo';
 
       $sSqlAgrupamentoRubrica = $oDaoAgrupamentoRubrica->sql_query_agrupamento($sCampos, $sWhere); 
       $rsAgrupamentoRubrica   = $oDaoAgrupamentoRubrica->sql_record($sSqlAgrupamentoRubrica);
@@ -120,9 +121,10 @@ try {
         $aRubricas[] = $oStdRubrica;
       }
 
-      $oRetorno->iTipo     = $oAgrupamentoRubrica->rh113_tipo;
-      $oRetorno->nCodigo   = $oAgrupamentoRubrica->rh113_codigo;
-      $oRetorno->aRubricas = $aRubricas;
+      $oRetorno->iTipo      = $oAgrupamentoRubrica->rh113_tipo;
+      $oRetorno->iTipoGrupo = $oAgrupamentoRubrica->rh113_tipogrupo;
+      $oRetorno->nCodigo    = $oAgrupamentoRubrica->rh113_codigo;
+      $oRetorno->aRubricas  = $aRubricas;
 
     break;
   
@@ -137,7 +139,7 @@ try {
     	
 	      $iAgrupamentoRubrica = $oParametros->iAgrupamentoRubrica;
 	
-	      validacaoRubricas($oParametros->aRubricas, $iInstituicao, $iAgrupamentoRubrica);
+	      validacaoRubricas($oParametros->aRubricas, $iInstituicao, $iAgrupamentoRubrica, $oParametros->iTipoGrupo);
 	
 	      /**
 	       * Erro ao alterar grupo de rubrica
@@ -149,7 +151,7 @@ try {
 	      /**
 	       * Remove todas as rubricas do grupo para depois incluir as rubricas lancadas na grid
 	       */   
-	      $oDaoAgrupamentoRubricaRubrica->excluir(null, "rh114_agrupamentorubrica = {$iAgrupamentoRubrica}");
+	      $oDaoAgrupamentoRubricaRubrica->excluir(null, "rh114_agrupamentorubrica = {$iAgrupamentoRubrica} and rh114_instituicao = {$iInstituicao}");
 	
 	      if ( $oDaoAgrupamentoRubricaRubrica->erro_status == '0' ) {
 	        throw new Exception('Erro ao alterar vinculo de agrupamento de rescisão com rubricas.\n'.$oDaoAgrupamentoRubricaRubrica->erro_msg);
@@ -158,7 +160,7 @@ try {
 	      /**
 	       * Pesquisa vinculo do grupo com rubricas
 	       */   
-	      $sWhereVinculosCadastrados = "rh114_agrupamentorubrica = {$iAgrupamentoRubrica}";
+	      $sWhereVinculosCadastrados = "rh114_agrupamentorubrica = {$iAgrupamentoRubrica} and rh114_instituicao = {$iInstituicao} ";
 	      $sSqlVinculosCadastrados   = $oDaoAgrupamentoRubricaRubrica->sql_query_file(null, "rh114_rubrica", null, $sWhereVinculosCadastrados);
 	      $rsVinculosCadastrados     = $oDaoAgrupamentoRubricaRubrica->sql_record($sSqlVinculosCadastrados);
 	      $aVinculosCadastrados      = array();
@@ -226,18 +228,29 @@ echo $oJson->encode($oRetorno);
 /**
  * Verifica se já existe as rubricas no grupo.
  */
-function validacaoRubricas($aRubricas, $iInstituicao, $iAgrupamentoRubrica = null) {
+function validacaoRubricas($aRubricas, $iInstituicao, $iAgrupamentoRubrica = null, $tipoGrupo = null) {
 
   $oDaoAgrupamentoRubricaRubrica = db_utils::getDao('agrupamentorubricarubrica');
 
   $sRubricas = implode("','", $aRubricas);
   $sWhere    = "rh114_rubrica in ('{$sRubricas}') and rh114_instituicao = $iInstituicao";
 
-  if ( !empty($iAgrupamentoRubrica) ) {
-    $sWhere .= " and rh114_agrupamentorubrica <> {$iAgrupamentoRubrica}";
+  if ( !empty($iAgrupamentoRubrica) and !empty($tipoGrupo) ) {
+    $sWhere .= " and rh114_agrupamentorubrica <> {$iAgrupamentoRubrica} and rh113_tipogrupo = {$tipoGrupo} ";
   }
 
-  $sSqlAgrupamentoRubricaRubrica = $oDaoAgrupamentoRubricaRubrica->sql_query_file(null, "rh114_rubrica", null, $sWhere);
+  $sSqlAgrupamentoRubricaRubrica = "
+  		SELECT rh114_rubrica 
+		FROM
+			agrupamentorubricarubrica
+		INNER JOIN 
+			agrupamentorubrica
+		ON 
+			rh114_agrupamentorubrica = rh113_sequencial
+		where 
+	  		{$sWhere}
+  ";
+
   $rsAgrupamentoRubricaRubrica   = $oDaoAgrupamentoRubricaRubrica->sql_record($sSqlAgrupamentoRubricaRubrica);
 
   if ( $oDaoAgrupamentoRubricaRubrica->numrows > 0 ) {

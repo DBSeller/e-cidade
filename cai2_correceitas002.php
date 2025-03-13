@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,37 +25,35 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_liborcamento.php");
-require_once ("libs/db_sql.php");
-require_once("classes/db_orctiporec_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_orctiporec_classe.php"));
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-//var_dump($HTTP_SERVER_VARS['QUERY_STRING']);
+db_postmemory($_GET);
+
 // quando for emissao sintetica coloca modelo retrato
 if ($sinana == 'S1' || $sinana == 'S2') {
-  $pdf = new PDF();
-}else {
- 	$pdf = new PDF('L');
+    $pdf = new PDF();
+} else {
+    $pdf = new PDF('L');
 }
 $pdf->Open();
 $pdf->AliasNbPages();
 if ($ordem == 'r') {
-	$orderby = ' order by k02_tipo, k02_codigo ';
-}
-elseif ($ordem == 'e') {
-	$orderby = ' order by k02_tipo, estrutural ';
-}
-elseif ($ordem == 'd') {
-	$orderby = ' order by k02_tipo, codrec ';
+    $orderby = ' order by k02_tipo, k02_codigo ';
+} elseif ($ordem == 'e') {
+    $orderby = ' order by k02_tipo, estrutural ';
+} elseif ($ordem == 'd') {
+    $orderby = ' order by k02_tipo, codrec ';
 } elseif ($ordem == 'a') {
-	$orderby = ' order by k02_tipo, k02_drecei ';
+    $orderby = ' order by k02_tipo, k02_drecei ';
 } elseif ($ordem == 'c') {
-  if ($sinana == 'S1') {
-	  $orderby = ' order by k02_tipo, codrec';
-  } else {
-	  $orderby = ' order by k02_tipo, c61_reduz ';
-  }
+    if ($sinana == 'S1') {
+        $orderby = ' order by k02_tipo, codrec';
+    } else {
+        $orderby = ' order by k02_tipo, c61_reduz ';
+    }
 }
 
 $iInstit = db_getsession("DB_instit");
@@ -73,49 +71,61 @@ $sSubQueryDesconto =  "  -       coalesce ( ( select case
                                                         and d.k12_numpar           = f.k12_numpar
                                                         and d.k12_receitaprincipal = f.k12_receit
                                                         and d.k12_numnov           = f.k12_numnov ),0 )  ";
-//$sSubQueryDesconto =  "  +   0 ";
-
 $where2 = ' where 1=1 and valor <> 0';
 
 if ($estrut != '') {
-	$where2 .= " and estrutural like '$estrut%' ";
-
+    $where2 .= " and estrutural like '$estrut%' ";
 }
 $inner_sql = "";
 $where = '';
 
 if ($codrec != '') {
-	$where = ' g.k02_codigo in ('.$codrec.') and ';
+    $where = ' g.k02_codigo in (' . $codrec . ') and ';
 }
 
 $inner_sql = "";
 
-if ($recurso != ""){
-     $clorctiporec = new cl_orctiporec;
+if ($recurso != "") {
+    $clorctiporec = new cl_orctiporec;
 
-     $res_tiporec  = $clorctiporec->sql_record($clorctiporec->sql_query_file($recurso,"o15_descr"));
-     if ($clorctiporec->numrows > 0){
-          db_fieldsmemory($res_tiporec,0);
-	  $head5 = "Recurso: ".$o15_descr;
-     }
 
-     $inner_sql = " left outer join orcreceita       on o70_codrec = o.k02_codrec and
-		                                        o70_anousu = o.k02_anousu
-		    left outer join conplanoreduz c1 on c1.c61_codcon = o70_codfon   and
-		                                        c1.c61_anousu = o70_anousu
-                    left outer join conplanoreduz c2 on c2.c61_anousu = p.k02_anousu and
-                                                        c2.c61_reduz  = p.k02_reduz";
+    $filtraRecurso = "o15_recurso = '{$recurso}'";
+    $sql = $clorctiporec->sql_query_file(null, "o15_codigo, o15_descr", null, $filtraRecurso);
 
-     $where    .= " c1.c61_codigo = ".$recurso." and ";
+    $recursos = [];
+    $res_tiporec = db_query($sql);
+    if (pg_num_rows($res_tiporec) == 0) {
+        db_redireciona("db_erros.php?fechar=true&db_erro=Não ao buscar recurso {$recurso}");
+    }
+
+    db_fieldsmemory($res_tiporec, 0);
+    $head5 = "Recurso: " . $o15_descr;
+
+    $recursos = db_utils::makeCollectionFromRecord($res_tiporec, function($dado) {
+        return $dado->o15_codigo;
+    });
+
+    $inner_sql = "
+        left outer join orcreceita  on o70_codrec = o.k02_codrec
+                                   and o70_anousu = o.k02_anousu
+        left outer join conplanoreduz c1 on c1.c61_codcon = o70_codfon
+                                        and c1.c61_anousu = o70_anousu
+        left outer join conplanoreduz c2 on c2.c61_anousu = p.k02_anousu
+                                        and c2.c61_reduz  = p.k02_reduz
+    ";
+
+    $inner_sql = analiseQueryPlanoOrcamento($inner_sql);
+
+    $where .= " c1.c61_codigo in (" . implode(', ', $recursos) . ") and ";
 }
 
 $head3 = "RELATÓRIO DE RECEITAS ARRECADADAS";
-if($tipo == 'O') {
-  $head4 = 'RECEITAS ORÇAMENTÁRIAS';
-} elseif($tipo == 'E') {
-  $head4 = 'RECEITAS EXTRA-ORÇAMENTÁRIAS';
+if ($tipo == 'O') {
+    $head4 = 'RECEITAS ORÇAMENTÁRIAS';
+} elseif ($tipo == 'E') {
+    $head4 = 'RECEITAS EXTRA-ORÇAMENTÁRIAS';
 } else {
-  $head4 = 'TODAS AS RECEITAS';
+    $head4 = 'TODAS AS RECEITAS';
 }
 $ordem = ' order by g.k02_codigo, f.k00_dtpaga, f.k00_numpre ';
 $head6 = "Período : ".db_formatar($datai, 'd')." a ".db_formatar($dataf, 'd');
@@ -159,10 +169,7 @@ if ($sinana == 'S1') {
              str_replace("#subquery_desconto#","",str_replace("cornump ", "cornumpdesconto ",$sSqlInterno));
      $sql .= " ) as xxx $where2 $orderby ";
 
-//die($sql);
-
-}
-elseif ($sinana == 'S2') {
+} elseif ($sinana == 'S2') {
 	// sintetico estrutural
 	$sql = "select estrutural,k02_tipo,descr,sum(valor) as valor from
 			    ( ";
@@ -198,11 +205,6 @@ elseif ($sinana == 'S2') {
 $sql .= " ) as xxx
 			    $where2
 			    group by estrutural,descr,k02_tipo";
-
-			    /*
-			     *  left join arrehist on k00_numpre = k12_numpre and
-           *                        k00_numpar = k12_numpar
-			     */
 
 } elseif ($sinana == 'A') {
 	/**
@@ -252,11 +254,6 @@ $sql .= " ) as xxx
 			    $orderby,
           k12_data ";
 
-			    /*
-			     *     left join arrehist    on k00_numpre      = k12_numpre and
-           *                              k00_numpar      = k12_numpar
-			     */
-
 } elseif ($sinana == 'S3') {
 	$sql = "select k02_codigo, k02_tipo, k02_drecei, codrec, estrutural, c61_reduz, c60_descr, sum(valor) as valor
           from (
@@ -305,23 +302,7 @@ $sql .= " ) as xxx
         ) as zzz
         group by k02_codigo, k02_tipo, k02_drecei, codrec, estrutural, c61_reduz, c60_descr
         $orderby ";
-
-
-        /*
-         * left join arrehist    on k00_numpre = k12_numpre and
-         *                          k00_numpar = k12_numpar
-         */
 }
-
-//$sql = "select x.* from ($sql) as x
-//		inner join conplanoreduz on c61_reduz = x.codrec and c61_instit = " . db_getsession("DB_instit") .
-//              " inner join conplanoexe on c62_reduz = c61_reduz and c62_anousu = " . db_getsession("DB_anousu") .
-//	      " where k02_tipo = 'O'
-//	      union
-//	select y.* from ($sql) as y
-//		inner join orcreceita on o70_codrec = codrec and o70_instit = " . db_getsession("DB_instit");
-// echo $sql;exit;
-//die($sql);
 
 $result = db_query($sql) or die("Erro realizando consulta : ".$sql);
 $xxnum = pg_numrows($result);
@@ -343,7 +324,6 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetFillColor(220);
 		$pdf->SetFont('Arial', 'B', 9);
-		//   $pdf->Cell(185,6,"RECEITAS ORÇAMENTARIAS",1,1,"C",1);
 		$pdf->Cell(10, 6, "COD", 1, 0, "C", 1);
 		$pdf->Cell(10, 6, "RED", 1, 0, "C", 1);
 		$pdf->Cell(40, 6, "ESTRUTURAL", 1, 0, "C", 1);
@@ -390,7 +370,6 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 																			 and orcreceita.o70_anousu =".db_getsession("DB_anousu")."
 																 order by o57_fonte";
 							$result1 = db_query($sql);
-							//	   db_criatabela($result1);
 							if ($result1 != false && pg_numrows($result1) > 0) {
 								$tem_desdobramento = true;
 							}
@@ -475,7 +454,6 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 				for ($d = 0; $d < sizeof($dbrec); $d ++) {
 					$pdf->cell(20, 4, '', 1, 0, "C", $pre);
 					$pdf->cell(30, 4, $dbreces[key($dbrec)], 1, 0, "C", $pre);
-					//          $pdf->cell(80,4,strtoupper($dbrecde[key($dbrec)]),1,0,"L",$pre);
 					$pdf->cell(80, 4, substr(strtoupper($dbrecde[key($dbrec)]).'-'.$dbcodigo[key($dbrec)].'-'.$dbdescr[key($dbrec)],0,50), 1, 0, "L", $pre);
 					$aa = $dbrec[key($dbrec)];
 					if ($aa < 0)
@@ -484,10 +462,8 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 					$pdf->cell(25, 4, db_formatar($aa, 'f'), 1, 0, "R", $pre);
 					$pdf->cell(10, 4, db_formatar($dbperc[key($dbrec)], 'p') . "%", 1, 1, "R", $pre);
 
-					//$pdf->cell(25,4,db_formatar($dbrec[key($dbrec)],'f'),1,1,"R",$pre);
 					$xrecurso = $dbcodigo[key($dbrec)].'-'.$dbdescr[key($dbrec)];
-					// $xvalor   = $dbrec[key($dbrec)];
-					$xvalor = $aa;
+          $xvalor = $aa;
 					if (array_key_exists($xrecurso, $valatu)) {
 						$valatu[$xrecurso] += $xvalor;
 					} else {
@@ -523,8 +499,6 @@ if ($sinana == 'S1' or $sinana == 'S3') {
     }
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetFillColor(220);
-		//   $pdf->SetFont('Arial','B',9);
-		//   $pdf->Cell(185,6,"RECEITAS EXTRA-ORÇAMENTARIAS",1,1,"C",1);
 		$pdf->SetFont('Arial', 'B', 9);
 		$pdf->Cell(10, 6, "COD", 1, 0, "C", 1);
 		$pdf->Cell(10, 6, "RED", 1, 0, "C", 1);
@@ -641,7 +615,6 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetFillColor(220);
 		$pdf->SetFont('Arial', 'B', 9);
-		//   $pdf->Cell(185,6,"RECEITAS ORÇAMENTARIAS",1,1,"C",1);
 		$pdf->Cell(10, 6, "COD", 1, 0, "C", 1);
 		$pdf->Cell(10, 6, "RED", 1, 0, "C", 1);
 		$pdf->Cell(15, 6, "DATA", 1, 0, "C", 1);
@@ -681,10 +654,13 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 			else
 				$pre = 1;
 
+
+      $oData = new DBDate($k12_data);
+      $sData = $oData->getDate(DBDate::DATA_PTBR);
 			$pdf->setfont('arial', '', 7);
 			$pdf->cell(10, 4, $k02_codigo, 1, 0, "C", $pre);
 			$pdf->cell(10, 4, $codrec, 1, 0, "C", $pre);
-			$pdf->Cell(15, 4, $k12_data, 1, 0, "C", $pre);
+			$pdf->Cell(15, 4, $sData, 1, 0, "C", $pre);
 			$pdf->Cell(15, 4, $k12_numpre, 1, 0, "C", $pre);
 			$pdf->cell(25, 4, $estrutural, 1, 0, "C", $pre);
 			$pdf->cell(80, 4, strtoupper($k02_drecei), 1, 0, "L", $pre);
@@ -702,10 +678,6 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 		$pdf->cell(25, 4, db_formatar($total_reco, 'f'), 1, 1, "R", 0);
 	}
 
-	//for($dd=0;$dd<sizeof($valatu);$dd++){
-	//  echo "<pre>";
-	//  print_r($valatu);
-	//  echo "</pre>";
 	if ($tipo == 'T' || $tipo == 'E') {
 		$pdf->ln(2);
 		if ($pdf->gety() > $pdf->h - 30) {
@@ -713,8 +685,6 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 		}
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetFillColor(220);
-		//   $pdf->SetFont('Arial','B',9);
-		//   $pdf->Cell(185,6,"RECEITAS EXTRA-ORÇAMENTARIAS",1,1,"C",1);
 		$pdf->SetFont('Arial', 'B', 9);
 		$pdf->Cell(10, 6, "COD", 1, 0, "C", 1);
 		$pdf->Cell(10, 6, "RED", 1, 0, "C", 1);
@@ -739,10 +709,14 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 				$pdf->Cell(25, 6, "VALOR", 1, 0, "C", 1);
 				$pdf->Cell(0, 6, "HISTÓRICO", 1, 1, "C", 1);
 			}
+
+      $oData = new DBDate($k12_data);
+      $sData = $oData->getDate(DBDate::DATA_PTBR);
+
 			$pdf->setfont('arial', '', 7);
 			$pdf->cell(10, 4, $k02_codigo, 1, 0, "C", $pre);
 			$pdf->cell(10, 4, $codrec, 1, 0, "C", $pre);
-			$pdf->Cell(15, 4, $k12_data, 1, 0, "C", $pre);
+			$pdf->Cell(15, 4, $sData, 1, 0, "C", $pre);
 			$pdf->cell(40, 4, $estrutural, 1, 0, "C", $pre);
 			$pdf->cell(100, 4, strtoupper($k02_drecei), 1, 0, "L", $pre);
 			$pdf->cell(25, 4, db_formatar($valor, 'f'), 1, 0, "R", $pre);
@@ -760,4 +734,3 @@ if ($sinana == 'S1' or $sinana == 'S3') {
 }
 
 $pdf->Output();
-?>

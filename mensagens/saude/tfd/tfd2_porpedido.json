@@ -1,0 +1,4 @@
+{
+  "conflito_intervalo"     : "Intervalo de datas inválido. Data final menor que a data inicial.",
+  "sem_filtro_selecionado" : "Nenhum filtro selecionado.\nEsse relatório poderá levar alguns minutos para ser gerado.  \nDeseja proseguir?"
+}

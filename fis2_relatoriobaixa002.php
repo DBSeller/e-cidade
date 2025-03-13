@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include('fpdf151/pdf.php');
-include("classes/db_sanitario_classe.php");
-include("classes/db_saniatividade_classe.php");
-include("classes/db_cgm_classe.php");
+include(modification('fpdf151/pdf.php'));
+include(modification("classes/db_sanitario_classe.php"));
+include(modification("classes/db_saniatividade_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
 $clrotulo = new rotulocampo;
 $clcgm = new cl_cgm;
 $clrotulo->label("q03_descr");
@@ -48,7 +48,7 @@ if(isset($dataini) && $dataini != "--" && $datafim == "--"){
 }elseif(isset($dataini) && $dataini == "--" && isset($datafim) && $datafim == "--"){
   $data = " y83_dtfim is not null";
 }
-$result = $clsaniatividade->sql_record($clsaniatividade->sql_query("",""," distinct y83_codsani,sanitario.*,ativid.*,cgm.* ",""," $data")); 
+$result = $clsaniatividade->sql_record($clsaniatividade->sql_query("",""," distinct y83_codsani,sanitario.*,ativid.*,cgm.* ",""," $data"));
 if($clsaniatividade->numrows > 0){
   $linhas = $clsaniatividade->numrows;
   db_fieldsmemory($result,0);
@@ -57,7 +57,7 @@ if($clsaniatividade->numrows > 0){
   echo "<script>window.close()</script>";
   exit;
 }
-$pdf = new PDF(); // abre a classe
+$pdf = new PDF(PDFDocument::PRINT_LANDSCAPE); // abre a classe
 $pdf->Open(); // abre o relatorio
 $pdf->AliasNbPages(); // gera alias para as paginas
 $pdf->AddPage(); // adiciona uma pagina
@@ -67,67 +67,70 @@ for($r=0;$r<$linhas;$r++){
   if($clsaniatividade->numrows > 0){
     db_fieldsmemory($resultativid,0);
   }
+
+  $multiplicador = 1.47;
+
   $head1 = "ATIVIDADES BAIXADAS";
   $Letra = 'arial';
   $pdf->SetFont($Letra,'',10);
   $pdf->SetTextColor(0,0,0);
   $pdf->SetFillColor(200);
-  $pdf->Cell(190,5,"ALVARÁ SANITÁRIO: ".$y80_codsani,1,0,"L",1);
+  $pdf->Cell($multiplicador*190,5,"ALVARÁ SANITÁRIO: ".$y80_codsani,1,0,"L",1);
   $pdf->Ln(6);
   $pdf->SetFillColor(255);
-  $pdf->Cell(100,6,$RLz01_nome.': '.@$z01_nome,1,0,"J",1);
-  $pdf->Cell(90,6,$RLz01_cgccpf.': '.@$z01_cgccpf,1,"J",1,30);
+  $pdf->Cell($multiplicador*100,6,$RLz01_nome.': '.@$z01_nome,1,0,"J",1);
+  $pdf->Cell($multiplicador*90,6,$RLz01_cgccpf.': '.@$z01_cgccpf,1,"J",1,30);
   $pdf->Ln(6);
-  $pdf->Cell(100,6,$RLj14_nome.': '.@$j14_nome,1,0,"J",1);
-  $pdf->Cell(35,6,$RLy80_numero.': '.@$y80_numero,1,"J",1,30);
-  $pdf->Cell(55,6,$RLy80_compl.': '.@$y80_compl,1,"J",1,30);
+  $pdf->Cell($multiplicador*100,6,$RLj14_nome.': '.@$j14_nome,1,0,"J",1);
+  $pdf->Cell($multiplicador*35,6,$RLy80_numero.': '.@$y80_numero,1,"J",1,30);
+  $pdf->Cell($multiplicador*55,6,$RLy80_compl.': '.@$y80_compl,1,"J",1,30);
   $pdf->Ln(6);
-  $pdf->Cell(70,6,$RLz01_munic.': '.@$z01_munic,1,0,"J",1);
-  $pdf->Cell(70,6,$RLj13_descr.': '.@$j13_descr,1,0,"J",1);
-  $pdf->Cell(50,6,$RLz01_cep.': '.@$z01_cep,1,0,"J",1);
+  $pdf->Cell($multiplicador*70,6,$RLz01_munic.': '.@$z01_munic,1,0,"J",1);
+  $pdf->Cell($multiplicador*70,6,$RLj13_descr.': '.@$j13_descr,1,0,"J",1);
+  $pdf->Cell($multiplicador*50,6,$RLz01_cep.': '.@$z01_cep,1,0,"J",1);
   $pdf->Ln(6);
-  $pdf->Cell(70,6,$RLy80_data.': '.db_formatar(@$y80_data,'d'),1,0,"J",1);
-  $pdf->Cell(70,6,$RLy80_obs.': '.substr(@$y80_obs,0,20)."...",1,0,"J",1);
-  $pdf->Cell(50,6,$RLy80_area.': '.@$y80_area,1,0,"J",1);
+  $pdf->Cell($multiplicador*70,6,$RLy80_data.': '.db_formatar(@$y80_data,'d'),1,0,"J",1);
+  $pdf->Cell($multiplicador*70,6,$RLy80_obs.': '.substr(@$y80_obs,0,20)."...",1,0,"J",1);
+  $pdf->Cell($multiplicador*50,6,$RLy80_area.': '.@$y80_area,1,0,"J",1);
   $pdf->Ln(6);
   $pdf->SetFillColor(200);
   if($clsaniatividade->numrows > 0){
-    $pdf->Cell(190,5,"ATIVIDADES: ",1,0,"L",1);
+    $pdf->Cell($multiplicador*190,5,"ATIVIDADES: ",1,0,"L",1);
     $pdf->Ln(6);
   }
   $pdf->SetFont($Letra,'',10);
   if($clsaniatividade->numrows > 1){
       $pdf->SetFillColor(200);
-      $pdf->Cell(20,6,$RLy83_seq.'',1,0,"C",1);
-      $pdf->Cell(45,6,$RLy83_dtini.'',1,0,"C",1);
-      $pdf->Cell(45,6,$RLy83_dtfim.'',1,0,"C",1);
-      $pdf->Cell(55,6,$RLq03_descr.'',1,0,"C",1);
-      $pdf->Cell(25,6,$RLy83_area.'',1,1,"C",1);
+      $pdf->Cell($multiplicador*20,6,$RLy83_seq.'',1,0,"C",1);
+      $pdf->Cell($multiplicador*35,6,$RLy83_dtini.'',1,0,"C",1);
+      $pdf->Cell($multiplicador*35,6,$RLy83_dtfim.'',1,0,"C",1);
+      $pdf->Cell($multiplicador*25,6,$RLy83_area.'',1,0,"C",1);
+      $pdf->Cell($multiplicador*55,6,$RLq03_descr.'',1,1,"C",1);
     for($i=0;$i<$clsaniatividade->numrows;$i++){
       db_fieldsmemory($resultativid,$i);
-      $pdf->Cell(20,6,''.$y83_seq,1,0,"C",0);
-      $pdf->Cell(45,6,''.($y83_dtini != ""?db_formatar($y83_dtini,'d'):''),1,0,"C",0);
-      $pdf->Cell(45,6,''.($y83_dtfim != ""?db_formatar($y83_dtfim,'d'):''),1,0,"C",0);
-      $pdf->Cell(55,6,''.$q03_descr,1,0,"C",0);
-      $pdf->Cell(25,6,''.$y83_area,1,1,"C",0);
-    }  
+      $pdf->Cell($multiplicador*20,6,''.$y83_seq,1,0,"C",0);
+      $pdf->Cell($multiplicador*35,6,''.($y83_dtini != ""?db_formatar($y83_dtini,'d'):''),1,0,"C",0);
+      $pdf->Cell($multiplicador*35,6,''.($y83_dtfim != ""?db_formatar($y83_dtfim,'d'):''),1,0,"C",0);
+      $pdf->Cell($multiplicador*25,6,''.$y83_area,1,0,"C",0);
+      $pdf->MultiCell($multiplicador*75,6,''.$q03_descr,1,"C");
+    }
   }else{
     if($clsaniatividade->numrows != 0){
       $total = 0;
       $totali = 0;
       $pdf->SetFillColor(200);
-      $pdf->Cell(20,6,$RLy83_seq.'',1,0,"C",1);
-      $pdf->Cell(45,6,$RLy83_dtini.'',1,0,"C",1);
-      $pdf->Cell(45,6,$RLy83_dtfim.'',1,0,"C",1);
-      $pdf->Cell(55,6,$RLq03_descr.'',1,0,"C",1);
-      $pdf->Cell(25,6,$RLy83_area.'',1,1,"C",1);
+      $pdf->Cell($multiplicador*20,6,$RLy83_seq.'',1,0,"C",1);
+      $pdf->Cell($multiplicador*35,6,$RLy83_dtini.'',1,0,"C",1);
+      $pdf->Cell($multiplicador*35,6,$RLy83_dtfim.'',1,0,"C",1);
+      $pdf->Cell($multiplicador*25,6,$RLy83_area.'',1,0,"C",1);
+      $pdf->Cell($multiplicador*75,6,$RLq03_descr.'',1,1,"C",1);
       db_fieldsmemory($resultativid,0);
-      $pdf->Cell(20,6,''.$y83_seq,1,0,"C",0);
-      $pdf->Cell(45,6,''.($y83_dtini != ""?db_formatar($y83_dtini,'d'):''),1,0,"C",0);
-      $pdf->Cell(45,6,''.($y83_dtfim != ""?db_formatar($y83_dtfim,'d'):''),1,0,"C",0);
-      $pdf->Cell(55,6,''.$q03_descr,1,0,"C",0);
-      $pdf->Cell(25,6,''.$y83_area,1,1,"C",0);
-    }  
+      $pdf->Cell($multiplicador*20,6,''.$y83_seq,1,0,"C",0);
+      $pdf->Cell($multiplicador*35,6,''.($y83_dtini != ""?db_formatar($y83_dtini,'d'):''),1,0,"C",0);
+      $pdf->Cell($multiplicador*35,6,''.($y83_dtfim != ""?db_formatar($y83_dtfim,'d'):''),1,0,"C",0);
+      $pdf->Cell($multiplicador*25,6,''.$y83_area,1,0,"C",0);
+      $pdf->MultiCell($multiplicador*75,6,''.$q03_descr,1,"C");
+    }
   }
   $pdf->Ln(4);
   if ($pdf->GetY() > 280) {

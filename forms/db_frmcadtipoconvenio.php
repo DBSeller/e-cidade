@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//MODULO: Arrecadação
+//MODULO: arrecadacao
 $clcadtipoconvenio->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("ar15_nome");
@@ -86,10 +86,10 @@ db_input('ar12_sigla',3,$Iar12_sigla,true,'text',$db_opcao,"")
 <script>
 function js_pesquisaar12_cadconveniomodalidade(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadconveniomodalidade','func_cadconveniomodalidade.php?funcao_js=parent.js_mostracadconveniomodalidade1|ar15_sequencial|ar15_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadconveniomodalidade','func_cadconveniomodalidade.php?funcao_js=parent.js_mostracadconveniomodalidade1|ar15_sequencial|ar15_nome','Pesquisa',true);
   }else{
      if(document.form1.ar12_cadconveniomodalidade.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cadconveniomodalidade','func_cadconveniomodalidade.php?pesquisa_chave='+document.form1.ar12_cadconveniomodalidade.value+'&funcao_js=parent.js_mostracadconveniomodalidade','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadconveniomodalidade','func_cadconveniomodalidade.php?pesquisa_chave='+document.form1.ar12_cadconveniomodalidade.value+'&funcao_js=parent.js_mostracadconveniomodalidade','Pesquisa',false);
      }else{
        document.form1.ar15_nome.value = ''; 
      }
@@ -108,7 +108,7 @@ function js_mostracadconveniomodalidade1(chave1,chave2){
   db_iframe_cadconveniomodalidade.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadtipoconvenio','func_cadtipoconvenio.php?funcao_js=parent.js_preenchepesquisa|ar12_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadtipoconvenio','func_cadtipoconvenio.php?funcao_js=parent.js_preenchepesquisa|ar12_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadtipoconvenio.hide();

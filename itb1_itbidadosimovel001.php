@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,29 +25,35 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_propri_classe.php");
-require_once("classes/db_itbipropriold_classe.php");
-require_once("classes/db_itbi_classe.php");
-require_once("classes/db_itbilogin_classe.php");
-require_once("classes/db_itbinome_classe.php");
-require_once("classes/db_itbinomecgm_classe.php");
-require_once("classes/db_itbimatric_classe.php");
-require_once("classes/db_itburbano_classe.php");
-require_once("classes/db_itbirural_classe.php");
-require_once("classes/db_itbiruralcaract_classe.php");
-require_once("classes/db_itbidadosimovel_classe.php");
-require_once("classes/db_itbidadosimovelsetorloc_classe.php");
-require_once("classes/db_itbiformapagamentovalor_classe.php");
-require_once("classes/db_localidaderural_classe.php");
-require_once("classes/db_itbilocalidaderural_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_propri_classe.php"));
+require_once(modification("classes/db_itbipropriold_classe.php"));
+require_once(modification("classes/db_itbi_classe.php"));
+require_once(modification("classes/db_itbilogin_classe.php"));
+require_once(modification("classes/db_itbinome_classe.php"));
+require_once(modification("classes/db_itbinomecgm_classe.php"));
+require_once(modification("classes/db_itbimatric_classe.php"));
+require_once(modification("classes/db_itburbano_classe.php"));
+require_once(modification("classes/db_itbirural_classe.php"));
+require_once(modification("classes/db_itbiruralcaract_classe.php"));
+require_once(modification("classes/db_itbidadosimovel_classe.php"));
+require_once(modification("classes/db_itbidadosimovelsetorloc_classe.php"));
+require_once(modification("classes/db_itbiformapagamentovalor_classe.php"));
+require_once(modification("classes/db_localidaderural_classe.php"));
+require_once(modification("classes/db_itbilocalidaderural_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_iptuant_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_itbiconstr_classe.php"));
+require_once(modification("classes/db_itbiconstrespecie_classe.php"));
+require_once(modification("classes/db_itbiconstrtipo_classe.php"));
+require_once(modification("classes/db_iptuconstr_ext_classe.php"));
+require_once(modification("classes/db_carconstr_classe.php"));
 
 $oGet  = db_utils::postMemory($_GET);
 $oPost = db_utils::postMemory($_POST);
@@ -69,6 +75,20 @@ $clitbiformapagamentovalor = new cl_itbiformapagamentovalor();
 $cllocalidaderural         = new cl_localidaderural();
 $clitbilocalidaderural     = new cl_itbilocalidaderural();
 $cldb_config               = new cl_db_config;
+$cl_iptucalc               = new cl_iptucalc();
+$cl_iptucale               = new cl_iptucale();
+$cl_db_config              = new cl_db_config();
+$cl_cgm                    = new cl_cgm();
+$clparitbi 		   		   = new cl_paritbi();
+$cliptuant 		   		   = new cl_iptuant();
+$clitbiconstr 			   = new cl_itbiconstr;
+$clitbiconstrespecie 	   = new cl_itbiconstrespecie;
+$clitbiconstrtipo 		   = new cl_itbiconstrtipo;
+$cliptuconstr              = new cl_iptuconstr_extends;
+$clcarconstr               = new cl_carconstr;
+
+use ECidade\Tributario\ITBI\Repository\ItbitaxasitbiRepository;
+use ECidade\Tributario\ITBI\Model\Itbitaxasitbi;
 
 $db_opcao = 1;
 $db_botao = true;
@@ -80,9 +100,15 @@ $iInstitSessao = db_getsession('DB_instit');
 $result        = $cldb_config->sql_record($cldb_config->sql_query_file($iInstitSessao, "cgc, db21_codcli"));
 db_fieldsmemory($result, 0);
 
+// Busca parâmetro de Matrícula Imovel Rural na tabela paritbi
+$sql = "SELECT it24_matricrural FROM paritbi WHERE it24_anousu = $iAnoUsu";
+$result = db_query($sql);
+db_fieldsmemory($result, 0);
+
 if (isset($oPost->incluir)) {
 
   db_inicio_transacao();
+
 
   $clitbi->it01_tipotransacao = $oPost->it01_tipotransacao;
   $clitbi->it01_areaterreno 	= $oPost->it01_areaterreno;
@@ -98,6 +124,19 @@ if (isset($oPost->incluir)) {
   $clitbi->it01_hora          = db_hora();
   $clitbi->it01_envia         = 'false';
   $clitbi->it01_percentualareatransmitida = $oPost->it01_percentualareatransmitida;
+  $clitbi->it01_cartorioextra = $oPost->j167_sequencial;
+
+  if($oPost->it01_processoexterno == null) {
+    $clitbi->it01_processo = $oPost->it01_processo;
+    $clitbi->it01_tituprocesso = $oPost->p58_requer;
+    $clitbi->it01_dtprocesso = null;
+  } else {
+    $data = str_replace('/', '-', $oPost->it01_dtprocesso);
+    $clitbi->it01_processo = $oPost->it01_processoexterno;
+    $clitbi->it01_tituprocesso = $oPost->it01_tituprocesso;
+    $clitbi->it01_dtprocesso = date('Y-m-d', strtotime(str_replace('/', '-', $oPost->it01_dtprocesso)));
+  }
+
 
   if (isset($oPost->it01_valortransacao)) {
 
@@ -111,6 +150,7 @@ if (isset($oPost->incluir)) {
     $clitbi->it01_valortransacao = $oPost->it01_valorterreno + $oPost->it01_valorconstr;
   }
 
+
   $clitbi->incluir(null);
 
   if ($clitbi->erro_status == 0) {
@@ -118,6 +158,17 @@ if (isset($oPost->incluir)) {
   }
 
   $sMsgErro = $clitbi->erro_msg;
+
+  $itbitaxasitbiRepository = ItbitaxasitbiRepository::getInstance();
+  $itbitaxasitbi = new Itbitaxasitbi();
+
+  if (!$lSqlErro AND !empty($oPost->codigoTipoTaxa)) {
+    $itbitaxasitbi->setSequencial(null);
+    $itbitaxasitbi->setItbi($clitbi->it01_guia);
+    $itbitaxasitbi->setTaxasitbi($oPost->codigoTipoTaxa);
+
+    $itbitaxasitbiRepository->persist($itbitaxasitbi);
+  }
 
   if (! $lSqlErro) {
 
@@ -139,18 +190,81 @@ if (isset($oPost->incluir)) {
       $sMsgErro = $clitburbano->erro_msg;
 
       if (! $lSqlErro) {
-
         $clitbimatric->it06_guia   = $clitbi->it01_guia;
         $clitbimatric->it06_matric = $oPost->j01_matric;
         $clitbimatric->incluir($clitbi->it01_guia, $oPost->j01_matric);
 
         if ($clitbimatric->erro_status == 0) {
           $lSqlErro = true;
+          $sMsgErro = $clitbimatric->erro_msg;
         }
 
-        $sMsgErro = $clitbimatric->erro_msg;
+        $rParans = $clparitbi->sql_record($clparitbi->sql_query(db_getsession('DB_anousu'), 'it24_carregaconstrucoesbenfeitoriasitbi, it24_grupotipobenfurbana, it24_grupoespbenfurbana'));
+        $oParans = \db_utils::fieldsMemory($rParans, 0);
 
-      }
+        if ($oParans->it24_carregaconstrucoesbenfeitoriasitbi == "t") {
+            $rIptuconstr = db_query($cliptuconstr->sql_query_file(null, null, "*", null, "j39_matric = {$clitbimatric->it06_matric} AND j39_dtdemo is null"));
+            $aIptuconstr = \db_utils::getCollectionByRecord($rIptuconstr);
+
+            foreach ($aIptuconstr as $oIptuconstr) {
+                $clitbiconstr->it08_guia = $clitbi->it01_guia;
+                $clitbiconstr->it08_area = $oIptuconstr->j39_area;
+                $clitbiconstr->it08_areatrans = $oIptuconstr->j39_area;
+                $clitbiconstr->it08_ano = $oIptuconstr->j39_ano;
+
+                $clitbiconstr->incluir(null);
+
+                if ( $clitbiconstr->erro_status == 0 ) {
+                    $lSqlErro = true;
+                    $sMsgErro = $clitbiconstr->erro_msg;
+                }
+
+                if ( !$lSqlErro ) {
+                    $rCarconstrEsp = db_query($clcarconstr->sql_caracteristicas_selecionadas($clitbimatric->it06_matric, $oIptuconstr->j39_idcons, $oParans->it24_grupoespbenfurbana));
+
+                    if (!$rCarconstrEsp) {
+                        $lSqlErro = true;
+                        $sMsgErro = "Erro ao buscar a espécie da construção {$oIptuconstr->j39_idcons}";
+                    }
+
+                    $oCarconstrEsp = \db_utils::fieldsMemory($rCarconstrEsp, 0);
+
+                    if (!empty($oCarconstrEsp->j31_codigo)) {
+                        $clitbiconstrespecie->it09_caract = $oCarconstrEsp->j31_codigo;
+                        $clitbiconstrespecie->it09_codigo = $clitbiconstr->it08_codigo;
+                        $clitbiconstrespecie->incluir($clitbiconstr->it08_codigo);
+
+                        if ( $clitbiconstrespecie->erro_status == 0 ) {
+                            $lSqlErro = true;
+                            $sMsgErro = "Erro ao inserir a espécie da construção {$oIptuconstr->j39_idcons}. \n\n{$clitbiconstrespecie->erro_msg}";
+                        }
+                    }
+
+                    if ( !$lSqlErro ) {
+                        $rCarconstrTipo = db_query($clcarconstr->sql_caracteristicas_selecionadas($clitbimatric->it06_matric, $oIptuconstr->j39_idcons, $oParans->it24_grupotipobenfurbana));
+
+                        if (!$rCarconstrTipo) {
+                            $lSqlErro = true;
+                            $sMsgErro = "Erro ao buscar o tipo da construção {$oIptuconstr->j39_idcons}";
+                        }
+
+                        $oCarconstrTipo = \db_utils::fieldsMemory($rCarconstrTipo, 0);
+
+                        if (!empty($oCarconstrTipo->j31_codigo)) {
+                            $clitbiconstrtipo->it10_caract = $oCarconstrTipo->j31_codigo;
+                            $clitbiconstrtipo->it10_codigo = $clitbiconstr->it08_codigo;
+                            $clitbiconstrtipo->incluir($clitbiconstr->it08_codigo);
+
+                            if ( $clitbiconstrtipo->erro_status == 0 ) {
+                                $lSqlErro = true;
+                                $sMsgErro = "Erro ao inserir o tipo da construção {$oIptuconstr->j39_idcons}. \n\n{$clitbiconstrtipo->erro_msg}";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     } else if ($oGet->tipo == "rural") {
 
@@ -246,7 +360,7 @@ if (isset($oPost->incluir)) {
     }
   }
 
-  if (! $lSqlErro) {
+  if(!$lSqlErro){
 
     $clitbilogin->it13_guia = $clitbi->it01_guia;
     $clitbilogin->it13_id_usuario = db_getsession("DB_id_usuario");
@@ -259,7 +373,7 @@ if (isset($oPost->incluir)) {
     $sMsgErro = $clitbilogin->erro_msg;
   }
 
-  if (! $lSqlErro && trim($oPost->j01_matric) != "") {
+  if (!$lSqlErro && trim($oPost->j01_matric) != "") {
 
     $rsPropri = $clpropri->sql_record($clpropri->sql_query($oPost->j01_matric));
 
@@ -322,49 +436,108 @@ if (isset($oPost->incluir)) {
     $sMsgErro = $clitbidadosimovel->erro_msg;
   }
 
-  if (! $lSqlErro) {
+  $itbitaxasitbi->setSequencial(null);
+  $itbitaxasitbi->setItbi($clitbi->it01_guia);
+  $itbitaxasitbi->setTaxasitbi(null);
 
-    $rsDadosPropri = $clitbimatric->sql_record($clitbimatric->sql_query_propri($clitbi->it01_guia));
+  $oDadosTaxaGuia = $itbitaxasitbiRepository->getDados($itbitaxasitbi);
 
-    if ($clitbimatric->numrows > 0) {
+  if ($oDadosTaxaGuia->it36_imovelurbanopleno == "t") {
+    $rDbConfig = $cl_db_config->sql_record($cl_db_config->sql_query(1));
 
-      $oDadosPropri = db_utils::fieldsMemory($rsDadosPropri, 0);
+    if (!$rDbConfig) {
+        throw new Exception("Erro ao buscar os dados da tabela db_config");
+    }
 
-      $clitbinome->it03_guia     = $clitbi->it01_guia;
-      $clitbinome->it03_tipo     = 'T';
-      $clitbinome->it03_princ    = 'true';
-      $clitbinome->it03_nome     = addslashes($oDadosPropri->z01_nome);
-      $clitbinome->it03_sexo     = 'm';
-      $clitbinome->it03_cpfcnpj  = $oDadosPropri->z01_cgccpf;
-      $clitbinome->it03_endereco = addslashes($oDadosPropri->z01_ender);
-      $clitbinome->it03_numero   = $oDadosPropri->z01_numero;
-      $clitbinome->it03_compl    = $oDadosPropri->z01_compl;
-      $clitbinome->it03_cxpostal = $oDadosPropri->z01_cxpostal;
-      $clitbinome->it03_bairro   = addslashes($oDadosPropri->z01_bairro);
-      $clitbinome->it03_munic    = $oDadosPropri->z01_munic;
-      $clitbinome->it03_uf       = $oDadosPropri->z01_uf;
-      $clitbinome->it03_cep      = $oDadosPropri->z01_cep;
-      $clitbinome->it03_mail     = $oDadosPropri->z01_email;
-      $clitbinome->incluir(null);
+    $oDbConfig = \db_utils::fieldsMemory($rDbConfig, 0);
 
-      if ($clitbinome->erro_status == 0) {
+    $rCgm = $cl_cgm->sql_record($cl_cgm->sql_query_file($oDbConfig->numcgm));
+
+    if (!$rCgm) {
+        throw new Exception("Erro ao buscar os dados da tabela cgm");
+    }
+
+    $oDadosPropri = \db_utils::fieldsMemory($rCgm, 0);
+
+    $clitbinome->it03_guia     = $clitbi->it01_guia;
+    $clitbinome->it03_tipo     = 'T';
+    $clitbinome->it03_princ    = 'true';
+    $clitbinome->it03_nome     = addslashes($oDadosPropri->z01_nome);
+    $clitbinome->it03_sexo     = 'm';
+    $clitbinome->it03_cpfcnpj  = $oDadosPropri->z01_cgccpf;
+    $clitbinome->it03_endereco = addslashes($oDadosPropri->z01_ender);
+    $clitbinome->it03_numero   = $oDadosPropri->z01_numero;
+    $clitbinome->it03_compl    = $oDadosPropri->z01_compl;
+    $clitbinome->it03_cxpostal = $oDadosPropri->z01_cxpostal;
+    $clitbinome->it03_bairro   = addslashes($oDadosPropri->z01_bairro);
+    $clitbinome->it03_munic    = $oDadosPropri->z01_munic;
+    $clitbinome->it03_uf       = $oDadosPropri->z01_uf;
+    $clitbinome->it03_cep      = $oDadosPropri->z01_cep;
+    $clitbinome->it03_mail     = $oDadosPropri->z01_email;
+    $clitbinome->incluir(null);
+
+    if ($clitbinome->erro_status == 0) {
         $lSqlErro = true;
-      }
+    }
 
-      $sMsgErro = $clitbinome->erro_msg;
+    $sMsgErro = $clitbinome->erro_msg;
 
-      if (! $lSqlErro) {
-
+    if (!$lSqlErro) {
         $clitbinomecgm->it21_itbinome = $clitbinome->it03_seq;
         $clitbinomecgm->it21_numcgm   = $oDadosPropri->z01_numcgm;
         $clitbinomecgm->incluir(null);
 
         if ($clitbinomecgm->erro_status == 0) {
-          $lSqlErro = true;
+            $lSqlErro = true;
         }
 
         $sMsgErro = $clitbinomecgm->erro_msg;
-      }
+    }
+  } else {
+    if (! $lSqlErro) {
+
+        $rsDadosPropri = $clitbimatric->sql_record($clitbimatric->sql_query_propri($clitbi->it01_guia));
+
+        if ($clitbimatric->numrows > 0) {
+
+          $oDadosPropri = db_utils::fieldsMemory($rsDadosPropri, 0);
+
+          $clitbinome->it03_guia     = $clitbi->it01_guia;
+          $clitbinome->it03_tipo     = 'T';
+          $clitbinome->it03_princ    = 'true';
+          $clitbinome->it03_nome     = addslashes($oDadosPropri->z01_nome);
+          $clitbinome->it03_sexo     = 'm';
+          $clitbinome->it03_cpfcnpj  = $oDadosPropri->z01_cgccpf;
+          $clitbinome->it03_endereco = addslashes($oDadosPropri->z01_ender);
+          $clitbinome->it03_numero   = $oDadosPropri->z01_numero;
+          $clitbinome->it03_compl    = $oDadosPropri->z01_compl;
+          $clitbinome->it03_cxpostal = $oDadosPropri->z01_cxpostal;
+          $clitbinome->it03_bairro   = addslashes($oDadosPropri->z01_bairro);
+          $clitbinome->it03_munic    = $oDadosPropri->z01_munic;
+          $clitbinome->it03_uf       = $oDadosPropri->z01_uf;
+          $clitbinome->it03_cep      = $oDadosPropri->z01_cep;
+          $clitbinome->it03_mail     = $oDadosPropri->z01_email;
+          $clitbinome->incluir(null);
+
+          if ($clitbinome->erro_status == 0) {
+            $lSqlErro = true;
+          }
+
+          $sMsgErro = $clitbinome->erro_msg;
+
+          if (! $lSqlErro) {
+
+            $clitbinomecgm->it21_itbinome = $clitbinome->it03_seq;
+            $clitbinomecgm->it21_numcgm   = $oDadosPropri->z01_numcgm;
+            $clitbinomecgm->incluir(null);
+
+            if ($clitbinomecgm->erro_status == 0) {
+              $lSqlErro = true;
+            }
+
+            $sMsgErro = $clitbinomecgm->erro_msg;
+          }
+        }
     }
   }
 
@@ -460,9 +633,10 @@ if (isset($oPost->incluir)) {
 
   db_fim_transacao($lSqlErro);
 
-} else if (! isset($oGet->pri) && $oGet->tipo != "rural") {
+}
+else if ((!isset($oGet->pri) && $oGet->tipo == "urbano") || (!isset($oGet->pri) && $oGet->tipo == "rural" && $it24_matricrural == "t")) {
 
-  include ("itb1_itbi004.php");
+  include(modification("itb1_itbi004.php"));
   exit();
 
 } else if (isset($oPost->j01_matric) && trim($oPost->j01_matric) != "") {
@@ -504,8 +678,64 @@ if (isset($oPost->incluir)) {
 
     $it05_direito     = round($nLados, 2);
     $it05_esquerdo    = round($nLados, 2);
+
+    $anousu = db_getsession("DB_anousu");
+
+    $rsParam = $clparitbi->sql_record($clparitbi->sql_query_file($anousu,"it24_carregavalorvenal"));
+
+    $it24_carregavalorvenal = \db_utils::fieldsMemory($rsParam, 0)->it24_carregavalorvenal;
+
+    if ($it24_carregavalorvenal == "t") {
+        $rIptucalc = db_query($cl_iptucalc->sql_query_file($anousu, $oPost->j01_matric, "j23_vlrter AS it01_valorterreno"));
+
+        if (!$rIptucalc) {
+            throw new Exception("Erro ao buscar o os dados da tabela iptucalc");
+        } else {
+            $aIptucalc = pg_fetch_assoc($rIptucalc);
+            if ($aIptucalc != false) {
+                db_postmemory($aIptucalc);
+
+                $it01_valorterreno = number_format($it01_valorterreno, 2, ",", ".");
+            }
+        }
+
+        $rIptucale = db_query($cl_iptucale->sql_query(null, null, null, "SUM(j22_valor) AS it01_valorconstr", null, " j22_anousu = {$anousu} AND j22_matric = {$oPost->j01_matric} AND j39_dtdemo IS NULL "));
+
+        if (!$rIptucale) {
+            throw new Exception("Erro ao buscar o os dados da tabela iptucale");
+        } else {
+            $aIptucale = pg_fetch_assoc($rIptucale);
+
+            if ($aIptucale != false) {
+                db_postmemory($aIptucale);
+
+                $it01_valorconstr = number_format($it01_valorconstr, 2, ",", ".");
+            }
+        }
+    }
+
+    $rIptuant  = db_query($cliptuant->sql_query_file($oPost->j01_matric));
+
+    if (!$rIptuant) {
+        throw new Exception("Erro ao buscar a referência anterior.\n\nErro: ".pg_last_error());
+    }
+
+    $aIptuant = pg_fetch_assoc($rIptuant);
+
+    if ($aIptuant != false) {
+        db_postmemory($aIptuant);
+    }
   }
 }
+/*
+ * Plugin ajustacadastroitbi Cria
+ if ($tipo == "urbano") {
+     $db_opcao_plugin = 3;
+ } else {
+     $db_opcao_plugin_rural = 3;
+ }
+*/
+    /* M16507 - ajustacadastroitbi - Plugin que ajusta os campos do ITBI para Porto Velho */
 ?>
 <html>
 <head>
@@ -517,13 +747,14 @@ if (isset($oPost->incluir)) {
 <script language="JavaScript" type="text/javascript" src="scripts/numbers.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/datagrid.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
 </head>
 <body class="body-default">
  <div class="container">
 	<?php
-    require_once ("forms/db_frmitbidadosimovel.php");
+    require_once(modification("forms/db_frmitbidadosimovel.php"));
   ?>
  </div>
 </body>
@@ -594,6 +825,7 @@ if (isset($oPost->incluir)) {
 
 			      parent.document.formaba.dados.disabled    = false;
             parent.document.formaba.transm.disabled   = false;
+            parent.document.formaba.inter.disabled    = false;
             parent.document.formaba.compnome.disabled = false;
             parent.document.formaba.constr.disabled   = false;
 

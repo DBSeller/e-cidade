@@ -10,7 +10,9 @@ class AgataOOParser extends AgataMerge
     var $break_style;
     var $lineBreak;
     var $dataBreakStyles;
-
+    var $detailData;
+    var $detailColumns;
+    
     /**
      * Método Construtor
      */
@@ -23,16 +25,32 @@ class AgataOOParser extends AgataMerge
         $this->repeatHeader     = $this->XmlArray['Report']['OpenOffice']['Config']['RepeatHeader'];
         $this->repeatFooter     = $this->XmlArray['Report']['OpenOffice']['Config']['RepeatFooter'];
         $this->lineBreak        = '</text:p><text:p>'; // \n no details troca por isso
+
         $this->dataBreakStyles = array();
-        define( 'PCLZIP_TEMPORARY_DIR', temp . '/');
+        
+        if(!defined('PCLZIP_TEMPORARY_DIR')){
+            define( 'PCLZIP_TEMPORARY_DIR', temp . '/');
+        }
+        
         require_once 'classes/pclzip/pclzip.lib.php';
         include_once 'include/util.inc';
         $this->buffer = array();
-        $this->break_style = '<style:style style:name="AgataPageBreak" style:family="paragraph" style:parent-style-name="Standard">' .
-                             '<style:properties fo:break-before="page"/>' .
-                             '</style:style>';
+
+        if (substr($source,-3) == 'sxw')
+        {
+            $this->break_style = '<style:style style:name="AgataPageBreak" style:family="paragraph" style:parent-style-name="Standard">' .
+                                 '<style:properties fo:break-before="page"/>' .
+                                 '</style:style>';
+            $this->page_break = '<text:p text:style-name="AgataPageBreak"/>';
+        }
+        else
+        {
+            $this->break_style = '<style:style style:name="AdiantiPageBreak" style:family="paragraph" style:parent-style-name="Standard">' .
+                                 '    <style:paragraph-properties fo:break-before="page"/>' .
+                                 '</style:style>';
+            $this->page_break = '<text:p text:style-name="AdiantiPageBreak"/>';
+        }
         
-        $this->page_break = '<text:p text:style-name="AgataPageBreak"/>';
         $this->complement = array();
         if (!file_exists($source))
         {
@@ -100,9 +118,22 @@ class AgataOOParser extends AgataMerge
                 $pieces = explode('text:name="', $line);
                 $section = strtolower(substr($pieces[1], 0, -2));
             }
-            else if (substr(trim($line), 0, 14) == '</office:body>')
+            else
             {
-                $section = 'end';
+                if (substr($source,-3) == 'sxw')
+                {
+                    if (substr(trim($line), 0, 14) == '</office:body>')
+                    {
+                        $section = 'end';
+                    }
+                }
+                else
+                {
+                    if (substr(trim($line), 0, 14) == '</office:text>')
+                    {
+                        $section = 'end';
+                    }
+                }
             }
             
             if ($line == '</office:automatic-styles>')
@@ -231,7 +262,7 @@ class AgataOOParser extends AgataMerge
         $output = implode('', $this->buffer['start']);
         
         # Se não tem details no Open Office, vai de Merge
-        if ($this->XmlArray['Report']['OpenOffice']['Details'])
+        if (isset($this->XmlArray['Report']['OpenOffice']['Details']))
         {
             $Details = $this->XmlArray['Report']['OpenOffice']['Details'];
         }
@@ -243,7 +274,11 @@ class AgataOOParser extends AgataMerge
         $break  = false;
         Wait::On();
         
-        while ($line = $this->CurrentQuery->FetchNext())
+        $counter = 0;
+        
+        $staticData = is_array($this->CurrentQuery->Query);
+        
+        while ( $staticData ? $line = $this->CurrentQuery->Query[$counter] : $line = $this->CurrentQuery->FetchNext() )
         {
             for ($y=1; $y<=count($line); $y++)
             {
@@ -257,7 +292,7 @@ class AgataOOParser extends AgataMerge
                 # entretanto a primeira dá problemas, Ex: Ó (211) ou (195+147)
                 for ($ascchar=161; $ascchar<=255; $ascchar ++)
                 {
-                    $cell = str_replace(chr($ascchar), "&#{$ascchar};", $cell);
+//                    $cell = str_replace(chr($ascchar), "&#{$ascchar};", $cell);
                 }
                 
                 $cell = str_replace(chr(147), ' ', $cell); // char maluco carv.
@@ -280,7 +315,7 @@ class AgataOOParser extends AgataMerge
                 $DataSet = $Detail['DataSet'];
                 $DetailKey = strtolower($DetailKey); // detail1
                 
-                $subdata = $this->runSubQuery($DataSet, $vars);
+                $subdata = $this->runSubQuery($DataSet, $vars, $DetailKey);
                 
                 if ($this->printEmptyDetail or $subdata)
                 {
@@ -310,7 +345,7 @@ class AgataOOParser extends AgataMerge
                     $DetailKey = strtolower($DetailKey); // detail1
                     
                     // rodo novamente para gerar $this->subQuery e outros
-                    $subdata = $this->runSubQuery($DataSet, $vars);
+                    $this->runSubQuery($DataSet, $vars, $DetailKey);
                     if ($this->printEmptyDetail or $this->rest[$DetailKey])
                     {
                         $output .= $this->printSection($DetailKey, $line, $this->rest[$DetailKey]);
@@ -328,9 +363,11 @@ class AgataOOParser extends AgataMerge
                     $output .= $this->printSection('footer',  $line);
                 }
             }
+            $counter ++;
         }
-        
+         if(isset($this->buffer['end']))
         $output .= implode('', $this->buffer['end']);
+
         $fd = fopen($this->prefix . bar . 'content.xml', 'w');
         fwrite($fd, $output);
         fclose($fd);
@@ -382,7 +419,7 @@ class AgataOOParser extends AgataMerge
         
         for ($i = count($data); $i >= 0; $i --)
         {
-            $cell = $data[$i];
+            $cell = isset($data[$i]) ? $data[$i] : null;
             $cell = str_replace('&', '&amp;',$cell);
             $cell = str_replace('<', '&lt;', $cell);
             $cell = str_replace('>', '&gt;', $cell);
@@ -392,14 +429,14 @@ class AgataOOParser extends AgataMerge
             # entretanto a primeira dá problemas, Ex: Ó (211) ou (195+147)
             for ($ascchar=161; $ascchar<=255; $ascchar ++)
             {
-                $cell = str_replace(chr($ascchar), "&#{$ascchar};", $cell);
+//                $cell = str_replace(chr($ascchar), "&#{$ascchar};", $cell);
             }
             $cell = str_replace(chr(147), ' ', $cell); // char maluco carv.
-            
+            if(isset($this->Adjustments[$i]['Mask']))
             $cell = FormatMask($this->Adjustments[$i]['Mask'], $cell);
             $data[$i] = $cell;
         }
-        if ($this->buffer[$section])
+        if (isset($this->buffer[$section]))
         {
             foreach ($this->buffer[$section] as $text_line)
             {
@@ -411,9 +448,9 @@ class AgataOOParser extends AgataMerge
                 //$subfield15 antes de $subfield1
                 for ($i = count($data); $i >= 0; $i --)
                 {
-                    $cell = $data[$i];
-                    $text_line = str_replace('$var' . $i, utf8_encode($cell), $text_line);
-                    $text_line = str_replace('[' . $this->CurrentQuery->ColumnNames[$i -1] . ']', utf8_encode($cell), $text_line);
+                    $cell = isset($data[$i]) ? $data[$i] : NULL;
+                    $text_line = str_replace('$var' . $i, $this->assureUTF8($cell), $text_line);
+                    $text_line = str_replace('[' . (isset($this->CurrentQuery->ColumnNames[$i -1])?$this->CurrentQuery->ColumnNames[$i -1]:NULL) . ']', $this->assureUTF8($cell), $text_line);
                 }
                 
                 # Search by barCode
@@ -441,14 +478,17 @@ class AgataOOParser extends AgataMerge
                     {
                         # Faz o split para separar a expressao.
                         $pattern   = '/(<text:p text:style-name=".*")/';
+                        if(!isset($string))$string = '';
                         $pieces    = preg_split($pattern, trim ($string), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
                         if (substr($text_line,-2) == '/>')
                         {
-                            $text_line = '<text:p text:style-name="AgataPageBreak"/>' . $pieces[1];
+                            if(isset($pieces[1]))
+                            $text_line = $this->page_break . $pieces[1];
                         }
                         else
                         {
-                            $text_line = '<text:p text:style-name="AgataPageBreak">' . $pieces[1];
+                            if(isset($pieces[1]))
+                            $text_line = str_replace('/>', '>', $this->page_break) . $pieces[1];
                         }
                     }
                     else
@@ -555,7 +595,7 @@ class AgataOOParser extends AgataMerge
                         
                         if ($count_stage == 1)
                         {
-                            if ($countFound)
+                            if (isset($countFound))
                             {
                                 $count_stage = 2;
                             }
@@ -565,7 +605,8 @@ class AgataOOParser extends AgataMerge
                             }
                         }
                         
-                        if ((!$breakFound) and (!$totalFound) and (!$countFound))
+                        if ((!$breakFound) and (!$totalFound) and (!isset($countFound
+                        )))
                         {
                             $sub_row ++;
                         }
@@ -594,7 +635,7 @@ class AgataOOParser extends AgataMerge
                             $text_line = $this->replaceTotal($text_line, 'subtotal', $section);
                             
                             # Substituir as variáveis
-                            if ($sub_data[$sub_row])
+                            if (isset($sub_data[$sub_row]) AND $sub_data[$sub_row])
                             {
                                 $text_line = $this->replaceDetails($text_line, $sub_data[$sub_row], $breakFound, $section);
                                 $text_line = $this->replaceLineFeed($text_line);
@@ -604,7 +645,7 @@ class AgataOOParser extends AgataMerge
                                 # Limpar ultimas linhas, quando já passou do eof
                                 for ($i = 20; $i >= 1; $i --)
                                 {
-                                    $alias     = '[' . $this->subQuery->ColumnNames[$i -1] . ']';
+                                    $alias     = '[' . (isset($this->subQuery->ColumnNames[$i -1])? $this->subQuery->ColumnNames[$i -1]:NULL). ']';
                                     $text_line = str_replace('$subfield' . $i, '', $text_line);
                                     $text_line = str_replace($alias, '', $text_line);
                                 }
@@ -735,11 +776,7 @@ class AgataOOParser extends AgataMerge
                 }
                 else
                 {
-                    $row = str_replace("\n",    $this->lineBreak, $row);
-                    $row = str_replace(chr(10), $this->lineBreak, $row);
-                    
-                    //$row = str_replace('<',     '&lt;',  $row);
-                    //$row = str_replace('>',     '&gt;',  $row);
+                    $row = str_replace(chr(10), '<text:line-break></text:line-break>', $row);
                 }
                 $return[] = $row;
             }
@@ -756,13 +793,14 @@ class AgataOOParser extends AgataMerge
      */
     function replaceDetails($text_line, $data_line, $breakFound = FALSE, $DetailKey)
     {
+        $row = 0;
         if ($data_line)
         {
             // faz de traz pra frente para substituir
             // $subfield15 antes de $subfield1
             for ($col = count($data_line); $col>=0; $col --)
             {
-                $cell = $data_line[$col];
+                $cell = isset($data_line[$col]) ? $data_line[$col] : NULL;
                 $cell = str_replace('&', '&amp;',$cell);
                 $cell = str_replace('<', '&lt;', $cell);
                 $cell = str_replace('>', '&gt;', $cell);
@@ -772,20 +810,20 @@ class AgataOOParser extends AgataMerge
                 # entretanto a primeira dá problemas, Ex: Ó (211) ou (195+147)
                 for ($ascchar=161; $ascchar<=255; $ascchar ++)
                 {
-                    $cell = str_replace(chr($ascchar), "&#{$ascchar};", $cell);
+//                    $cell = str_replace(chr($ascchar), "&#{$ascchar};", $cell);
                 }
                 $cell = str_replace(chr(147), ' ', $cell); // char maluco carv.
                 
                 $this_text = '$subfield' . $col;
                 $SubMyVar  = $this_text;
-                $alias     = '[' . $this->subQuery->ColumnNames[$col-1] . ']';
+                $alias     = '[' . (isset($this->subQuery->ColumnNames[$col-1]) ? $this->subQuery->ColumnNames[$col-1] : NULL) . ']';
                 
                 if ((strpos($text_line, $SubMyVar) !== false) or (strpos($text_line, $alias) !== false))
                 {
                     $that_text = FormatMask($this->SubAdjustments[$col]['Mask'], $cell);
-                    $text_line = str_replace($this_text, utf8_encode($that_text), $text_line);
+                    $text_line = str_replace($this_text, $this->assureUTF8($that_text), $text_line);
                     //novo 20080403
-                    $text_line = str_replace($alias, utf8_encode($that_text), $text_line);
+                    $text_line = str_replace($alias, $this->assureUTF8($that_text), $text_line);
                     
                     // se está dentro de uma linha de quebra, não sumariza, não totaliza nada
                     if (!$breakFound)
@@ -961,25 +999,16 @@ class AgataOOParser extends AgataMerge
     }
     
     
-    function runSubQuery($DataSet, $vars)
+    function runSubQuery($DataSet, $vars, $DetailKey = NULL)
     {
-        $where = $DataSet['Query']['Where'];
-        $from  = $DataSet['Query']['From'];
-        
-        foreach ($vars as $var => $content)
+        if ($this->detailData)
         {
-            $where = str_replace($var, $content, $where);
-            $from  = str_replace($var, $content, $from);
-        }
-        
-        $subdata = array();
-        if ($DataSet['Query']['Select'])
-        {
-            $DataSet['Query']['Where'] = $where;
-            $DataSet['Query']['From']  = $from;
-            
-            # Cria Query
-            $this->subQuery = AgataCore::CreateQuery($this->agataDB, $DataSet, $this->Parameters);
+            $subdata = $this->detailData[$DetailKey];
+            if (empty($this->subQuery))
+            {
+                $this->subQuery = new stdClass;
+            }
+            $this->subQuery->ColumnNames = $this->detailColumns[$DetailKey];
             $this->SubAdjustments = Report::ExtractAdjustments($DataSet);
             $this->subFields = array();
             $subfield_count=1;
@@ -988,24 +1017,79 @@ class AgataOOParser extends AgataMerge
                 $this->subFields[$columnName] = $subfield_count;
                 $subfield_count ++;
             }
+            return $subdata;
+        }
+        else
+        {
+            $where = $DataSet['Query']['Where'];
+            $from  = $DataSet['Query']['From'];
             
-            if (is_agata_error($this->subQuery))
+            foreach ($vars as $var => $content)
             {
-                new Dialog($this->subQuery->GetError());
-                
-                Wait::Off();
-                return false;
+                $where = str_replace($var, $content, $where);
+                $from  = str_replace($var, $content, $from);
             }
-            else
+            
+            $subdata = array();
+            if ($DataSet['Query']['Select'])
             {
-                $subdata = array();
-                while ($sub_row = $this->subQuery->FetchNext())
+                $DataSet['Query']['Where'] = $where;
+                $DataSet['Query']['From']  = $from;
+                
+                # Cria Query
+                $this->subQuery = AgataCore::CreateQuery($this->agataDB, $DataSet, $this->Parameters);
+                $this->SubAdjustments = Report::ExtractAdjustments($DataSet);
+                $this->subFields = array();
+                $subfield_count=1;
+                
+                foreach ($this->subQuery->ColumnNames as $columnName)
                 {
-                    $subdata[] = $sub_row;
+                    $this->subFields[$columnName] = $subfield_count;
+                    $subfield_count ++;
+                }
+                
+                if (is_agata_error($this->subQuery))
+                {
+                    new Dialog($this->subQuery->GetError());
+                    
+                    Wait::Off();
+                    return false;
+                }
+                else
+                {
+                    $subdata = array();
+                    while ($sub_row = $this->subQuery->FetchNext())
+                    {
+                        $subdata[] = $sub_row;
+                    }
                 }
             }
+            return $subdata;
         }
-        return $subdata;
+    }
+    
+    
+    public function setDetailData($detailData)
+    {
+        $this->detailData = $detailData;
+    }
+    
+    public function setDetailColumns($detailColumns)
+    {
+        $this->detailColumns = $detailColumns;
+    }
+
+    /**
+     * Garante que a string estará em UTF8
+     * @param $content string a ser convertida
+     */
+    public function assureUTF8($content)
+    {
+        if (utf8_encode(utf8_decode($content)) !== $content ) // se não UTF8
+        {
+            $content = utf8_encode($content);
+        }
+        return $content;
     }
 }
-?>
+

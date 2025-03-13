@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_obrastec_classe.php");
-require_once("classes/db_obrastecnicos_classe.php");
+require_once(modification("classes/db_obrastec_classe.php"));
+require_once(modification("classes/db_obrastecnicos_classe.php"));
 
 $oDaoObrasTec      = new cl_obrastec;
 $oDaoObrasTecnicos = new cl_obrastecnicos;
@@ -107,7 +107,7 @@ if($oDaoObrasTecnicos->numrows > 0){
 <script>
 function js_mostracgm(){
   
-    func_nome.jan.location.href = 'prot3_conscgm002.php?fechar=func_nome&numcgm=<?php echo $oTecnicos->ob15_numcgm; ?>';
+    func_nome.jan.location.href = 'prot3_consultacgmnovo002.php?fechar=func_nome&numcgm=<?php echo $oTecnicos->ob15_numcgm; ?>';
     func_nome.mostraMsg();
     func_nome.show();
     func_nome.focus();

@@ -2,28 +2,28 @@
  * @constructor
  */
 var DBViewCaracteristicasConstrucao = function (sNomeInstanciaParametro, iCodigoMatricula, iCodigoConstrucao) {
-  
+
   /**
-   * Instancia da Classe 
+   * Instancia da Classe
    */
   var oInstancia             = this;
   var lPrimeiroCarregamento  = true;
-  /**                        
-   *                         
-   */                        
+  /**
+   *
+   */
   var sNomeInstancia         = sNomeInstanciaParametro;
-  var aCaracteristicas       = new Array(); 
+  var aCaracteristicas       = new Array();
   var iMatricula             = new Number(iCodigoMatricula);
   var iConstrucao            = new Number(iCodigoConstrucao);
   var sRPC                   = 'cad4_iptuconstr.RPC.php';
   this.oGridCaracteristicas  = new Object();
   this.aSelecionados         = new Array();
   /**
-   * 
+   *
    */
   this.isPrimeiroCarregamento = function () {
     return lPrimeiroCarregamento;
- 
+
  }
 
   this.setPrimeiroCarregamento = function ( lCondicao ) {
@@ -37,7 +37,7 @@ var DBViewCaracteristicasConstrucao = function (sNomeInstanciaParametro, iCodigo
     return sNomeInstancia;
   }
   /**
-   * Retorna a Instancia do Componente 
+   * Retorna a Instancia do Componente
    * @returns DBViewCaracteristicasConstrucao
    */
   this.getInstancia        = function() {
@@ -73,13 +73,13 @@ var DBViewCaracteristicasConstrucao = function (sNomeInstanciaParametro, iCodigo
   this.getCaminhoArquivoRPC = function() {
     return sRPC;
   };
-  
+
   if ( iCodigoMatricula == "" && iCodigoConstrucao == "" ) {
     return this;
   }
-  
+
   this.carregarCaracteristicas();
-  
+
   return this;
 }
 
@@ -103,12 +103,12 @@ DBViewCaracteristicasConstrucao.prototype.carregarCaracteristicas = function(iMa
   oParam.iTipoConstrucao    = 1;
   oParam.iMatricula         = iMatricula  == null ? this.getMatricula()        : iMatricula;
   oParam.iCodigoConstrucao  = iConstrucao == null ? this.getCodigoConstrucao() : iConstrucao;
-  
+
   /**
    * Transforma parametros do RPC em uma string JSON
    */
   var sJSONParametros       = Object.toJSON(oParam);
-  
+
   /**
    * Dados da Requisição AJAX
    */
@@ -119,32 +119,32 @@ DBViewCaracteristicasConstrucao.prototype.carregarCaracteristicas = function(iMa
   oRequisicao.onComplete    = function( oAjax ) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
-    
+    var oRetorno = JSON.parse(oAjax.responseText);
+
     if (oRetorno.iStatus== "2") {
       alert(oRetorno.sMessage.urlDecode());
       return;
-    } 
+    }
 
     /**
      * Define as Caracteristicas encontradas;
      */
     oInstancia.setCaracteristicas(oRetorno.aCaracteristicas);
     oInstancia.aSelecionados = oRetorno.aSelecionadas;
-    
+
   };
-  
+
   /**
    * Executa a Requisição
    */
   var oAjax          = new Ajax.Request(this.getCaminhoArquivoRPC(), oRequisicao);
-  
+
 }
 
 DBViewCaracteristicasConstrucao.prototype.criarJanela = function() {
 
     /**
-     * Inicia WindowAux 
+     * Inicia WindowAux
      */
     if ( typeof(this.oJanela) == "object" ) {
       js_showWindow( this.oJanela.divWindow );
@@ -166,20 +166,20 @@ DBViewCaracteristicasConstrucao.prototype.criarJanela = function() {
 
       var sMsg      = "Selecione as características relacionadas ao Grupo \"Construções\"";
 
-      this.oJanela  = new windowAux(this.getNomeInstancia() + ".oJanela", 
-                                    "Características da Constução", 
-                                    650, 
+      this.oJanela  = new windowAux(this.getNomeInstancia()+ ".oJanela",
+                                    "Características da Constução",
+                                    650,
                                     560);
       this.oJanela.setContent(sConteudo);
       this.oJanela.show(10, window.availWidth);
-      
+
       $( this.getNomeInstancia() + "contentCaracteristicas" ).style.width = this.oJanela.getWidth() - 30;
-    
-    
+
+
        /**
         * Inicia MessageBoard
         */
-       this.oPainelMensagem = new DBMessageBoard(this.getNomeInstancia() + "_painel", 
+       this.oPainelMensagem = new DBMessageBoard(this.getNomeInstancia() + "_painel",
                                                  'Características da Construção',
                                                  sMsg,
                                                  $(this.getNomeInstancia() + 'headerCaracteristicas'));
@@ -193,9 +193,9 @@ DBViewCaracteristicasConstrucao.prototype.criarDataGrid = function () {
   this.oGridCaracteristicas.nameInstance = this.getNomeInstancia() +  '.oGridCaracteristicas';
   this.oGridCaracteristicas.setHeader    ( ['Codigo', 'Grupo da Característica', 'Característica'] );
   this.oGridCaracteristicas.setCellWidth ( ["20%", "40%", "40%"] );
-  this.oGridCaracteristicas.setCellAlign ( ['center', "left", "center"] );          
+  this.oGridCaracteristicas.setCellAlign ( ['center', "left", "center"] );
   this.oGridCaracteristicas.setHeight("350");
-  this.oGridCaracteristicas.show         ( $(this.getNomeInstancia() + "contentCaracteristicas") ); 
+  this.oGridCaracteristicas.show         ( $(this.getNomeInstancia() + "contentCaracteristicas") );
 }
 
 DBViewCaracteristicasConstrucao.prototype.renderizarDadosGrid = function() {
@@ -208,14 +208,14 @@ DBViewCaracteristicasConstrucao.prototype.renderizarDadosGrid = function() {
     var aCelulas         = new Array();
     aCelulas[0]          = oCaracteristica.iCodigoGrupo;
     aCelulas[1]          = oCaracteristica.sDescricaoGrupo.urlDecode();
-    
+
     var sComboBox        = "<select id=\"comboCaracter"+ iIndiceCaracteristica +"\" style='width: 100%'>\n";
     sComboBox           += "  <option value='0'>Nenhuma...</option>                       \n";
     for (var iOpcao = 0; iOpcao < oCaracteristica.aOpcoes.length; iOpcao++) {
-      
+
       var oOpcao         = oCaracteristica.aOpcoes[iOpcao];
-      var sSelecionado   = oOpcao.lSelecionada ? "selected" : ""; 
-      sComboBox         += "  <option value='" + oOpcao.iCodigoCaracteristica + "' " + sSelecionado + " > " + oOpcao.iCodigoCaracteristica  + " - " + oOpcao.sDescricaoCaracteristica.urlDecode() + "</option>\n"; 
+      var sSelecionado   = oOpcao.lSelecionada ? "selected" : "";
+      sComboBox         += "  <option value='" + oOpcao.iCodigoCaracteristica + "' " + sSelecionado + " > " + oOpcao.iCodigoCaracteristica  + " - " + oOpcao.sDescricaoCaracteristica.urlDecode() + "</option>\n";
     }
     sComboBox           += "</select>";
     aCelulas[2]          = sComboBox;
@@ -231,13 +231,13 @@ DBViewCaracteristicasConstrucao.prototype.show = function ( oElemento ) {
     this.criarDataGrid();
     this.renderizarDadosGrid();
     this.setPrimeiroCarregamento(false);
-  } 
+  }
   js_showWindow( this.oJanela.divWindow );
 
 }
 
 DBViewCaracteristicasConstrucao.prototype.importarDadosConsntrucao = function( iMatriculaImportada, iIdConstrucao) {
-  
+
   if ( iMatriculaImportada == null ) {
     return false;
   }
@@ -252,19 +252,19 @@ DBViewCaracteristicasConstrucao.prototype.importarDadosConsntrucao = function( i
 DBViewCaracteristicasConstrucao.prototype.getSelecao = function() {
 
   if ( this.oGridCaracteristicas instanceof DBGrid  ) {
-	  
+
     this.aSelecionados = new Array();
-    
+
     for (var iIndiceLinha = 0; iIndiceLinha < this.oGridCaracteristicas.aRows.length; iIndiceLinha++) {
 
       with (this.oGridCaracteristicas.aRows[iIndiceLinha]) {
 
         if ( this.aSelecionados.indexOf( aCells[2].getValue() ) == -1 ) {
           this.aSelecionados.push(aCells[2].getValue());
-        } 
+        }
       }
     }
-    
+
   }
   return this.aSelecionados;
 }

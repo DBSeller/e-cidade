@@ -123,7 +123,7 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',3,'');
 function js_pesquisa(){
 
   sFiltro = "sFiltro=unidades";
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_retirada','func_far_retirada.php?func=<?=$func?>&'+sFiltro+'&funcao_js=parent.js_preenchepesquisa|fa04_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_retirada','func_far_retirada.php?func=<?=$func?>&'+sFiltro+'&funcao_js=parent.js_preenchepesquisa|fa04_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_retirada.hide();
@@ -197,7 +197,7 @@ function js_consultaRequisicao(fa04_i_codigo){
 function js_saida(oAjax) {
 
   js_removeObj("msgBox");
-  var obj               = eval("(" + oAjax.responseText + ")");
+  var obj               = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
   
     alert(obj.message.urlDecode());
@@ -341,7 +341,7 @@ function js_atendeRequisicao() {
 function js_saidaAtendimento(oAjax) {
 
   js_removeObj("msgBox");
-  var obj               = eval("(" + oAjax.responseText + ")");
+  var obj               = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
   
     alert(obj.message.urlDecode());
@@ -375,7 +375,7 @@ function js_mostraLotes(iItem) {
   sField        = $('atendido'+iItem).id;
   sUrl          = 'mat4_mostraitemlotes.php?iCodMater='+iCodItem+'&iCodDepto='+iCodEstoque;
   sUrl         += '&nValor='+nValor+'&nValorSolicitado='+nValorReqItem+'&updateField='+sField;
-  js_OpenJanelaIframe('top.corpo','db_iframe_lotes',sUrl,'Lotes ',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotes',sUrl,'Lotes ',true);
   
 }
 

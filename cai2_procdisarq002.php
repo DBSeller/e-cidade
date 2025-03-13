@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_diversos_classe.php");
-include("classes/db_arreinscr_classe.php");
-include("classes/db_arrematric_classe.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_disbancodiver_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_diversos_classe.php"));
+include(modification("classes/db_arreinscr_classe.php"));
+include(modification("classes/db_arrematric_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_disbancodiver_classe.php"));
 $cldiversos      = new cl_diversos;
 $clarrematric    = new cl_arrematric;
 $clarreinscr     = new cl_arreinscr;
@@ -42,7 +42,7 @@ $cldisbancodiver = new cl_disbancodiver;
 db_postmemory($HTTP_POST_VARS);
 
 $sql="select x33_dtvenc as datavenc from aguaconfvenc where x33_exerc = ".db_getsession("DB_anousu")." and x33_parcela = $parcela"; 
-$result = pg_query($sql);
+$result = db_query($sql);
 db_fieldsmemory($result, 0);
 
 $data = split("-",$datavenc);
@@ -77,7 +77,7 @@ $sqldiferenca = "
 	  and disbanco.classi is true 
 	  and disarq.autent   is false  
     and disbanco.instit = $instit";
-$resultdiferenca = pg_query($sqldiferenca);
+$resultdiferenca = db_query($sqldiferenca);
 $linhasdiferenca = pg_num_rows($resultdiferenca);
 if($linhasdiferenca >0){
   db_inicio_transacao();
@@ -95,7 +95,7 @@ if($linhasdiferenca >0){
     $sqldisbancodiver .= "       inner join diversos on  k44_coddiver = dv05_coddiver ";
     $sqldisbancodiver .= "       left  join arrecad  on  dv05_numpre  = k00_numpre ";
     $sqldisbancodiver .= " where k44_idret = $idret ";
-    $resultdisbancodiver = pg_query($sqldisbancodiver);
+    $resultdisbancodiver = db_query($sqldisbancodiver);
     $linhasdisbancodiver = pg_num_rows($resultdisbancodiver);
     if($linhasdisbancodiver > 0){
       $linhadesprocess ++;
@@ -162,7 +162,7 @@ if($linhasdiferenca >0){
       $k00_numcgm = 0;
 
       $sqlcgm = " select k00_numcgm from arrenumcgm where k00_numpre = $k00_numpre";
-      $resultcgm = pg_query($sqlcgm);
+      $resultcgm = db_query($sqlcgm);
       $linhascgm = pg_num_rows($resultcgm);
       if($linhascgm>0){
         db_fieldsmemory($resultcgm,0);
@@ -173,7 +173,7 @@ if($linhasdiferenca >0){
         $sqlcgm .= "   from recibopaga ";
         $sqlcgm .= "        inner join arrenumcgm on arrenumcgm.k00_numpre = recibopaga.k00_numpre ";
         $sqlcgm .= "  where recibopaga.k00_numnov = $k00_numpre limit 1";
-        $resultcgm = pg_query($sqlcgm);
+        $resultcgm = db_query($sqlcgm);
         $linhascgm = pg_num_rows($resultcgm);
         if($linhascgm>0){
           db_fieldsmemory($resultcgm,0);
@@ -182,7 +182,7 @@ if($linhasdiferenca >0){
 
       if($k00_numcgm==0) {
         $sqlcgm = " select k00_numcgm from recibo where k00_numpre = $k00_numpre";
-        $resultcgm = pg_query($sqlcgm);
+        $resultcgm = db_query($sqlcgm);
         $linhascgm = pg_num_rows($resultcgm);
         if($linhascgm>0){
           db_fieldsmemory($resultcgm,0);
@@ -191,7 +191,7 @@ if($linhasdiferenca >0){
 
 
       $sqlerro=false;
-      $result06=pg_query("select nextval('numpref_k03_numpre_seq')");
+      $result06=db_query("select nextval('numpref_k03_numpre_seq')");
       db_fieldsmemory($result06,0);
       //echo "<br>erro = ".pg_last_error()."<br>";
       $dataatual = date("Y-m-d",db_getsession("DB_datausu"));
@@ -236,7 +236,7 @@ if($linhasdiferenca >0){
 			from arrecant 
 			inner join arrematric on arrematric.k00_numpre = arrecant.k00_numpre
 			where arrecant.k00_numpre = $k00_numpre";
-      $resultmatric = pg_query($sqlmatric);
+      $resultmatric = db_query($sqlmatric);
       $linhasmatric = pg_num_rows($resultmatric);
       if($linhasmatric>0){
         db_fieldsmemory($resultmatric,0);
@@ -269,7 +269,7 @@ select arreinscr.k00_inscr
 from arrecant 
 inner join arreinscr on arreinscr.k00_numpre = arrecant.k00_numpre
 where arrecant.k00_numpre = $k00_numpre";
-      $resultinscr = pg_query($sqlinscr);
+      $resultinscr = db_query($sqlinscr);
       $linhasinscr = pg_num_rows($resultinscr);
       if($linhasinscr>0){
         db_fieldsmemory($resultinscr,0);
@@ -286,7 +286,7 @@ where arrecant.k00_numpre = $k00_numpre";
 
 
       $sqlArretipo = " select dv09_tipo as arretipo from procdiver where dv09_procdiver = $procedencia and dv09_instit = ".db_getsession('DB_instit') ;
-      $rsArretipo  = pg_query($sqlArretipo);
+      $rsArretipo  = db_query($sqlArretipo);
       if (pg_num_rows($rsArretipo) > 0 ){
         db_fieldsmemory($rsArretipo,0);
       }else{
@@ -295,7 +295,7 @@ where arrecant.k00_numpre = $k00_numpre";
         exit;
       }
 
-      $result09 = pg_query("select fc_geraarrecad(7,$nextval,true,2) as retorno") ;
+      $result09 = db_query("select fc_geraarrecad(7,$nextval,true,2) as retorno") ;
       if (pg_num_rows($result09) > 0 ) {
         db_fieldsmemory($result09,0);
         $iRetorno = substr(trim($retorno),0,1);

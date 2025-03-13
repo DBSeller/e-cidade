@@ -82,10 +82,10 @@ db_input('la22_i_codigo',10,$Ila22_i_codigo,true,'text',3,'')
 <script>
 function js_pesquisala38_i_medico(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_medicos','func_medicos.php?funcao_js=parent.js_mostramedicos1|sd03_i_codigo|sd03_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_medicos','func_medicos.php?funcao_js=parent.js_mostramedicos1|sd03_i_codigo|sd03_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.la38_i_medico.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_medicos','func_medicos.php?pesquisa_chave='+document.form1.la38_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_medicos','func_medicos.php?pesquisa_chave='+document.form1.la38_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
      }else{
        document.form1.sd03_i_codigo.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostramedicos1(chave1,chave2){
 }
 function js_pesquisala38_i_requisicao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_lab_requisicao','func_lab_requisicao.php?funcao_js=parent.js_mostralab_requisicao1|la22_i_codigo|la22_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_requisicao','func_lab_requisicao.php?funcao_js=parent.js_mostralab_requisicao1|la22_i_codigo|la22_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.la38_i_requisicao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_lab_requisicao','func_lab_requisicao.php?pesquisa_chave='+document.form1.la38_i_requisicao.value+'&funcao_js=parent.js_mostralab_requisicao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_requisicao','func_lab_requisicao.php?pesquisa_chave='+document.form1.la38_i_requisicao.value+'&funcao_js=parent.js_mostralab_requisicao','Pesquisa',false);
      }else{
        document.form1.la22_i_codigo.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostralab_requisicao1(chave1,chave2){
   db_iframe_lab_requisicao.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lab_medico','func_lab_medico.php?funcao_js=parent.js_preenchepesquisa|la38_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_medico','func_lab_medico.php?funcao_js=parent.js_preenchepesquisa|la38_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_lab_medico.hide();

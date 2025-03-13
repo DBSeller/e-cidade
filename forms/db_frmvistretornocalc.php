@@ -58,7 +58,7 @@ db_input('y04_msgretorno',150,$Iy04_msgretorno,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_vistretornocalc','func_vistretornocalc.php?funcao_js=parent.js_preenchepesquisa|y04_codmsg','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistretornocalc','func_vistretornocalc.php?funcao_js=parent.js_preenchepesquisa|y04_codmsg','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_vistretornocalc.hide();

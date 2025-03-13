@@ -9,5 +9,6 @@
   "erro_obrasalvara"                    : "Ocorreu um erro ao salvar os dados na tabela obrasalvara",
   "alvara_renovado"                     : "Renovação efetuada com sucesso!",
   "erro_busca_historico"                : "Não foi possível buscar o histórico do alvará.",
-  "campo_obrigatorio"                   : "Campo [sCampo] é de preenchimento obrigatório."
+  "campo_obrigatorio"                   : "Campo [sCampo] é de preenchimento obrigatório.",
+  "alvara_cancelado"                    : "Não é possível renovar um alvará cancelado."
 }

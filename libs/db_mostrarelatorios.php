@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 define('FPDF_FONTPATH','fpdf151/font/');
-require('fpdf151/fpdf.php');
+require(modification('fpdf151/fpdf.php'));
 
 class PDF extends FPDF
 {

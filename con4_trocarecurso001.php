@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include ("classes/db_orctiporec_classe.php");
-include ("classes/db_conplanoreduz_classe.php");
-include ("classes/db_conplanoexe_classe.php");
-include ("classes/db_orcdotacao_classe.php");
-include ("classes/db_orcreceita_classe.php");
-include ("classes/db_empresto_classe.php");
-include ("classes/db_placaixarec_classe.php");
-include ("classes/db_orcreserprev_classe.php");
-include ("classes/db_sliprecurso_classe.php");
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
+include(modification("classes/db_conplanoexe_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcreceita_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
+include(modification("classes/db_placaixarec_classe.php"));
+include(modification("classes/db_orcreserprev_classe.php"));
+include(modification("classes/db_sliprecurso_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -80,7 +80,7 @@ if(isset($processar)){
   
   $sql = "update conplanoreduz set c61_codigo = $recurso where c61_anousu = ".db_getsession("DB_anousu")." and c61_codigo = ".$o15_codigo;
  
-  $result = @pg_query($sql);
+  $result = @db_query($sql);
   if($result == false ){
     $erro = true;
     $erro_msg = "Erro ao alterar conplanoreduz.";
@@ -90,7 +90,7 @@ if(isset($processar)){
 
     $sql = "update conplanoexe set c62_codrec = $recurso where c62_anousu = ".db_getsession("DB_anousu")." and c62_codrec = ".$o15_codigo;
  
-    $result = @pg_query($sql);
+    $result = @db_query($sql);
     if($result == false ){
       $erro = true;
       $erro_msg = "Erro ao alterar conplanorexe.";
@@ -102,7 +102,7 @@ if(isset($processar)){
   
     $sql = "update orcdotacao set o58_codigo = $recurso where o58_anousu = ".db_getsession("DB_anousu")." and o58_codigo = ".$o15_codigo;
  
-    $result = @pg_query($sql);
+    $result = @db_query($sql);
     if($result == false ){
       $erro = true;
       $erro_msg = "Já existe uma dotação com o estrutural a ser inserido. Verifique este recurso novo.";
@@ -114,7 +114,7 @@ if(isset($processar)){
   
     $sql = "update orcreceita set o70_codigo = $recurso where o70_anousu = ".db_getsession("DB_anousu")." and o70_codigo = ".$o15_codigo;
  
-    $result = @pg_query($sql);
+    $result = @db_query($sql);
     if($result == false ){
       $erro = true;
       $erro_msg = "Erro ao alterar orcreceita.";
@@ -127,7 +127,7 @@ if(isset($processar)){
   
     $sql = "update empresto set e91_recurso = $recurso where e91_anousu = ".db_getsession("DB_anousu")." and e91_recurso = ".$o15_codigo;
  
-    $result = @pg_query($sql);
+    $result = @db_query($sql);
     if($result == false ){
       $erro = true;
       $erro_msg = "Erro ao alterar empresto.";
@@ -139,7 +139,7 @@ if(isset($processar)){
   
     $sql = "update placaixarec set k81_codigo = $recurso where k81_codpla = placaixa.k80_codpla and placaixa.k80_data > '".db_getsession("DB_anousu")."-01-01' and k81_codigo = ".$o15_codigo;
  
-    $result = @pg_query($sql);
+    $result = @db_query($sql);
     if($result == false ){
       $erro = true;
       $erro_msg = "Erro ao alterar planilhas.";
@@ -151,7 +151,7 @@ if(isset($processar)){
     
     $sql = "update orcreserprev set o33_codigo = $recurso where o33_anousu = ".db_getsession("DB_anousu")." and  o33_codigo = ".$o15_codigo;
  
-    $result = @pg_query($sql);
+    $result = @db_query($sql);
     if($result == false ){
       $erro = true;
       $erro_msg = "Erro ao alterar reservas.";
@@ -163,7 +163,7 @@ if(isset($processar)){
     
     $sql = "update sliprecurso set k29_recurso = $recurso where k29_slip = slip.k17_codigo and slip.k17_data > '".db_getsession("DB_anousu")."-01-01' and  k29_recurso = ".$o15_codigo;
  
-    $result = @pg_query($sql);
+    $result = @db_query($sql);
     if($result == false ){
       $erro = true;
       $erro_msg = "Erro ao alterar slips.";
@@ -176,7 +176,7 @@ if(isset($processar)){
      $sql = "update orcppatiporec set o26_codigo = $recurso where o26_codseqppa = orcppaval.o24_codseqppa and orcppaval.o24_exercicio >= ".db_getsession("DB_anousu")." and o26_codigo = $o15_codigo";
     
  
-    $result = @pg_query($sql);
+    $result = @db_query($sql);
     if($result == false ){
       $erro = true;
       $erro_msg = "Erro ao alterar orcppatiporec.";

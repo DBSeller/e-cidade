@@ -1,34 +1,33 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
+require_once(modification("fpdf151/pdf.php"));
 
-include ("fpdf151/pdf.php");
-
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+parse_str($_SERVER["QUERY_STRING"]);
 
 $head3 = "Relatorio de Saldo da Tesouraria";
 $head5 = "DATA: $datai_dia/$datai_mes/$datai_ano ";
@@ -52,7 +51,6 @@ if ($tipo == "conta") {
 	$pdf->Cell(35, $alt, "VLR.DEBITO", "LRTB", 0, "C", 0);
 	$pdf->Cell(35, $alt, "VLR.CREDITO", "LRTB", 0, "C", 0);
 	$pdf->Cell(35, $alt, "SALDO ATUAL", "LRTB", 1, "C", 0);
-
 } else {
 	$pdf->Cell(20, $alt, "R.", "LRTB", 0, "C", 0);
 	$pdf->Cell(100, $alt, "DESCRICAO", "LRTB", 0, "C", 0);
@@ -61,6 +59,7 @@ if ($tipo == "conta") {
 	$pdf->Cell(35, $alt, "VLR.CREDITO", "LRTB", 0, "C", 0);
 	$pdf->Cell(35, $alt, "SALDO ATUAL", "LRTB", 1, "C", 0);
 }
+
 $totval1 = 0;
 $totval2 = 0;
 $totval3 = 0;
@@ -71,67 +70,204 @@ $tval3 = 0;
 $tval4 = 0;
 
 if ($tipo == "conta") {
+
+
 	$sql = "select k13_conta,k13_descr,c60_estrut,c61_codigo,o15_descr
-			              from saltes 
+			              from saltes
 			 	          inner join conplanoexe on c62_anousu = ".db_getsession("DB_anousu")." and c62_reduz = k13_conta
-				          inner join conplanoreduz on c61_anousu = ".db_getsession("DB_anousu")." and 
-                                                                       c61_reduz = c62_reduz and 
-                                                                       c61_instit = ".db_getsession("DB_instit")."                                                                         
+				          inner join conplanoreduz on c61_anousu = ".db_getsession("DB_anousu")." and
+                                                                       c61_reduz = c62_reduz and
+                                                                       c61_instit = ".db_getsession("DB_instit")."
 				          inner join conplano on c61_codcon = c60_codcon and c61_anousu = c60_anousu
-				          inner join orctiporec on o15_codigo = c61_codigo  
+				          inner join orctiporec on o15_codigo = c61_codigo
 					  where c60_codsis in (5,6)
 				      order by k13_descr";
 
-} else
-	if ($tipo == "instituicao") {
+} else if ($tipo == "instituicao") {
 		$sql = "select db90_codban,db90_descr
-						    from saltes 
-							   inner join conplanoexe on c62_anousu = ".db_getsession("DB_anousu")." and c62_reduz = k13_conta
-							   inner join conplanoreduz on c61_anousu = ".db_getsession("DB_anousu")." and 
-                                                                            c61_reduz = c62_reduz and 
-                                                                            c61_instit = ".db_getsession("DB_instit")."
-							   inner join conplano on c61_codcon = c60_codcon and c61_anousu=c60_anousu
-							   inner join orctiporec on o15_codigo = c61_codigo
-				               inner join conplanoconta on c63_codcon = conplano.c60_codcon and c63_anousu=c60_anousu                                                  
-				               inner join db_bancos on db90_codban = conplanoconta.c63_banco
-							where c60_codsis in (5,6)
-				            group by db90_codban, db90_descr
-						    order by db90_codban";
+                from saltes
+                   inner join conplanoexe on c62_anousu = ".db_getsession("DB_anousu")." and c62_reduz = k13_conta
+                   inner join conplanoreduz on c61_anousu = ".db_getsession("DB_anousu")." and
+                                                                c61_reduz = c62_reduz and
+                                                                c61_instit = ".db_getsession("DB_instit")."
+                   inner join conplano on c61_codcon = c60_codcon and c61_anousu=c60_anousu
+                   inner join orctiporec on o15_codigo = c61_codigo
+                   inner join conplanoconta on c63_codcon = conplano.c60_codcon and c63_anousu=c60_anousu  and c63_reduz = c61_reduz
+                   inner join db_bancos on db90_codban = conplanoconta.c63_banco
+                where c60_codsis in (5,6)
+                group by db90_codban, db90_descr
+                order by db90_codban";
 
-	} else {
-		$sql = "select c61_codigo,o15_descr
-					              from saltes 
-					 	          inner join conplanoexe on c62_anousu = ".db_getsession("DB_anousu")." and c62_reduz = k13_conta
-						          inner join conplanoreduz on c61_anousu = ".db_getsession("DB_anousu")." and 
-             											   c61_reduz = c62_reduz  and
-          										   c61_instit = ".db_getsession("DB_instit")."
-						          inner join conplano on c61_codcon = c60_codcon and c61_anousu=c60_anousu
-						          inner join orctiporec on o15_codigo = c61_codigo  
-							where c60_codsis in (5,6)
-					              group by c61_codigo, o15_descr
-						      order by c61_codigo ";
+} else if ($tipo == "domicilio_bancario") {
+
+
+
+
+
+    $instit = db_getsession("DB_instit");
+    $data = "$datai_ano-$datai_mes-$datai_dia";
+
+	$sql = "
+
+         select  substr(saltessaldo,2,13)::float8 as anterior,
+                 substr(saltessaldo,15,13)::float8 as debitado ,
+                 substr(saltessaldo,28,13)::float8 as creditado,
+                 substr(saltessaldo,41,13)::float8 as atual,
+                 *
+           from (
+
+               select
+                      k13_conta,
+                      k13_descr,
+                      db89_db_bancos || ' / ' || db89_codagencia || ' / ' ||  db83_conta || ' - ' || db83_dvconta as bancoagencia,
+                      o15_recurso,
+                      o15_descr,
+                      db83_conta  ,
+                      db83_dvconta,
+                      db89_db_bancos,
+                      o15_complemento,
+                      c61_reduz,
+                      fc_saltessaldo(k13_conta,'$data','$data',null, $instit) as saltessaldo
+		        from saltes
+					     inner join conplanoexe on c62_anousu = ".db_getsession("DB_anousu")." and c62_reduz = k13_conta
+					     inner join conplanoreduz on c61_anousu =".db_getsession("DB_anousu")." and
+		                                                              c61_reduz = c62_reduz and
+		                                                              c61_instit = ".db_getsession("DB_instit")."
+					     inner join conplano on c61_codcon = c60_codcon and c61_anousu=c60_anousu
+					     inner join orctiporec on o15_codigo = c61_codigo
+                         join conplanocontabancaria on c56_codcon = c61_codcon
+                                                   and c56_anousu = c61_anousu
+                                                   and c56_reduz = c61_reduz
+                         join contabancaria on (c56_contabancaria) = (db83_sequencial)
+                         join bancoagencia on (db83_bancoagencia) = (db89_sequencial)
+
+			     where c60_codsis in (5,6)
+             and (k13_limite is null or k13_limite >= '".date("Y-m-d",db_getsession("DB_datausu"))."')
+	        group by
+                    o15_recurso,
+                    k13_conta,
+                    k13_descr,
+                     o15_descr,
+                     db89_db_bancos,
+                     db89_codagencia,
+                     db83_conta,
+                     db83_dvconta,
+                     o15_complemento,
+                     c61_reduz
+             ) as xx
+
+
+			order by o15_recurso ";
+
+
+            $rsDomicilio = db_query($sql);
+            if (pg_numrows($rsDomicilio) > 0) {
+
+                $aContas = array();
+                for ($i = 0; $i < pg_numrows($rsDomicilio); $i++) {
+
+                    $oDados = db_utils::fieldsMemory($rsDomicilio, $i);
+                    $oDadosContas = new stdClass();
+                    $oDadosContas->k13_conta = $oDados->k13_conta;
+                    $oDadosContas->k13_descr = $oDados->k13_descr;
+                    $oDadosContas->bancoagencia = $oDados->bancoagencia;
+                    $oDadosContas->o15_recurso = $oDados->o15_recurso;
+                    $oDadosContas->o15_descr = $oDados->o15_descr;
+                    $oDadosContas->db83_conta = $oDados->db83_conta;
+                    $oDadosContas->db83_dvconta = $oDados->db83_dvconta;
+                    $oDadosContas->db89_db_bancos = $oDados->db89_db_bancos;
+                    $oDadosContas->o15_complemento = $oDados->o15_complemento;
+                    $oDadosContas->vlr_anterior = $oDados->anterior;
+                    $oDadosContas->vlr_debito = $oDados->debitado;
+                    $oDadosContas->vlr_credito = $oDados->creditado;
+                    $oDadosContas->vlr_atual = $oDados->atual;
+                    $aContas[$oDados->bancoagencia][] = $oDadosContas;
+                }
+
+                $aRegistros = array();
+                $oConta = null;
+                foreach ($aContas as $conta => $aConta) {
+
+                    $oTotais = new stdClass();
+                    $totalAnterior = 0;
+                    $totalDebito = 0;
+                    $totalCredito = 0;
+                    $totalAtual = 0;
+
+                    foreach($aConta as $oConta){
+
+                       if ($oConta->tipo != "2" || $oConta->tipo != "3") {
+
+                            $totalAnterior += $oConta->vlr_anterior;
+                            $totalDebito +=   $oConta->vlr_debito;
+                            $totalCredito +=  $oConta->vlr_credito;
+                            $totalAtual +=   $oConta->vlr_atual;
+                        }
+
+                        $aRegistros[$conta]['dados'][] = $oConta;
+                    }
+
+                    $oTotais->totalAnterior = $totalAnterior;
+                    $oTotais->totalDebito = $totalDebito;
+                    $oTotais->totalCredito = $totalCredito;
+                    $oTotais->totalAtual = $totalAtual;
+                    $aRegistros[$conta]['totais'] =$oTotais;
+
+                }
+
+
+            }
+
+
+
+
+
+
+
+} else {
+		$sql = "select o15_recurso, o15_descr
+                  from saltes
+                  inner join conplanoexe on c62_anousu = ".db_getsession("DB_anousu")." and c62_reduz = k13_conta
+                  inner join conplanoreduz on c61_anousu = ".db_getsession("DB_anousu")." and
+                                           c61_reduz = c62_reduz  and
+                                   c61_instit = ".db_getsession("DB_instit")."
+                  inner join conplano on c61_codcon = c60_codcon and c61_anousu=c60_anousu
+                  inner join orctiporec on o15_codigo = c61_codigo
+            where c60_codsis in (5,6)
+                  group by o15_recurso, o15_descr
+              order by o15_recurso ";
 	}
+
+
+
+
+
 $result = db_query($sql);
 if (empty ($datai_dia)) {
 	$datai_dia = date('d', db_getsession("DB_datausu"));
 	$datai_mes = date('m', db_getsession("DB_datausu"));
 	$datai_ano = date('Y', db_getsession("DB_datausu"));
 }
+
+
 for ($i = 0; $i < pg_numrows($result); $i ++) {
+
+
 	db_fieldsmemory($result, $i);
+
 	if ($tipo == "conta") {
+
 		$result1 = db_query("select fc_saltessaldo($k13_conta,'$datai_ano-$datai_mes-$datai_dia','$datai_ano-$datai_mes-$datai_dia',null,".db_getsession("DB_instit").")");
 		$valor = pg_result($result1, 0, 0);
 		$valor = preg_split("/\s+/", $valor);
 
 		$pdf->Cell(20, $alt, "$k13_conta", "LRTB", 0, "C", 0);
 		$pdf->Cell(100, $alt, "$k13_descr", "LRTB", 0, "L", 0);
-		if ($valor[0] == "2")
+		if ($valor[0] == "2"){
 			$pdf->Cell(20, $alt, "Nada no Corrente", "LRTB", 0, "L", 0);
-		else
-			if ($valor[0] == "3")
+        }else if ($valor[0] == "3") {
 				$pdf->Cell(20, $alt, "Nada no cfautent", "LRTB", 0, "L", 0);
-			else {
+        }else {
 				$pdf->Cell(35, $alt, db_formatar($valor[1], 'f'), "LRTB", 0, "R", 0);
 				$pdf->Cell(35, $alt, db_formatar($valor[2], 'f'), "LRTB", 0, "R", 0);
 				$pdf->Cell(35, $alt, db_formatar($valor[3], 'f'), "LRTB", 0, "R", 0);
@@ -143,22 +279,23 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 				$totval4 += (float) str_replace(",", "", $valor[4]);
 			}
 		$pdf->Ln();
-	} else
-		if ($tipo == "recurso") { // tipo = recurso
+
+	} else if ($tipo == "recurso") { // tipo = recurso
+
 			// imprime recurso e totaliza contas
-			$pdf->Cell(20, $alt, "$c61_codigo", "LRTB", 0, "C", 0);
+			$pdf->Cell(20, $alt, "$o15_recurso", "LRTB", 0, "C", 0);
 			$pdf->Cell(100, $alt, "$o15_descr", "LRTB", 0, "L", 0);
 			$sql = "select k13_conta
-									                 from saltes 
+									                 from saltes
 										               inner join conplanoexe on c62_anousu = ".db_getsession("DB_anousu")."
 											                          and c62_reduz = k13_conta
-										               inner join conplanoreduz on c61_anousu =".db_getsession("DB_anousu")." and 
-        																c61_reduz = c62_reduz and 
+										               inner join conplanoreduz on c61_anousu =".db_getsession("DB_anousu")." and
+        																c61_reduz = c62_reduz and
 																	c61_instit = ".db_getsession("DB_instit")."
 										               inner join conplano on c61_codcon = c60_codcon and c61_anousu=c60_anousu
-										               inner join orctiporec on o15_codigo = c61_codigo  
-									                 where orctiporec.o15_codigo = $c61_codigo 
-									                 		and c60_codsis in (5,6) 
+										               inner join orctiporec on o15_codigo = c61_codigo
+									                 where orctiporec.o15_recurso = '{$o15_recurso}'
+									                 		and c60_codsis in (5,6)
 											 order by k13_conta";
 			$result_contas = db_query($sql);
 			$nrows = pg_numrows($result_contas);
@@ -190,36 +327,36 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 			$tval3 = 0;
 			$tval4 = 0;
 
-		} else
-			if ($tipo == "instituicao") {
-				// quebra por bancos e lista as contas abaixo				
-				$sql = "   select k13_conta, 
-								          k13_descr, 
+		} else if ($tipo == "instituicao") {
+
+				// quebra por bancos e lista as contas abaixo
+				$sql = "   select k13_conta,
+								          k13_descr,
 								          c61_codigo,
 								          fc_saltessaldo(k13_conta,
 								                                 '$datai_ano-$datai_mes-$datai_dia',
 								                                 '$datai_ano-$datai_mes-$datai_dia',
 								                                  null,
 								                                  ".$instit.")   as valor
-								from saltes 
+								from saltes
 										    inner join conplanoexe on c62_anousu = ".$anousu."
 								                        and c62_reduz = k13_conta
-								            inner join conplanoreduz on c61_anousu = ".$anousu." and 
-       												 c61_reduz = c62_reduz and 
+								            inner join conplanoreduz on c61_anousu = ".$anousu." and
+       												 c61_reduz = c62_reduz and
                                                                                          c61_instit = ".$instit."
 										    inner join conplano on c61_codcon = c60_codcon and c61_anousu=c60_anousu
 										    inner join orctiporec on o15_codigo = c61_codigo
-								            inner join conplanoconta on c63_codcon = conplano.c60_codcon and c63_anousu=c60_anousu
-								            inner join db_bancos on trim(db90_codban) = conplanoconta.c63_banco::varchar(10)  
-							  where trim(db_bancos.db90_codban)::integer = $db90_codban 
-									     and c60_codsis in (5,6)                          
-							  order by k13_descr								                      
-								              ";								 
+								            inner join conplanoconta on c63_codcon = conplano.c60_codcon and c63_anousu=c60_anousu  and c63_reduz = c61_reduz
+								            inner join db_bancos on trim(db90_codban) = conplanoconta.c63_banco::varchar(10)
+							  where trim(db_bancos.db90_codban)::integer = $db90_codban
+									     and c60_codsis in (5,6)
+							  order by k13_descr
+								              ";
 				$result_contas = db_query($sql);
 				$nrows = pg_numrows($result_contas);
 
 				// db_criatabela($result_contas); exit;
-				 
+
 				$tot_livre_ant = 0;
 				$tot_livre_deb = 0;
 				$tot_livre_cre = 0;
@@ -231,7 +368,7 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 				for ($h = 0; $h < $nrows; $h ++) {
 					db_fieldsmemory($result_contas, $h);
 					$valor = preg_split("/\s+/", $valor);
-					if ($c61_codigo == 1) { // totalizamos o recurso livre						
+					if ($c61_codigo == 1) { // totalizamos o recurso livre
 						if ($valor[0] != "2" || $valor[0] != "3") {
 							$tot_livre_ant += (float) str_replace(",", "", $valor[1]);
 							$tot_livre_deb += (float) str_replace(",", "", $valor[2]);
@@ -261,7 +398,7 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 			    $totval2 += $tot_livre_deb + $tot_vinculado_deb;
 			    $totval3 += $tot_livre_cre  + $tot_vinculado_cre;
 			    $totval4 += $tot_livre_final + $tot_vinculado_final;
-			
+
                 // total livre
                 $pdf->SetFont('Arial', '', 8); // seta a fonte do relatorio
                 $pdf->Cell(20, $alt, "", "LRTB", 0, "C", 0);
@@ -278,7 +415,7 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
                 $pdf->Cell(35, $alt, db_formatar( $tot_vinculado_ant, 'f'), "LRTB", 0, "R", 0);
 				$pdf->Cell(35, $alt, db_formatar($tot_vinculado_deb, 'f'), "LRTB", 0, "R", 0);
 				$pdf->Cell(35, $alt, db_formatar($tot_vinculado_cre, 'f'), "LRTB", 0, "R", 0);
-				$pdf->Cell(35, $alt, db_formatar($tot_vinculado_final, 'f'), "LRTB", 0, "R", 0);                			 
+				$pdf->Cell(35, $alt, db_formatar($tot_vinculado_final, 'f'), "LRTB", 0, "R", 0);
 				$pdf->Ln();
 
                 // listar contas
@@ -296,27 +433,74 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 			           $pdf->Cell(35, $alt, db_formatar($tval2, 'f'), "LRTB", 0, "R", 0);
 			           $pdf->Cell(35, $alt, db_formatar($tval3, 'f'), "LRTB", 0, "R", 0);
 			           $pdf->Cell(35, $alt, db_formatar($tval4, 'f'), "LRTB", 0, "R", 0);
-					   
-					   
+
+
 				   }
                    $pdf->Ln();
                 }
-                
+
+
+            } else if ($tipo == "domicilio_bancario") {
+
+                $totval1 = 0;
+                $totval2 = 0;
+                $totval3 = 0;
+                $totval4 = 0;
+
+                foreach( $aRegistros as $conta => $registros ){
+
+
+                      $oTatal = $registros['totais'];
+
+                      $totval1 += $oTatal->totalAnterior;
+                      $totval2 += $oTatal->totalDebito;
+                      $totval3 += $oTatal->totalCredito;
+                      $totval4 += $oTatal->totalAtual;
+
+
+                      $pdf->SetFont('Arial', 'B', 10); // seta a fonte do relatorio
+                      $pdf->Cell(120, $alt, "$conta", "", 0, "L", 0);
+                      $pdf->Cell(35, $alt, db_formatar($oTatal->totalAnterior, 'f'), "", 0, "R", 0);
+                      $pdf->Cell(35, $alt, db_formatar($oTatal->totalDebito, 'f'), "", 0, "R", 0);
+                      $pdf->Cell(35, $alt, db_formatar($oTatal->totalCredito, 'f'), "", 0, "R", 0);
+                      $pdf->Cell(35, $alt, db_formatar($oTatal->totalAtual, 'f'), "", 1, "R", 0);
+
+                      $pdf->SetFont('Arial', '', 10); // seta a fonte do relatorio
+
+                      foreach ($registros['dados'] as $oConta) {
+
+                        $pdf->Cell(5, $alt, " ", "", 0, "C", 0);
+                        $pdf->Cell(115, $alt, "($oConta->k13_conta) $oConta->k13_descr  - $oConta->o15_recurso - $oConta->o15_complemento", "", 0, "L", 0);
+                        $pdf->Cell(35, $alt, db_formatar($oConta->vlr_anterior, 'f'), "", 0, "R", 0);
+                        $pdf->Cell(35, $alt, db_formatar($oConta->vlr_debito, 'f'), "", 0, "R", 0);
+                        $pdf->Cell(35, $alt, db_formatar($oConta->vlr_credito, 'f'), "", 0, "R", 0);
+                        $pdf->Cell(35, $alt, db_formatar($oConta->vlr_atual, 'f'), "", 1, "R", 0);
+                      }
+
+                    }
+
+                    $pdf->Ln();
+                    break;
+
+
+
                 /////// fim do lista contas
 			} else {
+
+
 				$pdf->SetFont('Arial', 'B', 10); // seta a fonte do relatorio
-				$pdf->Cell(20, $alt, "$c61_codigo", "LRTB", 0, "C", 0);
+				$pdf->Cell(20, $alt, "$o15_recurso", "LRTB", 0, "C", 0);
 				$pdf->Cell(100, $alt, "$o15_descr", "LRTB", 0, "L", 0);
 				$sql = "select k13_conta, k13_descr, c60_estrut
-												             from saltes 
+												             from saltes
 												                inner join conplanoexe on c62_anousu = ".db_getsession("DB_anousu")."
 													                          and c62_reduz = k13_conta
-												                inner join conplanoreduz on c61_anousu=".$anousu." and 
-              															 c61_reduz = c62_reduz and 
+												                inner join conplanoreduz on c61_anousu=".$anousu." and
+              															 c61_reduz = c62_reduz and
 																 c61_instit = ".db_getsession("DB_instit")."
 												                inner join conplano on c61_codcon = c60_codcon and c61_anousu=c60_anousu
-												                inner join orctiporec on o15_codigo = c61_codigo  
-												             where orctiporec.o15_codigo = $c61_codigo 
+												                inner join orctiporec on o15_codigo = c61_codigo
+												             where orctiporec.o15_recurso = '{$o15_recurso}'
 											                    and c60_codsis in (5,6)
 												  	         order by k13_descr";
 				$result_contas = db_query($sql);
@@ -370,6 +554,7 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 }
 
 $pdf->Ln(7);
+$pdf->SetFont('Arial', 'B'); // seta a fonte do relatorio
 $pdf->Cell(60, $alt, "Totais", "LRTB", 0, "C", 0);
 $pdf->Cell(50, $alt, "Anterior:".db_formatar($totval1, 'f'), "LRTB", 0, "R", 0);
 $pdf->Cell(50, $alt, "Debito  :".db_formatar($totval2, 'f'), "LRTB", 0, "R", 0);

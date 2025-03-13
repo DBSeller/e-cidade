@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -238,7 +238,7 @@ if ($oDaoTipoDespacho->numrows > 1) {
   <tr>
   <td colspan=4 align='center' >
      <input name="alterar" type="submit" id="db_opcao" value="Alterar" onclick='return js_submit();' />
-     <input name="voltar" type="button" id="voltar" value="Voltar" onclick='top.corpo.location.href="pro4_despachoalt001.php"' >
+     <input name="voltar" type="button" id="voltar" value="Voltar" onclick='(window.CurrentWindow || parent.CurrentWindow).corpo.location.href="pro4_despachoalt001.php"' >
      <input name="imprimir" type="button" id="imprimir" value="Imprimir Despacho" onclick='js_imprime();' >
   </td>
   </tr>
@@ -250,7 +250,7 @@ if ($oDaoTipoDespacho->numrows > 1) {
 <td colspan=4 align="center">
 <b>
   Não existe despacho para alterar!!<br><br>
-<input name="voltar" type="button" id="voltar" value="Voltar" onclick='top.corpo.location.href="pro4_despachoalt001.php"' >
+<input name="voltar" type="button" id="voltar" value="Voltar" onclick='(window.CurrentWindow || parent.CurrentWindow).corpo.location.href="pro4_despachoalt001.php"' >
 </b>
 </td>
 </tr>
@@ -264,7 +264,7 @@ if ($oDaoTipoDespacho->numrows > 1) {
 <td colspan=4 align="center">
 <b>
   Não existe despacho para alterar!!<br><br>
-<input name="voltar" type="button" id="voltar" value="Voltar" onclick='top.corpo.location.href="pro4_despachoalt001.php"' >
+<input name="voltar" type="button" id="voltar" value="Voltar" onclick='(window.CurrentWindow || parent.CurrentWindow).corpo.location.href="pro4_despachoalt001.php"' >
 </b>
 </td>
 </tr>

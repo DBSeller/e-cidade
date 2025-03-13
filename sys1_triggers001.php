@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_sysarquivo_classe.php");
-include("classes/db_db_sysfuncoes_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_sysarquivo_classe.php"));
+include(modification("classes/db_db_sysfuncoes_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if(isset($retorno)) {
@@ -42,17 +42,17 @@ if(isset($retorno)) {
 		  inner join db_sysarquivo a
 		  on a.codarq = t.codarq
           where codtrigger = $retorno";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 }
 //////////INCLUIR/////////////
 if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS);
-  //$result = pg_exec("select max(codtrigger) + 1 from db_systriggers");
-  $result = pg_exec("select nextval('db_systriggers_codtrigger_seq')");
+  //$result = db_query("select max(codtrigger) + 1 from db_systriggers");
+  $result = db_query("select nextval('db_systriggers_codtrigger_seq')");
   $codtrigger = pg_result($result,0,0);
   $codtrigger = $codtrigger==""?"1":$codtrigger;
-  pg_exec("insert into db_systriggers  (codtrigger,nometrigger,quandotrigger,eventotrigger,codfuncao,codarq )
+  db_query("insert into db_systriggers  (codtrigger,nometrigger,quandotrigger,eventotrigger,codfuncao,codarq )
                                        values($codtrigger,
                                              '$nometrigger',
 				  	     '$quandotrigger',
@@ -63,7 +63,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
 ////////////////ALTERAR////////////////  
 } else if(isset($HTTP_POST_VARS["alterar"])) {
   db_postmemory($HTTP_POST_VARS);
-  pg_exec("update db_systriggers set nometrigger = '$nometrigger',
+  db_query("update db_systriggers set nometrigger = '$nometrigger',
 									 quandotrigger = '$quandotrigger',
 									 eventotrigger = '$eventotrigger',
 									 codfuncao = $codfuncao,
@@ -72,7 +72,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   db_redireciona("sys1_triggers001.php");
 ////////////////EXCLUIR//////////////
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("delete from db_systriggers where codtrigger = ".$HTTP_POST_VARS["codtrigger"]) or die("Erro(36) excluindo db_systrigger");			
+  db_query("delete from db_systriggers where codtrigger = ".$HTTP_POST_VARS["codtrigger"]) or die("Erro(36) excluindo db_systrigger");			
   db_redireciona("sys1_triggers001.php");
 }
 

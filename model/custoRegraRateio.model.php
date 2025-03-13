@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 /**
   * Cria Regras de Rateio para os criteios 
-  * @version $Author: dbiuri $  -  $Revision: 1.1 $ 
+  * @version $Author: dbanderson $  -  $Revision: 1.3 $ 
   * @package Custos
   */
 final class custoRegraRateio {

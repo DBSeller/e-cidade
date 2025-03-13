@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once "libs/db_stdlib.php";
-require_once "libs/db_conecta.php";
-require_once "libs/db_sessoes.php";
-require_once "libs/db_usuariosonline.php";
-require_once "dbforms/db_funcoes.php";
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("dbforms/db_funcoes.php");
 
 $clpcproc          = new cl_pcproc;
 $clpcorcamitem     = new cl_pcorcamitem;
@@ -110,16 +110,16 @@ if ($op == "alterar") {
 
   function js_pesquisapc80_codproc(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo.iframe_orcam',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcam',
                           'db_iframe_pcproc',
-                          'func_pcproc.php?orclic=true&situacao=2&funcao_js=parent.js_mostrapcproc1|pc80_codproc',
+                          'func_pcproc.php?orclic=true&situacao=2&lBloqueiaVinculadosOrcamento=true&funcao_js=parent.js_mostrapcproc1|pc80_codproc',
                           'Pesquisa',
                           true,
                           '0');
     }else{
-      js_OpenJanelaIframe('top.corpo.iframe_orcam',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcam',
                           'db_iframe_pcproc',
-                          'func_pcproc.php?orclic=true&situacao=2&funcao_js=parent.js_mostrapcproc1|pc80_codproc',
+                          'func_pcproc.php?orclic=true&situacao=2&lBloqueiaVinculadosOrcamento=true&funcao_js=parent.js_mostrapcproc1|pc80_codproc',
                           'Pesquisa',false,'0');
     }
   }

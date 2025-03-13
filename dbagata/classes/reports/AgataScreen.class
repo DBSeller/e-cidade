@@ -46,7 +46,7 @@ class AgataScreen extends AgataReport
         
         
         $this->window = new GtkWindow;
-        $this->window->connect_object('key_press_event', array(&$this,'KeyTest'));
+        $this->window->connect_object('key_press_event', array($this,'KeyTest'));
         $this->window->set_title(_a('Preview of Report'));
         $this->window->set_uposition(20,20);
         $this->window->set_default_size(740,540);
@@ -95,12 +95,12 @@ class AgataScreen extends AgataReport
             $local_pix['sxw']    = Gdk::pixmap_create_from_xpm($this->window->window, null, AGATA_PATH . '/interface/sxw.xpm');
             
             $hbox = new GtkHBox;
-            $hbox->pack_start(new Button(array(&$this, 'PreGenerate'), _a('Export to TXT File'), $local_pix['edit'], ICONBUTTON, 'txt'), false, false);
-            $hbox->pack_start(new Button(array(&$this, 'PreGenerate'), _a('Export to PDF File'), $local_pix['pdf'],  ICONBUTTON, 'pdf'), false, false);
-            $hbox->pack_start(new Button(array(&$this, 'PreGenerate'), _a('Export to HTML File'),$local_pix['html'], ICONBUTTON, 'html'),false, false);
-            $hbox->pack_start(new Button(array(&$this, 'PreGenerate'), _a('Export to XML File'), $local_pix['xml'],  ICONBUTTON, 'xml'), false, false);
-            $hbox->pack_start(new Button(array(&$this, 'PreGenerate'), _a('Export to CSV File'), $local_pix['csv'],  ICONBUTTON, 'csv'), false, false);
-            $hbox->pack_start(new Button(array(&$this, 'PreGenerate'), _a('Export to SXW File'), $local_pix['sxw'],  ICONBUTTON, 'sxw'), false, false);
+            $hbox->pack_start(new Button(array($this, 'PreGenerate'), _a('Export to TXT File'), $local_pix['edit'], ICONBUTTON, 'txt'), false, false);
+            $hbox->pack_start(new Button(array($this, 'PreGenerate'), _a('Export to PDF File'), $local_pix['pdf'],  ICONBUTTON, 'pdf'), false, false);
+            $hbox->pack_start(new Button(array($this, 'PreGenerate'), _a('Export to HTML File'),$local_pix['html'], ICONBUTTON, 'html'),false, false);
+            $hbox->pack_start(new Button(array($this, 'PreGenerate'), _a('Export to XML File'), $local_pix['xml'],  ICONBUTTON, 'xml'), false, false);
+            $hbox->pack_start(new Button(array($this, 'PreGenerate'), _a('Export to CSV File'), $local_pix['csv'],  ICONBUTTON, 'csv'), false, false);
+            $hbox->pack_start(new Button(array($this, 'PreGenerate'), _a('Export to SXW File'), $local_pix['sxw'],  ICONBUTTON, 'sxw'), false, false);
             $hbox->pack_start(new GtkHBox);
             
             $vbox->pack_start($hbox, false, false);
@@ -108,7 +108,7 @@ class AgataScreen extends AgataReport
         
         $hbox2 = new GtkHBox;
         $hbox2->pack_start(new GtkHBox);
-        $hbox2->pack_start(new Button(array(&$this, 'Close'),   _a('Close'), $Pixmaps['ok'],  IMAGEBUTTON), false, false);
+        $hbox2->pack_start(new Button(array($this, 'Close'),   _a('Close'), $Pixmaps['ok'],  IMAGEBUTTON), false, false);
         
         
         $vbox->pack_start($a = new GtkHSeparator, false, false);
@@ -216,12 +216,12 @@ class AgataScreen extends AgataReport
                             }
                             if ($withcontent)
                             {
-                                $bg = &new GdkColor(54000, 54000, 54000);
+                                $bg = new GdkColor(54000, 54000, 54000);
                                 $style = null;
-                                $style = &new GtkStyle;
+                                $style = new GtkStyle;
                                 $style->base[GTK_STATE_NORMAL] = $bg;
                                 $node = $this->TreeList->AppendLineItems($this->Nodes[$this->Association[$chave]], $totalline, null, $style);
-                                $fg = &new GdkColor(51400, 0, 0);
+                                $fg = new GdkColor(51400, 0, 0);
                                 $style->fg[GTK_STATE_NORMAL] = $fg;
                             }
                         }
@@ -324,9 +324,9 @@ class AgataScreen extends AgataReport
                         }
                         if ($withcontent)
                         {
-                            $bg = &new GdkColor(54000, 54000, 54000);
+                            $bg = new GdkColor(54000, 54000, 54000);
                             $style = null;
-                            $style = &new GtkStyle;
+                            $style = new GtkStyle;
                             $style->base[GTK_STATE_NORMAL] = $bg;
                             if ($TreeView)
                             {
@@ -336,7 +336,7 @@ class AgataScreen extends AgataReport
                             {
                                 $node = $this->TreeList->AppendLineItems($totalline, $style);
                             }
-                            $fg = &new GdkColor(51400, 0, 0);
+                            $fg = new GdkColor(51400, 0, 0);
                             $style->fg[GTK_STATE_NORMAL] = $fg;
                         }
                     }
@@ -389,7 +389,7 @@ class AgataScreen extends AgataReport
         if (!in_array($type, array('txt', 'xml', 'csv')))
         {
             $items  = Layout::ListLayouts();
-            $this->LayoutList = &new IList($items, array(&$this, 'ReturnLayout'), $Pixmaps['ico_colors'], _a('Choose the Layout'), _a('Layout Name'), $type);
+            $this->LayoutList = new IList($items, array($this, 'ReturnLayout'), $Pixmaps['ico_colors'], _a('Choose the Layout'), _a('Layout Name'), $type);
         }
         else
         {
@@ -402,7 +402,7 @@ class AgataScreen extends AgataReport
         $OutputDir = $this->agataConfig['general']['OutputDir'];
         $button = array('interface/output.xpm', _a('Output'), $OutputDir);
         $message = _a('Export to ' . strtoupper($type) . ' File');
-        $dialog = new FileDialog($message, array($type), $button, $OutputDir, array(&$this, 'Generate'), $type);
+        $dialog = new FileDialog($message, array($type), $button, $OutputDir, array($this, 'Generate'), $type);
         
         if ($this->FileName)
         {
@@ -420,7 +420,7 @@ class AgataScreen extends AgataReport
         if ($FileName)
         {
             $fileselection->hide();
-            $objQueryData = &new AgataQueryArray($this->QueryArray);
+            $objQueryData = new AgataQueryArray($this->QueryArray);
             $objQueryData->Columns = $this->CurrentQuery->Columns;
             $objQueryData->ColumnCount = $this->CurrentQuery->ColumnCount;
             $objQueryData->Parameters  = $this->CurrentQuery->Parameters;

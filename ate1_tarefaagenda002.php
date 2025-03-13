@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,80 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tarefa_agenda_classe.php");
-include("classes/db_tarefa_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tarefa_agenda_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 $cltarefa_agenda = new cl_tarefa_agenda;
-$cltarefa      = new cl_tarefa;
-$db_opcao = 22;
-$db_botao = false;
+$cltarefa        = new cl_tarefa;
+$db_opcao        = 22;
+$db_botao        = false;
+$sqlerro         = false;   
+  
+  if(isset($incluir)){
+    db_inicio_transacao();
+    $cltarefa_agenda->at13_tarefa  = $at13_tarefa;
+    $cltarefa_agenda->at13_dia     = $at13_dia_ano."-".$at13_dia_mes."-".$at13_dia_dia;
+    $cltarefa_agenda->at13_horaini = $at13_horaini;
+    $cltarefa_agenda->at13_horafim = $at13_horafim;
+    $cltarefa_agenda->incluir($at13_sequencial);
+    
+    if ($cltarefa_agenda->erro_status   == 0) {
+      $erro_msg = $cltarefa_agenda->erro_msg;
+      $sqlerro  = true;  
+    }
+    
+    db_fim_transacao($sqlerro);
+    db_redireciona("ate1_tarefaagenda002.php?at13_tarefa=".$at13_tarefa);
+   
+   }
+   
+   if(isset($alterar)){
+    db_inicio_transacao();
+    $cltarefa_agenda->at13_tarefa  = $at13_tarefa;
+    $cltarefa_agenda->at13_dia     = $at13_dia_ano."-".$at13_dia_mes."-".$at13_dia_dia;
+    $cltarefa_agenda->at13_horaini = $at13_horaini;
+    $cltarefa_agenda->at13_horafim = $at13_horafim;
+    $cltarefa_agenda->alterar($at13_sequencial);
+    
+    if ($cltarefa_agenda->erro_status   == 0) {
+      $erro_msg = $cltarefa_agenda->erro_msg;
+      $sqlerro  = true;  
+    }
+    
+    db_fim_transacao($sqlerro);
+    db_redireciona("ate1_tarefaagenda002.php?at13_tarefa=".$at13_tarefa);
+   
+   }
+   
+   if(isset($excluir)){
+    db_inicio_transacao();
+    $cltarefa_agenda->excluir($at13_sequencial);
+    
+    if ($cltarefa_agenda->erro_status   == 0) {
+      $erro_msg = $cltarefa_agenda->erro_msg;
+      $sqlerro  = true;  
+    }
+    
+    db_fim_transacao($sqlerro);
+    db_redireciona("ate1_tarefaagenda002.php?at13_tarefa=".$at13_tarefa);
+   
+   }
+   
+   if(isset($opcao) && ( $opcao == "alterar" || $opcao == "excluir") ){
+      $rsTarefaAgenda = $cltarefa_agenda->sql_record($cltarefa_agenda->sql_query_file($at13_sequencial));
+      if($cltarefa_agenda->numrows > 0){
+        db_fieldsmemory($rsTarefaAgenda,0); 
+      }
+    }
+ 
+ 
 ?>
 <html>
 <head>
@@ -54,7 +114,7 @@ $db_botao = false;
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcontarefaagenda.php");
+	include(modification("forms/db_frmtarefaagenda.php"));
 	?>
     </center>
 	</td>
@@ -67,7 +127,7 @@ if(isset($alterar) || isset($excluir) || isset($incluir)){
     db_msgbox($erro_msg);
     if($cltarefausu->erro_campo!=""){
         echo "<script> document.form1.".$cltarefausu->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-        echo "<script> document.form1.".$cltarefausu->erro_campo.".focus();</script>";
+       echo "<script> document.form1.".$cltarefausu->erro_campo.".focus();</script>";
     }
 }
 ?>

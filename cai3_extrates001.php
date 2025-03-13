@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -131,8 +131,8 @@ function js_mt() {
             <tr> 
               <td height="25" nowrap> <select name="conta[]" size="10" id="conta" multiple>
                   <?
-//            	     $result = pg_exec("select k13_reduz,k13_descr from saltes inner join conplanoexe on c62_reduz = k13_reduz and c62_anousu = " . db_getsession("DB_anousu") . " inner join conplanoexe on c62_reduz = c61_reduz and c62_anousu = c61_anousu and c61_instit = " . db_getsession("DB_instit"));
-            	     $result = pg_exec("select k13_reduz, k13_descr 
+//            	     $result = db_query("select k13_reduz,k13_descr from saltes inner join conplanoexe on c62_reduz = k13_reduz and c62_anousu = " . db_getsession("DB_anousu") . " inner join conplanoexe on c62_reduz = c61_reduz and c62_anousu = c61_anousu and c61_instit = " . db_getsession("DB_instit"));
+            	     $result = db_query("select k13_reduz, k13_descr 
 		                        from saltes 
 					     inner join conplanoexe   on c62_reduz  = k13_reduz and 
 					                                 c62_anousu = " . db_getsession("DB_anousu") . 
@@ -148,7 +148,7 @@ function js_mt() {
 			  <select name="caixa" id="caixa">
 			  <option value="T">Todos</option>
                   <?
-				 $result = pg_exec("select k11_id,k11_ipterm from cfautent where k11_instit = " . db_getsession("DB_instit") . " order by k11_ipterm");
+				 $result = db_query("select k11_id,k11_ipterm from cfautent where k11_instit = " . db_getsession("DB_instit") . " order by k11_ipterm");
 				 $numrows = pg_numrows($result);
 				 for($i = 0;$i < $numrows;$i++)
 				   echo "<option value=\"".pg_result($result,$i,0)."\">".pg_result($result,$i,1)."</option>\n";

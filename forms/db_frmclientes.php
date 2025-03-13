@@ -77,7 +77,7 @@ $clclientes->rotulo->label();
         <td colspan="3"> 
           <?
 
-            require_once("classes/db_db_uf_classe.php");
+            require_once(modification("classes/db_db_uf_classe.php"));
             
             $clDBUf = new cl_db_uf();
             $rsUf   = $clDBUf->sql_record($clDBUf->sql_query_file(null,"db12_codigo,db12_uf"));
@@ -162,7 +162,7 @@ $clclientes->rotulo->label();
         <td colspan="3"> 
           <?
 	            $sql = " select db30_codver , '2.'||db30_codversao ||'.'|| db30_codrelease as versao from db_versao order by db30_codver";
-	            db_selectrecord("at01_codver",pg_exec($sql),true,$db_opcao,"style='width:90px'",'','','','',1);
+	            db_selectrecord("at01_codver",db_query($sql),true,$db_opcao,"style='width:90px'",'','','','',1);
           ?>
         </td>		    
 		  </tr>
@@ -233,7 +233,7 @@ $clclientes->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_clientes','db_iframe_clientes','func_clientes.php?funcao_js=parent.js_preenchepesquisa|at01_codcli','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_clientes','db_iframe_clientes','func_clientes.php?funcao_js=parent.js_preenchepesquisa|at01_codcli','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_clientes.hide();

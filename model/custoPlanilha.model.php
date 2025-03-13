@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -142,20 +142,20 @@ class custoPlanilha {
         
         case 1:
           
-          require_once("model/custoPlanilhaFolha.model.php");
+          require_once(modification("model/custoPlanilhaFolha.model.php"));
           $oCustosFolha  = new custoPlanilhaFolha();
           $oCustosFolha->processarDados($this->getMesusu(), $this->getAnousu())->save($this->getPlanilha());
           break;
           
         case 2:
           
-          require_once("model/custoPlanilhaProvisao.model.php");
+          require_once(modification("model/custoPlanilhaProvisao.model.php"));
           $oCustosFolha  = new custoPlanilhaProvisao();
           $oCustosFolha->processarDados($this->getMesusu(), $this->getAnousu())->save($this->getPlanilha());
           break;
         case 3:
           
-          require_once("model/custoPlanilhaConsumoAlmox.model.php");
+          require_once(modification("model/custoPlanilhaConsumoAlmox.model.php"));
           $oCustosAlmoxarifado = new custoPlanilhaConsumoAlmox();
           $oCustosAlmoxarifado->processarDados($this->getMesusu(), $this->getAnousu())->save($this->getPlanilha());
           
@@ -163,28 +163,28 @@ class custoPlanilha {
           
         case 4 :
           
-          require_once("model/custoPlanilhaDiarias.model.php");
+          require_once(modification("model/custoPlanilhaDiarias.model.php"));
           $oCustosDiarias = new custoPlanilhaDiarias();
           $oCustosDiarias->processarDados($this->getMesusu(), $this->getAnousu())->save($this->getPlanilha());
           break;
           
         case 5 :
           
-          require_once("model/custoPlanilhaServicoPessoaFisica.model.php");
+          require_once(modification("model/custoPlanilhaServicoPessoaFisica.model.php"));
           $oCustosServicoPF = new custoPlanilhaServicoPessoaFisica();
           $oCustosServicoPF->processarDados($this->getMesusu(), $this->getAnousu())->save($this->getPlanilha());
           break;
 
         case 6 :
           
-          require_once("model/custoPlanilhaServicoPessoaJuridica.model.php");
+          require_once(modification("model/custoPlanilhaServicoPessoaJuridica.model.php"));
           $oCustosServicoPJ = new custoPlanilhaServicoPessoaJuridica();
           $oCustosServicoPJ->processarDados($this->getMesusu(), $this->getAnousu())->save($this->getPlanilha());
           break;
           
         case 7 :
           
-          require_once("model/custoPlanilhaOutros.model.php");
+          require_once(modification("model/custoPlanilhaOutros.model.php"));
           $oCustosOutros = new custoPlanilhaOutros();
           $oCustosOutros->processarDados($this->getMesusu(), $this->getAnousu())->save($this->getPlanilha());
           break;  
@@ -206,9 +206,9 @@ class custoPlanilha {
       
       $sWhere = " and {$this->getFiltros()}"; 
     }
-    
+
     $aCustos = array();
-    if (empty($iPlanilha)) {
+    if (empty($this->iPlanilha)) {
       return $aCustos; 	
     }
     $sSqlCustos   = "SELECT cc17_custoplanilhaorigem, ";
@@ -264,7 +264,7 @@ class custoPlanilha {
     $sSqlCustos  .= " where cc15_sequencial = {$this->getPlanilha()} {$sWhere}";
     $sSqlCustos  .= "order by cc01_estrutural ";
     $rsCustos     = db_query($sSqlCustos);
-    $aCustos      = db_utils::getColectionByRecord($rsCustos, false, false, true);
+    $aCustos      = db_utils::getCollectionByRecord($rsCustos, false, false, true);
     $iTotalRowsCusto = pg_num_Rows($rsCustos);
     return $aCustos;
   }

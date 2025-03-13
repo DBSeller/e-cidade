@@ -1,0 +1,14 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="j13_codi"   label="codigo"   />
+    <campo campo="j13_descr"  label="descricao"   />
+  </campos>
+  <from tabela="bairro" />
+  <juncoes>
+  </juncoes>
+  <filtros>
+  </filtros>
+  <agrupamento campos="" />
+  <ordenacao   campos="descricao" />
+</consulta>

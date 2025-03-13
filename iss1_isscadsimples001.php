@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_isscadsimples_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_isscadsimples_classe.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $post                 = db_utils::postmemory($_POST);
@@ -67,18 +67,23 @@ if(isset($incluir)){
 
 	}else{
 
-     $rsIss = $clissbase->sql_record($clissbase->sql_query($post->q38_inscr));
+         $rsIss = $clissbase->sql_record($clissbase->sql_query($post->q38_inscr));
 
 		 if ($clissbase->numrows > 0){
 
-       $oIss = db_utils::fieldsMemory($rsIss,0);
+             $oIss = db_utils::fieldsMemory($rsIss,0);
 			 if (db_strtotime($dataIni2) < db_strtotime($oIss->q02_dtinic)){
 
-         $erro_msg = "Data Inicial menor que a data do início da Atividade.";
+			 	/*
+			 	 * aqui Sistema está permitindo colocar data de Inicio do Simples apenas a 
+			 	 * partir da data de Inicio da Inscrição.
+			 	 * 
+                 $erro_msg = "Data Inicial menor que a data do início da Atividade.";
 				 $lSqlErro = true;
 				 $clisscadsimples->erro_msg    = $erro_msg;
 				 $clisscadsimples->erro_campo  = "q38_dtinicial";
 				 $clisscadsimples->erro_status = 0;
+			 	 */
 			 }
 		 }
 
@@ -117,7 +122,7 @@ if(isset($incluir)){
 <body class="body-default">
   <div class="container">
 	<?php
-	  include("forms/db_frmisscadsimples.php");
+	  include(modification("forms/db_frmisscadsimples.php"));
 	?>
   </div>
   <?php

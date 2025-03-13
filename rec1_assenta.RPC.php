@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("std/db_stdClass.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+use ECidade\RecursosHumanos\RH\Assentamento\Repository\Assentamento as AssentamentoRespository;
 
 define('MENSAGENS', 'recursoshumanos.rh.rec1_assenta.');
 
@@ -40,6 +42,7 @@ $oJson                = new services_json();
 $oParametros          = $oJson->decode(str_replace("\\", "", $_POST["json"]));
 $oRetorno             = new stdClass();
 $oRetorno->iStatus    = 1;
+$oRetorno->erro       = false;
 $oRetorno->sMensagem  = '';
 $aRegistros           = array();
 
@@ -120,10 +123,123 @@ try {
 
 
     break;
+    case 'validarUltimoAfastamentoServidorApiEsocial':
+      $codigoServidor = $oParametros->codigoServidor;
+      $dataInicioAfastamento = $oParametros->dataInicioAfastamento;
+      $tipoAssentamento = $oParametros->tipoAssentamento;
+      $codigoAssentamento = $oParametros->codigoAssentamento;
+
+      $assentamentoRepo = AssentamentoRespository::getInstance();
+
+      $oRetorno->isDataInicialAfastamentoValido = $assentamentoRepo->validarUltimoProtocoloAfastamentoByServidor($codigoServidor, $dataInicioAfastamento, $tipoAssentamento, $codigoAssentamento);
+
+    break;
+
+      case 'getDadosRetificacao':
+
+          $assensamento = AssentamentoRepository::getInstanceByCodigo($oParametros->codigo_assenamento);
+          $retificacao = $assensamento->getRetificacao();
+          $stdRetificacao = new stdClass();
+          $stdRetificacao->sequencial = '';
+          $stdRetificacao->origem = '';
+          $stdRetificacao->tipo   = '';
+          $stdRetificacao->numero = '';
+          if ($retificacao) {
+              $stdRetificacao = $retificacao;
+          }
+          $oRetorno->retificacao = $stdRetificacao;
+
+          break;
+
+      case 'validarDadosAssentamento':
+
+          $oRetorno->obrigarRetificacao = false;
+          $tipoAssentamentoOrigem  = TipoAssentamentoRepository::getInstance()->getInstanciaPorTipo($oParametros->dadosAssentamento->origem);
+          $tipoAssentamentoDestino = TipoAssentamentoRepository::getInstance()->getInstanciaPorTipo($oParametros->dadosAssentamento->destino);
+
+          $daoAfastamentoEsocial = new cl_afastamentosesocial();
+          $codigoTipoAssentamentoOrigem = $tipoAssentamentoOrigem->getSequencial();
+          $sqlAfastamentoEsocial = $daoAfastamentoEsocial->sql_query_file(null, "eso08_sequencial", null, "eso08_tipoasse = {$codigoTipoAssentamentoOrigem}");
+          $rsAfastamentoEsocial  = db_query($sqlAfastamentoEsocial);
+
+          if (!$rsAfastamentoEsocial) {
+              throw new DBException("Erro ao buscar o vínculo do tipo do assentamento com o eSocial.");
+          }
+
+          if (pg_num_rows($rsAfastamentoEsocial) == 0) {
+            break;
+          }
+
+          $atributosOrigem = $tipoAssentamentoOrigem->getAtributosDinamicos();
+          $atributoHiddenOrigem = null;
+          foreach ($atributosOrigem as $atributo) {
+
+              if ($atributo->tipoAtributo === 7) {
+                  $atributoHiddenOrigem = $atributo;
+              }
+          }
+
+          $atributosDestino = $tipoAssentamentoDestino->getAtributosDinamicos();
+          $atributoHiddenDestino = null;
+          foreach ($atributosDestino as $atributo) {
+
+              if ($atributo->tipoAtributo === 7) {
+                  $atributoHiddenDestino = $atributo;
+              }
+          }
+
+          $motivoOrigem = "Acidente/Doença não relacionada ao trabalho";
+          $motivoDestino = "Acidente/Doença do trabalho";
+
+          if((int)$atributoHiddenOrigem->valorDefault == 1 ) {
+              $motivoOrigem = "Acidente/Doença do trabalho";
+              $motivoDestino = "Acidente/Doença não relacionada ao trabalho";
+          }
+
+          $mensagem  = "O tipo de assentamento {$tipoAssentamentoOrigem->getDescricao()} possui vínculo com o motivo do eSocial {$motivoOrigem} ";
+          $mensagem .= "e já possui protocolo de envio. Este motivo só pode ser alterado para o motivo {$motivoDestino}.\n";
+          $mensagem .= "Consulte a rotina DB:RECURSOSHUMANOS > eSocial > Procedimentos > Configuração > Vínculo de Afastamento.";
+
+          $tiposValidar = array(1, 3);
+          if (in_array((int)$atributoHiddenOrigem->valorDefault, $tiposValidar)) {
+
+              if (is_null($atributoHiddenDestino)) {
+                  throw new BusinessException($mensagem);
+              }
+          
+              if (!in_array((int)$atributoHiddenDestino->valorDefault, $tiposValidar)) {
+                  throw new BusinessException($mensagem);
+              }
+
+              $oRetorno->obrigarRetificacao = true;
+          } else if ($oParametros->possuiProcessoEsocial ) {
+              $mensagem  = "Este assentamento já foi enviado ao eSocial. O tipo do assentamento não pode ser alterado.";
+              throw new Exception($mensagem);
+          }
+
+          break;
+      case 'possuiProtocoloEsocial':
+
+          $possuiProtocolo = false;
+          try {
+              if (!empty($oParametros->codigo_assentamento)) {
+                  $assentamentoEsocial = AssentamentoRespository::getInstance();
+                  if ($assentamentoEsocial->possuiConfiguracaoApi()) {
+                      $possuiProtocolo = $assentamentoEsocial->possuiProtocoloByAfastamento($oParametros->codigo_assentamento);
+                  }
+              }
+
+              $oRetorno->possuiProtocoloEsocial = $possuiProtocolo;
+          } catch (Exception $oErro) {
+              $oRetorno->sMensagem  = "Erro ao acessar o sistema do eSocial.\nNão foi possível verificar se assentamento selecionado foi enviado para o eSocial.";
+              $oRetorno->erro  = true;
+          }
+          break;
   }
 } catch (Exception $oErro) {
 
   $oRetorno->iStatus   = 2;
+  $oRetorno->erro      = true;
   $oRetorno->sMensagem = $oErro->getMessage();
 }
 

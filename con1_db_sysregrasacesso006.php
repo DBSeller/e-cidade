@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_sysregrasacesso_classe.php");
-include("classes/db_db_sysregrasacessocanc_classe.php");
-include("classes/db_db_sysregrasacessousu_classe.php");
-include("classes/db_db_sysregrasacessoip_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_sysregrasacesso_classe.php"));
+include(modification("classes/db_db_sysregrasacessocanc_classe.php"));
+include(modification("classes/db_db_sysregrasacessousu_classe.php"));
+include(modification("classes/db_db_sysregrasacessoip_classe.php"));
 $cldb_sysregrasacesso = new cl_db_sysregrasacesso;
   /*
 $cldb_sysregrasacessocanc = new cl_db_sysregrasacessocanc;
@@ -96,7 +96,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_sysregrasacesso.php");
+	include(modification("forms/db_frmdb_sysregrasacesso.php"));
 	?>
     </center>
 	</td>
@@ -129,11 +129,11 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_sysregrasacessocanc.disabled=false;
-         top.corpo.iframe_db_sysregrasacessocanc.location.href='con1_db_sysregrasacessocanc001.php?db_opcaoal=33&db49_idacesso=".@$db46_idacesso."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_sysregrasacessocanc.location.href='con1_db_sysregrasacessocanc001.php?db_opcaoal=33&db49_idacesso=".@$db46_idacesso."';
          parent.document.formaba.db_sysregrasacessousu.disabled=false;
-         top.corpo.iframe_db_sysregrasacessousu.location.href='con1_db_sysregrasacessousu001.php?db_opcaoal=33&db47_idacesso=".@$db46_idacesso."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_sysregrasacessousu.location.href='con1_db_sysregrasacessousu001.php?db_opcaoal=33&db47_idacesso=".@$db46_idacesso."';
          parent.document.formaba.db_sysregrasacessoip.disabled=false;
-         top.corpo.iframe_db_sysregrasacessoip.location.href='con1_db_sysregrasacessoip001.php?db_opcaoal=33&db48_idacesso=".@$db46_idacesso."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_sysregrasacessoip.location.href='con1_db_sysregrasacessoip001.php?db_opcaoal=33&db48_idacesso=".@$db46_idacesso."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_sysregrasacessocanc');";

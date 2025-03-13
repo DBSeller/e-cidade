@@ -318,3 +318,4 @@ SELECT fc_executa_ddl('CREATE INDEX '||table_name||'_mudancas_nome_campo_in ON '
  WHERE table_schema = 'configuracoes'
    AND table_name ~ '^db_auditoria_[0-9]{6}_[0-9]{1}'
    AND table_type = 'BASE TABLE';
+

@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -30,15 +30,11 @@
  * @author     Fabio Esteves - fabio.esteves@dbseller.com.br
  * @package    educacao
  * @subpackage avaliacao
- * @version    $Revision: 1.99 $
+ * @version    $Revision: 1.168 $
  */
-class DiarioAvaliacaoDisciplina {
+class DiarioAvaliacaoDisciplina extends DiarioDisciplina {
 
-  /**
-   * Codigo sequencial do diario
-   * @var integer
-   */
-  private $iCodigoDiario;
+  const CALCULAR_PROPORCIONALIDADE = 1;
 
   /**
    * Verifica se o diario esta encerrado
@@ -72,15 +68,17 @@ class DiarioAvaliacaoDisciplina {
   private $aAvaliacaoAproveitamento = array();
 
   /**
-   * Resultado final da disciplina
-   * @var AvaliacaoResultadoFinal
+   * Caso disciplina tenha uma avaliação alternativa
+   * Só quando procedimento de avaliação igual a soma
+   * @var AvaliacaoAlternativa
    */
-  private $oResultadoFinal;
+  private $oAvaliacaoAlternativa = null;
+
   /**
-   * Caso o calculo da frequencia seja global, usaremos o $nPercentualGlobal
-   * @var number:null
+   * Guarda a ordem dos períodos da proporcionalidade
+   * @var array|null
    */
-  private $nPercentualGlobal = null;
+  private $aOrdemPeriodoProporcionalidade = null;
 
   public function __construct(DiarioAvaliacaoDisciplinaVO $oDadosDiario = null) {
 
@@ -96,14 +94,6 @@ class DiarioAvaliacaoDisciplina {
 
   public function setDiario(DiarioClasse $oDiarioClasse) {
     $this->oDiario = $oDiarioClasse;
-  }
-
-  /**
-   * Retorna o codigo sequencial do diario
-   * @return integer
-   */
-  public function getCodigoDiario() {
-    return $this->iCodigoDiario;
   }
 
   /**
@@ -201,9 +191,15 @@ class DiarioAvaliacaoDisciplina {
 
       $oDaoDiario          = new cl_diario;
       $sSqlDiarioAvaliacao = $oDaoDiario->sql_query_avaliacoes_periodo($this->iCodigoDiario);
-      $rsDiarioAvaliacao   = $oDaoDiario->sql_record($sSqlDiarioAvaliacao);
-      $iTotalLinhas        = $oDaoDiario->numrows;
-      for ($iDiario = 0; $iDiario< $iTotalLinhas; $iDiario++) {
+      $rsDiarioAvaliacao   = db_query( $sSqlDiarioAvaliacao );
+
+      if ( !$rsDiarioAvaliacao ) {
+        throw new DBException('Falha ao buscar os dados do aproveitamento da avaliação.');
+      }
+
+      $iTotalLinhas = pg_num_rows( $rsDiarioAvaliacao );
+
+      for ($iDiario = 0; $iDiario < $iTotalLinhas; $iDiario++) {
 
         $oDadosDiario             = db_utils::fieldsMemory($rsDiarioAvaliacao, $iDiario);
         $oAvaliavaoAproveitamento = new AvaliacaoAproveitamento($oDadosDiario->codigo);
@@ -214,12 +210,18 @@ class DiarioAvaliacaoDisciplina {
           $oElementoAvaliacao = ResultadoAvaliacaoRepository::getResultadoAvaliacaoByCodigo($oDadosDiario->codigo_elemento);
         }
 
+        $oAvaliavaoAproveitamento->setDiarioAvaliacaoDisciplina($this);
         $oAvaliavaoAproveitamento->setElementoAvaliacao($oElementoAvaliacao);
         $oAvaliavaoAproveitamento->setNumeroFaltas($oDadosDiario->numero_faltas);
         $oAvaliavaoAproveitamento->setParecerPadronizado($oDadosDiario->parecerpadronizado);
         $oAvaliavaoAproveitamento->setAmparado(trim($oDadosDiario->amparo) == "S" ? true : false);
         $oAvaliavaoAproveitamento->setConvertido(trim($oDadosDiario->convertido) == "S" ? true : false);
         $oAvaliavaoAproveitamento->setObservacao($oDadosDiario->observacao);
+
+        if ( !empty($oDadosDiario->codigo_faltas_abonadas) ) {
+          $oAvaliavaoAproveitamento->setFaltasAbonadas(AbonoFaltaRepository::getByCodigo($oDadosDiario->codigo_faltas_abonadas));
+        }
+
         $sTipoAvaliacao = $oElementoAvaliacao->getFormaDeAvaliacao()->getTipo();
         if ($this->oDiario->getMatricula()->isAvaliadoPorParecer()) {
           $sTipoAvaliacao = 'PARECER';
@@ -231,12 +233,13 @@ class DiarioAvaliacaoDisciplina {
           case 'NOTA' :
 
             $oValorAproveitamento = new ValorAproveitamentoNota($oDadosDiario->valor_nota);
+            $oValorAproveitamento->setAproveitamentoReal( $oDadosDiario->valor_nota_real );
             $oAvaliavaoAproveitamento->setParecer($oDadosDiario->parecer);
             break;
 
           case 'PARECER' :
 
-            $oValorAproveitamento = new ValorAproveitamentoParecer($oDadosDiario->parecer);
+                $oValorAproveitamento = new ValorAproveitamentoParecer($oDadosDiario->parecer);
             break;
 
          case 'NIVEL' :
@@ -276,7 +279,8 @@ class DiarioAvaliacaoDisciplina {
        * Verificamos se todos os Resultados possuem Registros
        */
       $iTotalSemResultado = 0;
-      foreach ($this->oDiario->getPeriodoAvaliacao() as $oPeriodo) {
+      $iAno               = $this->oDiario->getTurma()->getCalendario()->getAnoExecucao();
+      foreach ($this->getPeriodosAvaliacao() as $oPeriodo) {
 
         if ($oPeriodo->isResultado()) {
 
@@ -291,11 +295,12 @@ class DiarioAvaliacaoDisciplina {
           if (!$lPossuiResultado) {
 
             $iTotalSemResultado ++;
+            $oRetorno = $oPeriodo->getResultado( $this->aAvaliacaoAproveitamento, false, $iAno );
 
-            $oRetorno = $oPeriodo->getResultado($this->aAvaliacaoAproveitamento);
             if (!$oRetorno instanceof ValorAproveitamento) {
               $oRetorno = FormaObtencao::getTipoValorAproveitamento($oPeriodo->getFormaDeAvaliacao());
             }
+
             $this->adicionarAvaliacao($oPeriodo, $oRetorno);
           }
         }
@@ -331,7 +336,7 @@ class DiarioAvaliacaoDisciplina {
       if ($oAvaliacao->getElementoAvaliacao()->isResultado()) {
         $this->salvarDadosResultado($oAvaliacao);
       } else {
-          $this->salvarDadosAvaliacao($oAvaliacao);
+        $this->salvarDadosAvaliacao($oAvaliacao);
       }
     }
   }
@@ -359,7 +364,7 @@ class DiarioAvaliacaoDisciplina {
 
     $nValorAproveitamento = $oAvaliacaoAproveitamento->getValorAproveitamento()->getAproveitamento();
     $oElementoAvaliacao   = $oAvaliacaoAproveitamento->getElementoAvaliacao();
-    $sFormaAvaliacao      = $oElementoAvaliacao->getFormaDeAvaliacao()->getTipo();
+    $sFormaAvaliacao      = $this->getRegencia()->getProcedimentoAvaliacao()->getFormaAvaliacao()->getTipo();
 
     if ($this->oDiario->getMatricula()->isAvaliadoPorParecer()) {
       $sFormaAvaliacao = 'PARECER';
@@ -379,9 +384,17 @@ class DiarioAvaliacaoDisciplina {
 
         $oDaoDiarioAvaliacao->ed72_c_valorconceito = "{$nValorAproveitamento}";
 
-        $iOrdemAvaliacao = $oElementoAvaliacao->getFormaDeAvaliacao()->getConceitoMinimo()->iOrdem;
-        if ($oAvaliacaoAproveitamento->getValorAproveitamento()->getOrdem() < $iOrdemAvaliacao) {
-          $oDaoDiarioAvaliacao->ed72_c_aprovmin = 'N';
+        $oAproveitamento = $oElementoAvaliacao->getFormaDeAvaliacao()->getConceitoMinimo();
+
+        if ( !is_null($oAproveitamento) ) {
+
+          $iOrdemAvaliacao = $oElementoAvaliacao->getFormaDeAvaliacao()->getConceitoMinimo()->iOrdem;
+
+            if (!empty($nValorAproveitamento) && $oAvaliacaoAproveitamento->getValorAproveitamento()->getOrdem() < $iOrdemAvaliacao) {
+              $oDaoDiarioAvaliacao->ed72_c_aprovmin = 'N';
+            }
+
+
         }
         break;
 
@@ -431,10 +444,12 @@ class DiarioAvaliacaoDisciplina {
   }
 
   /**
-   * Persiste as Informacoes das avaliacoes
-   *
+   * Persiste as informações das avaliações
    * @param AvaliacaoAproveitamento $oAvaliacaoAproveitamento
+   * @return bool
    * @throws BusinessException
+   * @throws DBException
+   * @throws Exception
    */
   protected function salvarDadosResultado(AvaliacaoAproveitamento $oAvaliacaoAproveitamento) {
 
@@ -445,7 +460,7 @@ class DiarioAvaliacaoDisciplina {
     $GLOBALS["HTTP_POST_VARS"]["ed73_c_valorconceito"] = '';
     $GLOBALS["HTTP_POST_VARS"]["ed73_t_parecer"]       = '';
 
-    $oDaoDiarioResultado                       = db_utils::getDao("diarioresultado");
+    $oDaoDiarioResultado                       = new cl_diarioresultado();
     $oDaoDiarioResultado->ed73_c_amparo        = $oAvaliacaoAproveitamento->isAmparado() ? "S" : "N";
     $oDaoDiarioResultado->ed73_i_procresultado = $oAvaliacaoAproveitamento->getElementoAvaliacao()->getCodigo();
     $oDaoDiarioResultado->ed73_i_diario        = $this->getCodigoDiario();
@@ -456,11 +471,19 @@ class DiarioAvaliacaoDisciplina {
 
     $oElementoAvaliacao         = $oAvaliacaoAproveitamento->getElementoAvaliacao();
     $nValorAproveitamento       = $oAvaliacaoAproveitamento->getValorAproveitamento()->getAproveitamento();
+
+    if ($nValorAproveitamento == "" && $oAvaliacaoAproveitamento->getValorAproveitamento()->getAproveitamentoReal() == 0) {
+        $nAproveitamentoReal = "";
+    } else {
+        $nAproveitamentoReal        = $oAvaliacaoAproveitamento->getValorAproveitamento()->getAproveitamentoReal();
+    }
+
     $iTotalReprovacoesNoPeriodo = count($this->oDiario->getDisciplinasReprovadasNoPeriodo($oElementoAvaliacao, false));
 
     $lTemDireitoRecuperacao = true;
     $oRecuperacao           = AvaliacaoPeriodicaRepository::getAvaliacaoDependente($oElementoAvaliacao);
     $sFormaAvaliacao        = $oElementoAvaliacao->getFormaDeAvaliacao()->getTipo();
+
 
     /**
      * Disciplinas apenas com Frequencia nao tem direito a recuperacao
@@ -471,7 +494,7 @@ class DiarioAvaliacaoDisciplina {
       $oAvaliacaoAproveitamento->emRecuperacao(false);
       unset($oRecuperacao);
     }
-    
+
     if (!empty($oRecuperacao)) {
 
       $iTotalDisciplinasRecuperacao = $oRecuperacao->quantidadeMaximaDisciplinasParaRecuperacao();
@@ -496,45 +519,85 @@ class DiarioAvaliacaoDisciplina {
           $lTemDireitoRecuperacao = false;
         }
       }
+
+      if( $oAvaliacaoAproveitamento->emRecuperacao() ) {
+
+        foreach( $this->getAvaliacoes() as $oAvaliacaoAproveitamentoRecuperacao ) {
+
+          if(    $oAvaliacaoAproveitamentoRecuperacao->getElementoAvaliacao()->getCodigo() == $oRecuperacao->getCodigo()
+              && $oAvaliacaoAproveitamentoRecuperacao->isAmparado()
+            ) {
+
+            $oAvaliacaoAproveitamento->setEmRecuperacao( false );
+            $lTemDireitoRecuperacao = false;
+          }
+        }
+      }
     }
-    
+
     if ( !$lCaracterReprobatorio ) {
       $lTemDireitoRecuperacao = false;
     }
-    
+
     if ($this->oDiario->getMatricula()->isAvaliadoPorParecer()) {
       $sFormaAvaliacao = 'PARECER';
     }
+
     if (!$this->isEncerrado()) {
 
       $oResultadoAvaliacao = $oAvaliacaoAproveitamento->getElementoAvaliacao();
-      $nAproveitamento     = '';     
-      $oAproveitamento     = $oResultadoAvaliacao->getResultado($this->getAvaliacoes());
-      if (!empty($oAproveitamento)) {
-        $nAproveitamento = $oAproveitamento->getAproveitamento();
+      $nAproveitamento     = '';
+      $oAproveitamento     = $oResultadoAvaliacao->getResultado( $this->getAvaliacoes(), false, $iAnoCalendario );
+
+      if (!empty($oAproveitamento) && is_null($oAproveitamento->getAproveitamentoReal()) ) {
+        $oAproveitamento->setAproveitamentoReal( $oAproveitamento->getAproveitamento() );
       }
-      $nValorAproveitamento = ArredondamentoNota::arredondar($nAproveitamento, $iAnoCalendario);
+
+      $mNotaReal = DiarioAvaliacaoDisciplina::calcularResultadoReal( $oResultadoAvaliacao, $this->oDiario, $this->getAvaliacoes(), $iAnoCalendario);
+
+      if (!empty($oAproveitamento) && !is_null( $mNotaReal ) ) {
+        $oAproveitamento->setAproveitamentoReal( $mNotaReal );
+      }
+
+      if (!empty($oAproveitamento)) {
+
+        $nAproveitamento     = $oAproveitamento->getAproveitamento();
+        $nAproveitamentoReal = $oAproveitamento->getAproveitamentoReal();
+      }
+
+      /**
+       * Atualiza o valor calculado do resultado na classe
+       */
+      $oAvaliacaoAproveitamento->setValorAproveitamento($oAproveitamento);
+
+      if(    $this->calcularPercentualFrequencia() < $this->oDiario->getProcedimentoDeAvaliacao()->getPercentualFrequencia()
+          && !$this->reclassificadoPorBaixaFrequencia()
+        ) {
+
+        $oAvaliacaoAproveitamento->setEmRecuperacao( false );
+        $lTemDireitoRecuperacao = false;
+      }
 
       /**
        * Validação necessária para tratamento do Resultado Final tratando o tipo de avaliação
        */
       switch ($sFormaAvaliacao) {
-        
+
         /**
          * NOTA:> Temos que avaliar o valor definido para aproveitamento mínimo
          */
         case 'NOTA':
-          
+          $nValorAproveitamento = ArredondamentoNota::arredondar($nAproveitamento, $iAnoCalendario);
           $oAvaliacaoAproveitamento->setAproveitamentoMinimo(true);
           $oAvaliacaoAproveitamento->setEmRecuperacao(false);
-          
+
           /**
            * Alterado validação para testar com o tipo mais condição
            * Da forma como estava  sempre estava entrando e alterando o aproveitamento minimo para false, mesmo quando
            * resultado informado vinha vazio
            */
-          if (   !($nValorAproveitamento === '') 
-               && ( ((int) $nValorAproveitamento === 0) 
+          if ( !($nValorAproveitamento === '')
+               && ( ((int) $nValorAproveitamento === 0)
                     || $nValorAproveitamento < $oResultadoAvaliacao->getAproveitamentoMinimo())
              ) {
 
@@ -546,7 +609,7 @@ class DiarioAvaliacaoDisciplina {
           }
 
           break;
-        
+
         /**
          * NIVEL:> Temos que avaliar a ordem das avaliações
          */
@@ -555,7 +618,7 @@ class DiarioAvaliacaoDisciplina {
           $oAvaliacaoAproveitamento->setAproveitamentoMinimo(true);
           $oAvaliacaoAproveitamento->setEmRecuperacao(false);
 
-          if (    $oAvaliacaoAproveitamento->getValorAproveitamento()->hasOrdem() 
+          if (    $oAvaliacaoAproveitamento->getValorAproveitamento()->hasOrdem()
                && $oAvaliacaoAproveitamento->getValorAproveitamento()->getOrdem() < $oResultadoAvaliacao->getFormaDeAvaliacao()->getConceitoMinimo()->iOrdem
              ) {
 
@@ -563,7 +626,7 @@ class DiarioAvaliacaoDisciplina {
               $oAvaliacaoAproveitamento->setEmRecuperacao(true);
             }
             $oAvaliacaoAproveitamento->setAproveitamentoMinimo(false);
-          } 
+          }
 
           break;
 
@@ -571,11 +634,13 @@ class DiarioAvaliacaoDisciplina {
          * PARECER:> Sempre de acordo com informado
          */
         case 'PARECER':
+            $oDaoDiarioResultado->ed73_t_parecer = $nValorAproveitamento;
+            $oAvaliacaoAproveitamento->setParecer($nValorAproveitamento);
           break;
       }
     }
-    
-    if (    !empty($oAproveitamentoNaRecuperacao) 
+
+    if (    !empty($oAproveitamentoNaRecuperacao)
          && $oAproveitamentoNaRecuperacao->isAmparado()
          && !$lCaracterReprobatorio
        ) {
@@ -585,8 +650,10 @@ class DiarioAvaliacaoDisciplina {
     switch ($sFormaAvaliacao) {
 
       case 'NOTA':
-        
+
         $oDaoDiarioResultado->ed73_i_valornota = "{$nValorAproveitamento}";
+        $nValorAproveitamento                  = ArredondamentoNota::arredondar($nAproveitamentoReal, $iAnoCalendario);
+        $oDaoDiarioResultado->ed73_valorreal   = "{$nValorAproveitamento}";
         break;
 
       case 'NIVEL':
@@ -595,12 +662,13 @@ class DiarioAvaliacaoDisciplina {
         break;
 
      case 'PARECER':
-       
-        $oDaoDiarioResultado->ed73_t_parecer = $nValorAproveitamento;
-        break;
+      $oDaoDiarioResultado->ed73_t_parecer = $nValorAproveitamento;
+      $oAvaliacaoAproveitamento->setParecer($nValorAproveitamento);
+         break;
     }
 
-    $oDaoDiarioResultado->ed73_c_aprovmin = $oAvaliacaoAproveitamento->temAproveitamentoMinimo()?"S":"N";
+    $oDaoDiarioResultado->ed73_c_aprovmin = $oAvaliacaoAproveitamento->temAproveitamentoMinimo() ? "S" : "N";
+
     if ($oAvaliacaoAproveitamento->getCodigo() == '') {
 
       $oDaoDiarioResultado->incluir(null);
@@ -610,6 +678,7 @@ class DiarioAvaliacaoDisciplina {
       $oDaoDiarioResultado->ed73_i_codigo = $oAvaliacaoAproveitamento->getCodigo();
       $oDaoDiarioResultado->alterar($oDaoDiarioResultado->ed73_i_codigo);
     }
+
     if ($oDaoDiarioResultado->erro_status == 0) {
       throw new BusinessException("Erro ao salvar Resultado da avaliacao ");
     }
@@ -619,6 +688,7 @@ class DiarioAvaliacaoDisciplina {
      */
     $oDaoDiarioResultadoRecuperacao = new cl_diarioresultadorecuperacao();
     $oDaoDiarioResultadoRecuperacao->excluir(null, "ed116_diarioresultado = {$oAvaliacaoAproveitamento->getCodigo()}");
+
     if ($oDaoDiarioResultadoRecuperacao->erro_status == 0) {
       throw new BusinessException("Erro ao salvar Resultado da avaliacao ");
     }
@@ -628,6 +698,7 @@ class DiarioAvaliacaoDisciplina {
       $oDaoDiarioResultadoRecuperacao                        = new cl_diarioresultadorecuperacao();
       $oDaoDiarioResultadoRecuperacao->ed116_diarioresultado = $oAvaliacaoAproveitamento->getCodigo();
       $oDaoDiarioResultadoRecuperacao->incluir(null);
+
       if ($oDaoDiarioResultadoRecuperacao->erro_status == 0) {
         throw new BusinessException("Erro ao salvar Resultado da avaliacao ");
       }
@@ -635,11 +706,13 @@ class DiarioAvaliacaoDisciplina {
 
     $oDaoParecerPadronizado = db_utils::getDao("parecerresult");
     $oDaoParecerPadronizado->excluir(null, " ed63_i_diarioresultado = {$oAvaliacaoAproveitamento->getCodigo()}");
+
     if ($oAvaliacaoAproveitamento->getParecerPadronizado() != "") {
 
       $oDaoParecerPadronizado->ed63_i_diarioresultado = $oAvaliacaoAproveitamento->getCodigo();
       $oDaoParecerPadronizado->ed63_t_parecer         = trim($oAvaliacaoAproveitamento->getParecerPadronizado());
       $oDaoParecerPadronizado->incluir(null);
+
       if ($oDaoParecerPadronizado->erro_status == 0) {
         throw new BusinessException("Erro ao salvar dados do parecer padronizado do resultado");
       }
@@ -658,12 +731,10 @@ class DiarioAvaliacaoDisciplina {
 
         $nPercentualMinimoFrequencia = $this->oDiario->getProcedimentoDeAvaliacao()->getPercentualFrequencia();
 
-        if ($nPercentualPresenca < $nPercentualMinimoFrequencia) {
+        if ( $nPercentualPresenca < $nPercentualMinimoFrequencia && !$this->reclassificadoPorBaixaFrequencia() ) {
           $sResultadoFrequencia = 'R';
         }
       }
-
-      $oAvaliacaoResultadoFinal->setResultadoAvaliacao($oAvaliacaoAproveitamento->getElementoAvaliacao());
 
       /**
        * Se o tipo da Avaliacao for PARECER não salvamos o aproveitamento e sim a palavra 'Parecer'
@@ -683,7 +754,7 @@ class DiarioAvaliacaoDisciplina {
         $sResultadoFinal      = 'A';
         $sResultadoAprovacao  = 'A';
 
-        if( !$oAvaliacaoAproveitamento->temAproveitamentoMinimo() ) {
+        if (!$oAvaliacaoAproveitamento->temAproveitamentoMinimo() ) {
 
           $sResultadoFinal      = 'R';
           $sResultadoAprovacao  = 'R';
@@ -702,19 +773,25 @@ class DiarioAvaliacaoDisciplina {
           $sResultadoAprovacao = '';
         }
 
+        $sResultadoFinal = 'R';
         if ($sResultadoAprovacao <> 'R' && $sResultadoFrequencia <> 'R') {
           $sResultadoFinal = 'A';
-        } else {
-          $sResultadoFinal = 'R';
         }
       }
 
-      if ( $this->getTotalFaltas() != 0  && $sResultadoFrequencia == 'R' ) {
+      if ( $this->getTotalFaltas() != 0  && $sResultadoFrequencia == 'R' && !$this->reclassificadoPorBaixaFrequencia() ) {
         $sResultadoFinal = 'R';
       }
 
-      if ( !$lCaracterReprobatorio && !$this->temAproveitamentoLancado() ) {
-        $sResultadoAprovacao = "A";
+      /**
+       * Aluno não pode reprovar por frequencia, se disciplina não possue Caracter Reprobatorio
+       */
+      if ( !$lCaracterReprobatorio ) {
+
+        $sResultadoFrequencia = "A";
+        if (!$this->temAproveitamentoLancado() ) {
+          $sResultadoAprovacao  = "A";
+        }
       }
 
       if ($sFormaControleFrequenciaDisciplina == 'F') {
@@ -726,21 +803,77 @@ class DiarioAvaliacaoDisciplina {
       }
 
       $oAmparo = $this->getAmparo();
-      if ($oAmparo != null && $oAmparo->isTotal()) {
+      if(    ( $oAmparo != null && $oAmparo->isTotal() )
+          || ( !empty( $this->aPeriodosCalcularProporcionalidade ) && $this->proporcionalidadeComAmparoTotal() ) ) {
         $sResultadoFinal = 'A';
       }
-      
+
       foreach ( $this->getDiario()->getTurma()->getEtapas() as $oEtapaTurma ) {
-        
+
         if ($oEtapaTurma->getEtapa()->getCodigo() == $this->getDiario()->getMatricula()->getEtapaDeOrigem()->getCodigo()
              && $oEtapaTurma->temAprovacaoAutomatica() ) {
-          
+
           $sResultadoAprovacao  = "A";
           $sResultadoFinal      = "A";
           $sResultadoFrequencia = "A";
         }
       }
 
+      /**
+       * Validado qual o último Resultado que gera Resultado Final e verifica se ele está sendo utilizado para gerar
+       * o Resultado Final
+       */
+      $oUltimoResultado         = $this->getUltimoResultadoFinal();
+      $sResultadoFinalJaLancado = '';
+
+      if ( $oUltimoResultado->getOrdemSequencia() == $oAvaliacaoAproveitamento->getOrdemSequencia() ) {
+
+        $sResultadoFinalJaLancado = $oAvaliacaoResultadoFinal->getResultadoFinal();
+
+        if ( count( $this->getElementosGeramResultadoFinal() ) > 1 && $sResultadoFinalJaLancado == "" ) {
+          return true;
+        }
+
+
+        if (   ( ($sResultadoFinalJaLancado == 'A' || ($oAvaliacaoResultadoFinal->getResultadoFrequencia() == "R"
+            && $oAvaliacaoResultadoFinal->getResultadoAprovacao() == "A") ) )
+            && $oAvaliacaoResultadoFinal->getResultadoAvaliacao()->getCodigo() != $oAvaliacaoAproveitamento->getElementoAvaliacao()->getCodigo()) {
+          return true;
+        }
+
+        /**
+         * Se procedimento, tem recuperação, mas o aluno excedeu o limite de disciplinas, o aluno deve ser reprovado.
+         */
+        $oResultadoTemRecuperacao = '';
+
+        if(    $oAvaliacaoResultadoFinal->getProcResultado()      != null
+            && $oAvaliacaoResultadoFinal->getResultadoAvaliacao() != null
+          ) {
+          $oResultadoTemRecuperacao = AvaliacaoPeriodicaRepository::getAvaliacaoDependente($oAvaliacaoResultadoFinal->getResultadoAvaliacao());
+        }
+
+        if ( !empty($oResultadoTemRecuperacao) ) {
+
+          $iTotalDisciplinasRecuperacao = $oResultadoTemRecuperacao->quantidadeMaximaDisciplinasParaRecuperacao();
+          $iTotalReprovacoesNoPeriodo   = count($this->oDiario->getDisciplinasReprovadasNoPeriodo($oAvaliacaoResultadoFinal->getResultadoAvaliacao(), false));
+          $lTemDireitoRecuperacao       = $iTotalDisciplinasRecuperacao > 0 && $iTotalReprovacoesNoPeriodo <= $iTotalDisciplinasRecuperacao;
+
+          if ( ($oAvaliacaoResultadoFinal->getResultadoAprovacao() == "R") && !$lTemDireitoRecuperacao) {
+            return true;
+          }
+        }
+      }
+
+      /**
+       * Caso haja 2 resultados que geram resultados finais, verifica se o Resultado Final já foi lançado e se o Valor
+       * Aproveitamento do segundo resultado está em branco e retorna, fazendo com que não seja setado os valores vazios
+       * para o Diario Final.
+       */
+      if ( $nValorAproveitamento === '' && !empty($sResultadoFinalJaLancado) && count( $this->getElementosGeramResultadoFinal() ) > 1 ) {
+        return true;
+      }
+
+      $oAvaliacaoResultadoFinal->setResultadoAvaliacao($oAvaliacaoAproveitamento->getElementoAvaliacao());
       $oAvaliacaoResultadoFinal->setValorAprovacao($nValorAproveitamento);
       $oAvaliacaoResultadoFinal->setResultadoAprovacao($sResultadoAprovacao);
       $oAvaliacaoResultadoFinal->setResultadoFinal($sResultadoFinal);
@@ -751,153 +884,11 @@ class DiarioAvaliacaoDisciplina {
   }
 
   /**
-   * Retorna os aproveitamentos do periodo
-   *
-   * @param $iPeriodo
-   * @internal param IElementoAvaliacao $oPeriodo
-   * @return AvaliacaoAproveitamento
-   */
-  public function getAproveitamentosDoPeriodo($iPeriodo) {
-
-    foreach ($this->getAvaliacoes() as $oAvaliacao) {
-      if ($oAvaliacao->getElementoAvaliacao()->getCodigo() == $iPeriodo) {
-        return $oAvaliacao;
-      }
-    }
-  }
-
-  /**
-   * Retorna os aproveitamentos do periodo, pela ordem sequencial
-   *
-   * @param $iOrdem
-   * @return AvaliacaoAproveitamento
-   */
-  public function getAvaliacoesPorOrdem($iOrdem) {
-
-    foreach ($this->getAvaliacoes() as $oAvaliacao) {
-      if ($oAvaliacao->getElementoAvaliacao()->getOrdemSequencia() == $iOrdem) {
-        return $oAvaliacao;
-      }
-    }
-  }
-
-  /**
-   * Retorna os resultados da disciplina
-   * @return AvaliacaoAproveitamento[];
-   */
-  public function getResultados() {
-
-    $aResultados = array();
-    foreach ($this->getAvaliacoes() as $oAvaliacao) {
-
-      if ($oAvaliacao->getElementoAvaliacao()->isResultado()) {
-
-        $aResultados[] = $oAvaliacao;
-      }
-    }
-    return $aResultados;
-  }
-
-  /**
-   * Retornar qual avaliacao depende do resultado do periodo $oElementoAvaliacao
-   * @param IElementoAvaliacao $oElementoAvaliacao elemento de avaliacao
-   * @return AvaliacaoAproveitamento
-   */
-  public function getAvaliacaoDependentesDoPeriodo(IElementoAvaliacao $oElementoAvaliacao) {
-
-    foreach ($this->getAvaliacoes() as $oAvaliacao) {
-
-      if (!$oAvaliacao->getElementoAvaliacao()->isResultado() &&
-          $oAvaliacao->getElementoAvaliacao()->getElementoAvaliacaoVinculado() != "") {
-
-        if ($oAvaliacao->getElementoAvaliacao()->getElementoAvaliacaoVinculado()->getOrdemSequencia() == $oElementoAvaliacao->getOrdemSequencia()) {
-
-          return $oAvaliacao;
-          break;
-        }
-      }
-    }
-  }
-
-  /**
-   * Retorna o elemento que gera o resultado final do procedimento
-   * @return AvaliacaoAproveitamento
-   */
-  public function getElementoResultadoFinal() {
-
-    $oElementoAvaliacaoFinal = null;
-    foreach ($this->getResultados() as $oResultado) {
-
-      if ($oResultado->getElementoAvaliacao()->geraResultadoFinal()) {
-
-       $oElementoAvaliacaoFinal = $oResultado;
-       break;
-      }
-    }
-    return $oElementoAvaliacaoFinal;
-  }
-
-  /**
-   * Retorna o total de faltas do diario;
-   * Os periodos que  são levadas em conta são apenas os periodos somados no periodo
-   * que gera a resultado final.
-   */
-  public function getTotalFaltas() {
-
-    $iTotalFaltas            = 0;
-    $oElementoResultadoFinal = $this->getElementoResultadoFinal();
-    if ($oElementoResultadoFinal != null && $oElementoResultadoFinal->getElementoAvaliacao() != null) {
-
-      $oResultadoFinal = $oElementoResultadoFinal->getElementoAvaliacao();
-      /**
-       * Percorremos todos os elementos que compoe o calculo da falta.
-       */
-      foreach ($oResultadoFinal->getElementosCalculoFaltas() as $oElementoFalta) {
-
-        foreach ($this->getAvaliacoes() as $oAvaliacao) {
-          if ($oAvaliacao->isAmparado()) {
-            continue;
-          }
-          if ($oElementoFalta->getOrdemSequencia() == $oAvaliacao->getOrdemSequencia()) {
-            $iTotalFaltas += $oAvaliacao->getNumeroFaltas();
-          }
-        }
-      }
-    }
-    return $iTotalFaltas;
-  }
-
-  public function getTotalFaltasPorPeriodo (PeriodoAvaliacao $oPeriodoAvaliacao) {
-
-    $iTotalFaltasPeriodo = 0;
-    $aAvaliacoes         = $this->getAvaliacoes();
-
-    if ($aAvaliacoes != null) {
-
-      /**
-       * Percorremos todos os elementos que compoe o calculo da falta.
-       */
-      foreach ($aAvaliacoes as $oElementoFalta) {
-
-        if ($oElementoFalta->getElementoAvaliacao() instanceof AvaliacaoPeriodica) {
-
-          if ($oPeriodoAvaliacao->getCodigo() == $oElementoFalta->getElementoAvaliacao()->getPeriodoAvaliacao()->getCodigo()) {
-
-            $iTotalFaltasPeriodo += $oElementoFalta->getNumeroFaltas();
-          }
-        }
-      }
-    }
-    return $iTotalFaltasPeriodo;
-  }
-
-  /**
    * Verifica se a lançamento de faltas lançadas por periodo de aula
    * @param PeriodoAvaliacao $oPeriodoAvaliacao periodo de avaliacao que está sendo verificado
    * @return boolean
    */
   public function  hasFaltasPorPeriodoDeAula(PeriodoAvaliacao $oPeriodoAvaliacao) {
-
     return $this->getTotalDeFaltasPorPeriodoDeAula($oPeriodoAvaliacao) > 0;
   }
 
@@ -956,6 +947,7 @@ class DiarioAvaliacaoDisciplina {
     }
     return $aFaltasNoPeriodo;
   }
+
   /**
    * Retorna o total de Faltas do periodo quando existe lançamento de faltas por periodo de aula
    * @param PeriodoAvaliacao $oPeriodoAvaliacao periodo de avaliacao que está sendo verificado
@@ -977,50 +969,6 @@ class DiarioAvaliacaoDisciplina {
       $this->oResultadoFinal = new AvaliacaoResultadoFinal($this);
     }
     return $this->oResultadoFinal;
-  }
-
-  /**
-   * Retorna o total de faltas abonadas da disciplina/regencia;
-   * @return integer
-   */
-  public function getTotalFaltasAbonadas() {
-
-    $iTotalFaltasAbonadas = 0;
-    $aAvaliacao           = $this->getAvaliacoes();
-
-    foreach ($aAvaliacao as $oAvaliacao) {
-
-      if ($oAvaliacao->getElementoAvaliacao()->isResultado()) {
-        continue;
-      }
-      $iTotalFaltasAbonadas += $oAvaliacao->getFaltasAbonadas();
-    }
-
-    return $iTotalFaltasAbonadas;
-  }
-
-  /**
-   * Retorna as faltas abonadas no período de avaliação
-   * @param PeriodoAvaliacao $oPeriodoAvaliacao
-   * @return int
-   */
-  public function getTotalFaltasAbonadasPorPeriodo( PeriodoAvaliacao $oPeriodoAvaliacao ) {
-
-    $iTotalFaltasAbonadas = 0;
-    $aAvaliacao           = $this->getAvaliacoes();
-
-    foreach ($aAvaliacao as $oElementoFalta) {
-
-      if ($oElementoFalta->getElementoAvaliacao() instanceof AvaliacaoPeriodica) {
-
-        if ($oPeriodoAvaliacao->getCodigo() == $oElementoFalta->getElementoAvaliacao()->getPeriodoAvaliacao()->getCodigo()) {
-
-          $iTotalFaltasAbonadas += $oElementoFalta->getFaltasAbonadas();
-        }
-      }
-    }
-
-    return $iTotalFaltasAbonadas;
   }
 
   /**
@@ -1057,99 +1005,6 @@ class DiarioAvaliacaoDisciplina {
   }
 
   /**
-   * Retorna o percentual de presenca do aluno quando o calculo for Global
-   * @return float
-   */
-  private function calculoDeFrequenciaGlobal() {
-
-    if ($this->nPercentualGlobal == null) {
-
-      $iTotalAulas     = 0;
-      $iTotalFaltas    = 0;
-      $iFaltasAbonadas = 0;
-      foreach ($this->oDiario->getDisciplinas() as $oDisciplinaDiario) {
-
-        $iTotalAulas     += $oDisciplinaDiario->getTotalDeAulasParaCalculo();
-        $iTotalFaltas    += $oDisciplinaDiario->getTotalFaltas();
-        $iFaltasAbonadas += $oDisciplinaDiario->getTotalFaltasAbonadas();
-      }
-
-      $nTotalFaltasSemAbono    = $iTotalFaltas - $iFaltasAbonadas;
-      $iTotalAulasPresentes    = $iTotalAulas  - $nTotalFaltasSemAbono;
-      $this->nPercentualGlobal = 0;
-      if ($iTotalAulas > 0) {
-        $this->nPercentualGlobal = ($iTotalAulasPresentes * 100) / $iTotalAulas;
-      }
-    }
-
-    return $this->nPercentualGlobal;
-  }
-  
-  /**
-   * Retorna o total de aulas Para realizar calculos de frequencia.
-   *
-   * Neste metodo,nao sao contabilizas aulas nos periodos em que o aluno está amparado.
-   * @return integer
-   */
-  public function getTotalDeAulasParaCalculo() {
-    
-    $iTotalDeAulasDadas = $this->getRegencia()->getTotalDeAulas();
-    $aPeriodosComAmparo = array();
-    foreach ($this->getAvaliacoes() as $oAvaliacao) {
-
-      if ($oAvaliacao->isAmparado() && !$oAvaliacao->getElementoAvaliacao()->isResultado()) {
-        $aPeriodosComAmparo[] = $oAvaliacao->getElementoAvaliacao()->getPeriodoAvaliacao();
-      }
-    }
-    
-    foreach($aPeriodosComAmparo as $oPeriodoAvaliacao) {
-      $iTotalDeAulasDadas -= $this->getRegencia()->getTotalDeAulasNoPeriodo($oPeriodoAvaliacao);
-    }
-    return $iTotalDeAulasDadas;
-  }
-
-  /**
-   * Retorna o percentual de presenca do aluno quando o calculo for individual
-   * @param stdClass $oDadosFrequencia Dados do calculo individual
-   * @return float
-   */
-  private function calculoDeFrequenciaIndividual() {
-
-    $iTotalDeAulas         = $this->getTotalDeAulasParaCalculo();
-    $nTotalFaltasSemAbono  = $this->getTotalFaltas() - $this->getTotalFaltasAbonadas();
-    $iTotalAulasPresentes  = $iTotalDeAulas - $nTotalFaltasSemAbono;
-    $nPercentualIndividual = "";
-    if ($iTotalDeAulas > 0) {
-      $nPercentualIndividual = ($iTotalAulasPresentes * 100) / $iTotalDeAulas;
-    }
-    return $nPercentualIndividual;
-  }
-
-
-  /**
-   * Verifica se o aluno foi reclassificado por baixa frequencia na disciplina .
-   * @return boolean true para reclassificado , false para não -reclassificado
-   */
-  public function reclassificadoPorBaixaFrequencia() {
-
-    $lAprovadoBaixaFrequencia = false;
-
-    $oDaoAprovConselho = db_utils::getDao("aprovconselho");
-
-    $sWhere  = "ed253_i_diario = {$this->getCodigoDiario()}";
-    $sWhere .= " and ed253_aprovconselhotipo = 2";
-
-    $sSqlAprovadoBaixaFrequencia = $oDaoAprovConselho->sql_query_file(null, '1', null, $sWhere);
-    $rsAprovadoBaixaFrequencia   = $oDaoAprovConselho->sql_record($sSqlAprovadoBaixaFrequencia);
-    if ($rsAprovadoBaixaFrequencia && $oDaoAprovConselho->numrows > 0) {
-      $lAprovadoBaixaFrequencia = true;
-    }
-
-    return $lAprovadoBaixaFrequencia;
-  }
-
-
-  /**
    * Verifica se a disciplina foi aprovada com progressao parcial
    * @return boolean
    */
@@ -1170,63 +1025,16 @@ class DiarioAvaliacaoDisciplina {
   }
 
   /**
-   * Retorna o ampardo da Disciplina
+   * Retorna o amparo da Disciplina
    * @return AmparoDisciplina Amparo da Disciplina
    */
   public function getAmparo() {
 
-    $oAmparo = null;
-    if ($this->getCodigoDiario() != "") {
-
-      $oAmparo = new AmparoDisciplina($this);
-      if ($oAmparo->getCodigo() == "") {
-        $oAmparo = null;
-      }
-    }
-    return $oAmparo;
-  }
-
-
-  /**
-   * Adiciona amparo para os períodos informados
-   * @param array $aPeriodosAvaliacao de AvaliacaoAproveitamento
-   * @param object $oTipoAmparo Pode ser uma instancia de Justificativa ou Convencao
-   * @param boolean $lAproveitaCargaHoraria  Gera aproveitamento da Carga Horaria
-   * @throws BusinessException quando nao informado justificativa do amparo
-   * @return void
-   */
-  public function salvarAmparo (array $aPeriodosAvaliacao, $oTipoAmparo, $lAproveitaCargaHoraria) {
-
-    $oAmparo = new AmparoDisciplina($this);
-
-    /**
-     * Valida o tipo de amparo
-     */
-    if ($oTipoAmparo instanceof Justificativa) {
-      $oAmparo->setJustificativa($oTipoAmparo);
-    } else if ($oTipoAmparo instanceof Convencao) {
-      $oAmparo->setConvencao($oTipoAmparo);
-    } else {
-      throw new BusinessException("Não foi informado o tipo de justificativa");
+    if( $this->getCodigoDiario() != "" && $this->oAmparo == null ) {
+      $this->oAmparo = AmparoDisciplinaRepository::getByDiarioAvaliacaoDisciplina( $this );
     }
 
-    foreach ($aPeriodosAvaliacao as $oAvaliacaoAproveitamento) {
-
-      $oAmparo->adicionarPeriodo($oAvaliacaoAproveitamento);
-    }
-    $oAmparo->setAproveitaCargaHoraria($lAproveitaCargaHoraria);
-
-    $oAmparo->salvar();
-  }
-
-  /**
-   * Remove o amparo da disciplina
-   * @return void
-   */
-  public function removerAmparo () {
-
-    $oAmparo = new AmparoDisciplina($this);
-    $oAmparo->excluir();
+    return $this->oAmparo;
   }
 
   /**
@@ -1240,11 +1048,11 @@ class DiarioAvaliacaoDisciplina {
 
     $iAno                    = $this->oDiario->getTurma()->getCalendario()->getAnoExecucao();
     $oElementoResultadoFinal = $this->getElementoResultadoFinal();
-    
+
     if (empty($oElementoResultadoFinal)) {
       return '';
     }
-    
+
     $oElementoResultadoFinal = $oElementoResultadoFinal->getElementoAvaliacao();
     if ($oElementoResultadoFinal->getFormaDeAvaliacao()->getTipo() != "NOTA") {
       return '';
@@ -1286,16 +1094,27 @@ class DiarioAvaliacaoDisciplina {
       if (!$oAvaliacaoAproveitamentoAtual->getValorAproveitamento()->getAproveitamento() == '') {
          $aElementosCalcular[] = $oAvaliacaoAproveitamentoAtual;
       }
-      $nNotaParcial         = $oElementoResultadoFinal->getResultado($aElementosCalcular, true);
 
-      if (!empty($nNotaParcial)) {
-        $nNotaParcial = $nNotaParcial->getAproveitamento();
+      $oNotaParcial = $oElementoResultadoFinal->getResultado( $aElementosCalcular, true, $iAno );
+
+      if ( is_null($oNotaParcial->getAproveitamentoReal() ) ) {
+        $oNotaParcial->setAproveitamentoReal($oNotaParcial->getAproveitamento());
       }
+
+      $mNotaReal = DiarioAvaliacaoDisciplina::calcularResultadoReal($oElementoResultadoFinal, $this->oDiario, $aElementosCalcular, $iAno);
+      if ( !is_null($mNotaReal) ) {
+        $oNotaParcial->setAproveitamentoReal( $mNotaReal );
+      }
+
+      if (!empty($oNotaParcial)) {
+        $nNotaParcial = $oNotaParcial->getAproveitamentoReal();
+      }
+
     }
-    
-    return ArredondamentoNota::arredondar($nNotaParcial, $iAno);
+
+    return $nNotaParcial;
   }
-  
+
   /**
    * Retorna uma instancia de DiarioClasse
    * @return DiarioClasse
@@ -1303,21 +1122,26 @@ class DiarioAvaliacaoDisciplina {
   public function getDiario() {
     return $this->oDiario;
   }
-  
+
   /**
    * Valida se esta disciplina esta em recuperação
    * @return boolean
    */
   public function emRecuperacao() {
-  	
+
     $oDaoRecuperacao = new cl_diarioresultadorecuperacao();
-    $sWhere = " ed95_i_codigo = {$this->iCodigoDiario} ";
+    $sWhere          = " ed95_i_codigo = {$this->iCodigoDiario} ";
     $sSqlRecuperacao = $oDaoRecuperacao->sql_query(null, "1", null, $sWhere);
-    $oDaoRecuperacao->sql_record($sSqlRecuperacao);
-    
-    if ($oDaoRecuperacao->numrows > 0) {
+    $rsRecuperacao   = db_query( $sSqlRecuperacao );
+
+    if ( !$rsRecuperacao ) {
+      throw new DBException('Falha ao verificar se o aluno está em recuperação na disciplina.');
+    }
+
+    if (pg_num_rows( $rsRecuperacao ) > 0) {
       return true;
     }
+
     return false;
   }
 
@@ -1366,26 +1190,6 @@ class DiarioAvaliacaoDisciplina {
   }
 
   /**
-   * Verifica se o diário possui aproveitamento lançado para algum período da disciplina
-   * @return boolean
-   */
-  public function temAproveitamentoLancado() {
-
-    $lTemAproveitamentoLancado = false;
-
-    foreach( $this->getAvaliacoes() as $oAvaliacaoAproveitamento ) {
-
-      if( $oAvaliacaoAproveitamento->getValorAproveitamento()->getAproveitamento() != '' ) {
-
-        $lTemAproveitamentoLancado = true;
-        break;
-      }
-    }
-
-    return $lTemAproveitamentoLancado;
-  }
-
-  /**
    * Verifica se o diário possui alguma falta lançada e se controla reprovação pela frequencia
    * @return boolean
    */
@@ -1400,8 +1204,8 @@ class DiarioAvaliacaoDisciplina {
       if( $oAvaliacaoAproveitamento->getNumeroFaltas() != '' || $oAvaliacaoAproveitamento->getNumeroFaltas() != '' ) {
         $lTemFaltaLancada = true;
       }
- 
-      if(    $oAvaliacaoAproveitamento->getElementoAvaliacao() instanceof ResultadoAvaliacao 
+
+      if(    $oAvaliacaoAproveitamento->getElementoAvaliacao() instanceof ResultadoAvaliacao
           && $oAvaliacaoAproveitamento->getElementoAvaliacao()->reprovaPorFrequencia()
         ) {
         $lReprovaFrequencia = true;
@@ -1413,5 +1217,237 @@ class DiarioAvaliacaoDisciplina {
     }
 
     return $lControlaReprovacaoFrequencia;
+  }
+
+  /**
+   * Retorna os periodos de avaliação do procedimento de avaliação da Regência
+   * @return AvaliacaoPeriodica[]|ResultadoAvaliacao[]
+   */
+  public function getPeriodosAvaliacao() {
+
+    $aPeriodosAvaliacao = array();
+
+    foreach ( $this->oRegencia->getProcedimentoAvaliacao()->getElementos() as $oPeriodoAvaliacao) {
+      $aPeriodosAvaliacao[] = $oPeriodoAvaliacao;
+    }
+
+    return $aPeriodosAvaliacao;
+  }
+
+  /**
+   * Retorna o período de avaliação de acordo com  a ordem informada
+   *
+   * @param  int $iOrdem   Ordem sequencial do período de avaliação
+   * @return AvaliacaoPeriodica|ResultadoAvaliacao|null
+   */
+  public function getPeriodoAvaliacaoPorOrdemSequencial($iOrdem) {
+
+    foreach ($this->getPeriodosAvaliacao() as $oPeriodoAvaliacao) {
+      if ($oPeriodoAvaliacao->getOrdemSequencia() == $iOrdem ) {
+        return $oPeriodoAvaliacao;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Retorna a ordem dos períodos que devem ser aplicado o cálculo da proporcionalidade
+   * @return array
+   */
+  public function getOrdemPeriodosAplicaProporcionalidade() {
+
+    if( is_array( $this->aOrdemPeriodoProporcionalidade ) ) {
+      return $this->aOrdemPeriodoProporcionalidade;
+    }
+
+    $oDaoDiarioRegra    = new cl_diarioregracalculo();
+    $sWhereDiarioRegra  = "ed125_diario = {$this->iCodigoDiario}";
+    $sWhereDiarioRegra .= " and ed125_regracalculo = " . self::CALCULAR_PROPORCIONALIDADE;
+    $sSqlDiarioRegra    = $oDaoDiarioRegra->sql_query_file( null, "ed125_ordemperiodo", null, $sWhereDiarioRegra );
+    $rsDiarioRegra      = db_query($sSqlDiarioRegra);
+
+    $this->aOrdemPeriodoProporcionalidade = array();
+    if ( $rsDiarioRegra && pg_num_rows($rsDiarioRegra) > 0 ) {
+
+      $iLinhas = pg_num_rows($rsDiarioRegra);
+      for ($i = 0; $i < $iLinhas; $i++) {
+        $this->aOrdemPeriodoProporcionalidade[] = db_utils::fieldsMemory($rsDiarioRegra, $i)->ed125_ordemperiodo;
+      }
+    }
+
+    return $this->aOrdemPeriodoProporcionalidade;
+  }
+
+  /**
+   * Limpa a order dos períodos com proporcionalidade, quando necessário atualizar a ordem dos períodos
+   */
+  public function limpaPeriodosAplicaProporcionalidade() {
+    $this->aOrdemPeriodoProporcionalidade = null;
+  }
+
+  /**
+   * Retorna os periodos de avaliação que devem compor o calculo do resultado final
+   * @return AvaliacaoAproveitamento[]
+   */
+  public function getPeriodosAvaliacaoProporcionalidade() {
+
+    $this->aPeriodosCalcularProporcionalidade = array();
+
+    foreach ( $this->getAvaliacoes() as $oAvaliacaoAproveitamento ) {
+
+      if( !$oAvaliacaoAproveitamento->getElementoAvaliacao()->isResultado() ) {
+        continue;
+      }
+
+      $oResultadoAvaliacao = $oAvaliacaoAproveitamento->getElementoAvaliacao();
+
+      if (    $oResultadoAvaliacao->getFormaDeObtencao() == 'SO'
+           && $oResultadoAvaliacao->utilizaProporcionalidade()
+         ) {
+
+        if( count( $this->getOrdemPeriodosAplicaProporcionalidade() ) > 0 ) {
+
+          foreach ( $this->getAvaliacoes() as $oAvaliacao ) {
+
+            if( in_array($oAvaliacao->getElementoAvaliacao()->getOrdemSequencia(), $this->getOrdemPeriodosAplicaProporcionalidade()) ) {
+              $this->aPeriodosCalcularProporcionalidade[] = $oAvaliacao;
+            }
+          }
+        }
+      }
+    }
+
+    return $this->aPeriodosCalcularProporcionalidade;
+  }
+
+  /**
+   * Verifica se os periodos considerados para proporcionalidade, estao todos amparados
+   * @return bool
+   */
+  public function proporcionalidadeComAmparoTotal() {
+
+    $lAmparoTotal = true;
+    $this->getPeriodosAvaliacaoProporcionalidade();
+    if( !empty($this->aPeriodosCalcularProporcionalidade) ) {
+
+      foreach( $this->aPeriodosCalcularProporcionalidade as $oAvaliacaoAproveitamento ) {
+
+        if( $oAvaliacaoAproveitamento->isAmparado() ) {
+          continue;
+        }
+
+        $lAmparoTotal = false;
+        break;
+      }
+    } else {
+      $lAmparoTotal = false;
+    }
+
+    return $lAmparoTotal;
+  }
+
+  /**
+   * Retorna a regra da avaliacao alternativa, se houver uma avaliação alternativa configurada para o diário
+   * @return AvaliacaoAlternativa|null
+   */
+  public function getAvaliacaoAlternativa() {
+
+    if ( is_null($this->oAvaliacaoAlternativa) ) {
+
+      $oAvaliacaoAlternativa = AvaliacaoAlternativaRepository::getByDiario($this->iCodigoDiario);
+
+      if ( !empty($oAvaliacaoAlternativa) ) {
+        $this->oAvaliacaoAlternativa = $oAvaliacaoAlternativa;
+      }
+    }
+
+    return $this->oAvaliacaoAlternativa;
+  }
+
+  /**
+   * Salva o vínculo de um diario( DiarioAvaliacaoDisciplina ) com uma avaliação alternativa
+   * @param  AvaliacaoAlternativa
+   * @throws DBException
+   */
+  public function salvarAvaliacaoAlternativa( AvaliacaoAlternativa $oAvaliacaoAlternativa ) {
+
+    if( !db_utils::inTransaction() ) {
+      throw new DBException( _M( MENSAGENS_DIARIOAVALIACAOALTERNATIVA . 'sem_transacao' ) );
+    }
+
+    $oDaoDiarioAvaliacaoAlternativa                            = new cl_diarioavaliacaoalternativa();
+    $oDaoDiarioAvaliacaoAlternativa->ed136_diario              = $this->getCodigoDiario();
+    $oDaoDiarioAvaliacaoAlternativa->ed136_procavalalternativa = $oAvaliacaoAlternativa->getCodigo();
+    $oDaoDiarioAvaliacaoAlternativa->incluir( null );
+
+    if( $oDaoDiarioAvaliacaoAlternativa->erro_status == "0" ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = $oDaoDiarioAvaliacaoAlternativa->erro_msg;
+      throw new DBException( _M( MENSAGENS_DIARIOAVALIACAOALTERNATIVA . 'erro_incluir_diario_avaliacaoalternativa', $oErro ) );
+    }
+
+    $this->oAvaliacaoAlternativa = $oAvaliacaoAlternativa;
+  }
+
+  /**
+   * Exclui o vínculo de um diario com uma avaliação alternativa
+   * @throws DBException
+   */
+  public function excluirAvaliacaoAlternativa() {
+
+    if( !db_utils::inTransaction() ) {
+      throw new DBException( _M( MENSAGENS_DIARIOAVALIACAOALTERNATIVA . 'sem_transacao' ) );
+    }
+
+    $oDaoDiarioAvaliacaoAlternativa = new cl_diarioavaliacaoalternativa();
+    $sWhereExclusao                 = " ed136_diario = {$this->getCodigoDiario()}";
+
+    $oDaoDiarioAvaliacaoAlternativa->excluir( null, $sWhereExclusao );
+
+    if( $oDaoDiarioAvaliacaoAlternativa->erro_status == "0" ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = $oDaoDiarioAvaliacaoAlternativa->erro_msg;
+      throw new DBException( _M( MENSAGENS_DIARIOAVALIACAOALTERNATIVA . 'erro_excluir_avaliacaoalternativa', $oErro ) );
+    }
+    $this->oAvaliacaoAlternativa = null;
+  }
+
+  /**
+   * Implementado metoto que valida a existencia de avaliação alterativa para disciplina
+   * @return boolean
+   */
+  public function hasAvaliacaoAlternativa() {
+
+    $this->getAvaliacaoAlternativa();
+    if ( is_null($this->oAvaliacaoAlternativa) ) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Calcula o aproveitamento Real de um aluno somente quando o sistema foi configurado para apresentar o resultado Real
+   * --> Escola > Procedimentos > Parâmetros Globais > Apresentar nota proporcional: NÃO
+   *
+   * Neste caso sistema recalcula a avaliação do aluno aplicando SOMENTE a soma dos períodos com avaliação
+   *
+   * @param  ResultadoAvaliacao        $oResultadoAvaliacao [description]
+   * @param  DiarioClasse              $oDiario             [description]
+   * @param  AvaliacaoAproveitamento[] $aElementosCalcular  [description]
+   * @param  integer                   $iAno                [description]
+   * @return ValorAproveitamentoNota|null
+   */
+  static function calcularResultadoReal( ResultadoAvaliacao $oResultadoAvaliacao, DiarioClasse $oDiario, $aElementosCalcular, $iAno) {
+
+    $mNotaReal = null;
+    if ( $oResultadoAvaliacao->getFormaDeObtencao() == 'SO' && !$oDiario->apresentarNotaProporcional() ) {
+
+      $oFormaObtencaoSoma = new FormaObtencaoSoma();
+      $oFormaObtencaoSoma->setResultadoAvaliacao($oResultadoAvaliacao);
+      $mNotaReal = $oFormaObtencaoSoma->calcularResultado( $aElementosCalcular, $iAno );
+    }
+    return $mNotaReal;
   }
 }

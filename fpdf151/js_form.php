@@ -1,5 +1,5 @@
 <?php
-require('fpdf_js.php');
+require(modification('fpdf151/fpdf_js.php'));
 
 class JS_Form extends PDF_Javascript
 {

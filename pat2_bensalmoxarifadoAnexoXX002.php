@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_utils.php");
-require_once("model/configuracao/DBEstrutura.model.php");
-require_once("model/configuracao/DBEstruturaValor.model.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/configuracao/DBEstrutura.model.php"));
+require_once(modification("model/configuracao/DBEstruturaValor.model.php"));
 
 $oGet          = db_utils::postMemory($_GET);
 $iInstituicao  = db_getsession("DB_instit");
@@ -60,15 +60,15 @@ $aContasBuscar = array();
 $iTotalLinhas  = $oDaoMaterialTipoGrupoVinculo->numrows;
 for ($iGrupo = 0; $iGrupo < $iTotalLinhas; $iGrupo++) {
   
-  $oDadoVinculoTipo   = db_utils::fieldsMemory($rsBuscaVinculoTipo, $iGrupo);
-  $oEstruturaValor    = new DBEstruturaValor($oDadoVinculoTipo->m65_db_estruturavalor);
-  $oEstruturaValor->loadContasAnaliticas($oDadoVinculoTipo->m65_db_estruturavalor);
-  $aContasEncontradas = $oEstruturaValor->getContasAnaliticas();
-  foreach ($aContasEncontradas as $oContaEstruturaValor) {
-    
-    $aContasBuscar[] = $oContaEstruturaValor->getCodigo();
-    //echo $oContaEstruturaValor->getCodigo()."---{$oContaEstruturaValor->getEstrutural()}<br>";
-  }
+  $oDadoVinculoTipo = db_utils::fieldsMemory($rsBuscaVinculoTipo, $iGrupo);
+  $oEstruturaValor  = new DBEstruturaValor($oDadoVinculoTipo->m65_db_estruturavalor);
+  $aContasBuscar[]  = $oEstruturaValor->getCodigo();
+}
+if (count($aContasBuscar) == 0) {
+
+  $sMsg = _M('patrimonial.patrimonio.pat2_bensalmoxarifadoAnexoXX002.vinculo_nao_localizado');
+  db_redireciona("db_erros.php?fechar=true&db_erro={$sMsg}");
+  exit;
 }
 $aWhereBuscaMaterial   = array();
 $aWhereBuscaMaterial[] = "m65_db_estruturavalor in (".implode(', ',$aContasBuscar).")";

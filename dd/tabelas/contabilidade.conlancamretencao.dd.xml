@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010328' name='contabilidade.conlancamretencao' description="Retençao vinculada ao lançamento" prefix="c127" label="Retençao vinculada ao lançamento" type="0">
+  <fields>
+    <field codigo="1010016" 
+           campo_api='' 
+           name="c127_sequencial" 
+           conteudo="int4" 
+           description="Código Sequencial" 
+           inivalue="" 
+           label="Código Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='contabilidade.conlancamretencao_c127_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010017" 
+           campo_api='' 
+           name="c127_conlancam" 
+           conteudo="int4" 
+           description="Código do Lancamento" 
+           inivalue="" 
+           label="Código do Lancamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Lancamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010018" 
+           campo_api='' 
+           name="c127_retencaotiporec" 
+           conteudo="int4" 
+           description="Retenção" 
+           inivalue="" 
+           label="Retenção" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Retenção" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c127_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="conlancam" inner='t'>
+      <fieldfk name="c127_conlancam" reference="c70_codlan" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cancmarca_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cancmarca_classe.php"));
 ?>
 <html>
 <head>
@@ -113,10 +113,10 @@ function js_opcao(valor){
 }
 function js_pesquisama01_i_cgm(mostra){
  if(mostra==true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_conscanc.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa de Marcas Canceladas',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_conscanc.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa de Marcas Canceladas',true);
  }else{
   if(document.form1.z01_numcgm.value != ''){
-   js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_conscanc.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa de Marcas Canceladas',false);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_conscanc.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa de Marcas Canceladas',false);
   }else{
    document.form1.z01_nome.value = '';
   }

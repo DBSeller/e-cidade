@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_itensmenu_classe.php");
-include("classes/db_db_versao_classe.php");
-include("classes/db_db_versaousu_classe.php");
-include("classes/db_db_versaoant_classe.php");
-include("classes/db_db_modulos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_itensmenu_classe.php"));
+include(modification("classes/db_db_versao_classe.php"));
+include(modification("classes/db_db_versaousu_classe.php"));
+include(modification("classes/db_db_versaoant_classe.php"));
+include(modification("classes/db_db_modulos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 ?>
 <html>
@@ -129,7 +129,7 @@ function js_troca_cor(idobj){
                     where db_menu.id_item_filho = $db32_id_item 
                     limit 1
                     ";
-            $res = pg_exec($sql);
+            $res = db_query($sql);
             if(pg_numrows($res)>0){
    	 	      echo '<tr>';
               echo '<td>';
@@ -148,7 +148,7 @@ function js_troca_cor(idobj){
                     from db_menu
                          inner join db_itensmenu on db_menu.id_item = db_itensmenu.id_item
                     where id_item_filho = $db32_id_item limit 1";
-            $res = pg_exec($sql);
+            $res = db_query($sql);
             if(pg_numrows($res)>0){
               $item_anterior .= pg_result($res,0,1).":";
             }

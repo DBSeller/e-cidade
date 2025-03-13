@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptubase_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptubase_classe.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $cliptubase = new cl_iptubase;
@@ -47,41 +47,33 @@ $cliptubase->rotulo->tlabel();
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="document.form1.j01_matric.focus();" >
 
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table height="430" width="790" border="0" cellspacing="0" cellpadding="0">
+<br />  <br />
+
 <form name="form1" method="post" action="cad1_averbacao001.php">
-  <tr>
-    <td align="left" valign="center" bgcolor="#CCCCCC">
-      <center>
-      <table border="0" cellspacing="0" cellpadding="0">
-        <tr> 
-          <td>     
-           <?
+  <center>
+  <fieldset style="width:600px;">
+    <legend>Matricula do imóvel</legend>
+    <table align="center" width="600" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+          <td>
+           <?php
             db_ancora($Lj01_matric,' js_matri(true); ',1);
            ?>
           </td>
           <td> 
-          <?
+          <?php
            db_input('j01_matric',10,0,true,'text',1,"onchange='js_matri(false)'; onkeyPress=js_disabled(true);");
            db_input('z01_nome',50,0,true,'text',3,"");
           ?>
           </td>
         </tr>
       </table>
-      <input name="entrar" type="submit" id="pesquisa" value="Entrar" disabled onclick="return js_checa();">
-      </center>
-    </td>
-  </tr>
+  </fieldset>
+  <input name="entrar" type="submit" id="pesquisa" value="Entrar" disabled onclick="return js_checa();">
+  </center>
 </form>
-</table>
-<?
+
+<?php
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
@@ -101,10 +93,10 @@ function js_checa(){
 function js_matri(mostra){
   var matric=document.form1.j01_matric.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubasenaobaixa.php?funcao_js=parent.js_mostra|j01_matric|z01_nome','Pesquisa',true);    
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubase','func_iptubasenaobaixa.php?funcao_js=parent.js_mostra|j01_matric|z01_nome','Pesquisa',true);    
   }else{
 	if(matric!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubasenaobaixa.php?pesquisa_chave='+matric+'&funcao_js=parent.js_mostra1','Pesquisa',false);      
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubase','func_iptubasenaobaixa.php?pesquisa_chave='+matric+'&funcao_js=parent.js_mostra1','Pesquisa',false);      
     }else{
       document.form1.j01_matric.value ="";        
     }

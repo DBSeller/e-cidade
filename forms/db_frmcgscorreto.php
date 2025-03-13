@@ -97,7 +97,7 @@ if($db_opcao == 1){
 <?
 if (isset($s127_i_login)&&$s127_i_login!=""){
 $sql = "select nome,id_usuario as s127_i_login from db_usuarios where id_usuario = ".@$s127_i_login;
-db_fieldsmemory(pg_query($sql),0);
+db_fieldsmemory(db_query($sql),0);
 }
 db_input('s127_i_login',5,$Is127_i_login,true,'text',3," onchange='js_pesquisas127_i_login(false);'");
 ?>

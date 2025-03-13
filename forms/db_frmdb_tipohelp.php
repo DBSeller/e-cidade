@@ -58,7 +58,7 @@ db_input('descrtipohelp',40,$Idescrtipohelp,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_tipohelp','func_db_tipohelp.php?funcao_js=parent.js_preenchepesquisa|id_codtipo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_tipohelp','func_db_tipohelp.php?funcao_js=parent.js_preenchepesquisa|id_codtipo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_tipohelp.hide();

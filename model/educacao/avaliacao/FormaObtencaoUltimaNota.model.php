@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,27 +31,27 @@
  * @package educacao
  * @subpackage avaliacao
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.11 $
  */
-require_once("model/educacao/avaliacao/FormaObtencao.model.php");
-require_once("model/educacao/avaliacao/iFormaObtencao.interface.php");
+require_once(modification("model/educacao/avaliacao/FormaObtencao.model.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
 class FormaObtencaoUltimaNota extends FormaObtencao implements IFormaObtencao {
-
 
   /**
    * Define as notas que ira ser usaddo no calculo
    * Deverá ser instancias de AvaliacaoAproveitamento
-   * @see IFormaObtencao::processarResultado()
-   * @param array $aAproveitamentos
+   * @param $aAproveitamentos
+   * @param $iAno
+   * @return ValorAproveitamentoNota
    */
-  public function processarResultado($aAproveitamentos) {
+  public function processarResultado( $aAproveitamentos, $iAno ) {
 
     /**
      * Verificamos a maior nota entre os Aproveitamentos
      */
     $mAproveitamento = new ValorAproveitamentoNota();
     $iOrdem          = '';
-    $aNotasPeriodos  = $this->getElementosParaCalculo($aAproveitamentos);
+    $aNotasPeriodos  = $this->getElementosParaCalculo( $aAproveitamentos, $iAno );
     $aElementos      = $this->getResultadoAvaliacao()->getElementosComposicaoResultado();
     foreach ($aNotasPeriodos as $oNotaDoAproveitamento) {
 
@@ -73,7 +73,10 @@ class FormaObtencaoUltimaNota extends FormaObtencao implements IFormaObtencao {
         $iOrdem          = $oNotaDoAproveitamento->getOrdemSequencia();
       }
     }
+    /**
+     * Devolvemos as notas Originais
+     */
+    $this->acertaNotasSubstituidasParaCalculo($aNotasPeriodos);
     return $mAproveitamento;
   }
 }
-?>

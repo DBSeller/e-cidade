@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_solicitem_classe.php");
-require_once("classes/db_pcmater_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_solicitem_classe.php"));
+require_once(modification("classes/db_pcmater_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -53,6 +53,7 @@ if (!isset($db_opcao)) {
   $nome       = "Fechar";
 }
 
+$db_opcao_resum = $db_opcao;
 $pc11_resum = null;
 if (isset($oGet->pc16_codmater) && !empty($oGet->pc16_codmater)) {
 
@@ -64,7 +65,7 @@ if (isset($oGet->pc16_codmater) && !empty($oGet->pc16_codmater)) {
 
 		$oPcMater = db_utils::fieldsMemory($rsSqlPcMater, 0);
 		if ($oPcMater->pc01_liberaresumo == 'f') {
-	    $db_opcao   = 3;
+	        $db_opcao_resum   = 3;
 		}
 	  $pc11_resum = $oPcMater->pc01_complmater;
 	}
@@ -119,7 +120,7 @@ if ( ! empty($oGet->pc11_codigo) ) {
         <fieldset>
           <legend class="bold"><?=@$Lpc11_resum?></legend>
           <?
-          db_textarea('pc11_resum',10,80,$Ipc11_resum,true,'text',$db_opcao);
+          db_textarea('pc11_resum',10,80,$Ipc11_resum,true,'text',$db_opcao_resum);
           ?>
         </fieldset>
       </td>
@@ -157,9 +158,7 @@ function js_passadados(x){
 function js_buscaval(){
   document.form1.pc11_prazo.value = parent.document.form1.pc11_prazo.value;
   document.form1.pc11_pgto.value  = parent.document.form1.pc11_pgto.value;
-  if (document.form1.pc11_resum.value == '') {
-    document.form1.pc11_resum.value = parent.document.form1.pc11_resum.value;
-  }
+  document.form1.pc11_resum.value = parent.document.form1.pc11_resum.value;
   document.form1.pc11_just.value  = parent.document.form1.pc11_just.value;
 }
 
@@ -168,4 +167,10 @@ $('pc11_prazo').style.width = sTamanhoTextArea;
 $('pc11_pgto').style.width  = sTamanhoTextArea;
 $('pc11_resum').style.width = sTamanhoTextArea;
 $('pc11_just').style.width  = sTamanhoTextArea;
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

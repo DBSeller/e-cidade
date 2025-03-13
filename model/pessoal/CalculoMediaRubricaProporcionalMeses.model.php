@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,8 +31,8 @@
  *
  * @author   Alberto Ferri Neto alberto@dbseller.com.br
  * @package  Pessoal
- * @revision $Author: dbalberto $
- * @version  $Revision: 1.5 $
+ * @revision $Author: dbanderson $
+ * @version  $Revision: 1.7 $
  */
 class CalculoMediaRubricaProporcionalMeses implements ICalculoMediaRubrica{
   /**

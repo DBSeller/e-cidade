@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -380,7 +380,7 @@ class cl_promitente {
    function sql_query ( $j41_matric=null,$j41_numcgm=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -413,7 +413,7 @@ class cl_promitente {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -425,7 +425,7 @@ class cl_promitente {
    function sql_query_file ( $j41_matric=null,$j41_numcgm=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -454,7 +454,7 @@ class cl_promitente {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -463,5 +463,20 @@ class cl_promitente {
      }
      return $sql;
   }
+		
+		function sql_query_enderecoEntrega($iNumCgmPromitente = null, $sCampos = "*", $sWhere = null) {
+			
+			if (empty($sWhere) && !empty($iNumCgmPromitente)) {
+				$sWhere = " where j41_numcgm = {$iNumCgmPromitente} ";
+			} else if (!empty($sWhere) && !empty($iNumCgmPromitente)) {
+				$sWhere = " where {$sWhere} and j41_numcgm = {$iNumCgmPromitente} ";
+			}
+			
+			$sSql  = "select {$sCampos}                                      ";
+			$sSql .= "  from promitente                                          ";
+			$sSql .= "       inner join iptubase  on j01_matric = j41_matric ";
+			$sSql .= "       left  join iptuender on j43_matric = j01_matric ";
+			$sSql .= $sWhere;
+			return $sSql;
+		}
 }
-?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,10 +24,10 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-?
-	include("fpdf151/pdfwebseller.php");
-	include("classes/db_calendario_classe.php");
-	include("classes/db_periodocalendario_classe.php");
+
+	include(modification("fpdf151/pdfwebseller.php"));
+	include(modification("classes/db_calendario_classe.php"));
+	include(modification("classes/db_periodocalendario_classe.php"));
 	$clcalendario = new cl_calendario;
 	$clperiodocalendario = new cl_periodocalendario;
 	$escola = db_getsession("DB_coddepto");
@@ -37,7 +37,7 @@
 				 inner join turma on ed60_i_turma=ed57_i_codigo
 			where ed57_i_escola=$escola";
 
-	$result = pg_query($sql);
+	$result = db_query($sql);
 	$linhas = pg_num_rows($result);
 
 	//db_criatabela($result);
@@ -70,7 +70,7 @@ $sql = "select distinct ed11_i_codigo,ed11_c_abrev,ed11_i_ensino,ed10_c_abrev fr
 			 inner join ensino on ed10_i_codigo = ed11_i_ensino
          where ed57_i_escola=$escola and ed52_i_ano=$calendario order by ed11_i_ensino";
 
-$result1 = pg_query($sql);
+$result1 = db_query($sql);
 $linhas1= pg_num_rows($result1);
 
   $pdf->Addpage("L");
@@ -199,7 +199,7 @@ $linhas1= pg_num_rows($result1);
         from serie
         where ed11_i_codigo=".$ed11_i_codigo;
 
-		$result2 = pg_query($sql2);
+		$result2 = db_query($sql2);
 		$linhas2= pg_num_rows($result2);
 		db_fieldsmemory($result2,0);
 

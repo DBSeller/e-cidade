@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_itbinome_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_itbinomecgm_classe.php");
-require_once("classes/db_cgm_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_itbinome_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_itbinomecgm_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_itburbano_classe.php"));
+
+use ECidade\Tributario\ITBI\Repository\ItbitaxasitbiRepository;
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -40,6 +43,8 @@ db_postmemory($HTTP_SERVER_VARS);
 $clitbinome    = new cl_itbinome;
 $clitbinomecgm = new cl_itbinomecgm;
 $clcgm         = new cl_cgm;
+$parreciboitibi = new cl_parreciboitbi;
+$clitburbano = new cl_itburbano();
 
 $db_opcao = 1;
 $db_botao = true;
@@ -56,8 +61,10 @@ if(isset($mostraitbinomecgm) && $mostraitbinomecgm != ""){
       $it03_nome     = $z01_nome;
       $it03_sexo     = $z01_sexo;
       if($it03_sexo == 'M'){
+        $it03_sexo = 'm';
         $aOptionsSexo = array('m'=>'Masculino');
       }else{
+        $it03_sexo = 'f';
         $aOptionsSexo = array('f'=>'Feminino');
       }
       $it03_cpfcnpj  = str_replace('-', '', str_replace('.', '', $z01_cgccpf));
@@ -104,6 +111,8 @@ if((isset($HTTP_POST_VARS["bt_opcao"]) && $HTTP_POST_VARS["bt_opcao"])=="Incluir
         </script>";
   db_fim_transacao($sqlerro);
 }
+
+// M16507 - ajustacadastroitbi - 0
 ?>
 <html>
 <head>
@@ -118,7 +127,7 @@ if((isset($HTTP_POST_VARS["bt_opcao"]) && $HTTP_POST_VARS["bt_opcao"])=="Incluir
 <body class="body-default">
   <div class="container">
     <?php
-      require_once("forms/db_frmitbinome.php");
+      require_once(modification("forms/db_frmitbinome.php"));
     ?>
   </div>
 </body>

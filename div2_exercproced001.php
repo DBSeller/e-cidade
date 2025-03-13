@@ -1,38 +1,38 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_proced_classe.php");
-require_once('libs/db_utils.php');
-require_once("libs/db_libpostgres.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_proced_classe.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_libpostgres.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -50,12 +50,12 @@ $clrotulo->label('v03_descr');
 
 $instit     = db_getsession("DB_instit");
 if (count($clpostgresqlutils->getTableIndexes('debitos')) == 0) {
-  
+
   db_msgbox("Problema nos índices da tabela débitos. Entre em contato com CPD.");
-  $db_botao = false; 
+  $db_botao = false;
   $db_opcao = 3;
 } else {
-  
+
   $db_botao = true;
   $db_opcao = 4;
 }
@@ -109,7 +109,7 @@ if (count($clpostgresqlutils->getTableIndexes('debitos')) == 0) {
             }
             if (exerc != ''){
                exerc = 'exerc='+exerc;
-            } 
+            }
             jan = window.open('div2_exercproced002.php?xdata='+document.form1.xdata.value+
                               '&analitico='+'&procedencias='+document.form1.v03_descr.value+
                               '&tiporel='+document.form1.tiporel.value+
@@ -119,7 +119,7 @@ if (count($clpostgresqlutils->getTableIndexes('debitos')) == 0) {
                               'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
             jan.moveTo(0,0);
           }
-      </script>  
+      </script>
       <link href="estilos.css" rel="stylesheet" type="text/css">
     </head>
     <body bgcolor=#CCCCCC onLoad="a=1">
@@ -130,45 +130,50 @@ if (count($clpostgresqlutils->getTableIndexes('debitos')) == 0) {
             <tr>
               <td>Data do calculo:</td>
 		  	<td>
-		  	  <?
-                $sqlDataDebitos  = "select distinct k115_data from datadebitos where k115_instit = $instit order by k115_data desc";
-		  		$rsDataDebitos   = db_query($sqlDataDebitos);
-                $intDatas        = pg_num_rows($rsDataDebitos);
-		  		for($i=0;$i<$intDatas;$i++){
- 	              db_fieldsmemory($rsDataDebitos,$i);
-		  		  $arrayDatas[$k115_data] = db_formatar($k115_data,'d');
-		  		}
-                db_fieldsmemory($rsDataDebitos,0);
-		  		db_select("xdata",$arrayDatas,true,$db_opcao,"");		
+		  	  <?php
+            $arrayDatas = array();
+            $sqlDataDebitos  = "select distinct k115_data from datadebitos where k115_instit = $instit order by k115_data desc";
+            $rsDataDebitos   = db_query($sqlDataDebitos);
+            $intDatas        = pg_num_rows($rsDataDebitos);
+
+            if ($intDatas > 0) {
+    		  		for($i=0;$i<$intDatas;$i++){
+                db_fieldsmemory($rsDataDebitos,$i);
+    		  		  $arrayDatas[$k115_data] = db_formatar($k115_data,'d');
+    		  		}
+              db_fieldsmemory($rsDataDebitos,0);
+            }
+
+		    		db_select("xdata",$arrayDatas,true,$db_opcao,"");
 		  	  ?>
 		      </td>
 		    </tr>
             <tr>
               <td>Tipo:</td>
               <td>
-                <? 
+                <?
            		  $matriz = array("r"=>"Resumido",
-		                          "c"=>"Completo", 
-		                         );             
-		          db_select("tiporel", $matriz,true,""); 
+		                          "c"=>"Completo",
+		                         );
+		          db_select("tiporel", $matriz,true,"");
            	    ?>
           	</td>
             </tr>
 	        <tr>
               <td nowrap title="Lista de procedencias separadas por vírgula" >
-                Lista de procedencias (separadas por vírgula): 
+                Lista de procedencias (separadas por vírgula):
               </td>
               <td>
                 <?
                   db_input('v03_descr', 100, $Iv03_descr, true, 'text', $db_opcao);
-                ?> 
+                ?>
               </td>
 		    </tr>
           </table>
-          
+
 		  <br><br>
-		  
-          <fieldset class="separator">         
+
+          <fieldset class="separator">
          	<legend>Exercícios</legend>
             <table  align="center" border="0" cellspacing="1" >
               <tr height="20" bgcolor="#FFCC66">
@@ -181,10 +186,10 @@ if (count($clpostgresqlutils->getTableIndexes('debitos')) == 0) {
               </tr>
 		      <?
                 $cor = '#E4F471';
-                $sqlmenor = "select distinct v01_exerc as exercicio from divida";
+                $sqlmenor = "select distinct v01_exerc as exercicio from divida order by v01_exerc";
                 $resultmenor = db_query($sqlmenor) or die($sqlmenor);
                 $cont=0;
-                for($x = 0;$x < pg_numrows($resultmenor);$x++){
+                for($x = 0;$x < pg_num_rows($resultmenor);$x++){
                   db_fieldsmemory($resultmenor,$x);
                   if ($cont==0){
                   	echo "<tr style='cursor: hand; height: 20px' bgcolor='$cor'>";
@@ -194,16 +199,16 @@ if (count($clpostgresqlutils->getTableIndexes('debitos')) == 0) {
                        $cor = '#E4F471';
                     }
                   }
-                  $cont++;                   
+                  $cont++;
               ?>
                 <td height="20px" width="25%" class="borda" style="font-size:11px" align="center" id="check<?=$i?>" nowrap>
-                  <input type="checkbox" value="<?=$exercicio?>"  
+                  <input type="checkbox" value="<?=$exercicio?>"
                   name="check<?=$i?>" checked onclick="js_verifica()"><?=$exercicio?>
                 </td>
               <?
                 if ($cont==4){
                 	echo "</tr>";
-                  	$cont=0;              
+                  	$cont=0;
                 }
                 }
               ?>

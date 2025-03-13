@@ -68,7 +68,7 @@ db_inputdata('y33_validade',@$y33_validade_dia,@$y33_validade_mes,@$y33_validade
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_procfiscalcadtipo','func_procfiscalcadtipo.php?funcao_js=parent.js_preenchepesquisa|y33_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procfiscalcadtipo','func_procfiscalcadtipo.php?funcao_js=parent.js_preenchepesquisa|y33_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_procfiscalcadtipo.hide();

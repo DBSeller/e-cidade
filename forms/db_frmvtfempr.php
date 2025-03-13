@@ -116,10 +116,10 @@ $clrotulo->label("rh35_descr");
 <script>
 function js_pesquisar16_empres(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhempresavt','func_rhempresavt.php?funcao_js=parent.js_mostrarhempresavt1|rh35_codigo|rh35_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhempresavt','func_rhempresavt.php?funcao_js=parent.js_mostrarhempresavt1|rh35_codigo|rh35_descr','Pesquisa',true);
   }else{
     if(document.form1.r16_empres.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_rhempresavt','func_rhempresavt.php?pesquisa_chave='+document.form1.r16_empres.value+'&funcao_js=parent.js_mostrarhempresavt','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhempresavt','func_rhempresavt.php?pesquisa_chave='+document.form1.r16_empres.value+'&funcao_js=parent.js_mostrarhempresavt','Pesquisa',false);
     }else{
       document.form1.rh35_descr.value = ''; 
     }
@@ -138,7 +138,7 @@ function js_mostrarhempresavt1(chave1,chave2){
   db_iframe_rhempresavt.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_vtfempr','func_vtfempr.php?funcao_js=parent.js_preenchepesquisa|r16_anousu|r16_mesusu|r16_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vtfempr','func_vtfempr.php?funcao_js=parent.js_preenchepesquisa|r16_anousu|r16_mesusu|r16_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_vtfempr.hide();

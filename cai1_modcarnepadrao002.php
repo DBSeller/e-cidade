@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas     = new cl_criaabas;
 $db_opcao = 1;
 ?>
@@ -55,14 +55,17 @@ $db_opcao = 1;
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
      <?
-   $clcriaabas->identifica = array( "modcarnepadrao"    =>"Modelo padrão da intituição",
-                    "modcarnepadraotipo"=>"Modelo padrão da intituição por tipo de débito", 
-                    "modcarneexcessao"  =>"Exceções para impressão de carnes"); 
+   $clcriaabas->identifica = array( "modcarnepadrao"    =>"Modelo padrão da instituição",
+                    "modcarnepadraotipo"=>"Modelo padrão da instituição por tipo de débito", 
+                    "modcarneexcessao"  =>"Exceções para impressão de carnes",
+                    "pix" => "PIX"  ); 
    $clcriaabas->src      = array( "modcarnepadrao"    =>"cai1_modcarnepadrao005.php",
                       "modcarnepadraotipo"=>"cai1_modcarnepadraotipo002.php",
-                      "modcarneexcessao"  =>"cai1_modcarneexcessao002.php");
+                      "modcarneexcessao"  =>"cai1_modcarneexcessao002.php",
+                      "pix"  =>"cai1_pix002.php");
    $clcriaabas->disabled   =  array("modcarnepadraotipo"=>"true",
-                    "modcarneexcessao"  =>"true"); 
+                    "modcarneexcessao"  =>"true",
+                    "pix"  =>"true"); 
    $clcriaabas->cria_abas(); 
        ?> 
        </td>
@@ -78,6 +81,7 @@ $db_opcao = 1;
   document.formaba.modcarnepadrao.size     = 50; 
   document.formaba.modcarnepadraotipo.size = 50; 
   document.formaba.modcarneexcessao.size   = 50;
+  document.formaba.pix.size = 50;
   
 </script>
   </html>

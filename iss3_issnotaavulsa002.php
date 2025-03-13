@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_issnotaavulsa_classe.php");
-include("classes/db_parissqn_classe.php");
-include("classes/db_issnotaavulsaservico_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_issnotaavulsa_classe.php"));
+include(modification("classes/db_parissqn_classe.php"));
+include(modification("classes/db_issnotaavulsaservico_classe.php"));
 
 $clissnotaavulsa = new cl_issnotaavulsa();
 $get             = db_utils::postmemory($_GET);
@@ -153,7 +153,7 @@ $sSqlInfo .= " order by  q51_numnota ";
 function js_mostraNota(numNota){
 
  
-  js_OpenJanelaIframe('top.corpo','db_iframe_pesquisanota','iss3_issnotaavulsa003.php?q51_sequencial='+numNota,"Pesquisa Notas Avulsa",true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesquisanota','iss3_issnotaavulsa003.php?q51_sequencial='+numNota,"Pesquisa Notas Avulsa",true);
 
 }
  </script> 

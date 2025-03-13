@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-include("classes/db_mer_desper_und_classe.php");
-include("classes/db_mer_cardapioaluno_classe.php");
-include("classes/db_mer_cardapioturma_classe.php");
-include("classes/db_mer_cardapiodia_classe.php");
-include("classes/db_mer_cardapiodata_classe.php");
-include("classes/db_mer_cardapioitem_classe.php");
-include("classes/db_mer_subitem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+include(modification("classes/db_mer_desper_und_classe.php"));
+include(modification("classes/db_mer_cardapioaluno_classe.php"));
+include(modification("classes/db_mer_cardapioturma_classe.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("classes/db_mer_cardapiodata_classe.php"));
+include(modification("classes/db_mer_cardapioitem_classe.php"));
+include(modification("classes/db_mer_subitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_desper_und    = new cl_mer_desper_und;

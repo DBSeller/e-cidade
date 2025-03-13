@@ -28,9 +28,9 @@
 session_start();
 $_SESSION["DB_itemmenu_acessado"] = "0";
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once('model/configuracao/SkinService.service.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification('model/configuracao/SkinService.service.php'));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
@@ -55,7 +55,7 @@ if( !session_is_registered("DB_instit")) {
     }
   }
 }
-  
+
 db_query("update db_usuariosonline 
        set uol_arquivo = '', 
    uol_modulo = 'Selecionando Área' ,
@@ -138,7 +138,7 @@ if(db_getsession("DB_id_usuario") == "1" || db_getsession("DB_administrador") ==
 
     $oSkin = new SkinService();
 
-    include( $oSkin->getPathFile("area.php") );
+    include(modification( $oSkin->getPathFile("area.php")) );
 
   ?>
 </html>

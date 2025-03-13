@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,17 +25,19 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_iptuconstrhabite_classe.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_obrashabite_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/DBDate.php");
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_iptuconstrhabite_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_obrashabite_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBDate.php"));
+
+db_postmemory($_POST);
+$oGet = db_utils::postMemory($_GET);
 
 $cliptuconstrhabite       = new cl_iptuconstrhabite;
 $clobrashabite            = new cl_obrashabite;
@@ -49,6 +51,8 @@ $db_botao = true;
 
 $lProcesso = "S";
 $lHabite   = "S";
+
+$z01_nome = DBString::urldecode_all($oGet->z01_nome);
 
 if (isset($opcao) && $opcao=="alterar") {
   $db_opcao = 2;
@@ -87,6 +91,11 @@ if(isset($incluir)){
 } else if(isset($alterar)) {
 
   db_inicio_transacao();
+
+  if (empty($j131_hora)) {
+    $cliptuconstrhabite->j131_hora = date("H:i",db_getsession("DB_uol_hora"));
+  }
+
   $cliptuconstrhabite->j131_dtprot   = $j131_dtprot;
   $cliptuconstrhabite->j131_dthabite = $j131_dthabite;
   $cliptuconstrhabite->alterar($j131_sequencial);
@@ -133,6 +142,8 @@ if (isset($opcao) && ($opcao=="alterar" || $opcao=="excluir")){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1; js_montaCampoHabite(); js_montaCampoProcesso();" >
@@ -145,7 +156,7 @@ if (isset($opcao) && ($opcao=="alterar" || $opcao=="excluir")){
     <legend><b>Cadastro de Habite-se</b></legend>
     <br><br>
 	<?
-	include("forms/db_frmiptuconstrhabite.php");
+	include(modification("forms/db_frmiptuconstrhabite.php"));
 	?>
     </center>
     </fieldset>
@@ -164,6 +175,7 @@ if(isset($incluir) || isset($alterar) || isset($excluir)){
     if($cliptuconstrhabite->erro_status != 0) {
       echo "<script>
             js_cancelar();
-          </script>"; }
+          </script>";
+    }
 }
 ?>

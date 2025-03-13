@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,7 +30,7 @@
  * @author: iuri@dbseller.com.br
  * @package Educacao
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.4 $
  */
 
 /**
@@ -71,7 +71,8 @@ class SituacaoEducacao {
 
   /**
    * Instância uma nova Situação, através do seu código
-   * @param integer $iCodigo Código da Situação
+   * @param $iCodigo
+   * @throws BusinessException
    */
   public function __construct($iCodigo) {
 
@@ -89,7 +90,7 @@ class SituacaoEducacao {
 
     $oDadosSituacao      = db_utils::fieldsMemory($rsSituacaoEducacao, 0);
     $this->iCodigo       = $oDadosSituacao->ed109_sequencial;
-    $this->descricao     = $oDadosSituacao->ed109_descricao;
+    $this->sDescricao    = $oDadosSituacao->ed109_descricao;
     $this->lAtivo        = $oDadosSituacao->ed109_ativo == 't';
     $this->iTipoSituacao = $oDadosSituacao->ed109_tiposituacaoeducacao;
 

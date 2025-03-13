@@ -1,38 +1,38 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 ?>
 <form name="form2">
  <table>
   <tr>
    <td valign="top" bgcolor="#CCCCCC">
-    <input type="radio" name="opcao" value="ER" onclick="js_direciona1();"> Escolas da rede municipal<br>
+    <input id="escolaRede" type="radio" name="opcao" value="ER" onclick="js_direciona1();"> <label for="escolaRede">Escolas da rede municipal</label><br>
    </td>
    <td>
-    <input type="radio" name="opcao" value="EF" onclick="js_direciona2();" <?=$db_opcao==1?"checked":""?>> Outras escolas<br><br>
+    <input id="escolaFora" type="radio" name="opcao" value="EF" onclick="js_direciona2();" <?=$db_opcao==1?"checked":""?>> <label for="escolaFora">Outras escolas</label><br><br>
    </td>
   </tr>
  </table>
@@ -41,21 +41,22 @@
 function js_direciona1() {
 
   location.href = "edu1_historicomps001.php?ed62_i_historico=<?=$ed99_i_historico?>&ed29_c_descr=<?=$ed29_c_descr?>"+
-                  "&ed29_i_codigo=<?=$ed29_i_codigo?>&ed61_i_aluno=<?=$ed61_i_aluno?>&ed47_v_nome=<?=$ed47_v_nome?>";
+                  "&ed29_i_codigo=<?=$ed29_i_codigo?>&ed61_i_aluno=<?=$ed61_i_aluno?>&ed47_v_nome=<?=$ed47_v_nome?>"+
+                  "&ed11_i_ensino=<?=$ed11_i_ensino?>";
 }
 
 function js_direciona2() {
 
   location.href = "edu1_historicompsfora001.php?ed99_i_historico=<?=$ed99_i_historico?>"+
                   "&ed29_c_descr=<?=$ed29_c_descr?>&ed29_i_codigo=<?=$ed29_i_codigo?>"+
-                  "&ed61_i_aluno=<?=$ed61_i_aluno?>&ed47_v_nome=<?=$ed47_v_nome?>";
+                  "&ed61_i_aluno=<?=$ed61_i_aluno?>&ed47_v_nome=<?=$ed47_v_nome?>"+
+                  "&ed11_i_ensino=<?=$ed11_i_ensino?>";
 }
 
 parent.disciplina.location.href = "edu1_historicodisciplinafora.php?ed100_i_historicompsfora=<?=@$chavepesquisa?>";
 </script>
 <?
-if ((isset($ed61_i_escola) && $ed61_i_escola != db_getsession("DB_coddepto"))
-  || (isset($situacao) && $situacao == "CONCLUÍDO")) {
+if ( isset($situacao) && $situacao == "CONCLUÍDO") {
   $db_botao = false;
 }
 
@@ -67,14 +68,21 @@ $clrotulo->label("ed18_i_codigo");
 $clrotulo->label("ed11_i_codigo");
 $clrotulo->label("ed57_i_codigo");
 $clrotulo->label("ed06_i_codigo");
+$clrotulo->label("ed11_i_ensino");
+$clrotulo->label("ed11_i_sequencia");
+$clrotulo->label("ed29_c_descr");
+$clrotulo->label("ed29_i_codigo");
+$clrotulo->label("ed11_c_descr");
+$clrotulo->label("ed82_c_nome");
+$clrotulo->label("ed06_c_descr");
 
 $lExcluir = false;
 ?>
 <form name="form1" method="post" action="" class="container">
   <table class="form-container">
     <tr>
-      <td nowrap title="<?=@$Ted99_i_codigo?>">
-        <?=@$Led99_i_codigo?>
+      <td nowrap title="<?=$Ted99_i_codigo?>">
+        <?=$Led99_i_codigo?>
       </td>
       <td>
         <?php
@@ -83,60 +91,63 @@ $lExcluir = false;
       </td>
     </tr>
     <tr>
-      <td nowrap title="<?=@$Ted99_i_historico?>">
+      <td nowrap title="<?=$Ted99_i_historico?>">
         <?php
-        db_ancora( @$Led99_i_historico, "js_pesquisaed99_i_historico(true);", 3 );
+        db_ancora( $Led99_i_historico, "js_pesquisaed99_i_historico(true);", 3 );
         ?>
       </td>
       <td>
         <?php
         $sScript = " onchange='js_pesquisaed99_i_historico(false);'";
         db_input( 'ed99_i_historico', 15, $Ied99_i_historico, true, 'text',   3, $sScript );
-        db_input( 'ed29_c_descr',     40, @$Ied29_c_descr,    true, 'text',   3 );
-        db_input( 'ed29_i_codigo',    40, @$Ied29_i_codigo,   true, 'hidden', 3 );
+        db_input( 'ed29_c_descr',     40, $Ied29_c_descr,     true, 'text',   3 );
+        db_input( 'ed29_i_codigo',    40, $Ied29_i_codigo,    true, 'hidden', 3 );
+        db_input( 'ed11_i_ensino',    40, $Ied11_i_ensino,    true, 'hidden', 3 );
+        db_input( 'ed11_i_sequencia', 40, $Ied11_i_sequencia, true, 'hidden', 3 );
         ?>
       </td>
     </tr>
     <tr>
-      <td nowrap title="<?=@$Ted99_i_serie?>">
+      <td nowrap title="<?=$Ted99_i_serie?>">
         <?php
-        db_ancora( @$Led99_i_serie, "js_pesquisaed99_i_serie(true);", $db_opcao1 );
+        db_ancora( $Led99_i_serie, "js_pesquisaed99_i_serie(true);", $db_opcao1 );
         ?>
       </td>
       <td>
         <?php
         db_input( 'ed99_i_serie', 15, $Ied99_i_serie,  true, 'text', 3, " onchange='js_pesquisaed99_i_serie(false);'" );
-        db_input( 'ed11_c_descr', 20, @$Ied11_c_descr, true, 'text', 3 );
+        db_input( 'ed11_c_descr', 20, $Ied11_c_descr, true, 'text', 3 );
         ?>
       </td>
     </tr>
     <tr>
-      <td nowrap title="<?=@$Ted99_i_anoref?>">
-        <?=@$Led99_i_anoref?>
+      <td nowrap title="<?=$Ted99_i_anoref?>">
+        <?=$Led99_i_anoref?>
       </td>
       <td>
         <?php
         db_input( 'ed99_i_anoref', 4, $Ied99_i_anoref, true, 'text', $db_opcao );
-        echo @$Led99_i_periodoref;
-        db_input( 'ed99_i_periodoref', 4, 1, true, 'text', $db_opcao );
-        echo @$Led99_c_turma;
+        echo $Led99_i_periodoref;
+        db_input( 'ed99_i_periodoref', 4, 0, true, 'text', $db_opcao );
+        echo $Led99_c_turma;
         db_input( 'ed99_c_turma', 30, $Ied99_c_turma, true, 'text', $db_opcao );
         ?>
       </td>
     </tr>
     <tr>
-      <td nowrap title="<?=@$Ted99_i_escolaproc?>">
+      <td nowrap title="<?=$Ted99_i_escolaproc?>">
         <?php
-        db_ancora( @$Led99_i_escolaproc, "js_pesquisaed99_i_escolaproc(true);", $db_opcao );
+        db_ancora( $Led99_i_escolaproc, "js_pesquisaed99_i_escolaproc(true);", $db_opcao );
         ?>
       </td>
       <td>
         <?php
         $sScript = " onchange='js_pesquisaed99_i_escolaproc(false);'";
         db_input( 'ed99_i_escolaproc', 15, $Ied99_i_escolaproc, true, 'text', $db_opcao, $sScript );
-        db_input( 'ed82_c_nome',       30, @$Ied82_c_nome,      true, 'text', 3 );
+        db_input( 'ed82_c_nome',       30, $Ied82_c_nome,      true, 'text', 3 );
         ?>
         <input name="novo"
+               id="btnNovo"
                type="button"
                value="Nova"
                onclick="js_novaescola();"
@@ -145,8 +156,8 @@ $lExcluir = false;
       </td>
     </tr>
     <tr>
-      <td nowrap title="<?=@$Ted99_c_situacao?>">
-        <?=@$Led99_c_situacao?>
+      <td nowrap title="<?=$Ted99_c_situacao?>">
+        <?=$Led99_c_situacao?>
       </td>
       <td>
         <?php
@@ -158,7 +169,8 @@ $lExcluir = false;
                     'CANCELADO'      => 'CANCELADO',
                     'EVADIDO'        => 'EVADIDO',
                     'FALECIDO'       => 'FALECIDO',
-                    'RECLASSIFICADO' => 'RECLASSIFICADO'
+                    'RECLASSIFICADO' => 'RECLASSIFICADO',
+                    'AVANÇO' => 'AVANÇO'
                   );
         db_select( 'ed99_c_situacao', $x, true, $db_opcao, " onchange='js_situacao(this);'" );
         ?>
@@ -169,7 +181,7 @@ $lExcluir = false;
         <fieldset>
           <legend class="bold">Observação</legend>
         <?php
-        db_textarea( 'ed99_observacao', 4, 10, $Ied99_observacao, true, '', 1, '', '', '', 500 );
+        db_textarea( 'ed99_observacao', 4, 10, $Ied99_observacao, true, '', 1, '', '', '');
         ?>
         </fieldset>
       </td>
@@ -183,26 +195,27 @@ $lExcluir = false;
                      name="legenda"
                      value="<?=@$ed99_c_situacao?>"
                      size="15"
+                     readonly
                      style="border: 0px; background: #cccccc; font-weight: bold; text-align: center;">
             </legend>
             <table>
               <tr id="justificativa" style="display: none;">
-                <td nowrap title="<?=@$Ted99_i_justificativa?>">
+                <td nowrap title="<?=$Ted99_i_justificativa?>">
                   <?php
-                  db_ancora( @$Led99_i_justificativa, "js_pesquisaed99_i_justificativa(true);", $db_opcao );
+                  db_ancora( $Led99_i_justificativa, "js_pesquisaed99_i_justificativa(true);", $db_opcao );
                   ?>
                 </td>
                 <td>
                   <?php
                   $sScript = " onchange='js_pesquisaed99_i_justificativa(false);'";
                   db_input( 'ed99_i_justificativa', 10, $Ied99_i_justificativa, true, 'text', $db_opcao, $sScript );
-                  db_input( 'ed06_c_descr',         30, @$Ied06_c_descr,        true, 'text', 3 );
+                  db_input( 'ed06_c_descr',         30, $Ied06_c_descr,        true, 'text', 3 );
                   ?>
                 </td>
               </tr>
               <tr id="resultado">
-                <td nowrap title="<?=@$Ted99_c_resultadofinal?>">
-                  <?=@$Led99_c_resultadofinal?>
+                <td nowrap title="<?=$Ted99_c_resultadofinal?>">
+                  <?=$Led99_c_resultadofinal?>
                 </td>
                 <td>
                   <?php
@@ -211,7 +224,7 @@ $lExcluir = false;
                   ?>
                 </td>
                 <td>
-                  <?=@$Led99_i_diasletivos?>
+                  <?=$Led99_i_diasletivos?>
                 </td>
                 <td>
                   <?php
@@ -220,16 +233,16 @@ $lExcluir = false;
                 </td>
               </tr>
               <tr>
-                <td nowrap title="<?=@$Ted99_i_qtdch?>">
-                  <?=@$Led99_i_qtdch?>&nbsp;&nbsp;&nbsp;
+                <td nowrap title="<?=$Ted99_i_qtdch?>">
+                  <?=$Led99_i_qtdch?>&nbsp;&nbsp;&nbsp;
                 </td>
                 <td>
                   <?php
                   db_input( 'ed99_i_qtdch', 10, $Ied99_i_qtdch, true, 'text', $db_opcao );
                   ?>
                 </td>
-                <td nowrap title="<?=@$Ted99_c_minimo?>" id="labelMinimo">
-                  <?=@$Led99_c_minimo?>
+                <td nowrap title="<?=$Ted99_c_minimo?>" id="labelMinimo">
+                  <?=$Led99_c_minimo?>
                 </td>
                 <td id="inputMinimo">
                   <?php
@@ -239,7 +252,7 @@ $lExcluir = false;
               </tr>
               <tr>
                 <td>
-                  <?=@$Led99_c_termofinal?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <?=$Led99_c_termofinal?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td>
                   <?php
@@ -266,13 +279,14 @@ $lExcluir = false;
       </td>
     </tr>
   </table>
+  <input type="hidden" id="iOpcao" value="<?=$db_opcao?>">
   <?php
   if( $db_opcao == 1 ) {
   ?>
 
     <input name="incluir"
            type="submit"
-           id="db_opcao"
+           id="btnIncluir"
            value="Incluir"
            <?=( $db_botao == false ? "disabled" : "" )?>
            onclick="return js_minimoaprov();">
@@ -282,13 +296,13 @@ $lExcluir = false;
 
     <input name="alterar"
            type="submit"
-           id="db_opcao"
+           id="btnAlterar"
            value="Alterar"
            <?=( $db_botao == false ? "disabled" : "" )?>
            onclick="return js_minimoaprov();">
     <input name="excluir"
            type="button"
-           id="db_opcao"
+           id="btnExcluir"
            value="Excluir"
            <?=( $db_botao == false ? "disabled" : "" )?>
            onclick="js_confirmaExclusao();" >
@@ -297,7 +311,7 @@ $lExcluir = false;
   ?>
 </form>
 <script>
-
+var iOrdemEtapaSelecionada = $F('ed11_i_sequencia');
 $('ed99_i_diasletivos').setAttribute('maxlength', '3');
 $('ed99_i_qtdch').setAttribute('maxlength', '7');
 
@@ -306,6 +320,7 @@ var sCaminhoMensagem = "educacao.escola.db_frmhistoricompsfora.";
 if (
          isset($ed99_c_situacao) && trim($ed99_c_situacao) == "CONCLUÍDO"
       || isset($ed99_c_situacao) && trim($ed99_c_situacao) == "RECLASSIFICADO"
+      || isset($ed99_c_situacao) && trim($ed99_c_situacao) == "AVANÇO"
    ) {?>
 
   document.getElementById("resultado").style.display     = "";
@@ -330,7 +345,7 @@ if (
 
 function js_situacao(campo) {
 
-  if (campo.value == "CONCLUÍDO" || campo.value == "RECLASSIFICADO") {
+  if (campo.value == "CONCLUÍDO" || campo.value == "RECLASSIFICADO" || campo.value == "AVANÇO") {
 
     document.getElementById("situacao").style.display      = "";
     document.getElementById("justificativa").style.display = "none";
@@ -373,7 +388,7 @@ function js_pesquisaed99_i_escolaproc(mostra) {
 
       js_OpenJanelaIframe('parent', 'db_iframe_escolaproc',
     	                  'func_escolaproc.php?pesquisa_chave='+document.form1.ed99_i_escolaproc.value+
-    	                  '&funcao_js=parent.dados.js_mostraescolaproc', 'Pesquisa', false
+    	                  '&funcao_js=parent.dados.js_mostraescolaproc&lRetornoPadrao=true', 'Pesquisa', false
     	                 );
     } else {
       document.form1.ed18_c_nome.value = '';
@@ -383,7 +398,14 @@ function js_pesquisaed99_i_escolaproc(mostra) {
 
 function js_mostraescolaproc(chave, erro) {
 
-  document.form1.ed82_c_nome.value = chave;
+  var sDescricao = chave;
+
+  if ( typeof(erro) !== 'boolean') {
+    sDescricao = erro;
+  }
+
+  document.form1.ed82_c_nome.value = sDescricao;
+
   if (erro == true) {
 
     document.form1.ed99_i_escolaproc.focus();
@@ -403,8 +425,10 @@ function js_pesquisaed99_i_serie(mostra) {
   if (mostra == true) {
 
     js_OpenJanelaIframe('parent', 'db_iframe_serie',
-    	                'func_seriehist.php?historico='+document.form1.ed99_i_historico.value+
-    	                '&funcao_js=parent.dados.js_mostraserie1|ed11_i_codigo|ed11_c_descr',
+    	                'func_seriehist.php?historico=' + $F('ed99_i_historico')    +
+                      '&iStatusAlteracaoHistorico='   + iStatusAlteracaoHistorico +
+                      '&iOrdemEtapaAtual='            + iOrdemEtapaAtual          +
+    	                '&funcao_js=parent.dados.js_mostraserie1|ed11_i_codigo|ed11_c_descr|ed11_i_sequencia',
     	                'Pesquisa de Etapas', true
     	                );
   } else {
@@ -412,8 +436,11 @@ function js_pesquisaed99_i_serie(mostra) {
     if (document.form1.ed99_i_serie.value != '') {
 
       js_OpenJanelaIframe('parent', 'db_iframe_serie',
-    	                  'func_seriehist.php?historico='+document.form1.ed99_i_historico.value+
-    	                  '&pesquisa_chave='+document.form1.ed99_i_serie.value+'&funcao_js=parent.dados.js_mostraserie',
+    	                  'func_seriehist.php?historico=' + $F('ed99_i_historico')    +
+                        '&iStatusAlteracaoHistorico='   + iStatusAlteracaoHistorico +
+                        '&iOrdemEtapaAtual='            + iOrdemEtapaAtual          +
+    	                  '&pesquisa_chave='              + $F('ed99_i_serie')        +
+                        '&funcao_js=parent.dados.js_mostraserie',
     	                  'Pesquisa', false
     	                 );
     } else {
@@ -436,6 +463,11 @@ function js_mostraserie1(chave1, chave2) {
 
   document.form1.ed99_i_serie.value = chave1;
   document.form1.ed11_c_descr.value = chave2;
+
+  $('ed11_i_sequencia').value = arguments[2];
+  iOrdemEtapaSelecionada = arguments[2]
+
+  validaBloquearBotao();
   parent.db_iframe_serie.hide();
 }
 
@@ -587,4 +619,49 @@ function js_validaFrequencia(oPercentualFrequencia) {
     return false;
   }
 }
+
+/*
+ * Valida se Escola selecionada tem permissão de manutenção do histórico do aluno.
+ */
+var iOrdemEtapaAtual          = CurrentWindow.corpo.oDadosManutencaoHistorico.aSenquenciaEtapas[$F('ed11_i_ensino')];
+var iStatusAlteracaoHistorico = CurrentWindow.corpo.oDadosManutencaoHistorico.iStatusAlteracaoHistorico;
+
+function validaBloquearBotao() {
+
+  liberarBotao();
+  var oHistorico = new HistoricoEscolar( iStatusAlteracaoHistorico,
+                                         iOrdemEtapaAtual,
+                                         iOrdemEtapaSelecionada );
+
+  if ( !oHistorico.permiteManutencao() ) {
+
+    if ( $F('iOpcao') == 1 ) {
+
+      $('btnIncluir').setAttribute('disabled', 'disabled');
+      $('btnNovo').setAttribute('disabled', 'disabled');
+    }
+
+    if ( $F('iOpcao') == 2 ) {
+
+      $('btnNovo').setAttribute('disabled', 'disabled');
+      $('btnAlterar').setAttribute('disabled', 'disabled');
+      $('btnExcluir').setAttribute('disabled', 'disabled');
+    }
+  }
+};
+
+function liberarBotao() {
+
+  if ( $('btnIncluir') ){
+    $('btnIncluir').removeAttribute('disabled');
+  }
+  if ( $('btnAlterar') ){
+    $('btnAlterar').removeAttribute('disabled');
+  }
+  if ( $('btnExcluir') ){
+    $('btnExcluir').removeAttribute('disabled');
+  }
+};
+
+validaBloquearBotao();
 </script>

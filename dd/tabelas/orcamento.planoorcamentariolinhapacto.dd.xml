@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010346' name='planoorcamentariolinhapacto' description="planoorcamentariolinhapacto" prefix="o156" label="planoorcamentariolinhapacto" type="0">
+  <fields>
+    <field codigo="1010131" 
+           campo_api='' 
+           name="o156_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='planoorcamentariolinhapacto_o156_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010132" 
+           campo_api='' 
+           name="o156_linhaspacto" 
+           conteudo="int4" 
+           description="Linhas de Pacto" 
+           inivalue="0" 
+           label="Linhas de Pacto" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Linhas de Pacto" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010133" 
+           campo_api='' 
+           name="o156_orcdotacaoplanoorcamentario" 
+           conteudo="int4" 
+           description="Plano Orcamentário" 
+           inivalue="0" 
+           label="Plano Orcamentário" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Plano Orcamentário" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010134" 
+           campo_api='' 
+           name="o156_valor" 
+           conteudo="float4" 
+           description="Valor" 
+           inivalue="0" 
+           label="Valor" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="o156_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="linhaspacto" inner='t'>
+      <fieldfk name="o156_linhaspacto" reference="c07_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="orcdotacaoplanoorcamentario" inner='t'>
+      <fieldfk name="o156_orcdotacaoplanoorcamentario" reference="o155_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

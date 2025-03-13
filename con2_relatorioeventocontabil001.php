@@ -1,38 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_liborcamento.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotuloConHistDoc  = new rotulo('conhistdoc');
 $oRotuloConHistDoc->label();
@@ -48,11 +47,9 @@ $rsBuscaAnoTransacao   = $oDaoContrans->sql_record($sSqlBuscaAnoTransacao);
 $aAnosConfigurados     = array();
 for ($iRowAno = 0; $iRowAno < $oDaoContrans->numrows; $iRowAno++) {
 
-	$iAnoLocalizado                     = db_utils::fieldsMemory($rsBuscaAnoTransacao, $iRowAno)->c45_anousu;
-	$aAnosConfigurados[$iAnoLocalizado] = $iAnoLocalizado;
+  $iAnoLocalizado                     = db_utils::fieldsMemory($rsBuscaAnoTransacao, $iRowAno)->c45_anousu;
+  $aAnosConfigurados[$iAnoLocalizado] = $iAnoLocalizado;
 }
-
-
 ?>
 <html>
 <head>
@@ -61,151 +58,145 @@ for ($iRowAno = 0; $iRowAno < $oDaoContrans->numrows; $iRowAno++) {
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script type="text/javascript" src="scripts/widgets/DBLancador.widget.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
-<body style="background-color: #cccccc; margin-top: 25px;">
-
-<center>
-	<form>
-		<fieldset style="width: 600px;">
-			<legend><b>Relatório de Eventos Contábeis</b></legend>
-			<table width="100%">
-				<tr>
-					<td>
-						<?php 
-							db_ancora("<b>Documento:</b>", "js_pesquisaDocumento(true);", 1);
-						?>
-					</td>
-					<td>
-						<?php
-						  db_input('c53_coddoc', 10, $Ic53_coddoc, true, 'text', 1, "onchange='js_pesquisaDocumento(false);'");
-						  db_input('c53_descr', 50, $Ic53_descr, true, 'text', 3)
-						?>
-					</td>
-				</tr>
-				<tr id="trLancamentos">
-					<td>
-						<?php 
-							db_ancora("<b>Lançamento:</b>", "js_pesquisaLancamento(true);", 1);
-						?>
-					</td>
-					<td>
-						<?php
-						  db_input('c46_seqtranslan', 10, $Ic46_seqtranslan, true, 'text', 1, "onchange='js_pesquisaLancamento(false);'");
-						  db_input('c46_descricao', 50, $Ic46_descricao, true, 'text', 3)
-						?>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-		<br>
-		<input type="button" name="btnEmiteRelatorio" id="btnEmiteRelatorio" value="Emitir" />
-	</form>
-</center>
-<?
-  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
-</body>
-</html>
+<body class="body-default">
+  <div class="container">
+    <form>
+      <fieldset style="width: 600px;">
+        <legend><b>Relatório de Eventos Contábeis</b></legend>
+        <div id="lancadorDocumentos"></div>
+        <table width="100%" style="margin-top: 15px;">
+          <tr id="trLancamentos">
+            <td>
+              <?php
+                db_ancora("<b>Lançamento:</b>", "js_pesquisaLancamento(true);", 1);
+              ?>
+            </td>
+            <td>
+              <?php
+                db_input('c46_seqtranslan', 10, $Ic46_seqtranslan, true, 'text', 1, "onchange='js_pesquisaLancamento(false);'");
+                db_input('c46_descricao', 50, $Ic46_descricao, true, 'text', 3)
+              ?>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+      <br>
+      <input type="button" name="btnEmiteRelatorio" id="btnEmiteRelatorio" value="Emitir" />
+    </form>
+  </div>
+<?php db_menu(); ?>
 <script>
+  var oLancadorDocumentos;
 
-	$('btnEmiteRelatorio').observe('click', function() {
+  function getCodigosDocumentos() {
 
-	  if ($F('c53_coddoc') == "") {
+    var aCodigosDocumentos = [];
+    var aDocumentos        = oLancadorDocumentos.getRegistros(false);
 
-			alert("Informe o documento.");
-			return false;
-	  }
+    for (var iDocumento = 0; iDocumento < aDocumentos.length; iDocumento++) {
+      aCodigosDocumentos.push(aDocumentos[iDocumento].sCodigo);
+    }
 
-	  if ($F('c46_seqtranslan') == "") {
+    return aCodigosDocumentos;
+  }
 
-		  var sMsgConfirm  = "Não foi selecionado nenhum lançamento.\nSerá emitido o relatório com todos";
-		  sMsgConfirm     += " os lançamentos do documento selecionado.\n\nConfirma esta operação?";
-		  if (!confirm(sMsgConfirm)) {
-			  return false;
-		  }
-	  }
+  document.observe('dom:loaded', function () {
 
-	  var sUrlRelatorio  = "con2_relatorioeventocontabil002.php?";
-	  	  sUrlRelatorio += "iCodigoDocumento="+$F('c53_coddoc');
-	  	  sUrlRelatorio += "&iCodigoLancamento="+$F('c46_seqtranslan');
-//	  	  sUrlRelatorio += "&iAno="+$F('iAno');
+    oLancadorDocumentos = new DBLancador('lancadorDocumentos');
+    oLancadorDocumentos.setNomeInstancia('oLancadorDocumentos');
+    oLancadorDocumentos.setLabelAncora('Documento:');
+    oLancadorDocumentos.setTextoFieldset('Documentos');
+    oLancadorDocumentos.setParametrosPesquisa('func_conhistdoc.php', ['0','1']);
+    oLancadorDocumentos.setTituloJanela("Pesquisa de Documentos");
+    oLancadorDocumentos.setGridHeight(150);
+    oLancadorDocumentos.show($('lancadorDocumentos'));
+  });
 
-    var oJanela = window.open(sUrlRelatorio, '', 'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+  $('btnEmiteRelatorio').observe('click', function() {
+
+    var aCodigosDocumentos = getCodigosDocumentos();
+
+    if (aCodigosDocumentos.length === 0) {
+
+      if (!confirm("A emissão do relatório pode demorar pois nenhum documento foi selecionado. Confirma esta operação?")) {
+        return false;
+      }
+    }
+
+    if ($F('c46_seqtranslan') == "") {
+
+      var sMsgConfirm  = "Não foi selecionado nenhum lançamento.\nSerá emitido o relatório com todos";
+      sMsgConfirm     += " os lançamentos do(s) documento(s) selecionado(s).\n\nConfirma esta operação?";
+      if (!confirm(sMsgConfirm)) {
+        return false;
+      }
+    }
+
+    var sUrlRelatorio  = "con2_relatorioeventocontabil002.php?";
+        sUrlRelatorio += "iCodigosDocumentos=" + aCodigosDocumentos.join(',');
+        sUrlRelatorio += "&iCodigoLancamento=" + $F('c46_seqtranslan');
+    var sOpcoes = 'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ';
+    var oJanela = window.open(sUrlRelatorio, '', sOpcoes);
+
     oJanela.moveTo(0,0);
-	  
-	});
+  });
 
+  function js_pesquisaLancamento(lMostra) {
 
-	function js_pesquisaLancamento(lMostra) {
+    var aCodigosDocumentos = getCodigosDocumentos();
+    var sUrlLancamento = "func_contranslan.php?iCodigoDocumento=" + aCodigosDocumentos.join(',') + "&pesquisa_chave=" + $F("c46_seqtranslan") + "&funcao_js=parent.js_completaLancamento";
+    if (lMostra) {
+      sUrlLancamento = "func_contranslan.php?iCodigoDocumento=" + aCodigosDocumentos.join(',') + "&funcao_js=parent.js_preencheLancamento|c46_seqtranslan|c46_descricao";
+    }
+    js_OpenJanelaIframe("", "db_iframe_contranslan", sUrlLancamento, "Pesquisa Lançamento", lMostra);
+  }
 
-		var sUrlLancamento = "func_contranslan.php?iCodigoDocumento="+$F('c53_coddoc')+"&pesquisa_chave="+$F("c46_seqtranslan")+"&funcao_js=parent.js_completaLancamento";
-		if (lMostra) {
-		  sUrlLancamento = "func_contranslan.php?iCodigoDocumento="+$F('c53_coddoc')+"&funcao_js=parent.js_preencheLancamento|c46_seqtranslan|c46_descricao";
-		}
-		js_OpenJanelaIframe("", "db_iframe_contranslan", sUrlLancamento, "Pesquisa Lançamento", lMostra);
-	}
+  function js_preencheLancamento(iSequencialLancamento, sDescricaoLancamento) {
 
-	function js_preencheLancamento(iSequencialLancamento, sDescricaoLancamento) {
-
-	  $('c46_seqtranslan').value = iSequencialLancamento;
+    $('c46_seqtranslan').value = iSequencialLancamento;
     $('c46_descricao').value   = sDescricaoLancamento;
     db_iframe_contranslan.hide();
-	}
+  }
 
-	function js_completaLancamento(iCodigoHistorico, lErro, sDescricaoLancamento) {
+  function js_completaLancamento(iCodigoHistorico, lErro, sDescricaoLancamento) {
 
-	  if (sDescricaoLancamento == null) {
-	    $("c46_descricao").value = iCodigoHistorico;
-	  } else {
-	  	$("c46_descricao").value = sDescricaoLancamento;
-	  }
-	  if (lErro) {
-	    $("c46_seqtranslan").value = "";
-	  }
-	}
+    if (sDescricaoLancamento == null) {
+      $("c46_descricao").value = iCodigoHistorico;
+    } else {
+      $("c46_descricao").value = sDescricaoLancamento;
+    }
+    if (lErro) {
+      $("c46_seqtranslan").value = "";
+    }
+  }
 
+  function js_pesquisaDocumento(lMostra) {
 
+    var sUrlDocumento = "";
+    if (lMostra) {
+      sUrlDocumento = "func_conhistdoc.php?funcao_js=parent.js_preencheDocumento|c53_coddoc|c53_descr";
+    } else {
+      sUrlDocumento = "func_conhistdoc.php?pesquisa_chave="+$F("c53_coddoc")+"&funcao_js=parent.js_completaDocumento";
+    }
+    js_OpenJanelaIframe("", "db_iframe_conhistdoc", sUrlDocumento, "Pesquisa Documento", lMostra);
+  }
 
+  function js_preencheDocumento(iCodigoDocumento, sDescricaoDocumento) {
 
+    $("c53_coddoc").value = iCodigoDocumento;
+    $("c53_descr").value  = sDescricaoDocumento;
+    db_iframe_conhistdoc.hide();
+  }
 
+  function js_completaDocumento(sDescricao, lErro) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-	function js_pesquisaDocumento(lMostra) {
-	
-	  var sUrlDocumento = "";
-	  if (lMostra) {
-	    sUrlDocumento = "func_conhistdoc.php?funcao_js=parent.js_preencheDocumento|c53_coddoc|c53_descr";
-	  } else {
-	    sUrlDocumento = "func_conhistdoc.php?pesquisa_chave="+$F("c53_coddoc")+"&funcao_js=parent.js_completaDocumento";
-	  }
-	  js_OpenJanelaIframe("", "db_iframe_conhistdoc", sUrlDocumento, "Pesquisa Documento", lMostra);
-	}
-	
-	function js_preencheDocumento(iCodigoDocumento, sDescricaoDocumento) {
-	
-	  $("c53_coddoc").value = iCodigoDocumento;
-	  $("c53_descr").value  = sDescricaoDocumento;
-	  db_iframe_conhistdoc.hide();
-	}
-	
-	function js_completaDocumento(sDescricao, lErro) {
-
-	  $("c53_descr").value = sDescricao;
-	  if (lErro) {
-	    $("c53_coddoc").value = "";
-	  }
-	}
-
+    $("c53_descr").value = sDescricao;
+    if (lErro) {
+      $("c53_coddoc").value = "";
+    }
+  }
 </script>
+</body>
+</html>

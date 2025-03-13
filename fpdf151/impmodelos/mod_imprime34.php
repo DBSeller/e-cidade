@@ -199,7 +199,7 @@ for ($i=0, $a=1; $i <= $iTotalRegistros; $i++) {
 
     $this->objpdf->Setfont('Arial','',8);
     $this->objpdf->rect($col+108,$lin+218,49,45);
-    if($this->regime != 1){ 
+    if($this->regime != 1){
       $this->objpdf->text($col+12,$lin+226,'Foi prestado, gratualmente, assistência ao trabalhador, nos termos do ');
       $this->objpdf->text($col+12,$lin+229,'art. 447 parag. 1° da Consolidação das Leis do Trabalho - CLT, sendo ');
       $this->objpdf->text($col+12,$lin+232,'comprovado, neste ato, efetivo pagamento das verbas rescisórias acima ');
@@ -226,7 +226,7 @@ for ($i=0, $a=1; $i <= $iTotalRegistros; $i++) {
     $this->objpdf->text($col,$lin+291,'Proj/Ativ. : '.$this->projativ.'-'.$this->descr_projativ);
     $this->objpdf->text($col+100,$lin+291,'Recurso  : '.$this->recurso.'-'.$this->descr_recurso);
     $this->objpdf->text($col,$lin+294,'Competencia : '.$this->mes.'/'.$this->ano);
-      
+
     if($i>0){
       $this->objpdf->text($col + 18,190,"FOLHA ".$a." DE ".$totalpaginas);
       $a ++;
@@ -234,9 +234,9 @@ for ($i=0, $a=1; $i <= $iTotalRegistros; $i++) {
 
     $this->objpdf->SetX($col + 25);
     $this->objpdf->SetY($lin + 106);
-    $this->objpdf->Setfont('Arial','',6);
+    $this->objpdf->Setfont('Arial','',5);
     $this->objpdf->SetAligns(array('C','R','L','R','C','R','L','R'));
-    $this->objpdf->SetWidths(array(10,15,59,15,10,15,59,15));
+    $this->objpdf->SetWidths(array(10,15,58,16,10,15,58,16));
 
   }
 
@@ -266,13 +266,23 @@ if($a > 1){
 
 $this->objpdf->SetY(192);
 $this->objpdf->SetAligns(array('C','R','R','R','C','R','R','R'));
-$this->objpdf->Row(array(
-                         "", "", "SOMA DOS PROVENTOS", db_formatar($total_valproventos,"f"),
-                         "", "", "SOMA DOS DESCONTOS", db_formatar($total_valdescontos,"f")
-                        ),3,false,4);
+$this->objpdf->Row(
+  array(
+    "",
+    "",
+    "SOMA DOS PROVENTOS",
+    db_formatar($total_valproventos,"f"),
+    "",
+    "",
+    "SOMA DOS DESCONTOS",
+    db_formatar($total_valdescontos,"f")
+  ),
+  3,
+  false,
+  4);
 $this->objpdf->Row(array(
                          "", "", "", "",
-                         "", "", "TOTAL LÍQUIDO", db_formatar(($total_valproventos - $total_valdescontos),"f")
+                         "", "", "TOTAL LÍQUIDO", db_formatar((round($total_valproventos, 2) - round($total_valdescontos, 2)),"f")
                         ),3,false,4);
 
 ?>

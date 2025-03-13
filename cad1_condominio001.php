@@ -1,63 +1,88 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_condominio_classe.php");
-include("classes/db_condominiocgm_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_condominio_classe.php"));
+include(modification("classes/db_condominiocgm_classe.php"));
+include(modification("classes/db_condominioprocesso_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $clcondominio = new cl_condominio;
 $clcondominiocgm 	= new cl_condominiocgm();
+$clcondominioprocesso = new cl_condominioprocesso();
+
 $db_opcao = 1;
 $db_botao = true;
 if(isset($incluir)){
 	$sqlerro=false;
 	db_inicio_transacao();
   $clcondominio->incluir($j107_sequencial);
-  
+
 	if ( $clcondominio->erro_status==0 ){
   	$sqlerro = true;
   }
- 
+
   if(!$sqlerro && trim($j106_numcgm)!=""){
   	$clcondominiocgm->j106_condominio = $clcondominio->j107_sequencial;
   	$clcondominiocgm->j106_numcgm			= $j106_numcgm;
   	$clcondominiocgm->incluir(null);
-	  
+
 	  if ( $clcondominiocgm->erro_status == "0" ){
 	  	$sqlerro = true;
 	  	$clcondominio->erro_msg = $clcondominiocgm->erro_msg;
 	  }
   }
-  
+
+  if(!$sqlerro && trim($y60_proces) != ""){
+
+    $partProc = explode("/", $y60_proces);
+    $sWhere = "WHERE p58_numero = '$partProc[0]' AND p58_ano = $partProc[1]";
+    $resProt = db_query("SELECT p58_codproc FROM protocolo.protprocesso $sWhere");
+
+    $num_codproc = null;
+    if (pg_num_rows($resProt)>0) {
+      db_fieldsmemory($resProt,0);
+      $num_codproc = $p58_codproc;
+    }
+
+  	$clcondominioprocesso->j179_condominio = $clcondominio->j107_sequencial;
+    $clcondominioprocesso->j179_processo   = (int) $num_codproc;
+  	$clcondominioprocesso->incluir(null);
+
+	  if ( $clcondominioprocesso->erro_status == "0" ){
+	  	$sqlerro = true;
+	  	$clcondominioprocesso->erro_msg = $clcondominioprocesso->erro_msg;
+	  }
+  }
+
   db_fim_transacao($sqlerro);
 }
 ?>
@@ -71,7 +96,7 @@ if(isset($incluir)){
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
+  <tr>
     <td width="360" height="18">&nbsp;</td>
     <td width="263">&nbsp;</td>
     <td width="25">&nbsp;</td>
@@ -79,17 +104,17 @@ if(isset($incluir)){
   </tr>
 </table>
 <table border="0" cellspacing="0" cellpadding="0" align="center">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
-	<?
-	include("forms/db_frmcondominio.php");
+	<?php
+	include(modification("forms/db_frmcondominio.php"));
 	?>
     </center>
 	</td>
   </tr>
 </table>
-<?
+<?php
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
@@ -97,7 +122,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 js_tabulacaoforms("form1","j107_nome",true,1,"j107_nome",true);
 </script>
-<?
+<?php
 if(isset($incluir)){
   if($clcondominio->erro_status=="0"){
     $clcondominio->erro(true,false);

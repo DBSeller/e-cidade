@@ -24,8 +24,8 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-include("classes/db_rhlota_classe.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("classes/db_rhlota_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 $clrhgeracaofolha->rotulo->label();
 $clrotulo     = new rotulocampo;
@@ -117,7 +117,7 @@ form > fieldset > table > TBODY > tr > td:first-child {
           * existe uma folha, caso não exista, ele retira também do select a folha.
           */
 
-         if (isset($DB_COMPLEMENTAR)) {
+         if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
     
            if( (FolhaPagamentoSalario::hasFolhaAberta(DBPessoal::getCompetenciaFolha()) && FolhaPagamento::getFolhaCompetenciaTipo($oCompetencia, FolhaPagamento::TIPO_FOLHA_SALARIO)) 
                 || !FolhaPagamento::getFolhaCompetenciaTipo($oCompetencia, FolhaPagamento::TIPO_FOLHA_SALARIO) ) {
@@ -132,7 +132,7 @@ form > fieldset > table > TBODY > tr > td:first-child {
              unset($arr_pontos['6']);
            }
     
-          } else if ( !isset($DB_COMPLEMENTAR) ) {
+          } else if ( !DBPessoal::verificarUtilizacaoEstruturaSuplementar() ) {
              unset($arr_pontos['6']);
           }
        
@@ -266,11 +266,11 @@ form > fieldset > table > TBODY > tr > td:first-child {
   $('anofolha').setAttribute("onblur", "js_combolista();");
 
   document.getElementById('anofolha').addEventListener('change', function() {
-    window.location = 'pes4_rhgeracaofolha001.php?anofolha='+this.value;
+    window.location = 'pes4_rhgeracaofolha001.php?anofolha='+this.value+'&mesfolha='+document.getElementById('mesfolha').value;
   });
 
   document.getElementById('mesfolha').addEventListener('change', function() {
-    window.location = 'pes4_rhgeracaofolha001.php?mesfolha='+this.value;
+    window.location = 'pes4_rhgeracaofolha001.php?mesfolha='+this.value+'&anofolha='+document.getElementById('anofolha').value;
   });
 })();
 
@@ -327,7 +327,7 @@ function js_combolista(iTipoFolha) {
 
    js_removeObj("msgBox");
 
-   var aRetorno = eval("("+oAjax.responseText+")");
+   var aRetorno = JSON.parse(oAjax.responseText);
    var sExpReg  = new RegExp('\\\\n','g');
 
    if ( aRetorno.lErro ) {
@@ -367,7 +367,7 @@ function js_combolista(iTipoFolha) {
  }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_folha','func_folha.php?funcao_js=parent.js_preenchepesquisa|r38_regist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_folha','func_folha.php?funcao_js=parent.js_preenchepesquisa|r38_regist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_folha.hide();
@@ -625,7 +625,7 @@ function js_enviardados() {
     return false;
   } else {
 
-	 	js_OpenJanelaIframe(  "top.corpo","db_iframe_selecionaservidores",
+	 	js_OpenJanelaIframe(  "CurrentWindow.corpo","db_iframe_selecionaservidores",
                           "pes4_rhgeracaofolha.php",
                           "Seleção de Servidores",
                           true
@@ -701,7 +701,7 @@ function js_geraFolha(aMatriculas){
                                  parameters: 'json='+Object.toJSON(oParam), 
                                  onComplete: function(oAjax) {
 
-                                    var oRetorno = eval("("+oAjax.responseText+")");
+                                    var oRetorno = JSON.parse(oAjax.responseText);
                                     js_removeObj('msgBox');
                                     
                                     if (oRetorno.status== "2") {

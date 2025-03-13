@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,132 +25,137 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_parjuridico_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_parjuridico_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
-$oPost              = db_utils::postMemory($_POST);
+$oPost = db_utils::postMemory($_POST);
 
 db_postmemory($_POST);
 db_postmemory($_GET);
 
-$clparjuridico      = new cl_parjuridico;
-$db_opcao           = 2;
-$lErro              = false;
+$clparjuridico = new cl_parjuridico;
+$db_opcao = 2;
+$lErro = false;
 $tipoInicialQuitada = 0;
-$tipoParcelamento   = 0;
+$tipoParcelamento = 0;
 
-if ( isset($alterar) ) {
+if (isset($alterar)) {
 
-  db_inicio_transacao();
-  $db_opcao = 2;
-  $clparjuridico->v19_envolinicialiptu        = $oPost->v19_envolinicialiptu;
-  $clparjuridico->v19_envolinicialiss         = $oPost->v19_envolinicialiss;
-  $clparjuridico->v19_envolprinciptu          = $oPost->v19_envolprinciptu;
-  $clparjuridico->v19_vlrexecmin              = $oPost->v19_vlrexecmin;
-  $clparjuridico->v19_partilha                = $oPost->v19_partilha;
-  $clparjuridico->v19_templateinicialquitada  = $oPost->tipoInicialQuitada == 1 ? $oPost->v19_templateinicialquitada : '';
-  $clparjuridico->v19_templateparcelamento    = $oPost->tipoParcelamento   == 1 ? $oPost->v19_templateparcelamento   : '';
-  $clparjuridico->v19_urlwebservice           = $oPost->v19_urlwebservice;
-  $clparjuridico->v19_login                   = $oPost->v19_login;
-  $clparjuridico->v19_senha                   = $oPost->v19_senha;
-  $clparjuridico->v19_codorgao                = $oPost->v19_codorgao;
+    db_inicio_transacao();
+    $db_opcao = 2;
+    $clparjuridico->v19_envolinicialiptu = $oPost->v19_envolinicialiptu;
+    $clparjuridico->v19_envolinicialiss = $oPost->v19_envolinicialiss;
+    $clparjuridico->v19_envolprinciptu = $oPost->v19_envolprinciptu;
+    $clparjuridico->v19_vlrexecmin = $oPost->v19_vlrexecmin;
+    $clparjuridico->v19_partilha = $oPost->v19_partilha;
+    $clparjuridico->v19_templateinicialquitada = $oPost->tipoInicialQuitada == 1 ? $oPost->v19_templateinicialquitada : '';
+    $clparjuridico->v19_templateparcelamento = $oPost->tipoParcelamento == 1 ? $oPost->v19_templateparcelamento : '';
+    $clparjuridico->v19_urlwebservice = $oPost->v19_urlwebservice;
+    $clparjuridico->v19_login = $oPost->v19_login;
+    $clparjuridico->v19_senha = $oPost->v19_senha;
+    $clparjuridico->v19_codorgao = $oPost->v19_codorgao;
+    $clparjuridico->v19_consultaanaliticainicial = $oPost->v19_consultaanaliticainicial;
+    $clparjuridico->v19_advogadopadrao = $oPost->v19_advogadopadrao;
 
-  $clparjuridico->alterar_camposNulos($v19_anousu, $v19_instit);
+    $clparjuridico->alterar_camposNulos($v19_anousu, $v19_instit);
 
-  if ( $clparjuridico->erro_status == "0" ) {
-    $lErro = true;
-  }
-  db_fim_transacao($lErro);
+    if ($clparjuridico->erro_status == "0") {
+        $lErro = true;
+    }
+    db_fim_transacao($lErro);
 
-} else if( isset($incluir) ) {
+} else if (isset($incluir)) {
 
-  db_inicio_transacao();
-  $clparjuridico->v19_envolinicialiptu        = $oPost->v19_envolinicialiptu;
-  $clparjuridico->v19_envolinicialiss         = $oPost->v19_envolinicialiss;
-  $clparjuridico->v19_envolprinciptu          = $oPost->v19_envolprinciptu;
-  $clparjuridico->v19_vlrexecmin              = $oPost->v19_vlrexecmin;
-  $clparjuridico->v19_partilha                = $oPost->v19_partilha;
-  $clparjuridico->v19_templateinicialquitada  = $oPost->tipoInicialQuitada == 1 ? $oPost->v19_templateinicialquitada : '';
-  $clparjuridico->v19_templateparcelamento    = $oPost->tipoParcelamento   == 1 ? $oPost->v19_templateparcelamento   : '';
-  $clparjuridico->v19_urlwebservice           = $oPost->v19_urlwebservice;
-  $clparjuridico->v19_login                   = $oPost->v19_login;
-  $clparjuridico->v19_senha                   = $oPost->v19_senha;
-  $clparjuridico->v19_codorgao                = $oPost->v19_codorgao;
-  $clparjuridico->incluir(db_getsession('DB_anousu'),db_getsession('DB_instit'));
+    db_inicio_transacao();
+    $clparjuridico->v19_envolinicialiptu = $oPost->v19_envolinicialiptu;
+    $clparjuridico->v19_envolinicialiss = $oPost->v19_envolinicialiss;
+    $clparjuridico->v19_envolprinciptu = $oPost->v19_envolprinciptu;
+    $clparjuridico->v19_vlrexecmin = $oPost->v19_vlrexecmin;
+    $clparjuridico->v19_partilha = $oPost->v19_partilha;
+    $clparjuridico->v19_templateinicialquitada = $oPost->tipoInicialQuitada == 1 ? $oPost->v19_templateinicialquitada : '';
+    $clparjuridico->v19_templateparcelamento = $oPost->tipoParcelamento == 1 ? $oPost->v19_templateparcelamento : '';
+    $clparjuridico->v19_urlwebservice = $oPost->v19_urlwebservice;
+    $clparjuridico->v19_login = $oPost->v19_login;
+    $clparjuridico->v19_senha = $oPost->v19_senha;
+    $clparjuridico->v19_codorgao = $oPost->v19_codorgao;
+    $clparjuridico->v19_consultaanaliticainicial = $oPost->v19_consultaanaliticainicial;
+    $clparjuridico->v19_advogadopadrao = $oPost->v19_advogadopadrao;
+    $clparjuridico->incluir(db_getsession('DB_anousu'), db_getsession('DB_instit'));
 
-  if ($clparjuridico->erro_status == "0") {
-    $lErro = true;
-  }
+    if ($clparjuridico->erro_status == "0") {
+        $lErro = true;
+    }
 
-  db_fim_transacao($lErro);
-}else{
+    db_fim_transacao($lErro);
+} else {
 
-  $sCampos = "*, b.db82_descricao as db82_descricao_parcelamento, a.db82_descricao as db82_descricao_inicialquitada";
-  $sSql = $clparjuridico->sql_query_alternativo(db_getsession('DB_anousu'),
-                                                db_getsession('DB_instit'),
-                                                $sCampos);
+    $sCampos = "*, b.db82_descricao as db82_descricao_parcelamento, a.db82_descricao as db82_descricao_inicialquitada";
+    $sSql = $clparjuridico->sql_query_advog(db_getsession('DB_anousu'),
+        db_getsession('DB_instit'),
+        $sCampos);
 
-  $result   = $clparjuridico->sql_record($sSql);
+    $result = $clparjuridico->sql_record($sSql);
 
-  if ($clparjuridico->numrows > 0) {
+    if ($clparjuridico->numrows > 0) {
 
-    db_fieldsmemory($result, 0);
-    $tipoInicialQuitada = empty($db82_descricao_inicialquitada) ? 0 : 1;
-    $tipoParcelamento   = empty($db82_descricao_parcelamento)   ? 0 : 1;
+        db_fieldsmemory($result, 0);
+        $tipoInicialQuitada = empty($db82_descricao_inicialquitada) ? 0 : 1;
+        $tipoParcelamento = empty($db82_descricao_parcelamento) ? 0 : 1;
 
-  } else {
+    } else {
 
-    $db_opcao   = 1;
-    $v19_instit = db_getsession('DB_instit');
-    $v19_anousu = db_getsession('DB_anousu');
-  }
+        $db_opcao = 1;
+        $v19_instit = db_getsession('DB_instit');
+        $v19_anousu = db_getsession('DB_anousu');
+    }
 }
 
 ?>
-<html>
-<head>
+    <html>
+    <head>
+        <?php
+        db_app::load("scripts.js, prototype.js, strings.js, estilos.css");
+        ?>
+        <script src="scripts/widgets/DBAncora.widget.js"></script>
+    </head>
+
+    <body class="body-default">
+    <div class="container">
+        <?php
+        include(modification("forms/db_frmparjuridico.php"));
+        db_menu(db_getsession("DB_id_usuario"),
+            db_getsession("DB_modulo"),
+            db_getsession("DB_anousu"),
+            db_getsession("DB_instit"));
+        ?>
+    </div>
+    </body>
+    </html>
+
 <?php
-  db_app::load("scripts.js, prototype.js, strings.js, estilos.css");
-?>
-</head>
 
-<body class="body-default">
-  <div class="container">
-    <?php
-      include("forms/db_frmparjuridico.php");
-      db_menu(db_getsession("DB_id_usuario"),
-              db_getsession("DB_modulo"),
-              db_getsession("DB_anousu"),
-              db_getsession("DB_instit"));
-    ?>
-  </div>
-</body>
-</html>
+if (isset($alterar) || isset($incluir)) {
 
-<?php
+    if ($clparjuridico->erro_status == "0") {
 
-if(isset($alterar) || isset($incluir)){
+        $clparjuridico->erro(true, false);
+        echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
 
-  if($clparjuridico->erro_status=="0"){
+        if ($clparjuridico->erro_campo != "") {
 
-    $clparjuridico->erro(true,false);
-    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+            echo "<script> document.form1." . $clparjuridico->erro_campo . ".style.backgroundColor='#99A9AE';</script>";
+            echo "<script> document.form1." . $clparjuridico->erro_campo . ".focus();</script>";
+        }
 
-    if($clparjuridico->erro_campo!=""){
+    } else {
 
-      echo "<script> document.form1.".$clparjuridico->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$clparjuridico->erro_campo.".focus();</script>";
+        $clparjuridico->erro(true, true);
     }
-
-  } else {
-
-    $clparjuridico->erro(true,true);
-  }
 }
 ?>

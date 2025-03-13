@@ -96,7 +96,6 @@ DBViewFiltroLancamentoAvaliacaoTurma = function (sId, nameInstance ) {
    * @var {Element} oCtnFieldsetDadosEscola
    */
   this.oCtnFieldsetDadosEscola              = document.createElement('fieldset');
-  this.oCtnFieldsetDadosEscola.style.height = '100px';
 
   /**
    * Legenda do dados da escola
@@ -203,7 +202,7 @@ DBViewFiltroLancamentoAvaliacaoTurma = function (sId, nameInstance ) {
   this.oBtnCancelarEncerramentoAvaliacoes.style.marginRight = '5px';
   this.oBtnCancelarEncerramentoAvaliacoes.style.height      = '20px';
   this.oBtnCancelarEncerramentoAvaliacoes.style.display     = 'none';
-  this.oBtnCancelarEncerramentoAvaliacoes.disabled          = true;
+  this.oBtnCancelarEncerramentoAvaliacoes.disabled          = false;
 
   /**
    * Container para os botões
@@ -276,7 +275,7 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.retornoCabecalhoGrig = function (
   this.oGridAulasDadas              = new DBGrid('gridAulasDadas');
   this.oGridAulasDadas.nameInstance = this.td + 'oGridAulasDadas';
 
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.aPeriodos.length == 0) {
     alert('Não foi possivel carregar os períodos da turma.');
@@ -298,6 +297,7 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.retornoCabecalhoGrig = function (
   this.oGridAulasDadas.setCellWidth(aCellWidth);
   this.oGridAulasDadas.setCellAlign(aCellAlign);
   this.oGridAulasDadas.setHeader(aHeader);
+  this.oCtnFieldsetAulasDadas.style.width = '96%';
   this.oGridAulasDadas.setHeight(this.oCtnFieldsetAulasDadas.getHeight() - 75);
   this.oGridAulasDadas.show(this.oCtnFieldsetAulasDadas);
   this.oCtnFieldsetAulasDadas.appendChild(this.oLegendAulasDadas);
@@ -339,13 +339,12 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.retornoDadosDaTurma = function(oA
   js_removeObj("msgBox");
 
   $('encerrarAvaliacoes').disabled             = true;
-  $('cancelarEncerramentoAvaliacoes').disabled = true;
 
   /**
    * variável oSelf identifica a instância da classe DBViewFiltroLancamentoAvaliacaoTurma
    */
   var oSelf    = this;
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   oDadosTurmaSelecionada = oRetorno;
 
@@ -362,10 +361,11 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.retornoDadosDaTurma = function(oA
   this.iTurma                   = oRetorno.iTurma;
   this.iEtapa                   = oRetorno.iEtapa;
   this.sTurma                   = oRetorno.sTurma.urlDecode();
+  this.iMaiorPermissao          = oRetorno.iMaiorPermissao;
 
-  if (!oRetorno.lBloqueiaEncerramento) {
+  if (oSelf.iMaiorPermissao) {
 
-    if (!oSelf.lProfessorLogado) {
+    if (oSelf.lProfessorLogado) {
 
       oSelf.oBtnCancelarEncerramentoAvaliacoes.style.display = '';
       oSelf.oBtnEncerrarAvaliacoes.style.display             = '';
@@ -374,11 +374,8 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.retornoDadosDaTurma = function(oA
     if (oRetorno.lTurmaEncerradaParcial) {
 
       $('encerrarAvaliacoes').disabled             = false;
-      $('cancelarEncerramentoAvaliacoes').disabled = false;
     } else if (oRetorno.lTurmaEncerrada && !oRetorno.lTurmaEncerradaParcial) {
-
-      $('encerrarAvaliacoes').disabled             = true;
-      $('cancelarEncerramentoAvaliacoes').disabled = false;
+      $('encerrarAvaliacoes').disabled             = false;
     }else {
       $('encerrarAvaliacoes').disabled = false;
     }
@@ -412,7 +409,7 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.retornoDadosDaTurma = function(oA
 
     oDisciplina.aPeriodos.each(function(oPeriodo, iPeriodo) {
 
-      var sId                   = oDisciplina.sAbrev.urlDecode() + iPeriodo;
+      var sId                   = oDisciplina.iCodigo + oDisciplina.sAbrev.urlDecode() + iPeriodo;
       var oDadosPeriodo         = new Object();
       oDadosPeriodo.id          = sId;
       oDadosPeriodo.iDisciplina = oDisciplina.iCodigo;
@@ -431,16 +428,7 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.retornoDadosDaTurma = function(oA
 
   this.oGridAulasDadas.renderRows();
 
-  /**
-   * Seta uma função na célula
-   */
-  aIdDadosEventosDisciplina.each(function (oEvento, iEvento) {
-
-    $(oEvento.id).onchange = function(){
-      oSelf.salvarAulasDadas(oEvento.iDisciplina, oEvento.iPeriodo, $F(oEvento.id));
-    };
-
-  });
+  this.setaFuncaoCelula( aIdDadosEventosDisciplina );
 
   $('lancarAvaliacoes').removeAttribute("disabled");
 
@@ -458,6 +446,14 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.retornoDadosDaTurma = function(oA
 
     oSelf.oInstanceAvaliacaoTurma.show();
   };
+
+  this.oCtnFieldsetAulasDadas.style.height = (this.oCtnView.getHeight() - this.oCtnFieldsetDadosEscola.getHeight()) - 30;
+  this.oGridAulasDadas.setHeight(this.oCtnFieldsetAulasDadas.getHeight() - 75);
+  this.oGridAulasDadas.show(this.oCtnFieldsetAulasDadas);
+  this.oGridAulasDadas.renderRows();
+  this.oCtnFieldsetAulasDadas.appendChild(this.oLegendAulasDadas);
+
+  this.setaFuncaoCelula( aIdDadosEventosDisciplina );
 };
 
 DBViewFiltroLancamentoAvaliacaoTurma.prototype.criarInstanciaLancamentoAvaliacoes = function (oDadosTurma) {
@@ -499,7 +495,7 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.salvarAulasDadas = function (iReg
 DBViewFiltroLancamentoAvaliacaoTurma.prototype.retornoSalvarAulasDadas = function(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 2) {
 
@@ -576,7 +572,7 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.show = function(oElement) {
                        onComplete: function(oAjax) {
 
                          js_removeObj('msgBox');
-                         var oRetorno = eval("("+oAjax.responseText+")");
+                         var oRetorno = JSON.parse(oAjax.responseText);
                          if (oRetorno.status == 1) {
                            oSelf.encerramentoAvaliacoes('1');
                          } else {
@@ -631,4 +627,20 @@ DBViewFiltroLancamentoAvaliacaoTurma.prototype.encerramentoAvaliacoes = function
 
   oJanelaEncerramento.show();
   oEncerramento.show($('ctnEncerramento2'));
+};
+
+/**
+ * Seta a função para as células de aulas dadas
+ * @param aIdDadosEventosDisciplina
+ */
+DBViewFiltroLancamentoAvaliacaoTurma.prototype.setaFuncaoCelula = function( aIdDadosEventosDisciplina ) {
+
+  var oSelf = this;
+
+  aIdDadosEventosDisciplina.each(function(oEvento) {
+
+    $(oEvento.id).onchange = function(){
+      oSelf.salvarAulasDadas(oEvento.iDisciplina, oEvento.iPeriodo, $F(oEvento.id));
+    };
+  });
 };

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,27 +29,27 @@
 //CLASSE DA ENTIDADE far_retiradaitens
 class cl_far_retiradaitens { 
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
+   public $rotulo     = null; 
+   public $query_sql  = null; 
+   public $numrows    = 0; 
+   public $numrows_incluir = 0; 
+   public $numrows_alterar = 0; 
+   public $numrows_excluir = 0; 
+   public $erro_status= null; 
+   public $erro_sql   = null; 
+   public $erro_banco = null;  
+   public $erro_msg   = null;  
+   public $erro_campo = null;  
+   public $pagina_retorno = null; 
    // cria variaveis do arquivo 
-   var $fa06_i_codigo = 0; 
-   var $fa06_t_posologia = null; 
-   var $fa06_i_retirada = 0; 
-   var $fa06_i_matersaude = 0; 
-   var $fa06_f_quant = 0; 
-   var $fa06_t_controlado = null; 
+   public $fa06_i_codigo = 0; 
+   public $fa06_t_posologia = null; 
+   public $fa06_i_retirada = 0; 
+   public $fa06_i_matersaude = 0; 
+   public $fa06_f_quant = 0; 
+   public $fa06_t_controlado = null; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+   public $campos = "
                  fa06_i_codigo = int4 = Código 
                  fa06_t_posologia = text = Posologia 
                  fa06_i_retirada = int4 = Retirada 
@@ -58,13 +58,13 @@ class cl_far_retiradaitens {
                  fa06_t_controlado = char(2) = Med.Controlado 
                  ";
    //funcao construtor da classe 
-   function cl_far_retiradaitens() { 
+   public function __construct(){ 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("far_retiradaitens"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
    //funcao erro 
-   function erro($mostra,$retorna) { 
+   public function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -73,7 +73,7 @@ class cl_far_retiradaitens {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->fa06_i_codigo = ($this->fa06_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["fa06_i_codigo"]:$this->fa06_i_codigo);
        $this->fa06_t_posologia = ($this->fa06_t_posologia == ""?@$GLOBALS["HTTP_POST_VARS"]["fa06_t_posologia"]:$this->fa06_t_posologia);
@@ -84,9 +84,9 @@ class cl_far_retiradaitens {
      }else{
        $this->fa06_i_codigo = ($this->fa06_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["fa06_i_codigo"]:$this->fa06_i_codigo);
      }
-   }
+    }
    // funcao para inclusao
-   function incluir ($fa06_i_codigo){ 
+   public function incluir ($fa06_i_codigo){ 
       $this->atualizacampos();
       if($this->fa06_t_posologia == null ){
         $this->fa06_t_posologia='';
@@ -209,7 +209,7 @@ class cl_far_retiradaitens {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($fa06_i_codigo=null) { 
+   public function alterar ($fa06_i_codigo=null) { 
       $this->atualizacampos();
      $sql = " update far_retiradaitens set ";
      $virgula = "";
@@ -349,7 +349,7 @@ class cl_far_retiradaitens {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($fa06_i_codigo=null,$dbwhere=null) { 
+   public function excluir ($fa06_i_codigo=null,$dbwhere=null) { 
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($fa06_i_codigo));
      }else{ 
@@ -415,7 +415,7 @@ class cl_far_retiradaitens {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -438,7 +438,7 @@ class cl_far_retiradaitens {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $fa06_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  public function sql_query ( $fa06_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -475,7 +475,7 @@ class cl_far_retiradaitens {
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $fa06_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  public function sql_query_file ( $fa06_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -508,7 +508,7 @@ class cl_far_retiradaitens {
      }
      return $sql;
   }
-   function sql_query_matrequitens($m40_codigo=null,$campos="*",$ordem=null,$dbwhere="") {
+  public function sql_query_matrequitens($m40_codigo=null,$campos="*",$ordem=null,$dbwhere="") {
     $sql = "select ";
     if ($campos != "*" ) {
       $campos_sql = split("#",$campos);
@@ -551,7 +551,8 @@ class cl_far_retiradaitens {
     }
     return $sql;
   }
-   function sql_query_posologia ( $fa06_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+  public function sql_query_posologia ( $fa06_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -598,7 +599,8 @@ class cl_far_retiradaitens {
      }
      return $sql;
   }
-   function sql_query_retiradaitens( $fa06_i_codigo=null,$campos="*",$ordem=null,$dbwhere="",$group_by=null){ 
+
+  public function sql_query_retiradaitens( $fa06_i_codigo=null,$campos="*",$ordem=null,$dbwhere="",$group_by=null){ 
      $sql = "select ";
      if($campos != "*"){
        $campos_sql = split("#",$campos);
@@ -659,7 +661,7 @@ class cl_far_retiradaitens {
   *         (far_controlemed.fa10_d_datafim is not null 
   *          and far_retirada.fa04_d_data between far_controlemed.fa10_d_dataini and far_controlemed.fa10_d_datafim)) ";
   */
-  function sql_query_retiradas_continuados($m40_codigo=null,$campos="*",$ordem=null,$dbwhere="") {
+  public function sql_query_retiradas_continuados($m40_codigo=null,$campos="*",$ordem=null,$dbwhere="") {
     $sql = "select ";
     if ($campos != "*" ) {
       $campos_sql = split("#",$campos);
@@ -711,7 +713,7 @@ class cl_far_retiradaitens {
    * @param unknown_type $ordem
    * @param unknown_type $dbwhere
    */
-  function sql_query_historicoretiradas($z01_i_cgsund=null,$campos="*",$ordem=null,$dbwhere="") {
+  public function sql_query_historicoretiradas($z01_i_cgsund=null,$campos="*",$ordem=null,$dbwhere="") {
     $sql = "select ";
     if ($campos != "*" ) {
       $campos_sql = split("#",$campos);
@@ -760,7 +762,7 @@ class cl_far_retiradaitens {
     return $sql;
   }
 
-  function sql_query_historicoretiradasdevolucoes($z01_i_cgsund=null,$campos="*",$ordem=null,$dbwhere1="", $dbwhere2="", 
+  public function sql_query_historicoretiradasdevolucoes($z01_i_cgsund=null,$campos="*",$ordem=null,$dbwhere1="", $dbwhere2="", 
                                                   $sGroupBy = '', $sWhereDepartamentos = '') {
     $sql = "select ";
     if ($campos != "*" ) {
@@ -794,14 +796,15 @@ class cl_far_retiradaitens {
     }
 
     $sql .= " from ((select cgs_und.*, db_usuarios.*, matestoqueitemlote.*, far_retiradarequi.*, matmater.*, ";
-    $sql .= ' matunid.*, far_matersaude.*, fa06_t_posologia, fa06_f_quant, null as fa23_c_motivo, ';
+    $sql .= ' matunid.*, far_matersaude.*, fa06_t_posologia, fa09_f_quant, fa06_f_quant, null as fa23_c_motivo, ';
     $sql .= ' null as fa23_i_cancelamento, null as fa23_i_quantidade, fa04_d_data, fa04_i_unidades, null as fa22_d_data, ';
-    $sql .= ' 1 as tipo, fa06_i_codigo, fa04_tiporetirada from far_retiradaitens ';
+    $sql .= ' 1 as tipo, fa06_i_codigo, fa04_tiporetirada, fa03_c_descr, fa04_i_codigo, null as fa22_i_codigo from far_retiradaitens ';
     $sql .= " inner join far_retirada          on fa06_i_retirada=fa04_i_codigo ";
     $sql .= " inner join cgs_und               on z01_i_cgsund = fa04_i_cgsund ";
     $sql .= " inner join far_matersaude        on fa06_i_matersaude=fa01_i_codigo ";
     $sql .= " inner join matmater              on matmater.m60_codmater = far_matersaude.fa01_i_codmater ";
     $sql .= " inner join matunid               on matunid.m61_codmatunid = matmater.m60_codmatunid ";
+    $sql .= " left join far_tiporeceita ON far_tiporeceita.fa03_i_codigo = far_retirada.fa04_i_tiporeceita ";
     $sql .= " left join far_retiradarequi      on fa04_i_codigo=fa07_i_retirada ";
     $sql .= " left join far_retiradaitemlote   on fa06_i_codigo=fa09_i_retiradaitens ";
     $sql .= " left join matestoqueitemlote     on fa09_i_matestoqueitem=m77_matestoqueitem ";
@@ -815,9 +818,9 @@ class cl_far_retiradaitens {
     $sql .= '                                union ';
 
     $sql .= ' (select cgs_und.*, db_usuarios.*, matestoqueitemlote.*, far_retiradarequi.*, matmater.*, ';
-    $sql .= ' matunid.*, far_matersaude.*, null as fa06_t_posologia, null as fa06_f_quant, fa23_c_motivo, ';
+    $sql .= ' matunid.*, far_matersaude.*, null as fa06_t_posologia, null as fa09_f_quant, null as fa06_f_quant, fa23_c_motivo, ';
     $sql .= ' fa23_i_cancelamento, fa23_i_quantidade, null as fa04_d_data, fa04_i_unidades, fa22_d_data, ';
-    $sql .= " 2 as tipo, fa06_i_codigo, fa04_tiporetirada from far_retiradaitens ";
+    $sql .= " 2 as tipo, fa06_i_codigo, fa04_tiporetirada, fa03_c_descr, null as fa04_i_codigo, fa22_i_codigo from far_retiradaitens ";
     $sql .= " inner join far_retirada          on fa06_i_retirada=fa04_i_codigo ";
     $sql .= ' inner join far_devolucaomed on far_devolucaomed.fa23_i_retiradaitens = far_retiradaitens.fa06_i_codigo ';
     $sql .= ' inner join far_devolucao on far_devolucao.fa22_i_codigo = far_devolucaomed.fa23_i_devolucao ';
@@ -825,6 +828,7 @@ class cl_far_retiradaitens {
     $sql .= " inner join far_matersaude        on fa06_i_matersaude=fa01_i_codigo ";
     $sql .= " inner join matmater              on matmater.m60_codmater = far_matersaude.fa01_i_codmater ";
     $sql .= " inner join matunid               on matunid.m61_codmatunid = matmater.m60_codmatunid ";
+    $sql .= " left join far_tiporeceita ON far_tiporeceita.fa03_i_codigo = far_retirada.fa04_i_tiporeceita ";
     $sql .= " left join far_retiradarequi      on fa04_i_codigo=fa07_i_retirada ";
     $sql .= " left join far_retiradaitemlote   on fa06_i_codigo=fa09_i_retiradaitens ";
     $sql .= " left join matestoqueitemlote     on fa09_i_matestoqueitem=m77_matestoqueitem ";
@@ -850,11 +854,8 @@ class cl_far_retiradaitens {
     }
     return $sql;
   }
-
   
-  
-  
-  function sql_query_mapaconsolidado($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
+  public function sql_query_mapaconsolidado($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
 
     $sSql = 'select ';
     if ($sCampos != '*') {

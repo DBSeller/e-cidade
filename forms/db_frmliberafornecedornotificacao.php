@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -92,12 +92,12 @@ function js_pesquisa_z01_numcgm(mostra) {
   if (mostra == true) {
     
     var sUrl = 'func_nome.php?testanome=false&funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome';
-    js_OpenJanelaIframe('top.corpo', 'func_nome', sUrl, 'Pesquisa', true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'func_nome', sUrl, 'Pesquisa', true);
   } else {
   
      var sUrl = 'func_nome.php?pesquisa_chave='+$('z01_numcgm').value+'&funcao_js=parent.js_mostracgm';
      if ($('z01_numcgm').value != '') {
-        js_OpenJanelaIframe('top.corpo', 'func_nome',  sUrl, 'Pesquisa', false);
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'func_nome',  sUrl, 'Pesquisa', false);
      } else {
        $('z01_nome').value = '';
      }
@@ -134,7 +134,7 @@ function js_pesquisa() {
              '&datainicial='+$('datainicial').value+
              '&datafinal='+$('datafinal').value+
              '&funcao_js=parent.js_notificacao|pc86_sequencial|pc86_numcgm|pc86_origem';
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_pesquisanotificacao', sUrl, 'Pesquisa', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_pesquisanotificacao', sUrl, 'Pesquisa', true);
 }
 
 /**
@@ -168,7 +168,7 @@ function js_retornoNotificacao(oAjax, iNotificaBloqueioFornecedor, iOrigem) {
   js_removeObj("msgBoxDebitosEmAberto");
                             
                                             
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   var iNumCgm  = new Number(oRetorno.iNumCgm);
   
   if (oRetorno.iParamFornecDeb != 3) {

@@ -72,9 +72,9 @@ db_input('j13_descr',40,$Ij13_descr,true,'text',3,'')
 <script>
 function js_pesquisay32_codnoti(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.y32_codnoti.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.y32_codnoti.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
   }
 }
 function js_mostrafiscal(chave,erro){
@@ -91,9 +91,9 @@ function js_mostrafiscal1(chave1,chave2){
 }
 function js_pesquisay32_codbai(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_bairro','func_bairro.php?pesquisa_chave='+document.form1.y32_codbai.value+'&funcao_js=parent.js_mostrabairro','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bairro','func_bairro.php?pesquisa_chave='+document.form1.y32_codbai.value+'&funcao_js=parent.js_mostrabairro','Pesquisa',false);
   }
 }
 function js_mostrabairro(chave,erro){
@@ -109,7 +109,7 @@ function js_mostrabairro1(chave1,chave2){
   db_iframe_bairro.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_fiscbairro','func_fiscbairro.php?funcao_js=parent.js_preenchepesquisa|y32_codnoti','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscbairro','func_fiscbairro.php?funcao_js=parent.js_preenchepesquisa|y32_codnoti','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_fiscbairro.hide();

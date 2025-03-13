@@ -1,0 +1,1 @@
+update db_itensmenu set libcliente = false where id_item = 1985520;

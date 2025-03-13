@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 
 $aux = new cl_arquivo_auxiliar;
@@ -76,8 +76,8 @@ $aux = new cl_arquivo_auxiliar;
            </td>
            <td> 
                 <select name="filtro">
-                    <option name="filtro1" value="1">Proprietários da Escritura</option>
-                    <option name="filtro1" value="2">Proprietários Reais (Promitentes)</option>
+                    <option name="filtro1" value="1">Proprietários</option>
+                    <option name="filtro1" value="2">Promitentes</option>
                 </select>
           </td>
        </tr>
@@ -120,7 +120,7 @@ $aux = new cl_arquivo_auxiliar;
 	  </tr>
        <tr>
              <td align="right"  title="Tipo" >
-               <strong>Listar:&nbsp;&nbsp;</strong>
+               <strong>Listar Matrículas:&nbsp;&nbsp;</strong>
                </td>
                <td>
 	       <? 
@@ -130,11 +130,11 @@ $aux = new cl_arquivo_auxiliar;
 	  </tr>
       <tr>
              <td align="right"  title="Tipo" >
-               <strong>Listar:&nbsp;&nbsp;</strong>
+               <strong>Listar tipo de Imóveis:&nbsp;&nbsp;</strong>
                </td>
                <td>
            <? 
-           $tipo_t = array("t"=>"Todas","pr"=>"Prediais","tr"=>"Territoriais");
+           $tipo_t = array("t"=>"Todos","pr"=>"Prediais","tr"=>"Territoriais");
            db_select("tipo2",$tipo_t,true,2); ?>
             </td>
       </tr>

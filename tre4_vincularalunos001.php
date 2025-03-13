@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,67 +25,104 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
   <head>
     <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Expires" CONTENT="0">
-    <?php
-    db_app::load("prototype.js, scripts.js, strings.js, datagrid.widget.js, dbcomboBox.widget.js");
-    db_app::load("estilos.css");
-    ?>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/datagrid.widget.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/widgets/dbcomboBox.widget.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
   </head>
   <body bgcolor="#CCCCCC" style="margin-top: 25px;">
     <form class="container" method="post" action="">
       <div>
         <fieldset>
-          <legend class="bold">Dados para vincular o aluno</legend>
-            <table>
-              <tr>
-               <td><label class="bold">Escola:</label></td>
-                <td id="ctnCboEscola" colspan="5">
-               </td>
-              </tr>
-              <tr>
-                <td><a href="#" onClick='js_pesquisaLinhas(true);' class="bold">Linha:</a></td>
-                <td id="inputCodigoLinha"></td>
-                <td id="inputDescricaoLinha" colspan="4"></td>
-              </tr>
-              <tr>
-                <td><label class="bold">Itinerário:</label></td>
-                <td id="selectItinerario" colspan="5"></td>
-              </tr>
-              <tr>
-                <td><label class="bold">Horário / Veículo:</label></td>
-                <td id="ctnHorarios" colspan="5"></td>
-              </tr>
-              <tr>
-                <td><label class="bold">Vagas:</label></td>
-                <td id="ctnVagas"></td>
-                <td><label class="bold">Passageiros Vinculados:</label></td>
-                <td id="ctnPassageirosVinculados"></td>
-                <td><label class="bold">Vagas Restantes:</label></td>
-                <td id="ctnVagasRestantes"></td>
-              </tr>
-              <tr>
-                <td><a href="#" onClick='js_pesquisaPontosParada(true);' class="bold">Ponto de Parada:</a></td>
-                <td id="inputCodigoPontoParada"></td>
-                <td id="inputDescricaoPontoParada" colspan="4"></td>
-              </tr>
-              <tr>
-                <td><a href="#" onClick='js_pesquisaAluno(true);' class="bold">Aluno:</a></td>
-                <td id="inputCodigoAluno"></td>
-                <td id="inputDescricaoAluno" colspan="4"></td>
-              </tr>
-            </table>
+          <legend class="bold">Dados Para Vincular o Aluno</legend>
+          <table>
+            <tr>
+              <td>
+                <label class="bold" for="selectTipoEscola">Tipo da Escola:</label>
+              </td>
+              <td colspan="5">
+                <select id="selectTipoEscola" class="field-size-max">
+                  <option value="1" selected="selected">Escola da Rede</option>
+                  <option value="2">Escola de Procedência</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+             <td>
+               <label class="bold" for="cboEscola">Escola:</label>
+             </td>
+             <td id="ctnCboEscola" colspan="5">
+             </td>
+            </tr>
+            <tr>
+              <td>
+                <a href="#" onClick='js_pesquisaLinhas(true);' class="bold">
+                  <label for="oInputCodigoLinha">Linha:</label>
+                </a>
+              </td>
+              <td id="inputCodigoLinha"></td>
+              <td id="inputDescricaoLinha" colspan="4"></td>
+            </tr>
+            <tr>
+              <td>
+                <label class="bold" for="selectItinerario">Itinerário:</label>
+              </td>
+              <td id="selectItinerario" colspan="5"></td>
+            </tr>
+            <tr>
+              <td>
+                <label class="bold" for="ctnHorarios">Horário / Veículo:</label>
+              </td>
+              <td id="ctnHorarios" colspan="5"></td>
+            </tr>
+            <tr>
+              <td>
+                <label class="bold" for="ctnVagas">Vagas:</label>
+              </td>
+              <td id="ctnVagas"></td>
+              <td>
+                <label class="bold" for="ctnPassageirosVinculados">Passageiros Vinculados:</label>
+              </td>
+              <td id="ctnPassageirosVinculados"></td>
+              <td>
+                <label class="bold" for="ctnVagasRestantes">Vagas Restantes:</label>
+              </td>
+              <td id="ctnVagasRestantes"></td>
+            </tr>
+            <tr>
+              <td>
+                <a href="#" onClick='js_pesquisaPontosParada(true);' class="bold">
+                  <label for="inputCodigoPontoParada">Ponto de Parada:</label>
+                </a>
+              </td>
+              <td id="inputCodigoPontoParada"></td>
+              <td id="inputDescricaoPontoParada" colspan="4"></td>
+            </tr>
+            <tr>
+              <td>
+                <a href="#" onClick='js_pesquisaAluno(true);' class="bold">
+                  <label for="inputCodigoAluno">Aluno:</label>
+                </a>
+              </td>
+              <td id="inputCodigoAluno"></td>
+              <td id="inputDescricaoAluno" colspan="4"></td>
+            </tr>
+          </table>
         </fieldset>
       </div>
       <div>
@@ -95,7 +132,7 @@ require_once("dbforms/db_funcoes.php");
     <div class="container">
       <div>
         <fieldset style="width: 1500px">
-          <legend class="bold">Vínculos do aluno</legend>
+          <legend class="bold">Vínculos da Linha</legend>
           <div id="gridAlunoPontoParada">
           </div>
         </fieldset>
@@ -112,14 +149,13 @@ require_once("dbforms/db_funcoes.php");
 <script>
 var   sUrlRpc                  = 'tre4_pontoparada.RPC.php';
 const MENSAGENS_VINCULO_ALUNOS = 'educacao.transporteescolar.tre4_vincularalunos.';
-var   aHorarios                = new Array();
+var   aHorarios                = [];
 
 /**
  * Elementos INPUT
  */
 var oCboEscola = new DBComboBox("cboEscola", "oCboEscola", null, "385px");
     oCboEscola.addItem("", "Selecione");
-    oCboEscola.addEvent("onChange", "js_limparCampos();");
     oCboEscola.addStyle('width', '100%');
     oCboEscola.show($('ctnCboEscola'));
 
@@ -214,11 +250,12 @@ $('ctnHorarios' ).appendChild( oSelectHorarios );
 var oGridVinculosAluno              = new DBGrid('gridVinculosAluno');
     oGridVinculosAluno.nameInstance = 'oGridVinculosAluno';
     oGridVinculosAluno.setCheckbox(0);
-    oGridVinculosAluno.setHeader(new Array("Código Ponto Parada", "Código", "Aluno", "Embarque", "Desembarque", "Itinerário", "Hora Saída", "Hora Chegada", "Código Ponto Parada Aluno"));
+    oGridVinculosAluno.setHeader( new Array("Código Ponto Parada", "Código", "Aluno", "Embarque", "Desembarque", "Itinerário", "Hora Saída", "Hora Chegada", "Código Ponto Parada Aluno"));
     oGridVinculosAluno.setCellAlign(new Array("center", "center", "left", "left", "left", "left", "left", "left", "center"));
     oGridVinculosAluno.setCellWidth(new Array("0%", "1%", "41%", "20%", "20%", "5%", "7%", "7%", "0%"));
     oGridVinculosAluno.aHeaders[1].lDisplayed = false;
     oGridVinculosAluno.aHeaders[2].lDisplayed = false;
+    oGridVinculosAluno.aHeaders[9].lDisplayed = false;
     oGridVinculosAluno.show($('gridAlunoPontoParada'));
 
 /**
@@ -242,7 +279,7 @@ $('btnAdicionarAluno').observe("click", function() {
 
 $('btnRemoverAluno').observe('click', function() {
   js_removeVinculo();
-})
+});
 
 $('oSelectItinerario').observe("change", function() {
 
@@ -255,11 +292,19 @@ $('oSelectItinerario').observe("change", function() {
 
 $('oSelectItinerario').onchange = function() {
   buscaHorariosLinha();
-}
+};
 
 $('selectHorarios').onchange = function() {
   preencheVagas();
-}
+};
+
+$('selectTipoEscola').onchange = function() {
+  js_pesquisarEscolas();
+};
+
+$('cboEscola').onchange = function() {
+  js_limparCampos();
+};
 
 /**
  * Pesquisa as linhas cadastradas
@@ -284,9 +329,14 @@ function js_pesquisaLinhas(lMostra) {
       oInputDescricaoLinha.value = '';
     }
   }
+
   sUrl += '&iEscola='+cboEscola.value;
+
+  if( $F('selectTipoEscola') == 2 ) {
+    sUrl += '&lEscolaProcedencia';
+  }
   
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_linhatransporte', sUrl, 'Pesquisa Linhas de Transporte', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_linhatransporte', sUrl, 'Pesquisa Linhas de Transporte', lMostra);
 }
 
 /**
@@ -331,17 +381,17 @@ function js_pesquisaPontosParada(lMostra) {
   var sUrl  = 'func_pontoparada.php?lPontoParadaLinhaTransporteItinerario&iLinhaTransporte='+oInputCodigoLinha.value;
       sUrl += '&iItinerario='+oSelectItinerario.value+'&funcao_js=parent.js_mostraPontoParada';
 
-  if (lMostra) {
+  if( lMostra ) {
     sUrl += '|tre04_sequencial|tre04_nome|tre11_sequencial';
   } else {
 
-    if (!empty(oInputCodigoPontoParada.value)) {
-      sUrl += '&pesquisa_chave='+oInputCodigoPontoParada.value;
+    if( !empty( $F('oInputCodigoPontoParada') ) ) {
+      sUrl += '&pesquisa_chave='+$F('oInputCodigoPontoParada');
     } else {
       oInputDescricaoPontoParada.value = '';
     }
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_pontoparada', sUrl, 'Pesquisa Pontos de Parada', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_pontoparada', sUrl, 'Pesquisa Pontos de Parada', lMostra);
 }
 
 /**
@@ -360,7 +410,7 @@ function js_mostraPontoParada() {
 
   if (arguments[1] === true) {
 
-    oInputCodigoItinerarioPontoParada.value = ''
+    oInputCodigoItinerarioPontoParada.value = '';
     oInputCodigoPontoParada.value           = '';
     oInputDescricaoPontoParada.value        = arguments[0];
   }
@@ -382,20 +432,25 @@ function js_pesquisaAluno(lMostra) {
     return false;
   }
 
-  var sUrl  = 'func_aluno.php?lPesquisaTransportePublico&iTransporte=2&iUtilizaTransporte=1';
-      sUrl += '&iEscola='+ $F('cboEscola');
-      sUrl += '&funcao_js=parent.js_mostraAluno';
+  var sUrl        = 'func_alunotransporteescolar.php?iEscola='+ $F('cboEscola');
+  var sEscolaRede = '&lEscolaRede=true';
+
+  if( $F('selectTipoEscola') == 2 ) {
+    sEscolaRede = '&lEscolaRede=false';
+  }
+
+  sUrl += sEscolaRede + '&funcao_js=parent.js_mostraAluno';
       
   if (lMostra) {
 	  
-	var sAlunos = '0';
+    var sAlunos = '0';
 
-	oGridVinculosAluno.aRows.each(function(oRow) {
+    oGridVinculosAluno.aRows.each(function(oRow) {
 
-		if (($F('oSelectItinerario') == 1 && oRow.aCells[6].getContent() == 'Ida') || 
-		    ($F('oSelectItinerario') == 2 && oRow.aCells[6].getContent() == 'Volta')) {
-			sAlunos += ','+oRow.aCells[2].getContent();
-		}
+      if (($F('oSelectItinerario') == 1 && oRow.aCells[6].getContent() == 'Ida') ||
+          ($F('oSelectItinerario') == 2 && oRow.aCells[6].getContent() == 'Volta')) {
+        sAlunos += ','+oRow.aCells[2].getContent();
+      }
     });
 	
     sUrl += '|ed47_i_codigo|ed47_v_nome';
@@ -408,7 +463,8 @@ function js_pesquisaAluno(lMostra) {
       oInputCodigoAluno.value = '';
     }
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_aluno', sUrl, 'Pesquisa Alunos', lMostra);
+
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aluno', sUrl, 'Pesquisa Alunos', lMostra);
 }
 
 /**
@@ -441,13 +497,13 @@ function js_adicionaVinculo() {
 
   if (js_validacoes()) {
 
-    var oParametro                      = new Object();
+    var oParametro                      = {};
         oParametro.exec                 = 'salvarVinculoAluno';
         oParametro.iCodigoPontoParada   = oInputCodigoItinerarioPontoParada.value;
         oParametro.iCodigoAluno         = oInputCodigoAluno.value;
         oParametro.iLinhaHorarioVeiculo = $('selectHorarios').value;
 
-    var oDadosRequisicao            = new Object();
+    var oDadosRequisicao            = {};
         oDadosRequisicao.method     = 'post';
         oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
         oDadosRequisicao.onComplete = js_retornoAdicionarVinculo;
@@ -463,7 +519,7 @@ function js_adicionaVinculo() {
 function js_retornoAdicionarVinculo(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.message.urlDecode());
 
@@ -534,33 +590,32 @@ function js_validacoes() {
  */
 function js_removeVinculo() {
 
+  var oParametro        = {};
+      oParametro.exec   = 'removerVinculoAluno';
+      oParametro.aDados = [];
+
+  oGridVinculosAluno.aRows.each(function(oRow) {
+
+    if (oRow.isSelected) {
+
+      oAlunos                    = {};
+      oAlunos.iCodigoPontoParada = oRow.aCells[1].getContent();
+      oAlunos.iCoddigoAluno      = oRow.aCells[2].getContent();
+      oAlunos.iCodigoVinculo     = oRow.aCells[9].getContent();
+
+      oParametro.aDados.push(oAlunos);
+    }
+  });
+
+  if (!Object.keys(oParametro.aDados).length) {
+
+    alert( _M( MENSAGENS_VINCULO_ALUNOS + 'nenhum_aluno_selecionado' ) );
+    return false;
+  }
+
   if ( confirm( _M( MENSAGENS_VINCULO_ALUNOS + 'confirma_remocao_vinculos') ) ) {
 
-    var oParametro         = new Object();
-        oParametro.exec    = 'removerVinculoAluno';
-        oParametro.aDados  = new Array();
-        
-
-    oGridVinculosAluno.aRows.each(function(oRow) {
-
-      if (oRow.isSelected) {
-
-        oAlunos                    = new Object();
-        oAlunos.iCodigoPontoParada = oRow.aCells[1].getContent();
-        oAlunos.iCoddigoAluno      = oRow.aCells[2].getContent();
-        oAlunos.iCodigoVinculo     = oRow.aCells[9].getContent();
-
-        oParametro.aDados.push(oAlunos);
-      }
-    });
-
-    if (!Object.keys(oParametro.aDados).length) {
-
-      alert( _M( MENSAGENS_VINCULO_ALUNOS + 'nenhum_aluno_selecionado' ) );
-      return false;
-    }
-
-    var oDadosRequisicao            = new Object();
+    var oDadosRequisicao            = {};
         oDadosRequisicao.method     = 'post';
         oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
         oDadosRequisicao.onComplete = js_retornoRemoverVinculo;
@@ -576,7 +631,7 @@ function js_removeVinculo() {
 function js_retornoRemoverVinculo(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.message.urlDecode());
 
@@ -590,11 +645,11 @@ function js_retornoRemoverVinculo(oResponse) {
  */
 function js_getAlunosVinculados() {
 
-  var oParametro                    = new Object();
+  var oParametro                    = {};
       oParametro.exec               = 'getAlunosVinculadosLinha';
       oParametro.iLinha             = oInputCodigoLinha.value;
 
-  var oDadosRequisicao            = new Object();
+  var oDadosRequisicao            = {};
       oDadosRequisicao.method     = 'post';
       oDadosRequisicao.parameters = 'json='+Object.toJSON(oParametro);
       oDadosRequisicao.onComplete = js_retornoAlunosVinculados;
@@ -609,7 +664,7 @@ function js_getAlunosVinculados() {
 function js_retornoAlunosVinculados(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   oGridVinculosAluno.clearAll(true);
   
@@ -617,7 +672,7 @@ function js_retornoAlunosVinculados(oResponse) {
 
     oRetorno.aAlunos.each(function(oAluno) {
 
-      var aLinha = new Array();
+      var aLinha = [];
           aLinha.push(oAluno.iCodigoItinerarioPontoParada);
           aLinha.push(oAluno.iCodigoAluno);
           aLinha.push(oAluno.sNome.urlDecode());
@@ -636,36 +691,40 @@ function js_retornoAlunosVinculados(oResponse) {
 }
 
 /**
- * Busca as escolas
+ * Busca as escolas conforme o tipo selecionado
+ * Tipo da Escola:
+ *   1 - Escola da Rede
+ *   2 - Escola de Procedência
  */
 function js_pesquisarEscolas() {
 
-  var oParametro  = new Object();
-  oParametro.exec = 'pesquisaEscola';
-  js_divCarregando( _M( MENSAGENS_VINCULO_ALUNOS + 'pesquisando_escolas' ), "msgBox");
+  js_limparCampos();
 
-  var oAjax = new Ajax.Request(
-                                sUrlRpc,
-                               {
-                                method:     'post',
-                                parameters: 'json='+Object.toJSON(oParametro),
-                                onComplete: js_retornaPesquisarEscolas
-                               }
-                              );
+  var oParametro = {};
+  var sExecuta   = 'pesquisaEscola';
+
+  if( $F('selectTipoEscola') == 2 ) {
+
+    sExecuta = 'pesquisaEscolasProcedencia';
+    oParametro.lSomenteAlunosForaRede = true;
+  }
+
+  oParametro.exec = sExecuta;
+
+  var oAjaxRequest = new AjaxRequest( sUrlRpc, oParametro, js_retornaPesquisarEscolas );
+      oAjaxRequest.setMessage( _M( MENSAGENS_VINCULO_ALUNOS + 'pesquisando_escolas' ) );
+      oAjaxRequest.execute();
 }
 
 /**
  * Retorna da busca pelas escolas
  */
-function js_retornaPesquisarEscolas(oResponse) {
+function js_retornaPesquisarEscolas( oRetorno, lErro ) {
 
   oCboEscola.clearItens();
 
-  js_removeObj("msgBox");
-
-  var oRetorno = eval('('+oResponse.responseText+')');
   oCboEscola.addItem("", "Selecione");
-  oRetorno.dados.each(function (oEscola, iSeq) {
+  oRetorno.dados.each(function (oEscola ) {
 
     oCboEscola.addItem(oEscola.codigo_escola, oEscola.nome_escola.urlDecode());
     if (oRetorno.dados.length == 1) {
@@ -691,12 +750,12 @@ function buscaHorariosLinha() {
     return false;
   }
 
-  var oParametros             = new Object();
+  var oParametros             = {};
       oParametros.exec        = 'getHorariosLinha';
       oParametros.iLinha      = $('oInputCodigoLinha').value;
       oParametros.iItinerario = $('oSelectItinerario').value;
 
-  var oDadosRequisicao            = new Object();
+  var oDadosRequisicao            = {};
       oDadosRequisicao.method     = 'post';
       oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
       oDadosRequisicao.onComplete = retornoBuscaHorariosLinhas;
@@ -712,16 +771,16 @@ function buscaHorariosLinha() {
 function retornoBuscaHorariosLinhas( oResponse ) {
 
   js_removeObj( "msgBox" );
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   js_limpaHorarios();
   limpaVagas();
 
   aHorarios = oRetorno.aHorarioLinha;
 
-  oRetorno.aHorarioLinha.each(function( oDados, iSeq ) {
+  oRetorno.aHorarioLinha.each(function( oDados ) {
 
-    var sHora  = oDados.hora_saida.urlDecode()
+    var sHora  = oDados.hora_saida.urlDecode();
         sHora += " às " + oDados.hora_chegada.urlDecode();
         sHora += " - " + oDados.nome_veiculo.urlDecode();
         sHora += " ( " + oDados.placa.urlDecode() + " ) ";
@@ -736,7 +795,7 @@ function js_limpaHorarios() {
 
   if (oSelectHorarios.length > 0) {
 
-    iTotalHorarios = oSelectHorarios.length;
+    var iTotalHorarios = oSelectHorarios.length;
     for ( var iContador = 0; iContador < iTotalHorarios; iContador++ ) {
       oSelectHorarios.options.remove( iContador );
     }
@@ -751,7 +810,7 @@ function preencheVagas() {
     limpaVagas();
   }
 
-  aHorarios.each(function( oHorario, iSeq ) {
+  aHorarios.each(function( oHorario ) {
 
     if ( oHorario.vinculo_veiculo_horario == $('selectHorarios' ).value ) {
 

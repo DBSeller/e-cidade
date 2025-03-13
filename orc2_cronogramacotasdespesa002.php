@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_db_config_classe.php");
-require_once("libs/db_liborcamento.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("dbforms/db_funcoes.php");
-require_once("model/cronogramaFinanceiro.model.php");
-require_once("model/relatorioContabil.model.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("model/cronogramaFinanceiro.model.php"));
+require_once(modification("model/relatorioContabil.model.php"));
 $oParams	    = db_utils::postMemory($_POST);
 $iCodRel = 78;
 $sListaInstit = str_replace('-',',',$oParams->db_selinstit);
@@ -55,16 +55,27 @@ $aLinhasRelatorio = array();
  * Agrupamos as despesas por mes/Bimestre
  */
 foreach ($aDespesas as $oDespesa) {
-  
+
   if ($oParams->nivel == 2) {
     $oDespesa->codigo = "{$oDespesa->o58_orgao}.{$oDespesa->codigo}";
   }
+
+  $oDespesa->codigo_apresentacao = $oDespesa->codigo;
+
+  if ($oParams->nivel == 9) {
+
+    $oDespesa->codigo              = "{$oDespesa->o58_orgao}{$oDespesa->o58_unidade}{$oDespesa->o58_codigo}{$oDespesa->o58_localizadorgastos}";
+    $oDespesa->descricao           = "$oDespesa->o58_codigo: {$oDespesa->o15_descr} / {$oDespesa->o58_localizadorgastos}:{$oDespesa->o11_descricao}";
+    $oDespesa->codigo_apresentacao = str_pad($oDespesa->o58_orgao, 2, "0", STR_PAD_LEFT).".".str_pad($oDespesa->o58_unidade, 2, "0", STR_PAD_LEFT);
+  }
+
   if ($oParams->iPeriodoImpr == 1) {
 
-     $aLinhasRelatorio[$oDespesa->codigo]->codigo    = $oDespesa->codigo;
-     $aLinhasRelatorio[$oDespesa->codigo]->descricao = $oDespesa->descricao;
-     $aLinhasRelatorio[$oDespesa->codigo]->aMeses    = array();
-     
+     $aLinhasRelatorio[$oDespesa->codigo]->codigo              = $oDespesa->codigo;
+     $aLinhasRelatorio[$oDespesa->codigo]->codigo_apresentacao = $oDespesa->codigo_apresentacao;
+     $aLinhasRelatorio[$oDespesa->codigo]->descricao           = $oDespesa->descricao;
+     $aLinhasRelatorio[$oDespesa->codigo]->aMeses              = array();
+
      $aLinhasRelatorio[$oDespesa->codigo]->aMeses[0]->valor   = @$oDespesa->aMetas->dados[0]->valor;
      $aLinhasRelatorio[$oDespesa->codigo]->aMeses[1]->valor   = @$oDespesa->aMetas->dados[1]->valor;
      $aLinhasRelatorio[$oDespesa->codigo]->aMeses[2]->valor   = @$oDespesa->aMetas->dados[2]->valor;
@@ -81,9 +92,10 @@ foreach ($aDespesas as $oDespesa) {
      
   } else {
     
-    $aLinhasRelatorio[$oDespesa->codigo]->codigo    = $oDespesa->codigo;
-    $aLinhasRelatorio[$oDespesa->codigo]->descricao = $oDespesa->descricao;
-    $aLinhasRelatorio[$oDespesa->codigo]->aMeses    = array();
+    $aLinhasRelatorio[$oDespesa->codigo]->codigo                 = $oDespesa->codigo;
+    $aLinhasRelatorio[$oDespesa->codigo]->codigo_apresentacao    = $oDespesa->codigo;
+    $aLinhasRelatorio[$oDespesa->codigo]->descricao              = $oDespesa->descricao;
+    $aLinhasRelatorio[$oDespesa->codigo]->aMeses                 = array();
      
     $aLinhasRelatorio[$oDespesa->codigo]->aMeses[0]->valor   = $oDespesa->aMetas->dados[0]->valor+$oDespesa->aMetas->dados[1]->valor;
     $aLinhasRelatorio[$oDespesa->codigo]->aMeses[1]->valor   = $oDespesa->aMetas->dados[2]->valor+$oDespesa->aMetas->dados[3]->valor;
@@ -180,23 +192,28 @@ if ($oParams->iPeriodoImpr == 1) {
                   6 => "Projeto/Atividade",
                   7 => "Elemento",
                   8 => "Recurso",
+                  9 => "Orgão / Unidade / Recurso / Anexo",
                  );
+
 
 $head2 = "Cronograma Mensal de Desembolso por {$aNiveis[$oParams->nivel]}";
 $head3 = "Art. 8º, da Lei Complementar 101/2000";
 $head4 = "Orçamento do exercício de {$oCronogramaFinanceiro->getAno()}";
 //$head5 = "Valores expressos por {$aNiveis[$oParams->nivel]}";
 
+$sLabelHeaderAgrupamento = $aNiveis[$oParams->nivel];
+if ($oParams->nivel == 9) {
+  $sLabelHeaderAgrupamento = " Recurso / Anexo ";
+}
 $pdf = new PDF('L');
 $pdf->Open();
 $pdf->SetAutoPageBreak(false, 0);
 $pdf->AliasNbPages();
 $pdf->setfillcolor(235);
-$iAlt   = 4;
-$sFonte = "arial";
+$iAlt              = 4;
+$sFonte            = "arial";
 $lEscreveCabecalho = true;
-$iCodigo = '';
-
+$iCodigo           = '';
 foreach ($aLinhasRelatorio as $oLinhaRelatorio) {
   
   if ($pdf->GetY() > $pdf->h - 25 ||$lEscreveCabecalho) {
@@ -208,9 +225,10 @@ foreach ($aLinhasRelatorio as $oLinhaRelatorio) {
     } else {
       $iAltLabel = 4; 
     }
-    
-    $pdf->cell(10,$iAltLabel, "Cod","TBR", 0, "C" , 1);
-    $pdf->cell(60,$iAltLabel, "Descrição","TBL", 0, "C" , 1);
+    $iALtura = $pdf->GetY();
+    $pdf->Cell(10, $iAltLabel, "Cod", "TBR", 0, "C" , 1);
+    $pdf->SetXY(20, $iALtura);
+    $pdf->cell(60,$iAltLabel, $sLabelHeaderAgrupamento,"TBL", 0, "C" , 1);
     $iAlturaCabecalho  = $pdf->GetY();
     $iMargemTotal      = 0;
     foreach ($oRelatorio->aPeriocidade as $iIndicePeriodo => $oPeriodo) {
@@ -239,7 +257,7 @@ foreach ($aLinhasRelatorio as $oLinhaRelatorio) {
     }
     if ($iCodigo != $oLinhaRelatorio->codigo ) {
       
-      $pdf->cell(10,$iAltLabel, $oLinhaRelatorio->codigo,"TBR", 0, "R" );
+      $pdf->cell(10,$iAltLabel, $oLinhaRelatorio->codigo_apresentacao, "TBR", 0, "R" );
       $pdf->SetFont($sFonte, '', 6);
       $pdf->cell(60,$iAltLabel, substr(urldecode($oLinhaRelatorio->descricao),0,45),"TBL", 0, "L" );
       $iAlturaLinha  = $pdf->GetY();
@@ -303,7 +321,8 @@ foreach ($oRelatorio->aPeriocidade as $iIndicePeriodo => $oPeriodo) {
 
 $pdf->SetXY(260, $iAlturaLinha);
 $pdf->cell(25, $iAltLabel, db_formatar($oTotalizador->total, "f"), "TBL", 1, "R",1);
-$pdf->addPage();
+if ($pdf->getAvailHeight() < 30) {
+  $pdf->addPage();
+}
 $oRelatorioOrcamento->getNotaExplicativa($pdf,1);
-$pdf->Output();  
-?>
+$pdf->Output();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
@@ -48,10 +48,10 @@ db_postmemory($HTTP_POST_VARS);
 <script>
 
 function js_emite(){
-  jan = window.open('pes2_sappensao002.php?ano='+document.form1.DBtxt23.value+'&mes='+document.form1.DBtxt25.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+  jan = window.open('pes2_sappensao002.php?sTipoFolha='+document.form1.sTipoFolha.value+'&ano='+document.form1.DBtxt23.value+'&mes='+document.form1.DBtxt25.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
 }
-</script>  
+</script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
@@ -87,11 +87,24 @@ function js_emite(){
         </td>
       </tr>
       <tr>
-        <td >&nbsp;</td>
-        <td >&nbsp;</td>
+        <td align="left" nowrap title="Escolha o Tipo de Folha">
+          <strong>Tipo de Folha:&nbsp;&nbsp;</strong>
+        </td>
+        <td>
+          <?php
+            $aTipoFolha = array(''    => 'Todos',
+                                'r14' => 'Salário',
+                                'r48' => 'Complementar',
+                                'r20' => 'Rescisão',
+                                'r35' => '13o. Salário'
+                                //'r22' => 'Adiantamento'
+                                );
+            db_select('sTipoFolha', $aTipoFolha, false, 1);
+          ?>
+        </td>
       </tr>
       <tr>
-        <td colspan="2" align = "center"> 
+        <td colspan="2" align = "center">
           <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >
         </td>
       </tr>
@@ -133,7 +146,7 @@ function js_mostratabdesc1(chave1,chave2){
 if(isset($ordem)){
   echo "<script>
        js_emite();
-       </script>";  
+       </script>";
 }
 $func_iframe = new janela('db_iframe','');
 $func_iframe->posX=1;

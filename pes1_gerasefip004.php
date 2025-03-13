@@ -1,58 +1,58 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_libgertxtfolha.php");
-require_once("libs/db_libpessoal.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_sql.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libgertxtfolha.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_sql.php"));
 
-require_once("classes/db_codmovsefip_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_cfpess_classe.php");
-require_once("classes/db_rhpessoal_classe.php");
-require_once("classes/db_rhpessoalmov_classe.php");
-require_once("classes/db_rhpesdoc_classe.php");
-require_once("classes/db_rhpesrescisao_classe.php");
-require_once("classes/db_rescisao_classe.php");
-require_once("classes/db_afasta_classe.php");
-require_once("classes/db_inssirf_classe.php");
-require_once("classes/db_rhlota_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("classes/db_codmovsefip_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_cfpess_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_rhpessoalmov_classe.php"));
+require_once(modification("classes/db_rhpesdoc_classe.php"));
+require_once(modification("classes/db_rhpesrescisao_classe.php"));
+require_once(modification("classes/db_rescisao_classe.php"));
+require_once(modification("classes/db_afasta_classe.php"));
+require_once(modification("classes/db_inssirf_classe.php"));
+require_once(modification("classes/db_rhlota_classe.php"));
+require_once(modification("classes/db_tomador_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet  = db_utils::postMemory($_GET);
 $oPost = db_utils::postMemory($_POST);
 
 global $conn;
-//db_postmemory($HTTP_POST_VARS);
 
 $clcodmovsefip   = new cl_codmovsefip;
 $cldb_config     = new cl_db_config;
@@ -65,6 +65,7 @@ $clrescisao      = new cl_rescisao;
 $clafasta        = new cl_afasta;
 $clinssirf       = new cl_inssirf;
 $cllayout_SEFIP  = new cl_layout_SEFIP;
+$cltomador       = new cl_tomador();
 $clrhlota        = new cl_rhlota;
 $db_opcao        = 1;
 $db_botao        = true;
@@ -205,6 +206,11 @@ if ( isset($oPost->gerar) ) {
         $sWhereMatriculasSelecionadas = "and rh01_regist in({$matriculasselecionadas})";
       }
 
+      if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+          $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+          $sWhereMatriculasSelecionadas .= " and rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+      }
+        
       $sSubSqlRescisao = $clrhpessoalmov->sql_query_rescisao(null,"rh02_regist",null,$sWhereRescisao);
       $sCampos   = "rh01_regist,
       h13_tpcont,
@@ -233,7 +239,11 @@ if ( isset($oPost->gerar) ) {
       rh05_causa,
       rh05_caub,
       1 as tipo,
-      cast(0 as varchar) as codigoautonomo";
+      cast(0 as varchar) as codigoautonomo,
+      rh02_seqpes,
+      coalesce(rh216_numcgm, 0) as cgmTomador
+    
+      ";
 
       $sCamposAutonomos = " z01_numcgm as rh01_regist,
       '13' as h13_tpcont,
@@ -262,11 +272,17 @@ if ( isset($oPost->gerar) ) {
       null as rh05_causa,
       null as rh05_caub,
       2 as tipo,
-      ( select array_to_string(array_accum(rh89_sequencial), ',')
-      from rhautonomolanc as subquery
-      where subquery.rh89_numcgm = z01_numcgm
-      and rh89_mesusu = $iMesUsu
-      and rh89_anousu = $iAnoUsu ) as codigoautonomo ";
+      (
+        select array_to_string(array_accum(rh89_sequencial), ',')
+        from rhautonomolanc as subquery
+        where subquery.rh89_numcgm = z01_numcgm
+        and rh89_mesusu = $iMesUsu
+        and rh89_anousu = $iAnoUsu
+        and rh89_instit = $iInstit
+      ) as codigoautonomo,
+      '0' as rh02_seqpes,
+      0 as cgmTomador
+      ";
 
       $sSqlDados = $clgera_sql_folha->gerador_sql( "",
           $iAnoUsu,
@@ -292,7 +308,7 @@ if ( isset($oPost->gerar) ) {
       {$sWhereRHLota}
       {$sWhereMatriculasSelecionadas}
       ", $iInstit);
-      
+
       $sSqlAutonomos  = "select {$sCamposAutonomos}                             ";
       $sSqlAutonomos .= "  from rhautonomolanc                                  ";
       $sSqlAutonomos .= " inner join cgm       on rh89_numcgm     = z01_numcgm  ";
@@ -300,9 +316,12 @@ if ( isset($oPost->gerar) ) {
       $sSqlAutonomos .= "  left join rhcbo     on rh70_sequencial = z04_rhcbo   ";
       $sSqlAutonomos .= " where rh89_anousu = {$iAnoUsu}                        ";
       $sSqlAutonomos .= "   and rh89_mesusu = {$iMesUsu}                        ";
-      $sSqlAutonomos .= " order by rh16_pis asc, rh01_admiss asc                ";
-      
-      $rsDados = $clrhpessoal->sql_record($sSqlDados." union $sSqlAutonomos");
+      $sSqlAutonomos .= " order by cgmTomador, rh16_pis asc, rh01_admiss asc                ";
+
+      $sSql  = $sSqlDados." union $sSqlAutonomos";
+
+      $rsDados = $clrhpessoal->sql_record($sSql);
+
 
       if ( $clrhpessoal->numrows == 0 ) {
         throw new Exception("Nenhum registro encontrado no Ano/Mês ({$iAnoUsu}/{$iMesUsu}). Arquivo não poderá ser gerado.");
@@ -311,7 +330,7 @@ if ( isset($oPost->gerar) ) {
         /**
          * incluimos a geracao do arquivo
          */
-        require_once ("classes/db_rhsefip_classe.php");
+        require_once(modification("classes/db_rhsefip_classe.php"));
         $oSefip = new cl_rhsefip;
         $oSefip->rh90_anousu   = $iAnoUsu;
         $oSefip->rh90_mesusu   = $iMesUsu;
@@ -333,8 +352,8 @@ if ( isset($oPost->gerar) ) {
         if ($oSefip->erro_status == 0) {
           throw new Exception("Erro ao Gerar Sefip:{$oSefip->erro_msg}");
         }
-        $cllayout_SEFIP->nomearq = "/tmp/SEFIP.RE";
-          
+        $cllayout_SEFIP->nomearq = "tmp/SEFIP.RE";
+
         $clgera_sql_folha->inicio_rh = false;
         $clgera_sql_folha->usar_pes  = false;
         $clgera_sql_folha->usar_res  = false;
@@ -358,7 +377,7 @@ if ( isset($oPost->gerar) ) {
         $sRubricaInssSal  = "R9".db_formatar((($oCfPess->r11_tbprev * 3) - 2),"s","0",2,"e",0);
         $sRubricaInssS13  = "R9".db_formatar((($oCfPess->r11_tbprev * 3) - 1),"s","0",2,"e",0);
         $sRubricaInssFer  = "R9".db_formatar((($oCfPess->r11_tbprev * 3))    ,"s","0",2,"e",0);
-        
+
         if ( trim($oCfPess->r11_rubdec) != "" ){
           $sRubricaAdiantamento = ",'".$oCfPess->r11_rubdec."'";
         } else {
@@ -379,13 +398,14 @@ if ( isset($oPost->gerar) ) {
         $aBaseINSSR990       = Array();
         $aComplemento13      = Array();
 
-
         for ( $i=0; $i < $clrhpessoal->numrows; $i++ ){
 
           $oPessoal = db_utils::fieldsMemory($rsDados, $i);
+
           if ($oPessoal->tipo == 2) {
             $oPessoal->rh01_regist = $oPessoal->z01_numcgm;
           }
+
           $nSalarioMaternidade = 0;
           $nSalarioFamilia     = 0;
           $nBaseFGTS           = 0;
@@ -403,6 +423,7 @@ if ( isset($oPost->gerar) ) {
            * apenas calculamos as rubricas para funcionários da prefeitura
            */
           if ($oPessoal->tipo == 1) {
+
             for ( $in=0; $in < count($aSiglas); $in++) {
 
               $sSqlGer = $clgera_sql_folha->gerador_sql( $aSiglas[$in],
@@ -429,8 +450,8 @@ if ( isset($oPost->gerar) ) {
                   {$sRubricaAdiantamento}) ",
                   $iInstit
                   );
-
                   $rsDadosGer = db_query($sSqlGer);
+
                   $iLinhasGer = pg_num_rows($rsDadosGer);
 
                   for ( $im=0 ; $im < $iLinhasGer; $im++ ) {
@@ -472,11 +493,11 @@ if ( isset($oPost->gerar) ) {
                       $nBaseINSS     += $oDadosGer->valor;
                       $nBaseDescINSS += $oDadosGer->valor;
                     }
-                    
+
                     if ( $oDadosGer->rubri == "R986" ) {
-                     
+
                       if ( $aSiglas[$in] == "r35" ){
-                       
+
                         if ( $lMes13 ) {
                           $nBaseINSS13 += $oDadosGer->valor;
                         } else {
@@ -486,10 +507,9 @@ if ( isset($oPost->gerar) ) {
                         $nBaseINSS13 += $oDadosGer->valor;
                       }
 
-                      if ( $aSiglas[$in] != "r35" and $aSiglas[$in] != "r20") {
+                      if ( $aSiglas[$in] != "r35" and $aSiglas[$in] != "r20" && $oDadosGer->valor > 0) {
                         $aComplemento13[$oPessoal->rh01_regist] = "1";
                       }
-
                     }
 
                     if(($oDadosGer->rubri == $sRubricaInssSal || $oDadosGer->rubri == $sRubricaInssFer) && $aSiglas[$in] != "r35"){
@@ -536,7 +556,7 @@ if ( isset($oPost->gerar) ) {
             if (pg_num_rows($rsValoresAutonomos) > 0) {
 
               foreach ( db_utils::getCollectionByRecord($rsValoresAutonomos) as $oDadosAutonomos){
-                  
+
                 $nBaseINSS  += $oDadosAutonomos->rh89_valorserv;
                 $nDescINSS  += $oDadosAutonomos->rh89_valorretinss;
                 $nDescFolha += $oDadosAutonomos->rh89_valorretinss;
@@ -640,7 +660,7 @@ if ( isset($oPost->gerar) ) {
         $cllayout_SEFIP->SFPRegistro10_207_213 = $oPost->cnae;
         $cllayout_SEFIP->SFPRegistro10_214_214 = $sAlteraCnae;
         $cllayout_SEFIP->SFPRegistro10_215_216 = str_pad(trim($oPost->aliqsat),2,"0",STR_PAD_RIGHT);
-        $cllayout_SEFIP->SFPRegistro10_219_221 = $oCfPess->r11_cdfpas;
+        $cllayout_SEFIP->SFPRegistro10_219_221 = (isset($oPost->fpas)&&!empty($oPost->fpas))?$oPost->fpas:$oCfPess->r11_cdfpas;
         $cllayout_SEFIP->SFPRegistro10_222_225 = $oPost->codterceiro;
         $cllayout_SEFIP->SFPRegistro10_226_229 = $oPost->codgps;
         $cllayout_SEFIP->SFPRegistro10_235_249 = $nTotalSalFamilia;     // Total geral do salario familia
@@ -694,41 +714,52 @@ if ( isset($oPost->gerar) ) {
           } else {
           }
         }
-          
+
         for ( $i=0; $i < $clrhpessoal->numrows; $i++ ){
 
           $oPessoal = db_utils::fieldsmemory($rsDados, $i);
+
+          $oTomador = null;
+
+          if ($codrec == "150") {
+
+              $oTomador = $cltomador->getCgmTomadorBySeqPes($oPessoal->rh02_seqpes);
+
+              if (empty($oTomador)) {
+                  $oTomador = $cltomador->getCgmOwn($oPessoal->rh02_seqpes);
+              }
+          }
+
           if ($oPessoal->tipo == 2) {
             $oPessoal->rh01_regist = $oPessoal->z01_numcgm;
           }
-          if((int)$oPessoal->rh16_pis > 0 ){
+
+          if ((int)$oPessoal->rh16_pis > 0) {
 
             $remuneracao13 = 0;
-              
+
             if($aSalarioFamilia[$oPessoal->rh01_regist] > 0 || $aBaseFGTS[$oPessoal->rh01_regist]     > 0 || $aBaseFGTS13[$oPessoal->rh01_regist] > 0 ||
-              
               $aFGTS13[$oPessoal->rh01_regist]     > 0 || $aFGTS[$oPessoal->rh01_regist]          > 0 || $aBaseINSS[$oPessoal->rh01_regist]   > 0 ||
               $aBaseINSS13[$oPessoal->rh01_regist] > 0 || $aBaseDescINSS[$oPessoal->rh01_regist] > 0 || $aDescINSS[$oPessoal->rh01_regist]    > 0 ||
-              $aDescINSS13[$oPessoal->rh01_regist] > 0  || $aBaseINSSR990[$oPessoal->rh01_regist] > 0){
-                
+              $aDescINSS13[$oPessoal->rh01_regist] > 0  || $aBaseINSSR990[$oPessoal->rh01_regist] > 0) {
+
               if ($oPessoal->h13_tpcont >= 12) {
                 if($iMesUsu == 12 && trim($oPessoal->rh05_recis) != "" ){
-                 
-                  $remuneracaosem13 = $aBaseINSS[$oPessoal->rh01_regist] + $aBaseINSS13[$oPessoal->rh01_regist];
+
+                  $remuneracaosem13 = $aBaseINSS[$oPessoal->rh01_regist];
                   $remuneracao13 = 0;
                 }else{
-                 
+
                   $remuneracaosem13 = $aBaseINSS[$oPessoal->rh01_regist];
                   $remuneracao13 = $aBaseINSS13[$oPessoal->rh01_regist];
                 }
               } else {
-               
+
                 $remuneracaosem13 = $aBaseFGTS[$oPessoal->rh01_regist];
                 $remuneracao13 = $aBaseFGTS13[$oPessoal->rh01_regist];
               }
-              
+
               if(( $lMes13 && $remuneracao13 == 0 && $aBaseINSS13[$oPessoal->rh01_regist] == 0) || ($lMes13 && $oPessoal->h13_tpcont == 13) ){
-                
                 continue;
               }
 
@@ -751,6 +782,7 @@ if ( isset($oPost->gerar) ) {
                   $remuneracaosem13 = 0;
                 }
               }
+
               if((trim($oPessoal->rh05_recis) == "" && $lMes13) || (trim($oPessoal->rh05_recis) != "" && !$lMes13)){
                 $remuneracao13 = $aBaseINSS13[$oPessoal->rh01_regist];
                 if($lMes13){
@@ -769,6 +801,11 @@ if ( isset($oPost->gerar) ) {
                 $recis_mes = (int) db_subdata($oPessoal->rh05_recis,"m");
                 $recis_ano = (int) db_subdata($oPessoal->rh05_recis,"a");
               }
+
+              if(empty($valorrescis) && !empty($remuneracao13) && $oPessoal->rh05_recis != '') {
+                $valorrescis = $remuneracao13;
+              }
+
               if(trim($oPessoal->rh05_recis) != "" || $lMes13){
                 if($recis_ano == (int)$iAnoUsu && $recis_mes == (int)$iMesUsu){
                   $valorrescis = $aBaseINSS13[$oPessoal->rh01_regist];
@@ -826,11 +863,6 @@ if ( isset($oPost->gerar) ) {
                 }
               }
 
-              // verifica se servidor tem complemento fora do calculo do 13 salario
-              if (isset($aComplemento13[$oPessoal->rh01_regist]) && $aComplemento13[$oPessoal->rh01_regist] == "1") {
-                $ocorrencia = "05";
-              }
-
               $subpes = $iAnoUsu."/".$iMesUsu;
               $situacao_funcionario = 0;
               if ($oPessoal->tipo == 1) {
@@ -886,6 +918,12 @@ if ( isset($oPost->gerar) ) {
               }
 
               $cllayout_SEFIP->SFPRegistro30_004_017 = $oConfig->cgc;
+
+              if ($codrec == "150" && !empty($oTomador)) {
+                  $cllayout_SEFIP->SFPRegistro30_018_018 = '1';
+                  $cllayout_SEFIP->SFPRegistro30_019_032 = $oTomador->z01_cgccpf;
+              }
+
               $cllayout_SEFIP->SFPRegistro30_033_043 = $oPessoal->rh16_pis;
               $cllayout_SEFIP->SFPRegistro30_044_051 = $data_admiss;
               $cllayout_SEFIP->SFPRegistro30_052_053 = $oPessoal->h13_tpcont;
@@ -896,6 +934,7 @@ if ( isset($oPost->gerar) ) {
               $cllayout_SEFIP->SFPRegistro30_147_154 = $xctps_d;
               $cllayout_SEFIP->SFPRegistro30_155_162 = $data_nasc;
               $cllayout_SEFIP->SFPRegistro30_163_167 = $oPessoal->rh37_cbo;
+
               $cllayout_SEFIP->SFPRegistro30_168_182 = $remuneracaosem13;
               $cllayout_SEFIP->SFPRegistro30_183_197 = $remuneracao13;
               $cllayout_SEFIP->SFPRegistro30_200_201 = $ocorrencia;
@@ -912,6 +951,34 @@ if ( isset($oPost->gerar) ) {
 
               if ($oPessoal->h13_tpcont == '01' ) {
                 $aListaGerados[$oPessoal->rh01_regist]['FGTS'] = $remuneracaosem13;
+              }
+
+              if ($codrec == "150" && !empty($oTomador) && $cllayout_SEFIP->SFPRegistro20_019_032 != $oTomador->z01_cgccpf) {
+
+                  $cllayout_SEFIP->SFPRegistro20_001_002 = "20";
+                  $cllayout_SEFIP->SFPRegistro20_003_003 = "1";
+                  $cllayout_SEFIP->SFPRegistro20_004_017 = $oConfig->cgc;
+                  $cllayout_SEFIP->SFPRegistro20_018_018 = "1";
+                  $cllayout_SEFIP->SFPRegistro20_019_032 = $oTomador->z01_cgccpf;
+                  $cllayout_SEFIP->SFPRegistro20_033_053 = str_repeat("0", 21);
+                  $cllayout_SEFIP->SFPRegistro20_054_093 = DBString::removerAcentuacao($oTomador->z01_nome);
+                  $cllayout_SEFIP->SFPRegistro20_094_143 = DBString::removerAcentuacao($oTomador->z01_ender);
+                  $cllayout_SEFIP->SFPRegistro20_144_163 = DBString::removerAcentuacao($oTomador->z01_bairro);
+                  $cllayout_SEFIP->SFPRegistro20_164_171 = $oTomador->z01_cep;
+                  $cllayout_SEFIP->SFPRegistro20_172_191 = DBString::removerAcentuacao($oTomador->z01_munic);
+                  $cllayout_SEFIP->SFPRegistro20_192_193 = $oTomador->z01_uf;
+                  $cllayout_SEFIP->SFPRegistro20_194_197 = str_repeat(" ", 4);
+                  $cllayout_SEFIP->SFPRegistro20_198_212 = str_repeat("0", 15);
+                  $cllayout_SEFIP->SFPRegistro20_213_227 = str_repeat("0", 15);
+                  $cllayout_SEFIP->SFPRegistro20_228_228 = "0";
+                  $cllayout_SEFIP->SFPRegistro20_229_242 = str_repeat("0", 14);
+                  $cllayout_SEFIP->SFPRegistro20_243_257 = str_repeat("0", 15);
+                  $cllayout_SEFIP->SFPRegistro20_258_272 = str_repeat("0", 15);
+                  $cllayout_SEFIP->SFPRegistro20_273_317 = str_repeat("0", 45);
+                  $cllayout_SEFIP->SFPRegistro20_318_359 = str_repeat(" ", 42);
+                  $cllayout_SEFIP->SFPRegistro20_360_360 = "*";
+
+                  $cllayout_SEFIP->geraRegist20SFP();
               }
 
               $cllayout_SEFIP->geraRegist30SFP();
@@ -941,20 +1008,20 @@ if ( isset($oPost->gerar) ) {
                       ((int)db_subdata($r45_dtreto,"a") > (int)$iAnoUsu)
                   ){
                     $situacao = $r45_situac;
-                    $dataafasta = ($situacao == 3 || $situacao == 6)?date("Y-m-d",mktime(0,0,0,db_subdata($r45_dtafas,"m"), db_subdata($r45_dtafas,"d") - 15, db_subdata($r45_dtafas,"a"))):$r45_dtafas;
+                    $dataafasta = ($situacao == 3 || $situacao == 6 || $situacao == 8)?date("Y-m-d",mktime(0,0,0,db_subdata($r45_dtafas,"m"), db_subdata($r45_dtafas,"d") - 15, db_subdata($r45_dtafas,"a"))):$r45_dtafas;
                     $dataretorno = $r45_dtreto;
-                      
+
                     $dataini = $dataafasta;
                     $datafim = $dataretorno;
-                    if($situacao == 3 || $situacao == 6){
+                    if($situacao == 3 || $situacao == 6 || $situacao == 8){
                       $dataini = $r45_dtafas;
                     }
-                      
+
                     if(db_subdata($dataafasta,"m") <= $iMesUsu && db_subdata($dataafasta,"a") == $iAnoUsu){
                       $datamov = $dataafasta;
                       $codmov  = $r45_codafa;
                     }
-                      
+
                     if((db_subdata($dataafasta,"m") < $iMesUsu && db_subdata($dataafasta,"a") == $iAnoUsu) || db_subdata($dataafasta,"a") < $iAnoUsu){
                       $result_codmovsefip = $clcodmovsefip->sql_record($clcodmovsefip->sql_query_file(null,null,null,"r66_codigo,r66_mensal","","r66_anousu = ".$iAnoUsu." and r66_mesusu = ".$iMesUsu." and trim(r66_codigo) = '".$r45_codafa."' and r66_mensal = 't'"));
                       if($clcodmovsefip->numrows > 0){
@@ -980,15 +1047,15 @@ if ( isset($oPost->gerar) ) {
                         }
                       }
                     }
-                      
+
                     $temreg = false;
-                      
+
                     if(db_subdata($dataretorno,"m") == $iMesUsu && db_subdata($dataretorno,"a") == $iAnoUsu){
                       $datamov = $dataretorno;
                       $codmov  = $r45_codret;
                       $temreg  = true;
                     }
-                      
+
                     $indfgts = "";
                     $result_ifgts = $clcodmovsefip->sql_record($clcodmovsefip->sql_query_file(null,null,null,"r66_ifgtsc,r66_ifgtse","","r66_anousu = ".$iAnoUsu." and r66_mesusu = ".$iMesUsu." and trim(r66_codigo) = '".$r45_codafa."'"));
                     if($clcodmovsefip->numrows > 0){
@@ -999,6 +1066,9 @@ if ( isset($oPost->gerar) ) {
                         $indfgts = $r66_ifgtse;
                       }
                     }
+
+
+
                     if ($temreg){
 
                       $cllayout_SEFIP->SFPRegistro32_004_017 = $oConfig->cgc;
@@ -1010,13 +1080,14 @@ if ( isset($oPost->gerar) ) {
                       $cllayout_SEFIP->SFPRegistro32_126_133 = db_formatar($dataafasta,'d');
                       $cllayout_SEFIP->SFPRegistro32_134_134 = $indfgts;
 
+                      if ($codrec == "150" && !empty($oTomador)) {
+                            $cllayout_SEFIP->SFPRegistro32_018_018 = "1";
+                            $cllayout_SEFIP->SFPRegistro32_019_032 = $oTomador->z01_cgccpf;
+                      }
 
                       $cllayout_SEFIP->geraRegist32SFP();
-
-
-
                     }
-                      
+
                     $cllayout_SEFIP->SFPRegistro32_004_017 = $oConfig->cgc;
                     $cllayout_SEFIP->SFPRegistro32_033_043 = $oPessoal->rh16_pis;
                     $cllayout_SEFIP->SFPRegistro32_044_051 = db_formatar($oPessoal->rh01_admiss,'d');
@@ -1025,12 +1096,15 @@ if ( isset($oPost->gerar) ) {
                     $cllayout_SEFIP->SFPRegistro32_124_125 = $codmov;
                     $cllayout_SEFIP->SFPRegistro32_126_133 = db_formatar($datamov,'d');
                     $cllayout_SEFIP->SFPRegistro32_134_134 = $indfgts;
-                      
-                      
-                      
+
+                    if ($codrec == "150" && !empty($oTomador)) {
+                        $cllayout_SEFIP->SFPRegistro32_018_018 = "1";
+                        $cllayout_SEFIP->SFPRegistro32_019_032 = $oTomador->z01_cgccpf;
+                    }
+
                     $aListaGerados[$oPessoal->rh01_regist]['Nome']            = $oPessoal->z01_nome;
                     $aListaGerados[$oPessoal->rh01_regist]['TipoContrato']    = $oPessoal->h13_tpcont;
-                      
+
                     if ( $temreg ) {
                       $aListaGerados[$oPessoal->rh01_regist]['CodAfastamento']  = $r45_codafa;
                       $aListaGerados[$oPessoal->rh01_regist]['DataAfastamento'] = db_formatar($dataafasta,'d');
@@ -1080,6 +1154,11 @@ if ( isset($oPost->gerar) ) {
                 $cllayout_SEFIP->SFPRegistro32_126_133 = db_formatar($oPessoal->rh05_recis,"d");
                 $cllayout_SEFIP->SFPRegistro32_134_134 = $indfgts;
 
+                if ($codrec == "150" && !empty($oTomador)) {
+                    $cllayout_SEFIP->SFPRegistro32_018_018 = "1";
+                    $cllayout_SEFIP->SFPRegistro32_019_032 = $oTomador->z01_cgccpf;
+                }
+
                 $aListaGerados[$oPessoal->rh01_regist]['Nome']            = $oPessoal->z01_nome;
                 $aListaGerados[$oPessoal->rh01_regist]['TipoContrato']    = $oPessoal->h13_tpcont;
                 $aListaGerados[$oPessoal->rh01_regist]['CodAfastamento']  = $codmov;
@@ -1093,6 +1172,7 @@ if ( isset($oPost->gerar) ) {
             $aListaSemPIS[$oPessoal->rh01_regist]['TipoContrato'] = $oPessoal->h13_tpcont;
           }
         }
+
         $cllayout_SEFIP->geraRegist90SFP();
         $cllayout_SEFIP->gera();
       }
@@ -1218,12 +1298,12 @@ if ( isset($oPost->gerar) ) {
         $pdf->Cell(16,$iAlt,db_formatar($aValores['FGTS'],'f')           ,0,0,'R',$iLista);
         $pdf->Cell(18,$iAlt,db_formatar($aValores['DescFolha'],'f')      ,0,1,'C',$iLista);
 
-        $nBasePrevidencia += $aValores['BasePrevidencia'];
-        $nDescPrevidencia += $aValores['DescPrevidencia'];
-        $nBase13          += $aValores['Base13'];
-        $nDesc13          += $aValores['Desc13'];
-        $nFGTS            += $aValores['FGTS'];
-        $nDescFolha       += $aValores['DescFolha'];
+        $nBasePrevidencia += (float) $aValores['BasePrevidencia'];
+        $nDescPrevidencia += (float) $aValores['DescPrevidencia'];
+        $nBase13          += (float) $aValores['Base13'];
+        $nDesc13          += (float) $aValores['Desc13'];
+        $nFGTS            += (float) $aValores['FGTS'];
+        $nDescFolha       += (float) $aValores['DescFolha'];
         $iContRegist++;
 
       }
@@ -1351,8 +1431,8 @@ db_app::load("estilos.css, grid.style.css");
                 <td nowrap align="right" title="Código do recolhimento"><b>Código:</b>
                 </td>
                 <td><?
-                $codrec = "115";
-                db_input('codrec',10,1,true,'text',3,"")
+                $aCodrec = array("115" => "115", "150" => "150");
+                db_select('codrec',$aCodrec,true,1);
                 ?>
                 </td>
                 <td nowrap align="right" title="Ano / Mês de competência"><b>Ano / Mês:</b>
@@ -1497,6 +1577,20 @@ db_app::load("estilos.css, grid.style.css");
                 ?>
                 </td>
               </tr>
+              <tr>
+                <td nowrap align="right" title="FPAS"><b>FPAS:</b>
+                </td>
+                <td>
+                <?
+                $sSqlCfPessPrev = $clcfpess->sql_query_file($anousu,$mesusu,db_getsession("DB_instit"), "r11_cdfpas" );
+                $rsCfPessPrev   = $clcfpess->sql_record($sSqlCfPessPrev);
+                $fpas = db_utils::fieldsMemory($rsCfPessPrev, 0)->r11_cdfpas;
+                db_input('fpas',2,1,true,'text',1,"","")
+                ?>
+                </td>
+                <td nowrap align="right" title=""></td>
+                <td></td>
+              </tr>
             </table>
           </fieldset>
         </td>
@@ -1519,7 +1613,7 @@ db_app::load("estilos.css, grid.style.css");
 
               $result_tbprev = $clinssirf->sql_record($clinssirf->sql_query_file(null,null," distinct (cast(r33_codtab as integer) - 2) as r33_codtab,r33_nome","r33_codtab","r33_codtab between 3 and 6 and r33_mesusu=$iMesUsu and r33_anousu=$iAnoUsu and r33_instit = ".db_getsession('DB_instit')));
               $iMesUsu = $iMesAnt;
-               
+
               for( $i=0, $cont = 1; $i<$clinssirf->numrows; $i++){
 
                 db_fieldsmemory($result_tbprev, $i);
@@ -1590,7 +1684,7 @@ db_app::load("estilos.css, grid.style.css");
                 </td>
               </tr>
             </table>
-        
+
         </td>
       </tr>
       <tr>
@@ -1609,7 +1703,7 @@ db_app::load("estilos.css, grid.style.css");
                 from rhlota
                 inner join cgm on rhlota.r70_numcgm = cgm.z01_numcgm
                 where r70_instit = {$iInstit}";
-                 
+
                 $result = db_query($sql);
                 db_selectrecord("r70_numcgm", $result, true, @$db_opcao, "", "", "", "0", $sAtualizaMatriculas, "2");
                 ?></td>
@@ -1639,7 +1733,7 @@ if( isset($oPost->gerar) ){
   } else {
 
     echo "<script>$('gerar').hide();</script>";
-    $sNomeArquivos  = "/tmp/SEFIP.RE#Arquivo para envio SEFIP";
+    $sNomeArquivos  = "tmp/SEFIP.RE#Arquivo para envio SEFIP";
     if ( count($aListaGerados) > 0 ) {
       $sNomeArquivos .= "|{$sArquivoConferencia}#Relatório de Conferência";
     }
@@ -1650,7 +1744,7 @@ if( isset($oPost->gerar) ){
 
     echo "<script>
     var sLista = '{$sNomeArquivos}';
-    top.corpo.js_montarlista(sLista,'form1');
+    (window.CurrentWindow || parent.CurrentWindow).corpo.js_montarlista(sLista,'form1');
     </script>";
 
   }
@@ -1661,7 +1755,7 @@ if (isset($oGet->iTipoProcessamento) && $oGet->iTipoProcessamento == 2) {
   echo "<script>";
   echo "  parent.document.formaba.gerasefip.disabled    = false;";
   echo "  parent.document.formaba.selecionados.disabled = false;";
-  echo "  top.corpo.iframe_selecionados.location.href   = 'pes1_gerasefipselecionados001.php';";
+  echo "  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_selecionados.location.href   = 'pes1_gerasefipselecionados001.php';";
   echo "  parent.mo_camada('selecionados');";
   echo "</script>\n";
 }
@@ -1671,58 +1765,58 @@ function js_verificacampos() {
 
   var retorno = true;
   if (document.form1.anousu.value == "") {
-  
+
     alert("Informe o ano de competência.");
     document.form1.anousu.focus();
     retorno = false;
   } else if (document.form1.mesusu.value == "") {
-  
+
     alert("Informe o mês de competência.");
     document.form1.mesusu.focus();
     retorno = false;
   } else if (document.form1.contato.value == "") {
-  
+
     alert("Informe o nome do contato.");
     document.form1.contato.focus();
     retorno = false;
   } else if (document.form1.fone.value == "") {
-  
+
     alert("Informe o fone de contato.");
     document.form1.fone.focus();
     retorno = false;
   } else {
-     
+
     if (document.form1.gerarcompensacao.value == 1) {
-        
+
       var sAnoCompInicial = document.form1.anocompeinicial.value;
       var sMesCompInicial = document.form1.mescompeinicial.value;
       var sAnoCompFinal   = document.form1.anocompefinal.value;
-      var sMesCompFinal   = document.form1.mescompefinal.value;         
-    
+      var sMesCompFinal   = document.form1.mescompefinal.value;
+
       if (sAnoCompInicial == '' || sMesCompInicial == '') {
-      
+
         alert('Competência Inicial da Compensação não informada!');
         retorno = false;
       }
-       
+
       if (sAnoCompFinal == '' || sMesCompFinal == '') {
-      
+
         alert('Competência Final da Compensação não informada!');
         retorno = false;
-      }       
-  
-      var sDataCompGeracao = new Date(document.form1.anousu.value+'-'+document.form1.mesusu.value+'-01');  
+      }
+
+      var sDataCompGeracao = new Date(document.form1.anousu.value+'-'+document.form1.mesusu.value+'-01');
       var sDataCompInicial = new Date(sAnoCompInicial+'-'+sMesCompInicial+'-01');
       var sDataCompFinal   = new Date(sAnoCompFinal+'-'+sMesCompFinal+'-01');
-      
+
       if (sDataCompInicial > sDataCompFinal) {
-      
+
         alert('Competência inicial da compensação não pode ser maior que competência da final!');
-        retorno = false;        
+        retorno = false;
       }
-      
+
       if (sDataCompInicial > sDataCompGeracao || sDataCompFinal > sDataCompGeracao) {
-      
+
         alert('Competência da Compensação não pode ser maior que competência da geração!');
         retorno = false;
       }
@@ -1730,18 +1824,18 @@ function js_verificacampos() {
 
     var aCheckBoxes = js_pesquisaPrevidenciaSelecionada();
     if (aCheckBoxes == "") {
-    
+
       alert("Selecione uma tabela de previdência.");
       retorno = false;
     }
   }
 
   if (retorno) {
-  
+
     parent.document.formaba.gerasefip.disabled    = true;
     parent.document.formaba.selecionados.disabled = true;
     $('gerar').hide();
-    
+
     retorno = true;
   }
 
@@ -1804,7 +1898,7 @@ function js_controla_anomes(opcao){
   document.form1.submit();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_codmovsefip','func_codmovsefip.php?funcao_js=parent.js_preenchepesquisa|r66_anousu|r66_mesusu|r66_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_codmovsefip','func_codmovsefip.php?funcao_js=parent.js_preenchepesquisa|r66_anousu|r66_mesusu|r66_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_codmovsefip.hide();
@@ -1816,25 +1910,25 @@ function js_preenchepesquisa(chave,chave1,chave2){
 }
   js_verindices("dtrecfgts",1, false);
   js_verindices("dtrecinss",1, true);
-  
+
 function js_liberarCompensacao() {
-  
+
   var lReadOnly = true;
   var bgcolor   = 'rgb(222, 184, 135)'
   if ($F('gerarcompensacao') == '1') {
-  
+
     lReadOnly = false;
-    bgcolor   = "white"; 
+    bgcolor   = "white";
   }
   $('valorcompensacao').style.backgroundColor = bgcolor;
   $('valorcompensacao').readOnly              = lReadOnly;
-  
+
   $('mescompeinicial').readOnly              = lReadOnly;
   $('mescompeinicial').style.backgroundColor = bgcolor;
   $('anocompeinicial').style.backgroundColor = bgcolor;
   $('anocompeinicial').readOnly              = lReadOnly;
-  
-  
+
+
   $('mescompefinal').readOnly              = lReadOnly;
   $('mescompefinal').style.backgroundColor = bgcolor;
   $('anocompefinal').readOnly              = lReadOnly;
@@ -1848,7 +1942,7 @@ js_liberarCompensacao();
  * Altera o valor do campo alteracnae para N caso o MES seja 13
  */
 function js_alteraCnae() {
-  
+
   if ($('mesusu').value == 13) {
     $('alteracnae').value = "N";
   }
@@ -1859,27 +1953,27 @@ function js_pesquisaPrevidenciaSelecionada() {
   var aCheckBoxes = "";
   var virgula     = "";
   for (i = 0; i < document.form1.length; i++) {
-  
+
     if (document.form1.elements[i].type == 'checkbox') {
-    
+
       if (document.form1.elements[i].checked == true) {
-      
+
         aCheckBoxes += virgula+document.form1.elements[i].value;
         virgula      = ",";
       }
     }
   }
-  
+
   $('checkboxes').value = aCheckBoxes;
   return aCheckBoxes;
 }
 
 function js_atualizaMatriculas() {
-  top.corpo.iframe_selecionados.js_montaGrid();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_selecionados.js_montaGrid();
 }
 
 function js_voltar() {
-  top.corpo.location.href = 'pes1_gerasefip001.php';
+  (window.CurrentWindow || parent.CurrentWindow).corpo.location.href = 'pes1_gerasefip001.php';
 }
 </script>
 </html>

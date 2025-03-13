@@ -1,0 +1,410 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='403' name='protocolo.protprocesso' description="Controla os processos" prefix="p58" label="" type="0">
+  <fields>
+    <field codigo="2454" 
+           campo_api='' 
+           name="p58_codproc" 
+           conteudo="int4" 
+           description="Número do código do Processo (Sequencial)" 
+           inivalue="0" 
+           label="Número de Controle" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Número de Controle" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.protprocesso_p58_codproc_seq' />
+     
+    </field> 
+    <field codigo="2455" 
+           campo_api='' 
+           name="p58_codigo" 
+           conteudo="int4" 
+           description="Código do tipo do processo" 
+           inivalue="0" 
+           label="Tipo" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="2456" 
+           campo_api='' 
+           name="p58_dtproc" 
+           conteudo="date" 
+           description="Data de entrada do processo no departamento" 
+           inivalue="null" 
+           label="Data do Processo" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data do Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="2457" 
+           campo_api='' 
+           name="p58_id_usuario" 
+           conteudo="int4" 
+           description="número do id do usuário" 
+           inivalue="0" 
+           label="id do usuário" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="" 
+           labelrel="id do usuário" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="2458" 
+           campo_api='' 
+           name="p58_numcgm" 
+           conteudo="int4" 
+           description="Número do CGM - Código Geral do Município.Titular do Processo" 
+           inivalue="0" 
+           label="Titular" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Titular" 
+           reference="z01_numcgm" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="2459" 
+           campo_api='' 
+           name="p58_requer" 
+           conteudo="varchar(80)" 
+           description="Descrição do requerimento" 
+           inivalue="" 
+           label="Requerente" 
+           size="80" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Requerente" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="2460" 
+           campo_api='' 
+           name="p58_coddepto" 
+           conteudo="int4" 
+           description="Código do departamento incial do processo" 
+           inivalue="0" 
+           label="Departamento Inicial" 
+           size="3" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Departamento Inicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="2461" 
+           campo_api='' 
+           name="p58_codandam" 
+           conteudo="int4" 
+           description="Código do andamento" 
+           inivalue="0" 
+           label="Andamento" 
+           size="8" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Andamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="4673" 
+           campo_api='' 
+           name="p58_obs" 
+           conteudo="text" 
+           description="Observações do processo." 
+           inivalue="" 
+           label="Observação" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="textarea" 
+           labelrel="Observação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="4674" 
+           campo_api='' 
+           name="p58_despacho" 
+           conteudo="text" 
+           description="Despacho" 
+           inivalue="" 
+           label="Despacho" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="textarea" 
+           labelrel="Despacho" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="6102" 
+           campo_api='' 
+           name="p58_hora" 
+           conteudo="varchar(5)" 
+           description="Hora da inclusão do processo" 
+           inivalue="" 
+           label="Hora da inclusão do processo" 
+           size="5" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Hora da inclusão do processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="6525" 
+           campo_api='' 
+           name="p58_interno" 
+           conteudo="bool" 
+           description="Interno ou não" 
+           inivalue="f" 
+           label="Interno ou não" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Interno ou não" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="6526" 
+           campo_api='' 
+           name="p58_publico" 
+           conteudo="bool" 
+           description="Despacho Publico" 
+           inivalue="f" 
+           label="Despacho Publico" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Despacho Publico" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="10671" 
+           campo_api='' 
+           name="p58_instit" 
+           conteudo="int4" 
+           description="Código da Instituição" 
+           inivalue="0" 
+           label="Código da Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Instituição" 
+           reference="codigo" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="18208" 
+           campo_api='' 
+           name="p58_numero" 
+           conteudo="varchar(30)" 
+           description="Número do Processo acompanhado do ano." 
+           inivalue="" 
+           label="Processo" 
+           size="30" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="18252" 
+           campo_api='' 
+           name="p58_ano" 
+           conteudo="int4" 
+           description="Ano do Processo" 
+           inivalue="0" 
+           label="Ano do Processo" 
+           size="4" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano do Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011256" 
+           campo_api='' 
+           name="p58_tipoprocesso" 
+           conteudo="int4" 
+           description="Vínculo com o tabela tipoprocesso." 
+           inivalue="0" 
+           label="Tipo de processo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field>
+    <field codigo="1011792" 
+           campo_api='' 
+           name="p58_orgao" 
+           conteudo="int4" 
+           description="Órgão" 
+           inivalue="0" 
+           label="Órgão" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Órgão" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011793" 
+           campo_api='' 
+           name="p58_processopai" 
+           conteudo="int4" 
+           description="Processo Principal" 
+           inivalue="0" 
+           label="Processo Principal" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo Principal" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field>
+    <field codigo="1011794" 
+           campo_api='' 
+           name="p58_volume" 
+           conteudo="int4" 
+           description="Volume" 
+           inivalue="0" 
+           label="Volume" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Volume" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="p58_codproc"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="p58_numcgm" reference="z01_numcgm" /> 
+    </foreignkey>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="p58_instit" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="db_usuarios" inner='t'>
+      <fieldfk name="p58_id_usuario" reference="id_usuario" /> 
+    </foreignkey>
+    <foreignkey reference="db_depart" inner='t'>
+      <fieldfk name="p58_coddepto" reference="coddepto" /> 
+    </foreignkey>
+    <foreignkey reference="tipoproc" inner='t'>
+      <fieldfk name="p58_codigo" reference="p51_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="tipoprocesso" inner='t'>
+      <fieldfk name="p58_tipoprocesso" reference="p109_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

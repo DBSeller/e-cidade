@@ -42,7 +42,7 @@ $pesqemp='false';
 
 $coddepto = db_getsession("DB_coddepto");
 
-$resultdepto = pg_query("select descrdepto from db_depart where coddepto = $coddepto");
+$resultdepto = db_query("select descrdepto from db_depart where coddepto = $coddepto");
 db_fieldsmemory($resultdepto,0);
 
 $m51_prazoent = 3;
@@ -184,7 +184,7 @@ $m51_prazoent = 3;
         <tr>
           <td colspan='4' align='center'>
 	  <?if ($e60_numcgm!=""){
-	      $result=pg_exec("select * from empempenho inner join empempitem on e62_numemp = e60_numemp inner join pcmater on pc01_codmater = e62_item where e60_numcgm=$e60_numcgm");
+	      $result=db_query("select * from empempenho inner join empempitem on e62_numemp = e60_numemp inner join pcmater on pc01_codmater = e62_item where e60_numcgm=$e60_numcgm");
 	      if (pg_numrows($result)>0){?>
               <input name="incluir" type="submit"  value="Incluir">
 	      <input name="voltar" type="button" value="Voltar" onclick="location.href='emp1_ordemcompra001.php';" >
@@ -246,11 +246,11 @@ db_input("val",100,0,true,"hidden",3);
 
   function js_coddepto(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostracoddepto1|coddepto|descrdepto','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostracoddepto1|coddepto|descrdepto','Pesquisa',true);
     }else{
       coddepto = document.form1.coddepto.value;
       if(coddepto!=""){
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+coddepto+'&funcao_js=parent.js_mostracoddepto','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+coddepto+'&funcao_js=parent.js_mostracoddepto','Pesquisa',false);
       }else{ 	
 	document.form1.descrdepto.value='';
       } 	

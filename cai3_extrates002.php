@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,7 +28,7 @@
 $head8 = "Texto numero 8";
 $head9 = "Texto numero 9";
 $head10 = "Texto numero 10";
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 //die ($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 $pdf = new PDF();
@@ -39,7 +39,7 @@ $pdf->AddPage();
 //////  EXTRATO
 $conta = split("Y",$conta);
 for($i = 0;$i < sizeof($conta);$i++) {
-  $des = pg_exec("select k13_descr
+  $des = db_query("select k13_descr
        				          from saltes where k13_reduz = ".$conta[$i]) . " 
                                    inner join conplanoreduz on c62_reduz = k13_reduz and 
                                                  c62_anousu = ".db_getsession("DB_anousu")." and 
@@ -85,7 +85,7 @@ for($i = 0;$i < sizeof($conta);$i++) {
 					 ".($id=="T"?"":"and c.k12_id = $id")."
                      order by c.k12_hora";
 //		     die($sql);
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $numrows = pg_numrows($result);
   $pdf->SetFont('Arial','B',8);
   $pdf->setX(20);

@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010283' name='esocial.afastamentoservidoresocial' description="Guarda os afastamentos lançados para o servidor que foram configurados como assentamento do eSocial" prefix="eso12" label="Afastamento do eSocial" type="0">
+  <fields>
+    <field codigo="1009753" 
+           campo_api='' 
+           name="eso12_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.afastamentoservidoresocial_eso12_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009754" 
+           campo_api='' 
+           name="eso12_assenta" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="null" 
+           label="Assenta" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009755" 
+           campo_api='' 
+           name="eso12_rhpessoal" 
+           conteudo="int4" 
+           description="Matrícula do servidor" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso12_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="assenta" inner='f'>
+      <fieldfk name="eso12_assenta" reference="h16_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="eso12_rhpessoal" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

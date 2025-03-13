@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -31,15 +31,16 @@ $clrotulo->label("q02_numcgm");
 $clrotulo->label("q39_dtbaixa");
 $clrotulo->label("q39_issmotivobaixa");
 $clrotulo->label("q39_obs");
-?>
+
+use ECidade\Tributario\Issqn\Enum\IssCategoriaEnum; ?>
 <form name="form1" method="post" action="">
-<fieldset>
+<fieldset style="min-width:590px;">
   <legend>Dados do Cadastro</legend>
 
 <table border="0">
   <tr>
-    <td nowrap title="<?=@$Tq38_sequencial?>">
-       <?=@$Lq38_sequencial?>
+    <td nowrap title="<?php echo $Tq38_sequencial?>">
+       <?php echo $Lq38_sequencial?>
     </td>
     <td>
     <?php
@@ -48,9 +49,9 @@ $clrotulo->label("q39_obs");
     </td>
   </tr>
   <tr>
-    <td nowrap title="<?=@$Tq38_inscr?>">
+    <td nowrap title="<?php echo $Tq38_inscr?>">
        <?php
-       db_ancora(@$Lq38_inscr,"js_pesquisaq38_inscr(true);",$db_opcaoinscr);
+       db_ancora($Lq38_inscr,"js_pesquisaq38_inscr(true);",$db_opcaoinscr);
        ?>
     </td>
     <td>
@@ -61,23 +62,23 @@ $clrotulo->label("q39_obs");
     </td>
   </tr>
   <tr>
-    <td nowrap title="<?=@$Tq38_dtinicial?>">
-       <?=@$Lq38_dtinicial?>
+    <td nowrap title="<?php echo $Tq38_dtinicial?>">
+       <?php echo $Lq38_dtinicial?>
     </td>
     <td>
       <?php
-      db_inputdata('q38_dtinicial',@$q38_dtinicial_dia,@$q38_dtinicial_mes,@$q38_dtinicial_ano,true,'text',$db_opcao,"")
+      db_inputdata('q38_dtinicial',$q38_dtinicial_dia,$q38_dtinicial_mes,$q38_dtinicial_ano,true,'text',$db_opcao,"")
       ?>
     </td>
   </tr>
   <tr>
-    <td nowrap title="<?=@$Tq38_categoria?>">
-       <?=@$Lq38_categoria?>
+    <td nowrap title="<?php echo $Tq38_categoria?>">
+       <?php echo $Lq38_categoria?>
     </td>
     <td>
       <?php
-        $x = array('1'=>'Micro Empresa','2'=>'Empresa de pequeno porte','3'=>'MEI');
-        db_select('q38_categoria',$x,true,$db_opcao,"");
+        $categorias = IssCategoriaEnum::descricoes();
+        db_select('q38_categoria',$categorias,true,$db_opcao,"");
       ?>
     </td>
   </tr>
@@ -93,32 +94,36 @@ $clrotulo->label("q39_obs");
         <legend>Dados Da Baixa</legend>
       <table>
         <tr>
-          <td nowrap title="<?=@$Tq39_dtbaixa?>">
-             <?=@$Lq39_dtbaixa?>
+          <td nowrap title="<?php echo $Tq39_dtbaixa?>">
+             <?php echo $Lq39_dtbaixa?>
           </td>
           <td>
             <?php
-            db_inputdata('q39_dtbaixa',@$q39_dtbaixa_dia,@$q39_dtbaixa_mes,@$q39_dtbaixa_ano,true,'text',3,"")
+            db_inputdata('q39_dtbaixa', $q39_dtbaixa_dia, $q39_dtbaixa_mes, $q39_dtbaixa_ano,true,'text',3,"")
             ?>
           </td>
         </tr>
         <tr>
-          <td nowrap title="<?=@$Tq39_issmotivobaixa?>">
-             <?=@$Lq39_issmotivobaixa?>
+          <td nowrap title="<?php echo $Tq39_issmotivobaixa?>">
+             <?php echo $Lq39_issmotivobaixa?>
           </td>
           <td>
              <?php
 
-               require_once("classes/db_issmotivobaixa_classe.php");
                $clissmotivobaixa = new cl_issmotivobaixa;
                $result           = $clissmotivobaixa->sql_record($clissmotivobaixa->sql_query("","*"));
-               db_selectrecord("q39_issmotivobaixa",$result,true,3);
+               if(!$result){
+                 db_redireciona("db_erros.php?fechar=false&db_erro=Erro aos consultar motivos da baixa");
+               }
+               if(pg_num_rows($result) > 0 ){
+                 db_selectrecord("q39_issmotivobaixa",$result,true,3);
+               }
              ?>
           </td>
         </tr>
         <tr>
-          <td nowrap title="<?=@$Tq39_obs?>">
-             <?=@$Lq39_obs?>
+          <td nowrap title="<?php echo $Tq39_obs?>">
+             <?php echo $Lq39_obs?>
           </td>
           <td>
              <?php
@@ -146,11 +151,11 @@ function js_envia(){
 function js_pesquisaq38_inscr(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issbase','func_issbase.php?funcao_js=parent.js_mostraissbase1|q02_inscr|z01_nome|q02_dtbaix','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issbase','func_issbase.php?funcao_js=parent.js_mostraissbase1|q02_inscr|z01_nome|q02_dtbaix','Pesquisa',true);
   }else{
 
      if(document.form1.q38_inscr.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_issbase','func_issbase.php?pesquisa_chave='+document.form1.q38_inscr.value+'&funcao_js=parent.js_mostraissbase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issbase','func_issbase.php?pesquisa_chave='+document.form1.q38_inscr.value+'&funcao_js=parent.js_mostraissbase','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = '';
      }
@@ -185,7 +190,7 @@ function js_mostraissbase1(chave1,chave2,chave3){
 	}
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_isscadsimples','func_isscadsimples.php?funcao_js=parent.js_preenchepesquisa|q38_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_isscadsimples','func_isscadsimples.php?funcao_js=parent.js_preenchepesquisa|q38_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
 

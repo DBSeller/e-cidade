@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clpcandpadrao->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -177,11 +177,11 @@ if (isset ($opcao) && $opcao == "incluir") {
 <script>
 function js_pesquisapc46_depart(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostrapc46_depart1|coddepto|descrdepto','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostrapc46_depart1|coddepto|descrdepto','Pesquisa',true);
     }else{
       pc46_depart = document.form1.pc46_depart.value;
       if(pc46_depart!=""){
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+pc46_depart+'&funcao_js=parent.js_mostrapc46_depart','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+pc46_depart+'&funcao_js=parent.js_mostrapc46_depart','Pesquisa',false);
       }else{ 	
 	document.form1.descrdepto.value='';
       } 	

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("fpdf151/pdfwebseller.php");
-require_once ("libs/db_stdlibwebseller.php");
+require_once(modification("fpdf151/pdfwebseller.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 
 $clmatricula         = new cl_matricula;
 $clturma             = new cl_turma;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,14 +29,14 @@
  *Rotina que gera o txt e o pdf com as informações dos alunos e docentes sem inep
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_sau_fecharquivo_classe.php");
-require_once("classes/db_lab_bpamagnetico_classe.php");
-require_once("classes/db_tfd_bpamagnetico_classe.php");
-require_once ("dbforms/db_layouttxt.php");
-require_once("classes/db_db_layoutcampos_classe.php");
-require_once ("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_sau_fecharquivo_classe.php"));
+require_once(modification("classes/db_lab_bpamagnetico_classe.php"));
+require_once(modification("classes/db_tfd_bpamagnetico_classe.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("classes/db_db_layoutcampos_classe.php"));
+require_once(modification("libs/db_utils.php"));
 
 
   //Seta as variavel do multicell
@@ -80,7 +80,7 @@ require_once ("libs/db_utils.php");
     $sSqlBuscaInfo .= "         where ed47_c_codigoinep = '' ";
     $sSqlBuscaInfo .= "           and ed18_i_codigo = $iEscola ";
     $sSqlBuscaInfo .= "           and ed52_i_ano = $ed52_i_ano"; 
-    $rsBuscaInfo    = pg_query($sSqlBuscaInfo);
+    $rsBuscaInfo    = db_query($sSqlBuscaInfo);
     $iLinhas        = pg_num_rows($rsBuscaInfo);
 
     if ($iLinhas == 0) {

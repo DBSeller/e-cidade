@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/educacao/importacaoCenso.model.php");
+require_once(modification("model/educacao/importacaoCenso.model.php"));
 
 class importacaoCodigoInep2010 extends importacaoCenso {
 	
@@ -43,7 +43,7 @@ class importacaoCodigoInep2010 extends importacaoCenso {
   	$rsAluno     = $oDaoAluno->sql_record($sSqlAluno);
   	
   	if ($oDaoAluno->numrows > 0) {
-  	  return $aDadosAluno = db_utils::getColectionByRecord($rsAluno, false, false, false);
+  	  return $aDadosAluno = db_utils::getCollectionByRecord($rsAluno, false, false, false);
   	} else {
   	  return null;
   	}

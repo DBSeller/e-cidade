@@ -58,7 +58,7 @@ db_input('ve33_descr',40,$Ive33_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veiccadmotoristasit','func_veiccadmotoristasit.php?funcao_js=parent.js_preenchepesquisa|ve33_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadmotoristasit','func_veiccadmotoristasit.php?funcao_js=parent.js_preenchepesquisa|ve33_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiccadmotoristasit.hide();

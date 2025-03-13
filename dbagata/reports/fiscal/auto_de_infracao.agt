@@ -25,8 +25,68 @@
             <Name>autodeinfracao</Name>
         </DataSource>
         <Query>
-            <Select>auto          as codigo_auto,         identificacao as vinculo_autuado,         codigo        as codigo_vinculo,         z01_nome      as nome_autuado,         z01_cgccpf    as cnpjcpf_autuado,         j13_descr     as bairro_autuado,         j14_nome      as endereco_autuado,         y14_numero    as numero_autuado,         y14_compl     as complemento_autuado,         y50_hora      as hora_inclusao,         y50_data      as data_inclusao_extenso,         (select coalesce( (select  valortotal_levantamento from fc_autodeinfracao_getimpostosservicos( $iCodigoAutodeInfracao, null ) ), 0 ) +        coalesce( (select valor_procedencia from  fc_autodeinfracao_getprocedencias( $iCodigoAutodeInfracao , null) ), 0 )) as total_geral,         (select coalesce(valor_procedencia, 0)             from fc_autodeinfracao_getprocedencias($iCodigoAutodeInfracao , null)) as total_procedencias,         ( select coalesce( valorhistorico_levantamento, 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_historico,         ( select coalesce( valorcorrigido_levantamento, 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_corrigido,         ( select coalesce( valormulta_levantamento    , 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_multa,         ( select coalesce( valorjuros_levantamento    , 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_juros,         ( select coalesce( valortotal_levantamento    , 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_levantamentos</Select>
-            <From>        (select y14_numero,                 y14_compl,                 y50_hora,                 y50_data,                 j13_descr,                 j14_nome,                 y50_codauto as auto,                  case when y30_codnoti is not null then 'Notificação' else                         (case when q02_numcgm is not null then  'Inscrição'  else                                  (case when y80_numcgm is not null then 'Sanitário ' else                                           (case when z01_numcgm is not null then 'Cgm'       else                                                    (case when j01_numcgm is not null then 'Matrícula' else 'Nenhum'                                                    end)                                           end)                                  end )                         end )                 end as identificacao,                  case when y51_codnoti is not null then y51_codnoti else                         (case when y53_matric is not null then y53_matric else                                  (case when y55_codsani is not null then y55_codsani else                                           (case when z01_numcgm is not null then z01_numcgm else                                                    (case when y52_inscr is not null then y52_inscr                                                    end)                                           end)                                  end )                         end )                 end as codigo,                  case when q02_numcgm is not null then q02_numcgm else                         (case when j01_numcgm is not null then j01_numcgm else                                  (case when y80_numcgm is not null then y80_numcgm else                                           (case when z01_numcgm is not null then z01_numcgm else q02_numcgm                                           end)                                  end )                         end )                 end as z01_numcgm          from auto                 inner join tipofiscaliza  on y50_codtipo = y27_codtipo                 left  join autocgm        on y54_codauto = y50_codauto                 left  join autoinscr      on y52_codauto = y50_codauto                 left  join automatric     on y53_codauto = y50_codauto                 left  join autosanitario  on y55_codauto = y50_codauto                 left  join iptubase       on j01_matric  = y53_matric                 left  join issbase        on y52_inscr   = q02_inscr                 left  join cgm            on z01_numcgm  = y54_numcgm                 left  join sanitario      on y80_codsani = y55_codsani                 left  join autofiscal     on y51_codauto = y50_codauto                 left  join fiscal         on y51_codnoti = y30_codnoti                 inner join autolocal      on y14_codauto = y50_codauto                 left  join ruas           on j14_codigo  = y14_codigo                 left  join bairro         on j13_codi    = y14_codi         ) as subqueryauto         inner join cgm  on cgm.z01_numcgm = subqueryauto.z01_numcgm</From>
+            <Select>auto          as codigo_auto,
+                    identificacao as vinculo_autuado,
+                    codigo        as codigo_vinculo,
+                    z01_nome      as nome_autuado,
+                    z01_cgccpf    as cnpjcpf_autuado,
+                    j13_descr     as bairro_autuado,
+                    j14_nome      as endereco_autuado,
+                    y14_numero    as numero_autuado,
+                    y14_compl     as complemento_autuado,
+                    y50_hora      as hora_inclusao,
+                    y50_data      as data_inclusao_extenso,
+                    (select coalesce( (select  valortotal_levantamento from fc_autodeinfracao_getimpostosservicos( $iCodigoAutodeInfracao, null ) ), 0 ) +
+                            coalesce( (select valor_procedencia from  fc_autodeinfracao_getprocedencias( $iCodigoAutodeInfracao , null) ), 0 )) as total_geral,
+                    (select coalesce( valor_procedencia, 0)            from fc_autodeinfracao_getprocedencias($iCodigoAutodeInfracao , null)) as total_procedencias,
+                    (select coalesce( valorhistorico_levantamento, 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_historico,
+                    (select coalesce( valorcorrigido_levantamento, 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_corrigido,
+                    (select coalesce( valormulta_levantamento    , 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_multa,
+                    (select coalesce( valorjuros_levantamento    , 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_juros,
+                    (select coalesce( valortotal_levantamento    , 0 ) from fc_autodeinfracao_getimpostosservicos ( $iCodigoAutodeInfracao, null ) ) as total_levantamentos,
+                    y50_obs       as obs_auto</Select>
+            <From>(SELECT y50_obs,
+                          y14_numero,
+                          y14_compl,
+                          y50_hora,
+                          y50_data,
+                          j13_descr,
+                          j14_nome,
+                          y50_codauto AS auto,
+                          CASE WHEN y30_codnoti IS NOT NULL THEN 'Notificação'
+                               WHEN q02_numcgm  IS NOT NULL THEN 'Inscrição'
+                               WHEN y80_numcgm  IS NOT NULL THEN 'Sanitário '
+                               WHEN z01_numcgm  IS NOT NULL THEN 'Cgm'
+                               WHEN j01_numcgm  IS NOT NULL THEN 'Matrícula'
+                               ELSE 'Nenhum'
+                          END AS identificacao,
+                          CASE WHEN y51_codnoti IS NOT NULL THEN y51_codnoti
+                               WHEN y53_matric  IS NOT NULL THEN y53_matric
+                               WHEN y55_codsani IS NOT NULL THEN y55_codsani
+                               WHEN z01_numcgm  IS NOT NULL THEN z01_numcgm
+                               WHEN y52_inscr   IS NOT NULL THEN y52_inscr
+                          END AS codigo,
+                          CASE WHEN q02_numcgm IS NOT NULL THEN q02_numcgm
+                               WHEN j01_numcgm IS NOT NULL THEN j01_numcgm
+                               WHEN y80_numcgm IS NOT NULL THEN y80_numcgm
+                               WHEN z01_numcgm IS NOT NULL THEN z01_numcgm
+                               ELSE q02_numcgm
+                          END AS z01_numcgm
+                   FROM auto INNER JOIN tipofiscaliza ON y50_codtipo = y27_codtipo
+                             LEFT  JOIN autocgm ON y54_codauto = y50_codauto
+                             LEFT  JOIN autoinscr ON y52_codauto = y50_codauto
+                             LEFT  JOIN automatric ON y53_codauto = y50_codauto
+                             LEFT  JOIN autosanitario ON y55_codauto = y50_codauto
+                             LEFT  JOIN iptubase ON j01_matric = y53_matric
+                             LEFT  JOIN issbase ON y52_inscr = q02_inscr
+                             LEFT  JOIN cgm ON z01_numcgm = y54_numcgm
+                             LEFT  JOIN sanitario ON y80_codsani = y55_codsani
+                             LEFT  JOIN autofiscal ON y51_codauto = y50_codauto
+                             LEFT  JOIN fiscal ON y51_codnoti = y30_codnoti
+                             INNER JOIN autolocal ON y14_codauto = y50_codauto
+                             LEFT  JOIN ruas ON j14_codigo = y14_codigo
+                             LEFT  JOIN bairro ON j13_codi = y14_codi
+                  ) AS subqueryauto INNER JOIN cgm ON cgm.z01_numcgm = subqueryauto.z01_numcgm</From>
             <Where>auto = $iCodigoAutodeInfracao;</Where>
             <GroupBy></GroupBy>
             <OrderBy></OrderBy>
@@ -114,6 +174,10 @@
                 <Mask></Mask>
                 <Function>/dbseller/a_ata_number_format.fun</Function>
             </Column18>
+            <Column19>
+                <Mask></Mask>
+                <Function></Function>
+            </Column19>
         </Fields>
     </DataSet>
     <PageSetup>
@@ -138,8 +202,21 @@
             <detail1>
                 <DataSet>
                     <Query>
-                        <Select>y29_descr as descricao_procedencia,split_part(arr_procedencia::varchar, ',', 3) as tipovalor_procedencia,substr(split_part(arr_procedencia::varchar, ',', 4), 0, length(split_part(arr_procedencia::varchar, ',', 4) ) ) as valor_procedencia</Select>
-                        <From>( select fc_autodeinfracao_getprocedencias( y59_codauto, y59_codtipo ) as arr_procedencia,                 y29_descr           from autotipo                inner join fiscalproc on y29_codtipo = y59_codtipo          where y59_codauto = $iCodigoAutodeInfracao ) as query;</From>
+                        <Select>y29_descr as descricao_procedencia,
+                                coalesce(y29_descr_obs, '')::varchar as detalhes_procedencia,
+                                split_part(arr_procedencia::varchar, ',', 3) as tipovalor_procedencia,
+                                substr(split_part(arr_procedencia::varchar, ',', 4), 0, length(split_part(arr_procedencia::varchar, ',', 4) ) ) as valor_procedencia,
+                                y45_valor as valor_padrao_receita,
+                                y45_descr as descricao_padrao_receita
+                        </Select>
+                        <From>( select fc_autodeinfracao_getprocedencias( y59_codauto, y59_codtipo ) as arr_procedencia,
+                                       y29_descr,
+                                       y29_descr_obs,
+                                       y45_valor,
+                                       y45_descr
+                                from autotipo inner join fiscalproc on y29_codtipo = y59_codtipo
+                                              left join  fiscalprocrec on y45_codtipo = y29_codtipo
+                                where y59_codauto = $iCodigoAutodeInfracao ) as query</From>
                         <Where></Where>
                         <GroupBy></GroupBy>
                         <OrderBy></OrderBy>
@@ -157,14 +234,19 @@
                             <Mask></Mask>
                             <Function>/dbseller/a_ata_number_format.fun</Function>
                         </Column3>
+                        <Column4>
+                            <Mask></Mask>
+                            <Function>/dbseller/a_ata_number_format.fun</Function>
+                        </Column4>                        
                     </Fields>
                 </DataSet>
             </detail1>
             <detail2>
                 <DataSet>
                     <Query>
-                        <Select>nome    as nome_fiscal,y56_obs as  obs_fiscal</Select>
-                        <From>autousu         inner join db_usuarios on id_usuario = y56_id_usuario</From>
+                        <Select>nome    as nome_fiscal,
+                                y56_obs as obs_fiscal</Select>
+                        <From>autousu inner join db_usuarios on id_usuario = y56_id_usuario</From>
                         <Where>y56_codauto = $iCodigoAutodeInfracao</Where>
                         <GroupBy></GroupBy>
                         <OrderBy></OrderBy>
@@ -178,18 +260,23 @@
                             <Mask></Mask>
                             <Function></Function>
                         </Column2>
-                        <Column3>
-                            <Mask></Mask>
-                            <Function>/dbseller/a_ata_number_format.fun</Function>
-                        </Column3>
                     </Fields>
                 </DataSet>
             </detail2>
             <detail3>
                 <DataSet>
                     <Query>
-                        <Select>split_part(substr(arr_auto::varchar, 2, length(arr_auto::varchar)), ',', 1)       as codigo_levantamento,split_part(arr_auto::varchar, ',', 2)                    as datainicio_levantamento,split_part(arr_auto::varchar, ',', 3)                    as datafim_levantamento,split_part(arr_auto::varchar, ',', 4)                    as valorhistorico_levantamento,split_part(arr_auto::varchar, ',', 5)                    as valorcorrigido_levantamento,split_part(arr_auto::varchar, ',', 6)                    as valormulta_levantamento,split_part(arr_auto::varchar, ',', 7)                    as valorjuros_levantamento,substr(split_part(arr_auto::varchar, ',', 8), 0, length(split_part(arr_auto::varchar, ',', 8) ) )            as valortotal_levantamento</Select>
-                        <From>( select fc_autodeinfracao_getimpostosservicos( y117_auto, y117_levanta) as arr_auto           from autolevanta          where y117_auto = $iCodigoAutodeInfracao ) as queryautolevantamento;</From>
+                        <Select>split_part(substr(arr_auto::varchar, 2, length(arr_auto::varchar)), ',', 1)                       as codigo_levantamento,
+                                split_part(arr_auto::varchar, ',', 2)                                                             as datainicio_levantamento,
+                                split_part(arr_auto::varchar, ',', 3)                                                             as datafim_levantamento,
+                                split_part(arr_auto::varchar, ',', 4)                                                             as valorhistorico_levantamento,
+                                split_part(arr_auto::varchar, ',', 5)                                                             as valorcorrigido_levantamento,
+                                split_part(arr_auto::varchar, ',', 6)                                                             as valormulta_levantamento,
+                                split_part(arr_auto::varchar, ',', 7)                                                             as valorjuros_levantamento,
+                                substr(split_part(arr_auto::varchar, ',', 8), 0, length(split_part(arr_auto::varchar, ',', 8) ) ) as valortotal_levantamento</Select>
+                        <From>( select fc_autodeinfracao_getimpostosservicos( y117_auto, y117_levanta) as arr_auto
+                                from autolevanta
+                                where y117_auto = $iCodigoAutodeInfracao ) as queryautolevantamento</From>
                         <Where></Where>
                         <GroupBy></GroupBy>
                         <OrderBy></OrderBy>
@@ -230,6 +317,28 @@
                     </Fields>
                 </DataSet>
             </detail3>
+            <detail4>
+                <DataSet>
+                    <Query>
+                        <Select>z01_nome as testemunhas,
+                                z01_cgccpf as cpf_testemunhas</Select>
+                        <From>autotestem inner join cgm on z01_numcgm = y24_numcgm</From>
+                        <Where>y24_codauto = $iCodigoAutodeInfracao</Where>
+                        <GroupBy></GroupBy>
+                        <OrderBy></OrderBy>
+                    </Query>
+                    <Fields>
+                        <Column1>
+                            <Mask></Mask>
+                            <Function></Function>
+                        </Column1>
+                        <Column2>
+                            <Mask></Mask>
+                            <Function></Function>
+                        </Column2>
+                    </Fields>
+                </DataSet>
+            </detail4>
         </Details>
         <Source>template_novo.sxw</Source>
     </OpenOffice>

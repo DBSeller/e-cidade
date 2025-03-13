@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_veicmanutencaomedida_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_veicmanutencaomedida_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotuloCancManutencao = new rotulocampo;
 $oRotuloCancManutencao->label("ve67_sequencial");
@@ -142,11 +142,11 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
   function js_pesquisar(lMostra) {
     
     if (lMostra) {
-      js_OpenJanelaIframe('top.corpo','db_iframe_veiculos','func_veicmanutencaomedida.php?funcao_js=parent.js_preencheManutencao|ve66_sequencial|ve01_placa|ve66_veiculo','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiculos','func_veicmanutencaomedida.php?funcao_js=parent.js_preencheManutencao|ve66_sequencial|ve01_placa|ve66_veiculo','Pesquisa',true);
     } else {
       
       if ($("iManutencao").value != "") {
-        js_OpenJanelaIframe('top.corpo','db_iframe_veiculos',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiculos',
                             'func_veicmanutencaomedida.php?pesquisa_chave='+$F("iManutencao")+'&funcao_js=parent.js_completaManutencao',
                             'Pesquisa',false);
       }
@@ -211,7 +211,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
                                        onComplete: function(oAjax) {
                                          
                                          js_removeObj("msgBox");
-                                         var aRetorno = eval("("+oAjax.responseText+")");
+                                         var aRetorno = JSON.parse(oAjax.responseText);
                                          alert(aRetorno.message.urlDecode());
                                          js_limpaCampos();
                                        }

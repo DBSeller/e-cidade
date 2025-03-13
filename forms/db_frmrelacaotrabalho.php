@@ -1,607 +1,699 @@
-<?php
-/*
- *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+
+<div class="container">
+
+  <form name="form1">
+    <fieldset>
+      <legend>Relações de Trabalho</legend>
+      <table class="form-container" style="width: 580px;">
+        <tr>
+          <td class="field-size3"><label for="sProfissional">Profissional:</label></td>
+          <td>
+            <input type="text" class='readonly field-size10' name="sProfissional" id='sProfissional' value='<?=$oGet->sNome?>' />
+            <input type="hidden" name="iVinculoEscola" id='iVinculoEscola' value='' />
+            <input type="hidden" name="iCodigoRelacao" id='iCodigoRelacao' value='' />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label id="labelRegimeTrabalhoExclusao" style="display: none;" for='ed24_i_codigo'>Regime de Trabalho:</label>
+            <label id="labelRegimeTrabalho" for='ed24_i_codigo'>
+              <a href="#" id="ancoraRegimeTrabalho" >Regime de Trabalho:</a>
+            </label>
+          </td>
+          <td>
+            <input type="text" name="ed24_i_codigo" id='ed24_i_codigo' value='' class="field-size2" />
+            <input type="text" name="ed24_c_descr" id='ed24_c_descr' value='' class='readonly field-size8'  />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for='cboFuncao'>Função Exercida:</label>
+          </td>
+          <td>
+            <select id='cboFuncao' style="width: 424px;" onchange="buscarTipoHora(null);">
+              <option>Selecione</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for='cboTipoHora'>Tipo Hora:</label>
+          </td>
+          <td>
+            <select id='cboTipoHora' style="width: 424px;">
+              <option>Selecione</option>
+            </select>
+          </td>
+        </tr>
+        <tr class='linhasReferenteEnsino' style="display: none;">
+          <td>
+            <label id="labelNivelEnsinoExclusao" for="ancoraNivelEnsino" style="display: none;"> Nível de Ensino: </label>
+            <label id="labelNivelEnsino" for="ancoraNivelEnsino">
+              <a href="#" id="ancoraNivelEnsino" >Nível de Ensino:</a>
+            </label>
+          </td>
+          <td>
+            <input type="text" name="ed10_i_codigo" id="ed10_i_codigo" value="" style="width:83px" />
+            <input type="text" name="ed10_c_descr"  id="ed10_c_descr"  value=""  class='readonly' style="width:341px"  />
+          </td>
+        </tr>
+        <tr class='linhasReferenteEnsino' style="display: none;">
+          <td>
+            <label id="labelTrabalhoExclusao" for="ancoraAreaTrabalho" style="display: none;">Área de Trabalho:</label>
+            <label id="labelTrabalho" for="ancoraAreaTrabalho">
+              <a href="#" id="ancoraAreaTrabalho" >Área de Trabalho:</a>
+            </label>
+          </td>
+          <td>
+            <input type="text" name="ed25_i_codigo" id="ed25_i_codigo" value="" style="width:83px" />
+            <input type="text" name="ed25_c_descr"  id="ed25_c_descr" value="" class='readonly' style="width:341px" />
+          </td>
+        </tr>
+      </table>
+      <fieldset id='disciplinas' style="display: none;" class="separator">
+        <legend>Disciplinas</legend>
+        <table id='tblDisciplinas' class="form-container"></table>
+      </fieldset>
+    </fieldset>
+    <input type="button" name="btnSalvar"   id='btnSalvar' value='Salvar' />
+    <input type="button" name="btnExcluir"  id='btnExcluir' value='Excluir' style="display: none;" />
+    <input type="button" name="btnCancelar" id='btnCancelar' value='Cancelar' disabled="disabled" />
+  </form>
+</div>
+<div class="subcontainer" style="width: 1000px;">
+  <fieldset>
+    <legend>Registros</legend>
+    <div id='ctnGridRelacaoTrabalho'></div>
+  </fieldset>
+</div>
+
+
+<script type="text/javascript">
+
+const MENSAGEM_FRMRELACAOTRABALHO = 'educacao.escola.db_frmrelacaotrabalho.';
+
+var oGet = js_urlToObject();
+
+/**
+ * Array com as funcoes do profissional
  */
+var aFuncoes = [];
 
-//MODULO: educação
-require_once("dbforms/db_classesgenericas.php");
+var oCollection  = new Collection().setId("codigo");
+var oGridRelacao = new DatagridCollection(oCollection).configure({order : false, height : 120 });
 
-$cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
-$clrechumanoativ          = new cl_rechumanoativ;
-$clrotulo                 = new rotulocampo;
+oGridRelacao.addColumn("regime",     {label : "Regime",     width : '20%'});
+oGridRelacao.addColumn("ensino",     {label : "Ensino",     width : '25%'});
+oGridRelacao.addColumn("area",       {label : "Área",       width : '20%'});
+oGridRelacao.addColumn("disciplina", {label : "Disciplina", width : '20%'});
 
-$clrelacaotrabalho->rotulo->label();
-$clrotulo->label("ed75_i_codigo");
-$clrotulo->label("ed25_i_codigo");
-$clrotulo->label("ed24_i_codigo");
-$clrotulo->label("ed12_i_codigo");
-$clrotulo->label("ed29_i_ensino");
+oGridRelacao.addAction("A", null, function(oEvento, oDados) {
+  oDados.datagridRow.selectLine();
+  preenchForm(oDados, false);
+});
 
-$db_botao1 = false;
+oGridRelacao.addAction("E", null, function(oEvento, oDados) {
+  oDados.datagridRow.selectLine();
+  preenchForm(oDados, true);
+});
 
-if( isset( $opcao ) && $opcao == "alterar" ) {
+oGridRelacao.show( $('ctnGridRelacaoTrabalho') );
 
-  $sCamposRelacaoTrabalho = "relacaotrabalho.*, ed12_i_ensino, ed10_c_descr, ed24_c_descr, ed25_c_descr, ed232_c_descr";
-  $sSqlRelacaoTrabalho    = $clrelacaotrabalho->sql_query( "", $sCamposRelacaoTrabalho, "", "ed23_i_codigo = {$ed23_i_codigo}" );
-  $result2                = $clrelacaotrabalho->sql_record( $sSqlRelacaoTrabalho );
+var oLookRegime = new DBLookUp( $('ancoraRegimeTrabalho'), $('ed24_i_codigo'), $('ed24_c_descr'), {
+  sArquivo: 'func_regimetrabalho.php',
+  sLabel: ' Pesquisa de Regimes de Trabalho',
+  sObjetoLookUp: 'db_iframe_regimetrabalho'
+});
 
-  db_fieldsmemory( $result2, 0 );
-  $db_opcao  = 2;
-  $db_botao1 = true;
-} else if( isset( $opcao ) && $opcao == "excluir" || isset( $db_opcao ) && $db_opcao == 3 ) {
 
-  if( !isset( $excluir ) ) {
+$('ed10_i_codigo').addEventListener( 'change', function(){
+    changeEnsino( false, [] );
+});
 
-    $sCamposRelacaoTrabalho = "relacaotrabalho.* ,ed12_i_ensino, ed10_c_descr, ed24_c_descr, ed25_c_descr,ed232_c_descr";
-    $sSqlRelacaoTrabalho    = $clrelacaotrabalho->sql_query( "", $sCamposRelacaoTrabalho, "", "ed23_i_codigo = {$ed23_i_codigo}" );
-    $result3                = $clrelacaotrabalho->sql_record( $sSqlRelacaoTrabalho );
+var oLookEnsino = new DBLookUp( $('ancoraNivelEnsino'), $('ed10_i_codigo'), $('ed10_c_descr'), {
+  sArquivo: 'func_ensino.php',
+  sLabel: ' Pesquisa de Ensinos',
+  sObjetoLookUp: 'db_iframe_ensino'
+});
 
-    db_fieldsmemory( $result3, 0 );
-  }
 
-  $db_botao1 = true;
-  $db_opcao  = 3;
-} else {
+oLookEnsino.setCallBack('onClick', function(aCampos) {
 
-  if( isset( $alterar ) ) {
+  $('ed25_i_codigo').value = '';
+  $('ed25_c_descr').value  = '';
+  buscaDisciplinas();
+});
 
-    $db_opcao  = 2;
-    $db_botao1 = true;
-  } else {
-    $db_opcao = 1;
+oLookEnsino.setCallBack('onChange', changeEnsino);
+
+function changeEnsino( lErro, aCampos ) {
+
+  $('ed25_i_codigo').value = '';
+  $('ed25_c_descr').value  = '';
+
+  if ( !lErro ) {
+    buscaDisciplinas();
   }
 }
-?>
-<form name="form1" method="post" action="">
-  <center>
-  <table border="0">
-    <tr>
-      <td nowrap></td>
-      <td>
-       <?php
-       db_input( 'ed23_i_codigo',          15, @$Ied23_i_codigo,          true, 'hidden', 3 );
-       db_input( 'ed23_i_rechumanoescola', 15, @$Ied23_i_rechumanoescola, true, 'hidden', 3 );
-       ?>
-      </td>
-    </tr>
-    <tr>
-      <td nowrap title="<?=@$ed20_i_tiposervidor == '1' ? 'Matrícula' : 'CGM'?>">
-        <label class="bold"><?=@$ed20_i_tiposervidor == '1' ? 'Matrícula:' : 'CGM:'?></label>
-      </td>
-      <td>
-        <?php
-        db_input( 'identificacao', 15, @$identificacao, true, 'text', 3 );
-        db_input( 'z01_nome',      50, @$Iz01_nome,     true, 'text', 3 );
-        ?>
-      </td>
-    </tr>
-    <tr>
-      <td nowrap title="<?=@$Ted23_i_regimetrabalho?>">
-        <?php
-        db_ancora( @$Led23_i_regimetrabalho, "js_pesquisaed23_i_regimetrabalho(true);", $db_opcao );
-        ?>
-      </td>
-      <td>
-        <?php
-        $sScript = " onchange='js_pesquisaed23_i_regimetrabalho(false);'";
-        db_input( 'ed23_i_regimetrabalho', 15, $Ied23_i_regimetrabalho, true, 'text', $db_opcao, $sScript );
-        db_input( 'ed24_c_descr',          40, @$Ied24_c_descr,         true, 'text',         3 );
-        ?>
-      </td>
-    </tr>
-    <?php
-    $db_opcao_atual = $db_opcao;
-    $db_opcao       = 3;
-    $cor            = "#DEB887";
-    $regente        = "N";
 
-    if(    ( isset( $ed23_i_rechumanoescola ) && !empty( $ed23_i_rechumanoescola ) )
-        || ( isset( $oGet->ed23_i_rechumanoescola ) && !empty( $oGet->ed23_i_rechumanoescola ) )
-      ) {
+function validaSeEnsinoEstaSelecionado() {
 
-      $iRecHumanoEscola = $ed23_i_rechumanoescola;
-      if( empty( $ed23_i_rechumanoescola ) ) {
-        $iRecHumanoEscola = $oGet->ed23_i_rechumanoescola;
-      }
+  if ( $F('ed10_i_codigo') == '') {
+    return false;
+  }
+  return true;
+}
 
-      $sWhereRecHumanoAtiv  = "     ed22_i_rechumanoescola = {$iRecHumanoEscola}";
-      $sWhereRecHumanoAtiv .= " AND ed75_i_escola = " . db_getsession("DB_coddepto");
-      $sWhereRecHumanoAtiv .= " AND ed01_c_regencia = 'S'";
-      $sSqlRecHumanoAtiv    = $clrechumanoativ->sql_query( "", "ed01_c_regencia", "", $sWhereRecHumanoAtiv );
-      $result               = $clrechumanoativ->sql_record( $sSqlRecHumanoAtiv );
+$('ancoraAreaTrabalho').addEventListener('click', adicionaEventoAreaTrabalho);
+$('ed25_i_codigo').addEventListener('change', adicionaEventoAreaTrabalho);
 
-      if( $clrechumanoativ->numrows > 0 ) {
+var oLookAreaTrabalho = new DBLookUp( $('ancoraAreaTrabalho'), $('ed25_i_codigo'), $('ed25_c_descr'), {
+    sArquivo: 'func_areatrabalho.php',
+    sLabel: ' Pesquisa Área de Trabalho',
+    sObjetoLookUp: 'db_iframe_areatrabalho'
+  });
 
-        $db_opcao = isset( $opcao ) && $opcao == "excluir" ? 3 : 1;
-        $cor      = "#E6E4F1";
-        $regente  = "S";
-      }
+function adicionaEventoAreaTrabalho(event) {
+
+  if ( !validaSeEnsinoEstaSelecionado() ) {
+
+    alert(_M(MENSAGEM_FRMRELACAOTRABALHO + "informe_ensino" ) );
+    event.preventDefault();
+    event.stopPropagation();
+    return;
+  }
+
+  oLookAreaTrabalho.setParametrosAdicionais( ['ensino=' + $F('ed10_i_codigo')] );
+}
+
+
+function buscarTipoHora(iTipoHoraSelecionar) {
+
+  if ( iTipoHoraSelecionar == null) {
+
+    $('ed10_i_codigo').value = '';
+    $('ed10_c_descr').value  = '';
+    $('ed25_i_codigo').value = '';
+    $('ed25_c_descr').value  = '';
+
+    if ( $('ed12_i_codigo') ) {
+
+      $('ed12_i_codigo'). value = '';
+      $('ed232_c_descr'). value = '';
     }
-    ?>
-    <tr>
-      <td nowrap colspan="2">
-        Somente para regentes de classe:
-      </td>
-    </tr>
-    <tr>
-      <td nowrap title="<?=@$Ted29_i_ensino?>">
-        <?php
-        db_ancora( @$Led29_i_ensino, "js_pesquisaed23_i_ensino(true);", $db_opcao );
-        ?>
-      </td>
-      <td>
-        <?php
-        $sScript = " onchange='js_pesquisaed23_i_ensino(false);' ";
-        db_input( 'ed12_i_ensino', 15, @$Ied12_i_ensino, true, 'text', $db_opcao, $sScript );
-        db_input( 'ed10_c_descr',  40, @$Ied10_c_descr,  true, 'text',         3 );
-        ?>
-      </td>
-    </tr>
-    <tr>
-      <td nowrap title="<?=@$Ted23_i_areatrabalho?>">
-        <?php
-        db_ancora( @$Led23_i_areatrabalho, "js_pesquisaed23_i_areatrabalho(true);", $db_opcao );
-        ?>
-      </td>
-      <td>
-        <?php
-        $sScript = " onchange='js_pesquisaed23_i_areatrabalho(false);'";
-        db_input( 'ed23_i_areatrabalho', 15, $Ied23_i_areatrabalho, true, 'text', $db_opcao, $sScript );
-        db_input( 'ed25_c_descr',        40, @$Ied25_c_descr,       true, 'text',         3 );
-        ?>
-      </td>
-    </tr>
-    <?php
-    if( isset( $opcao ) || $regente == "N" ) {
-      ?>
-      <tr>
-       <td nowrap title="<?=@$Ted23_i_disciplina?>">
-        <?php
-        db_ancora( @$Led23_i_disciplina, "js_pesquisaed23_i_disciplina(true);", $db_opcao );
-        ?>
-       </td>
-       <td>
-         <?php
-         $sScript = " onchange='js_pesquisaed23_i_disciplina(false);'";
-         db_input( 'ed23_i_disciplina', 15, $Ied23_i_disciplina, true, 'text', $db_opcao, $sScript );
-         db_input( 'ed232_c_descr',     40, @$Ied232_c_descr,    true, 'text',         3 );
-         ?>
-       </td>
-      </tr>
-    <?php
-    } else {
-    ?>
-      <tbody id="div_disciplina"></tbody>
-    <?php
+  }
+
+  $('cboTipoHora').options.length = 0;
+  $('cboTipoHora').add(new Option('Selecione', ''));
+
+  var aTipoHoraAdicionado = [];
+  for ( var oAtividade of aFuncoes ) {
+
+    if ( oAtividade.iCodigo != $F('cboFuncao') ) {
+      continue;
     }
-    ?>
-  </table>
-  <?php
-  $db_opcao = $db_opcao_atual;
-  ?>
-  <input name="ed23_i_rechumanoescola" type="hidden" value="<?=@$ed23_i_rechumanoescola?>">
-  <input name="<?=( $db_opcao == 1 ? "incluir" : ( $db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir" ) )?>"
-         type="submit"
-         id="db_opcao"
-         value="<?=( $db_opcao == 1 ? "Incluir" : ( $db_opcao == 2 || $db_opcao == 22 ? "Alterar" : "Excluir" ) )?>"
-         <?=( $db_botao == false ? "disabled" : "" )?>
-         <?=$db_opcao != 3 ? "onclick=\"return js_valida('$regente');\"" : ""?>>
-  <input name="cancelar" type="submit" value="Cancelar" <?=( $db_botao1 == false ? "disabled" : "" )?> >
-  <input name="regente" type="hidden" value="<?=$regente?>">
-  <table width="100%">
-    <tr>
-      <td valign="top">
-      <?php
-      $escola     = db_getsession("DB_coddepto");
-      $chavepri   = array( "ed23_i_codigo" => @$ed23_i_codigo );
-      $campossql  = "ed23_i_codigo, ed23_i_rechumanoescola, ed23_i_areatrabalho, ed25_c_descr as db_area";
-      $campossql .= ", ed23_i_regimetrabalho, ed24_c_descr as db_regime, ed23_i_disciplina";
-      $campossql .= ", ed232_c_descr as db_disciplina, ed12_i_ensino, ed10_c_descr as db_ensino";
-      $sSql       = $clrelacaotrabalho->sql_query( "", $campossql, "", "ed23_i_rechumanoescola = {$ed23_i_rechumanoescola}" );
 
-      $cliframe_alterar_excluir->chavepri      = $chavepri;
-      $cliframe_alterar_excluir->sql           = $sSql;
-      $cliframe_alterar_excluir->campos        = "ed23_i_codigo,db_regime,db_ensino,db_area,db_disciplina";
-      $cliframe_alterar_excluir->legenda       = "Registros";
-      $cliframe_alterar_excluir->msg_vazio     = "Não foi encontrado nenhum registro.";
-      $cliframe_alterar_excluir->textocabec    = "#DEB887";
-      $cliframe_alterar_excluir->textocorpo    = "#444444";
-      $cliframe_alterar_excluir->fundocabec    = "#444444";
-      $cliframe_alterar_excluir->fundocorpo    = "#eaeaea";
-      $cliframe_alterar_excluir->iframe_height = "140";
-      $cliframe_alterar_excluir->iframe_width  = "100%";
-      $cliframe_alterar_excluir->tamfontecabec = 9;
-      $cliframe_alterar_excluir->tamfontecorpo = 9;
-      $cliframe_alterar_excluir->formulario    = false;
-      $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);
-      ?>
-      </td>
-    </tr>
-  </table>
-  </center>
-</form>
-<script>
-function js_valida( regente ) {
+    liberaNivelEnsino(oAtividade.lPermiteVincularEnsino);
+    for( var sIndex in oAtividade.aResumoTurno) {
 
-  if( document.form1.ed23_i_regimetrabalho.value == "" ) {
+      var oTipoHora = oAtividade.aResumoTurno[sIndex]
+      if (aTipoHoraAdicionado.in_array(oTipoHora.iTipoHoraTrabalho) ){
+        continue;
+      }
+      aTipoHoraAdicionado.push(oTipoHora.iTipoHoraTrabalho);
+      $('cboTipoHora').add(new Option(oTipoHora.sTipoHoraTrabalho, oTipoHora.iTipoHoraTrabalho));
+    }
+  }
 
-    alert( "Campo Regime de Trabalho não informado!" );
+  if (iTipoHoraSelecionar != null) {
+    $('cboTipoHora').value = iTipoHoraSelecionar;
+  }
+}
+
+function buscaFuncoesProfissional() {
+
+  var oParam = {exec: 'buscaAtividadesProfissional', iVinculoEscola : $F('iVinculoEscola')};
+  new AjaxRequest('edu4_rechumanoatividade.RPC.php', oParam, function(oRetorno, lErro) {
+
+    if (lErro) {
+      alert(oRetorno.sMessage);
+      return;
+    }
+
+    if ( oRetorno.aAtividades.length == 0 ) {
+
+      // alert ( _M(MENSAGEM_FRMRELACAOTRABALHO + 'cadastre_funcao_profissional') );
+      return;
+    }
+
+    aFuncoes = oRetorno.aAtividades;
+    $('cboFuncao').options.length = 0;
+    $('cboFuncao').add(new Option('Selecione', ''));
+    $('cboTipoHora').options.length = 0;
+    $('cboTipoHora').add(new Option('Selecione', ''));
+
+    for ( var oAtividade of aFuncoes ) {
+        let descricao = `${oAtividade.sDescricao} - ${oAtividade.dataInicio} até ${oAtividade.dataFim?oAtividade.dataFim:"Em aberto"} `;
+        $('cboFuncao').add(new Option( descricao, oAtividade.iCodigo ));
+    }
+
+  }).setMessage( _M(MENSAGEM_FRMRELACAOTRABALHO + 'buscando_funcoes') ).execute();
+}
+
+
+
+(function () {
+
+  var oParam = {'exec' : 'buscaRechumanoEscola', iRecHumano : oGet.ed75_i_rechumano };
+  new AjaxRequest('edu4_relacaotrabalho.RPC.php', oParam, function(oRetorno, lErro) {
+
+    if ( lErro ) {
+
+      alert(oRetorno.sMessage);
+      return;
+    }
+
+    $('iVinculoEscola').value = oRetorno.iVinculoEscola;
+
+    buscaFuncoesProfissional();
+    buscaRelacoesTrabalho();
+  }).execute();
+
+})();
+
+
+/**
+ * Busca as reelações de trabalho já inclusas
+ * @return {void}
+ */
+function buscaRelacoesTrabalho() {
+
+  oCollection.clear();
+  var oParam = {'exec' : 'buscaRelacoesTrabalho', iVinculoEscola : $F('iVinculoEscola') };
+  new AjaxRequest('edu4_relacaotrabalho.RPC.php', oParam, function(oRetorno, lErro) {
+
+    if ( lErro ) {
+
+      alert(oRetorno.sMessage);
+      return;
+    }
+
+    for ( var oRelacao of oRetorno.aRelacoes ) {
+      oCollection.add(oRelacao);
+    }
+
+    oGridRelacao.reload();
+  }).execute();
+}
+
+function liberaNivelEnsino(lLiberar) {
+
+  $('tblDisciplinas').innerHTML = '';
+
+  $$('.linhasReferenteEnsino').each(function (oElement) {
+
+    oElement.style.display = 'none';
+    if ( lLiberar ) {
+      oElement.style.display = 'table-row';
+    }
+  });
+
+  $('disciplinas').style.display = 'none';
+  if (lLiberar) {
+    $('disciplinas').style.display = '';
+  }
+}
+
+
+function validarInformacoesFormulario() {
+
+  if ( empty($F('ed24_i_codigo')) ) {
+
+    alert( _M(MENSAGEM_FRMRELACAOTRABALHO + 'informe_regime_trabalho') );
     return false;
   }
 
-  if( regente== "S" ) {
+  if ( empty($F('cboFuncao')) ) {
 
-    if( document.form1.ed12_i_ensino.value == "" ) {
+    alert( _M(MENSAGEM_FRMRELACAOTRABALHO + 'informe_funcao') );
+    return false;
+  }
 
-      alert( "Campo Nível de Ensino não informado!" );
-      return false;
-    }
+  if ( empty($F('cboTipoHora')) ) {
 
-    if( document.form1.ed23_i_areatrabalho.value == "" ) {
+    alert( _M(MENSAGEM_FRMRELACAOTRABALHO + 'informe_tipo_hora') );
+    return false;
+  }
 
-      alert( "Campo Área de Trabalho não informado!" );
-      return false;
-    }
+  /**
+   * quando iCodigoRelacao esta vazio, é inclusão
+   */
+    var aElementos = $$('input[type="checkbox"]:checked');
 
-    if( document.form1.ed23_i_codigo.value != "" ) {
+    for ( var oAtividade of aFuncoes ) {
 
-      if( document.form1.ed23_i_disciplina.value == "" ) {
+      if ( oAtividade.iCodigo == $F('cboFuncao') && oAtividade.lPermiteVincularEnsino) {
 
-        alert( "Campo Disciplina não informado!" );
-        return false;
-      }
-    } else {
+        if ( empty($F('ed10_i_codigo')) ) {
 
-      tam = document.form1.coddisciplina.length;
-
-      if( tam == undefined ) {
-
-        if( document.form1.coddisciplina.checked == false ) {
-
-          alert( "Campo Disciplina(s) não informado!" );
+          alert( _M(MENSAGEM_FRMRELACAOTRABALHO + 'informe_nivel_ensino') );
           return false;
         }
-      } else {
 
-        checado = 0;
+        if ( empty($F('ed25_i_codigo')) ) {
 
-        for( x = 0; x < tam; x++ ) {
+          alert( _M(MENSAGEM_FRMRELACAOTRABALHO + 'informe_area_trabalho') );
+          return false;
+        }
 
-          if( document.form1.coddisciplina[x].checked == true ) {
-            checado++;
+        if ( !empty( $F('iCodigoRelacao') ) ) {
+
+          if ( $('ed12_i_codigo') && empty($F('ed12_i_codigo')) && !oAtividade.lAtividadeSemRegencia ){
+
+            alert( _M(MENSAGEM_FRMRELACAOTRABALHO + 'informe_disciplina') );
+            return false;
+          }
+        } else {
+
+          if ( aElementos.length == 0 && !oAtividade.lAtividadeSemRegencia ) {
+
+            alert( _M(MENSAGEM_FRMRELACAOTRABALHO + 'marque_uma_disciplina') );
+            return false;
           }
         }
-
-        if( checado == 0 ) {
-
-          alert( "Campo Disciplina(s) não informado!" );
-          return false;
-        }
       }
     }
-  }
 
   return true;
 }
 
-function js_pesquisaed23_i_areatrabalho( mostra ) {
+$('btnSalvar').addEventListener('click', function() {
 
-  if( document.form1.ed12_i_ensino.value == "" ) {
+  if ( !validarInformacoesFormulario() ) {
+    return;
+  }
 
-    alert( "Informe primeiro o Nível de Ensino!" );
-    document.form1.ed23_i_areatrabalho.value      = "";
-    document.form1.ed12_i_ensino.style.background = "#99A9AE";
-    document.form1.ed12_i_ensino.focus();
+  var oParam = {
+    'exec'         : 'salvar',
+    iCodigoRelacao : $F('iCodigoRelacao'),
+    iVinculoEscola : $F('iVinculoEscola'),
+    iRegime        : $F('ed24_i_codigo'),
+    iFuncao        : $F('cboFuncao'),
+    iTipoHora      : $F('cboTipoHora'),
+    iEnsino        : $F('ed10_i_codigo'),
+    iArea          : $F('ed25_i_codigo'),
+    aDisciplinas   : [],
+    iDisciplina    : ''
+  };
+
+  if ( !empty(oParam.iCodigoRelacao) && $('ed12_i_codigo') ) {
+    oParam.iDisciplina = $F('ed12_i_codigo');
   } else {
 
-    if( mostra == true ) {
-      js_OpenJanelaIframe('','db_iframe_areatrabalho','func_areatrabalho.php?ensino='+document.form1.ed12_i_ensino.value+'&funcao_js=parent.js_mostraareatrabalho1|ed25_i_codigo|ed25_c_descr','Pesquisa de Áreas de Trabalho',true);
-    } else {
+    var aElementos = $$('input[type="checkbox"]:checked');
+    for (var oElemento of aElementos ) {
 
-      if( document.form1.ed23_i_areatrabalho.value != '' ) {
-        js_OpenJanelaIframe(
-                             '',
-                             'db_iframe_areatrabalho',
-                             'func_areatrabalho.php?ensino='+document.form1.ed12_i_ensino.value
-                                                 +'&pesquisa_chave='+document.form1.ed23_i_areatrabalho.value
-                                                 +'&funcao_js=parent.js_mostraareatrabalho',
-                             'Pesquisa',
-                             false
-                           );
-      } else {
-        document.form1.ed25_c_descr.value = '';
+      if ( oElemento.id == 'todas' ){
+        continue;
       }
+      oParam.aDisciplinas.push(oElemento.value);
     }
   }
-}
 
-function js_mostraareatrabalho( chave, erro ) {
 
-  document.form1.ed25_c_descr.value = chave;
+  new AjaxRequest('edu4_relacaotrabalho.RPC.php', oParam, function(oRetorno, lErro) {
 
-  if( erro == true ) {
+    alert(oRetorno.sMessage);
+    if ( lErro ) {
+      return;
+    }
 
-    document.form1.ed23_i_areatrabalho.focus();
-    document.form1.ed23_i_areatrabalho.value = '';
+    limparForm();
+    buscaRelacoesTrabalho();
+  }).setMessage( _M(MENSAGEM_FRMRELACAOTRABALHO + 'aguarde_salvando') ).execute();
+});
+
+
+$('btnExcluir').addEventListener('click', function() {
+
+  if ( !confirm(_M(MENSAGEM_FRMRELACAOTRABALHO + 'confirma_exclusao')) ) {
+    return;
   }
+  var oParam = { 'exec' : 'excluir', iCodigoRelacao : $F('iCodigoRelacao') };
+
+  new AjaxRequest('edu4_relacaotrabalho.RPC.php', oParam, function(oRetorno, lErro) {
+
+    alert(oRetorno.sMessage);
+    if ( lErro ) {
+      return;
+    }
+
+    limparForm();
+    buscaRelacoesTrabalho();
+  }).setMessage( _M(MENSAGEM_FRMRELACAOTRABALHO + 'aguarde_excluindo') ).execute();
+});
+
+
+function limparForm() {
+
+  $('labelRegimeTrabalhoExclusao').style.display = 'none';
+  $('labelRegimeTrabalho').style.display         = '';
+  $('labelNivelEnsinoExclusao').style.display    = 'none';
+  $('labelNivelEnsino').style.display            = '';
+  $('labelTrabalhoExclusao').style.display       = 'none';
+  $('labelTrabalho').style.display               = '';
+
+  $('ed24_i_codigo').removeAttribute('disabled');
+  $('ed24_c_descr').removeAttribute('disabled');
+  $('ed10_i_codigo').removeAttribute('disabled');
+  $('ed10_c_descr').removeAttribute('disabled');
+  $('ed25_i_codigo').removeAttribute('disabled');
+  $('ed25_c_descr').removeAttribute('disabled');
+  $('cboFuncao').removeAttribute('disabled');
+  $('cboTipoHora').removeAttribute('disabled');
+
+  $('btnSalvar').style.display  = '';
+  $('btnExcluir').style.display = 'none';
+
+  $('iCodigoRelacao').value  = '';
+  $('ed24_i_codigo').value   = '';
+  $('ed24_c_descr').value    = '';
+  $('ed10_i_codigo').value   = '';
+  $('ed10_c_descr').value    = '';
+  $('ed25_i_codigo').value   = '';
+  $('ed25_c_descr').value    = '';
+  $('cboFuncao').value       = '';
+
+  $('tblDisciplinas').innerHTML = '';
+  liberaNivelEnsino(false);
+  var oEvent = new Event('change');
+  $('cboFuncao').dispatchEvent(oEvent);
+  $('btnCancelar').setAttribute('disabled', 'disabled');
 }
 
-function js_mostraareatrabalho1( chave1, chave2 ) {
+/**
+ * Botão Cancelar
+ */
+$('btnCancelar').addEventListener('click', function(){
 
-  document.form1.ed23_i_areatrabalho.value = chave1;
-  document.form1.ed25_c_descr.value        = chave2;
-  db_iframe_areatrabalho.hide();
-}
+  oGridRelacao.reload();
+  limparForm();
+});
 
-function js_pesquisaed23_i_regimetrabalho( mostra ) {
+/**
+ * Preenche os dados da grid no form quando clicado em Alterar ou Excluir
+ * @param  {Object}  oDados    dados da collection
+ * @param  {boolean} lBloqueia se deve bloquear o from (só em exclusão)
+ * @return {void}
+ */
+function preenchForm(oDados, lBloqueia) {
 
-  if( mostra == true ) {
-    js_OpenJanelaIframe(
-                         '',
-                         'db_iframe_regimetrabalho',
-                         'func_regimetrabalho.php?funcao_js=parent.js_mostraregimetrabalho1|ed24_i_codigo|ed24_c_descr',
-                         'Pesquisa de Regimes de Trabalho',
-                         true
-                       );
-  } else {
+  limparForm();
 
-    if( document.form1.ed23_i_regimetrabalho.value != '' ) {
-      js_OpenJanelaIframe(
-                           '',
-                           'db_iframe_regimetrabalho',
-                           'func_regimetrabalho.php?pesquisa_chave='+document.form1.ed23_i_regimetrabalho.value
-                                                 +'&funcao_js=parent.js_mostraregimetrabalho',
-                           'Pesquisa',
-                           false
-                         );
-    } else {
-      document.form1.ed24_c_descr.value = '';
+  $('iCodigoRelacao').value  = oDados.codigo;
+  $('ed24_i_codigo').value   = oDados.regime_codigo;
+  $('ed24_c_descr').value    = oDados.regime;
+  $('ed10_i_codigo').value   = oDados.ensino_codigo;
+  $('ed10_c_descr').value    = oDados.ensino;
+  $('ed25_i_codigo').value   = oDados.area_codigo;
+  $('ed25_c_descr').value    = oDados.area;
+
+    if ( oDados.funcao_codigo != '') {
+    $('cboFuncao').value = oDados.funcao_codigo;
+    buscarTipoHora(oDados.tipo_hora_codigo);
+  }
+
+  if ( lBloqueia ) {
+
+    $('btnSalvar').style.display  = 'none';
+    $('btnExcluir').style.display = '';
+
+    $('labelRegimeTrabalhoExclusao').style.display = '';
+    $('labelRegimeTrabalho').style.display         = 'none';
+    $('labelNivelEnsinoExclusao').style.display    = '';
+    $('labelNivelEnsino').style.display            = 'none';
+    $('labelTrabalhoExclusao').style.display       = '';
+    $('labelTrabalho').style.display               = 'none';
+
+    $('ed24_i_codigo').setAttribute('disabled', 'disabled');
+    $('ed24_c_descr').setAttribute('disabled', 'disabled');
+    $('ed10_i_codigo').setAttribute('disabled', 'disabled');
+    $('ed10_c_descr').setAttribute('disabled', 'disabled');
+    $('ed25_i_codigo').setAttribute('disabled', 'disabled');
+    $('ed25_c_descr').setAttribute('disabled', 'disabled');
+    $('cboFuncao').setAttribute('disabled', 'disabled');
+    $('cboTipoHora').setAttribute('disabled', 'disabled');
+  }
+
+  if ( !empty(oDados.ensino_codigo) ) {
+    liberaNivelEnsino(true);
+  }
+
+  if ( !empty(oDados.disciplina_codigo) || !empty( $F('iCodigoRelacao') ) ) {
+
+    adicionaAncoraDisciplina(oDados);
+
+    if ( lBloqueia ) {
+
+      $('labelDisciplinaExclusao').style.display = '';
+      $('labelDisciplina').style.display         = 'none';
+      $('ed12_i_codigo').setAttribute('disabled', 'disabled');
     }
   }
+
+  $('btnCancelar').removeAttribute('disabled');
 }
 
-function js_mostraregimetrabalho( chave, erro ) {
+function adicionaAncoraDisciplina(oDados) {
 
-  document.form1.ed24_c_descr.value = chave;
+  $('tblDisciplinas').innerHTML = '';
 
-  if( erro == true ) {
+  var oLink       = document.createElement('a');
+  oLink.href      = '#';
+  oLink.id        = 'ancoraDisciplina';
+  oLink.innerHTML = 'Disciplina:';
 
-    document.form1.ed23_i_regimetrabalho.focus();
-    document.form1.ed23_i_regimetrabalho.value = '';
-  }
-}
+  var oLabelDisciplinaExclusao           = document.createElement('label');
+  oLabelDisciplinaExclusao.id            = "labelDisciplinaExclusao";
+  oLabelDisciplinaExclusao.innerHTML     = "Disciplina:";
+  oLabelDisciplinaExclusao.style.display = "none";
+  oLabelDisciplinaExclusao.setAttribute( "for", "ed12_i_codigo" );
 
-function js_mostraregimetrabalho1( chave1, chave2 ) {
+  var oLabelDisciplina           = document.createElement('label');
+  oLabelDisciplina.id            = "labelDisciplina";
+  oLabelDisciplina.for           = "ed12_i_codigo";
+  oLabelDisciplina.style.display = "";
+  oLabelDisciplina.setAttribute( "for", "ed12_i_codigo" );
 
-  document.form1.ed23_i_regimetrabalho.value = chave1;
-  document.form1.ed24_c_descr.value          = chave2;
-  db_iframe_regimetrabalho.hide();
-}
+  var oInputCodigo         = document.createElement('input');
+  oInputCodigo.type        = 'text';
+  oInputCodigo.name        = 'ed12_i_codigo';
+  oInputCodigo.id          = 'ed12_i_codigo';
+  oInputCodigo.value       = oDados.disciplina_codigo;
+  oInputCodigo.style.width = '83px';
 
-function js_pesquisaed23_i_ensino( mostra ) {
+  var oInputDescricao         = document.createElement('input');
+  oInputDescricao.type        = 'text';
+  oInputDescricao.name        = 'ed232_c_descr';
+  oInputDescricao.id          = 'ed232_c_descr';
+  oInputDescricao.style.width = '341px';
+  oInputDescricao.value       = oDados.disciplina;
+  oInputDescricao.addClassName('readonly' );
+  oInputDescricao.setAttribute('disabled', 'disabled' );
 
-  if( mostra == true ) {
-    js_OpenJanelaIframe(
-                         '',
-                         'db_iframe_ensino',
-                         'func_ensino.php?funcao_js=parent.js_mostraensino1|ed10_i_codigo|ed10_c_descr',
-                         'Pesquisa de Ensinos',
-                         true
-                       );
-  } else {
+  var oRow = $('tblDisciplinas').insertRow(0);
 
-    if( document.form1.ed12_i_ensino.value != '' ) {
-      js_OpenJanelaIframe(
-                           '',
-                           'db_iframe_ensino',
-                           'func_ensino.php?pesquisa_chave='+document.form1.ed12_i_ensino.value
-                                         +'&funcao_js=parent.js_mostraensino',
-                           'Pesquisa',
-                           false
-                         );
-    } else {
+  var oCcell1 = oRow.insertCell(0);
+  oCcell1.addClassName("field-size3");
+  oCcell1.appendChild(oLabelDisciplinaExclusao);
+  oLabelDisciplina.appendChild(oLink);
+  oCcell1.appendChild(oLabelDisciplina);
+  var oCcell2 = oRow.insertCell(1);
+  oCcell2.appendChild(oInputCodigo);
+  oCcell2.appendChild(oInputDescricao);
 
-      document.form1.ed10_c_descr.value        = '';
-      document.form1.ed23_i_areatrabalho.value = '';
-      document.form1.ed25_c_descr.value        = '';
 
-      if( document.form1.ed23_i_codigo.value != "" ) {
+  var aDisciplinasAdicionadas = [];
+  for ( var oItem of oCollection.get() ) {
 
-        document.form1.ed23_i_disciplina.value = '';
-        document.form1.ed232_c_descr.value     = '';
-      } else {
-        document.getElementById("div_disciplina").innerHTML = "";
-      }
+    if ( !empty(oItem.disciplina_codigo) ) {
+      aDisciplinasAdicionadas.push(oItem.disciplina_codigo);
     }
   }
-}
 
-function js_mostraensino( chave, erro ) {
+  if ( validaSeEnsinoEstaSelecionado() ) {
 
-  document.form1.ed10_c_descr.value        = chave;
-  document.form1.ed23_i_areatrabalho.value = '';
-  document.form1.ed25_c_descr.value        = '';
-
-  if( document.form1.ed23_i_codigo.value != "" ) {
-
-    document.form1.ed23_i_disciplina.value = '';
-    document.form1.ed232_c_descr.value     = '';
-  } else {
-    document.getElementById("div_disciplina").innerHTML = "";
-  }
-
-  if( erro == true ) {
-
-    document.form1.ed12_i_ensino.focus();
-    document.form1.ed12_i_ensino.value = '';
-  } else {
-
-    js_divCarregando( "Aguarde, buscando disciplinas", "msgBox" );
-
-    var sAction = 'PesquisaDisciplina';
-    var url     = 'edu1_relacaotrabalhoRPC.php';
-    parametros  = 'sAction='+sAction+'&ensino='+document.form1.ed12_i_ensino.value;
-
-    new Ajax.Request(url,{method    : 'post',
-                                      parameters: parametros,
-                                      onComplete: js_retornaPesquisaDisciplina
-                                     });
+    var oLookDisciplina = new DBLookUp( oLink, oInputCodigo, oInputDescricao, {
+      sArquivo: 'func_disciplinarelacao.php',
+      sLabel: ' Pesquisa de Disciplinas',
+      sObjetoLookUp: 'db_iframe_disciplina',
+      aParametrosAdicionais : ['ensino=' + $F('ed10_i_codigo'), 'disciplinas='+aDisciplinasAdicionadas.join()]
+    });
   }
 }
 
-function js_mostraensino1( chave1, chave2 ) {
 
-  document.form1.ed12_i_ensino.value       = chave1;
-  document.form1.ed10_c_descr.value        = chave2;
-  document.form1.ed23_i_areatrabalho.value = '';
-  document.form1.ed25_c_descr.value        = '';
+/**
+ * Busca Disciplinas
+ * Mesmo código utilizado no código anterior
+ */
+function buscaDisciplinas() {
 
-  if( document.form1.ed23_i_codigo.value != "" ) {
+  if ( empty($F('ed10_i_codigo')) ) {
 
-    document.form1.ed23_i_disciplina.value = '';
-    document.form1.ed232_c_descr.value     = '';
-  } else {
-    document.getElementById("div_disciplina").innerHTML = "";
+    $('tblDisciplinas').innerHTML = '';
+    return false;
   }
 
-  db_iframe_ensino.hide();
-  js_divCarregando( "Aguarde, buscando disciplinas","msgBox" );
+  if ( !empty($F('iCodigoRelacao')) ) {
+
+    adicionaAncoraDisciplina( {'disciplina_codigo': null, 'disciplina': ''} );
+    return false;
+  }
 
   var sAction = 'PesquisaDisciplina';
   var url     = 'edu1_relacaotrabalhoRPC.php';
-  parametros  = 'sAction='+sAction+'&ensino='+document.form1.ed12_i_ensino.value+'&disciplinas=<?=$disc_cad?>';
-
+  parametros  = 'sAction='+sAction+'&ensino='+$F('ed10_i_codigo');
 
   new Ajax.Request(url,{method    : 'post',
-                        parameters: parametros,
-                        onComplete: js_retornaPesquisaDisciplina
-                       });
+                                    parameters: parametros,
+                                    onComplete: js_retornaPesquisaDisciplina
+                                   });
 }
 
 function js_retornaPesquisaDisciplina( oAjax ) {
 
-  js_removeObj( "msgBox" );
-
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if( oRetorno.length == 0 ) {
-   todas = '';
-  } else {
-    todas = '<br><input type="checkbox" name="todas" id="todas" value="" onclick="js_todas();">Todas';
+
+    $('tblDisciplinas').innerHTML = '<td><b>Nenhuma disciplina disponível.</b></td>';
+    return;
   }
 
-  sHtml = '<tr><td><b>Disciplina(s):</b>' + todas + '</td>';
+  var todas = '<input type="checkbox" name="todas" id="todas" value="" onclick="js_todas();">Todas';
+  sHtml     = '<tr><td><b>' + todas + '</b></td>';
 
-  if( oRetorno.length == 0 ) {
+  sHtml += '<td>';
+  sHtml += ' <table><tr>';
+  cont   = 0;
 
-    sHtml += '<td>Nenhuma disciplina disponível.</td>';
-    document.form1.incluir.disabled = true;
-  } else {
+  for (var oDisciplina of oRetorno ) {
 
-    sHtml += '<td>';
-    sHtml += ' <table><tr>';
-    cont   = 0;
-
-    for( var i = 0;i < oRetorno.length; i++ ) {
-
-      cont++;
-      with (oRetorno[i]) {
-
-        sHtml += '<td><input type="checkbox" name="coddisciplina[]" id="coddisciplina" value="'+ed12_i_codigo+'"> '+ed232_c_descr.urlDecode()+'</td>';
-        if( cont % 3 == 0 ) {
-          sHtml += ' </tr><tr>';
-        }
-      }
+    cont++;
+    sHtml += '<td><input type="checkbox" name="coddisciplina[]" id="coddisciplina" value="'+oDisciplina.ed12_i_codigo+'"> '+oDisciplina.ed232_c_descr.urlDecode()+'</td>';
+    if( cont % 3 == 0 ) {
+      sHtml += ' </tr><tr>';
     }
-
-    sHtml += ' </tr></table>';
-    sHtml += '</td>';
-    document.form1.incluir.disabled = false;
   }
+  sHtml += ' </tr></table>';
+  sHtml += '</td>';
+
 
   sHtml += '</tr>';
-  $('div_disciplina').innerHTML = sHtml;
+  $('tblDisciplinas').innerHTML = sHtml;
 }
 
-function js_pesquisaed23_i_disciplina( mostra ) {
-
-  if( document.form1.ed12_i_ensino.value == "" ) {
-
-    alert( "Informe primeiro o Nível de Ensino!" );
-    document.form1.ed23_i_disciplina.value             = '';
-    document.form1.ed12_i_ensino.style.backgroundColor = '#99A9AE';
-    document.form1.ed12_i_ensino.focus();
-  } else {
-
-    if( mostra == true ) {
-      js_OpenJanelaIframe(
-                           '',
-                           'db_iframe_disciplina',
-                           'func_disciplinarelacao.php?ensino='+document.form1.ed12_i_ensino.value
-                                                    +'&disciplinas=<?=$disc_cad?>'
-                                                    +'&funcao_js=parent.js_mostradisciplina1|ed12_i_codigo|ed232_c_descr',
-                           'Pesquisa de Disciplinas',
-                           true
-                         );
-    } else {
-
-      if( document.form1.ed23_i_disciplina.value != '' ) {
-        js_OpenJanelaIframe(
-                             '',
-                             'db_iframe_disciplina',
-                             'func_disciplinarelacao.php?ensino='+document.form1.ed12_i_ensino.value
-                                                      +'&disciplinas=<?=$disc_cad?>'
-                                                      +'&pesquisa_chave='+document.form1.ed23_i_disciplina.value
-                                                      +'&funcao_js=parent.js_mostradisciplina',
-                             'Pesquisa',
-                             false
-                           );
-      } else {
-        document.form1.ed232_c_descr.value = '';
-      }
-    }
-  }
-}
-
-function js_mostradisciplina( chave, erro ) {
-
-  document.form1.ed232_c_descr.value = chave;
-
-  if( erro == true ) {
-
-    document.form1.ed23_i_disciplina.focus();
-    document.form1.ed23_i_disciplina.value = '';
-  }
-}
-
-function js_mostradisciplina1( chave1, chave2 ) {
-
-  document.form1.ed23_i_disciplina.value = chave1;
-  document.form1.ed232_c_descr.value     = chave2;
-  db_iframe_disciplina.hide();
-}
 
 function js_todas() {
 
@@ -626,4 +718,5 @@ function js_todas() {
     }
   }
 }
+
 </script>

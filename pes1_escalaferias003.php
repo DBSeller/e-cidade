@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 try {
 
@@ -43,7 +43,8 @@ try {
   $clcgm             = new cl_cgm();
   $clrhferiasperiodo = new cl_rhferiasperiodo();
   $clrhferias        = new cl_rhferias();
-  
+
+  $lPermiteEscolhaPeriodo = FeriasConfiguracao::isUltimoPeriodoAquisitivo();
   $clcgm->rotulo->label('z01_nome');
   $clrhferiasperiodo->rotulo->label();
   $clrhferias->rotulo->label();
@@ -53,10 +54,41 @@ try {
   $rh109_regist      = isset($oGet->rh109_regist) ? $oGet->rh109_regist : null;
   $z01_nome          = isset($oGet->z01_nome)     ? $oGet->z01_nome     : null;
   $oServidor         = new Servidor($rh109_regist);
-
-
+  $z01_nome = $oServidor->getCgm()->getNome();
   $oPeriodoGozoFerias = PeriodoGozoFerias::getUltimoPeriodoGozo( $oServidor );
+  $oPeriodoAquisivo   = PeriodoAquisitivoFerias::getDisponivel( $oServidor );
+  if (!empty($oGet->codigo_ferias)) {
+
+    $oPeriodoAquisivo = PeriodoAquisitivoFeriasRepository::getPeriodosPorCodigo($oGet->codigo_ferias);
+    $oPeriodoGozoFerias = $oPeriodoAquisivo->getPeriodoDeFeriasPorCodigo($oGet->codigo_periodo);
+  }
+
+  $iDiasGozados                       = $oPeriodoAquisivo->getDiasGozados();
+  $iDiasAbonados                      = $oPeriodoAquisivo->getDiasAbonados();
+  $rh109_diasdireito                  = $oPeriodoAquisivo->getDiasDireito() - $iDiasGozados - $iDiasAbonados;
+
+  $sTextoPeriodo         = $oPeriodoAquisivo->getDataInicial()->getDate(DBDate::DATA_PTBR)." - ";
+  $sTextoPeriodo        .= $oPeriodoAquisivo->getDataFinal()->getDate(DBDate::DATA_PTBR)." Dias: {$rh109_diasdireito}";
+
+  $aPeriodosAquisitivos = array($oPeriodoAquisivo->getCodigo() => $sTextoPeriodo);
   $oPeriodoAquisivo   = $oPeriodoGozoFerias->getPeriodoAquisitivo();
+  $iCodigoPeriodoGozo = $oPeriodoGozoFerias->getCodigoPeriodo();
+  
+  $oDaoRhferiasperiodopontofe = new cl_rhferiasperiodopontofe;
+  $sSqlRhferiasperiodopontofe = $oDaoRhferiasperiodopontofe->sql_query_file(null, "*", null, " rh112_rhferiasperiodo = {$iCodigoPeriodoGozo}");
+  $rsRhferiasperiodopontofe   = db_query($sSqlRhferiasperiodopontofe);
+
+  if(is_resource($rsRhferiasperiodopontofe) && pg_num_rows($rsRhferiasperiodopontofe) > 0) {
+    throw new BusinessException("Não foi possível realizar a operação.\nA escala já foi processada no módulo pessoal.");
+  }
+
+  $oDaoRhferiasperiodoassentamento = new cl_rhferiasperiodoassentamento;
+  $sSqlRhferiasperiodoassentamento = $oDaoRhferiasperiodoassentamento->sql_query_file(null, "*", null, " rh169_rhferiasperiodo = {$iCodigoPeriodoGozo}");
+  $rsRhferiasperiodoassentamento   = db_query($sSqlRhferiasperiodoassentamento);
+
+  if(is_resource($rsRhferiasperiodoassentamento) && pg_num_rows($rsRhferiasperiodoassentamento) > 0) {
+    throw new BusinessException("Não foi possível realizar a operação.\nA escala possui assentamentos vinculados.");
+  }
 
   $rh109_periodoaquisitivoinicial_dia = $oPeriodoAquisivo->getDataInicial()->getDia();  
   $rh109_periodoaquisitivoinicial_mes = $oPeriodoAquisivo->getDataInicial()->getMes();
@@ -73,12 +105,6 @@ try {
   $rh110_datafinal_mes                = $oPeriodoGozoFerias->getPeriodoFinal()->getMes();
   $rh110_datafinal_ano                = $oPeriodoGozoFerias->getPeriodoFinal()->getAno();
   $rh110_datafinal_dia                = $oPeriodoGozoFerias->getPeriodoFinal()->getDia();
-  $rh110_periodoespecificoinicial_dia = ($oPeriodoGozoFerias->getPeriodoEspecificoInicial()) ? $oPeriodoGozoFerias->getPeriodoEspecificoInicial()->getDia() : '';
-  $rh110_periodoespecificoinicial_mes = ($oPeriodoGozoFerias->getPeriodoEspecificoInicial()) ? $oPeriodoGozoFerias->getPeriodoEspecificoInicial()->getMes() : '';
-  $rh110_periodoespecificoinicial_ano = ($oPeriodoGozoFerias->getPeriodoEspecificoInicial()) ? $oPeriodoGozoFerias->getPeriodoEspecificoInicial()->getAno() : '';
-  $rh110_periodoespecificofinal_dia   = ($oPeriodoGozoFerias->getPeriodoEspecificoFinal()) ? $oPeriodoGozoFerias->getPeriodoEspecificoFinal()->getDia() : '';
-  $rh110_periodoespecificofinal_mes   = ($oPeriodoGozoFerias->getPeriodoEspecificoFinal()) ? $oPeriodoGozoFerias->getPeriodoEspecificoFinal()->getMes() : '';
-  $rh110_periodoespecificofinal_ano   = ($oPeriodoGozoFerias->getPeriodoEspecificoFinal()) ? $oPeriodoGozoFerias->getPeriodoEspecificoFinal()->getAno() : '';
   $rh110_dias                         = $oPeriodoGozoFerias->getDiasGozo();
   $rh110_diasabono                    = $oPeriodoGozoFerias->getDiasAbono();
   $rh110_tipoponto_select_descr       = $oPeriodoGozoFerias->getTipoPonto() == '1' ? 'Salário' : 'Complementar';
@@ -88,7 +114,7 @@ try {
   $rh110_observacoes                  = $oPeriodoGozoFerias->getObservacao();
   $lDireitoApuracaoMedia              = (!empty($rh110_periodoespecificoinicial_dia) ? 'E' : 'N');
 
-  include('forms/db_frmescalaferias.php');
+  include(modification('forms/db_frmescalaferias.php'));
 } catch ( Exception $eErro ) {
 
   db_msgbox($eErro->getMessage());

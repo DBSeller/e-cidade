@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,7 +33,7 @@ $sSqlForncedor .=	"									C.z01_nome 		as nome_do_fornecedor";
 $sSqlForncedor .= "	FROM bens as B INNER JOIN cgm as C ON (B.t52_numcgm = C.z01_numcgm)";
 $sSqlForncedor .= " WHERE B.t52_instit = $iIdDaEmpresa ORDER BY C.z01_numcgm ASC";
 
-$rsFornecedor 	= pg_query($sSqlForncedor); 
+$rsFornecedor 	= db_query($sSqlForncedor); 
 $iNumeroLinhas 	= pg_num_rows($rsFornecedor);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {
@@ -46,7 +46,7 @@ for ($i=0; $i<$iNumeroLinhas; $i++) {
 //$sSqlEmpresa .= "       '10101' as id_da_empresa, ";
 //$sSqlEmpresa .= "       '10100' as id_do_fornecedor, ";
 //$sSqlEmpresa .= "       'TESTE FORNECEDOR EXPORTACAO CRITERIUM' as nome_do_fornecedor";
-//$rsEmpresa    = pg_query($sSqlEmpresa);
+//$rsEmpresa    = db_query($sSqlEmpresa);
 //$oEmpresa     = db_utils::fieldsMemory($rsEmpresa,0);
 //// var_dump($oEmpresa);
 //$oLayoutTxt->setByLineOfDBUtils($oEmpresa,3,"07");

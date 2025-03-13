@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,89 +25,126 @@
  *                                licenca/licenca_pt.txt 
  */
 
+define( 'MENSAGENS_ESCOLAPROCEDENCIA_REPOSITORY', 'educacao.escola.EscolaProcedenciaRepository.' );
+
+/**
+ * Classe repository para classes EscolaProcedencia
+ * @author Iuri Guntchnigg <iuri@dbseller.com.br>
+ * @package educacao
+ */
+class EscolaProcedenciaRepository {
+
   /**
-   * Classe repository para classes EscolaProcedencia
-   * @author Iuri Guntchnigg <iuri@dbseller.com.br>
-   * @package educacao
+   * Collection de EscolaProcedencia
+   * @var array
    */
-  class EscolaProcedenciaRepository {
+  private $aEscolas = array();
 
-    /**
-     * Collection de EscolaProcedencia
-     * @var array
-     */
-    private $aEscolas = array();
+  /**
+   * Instancia da classe
+   * @var EscolaProcedenciaRepository
+   */
+  private static $oInstance;
 
-    /**
-     * Instancia da classe
-     * @var EscolaProcedenciaRepository
-     */
-    private static $oInstance;
+  private function __construct() {
 
-    private function __construct() {
-
-    }
-    private function __clone() {
-
-    }
-
-    /**
-     * Retorno uma instancia do EscolaProcedencia pelo Codigo
-     * @param integer $iCodigo Codigo do EscolaProcedencia
-     * @return EscolaProcedencia
-     */
-    public static function getEscolaByCodigo($iCodigoEscola) {
-
-      if (!array_key_exists($iCodigoEscola, EscolaProcedenciaRepository::getInstance()->aEscolas)) {
-        EscolaProcedenciaRepository::getInstance()->aEscolas[$iCodigoEscola] = new EscolaProcedencia($iCodigoEscola);
-      }
-      return EscolaProcedenciaRepository::getInstance()->aEscolas[$iCodigoEscola];
-    }
-
-    /**
-     * Retorna a instancia da classe
-     * @return EscolaProcedenciaRepository
-     */
-    protected static function getInstance() {
-
-      if (self::$oInstance == null) {
-
-        self::$oInstance = new EscolaProcedenciaRepository();
-      }
-      return self::$oInstance;
-    }
-
-    /**
-     * Adiciona um EscolaProcedencia dao repositorio
-     * @param EscolaProcedencia $oEscolaProcedencia Instancia do EscolaProcedencia
-     * @return boolean
-     */
-    public static function adicionarEscolaProcedencia(EscolaProcedencia $oEscolaProcedencia) {
-
-      if(!array_key_exists($oEscolaProcedencia->getCodigo(), EscolaProcedenciaRepository::getInstance()->aEscolas)) {
-        EscolaProcedenciaRepository::getInstance()->aEscolas[$oEscolaProcedencia->getCodigo()] = $oEscolaProcedencia;
-      }
-      return true;
-    }
-
-    /**
-     * Remove o EscolaProcedencia passado como parametro do repository
-     * @param EscolaProcedencia $oEscolaProcedencia
-     * @return boolean
-     */
-    public static function removerEscolaProcedencia(EscolaProcedencia $oEscolaProcedencia) {
-
-      if (array_key_exists($oEscolaProcedencia->getCodigo(), EscolaProcedenciaRepository::getInstance()->aEscolas)) {
-        unset(EscolaProcedenciaRepository::getInstance()->aEscolas[$oEscolaProcedencia->getCodigo()]);
-      }
-      return true;
-    }
-
-    /**
-     * Retorna o total de cidadoes existentes no repositorio;
-     * @return integer;
-     */
-    public static function getTotalEscolaProcedencia() {
-      return count(EscolaProcedenciaRepository::getInstance()->aEscolas);
-    }
   }
+  private function __clone() {
+
+  }
+
+  /**
+   * Retorno uma instancia do EscolaProcedencia pelo Codigo
+   * @param integer $iCodigo Codigo do EscolaProcedencia
+   * @return EscolaProcedencia
+   */
+  public static function getEscolaByCodigo($iCodigoEscola) {
+
+    if (!array_key_exists($iCodigoEscola, EscolaProcedenciaRepository::getInstance()->aEscolas)) {
+      EscolaProcedenciaRepository::getInstance()->aEscolas[$iCodigoEscola] = new EscolaProcedencia($iCodigoEscola);
+    }
+    return EscolaProcedenciaRepository::getInstance()->aEscolas[$iCodigoEscola];
+  }
+
+  /**
+   * Retorna a instancia da classe
+   * @return EscolaProcedenciaRepository
+   */
+  protected static function getInstance() {
+
+    if (self::$oInstance == null) {
+
+      self::$oInstance = new EscolaProcedenciaRepository();
+    }
+    return self::$oInstance;
+  }
+
+  /**
+   * Adiciona um EscolaProcedencia dao repositorio
+   * @param EscolaProcedencia $oEscolaProcedencia Instancia do EscolaProcedencia
+   * @return boolean
+   */
+  public static function adicionarEscolaProcedencia(EscolaProcedencia $oEscolaProcedencia) {
+
+    if(!array_key_exists($oEscolaProcedencia->getCodigo(), EscolaProcedenciaRepository::getInstance()->aEscolas)) {
+      EscolaProcedenciaRepository::getInstance()->aEscolas[$oEscolaProcedencia->getCodigo()] = $oEscolaProcedencia;
+    }
+    return true;
+  }
+
+  /**
+   * Remove o EscolaProcedencia passado como parametro do repository
+   * @param EscolaProcedencia $oEscolaProcedencia
+   * @return boolean
+   */
+  public static function removerEscolaProcedencia(EscolaProcedencia $oEscolaProcedencia) {
+
+    if (array_key_exists($oEscolaProcedencia->getCodigo(), EscolaProcedenciaRepository::getInstance()->aEscolas)) {
+      unset(EscolaProcedenciaRepository::getInstance()->aEscolas[$oEscolaProcedencia->getCodigo()]);
+    }
+    return true;
+  }
+
+  /**
+   * Retorna o total de escolas de procedencia
+   * @return int
+   */
+  public static function getTotalEscolaProcedencia() {
+    return count(EscolaProcedenciaRepository::getInstance()->aEscolas);
+  }
+
+  /**
+   * @param bool $lSomenteAlunosForaRede
+   * @return EscolaProcedencia[]
+   * @throws DBException
+   */
+  public static function getTodasEscolasProcedencia( $lSomenteAlunosForaRede = false ) {
+
+    $oDaoEscolaProcedencia   = new cl_escolaproc();
+    $sWhereEscolaProcedencia = !$lSomenteAlunosForaRede ? "" : "ed76_i_codigo is not null and ed76_c_tipo = 'F'";
+    $sSqlEscolaProcedencia   = $oDaoEscolaProcedencia->sql_query_escola_aluno_vinculado(
+                                                                                         null,
+                                                                                         'ed82_i_codigo',
+                                                                                         'ed82_i_codigo',
+                                                                                         $sWhereEscolaProcedencia
+                                                                                       );
+    $rsEscolaProcedencia   = db_query( $sSqlEscolaProcedencia );
+
+    if( !$rsEscolaProcedencia ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+
+      throw new DBException( _M( MENSAGENS_ESCOLAPROCEDENCIA_REPOSITORY . 'erro_buscar_escolas', $oErro ) );
+    }
+
+    if( pg_num_rows( $rsEscolaProcedencia ) > 0 ) {
+
+      for( $iContador = 0; $iContador < pg_num_rows( $rsEscolaProcedencia ); $iContador++ ) {
+        EscolaProcedenciaRepository::getEscolaByCodigo( db_utils::fieldsMemory( $rsEscolaProcedencia, $iContador )->ed82_i_codigo );
+      }
+    }
+
+    return EscolaProcedenciaRepository::getInstance()->aEscolas;
+  }
+}

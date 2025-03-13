@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_benstransf_classe.php");
-include("classes/db_benstransfcodigo_classe.php");
-include("classes/db_benstransfdes_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_db_depusu_classe.php");
-include("classes/db_db_depart_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_benstransf_classe.php"));
+include(modification("classes/db_benstransfcodigo_classe.php"));
+include(modification("classes/db_benstransfdes_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_db_depusu_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
 $cldb_depusu = new cl_db_depusu;
 $clbenstransf = new cl_benstransf;
 $clbenstransfcodigo = new cl_benstransfcodigo;
@@ -98,7 +98,7 @@ $db_botao = false;
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmbenstransf.php");
+	include(modification("forms/db_frmbenstransf.php"));
 	?>
     </center>
 	</td>
@@ -130,7 +130,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.benstransfcodigo.disabled=false;
-         top.corpo.iframe_benstransfcodigo.location.href='pat1_benstransfcodigo001.php?db_opcaoal=33&t95_codtran=".@$t93_codtran."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_benstransfcodigo.location.href='pat1_benstransfcodigo001.php?db_opcaoal=33&t95_codtran=".@$t93_codtran."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('benstransfcodigo');";

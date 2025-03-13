@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,29 +25,29 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_libtributario.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_iptucalc_classe.php");
-require_once("classes/db_iptunump_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_massamat_classe.php");
-require_once("classes/db_iptuender_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_db_docparag_classe.php");
-require_once("classes/db_arrematric_classe.php");
-require_once("classes/db_listadoc_classe.php");
-require_once("classes/db_db_layouttxtgeracao_classe.php");
-require_once("model/regraEmissao.model.php");
-require_once("model/convenio.model.php");
-require_once("model/recibo.model.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_libtributario.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_iptucalc_classe.php"));
+require_once(modification("classes/db_iptunump_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_massamat_classe.php"));
+require_once(modification("classes/db_iptuender_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_db_docparag_classe.php"));
+require_once(modification("classes/db_arrematric_classe.php"));
+require_once(modification("classes/db_listadoc_classe.php"));
+require_once(modification("classes/db_db_layouttxtgeracao_classe.php"));
+require_once(modification("model/regraEmissao.model.php"));
+require_once(modification("model/convenio.model.php"));
+require_once(modification("model/recibo.model.php"));
 
 $cliptucalc    = new cl_iptucalc;
 $cliptuender   = new cl_iptuender;
@@ -191,6 +191,14 @@ if ($imobiliaria == "com") {
   $whereimobil = " and j44_matric is null ";
 }
 
+$wherelistamatrics = "";
+if ($listamatrics == "") {
+  $wherelistamatrics = " ";
+} else {
+  $wherelistamatrics = " and iptucalc.j23_matric in ($listamatrics) ";
+  $quantidade = "";
+}
+
 $whereloteam = "";
 if ($loteamento == "com") {
   $whereloteam = " and loteloteam.j34_idbql is not null ";
@@ -274,7 +282,7 @@ $sqlprinc .= "              left  join imobil 	          on imobil.j44_matric = 
 $sqlprinc .= "              left  join loteloteam 	      on loteloteam.j34_idbql = lote.j34_idbql ";
 $sqlprinc .= "              left  join iptuant     	      on iptuant.j40_matric   = iptubase.j01_matric ";
 $sqlprinc .= "        where iptucalc.j23_anousu = $anousu ";
-$sqlprinc .= "        $whereimobil {$whereloteam}" . ($quantidade != ""?" limit {$quantidade}":"") . ") as x ";
+$sqlprinc .= "        $whereimobil {$wherelistamatrics} {$whereloteam}" . ($quantidade != ""?" limit {$quantidade}":"") . ") as x ";
 
 $sqlprinc .= " order by {$sOrder}";
 
@@ -1131,15 +1139,26 @@ for ($vez = 0; $vez <= 1; $vez++) {
                 }
 
                 $iMaxParc = 0;
-                $achoua=false;
+
+                $oDataAtual = new DBDate(date('Y-m-d', db_getsession("DB_datausu")));
 
                 for ($unicont = 1; $unicont <= 12; $unicont ++) {
+
+                  $achoua=false;
+
+                  $iDebitoJuros = 0;
+                  $iDebitoMulta = 0;
+                  $iDebitoValor = 0;
+
+                  $iParcelaAtual = null;
 
                   for ($a=0;$a<pg_numrows($resultfinarrecad);$a++) {
                     if (pg_result($resultfinarrecad,$a,"k00_numpar") == $unicont ) {
                       db_fieldsmemory($resultfinarrecad, $a);
-                      $achoua=true;
+                      $achoua = true;
+                      $iParcelaAtual = $a;
                       $iMaxParc = $unicont;
+                      $iDebitoValor = $k00_valor;
                       break;
                     }
                   }
@@ -1152,6 +1171,37 @@ for ($vez = 0; $vez <= 1; $vez++) {
                     $k00_dtvenc = "";
                     $k00_valor = 0;
                   } else {
+
+                    // verifica se a parcela já está vencida, e pega a data da próxima parcela, caso seja a ultima parcela
+                    // não faz nada, continua com a mesma data.
+                    if($oDataAtual->getDate() > $k00_dtvenc){
+
+                      $sDataVencimento = "";
+
+                      for ($iContParcelas = $iParcelaAtual; $iContParcelas < pg_numrows($resultfinarrecad); $iContParcelas++) {
+
+                        if(pg_result($resultfinarrecad, $iContParcelas ,"k00_dtvenc") >= date('Y-m-d', db_getsession("DB_datausu")) && $sDataVencimento == ""){
+                          $sDataVencimento = pg_result($resultfinarrecad, $iContParcelas ,"k00_dtvenc");
+                        }
+                      }
+
+                      if (empty($sDataVencimento)) {
+                        $sDataVencimento = pg_result($resultfinarrecad, (pg_numrows($resultfinarrecad) - 1) ,"k00_dtvenc");
+                      }
+
+                      $iDebitoValor = 0;
+                      $aCalculoDebitos = db_utils::makeCollectionFromRecord(
+                        debitos_matricula( $j23_matric, 0, pg_result($resultfinarrecad, 0 ,"k00_tipo"), strtotime($sDataVencimento), db_getsession("DB_anousu"), "", "", " and arrecad.k00_numpar = {$unicont}", true ),
+                        function($oItem) use(&$iDebitoValor, &$iDebitoJuros, &$iDebitoMulta) {
+
+                          $iDebitoValor += $oItem->vlrcor;
+                          $iDebitoJuros += $oItem->vlrjuros;
+                          $iDebitoMulta += $oItem->vlrmulta;
+                        }
+                      );
+
+                      $k00_dtvenc = $sDataVencimento;
+                    }
 
 										$k03_numprepar = '';
 										if ($gerar == "dados" and $achoua){
@@ -1184,7 +1234,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
 												db_inicio_transacao();
 
 											  try {
-	                        $oRecibo = new recibo(2, null, 5);
+                          $oRecibo = new recibo(2, null, 5);
 	                        $oRecibo->addNumpre($k00_numpre,$k00_numpar);
 	                        $oRecibo->setNumBco($oRegraEmissao->getCodConvenioCobranca());
 	                        $oRecibo->setDataRecibo($k00_dtvenc);
@@ -1209,7 +1259,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
 
                   }
 
-                  $k00_valor += $taxa_bancaria;
+                  $iDebitoValor += $taxa_bancaria;
 
                   if ($gerar == "dados") {
                     ////////
@@ -1219,9 +1269,9 @@ for ($vez = 0; $vez <= 1; $vez++) {
                       } else {
                         fputs($clabre_arquivo->arquivo, db_formatar($k00_dtvenc, 'd'));
                       }
-                      fputs($clabre_arquivo->arquivo, db_formatar($k00_valor, 'f', ' ', 15));
-                      fputs($clabre_arquivo->arquivo, db_formatar($k00_valor * $k02_juros / 100, 'f', ' ', 15));
-                      fputs($clabre_arquivo->arquivo, db_formatar($k00_valor * $k140_faixa / 100, 'f', ' ', 15));
+                      fputs($clabre_arquivo->arquivo, db_formatar($iDebitoValor, 'f', ' ', 15));
+                      fputs($clabre_arquivo->arquivo, db_formatar($iDebitoJuros, 'f', ' ', 15));
+                      fputs($clabre_arquivo->arquivo, db_formatar($iDebitoMulta, 'f', ' ', 15));
                     } else {
                       fputs($clabre_arquivo->arquivo, str_repeat(" ", 10));
                       fputs($clabre_arquivo->arquivo, db_formatar(0, 'f', ' ', 15));
@@ -1861,7 +1911,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
 
 ########################################################################################################################
 // Melhoria na emissao para gerar parcelas e unicas opcionais de vencimentos, aplicando correção
-include("cad4_geracarneiptutxtParcelasOpcionais.php");
+include(modification("cad4_geracarneiptutxtParcelasOpcionais.php"));
 
 ########################################################################################################################
 

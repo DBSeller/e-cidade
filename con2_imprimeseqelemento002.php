@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-include ("fpdf151/assinatura.php");
-include ("libs/db_sql.php");
-include ("libs/db_libcontabilidade.php");
-include ("libs/db_liborcamento.php");
-include ("classes/db_orcparamrel_classe.php");
-include ("classes/db_orcparamseq_classe.php");
-include ("classes/db_orcparamelemento_classe.php");
-include("libs/db_libtxt.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_orcparamseq_classe.php"));
+include(modification("classes/db_orcparamelemento_classe.php"));
+include(modification("libs/db_libtxt.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clorcparamrel = new cl_orcparamrel;
 $clorcparamseq = new cl_orcparamseq;
@@ -50,8 +50,8 @@ $campos_elem = "o44_sequencia, o69_descr, c60_estrut, c60_descr";
 $sqlrelat = $clorcparamrel->sql_query($c69_codseq, $campos);
 $sqlelem  = $clorcparamelemento->sql_query_estrutural ($anousu,$c69_codseq,null,null,db_getsession("DB_instit")." group by $campos_elem, o69_codseq ",$campos_elem,"o69_codseq");
 
-$result1  = pg_exec($sqlrelat);
-$result2  = pg_exec($sqlelem);
+$result1  = db_query($sqlrelat);
+$result2  = db_query($sqlelem);
 
 if(pg_numrows($result1)==0||pg_numrows($result2)==0) {
 	db_msgbox("Não existem parâmetros cadastrados para este exercício!");

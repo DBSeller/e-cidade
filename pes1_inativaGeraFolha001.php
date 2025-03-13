@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_utils.php");
-  require_once("libs/db_usuariosonline.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("classes/db_rhgeracaofolha_classe.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("classes/db_rhgeracaofolha_classe.php"));
   
   $oRhGeracaoFolha = new cl_rhgeracaofolha(); 
   $oRotulo = new rotulocampo();
@@ -39,6 +39,7 @@
   $oRotulo->label('rh102_descricao');
   $oRotulo->label('rh102_anousu');
   $oRotulo->label('rh102_mesusu');
+  $oRotulo->label('rh103_tipofolha');
   
   $oPost = db_utils::postMemory($HTTP_POST_VARS);
 
@@ -110,6 +111,16 @@
             ?>
           </td>
         </tr>
+        <tr>
+          <td title="<?=$Trh103_tipofolha." - ".$Trh103_tipofolha;?>">
+            <b>Tipo de folha:</b>
+          </td>
+          <td>
+            <?
+              db_input("rh103_tipofolha", 50, $Irh102_anousu, true, "text", 3);
+            ?>
+          </td>
+        </tr>
       </table>
     </fieldset>
 
@@ -141,7 +152,7 @@
    *  Abre Pesquisa
    */
   function js_pesquisar() {
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhgeracaofolha','func_rhgeracaofolha.php?ativas=true&funcao_js=parent.js_preenchePesquisa|rh102_sequencial|rh102_descricao|rh102_mesusu|rh102_anousu','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhgeracaofolha','func_rhgeracaofolha.php?ativas=true&funcao_js=parent.js_preenchePesquisa|rh102_sequencial|rh102_descricao|rh102_mesusu|rh102_anousu|rh103_tipofolha','Pesquisa',true);
   }
   
   /**
@@ -149,7 +160,7 @@
    */
   function js_inativar() {
     
-    if ( $('rh102_sequencial').value == "" || $('rh102_descricao').value == "" || $('rh102_mesusu').value == "" || $('rh102_anousu').value == "") {
+    if ( $('rh102_sequencial').value == "" || $('rh102_descricao').value == "" || $('rh102_mesusu').value == "" || $('rh102_anousu').value == "" || $('rh103_tipofolha').value == "") {
     
       alert("Por favor, preencha o formulário corretamente.");
       return false;
@@ -163,12 +174,13 @@
   /**
    * Esta função preenche os dados do formulário com os dados buscados na lookup
    */
-  function js_preenchePesquisa(iSequencial, sDescricao, iMesUso, iAnoUso) {
+  function js_preenchePesquisa(iSequencial, sDescricao, iMesUso, iAnoUso, rh103_tipofolha) {
   
     $('rh102_sequencial').value = iSequencial;
     $('rh102_descricao').value  = sDescricao;
     $('rh102_mesusu').value     = iMesUso;
     $('rh102_anousu').value     = iAnoUso;
+    $('rh103_tipofolha').value = rh103_tipofolha;
     $('btnInativar').enable();
     db_iframe_rhgeracaofolha.hide();
   }
@@ -181,6 +193,7 @@
   $('rh102_descricao').value  = "";
   $('rh102_mesusu').value     = "";
   $('rh102_anousu').value     = "";
+  $('rh103_tipofolha').value = "";
   $('btnInativar').disable();
 </script>
 

@@ -68,7 +68,7 @@ db_input('ed03_c_abrevia',10,$Ied03_c_abrevia,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_series','func_series.php?funcao_js=parent.js_preenchepesquisa|ed03_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_series','func_series.php?funcao_js=parent.js_preenchepesquisa|ed03_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_series.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
   
-include("classes/db_empage_classe.php");
-include("classes/db_empagetipo_classe.php");
-include("classes/db_empagemov_classe.php");
-include("classes/db_empagemovforma_classe.php");
-include("classes/db_empagemovconta_classe.php");
-include("classes/db_empord_classe.php");
-include("classes/db_empagepag_classe.php");
-include("classes/db_empageslip_classe.php");
-include("classes/db_pcfornecon_classe.php");
+include(modification("classes/db_empage_classe.php"));
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("classes/db_empagemovforma_classe.php"));
+include(modification("classes/db_empagemovconta_classe.php"));
+include(modification("classes/db_empord_classe.php"));
+include(modification("classes/db_empagepag_classe.php"));
+include(modification("classes/db_empageslip_classe.php"));
+include(modification("classes/db_pcfornecon_classe.php"));
 $clempage = new cl_empage;
 $clempagetipo = new cl_empagetipo;
 $clempagemov = new cl_empagemov;
@@ -475,7 +475,7 @@ if(isset($nova)){
    
 //sempre que ja existir agenda entra nesta opcao  
  if(isset($e80_codage) && empty($pesquisar)){  
-	include("forms/db_frmempage.php");
+	include(modification("forms/db_frmempage.php"));
 
 //pela primeira vez que entrar neste arquivo, entra nesta opcao para digitar a data da agenda 
 //entra nesta opcao para escolher uma das agendas ou então selecionar uma jah existente
@@ -556,7 +556,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 
 function js_empage(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
 }
 function js_mostra(codage,data){
   arr = data.split('-');

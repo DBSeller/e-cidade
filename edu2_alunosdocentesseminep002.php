@@ -1,183 +1,184 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_utils.php");
+use ECidade\Educacao\Escola\Censo\Censo;
+use ECidade\Educacao\Escola\Censo\Helpers\Pessoa as PessoaHelper;
+use ECidade\Educacao\Escola\Censo\Identificacao\DadosExportacao as DadosExportacaoIdentificacao;
+use ECidade\Educacao\Escola\Censo\Identificacao\Model\Pessoa;
+use ECidade\Educacao\Escola\Registry\CensoMunicipioRegistry;
 
-$oGet = db_utils::postMemory($_GET);
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
 
-$aListaAlunos  = array();
-$aListaDocente = array();
-$iAno          = $oGet->ano;
-$sEscolas      = $oGet->sEscola;
-/**
- * Todos os tipos, ou somente alunos
- */
-if ($oGet->tipo == 1 || $oGet->tipo == 3) {
-  
-  $oDaoAluno = db_utils::getDao("aluno");
-  $sCampos        = " ed47_i_codigo as codigo,";
-  $sCampos       .= " to_char(ed47_d_nasc, 'dd/mm/yyyy') as datanascimento,";
-  $sCampos       .= " ed47_v_nome as nomealuno,";
-  $sCampos       .= " ed47_v_pai as nomepaialuno, ";
-  $sCampos       .= " ed47_v_mae as nomemaealuno,";
-  $sCampos       .= " ed47_i_codigo as codigoalunoinep, ";
-  $sCampos       .= " ed261_c_nome as municipionascimento,";
-  $sCampos       .= " ed260_c_sigla as ufnascimento,";
-  $sCampos       .= " ed47_c_codigoinep as idalunoinep";
-  $sWhere         = "     ed47_c_codigoinep = '' ";
-  $sWhere        .= " and ed18_i_codigo in({$sEscolas})";
-  $sWhere        .= " and ed52_i_ano    = {$iAno}";
-  $sWhere        .= " and ed60_c_situacao ='MATRICULADO' ";
-  $sSqlDadosAluno = $oDaoAluno->sql_query_censo_inep(null, $sCampos, "ed47_i_codigo", $sWhere); 
-  $rsDadosAluno   = $oDaoAluno->sql_record($sSqlDadosAluno);
-  $iLinhas        = $oDaoAluno->numrows;
-  for ($iContador = 0; $iContador < $iLinhas; $iContador++) {
-    $aListaAlunos[] = db_utils::fieldsMemory($rsDadosAluno, $iContador); 
-  }
-}
-/**
- * Todos os tipos, ou somente Docentes
- */
-if ($oGet->tipo == 1 || $oGet->tipo == 2) {
-
-  $oDaoRecHumano    = db_utils::getdao("rechumano");
-  $sCampos          = "distinct z01_numcgm as codigo, ";
-  $sCampos         .= "to_char(z01_nasc, 'dd/mm/yyyy') as datadenascimento, ";
-  $sCampos         .= "z01_mae    as nomemaedocente, ";
-  $sCampos         .= "z01_cgccpf as numerocpf, ";
-  $sCampos         .= "censomunicender.ed261_c_nome  as municipionascimento, ";
-  $sCampos         .= "censoufnat.ed260_c_sigla as ufnascimento,";
-  $sCampos         .= "z01_nome as nomedocente, ";
-  $sCampos         .= "ed20_i_codigo as codigodocenteescola,";
-  $sCampos         .= "ed20_i_codigoinep as idinep";
-  
-  $sWhere           = " ed20_i_codigoinep is null ";
-  $sWhere          .= " and ed52_i_ano = {$iAno} ";
-  $sWhere          .= " and ed01_c_regencia = 'S' ";
-  $sWhere          .= " and  ed75_i_escola  in({$sEscolas})";
-  $sSqlDadosDocente = $oDaoRecHumano->sql_query_solicitaseminep("", $sCampos, "", $sWhere);
-  $rsDadosDocente   = $oDaoRecHumano->sql_record($sSqlDadosDocente);
-  $iLinhas          = $oDaoRecHumano->numrows;
-  
-  /**
-   * Agrupamos os dados do docente por codigo de CGM.
-   */
-  for ($iContador = 0; $iContador < $iLinhas; $iContador++) {
-    
-    $oDadosDocente = db_utils::fieldsMemory($rsDadosDocente, $iContador);
-    if (!isset($aListaDocente[$oDadosDocente->codigo])) {
-      $aListaDocente[$oDadosDocente->codigo] = $oDadosDocente;
+try {
+    if (!isset($_GET['filtros'])) {
+        throw new Exception('Não foi informado os filros para emissão do relatório.');
     }
-  }
-}
-$oPdf    = new Pdf("L");
-$oPdf->Open();
-$oPdf->AliasNbPages();
-$oPdf->SetAutoPageBreak(false);
-if (count($aListaAlunos) == 0 && count($aListaDocente) == 0) {
-  
-  /**
-   * @todo criar mensgaem de erro quando nao existir registros.
-   */
-  db_redireciona('db_erro.php?erro="Sem dados para gerar relatorio');
-}
-$lPrimeiraImpressao = true;
-$iAlturaLinha       = 4;
+    $filtros = JSON::create()->parse(base64_decode($_GET['filtros']));
 
-foreach ($aListaAlunos as $oAluno) {
-  
-  if ($oPdf->GetY() > $oPdf->h - 25 || $lPrimeiraImpressao) {
-    
-     $head1 = 'Listagem de Alunos sem Código INEP';
-     $oPdf->AddPage();
-     $oPdf->SetFillColor('240');
-     $oPdf->setfont('arial', 'b', 7);
-     $oPdf->cell(20, $iAlturaLinha, 'Código', "TBR", 0, "C", 1);
-     $oPdf->cell(70, $iAlturaLinha, 'Aluno', 1, 0, "C", 1);
-     $oPdf->cell(20, $iAlturaLinha, 'Nascimento', 1, 0, "C", 1);
-     $oPdf->cell(60, $iAlturaLinha, 'Mãe', 1, 0, "C", 1);
-     $oPdf->cell(60, $iAlturaLinha, 'Pai', 1, 0, "C", 1);          
-     $oPdf->cell(40, $iAlturaLinha, 'Naturalidade', 1, 0, "C", 1);
-     $oPdf->cell(8, $iAlturaLinha, 'UF', "TBL", 1, "C", 1);
-     $lPrimeiraImpressao = false;    
-  }
-  
-  $oPdf->setfont('arial', '', 6);  
-  $oPdf->cell(20, $iAlturaLinha, $oAluno->codigo, "TBR", 0, "R");
-  $oPdf->cell(70, $iAlturaLinha, $oAluno->nomealuno, 1, 0, "L");
-  $oPdf->cell(20, $iAlturaLinha, $oAluno->datanascimento, 1, 0, "C");
-  $oPdf->cell(60, $iAlturaLinha, $oAluno->nomemaealuno, 1, 0, "L");
-  $oPdf->cell(60, $iAlturaLinha, $oAluno->nomepaialuno, 1, 0, "L");    
-  $oPdf->cell(40, $iAlturaLinha, $oAluno->municipionascimento, 1, 0, "L");
-  $oPdf->cell(8, $iAlturaLinha, $oAluno->ufnascimento, "TBL", 1, "L");
-  
+    $censo = new Censo($filtros->ano);
+    $escolas = array_map(function ($codigo) {
+        return EscolaRepository::getEscolaByCodigo($codigo);
+    }, $filtros->escolas);
+
+    $dadosExportacao = new DadosExportacaoIdentificacao();
+    $dadosExportacao->setCenso($censo);
+    $dadosExportacao->setEscolas($escolas);
+    $dadosExportacao->processar();
+
+    $profissionais = [];
+    $alunos = [];
+
+    $pessoas = $dadosExportacao->getService()->getPessoas();
+    foreach ($pessoas as $pessoa) {
+        if (PessoaHelper::isAluno($pessoa->getCodigoPessoa())) {
+            $alunos[] = $pessoa;
+        } else {
+            $profissionais[] = $pessoa;
+        }
+    }
+
+
+    $pdf = new Pdf("L");
+    $pdf->Open();
+    $pdf->AliasNbPages();
+    $pdf->SetAutoPageBreak(false, 15);
+    $pdf->SetFillColor('240');
+
+    imprimirAlunos($pdf, $alunos);
+    imprimirProfissionais($pdf, $profissionais);
+
+    $pdf->Output();
+} catch (Exception $e) {
+    $sMsg = urlencode($e->getMessage());
+    db_redireciona('db_erros.php?fechar=true&db_erro=' . $sMsg);
 }
-if (count($aListaAlunos) > 0) {
-  
-  $oPdf->setfont('arial', 'b', 8);
-  $oPdf->cell(230, $iAlturaLinha, "Total de Alunos", "TBR", 0, "R");
-  $oPdf->setfont('arial', '', 7);
-  $oPdf->cell(48, $iAlturaLinha, count($aListaAlunos), "TBL", 0 ,"R");
+
+/**
+ * @param FPDF $pdf
+ * @param string $label1
+ * @param string $label2
+ */
+function imprimeHeader(FPDF $pdf, $label1 = 'Código', $label2 = "Aluno")
+{
+    $pdf->AddPage();
+    $pdf->setfont('arial', 'b', 8);
+    $pdf->cell(20, 4, $label1, "TBR", 0, "C", 1);
+    $pdf->cell(90, 4, $label2, 1, 0, "C", 1);
+    $pdf->cell(20, 4, 'Nascimento', 1, 0, "C", 1);
+    $pdf->cell(90, 4, 'Mãe', 1, 0, "C", 1);
+    $pdf->cell(50, 4, 'Naturalidade', 1, 0, "C", 1);
+    $pdf->cell(5, 4, 'UF', "TBL", 1, "C", 1);
+    $pdf->setfont('arial', '', 8);
 }
-$lPrimeiraImpressao = true;  
-foreach ($aListaDocente as $oDocente) {
-  
-  $head1 = 'Listagem de Docentes sem Código INEP';
-  if ($oPdf->GetY() > $oPdf->h - 25 || $lPrimeiraImpressao) {
-  
-    $oPdf->AddPage();
-    $oPdf->SetFillColor('240');
-    $oPdf->setfont('arial', 'b', 8);
-    $oPdf->cell(20, $iAlturaLinha, 'Código', "TBR", 0, "C", 1);
-    $oPdf->cell(90, $iAlturaLinha, 'Docente', 1, 0, "C", 1);
-    $oPdf->cell(20, $iAlturaLinha, 'Nascimento', 1, 0, "C", 1);
-    $oPdf->cell(90, $iAlturaLinha, 'Mãe', 1, 0, "C", 1);
-    $oPdf->cell(50, $iAlturaLinha, 'Naturalidade', 1, 0, "C", 1);
-    $oPdf->cell(5, $iAlturaLinha, 'UF', "TBL", 1, "C", 1);
-    $lPrimeiraImpressao = false;    
-    
-  }
-  
-  $oPdf->setfont('arial', '', 6);  
-  $oPdf->cell(20, $iAlturaLinha, $oDocente->codigo, "TBR", 0, "R");
-  $oPdf->cell(90, $iAlturaLinha, $oDocente->nomedocente, 1, 0, "L");
-  $oPdf->cell(20, $iAlturaLinha, $oDocente->datadenascimento, 1, 0, "C");
-  $oPdf->cell(90, $iAlturaLinha, $oDocente->nomemaedocente, 1, 0, "L");
-  $oPdf->cell(50, $iAlturaLinha, $oDocente->municipionascimento, 1, 0, "L");
-  $oPdf->cell(5, $iAlturaLinha, $oDocente->ufnascimento, "TBL", 1, "L");
-  
+
+/**
+ * @param FPDF $pdf
+ * @param Pessoa $pessoa
+ * @throws Exception
+ */
+function imprimePessoa(FPDF $pdf, Pessoa $pessoa)
+{
+    $codigoMunicipioNascimento = $pessoa->getCodigoMunicipioNascimento();
+    $codigoComMascara = $pessoa->getCodigoPessoa();
+    $codigo = PessoaHelper::decode($codigoComMascara);
+
+    if (empty($codigoMunicipioNascimento) && $pessoa->getNacionalidade() !== 3) {
+        $tipo = PessoaHelper::isAluno($codigoComMascara) ? 'Aluno' : 'Profissional';
+        throw new Exception(sprintf('%s %s não possui município de nascimento informado.', $tipo, $pessoa->getNome()));
+    }
+
+    $municipioNascimento = 'ESTRANGEIRO';
+    $uFMunicipioNascimento = '';
+    if ($pessoa->getNacionalidade() !== 3) {
+        $municipio = CensoMunicipioRegistry::get($codigoMunicipioNascimento);
+        $municipioNascimento = $municipio->getNome();
+        $uFMunicipioNascimento = $municipio->getCensoUf()->getSigla();
+    }
+
+    $pdf->cell(20, 4, $codigo, "TBR", 0, "C");
+    $pdf->cell(90, 4, $pessoa->getNome(), 1, 0, "L");
+    $pdf->cell(20, 4, $pessoa->getDataNascimento(), 1, 0, "C");
+    $pdf->cell(90, 4, $pessoa->getFiliacao1(), 1, 0, "L");
+    $pdf->cell(50, 4, $municipioNascimento, 1, 0, "L");
+    $pdf->cell(5, 4, $uFMunicipioNascimento, "TBL", 1, "C");
 }
-if (count($aListaDocente) > 0) {
-  
-  $oPdf->setfont('arial', 'b', 8);
-  $oPdf->cell(220, $iAlturaLinha, "Total de Docentes", "TBR", 0, "R");
-  $oPdf->setfont('arial', '', 7);
-  $oPdf->cell(55, $iAlturaLinha, count($aListaDocente), "TBL", 0 , "R");
+
+/**
+ * @param FPDF $pdf
+ * @param string $label
+ * @param integer $total
+ */
+function imprimeTotalizador(FPDF $pdf, $label, $total)
+{
+    $pdf->setfont('arial', 'B', 8);
+    $pdf->cell(230, 4, "Total de {$label}", "TBR", 0, "R");
+    $pdf->cell(48, 4, $total, "TBL", 0, "R");
+    $pdf->setfont('arial', '', 8);
 }
-$oPdf->Output();
-?>
+
+/**
+ * @param FPDF $pdf
+ * @param Pessoa[] $alunos
+ * @throws Exception
+ */
+function imprimirAlunos(FPDF $pdf, array $alunos)
+{
+    global $head2;
+    $head2 = 'Listagem de Alunos sem Código INEP';
+    imprimeHeader($pdf);
+    foreach ($alunos as $aluno) {
+        if ($pdf->getY() >= ($pdf->h - 18)) {
+            imprimeHeader($pdf);
+        }
+        imprimePessoa($pdf, $aluno);
+    }
+
+    imprimeTotalizador($pdf, 'Alunos', count($alunos));
+}
+
+/**
+ * @param FPDF $pdf
+ * @param Pessoa[] $profissionais
+ * @throws Exception
+ */
+function imprimirProfissionais(FPDF $pdf, array $profissionais)
+{
+    global $head2;
+    $head2 = 'Listagem de Docentes sem Código INEP';
+    imprimeHeader($pdf, 'CPF', 'Docente');
+
+    foreach ($profissionais as $profissional) {
+        if ($pdf->getY() >= ($pdf->h - 18)) {
+            imprimeHeader($pdf, 'CGM', 'Docente');
+        }
+
+        imprimePessoa($pdf, $profissional);
+    }
+
+    imprimeTotalizador($pdf, 'Docentes', count($profissionais));
+}

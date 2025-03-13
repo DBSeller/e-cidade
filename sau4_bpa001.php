@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_stdlibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo           = new rotulocampo ();
 $oDaoSauFechamento  = db_utils::getdao('sau_fechamento');
@@ -363,7 +363,7 @@ function js_listUnidades() {
 }
 function js_pesquisasd98_i_fechamento(mostra) {
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_sau_fechamento',
                       'func_sau_fechamento.php?funcao_js=parent.js_mostrasau_fechamento1|sd97_i_compmes|sd97_i_compano'+
                       '|sd97_i_financiamento|sd65_c_nome|sd97_d_dataini|sd97_d_datafim|sd97_i_codigo','Pesquisa',true);
@@ -461,7 +461,7 @@ if (isset($gerararquivo)) {
 
   /* Seleciona o codigo da ultima reliase para informar a versão so programa */
   $sqlCodRelease = " select db30_codrelease as ultimarelease from db_versao order by db30_codver desc limit 1 ";
-  $rsCodRelease  = pg_query($sqlCodRelease);
+  $rsCodRelease  = db_query($sqlCodRelease);
 
   /* Seta filtros e opções da geração */
   $oDados->iFechamento    = $sd97_i_codigo;
@@ -482,7 +482,7 @@ if (isset($gerararquivo)) {
   /*select da produção do BPA*/
   $sSql                   = $oDaoSauFecharquivo->sql_query_prd_bpa($oDados);
   $sErro                  = "Erro ao selecionar registros. <p>Comunique o adminstrador.";
-  $rsProducao             = pg_query ($sSql) or die ($sErro);
+  $rsProducao             = db_query ($sSql) or die ($sErro);
   $iLinhasProducao        = pg_num_rows ($rsProducao);
 
   if ($iLinhasProducao == 0) {
@@ -494,7 +494,7 @@ if (isset($gerararquivo)) {
     /* select do cabeçalho */
     $sSql            = $oDaoSauFecharquivo->sql_query_cbr_bpa($oDados,$sSql);
     $sErro           = "Erro ao selecionar o Cabeçalho. <p>Comunique o adminstrador.";
-    $rsCabecalho     = pg_query($sSql) or die ($sErro);
+    $rsCabecalho     = db_query($sSql) or die ($sErro);
 
     /* Monta nome do arquivo */
     $sAbrevMes       = data_farmacia($sd97_i_compano,$sd97_i_compmes."M");

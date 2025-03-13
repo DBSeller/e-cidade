@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -358,7 +358,7 @@ class cl_movrel {
      $sql .= " where 1 = 1 ".$sql1;
 //     $sql .= "oid = '$oid'";
 //     echo "<br><br>  sql_movrel --> ".$sql;
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "arquivo gerado pelo sistema a partir da leitura de nao Alterado. Alteracao Abortada.\\n";

@@ -36,7 +36,7 @@
  * @copyright 2003 Laurent PASSEBECQ
 **/
 
-require_once('fpdf.php');
+require_once(modification('fpdf151/label/fpdf.php'));
 
 class PDF_Label extends FPDF {
 
@@ -118,7 +118,7 @@ class PDF_Label extends FPDF {
 			$Tformat = $this->_Avery_Labels[$format];
 		}
 
-		parent::FPDF('P', $Tformat['metric'], $Tformat['paper-size']);
+		parent::__construct('P', $Tformat['metric'], $Tformat['paper-size']);
 		$this->_Set_Format($Tformat);
 		$this->Set_Font_Name('Arial');
 		$this->SetMargins(0,0); 

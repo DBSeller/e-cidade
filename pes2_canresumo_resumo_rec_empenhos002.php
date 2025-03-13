@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -89,6 +89,7 @@ select rubric,
              and rh72_mesusu   = $mes
              and rh72_siglaarq = '$sigla'
              and rh27_pd != 3
+             and rh27_instit = ".db_getsession('DB_instit')."
 
         union all
 
@@ -118,7 +119,7 @@ select rubric,
            where rh79_anousu   = $ano
              and rh79_mesusu   = $mes
              and rh79_siglaarq = '$sigla'
-             and rh27_pd !=  3";
+             and rh27_pd !=  3 and rh27_instit = ".db_getsession('DB_instit');
 if($ponto == 's'){
 $sql .= "
           union all
@@ -158,7 +159,7 @@ $sql .= "
 
 ";
 //echo $sql;exit;
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if($xxnum == 0){
   db_redireciona('db_erros.php?fechar=true&db_erro=Não nenhum registro encontrado no período de '.$mes.' / '.$ano);

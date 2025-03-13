@@ -1,80 +1,80 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: orcamento
 //CLASSE DA ENTIDADE orcprograma
-class cl_orcprograma { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $o54_anousu = 0; 
-   var $o54_programa = 0; 
-   var $o54_descr = null; 
-   var $o54_codtri = null; 
-   var $o54_finali = null; 
-   var $o54_problema = null; 
-   var $o54_publicoalvo = null; 
-   var $o54_justificativa = null; 
-   var $o54_objsetorassociado = null; 
-   var $o54_tipoprograma = 0; 
-   var $o54_estrategiaimp = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_orcprograma {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $o54_anousu = 0;
+   var $o54_programa = 0;
+   var $o54_descr = null;
+   var $o54_codtri = null;
+   var $o54_finali = null;
+   var $o54_problema = null;
+   var $o54_publicoalvo = null;
+   var $o54_justificativa = null;
+   var $o54_objsetorassociado = null;
+   var $o54_tipoprograma = 0;
+   var $o54_estrategiaimp = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 o54_anousu = int4 = Exercício 
-                 o54_programa = int4 = Programa 
-                 o54_descr = varchar(40) = Descrição 
-                 o54_codtri = varchar(10) = Código tribunal 
-                 o54_finali = text = Finalidade 
-                 o54_problema = text = Problema 
-                 o54_publicoalvo = text = Público Alvo 
-                 o54_justificativa = text = Justificativa 
-                 o54_objsetorassociado = text = Objetivo Setor Associado 
-                 o54_tipoprograma = int4 = Tipo de Programa 
-                 o54_estrategiaimp = text = Estratégia de Implementação do Programa 
+                 o54_anousu = int4 = Exercício
+                 o54_programa = int4 = Programa
+                 o54_descr = varchar(40) = Descrição
+                 o54_codtri = varchar(10) = Código tribunal
+                 o54_finali = text = Finalidade
+                 o54_problema = text = Problema
+                 o54_publicoalvo = text = Público Alvo
+                 o54_justificativa = text = Justificativa
+                 o54_objsetorassociado = text = Objetivo Setor Associado
+                 o54_tipoprograma = int4 = Tipo de Programa
+                 o54_estrategiaimp = text = Estratégia de Implementação do Programa
                  ";
-   //funcao construtor da classe 
-   function cl_orcprograma() { 
+   //funcao construtor da classe
+   function cl_orcprograma() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("orcprograma"); 
+     $this->rotulo = new rotulo("orcprograma");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -102,9 +102,9 @@ class cl_orcprograma {
      }
    }
    // funcao para inclusao
-   function incluir ($o54_anousu,$o54_programa){ 
+   function incluir ($o54_anousu,$o54_programa){
       $this->atualizacampos();
-     if($this->o54_descr == null ){ 
+     if($this->o54_descr == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "o54_descr";
        $this->erro_banco = "";
@@ -113,7 +113,7 @@ class cl_orcprograma {
        $this->erro_status = "0";
        return false;
      }
-     if($this->o54_codtri == null ){ 
+     if($this->o54_codtri == null ){
        $this->erro_sql = " Campo Código tribunal nao Informado.";
        $this->erro_campo = "o54_codtri";
        $this->erro_banco = "";
@@ -122,7 +122,7 @@ class cl_orcprograma {
        $this->erro_status = "0";
        return false;
      }
-     if($this->o54_tipoprograma == null ){ 
+     if($this->o54_tipoprograma == null ){
        $this->erro_sql = " Campo Tipo de Programa nao Informado.";
        $this->erro_campo = "o54_tipoprograma";
        $this->erro_banco = "";
@@ -131,9 +131,9 @@ class cl_orcprograma {
        $this->erro_status = "0";
        return false;
      }
-       $this->o54_anousu = $o54_anousu; 
-       $this->o54_programa = $o54_programa; 
-     if(($this->o54_anousu == null) || ($this->o54_anousu == "") ){ 
+       $this->o54_anousu = $o54_anousu;
+       $this->o54_programa = $o54_programa;
+     if(($this->o54_anousu == null) || ($this->o54_anousu == "") ){
        $this->erro_sql = " Campo o54_anousu nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -141,7 +141,7 @@ class cl_orcprograma {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->o54_programa == null) || ($this->o54_programa == "") ){ 
+     if(($this->o54_programa == null) || ($this->o54_programa == "") ){
        $this->erro_sql = " Campo o54_programa nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -150,33 +150,33 @@ class cl_orcprograma {
        return false;
      }
      $sql = "insert into orcprograma(
-                                       o54_anousu 
-                                      ,o54_programa 
-                                      ,o54_descr 
-                                      ,o54_codtri 
-                                      ,o54_finali 
-                                      ,o54_problema 
-                                      ,o54_publicoalvo 
-                                      ,o54_justificativa 
-                                      ,o54_objsetorassociado 
-                                      ,o54_tipoprograma 
-                                      ,o54_estrategiaimp 
+                                       o54_anousu
+                                      ,o54_programa
+                                      ,o54_descr
+                                      ,o54_codtri
+                                      ,o54_finali
+                                      ,o54_problema
+                                      ,o54_publicoalvo
+                                      ,o54_justificativa
+                                      ,o54_objsetorassociado
+                                      ,o54_tipoprograma
+                                      ,o54_estrategiaimp
                        )
                 values (
-                                $this->o54_anousu 
-                               ,$this->o54_programa 
-                               ,'$this->o54_descr' 
-                               ,'$this->o54_codtri' 
-                               ,'$this->o54_finali' 
-                               ,'$this->o54_problema' 
-                               ,'$this->o54_publicoalvo' 
-                               ,'$this->o54_justificativa' 
-                               ,'$this->o54_objsetorassociado' 
-                               ,$this->o54_tipoprograma 
-                               ,'$this->o54_estrategiaimp' 
+                                $this->o54_anousu
+                               ,$this->o54_programa
+                               ,'$this->o54_descr'
+                               ,'$this->o54_codtri'
+                               ,'$this->o54_finali'
+                               ,'$this->o54_problema'
+                               ,'$this->o54_publicoalvo'
+                               ,'$this->o54_justificativa'
+                               ,'$this->o54_objsetorassociado'
+                               ,$this->o54_tipoprograma
+                               ,'$this->o54_estrategiaimp'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Programas Orçamento ($this->o54_anousu."-".$this->o54_programa) nao Incluído. Inclusao Abortada.";
@@ -219,16 +219,16 @@ class cl_orcprograma {
        $resac = db_query("insert into db_acount values($acount,752,13651,'','".AddSlashes(pg_result($resaco,0,'o54_estrategiaimp'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($o54_anousu=null,$o54_programa=null) { 
+   function alterar ($o54_anousu=null,$o54_programa=null) {
       $this->atualizacampos();
      $sql = " update orcprograma set ";
      $virgula = "";
-     if(trim($this->o54_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_anousu"])){ 
+     if(trim($this->o54_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_anousu"])){
        $sql  .= $virgula." o54_anousu = $this->o54_anousu ";
        $virgula = ",";
-       if(trim($this->o54_anousu) == null ){ 
+       if(trim($this->o54_anousu) == null ){
          $this->erro_sql = " Campo Exercício nao Informado.";
          $this->erro_campo = "o54_anousu";
          $this->erro_banco = "";
@@ -238,10 +238,10 @@ class cl_orcprograma {
          return false;
        }
      }
-     if(trim($this->o54_programa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_programa"])){ 
+     if(trim($this->o54_programa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_programa"])){
        $sql  .= $virgula." o54_programa = $this->o54_programa ";
        $virgula = ",";
-       if(trim($this->o54_programa) == null ){ 
+       if(trim($this->o54_programa) == null ){
          $this->erro_sql = " Campo Programa nao Informado.";
          $this->erro_campo = "o54_programa";
          $this->erro_banco = "";
@@ -251,10 +251,10 @@ class cl_orcprograma {
          return false;
        }
      }
-     if(trim($this->o54_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_descr"])){ 
+     if(trim($this->o54_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_descr"])){
        $sql  .= $virgula." o54_descr = '$this->o54_descr' ";
        $virgula = ",";
-       if(trim($this->o54_descr) == null ){ 
+       if(trim($this->o54_descr) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "o54_descr";
          $this->erro_banco = "";
@@ -264,10 +264,10 @@ class cl_orcprograma {
          return false;
        }
      }
-     if(trim($this->o54_codtri)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_codtri"])){ 
+     if(trim($this->o54_codtri)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_codtri"])){
        $sql  .= $virgula." o54_codtri = '$this->o54_codtri' ";
        $virgula = ",";
-       if(trim($this->o54_codtri) == null ){ 
+       if(trim($this->o54_codtri) == null ){
          $this->erro_sql = " Campo Código tribunal nao Informado.";
          $this->erro_campo = "o54_codtri";
          $this->erro_banco = "";
@@ -277,30 +277,30 @@ class cl_orcprograma {
          return false;
        }
      }
-     if(trim($this->o54_finali)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_finali"])){ 
+     if(trim($this->o54_finali)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_finali"])){
        $sql  .= $virgula." o54_finali = '$this->o54_finali' ";
        $virgula = ",";
      }
-     if(trim($this->o54_problema)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_problema"])){ 
+     if(trim($this->o54_problema)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_problema"])){
        $sql  .= $virgula." o54_problema = '$this->o54_problema' ";
        $virgula = ",";
      }
-     if(trim($this->o54_publicoalvo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_publicoalvo"])){ 
+     if(trim($this->o54_publicoalvo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_publicoalvo"])){
        $sql  .= $virgula." o54_publicoalvo = '$this->o54_publicoalvo' ";
        $virgula = ",";
      }
-     if(trim($this->o54_justificativa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_justificativa"])){ 
+     if(trim($this->o54_justificativa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_justificativa"])){
        $sql  .= $virgula." o54_justificativa = '$this->o54_justificativa' ";
        $virgula = ",";
      }
-     if(trim($this->o54_objsetorassociado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_objsetorassociado"])){ 
+     if(trim($this->o54_objsetorassociado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_objsetorassociado"])){
        $sql  .= $virgula." o54_objsetorassociado = '$this->o54_objsetorassociado' ";
        $virgula = ",";
      }
-     if(trim($this->o54_tipoprograma)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_tipoprograma"])){ 
+     if(trim($this->o54_tipoprograma)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_tipoprograma"])){
        $sql  .= $virgula." o54_tipoprograma = $this->o54_tipoprograma ";
        $virgula = ",";
-       if(trim($this->o54_tipoprograma) == null ){ 
+       if(trim($this->o54_tipoprograma) == null ){
          $this->erro_sql = " Campo Tipo de Programa nao Informado.";
          $this->erro_campo = "o54_tipoprograma";
          $this->erro_banco = "";
@@ -310,7 +310,7 @@ class cl_orcprograma {
          return false;
        }
      }
-     if(trim($this->o54_estrategiaimp)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_estrategiaimp"])){ 
+     if(trim($this->o54_estrategiaimp)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o54_estrategiaimp"])){
        $sql  .= $virgula." o54_estrategiaimp = '$this->o54_estrategiaimp' ";
        $virgula = ",";
      }
@@ -354,7 +354,7 @@ class cl_orcprograma {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Programas Orçamento nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->o54_anousu."-".$this->o54_programa;
@@ -382,14 +382,14 @@ class cl_orcprograma {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($o54_anousu=null,$o54_programa=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($o54_anousu=null,$o54_programa=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($o54_anousu,$o54_programa));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -432,7 +432,7 @@ class cl_orcprograma {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Programas Orçamento nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$o54_anousu."-".$o54_programa;
@@ -460,11 +460,11 @@ class cl_orcprograma {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -486,11 +486,11 @@ class cl_orcprograma {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $o54_anousu=null,$o54_programa=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $o54_anousu=null,$o54_programa=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -503,23 +503,23 @@ class cl_orcprograma {
      $sql2 = "";
      if($dbwhere==""){
        if($o54_anousu!=null ){
-         $sql2 .= " where orcprograma.o54_anousu = $o54_anousu "; 
-       } 
+         $sql2 .= " where orcprograma.o54_anousu = $o54_anousu ";
+       }
        if($o54_programa!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " orcprograma.o54_programa = $o54_programa "; 
-       } 
+         }
+         $sql2 .= " orcprograma.o54_programa = $o54_programa ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -528,11 +528,11 @@ class cl_orcprograma {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $o54_anousu=null,$o54_programa=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $o54_anousu=null,$o54_programa=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -545,23 +545,23 @@ class cl_orcprograma {
      $sql2 = "";
      if($dbwhere==""){
        if($o54_anousu!=null ){
-         $sql2 .= " where orcprograma.o54_anousu = $o54_anousu "; 
-       } 
+         $sql2 .= " where orcprograma.o54_anousu = $o54_anousu ";
+       }
        if($o54_programa!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " orcprograma.o54_programa = $o54_programa "; 
-       } 
+         }
+         $sql2 .= " orcprograma.o54_programa = $o54_programa ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -570,11 +570,11 @@ class cl_orcprograma {
      }
      return $sql;
   }
-  
+
   function sql_query_buscaprogramasigfis ( $o54_anousu=null,$o54_programa=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -600,14 +600,14 @@ class cl_orcprograma {
       $sql2 .= " where ";
       }
         $sql2 .= " orcprograma.o54_programa = $o54_programa ";
-         } 
+         }
        }else if($dbwhere != ""){
         $sql2 = " where $dbwhere";
   }
         $sql .= $sql2;
         if($ordem != null ){
         $sql .= " order by ";
-        $campos_sql = split("#",$ordem);
+        $campos_sql = explode("#",$ordem);
         $virgula = "";
         for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -616,10 +616,10 @@ class cl_orcprograma {
         }
         return $sql;
   }
-  
+
   /**
-   * 
-   * Busca dados para gerar arquivo de Programa de Orçamento 
+   *
+   * Busca dados para gerar arquivo de Programa de Orçamento
    * @param String $campos
    * @param String $campos2 // Campo Agregador
    * @param String $ordem
@@ -630,11 +630,11 @@ class cl_orcprograma {
   function sql_query_programaOrcamento($campos="*", $campos2=null, $ordem=null, $dbwhere="", $sGroupBy="*" ) {
     $sql = "select ";
     if($campos != "*" ) {
-      
-      $campos_sql = split("#",$campos);
+
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++) {
-        
+
         $sql .= $virgula.$campos_sql[$i];
         $virgula = ",";
       }
@@ -644,7 +644,7 @@ class cl_orcprograma {
     if ($campos2 != null) {
       $sql .= $campos2;
     }
-    
+
     $sql .= "  from orcprograma ";
     $sql .= " inner join orcdotacao on orcdotacao.o58_anousu   = orcprograma.o54_anousu ";
     $sql .= "											 and orcdotacao.o58_programa = orcprograma.o54_programa ";
@@ -654,31 +654,30 @@ class cl_orcprograma {
     }
     $sql .= $sql2;
     if($ordem != null ) {
-      
+
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++) {
-        
+
         $sql .= $virgula.$campos_sql[$i];
         $virgula = ",";
       }
     }
     $sql .= " group by ";
     if($campos != "*" ) {
-      
-      $campos_sql = split("#",$campos);
+
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++) {
-        
+
         $sql .= $virgula.$campos_sql[$i];
         $virgula = ",";
       }
     } else {
       $sql .= $campos;
-    }    
+    }
         return $sql;
   }
-  
+
 }
-?>

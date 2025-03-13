@@ -1,4 +1,30 @@
 <?
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
 
 function db_sel_pessal($tabela,$cmp_=null,$where=null){
   global $$tabela;
@@ -167,9 +193,12 @@ function db_sel_pessal($tabela,$cmp_=null,$where=null){
 }
 
 function db_alerta_erro_eval($registro,$formula,$rubrica){
+
+  $error = error_get_last();
   $saida = ob_get_contents();
+  ob_flush();
   ob_end_clean();
-  if(strpos($saida, "Parse error")>0) {
+  if(strpos($saida, "Parse error") > 0 || !empty($error) && $error['type'] === E_PARSE) {
     db_msgbox("Erro na Formula : ".$formula." \\n\\n Matricula : ".$registro." \\n\\n Rubrica : ".$rubrica." \\n\\n Contate o Suporte !!");
     exit;
   }
@@ -265,8 +294,8 @@ function db_retorno_variaveis($ano, $mes, $registro){
   /*
   global $f001, $f002,   $f003, $f004, $f005, 
          $f006, $f006_c, $f007, $f008, $f009, 
-	 $f010, $f011,   $f012, $f013, $f014, 
-	 $f015, $f022,   $f024, $f025, $padrao;
+   $f010, $f011,   $f012, $f013, $f014, 
+   $f015, $f022,   $f024, $f025, $padrao;
   */
   $sqlvar = '
           select 0::VARCHAR||trim(substr(db_fxxx,1,11)) as f001,
@@ -288,16 +317,17 @@ function db_retorno_variaveis($ano, $mes, $registro){
                  0::VARCHAR||trim(substr(db_fxxx,177,11)) as f022,
                  0::VARCHAR||trim(substr(db_fxxx,188,11)) as f024,
                  0::VARCHAR||trim(substr(db_fxxx,199,11)) as f025,
-                 substr(db_fxxx,210,15) as padrao
+                 0::VARCHAR||trim(substr(db_fxxx,210,11)) as F030,
+                 substr(db_fxxx,221,15) as padrao
             from (
-	           select db_fxxx(rh02_regist,rh02_anousu,rh02_mesusu,'.db_getsession("DB_instit").')
+             select db_fxxx(rh02_regist,rh02_anousu,rh02_mesusu,'.db_getsession("DB_instit").')
                    from   rhpessoalmov
                    where rh02_anousu = '.$ano.'
-       		         and rh02_mesusu = '.$mes.'
+                   and rh02_mesusu = '.$mes.'
                    and rh02_regist = '.$registro.'
                    and rh02_instit = '.db_getsession("DB_instit").'
-		  ) as x';
-//		  echo $sqlvar;
+      ) as x';
+//      echo $sqlvar;
   $resultvar = db_query($sqlvar);
 
   if($resultvar == false){
@@ -353,15 +383,15 @@ function db_foto($numcgm,$db_opcao = 3,$javascript = "",$width="95",$height="120
   global $oid;
 
   if(trim($numcgm) != "" && $numcgm != null){
-	  $result_foto = db_query("select rh50_oid as oid from rhfotos where rh50_numcgm = $numcgm");
-	  if(pg_numrows($result_foto) > 0){
-	 	  db_fieldsmemory($result_foto, 0);
-	  }
+    $result_foto = db_query("select rh50_oid as oid from rhfotos where rh50_numcgm = $numcgm");
+    if(pg_numrows($result_foto) > 0){
+      db_fieldsmemory($result_foto, 0);
+    }
   }
 
   $mostrarimagem = "imagens/none1.jpeg";
   if(isset($oid)){
-  	$mostrarimagem = "func_mostrarimagem.php?oid=".$oid;
+    $mostrarimagem = "func_mostrarimagem.php?oid=".$oid;
   }
   $href = "<img src='".$mostrarimagem."' border=0 width='".$width."' height='".$height."'>";
   db_ancora("$href","$javascript","$db_opcao");
@@ -444,15 +474,18 @@ function db_mktime($string=null){
   }
 }
 function db_year($string=null){
-  return substr($string,0,4)+0;
+    $year = substr($string,0,4);
+    return intval($year);
 }
 
 function db_month($string=null){
-  return substr($string,5,2)+0;
+    $month = substr($string,5,2);
+    return intval($month);
 }
 
 function db_day($string=null){
-  return substr($string,8,2)+0;
+    $day = substr($string,8,2);
+    return intval($day);
 }
 
 function db_datedif($pmktime=null,$smktime=null, $tipo='d'){
@@ -517,12 +550,30 @@ function bb_round($valor=0,$dig=2){
   return round($valor,$dig);
 }
 
-function bb_condicaosubpes($prefixo=null){
+function bb_condicaosubpes($prefixo=null, $sNomeTabela = null) {
+  
   global $subpes;
   $retorno  = " where ".$prefixo."anousu = ".db_substr($subpes,1,4);
   $retorno .= "  and  ".$prefixo."mesusu = ".db_substr($subpes,6,2);
-  if(db_at(strtoupper($prefixo),"R45_R61_R30_R51_R05_R12_R03_R27_R57_R42_R25_R28_R41_R52_R63_R17_R60_R64_R65_R37_R66_R67_") == 0 ){
+  
+  if(db_at(strtoupper($prefixo),"R45_R61_R30_R51_R05_R12_R03_R27_R57_R42_R25_R28_R41_R52_R63_R17_R60_R64_R65_R37_R66_R67_") == 0 ){    
     $retorno .= "  and  ".$prefixo."instit = ".DB_getsession("DB_instit");
+  }
+  
+  if ($sNomeTabela != null) {
+    
+    $aSiglasMatricula = array("cv01","h07","h09","h10","h16","h18","h22","h57","h60","h72","r01","r03","r10","r14","r17","r18","r19","r20","r21","r22","r26","r28","r29","r30","r31","r34","r35","r36","r38","r40","r45","r47","r48","r51","r52","r53","r54","r57","r58","r60","r61","r63","r64","r69","r90","r91","r92","r93","r94","rh01","rh02","rh09","rh10","rh101","rh108","rh109","rh11","rh112","rh118","rh126","rh134","rh139","rh143","rh144","rh15","rh16","rh17","rh19","rh21","rh31","rh49","rh54","rh57","rh61","rh62","rh66","rh67","rh77","rh85","rh93","rh96","rh99");
+    
+    if (DBPessoal::verificarUtilizacaoEstruturaSuplementar() && in_array($prefixo, $aSiglasMatricula)) {
+  
+      $sWherePontofs = "and exists (select 1                              
+                                      from {$sNomeTabela}                        
+                                     where r10_regist = {$prefixo}_regist        
+                                       and r10_anousu = {$prefixo}_anousu        
+                                       and r10_mesusu = {$prefixo}_mesusu ) ";
+         
+      $retorno .= $sWherePontofs;
+    }
   }
   return $retorno;
 }
@@ -595,15 +646,29 @@ function db_selectmax($matriz=null,$query=null, $tabela = "", $campos=" * ", $or
     }
 
   }
+  global $$matriz;
+  $aChavesCachear = array('rubr_', 'basesr', 'bases');
+  $sNomeChave = $matriz;
+  $indice = md5($sNomeChave."#".str_replace(" ", "_", $query));
+  if (in_array($sNomeChave, $aChavesCachear)) {
 
+    $chave = DBRegistry::get($indice);
+    if (DBRegistry::has($indice)) {
+      $$matriz = $chave;
+      return true;
+    }
+  }
   $result = @db_query($query);
   //db_criatabela($result);
   global $$matriz;
   if($result!=false && pg_numrows($result)>0){
     
    // echo $matriz."[0]["";
-    
-    $$matriz = pg_fetch_all($result);
+    $dados   = pg_fetch_all($result);
+    $$matriz = $dados;
+    if (in_array($sNomeChave, $aChavesCachear)) {
+      DBRegistry::add($indice, $dados);
+    }
 
     //print_r($$matriz);
     
@@ -753,7 +818,7 @@ function db_insert($tabela,$mat_campos,$mat_valores,$execdie=true){
        // if ( type( $mat_valores[$ii] ) == "c" && strtoupper(db_substr($mat_valores[$ii],1,8)) == "DB_OID: "){
        //    $mat_valores[$ii] = "lo_import(".db_sqlformat(db_substr($mat_valores[$ii],9)).")";
        // }else{
-	 
+   
            $mat_valores[$ii] = db_sqlformat($mat_valores[$ii]);
        // }
         $linha4 .=  $mat_valores[$ii].",";
@@ -763,11 +828,11 @@ function db_insert($tabela,$mat_campos,$mat_valores,$execdie=true){
   // echo "<BR><BR><BR>".($linha1.$linha2.$linha3.$linha4).";<BR><BR>";
   $db_sql = db_query($linha1.$linha2.$linha3.$linha4);
   if( $db_sql == false ){
-  	if($execdie == true){
+    if($execdie == true){
       echo ("erro ao tentar gravar em ".$tabela);
       echo "<br>".$linha1.$linha2.$linha3.$linha4;
       exit;
-  	}
+    }
   }
   return $db_sql;
 }
@@ -851,25 +916,25 @@ function db_dias_pagto($registro=null,$r45_dtreto,$r45_dtafas){
               $dias_pagamento = db_datedif($dtfim,$r45_dtreto);
 //echo "<BR> 3 dias_pagamento --> $dias_pagamento";          
               if( $dias_pagamento > 0 ){
-              	 if( $dias_mes > 30){
-     	              $dias_pagamento -= 1;
+                 if( $dias_mes > 30){
+                    $dias_pagamento -= 1;
 //echo "<BR> 4 dias_pagamento --> $dias_pagamento";          
-               	 }else if( $dias_mes == 29){ 
-     	              $dias_pagamento = (30 - db_day($r45_dtreto));
+                 }else if( $dias_mes == 29){ 
+                    $dias_pagamento = (30 - db_day($r45_dtreto));
 //echo "<BR> 5 dias_pagamento --> $dias_pagamento";          
-     	           }
+                 }
               }
            }else { 
              $dias_pagamento = ceil(((db_mktime($dtfim) - db_mktime($r45_dtreto) + db_mktime($r45_dtafas) - db_mktime($dtini))/86400));
 //echo "<BR> 6 dias_pagamento --> $dias_pagamento";          
               if( !db_empty($dias_pagamento)){
-             	   if( $dias_mes > 30){
-     	             $dias_pagamento -= 1;
+                 if( $dias_mes > 30){
+                   $dias_pagamento -= 1;
 //echo "<BR> 7 dias_pagamento --> $dias_pagamento";          
-//           	   }else if( $dias_mes < 30){ 
-//    	             $dias_pagamento = (30 - $dias_mes);
+//               }else if( $dias_mes < 30){ 
+//                   $dias_pagamento = (30 - $dias_mes);
 //echo "<BR> 8 dias_pagamento --> $dias_pagamento";          
-     	           } 
+                 } 
               }
            } 
        }
@@ -899,82 +964,94 @@ function situacao_funcionario ($registro=null,$datafim=null){
 
     if( db_mktime($afasta[0]["r45_dtreto"]) >= db_mktime($dtini) || db_empty($afasta[0]["r45_dtreto"])){
 
+      /**
+       * Caso Afastamento de doença for do tipo mais de 30 dias considera como afastamento
+       * somente o período superior aos 30 para isso adianta a data em 30 dias
+       *
+       * Ex.: 45 dias de afastamento considera com afastamento apenas 15 dias
+       */
+      if($afasta[0]["r45_situac"] == Afastamento::AFASTADO_DOENCA_MAIS_30_DIAS) {
+
+        $sDataAfastamento        = new DBDate($afasta[0]["r45_dtafas"]);
+        $afasta[0]["r45_dtafas"] = $sDataAfastamento->adiantarPeriodo(30, 'd')->getDate();
+      }
+
       // Caso acha afastamento e data de retorno for maior ou igual da de afastamento ou retornou
 
        $afastado = $afasta[0]["r45_situac"];
        if( !db_empty($afasta[0]["r45_dtreto"]) ){
-	        if( db_mktime($afasta[0]["r45_dtafas"]) > db_mktime($dtfim) ){
-	           $afastado = 1;
-	        }
-	        if(isset($datafim) || !db_empty($datafim)){
-	           if( db_mktime($afasta[0]["r45_dtreto"]) < db_mktime($datafim) ){
-	              $afastado = 1;
-	           }
-	        }
-	     }
+          if( db_mktime($afasta[0]["r45_dtafas"]) > db_mktime($dtfim) ){
+             $afastado = 1;
+          }
+          if(isset($datafim) || !db_empty($datafim)){
+             if( db_mktime($afasta[0]["r45_dtreto"]) < db_mktime($datafim) ){
+                $afastado = 1;
+             }
+          }
+       }
        //echo "<BR> ".$afasta[0]["r45_dtreto"]." > ".$dtfim."  && ".$afasta[0]["r45_dtafas"]." < ".$dtini; 
-	     if( $afastado != 1){
-	       if( ( db_mktime($afasta[0]["r45_dtreto"])==0 || db_mktime($afasta[0]["r45_dtreto"]) > db_mktime($dtfim)  ) && db_mktime($afasta[0]["r45_dtafas"]) >= db_mktime($dtini) ){
-	         $dias_pagamento = db_datedif($afasta[0]["r45_dtafas"],$dtini);
-	       }else if( ( db_empty( $afasta[0]["r45_dtreto"]) || db_mktime($afasta[0]["r45_dtreto"]) > db_mktime($dtfim)  ) && db_mktime($afasta[0]["r45_dtafas"]) < db_mktime($dtini) ){ 
- 	         $dias_pagamento = 0;
-	       }else if( db_mktime($afasta[0]["r45_dtafas"]) < db_mktime($dtini) && db_mktime($afasta[0]["r45_dtreto"]) <= db_mktime($dtfim) ){ 
-	         $dias_pagamento = db_datedif($dtfim,$afasta[0]["r45_dtreto"]);
-	         if( $dias_pagamento > 0 ){
-		         if( $dias_mes > 30){
-		           $dias_pagamento -= 1;
-		         }else if( $dias_mes == 29){ 
-		           $dias_pagamento = (30 - db_day($afasta[0]["r45_dtreto"]));
-		         }
-	         }
-	       }else if( db_mktime($afasta[0]["r45_dtafas"]) >= db_mktime($dtini) && db_mktime($afasta[0]["r45_dtreto"]) <= db_mktime($dtfim)){ 
-	         $dias_pagamento = ceil(((db_mktime($dtfim) - db_mktime($afasta[0]["r45_dtreto"]) + db_mktime($afasta[0]["r45_dtafas"]) - db_mktime($dtini))/86400));
-	         if( !db_empty($dias_pagamento)){
-		         if( $dias_mes > 30){
-		            $dias_pagamento -= 1;
-		         }else if( $dias_mes < 30){ 
-		            $dias_pagamento += (30 - $dias_mes);
-		         }
-	         }
-	       }
-	       $data_afastamento = $afasta[0]["r45_dtafas"];
-	     }
+       if( $afastado != 1){
+         if( ( db_mktime($afasta[0]["r45_dtreto"])==0 || db_mktime($afasta[0]["r45_dtreto"]) > db_mktime($dtfim)  ) && db_mktime($afasta[0]["r45_dtafas"]) >= db_mktime($dtini) ){
+           $dias_pagamento = db_datedif($afasta[0]["r45_dtafas"],$dtini);
+         }else if( ( db_empty( $afasta[0]["r45_dtreto"]) || db_mktime($afasta[0]["r45_dtreto"]) > db_mktime($dtfim)  ) && db_mktime($afasta[0]["r45_dtafas"]) < db_mktime($dtini) ){ 
+           $dias_pagamento = 0;
+         }else if( db_mktime($afasta[0]["r45_dtafas"]) < db_mktime($dtini) && db_mktime($afasta[0]["r45_dtreto"]) <= db_mktime($dtfim) ){ 
+           $dias_pagamento = db_datedif($dtfim,$afasta[0]["r45_dtreto"]);
+           if( $dias_pagamento > 0 ){
+             if( $dias_mes > 30){
+               $dias_pagamento -= 1;
+             }else if( $dias_mes == 29){ 
+               $dias_pagamento = (30 - db_day($afasta[0]["r45_dtreto"]));
+             }
+           }
+         }else if( db_mktime($afasta[0]["r45_dtafas"]) >= db_mktime($dtini) && db_mktime($afasta[0]["r45_dtreto"]) <= db_mktime($dtfim)){ 
+           $dias_pagamento = ceil(((db_mktime($dtfim) - db_mktime($afasta[0]["r45_dtreto"]) + db_mktime($afasta[0]["r45_dtafas"]) - db_mktime($dtini))/86400));
+           if( !db_empty($dias_pagamento)){
+             if( $dias_mes > 30){
+                $dias_pagamento -= 1;
+             }else if( $dias_mes < 30){ 
+                $dias_pagamento += (30 - $dias_mes);
+             }
+           }
+         }
+         $data_afastamento = $afasta[0]["r45_dtafas"];
+       }
     }
   }else{
      if( db_year($pessoal[$Ipessoal]["r01_admiss"]) == db_val(db_substr($subpes,1,4)) 
-	   && db_month($pessoal[$Ipessoal]["r01_admiss"]) == db_val(db_substr($subpes,-2)) ){
+     && db_month($pessoal[$Ipessoal]["r01_admiss"]) == db_val(db_substr($subpes,-2)) ){
        
        //echo "<BR> Admissao efetuada no ano e mes da folha";
-
-     	 if( $dias_mes > 30){
-	       $dias_pagamento_sf = $dias_mes - ( db_day($pessoal[$Ipessoal]["r01_admiss"]));
-	       $dias_pagamento = $dias_mes - ( db_day($pessoal[$Ipessoal]["r01_admiss"]));
-	     }else if( $dias_mes = 30){ 
-	       $dias_pagamento_sf = $dias_mes - ( db_day($pessoal[$Ipessoal]["r01_admiss"]) - 1);
-	       $dias_pagamento = $dias_mes - ( db_day($pessoal[$Ipessoal]["r01_admiss"]) - 1);
-	     }else{
-	       $dias_pagamento_sf = 30 - ( db_day($pessoal[$Ipessoal]["r01_admiss"]) - 1);
-	       $dias_pagamento    = 30 - ( db_day($pessoal[$Ipessoal]["r01_admiss"]) - 1);
-	     }
+  
+       if( $dias_mes > 30){
+         $dias_pagamento_sf = $dias_mes - ( db_day($pessoal[$Ipessoal]["r01_admiss"]));
+         $dias_pagamento = $dias_mes - ( db_day($pessoal[$Ipessoal]["r01_admiss"]));
+       }else if( $dias_mes = 30){ 
+         $dias_pagamento_sf = $dias_mes - ( db_day($pessoal[$Ipessoal]["r01_admiss"]) - 1);
+         $dias_pagamento = $dias_mes - ( db_day($pessoal[$Ipessoal]["r01_admiss"]) - 1);
+       }else{
+         $dias_pagamento_sf = 30 - ( db_day($pessoal[$Ipessoal]["r01_admiss"]) - 1);
+         $dias_pagamento    = 30 - ( db_day($pessoal[$Ipessoal]["r01_admiss"]) - 1);
+       }
      }
      if(!db_empty($pessoal[$Ipessoal]["r01_recis"])){ 
 
        if( db_year($pessoal[$Ipessoal]["r01_recis"]) == db_val(db_substr($subpes,1,4)) 
-	     && db_month($pessoal[$Ipessoal]["r01_recis"]) == db_val(db_substr($subpes,-2)) ){
+       && db_month($pessoal[$Ipessoal]["r01_recis"]) == db_val(db_substr($subpes,-2)) ){
           
           //echo "<BR> Rescisao efetuada no ano e mes da folha";
        
-	        $dias_pagamento_sf = db_day($pessoal[$Ipessoal]["r01_recis"]);
+          $dias_pagamento_sf = db_day($pessoal[$Ipessoal]["r01_recis"]);
        }elseif( (db_year($pessoal[$Ipessoal]["r01_recis"]) < db_val(db_substr($subpes,1,4))) 
-		             || (db_year($pessoal[$Ipessoal]["r01_recis"]) == db_val(db_substr($subpes,1,4))
-		                 && db_month($pessoal[$Ipessoal]["r01_recis"]) < db_val(db_substr($subpes,-2))
-		    						)
-		    			)
-		   {
+                 || (db_year($pessoal[$Ipessoal]["r01_recis"]) == db_val(db_substr($subpes,1,4))
+                     && db_month($pessoal[$Ipessoal]["r01_recis"]) < db_val(db_substr($subpes,-2))
+                    )
+              )
+       {
            //echo "<BR> Rescisao efetuada antes do ano e mes da folha --> ".$pessoal[$Ipessoal]["r01_recis"];
        
-		       $dias_pagamento_sf = 0;
-		   }
+           $dias_pagamento_sf = 0;
+       }
      }
   }
 //  echo "<br>  dias_pagamento_sf --> $dias_pagamento_sf ";
@@ -1013,64 +1090,64 @@ function ferias($registro,$cfuncao = ""){
       // r30_proc2 --> Funcionário com saldo de férias para o proximo ano / mês
 
      if( db_substr($cadferia[0]["r30_proc1"],1,4).db_substr($cadferia[0]["r30_proc1"],6,2)  > $anomes || 
-	       db_substr($cadferia[0]["r30_proc2"],1,4).db_substr($cadferia[0]["r30_proc2"],6,2)  > $anomes ){
-       	return;
+         db_substr($cadferia[0]["r30_proc2"],1,4).db_substr($cadferia[0]["r30_proc2"],6,2)  > $anomes ){
+        return;
      }
 
      // r30_proc1d --> Funcionário com diferença de férias para este ano / mês.
      if( db_empty($cadferia[0]["r30_proc1d"]) || $cadferia[0]["r30_proc1d"] == $subpes){
-      	
+        
         $F019 = $cadferia[0]["r30_dias1"];
-       	$F020 = $cadferia[0]["r30_abono"];
+        $F020 = $cadferia[0]["r30_abono"];
 
         $dias_ = ndias(db_substr(db_dtoc($cadferia[0]["r30_per1i"]),4,7));
-       	$maxdiac = db_str($dias_,2,0,"0")         ;
+        $maxdiac = db_str($dias_,2,0,"0")         ;
         //echo "<BR> 1.11 - maxdiac --> $maxdiac";
-      	if( db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) == $anomes && 
-    	      db_substr(db_dtos($cadferia[0]["r30_per1f"]),1,6) == $anomes){
+        if( db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) == $anomes && 
+            db_substr(db_dtos($cadferia[0]["r30_per1f"]),1,6) == $anomes){
             $F021 = $F019;
-       	}else if( db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) < $anomes && 
-	                db_substr(db_dtos($cadferia[0]["r30_per1f"]),1,6) == $anomes){
+        }else if( db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) < $anomes && 
+                  db_substr(db_dtos($cadferia[0]["r30_per1f"]),1,6) == $anomes){
             $F019 = db_datedif( $cadferia[0]["r30_per1f"] , db_ctod("01/".db_substr(db_dtoc($cadferia[0]["r30_per1f"]),4,7)) ) + 1 ;
             //echo "<BR> 1.12 - F019 --> $F019";
             $F020 = 0 ;
             $F021 = $F019;
-	          if( strtolower($cfpess[0]["r11_fersal"]) == 's' && !db_boolean( $cfpess[0]["r11_recalc"] )){
+            if( strtolower($cfpess[0]["r11_fersal"]) == 's' && !db_boolean( $cfpess[0]["r11_recalc"] )){
                $F019 = 0;
                $F021 = 0;
-	          }
-	      }else if( db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) == $anomes && 
-	                db_substr(db_dtos($cadferia[0]["r30_per1f"]),1,6) > $anomes ){
+            }
+        }else if( db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) == $anomes && 
+                  db_substr(db_dtos($cadferia[0]["r30_per1f"]),1,6) > $anomes ){
 
             $s_data2 = db_substr(db_dtoc($cadferia[0]["r30_per1i"]),7,4).'-'.db_substr(db_dtoc($cadferia[0]["r30_per1i"]),4,2).'-'.$maxdiac;
             $s_data1 = $cadferia[0]["r30_per1i"];
             $F019 = pg_result(db_query("select '$s_data2'::date - '$s_data1'::date as d"),0,'d') + 1;
 
             //echo "<BR> 1.12 - F019 --> $F019";
-	          $F020 = $cadferia[0]["r30_abono"];
-	          $F021 = $F019;
-	          if( strtolower($cfpess[0]["r11_fersal"]) == 's' 
+            $F020 = $cadferia[0]["r30_abono"];
+            $F021 = $F019;
+            if( strtolower($cfpess[0]["r11_fersal"]) == 's' 
                 && !db_boolean( $cfpess[0]["r11_recalc"] ) 
-				        && db_month( $cadferia[0]["r30_per1i"] ) == 2 
+                && db_month( $cadferia[0]["r30_per1i"] ) == 2 
                 && db_year($cadferia[0]["r30_per1i"]) == db_substr($subpes,1,4)
                 && $F019 == ndias($dias_)){
-		           $F019 = 30;
-           	  $F021 = 30;
-	          }
-	          $F023 = $cadferia[0]["r30_dias1"] - $F019;
-      	}else if(db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) > $anomes &&  
-	               db_substr(db_dtos($cadferia[0]["r30_per1f"]),1,6) > $anomes){
-	         $F023 = $F019;
-	         $F019 = 0 ;
-	         $F021 = 0  ;
-	      }else if( db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) < $anomes ){ 
-	         $F019 = 0;
-	         $F020 = 0;
-	         $F021 = 0;
-	      }
+               $F019 = 30;
+              $F021 = 30;
+            }
+            $F023 = $cadferia[0]["r30_dias1"] - $F019;
+        }else if(db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) > $anomes &&  
+                 db_substr(db_dtos($cadferia[0]["r30_per1f"]),1,6) > $anomes){
+           $F023 = $F019;
+           $F019 = 0 ;
+           $F021 = 0  ;
+        }else if( db_substr(db_dtos($cadferia[0]["r30_per1i"]),1,6) < $anomes ){ 
+           $F019 = 0;
+           $F020 = 0;
+           $F021 = 0;
+        }
        if( $cadferia[0]["r30_tip1"] == "11"){
-	        $F020 = 0;
-	     }
+          $F020 = 0;
+       }
        if(    db_month($cadferia[0]["r30_per1i"]) == 2  
            && db_year($cadferia[0]["r30_per1i"])  == db_substr($subpes,1,4) 
            && $cadferia[0]["r30_tip1"]            == "01" 
@@ -1092,61 +1169,61 @@ function ferias($registro,$cfuncao = ""){
 
        // r30_proc2d --> Funcionário com diferença de saldo de férias já cadastradas para este ano / mês
 
-	     if( db_empty($cadferia[0]["r30_proc2d"]) || $cadferia[0]["r30_proc2d"] == $subpes){ 
-	        if( $cadferia[0]["r30_tip2"] == "10"){
+       if( db_empty($cadferia[0]["r30_proc2d"]) || $cadferia[0]["r30_proc2d"] == $subpes){ 
+          if( $cadferia[0]["r30_tip2"] == "10"){
 
              // Saldo em Abono 
 
-	           $F019 = 0;
-	           $F020 = $cadferia[0]["r30_abono"];
-	           $F021 = 0;
-	        }else if( $cadferia[0]["r30_tip2"] == "09"){ 
+             $F019 = 0;
+             $F020 = $cadferia[0]["r30_abono"];
+             $F021 = 0;
+          }else if( $cadferia[0]["r30_tip2"] == "09"){ 
 
              // saldo de Ferias
              $F019 = $cadferia[0]["r30_dias2"];
 
               //  echo "<BR> 1.12 - F019 --> $F019   F020 --> $F020   F023 --> $F023 ";
-       	      if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) < $anomes && 
-	                      db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) == $anomes){
+              if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) < $anomes && 
+                        db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) == $anomes){
                         $F019 = db_datedif( $cadferia[0]["r30_per2f"] , db_ctod("01/".db_substr(db_dtoc($cadferia[0]["r30_per2f"]),4,7)) ) + 1 ;
                         //echo "<BR> 1.12 - F019 --> $F019";
                         $F020 = 0 ;
                         $F021 = $F019;
-	                      if( strtolower($cfpess[0]["r11_fersal"]) == 's' && !db_boolean( $cfpess[0]["r11_recalc"] )){
+                        if( strtolower($cfpess[0]["r11_fersal"]) == 's' && !db_boolean( $cfpess[0]["r11_recalc"] )){
                            $F019 = 0;
                            $F021 = 0;
-	                      }
-	            }else if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) == $anomes && 
-	                      db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) > $anomes ){
+                        }
+              }else if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) == $anomes && 
+                        db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) > $anomes ){
         
                   $dias2_   = ndias(db_substr(db_dtoc($cadferia[0]["r30_per2i"]),4,7));
-       	          $maxdiac2 = db_str($dias2_,2,0,"0")         ;
+                  $maxdiac2 = db_str($dias2_,2,0,"0")         ;
               
                   $s_data2 = db_substr(db_dtoc($cadferia[0]["r30_per2i"]),7,4).'-'.db_substr(db_dtoc($cadferia[0]["r30_per2i"]),4,2).'-'.$maxdiac2;
                   $s_data1 = $cadferia[0]["r30_per2i"];
                   $F019 = pg_result(db_query("select '$s_data2'::date - '$s_data1'::date as d"),0,'d') + 1;
               
                   //echo "<BR> 1.12 - F019 --> $F019";
-	                $F020 = $cadferia[0]["r30_abono"];
-	                $F021 = $F019;
-	                if( strtolower($cfpess[0]["r11_fersal"]) == 's' 
+                  $F020 = $cadferia[0]["r30_abono"];
+                  $F021 = $F019;
+                  if( strtolower($cfpess[0]["r11_fersal"]) == 's' 
                       && !db_boolean( $cfpess[0]["r11_recalc"] ) 
-				              && db_month( $cadferia[0]["r30_per2i"] ) == 2 
+                      && db_month( $cadferia[0]["r30_per2i"] ) == 2 
                       && db_year($cadferia[0]["r30_per2i"]) == db_substr($subpes,1,4)
                       && $F019 == ndias($dias_)){
-		                 $F019 = 30;
-                 	  $F021 = 30;
-	                }
-	                $F023 = $cadferia[0]["r30_dias2"] - $F019;
-      	      }else if(db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) > $anomes &&  
-	                     db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) > $anomes){
-	               $F023 = $F019;
-	               $F019 = 0 ;
-	               $F021 = 0  ;
-	            }else if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) < $anomes ){ 
-	               $F019 = 0;
-	               $F020 = 0;
-	               $F021 = 0;
+                     $F019 = 30;
+                    $F021 = 30;
+                  }
+                  $F023 = $cadferia[0]["r30_dias2"] - $F019;
+              }else if(db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) > $anomes &&  
+                       db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) > $anomes){
+                 $F023 = $F019;
+                 $F019 = 0 ;
+                 $F021 = 0  ;
+              }else if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) < $anomes ){ 
+                 $F019 = 0;
+                 $F020 = 0;
+                 $F021 = 0;
               }
 
 
@@ -1155,47 +1232,47 @@ function ferias($registro,$cfuncao = ""){
 
 /*
 
-	           if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) == $anomes && 
-		             db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) >= $anomes ){
-		            $F019 = db_datedif($cadferia[0]["r30_per2f"],$cadferia[0]["r30_per2i"]) + 1;
-		            $F020 = 0;
-		            $F021 = $F019;
-	           }else if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) < $anomes &&  
-		                   db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) == $anomes ){
+             if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) == $anomes && 
+                 db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) >= $anomes ){
+                $F019 = db_datedif($cadferia[0]["r30_per2f"],$cadferia[0]["r30_per2i"]) + 1;
+                $F020 = 0;
+                $F021 = $F019;
+             }else if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) < $anomes &&  
+                       db_substr(db_dtos($cadferia[0]["r30_per2f"]),1,6) == $anomes ){
                 $F019 = db_datedif($cadferia[0]["r30_per2f"] ,db_ctod("01/".db_substr(db_dtoc($cadferia[0]["r30_per2f"]),4,2)."/".db_substr(db_dtoc($cadferia[0]["r30_per2f"]),7,4)) ) + 1 ;
 
                 //echo "<BR> 1.13 - F019 --> $F019";
-		            $F020 = 0;
-		            $F021 = $F019;
-	           }else if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) > $anomes ){
-	              $F023 = $F019;
-		            $F019 = 0 ;
-		            $F020 = 0 ;
-		            $F021 = 0 ;
+                $F020 = 0;
+                $F021 = $F019;
+             }else if( db_substr(db_dtos($cadferia[0]["r30_per2i"]),1,6) > $anomes ){
+                $F023 = $F019;
+                $F019 = 0 ;
+                $F020 = 0 ;
+                $F021 = 0 ;
              }else{
                 $F019 = 0;
                 $F020 = 0;
                 $F021 = 0;
-	           }
+             }
 
 
 */
              //   echo "<BR> 1.13 - F019 --> $F019   F020 --> $F020   F023 --> $F023 ";
 
-	        }
-	        if( db_at($cfuncao , "fecha_folha")>0 && db_empty($cadferia[0]["r30_proc2d"])){
-	           if( $F019 != 0 || $F020 != 0){
-	              $perai = $cadferia[0]["r30_perai"];
-		            $condicaoaux  = " and r30_regist = ".db_sqlformat( $registro );
-		            $condicaoaux .= " and r30_perai = ".db_sqlformat( $perai );
-		            $matriz1 = array();
-		            $matriz2 = array();
-		            $matriz1[1] = "r30_proc2d";
-		            $matriz2[1] = $subpes;
-		            db_update( "cadferia", $matriz1,$matriz2, bb_condicaosubpes( "r30_" ).$condicaoaux )                 ;
-	           }
-	        }
-	     }
+          }
+          if( db_at($cfuncao , "fecha_folha")>0 && db_empty($cadferia[0]["r30_proc2d"])){
+             if( $F019 != 0 || $F020 != 0){
+                $perai = $cadferia[0]["r30_perai"];
+                $condicaoaux  = " and r30_regist = ".db_sqlformat( $registro );
+                $condicaoaux .= " and r30_perai = ".db_sqlformat( $perai );
+                $matriz1 = array();
+                $matriz2 = array();
+                $matriz1[1] = "r30_proc2d";
+                $matriz2[1] = $subpes;
+                db_update( "cadferia", $matriz1,$matriz2, bb_condicaosubpes( "r30_" ).$condicaoaux )                 ;
+             }
+          }
+       }
     }
 
   }
@@ -1338,7 +1415,7 @@ function retorna_avos($r30_perai,$r30_peraf_ant,$r30_peraf){
        $navos = 12;
     }
  }
-	 
+   
  return $navos;
 }
 
@@ -1470,7 +1547,7 @@ function afas_periodo_aquisitivo ($periodoi, $periodof ){
         if( db_at(db_str($afasta[$Iafasta]["r45_situac"],1),"5-2-4-7")>0){
            continue;
         }
-        if(  db_at(db_str( $afasta[$Iafasta]["r45_situac"],1 ) , "3-6")>0 ){
+        if(  db_at(db_str( $afasta[$Iafasta]["r45_situac"],1 ) , "3-6-8")>0 ){
            if( !db_empty($afasta[$Iafasta]["r45_dtreto"]) && (db_mktime($afasta[$Iafasta]["r45_dtreto"]) < db_mktime($periodoi))){
                continue;
            }
@@ -1480,10 +1557,10 @@ function afas_periodo_aquisitivo ($periodoi, $periodof ){
            if( !db_empty($afasta[$Iafasta]["r45_dtreto"]) && (db_mktime($afasta[$Iafasta]["r45_dtreto"]) > db_mktime($periodoi)) ){
               if( (db_mktime($afasta[$Iafasta]["r45_dtafas"])-db_mktime($desconta_dias)) > db_mktime($periodoi)){
                  if(db_mktime($afasta[$Iafasta]["r45_dtreto"]) > db_mktime($periodof)) {
-		    $periodo_afastado += ceil(((db_mktime($periodof) - db_mktime($afasta[$Iafasta]["r45_dtafas"]) - db_mktime($desconta_dias))/86400));
-		 }else{
+        $periodo_afastado += ceil(((db_mktime($periodof) - db_mktime($afasta[$Iafasta]["r45_dtafas"]) - db_mktime($desconta_dias))/86400));
+     }else{
                     $periodo_afastado += ceil(((db_mktime($afasta[$Iafasta]["r45_dtreto"]) - db_mktime($afasta[$Iafasta]["r45_dtafas"]) - db_mktime($desconta_dias))/86400));
-		 }
+     }
               }else{
                  $periodo_afastado += db_datedif($afasta[$Iafasta]["r45_dtreto"],$periodoi);
               }
@@ -1545,84 +1622,102 @@ function salario_base($pessoal,$Ipessoal,$cfuncao = ""){
          $F007, $F008, $F009, $F010, $F011,
          $F012, $F013, $F014, $F015, $F016,
          $F017, $F018, $F019, $F020, $F021,
-         $F022, $F023, $F006_clt, $F024, $F003, $F025, $F026, $F027, $F028;
+         $F022, $F023, $F006_clt, $F024, $F003, $F025, $F026, $F027, $F028, $F030, $F031;
  
   global $quais_diversos;
   eval($quais_diversos);
 
-			       
+             
   global $padroes;
   
+  $oServidor = ServidorRepository::getInstanciaByCodigo($pessoal[$Ipessoal]["r01_regist"],DBPessoal::getAnoFolha(),DBPessoal::getMesFolha()); 
+  $F030      = DBPessoal::getVariaveisCalculo($oServidor)->f030;
+
   $F007 = 0;
   $F010 = 0;
+  $F031 = 0;
   $diversominimo = "    ";
   if( !db_empty($pessoal[$Ipessoal]["r01_salari"])){
      $F007 = $pessoal[$Ipessoal]["r01_salari"];
      
      $F010 = $pessoal[$Ipessoal]["r01_salari"];
-//echo "<BR> 1 F010 --> $F010";		
- }else{
-     $condicaoaux  = " and r02_regime = ".db_sqlformat( $pessoal[$Ipessoal]["r01_regime"] );
-     $condicaoaux .= " and r02_codigo = ".db_sqlformat( $pessoal[$Ipessoal]["r01_padrao"]);
-     global $padroes;
-     if( db_selectmax( "padroes", "select * from padroes ".bb_condicaosubpes( "r02_" ).$condicaoaux )){
-	if( strtolower($padroes[0]["r02_tipo"]) == "h"){
-	   $valor_padrao = bb_round($padroes[0]["r02_valor"]*$F008,2);
-	}else{
-	   $valor_padrao = $padroes[0]["r02_valor"];
-	}
-	if( !db_empty($pessoal[$Ipessoal]["r01_hrssem"]) && $padroes[0]["r02_hrssem"] > 0){
-	   $F007 = $valor_padrao/$padroes[0]["r02_hrssem"]*$pessoal[$Ipessoal]["r01_hrssem"] ; 
-	   $F010 = $valor_padrao/$padroes[0]["r02_hrssem"]*$pessoal[$Ipessoal]["r01_hrssem"] ; 
-//echo "<BR> 2 F010 --> $F010";		
-	}else{
-	   $F007 = $valor_padrao;
-	   $F010 = $valor_padrao;
-//echo "<BR> 3 F010 --> $F010";		
-	}
-	$diversominimo = $padroes[0]["r02_minimo"];
-     }else{
-	$F007 = 0;
-	$F010 = 0;
+//echo "<BR> 1 F010 --> $F010";   
+ } else {
+    $condicaoaux  = " and r02_regime = ".db_sqlformat( $pessoal[$Ipessoal]["r01_regime"] );
+    $condicaoaux .= " and r02_codigo = ".db_sqlformat( $pessoal[$Ipessoal]["r01_padrao"]);
+    global $padroes;
+    $sChavePadrao = 'chavepadrao#'.$pessoal[$Ipessoal]["r01_regime"]."#".$pessoal[$Ipessoal]["r01_padrao"];
+    $padroes      = DBRegistry::get($sChavePadrao);
+    if (empty($padroes)) {
+
+       $lPadrao = db_selectmax( "padroes", "select * from padroes ".bb_condicaosubpes( "r02_" ).$condicaoaux );
+       DBRegistry::add($sChavePadrao, array());
+       if ($lPadrao) {
+         DBRegistry::add($sChavePadrao, $padroes);
+       }
      }
+     if (!empty($padroes)) {
+
+       if (strtolower($padroes[0]["r02_tipo"]) == "h") {
+         $valor_padrao = bb_round($padroes[0]["r02_valor"]*$F008,2);
+       } else {
+         $valor_padrao = $padroes[0]["r02_valor"];
+       }
+       if ( !db_empty($pessoal[$Ipessoal]["r01_hrssem"]) && $padroes[0]["r02_hrssem"] > 0) {
+
+         $F007 = $valor_padrao/$padroes[0]["r02_hrssem"]*$pessoal[$Ipessoal]["r01_hrssem"] ;
+         $F010 = $valor_padrao/$padroes[0]["r02_hrssem"]*$pessoal[$Ipessoal]["r01_hrssem"] ;
+
+       } else {
+         $F007 = $valor_padrao;
+         $F010 = $valor_padrao;
+       }
+       $diversominimo = $padroes[0]["r02_minimo"];
+    } else {
+
+      $F007 = 0;
+      $F010 = 0;
+    }
   }
-  if( strtolower($pessoal[$Ipessoal]["r01_progr"]) == "s"  && db_empty($pessoal[$Ipessoal]["r01_salari"])){
+
+  if ( strtolower($pessoal[$Ipessoal]["r01_progr"]) == "s"  && db_empty($pessoal[$Ipessoal]["r01_salari"])) {
+
      $condicaoaux  = " and r24_regime = ".db_sqlformat( $pessoal[$Ipessoal]["r01_regime"] );
      $condicaoaux .= " and r24_padrao = ".db_sqlformat( $pessoal[$Ipessoal]["r01_padrao"] );
      $condicaoaux .= " order by r24_meses ";
      global $progress;
      if( db_selectmax( "progress", "select * from progress ".bb_condicaosubpes( "r24_" ).$condicaoaux )){
-	$valor_progress = 0;
-	if( $cfuncao == "gerfres" && strtolower($pessoal[$Ipessoal]["r01_tpvinc"]) == "a"){
-	    $data_base = $pessoal[$Ipessoal]["r01_recis"];
-	}else{
-	    $data_base = (strtolower($pessoal[$Ipessoal]["r01_tpvinc"]) == "a" ? $cfpess[0]["r11_dataf"] : $pessoal[$Ipessoal]["r01_admiss"]);
-	}
-	$data_progr = (db_empty($pessoal[$Ipessoal]["r01_anter"]) ? $pessoal[$Ipessoal]["r01_admiss"] : $pessoal[$Ipessoal]["r01_anter"]);
-	if( $cfuncao == "gerfres" && strtolower($pessoal[$Ipessoal]["r01_tpvinc"]) == "a"){
-	  $anos = bb_round( ( db_year($data_base) - db_year($data_progr) ) * 12,2);
-	}else{
-	  $anos = $F024;
-	}
-	$perc = 0;
-	for($Iprogress=0;$Iprogress<count($progress);$Iprogress++){
-	  if($progress[$Iprogress]["r24_meses"] > $anos){
-	    break;
-	  }
-	  $perc = $progress[$Iprogress]["r24_perc"];
-	  $valor_progress = $progress[$Iprogress]["r24_valor"];
-	}
-	if( $valor_progress > 0){
-	   $F010 = $valor_progress;
-//echo "<BR> 2 F010 --> $F010";		
-	   if( strtolower($padroes[0]["r02_tipo"]) == "h"){
-	      $F010 = $F010 * $F008;
-//echo "<BR> 3 F010 --> $F010";		
-	   }
-	}else{
-	   $F010 += bb_round(($F007*bb_round($perc/100,2)),2);
-//echo "<BR> 4 F010 --> $F010";		
-	}
+  $valor_progress = 0;
+  if( $cfuncao == "gerfres" && strtolower($pessoal[$Ipessoal]["r01_tpvinc"]) == "a"){
+      $data_base = $pessoal[$Ipessoal]["r01_recis"];
+  }else{
+      $data_base = (strtolower($pessoal[$Ipessoal]["r01_tpvinc"]) == "a" ? $cfpess[0]["r11_dataf"] : $pessoal[$Ipessoal]["r01_admiss"]);
+  }
+  $data_progr = (db_empty($pessoal[$Ipessoal]["r01_anter"]) ? $pessoal[$Ipessoal]["r01_admiss"] : $pessoal[$Ipessoal]["r01_anter"]);
+  if( $cfuncao == "gerfres" && strtolower($pessoal[$Ipessoal]["r01_tpvinc"]) == "a"){
+    $anos = bb_round( ( db_year($data_base) - db_year($data_progr) ) * 12,2);
+  }else{
+    $anos = $F024;
+  }
+  $perc = 0;
+  for($Iprogress=0;$Iprogress<count($progress);$Iprogress++){
+    if($progress[$Iprogress]["r24_meses"] > $anos){
+      break;
+    }
+    $perc = $progress[$Iprogress]["r24_perc"];
+    $valor_progress = $progress[$Iprogress]["r24_valor"];
+  }
+  if( $valor_progress > 0){
+     $F010 = $valor_progress;
+//echo "<BR> 2 F010 --> $F010";   
+     if( strtolower($padroes[0]["r02_tipo"]) == "h"){
+        $F010 = $F010 * $F008;
+//echo "<BR> 3 F010 --> $F010";   
+     }
+  }else{
+     $F010 += bb_round(($F007*bb_round($perc/100,2)),2);
+//echo "<BR> 4 F010 --> $F010";   
+  }
      }
   }
 
@@ -1632,8 +1727,9 @@ function salario_base($pessoal,$Ipessoal,$cfuncao = ""){
      db_selectmax( "diversos_", "select * from pesdiver ".bb_condicaosubpes( "r07_" ).$condicaoaux );
      $valormin = $diversos_[0]["r07_valor"];
      if( $F010 < $valormin){
-	$F010 = $valormin ;
-//echo "<BR> 5 F010 --> $F010";		
+  $F010 = $valormin ;
+  $F031 = $valormin;
+//echo "<BR> 5 F010 --> $F010";   
      }
   }
 
@@ -1679,12 +1775,13 @@ function funcionarioferiasvencidas ($sDataVencimento, $sWhere = '') {
   $sSqlFuncionarios .= " where rh02_anousu = $iAno  ";
   $sSqlFuncionarios .= "   and rh02_mesusu = $iMes ";
   $sSqlFuncionarios .= "   and rh02_instit = ".db_getsession("DB_instit")." ";
-  $sSqlFuncionarios .= "   and rh01_admiss <= to_date('$iAno-$iMes-(ndias($iAno,$iMes))', 'YYYY-mm-dd') ";
+  $sSqlFuncionarios .= "   and rh01_admiss <= ('$iAno-$iMes-'||ndias($iAno,$iMes) )::date ";
   $sSqlFuncionarios .= "   and rh30_vinculo = 'A' ";
   $sSqlFuncionarios .= "   and ( rh05_recis is null or rh05_recis >= to_date('$iAno-$iMes-01', 'YYYY-mm-dd') ) ";
   $sSqlFuncionarios .= "   {$sWhere}";
   $sSqlFuncionarios .= " order by r70_descr, z01_nome ";
   $sSqlFuncionarios .= " ";
+
   $rsFuncionarios    = db_query($sSqlFuncionarios);
   /**
    * Criamos um array com toads as lotacoes, e seus funcionarios..
@@ -1914,4 +2011,46 @@ function retornaCompetenciasByPeriodo ( DBDate $oDataInicial, DBDate $oDataFinal
   }
   
   return $aRetorno;
-}                                                                                                    
+}
+
+function validarPadraoSalarioServidor($padrao, $padraoPai, $regime, $instituicao) {
+
+  if(trim($padrao) == trim($padraoPai)) {
+    return 'O padrão informado como pai já está cadastrado como sucessor do padrão atual.';
+  }
+
+  $clpadroes = new cl_padroes;
+  $anousu    = DBPessoal::getAnoFolha();
+  $mesusu    = DBPessoal::getMesFolha();
+
+  $sqlPadraoAvo = $clpadroes->sql_query_file($anousu, $mesusu, $regime, $padraoPai, $instituicao, "r02_padraopai_codigo");
+  $rsPadraoAvo  = db_query($sqlPadraoAvo);
+
+  if(pg_num_rows($rsPadraoAvo) == 0){
+    return true;
+  }
+
+  $oPadraoAvo = db_utils::fieldsMemory($rsPadraoAvo, 0);
+  $padraoAvo  = $oPadraoAvo->r02_padraopai_codigo;
+
+  if(empty($padraoAvo)){
+    return true;
+  }
+
+  return validarPadraoSalarioServidor($padrao, $padraoAvo, $regime, $instituicao);
+}
+
+function verificaRubricaAdiantamento($rubricaAdiantamento) {
+  
+  $clrhrubricaadiantamento = new cl_rhrubricasadiantamento();
+
+  $sqlResult = $clrhrubricaadiantamento->sql_query($rubricaAdiantamento,null,db_getsession("DB_instit"));
+  $result = db_query($sqlResult);
+
+  if (pg_num_rows($result) > 0) {
+    $oRubricaAdiantamento = db_utils::fieldsMemory($result, 0);
+    $rubricaAdiantamento  = $oRubricaAdiantamento->rh262_rubrica_adiantamento;
+  } 
+
+  return $rubricaAdiantamento;
+}

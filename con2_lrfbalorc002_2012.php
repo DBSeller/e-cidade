@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_libtxt.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_conrelvalor_classe.php");
-require_once ("model/relatorioContabil.model.php");
-require_once ("model/linhaRelatorioContabil.model.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_libtxt.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_conrelvalor_classe.php"));
+require_once(modification("model/relatorioContabil.model.php"));
+require_once(modification("model/linhaRelatorioContabil.model.php"));
 
 function imprime_cabec_rec($alt,$pdf){
    $pdf->setfont('arial','',6);
@@ -842,7 +842,7 @@ for ($i=0; $i<pg_numrows($result_bal); $i++) {
 */
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $xinstit    = split("-",$db_selinstit);
-$resultinst = pg_exec("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 db_fieldsmemory($resultinst,0);
 
 $head2 = "MUNICÍPIO DE ".$munic;

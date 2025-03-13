@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -48,7 +48,7 @@ class contribuicaoModel {
     
     $this->iContribuicao = $iContribuicao;
 
-    require_once("libs/db_utils.php");
+    require_once(modification("libs/db_utils.php"));
     $this->oContribuicaoDAO = db_utils::getDao('contrib');
     
   }

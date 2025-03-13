@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt10');
 $clrotulo->label('DBtxt11');
@@ -149,14 +149,14 @@ function js_pesquisatabrec(mostra) {
   
   if (mostra) {
     
-    js_OpenJanelaIframe('top.corpo','db_iframe_tabrec',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec',
                         'func_tabrec_todas.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_drecei',
                         'Pesquisa',true);
   } else {
     
     if (document.form1.k02_codigo.value != '') {
       
-    	js_OpenJanelaIframe('top.corpo',
+    	js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_tabrec',
                           'func_tabrec_todas.php?pesquisa_chave='+$F('k02_codigo')+'&funcao_js=parent.js_mostratabrec',
                           'Pesquisa',false);

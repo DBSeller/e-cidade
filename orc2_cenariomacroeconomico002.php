@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,10 +26,10 @@
  */
 
 
-include ("fpdf151/pdf.php");
-include ("libs/db_utils.php");
-include ("libs/db_sql.php");
-include("classes/db_orccenarioeconomicoparam_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_orccenarioeconomicoparam_classe.php"));
 
 $oGet = db_utils::postMemory($_GET);
 

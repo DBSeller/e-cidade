@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,6 +25,10 @@
  *                                licenca/licenca_pt.txt
  */
 
+if ( $lAcessadoEscola ) {
+  MsgAviso(db_getsession("DB_coddepto"), "escola");
+}
+
 //MODULO: educação
 $oDaoFormaAvaliacao->rotulo->label();
 ?>
@@ -37,7 +41,7 @@ $oDaoFormaAvaliacao->rotulo->label();
    <table border="0" width="95%">
     <tr>
      <td nowrap title="<?=@$Ted37_i_codigo?>">
-      <?=@$Led37_i_codigo?>
+      <label for="ed37_i_codigo"><?=@$Led37_i_codigo?></label>
      </td>
      <td>
       <?php db_input('ed37_i_codigo',10,$Ied37_i_codigo,true,'text',3,"")?>
@@ -45,7 +49,7 @@ $oDaoFormaAvaliacao->rotulo->label();
     </tr>
     <tr>
      <td nowrap title="<?=@$Ted37_c_descr?>">
-      <?=@$Led37_c_descr?>
+      <label for="ed37_c_descr"><?=@$Led37_c_descr?></label>
      </td>
      <td>
       <?php db_input('ed37_c_descr',30,$Ied37_c_descr,true,'text',$db_opcao,"")?>
@@ -53,7 +57,7 @@ $oDaoFormaAvaliacao->rotulo->label();
     </tr>
     <tr>
      <td nowrap title="<?=@$Ted37_c_tipo?>">
-      <?=@$Led37_c_tipo?>
+      <label for="ed37_c_tipo"><?=@$Led37_c_tipo?></label>
      </td>
      <td>
       <?php
@@ -68,7 +72,7 @@ $oDaoFormaAvaliacao->rotulo->label();
       <table border="0">
        <tr>
         <td nowrap title="<?=@$Ted37_c_parecerarmaz?>">
-         <?=@$Led37_c_parecerarmaz?>
+         <label for="ed37_c_parecerarmaz"><?=@$Led37_c_parecerarmaz?></label>
         </td>
         <td>
          <?php
@@ -83,24 +87,23 @@ $oDaoFormaAvaliacao->rotulo->label();
        <table>
         <tr>
          <td>
-          <?=@$Led37_c_minimoaprov?>
+          <label for="ed37_c_minimoaprovconc"><?=@$Led37_c_minimoaprov?></label>
          </td>
          <td>
           <?php
 
             $sCamposConceito = "ed39_c_conceito,ed37_c_minimoaprov";
             $sWhereConceito  = " ed39_i_formaavaliacao = ".@$ed39_i_formaavaliacao;
-            $sSqlConceito    = $oDaoConceito->sql_query("",$sCamposConceito,"ed39_i_sequencia",$sWhereConceito);
-
+            $sSqlConceito    = $oDaoFormaAvaliacao->sql_formaavaliacao("",$sCamposConceito,"ed39_i_sequencia",$sWhereConceito);
             if (!empty($ed39_i_formaavaliacao)) {
 
-              $rsConceito = $oDaoConceito->sql_record($sSqlConceito);
+              $rsConceito = $oDaoFormaAvaliacao->sql_record($sSqlConceito);
               $sDisabled  = $db_opcao == 3 ? "disabled = 'disabled'" : "";
-              echo "<select name='ed37_c_minimoaprovconc' {$sDisabled}  >";
+              echo "<select name='ed37_c_minimoaprovconc' id='ed37_c_minimoaprovconc' {$sDisabled}  >";
 
-              if ($rsConceito && $oDaoConceito->numrows > 0) {
+              if ($rsConceito && $oDaoFormaAvaliacao->numrows > 0) {
 
-                for ($iCont = 0; $iCont < $oDaoConceito->numrows; $iCont++) {
+                for ($iCont = 0; $iCont < $oDaoFormaAvaliacao->numrows; $iCont++) {
 
                   db_fieldsmemory($rsConceito,$iCont);
                   $sSelected = trim($ed37_c_minimoaprov) == trim($ed39_c_conceito) ? "selected" : "";
@@ -115,7 +118,7 @@ $oDaoFormaAvaliacao->rotulo->label();
               $sOnClick = " onclick=\"alert('{$sAlert}');\" ";
 
               $sDisabled = $db_opcao == 3 ? "disabled = 'disabled'" : "";
-              echo "<select name='ed37_c_minimoaprovconc' {$sDisabled} $sOnClick >";
+              echo "<select name='ed37_c_minimoaprovconc' id='ed37_c_minimoaprovconc' {$sDisabled} $sOnClick >";
             }
             echo "</select>";
           ?>
@@ -133,7 +136,7 @@ $oDaoFormaAvaliacao->rotulo->label();
     <table>
      <tr>
       <td>
-       <?=@$Led37_i_menorvalor?>
+       <label for="ed37_i_menorvalor"><?=@$Led37_i_menorvalor?></label>
       </td>
       <td>
        <?php
@@ -143,7 +146,7 @@ $oDaoFormaAvaliacao->rotulo->label();
      </tr>
      <tr>
       <td>
-       <?=@$Led37_i_maiorvalor?>
+       <label for="ed37_i_maiorvalor"><?=@$Led37_i_maiorvalor?></label>
       </td>
       <td>
        <?php
@@ -153,7 +156,7 @@ $oDaoFormaAvaliacao->rotulo->label();
      </tr>
      <tr>
       <td>
-       <?=@$Led37_i_variacao?>
+       <label for="ed37_i_variacao"><?=@$Led37_i_variacao?></label>
       </td>
       <td>
        <?php
@@ -163,7 +166,7 @@ $oDaoFormaAvaliacao->rotulo->label();
      </tr>
      <tr>
       <td>
-       <?=@$Led37_c_minimoaprov?>
+       <label for="ed37_c_minimoaprovnota"><?=@$Led37_c_minimoaprov?></label>
       </td>
       <td>
        <input title="Mínimo para Aprovação Campo:ed37_c_minimoaprov " name="ed37_c_minimoaprovnota"
@@ -203,13 +206,20 @@ $oDaoFormaAvaliacao->rotulo->label();
 <?}?>
 </center>
 <script>
+
+var sMSG = 'educacao.escola.db_frmformaavaliacao.';
 function js_formataVariacao() {
 
-  var iCasasDecimais = '<?=ArredondamentoNota::getNumeroCasasDecimais(db_getsession("DB_anousu"));?>';
-  js_observeMascaraNota($('ed37_i_variacao'), '<?=ArredondamentoNota::getMascara(db_getsession("DB_anousu"))?>');
-	js_observeMascaraNota($('ed37_i_menorvalor'), '<?=ArredondamentoNota::getMascara(db_getsession("DB_anousu"))?>');
-	js_observeMascaraNota($('ed37_i_maiorvalor'), '<?=ArredondamentoNota::getMascara(db_getsession("DB_anousu"))?>');
-	js_observeMascaraNota($('ed37_c_minimoaprovnota'), '<?=ArredondamentoNota::getMascara(db_getsession("DB_anousu"))?>');
+  var iCasasDecimais = 0;
+  new AjaxRequest('edu4_configuracaonota.RPC.php', {exec:'retornaConfiguracaoAnoAtual'}, function (oRetorno, lErro) {
+
+    iCasasDecimais = oRetorno.iCasasDecimais;
+    js_observeMascaraNota($('ed37_i_variacao'), oRetorno.variacao );
+    js_observeMascaraNota($('ed37_i_menorvalor'), oRetorno.menorValor );
+    js_observeMascaraNota($('ed37_i_maiorvalor'), oRetorno.maiorValor );
+    js_observeMascaraNota($('ed37_c_minimoaprovnota'), oRetorno.minimoAprovacao );
+
+  }).setMessage( _M( sMSG + "buscando_configuracao") ).execute();
 }
 
 function js_tiporesultado(valor) {
@@ -245,9 +255,9 @@ function js_tiporesultado(valor) {
 function js_pesquisa() {
 
   js_OpenJanelaIframe('','db_iframe_formaavaliacao','func_formaavaliacao.php?'+
-		              'funcao_js=parent.js_preenchepesquisa|ed37_i_codigo',
-		              'Pesquisa de Formas de Avaliação',true
-		             );
+                  'funcao_js=parent.js_preenchepesquisa|ed37_i_codigo',
+                  'Pesquisa de Formas de Avaliação',true
+                 );
 
 }
 
@@ -349,12 +359,12 @@ function js_hideshowselect(v) {
 js_formataVariacao();
 function js_validaVariacao() {
 
-	if (document.getElementById("ed37_c_tipo").value == "NOTA") {
+  if (document.getElementById("ed37_c_tipo").value == "NOTA") {
 
-		if (document.getElementById("ed37_i_variacao").value == 0) {
-		  alert("Valor de Variação não pode ser 0!");
-		  return false;
-		}
-	}
+    if (document.getElementById("ed37_i_variacao").value == 0) {
+      alert("Valor de Variação não pode ser 0!");
+      return false;
+    }
+  }
 }
 </script>

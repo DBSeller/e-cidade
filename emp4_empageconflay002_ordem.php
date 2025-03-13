@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_pagordem_classe.php");
-include("classes/db_empagetipo_classe.php");
-include("classes/db_empord_classe.php");
-include("classes/db_empagemov_classe.php");
-include("classes/db_empagepag_classe.php");
-include("classes/db_empagemod_classe.php");
-include("classes/db_pcfornecon_classe.php");
+include(modification("classes/db_pagordem_classe.php"));
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("classes/db_empord_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("classes/db_empagepag_classe.php"));
+include(modification("classes/db_empagemod_classe.php"));
+include(modification("classes/db_pcfornecon_classe.php"));
 
 $clempagetipo = new cl_empagetipo;
 $clpagordem   = new cl_pagordem;
@@ -183,7 +183,7 @@ function js_calcula(campo){
 	     // if($e84_codmod != $e83_codmod){
 
 		$sql = " select c63_banco from conplanoreduz 
-			      inner join conplanoconta on c61_codcon = c63_codcon and c61_anousu=c63_anousu 
+			      inner join conplanoconta on c61_codcon = c63_codcon and c61_anousu=c63_anousu and c61_reduz = c63_reduz
 			      where c61_anousu=".db_getsession("DB_anousu")." and c61_reduz=$e83_conta
 		      ";
 			      

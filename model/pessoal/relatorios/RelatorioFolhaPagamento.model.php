@@ -1,7 +1,7 @@
 <?PHP
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,8 +30,8 @@
  * relacionados ao funcionarios
  * @author   Rafael Lopes rafael.lopes@dbseller.com.br	
  * @package  Pessoal
- * @revision $Author: dbmauricio $
- * @version  $Revision: 1.9 $
+ * @revision $Author: dbrenan $
+ * @version  $Revision: 1.12 $
  *
  */
 abstract class RelatorioFolhaPagamento {
@@ -320,7 +320,7 @@ abstract class RelatorioFolhaPagamento {
     /**
      * instancia a classe DAO rhpessoal
      */
-    $oDaoRHPessoal  = db_utils::getDao("rhpessoal",true);
+    $oDaoRHPessoal  = new cl_rhpessoal();
 
     
     /**
@@ -358,6 +358,16 @@ abstract class RelatorioFolhaPagamento {
       $sSqlBase  .= "        rh02_codreg  as classe,                                                                 \n";
       $sSqlBase  .= "        z01_nome     as nome_servidor,                                                          \n";
       $sSqlBase  .= "        z01_nasc     as data_nascimento,                                                        \n";
+      $sSqlBase  .= "        rh01_admiss  as admissao,                                                               \n";
+      $sSqlBase  .= "        rh01_nasc    as nascimento,                                                             \n";
+      $sSqlBase  .= "        rh21_descr   as instrucao,                                                              \n";
+      $sSqlBase  .= "        z01_pis      as pis,                                                                    \n";
+      $sSqlBase  .= "        z01_cgccpf   as cpf,                                                                    \n";
+      $sSqlBase  .= "        rh01_clas2 as aposentadoria,                                                            \n";
+      $sSqlBase  .= "        rh44_codban as banco,                                                                   \n";
+      $sSqlBase  .= "        coalesce(trim(rh44_agencia),'')||'-'||coalesce(rh44_dvagencia,'') as agencia,           \n";
+      $sSqlBase  .= "        coalesce(trim(rh44_conta),'')||'-'||coalesce(rh44_dvconta,'') as conta,                 \n";
+      $sSqlBase  .= "        (select h13_descr from tpcontra where h13_codigo = rh02_tpcont) as h13_descr,           \n";        
       $sSqlBase  .= "        {$oTipoFolha->sSigla}_valor    as valor_rubrica,                                        \n";
       $sSqlBase  .= "        {$oTipoFolha->sSigla}_quant    as quant_rubrica,                                        \n";
       $sSqlBase  .= "        {$oTipoFolha->sSigla}_rubric   as rubrica,                                              \n";
@@ -390,6 +400,7 @@ abstract class RelatorioFolhaPagamento {
       $sSqlBase  .= "                            when 4 then 'S.Militar'                                             \n";
       $sSqlBase  .= "                            when 5 then 'Gestante'                                              \n";
       $sSqlBase  .= "                            when 6 then 'Doença'                                                \n";
+      $sSqlBase  .= "                            when 8 then 'Doença'                                                \n";
       $sSqlBase  .= "                          else 'S/Venc.' end                                                    \n";
       $sSqlBase  .= "                      else 'Normal'                                                             \n";
       $sSqlBase  .= "                 end as situacao_funcionario                                                    \n";
@@ -405,7 +416,7 @@ abstract class RelatorioFolhaPagamento {
       $sSqlBase  .= "           order by r45_dtreto limit 1                                                          \n";
       $sSqlBase  .= "        ) as situacao_funcionario,                                                              \n";
       $sSqlBase  .= "        r02_descr as padrao_descr                                                               \n";
-      $sSqlBase  .= "   from ({$sSqlBase1}) as sql_base 		                                                         \n";
+      $sSqlBase  .= "   from ({$sSqlBase1}) as sql_base 		                                                     \n";
       $sSqlBase  .= "  where rh01_regist is not null                                                                 \n";
       $sSqlBase  .= "        {$this->sWhereSelecao}                                                                  \n";
       $sSqlBase  .= "        {$this->sWhereRegime}                                                                   \n";

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matrequiitem_classe.php");
-include("classes/db_atendrequiitem_classe.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_matparam_classe.php");
-include("classes/db_db_departorg_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_almoxdepto_classe.php");
-include("classes/materialestoque.model.php");
-require_once "libs/db_app.utils.php";
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matrequiitem_classe.php"));
+include(modification("classes/db_atendrequiitem_classe.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matparam_classe.php"));
+include(modification("classes/db_db_departorg_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
+include(modification("classes/materialestoque.model.php"));
+require_once modification("libs/db_app.utils.php");
 db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 db_app::import("Acordo");
 db_app::import("AcordoComissao");
@@ -301,11 +301,11 @@ function js_verifica(max,quan,nome,sol){
 }
 function js_lancadados(quansol,codreqitem,codmater,descrmater,obs,i,m40_codigo){
   quantatend=eval('document.form1.quant_'+codmater+'_'+codreqitem+'_'+i+'.value;');
-  js_OpenJanelaIframe('top.corpo','db_iframe_lanca','mat1_lancarequi001.php?codreqitem='+codreqitem+'&codmater='+codmater+'&descrmater='+descrmater+'&obs='+obs+'&quantatend='+quantatend+'&m40_codigo='+m40_codigo+'&m80_codigo='+parent.document.form1.m80_codigo.value,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lanca','mat1_lancarequi001.php?codreqitem='+codreqitem+'&codmater='+codmater+'&descrmater='+descrmater+'&obs='+obs+'&quantatend='+quantatend+'&m40_codigo='+m40_codigo+'&m80_codigo='+parent.document.form1.m80_codigo.value,'Pesquisa',true);
 }
 function js_mostraLotes(iCodItem, iCodEstoque) {
 
-  js_OpenJanelaIframe('top.corpo','db_iframe_lotes','mat4_mostralotes.php?iCodMater='+iCodItem+'&iCodDepto='+iCodEstoque,'Lotes ',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotes','mat4_mostralotes.php?iCodMater='+iCodItem+'&iCodDepto='+iCodEstoque,'Lotes ',true);
 
 }
 js_desab();

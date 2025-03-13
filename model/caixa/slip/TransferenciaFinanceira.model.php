@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -30,7 +30,7 @@
  * @author Matheus Felini / Bruno Silva
  * @package caixa
  * @subpackage slip
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.30 $
  */
 class TransferenciaFinanceira extends Transferencia {
 
@@ -176,20 +176,23 @@ class TransferenciaFinanceira extends Transferencia {
 
   /**
    * @param $iCodigoTransferencia
+   * @param $codigoRecurso
    * @return bool
    * @throws Exception
    */
-  public function receberTransferencia($iCodigoTransferencia){
+  public function receberTransferencia($iCodigoTransferencia, $codigoRecurso = null){
 
     $iCodigoSlipRecebido = $this->getCodigoSlip();
     $this->setCodigoSlip(null);
     parent::salvar();
 
+
+
     $this->executaAutenticacao();
 
     $oDaoTipoOperacaoVinculo                        = db_utils::getDao('sliptipooperacaovinculo');
     $oDaoTipoOperacaoVinculo->k153_slip             = $this->getCodigoSlip();
-    $oDaoTipoOperacaoVinculo->k153_slipoperacaotipo = 3;
+    $oDaoTipoOperacaoVinculo->k153_slipoperacaotipo = $this->getTipoOperacao();
     $oDaoTipoOperacaoVinculo->incluir($this->getCodigoSlip());
     if ($oDaoTipoOperacaoVinculo->erro_status == "0") {
       throw new Exception("Impossível vincular o slip ao tipo de operação.\n\nErro Técnico:{$oDaoTipoOperacaoVinculo->erro_msg}");
@@ -214,6 +217,9 @@ class TransferenciaFinanceira extends Transferencia {
       throw new Exception($sMensagemErro);
     }
 
+    if (!empty($codigoRecurso)) {
+      Transferencia::vincularRecursoCreditoDebito($this->getCodigoSlip(), $codigoRecurso, $codigoRecurso);
+    }
     $this->salvarVinculoComProcesso();
 
     $this->executarLancamentoContabil();
@@ -243,8 +249,8 @@ class TransferenciaFinanceira extends Transferencia {
   }
 
   /**
-   * Verifica existência de estorno no recebimento da transferência
-   * @return boolean
+   * @return bool
+   * @throws Exception
    */
   public function possuiEstornoRecebimento() {
 
@@ -278,8 +284,11 @@ class TransferenciaFinanceira extends Transferencia {
   }
 
   /**
-   * Anula uma transferência financeira
    * @param string $sMotivo
+   *
+   * @return bool
+   * @throws BusinessException
+   * @throws Exception
    */
   public function anular($sMotivo) {
 
@@ -292,7 +301,6 @@ class TransferenciaFinanceira extends Transferencia {
     }
 
     if ($this->getTipoOperacao() != 3 && $this->getTipoOperacao() != 4) {
-//
       if ($this->possuiRecebimento() && !$this->possuiEstornoRecebimento()) {
         throw new BusinessException("Essa transferência possui recebimento e não está estornada.");
       }
@@ -302,56 +310,54 @@ class TransferenciaFinanceira extends Transferencia {
      * marcamos a transferencia como estornada, quando a operacao for o estorno do recebimento
      */
     if ($this->getTipoOperacao() == 4) {
-
-      $iCodigoSlip     = $this->getCodigoSlip();
-      $oDaoRecebimento = db_utils::getDao('transferenciafinanceirarecebimento');
-      $sWhere          = "k151_slip = {$iCodigoSlip}";
-      $sSqlRecebimento = $oDaoRecebimento->sql_query(null, "transferenciafinanceirarecebimento.*", null, $sWhere);
-      $rsRecebimento   = $oDaoRecebimento->sql_record($sSqlRecebimento);
-      if ($oDaoRecebimento->numrows > 0) {
-
-        $oDadosRecebimento                = db_utils::fieldsMemory($rsRecebimento, 0);
-        $oDaoRecebimento->k151_sequencial = $oDadosRecebimento->k151_sequencial;
-        $oDaoRecebimento->k151_estornado  = "true";
-        $oDaoRecebimento->alterar($oDadosRecebimento->k151_sequencial);
-        if ($oDaoRecebimento->erro_status == 0) {
-          throw new BusinessException("Erro ao estornar transferência do slip {$iCodigoSlip}.");
-        }
-      }
+      $this->mudaStatusAnulado();
     }
     $this->oSlip->anular($sMotivo, $lExcluirCheque);
     return true;
   }
 
   /**
-   * Funções para anulação de uma transferÊncia de recebimento e de mudança de status na tabela transferenciafinanceirarecebimento
+   * @throws Exception
    */
-
   public function mudaStatusAnulado() {
 
     $oDaoRecebimento   = db_utils::getDao('transferenciafinanceirarecebimento');
     $sWhere            = "k151_slip = {$this->getCodigoSlip()}";
-    $sSqlRecebimento   = $oDaoRecebimento->sql_query_file(null, "*", null, $sWhere);
+    $sSqlRecebimento   = $oDaoRecebimento->sql_query_file(null, "k151_sequencial", null, $sWhere);
     $rsRecebimento     = $oDaoRecebimento->sql_record($sSqlRecebimento);
 
-    if ($oDaoRecebimento->erro_status == 0) {
+    if ($oDaoRecebimento->erro_status == "0") {
       $sMsg  = "Erro na mudança de status da transferência. \n\n Erro técnico: query tabela transferenciafinanceirarecebimento | ";
       $sMsg .= " {$oDaoRecebimento->erro_msg}";
       throw new Exception($sMsg);
     }
-
     $oRecebimento      = db_utils::fieldsMemory($rsRecebimento,0);
-    unset($oDaoRecebimento);
-
     $oDaoRecebimentoAlterado = db_utils::getDao('transferenciafinanceirarecebimento');
     $oDaoRecebimentoAlterado->k151_estornado  = "true";
+    $oDaoRecebimentoAlterado->k151_sequencial  = $oRecebimento->k151_sequencial;
     $oDaoRecebimentoAlterado->alterar($oRecebimento->k151_sequencial);
-
+    if ($oDaoRecebimentoAlterado->erro_status == "0") {
+      throw new Exception("Ocorreu um erro ao alterar o status do slip de recebimento.");
+    }
+    return true;
   }
 
-
+  /**
+   * @param $sMotivo
+   *
+   * @throws Exception
+   */
   public function anularRecebimento($sMotivo) {
+
     $this->oSlip->anular($sMotivo);
     $this->mudaStatusAnulado();
+  }
+
+    /**
+     * @return int
+     */
+  public function getCodigoTransferencia()
+  {
+      return $this->iCodigoTransferencia;
   }
 }

@@ -1,38 +1,38 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_relatorio_classe.php");
-include("classes/db_db_geradorrelatoriotemplate_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_relatorio_classe.php"));
+include(modification("classes/db_db_geradorrelatoriotemplate_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oFile = db_utils::postMemory($_FILES);
@@ -43,29 +43,29 @@ $cldb_geradorrelatoriotemplate = new cl_db_geradorrelatoriotemplate();
 $cldb_relatorio->rotulo->label();
 
   if (isset($oPost->method) && $oPost->method  == "incluir") {
-  	
+
 	 $lErro = false;
-	 
+
      db_inicio_transacao();
-     
+
 	 $oidGrava = pg_lo_create();
 
 	 $dados    = file_get_contents($oFile->arquivo['tmp_name']);
-	 
+
 	 if (!$dados) {
-  		$sMsgErro = "Falha ao abrir o arquivo [{$oFile->arquivo['tmp_name']}].";	
+  		$sMsgErro = "Falha ao abrir o arquivo [{$oFile->arquivo['tmp_name']}].";
   		$lErro    = true;
 	 }
 
 	 $objeto   = pg_lo_open($conn, $oidGrava, "w");
-	
+
 	 if (!$objeto) {
 	   $sMsgErro = "Falha ao buscar objedo do banco de dados";
 	   $lErro    = true;
 	 }
 
 	 $lObjetoEscrito = pg_lo_write($objeto, $dados);
-	
+
 	 if (!$lObjetoEscrito) {
   	   $sMsgErro = "Falha na escrita do objedo no banco de dados";
   	   $lErro    = true;
@@ -75,27 +75,27 @@ $cldb_relatorio->rotulo->label();
 
 	 $cldb_geradorrelatoriotemplate->db15_db_relatorio = $oPost->db63_sequencial;
 	 $cldb_geradorrelatoriotemplate->db15_documento    = $oidGrava;
-	
+
      $rsConsultaTemplate = $cldb_geradorrelatoriotemplate->sql_record($cldb_geradorrelatoriotemplate->sql_query(null,"db15_sequencial",null, " db15_db_relatorio = {$oPost->db63_sequencial}"));
-    
+
 	 if ( $cldb_geradorrelatoriotemplate->numrows > 0 ) {
 	   $oTemplate = db_utils::fieldsMemory($rsConsultaTemplate,0);
 	   $cldb_geradorrelatoriotemplate->db15_sequencial = $oTemplate->db15_sequencial;
 	   $cldb_geradorrelatoriotemplate->alterar($oTemplate->db15_sequencial);
 	 } else {
-	   $cldb_geradorrelatoriotemplate->incluir(null);		
+	   $cldb_geradorrelatoriotemplate->incluir(null);
    	 }
-	
+
 	 if ($cldb_geradorrelatoriotemplate->erro_status == 0){
 	   $sMsgErro = $cldb_geradorrelatoriotemplate->erro_msg;
   	   $lErro    = true;
 	 }
 
 	db_fim_transacao($lErro);
-	
+
   }
-	
-  
+
+
 
 ?>
 
@@ -107,7 +107,6 @@ $cldb_relatorio->rotulo->label();
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/libJsonJs.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/geradorrelatorios.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
@@ -151,7 +150,7 @@ $cldb_relatorio->rotulo->label();
     		    <td nowrap title="Selecione o Arquivo fonte">
        			  <b> Arquivo :</b>
     			</td>
-    		    <td> 
+    		    <td>
     			  <?
       				db_input('arquivo',43,'',true,'file',1,"");
     			  ?>
@@ -166,7 +165,7 @@ $cldb_relatorio->rotulo->label();
   		  <input type="button" value="Incluir"   onClick="js_verificaTemplate();" />
 	  	</td>
 	  </tr>
-	</table>	  	
+	</table>
   </form>
 </center>
 <?
@@ -179,7 +178,7 @@ $cldb_relatorio->rotulo->label();
   function js_verificaRel(){
   	var iCodRelatorio = document.form1.db63_sequencial.value;
   	if ( iCodRelatorio == "" ) {
-  	  alert("Preencha código do relatório");  	
+  	  alert("Preencha código do relatório");
    	} else {
 	    js_consultaVariaveis(iCodRelatorio);
 	  }
@@ -187,82 +186,82 @@ $cldb_relatorio->rotulo->label();
 
 
   function js_consultaVariaveis(iCodRelatorio){
-    
+
   	var sAcao = "consultaVariaveis";
-  	
+
 	var sQuery  = "sAcao="+sAcao;
   		sQuery += "&iCodRelatorio="+iCodRelatorio;
    	var url          = "sys4_cadastrotemplateRPC.php";
    	var oAjax        = new Ajax.Request( url, {
-                                               method: 'post', 
+                                               method: 'post',
                                                parameters: sQuery,
                                                onComplete: js_retornoVariaveis
                                               }
                                        );
-  
-                                           
+
+
   }
-  
+
   function js_retornoVariaveis(oAjax){
-    
+
     var iCodRelatorio = document.form1.db63_sequencial.value;
     var aParametros   = new Array();
-    var aRetorno 	  = eval("("+oAjax.responseText+")");
-    
+    var aRetorno 	  = JSON.parse(oAjax.responseText);
+
     if (aRetorno.length > 0) {
       for(var i=0; i < aRetorno.length; i++){
         if(aRetorno[i].sLabel != ""){
-		  var sDescricao = aRetorno[i].sLabel; 
+		  var sDescricao = aRetorno[i].sLabel;
 	    } else {
 	  	  var sDescricao = aRetorno[i].sNome;
 	    }
-		
+
 	    var sVariavel   = prompt(sDescricao,aRetorno[i].sValor);
 	    var objVariavel = new js_criaObjetoVariavel(aRetorno[i].sNome,sVariavel);
 	    aParametros[i]  = objVariavel;
-	    
+
       }
 	}
-	
-	js_imprimeRelatorio(iCodRelatorio,js_downloadArquivo,aParametros.toSource()); 
-  
+
+	js_imprimeRelatorio(iCodRelatorio,js_downloadArquivo,JSON.stringify(aParametros));
+
   }
-  
+
 
 
   function js_verificaTemplate(){
-  
+
 	var iCodRelatorio = document.form1.db63_sequencial.value;
 	var sArquivo	  = document.form1.arquivo.value;
-	
+
 	if( sArquivo == "" || iCodRelatorio == ""){
 		alert("Favor preencher todos os campos!");
 		return false;
 	}
-	
- 
+
+
   	js_divCarregando('Aguarde, processando...','msgBox');
-  	
+
   	var sAcao   = "consultaTemplate";
   	var sQuery  = "sAcao="+sAcao;
     		sQuery += "&iCodRelatorio="+iCodRelatorio;
-  		
+
    	var url     = "sys4_cadastrotemplateRPC.php";
    	var oAjax   = new Ajax.Request( url, {
-                                          method: 'post', 
+                                          method: 'post',
                                           parameters: sQuery,
                                           onComplete: js_retornoVerificaTemplate
                                          }
                                   );
   }
-  
-  
+
+
   function js_retornoVerificaTemplate(oAjax){
-  	
+
   	js_removeObj('msgBox');
-  	
-  	var aRetorno = eval("("+oAjax.responseText+")");
-	
+
+  	var aRetorno = JSON.parse(oAjax.responseText);
+
 	 	if ( aRetorno.templates.length > 0  ){
 	  	  if ( confirm("Já existe um template cadastrado para esse relatório, deseja substituir ?") ) {
 		    js_incluir();
@@ -271,28 +270,28 @@ $cldb_relatorio->rotulo->label();
 		  }
 		} else {
 		  document.form1.method.value = "incluir";
-		  js_incluir();	  
+		  js_incluir();
 		}
-	
+
   }
-  
-  
+
+
   function js_incluir(){
- 	
-    document.form1.method.value = "incluir"; 	
+
+    document.form1.method.value = "incluir";
     document.form1.submit();
 
-  }	
-	
-	
-	
+  }
+
+
+
   function js_retornoInclusao(iCodRelatorio){
     if(confirm("Deseja Imprimir")){
       js_consultaVariaveis(iCodRelatorio);
    	}
-  }	
-	
-	
+  }
+
+
   function js_pesquisaRelatorio(mostra){
     if (mostra==true) {
       js_OpenJanelaIframe('','db_iframe_db_relatorio','func_db_relatorio.php?lTemplate=true&funcao_js=parent.js_mostrarelatorio1|db63_sequencial|db63_nomerelatorio','Pesquisa',true);
@@ -307,9 +306,9 @@ $cldb_relatorio->rotulo->label();
 
 
   function js_mostrarelatorio(chave,erro) {
-    
+
     document.form1.db63_nomerelatorio.value = chave;
-    
+
     if (erro==true) {
       document.form1.db63_sequencial.focus();
       document.form1.db63_sequencial.value = '';
@@ -320,17 +319,17 @@ $cldb_relatorio->rotulo->label();
   function js_mostrarelatorio1(chave1,chave2){
     document.form1.db63_sequencial.value 	 = chave1;
     document.form1.db63_nomerelatorio.value  = chave2;
-    db_iframe_db_relatorio.hide();  
+    db_iframe_db_relatorio.hide();
   }
 
 </script>
 <?
-	
+
   if (isset($oPost->method) && $oPost->method  == "incluir") {
 		if ($lErro) {
-		  db_msgbox($sMsgErro);	 
+		  db_msgbox($sMsgErro);
 		} else {
 		  db_msgbox("Inclusão feita com sucesso!");
 		}
-  }	
+  }
 ?>

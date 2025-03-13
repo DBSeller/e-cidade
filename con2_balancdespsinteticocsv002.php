@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 header('Content-type: text/html; charset=ISO-8859-9');
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_liborcamento.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("classes/db_orcelemento_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("classes/db_orcelemento_classe.php"));
 echo "<PRE>";
 db_postmemory($_POST);
 //Abre o arquivo
@@ -93,7 +93,7 @@ if (!isset($db_selinstit)) {
 }
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -120,7 +120,7 @@ $head5 = "INSTITUIÇÕES : ".$descr_inst;
 $clselorcdotacao = new cl_selorcdotacao();
 $clselorcdotacao->setDados($filtra_despesa);
 // passa os parametros vindos da func_selorcdotacao_abas.php
-$sele_work = $clselorcdotacao->getDados();
+$sele_work = $clselorcdotacao->getDadosComplemento();
 
 $clselorcdotacao->instit = "(".db_getsession("DB_instit").")";
 
@@ -493,7 +493,7 @@ $sql_result .= $ordem;
 //echo $sql_result; exit;
 
 if ($selecao != "") {
-  $result = pg_exec($sql_result);
+  $result = db_query($sql_result);
 }
 
 $orgao     = "";
@@ -1892,7 +1892,7 @@ if ($nivela > 0) {
   order by o58_elemento";
   
 //  echo $sql;  exit;
-  $result = pg_exec($sql);
+  $result = db_query($sql);
 //  db_criatabela($result);  exit;
   
   // TOTAIS GERAIS

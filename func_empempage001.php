@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_empagemov_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
-$clempagemov = new cl_empagemov;
-$clrotulo = new rotulocampo;
+db_postmemory($_POST);
+$clempagemov = new cl_empagemov();
+$clrotulo    = new rotulocampo();
 $clrotulo->label("o56_descr");
 $clrotulo->label("o56_elemento");
 $clempagemov->rotulo->label();
@@ -55,7 +56,6 @@ $clempagemov->rotulo->label();
       <center>
       <input name="fechar" type="button" value="Fechar" onclick="parent.db_iframe_agendamento.hide();">
       <?
-      //$sql = $clempagemov->sql_query_consemp(null,"e81_codage,e81_codmov,e82_codord,e83_descr as DL_Forma,e81_valor,e90_codgera as DL_Arquivo,e87_dataproc,e76_codret,e92_descrerro","e81_codage,e81_codmov","e60_numemp=$e60_numemp");
       $sql = $clempagemov->sql_query_consemp(null,"
              distinct e81_codage,
              e43_ordempagamento as DL_OP_auxiliar,
@@ -83,11 +83,11 @@ $clempagemov->rotulo->label();
              case when e86_codmov is not null 
                    and e86_cheque <> '0' 
                    and round(e81_valor,2)-round(e53_valor,2)-round(e53_vlranu,2)-round(e53_vlrpag,2) <= 0
-                   and corconf.k12_id is not null then 'MOVIMENTO PAGO'
+                   and corconf.k12_id is not null then case when corempagemov.k12_sequencial is not null then 'MOVIMENTO PAGO' else 'MOVIMENTO AGENDADO' end
               else 
                  ( case when e86_codmov is not null and e86_cheque <> '0'
                            and round(e81_valor,2)-round(e53_valor,2)-round(e53_vlranu,2)-round(e53_vlrpag,2) > 0 then 'A PAGAR'
-                   when e86_codmov is not null and e86_cheque = '0' or e86_cheque is not null and corempagemov.k12_id is not null then 'MOVIMENTO PAGO'
+                   when e86_codmov is not null and e86_cheque = '0' or e86_cheque is not null and corempagemov.k12_id is not null then case when corempagemov.k12_sequencial is not null then 'MOVIMENTO PAGO' else 'MOVIMENTO AGENDADO' end
                        else e92_descrerro end)
              end as e92_descrerro, e92_descrerro as dl_OcorrenciaRetorno","
              e81_codage,
@@ -102,3 +102,9 @@ $clempagemov->rotulo->label();
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

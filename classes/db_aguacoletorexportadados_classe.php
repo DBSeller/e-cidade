@@ -1,158 +1,158 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Agua
 //CLASSE DA ENTIDADE aguacoletorexportadados
-class cl_aguacoletorexportadados { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $x50_sequencial = 0; 
-   var $x50_aguacoletorexportadados = 0; 
-   var $x50_aguacoletorexporta = 0; 
-   var $x50_matric = 0; 
-   var $x50_rota = 0; 
-   var $x50_tipo = 0; 
-   var $x50_codlogradouro = 0; 
-   var $x50_codbairro = 0; 
-   var $x50_codhidrometro = 0; 
-   var $x50_zona = 0; 
-   var $x50_ordem = 0; 
-   var $x50_responsavel = null; 
-   var $x50_nomelogradouro = null; 
-   var $x50_numero = 0; 
-   var $x50_letra = null; 
-   var $x50_complemento = null; 
-   var $x50_nomebairro = null; 
-   var $x50_cidade = null; 
-   var $x50_estado = null; 
-   var $x50_quadra = 0; 
-   var $x50_economias = 0; 
-   var $x50_categorias = null; 
-   var $x50_areaconstruida = 0; 
-   var $x50_nrohidro = null; 
-   var $x50_numpre = 0; 
-   var $x50_natureza = null; 
-   var $x50_dtleituraatual_dia = null; 
-   var $x50_dtleituraatual_mes = null; 
-   var $x50_dtleituraatual_ano = null; 
-   var $x50_dtleituraatual = null; 
-   var $x50_diasleitura = 0; 
-   var $x50_dtleituraanterior_dia = null; 
-   var $x50_dtleituraanterior_mes = null; 
-   var $x50_dtleituraanterior_ano = null; 
-   var $x50_dtleituraanterior = null; 
-   var $x50_consumo = 0; 
-   var $x50_mediadiaria = 0; 
-   var $x50_consumopadrao = 0; 
-   var $x50_consumomaximo = 0; 
-   var $x50_vencimento_dia = null; 
-   var $x50_vencimento_mes = null; 
-   var $x50_vencimento_ano = null; 
-   var $x50_vencimento = null; 
-   var $x50_valoracrescimo = 0; 
-   var $x50_valordesconto = 0; 
-   var $x50_valortotal = 0; 
-   var $x50_linhadigitavel = null; 
-   var $x50_codigobarras = null; 
-   var $x50_imprimeconta = 0; 
-   var $x50_valor_m3_excesso = 0; 
-   var $x50_leituracoletada = 0; 
-   var $x50_observacao = null; 
-   var $x50_contaimpressa = 0; 
-   var $x50_avisoleiturista = null; 
-   
-   // cria propriedade com as variaveis do arquivo 
+class cl_aguacoletorexportadados {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $x50_sequencial = 0;
+   var $x50_aguacoletorexportadados = 0;
+   var $x50_aguacoletorexporta = 0;
+   var $x50_matric = 0;
+   var $x50_rota = 0;
+   var $x50_tipo = 0;
+   var $x50_codlogradouro = 0;
+   var $x50_codbairro = 0;
+   var $x50_codhidrometro = 0;
+   var $x50_zona = 0;
+   var $x50_ordem = 0;
+   var $x50_responsavel = null;
+   var $x50_nomelogradouro = null;
+   var $x50_numero = 0;
+   var $x50_letra = null;
+   var $x50_complemento = null;
+   var $x50_nomebairro = null;
+   var $x50_cidade = null;
+   var $x50_estado = null;
+   var $x50_quadra = 0;
+   var $x50_economias = 0;
+   var $x50_categorias = null;
+   var $x50_areaconstruida = 0;
+   var $x50_nrohidro = null;
+   var $x50_numpre = 0;
+   var $x50_natureza = null;
+   var $x50_dtleituraatual_dia = null;
+   var $x50_dtleituraatual_mes = null;
+   var $x50_dtleituraatual_ano = null;
+   var $x50_dtleituraatual = null;
+   var $x50_diasleitura = 0;
+   var $x50_dtleituraanterior_dia = null;
+   var $x50_dtleituraanterior_mes = null;
+   var $x50_dtleituraanterior_ano = null;
+   var $x50_dtleituraanterior = null;
+   var $x50_consumo = 0;
+   var $x50_mediadiaria = 0;
+   var $x50_consumopadrao = 0;
+   var $x50_consumomaximo = 0;
+   var $x50_vencimento_dia = null;
+   var $x50_vencimento_mes = null;
+   var $x50_vencimento_ano = null;
+   var $x50_vencimento = null;
+   var $x50_valoracrescimo = 0;
+   var $x50_valordesconto = 0;
+   var $x50_valortotal = 0;
+   var $x50_linhadigitavel = null;
+   var $x50_codigobarras = null;
+   var $x50_imprimeconta = 0;
+   var $x50_valor_m3_excesso = 0;
+   var $x50_leituracoletada = 0;
+   var $x50_observacao = null;
+   var $x50_contaimpressa = 0;
+   var $x50_avisoleiturista = null;
+
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 x50_sequencial = int8 = Código Exportação Dados 
-                 x50_aguacoletorexportadados = int8 = Código Exportação Dados 
-                 x50_aguacoletorexporta = int4 = Código Exportação 
-                 x50_matric = int4 = Matrícula 
-                 x50_rota = int4 = Rota 
-                 x50_tipo = int4 = Código 
-                 x50_codlogradouro = int4 = Cod. Logradouro 
-                 x50_codbairro = int4 = Cód. do Bairro 
-                 x50_codhidrometro = int4 = Cód Hidrometro 
-                 x50_zona = int8 = Código 
-                 x50_ordem = int4 = Ordem de Registro da Matricula 
-                 x50_responsavel = varchar(100) = Nome do Responsavel 
-                 x50_nomelogradouro = varchar(40) = Logradouro 
-                 x50_numero = int4 = Número Logradouro 
-                 x50_letra = char(1) = Letra Logradouro 
-                 x50_complemento = varchar(30) = Complemento 
-                 x50_nomebairro = varchar(40) = Nome Bairro 
-                 x50_cidade = varchar(40) = Cidade 
-                 x50_estado = char(2) = Estado 
-                 x50_quadra = int4 = Quadra 
-                 x50_economias = int4 = Economias 
-                 x50_categorias = varchar(40) = Categoria 
-                 x50_areaconstruida = float8 = Área Construida 
-                 x50_nrohidro = varchar(20) = Numero Hidrometro 
-                 x50_numpre = int4 = Numpre 
-                 x50_natureza = varchar(20) = Natureza 
-                 x50_dtleituraatual = date = Data Leitura Atual 
-                 x50_diasleitura = int4 = Dias Leitura 
-                 x50_dtleituraanterior = date = Data Leitura Anterior 
-                 x50_consumo = int4 = Consumo 
-                 x50_mediadiaria = int4 = Media Diaria 
-                 x50_consumopadrao = float8 = Consumo Padrao 
-                 x50_consumomaximo = float8 = Consumo Máximo 
-                 x50_vencimento = date = Data Vencimento 
-                 x50_valoracrescimo = float8 = Valor Acrescimo 
-                 x50_valordesconto = float8 = Valor Desconto 
-                 x50_valortotal = float8 = Valor Total 
-                 x50_linhadigitavel = varchar(70) = Linha Digitavel 
-                 x50_codigobarras = varchar(70) = Código Barras 
-                 x50_imprimeconta = int4 = Imprime Conta 
-                 x50_valor_m3_excesso = float8 = Valor m3 Excesso 
-                 x50_leituracoletada = int4 = Leitura Coletada 
-                 x50_observacao = text = Observação da Matrícula 
+                 x50_sequencial = int8 = Código Exportação Dados
+                 x50_aguacoletorexportadados = int8 = Código Exportação Dados
+                 x50_aguacoletorexporta = int4 = Código Exportação
+                 x50_matric = int4 = Matrícula
+                 x50_rota = int4 = Rota
+                 x50_tipo = int4 = Código
+                 x50_codlogradouro = int4 = Cod. Logradouro
+                 x50_codbairro = int4 = Cód. do Bairro
+                 x50_codhidrometro = int4 = Cód Hidrometro
+                 x50_zona = int8 = Código
+                 x50_ordem = int4 = Ordem de Registro da Matricula
+                 x50_responsavel = varchar(100) = Nome do Responsavel
+                 x50_nomelogradouro = varchar(40) = Logradouro
+                 x50_numero = int4 = Número Logradouro
+                 x50_letra = char(1) = Letra Logradouro
+                 x50_complemento = varchar(30) = Complemento
+                 x50_nomebairro = varchar(40) = Nome Bairro
+                 x50_cidade = varchar(40) = Cidade
+                 x50_estado = char(2) = Estado
+                 x50_quadra = int4 = Quadra
+                 x50_economias = int4 = Economias
+                 x50_categorias = varchar(40) = Categoria
+                 x50_areaconstruida = float8 = Área Construida
+                 x50_nrohidro = varchar(20) = Numero Hidrometro
+                 x50_numpre = int4 = Numpre
+                 x50_natureza = varchar(20) = Natureza
+                 x50_dtleituraatual = date = Data Leitura Atual
+                 x50_diasleitura = int4 = Dias Leitura
+                 x50_dtleituraanterior = date = Data Leitura Anterior
+                 x50_consumo = int4 = Consumo
+                 x50_mediadiaria = int4 = Media Diaria
+                 x50_consumopadrao = float8 = Consumo Padrao
+                 x50_consumomaximo = float8 = Consumo Máximo
+                 x50_vencimento = date = Data Vencimento
+                 x50_valoracrescimo = float8 = Valor Acrescimo
+                 x50_valordesconto = float8 = Valor Desconto
+                 x50_valortotal = float8 = Valor Total
+                 x50_linhadigitavel = varchar(70) = Linha Digitavel
+                 x50_codigobarras = varchar(70) = Código Barras
+                 x50_imprimeconta = int4 = Imprime Conta
+                 x50_valor_m3_excesso = float8 = Valor m3 Excesso
+                 x50_leituracoletada = int4 = Leitura Coletada
+                 x50_observacao = text = Observação da Matrícula
                  x50_contaimpressa = int4 = Conta Impressa
-                 x50_avisoleiturista = text = Aviso Leiturista 
+                 x50_avisoleiturista = text = Aviso Leiturista
                  ";
-   //funcao construtor da classe 
-   function cl_aguacoletorexportadados() { 
+   //funcao construtor da classe
+   function cl_aguacoletorexportadados() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("aguacoletorexportadados"); 
+     $this->rotulo = new rotulo("aguacoletorexportadados");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -229,18 +229,18 @@ class cl_aguacoletorexportadados {
        $this->x50_observacao = ($this->x50_observacao == ""?@$GLOBALS["HTTP_POST_VARS"]["x50_observacao"]:$this->x50_observacao);
        $this->x50_contaimpressa = ($this->x50_contaimpressa == ""?@$GLOBALS["HTTP_POST_VARS"]["x50_contaimpressa"]:$this->x50_contaimpressa);
        $this->x50_avisoleiturista = ($this->x50_avisoleiturista == ""?@$GLOBALS["HTTP_POST_VARS"]["x50_avisoleiturista"]:$this->x50_avisoleiturista);
-       
+
      }else{
        $this->x50_sequencial = ($this->x50_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["x50_sequencial"]:$this->x50_sequencial);
      }
    }
    // funcao para inclusao
-   function incluir ($x50_sequencial){ 
+   function incluir ($x50_sequencial){
       $this->atualizacampos();
-     if($this->x50_aguacoletorexportadados == null ){ 
+     if($this->x50_aguacoletorexportadados == null ){
        $this->x50_aguacoletorexportadados = "0";
      }
-     if($this->x50_aguacoletorexporta == null ){ 
+     if($this->x50_aguacoletorexporta == null ){
        $this->erro_sql = " Campo Código Exportação nao Informado.";
        $this->erro_campo = "x50_aguacoletorexporta";
        $this->erro_banco = "";
@@ -249,7 +249,7 @@ class cl_aguacoletorexportadados {
        $this->erro_status = "0";
        return false;
      }
-     if($this->x50_matric == null ){ 
+     if($this->x50_matric == null ){
        $this->erro_sql = " Campo Matrícula nao Informado.";
        $this->erro_campo = "x50_matric";
        $this->erro_banco = "";
@@ -258,7 +258,7 @@ class cl_aguacoletorexportadados {
        $this->erro_status = "0";
        return false;
      }
-     if($this->x50_rota == null ){ 
+     if($this->x50_rota == null ){
        $this->erro_sql = " Campo Rota nao Informado.";
        $this->erro_campo = "x50_rota";
        $this->erro_banco = "";
@@ -267,10 +267,10 @@ class cl_aguacoletorexportadados {
        $this->erro_status = "0";
        return false;
      }
-     if($this->x50_tipo == null ){ 
+     if($this->x50_tipo == null ){
        $this->x50_tipo = "0";
      }
-     if($this->x50_codlogradouro == null ){ 
+     if($this->x50_codlogradouro == null ){
        $this->erro_sql = " Campo Cod. Logradouro nao Informado.";
        $this->erro_campo = "x50_codlogradouro";
        $this->erro_banco = "";
@@ -279,7 +279,7 @@ class cl_aguacoletorexportadados {
        $this->erro_status = "0";
        return false;
      }
-     if($this->x50_codbairro == null ){ 
+     if($this->x50_codbairro == null ){
        $this->erro_sql = " Campo Cód. do Bairro nao Informado.";
        $this->erro_campo = "x50_codbairro";
        $this->erro_banco = "";
@@ -288,7 +288,7 @@ class cl_aguacoletorexportadados {
        $this->erro_status = "0";
        return false;
      }
-     if($this->x50_codhidrometro == null ){ 
+     if($this->x50_codhidrometro == null ){
        $this->erro_sql = " Campo Cód Hidrometro nao Informado.";
        $this->erro_campo = "x50_codhidrometro";
        $this->erro_banco = "";
@@ -297,83 +297,83 @@ class cl_aguacoletorexportadados {
        $this->erro_status = "0";
        return false;
      }
-     if($this->x50_zona == null ){ 
+     if($this->x50_zona == null ){
        $this->x50_zona = "0";
      }
-     if($this->x50_ordem == null ){ 
+     if($this->x50_ordem == null ){
        $this->x50_ordem = "0";
      }
-     if($this->x50_numero == null ){ 
+     if($this->x50_numero == null ){
        $this->x50_numero = "0";
      }
-     if($this->x50_quadra == null ){ 
+     if($this->x50_quadra == null ){
        $this->x50_quadra = "0";
      }
-     if($this->x50_economias == null ){ 
+     if($this->x50_economias == null ){
        $this->x50_economias = "0";
      }
-     if($this->x50_areaconstruida == null ){ 
+     if($this->x50_areaconstruida == null ){
        $this->x50_areaconstruida = "0";
      }
-     if($this->x50_numpre == null ){ 
+     if($this->x50_numpre == null ){
        $this->x50_numpre = "0";
      }
-     if($this->x50_dtleituraatual == null ){ 
+     if($this->x50_dtleituraatual == null ){
        $this->x50_dtleituraatual = "null";
      }
-     if($this->x50_diasleitura == null ){ 
+     if($this->x50_diasleitura == null ){
        $this->x50_diasleitura = "0";
      }
-     if($this->x50_dtleituraanterior == null ){ 
+     if($this->x50_dtleituraanterior == null ){
        $this->x50_dtleituraanterior = "null";
      }
-     if($this->x50_consumo == null ){ 
+     if($this->x50_consumo == null ){
        $this->x50_consumo = "0";
      }
-     if($this->x50_mediadiaria == null ){ 
+     if($this->x50_mediadiaria == null ){
        $this->x50_mediadiaria = "0";
      }
-     if($this->x50_consumopadrao == null ){ 
+     if($this->x50_consumopadrao == null ){
        $this->x50_consumopadrao = "0";
      }
-     if($this->x50_consumomaximo == null ){ 
+     if($this->x50_consumomaximo == null ){
        $this->x50_consumomaximo = "0";
      }
-     if($this->x50_vencimento == null ){ 
+     if($this->x50_vencimento == null ){
        $this->x50_vencimento = "null";
      }
-     if($this->x50_valoracrescimo == null ){ 
+     if($this->x50_valoracrescimo == null ){
        $this->x50_valoracrescimo = "0";
      }
-     if($this->x50_valordesconto == null ){ 
+     if($this->x50_valordesconto == null ){
        $this->x50_valordesconto = "0";
      }
-     if($this->x50_valortotal == null ){ 
+     if($this->x50_valortotal == null ){
        $this->x50_valortotal = "0";
      }
-     if($this->x50_imprimeconta == null ){ 
+     if($this->x50_imprimeconta == null ){
        $this->x50_imprimeconta = "0";
      }
-     if($this->x50_valor_m3_excesso == null ){ 
+     if($this->x50_valor_m3_excesso == null ){
        $this->x50_valor_m3_excesso = "0";
      }
-     if($this->x50_leituracoletada == null ){ 
+     if($this->x50_leituracoletada == null ){
        $this->x50_leituracoletada = "0";
      }
-     if($this->x50_contaimpressa == null ){ 
+     if($this->x50_contaimpressa == null ){
        $this->x50_contaimpressa = "0";
      }
      if($x50_sequencial == "" || $x50_sequencial == null ){
-       $result = db_query("select nextval('aguacoletorexportadados_x50_sequencial_seq')"); 
+       $result = db_query("select nextval('aguacoletorexportadados_x50_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: aguacoletorexportadados_x50_sequencial_seq do campo: x50_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: aguacoletorexportadados_x50_sequencial_seq do campo: x50_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->x50_sequencial = pg_result($result,0,0); 
+       $this->x50_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from aguacoletorexportadados_x50_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $x50_sequencial)){
@@ -384,10 +384,10 @@ class cl_aguacoletorexportadados {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->x50_sequencial = $x50_sequencial; 
+         $this->x50_sequencial = $x50_sequencial;
        }
      }
-     if(($this->x50_sequencial == null) || ($this->x50_sequencial == "") ){ 
+     if(($this->x50_sequencial == null) || ($this->x50_sequencial == "") ){
        $this->erro_sql = " Campo x50_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -396,102 +396,102 @@ class cl_aguacoletorexportadados {
        return false;
      }
      $sql = "insert into aguacoletorexportadados(
-                                       x50_sequencial 
-                                      ,x50_aguacoletorexportadados 
-                                      ,x50_aguacoletorexporta 
-                                      ,x50_matric 
-                                      ,x50_rota 
-                                      ,x50_tipo 
-                                      ,x50_codlogradouro 
-                                      ,x50_codbairro 
-                                      ,x50_codhidrometro 
-                                      ,x50_zona 
-                                      ,x50_ordem 
-                                      ,x50_responsavel 
-                                      ,x50_nomelogradouro 
-                                      ,x50_numero 
-                                      ,x50_letra 
-                                      ,x50_complemento 
-                                      ,x50_nomebairro 
-                                      ,x50_cidade 
-                                      ,x50_estado 
-                                      ,x50_quadra 
-                                      ,x50_economias 
-                                      ,x50_categorias 
-                                      ,x50_areaconstruida 
-                                      ,x50_nrohidro 
-                                      ,x50_numpre 
-                                      ,x50_natureza 
-                                      ,x50_dtleituraatual 
-                                      ,x50_diasleitura 
-                                      ,x50_dtleituraanterior 
-                                      ,x50_consumo 
-                                      ,x50_mediadiaria 
-                                      ,x50_consumopadrao 
-                                      ,x50_consumomaximo 
-                                      ,x50_vencimento 
-                                      ,x50_valoracrescimo 
-                                      ,x50_valordesconto 
-                                      ,x50_valortotal 
-                                      ,x50_linhadigitavel 
-                                      ,x50_codigobarras 
-                                      ,x50_imprimeconta 
-                                      ,x50_valor_m3_excesso 
-                                      ,x50_leituracoletada 
-                                      ,x50_observacao 
-                                      ,x50_contaimpressa 
+                                       x50_sequencial
+                                      ,x50_aguacoletorexportadados
+                                      ,x50_aguacoletorexporta
+                                      ,x50_matric
+                                      ,x50_rota
+                                      ,x50_tipo
+                                      ,x50_codlogradouro
+                                      ,x50_codbairro
+                                      ,x50_codhidrometro
+                                      ,x50_zona
+                                      ,x50_ordem
+                                      ,x50_responsavel
+                                      ,x50_nomelogradouro
+                                      ,x50_numero
+                                      ,x50_letra
+                                      ,x50_complemento
+                                      ,x50_nomebairro
+                                      ,x50_cidade
+                                      ,x50_estado
+                                      ,x50_quadra
+                                      ,x50_economias
+                                      ,x50_categorias
+                                      ,x50_areaconstruida
+                                      ,x50_nrohidro
+                                      ,x50_numpre
+                                      ,x50_natureza
+                                      ,x50_dtleituraatual
+                                      ,x50_diasleitura
+                                      ,x50_dtleituraanterior
+                                      ,x50_consumo
+                                      ,x50_mediadiaria
+                                      ,x50_consumopadrao
+                                      ,x50_consumomaximo
+                                      ,x50_vencimento
+                                      ,x50_valoracrescimo
+                                      ,x50_valordesconto
+                                      ,x50_valortotal
+                                      ,x50_linhadigitavel
+                                      ,x50_codigobarras
+                                      ,x50_imprimeconta
+                                      ,x50_valor_m3_excesso
+                                      ,x50_leituracoletada
+                                      ,x50_observacao
+                                      ,x50_contaimpressa
                                       ,x50_avisoleiturista
                        )
                 values (
-                                $this->x50_sequencial 
-                               ,$this->x50_aguacoletorexportadados 
-                               ,$this->x50_aguacoletorexporta 
-                               ,$this->x50_matric 
-                               ,$this->x50_rota 
-                               ,$this->x50_tipo 
-                               ,$this->x50_codlogradouro 
-                               ,$this->x50_codbairro 
-                               ,$this->x50_codhidrometro 
-                               ,$this->x50_zona 
-                               ,$this->x50_ordem 
-                               ,'$this->x50_responsavel' 
-                               ,'$this->x50_nomelogradouro' 
-                               ,$this->x50_numero 
-                               ,'$this->x50_letra' 
-                               ,'$this->x50_complemento' 
-                               ,'$this->x50_nomebairro' 
-                               ,'$this->x50_cidade' 
-                               ,'$this->x50_estado' 
-                               ,$this->x50_quadra 
-                               ,$this->x50_economias 
-                               ,'$this->x50_categorias' 
-                               ,$this->x50_areaconstruida 
-                               ,'$this->x50_nrohidro' 
-                               ,$this->x50_numpre 
-                               ,'$this->x50_natureza' 
-                               ,".($this->x50_dtleituraatual == "null" || $this->x50_dtleituraatual == ""?"null":"'".$this->x50_dtleituraatual."'")." 
-                               ,$this->x50_diasleitura 
-                               ,".($this->x50_dtleituraanterior == "null" || $this->x50_dtleituraanterior == ""?"null":"'".$this->x50_dtleituraanterior."'")." 
-                               ,$this->x50_consumo 
-                               ,$this->x50_mediadiaria 
-                               ,$this->x50_consumopadrao 
-                               ,$this->x50_consumomaximo 
-                               ,".($this->x50_vencimento == "null" || $this->x50_vencimento == ""?"null":"'".$this->x50_vencimento."'")." 
-                               ,$this->x50_valoracrescimo 
-                               ,$this->x50_valordesconto 
-                               ,$this->x50_valortotal 
-                               ,'$this->x50_linhadigitavel' 
-                               ,'$this->x50_codigobarras' 
-                               ,$this->x50_imprimeconta 
-                               ,$this->x50_valor_m3_excesso 
-                               ,$this->x50_leituracoletada 
-                               ,'$this->x50_observacao' 
-                               ,$this->x50_contaimpressa 
+                                $this->x50_sequencial
+                               ,$this->x50_aguacoletorexportadados
+                               ,$this->x50_aguacoletorexporta
+                               ,$this->x50_matric
+                               ,$this->x50_rota
+                               ,$this->x50_tipo
+                               ,$this->x50_codlogradouro
+                               ,$this->x50_codbairro
+                               ,$this->x50_codhidrometro
+                               ,$this->x50_zona
+                               ,$this->x50_ordem
+                               ,'$this->x50_responsavel'
+                               ,'$this->x50_nomelogradouro'
+                               ,$this->x50_numero
+                               ,'$this->x50_letra'
+                               ,'$this->x50_complemento'
+                               ,'$this->x50_nomebairro'
+                               ,'$this->x50_cidade'
+                               ,'$this->x50_estado'
+                               ,$this->x50_quadra
+                               ,$this->x50_economias
+                               ,'$this->x50_categorias'
+                               ,$this->x50_areaconstruida
+                               ,'$this->x50_nrohidro'
+                               ,$this->x50_numpre
+                               ,'$this->x50_natureza'
+                               ,".($this->x50_dtleituraatual == "null" || $this->x50_dtleituraatual == ""?"null":"'".$this->x50_dtleituraatual."'")."
+                               ,$this->x50_diasleitura
+                               ,".($this->x50_dtleituraanterior == "null" || $this->x50_dtleituraanterior == ""?"null":"'".$this->x50_dtleituraanterior."'")."
+                               ,$this->x50_consumo
+                               ,$this->x50_mediadiaria
+                               ,$this->x50_consumopadrao
+                               ,$this->x50_consumomaximo
+                               ,".($this->x50_vencimento == "null" || $this->x50_vencimento == ""?"null":"'".$this->x50_vencimento."'")."
+                               ,$this->x50_valoracrescimo
+                               ,$this->x50_valordesconto
+                               ,$this->x50_valortotal
+                               ,'$this->x50_linhadigitavel'
+                               ,'$this->x50_codigobarras'
+                               ,$this->x50_imprimeconta
+                               ,$this->x50_valor_m3_excesso
+                               ,$this->x50_leituracoletada
+                               ,'$this->x50_observacao'
+                               ,$this->x50_contaimpressa
                                ,'$this->x50_avisoleiturista'
                       )";
-                              
-     $result = db_query($sql); 
-     if($result==false){ 
+
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Agua Coletor Exporta Dados ($this->x50_sequencial) nao Incluído. Inclusao Abortada.";
@@ -565,19 +565,19 @@ class cl_aguacoletorexportadados {
        $resac = db_query("insert into db_acount values($acount,2703,15616,'','".AddSlashes(pg_result($resaco,0,'x50_observacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,2703,16564,'','".AddSlashes(pg_result($resaco,0,'x50_contaimpressa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,2703,18422,'','".AddSlashes(pg_result($resaco,0,'x50_avisoleiturista'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       
+
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($x50_sequencial=null) { 
+   function alterar ($x50_sequencial=null) {
       $this->atualizacampos();
      $sql = " update aguacoletorexportadados set ";
      $virgula = "";
-     if(trim($this->x50_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_sequencial"])){ 
+     if(trim($this->x50_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_sequencial"])){
        $sql  .= $virgula." x50_sequencial = $this->x50_sequencial ";
        $virgula = ",";
-       if(trim($this->x50_sequencial) == null ){ 
+       if(trim($this->x50_sequencial) == null ){
          $this->erro_sql = " Campo Código Exportação Dados nao Informado.";
          $this->erro_campo = "x50_sequencial";
          $this->erro_banco = "";
@@ -587,17 +587,17 @@ class cl_aguacoletorexportadados {
          return false;
        }
      }
-     if(trim($this->x50_aguacoletorexportadados)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_aguacoletorexportadados"])){ 
-        if(trim($this->x50_aguacoletorexportadados)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_aguacoletorexportadados"])){ 
-           $this->x50_aguacoletorexportadados = "0" ; 
-        } 
+     if(trim($this->x50_aguacoletorexportadados)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_aguacoletorexportadados"])){
+        if(trim($this->x50_aguacoletorexportadados)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_aguacoletorexportadados"])){
+           $this->x50_aguacoletorexportadados = "0" ;
+        }
        $sql  .= $virgula." x50_aguacoletorexportadados = $this->x50_aguacoletorexportadados ";
        $virgula = ",";
      }
-     if(trim($this->x50_aguacoletorexporta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_aguacoletorexporta"])){ 
+     if(trim($this->x50_aguacoletorexporta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_aguacoletorexporta"])){
        $sql  .= $virgula." x50_aguacoletorexporta = $this->x50_aguacoletorexporta ";
        $virgula = ",";
-       if(trim($this->x50_aguacoletorexporta) == null ){ 
+       if(trim($this->x50_aguacoletorexporta) == null ){
          $this->erro_sql = " Campo Código Exportação nao Informado.";
          $this->erro_campo = "x50_aguacoletorexporta";
          $this->erro_banco = "";
@@ -607,10 +607,10 @@ class cl_aguacoletorexportadados {
          return false;
        }
      }
-     if(trim($this->x50_matric)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_matric"])){ 
+     if(trim($this->x50_matric)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_matric"])){
        $sql  .= $virgula." x50_matric = $this->x50_matric ";
        $virgula = ",";
-       if(trim($this->x50_matric) == null ){ 
+       if(trim($this->x50_matric) == null ){
          $this->erro_sql = " Campo Matrícula nao Informado.";
          $this->erro_campo = "x50_matric";
          $this->erro_banco = "";
@@ -620,10 +620,10 @@ class cl_aguacoletorexportadados {
          return false;
        }
      }
-     if(trim($this->x50_rota)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_rota"])){ 
+     if(trim($this->x50_rota)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_rota"])){
        $sql  .= $virgula." x50_rota = $this->x50_rota ";
        $virgula = ",";
-       if(trim($this->x50_rota) == null ){ 
+       if(trim($this->x50_rota) == null ){
          $this->erro_sql = " Campo Rota nao Informado.";
          $this->erro_campo = "x50_rota";
          $this->erro_banco = "";
@@ -633,17 +633,17 @@ class cl_aguacoletorexportadados {
          return false;
        }
      }
-     if(trim($this->x50_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_tipo"])){ 
-        if(trim($this->x50_tipo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_tipo"])){ 
-           $this->x50_tipo = "0" ; 
-        } 
+     if(trim($this->x50_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_tipo"])){
+        if(trim($this->x50_tipo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_tipo"])){
+           $this->x50_tipo = "0" ;
+        }
        $sql  .= $virgula." x50_tipo = $this->x50_tipo ";
        $virgula = ",";
      }
-     if(trim($this->x50_codlogradouro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_codlogradouro"])){ 
+     if(trim($this->x50_codlogradouro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_codlogradouro"])){
        $sql  .= $virgula." x50_codlogradouro = $this->x50_codlogradouro ";
        $virgula = ",";
-       if(trim($this->x50_codlogradouro) == null ){ 
+       if(trim($this->x50_codlogradouro) == null ){
          $this->erro_sql = " Campo Cod. Logradouro nao Informado.";
          $this->erro_campo = "x50_codlogradouro";
          $this->erro_banco = "";
@@ -653,10 +653,10 @@ class cl_aguacoletorexportadados {
          return false;
        }
      }
-     if(trim($this->x50_codbairro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_codbairro"])){ 
+     if(trim($this->x50_codbairro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_codbairro"])){
        $sql  .= $virgula." x50_codbairro = $this->x50_codbairro ";
        $virgula = ",";
-       if(trim($this->x50_codbairro) == null ){ 
+       if(trim($this->x50_codbairro) == null ){
          $this->erro_sql = " Campo Cód. do Bairro nao Informado.";
          $this->erro_campo = "x50_codbairro";
          $this->erro_banco = "";
@@ -666,10 +666,10 @@ class cl_aguacoletorexportadados {
          return false;
        }
      }
-     if(trim($this->x50_codhidrometro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_codhidrometro"])){ 
+     if(trim($this->x50_codhidrometro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_codhidrometro"])){
        $sql  .= $virgula." x50_codhidrometro = $this->x50_codhidrometro ";
        $virgula = ",";
-       if(trim($this->x50_codhidrometro) == null ){ 
+       if(trim($this->x50_codhidrometro) == null ){
          $this->erro_sql = " Campo Cód Hidrometro nao Informado.";
          $this->erro_campo = "x50_codhidrometro";
          $this->erro_banco = "";
@@ -679,222 +679,222 @@ class cl_aguacoletorexportadados {
          return false;
        }
      }
-     if(trim($this->x50_zona)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_zona"])){ 
-        if(trim($this->x50_zona)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_zona"])){ 
-           $this->x50_zona = "0" ; 
-        } 
+     if(trim($this->x50_zona)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_zona"])){
+        if(trim($this->x50_zona)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_zona"])){
+           $this->x50_zona = "0" ;
+        }
        $sql  .= $virgula." x50_zona = $this->x50_zona ";
        $virgula = ",";
      }
-     if(trim($this->x50_ordem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_ordem"])){ 
-        if(trim($this->x50_ordem)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_ordem"])){ 
-           $this->x50_ordem = "0" ; 
-        } 
+     if(trim($this->x50_ordem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_ordem"])){
+        if(trim($this->x50_ordem)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_ordem"])){
+           $this->x50_ordem = "0" ;
+        }
        $sql  .= $virgula." x50_ordem = $this->x50_ordem ";
        $virgula = ",";
      }
-     if(trim($this->x50_responsavel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_responsavel"])){ 
+     if(trim($this->x50_responsavel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_responsavel"])){
        $sql  .= $virgula." x50_responsavel = '$this->x50_responsavel' ";
        $virgula = ",";
      }
-     if(trim($this->x50_nomelogradouro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_nomelogradouro"])){ 
+     if(trim($this->x50_nomelogradouro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_nomelogradouro"])){
        $sql  .= $virgula." x50_nomelogradouro = '$this->x50_nomelogradouro' ";
        $virgula = ",";
      }
-     if(trim($this->x50_numero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_numero"])){ 
-        if(trim($this->x50_numero)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_numero"])){ 
-           $this->x50_numero = "0" ; 
-        } 
+     if(trim($this->x50_numero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_numero"])){
+        if(trim($this->x50_numero)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_numero"])){
+           $this->x50_numero = "0" ;
+        }
        $sql  .= $virgula." x50_numero = $this->x50_numero ";
        $virgula = ",";
      }
-     if(trim($this->x50_letra)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_letra"])){ 
+     if(trim($this->x50_letra)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_letra"])){
        $sql  .= $virgula." x50_letra = '$this->x50_letra' ";
        $virgula = ",";
      }
-     if(trim($this->x50_complemento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_complemento"])){ 
+     if(trim($this->x50_complemento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_complemento"])){
        $sql  .= $virgula." x50_complemento = '$this->x50_complemento' ";
        $virgula = ",";
      }
-     if(trim($this->x50_nomebairro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_nomebairro"])){ 
+     if(trim($this->x50_nomebairro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_nomebairro"])){
        $sql  .= $virgula." x50_nomebairro = '$this->x50_nomebairro' ";
        $virgula = ",";
      }
-     if(trim($this->x50_cidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_cidade"])){ 
+     if(trim($this->x50_cidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_cidade"])){
        $sql  .= $virgula." x50_cidade = '$this->x50_cidade' ";
        $virgula = ",";
      }
-     if(trim($this->x50_estado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_estado"])){ 
+     if(trim($this->x50_estado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_estado"])){
        $sql  .= $virgula." x50_estado = '$this->x50_estado' ";
        $virgula = ",";
      }
-     if(trim($this->x50_quadra)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_quadra"])){ 
-        if(trim($this->x50_quadra)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_quadra"])){ 
-           $this->x50_quadra = "0" ; 
-        } 
+     if(trim($this->x50_quadra)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_quadra"])){
+        if(trim($this->x50_quadra)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_quadra"])){
+           $this->x50_quadra = "0" ;
+        }
        $sql  .= $virgula." x50_quadra = $this->x50_quadra ";
        $virgula = ",";
      }
-     if(trim($this->x50_economias)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_economias"])){ 
-        if(trim($this->x50_economias)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_economias"])){ 
-           $this->x50_economias = "0" ; 
-        } 
+     if(trim($this->x50_economias)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_economias"])){
+        if(trim($this->x50_economias)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_economias"])){
+           $this->x50_economias = "0" ;
+        }
        $sql  .= $virgula." x50_economias = $this->x50_economias ";
        $virgula = ",";
      }
-     if(trim($this->x50_categorias)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_categorias"])){ 
+     if(trim($this->x50_categorias)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_categorias"])){
        $sql  .= $virgula." x50_categorias = '$this->x50_categorias' ";
        $virgula = ",";
      }
-     if(trim($this->x50_areaconstruida)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_areaconstruida"])){ 
-        if(trim($this->x50_areaconstruida)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_areaconstruida"])){ 
-           $this->x50_areaconstruida = "0" ; 
-        } 
+     if(trim($this->x50_areaconstruida)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_areaconstruida"])){
+        if(trim($this->x50_areaconstruida)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_areaconstruida"])){
+           $this->x50_areaconstruida = "0" ;
+        }
        $sql  .= $virgula." x50_areaconstruida = $this->x50_areaconstruida ";
        $virgula = ",";
      }
-     if(trim($this->x50_nrohidro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_nrohidro"])){ 
+     if(trim($this->x50_nrohidro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_nrohidro"])){
        $sql  .= $virgula." x50_nrohidro = '$this->x50_nrohidro' ";
        $virgula = ",";
      }
-     if(trim($this->x50_numpre)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_numpre"])){ 
-        if(trim($this->x50_numpre)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_numpre"])){ 
-           $this->x50_numpre = "0" ; 
-        } 
+     if(trim($this->x50_numpre)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_numpre"])){
+        if(trim($this->x50_numpre)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_numpre"])){
+           $this->x50_numpre = "0" ;
+        }
        $sql  .= $virgula." x50_numpre = $this->x50_numpre ";
        $virgula = ",";
      }
-     if(trim($this->x50_natureza)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_natureza"])){ 
+     if(trim($this->x50_natureza)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_natureza"])){
        $sql  .= $virgula." x50_natureza = '$this->x50_natureza' ";
        $virgula = ",";
      }
-     if(trim($this->x50_dtleituraatual)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraatual_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraatual_dia"] !="") ){ 
+     if(trim($this->x50_dtleituraatual)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraatual_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraatual_dia"] !="") ){
        $sql  .= $virgula." x50_dtleituraatual = '$this->x50_dtleituraatual' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraatual_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraatual_dia"])){
          $sql  .= $virgula." x50_dtleituraatual = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->x50_diasleitura)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_diasleitura"])){ 
-        if(trim($this->x50_diasleitura)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_diasleitura"])){ 
-           $this->x50_diasleitura = "0" ; 
-        } 
+     if(trim($this->x50_diasleitura)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_diasleitura"])){
+        if(trim($this->x50_diasleitura)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_diasleitura"])){
+           $this->x50_diasleitura = "0" ;
+        }
        $sql  .= $virgula." x50_diasleitura = $this->x50_diasleitura ";
        $virgula = ",";
      }
-     if(trim($this->x50_dtleituraanterior)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraanterior_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraanterior_dia"] !="") ){ 
+     if(trim($this->x50_dtleituraanterior)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraanterior_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraanterior_dia"] !="") ){
        $sql  .= $virgula." x50_dtleituraanterior = '$this->x50_dtleituraanterior' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraanterior_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["x50_dtleituraanterior_dia"])){
          $sql  .= $virgula." x50_dtleituraanterior = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->x50_consumo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_consumo"])){ 
-        if(trim($this->x50_consumo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_consumo"])){ 
-           $this->x50_consumo = "0" ; 
-        } 
+     if(trim($this->x50_consumo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_consumo"])){
+        if(trim($this->x50_consumo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_consumo"])){
+           $this->x50_consumo = "0" ;
+        }
        $sql  .= $virgula." x50_consumo = $this->x50_consumo ";
        $virgula = ",";
      }
-     if(trim($this->x50_mediadiaria)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_mediadiaria"])){ 
-        if(trim($this->x50_mediadiaria)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_mediadiaria"])){ 
-           $this->x50_mediadiaria = "0" ; 
-        } 
+     if(trim($this->x50_mediadiaria)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_mediadiaria"])){
+        if(trim($this->x50_mediadiaria)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_mediadiaria"])){
+           $this->x50_mediadiaria = "0" ;
+        }
        $sql  .= $virgula." x50_mediadiaria = $this->x50_mediadiaria ";
        $virgula = ",";
      }
-     if(trim($this->x50_consumopadrao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_consumopadrao"])){ 
-        if(trim($this->x50_consumopadrao)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_consumopadrao"])){ 
-           $this->x50_consumopadrao = "0" ; 
-        } 
+     if(trim($this->x50_consumopadrao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_consumopadrao"])){
+        if(trim($this->x50_consumopadrao)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_consumopadrao"])){
+           $this->x50_consumopadrao = "0" ;
+        }
        $sql  .= $virgula." x50_consumopadrao = $this->x50_consumopadrao ";
        $virgula = ",";
      }
-     if(trim($this->x50_consumomaximo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_consumomaximo"])){ 
-        if(trim($this->x50_consumomaximo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_consumomaximo"])){ 
-           $this->x50_consumomaximo = "0" ; 
-        } 
+     if(trim($this->x50_consumomaximo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_consumomaximo"])){
+        if(trim($this->x50_consumomaximo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_consumomaximo"])){
+           $this->x50_consumomaximo = "0" ;
+        }
        $sql  .= $virgula." x50_consumomaximo = $this->x50_consumomaximo ";
        $virgula = ",";
      }
-     if(trim($this->x50_vencimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_vencimento_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["x50_vencimento_dia"] !="") ){ 
+     if(trim($this->x50_vencimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_vencimento_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["x50_vencimento_dia"] !="") ){
        $sql  .= $virgula." x50_vencimento = '$this->x50_vencimento' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["x50_vencimento_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["x50_vencimento_dia"])){
          $sql  .= $virgula." x50_vencimento = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->x50_valoracrescimo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_valoracrescimo"])){ 
-        if(trim($this->x50_valoracrescimo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_valoracrescimo"])){ 
-           $this->x50_valoracrescimo = "0" ; 
-        } 
+     if(trim($this->x50_valoracrescimo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_valoracrescimo"])){
+        if(trim($this->x50_valoracrescimo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_valoracrescimo"])){
+           $this->x50_valoracrescimo = "0" ;
+        }
        $sql  .= $virgula." x50_valoracrescimo = $this->x50_valoracrescimo ";
        $virgula = ",";
      }
-     if(trim($this->x50_valordesconto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_valordesconto"])){ 
-        if(trim($this->x50_valordesconto)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_valordesconto"])){ 
-           $this->x50_valordesconto = "0" ; 
-        } 
+     if(trim($this->x50_valordesconto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_valordesconto"])){
+        if(trim($this->x50_valordesconto)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_valordesconto"])){
+           $this->x50_valordesconto = "0" ;
+        }
        $sql  .= $virgula." x50_valordesconto = $this->x50_valordesconto ";
        $virgula = ",";
      }
-     if(trim($this->x50_valortotal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_valortotal"])){ 
-        if(trim($this->x50_valortotal)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_valortotal"])){ 
-           $this->x50_valortotal = "0" ; 
-        } 
+     if(trim($this->x50_valortotal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_valortotal"])){
+        if(trim($this->x50_valortotal)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_valortotal"])){
+           $this->x50_valortotal = "0" ;
+        }
        $sql  .= $virgula." x50_valortotal = $this->x50_valortotal ";
        $virgula = ",";
      }
-     if(trim($this->x50_linhadigitavel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_linhadigitavel"])){ 
+     if(trim($this->x50_linhadigitavel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_linhadigitavel"])){
        $sql  .= $virgula." x50_linhadigitavel = '$this->x50_linhadigitavel' ";
        $virgula = ",";
      }
-     if(trim($this->x50_codigobarras)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_codigobarras"])){ 
+     if(trim($this->x50_codigobarras)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_codigobarras"])){
        $sql  .= $virgula." x50_codigobarras = '$this->x50_codigobarras' ";
        $virgula = ",";
      }
-     if(trim($this->x50_imprimeconta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_imprimeconta"])){ 
-        if(trim($this->x50_imprimeconta)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_imprimeconta"])){ 
-           $this->x50_imprimeconta = "0" ; 
-        } 
+     if(trim($this->x50_imprimeconta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_imprimeconta"])){
+        if(trim($this->x50_imprimeconta)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_imprimeconta"])){
+           $this->x50_imprimeconta = "0" ;
+        }
        $sql  .= $virgula." x50_imprimeconta = $this->x50_imprimeconta ";
        $virgula = ",";
      }
-     if(trim($this->x50_valor_m3_excesso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_valor_m3_excesso"])){ 
-        if(trim($this->x50_valor_m3_excesso)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_valor_m3_excesso"])){ 
-           $this->x50_valor_m3_excesso = "0" ; 
-        } 
+     if(trim($this->x50_valor_m3_excesso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_valor_m3_excesso"])){
+        if(trim($this->x50_valor_m3_excesso)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_valor_m3_excesso"])){
+           $this->x50_valor_m3_excesso = "0" ;
+        }
        $sql  .= $virgula." x50_valor_m3_excesso = $this->x50_valor_m3_excesso ";
        $virgula = ",";
      }
-     if(trim($this->x50_leituracoletada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_leituracoletada"])){ 
-        if(trim($this->x50_leituracoletada)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_leituracoletada"])){ 
-           $this->x50_leituracoletada = "0" ; 
-        } 
+     if(trim($this->x50_leituracoletada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_leituracoletada"])){
+        if(trim($this->x50_leituracoletada)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_leituracoletada"])){
+           $this->x50_leituracoletada = "0" ;
+        }
        $sql  .= $virgula." x50_leituracoletada = $this->x50_leituracoletada ";
        $virgula = ",";
      }
-     if(trim($this->x50_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_observacao"])){ 
+     if(trim($this->x50_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_observacao"])){
        $sql  .= $virgula." x50_observacao = '$this->x50_observacao' ";
        $virgula = ",";
      }
-     if(trim($this->x50_contaimpressa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_contaimpressa"])){ 
-        if(trim($this->x50_contaimpressa)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_contaimpressa"])){ 
-           $this->x50_contaimpressa = "0" ; 
-        } 
+     if(trim($this->x50_contaimpressa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_contaimpressa"])){
+        if(trim($this->x50_contaimpressa)=="" && isset($GLOBALS["HTTP_POST_VARS"]["x50_contaimpressa"])){
+           $this->x50_contaimpressa = "0" ;
+        }
        $sql  .= $virgula." x50_contaimpressa = $this->x50_contaimpressa ";
        $virgula = ",";
      }
-     if(trim($this->x50_avisoleiturista)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_avisoleiturista"])){ 
+     if(trim($this->x50_avisoleiturista)!="" || isset($GLOBALS["HTTP_POST_VARS"]["x50_avisoleiturista"])){
        $sql  .= $virgula." x50_avisoleiturista = '$this->x50_avisoleiturista' ";
        $virgula = ",";
-     }     
+     }
      $sql .= " where ";
      if($x50_sequencial!=null){
        $sql .= " x50_sequencial = $this->x50_sequencial";
@@ -999,7 +999,7 @@ class cl_aguacoletorexportadados {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Agua Coletor Exporta Dados nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->x50_sequencial;
@@ -1027,14 +1027,14 @@ class cl_aguacoletorexportadados {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($x50_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($x50_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($x50_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -1104,7 +1104,7 @@ class cl_aguacoletorexportadados {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Agua Coletor Exporta Dados nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$x50_sequencial;
@@ -1132,11 +1132,11 @@ class cl_aguacoletorexportadados {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -1158,8 +1158,8 @@ class cl_aguacoletorexportadados {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $x50_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $x50_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -1201,8 +1201,8 @@ class cl_aguacoletorexportadados {
      $sql2 = "";
      if($dbwhere==""){
        if($x50_sequencial!=null ){
-         $sql2 .= " where aguacoletorexportadados.x50_sequencial = $x50_sequencial "; 
-       } 
+         $sql2 .= " where aguacoletorexportadados.x50_sequencial = $x50_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -1218,8 +1218,8 @@ class cl_aguacoletorexportadados {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $x50_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $x50_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -1235,8 +1235,8 @@ class cl_aguacoletorexportadados {
      $sql2 = "";
      if($dbwhere==""){
        if($x50_sequencial!=null ){
-         $sql2 .= " where aguacoletorexportadados.x50_sequencial = $x50_sequencial "; 
-       } 
+         $sql2 .= " where aguacoletorexportadados.x50_sequencial = $x50_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -1253,60 +1253,61 @@ class cl_aguacoletorexportadados {
      return $sql;
   }
    public function sql_query_leituras_anteriores($iMatricula, $iAno, $iMes) {
-   	
-   	$sSqlLeituras = "select x21_codleitura, 
-                            x21_exerc, 
-           									x21_mes, 
-           									x21_situacao, 
-           									x17_descr, 
+
+   	$sSqlLeituras = "select x21_codleitura,
+                            x21_exerc,
+           									x21_mes,
+           									x21_situacao,
+           									x17_descr,
            									x21_leitura,
-           									case 
+           									case
                 						  when x21_excesso >= 0 then x21_consumo + x21_excesso
                               else x21_consumo
-              							end as x21_consumo, 
-              							case 
+              							end as x21_consumo,
+              							case
 							                when x21_excesso < 0 then 0
 							                else x21_excesso
-							              end as x21_excesso, 
-						           			30::integer as x21_dias, 
-           									x21_dtleitura,  
+							              end as x21_excesso,
+						           			30::integer as x21_dias,
+           									x21_dtleitura,
+                            x21_saldo,
            									fc_agua_mesesultimaleitura(x21_exerc, x21_mes, x04_matric, x21_codleitura) as x99_mesultimaleitura
-      								 from agualeitura 
-           						inner join aguahidromatric on x04_codhidrometro = x21_codhidrometro 
-           						inner join aguasitleitura on x17_codigo = x21_situacao 
-     									where x04_matric = {$iMatricula} 
+      								 from agualeitura
+           						inner join aguahidromatric on x04_codhidrometro = x21_codhidrometro
+           						inner join aguasitleitura on x17_codigo = x21_situacao
+     									where x04_matric = {$iMatricula}
        									and x21_status = 1
-                        and (x21_exerc, x21_mes) in (select extract(year from data)  as anousu, 
-                                                            extract(month from data) as mesusu 
-                                                       from (select cast(date '$iAno-$iMes-01' - cast(cast(mes as text) ||cast(' month' as text) as interval) as date) as data 
+                        and (x21_exerc, x21_mes) in (select extract(year from data)  as anousu,
+                                                            extract(month from data) as mesusu
+                                                       from (select cast(date '$iAno-$iMes-01' - cast(cast(mes as text) ||cast(' month' as text) as interval) as date) as data
                                                                from generate_series(0, 7) as mes) as x)
-                   order by x21_exerc desc, x21_mes desc 
+                   order by x21_exerc desc, x21_mes desc
                    limit 6";
 
     return $sSqlLeituras;
   }
    public function sql_query_categoria_imovel ($iMatricula) {
-    
+
     $sqlCategoria = "select j31_descr from aguaconstr
                       inner join aguaconstrcar on x12_codconstr = x11_codconstr
                       inner join caracter on j31_codigo = x12_codigo and j31_grupo = 80
                       where x11_matric = $iMatricula";
-    
+
     return $sqlCategoria;
   }
    public function sql_query_hidrometro_ativo ($iMatricula) {
-    
-    $sqlHidrometroAtivo = "select x04_codhidrometro, x04_nrohidro, x04_avisoleiturista 
-                             from aguahidromatric 
+
+    $sqlHidrometroAtivo = "select x04_codhidrometro, x04_nrohidro, x04_avisoleiturista
+                             from aguahidromatric
                              left join aguahidrotroca on x28_codhidrometro = x04_codhidrometro
                             where x04_matric = $iMatricula
                               and x28_codigo is null";
     return $sqlHidrometroAtivo;
   }
    public function sql_query_dados_matriculas($iRota, $iRotaRuas) {
-    
+
     $sqlDadosMatriculas = "select coalesce(x06_codrota, 999999) as x07_codrota, x01_matric,
-                                  z01_nome, x01_codrua, j88_codigo, j14_nome, x01_numero, x01_orientacao, 
+                                  z01_nome, x01_codrua, j88_codigo, j14_nome, x01_numero, x01_orientacao,
                           		  case
                           		    when x32_codcorresp is not null then
                           			  x02_complemento
@@ -1318,10 +1319,10 @@ class cl_aguacoletorexportadados {
                           			  bairro2.j13_descr
                           			else
                           			  bairro.j13_descr
-                          		  end as x99_bairro, 
-                          		  x01_zona, x01_quadra, 
+                          		  end as x99_bairro,
+                          		  x01_zona, x01_quadra,
                                   fc_agua_qtdeconomias(x01_matric) as x01_qtdeconomia,
-                                  x01_codbairro, j88_codigo, nextval('numpref_k03_numpre_seq') as numpre, 
+                                  x01_codbairro, j88_codigo, nextval('numpref_k03_numpre_seq') as numpre,
                                   to_char(fc_agua_areaconstr(x01_matric), '999990.00') as x99_areaconstr,
                                   x32_codcorresp
 	                         from aguabase
@@ -1336,7 +1337,7 @@ class cl_aguacoletorexportadados {
                             left  join bairro   as bairro2            on bairro2.j13_codi     = x02_codbairro
                             left  join ruastipo                       on ruastipo.j88_codigo  = ruas.j14_tipo
                             left  join aguabasebaixa                  on x08_matric           = x01_matric
-                          where x07_codrota in ($iRota) 
+                          where x07_codrota in ($iRota)
                             and x07_codrotarua in ($iRotaRuas)
                             and x01_numero between x07_nroini and x07_nrofim
                             and x01_orientacao = x07_orientacao
@@ -1344,7 +1345,7 @@ class cl_aguacoletorexportadados {
                             and x08_matric is null
                           order by x07_codrota, x07_ordem, x01_codrua, x01_orientacao, x01_numero
                           ";
-    
+
     return $sqlDadosMatriculas;
   }
    // funcao do sql dados
@@ -1370,7 +1371,6 @@ class cl_aguacoletorexportadados {
 		$sql .= "      inner join ruastipo  on  ruastipo.j88_codigo = aguacoletorexportadados.x50_tipo";
 		$sql .= "      inner join aguacoletorexporta  on  aguacoletorexporta.x49_sequencial = aguacoletorexportadados.x50_aguacoletorexporta";
 		$sql .= "      inner join aguahidromarca  on  aguahidromarca.x03_codmarca = aguahidromatric.x04_codmarca";
-		$sql .= "      inner join aguabase  as a on   a.x01_matric = aguahidromatric.x04_matric";
 		$sql .= "      inner join aguahidrodiametro  on  aguahidrodiametro.x15_coddiametro = aguahidromatric.x04_coddiametro";
 		$sql .= "      inner join bairro as bairro2  on  bairro2.j13_codi = aguabase.x01_codbairro";
 		$sql .= "      inner join ruas  as b on   b.j14_codigo = aguabase.x01_codrua";
@@ -1398,9 +1398,9 @@ class cl_aguacoletorexportadados {
 		}
 		return $sql;
 	}
-	
+
   public function getSqlArrecadRecibo($iCodColetorExportaDados) {
-     
+
     $sql = "
       select k00_numcgm,
          k00_dtoper,
@@ -1415,7 +1415,7 @@ class cl_aguacoletorexportadados {
          0::integer as k00_conta,
          null as k00_dtpaga,
          x50_numpre as k00_numnov
-  
+
     from aguacoletorexportadados
          inner join aguacoletorexportadadosreceita on x52_aguacoletorexportadados = x50_sequencial
          inner join arrecad  on k00_numpre = x52_numpre
@@ -1423,9 +1423,8 @@ class cl_aguacoletorexportadados {
                             and k00_receit = x52_receita
    where x50_sequencial = $iCodColetorExportaDados
      and x52_valor      > 0";
-    
+
     return $sql;
   }
-	
+
 }
-?>

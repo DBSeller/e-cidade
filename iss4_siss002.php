@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,7 +28,7 @@
 if(!session_id()){
   session_start();
 }
-require("libs/db_stdlib.php");
+require(modification("libs/db_stdlib.php"));
 //echo "mostra = $mostrahtml e botao = $botao  arg0= $argv[0]  arg1= $argv[1]";
 if(isset($mostrahtml) and $mostrahtml== true){
   if($botao==1){
@@ -80,11 +80,12 @@ db_log("Arquivo de Log: $sArquivoLog", $sArquivoLog,2);
 db_log("", $sArquivoLog,2);
 
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
-$DB_SERVIDOR_SISS  = "localhost";
-$DB_BASE_SISS     = "siss_interface";
+$DB_SERVIDOR_SISS  = "200.192.137.56";
+$DB_BASE_SISS     = "carazinho_int";
 $DB_PORTA_SISS    = "5432";
+
 $DB_USUARIO_SISS  = "siss_interface";
 $DB_SENHA_SISS    = "siss_interface";
 
@@ -101,14 +102,14 @@ if(!($conn2 = @pg_connect("host=$DB_SERVIDOR_SISS dbname=$DB_BASE_SISS port=$DB_
 //######################################################
 
 if(isset($mostrahtml) and $mostrahtml== true){
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
 
 }else{
 
-  $DB_SERVIDOR = "192.168.0.2";
-  $DB_BASE     = "auto_car_20080720";
-  $DB_PORTA    = "5432";
+  $DB_SERVIDOR = "localhost";
+  $DB_BASE     = "teste_dbseller";
+  $DB_PORTA    = "5434";
   $DB_USUARIO  = "postgres";
   $DB_SENHA    = "";
 
@@ -120,14 +121,19 @@ if(isset($mostrahtml) and $mostrahtml== true){
   }
 
   $sqlinstit = "select codigo from db_config where prefeitura is true";
-  $rsInstit  = pg_query($conn ,$sqlinstit);
+  $rsInstit  = db_query($conn ,$sqlinstit);
   $instit    = pg_result($rsInstit,0,0);
 
   $sqlSessao  = "SELECT fc_startsession()";
-  $rsSessao   = pg_query($conn, $sqlSessao) or die("Problema com a sessão");
+  $rsSessao   = db_query($conn, $sqlSessao) or die("Problema com a sessão");
 
   $sqlPut = "SELECT fc_putsession('DB_instit',$instit )";
-  $rsPut  = pg_query($conn,$sqlPut) or die("Problema com a sessão" );
+  $rsPut  = db_query($conn,$sqlPut) or die("Problema com a sessão" );
+
+  $sql = "select nextval('db_logsacessa_codsequen_seq')";
+  $result = db_query($sql) or die($sql);
+  $codsequen = pg_result($result, 0, 0);
+
 }
 
 
@@ -135,6 +141,7 @@ db_putsession("DB_instit",$instit);
 db_putsession("DB_datausu", date("Y-m-d"));
 db_putsession("DB_id_usuario",1);
 db_putsession("DB_anousu",date("Y"));
+db_putsession("DB_acessado",$codsequen);
 
 if(isset($mostrahtml) and $mostrahtml== true){
   ?>
@@ -165,7 +172,7 @@ if($processartodos == false){
     or q02_ultalt = '$datahoje';
   ";
 
-  $resultinscricao = pg_query($conn,$sqlinscricao);
+  $resultinscricao = db_query($conn,$sqlinscricao);
   $linhasinscricao = pg_num_rows($resultinscricao);
   if($linhasinscricao > 0){
     for($procalt=0;$procalt< $linhasinscricao;$procalt++){
@@ -197,8 +204,8 @@ if($processartodos == false){
 
 }
 
-pg_query($conn,'BEGIN');
-pg_query($conn2,'BEGIN');
+db_query($conn,'BEGIN');
+db_query($conn2,'BEGIN');
 if($cancelaProcessamento == false){
 
 
@@ -217,7 +224,7 @@ if($cancelaProcessamento == false){
       inner join tabativ  on  tabativ.q07_ativ  = ativid.q03_ativ
       order by q03_ativ 
       ";
-  $resultAtiv = pg_query($conn,$sqlAtiv);    
+  $resultAtiv = db_query($conn,$sqlAtiv);    
   $linhasAtiv = pg_num_rows($resultAtiv);
 
   if ($linhasAtiv > 0){
@@ -245,7 +252,7 @@ if($cancelaProcessamento == false){
 
       //verificar se ja existe esta atividade no siss
       $sqlAtiviSiss = "select * from tb_atividades where codativ = $q03_ativ";
-      $resultAtivSiss = pg_query($conn2,$sqlAtiviSiss);
+      $resultAtivSiss = db_query($conn2,$sqlAtiviSiss);
       $linhasAtivSiss = pg_num_rows($resultAtivSiss);
       if ($linhasAtivSiss == 0  ){
         $incluiCadAtiv = " Insert into tb_atividades (
@@ -261,11 +268,11 @@ if($cancelaProcessamento == false){
                                                       ".dbValida( $dt_exp,'date')."
                                                       )";
  
-        $resultCadAtiv = @pg_query($conn2,$incluiCadAtiv) ;
+        $resultCadAtiv = @db_query($conn2,$incluiCadAtiv) ;
         if($resultCadAtiv==false){
           db_log("Erro: \n sql = $incluiCadAtiv", null, 1);
-          pg_query($conn , 'rollback');
-          pg_query($conn2, 'rollback');
+          db_query($conn , 'rollback');
+          db_query($conn2, 'rollback');
           exit;
         }else{
           if($processartodos == false){
@@ -315,7 +322,7 @@ if($cancelaProcessamento == false){
           $whereinscr
           ";
   
-  $resultissbase = pg_query($conn,$sqlissbase);
+  $resultissbase = db_query($conn,$sqlissbase);
   $linhasissbase = pg_num_rows($resultissbase);
   if(isset($mostrahtml) and $mostrahtml== true){
     db_atutermometro(1,8, 'termometro2');
@@ -341,7 +348,7 @@ if($cancelaProcessamento == false){
 
       //verifica se ja processou hoje...
       $sqlverifica =" select * from tb_contribuintes where ccm = $inscricao and dt_exp = current_date";
-      $resultverifica = pg_query($conn2,$sqlverifica);
+      $resultverifica = db_query($conn2,$sqlverifica);
       $linhasverifica = pg_num_rows($resultverifica);
       if($linhasverifica > 0   ){
         if(isset($mostrahtml) and $mostrahtml== true){
@@ -352,8 +359,8 @@ if($cancelaProcessamento == false){
           db_log("", $sArquivoLog,2);
           db_log("*** FINAL Script ".$sNomeScript." *** \n\n", $sArquivoLog,2);
           echo "<script>parent.db_iframe_relatorio.hide(); </script>";
-          pg_query($conn , 'rollback');
-          pg_query($conn2, 'rollback');
+          db_query($conn , 'rollback');
+          db_query($conn2, 'rollback');
           exit;
         }else{
           db_log("Empresa ja incluida para esta data.",$sArquivoLog);
@@ -361,8 +368,8 @@ if($cancelaProcessamento == false){
           db_log("Final.: " . date( "H:i:s"), $sArquivoLog);
           db_log("", $sArquivoLog);
           db_log("*** FINAL Script ".$sNomeScript." *** \n\n", $sArquivoLog);
-          pg_query($conn , 'rollback');
-          pg_query($conn2, 'rollback');
+          db_query($conn , 'rollback');
+          db_query($conn2, 'rollback');
           exit;
         }
 
@@ -373,7 +380,7 @@ if($cancelaProcessamento == false){
                     inner join varfix    on q33_inscr = q01_inscr
                     inner join varfixval on q33_codigo = q34_codigo
                     where q33_inscr = $inscricao limit 1 ";
-      $resultValfix = pg_query($conn,$sqlValfix );
+      $resultValfix = db_query($conn,$sqlValfix );
       $linhasValfix = pg_num_rows($resultValfix );
       if($linhasValfix > 0){
         db_fieldsmemory($resultValfix,0);
@@ -416,11 +423,11 @@ if($cancelaProcessamento == false){
 								)";
       // db_log("inclui $is  = $inscricao", null, 1, true,true);
       //die($incluiempresa);
-      $resultinclui = @pg_query($conn2,$incluiempresa) ;
+      $resultinclui = @db_query($conn2,$incluiempresa) ;
       if($resultinclui==false){
         db_log("Erro: \n sql = $incluiempresa", null, 1);
-        pg_query($conn , 'rollback');
-        pg_query($conn2, 'rollback');
+        db_query($conn , 'rollback');
+        db_query($conn2, 'rollback');
         exit;
       }else{
         if($processartodos == false){
@@ -434,7 +441,7 @@ if($cancelaProcessamento == false){
      //############## PROCESSANDO INSCRICOES - ATIVIDADES  ##############
      
      $sqlTavativ = " select q07_ativ,q07_datain,q07_datafi from tabativ where q07_inscr = $inscricao ";
-     $resultTabativ = pg_query($conn , $sqlTavativ);
+     $resultTabativ = db_query($conn , $sqlTavativ);
      $linhasTabativ = pg_num_rows($resultTabativ);
      if($linhasTabativ > 0){
      
@@ -443,7 +450,7 @@ if($cancelaProcessamento == false){
          
          //verificar se ja tem esta atividade gravada no SISS
          $sqlAtiv_contrib = " select * from tb_ativ_contrib where ccm = $inscricao  and codativ = $q07_ativ ";
-         $resultAtiv_contrib = pg_query($conn2 , $sqlAtiv_contrib );
+         $resultAtiv_contrib = db_query($conn2 , $sqlAtiv_contrib );
          $linhasAtiv_contrib = pg_num_rows($resultAtiv_contrib);
          if($linhasAtiv_contrib == 0){
            $incluiAtiv_contrib = "
@@ -461,12 +468,12 @@ if($cancelaProcessamento == false){
                                                                false,
                                                                ".dbValida( $dt_exp,'date')."
                                                              )";
-           $resultIncluiAtiv_contrib = pg_query($conn2, $incluiAtiv_contrib);
+           $resultIncluiAtiv_contrib = db_query($conn2, $incluiAtiv_contrib);
            
            if($resultIncluiAtiv_contrib==false){
              db_log("Erro: \n sql = $incluiAtiv_contrib", null, 1);
-             pg_query($conn,'rollback');
-             pg_query($conn2,'rollback');
+             db_query($conn,'rollback');
+             db_query($conn2,'rollback');
              exit;
            }else{
              if($processartodos == false){
@@ -483,7 +490,7 @@ if($cancelaProcessamento == false){
      // Processa aidof
      
      $sqlAidof = "select  q09_nota, y08_dtlanc,y08_notain,y08_notafi from aidof inner join notasiss on q09_codigo = y08_nota where y08_inscr = $inscricao";
-     $resultAidof = pg_query($conn, $sqlAidof);
+     $resultAidof = db_query($conn, $sqlAidof);
      $linhasAidof = pg_num_rows($resultAidof);
      if($linhasAidof > 0){
        for($ad=0;$ad<$linhasAidof;$ad++){
@@ -494,7 +501,7 @@ if($cancelaProcessamento == false){
                                         and num_ini = $y08_notain
                                         and num_fim = $y08_notafi
                                         and serie   =".dbValida( $q09_nota,'string') ." " ; 
-         $resultAidofSiss = pg_query($conn2,$sqlVerAidofSiss);
+         $resultAidofSiss = db_query($conn2,$sqlVerAidofSiss);
          $linhasAidofSiss = pg_num_rows($resultAidofSiss);
          if($linhasAidofSiss ==0){
            
@@ -507,11 +514,11 @@ if($cancelaProcessamento == false){
                                                           false,
                                                           ".dbValida( $dt_exp,'date')."
                                                           )";
-           $resultIncAidof = pg_query($conn2,$incluiAidof);
+           $resultIncAidof = db_query($conn2,$incluiAidof);
            if($resultIncAidof==false){
              db_log("Erro: \n sql = $incluiAidof", null, 1);
-             pg_query($conn,'rollback');
-             pg_query($conn2,'rollback');
+             db_query($conn,'rollback');
+             db_query($conn2,'rollback');
              exit;
            }else{
              if($processartodos == false){
@@ -536,7 +543,7 @@ if($cancelaProcessamento == false){
                      inner join cgm                    on issbase.q02_numcgm    = cgm.z01_numcgm
                      where k00_inscr = {$inscricao} and z01_cgccpf is not null
                      group by z01_cgccpf,q23_mesusu,q23_anousu";
-       $resultSimples = pg_query($conn , $sqlSimples );
+       $resultSimples = db_query($conn , $sqlSimples );
        $linhasSimples = pg_num_rows($resultSimples);
        if($linhasSimples >0){
           for($si=0;$si<$linhasSimples;$si++){
@@ -547,7 +554,7 @@ if($cancelaProcessamento == false){
                                        where cnpj= '".$cnpj."' 
                                          and mes = $q23_mesusu
                                          and ano = $q23_anousu ";
-              $resultSimplesSiss = pg_query($conn2,$sqlVerSimplesSiss);
+              $resultSimplesSiss = db_query($conn2,$sqlVerSimplesSiss);
               $linhasSimplesSiss = pg_num_rows($resultSimplesSiss);
               if($linhasSimplesSiss == 0 ){
                 
@@ -559,11 +566,11 @@ if($cancelaProcessamento == false){
                                                           false,
                                                           ".dbValida( $dt_exp,'date')."
                                                          )";
-                $resultIncSimples = pg_query($conn2,$IncluiSimples);
+                $resultIncSimples = db_query($conn2,$IncluiSimples);
                 if($resultIncSimples==false){
                   db_log("Erro: \n sql = $IncluiSimples", null, 1);
-                  pg_query($conn,'rollback');
-                  pg_query($conn2,'rollback');
+                  db_query($conn,'rollback');
+                  db_query($conn2,'rollback');
                   exit;
                 }else{
                   if($processartodos == false){
@@ -585,7 +592,7 @@ if($cancelaProcessamento == false){
   $sqlEscritorio = " select distinct q10_numcgm,z01_nome,z01_cgccpf,z01_munic,z01_uf,z01_telef,z01_email,current_date as dt_exp 
                      from escrito 
                      inner join cgm on q10_numcgm = z01_numcgm";
-  $resultEscritorio = pg_query($conn , $sqlEscritorio);
+  $resultEscritorio = db_query($conn , $sqlEscritorio);
   $linhasEscritorio = pg_num_rows($resultEscritorio);
   if($linhasEscritorio > 0){
 
@@ -613,7 +620,7 @@ if($cancelaProcessamento == false){
       // verifica se ja tem escritorio em SISS
       
       $sqlEscrSiss = "select * from tb_escritorios where codescr = $q10_numcgm ";
-      $resultEscrSiss = pg_query($conn2,$sqlEscrSiss);
+      $resultEscrSiss = db_query($conn2,$sqlEscrSiss);
       $linhasEscrSiss = pg_num_rows($resultEscrSiss);
       if($linhasEscrSiss == 0){
         if( $z01_cgccpf==""  ){
@@ -639,12 +646,12 @@ if($cancelaProcessamento == false){
                                                            false,
                                                            ".dbValida( $dt_exp,'date')."
                                                          ) ";
-         $resultIncEscr = pg_query($conn2,$incluirEscritorio );
+         $resultIncEscr = db_query($conn2,$incluirEscritorio );
 
          if($resultIncEscr==false){
            db_log("Erro: \n sql = $incluirEscritorio", null, 1);
-           pg_query($conn,'rollback');
-           pg_query($conn2,'rollback');
+           db_query($conn,'rollback');
+           db_query($conn2,'rollback');
            exit;
          }else{
            if($processartodos == false){
@@ -656,14 +663,14 @@ if($cancelaProcessamento == false){
          // PROCESSAR AS INSCRIÇÕES PARA CADA ESCRITORIO
 
          $sqlEscrInsc = "select * from escrito where q10_numcgm = $q10_numcgm ";
-         $resultEscrInsc = pg_query($conn, $sqlEscrInsc);
+         $resultEscrInsc = db_query($conn, $sqlEscrInsc);
          $linhasEscrInsc = pg_num_rows($resultEscrInsc);
          if($linhasEscrInsc > 0){
            for($ei=0; $ei<$linhasEscrInsc; $ei++){
              db_fieldsmemory($resultEscrInsc ,$ei);
              // verificar se ja esta cadastrado no SISS  
              $sqlEscrInscSiss = " select * from tb_escrit_contrib where ccm = $q10_inscr and codescr= $q10_numcgm ";
-             $resultEscrInscSiss = pg_query($conn2,$sqlEscrInscSiss);
+             $resultEscrInscSiss = db_query($conn2,$sqlEscrInscSiss);
              $linhasEscrInscSiss = pg_num_rows($resultEscrInscSiss);
              if($linhasEscrInscSiss == 0){
                $incluiEscrInsc = "
@@ -673,11 +680,11 @@ if($cancelaProcessamento == false){
                                                                    false, 
                                                                    ".dbValida( $dt_exp,'date')."
                                                                  )";
-               $resultIncEscrInsc = pg_query($conn2, $incluiEscrInsc);
+               $resultIncEscrInsc = db_query($conn2, $incluiEscrInsc);
                if($resultIncEscrInsc==false){
                  db_log("Erro: \n sql = $incluiEscrInsc", null, 1);
-                 pg_query($conn,'rollback');
-                 pg_query($conn2,'rollback');
+                 db_query($conn,'rollback');
+                 db_query($conn2,'rollback');
                  exit;
                }else{
                  if($processartodos == false){
@@ -697,16 +704,16 @@ if($cancelaProcessamento == false){
 
 // ################################# PARTE 2 ###################################
 
-include("classes/db_issvar_classe.php");
-include("classes/db_issvarnotas_classe.php");
-include("classes/db_arreinscr_classe.php");
-include("classes/db_arrecad_classe.php");
+include(modification("classes/db_issvar_classe.php"));
+include(modification("classes/db_issvarnotas_classe.php"));
+include(modification("classes/db_arreinscr_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
 $clissvar = new cl_issvar;
 $vir = "";
 $sqlerro = false;
 $inscricaoSemIssbase = "";
 $sqlBuscaBoleto = "select * from tb_controle_boletos where controle is false order by ccm,documento ";
-$rsBuscaBoleto = pg_query($conn2,$sqlBuscaBoleto); 
+$rsBuscaBoleto = db_query($conn2,$sqlBuscaBoleto); 
 $linhasBuscaBoleto = pg_num_rows($rsBuscaBoleto);
 if(isset($mostrahtml) and $mostrahtml== true){
     db_atutermometro(8,9, 'termometro2');
@@ -747,7 +754,7 @@ if($linhasBuscaBoleto > 0){
 
     //validar se a inscrição esta na issbase
     $sqlValidaIssbase = "select q02_inscr from issbase where q02_inscr = $ccm ";
-    $rsValidaIssbase  = pg_query($conn, $sqlValidaIssbase);
+    $rsValidaIssbase  = db_query($conn, $sqlValidaIssbase);
     $linhasValidaIssbase = pg_num_rows($rsValidaIssbase);
 
     if($linhasValidaIssbase == 0) {
@@ -757,8 +764,8 @@ if($linhasBuscaBoleto > 0){
     }
     if($linhasValidaIssbase > 0){
 
-      if($documento < 8000000){
-         db_log("Boleto não processada, num_documento deve ser menor que 8000000 (documento = $documento)", $sArquivoLog,2, true,true); 
+      if($documento < 20000000){
+         db_log("Boleto não processada, num_documento deve ser menor que 20000000 (documento = $documento)", $sArquivoLog,2, true,true); 
       }else{
 
 
@@ -772,7 +779,7 @@ if($linhasBuscaBoleto > 0){
                              and k00_inscr = $ccm
                              and q05_ano = $ano
                              and q05_mes = $mes ";
-      $rsBuscarAbertos = pg_query($conn , $sqlBuscarAbertos);
+      $rsBuscarAbertos = db_query($conn , $sqlBuscarAbertos);
       $linhasBuscarAbertos = pg_num_rows($rsBuscarAbertos);
       $naoProcessaBoletoSimples = false;
       if($linhasBuscarAbertos > 0 ){
@@ -789,7 +796,7 @@ if($linhasBuscaBoleto > 0){
             left  join issarqsimplesregdisbanco on q44_issarqsimplesreg = q23_sequencial
             left  join disbanco           on disbanco.idret = q44_disbanco
             where q68_issvar = $cod_issvar ";
-          $rsSimples = pg_query($sqlSimples);								
+          $rsSimples = db_query($sqlSimples);								
           $linhasSimples = pg_num_rows($rsSimples);
           if($linhasSimples > 0 ){
             db_fieldsmemory($rsSimples , 0);
@@ -825,9 +832,9 @@ if($linhasBuscaBoleto > 0){
         $clissvar-> incluir_issvar_complementar ($vt,$ccm);
         if($clissvar->erro_status=="0"){
           $sqlerro = true;
-          db_log("Erro no processamento do boleto", $sArquivoLog, 0, true,true);
-          pg_query($conn,'rollback');
-          pg_query($conn2,'rollback');
+          db_log("Erro no processamento do boleto!", $sArquivoLog, 0, true,true);
+          db_query($conn,'rollback');
+          db_query($conn2,'rollback');
           exit;
         }
 
@@ -837,22 +844,22 @@ if($linhasBuscaBoleto > 0){
             (k99_numpre,k99_numpar,k99_numpre_n,k99_codbco,k99_codage,k99_numbco,k99_desconto,k99_tipo,k99_origem) 
             values 
             ($documento,$mes,$documento,0,'','',0,10,4)";
-          $rsIncluiRecibo = pg_query($sqlIncluiRecibo);															
+          $rsIncluiRecibo = db_query($sqlIncluiRecibo);															
           if($rsIncluiRecibo==false){
             $sqlerro = true;
             db_log("Erro: \n sql = $sqlIncluiRecibo", null, 0, true,true);
-            pg_query($conn,'rollback');
-            pg_query($conn2,'rollback');
+            db_query($conn,'rollback');
+            db_query($conn2,'rollback');
             exit;
           }
 
           $sqlIncluiRecibocodbar  = "insert into recibocodbar (k00_numpre,k00_codbar,k00_linhadigitavel) values($documento,'".$codigo_barra."','".$codigo_barra."')";
-          $rsIncluiRecibocodbar   = pg_query($sqlIncluiRecibocodbar);
+          $rsIncluiRecibocodbar   = db_query($sqlIncluiRecibocodbar);
           if($rsIncluiRecibocodbar==false){
             $sqlerro = true;
             db_log("Erro: \n sql = $sqlIncluiRecibocodbar", null, 1, true,true);
-            pg_query($conn,'rollback');
-            pg_query($conn2,'rollback');
+            db_query($conn,'rollback');
+            db_query($conn2,'rollback');
             exit;
           }
         }
@@ -872,7 +879,7 @@ if($linhasBuscaBoleto > 0){
 
   }
   }// do for
-  if(($linhasValidaIssbase > 0)  and ($documento > 8000000 )){
+  if(($linhasValidaIssbase > 0)  and ($documento > 20000000 )){
     foreach ($arrayGiss as $key => $value) {
       // cada array maior
      //  echo " \n\n Chave: $key; Valor: $value";
@@ -885,11 +892,11 @@ if($linhasBuscaBoleto > 0){
         $and = "and";
       }
       $sqlAlteraControle = "update tb_controle_boletos set controle = 't' where $wherecontrole ";
-      $rsAlteraControle  = pg_query($conn2,$sqlAlteraControle);
+      $rsAlteraControle  = db_query($conn2,$sqlAlteraControle);
       if($rsAlteraControle ==false){
         db_log("Erro: \n sql = $sqlAlteraControle", null, 1, true,true);
-        pg_query($conn,'rollback');
-        pg_query($conn2,'rollback');
+        db_query($conn,'rollback');
+        db_query($conn2,'rollback');
         exit;
       }
 
@@ -900,8 +907,8 @@ if($linhasBuscaBoleto > 0){
 }
 echo "\n OK \n";
 
-pg_query($conn,'commit');
-pg_query($conn2,'commit');
+db_query($conn,'commit');
+db_query($conn2,'commit');
 
 //db_log("Inicio: $sHoraInicio", $sArquivoLog);
 db_log("Final.: " . date( "H:i:s"), $sArquivoLog);

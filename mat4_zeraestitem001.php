@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,44 +25,47 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_matestoque_classe.php");
-require_once("classes/db_matestoqueitem_classe.php");
-require_once("classes/db_matestoqueitemfabric_classe.php");
-require_once("classes/db_matestoqueitemlote_classe.php");
-require_once("classes/db_matestoquedevitemmei_classe.php");
-require_once("classes/db_matestoquedevitem_classe.php");
-require_once("classes/db_matestoquedev_classe.php");
-require_once("classes/db_atendrequiitemmei_classe.php");
-require_once("classes/db_atendrequiitem_classe.php");
-require_once("classes/db_atendrequi_classe.php");
-require_once("classes/db_matestoqueinimeiari_classe.php");
-require_once("classes/db_matestoqueinimeimdi_classe.php");
-require_once("classes/db_matrequi_classe.php");
-require_once("classes/db_matrequiitem_classe.php");
-require_once("classes/db_matestoqueini_classe.php");
-require_once("classes/db_matestoqueinil_classe.php");
-require_once("classes/db_matestoqueinill_classe.php");
-require_once("classes/db_matestoquetransf_classe.php");
-require_once("classes/db_matestoqueinimei_classe.php");
-require_once("classes/db_matanulitemrequi_classe.php");
-require_once("classes/db_matestoqueinimeipm_classe.php");
-require_once("classes/db_matpedidotransf_classe.php");
-require_once("classes/db_matestoqueinimeimatpedidoitem_classe.php");
-require_once("classes/db_matmaterprecomedio_classe.php");
-require_once("classes/db_matmaterprecomedioini_classe.php");
-require_once("classes/db_matestoqueitemnota_classe.php");
-require_once("classes/db_matestoqueitemoc_classe.php");
-require_once("classes/db_matestoqueitemunid_classe.php");
-require_once("classes/db_empnotaitembenspendente_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_matestoquetransferencia_classe.php");
-require_once("classes/db_conlancammatestoqueinimei_classe.php");
-require_once("classes/db_matestoqueitemnotafiscalmanual_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_matestoque_classe.php"));
+require_once(modification("classes/db_matestoqueitem_classe.php"));
+require_once(modification("classes/db_matestoqueitemfabric_classe.php"));
+require_once(modification("classes/db_matestoqueitemlote_classe.php"));
+require_once(modification("classes/db_matestoquedevitemmei_classe.php"));
+require_once(modification("classes/db_matestoquedevitem_classe.php"));
+require_once(modification("classes/db_matestoquedev_classe.php"));
+require_once(modification("classes/db_atendrequiitemmei_classe.php"));
+require_once(modification("classes/db_atendrequiitem_classe.php"));
+require_once(modification("classes/db_atendrequi_classe.php"));
+require_once(modification("classes/db_matestoqueinimeiari_classe.php"));
+require_once(modification("classes/db_matestoqueinimeimdi_classe.php"));
+require_once(modification("classes/db_matrequi_classe.php"));
+require_once(modification("classes/db_matrequiitem_classe.php"));
+require_once(modification("classes/db_matestoqueini_classe.php"));
+require_once(modification("classes/db_matestoqueinil_classe.php"));
+require_once(modification("classes/db_matestoqueinill_classe.php"));
+require_once(modification("classes/db_matestoquetransf_classe.php"));
+require_once(modification("classes/db_matestoqueinimei_classe.php"));
+require_once(modification("classes/db_matanulitemrequi_classe.php"));
+require_once(modification("classes/db_matestoqueinimeipm_classe.php"));
+require_once(modification("classes/db_matpedidotransf_classe.php"));
+require_once(modification("classes/db_matestoqueinimeimatpedidoitem_classe.php"));
+require_once(modification("classes/db_matmaterprecomedio_classe.php"));
+require_once(modification("classes/db_matmaterprecomedioini_classe.php"));
+require_once(modification("classes/db_matestoqueitemnota_classe.php"));
+require_once(modification("classes/db_matestoqueitemoc_classe.php"));
+require_once(modification("classes/db_matestoqueitemunid_classe.php"));
+require_once(modification("classes/db_empnotaitembenspendente_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_matestoquetransferencia_classe.php"));
+require_once(modification("classes/db_conlancammatestoqueinimei_classe.php"));
+require_once(modification("classes/db_matestoqueitemnotafiscalmanual_classe.php"));
+require_once(modification("classes/db_matrequiitemcriteriocustorateio_classe.php"));
+require_once(modification("classes/db_custoapropria_classe.php"));
+require_once(modification("classes/db_bensdispensatombamento_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -98,6 +101,10 @@ $cl_empnotaitembenspendente = new cl_empnotaitembenspendente;
 $clmatanulitemrequi = new cl_matanulitemrequi;
 $clconlancammatestoqueinimei = new cl_conlancammatestoqueinimei();
 $clmatestoqueitemnotafiscalmanual = new cl_matestoqueitemnotafiscalmanual();
+$clbensdispensatombamento = new cl_bensdispensatombamento();
+
+$clmatrequiitemcriteriocustorateio = new cl_matrequiitemcriteriocustorateio();
+$clcustoapropria = new cl_custoapropria();
 
 
 $db_botao = true;
@@ -297,6 +304,28 @@ if (isset ($excluir)) {
 
   $info = split(",", $cod);
 
+
+  if ($sqlerro == false) {
+
+    if ($info[0] != "") {
+
+      $clmatanulitemrequi->excluir(null,"m102_matrequiitem in (".$codMatRequiItem.")");
+
+      if ($clmatanulitemrequi->erro_status == 0) {
+
+        $sqlerro  = true;
+        $erro_msg = $clmatanulitemrequi->erro_msg;
+        db_msgbox("Erro!!matanulitemrequi!!");
+      }
+    }  
+
+  }  
+
+
+
+
+
+/*
   for($w = 0; $w < count($info); $w++) {
 
     if ($info[$w] != "") {
@@ -314,8 +343,22 @@ if (isset ($excluir)) {
       }
     }
   }
+*/
+
 
   if ($sqlerro == false) {
+
+
+    $clmatrequiitemcriteriocustorateio->excluir(null, "cc13_matrequiitem in (select m41_codigo from matrequiitem   where m41_codmatmater in ($codmatmater) )");
+    if ($clmatrequiitemcriteriocustorateio->erro_status==0){
+      $sqlerro=true;
+      $erro_msg = $clmatrequiitemcriteriocustorateio->erro_msg;
+      db_msgbox("Erro!!matrequiitemcriteriocustorateio!!");
+    }
+
+
+    // ($cc13_sequencial=null,$dbwhere=null) { 
+//    delete from matrequiitemcriteriocustorateio where cc13_matrequiitem in (select m41_codigo from matrequiitem   where m41_codmatmater in (1) );
 
     $clmatrequiitem->excluir(null,"m41_codmatmater in ($codmatmater)");
     if ($clmatrequiitem->erro_status==0){
@@ -388,11 +431,34 @@ if (isset ($excluir)) {
   if ($sqlerro == false) {
     if ($codmei!=""){
 
+
+      //$sSqlMatestoqueinimei = "select m82_codigo from matestoqueinimei where m82_matestoqueini in({$codini})";
+    	//$clconlancammatestoqueinimei->excluir(null, "c103_matestoqueinimei in ({$sSqlMatestoqueinimei})");
+      $clconlancammatestoqueinimei->excluir(null, "c103_matestoqueinimei in ({$codmei})");
+
+    	if ($clconlancammatestoqueinimei->erro_status==0){
+        
+    		$sqlerro = true;
+    		$erro_msg = $clconlancammatestoqueinimei->erro_msg;
+    		db_msgbox("Erro!!conlancammatestoqueinimei!");
+    		db_msgbox($erro_msg);
+    	}
+
+
+      $clcustoapropria->excluir(null, "cc12_matestoqueinimei in ({$codmei}) ");
+    	if ($clcustoapropria->erro_status==0){
+        
+    		$sqlerro = true;
+    		$erro_msg = $clcustoapropria->erro_msg;
+    		db_msgbox("Erro!!custoapropria!");
+    		db_msgbox($erro_msg);
+    	}
+
       $clmatestoqueinimei->excluir(null, "m82_codigo in ($codmei)");
       if ($clmatestoqueinimei->erro_status == 0) {
         $sqlerro = true;
         $erro_msg = $clmatestoqueinimei->erro_msg;
-        db_msgbox("Erro!!matestoqueinimei!!\\n{$erro_msg}");
+        db_msgbox("[1] - Erro!!matestoqueinimei!!\\n{$erro_msg}");
       }
     }
   }
@@ -605,6 +671,18 @@ if (isset ($excluir)) {
       }
     }
 
+
+    if ($sqlerro==false){
+      
+      $clbensdispensatombamento->excluir(null, "e139_matestoqueitem = {$m71_codlanc} ");
+      if ($clbensdispensatombamento->erro_status==0){
+        $sqlerro=true;
+        $erro_msg=$clbensdispensatombamento->erro_msg;
+        db_msgbox("Erro!! bensdispensatombamento!!");
+        echo pg_last_error();
+      }
+    }
+
     if ($sqlerro==false){
       $clmatestoqueitem->excluir($m71_codlanc);
       if ($clmatestoqueitem->erro_status==0){
@@ -676,7 +754,7 @@ if (isset ($excluir)) {
 if (db_getsession('DB_login') != 'dbseller') {
   db_msgbox("Rotina administrativa do sistema ! Acesso restrito !");
 }else{
-  include ("forms/db_frmzeraestitem.php");
+  include(modification("forms/db_frmzeraestitem.php"));
 }
 ?>
     </center>

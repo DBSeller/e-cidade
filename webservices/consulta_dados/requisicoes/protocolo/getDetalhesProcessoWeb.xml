@@ -1,0 +1,81 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="codigo"   label="codigo_andamento" />
+        <campo campo="data_despacho"    label="data_andamento" />
+        <campo campo="hora_despacho"       label="hora_andamento" />
+        <campo campo=" concat(despacho,' ',motivo)"   label="despacho" />
+        <campo campo="id_estorage" label="id_estorage" />
+        <campo campo="descricao"     label="descricao" />
+    </campos>
+    <from tabela="(
+                    SELECT
+                    p61_codandam AS codigo,
+                    p61_despacho AS despacho,
+                    p61_dtandam AS data_despacho,
+                    p61_hora AS hora_despacho,
+                    NULL AS id_estorage,
+                    NULL AS descricao,
+                    (
+                        SELECT
+                           p67_historico
+                        FROM
+                           protocolo.arqproc
+                        LEFT JOIN protocolo.procarquiv on
+                        p68_codarquiv = p67_codarquiv
+                        LEFT JOIN protocolo.arqandam on
+                        p69_codarquiv = p67_codarquiv
+                        WHERE
+                            p67_codproc  = $numero_processo
+                        GROUP BY
+                            p67_codproc,
+                            p67_historico
+                        ORDER BY MAX(p67_codarquiv) DESC
+                        LIMIT 1
+                    )  as motivo,
+                    'PADRAO' AS tipo
+                FROM
+                    procandam
+                WHERE
+                    p61_codproc = $numero_processo
+                    AND p61_publico IS TRUE
+                UNION
+                SELECT
+                    DISTINCT p78_sequencial AS codigo,
+                    p78_despacho AS despacho,
+                    p78_data AS data_despacho,
+                    p78_hora AS hora_despacho,
+                    p01_nomedocumento AS id_estorage,
+                    p01_descricao AS descricao,
+                    '' as motivo,
+                    'INTERNO' AS tipo
+                FROM
+                    procandamint
+                LEFT JOIN procandamintand ON
+                    p86_codandam = p78_codandam
+                LEFT JOIN proctransferintand ON
+                    p87_codandam = p78_codandam
+                LEFT JOIN protprocessodocumento ON
+                    p01_procandamint = p78_sequencial
+                    AND p01_estorage IS TRUE
+                WHERE
+                    p78_codandam IN (
+                    SELECT
+                        p61_codandam
+                    FROM
+                        procandam
+                    WHERE
+                        p61_codproc = $numero_processo  )
+                    AND p78_publico IS TRUE
+                    AND p86_codandam IS NULL
+                    AND p87_codandam IS NULL
+                    ) AS processo
+	"/>
+    <juncoes>
+    </juncoes>
+    <filtros>
+        <filtro label="numero_processo" condicao="$numero_processo = $numero_processo" obrigatorio="true"/>
+    </filtros>
+    <agrupamento campos="" />
+    <ordenacao   campos="data_despacho DESC,hora_despacho DESC,codigo DESC" />
+</consulta>

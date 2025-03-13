@@ -1,38 +1,40 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_acordo_classe.php");
-
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_acordo_classe.php"));
+define('EXECUCAO_CONTRATO_FINANCEIRA', 1);
+define('EXECUCAO_FINANCEIRA_EMPENHO', 2);
+$oGet = db_utils::postMemory($_GET);
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -113,18 +115,23 @@ db_app::load("estilos.css, grid.style.css");
         $aWhere[] = 'ac16_acordogrupo = ' . $ac16_acordogrupo;
       }
 
+      $sNomeMetodo = 'sql_queryDadosMapaExecucao';
+      if ( ! empty($oGet->execucao) && $oGet->execucao == EXECUCAO_FINANCEIRA_EMPENHO) {
+        $sNomeMetodo = 'sql_query_movimentacao_empenho';
+      }
+
       /**
        * Numero e ano do acordo - separados por '/', caso nao for informado ano, pega da sessao
        */
       if (!empty($ac16_numeroacordo)) {
 
         $aNumeroAcordo = explode('/', $ac16_numeroacordo);
-        $iNumero = $aNumeroAcordo[0]; 
+        $iNumero = $aNumeroAcordo[0];
         $iAno = !empty($aNumeroAcordo[1]) ? $aNumeroAcordo[1] : db_getsession("DB_anousu");
 
         $aWhere[] = "ac16_numeroacordo = $iNumero";
         $aWhere[] = "ac16_anousu = $iAno";
-      } 
+      }
 
       $aWhere[] = 'ac16_instit = ' . db_getsession('DB_instit');
       $sWhere = implode(' and ', $aWhere);
@@ -149,22 +156,22 @@ db_app::load("estilos.css, grid.style.css");
         $sCampos .= "ac28_descricao as dl_Origem";
 
         $repassa = array();
-        $sSql = $oDaoAcordo->sql_queryDadosMapaExecucao(null, $sCampos, 'ac16_sequencial', $sWhere);
-        
+        $sSql = $oDaoAcordo->$sNomeMetodo(null, $sCampos, 'ac16_sequencial', $sWhere);
+
         if (isset($chave_ac16_sequencial)) {
           $repassa = array("chave_ac16_sequencial"=>$chave_ac16_sequencial,"chave_ac16_sequencial"=>$chave_ac16_sequencial);
-        } 
+        }
 
-        db_lovrot($sSql, 15, "()", "", $funcao_js, "", "NoMe", $repassa); 
-      } 
-      
+        db_lovrot($sSql, 15, "()", "", $funcao_js, "", "NoMe", $repassa);
+      }
+
       /**
        * Pesquisa pelo código do acordo
        * - usado ao disparar evento change do input
        */
       else {
 
-        $sSqlAcordo = $oDaoAcordo->sql_queryDadosMapaExecucao(null, "*", null, $sWhere);
+        $sSqlAcordo = $oDaoAcordo->$sNomeMetodo(null, "*", null, $sWhere);
         $rsAcordo   = $oDaoAcordo->sql_record($sSqlAcordo);
 
         if ($oDaoAcordo->numrows > 0) {
@@ -220,8 +227,8 @@ function js_formatarNumeroAno(elemento) {
         return false;
       }
     }
-    
-    return js_mask(event, "0-9|/"); 
+
+    return js_mask(event, "0-9|/");
   };
 }
 
@@ -275,4 +282,11 @@ function js_pesquisaac16_acordogrupo(mostra) {
 
 	  db_iframe_pesquisagrupo.hide();
 	}
+</script>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,5 +25,4 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "bensbaix.t55_codbem,bensbaix.t55_baixa,bensbaix.t55_motivo";
-?>
+$campos = "bensbaix.*";

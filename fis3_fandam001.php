@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,17 +30,17 @@ if(!isset($abas)){
   echo "<script>location.href='fis3_fandam005.php'</script>";
   exit;
 }
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_vistorias_classe.php");
-include("classes/db_tipovistorias_classe.php");
-include("classes/db_vistoriaandam_classe.php");
-include("classes/db_fandam_classe.php");
-include("classes/db_fandamusu_classe.php");
-include("classes/db_vistusuario_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_vistorias_classe.php"));
+include(modification("classes/db_tipovistorias_classe.php"));
+include(modification("classes/db_vistoriaandam_classe.php"));
+include(modification("classes/db_fandam_classe.php"));
+include(modification("classes/db_fandamusu_classe.php"));
+include(modification("classes/db_vistusuario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo        = new rotulocampo;
 $clvistorias     = new cl_vistorias;
@@ -62,14 +62,14 @@ if(isset($y70_codvist) && !isset($HTTP_POST_VARS["db_opcao"])){
      if($clvistusuario->numrows == 0){
        $db_opcao = 1;
        echo "<script>alert('Não existem fiscais cadastrados para esta vistoria!');</script>";
-       include("fis3_fandam004.php");
+       include(modification("fis3_fandam004.php"));
        exit;
      }
      $db_botao = false;
    }else{
      $db_opcao = 1;
      echo "<script>alert('Código da Vistoria inválido!');</script>";
-     include("fis3_fandam004.php");
+     include(modification("fis3_fandam004.php"));
      exit;
    }
 }
@@ -92,7 +92,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
   db_fim_transacao();
 }
 if(!isset($pri)){
-  include("fis3_fandam004.php");
+  include(modification("fis3_fandam004.php"));
   exit;
 }
 ?>
@@ -124,7 +124,7 @@ if(!isset($pri)){
         <?
 	$db_opcao=1;
         $db_botao = true;
-	include("forms/db_frmfandam.php");
+	include(modification("forms/db_frmfandam.php"));
 	?>
     </center>
 	</td>

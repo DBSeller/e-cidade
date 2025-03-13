@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: issqn
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo                 = new rotulocampo;
 $cltipcalcexe->rotulo->label();
@@ -62,7 +62,7 @@ if (isset($db_opcaoal)) {
  */
 if (isset($q83_cadvencdescsimples) && $q83_cadvencdescsimples != null) {
 
-	require_once("classes/db_cadvencdesc_classe.php");
+	require_once(modification("classes/db_cadvencdesc_classe.php"));
 	$oDaoCadvencdesc  = new cl_cadvencdesc;
 	$sSqlDescr        = $oDaoCadvencdesc->sql_query_file($q83_cadvencdescsimples, "q92_descr as descricaoSimples", null, null);
   $rsDescr          = $oDaoCadvencdesc->sql_record($sSqlDescr);
@@ -178,11 +178,11 @@ if (isset($q83_cadvencdescsimples) && $q83_cadvencdescsimples != null) {
 function js_pesquisaSimples(mostra){
    
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo.iframe_tipcalcexe','db_iframe_cadvencdescSimples','func_cadvencdesc.php?funcao_js=parent.js_mostraSimples1|q92_codigo|q92_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tipcalcexe','db_iframe_cadvencdescSimples','func_cadvencdesc.php?funcao_js=parent.js_mostraSimples1|q92_codigo|q92_descr','Pesquisa',true,'0','1','775','390');
   }else{
     
      if($F('q83_cadvencdescsimples') != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_tipcalcexe','db_iframe_cadvencdescSimples','func_cadvencdesc.php?pesquisa_chave='+$F("q83_cadvencdescsimples")+'&funcao_js=parent.js_mostraSimples','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tipcalcexe','db_iframe_cadvencdescSimples','func_cadvencdesc.php?pesquisa_chave='+$F("q83_cadvencdescsimples")+'&funcao_js=parent.js_mostraSimples','Pesquisa',false);
      }else{
        document.form1.descricaoSimples.value = ''; 
      }
@@ -210,11 +210,11 @@ function js_mostraSimples1(chave1, chave2) {
 function js_pesquisaq83_codven(mostra){
    
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo.iframe_tipcalcexe','db_iframe_cadvencdesc','func_cadvencdesc.php?funcao_js=parent.js_mostracadvencdesc1|q92_codigo|q92_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tipcalcexe','db_iframe_cadvencdesc','func_cadvencdesc.php?funcao_js=parent.js_mostracadvencdesc1|q92_codigo|q92_descr','Pesquisa',true,'0','1','775','390');
   } else {
     
      if ($('q83_codven').value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_tipcalcexe','db_iframe_cadvencdesc','func_cadvencdesc.php?pesquisa_chave='+$('q83_codven').value+'&funcao_js=parent.js_mostracadvencdesc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tipcalcexe','db_iframe_cadvencdesc','func_cadvencdesc.php?pesquisa_chave='+$('q83_codven').value+'&funcao_js=parent.js_mostracadvencdesc','Pesquisa',false);
      }else{
        $('q92_descr').value = ''; 
      }

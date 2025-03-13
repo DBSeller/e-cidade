@@ -30,7 +30,7 @@ class FieldArea extends GtkFixed
     function FieldArea($horizontal = true, $limit = false)
     {
         GtkFixed::GtkFixed();
-        GtkFixed::connect('drag_data_received', array(&$this, 'DragReceive'));
+        GtkFixed::connect('drag_data_received', array($this, 'DragReceive'));
         $targets = array(array('text/plain', 0, -1));
         GtkFixed::drag_dest_set(GTK_DEST_DEFAULT_ALL, $targets, GDK_ACTION_COPY);
         
@@ -89,18 +89,18 @@ class FieldArea extends GtkFixed
                 $label = $udata[0];
                 $name  = $udata[1];
                 
-                $button = &new VoidButton($label, $Pixmaps['field'], IMAGEBUTTON);
+                $button = new VoidButton($label, $Pixmaps['field'], IMAGEBUTTON);
                 # set_tip com a descricao full
                 $tooltips = $button->tooltips;
                 $tooltips->set_tip($button, $name);
                 $button->show_all();
                 
-                $button->connect('drag_data_get', array(&$this, 'getDrag'), $data->data);
+                $button->connect('drag_data_get', array($this, 'getDrag'), $data->data);
                 $targets = array(array('text/plain', 0, -1));
                 $button->drag_source_set(GDK_BUTTON1_MASK, $targets, GDK_ACTION_COPY);
                 $button->set_data(0, $udata);
                 $button->set_usize(120,26);
-                $button->connect('clicked', array(&$this, 'Popup'));
+                $button->connect('clicked', array($this, 'Popup'));
                 $this->add($button);
             }
         }
@@ -130,7 +130,7 @@ class FieldArea extends GtkFixed
         $menu = new GtkMenu;
         $icon = gdk::pixmap_create_from_xpm($widget->window, null, images . 'menu_del.xpm');
         $item1 = new MyNormalMenuItem($icon, 'Remover');
-        $item1->connect_object('activate', array(&$this, 'RemoveWidget'), $widget);
+        $item1->connect_object('activate', array($this, 'RemoveWidget'), $widget);
         $menu->append($item1);
         $menu->show_all();
         $menu->popup(null,null,null,1,1);

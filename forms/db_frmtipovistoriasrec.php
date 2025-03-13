@@ -30,7 +30,7 @@ $cltipovistoriasrec->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("y77_descricao");
 $clrotulo->label("k02_descr");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 if(isset($opcao) && $opcao == "alterar"){
   echo "<script>parent.iframe_vistrec.location.href='fis1_tipovistoriasrec002.php?chavepesquisa=$y78_codtipo&chavepesquisa1=$y78_receit'</script>";

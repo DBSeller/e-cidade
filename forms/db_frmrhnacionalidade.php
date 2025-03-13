@@ -58,7 +58,7 @@ db_input('rh06_descr',40,$Irh06_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhnacionalidade','func_rhnacionalidade.php?funcao_js=parent.js_preenchepesquisa|rh06_nacionalidade','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhnacionalidade','func_rhnacionalidade.php?funcao_js=parent.js_preenchepesquisa|rh06_nacionalidade','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhnacionalidade.hide();

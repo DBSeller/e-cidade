@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -47,7 +47,7 @@ db_input('e29_anousu',4,$Ie29_anousu,true,'text',3,"")
   <tr>
     <td nowrap title="<?=@$Te29_instit?>">
        <?
-       db_ancora(@$Le29_instit,"js_pesquisae29_instit(true);",3);
+       db_ancora(@$Le29_instit,"js_pesquisae29_instit(true);",1);
        ?>
     </td>
     <td> 
@@ -77,10 +77,10 @@ db_input('e29_codemp',15,$Ie29_codemp,true,'text',$db_opcao,"")
 <script>
 function js_pesquisae29_instit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
   }else{
      if(document.form1.e29_instit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.e29_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.e29_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
      }else{
        document.form1.nomeinst.value = ''; 
      }
@@ -99,7 +99,7 @@ function js_mostradb_config1(chave1,chave2){
   db_iframe_db_config.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empparamnum','func_empparamnum.php?funcao_js=parent.js_preenchepesquisa|e29_instit|e29_anousu','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empparamnum','func_empparamnum.php?funcao_js=parent.js_preenchepesquisa|e29_instit|e29_anousu','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_empparamnum.hide();

@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-//include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcsuplem_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcsuplemtipo_classe.php");
-include("classes/db_orcsuplemrec_classe.php");
-include("classes/db_orcsuplemval_classe.php");
-include("classes/db_orcprojeto_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+//include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcsuplem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcsuplemtipo_classe.php"));
+include(modification("classes/db_orcsuplemrec_classe.php"));
+include(modification("classes/db_orcsuplemval_classe.php"));
+include(modification("classes/db_orcprojeto_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 //db_postmemory($HTTP_POST_VARS);
@@ -98,7 +98,7 @@ if(isset($excluir)){
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
-	<? include("forms/db_frmorcsuplem.php"); ?>
+	<? include(modification("forms/db_frmorcsuplem.php")); ?>
     </center>
 	</td>
   </tr>

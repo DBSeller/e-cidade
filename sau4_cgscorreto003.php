@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,16 +28,19 @@
 parse_str ( $HTTP_SERVER_VARS ["QUERY_STRING"] );
 if (! isset ( $abas )) {
 	echo "<script>location.href='sau4_cgscorreto004.php?db_opcao=3'</script>";
-	exit ();
+    /**
+      * Redmine #15756
+      */
+	//exit ();
 }
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_sau_cgscorreto_classe.php");
-include ("classes/db_sau_cgserrado_classe.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_sau_cgscorreto_classe.php"));
+include(modification("classes/db_sau_cgserrado_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str ( $HTTP_SERVER_VARS ["QUERY_STRING"] );
 db_postmemory ( $HTTP_POST_VARS );
@@ -50,7 +53,7 @@ $db_opcao = 33;
 if ((isset ( $HTTP_POST_VARS ["db_opcao"] ) && $HTTP_POST_VARS ["db_opcao"]) == "Excluir") {
 	
 	$sql1 = "select * from sau_cgscorreto where s127_i_codigo = $s127_i_codigo";
-	$result1 = pg_query ( $sql1 );
+	$result1 = db_query ( $sql1 );
 	$linhas1 = pg_num_rows ( $result1 );
 	if ($linhas1 > 0) {
 		db_fieldsmemory ( $result1, 0 );
@@ -95,7 +98,7 @@ if ((isset ( $HTTP_POST_VARS ["db_opcao"] ) && $HTTP_POST_VARS ["db_opcao"]) == 
 		<center>
 	<?
 	
-	include ("forms/db_frmcgscorreto.php");
+	include(modification("forms/db_frmcgscorreto.php"));
 	?>
     </center>
 		</td>

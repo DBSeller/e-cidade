@@ -1,45 +1,45 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  *
  * @author Iuri Guntchnigg
- * @revision $Author: dbtales.baz $
- * @version $Revision: 1.15 $
+ * @revision $Author: dbjohn.reis $
+ * @version $Revision: 1.22 $
  */
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/impcarne.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
 
-require_once("libs/db_utils.php");
-require_once("libs/JSON.php");
-require_once("libs/db_libpessoal.php");
-require_once("classes/db_cfpess_classe.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("classes/db_cfpess_classe.php"));
 
-$oDaoCfpess            = new cl_cfpess;
+$oDaoCfpess = new cl_cfpess;
 
 /**
  * Modelo de impressão de relatório empenho folha
@@ -68,7 +68,7 @@ $sSqlEmpenhos  .= "       rh72_orgao,                                           
 $sSqlEmpenhos  .= "       rh72_projativ,                                                                            ";
 $sSqlEmpenhos  .= "       rh72_anousu,                                                                              ";
 $sSqlEmpenhos  .= "       rh72_mesusu,                                                                              ";
-$sSqlEmpenhos  .= "       rh72_recurso,                                                                             ";
+$sSqlEmpenhos  .= "       o15_recurso,                                                                             ";
 $sSqlEmpenhos  .= "       rh72_siglaarq,                                                                            ";
 $sSqlEmpenhos  .= "       rh72_siglaarq,                                                                            ";
 $sSqlEmpenhos  .= "       rh72_concarpeculiar,                                                                      ";
@@ -88,10 +88,8 @@ $sSqlEmpenhos  .= "       inner join orcelemento                on rh72_codele  
 $sSqlEmpenhos  .= "                                            and rh72_anousu         = o56_anousu                 ";
 $sSqlEmpenhos  .= "       left join rhempenhofolhaempenho       on rh72_sequencial     = rh76_rhempenhofolha        ";
 $sSqlEmpenhos  .= "       left join empempenho                  on rh76_numemp         = e60_numemp                 ";
-$sSqlEmpenhos  .= "       left join rhelementoemp               on rh72_codele         = rh38_codele                ";
-$sSqlEmpenhos  .= "                                            and rh38_anousu         = rh72_anousu                ";
-$sSqlEmpenhos  .= "       left join  rhelementoemppcmater       on rh38_seq            = rh36_rhelementoemp         ";
-$sSqlEmpenhos  .= "       left join pcmater                     on rh36_pcmater        = pc01_codmater              ";
+$sSqlEmpenhos  .= "       LEFT JOIN empempitem                  on e60_numemp          = e62_numemp";
+$sSqlEmpenhos  .= "       left join pcmater                     on e62_item            = pc01_codmater              ";
 $sSqlEmpenhos  .= "   where rh72_tipoempenho = {$oParam->iTipo}                                                     ";
 $sSqlEmpenhos  .= "     and rh73_tiporubrica = 1                                                                    ";
 $sSqlEmpenhos  .= "     and rh72_anousu      = {$oParam->iAnoFolha}                                                 ";
@@ -126,16 +124,18 @@ $sSqlEmpenhos  .= "            rh72_orgao,                                      
 $sSqlEmpenhos  .= "            rh72_projativ,                                                 ";
 $sSqlEmpenhos  .= "            rh72_mesusu,                                                   ";
 $sSqlEmpenhos  .= "            rh72_anousu,                                                   ";
-$sSqlEmpenhos  .= "            rh72_recurso,                                                  ";
+$sSqlEmpenhos  .= "            o15_recurso,                                                  ";
 $sSqlEmpenhos  .= "            rh72_siglaarq,                                                 ";
 $sSqlEmpenhos  .= "            rh72_concarpeculiar,                                           ";
 $sSqlEmpenhos  .= "            e60_codemp,                                                    ";
 $sSqlEmpenhos  .= "            e60_anousu,                                                    ";
 $sSqlEmpenhos  .= "            pc01_descrmater                                                ";
-$sSqlEmpenhos  .= " order by   rh72_recurso,rh72_orgao,rh72_unidade,rh72_projativ,o56_elemento";
+$sSqlEmpenhos  .= " order by   o15_recurso,rh72_orgao,rh72_unidade,rh72_projativ,o56_elemento";
 
 $rsDadosEmpenho   = db_query($sSqlEmpenhos);
-$aEmpenhos        = db_utils::getColectionByRecord($rsDadosEmpenho);
+
+
+$aEmpenhos        = db_utils::getCollectionByRecord($rsDadosEmpenho);
 $aLinhasRelatorio = array();
 
 $rsCfPess        = $oDaoCfpess->sql_record($oDaoCfpess->sql_query_file(db_anofolha(), db_mesfolha(), db_getsession("DB_instit"), "r11_geraretencaoempenho"));
@@ -164,7 +164,7 @@ $lMostraRetencao = db_utils::fieldsMemory($rsCfPess,0)->r11_geraretencaoempenho;
       $sSqlDadosRetencao  .= "   order by rh73_rubric                                                                                     ";
 
       $rsDadosEmpenho     = db_query($sSqlDadosRetencao);
-      $aRetencoes         = db_utils::getColectionByRecord($rsDadosEmpenho);
+      $aRetencoes         = db_utils::getCollectionByRecord($rsDadosEmpenho);
 
       $oEmpenho->aDescontos = $aRetencoes;
       $aLinhasRelatorio[]   = $oEmpenho;

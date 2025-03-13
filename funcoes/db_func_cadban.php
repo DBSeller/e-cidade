@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "cadban.k15_codigo,z01_nome,cadban.k15_numcgm,cadban.k15_codbco,cadban.k15_codage,k15_conta";
+$campos = "cadban.k15_codigo,z01_nome,cadban.k15_numcgm,cadban.k15_codbco,cadban.k15_codage,k15_conta,k15_local";
 ?>

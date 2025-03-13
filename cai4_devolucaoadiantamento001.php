@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_usuariosonline.php");
-  require_once("dbforms/db_funcoes.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
 ?>
 
 <html>
@@ -57,10 +57,10 @@
             </tr>
             <tr>
               <td><label for="iCodigoMovimento">
-                <?php 
-                  db_ancora( 'Movimento:', 
-                             "pesquisaCodigoMovimento();", 
-                             1 ); 
+                <?php
+                  db_ancora( 'Movimento:',
+                             "pesquisaCodigoMovimento();",
+                             1 );
                 ?></label>
               </td>
               <td>
@@ -118,10 +118,10 @@
      * Abre a func de pesquisa do movimento
      */
     function pesquisaCodigoMovimento() {
-        js_OpenJanelaIframe( 'top.corpo', 
-                             'db_iframe_empagemov', 
-                             'func_empagemov.php?chave_empenho_conferido=1&funcao_js=parent.exibeCodigoMovimento|e81_codmov',
-                             'Pesquisa Movimento', true, '25', '10', '775', '450' );
+        js_OpenJanelaIframe( 'CurrentWindow.corpo',
+                             'db_iframe_empagemov',
+                             'func_empagemov_prestacao.php?funcao_js=parent.exibeCodigoMovimento|e81_codmov',
+                             'Pesquisa Movimento', true );
     }
 
     /**
@@ -145,7 +145,7 @@
           oParam.iCodigoMovimentacao = iCodigo;
           oParam.exec                = 'getDadosEmpenho';
           new Ajax.Request ("cai4_devolucaoadiantamento004.RPC.php", {
-                                  method     : 'post',  
+                                  method     : 'post',
                                   parameters : 'json=' + Object.toJSON(oParam),
                                   onComplete : function(oRetorno) {
 
@@ -206,7 +206,7 @@
      */
     $('frmDevolucaoAdiantamento').observe('submit', function(e) {
 
-      if ($F('iSequencialEmpPresta') == '') {        
+      if ($F('iSequencialEmpPresta') == '') {
 
         e.preventDefault();
         alert( _M("financeiro.caixa.cai4_devolucaoadiantamento001.movimento_nao_selecionado") );
@@ -217,7 +217,7 @@
         if ($('iTipoDevolucao').value == 2) {
 
           e.preventDefault();
-          top.corpo.location = 'emp1_emppagamentoestornanota002.php?e81_codmov=' + $F('iCodigoMovimento')
+          CurrentWindow.corpo.location = 'emp1_emppagamentoestornanota002.php?e81_codmov=' + $F('iCodigoMovimento')
                                + '&pag_ord=true&origem_devolucao=true';
           return false;
         }

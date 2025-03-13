@@ -1,54 +1,54 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rechumano_classe.php");
-include("classes/db_rechumanoescola_classe.php");
-include("classes/db_rechumanopessoal_classe.php");
-include("classes/db_rechumanocgm_classe.php");
-include("classes/db_db_uf_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpesdoc_classe.php");
-include("classes/db_rhraca_classe.php");
-include("classes/db_rhinstrucao_classe.php");
-include("classes/db_rhestcivil_classe.php");
-include("classes/db_rhnacionalidade_classe.php");
-include("classes/db_pais_classe.php");
-include("classes/db_censouf_classe.php");
-include("classes/db_censomunic_classe.php");
-include("classes/db_censoorgemissrg_classe.php");
-include("classes/db_censocartorio_classe.php");
-include("libs/db_jsplibwebseller.php");
-db_postmemory($HTTP_POST_VARS);
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rechumano_classe.php"));
+include(modification("classes/db_rechumanoescola_classe.php"));
+include(modification("classes/db_rechumanopessoal_classe.php"));
+include(modification("classes/db_rechumanocgm_classe.php"));
+include(modification("classes/db_db_uf_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhpesdoc_classe.php"));
+include(modification("classes/db_rhraca_classe.php"));
+include(modification("classes/db_rhinstrucao_classe.php"));
+include(modification("classes/db_rhestcivil_classe.php"));
+include(modification("classes/db_rhnacionalidade_classe.php"));
+include(modification("classes/db_pais_classe.php"));
+include(modification("classes/db_censouf_classe.php"));
+include(modification("classes/db_censomunic_classe.php"));
+include(modification("classes/db_censoorgemissrg_classe.php"));
+include(modification("classes/db_censocartorio_classe.php"));
+include(modification("libs/db_jsplibwebseller.php"));
+db_postmemory($_POST);
 $clrechumano        = new cl_rechumano;
 $clrechumanopessoal = new cl_rechumanopessoal;
 $clrechumanocgm     = new cl_rechumanocgm;
@@ -77,12 +77,19 @@ if (isset($incluir)) {
   $mes           = date("m",db_getsession("DB_datausu"));
   $ano           = date("Y",db_getsession("DB_datausu"));
   db_inicio_transacao();
-  
+
   if ($temregistro == 0) {
-  	
+
     $clrechumano->ed20_c_posgraduacao = "0001";
     $clrechumano->ed20_c_outroscursos = "000001";
     $clrechumano->ed20_i_rhregime     = $rh30_codreg;
+    if (in_array($ed20_i_escolaridade, [5, 6])) {
+      $clrechumano->ed20_tipoensinomedio = $ed20_tipoensinomedio;
+    } else {
+      $clrechumano->ed20_tipoensinomedio = null;
+    }
+    $clrechumano->ed20_localizacaodiferenciada = $ed20_localizacaodiferenciada;
+    $clrechumano->ed20_paisresidencia = $ed20_paisresidencia;
     $clrechumano->incluir(null);
     if ($clrechumano->erro_status == "1") {
 
@@ -106,14 +113,21 @@ if (isset($incluir)) {
     }
 
   } else {
-  	
+
     $clrechumano->ed20_i_rhregime = $rh30_codreg;
+    if ($ed20_i_escolaridade == 5) {
+      $clrechumano->ed20_tipoensinomedio = $ed20_tipoensinomedio;
+    } else {
+      $clrechumano->ed20_tipoensinomedio = null;
+    }
+    $clrechumano->ed20_localizacaodiferenciada = $ed20_localizacaodiferenciada;
+    $clrechumano->ed20_paisresidencia = $ed20_paisresidencia;
     $clrechumano->alterar($ed20_i_codigo);
 
     $sWhereRecHumano = " ed75_i_rechumano = {$ed20_i_codigo} AND ed75_i_escola = {$ed75_i_escola}";
     $sSqlRecHumano   = $clrechumanoescola->sql_query( "", "*", "", $sWhereRecHumano );
     $result1         = db_query( $sSqlRecHumano );
-    
+
     if ( pg_num_rows( $result1 ) == 0 ) {
 
       $clrechumanoescola->ed75_d_ingresso   = $ano."-".$mes."-".$dia;
@@ -138,7 +152,7 @@ if (isset($incluir)) {
   $db_opcao  = 1;
   $db_opcao1 = 1;
   $db_botao  = true;
-  include("funcoes/db_func_rechumanonovo.php");
+  include(modification("funcoes/db_func_rechumanonovo.php"));
   if ($ed20_i_tiposervidor == 1) {
 
     $sql    = "select $campospessoal ";
@@ -169,7 +183,7 @@ if (isset($incluir)) {
       $ed284_i_rhpessoal = $chavepesquisa;
 
     }
- 	
+
   } else {
 
     $sql1    = " select $camposcgm ";
@@ -192,32 +206,33 @@ if (isset($incluir)) {
 }
 ?>
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td valign="top" bgcolor="#CCCCCC">
-      <br>
-      <fieldset style="width:95%"><legend><b>Inclusão de Recurso Humano</b></legend>
-        <?include("forms/db_frmrechumano.php");?>
-      </fieldset>
-    </td>
-  </tr>
-</table>
-</body>
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+  </head>
+  <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td valign="top" bgcolor="#CCCCCC">
+          <br>
+          <fieldset style="width:95%"><legend><b>Inclusão de Recurso Humano</b></legend>
+            <?php include(modification("forms/db_frmrechumano.php"));?>
+          </fieldset>
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>
 <script>
 js_tabulacaoforms("form1","ed20_i_codigo",true,1,"ed20_i_codigo",true);
 </script>
-<?
+<?php
 if (isset($incluir)) {
 
   if ($clrechumano->erro_status == "0") {
@@ -232,7 +247,7 @@ if (isset($incluir)) {
     }
 
   } else {
- 	
+
     if ($temregistro == 0) {
       db_redireciona("edu1_rechumano002.php?chavepesquisa={$clrechumano->ed20_i_codigo}&ed75_i_codigo={$clrechumanoescola->ed75_i_codigo}");
     } else {

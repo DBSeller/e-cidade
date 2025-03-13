@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010274' name='esocial.grupomotivoafastamentoesocial' description="Grupo de motivos de afastamentos considerados para o eSocial." prefix="eso10" label="Grupo de motivos de afastamento" type="0">
+  <fields>
+    <field codigo="1009693" 
+           campo_api='' 
+           name="eso10_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.grupomotivoafastamentoesocial_eso10_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009694" 
+           campo_api='' 
+           name="eso10_descricao" 
+           conteudo="varchar(255)" 
+           description="Descrição do grupo de motivos do eSocial." 
+           inivalue="" 
+           label="Descrição" 
+           size="255" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009695" 
+           campo_api='' 
+           name="eso10_db_cadattdinamico" 
+           conteudo="int4" 
+           description="Vínculo com a tabela de grupo de atributos dinâmicos." 
+           inivalue="0" 
+           label="Grupo de atributos dinâmicos" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Grupo de atributos dinâmicos" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso10_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_cadattdinamico" inner='t'>
+      <fieldfk name="eso10_db_cadattdinamico" reference="db118_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

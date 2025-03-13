@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
  
 
-require ('fpdf151/pdf.php');
-include ("dbforms/db_funcoes.php");
+require(modification('fpdf151/pdf.php'));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -68,7 +68,7 @@ if ($datafim != "--"){
 //echo $sql;exit;
 
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 if($result==false || pg_numrows($result)==0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem atendimentos cadastrados!');

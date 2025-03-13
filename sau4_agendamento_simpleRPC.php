@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-include_once("classes/db_sau_upsparalisada_classe.php");
-include_once("classes/db_ausencias_classe.php");
-include_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+include_once(modification("classes/db_sau_upsparalisada_classe.php"));
+include_once(modification("classes/db_ausencias_classe.php"));
+include_once(modification("libs/JSON.php"));
 $osau_paralisacao    = new cl_sau_upsparalisada;
 $oausencias           = new cl_ausencias;
 $objJson             = new services_json();
@@ -50,7 +50,7 @@ if($objParam->exec == 'consulta'){
 	                   and sd23_d_consulta='$objParam->data'
 	                   and sd27_i_codigo=$objParam->medico
 	                   and sd23_i_codigo not in (select s114_i_agendaconsulta from agendaconsultaanula where s114_i_agendaconsulta=sd23_i_codigo)";
-	$result=pg_query($sql);
+	$result=db_query($sql);
     if(pg_num_rows($result)>0){
         $objRetorno->cod_consulta  = pg_result($result,0,0);
     }else{
@@ -68,7 +68,7 @@ if($objParam->exec == 'medico'){
 	              and sd04_i_unidade=$departamento
 	              and unidademedicos.sd04_i_medico=$objParam->medico
 	          limit 1";
-	   $result=pg_query($sql);
+	   $result=db_query($sql);
        $linhas=pg_num_rows($result);
     }
     if($linhas>0){
@@ -136,7 +136,7 @@ if($objParam->exec == 'getSaldoconsulta'){
 							       ( sd30_d_valinicial is not null and sd30_d_valinicial <= '$data' ) 
 							      ) $sAusenciaPorCodGradeHorario $sCodigoGradeHorario
 				             ";
-	$result=pg_query($sql);
+	$result=db_query($sql);
 	db_fieldsmemory($result,0);
 	$objRetorno->saldo=$total;
 	$paralizado = 0;
@@ -189,7 +189,7 @@ if($objParam->exec == 'getProcedimento'){
                            where sd63_c_procedimento = '$objParam->sd63_c_procedimento' and sd96_i_cbo = $objParam->rh70_sequencial
                              limit 1 ) as xx";
 
-	$result = pg_query($sql);
+	$result = db_query($sql);
 
   if(pg_num_rows($result) < 1) {
 

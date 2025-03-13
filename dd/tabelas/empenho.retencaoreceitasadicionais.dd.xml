@@ -1,0 +1,208 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010362' name='empenho.retencaoreceitasadicionais' description="Retenção Receitas Adicionais referenciadas as Retenções Receitas" prefix="e19" label="Retenção Receitas Adicionais" type="0">
+  <fields>
+    <field codigo="1010219"
+           campo_api=''
+           name="e19_sequencial"
+           conteudo="int4"
+           description="Sequencial"
+           inivalue="0"
+           label="Sequencial"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sequencial"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='empenho.retencaoreceitasadicionais_e19_sequencial_seq' />
+
+    </field>
+    <field codigo="1010221"
+           campo_api=''
+           name="e19_tiposerviconotafiscal"
+           conteudo="int4"
+           description="Tipo Serviço de Nota Fiscal"
+           inivalue="0"
+           label="Tipo Serviço de Nota Fiscal"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Tipo Serviço de Nota Fiscal"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010222"
+           campo_api=''
+           name="e19_valornaoretidoprincipal"
+           conteudo="float4"
+           description="Valor da retenção principal que deixou de ser efetuada pelo contratante ou que foi depositada em juízo em decorrência de decisão judicial/administrativa"
+           inivalue="0"
+           label="Valor Não Retido Principal"
+           size="25"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor Não Retido Principal"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010223"
+           campo_api=''
+           name="e19_valorservico15"
+           conteudo="float4"
+           description="Valor dos Serviços prestados por segurados em condições especiais, cuja atividade permita concessão de aposentadoria especial após 15 anos de contribuição"
+           inivalue="0"
+           label="Valor de Serviços 15 anos"
+           size="25"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor de Serviços 15 anos"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010220"
+           campo_api=''
+           name="e19_retencaoreceitas"
+           conteudo="int4"
+           description="Retenção Receitas"
+           inivalue="0"
+           label="Retenção Receitas"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Retenção Receitas"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010225"
+           campo_api=''
+           name="e19_valorservico25"
+           conteudo="float4"
+           description="Valor dos Serviços prestados por segurados em condições especiais, cuja atividade permita concessão de aposentadoria especial após 25 anos de contribuição."
+           inivalue="0"
+           label="Valor de Serviços 25 anos"
+           size="25"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor de Serviços 25 anos"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010226"
+           campo_api=''
+           name="e19_valoradicional"
+           conteudo="float4"
+           description="Adicional apurado de retenção da nota fiscal, caso os serviços tenham sido prestados sob condições especiais que ensejem aposentadoria especial aos trabalhadores após 15, 20, ou 25 anos de contribuição."
+           inivalue="0"
+           label="Valor Adicional"
+           size="10"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor Adicional"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010227"
+           campo_api=''
+           name="e19_valornaoretidoadicional"
+           conteudo="float4"
+           description="Valor da retenção adicional que deixou de ser efetuada pelo contratante ou que foi depositada em juízo em decorrência de decisão judicial/administrativa"
+           inivalue="0"
+           label="Valor Não Retido Adicional"
+           size="25"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor Não Retido Adicional"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010224"
+           campo_api=''
+           name="e19_valorservico20"
+           conteudo="float4"
+           description="Valor dos Serviços prestados por segurados em condições especiais, cuja atividade permita concessão de aposentadoria especial após 20 anos de contribuição."
+           inivalue="0"
+           label="Valor de Serviços 20 anos"
+           size="25"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor de Serviços 20 anos"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1014491"
+           campo_api=''
+           name="e19_indvalorbase"
+           conteudo="bool"
+           description="Indicativo se deve usar o valor base como referência para cálculo dos 11%"
+           inivalue="f"
+           label="Referência para cálculo"
+           size="1"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="5"
+           tipoobj="text"
+           labelrel="Referência para cálculo"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="e19_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="retencaoreceitas" inner='t'>
+      <fieldfk name="e19_retencaoreceitas" reference="e23_sequencial" />
+    </foreignkey>
+    <foreignkey reference="tiposerviconotafiscal" inner='t'>
+      <fieldfk name="e19_tiposerviconotafiscal" reference="e18_sequencial" />
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_gerfcom_classe.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_gerfcom_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $clgerfcom = new cl_gerfcom;
 $clrotulo  = new rotulocampo;
@@ -126,7 +126,8 @@ db_postmemory($HTTP_POST_VARS);
 			                                 "r48"=>"Complementar",
 			                                 "r20"=>"Rescisão",
 			                                 "r35"=>"13o. Salário",
-			                                 "r22"=>"Adiantamento"
+			                                 "r22"=>"Adiantamento",
+                                                         "r99"=>"Salário + Rescisão"
 			                                );
 			  $geraform->complementar = "r48";                // VALUE DA COMPLEMENTAR PARA BUSCAR SEMEST 
 			
@@ -292,13 +293,13 @@ function js_geraCsv() {
 function js_retornoCsv(oAjax) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     // se o retorno do csv "status" for 1, significa que nao ocorreram erros e exibimos a opção de download
     
     if (oRetorno.status == 1) {
 
-     var listagem  = oRetorno.sArquivo+"# Download do Arquivo - "+ oRetorno.sArquivo;
+     var listagem  = oRetorno.sArquivo+"# Download do Arquivo - relatorioFolhaPagamentoAnalitico.csv";
          js_montarlista(listagem,'form1');      
            
     } else {  // senão  Exibimos o erro ocorriodo na geração do CSV
@@ -308,71 +309,4 @@ function js_retornoCsv(oAjax) {
     
     }
 }
-/*
-function js_emite(){
-  qry = "?folha="+document.form1.tipofol.value;
-  qry+= "&tipo="+document.form1.tipo.value;
-  qry+= "&ano="+document.form1.anofolha.value;
-  qry+= "&mes="+document.form1.mesfolha.value;
-  qry+= "&ansin="+document.form1.ansin.value;
-  qry+= "&afastado="+document.form1.afastado.value;
-  qry+= "&sel="+document.form1.selecao.value;
-  qry+= "&reg="+document.form1.regime.value;
-  if(document.form1.complementar){
-    qry+= "&semest="+document.form1.complementar.value;
-  }
-
-  if(document.form1.selreg){
-    if(document.form1.selreg.length > 0){
-      faixareg = js_campo_recebe_valores();
-      qry+= "&fre="+faixareg;
-    }
-  }else if(document.form1.regisi){
-    regini = document.form1.regisi.value;
-    regfim = document.form1.regisf.value;
-    qry+= "&rei="+regini;
-    qry+= "&ref="+regfim;
-  }
-
-  if(document.form1.sellot){
-    if(document.form1.sellot.length > 0){
-      faixalot = js_campo_recebe_valores();
-      qry+= "&flt="+faixalot;
-    }
-  }else if(document.form1.lotaci){
-    lotini = document.form1.lotaci.value;
-    lotfim = document.form1.lotacf.value;
-    qry+= "&lti="+lotini;
-    qry+= "&ltf="+lotfim;
-  }
-
-  if(document.form1.selloc){
-    if(document.form1.selloc.length > 0){
-      faixaloc = js_campo_recebe_valores();
-      qry+= "&flc="+faixaloc;
-    }
-  }else if(document.form1.locali){
-    locini = document.form1.locali.value;
-    locfim = document.form1.localf.value;
-    qry+= "&lci="+locini;
-    qry+= "&lcf="+locfim;
-  }
-
-  if(document.form1.selorg){
-    if(document.form1.selorg.length > 0){
-      faixaorg = js_campo_recebe_valores();
-      qry+= "&for="+faixaorg;
-    }
-  }else if(document.form1.orgaoi){
-    orgini = document.form1.orgaoi.value;
-    orgfim = document.form1.orgaof.value;
-    qry+= "&ori="+orgini;
-    qry+= "&orf="+orgfim;
-  }
-
-  jan = window.open('pes2_analitica002.php'+qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-  jan.moveTo(0,0);
-
-}
-*/
 </script>

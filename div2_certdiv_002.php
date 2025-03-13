@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,17 +31,17 @@ if ( !isset($certid) || $certid == '' ) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Certidão Não Encontrada.');
   exit;
 }
-include("fpdf151/pdf3.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("fpdf151/assinatura.php");
-include("classes/db_propri_classe.php");
+include(modification("fpdf151/pdf3.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("classes/db_propri_classe.php"));
 
 $classinatura = new cl_assinatura;
 
 $clpropri = new cl_propri;
 
-pg_query("BEGIN");
+db_query("BEGIN");
 
 if (!isset($valormaximo) || $valormaximo == ""){
   $valormaximo=99999999999;
@@ -108,7 +108,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 	  order by {$ordenarpor}
 	  ";
 	//  echo $sql;exit;
-	$result=pg_query($sql);
+	$result=db_query($sql);
 	if ( pg_numrows($result) == 0 ) {
 	  //    db_redireciona('db_erros.php?fechar=true&db_erro=Certidão no. '.$inic. ' Não Encontrado.');
 	  //    exit;
@@ -145,7 +145,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 	/*
 	   $instit = db_getsession("DB_instit");
 	   $sqltexto = "select * from db_textos where id_instit = $instit and ( descrtexto like 'inicial%' or descrtexto like 'ass%')";
-	   $resulttexto = pg_exec($sqltexto);
+	   $resulttexto = db_query($sqltexto);
 	   for( $xx = 0;$xx < pg_numrows($resulttexto);$xx ++ ){
 	   db_fieldsmemory($resulttexto,$xx);
 	   $text  = $descrtexto;
@@ -158,7 +158,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 	  inner join db_tipodoc on db08_codigo  = db03_tipodoc
 	  inner join db_paragrafo on db04_idparag = db02_idparag 
 	  where db03_tipodoc = 1017 and db03_instit = " . db_getsession("DB_instit")." order by db04_ordem ";
-	$resparag = pg_query($sqlparag);
+	$resparag = db_query($sqlparag);
 
 	if ( pg_numrows($resparag) == 0 ) {
 	  $head1 = 'SECRETARIA DE FINANÇAS';
@@ -175,7 +175,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 	  inner join db_tipodoc on db08_codigo  = db03_tipodoc
 	  inner join db_paragrafo on db04_idparag = db02_idparag 
 	  where db03_tipodoc = 1008 and db03_instit = " . db_getsession("DB_instit")." order by db04_ordem ";
-	$resparag = pg_query($sqlparag);
+	$resparag = db_query($sqlparag);
 	//echo "////////////sqlparag = ".$sqlparag;
 	//  db_criatabela($resparag);exit;
 	if ( pg_numrows($resparag) == 0 ) {
@@ -203,7 +203,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 	      where v14_certid = $v14_certid and db03_instit = " . db_getsession("DB_instit")." 
 	      order by db04_ordem ) as x ";
 	    //echo "//////////////////sqlordem1 = $sql";
-	    $resultp=pg_query($sql);
+	    $resultp=db_query($sql);
 	    if(pg_numrows($resultp)==0){
 	      $fundamento=" ****************** Fundamentação não cadastrada.  ********************";
 	    }else{
@@ -273,7 +273,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 	  where v14_certid = $v14_certid
 	  order by v01_numpre,v01_numpar";
 	
-	$result3 = pg_exec($sql) or die($sql);
+	$result3 = db_query($sql) or die($sql);
 	if ( pg_numrows($result3) == 0 ) {
 	  db_redireciona('db_erros.php?fechar=true&db_erro=Certidão no. '.$v14_certid. ' Não encontrada!');
 	  exit;
@@ -285,12 +285,12 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 	  db_fieldsmemory($result3,$ii);
 
 	  $sqlprocura = "select * from arrecad where k00_numpre = $v01_numpre";
-	  $resultprocura = pg_exec($sqlprocura) or die($sqlprocura);
+	  $resultprocura = db_query($sqlprocura) or die($sqlprocura);
 	  if (pg_numrows($resultprocura) > 0) {
 	    $result2 =     debitos_numpre($v01_numpre,0,0,$dataemis,$anoemis,$v01_numpar);
 	  } else {
 	    $sqlprocura = "select * from arreold where k00_numpre = $v01_numpre";
-	    $resultprocura = pg_exec($sqlprocura) or die($sqlprocura);
+	    $resultprocura = db_query($sqlprocura) or die($sqlprocura);
 	    if (pg_numrows($resultprocura) > 0) {
 	      $result2 = debitos_numpre_old($v01_numpre,0,0,$dataemis,$anoemis,$v01_numpar,'','');
 	    } else {
@@ -337,7 +337,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 		$sSqlPardiv .= "	  from pardiv																		";
 		$sSqlPardiv .= "	 where v04_instit = ".db_getsession("DB_instit") ;
 		
-		$rsPardiv			 = pg_query($sSqlPardiv) or die($sSqlPardiv);
+		$rsPardiv			 = db_query($sSqlPardiv) or die($sSqlPardiv);
 		$iLinhasPardiv = pg_num_rows($rsPardiv);
 		
 		$oPardiv = db_utils::fieldsMemory($rsPardiv,0);
@@ -392,7 +392,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 					$sqlPossuidor .= "	 from cfiptu																	";
 					$sqlPossuidor .= "  where j18_anousu= ".db_getsession("DB_anousu") ;
 
-					$resultPossuidor = pg_query($sqlPossuidor);
+					$resultPossuidor = db_query($sqlPossuidor);
 					$linhasPossuidor = pg_num_rows($resultPossuidor);
 					
 					if($linhasPossuidor>0){
@@ -409,7 +409,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 					}
 						
 					$sSqlEnvol    = " select * from fc_busca_envolvidos({$lRegra},{$oPardiv->v04_envolcdaiptu},'M',{$matric})";
-					$rsEnvol      = pg_query($sSqlEnvol) or die($sSqlEnvol);
+					$rsEnvol      = db_query($sSqlEnvol) or die($sSqlEnvol);
 					$iLinhasEnvol = pg_num_rows($rsEnvol);
 				
 					if ($oPardiv->v04_envolcdaiptu == 2 && $iLinhasEnvol == 0 ) {
@@ -419,7 +419,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 						$sSqlEnvol .= "		from iptubase							     ";
 						$sSqlEnvol .= "	 where j01_matric = {$matric}	   "; 
 						
-						$rsEnvol      = pg_query($sSqlEnvol) or die($sSqlEnvol);
+						$rsEnvol      = db_query($sSqlEnvol) or die($sSqlEnvol);
 						$iLinhasEnvol = pg_num_rows($rsEnvol);
 
 					}
@@ -442,7 +442,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 						$sSqlDadosEnvol .= "	 from cgm															";
 						$sSqlDadosEnvol .= "  where z01_numcgm = {$oEnvol->rinumcgm}";
 						
-						$rsDadosEnvol			 = pg_query($sSqlDadosEnvol) or die($sSqlDadosEnvol);
+						$rsDadosEnvol			 = db_query($sSqlDadosEnvol) or die($sSqlDadosEnvol);
 						$iLinhasDadosEnvol = pg_num_rows($rsDadosEnvol);
 
 						if ($iLinhasDadosEnvol > 0) {
@@ -507,7 +507,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 				$sSqlProprietario .= "   from proprietario         ";
 				$sSqlProprietario .= "  where j01_matric = $matric ";
 				
-				$rsProprietario 	 = pg_query($sSqlProprietario) or die($sSqlProprietario);
+				$rsProprietario 	 = db_query($sSqlProprietario) or die($sSqlProprietario);
 				$oProprietario  	 = db_utils::fieldsMemory($rsProprietario,0);
       
         if ($pdf->gety()>$pdf->h -45){
@@ -533,7 +533,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 					$pdf->cell(40,5,'BAIRRO : '.$oProprietario->j13_descr,0,1,"l",0);
 					
 					$sqlcidade = "select munic, uf, cep from db_config where codigo = ".db_getsession('DB_instit');
-					$resultcidade = pg_exec($sqlcidade);
+					$resultcidade = db_query($sqlcidade);
 					db_fieldsmemory($resultcidade,0);
 					$pdf->cell(120,5,'CIDADE : '.$munic.' / '.$uf,0,0,"l",0);
 					$pdf->cell(40,5,'CEP : '.$cep,0,1,"l",0);
@@ -590,7 +590,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 				$pdf->setfont('arial','',10);
 
 				$sSqlEnvol    = " select * from fc_busca_envolvidos({$lRegra},{$oPardiv->v04_envolcdaiss},'I',{$inscr})";
-				$rsEnvol      = pg_query($sSqlEnvol) or die($sSqlEnvol);
+				$rsEnvol      = db_query($sSqlEnvol) or die($sSqlEnvol);
 				$iLinhasEnvol = pg_num_rows($rsEnvol);
 
 				for ($i = 0; $i < $iLinhasEnvol; $i++ ) {
@@ -611,7 +611,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 					$sSqlDadosEnvol .= "   from cgm                             ";
 					$sSqlDadosEnvol .= "  where z01_numcgm = {$oEnvol->rinumcgm}";
 
-					$rsDadosEnvol      = pg_query($sSqlDadosEnvol);
+					$rsDadosEnvol      = db_query($sSqlDadosEnvol);
 					$iLinhasDadosEnvol = pg_num_rows($rsDadosEnvol);
 
 					if ($iLinhasDadosEnvol > 0) {
@@ -672,7 +672,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 				$sSqlEmpresa .= "   from empresa            ";
 				$sSqlEmpresa .= "  where q02_inscr = $inscr ";
 
-				$rsEmpresa    = pg_query($sSqlEmpresa) or die($sSqlEmpresa);
+				$rsEmpresa    = db_query($sSqlEmpresa) or die($sSqlEmpresa);
 				$oEmpresa     = db_utils::fieldsMemory($rsEmpresa,0);
         if ($pdf->gety()>$pdf->h -68){
             $pdf->addPage();
@@ -738,7 +738,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 				$sSqlCgm .= "	  from cgm										  ";
 				$sSqlCgm .= "  where z01_numcgm = $v01_numcgm ";
 		
-				$rsCgm = pg_query($sSqlCgm) or die($sSqlCgm);
+				$rsCgm = db_query($sSqlCgm) or die($sSqlCgm);
 				$oCgm  = db_utils::fieldsMemory($rsCgm,0);
 				
 				$sEndereco = $oCgm->z01_ender;
@@ -777,7 +777,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 
 	$pdf->setfont('','B',10);
 	db_fieldsmemory($result3,0);
-	$res_proced = pg_query("select * from proced where v03_codigo = $v01_proced");
+	$res_proced = db_query("select * from proced where v03_codigo = $v01_proced");
 	db_fieldsmemory($res_proced,0);
 
 
@@ -853,7 +853,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 									where db03_tipodoc = 1018 
 										and db03_instit  = ".db_getsession("DB_instit")." order by db04_ordem ";
 	  
-		$resparag = pg_query($sqlparag);
+		$resparag = db_query($sqlparag);
 	  
 		if ( pg_numrows($resparag) == 0 ) {
 	    db_redireciona('db_erros.php?fechar=true&db_=Configure o documento da CDA!');
@@ -916,12 +916,12 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 
 	  db_fieldsmemory($result3,$ii);
 	  $sqlprocura = "select * from arrecad where k00_numpre = $v01_numpre";
-	  $resultprocura = pg_exec($sqlprocura) or die($sqlprocura);
+	  $resultprocura = db_query($sqlprocura) or die($sqlprocura);
 	  if (pg_numrows($resultprocura) > 0) {
 	    $result2 = debitos_numpre($v01_numpre,0,0,$dataemis,$anoemis,$v01_numpar);
 		} else {
 	    $sqlprocura = "select * from arreold where k00_numpre = $v01_numpre";
-	    $resultprocura = pg_exec($sqlprocura) or die($sqlprocura);
+	    $resultprocura = db_query($sqlprocura) or die($sqlprocura);
 	    if (pg_numrows($resultprocura) > 0) {
 	      $result2 = debitos_numpre_old($v01_numpre,0,0,$dataemis,$anoemis,$v01_numpar,'','');
 	    }else{
@@ -939,12 +939,12 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 	      k00_tipo 
 		from arreforo
 		where k00_certidao = $v14_certid ";
-	      $resultprocuraarreforo = pg_query($sqlprocuraarreforo) or die($sqlprocuraarreforo);
+	      $resultprocuraarreforo = db_query($sqlprocuraarreforo) or die($sqlprocuraarreforo);
 
 	      if (pg_numrows($resultprocuraarreforo) > 0) {	  
 		$sqlInsertArreold = "insert into arreold ( k00_numpre,k00_numpar,k00_numcgm,k00_dtoper,k00_receit,k00_hist,k00_valor, k00_dtvenc,k00_numtot,k00_numdig,k00_tipo ) $sqlprocuraarreforo ";
     //echo "<b>inserarreold</b>: $sqlInsertArreold<br><br>";
-		pg_query($sqlInsertArreold) or die($sqlInsertArreold);
+		db_query($sqlInsertArreold) or die($sqlInsertArreold);
 		$result2 = debitos_numpre_old($v01_numpre,0,0,$dataemis,$anoemis,$v01_numpar,'','');
 	  //db_criatabela($result2);exit;    
 				}else{
@@ -1127,7 +1127,7 @@ for($numcertid=0;$numcertid<$numero;$numcertid++){
 															                                              where v14_certid = $v14_certid)";
 															
 	
-	$resMetCalculo = pg_query($sMetCalculo);
+	$resMetCalculo = db_query($sMetCalculo);
 	if(pg_num_rows($resMetCalculo)){
 		$iNumRows = pg_num_rows($resMetCalculo);
 		for($v=0; $v < $iNumRows; $v++){

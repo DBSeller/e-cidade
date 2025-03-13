@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_liborcamento.php");
-include("libs/db_utils.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_processoouvidoriaprorrogacao_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_processoouvidoriaprorrogacao_classe.php"));
 
 $clprotprocesso = new cl_protprocesso();
 $clprocessoouvidoriaprorrogacao = new cl_processoouvidoriaprorrogacao();
@@ -51,7 +51,7 @@ if($codproc != ""){
 	
 	if($clprotprocesso->numrows > 0){
 			
-		$aDadosProcesso = db_utils::getColectionByRecord($rsProcesso,false,false,false);
+		$aDadosProcesso = db_utils::getCollectionByRecord($rsProcesso,false,false,false);
 												
 												
 												
@@ -73,7 +73,7 @@ if($codproc != ""){
 												
 	// echo $sQueryProcessos."<br><br>";		
 	// die($sQueryProcessos);			
-		$rsQueryProcessos	= pg_query($sQueryProcessos);
+		$rsQueryProcessos	= db_query($sQueryProcessos);
 		if(pg_num_rows($rsQueryProcessos)>0){
 			$aDadosProrrogacao = array();
 			$aDadosSequencial	 = array();
@@ -100,7 +100,7 @@ if($codproc != ""){
 														 			
 			  // echo $sQueryProcesso."<br><br>";
 				
-				$rsQueryProcesso = pg_query($sQueryProcesso);
+				$rsQueryProcesso = db_query($sQueryProcesso);
 				$iNumRows1 = pg_num_rows($rsQueryProcesso);
 				if($iNumRows1 > 0){
 					

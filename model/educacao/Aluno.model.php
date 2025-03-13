@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,7 +29,7 @@
  * Classe modelo para aluno
  * @package   Educacao
  * @author    Robson Inacio - robson@dbseller.com.br
- * @version   $Revision: 1.35 $
+ * @version   $Revision: 1.41 $
  */
 class Aluno {
 
@@ -44,6 +44,12 @@ class Aluno {
 	 * @var string
 	 */
 	private $sNome = null;
+
+  /**
+	 * Nome do aluno
+	 * @var string
+	 */
+	private $sNomeSocial = null;
 	/**
 	 * data de nascimento do aluno
 	 * @var string
@@ -273,6 +279,88 @@ class Aluno {
   protected $sEmailAluno;
 
 	/**
+   * Tipo Sanguineo do Aluno
+   * @var integer
+   */
+  protected $iTiposanguineo;
+
+    /**
+     * @var integer
+     */
+  protected $paisResidencia;
+
+  /**
+   * @var Escola|EscolaProcedencia
+   */
+  protected $oEscolaProcedencia;
+
+  /**
+   * nome da foto salva ao aluno
+   * @var string
+   */
+  protected $sFoto;
+
+    /**
+     * @var integer
+     */
+    private $localizacaoDiferenciada;
+
+    /**
+     * @var string
+     */
+    private $certidaoCartorio;
+
+    /**
+     * @var string
+     */
+    private $cpf;
+    
+    /**
+     * @var integer
+     */
+    private $dEmissaoIdentidade;
+    
+    /**
+     * @var integer
+     */
+    private $iUFIdentidade;
+
+    /**
+     * @var date
+     */
+    private $dDataExpedicaoIdentidade;
+    
+    /**
+     * @var date
+     */
+    private $dDataCertidaoNascimento;
+    
+    /**
+     * @var string
+     */
+    private $iOrgaoEmissorIdentidade;
+    
+    /**
+     * @var string
+     */
+    private $sNumeroCertidao;
+    
+    /**
+     * @var string
+     */
+    private $iCartorioCertidao;
+    
+    /**
+     * @var string
+     */
+    private $sFolhaCertidao;
+    
+    /**
+     * @var string
+     */
+    private $sLivroCertidao;
+
+    /**
 	 * Metodo construtor para classe aluno
 	 *
 	 * @param  integer $iCodigoAluno
@@ -282,39 +370,55 @@ class Aluno {
 
 		if ($iCodigoAluno != null) {
 
-      $oDaoAluno = db_utils::getDao('aluno');
+      $oDaoAluno = new cl_aluno();
       $sSqlAluno = $oDaoAluno->sql_query_file($iCodigoAluno);
       $rsAluno   = $oDaoAluno->sql_record($sSqlAluno);
       if ($rsAluno && $oDaoAluno->numrows > 0 ) {
-
         $oAluno = db_utils::fieldsMemory($rsAluno, 0);
         $this->iCodigoAluno                 = $oAluno->ed47_i_codigo;
-			  $this->sNome                        = $oAluno->ed47_v_nome;
-			  $this->sDataNascimento              = $oAluno->ed47_d_nasc;
-			  $this->sNomePai                     = $oAluno->ed47_v_pai;
-			  $this->sNomeMae                     = $oAluno->ed47_v_mae;
-		    $this->sNomeResponsavelLegal        = $oAluno->ed47_c_nomeresp;
-		    $this->iOidFoto                     = $oAluno->ed47_o_oid;
-		    $this->sEmailResponsavel            = $oAluno->ed47_c_emailresp;
-		    $this->sCelularResponsavel          = $oAluno->ed47_celularresponsavel;
-		    $this->sSexo                        = $oAluno->ed47_v_sexo;
-		    $this->sRaca                        = $oAluno->ed47_c_raca;
-		    $this->iCodigoInep                  = $oAluno->ed47_c_codigoinep;
-		    $this->iNacionalidade               = $oAluno->ed47_i_nacion;
-		    $this->sBairro                      = $oAluno->ed47_v_bairro;
-		    $this->sComplemento                 = $oAluno->ed47_v_compl;
-		    $this->sZona                        = $oAluno->ed47_c_zona;
-		    $this->sEnderecoResidencia          = $oAluno->ed47_v_ender;
-		    $this->sNumeroResidencia            = $oAluno->ed47_c_numero;
-		    $this->iCodigoMunicipioNaturalidade = $oAluno->ed47_i_censomunicnat;
-		    $this->iCodigoMunicipio             = $oAluno->ed47_i_censomunicend;
-		    $this->iCodigoPais                  = $oAluno->ed47_i_pais;
-		    $this->sCepResidencia               = $oAluno->ed47_v_cep;
-		    $this->iEstadoCivil                 = $oAluno->ed47_i_estciv;
-		    $this->sNumeroTelefone              = $oAluno->ed47_v_telef;
-		    $this->sNumeroCelular               = $oAluno->ed47_v_telcel;
+        $this->sNome                        = trim($oAluno->ed47_v_nome);
+        $this->sNomeSocial                  = trim($oAluno->ed47_v_nomesocial);
+        $this->sDataNascimento              = $oAluno->ed47_d_nasc;
+        $this->sNomePai                     = $oAluno->ed47_v_pai;
+        $this->sNomeMae                     = $oAluno->ed47_v_mae;
+        $this->sNomeResponsavelLegal        = $oAluno->ed47_c_nomeresp;
+        $this->iOidFoto                     = $oAluno->ed47_o_oid;
+        $this->sEmailResponsavel            = $oAluno->ed47_c_emailresp;
+        $this->sCelularResponsavel          = $oAluno->ed47_celularresponsavel;
+        $this->sSexo                        = $oAluno->ed47_v_sexo;
+        $this->sRaca                        = $oAluno->ed47_c_raca;
+        $this->iCodigoInep                  = $oAluno->ed47_c_codigoinep;
+        $this->iNacionalidade               = $oAluno->ed47_i_nacion;
+        $this->sBairro                      = $oAluno->ed47_v_bairro;
+        $this->sComplemento                 = $oAluno->ed47_v_compl;
+        $this->sZona                        = $oAluno->ed47_c_zona;
+        $this->sEnderecoResidencia          = $oAluno->ed47_v_ender;
+        $this->sNumeroResidencia            = $oAluno->ed47_c_numero;
+        $this->iCodigoMunicipioNaturalidade = $oAluno->ed47_i_censomunicnat;
+        $this->iCodigoMunicipio             = $oAluno->ed47_i_censomunicend;
+        $this->iCodigoPais                  = $oAluno->ed47_i_pais;
+        $this->sCepResidencia               = $oAluno->ed47_v_cep;
+        $this->iEstadoCivil                 = $oAluno->ed47_i_estciv;
+        $this->sNumeroTelefone              = $oAluno->ed47_v_telef;
+        $this->sNumeroCelular               = $oAluno->ed47_v_telcel;
         $this->sIdentidade                  = $oAluno->ed47_v_ident;
         $this->sEmailAluno                  = $oAluno->ed47_v_email;
+        $this->iTiposanguineo               = $oAluno->ed47_tiposanguineo;
+        $this->paisResidencia               = $oAluno->ed47_paisresidencia;
+        $this->certidaoCartorio             = $oAluno->ed47_c_certidaocart;
+        $this->localizacaoDiferenciada      = $oAluno->ed47_localizacaodiferenciada;
+        $this->sFoto                        = trim($oAluno->ed47_c_foto);
+        $this->cpf                          = $oAluno->ed47_v_cpf;
+        $this->dEmissaoIdentidade           = $oAluno->ed47_d_identdtexp;
+        $this->iUFIdentidade                = $oAluno->ed47_i_censoufident;
+        $this->iOrgaoEmissorIdentidade      = $oAluno->ed47_i_censoorgemissrg;
+        $this->dDataExpedicaoIdentidade      = $oAluno->ed47_d_identdtexp;
+        $this->sNumeroCertidao              = $oAluno->ed47_c_certidaonum;
+        $this->iCartorioCertidao            = $oAluno->ed47_i_censocartorio;
+        $this->sFolhaCertidao               = $oAluno->ed47_c_certidaofolha;
+        $this->sLivroCertidao               = $oAluno->ed47_c_certidaolivro;
+        $this->dDataCertidaoNascimento      = $oAluno->ed47_c_certidaodata;
+        
         unset($oAluno);
       }else{
         return false;
@@ -322,6 +426,54 @@ class Aluno {
     }
     return true;
 	}
+
+    /**
+     * @return int
+     */
+    public function getLocalizacaoDiferenciada()
+    {
+        return $this->localizacaoDiferenciada;
+    }
+
+    /**
+     * @param int $localizacaoDiferenciada
+     */
+    public function setLocalizacaoDiferenciada($localizacaoDiferenciada)
+    {
+        $this->localizacaoDiferenciada = $localizacaoDiferenciada;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCertidaoCartorio()
+    {
+        return $this->certidaoCartorio;
+    }
+
+    /**
+     * @param string $certidaoCartorio
+     */
+    public function setCertidaoCartorio($certidaoCartorio)
+    {
+        $this->certidaoCartorio = $certidaoCartorio;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaisResidencia()
+    {
+        return $this->paisResidencia;
+    }
+
+    /**
+     * @param mixed $paisResidencia
+     */
+    public function setPaisResidencia($paisResidencia)
+    {
+        $this->paisResidencia = $paisResidencia;
+    }
 
 	 /**
    * @return integer codigo do aluno
@@ -352,7 +504,7 @@ class Aluno {
 
     if (empty($this->oCarteiraIdentificacao) && $this->getCodigoAluno() != "") {
 
-      $oDaoCarteiraIdentificacao = db_utils::getDao("loteimpressaocartaoidentificacaoaluno");
+      $oDaoCarteiraIdentificacao = new cl_loteimpressaocartaoidentificacaoaluno();
       $sWhere                    = " ed306_aluno = {$this->getCodigoAluno()} ";
       $sSqlCarteiraIdentificacao = $oDaoCarteiraIdentificacao->sql_query(null,"ed306_sequencial",null,$sWhere);
       $rsCarteiraIdentificacao   = $oDaoCarteiraIdentificacao->sql_record($sSqlCarteiraIdentificacao);
@@ -377,6 +529,13 @@ class Aluno {
    */
   public function getNome() {
     return $this->sNome;
+  }
+
+  /**
+   * @return string nome social do aluno
+   */
+  public function getNomeSocial() {
+    return $this->sNomeSocial;
   }
 
   /**
@@ -407,10 +566,14 @@ class Aluno {
    */
   public function getFoto() {
 
-  	$sPathFoto  = "tmp/foto_aluno_{$this->iCodigoAluno}.jpg";
+    $sExtencao = 'jpg';
+    if ( !empty($this->sFoto) ) {
+      $sExtencao = end((explode('.', $this->sFoto)));
+    }
+  	$sPathFoto  = "tmp/foto_aluno_{$this->iCodigoAluno}.{$sExtencao}";
  		$lGerouFoto = DBLargeObject::leitura($this->iOidFoto, $sPathFoto);
 
-  	if ($lGerouFoto) {
+  	if ($this->iOidFoto != 0 && $lGerouFoto) {
   		return $sPathFoto;
   	}
  	  return false;
@@ -422,10 +585,11 @@ class Aluno {
    *
    * @param $iCurso
    * @return HistoricoAluno
+   * @throw BusinessException
    */
   public function getHistoricoEscolar($iCurso) {
 
-    $oDaoHistoricoEscolar = db_utils::getDao("historico");
+    $oDaoHistoricoEscolar = new cl_historico();
     $sSqlHistorico        = $oDaoHistoricoEscolar->sql_query_file(null,
                                                                   "ed61_i_codigo",
                                                                   null,
@@ -434,6 +598,11 @@ class Aluno {
                                                                  );
     $rsHistorico      = $oDaoHistoricoEscolar->sql_record($sSqlHistorico);
     $iCodigoHistorico = 0;
+    if ($oDaoHistoricoEscolar->numrows > 1) {
+
+        $mensagem  = "Foi encontrado mais de um histórico escolar para o aluno neste curso. É necessário remover um dos históricos.";
+        throw new BusinessException($mensagem);
+    }
     if ($oDaoHistoricoEscolar->numrows == 1) {
       $iCodigoHistorico = db_utils::fieldsMemory($rsHistorico, 0)->ed61_i_codigo;
     }
@@ -450,7 +619,7 @@ class Aluno {
 
     if (count($this->aMatricula) == 0 && $this->getCodigoAluno()) {
 
-      $oDaoMatricula = db_utils::getDao('matricula');
+      $oDaoMatricula = new cl_matricula();
       $sWhere        = " ed60_i_aluno = {$this->getCodigoAluno()}";
       $sSqlMatricula = $oDaoMatricula->sql_query_file(null, 'ed60_i_codigo, ed60_d_datamatricula', 'ed60_matricula',
                                                       $sWhere,'ed60_d_datamatricula');
@@ -477,19 +646,22 @@ class Aluno {
    */
   public function getMatriculaByTurma(Turma $oTurma) {
 
-    $oDaoMatricula = db_utils::getDao('matricula');
+    $oDaoMatricula = new cl_matricula();
     $sWhere        = "     ed60_i_aluno = {$this->getCodigoAluno()} ";
     $sWhere       .= " and ed60_i_turma = {$oTurma->getCodigo()} ";
-    $sWhere       .= " and ed60_c_ativa = 'S' ";
+
     $sSqlMatricula = $oDaoMatricula->sql_query_file(null, 'ed60_i_codigo', null, $sWhere);
     $rsMatricula   = $oDaoMatricula->sql_record($sSqlMatricula);
-    $iMatricula    = db_utils::fieldsMemory($rsMatricula, 0)->ed60_i_codigo;
 
-    if (count($this->aMatricula) == 0 && !empty($this->iCodigoAluno) && $oDaoMatricula->numrows > 0) {
+    if ( $rsMatricula && $oDaoMatricula->numrows > 0) {
 
-      $this->aMatricula[$iMatricula] = new Matricula($iMatricula);
+      $iMatricula = db_utils::fieldsMemory($rsMatricula, 0)->ed60_i_codigo;
+      if ( count($this->aMatricula) == 0 && !empty($this->iCodigoAluno) ) {
+        $this->aMatricula[$iMatricula] = MatriculaRepository::getMatriculaByCodigo($iMatricula);
+      }
+      return $this->aMatricula[$iMatricula];
     }
-    return $this->aMatricula[$iMatricula];
+    return null;
   }
 
   /**
@@ -510,17 +682,18 @@ class Aluno {
   }
 
   /**
-   * Retorna as progressoes parciais do aluno
    * Retorna todas as progressoes parciais do aluno
+   * @param bool $lOrdenarAno
    * @return ProgressaoParcialAluno[] Progressoes parciais do aluno
    */
-  public function getProgressaoParcial() {
+  public function getProgressaoParcial( $lOrdenarAno = false ) {
 
     if (count($this->aProgressaoParcial) == 0 && !empty($this->iCodigoAluno)) {
 
-      $oDaoProgressaoParcial = db_utils::getDao("progressaoparcialaluno");
-      $swhere                = " ed114_aluno = {$this->getCodigoAluno()}";
-      $sSqlProgressaoParcial = $oDaoProgressaoParcial->sql_query_file(null, "ed114_sequencial", null, $swhere);
+      $oDaoProgressaoParcial = new cl_progressaoparcialaluno();
+      $sWhere                = " ed114_aluno = {$this->getCodigoAluno()}";
+      $sOrdenacao            = $lOrdenarAno ? "ed114_ano desc" : null;
+      $sSqlProgressaoParcial = $oDaoProgressaoParcial->sql_query_file(null, "ed114_sequencial", $sOrdenacao, $sWhere);
       $rsProgressaoParcial   = $oDaoProgressaoParcial->sql_record($sSqlProgressaoParcial);
       $iRegistros            = $oDaoProgressaoParcial->numrows;
 
@@ -533,6 +706,7 @@ class Aluno {
         }
       }
     }
+
     return $this->aProgressaoParcial;
   }
 
@@ -717,7 +891,7 @@ class Aluno {
    * @return number
    */
   public function getEstadoCivil() {
-    Return $this->iEstadoCivil;
+    return $this->iEstadoCivil;
   }
 
   /**
@@ -725,7 +899,7 @@ class Aluno {
    * @return number
    */
   public function getNumeroTelefone() {
-    Return $this->sNumeroTelefone;
+    return $this->sNumeroTelefone;
   }
 
   /**
@@ -742,7 +916,7 @@ class Aluno {
    */
   public function temPreEscolaNaRede() {
 
-    $oDaoMatricula = db_utils::getDao("matricula");
+    $oDaoMatricula = new cl_matricula();
     $sSqlMatricula = $oDaoMatricula->sql_query_matriculaserie(null,
                                                               "ed221_i_serie",
                                                               null,
@@ -774,7 +948,7 @@ class Aluno {
    */
   public function getNecessidadesEspeciais() {
 
-    $oDaoAlunoNecessidade    = db_utils::getDao("alunonecessidade");
+    $oDaoAlunoNecessidade    = new cl_alunonecessidade();
     $sWhereAlunoNecessidade  = "ed214_i_aluno = {$this->getCodigoAluno()}";
     $sCamposAlunoNecessidade = "ed48_i_codigo, ed48_c_descr";
     $sSqlAlunoNecessidade    = $oDaoAlunoNecessidade->sql_query(null, $sCamposAlunoNecessidade, null, $sWhereAlunoNecessidade);
@@ -805,7 +979,7 @@ class Aluno {
    */
   public function getRecursosAvaliacao() {
 
-    $oDaoAlunoRecursosAvaliacao    = db_utils::getDao("alunorecursosavaliacaoinep");
+    $oDaoAlunoRecursosAvaliacao    = new cl_alunorecursosavaliacaoinep();
     $sWhereAlunoRecursosAvaliacao  = "ed327_aluno = {$this->getCodigoAluno()}";
     $sCamposAlunoRecursosAvaliacao = "ed326_sequencial, ed326_descricao";
     $sSqlAlunoRecursosAvaliacao    = $oDaoAlunoRecursosAvaliacao->sql_query(
@@ -905,6 +1079,21 @@ class Aluno {
   }
 
   /**
+   * Define a data de expedição do RG do Aluno.
+   *
+   * @param string $dDataExpedicaoIdentidade
+   * @return Aluno
+   */
+  public function setDataExpedicaoIdentidade($dDataExpedicaoIdentidade) {
+    $this->dDataExpedicaoIdentidade = $dDataExpedicaoIdentidade;
+    return $this;
+  }
+
+  public function getDataExpedicaoIdentidade() {
+    return $this->dDataExpedicaoIdentidade;
+  }
+
+  /**
    * Retorna instância de SituacaoAluno
    * @return SituacaoAluno
    */
@@ -917,16 +1106,17 @@ class Aluno {
   }
 
   public function salvar() {
-
-
     if (!db_utils::inTransaction()) {
       throw new DBException("Nenhuma transação no banco.");
     }
 
-    $oDaoAluno = db_utils::getDao("aluno");
+    $oDaoAluno = new cl_aluno();
 
     $oDaoAluno->ed47_i_codigo = $this->getCodigoAluno();
     $oDaoAluno->ed47_c_codigoinep = $this->getCodigoInep();
+    $oDaoAluno->ed47_paisresidencia = $this->getPaisResidencia();
+    $oDaoAluno->ed47_c_certidaocart = $this->getCertidaoCartorio();
+    $oDaoAluno->ed47_localizacaodiferenciada = $this->getLocalizacaoDiferenciada();
 
     if (empty($this->iCodigoAluno)) {
       $oDaoAluno->incluir(null);
@@ -974,4 +1164,103 @@ class Aluno {
 
     return new AlunoMatriculaCenso( $this, $iAno );
   }
+
+  /**
+   * Retorna o Fator Rh do aluno
+   * @return string
+   */
+  public function getTipoSanguineo() {
+
+    if ( empty($this->iTiposanguineo) ) {
+      return '';
+    }
+    return TipoSanguineoRepository::getByCodigo($this->iTiposanguineo);
+  }
+
+  /**
+   * Retorna a escola de Procedencia do aluni
+   *
+   * @return Escola|EscolaProcedencia
+   * @throws BusinessException
+   */
+  public function getEscolaDeProcedencia() {
+
+    if (!empty($this->oEscolaProcedencia)) {
+      return $this->oEscolaProcedencia;
+    }
+    $oDaoAlunoPrimat = new cl_alunoprimat();
+    $sSqlDadosEscola = $oDaoAlunoPrimat->sql_query_file(null,
+                                                       "ed76_i_escola, ed76_c_tipo",
+                                                       null,
+                                                       "ed76_i_aluno = {$this->getCodigoAluno()}"
+                                                      );
+    $rsEscolaProcedencia = db_query($sSqlDadosEscola);
+    if (!$rsEscolaProcedencia) {
+      throw new BusinessException("Erro ao pesquisar dados da escola de procedência do aluno.");
+    }
+    if (pg_num_rows($rsEscolaProcedencia) > 0) {
+
+      $oDadosEscola = db_utils::fieldsMemory($rsEscolaProcedencia, 0);
+      switch ($oDadosEscola->ed76_c_tipo) {
+
+        case 'M':
+
+          $this->oEscolaProcedencia = EscolaRepository::getEscolaByCodigo($oDadosEscola->ed76_i_escola);
+          break;
+
+        case 'F':
+
+          $this->oEscolaProcedencia = EscolaProcedenciaRepository::getEscolaByCodigo($oDadosEscola->ed76_i_escola);
+          break;
+      }
+      return $this->oEscolaProcedencia;
+    }
+  }
+
+  public function getCpf()
+  {
+      return $this->cpf;
+  }
+  
+  public function getEmissaoIdentidade()
+  {
+      return $this->dEmissaoIdentidade;
+  }
+  
+  public function getUFIdentidade()
+  {
+      return $this->iUFIdentidade;
+  }
+  
+  public function getOrgaoEmissorIdentidade()
+  {
+      return $this->iOrgaoEmissorIdentidade;
+  }
+  
+  public function getDataCertidaoNascimento()
+  {
+      return $this->dDataCertidaoNascimento;
+  }
+  
+  public function getCartorioCertidao() 
+  {
+      return $this->iCartorioCertidao;
+  }
+  
+  public function getNumeroCertidao()
+  {
+      return $this->sNumeroCertidao;
+  }
+  
+  public function getFolhaCertidao() 
+  {
+      return $this->sFolhaCertidao;
+  }
+  
+  public function getLivroCertidao()
+  {
+      return $this->sLivroCertidao;
+  }
+  
+  
 }

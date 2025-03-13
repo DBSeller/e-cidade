@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_empresto_classe.php");
-include("classes/db_orcparamseq_classe.php");
-include("libs/db_utils.php");
-include("libs/db_app.utils.php");
-require_once("model/linhaRelatorioContabil.model.php");
-require_once("model/relatorioContabil.model.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
+include(modification("classes/db_orcparamseq_classe.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_app.utils.php"));
+require_once(modification("model/linhaRelatorioContabil.model.php"));
+require_once(modification("model/relatorioContabil.model.php"));
 
 $iAnousu           = db_getsession("DB_anousu");
 $iCodigoPeriodo    = $periodo;
@@ -48,7 +48,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
 
 
-$resultinst = pg_exec("select codigo, nomeinst, nomeinstabrev 
+$resultinst = db_query("select codigo, nomeinst, nomeinstabrev 
                          from db_config 
                         where codigo in (".str_ireplace('-', ',', $db_selinstit).") ");
 $descr_inst = '';

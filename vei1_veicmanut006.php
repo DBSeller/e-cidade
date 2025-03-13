@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,102 +25,147 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_veicmanut_classe.php");
-include("classes/db_veicmanutitem_classe.php");
-include("classes/db_veicmanutoficina_classe.php");
-include("classes/db_veicmanutretirada_classe.php");
-include("classes/db_veiculos_classe.php");
-include("classes/db_veictipoabast_classe.php");
-include("classes/db_veicretirada_classe.php");
-db_app::import("veiculos.*");
-$clveicmanut = new cl_veicmanut;
-$clveiculos  = new cl_veiculos;
-/*$clveicmanutitem = new cl_veicmanutitem;*/
-$clveicmanutoficina = new cl_veicmanutoficina;
-$clveicmanutretirada = new cl_veicmanutretirada;
-db_postmemory($HTTP_POST_VARS);
-   $db_opcao = 33;
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("dbforms/db_funcoes.php");
+
+$clveicmanut         = new cl_veicmanut();
+$clveicmanutitem     = new cl_veicmanutitem();
+$clveiculos          = new cl_veiculos();
+$clveicmanutoficina  = new cl_veicmanutoficina();
+$clveicmanutretirada = new cl_veicmanutretirada();
+
+db_postmemory($_POST);
+
+$db_opcao = 33;
 $db_botao = false;
-if(isset($excluir)){
-  $sqlerro=false;
+$sqlerro  = false;
+
+if (isset($excluir)) {
+
+  $sqlerro = false;
   db_inicio_transacao();
-  if ($sqlerro==false){
-  	$result_oficina=$clveicmanutoficina->sql_record($clveicmanutoficina->sql_query(null,"*",null,"ve66_veicmanut=$ve62_codigo"));
-  	if($clveicmanutoficina->numrows>0){
-  	 	$clveicmanutoficina->excluir(null,"ve66_veicmanut=$ve62_codigo");
-  		if ($clveicmanutoficina->erro_status=="0"){
-  			$erro_msg=$clveicmanutoficina->erro_msg;
-  			$sqlerro=true;
+
+  if ($sqlerro == false) {
+
+    $result_oficina = $clveicmanutoficina->sql_record($clveicmanutoficina->sql_query(null, "*", null, " ve66_veicmanut = {$ve62_codigo} "));
+  	if ($clveicmanutoficina->numrows > 0) {
+
+      $clveicmanutoficina->excluir(null, " ve66_veicmanut = {$ve62_codigo} ");
+  		if ($clveicmanutoficina->erro_status == "0") {
+
+        $erro_msg = $clveicmanutoficina->erro_msg;
+  			$sqlerro  = true;
   		}
   	}
   }
-  if ($sqlerro==false){
-  	$result_retirada=$clveicmanutretirada->sql_record($clveicmanutretirada->sql_query(null,"*",null,"ve65_veicmanut=$ve62_codigo"));
-  	if($clveicmanutretirada->numrows>0){
-  		$clveicmanutretirada->excluir(null,"ve65_veicmanut=$ve62_codigo");
-  		if ($clveicmanutretirada->erro_status=="0"){
-  			$erro_msg=$clveicmanutretirada->erro_msg;
-  			$sqlerro=true;
+
+  if ($sqlerro == false) {
+
+    $result_retirada = $clveicmanutretirada->sql_record($clveicmanutretirada->sql_query(null, "*", null, " ve65_veicmanut = {$ve62_codigo} "));
+  	if ($clveicmanutretirada->numrows > 0) {
+
+      $clveicmanutretirada->excluir(null, " ve65_veicmanut = {$ve62_codigo} ");
+      if ($clveicmanutretirada->erro_status == "0") {
+
+        $erro_msg = $clveicmanutretirada->erro_msg;
+  			$sqlerro  = true;
   		}
   	}
   }
-  if ($sqlerro==false){
-  	$clveicmanut->excluir($ve62_codigo);
-  	if($clveicmanut->erro_status==0){
-    	$sqlerro=true;
+
+  $result_veicmanutitem = $clveicmanutitem->sql_record($clveicmanutitem->sql_query(null, "ve63_codigo", null, " ve63_veicmanut = {$ve62_codigo} "));
+  if ($clveicmanutitem->numrows > 0) {
+
+    $clveicmanutitemmaterial = new cl_veicmanutitempcmater();
+    for ($iItem = 0; $iItem < $clveicmanutitem->numrows; $iItem++) {
+
+      $oItem = db_utils::fieldsMemory($result_veicmanutitem, $iItem);
+      $clveicmanutitemmaterial->excluir(null, " ve64_veicmanutitem = {$oItem->ve63_codigo} ");
+      if ($clveicmanutitemmaterial->erro_status == "0") {
+
+        $erro_msg = $clveicmanutitemmaterial->erro_msg;
+        $sqlerro  = true;
+        break;
+      }
+    }
+
+    if ($sqlerro == false) {
+
+      $clveicmanutitem->excluir(null, " ve63_veicmanut = {$ve62_codigo} ");
+      if ($clveicmanutitem->erro_status == "0") {
+
+        $erro_msg = $clveicmanutitem->erro_msg;
+        $sqlerro  = true;
+      }
+    }
+  }
+
+  if ($sqlerro == false) {
+
+    $clveicmanut->excluir($ve62_codigo);
+    if ($clveicmanut->erro_status == 0) {
+      $sqlerro = true;
   	}
-  	$erro_msg = $clveicmanut->erro_msg;
+    $erro_msg = $clveicmanut->erro_msg;
   }
   db_fim_transacao($sqlerro);
-   $db_opcao = 3;
-   $db_botao = true;
-}else if(isset($chavepesquisa)){
-   $db_opcao = 3;
-   $db_botao = true;
-   $result = $clveicmanut->sql_record($clveicmanut->sql_query($chavepesquisa));
-   db_fieldsmemory($result,0);
-   $result_oficina=$clveicmanutoficina->sql_record($clveicmanutoficina->sql_query(null,"*",null,"ve66_veicmanut=$chavepesquisa"));
-   if($clveicmanutoficina->numrows>0){
-   	db_fieldsmemory($result_oficina,0);
-   }
-   $result_retirada=$clveicmanutretirada->sql_record($clveicmanutretirada->sql_query(null,"*",null,"ve65_veicmanut=$ve62_codigo"));
-   if($clveicmanutretirada->numrows>0){
-   	db_fieldsmemory($result_retirada,0);
-   }
+  $db_opcao = 3;
+  $db_botao = true;
+} else if (isset($chavepesquisa)) {
+
+  $db_opcao = 3;
+  $db_botao = true;
+  $sCampos  = " *, motorista.z01_nome as descricao_motorista ";
+  $result   = $clveicmanut->sql_record($clveicmanut->sql_query($chavepesquisa, $sCampos));
+
+  if ($result != false && $clveicmanut->numrows > 0) {
+
+    db_fieldsmemory($result, 0);
+    $result_oficina = $clveicmanutoficina->sql_record($clveicmanutoficina->sql_query(null, "*", null, " ve66_veicmanut = {$chavepesquisa} "));
+    if ($result_oficina != false && $clveicmanutoficina->numrows > 0) {
+      db_fieldsmemory($result_oficina, 0);
+    }
+    $result_retirada = $clveicmanutretirada->sql_record($clveicmanutretirada->sql_query(null, "*", null, " ve65_veicmanut = {$ve62_codigo} "));
+    if ($result_retirada != false && $clveicmanutretirada->numrows > 0) {
+      db_fieldsmemory($result_retirada, 0);
+    }
+  } else {
+
+    $erro_msg = "A Manutenção de Veículo informada é inválida.";
+    $excluir  = false;
+    $db_botao = false;
+    $db_opcao = 33;
+  }
 }
 ?>
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" style='margin-top: 25px' topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-	<?
-	include("forms/db_frmveicmanut.php");
-	?>
-</body>
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+  </head>
+  <body class="body-default">
+	  <?php include modification("forms/db_frmveicmanut.php"); ?>
+  </body>
 </html>
-<?
-if(isset($excluir)){
-  if($sqlerro==true){
+<?php
+if (isset($excluir)) {
+  if ($sqlerro == true) {
+
     db_msgbox($erro_msg);
-    if($clveicmanut->erro_campo!=""){
+    if($clveicmanut->erro_campo != "") {
+
       echo "<script> document.form1.".$clveicmanut->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clveicmanut->erro_campo.".focus();</script>";
     };
-  }else{
-   db_msgbox($erro_msg);
+  } else {
+    db_msgbox($erro_msg);
  echo "
   <script>
     function js_db_tranca(){
@@ -131,22 +176,22 @@ if(isset($excluir)){
  ";
   }
 }
-if(isset($chavepesquisa)){
- echo "
+if (isset($chavepesquisa)) {
+  echo "
   <script>
       function js_db_libera(){
          parent.document.formaba.veicmanutitem.disabled=false;
-         top.corpo.iframe_veicmanutitem.location.href='vei1_veicmanutitem001.php?db_opcaoal=3&ve63_veicmanut=".@$ve62_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_veicmanutitem.location.href='vei1_veicmanutitem001.php?db_opcaoal=3&ve63_veicmanut=".@$ve62_codigo."';
      ";
-         if(isset($liberaaba)){
-           echo "  parent.mo_camada('veicmanutitem');";
-         }
- echo"}\n
+  if (isset($liberaaba)) {
+    echo "  parent.mo_camada('veicmanutitem');";
+  }
+  echo"}\n
     js_db_libera();
   </script>\n
  ";
 }
- if($db_opcao==22||$db_opcao==33){
-    echo "<script>document.form1.pesquisar.click();</script>";
- }
+if ($db_opcao == 22 || $db_opcao == 33) {
+  echo "<script>document.form1.pesquisar.click();</script>";
+}
 ?>

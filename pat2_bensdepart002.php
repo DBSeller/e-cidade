@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_bens_classe.php");
-require_once("classes/db_bensmater_classe.php");
-require_once("classes/db_bensimoveis_classe.php");
-require_once("classes/db_bensbaix_classe.php");
-require_once("classes/db_db_depart_classe.php");
-require_once("classes/db_histbem_classe.php");
-require_once("classes/db_cfpatriplaca_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_bens_classe.php"));
+require_once(modification("classes/db_bensmater_classe.php"));
+require_once(modification("classes/db_bensimoveis_classe.php"));
+require_once(modification("classes/db_bensbaix_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
+require_once(modification("classes/db_histbem_classe.php"));
+require_once(modification("classes/db_cfpatriplaca_classe.php"));
 
 $clbens         = new cl_bens;
 $clbensmater    = new cl_bensmater;
@@ -110,7 +110,7 @@ $head3 = "DEPARTAMENTO";
 //									    and (limite  is null or limite >= '".date("Y-m-d", db_getsession("DB_datausu"))."')";
 //
 ////die($sQueryOrgao);
-//	$resQueryOrgao = pg_query($sQueryOrgao);
+//	$resQueryOrgao = db_query($sQueryOrgao);
 //   if(pg_num_rows($resQueryOrgao)>0){
 //	   db_fieldsmemory($resQueryOrgao,0);
 //	   
@@ -377,7 +377,7 @@ for ($x = 0; $x<$numrows; $x++) {
                     where db01_coddepto in ($t52_depart) 
                       and db01_anousu   = ".db_getsession("DB_anousu");
 		   
-       $resQueryOrgao = pg_query($sQueryOrgao);
+       $resQueryOrgao = db_query($sQueryOrgao);
 		   if(pg_num_rows($resQueryOrgao)>0){
 		   	db_fieldsmemory($resQueryOrgao,0);
 //		   	$head2 = "TODOS OS ORGÃOS";
@@ -550,7 +550,7 @@ for ($x = 0; $x<$numrows; $x++) {
                     where db01_coddepto in ($t52_depart) 
                       and db01_anousu   = ".db_getsession("DB_anousu");
 		   
-		   	$resQueryOrgao = pg_query($sQueryOrgao);
+		   	$resQueryOrgao = db_query($sQueryOrgao);
 		   	if(pg_num_rows($resQueryOrgao)>0){
 		   		db_fieldsmemory($resQueryOrgao,0);
 //		   		$head2 = "TODOS OS ORGÃOS";
@@ -617,7 +617,7 @@ for ($x = 0; $x<$numrows; $x++) {
                     where db01_coddepto in ($t52_depart) 
                       and db01_anousu   = ".db_getsession("DB_anousu");
 		   
-		   	$resQueryOrgao = pg_query($sQueryOrgao);
+		   	$resQueryOrgao = db_query($sQueryOrgao);
 		   	if(pg_num_rows($resQueryOrgao)>0){
 		   		db_fieldsmemory($resQueryOrgao,0);
 //		   		$head2 = "TODOS OS ORGÃOS";

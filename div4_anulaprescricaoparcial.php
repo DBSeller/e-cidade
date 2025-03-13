@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include_once("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $clrotulo = new rotulocampo;
 
@@ -114,7 +114,7 @@ function js_prescreve() {
 
 function js_retorno(oAjax){
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
     alert("Prescrição anulada com sucesso");
   } else {
@@ -217,7 +217,7 @@ function js_completaPesquisa() {
 
 function js_retornoCompletaPesquisa(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
     if (oRetorno.status == 1) {
       
@@ -261,7 +261,7 @@ function js_pesquisalista(mostra){
      }else{
        var sUrl = 'func_lista.php?pesquisa_chave='+document.form1.k60_codigo.value+'&funcao_js=parent.js_mostralista';
      }
-     js_OpenJanelaIframe('top.corpo','db_iframe',sUrl,'Pesquisa',mostra);
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe',sUrl,'Pesquisa',mostra);
 }
 
 function js_mostralista(chave,erro){

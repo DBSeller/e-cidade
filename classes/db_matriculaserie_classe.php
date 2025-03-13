@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -391,7 +391,7 @@ class cl_matriculaserie {
    function sql_query ( $ed221_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -401,12 +401,11 @@ class cl_matriculaserie {
        $sql .= $campos;
      }
      $sql .= " from matriculaserie ";
-     $sql .= "      inner join serie  on  serie.ed11_i_codigo = matriculaserie.ed221_i_serie";
-     $sql .= "      inner join matricula  on  matricula.ed60_i_codigo = matriculaserie.ed221_i_matricula";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = serie.ed11_i_codcenso";
-     $sql .= "      inner join ensino  on  ensino.ed10_i_codigo = serie.ed11_i_ensino";
-     $sql .= "      inner join aluno  on  aluno.ed47_i_codigo = matricula.ed60_i_aluno";
-     $sql .= "      inner join turma  on  turma.ed57_i_codigo = matricula.ed60_i_turma";
+     $sql .= "      inner join serie            on  serie.ed11_i_codigo = matriculaserie.ed221_i_serie";
+     $sql .= "      inner join matricula        on  matricula.ed60_i_codigo = matriculaserie.ed221_i_matricula";
+     $sql .= "      inner join ensino           on  ensino.ed10_i_codigo = serie.ed11_i_ensino";
+     $sql .= "      inner join aluno            on  aluno.ed47_i_codigo = matricula.ed60_i_aluno";
+     $sql .= "      inner join turma            on  turma.ed57_i_codigo = matricula.ed60_i_turma";
      $sql2 = "";
      if($dbwhere==""){
        if($ed221_i_codigo!=null ){
@@ -418,7 +417,7 @@ class cl_matriculaserie {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -431,7 +430,7 @@ class cl_matriculaserie {
    function sql_query_file ( $ed221_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -452,7 +451,7 @@ class cl_matriculaserie {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

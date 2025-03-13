@@ -1,7 +1,7 @@
 <?php
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -42,7 +42,7 @@ class DBInterval {
 
   protected static $aDaysString = array("day", "days", "dias", "dia");
 
-  public function __construct($sInterval) {
+  public function __construct($sInterval = null) {
 
     $this->sInterval = trim(strtolower($sInterval));
     if ($this->validate()) {
@@ -54,6 +54,7 @@ class DBInterval {
    * Analisa a intervalo passado o cria os dados necessarios
    */
   protected function createInterval() {
+
 
     $sString        = $this->sInterval;
     $aPartsInterval = explode(" ", $sString);
@@ -112,8 +113,8 @@ class DBInterval {
    * Define os anos do intervalo
    * @param $iYears
    */
-  private function setYear($iYears) {
-    $this->iYears = $iYears;
+  public function setYear($iYears) {
+    $this->iYears = (int)$iYears;
   }
 
   /**
@@ -128,8 +129,8 @@ class DBInterval {
    * Define os meses do intevalo
    * @param $iMonths
    */
-  private function setMonths($iMonths) {
-    $this->iMonth = $iMonths;
+  public function setMonths($iMonths) {
+    $this->iMonth = (int)$iMonths;
   }
 
   /**
@@ -144,8 +145,8 @@ class DBInterval {
    * Define os dias do intervalo
    * @param $iDays
    */
-  private function setDays($iDays) {
-    $this->iDays = $iDays;
+  public function setDays($iDays) {
+    $this->iDays = (int)$iDays;
   }
 
   /**
@@ -161,6 +162,34 @@ class DBInterval {
    * @return null|string
    */
   public function getInterval() {
+
+    $this->sInterval = $this->getYears(). " years ". $this->getMonths()." mons ".$this->getDays()." days ";
     return $this->sInterval;
+  }
+
+  /**
+   * Retorna o intervalor em numero de dias
+   * @return int
+   */
+  public function intervalToDays()  {
+
+    $iDiasDoAno = $this->getYears() * 365;
+    $iDiasNoMes = DBNumber::truncate($this->getMonths() * 30.41667, 0);
+    $iDias      = $this->getDays();
+    return $iDiasDoAno + $iDiasNoMes + $iDias;
+  }
+
+  /**
+   * Verifica se o intervalo é maior que o outro passado
+   *
+   * @param DBInterval $oIntervalo
+   * @return bool
+   */
+  public function greaterThan(DBInterval $oIntervalo) {
+
+    if ($this->intervalToDays() > $oIntervalo->intervalToDays()) {
+      return true;
+    }
+    return false;
   }
 }

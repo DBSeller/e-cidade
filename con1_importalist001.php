@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sql.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_projmelhorias_classe.php");
-include("classes/db_projmelhoriasresp_classe.php");
-include("classes/db_projmelhoriasmatric_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_projmelhorias_classe.php"));
+include(modification("classes/db_projmelhoriasresp_classe.php"));
+include(modification("classes/db_projmelhoriasmatric_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clprojmelhorias = new cl_projmelhorias;
 $clprojmelhoriasmatric = new cl_projmelhoriasmatric;
@@ -179,7 +179,7 @@ if (isset($incluir)){
       echo "<script> document.form1.".$clprojmelhorias->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clprojmelhorias->erro_campo.".focus();</script>";
     }else{ 
-      echo"<script>top.corpo.location.href='con1_importalist001.php';</script>";
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='con1_importalist001.php';</script>";
     }
 }
 ?>

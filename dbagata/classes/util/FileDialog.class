@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -43,7 +43,7 @@ class FileDialog
         $window->set_usize(556,360);
         $window->set_title($title);
         $window->realize();
-        $window->connect_object('key_press_event', array(&$this,'KeyTest'), 'window');
+        $window->connect_object('key_press_event', array($this,'KeyTest'), 'window');
         $this->gdkwindow = $window->window;
         $this->window = &$window;
         
@@ -59,9 +59,9 @@ class FileDialog
             $this->desktop = $this->home . $this->barra . 'Desktop';
             
             $ico = Gdk::pixmap_create_from_xpm($this->gdkwindow, null, images . 'drive.xpm');
-            $this->MenuDrives = &new GtkMenu;
+            $this->MenuDrives = new GtkMenu;
             // A:
-            $item = &new MyNormalMenuItem($ico, " Drive A: ", array(&$this, 'GoLocal'), 'A:');
+            $item = new MyNormalMenuItem($ico, " Drive A: ", array($this, 'GoLocal'), 'A:');
             $this->MenuDrives->append($item);
             
             for ($n=66; $n<=90; $n++)
@@ -69,7 +69,7 @@ class FileDialog
                 $drive = chr($n) . ':';
                 if (file_exists($drive))
                 {
-                    $item = &new MyNormalMenuItem($ico, " Drive $drive ", array(&$this, 'GoLocal'), $drive);
+                    $item = new MyNormalMenuItem($ico, " Drive $drive ", array($this, 'GoLocal'), $drive);
                     $this->MenuDrives->append($item);
                 }
             }
@@ -119,7 +119,7 @@ class FileDialog
         {
             $extrabuttonlabel = _a($extrabutton[1]) . ': ' . $extrabutton[2];
             $extra= new Icone($this->gdkwindow, $extrabutton[0],' '._a($extrabutton[1]).' ',$extrabuttonlabel);
-            $extra->connect_object('clicked', array(&$this, 'GoLocal'), $extrabutton[2]);
+            $extra->connect_object('clicked', array($this, 'GoLocal'), $extrabutton[2]);
             $extra->set_relief(GTK_RELIEF_NONE);
             //$extrabutton = array(xpm, text, path, function)
         }
@@ -127,12 +127,12 @@ class FileDialog
         $filesys= new Icone($this->gdkwindow, images . 'network.xpm',' '._a('Drives').' ', $networklabel);
         //$floppy = new Icone($this->gdkwindow, images . 'floppy.xpm',' '._a('Floppy').' ',  $floppylabel);
         
-        $root->connect_object('clicked', array(&$this, 'GoLocal'), $this->root);
-        $home->connect_object('clicked', array(&$this, 'GoLocal'), $this->home);
-        $desktop->connect_object('clicked', array(&$this, 'GoLocal'), $this->desktop);
-        $filesys->connect_object('clicked', array(&$this, 'PopDrives'));
-        $network->connect_object('clicked', array(&$this, 'PopNetworks'));
-        //$floppy->connect_object('clicked', array(&$this, 'GoLocal'), $this->floppy);
+        $root->connect_object('clicked', array($this, 'GoLocal'), $this->root);
+        $home->connect_object('clicked', array($this, 'GoLocal'), $this->home);
+        $desktop->connect_object('clicked', array($this, 'GoLocal'), $this->desktop);
+        $filesys->connect_object('clicked', array($this, 'PopDrives'));
+        $network->connect_object('clicked', array($this, 'PopNetworks'));
+        //$floppy->connect_object('clicked', array($this, 'GoLocal'), $this->floppy);
         
         
         $root->set_relief(GTK_RELIEF_NONE);
@@ -155,10 +155,10 @@ class FileDialog
             $iconet = Gdk::pixmap_create_from_xpm($this->gdkwindow, null, images . 'ico_net.xpm');
             $this->LeftBox->pack_start($network, false, false, 5);
             
-            $this->MenuNetworks = &new GtkMenu;
+            $this->MenuNetworks = new GtkMenu;
             foreach ($Networks as $network)
             {
-                $item = &new MyNormalMenuItem($iconet, $network, array(&$this, 'GoRemote'), $network);
+                $item = new MyNormalMenuItem($iconet, $network, array($this, 'GoRemote'), $network);
                 $this->MenuNetworks->append($item);
             }
             $this->MenuNetworks->show_all();
@@ -173,9 +173,9 @@ class FileDialog
         $reload = new IconeImg($this->gdkwindow, images . 'reload.xpm', _a('Reload'));
         $new    = new IconeImg($this->gdkwindow, images . 'new.xpm',    _a('New'));
         
-        $reload->connect_object('clicked', array(&$this, 'Reload'));
-        $up->connect_object('clicked', array(&$this, 'GoUp'));
-        $new->connect_object('clicked', array(&$this, 'NewFolder'));
+        $reload->connect_object('clicked', array($this, 'Reload'));
+        $up->connect_object('clicked', array($this, 'GoUp'));
+        $new->connect_object('clicked', array($this, 'NewFolder'));
         
         $up->set_relief(GTK_RELIEF_NONE);
         $reload->set_relief(GTK_RELIEF_NONE);
@@ -203,8 +203,8 @@ class FileDialog
         $this->ComboPath = $ComboPath = new GtkCombo;
         $ComboList = $ComboPath->list;
         $ComboEntry = $ComboPath->entry;
-        $ComboEntry->connect_object('key_press_event', array(&$this,'KeyTest'), 'combo');
-        $ComboList->connect_object('button_press_event', array(&$this, 'ComboChange'));
+        $ComboEntry->connect_object('key_press_event', array($this,'KeyTest'), 'combo');
+        $ComboList->connect_object('button_press_event', array($this, 'ComboChange'));
         $ComboPath->set_usize(280,-1);
         $ControlBox->pack_start($ComboPath, false, false);
         
@@ -217,12 +217,12 @@ class FileDialog
             }
         }
         
-        $EntryPath->connect_object('key_press_event', array(&$this,'KeyTest'), 'entry');
+        $EntryPath->connect_object('key_press_event', array($this,'KeyTest'), 'entry');
         $window->set_focus($EntryPath);
         $ActionBox->pack_start($EntryPath, true, true);
         
-        $this->DirListing = &new DirListing($this->gdkwindow, array(_a('File'), _a('Size'), _a('Date')));
-        $dir = &$this->DirListing;
+        $this->DirListing = new DirListing($this->gdkwindow, array(_a('File'), _a('Size'), _a('Date')));
+        $dir = $this->DirListing;
         $dir->barra = $this->barra;
         $dir->Combo = $ComboPath;
         $dir->Entry = $EntryPath;
@@ -248,7 +248,7 @@ class FileDialog
         $cancel = new Icone($this->gdkwindow, images . 'cancel.xpm',' '._a('Cancel').' ',   _a('Cancel'), true);
         $this->Action = &$Action;
         $this->Parameter = &$Parameter;
-        $ok->connect_object('clicked', array(&$this, 'onOk'));
+        $ok->connect_object('clicked', array($this, 'onOk'));
         $cancel->connect_object('clicked', array($window, 'hide'));
         
         $ok->set_relief(GTK_RELIEF_NONE);
@@ -332,11 +332,11 @@ class FileDialog
             {
                 if ($this->Parameter)
                 {
-                    call_user_func($this->Action, &$this, $this->Parameter);
+                    call_user_func($this->Action, $this, $this->Parameter);
                 }
                 else
                 {
-                    call_user_func($this->Action, &$this);
+                    call_user_func($this->Action, $this);
                 }
             }
         }
@@ -452,7 +452,7 @@ class FileDialog
     /***********************************************************/
     function NewFolder()
     {
-        $this->InputBox = new InputBox(_a('New Folder'), 180, '', array(&$this,'MakeFolder'));
+        $this->InputBox = new InputBox(_a('New Folder'), 180, '', array($this,'MakeFolder'));
     }
     
     /***********************************************************/
@@ -481,7 +481,7 @@ class FileDialog
     /***********************************************************/
     function GoDir($Directory)
     {
-        $dir = &$this->DirListing;
+        $dir = $this->DirListing;
         $dir->LoadDirectory($Directory);
         $entry = $this->EntryPath;
         $entry->set_text('');
@@ -515,7 +515,7 @@ class DirListing extends GtkCList
     function DirListing($gdkwindow, $array)
     {
         GtkCList::GtkCList(count($array), $array);
-        GtkCList::connect_object('select-row', array(&$this, 'GoDir'));
+        GtkCList::connect_object('select-row', array($this, 'GoDir'));
     }
     
     /***********************************************************/

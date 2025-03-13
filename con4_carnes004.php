@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_conn.php");
-require("libs/db_stdlib.php");
+include(modification("libs/db_conn.php"));
+require(modification("libs/db_stdlib.php"));
 define('FPDF_FONTPATH','fpdf151/font/');
-require('fpdf151/fpdf.php');
+require(modification('fpdf151/fpdf.php'));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -37,14 +37,14 @@ if(!($conn = pg_connect("host=$DB_SERVIDOR dbname=$DB_BASE port=$DB_PORTA user=$
   exit;
 }
 
-  $campos = pg_exec("select nomecam,posxmodelo,posymodelo from db_carnescampos where codmodelo = $codigo");
-  $result = pg_exec("select * from cgm limit 10");
-  $nomeimg = pg_exec("select nomemodelo,imgmodelo,orientacao from db_carnesimg where codmodelo = $codigo");
+  $campos = db_query("select nomecam,posxmodelo,posymodelo from db_carnescampos where codmodelo = $codigo");
+  $result = db_query("select * from cgm limit 10");
+  $nomeimg = db_query("select nomemodelo,imgmodelo,orientacao from db_carnesimg where codmodelo = $codigo");
   $arquivo = str_replace(" ","_",pg_result($nomeimg,0,"nomemodelo")).".jpg";
-  pg_exec("begin");
+  db_query("begin");
   $oid = pg_result($nomeimg,0,"imgmodelo");
   pg_loexport($oid,$arquivo);
-  pg_exec("end");
+  db_query("end");
   $orientacao = pg_result($nomeimg,0,"orientacao");
   if($orientacao == "R") {
     $orientacao = "P";

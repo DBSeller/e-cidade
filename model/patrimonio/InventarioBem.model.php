@@ -1,111 +1,110 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Model responsavel pelo BEM adicionado a um inventario
  * @author matheus.felini
  * @package patrimonio
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 class InventarioBem {
-  
+
   /**
    * Codigo do Bem dentro do inventario
    * @var integer
    */
   protected $iCodigo;
-  
+
   /**
    * Inventario a qual este bem pertece
    * @var Inventario
    */
   protected $oInventario;
-  
+
   /**
    * Bem
    * @var Bem
    */
   protected $oBem;
-  
+
   /**
    * Departamento
    * @var DBDepartamento
    */
   protected $oDepartamento;
-  
+
   /**
    * Divisao
    * @var DBDivisaoDepartamento
    */
   protected $oDivisaoDepartamento;
-  
+
   /**
    * Codigo da Situacao do bem
    * @var integer
    */
   protected $iSituacao;
-  
+
   /**
    * Valor que o bem pode depreciar ainda
    * @var number
    */
   protected $nValorDepreciavel;
-  
+
   /**
    * Valor Residual do bem, apos a depreciacao deve ficar com este valor
    * @var number
    */
   protected $nValorResidual;
-  
+
   /**
    * Vida util total do bem
    * @var integer
    */
   protected $iVidaUtil;
-  
-  
+
+
   /**
    * Seta as propriedades do bem dentro do inventario
    * @param integer $iCodigo
    * @throws BusinessException
-   * @return InventarioBem
    */
   public function __construct($iCodigo=null) {
-    
+
     $this->iCodigo = $iCodigo;
     if (!empty($this->iCodigo)) {
-      
-      $oDaoInventarioBem      = db_utils::getDao('inventariobem');
+
+      $oDaoInventarioBem      = new cl_inventariobem();
       $sSqlBuscaInventarioBem = $oDaoInventarioBem->sql_query_file($this->iCodigo);
       $rsBuscaInventarioBem   = $oDaoInventarioBem->sql_record($sSqlBuscaInventarioBem);
       if ($oDaoInventarioBem->erro_status == "0") {
         throw new BusinessException(_M('patrimonial.patrimonio.InventarioBem_model.bem_nao_localizado'));
       }
-      
+
       $oDadoInventarioBem         = db_utils::fieldsMemory($rsBuscaInventarioBem, 0);
       $this->iCodigo              = $oDadoInventarioBem->t77_sequencial;
       $this->oInventario          = new Inventario($oDadoInventarioBem->t77_inventario);
@@ -118,17 +117,16 @@ class InventarioBem {
       $this->iVidaUtil            = $oDadoInventarioBem->t77_vidautil;
       unset($oDadoInventarioBem);
     }
-    return true;
   }
-  
+
   /**
    * Salva os dados do bem dentro do inventario
    * @throws BusinessException
-   * @return InventarioBem
+   * @return boolean
    */
   public function salvar() {
-    
-    $oDaoInventarioBem                       = db_utils::getDao('inventariobem');
+
+    $oDaoInventarioBem                       = new cl_inventariobem();
     $oDaoInventarioBem->t77_sequencial       = $this->getCodigo();
     $oDaoInventarioBem->t77_inventario       = $this->getInventario()->getInventario();
     $oDaoInventarioBem->t77_bens             = $this->getBem()->getCodigoBem();
@@ -138,30 +136,29 @@ class InventarioBem {
     $oDaoInventarioBem->t77_vidautil         = $this->getVidaUtil();
     $oDaoInventarioBem->t77_departdiv        = null;
     $oDaoInventarioBem->t77_db_depart        = null;
-    
+
     if ( $this->getDivisaoDepartamento() instanceof DBDivisaoDepartamento ) {
-      $oDaoInventarioBem->t77_departdiv = $this->getDivisaoDepartamento()->getCodigo() == "" ? "0" : $this->getDivisaoDepartamento()->getCodigo(); 
+      $oDaoInventarioBem->t77_departdiv = $this->getDivisaoDepartamento()->getCodigo() == "" ? null : $this->getDivisaoDepartamento()->getCodigo();
     }
     if ($this->getDepartamento() instanceof DBDepartamento) {
       $oDaoInventarioBem->t77_db_depart = $this->getDepartamento()->getCodigo();
     }
-    
+
     if ($this->getCodigo() == "") {
-      
+
       $oDaoInventarioBem->incluir(null);
       $this->iCodigo = $oDaoInventarioBem->t77_sequencial;
     } else {
       $oDaoInventarioBem->alterar($this->getCodigo());
     }
-    
+
     if ($oDaoInventarioBem->erro_status == "0") {
       throw new BusinessException(_M('patrimonial.patrimonio.InventarioBem_model.nao_foi_possivel_salvar', $oDaoInventarioBem));
     }
-    
     return true;
   }
-  
-  
+
+
   /**
    * Retorna Codigo do bem dentro do inventario
    * @return integer
@@ -305,27 +302,29 @@ class InventarioBem {
   public function setVidaUtil($iVidaUtil) {
     $this->iVidaUtil = $iVidaUtil;
   }
-  
+
   /**
    * Busca os dados da última reavaliação do bem, caso existam reavalizações do bem
-   * @param  Bem $oBem
-   * @return InventarioBem | null
+   * @param Bem $oBem
+   *
+   * @return InventarioBem|null
+   * @throws DBException
    */
   public static function buscaDadosDaReavaliacaoBem (Bem $oBem) {
-    
+
     $oBemReavaliado    = null;
     $iCodigoBem        = $oBem->getCodigoBem();
 
     if (empty($iCodigoBem)) {
       throw new DBException('Erro Técnico: Código do bem não informado.');
     }
-    
-    $oDaoInventarioBem = db_utils::getDao("inventariobem");
+
+    $oDaoInventarioBem = new cl_inventariobem();
     $sWhere            = "t75_situacao = 3 and t77_bens = {$iCodigoBem}";
     $sOrder            = "t77_sequencial desc limit 1";
     $sSql              = $oDaoInventarioBem->sql_query(null,"t77_sequencial", $sOrder, $sWhere);
     $rsResultadoQuery  = db_query($sSql);
-    
+
     if (!$rsResultadoQuery) {
       throw new DBException("Erro Técnico: problema ao buscar dados da reavalização do bem.");
     }

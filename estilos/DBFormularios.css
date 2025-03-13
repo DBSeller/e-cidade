@@ -2,6 +2,10 @@
  * DBFormularios
  * Elemento principal do Formulário deve ter esta class
  */
+.Whoops {
+  text-align: inherit !important;
+}
+
 .container:not([rel="ignore-css"]) {
   display: table;
   margin: 25px auto 0 auto;
@@ -10,7 +14,7 @@
 
 .subcontainer:not([rel="ignore-css"]) {
   display: table;
-  margin: 0px auto 0 auto;
+    margin: 0 auto 0 auto;
   text-align: center;
 }
 
@@ -37,7 +41,7 @@ table.form-container:not([rel="ignore-css"]) tr td{
 /**
  * Celulas pares
  */
-table.form-container:not([rel="ignore-css"]) > tr > td:nth-child(even) {
+table.form-container:not([rel="ignore-css"]) > tbody  > tr > td:nth-child(even) {
 /** Tabela principal */
 /*table.form-container > tr > td > fieldset  table > tr > td:nth-child(even):not([rel="ignore-css"]) { /* Tabela 1 nivel abaixo tabela principal */
   text-align: left;
@@ -46,7 +50,7 @@ table.form-container:not([rel="ignore-css"]) > tr > td:nth-child(even) {
 /**
  * Celulas impares
  */
-table.form-container:not([rel="ignore-css"]) > tr > td:nth-child(odd) {
+table.form-container:not([rel="ignore-css"]) > tbody > tr > td:nth-child(odd) {
 
   font-weight: bold;
   text-align: right;
@@ -54,7 +58,7 @@ table.form-container:not([rel="ignore-css"]) > tr > td:nth-child(odd) {
 /**
  * Primeira Célula
  */
-table.form-container:not([rel="ignore-css"]) > tr > td:first-child{
+table.form-container:not([rel="ignore-css"]) > tbody > tr > td:first-child{
   font-weight: bold;
   text-align: left;
 }
@@ -64,19 +68,19 @@ table.subtable:not([rel="ignore-css"]) {
   width: 100%;
 }
 
-table.subtable:not([rel="ignore-css"]) > tr > td {
-  width: 104;
+table.subtable:not([rel="ignore-css"]) > tbody  > tr > td {
+    width: 104px;
 }
 
-table.form-container:not([rel="ignore-css"])  tr  td[colspan] {
-  padding: 0px;
-  margin: 0px;
+table.form-container:not([rel="ignore-css"]) > tbody   tr  td[colspan] {
+    padding: 0;
+    margin: 0;
 }
 
-table.form-container:not([rel="ignore-css"]) tr  td[colspan] table {
-  margin: 0px;
-  padding: 0px;
-  padding-left: 0px;
+table.form-container:not([rel="ignore-css"]) > tbody  tr  td[colspan] table {
+    margin: 0;
+    padding: 0;
+    padding-left: 0;
 }
 
 /*
@@ -93,28 +97,38 @@ div.center {
  * FieldSet Separador de Informações
  */
 fieldset.separator {
-  margin: 0px auto;
+    margin: 0 auto;
   margin-top: 5px;
   margin-bottom: 5px;
-  border: 0px;
+    border: 0;
   border-top: 2px groove #FFF;
-  padding-bottom: 0px;
+    padding-bottom: 0;
 }
+
+
 
 /**
  * Aplica Negrito por padrão em todos legend.
  */
 legend:not([rel="ignore-css"]) {
   font-weight: bold;
+  text-align: left;
 }
 
 /*
  * Aplica altura em todos botões do formulário.
  */
 input[type='text']:not([rel="ignore-css"]).readonly,
-.readonly {
+textarea:not([rel="ignore-css"]).readonly {
   background-color: #DEB887 !important;
   color:-moz-fieldtext;
+}
+
+input[type='text']:not([rel="ignore-css"]):disabled:not([class="input-abas"]),
+input[type='text']:not([rel="ignore-css"]):disabled:not([class="nomes"]),
+textarea:not([rel="ignore-css"]):disabled {
+    background-color: #DEB887 !important;
+    color:-moz-fieldtext;
 }
 
 /**
@@ -148,40 +162,80 @@ select:not([rel='ignore-css']) option {
  * O tamanho foi adaptado para que eles combinados em mesma linha
  * Acabem somando o mesmo tamanho.
  */
+
+ /**
+  * 40px * 1 + 3px * 0
+  */
 .field-size1 {
   width: 40px;
 }
 
+/**
+ * 40px * 2 + 3px * 1
+ */
 .field-size2 {
   width: 83px;
 }
 
+/**
+ * 40px * 3 + 3px * 2
+ */
 .field-size3 {
   width: 126px;
 }
 
+/**
+ * 40px * 4 + 3px * 3
+ */
 .field-size4 {
   width: 169px;
 }
 
+/**
+ * 40px * 5 + 3px * 4
+ */
 .field-size5 {
   width: 212px;
 }
 
+/**
+ * 40px * 6 + 3px * 5
+ */
 .field-size6 {
   width: 255px;
 }
-
+/**
+ * 40px * 7 + 3px * 6
+ */
 .field-size7 {
   width: 298px;
 }
-
+/**
+ * 40px * 8 + 3px * 7
+ */
 .field-size8 {
   width: 341px;
 }
 
+/**
+ * 40px * 9 + 3px * 8
+ */
 .field-size9 {
   width: 384px;
+}
+
+/**
+ * 40px * 10 + 3px * 9
+ */
+.field-size10 {
+  width: 427px;
+}
+
+/**
+ * 40px * 11 + 3px * 10
+ */
+.field-size11 {
+  width: 470px;
 }
 
 .field-size-max{
@@ -201,7 +255,14 @@ input.form-error {
   color:black;
 }
 
-.form-error { }
+.form-error {
+  background-color: #f78481;
+}
+
+.form-sucess {
+  background-color: #a7d09d;
+}
+
 .form-warning { }
 .form-info { }
 
@@ -233,4 +294,56 @@ fieldset.separator textarea:not([rel='ignore-css']){
 
 .background-yellow {
   background-color: #E8EE6F;
+}
+
+.caixaalta {
+  text-transform: capitalize;
+}
+
+input.opcional,
+textarea.opcional {
+  background-color: #e6e4f1;
+}
+
+
+.alert {
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-size: 10pt;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-primary {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
 }

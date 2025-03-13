@@ -1,0 +1,1 @@
+update cgs_und set z01_v_ender = z01_v_ender;

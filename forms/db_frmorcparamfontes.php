@@ -83,10 +83,10 @@ db_input('o57_fonte',15,$Io57_fonte,true,'text',3,'')
 <script>
 function js_pesquisao43_codparrel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcparamrel','func_orcparamrel.php?funcao_js=parent.js_mostraorcparamrel1|o42_codparrel|o42_descrrel','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcparamrel','func_orcparamrel.php?funcao_js=parent.js_mostraorcparamrel1|o42_codparrel|o42_descrrel','Pesquisa',true);
   }else{
      if(document.form1.o43_codparrel.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_orcparamrel','func_orcparamrel.php?pesquisa_chave='+document.form1.o43_codparrel.value+'&funcao_js=parent.js_mostraorcparamrel','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcparamrel','func_orcparamrel.php?pesquisa_chave='+document.form1.o43_codparrel.value+'&funcao_js=parent.js_mostraorcparamrel','Pesquisa',false);
      }else{
        document.form1.o42_descrrel.value = ''; 
      }
@@ -106,10 +106,10 @@ function js_mostraorcparamrel1(chave1,chave2){
 }
 function js_pesquisao43_codfon(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostraorcfontes1|o57_codfon|o57_fonte','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostraorcfontes1|o57_codfon|o57_fonte','Pesquisa',true);
   }else{
      if(document.form1.o43_codfon.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_orcfontes','func_orcfontes.php?pesquisa_chave='+document.form1.o43_codfon.value+'&funcao_js=parent.js_mostraorcfontes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcfontes','func_orcfontes.php?pesquisa_chave='+document.form1.o43_codfon.value+'&funcao_js=parent.js_mostraorcfontes','Pesquisa',false);
      }else{
        document.form1.o57_fonte.value = ''; 
      }
@@ -128,7 +128,7 @@ function js_mostraorcfontes1(chave1,chave2){
   db_iframe_orcfontes.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcparamfontes','func_orcparamfontes.php?funcao_js=parent.js_preenchepesquisa|o43_codparrel|o43_codfon|o43_anousu','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcparamfontes','func_orcparamfontes.php?funcao_js=parent.js_preenchepesquisa|o43_codparrel|o43_codfon|o43_anousu','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_orcparamfontes.hide();

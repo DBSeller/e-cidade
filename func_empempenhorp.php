@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empempenho_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empempenho_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clempempenho = new cl_empempenho;
@@ -102,44 +102,51 @@ $rotulo->label("z01_cgccpf");
       $campos="e60_numemp,e60_codemp,z01_nome";
       if(!isset($pesquisa_chave) ){
         $campos = "empempenho.e60_numemp,
-	           empempenho.e60_codemp,
-		   empempenho.e60_emiss as DB_e60_emiss,
-		   cgm.z01_nome,
-		   cgm.z01_cgccpf,
-		   empempenho.e60_coddot,
-		   e60_vlremp,
-		   e60_vlrliq,
-		   e60_vlrpag,
-		   e60_vlranu";
-        $campos = " distinct ".$campos;
-        $dbwhere=" e60_instit = ".db_getsession("DB_instit");
-	if (isset($anul)&&$anul==false){
-          $dbwhere .= " and e60_vlranu<e60_vlremp ";	  
-	}
-        if(isset($chave_e60_numemp) && (trim($chave_e60_numemp)!="") ){
-              $sql = $clempempenho->sql_query_resto($chave_e60_numemp,$campos,"e60_numemp","$dbwhere and e60_numemp=$chave_e60_numemp ");
-        }else if(isset($chave_e60_codemp) && (trim($chave_e60_codemp)!="") ){
-	      $arr = split("/",$chave_e60_codemp);
-	      if(count($arr) == 2  && isset($arr[1]) && $arr[1] != '' ){
-		$dbwhere_ano = " and e60_anousu = ".$arr[1];
-              }else if(count($arr)==1){
-                $dbwhere_ano = " and e60_anousu = ".db_getsession("DB_anousu");
-       	      }else{
-		$dbwhere_ano = "";
-	      }
-              $sql = $clempempenho->sql_query_resto("",$campos,"e60_numemp","$dbwhere and e60_codemp='".$arr[0]."'$dbwhere_ano");
-        }else if(isset($chave_z01_nome) && (trim($chave_z01_nome)!="") ){
-              $sql = $clempempenho->sql_query_resto("",$campos,"e60_numemp","$dbwhere and z01_nome like '$chave_z01_nome%'");
-        }else if(isset($chave_z01_cgccpf) && (trim($chave_z01_cgccpf)!="") ){
-              $sql = $clempempenho->sql_query_resto("",$campos,"e60_numemp","$dbwhere and z01_cgccpf like '$chave_z01_cgccpf%'");
-        }else{
-           $sql = "";
+	                 empempenho.e60_codemp,
+                   empempenho.e60_emiss as DB_e60_emiss,
+		               cgm.z01_nome,
+		               cgm.z01_cgccpf,
+		               empempenho.e60_coddot,
+		               e60_vlremp,
+		               e60_vlrliq,
+		               e60_vlrpag,
+		               e60_vlranu";
+        $campos = " distinct " . $campos;
+        $dbwhere = " e60_instit = " . db_getsession("DB_instit");
+
+        /* [Extensão] - Filtro da Despesa */
+
+        if (isset($anul) && $anul == false) {
+          $dbwhere .= " and e60_vlranu<e60_vlremp ";
         }
-	$repassa = array("chave_z01_nome"=>@$chave_z01_nome);
-	$result = $clempempenho->sql_record($sql);
-	if($clempempenho->numrows>0){
-	  db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
-	}
+        if (isset($chave_e60_numemp) && (trim($chave_e60_numemp) != "")) {
+          $sql = $clempempenho->sql_query_resto($chave_e60_numemp, $campos, "e60_numemp", "$dbwhere and e60_numemp=$chave_e60_numemp ");
+        } else if (isset($chave_e60_codemp) && (trim($chave_e60_codemp) != "")) {
+
+          $arr = explode("/", $chave_e60_codemp);
+          if (count($arr) == 2 && isset($arr[1]) && $arr[1] != '') {
+            $dbwhere_ano = " and e60_anousu = " . $arr[1];
+          } else if (count($arr) == 1) {
+            $dbwhere_ano = " and e60_anousu = " . db_getsession("DB_anousu");
+          } else {
+            $dbwhere_ano = "";
+          }
+          $sql = $clempempenho->sql_query_resto("", $campos, "e60_numemp", "$dbwhere and e60_codemp='" . $arr[0] . "'$dbwhere_ano");
+        } else if (isset($chave_z01_nome) && (trim($chave_z01_nome) != "")) {
+          $sql = $clempempenho->sql_query_resto("", $campos, "e60_numemp", "$dbwhere and z01_nome like '$chave_z01_nome%'");
+        } else if (isset($chave_z01_cgccpf) && (trim($chave_z01_cgccpf) != "")) {
+          $sql = $clempempenho->sql_query_resto("", $campos, "e60_numemp", "$dbwhere and z01_cgccpf like '$chave_z01_cgccpf%'");
+        } else {
+          $sql = "";
+        }
+        $repassa = array("chave_z01_nome" => @$chave_z01_nome);
+        if (!empty($sql)) {
+
+          $result = $clempempenho->sql_record($sql);
+          if ($clempempenho->numrows > 0) {
+            db_lovrot($sql, 15, "()", "", $funcao_js, "", "NoMe", $repassa);
+          }
+        }
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
           $result = $clempempenho->sql_record($clempempenho->sql_query_resto($pesquisa_chave));
@@ -161,4 +168,10 @@ $rotulo->label("z01_cgccpf");
 </html>
 <script>
   document.getElementById("chave_e60_codemp").focus();
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

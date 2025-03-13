@@ -58,7 +58,7 @@ db_input('k65_descricao',50,$Ik65_descricao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conciliatipo','func_conciliatipo.php?funcao_js=parent.js_preenchepesquisa|k65_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conciliatipo','func_conciliatipo.php?funcao_js=parent.js_preenchepesquisa|k65_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conciliatipo.hide();

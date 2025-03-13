@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -728,12 +728,12 @@ class cl_tfd_fechamento {
     /* dados do medico */
     $sSql .= "        medicos.sd03_i_codigo                 as codigo_medico,                                          ";
     $sSql .= "        case                                                                                             ";
-    $sSql .= "          when m.z01_nome = ''                                                                           ";
+    $sSql .= "          when trim(m.z01_nome) = '' or m.z01_nome is null                                               ";
     $sSql .= "            then sau_medicosforarede.s154_c_nome                                                         ";
     $sSql .= "          else m.z01_nome                                                                                ";
     $sSql .= "        end                                   as nome_medico,                                            ";
     $sSql .= "        case                                                                                             ";
-    $sSql .= "          when cgmdoc.z02_i_cns = ''                                                                     ";
+    $sSql .= "          when trim(cgmdoc.z02_i_cns) = '' or cgmdoc.z02_i_cns is null                                   ";
     $sSql .= "            then sau_medicosforarede.s154_c_cns                                                          ";
     $sSql .= "          else cgmdoc.z02_i_cns                                                                          ";
     $sSql .= "        end                                   as cnsmedico,                                              ";
@@ -779,37 +779,38 @@ class cl_tfd_fechamento {
     $sSql .= "        cgs_und.z01_v_bairro                  as bairro_end_paciente,       ";
     $sSql .= "        cgs_und.z01_v_cep                     as cep_paciente,              ";
     $sSql .= "        cgs_und.z01_v_telef                   as telefone_paciente,         ";
-    $sSql .= "        etnia.s200_identificador              as etinia                     ";
-  
-    $sSql .= "   FROM tfd_fechamento                                                                                                      ";
-    $sSql .= "        inner join fechamentotfdprocedimento  on tf40_tfd_fechamento                  = tf32_i_codigo                        ";
-    $sSql .= "        inner join tfd_pedidotfd              on tf40_tfd_pedidotfd                   = tf01_i_codigo                        ";
-    $sSql .= "        inner join unidades                   on unidades.sd02_i_codigo               = tfd_pedidotfd.tf01_i_depto           ";
-    $sSql .= "        inner join cgs                        on cgs.z01_i_numcgs                     = tf40_cgs_und                         ";
-    $sSql .= "        inner join cgs_und                    on cgs_und.z01_i_cgsund                 = cgs.z01_i_numcgs                     ";
-    $sSql .= "        left  join cgs_undetnia               on cgs_undetnia.s201_cgs_unid           = cgs_und.z01_i_cgsund                 ";
-    $sSql .= "        left  join etnia                      on etnia.s200_codigo                    = cgs_undetnia.s201_etnia              ";
-    $sSql .= "        inner join sau_procedimento           on sau_procedimento.sd63_i_codigo       = tf40_sau_procedimento                ";
-    $sSql .= "        inner join sau_financiamento          on sau_financiamento.sd65_i_codigo      = sau_procedimento.sd63_i_financiamento";
-    $sSql .= "        inner join sau_procregistro           on sau_procregistro.sd85_i_procedimento = sau_procedimento.sd63_i_codigo       ";
-    $sSql .= "        inner join medicos                    on medicos.sd03_i_codigo                = tf01_i_profissionalsolic             ";
-    $sSql .= "        left  join sau_medicosforarede        on sau_medicosforarede.s154_i_medico    = medicos.sd03_i_codigo                ";
-    $sSql .= "        left  join cgm m                      on m.z01_numcgm                         = medicos.sd03_i_cgm                   ";
-    $sSql .= "        left  join cgmdoc                     on cgmdoc.z02_i_cgm                     = m.z01_numcgm                         ";
-    $sSql .= "        inner join rhcbo                      on tf01_rhcbosolicitante                = rh70_sequencial                      ";
-    $sSql .= "        inner join tfd_agendamentoprestadora  on tf16_i_pedidotfd                     = tf01_i_codigo                        ";
-    $sSql .= "        inner join tfd_prestadoracentralagend on tf16_i_prestcentralagend             =  tfd_prestadoracentralagend.tf10_i_codigo";
-    $sSql .= "        inner join tfd_prestadora             on tf10_i_prestadora                    = tfd_prestadora.tf25_i_codigo          ";
-    $sSql .= "        inner join tfd_destino                on tf25_i_destino                       = tfd_destino.tf03_i_codigo             ";
-    $sSql .= "        inner join tfd_tipodistancia          on tfd_tipodistancia.tf24_i_codigo      = tfd_destino.tf03_i_tipodistancia      ";
-    $sSql .= "  where tf01_i_situacao = 2                                                                                                   ";
+    $sSql .= "        etnia.s200_identificador              as etinia,                    ";
+    $sSql .= "        medicos.sd03_i_tipo                   as tipo_profissional          ";
+
+    $sSql .= "   FROM tfd_fechamento                                                                                                            ";
+    $sSql .= "        inner join fechamentotfdprocedimento  on tf40_tfd_fechamento                  = tf32_i_codigo                             ";
+    $sSql .= "        inner join tfd_pedidotfd              on tf40_tfd_pedidotfd                   = tf01_i_codigo                             ";
+    $sSql .= "        inner join unidades                   on unidades.sd02_i_codigo               = tfd_pedidotfd.tf01_i_depto                ";
+    $sSql .= "        inner join cgs                        on cgs.z01_i_numcgs                     = tf40_cgs_und                              ";
+    $sSql .= "        inner join cgs_und                    on cgs_und.z01_i_cgsund                 = cgs.z01_i_numcgs                          ";
+    $sSql .= "        left  join cgs_undetnia               on cgs_undetnia.s201_cgs_unid           = cgs_und.z01_i_cgsund                      ";
+    $sSql .= "        left  join etnia                      on etnia.s200_codigo                    = cgs_undetnia.s201_etnia                   ";
+    $sSql .= "        inner join sau_procedimento           on sau_procedimento.sd63_i_codigo       = tf40_sau_procedimento                     ";
+    $sSql .= "        inner join sau_financiamento          on sau_financiamento.sd65_i_codigo      = sau_procedimento.sd63_i_financiamento     ";
+    $sSql .= "        inner join sau_procregistro           on sau_procregistro.sd85_i_procedimento = sau_procedimento.sd63_i_codigo            ";
+    $sSql .= "        inner join medicos                    on medicos.sd03_i_codigo                = tf01_i_profissionalsolic                  ";
+    $sSql .= "        left  join sau_medicosforarede        on sau_medicosforarede.s154_i_medico    = medicos.sd03_i_codigo                     ";
+    $sSql .= "        left  join cgm m                      on m.z01_numcgm                         = medicos.sd03_i_cgm                        ";
+    $sSql .= "        left  join cgmdoc                     on cgmdoc.z02_i_cgm                     = m.z01_numcgm                              ";
+    $sSql .= "        inner join rhcbo                      on tf01_rhcbosolicitante                = rh70_sequencial                           ";
+    $sSql .= "        inner join tfd_agendamentoprestadora  on tf16_i_pedidotfd                     = tf01_i_codigo                             ";
+    $sSql .= "        inner join tfd_prestadoracentralagend on tf16_i_prestcentralagend             =  tfd_prestadoracentralagend.tf10_i_codigo ";
+    $sSql .= "        inner join tfd_prestadora             on tf10_i_prestadora                    = tfd_prestadora.tf25_i_codigo              ";
+    $sSql .= "        inner join tfd_destino                on tf25_i_destino                       = tfd_destino.tf03_i_codigo                 ";
+    $sSql .= "        inner join tfd_tipodistancia          on tfd_tipodistancia.tf24_i_codigo      = tfd_destino.tf03_i_tipodistancia          ";
+    $sSql .= "  where tf01_i_situacao = 2                                                                                                       ";
   
     if (!empty($sWhere)) {
       $sSql .= " and {$sWhere} " ;
     }
   
     $sSql .= "  order by cnsmedico, cbo, procedimento, codigo_procedimento, idade_atendimento";
-  
+
     return $sSql;
   }
 }

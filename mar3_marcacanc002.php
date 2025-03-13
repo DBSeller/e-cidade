@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_marca_classe.php");
-include("classes/db_marcaloc_classe.php");
-include("classes/db_cancmarca_classe.php");
-include("classes/db_transfmarca_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_marca_classe.php"));
+include(modification("classes/db_marcaloc_classe.php"));
+include(modification("classes/db_cancmarca_classe.php"));
+include(modification("classes/db_transfmarca_classe.php"));
 ?>
 <html>
 <head>
@@ -181,9 +181,9 @@ if(isset($cgm)){
        <?
        if($ma01_o_imagem!=0){
         $arquivo = "tmp/".$ma01_c_nomeimagem;
-        pg_exec("begin");
+        db_query("begin");
         pg_loexport($ma01_o_imagem,$arquivo);
-        pg_exec("end");
+        db_query("end");
        }else{
         $arquivo = "imagens/semmarca.jpg";
        }?>

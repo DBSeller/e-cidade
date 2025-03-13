@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -75,7 +75,9 @@ $sql2 = "insert into w_contasmovimento select k13_reduz,
 	            						inner join conplano      on c60_codcon  = c61_codcon 
 										                        and c60_anousu  = c61_anousu
 	             						left  join conplanoconta on c60_codcon  = c63_codcon 
-										                        and c63_anousu =c60_anousu ";
+										                        and c63_anousu =c60_anousu 
+										                        and c63_reduz =c61_reduz 
+										                        ";
 if($conta > 0) {
 	$sql2 .= " where c61_reduz = $conta ";
 }	             
@@ -108,9 +110,9 @@ echo $sql3.";<br><br>";
 exit;
 */
 
-pg_query($sql1) or die ("Erro gerando tabela temporaria");
-pg_query($sql2) or die ("Erro incluindo registros na tabela temporaria");
-$resultcontasmovimento = pg_query($sql3);
+db_query($sql1) or die ("Erro gerando tabela temporaria");
+db_query($sql2) or die ("Erro incluindo registros na tabela temporaria");
+$resultcontasmovimento = db_query($sql3);
 if(pg_numrows($resultcontasmovimento) == 0){
     db_redireciona('db_erros.php?fechar=true&db_erro=Não existem dados neste periodo.');
 }
@@ -622,7 +624,7 @@ $sql .= "
 }
        
 //	   echo $sql; exit;
-    $resmovimentacao = pg_exec($sql);    
+    $resmovimentacao = db_query($sql);    
     $quebra_data = '';
     $saldo_dia_debito  = 0;
     $saldo_dia_credito = 0;
@@ -680,7 +682,7 @@ $sql .= "
 		    where k02_codigo = $receita
 		      and k02_anousu = ".db_getsession("DB_anousu")."		   
 	               ";
-		 $res_rec = pg_query($sql);
+		 $res_rec = db_query($sql);
 		 $c61_reduz ="";
 		 if (pg_numrows($res_rec)>0){
 		     db_fieldsmemory($res_rec,0);

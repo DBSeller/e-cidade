@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -75,7 +75,7 @@ class cl_progressaoparcialalunoresultadofinal {
      if($exclusao==false){
        $this->ed121_sequencial = ($this->ed121_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["ed121_sequencial"]:$this->ed121_sequencial);
        $this->ed121_progressaoparcialalunomatricula = ($this->ed121_progressaoparcialalunomatricula == ""?@$GLOBALS["HTTP_POST_VARS"]["ed121_progressaoparcialalunomatricula"]:$this->ed121_progressaoparcialalunomatricula);
-       $this->ed121_nota = ($this->ed121_nota == ""?@$GLOBALS["HTTP_POST_VARS"]["ed121_nota"]:$this->ed121_nota);
+       $this->ed121_nota = ($this->ed121_nota === ""?@$GLOBALS["HTTP_POST_VARS"]["ed121_nota"]:$this->ed121_nota);
        $this->ed121_faltas = ($this->ed121_faltas == ""?@$GLOBALS["HTTP_POST_VARS"]["ed121_faltas"]:$this->ed121_faltas);
        $this->ed121_resultadofinal = ($this->ed121_resultadofinal == ""?@$GLOBALS["HTTP_POST_VARS"]["ed121_resultadofinal"]:$this->ed121_resultadofinal);
      }else{

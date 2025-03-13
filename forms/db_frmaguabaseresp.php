@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
   //MODULO: agua
-  include("dbforms/db_classesgenericas.php");
+  include(modification("dbforms/db_classesgenericas.php"));
   
   $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
   $claguabaseresp->rotulo->label();
@@ -139,13 +139,13 @@
   function js_pesquisax14_matric(mostra) {
 
 	  if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabaseresp', 'db_iframe_aguabase',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabaseresp', 'db_iframe_aguabase',
     	                    'func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm',
     	                    'Pesquisa', true, '0', '1', '775', '390');
     } else {
 
       if (document.form1.x14_matric.value != '') { 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabaseresp', 'db_iframe_aguabase', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabaseresp', 'db_iframe_aguabase', 
                             'func_aguabase.php?pesquisa_chave=' + document.form1.x14_matric.value + 
                               '&funcao_js=parent.js_mostraaguabase',
                             'Pesquisa', false);
@@ -177,13 +177,13 @@
   function js_pesquisax14_numcgm(mostra) {
 
 	  if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabaseresp', 'db_iframe_cgm', 
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabaseresp', 'db_iframe_cgm', 
     	                    'func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome',
     	                    'Pesquisa', true, '0', '1', '775', '390');
     } else {
 
       if (document.form1.x14_numcgm.value != '') { 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabaseresp', 'db_iframe_cgm', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabaseresp', 'db_iframe_cgm', 
                             'func_nome.php?pesquisa_chave=' + document.form1.x14_numcgm.value +
                               '&funcao_js=parent.js_mostracgm',
                             'Pesquisa', false);

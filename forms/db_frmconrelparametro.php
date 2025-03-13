@@ -60,7 +60,7 @@ $clconrelparametro->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conrelparametro','func_conrelparametro.php?funcao_js=parent.js_preenchepesquisa|c18_parametro','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conrelparametro','func_conrelparametro.php?funcao_js=parent.js_preenchepesquisa|c18_parametro','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conrelparametro.hide();

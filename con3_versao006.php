@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_db_versao_classe.php");
-include("classes/db_db_versaoant_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_db_versao_classe.php"));
+include(modification("classes/db_db_versaoant_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -87,7 +87,7 @@ if(isset($id_item) && $id_item != 0){
 $sql .= "
         order by nome_modulo";
 
-$res = pg_exec($sql);
+$res = db_query($sql);
 
 $numrows = pg_numrows($res);
 
@@ -115,7 +115,7 @@ for($i=0;$i<$numrows;$i++){
               where modulo = $modulo
               order by i.codproced";
 
-  $result = pg_query($sql);
+  $result = db_query($sql);
 
   if(pg_numrows($result)>0){
         
@@ -141,7 +141,7 @@ for($i=0;$i<$numrows;$i++){
                  where modulo = $modulo
               ) ";
 
-      $resitem = pg_query($sql);
+      $resitem = db_query($sql);
       for($mi=0;$mi<pg_numrows($resitem);$mi++){
         db_fieldsmemory($resitem,$mi);
         $pdf->Cell(5,4,"");

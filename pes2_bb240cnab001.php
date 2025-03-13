@@ -1,9 +1,9 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
+ *                         e-cidadedbseller.com.br                   
  *                                                                    
  *  Este programa e software livre; voce pode redistribui-lo e/ou     
  *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
@@ -25,14 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rharqbanco_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrharqbanco = new cl_rharqbanco;
+
 $clrotulo = new rotulocampo;
 $clrharqbanco->rotulo->label();
 $clrotulo->label('rh34_codarq');
@@ -93,20 +94,24 @@ if(isset($emite2)){
         qry += '&codban='+document.form1.rh34_codban.value;
         qry += '&tiparq='+document.form1.tiparq.value;
         qry += '&qfolha='+document.form1.qfolha.value;
-        js_OpenJanelaIframe('top.corpo','db_iframe_geraarqbanco','pes2_bb240cnab002.php?'+qry,'Gerando Arquivo',true);
+        qry += '&opt_todosbcos='+document.form1.opt_todosbcos.value;
+        qry += '&xano='+document.form1.ano.value;
+        qry += '&xmes='+document.form1.mes.value;
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_geraarqbanco','pes2_bb240cnab002.php?'+qry,'Gerando Arquivo',true);
       }
       
-      function js_detectaarquivo(arquivo,pdf){
+      function js_detectaarquivo(arquivo,pdf,arquivo_total){
         js_controlarodape(false);
-        top.corpo.db_iframe_geraarqbanco.hide();
+        CurrentWindow.corpo.db_iframe_geraarqbanco.hide();
         listagem = arquivo+"#Download arquivo TXT (pagamento eletrônico)|";
-        listagem+= pdf+"#Download relatório";
+        listagem+= pdf+"#Download relatório|";
+        listagem+= arquivo_total+"#Download totalizador";
         js_montarlista(listagem,"form1");
       }
       
       function js_erro(msg){
         js_controlarodape(false);
-        top.corpo.db_iframe_geraarqbanco.hide();
+        CurrentWindow.corpo.db_iframe_geraarqbanco.hide();
         alert(msg);
       }
       function js_fechaiframe(){
@@ -114,10 +119,10 @@ if(isset($emite2)){
       }
       function js_controlarodape(mostra){
         if(mostra == true){
-          document.form1.rodape.value = parent.bstatus.document.getElementById('st').innerHTML;
-          parent.bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
+          document.form1.rodape.value = CurrentWindow.bstatus.document.getElementById('st').innerHTML;
+          CurrentWindow.bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
         }else{
-          parent.bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
+          CurrentWindow.bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
         }
       }
     </script>  
@@ -133,102 +138,112 @@ if(isset($emite2)){
         <table align="center" border="0" class="form-container">
           <tr>
             <td><b>Data da Geração:</b></td>
-            <td><?
+            <td><?php
               if((!isset($datagera_dia) || (isset($datagera_dia) && trim($datagera_dia) == "")) && (!isset($datagera_mes) || (isset($datagera_mes) && trim($datagera_mes) == "")) && (!isset($datagera_ano) || (isset($datagera_ano) && trim($datagera_ano) == ""))){
                 $datagera_dia=date('d',db_getsession('DB_datausu'));
                 $datagera_mes=date('m',db_getsession('DB_datausu'));
                 $datagera_ano=date('Y',db_getsession('DB_datausu'));
               }
-              db_inputdata('datagera',@$datagera_dia,@$datagera_mes,@$datagera_ano,true,'text',1,"");
+              db_inputdata('datagera',$datagera_dia,$datagera_mes,$datagera_ano,true,'text',1,"");
               ?></td>
           </tr>
           <tr>
             <td><b>Data de Depósito:</b></td>
             <td>
-              <?
+              <?php
               if((!isset($datadeposit_dia) || (isset($datadeposit_dia) && trim($datadeposit_dia) == "")) && (!isset($datadeposit_mes) || (isset($datadeposit_mes) && trim($datadeposit_mes) == "")) && (!isset($datadeposit_ano) || (isset($datadeposit_ano) && trim($datadeposit_ano) == ""))){
                 $datadeposit_dia = "";
                 $datadeposit_mes = "";
                 $datadeposit_ano = "";
               }
-              db_inputdata('datadeposit',@$datadeposit_dia,@$datadeposit_mes,@$datadeposit_ano,true,'text',1);
+              db_inputdata('datadeposit',$datadeposit_dia,$datadeposit_mes,$datadeposit_ano,true,'text',1);
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td><b>Banco:</b></td>
+            <td>
+              <?php  
+              (!isset($GLOBALS['opt_todosbcos'])) ? $GLOBALS['opt_todosbcos'] = '1' : '';
+              $arr_tipobanco = Array("1"=>"Banco do Brasil", "0"=>"Todos");
+              db_select("opt_todosbcos", $arr_tipobanco, true, 1, 'style="max-width: 125px;"');
               ?>
             </td>
           </tr>
           <tr> 
-            <td title="<?=@$Trh34_codarq?>">
+            <td title="<?=$Trh34_codarq?>">
               <?php
-                db_ancora(@$Lrh34_codarq,"js_pesquisa(true);",1);
+                db_ancora($Lrh34_codarq,"js_pesquisa(true);",1);
               ?>
             </td>
             <td>
               <?php
-                db_input("rh34_codarq",10,@$Irh34_codarq,true,"text",4,"onchange='js_pesquisa(false);'");
-                db_input("rh34_descr",34,@$Irh34_descr,true,"text",3);
+                db_input("rh34_codarq",10,$Irh34_codarq,true,"text",4,"onchange='js_pesquisa(false);'");
+                db_input("rh34_descr",34,$Irh34_descr,true,"text",3);
                 db_input("rodape",40,0,true,"hidden",3);
               ?>
             </td>
           </tr>
           <tr>
             <td colspan="2">
-              <fieldset>
+              <fieldset id="fieldsetdadosbancarios">
                 <legend >Dados Bancários</legend>
                   <table>
                     <tr>
-                      <td  title="<?=@$Trh34_codban?>">
-                        <?
-                        db_ancora(@$Lrh34_codban,"return true;",3);
+                      <td  title="<?=$Trh34_codban?>">
+                        <?php
+                        db_ancora($Lrh34_codban,"return true;",3);
                         ?>
                       </td>
                       <td colspan="3" rel="ignore-css" style="padding-top:3px; white-space:nowrap"> 
-                        <?
+                        <?php
                         db_input('rh34_codban',6,$Irh34_codban,true,'text',3);
                         db_input('db90_descr',31,$Idb90_descr,true,'text',3);
                         ?>
                       </td>
                     </tr>
                     <tr>
-                      <td  title="<?=@$Trh34_agencia?>">
-                        <?=@$Lrh34_agencia?>
+                      <td  title="<?=$Trh34_agencia?>">
+                        <?=$Lrh34_agencia?>
                       </td>
                       <td > 
-                        <?
+                        <?php
                         db_input('rh34_agencia',6,$Irh34_agencia,true,'text',3,"")
                         ?>
                       </td>
-                      <td  title="<?=@$Trh34_dvagencia?>" align="left" rel="ignore-css">
+                      <td  title="<?=$Trh34_dvagencia?>" align="left" rel="ignore-css">
                        <b> DV da Agência:</b>
                       </td>
                       <td> 
-                        <?
+                        <?php
                         db_input('rh34_dvagencia',2,$Irh34_dvagencia,true,'text',3,"style='width:100%' class='readonly'");
                         ?>
                       </td>
                     </tr>
                     <tr>
-                      <td  title="<?=@$Trh34_conta?>"> 
-                        <?=@$Lrh34_conta?>
+                      <td  title="<?=$Trh34_conta?>"> 
+                        <?=$Lrh34_conta?>
                       </td>
                       <td> 
-                        <?
+                        <?php
                         db_input('rh34_conta',15,$Irh34_conta,true,'text',3,"")
                         ?>
                       </td>
-                      <td  title="<?=@$Trh34_dvconta?>" align="left" rel="ignore-css">
+                      <td  title="<?=$Trh34_dvconta?>" align="left" rel="ignore-css">
                         <b>DV da Conta Corrente:</b>
                       </td>
                       <td> 
-                        <?
+                        <?php
                         db_input('rh34_dvconta',2,$Irh34_dvconta,true,'text',3,"style='width:100%' class='readonly'");
                         ?>
                       </td>
                     </tr>
                     <tr>
-                      <td  title="<?=@$Trh34_convenio?>">
-                        <?=@$Lrh34_convenio?>
+                      <td  title="<?=$Trh34_convenio?>">
+                        <?=$Lrh34_convenio?>
                       </td> 
                       <td colspan="3" rel="ignore-css" style="padding-top:3px;"> 
-                        <?
+                        <?php
                         db_input('rh34_convenio',15,$Irh34_convenio,true,'text',3,"")
                         ?>
                       </td>
@@ -238,12 +253,12 @@ if(isset($emite2)){
             </td>
           </tr>
           <tr>
-            <td  title="<?=@$Trh34_sequencial?>">
-              <?=@$Lrh34_sequencial?>
+            <td  title="<?=$Trh34_sequencial?>">
+              <?=$Lrh34_sequencial?>
             </td>
             <td> 
-              <?
-              db_input('rh34_sequencial',15,$Irh34_sequencial,true,'text',1,"")
+              <?php
+              db_input('rh34_sequencial',15,$Irh34_sequencial,true,'text',1,"","","",'max-width: 125px;')
               ?>
             </td>
           </tr>
@@ -252,7 +267,7 @@ if(isset($emite2)){
               <strong>Tipo de Arquivo:</strong>
             </td>
             <td>
-              <?
+              <?php
               $arr_tiparq = Array(
         			                    "1"=>"1 - Pensão Judicial",
         			                    "0"=>"0 - Todos"
@@ -262,17 +277,43 @@ if(isset($emite2)){
             </td>
           </tr>
           <tr>
+            <td align="left" nowrap title="Digite o Ano / Mes de competência" >
+            <strong>Ano / Mês :&nbsp;&nbsp;</strong>
+            </td>
+            <td>
+              <?php
+               if(!isset($ano) ){
+                 $ano = db_anofolha();
+               }
+               db_input('ano',4,1,true,'text',2);
+              ?>
+              &nbsp;/&nbsp;
+              <?php
+               
+               if(!isset($mes)){
+                 $mes = db_mesfolha();
+               }
+               db_input('mes',2,1,true,'text',2);
+              ?>
+            </td>
+          </tr>
+          <tr>
             <td>
               <strong>Tipo de Folha:</strong>
             </td>
             <td>
-              <?
+              <?php
               $arr_qfolha = Array(
                                   "1"=>"Salário",
         	                        "2"=>"Complementar",
                                   "3"=>"13º. Salário",
                                   "4"=>"Rescisão"
                                  );
+
+              if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+                $arr_qfolha["5"] = "Suplementar"; 
+              }
+              
               db_select("qfolha", $arr_qfolha, true, 1);
               ?>
             </td>
@@ -280,22 +321,26 @@ if(isset($emite2)){
     </fieldset>
     <input name="emite2" id="emite2" type="submit" value="Processar" onclick="return js_valores();" >
   </form>
-  <?php db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
+  <?php db_menu(); ?>
 </body>
 </html>
 <script>
 function js_habilita(valor){
   if(valor == 1){
     document.form1.qfolha.disabled = false;
+    document.form1.ano.disabled = false;
+    document.form1.mes.disabled = false;
   }else{
     document.form1.qfolha.disabled = true;
+    document.form1.ano.disabled = true;
+    document.form1.mes.disabled = true;
   }
 }
 function js_pesquisa(mostra){
   if (mostra==true) {
 
     js_OpenJanelaIframe(
-        'top.corpo',
+        'CurrentWindow.corpo',
         'db_iframe_rharqbanco',
         'func_rharqbanco.php?ativas=true&iCodigoBanco=001&funcao_js=parent.js_mostra1|rh34_codarq|rh34_descr',
         'Pesquisa de Arquivo Bancário',
@@ -303,7 +348,7 @@ function js_pesquisa(mostra){
 
   } else {
     if (document.form1.rh34_codarq.value != '') {
-      js_OpenJanelaIframe('top.corpo','db_iframe_rharqbanco','func_rharqbanco.php?ativas=true&pesquisa_chave='+document.form1.rh34_codarq.value+'&iCodigoBanco=001&funcao_js=parent.js_mostra','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rharqbanco','func_rharqbanco.php?ativas=true&pesquisa_chave='+document.form1.rh34_codarq.value+'&iCodigoBanco=001&funcao_js=parent.js_mostra','Pesquisa',false);
     } else {
       document.form1.rh34_codarq.value = '';
       document.form1.rh34_descr.value = '';
@@ -326,10 +371,10 @@ function js_mostra1(chave1,chave2){
 }
 function js_pesquisarh34_codban(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_bancos','func_db_bancos.php?funcao_js=parent.js_mostradb_bancos1|db90_codban|db90_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_bancos','func_db_bancos.php?funcao_js=parent.js_mostradb_bancos1|db90_codban|db90_descr','Pesquisa',true);
   }else{
     if(document.form1.rh34_codban.value != ''){
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_bancos','func_db_bancos.php?pesquisa_chave='+document.form1.rh34_codban.value+'&funcao_js=parent.js_mostradb_bancos','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_bancos','func_db_bancos.php?pesquisa_chave='+document.form1.rh34_codban.value+'&funcao_js=parent.js_mostradb_bancos','Pesquisa',false);
     }else{
       document.form1.db90_descr.value = '';
     }
@@ -349,7 +394,7 @@ function js_mostradb_bancos1(chave1,chave2){
 }
 js_habilita(document.form1.tiparq.value);
 </script>
-<?
+<?php
 if(isset($emite2)){
   if($clrharqbanco->erro_status=="0"){
     $clrharqbanco->erro(true,false);

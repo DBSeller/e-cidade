@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
 
 $oJson    = new services_json();
 
@@ -46,7 +46,7 @@ switch($oParam->exec) {
 
   case 'getRuas':
 
-    require_once('model/rotasRuas.model.php');
+    require_once(modification('model/rotasRuas.model.php'));
 
     try {
 
@@ -67,7 +67,7 @@ switch($oParam->exec) {
 
   case 'getRotasConflito':
 
-    require_once('model/rotasRuas.model.php');
+    require_once(modification('model/rotasRuas.model.php'));
 
     try {
 
@@ -89,7 +89,7 @@ switch($oParam->exec) {
 
   case 'getRotaOrientacao':
 
-    require_once('model/rotasRuas.model.php');
+    require_once(modification('model/rotasRuas.model.php'));
 
     try {
 

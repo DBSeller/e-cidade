@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -372,7 +372,6 @@ class cl_edu_numalunobloqueado {
      $sql .= " from edu_numalunobloqueado ";
      $sql .= "      inner join turma  on  turma.ed57_i_codigo = edu_numalunobloqueado.ed289_i_turma";
      $sql .= "      left  join censocursoprofiss  on  censocursoprofiss.ed247_i_codigo = turma.ed57_i_censocursoprofiss";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = turma.ed57_i_censoetapa";
      $sql .= "      inner join escola  on  escola.ed18_i_codigo = turma.ed57_i_escola";
      $sql .= "      inner join turno  on  turno.ed15_i_codigo = turma.ed57_i_turno";
      $sql .= "      inner join sala  on  sala.ed16_i_codigo = turma.ed57_i_sala";

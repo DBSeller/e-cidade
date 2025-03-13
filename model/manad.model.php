@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,91 +33,102 @@ class manad {
 	function __construct() { }
   
 	public $aCredores = array(); 
-  function getSqlK050($iInstit, $sDataini, $sDatafim) {
+  function getSqlK050($iInstit, $sDataini, $sDatafim, $tabelas = array() ) {
 
   	list ( $iAnoUsuFim, $iMesUsuFim, $iDiaUsuFim ) = explode("-", $sDatafim);
     list ( $iAnoUsuIni, $iMesUsuIni, $iDiaUsuIni ) = explode("-", $sDataini);
 
-		/**
-		 * K050
-		 */
-		$sSqlK050  = "select distinct
-                         'K050'                          as reg, ";
-		$sSqlK050 .= "       (select cgc       ";
-		$sSqlK050 .= "          from db_config ";
-		$sSqlK050 .= "         where codigo =  {$iInstit} ) as cnpj_cei, ";
-		$sSqlK050 .= "       '01011900'                     as dt_inc_alt,     ";
-		$sSqlK050 .= "       rhpessoal.rh01_regist    as cod_reg_trab,   ";
-		$sSqlK050 .= "       cgm.z01_cgccpf           as cpf,            ";
-		$sSqlK050 .= "       rhpesdoc.rh16_pis        as nit,            ";
-		$sSqlK050 .= "       ( select tpcontra.h13_tpcont 
-                             from tpcontra 
-                                  inner join  rhpessoalmov on rhpessoalmov.rh02_tpcont = tpcontra.h13_codigo
-                            where rhpessoalmov.rh02_regist = rhpessoal.rh01_regist 
-                            order by rhpessoalmov.rh02_anousu desc,
-                                     rhpessoalmov.rh02_mesusu desc limit 1 ) as cod_categ, ";
+	/**
+	 * K050
+	 */
+	$sSqlK050  = "select distinct
+                        'K050'                          as reg, ";
+	$sSqlK050 .= "       (select cgc       ";
+	$sSqlK050 .= "          from db_config ";
+	$sSqlK050 .= "         where codigo =  {$iInstit} ) as cnpj_cei, ";
+	$sSqlK050 .= "       '01011900'                     as dt_inc_alt,     ";
+	$sSqlK050 .= "       rhpessoal.rh01_regist    as cod_reg_trab,   ";
+	$sSqlK050 .= "       cgm.z01_cgccpf           as cpf,            ";
+	$sSqlK050 .= "       rhpesdoc.rh16_pis        as nit,            ";
+	$sSqlK050 .= "       ( select tpcontra.h13_tpcont 
+                            from tpcontra 
+                                 inner join  rhpessoalmov on rhpessoalmov.rh02_tpcont = tpcontra.h13_codigo
+                           where rhpessoalmov.rh02_regist = rhpessoal.rh01_regist 
+                           order by rhpessoalmov.rh02_anousu desc,
+                                    rhpessoalmov.rh02_mesusu desc limit 1 ) as cod_categ, ";
 
-		$sSqlK050 .= "       cgm.z01_nome             as nome_trab,      ";
-		$sSqlK050 .= "       to_char(rh01_nasc,'ddmmYYYY')   as dt_nasc,        ";
-		
-		$sSqlK050 .= "       to_char(rhpessoal.rh01_admiss, 'ddmmYYYY')    as dt_admissao,    ";
-		
-		$sSqlK050 .= "       to_char(rhpesrescisao.rh05_recis, 'ddmmYYYY') as dt_demissao, ";
-		$sSqlK050 .= "       rh30_vinculomanad  as ind_vinc,       ";
-		$sSqlK050 .= "       null                      as tipo_ato_nom,   ";
-		$sSqlK050 .= "       null                      as nm_ato_nom,     ";
-		$sSqlK050 .= "       null                      as dt_ato_nom      ";
-		$sSqlK050 .= "  from rhpessoal ";
-		$sSqlK050 .= "       inner join cgm           on z01_numcgm                = rh01_numcgm "; 
-		$sSqlK050 .= "       inner join rhpessoalmov  on rh01_regist               = rh02_regist ";
-    $sSqlK050 .= "       inner join rhregime      on rh30_codreg = rh02_codreg ";
-    $sSqlK050 .= "                               and rh30_instit = rh02_instit "; 
-		$sSqlK050 .= "       left  join rhpesdoc      on rhpesdoc.rh16_regist      = rhpessoal.rh01_regist ";
-		$sSqlK050 .= "       left  join rhpesrescisao on rhpesrescisao.rh05_seqpes = rhpessoalmov.rh02_seqpes ";
-		$sSqlK050 .= " where "; 
-		$sSqlK050 .= "       rhpessoalmov.rh02_anousu = {$iAnoUsuFim}";
-                $sSqlK050 .= "   and rhpessoalmov.rh02_mesusu   = {$iMesUsuFim} ";
-                $sSqlK050 .= "   and ( rhpesrescisao.rh05_recis is null 
-                        or rhpesrescisao.rh05_recis >= '{$iAnoUsuFim}-{$iMesUsuIni}-{$iDiaUsuIni}' 
-                        or rh02_regist in (select distinct r20_regist from gerfres where (r20_anousu >= {$iAnoUsuIni} and r20_mesusu >= {$iMesUsuIni} ) and (r20_anousu <= {$iAnoUsuFim} and r20_mesusu <= {$iMesUsuFim} ) )
-                    ) ";
-                $sSqlK050 .= "   and rhpessoalmov.rh02_instit = {$iInstit} ";
-//echo $sSqlK050;exit;
-		return $sSqlK050;   	
+	$sSqlK050 .= "       cgm.z01_nome             as nome_trab,      ";
+	$sSqlK050 .= "       to_char(rh01_nasc,'ddmmYYYY')   as dt_nasc,        ";
+
+	$sSqlK050 .= "       to_char(rhpessoal.rh01_admiss,'ddmmYYYY')    as dt_admissao,    ";
+
+	$sSqlK050 .= "       to_char((select rhpesrescisao.rh05_recis
+                                   from rhpesrescisao 
+                                        inner join rhpessoalmov on rhpessoalmov.rh02_seqpes = rhpesrescisao.rh05_seqpes
+                                  where rhpessoalmov.rh02_regist = rhpessoal.rh01_regist
+                                  order by rhpessoalmov.rh02_anousu desc,
+                                           rhpessoalmov.rh02_mesusu desc limit 1 ),'ddmmYYYY') as dt_demissao,    ";
+
+	$sSqlK050 .= "       null                      as ind_vinc,       ";
+	$sSqlK050 .= "       null                      as tipo_ato_nom,   ";
+	$sSqlK050 .= "       null                      as nm_ato_nom,     ";
+	$sSqlK050 .= "       null                      as dt_ato_nom      ";
+	$sSqlK050 .= "  from rhpessoal ";
+	$sSqlK050 .= "       inner join cgm            on z01_numcgm                = rh01_numcgm ";
+	$sSqlK050 .= "       inner join rhpessoalmov  on rh01_regist               = rh02_regist ";
+	$sSqlK050 .= "       left  join rhpesdoc      on rhpesdoc.rh16_regist      = rhpessoal.rh01_regist ";
+	$sSqlK050 .= " where ((rhpessoalmov.rh02_anousu >= {$iAnoUsuIni}";
+	$sSqlK050 .= "   and rhpessoalmov.rh02_mesusu   >= {$iMesUsuIni}) ";
+	$sSqlK050 .= "   and (rhpessoalmov.rh02_anousu <= {$iAnoUsuFim}";
+    $sSqlK050 .= "   and rhpessoalmov.rh02_mesusu   <= {$iMesUsuFim})) ";
+	$sSqlK050 .= "   and rhpessoalmov.rh02_instit = {$iInstit} ";
+
+     $tabelaPrevidencia = implode(', ', $tabelas);
+     if ( !empty($tabelaPrevidencia ) ){
+        $sSqlK050 .= "   and rhpessoalmov.rh02_tbprev in ({$tabelaPrevidencia}) ";
+     }
+
+	return $sSqlK050;
   	
   }
   
   function getSqlK100($iInstit) {
   	
   	$sSqlK100  = " select 'K100'            as reg,         ";
-		$sSqlK100 .= "        '01011900'        as dt_inc_alt,  ";
-		$sSqlK100 .= "        rhlota.r70_codigo as cod_ltc,     ";
-		$sSqlK100 .= "        (select cgc        ";
+	$sSqlK100 .= "        '01011900'        as dt_inc_alt,  ";
+	$sSqlK100 .= "        rhlota.r70_codigo as cod_ltc,     ";
+	$sSqlK100 .= "        (select cgc        ";
     $sSqlK100 .= "           from db_config  ";
     $sSqlK100 .= "          where codigo =  {$iInstit}) as cnpj_cei, ";
-		$sSqlK100 .= "        rhlota.r70_descr  as desc_ltc,    ";
-		$sSqlK100 .= "        null              as cnpj_cei_tom ";
-		$sSqlK100 .= "   from rhlota                            ";
-		$sSqlK100 .= "  where r70_instit = {$iInstit}           ";
+	$sSqlK100 .= "        rhlota.r70_descr  as desc_ltc,    ";
+	$sSqlK100 .= "        null              as cnpj_cei_tom ";
+	$sSqlK100 .= "   from rhlota                            ";
+	$sSqlK100 .= "  where r70_instit = {$iInstit}           ";
   	return $sSqlK100; 
   }
   
   function getSqlK150($iInstit){
   	
   	$sSqlK150  = " select 'K150'        as reg,";
-		$sSqlK150 .= "        (select cgc        ";
-		$sSqlK150 .= "           from db_config  ";
-		$sSqlK150 .= "          where codigo =  {$iInstit}) as cnpj_cei, ";
-		$sSqlK150 .= "        '01011900'          as dt_inc_alt,     ";
-		$sSqlK150 .= "        rh27_rubric         as cod_rubrica,    ";
-		$sSqlK150 .= "        rh27_descr          as desc_rubrica    ";
-		$sSqlK150 .= "   from rhrubricas                             ";
-		$sSqlK150 .= "  where rh27_instit = {$iInstit}               ";
-		return $sSqlK150;		
+	$sSqlK150 .= "        (select cgc        ";
+	$sSqlK150 .= "           from db_config  ";
+	$sSqlK150 .= "          where codigo =  {$iInstit}) as cnpj_cei, ";
+	$sSqlK150 .= "        '01011900'          as dt_inc_alt,     ";
+	$sSqlK150 .= "        rh27_rubric         as cod_rubrica,    ";
+	$sSqlK150 .= "        rh27_descr          as desc_rubrica    ";
+	$sSqlK150 .= "   from rhrubricas                             ";
+	$sSqlK150 .= "  where rh27_instit = {$iInstit}               ";
+	return $sSqlK150;
   	
   }
   
-  function getSqlK250($iInstit, $sDataini, $sDatafim){
+  function getSqlK250($iInstit, $sDataini, $sDatafim, $tabelas = array() ) {
+
+      $tabelaPrevidencia = implode(', ', $tabelas);
+      $filtraTabelaPrevidenciaria = '';
+      if ( !empty($tabelaPrevidencia ) ){
+          $filtraTabelaPrevidenciaria = " and rhpessoalmov.rh02_tbprev in ({$tabelaPrevidencia}) ";
+      }
 
   	list ( $iAnoUsuFim, $iMesUsuFim, $iDiaUsuFim ) = explode("-", $sDatafim);
     list ( $iAnoUsuIni, $iMesUsuIni, $iDiaUsuIni ) = explode("-", $sDataini);
@@ -127,9 +138,7 @@ class manad {
   	 */ 
     $sData1 = $iAnoUsuIni.$iMesUsuIni;
     $sData2 = $iAnoUsuFim.$iMesUsuFim;
-    
-    //die($sData1);
-     
+
     $sSqlK250   = " select reg,
                            cnpj_cei,
                            ind_fl,
@@ -138,7 +147,10 @@ class manad {
                            dt_comp,
                            dt_pgto,
                            cod_cbo,
-                           cod_ocorr,
+                          case when trim(cod_ocorr) = '' or cod_ocorr is null
+                               then '00'
+                               else cod_ocorr
+                          end as cod_ocorr,
                            desc_cargo, 
                            
                            replace(cast(round(sum(cast(replace(coalesce(vl_base_irrf,'0,00'),',','.') as numeric)),2) as text),'.',',') as vl_base_irrf,
@@ -148,202 +160,190 @@ class manad {
     $sSqlK250  .= "        min(cast(coalesce(qtd_dep_sf,0) as numeric)) as qtd_dep_sf  ";
     $sSqlK250  .= "   from ( ";
     
-		$sSqlK250  .= " select case 
-		                        when round(cast(substr(db_fxxx(cod_reg_trab,anousu,mesusu,instit),45,11)as numeric),0) = 0 then null 
-		                        else round(cast(substr(db_fxxx(cod_reg_trab,anousu,mesusu,instit),45,11)as numeric),0) 
-		                       end as qtd_dep_ir, 
-		                        ";
-		 
-		$sSqlK250 .= "        case 
-		                        when round(cast(substr(db_fxxx(cod_reg_trab,anousu,mesusu,instit),56,11)as numeric),0) = 0 then null 
-		                        else round(cast(substr(db_fxxx(cod_reg_trab,anousu,mesusu,instit),56,11)as numeric),0)
-                          end as qtd_dep_sf,";
-		 
-		$sSqlK250 .= "        x.* ";
-		$sSqlK250 .= "   from (   ";
-		$sSqlK250 .= "       select 'K250'                                        as reg,          ";
-		$sSqlK250 .= "              (select cgc from db_config where codigo =  {$iInstit}) as cnpj_cei,         ";
-		$sSqlK250 .= "              1                                             as ind_fl,       ";
-		$sSqlK250 .= "              r14_lotac                                     as cod_ltc,      ";
-		$sSqlK250 .= "              r14_regist                                    as cod_reg_trab, ";
-		$sSqlK250 .= "              lpad(r14_mesusu,2,'0')||r14_anousu            as dt_comp,      ";
-		$sSqlK250 .= "              ndias(r14_anousu,r14_mesusu)||lpad(r14_mesusu,2,'0')||r14_anousu as dt_pgto, "; 
-		$sSqlK250 .= "              rh37_cbo                                      as cod_cbo,      ";
-		$sSqlK250 .= "              rh02_ocorre                                   as cod_ocorr,    ";
-		$sSqlK250 .= "              rh37_descr                                    as desc_cargo,   ";
-		$sSqlK250 .= "              r14_mesusu                                    as mesusu,       ";
-		$sSqlK250 .= "              r14_anousu                                    as anousu,       ";
-		$sSqlK250 .= "              gerfsal.r14_instit                            as instit,       ";
-		
-		$sSqlK250 .= "              replace(cast(cast(round((case                                                ";
-		$sSqlK250 .= "                                         when r14_rubric in ('R981','R983') then r14_valor "; 
-		$sSqlK250 .= "                                         else 0                                            "; 
-		$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_irrf, ";
-		 
-		$sSqlK250 .= "              replace(cast(cast(round((case                                      "; 
-		$sSqlK250 .= "                                         when r14_rubric = 'R992' then r14_valor "; 
-		$sSqlK250 .= "                                         else 0                                  "; 
-		$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_ps ";
-		 
-		$sSqlK250 .= "         from gerfsal                                   ";
-		$sSqlK250 .= "              inner join rhpessoal    on rhpessoal.rh01_regist    = gerfsal.r14_regist "; 
-		$sSqlK250 .= "              inner join rhfuncao     on rhfuncao.rh37_funcao     = rhpessoal.rh01_funcao "; 
-		$sSqlK250 .= "                                     and rhfuncao.rh37_instit     = gerfsal.r14_instit "; 
-		$sSqlK250 .= "              inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfsal.r14_regist "; 
-		$sSqlK250 .= "                                     and rhpessoalmov.rh02_mesusu = gerfsal.r14_mesusu "; 
-		$sSqlK250 .= "                                     and rhpessoalmov.rh02_anousu = gerfsal.r14_anousu ";
-                $sSqlK250 .= "       where gerfsal.r14_instit = {$iInstit} ";
-                $sSqlK250 .= "         and cast( gerfsal.r14_anousu||lpad(gerfsal.r14_mesusu,2,'0') as integer)
-                                           between cast('$sData1' as integer)
-                                               and cast('$sData2' as integer)";    
-                $sSqlK250 .= "          and exists ( select 1
-                                                     from gerfsal g
-			                             where g.r14_regist = gerfsal.r14_regist
-					               and g.r14_anousu = gerfsal.r14_anousu
-					               and g.r14_mesusu = gerfsal.r14_mesusu
-					               and g.r14_instit = gerfsal.r14_instit
-					               and g.r14_rubric <> 'R953' ) ";
-                $sSqlK250 .= "          and exists ( select 1
-                                                       from gerfsal g
-                                                      where g.r14_regist = gerfsal.r14_regist
-                                                        and g.r14_anousu = gerfsal.r14_anousu
-                                                        and g.r14_mesusu = gerfsal.r14_mesusu
-                                                        and g.r14_instit = gerfsal.r14_instit
-                                                        and g.r14_rubric <> 'R991' ) ";
-                $sSqlK250 .= "   and cast(rhpessoalmov.rh02_anousu||lpad(rhpessoalmov.rh02_mesusu,2,'0') as integer) 
-                                           between cast('$sData1' as integer)
-                                               and cast('$sData2' as integer)";    
-                $sSqlK250 .= "   and rhpessoalmov.rh02_instit = {$iInstit} ";
-		
-                $sSqlK250 .= "       union ";
-		$sSqlK250 .= "       select 'K250'                                        as reg, "; 
-		$sSqlK250 .= "              (select cgc from db_config where codigo =  {$iInstit}) as cnpj, "; 
-		$sSqlK250 .= "              2                                             as ind_fl, "; 
-		$sSqlK250 .= "              rh02_lota::char(4)                            as cod_ltc, "; 
-		$sSqlK250 .= "              r35_regist                                    as cod_reg_trab, "; 
-		$sSqlK250 .= "              '13'||r35_anousu            as dt_comp, "; 
-		$sSqlK250 .= "              ndias(r35_anousu,12)||lpad(12,2,'0')||r35_anousu as dt_pgto, "; 
-		$sSqlK250 .= "              rh37_cbo                                      as cod_cbo, "; 
-		$sSqlK250 .= "              rh02_ocorre                                   as cod_ocorr, "; 
-		$sSqlK250 .= "              rh37_descr                                    as desc_cargo, "; 
-		$sSqlK250 .= "              12                                            as mesusu, "; 
-		$sSqlK250 .= "              r35_anousu                                    as anousu, "; 
-		$sSqlK250 .= "              rh02_instit                                   as instit, "; 
-		$sSqlK250 .= "              replace(cast(cast(round((case  "; 
-		$sSqlK250 .= "                                         when r35_rubric in ('R981','R983') then r35_valor "; 
-		$sSqlK250 .= "                                         else 0 "; 
-		$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_irrf, "; 
-		$sSqlK250 .= "              replace(cast(cast(round((case  "; 
-		$sSqlK250 .= "                                         when r35_rubric = 'R992' then r35_valor "; 
-		$sSqlK250 .= "                                         else 0 "; 
-		$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_ps "; 
-		$sSqlK250 .= "        from (select r35_anousu, 13, r35_regist, r35_rubric, round(sum(r35_valor),2) as r35_valor 
-                                            from gerfs13 where r35_anousu between {$iAnoUsuIni} and {$iAnoUsuFim} 
-                                                           and r35_instit = {$iInstit} 
-                                            group by r35_anousu, r35_regist, r35_rubric) as gerfs13"; 
-		$sSqlK250 .= "              inner join rhpessoal    on rhpessoal.rh01_regist = gerfs13.r35_regist "; 
-		$sSqlK250 .= "              inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfs13.r35_regist "; 
-		$sSqlK250 .= "              inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoalmov.rh02_funcao "; 
-		$sSqlK250 .= "                                     and rhfuncao.rh37_instit  = {$iInstit} "; 
-                $sSqlK250 .= "       where ";
-                $sSqlK250 .= "             rhpessoalmov.rh02_anousu = {$iAnoUsuFim}";
-                $sSqlK250 .= "         and rhpessoalmov.rh02_mesusu = {$iMesUsuFim} ";
-                $sSqlK250 .= "         and rhpessoalmov.rh02_instit = {$iInstit} ";
-                                      
-		$sSqlK250 .= "       union ";
-		$sSqlK250 .= "       select 'K250'                                        as reg, "; 
-		$sSqlK250 .= "              (select cgc from db_config where codigo =  {$iInstit}) as cnpj, "; 
-		$sSqlK250 .= "              4                                             as ind_fl, "; 
-		$sSqlK250 .= "              r48_lotac                                     as cod_ltc, "; 
-		$sSqlK250 .= "              r48_regist                                    as cod_reg_trab, "; 
-		$sSqlK250 .= "              lpad(r48_mesusu,2,'0')||r48_anousu            as dt_comp, "; 
-		$sSqlK250 .= "              ndias(r48_anousu,r48_mesusu)||lpad(r48_mesusu,2,'0')||r48_anousu as dt_pgto, "; 
-		$sSqlK250 .= "              rh37_cbo                                      as cod_cbo, "; 
-		$sSqlK250 .= "              rh02_ocorre                                   as cod_ocorr, "; 
-		$sSqlK250 .= "              rh37_descr                                    as desc_cargo, "; 
-		$sSqlK250 .= "              r48_mesusu                                    as mesusu, "; 
-		$sSqlK250 .= "              r48_anousu                                    as anousu, "; 
-		$sSqlK250 .= "              gerfcom.r48_instit                            as instit, "; 
-		$sSqlK250 .= "              replace(cast(cast(round((case  "; 
-		$sSqlK250 .= "                                         when r48_rubric in ('R981','R983') then r48_valor "; 
-		$sSqlK250 .= "                                         else 0 "; 
-		$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_irrf, "; 
-		$sSqlK250 .= "              replace(cast(cast(round((case  "; 
-		$sSqlK250 .= "                                         when r48_rubric = 'R992' then r48_valor "; 
-		$sSqlK250 .= "                                         else 0 "; 
-		$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_ps "; 
-		$sSqlK250 .= "         from gerfcom "; 
-		$sSqlK250 .= "              inner join rhpessoal    on rhpessoal.rh01_regist = gerfcom.r48_regist "; 
-		$sSqlK250 .= "              inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao "; 
-		$sSqlK250 .= "                                     and rhfuncao.rh37_instit  = gerfcom.r48_instit "; 
-		$sSqlK250 .= "              inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfcom.r48_regist "; 
-		$sSqlK250 .= "                                     and rhpessoalmov.rh02_mesusu = gerfcom.r48_mesusu "; 
-		$sSqlK250 .= "                                     and rhpessoalmov.rh02_anousu = gerfcom.r48_anousu ";
-                $sSqlK250 .= "       where gerfcom.r48_instit = {$iInstit} ";
-                $sSqlK250 .= "         and cast( gerfcom.r48_anousu||lpad(gerfcom.r48_mesusu,2,'0') as integer ) 
-                                             between cast( '$sData1' as integer) 
-                                                 and cast( '$sData2' as integer)";
-                $sSqlK250 .= "          and exists ( select 1
-                                                       from gerfcom c
-                                                      where c.r48_regist = gerfcom.r48_regist
-                                                        and c.r48_anousu = gerfcom.r48_anousu
-                                                        and c.r48_mesusu = gerfcom.r48_mesusu
-                                                        and c.r48_instit = gerfcom.r48_instit
-                                                        and c.r48_rubric <> 'R953' ) ";
-                $sSqlK250 .= "          and exists ( select 1
-                                                       from gerfcom c
-                                                      where c.r48_regist = gerfcom.r48_regist
-                                                        and c.r48_anousu = gerfcom.r48_anousu
-                                                        and c.r48_mesusu = gerfcom.r48_mesusu
-                                                        and c.r48_instit = gerfcom.r48_instit
-                                                        and c.r48_rubric <> 'R991' ) ";
-                $sSqlK250 .= "   and cast(rhpessoalmov.rh02_anousu||lpad(rhpessoalmov.rh02_mesusu,2,'0') as integer) 
-                                           between cast('$sData1' as integer)
-                                               and cast('$sData2' as integer)";    
+	$sSqlK250  .= " select case 
+	                        when round(cast(substr(db_fxxx(cod_reg_trab,anousu,mesusu,instit),45,11)as numeric),0) = 0 then null 
+	                        else round(cast(substr(db_fxxx(cod_reg_trab,anousu,mesusu,instit),45,11)as numeric),0) 
+	                       end as qtd_dep_ir, 
+	                        ";
 
-                $sSqlK250 .= "   and rhpessoalmov.rh02_instit = {$iInstit} ";
-		$sSqlK250 .= "       union ";
+	$sSqlK250 .= "        case 
+	                        when round(cast(substr(db_fxxx(cod_reg_trab,anousu,mesusu,instit),56,11)as numeric),0) = 0 then null 
+	                        else round(cast(substr(db_fxxx(cod_reg_trab,anousu,mesusu,instit),56,11)as numeric),0)
+                         end as qtd_dep_sf,";
+
+	$sSqlK250 .= "        x.* ";
+	$sSqlK250 .= "   from (   ";
+	$sSqlK250 .= "       select 'K250'                                        as reg,          ";
+	$sSqlK250 .= "              (select cgc from db_config where codigo =  {$iInstit}) as cnpj_cei,         ";
+	$sSqlK250 .= "              1                                             as ind_fl,       ";
+	$sSqlK250 .= "              r14_lotac                                     as cod_ltc,      ";
+	$sSqlK250 .= "              r14_regist                                    as cod_reg_trab, ";
+	$sSqlK250 .= "              lpad(r14_mesusu,2,'0')||r14_anousu            as dt_comp,      ";
+	$sSqlK250 .= "              ndias(r14_anousu,r14_mesusu)||lpad(r14_mesusu,2,'0')||r14_anousu as dt_pgto, ";
+	$sSqlK250 .= "              rh37_cbo                                      as cod_cbo,      ";
+	$sSqlK250 .= "              rh02_ocorre                                   as cod_ocorr,    ";
+	$sSqlK250 .= "              rh37_descr                                    as desc_cargo,   ";
+	$sSqlK250 .= "              r14_mesusu                                    as mesusu,       ";
+	$sSqlK250 .= "              r14_anousu                                    as anousu,       ";
+	$sSqlK250 .= "              gerfsal.r14_instit                            as instit,       ";
+
+	$sSqlK250 .= "              replace(cast(cast(round((case                                                ";
+	$sSqlK250 .= "                                         when r14_rubric in ('R981','R983') then r14_valor ";
+	$sSqlK250 .= "                                         else 0                                            ";
+	$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_irrf, ";
+
+	$sSqlK250 .= "              replace(cast(cast(round((case                                      ";
+	$sSqlK250 .= "                                         when r14_rubric = 'R992' then r14_valor ";
+	$sSqlK250 .= "                                         else 0                                  ";
+	$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_ps ";
+
+	$sSqlK250 .= "         from gerfsal                                   ";
+	$sSqlK250 .= "              inner join rhpessoal    on rhpessoal.rh01_regist    = gerfsal.r14_regist ";
+	$sSqlK250 .= "              inner join rhfuncao     on rhfuncao.rh37_funcao     = rhpessoal.rh01_funcao ";
+	$sSqlK250 .= "                                     and rhfuncao.rh37_instit     = gerfsal.r14_instit ";
+	$sSqlK250 .= "              inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfsal.r14_regist ";
+	$sSqlK250 .= "                                     and rhpessoalmov.rh02_mesusu = gerfsal.r14_mesusu ";
+	$sSqlK250 .= "                                     and rhpessoalmov.rh02_anousu = gerfsal.r14_anousu ";
+    $sSqlK250 .= "       where gerfsal.r14_instit = {$iInstit} ";
+    $sSqlK250 .= "         and cast( gerfsal.r14_anousu||lpad(gerfsal.r14_mesusu,2,'0') as integer)
+                               between cast('$sData1' as integer)
+                                   and cast('$sData2' as integer)";    
+    $sSqlK250 .= "          and exists ( select 1
+                                          from gerfsal g
+												                 where g.r14_regist = gerfsal.r14_regist
+												                   and g.r14_anousu = gerfsal.r14_anousu
+												                   and g.r14_mesusu = gerfsal.r14_mesusu
+												                   and g.r14_instit = gerfsal.r14_instit
+												                   and g.r14_rubric <> 'R953' ) ";
+    $sSqlK250 .= "          and exists ( select 1
+                                          from gerfsal g
+                                         where g.r14_regist = gerfsal.r14_regist
+                                           and g.r14_anousu = gerfsal.r14_anousu
+                                           and g.r14_mesusu = gerfsal.r14_mesusu
+                                           and g.r14_instit = gerfsal.r14_instit
+                                           and g.r14_rubric <> 'R991' ) ";
+    $sSqlK250 .= "   and rhpessoalmov.rh02_instit = {$iInstit} {$filtraTabelaPrevidenciaria} ";
+		
+    $sSqlK250 .= "       union ";
+	$sSqlK250 .= "       select 'K250'                                        as reg, ";
+	$sSqlK250 .= "              (select cgc from db_config where codigo =  {$iInstit}) as cnpj, ";
+	$sSqlK250 .= "              2                                             as ind_fl, ";
+	$sSqlK250 .= "              r35_lotac                                     as cod_ltc, ";
+	$sSqlK250 .= "              r35_regist                                    as cod_reg_trab, ";
+	$sSqlK250 .= "              lpad(r35_mesusu,2,'0')||r35_anousu            as dt_comp, ";
+	$sSqlK250 .= "              ndias(r35_anousu,r35_mesusu)||lpad(r35_mesusu,2,'0')||r35_anousu as dt_pgto, ";
+	$sSqlK250 .= "              rh37_cbo                                      as cod_cbo, ";
+	$sSqlK250 .= "              rh02_ocorre                                   as cod_ocorr, ";
+	$sSqlK250 .= "              rh37_descr                                    as desc_cargo, ";
+	$sSqlK250 .= "              r35_mesusu                                    as mesusu, ";
+	$sSqlK250 .= "              r35_anousu                                    as anousu, ";
+	$sSqlK250 .= "              gerfs13.r35_instit                            as instit, ";
+	$sSqlK250 .= "              replace(cast(cast(round((case  ";
+	$sSqlK250 .= "                                         when r35_rubric in ('R981','R983') then r35_valor ";
+	$sSqlK250 .= "                                         else 0 ";
+	$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_irrf, ";
+	$sSqlK250 .= "              replace(cast(cast(round((case  ";
+	$sSqlK250 .= "                                         when r35_rubric = 'R992' then r35_valor ";
+	$sSqlK250 .= "                                         else 0 ";
+	$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_ps ";
+	$sSqlK250 .= "         from gerfs13 ";
+	$sSqlK250 .= "              inner join rhpessoal    on rhpessoal.rh01_regist = gerfs13.r35_regist ";
+	$sSqlK250 .= "              inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao ";
+	$sSqlK250 .= "                                     and rhfuncao.rh37_instit  = gerfs13.r35_instit ";
+	$sSqlK250 .= "              inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfs13.r35_regist ";
+	$sSqlK250 .= "                                     and rhpessoalmov.rh02_mesusu = gerfs13.r35_mesusu ";
+	$sSqlK250 .= "                                     and rhpessoalmov.rh02_anousu = gerfs13.r35_anousu ";
+    $sSqlK250 .= "       where gerfs13.r35_instit = {$iInstit} ";
+    $sSqlK250 .= "         and cast( gerfs13.r35_anousu||lpad(gerfs13.r35_mesusu,2,'0') as integer)
+                               between cast('$sData1' as integer)
+                                   and cast('$sData2' as integer)";
+    $sSqlK250 .= "   and rhpessoalmov.rh02_instit = {$iInstit} {$filtraTabelaPrevidenciaria} ";
+                                      
+	$sSqlK250 .= "       union ";
+	$sSqlK250 .= "       select 'K250'                                        as reg, ";
+	$sSqlK250 .= "              (select cgc from db_config where codigo =  {$iInstit}) as cnpj, ";
+	$sSqlK250 .= "              4                                             as ind_fl, ";
+	$sSqlK250 .= "              r48_lotac                                     as cod_ltc, ";
+	$sSqlK250 .= "              r48_regist                                    as cod_reg_trab, ";
+	$sSqlK250 .= "              lpad(r48_mesusu,2,'0')||r48_anousu            as dt_comp, ";
+	$sSqlK250 .= "              ndias(r48_anousu,r48_mesusu)||lpad(r48_mesusu,2,'0')||r48_anousu as dt_pgto, ";
+	$sSqlK250 .= "              rh37_cbo                                      as cod_cbo, ";
+	$sSqlK250 .= "              rh02_ocorre                                   as cod_ocorr, ";
+	$sSqlK250 .= "              rh37_descr                                    as desc_cargo, ";
+	$sSqlK250 .= "              r48_mesusu                                    as mesusu, ";
+	$sSqlK250 .= "              r48_anousu                                    as anousu, ";
+	$sSqlK250 .= "              gerfcom.r48_instit                            as instit, ";
+	$sSqlK250 .= "              replace(cast(cast(round((case  ";
+	$sSqlK250 .= "                                         when r48_rubric in ('R981','R983') then r48_valor ";
+	$sSqlK250 .= "                                         else 0 ";
+	$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_irrf, ";
+	$sSqlK250 .= "              replace(cast(cast(round((case  ";
+	$sSqlK250 .= "                                         when r48_rubric = 'R992' then r48_valor ";
+	$sSqlK250 .= "                                         else 0 ";
+	$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_ps ";
+	$sSqlK250 .= "         from gerfcom ";
+	$sSqlK250 .= "              inner join rhpessoal    on rhpessoal.rh01_regist = gerfcom.r48_regist ";
+	$sSqlK250 .= "              inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao ";
+	$sSqlK250 .= "                                     and rhfuncao.rh37_instit  = gerfcom.r48_instit ";
+	$sSqlK250 .= "              inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfcom.r48_regist ";
+	$sSqlK250 .= "                                     and rhpessoalmov.rh02_mesusu = gerfcom.r48_mesusu ";
+	$sSqlK250 .= "                                     and rhpessoalmov.rh02_anousu = gerfcom.r48_anousu ";
+    $sSqlK250 .= "       where gerfcom.r48_instit = {$iInstit} ";
+    $sSqlK250 .= "         and cast( gerfcom.r48_anousu||lpad(gerfcom.r48_mesusu,2,'0') as integer ) 
+                               between cast( '$sData1' as integer) 
+                                   and cast( '$sData2' as integer)";
+    $sSqlK250 .= "          and exists ( select 1
+                                           from gerfcom c
+                                          where c.r48_regist = gerfcom.r48_regist
+                                            and c.r48_anousu = gerfcom.r48_anousu
+                                            and c.r48_mesusu = gerfcom.r48_mesusu
+                                            and c.r48_instit = gerfcom.r48_instit
+                                            and c.r48_rubric <> 'R953' ) ";
+    $sSqlK250 .= "          and exists ( select 1
+                                           from gerfcom c
+                                          where c.r48_regist = gerfcom.r48_regist
+                                            and c.r48_anousu = gerfcom.r48_anousu
+                                            and c.r48_mesusu = gerfcom.r48_mesusu
+                                            and c.r48_instit = gerfcom.r48_instit
+                                            and c.r48_rubric <> 'R991' ) ";
+
+    $sSqlK250 .= "   and rhpessoalmov.rh02_instit = {$iInstit} {$filtraTabelaPrevidenciaria} ";
+	$sSqlK250 .= "       union ";
 		 
-		$sSqlK250 .= "       select 'K250'                                        as reg, "; 
-		$sSqlK250 .= "              (select cgc from db_config where codigo =  {$iInstit}) as cnpj, "; 
-		$sSqlK250 .= "              6                                             as ind_fl, "; 
-		$sSqlK250 .= "              r20_lotac                                     as cod_ltc, "; 
-		$sSqlK250 .= "              r20_regist                                    as cod_reg_trab, "; 
-		$sSqlK250 .= "              lpad(r20_mesusu,2,'0')||r20_anousu            as dt_comp, "; 
-		$sSqlK250 .= "              ndias(r20_anousu,r20_mesusu)||lpad(r20_mesusu,2,'0')||r20_anousu as dt_pgto, "; 
-		$sSqlK250 .= "              rh37_cbo                                      as cod_cbo, "; 
-		$sSqlK250 .= "              rh02_ocorre                                   as cod_ocorr, "; 
-		$sSqlK250 .= "              rh37_descr                                    as desc_cargo, "; 
-		$sSqlK250 .= "              r20_mesusu                                    as mesusu, "; 
-		$sSqlK250 .= "              r20_anousu                                    as anousu, "; 
-		$sSqlK250 .= "              gerfres.r20_instit                            as instit, "; 
-		$sSqlK250 .= "              replace(cast(cast(round((case  "; 
-		$sSqlK250 .= "                                         when r20_rubric in ('R981','R983') then r20_valor "; 
-		$sSqlK250 .= "                                         else 0 "; 
-		$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_irrf, "; 
-		$sSqlK250 .= "              replace(cast(cast(round((case  "; 
-		$sSqlK250 .= "                                         when r20_rubric = 'R992' then r20_valor "; 
-		$sSqlK250 .= "                                         else 0 "; 
-		$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',')  as vl_base_ps "; 
-		$sSqlK250 .= "         from gerfres "; 
-		$sSqlK250 .= "              inner join rhpessoal    on rhpessoal.rh01_regist = gerfres.r20_regist "; 
-		$sSqlK250 .= "              inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao "; 
-		$sSqlK250 .= "                                     and rhfuncao.rh37_instit  = gerfres.r20_instit "; 
-		$sSqlK250 .= "              inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfres.r20_regist "; 
-		$sSqlK250 .= "                                     and rhpessoalmov.rh02_mesusu = gerfres.r20_mesusu "; 
-		$sSqlK250 .= "                                     and rhpessoalmov.rh02_anousu = gerfres.r20_anousu "; 
-		$sSqlK250 .= "  where gerfres.r20_instit = {$iInstit} ";
-                $sSqlK250 .= "    and cast( gerfres.r20_anousu||lpad(gerfres.r20_mesusu,2,'0') as integer)
-                                            between cast( '$sData1' as integer) 
-                                                and cast( '$sData2' as integer)";
-                $sSqlK250 .= "   and cast(rhpessoalmov.rh02_anousu||lpad(rhpessoalmov.rh02_mesusu,2,'0') as integer) 
-                                           between cast('$sData1' as integer)
-                                               and cast('$sData2' as integer)";    
-                $sSqlK250 .= "   and rhpessoalmov.rh02_instit = {$iInstit} ";                              
-		$sSqlK250 .= " ) as x ) as y
-		/* 
-		where (vl_base_irrf != '0,00' and vl_base_ps != '0,00')
-		*/
+	$sSqlK250 .= "       select 'K250'                                        as reg, ";
+	$sSqlK250 .= "              (select cgc from db_config where codigo =  {$iInstit}) as cnpj, ";
+	$sSqlK250 .= "              6                                             as ind_fl, ";
+	$sSqlK250 .= "              r20_lotac                                     as cod_ltc, ";
+	$sSqlK250 .= "              r20_regist                                    as cod_reg_trab, ";
+	$sSqlK250 .= "              lpad(r20_mesusu,2,'0')||r20_anousu            as dt_comp, ";
+	$sSqlK250 .= "              ndias(r20_anousu,r20_mesusu)||lpad(r20_mesusu,2,'0')||r20_anousu as dt_pgto, ";
+	$sSqlK250 .= "              rh37_cbo                                      as cod_cbo, ";
+	$sSqlK250 .= "              rh02_ocorre                                   as cod_ocorr, ";
+	$sSqlK250 .= "              rh37_descr                                    as desc_cargo, ";
+	$sSqlK250 .= "              r20_mesusu                                    as mesusu, ";
+	$sSqlK250 .= "              r20_anousu                                    as anousu, ";
+	$sSqlK250 .= "              gerfres.r20_instit                            as instit, ";
+	$sSqlK250 .= "              replace(cast(cast(round((case  ";
+	$sSqlK250 .= "                                         when r20_rubric in ('R981','R983') then r20_valor ";
+	$sSqlK250 .= "                                         else 0 ";
+	$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',') as vl_base_irrf, ";
+	$sSqlK250 .= "              replace(cast(cast(round((case  ";
+	$sSqlK250 .= "                                         when r20_rubric = 'R992' then r20_valor ";
+	$sSqlK250 .= "                                         else 0 ";
+	$sSqlK250 .= "                                       end),2) as numeric) as text),'.',',')  as vl_base_ps ";
+	$sSqlK250 .= "         from gerfres ";
+	$sSqlK250 .= "              inner join rhpessoal    on rhpessoal.rh01_regist = gerfres.r20_regist ";
+	$sSqlK250 .= "              inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao ";
+	$sSqlK250 .= "                                     and rhfuncao.rh37_instit  = gerfres.r20_instit ";
+	$sSqlK250 .= "              inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfres.r20_regist ";
+	$sSqlK250 .= "                                     and rhpessoalmov.rh02_mesusu = gerfres.r20_mesusu ";
+	$sSqlK250 .= "                                     and rhpessoalmov.rh02_anousu = gerfres.r20_anousu ";
+	$sSqlK250 .= "  where gerfres.r20_instit = {$iInstit} ";
+    $sSqlK250 .= "    and cast( gerfres.r20_anousu||lpad(gerfres.r20_mesusu,2,'0') as integer)
+                          between cast( '$sData1' as integer) 
+                              and cast( '$sData2' as integer)";
+    $sSqlK250 .= "   and rhpessoalmov.rh02_instit = {$iInstit} {$filtraTabelaPrevidenciaria} ";
+	$sSqlK250 .= " ) as x ) as y
 		               group by reg,
                            cnpj_cei,
                            ind_fl,
@@ -355,13 +355,25 @@ class manad {
                            cod_ocorr,
                            desc_cargo	";
 		
- //   die($sSqlK250);exit;
+    //die($sSqlK250);
 		
 	  return $sSqlK250;
   }
   
-  function getSqlK300($iInstit,$sDataini,$sDatafim){
-  	
+  function getSqlK300($iInstit,$sDataini,$sDatafim, $tabelas = array() ) {
+
+      $tabelaPrevidencia = implode(', ', $tabelas);
+      $filtraTabelaPrevidenciaria = '';
+      if ( !empty($tabelaPrevidencia ) ){
+          $filtraTabelaPrevidenciaria = " and rhpessoalmov.rh02_tbprev in ({$tabelaPrevidencia}) ";
+      }
+
+
+      db_app::import('configuracao.Instituicao');
+
+    $oInstituicao   = new Instituicao($iInstit);
+    $iCodigoCliente = $oInstituicao->getCodigoCliente();
+
   	list ( $iAnoUsuFim, $iMesUsuFim, $iDiaUsuFim ) = explode("-", $sDatafim);
     list ( $iAnoUsuIni, $iMesUsuIni, $iDiaUsuIni ) = explode("-", $sDataini);
     
@@ -383,256 +395,301 @@ class manad {
     $sSqlK300 .= "        ind_base_irrf, ";
     $sSqlK300 .= "        ind_base_ps,  ";
      
-    // $sSqlK300 .= "        vlr_rubr, "; 
-    // $sSqlK300 .= "        ind_rubr, "; 
-    // $sSqlK300 .= "        ind_base_irrf, "; 
-    // $sSqlK300 .= "        ind_base_ps ";
-    
     $sSqlK300 .= "        replace(cast(round(sum(cast(replace(coalesce(vlr_rubr,'0,00'),',','.') as numeric)),2) as text),'.',',') as vlr_rubr ";
     
     $sSqlK300 .= "   from ( ";
     
   	$sSqlK300 .= " select 'K300'                                        as reg, "; 
-		$sSqlK300 .= "        (select cgc from db_config where codigo =  {$iInstit}) as cnpj_cei, "; 
-		$sSqlK300 .= "        1                                             as ind_fl, "; 
-		$sSqlK300 .= "        r14_lotac                                     as cod_ltc, "; 
-		$sSqlK300 .= "        r14_regist                                    as cod_reg_trab, "; 
-		$sSqlK300 .= "        lpad(r14_mesusu,2,'0')||r14_anousu            as dt_comp, "; 
-		$sSqlK300 .= "        r14_rubric                                    as cod_rubr, "; 
-		$sSqlK300 .= "        replace(cast(cast(round(r14_valor,2) as numeric) as text),'.',',') as vlr_rubr, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when r14_pd = 1 then 'P' "; 
-		$sSqlK300 .= "          else 'D' "; 
-		$sSqlK300 .= "        end as ind_rubr, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when b1.r09_base is not null then 1 "; 
-		$sSqlK300 .= "          else 3 "; 
-		$sSqlK300 .= "        end as ind_base_irrf, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when r14_rubric in (select r09_rubric from basesr where r09_anousu = rh02_anousu 
-                                                    and r09_mesusu = rh02_mesusu and r09_base = 'B001' and r09_instit = {$iInstit}) then 1 "; 
-		$sSqlK300 .= "          when r14_rubric between 'R901' and 'R912' then 3 "; 
-		$sSqlK300 .= "          when r14_rubric in ('R918','R919', 'R920', 'R921' ) then 4 "; 
-		$sSqlK300 .= "          else 8 "; 
-		$sSqlK300 .= "        end as ind_base_ps "; 
-		$sSqlK300 .= "   from gerfsal "; 
-		$sSqlK300 .= "        inner join rhpessoal    on rhpessoal.rh01_regist = gerfsal.r14_regist "; 
-		$sSqlK300 .= "        inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao "; 
-		$sSqlK300 .= "                               and rhfuncao.rh37_instit  = gerfsal.r14_instit "; 
-		$sSqlK300 .= "        inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfsal.r14_regist "; 
-		$sSqlK300 .= "                               and rhpessoalmov.rh02_mesusu = gerfsal.r14_mesusu "; 
-		$sSqlK300 .= "                               and rhpessoalmov.rh02_anousu = gerfsal.r14_anousu ";
-                $sSqlK300 .= "        inner join rhregime     on rh30_codreg = rh02_codreg ";
-                $sSqlK300 .= "                               and rh30_instit = rh02_instit ";
-		$sSqlK300 .= "        left  join basesr as b1 on b1.r09_anousu  = r14_anousu "; 
-		$sSqlK300 .= "                               and b1.r09_mesusu = r14_mesusu "; 
-		$sSqlK300 .= "                               and b1.r09_instit = r14_instit "; 
-		$sSqlK300 .= "                               and b1.r09_rubric = r14_rubric "; 
-		$sSqlK300 .= "                               and b1.r09_base  in ('B004','B005') "; 
-		$sSqlK300 .= "        left  join basesr as b2 on b2.r09_anousu  = r14_anousu "; 
-		$sSqlK300 .= "                               and b2.r09_mesusu = r14_mesusu "; 
-		$sSqlK300 .= "                               and b2.r09_instit = r14_instit "; 
-		$sSqlK300 .= "                               and b2.r09_rubric = r14_rubric "; 
-		$sSqlK300 .= "                               and b2.r09_base  in ('B001','B002') "; 
-		$sSqlK300 .= "        left  join basesr as b3 on b3.r09_anousu  = r14_anousu "; 
-		$sSqlK300 .= "                               and b3.r09_mesusu = r14_mesusu "; 
-		$sSqlK300 .= "                               and b3.r09_instit = r14_instit "; 
-		$sSqlK300 .= "                               and b3.r09_rubric = r14_rubric "; 
-		$sSqlK300 .= "                               and b3.r09_base   = 'B003' "; 
-		$sSqlK300 .= "  where gerfsal.r14_pd != 3 "; 
-		$sSqlK300 .= "    and gerfsal.r14_instit = {$iInstit} ";
-                $sSqlK300 .= "    and cast( gerfsal.r14_anousu||lpad(gerfsal.r14_mesusu,2,'0') as integer)
-                                            between cast('$sData1' as integer)
-                                                and cast('$sData2' as integer)";    
-                $sSqlK300 .= "   and cast(rhpessoalmov.rh02_anousu||lpad(rhpessoalmov.rh02_mesusu,2,'0') as integer) 
-                                           between cast('$sData1' as integer)
-                                               and cast('$sData2' as integer)";    
-                $sSqlK300 .= "   and rhpessoalmov.rh02_instit = {$iInstit} ";    
+	$sSqlK300 .= "        (select cgc from db_config where codigo =  {$iInstit}) as cnpj_cei, ";
+	$sSqlK300 .= "        1                                             as ind_fl, ";
+	$sSqlK300 .= "        r14_lotac                                     as cod_ltc, ";
+	$sSqlK300 .= "        r14_regist                                    as cod_reg_trab, ";
+	$sSqlK300 .= "        lpad(r14_mesusu,2,'0')||r14_anousu            as dt_comp, ";
+	$sSqlK300 .= "        r14_rubric                                    as cod_rubr, ";
+	$sSqlK300 .= "        replace(cast(cast(round(r14_valor,2) as numeric) as text),'.',',') as vlr_rubr, ";
+	$sSqlK300 .= "        case  ";
+	$sSqlK300 .= "          when r14_pd = 1 then 'P' ";
+	$sSqlK300 .= "          else 'D' ";
+	$sSqlK300 .= "        end as ind_rubr, ";
+	$sSqlK300 .= "        case  ";
+    if ( $iCodigoCliente == 50 ){
+       $sSqlK300 .= "          when r14_rubric in ('R931','2001') then 1 ";
+    }
+	$sSqlK300 .= "          when b1.r09_base is not null then 1 ";
+	$sSqlK300 .= "          else 3 ";
+	$sSqlK300 .= "        end as ind_base_irrf, ";
+	$sSqlK300 .= "        case  ";
+    if ( $iCodigoCliente == 50 ){
+       $sSqlK300 .= "          when r14_rubric in ('0269','0273','0284','0286','0287','0304','0535','R931','2001','0228','0466') then 8 ";
+    }
+	$sSqlK300 .= "          when b2.r09_base is not null then 1 ";
+	$sSqlK300 .= "          when b3.r09_base is not null then 2 ";
+    $sSqlK300 .= "          when r14_rubric between 'R901' and 'R912' then 3 ";
+	$sSqlK300 .= "          when r14_rubric = 'R919' then 4 ";
+	$sSqlK300 .= "          when r14_pd = 2 then 8 ";
+	$sSqlK300 .= "          else 9 ";
+	$sSqlK300 .= "        end as ind_base_ps ";
+	$sSqlK300 .= "   from gerfsal ";
+	$sSqlK300 .= "        inner join rhpessoal    on rhpessoal.rh01_regist = gerfsal.r14_regist ";
+	$sSqlK300 .= "        inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao ";
+	$sSqlK300 .= "                               and rhfuncao.rh37_instit  = gerfsal.r14_instit ";
+	$sSqlK300 .= "        inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfsal.r14_regist ";
+	$sSqlK300 .= "                               and rhpessoalmov.rh02_mesusu = gerfsal.r14_mesusu ";
+    $sSqlK300 .= "                               and rhpessoalmov.rh02_anousu = gerfsal.r14_anousu ";
+	$sSqlK300 .= "        left  join basesr as b1 on b1.r09_anousu  = r14_anousu ";
+	$sSqlK300 .= "                               and b1.r09_mesusu = r14_mesusu ";
+	$sSqlK300 .= "                               and b1.r09_instit = r14_instit ";
+	$sSqlK300 .= "                               and b1.r09_rubric = r14_rubric ";
+	$sSqlK300 .= "                               and b1.r09_base  in ('B004','B005') ";
+	$sSqlK300 .= "        left  join basesr as b2 on b2.r09_anousu  = r14_anousu ";
+	$sSqlK300 .= "                               and b2.r09_mesusu = r14_mesusu ";
+	$sSqlK300 .= "                               and b2.r09_instit = r14_instit ";
+	$sSqlK300 .= "                               and b2.r09_rubric = r14_rubric ";
+	$sSqlK300 .= "                               and b2.r09_base  in ('B001','B002') ";
+	$sSqlK300 .= "        left  join basesr as b3 on b3.r09_anousu  = r14_anousu ";
+	$sSqlK300 .= "                               and b3.r09_mesusu = r14_mesusu ";
+	$sSqlK300 .= "                               and b3.r09_instit = r14_instit ";
+	$sSqlK300 .= "                               and b3.r09_rubric = r14_rubric ";
+	$sSqlK300 .= "                               and b3.r09_base   = 'B003' ";
+	$sSqlK300 .= "  where gerfsal.r14_pd != 3 {$filtraTabelaPrevidenciaria}  ";
+	$sSqlK300 .= "    and gerfsal.r14_instit = {$iInstit} ";
+    $sSqlK300 .= "    and cast( gerfsal.r14_anousu||lpad(gerfsal.r14_mesusu,2,'0') as integer)
+                          between cast('$sData1' as integer) and cast('$sData2' as integer) ";
+	$sSqlK300 .= " union ";
+	$sSqlK300 .= " select 'K300'                                        as reg, ";
+	$sSqlK300 .= "        (select cgc from db_config where codigo =  {$iInstit}) as cnpj, ";
+	$sSqlK300 .= "        2                                             as ind_fl, ";
+	$sSqlK300 .= "        r35_lotac                                     as cod_ltc, ";
+	$sSqlK300 .= "        r35_regist                                    as cod_reg_trab, ";
+	$sSqlK300 .= "        lpad(r35_mesusu,2,'0')||r35_anousu            as dt_comp, ";
+	$sSqlK300 .= "        r35_rubric                                    as cod_rubr, ";
+	$sSqlK300 .= "        replace(cast(cast(round(r35_valor,2) as numeric) as text),'.',',') as vlr_rubr, ";
+	$sSqlK300 .= "        case  ";
+	$sSqlK300 .= "          when r35_pd = 1 then 'P' ";
+	$sSqlK300 .= "          else 'D' ";
+	$sSqlK300 .= "        end as ind_rubr, ";
+	$sSqlK300 .= "        case  ";
+	$sSqlK300 .= "          when b1.r09_base is not null then 1 ";
+	$sSqlK300 .= "          else 3 ";
+	$sSqlK300 .= "        end as ind_base_irrf, ";
+	$sSqlK300 .= "        case  ";
+    if ( $iCodigoCliente == 50 ){
+       $sSqlK300 .= "          when r35_rubric in ('0269','4269','0284','0286','0287','0304','0535') then 8 "; 
+    }
+	$sSqlK300 .= "          when b2.r09_base is not null then 1 ";
+	$sSqlK300 .= "          when b3.r09_base is not null and r35_mesusu = 12 then 2 ";
+	$sSqlK300 .= "          when r35_rubric between 'R901' and 'R912' then 3 ";
+	$sSqlK300 .= "          when r35_rubric = 'R919' then 4 ";
+	$sSqlK300 .= "          when r35_pd = 2 then 8 ";
+	$sSqlK300 .= "          else 9 ";
+	$sSqlK300 .= "        end as ind_base_ps ";
+	$sSqlK300 .= "   from gerfs13 ";
+	$sSqlK300 .= "        inner join rhpessoal    on rhpessoal.rh01_regist = gerfs13.r35_regist ";
+	$sSqlK300 .= "        inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao ";
+	$sSqlK300 .= "                               and rhfuncao.rh37_instit  = gerfs13.r35_instit ";
+	$sSqlK300 .= "        inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfs13.r35_regist ";
+	$sSqlK300 .= "                               and rhpessoalmov.rh02_mesusu = gerfs13.r35_mesusu ";
+	$sSqlK300 .= "                               and rhpessoalmov.rh02_anousu = gerfs13.r35_anousu ";
+	$sSqlK300 .= "        left  join basesr as b1 on b1.r09_anousu  = r35_anousu ";
+	$sSqlK300 .= "                               and b1.r09_mesusu = r35_mesusu ";
+	$sSqlK300 .= "                               and b1.r09_instit = r35_instit ";
+	$sSqlK300 .= "                               and b1.r09_rubric = r35_rubric ";
+	$sSqlK300 .= "                               and b1.r09_base  in ('B004','B005') ";
+	$sSqlK300 .= "        left  join basesr as b2 on b2.r09_anousu  = r35_anousu ";
+	$sSqlK300 .= "                               and b2.r09_mesusu = r35_mesusu ";
+	$sSqlK300 .= "                               and b2.r09_instit = r35_instit ";
+	$sSqlK300 .= "                               and b2.r09_rubric = r35_rubric ";
+	$sSqlK300 .= "                               and b2.r09_base  in ('B001','B002') ";
+	$sSqlK300 .= "        left  join basesr as b3 on b3.r09_anousu  = r35_anousu ";
+	$sSqlK300 .= "                               and b3.r09_mesusu = r35_mesusu ";
+	$sSqlK300 .= "                               and b3.r09_instit = r35_instit ";
+	$sSqlK300 .= "                               and b3.r09_rubric = r35_rubric ";
+	$sSqlK300 .= "                               and b3.r09_base   = 'B003' ";
+	$sSqlK300 .= "  where gerfs13.r35_pd != 3 {$filtraTabelaPrevidenciaria} ";
+    $sSqlK300 .= "    and gerfs13.r35_instit = {$iInstit} ";
+    $sSqlK300 .= "    and cast( gerfs13.r35_anousu||lpad(gerfs13.r35_mesusu,2,'0') as integer)
+                          between cast('$sData1' as integer) and cast('$sData2' as integer)";
+	$sSqlK300 .= " union ";
+	$sSqlK300 .= " select 'K300'                                        as reg, ";
+	$sSqlK300 .= "        (select cgc from db_config where codigo =  {$iInstit}) as cnpj, ";
+	$sSqlK300 .= "        4                                             as ind_fl, ";
+	$sSqlK300 .= "        r48_lotac                                     as cod_ltc, ";
+	$sSqlK300 .= "        r48_regist                                    as cod_reg_trab, ";
+	$sSqlK300 .= "        lpad(r48_mesusu,2,'0')||r48_anousu            as dt_comp, ";
+	$sSqlK300 .= "        r48_rubric                                    as cod_rubr, ";
+	$sSqlK300 .= "        replace(cast(cast(round(r48_valor,2) as numeric) as text),'.',',') as vlr_rubr, ";
+	$sSqlK300 .= "        case  ";
+	$sSqlK300 .= "          when r48_pd = 1 then 'P' ";
+	$sSqlK300 .= "          else 'D' ";
+	$sSqlK300 .= "        end as ind_rubr, ";
+	$sSqlK300 .= "        case  ";
+	$sSqlK300 .= "          when b1.r09_base is not null then 1 ";
+	$sSqlK300 .= "          else 3 ";
+	$sSqlK300 .= "        end as ind_base_irrf, ";
+	$sSqlK300 .= "        case  ";
+    if ( $iCodigoCliente == 50 ){
+       $sSqlK300 .= "          when r48_rubric in ('0269','0273','0284','0286','0287','0304','0535') then 8 "; 
+    }
+	$sSqlK300 .= "          when b2.r09_base is not null then 1 ";
+	$sSqlK300 .= "          when b3.r09_base is not null then 2 ";
+	$sSqlK300 .= "          when r48_rubric between 'R901' and 'R912' then 3 ";
+	$sSqlK300 .= "          when r48_rubric = 'R919' then 4 ";
+	$sSqlK300 .= "          when r48_pd = 2 then 8 ";
+	$sSqlK300 .= "          else 9 ";
+	$sSqlK300 .= "        end as ind_base_ps ";
+	$sSqlK300 .= "   from gerfcom ";
+	$sSqlK300 .= "        inner join rhpessoal    on rhpessoal.rh01_regist = gerfcom.r48_regist ";
+	$sSqlK300 .= "        inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao ";
+	$sSqlK300 .= "                               and rhfuncao.rh37_instit  = gerfcom.r48_instit ";
+	$sSqlK300 .= "        inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfcom.r48_regist ";
+	$sSqlK300 .= "                               and rhpessoalmov.rh02_mesusu = gerfcom.r48_mesusu ";
+	$sSqlK300 .= "                               and rhpessoalmov.rh02_anousu = gerfcom.r48_anousu ";
+	$sSqlK300 .= "        left  join basesr as b1 on b1.r09_anousu  = r48_anousu ";
+	$sSqlK300 .= "                               and b1.r09_mesusu = r48_mesusu ";
+	$sSqlK300 .= "                               and b1.r09_instit = r48_instit ";
+	$sSqlK300 .= "                               and b1.r09_rubric = r48_rubric ";
+	$sSqlK300 .= "                               and b1.r09_base  in ('B004','B005') ";
+	$sSqlK300 .= "        left  join basesr as b2 on b2.r09_anousu  = r48_anousu ";
+	$sSqlK300 .= "                               and b2.r09_mesusu = r48_mesusu ";
+	$sSqlK300 .= "                               and b2.r09_instit = r48_instit ";
+	$sSqlK300 .= "                               and b2.r09_rubric = r48_rubric ";
+	$sSqlK300 .= "                               and b2.r09_base  in ('B001','B002') ";
+	$sSqlK300 .= "        left  join basesr as b3 on b3.r09_anousu  = r48_anousu ";
+	$sSqlK300 .= "                               and b3.r09_mesusu = r48_mesusu ";
+	$sSqlK300 .= "                               and b3.r09_instit = r48_instit ";
+	$sSqlK300 .= "                               and b3.r09_rubric = r48_rubric ";
+	$sSqlK300 .= "                               and b3.r09_base   = 'B003' ";
+	$sSqlK300 .= "  where gerfcom.r48_pd != 3 {$filtraTabelaPrevidenciaria} ";
+    $sSqlK300 .= "    and gerfcom.r48_instit = {$iInstit} ";
+    $sSqlK300 .= "    and cast( gerfcom.r48_anousu||lpad(gerfcom.r48_mesusu,2,'0') as integer)
+                          between cast('$sData1' as integer) and cast('$sData2' as integer)";
                                   
-		$sSqlK300 .= " union "; 
-		$sSqlK300 .= " select 'K300'                                        as reg, "; 
-		$sSqlK300 .= "        (select cgc from db_config where codigo =  {$iInstit}) as cnpj, "; 
-		$sSqlK300 .= "        2                                             as ind_fl, "; 
-		$sSqlK300 .= "        rh02_lota::char(4)                            as cod_ltc, "; 
-		$sSqlK300 .= "        r35_regist                                    as cod_reg_trab, "; 
-		$sSqlK300 .= "        '13'||r35_anousu            as dt_comp, "; 
-		$sSqlK300 .= "        r35_rubric                                    as cod_rubr, "; 
-		$sSqlK300 .= "        replace(cast(cast(round(r35_valor,2) as numeric) as text),'.',',') as vlr_rubr, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when r35_pd = 1 then 'P' "; 
-		$sSqlK300 .= "          else 'D' "; 
-		$sSqlK300 .= "        end as ind_rubr, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when b1.r09_base is not null then 2 "; 
-		$sSqlK300 .= "          else 3 "; 
-		$sSqlK300 .= "        end as ind_base_irrf, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when r35_rubric in (select r09_rubric from basesr where r09_anousu = rh02_anousu 
-                                                    and r09_mesusu = rh02_mesusu and r09_base = 'B003' and r09_instit = {$iInstit}) then 1 "; 
-		$sSqlK300 .= "          when r35_rubric between 'R901' and 'R912' then 3 "; 
-		$sSqlK300 .= "          when r35_rubric in ('R918','R919', 'R920', 'R921' ) then 4 "; 
-		$sSqlK300 .= "          else 8 "; 
-		$sSqlK300 .= "        end as ind_base_ps "; 
-		$sSqlK300 .= "        from (select r35_anousu, 13, r35_regist, r35_rubric, r35_pd, round(sum(r35_valor),2) as r35_valor 
-                                            from gerfs13 where r35_anousu between {$iAnoUsuIni} and {$iAnoUsuFim} 
-                                                           and r35_instit = {$iInstit} 
-                                                           and r35_pd != 3
-                                            group by r35_anousu, r35_regist, r35_rubric, r35_pd) as gerfs13"; 
-		$sSqlK300 .= "        inner join rhpessoal    on rhpessoal.rh01_regist = gerfs13.r35_regist "; 
-		$sSqlK300 .= "        inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao "; 
-		$sSqlK300 .= "                               and rhfuncao.rh37_instit  = {$iInstit} "; 
-		$sSqlK300 .= "        inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfs13.r35_regist "; 
-                $sSqlK300 .= "        inner join rhregime     on rh30_codreg = rh02_codreg ";
-                $sSqlK300 .= "                               and rh30_instit = rh02_instit ";
-		$sSqlK300 .= "        left  join basesr as b1 on b1.r09_anousu  = rh02_anousu "; 
-		$sSqlK300 .= "                               and b1.r09_mesusu = rh02_mesusu "; 
-		$sSqlK300 .= "                               and b1.r09_instit = rh02_instit "; 
-		$sSqlK300 .= "                               and b1.r09_rubric = r35_rubric "; 
-		$sSqlK300 .= "                               and b1.r09_base  in ('B006') "; 
-		$sSqlK300 .= "        left  join basesr as b2 on b2.r09_anousu  = rh02_anousu "; 
-		$sSqlK300 .= "                               and b2.r09_mesusu = rh02_mesusu "; 
-		$sSqlK300 .= "                               and b2.r09_instit = rh02_instit "; 
-		$sSqlK300 .= "                               and b2.r09_rubric = r35_rubric "; 
-		$sSqlK300 .= "                               and b2.r09_base  in ('B001','B002') "; 
-		$sSqlK300 .= "        left  join basesr as b3 on b3.r09_anousu  = rh02_anousu "; 
-		$sSqlK300 .= "                               and b3.r09_mesusu = rh02_mesusu "; 
-		$sSqlK300 .= "                               and b3.r09_instit = rh02_instit "; 
-		$sSqlK300 .= "                               and b3.r09_rubric = r35_rubric "; 
-		$sSqlK300 .= "                               and b3.r09_base   = 'B003' "; 
-		$sSqlK300 .= "  where "; 
-                $sSqlK300 .= "       rhpessoalmov.rh02_anousu  = {$iAnoUsuFim}";
-                $sSqlK300 .= "   and rhpessoalmov.rh02_mesusu  = {$iMesUsuFim} ";
-                $sSqlK300 .= "   and rhpessoalmov.rh02_instit = {$iInstit} ";                              
-		$sSqlK300 .= " union "; 
-		$sSqlK300 .= " select 'K300'                                        as reg, "; 
-		$sSqlK300 .= "        (select cgc from db_config where codigo =  {$iInstit}) as cnpj, "; 
-		$sSqlK300 .= "        4                                             as ind_fl, "; 
-		$sSqlK300 .= "        r48_lotac                                     as cod_ltc, "; 
-		$sSqlK300 .= "        r48_regist                                    as cod_reg_trab, "; 
-		$sSqlK300 .= "        lpad(r48_mesusu,2,'0')||r48_anousu            as dt_comp, "; 
-		$sSqlK300 .= "        r48_rubric                                    as cod_rubr, "; 
-		$sSqlK300 .= "        replace(cast(cast(round(r48_valor,2) as numeric) as text),'.',',') as vlr_rubr, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when r48_pd = 1 then 'P' "; 
-		$sSqlK300 .= "          else 'D' "; 
-		$sSqlK300 .= "        end as ind_rubr, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when b1.r09_base is not null then 1 "; 
-		$sSqlK300 .= "          else 3 "; 
-		$sSqlK300 .= "        end as ind_base_irrf, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when r48_rubric in (select r09_rubric from basesr where r09_anousu = rh02_anousu 
-                                                   and r09_mesusu = rh02_mesusu and r09_base = 'B001' and r09_instit = {$iInstit}) then 1 "; 
-		$sSqlK300 .= "          when r48_rubric between 'R901' and 'R912' then 3 "; 
-		$sSqlK300 .= "          when r48_rubric in ('R918','R919', 'R920', 'R921' ) then 4 "; 
-		$sSqlK300 .= "          else 8 "; 
-		$sSqlK300 .= "        end as ind_base_ps "; 
-		$sSqlK300 .= "   from gerfcom "; 
-		$sSqlK300 .= "        inner join rhpessoal    on rhpessoal.rh01_regist = gerfcom.r48_regist "; 
-		$sSqlK300 .= "        inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao "; 
-		$sSqlK300 .= "                               and rhfuncao.rh37_instit  = gerfcom.r48_instit "; 
-		$sSqlK300 .= "        inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfcom.r48_regist "; 
-		$sSqlK300 .= "                               and rhpessoalmov.rh02_mesusu = gerfcom.r48_mesusu "; 
-		$sSqlK300 .= "                               and rhpessoalmov.rh02_anousu = gerfcom.r48_anousu "; 
-                $sSqlK300 .= "        inner join rhregime     on rh30_codreg = rh02_codreg ";
-                $sSqlK300 .= "                               and rh30_instit = rh02_instit ";
-		$sSqlK300 .= "        left  join basesr as b1 on b1.r09_anousu  = r48_anousu "; 
-		$sSqlK300 .= "                               and b1.r09_mesusu = r48_mesusu "; 
-		$sSqlK300 .= "                               and b1.r09_instit = r48_instit "; 
-		$sSqlK300 .= "                               and b1.r09_rubric = r48_rubric "; 
-		$sSqlK300 .= "                               and b1.r09_base  in ('B004','B005') "; 
-		$sSqlK300 .= "        left  join basesr as b2 on b2.r09_anousu  = r48_anousu "; 
-		$sSqlK300 .= "                               and b2.r09_mesusu = r48_mesusu "; 
-		$sSqlK300 .= "                               and b2.r09_instit = r48_instit "; 
-		$sSqlK300 .= "                               and b2.r09_rubric = r48_rubric "; 
-		$sSqlK300 .= "                               and b2.r09_base  in ('B001','B002') "; 
-		$sSqlK300 .= "        left  join basesr as b3 on b3.r09_anousu  = r48_anousu "; 
-		$sSqlK300 .= "                               and b3.r09_mesusu = r48_mesusu "; 
-		$sSqlK300 .= "                               and b3.r09_instit = r48_instit "; 
-		$sSqlK300 .= "                               and b3.r09_rubric = r48_rubric "; 
-		$sSqlK300 .= "                               and b3.r09_base   = 'B003' "; 
-		$sSqlK300 .= "  where gerfcom.r48_pd != 3 "; 
-                $sSqlK300 .= "    and gerfcom.r48_instit = {$iInstit} ";
-                $sSqlK300 .= "    and cast( gerfcom.r48_anousu||lpad(gerfcom.r48_mesusu,2,'0') as integer)
-                                      between cast('$sData1' as integer)
-                                          and cast('$sData2' as integer)";
-                $sSqlK300 .= "   and cast(rhpessoalmov.rh02_anousu||lpad(rhpessoalmov.rh02_mesusu,2,'0') as integer) 
-                                           between cast('$sData1' as integer)
-                                               and cast('$sData2' as integer)";    
-                $sSqlK300 .= "   and rhpessoalmov.rh02_instit = {$iInstit} ";
-                                  
-		$sSqlK300 .= " union "; 
-		$sSqlK300 .= " select 'K300'                                        as reg, "; 
-		$sSqlK300 .= "        (select cgc from db_config where codigo =  {$iInstit}) as cnpj, "; 
-		$sSqlK300 .= "        6                                             as ind_fl, "; 
-		$sSqlK300 .= "        r20_lotac                                     as cod_ltc, "; 
-		$sSqlK300 .= "        r20_regist                                    as cod_reg_trab, "; 
-		$sSqlK300 .= "        lpad(r20_mesusu,2,'0')||r20_anousu            as dt_comp, "; 
-		$sSqlK300 .= "        r20_rubric                                    as cod_rubr, "; 
-		$sSqlK300 .= "        replace(cast(cast(round(r20_valor,2) as numeric) as text),'.',',') as vlr_rubr, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when r20_pd = 1 then 'P' "; 
-		$sSqlK300 .= "          else 'D' "; 
-		$sSqlK300 .= "        end as ind_rubr, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when b1.r09_base is not null then 1 "; 
-		$sSqlK300 .= "          else 3 "; 
-		$sSqlK300 .= "        end as ind_base_irrf, "; 
-		$sSqlK300 .= "        case  "; 
-		$sSqlK300 .= "          when r20_rubric in (select r09_rubric from basesr where r09_anousu = rh02_anousu 
-                                                    and r09_mesusu = rh02_mesusu and r09_base = 'B003' and r09_instit = {$iInstit}) then 2 "; 
-		$sSqlK300 .= "          when r20_rubric between 'R901' and 'R912' then 3 "; 
-		$sSqlK300 .= "          when r20_rubric in ('R918','R919', 'R920', 'R921' ) then 4 "; 
-		$sSqlK300 .= "          else 8 "; 
-		$sSqlK300 .= "        end as ind_base_ps "; 
-		$sSqlK300 .= "   from gerfres "; 
-		$sSqlK300 .= "        inner join rhpessoal    on rhpessoal.rh01_regist = gerfres.r20_regist "; 
-		$sSqlK300 .= "        inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao "; 
-		$sSqlK300 .= "                               and rhfuncao.rh37_instit  = gerfres.r20_instit "; 
-		$sSqlK300 .= "        inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfres.r20_regist "; 
-		$sSqlK300 .= "                               and rhpessoalmov.rh02_mesusu = gerfres.r20_mesusu "; 
-		$sSqlK300 .= "                               and rhpessoalmov.rh02_anousu = gerfres.r20_anousu "; 
-                $sSqlK300 .= "        inner join rhregime     on rh30_codreg = rh02_codreg ";
-                $sSqlK300 .= "                               and rh30_instit = rh02_instit ";
-		$sSqlK300 .= "        left  join basesr as b1 on b1.r09_anousu  = r20_anousu "; 
-		$sSqlK300 .= "                               and b1.r09_mesusu = r20_mesusu "; 
-		$sSqlK300 .= "                               and b1.r09_instit = r20_instit "; 
-		$sSqlK300 .= "                               and b1.r09_rubric = r20_rubric "; 
-		$sSqlK300 .= "                               and b1.r09_base  in ('B004','B005') "; 
-		$sSqlK300 .= "        left  join basesr as b2 on b2.r09_anousu  = r20_anousu "; 
-		$sSqlK300 .= "                               and b2.r09_mesusu = r20_mesusu "; 
-		$sSqlK300 .= "                               and b2.r09_instit = r20_instit "; 
-		$sSqlK300 .= "                               and b2.r09_rubric = r20_rubric "; 
-		$sSqlK300 .= "                               and b2.r09_base  in ('B001','B002') "; 
-		$sSqlK300 .= "        left  join basesr as b3 on b3.r09_anousu  = r20_anousu "; 
-		$sSqlK300 .= "                               and b3.r09_mesusu = r20_mesusu "; 
-		$sSqlK300 .= "                               and b3.r09_instit = r20_instit "; 
-		$sSqlK300 .= "                               and b3.r09_rubric = r20_rubric "; 
-		$sSqlK300 .= "                               and b3.r09_base   = 'B003' "; 
-		$sSqlK300 .= "  where gerfres.r20_pd != 3 "; 
-                $sSqlK300 .= "    and gerfres.r20_instit = {$iInstit} ";
-                $sSqlK300 .= "    and cast( gerfres.r20_anousu||lpad(gerfres.r20_mesusu,2,'0') as integer)
-                                      between cast('$sData1' as integer)
-                                          and cast('$sData2' as integer)";
-                $sSqlK300 .= "   and cast(rhpessoalmov.rh02_anousu||lpad(rhpessoalmov.rh02_mesusu,2,'0') as integer) 
-                                           between cast('$sData1' as integer)
-                                               and cast('$sData2' as integer)";    
-                $sSqlK300 .= "   and rhpessoalmov.rh02_instit = {$iInstit} ";
-                                              
-                $sSqlK300 .= " ) as x ";
-                $sSqlK300 .= " group by reg, "; 
-                $sSqlK300 .= "          cnpj_cei, "; 
-                $sSqlK300 .= "          ind_fl, "; 
-                $sSqlK300 .= "          cod_ltc, "; 
-                $sSqlK300 .= "          cod_reg_trab, "; 
-                $sSqlK300 .= "          dt_comp, "; 
-                $sSqlK300 .= "          cod_rubr, ";
-                $sSqlK300 .= "          ind_rubr, ";
-                $sSqlK300 .= "          ind_base_irrf, ";
-                $sSqlK300 .= "          ind_base_ps  ";
-                $sSqlK300 .= " order by reg, dt_comp, ind_fl, cod_rubr ";
-///    echo $sSqlK300;exit; 
-		return $sSqlK300;
+	$sSqlK300 .= " union ";
+	$sSqlK300 .= " select 'K300'                                        as reg, ";
+	$sSqlK300 .= "        (select cgc from db_config where codigo =  {$iInstit}) as cnpj, ";
+	$sSqlK300 .= "        6                                             as ind_fl, ";
+	$sSqlK300 .= "        r20_lotac                                     as cod_ltc, ";
+	$sSqlK300 .= "        r20_regist                                    as cod_reg_trab, ";
+	$sSqlK300 .= "        lpad(r20_mesusu,2,'0')||r20_anousu            as dt_comp, ";
+	$sSqlK300 .= "        r20_rubric                                    as cod_rubr, ";
+	$sSqlK300 .= "        replace(cast(cast(round(r20_valor,2) as numeric) as text),'.',',') as vlr_rubr, ";
+	$sSqlK300 .= "        case  ";
+	$sSqlK300 .= "          when r20_pd = 1 then 'P' ";
+	$sSqlK300 .= "          else 'D' ";
+	$sSqlK300 .= "        end as ind_rubr, ";
+	$sSqlK300 .= "        case  ";
+    $sSqlK300 .= " WHEN rh05_causa = 20 and r59_regime = 3 and r20_rubric between '2000' and '3999' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 20 and r59_regime = 3 and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 20 and r59_regime = 3 and r20_rubric = 'R931' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_menos1 = 'S' and r59_regime in (1, 2) and (r20_rubric between '2000' and '3999' or r20_rubric = 'R931') THEN 3 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_menos1 = 'S' and r59_regime in (1, 2) and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_menos1 = 'S' and r59_regime = 3 and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and (r20_rubric between '2000' and '3999' or r20_rubric = 'R931') THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_menos1 = 'N' and r59_regime in (1, 2) and r20_rubric between '2000' and '3999' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_menos1 = 'S' and r59_regime  = 3 and r20_rubric between '2000' and '3999' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_menos1 = 'N' and r59_regime = 1 and r20_rubric = 'R931' THEN 3 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_menos1 = 'N' and r59_regime = 2 and r20_rubric = 'R931' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_menos1 = 'S' and r59_regime  = 3 and r20_rubric = 'R931' THEN 3 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r59_menos1 = 'N' and r59_regime in (2, 3) and r20_rubric between '2000' and '3999' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r59_regime = 2 and r20_rubric between '2000' and '3999' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r59_regime in (2, 3) and r20_rubric = 'R931' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r59_regime in (2, 3) and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r59_menos1 = 'N' and r59_regime in (2, 3) and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r59_menos1 = 'S' and r59_regime  = 2 and r20_rubric between '2000' and '3999' THEN 3 ";
+    $sSqlK300 .= " WHEN rh05_causa = 70 and r59_regime = 1 and (r20_rubric between '2000' and '3999') THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 70 and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 71 and r59_regime = 2 and r20_rubric between '2000' and '3999' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 71 and r59_regime = 2 and r20_rubric = 'R931' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 71 and r59_regime = 2 and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 72 and r59_menos1 = 'S' and r59_regime = 2 and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 72 and r59_regime = 2 and r20_rubric between '2000' and '3999' THEN 1 ";
+    if ( $iCodigoCliente == 50 ){
+	   $sSqlK300 .= " when r20_rubric = '0228' then 1 ";
+    }
+	$sSqlK300 .= "          when b1.r09_base is not null then 1 ";
+	$sSqlK300 .= "          else 3 ";
+	$sSqlK300 .= "        end as ind_base_irrf, ";
+	$sSqlK300 .= "        case  ";
+    $sSqlK300 .= " WHEN rh05_causa = 20 and r59_regime = 3 and r20_rubric between '2000' and '3999' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 20 and r59_regime = 3 and r20_rubric between '4000' and '5999' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 20 and r20_rubric = 'R931' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r20_rubric between '2000' and '3999' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_regime in (1, 2) and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r59_regime = 3 and r20_rubric between '4000' and '5999' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 21 and r20_rubric = 'R931' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r59_menos1 = 'N' and r59_regime = 3 and r20_rubric between '2000' and '3999' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r20_rubric = 'R931' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r59_regime = 3 and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 60 and r59_menos1 = 'S' and r59_regime = 2 and r20_rubric between '2000' and '3999' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 70 and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 70 and r59_regime = 1 and (r20_rubric between '2000' and '3999' or r20_rubric = 'R931') THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 71 and r59_regime = 2 and r20_rubric between '2000' and '3999' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 71 and r59_regime = 2 and r20_rubric = 'R931' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 71 and r59_regime = 2 and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 72 and r59_menos1 = 'S' and r59_regime = 2 and r20_rubric between '2000' and '3999' THEN 8 ";
+    $sSqlK300 .= " WHEN rh05_causa = 72 and r59_menos1 = 'N' and r59_regime = 2 and r20_rubric between '2000' and '3999' THEN 1 ";
+    $sSqlK300 .= " WHEN rh05_causa = 72 and r59_regime = 2 and r20_rubric between '4000' and '5999' THEN 2 ";
+    $sSqlK300 .= " WHEN rh05_causa = 11 and (trim(rh05_caub) = '' or rh05_caub is null or rh05_caub = '01') and ";
+    $sSqlK300 .= "     (r20_rubric between '2000' and '3999' or r20_rubric = 'R931') THEN 8 ";
+    $sSqlK300 .= " when rh02_codreg in (5,14) then 8 "; 
+    if ( $iCodigoCliente == 50 ){
+       $sSqlK300 .= " when r20_rubric in ('0269','0273','4269','0284','0286','0287','0304','0535','R931','2001') then 8 "; 
+	   $sSqlK300 .= " when r20_rubric = '0228' then 9 ";
+    }
+	$sSqlK300 .= "          when b2.r09_base is not null then 1 ";
+	$sSqlK300 .= "          when b3.r09_base is not null then 2 ";
+	$sSqlK300 .= "          when r20_rubric between 'R901' and 'R912' then 3 ";
+	$sSqlK300 .= "          when r20_rubric = 'R919' then 4 ";
+	$sSqlK300 .= "          when r20_pd = 2 then 8 ";
+	$sSqlK300 .= "          else 9 ";
+	$sSqlK300 .= "        end as ind_base_ps ";
+	$sSqlK300 .= "   from gerfres ";
+	$sSqlK300 .= "        inner join rhpessoal    on rhpessoal.rh01_regist = gerfres.r20_regist ";
+	$sSqlK300 .= "        inner join rhfuncao     on rhfuncao.rh37_funcao  = rhpessoal.rh01_funcao ";
+	$sSqlK300 .= "                               and rhfuncao.rh37_instit  = gerfres.r20_instit ";
+	$sSqlK300 .= "        inner join rhpessoalmov on rhpessoalmov.rh02_regist = gerfres.r20_regist ";
+	$sSqlK300 .= "                               and rhpessoalmov.rh02_mesusu = gerfres.r20_mesusu ";
+	$sSqlK300 .= "                               and rhpessoalmov.rh02_anousu = gerfres.r20_anousu ";
+    $sSqlK300 .= "        inner join rhregime     on rh30_instit = rh02_instit ";
+    $sSqlK300 .= "                               and rh02_codreg = rh30_codreg ";
+    $sSqlK300 .= "        INNER JOIN rhpesrescisao ON rhpessoalmov.rh02_seqpes = rhpesrescisao.rh05_seqpes ";
+    $sSqlK300 .= "                                AND extract(year from rh05_recis) = rhpessoalmov.rh02_anousu";
+    $sSqlK300 .= "        inner join rescisao      on rh02_anousu = r59_anousu and rh02_mesusu = r59_mesusu ";
+    $sSqlK300 .= "                                and r59_regime = rh30_regime and r59_causa = rh05_causa ";
+    $sSqlK300 .= "                                and r59_caub = rh05_caub ";
+    $sSqlK300 .= "                                AND r59_menos1 = ( select case when (rh05_recis - rh01_admiss) > 365 then 'N' else 'S' end ) ";
+	$sSqlK300 .= "        left  join basesr as b1 on b1.r09_anousu  = r20_anousu ";
+	$sSqlK300 .= "                               and b1.r09_mesusu = r20_mesusu ";
+	$sSqlK300 .= "                               and b1.r09_instit = r20_instit ";
+	$sSqlK300 .= "                               and b1.r09_rubric = r20_rubric ";
+	$sSqlK300 .= "                               and b1.r09_base  in ('B004','B005') ";
+	$sSqlK300 .= "        left  join basesr as b2 on b2.r09_anousu  = r20_anousu ";
+	$sSqlK300 .= "                               and b2.r09_mesusu = r20_mesusu ";
+	$sSqlK300 .= "                               and b2.r09_instit = r20_instit ";
+	$sSqlK300 .= "                               and b2.r09_rubric = r20_rubric ";
+	$sSqlK300 .= "                               and b2.r09_base  in ('B001','B002') ";
+	$sSqlK300 .= "        left  join basesr as b3 on b3.r09_anousu  = r20_anousu ";
+	$sSqlK300 .= "                               and b3.r09_mesusu = r20_mesusu ";
+	$sSqlK300 .= "                               and b3.r09_instit = r20_instit ";
+	$sSqlK300 .= "                               and b3.r09_rubric = r20_rubric ";
+	$sSqlK300 .= "                               and b3.r09_base   = 'B003' ";
+	$sSqlK300 .= "  where gerfres.r20_pd != 3 {$filtraTabelaPrevidenciaria} ";
+    $sSqlK300 .= "    and gerfres.r20_instit = {$iInstit} ";
+    $sSqlK300 .= "    and cast( gerfres.r20_anousu||lpad(gerfres.r20_mesusu,2,'0') as integer)
+                          between cast('$sData1' as integer) and cast('$sData2' as integer)";
+    $sSqlK300 .= " ) as x ";
+    $sSqlK300 .= " group by reg, "; 
+    $sSqlK300 .= "          cnpj_cei, "; 
+    $sSqlK300 .= "          ind_fl, "; 
+    $sSqlK300 .= "          cod_ltc, "; 
+    $sSqlK300 .= "          cod_reg_trab, "; 
+    $sSqlK300 .= "          dt_comp, "; 
+    $sSqlK300 .= "          cod_rubr, ";
+    $sSqlK300 .= "          ind_rubr, ";
+    $sSqlK300 .= "          ind_base_irrf, ";
+    $sSqlK300 .= "          ind_base_ps  ";
+
+	return $sSqlK300;
 		 
   }
   
@@ -652,26 +709,26 @@ class manad {
     }
     
   	$sSql0000  = " select '0000'      as reg, ";
-		$sSql0000 .= "        nomeinst    as nome, ";
-		$sSql0000 .= "        cgc         as cnpj, ";
-		$sSql0000 .= "        null         as cpf, ";
-		$sSql0000 .= "        null        as cei, ";
-		$sSql0000 .= "        null        as nit, ";
-		$sSql0000 .= "        uf          as uf, ";
-		$sSql0000 .= "        null        as ie, ";
-		$sSql0000 .= "        '{$iCodMun}'  as cod_mun, ";
-		$sSql0000 .= "        null          as im, ";
-		$sSql0000 .= "        null          as suframa, ";
-		$sSql0000 .= "        '1'           as ind_centr, ";
-		$sSql0000 .= "        '{$sDtIni}'   as dt_ini, ";
-		$sSql0000 .= "        '{$sDtFim}'   as dt_fin, ";
-		$sSql0000 .= "        '003'         as cod_ver, ";
-		$sSql0000 .= "        '{$iCodFin}' as cod_fin, ";
-		$sSql0000 .= "        '1'           as ind_ed ";
-		$sSql0000 .= "   from db_config      ";
-		$sSql0000 .= "  where codigo = {$iInstit} ";
-		
-		return $sSql0000;
+	$sSql0000 .= "        nomeinst    as nome, ";
+	$sSql0000 .= "        cgc         as cnpj, ";
+	$sSql0000 .= "        null         as cpf, ";
+	$sSql0000 .= "        null        as cei, ";
+	$sSql0000 .= "        null        as nit, ";
+	$sSql0000 .= "        uf          as uf, ";
+	$sSql0000 .= "        null        as ie, ";
+	$sSql0000 .= "        '{$iCodMun}'  as cod_mun, ";
+	$sSql0000 .= "        null          as im, ";
+	$sSql0000 .= "        null          as suframa, ";
+	$sSql0000 .= "        '1'           as ind_centr, ";
+	$sSql0000 .= "        '{$sDtIni}'   as dt_ini, ";
+	$sSql0000 .= "        '{$sDtFim}'   as dt_fin, ";
+	$sSql0000 .= "        '003'         as cod_ver, ";
+	$sSql0000 .= "        '{$iCodFin}' as cod_fin, ";
+	$sSql0000 .= "        '1'           as ind_ed ";
+	$sSql0000 .= "   from db_config      ";
+	$sSql0000 .= "  where codigo = {$iInstit} ";
+
+	return $sSql0000;
   	
   }
   
@@ -733,7 +790,7 @@ class manad {
      */ 
     $sSqlEmpenho  = " select e60_numemp, ";
     $sSqlEmpenho .= "        e60_anousu, ";
-    $sSqlEmpenho .= "        e60_anousu||trim(e60_codemp)::integer as nm_emp, ";
+    $sSqlEmpenho .= "        e60_anousu::text||trim(e60_codemp)::integer as nm_emp, ";
     $sSqlEmpenho .= "        o58_orgao as cod_org, ";
     $sSqlEmpenho .= "        o58_unidade as cod_un_orc, ";
     $sSqlEmpenho .= "        o58_funcao as cod_fun, ";
@@ -765,8 +822,9 @@ class manad {
     $sSqlEmpenho .= "                               and o58_instit = e60_instit ";
     $sSqlEmpenho .= "        inner join orcelemento  on o56_codele = o58_codele and o56_anousu = o58_anousu ";
     $sSqlEmpenho .= "        inner join orctiporec   on o58_codigo = o15_codigo";
-    $sSqlEmpenho .= "  where c75_data  between '{$sDataInicial}' and '{$sDataFinal}' "; 
-    $sSqlEmpenho .= "    and e60_emiss between '{$sDataInicial}' and '{$sDataFinal}' ";
+    $sSqlEmpenho .= "  where c75_data >= '{$sDataInicial}' "; 
+    $sSqlEmpenho .= "    and c75_data <='{$sDataFinal}' ";  
+    $sSqlEmpenho .= "    and e60_emiss <='{$sDataFinal}'";
     $sSqlEmpenho .= "    and c71_coddoc in (1,2,31,32) ";
     $sSqlEmpenho .= "    and e60_instit in ({$sListaInstit}) ";
           
@@ -776,7 +834,7 @@ class manad {
     $sSqlEmpenho .= " union all ";
     $sSqlEmpenho .= " select distinct (e91_numemp) , ";
     $sSqlEmpenho .= "        e60_anousu, ";
-    $sSqlEmpenho .= "        e60_anousu||trim(e60_codemp)::integer as e60_codemp, ";
+    $sSqlEmpenho .= "        e60_anousu::text||trim(e60_codemp)::integer as e60_codemp, ";
     $sSqlEmpenho .= "        o58_orgao, ";
     $sSqlEmpenho .= "        o58_unidade, ";
     $sSqlEmpenho .= "        o58_funcao, ";
@@ -812,7 +870,7 @@ class manad {
     $sSqlEmpenho .= "  union all ";
     $sSqlEmpenho .= " select e60_numemp, ";
     $sSqlEmpenho .= "        e60_anousu, ";
-    $sSqlEmpenho .= "        e60_anousu||trim(e60_codemp)::integer as e60_codemp, ";
+    $sSqlEmpenho .= "        e60_anousu::text ||trim(e60_codemp)::integer as e60_codemp, ";
     $sSqlEmpenho .= "        o58_orgao, ";
     $sSqlEmpenho .= "        o58_unidade, ";
     $sSqlEmpenho .= "        o58_funcao, ";
@@ -852,7 +910,7 @@ class manad {
     $sSqlEmpenho .= "  order by 5, 6,7,8,9,10,11,12,13";
     $rsEmpenho    = db_query($sSqlEmpenho);
     $iTotalLinhas = pg_num_rows($rsEmpenho);
-    return db_utils::getColectionByRecord($rsEmpenho);
+    return db_utils::getCollectionByRecord($rsEmpenho);
   }
   
   /**
@@ -916,7 +974,7 @@ class manad {
     $sSqlLiquidacoes .= "     and e60_anousu < {$iAno} ";
     $sSqlLiquidacoes .= "     and e60_instit in ($sListaInstit) and e91_anousu = ".db_getsession("DB_anousu");
     $rsLiquidacoes    = db_query($sSqlLiquidacoes);
-    return db_utils::getColectionByRecord($rsLiquidacoes);
+    return db_utils::getCollectionByRecord($rsLiquidacoes);
     
   }
   
@@ -1183,7 +1241,6 @@ class manad {
       $sSqlDesdobramento .= "        inner join orcelemento on o56_codele = o58_codele and o56_anousu = o58_anousu ";
       $sSqlDesdobramento .= "  where c71_coddoc in (7,52,53,54,55,56,58,59,60,61,62,63,64) ";
       $sSqlDesdobramento .= "    and c71_data between '{$sDataInicial}' and '{$sDataFinal}' ";
-      //$sql_desdobramento .= "  /* and c73_coddot = $o58_coddot */ ";
       $sSqlDesdobramento .= "    and substr(o56_elemento,1,7)='".substr($oDespesa->o58_elemento,0,7)."' ";
       $sSqlDesdobramento .= "    and c73_anousu = ".db_getsession("DB_anousu");
       
@@ -1392,10 +1449,8 @@ class manad {
   
   public function getDadosOrgao($sDataInicial, $sDataFinal, $iAnoInicio) {
     
-    list ($iAnoUsuFim, $iMesUsuFim, $iDiaUsuFim ) = explode("-", $sDataFinal);
+    list ($iAnoUsuFim, $iMesUsuFim, $iDiaUsuFim ) = explode("-", $sDataInicial);
     $iAno         = $iAnoUsuFim;
-
-
     $aOrgaos      = array();
     $sWhereInstit = " and o58_instit = ".db_getsession("DB_instit");
     $sSqlOrgaos   = "select distinct    "; 

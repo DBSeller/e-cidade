@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 //MODULO: caixa
-include("classes/db_db_documento_classe.php");
-require_once ('libs/db_libdicionario.php');
+include(modification("classes/db_db_documento_classe.php"));
+require_once(modification('libs/db_libdicionario.php'));
 $cldbdocumento = new cl_db_documento;
 $clcadtipoparc->rotulo->label();
 $cldbdocumento->rotulo->label();
@@ -150,6 +150,39 @@ if (!isset($k40_diapulames)) {
     <td> 
 <?
 db_input('k40_diapulames',10,$Ik40_diapulames,true,'text',$db_opcao,"")
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tk40_permvalcadparc?>">
+       <?=@$Lk40_permvalcadparc?>
+    </td>
+    <td> 
+<?
+$x = array("f"=>"NAO","t"=>"SIM");
+db_select('k40_permvalcadparc',$x,true,$db_opcao,"");
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tk40_permdataparc?>">
+       <?=@$Lk40_permdataparc?>
+    </td>
+    <td> 
+<?
+$x = array("f"=>"NAO","t"=>"SIM");
+db_select('k40_permdataparc',$x,true,$db_opcao,"");
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tk40_controlavencimento?>">
+       <?=@$Lk40_controlavencimento?>
+    </td>
+    <td> 
+<?
+$x = array("f"=>"NAO","t"=>"SIM");
+db_select('k40_controlavencimento',$x,true,$db_opcao,"");
 ?>
     </td>
   </tr>
@@ -310,7 +343,7 @@ function js_ddl_regraunif(){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_cadtipoparc','db_iframe_cadtipoparc','func_cadtipoparc.php?funcao_js=parent.js_preenchepesquisa|k40_codigo','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoparc','db_iframe_cadtipoparc','func_cadtipoparc.php?funcao_js=parent.js_preenchepesquisa|k40_codigo','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadtipoparc.hide();

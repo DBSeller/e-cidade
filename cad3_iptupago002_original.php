@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $pdf = new PDF("L"); 
 $pdf->Open(); 
@@ -60,7 +60,7 @@ group by k00_receit,k02_drecei
 */
 //$exercicio = db_getsession("DB_anousu");
 $sql = "select count(*) from iptucalc where j23_anousu = $exercicio";
-$result = pg_exec($sql);
+$result = db_query($sql);
 $totcontrib = pg_result($result,0);
 $sql = "
 select * from
@@ -229,7 +229,7 @@ select * from
 		group by k00_receit,k02_drecei) as kk
 	on kk.rec_parc5 = x.rec_pago
        "; 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 // j23_matric, z01_nome, percentual, valordb, valorsap, diferenca
 $linha = 60;
@@ -341,19 +341,19 @@ $pdf->Cell(20,4,db_formatar($tot_par1+$tot_par2+$tot_par3+$tot_par4+$tot_par5,'f
 $pdf->Cell(20,4,db_formatar(($tot_par1+$tot_par2+$tot_par3+$tot_par4+$tot_par5)/$total_calc*100,'f')."%",0,1,"R",0);
 
 $sql = "select count(*) as quant_calculada from (select distinct j20_matric from iptunump where j20_anousu = $exercicio) as x";
-$result = pg_exec($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 $pdf->Cell(95,4,"Quantidade de matriculas com emissão de carnês: ",0,0,"L",0);
 $pdf->Cell(20,4,db_formatar($quant_calculada,'s'),0,1,"R",0);
 
 $sql = "select count(*) as quant_unica from (select distinct j20_matric from iptunump inner join arrepaga on j20_numpre = k00_numpre where j20_anousu = $exercicio and k00_hist = 990) as x";
-$result = pg_exec($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 $pdf->Cell(95,4,"Quantidade de matrículas que pagaram em cota unica: ",0,0,"L",0);
 $pdf->Cell(20,4,db_formatar($quant_unica,'s'),0,1,"R",0);
 
 $sql = "select count(*) as quant_parcelado from (select distinct j20_matric from iptunump inner join arrepaga on j20_numpre = k00_numpre where j20_anousu = $exercicio and k00_hist <> 990) as x";
-$result = pg_exec($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 $pdf->Cell(95,4,"Quantidade de matrículas que pagaram parcelado: ",0,0,"L",0);
 $pdf->Cell(20,4,db_formatar($quant_parcelado,'s'),0,1,"R",0);
@@ -365,7 +365,7 @@ $pdf->Cell(180,4,"","T",1,"L",0);
 
 $pdf->Cell(95,4,"  - nos valores do imposto estão incluídos as onerações. ",0,1,"L",0);
 
-$result = pg_exec("select max(dtarq) as dtarq from disbanco");
+$result = db_query("select max(dtarq) as dtarq from disbanco");
 db_fieldsmemory($result,0);
 $pdf->Cell(95,4,"  - arquivos recebidos dos bancos até " . db_formatar($dtarq,'d'),0,0,"L",0);
 

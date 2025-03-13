@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -39,7 +39,7 @@ $sSqlHistorico .= "			from histbensocorrencia";
 //$sSqlHistorico .= "			from histbensocorrencia inner join"; 
 //$sSqlHistorico .= "				ocorrenciabens on t69_ocorrenciasbens = t68_sequencial";
 
-$rsHistorico    = pg_query($sSqlHistorico);
+$rsHistorico    = db_query($sSqlHistorico);
 $iNumeroLinhas 	= pg_num_rows($rsHistorico);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {

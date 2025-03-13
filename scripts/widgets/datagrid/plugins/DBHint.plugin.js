@@ -90,5 +90,9 @@ DBGrid.prototype.setHint = function(iLine, iCell, sMessage, oParameters) {
   parent.oHint.setScrollElement($("body-container-"+this.sName));
   parent.oHint.make($(sIdCelulaDestino));
   
+  if (!!oParameters && !!oParameters.className) {
+    parent.oHint.oDivInterna.addClassName(oParameters.className);
+  }
+  
 }
 

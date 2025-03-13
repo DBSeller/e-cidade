@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("interfaces/ILancamentoAuxiliar.interface.php");
-require_once ("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
 /**
  * Executa os lançamentos contabeis auxiliares de uma receita reconhecida pela fato gerador
  * @author Matheus Felini
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.9 $
  */
 class LancamentoAuxiliarReconhecimentoReceitaFatoGerador extends LancamentoAuxiliarBase implements ILancamentoAuxiliar {
   

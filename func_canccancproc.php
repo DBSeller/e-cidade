@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cancdebitos_classe.php");
-
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cancdebitos_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 $clcancdebitos = new cl_cancdebitos;
@@ -114,7 +114,7 @@ $instit = db_getsession("DB_instit");
                 where not exists(select q78_cancdebitos 
                                    from cancdebitosissplan 
                                   where q78_cancdebitos = cancdebitos.k20_codigo)";
-
+       
         if(isset($chave_k20_codigo) && (trim($chave_k20_codigo)!="") ){
            $sql .= " and k20_codigo = $chave_k20_codigo   and k20_instit = $instit";
         }else if(isset($chave_k20_data) && (trim($chave_k20_data)!="") ){
@@ -124,8 +124,8 @@ $instit = db_getsession("DB_instit");
         }else{
           $sql .= " and k20_instit =  $instit";
         }
-        $sql .= " order by k20_codigo, k20_data";				
-//			die($sql);
+        $sql .= " order by k20_codigo, k20_data";		
+        //die($sql);
         db_lovrot($sql,15,"()","",$funcao_js);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
@@ -154,3 +154,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/JSON.php");
-require_once ("std/db_stdClass.php");
-require_once ("std/DBDate.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
 define("URL_MENSAGEM_TURMACENSO_RPC", "educacao.escola.edu4_turmascenso_RPC.");
 
@@ -75,8 +75,8 @@ try {
         $oDados->iTurma     = $oTurma->getCodigo();
         $oDados->lVinculada = false;
 
-        $sCampos     = 'ed342_censoetapa, ed342_nome, ed343_turmacenso';
-        $sSql        = $oDaoTurmaVinculada->sql_query(null, $sCampos, null, "ed343_turma = $oDados->iTurma ");
+        $sCampos     = 'ed134_censoetapa, ed342_nome, ed343_turmacenso';
+        $sSql        = $oDaoTurmaVinculada->sql_query2(null, $sCampos, null, "ed343_turma = $oDados->iTurma ");
         $rsVinculada = db_query($sSql);
 
         $oDados->lVinculada      = pg_num_rows( $rsVinculada ) > 0;
@@ -86,7 +86,7 @@ try {
         if( empty( $oRetorno->iEtapaCenso ) ) {
 
           $oRetorno->iTurmaCenso = $oDadosRetorno->ed343_turmacenso;
-          $oRetorno->iEtapaCenso = $oDadosRetorno->ed342_censoetapa;
+          $oRetorno->iEtapaCenso = $oDadosRetorno->ed134_censoetapa;
           $oRetorno->sNomeTurma  = urlencode( $oDadosRetorno->ed342_nome );
         }
       }
@@ -142,6 +142,7 @@ try {
       }
 
       $oTurmaCenso = new TurmaCenso( $iTurmaCenso );
+      $oTurmaCenso->setAnoCalendarioTurma($oParam->iAnoCalendario);
       $oTurmaCenso->setEtapaCenso($oParam->iCensoEtapa);
       $oTurmaCenso->setNomeTurma($oParam->sTurmaCenso);
       $oTurmaCenso->removerTurmas();
@@ -153,7 +154,7 @@ try {
         $oTurmaCensoTurma->setTurma($oTurma);
         $oTurmaCenso->adicionarTurmaCensoTurma($oTurmaCensoTurma);
       }
-      
+
       $oTurmaCenso->salvar();
 
       db_fim_transacao();

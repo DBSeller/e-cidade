@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -134,10 +134,10 @@ $("ve66_hora").value = "<?=date("H:i")?>";
 
 function js_pesquisave66_veiculo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_veiculos','func_veiculos.php?funcao_js=parent.js_mostraveiculos1|ve01_codigo|ve01_placa','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiculos','func_veiculos.php?funcao_js=parent.js_mostraveiculos1|ve01_codigo|ve01_placa','Pesquisa',true);
   }else{
      if(document.form1.ve66_veiculo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_veiculos','func_veiculos.php?pesquisa_chave='+document.form1.ve66_veiculo.value+'&funcao_js=parent.js_mostraveiculos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiculos','func_veiculos.php?pesquisa_chave='+document.form1.ve66_veiculo.value+'&funcao_js=parent.js_mostraveiculos','Pesquisa',false);
      }else{
        document.form1.ve01_codigo.value = ''; 
      }
@@ -164,10 +164,10 @@ function js_mostraveiculos1(chave1,chave2){
 }
 function js_pesquisave66_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
      if(document.form1.ve66_usuario.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.ve66_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.ve66_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
      }else{
        document.form1.nome.value = ''; 
      }
@@ -186,7 +186,7 @@ function js_mostradb_usuarios1(chave1,chave2){
   db_iframe_db_usuarios.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veicmanutencaomedida','func_veicmanutencaomedida.php?funcao_js=parent.js_preenchepesquisa|ve66_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veicmanutencaomedida','func_veicmanutencaomedida.php?funcao_js=parent.js_preenchepesquisa|ve66_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veicmanutencaomedida.hide();
@@ -201,7 +201,7 @@ function js_pesquisa_medida() {
                   document.form1.ve66_data_mes.value + '-' +
                   document.form1.ve66_data_dia.value;
   var retirada  = '';
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_ultimamedida',
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_ultimamedida',
     'func_veiculos_medida.php?metodo=ultimamedida&veiculo='+document.form1.ve66_veiculo.value+
                                                 '&data='+databanco+
                                                 '&hora='+document.form1.ve66_hora.value+

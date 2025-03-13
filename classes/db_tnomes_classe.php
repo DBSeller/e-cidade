@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -117,7 +117,7 @@ class cl_tnomes {
        return false;
      }
      if($yy_codigo == "" || $yy_codigo == null ){
-       $result = @pg_query("select nextval('tnomes_yy_codigo_seq')"); 
+       $result = @db_query("select nextval('tnomes_yy_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: tnomes_yy_codigo_seq do campo: yy_codigo"; 
@@ -128,7 +128,7 @@ class cl_tnomes {
        }
        $this->yy_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from tnomes_yy_codigo_seq");
+       $result = @db_query("select last_value from tnomes_yy_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $yy_codigo)){
          $this->erro_sql = " Campo yy_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -160,7 +160,7 @@ class cl_tnomes {
                                ,".($this->yy_data == "null" || $this->yy_data == ""?"null":"'".$this->yy_data."'")." 
                                ,'$this->yy_obs' 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -184,13 +184,13 @@ class cl_tnomes {
      $this->erro_status = "1";
      $resaco = $this->sql_record($this->sql_query_file($this->yy_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,5201,'$this->yy_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,757,5201,'','".AddSlashes(pg_result($resaco,0,'yy_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,757,5202,'','".AddSlashes(pg_result($resaco,0,'yy_nome'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,757,5203,'','".AddSlashes(pg_result($resaco,0,'yy_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,757,5204,'','".AddSlashes(pg_result($resaco,0,'yy_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,5201,'$this->yy_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,757,5201,'','".AddSlashes(pg_result($resaco,0,'yy_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,757,5202,'','".AddSlashes(pg_result($resaco,0,'yy_nome'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,757,5203,'','".AddSlashes(pg_result($resaco,0,'yy_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,757,5204,'','".AddSlashes(pg_result($resaco,0,'yy_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -268,19 +268,19 @@ class cl_tnomes {
      $sql .= " where  yy_codigo = $this->yy_codigo
 ";
      $resaco = $this->sql_record($this->sql_query_file($this->yy_codigo));
-     if($this->numrows>0){       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     if($this->numrows>0){       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,5201,'$this->yy_codigo','A')");
+       $resac = db_query("insert into db_acountkey values($acount,5201,'$this->yy_codigo','A')");
        if(isset($GLOBALS["HTTP_POST_VARS"]["yy_codigo"]))
-         $resac = pg_query("insert into db_acount values($acount,757,5201,'".AddSlashes(pg_result($resaco,0,'yy_codigo'))."','$this->yy_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,757,5201,'".AddSlashes(pg_result($resaco,0,'yy_codigo'))."','$this->yy_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["yy_nome"]))
-         $resac = pg_query("insert into db_acount values($acount,757,5202,'".AddSlashes(pg_result($resaco,0,'yy_nome'))."','$this->yy_nome',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,757,5202,'".AddSlashes(pg_result($resaco,0,'yy_nome'))."','$this->yy_nome',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["yy_data"]))
-         $resac = pg_query("insert into db_acount values($acount,757,5203,'".AddSlashes(pg_result($resaco,0,'yy_data'))."','$this->yy_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,757,5203,'".AddSlashes(pg_result($resaco,0,'yy_data'))."','$this->yy_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["yy_obs"]))
-         $resac = pg_query("insert into db_acount values($acount,757,5204,'".AddSlashes(pg_result($resaco,0,'yy_obs'))."','$this->yy_obs',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,757,5204,'".AddSlashes(pg_result($resaco,0,'yy_obs'))."','$this->yy_obs',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Nomes nao Alterado. Alteracao Abortada.\\n";
@@ -314,13 +314,13 @@ class cl_tnomes {
      $resaco = $this->sql_record($this->sql_query_file($yy_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,5201,'".pg_result($resaco,$iresaco,'yy_codigo')."','E')");
-         $resac = pg_query("insert into db_acount values($acount,757,5201,'','".AddSlashes(pg_result($resaco,$iresaco,'yy_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,757,5202,'','".AddSlashes(pg_result($resaco,$iresaco,'yy_nome'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,757,5203,'','".AddSlashes(pg_result($resaco,$iresaco,'yy_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,757,5204,'','".AddSlashes(pg_result($resaco,$iresaco,'yy_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,5201,'".pg_result($resaco,$iresaco,'yy_codigo')."','E')");
+         $resac = db_query("insert into db_acount values($acount,757,5201,'','".AddSlashes(pg_result($resaco,$iresaco,'yy_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,757,5202,'','".AddSlashes(pg_result($resaco,$iresaco,'yy_nome'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,757,5203,'','".AddSlashes(pg_result($resaco,$iresaco,'yy_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,757,5204,'','".AddSlashes(pg_result($resaco,$iresaco,'yy_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from tnomes
@@ -332,7 +332,7 @@ class cl_tnomes {
       }
       $sql2 .= " yy_codigo = $yy_codigo ";
 }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Nomes nao Excluído. Exclusão Abortada.\\n";
@@ -363,7 +363,7 @@ class cl_tnomes {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

@@ -1,55 +1,47 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_pessoal_classe.php");
-include("classes/db_gerfsal_classe.php");
-include("classes/db_gerfres_classe.php");
-include("classes/db_gerfs13_classe.php");
-include("classes/db_gerfcom_classe.php");
-include("classes/db_rhrubricas_classe.php");
-include("classes/db_lotacao_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clrhpessoal   = new cl_rhpessoal;
-$clpessoal   = new cl_pessoal;
-$clgerfsal   = new cl_gerfsal;
-$clgerfres   = new cl_gerfres;
-$clgerfs13  = new cl_gerfs13;
-$clgerfcom  = new cl_gerfcom;
-$clrhrubricas= new cl_rhrubricas;
-$cllotacao   = new cl_lotacao;
-$db_opcao    = 1;
-$db_botao    = true;
+$clpessoal     = new cl_pessoal;
+$clgerfsal     = new cl_gerfsal;
+$clgerfres     = new cl_gerfres;
+$clgerfs13     = new cl_gerfs13;
+$clgerfcom     = new cl_gerfcom;
+$clrhrubricas  = new cl_rhrubricas;
+$cllotacao     = new cl_lotacao;
+$db_opcao      = 1;
+$db_botao      = true;
 
 // Se variáveis anouso e mesusu não existem, ele pegará as variáveis atuais da folha
 if(!isset($r14_anousu) || (isset($r14_anousu) && trim($r14_anousu) == "")){
@@ -59,12 +51,17 @@ if(!isset($r14_mesusu) || (isset($r14_mesusu) && trim($r14_mesusu) == "")){
   $r14_mesusu = db_mesfolha();
 }
 ////////////
+$aFolhasComNovaEstrutura = array("fs", "supl","com");
+if ( DBPessoal::verificarUtilizacaoEstruturaSuplementar() && in_array($gerf, $aFolhasComNovaEstrutura) ) {
+  require_once(modification("pes4_implantacaoponto001.php"));
+  exit;
+}
 
 if(isset($incluir) || isset($confirmado) || isset($gerfnovo)){
 
   $gerfteste = 0;
   if($gerf == "fs" || $gerf == "Rfs"){
-    
+
     // Rotina que verifica se já existe, na tabela gerfsal, algum registro com o mesmo anousu, mesusu e rubrica
     $result_folhasalario = $clgerfsal->sql_record($clgerfsal->sql_query_seleciona(null,null,null,null,"r14_valor as valoranterior,r14_quant as quantidadeanterior",null,"r14_anousu = $r14_anousu and r14_mesusu = $r14_mesusu and r14_regist = $r14_regist and r14_rubric = $r14_rubric and r14_instit = ".db_getsession("DB_instit")));
     if($clgerfsal->numrows > 0){
@@ -74,7 +71,7 @@ if(isset($incluir) || isset($confirmado) || isset($gerfnovo)){
     //////////
 
   }else if($gerf == "fr" || $gerf == "Rfr"){
-    
+
     // Rotina que verifica se já existe, na tabela gerfres, algum registro com o mesmo anousu, mesusu, rubrica e tipo
 //    echo ($clgerfres->sql_query_seleciona($r14_anousu,$r14_mesusu,$r14_regist,$r14_rubric,$r20_tpp,"r20_valor as valoranterior,r20_quant as quantidadeanterior"));
     $result_folharescisao= $clgerfres->sql_record($clgerfres->sql_query_seleciona(null,null,null,null,null,"r20_valor as valoranterior,r20_quant as quantidadeanterior",null,"r20_anousu = $r14_anousu and r20_mesusu = $r14_mesusu and r20_regist = $r14_regist and r20_rubric = $r14_rubric and r20_tpp = $r20_tpp and r20_instit = ".db_getsession("DB_instit")));
@@ -83,9 +80,9 @@ if(isset($incluir) || isset($confirmado) || isset($gerfnovo)){
       $gerfteste = 1;
     }
     //////////
-    
+
   }else if($gerf == "f13" || $gerf == "Rf13"){
-    
+
     // Rotina que verifica se já existe, na tabela gerfs13, algum registro com o mesmo anousu, mesusu e rubrica
     $result_folhadecimo = $clgerfs13->sql_record($clgerfs13->sql_query_seleciona(null,null,null,null,"r35_valor as valoranterior,r35_quant as quantidadeanterior",null,"r35_anousu = $r14_anousu and r35_mesusu = $r14_mesusu and r35_regist = $r14_regist and r35_rubric = $r14_rubric and r35_instit = ".db_getsession("DB_instit")));
     if($clgerfs13->numrows > 0){
@@ -93,9 +90,9 @@ if(isset($incluir) || isset($confirmado) || isset($gerfnovo)){
       $gerfteste = 1;
     }
     //////////
-    
+
   }else if($gerf == "com" || $gerf == "Rcom"){
-    
+
     // Rotina que verifica se já existe, na tabela gerfcom, algum registro com o mesmo anousu, mesusu e rubrica
     $result_gerfcomplementar = $clgerfcom->sql_record($clgerfcom->sql_query_seleciona(null,null,null,null,"r48_valor as valoranterior,r48_quant as quantidadeanterior",null,"r48_anousu = $r14_anousu and r48_mesusu = $r14_mesusu and r48_regist = $r14_regist and r48_rubric = $r14_rubric and r48_instit = ".db_getsession("DB_instit")));
     if($clgerfcom->numrows > 0){
@@ -103,7 +100,7 @@ if(isset($incluir) || isset($confirmado) || isset($gerfnovo)){
       $gerfteste = 1;
     }
     //////////
-    
+
   }
 
   $ok = false;
@@ -236,7 +233,7 @@ if(isset($incluir) && !isset($alertconfirma)){
   //////////
 
   }
-  
+
   db_fim_transacao($sqlerro);
 }else if(isset($alterar)){
   db_inicio_transacao();
@@ -284,7 +281,7 @@ if(isset($incluir) && !isset($alertconfirma)){
       unset($repassa);
     }
   //////////
-    
+
   // Se for folha de rescisão
   }else if($sqlerro == false && ($gerf == "fr" || $gerf == "Rfr")){
 
@@ -313,9 +310,9 @@ if(isset($incluir) && !isset($alertconfirma)){
     }
 
     $erro_msg = str_replace("Inclusao","Alteracao",$erro_msg);
-    $erro_msg = str_replace("Exclusao","Alteracao",$erro_msg); 
+    $erro_msg = str_replace("Exclusao","Alteracao",$erro_msg);
   //////////
-  
+
   // Se for folha de 13o
   }else if($sqlerro == false && ($gerf == "f13" || $gerf == "Rf13")){
 
@@ -334,7 +331,7 @@ if(isset($incluir) && !isset($alertconfirma)){
       $sqlerro=true;
     }
   //////////
-  
+
   // Se for folha complementar
   }else if($sqlerro == false && ($gerf == "com" || $gerf == "Rcom")){
     $clgerfcom->r48_anousu = $r14_anousu;
@@ -359,7 +356,7 @@ if(isset($incluir) && !isset($alertconfirma)){
   if(isset($ok) && $ok == true){
 
     $r14_valor -= $valoranterior;
-    $r14_quant -= $quantidadeanterior;      
+    $r14_quant -= $quantidadeanterior;
 
   }
 
@@ -386,7 +383,7 @@ if(isset($incluir) && !isset($alertconfirma)){
       $sqlerro=true;
     }
   //////////
-    
+
   // Se for folha de 13o
   }else if($gerf == "f13" || $gerf == "Rf13"){
     $clgerfs13->excluir($r14_anousu,$r14_mesusu,$r14_regist,$r14_rubric);
@@ -395,7 +392,7 @@ if(isset($incluir) && !isset($alertconfirma)){
       $sqlerro=true;
     }
   //////////
-    
+
   // Se for folha complementar
   }else if($gerf == "com" || $gerf == "Rcom"){
     $clgerfcom->excluir($r14_anousu,$r14_mesusu,$r14_regist,$r14_rubric);
@@ -409,7 +406,7 @@ if(isset($incluir) && !isset($alertconfirma)){
 
   db_fim_transacao($sqlerro);
 }else if(isset($opcao)){
-      
+
   if($opcao == "alterar"){
     $db_opcao = 2;
   }else if($opcao == "excluir"){
@@ -419,7 +416,7 @@ if(isset($incluir) && !isset($alertconfirma)){
   ///////////////////////////////////////////////////
   // Rotina para buscar os dados da folha selecionado
   ///////////////////////////////////////////////////
-    
+
   $campoextra = "";
   $whereextra = "";
   if($gerf == "fs" || $gerf == "Rfs"){
@@ -502,7 +499,7 @@ if(isset($incluir) && !isset($alertconfirma)){
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
+  <tr>
     <td width="25%" height="18">&nbsp;</td>
     <td width="25%">&nbsp;</td>
     <td width="25%">&nbsp;</td>
@@ -510,7 +507,7 @@ if(isset($incluir) && !isset($alertconfirma)){
   </tr>
 </table>
 <?
-include("forms/db_frmgerffx.php");
+include(modification("forms/db_frmgerffx.php"));
 ?>
 <?
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -94,7 +94,7 @@ $clbensmodeloetiquetapadrao->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bensmodeloetiqueta',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensmodeloetiqueta',
                       'func_bensmodeloetiqueta.php?funcao_js=parent.js_preenchepesquisa|t71_sequencial',
                       'Pesquisa',true);
 }
@@ -108,12 +108,12 @@ function js_preenchepesquisa(chave){
 }
 function js_pesquisa_modelo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bensmodeloetiquetapadrao',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensmodeloetiquetapadrao',
                         'func_bensmodeloetiquetapadrao.php?funcao_js=parent.js_mostramodelo1|t72_sequencial|t72_descr',
                         'Pesquisa',true);
   }else{
      if(document.form1.t72_sequencial.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bensmodeloetiquetapadrao',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensmodeloetiquetapadrao',
                             'func_bensmodeloetiquetapadrao.php?'+
                             +'pesquisa_chave='+document.form1.t72_sequencial.value+'&funcao_js=parent.js_mostramodelo',
                             'Pesquisa',false);

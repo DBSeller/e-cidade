@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_libpessoal.php");
-include("classes/db_rhpagatra_classe.php");
-include("classes/db_rhpagocor_classe.php");
-include("classes/db_rhpessoal_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("classes/db_rhpagatra_classe.php"));
+include(modification("classes/db_rhpagocor_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
 $clrhpagatra = new cl_rhpagatra;
 $clrhpagocor = new cl_rhpagocor;
 $clrhpessoal = new cl_rhpessoal;

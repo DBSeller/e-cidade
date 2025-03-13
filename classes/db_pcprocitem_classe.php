@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -355,7 +355,7 @@ class cl_pcprocitem {
    function sql_query ( $pc81_codprocitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -381,7 +381,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -393,7 +393,7 @@ class cl_pcprocitem {
    function sql_query_autitem ( $pc81_codprocitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -422,7 +422,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -434,7 +434,7 @@ class cl_pcprocitem {
    function sql_query_dotac ( $pc81_codprocitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -463,7 +463,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -475,7 +475,7 @@ class cl_pcprocitem {
    function sql_query_file ( $pc81_codprocitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -496,7 +496,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -508,7 +508,7 @@ class cl_pcprocitem {
    function sql_query_itememautoriza ( $pc81_codprocitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -534,7 +534,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -546,7 +546,7 @@ class cl_pcprocitem {
    function sql_query_orcam ( $pc81_codprocitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -572,7 +572,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -584,7 +584,7 @@ class cl_pcprocitem {
    function sql_query_pcmater ( $pc81_codprocitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -615,9 +615,10 @@ class cl_pcprocitem {
      $sql .= "      left  join cgm                    on empautoriza.e54_numcgm              = cgm.z01_numcgm ";
      $sql .= "      left  join empempaut              on empempaut.e61_autori                = empautitem.e55_autori ";
      $sql .= "      left  join empempenho             on empempenho.e60_numemp               = empempaut.e61_numemp ";
-     $sql .= "      left join liclicitem              on liclicitem.l21_codpcprocitem        = pcprocitem.pc81_codprocitem";
-     $sql .= "      left join processocompraloteitem  on processocompraloteitem.pc69_pcprocitem = pcprocitem.pc81_codprocitem";
-     $sql .= "      left join processocompralote      on processocompralote.pc68_sequencial = processocompraloteitem.pc69_processocompralote";
+     $sql .= "      left  join pctipocompra           on empempenho.e60_codcom               = pctipocompra.pc50_codcom";
+     $sql .= "      left  join liclicitem              on liclicitem.l21_codpcprocitem        = pcprocitem.pc81_codprocitem";
+     $sql .= "      left  join processocompraloteitem  on processocompraloteitem.pc69_pcprocitem = pcprocitem.pc81_codprocitem";
+     $sql .= "      left  join processocompralote      on processocompralote.pc68_sequencial     = processocompraloteitem.pc69_processocompralote";
      $sql2 = "";
      if($dbwhere==""){
        if($pc81_codprocitem!=null ){
@@ -629,7 +630,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -641,7 +642,7 @@ class cl_pcprocitem {
    function sql_query_solprot ( $pc81_codprocitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -668,7 +669,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -682,7 +683,7 @@ class cl_pcprocitem {
 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -707,6 +708,9 @@ class cl_pcprocitem {
      $sql .= "      left  join pcmater  on  pcmater.pc01_codmater = solicitempcmater.pc16_codmater";
      $sql .= "      left  join solicitemele  on  solicitemele.pc18_solicitem = solicitem.pc11_codigo";
      $sql .= "      left  join acordopcprocitem  on  pc81_codprocitem = ac23_pcprocitem";
+     $sql .= "      left  join solicitatipo on solicitatipo.pc12_numero = solicita.pc10_numero";
+     $sql .= "      left  join pctipocompra on pctipocompra.pc50_codcom = solicitatipo.pc12_tipo";
+     $sql .= "      left  join pctipocompratribunal on pctipocompratribunal.l44_sequencial = pctipocompra.pc50_pctipocompratribunal";
 
      $sql2 = "";
      if($dbwhere==""){
@@ -719,7 +723,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -732,7 +736,7 @@ class cl_pcprocitem {
   function sql_query_dotacao_reserva ( $pc81_codprocitem=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -773,7 +777,7 @@ class cl_pcprocitem {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -816,4 +820,51 @@ class cl_pcprocitem {
     return $sSql;
   }
 
+    function sqlItensRegistroPreco($pc81_codprocitem = null, $campos = "*", $ordem = null, $dbwhere = "")
+    {
+        $sql = "select ";
+
+        if ($campos != "*") {
+            $campos_sql = explode("#", $campos);
+            $virgula = "";
+
+            for ($i = 0; $i < sizeof($campos_sql); $i++) {
+                $sql .= $virgula . $campos_sql[$i];
+                $virgula = ",";
+            }
+        } else {
+            $sql .= $campos;
+        }
+        $sql .= " from pcprocitem ";
+        $sql .= "      inner join pcproc                 on pcproc.pc80_codproc                 = pcprocitem.pc81_codproc";
+        $sql .= "      inner join solicitem              on solicitem.pc11_codigo               = pcprocitem.pc81_solicitem";
+        $sql .= "      inner join solicita               on solicita.pc10_numero                = solicitem.pc11_numero";
+        $sql .= "      left  join solicitemunid          on solicitemunid.pc17_codigo           = solicitem.pc11_codigo";
+        $sql .= "      left  join matunid                on matunid.m61_codmatunid              = solicitemunid.pc17_unid";
+        $sql .= "      left  join solicitempcmater       on solicitempcmater.pc16_solicitem     = solicitem.pc11_codigo";
+        $sql .= "      left  join pcmater                on pcmater.pc01_codmater               = solicitempcmater.pc16_codmater";
+        $sql .= "      left  join solicitaregistropreco  on solicita.pc10_numero                = solicitaregistropreco.pc54_solicita ";
+        $sql2 = "";
+        if ($dbwhere == "") {
+            if ($pc81_codprocitem != null) {
+                $sql2 .= " where pcprocitem.pc81_codprocitem = $pc81_codprocitem ";
+            }
+        } else {
+            if ($dbwhere != "") {
+                $sql2 = " where $dbwhere";
+            }
+        }
+        $sql .= $sql2;
+        if ($ordem != null) {
+            $sql .= " order by ";
+            $campos_sql = explode("#", $ordem);
+            $virgula = "";
+            for ($i = 0; $i < sizeof($campos_sql); $i++) {
+                $sql .= $virgula . $campos_sql[$i];
+                $virgula = ",";
+            }
+        }
+
+        return $sql;
+    }
 }

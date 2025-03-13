@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_utils.php");
-require_once("fpdf151/pdfwebseller.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("fpdf151/pdfwebseller.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -95,7 +95,7 @@ $sCamposMatricula  = " ed47_v_nome, ed47_i_codigo, ed47_c_nis, ed11_i_codigo, ed
 $sCamposMatricula .= " ed11_i_sequencia, ed11_i_ensino, ed57_c_descr, ed57_i_codigo, ed47_c_codigoinep,   ";
 $sCamposMatricula .= " ed18_c_nome,ed57_i_escola, date_part('year', age('{$sDataCorrente}'::date, ed47_d_nasc)) as idade";
 
-$sOrderMatricula   = " ed11_i_ensino, ed11_i_sequencia, ed57_c_descr";
+$sOrderMatricula   = " ed11_i_ensino, ed11_i_sequencia, ed57_c_descr, ed47_v_nome";
 
 $sSqlMatricula     = $oDaoMatricula->sql_query_bolsafamilia("", $sCamposMatricula, $sOrderMatricula, $sWhereMatricula);
 $rsMatricula       = $oDaoMatricula->sql_record($sSqlMatricula);
@@ -103,7 +103,7 @@ $iNumLinhas        = $oDaoMatricula->numrows;
 
 $aEscolas              = array();
 $oIdade                = new stdClass();
-$oIdade->iIdadeInicial = 6;
+$oIdade->iIdadeInicial = 0;
 $oIdade->iIdadeFinal   = 15;
 $oIdade->nPercentual   = 85;
 $oIdade->iTotalAlunos  = 0;
@@ -111,7 +111,7 @@ $oIdade->aEscolas      = array();
 $aFaixaDeIdades[]      = $oIdade;
 
 $oIdade                = new stdClass();
-$oIdade->iIdadeInicial = 16;
+$oIdade->iIdadeInicial = 0;
 $oIdade->iIdadeFinal   = 17;
 $oIdade->nPercentual   = 75;
 $oIdade->iTotalAlunos  = 0;
@@ -124,9 +124,9 @@ for ($iCont = 0; $iCont < $iNumLinhas; $iCont++) {
   $oDadosMatricula = db_utils::fieldsmemory($rsMatricula, $iCont);
   
   /**
-   * Alunos maiores que 17 Anos, não entram no calculo do bolsa familia
+   * Alunos maiores que 17 Anos, não entram no calculo do Auxílio Brasil
    */
-  if ($oDadosMatricula->idade < 6 || $oDadosMatricula->idade > 17) {
+  if ( $oDadosMatricula->idade > 17 ) {
     continue;
   }
 
@@ -219,7 +219,7 @@ $oPdf = new PDF();
 $oPdf->AliasNbPages();
 $oPdf->Open();
 $oPdf->SetAutoPageBreak(false, 20);
-$head1 = "RELATÓRIO DE ALUNOS COM BOLSA FAMÍLIA";
+$head1 = "RELATÓRIO DE ALUNOS COM AUXÍLIO BRASIL";
 $head2 = "Escola: {$sNomeEscola}";
 $head3 = "Etapa: {$sNomeEtapa}";
 $head4 = "Ano: {$oGet->iAno}";

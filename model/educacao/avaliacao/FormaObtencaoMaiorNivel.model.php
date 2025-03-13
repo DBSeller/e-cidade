@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,19 +31,20 @@
  * @package educacao
  * @subpackage avaliacao
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.7 $
  */
-require_once("model/educacao/avaliacao/FormaObtencao.model.php");
-require_once("model/educacao/avaliacao/iFormaObtencao.interface.php");
+require_once(modification("model/educacao/avaliacao/FormaObtencao.model.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
 class FormaObtencaoMaiorNivel extends FormaObtencao implements IFormaObtencao {
 
   /**
    * Define as notas que ira ser usada no calculo
    * Recebe um array de AvaliacaoAproveitamento
-   * @see IFormaObtencao::processarResultado()
-   * @param array $aAproveitamentos
+   * @param $aAproveitamentos
+   * @param $iAno
+   * @return ValorAproveitamentoNivel
    */
-  public function processarResultado($aAproveitamentos) {
+  public function processarResultado( $aAproveitamentos, $iAno ) {
 
     $mAproveitamento = new ValorAproveitamentoNivel();
     $iOrdem          = 0;

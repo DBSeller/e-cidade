@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -67,7 +67,7 @@ if (isset($qual_modulo)) {
       inner join db_sysarqmod d on a.codarq = d.codarq
       inner join db_sysmodulo m on d.codmod = m.codmod
       where m.codmod = $qual_modulo";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     db_fieldsmemory($result,0);
     for ($i=0; $i<pg_numrows($result); $i++) {
       $arqs[$i] = pg_result($result,$i,'nomearq');
@@ -83,7 +83,7 @@ if (isset($qual_modulo)) {
     inner join db_sysmodulo m on d.codmod = m.codmod
     where a.codarq = $qual_arquivo";
   
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
   for ($i=0; $i<pg_numrows($result); $i++) {
     $arqs[$i] = pg_result($result,$i,'nomearq');
@@ -103,7 +103,7 @@ if ($tipo == 1) {
 } else {
   
   $sqlmodulo = "select codmod, nomemod from db_sysmodulo where ativo is true";
-  $resultmodulo = pg_exec($sqlmodulo);
+  $resultmodulo = db_query($sqlmodulo);
   
   for ($modulo = 0; $modulo < pg_numrows($resultmodulo); $modulo++) {
     $qual_modulo = pg_result($resultmodulo,$modulo,"codmod");
@@ -119,7 +119,7 @@ if ($tipo == 1) {
       inner join db_sysarqmod d on a.codarq = d.codarq
       inner join db_sysmodulo m on d.codmod = m.codmod
       where m.codmod = $qual_modulo";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     db_fieldsmemory($result,0);
     for ($i=0; $i<pg_numrows($result); $i++) {
       $arqs[$i] = pg_result($result,$i,'nomearq');
@@ -150,7 +150,7 @@ for ($i=0; $i<sizeof($arqs); $i++) {
     select relname
     from pg_class
     where relname = '".trim($arqs[$i])."'";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if (pg_numrows($result)==0) {
     ?>
     <tr>
@@ -207,7 +207,7 @@ for ($i=0; $i<sizeof($arqs); $i++) {
     $sql .= "    AND c.relname = '".trim($arqs[$i])."'";
     $sql .= "ORDER BY attnum";
     
-    $campo = pg_exec($sql);
+    $campo = db_query($sql);
     
     /*$sql = "select *
 from db_arquivo a
@@ -215,14 +215,14 @@ inner join db_sysarqcamp ac on a.codarq = ac.codarq
 inner join db_syscampo c on c.codcam = ac.codcam
 where trim(nomearq) = ".trim($arqs[$i])."
 order by ac.seqarq.;
-$campoc = pg_exec($sql);
+$campoc = db_query($sql);
 */
     $listaa = 0;
     for ($x=0; $x<pg_numrows($campo); $x++) {
       
       $nomecam = trim(pg_result($campo,$x,'attname'));
       $sql = "select * from db_syscampo where trim(nomecam) = '$nomecam'";
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       if (pg_numrows($result)==0) {
         if ($listaa==0) {
           $listaa = 1;
@@ -282,7 +282,7 @@ inner join db_sysarqcamp ac on a.codarq = ac.codarq
 inner join db_syscampo c on c.codcam = ac.codcam
 where trim(nomearq) = '".trim($arqs[$i])."'
 order by ac.seqarq";
-    $campo1 = pg_exec($sql);
+    $campo1 = db_query($sql);
     
     for ($x=0; $x<pg_numrows($campo1); $x++) {
       $tem = 0;
@@ -327,12 +327,12 @@ from db_sysarquivo a
 inner join db_sysarqcamp c on a.codarq = c.codarq
 inner join db_syssequencia s on s.codsequencia = c.codsequencia
 where trim(a.nomearq) = '".trim($arqs[$i])."' and c.codsequencia > 0";
-    $res = pg_exec($sql);
+    $res = db_query($sql);
     if (pg_numrows($res)>0) {
       $sql = "select relname
 from pg_class
 where relname = '".pg_result($res,0,0)."'";
-      $res1 = pg_exec($sql);
+      $res1 = db_query($sql);
       if (pg_numrows($res1)==0) {
         
         if ($imp == false) {

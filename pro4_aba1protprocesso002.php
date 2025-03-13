@@ -1,45 +1,45 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_procdoctipo_classe.php");
-include("classes/db_protparam_classe.php");
-include("classes/db_procvar_classe.php");
-include("classes/db_andpadrao_classe.php");
-include("classes/db_proctipovar_classe.php");
-include("classes/db_procprocessodoc_classe.php");
-include("classes/db_db_depusu_classe.php");
-include("classes/db_db_syscampo_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_procdoctipo_classe.php"));
+require_once(modification("classes/db_protparam_classe.php"));
+require_once(modification("classes/db_procvar_classe.php"));
+require_once(modification("classes/db_andpadrao_classe.php"));
+require_once(modification("classes/db_proctipovar_classe.php"));
+require_once(modification("classes/db_procprocessodoc_classe.php"));
+require_once(modification("classes/db_db_depusu_classe.php"));
+require_once(modification("classes/db_db_syscampo_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -101,13 +101,13 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
   $sql = " select p54_codigo, p54_codcam from procvar where p54_codigo = {$oPost->p58_codigo} ";
   //die($sql);
   $rs = db_query($sql) or die($sql);
-  
+
   $clproctipovar->excluir($clprotprocesso->p58_codproc);
   if ($clproctipovar->erro_status == "0"){
       $sqlerro = true;
   }
-    
-  if (pg_num_rows($rs) > 0){ 
+
+  if (pg_num_rows($rs) > 0){
     while ($ln = pg_fetch_array($rs)){
       $sql2 = "select nomecam from db_syscampo where codcam = ".$ln["p54_codcam"];
       $rscam = db_query($sql2) or die($sql2);
@@ -118,11 +118,11 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
       $GLOBALS["HTTP_POST_VARS"]["p55_codvar"] = $ln["p54_codigo"];
       $GLOBALS["HTTP_POST_VARS"]["p55_codcam"] = $ln["p54_codcam"];
       $GLOBALS["HTTP_POST_VARS"]["p55_conteudo"] = $$nomecam;
-      
+
       if($$nomecam == ""){
       	continue;
       }
-      
+
       $clproctipovar->p55_codproc = $clprotprocesso->p58_codproc;
       $clproctipovar->p55_codvar = $ln["p54_codigo"];
       $clproctipovar->p55_codcam = $ln["p54_codcam"];
@@ -131,9 +131,9 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
       if ($clproctipovar->erro_status == "0"){
         $sqlerro = true;
       }
-      // $clproctipovar->erro(true,false);  
-      //           echo "<script>alert('processo: ".$p55_codproc."\\ncodvar: ".$p55_codvar."\\ncodcam: ".$p55_codcam."\\n$nomecam: ".$$nomecam."');</script>"; 
-    } 
+      // $clproctipovar->erro(true,false);
+      //           echo "<script>alert('processo: ".$p55_codproc."\\ncodvar: ".$p55_codvar."\\ncodcam: ".$p55_codcam."\\n$nomecam: ".$$nomecam."');</script>";
+    }
   }
   db_fim_transacao($sqlerro);
 
@@ -151,7 +151,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
       }
    }
 }else{
-//     include("classes/db_procdoctipo_classe.php");
+//     include(modification("classes/db_procdoctipo_classe.php"));
        $cldoc = new cl_procdoctipo;
        $res = $cldoc->sql_record($cldoc->sql_query($p58_codigo,"","p56_coddoc,p56_descr"));
         $db_opcao = 2;
@@ -183,14 +183,14 @@ if (isset($oGet->alt) && $oGet->alt == 1) {
 ?>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" <?=$sOnLoad?>>
-<form name="form1" method="post" action="">
+<form name="form1" method="post" action="" onsubmit="return js_validaObservacao();">
 <br /><br />
 <center>
 <table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="430" align="center" valign="top" bgcolor="#CCCCCC">
       <?
-         include("forms/db_frmprotprocessoalt.php");
+         include(modification("forms/db_frmprotprocessoalt.php"));
       ?>
     </td>
   </tr>

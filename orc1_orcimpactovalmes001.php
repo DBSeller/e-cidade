@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
-include("classes/db_orcimpactoval_classe.php");
-include("classes/db_orcimpactovalmes_classe.php");
-include("classes/db_orcimpactovalele_classe.php");
-include("classes/db_orcimpactotiporec_classe.php");
-include("classes/db_orcimpacto_classe.php");
-include("classes/db_orcelemento_classe.php");
+include(modification("classes/db_orcimpactoval_classe.php"));
+include(modification("classes/db_orcimpactovalmes_classe.php"));
+include(modification("classes/db_orcimpactovalele_classe.php"));
+include(modification("classes/db_orcimpactotiporec_classe.php"));
+include(modification("classes/db_orcimpacto_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -108,7 +108,7 @@ if(isset($atualizar)){
     <br>
     <center>
 	<?
-	include("forms/db_frmorcimpactovalmes.php");
+	include(modification("forms/db_frmorcimpactovalmes.php"));
 	?>
     </center>
 	</td>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_matrequi_classe.php");
-require_once("classes/db_matrequiitem_classe.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_matrequi_classe.php"));
+require_once(modification("classes/db_matrequiitem_classe.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_utils.php"));
 
 $clmatrequi     = new cl_matrequi;
 $clmatrequiitem = new cl_matrequiitem;
@@ -40,7 +40,7 @@ $m40_codigo     = null;
 $sqlpref        = "select * from db_config where codigo = ".db_getsession("DB_instit");
 $tObserva       = "18";
 
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 db_fieldsmemory($resultpref,0);
 
 $aParametro = db_stdClass::getParametro('matparam');
@@ -234,12 +234,16 @@ for($contador=0;$contador<$numrows_matrequi;$contador++){
                      || coalesce(m41_obs,' ') as m41_obs,
               (select coalesce(sum(m43_quantatend),0)
                  from atendrequiitem
-                where m43_codmatrequiitem = m41_codigo) as m43_quantatend";
+                where m43_codmatrequiitem = m41_codigo) as m43_quantatend,
+              (select coalesce(sum(m103_quantanulada),0)
+                 from matanulitem
+                   inner join matanulitemrequi on m102_matanulitem = m103_codigo
+                 where m102_matrequiitem = m41_codigo) as m103_quantanulada";
 
 	$where_matrequi_item  = " (matrequi.m40_depto = {$iCodigoDepto} or m91_depto = {$iCodigoDepto})";
 	$where_matrequi_item .= " and m40_codigo = {$m40_codigo}";
 
-	$sMatrequi    = $clmatrequi->sql_query_matrequi_atend_rel(null, $sCampos,"m60_descr",$where_matrequi_item);
+	$sMatrequi    = $clmatrequi->sql_query_matrequi_atend_rel(null, $sCampos, "m60_descr", $where_matrequi_item);
 	$result_itens = $clmatrequi->sql_record($sMatrequi);
 
 	/*
@@ -270,6 +274,7 @@ for($contador=0;$contador<$numrows_matrequi;$contador++){
   $pdf1->runidadesaida  = "m61_descr";
   $pdf1->rquantdeitens  = "m41_quant";
   $pdf1->rquantatend    = "m43_quantatend";
+  $pdf1->rquantanulada  = "m103_quantanulada";
   $pdf1->rlocalizacao   = "localizacao";
   $pdf1->robsdositens   = "m41_obs";
   $pdf1->recorddositens = $result_itens;

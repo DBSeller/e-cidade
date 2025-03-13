@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
 
-include("libs/db_liborcamento.php");
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
-include("fpdf151/assinatura.php");
+include(modification("libs/db_liborcamento.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("fpdf151/assinatura.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -60,8 +60,8 @@ $classinatura = new cl_assinatura;
   $nivela = substr($nivel,0,1);
   $sele_work = ' o58_instit in ('.str_replace('-',', ',$db_selinstit).')';
   
-  pg_exec("begin");
-  pg_exec("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
+  db_query("begin");
+  db_query("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
     
   $xcampos = split("-",$orgaos);
   
@@ -89,10 +89,10 @@ $classinatura = new cl_assinatura;
        $where .= ",0,0";
      if($nivela == 7)
        $where .= ",0";
-     pg_exec("insert into t values($where)");
+     db_query("insert into t values($where)");
   }
 
-pg_exec("commit");
+db_query("commit");
 
 $anousu  = db_getsession("DB_anousu");
 //$dataini = $dt_ini; //anousu.'-01-01'; //$dt_ini;
@@ -173,8 +173,8 @@ $sql_grup = " select
 	    o58_funcao
        ";
       
-$result_grup = pg_exec($sql_grup);
-$result = pg_exec($sql);
+$result_grup = db_query($sql_grup);
+$result = db_query($sql);
 //db_criatabela($result_grup);
 //db_criatabela($result);exit;
 
@@ -224,8 +224,8 @@ $sql_grup = " select
 	    o58_funcao
        ";
       
-$result_grup_intra = pg_exec($sql_grup);
-$result_intra = pg_exec($sql);
+$result_grup_intra = db_query($sql_grup);
+$result_intra = db_query($sql);
 
 
 

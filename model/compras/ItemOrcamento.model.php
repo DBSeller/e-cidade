@@ -1,7 +1,7 @@
 <?php
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -24,8 +24,8 @@
 /**
  * Classe VO representa um Item do Orçamento de Compras
  * Class ItemOrcamento
- * @author $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @author $Author: dbmatheus.felini $
+ * @version $Revision: 1.6 $
  */
 
 class ItemOrcamento {
@@ -153,7 +153,7 @@ class ItemOrcamento {
      $oDaoCotacoes  = new cl_pcorcamval();
      $sQueryCotacao = $oDaoCotacoes->sql_query_fornec(null,
                                                       $this->getCodigo(),
-                                                      "pc21_numcgm, pc23_quant, pc23_vlrun"
+                                                      "pc21_numcgm, pc23_quant, pc23_vlrun, pc23_percentualdesconto, pc23_bdi, pc23_encargossociais, pc23_notatecnica"
                                                       );
      $rsCotacao = $oDaoCotacoes->sql_record($sQueryCotacao);
 
@@ -168,6 +168,10 @@ class ItemOrcamento {
          $oCotacao->setItem($this);
          $oCotacao->setValorUnitario($oDadosCotacao->pc23_vlrun);
          $oCotacao->setQuantidade($oDadosCotacao->pc23_quant);
+         $oCotacao->setValorDesconto($oDadosCotacao->pc23_percentualdesconto);
+         $oCotacao->setBdi($oDadosCotacao->pc23_bdi);
+         $oCotacao->setEncargosSociais($oDadosCotacao->pc23_encargossociais);
+         $oCotacao->setNotaTecnica($oDadosCotacao->pc23_notatecnica);
 
          $this->aCotacoes[] = $oCotacao;
        }
@@ -180,7 +184,7 @@ class ItemOrcamento {
    * Retorna todas as cotações do fornecedor informado
    *
    * @param CgmBase $oFornecedor
-   * @return CotacaoItem
+   * @return CotacaoItem|bool
    */
    public function getCotacaoDoFornecedor(CgmBase $oFornecedor) {
 
@@ -190,8 +194,6 @@ class ItemOrcamento {
          return $oCotacaoItem;
        }
      }
-
      return false;
    }
-
 }

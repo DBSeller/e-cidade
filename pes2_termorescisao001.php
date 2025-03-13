@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
 $clrotulo->label('DBtxt27');
 $clrotulo->label('DBtxt28');
-db_postmemory($HTTP_POST_VARS);
+
+db_postmemory($_POST);
 ?>
 <html>
 <head>
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
+<link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script>
 variavel = 1;
@@ -62,9 +65,8 @@ function js_emite(){
   document.form1.method = "";
   document.form1.target = "";
 
-  // jan = window.open('pes2_termorescisao002.php?&ano='+document.form1.DBtxt23.value+'&mes='+document.form1.DBtxt25.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-  // jan.moveTo(0,0);
 }
+
 function js_setacampo(){
   if(document.form1.registro1){
     js_tabulacaoforms("form1","registro1",true,1,"registro1",true);
@@ -77,63 +79,34 @@ function js_setacampo(){
   }
 }
 </script>  
-<link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="js_setacampo();" bgcolor="#cccccc">
-
-<style type="text/css">
-
-	#fieldTermoRescisao {
-		width:300px;margin:30px auto 0 auto;
-	}
-
-	#fieldTermoRescisao td {
-		text-align: left;
-	}
-	 
-	select {
-		width:100px;
-	}
-</style>
-	
+<body>
+<div class="container">
 <form name="form1" method="post" action="">
-	 
-	<fieldset id="fieldTermoRescisao">
-		 
-		<legend><strong>Termo de Rescisão</strong></legend>
-		 
-		<table>
-			
-			<?php
-				include("dbforms/db_classesgenericas.php");
-				$geraform               = new cl_formulario_rel_pes;
-				$geraform->usaregi      = true;
-				$geraform->strngtipores = "gm";
-				$geraform->onchpad      = true;
-				$geraform->gera_form(db_anofolha(), db_mesfolha());
-			?>
-
-			<tr>
-				<td>
-					<strong>Homolognet: </strong>
-				</td>
-				<td>
-					<?php db_select('homolognet', array('true' => 'Sim', '0' => 'Não'), true, 2); ?>
-				</td>
-			</tr>
-			
-		</table>
-	</fieldset>
-	 
-	<br />
-			
-	<center>
-		<input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" onblur="js_tabulacaoforms('form1','anofolha',true,1,'anofolha',true);">
-	</center>
-	 
+  <fieldset>
+    <legend>Termo de Rescisão</legend>
+    <table class="form-container">
+      <?php
+      	include(modification("dbforms/db_classesgenericas.php"));
+      	$geraform               = new cl_formulario_rel_pes;
+      	$geraform->usaregi      = true;
+      	$geraform->strngtipores = "gm";
+      	$geraform->onchpad      = true;
+      	$geraform->gera_form(db_anofolha(), db_mesfolha());
+      ?>
+      <tr>
+        <td>Homolognet:</td>
+        <td>
+          <?php db_select('homolognet', array('true' => 'Sim', '0' => 'Não'), true, 2); ?>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+  <input name="emite2" type="button" value="Processar" onclick="js_emite();" onblur="js_tabulacaoforms('form1','anofolha',true,1,'anofolha',true);">
 </form>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+</div>
+<?php
+db_menu();
 ?>
 </body>
 </html>

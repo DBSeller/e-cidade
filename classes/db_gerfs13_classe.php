@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -912,5 +912,33 @@ class cl_gerfs13 {
      }
      return $sql;
   }
+
+  public function migraGerfS13($iInstituicao) {
+    
+    $sSql  = "create table w_migracao_13salario as select distinct r34_anousu,                                                       ";
+    $sSql .= "                                                     r34_mesusu,                                                       ";
+    $sSql .= "                                                     r34_instit                                                        ";
+    $sSql .= "                                           from pontof13                                                               ";
+    $sSql .= "                                           inner join gerfs13 on r34_anousu = r35_anousu                               ";
+    $sSql .= "                                                             and r34_mesusu = r35_mesusu                               ";
+    $sSql .= "                                                             and r34_instit = {$iInstituicao};                         ";
+    $sSql .= "                                                                                                                       ";
+    
+    $sSql .= "insert into rhfolhapagamento                                                                                           ";
+    $sSql .= "select nextval('rhfolhapagamento_rh141_sequencial_seq'),                                                               ";
+    $sSql .= "       0,                                                                                                              ";
+    $sSql .= "       r34_anousu,                                                                                                     ";
+    $sSql .= "       r34_mesusu,                                                                                                     ";
+    $sSql .= "       r34_anousu,                                                                                                     ";
+    $sSql .= "       r34_mesusu,                                                                                                     ";
+    $sSql .= "       r34_instit,                                                                                                     ";
+    $sSql .= "       5,                                                                                                              ";
+    $sSql .= "       false,                                                                                                          ";
+    $sSql .= "       'Folha 13º Salário número: 0 da competência: ' || r34_anousu || '/' || r34_mesusu || ' gerada automaticamente.' ";
+    $sSql .= "  from w_migracao_13salario                                                                                            ";
+    $sSql .= "order by r34_anousu asc,                                                                                               ";
+    $sSql .= "         r34_mesusu asc;                                                                                               ";
+  
+    return $sSql;
+  }
 }
-?>

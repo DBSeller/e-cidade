@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+*  Copyright (C) 2009 DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_auto_classe.php");
-include("classes/db_autotipo_classe.php");
-include("classes/db_autoandam_classe.php");
-include("classes/db_autoultandam_classe.php");
-include("classes/db_fandam_classe.php");
-include("classes/db_fandamusu_classe.php");
-include("classes/db_autousu_classe.php");
-include("classes/db_autolocal_classe.php");
-include("classes/db_autoexec_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_auto_classe.php"));
+include(modification("classes/db_autotipo_classe.php"));
+include(modification("classes/db_autoandam_classe.php"));
+include(modification("classes/db_autoultandam_classe.php"));
+include(modification("classes/db_fandam_classe.php"));
+include(modification("classes/db_fandamusu_classe.php"));
+include(modification("classes/db_autousu_classe.php"));
+include(modification("classes/db_autolocal_classe.php"));
+include(modification("classes/db_autoexec_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 if(!isset($abas)){
   echo "<script>location.href='fis3_fandamauto005.php'</script>";
@@ -81,14 +81,14 @@ if(isset($y50_codauto) && !isset($HTTP_POST_VARS["db_opcao"])){
      if($clautousu->numrows == 0){
        $db_opcao = 1;
        echo "<script>alert('Não existem fiscais cadastrados para este auto de infração!');</script>";
-       include("fis3_fandamauto004.php");
+       include(modification("fis3_fandamauto004.php"));
        exit;
      }
      $db_botao = false;
    }else{
      $db_opcao = 1;
      echo "<script>alert('Código do auto de infração inválido!');</script>";
-     include("fis3_fandamauto004.php");
+     include(modification("fis3_fandamauto004.php"));
      exit;
    }
 }
@@ -111,7 +111,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
   db_fim_transacao();
 }
 if(!isset($pri)){
-  include("fis3_fandamauto004.php");
+  include(modification("fis3_fandamauto004.php"));
   exit;
 }
 ?>
@@ -147,7 +147,7 @@ if(!isset($pri)){
 	<?
 	$db_opcao=1;
         $db_botao = true;
-	include("forms/db_frmfandam.php");
+	include(modification("forms/db_frmfandam.php"));
 	?>
     </center>
     </fieldset>	

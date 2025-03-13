@@ -1,36 +1,40 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
+if ( !empty($_POST['rh01_admiss']) && empty($_POST['r01_admiss']) ) {
+  $_POST['r01_admiss'] = $_POST['rh01_admiss'];
+}
 
 function cadastro_164 (){
 
 	global $cfpess,
 	$cadferia,
 	$d08_carnes,
+	$db21_codcli,
 	$datafim,
 	$datainicio,
 	$gerfcom,
@@ -73,6 +77,7 @@ function cadastro_164 (){
 
 	global $sequencia,$r01_admiss,$r01_recis, $r01_mrenum;
 	global $rh05_codigoseguranca, $rh05_trct;
+	global $rh05_recis_ano, $rh05_recis_mes;
 
 	$sql = "select rh22_codaec    as r11_codaec
 	rh22_natest    as r11_natest
@@ -151,11 +156,13 @@ function cadastro_164 (){
 
 	if($pagar_13_salario_na_rescisao == 'true'){
 		if( db_boolean( $rescisao[0]["r59_13sal"] )){
-			$condicaoaux = " and r35_regist = " . db_sqlformat( $matric );
-			if( db_selectmax( "gerfs13", "select * from gerfs13 ". bb_condicaosubpesproc("r35_",$r01_recis).$condicaoaux )){
-				db_delete( "gerfs13", bb_condicaosubpesproc("r35_",$r01_recis).$condicaoaux );
-				$condicaoaux = " and r34_regist = " . db_sqlformat( $matric );
-				db_delete( "pontof13", bb_condicaosubpesproc("r34_",$r01_recis).$condicaoaux );
+			$condicaoaux  = " where r35_anousu = ".db_anofolha()." and  r35_mesusu = ".db_mesfolha();
+			$condicaoaux .= " and r35_regist = " . db_sqlformat( $matric );
+			if( db_selectmax( "gerfs13", "select * from gerfs13 ". $condicaoaux )){
+				db_delete( "gerfs13", $condicaoaux );
+				$condicaoaux  = " where r34_anousu = ".db_anofolha()." and  r34_mesusu = ".db_mesfolha();
+				$condicaoaux .= " and r34_regist = " . db_sqlformat( $matric );
+				db_delete( "pontof13", $condicaoaux );
 			}
 		}
 	}
@@ -255,7 +262,7 @@ function cadastro_164 (){
     //echo "<BR> 17 nres --> $nres";
     //echo "<BR> 18 ndias --> $ndias";
     //echo "<BR> 19 dias_afastados --> $dias_afastados";
-    //exit; 
+    //exit;
 	$matriz1 = array();
 	$matriz2 = array();
 	$matriz1[1] = "r19_regist";
@@ -281,7 +288,7 @@ function cadastro_164 (){
 	for($Ipontofs=0;$Ipontofs<count($pontofs);$Ipontofs++){
 
 		$condicaoaux = " where rh27_instit = ". db_getsession("DB_instit") ." and rh27_rubric = " .db_sqlformat( $pontofs[$Ipontofs]["r10_rubric"] );
-				if(db_selectmax("rubricas", "select * from rhrubricas ".$condicaoaux ) 
+				if(db_selectmax("rubricas", "select * from rhrubricas ".$condicaoaux )
 					    && $rubricas[0]["rh27_tipo"] == 2 ){
 
 			$matriz2[1] = $pontofs[$Ipontofs]["r10_regist"];
@@ -296,15 +303,15 @@ function cadastro_164 (){
 			$condicaoaux .= " and r19_rubric = " .db_sqlformat( $pontofs[$Ipontofs]["r10_rubric"] );
       global $pontofr;
 
-      
+
       /**
        * Valor achado no ponto de Salário.
        * O Valor no ponto de Salário sobrescreve o valor do ponto fixo.
        * No caso de ser proporcional(quantidade/valor no cadastro de rubricas). Proporcionaliza os dias trabalhados
-       */ 
+       */
       $nValor      = $pontofs[$Ipontofs]["r10_valor"];
       $nQuantidade = $pontofs[$Ipontofs]["r10_quant"];
-      
+
       if ( !!db_boolean($rubricas[0]["rh27_calcp"]) ) {
         $nValor      =  round( ($nValor/30) * $nsal );
         echo "Valor Modificado: {$nValor}<br>";
@@ -351,12 +358,12 @@ function cadastro_164 (){
 			}
 		}
 	}
-	
+
 	$datafim = date("Y-m-d",db_mktime($r01_recis)+(($r01_taviso == 2 ?($nres*86400) : 0 )));
-	
+
 	// Tem 13 salario Proporcional
 	if( db_boolean($rescisao[0]["r59_13sal"]) && $cfpess[0]["r11_mes13"] >= db_month( $r01_recis )){
-		
+
 		$gera_13sal = true;
 		if($pagar_13_salario_na_rescisao == 'false' && $cfpess[0]["r11_mes13"] == db_month($r01_recis)){
 			$gera_13sal = false;
@@ -368,7 +375,7 @@ function cadastro_164 (){
 
 	// Paga ferias vencidas ou Paga ferias Proporcionais
 	if( db_boolean($rescisao[0]["r59_fvenc"]) || db_boolean($rescisao[0]["r59_fprop"])){
-			
+
 		$datarescisao = date("Y-m-d",db_mktime($r01_recis) + (( $r01_taviso == 2? $nres: 0 )*86400));
 		$tipoferias = " ";
 		$dias_diferenca_ferias = 0;
@@ -380,7 +387,7 @@ function cadastro_164 (){
 		}else{
 
 			if( $cadferia[0]["r30_ndias"] > ($cadferia[0]["r30_dias1"] + $cadferia[0]["r30_dias2"] + $cadferia[0]["r30_abono"]) ){
-					
+
 				$dias_diferenca_ferias = $cadferia[0]["r30_ndias"] - ($cadferia[0]["r30_dias1"] + $cadferia[0]["r30_dias2"] + $cadferia[0]["r30_abono"] );
 				$datainicio = $cadferia[0]["r30_perai"];
 				$tipoferias = "D";
@@ -493,7 +500,7 @@ function cadastro_164 (){
 		$matriz2 = array();
 		$condicaoaux  = " and r52_regist = ".db_sqlformat($pensao[$Ipensao]["r52_regist"]);
 		$condicaoaux .= " and r52_numcgm = ".db_sqlformat($pensao[$Ipensao]["r52_numcgm"]);
-			
+
 		$matriz1[1] = "r52_valor";
 		$matriz1[2] = "r52_valcom";
 		$matriz1[3] = "r52_val13";
@@ -507,6 +514,14 @@ function cadastro_164 (){
 
 	$matriz1 = array();
 	$matriz2 = array();
+	$codigoIdentificadorRescisao = $matric . $rh05_recis_ano . $rh05_recis_mes;
+	$dataPagamentoRescisao = 'null';
+
+	if (!empty($_POST['dataPagamento'])) {
+		$dataPagamento =  new DBDate($_POST['dataPagamento']);
+		$dataPagamentoRescisao = $dataPagamento->getDate();
+	}
+
 	$matriz1[1] = "rh05_seqpes" ;
 	$matriz1[2] = "rh05_recis"  ;
 	$matriz1[3] = "rh05_causa"  ;
@@ -516,6 +531,9 @@ function cadastro_164 (){
 	$matriz1[7] = "rh05_mremun" ;
 	$matriz1[8] = "rh05_codigoseguranca" ;
 	$matriz1[9] = "rh05_trct" ;
+	$matriz1[10] = "rh05_codigorescisao";
+	$matriz1[11] = "rh05_tiporescisao";
+	$matriz1[12] = "rh05_datapagamento";
 	$matriz2[1] = $sequencia ;
 	$matriz2[2] = db_nulldata($r01_recis);
 	$matriz2[3] = $r01_causa  ;
@@ -525,34 +543,35 @@ function cadastro_164 (){
 	$matriz2[7] = $r01_mremun;
 	$matriz2[8] = $rh05_codigoseguranca;
 	$matriz2[9] = $rh05_trct;
+	$matriz2[10] = $codigoIdentificadorRescisao;
+	$matriz2[11] = 1;
+	$matriz2[12] = $dataPagamentoRescisao;
 
-	//pg_exec("update pg_class set reltriggers = 0 where relname = 'rhpesrescisao'");
 	db_insert( "rhpesrescisao", $matriz1, $matriz2 );
-	//pg_exec("update pg_class set reltriggers = (select count(*) from pg_trigger where pg_class.oid = tgrelid) where relname = 'rhpesrescisao'");
 
   /**
    * Altera rhpesrescisao informando os avos de ferias, 13 salario e quantidade de ferias vencidas
-   */   
+   */
   global $iAvos13Salario, $iFeriasVencidas, $iAvosFeriasPeriodo;
-  
+
   $oDaoRhpesrescisao = db_utils::getDao('rhpesrescisao');
   $oDaoRhpesrescisao->rh05_seqpes = $sequencia;
   $oDaoRhpesrescisao->rh05_feriasavos     = $iAvosFeriasPeriodo;
   $oDaoRhpesrescisao->rh05_feriasvencidas = $iFeriasVencidas;
   $oDaoRhpesrescisao->rh05_13salarioavos  = $iAvos13Salario;
   $oDaoRhpesrescisao->alterar($sequencia);
-  
+
   /**
    * Procura afastamento com data de retorno maior ou igual data da rescisao ou sem data de retorno
    */
   $oDaoAfasta = db_utils::getDao('afasta');
   $sWhereAfastamento  = "r45_regist = {$matric} ";
   $sWhereAfastamento .= " and ( r45_dtreto >= '{$r01_recis}' or r45_dtreto is null )";
-  
+
   $sSqlAfastamento    = $oDaoAfasta->sql_query_file(null, 'r45_codigo', null, $sWhereAfastamento);
   $rsAfastamento      = $oDaoAfasta->sql_record($sSqlAfastamento);
   $iTotalAfastamentos = $oDaoAfasta->numrows;
-  
+
   /**
    * Encontrou afastamento para o servidor
    * altearao data de retorno para a mesma data
@@ -574,7 +593,7 @@ function cadastro_164 (){
   			db_msgbox(str_replace("\n", '\n', $oDaoAfasta->erro_msg));
   		}
   	}
-  	
+
   }
 
 }
@@ -629,18 +648,18 @@ function traz_aviso (){
 // ---------------- inicio do programa
 
 
-global $cfpess,$subpes,$d08_carnes,$db_debug,$matric,$sequencia,$r01_admiss,$r01_recis, $r59_aviso ;
+global $cfpess,$subpes,$d08_carnes,$db21_codcli, $db_debug,$matric,$sequencia,$r01_admiss,$r01_recis, $r59_aviso ;
 global $r01_causa, $r01_taviso, $r01_mremun, $r01_aviso,$pagar_13_salario_na_rescisao;
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_libpessoal.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("pes4_avaliaferiasrescisao.php");
-require_once("classes/db_rhpesrescisao_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("pes4_avaliaferiasrescisao.php"));
+require_once(modification("classes/db_rhpesrescisao_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_inicio_transacao();
@@ -659,13 +678,14 @@ $r01_caub   = $rh05_caub;
 $r01_taviso = $rh05_taviso;
 $r01_mremun = $rh05_mremun;
 global $db_config;
-db_selectmax("db_config","select lower(trim(munic)) as d08_carnes , cgc from db_config where codigo = ".db_getsession("DB_instit"));
+db_selectmax("db_config","select lower(trim(munic)) as d08_carnes , cgc, db21_codcli from db_config where codigo = ".db_getsession("DB_instit"));
 
 if(trim($db_config[0]["cgc"]) == "90940172000138"){
 	$d08_carnes = "daeb";
 }else{
 	$d08_carnes = $db_config[0]["d08_carnes"];
 }
+$db21_codcli = $db_config[0]["db21_codcli"];
 
 
 $db_erro = false;
@@ -689,8 +709,8 @@ db_selectmax("rescisao","select * from rescisao ".bb_condicaosubpes("r59_").$con
 cadastro_164();
 
 db_fim_transacao();
-//sleep(2);
 if(!isset($campomatriculas)){
+	db_msgbox("Processo concluído com sucesso.");
 	db_redireciona("pes4_rhpesrescis001.php");
 }else{
 
@@ -701,7 +721,14 @@ if(!isset($campomatriculas)){
 	$qry .= "&caub=$caub&causa=$causa&rescisao=$rescisao&taviso=$taviso&aviso=$aviso&remun=$remun";
 	$qry .= "&descr=$descr&descr1=$descr1&rescisao=$rescisao&taviso=$taviso&aviso=$aviso&remun=$remun";
 	$qry .= "&recis_ano=$recis_ano&recis_mes=$recis_mes&recis_dia=$recis_dia&aviso_ano=$aviso_ano&aviso_mes=$aviso_mes&aviso_dia=$aviso_dia";
+	if (!empty($_POST['dataPagamentoOriginal'])) {
+		$dataPagamentoOriginal = new DBDate($_POST['dataPagamentoOriginal']);
 
+		$qry .= "&dataPagamento=" . $dataPagamentoOriginal->getDate(DBDate::DATA_PTBR);
+		$qry .= "&dataPagamento_dia=" . $dataPagamentoOriginal->getDia();
+		$qry .= "&dataPagamento_mes=" . $dataPagamentoOriginal->getMes();
+		$qry .= "&dataPagamento_ano=" . $dataPagamentoOriginal->getAno();
+	}
 	db_redireciona("pes4_rhpesrescis004.php".$qry);
 
 }

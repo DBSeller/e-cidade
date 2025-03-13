@@ -1,15 +1,18 @@
+require_once("scripts/widgets/datagrid/plugins/DBHint.plugin.js");
 require_once("scripts/widgets/datagrid/plugins/DBSelecionaLinha.plugin.js");
 /**
  * View que permite a seleção de instituição de acordo com o usuário
- * @param sNomeInstancia - Nome da Instancia
- * @param oContainerDestino - Objeto que será adicionado o componente
+ *
+ * @param {String} sNomeInstancia           Nome da Instancia
+ * @param {HTMLElement} oContainerDestino  Objeto que será adicionado o componente
  * @constructor
  *
- * Exemplo:
+ * @example
  * var oViewInstituicao = new DBViewInstituicao('oViewInstituicao', $('ctnDestino'));
  * oViewInstituicao.setLegenda("Legenda do Fieldset"); (opcional)
  * oViewInstituicao.apresentarNomeAbreviado(true); (opcional)
  * oViewInstituicao.show();
+ *
  */
 DBViewInstituicao = function(sNomeInstancia, oContainerDestino) {
 
@@ -22,6 +25,8 @@ DBViewInstituicao = function(sNomeInstancia, oContainerDestino) {
   this.iHeight           = 200;
   this.lNomeAbreviado    = false;
   this.iTotalInstituicao = 0;
+  this.aCallBackClickLinha=[];
+  this.lMarcarSessao = true;
 
   this.show = function () {
 
@@ -106,7 +111,7 @@ DBViewInstituicao.prototype.carregarInstituicoes = function () {
                     onComplete: function(oAjax) {
 
                       js_removeObj("msgBox");
-                      var oRetorno = eval("("+oAjax.responseText+")");
+                      var oRetorno = JSON.parse(oAjax.responseText);
                       self.aInstituicoes = oRetorno.aInstituicoes;
                     }
                   });
@@ -126,9 +131,13 @@ DBViewInstituicao.prototype.montarGrid = function () {
   this.oGridInstituicao.setHeader(["Código", "Instituição"]);
   this.oGridInstituicao.aHeaders[1].lDisplayed = false;
   this.oGridInstituicao.show($('ctnDBViewGridInstituicao'));
-  this.oGridInstituicao.setStatus("Clique sob a linha para selecionar");
+  this.oGridInstituicao.setStatus("Clique sobre a linha para selecionar.");
   this.carregarInstituicoes();
   this.preencherGrid();
+};
+
+DBViewInstituicao.prototype.setMarcarSessao = function (lValor) {
+  this.lMarcarSessao = lValor;
 };
 
 /**
@@ -141,7 +150,7 @@ DBViewInstituicao.prototype.preencherGrid = function () {
   this.aInstituicoes.each(function (oInstituicao, iIndice) {
 
     var lMarcarCheckBox = false;
-    if (oInstituicao.lSelecionado) {
+    if (oInstituicao.lSelecionado && self.lMarcarSessao) {
       lMarcarCheckBox = true;
     }
 
@@ -150,13 +159,14 @@ DBViewInstituicao.prototype.preencherGrid = function () {
     aLinha[1]  = oInstituicao.iCodigo + " - ";
     aLinha[1] += self.lNomeAbreviado === true ? oInstituicao.sNomeAbreviado.urlDecode() : oInstituicao.sNomeCompleto.urlDecode();
     self.oGridInstituicao.addRow(aLinha, false, false, lMarcarCheckBox);
+    sObjetoInstituicao = JSON.stringify(oInstituicao);
 
     /*
      * Adicionado evento quando clicado na célula 2
      */
     self.oGridInstituicao.aRows[iIndice].aCells[2].adicionarEvento(
-      "onclick",
-      self.oGridInstituicao.nameInstance+".selecionarLinha("+oInstituicao.iCodigo+", "+iIndice+")"
+      "onclick", 
+      self.sNomeInstancia+".clickLinha("+sObjetoInstituicao+", "+iIndice+")"
     );
 
     self.iTotalInstituicao++;
@@ -173,8 +183,26 @@ DBViewInstituicao.prototype.preencherGrid = function () {
   });
 };
 
+DBViewInstituicao.prototype.clickLinha = function (oItem, iIndice) {
+
+  this.oGridInstituicao.selecionarLinha(oItem.iCodigo, iIndice);
+  if(this.aCallBackClickLinha.length > 0) {
+    this.aCallBackClickLinha.each( function(callBackClick) {
+      callBackClick(iIndice, oItem.iCodigo, oItem);
+    });
+  }
+};
+
+DBViewInstituicao.prototype.addCallBackClickLinha = function (callBackClick) {
+
+  if(typeof callBackClick == 'function') {
+    this.aCallBackClickLinha.push(callBackClick);
+  }
+};
+
 /**
  * Retorna um array de objeto contendo o código e nome das instituições selecionadas
+ * 
  * @returns {Array}
  * @param {boolean} lSomenteCodigo - Indica se o retorno deve ser somente o código ou o objeto com codigo e nome
  */
@@ -202,4 +230,13 @@ DBViewInstituicao.prototype.getInstituicoesSelecionadas = function (lSomenteCodi
   }
 
   return aInstituicoesSelecionadas;
+};
+
+DBViewInstituicao.prototype.setInstituicoesSelecionadas = function (instituicoes) {
+
+    this.oGridInstituicao.getRows().forEach(function(oLinha){
+      if ( instituicoes.indexOf(oLinha.aCells[1].getValue()) > -1) {
+          document.getElementById(oLinha.aCells[2].sId).click();
+      }
+    });
 };

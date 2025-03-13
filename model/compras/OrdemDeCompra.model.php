@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -28,10 +28,13 @@
 /**
  * model para controle da ordem de compra
  * @author Rafael Lopes
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.15 $
  * @package compras
  */
 class OrdemDeCompra {
+
+  const TIPO_NORMAL     = 1;
+  const TIPO_AUTOMATICA = 2;
 
   /**
    * codigo da ordem de compra
@@ -94,6 +97,11 @@ class OrdemDeCompra {
   private $nValorLancar;
 
   /**
+   * @type float
+   */
+  private $nValorAnulado;
+
+  /**
    * Armazena os itens da ordem de compra
    * @var ItemOrdemDeCompra[]
    */
@@ -132,8 +140,10 @@ class OrdemDeCompra {
     $this->iCodigoOrdem = $iCodigoOrdem;
     if (!empty($this->iCodigoOrdem)) {
 
-      $oDaoMatOrdem         = db_utils::getDao('matordem');
-      $oDaoMatestoqueitemoc = db_utils::getDao('matestoqueitemoc');
+      $oDaoMatOrdem         = new cl_matordem();
+      $oDaoMatestoqueitemoc = new cl_matestoqueitemoc();
+      $oDaoItemAnulado      = new cl_matordemitemanu();
+      $sSqlValorAnulado     = $oDaoItemAnulado->sql_query_file_anulado("sum(m36_vrlanu)", "m51_codordem = {$this->iCodigoOrdem}");
       $sSqlMatestoqueitemoc = $oDaoMatestoqueitemoc->sql_query(null,null,"sum(m71_valor) ", null,"m52_codordem = {$this->iCodigoOrdem} and m73_cancelado is false");
 
       $sCamposMatOrdem  = "m51_codordem   , ";
@@ -144,6 +154,7 @@ class OrdemDeCompra {
       $sCamposMatOrdem .= "m51_tipo       , ";
       $sCamposMatOrdem .= "m51_valortotal , ";
       $sCamposMatOrdem .= "m53_data       , ";
+      $sCamposMatOrdem .= "({$sSqlValorAnulado}) as valoranulado, ";
       $sCamposMatOrdem .= "($sSqlMatestoqueitemoc) as valorlancado ";
 
       $sSqlMatOrdem = $oDaoMatOrdem->sql_query_tot( null,$sCamposMatOrdem , null, "m51_codordem = {$iCodigoOrdem}");
@@ -163,6 +174,7 @@ class OrdemDeCompra {
       $this->setTotalOrdem($oDadosMatOrdem->m51_valortotal);
       $this->setValorLancado($oDadosMatOrdem->valorlancado);
       $this->setValorLancar($nLancar);
+      $this->nValorAnulado = $oDadosMatOrdem->valoranulado;
 
 
       /*
@@ -348,6 +360,14 @@ class OrdemDeCompra {
   }
 
   /**
+   * Retorna o valor anulado da Ordem de Compra
+   * @return float
+   */
+  public function getValorAnulado() {
+    return $this->nValorAnulado;
+  }
+
+  /**
    * Retorna array de todos itens de entrada
    * @return MovimentacaoItem[]
    */
@@ -375,6 +395,7 @@ class OrdemDeCompra {
         $oMovimentacaoItem->setValor($oDadosMatOrdemItem->m71_valor);
         $oMovimentacaoItem->setAlmoxarifado($oAlmoxarifado);
         $oMovimentacaoItem->setTipoMovimentacao($oTipoMovimentacao);
+        $oMovimentacaoItem->setData(new DBDate($oDadosMatOrdemItem->m80_data));
 
         $aItensEntrada[]     = $oMovimentacaoItem;
 
@@ -418,5 +439,4 @@ class OrdemDeCompra {
     $this->oEmpenhoFinanceiro = $aItens[0]->getItemEmpenho()->getEmpenhoFinanceiro();
     return $this->oEmpenhoFinanceiro;
   }
-
 }

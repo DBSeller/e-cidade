@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($_POST);
 db_postmemory($_GET);
@@ -38,10 +38,10 @@ db_postmemory($_GET);
 if(isset($HTTP_POST_VARS["atualizar"])) {
   db_postmemory($HTTP_POST_VARS);
   if(!isset($campos)) {
-    pg_exec("BEGIN");
-    pg_exec("update db_sysarqcamp set codsequencia = 0 where codsequencia = $codsequencia") or die("Erro(15) atualizando db_sysarqcamp");
-    pg_exec("delete from db_syssequencia where codsequencia = $codsequencia") or die("Erro(16) excluindo em db_syssequencia");
-    pg_exec("END");
+    db_query("BEGIN");
+    db_query("update db_sysarqcamp set codsequencia = 0 where codsequencia = $codsequencia") or die("Erro(15) atualizando db_sysarqcamp");
+    db_query("delete from db_syssequencia where codsequencia = $codsequencia") or die("Erro(16) excluindo em db_syssequencia");
+    db_query("END");
     db_redireciona();	
   } else {
     $aux = split("#",$campos);
@@ -49,16 +49,16 @@ if(isset($HTTP_POST_VARS["atualizar"])) {
     $nomecampo = $aux[2];
     if($nomesequencia=="")
       $nomesequencia = $db_tabela."_".$nomecampo."_seq";
-    pg_exec("BEGIN");
-    //pg_exec("update db_sysarqcamp set codsequencia = 0
+    db_query("BEGIN");
+    //db_query("update db_sysarqcamp set codsequencia = 0
     //         where codsequencia = $codsequencia") or die("Erro(18) atualizando db_sysarqcamp");
     //if($codsequencia != "0")
-    //  pg_exec("delete from db_syssequencia where codsequencia = $codsequencia") or die("Erro(17) excluindo em db_syssequencia");
+    //  db_query("delete from db_syssequencia where codsequencia = $codsequencia") or die("Erro(17) excluindo em db_syssequencia");
       if($codsequencia == "0") {//sequencia não existe, criar uma
-        //$result = pg_exec("select max(codsequencia) + 1 from db_syssequencia");
-        $result = pg_exec("select nextval('db_syssequencia_codsequencia_se')");
+        //$result = db_query("select max(codsequencia) + 1 from db_syssequencia");
+        $result = db_query("select nextval('db_syssequencia_codsequencia_se')");
         $codsequencia = pg_result($result,0,0);
-        pg_exec("insert into db_syssequencia values($codsequencia,
+        db_query("insert into db_syssequencia values($codsequencia,
                                                   '$nomesequencia',
                                                   $incrseq,
                                                   $minvalueseq,
@@ -66,7 +66,7 @@ if(isset($HTTP_POST_VARS["atualizar"])) {
                                                   $startseq,
                                                   $cacheseq)") or die("Erro(18) inserindo em db_syssequencia");    
       } else if($codsequencia != "0") {//sequencia existe, dá update
-        pg_exec("update db_syssequencia set nomesequencia = '$nomesequencia',
+        db_query("update db_syssequencia set nomesequencia = '$nomesequencia',
                                           incrseq = $incrseq,
                                           minvalueseq = $minvalueseq,
                                           maxvalueseq = $maxvalueseq,
@@ -74,12 +74,18 @@ if(isset($HTTP_POST_VARS["atualizar"])) {
                                           cacheseq = $cacheseq
 			  where codsequencia = $codsequencia") or die("Erro(32) alterando em db_syssequencia");
       } else {
-      pg_exec("ROLLBACK");
+      db_query("ROLLBACK");
       db_erro("Erro na variável codsequencia");
     }
-    pg_exec("update db_sysarqcamp set codsequencia = $codsequencia
+    
+    
+    
+    db_query("update db_sysarqcamp set codsequencia = $codsequencia
              where codarq = $dbh_tabela and codcam = $codcampo") or die("Erro(38) alterando db_sysarqcamp");
-    pg_exec("END");
+    
+    
+    
+    db_query("END");
     db_redireciona();
   }
 } 
@@ -179,7 +185,7 @@ input {
 			  ?>
               <? 
 			    if(isset($HTTP_POST_VARS["dbh_tabela"])) {
-				  $result = pg_exec("select codarq,nomearq from db_sysarquivo where codarq = $dbh_tabela");
+				  $result = db_query("select codarq,nomearq from db_sysarquivo where codarq = $dbh_tabela");
 				  db_fieldsmemory($result,0);			    
 			    }
 			    echo db_text("tabela",40,40,@trim($nomearq),@$codarq,3)
@@ -191,7 +197,7 @@ input {
             <td> <strong>Campos:</strong><br> <select name="campos" id="campos" onChange="document.form1.atualizar.value = 'Atualizar'" size="17" style="width:250px">
                 <?
                 if(isset($HTTP_POST_VARS["dbh_tabela"])) {
-                  $result = pg_exec("select c.codcam,c.nomecam,ac.codsequencia from db_syscampo c inner join db_sysarqcamp ac on ac.codcam = c.codcam  where ac.codarq = $dbh_tabela");
+                  $result = db_query("select c.codcam,c.nomecam,ac.codsequencia from db_syscampo c inner join db_sysarqcamp ac on ac.codcam = c.codcam  where ac.codarq = $dbh_tabela");
                   $numrows = pg_numrows($result);
                   if($numrows > 0) {
                     for($i = 0;$i < $numrows;$i++) {
@@ -199,7 +205,7 @@ input {
                     }
                   }
                 }
-                if($numrows > 0) {
+                if(!empty($numrows) && $numrows > 0) {
                   $codsequencia = 0;
                   for($i = 0;$i < $numrows;$i++) {
                     if(pg_result($result,$i,"codsequencia") != "0") {
@@ -218,7 +224,7 @@ input {
                   $cacheseq    = "1";  
                   $nomesequencia = "";
                 } else {
-                  $result = pg_exec("select incrseq,minvalueseq,maxvalueseq,startseq,cacheseq,nomesequencia from db_syssequencia where codsequencia = $codsequencia");
+                  $result = db_query("select incrseq,minvalueseq,maxvalueseq,startseq,cacheseq,nomesequencia from db_syssequencia where codsequencia = $codsequencia");
                   db_fieldsmemory($result,0);
                 }
        		     ?>

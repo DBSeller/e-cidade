@@ -26,8 +26,8 @@
  */
 
 //MODULO: Configuracoes
-include("dbforms/db_classesgenericas.php");
-include("libs/db_utils.php");
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("libs/db_utils.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcadenderbairrocadenderrua->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -141,10 +141,10 @@ function js_cancelar(){
 }
 function js_pesquisadb87_cadenderrua(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadenderbairrocadenderrua','db_iframe_cadenderrua','func_cadenderrua.php?funcao_js=parent.js_mostracadenderrua1|db74_sequencial|db74_descricao','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadenderbairrocadenderrua','db_iframe_cadenderrua','func_cadenderrua.php?funcao_js=parent.js_mostracadenderrua1|db74_sequencial|db74_descricao','Pesquisa',true,'0','1');
   }else{
      if(document.form1.db87_cadenderrua.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadenderbairrocadenderrua','db_iframe_cadenderrua','func_cadenderrua.php?pesquisa_chave='+document.form1.db87_cadenderrua.value+'&funcao_js=parent.js_mostracadenderrua','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadenderbairrocadenderrua','db_iframe_cadenderrua','func_cadenderrua.php?pesquisa_chave='+document.form1.db87_cadenderrua.value+'&funcao_js=parent.js_mostracadenderrua','Pesquisa',false);
      }else{
        document.form1.db74_descricao.value = ''; 
      }
@@ -164,10 +164,10 @@ function js_mostracadenderrua1(chave1,chave2){
 }
 function js_pesquisadb87_cadenderbairro(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadenderbairrocadenderrua','db_iframe_cadenderbairro','func_cadenderbairro.php?funcao_js=parent.js_mostracadenderbairro1|db73_sequencial|db73_descricao','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadenderbairrocadenderrua','db_iframe_cadenderbairro','func_cadenderbairro.php?funcao_js=parent.js_mostracadenderbairro1|db73_sequencial|db73_descricao','Pesquisa',true,'0','1');
   }else{
      if(document.form1.db87_cadenderbairro.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadenderbairrocadenderrua','db_iframe_cadenderbairro','func_cadenderbairro.php?pesquisa_chave='+document.form1.db87_cadenderbairro.value+'&funcao_js=parent.js_mostracadenderbairro','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadenderbairrocadenderrua','db_iframe_cadenderbairro','func_cadenderbairro.php?pesquisa_chave='+document.form1.db87_cadenderbairro.value+'&funcao_js=parent.js_mostracadenderbairro','Pesquisa',false);
      }else{
        document.form1.db73_descricao.value = ''; 
      }

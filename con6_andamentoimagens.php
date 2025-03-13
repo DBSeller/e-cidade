@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
 ?>
 <html>
 <head>
@@ -42,8 +42,8 @@
     <td align="center"><strong>Imagens em anexo desta ordem de servi&ccedil;o:</strong></td>
   </tr>
 <?
-  pg_exec("begin");
-  $result = pg_exec("select * from db_ordemimagens where codordem = $ordem");
+  db_query("begin");
+  $result = db_query("select * from db_ordemimagens where codordem = $ordem");
   $num = pg_numrows($result);
   for ($i=0;$i<$num;$i++) {
     $nomeTemporario = tempnam("../tmp/","");
@@ -58,7 +58,7 @@
     </tr>
     \n";
   }
-  pg_exec("end");
+  db_query("end");
 ?>
 </table>
 </body>

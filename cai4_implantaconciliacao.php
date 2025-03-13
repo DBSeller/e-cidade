@@ -1,56 +1,65 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-	require_once("libs/db_stdlib.php");
-	require_once("libs/db_conecta.php");
-	require_once("libs/db_sessoes.php");
-	require_once("libs/db_usuariosonline.php");
-	require_once("libs/exceptions/BusinessException.php");
-	require_once("libs/exceptions/DBException.php");
-	require_once("libs/db_utils.php");
-	require_once("dbforms/db_funcoes.php");
-	require_once("classes/db_concilia_classe.php");
-	require_once("classes/db_conciliacor_classe.php");
-	require_once("classes/db_conciliaitem_classe.php");
-	require_once("classes/db_corrente_classe.php");
-	require_once("classes/db_extratolinha_classe.php");
-	require_once("classes/db_conciliaextrato_classe.php");
-	
+	require_once(modification("libs/db_stdlib.php"));
+	require_once(modification("libs/db_conecta.php"));
+	require_once(modification("libs/db_sessoes.php"));
+	require_once(modification("libs/db_usuariosonline.php"));
+	require_once(modification("libs/exceptions/BusinessException.php"));
+	require_once(modification("libs/exceptions/DBException.php"));
+	require_once(modification("libs/db_utils.php"));
+	require_once(modification("dbforms/db_funcoes.php"));
+	require_once(modification("classes/db_concilia_classe.php"));
+	require_once(modification("classes/db_conciliacor_classe.php"));
+	require_once(modification("classes/db_conciliaitem_classe.php"));
+	require_once(modification("classes/db_corrente_classe.php"));
+	require_once(modification("classes/db_extratolinha_classe.php"));
+	require_once(modification("classes/db_conciliaextrato_classe.php"));
+
 	$clcorrente             = new cl_corrente;
 	$clconcilia             = new cl_concilia;
 	$clconciliacor          = new cl_conciliacor;
 	$clconciliaitem         = new cl_conciliaitem;
 	$oDaoExtratolinha       = new cl_extratolinha;
-	$oDaoConciliaExtrato    = new cl_conciliaextrato; 
+	$oDaoConciliaExtrato    = new cl_conciliaextrato;
 
 	$sqlerro = false;
 	$erromsg = "";
 
-	db_postmemory($HTTP_POST_VARS);
+  $iInstituicaoSessao = db_getsession('DB_instit');
+	db_postmemory($_POST);
+
+if( $data == '0' ){
+
+  $data = (db_getsession("DB_anousu")-1)."-12-31";
+  //  $sql = "insert into extratolinha values 
+
+}
+
 	?>
 
 <html>
@@ -66,25 +75,23 @@
 
   $sWhereReduz  = " select c61_reduz ";
   $sWhereReduz .= "   from contabancaria ";
-  $sWhereReduz .= "        inner join conplanocontabancaria on conplanocontabancaria.c56_contabancaria = contabancaria.db83_sequencial ";
+  $sWhereReduz .= "        inner join conplanocontabancaria on conplanocontabancaria.c56_contabancaria = contabancaria.db83_sequencial and conplanocontabancaria.c56_anousu = " . db_getsession('DB_anousu');
   $sWhereReduz .= "        inner join conplanoreduz         on conplanoreduz.c61_codcon = conplanocontabancaria.c56_codcon ";
   $sWhereReduz .= "                                        and conplanoreduz.c61_anousu = conplanocontabancaria.c56_anousu ";
   $sWhereReduz .= "                                        and conplanoreduz.c61_anousu = ".db_getsession('DB_anousu');
-  $sWhereReduz .= "                                        and conplanoreduz.c61_instit = ".db_getsession('DB_instit');
+  $sWhereReduz .= "                                        and conplanoreduz.c61_instit = {$iInstituicaoSessao}";
   $sWhereReduz .= "  where contabancaria.db83_sequencial = {$conta} ";
 
-	// select somando o valor total do corrente 
+	// select somando o valor total do corrente
 	$rsTotalCorrente = $clcorrente->sql_record($clcorrente->sql_query_file(null,null,null,
                                                                          " coalesce(sum(k12_valor),0) as totalcorrente ",
                                                                          null,
-                                                                         "   k12_data <= '".$data."' 
+                                                                         "   k12_data <= '".$data."'
                                                                          and k12_conta in ($sWhereReduz) "));
-	if ($clcorrente->numrows > 0) {
-		db_fieldsmemory($rsTotalCorrente,0);	
-	}
+
+	$totalcorrente = db_utils::fieldsMemory($rsTotalCorrente, 0)->totalcorrente;
 
 	db_inicio_transacao();
-
 	$clconcilia->k68_data           = $data;
 	$clconcilia->k68_contabancaria  = $conta;
 	$clconcilia->k68_saldoextrato   = $totalcorrente;
@@ -113,62 +120,64 @@
 		$sqlerro = true;
 	}
 
-	// select na corrente por data e conta e for duplicando as pendencias de conciliacoes anteriores para essa em questao 
-  //	die($clcorrente->sql_query_file(null,null,null,"k12_id,k12_data,k12_autent","k12_data,k12_id,k12_autent"," k12_data <= '".$data."' and k12_conta = $conta "));
-	$rsCorrente = $clcorrente->sql_record($clcorrente->sql_query_file(null,
-                                                                    null,
-                                                                    null,
-                                                                    "distinct k12_id,k12_data,k12_autent",
-                                                                    "k12_data,k12_id,k12_autent",
-                                                                    " k12_data <= '".$data."' and k12_conta in ($sWhereReduz)"));
-	$intNumrows = $clcorrente->numrows;
+	$sCamposTesouraria   = "distinct riCaixa as k12_id , riAutent as k12_autent, riData as k12_data";
+	$sSqlBuscaTesouraria = "
+    select {$sCamposTesouraria}
+      from fc_extratocaixa({$iInstituicaoSessao}, $conta, '1500-01-01', '{$data}', false) as x
+           left join conciliacor on k84_id     = ricaixa
+                                and k84_data   = ridata
+                                and k84_autent = riautent
+     where k84_conciliaitem is null
+        ";
+	$rsCorrente          = db_query($sSqlBuscaTesouraria);
+	$intNumrows          = pg_num_rows($rsCorrente);
 
-  db_criatermometro('termometro','Concluido...','blue',1); 
+  db_criatermometro('termometro','Concluido...','blue',1);
 
-//  db_msgbox($intNumrows); 
 
 	for($i = 0; $i < $intNumrows; $i++ ){
-		db_fieldsmemory($rsCorrente,$i);
-        
+
+		$oStdDadosCaixa = db_utils::fieldsMemory($rsCorrente, $i);
+
 		db_atutermometro($i, $intNumrows, 'termometro');
 
 		$clconciliacor->k84_conciliaitem   = $clconciliaitem->k83_sequencial ;
-		$clconciliacor->k84_id             = $k12_id;
-		$clconciliacor->k84_data           = $k12_data;
-		$clconciliacor->k84_autent         = $k12_autent;
+		$clconciliacor->k84_id             = $oStdDadosCaixa->k12_id;
+		$clconciliacor->k84_data           = $oStdDadosCaixa->k12_data;
+		$clconciliacor->k84_autent         = $oStdDadosCaixa->k12_autent;
     $clconciliacor->k84_conciliaorigem = 1;
 
     if ( !$sqlerro ) {
 		  $clconciliacor->incluir(null);
     }
-		
-		if($clconciliacor->erro_status == 0){
-		  
+
+		if ($clconciliacor->erro_status == 0) {
+
 			$erromsg = $clconciliacor->erro_msg;
 			$sqlerro = true;
 			break;
 		}
 	}
-	
+
 	/**
 	 * após incluir na conciliacor, buscamos os registros da extratolinha
 	 *  filtrando pela data <= e pela conta passada
 	 *  percorrer os registros retornados da extratolinha e incluir na conciliaextrato
-	 *  
-   * k86_data           <=  $data       
+	 *
+   * k86_data           <=  $data
    * k86_contabancaria   =  $conta
 	 */
-	
+
 	$sWhereExtratoLinha  = "k86_data <= '{$data}' and  k86_contabancaria = {$conta} ";
-	
+
 	$sSqlExtratoLinha   = $oDaoExtratolinha->sql_query(null, "k86_sequencial", null, $sWhereExtratoLinha);
 	$rsExtratoLinha     = $oDaoExtratolinha->sql_record($sSqlExtratoLinha);
 	$iTotalExtratoLinha = $oDaoExtratolinha->numrows;
-	
+
 	if ($iTotalExtratoLinha > 0) {
-	  
+
   	for ($iExtratoLinha = 0; $iExtratoLinha <  $iTotalExtratoLinha; $iExtratoLinha++) {
-  	  
+
   	  $oExtratoLinha = db_utils::fieldsMemory($rsExtratoLinha, $iExtratoLinha);
   	  $oDaoConciliaExtrato->k87_conciliaitem   = $clconciliaitem->k83_sequencial;
   	  $oDaoConciliaExtrato->k87_extratolinha   = $oExtratoLinha->k86_sequencial;
@@ -177,17 +186,14 @@
   	    $oDaoConciliaExtrato->incluir(null);
       }
   	  if ($oDaoConciliaExtrato->erro_status == "0") {
-  	    
+
   	    $erromsg = "ERRO extratolinha : " . $oDaoConciliaExtrato->erro_msg;
   	    $sqlerro = true;
   	    break;
   	  }
-  	  
   	}
-	
 	}
-	
-  
+
 //	$sqlerro = true;
 	db_fim_transacao($sqlerro);
 

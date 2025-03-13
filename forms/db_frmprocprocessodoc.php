@@ -83,10 +83,10 @@ db_select('p81_doc',$x,true,$db_opcao,"");
 <script>
 function js_pesquisap81_codproc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
   }else{
      if(document.form1.p81_codproc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.p81_codproc.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.p81_codproc.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
      }else{
        document.form1.p58_codproc.value = ''; 
      }
@@ -106,10 +106,10 @@ function js_mostraprotprocesso1(chave1,chave2){
 }
 function js_pesquisap81_coddoc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_procdoc','func_procdoc.php?funcao_js=parent.js_mostraprocdoc1|p56_coddoc|p56_coddoc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procdoc','func_procdoc.php?funcao_js=parent.js_mostraprocdoc1|p56_coddoc|p56_coddoc','Pesquisa',true);
   }else{
      if(document.form1.p81_coddoc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_procdoc','func_procdoc.php?pesquisa_chave='+document.form1.p81_coddoc.value+'&funcao_js=parent.js_mostraprocdoc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procdoc','func_procdoc.php?pesquisa_chave='+document.form1.p81_coddoc.value+'&funcao_js=parent.js_mostraprocdoc','Pesquisa',false);
      }else{
        document.form1.p56_coddoc.value = ''; 
      }
@@ -128,7 +128,7 @@ function js_mostraprocdoc1(chave1,chave2){
   db_iframe_procdoc.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_procprocessodoc','func_procprocessodoc.php?funcao_js=parent.js_preenchepesquisa|p81_codproc|p81_coddoc','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procprocessodoc','func_procprocessodoc.php?funcao_js=parent.js_preenchepesquisa|p81_codproc|p81_coddoc','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_procprocessodoc.hide();

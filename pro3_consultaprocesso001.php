@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("classes/db_procandam_classe.php");
-require_once ("classes/db_proctransfer_classe.php");
-require_once ("classes/db_protprocesso_classe.php");
-require_once ("classes/db_proctransand_classe.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_procandam_classe.php"));
+require_once(modification("classes/db_proctransfer_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_proctransand_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $db_opcao = 1;
 db_postmemory($HTTP_SERVER_VARS);
@@ -84,7 +84,8 @@ $rotulo->label("numeroProcesso");
 		    </td>
 		    <td> 
 					<?php
-					  db_input('p58_numero',10,$Ip58_numero,true,'text',$db_opcao," onchange='js_pesquisap58_codproc(false);'");
+            db_input('p58_codproc',5,$Ip58_numero,true,'hidden', $db_opcao);
+					  db_input('p58_numero',10,$Ip58_numero,true,'text', $db_opcao," onchange='js_pesquisap58_codproc(false);'");
 					  db_input('p58_requer',40,$Ip58_requer,true,'text',3,'');
 					?>
 		    </td>
@@ -124,7 +125,10 @@ function js_consultaProcesso() {
 
   var iNumeroProcesso = $F('p58_numero');
   var iNumeroCgm = $F('p58_numcgm');
-  var sUrl = 'pro3_consultaprocesso003.php?numeroprocesso=' + iNumeroProcesso + '&cgm=' + iNumeroCgm;
+  var iCodProc = $F('p58_codproc');
+  var sUrl = 'pro3_consultaprocesso003.php?p58_codproc='+ iCodProc +
+                                           '&numeroprocesso=' + iNumeroProcesso + 
+                                           '&cgm=' + iNumeroCgm;
 
   if (iNumeroProcesso == "" && iNumeroCgm == "") {
 
@@ -132,7 +136,7 @@ function js_consultaProcesso() {
     return false;
   }
       
-  js_OpenJanelaIframe('top.corpo', 'db_iframe', sUrl, 'Pesquisa de Processos', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe', sUrl, 'Pesquisa de Processos', true);
 } 
 
 var sGrupo = <?=$grupo?>;
@@ -147,7 +151,7 @@ var sGrupo = <?=$grupo?>;
  */
 function js_validarNumero(sNumero) {
 
-  var lCaracteresValidos = new RegExp(/^[0-9\/]+$/).test(sNumero);
+  var lCaracteresValidos = new RegExp(/^[0-9A-Za-z\/]+$/).test(sNumero);
   var iPosicaoBarra      = sNumero.indexOf('/');
   var iQuantidadeBarras  = iPosicaoBarra > 0 ? sNumero.match(/\//g).length : 0;
 
@@ -184,11 +188,11 @@ function js_validarNumero(sNumero) {
 
 function js_pesquisap58_codproc(mostra) {
 
-  var sUrl = 'func_protprocesso_protocolo.php?grupo='+sGrupo;
+  var sUrl = 'func_protprocesso_protocolo.php?todas_instituicoes=1&grupo='+sGrupo + ',2';
   
   if(mostra) {
 
-    sUrl += '&funcao_js=parent.js_mostraprotprocesso1|p58_numero|dl_nome_ou_razão_social';
+    sUrl += '&funcao_js=parent.js_mostraprotprocesso1|dl_codigo_do_processo|p58_numero|dl_nome_ou_razão_social';
     js_OpenJanelaIframe('', 'db_iframe_cgm', sUrl, 'Pesquisa de Processos', true);
 
   } else {
@@ -215,15 +219,17 @@ function js_mostraprotprocesso(chave, chave1, erro) {
   
   document.form1.p58_requer.value = chave1; 
   document.form1.p58_numero.value = chave;
-  
+  document.getElementById('p58_codproc').value = "";
   if (erro) { 
     document.form1.p58_numero.focus(); 
     document.form1.p58_numero.value = ''; 
   }
 }
 
-function js_mostraprotprocesso1(sNumero, sNome) {
+function js_mostraprotprocesso1(p58_codproc,sNumero, sNome) {
   
+  //alert("ss:" + p58_codproc);
+  document.getElementById('p58_codproc').value = p58_codproc;
   document.getElementById('p58_numero').value = sNumero;
   document.getElementById('p58_requer').value = sNome;
   db_iframe_cgm.hide();
@@ -246,6 +252,7 @@ function js_preenchepesquisa(chave) {
 function js_pesquisap58_numcgm(mostra) {
 
   var sUrl = 'func_nome.php?';  
+  document.getElementById('p58_codproc').value = "";
   if (mostra) {
 
     sUrl += 'funcao_js=parent.js_mostracgm1|0|1'; 

@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
@@ -57,7 +57,7 @@ $oClRotulo->label("nome");
         <? db_ancora(@$Led103_i_atestvaga, "js_pesquisaed103_i_atestvaga(true);", $db_opcao); ?>
       </td>
       <td>
-        <? db_input('ed103_i_atestvaga', 15, $Ied103_i_atestvaga, true, 'text', $db_opcao, 
+        <? db_input('ed103_i_atestvaga', 15, $Ied103_i_atestvaga, true, 'text', $db_opcao,
                     " onchange='js_pesquisaed103_i_atestvaga();'"
                    )
         ?>
@@ -164,7 +164,7 @@ $oClRotulo->label("nome");
     <td>
       <? db_inputdata('ed103_d_data', @$ed103_d_data_dia, @$ed103_d_data_mes, @$ed103_d_data_ano,
                       true,'text', $db_opcao, ""
-                     ) 
+                     )
       ?>
     </td>
   </tr>
@@ -185,47 +185,66 @@ $oClRotulo->label("nome");
     </td>
   </tr>
   <tr>
-    <?
+    <?php
       $sSqlQuery = $oDaoObsTransferencia->sql_query("",
                                                     "ed283_t_mensagem",
                                                     "",
                                                     " ed283_i_escola = $iEscola"
                                                    );
-      $rsResult = $oDaoObsTransferencia->sql_record($sSqlQuery);      
+      $rsResult = $oDaoObsTransferencia->sql_record($sSqlQuery);
       if ($oDaoObsTransferencia->numrows > 0) {
-  
+
         $obs = db_utils::fieldsmemory($rsResult, 0)->ed283_t_mensagem;
-     
+
       }
     ?>
     <td colspan="3">
-      <b>Bolsa Família:</b>
-    <?
+      <b>Auxílio Brasil:</b>
+    <?php
       $x = array("1" => "NÃO", "2" => "SIM");
       db_select('ed283_c_bolsafamilia', $x, true, @$db_opcao, "");
+    ?>
+      <b>Formato do Relatório:</b>
+    <?php
+      $x = array("P" => "Retrato", "L" => "Paisagem");
+      db_select('formato', $x, true, @$db_opcao, "");
     ?>
     </td>
   </tr>
   <tr>
     <td valign="top" colspan="3">
       <b>Observação Geral:</b><br>
-      <? db_textarea('obs', 3, 90, @$obs, true, 'text', @$db_opcao, "") ?><br />
+      <?php db_textarea('obs', 3, 90, @$obs, true, 'text', @$db_opcao, "") ?><br />
     </td>
   </tr>
 </table>
 </center>
-<input name="<?=($db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir"))?>" 
-       type="submit" id="db_opcao" value="<?=($db_opcao == 1 ? "Incluir" : ($db_opcao == 2 || 
-       $db_opcao == 22 ? "Alterar" : "Excluir"))?>" <?=($db_botao == false ? "disabled" : "")?> 
+    <?php
+    $parametros = \App\Domain\Educacao\Secretaria\Models\ParametrosNotificacao::first();
+    ?>
+    <div class="container" <?=!$parametros->ed177_notificar_escolas ?'style="display: none':''?>">
+        <div class="alert alert-warning text-left" role="alert" id="alerta-email" hidden>
+            Não há e-mail cadastrado nos dados da escola de destino, não será possível notificar sobre a transferência.
+        </div>
+    </div>
+<input name="<?=($db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir"))?>"
+       type="submit" id="db_opcao" value="<?=($db_opcao == 1 ? "Incluir" : ($db_opcao == 2 ||
+       $db_opcao == 22 ? "Alterar" : "Excluir"))?>" <?=($db_botao == false ? "disabled" : "")?>
        onclick="return js_submit()" <?=isset($incluir) ? "style='visibility:hidden;'" : ""?>>
 </form>
 
 <script>
-
+const alertaEmail = document.getElementById('alerta-email');
 sUrl = 'edu4_escola.RPC.php';
 
 function js_getDadosLookup(ed47_i_codigo, ed102_i_base, ed102_i_calendario, ed102_d_data, ed18_i_codigo, ed18_c_nome,
-                           ed102_i_codigo, ed15_i_codigo, ed15_c_nome, ed11_i_codigo, ed11_c_descr, ed47_v_nome) {
+               ed18_c_email, ed102_i_codigo, ed15_i_codigo, ed15_c_nome, ed11_i_codigo, ed11_c_descr, ed47_v_nome) {
+
+    if (empty(ed18_c_email)) {
+        alertaEmail.removeAttribute('hidden');
+    } else {
+        alertaEmail.setAttribute('hidden', 'hidden');
+    }
 
   db_iframe_atestvaga.hide();
 
@@ -265,14 +284,14 @@ function js_getDadosMatricula(iAluno) {
   oParam.iAluno  = iAluno;
 
   oParam.iEscola = <?=$iEscola?>;
-  
+
   js_webajax(oParam, 'js_retornoGetDadosMatricula', sUrl);
 
 }
 
 function js_retornoGetDadosMatricula(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
 
@@ -323,7 +342,7 @@ function js_limpacampos() {
   $('datamodif').value         = "";
   $('caldescr').value          = "";
   $('ed52_d_inicio').value     = "";
-  $('ed52_d_fim').value        = "";                                          
+  $('ed52_d_fim').value        = "";
 
 }
 
@@ -337,12 +356,12 @@ function js_submit() {
     return false;
 
   } else if ($('ed103_d_data').value == "") {
-    
+
     alert("Informe a Data da Transferência para prosseguir!");
     document.form1.ed103_d_data.focus();
     document.form1.ed103_d_data.style.backgroundColor='#99A9AE';
     return false;
- 
+
   } else {
 
     datamat = document.form1.datamatricula.value;
@@ -362,16 +381,16 @@ function js_submit() {
                   document.form1.ed52_d_fim.value.substr(3,2)+"-"+
                   document.form1.ed52_d_fim.value.substr(0,2);
         check = js_validata(datatransf,dataini,datafim);
-        
+
         if (check == false) {
-          
+
           data_ini = dataini.substr(8,2)+"/"+dataini.substr(5,2)+"/"+dataini.substr(0,4);
           data_fim = datafim.substr(8,2)+"/"+datafim.substr(5,2)+"/"+datafim.substr(0,4);
           alert("Data da Transferência fora do periodo do calendario ( "+data_ini+" a "+data_fim+" ).");
           document.form1.ed103_d_data.focus();
           document.form1.ed103_d_data.style.backgroundColor='#99A9AE';
           return false;
-        
+
         }
       }
     }
@@ -385,9 +404,9 @@ function js_submit() {
         document.form1.ed103_d_data.focus();
         document.form1.ed103_d_data.style.backgroundColor='#99A9AE';
         return false;
-      
+
       }
-    
+
     }
     if(dataatest != "") {
 
@@ -400,35 +419,35 @@ function js_submit() {
         return false;
 
       }
-    
+
     }
-  
+
   }
   document.form1.db_opcao.style.visibility = "hidden";
   return true;
 }
 
 function js_pesquisaed103_i_atestvaga(mostra){
- 
+
   if(mostra==true){
-    
-    js_OpenJanelaIframe('top.corpo','db_iframe_atestvaga',
+
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atestvaga',
                         'func_atestvagatransf.php?funcao_js=parent.js_getDadosLookup|ed47_i_codigo|ed102_i_base'+
-                        '|ed102_i_calendario|ed102_d_data|ed18_i_codigo|ed18_c_nome|ed102_i_codigo|ed15_i_codigo|'+
+                        '|ed102_i_calendario|ed102_d_data|ed18_i_codigo|ed18_c_nome|ed18_c_email|ed102_i_codigo|ed15_i_codigo|'+
                         'ed15_c_nome|ed11_i_codigo|ed11_c_descr|ed47_v_nome','Pesquisa',true
                        );
- 
+
   } else {
     if(document.form1.ed103_i_atestvaga.value != ''){
-      
-      js_OpenJanelaIframe('top.corpo','db_iframe_atestvaga',
+
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atestvaga',
                           'func_atestvagatransf.php?pesquisa_chave='+$('ed103_i_atestvaga').value+
                           '&funcao_js=parent.js_getDadosLookup|ed47_i_codigo|ed102_i_base'+
-                          '|ed102_i_calendario|ed102_d_data|ed18_i_codigo|ed18_c_nome|ed102_i_codigo|ed15_i_codigo|'+
+                          '|ed102_i_calendario|ed102_d_data|ed18_i_codigo|ed18_c_nome|ed18_c_email|ed102_i_codigo|ed15_i_codigo|'+
                           'ed15_c_nome|ed11_i_codigo|ed11_c_descr|ed47_v_nome','Pesquisa',true
                          );
 
-    
+
     } else {
       document.form1.ed47_v_nome.value = '';
     }
@@ -438,9 +457,9 @@ function js_pesquisaed103_i_atestvaga(mostra){
 
 <?
   if ($db_opcao != 1) {
-    
+
     echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
-  
+
   }
 ?>
 </script>

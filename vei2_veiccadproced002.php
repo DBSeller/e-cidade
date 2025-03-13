@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_veiccadproced_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_veiccadproced_classe.php"));
 $clveiccadproced = new cl_veiccadproced;
 $clveiccadproced->rotulo->label();
 $clrotulo = new rotulocampo;

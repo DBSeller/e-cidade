@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
   //MODULO: agua
-  include("dbforms/db_classesgenericas.php");
+  include(modification("dbforms/db_classesgenericas.php"));
   
   $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
   $claguabasecorresp->rotulo->label();
@@ -146,13 +146,13 @@
   function js_pesquisax32_codcorresp(mostra) {
 
 	  if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabasecorresp', 'db_iframe_aguacorresp',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabasecorresp', 'db_iframe_aguacorresp',
     	                    'func_aguacorresp.php?funcao_js=parent.js_mostraaguacorresp1|x02_codcorresp|x02_codcorresp',
     	                    'Pesquisa', true, '0', '1', '775', '390');
     } else {
 
       if (document.form1.x32_codcorresp.value != '') { 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabasecorresp', 'db_iframe_aguacorresp',
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabasecorresp', 'db_iframe_aguacorresp',
                             'func_aguacorresp.php?pesquisa_chave=' + document.form1.x32_codcorresp.value + 
                               '&funcao_js=parent.js_mostraaguacorresp',
                             'Pesquisa', false);
@@ -183,12 +183,12 @@
   
   function js_pesquisax32_matric(mostra) {
     if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo.iframe_aguabasecorresp', 'db_iframe_aguabase',
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabasecorresp', 'db_iframe_aguabase',
     	                    'func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm',
     	                    'Pesquisa', true, '0', '1', '775', '390');
     } else {
       if (document.form1.x32_matric.value != '') { 
-        js_OpenJanelaIframe('top.corpo.iframe_aguabasecorresp', 'db_iframe_aguabase',
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguabasecorresp', 'db_iframe_aguabase',
                             'func_aguabase.php?pesquisa_chave=' + document.form1.x32_matric.value +
                               '&funcao_js=parent.js_mostraaguabase',
                             'Pesquisa', false);

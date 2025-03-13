@@ -1,0 +1,132 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010461' name='juridico.custaparcela' description="Custa Parcela" prefix="v44" label="custaparcela" type="0">
+  <fields>
+    <field codigo="1010644" 
+           campo_api='' 
+           name="v44_sequencial" 
+           conteudo="int4" 
+           description="Guarda o numero sequencial dos dados da tabela" 
+           inivalue="0" 
+           label="Squencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Squencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='juridico.custaparcela_v44_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010645" 
+           campo_api='' 
+           name="v44_processoforopartilhacusta" 
+           conteudo="int4" 
+           description="Código sequencial do cadastro da partilha gerada para o processo do foro" 
+           inivalue="0" 
+           label="Processo foro partilha custa" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo foro partilha custa" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010646" 
+           campo_api='' 
+           name="v44_inicialpartilhacustas" 
+           conteudo="int4" 
+           description="Armazena a inicial" 
+           inivalue="0" 
+           label="Inicial partilha custas" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Inicial partilha custas" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010647" 
+           campo_api='' 
+           name="v44_numpre" 
+           conteudo="int4" 
+           description="Armazena o numpre" 
+           inivalue="0" 
+           label="Numpre" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Numpre" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010648" 
+           campo_api='' 
+           name="v44_numpar" 
+           conteudo="int4" 
+           description="Campo responsavel por armazenar o numero da parcela" 
+           inivalue="0" 
+           label="Numero parcelas" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Numero parcelas" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010649" 
+           campo_api='' 
+           name="v44_receit" 
+           conteudo="int4" 
+           description="Armazena dados da receita" 
+           inivalue="0" 
+           label="Receit" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Receit" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="v44_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="processoforopartilhacusta" inner='f'>
+      <fieldfk name="v44_processoforopartilhacusta" reference="v77_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="inicialpartilhacustas" inner='f'>
+      <fieldfk name="v44_inicialpartilhacustas" reference="" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

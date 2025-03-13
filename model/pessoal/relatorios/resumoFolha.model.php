@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("RelatorioFolhaPagamento.model.php");
+require_once(modification("model/pessoal/relatorios/RelatorioFolhaPagamento.model.php"));
 
 /**
  * @fileoverview Classe para geração do resumo da folha
@@ -33,8 +33,8 @@ require_once ("RelatorioFolhaPagamento.model.php");
  * @author       Rafael Nery  rafael.nery@dbseller.com.br
  *               
  * @package      Pessoal
- * @revision     $Author: dbrafael.nery $
- * @version      $Revision: 1.1 $
+ * @revision     $Author: dbjeferson.belmiro $
+ * @version      $Revision: 1.6 $
  */
 class resumoFolha extends RelatorioFolhaPagamento {
 
@@ -457,7 +457,7 @@ class resumoFolha extends RelatorioFolhaPagamento {
       $oValoresPatronais->aBasePrevidencia3 = array("sNome" => "BASE PREV.3", "nValor" => 0);
       $oValoresPatronais->aBasePrevidencia4 = array("sNome" => "BASE PREV.4", "nValor" => 0);
 
-      $aValoresPatronais = db_utils::getColectionByRecord($rsValoresPatronais);
+      $aValoresPatronais = db_utils::getCollectionByRecord($rsValoresPatronais);
 
       foreach ($aValoresPatronais as $oRowValPatronais){
 

@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: biblioteca
@@ -439,8 +439,8 @@ class cl_emprestimoacervo {
      }
      return $sql;
   }
-  
-  
+
+
   function sql_query_emprestimos_acervo_com_autor ( $bi19_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
@@ -454,15 +454,18 @@ class cl_emprestimoacervo {
       $sql .= $campos;
     }
     $sql .= " from emprestimoacervo ";
-    $sql .= "      inner join emprestimo  on  emprestimo.bi18_codigo = emprestimoacervo.bi19_emprestimo";
-    $sql .= "      inner join exemplar  on  exemplar.bi23_codigo = emprestimoacervo.bi19_exemplar";
-    $sql .= "      inner join carteira  on  carteira.bi16_codigo = emprestimo.bi18_carteira";
-    $sql .= "      inner join acervo      on  acervo.bi06_seq = exemplar.bi23_acervo";
-    $sql .= "      inner join biblioteca  on  acervo.bi06_biblioteca = biblioteca.bi17_codigo";
-    $sql .= "      left  join devolucaoacervo on bi21_codigo = bi19_codigo";
-    $sql .= "      left  join autoracervo on autoracervo.bi21_acervo = bi06_seq";
-    $sql .= "      left  join autor       on autoracervo.bi21_autor  = bi01_codigo";
+    $sql .= "      inner join emprestimo      on emprestimo.bi18_codigo      = emprestimoacervo.bi19_emprestimo";
+    $sql .= "      inner join exemplar        on exemplar.bi23_codigo        = emprestimoacervo.bi19_exemplar";
+    $sql .= "      inner join carteira        on carteira.bi16_codigo        = emprestimo.bi18_carteira";
+    $sql .= "      inner join acervo          on acervo.bi06_seq             = exemplar.bi23_acervo";
+    $sql .= "      inner join leitorcategoria on leitorcategoria.bi07_codigo = carteira.bi16_leitorcategoria";
+    $sql .= "      inner join biblioteca      on acervo.bi06_biblioteca      = biblioteca.bi17_codigo";
+    $sql .= "      left  join devolucaoacervo on bi21_codigo                 = bi19_codigo";
+    $sql .= "      left  join autoracervo     on autoracervo.bi21_acervo     = bi06_seq";
+    $sql .= "      left  join autor           on autoracervo.bi21_autor      = bi01_codigo";
+
     $sql2 = "";
+
     if($dbwhere==""){
       if($bi19_codigo!=null ){
         $sql2 .= " where emprestimoacervo.bi19_codigo = $bi19_codigo ";

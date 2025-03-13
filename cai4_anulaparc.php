@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 //echo "parcel =$parcel  usu = $usu motivo = $motivo processo = $v22_processo"; exit;
 $processo = $v22_processo;
 
@@ -47,12 +47,12 @@ if($parcel!=""){
           </script>";
 	}
 	
-	pg_exec('begin');
+	db_query('begin');
 	$processo = ($processo=="")?"null":$processo;
 	$sql = "select fc_excluiparcelamento($parcel,$usu,'".$motivo."',$processo) as retorno";
-  	$result = pg_exec($sql);
+  	$result = db_query($sql);
   	if (trim(substr(pg_result($result,0),0,1)) == "1") {
-		pg_exec("commit");
+		db_query("commit");
 		db_msgbox("Parcelamento anulado com sucesso.");
 		echo "<script>parent.db_iframe_anulaparc1.hide();
 					  parent.db_iframe_mostrainscr.hide();
@@ -61,7 +61,7 @@ if($parcel!=""){
 		
 		exit;
   	} else {
-    	pg_exec('rollback');
+    	db_query('rollback');
     	//echo "<script>alert('Erro durante a exclusao do parcelamento!');</script>";
     	db_msgbox("Erro durante a exclusao do parcelamento! " . pg_result($result,0));
   	}

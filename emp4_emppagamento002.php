@@ -26,30 +26,30 @@
  */
 
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("dbforms/db_funcoes.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
+  include(modification("dbforms/db_funcoes.php"));
 
-  include("libs/db_libcontabilidade.php");
+  include(modification("libs/db_libcontabilidade.php"));
 
 //------------------------------------------------------
 //   Arquivos que verificam se o boletim já foi liberado ou naum
-  include("classes/db_boletim_classe.php");
+  include(modification("classes/db_boletim_classe.php"));
   $clverficaboletim =  new cl_verificaboletim(new cl_boletim);
 //------------------------------------------------------
 
   
 
-  include("libs/db_liborcamento.php");
-  include("classes/db_orcdotacao_classe.php");
-  include("classes/db_empempenho_classe.php");
-  include("classes/db_empelemento_classe.php");
-  include("classes/db_pagordem_classe.php");
-  include("classes/db_pagordemele_classe.php");
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("classes/db_orcdotacao_classe.php"));
+  include(modification("classes/db_empempenho_classe.php"));
+  include(modification("classes/db_empelemento_classe.php"));
+  include(modification("classes/db_pagordem_classe.php"));
+  include(modification("classes/db_pagordemele_classe.php"));
 
-  include("classes/db_cfautent_classe.php");
+  include(modification("classes/db_cfautent_classe.php"));
   $clcfautent = new cl_cfautent;
 
   $clpagordem    = new cl_pagordem;
@@ -59,27 +59,27 @@
   $clorcdotacao  = new cl_orcdotacao;
 
 
-  include("libs/db_libcaixa.php");
+  include(modification("libs/db_libcaixa.php"));
   $clautenticar= new cl_autenticar;
 
-  include("classes/db_empagemov_classe.php");
+  include(modification("classes/db_empagemov_classe.php"));
   $clempagemov    = new cl_empagemov;
 
 
-  include("classes/db_conlancam_classe.php");
-  include("classes/db_conlancamele_classe.php");
-  include("classes/db_conlancampag_classe.php");
-  include("classes/db_conlancamcgm_classe.php");
-  include("classes/db_conparlancam_classe.php");
-  include("classes/db_conlancamemp_classe.php");
-  include("classes/db_conlancamval_classe.php");
-  include("classes/db_conlancamdot_classe.php");
-  include("classes/db_conlancamdoc_classe.php");
-  include("classes/db_conlancamcompl_classe.php");
-  include("classes/db_saltes_classe.php");
-  include("classes/db_conplanoreduz_classe.php");
-  include("classes/db_conlancamord_classe.php");
-  include("classes/db_conlancamlr_classe.php");
+  include(modification("classes/db_conlancam_classe.php"));
+  include(modification("classes/db_conlancamele_classe.php"));
+  include(modification("classes/db_conlancampag_classe.php"));
+  include(modification("classes/db_conlancamcgm_classe.php"));
+  include(modification("classes/db_conparlancam_classe.php"));
+  include(modification("classes/db_conlancamemp_classe.php"));
+  include(modification("classes/db_conlancamval_classe.php"));
+  include(modification("classes/db_conlancamdot_classe.php"));
+  include(modification("classes/db_conlancamdoc_classe.php"));
+  include(modification("classes/db_conlancamcompl_classe.php"));
+  include(modification("classes/db_saltes_classe.php"));
+  include(modification("classes/db_conplanoreduz_classe.php"));
+  include(modification("classes/db_conlancamord_classe.php"));
+  include(modification("classes/db_conlancamlr_classe.php"));
 
 
 $clconlancam	          = new cl_conlancam;
@@ -114,7 +114,7 @@ if(isset($confirmar)){
       db_inicio_transacao();
 
       // arquivo de pagamento de empenho
-      include("emp1_emppagamentoarq.php");  
+      include(modification("emp1_emppagamentoarq.php"));  
 
       db_fim_transacao($sqlerro);
 }
@@ -212,7 +212,7 @@ if(isset($pag_emp) && empty($confirmar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmemppagamento.php");
+	include(modification("forms/db_frmemppagamento.php"));
 	?>
     </center>
 	</td>

@@ -173,7 +173,7 @@ DBViewAvaliacao.PeriodoTurma.prototype.retornoBuscaPeriodos = function (oRespons
 
   js_removeObj("msgBox");
   var oSelf    = this;
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.aPeriodos.length > 0) {
 

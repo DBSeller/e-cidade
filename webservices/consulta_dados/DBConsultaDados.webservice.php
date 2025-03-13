@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-define("PATH_ECIDADE", "../../");
 ini_set("soap.wsdl_cache_enabled", "0");
-require_once(PATH_ECIDADE . "model/configuracao/consulta_dados/ConsultaDados.model.php");
-require_once(PATH_ECIDADE . "libs/db_conn.php");
-require_once(PATH_ECIDADE . "libs/db_utils.php");
+require_once(modification("model/configuracao/consulta_dados/ConsultaDados.model.php"));
+require_once(modification("libs/db_conn.php"));
+require_once(modification("libs/db_utils.php"));
 
 $conn           = pg_connect("host=$DB_SERVIDOR dbname=$DB_BASE port=$DB_PORTA user=$DB_USUARIO password=$DB_SENHA");
 $rsStartSession = pg_query("select fc_startsession()");

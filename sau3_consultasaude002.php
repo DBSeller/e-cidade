@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,76 +25,123 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/verticalTab.widget.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
 
-$oDaoCgsUnd = db_utils::getdao("cgs_und");
+$oDaoCgsUnd = new cl_cgs_und();
 $oDaoCgsUnd->rotulo->label();
 
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+<title>DBSeller Informática Ltda - Página Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-<?
-      $sLib  = "scripts.js,prototype.js,datagrid.widget.js,strings.js,grid.style.css,";
-      $sLib .= "estilos.css,/widgets/dbautocomplete.widget.js,webseller.js";
-      db_app::load($sLib);
-     ?>
+<?php
+  $sLib  = "scripts.js,prototype.js,datagrid.widget.js,strings.js,grid.style.css,";
+  $sLib .= "estilos.css,/widgets/dbautocomplete.widget.js,webseller.js";
+  db_app::load($sLib);
+?>
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <link href="estilos/tab.style.css" rel="stylesheet" type="text/css">
+<style>
+
+body, html {
+
+  width  : 100%;
+  height : 100%;
+  padding: 0px;
+  margin : 0px;
+  border : 0px;
+}
+
+body {
+  padding: 5px;
+  width:   calc(100% - 20px);
+  height:  calc(100% - 20px);
+}
+
+.container-abas {
+  padding-top: 5px;
+  height: calc(100% - 50px);
+}
+
+.container-paciente {
+  height: 50px;
+}
+
+#fieldDadosSaude {
+  height: calc(100% - 20px);
+}
+
+#fieldDadosSaude > table:nth-child(2) {
+  height: 100%;
+}
+</style>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<center>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-      <fieldset style='width: 100%; margin-top: 2px;' > <legend><b>Paciente:</b></legend>
-        <table align="left">
-          <tr>
-            <td nowrap title="<?=@$Tz01_i_cgsund?>">
-              <?=$Lz01_i_cgsund?>&nbsp;
-            </td>
-            <td nowrap>
-              <?db_input('z01_i_cgsund', 5, $Iz01_i_cgsund, true, 'text', 3, '');?>
-            </td>
-            <td title='<?=$Tz01_v_nome?>' nowrap>
-              <?=$Lz01_v_nome?>&nbsp;
-            </td>
-            <td nowrap>
-              <?db_input('z01_v_nome', 40, @$Iz01_v_nome, true, 'text', 3, '');?>
-            </td>
-          </tr>
-        </table>
-      </fieldset>
-    </center>
-	</td>
-</tr>
-<tr>
-  <td colspan="2" width="100%">
-    <fieldset style='padding-left:0px'><legend><b>Dados da Saúde:</b></legend>
-      <?
+<body class="body-default">
+  <div class="container-paciente">
+    <fieldset class="form-container">
+      <div id="status-microarea" class="alert-danger" style="text-align: center;" role="alert" hidden>
+        Paciente sem cadastro em uma microárea!
+      </div>
+      <legend>Paciente:</legend>
+      <table align="left">
+        <tr>
+          <td nowrap title="<?=@$Tz01_i_cgsund?>">
+            <?=$Lz01_i_cgsund?>&nbsp;
+          </td>
+          <td nowrap>
+            <?db_input('z01_i_cgsund', 5, $Iz01_i_cgsund, true, 'text', 3, '');?>
+          </td>
+          <td title='<?=$Tz01_v_nome?>' nowrap>
+            <?=$Lz01_v_nome?>&nbsp;
+          </td>
+          <td nowrap>
+            <?db_input('z01_v_nome', 40, @$Iz01_v_nome, true, 'text', 3, '');?>
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+  </div>
+  <div class="container-abas">
+    <fieldset id="fieldDadosSaude">
+      <legend>Dados da Saúde:</legend>
+      <?php
       $oMenuVertical = new verticalTab('menus','100%');
-      $oMenuVertical->add('info', 'Informações Pessoais', 'sau3_consultasaude004.php?z01_i_cgsund='.$z01_i_cgsund);
-      $oMenuVertical->add('documentos', 'Documentos', 'sau1_cgs_doc002.php?chavepesquisa='.$z01_i_cgsund.
-                          '&lReadOnly=true'
-                           );
-      $oMenuVertical->add('cartao_sus', 'Cartão SUS', 'sau3_cartaosuscgs.iframe.php?z01_i_cgsund='.$z01_i_cgsund);
-      $oMenuVertical->add('agendamentos', 'Agendamentos', 'sau3_agendamentoscgs.iframe.php?z01_i_cgsund='.
-                          $z01_i_cgsund.'&iLinhas='.$iLinhas
-                         );
-      $oMenuVertical->add('atendimentos', 'Atendimentos', 'sau3_prontuarioscgs.iframe.php?z01_i_cgsund='.
-                          $z01_i_cgsund.'&iLinhas='.$iLinhas
-                         );
+      $oMenuVertical->add(
+        'info',
+        'Informações Pessoais',
+        'sau3_consultasaude004.php?z01_i_cgsund='.$z01_i_cgsund
+      );
+      $oMenuVertical->add(
+        'documentos',
+        'Documentos',
+        'sau1_cgs_doc002.php?chavepesquisa='.$z01_i_cgsund.'&lReadOnly=true'
+      );
+
+      $oMenuVertical->add(
+        'cartao_sus',
+        'Cartão SUS',
+        'sau3_cartaosuscgs.iframe.php?z01_i_cgsund='.$z01_i_cgsund
+      );
+      $oMenuVertical->add(
+        'agendamentos',
+        'Agendamentos', 'sau3_agendamentoscgs.iframe.php?z01_i_cgsund='.$z01_i_cgsund.'&iLinhas='.$iLinhas
+      );
+      $oMenuVertical->add(
+        'atendimentos',
+        'Atendimentos',
+        'sau3_prontuarioscgs.iframe.php?z01_i_cgsund='.$z01_i_cgsund.'&iLinhas='.$iLinhas
+      );
+
       $oMenuVertical->add('farmacia', 'Farmácia', 'sau3_consultasaude006.php?z01_i_cgsund='.$z01_i_cgsund.
                           '&iLinhas='.$iLinhas);
       $oMenuVertical->add('laboratorio', 'Laboratorio', 'sau3_examescgs.iframe.php?z01_i_cgsund='.$z01_i_cgsund.
@@ -103,26 +150,38 @@ $oDaoCgsUnd->rotulo->label();
                           '&iLinhas='.$iLinhas);
       $oMenuVertical->add('vacinas', 'Vacinas', 'sau3_vacinascgs.iframe.php?z01_i_cgsund='.$z01_i_cgsund.
                           '&iLinhas='.$iLinhas);
-      $oMenuVertical->add('hiperdia', "Hiperdia", 'sau3_consultasaude005.php?z01_i_cgsund='.$z01_i_cgsund.
-                          '&iLinhas='.$iLinhas);
+      $oMenuVertical->add(
+        'problemas',
+        'Problemas/Condições de Saúde', 
+        'sau3_consultasaude005.php?z01_i_cgsund='.$z01_i_cgsund
+      );
       if (db_permissaomenu(date('Y'), db_getsession('DB_modulo'), 8813) == 'true') {
         $oMenuVertical->add('cid', "CID's", 'sau3_consultacid001.php?lPopup=true&z01_i_cgsund='.$z01_i_cgsund.
                             '&iLinhas='.$iLinhas);
       }
+
+
       $oMenuVertical->add('imprimir', 'Imprimir', 'sau2_consultageral001.php?z01_i_cgsund='.$z01_i_cgsund);
+
       $oMenuVertical->show();
       ?>
     </fieldset>
-  </td>
-</tr>
-</table>
-
-</center>
-
+  </div>
+</body>
+<script rel="script" type="text/javascript" src="scripts/classes/saude/ValidaCgs.js"></script>
 <script>
+const divAlert = document.getElementById('status-microarea');
+const inputCgs = {
+  id: document.getElementById('z01_i_cgsund'),
+  nome: document.getElementById('z01_v_nome')
+};
+const validaCgs = new ValidaCgs(inputCgs);
 
 js_getInfoCgs();
 
+window.onload = () => {
+  validaCgs.cadastroMicroarea(inputCgs, divAlert);
+}
 
 function js_getInfoCgs() {
 
@@ -133,17 +192,13 @@ function js_getInfoCgs() {
   if($F('z01_i_cgsund') != '') {
     js_webajax(oParam, 'js_retornogetInfoCgs', 'sau4_ambulatorial.RPC.php');
   }
-
 }
 
 function js_retornogetInfoCgs(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   $('z01_v_nome').value   = oRetorno.z01_v_nome.urlDecode();
-
 }
 
 </script>
-
-</body>
 </html>

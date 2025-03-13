@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('j01_matric');
 $clrotulo->label('q02_inscr');
@@ -50,6 +50,8 @@ $instit = db_getsession("DB_instit");
 
 $agrupa1 = '';
 $agrupa2 = '';
+$ordem_ano_exercicio = '';
+$ordem_procedencia = '';
 
 if ($valor_inicial == "") {
 	$valor_inicial = 0;
@@ -59,11 +61,13 @@ if($agexerc == "S"){
    $head5 = 'AGRUPADO POR EXERCÍCIO : SIM';
    $agrupa1 = ', k22_exerc ';
    $debagrupa1 = ', k22_exerc ';
+   $ordem_ano_exercicio = ', k22_exerc asc';
 }
 
 if($agproced == "S"){
    $head6 = 'AGRUPADO POR EXERCÍCIO : NÃO';
    $agrupa2 = ', v01_proced,v03_descr ';
+   $ordem_procedencia = ' , v01_proced';
 }
 
 if($sele == "S"){
@@ -141,7 +145,7 @@ $sql1 = "select k22_data as xdata
              from debitos 
              where k22_instit = $instit
              order by k22_data desc limit 1";
-$result1 = pg_exec($sql1);
+$result1 = db_query($sql1);
 db_fieldsmemory($result1,0);
 
 $head5 = "Cáculo na data :".db_formatar($xdata,'d');
@@ -150,6 +154,7 @@ if ($proced != "" or $agproced == "S") {
 	$sql = "
 					select $matric,
 			z01_nome,
+			z01_cgccpf,  
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -173,6 +178,7 @@ if ($proced != "" or $agproced == "S") {
 
 		 group by $matric,
 			z01_nome,
+			z01_cgccpf,
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -180,11 +186,13 @@ if ($proced != "" or $agproced == "S") {
 					$agrupa1
 			$agrupa2
 				 ";
+		//die($agrupa2);		 
 	if($considera_debitos==1) {
     //die($exercicios);
 		$sql .= " union all 
 					select  $matric,
 									z01_nome,
+									z01_cgccpf,
 									z01_ender,
 									z01_compl,
 									z01_bairro,
@@ -220,6 +228,7 @@ if ($proced != "" or $agproced == "S") {
 								 where k22_tipo = 5 and k22_exerc > $maiorexerc $proced and k22_data = '$xdata' and k22_instit = $instit
 								 group by $matric,
 									z01_nome,
+									z01_cgccpf,
 									z01_ender,
 									z01_compl,
 									z01_bairro,
@@ -232,9 +241,18 @@ if ($proced != "" or $agproced == "S") {
 
 	$sql_exe = "
 	 
-			select * from (
+	select *,
+		sum(valor) over (partition by $matric $agrupa1) as soma_por_cgm_por_ano,
+		sum(valor) over (partition by $matric $agrupa1 order by $matric $ordem_procedencia $agrupa1) as soma_por_cgm_por_ano_linha,
+		sum(valor) over (partition by $matric ) as soma_por_cgm,
+		round(sum(k22_vlrhis) over (partition by $matric $agrupa1),2) as soma_k22_vlrhis_por_ano,
+		round(sum(k22_vlrcor) over (partition by $matric $agrupa1), 2) as soma_k22_vlrcor_por_ano,
+		round(sum(k22_juros) over (partition by $matric $agrupa1), 2) as soma_k22_juros_por_ano,
+		round(sum(k22_multa) over (partition by $matric $agrupa1), 2) as soma_k22_multa_por_ano
+    from (
 			select $matric,
 			z01_nome,
+			z01_cgccpf,
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -250,6 +268,7 @@ if ($proced != "" or $agproced == "S") {
 				 
 		 group by $matric,
 			z01_nome,
+			z01_cgccpf,
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -259,7 +278,7 @@ if ($proced != "" or $agproced == "S") {
 		) as x 
 	where valor >= $valor_inicial::numeric and valor <= $valor_final::numeric
 
-					order by $ordem $ordemtipo
+					order by $ordem $ordemtipo ,$matric $ordem_ano_exercicio $ordem_procedencia
 					$limite
 
 	";
@@ -268,6 +287,7 @@ if ($proced != "" or $agproced == "S") {
 	$sql = "
 					select $matric,
 			z01_nome,
+			z01_cgccpf,
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -284,6 +304,7 @@ if ($proced != "" or $agproced == "S") {
 		 where k22_tipo = 5 and k22_exerc in (" . str_replace("-",",",$exerc) . ") and k22_data = '$xdata' and k22_instit = $instit
 		 group by $matric,
 			z01_nome,
+			z01_cgccpf,
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -295,6 +316,7 @@ if ($proced != "" or $agproced == "S") {
 		$sql .= " union all 
 					select $matric,
 			z01_nome,
+			z01_cgccpf,
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -317,6 +339,7 @@ if ($proced != "" or $agproced == "S") {
 		 where k22_tipo = 5 and k22_exerc > $maiorexerc and k22_data = '$xdata' and k22_instit = $instit
 		 group by $matric,
 			z01_nome,
+			z01_cgccpf,
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -327,9 +350,18 @@ if ($proced != "" or $agproced == "S") {
 
 	$sql_exe = "
 	 
-			select * from (
+	select *,
+		sum(valor) over (partition by $matric $agrupa1) as soma_por_cgm_por_ano,
+		sum(valor) over (partition by $matric $agrupa1 order by $matric $agrupa1) as soma_por_cgm_por_ano_linha,
+		sum(valor) over (partition by $matric) as soma_por_cgm,
+		round(sum(k22_vlrhis) over (partition by $matric $agrupa1),2) as soma_k22_vlrhis_por_ano,
+		round(sum(k22_vlrcor) over (partition by $matric $agrupa1), 2) as soma_k22_vlrcor_por_ano,
+		round(sum(k22_juros) over (partition by $matric $agrupa1), 2) as soma_k22_juros_por_ano,
+		round(sum(k22_multa) over (partition by $matric $agrupa1), 2) as soma_k22_multa_por_ano
+    from  (
 			select $matric,
 			z01_nome,
+			z01_cgccpf,
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -344,6 +376,7 @@ if ($proced != "" or $agproced == "S") {
 				 
 		 group by $matric,
 			z01_nome,
+			z01_cgccpf,
 			z01_ender,
 			z01_compl,
 			z01_bairro,
@@ -351,11 +384,11 @@ if ($proced != "" or $agproced == "S") {
 					$agrupa1
 		) as x 
 	where valor >= $valor_inicial::numeric and valor <= $valor_final::numeric
-	order by $ordem $ordemtipo	$limite	";
+	order by $ordem $ordemtipo ,$matric $ordem_ano_exercicio $limite	";
 	
 }
-
-$result = pg_exec($sql_exe);
+//die($sql_exe);
+$result = db_query($sql_exe);
 if(pg_numrows($result)==0){
   db_redireciona('db_erros.php?fechar=true&db_erro=Não existem dividas em aberto. ($exercicios).');
 }
@@ -384,34 +417,37 @@ for ($x = 0 ; $x < pg_numrows($result);$x++){
     }
      
      $pdf->Cell(15,5,substr($$xmatric,0,10),1,0,"C",1);
-     $pdf->Cell(60,5,$RLz01_nome,1,0,"C",1);
+     $pdf->Cell(63,5,$RLz01_nome,1,0,"C",1);
      if($agexerc == "S")
-        $pdf->Cell(18,5,$RLv01_exerc,1,0,"C",1);
+        $pdf->Cell(12,5,$RLv01_exerc,1,0,"C",1);
      if($agproced == "S"){
        $pdf->Cell(20,5,$RLv01_proced,1,0,"C",1);
-       $pdf->Cell(70,5,$RLv03_descr,1,0,"C",1);
+       $pdf->Cell(55,5,$RLv03_descr,1,0,"C",1);
      }
-     $pdf->cell(20,5,'Historico',1,0,"L",1);
-     $pdf->cell(20,5,'Corrigido',1,0,"L",1);
-     $pdf->cell(20,5,'Juros',1,0,"L",1);
-     $pdf->cell(20,5,'Multa',1,0,"L",1);
-     $pdf->cell(20,5,'Total',1,1,"L",1);
+	 $pdf->cell(26,5,'CPF/CNPJ',1,0,"C",1);
+     $pdf->cell(16,5,'Historico',1,0,"L",1);
+     $pdf->cell(17,5,'Corrigido',1,0,"L",1);
+     $pdf->cell(17,5,'Juros',1,0,"L",1);
+     $pdf->cell(16,5,'Multa',1,0,"L",1);
+     $pdf->cell(17,5,'Total',1,1,"L",1);
      $pag = 0;
   }
   $pdf->SetFont('Arial','',7);
   $pdf->Cell(15,5,trim($$matric),0,0,"C",0);
-  $pdf->Cell(60,5,$z01_nome,0,0,"L",0);
+  $pdf->Cell(63,5,$z01_nome,0,0,"L",0);
   if($agexerc == "S")
-    $pdf->Cell(18,5,$k22_exerc,0,0,"C",0);
+    $pdf->Cell(12,5,$k22_exerc,0,0,"C",0);
   if($agproced == "S"){
     $pdf->Cell(20,5,$v01_proced,0,0,"C",0);
-    $pdf->Cell(70,5,$v03_descr,0,0,"L",0);
+    $pdf->Cell(55,5,$v03_descr,0,0,"L",0);
   }
-  $pdf->cell(20,5,db_formatar($k22_vlrhis,'f'),0,0,"R",0);
-  $pdf->cell(20,5,db_formatar($k22_vlrcor,'f'),0,0,"R",0);
-  $pdf->cell(20,5,db_formatar($k22_juros,'f'),0,0,"R",0);
-  $pdf->cell(20,5,db_formatar($k22_multa,'f'),0,0,"R",0);
-  $pdf->cell(20,5,db_formatar($valor,'f'),0,1,"R",0);
+  $cpfCnpj = strlen($z01_cgccpf) == 11 ? 'cpf' : 'cnpj'; 
+  $pdf->cell(26,5,db_formatar($z01_cgccpf,$cpfCnpj),0,0,"C",0);
+  $pdf->cell(16,5,db_formatar($k22_vlrhis,'f'),0,0,"R",0);
+  $pdf->cell(17,5,db_formatar($k22_vlrcor,'f'),0,0,"R",0);
+  $pdf->cell(17,5,db_formatar($k22_juros,'f'),0,0,"R",0);
+  $pdf->cell(16,5,db_formatar($k22_multa,'f'),0,0,"R",0);
+  $pdf->cell(17,5,db_formatar($valor,'f'),0,1,"R",0);
   $totalreg += 1;
   $totalhis += $k22_vlrhis;
   $totalcor += $k22_vlrcor;
@@ -420,74 +456,40 @@ for ($x = 0 ; $x < pg_numrows($result);$x++){
   $totalval += $valor;
   
   
-  if($analitico == 1){
-
-	  for ($contanos=0; $contanos < sizeof($matanos); $contanos++) {
-			if ($proced == "" and $agproced == "N") {
-				$sql = "
-						select k22_exerc,
-				round(sum(k22_vlrhis),2) as k22_vlrhis,
-				round(sum(k22_vlrcor),2) as k22_vlrcor,
-				round(sum(k22_juros),2) as k22_juros,
-				round(sum(k22_multa),2) as k22_multa,
-				round(sum(k22_vlrcor+k22_juros+k22_multa),2) as valor
-						from debitos
-						where $matric1 = ".$$matric." and k22_tipo = 5 and k22_instit = $instit and k22_exerc in (" . str_replace("-",",",$exerc) . ") and k22_data = '$xdata'
-					group by k22_exerc
-				 ";
-		  } else {
-				$sql = "
-						select v01_exerc as k22_exerc,
-				round(sum(k22_vlrhis),2) as k22_vlrhis,
-				round(sum(k22_vlrcor),2) as k22_vlrcor,
-				round(sum(k22_juros),2) as k22_juros,
-				round(sum(k22_multa),2) as k22_multa,
-				round(sum(k22_vlrcor+k22_juros+k22_multa),2) as valor
-						from debitos
-								 inner join divida on v01_numpre = k22_numpre 
-								                  and v01_numpar = k22_numpar 
-																	and k22_data = '$xdata'
-																	and v01_instit = ".db_getsession('DB_instit')."
-								 inner join proced on v01_proced = v03_codigo
-								                  and v03_instit = ".db_getsession('DB_instit')."  
-								 inner join arretipo on arretipo.k00_tipo = k22_tipo
-						where $matric1 = ".$$matric." and k03_tipo = 5 and k22_instit = $instit and v01_exerc = " . $matanos[$contanos] . " $proced and k22_data = '$xdata'
-					group by v01_exerc
-				 ";
+  if($analitico == 1 ){
+	if ($soma_por_cgm_por_ano_linha==$soma_por_cgm_por_ano)
+		{
+			$pdf->cell(70,5,'',0,0,"C",0);
+            $pdf->cell(8,5,$k22_exerc,0,0,"L",0);
+			if($agexerc == "S")
+				$pdf->cell(12,7,'',0,0,"R",0);
+			if($agproced == "S"){
+				$pdf->cell(20,7,'',0,0,"R",0);
+				$pdf->cell(55,7,'',0,0,"R",0);
 			}
-			 //echo $sql;exit;
-			 $res = pg_query($sql);
-			 if(pg_numrows($res)){
-				 for($xx=0;$xx<pg_numrows($res);$xx++){
-					 db_fieldsmemory($res,$xx);
-					 $pdf->cell(65,5,'',0,0,"C",0);
-					 $pdf->cell(10,5,$k22_exerc,0,0,"C",0);
-					 $pdf->cell(20,5,db_formatar($k22_vlrhis,'f'),0,0,"R",0);
-					 $pdf->cell(20,5,db_formatar($k22_vlrcor,'f'),0,0,"R",0);
-					 $pdf->cell(20,5,db_formatar($k22_juros,'f'),0,0,"R",0);
-					 $pdf->cell(20,5,db_formatar($k22_multa,'f'),0,0,"R",0);
-					 $pdf->cell(20,5,db_formatar($valor,'f'),0,1,"R",0);
-				 }	
-			 }
-			 if ($proced == "" and $agproced == "N") {
-				 break;
-			 }
+			$pdf->cell(26,7,'',0,0,"R",0);
+			$pdf->cell(16,5,db_formatar($soma_k22_vlrhis_por_ano,'f'),0,0,"R",0);
+			$pdf->cell(17,5,db_formatar($soma_k22_vlrcor_por_ano,'f'),0,0,"R",0);
+			$pdf->cell(17,5,db_formatar($soma_k22_juros_por_ano,'f'),0,0,"R",0);
+			$pdf->cell(16,5,db_formatar($soma_k22_multa_por_ano,'f'),0,0,"R",0);
+			$pdf->cell(17,5,db_formatar($soma_por_cgm_por_ano,'f'),0,1,"R",0);
 		}
-	}
+    }
 }			
 $pdf->SetFont('Arial','B',7);
-$pdf->Cell(75,7,'Total de Registros : '.$totalreg,'T',0,"L",0);
+$pdf->Cell(78,7,'Total de Registros : '.$totalreg,'T',0,"L",0);
 if($agexerc == "S")
-  $pdf->Cell(18,7,'','T',0,"C",0);
+  $pdf->cell(12,7,'','T',0,"R",0);
 if($agproced == "S"){
-  $pdf->Cell(20,7,'','T',0,"C",0);
-  $pdf->Cell(70,7,'','T',0,"L",0);
+  $pdf->cell(20,7,'','T',0,"R",0);
+  $pdf->cell(55,7,'','T',0,"R",0);
 }
-$pdf->cell(20,7,db_formatar($totalhis,'f'),'T',0,"R",0);
-$pdf->cell(20,7,db_formatar($totalcor,'f'),'T',0,"R",0);
-$pdf->cell(20,7,db_formatar($totaljur,'f'),'T',0,"R",0);
-$pdf->cell(20,7,db_formatar($totalmul,'f'),'T',0,"R",0);
-$pdf->cell(20,7,db_formatar($totalval,'f'),'T',1,"R",0);
+$pdf->cell(26,7,'','T',0,"R",0);
+$pdf->cell(16,7,db_formatar($totalhis,'f'),'T',0,"R",0);
+$pdf->cell(17,7,db_formatar($totalcor,'f'),'T',0,"R",0);
+$pdf->cell(17,7,db_formatar($totaljur,'f'),'T',0,"R",0);
+$pdf->cell(16,7,db_formatar($totalmul,'f'),'T',0,"R",0);
+$pdf->cell(17,7,db_formatar($totalval,'f'),'T',1,"R",0);
 
 	
 $pdf->Output();

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_coremp_classe.php");
-require_once("classes/db_pagordemnota_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_coremp_classe.php"));
+require_once(modification("classes/db_pagordemnota_classe.php"));
 
 $clcoremp = new cl_coremp;
 $clpagordemnota = new cl_pagordemnota;
@@ -151,7 +151,7 @@ $troca = 1;
 $alt = 4;
 $total = 0;
 $tipo = "";
-//echo db_getsession();
+
 $soma = 0;
 db_fieldsmemory($result,0);
 $xtipo = $tipo;
@@ -256,5 +256,3 @@ $pdf->ln(3);
 $pdf->cell(280,$alt,'TOTAL DE GERAL      :  '.$geral."   VALOR GERAL  :R$ ".db_formatar($tot_valor,"f"),"T",0,"L",0);
 
 $pdf->Output();
-
-?>

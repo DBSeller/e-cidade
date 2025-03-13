@@ -1,0 +1,42 @@
+[
+    {
+        "label": "Dotação",
+        "width": "33",
+        "nome": "dotacao",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "dotacao"
+    },
+    {
+        "label": "Estrutural da Dotação",
+        "width": "33",
+        "nome": "estrutural",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "estrutural"
+    },
+    {
+        "label": "Esfera Orçamentária",
+        "width": "33",
+        "nome": "esfera_orcamentaria",
+        "tipo": "combo",
+        "lista": [
+            {
+                "codigo": "10",
+                "descricao": "10 - F - Orçamento Fiscal"
+            },
+            {
+                "codigo": "20",
+                "descricao": "20 - S - Orçamento da Seguridade Social"
+            },
+            {
+                "codigo": "30",
+                "descricao": "30 - I - Orçamento de Investimento"
+            }
+        ],
+        "editavel": true,
+        "valor": "esfera_orcamentaria"
+    }
+]

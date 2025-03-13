@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once ("classes/db_cgm_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_cgm_classe.php"));
 
 /** matricula **/
 $clrotulo = new rotulocampo();
@@ -169,9 +169,9 @@ function js_validaCampos(){
 function js_cgm(mostra){
   var cgm=document.form1.z01_numcgm.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_mostracgm|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_mostracgm|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?pesquisa_chave=' + cgm 
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?pesquisa_chave=' + cgm 
                                                                   + '&funcao_js=parent.js_mostracgm1','Pesquisa',false);
   }
 }
@@ -191,10 +191,10 @@ function js_mostracgm1(erro,chave){
 function js_matri(mostra){
   var matri=document.form1.j01_matric.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe3','func_iptubase.php?funcao_js=parent.js_mostramatri|j01_matric|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe3','func_iptubase.php?funcao_js=parent.js_mostramatri|j01_matric|z01_nome','Pesquisa',true);
   }else{
     if (matri != "") {
-	    js_OpenJanelaIframe('top.corpo','db_iframe3','func_iptubase.php?pesquisa_chave='+matri+
+	    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe3','func_iptubase.php?pesquisa_chave='+matri+
 	                                                                  '&funcao_js=parent.js_mostramatri1','Pesquisa',false);
     }                                                                 
   }
@@ -274,7 +274,7 @@ function js_retornoProcessamento(oAjax) {
 	
 	js_removeObj('msgbox');
 
-	var oRetorno  = eval("("+oAjax.responseText+")");
+	var oRetorno  = JSON.parse(oAjax.responseText);
 
 	oGridDebitos.clearAll(true);
 
@@ -365,7 +365,7 @@ function js_retornaDebitos(oAjax) {
 	
 	js_removeObj('msgbox');
 
-	var oRetorno  = eval("("+oAjax.responseText+")");
+	var oRetorno  = JSON.parse(oAjax.responseText);
 
 	oGridDebitos.clearAll(true);
 

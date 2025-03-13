@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 set_time_limit(0);
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -71,7 +71,7 @@ $sql = "select data,numcgm as um ,z01_nome as dois ,
 //echo $sql;exit;
 $head7 = 'Valores entre :  '.trim(db_formatar($valorminimo,'f')).'   e   '.trim(db_formatar($valormaximo,'f'));
 $head8 = 'Posição em : '.db_formatar($data,'d');
-$result1 = pg_exec($sql);
+$result1 = db_query($sql);
 
 $ttvlrhis=0;
 $ttvlrcor=0;
@@ -135,7 +135,7 @@ for($yy=0;$yy<$resultnrows;$yy++){
            order by val1 desc
           ";
 //echo $sql2;exit;
-  $result2 = pg_exec($sql2);
+  $result2 = db_query($sql2);
   for($ii = 0;$ii < pg_numrows($result2);$ii++){
      db_fieldsmemory($result2,$ii);
      if ($pdf->h - 30 < $pdf->gety()){

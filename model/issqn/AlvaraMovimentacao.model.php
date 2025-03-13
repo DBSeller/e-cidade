@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,13 +30,13 @@
  * @see model/issqn/alvara/MovimentacaoAlvara.model.php
  *
  * @fileoverview - Classe de Modelo para movimentações do Alvará 
- * @author    Rafael Serpa Nery - rafael.nery@dbseller.com.br	
+ * @author    Rafael Serpa Nery - rafael.nery@dbseller.com.br 
  * @package   ISSQN
- * @revision  $Author: dbjeferson.belmiro $
- * @version   $Revision: 1.13 $
+ * @revision  $Author: dbstephano.ramos $
+ * @version   $Revision: 1.18 $
  */
-require_once('libs/db_stdlib.php');
-require_once('libs/db_utils.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_utils.php'));
 
 abstract class AlvaraMovimentacao {
   
@@ -178,21 +178,21 @@ abstract class AlvaraMovimentacao {
    * @param unknown_type $aDocumentos
    */
   protected function gravaDocumentos(){
-  	if (count($this->aDocumentos) > 0) {
-  		
-	    $oDaoIssAlvaraDocumento = db_utils::getDAO('issalvaradocumento');
-	    $oDaoIssAlvaraDocumento->excluir("", "q122_issalvara = {$this->iCodigoAlvara}");
-	    
-	    foreach ($this->aDocumentos as $iDocumento){
-	      
-	      $oDaoIssAlvaraDocumento->q122_issalvara    = $this->iCodigoAlvara;
-	      $oDaoIssAlvaraDocumento->q122_caddocumento = $iDocumento;
-	      $oDaoIssAlvaraDocumento->incluir("");
-	      if($oDaoIssAlvaraDocumento->erro_status == "0"){
-	        throw new ErrorException($oDaoIssAlvaraDocumento->erro_msg);
-	      } 
-	    }
-	  }
+    if (count($this->aDocumentos) > 0) {
+      
+      $oDaoIssAlvaraDocumento = db_utils::getDAO('issalvaradocumento');
+      $oDaoIssAlvaraDocumento->excluir("", "q122_issalvara = {$this->iCodigoAlvara}");
+      
+      foreach ($this->aDocumentos as $iDocumento){
+        
+        $oDaoIssAlvaraDocumento->q122_issalvara    = $this->iCodigoAlvara;
+        $oDaoIssAlvaraDocumento->q122_caddocumento = $iDocumento;
+        $oDaoIssAlvaraDocumento->incluir("");
+        if($oDaoIssAlvaraDocumento->erro_status == "0"){
+          throw new ErrorException($oDaoIssAlvaraDocumento->erro_msg);
+        } 
+      }
+    }
   }
 
   /**
@@ -353,7 +353,7 @@ abstract class AlvaraMovimentacao {
     if($oDaoIssMovAlvara->numrows == 0){
       return array();
     } else {
-      return db_utils::getColectionByRecord($rsSqlMovAlvara);
+      return db_utils::getCollectionByRecord($rsSqlMovAlvara);
     }
   }
   

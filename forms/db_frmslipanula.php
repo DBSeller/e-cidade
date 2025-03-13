@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_conplanoexe_classe.php");
-include("classes/db_saltes_classe.php");
+include(modification("classes/db_conplanoexe_classe.php"));
+include(modification("classes/db_saltes_classe.php"));
 $clsaltes = new cl_saltes;
 $clconplanoexe = new cl_conplanoexe;
 $clrotulo = new rotulocampo;
@@ -151,7 +151,7 @@ $clrotulo->label("z01_numcgm");
 	                  $sSqlRecurso .= "       inner join orctiporec on o15_codigo =  k29_recurso";
 	                  $sSqlRecurso .=  " where k29_slip =  {$k17_codigo}";
 	                  $rsRecuros    = db_query($sSqlRecurso);
-	                  $aRecursos    = db_utils::getColectionByRecord($rsRecuros);
+	                  $aRecursos    = db_utils::getCollectionByRecord($rsRecuros);
 	                  foreach ($aRecursos as $oRecurso) {
 	                    
 	                    echo "<tr>";

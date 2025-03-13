@@ -1,38 +1,39 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (c) 2014  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_numprebloqpag_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_numprebloqpag_classe.php"));
+
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
 
@@ -40,7 +41,7 @@ switch ($oParam->exec) {
 
   case "getDadosNumpre": 
   
-	  $oDaoArrecad = db_utils::getDao('arrecad');
+	  $oDaoArrecad = new cl_arrecad();
 	  $sCampos = "arrecad.k00_numpre, 
 	              arrecad.k00_numpar, 
 	              arrecad.k00_tipo,
@@ -60,22 +61,24 @@ switch ($oParam->exec) {
     	  
     $rsNumpre = $oDaoArrecad->sql_record($oDaoArrecad->sql_query(null,$sCampos,$sOrdem,$sWhere));
 	  if ($rsNumpre) {
-	    $aRegistros = db_utils::getColectionByRecord($rsNumpre,0,false,false,true);
+	    $aRegistros = db_utils::getCollectionByRecord($rsNumpre,0,false,false,true);
 	  } else {
-	    $sMensagem  = "Nenhum dado retornado";
+
+	    $sMensagem  = "Nenhuma parcela encontrada.";
 	    $iStatus    = 2;
 	    $aRegistros = array("iStatus"=>$iStatus, "sMensagem"=>urlencode($sMensagem));
 	  }
 	  
-	  $oRetorno = new stdClass();
+	  $oRetorno             = new stdClass();
 	  $oRetorno->aRegistros = $aRegistros;
+
 	  echo $oJson->encode($oRetorno);
 	  
 	break;
 	
 	case "getDadosNumpreBloqueado": 
   
-    $oDaoArrecad = db_utils::getDao('arrecad');
+    $oDaoArrecad = new cl_arrecad();
     $sCampos = "arrecad.k00_numpre, 
                 arrecad.k00_numpar, 
                 arrecad.k00_tipo,
@@ -94,20 +97,23 @@ switch ($oParam->exec) {
          
     $rsNumpre = $oDaoArrecad->sql_record($oDaoArrecad->sql_query(null,$sCampos,$sOrdem,$sWhere));
     if ($rsNumpre) {
-      $aRegistros = db_utils::getColectionByRecord($rsNumpre,0,false,false,true);
+      $aRegistros = db_utils::getCollectionByRecord($rsNumpre,0,false,false,true);
     } else {
-      $sMensagem  = "Nenhum dado retornado";
+
+      $sMensagem  = "Nenhuma parcela encontrada.";
       $iStatus    = 2;
       $aRegistros = array("iStatus"=>$iStatus, "sMensagem"=>urlencode($sMensagem));
     }
     
-    $oRetorno = new stdClass();
+    $oRetorno             = new stdClass();
     $oRetorno->aRegistros = $aRegistros;
+
     echo $oJson->encode($oRetorno);
     
   break;
 	  
   case "incluirNumpre":
+
   	 $oNumprebloqpag = db_utils::getDao('numprebloqpag');
   	 
   	 $sqlerro   = false;
@@ -168,4 +174,3 @@ switch ($oParam->exec) {
   break;	
 	  
 }
-?>

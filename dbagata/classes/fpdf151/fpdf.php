@@ -579,7 +579,7 @@ function GetStringWidth($s)
 {
 	//Get width of a string in the current font
 	$s=(string)$s;
-	$cw=&$this->CurrentFont['cw'];
+	$cw=$this->CurrentFont['cw'];
 	$w=0;
 	$l=strlen($s);
 	for($i=0;$i<$l;$i++)
@@ -720,7 +720,7 @@ function SetFont($family,$style='',$size=0)
 	$this->FontStyle=$style;
 	$this->FontSizePt=$size;
 	$this->FontSize=$size/$this->k;
-	$this->CurrentFont=&$this->fonts[$fontkey];
+	$this->CurrentFont=$this->fonts[$fontkey];
 	if($this->page>0)
 		$this->_out(sprintf('BT /F%d %.2f Tf ET',$this->CurrentFont['i'],$this->FontSizePt));
 }
@@ -859,7 +859,7 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
 function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 {
 	//Output text with automatic or explicit line breaks
-	$cw=&$this->CurrentFont['cw'];
+	$cw=$this->CurrentFont['cw'];
 	if($w==0)
 		$w=$this->w-$this->rMargin-$this->x;
 	$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
@@ -972,7 +972,7 @@ function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 function Write($h,$txt,$link='')
 {
 	//Output text in flowing mode
-	$cw=&$this->CurrentFont['cw'];
+	$cw=$this->CurrentFont['cw'];
 	$w=$this->w-$this->rMargin-$this->x;
 	$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
 	$s=str_replace("\r",'',$txt);
@@ -1276,8 +1276,8 @@ function _putfonts()
 		$this->_out('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences ['.$diff.']>>');
 		$this->_out('endobj');
 	}
-	$mqr=get_magic_quotes_runtime();
-	set_magic_quotes_runtime(0);
+	//$mqr=get_magic_quotes_runtime();
+	//set_magic_quotes_runtime(0);
 	foreach($this->FontFiles as $file=>$info)
 	{
 		//Font file embedding
@@ -1300,7 +1300,7 @@ function _putfonts()
 		fclose($f);
 		$this->_out('endobj');
 	}
-	set_magic_quotes_runtime($mqr);
+	//set_magic_quotes_runtime($mqr);
 	foreach($this->fonts as $k=>$font)
 	{
 		//Font objects

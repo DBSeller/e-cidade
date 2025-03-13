@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_orctiporec_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcorgao_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conlancamcgm_classe.php");
-include("classes/db_conlancamval_classe.php");
-include("classes/db_conlancam_classe.php");
-include("classes/db_orcsuplem_classe.php");
-include("classes/db_conlancamrec_classe.php");
-include("classes/db_conlancamemp_classe.php");
-include("classes/db_conlancamdot_classe.php");
-include("classes/db_conlancamdig_classe.php");
-include("classes/db_pagordemnota_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_conlancamcgm_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_orcsuplem_classe.php"));
+include(modification("classes/db_conlancamrec_classe.php"));
+include(modification("classes/db_conlancamemp_classe.php"));
+include(modification("classes/db_conlancamdot_classe.php"));
+include(modification("classes/db_conlancamdig_classe.php"));
+include(modification("classes/db_pagordemnota_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -493,6 +493,7 @@ if ($tipo=="s"){
 
   $xtipo = ' and c53_coddoc in (';
   $tem_outro = false;
+
   if (isset($emp)) {
     $xtipo .= '1,2,32';
     $tem_outro = true;
@@ -501,6 +502,7 @@ if ($tipo=="s"){
   if (isset($liq)) {
     if ($tem_outro == true)
       $xtipo .= ',';
+
     $xtipo .= '3,4,23,24,33,34'; 
     $tem_outro = true;
   }
@@ -508,9 +510,19 @@ if ($tipo=="s"){
   if (isset($pag)) {
     if ($tem_outro == true)
       $xtipo .= ',';
-    $xtipo .= '5,6,35,36,37'; 
+
+    $xtipo .= '5,6,35,36,37';
   }
-  $xtipo .= ')';
+
+    if (isset($ret)) {
+        if ($tem_outro == true){
+            $xtipo .= ',';
+        }
+        $xtipo .= ' 6000, 6001, 6002, 6003, 6004, 6005, 6006, 6007, 6008, 6009, 6010, 6011, 6012, 6013 ';
+    }
+
+
+    $xtipo .= ')';
 
   if (isset($lista)) {
     $w="("; 
@@ -572,9 +584,7 @@ from conlancam
                                and o56_anousu = o58_anousu
      inner join cgm 		        on z01_numcgm = e60_numcgm
 where $txt_where $xtipo
-order by e60_numcgm,e60_anousu,e60_codemp,c70_codlan
-";
-
+order by e60_numcgm,e60_anousu,e60_codemp,c70_codlan ";
 
 $sql2 = "
 select c53_descr,
@@ -594,14 +604,11 @@ from conlancam
                              and o56_anousu = o58_anousu
      inner join cgm 		on z01_numcgm = e60_numcgm
 where $txt_where $xtipo
-group by c53_descr
-";
+group by c53_descr ";
+
 
 $result = pg_exec($sql);
 $result2 = pg_exec($sql2); 
-
-//db_criatabela($result);
-//db_criatabela($result2);exit;
 
 $xxnum = pg_numrows($result);
 $xxnum2= pg_numrows($result2);
@@ -705,7 +712,7 @@ $cgm = 0;
    
    
 }
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf->output();
 
 ?>

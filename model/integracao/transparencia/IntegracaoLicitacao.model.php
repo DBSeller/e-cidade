@@ -1,7 +1,7 @@
 <?php
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -20,13 +20,18 @@
  *   Cópia da licença no diretório licenca/licenca_en.txt
  *                                 licenca/licenca_pt.txt
  */
-require_once("IItemIntegracao.interface.php");
-require_once("IntegracaoBase.model.php");
+require_once(modification("model/integracao/transparencia/IItemIntegracao.interface.php"));
+require_once(modification("model/integracao/transparencia/IntegracaoBase.model.php"));
 
 /**
  * Classe que realizar a integracao d
  */
 class IntegracaoLicitacao extends IntegracaoBase implements IItemIntegracao {
+
+  const DOCUMENTO_ATA    = 1;
+  const DOCUMENTO_MINUTA = 2;
+  const DOCUMENTO_EDITAL = 3;
+  const DOCUMENTO_OUTROS = 4;
 
   /**
    * Metodo para processamento da Integracao
@@ -47,7 +52,7 @@ class IntegracaoLicitacao extends IntegracaoBase implements IItemIntegracao {
    */
   private function carregarDadosLicitacao () {
 
-    require_once DB_CLASSES."classes/db_liclicita_classe.php";
+    require_once modification(DB_CLASSES."classes/db_liclicita_classe.php");
 
     IntegracaoPortalTransparencia::escreverTitulo("IMPORTANDO LICITAÇÕES");
     $sListaCamposImportar   = "l20_codigo as id,";
@@ -105,7 +110,7 @@ class IntegracaoLicitacao extends IntegracaoBase implements IItemIntegracao {
 
 
     IntegracaoPortalTransparencia::escreverTitulo("IMPORTANDO ITENS DAS LICITAÇÕES");
-    require_once DB_CLASSES."classes/db_liclicitem_classe.php";
+    require_once modification(DB_CLASSES."classes/db_liclicitem_classe.php");
     $sListaCampos  = "l21_codigo       as id,";
     $sListaCampos .= "l21_codliclicita as licitacao_id,";
     $sListaCampos .= "pc01_descrmater  as material,";
@@ -132,6 +137,9 @@ class IntegracaoLicitacao extends IntegracaoBase implements IItemIntegracao {
     for ($iItens = 0; $iItens < $iTotalItens; $iItens++) {
 
       $oItemLicitacao = db_utils::fieldsMemory($rsItensLicitacao, $iItens);
+
+      $buscaSequencial = pg_query($this->rsConexaoDestino, "select nextval('licitacoes_itens_id_seq') as sequencial");
+      $oItemLicitacao->id = pg_fetch_result($buscaSequencial, 0, 'sequencial');
       $this->inserirDadosPortalTransparencia($oItemLicitacao, $oTableManagerLicitacoesItens);
     }
     $this->persistirDadosPortalTransparencia($oTableManagerLicitacoesItens);
@@ -140,44 +148,108 @@ class IntegracaoLicitacao extends IntegracaoBase implements IItemIntegracao {
 
   public function carregarDocumentosDaLicitacao() {
 
-
     IntegracaoPortalTransparencia::escreverTitulo("IMPORTANDO DOCUMENTOS DAS LICITAÇÕES");
-    require_once DB_CLASSES."classes/db_liclicitaata_classe.php";
-    require_once DB_CLASSES."classes/db_liclicitaedital_classe.php";
-    require_once DB_CLASSES."classes/db_liclicitaminuta_classe.php";
 
-    $sDiretorioLicitacaoes  = "/tmp";
-    $oDaoLicitacaoAta    = new cl_liclicitaata();
-    $oDaoLicitacaoMinuta = new cl_liclicitaminuta();
-    $oDaoLicitacaoEdital = new cl_liclicitaedital();
+    $sDiretorioLicitacaoes        = ECIDADE_PATH."tmp";
+    $oDaoLicitacaoAta             = new cl_liclicitaata();
+    $oDaoLicitacaoMinuta          = new cl_liclicitaminuta();
+    $oDaoLicitacaoEdital          = new cl_liclicitaedital();
+    $oDaoLicitacaoEventoDocumento = new cl_liclicitaeventodocumento();
+    $oDaoLicitacaoOutros          = new cl_documentolicitacaotransparencia();
 
     $sWhere  = " l20_anousu >= {$this->iAnoInicioIntegracao} ";
     $sWhere .= " and exists(select 1 from liclicitem where l21_codliclicita = l20_codigo) ";
 
     $aQueryesDocumentos = array();
     $sCamposAta  = "null as id, l39_liclicita as licitacao_id,  l39_arquivo as documento, ";
-    $sCamposAta .= "'{$sDiretorioLicitacaoes}/arquivo_1_'||l39_arquivo||'.dat' as nome_arquivo_importacao,";
+    $sCamposAta .= "'{$sDiretorioLicitacaoes}/arquivo_1_'||l39_arquivo||'.dat' as nome_arquivo_importacao, ";
     $sCamposAta .= " l39_arqnome as nome,";
-    $sCamposAta .= " 1 as tipo";
+    $sCamposAta .= self::DOCUMENTO_ATA . " as tipo";
 
     $aQueryesDocumentos[] = $oDaoLicitacaoAta->sql_query(null, $sCamposAta, null, $sWhere);
 
     $sCamposMinuta  = "null as id, l43_liclicita as licitacao_id, l43_arquivo,";
     $sCamposMinuta .= "'{$sDiretorioLicitacaoes}/arquivo_2_'||l43_arquivo||'.dat' as nome_arquivo_importacao,l43_arqnome as nome, ";
-    $sCamposMinuta .= " 2 as tipo";
+    $sCamposMinuta .= self::DOCUMENTO_MINUTA . " as tipo";
 
     $aQueryesDocumentos[] = $oDaoLicitacaoMinuta->sql_query(null, $sCamposMinuta, null, $sWhere);
 
     $sCamposEdital  = "null as id, l27_liclicita as licitacao_id, l27_arquivo, ";
-    $sCamposEdital .= "'{$sDiretorioLicitacaoes}/arquivo_3_'||l27_arquivo||'.dat' as nome_arquivo_importacao, l27_arqnome as nome,";
-    $sCamposEdital .= " 3 as tipo";
+    $sCamposEdital .= "'{$sDiretorioLicitacaoes}/arquivo_3_'||l27_arquivo||'.dat' as nome_arquivo_importacao, l27_arqnome as nome, ";
+    $sCamposEdital .= self::DOCUMENTO_EDITAL . " as tipo";
 
     $aQueryesDocumentos[] = $oDaoLicitacaoEdital->sql_query(null, $sCamposEdital, null, $sWhere);
+
+    /**
+     * Documentos de licitação vinculados a eventos
+     */
+    $aCamposEventos = array(
+      'null as id',
+      'l46_liclicita as licitacao_id',
+      'l47_arquivo as documento',
+      "'{$sDiretorioLicitacaoes}/arquivo_'||l47_arquivo||'.dat' as nome_arquivo_importacao",
+      'l47_nomearquivo as nome',
+    );
+
+    $aTiposDocumentoAta = array(
+      DocumentoEventoLicitacao::ATA_JULGAMENTO_CREDENCIAMENTO,
+      DocumentoEventoLicitacao::ATA_JULGAMENTO_RECURSOS,
+      DocumentoEventoLicitacao::ATA_REGISTRO_PRECO,
+      DocumentoEventoLicitacao::ATA_JULGAMENTO_RECURSO,
+      DocumentoEventoLicitacao::ATA_PREGAO,
+      DocumentoEventoLicitacao::ATA_PROCEDIMENTO_PRE_QUALIFICACAO,
+      DocumentoEventoLicitacao::ATA_RDC,
+      DocumentoEventoLicitacao::ATA_HABILITACAO_PROPOSTAS,
+      DocumentoEventoLicitacao::ATA_HABILITACAO_PROPOSTAS_PROJETOS
+    );
+    $sTiposDocumentoAta = implode(', ', array_map(function($iTipo) {
+      return "'" . $iTipo . "'";
+    }, $aTiposDocumentoAta));
+
+    $aTiposDocumentoEdital = array(
+      DocumentoEventoLicitacao::AVISO_ALTERACAO_EDITAL_ERRATA,
+      DocumentoEventoLicitacao::EDITAL_PRE_QUALIFICACAO,
+      DocumentoEventoLicitacao::EDITAL_ANEXOS,
+      DocumentoEventoLicitacao::EDITAL_ANEXOS_OUTRO_ORGAO,
+    );
+    $sTiposDocumentoEdital = implode(', ', array_map(function($iTipo) {
+      return "'" . $iTipo . "'";
+    }, $aTiposDocumentoEdital));
+
+    // Verifica se esta configurado a exportacao de outros tipos de arquivos enviados para o LICITACON
+    $sqlOutros = $oDaoLicitacaoOutros->sql_query();
+    $rsOutros  = db_query($this->rsConexaoOrigem, $sqlOutros);
+
+    // Se existir, monta adiciona os tipos na busca como tipo 4 - outros
+    if ($rsOutros) {
+        $aTipoOutros      = array();
+        $quantidadeOutros = pg_num_rows($rsOutros);
+        for ( $i=0; $i < $quantidadeOutros; $i++ ) {
+            $outro = db_utils::fieldsMemory($rsOutros,$i);
+            $aTipoOutros[] = $outro->l48_documento;
+        }
+        if (sizeof($aTipoOutros) > 0) {
+            $sTiposOutros = implode(', ', array_map(function($iTipo) {
+                return "'" . $iTipo . "'";
+            }, $aTipoOutros));
+            $sCamposEventos       = implode(', ', array_merge($aCamposEventos, array(self::DOCUMENTO_OUTROS. ' as tipo')));
+            $sWhereEventos        = "{$sWhere} and l47_tipodocumento in({$sTiposOutros})";
+            $aQueryesDocumentos[] = $oDaoLicitacaoEventoDocumento->sql_query(null, $sCamposEventos, null, $sWhereEventos);
+        }
+    }
+
+    $sCamposEventos       = implode(', ', array_merge($aCamposEventos, array(self::DOCUMENTO_ATA. ' as tipo')));
+    $sWhereEventos        = "{$sWhere} and l47_tipodocumento in({$sTiposDocumentoAta})";
+    $aQueryesDocumentos[] = $oDaoLicitacaoEventoDocumento->sql_query(null, $sCamposEventos, null, $sWhereEventos);
+
+    $sCamposEventos       = implode(', ', array_merge($aCamposEventos, array(self::DOCUMENTO_EDITAL . ' as tipo')));
+    $sWhereEventos        = "{$sWhere} and l47_tipodocumento in({$sTiposDocumentoEdital})";
+    $aQueryesDocumentos[] = $oDaoLicitacaoEventoDocumento->sql_query(null, $sCamposEventos, null, $sWhereEventos);
 
     $sQueryDocumentos       = implode(" union ", $aQueryesDocumentos);
     $rsDocumentosLicitacao  = db_query($this->rsConexaoOrigem, $sQueryDocumentos);
     if (!$rsDocumentosLicitacao) {
-      throw new Exception("Erro ao documentos das licitacoes ".pg_last_error());
+      throw new Exception("Erro ao importar os documentos das licitações: " . pg_last_error());
     }
 
     $iTotalDocumentos                  = pg_num_rows($rsDocumentosLicitacao);
@@ -203,9 +275,9 @@ class IntegracaoLicitacao extends IntegracaoBase implements IItemIntegracao {
       $sUpdateAcertoOID .= " where documento = {$iOId}";
       $rsQueryAcertoDocumentos = db_query($this->rsConexaoDestino, $sUpdateAcertoOID);
       if (!$rsQueryAcertoDocumentos) {
-        throw new Exception("Erro a corrigir documentos das licitacoes ".pg_last_error());
+        throw new Exception("Erro ao corrigir os documentos das licitacoes: " . pg_last_error());
       }
-      //unlink($sArquivo);
+      unlink($sArquivo);
     }
   }
 

@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_aguacalc_classe.php");
-include("classes/db_aguacalcval_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_aguacalc_classe.php"));
+include(modification("classes/db_aguacalcval_classe.php"));
 $claguacalc = new cl_aguacalc;
   /*
 $claguacalcval = new cl_aguacalcval;
@@ -78,7 +78,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmaguacalc.php");
+	include(modification("forms/db_frmaguacalc.php"));
 	?>
     </center>
 	</td>
@@ -111,7 +111,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.aguacalcval.disabled=false;
-         top.corpo.iframe_aguacalcval.location.href='agu1_aguacalcval001.php?db_opcaoal=33&x23_codcalc=".@$x22_codcalc."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguacalcval.location.href='agu1_aguacalcval001.php?db_opcaoal=33&x23_codcalc=".@$x22_codcalc."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('aguacalcval');";

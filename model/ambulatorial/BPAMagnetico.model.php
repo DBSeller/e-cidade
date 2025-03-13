@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once 'model/dbLayoutReader.model.php';
+require_once modification("model/dbLayoutReader.model.php");
 
 /**
  * Reponsável por gerar o arquivo BPA
  * @package ambulatorial
  * @author  Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.25 $
  */
 class BPAMagnetico {
 
@@ -235,7 +235,7 @@ class BPAMagnetico {
     $oDadosCabecalho->cbc_dst     = $this->oConfigParamentros->sBPADestino;
     $oDadosCabecalho->cbc_dst_in  = 'M';
     $oDadosCabecalho->cbc_versao  = $this->iVersaoSistema;
-    $oDadosCabecalho->cbc_fim     = " ";
+    $oDadosCabecalho->cbc_fim     = ' ';
 
     $this->oDadosCabecalho = $oDadosCabecalho;
     return $this->oDadosCabecalho;
@@ -273,10 +273,12 @@ class BPAMagnetico {
     /**
      * Filtramos as unidades selecionadas
      */
+    /*PLUGIN ESF - Inicializar variável sWhereProcedimentosESF*/
     if (count($this->aUnidades) > 0) {
 
       $aKeys = array_keys($this->aUnidades);
       $this->oCompetenciaFechada->adicionaFiltroBuscaProcedimentos("unidades.sd02_i_codigo in (".implode(", ", $aKeys).")");
+      /*PLUGIN ESF - Definindo a varável sWhereProcedimentosESF*/
     }
 
     /**
@@ -291,6 +293,25 @@ class BPAMagnetico {
 
     $aDadosAgrupados = array();
     $aProcedimentos  = $this->oCompetenciaFechada->getProcedimentos();
+
+    $exigeIdade = [
+      '0301010013', // CONSULTA AO PACIENTE CURADO DE TUBERCULOSE (TRATAMENTO SUPERVISIONADO)
+      '0301010021', // CONSULTA COM IDENTIFIÇÃO DE CASOS NOVOS DE TUBERCULOSE 
+      '0301010030', // CONSULTA DE PROFISSIONAIS DE NÍVEL SUPERIOR NA ATENÇÃO PRIMÁRIA (EXCETO MÉDICO) 
+      '0301010048', // CONSULTA DE PROFISSIONAIS DE NÍVEL SUPERIOR NA ATENÇÃO ESPECIALIZADA (EXCETO MÉDICO)
+      '0301010056', // CONSULTA MÉDICA EM SAÚDE DO TRABALHADOR 
+      '0301010064', // CONSULTA MÉDICA EM ATENÇÃO PRIMÁRIA
+      '0301010072', // CONSULTA MÉDICA EM ATENÇÃO ESPECIALIZADA 
+      '0301010080', // CONSULTA PARA ACOMPANHAMENTO DE CRESCIMENTO E DESENVOLVIMENTO (PUERICULTURA) 
+      '0301010099', // CONSULTA PARA AVALIAÇÃO CLÍNICA DO FUMANTE 
+      '0301010102', // CONSULTA PARA DIAGNÓSTICO/AVALIAÇÃO DE GLAUCOMA (GONIOSCOPIA, TONOMETRIA E CAMPIMETRIA) 
+      '0301010110', // CONSULTA PRÉ-NATAL 
+      '0301010129', // CONSULTA PUERPERAL 
+      '0301010137', // CONSULTA/ATENDIMENTO DOMICILIAR NA ATENÇÃO BÁSICA 
+      '0301010153', // PRIMEIRA CONSULTA ODONTOLÓGICA PROGRAMÁTICA 
+    ];
+
+    /*PLUGIN ESF - Merge Procedimentos BPA com Procedimentos ESF*/
 
     foreach ($aProcedimentos as $iIndice => $oProcedimento) {
 
@@ -310,6 +331,10 @@ class BPAMagnetico {
       $iProcedimento       = $oProcedimento->procedimento;
       $iCodigoProcedimento = $oProcedimento->codigo_procedimento;
       $iIdadeAtendimento   = $oProcedimento->idade_atendimento;
+
+      if (!in_array($iProcedimento, $exigeIdade)) {
+        $iIdadeAtendimento = 0;
+      }
 
       $sUniqueKey = $iCNESUnidade."#".$iCBO."#".$iProcedimento."#".$iCodigoProcedimento."#".$iIdadeAtendimento;
 
@@ -333,14 +358,16 @@ class BPAMagnetico {
         $oDadosProcedimento->prd_seq   = str_pad($iLinha,  2, 0, STR_PAD_LEFT);
         $oDadosProcedimento->prd_pa    = $oProcedimento->procedimento;
         $oDadosProcedimento->prd_idade = str_pad($oProcedimento->idade_atendimento, 3, 0, STR_PAD_LEFT);
-        $oDadosProcedimento->prd_qt    = 1;
+		    $oDadosProcedimento->prd_qt    = 1;
+        /*PLUGIN ESF - Alterado para buscar quantidade retornada da query dos procedimentos*/
         $oDadosProcedimento->prd_org   = 'BPA';
-        $oDadosProcedimento->prd_fim   = " ";
+        $oDadosProcedimento->prd_fim   = ' ';
 
         $aDadosAgrupados[$sUniqueKey]  = $oDadosProcedimento;
 
       } else {
-        $aDadosAgrupados[$sUniqueKey]->prd_qt++;
+        /*PLUGIN ESF - Alterado contador para adicionar o quantidade de procedimentos*/
+		    $aDadosAgrupados[$sUniqueKey]->prd_qt++;
       }
     }
 
@@ -361,10 +388,6 @@ class BPAMagnetico {
 
     $iLinha  = 0;
     $iPagina = 0;
-    /**
-     * Maior numero de páginas geradas no BPA
-     */
-    $iMaiorNumeroPagina = 0;
 
     /**
      * Competencia sem formatacao
@@ -405,6 +428,8 @@ class BPAMagnetico {
 
     $aProcedimentos = $this->oCompetenciaFechada->getProcedimentos();
     $iCodigoMedico  = 0;
+    $iLinha = 0;
+    $iPagina = 1;
 
     foreach ($aProcedimentos as $iIndice => $oProcedimento) {
 
@@ -424,14 +449,22 @@ class BPAMagnetico {
       }
 
       if ($iCodigoMedico != $oProcedimento->codigo_medico) {
-
-        if ($iPagina > $iMaiorNumeroPagina) {
-          $iMaiorNumeroPagina = $iPagina;
-        }
+        
         $iLinha  = 0;
-        $iPagina = 1;
+        $iPagina++;
+
+        $this->iNumeroPaginas = $iPagina;
       }
 
+      if ($oProcedimento->data_nascimento == "") {
+          $sMensagem = "Data de nascimento em branco, paciente: ".$oProcedimento->codigo_paciente . " - " . $oProcedimento->nome_paciente ;
+          throw new BusinessException($sMensagem);
+      }
+
+      if ($oProcedimento->data_atendimento == "") {
+          $sMensagem = "Data de atendimento em branco, paciente: ".$oProcedimento->codigo_paciente . " - " . $oProcedimento->nome_paciente ;
+          throw new BusinessException($sMensagem);
+      }
 
       $iCNESUnidade    = $oProcedimento->cnes_unidade;
       $oDataNascimento = new DBDate($oProcedimento->data_nascimento);
@@ -490,11 +523,13 @@ class BPAMagnetico {
       $oDadosProcedimento->prd_lograd_pcnte = "081"; //Rua
       $oDadosProcedimento->prd_end_pcnte    = str_pad(substr($oProcedimento->endereco_paciente, 0, 30), 30, " ", STR_PAD_RIGHT);
       $oDadosProcedimento->prd_compl_pcnte  = str_pad(substr($oProcedimento->complemento_end_paciente, 0, 10), 10, " ", STR_PAD_RIGHT);
-      $oDadosProcedimento->prd_num_pcnte    = str_pad($oProcedimento->numero_end_paciente, 5, " ", STR_PAD_LEFT);
+      $oDadosProcedimento->prd_num_pcnte    = str_pad($oProcedimento->numero_end_paciente, 5, " ", STR_PAD_RIGHT);
       $oDadosProcedimento->prd_bairro_pcnte = str_pad(substr($oProcedimento->bairro_end_paciente, 0, 30), 30, " ", STR_PAD_RIGHT);
       $oDadosProcedimento->prd_ddtel_pcnte  = str_pad($iTelefonePaciente, 11, " ",STR_PAD_RIGHT);
       $oDadosProcedimento->prd_email_pcnte  = str_pad(substr($oProcedimento->email, 0, 40), 40, " ", STR_PAD_RIGHT);
-      $oDadosProcedimento->prd_fim          = " ";
+      /** PLUGIN ESF MODIFICANDO A LINHA ABAIXO */
+      $oDadosProcedimento->prd_ine          = str_repeat(' ', 10);
+      $oDadosProcedimento->prd_fim          = ' ';
 
       $this->aDados[] = $oDadosProcedimento;
       $iCodigoMedico  = $oProcedimento->codigo_medico;
@@ -503,8 +538,6 @@ class BPAMagnetico {
         $this->aProcedimentosInclusosArquivo[] = $oProcedimento->codigo_procedimento_fechado;
       }
     }
-
-    $this->iNumeroPaginas     = $iMaiorNumeroPagina;
   }
 
   /**
@@ -524,7 +557,7 @@ class BPAMagnetico {
       $lRegistroValido          = false;
     }
 
-    if (empty($oDadosProcedimento->cnsmedico)) {
+    if( empty( $oDadosProcedimento->cnsmedico ) && $oDadosProcedimento->tipo_profissional == 1 ) {
 
       $this->escreverLog(2, $oDadosProcedimento, "CNS não informado");
       $this->lTemInconsistencia = true;

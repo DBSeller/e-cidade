@@ -88,10 +88,10 @@ $clrotulo->label("nome");
 <script>
 function js_pesquisak94_transf(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_caitransf','func_caitransf.php?funcao_js=parent.js_mostracaitransf1|k91_transf|k91_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_caitransf','func_caitransf.php?funcao_js=parent.js_mostracaitransf1|k91_transf|k91_descr','Pesquisa',true);
   }else{
      if(document.form1.k94_transf.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_caitransf','func_caitransf.php?pesquisa_chave='+document.form1.k94_transf.value+'&funcao_js=parent.js_mostracaitransf','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_caitransf','func_caitransf.php?pesquisa_chave='+document.form1.k94_transf.value+'&funcao_js=parent.js_mostracaitransf','Pesquisa',false);
      }else{
        document.form1.k91_descr.value = ''; 
      }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include_once("classes/db_matordem_classe.php");
-include_once("classes/db_matordemitem_classe.php");
-include_once("classes/db_empnotaord_classe.php");
-include_once("classes/db_matestoqueini_classe.php");
-include_once("classes/db_matestoque_classe.php");
-include_once("classes/db_empnotaord_classe.php");
-include_once("classes/db_matmater_classe.php");
-include_once("classes/db_matmaterunisai_classe.php");
-include_once("classes/db_transmater_classe.php");
-include_once("classes/db_matestoqueitem_classe.php");
-include_once("classes/db_matestoqueitemlanc_classe.php");
-include_once("classes/db_matestoqueitemunid_classe.php");
-include_once("classes/db_matestoqueitemoc_classe.php");
-include_once("classes/db_matestoqueitemnota_classe.php");
-include_once("classes/db_matestoqueinimei_classe.php");
-include_once("classes/db_pagordemrec_classe.php");
+include_once(modification("classes/db_matordem_classe.php"));
+include_once(modification("classes/db_matordemitem_classe.php"));
+include_once(modification("classes/db_empnotaord_classe.php"));
+include_once(modification("classes/db_matestoqueini_classe.php"));
+include_once(modification("classes/db_matestoque_classe.php"));
+include_once(modification("classes/db_empnotaord_classe.php"));
+include_once(modification("classes/db_matmater_classe.php"));
+include_once(modification("classes/db_matmaterunisai_classe.php"));
+include_once(modification("classes/db_transmater_classe.php"));
+include_once(modification("classes/db_matestoqueitem_classe.php"));
+include_once(modification("classes/db_matestoqueitemlanc_classe.php"));
+include_once(modification("classes/db_matestoqueitemunid_classe.php"));
+include_once(modification("classes/db_matestoqueitemoc_classe.php"));
+include_once(modification("classes/db_matestoqueitemnota_classe.php"));
+include_once(modification("classes/db_matestoqueinimei_classe.php"));
+include_once(modification("classes/db_pagordemrec_classe.php"));
 
 $clmatordem       = new cl_matordem;
 $clmatordemitem   = new cl_matordemitem;
@@ -502,7 +502,7 @@ if($sqlerro == false){
 
 
 if($mostrar_dados_incluidos == true){
-  $res = pg_exec("select empempitem.* from empempitem inner join empempenho on e62_numemp = e60_numemp where e60_numemp = $e60_numemp;");
+  $res = db_query("select empempitem.* from empempitem inner join empempenho on e62_numemp = e60_numemp where e60_numemp = $e60_numemp;");
   db_criatabela($res);
   for($i=0; $i<pg_num_rows($res); $i++){
     db_fieldsmemory($res, $i);
@@ -510,81 +510,81 @@ if($mostrar_dados_incluidos == true){
     echo "<BR><BR><BR><BR><b> Virou! </b>";
 
     echo "<BR>empnota";
-    $res1 = pg_exec("select * from empnota where e69_numemp = $e60_numemp;");
+    $res1 = db_query("select * from empnota where e69_numemp = $e60_numemp;");
     db_fieldsmemory($res1, 0);
     db_criatabela($res1);
 
     echo "empnotaele";
-    $res1 = pg_exec("select * from empnotaele where e70_codnota = $e69_codnota;");
+    $res1 = db_query("select * from empnotaele where e70_codnota = $e69_codnota;");
     db_criatabela($res1);
 
     echo "empnotaord";
-    $res1 = pg_exec("select * from empnotaord where m72_codnota = $e69_codnota;");
+    $res1 = db_query("select * from empnotaord where m72_codnota = $e69_codnota;");
     db_criatabela($res1);
 
     echo "matordemitem";
-    $res1 = pg_exec("select * from matordemitem where m52_numemp = $e60_numemp;");
+    $res1 = db_query("select * from matordemitem where m52_numemp = $e60_numemp;");
     db_fieldsmemory($res1, 0);
     db_criatabela($res1);
     
     echo "matordem";
-    $res1 = pg_exec("select * from matordem where m51_codordem = $m52_codordem");
+    $res1 = db_query("select * from matordem where m51_codordem = $m52_codordem");
     db_criatabela($res1);
 
     echo "matestoque";
-    $res1 = pg_exec("select matestoque.* from transmater inner join matestoque on m70_codmatmater = m63_codmatmater where m63_codpcmater = $e62_item");
+    $res1 = db_query("select matestoque.* from transmater inner join matestoque on m70_codmatmater = m63_codmatmater where m63_codpcmater = $e62_item");
     db_fieldsmemory($res1, 0);
     db_criatabela($res1);
 
     echo "matestoqueitem";
-    $res1 = pg_exec("select * from matestoqueitem where m71_codmatestoque = $m70_codigo");
+    $res1 = db_query("select * from matestoqueitem where m71_codmatestoque = $m70_codigo");
     db_fieldsmemory($res1, 0);
     db_criatabela($res1);
 
     echo "matestoqueunid";
-    $res1 = pg_exec("select * from matestoqueitemunid where m75_codmatestoqueitem = $m71_codlanc");
+    $res1 = db_query("select * from matestoqueitemunid where m75_codmatestoqueitem = $m71_codlanc");
     db_criatabela($res1);
 
     echo "matestoqueitemoc";
-    $res1 = pg_exec("select * from matestoqueitemoc where m73_codmatestoqueitem = $m71_codlanc");
+    $res1 = db_query("select * from matestoqueitemoc where m73_codmatestoqueitem = $m71_codlanc");
     db_fieldsmemory($res1, 0);
     db_criatabela($res1);
     
     echo "matestoqueitem";
-    $res1 = pg_exec("select * from matordemitem where m52_codlanc = $m73_codmatordemitem;");
+    $res1 = db_query("select * from matordemitem where m52_codlanc = $m73_codmatordemitem;");
     db_fieldsmemory($res1, 0);
     db_criatabela($res1);
     
     echo "matordem";
-    $res1 = pg_exec("select * from matordem where m51_codordem = $m52_codordem");
+    $res1 = db_query("select * from matordem where m51_codordem = $m52_codordem");
     db_criatabela($res1);
     
     echo "empnotaord";
-    $res1 = pg_exec("select * from empnotaord where m72_codordem = $m52_codordem and m72_codnota = $e69_codnota");
+    $res1 = db_query("select * from empnotaord where m72_codordem = $m52_codordem and m72_codnota = $e69_codnota");
     db_criatabela($res1);
 
     echo "matestoqueitemnota";
-    $res1 = pg_exec("select * from matestoqueitemnota where m74_codmatestoqueitem = $m71_codlanc");
+    $res1 = db_query("select * from matestoqueitemnota where m74_codmatestoqueitem = $m71_codlanc");
     db_fieldsmemory($res1, 0);
     db_criatabela($res1);
 
     echo "empnota";
-    $res1 = pg_exec("select * from empnota where e69_codnota = $e69_codnota");
+    $res1 = db_query("select * from empnota where e69_codnota = $e69_codnota");
     db_criatabela($res1);
     
     echo "matestoqueinimei";
-    $res1 = pg_exec("select * from matestoqueinimei where m82_matestoqueitem = $m71_codlanc");
+    $res1 = db_query("select * from matestoqueinimei where m82_matestoqueitem = $m71_codlanc");
     db_fieldsmemory($res1, 0);
     db_criatabela($res1);
     
     echo "matestoqueini";
-    $res1 = pg_exec("select * from matestoqueini where m80_codigo = $m82_matestoqueini");
+    $res1 = db_query("select * from matestoqueini where m80_codigo = $m82_matestoqueini");
     db_criatabela($res1);
   }
   exit;
 }
 // teste, pra ver se as transações não foram interrompidas durante a execução programática do script !
-// db_criatabela(pg_query("select  * from db_config"));
+// db_criatabela(db_query("select  * from db_config"));
 
 
 

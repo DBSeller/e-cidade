@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_processoforomov_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_processoforomov_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -93,7 +93,7 @@ $clprocessoforomov->rotulo->label("v73_sequencial");
 	        if (isset($campos) == false) {
 	        	
 	          if (file_exists("funcoes/db_func_processoforomov.php") == true) {
-	            include("funcoes/db_func_processoforomov.php");
+	            include(modification("funcoes/db_func_processoforomov.php"));
 	          } else {
 	            $campos = "processoforomov.*";
 	          }
@@ -157,4 +157,10 @@ if (!isset($pesquisa_chave)) {
 ?>
 <script>
   js_tabulacaoforms("form2","chave_v73_sequencial",true,1,"chave_v73_sequencial",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

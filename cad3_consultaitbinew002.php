@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_itbi_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_itbi_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -99,7 +99,7 @@ $clrotulo->label("j13_descr");
     $where .= " and itbimatric.it06_guia is null ";
   }
   if(isset($codrua) && $codrua != ""){
-    $where .= " and j14_codigo = $codrua ";
+    $where .= " and codpri = $codrua ";
   }
   
   $sql  = " select distinct on (it01_guia) 																			";
@@ -128,12 +128,7 @@ $clrotulo->label("j13_descr");
   $sql .= "        inner join itbitransacao on it04_codigo = it01_tipotransacao ";
   $sql .= "        left  join itbimatric    on it01_guia   = it06_guia 	        ";
   $sql .= "        left  join itbiavalia    on it14_guia   = it01_guia 	        ";
-  $sql .= "        inner join iptubase      on it06_matric = j01_matric	        ";
-  $sql .= "        inner join lote          on j34_idbql   = j01_idbql 	        ";
-	$sql .= "        left  join loteloc       on j06_idbql   = j01_idbql 					";
-  $sql .= "        left  join setorloc      on j05_codigo  = j06_setorloc				";
-  $sql .= "        inner join testpri       on j34_idbql   = j49_idbql 	        ";
-  $sql .= "        inner join ruas          on j14_codigo  = j49_codigo         ";
+  $sql .= "        inner join proprietario      on it06_matric = j01_matric	        ";
   $sql .= "    where 1=1 $where 																								";
   $sql .= " union all 																													";
   $sql .= "    select it01_guia, 		                                            ";
@@ -148,16 +143,11 @@ $clrotulo->label("j13_descr");
   $sql .= "        inner join itbitransacao on it04_codigo = it01_tipotransacao ";
   $sql .= "        left  join itbimatric    on it01_guia   = it06_guia 					";
   $sql .= "        left  join itbiavalia    on it14_guia   = it01_guia 					";
-  $sql .= "        left  join iptubase      on it06_matric = j01_matric 				";
-  $sql .= "        left  join lote          on j34_idbql   = j01_idbql 					";
-  $sql .= "        left  join loteloc       on j06_idbql   = j01_idbql 					";
-  $sql .= "        left  join setorloc      on j05_codigo  = j06_setorloc				";
-  $sql .= "        left  join testpri       on j34_idbql   = j49_idbql 					";
-  $sql .= "        left  join ruas          on j14_codigo  = j49_codigo 				";
+  $sql .= "        left  join proprietario      on it06_matric = j01_matric 		";
   $sql .= "    where it06_guia is null $where                                   ";
   $sql .= ") as x                                                               ";
   $sql .= "order by it01_guia desc                                              ";
-
+  
   $result = $clitbi->sql_record($sql);
   if($clitbi->numrows == 1){
 

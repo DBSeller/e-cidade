@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_conplanoexe_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcreceita_classe.php");
-include("classes/db_orcreceitaval_classe.php");
-include("classes/db_conlancam_classe.php");
-include("classes/db_conlancamrec_classe.php");
-include("classes/db_conlancamdoc_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_conlancamimp_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_conplanoexe_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcreceita_classe.php"));
+include(modification("classes/db_orcreceitaval_classe.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamrec_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_conlancamimp_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -192,7 +192,7 @@ function atuOrcreceitaval($codrec,$mes,$valor){
         return $msg;
      }
 }
-include("dbforms/Sajax.php");  // inclusão da biblioteda ajax
+include(modification("dbforms/Sajax.php"));  // inclusão da biblioteda ajax
 sajax_init();// Inicializar o sajax
 $sajax_debug_mode = 0;// para Debugar o sajax = 0 desligado 1 = ligado
 sajax_export("atuOrcreceitaval");// função exportada !
@@ -231,7 +231,7 @@ function mensagem(retorno){
     <td height="500" align="center" valign="top" bgcolor="#CCCCCC">     
     <center>
 	<?
-	include("forms/db_frmimplantareceita.php");
+	include(modification("forms/db_frmimplantareceita.php"));
 	?>
     </center>
 	</td>

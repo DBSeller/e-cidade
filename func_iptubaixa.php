@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptubaixa_classe.php");
-include("classes/db_setorloc_classe.php");
-include ("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptubaixa_classe.php"));
+include(modification("classes/db_setorloc_classe.php"));
+include(modification("libs/db_app.utils.php"));
 
 db_postmemory($_POST);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -118,25 +118,32 @@ $rsSetorLoc = $clsetorloc->sql_record($clsetorloc->sql_query_file(null, 'j05_cod
   </tr>
   <tr> 
     <td align="center" valign="top"> 
-      <?
+      <?php
+      $sql2 = '1 = 1';      
+
+      if (!empty($tipoImovel)) {
+        $sql2 .= " and j01_tipoimovel = {$tipoImovel} ";
+      } else {
+        $sql2 .= " and j01_tipoimovel = 1 ";
+      }
+
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_iptubaixa.php")==true){
-             include("funcoes/db_func_iptubaixa.php");
+             include(modification("funcoes/db_func_iptubaixa.php"));
            }else{
            $campos = "iptubaixa.*";
            }
         }
         if(isset($chave_j02_matric) && (trim($chave_j02_matric)!="") ){
-	         $sql = $cliptubaixa->sql_query_loteloc($chave_j02_matric,$campos,"j02_matric");
+          $sql2 .= " and j02_matric = $chave_j02_matric"; 
+          $sql = $cliptubaixa->sql_query_loteloc(null, $campos,"j02_matric", $sql2);
         }else if(isset($chave_j02_dtbaixa) && (trim($chave_j02_dtbaixa)!="") ){
-	         $sql = $cliptubaixa->sql_query_loteloc("",$campos,"j02_dtbaixa"," j02_dtbaixa like '$chave_j02_dtbaixa%' ");
+          $sql2 .= " and j02_dtbaixa like '$chave_j02_dtbaixa%' ";
+          $sql = $cliptubaixa->sql_query_loteloc("",$campos,"j02_dtbaixa",$sql2);
         }else if((isset($j05_codigoproprio) && ($j05_codigoproprio  != '' )) or 
                 (isset($j06_quadraloc)      && ($j06_quadraloc != ''))       or   
                 (isset($j06_lote)           && ($j06_lote != ''))){
-                  
-          $sql2 = '1 = 1';        
-                 	
           if(isset($j05_codigoproprio) && ($j05_codigoproprio != 'todos' )) {
           	$sql2 .= " and j05_codigoproprio = '$j05_codigoproprio' ";
           }
@@ -150,7 +157,12 @@ $rsSetorLoc = $clsetorloc->sql_record($clsetorloc->sql_query_file(null, 'j05_cod
           
         }
         else{
-           $sql = $cliptubaixa->sql_query_loteloc("",$campos,"j02_matric","");
+          if (!empty($tipoImovel)) {
+            $sql2 = " j01_tipoimovel = {$tipoImovel} ";
+          } else {
+            $sql2 = " j01_tipoimovel = 1 ";
+          }
+          $sql = $cliptubaixa->sql_query_loteloc("",$campos,"j02_matric", $sql2);
         }
         $repassa = array();
         if(isset($chave_j02_dtbaixa)){
@@ -236,7 +248,7 @@ function js_carregaQuadra(iCodSetor) {
 
 function js_retornaQuadra(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")"); 
+  var oRetorno = JSON.parse(oAjax.responseText); 
   var aQuadras = new Array(); 
   
   if(oRetorno.status == 1) {
@@ -271,7 +283,7 @@ function js_carregaLote(sQuadra) {
 
 function js_retornaLote(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   var aLotes   = new Array(); 
   aLotes['']   = 'Todos...';
   
@@ -289,4 +301,10 @@ function js_retornaLote(oAjax) {
 
 js_carregaQuadra($F('j05_codigoproprio'));
 
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

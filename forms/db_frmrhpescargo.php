@@ -58,7 +58,7 @@ db_input('rh20_cargo',5,$Irh20_cargo,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpescargo','func_rhpescargo.php?funcao_js=parent.js_preenchepesquisa|rh20_seqpes','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpescargo','func_rhpescargo.php?funcao_js=parent.js_preenchepesquisa|rh20_seqpes','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpescargo.hide();

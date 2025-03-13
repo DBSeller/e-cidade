@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_utils.php");
-include("libs/db_app.utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_app.utils.php"));
 
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -133,7 +133,7 @@ $sSql = " SELECT z01_numcgm,
 			
 
 $rsDados      = db_query($sSql); 
-$aListaDados  = db_utils::getColectionByRecord($rsDados);
+$aListaDados  = db_utils::getCollectionByRecord($rsDados);
 $aDados       = array();
 
 foreach ($aListaDados as $oIndiceDados => $oValorDados) {

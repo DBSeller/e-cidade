@@ -26,7 +26,7 @@
  */
 
 //MODULO: Laboratório
-include ("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir ( );
 $cllab_labsetor->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -53,9 +53,9 @@ db_input('la24_i_codigo',10,$Ila24_i_codigo,true,'text',3,"")
     if((isset($chavepesquisa) || isset($opcao) || isset($alterar)) && isset($la24_c_nomearq)){
      if($la24_o_assinatura!=0){
       $arquivo = "tmp/".$la24_c_nomearq;
-      pg_exec("begin");
+      db_query("begin");
       pg_loexport($la24_o_assinatura,$arquivo);
-      pg_exec("end");
+      db_query("end");
      }else{
       $arquivo = "imagens/semmarca.jpg";
      }

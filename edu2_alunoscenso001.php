@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $escola = db_getsession("DB_coddepto");
 if(!isset($ed52_i_ano)){
  $ano_censo = date("Y");
@@ -399,7 +399,7 @@ function fillSelectFromArray(selectCtrl, itemArray, goodPrompt, badPrompt, defau
     </tr>
     <tr>
      <td valign="top">
-      <input type="checkbox" name="campos" value="case when ed47_i_transpublico = 1 then 'SIM' else null end" onclick="VerificaTamanho(6);"> Transporte Escolar
+      <input type="checkbox" name="campos" value="case when ed47_i_transpublico = 1 then 'SIM' else null end as transporte" onclick="VerificaTamanho(6);"> Transporte Escolar
       <input type="hidden" name="largura" id="largura" value="5">
       <input type="hidden" name="cabecalho" value="T"><br>
      </td>
@@ -416,7 +416,7 @@ function fillSelectFromArray(selectCtrl, itemArray, goodPrompt, badPrompt, defau
     </tr>
     <tr>
      <td valign="top">
-      <input type="checkbox" name="campos" value="case when ed47_c_zona = 'RURAL' then 'R' else 'U' end" onclick="VerificaTamanho(7);"> Zona Localização
+      <input type="checkbox" name="campos" value="case when ed47_c_zona = 'RURAL' then 'R' else 'U' end as zona " onclick="VerificaTamanho(7);"> Zona Localização
       <input type="hidden" name="largura" id="largura" value="5">
       <input type="hidden" name="cabecalho" value="Z"><br>
      </td>
@@ -433,7 +433,7 @@ function fillSelectFromArray(selectCtrl, itemArray, goodPrompt, badPrompt, defau
     </tr>
     <tr>
      <td valign="top">
-      <input type="checkbox" name="campos" value="(select array(select ed214_i_necessidade from alunonecessidade where ed214_i_aluno = ed47_i_codigo))" onclick="VerificaTamanho(8);"> Necessidades Especiais
+      <input type="checkbox" name="campos" value="(select array_to_string( array(select ed214_i_necessidade from alunonecessidade where ed214_i_aluno = ed47_i_codigo), ',') ) as necessidade" onclick="VerificaTamanho(8);"> Necessidades Especiais
       <input type="hidden" name="largura" id="largura" value="10">
       <input type="hidden" name="cabecalho" value="NE"><br>
      </td>
@@ -484,7 +484,7 @@ function fillSelectFromArray(selectCtrl, itemArray, goodPrompt, badPrompt, defau
     </tr>
     <tr>
      <td valign="top">
-      <input type="checkbox" name="campos" value="substr(ed60_c_situacao,1,5)" onclick="VerificaTamanho(11);"> Situação
+      <input type="checkbox" name="campos" value="substr(ed60_c_situacao,1,5) as situacao" onclick="VerificaTamanho(11);"> Situação
       <input type="hidden" name="largura" id="largura" value="10">
       <input type="hidden" name="cabecalho" value="St"><br>
      </td>

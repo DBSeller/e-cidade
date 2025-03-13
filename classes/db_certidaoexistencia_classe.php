@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -55,10 +55,16 @@ class cl_certidaoexistencia {
    var $j133_observacao = null; 
    var $j133_processo = null; 
    var $j133_titulaprocesso = null; 
-   var $j133_dtProcesso_dia = null; 
-   var $j133_dtProcesso_mes = null; 
-   var $j133_dtProcesso_ano = null; 
-   var $j133_dtProcesso = null; 
+   var $j133_dtprocesso_dia = null; 
+   var $j133_dtprocesso_mes = null; 
+   var $j133_dtprocesso_ano = null; 
+   var $j133_dtprocesso = null;
+   var $j133_arealote = null;
+   var $j133_areareallote = null;
+   var $j133_areaconstruida = null;
+   var $j133_arearealconstruida = null;
+   var $j133_numhabite = null;
+   var $j133_dathabite = null;
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  j133_sequencial = int4 = Sequencial 
@@ -71,7 +77,13 @@ class cl_certidaoexistencia {
                  j133_observacao = varchar(255) = Observação 
                  j133_processo = varchar(100) = Número do processo 
                  j133_titulaprocesso = varchar(150) = Titular do Processo 
-                 j133_dtProcesso = date = Data do Processo 
+                 j133_dtprocesso = date = Data do Processo 
+                 j133_arealote = float = Tamanho da Área do Lote
+                 j133_areareallote = float = Tamanho da Área Real do Lote
+                 j133_areaconstruida = float = Tamanho da Área Construída do Lote
+                 j133_arearealconstruida = float = Tamanho da Área Real Construída do Lote
+                 j133_numhabite = varchar(20) = Número de Cadastro do Habite-se do Lote
+                 j133_dathabite = date = Data da Emissão do Habite-se
                  ";
    //funcao construtor da classe 
    function cl_certidaoexistencia() { 
@@ -107,13 +119,18 @@ class cl_certidaoexistencia {
        $this->j133_arquivo = ($this->j133_arquivo == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_arquivo"]:$this->j133_arquivo);
        $this->j133_observacao = ($this->j133_observacao == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_observacao"]:$this->j133_observacao);
        $this->j133_processo = ($this->j133_processo == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_processo"]:$this->j133_processo);
-       $this->j133_titulaprocesso = ($this->j133_titulaprocesso == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_titulaprocesso"]:$this->j133_titulaprocesso);
-       if($this->j133_dtProcesso == ""){
-         $this->j133_dtProcesso_dia = ($this->j133_dtProcesso_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_dtProcesso_dia"]:$this->j133_dtProcesso_dia);
-         $this->j133_dtProcesso_mes = ($this->j133_dtProcesso_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_dtProcesso_mes"]:$this->j133_dtProcesso_mes);
-         $this->j133_dtProcesso_ano = ($this->j133_dtProcesso_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_dtProcesso_ano"]:$this->j133_dtProcesso_ano);
-         if($this->j133_dtProcesso_dia != ""){
-            $this->j133_dtProcesso = $this->j133_dtProcesso_ano."-".$this->j133_dtProcesso_mes."-".$this->j133_dtProcesso_dia;
+       $this->j133_arealote = ($this->j133_arealote == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_arealote"]:$this->j133_arealote);
+       $this->j133_areareallote = ($this->j133_areareallote == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_areareallote"]:$this->j133_areareallote);
+       $this->j133_areaconstruida = ($this->j133_areaconstruida == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_areaconstruida"]:$this->j133_areaconstruida);
+       $this->j133_arearealconstruida = ($this->j133_arearealconstruida == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_arearealconstruida"]:$this->j133_arearealconstruida);
+       $this->j133_numhabite = ($this->j133_numhabite == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_numhabite"]:$this->j133_numhabite);
+       $this->j133_dathabite = ($this->j133_dathabite == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_dathabite"]:$this->j133_dathabite);
+       if($this->j133_dtprocesso == ""){
+         $this->j133_dtprocesso_dia = ($this->j133_dtprocesso_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_dtprocesso_dia"]:$this->j133_dtprocesso_dia);
+         $this->j133_dtprocesso_mes = ($this->j133_dtprocesso_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_dtprocesso_mes"]:$this->j133_dtprocesso_mes);
+         $this->j133_dtprocesso_ano = ($this->j133_dtprocesso_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["j133_dtprocesso_ano"]:$this->j133_dtprocesso_ano);
+         if($this->j133_dtprocesso_dia != ""){
+            $this->j133_dtprocesso = $this->j133_dtprocesso_ano."-".$this->j133_dtprocesso_mes."-".$this->j133_dtprocesso_dia;
          }
        }
      }else{
@@ -168,8 +185,26 @@ class cl_certidaoexistencia {
        $this->erro_status = "0";
        return false;
      }
-     if($this->j133_dtProcesso == null ){ 
-       $this->j133_dtProcesso = "null";
+     if($this->j133_dtprocesso == null ){ 
+       $this->j133_dtprocesso = "null";
+     }
+     if($this->j133_arealote == null ){ 
+       $this->j133_arealote = "null";
+     }
+     if($this->j133_areareallote == null ){ 
+       $this->j133_areareallote = "null";
+     }
+     if($this->j133_areaconstruida == null ){ 
+       $this->j133_areaconstruida = "null";
+     }
+     if($this->j133_arearealconstruida == null ){ 
+       $this->j133_arearealconstruida = "null";
+     }
+     if($this->j133_numhabite == null ){ 
+       $this->j133_numhabite = "";
+     }
+     if($this->j133_dathabite == null || $this->j133_dathabite == "--"){ 
+       $this->j133_dathabite = "null";
      }
      if($j133_sequencial == "" || $j133_sequencial == null ){
        $result = db_query("select nextval('certidaoexistencia_j133_sequencial_seq')"); 
@@ -214,7 +249,13 @@ class cl_certidaoexistencia {
                                       ,j133_observacao 
                                       ,j133_processo 
                                       ,j133_titulaprocesso 
-                                      ,j133_dtProcesso 
+                                      ,j133_dtprocesso
+                                      ,j133_arealote
+                                      ,j133_areareallote
+                                      ,j133_areaconstruida
+                                      ,j133_arearealconstruida 
+                                      ,j133_numhabite
+                                      ,j133_dathabite 
                        )
                 values (
                                 $this->j133_sequencial 
@@ -227,8 +268,14 @@ class cl_certidaoexistencia {
                                ,'$this->j133_observacao' 
                                ,'$this->j133_processo' 
                                ,'$this->j133_titulaprocesso' 
-                               ,".($this->j133_dtProcesso == "null" || $this->j133_dtProcesso == ""?"null":"'".$this->j133_dtProcesso."'")." 
-                      )";
+                               ,".($this->j133_dtprocesso == "null" || $this->j133_dtprocesso == ""?"null":"'".$this->j133_dtprocesso."'")."
+                               ,$this->j133_arealote
+                               ,$this->j133_areareallote
+                               ,$this->j133_areaconstruida
+                               ,$this->j133_arearealconstruida 
+                               ,'$this->j133_numhabite'
+                               ,".($this->j133_dathabite == "null" || $this->j133_dathabite == "" ?"null":"'".$this->j133_dathabite."'")."
+                        )";
      //echo $sql;
      $result = db_query($sql); 
      if($result==false){ 
@@ -270,7 +317,7 @@ class cl_certidaoexistencia {
        $resac = db_query("insert into db_acount values($acount,3341,18852,'','".AddSlashes(pg_result($resaco,0,'j133_observacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,3341,18853,'','".AddSlashes(pg_result($resaco,0,'j133_processo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,3341,18854,'','".AddSlashes(pg_result($resaco,0,'j133_titulaprocesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,3341,18855,'','".AddSlashes(pg_result($resaco,0,'j133_dtProcesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3341,18855,'','".AddSlashes(pg_result($resaco,0,'j133_dtprocesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -387,12 +434,12 @@ class cl_certidaoexistencia {
        $sql  .= $virgula." j133_titulaprocesso = '$this->j133_titulaprocesso' ";
        $virgula = ",";
      }
-     if(trim($this->j133_dtProcesso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j133_dtProcesso_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["j133_dtProcesso_dia"] !="") ){ 
-       $sql  .= $virgula." j133_dtProcesso = '$this->j133_dtProcesso' ";
+     if(trim($this->j133_dtprocesso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j133_dtprocesso_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["j133_dtprocesso_dia"] !="") ){ 
+       $sql  .= $virgula." j133_dtprocesso = '$this->j133_dtprocesso' ";
        $virgula = ",";
      }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["j133_dtProcesso_dia"])){ 
-         $sql  .= $virgula." j133_dtProcesso = null ";
+       if(isset($GLOBALS["HTTP_POST_VARS"]["j133_dtprocesso_dia"])){ 
+         $sql  .= $virgula." j133_dtprocesso = null ";
          $virgula = ",";
        }
      }
@@ -427,8 +474,8 @@ class cl_certidaoexistencia {
            $resac = db_query("insert into db_acount values($acount,3341,18853,'".AddSlashes(pg_result($resaco,$conresaco,'j133_processo'))."','$this->j133_processo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["j133_titulaprocesso"]) || $this->j133_titulaprocesso != "")
            $resac = db_query("insert into db_acount values($acount,3341,18854,'".AddSlashes(pg_result($resaco,$conresaco,'j133_titulaprocesso'))."','$this->j133_titulaprocesso',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j133_dtProcesso"]) || $this->j133_dtProcesso != "")
-           $resac = db_query("insert into db_acount values($acount,3341,18855,'".AddSlashes(pg_result($resaco,$conresaco,'j133_dtProcesso'))."','$this->j133_dtProcesso',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["j133_dtprocesso"]) || $this->j133_dtprocesso != "")
+           $resac = db_query("insert into db_acount values($acount,3341,18855,'".AddSlashes(pg_result($resaco,$conresaco,'j133_dtprocesso'))."','$this->j133_dtprocesso',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      //echo $sql;
@@ -487,7 +534,7 @@ class cl_certidaoexistencia {
          $resac = db_query("insert into db_acount values($acount,3341,18852,'','".AddSlashes(pg_result($resaco,$iresaco,'j133_observacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3341,18853,'','".AddSlashes(pg_result($resaco,$iresaco,'j133_processo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3341,18854,'','".AddSlashes(pg_result($resaco,$iresaco,'j133_titulaprocesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,3341,18855,'','".AddSlashes(pg_result($resaco,$iresaco,'j133_dtProcesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3341,18855,'','".AddSlashes(pg_result($resaco,$iresaco,'j133_dtprocesso'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from certidaoexistencia
@@ -640,24 +687,23 @@ class cl_certidaoexistencia {
    function sql_queryDadosCertidao( $iCodigoCertidao, $sCampos = "*", $sWhere = "" ) {
   
    
-     $sql  = "select $sCampos  from certidaoexistencia ";
-     $sql .= "       left join certidaoexistenciaprotprocesso on cast(certidaoexistenciaprotprocesso.j134_protprocesso as varchar) = certidaoexistencia.j133_processo ";
+     $sql  = " SELECT $sCampos  FROM certidaoexistencia ";
+     $sql .= " LEFT JOIN certidaoexistenciaprotprocesso ON certidaoexistencia.j133_sequencial = certidaoexistenciaprotprocesso.j134_certidaoexistencia ";
      $sql2 = "";
      
      if ($sWhere == "") {
-     	
+      
        if ($iCodigoCertidao != null ) {
-         $sql2 .= " where certidaoexistencia.j133_sequencial = $iCodigoCertidao "; 
+         $sql2 .= " WHERE certidaoexistencia.j133_sequencial = $iCodigoCertidao "; 
        } 
        
      } else if ($sWhere != "") {
-       $sql2 = " where $sWhere";
+       $sql2 = " WHERE $sWhere";
      }
      $sql .= $sql2;
-     
+
      return $sql;
-  	 
+     
    }
 
 }
-?>

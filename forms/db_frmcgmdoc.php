@@ -114,7 +114,7 @@ $clrotulo->label("z01_nome");
           </td>
           <td>
            <?
-           $x = array('1'=>'NÃO SABE LER / ESCREVER','10'=>'MESTRADO','11'=>'DOUTORADO','2'=>'ALFABETIZADO','3'=>'1° GRAU INCOMPLETO','4'=>'1° GRAU COMPLETO','5'=>'2° GRAU INCOMPLETO','6'=>'2° GRAU COMPLETO','7'=>'SUPERIOR INCOMPLETO','8'=>'SUPERIOR COMPLETO','9'=>'ESPECIALIZAÇÃO / RESIDÊNCIA');
+           $x = array('' => 'Selecione...', '1'=>'NÃO SABE LER / ESCREVER','10'=>'MESTRADO','11'=>'DOUTORADO','2'=>'ALFABETIZADO','3'=>'1° GRAU INCOMPLETO','4'=>'1° GRAU COMPLETO','5'=>'2° GRAU INCOMPLETO','6'=>'2° GRAU COMPLETO','7'=>'SUPERIOR INCOMPLETO','8'=>'SUPERIOR COMPLETO','9'=>'ESPECIALIZAÇÃO / RESIDÊNCIA');
            db_select('z02_i_escolaridade',$x,true,$db_opcao,"");
            ?>
           </td>
@@ -335,6 +335,23 @@ $clrotulo->label("z01_nome");
  </tr>
 </table>
 <br>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
+<input onclick="return validaForm();" name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
 </center>
 </form>
+
+<script>
+    const cns = document.getElementById('z02_i_cns');
+    const escolaridade = document.getElementById('z02_i_escolaridade');
+    const validaForm = function() {
+        if (!cns.value.validaCNS()) {
+            alert('CNS inválido.');
+            return false;
+        }
+        if (escolaridade.value == '') {
+          alert('Informe a Escolaridade!');
+          return false;
+        }
+        
+        return true;
+    };
+</script>

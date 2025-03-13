@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -27,15 +27,15 @@
 
 set_time_limit(0);
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("model/cadastro/Lote.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("model/cadastro/Lote.model.php"));
 
 $oJson              = new services_json();
 
@@ -653,7 +653,7 @@ function layout2($aGeodados, $aCaracteristicasDisponiveis, $sNomeArquivo, $sZipT
           $oGeodadosLayout2->construcao_area        = '';
           $oGeodadosLayout2->valor_venal_construcao = '';
           $oGeodadosLayout2->valor_iptu_construcao  = '';
-          
+
           $oGeodadosLayout2->codigo_construcao      = $oConstrucao->getCodigoConstrucao();
           $oGeodadosLayout2->construcao_numero      = $oConstrucao->getNumeroEndereco();
           $oGeodadosLayout2->construcao_complemento = $oConstrucao->getComplementoEndereco();
@@ -994,19 +994,19 @@ function geraLinhaArquivo($pArquivo, $oLinhaArquivo, $sSeparador = ';', $lCabeca
   $oLinha->endereco_entrega_caixapostal   =  trim($oLinhaArquivo->endereco_entrega_caixapostal  );
 
   if ($oLinha->valor_testada_lote     and $lCabecalho == false) {
-    $oLinha->valor_testada_lote     = db_formatar($oLinha->valor_testada_lote, 'fff');
+    $oLinha->valor_testada_lote     = round($oLinha->valor_testada_lote, 2);
   }
   if ($oLinha->valor_venal_terreno    and $lCabecalho == false) {
-    $oLinha->valor_venal_terreno    = db_formatar($oLinha->valor_venal_terreno, 'fff');
+    $oLinha->valor_venal_terreno    = round($oLinha->valor_venal_terreno, 2);
   }
   if ($oLinha->valor_venal_construcao and $lCabecalho == false) {
-    $oLinha->valor_venal_construcao = db_formatar($oLinha->valor_venal_construcao, 'fff');
+    $oLinha->valor_venal_construcao = round($oLinha->valor_venal_construcao,2);
   }
   if ($oLinha->valor_iptu_terreno     and $lCabecalho == false) {
-    $oLinha->valor_iptu_terreno     = db_formatar($oLinha->valor_iptu_terreno, 'fff');
+    $oLinha->valor_iptu_terreno     = round($oLinha->valor_iptu_terreno,2);
   }
   if ($oLinha->valor_iptu_construcao  and $lCabecalho == false) {
-    $oLinha->valor_iptu_construcao  = db_formatar($oLinha->valor_iptu_construcao, 'fff');
+    $oLinha->valor_iptu_construcao  = round($oLinha->valor_iptu_construcao,2);
   }
 
   if(isset($oLinhaArquivo->iQdteCaracteristicasFace)) {

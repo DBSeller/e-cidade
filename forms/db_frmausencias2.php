@@ -26,7 +26,7 @@
  */
 
 //MODULO: saude
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clausencias->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -163,7 +163,7 @@ function js_mostraunidademedicos1(chave1,chave2){
   db_iframe_unidademedicos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_undmedhorario','func_undmedhorario.php?funcao_js=parent.js_preenchepesquisa|sd30_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_undmedhorario','func_undmedhorario.php?funcao_js=parent.js_preenchepesquisa|sd30_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_undmedhorario.hide();

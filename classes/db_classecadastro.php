@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 class cl_sqlmatriculas {
@@ -150,9 +150,9 @@ class cl_ruas {
      echo "<script>location.href=\"db_erros.php?db_erro=";
 	 echo $this->$db_erro;
 	 echo "&acao=$uri\"</script>";
-  } 
+  }
   function dadosCodigo($filtro = "") {
-    $result = pg_exec("select * from ruas ".($filtro != ""?"where j14_codigo = $filtro":"")." order by j14_codigo");
+    $result = db_query("select * from ruas ".($filtro != ""?"where j14_codigo = $filtro":"")." order by j14_codigo");
     if(pg_numrows($result) > 0)
 	  return $result;
 	else
@@ -166,7 +166,7 @@ class cl_ruas {
     return "select j14_codigo, j14_nome, j14_tipo from ruas where j14_nome like '$filtro%' order by j14_nome";
   }
   function dadosNome($filtro = "") {
-    $result = pg_exec("select * from ruas ".($filtro != ""?"where j14_nome like '$filtro%'":"")." order by j14_nome");
+    $result = db_query("select * from ruas ".($filtro != ""?"where j14_nome like '$filtro%'":"")." order by j14_nome");
     if(pg_numrows($result) > 0)
 	  return $result;
 	else
@@ -182,7 +182,7 @@ class cl_ruas {
 	   $this->$db_erro = 'Descrição da Rua/Avenida deverá ser preenchida.';
 	   return false;
 	}
-    $result = @pg_exec("insert into ruas(j14_codigo,j14_nome,j14_tipo) values($codigo,'$nome','$tipo')");
+    $result = @db_query("insert into ruas(j14_codigo,j14_nome,j14_tipo) values($codigo,'$nome','$tipo')");
     if($result == false){
 	   $this->$db_erro = 'Contate Administrador.';
     }
@@ -198,7 +198,7 @@ class cl_ruas {
 	   $this->$db_erro = 'Código da Rua/Avenida Inválido';
 	   return false;
 	}
-    $result = @pg_exec("update ruas set j14_nome = '$nome',
+    $result = @db_query("update ruas set j14_nome = '$nome',
 	                                   j14_tipo = '$tipo'
 							 where j14_codigo = $codigo");
 	if(@pg_cmdtuples($result) > 0)
@@ -213,7 +213,7 @@ class cl_ruas {
 	   $this->$db_erro = 'Código do Logradouro Inválido';
 	   return false;
 	}
-    $result = @pg_exec("delete from ruas where j14_codigo = $codigo");
+    $result = @db_query("delete from ruas where j14_codigo = $codigo");
 	if(@pg_cmdtuples($result) > 0)
 	  return true;
 	else{
@@ -228,21 +228,21 @@ class cl_bairro {
     $this->rotulo = new rotulo("bairro");
   }
   function dadosCodigo($filtro = "") {
-    $result = pg_exec("select * from bairro ".($filtro != ""?"where j13_codi = $filtro":"")." order by j13_codi");
+    $result = db_query("select * from bairro ".($filtro != ""?"where j13_codi = $filtro":"")." order by j13_codi");
     if(pg_numrows($result) > 0)
 	  return $result;
 	else
 	  return false;
   }
   function dadosNome($filtro = "") {
-    $result = pg_exec("select * from bairro ".($filtro != ""?"where j13_descr like '$filtro%'":"")." order by j13_descr ");
+    $result = db_query("select * from bairro ".($filtro != ""?"where j13_descr like '$filtro%'":"")." order by j13_descr ");
     if(pg_numrows($result) > 0)
 	  return $result;
 	else
 	  return false;
   }
   function sqldadosNome($filtro = "") {
-    return "select j13_codi,  j13_descr, j13_codant from bairro where j13_descr like '$filtro%' order by j13_descr ";
+    return "select j13_codi,  j13_descr, j13_codant from bairro where j13_descr ilike '%$filtro%' order by j13_descr ";
   }
   function sqldadosCodigo($filtro = "") {
     return "select j13_codi,  j13_descr, j13_codant from bairro where j13_codi = $filtro order by j13_codi";
@@ -250,7 +250,7 @@ class cl_bairro {
   function incluir($codigo,$nome,$codant) {
     if($codigo=="")
 	   return false;
-    $result = pg_exec("insert into bairro(j13_codi,j13_descr,j13_codant) values($codigo,'$descr','$codant')");
+    $result = db_query("insert into bairro(j13_codi,j13_descr,j13_codant) values($codigo,'$descr','$codant')");
 	if(pg_cmdtuples($result) > 0)
 	  return true;
 	else
@@ -259,7 +259,7 @@ class cl_bairro {
   function alterar($codigo,$descr,$codant) {
     if($codigo=="")
 	   return false;
-    $result = pg_exec("update bairro set j13_descr = '$descr',
+    $result = db_query("update bairro set j13_descr = '$descr',
 	                                     j13_coant = '$coant'
 							 where j13_codi = $codigo");
 	if(pg_cmdtuples($result) > 0)
@@ -270,7 +270,7 @@ class cl_bairro {
   function excluir($codigo) {
     if($codigo=="")
 	   return false;
-    $result = pg_exec("delete from bairro where j13_codi = $codigo");
+    $result = db_query("delete from bairro where j13_codi = $codigo");
 	if(pg_cmdtuples($result) > 0)
 	  return true;
 	else
@@ -283,14 +283,14 @@ class cl_setor {
     $this->rotulo = new rotulo("setor");
   }
   function dadosCodigo($filtro = "") {
-    $result = pg_exec("select * from setor ".($filtro != ""?"where j30_codi = $filtro":"")." order by j30_codi");
+    $result = db_query("select * from setor ".($filtro != ""?"where j30_codi = $filtro":"")." order by j30_codi");
     if(pg_numrows($result) > 0)
 	  return $result;
 	else
 	  return false;
   }
   function dadosNome($filtro = "") {
-    $result = pg_exec("select * from setor ".($filtro != ""?"where j30_descr like '$filtro%'":"")." order by j30_descr ");
+    $result = db_query("select * from setor ".($filtro != ""?"where j30_descr like '$filtro%'":"")." order by j30_descr ");
     if(pg_numrows($result) > 0)
 	  return $result;
 	else
@@ -299,7 +299,7 @@ class cl_setor {
   function incluir($codigo,$descr,$alipre = 0,$aliter = 0) {
     if($codigo=="")
 	   return false;
-    $result = pg_exec("insert into setor(j30_codi,j30_descr,j30_alipre,j30_aliter) values($codigo,'$descr',$alipre,$aliter)");
+    $result = db_query("insert into setor(j30_codi,j30_descr,j30_alipre,j30_aliter) values($codigo,'$descr',$alipre,$aliter)");
 	if(pg_cmdtuples($result) > 0)
 	  return true;
 	else
@@ -308,7 +308,7 @@ class cl_setor {
   function alterar($codigo,$descr,$alipre = 0,$aliter = 0) {
     if($codigo=="")
 	   return false;
-    $result = pg_exec("update setor set j30_descr = '$descr',
+    $result = db_query("update setor set j30_descr = '$descr',
 	                                    j30_alipre = $alipre,
 										j30_aliter = $aliter
 							 where j30_codi = $codigo");
@@ -320,7 +320,7 @@ class cl_setor {
   function excluir($codigo) {
     if($codigo=="")
 	   return false;
-    $result = pg_exec("delete from setor where j30_codi = $codigo");
+    $result = db_query("delete from setor where j30_codi = $codigo");
 	if(pg_cmdtuples($result) > 0)
 	  return true;
 	else

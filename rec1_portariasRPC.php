@@ -1,33 +1,7 @@
-<?
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -51,19 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
-require("libs/db_utils.php");
-include("classes/db_rhparam_classe.php");
-include("classes/db_portaria_classe.php");
-include("classes/db_portariaassenta_classe.php");
-include("classes/db_portariatipodoccoletiva_classe.php");
-include("classes/db_portariatipodocindividual_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_utils.php"));
 
 $oPost  = db_utils::postMemory($_POST);
 $oJson  = new services_json();
@@ -90,8 +58,14 @@ if ($oPost->sAcao == "consultaPortarias") {
   }
 
   $sWhere .= " and h31_anousu = {$iAnoUsu} ";
+  $sWhereVerificaLotacao = " and h16_regist in (select distinct rh02_regist from rhpessoalmov
+                                                 where rh02_anousu = ".DBPessoal::getAnoFolha()."
+                                                   and rh02_mesusu = ".DBPessoal::getMesFolha()."
+                                                   and rh02_lota in (select rh157_lotacao
+                                                                       from db_usuariosrhlota
+                                                                      where rh157_usuario = ".db_getsession("DB_id_usuario")."))";
 
-  $rsConsultaPortarias = $clportaria->sql_record($clportaria->sql_query(null,"*",null,$sWhere));
+  $rsConsultaPortarias = $clportaria->sql_record($clportaria->sql_query_assentamento_funcional(null,"*",null,$sWhere, $sWhereVerificaLotacao, 2));
   $iNroLinhasPort 	   = $clportaria->numrows;
 
   if ( $iNroLinhasPort > 0 ) {
@@ -128,7 +102,7 @@ if ($oPost->sAcao == "consultaPortarias") {
   	}
 
 
-	$rsConsultaTipo = $clportaria->sql_record($clportaria->sql_query(null,"h31_portariatipo",null,$sWhere));
+	$rsConsultaTipo = $clportaria->sql_record($clportaria->sql_query_assentamento_funcional(null,"h31_portariatipo",null,$sWhere, $sWhereVerificaLotacao, 2));
 	$iNroLinhasTipo = $clportaria->numrows;
 
 

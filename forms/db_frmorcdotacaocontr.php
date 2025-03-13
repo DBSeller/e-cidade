@@ -26,7 +26,7 @@
  */
 
 //MODULO: orcamento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clorcdotacaocontr->rotulo->label();
 $clrotulo = new rotulocampo();
@@ -103,9 +103,9 @@ $clrotulo->label("o58_orgao");
 <script>
 function js_pesquisao61_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_orcdotacaocontr','db_iframe_orctiporec','func_orctiporec.php?sFiltroTipo=2&funcao_js=parent.js_mostraorctiporec1|o15_codigo|o15_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcdotacaocontr','db_iframe_orctiporec','func_orctiporec.php?sFiltroTipo=2&funcao_js=parent.js_mostraorctiporec1|o15_codigo|o15_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_orcdotacaocontr','db_iframe_orctiporec','func_orctiporec.php?sFiltroTipo=2&pesquisa_chave='+$('o61_codigo').value+'&funcao_js=parent.js_mostraorctiporec','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcdotacaocontr','db_iframe_orctiporec','func_orctiporec.php?sFiltroTipo=2&pesquisa_chave='+$('o61_codigo').value+'&funcao_js=parent.js_mostraorctiporec','Pesquisa',false);
   }
 }
 function js_mostraorctiporec(chave,erro){
@@ -124,7 +124,7 @@ function js_mostraorctiporec1(chave1,chave2){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_orcdotacaocontr','db_iframe_orcdotacaocontr','func_orcdotacaocontr.php?funcao_js=parent.js_preenchepesquisa|o61_anousu|o61_coddot','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcdotacaocontr','db_iframe_orcdotacaocontr','func_orcdotacaocontr.php?funcao_js=parent.js_preenchepesquisa|o61_anousu|o61_coddot','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_orcdotacaocontr.hide();

@@ -68,7 +68,7 @@ db_input('sd11_f_orcamento',6,$Isd11_f_orcamento,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_grupoproc','func_grupoproc.php?funcao_js=parent.js_preenchepesquisa|sd11_c_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_grupoproc','func_grupoproc.php?funcao_js=parent.js_preenchepesquisa|sd11_c_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_grupoproc.hide();

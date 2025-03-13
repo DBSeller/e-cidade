@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,11 +26,11 @@
  */
 
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_db_depusu_classe.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_db_usuarios_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_db_depusu_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
 
 
 $cldepusu = new cl_db_depusu;
@@ -229,7 +229,7 @@ if (isset($depto)) {
 
 if (empty($id_usuario) and empty($depto)) {
   
-  $result2 = $cldepart->sql_record($cldepart->sql_query("","distinct *","",$dbwhere));
+  $result2 = $cldepart->sql_record($cldepusu->sql_query("","","distinct *",$order_by,$dbwhere));
   
   if ($cldepart->numrows == 0) {
     db_redireciona('db_erros.php?fechar=true&db_erro=Não foram encontrados registros para esse(s) filtro(s).');

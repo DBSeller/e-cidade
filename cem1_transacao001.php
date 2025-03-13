@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_sepulturas_classe.php");
-require_once("classes/db_ossoario_classe.php");
-require_once("classes/db_ossoariopart_classe.php");
-require_once("classes/db_restos_classe.php");
-require_once("classes/db_retiradas_classe.php");
-require_once("classes/db_gavetas_classe.php");
-require_once("classes/db_jazigos_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_sepulturas_classe.php"));
+require_once(modification("classes/db_ossoario_classe.php"));
+require_once(modification("classes/db_ossoariopart_classe.php"));
+require_once(modification("classes/db_restos_classe.php"));
+require_once(modification("classes/db_retiradas_classe.php"));
+require_once(modification("classes/db_gavetas_classe.php"));
+require_once(modification("classes/db_jazigos_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -60,7 +60,7 @@ $antigo = "X";
 </head>
 <body class="body-default">
    <?php
-    include("forms/db_frmtransacoes.php");
+    include(modification("forms/db_frmtransacoes.php"));
    ?>
 </body>
 </html>

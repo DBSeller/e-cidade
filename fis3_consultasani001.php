@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_sanitario_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_sanitario_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -141,14 +141,14 @@ function js_limpacampos(){
   document.form1.a_ano.value       = '';
 }
 function js_consultasani(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_consultasani','fis3_consultasani002.php?y80_codsani='+document.form1.y80_codsani.value+'&y80_numcgm='+document.form1.y80_numcgm.value+'&ativ='+document.form1.ativ.value+'&dataini='+document.form1._ano.value+'-'+document.form1._mes.value+'-'+document.form1._dia.value+'&datafim='+document.form1.a_ano.value+'-'+document.form1.a_mes.value+'-'+document.form1.a_dia.value+'&funcao_js=parent.js_abreconsulta|y80_codsani','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consultasani','fis3_consultasani002.php?y80_codsani='+document.form1.y80_codsani.value+'&y80_numcgm='+document.form1.y80_numcgm.value+'&ativ='+document.form1.ativ.value+'&dataini='+document.form1._ano.value+'-'+document.form1._mes.value+'-'+document.form1._dia.value+'&datafim='+document.form1.a_ano.value+'-'+document.form1.a_mes.value+'-'+document.form1.a_dia.value+'&funcao_js=parent.js_abreconsulta|y80_codsani','Pesquisa',true);
 }
 function js_pesquisay80_numcgm(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.y80_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.y80_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
   }
 }
 function js_mostracgm(erro,chave){
@@ -168,10 +168,10 @@ function js_mostracgm1(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sanitario','func_sanitario.php?lMostarTodos=true&funcao_js=parent.js_preenchepesquisa|y80_codsani','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sanitario','func_sanitario.php?lMostarTodos=true&funcao_js=parent.js_preenchepesquisa|y80_codsani','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
-  js_OpenJanelaIframe('top.corpo','db_iframe_consulta','fis3_consultasani002.php?y80_codsani='+chave,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consulta','fis3_consultasani002.php?y80_codsani='+chave,'Pesquisa',true);
 }
 function js_pesquisay83_ativ(mostra){
 
@@ -197,6 +197,6 @@ function js_mostraativid1(chave1,chave2){
   db_iframe_ativid.hide();
 }
 function js_abreconsulta(chave){
-  js_OpenJanelaIframe('top.corpo','db_iframe_consulta','fis3_consultasani002.php?y80_codsani='+chave,'Pesquisa',true,25);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consulta','fis3_consultasani002.php?y80_codsani='+chave,'Pesquisa',true,25);
 }
 </script>

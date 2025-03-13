@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -443,7 +443,7 @@ class cl_empempenholiberado {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $e22_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $e22_sequencial=null,$campos="*",$ordem=null,$dbwhere="", $flagDesdobramento=false){ 
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -465,6 +465,15 @@ class cl_empempenholiberado {
      $sql .= "      inner join emptipo  on  emptipo.e41_codtipo = empempenho.e60_codtipo";
      $sql .= "      inner join concarpeculiar  on  concarpeculiar.c58_sequencial = empempenho.e60_concarpeculiar";
      $sql .= "      inner join empelemento  on  e64_numemp = e60_numemp ";
+     
+     if ($flagDesdobramento) {
+      $sql .= "      left join desdobramentosliberadosordemcompra on pc33_codele = e64_codele";
+      $sql .= "      left join orcelemento 
+                        on orcelemento.o56_codele = empelemento.e64_codele
+                          and orcelemento.o56_anousu = empempenho.e60_anousu
+        ";
+     }
+     
      $sql2 = "";
      if($dbwhere==""){
        if($e22_sequencial!=null ){

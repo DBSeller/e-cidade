@@ -28,15 +28,15 @@
 
 if (!isset($arqinclude)){ // se este arquivo no esta incluido por outro
   
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_liborcamento.php");
-  include("libs/db_libtxt.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("classes/db_conrelinfo_classe.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("libs/db_libtxt.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
   
   $classinatura = new cl_assinatura;
   $orcparamrel = new cl_orcparamrel;
@@ -140,7 +140,7 @@ $somador_IX_bim      = 0;
 $db_selinstit_sem_rpps = "";
 
 $xinstit    = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,munic,db21_tipoinstit from db_config where codigo in (".str_replace('-',', ',$db_selinstit).")");
+$resultinst = db_query("select codigo,munic,db21_tipoinstit from db_config where codigo in (".str_replace('-',', ',$db_selinstit).")");
 $descr_inst = '';
 $xvirgi     = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -182,11 +182,11 @@ $where = " c61_instit in (".str_replace('-',', ',$db_selinstit_sem_rpps).")  ";
 //echo (db_getsession("DB_anousu").$dt_ini.$dt_fin.$where);exit;
 
 $result_peranterior = db_planocontassaldo_matriz(db_getsession("DB_anousu"),$dt_ini_ant,$dt_fin_ant,false,$where);
-@pg_query("Drop table Work_pl");
+@db_query("Drop table Work_pl");
 
 
 $result = db_planocontassaldo_matriz(db_getsession("DB_anousu"),$dt_ini,$dt_fin,false,$where);
-@pg_query("Drop table Work_pl");
+@db_query("Drop table Work_pl");
 //////////////////////////
 
 if (!isset($arqinclude)){ // se este arquivo no esta incluido por outro
@@ -547,7 +547,7 @@ if (!isset($arqinclude)){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // seleciona instituio do RPPS
 $sql    = "select codigo  from db_config where db21_tipoinstit in (5,6) ";
-$resultinst = pg_exec($sql);
+$resultinst = db_query($sql);
 $instit ='0';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -557,11 +557,11 @@ for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
 }
 $where = " c61_instit in (".$instit.") "; 
 $result_peranterior = db_planocontassaldo_matriz(db_getsession("DB_anousu"),$dt_ini_ant,$dt_fin_ant,false,$where);
-@pg_query("drop table work_pl");
+@db_query("drop table work_pl");
 
 
 $result = db_planocontassaldo_matriz(db_getsession("DB_anousu"),$dt_ini,$dt_fin,false,$where);
-@pg_query("drop table work_pl");
+@db_query("drop table work_pl");
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //echo "Depois RPPS"; exit;

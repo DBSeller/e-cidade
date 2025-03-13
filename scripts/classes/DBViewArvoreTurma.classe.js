@@ -189,7 +189,7 @@ DBViewArvoreTurma.prototype.show = function(oContainer) {
 DBViewArvoreTurma.prototype.retornoDadosArvore = function(oAjax) {
   
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   this.oTreeViewAvaliacao.addNode("0", "Escola");
   

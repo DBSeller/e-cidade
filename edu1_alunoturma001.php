@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,21 +25,22 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_matricula_classe.php");
-require_once("classes/db_edu_parametros_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("model/educacao/DBEducacaoTermo.model.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_matricula_classe.php"));
+require_once(modification("classes/db_edu_parametros_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/educacao/DBEducacaoTermo.model.php"));
 
 $trocaTurma  = 1;
 
 db_postmemory($_GET);
 db_postmemory($_POST);
+
 $clmatricula      = new cl_matricula;
 $cledu_parametros = new cl_edu_parametros;
 $escola           = db_getsession("DB_coddepto");
@@ -171,12 +172,11 @@ if (isset($classificar)) {
     <td>
      <form name="form1" id='form1' method="POST">
       <input name="classificar" type="submit" value="Classificar Turma" <?=$clmatricula->numrows == 0?" disabled":""?>
-             onClick="location.href = 'edu1_alunoturma002.php?ed60_i_turma=<?=$ed60_i_turma?>&ed57_c_descr=<?=$ed57_c_descr?>
-                      &ed52_c_descr=<?=$ed52_c_descr?>'" >
+             onClick="location.href = 'edu1_alunoturma002.php?ed60_i_turma=<?=$ed60_i_turma?>&ed57_c_descr=<?=$ed57_c_descr?>&ed52_c_descr=<?=$ed52_c_descr?>'" >
       <input name="ed60_i_turma" type="hidden" value="<?=$ed60_i_turma?>">
       <input name="ed52_c_descr" type="hidden" value="<?=$ed52_c_descr?>">
       <input name="ed57_c_descr" type="hidden" value="<?=$ed57_c_descr?>">
-      <label><strong>Exibir Trocas de Turma:</strong></label>
+      <label for="trocaTurma"><strong>Exibir Trocas de Turma:</strong></label>
       <?=db_select('trocaTurma', array(1 => "Não", 2 => "Sim"), true, 1); ?>
     </td>
      </form>
@@ -197,7 +197,7 @@ if (isset($classificar)) {
        <td align='center'><strong>Turno</strong></td>
        <td align='center'><strong>Etapa</strong></td>
       </tr>
-      <?
+      <?php
       if ($clmatricula->numrows > 0) {
 
         $cor1 = "#DBDBDB";
@@ -294,8 +294,7 @@ if (isset($classificar)) {
           <td class='aluno'>NENHUM ALUNO MATRICULADO.</td>
          </tr>
         </table>
-        <?
-
+        <?php
       }
       ?>
      </table>

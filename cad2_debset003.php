@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_setor_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_sanitario_classe.php");
-require_once('libs/db_utils.php');
-require_once("libs/db_libpostgres.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_setor_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_sanitario_classe.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_libpostgres.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);

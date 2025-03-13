@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -191,7 +191,7 @@ abstract class DescontoConsignado {
     }
 
     LogCalculoFolha::write("Recalculando insuficiência de Saldo(R928).");
-    calcula_r928($iMatriculaServidor, $sLotacao, $iTipoFolha);
+//    calcula_r928($iMatriculaServidor, $sLotacao, $iTipoFolha);
   }
 
   /**

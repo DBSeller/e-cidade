@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
-$rstab = pg_exec("select d.nomemod,m.codarq,a.nomearq,a.tipotabela,a.naolibclass,a.naolibform,a.naolibfunc,a.naolibprog
+$rstab = db_query("select d.nomemod,m.codarq,a.nomearq,a.tipotabela,a.naolibclass,a.naolibform,a.naolibfunc,a.naolibprog
                   from   db_sysarquivo a
                          inner join db_sysarqmod m on a.codarq = m.codarq
                          inner join db_sysmodulo d on d.codmod = m.codmod 
@@ -96,7 +96,7 @@ function js_executa(valor){
 <tr>
 <td valign="top" width="20%" style=''>
  <? 
-   $rsmod = pg_exec("select m.codmod,m.nomemod 
+   $rsmod = db_query("select m.codmod,m.nomemod 
      	                from   db_sysmodulo m
 	               	       inner join db_sysarqmod s on s.codmod = m.codmod
 			       where ativo is true

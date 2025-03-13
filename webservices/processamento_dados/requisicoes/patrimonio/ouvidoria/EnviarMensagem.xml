@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<processamento>
+
+    <transacao>true</transacao>
+
+    <parametros>
+        <parametro nome="codigo_processo" obrigatorio="false" tipo="integer"/>
+        <parametro nome="codigo_andamento" obrigatorio="false" tipo="integer"/>
+        <parametro nome="mensagem" obrigatorio="true" tipo="string"/>
+        <parametro nome="anexos" obrigatorio="true" tipo="string"/>
+        <parametro nome="resposta_ouvidoria" obrigatorio="false" tipo="integer"/>
+    </parametros>
+
+    <configuracoes>
+        <classe nome="ECidade\Patrimonial\Ouvidoria\Externa\WebService\EnviarMensagem" parametros="" caminho="src/Patrimonial/Ouvidoria/Externa/WebService/EnviarMensagem.php">
+            <metodos>
+                <metodo nome="setCodigoProcesso" parametros="$codigo_processo"/>
+                <metodo nome="setRespostaOuvidoria" parametros="$resposta_ouvidoria"/>
+                <metodo nome="setMensagem" parametros="$mensagem"/>
+                <metodo nome="setCodigoAndamento" parametros="$codigo_andamento"/>
+                <metodo nome="setAnexos" parametros="$anexos"/>
+                <metodo nome="salvar"/>
+            </metodos>
+        </classe>
+    </configuracoes>
+
+</processamento>

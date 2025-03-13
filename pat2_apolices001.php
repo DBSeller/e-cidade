@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_apolice_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_apolice_classe.php"));
 $clapolice = new cl_apolice;
 $clrotulo = new rotulocampo;
 $clapolice->rotulo->label();
@@ -84,10 +84,10 @@ function js_abre(botao){
 //--------------------------------
 function js_pesquisa_apolice(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_apolice','func_apolice.php?funcao_js=parent.js_mostraapolice1|t81_codapo|t81_apolice','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_apolice','func_apolice.php?funcao_js=parent.js_mostraapolice1|t81_codapo|t81_apolice','Pesquisa',true);
   }else{
      if(document.form1.t81_codapo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_apolice','func_apolice.php?pesquisa_chave='+document.form1.t81_codapo.value+'&funcao_js=parent.js_mostraapolice','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_apolice','func_apolice.php?pesquisa_chave='+document.form1.t81_codapo.value+'&funcao_js=parent.js_mostraapolice','Pesquisa',false);
      }else{
        document.form1.t81_apolice.value = ''; 
      }

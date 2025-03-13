@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -502,5 +502,52 @@ class cl_linhatransportepontoparadaaluno {
      }
      return $sql;
   }
+
+  function sql_query_aluno_vinculado( $tre12_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "" ) {
+
+    $sql = "select ";
+
+    if( $campos != "*" ) {
+
+      $campos_sql = split("#",$campos);
+      $virgula    = "";
+
+      for( $i = 0; $i < sizeof( $campos_sql ); $i++ ) {
+
+        $sql    .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    } else {
+      $sql .= $campos;
+    }
+
+    $sql .= " from linhatransportepontoparadaaluno ";
+    $sql .= "      inner join linhatransportehorarioveiculo on linhatransportehorarioveiculo.tre08_sequencial = linhatransportepontoparadaaluno.tre12_linhatransportehorarioveiculo";
+    $sql2 = "";
+
+    if( $dbwhere == "" ) {
+
+      if( $tre12_sequencial != null ) {
+        $sql2 .= " where linhatransportepontoparadaaluno.tre12_sequencial = $tre12_sequencial ";
+      }
+    } else if( $dbwhere != "" ) {
+      $sql2 = " where $dbwhere";
+    }
+
+    $sql .= $sql2;
+
+    if( $ordem != null ) {
+
+      $sql       .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula    = "";
+
+      for( $i = 0; $i < sizeof( $campos_sql ); $i++ ) {
+
+        $sql    .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+  }
 }
-?>

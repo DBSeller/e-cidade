@@ -73,10 +73,10 @@ db_input('ed20_i_codigo',10,$Ied20_i_codigo,true,'text',3,'')
 <script>
 function js_pesquisabi12_leitor(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_leitor','func_leitor.php?funcao_js=parent.js_mostraleitor1|bi10_codigo|bi10_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_leitor','func_leitor.php?funcao_js=parent.js_mostraleitor1|bi10_codigo|bi10_codigo','Pesquisa',true);
   }else{
      if(document.form1.bi12_leitor.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_leitor','func_leitor.php?pesquisa_chave='+document.form1.bi12_leitor.value+'&funcao_js=parent.js_mostraleitor','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_leitor','func_leitor.php?pesquisa_chave='+document.form1.bi12_leitor.value+'&funcao_js=parent.js_mostraleitor','Pesquisa',false);
      }else{
        document.form1.bi10_codigo.value = ''; 
      }
@@ -96,10 +96,10 @@ function js_mostraleitor1(chave1,chave2){
 }
 function js_pesquisabi12_rechumano(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rechumano','func_rechumano.php?funcao_js=parent.js_mostrarechumano1|ed20_i_codigo|ed20_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rechumano','func_rechumano.php?funcao_js=parent.js_mostrarechumano1|ed20_i_codigo|ed20_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.bi12_rechumano.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rechumano','func_rechumano.php?pesquisa_chave='+document.form1.bi12_rechumano.value+'&funcao_js=parent.js_mostrarechumano','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rechumano','func_rechumano.php?pesquisa_chave='+document.form1.bi12_rechumano.value+'&funcao_js=parent.js_mostrarechumano','Pesquisa',false);
      }else{
        document.form1.ed20_i_codigo.value = ''; 
      }
@@ -118,7 +118,7 @@ function js_mostrarechumano1(chave1,chave2){
   db_iframe_rechumano.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_leitorfunc','func_leitorfunc.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_leitorfunc','func_leitorfunc.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_leitorfunc.hide();

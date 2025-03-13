@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_sql.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_rhlota_classe.php");
-include ("classes/db_lotacao_classe.php");
-include ("classes/db_rhfuncao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhlota_classe.php"));
+include(modification("classes/db_lotacao_classe.php"));
+include(modification("classes/db_rhfuncao_classe.php"));
 $clrhfuncao = new cl_rhfuncao();
 $clrhlota = new cl_rhlota();
 $cllotacao = new cl_lotacao();
@@ -177,7 +177,7 @@ if($porlotacao == true){
 </body>
 <script>
 function js_consultaregistro(registro,lotacao){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conspessoal','pes3_conspessoal002.php?regist='+registro,'Visualização das matriculas cadastradas',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conspessoal','pes3_conspessoal002.php?regist='+registro,'Visualização das matriculas cadastradas',true);
 }
 function js_consultalotacao(lotacao){
   parent.location.href = "pes3_consrhlotacao002.php?ano=<?=($ano)?>&mes=<?=($mes)?>&lotacao="+lotacao;

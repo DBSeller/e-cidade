@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,32 +25,32 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("std/db_stdClass.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_liborcamento.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("dbforms/db_classesgenericas.php");
-require_once ("classes/db_solicita_classe.php");
-require_once ("classes/db_solicitem_classe.php");
-require_once ("classes/db_solicitemele_classe.php");
-require_once ("classes/db_solicitempcmater_classe.php");
-require_once ("classes/db_pcdotac_classe.php");
-require_once ("classes/db_pcdotaccontrapartida_classe.php");
-require_once ("classes/db_pcparam_classe.php");
-require_once ("classes/db_pcmaterele_classe.php");
-require_once ("classes/db_orcorgao_classe.php");
-require_once ("classes/db_orcdotacao_classe.php");
-require_once ("classes/db_empautidot_classe.php");
-require_once ("classes/db_db_depart_classe.php");
-require_once ("classes/db_orcreserva_classe.php");
-require_once ("classes/db_orcreservasol_classe.php");
-require_once ("classes/db_orcelemento_classe.php");
-require_once ("classes/db_pcproc_classe.php");
-require_once("classes/solicitacaocompras.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_solicita_classe.php"));
+require_once(modification("classes/db_solicitem_classe.php"));
+require_once(modification("classes/db_solicitemele_classe.php"));
+require_once(modification("classes/db_solicitempcmater_classe.php"));
+require_once(modification("classes/db_pcdotac_classe.php"));
+require_once(modification("classes/db_pcdotaccontrapartida_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_pcmaterele_classe.php"));
+require_once(modification("classes/db_orcorgao_classe.php"));
+require_once(modification("classes/db_orcdotacao_classe.php"));
+require_once(modification("classes/db_empautidot_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
+require_once(modification("classes/db_orcreserva_classe.php"));
+require_once(modification("classes/db_orcreservasol_classe.php"));
+require_once(modification("classes/db_orcelemento_classe.php"));
+require_once(modification("classes/db_pcproc_classe.php"));
+require_once(modification("classes/solicitacaocompras.model.php"));
 
 db_postmemory($_GET);
 db_postmemory($_POST);
@@ -121,6 +121,7 @@ if (isset($iframe)) {
 }
 
 $sqlerro = false;
+$erro_msg = "";
 if (isset($incluir) || isset($alterar) || isset($excluir)) {
 
   if (!isset($pc13_coddot) || (isset($pc13_coddot) && $pc13_coddot == "")) {
@@ -167,7 +168,6 @@ if ($pc30_gerareserva == 't' && isset($nreserva)) {
   }
 }
 
-$erro_msg = "";
 $sqlerrosaldo = false;
 if (isset($incluir) && $sqlerro == false) {
 
@@ -241,6 +241,10 @@ if (isset($incluir) && $sqlerro == false) {
       $clpcdotac->pc13_depto = $pc13_depto;
       $clpcdotac->pc13_quant = $pc13_quant;
       $clpcdotac->pc13_valor = $pc13_valor;
+      $clpcdotac->pc13_valor = $pc13_valor;
+      if (!empty($pc13_planoorcamentariolinhapacto)) {
+          $clpcdotac->pc13_planoorcamentariolinhapacto = $pc13_planoorcamentariolinhapacto;
+      }
       //select para buscar o código do elemento
       //die($clorcelemento->sql_query_file(null,"o56_codele",""," o56_elemento='$o56_elemento'"));
       if (isset($o56_codele) && $o56_codele != "") {
@@ -477,6 +481,9 @@ if (isset($incluir) && $sqlerro == false) {
     $clpcdotac->pc13_quant      = $pc13_quant;
     $clpcdotac->pc13_valor      = $pc13_valor;
     $clpcdotac->pc13_sequencial = $pc13_sequencial;
+    if (!empty($pc13_planoorcamentariolinhapacto)) {
+      $clpcdotac->pc13_planoorcamentariolinhapacto = $pc13_planoorcamentariolinhapacto;
+    }
 
     //select para buscar o código do elemento
     $result_codele = $clorcelemento->sql_record($clorcelemento->sql_query_file(null, null, "o56_codele", "", " o56_anousu = $pc13_anousu and o56_elemento='$o56_elemento'"));
@@ -688,32 +695,40 @@ if (isset($incluir) || isset($alterar) || isset($excluir)) {
   db_fim_transacao($sqlerro);
 
   if ($sqlerro == false){
-     echo "<script> top.corpo.iframe_solicitem.location.href = 'com1_solicitem001.php?pc11_numero=$pc11_numero&pc11_codigo=$pc13_codigo&pc13_codele=".@$pc13_codele."$parametro'; </script>";
+     echo "<script> (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_solicitem.location.href = 'com1_solicitem001.php?pc11_numero=$pc11_numero&pc11_codigo=$pc13_codigo&pc13_codele=".@$pc13_codele."$parametro'; </script>";
   }
 }
 
 if (isset($opcao) && $opcao != "incluir") {
-  $result_pcdotac = $clpcdotac->sql_record($clpcdotac->sql_query_depart(null,
-                                                                        null,
-                                                                        null,
-                                                                        "pc13_coddot,
-  		                                                                   pc13_quant,
-  		                                                                   pc13_valor,
-                                                                         pc13_depto,
-  		                                                                   pc19_orctiporec,
-                                                                         pc13_codele,
-                                                                         descrdepto",
-                                                                        null,
-                                                                        "pc13_sequencial = $pc13_sequencial"
-                                                                        ));
+
+   $sqlDotacao = $clpcdotac->sql_query_depart(null,
+       null,
+       null,
+       "pc13_coddot,
+                pc13_quant,
+                pc13_valor,
+                pc13_depto,
+                pc19_orctiporec,
+                pc13_codele,
+                o156_orcdotacaoplanoorcamentario,
+                pc13_planoorcamentariolinhapacto,
+                descrdepto",
+       null,
+       "pc13_sequencial = $pc13_sequencial"
+   );
+  $result_pcdotac = $clpcdotac->sql_record($sqlDotacao);
   if ($clpcdotac->numrows > 0) {
-    db_fieldsmemory($result_pcdotac, 0);
+      db_fieldsmemory($result_pcdotac, 0);
+      if (!empty($o156_orcdotacaoplanoorcamentario)) {
+          $planoorcamento = $o156_orcdotacaoplanoorcamentario;
+      }
   }
 }
 if (isset($pesquisa_dot)) {
   $result_descrdepto = $cldb_depart->sql_record($cldb_depart->sql_query_file($pc13_depto, "descrdepto"));
   if ($cldb_depart->numrows > 0) {
     db_fieldsmemory($result_descrdepto, 0);
+
   }
 }
 $pc30_gerareserva = $gerareservaold;
@@ -777,6 +792,15 @@ if (isset($aParametrosOrcamento[0]->o50_utilizapacto) && $aParametrosOrcamento[0
   	}
 
   }
+     $planoorcamento = '';
+     if (!empty($pc13_planoorcamentariolinhapacto)) {
+
+         $daoPlanoOrcamentarioLinha = new cl_planoorcamentariolinhapacto();
+
+         $dadosPlanoOrcamento = $daoPlanoOrcamentarioLinha->findBydId($pc13_planoorcamentariolinhapacto);
+         $planoorcamento  = $dadosPlanoOrcamento->o156_orcdotacaoplanoorcamentario;
+
+     }
 
  }
 
@@ -788,6 +812,7 @@ if (isset($aParametrosOrcamento[0]->o50_utilizapacto) && $aParametrosOrcamento[0
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
@@ -797,7 +822,7 @@ if (isset($aParametrosOrcamento[0]->o50_utilizapacto) && $aParametrosOrcamento[0
   <tr>
     <td width="100%">
       <?
-      include ("forms/db_frmsolicitemiframe.php");
+      include(modification("forms/db_frmsolicitemiframe.php"));
       ?>
     </td>
   </tr>
@@ -817,8 +842,9 @@ if (isset($alterar) || isset($excluir) || isset($incluir)) {
       echo "<script> document.form1." . $clpcdotac->erro_campo . ".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1." . $clpcdotac->erro_campo . ".focus();</script>";
     } else {
-      //      echo "<script> top.corpo.iframe_solicitem.location.href = 'com1_solicitem001.php?pc11_numero=$pc11_numero&pc11_codigo=$pc13_codigo&opcao=alterar'; </script>";
+      //      echo "<script> (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_solicitem.location.href = 'com1_solicitem001.php?pc11_numero=$pc11_numero&pc11_codigo=$pc13_codigo&opcao=alterar'; </script>";
     }
   }
 }
 ?>
+

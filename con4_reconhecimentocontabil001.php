@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("libs/db_liborcamento.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -174,7 +174,7 @@ if ( oGet.lEstorno == 'true' ) {
  */
 function js_buscar() {
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_reconhecimentocontabil', 
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_reconhecimentocontabil', 
                       'func_reconhecimentocontabil.php?lEstorno=false&funcao_js=parent.js_retornoBusca|0', 'Pesquisa', 
                       true);
 }
@@ -228,7 +228,7 @@ function js_buscarDados(iReconhecimentoContabil) {
 function js_retornoBuscarDados(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode(); 
 
   /**
@@ -363,7 +363,7 @@ function js_incluirReconhecimentoContabil() {
 function js_retornoIncluirReconhencimentoContabil(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode(); 
 
   /**
@@ -413,7 +413,7 @@ function js_estornarReconhecimentoContabil() {
 function js_retornoEstornarReconhencimentoContabil(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode(); 
 
   /**
@@ -449,12 +449,12 @@ function js_pesquisaNome(lMostrar) {
 
   if (lMostrar) {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_retornoPesquisaNomeAncora|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_retornoPesquisaNomeAncora|0|1','Pesquisa',true);
     return true;
   }
 
   var iNumCgm = $('c112_numcgm').value;
-  js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?pesquisa_chave=' + iNumCgm + '&funcao_js=parent.js_retornoPesquisaNomeInput','Pesquisa',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?pesquisa_chave=' + iNumCgm + '&funcao_js=parent.js_retornoPesquisaNomeInput','Pesquisa',false);
 
   return true;
 }

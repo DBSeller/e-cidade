@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -38,7 +38,7 @@ define("COR_PREENCHIMENTO", 235);
 /**
  * Configuração do cabeçalho
  */
-$sNomeFolha = (count($oParametros->aNomeTipoFolha) == 1) ? $oParametros->aNomeTipoFolha[0] : 'Vários';
+$sNomeFolha = (count($oParametros->aNomeTipoFolha) == 1) ? utf8_decode(urldecode($oParametros->aNomeTipoFolha[0])) : 'Vários';
 $head2      = "$oDadosRubricasRelatorio->rh45_descr ({$oParametros->iMesCompetencia} / {$oParametros->iAnoCompetencia})";
 $head4      = "Tipo de Folha: " . $sNomeFolha;
 $head5      = "Tipo de Resumo: {$sLabelTipoRelatorio}";
@@ -422,4 +422,6 @@ if ( $lMostraTotal ) {
 	$oPdf->Cell( $aTamanhosColunas['iTotal'] , ALTURA_CELULA, db_formatar($iTotalGeral, "f") , COM_BORDA, COM_QUEBRA, "R" ,COM_FUNDO );
 }
 
-$oPdf->Output(date('ymdhis') . ".pdf",true);
+$pdfPath = "tmp/". date('ymdhis') . ".pdf";
+
+$oPdf->Output($pdfPath,false);

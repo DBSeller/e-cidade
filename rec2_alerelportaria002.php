@@ -1,33 +1,33 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/impcarne.php");
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $sql_nome       = "select * from tipoasse where h12_assent = '$tipo';";
@@ -58,18 +58,25 @@ $sSqlPortarias .= "         h16_dtconc            as h16_dtconc,                
 $sSqlPortarias .= "         h16_dtterm            as h16_dtterm,                       ";
 $sSqlPortarias .= "         h16_histor||h16_hist2 as descr                             ";
 $sSqlPortarias .= "  from portaria                                                     ";
-$sSqlPortarias .= "       inner join portariaassenta on h31_sequencial = h33_portaria  ";
-$sSqlPortarias .= "       inner join assenta         on h16_codigo     = h33_assenta   ";
-$sSqlPortarias .= "       inner join tipoasse        on h12_codigo     = h16_assent    ";
-$sSqlPortarias .= "       inner join rhpessoal       on rh01_regist    = h16_regist    ";
-$sSqlPortarias .= "       inner join cgm             on rh01_numcgm    = z01_numcgm    ";
-$sSqlPortarias .= "       left  join rhpessoalmov    on rh02_regist    = rh01_regist   ";
-$sSqlPortarias .= "                                 and rh02_anousu    = ".db_anofolha();
-$sSqlPortarias .= "                                 and rh02_mesusu    = ".db_mesfolha(); 
-$sSqlPortarias .= "       left join rhlota           on r70_codigo     = rh02_lota     ";
-$sSqlPortarias .= "                                 and r70_instit     = rh02_instit   ";
+$sSqlPortarias .= "       inner join portariaassenta        on h31_sequencial               = h33_portaria  ";
+$sSqlPortarias .= "       inner join assenta                on h16_codigo                   = h33_assenta   ";
+$sSqlPortarias .= "       inner join assentamentofuncional  on rh193_assentamento_funcional = h16_codigo ";
+$sSqlPortarias .= "       inner join tipoasse               on h12_codigo                   = h16_assent    ";
+$sSqlPortarias .= "       inner join rhpessoal              on rh01_regist                  = h16_regist    ";
+$sSqlPortarias .= "       inner join cgm                    on rh01_numcgm                  = z01_numcgm    ";
+$sSqlPortarias .= "       left  join rhpessoalmov           on rh02_regist                  = rh01_regist   ";
+$sSqlPortarias .= "                                        and rh02_anousu                  = ".db_anofolha();
+$sSqlPortarias .= "                                        and rh02_mesusu                  = ".db_mesfolha();
+$sSqlPortarias .= "       left join rhlota                  on r70_codigo                   = rh02_lota     ";
+$sSqlPortarias .= "                                        and r70_instit                   = rh02_instit   ";
 $sSqlPortarias .= "  where h31_dtportaria between '$dataIni' and '$dataFim'            ";
 $sSqlPortarias .= "    and h12_assent = '$tipo'                                        ";
+$sSqlPortarias .= "    and h16_regist in (select distinct rh02_regist from rhpessoalmov                                   ";
+$sSqlPortarias .= "                        where rh02_anousu = ".DBPessoal::getAnoFolha()."                               ";
+$sSqlPortarias .= "                          and rh02_mesusu = ".DBPessoal::getMesFolha()."                               ";
+$sSqlPortarias .= "                          and rh02_lota in (select rh157_lotacao                                       ";
+$sSqlPortarias .= "                                              from db_usuariosrhlota                                   ";
+$sSqlPortarias .= "                                             where rh157_usuario = ".db_getsession("DB_id_usuario")."))";
 $sSqlPortarias .= "  order by z01_nome                                                 ";
 
 

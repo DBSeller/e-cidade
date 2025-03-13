@@ -10,10 +10,12 @@
     <campo campo="db121_estrutural"                    label="cod_item_servico" />
     <campo campo="db121_descricao"                     label="desc_item_servico"/>
     <campo campo="q136_valor"                          label="aliq"             />
-    <campo campo="case when q136_localpagamento = 1 then 'Sede Prestador' 
+    <campo campo="case when q136_localpagamento = 1 then 'Sede Prestador'
                        when q136_localpagamento = 2 then 'Sede tomador'
                        when q136_localpagamento = 3 then 'Local de prestação do serviço' end"
            label="local_pgto"                                />
+    <campo campo="case when q136_tipotributacao = 3 then 't' else 'f' end"                     label="tributacao_nao_incide" />
+    <campo campo="q136_exercicio"                                  label="exercicio" />
   </campos>
   <from tabela="ativid"/>
   <juncoes>

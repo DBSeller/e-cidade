@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_arretipo_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_arretipo_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clarretipo = new cl_arretipo;
 $clrotulo   = new rotulocampo;
@@ -318,7 +318,7 @@ function js_abre(){
             oProcesso.sTitular         = sTitular;
             oProcesso.dDataProcesso    = dDataProcesso;
 
-        js_OpenJanelaIframe('top.corpo','db_iframe','div4_importadivida002.php?oProcesso='+Object.toJSON(oProcesso)+'&k00_tipo_or='+document.form1.tipor.value+'&k00_tipo_des='+document.form1.tipdes.value+'&tipoparc='+document.form1.parc.value+'&uni='+uni+'&datavenc='+data,'Pesquisa',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','div4_importadivida002.php?oProcesso='+Object.toJSON(oProcesso)+'&k00_tipo_or='+document.form1.tipor.value+'&k00_tipo_des='+document.form1.tipdes.value+'&tipoparc='+document.form1.parc.value+'&uni='+uni+'&datavenc='+data,'Pesquisa',true);
       }
     }
   }

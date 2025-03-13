@@ -58,7 +58,7 @@ db_input('cm19_c_descr',40,$Icm19_c_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_campas','func_campas.php?funcao_js=parent.js_preenchepesquisa|cm19_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_campas','func_campas.php?funcao_js=parent.js_preenchepesquisa|cm19_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_campas.hide();

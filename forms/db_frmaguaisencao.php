@@ -129,11 +129,11 @@ db_input('x10_processo',5,$Ix10_processo,true,'text',$db_opcao,"")
 <script>
 function js_pesquisax10_matric(mostra){
   if(mostra==true){
-    //js_OpenJanelaIframe('top.corpo.iframe_aguaisencao','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|z01_nome','Pesquisa',true,'0','1','775','390');
-    js_OpenJanelaIframe('top.corpo.iframe_aguaisencao','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|z01_nome','Pesquisa',true,'0','1');
+    //js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencao','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|z01_nome','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencao','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|z01_nome','Pesquisa',true,'0','1');
   }else{
      if(document.form1.x10_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguaisencao','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x10_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencao','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x10_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -153,11 +153,11 @@ function js_mostraaguabase1(chave1,chave2){
 }
 function js_pesquisax10_codisencaotipo(mostra){
   if(mostra==true){
-    //js_OpenJanelaIframe('top.corpo.iframe_aguaisencao','db_iframe_aguaisencaotipo','func_aguaisencaotipo.php?funcao_js=parent.js_mostraaguaisencaotipo1|x29_codisencaotipo|x29_descr','Pesquisa',true,'0','1','775','390');
-    js_OpenJanelaIframe('top.corpo.iframe_aguaisencao','db_iframe_aguaisencaotipo','func_aguaisencaotipo.php?funcao_js=parent.js_mostraaguaisencaotipo1|x29_codisencaotipo|x29_descr','Pesquisa',true,'0','1');
+    //js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencao','db_iframe_aguaisencaotipo','func_aguaisencaotipo.php?funcao_js=parent.js_mostraaguaisencaotipo1|x29_codisencaotipo|x29_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencao','db_iframe_aguaisencaotipo','func_aguaisencaotipo.php?funcao_js=parent.js_mostraaguaisencaotipo1|x29_codisencaotipo|x29_descr','Pesquisa',true,'0','1');
   }else{
      if(document.form1.x10_codisencaotipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguaisencao','db_iframe_aguaisencaotipo','func_aguaisencaotipo.php?pesquisa_chave='+document.form1.x10_codisencaotipo.value+'&funcao_js=parent.js_mostraaguaisencaotipo','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencao','db_iframe_aguaisencaotipo','func_aguaisencaotipo.php?pesquisa_chave='+document.form1.x10_codisencaotipo.value+'&funcao_js=parent.js_mostraaguaisencaotipo','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.x29_descr.value = ''; 
      }
@@ -176,8 +176,8 @@ function js_mostraaguaisencaotipo1(chave1,chave2){
   db_iframe_aguaisencaotipo.hide();
 }
 function js_pesquisa(){
-  //js_OpenJanelaIframe('top.corpo.iframe_aguaisencao','db_iframe_aguaisencao','func_aguaisencao.php?funcao_js=parent.js_preenchepesquisa|x10_codisencao','Pesquisa',true,'0','1','775','390');
-  js_OpenJanelaIframe('top.corpo.iframe_aguaisencao','db_iframe_aguaisencao','func_aguaisencao.php?funcao_js=parent.js_preenchepesquisa|x10_codisencao','Pesquisa',true,'0','1');
+  //js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencao','db_iframe_aguaisencao','func_aguaisencao.php?funcao_js=parent.js_preenchepesquisa|x10_codisencao','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencao','db_iframe_aguaisencao','func_aguaisencao.php?funcao_js=parent.js_preenchepesquisa|x10_codisencao','Pesquisa',true,'0','1');
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguaisencao.hide();

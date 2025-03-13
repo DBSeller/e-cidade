@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_calendario_classe.php");
-include("classes/db_periodocalendario_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("classes/db_periodocalendario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcalendario = new cl_calendario;
 $clperiodocalendario = new cl_periodocalendario;
@@ -75,7 +75,7 @@ if(isset($sabado)){
       if($sabado=="N"){
        if (date("w", mktime (0,0,0,$m,$d+$i,$y)) == 0 || date("w", mktime (0,0,0,$m,$d+$i,$y)) == 6){
         #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-        $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
+        $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
         if(pg_num_rows($res)==0){
          $nao_util++;
         }else{
@@ -85,7 +85,7 @@ if(isset($sabado)){
         }
        }else{
         #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-        $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
+        $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
         if($row = pg_fetch_assoc($res)){
          $nao_util++;
         }
@@ -93,7 +93,7 @@ if(isset($sabado)){
       }else{
        if (date("w", mktime (0,0,0,$m,$d+$i,$y)) == 0 ){
         #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-        $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
+        $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
         if(pg_num_rows($res)==0){
          $nao_util++;
         }else{
@@ -103,7 +103,7 @@ if(isset($sabado)){
         }
        }else{
         #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-        $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
+        $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
         if($row = pg_fetch_assoc($res)){
          $nao_util++;
         }
@@ -129,7 +129,7 @@ if(isset($sabado)){
        if($sabado=="N"){
         if (date("w", mktime (0,0,0,$m,$d+$i,$y)) == 0 || date("w", mktime (0,0,0,$m,$d+$i,$y)) == 6){
          #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-         $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
+         $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
          if(pg_num_rows($res)==0){
           $nao_util++;
          }else{
@@ -139,7 +139,7 @@ if(isset($sabado)){
          }
         }else{
          #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-         $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
+         $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
          if($row = pg_fetch_assoc($res)){
           $nao_util++;
          }
@@ -147,7 +147,7 @@ if(isset($sabado)){
        }else{
         if (date("w", mktime (0,0,0,$m,$d+$i,$y)) == 0 ){
          #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-         $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
+         $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
          if(pg_num_rows($res)==0){
           $nao_util++;
          }else{
@@ -157,7 +157,7 @@ if(isset($sabado)){
          }
         }else{
          #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-         $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
+         $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
          if($row = pg_fetch_assoc($res)){
           $nao_util++;
          }
@@ -187,7 +187,7 @@ if(isset($sabado)){
         if($sabado=="N"){
          if (date("w", mktime (0,0,0,$m3,$d+$i,$y3)) == 0 || date("w", mktime (0,0,0,$m3,$d+$i,$y3)) == 6){
           #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-          $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m3 AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
+          $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m3 AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
           if(pg_num_rows($res)==0){
            $nao_util++;
           }else{
@@ -197,7 +197,7 @@ if(isset($sabado)){
           }
          }else{
           #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-          $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m3 AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
+          $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m3 AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
           if($row = pg_fetch_assoc($res)){
            $nao_util++;
           }
@@ -205,7 +205,7 @@ if(isset($sabado)){
         }else{
          if (date("w", mktime (0,0,0,$m3,$d+$i,$y3)) == 0 ){
           #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-          $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m3 AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
+          $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m3 AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario");
           if(pg_num_rows($res)==0){
            $nao_util++;
           }else{
@@ -215,7 +215,7 @@ if(isset($sabado)){
           }
          }else{
           #pesquisa no banco os feriados cadastrados se retornar aquele dia ele adiciona 1 no dia não útil
-          $res = pg_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m3 AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
+          $res = db_query("SELECT * FROM feriado WHERE extract(month from ed54_d_data)=$m3 AND extract(day from ed54_d_data)=$d+$i AND ed54_i_calendario=$calendario AND ed54_c_dialetivo = 'N' ");
           if($row = pg_fetch_assoc($res)){
            $nao_util++;
           }
@@ -235,7 +235,7 @@ if(isset($sabado)){
               ed53_i_semletivas = $semletivas
              WHERE ed53_i_codigo = $ed53_i_codigo
             ";
-    $query1 = pg_query($sql1);
+    $query1 = db_query($sql1);
   }
   $sql2 = $clperiodocalendario->sql_query("","sum(ed53_i_diasletivos) as dias1,sum(ed53_i_semletivas) as semanas1",""," ed53_i_calendario = $calendario AND ed09_c_somach = 'S'");
   $result2 = $clperiodocalendario->sql_record($sql2);
@@ -249,13 +249,13 @@ if(isset($sabado)){
             ed52_i_semletivas = $semanas1
            WHERE ed52_i_codigo = $calendario
           ";
-  $query3 = pg_query($sql3);
+  $query3 = db_query($sql3);
   if(isset($feriado)){
    //echo "oioioi";
    ?>
    <script>
-    top.corpo.iframe_a1.location.href='edu1_calendario002.php?chavepesquisa=<?=$calendario?>';
-    top.corpo.iframe_a2.location.href='edu1_periodocalendario001.php?ed53_i_calendario=<?=$calendario?>&ed52_c_descr=<?=$ed52_c_descr?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href='edu1_calendario002.php?chavepesquisa=<?=$calendario?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='edu1_periodocalendario001.php?ed53_i_calendario=<?=$calendario?>&ed52_c_descr=<?=$ed52_c_descr?>';
    </script>
    <?
   }else{
@@ -263,7 +263,7 @@ if(isset($sabado)){
    <script>
     parent.document.form1.ed52_i_diasletivos.value = <?=$dias1?>;
     parent.document.form1.ed52_i_semletivas.value = <?=$semanas1?>;
-    top.corpo.iframe_a2.location.href='edu1_periodocalendario001.php?ed53_i_calendario=<?=$calendario?>&ed52_c_descr=<?=$ed52_c_descr?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='edu1_periodocalendario001.php?ed53_i_calendario=<?=$calendario?>&ed52_c_descr=<?=$ed52_c_descr?>';
     parent.document.form1.alterar.click();
    </script>
    <?
@@ -274,7 +274,7 @@ if(isset($sabado)){
   db_fieldsmemory($result,0);
   ?>
   <script>
-   top.corpo.iframe_a2.location.href='edu1_periodocalendario001.php?ed53_i_calendario=<?=$ed52_i_codigo?>&ed52_c_descr=<?=$ed52_c_descr?>';
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='edu1_periodocalendario001.php?ed53_i_calendario=<?=$ed52_i_codigo?>&ed52_c_descr=<?=$ed52_c_descr?>';
    <?if(!isset($feriado)){?>
     parent.document.form1.alterar.click();
    <?}?>

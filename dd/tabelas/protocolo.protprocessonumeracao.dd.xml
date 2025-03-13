@@ -1,0 +1,134 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='3216' name='protocolo.protprocessonumeracao' description="Guarda o próximo número do processo a ser gerado no ano." prefix="p07" label="Númeração do Protocolo" type="0">
+  <fields>
+    <field codigo="18214" 
+           campo_api='' 
+           name="p07_sequencial" 
+           conteudo="int4" 
+           description="Sequencial de controle da númeração do ùltimo processo." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.protprocessonumeracao_p07_sequencial_seq' />
+     
+    </field> 
+    <field codigo="18210" 
+           campo_api='' 
+           name="p07_instit" 
+           conteudo="int4" 
+           description="Instituição que o processo está relacionado." 
+           inivalue="0" 
+           label="Instituição" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="18209" 
+           campo_api='' 
+           name="p07_ano" 
+           conteudo="int4" 
+           description="Ano do Processo" 
+           inivalue="0" 
+           label="Ano do Processo" 
+           size="4" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano do Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="18211" 
+           campo_api='' 
+           name="p07_proximonumero" 
+           conteudo="int4" 
+           description="Próximo número do processo a ser gerado." 
+           inivalue="0" 
+           label="Próximo Número" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Próximo Número" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.protprocessonumeracao_p07_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011787" 
+           campo_api='' 
+           name="p07_prottipodocumentoprocesso" 
+           conteudo="int4" 
+           description="Tipo de documento do processo." 
+           inivalue="0" 
+           label="Tipo de Documento" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Documento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1699" 
+           campo_api='' 
+           name="p07_orgao" 
+           conteudo="int4" 
+           description="órgão" 
+           inivalue="0" 
+           label="Órgão" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Órgão" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="p07_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="p07_instit" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="prottipodocumentoprocesso" inner='f'>
+      <fieldfk name="p07_prottipodocumentoprocesso" reference="p91_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

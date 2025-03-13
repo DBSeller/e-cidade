@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once("model/pessoal/CalculoFolha.model.php");
+require_once(modification("model/pessoal/CalculoFolha.model.php"));
 /**
  * Definiões sobre o Calculo de 13º Salario de um servidor em uma competencia
  * 
@@ -55,4 +55,26 @@ class CalculoFolha13o extends CalculoFolha {
 
   public function gerar()    {}
 
+  /**
+   * Método que calcula o valor da isenção para o servidor atual
+   *
+   * @access public
+   * @return Number
+   */
+  public function ajustarParcelaIsentaAposentadoPensionista($sRubrica, $nValorIsencao, $nValorAtual) {
+
+    $oServidorAtual    = $this->getServidor();
+    $nValorMaximoAtual = $nValorAtual;
+
+    LogCalculoFolha::write('');
+    LogCalculoFolha::write('Ajustando parcela de isencao para o servidor: '.$oServidorAtual->getMatricula());
+
+    $mValorVinculado = $this->verificarParcelaIsentaAposentadoPensionistaServidorVinculado($oServidorAtual, $sRubrica);
+
+    if($mValorVinculado !== false) {
+      return $this->calcularParcelaIsentaAposentadoPensionista($nValorIsencao, $nValorMaximoAtual, $nValorAtual, $mValorVinculado);
+    }
+
+    return $this->calcularParcelaIsentaAposentadoPensionista($nValorIsencao, $nValorMaximoAtual, $nValorAtual);
+  }
 }

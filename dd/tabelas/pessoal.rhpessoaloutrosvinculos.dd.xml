@@ -1,0 +1,205 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010347' name='pessoal.rhpessoaloutrosvinculos' description="Outros vínculos do Servidor." prefix="rh224" label="Outros vínculos" type="0">
+  <fields>
+    <field codigo="1010137" 
+           campo_api='' 
+           name="rh224_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='pessoal.rhpessoaloutrosvinculos_rh224_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010139" 
+           campo_api='' 
+           name="rh224_tipocontribuicao" 
+           conteudo="int4" 
+           description="Indicativo do tipo de contribuição." 
+           inivalue="0" 
+           label="Indicativo do tipo de contribuição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Indicativo do tipo de contribuição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010140" 
+           campo_api='' 
+           name="rh224_tipoinscricao" 
+           conteudo="int4" 
+           description="Tipo de inscrição (1- CNPJ/ 2- CPF)" 
+           inivalue="0" 
+           label="Tipo de inscrição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de inscrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010141" 
+           campo_api='' 
+           name="rh224_numeroinscricao" 
+           conteudo="varchar(14)" 
+           description="Número de inscrição." 
+           inivalue="0" 
+           label="Número de inscrição" 
+           size="14" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Número de inscrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010142" 
+           campo_api='' 
+           name="rh224_codigocategoria" 
+           conteudo="int4" 
+           description="Código da categoria referente a tabela 1 do eSocial." 
+           inivalue="0" 
+           label="Código da categoria" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da categoria" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010143" 
+           campo_api='' 
+           name="rh224_valorremuneracao" 
+           conteudo="float4" 
+           description="Valor de remuneração." 
+           inivalue="0" 
+           label="Valor de remuneração" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor de remuneração" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010144" 
+           campo_api='' 
+           name="rh224_instituicao" 
+           conteudo="int4" 
+           description="Código da Instituição." 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010176" 
+           campo_api='' 
+           name="rh224_ano" 
+           conteudo="int4" 
+           description="Ano" 
+           inivalue="0" 
+           label="Ano" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010177" 
+           campo_api='' 
+           name="rh224_mes" 
+           conteudo="int4" 
+           description="Mês" 
+           inivalue="0" 
+           label="Mês" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Mês" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010178" 
+           campo_api='' 
+           name="rh224_matricula" 
+           conteudo="int8" 
+           description="Matrícula" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh224_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="rh224_matricula" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

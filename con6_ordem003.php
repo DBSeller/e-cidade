@@ -33,10 +33,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///  verifica se foi dado o submit com o botão incluir para incluir os dados cadastrados
@@ -49,23 +49,23 @@
     $dataprev = $dataprev_ano."-".$dataprev_mes."-".$dataprev_dia;  // prepara a data no formato a ser gravado no postgres
 	$prevmail = $dataprev_dia."/".$dataprev_mes."/".$dataprev_ano;  // $prevmail é a data a ser exibida no email que será enviado.
     // acha o valor do codigo do novo registro a ser acrescentado
-	$result = pg_exec("select max(codordem) + 1 from db_ordem");
+	$result = db_query("select max(codordem) + 1 from db_ordem");
     $codigo = pg_result($result,0,0);
     $codigo = $codigo == ""?"1":$codigo;
     // Verifica se foi preenchido o campo de destinatário da ordem de serviço, caso tenha sido deixado em branco preenche no postgres com o valor null
     if($usuarioreceb == "")  $usuarioreceb = "null";
     // Comeca a transação para gravar os valores no postgres  
-    pg_exec("begin");
+    db_query("begin");
 	// Insere registro da ordem
-    $result = pg_exec("insert into db_ordem values($codigo,'$dataordem','$descr',$DB_id_usuario,$usuarioreceb,$depto,'$dataprev',false)") or die ("Erro: (25). Processo de inclusao.");
+    $result = db_query("insert into db_ordem values($codigo,'$dataordem','$descr',$DB_id_usuario,$usuarioreceb,$depto,'$dataprev',false)") or die ("Erro: (25). Processo de inclusao.");
     if($or10_codatend != "" && $or10_seq != ""){
-      $result = pg_exec("insert into db_ordematend values($codigo,$or10_codatend,$or10_seq)") or die ("Erro: (25). Processo de inclusao na tabela db_ordematend.");
+      $result = db_query("insert into db_ordematend values($codigo,$or10_codatend,$or10_seq)") or die ("Erro: (25). Processo de inclusao na tabela db_ordematend.");
     }
     // inser módulos selecionados para esta ordem
 	if (isset($modulos)) {
       $num = sizeof($modulos);
       for ($i=0;$i<$num;$i++) {
-	    pg_exec("insert into db_ordemmod values ($codigo,".$modulos[$i].")") or die ("Erro (27). Inserindo modulos.");
+	    db_query("insert into db_ordemmod values ($codigo,".$modulos[$i].")") or die ("Erro (27). Inserindo modulos.");
 	  }
     }
 	$existeAnexos = false; // usado para informar no mail se existem anexos nesta ordem de servico
@@ -73,7 +73,7 @@
 	if (isset($arquivos)) {
 	  $existeAnexos = true; // usado para informar no mail se existem anexos nesta ordem 
 	  // localiza valor do maior codigo que sera inserido na tabela imagens
-	  $pesquisaMaiorCod = pg_exec("select max(codimg) + 1 from db_ordemimagens");
+	  $pesquisaMaiorCod = db_query("select max(codimg) + 1 from db_ordemimagens");
       $maiorCod = pg_result($pesquisaMaiorCod,0,0);
       $maiorCod = $maiorCod==""?"1":$maiorCod;
       // loop para insercao dos arquivos anexados na tabela db_ordemimagens
@@ -81,18 +81,18 @@
       for ($i=0;$i<$numarq;$i++) {
 	    $nomeArquivo = $arquivos[$i].".dbordem";
         $oid = pg_loimport($nomeArquivo) or die($nomeArquivo." Erro(39). Gravando imagem na tabela.");
-        pg_exec("insert into db_ordemimagens values($maiorCod,$oid,$codigo)") or die("Erro inserindo imagem");
+        db_query("insert into db_ordemimagens values($maiorCod,$oid,$codigo)") or die("Erro inserindo imagem");
 		//system("rm ".$tmp_name." -f ");
 		$maiorCod++;
 		system("rm -f ".$nomeArquivo);
 	  }
     }
-    pg_exec("end");
+    db_query("end");
 ///////////////////////////////////////////////////////////////////////////
 // Rotina responsável por avisar por mail o destinatário da ordem e o responsavel pelo seu grupo.
 ///////////////////////////////////////////////////////////////////////////
   if ($usuarioreceb != "null") {
-    $identificaCamposEmail = pg_exec("select u.email as emailRemetente, u.nome as nomeremetente, r.nome as nomedestinatario, 
+    $identificaCamposEmail = db_query("select u.email as emailRemetente, u.nome as nomeremetente, r.nome as nomedestinatario, 
 	                                 r.email as emailDestinatario, u.id_usuario, du.coddepto, p.descrdepto, p.nomeresponsavel, p.emailresponsavel
                                      from db_usuarios u
 		        					 inner join db_usuarios r on r.id_usuario = $usuarioreceb
@@ -103,14 +103,14 @@
     $destinatario = pg_result($identificaCamposEmail,0,"nomedestinatario")." <".pg_result($identificaCamposEmail,0,"emailDestinatario").">";
 	$sufixo = "você";
   } else {
-    $identificaCamposEmail = pg_exec("Select u.email as emailRemetente, u.nome as nomeremetente, u.id_usuario, du.coddepto, 
+    $identificaCamposEmail = db_query("Select u.email as emailRemetente, u.nome as nomeremetente, u.id_usuario, du.coddepto, 
 	                                  p.descrdepto, p.nomeresponsavel, p.emailresponsavel
                                       from db_usuarios u
 									  inner join db_depusu du on du.id_usuario = u.id_usuario
 									  left outer join db_depart p on p.coddepto = du.coddepto 
 			    					  where u.id_usuario =  $DB_id_usuario limit 1
 								     ");
-	$retornaListaDeDestinatarios = pg_exec("select d.id_usuario, d.coddepto, u.nome , u.email
+	$retornaListaDeDestinatarios = db_query("select d.id_usuario, d.coddepto, u.nome , u.email
 	                                        from db_depusu d
 											inner join db_usuarios u on u.id_usuario = d.id_usuario
 	                                        where d.coddepto = $depto
@@ -305,7 +305,7 @@
 <table width="790" border="0" cellspacing="0" cellpadding="0">
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-	<? include("forms/db_frmordem.php"); ?>
+	<? include(modification("forms/db_frmordem.php")); ?>
 	
 	<?
     db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));

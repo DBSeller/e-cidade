@@ -1,52 +1,53 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_solicita_classe.php");
-require_once("classes/db_solicitem_classe.php");
-require_once("classes/db_pcdotac_classe.php");
-require_once("classes/db_pcsugforn_classe.php");
-require_once("classes/db_db_departorg_classe.php");
-require_once("classes/db_orcreservasol_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_empparametro_classe.php");
+ini_set('display_errors', "off");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_solicita_classe.php"));
+require_once(modification("classes/db_solicitem_classe.php"));
+require_once(modification("classes/db_pcdotac_classe.php"));
+require_once(modification("classes/db_pcsugforn_classe.php"));
+require_once(modification("classes/db_db_departorg_classe.php"));
+require_once(modification("classes/db_orcreservasol_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_empparametro_classe.php"));
 
 
 /*
  * Configurações GED
  */
-require_once ("integracao_externa/ged/GerenciadorEletronicoDocumento.model.php");
-require_once ("integracao_externa/ged/GerenciadorEletronicoDocumentoConfiguracao.model.php");
-require_once ("libs/exceptions/BusinessException.php");
+require_once(modification("integracao_externa/ged/GerenciadorEletronicoDocumento.model.php"));
+require_once(modification("integracao_externa/ged/GerenciadorEletronicoDocumentoConfiguracao.model.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
 
 $oGet = db_utils::postMemory($_GET);
+
 $oConfiguracaoGed = GerenciadorEletronicoDocumentoConfiguracao::getInstance();
 if ($oConfiguracaoGed->utilizaGED()) {
 
@@ -169,6 +170,7 @@ $where_solicita .= $and." pc10_correto='t' ";
 //die($clsolicita->sql_query_solicita(null," distinct pc10_numero,pc10_data,pc10_resumo,pc12_vlrap,descrdepto,coddepto,nomeresponsavel,pc50_descr,pc10_login,nome",'pc10_numero',$where_solicita));
 $sSqlSolicita         = $clsolicita->sql_query_solicita(null,
                                                         "distinct pc10_numero,
+                                                         pc67_sequencial,
                                                          pc10_data,
                                                          pc10_resumo,
                                                          pc12_vlrap,
@@ -181,7 +183,7 @@ $sSqlSolicita         = $clsolicita->sql_query_solicita(null,
                                                          nome,
                                                          o78_pactoplano,
                                                          o74_descricao,
-																												 pc90_numeroprocesso",'pc10_numero',$where_solicita);
+														 pc90_numeroprocesso",'pc10_numero',$where_solicita);
 
 $result_pesq_solicita = $clsolicita->sql_record($sSqlSolicita);
 $numrows_solicita = $clsolicita->numrows;
@@ -298,7 +300,7 @@ if (trim($erros) == ""){
 	        for ($ii = $linha; $ii < $num_rows_res; $ii++){
 	          db_fieldsmemory($res_reservasaldo,$ii);
 	   	      if ($codsol == $pc11_codigo){
-	   	        
+
 		          $total_dotacao += $valordotacao;
 		          $total_reserva += $valorreserva;
 			        $linha = $ii;
@@ -366,7 +368,7 @@ for($contador=0;$contador<$numrows_solicita;$contador++) {
     $sSqlLicitacao .= "       inner join liclicita  on l21_codliclicita = l20_codigo";
     $sSqlLicitacao .= "       inner join cflicita   on l20_codtipocom    = l03_codigo";
     $sSqlLicitacao .= " where pc53_solicitafilho = {$pc10_numero}";
-    //echo $sSqlLicitacao."<br>";
+//    echo $sSqlLicitacao."<br>";
     $rsLicitacao   = db_query($sSqlLicitacao);
     if (pg_num_rows($rsLicitacao) > 0) {
 
@@ -376,6 +378,7 @@ for($contador=0;$contador<$numrows_solicita;$contador++) {
     }
 
   }
+  $pdf1->anulada    = !empty($pc67_sequencial);
   $pdf1->prefeitura = $nomeinst;
   $pdf1->enderpref  = trim($ender).",".$numero;
   $pdf1->municpref  = $munic;
@@ -396,7 +399,7 @@ for($contador=0;$contador<$numrows_solicita;$contador++) {
   $pdf1->processo_administrativo = $pc90_numeroprocesso;
   $pdf1->Sdata       = $pc10_data;
   $pdf1->Svalor      = $pc12_vlrap;
-  $pdf1->Sresumo     = substr(stripslashes(addslashes($pc10_resumo)),0,735);
+  $pdf1->Sresumo     = substr(htmlspecialchars_decode(stripslashes($pc10_resumo)),0,735);
   $pdf1->Stipcom     = $pc50_descr;
   $pdf1->Sdepart     = $descrdepto;
   $pdf1->Srespdepart = $nomeresponsavel;
@@ -469,6 +472,8 @@ for($contador=0;$contador<$numrows_solicita;$contador++) {
       																			 pc17_quant,
       																			 pc01_codmater,
       																			 pc01_descrmater,
+                                             pc01_complmater,
+                                             pc01_liberaresumo,
       																			 (pc11_quant*pc11_vlrun) as pc11_valtot,
       																			 pc23_valor,
       																			 m61_usaquant,
@@ -477,8 +482,10 @@ for($contador=0;$contador<$numrows_solicita;$contador++) {
       																			$sOrdemBuscaItem,
       																			$sWhereBuscaItem);
 
+
+
   $result_pesq_solicitem = $clsolicitem->sql_record($sSqlItem);
-  
+
   $numrows_solicitem     = $clsolicitem->numrows;
 
   if ($numrows_solicitem == 0 && isset($oGet->valor_orcado) && $oGet->valor_orcado == 't') {
@@ -508,6 +515,8 @@ for($contador=0;$contador<$numrows_solicita;$contador++) {
   $pdf1->sprazo         = 'pc11_prazo';
   $pdf1->spgto          = 'pc11_pgto';
   $pdf1->sresum         = 'pc11_resum';
+  $pdf1->sComplemento   = 'pc01_complmater';
+  $pdf1->lLiberaresumo  = 'pc01_liberaresumo';
   $pdf1->sjust          = 'pc11_just';
   $pdf1->sunidade       = 'm61_descr';
   $pdf1->sabrevunidade  = 'm61_abrev';
@@ -516,22 +525,19 @@ for($contador=0;$contador<$numrows_solicita;$contador++) {
   $pdf1->scodpcmater    = 'pc01_codmater';
   $pdf1->selemento      = 'so56_elemento';
   $pdf1->sdelemento     = 'descrele';
-  
 
-  $result_pesq_pcdotac = $clpcdotac->sql_record($clpcdotac->sql_query_dotreserva(
-                                                 null,
-                                                 null,
-                                                 null,
-                                                 "pc13_codigo,
-                                                 pc13_anousu,
-                                                 pc13_coddot,
-                                                 pc13_quant,
-                                                 pc13_valor,
-                                                 pc19_orctiporec,
-                                                 o58_projativ,
-                                                 o55_descr,
-                                                 o56_elemento as do56_elemento",
-                                                 'pc13_codigo',"pc11_numero=$pc10_numero"));
+
+    $campos = "pc13_codigo, pc13_anousu, pc13_coddot, pc13_quant, pc13_valor, pc19_orctiporec, o58_projativ, o55_descr, o56_elemento as do56_elemento";
+    $sql = $clpcdotac->sql_query_dotreserva(
+        null,
+        null,
+        null,
+        $campos,
+        'pc13_codigo', "pc11_numero=$pc10_numero");
+    $result_pesq_pcdotac = $clpcdotac->sql_record($sql);
+//    echo $sql;
+//    die();
+
 
 
   $numrows_pcdotac          = $clpcdotac->numrows;
@@ -546,6 +552,7 @@ for($contador=0;$contador<$numrows_solicita;$contador++) {
   $pdf1->dcontrap           = 'pc19_orctiporec';
   $pdf1->dvalor             = 'pc13_valor';
   $pdf1->delemento          = 'do56_elemento';
+
 
   $result_pesq_pcsugforn = $clpcsugforn->sql_record($clpcsugforn->sql_query($pc10_numero,null,"distinct z01_numcgm,z01_nome,z01_ender,z01_numero,z01_munic,z01_telef,z01_cgccpf",'z01_numcgm'));
   $numrows_pcsugforn = $clpcsugforn->numrows;
@@ -562,7 +569,10 @@ for($contador=0;$contador<$numrows_solicita;$contador++) {
 	  $pdf1->imprime();
 	  $pdf1->Snumero_ant = $pc10_numero;
 
+
 }
+
+
 if(isset($argv[1])){
   $pdf1->objpdf->Output("/tmp/teste.pdf");
 }else{

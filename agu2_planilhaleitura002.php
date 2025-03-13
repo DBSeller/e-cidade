@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
 
 $objGet  = db_utils::postmemory($_GET);
 
@@ -47,7 +47,7 @@ if ($objGet->lista != "") {
 }
 
 if($objGet->filtro == '2') {
-  require_once("classes/db_aguacoletorexportadados_classe.php");
+  require_once(modification("classes/db_aguacoletorexportadados_classe.php"));
   
   $clAguaColetorExportaDados = new cl_aguacoletorexportadados();
   
@@ -167,7 +167,7 @@ $sql = "
 			 ";
             
 
-$result 	= pg_exec($sql);
+$result 	= db_query($sql);
 $numrows 	= pg_numrows($result);
 
 if ($numrows == 0){

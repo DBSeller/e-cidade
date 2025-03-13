@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_app.utils.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_app.utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $oRotulo = new rotulocampo();
 $oRotulo->label("c60_codcon");
 $oRotulo->label("c60_descr");
@@ -42,20 +42,19 @@ $oRotulo->label("c60_descr");
     <meta http-equiv="Expires" CONTENT="0">
     <?
      db_app::load("scripts.js, strings.js, prototype.js,datagrid.widget.js, widgets/dbautocomplete.widget.js");
-     db_app::load("widgets/windowAux.widget.js, dbmessageBoard.widget.js");
+     db_app::load("widgets/windowAux.widget.js, dbmessageBoard.widget.js, AjaxRequest.js");
      db_app::load("estilos.css,grid.style.css");
     ?>
   </head>
   <body bgcolor="#CCCCCC" style='margin-top:25px' leftmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-    <center>
+  <div class="container">
       <form name='form1' id='form1'>
-      <div style="display: table">
         <fieldset>
-          <legend><b>Vincular Contas Sigfis</b></legend>
-          <table>
+          <legend>Vincular Contas Sigfis</legend>
+          <table class="form-container">
              <tr>
                <td>
-                 <b>Conta TCE/RJ:</b>
+                 Conta TCE/RJ:
                </td>
                <td>
                   <?
@@ -78,7 +77,7 @@ $oRotulo->label("c60_descr");
                </td>
              </tr>
              <tr>
-                <td><b>Natureza do Saldo:</b></td>
+                <td>Natureza do Saldo:</td>
                 <td>
                   <? 
                     $aNaturezaSaldo = array(
@@ -92,11 +91,23 @@ $oRotulo->label("c60_descr");
              </tr>             
           </table>
         </fieldset>
-      </div>
+
       <input type="button" value='Salvar' id='btnSalvarVinculo'>
       <input type="button" value='Visualizar Vínculos' id='btnVisualizar'>
       </form>
-    </center>
+        <form name='form1' id='form1'>
+            <fieldset>
+                <legend>Vincular por lote</legend>
+                <table class="form-container">
+                    <tr>
+                        <td>Arquivo:</td>
+                        <td><input type="file" id="arquivoVinculo" name="arquivo"></td>
+                    </tr>
+                </table>
+            </fieldset>
+            <input type="button" value='Importar arquivo' id='btnImportaArquivo'>
+        </form>
+  </div>
   </body>
 </html>  
 <? 
@@ -202,7 +213,7 @@ $oRotulo->label("c60_descr");
   function js_retornoVinculo(oAjax) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 1) {
  
       alert('Vínculo realizado com sucesso');
@@ -222,7 +233,7 @@ $oRotulo->label("c60_descr");
 
     var sContent  = "<center>";
         sContent += "<fieldset>";
-        sContent += "  <legend><b>Vinculos Realizados</b></legend>";
+        sContent += "  <legend>Vinculos Realizados</legend>";
         sContent += "  <div id='ctnVinculos'></div>";
         sContent += "</fieldset>";
         sContent += "<br><input type='button' name='btnExcluir' id='btnConfirmar' value='Excluir' ";
@@ -290,7 +301,7 @@ $oRotulo->label("c60_descr");
      
      js_removeObj('msgBox');
      oGridVinculo.clearAll(true);
-     var oRetorno = eval('('+oAjax.responseText+")");
+     var oRetorno = JSON.parse(oAjax.responseText);
      oRetorno.contasvinculadas.each(function(oConta, iSeq) {
          
          var aRow = new Array();
@@ -331,7 +342,7 @@ $oRotulo->label("c60_descr");
    function js_retornocancelavinculo(oAjax) {
      
      js_removeObj('msgBox');
-     var oRetorno = eval('('+oAjax.responseText+')');
+     var oRetorno = JSON.parse(oAjax.responseText);
      if (oRetorno.status == 1) {
      
        alert('Vínculo das contas selecionados foram removidos com sucesso!');
@@ -341,5 +352,49 @@ $oRotulo->label("c60_descr");
      }
    
    }
+
+   function importarArquivo()
+   {
+       if (!$('arquivoVinculo').value) {
+           alert('Arquivo não informado.');
+           return false;
+       }
+
+        var ajax = new AjaxRequest(
+            'con4_vincularcontassigfis.RPC.php',
+            {
+                'exec': 'importarArquivoVinculos'
+            },
+            function(response) {
+
+                if (response.erro) {
+                    alert(response.message.urlDecode());
+                    return;
+                }
+
+                if (response.erros) {
+                    if (confirm('Arquivo importado com inconsistências. Deseja visualizar o relatório?')) {
+
+                        var titulo = 'Relatório de inconsistências SIGFIS',
+                            sEndereco = 'libs/db_pdf_erros.php?sCaminhoArquivo=tmp/sigfiserros.json&titulo=' + titulo;
+                        var jan = window.open(sEndereco, '',
+                            'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+
+                            ',scrollbars=1,location=0'
+                        );
+                        jan.moveTo(0,0);
+                    }
+                } else {
+                    alert("Arquivo importado com sucesso.");
+                }
+            }
+        );
+
+        ajax
+            .addFileInput($('arquivoVinculo'))
+            .execute();
+   }
+
   $('btnVisualizar').observe('click', js_visualizarVinculos);
+  $('btnImportaArquivo').observe('click', importarArquivo);
+
 </script>

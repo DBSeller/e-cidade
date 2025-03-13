@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -137,7 +137,7 @@ class cl_orcparamrelnota {
        $this->erro_status = "0";
        return false;
      }
-   if($this->o42_tamanhofontenota == null ){ 
+     if($this->o42_tamanhofontenota == null ){ 
        $this->erro_sql = " Campo Tamanho da Fonte nao Informado.";
        $this->erro_campo = "o42_tamanhofontenota";
        $this->erro_banco = "";
@@ -187,6 +187,21 @@ class cl_orcparamrelnota {
        $this->erro_status = "0";
        return false;
      }
+
+     $sqlVerificaNotas  =  $this->sql_query($this->o42_codparrel, $this->o42_anousu, $this->o42_instit , $this->o42_periodo) ;
+     $rsNotas = db_query($sqlVerificaNotas);
+
+     // Verifica se existe nota cadastrada anteriormente, caso exista, retorna mensagem
+     if($rsNotas) {
+
+       if(pg_numrows($rsNotas) > 0 ) {
+
+          $this->erro_sql = " ($this->o42_codparrel."-".$this->o42_anousu."-".$this->o42_instit."-".$this->o42_periodo) nao Incluído. Inclusao Abortada.";
+          $this->erro_msg = "Notas Explicativas/Fonte já estão cadastradas.";
+          return false;
+       }
+     }
+
      $sql = "insert into orcparamrelnota(
                                        o42_codparrel 
                                       ,o42_anousu 
@@ -210,20 +225,15 @@ class cl_orcparamrelnota {
                                ,$this->o42_tamanhofontedados
                       )";
      $result = db_query($sql); 
+
      if($result==false){ 
-       $this->erro_banco = str_replace("\n","",@pg_last_error());
-       if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = " ($this->o42_codparrel."-".$this->o42_anousu."-".$this->o42_instit."-".$this->o42_periodo) nao Incluído. Inclusao Abortada.";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_banco = " já Cadastrado";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       }else{
-         $this->erro_sql   = " ($this->o42_codparrel."-".$this->o42_anousu."-".$this->o42_instit."-".$this->o42_periodo) nao Incluído. Inclusao Abortada.";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       }
-       $this->erro_status = "0";
-       $this->numrows_incluir= 0;
+
+       $this->erro_banco      = str_replace("\n","",@pg_last_error());
+       $this->erro_sql        = " ($this->o42_codparrel."-".$this->o42_anousu."-".$this->o42_instit."-".$this->o42_periodo) nao Incluído. Inclusao Abortada.";
+       $this->erro_msg        = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg       .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status     = "0";
+       $this->numrows_incluir = 0;
        return false;
      }
      $this->erro_banco = "";

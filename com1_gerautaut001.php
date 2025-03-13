@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_pcorcam_classe.php");
-include("classes/db_pcparam_classe.php");
-include("classes/db_pcproc_classe.php");
-include("classes/db_empautoriza_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_pcorcam_classe.php"));
+include(modification("classes/db_pcparam_classe.php"));
+include(modification("classes/db_pcproc_classe.php"));
+include(modification("classes/db_empautoriza_classe.php"));
 $clpcparam = new cl_pcparam;
 $clpcorcam = new cl_pcorcam;
 $clpcproc  = new cl_pcproc;
@@ -59,7 +59,7 @@ $db_botao = true;
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
      <?
     
-        include("forms/db_frmgerautaut.php");
+        include(modification("forms/db_frmgerautaut.php"));
 
 
         
@@ -75,7 +75,7 @@ if(isset($pc80_codproc) && trim($pc80_codproc)!="" || isset($anul) || (isset($pc
  
  if (isset($pc10_numero) && trim($pc10_numero) != ""){
        $sql = "select pc80_codproc from pcproc inner join pcprocitem on pc81_codproc = pc80_codproc inner join solicitem on pc11_codigo = pc81_solicitem where pc11_numero = $pc10_numero limit 1";
-       $res_pcproc = @pg_query($sql);
+       $res_pcproc = @db_query($sql);
        if (@pg_numrows($res_pcproc) > 0) {
              db_fieldsmemory($res_pcproc,0);
        } 

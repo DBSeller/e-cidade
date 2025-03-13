@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,15 +28,15 @@
 /*
  * cancelamento de exportação
  */
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-require ("libs/db_app.utils.php");
-require ("classes/db_aguacoletorexporta_classe.php");
-require ("classes/db_aguacoletorexportasituacao_classe.php");
-require_once ("agu4_cancelaleituras_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("classes/db_aguacoletorexporta_classe.php"));
+require(modification("classes/db_aguacoletorexportasituacao_classe.php"));
+require_once(modification("agu4_cancelaleituras_classe.php"));
 
 db_postmemory ( $_POST );
 
@@ -190,7 +190,7 @@ function js_cancelar_exportacao() {
 }
 
 function js_pesquisa(){
-	js_OpenJanelaIframe('top.corpo','db_iframe_aguacoletorexporta','func_aguacoletorexporta.php?funcao_js=parent.js_preenchepesquisa|x49_sequencial','Pesquisa',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguacoletorexporta','func_aguacoletorexporta.php?funcao_js=parent.js_preenchepesquisa|x49_sequencial','Pesquisa',true);
 }
 
 function js_preenchepesquisa(codigoExportacao) {
@@ -213,7 +213,7 @@ function js_preenchepesquisa(codigoExportacao) {
 function js_retorno_pesquisa(oAjax) {
 	
 	js_removeObj('msgbox');
-	var oRetorno    = eval("("+oAjax.responseText+")");
+	var oRetorno    = JSON.parse(oAjax.responseText);
 	
 	var sequencial  = document.form1.x49_sequencial;
 	var coletor     = document.form1.x49_aguacoletor;

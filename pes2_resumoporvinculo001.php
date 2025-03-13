@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_gerfcom_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_gerfcom_classe.php"));
 $clgerfcom = new cl_gerfcom;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -42,7 +42,7 @@ $clrotulo->label('rh55_descr');
 $clrotulo->label('r44_selec');
 $clrotulo->label('r44_descr');
 db_postmemory($HTTP_POST_VARS);
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $geraform = new cl_formulario_rel_pes;
 
 $geraform->lo1nome = "DBtxt27";                  // NOME DO CAMPO DA LOTAÇÃO INICIAL
@@ -195,7 +195,7 @@ function js_emite(){
         </td>
         <td>
           <?
-      $result_regimes = pg_exec("select rh52_regime, rh52_descr from rhcadregime");
+      $result_regimes = db_query("select rh52_regime, rh52_descr from rhcadregime");
       if(pg_num_rows($result_regimes) > 0){
 	$arr_regimes[0] = "Todos";
         for($i=0; $i<pg_num_rows($result_regimes); $i++){
@@ -281,10 +281,10 @@ function js_emite(){
 <script>
 function js_pesquisasel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_mostrasel1|r44_selec|r44_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_mostrasel1|r44_selec|r44_descr','Pesquisa',true);
   }else{
      if(document.form1.r44_selec.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostrasel','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostrasel','Pesquisa',false);
      }else{
        document.form1.r44_descr.value = '';
      }
@@ -304,10 +304,10 @@ function js_mostrasel1(chave1,chave2){
 }
 function js_pesquisaDBtxt27(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhlocaltrab','func_rhlocaltrabestrut.php?funcao_js=parent.js_mostraDBtxt271|rh55_estrut|rh55_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlocaltrab','func_rhlocaltrabestrut.php?funcao_js=parent.js_mostraDBtxt271|rh55_estrut|rh55_descr','Pesquisa',true);
   }else{
      if(document.form1.DBtxt27.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhlocaltrab','func_rhlocaltrabestrut.php?pesquisa_chave='+document.form1.DBtxt27.value+'&funcao_js=parent.js_mostraDBtxt27','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlocaltrab','func_rhlocaltrabestrut.php?pesquisa_chave='+document.form1.DBtxt27.value+'&funcao_js=parent.js_mostraDBtxt27','Pesquisa',false);
      }else{
        document.form1.DBtxt27_descr.value = '';
      }
@@ -327,10 +327,10 @@ function js_mostraDBtxt271(chave1,chave2){
 }
 function js_pesquisaDBtxt28(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhlocaltrab','func_rhlocaltrabestrut.php?funcao_js=parent.js_mostraDBtxt281|rh55_estrut|rh55_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlocaltrab','func_rhlocaltrabestrut.php?funcao_js=parent.js_mostraDBtxt281|rh55_estrut|rh55_descr','Pesquisa',true);
   }else{
      if(document.form1.DBtxt28.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhlocaltrab','func_rhlocaltrabestrut.php?pesquisa_chave='+document.form1.DBtxt28.value+'&funcao_js=parent.js_mostraDBtxt28','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlocaltrab','func_rhlocaltrabestrut.php?pesquisa_chave='+document.form1.DBtxt28.value+'&funcao_js=parent.js_mostraDBtxt28','Pesquisa',false);
      }else{
        document.form1.DBtxt28_descr.value = '';
      }

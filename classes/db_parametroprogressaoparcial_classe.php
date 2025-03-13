@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -618,5 +618,6 @@ class cl_parametroprogressaoparcial {
     }
     return $sql;
   }
+
+  /* ATENCAO: PLUGIN ParametroProgressaoParcial - SQL sql_query_parametro_dependencia - INSTALADO AQUI - NAO REMOVER */
 }
-?>

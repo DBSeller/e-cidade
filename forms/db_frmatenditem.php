@@ -26,13 +26,13 @@
  */
 
 //MODULO: atendimento
-include("classes/db_atenditemtipo_classe.php");
+include(modification("classes/db_atenditemtipo_classe.php"));
 $clatenditem->rotulo->label();
 $clrotulo = new rotulocampo;
 $clatenditemtipo = new cl_atenditemtipo;
 $clrotulo->label("at02_codcli");
 $clrotulo->label("at02_codcli");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 if(isset($opcao) && $opcao == "alterar"){
   echo "<script>parent.iframe_atenditem.location.href='ate1_atenditem002.php?chavepesquisa=$at05_seq&chavepesquisa1=$at05_codatend'</script>";

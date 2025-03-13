@@ -102,10 +102,10 @@ db_input('y77_descricao',50,$Iy77_descricao,true,'text',3,'')
 <script>
 function js_pesquisay06_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
      if(document.form1.y06_usuario.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.y06_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.y06_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
      }else{
        document.form1.nome.value = ''; 
      }
@@ -125,10 +125,10 @@ function js_mostradb_usuarios1(chave1,chave2){
 }
 function js_pesquisay06_codtipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tipovistorias','func_tipovistorias.php?funcao_js=parent.js_mostratipovistorias1|y77_codtipo|y77_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipovistorias','func_tipovistorias.php?funcao_js=parent.js_mostratipovistorias1|y77_codtipo|y77_descricao','Pesquisa',true);
   }else{
      if(document.form1.y06_codtipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tipovistorias','func_tipovistorias.php?pesquisa_chave='+document.form1.y06_codtipo.value+'&funcao_js=parent.js_mostratipovistorias','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipovistorias','func_tipovistorias.php?pesquisa_chave='+document.form1.y06_codtipo.value+'&funcao_js=parent.js_mostratipovistorias','Pesquisa',false);
      }else{
        document.form1.y77_descricao.value = ''; 
      }
@@ -147,7 +147,7 @@ function js_mostratipovistorias1(chave1,chave2){
   db_iframe_tipovistorias.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_vistoriaslote','func_vistoriaslote.php?funcao_js=parent.js_preenchepesquisa|y06_vistoriaslote','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistoriaslote','func_vistoriaslote.php?funcao_js=parent.js_preenchepesquisa|y06_vistoriaslote','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_vistoriaslote.hide();

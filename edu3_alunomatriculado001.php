@@ -1,63 +1,37 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
 db_postmemory($HTTP_POST_VARS);
 $oDaoMatricula  = db_utils::getdao("matricula");
 $oDaoCalendario = db_utils::getdao("calendario");
@@ -67,45 +41,46 @@ $sNomeEscola    = db_getsession("DB_nomedepto");
 $iEscola        = db_getsession("DB_coddepto");
 $iModulo        = db_getsession("DB_modulo");
 /**
- * 
+ *
  * Função que busca os dados da escola
  * @param  $iModulo codigo da escola da sessao
  */
-function GetDadosEscola($iModulo) { 
-	
+function GetDadosEscola($iModulo) {
+
   $sHtml     = '';
-  $sSelected = '';
   $sDisplay  = 'style="display: none;"';
-  
+  $sSelected = '';
+
   if ($iModulo == 7159) {
-    
+
     $sSelected = 'selected="selected"';
     $sDisplay  = '';
   }
-  
+
   $sHtml         .= '<td align="left" '.$sDisplay.'> ';
   $sHtml         .= '<b>Selecione a escola:</b>';
-  $oDaoEscola     = db_utils::getdao('escola');              
-  $sSqlEscola     = $oDaoEscola->sql_query_file("","ed18_i_codigo,ed18_c_nome","","");                                                                      
-  $rsResultEscola = $oDaoEscola->sql_record($sSqlEscola);            
+  $oDaoEscola     = db_utils::getdao('escola');
+  $sSqlEscola     = $oDaoEscola->sql_query_file("","ed18_i_codigo,ed18_c_nome","","");
+  $rsResultEscola = $oDaoEscola->sql_record($sSqlEscola);
   $iLinhas        = $oDaoEscola->numrows;
-                      
+
   $sHtml .= '<select name="escola" id="escola" onChange="js_escola(this.value);" style="height:18px;font-size:10px;">';
-  $sHtml .= ' <option value="">Selecione a Escola</option>';
-      
-  for ($iCont = 0; $iCont < $iLinhas; $iCont++) {   
-                  
-    $oDadosEscola = db_utils::fieldsmemory($rsResultEscola,$iCont);    
-    $sHtml       .= " <option value='$oDadosEscola->ed18_i_codigo' $sSelected>$oDadosEscola->ed18_c_nome</option>";
-             
-  } 
-         
+  $sHtml .= "  <option value='' {$sSelected}>Selecione a Escola</option>";
+
+  for ($iCont = 0; $iCont < $iLinhas; $iCont++) {
+
+    $oDadosEscola = db_utils::fieldsmemory($rsResultEscola, $iCont);
+    $sHtml       .= " <option value='$oDadosEscola->ed18_i_codigo' >$oDadosEscola->ed18_c_nome</option>";
+
+  }
+
   $sHtml .= ' </select>';
   $sHtml .= '</td>';
-  
-  
+
+
   echo $sHtml;
 }
+
 ?>
 <html>
  <head>
@@ -133,13 +108,13 @@ function GetDadosEscola($iModulo) {
     <form name="form1" method="post" action="">
       <fieldset style="width:95%"><legend><b>Relatório de Alunos Matriculados  </b></legend>
        <table border="0">
-        <tr>      
-         <?      
+        <tr>
+         <?
            GetDadosEscola(db_getsession('DB_modulo'));
          ?>
          <td>
           <b>Selecione o Calendário:</b>
-          <select name="calendario" id="select_calendario" onchange="js_etapa(this.value)" 
+          <select name="calendario" id="select_calendario" onchange="js_etapa(this.value)"
                   style="width:150px;height:18px;font-size:10px;;" >
           </select>
          </td>
@@ -148,16 +123,16 @@ function GetDadosEscola($iModulo) {
           <select name="etapa" id="etapa" onchange="js_liberaBotao(this.value)"
                   style="width:150px;height:18px;font-size:10px;;" >
           </select>
-         </td>       
+         </td>
          <td>
           <b>Filtro:</b>
           <select name="filtro" style="font-size:9px;width:180px;height:18px;">
            <option value="2" <?=@$filtro==2?"selected":""?>>TURMAS</option>
            <option value="1" <?=@$filtro==1?"selected":""?>>TURMAS E PERCENTUAIS</option>
           </select>
-         </td>         
-         <td valign='bottom'>                    
-           <input type="button" name="procurar" id="procurar" value="Processar" 
+         </td>
+         <td valign='bottom'>
+           <input type="button" name="procurar" id="procurar" value="Processar"
                   onclick="js_procurar(document.form1.calendario.value,document.form1.etapa.value,document.form1.escola.value)" disabled>
          </td>
         </tr>
@@ -192,7 +167,7 @@ function GetDadosEscola($iModulo) {
           if ($rs && pg_num_rows($rs) > 0) {
 
             $iLinhas = pg_num_rows($rs);
-            for ($i=0; $i < $iLinhas ; $i++) { 
+            for ($i=0; $i < $iLinhas ; $i++) {
 
               $aEtapas[] = db_utils::fieldsMemory($rs, $i)->ed11_i_codigo;
             }
@@ -200,7 +175,7 @@ function GetDadosEscola($iModulo) {
         }
 
         $oViewHtml = new HtmlAlunosMatriculados($oCalendario, $aEtapas, $oEscola);
-        
+
         if ( $filtro == 1 ) {
           $oViewHtml->setExibePercentual(true);
         }
@@ -227,131 +202,131 @@ function GetDadosEscola($iModulo) {
   }
 })();
 
-function js_procurar(calendario,etapa,escola) {	
-	
-	location.href = "edu3_alunomatriculado001.php?procurar&calendario="+calendario+"&etapa="+etapa+"&escola="+escola+"&filtro="+document.form1.filtro.value; 
+function js_procurar(calendario,etapa,escola) {
+
+	location.href = "edu3_alunomatriculado001.php?procurar&calendario="+calendario+"&etapa="+etapa+"&escola="+escola+"&filtro="+document.form1.filtro.value;
 }
 
 function js_botao(valor) {
-  
+
   if (valor != "") {
     document.form1.procurar.disabled = false;
   } else {
     document.form1.procurar.disabled = true;
   }
-  
+
 }
 
 
 function js_escola(escola) {
 
-  var oParam    = new Object(); 
+  var oParam    = new Object();
 
   oParam.exec   = "PesquisaCalendario";
   oParam.escola =  escola;
 
-  var url       = 'edu4_escola.RPC.php';    
+  var url       = 'edu4_escola.RPC.php';
 
   js_webajax(oParam,'js_retornoPesquisaCalendario',url);
-  
+
 }
 
 function js_retornoPesquisaCalendario(oRetorno) {
-        
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
-  
+
   if (oRetorno.iStatus  != 1) {
-    
+
     alert(oRetorno.sMessage.urlDecode());
     return false;
-  
+
   } else {
-     
-    sHtml += '<option value="">Selecione o Calendário</option>';                  
-  
+
+    sHtml += '<option value="">Selecione o Calendário</option>';
+
     for (var i = 0;i < oRetorno.aResult.length; i++) {
-                    
+
       with (oRetorno.aResult[i]) {
-                      
+
         sHtml += '<option value="'+oRetorno.aResult[i].ed52_i_codigo+'">';
         sHtml += oRetorno.aResult[i].ed52_c_descr.urlDecode()+'</option>';
-                       
-      }  
-            
+
+      }
+
     }
-  
+
     $('select_calendario').innerHTML             = sHtml;
     document.form1.select_calendario[0].selected = true;
-          
-  
-  }  
-  
+
+
+  }
+
   $('select_calendario').disabled  = false;
-      
+
 }
-    
+
 function js_etapa(calendario) {
-           
+
   $('etapa').innerHTML = "";
   $('etapa').disabled  = true;
   var oParam        = new Object();
-  
+
   oParam.exec       = "PesquisaEtapa";
 
   <? if ($iModulo != 7159) { ?>
-    
+
     oParam.escola = <?=$iEscola?>
-  
+
   <? } else { ?>
 
     oParam.escola  =  $('escola').value;
-  
+
   <? } ?>
 
   oParam.calendario = calendario;
-  
-  var url           = 'edu4_escola.RPC.php';    
-  
+
+  var url           = 'edu4_escola.RPC.php';
+
   js_webajax(oParam,'js_retornoPesquisaEtapa',url);
-        
+
 }
 
 function js_retornoPesquisaEtapa(oRetorno) {
-        
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
-  
+
   if (oRetorno.iStatus  != 1) {
-    
+
     alert(oRetorno.sMessage.urlDecode());
     return false;
-  
+
   } else {
-    
-    if (oRetorno.aResult1.length == 0) {      
-      sHtml += '<option value="">Não há Etapa</option>';    
+
+    if (oRetorno.aResult1.length == 0) {
+      sHtml += '<option value="">Não há Etapa</option>';
     } else {
-         
+
       sHtml += '<option value="">Selecione a Etapa</option>';
       sHtml += '<option value="0">Todas</option>';
-    
+
       for (var i = 0;i < oRetorno.aResult1.length; i++) {
-                  
+
         sHtml += '<option value="'+oRetorno.aResult1[i].ed11_i_codigo+'">'+
                  oRetorno.aResult1[i].ed11_c_descr.urlDecode()+'</option>';
-                
-      }  
-          
-    } 
- 
+
+      }
+
+    }
+
   $('etapa').innerHTML   = sHtml;
   $('etapa').disabled    = false;
-        
+
   }
-  
+
 }
 
 function js_liberaBotao(valor){
@@ -367,14 +342,14 @@ function js_liberaBotao(valor){
 
 function js_matriculas(turma,descrturma,calendario,etapaturma){
 
-  js_OpenJanelaIframe('top.corpo','db_iframe_matriculas','edu3_alunomatriculado002.php?turma='+turma+'&etapaturma='+etapaturma,'Alunos Matriculados na Turma '+descrturma,true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matriculas','edu3_alunomatriculado002.php?turma='+turma+'&etapaturma='+etapaturma,'Alunos Matriculados na Turma '+descrturma,true);
   location.href = "#topo";
 }
 
 </script>
 
 <?
-  
+
 if ($iModulo != 7159) {
 ?>
 

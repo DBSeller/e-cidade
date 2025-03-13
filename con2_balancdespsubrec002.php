@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_liborcamento.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_sql.php"));
 
 //db_postmemory($HTTP_POST_VARS,2);exit;
 db_postmemory($HTTP_SERVER_VARS);
@@ -72,12 +72,12 @@ $sql = "select o58_subfuncao,
 	group by o58_subfuncao,o53_descr,o58_codigo,o15_descr
 	order by o58_subfuncao,o58_codigo";
 
-//db_criatabela(pg_exec($sql));exit;
+//db_criatabela(db_query($sql));exit;
 //uncao para gerar work
-$res = pg_exec($sql);
+$res = db_query($sql);
 
 
-pg_exec("commit");
+db_query("commit");
 
 $pdf = new PDF(); 
 $pdf->Open(); 
@@ -289,6 +289,6 @@ $pdf->setfont('arial','',7);
 
 
 //pg_free_result($result);
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf->Output();
 ?>

@@ -1,0 +1,46 @@
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+
+namespace App\Domain\Financeiro\Orcamento\Models;
+
+use App\Domain\Financeiro\Planejamento\Models\DetalhamentoDespesa;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class NaturezaDespesa
+ * @package App\Domain\Financeiro\Orcamento\Models
+ * @property $o56_codele
+ * @property $o56_anousu
+ * @property $o56_elemento
+ * @property $o56_descr
+ * @property $o56_finali
+ * @property $o56_orcado
+ */
+class NaturezaDespesa extends Model
+{
+    protected $table = 'orcamento.orcelemento';
+}

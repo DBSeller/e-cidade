@@ -31,7 +31,7 @@ $clrotulo = new rotulocampo;
 $clrotulo->label("fa20_i_codigo");
 $clrotulo->label("fa15_i_codigo");
 $clrotulo->label("fa20_c_prescricao");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 ?>
 <form name="form1" method="post" action="">

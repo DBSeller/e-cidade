@@ -30,16 +30,16 @@ db_ordem
 - status [1-em desenvolvimento|2-liberada para teste|3-retorno|4-aguardando conclusão]
 */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include_once ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
 
-include ("classes/db_db_ordem_classe.php");
-include ("classes/db_db_ordemandam_classe.php");
-include ("classes/db_db_depart_classe.php");
-include ("classes/db_db_usuarios_classe.php");
+include(modification("classes/db_db_ordem_classe.php"));
+include(modification("classes/db_db_ordemandam_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
 
 
 $cldb_ordem = new cl_db_ordem;
@@ -59,20 +59,20 @@ if (isset ($HTTP_POST_VARS["incluir"])) {
 	} else {
 		$dtfim = "null";
 	} // data final pode vir nula
-	$result = pg_exec("select max(codandam) + 1 from db_ordemandam");
+	$result = db_query("select max(codandam) + 1 from db_ordemandam");
 	$codigo = pg_result($result, 0, 0);
 	$codigo = $codigo == "" ? "1" : $codigo;
 	// seleciona o usuario que foi escolhido para ser o novo destinatario desta ordem de servico.
-	$pesquisaidusuario = pg_exec("select id_usuario from db_usuarios where nome = '$usuarioescolhido'");
+	$pesquisaidusuario = db_query("select id_usuario from db_usuarios where nome = '$usuarioescolhido'");
 	$idusuario = pg_result($pesquisaidusuario, 0, "id_usuario");
 	$usuario_atual = db_getsession("DB_id_usuario");
 	// insere o novo andamento
-	$result = pg_exec("insert into db_ordemandam values 
+	$result = db_query("insert into db_ordemandam values 
 	          ($codigo,$codordem,'$dtini',$dtfim,'$hrini','$hrfim','$descr',$usuario_atual)")
 	          or die("Erro: (12). Processo de inclusao.");
 
         // novo destinatario tambem é adicionado na tabela db_ordem
-	$updatedb_ordem = pg_exec("update db_ordem set usureceb = $idusuario, 
+	$updatedb_ordem = db_query("update db_ordem set usureceb = $idusuario, 
 	                                               status = $status
 	                           where codordem = $codordem");
 	db_msgbox("Incluida com sucesso.");
@@ -82,13 +82,13 @@ if (isset ($HTTP_POST_VARS["incluir"])) {
 } elseif (isset ($HTTP_POST_VARS["recebe"])) {
 			db_postmemory($HTTP_POST_VARS);
 			$dtatual = date("Y-m-d"); // insere a data final com a data do sistema.
-			pg_exec("begin");
-			$result = pg_exec("update db_ordem set dtrecebe = '$dtatual', 
+			db_query("begin");
+			$result = db_query("update db_ordem set dtrecebe = '$dtatual', 
 			                                       status = 1
 			                   where codordem = $codordem") 
 					   or die(" $dtfim Erro: (26). Processo de inclusao.");
 
-			pg_exec("end");
+			db_query("end");
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//  rotina para finalizar uma ordem de servico.
@@ -96,9 +96,9 @@ if (isset ($HTTP_POST_VARS["incluir"])) {
 				db_postmemory($HTTP_POST_VARS);
 				$dtatual = date("Y-m-d"); // insere a data final com a data do sistema.
 				$dataAtualEmail = date("d/m/Y"); // formatação da data para aparecer no email
-				pg_exec("begin");
+				db_query("begin");
 				// insere registro na tabela db_ordemfim indicando que essa ordem foi finalizada
-				$result = pg_exec("insert into db_ordemfim values ($codordem,$DB_id_usuario,'$dtatual')") or die(" $dtfim Erro: (26). Processo de inclusao.");
+				$result = db_query("insert into db_ordemfim values ($codordem,$DB_id_usuario,'$dtatual')") or die(" $dtfim Erro: (26). Processo de inclusao.");
 				// verifica se a data nao foi deixada em branco
 				if (!checkdate($dtini_mes, $dtini_dia, $dtini_ano))
 					db_erro("Erro (11). Data invalida.");
@@ -108,17 +108,17 @@ if (isset ($HTTP_POST_VARS["incluir"])) {
 				} else {
 					$dtfim = "null";
 				}
-				$result = pg_exec("select max(codandam) + 1 from db_ordemandam");
+				$result = db_query("select max(codandam) + 1 from db_ordemandam");
 				$codigo = pg_result($result, 0, 0);
 				$codigo = $codigo == "" ? "1" : $codigo;
 				// seleciona usuario na tabela db_usuario pelo nome do destinatario escolhido.
-				$pesquisaidusuario = pg_exec("select id_usuario from db_usuarios where nome = '$usuarioescolhido'");
+				$pesquisaidusuario = db_query("select id_usuario from db_usuarios where nome = '$usuarioescolhido'");
 				$idusuario = pg_result($pesquisaidusuario, 0, "id_usuario");
-				$result = pg_exec("insert into db_ordemandam values ($codigo,$codordem,'$dtini',$dtfim,'$hrini','$hrfim','$descr',$idusuario)") or die("Erro: (12). Processo de inclusao.");
-				$updatedb_ordem = pg_exec("update db_ordem set usureceb = $idusuario where codordem = $codordem");
+				$result = db_query("insert into db_ordemandam values ($codigo,$codordem,'$dtini',$dtfim,'$hrini','$hrfim','$descr',$idusuario)") or die("Erro: (12). Processo de inclusao.");
+				$updatedb_ordem = db_query("update db_ordem set usureceb = $idusuario where codordem = $codordem");
 				///////////////////////////////////////////////////
 				//  Rotina que avisa por mail o dono da ordem quando a mesma foi finalizada.
-				$informacoesSobreOrdem = pg_exec("select o.codordem, o.id_usuario, u.nome, u.email,  to_char(o.dataprev,'DD/MM/YYYY') as dataprev
+				$informacoesSobreOrdem = db_query("select o.codordem, o.id_usuario, u.nome, u.email,  to_char(o.dataprev,'DD/MM/YYYY') as dataprev
 				                                    from db_ordem o
 													inner join db_usuarios u on u.id_usuario = o.id_usuario
 													where o.codordem = $codordem
@@ -237,7 +237,7 @@ if (isset ($HTTP_POST_VARS["incluir"])) {
 				</html>              ";
 
 				///////////////////////////////////////////////////
-				pg_exec("end");
+				db_query("end");
 				db_msgbox("Ordem finalizada! ultimo andamento registrado.");
 				db_redireciona("con6_ordemandamento.php");
 			}
@@ -351,7 +351,7 @@ function js_reload(){
 
 } else {
 	
-	include("con6_ordemandamento002.php");
+	include(modification("con6_ordemandamento002.php"));
 	// se entrou aqui, é porque foi clicado em cima de uma ordem para inserir andamentos
 
 }

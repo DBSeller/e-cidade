@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,21 +24,18 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+define( 'MENSAGENS_TRE4_VEICULOTRANSPORTE_RPC', 'educacao.transporteescolar.tre4_veiculotransporte.' );
 
-require_once ("std/db_stdClass.php");
-require_once ("std/DBNumber.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/JSON.php");
-require_once ("dbforms/db_funcoes.php");
-require_once 'libs/exceptions/DBException.php';
-require_once 'libs/exceptions/FileException.php';
-require_once 'libs/exceptions/BusinessException.php';
-require_once 'libs/exceptions/ParameterException.php';
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBNumber.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oJson  = new services_json();
 $oParam = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -50,6 +47,7 @@ $oRetorno->message = 1;
 try {
 
   db_inicio_transacao();
+
   switch ($oParam->exec) {
 
     case "salvar":
@@ -67,14 +65,14 @@ try {
       $oVeiculoTransporte->salvar();
       $oRetorno->iCodigoVeiculo = $oVeiculoTransporte->getCodigo();
 
-      $oRetorno->message = urlencode(_M('educacao.transporteescolar.tre4_veiculotransporte.confirma_salvar'));
+      $oRetorno->message = urlencode( _M( MENSAGENS_TRE4_VEICULOTRANSPORTE_RPC . 'confirma_salvar' ) );
       break;
 
     case 'excluir':
 
       $oVeiculoTransporte = new VeiculoTransporte($oParam->iCodigoVeiculo);
       $oVeiculoTransporte->remover();
-      $oRetorno->message = urlencode(_M('educacao.transporteescolar.tre4_veiculotransporte.confirma_excluir'));
+      $oRetorno->message = urlencode( _M( MENSAGENS_TRE4_VEICULOTRANSPORTE_RPC . 'confirma_excluir' ) );
       break;
 
     case 'getDados':
@@ -135,19 +133,19 @@ try {
         }
       }
 
+      if( $lVeiculoJaExistente ) {
+        throw new BusinessException( _M( MENSAGENS_TRE4_VEICULOTRANSPORTE_RPC . 'veiculo_ja_vinculado', $oMensagem ) );
+      }
+
       foreach ($oLinhaItinerarioHorario->getTransportes() as $oVeiculoTransporte) {
         $oLinhaItinerarioHorario->adicionarTransporte($oVeiculoTransporte);
       }
+
       $oLinhaItinerarioHorario->adicionarTransporte(new VeiculoTransporte($oParam->iVeiculo));
       $oLinhaItinerarioHorario->salvarVeiculo();
 
-      if ($lVeiculoJaExistente) {
+      $oRetorno->message = urlencode( _M( MENSAGENS_TRE4_VEICULOTRANSPORTE_RPC . 'confirma_salvar_vinculo' ) );
 
-        $oRetorno->message = urlencode(_M('educacao.transporteescolar.tre4_veiculotransporte.veiculo_ja_vinculado',
-                                          $oMensagem));
-      } else {
-        $oRetorno->message = urlencode(_M('educacao.transporteescolar.tre4_veiculotransporte.confirma_salvar_vinculo'));
-      }
       break;
 
     case "getVeiculosHorario":
@@ -193,8 +191,6 @@ try {
      */
     case 'removerVinculoVeiculo':
 
-      db_inicio_transacao();
-
       if (isset($oParam->iItinerarioHorario) && isset($oParam->iVeiculoHorario)) {
 
         $oLinhaItinerarioHorario = new LinhaItinerarioHorario($oParam->iItinerarioHorario);
@@ -207,39 +203,13 @@ try {
         $oLinhaItinerarioHorario->salvarVeiculo();
       }
 
-      $oRetorno->message = urlencode(_M('educacao.transporteescolar.tre4_veiculotransporte.confirma_remover_vinculo'));
+      $oRetorno->message = urlencode( _M( MENSAGENS_TRE4_VEICULOTRANSPORTE_RPC . 'confirma_remover_vinculo' ) );
 
-      db_fim_transacao();
       break;
   }
+
   db_fim_transacao(false);
-}
-catch (BusinessException $eBusinnesException) {
-
-  $oRetorno->status  = 2;
-  $oRetorno->message = urlencode($eBusinnesException->getMessage());
-  db_fim_transacao(true);
-}
-catch (DBException $eDBException) {
-
-  $oRetorno->status  = 2;
-  $oRetorno->message = urlencode($eDBException->getMessage());
-  db_fim_transacao(true);
-}
-catch (ParameterException $eParameterException) {
-
-  $oRetorno->status  = 2;
-  $oRetorno->message = urlencode($eParameterException->getMessage());
-  db_fim_transacao(true);
-}
-catch (FileException $eFileException) {
-
-  $oRetorno->status  = 2;
-  $oRetorno->message = urlencode($eFileException->getMessage());
-  db_fim_transacao(true);
-
-}
-catch (Exception $eException) {
+} catch (Exception $eException) {
 
   $oRetorno->status  = 2;
   $oRetorno->message = urlencode($eException->getMessage());

@@ -78,7 +78,7 @@ db_input('ed30_f_valorfinal',5,$Ied30_f_valorfinal,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conceitos','func_conceitos.php?funcao_js=parent.js_preenchepesquisa|ed30_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conceitos','func_conceitos.php?funcao_js=parent.js_preenchepesquisa|ed30_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conceitos.hide();

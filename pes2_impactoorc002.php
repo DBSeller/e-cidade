@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_selecao_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_selecao_classe.php"));
 $clselecao = new cl_selecao;
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -43,7 +43,7 @@ if(isset($selec) && $selec != ''){
 $head6 = "";
 $head5 = "";
 if(trim($selecao) != ""){
-  $result_selecao = $clselecao->sql_record($clselecao->sql_query_file($selecao," r44_descr, r44_where ",db_getsession("DB_instit")));
+   $result_selecao = $clselecao->sql_record($clselecao->sql_query_file($selecao,db_getsession("DB_instit")," r44_descr, r44_where "));
   if($clselecao->numrows > 0){
     db_fieldsmemory($result_selecao, 0);
     $where .= " and ".$r44_where;
@@ -107,7 +107,7 @@ order by rh37_funcao,r02_codigo,z01_nome;
        ";
 //echo $sql ; exit;
 //die ($sql);
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem cálculos para o período de '.$mes.' / '.$ano);

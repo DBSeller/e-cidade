@@ -1,29 +1,31 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
+
+use ECidade\Enum\Educacao\Escola\TipoEnsinoEnum;
 
 define( 'MENSAGEM_ENSINO', 'educacao.escola.Ensino.' );
 
@@ -31,52 +33,88 @@ define( 'MENSAGEM_ENSINO', 'educacao.escola.Ensino.' );
  * Classe para tipo de ensino da Educacao
  * @author Iuri Guntchnigg
  * @package Educacao
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.12 $
  */
 class Ensino {
-  
+
+  /**
+   * Constante para Tipo de Ensino
+   */
+  const ENSINO_REGULAR = 1;
+  const ENSINO_EJA     = 3;
+
   /**
    * Codigo do Ensino;
    * var integer
    */
   protected $iCodigo;
-  
+
   /**
    * Nome do Ensino;
    * @var string
    */
   protected $sNome;
-  
+
   /**
    * Abreviatura do ensino
    * @var string
    */
   protected $sAbreviatura;
-  
+
   /**
-   * Construtor da classe. Recebe o código de ensino
-   * @param integer $iCodigo
+   * Código do tipo de Ensino
+   *   1 | ENSINO REGULAR               | ER
+   *   2 | EDUCAÇÃO ESPECIAL            | ES
+   *   3 | EDUCAÇÃO DE JOVENS E ADULTOS | EJ
+   *   4 | EDUCAÇÃO PROFISSIONAL        | EP
+   * @var integer
    */
+  protected $iCodigoTipoEnsino;
+
+    /**
+     * @var integer
+     */
+  protected $ordem;
+
+  /**
+   * Etapas do ensino
+   * @var Etapas[]
+   */
+  protected $aEtapas = array();
+
+    /**
+     * @var TipoEnsinoEnum
+     */
+    private $tipoEnsino;
+
+    /**
+     * Construtor da classe. Recebe o código de ensino
+     * @param integer $iCodigo
+     * @throws ReflectionException
+     */
   public function __construct($iCodigo = null) {
-    
+
     if (!empty($iCodigo)) {
-      
-      $oDaoEnsino = db_utils::getDao("ensino");
+
+      $oDaoEnsino = new cl_ensino();
       $sSqlEnsino = $oDaoEnsino->sql_query_file($iCodigo);
       $rsEnsino   = $oDaoEnsino->sql_record($sSqlEnsino);
-      
+
       if ($oDaoEnsino->numrows == 1) {
-        
-        $oEnsino            = db_utils::fieldsMemory($rsEnsino, 0);
-        $this->sNome        = $oEnsino->ed10_c_descr;
-        $this->sAbreviatura = $oEnsino->ed10_c_abrev;
+
+        $oEnsino                 = db_utils::fieldsMemory($rsEnsino, 0);
+        $this->sNome             = $oEnsino->ed10_c_descr;
+        $this->sAbreviatura      = $oEnsino->ed10_c_abrev;
+        $this->iCodigoTipoEnsino = $oEnsino->ed10_i_tipoensino;
+        $this->tipoEnsino = new TipoEnsinoEnum((int) $oEnsino->ed10_tipo);
+        $this->ordem = $oEnsino->ed10_ordem;
       }
-      
+
     }
     $this->iCodigo = $iCodigo;
   }
-  
-  
+
+
   /**
    * Retorna o codigo do ensino
    * @return integer
@@ -84,7 +122,7 @@ class Ensino {
   public function getCodigo() {
     return $this->iCodigo;
   }
-  
+
   /**
    * Define o nome do ensino
    * @param string $sNome nome do ensino
@@ -92,15 +130,15 @@ class Ensino {
   public function setNome($sNome) {
     $this->sNome = $sNome;
   }
-  
+
   /**
    * Retorna o nome do ensino
    * @return string
    */
   public function getNome() {
-    return $this->sNome;    
+    return $this->sNome;
   }
-  
+
   /**
    * Retorna a abreviatura do ensino
    * @return string
@@ -108,7 +146,7 @@ class Ensino {
   public function getAbreviatura() {
     return $this->sAbreviatura;
   }
-  
+
   /**
    * Seta uma abreviatura para o ensino
    * @param string $sAbreviatura
@@ -120,7 +158,7 @@ class Ensino {
 
   /**
    * Verifica se o ensino esta informado como ensino infantil
-   * @return boolean 
+   * @return boolean
    */
   public function isInfantil() {
 
@@ -138,11 +176,11 @@ class Ensino {
 
     if ($rsInfantil &&  pg_num_rows($rsInfantil) == 1) {
       return true;
-    } 
+    }
     return false;
   }
 
-  
+
   /**
    * Verifica se ensino possui turma ativa
    * @throw DBException
@@ -156,7 +194,7 @@ class Ensino {
 
     $sSqlTurmaAtiva = $oDaoRegencia->sql_query ( null, " 1 ", null, $sWhere );
     $rsTurmaAtiva   = db_query( $sSqlTurmaAtiva );
-    
+
     if ( !$rsTurmaAtiva ) {
       throw new DBException(_M('educacao.escola.Ensino.erro_verificar_ensino_possui_turma_ativa'));
     }
@@ -192,7 +230,7 @@ class Ensino {
     $oDaoEnsinoInfantil->ed117_ensino     = $this->iCodigo;
 
     $oDaoEnsinoInfantil->incluir(null);
-    
+
     if ( $oDaoEnsinoInfantil->erro_status == 0 ) {
       throw new DBException(_M('educacao.escola.Ensino.ensino_infantil_nao_vinculado'));
     }
@@ -228,14 +266,14 @@ class Ensino {
     }
     return true;
   }
-  
+
   /**
    * Retorna os termos de resultado final para o ensino
    * @param integer $iAno - Ano para dos termos a serem verificados
    * @return array
    */
   public function getTermosResultadoFinal ($iAno) {
-    
+
     $sCampos    = "ed110_descricao, ed110_abreviatura, ed110_referencia";
     $sWhere     = "     ed110_ensino = {$this->iCodigo} ";
     $sWhere    .= " and ed110_ano = {$iAno}";
@@ -252,15 +290,112 @@ class Ensino {
 
     $aTermos = array();
     if ( $rsTermos && pg_num_rows($rsTermos) > 0 ) {
-      
+
       $iLinhas = pg_num_rows($rsTermos);
-      
+
       for ( $i = 0; $i < $iLinhas; $i ++ ) {
         $aTermos[] = db_utils::fieldsMemory($rsTermos, $i);
       }
     }
-      
+
     return $aTermos;
   }
+
+  /**
+   * Retorna o Tipo de Ensino
+   * @return integer
+   * @deprecated
+   */
+  public function getCodigoTipoEnsino() {
+    return $this->iCodigoTipoEnsino;
+  }
+
+  /**
+   * Define o Tipo de Ensino
+   * @param integer $iCodigoTipoEnsino
+   * @deprecated
+   */
+  public function setCodigoTipoEnsino( $iCodigoTipoEnsino ) {
+    $this->iCodigoTipoEnsino = $iCodigoTipoEnsino;
+  }
+
+    /**
+     * Retorna o código da modalidade de ensino
+     * @return int
+     */
+    public function getCodigoModalidadeEnsino() {
+        return $this->iCodigoTipoEnsino;
+    }
+
+    /**
+     * Seta o código da modalidade de ensino
+     * @param $iCodigoTipoEnsino
+     */
+    public function setCodigoModalidadeEnsino( $iCodigoTipoEnsino ) {
+        $this->iCodigoTipoEnsino = $iCodigoTipoEnsino;
+    }
+
+    /**
+   * Busca as etapas do ensino
+   *
+   * @return Etapas[] retorna um array com as etapas do ensino
+   */
+  public function getEtapas() {
+
+    if ( empty($this->aEtapas) ) {
+
+      $oDao = new cl_serie();
+      $sSql = $oDao->sql_query_file(null, "ed11_i_codigo", "ed11_i_sequencia", "ed11_i_ensino = {$this->iCodigo}");
+      $rs   = db_query($sSql);
+
+      if (!$rs) {
+        throw new Exception("Error Processing Request", 1);
+      }
+      $iLinhas = pg_num_rows($rs);
+      if ( $iLinhas > 0 ) {
+
+        for ( $i = 0; $i < $iLinhas; $i++) {
+
+          $iCodigo = db_utils::fieldsMemory($rs, $i)->ed11_i_codigo;
+          $this->aEtapas[] = EtapaRepository::getEtapaByCodigo($iCodigo);
+        }
+      }
+    }
+
+    return $this->aEtapas;
+  }
+
+    /**
+     * @return array
+     */
+    public function toArray() {
+
+        return array(
+          "codigo" =>$this->iCodigo,
+          "descricao" =>$this->sNome,
+        );
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrdem() {
+        return $this->ordem;
+    }
+
+    /**
+     * @return TipoEnsinoEnum
+     */
+    public function getTipoEnsino()
+    {
+        return $this->tipoEnsino;
+    }
+
+    /**
+     * @param TipoEnsinoEnum $tipoEnsino
+     */
+    public function setTipoEnsino($tipoEnsino)
+    {
+        $this->tipoEnsino = $tipoEnsino;
+    }
 }
-?>

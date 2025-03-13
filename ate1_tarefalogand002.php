@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,25 +28,25 @@
 
 define("TAREFA", true);
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/smtp.class.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefalog_classe.php");
-include("classes/db_tarefalogenvol_classe.php");
-include("classes/db_tarefalogsituacao_classe.php");
-include("classes/db_tarefasituacao_classe.php");
-include("classes/db_tarefalogitem_classe.php");
-include("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefaclientes_classe.php");
-include("classes/db_db_versaotarefa_classe.php");
-include("classes/db_clientes_classe.php");
-include("classes/db_tarefalogclientes_classe.php");
-include("classes/db_tarefacadsituacaousu_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/smtp.class.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefalog_classe.php"));
+include(modification("classes/db_tarefalogenvol_classe.php"));
+include(modification("classes/db_tarefalogsituacao_classe.php"));
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefalogitem_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefaclientes_classe.php"));
+include(modification("classes/db_db_versaotarefa_classe.php"));
+include(modification("classes/db_clientes_classe.php"));
+include(modification("classes/db_tarefalogclientes_classe.php"));
+include(modification("classes/db_tarefacadsituacaousu_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -415,7 +415,7 @@ if(isset($incluir)){
           $cltarefa->alterar($cltarefalog->at43_tarefa);
           if($cltarefa->erro_status!=0 and $sqlerro == false) {
             db_fim_transacao($sqlerro);
-            echo "<script>top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?a=1&at43_tarefa=".@$at43_tarefa."&xxx=2&at43_usuario=".@$at43_usuario."&opcao=" . 'alterar' . "&at43_sequencial=" . $cltarefalog->at43_sequencial . "'</script>";
+            echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?a=1&at43_tarefa=".@$at43_tarefa."&xxx=2&at43_usuario=".@$at43_usuario."&opcao=" . 'alterar' . "&at43_sequencial=" . $cltarefalog->at43_sequencial . "'</script>";
           } else {
             $sqlerro  = true;
             $erro_msg = $cltarefa->erro_msg;
@@ -515,6 +515,7 @@ if(isset($incluir)){
     
     if($sqlerro == false) {
       $result = $cltarefalogsituacao->sql_record($cltarefalogsituacao->sql_query(null,"at48_sequencial",null,"at48_tarefalog=$cltarefalog->at43_sequencial"));
+      
       if($cltarefalogsituacao->numrows > 0) {
         db_fieldsmemory($result,0);
         
@@ -527,7 +528,7 @@ if(isset($incluir)){
           $erro_msg = $cltarefalogsituacao->erro_msg;
           $sqlerro = true;
         } else {
-          echo "<script>top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?a=3&at43_tarefa=".@$at43_tarefa."&xxx=1&at43_usuario=".@$at43_usuario."'</script>";
+          echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?a=3&at43_tarefa=".@$at43_tarefa."&xxx=1&at43_usuario=".@$at43_usuario."'</script>";
         }
       }
     }
@@ -552,7 +553,21 @@ if(isset($incluir)){
           if ($cltarefalog->at43_progresso == 100 ) {
             $cltarefasituacao->at47_situacao = 3;
           }else{
-            $cltarefasituacao->at47_situacao = $at48_situacao;	
+          	
+          	 /*
+             * busca ultimo registro da tarefa
+             */
+            $sCamposLog  = "at43_tarefa, at48_sequencial, at48_situacao, at48_tarefalog";
+            $sWhereLog   = "at43_tarefa = $at43_tarefa";
+            $sOrderLog   = "at48_tarefalog desc";
+            $rsResultLog = $cltarefalogsituacao->sql_record($cltarefalogsituacao->sql_query("", $sCamposLog, $sOrderLog, $sWhereLog));
+          
+            if($cltarefalogsituacao->numrows > 0){
+            db_fieldsmemory($rsResultLog,0);
+              $cltarefasituacao->at47_situacao = $at48_situacao;
+            } else {
+              $cltarefasituacao->at47_situacao = $at48_situacao;	
+            }
           }
           $cltarefasituacao->alterar($at47_sequencial);
           if ($cltarefasituacao->erro_status == 0) {
@@ -564,7 +579,7 @@ if(isset($incluir)){
     }
     
   } else {
-    echo "<script>top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?a=4&at43_tarefa=".@$at43_tarefa."&xxx=3&at43_usuario=".@$at43_usuario."'</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?a=4&at43_tarefa=".@$at43_tarefa."&xxx=3&at43_usuario=".@$at43_usuario."'</script>";
   }
 
   db_fim_transacao($sqlerro);
@@ -601,7 +616,7 @@ if(isset($incluir)){
       $sqlerro=true;
     }
     else {
-      echo "<script>top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?a=5&at43_tarefa=".@$at43_tarefa."&xxx=4&at43_usuario=".@$at43_usuario."'</script>";
+      echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand002.php?a=5&at43_tarefa=".@$at43_tarefa."&xxx=4&at43_usuario=".@$at43_usuario."'</script>";
     } 
     $erro_msg = $cltarefalog->erro_msg; 
     
@@ -672,7 +687,7 @@ if(isset($incluir)){
 <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
 <center>
 <?
-include("forms/db_frmcontarefalogand.php");
+include(modification("forms/db_frmcontarefalogand.php"));
 ?>
 </center>
 </td>

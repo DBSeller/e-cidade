@@ -82,10 +82,10 @@ db_input('k00_descr',40,$Ik00_descr,true,'text',3,'')
 <script>
 function js_pesquisak101_db_documento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_documento','func_db_documento.php?funcao_js=parent.js_mostradb_documento1|db03_docum|db03_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_documento','func_db_documento.php?funcao_js=parent.js_mostradb_documento1|db03_docum|db03_descr','Pesquisa',true);
   }else{
      if(document.form1.k101_db_documento.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_documento','func_db_documento.php?pesquisa_chave='+document.form1.k101_db_documento.value+'&funcao_js=parent.js_mostradb_documento','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_documento','func_db_documento.php?pesquisa_chave='+document.form1.k101_db_documento.value+'&funcao_js=parent.js_mostradb_documento','Pesquisa',false);
      }else{
        document.form1.db03_descr.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostradb_documento1(chave1,chave2){
 }
 function js_pesquisak101_tipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true);
   }else{
      if(document.form1.k101_tipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k101_tipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k101_tipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
      }else{
        document.form1.k00_descr.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostraarretipo1(chave1,chave2){
   db_iframe_arretipo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_notificaarretipodoc','func_notificaarretipodoc.php?funcao_js=parent.js_preenchepesquisa|k101_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_notificaarretipodoc','func_notificaarretipodoc.php?funcao_js=parent.js_preenchepesquisa|k101_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_notificaarretipodoc.hide();

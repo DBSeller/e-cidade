@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $ed100_i_historicompsfora=$ed100_i_historicompsfora;
 ?>
@@ -49,10 +49,10 @@ if (isset ( $ordenacao ) ) {
   }
 ?>
  <script>
-  top.corpo.arvore.location.reload();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.arvore.location.reload();
   parent.db_iframe_ordenar.hide();
-  top.corpo.disciplina.document.body.hidden = true;
-  top.corpo.dados.document.body.hidden      = true;
+  (window.CurrentWindow || parent.CurrentWindow).corpo.disciplina.document.body.hidden = true;
+  (window.CurrentWindow || parent.CurrentWindow).corpo.dados.document.body.hidden      = true;
  </script>
 <?}?>
 <html>

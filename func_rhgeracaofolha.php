@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
-*  Copyright (C) 2014  DBSeller Servicos de Informatica
+*  Copyright (C) 2009  DBSeller Servicos de Informatica
 *                            www.dbseller.com.br
 *                         e-cidade@dbseller.com.br
 *
@@ -24,12 +24,12 @@
 *  Copia da licenca no diretorio licenca/licenca_en.txt
 *                                licenca/licenca_pt.txt
 */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_rhgeracaofolha_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhgeracaofolha_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -105,7 +105,7 @@ if( !empty($ativas) ){
         if (!isset($campos)) {
 
           if (file_exists("funcoes/db_func_rhgeracaofolha.php")) {
-            include("funcoes/db_func_rhgeracaofolha.php");
+            include(modification("funcoes/db_func_rhgeracaofolha.php"));
           } else {
             $campos = "rhgeracaofolha.*";
           }
@@ -118,13 +118,13 @@ if( !empty($ativas) ){
         }
 
         if (isset($chave_rh102_sequencial) && (trim($chave_rh102_sequencial) != "" && DBNumber::isInteger($chave_rh102_sequencial) ) ){
-           $sql = $clrhgeracaofolha->sql_query($chave_rh102_sequencial,$campos, "rh102_sequencial", $sWhereGeracoesAtivas);
+           $sql = $clrhgeracaofolha->sql_query_rhgeracaofolha($chave_rh102_sequencial,$campos, "rh102_sequencial", $sWhereGeracoesAtivas);
         } else if (isset($chave_rh102_descricao) && (trim($chave_rh102_descricao)!="") ){
-          $sql = $clrhgeracaofolha->sql_query("", $campos, "rh102_descricao"," rh102_descricao like '$chave_rh102_descricao%' and $sWhereGeracoesAtivas ");
+          $sql = $clrhgeracaofolha->sql_query_rhgeracaofolha("", $campos, "rh102_descricao"," rh102_descricao like '$chave_rh102_descricao%' and $sWhereGeracoesAtivas ");
         } else {
-           $sql = $clrhgeracaofolha->sql_query("", $campos, "rh102_sequencial", $sWhereGeracoesAtivas);
+           $sql = $clrhgeracaofolha->sql_query_rhgeracaofolha("", $campos, "rh102_sequencial", $sWhereGeracoesAtivas);
         }
-
+        
         if( isset($chave_rh102_descricao) ){
           $chave_rh102_descricao = str_replace("\\", "", $chave_rh102_descricao);
         }
@@ -133,7 +133,7 @@ if( !empty($ativas) ){
         if (isset($chave_rh102_sequencial)) {
           $repassa = array("chave_rh102_sequencial" => $chave_rh102_sequencial, "chave_rh102_descricao" => $chave_rh102_descricao);
         }
-                
+        
         db_lovrot($sql, 15, "()", "", $funcao_js, "", "NoMe", $repassa);
       } else {
 
@@ -177,4 +177,11 @@ if( !empty($ativas) ){
 <?php } ?>
 <script>
   js_tabulacaoforms("form2", "chave_rh102_sequencial", true, 1, "chave_rh102_sequencial", true);
+</script>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

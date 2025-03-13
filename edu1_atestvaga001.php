@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_jsplibwebseller.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
 
 $ed102_d_data_dia = date("d", db_getsession("DB_datausu"));
 $ed102_d_data_mes = date("m", db_getsession("DB_datausu"));
@@ -67,7 +67,7 @@ if (isset($incluir)) {
  <body bgcolor="#CCCCCC">
    <?MsgAviso(db_getsession("DB_coddepto"), "escola");?>
    
-   <?include("forms/db_frmatestvaga.php");?>
+   <?include(modification("forms/db_frmatestvaga.php"));?>
    
    <?
      db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), 

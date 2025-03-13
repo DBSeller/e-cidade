@@ -1,61 +1,61 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once('classes/db_acordocomissao_classe.php');
-require_once('classes/db_acordocomissaomembro_classe.php');
-require_once("classes/db_acordotipo_classe.php");
-require_once("classes/db_acordopenalidade_classe.php");
-require_once("classes/db_acordogarantia_classe.php");
-require_once('model/AcordoComissao.model.php');
-require_once('model/Acordo.model.php');
-require_once('model/AcordoItem.model.php');
-require_once('model/AcordoComissaoMembro.model.php');
-require_once("model/AcordoPenalidade.model.php");
-require_once("model/AcordoGarantia.model.php");
-require_once("model/CgmFactory.model.php");
-require_once('model/CgmBase.model.php');
-require_once('model/CgmFisico.model.php');
-require_once('model/CgmJuridico.model.php');
-require_once("model/MaterialCompras.model.php");
-require_once("model/AcordoPosicao.model.php");
-require_once("model/licitacao.model.php");
-require_once("model/ProcessoCompras.model.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("model/AcordoDocumento.model.php");
-require_once("model/empenho/EmpenhoFinanceiro.model.php");
-require_once("model/Dotacao.model.php");
-require_once("model/configuracao/Instituicao.model.php");
-require_once("model/ProcessoCompras.model.php");
+require_once(modification('classes/db_acordocomissao_classe.php'));
+require_once(modification('classes/db_acordocomissaomembro_classe.php'));
+require_once(modification("classes/db_acordotipo_classe.php"));
+require_once(modification("classes/db_acordopenalidade_classe.php"));
+require_once(modification("classes/db_acordogarantia_classe.php"));
+require_once(modification('model/AcordoComissao.model.php'));
+require_once(modification('model/Acordo.model.php'));
+require_once(modification('model/AcordoItem.model.php'));
+require_once(modification('model/AcordoComissaoMembro.model.php'));
+require_once(modification("model/AcordoPenalidade.model.php"));
+require_once(modification("model/AcordoGarantia.model.php"));
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification('model/CgmBase.model.php'));
+require_once(modification('model/CgmFisico.model.php'));
+require_once(modification('model/CgmJuridico.model.php'));
+require_once(modification("model/MaterialCompras.model.php"));
+require_once(modification("model/AcordoPosicao.model.php"));
+require_once(modification("model/licitacao.model.php"));
+require_once(modification("model/ProcessoCompras.model.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("model/AcordoDocumento.model.php"));
+require_once(modification("model/empenho/EmpenhoFinanceiro.model.php"));
+require_once(modification("model/Dotacao.model.php"));
+require_once(modification("model/configuracao/Instituicao.model.php"));
+require_once(modification("model/ProcessoCompras.model.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(db_stdClass::db_stripTagsJson(str_replace("\\","",$_POST["json"])));
@@ -73,11 +73,11 @@ switch($oParam->exec) {
   	$nSomaTotal = 0;
 
   	foreach ($aPosicao as $oPosicao) {
-  	  
+
   		foreach ($oPosicao->getItens() as $oDado) {
 
 	  		$oItem = new stdClass();
-	  		
+
 	  		if ($oPosicao->getTipo() == 1) {
 
 	  			$oItem->aditamento = '';
@@ -197,22 +197,21 @@ switch($oParam->exec) {
     break;
 
   case 'empenhamentosConsulta' :
-
   	$oAcordo         = new Acordo($oParam->ac16_sequencial);
   	$aEmpenhamentos  = $oAcordo->getAutorizacoes();
     $oRetorno->dados = array();
 
   	foreach ($aEmpenhamentos as $oEmpenhamento) {
-
   		$oAut = new stdClass();
   		$oAut->codigoAutorizacao = $oEmpenhamento->codigo;
-  		$oAut->empenho           = $oEmpenhamento->empenho;
-  		$oAut->codigoempenho     = $oEmpenhamento->codigoempenho;
-  		$oAut->dataEmissao       = $oEmpenhamento->dataemissao;
-  		$oAut->dataAnulacao      = $oEmpenhamento->dataanulacao;
-  		$oAut->valor             = $oEmpenhamento->valor;
+  		$oAut->empenho = $oEmpenhamento->empenho;
+  		$oAut->codigoempenho = $oEmpenhamento->codigoempenho;
+  		$oAut->dataEmissao = $oEmpenhamento->dataemissao;
+  		$oAut->dataAnulacao = $oEmpenhamento->dataanulacao;
+        $oAut->valor = $oEmpenhamento->valor;
+        $oAut->e54_valor = $oEmpenhamento->e54_valor;
 
-  		$oRetorno->dados[]       = $oAut;
+  		$oRetorno->dados[] = $oAut;
   	}
 
     $oRetorno->detalhe  = $oParam->detalhe;
@@ -227,9 +226,9 @@ switch($oParam->exec) {
     $oAcordo = new Acordo($oParam->ac16_sequencial);
     $aDados = $oAcordo->getPosicoes();
 
-    
+
     foreach ($aDados as $oDado) {
-      
+
       $oItem = new stdClass();
 	    $oItem->codigo      = $oDado->getCodigo();
 	    $oItem->situacao    = urlencode($oDado->getDescricaoTipo());
@@ -366,4 +365,5 @@ switch($oParam->exec) {
     }
     break;
 }
+$oRetorno->erro = $oRetorno->status;
 echo $oJson->encode($oRetorno);

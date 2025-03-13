@@ -26,7 +26,7 @@
  */
 
 //MODULO: caixa
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcadtipoparcdeb->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -146,10 +146,10 @@ function js_cancelar(){
 }
 function js_pesquisak41_cadtipoparc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadtipoparcdeb','db_iframe_cadtipoparc','func_cadtipoparc.php?funcao_js=parent.js_mostracadtipoparc1|k40_codigo|k40_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoparcdeb','db_iframe_cadtipoparc','func_cadtipoparc.php?funcao_js=parent.js_mostracadtipoparc1|k40_codigo|k40_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.k41_cadtipoparc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadtipoparcdeb','db_iframe_cadtipoparc','func_cadtipoparc.php?pesquisa_chave='+document.form1.k41_cadtipoparc.value+'&funcao_js=parent.js_mostracadtipoparc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoparcdeb','db_iframe_cadtipoparc','func_cadtipoparc.php?pesquisa_chave='+document.form1.k41_cadtipoparc.value+'&funcao_js=parent.js_mostracadtipoparc','Pesquisa',false);
      }else{
        document.form1.k40_descr.value = ''; 
      }
@@ -169,10 +169,10 @@ function js_mostracadtipoparc1(chave1,chave2){
 }
 function js_pesquisak41_arretipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadtipoparcdeb','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoparcdeb','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.k41_arretipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadtipoparcdeb','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k41_arretipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoparcdeb','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.k41_arretipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
      }else{
        document.form1.k00_descr.value = ''; 
      }

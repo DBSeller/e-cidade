@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once("classes/db_solicita_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_solicita_classe.php"));
 
 $clsolicita = new cl_solicita;
 $clrotulo = new rotulocampo();
@@ -131,14 +131,14 @@ function js_solicitade(mostra) {
 
   if(mostra == true){
     
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_solicita',
                         'func_solicitamanutencaoreserva.php?funcao_js=parent.js_mostrasolicitade1|'+
                         'pc10_numero&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
   }else{
     
     if(document.form1.pc10_numerode.value != ''){
-       js_OpenJanelaIframe('top.corpo', 
+       js_OpenJanelaIframe('CurrentWindow.corpo', 
                            'db_iframe_solicita',
                            'func_solicitamanutencaoreserva.php?pesquisa_chave='+document.form1.pc10_numerode.value+
                            '&funcao_js=parent.js_mostrasolicitade&param_depart=<?=db_getsession("DB_coddepto")?>',
@@ -168,11 +168,11 @@ function js_solicitaate(mostra){
 
 if(mostra == true){
   
-  js_OpenJanelaIframe('top.corpo','db_iframe_solicitaate','func_solicita.php?funcao_js=parent.js_mostrasolicitaate1|pc10_numero&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicitaate','func_solicita.php?funcao_js=parent.js_mostrasolicitaate1|pc10_numero&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
   }else{
     
      if(document.form1.pc10_numeroate.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_solicitaate','func_solicita.php?pesquisa_chave='+document.form1.pc10_numeroate.value+'&funcao_js=parent.js_mostrasolicitaate&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicitaate','func_solicita.php?pesquisa_chave='+document.form1.pc10_numeroate.value+'&funcao_js=parent.js_mostrasolicitaate&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',false);
      }else{
        document.form1.pc10_numeroate.value = '';
      }

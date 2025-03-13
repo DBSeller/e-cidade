@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
 
 class clExpDadosColetores {
     
@@ -230,7 +230,7 @@ class clExpDadosColetores {
    * @param integer $iTipo - 1 Importada, 2 - exportada
    */
   public function geraACExportaDadosLeitura($iCodColetorExportaDados, $iCodLeitura, $iDias = "0", $iMeses = "0", $iTipo = "2") {
-    require_once("classes/db_aguacoletorexportadadosleitura_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadadosleitura_classe.php"));
     $this->clACExportaDadosLeitura = new cl_aguacoletorexportadadosleitura();
     
     $this->iCodColetorExportaDados = $iCodColetorExportaDados;
@@ -280,7 +280,7 @@ class clExpDadosColetores {
    */
   public function getLeituras($iMatricula, $iAno = null, $iMes = null) {
     
-    require_once("classes/db_aguacoletorexportadados_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadados_classe.php"));
     
     $this->iMatricula = $iMatricula;
     
@@ -393,7 +393,7 @@ class clExpDadosColetores {
    * @param integer $iCgmLeiturista - Codigo do leiturista para qual foi designado o coletor
    */
   public function geraLeitura($iCgmLeiturista) {
-    require_once("classes/db_agualeitura_classe.php");
+    require_once(modification("classes/db_agualeitura_classe.php"));
     $this->clAguaLeitura = new cl_agualeitura();
     
     $this->iCgmLeiturista = $iCgmLeiturista;
@@ -526,7 +526,7 @@ class clExpDadosColetores {
    * @param string $sCodRuas
    */
   public function getInformacoesMatriculas($sCodRotas, $sCodRuas) {
-    require_once("classes/db_aguacoletorexportadados_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadados_classe.php"));
     $this->clACExportaDados = new cl_aguacoletorexportadados();
     
     $this->sCodRotas = $sCodRotas;
@@ -552,7 +552,7 @@ class clExpDadosColetores {
    */
   public function geraACExportaSituacao($iCodColetorExporta = null, $iUsuario, $dData, $sHora, $sMotivo, $iSituacao) {
     
-    require_once("classes/db_aguacoletorexportasituacao_classe.php");
+    require_once(modification("classes/db_aguacoletorexportasituacao_classe.php"));
     $this->clACExportaSituacao = new cl_aguacoletorexportasituacao();
     
     if($iCodColetorExporta != null) {
@@ -604,7 +604,7 @@ class clExpDadosColetores {
    */
   public function geraACExporta($iCodColetor, $iInstituicao, $iAno, $iMes, $iSituacao) {
 
-    require_once("classes/db_aguacoletorexporta_classe.php");
+    require_once(modification("classes/db_aguacoletorexporta_classe.php"));
     $this->clACExporta = new cl_aguacoletorexporta();
 
     /* validação de campos obrigatórios */
@@ -757,7 +757,7 @@ class clExpDadosColetores {
    * @param integer $iNumTotal
    */
   public function geraACExportaDadosReceita($iCodReceita, $iCodColetorExportaDados, $sDescricao, $iParcela, $fValor, $iNumPre, $iNumTotal) {
-    require_once("classes/db_aguacoletorexportadadosreceita_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadadosreceita_classe.php"));
     $this->clACExportaDadosReceita = new cl_aguacoletorexportadadosreceita();
     
     /* validação de campos obrigatórios */
@@ -811,7 +811,7 @@ class clExpDadosColetores {
    */
   public function geraACExportaDados($iCodColetorExporta, $iCodColetorExportaDados = "null") {
     
-    require_once("classes/db_aguacoletorexportadados_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadados_classe.php"));
     $this->clACExportaDados = new cl_aguacoletorexportadados;
     
     /* validação de campos obrigatórios */
@@ -899,7 +899,7 @@ class clExpDadosColetores {
   
   public function getCodReceitaExcesso($iCodConsumoExcesso) {
     
-    require_once("classes/db_aguaconsumotipo_classe.php");
+    require_once(modification("classes/db_aguaconsumotipo_classe.php"));
     
     $this->clAguaConsumoTipo = new cl_aguaconsumotipo();
     
@@ -916,7 +916,7 @@ class clExpDadosColetores {
   }
   
   public function getNumpreExcesso($iMatricula, $iAno, $iMes) {
-    require_once("classes/db_aguacalc_classe.php");
+    require_once(modification("classes/db_aguacalc_classe.php"));
     $this->clAguaCalc = new cl_aguacalc();
     
     $this->iMatricula = $iMatricula;
@@ -968,6 +968,36 @@ class clExpDadosColetores {
       
     }
     
+  }
+  
+  /**
+   * Retorna se existe alguma importação pendente da matricula informada
+   * @param unknown $iMatricula
+   * 
+   * @return boolean
+   */
+  public function getImportacaoPendente($iMatricula) {
+  
+    $lStatusMesMatricula = false;
+  
+    $sSql  = " select count(*)                                                                             ";
+    $sSql .= "   from aguacoletorexportadadosleitura                                                       ";
+    $sSql .= "        inner join agualeitura              on  x21_codleitura = x51_agualeitura             ";
+    $sSql .= "        inner join aguacoletorexportadados  on  x50_sequencial = x51_aguacoletorexportadados ";
+    $sSql .= "        inner join aguacoletorexporta       on  x49_sequencial = x50_aguacoletorexporta      ";
+    $sSql .= "  where x50_matric = {$iMatricula}                                                           ";
+    $sSql .= "    and x21_tipo   = 2                                                                       ";
+    $sSql .= "    and x21_status = 2                                                                       ";
+  
+    $rsSqlStatus = db_query($sSql);
+  
+    if (pg_num_rows($rsSqlStatus) > 0) {
+  
+      $lStatusMesMatricula = (db_utils::fieldsMemory($rsSqlStatus, 0)->count > 0 ? true : false);
+    }
+    
+    return $lStatusMesMatricula;
+  
   }
   
 }

@@ -73,10 +73,10 @@ db_input('j39_idbql',4,$Ij39_idbql,true,'text',3,'')
 <script>
 function js_pesquisaj84_tesinter(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tesinter','func_tesinter.php?funcao_js=parent.js_mostratesinter1|j39_sequencial|j39_idbql','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tesinter','func_tesinter.php?funcao_js=parent.js_mostratesinter1|j39_sequencial|j39_idbql','Pesquisa',true);
   }else{
      if(document.form1.j84_tesinter.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tesinter','func_tesinter.php?pesquisa_chave='+document.form1.j84_tesinter.value+'&funcao_js=parent.js_mostratesinter','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tesinter','func_tesinter.php?pesquisa_chave='+document.form1.j84_tesinter.value+'&funcao_js=parent.js_mostratesinter','Pesquisa',false);
      }else{
        document.form1.j39_idbql.value = ''; 
      }
@@ -96,10 +96,10 @@ function js_mostratesinter1(chave1,chave2){
 }
 function js_pesquisaj84_tesintertipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tesintertipo','func_tesintertipo.php?funcao_js=parent.js_mostratesintertipo1|j92_sequencial|j92_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tesintertipo','func_tesintertipo.php?funcao_js=parent.js_mostratesintertipo1|j92_sequencial|j92_descr','Pesquisa',true);
   }else{
      if(document.form1.j84_tesintertipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tesintertipo','func_tesintertipo.php?pesquisa_chave='+document.form1.j84_tesintertipo.value+'&funcao_js=parent.js_mostratesintertipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tesintertipo','func_tesintertipo.php?pesquisa_chave='+document.form1.j84_tesintertipo.value+'&funcao_js=parent.js_mostratesintertipo','Pesquisa',false);
      }else{
        document.form1.j92_descr.value = ''; 
      }
@@ -118,7 +118,7 @@ function js_mostratesintertipo1(chave1,chave2){
   db_iframe_tesintertipo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tesinteroutros','func_tesinteroutros.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tesinteroutros','func_tesinteroutros.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tesinteroutros.hide();

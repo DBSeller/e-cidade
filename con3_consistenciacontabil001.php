@@ -1,33 +1,7 @@
 <?php
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -51,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -136,11 +110,11 @@ require_once ("dbforms/db_funcoes.php");
                       onComplete: function(oAjax) {
 
                         js_removeObj("msgBox");
-                        var oRetorno = eval("("+oAjax.responseText+")");
-                        
+                        var oRetorno = JSON.parse(oAjax.responseText);
+
                         if (oRetorno.aRelatorios.length == 0) {
 
-                          alert( _M(URL_MENSAGEM + "relatorios_grupo_conferencia")); 
+                          alert( _M(URL_MENSAGEM + "relatorios_grupo_conferencia"));
                           return false;
                         }
                         oRetorno.aRelatorios.each(function(oRelatorio) {
@@ -179,10 +153,10 @@ require_once ("dbforms/db_funcoes.php");
 
                         js_removeObj("msgBox");
                         oComboBoxPeriodo.clearItens();
-                        var oRetorno = eval("("+oAjax.responseText+")");
+                        var oRetorno = JSON.parse(oAjax.responseText);
                         if (oRetorno.aPeriodos.length == 0) {
-                          
-                          alert( _M(URL_MENSAGEM + "nenhum_periodo_encontrado" ) ); 
+
+                          alert( _M(URL_MENSAGEM + "nenhum_periodo_encontrado" ) );
                           return false;
                         }
                         oRetorno.aPeriodos.each(function(oPeriodo) {
@@ -201,14 +175,12 @@ require_once ("dbforms/db_funcoes.php");
   function processar() {
 
     if (oComboBoxConferencia.getValue() == "0") {
-      
-      alert(_M(URL_MENSAGEM+"relatorio_nao_selecionado")); 
+      alert(_M(URL_MENSAGEM+"relatorio_nao_selecionado"));
       return false;
     }
 
     if (oViewInstituicao.getInstituicoesSelecionadas().length == 0) {
-      
-      alert(_M(URL_MENSAGEM+"instituicao_nao_selecionada")); 
+      alert(_M(URL_MENSAGEM+"instituicao_nao_selecionada"));
       return false;
     }
 
@@ -237,7 +209,13 @@ require_once ("dbforms/db_funcoes.php");
 
     oBotaoProcessar.disable = false;
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
+    console.log(oRetorno);
+    if (oRetorno.erro) {
+        alert(oRetorno.message.urlDecode());
+        return;
+    }
+
     sArquivoDownload = oRetorno.arquivo.urlDecode();
 
     oWindow = new windowAux("oWindow1", "Resultado da Conferência Contábil", 1024, 600);
@@ -296,12 +274,16 @@ require_once ("dbforms/db_funcoes.php");
 
     var oDBGridResultado = new DBGrid("oDBGridResultado");
     oDBGridResultado.nameInstance = "oDBGridResultado";
-    oDBGridResultado.setHeight(300);
+
+    oDBGridResultado.allowSelectColumns(false);
     oDBGridResultado.setCellWidth(aCellWidth);
     oDBGridResultado.setCellAlign(aCellAlign);
     oDBGridResultado.setHeader(aCellHeaders);
-    oDBGridResultado.show($('ctnGridResultado'));
+
+    oDBGridResultado.setHeight(300);
     oDBGridResultado.clearAll(true);
+
+    oDBGridResultado.show($('ctnGridResultado'));
 
     /**
      * Percorremos os dados do objeto para preencher a grid
@@ -321,8 +303,9 @@ require_once ("dbforms/db_funcoes.php");
       }
       iLinha++;
     }
-    oDBGridResultado.renderRows();
 
+    oDBGridResultado.gridContainerWidth = 964;
+    oDBGridResultado.renderRows();
   }
 
   function downloadArquivo() {

@@ -1,42 +1,42 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
  *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
  *  detalhes.                                                         
  *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
  *  02111-1307, USA.                                                  
  *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("classes/db_conlancam_classe.php");
-require_once("classes/db_conlancamval_classe.php");
-require_once("classes/db_conlancamdoc_classe.php");
-require_once("classes/db_conlancamlr_classe.php");
-require_once("classes/db_conencerramento_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("classes/db_conlancam_classe.php"));
+require_once(modification("classes/db_conlancamval_classe.php"));
+require_once(modification("classes/db_conlancamdoc_classe.php"));
+require_once(modification("classes/db_conlancamlr_classe.php"));
+require_once(modification("classes/db_conencerramento_classe.php"));
 
 $cltranslan        = new cl_translan;
 $clconlancam       = new cl_conlancam;
@@ -237,7 +237,7 @@ function js_abreInscricaoRp(){
 
   datalanc = $F('datalanc');
   if (datalanc != ''){
-      js_OpenJanelaIframe('top.corpo','db_iframe_rp','con4_inscreverp.php?dtlanc='+datalanc,'Inscrever RPs',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rp','con4_inscreverp.php?dtlanc='+datalanc,'Inscrever RPs',true);
   }else{
       alert('Digite a data de Lançamento.');
       $('datalanc').focus();
@@ -248,7 +248,7 @@ function js_abreNaoInscricaoRp(){
 
   datalanc = $F('datalanc');
   if (datalanc != ''){
-      js_OpenJanelaIframe('top.corpo','db_iframe_rp','con4_naoinscreverp.php?datalanc='+datalanc,'não Inscrever RPs',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rp','con4_naoinscreverp.php?datalanc='+datalanc,'não Inscrever RPs',true);
   }else{
       alert('Digite a data de Lançamento.');
       $('datalanc').focus();
@@ -258,7 +258,7 @@ function js_abreNaoInscricaoRp(){
 function js_cancelaRP(){
   
    if (confirm("Todos os RP's Incluídos serao cancelados.\nConfirma Procedimento?")){
-      js_OpenJanelaIframe('top.corpo','db_iframe_canccomp','con4_cancelarrp001.php?tipo=1','Cancelar RPs',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_canccomp','con4_cancelarrp001.php?tipo=1','Cancelar RPs',true);
    }
 }
 
@@ -267,7 +267,7 @@ function js_abreTransf(){
   datalanc = $F('datalanc');
   if (datalanc != ''){
      if (confirm('Essa rotina ira realizar a transferência de Saldo.\nConfirma Procedimento?')){
-        js_OpenJanelaIframe('top.corpo','db_iframe_canccomp','con4_processacompensado.php?tipo=4&datalanc='+datalanc,'Transferências das contas de Resultado',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_canccomp','con4_processacompensado.php?tipo=4&datalanc='+datalanc,'Transferências das contas de Resultado',true);
      }
   }else{
       alert('Digite a data de Lançamento.');
@@ -277,7 +277,7 @@ function js_abreTransf(){
 function js_cancelaTrans(){
   
    if (confirm("As transferências das contas do resultado serão canceladas.\nConfirma Procedimento?")){
-      js_OpenJanelaIframe('top.corpo','db_iframe_canccomp','con4_cancelarrp001.php?tipo=4','Cancelar Transferências',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_canccomp','con4_cancelarrp001.php?tipo=4','Cancelar Transferências',true);
    }
 }
 function js_abreSaldorec(){
@@ -285,7 +285,7 @@ function js_abreSaldorec(){
   datalanc = $F('datalanc');
   if (datalanc != ''){
      if (confirm('Essa rotina ira realizar o encerramento do Saldo receita/Despesa.\nConfirma Procedimento?')){
-        js_OpenJanelaIframe('top.corpo','db_iframe_canccomp','con4_processasaldorec.php?datalanc='+datalanc,'Encerramento do Saldo receita/Despesa',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_canccomp','con4_processasaldorec.php?datalanc='+datalanc,'Encerramento do Saldo receita/Despesa',true);
      }
   }else{
       alert('Digite a data de Lançamento.');
@@ -295,7 +295,7 @@ function js_abreSaldorec(){
 function js_cancelaSaldorec(){
   
    if (confirm("Os lançamentos para o encerramento do saldo Receita/Despesa.\nConfirma Procedimento?")){
-      js_OpenJanelaIframe('top.corpo','db_iframe_canccomp','con4_cancelarrp001.php?tipo=2','Cancelar Lançamentos Compensado',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_canccomp','con4_cancelarrp001.php?tipo=2','Cancelar Lançamentos Compensado',true);
    }
 }
 function js_abreSisOrc(){
@@ -303,7 +303,7 @@ function js_abreSisOrc(){
   datalanc = $F('datalanc');
   if (datalanc != ''){
      if (confirm('Essa Rotina ira realizar o encerramento do sistema Orçamentario.\nConfirma Procedimento?')){
-        js_OpenJanelaIframe('top.corpo','db_iframe_canccomp','con4_processacompensado.php?tipo=3&datalanc='+datalanc,'Encerramento das contas do compensado',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_canccomp','con4_processacompensado.php?tipo=3&datalanc='+datalanc,'Encerramento das contas do compensado',true);
      }
   }else{
       alert('Digite a data de Lançamento.');
@@ -313,7 +313,7 @@ function js_abreSisOrc(){
 function js_cancelaCom(){
   
    if (confirm("Os lançamentos para o encerramento das contas do compensado serão cancelados.\nConfirma Procedimento?")){
-      js_OpenJanelaIframe('top.corpo','db_iframe_canccomp','con4_cancelarrp001.php?tipo=3','Cancelar Lançamentos Compensado',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_canccomp','con4_cancelarrp001.php?tipo=3','Cancelar Lançamentos Compensado',true);
    }
 }
 

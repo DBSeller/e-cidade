@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("classes/db_lab_valorreferencia_classe.php");
-require_once ("classes/db_lab_tiporeferenciaalfa_classe.php");
-require_once ("classes/db_lab_tiporeferenciaalnumerico_classe.php");
-require_once ("classes/db_lab_valorreferenciasel_classe.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_lab_valorrefselgrupo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_lab_valorreferencia_classe.php"));
+require_once(modification("classes/db_lab_tiporeferenciaalfa_classe.php"));
+require_once(modification("classes/db_lab_tiporeferenciaalnumerico_classe.php"));
+require_once(modification("classes/db_lab_valorreferenciasel_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_lab_valorrefselgrupo_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cllab_valorreferencia          = new cl_lab_valorreferencia;
@@ -116,7 +116,7 @@ if(isset($excluir)) {
 
     db_fieldsmemory($result,0);
 
-    $sql     = $cllab_valorrefselgrupo->sql_query(""," la28_i_codigo,la28_c_descr ",""," la51_i_referencia = $la29_i_codigo ");
+    $sql     = $cllab_valorrefselgrupo->sql_query(""," la28_i_codigo,la28_c_descr ","la51_i_codigo"," la51_i_referencia = $la29_i_codigo ");
     $rResult = $cllab_valorrefselgrupo->sql_record($sql);
     for ($x = 0; $x < $cllab_valorrefselgrupo->numrows; $x++) {
 
@@ -153,7 +153,9 @@ if(isset($excluir)) {
 <body class='body_default' >
   <div class='container'>
     <?php
-      require_once("forms/db_frmlab_valorreferencia.php");
+
+      $GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"] = 'lab1_lab_valorreferencia003.php';
+      require_once(modification("forms/db_frmlab_valorreferencia.php"));
     ?>
   </div>
 <?php

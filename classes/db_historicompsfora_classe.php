@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -49,7 +49,7 @@ class cl_historicompsfora {
    var $ed99_i_justificativa = null;
    var $ed99_c_turma = null; 
    var $ed99_i_anoref = 0; 
-   var $ed99_i_periodoref = 0; 
+   var $ed99_i_periodoref = '0'; 
    var $ed99_c_resultadofinal = null; 
    var $ed99_c_situacao = null; 
    var $ed99_i_qtdch = 0; 
@@ -67,7 +67,7 @@ class cl_historicompsfora {
                  ed99_i_justificativa = int8 = Justificativa 
                  ed99_c_turma = char(80) = Turma 
                  ed99_i_anoref = int4 = Ano 
-                 ed99_i_periodoref = int4 = Período 
+                 ed99_i_periodoref = char(200) = Período 
                  ed99_c_resultadofinal = char(1) = Resultado Final 
                  ed99_c_situacao = char(20) = Situação 
                  ed99_i_qtdch = numeric(10) = Carga Horária 
@@ -245,7 +245,7 @@ class cl_historicompsfora {
                                ,$this->ed99_i_justificativa 
                                ,'$this->ed99_c_turma' 
                                ,$this->ed99_i_anoref 
-                               ,$this->ed99_i_periodoref 
+                               ,'$this->ed99_i_periodoref'
                                ,'$this->ed99_c_resultadofinal' 
                                ,'$this->ed99_c_situacao' 
                                ,$this->ed99_i_qtdch 
@@ -273,7 +273,7 @@ class cl_historicompsfora {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->ed99_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -311,7 +311,7 @@ class cl_historicompsfora {
      return true;
    } 
    // funcao para alteracao
-   public function alterar ($ed99_i_codigo=null) { 
+   public function alterar ($ed99_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update historicompsfora set ";
      $virgula = "";
@@ -395,7 +395,7 @@ class cl_historicompsfora {
         if(trim($this->ed99_i_periodoref)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed99_i_periodoref"])){ 
            $this->ed99_i_periodoref = "0" ; 
         } 
-       $sql  .= $virgula." ed99_i_periodoref = $this->ed99_i_periodoref ";
+       $sql  .= $virgula." ed99_i_periodoref = '$this->ed99_i_periodoref' ";
        $virgula = ",";
      }
      if(trim($this->ed99_c_resultadofinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed99_c_resultadofinal"])){ 

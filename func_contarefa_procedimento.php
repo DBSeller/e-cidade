@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_clientes_classe.php");
-include("classes/db_db_sysmodulo_classe.php");
-include("classes/db_db_syscadproced_classe.php");
-include("classes/db_db_versao_classe.php");
-include("classes/db_db_usuclientes_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_clientes_classe.php"));
+include(modification("classes/db_db_sysmodulo_classe.php"));
+include(modification("classes/db_db_syscadproced_classe.php"));
+include(modification("classes/db_db_versao_classe.php"));
+include(modification("classes/db_db_usuclientes_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -169,7 +169,7 @@ if( isset($pesquisa_versao) ) {
        //echo
        $sql .= "  order by m.nomemod,i.codproced";
   
-      $result = pg_query($sql);
+      $result = db_query($sql);
 
       if(pg_numrows($result)>0){
         
@@ -198,7 +198,7 @@ if( isset($pesquisa_versao) ) {
                   )
                   ";
 
-          $resitem = pg_query($sql);
+          $resitem = db_query($sql);
           for($mi=0;$mi<pg_numrows($resitem);$mi++){
             db_fieldsmemory($resitem,$mi);
             echo "&nbsp&nbsp&nbsp<strong>2.$db30_codversao.$db30_codrelease</strong> $db32_obs<br>";
@@ -383,4 +383,10 @@ function js_pesquisa_tarefa(tarefa,descricao,progresso,codproced,descrproced,cod
   }
 }
 
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

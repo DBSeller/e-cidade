@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010245' name='planocontadetalheconplanoorcamento' description="planocontadetalheconplanoorcamento" prefix="c97" label="planocontadetalheconplanoorcamento" type="0">
+  <fields>
+    <field codigo="1009552" 
+           campo_api='' 
+           name="c97_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='planocontadetalheconplanoorcamento_c97_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009553" 
+           campo_api='' 
+           name="c97_planocontadetalhe" 
+           conteudo="int4" 
+           description="Código do Ementário" 
+           inivalue="0" 
+           label="Código do Ementário" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Ementário" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009554" 
+           campo_api='' 
+           name="c97_conplanoorcamento" 
+           conteudo="int4" 
+           description="Código da Conta no Orçamento" 
+           inivalue="0" 
+           label="Código da Conta no Orçamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Conta no Orçamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c97_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="planocontadetalhe" inner='t'>
+      <fieldfk name="c97_planocontadetalhe" reference="c95_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

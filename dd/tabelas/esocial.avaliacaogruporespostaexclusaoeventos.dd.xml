@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010305' name='esocial.avaliacaogruporespostaexclusaoeventos' description="Vínculo da Exclusão de Eventos com o Grupo e CGM." prefix="eso14" label="Vínculo da Exclusão de Eventos com o Grupo e CGM." type="0">
+  <fields>
+    <field codigo="1009895" 
+           campo_api='' 
+           name="eso14_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da Tabela" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.avaliacaogruporespostaexclusaoeventos_eso14_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009896" 
+           campo_api='' 
+           name="eso14_avaliacaogruporesposta" 
+           conteudo="int4" 
+           description="Código da Avaliação Grupo Resposta" 
+           inivalue="0" 
+           label="Avaliação Grupo Resposta" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Avaliação Grupo Resposta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009897" 
+           campo_api='' 
+           name="eso14_protocolo" 
+           conteudo="varchar" 
+           description="Protocolo" 
+           inivalue="0" 
+           label="Protocolo" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Protocolo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009898" 
+           campo_api='' 
+           name="eso14_cgm" 
+           conteudo="int4" 
+           description="Vínculo com o empregador." 
+           inivalue="0" 
+           label="Empregador" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Empregador" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso14_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="eso14_cgm" reference="z01_numcgm" /> 
+    </foreignkey>
+    <foreignkey reference="avaliacaogruporesposta" inner='t'>
+      <fieldfk name="eso14_avaliacaogruporesposta" reference="db107_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

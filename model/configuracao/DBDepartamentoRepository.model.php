@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -52,9 +52,10 @@ class DBDepartamentoRepository {
   }
 
   /**
-   * Retorno uma instancia do DBDepartamento pelo Codigo
-   * @param integer $iCodigo Codigo do DBDepartamento
-   * @return DBDepartamento
+   * @param $iCodigoDBDepartamento
+   * @return mixed
+   * @throws Exception
+   * @see getPorCodigo
    */
   public static function getDBDepartamentoByCodigo($iCodigoDBDepartamento) {
     
@@ -62,7 +63,41 @@ class DBDepartamentoRepository {
       DBDepartamentoRepository::getInstance()->aDBDepartamento[$iCodigoDBDepartamento] = new DBDepartamento($iCodigoDBDepartamento);
     }
     return DBDepartamentoRepository::getInstance()->aDBDepartamento[$iCodigoDBDepartamento];
-  } 
+  }
+
+  /**
+   * @param $iCodigoDBDepartamento
+   * @return mixed
+   * @throws Exception
+   * @see getPorCodigo
+   */
+  public static function getIdOrgaoByCodigo($iCodigoDBDepartamento) {
+    
+    if (!array_key_exists($iCodigoDBDepartamento, DBDepartamentoRepository::getInstance()->aDBDepartamento)) {
+      DBDepartamentoRepository::getInstance()->aDBDepartamento[$iCodigoDBDepartamento] = new DBDepartamento($iCodigoDBDepartamento);
+    }
+    
+    return DBDepartamentoRepository::getInstance()->aDBDepartamento[$iCodigoDBDepartamento]->getIdOrgao();
+  }
+
+  /**
+     * @return DBDepartamento
+     * @throws Exception
+     */
+  public static function getDepartamentoSessao() {
+      return DBDepartamentoRepository::getDBDepartamentoByCodigo(db_getsession("DB_coddepto"));
+  }
+
+
+  /**
+   * @param $codigoDepartamento
+   * @return DBDepartamento
+   * @throws Exception
+   */
+  public static function getPorCodigo($codigoDepartamento)
+  {
+      return self::getDBDepartamentoByCodigo($codigoDepartamento);
+  }
   
   /**
    * Retorna a instancia da classe

@@ -30,7 +30,7 @@ $clvistoriarec->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("y70_id_usuario");
 $clrotulo->label("k02_descr");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 if(isset($opcao) && $opcao == "alterar"){
   echo "<script>parent.iframe_receitas.location.href='fis1_vistoriarec002.php?chavepesquisa=$y76_codvist&chavepesquisa1=$y76_receita'</script>";

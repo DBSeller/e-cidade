@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_jsplibwebseller.php");
-include("libs/db_stdlibwebseller.php");
-require_once("ext/php/adodb-time.inc.php");
-require_once("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_jsplibwebseller.php"));
+include(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("ext/php/adodb-time.inc.php"));
+require_once(modification("libs/db_utils.php"));
 
-include("classes/db_agendamentos_ext_classe.php");
-include("classes/db_ausencias_ext_classe.php");
+include(modification("classes/db_agendamentos_ext_classe.php"));
+include(modification("classes/db_ausencias_ext_classe.php"));
 
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
-include("classes/db_sau_motivo_ausencia_classe.php");
+include(modification("classes/db_sau_motivo_ausencia_classe.php"));
 $clmotivo_ausencia = new cl_sau_motivo_ausencia;
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -258,7 +258,7 @@ if(isset($opcao)){
     <td align="left" valign="top" bgcolor="#CCCCCC">
     <center>
         <?
-        include("forms/db_frmundmedhorario007.php");
+        include(modification("forms/db_frmundmedhorario007.php"));
         ?>
     </center>
         </td>

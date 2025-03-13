@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if (isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS); 
-  $result = pg_exec("select max(coddepto) + 1 from db_depart");
+  $result = db_query("select max(coddepto) + 1 from db_depart");
   $codigo = pg_result($result,0,0);
   $codigo = $codigo == ""?"1":$codigo;
-  $result = pg_exec("insert into db_depart values($codigo,'$descrdepto','$nomeresponsavel','$emailresponsavel')") or die ("Erro: (37). Processo de inclusao.");
+  $result = db_query("insert into db_depart values($codigo,'$descrdepto','$nomeresponsavel','$emailresponsavel')") or die ("Erro: (37). Processo de inclusao.");
   db_msgbox("Incluido com sucesso.");
 }
 ?>
@@ -71,7 +71,7 @@ function js_verificaFormulario() {
 <table width="790" height="100%" border="0" cellspacing="0" cellpadding="0">
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-	<? include("forms/db_frmdepartamento.php"); ?>	
+	<? include(modification("forms/db_frmdepartamento.php")); ?>	
 	</td>
   </tr>
 </table>

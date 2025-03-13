@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -484,5 +484,76 @@ class cl_iptunump {
      }
      return $sql;
   }
+   function sql_query_ender_taxa ( $j20_anousu=null,$j20_matric=null,$campos="*",$ordem=null,$dbwhere=""){ 
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from iptubase ";
+     $sql .= "      inner join ";
+     $sql .= "         ( ";
+     $sql .= "           select ";
+     $sql .= "              j20_matric, ";
+     $sql .= "              j20_anousu, ";
+     $sql .= "              j20_numpre ";
+     $sql .= "           from ";
+     $sql .= "             iptunump ";
+     $sql .= "             where j20_anousu = $j20_anousu ";
+     $sql .= "           UNION ";
+     $sql .= "           select ";
+     $sql .= "              j151_matric as j20_matric, ";
+     $sql .= "              j08_anousu as j20_anousu, ";
+     $sql .= "              j151_numpre as j20_numpre ";
+     $sql .= "           from ";
+     $sql .= "             iptutaxanump txnump ";
+     $sql .= "             inner join iptucadtaxaexe txexe on txexe.j08_iptucadtaxaexe = txnump.j151_iptucadtaxaexe ";
+     $sql .= "             where txexe.j08_anousu = $j20_anousu ";
+     $sql .= "         ) nump on  iptubase.j01_matric = nump.j20_matric ";
+     $sql .= "      inner join lote      on  lote.j34_idbql = iptubase.j01_idbql";
+     $sql .= "      inner join testada   on j34_idbql  =j36_idbql   ";
+     
+     $sql .= "      inner join testpri   on j49_idbql  = j36_idbql  ";
+     $sql .= "                          and j49_face   = j36_face   ";
+     $sql .= "                          and j49_codigo = j36_codigo ";
+     
+     $sql .= "      inner join bairro on j34_bairro=j13_codi";
+     $sql .= "      inner join ruas on j14_codigo = j36_codigo";
+     $sql .= "      inner join zonas on  j50_zona = j34_zona";
+     $sql .= "      inner join setor on  j30_codi = j34_setor";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($j20_anousu!=null ){
+         $sql2 .= " where nump.j20_anousu = $j20_anousu "; 
+       } 
+       if($j20_matric!=null ){
+         if($sql2!=""){
+            $sql2 .= " and ";
+         }else{
+            $sql2 .= " where ";
+         } 
+         $sql2 .= " nump.j20_matric = $j20_matric "; 
+       } 
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
 }
-?>
+

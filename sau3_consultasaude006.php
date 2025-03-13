@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once('libs/db_utils.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification('libs/db_utils.php'));
 
 if (isset($z01_i_cgsund)) {
   
@@ -50,8 +50,18 @@ if (isset($z01_i_cgsund)) {
   $sCampos .= "           end ";
   $sCampos .= "      end "; 
   $sCampos .= " end as dl_tipo_de_retirada, ";
-  $sCampos .= " fa01_i_codigo, m60_descr as dl_medicamento, "; 
-  $sCampos .= " fa06_f_quant, m77_lote as dl_lote, m77_dtvalidade as dl_validade, fa07_i_matrequi,";
+  $sCampos .= " fa01_i_codigo, m60_descr as dl_medicamento, ";
+  // Alterado busca da quantidade retirada quando a retirada foi fracionada em lotes. Busca a quantidade retirada de cada lote.
+  // Se não busca o total retirado
+  $sCampos .= " case ";
+  $sCampos .= "   when fa09_f_quant is not null ";
+  $sCampos .= "     then fa09_f_quant ";
+  $sCampos .= "   else fa06_f_quant ";
+  $sCampos .= " end as fa06_f_quant,  ";
+
+  $sCampos .= " m77_lote as dl_lote, m77_dtvalidade as dl_validade, fa07_i_matrequi,";
+
+
   $sCampos .= " fa23_c_motivo as dl_motivo_da_devolucao, login as dl_usuario"; 
   $sSql     = $oDaoFarRetiradaitens->sql_query_historicoretiradasdevolucoes($z01_i_cgsund, 
                                                                             $sCampos, 

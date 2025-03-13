@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -37,7 +37,7 @@ $clrotulo->label("p58_codproc");
 $clrotulo->label("p30_procapensado");
 $clrotulo->label("z01_nome");
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 ?>
 </script>
@@ -126,18 +126,17 @@ function js_pesquisap30_procapensado(mostra){
   var p30_procapensado = document.form1.p30_procapensado.value;
     
   if(mostra == true){
-    var sUrl = 'func_protprocesso.php?grupo=1&apensado='+p58_codproc+'&funcao_js=parent.js_mostratipoproc1|0|2';
-    db_iframe.jan.location.href = sUrl;
-    db_iframe.mostraMsg();
-    db_iframe.show();
-    db_iframe.focus();
+    var sUrl = 'func_protprocesso.php?grupo=1&apensado='+p58_codproc+'&funcao_js=parent.js_mostratipoproc1|0|3';
+      js_OpenJanelaIframe("", "db_iframe_proc", sUrl, "Pesquisa", true);
+
   } else {
     var sUrl = 'func_protprocesso.php?grupo=1&apensado='+p58_codproc+'&pesquisa_chave='+p30_procapensado+
                                             '&funcao_js=parent.js_mostratipoproc';
-    db_iframe.jan.location.href = sUrl;
+      js_OpenJanelaIframe("", "db_iframe_proc", sUrl, "Pesquisa", false);
   }
 }
-function js_mostratipoproc(chave1,chave2,erro){
+function js_mostratipoproc(chave1, chave2, erro) {
+
   document.form1.p30_procapensado.value = chave1;
   document.form1.z01_nome.value   = chave2; 
   if(erro == true){ 
@@ -146,10 +145,11 @@ function js_mostratipoproc(chave1,chave2,erro){
   }
 }
 function js_mostratipoproc1(chave1,chave2){
+
   document.form1.p30_procapensado.value = chave1;
   document.form1.z01_nome.value         = chave2;
   document.form1.submit();
-  db_iframe.hide();
+  db_iframe_proc.hide();
 }
 function js_imprimir_capa(){
   var p58_codproc = document.form1.p58_codproc.value;

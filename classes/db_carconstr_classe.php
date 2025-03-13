@@ -1,64 +1,64 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: cadastro
 //CLASSE DA ENTIDADE carconstr
-class cl_carconstr { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $j48_matric = 0; 
-   var $j48_idcons = 0; 
-   var $j48_caract = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_carconstr {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $j48_matric = 0;
+   var $j48_idcons = 0;
+   var $j48_caract = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 j48_matric = int4 = Matricula 
-                 j48_idcons = int4 = Codigo Construcao 
-                 j48_caract = int4 = Caracteristica 
+                 j48_matric = int4 = Matricula
+                 j48_idcons = int4 = Codigo Construcao
+                 j48_caract = int4 = Caracteristica
                  ";
-   //funcao construtor da classe 
-   function cl_carconstr() { 
+   //funcao construtor da classe
+   function cl_carconstr() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("carconstr"); 
+     $this->rotulo = new rotulo("carconstr");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -79,12 +79,12 @@ class cl_carconstr {
      }
    }
    // funcao para inclusao
-   function incluir ($j48_matric,$j48_idcons,$j48_caract){ 
+   function incluir ($j48_matric,$j48_idcons,$j48_caract){
       $this->atualizacampos();
-       $this->j48_matric = $j48_matric; 
-       $this->j48_idcons = $j48_idcons; 
-       $this->j48_caract = $j48_caract; 
-     if(($this->j48_matric == null) || ($this->j48_matric == "") ){ 
+       $this->j48_matric = $j48_matric;
+       $this->j48_idcons = $j48_idcons;
+       $this->j48_caract = $j48_caract;
+     if(($this->j48_matric == null) || ($this->j48_matric == "") ){
        $this->erro_sql = " Campo j48_matric nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -92,7 +92,7 @@ class cl_carconstr {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->j48_idcons == null) || ($this->j48_idcons == "") ){ 
+     if(($this->j48_idcons == null) || ($this->j48_idcons == "") ){
        $this->erro_sql = " Campo j48_idcons nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -100,7 +100,7 @@ class cl_carconstr {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->j48_caract == null) || ($this->j48_caract == "") ){ 
+     if(($this->j48_caract == null) || ($this->j48_caract == "") ){
        $this->erro_sql = " Campo j48_caract nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -109,17 +109,17 @@ class cl_carconstr {
        return false;
      }
      $sql = "insert into carconstr(
-                                       j48_matric 
-                                      ,j48_idcons 
-                                      ,j48_caract 
+                                       j48_matric
+                                      ,j48_idcons
+                                      ,j48_caract
                        )
                 values (
-                                $this->j48_matric 
-                               ,$this->j48_idcons 
-                               ,$this->j48_caract 
+                                $this->j48_matric
+                               ,$this->j48_idcons
+                               ,$this->j48_caract
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = " ($this->j48_matric."-".$this->j48_idcons."-".$this->j48_caract) nao Incluído. Inclusao Abortada.";
@@ -155,42 +155,16 @@ class cl_carconstr {
        $resac = db_query("insert into db_acount values($acount,31,161,'','".AddSlashes(pg_result($resaco,0,'j48_caract'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($j48_matric=null,$j48_idcons=null,$j48_caract=null) { 
+   function alterar ($j48_matric=null,$j48_idcons=null,$j48_caract=null) {
       $this->atualizacampos();
      $sql = " update carconstr set ";
      $virgula = "";
-     if(trim($this->j48_matric)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j48_matric"])){ 
-       $sql  .= $virgula." j48_matric = $this->j48_matric ";
-       $virgula = ",";
-       if(trim($this->j48_matric) == null ){ 
-         $this->erro_sql = " Campo Matricula nao Informado.";
-         $this->erro_campo = "j48_matric";
-         $this->erro_banco = "";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "0";
-         return false;
-       }
-     }
-     if(trim($this->j48_idcons)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j48_idcons"])){ 
-       $sql  .= $virgula." j48_idcons = $this->j48_idcons ";
-       $virgula = ",";
-       if(trim($this->j48_idcons) == null ){ 
-         $this->erro_sql = " Campo Codigo Construcao nao Informado.";
-         $this->erro_campo = "j48_idcons";
-         $this->erro_banco = "";
-         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-         $this->erro_status = "0";
-         return false;
-       }
-     }
-     if(trim($this->j48_caract)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j48_caract"])){ 
+     if(trim($this->j48_caract)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j48_caract"])){
        $sql  .= $virgula." j48_caract = $this->j48_caract ";
        $virgula = ",";
-       if(trim($this->j48_caract) == null ){ 
+       if(trim($this->j48_caract) == null ){
          $this->erro_sql = " Campo Caracteristica nao Informado.";
          $this->erro_campo = "j48_caract";
          $this->erro_banco = "";
@@ -208,7 +182,7 @@ class cl_carconstr {
        $sql .= " and  j48_idcons = $this->j48_idcons";
      }
      if($j48_caract!=null){
-       $sql .= " and  j48_caract = $this->j48_caract";
+       $sql .= " and  j48_caract = $j48_caract";
      }
      $resaco = $this->sql_record($this->sql_query_file($this->j48_matric,$this->j48_idcons,$this->j48_caract));
      if($this->numrows>0){
@@ -228,7 +202,7 @@ class cl_carconstr {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->j48_matric."-".$this->j48_idcons."-".$this->j48_caract;
@@ -256,14 +230,14 @@ class cl_carconstr {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($j48_matric=null,$j48_idcons=null,$j48_caract=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($j48_matric=null,$j48_idcons=null,$j48_caract=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($j48_matric,$j48_idcons,$j48_caract));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -305,7 +279,7 @@ class cl_carconstr {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$j48_matric."-".$j48_idcons."-".$j48_caract;
@@ -333,11 +307,11 @@ class cl_carconstr {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -359,10 +333,10 @@ class cl_carconstr {
       }
      return $result;
    }
-   function sql_query ( $j48_matric=null,$j48_idcons=null,$j48_caract=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $j48_matric=null,$j48_idcons=null,$j48_caract=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -378,31 +352,31 @@ class cl_carconstr {
      $sql2 = "";
      if($dbwhere==""){
        if($j48_matric!=null ){
-         $sql2 .= " where carconstr.j48_matric = $j48_matric "; 
-       } 
+         $sql2 .= " where carconstr.j48_matric = $j48_matric ";
+       }
        if($j48_idcons!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " carconstr.j48_idcons = $j48_idcons "; 
-       } 
+         }
+         $sql2 .= " carconstr.j48_idcons = $j48_idcons ";
+       }
        if($j48_caract!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " carconstr.j48_caract = $j48_caract "; 
-       } 
+         }
+         $sql2 .= " carconstr.j48_caract = $j48_caract ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -411,10 +385,10 @@ class cl_carconstr {
      }
      return $sql;
   }
-   function sql_query_file ( $j48_matric=null,$j48_idcons=null,$j48_caract=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $j48_matric=null,$j48_idcons=null,$j48_caract=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -427,31 +401,31 @@ class cl_carconstr {
      $sql2 = "";
      if($dbwhere==""){
        if($j48_matric!=null ){
-         $sql2 .= " where carconstr.j48_matric = $j48_matric "; 
-       } 
+         $sql2 .= " where carconstr.j48_matric = $j48_matric ";
+       }
        if($j48_idcons!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " carconstr.j48_idcons = $j48_idcons "; 
-       } 
+         }
+         $sql2 .= " carconstr.j48_idcons = $j48_idcons ";
+       }
        if($j48_caract!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " carconstr.j48_caract = $j48_caract "; 
-       } 
+         }
+         $sql2 .= " carconstr.j48_caract = $j48_caract ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -460,21 +434,21 @@ class cl_carconstr {
      }
      return $sql;
   }
-  
+
   function sql_queryCaracteristicas($iMatricula, $iCodigoConstrucao) {
-    
+
     $sSql  = "select *                                          ";
     $sSql .= "  from carconstr                                  ";
     $sSql .= "       left join caracter on j31_codigo = j48_caract  ";
     $sSql .= "       left join cargrup  on j32_grupo  = j31_grupo   ";
-    $sSql .= "                         and j32_tipo   = 'C'         "; 
+    $sSql .= "                         and j32_tipo   = 'C'         ";
     $sSql .= " where j48_matric = {$iMatricula}               ";
     $sSql .= "   and j48_idcons = {$iCodigoConstrucao}        ";
 
     return $sSql;
-     
+
   }
-  
+
   /**
    * Pesquisa os grupos de caracteristicas e seuas seleções por matricula e id_CONSTR
    * @param integer $iMatricula
@@ -513,9 +487,28 @@ class cl_carconstr {
     $sSql.= "                                     and j48_idcons        = {$iIdConstrucao}                        \n";
     $sSql.= " where j32_tipo = 'C'                                                                                \n";
     $sSql.= " order by j32_grupo                                                                                  \n";
-    
+
     return $sSql;
   }
-  
+
+  function sql_caracteristicas_selecionadas($iMatric, $iIdConstr, $sGrupo)
+  {
+    $sSql  = "SELECT *
+                FROM carconstr
+               INNER JOIN caracter
+                     ON j31_codigo = j48_caract
+               INNER JOIN cargrup
+                     ON j32_grupo = j31_grupo
+                     AND j32_tipo = 'C'
+               WHERE j48_matric = {$iMatric}
+                 AND j48_idcons = {$iIdConstr}";
+
+    if (!empty($sGrupo)) {
+        $sSql .= " AND j31_grupo IN ({$sGrupo}) ";
+    }
+
+    return $sSql;
+  }
+
 }
 ?>

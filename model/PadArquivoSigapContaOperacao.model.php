@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ('model/PadArquivoSigap.model.php');
+require_once(modification('model/PadArquivoSigap.model.php'));
 /**
  * Prove dados para a geração do arquivo das Contas de operação para o SIGAP
  * @package Pad
  * @author Iuri Guncthnigg
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.6 $
  */
 final class PadArquivoSigapContaOperacao extends PadArquivoSigap {
   

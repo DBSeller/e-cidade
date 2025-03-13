@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,33 +25,33 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_libdocumento.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_trocaserie_classe.php");
-require_once("classes/db_turma_classe.php");
-require_once("classes/db_turmaserieregimemat_classe.php");
-require_once("classes/db_matricula_classe.php");
-require_once("classes/db_matriculaserie_classe.php");
-require_once("classes/db_matriculamov_classe.php");
-require_once("classes/db_regencia_classe.php");
-require_once("classes/db_diario_classe.php");
-require_once("classes/db_diarioavaliacao_classe.php");
-require_once("classes/db_diarioresultado_classe.php");
-require_once("classes/db_diariofinal_classe.php");
-require_once("classes/db_historico_classe.php");
-require_once("classes/db_historicomps_classe.php");
-require_once("classes/db_histmpsdisc_classe.php");
-require_once("classes/db_regenciaperiodo_classe.php");
-require_once("classes/db_procedimento_classe.php");
-require_once("classes/db_alunocurso_classe.php");
-require_once("classes/db_alunopossib_classe.php");
-require_once("classes/db_amparo_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_trocaserie_classe.php"));
+require_once(modification("classes/db_turma_classe.php"));
+require_once(modification("classes/db_turmaserieregimemat_classe.php"));
+require_once(modification("classes/db_matricula_classe.php"));
+require_once(modification("classes/db_matriculaserie_classe.php"));
+require_once(modification("classes/db_matriculamov_classe.php"));
+require_once(modification("classes/db_regencia_classe.php"));
+require_once(modification("classes/db_diario_classe.php"));
+require_once(modification("classes/db_diarioavaliacao_classe.php"));
+require_once(modification("classes/db_diarioresultado_classe.php"));
+require_once(modification("classes/db_diariofinal_classe.php"));
+require_once(modification("classes/db_historico_classe.php"));
+require_once(modification("classes/db_historicomps_classe.php"));
+require_once(modification("classes/db_histmpsdisc_classe.php"));
+require_once(modification("classes/db_regenciaperiodo_classe.php"));
+require_once(modification("classes/db_procedimento_classe.php"));
+require_once(modification("classes/db_alunocurso_classe.php"));
+require_once(modification("classes/db_alunopossib_classe.php"));
+require_once(modification("classes/db_amparo_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $ed101_d_data_dia = date("d",db_getsession("DB_datausu"));
 $ed101_d_data_mes = date("m",db_getsession("DB_datausu"));
@@ -114,7 +114,7 @@ if (count($aParagrafos) > 0) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Classificação de Aluno</b></legend>
-    <?include("forms/db_frmtrocaserie.php");?>
+    <?include(modification("forms/db_frmtrocaserie.php"));?>
    </fieldset>
    </center>
   </td>

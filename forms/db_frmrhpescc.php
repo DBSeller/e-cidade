@@ -58,7 +58,7 @@ db_input('rh17_cc',1,$Irh17_cc,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpescc','func_rhpescc.php?funcao_js=parent.js_preenchepesquisa|rh17_regist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpescc','func_rhpescc.php?funcao_js=parent.js_preenchepesquisa|rh17_regist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpescc.hide();

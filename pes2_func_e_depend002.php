@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 
@@ -72,7 +72,7 @@ $sql = "
        ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);
@@ -87,8 +87,13 @@ $pdf->setfillcolor(235);
 $pdf->setfont('arial','b',8);
 $troca = 1;
 $alt = 4;
+$iTotalComDependentes = 0;
+$iTotalSemDependentes = 0;
+$iTotalDependentesPorMatric = 0;
+$aCgm = array();
 for($x = 0; $x < pg_numrows($result);$x++){
    db_fieldsmemory($result,$x);
+
    if ($pdf->gety() > $pdf->h - 30 || $troca != 0 ){
       $pdf->addpage();
       $pdf->setfont('arial','b',8);
@@ -104,10 +109,19 @@ for($x = 0; $x < pg_numrows($result);$x++){
    $pdf->cell(20,$alt,db_formatar($rh01_nasc,'d'),0,1,"C",0);
    $sql_dep = "select * from rhdepend 
                where rh31_regist = $rh01_regist"; 
-   $res_dep = pg_query($sql_dep);
+   $res_dep = db_query($sql_dep);
+
+   if(pg_numrows($res_dep) > 0){
+     if(!in_array($z01_numcgm,$aCgm)){
+       $iTotalComDependentes++;
+     }
+   }else{
+     $iTotalSemDependentes++;
+   }
      
    for($yy = 0;$yy < pg_numrows($res_dep);$yy++){
       db_fieldsmemory($res_dep,$yy);
+      $iTotalDependentesPorMatric++;
       if($yy == 0)
         $pdf->cell(40,$alt,'DEPENDENTES : ',0,0,"L",0);
       else
@@ -115,11 +129,19 @@ for($x = 0; $x < pg_numrows($result);$x++){
       $pdf->cell(60,$alt,$rh31_nome,0,0,"L",0);
       $pdf->cell(20,$alt,$rh31_gparen,0,0,"L",0);
       $pdf->cell(20,$alt,db_formatar($rh31_dtnasc,'d'),0,1,"C",0);
+      if(($yy+1) == pg_numrows($res_dep)){
+        $pdf->cell(30,$alt,"Total de Dependentes: {$iTotalDependentesPorMatric}",0,1,"L",0);
+	$iTotalDependentesPorMatric = 0;
+      }
    }
    $pdf->cell(0,$alt,'','T',1,"C",0);
+   $aCgm[] = $z01_numcgm;
    
 }
 
+
+$pdf->cell(60,$alt,"Total de Dependentes:{$iTotalComDependentes}",1,0,"C",1);
+$pdf->cell(60,$alt,"Total de Matriculas sem Dependentes:{$iTotalSemDependentes}",1,0,"C",1);
 //$pdf->setfont('arial','b',8);
 //$pdf->cell(80,$alt,'TOTAL DO BANCO',"T",0,"C",0);
 //$pdf->cell(20,$alt,'',"T",0,"C",0);

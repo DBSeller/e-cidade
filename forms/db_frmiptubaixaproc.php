@@ -72,10 +72,10 @@ db_input('p58_codproc',10,$Ip58_codproc,true,'text',3,'')
 <script>
 function js_pesquisaj03_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_iptubaixa','func_iptubaixa.php?funcao_js=parent.js_mostraiptubaixa1|j02_matric|j02_dtbaixa','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubaixa','func_iptubaixa.php?funcao_js=parent.js_mostraiptubaixa1|j02_matric|j02_dtbaixa','Pesquisa',true);
   }else{
      if(document.form1.j03_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_iptubaixa','func_iptubaixa.php?pesquisa_chave='+document.form1.j03_matric.value+'&funcao_js=parent.js_mostraiptubaixa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubaixa','func_iptubaixa.php?pesquisa_chave='+document.form1.j03_matric.value+'&funcao_js=parent.js_mostraiptubaixa','Pesquisa',false);
      }else{
        document.form1.j02_dtbaixa.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostraiptubaixa1(chave1,chave2){
 }
 function js_pesquisaj03_codproc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
   }else{
      if(document.form1.j03_codproc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.j03_codproc.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.j03_codproc.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
      }else{
        document.form1.p58_codproc.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostraprotprocesso1(chave1,chave2){
   db_iframe_protprocesso.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_iptubaixaproc','func_iptubaixaproc.php?funcao_js=parent.js_preenchepesquisa|j03_matric','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubaixaproc','func_iptubaixaproc.php?funcao_js=parent.js_preenchepesquisa|j03_matric','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_iptubaixaproc.hide();

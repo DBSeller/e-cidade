@@ -26,7 +26,7 @@
  */
 
 //MODULO: Custos
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcustocriteriopcmater->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -142,7 +142,7 @@ function js_cancelar(){
 }
 function js_pesquisacc10_pcmater(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_custocriteriopcmater',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriopcmater',
                         'db_iframe_pcmater',
                         'func_pcmater.php?funcao_js=parent.js_mostrapcmater1|pc01_codmater|pc01_descrmater',
                         'Materiais',
@@ -151,7 +151,7 @@ function js_pesquisacc10_pcmater(mostra){
                         (document.body.scrollHeight-80));
   }else{
      if(document.form1.cc10_pcmater.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_custocriteriopcmater','db_iframe_pcmater','func_pcmater.php?pesquisa_chave='+document.form1.cc10_pcmater.value+'&funcao_js=parent.js_mostrapcmater','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriopcmater','db_iframe_pcmater','func_pcmater.php?pesquisa_chave='+document.form1.cc10_pcmater.value+'&funcao_js=parent.js_mostrapcmater','Pesquisa',false);
      }else{
        document.form1.pc01_descrmater.value = ''; 
      }
@@ -171,10 +171,10 @@ function js_mostrapcmater1(chave1,chave2){
 }
 function js_pesquisacc10_custocriteriorateio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_custocriteriopcmater','db_iframe_custocriteriorateio','func_custocriteriorateio.php?funcao_js=parent.js_mostracustocriteriorateio1|cc08_sequencial|cc08_instit','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriopcmater','db_iframe_custocriteriorateio','func_custocriteriorateio.php?funcao_js=parent.js_mostracustocriteriorateio1|cc08_sequencial|cc08_instit','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.cc10_custocriteriorateio.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_custocriteriopcmater','db_iframe_custocriteriorateio','func_custocriteriorateio.php?pesquisa_chave='+document.form1.cc10_custocriteriorateio.value+'&funcao_js=parent.js_mostracustocriteriorateio','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriopcmater','db_iframe_custocriteriorateio','func_custocriteriorateio.php?pesquisa_chave='+document.form1.cc10_custocriteriorateio.value+'&funcao_js=parent.js_mostracustocriteriorateio','Pesquisa',false);
      }else{
        document.form1.cc08_instit.value = ''; 
      }

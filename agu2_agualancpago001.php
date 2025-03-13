@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_aguacalc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_aguacalc_classe.php"));
 $claguacalc = new cl_aguacalc;
 $claguacalc->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -49,7 +49,17 @@ db_postmemory($HTTP_POST_VARS);
 <script>
 
 function js_emite(){
-  js_OpenJanelaIframe('','db_iframe_relatorio','agu2_agualancpago002.php?anousu='+document.form1.anousu.value+'&mesfinal='+document.form1.mesfinal.value+'&tipo='+document.form1.tipo.value+'&inadimbaseada='+document.form1.inadimbaseada.value,'',true);}
+    var sPathRelatorio = 'agu2_agualancpago002.php';
+    sPathRelatorio += '?anousu='+document.form1.anousu.value;
+    sPathRelatorio += '&mesfinal='+document.form1.mesfinal.value;
+    sPathRelatorio += '&tipo='+document.form1.tipo.value;
+    sPathRelatorio += '&inadimbaseada='+document.form1.inadimbaseada.value;
+    var oJanela = window.open(
+        sPathRelatorio, '',
+        'width=' + (screen.availWidth - 5) + ',height=' + (screen.availHeight - 40) + ',scrollbars=1,location=0 '
+    );
+    oJanela.moveTo(0, 0);
+}
 </script>  
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
@@ -75,11 +85,11 @@ function js_emite(){
 <select name="anousu" >
 <?
 $sqlano = "select x22_exerc as anoini from aguacalc order by x22_exerc desc limit 1;";
-$resultano = pg_query($sqlano) or die($sqlano);
+$resultano = db_query($sqlano) or die($sqlano);
 db_fieldsmemory($resultano);
 
 $sqlano = "select x22_exerc as anofim from aguacalc order by x22_exerc limit 1;";
-$resultano = pg_query($sqlano) or die($sqlano);
+$resultano = db_query($sqlano) or die($sqlano);
 db_fieldsmemory($resultano);
 
 for($i=$anoini;$i >= $anofim;$i--){

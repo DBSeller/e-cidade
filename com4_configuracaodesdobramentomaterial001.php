@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -135,7 +135,7 @@ function js_atualizaGrid() {
 function js_retornoAtualizaGrid(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 
     oDbGridElementos.clearAll(true);
@@ -160,7 +160,7 @@ function js_pesquisaElemento() {
   var sQuery       = '&chave_o56_elemento=3';
     
   var sUrlPesquisa = 'func_orcelemento_comreduzido.php?funcao_js=parent.js_retornoPesquisaElemento|o56_elemento|o56_descr';
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_elementosdespesa',
                       sUrlPesquisa + sQuery,
                       'Busca de elementos de despesa',
@@ -206,7 +206,7 @@ function js_configurarElemento() {
 function js_retornoConfigurarElemento(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 
     alert ('Elemento configurado com sucesso.');
@@ -243,7 +243,7 @@ function js_deletaElemento(iSequencial) {
  */
 function js_retornoDeletaElemento(oAjax) {
 
-   var oRetorno = eval('('+oAjax.responseText+')');
+   var oRetorno = JSON.parse(oAjax.responseText);
    if (oRetorno.status == 1) {
 
      alert ('Elemento excluso com sucesso.');

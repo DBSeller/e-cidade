@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
 
 parse_str(($HTTP_SERVER_VARS['QUERY_STRING']));
 
 if(file_exists(base64_decode($arquivo))){
-  include(base64_decode($arquivo));
+  include(modification(base64_decode($arquivo)));
 }else{
 
   echo "

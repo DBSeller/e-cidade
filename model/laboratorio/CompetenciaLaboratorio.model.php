@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once 'model/ambulatorial/ICompetenciaSaude.interface.php';
+require_once modification("model/ambulatorial/ICompetenciaSaude.interface.php");
 
 define("MSG_COMPETENCIA", "saude.laboratorio.CompetenciaLaboratorio.");
 
@@ -37,7 +37,7 @@ define("MSG_COMPETENCIA", "saude.laboratorio.CompetenciaLaboratorio.");
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
  * @author André Mello <andre.mello@dbseller.com.br>
  * @package laboratorio
- * @version   $Revision: 1.3 $
+ * @version   $Revision: 1.4 $
  */
 class CompetenciaLaboratorio implements ICompetenciaSaude {
 

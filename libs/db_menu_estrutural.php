@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,8 +30,8 @@
  *  monta duas div, -> div_conplano e div_conplanosis
  *
  */
- include_once("classes/db_conplano_classe.php");
- include_once("classes/db_conplanosis_classe.php");
+ include_once(modification("classes/db_conplano_classe.php"));
+ include_once(modification("classes/db_conplanosis_classe.php"));
 
  class menu_estrutural extends cl_conplano  {
 

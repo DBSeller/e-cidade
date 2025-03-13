@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,17 +31,15 @@ $clrotulo = new rotulocampo;
 $clrotulo->label("nome");
 $clrotulo->label("descrdepto");
 ?>
-<!--<form name="form1" method="post" action="" onsubmit='js_buscavalores();' >-->
 <div class="container">
   <form name="form1" method="post" action="">
   <fieldset>
     <legend><b>Atendimento de Requisição</b></legend>
-    <fieldset style="'text-align:left" class="separator">
+    <fieldset style="text-align:left" class="separator">
       <legend><b>Dados da Requisição</b></legend>
         <table border="0">
         <tr>
           <td nowrap title="<?=@$Tm40_codigo?>">
-             <?//=@$Lm40_codigo?>
           <b>Código da Requisição: </b>
           </td>
           <td>
@@ -124,9 +122,6 @@ $clrotulo->label("descrdepto");
           </table>
           </fieldset>
    </fieldset>
-    <!--
-    <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Confirma":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-    -->
          <input name="incluir" type="button"  value="Efetuar Atendimento" onclick="return js_atendeRequisicao();" >
   <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
   <?
@@ -143,19 +138,14 @@ $clrotulo->label("descrdepto");
 iTipoControle = <?=$iTipoControleCustos;?>;
 function js_pesquisa(){
 
-  sFiltro = "sFiltro=almox";
-  js_OpenJanelaIframe('top.corpo','db_iframe_atendrequi','func_matrequiatend.php?'+sFiltro+'&funcao_js=parent.js_preenchepesquisa|m40_codigo','Pesquisa',true);
+  sFiltro = "sFiltro=almox&naoTrazerDevolucoes";
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atendrequi','func_matrequiatend.php?'+sFiltro+'&funcao_js=parent.js_preenchepesquisa|m40_codigo','Pesquisa',true);
 
   $('mensagempontopedido').innerHTML     = '';
   $('mensagempontopedido').style.display = 'none';
 }
 function js_preenchepesquisa(chave){
   db_iframe_atendrequi.hide();
-  <?
-//  if($db_opcao!=1){
-   // echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
-//  }
-  ?>
   js_consultaRequisicao(chave);
 }
 function js_marca(idObjeto, sClasse, sLinha){
@@ -206,7 +196,6 @@ function js_consultaRequisicao(iRequisicao){
    js_divCarregando("Aguarde, efetuando pesquisa","msgBox");
    strJson = '{"exec":"getDados","params":[{"iCodReq":'+iRequisicao+'}]}';
    $('dadosrequisicao').innerHTML    = '';
-   //$('pesquisar').disabled = true;
    var url     = 'mat4_requisicaoRPC.php';
    var oAjax   = new Ajax.Request(
                             url, 
@@ -221,7 +210,7 @@ function js_consultaRequisicao(iRequisicao){
 function js_saida(oAjax) {
 
   js_removeObj("msgBox");
-  var obj               = eval("(" + oAjax.responseText + ")");
+  var obj               = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
   
     alert(obj.message.urlDecode());
@@ -409,7 +398,7 @@ function js_atendeRequisicao() {
 function js_saidaAtendimento(oAjax) {
 
   js_removeObj("msgBox");
-  var obj = eval("(" + oAjax.responseText + ")");
+  var obj = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
 
     alert(obj.message.urlDecode());
@@ -423,7 +412,6 @@ function js_saidaAtendimento(oAjax) {
      query='';
      query += "&ini="+obj.m40_codigo.value;
      query += "&fim="+obj.m40_codigo.value;
-     //query += "&tObserva="+obj.tobserva.value;
      query += "&departamento=<?=db_getsession("DB_coddepto")?>";
      jan = window.open('mat2_matrequi002.php?'+query,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
      jan.moveTo(0,0);
@@ -444,7 +432,7 @@ function js_mostraLotes(iItem) {
   sField        = $('atendido'+iItem).id;
   sUrl          = 'mat4_mostraitemlotes.php?iCodMater='+iCodItem+'&iCodDepto='+iCodEstoque;
   sUrl         += '&nValor='+nValor+'&nValorSolicitado='+nValorReqItem+'&updateField='+sField;
-  js_OpenJanelaIframe('top.corpo','db_iframe_lotes',sUrl,'Lotes ',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotes',sUrl,'Lotes ',true);
   
 }
 

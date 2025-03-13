@@ -1,0 +1,140 @@
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+?>
+<form name="form1" method="post" action="">
+    <fieldset style="width: 900px">
+        <legend>Situação de Eventos</legend>
+        <table class="form-container">
+            <tr>
+                <td>
+                    <label for="empregador">Empregador:</label>
+                </td>
+                <td>
+                    <select id="empregador">
+                        <?php foreach ($aEmpregador as $oEmpregador) { ?>
+                            <option value="<?php echo $oEmpregador->cgm; ?>"><?php echo $oEmpregador->empregador; ?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="evento">Evento:</label>
+                </td>
+                <td>
+                    <select id="evento">
+                        <option value="">Todos</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="statusErro">Filtrar envios com erros / status</label></td>
+                <td>
+                    <select name="statusErro" id="statusErro">
+                        <option value="false">Não</option>
+                        <option value="true">Sim</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+            </tr>
+            <tr>
+                <td><label for="statusRecibo">Filtrar envios com sucesso</label></td>
+                <td>
+                    <select name="statusRecibo" id="statusRecibo">
+                        <option value="false">Não</option>
+                        <option value="true">Sim</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="statusOcorrencia">Filtrar envios com ocorrências</label></td>
+                <td>
+                    <select name="statusOcorrencia" id="statusOcorrencia">
+                        <option value="false">Não</option>
+                        <option value="true">Sim</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="dataInicio">Data Envio:</label>
+                </td>
+                <td>
+                    <?php
+                    $anoAtual = date("Y", db_getsession("DB_datausu"));
+                    $diaAtual = date("d", db_getsession("DB_datausu"));
+                    $mesAtual = date("m", db_getsession("DB_datausu"));
+
+                    db_inputdata('dataInicio', $diaAtual, $mesAtual, $anoAtual, true, 'text', 1, "");
+                    echo "à";
+                    db_inputdata('dataFim', $diaAtual, $mesAtual, $anoAtual, true, 'text', 1, "");
+                    ?>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <input type="button" id="consultar" value="Consultar"/>
+    <input type="button" id="imprimir" value="Imprimir" />
+    <div id="containerEventos">
+        <fieldset>
+            <legend>Eventos</legend>
+            <div id="gridEventos"/>
+        </fieldset>
+    </div>
+</form>
+
+<script>
+    const selectRecibo = document.querySelector("select[name=statusRecibo]");
+    const selectOcorrencia = document.querySelector("select[name=statusOcorrencia]");
+
+    selectRecibo.addEventListener("change", function() { selectOcorrencia.value = false ; });
+    selectOcorrencia.addEventListener("change", function() { selectRecibo.value = false ; });
+
+
+    (function(){
+        try {
+            buscarArquivos();
+        } catch (e) {
+            alert(e);
+        }
+    })();
+
+    function buscarArquivos() {
+        var parametros = {'exec': 'getTipos' , 'separa': 1};
+        new AjaxRequest('eso4_esocialapi.RPC.php', parametros, function(retorno) {
+            if (retorno.erro) {
+                return false;
+            }
+            for(var opcao of retorno.tipos) {
+                $('evento').add(new Option(opcao.titulo, opcao.layout));
+            }
+        }).setMessage('Buscando Arquivos.').execute();
+    }
+
+
+</script>

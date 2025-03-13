@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_jsplibwebseller.php");
-include("classes/db_mer_tprefeicao_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_libdicionario.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_jsplibwebseller.php"));
+include(modification("classes/db_mer_tprefeicao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_libdicionario.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmer_tprefeicao = new cl_mer_tprefeicao;
 $db_opcao         = 1;
@@ -48,7 +48,7 @@ if (isset($atualizar)) {
   for ($x=0; $x<count($vet); $x++) {
   	
     $sql    = "update mer_tprefeicao set me03_i_orden=".($x+1)." where me03_i_codigo=$vet[$x]";
-    $result = pg_query($sql);
+    $result = db_query($sql);
     
  }
 }
@@ -56,7 +56,7 @@ if (isset($atualizar)) {
 if (isset($incluir)) {
 	
   $sqltp    = "select me03_i_orden as anterior from mer_tprefeicao order by me03_i_orden desc";
-  $resulttp = pg_query($sqltp);
+  $resulttp = db_query($sqltp);
   $linhastp = pg_num_rows($resulttp);
   if($linhastp == 0){
     $orden = 1;
@@ -95,7 +95,7 @@ if (isset($incluir)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Inclusão Tipo de Refeição</b></legend>
-    <?include("forms/db_frmmer_tprefeicao.php");?>
+    <?include(modification("forms/db_frmmer_tprefeicao.php"));?>
    </fieldset>
    </center>
   </td>

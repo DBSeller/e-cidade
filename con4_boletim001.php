@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,35 +25,35 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("libs/db_libcontabilidade.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_boletim_classe.php");
-include("classes/db_conlancambol_classe.php");
-include("classes/db_saltes_classe.php");
-include("classes/db_orcreceita_classe.php");
-include("classes/db_orcreceitaval_classe.php");
-include("classes/db_orcfontes_classe.php");
-include("classes/db_orcfontesdes_classe.php");
-include("classes/db_conlancam_classe.php");
-include("classes/db_conlancamrec_classe.php");
-include("classes/db_conlancamval_classe.php");
-include("classes/db_conlancamdoc_classe.php");
-include("classes/db_conlancamlr_classe.php");
-include("classes/db_conlancampag_classe.php");
-include("classes/db_conlancamcompl_classe.php");
-include("classes/db_contrans_classe.php");
-include("classes/db_conplanoreduz_classe.php");
-include("classes/db_conlancamcgm_classe.php");
-include("classes/db_corgrupocorrente_classe.php");
-include("classes/db_conlancamcorgrupocorrente_classe.php");
-include("classes/db_conplanoconplanoorcamento_classe.php");
+include(modification("classes/db_boletim_classe.php"));
+include(modification("classes/db_conlancambol_classe.php"));
+include(modification("classes/db_saltes_classe.php"));
+include(modification("classes/db_orcreceita_classe.php"));
+include(modification("classes/db_orcreceitaval_classe.php"));
+include(modification("classes/db_orcfontes_classe.php"));
+include(modification("classes/db_orcfontesdes_classe.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamrec_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_conlancamlr_classe.php"));
+include(modification("classes/db_conlancampag_classe.php"));
+include(modification("classes/db_conlancamcompl_classe.php"));
+include(modification("classes/db_contrans_classe.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
+include(modification("classes/db_conlancamcgm_classe.php"));
+include(modification("classes/db_corgrupocorrente_classe.php"));
+include(modification("classes/db_conlancamcorgrupocorrente_classe.php"));
+include(modification("classes/db_conplanoconplanoorcamento_classe.php"));
 
 
 db_postmemory($HTTP_POST_VARS);
@@ -158,7 +158,7 @@ if( isset($processar) || isset($desprocessar) ){
     where corrente.k12_data  = '".$data."'";
     
     // Comentado para posterior analise pelo Paulo pois falta testar o TABPLAN (16/03/2007 Fabrizio)
-    /*$resultteste = pg_query($sql);
+    /*$resultteste = db_query($sql);
     
     //db_criatabela($resultteste);exit;     
     if( $resultteste == false){
@@ -402,7 +402,7 @@ if( isset($processar) || isset($desprocessar) ){
 			inner join orcreceita on o70_anousu = " . db_getsession('DB_anousu') . " and o70_codrec = k02_codrec
       ";
       
-      $resultorcamentaria = pg_query($sql) or die($sql);
+      $resultorcamentaria = db_query($sql) or die($sql);
       
       if ($debug==true){
         echo $sql; 
@@ -411,9 +411,9 @@ if( isset($processar) || isset($desprocessar) ){
       }	
       
       
-      include("con4_boletim004.php");
+      include(modification("con4_boletim004.php"));
       //if(pg_numrows($resultorcamentaria)!=0){
-        // include("con4_boletim004.php");
+        // include(modification("con4_boletim004.php"));
       //  }else{
         //   $msg_erro = 'Não existe receita arrecadada para esta data.';
       // }
@@ -447,7 +447,7 @@ if( isset($processar) || isset($desprocessar) ){
 if($executar == false && $mensagem != ""){
   echo $mensagem;
 }else{
-  include("forms/db_frmboletim001.php");
+  include(modification("forms/db_frmboletim001.php"));
 }
 ?>
 </center>

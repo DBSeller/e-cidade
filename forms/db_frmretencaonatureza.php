@@ -77,7 +77,7 @@ $clretencaonatureza->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_retencaonatureza','func_retencaonatureza.php?funcao_js=parent.js_preenchepesquisa|e30_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_retencaonatureza','func_retencaonatureza.php?funcao_js=parent.js_preenchepesquisa|e30_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_retencaonatureza.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,33 +26,33 @@
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_liborcamento.php");
-include ("libs/db_libcontabilidade.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_boletim_classe.php");
-include ("classes/db_saltes_classe.php");
-include ("classes/db_orcreceita_classe.php");
-include ("classes/db_orcreceitaval_classe.php");
-include ("classes/db_orcfontes_classe.php");
-include ("classes/db_orcfontesdes_classe.php");
-include ("classes/db_conlancambol_classe.php");
-include ("classes/db_conlancam_classe.php");
-include ("classes/db_conlancamrec_classe.php");
-include ("classes/db_conlancamval_classe.php");
-include ("classes/db_conlancamdoc_classe.php");
-include ("classes/db_conlancamlr_classe.php");
-include ("classes/db_conlancampag_classe.php");
-include ("classes/db_contrans_classe.php");
-include ("classes/db_conplanoreduz_classe.php");
-include ("classes/db_conlancamcompl_classe.php");
-include ("classes/db_conlancamcgm_classe.php");
-include ("classes/db_conlancamcorgrupocorrente_classe.php");
-include ("model/contaTesouraria.model.php");
-require_once ("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_boletim_classe.php"));
+include(modification("classes/db_saltes_classe.php"));
+include(modification("classes/db_orcreceita_classe.php"));
+include(modification("classes/db_orcreceitaval_classe.php"));
+include(modification("classes/db_orcfontes_classe.php"));
+include(modification("classes/db_orcfontesdes_classe.php"));
+include(modification("classes/db_conlancambol_classe.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamrec_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_conlancamlr_classe.php"));
+include(modification("classes/db_conlancampag_classe.php"));
+include(modification("classes/db_contrans_classe.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
+include(modification("classes/db_conlancamcompl_classe.php"));
+include(modification("classes/db_conlancamcgm_classe.php"));
+include(modification("classes/db_conlancamcorgrupocorrente_classe.php"));
+include(modification("model/contaTesouraria.model.php"));
+require_once(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -286,7 +286,7 @@ if (isset ($processar) || isset ($desprocessar)) {
 	<?
 
 
-include ("forms/db_frmboletim003.php");
+include(modification("forms/db_frmboletim003.php"));
 ?>
     </center>
 	</td>

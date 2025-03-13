@@ -17,5 +17,6 @@
   "confirma_exclusao_linha"          : "Confirma a exclusão da linha [sNomeLinha]?",
   "aguardando_remover_linha"         : "Aguarde, removendo a linha.",
   "hora_partida_maior"               : "Hora de partida maior que a hora de chegada.",
-  "nenhum_logradouro_para_reordenar" : "Não há logradouros suficientes para reordenar."
+  "nenhum_logradouro_para_reordenar" : "Não há logradouros suficientes para reordenar.",
+  "aguarde_gerando_retorno"          : "Aguarde, gerando retorno."
 }

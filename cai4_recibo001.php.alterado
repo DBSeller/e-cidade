@@ -1,0 +1,660 @@
+<?
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
+require("libs/db_stdlib.php");
+require("libs/db_conecta.php");
+include("libs/db_sessoes.php");
+include("libs/db_usuariosonline.php");
+include("libs/db_sql.php");
+include("dbforms/db_funcoes.php");
+include("classes/db_cgm_classe.php");
+include("classes/db_procrec_classe.php");
+include("classes/db_protprocesso_classe.php");
+include("classes/db_taxagruporeg_classe.php");
+
+$clcgm          = new cl_cgm;
+$clprocrec      = new cl_procrec;
+$clprotprocesso = new cl_protprocesso;
+$cltaxagruporeg = new cl_taxagruporeg;
+
+$clcgm->rotulo->label();
+$clrotulo = new rotulocampo;
+$clrotulo->label('j01_matric');
+$clrotulo->label('p58_codproc');
+$clrotulo->label('q02_inscr');
+$clrotulo->label('k02_codigo');
+$clrotulo->label('k02_drecei');
+$clrotulo->label('codsubrec');
+$clrotulo->label('k07_descr');
+
+//db_postmemory($HTTP_SERVER_VARS);
+db_postmemory($HTTP_SERVER_VARS);
+
+/*
+ mostramenu = t
+ titulo     = CGM
+ origem     = 113
+ codproc    = 12345
+ textarea   = fsda sdasdfasfasfas asf af asfa sfd
+ tipo       = 2
+
+*/
+
+if(isset($mostramenu)&& $mostramenu == 't'){
+    $historico   = $textarea;
+    $p58_codproc = $codproc;
+	if(isset($titulo) && $titulo == 'CGM'){
+		$z01_numcgm = $origem;
+	}else if(isset($titulo) && $titulo == 'MATRICULA'){
+		$j01_matric = $origem;
+	}else if(isset($titulo) && $titulo == 'INSCRICAO'){
+		$q02_inscr = $origem;
+	}
+}
+
+?>
+<html>
+<head>
+<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Expires" CONTENT="0">
+<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<link href="estilos.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+.nomerecibo {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	background-color: #CCCCCC;
+	color: #000000;
+	text-decoration: blink;
+}
+-->
+</style>
+<script>
+function js_gravareceita(){
+  var tab = (recibos.document.all)?recibos.document.all.tab:recibos.document.getElementById('tab');
+  var processa = true;
+  if( document.form1.k02_codigo.value == ''){
+	alert('Receita não Selecionada. Verifique!');
+	processa = false;
+	document.form1.k02_codigo.focus();
+    return;
+  }
+  if(processa == true){
+    var vlr = new Number(document.form1.valor.value);
+    if(isNaN(vlr) || vlr == 0){
+       //if( document.form1.valor.value == '' && document.form1.valor.value == '0'){
+       alert('Valor digitado nao esta correto. Verifique!');
+       document.form1.valor.focus();
+       processa = false;
+       return
+    }
+  }
+ /* 
+  for(i=0;i<tab.rows.length;i++){
+    if( 'id_'+document.form1.k02_codigo.value == tab.rows[i].id){
+	   if(confirm('Receita já Digitada. Valor : '+tab.rows[i].cells[4].innerHTML+' \n    Somar ao valor? ')==true ){
+          var soma = new  Number(tab.rows[i].cells[4].innerHTML) + Number(document.form1.valor.value);
+          tab.rows[i].cells[4].innerHTML = soma;
+          processa = false;
+	   }
+  	}
+  }
+*/
+  if(processa == true){
+    var NovaLinha = tab.insertRow(tab.rows.length);
+    NovaLinha.id = 'id_'+tab.rows.length;
+
+    NovaColuna = NovaLinha.insertCell(0);
+    NovaColuna.style.fontSize = '10px';
+    NovaColuna.align = 'left';
+    NovaColuna.innerHTML = document.form1.k02_codigo.value;
+
+    NovaColuna = NovaLinha.insertCell(1);
+    NovaColuna.style.fontSize = '10px';
+    NovaColuna.align = 'left';
+    NovaColuna.innerHTML = document.form1.k02_drecei.value;
+
+    NovaColuna = NovaLinha.insertCell(2);
+    NovaColuna.style.fontSize = '10px';
+    NovaColuna.align = 'left';
+    NovaColuna.innerHTML = document.form1.codsubrec.value;
+
+    NovaColuna = NovaLinha.insertCell(3);
+    NovaColuna.style.fontSize = '10px';
+    NovaColuna.align = 'left';
+    NovaColuna.innerHTML = document.form1.k07_descr.value;
+
+    NovaColuna = NovaLinha.insertCell(4);
+    NovaColuna.style.fontSize = '12px';
+    NovaColuna.align = 'right';
+    NovaColuna.innerHTML = document.form1.valor.value;
+
+    NovaColuna = NovaLinha.insertCell(5);
+    NovaColuna.align = 'center';
+    NovaColuna.innerHTML = '<input class="cancelapagto" value="Excluir" type="button" onclick="js_removelinha(\'id_'+tab.rows.length+'\')">' ;
+  }
+  document.form1.k02_codigo.value = '';
+  document.form1.k02_drecei.value = '';
+  document.form1.codsubrec.value = '';
+  document.form1.k07_descr.value = '';
+  document.form1.valor.value = '';
+  document.form1.k02_codigo.focus();
+}
+
+function js_processarecibo(hist){
+  var tab = (recibos.document.all)?recibos.document.all.tab:recibos.document.getElementById('tab');
+  var processa = true;
+  if(tab.rows.length==1){
+    alert("Receitas nao Digitadas.");
+    processa = false;
+  }
+  if(processa == true){
+    if(document.form1.z01_numcgm.value =="" && document.form1.q02_inscr.value =="" && document.form1.j01_matric.value ==""){
+	  alert("Selecione o Nome do Contribuinte.");
+      processa = false;
+    }
+  }
+
+  if(processa == true){
+    if(confirm('Confirma Emissao do Recibo?')==true){
+	  var query_string = 'z01_numcgm='+document.form1.z01_numcgm.value+'&';
+	  query_string += 'j01_matric='+document.form1.j01_matric.value+'&';
+	  query_string += 'q02_inscr='+document.form1.q02_inscr.value+'&';
+	  query_string += 'p58_codproc='+document.form1.p58_codproc.value+'&';
+	  var codrece = '';
+	  var vlrrece = '';
+	  var bota = '';
+	  var codtaxa = '';
+      for(i=1;i<tab.rows.length;i++){
+	     codrece += bota+tab.rows[i].cells[0].innerHTML ;
+	     codtaxa += bota+tab.rows[i].cells[2].innerHTML ;
+	     vlrrece += bota+tab.rows[i].cells[4].innerHTML ;
+		 bota = 'YY'; 
+  	  }
+      //query_string += 'mostramenu='+document.form1.mostramenu.value+'codrece='+codrece+'&codtaxa='+codtaxa+'&vlrrece='+vlrrece+'&historico=' + escape(document.form1.historico.value);
+      query_string += 'codrece='+codrece+'&codtaxa='+codtaxa+'&vlrrece='+vlrrece+'&historico=' + escape(document.form1.historico.value);
+      query_string += '&db_datausu=' + document.form1.k00_dtoper_ano.value+'-'+document.form1.k00_dtoper_mes.value+'-'+document.form1.k00_dtoper_dia.value;
+      jan = window.open('cai4_recibo003.php?'+query_string,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+      jan.moveTo(0,0); 
+      if (document.form1.incproc.value!=""&&document.form1.incproc.value=='true'){
+          location.href='pro4_protprocesso001.php';
+      }
+    }
+  }
+}
+function js_vertaxas(){
+   
+
+
+}
+
+</script>
+</head>
+<body bgcolor=#CCCCCC bgcolor="#CCCCCC" leftmargin=" 0" topmargin=" 0" marginwidth=" 0" marginheight=" 0" onLoad="a=1" >
+<form name="form1" action="" method="get">
+<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
+<?if(!isset($mostramenu) || $mostramenu == 'f'){?>
+  <tr> 
+    <td width="360">&nbsp;</td>
+    <td width="263">&nbsp;</td>
+    <td width="25">&nbsp;</td>
+    <td width="140">&nbsp;</td>
+  </tr>
+<?}?>  
+</table>
+<table width="771" height="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr> 
+    <td width="771" align="left" valign="top" bgcolor="#CCCCCC">
+	<center>
+          <table width="97%">
+            <tr> 
+              <td height="94" colspan="3"><table width="100%">
+                  <tr> 
+                    <td width="5%" height="20">
+         	    <small> 
+                    <?
+			        db_ancora($Lz01_numcgm,'js_mostranomes(true);',4);
+			        ?>
+				</small>
+                    </td>
+                    <td width="41%" nowrap> 
+                      <?
+		      if ((isset($p58_codproc)&&$p58_codproc!="")&&(isset($incproc)&&$incproc==true)){
+				  $result_prot=$clprotprocesso->sql_record($clprotprocesso->sql_query($p58_codproc,"p58_numcgm,z01_nome"));
+				  if ($clprotprocesso->numrows>0){
+					db_fieldsmemory($result_prot,0);
+					$z01_numcgm=$p58_numcgm;
+				  }
+		      }
+		      db_input('incproc',10,'',true,'hidden',3);
+		      
+ 		      db_input('z01_numcgm',10,$Iz01_numcgm,true,'text',4,' onchange="js_mostranomes(false);"');
+		       ?>
+                      <?
+ 		      db_input('z01_nome',40,$Iz01_nome,true,'text',3,'');
+		      ?>
+                    </td>
+                    <td width="54%" colspan="2" rowspan="4" align="right"> <table width="100%" border="0" cellspacing="0">
+                        <tr> 
+                          <td>&nbsp;&nbsp;&nbsp;
+                          </td>
+                          <td>&nbsp;&nbsp;&nbsp;
+                          </td>
+                        </tr>
+                        <tr> 
+                          <td>
+                            <?=$Lz01_ender?>
+                          </td>
+                          <td> 
+                            <?=db_input('z01_ender',40,$Iz01_ender,true,'text',3,'','DBF_ender','#CCCCCC')?>
+                          </td>
+                        </tr>
+                        <tr> 
+                          <td>
+                            <?=$Lz01_munic?>
+                          </td>
+                          <td> 
+                            <?=db_input('z01_munic',20,$Iz01_munic,true,'text',3,'','DBF_munic','#CCCCCC')?>
+                          </td>
+                        </tr>
+                        <tr> 
+                          <td>
+                            <?=$Lz01_cep?>
+                          </td>
+                          <td> 
+                            <?=db_input('z01_cep',8,$Iz01_cep,true,'text',3,'','DBF_cep','#CCCCCC')?>
+                            <?=$Lz01_uf?>
+                            <?=db_input('z01_uf',2,$Iz01_uf,true,'text',3,'','DBF_uf','#CCCCCC')?>
+                          </td>
+                        </tr>
+                      </table>
+                      &nbsp;&nbsp;&nbsp; </td>
+                  </tr>
+                  <tr> 
+                    <td nowrap> 
+		    <small> 
+                      <?
+			        db_ancora($Lj01_matric,'js_mostramatriculas(true);',4);
+			        ?>
+		    </small> 
+                    </td>
+                    <td> 
+                      <?
+ 			        db_input('j01_matric',10,$Ij01_matric,true,'text',4,'onchange="js_mostramatriculas(false);"');
+			        ?>
+                    </td>
+                  </tr>
+                  <tr> 
+                    <td nowrap> 
+		    <small> 
+                      <?
+ 			        db_ancora($Lq02_inscr,'js_mostrainscricao(true)',4);
+			        ?>
+		    </small> 
+                    </td>
+                    <td> 
+                      <?
+ 			        db_input('q02_inscr',10,$Iq02_inscr,true,'text',4,'onchange="js_mostrainscricao(false);"');
+			        ?>
+                    </td>
+                  </tr>
+                  <tr> 
+                    <td nowrap> 
+		    <small> 
+                      <?
+ 			        db_ancora($Lp58_codproc,' js_mostracodproc(true); ',4);
+			        ?>
+		    </small> 
+                    </td>
+                    <td> 
+                      <?
+ 			        db_input('p58_codproc',10,$Ip58_codproc,true,'text',4,'onchange="js_mostracodproc(false);"');
+			        ?>
+                    </td>
+                  </tr>
+                  <tr> 
+                    <td height="20">&nbsp; </td>
+                    <td>&nbsp; </td>
+                  </tr>
+                </table></td>
+            </tr>
+            <tr> 
+              <td colspan="3"><hr></td>
+            </tr>
+            <tr> 
+              <td  colspan="3" valign="top"> <table width="100%">
+                  <tr> 
+                    <td width="10%" height="26" align="left" nowrap> 
+                      <?
+					      db_ancora(@$Lk02_codigo,"js_pesquisatabrec(true);",4);
+                      ?>
+                    </td>
+                    <td width="4%"> 
+                      <?
+            	          db_input('k02_codigo',4,$Ik02_codigo,true,'text',4,"onchange='js_pesquisatabrec(false);'");
+	    		      ?>
+                    </td>
+                    <td width="33%"> 
+                      <?
+						  db_input('k02_drecei',40,$Ik02_drecei,true,'text',4);
+						  db_input('codsubrec',40,$Icodsubrec,true,'hidden',4);
+						  db_input('k07_descr',100,$Ik07_descr,true,'hidden',4);
+					  ?>
+                    </td>
+             
+                    <td width="13%" align="center"> <INPUT NAME="taxa" value='Taxas' type="button" id="taxa" onclick="js_vertaxas()"> 
+                    </td>
+                    <td width="25%"> <input name="valor" type="text" id="valor" size="20" maxlength="30" onBlur="js_valor(this);" onKeyUp="this.value = this.value.replace(',','.')"></td>
+                    <td width="15%"> <input name="gravar" type="button" id="gravar" value="Gravar" onClick="js_gravareceita();"></td>
+                    <td width="15%"> 
+					    <input name="mostramenu" type="hidden" id="" value="">
+					</td>
+		    <script>
+		    function js_valor(obj){
+		      if(obj.value < 0){
+		        alert('Valor não pode ser negativo!!')
+		      }
+		    }
+		    </script>
+                  
+		  </tr>
+                </table>
+                <!--iframe height="40" width="775" name="recibo" src="cai4_recibo002.php?"></iframe-->
+              </td>
+            </tr>
+            <tr> 
+              <td colspan="3" valign="top"> <iframe height="125" width="775" name="recibos" src="cai4_recibo002.php?"></iframe> 
+              </td>
+            </tr>
+            <tr> 
+              <td colspan="3" valign="top"><hr></td>
+            </tr>
+            <tr> 
+              <td width="8%" valign="top">Hist&oacute;rico:</td>
+              <td width="62%" >
+			      <textarea name="historico" cols="80" rows="3" id="historico" value="<?=@$historico?>">
+				  <?
+//                    echo @$historico;
+				  ?>
+				  </textarea>
+				  <?
+				   // echo "<script>alert(document.form1.historico.value); </script>";
+				  ?>
+              </td>
+              <td width="30%" valign="top" > <strong>Data Vencimento:</strong><br>
+                <?
+					$k00_dtoper     = date('Y-m-d',db_getsession("DB_datausu"));
+					$k00_dtoper_dia = date('d',db_getsession("DB_datausu"));
+					$k00_dtoper_mes = date('m',db_getsession("DB_datausu"));
+					$k00_dtoper_ano = date('Y',db_getsession("DB_datausu"));
+					//
+					$Ik00_dtoper = '9';
+					db_inputdata('k00_dtoper',$k00_dtoper_dia,$k00_dtoper_mes,$k00_dtoper_ano,true,'text',4);
+				?>
+              </td>
+            </tr>
+            <tr align="center"> 
+              <td height="26" colspan="3"> 
+			      <input name="confirma" type="button" id="confirma" value="Confirmar" onClick="js_processarecibo()">&nbsp;&nbsp;&nbsp; 
+			      <input name="cancela" type="button" id="cancela" value="Limpa" onclick="document.form1.historico.value=''">&nbsp;&nbsp;&nbsp; 
+			      <input name="novo" type="button" id="novo" value="Novo" onclick="location.href='cai4_recibo001.php'"> 
+		      </td>
+            </tr>
+          </table>
+        </center>
+	</td>
+  </tr>
+</table>
+</form>
+<? 
+ if(!isset($mostramenu) || $mostramenu == 'f'){
+ 	db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+ }
+?>
+</body>
+</html>
+<script>
+
+function js_mostracodproc(mostra){
+ if(mostra==true){
+    js_OpenJanelaIframe('top.corpo','db_iframe_proc','func_protprocesso.php?funcao_js=parent.js_mostraproc1|p58_codproc|p58_numcgm|z01_nome','Pesquisa',true,'15');
+    /*
+    func_iframe.jan.location.href = 'func_protprocesso.php?funcao_js=parent.js_mostraproc1|p58_codproc|p58_numcgm|z01_nome';
+    func_iframe.setLargura(770);
+    func_iframe.setAltura(430);
+    func_iframe.mostraMsg();
+    func_iframe.show();
+    func_iframe.focus();
+    */
+  }else{
+    if(document.form1.p58_codproc.value != '') {
+        js_OpenJanelaIframe('','db_iframe_proc','func_protprocesso.php?pesquisa_chave='+document.form1.p58_codproc.value+'&funcao_js=parent.js_mostraproc','Pesquisa',false);
+    }
+  }
+}
+function js_mostraproc(chave,obs,erro){
+  if(erro==true){ 
+    document.form1.p58_codproc.focus(); 
+    document.form1.p58_codproc.value = ''; 
+  }else{
+     document.form1.z01_numcgm.value = chave; 
+     document.form1.z01_nome.value = obs; 
+     document.form1.historico.value = ''; 
+  }   
+}
+function js_mostraproc1(chave1,n,z,f){  
+  document.form1.z01_numcgm.value = n;
+  document.form1.z01_nome.value = z;
+  document.form1.p58_codproc.value = chave1;
+  //document.form1.historico.value = f;
+  db_iframe_proc.hide();
+}
+
+function js_mostranomes(mostra){
+  if(mostra==true){
+    js_OpenJanelaIframe('top.corpo','db_iframe_nome','func_nome.php?testanome=true&funcao_js=parent.js_preenche|0|1','Pesquisa',true,'15');
+    /*
+    func_iframe.jan.location.href = 'func_nome.php?testanome=true&funcao_js=parent.js_preenche|0|1';
+    func_iframe.setLargura(770);
+    func_iframe.setAltura(430);
+    func_iframe.mostraMsg();
+    func_iframe.show();
+    func_iframe.focus();
+    */
+  }else{
+    js_OpenJanelaIframe('top.corpo','db_iframe_nome','func_nome.php?testanome=true&pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_preenche1','Pesquisa',false);
+  }
+}
+function js_preenche1(chave,chave1){
+  document.form1.q02_inscr.value = "";
+  document.form1.j01_matric.value = "";
+  document.form1.z01_nome.value = chave1;
+  if(chave1==true){
+    document.form1.z01_numcgm.value = '';
+    document.form1.z01_numcgm.focus();
+  }
+}
+
+function js_preenche(chave,chave1){
+  document.form1.q02_inscr.value = "";
+  document.form1.j01_matric.value = "";
+  document.form1.z01_numcgm.value = chave;
+  document.form1.z01_nome.value = chave1;
+  db_iframe_nome.hide();
+}
+/*
+ alterada para js_Open..
+*/
+function js_pesquisatabrec(mostra){
+     if(mostra==true){
+       js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|0|3','Pesquisa',true,'15');
+       /* 
+       func_iframe.jan.location.href = 'func_tabrec.php?funcao_js=parent.js_mostratabrec1|0|3';
+       func_iframe.setLargura(770);
+       func_iframe.setAltura(430);
+       func_iframe.mostraMsg();
+       func_iframe.show();
+       func_iframe.focus();
+       */
+     }else{
+       js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.k02_codigo.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
+     }
+}
+function js_mostratabrec(chave,erro){
+  document.form1.k02_drecei.value = chave;
+  if(erro==true){
+     document.form1.k02_codigo.focus();
+     document.form1.k02_codigo.value = '';
+  }
+}
+function js_mostratabrec1(chave1,chave2){
+     document.form1.k02_codigo.value = chave1;
+     document.form1.k02_drecei.value = chave2;
+     db_iframe_tabrec.hide();
+}
+function js_mostramatriculas(mostra){
+  if(mostra==true){
+     js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubase.php?funcao_js=parent.js_preenchematriculas|0|1','Pesquisa',true,'15');
+     /*
+    func_iframe.jan.location.href = 'func_iptubase.php?funcao_js=parent.js_preenchematriculas|0|1';
+    func_iframe.setLargura(770);
+    func_iframe.setAltura(430);
+    func_iframe.mostraMsg();
+    func_iframe.show();
+    func_iframe.focus();
+    */
+  }else{
+     js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubase.php?pesquisa_chave='+document.form1.j01_matric.value+'&funcao_js=parent.js_preenchematriculas2','Pesquisa',false);
+  }
+}
+function js_preenchematriculas(chave,chave1){
+  document.form1.q02_inscr.value = "";
+  document.form1.z01_numcgm.value = "";
+  document.form1.j01_matric.value = chave;
+  document.form1.z01_nome.value = chave1;
+  document.form1.z01_nome2.value = chave1;
+  db_iframe_iptubase.hide();
+}
+
+function js_preenchematriculas2(chave,chave1){
+  document.form1.q02_inscr.value = "";
+  document.form1.z01_numcgm.value = "";
+  document.form1.z01_nome.value = chave;
+  db_iframe_iptubase.hide();
+}
+
+function js_mostrainscricao(mostra){
+  if(mostra==true){
+    js_OpenJanelaIframe('top.corpo','db_iframe_issbase','func_issbase.php?funcao_js=parent.js_preencheinscricao|0|1','Pesquisa',true,'15');
+    /*
+    func_iframe.jan.location.href = 'func_issbase.php?funcao_js=parent.js_preencheinscricao|0|1';
+    func_iframe.setLargura(770);
+    func_iframe.setAltura(430);
+    func_iframe.mostraMsg();
+    func_iframe.show();
+    func_iframe.focus();
+    */
+  }else{
+    js_OpenJanelaIframe('top.corpo','db_iframe_issbase','func_issbase.php?pesquisa_chave='+document.form1.q02_inscr.value+'&funcao_js=parent.js_preencheinscricao2','Pesquisa',false);
+  }
+}
+
+function js_preencheinscricao(chave,chave1){
+  document.form1.j01_matric.value = "";
+  document.form1.z01_numcgm.value = "";
+  document.form1.z01_nome.value = chave1;
+  document.form1.q02_inscr.value = chave;
+  db_iframe_issbase.hide();
+}
+
+function js_preencheinscricao2(chave,chave1){
+  document.form1.j01_matric.value = "";
+  document.form1.z01_numcgm.value = "";
+  document.form1.z01_nome.value = chave;
+  db_iframe_issbase.hide();
+}
+
+
+function js_vertaxas(){
+    js_OpenJanelaIframe('top.corpo','func_iframe_taxas','cai4_recibo005.php?receita='+document.form1.k02_codigo.value+'&funcao_js=parent.js_preenchereceita|0|2','Pesquisa',true,'15');
+    /*
+    cai4_recibo005.php?receita='+document.form1.k02_codigo.value+'&funcao_js=parent.js_preenchereceita|0|2
+    func_iframe.setLargura(770);
+    func_iframe.setAltura(430);
+    func_iframe.mostraMsg();
+    func_iframe.show();
+    func_iframe.focus();
+    */
+}
+
+function js_gravarec(cod,descr,valor){
+  document.form1.k02_codigo.value=cod;
+  document.form1.k02_drecei.value=descr;
+  document.form1.valor.value=valor;
+  document.form1.gravar.click();
+}
+
+</script>
+<?
+if ((isset($codtipo)&&$codtipo!="")&&(isset($incproc)&&$incproc==true)){
+  $result_procrec=$clprocrec->sql_record($clprocrec->sql_query($codtipo));
+  for ($w=0;$w<$clprocrec->numrows;$w++){
+    db_fieldsmemory($result_procrec,$w);
+    echo "<script>js_gravarec($p52_codrec,'$k02_drecei',$p52_valor);</script>";
+  }
+}
+
+if (isset($mostramenu)&&$mostramenu=='t'){
+  
+//  echo "<script>document.form1.mostramenu.value = 't';</script>";
+//  echo "<script>js_mostranomes(false);</script>";
+  
+  $grupocnd = 79;
+//                                          die($cltaxagruporeg->sql_query(null,"*","k02_codigo","k08_taxagrupo = $grupocnd")."<br><br>");
+  $rsTaxagruporeg = $cltaxagruporeg->sql_record($cltaxagruporeg->sql_query(null,"*","k02_codigo","k08_taxagrupo = $grupocnd"));
+  $numrows = $cltaxagruporeg->numrows;
+  for ($w=0;$w<$numrows;$w++){
+//  db_fieldsmemory($rsTaxagruporeg,$w,true,true);
+    db_fieldsmemory($rsTaxagruporeg,$w);
+//	echo "$k02_codigo - $k02_drecei - $k07_valorf <br>";
+    echo "<script>js_gravarec($k02_codigo,'$k02_drecei',$k07_valorf);</script>";
+  }
+}
+
+/*
+$func_ifra = new janela("func_iframe","");
+ffunc_ifra ->posX=1;
+$func_ifra ->posY=20;
+$func_ifra ->largura=1;
+$func_ifra ->altura=1;
+$func_ifra ->titulo="Pesquisa";
+$func_ifra ->iniciarVisivel = false;
+$func_ifra ->mostrar();
+*/
+?>

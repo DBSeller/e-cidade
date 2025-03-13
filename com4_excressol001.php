@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_solicita_classe.php");
-include("classes/db_orcreservasol_classe.php");
-include("classes/db_orcreserva_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_solicita_classe.php"));
+include(modification("classes/db_orcreservasol_classe.php"));
+include(modification("classes/db_orcreserva_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clsolicita = new cl_solicita;
@@ -85,6 +85,10 @@ function js_submit_form(){
   js_gera_chaves();
   return true;
 }
+function js_emite(){
+  jan = window.open('com2_excressol002.php','','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+  jan.moveTo(0,0);
+}
 </script>  
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
@@ -110,7 +114,7 @@ function js_submit_form(){
     <?
            $cliframe_seleciona->campos  = "pc10_numero,pc10_data,pc10_resumo,pc10_depto,descrdepto,pc10_instit,nomeinst,pc10_login,nome";
            $cliframe_seleciona->legenda="Solicitações";
-           $cliframe_seleciona->sql=$clsolicita->sql_query_reserv(null,"distinct pc10_numero,pc10_data,pc10_resumo,pc10_depto,descrdepto,pc10_instit,nomeinst,pc10_login,nome",null,"o82_codres is not null and pc81_solicitem is null and (current_date-pc10_data)>=30 and pc10_depto in (select coddepto from db_depusu where id_usuario = ".db_getsession("DB_id_usuario").") ");
+           $cliframe_seleciona->sql=$clsolicita->sql_query_reserv(null,"distinct pc10_numero,pc10_data,pc10_resumo,pc10_depto,descrdepto,pc10_instit,nomeinst,pc10_login,nome",null,"EXTRACT (YEAR FROM pc10_data)= ".db_getsession("DB_anousu")."  and o82_codres is not null and pc81_solicitem is null and (current_date-pc10_data)>=30 and pc10_depto in (select coddepto from db_depusu where id_usuario = ".db_getsession("DB_id_usuario").") ");
            $cliframe_seleciona->iframe_height ="300";
            $cliframe_seleciona->iframe_width ="650";
            $cliframe_seleciona->iframe_nome ="solicita"; 
@@ -126,6 +130,7 @@ function js_submit_form(){
   <tr>
   <td colspan="2" align="center">
     <input name="processar" type="submit" value="Processar" onclick='return js_submit_form();';>
+    <input name="rel" type="button" value="Relatório" onclick='js_emite();';>
   </td>
   </tr>
   </table>

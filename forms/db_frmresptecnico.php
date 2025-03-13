@@ -26,8 +26,8 @@
  */
 
 //MODULO: fiscal
-include("classes/db_sanitario_classe.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("classes/db_sanitario_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clsanitario = new cl_sanitario;
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clresptecnico->rotulo->label();

@@ -1,43 +1,43 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_empageconfche_classe.php");
-include("classes/db_empagemov_classe.php");
+include(modification("classes/db_empageconfche_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
 
 $clempageconfche = new cl_empageconfche;
 $clempagemov     = new cl_empagemov;
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 //db_postmemory($HTTP_POST_VARS);
@@ -76,7 +76,7 @@ if(isset($dtfi) && $dtfi !=''){
 }
 
 if(isset($e83_codtipo) && $e83_codtipo != ''){
-  $dbwhere .= " and e85_codtipo = $e83_codtipo"; 
+  $dbwhere .= " and e85_codtipo = $e83_codtipo";
 }
 
 if(isset($e80_codage) && $e80_codage != ''){
@@ -102,10 +102,10 @@ function js_calcula(){
   chaves =  js_retorna_chaves();
   if(chaves != ''){
     tot = new Number(0);
-    arr = chaves.split("#"); 
+    arr = chaves.split("#");
     for(i=0; i<arr.length; i++){
       dad = arr[i];
-      arr_dad = dad.split("-"); 
+      arr_dad = dad.split("-");
       valor = new Number(arr_dad[2]);
       tot = new Number(tot+valor);
     }
@@ -118,8 +118,8 @@ function js_calcula(){
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="100%" align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
     <form name="form1" method="post" action="">
 	      <center>
 
@@ -127,9 +127,9 @@ function js_calcula(){
 
 $dbwhere .= " and e80_instit = " . db_getsession("DB_instit") . " and e90_codmov is null ";
 
-//if(isset($e83_codtipo) && $e83_codtipo != '' ){
-//  $dbwhere .=" and e83_codtipo=$e83_codtipo ";
-//}
+/* [Extensão] - Filtro da Despesa */
+
+
 if(isset($e87_codgera) && $e87_codgera != ''){
   $sql    		= $clempagemov->sql_query_gera(null,"e81_codmov,e83_codtipo,e83_descr,e60_emiss,e60_codemp,e82_codord,z01_numcgm,z01_nome,e81_valor,sum(e53_valor) as e53_vlrliq, sum(e53_vlrpag) as e53_vlrpag, sum(e53_valor - e53_vlrpag) as db_disponivel","","$dbwhere group by e81_codmov,e83_codtipo,e83_descr,e60_emiss,e60_codemp,e82_codord,z01_numcgm,z01_nome,e81_valor");
   $sql_disabled    	= $clempagemov->sql_query_gera(null,"e81_codmov,e83_codtipo,e83_descr,e60_emiss,e60_codemp,e82_codord,z01_numcgm,z01_nome,e81_valor, sum(e53_valor) as e53_vlrliq, sum(e53_vlrpag) as e53_vlrpag, sum(e53_valor - e53_vlrpag) as db_disponivel","","$dbwhere group by e81_codmov,e83_codtipo,e83_descr,e60_emiss,e60_codemp,e82_codord,z01_numcgm,z01_nome,e81_valor having e81_valor > sum(e53_valor - e53_vlrpag) ");
@@ -156,7 +156,7 @@ if(isset($e87_codgera) && $e87_codgera != ''){
 	  $cliframe_seleciona->dbscript = "onclick='parent.js_calcula();'";
 	  $cliframe_seleciona->desabilitados = false;
 	  $cliframe_seleciona->checked = true;
-	  
+
           $campos  = "e81_codmov,e83_codtipo,e83_descr,e60_emiss,e60_codemp,e82_codord,z01_numcgm,z01_nome,e81_valor,db_disponivel";
 	  $cliframe_seleciona->campos = $campos;
 	  $cliframe_seleciona->sql = $sql;
@@ -183,7 +183,7 @@ if(isset($e87_codgera) && $e87_codgera != ''){
 
 //	  $result  = $clempageconfche->sql_record($sql);
 //	  db_fieldsmemory($result,0);
-          
+
 //          if(isset($e87_codgera) && $e87_codgera != ''){
 //            $sql    = $clempagemov->sql_query_gera(null,"count(e81_valor) as registros","","$dbwhere");
 //	  } else {
@@ -192,7 +192,7 @@ if(isset($e87_codgera) && $e87_codgera != ''){
 //	  echo $sql;
 //	  $result  = $clempagemov->sql_record($sql);
 //	  db_fieldsmemory($result,0);
-?>	  
+?>
       </center>
     </form>
     </td>

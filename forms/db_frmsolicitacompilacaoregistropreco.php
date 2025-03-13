@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -109,12 +109,6 @@ if (isset($oGet->alterar)) {
               <td>
                  &nbsp;
               </td>
-              <td>
-
-                <input type="checkbox" id='pc54_liberado'>
-                <label for="pc54_liberado"><b>Disponibilizar para Utilização:</b></label>
-
-              </td>
             </tr>
           </table>
         </fieldset>
@@ -185,7 +179,7 @@ function js_salvarEstimativa() {
    oParam.tipo        = 6;
    oParam.datainicio  = $F('pc54_datainicio');
    oParam.datatermino = $F('pc54_datatermino');
-   oParam.liberado    = $('pc54_liberado').checked;
+   oParam.liberado    = true;
    oParam.iAbertura   = $F('pc54_solicita');
    var sResumo        = tagString($F('pc10_resumo'));
    oParam.resumo      = encodeURIComponent(sResumo);
@@ -200,7 +194,7 @@ function js_salvarEstimativa() {
 function js_retornoSalvarabertura(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 
      if (!lAlteracao) {
@@ -210,6 +204,9 @@ function js_retornoSalvarabertura(oAjax) {
 
      }
      $('pc10_numero').value = oRetorno.iCodigoSolicita;
+     //var resumo = decodeURIComponent(oRetorno.resumo.replace(/\+/g, " "));
+     var resumo = oRetorno.resumo.urlDecode();
+     $('pc10_resumo').value = resumo.replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(n); });
 
   } else {
    alert(oRetorno.message.urlDecode());
@@ -244,13 +241,15 @@ function js_completaPesquisa(iSolicitacao) {
 
 function js_retornoCompletaPesquisa(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 
     $('pc54_datainicio').value  = oRetorno.datainicio;
     $('pc54_datatermino').value = oRetorno.datatermino;
-    $('pc10_resumo').value      = oRetorno.resumo.urlDecode();
-    $('pc54_liberado').checked  = oRetorno.liberado;
+    
+    var resumo = oRetorno.resumo.urlDecode();
+    $('pc10_resumo').value = resumo.replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(n); });
+
     $('pc10_numero').value      = oRetorno.solicitacao;
     $('pc54_solicita').value = oRetorno.codigoabertura;
     parent.iframe_itens.js_preencheGrid(oRetorno.itens);
@@ -296,7 +295,7 @@ function js_preenche(solicita,reload) {
                                 onComplete: function(oAjax){
 
                                   js_removeObj("msgBox");
-                                  var oRetorno = eval("("+oAjax.responseText+")");
+                                  var oRetorno = JSON.parse(oAjax.responseText);
                                   if (oRetorno.dados.length == 0) {
 
                                     alert("Abertura do Registro de Preço "+solicita+" não possui estimativa criada.");

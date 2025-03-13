@@ -17,14 +17,10 @@ CACHE 1;
 
 CREATE TABLE rubricadescontoconsignado(
 rh140_sequencial    int8 NOT NULL default 0,
-rh140_rubric    char(4) NOT NULL ,
+rh140_rubric    char(4),
 rh140_instit    int4 NOT NULL default 0,
 rh140_ordem   int4 default 0,
 CONSTRAINT rubricadescontoconsignado_sequ_pk PRIMARY KEY (rh140_sequencial));
-
-ALTER TABLE rubricadescontoconsignado
-ADD CONSTRAINT rubricadescontoconsignado_rubric_instit_fk FOREIGN KEY (rh140_rubric,rh140_instit)
-REFERENCES rhrubricas;
 
 CREATE UNIQUE INDEX rubricadescontoconsignado_rubric_in ON rubricadescontoconsignado(rh140_rubric);
 
@@ -599,4 +595,3 @@ update lab_tiporeferenciaalnumerico
        la30_f_absurdomax = absurdomax
   from w_lab_tiporeferenciaalnumerico
  where lab_tiporeferenciaalnumerico.la30_i_codigo = codigo;
-

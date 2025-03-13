@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("fpdf151/scpdf.php");
-include("fpdf151/impfarmacia.php");
-include("libs/db_sql.php");
-include("classes/db_tfd_beneficiadosajudacusto_classe.php");
-require_once('libs/db_utils.php');
+require(modification("fpdf151/scpdf.php"));
+include(modification("fpdf151/impfarmacia.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_tfd_beneficiadosajudacusto_classe.php"));
+require_once(modification('libs/db_utils.php'));
 
 $cltfd_beneficiadosajudacusto = new cl_tfd_beneficiadosajudacusto;
 

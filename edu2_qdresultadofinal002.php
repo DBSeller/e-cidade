@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-include("fpdf151/scpdf.php");
-include("classes/db_turma_classe.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_regenciaperiodo_classe.php");
-include("classes/db_regenteconselho_classe.php");
-include("classes/db_aprovconselho_classe.php");
-include("classes/db_edu_relatmodel_classe.php");
-include("classes/db_telefoneescola_classe.php");
-include("classes/db_escola_classe.php");
-include("classes/db_cursoato_classe.php");
-include("classes/db_aluno_classe.php");
-require_once("libs/db_utils.php");
-require_once("model/educacao/DBEducacaoTermo.model.php");
+require(modification("libs/db_stdlibwebseller.php"));
+include(modification("fpdf151/scpdf.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_regenciaperiodo_classe.php"));
+include(modification("classes/db_regenteconselho_classe.php"));
+include(modification("classes/db_aprovconselho_classe.php"));
+include(modification("classes/db_edu_relatmodel_classe.php"));
+include(modification("classes/db_telefoneescola_classe.php"));
+include(modification("classes/db_escola_classe.php"));
+include(modification("classes/db_cursoato_classe.php"));
+include(modification("classes/db_aluno_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/educacao/DBEducacaoTermo.model.php"));
 
 $resultedu         = eduparametros(db_getsession("DB_coddepto"));
 $clturma           = new cl_turma;
@@ -196,7 +196,7 @@ for ($x = 0; $x < $linhas; $x++) {
   $ano = substr($ed52_d_resultfinal,0,4);
   $fpdf->addpage('L');
   $sSql = "select nomeinst,trim(ender)||','||trim(numero::varchar) as ender,munic,uf,telef,email,url,logo from db_config where codigo = ".db_getsession("DB_instit");
-  $dados = pg_exec($conn,$sSql);
+  $dados = db_query($conn,$sSql);
     $url = @pg_result($dados,0,"url");
     $fpdf->SetXY(1,1);
   if ($brasao == "b1") {
@@ -208,7 +208,7 @@ for ($x = 0; $x < $linhas; $x++) {
   $fpdf->setXY(20,5);
   $fpdf->multicell(120,4,$sCabecalho,0,"C",0,0);
   $fpdf->setXY(175,5);
-  $result_mant     = pg_exec($conn,"select nomeinst from db_config where codigo = ".db_getsession("DB_instit"));
+  $result_mant     = db_query($conn,"select nomeinst from db_config where codigo = ".db_getsession("DB_instit"));
   $mantenedora     = pg_result($result_mant,0,'nomeinst');
   $sCampos         = "ed05_c_finalidade,ed05_c_numero,ed05_d_vigora,ed05_d_publicado";
   $sWhere          = " ed29_i_codigo in ($ed29_i_codigo) AND ed18_i_codigo = $escola";
@@ -362,7 +362,7 @@ for ($x = 0; $x < $linhas; $x++) {
     $sql5    .= "      AND ed95_i_regencia in ($reg_pagina) ";
 	$sql5    .= "  AND ed59_c_condicao = 'OB' ";
     $sql5    .= "      ORDER BY ed59_i_ordenacao ";
-    $result5  = pg_query($sql5);
+    $result5  = db_query($sql5);
     $linhas5  = pg_num_rows($result5);
     $cont3    = 0;
     if ($linhas5 > 0) {
@@ -424,7 +424,7 @@ for ($x = 0; $x < $linhas; $x++) {
              $sql_f   .= "         AND ed59_c_freqglob = 'F' ";
              $sql_f   .= "         AND ed95_i_aluno = $ed60_i_aluno ";
              $sql_f   .= "         AND ed95_i_regencia = $ed59_i_codigo ";
-             $result_f = pg_query($sql_f);
+             $result_f = db_query($sql_f);
              $linhas_f = pg_num_rows($result_f);
              if ($resultedu == 'S') {
                $frequencia = number_format(pg_result($result_f,0,'ed74_i_percfreq'),2,".",".");
@@ -486,7 +486,7 @@ for ($x = 0; $x < $linhas; $x++) {
     $sql6   .= "                                                         where ed59_i_turma = $ed57_i_codigo ";
     $sql6   .= "                                                               AND ed59_i_serie = $ed223_i_serie) ";
     $sql6   .= "      AND ed59_c_condicao = 'OB' AND ed74_c_resultadofinal != 'A' ";
-    $result6 = pg_query($sql6);
+    $result6 = db_query($sql6);
     $linhas6 = pg_num_rows($result6);
     if (trim($ed60_c_situacao) != "MATRICULADO" || $linhas5 == 0) {
       $rf = "";
@@ -763,7 +763,7 @@ for ($x = 0; $x < $linhas; $x++) {
       $sql5   .= "     AND ed95_i_regencia in ($reg_pagina) ";
       $sql5   .= "     AND ed59_c_condicao = 'OB' ";
       $sql5   .= "     ORDER BY ed59_i_ordenacao ";
-      $result5 = pg_query($sql5);
+      $result5 = db_query($sql5);
       $linhas5 = pg_num_rows($result5);
       $cont3   = 0;
       if ($linhas5 > 0) {
@@ -824,7 +824,7 @@ for ($x = 0; $x < $linhas; $x++) {
                 $sql_f   .= "              AND ed59_c_freqglob = 'F' ";
                 $sql_f   .= "              AND ed95_i_aluno = $ed60_i_aluno ";
                 $sql_f   .= "              AND ed95_i_regencia = $ed59_i_codigo ";
-                $result_f = pg_query($sql_f);
+                $result_f = db_query($sql_f);
                 $linhas_f = pg_num_rows($result_f);
                 if ($resultedu == 'S') {
                   $frequencia = number_format(pg_result($result_f,0,'ed74_i_percfreq'),2,".",".");
@@ -889,7 +889,7 @@ for ($x = 0; $x < $linhas; $x++) {
       $sql6   .= "                                                                  AND ed59_i_serie = $ed223_i_serie)";
       $sql6   .= "     AND ed59_c_condicao = 'OB' ";
       $sql6   .= "     AND ed74_c_resultadofinal != 'A' ";
-      $result6 = pg_query($sql6);
+      $result6 = db_query($sql6);
       $linhas6 = pg_num_rows($result6);
       if (trim($ed60_c_situacao)!="MATRICULADO") {
         $rf = "";

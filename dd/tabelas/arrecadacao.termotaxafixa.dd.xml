@@ -1,0 +1,86 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010281' name='arrecadacao.termotaxafixa' description="Taxa fixa do termo do parcelamento" prefix="ar42" label="termotaxafixa" type="0">
+  <fields>
+    <field codigo="1009734" 
+           campo_api='' 
+           name="ar42_sequencial" 
+           conteudo="int8" 
+           description="Código sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t"
+           hassequence="t" >
+      <sequence name="arrecadacao.termotaxafixa_ar42_sequencial_seq" />
+    </field> 
+    <field codigo="1009735" 
+           campo_api='' 
+           name="ar42_parcel" 
+           conteudo="int8" 
+           description="Código do termo do parcelamento" 
+           inivalue="0" 
+           label="Parcelamento" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Parcelamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009736" 
+           campo_api='' 
+           name="ar42_processoforo" 
+           conteudo="int8" 
+           description="Código do processo do foro" 
+           inivalue="0" 
+           label="Processo do Foro" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo do Foro" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009737" 
+           campo_api='' 
+           name="ar42_fixa" 
+           conteudo="bool" 
+           description="Define se a taxa do parcelamento do termo é fixa" 
+           inivalue="f" 
+           label="Fixa" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Fixa" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="ar42_sequencial" />
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

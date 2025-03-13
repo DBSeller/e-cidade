@@ -1,40 +1,40 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_liborcamento.php");
-require_once("dbforms/db_funcoes.php");
-require_once("model/ppa.model.php");
-require_once("libs/JSON.php");
-require_once('model/ppaVersao.model.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("model/ppa.model.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification('model/ppaVersao.model.php'));
 
 $aParametros         = db_stdClass::getParametro("orcparametro", array(db_getsession("DB_anousu")));
 $oParametroOrcamento = $aParametros[0];
@@ -68,7 +68,7 @@ if ($oParam->exec == "getParametros") {
     $sSqlParametros .= "       orccenarioeconomicoconplano.* ";
     $sSqlParametros .= "  from orccenarioeconomicoparam ";
     $sSqlParametros .= "       left join orccenarioeconomicoconplano on o04_orccenarioeconomicoparam = o03_sequencial";
-    $sSqlParametros .= "       and o04_conplano = '{$oParam->params->conplano}' "; 
+    $sSqlParametros .= "       and o04_conplano = '{$oParam->params->conplano}' ";
     $sSqlParametros .= "       and o04_anousu in (select generate_series(".db_getsession("DB_anousu").",".db_getsession("DB_anousu").+ppa::ANOS_PREVISAO_CALCULO.",1))";
     $sSqlParametros .= " where o03_instit = ".db_getsession("DB_instit");
     $sSqlParametros .= " order by o03_sequencial,o03_anoreferencia";
@@ -99,7 +99,7 @@ if ($oParam->exec == "getParametros") {
       $oRetorno->itens  = $aColecaoParametros;
 
     }
-    
+
   } else {
 
     $oRetorno->status = 2;
@@ -136,7 +136,7 @@ if ($oParam->exec == "getParametros") {
   $rsIncluir = db_query($sSql);
   if ($rsIncluir) {
 
-    $aFontes = db_utils::getColectionByRecord($rsIncluir);
+    $aFontes = db_utils::getCollectionByRecord($rsIncluir);
     foreach ($aFontes as $oFonte) {
 
       $oDaoParametrosReceita->excluir(null, "o04_conplano  = {$oFonte->codigo_conplano}");
@@ -202,7 +202,7 @@ if ($oParam->exec == "getParametros") {
     if ($rsParametros && pg_num_rows($rsParametros) > 0) {
 
       $oRetorno->status = 1;
-      $oRetorno->itens  = db_utils::getColectionByRecord($rsParametros, false, false, true);
+      $oRetorno->itens  = db_utils::getCollectionByRecord($rsParametros, false, false, true);
 
     }
   } else {
@@ -260,7 +260,7 @@ if ($oParam->exec == "getParametros") {
 	if ( !USE_PCASP && file_exists("config/pcasp.txt") ) {
 		$_SESSION["DB_use_pcasp"] = "t";
 	}
-	
+
    $oPPA                  = new ppa($oParam->iCodigoLei, $oParam->iTipo, $oParam->iCodigoVersao);
    try {
 
@@ -274,18 +274,18 @@ if ($oParam->exec == "getParametros") {
      $oRetorno->message     = urlencode("Erro[".$eErro->getCode()."] - " .$eErro->getMessage());
 
    }
-   
+
    /**
     * @todo - remover
     */
    if ( !USE_PCASP && file_exists("config/pcasp.txt") ) {
    	$_SESSION["DB_use_pcasp"] = "f";
    }
-   
+
    echo $oJson->encode($oRetorno);
 
 } else if ($oParam->exec == "saveEstimativa") {
-	
+
 	/**
 	 * @todo - remover
 	 * Ativa PCASP quando arquivo de configuração com ano do PCASP existir
@@ -364,7 +364,7 @@ if ($oParam->exec == "getParametros") {
     $oRetorno->status      = 2;
     $oRetorno->message     = urlencode($eErro->getMessage());
     db_fim_transacao(true);
-  }  
+  }
 
   /**
    * @todo - remover
@@ -372,7 +372,7 @@ if ($oParam->exec == "getParametros") {
   if ( !USE_PCASP && file_exists("config/pcasp.txt") ) {
   	$_SESSION["DB_use_pcasp"] = "f";
   }
-  
+
   echo $oJson->encode($oRetorno);
 } else if ($oParam->exec == "reprocessaEstimativa") {
 
@@ -383,7 +383,7 @@ if ($oParam->exec == "getParametros") {
 	if ( !USE_PCASP && file_exists("config/pcasp.txt") ) {
 		$_SESSION["DB_use_pcasp"] = "t";
 	}
-	
+
   try {
 
     db_inicio_transacao();
@@ -417,14 +417,14 @@ if ($oParam->exec == "getParametros") {
     $oRetorno->message     = urlencode($eErro->getMessage());
     db_fim_transacao(true);
   }
-  
+
   /**
    * @todo - remover
    */
   if ( !USE_PCASP && file_exists("config/pcasp.txt") ) {
   	$_SESSION["DB_use_pcasp"] = "f";
   }
-  
+
   echo $oJson->encode($oRetorno);
 } else if ($oParam->exec == "calculaValorEstimativa") {
 
@@ -563,7 +563,7 @@ if ($oParam->exec == "getParametros") {
   echo $oJson->encode($oRetorno);
 } else if ($oParam->exec ==  "getDadosVersao") {
 
-    require_once('model/ppaVersao.model.php');
+    require_once(modification('model/ppaVersao.model.php'));
     $oDaoPpaVersao              = db_utils::getDao("ppaversao");
     $sSqlProximaVersao          = $oDaoPpaVersao->sql_query_file(null,"coalesce(max(o119_versao), 0)+1 as versao");
     $rsProximaVersao            = $oDaoPpaVersao->sql_record($sSqlProximaVersao);
@@ -590,14 +590,14 @@ if ($oParam->exec == "getParametros") {
                                                     "o119_versao < {$oRetorno->o119_versao} {$sWhere}"
                                                    );
      $rsOutrasVersoes = $oDaoPpaVersao->sql_record($sSqlOutrasVersoes);
-     $oRetorno->itens = db_utils::getColectionByRecord($rsOutrasVersoes, true);
+     $oRetorno->itens = db_utils::getCollectionByRecord($rsOutrasVersoes, true);
 
    }
    echo $oJson->encode($oRetorno);
 
 } else if ($oParam->exec == "retornaVersaoPPA") {
 
-  require_once('model/ppaVersao.model.php');
+  require_once(modification('model/ppaVersao.model.php'));
   $oPPaVersao                 = new ppaVersao($oParam->iCodigoVersao);
   try {
 
@@ -616,7 +616,7 @@ if ($oParam->exec == "getParametros") {
   echo $oJson->encode($oRetorno);
 } else if ($oParam->exec == "novaVersaoPPA") {
 
-  require_once('model/ppaVersao.model.php');
+  require_once(modification('model/ppaVersao.model.php'));
   $oPPaVersao                 = new ppaVersao($oParam->iCodigoVersao);
   try {
 
@@ -635,7 +635,7 @@ if ($oParam->exec == "getParametros") {
   echo $oJson->encode($oRetorno);
 } else if ($oParam->exec == "homologarPPA") {
 
-  require_once('model/ppaVersao.model.php');
+  require_once(modification('model/ppaVersao.model.php'));
   $oPPaVersao   = new ppaVersao($oParam->iCodigoVersao);
   try {
 
@@ -658,7 +658,7 @@ if ($oParam->exec == "getParametros") {
   echo $oJson->encode($oRetorno);
 } else if ($oParam->exec == "getUltimoAnoIntegrado") {
 
-  require_once('model/ppaVersao.model.php');
+  require_once(modification('model/ppaVersao.model.php'));
   $oPPaVersao   = new ppaVersao($oParam->o119_sequencial);
   $iAno         = $oPPaVersao->getUltimoAnoIntegrado();
   if ($iAno == null) {
@@ -670,7 +670,7 @@ if ($oParam->exec == "getParametros") {
   echo $oJson->encode($oRetorno);
 } else if ($oParam->exec == "integrar") {
 
-  require_once('model/ppaVersao.model.php');
+  require_once(modification('model/ppaVersao.model.php'));
   $oPPaVersao   = new ppaVersao($oParam->o119_sequencial);
   db_inicio_transacao();
   try {
@@ -698,7 +698,7 @@ if ($oParam->exec == "getParametros") {
       $sSqlDotacoes .= "having count(*) > 1 ";
       $sSqlDotacoes .= " order by dot,o08_ano ";
       $rsDotacoes    = db_query($sSqlDotacoes);
-      $oRetorno->itens = db_utils::getColectionByRecord($rsDotacoes,false,false, true);
+      $oRetorno->itens = db_utils::getCollectionByRecord($rsDotacoes,false,false, true);
 
     }
     $oRetorno->message = urlencode($eErro->getMessage());
@@ -715,24 +715,24 @@ if ($oParam->exec == "getParametros") {
   $sSqAnoCancelar .=  "   and o123_situacao   = 1 ";
   $sSqAnoCancelar .=  "   and o123_tipointegracao = 1 ";
   $sSqAnoCancelar .=  "   and o123_instit     = ".db_getsession("DB_instit");
-  $sSqAnoCancelar .=  "   and exists(select 1 ";
-  $sSqAnoCancelar .=  "                from ppaintegracaodespesa ";
-  $sSqAnoCancelar .=  "               where o121_ppaintegracao = o123_sequencial)";
-  $rsAnoCancelar   = DB_query($sSqAnoCancelar);
+//  $sSqAnoCancelar .=  "   and exists(select 1 ";
+//  $sSqAnoCancelar .=  "                from ppaintegracaodespesa ";
+//  $sSqAnoCancelar .=  "               where o121_ppaintegracao = o123_sequencial)";
+  $rsAnoCancelar   = db_query($sSqAnoCancelar);
   $iAnoCancelar    = "";
   if (pg_num_rows($rsAnoCancelar) == 1) {
     $iAnoCancelar = db_utils::fieldsMemory($rsAnoCancelar, 0)->o123_ano;
   } else {
 
     $oRetorno->status  = 2;
-    $oRetorno->message = urlencode("Não existe integrações a cancelar para esse ano");
+    $oRetorno->message = urlencode("Não existe integrações a cancelar para esse ano.");
 
   }
   $oRetorno->anointegrar = $iAnoCancelar;
   echo $oJson->encode($oRetorno);
 } else if ($oParam->exec == "cancelaintegracao") {
 
-   require_once('model/ppaVersao.model.php');
+   require_once(modification('model/ppaVersao.model.php'));
   $oPPaVersao   = new ppaVersao($oParam->o119_sequencial);
   db_inicio_transacao();
   try {

@@ -1,42 +1,45 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgm_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cgm_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
 if (!isset($pesquisar)) {
   parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 }
+
+$oGet = db_utils::postMemory($_GET);
 
 $clcgm = new cl_cgm;
 $clrotulo = new rotulocampo;
@@ -67,7 +70,7 @@ exit;
 }
 
 if (isset($testanome) && !isset($pesquisa_chave)) {
-  
+
   $funmat = split("\|",$funcao_js);
   $func_antes = $funmat[0];
   $valores = "";
@@ -98,6 +101,16 @@ if (isset($testanome) && !isset($pesquisa_chave)) {
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script>
+  window.onload = function(){
+      const btnPesquisar = document.getElementById("pesquisar2");
+
+      document.body.addEventListener('keydown', function(event){
+        if(event.which == 13){
+          btnPesquisar.click();
+        }
+      });
+
+  };
   function js_submit_numcgm_buscanome(numcgm){
     document.form_busca_dados.numcgm_busca_dados.value = numcgm;
     document.form_busca_dados.submit();
@@ -109,6 +122,7 @@ if (isset($testanome) && !isset($pesquisa_chave)) {
         document.form2.elements[i].value = "";
       }
     }
+    document.getElementById('pesquisar2').click();
   }
 
   <?php if(isset($testanome) && !isset($pesquisa_chave)): ?>
@@ -198,13 +212,12 @@ if (isset($testanome) && !isset($pesquisa_chave)) {
       </tr>
     </table>
   </form>
-  
+
   <table class="container">
     <tr>
       <td>
         <?php if (!isset($pesquisa_chave)) { ?>
           <script>
-            js_limpa();
             document.form2.nomeDigitadoParaPesquisa.focus();
           </script>
           <?php
@@ -225,9 +238,14 @@ if (isset($testanome) && !isset($pesquisa_chave)) {
           $clnome = new cl_cgm;
           $sql    = '';
 
+          $iTipoFiltroCGM = 0;
+          if (!empty($oGet->filtrar_cgm)) {
+            $iTipoFiltroCGM = $oGet->filtrar_cgm;
+          }
+
           if (isset($nomeDigitadoParaPesquisa) && !empty($nomeDigitadoParaPesquisa)) {
             $nomeDigitadoParaPesquisa = strtoupper($nomeDigitadoParaPesquisa);
-            $sql = $clnome->sqlnome($nomeDigitadoParaPesquisa,$campos);
+            $sql = $clnome->sqlnome($nomeDigitadoParaPesquisa,$campos, $iTipoFiltroCGM);
           } else if (isset($numcgmDigitadoParaPesquisa) && !empty($numcgmDigitadoParaPesquisa)) {
             $sql = $clnome->sql_query($numcgmDigitadoParaPesquisa,$campos);
           } else if (isset($cpf) && !empty($cpf)) {
@@ -241,7 +259,7 @@ if (isset($testanome) && !isset($pesquisa_chave)) {
             }
           }
 
-          db_lovrot($sql, 14, "()", "", $funcao_js);
+          db_lovrot($sql, 14, "()", "", $funcao_js, "", "NoMe", null, false);
         } else {
           if (!empty($pesquisa_chave)) {
             $result = $clcgm->sql_record($clcgm->sql_query($pesquisa_chave));
@@ -250,11 +268,18 @@ if (isset($testanome) && !isset($pesquisa_chave)) {
                 db_fieldsmemory($result, 0);
                 if (isset($lNovoDetalhe) && $lNovoDetalhe == 1) {
                   echo "<script>" . $funcao_js . "('{$z01_nome}', false);</script>";
+                } else if ( isset($familia) ){
+                  echo "<script>" . $funcao_js . "(false, \"$z01_nome\",\"$z01_mae\",\"$z01_pai\");</script>";
                 } else {
                   echo "<script>" . $funcao_js . "(false, \"$z01_nome\");</script>";
                 }
               } else {
-                echo "<script>" . $funcao_js . "(true, 'Código (" . $pesquisa_chave . ") não Encontrado');</script>";
+
+                if (isset($lNovoDetalhe) && $lNovoDetalhe == 1) {
+                  echo "<script>" . $funcao_js . "('Código (" . $pesquisa_chave . ") não Encontrado', true);</script>";
+                } else {
+                  echo "<script>" . $funcao_js . "(true, 'Código (" . $pesquisa_chave . ") não Encontrado');</script>";
+                }
               }
             }
             else {
@@ -281,3 +306,9 @@ if (isset($testanome) && !isset($pesquisa_chave)) {
   </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

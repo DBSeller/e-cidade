@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_inssirf_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_inssirf_classe.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -177,7 +177,7 @@ group by
        ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
@@ -364,7 +364,7 @@ group by
 ) as xxxx
        ";
 
-$result2 = pg_query($sql2);
+$result2 = db_query($sql2);
 
 $numrows2 = pg_numrows($result2);
 

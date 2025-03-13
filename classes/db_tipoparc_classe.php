@@ -1,99 +1,107 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: divida
 //CLASSE DA ENTIDADE tipoparc
-class cl_tipoparc { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $tipoparc = 0; 
-   var $descr = null; 
-   var $dtini_dia = null; 
-   var $dtini_mes = null; 
-   var $dtini_ano = null; 
-   var $dtini = null; 
-   var $dtfim_dia = null; 
-   var $dtfim_mes = null; 
-   var $dtfim_ano = null; 
-   var $dtfim = null; 
-   var $maxparc = 0; 
-   var $minparc = 0;   
-   var $vlrmin = 0; 
-   var $dtvlr_dia = null; 
-   var $dtvlr_mes = null; 
-   var $dtvlr_ano = null; 
-   var $dtvlr = null; 
-   var $inflat = null; 
-   var $descmul = 0; 
-   var $descjur = 0; 
-   var $descvlr = 0; 
-   var $cadtipoparc = 0; 
-   var $k42_minentrada = 0; 
-   var $instit = 0; 
-   var $tipovlr = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_tipoparc {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $tipoparc = 0;
+   var $descr = null;
+   var $dtini_dia = null;
+   var $dtini_mes = null;
+   var $dtini_ano = null;
+   var $dtini = null;
+   var $dtfim_dia = null;
+   var $dtfim_mes = null;
+   var $dtfim_ano = null;
+   var $dtfim = null;
+   var $maxparc = 0;
+   var $minparc = 0;
+   var $vlrmin = 0;
+   var $vlrmax = 0;
+   var $dtvlr_dia = null;
+   var $dtvlr_mes = null;
+   var $dtvlr_ano = null;
+   var $dtvlr = null;
+   var $vlrmindeb = 0;
+   var $vlrmaxdeb = 0;
+   var $inflat = null;
+   var $descmul = 0;
+   var $descjur = 0;
+   var $descvlr = 0;
+   var $cadtipoparc = 0;
+   var $k42_minentrada = 0;
+   var $instit = 0;
+   var $tipovlr = 0;
+   var $tipopessoa = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 tipoparc = int4 = Tipo de Parcelamento 
-                 descr = varchar(40) = Descrição 
-                 dtini = date = Data Inicial 
-                 dtfim = date = Data Final 
+                 tipoparc = int4 = Tipo de Parcelamento
+                 descr = varchar(40) = Descrição
+                 dtini = date = Data Inicial
+                 dtfim = date = Data Final
                  maxparc = int4 = Máximo de Parcelas
                  minparc = int4 = Minimo de Parcelas
-                 vlrmin = float8 = valor minimo 
-                 dtvlr = date = data do valor minimo 
-                 inflat = varchar(5) = inflator 
-                 descmul = float8 = Desconto Multa (%) 
-                 descjur = float8 = Desconto Juros (%) 
-                 descvlr = float8 = Desconto Valor Corrigido (%) 
-                 cadtipoparc = int4 = Código 
-                 k42_minentrada = float8 = Mínimo na Entrada (%) 
-                 instit = int4 = Instituição 
-                 tipovlr = int4 = Tipo de valor para correção 
+                 vlrmin = float8 = valor minimo da Parcela
+                 vlrmax = float8 = valor maximo da Parcela
+                 dtvlr = date = data do valor minimo
+                 vlrmindeb = float8 = valor minimo do Débito
+                 vlrmaxdeb = float8 = valor maximo do Débito
+                 inflat = varchar(5) = inflator
+                 descmul = float8 = Desconto Multa (%)
+                 descjur = float8 = Desconto Juros (%)
+                 descvlr = float8 = Desconto Valor Corrigido (%)
+                 cadtipoparc = int4 = Código
+                 k42_minentrada = float8 = Mínimo na Entrada (%)
+                 instit = int4 = Instituição
+                 tipovlr = int4 = Tipo de valor para correção
+                 tipopessoa = int4 = Tipo de pessoa
                  ";
-   //funcao construtor da classe 
-   function cl_tipoparc() { 
+   //funcao construtor da classe
+   function cl_tipoparc() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("tipoparc"); 
+     $this->rotulo = new rotulo("tipoparc");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -123,8 +131,9 @@ class cl_tipoparc {
          }
        }
        $this->maxparc = ($this->maxparc == ""?@$GLOBALS["HTTP_POST_VARS"]["maxparc"]:$this->maxparc);
-       $this->minparc = ($this->minparc == ""?@$GLOBALS["HTTP_POST_VARS"]["minparc"]:$this->minparc);       
+       $this->minparc = ($this->minparc == ""?@$GLOBALS["HTTP_POST_VARS"]["minparc"]:$this->minparc);
        $this->vlrmin = ($this->vlrmin == ""?@$GLOBALS["HTTP_POST_VARS"]["vlrmin"]:$this->vlrmin);
+       $this->vlrmax = ($this->vlrmax == ""?@$GLOBALS["HTTP_POST_VARS"]["vlrmax"]:$this->vlrmax);
        if($this->dtvlr == ""){
          $this->dtvlr_dia = ($this->dtvlr_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["dtvlr_dia"]:$this->dtvlr_dia);
          $this->dtvlr_mes = ($this->dtvlr_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["dtvlr_mes"]:$this->dtvlr_mes);
@@ -133,6 +142,8 @@ class cl_tipoparc {
             $this->dtvlr = $this->dtvlr_ano."-".$this->dtvlr_mes."-".$this->dtvlr_dia;
          }
        }
+       $this->vlrmindeb = ($this->vlrmindeb == ""?@$GLOBALS["HTTP_POST_VARS"]["vlrmindeb"]:$this->vlrmindeb);
+       $this->vlrmaxdeb = ($this->vlrmaxdeb == ""?@$GLOBALS["HTTP_POST_VARS"]["vlrmaxdeb"]:$this->vlrmaxdeb);
        $this->inflat = ($this->inflat == ""?@$GLOBALS["HTTP_POST_VARS"]["inflat"]:$this->inflat);
        $this->descmul = ($this->descmul == ""?@$GLOBALS["HTTP_POST_VARS"]["descmul"]:$this->descmul);
        $this->descjur = ($this->descjur == ""?@$GLOBALS["HTTP_POST_VARS"]["descjur"]:$this->descjur);
@@ -141,14 +152,15 @@ class cl_tipoparc {
        $this->k42_minentrada = ($this->k42_minentrada == ""?@$GLOBALS["HTTP_POST_VARS"]["k42_minentrada"]:$this->k42_minentrada);
        $this->instit = ($this->instit == ""?@$GLOBALS["HTTP_POST_VARS"]["instit"]:$this->instit);
        $this->tipovlr = ($this->tipovlr == ""?@$GLOBALS["HTTP_POST_VARS"]["tipovlr"]:$this->tipovlr);
+       $this->tipopessoa = ($this->tipopessoa == ""?@$GLOBALS["HTTP_POST_VARS"]["tipopessoa"]:$this->tipovlr);
      }else{
        $this->tipoparc = ($this->tipoparc == ""?@$GLOBALS["HTTP_POST_VARS"]["tipoparc"]:$this->tipoparc);
      }
    }
    // funcao para inclusao
-   function incluir ($tipoparc){ 
+   function incluir ($tipoparc){
       $this->atualizacampos();
-     if($this->descr == null ){ 
+     if($this->descr == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "descr";
        $this->erro_banco = "";
@@ -157,7 +169,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->dtini == null ){ 
+     if($this->dtini == null ){
        $this->erro_sql = " Campo Data Inicial nao Informado.";
        $this->erro_campo = "dtini_dia";
        $this->erro_banco = "";
@@ -166,7 +178,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->dtfim == null ){ 
+     if($this->dtfim == null ){
        $this->erro_sql = " Campo Data Final nao Informado.";
        $this->erro_campo = "dtfim_dia";
        $this->erro_banco = "";
@@ -175,7 +187,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->maxparc == null ){ 
+     if($this->maxparc == null ){
        $this->erro_sql = " Campo Máximo de Parcelas nao Informado.";
        $this->erro_campo = "maxparc";
        $this->erro_banco = "";
@@ -184,7 +196,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->minparc == null ){ 
+     if($this->minparc == null ){
        $this->erro_sql = " Campo Minimo de Parcelas nao Informado.";
        $this->erro_campo = "minparc";
        $this->erro_banco = "";
@@ -192,9 +204,9 @@ class cl_tipoparc {
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
-     }     
-     if($this->vlrmin == null ){ 
-       $this->erro_sql = " Campo valor minimo nao Informado.";
+     }
+     if($this->vlrmin == null ){
+       $this->erro_sql = " Campo valor minimo da Parcela nao Informado.";
        $this->erro_campo = "vlrmin";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -202,7 +214,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->dtvlr == null ){ 
+     if($this->dtvlr == null ){
        $this->erro_sql = " Campo data do valor minimo nao Informado.";
        $this->erro_campo = "dtvlr_dia";
        $this->erro_banco = "";
@@ -211,7 +223,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->inflat == null ){ 
+     if($this->inflat == null ){
        $this->erro_sql = " Campo inflator nao Informado.";
        $this->erro_campo = "inflat";
        $this->erro_banco = "";
@@ -220,7 +232,25 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->descmul == null ){ 
+     if($this->vlrmindeb == null ){
+       $this->erro_sql = " Campo Valor Mínimo do Débito não Informado.";
+       $this->erro_campo = "vlrmindeb";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->vlrmaxdeb == null ){
+       $this->erro_sql = " Campo Valor Máximo do Débito não Informado.";
+       $this->erro_campo = "vlrmindeb";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->descmul == null ){
        $this->erro_sql = " Campo Desconto Multa (%) nao Informado.";
        $this->erro_campo = "descmul";
        $this->erro_banco = "";
@@ -229,7 +259,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->descjur == null ){ 
+     if($this->descjur == null ){
        $this->erro_sql = " Campo Desconto Juros (%) nao Informado.";
        $this->erro_campo = "descjur";
        $this->erro_banco = "";
@@ -238,7 +268,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->descvlr == null ){ 
+     if($this->descvlr == null ){
        $this->erro_sql = " Campo Desconto Valor Corrigido (%) nao Informado.";
        $this->erro_campo = "descvlr";
        $this->erro_banco = "";
@@ -247,7 +277,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->cadtipoparc == null ){ 
+     if($this->cadtipoparc == null ){
        $this->erro_sql = " Campo Código nao Informado.";
        $this->erro_campo = "cadtipoparc";
        $this->erro_banco = "";
@@ -256,7 +286,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k42_minentrada == null ){ 
+     if($this->k42_minentrada == null ){
        $this->erro_sql = " Campo Mínimo na Entrada (%) nao Informado.";
        $this->erro_campo = "k42_minentrada";
        $this->erro_banco = "";
@@ -265,7 +295,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->instit == null ){ 
+     if($this->instit == null ){
        $this->erro_sql = " Campo Instituição nao Informado.";
        $this->erro_campo = "instit";
        $this->erro_banco = "";
@@ -274,7 +304,7 @@ class cl_tipoparc {
        $this->erro_status = "0";
        return false;
      }
-     if($this->tipovlr == null ){ 
+     if($this->tipovlr == null ){
        $this->erro_sql = " Campo Tipo de valor para correção nao Informado.";
        $this->erro_campo = "tipovlr";
        $this->erro_banco = "";
@@ -284,16 +314,16 @@ class cl_tipoparc {
        return false;
      }
      if($tipoparc == "" || $tipoparc == null ){
-       $result = db_query("select nextval('tipoparc_tipoparc_seq')"); 
+       $result = db_query("select nextval('tipoparc_tipoparc_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: tipoparc_tipoparc_seq do campo: tipoparc"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: tipoparc_tipoparc_seq do campo: tipoparc";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->tipoparc = pg_result($result,0,0); 
+       $this->tipoparc = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from tipoparc_tipoparc_seq");
        if(($result != false) && (pg_result($result,0,0) < $tipoparc)){
@@ -304,10 +334,10 @@ class cl_tipoparc {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->tipoparc = $tipoparc; 
+         $this->tipoparc = $tipoparc;
        }
      }
-     if(($this->tipoparc == null) || ($this->tipoparc == "") ){ 
+     if(($this->tipoparc == null) || ($this->tipoparc == "") ){
        $this->erro_sql = " Campo tipoparc nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -316,43 +346,51 @@ class cl_tipoparc {
        return false;
      }
      $sql = "insert into tipoparc(
-                                       tipoparc 
-                                      ,descr 
-                                      ,dtini 
-                                      ,dtfim 
-                                      ,maxparc 
+                                       tipoparc
+                                      ,descr
+                                      ,dtini
+                                      ,dtfim
+                                      ,maxparc
                                       ,minparc
-                                      ,vlrmin 
-                                      ,dtvlr 
-                                      ,inflat 
-                                      ,descmul 
-                                      ,descjur 
-                                      ,descvlr 
-                                      ,cadtipoparc 
-                                      ,k42_minentrada 
-                                      ,instit 
-                                      ,tipovlr 
+                                      ,vlrmin
+                                      ,vlrmax
+                                      ,dtvlr
+                                      ,vlrmindeb
+                                      ,vlrmaxdeb
+                                      ,inflat
+                                      ,descmul
+                                      ,descjur
+                                      ,descvlr
+                                      ,cadtipoparc
+                                      ,k42_minentrada
+                                      ,instit
+                                      ,tipovlr
+                                      ,tipopessoa
                        )
                 values (
-                                $this->tipoparc 
-                               ,'$this->descr' 
-                               ,".($this->dtini == "null" || $this->dtini == ""?"null":"'".$this->dtini."'")." 
-                               ,".($this->dtfim == "null" || $this->dtfim == ""?"null":"'".$this->dtfim."'")." 
+                                $this->tipoparc
+                               ,'$this->descr'
+                               ,".($this->dtini == "null" || $this->dtini == ""?"null":"'".$this->dtini."'")."
+                               ,".($this->dtfim == "null" || $this->dtfim == ""?"null":"'".$this->dtfim."'")."
                                ,$this->maxparc
-                               ,$this->minparc 
-                               ,$this->vlrmin 
-                               ,".($this->dtvlr == "null" || $this->dtvlr == ""?"null":"'".$this->dtvlr."'")." 
-                               ,'$this->inflat' 
-                               ,$this->descmul 
-                               ,$this->descjur 
-                               ,$this->descvlr 
-                               ,$this->cadtipoparc 
-                               ,$this->k42_minentrada 
-                               ,$this->instit 
-                               ,$this->tipovlr 
+                               ,$this->minparc
+                               ,$this->vlrmin
+                               ,".($this->vlrmax == "null" || $this->vlrmax == ""?"0":$this->vlrmax)."
+                               ,".($this->dtvlr == "null" || $this->dtvlr == ""?"null":"'".$this->dtvlr."'")."
+                               ,$this->vlrmindeb
+                               ,".($this->vlrmaxdeb == "null" || $this->vlrmaxdeb == ""?"0":$this->vlrmaxdeb)."
+                               ,'$this->inflat'
+                               ,$this->descmul
+                               ,$this->descjur
+                               ,$this->descvlr
+                               ,$this->cadtipoparc
+                               ,$this->k42_minentrada
+                               ,$this->instit
+                               ,$this->tipovlr
+                               ,$this->tipopessoa
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = " ($this->tipoparc) nao Incluído. Inclusao Abortada.";
@@ -386,7 +424,7 @@ class cl_tipoparc {
        $resac = db_query("insert into db_acount values($acount,95,502,'','".AddSlashes(pg_result($resaco,0,'dtini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,95,503,'','".AddSlashes(pg_result($resaco,0,'dtfim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,95,504,'','".AddSlashes(pg_result($resaco,0,'maxparc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,95,16693,'','".AddSlashes(pg_result($resaco,0,'minparc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");       
+       $resac = db_query("insert into db_acount values($acount,95,16693,'','".AddSlashes(pg_result($resaco,0,'minparc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,95,505,'','".AddSlashes(pg_result($resaco,0,'vlrmin'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,95,506,'','".AddSlashes(pg_result($resaco,0,'dtvlr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,95,507,'','".AddSlashes(pg_result($resaco,0,'inflat'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
@@ -397,18 +435,22 @@ class cl_tipoparc {
        $resac = db_query("insert into db_acount values($acount,95,9580,'','".AddSlashes(pg_result($resaco,0,'k42_minentrada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,95,9996,'','".AddSlashes(pg_result($resaco,0,'instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,95,14348,'','".AddSlashes(pg_result($resaco,0,'tipovlr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,95,1010077,'','".AddSlashes(pg_result($resaco,0,'vlrmax'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,95,1010087,'','".AddSlashes(pg_result($resaco,0,'tipopessoa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,95,1011722,'','".AddSlashes(pg_result($resaco,0,'vlrmindeb'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,95,1011723,'','".AddSlashes(pg_result($resaco,0,'vlrmaxdeb'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($tipoparc=null) { 
+   function alterar ($tipoparc=null) {
       $this->atualizacampos();
      $sql = " update tipoparc set ";
      $virgula = "";
-     if(trim($this->tipoparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["tipoparc"])){ 
+     if(trim($this->tipoparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["tipoparc"])){
        $sql  .= $virgula." tipoparc = $this->tipoparc ";
        $virgula = ",";
-       if(trim($this->tipoparc) == null ){ 
+       if(trim($this->tipoparc) == null ){
          $this->erro_sql = " Campo Tipo de Parcelamento nao Informado.";
          $this->erro_campo = "tipoparc";
          $this->erro_banco = "";
@@ -418,10 +460,10 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descr"])){ 
+     if(trim($this->descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descr"])){
        $sql  .= $virgula." descr = '$this->descr' ";
        $virgula = ",";
-       if(trim($this->descr) == null ){ 
+       if(trim($this->descr) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "descr";
          $this->erro_banco = "";
@@ -431,10 +473,10 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->dtini)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtini_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtini_dia"] !="") ){ 
+     if(trim($this->dtini)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtini_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtini_dia"] !="") ){
        $sql  .= $virgula." dtini = '$this->dtini' ";
        $virgula = ",";
-       if(trim($this->dtini) == null ){ 
+       if(trim($this->dtini) == null ){
          $this->erro_sql = " Campo Data Inicial nao Informado.";
          $this->erro_campo = "dtini_dia";
          $this->erro_banco = "";
@@ -443,11 +485,11 @@ class cl_tipoparc {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["dtini_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["dtini_dia"])){
          $sql  .= $virgula." dtini = null ";
          $virgula = ",";
-         if(trim($this->dtini) == null ){ 
+         if(trim($this->dtini) == null ){
            $this->erro_sql = " Campo Data Inicial nao Informado.";
            $this->erro_campo = "dtini_dia";
            $this->erro_banco = "";
@@ -458,10 +500,10 @@ class cl_tipoparc {
          }
        }
      }
-     if(trim($this->dtfim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtfim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtfim_dia"] !="") ){ 
+     if(trim($this->dtfim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtfim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtfim_dia"] !="") ){
        $sql  .= $virgula." dtfim = '$this->dtfim' ";
        $virgula = ",";
-       if(trim($this->dtfim) == null ){ 
+       if(trim($this->dtfim) == null ){
          $this->erro_sql = " Campo Data Final nao Informado.";
          $this->erro_campo = "dtfim_dia";
          $this->erro_banco = "";
@@ -470,11 +512,11 @@ class cl_tipoparc {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["dtfim_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["dtfim_dia"])){
          $sql  .= $virgula." dtfim = null ";
          $virgula = ",";
-         if(trim($this->dtfim) == null ){ 
+         if(trim($this->dtfim) == null ){
            $this->erro_sql = " Campo Data Final nao Informado.";
            $this->erro_campo = "dtfim_dia";
            $this->erro_banco = "";
@@ -485,10 +527,10 @@ class cl_tipoparc {
          }
        }
      }
-     if(trim($this->maxparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["maxparc"])){ 
+     if(trim($this->maxparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["maxparc"])){
        $sql  .= $virgula." maxparc = $this->maxparc ";
        $virgula = ",";
-       if(trim($this->maxparc) == null ){ 
+       if(trim($this->maxparc) == null ){
          $this->erro_sql = " Campo Máximo de Parcelas nao Informado.";
          $this->erro_campo = "maxparc";
          $this->erro_banco = "";
@@ -498,10 +540,10 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->minparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["minparc"])){ 
+     if(trim($this->minparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["minparc"])){
        $sql  .= $virgula." minparc = $this->minparc ";
        $virgula = ",";
-       if(trim($this->minparc) == null ){ 
+       if(trim($this->minparc) == null ){
          $this->erro_sql = " Campo Minimo de Parcelas nao Informado.";
          $this->erro_campo = "minparc";
          $this->erro_banco = "";
@@ -510,12 +552,12 @@ class cl_tipoparc {
          $this->erro_status = "0";
          return false;
        }
-     }     
-     if(trim($this->vlrmin)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrmin"])){ 
+     }
+     if(trim($this->vlrmin)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrmin"])){
        $sql  .= $virgula." vlrmin = $this->vlrmin ";
        $virgula = ",";
-       if(trim($this->vlrmin) == null ){ 
-         $this->erro_sql = " Campo valor minimo nao Informado.";
+       if(trim($this->vlrmin) == null ){
+         $this->erro_sql = " Campo valor minimo da parcela nao Informado.";
          $this->erro_campo = "vlrmin";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -524,10 +566,23 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->dtvlr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtvlr_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtvlr_dia"] !="") ){ 
+     if(trim($this->vlrmax)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrmax"])){
+       $sql  .= $virgula." vlrmax = $this->vlrmax ";
+       $virgula = ",";
+       if(trim($this->vlrmax) == null ){
+         $this->erro_sql = " Campo valor maximo da parcela nao Informado.";
+         $this->erro_campo = "vlrmax";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(trim($this->dtvlr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtvlr_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtvlr_dia"] !="") ){
        $sql  .= $virgula." dtvlr = '$this->dtvlr' ";
        $virgula = ",";
-       if(trim($this->dtvlr) == null ){ 
+       if(trim($this->dtvlr) == null ){
          $this->erro_sql = " Campo data do valor minimo nao Informado.";
          $this->erro_campo = "dtvlr_dia";
          $this->erro_banco = "";
@@ -536,11 +591,11 @@ class cl_tipoparc {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["dtvlr_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["dtvlr_dia"])){
          $sql  .= $virgula." dtvlr = null ";
          $virgula = ",";
-         if(trim($this->dtvlr) == null ){ 
+         if(trim($this->dtvlr) == null ){
            $this->erro_sql = " Campo data do valor minimo nao Informado.";
            $this->erro_campo = "dtvlr_dia";
            $this->erro_banco = "";
@@ -551,10 +606,37 @@ class cl_tipoparc {
          }
        }
      }
-     if(trim($this->inflat)!="" || isset($GLOBALS["HTTP_POST_VARS"]["inflat"])){ 
+     if(trim($this->vlrmindeb)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrmindeb"])){
+       $sql  .= $virgula." vlrmindeb = $this->vlrmindeb ";
+       $virgula = ",";
+       if(trim($this->vlrmindeb) == null ){
+         $this->erro_sql = " Campo valor minimo do debito nao Informado.";
+         $this->erro_campo = "vlrmindeb";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(trim($this->vlrmaxdeb)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrmaxdeb"])){
+       $sql  .= $virgula." vlrmaxdeb = $this->vlrmaxdeb ";
+       $virgula = ",";
+       if(trim($this->vlrmaxdeb) == null ){
+         $this->erro_sql = " Campo valor maximo do debito nao Informado.";
+         $this->erro_campo = "vlrmaxdeb";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+
+     if(trim($this->inflat)!="" || isset($GLOBALS["HTTP_POST_VARS"]["inflat"])){
        $sql  .= $virgula." inflat = '$this->inflat' ";
        $virgula = ",";
-       if(trim($this->inflat) == null ){ 
+       if(trim($this->inflat) == null ){
          $this->erro_sql = " Campo inflator nao Informado.";
          $this->erro_campo = "inflat";
          $this->erro_banco = "";
@@ -564,10 +646,10 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->descmul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descmul"])){ 
+     if(trim($this->descmul)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descmul"])){
        $sql  .= $virgula." descmul = $this->descmul ";
        $virgula = ",";
-       if(trim($this->descmul) == null ){ 
+       if(trim($this->descmul) == null ){
          $this->erro_sql = " Campo Desconto Multa (%) nao Informado.";
          $this->erro_campo = "descmul";
          $this->erro_banco = "";
@@ -577,10 +659,10 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->descjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descjur"])){ 
+     if(trim($this->descjur)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descjur"])){
        $sql  .= $virgula." descjur = $this->descjur ";
        $virgula = ",";
-       if(trim($this->descjur) == null ){ 
+       if(trim($this->descjur) == null ){
          $this->erro_sql = " Campo Desconto Juros (%) nao Informado.";
          $this->erro_campo = "descjur";
          $this->erro_banco = "";
@@ -590,10 +672,10 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->descvlr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descvlr"])){ 
+     if(trim($this->descvlr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["descvlr"])){
        $sql  .= $virgula." descvlr = $this->descvlr ";
        $virgula = ",";
-       if(trim($this->descvlr) == null ){ 
+       if(trim($this->descvlr) == null ){
          $this->erro_sql = " Campo Desconto Valor Corrigido (%) nao Informado.";
          $this->erro_campo = "descvlr";
          $this->erro_banco = "";
@@ -603,10 +685,10 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->cadtipoparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cadtipoparc"])){ 
+     if(trim($this->cadtipoparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cadtipoparc"])){
        $sql  .= $virgula." cadtipoparc = $this->cadtipoparc ";
        $virgula = ",";
-       if(trim($this->cadtipoparc) == null ){ 
+       if(trim($this->cadtipoparc) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "cadtipoparc";
          $this->erro_banco = "";
@@ -616,10 +698,10 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->k42_minentrada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k42_minentrada"])){ 
+     if(trim($this->k42_minentrada)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k42_minentrada"])){
        $sql  .= $virgula." k42_minentrada = $this->k42_minentrada ";
        $virgula = ",";
-       if(trim($this->k42_minentrada) == null ){ 
+       if(trim($this->k42_minentrada) == null ){
          $this->erro_sql = " Campo Mínimo na Entrada (%) nao Informado.";
          $this->erro_campo = "k42_minentrada";
          $this->erro_banco = "";
@@ -629,10 +711,10 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["instit"])){ 
+     if(trim($this->instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["instit"])){
        $sql  .= $virgula." instit = $this->instit ";
        $virgula = ",";
-       if(trim($this->instit) == null ){ 
+       if(trim($this->instit) == null ){
          $this->erro_sql = " Campo Instituição nao Informado.";
          $this->erro_campo = "instit";
          $this->erro_banco = "";
@@ -642,12 +724,25 @@ class cl_tipoparc {
          return false;
        }
      }
-     if(trim($this->tipovlr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["tipovlr"])){ 
+     if(trim($this->tipovlr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["tipovlr"])){
        $sql  .= $virgula." tipovlr = $this->tipovlr ";
        $virgula = ",";
-       if(trim($this->tipovlr) == null ){ 
+       if(trim($this->tipovlr) == null ){
          $this->erro_sql = " Campo Tipo de valor para correção nao Informado.";
          $this->erro_campo = "tipovlr";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+      if(trim($this->tipopessoa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["tipopessoa"])){
+       $sql  .= $virgula." tipopessoa = $this->tipopessoa ";
+       $virgula = ",";
+       if(trim($this->tipovlr) == null ){
+         $this->erro_sql = " Campo Tipo de pessoa nao Informado.";
+         $this->erro_campo = "tipopessoa";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -676,8 +771,8 @@ class cl_tipoparc {
            $resac = db_query("insert into db_acount values($acount,95,503,'".AddSlashes(pg_result($resaco,$conresaco,'dtfim'))."','$this->dtfim',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["maxparc"]) || $this->maxparc != "")
            $resac = db_query("insert into db_acount values($acount,95,504,'".AddSlashes(pg_result($resaco,$conresaco,'maxparc'))."','$this->maxparc',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["minparc"]) || $this->minparc != "")          
-           $resac = db_query("insert into db_acount values($acount,95,16693,'','".AddSlashes(pg_result($resaco,0,'minparc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");           
+         if(isset($GLOBALS["HTTP_POST_VARS"]["minparc"]) || $this->minparc != "")
+           $resac = db_query("insert into db_acount values($acount,95,16693,'','".AddSlashes(pg_result($resaco,0,'minparc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["vlrmin"]) || $this->vlrmin != "")
            $resac = db_query("insert into db_acount values($acount,95,505,'".AddSlashes(pg_result($resaco,$conresaco,'vlrmin'))."','$this->vlrmin',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["dtvlr"]) || $this->dtvlr != "")
@@ -698,10 +793,18 @@ class cl_tipoparc {
            $resac = db_query("insert into db_acount values($acount,95,9996,'".AddSlashes(pg_result($resaco,$conresaco,'instit'))."','$this->instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["tipovlr"]) || $this->tipovlr != "")
            $resac = db_query("insert into db_acount values($acount,95,14348,'".AddSlashes(pg_result($resaco,$conresaco,'tipovlr'))."','$this->tipovlr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["vlrmax"]) || $this->vlrmax != "")
+           $resac = db_query("insert into db_acount values($acount,95,1010077,'".AddSlashes(pg_result($resaco,$conresaco,'vlrmax'))."','$this->vlrmax',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["tipopessoa"]) || $this->tipopessoa != "")
+           $resac = db_query("insert into db_acount values($acount,95,1010087,'".AddSlashes(pg_result($resaco,$conresaco,'tipopessoa'))."','$this->tipopessoa',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["vlrmindeb"]) || $this->vlrmindeb != "")
+           $resac = db_query("insert into db_acount values($acount,95,1011722,'".AddSlashes(pg_result($resaco,$conresaco,'vlrmindeb'))."','$this->vlrmindeb',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["vlrmaxdeb"]) || $this->vlrmaxdeb != "")
+           $resac = db_query("insert into db_acount values($acount,95,1011723,'".AddSlashes(pg_result($resaco,$conresaco,'vlrmaxdeb'))."','$this->vlrmaxdeb',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->tipoparc;
@@ -729,14 +832,14 @@ class cl_tipoparc {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($tipoparc=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($tipoparc=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($tipoparc));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -750,7 +853,7 @@ class cl_tipoparc {
          $resac = db_query("insert into db_acount values($acount,95,502,'','".AddSlashes(pg_result($resaco,$iresaco,'dtini'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,95,503,'','".AddSlashes(pg_result($resaco,$iresaco,'dtfim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,95,504,'','".AddSlashes(pg_result($resaco,$iresaco,'maxparc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,95,16693,'','".AddSlashes(pg_result($resaco,0,'minparc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");         
+         $resac = db_query("insert into db_acount values($acount,95,16693,'','".AddSlashes(pg_result($resaco,0,'minparc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,95,505,'','".AddSlashes(pg_result($resaco,$iresaco,'vlrmin'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,95,506,'','".AddSlashes(pg_result($resaco,$iresaco,'dtvlr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,95,507,'','".AddSlashes(pg_result($resaco,$iresaco,'inflat'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
@@ -761,6 +864,10 @@ class cl_tipoparc {
          $resac = db_query("insert into db_acount values($acount,95,9580,'','".AddSlashes(pg_result($resaco,$iresaco,'k42_minentrada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,95,9996,'','".AddSlashes(pg_result($resaco,$iresaco,'instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,95,14348,'','".AddSlashes(pg_result($resaco,$iresaco,'tipovlr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,95,1010077,'','".AddSlashes(pg_result($resaco,$iresaco,'vlrmax'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,95,1010087,'','".AddSlashes(pg_result($resaco,$iresaco,'tipopessoa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,95,1011722,'','".AddSlashes(pg_result($resaco,$iresaco,'vlrmindeb'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,95,1011723,'','".AddSlashes(pg_result($resaco,$iresaco,'vlrmaxdeb'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from tipoparc
@@ -777,7 +884,7 @@ class cl_tipoparc {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$tipoparc;
@@ -805,11 +912,11 @@ class cl_tipoparc {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -831,8 +938,8 @@ class cl_tipoparc {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $tipoparc=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $tipoparc=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -854,8 +961,8 @@ class cl_tipoparc {
      $sql2 = "";
      if($dbwhere==""){
        if($tipoparc!=null ){
-         $sql2 .= " where tipoparc.tipoparc = $tipoparc "; 
-       } 
+         $sql2 .= " where tipoparc.tipoparc = $tipoparc ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -871,8 +978,8 @@ class cl_tipoparc {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $tipoparc=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $tipoparc=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -888,8 +995,8 @@ class cl_tipoparc {
      $sql2 = "";
      if($dbwhere==""){
        if($tipoparc!=null ){
-         $sql2 .= " where tipoparc.tipoparc = $tipoparc "; 
-       } 
+         $sql2 .= " where tipoparc.tipoparc = $tipoparc ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -904,6 +1011,6 @@ class cl_tipoparc {
        }
      }
      return $sql;
-  }
+   }
 }
 ?>

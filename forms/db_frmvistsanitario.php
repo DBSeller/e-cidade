@@ -72,9 +72,9 @@ db_input('y80_numcgm',10,$Iy80_numcgm,true,'text',3,'')
 <script>
 function js_pesquisay74_codvist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_vistorias','func_vistorias.php?funcao_js=parent.js_mostravistorias1|y70_codvist|y70_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistorias','func_vistorias.php?funcao_js=parent.js_mostravistorias1|y70_codvist|y70_data','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_vistorias','func_vistorias.php?pesquisa_chave='+document.form1.y74_codvist.value+'&funcao_js=parent.js_mostravistorias','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistorias','func_vistorias.php?pesquisa_chave='+document.form1.y74_codvist.value+'&funcao_js=parent.js_mostravistorias','Pesquisa',false);
   }
 }
 function js_mostravistorias(chave,erro){
@@ -91,9 +91,9 @@ function js_mostravistorias1(chave1,chave2){
 }
 function js_pesquisay74_codsani(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_sanitario','func_sanitario.php?funcao_js=parent.js_mostrasanitario1|y80_codsani|y80_numcgm','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sanitario','func_sanitario.php?funcao_js=parent.js_mostrasanitario1|y80_codsani|y80_numcgm','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_sanitario','func_sanitario.php?pesquisa_chave='+document.form1.y74_codsani.value+'&funcao_js=parent.js_mostrasanitario','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sanitario','func_sanitario.php?pesquisa_chave='+document.form1.y74_codsani.value+'&funcao_js=parent.js_mostrasanitario','Pesquisa',false);
   }
 }
 function js_mostrasanitario(chave,erro){
@@ -109,7 +109,7 @@ function js_mostrasanitario1(chave1,chave2){
   db_iframe_sanitario.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_vistsanitario','func_vistsanitario.php?funcao_js=parent.js_preenchepesquisa|y74_codvist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistsanitario','func_vistsanitario.php?funcao_js=parent.js_preenchepesquisa|y74_codvist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_vistsanitario.hide();

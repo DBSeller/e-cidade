@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -154,7 +154,7 @@ class cl_db_projetos {
        return false;
      }
      if($at60_codigo == "" || $at60_codigo == null ){
-       $result = @pg_query("select nextval('db_projetos_at60_codigo_seq')"); 
+       $result = @db_query("select nextval('db_projetos_at60_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: db_projetos_at60_codigo_seq do campo: at60_codigo"; 
@@ -165,7 +165,7 @@ class cl_db_projetos {
        }
        $this->at60_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from db_projetos_at60_codigo_seq");
+       $result = @db_query("select last_value from db_projetos_at60_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $at60_codigo)){
          $this->erro_sql = " Campo at60_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -201,7 +201,7 @@ class cl_db_projetos {
                                ,".($this->at60_fim == "null" || $this->at60_fim == ""?"null":"'".$this->at60_fim."'")." 
                                ,$this->at60_situacao 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -227,15 +227,15 @@ class cl_db_projetos {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->at60_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,8345,'$this->at60_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,1410,8345,'','".AddSlashes(pg_result($resaco,0,'at60_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1410,8346,'','".AddSlashes(pg_result($resaco,0,'at60_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1410,8347,'','".AddSlashes(pg_result($resaco,0,'at60_responsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1410,8348,'','".AddSlashes(pg_result($resaco,0,'at60_inicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1410,8349,'','".AddSlashes(pg_result($resaco,0,'at60_fim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1410,8352,'','".AddSlashes(pg_result($resaco,0,'at60_situacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,8345,'$this->at60_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,1410,8345,'','".AddSlashes(pg_result($resaco,0,'at60_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1410,8346,'','".AddSlashes(pg_result($resaco,0,'at60_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1410,8347,'','".AddSlashes(pg_result($resaco,0,'at60_responsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1410,8348,'','".AddSlashes(pg_result($resaco,0,'at60_inicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1410,8349,'','".AddSlashes(pg_result($resaco,0,'at60_fim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1410,8352,'','".AddSlashes(pg_result($resaco,0,'at60_situacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -357,24 +357,24 @@ class cl_db_projetos {
      $resaco = $this->sql_record($this->sql_query_file($this->at60_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,8345,'$this->at60_codigo','A')");
+         $resac = db_query("insert into db_acountkey values($acount,8345,'$this->at60_codigo','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at60_codigo"]))
-           $resac = pg_query("insert into db_acount values($acount,1410,8345,'".AddSlashes(pg_result($resaco,$conresaco,'at60_codigo'))."','$this->at60_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1410,8345,'".AddSlashes(pg_result($resaco,$conresaco,'at60_codigo'))."','$this->at60_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at60_descr"]))
-           $resac = pg_query("insert into db_acount values($acount,1410,8346,'".AddSlashes(pg_result($resaco,$conresaco,'at60_descr'))."','$this->at60_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1410,8346,'".AddSlashes(pg_result($resaco,$conresaco,'at60_descr'))."','$this->at60_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at60_responsavel"]))
-           $resac = pg_query("insert into db_acount values($acount,1410,8347,'".AddSlashes(pg_result($resaco,$conresaco,'at60_responsavel'))."','$this->at60_responsavel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1410,8347,'".AddSlashes(pg_result($resaco,$conresaco,'at60_responsavel'))."','$this->at60_responsavel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at60_inicio"]))
-           $resac = pg_query("insert into db_acount values($acount,1410,8348,'".AddSlashes(pg_result($resaco,$conresaco,'at60_inicio'))."','$this->at60_inicio',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1410,8348,'".AddSlashes(pg_result($resaco,$conresaco,'at60_inicio'))."','$this->at60_inicio',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at60_fim"]))
-           $resac = pg_query("insert into db_acount values($acount,1410,8349,'".AddSlashes(pg_result($resaco,$conresaco,'at60_fim'))."','$this->at60_fim',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1410,8349,'".AddSlashes(pg_result($resaco,$conresaco,'at60_fim'))."','$this->at60_fim',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at60_situacao"]))
-           $resac = pg_query("insert into db_acount values($acount,1410,8352,'".AddSlashes(pg_result($resaco,$conresaco,'at60_situacao'))."','$this->at60_situacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1410,8352,'".AddSlashes(pg_result($resaco,$conresaco,'at60_situacao'))."','$this->at60_situacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Projetos nao Alterado. Alteracao Abortada.\\n";
@@ -415,15 +415,15 @@ class cl_db_projetos {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,8345,'$at60_codigo','E')");
-         $resac = pg_query("insert into db_acount values($acount,1410,8345,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1410,8346,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1410,8347,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_responsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1410,8348,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_inicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1410,8349,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_fim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1410,8352,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_situacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,8345,'$at60_codigo','E')");
+         $resac = db_query("insert into db_acount values($acount,1410,8345,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1410,8346,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1410,8347,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_responsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1410,8348,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_inicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1410,8349,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_fim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1410,8352,'','".AddSlashes(pg_result($resaco,$iresaco,'at60_situacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from db_projetos
@@ -439,7 +439,7 @@ class cl_db_projetos {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Projetos nao Excluído. Exclusão Abortada.\\n";
@@ -473,7 +473,7 @@ class cl_db_projetos {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

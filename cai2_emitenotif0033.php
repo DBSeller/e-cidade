@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_listanotifica_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_listanotifica_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
 //parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -100,7 +100,7 @@ $cllistanotifica->rotulo->label("k63_notifica");
       }
       $sqllista = "select * from lista where k60_codigo = $lista and k60_instit= $instit";
       //echo "<br>$sqllista<br>";
-      $resultlista = pg_exec($sqllista);
+      $resultlista = db_query($sqllista);
       db_fieldsmemory($resultlista,0);
       //db_msgbox($k60_tipo);
       if ($k60_tipo == 'M'){
@@ -250,7 +250,7 @@ $cllistanotifica->rotulo->label("k63_notifica");
                                z01_nome"; 
       
         //die($sql);
-        $result = pg_exec($sql);
+        $result = db_query($sql);
           if(pg_numrows($result) !=0 ){
             db_fieldsmemory($result,0);
             echo "<script>".$funcao_js."('$z01_nome',false);</script>";

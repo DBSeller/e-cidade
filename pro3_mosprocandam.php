@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_procandam_classe.php");
-include("classes/db_proctransfer_classe.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_proctransand_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_procandam_classe.php"));
+include(modification("classes/db_proctransfer_classe.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_proctransand_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 ?>
@@ -91,7 +91,7 @@ function js_imprime(){
          <?
              
              // db_lovrot($sqlandam,10,"","","");
-            $rs = pg_exec($sqlandam);  
+            $rs = db_query($sqlandam);  
             $j = 0;
             for ($i = 0;$i < pg_num_rows($rs);$i++){
 	      $arquiv = false;
@@ -116,7 +116,7 @@ function js_imprime(){
 				inner join tipoproc on p51_codigo = p58_codigo 
 				inner join db_usuarios on p58_id_usuario = id_usuario
 				where p58_codproc = $p61_codproc";
-		  $resrequer = pg_query($sqlrequer);
+		  $resrequer = db_query($sqlrequer);
                   if(pg_numrows($resrequer) > 0){
 		    db_fieldsmemory($resrequer,0);
 		    echo "<tr>
@@ -168,7 +168,7 @@ function js_imprime(){
 				 inner join proctransferproc on p63_codtran = p62_codtran
 				 where p63_codproc = $codproc and p63_codtran not in(select p64_codtran
 				                                       from   proctransand order by p64_codtran)";
-		  $res = pg_query($sql);
+		  $res = db_query($sql);
 		  if(pg_numrows($res) > 0){
 		    db_fieldsmemory($res,0);
 		    //$situacao = "<b>EM TRANSFERÊNCIA PARA $deptovai - CODTRANS: $p63_codtran</b>";
@@ -181,7 +181,7 @@ function js_imprime(){
 			  inner join db_usuarios on p67_id_usuario = id_usuario 
 			  inner join db_depart on p67_coddepto = coddepto 
 			  where p67_codproc = $p61_codproc";
-		  $res = pg_query($sql);
+		  $res = db_query($sql);
 		  if(pg_numrows($res) > 0){
 		    db_fieldsmemory($res,0);
 		    $situacao = "<b>ARQUIVADO</b>";
@@ -231,7 +231,7 @@ function js_imprime(){
 		  	 inner join recibo r on r.k00_numpre = k80_numpre 
 			 left join arrepaga rp on rp.k00_numpre = k80_numpre 
 		  where k80_codproc = $codproc group by r.k00_numpre, rp.k00_numpre,rp.k00_dtpaga,r.k00_dtvenc,r.k00_dtoper";
-	  $res = pg_query($sql);
+	  $res = db_query($sql);
 	  if(pg_numrows($res) > 0){
 	    echo "
 	     <tr>

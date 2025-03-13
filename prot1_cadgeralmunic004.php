@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_cgmtipoempresa_classe.php");
-require_once("classes/db_tipoempresa_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_cgmtipoempresa_classe.php"));
+require_once(modification("classes/db_tipoempresa_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -52,53 +52,30 @@ $cltipoempresa->rotulo->label();
 //testa para saber se é pessoa física ou jurídica
 //seta variável para exibir parte pertiente a cada tipo no formulário
 if (isset($oPost->cpf) && trim($oPost->cpf) != "") {
-	$lPessoaFisica = true;
+  $lPessoaFisica = true;
 } else {
-	$lPessoaFisica = false;
+  $lPessoaFisica = false;
 }
 ?>
+
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<?php
-  db_app::load("scripts.js");
-  db_app::load("prototype.js");
-  db_app::load("widgets/windowAux.widget.js");
-  db_app::load("strings.js");
-  db_app::load("widgets/dbtextField.widget.js");
-  db_app::load("dbViewCadEndereco.classe.js");
-  db_app::load("dbmessageBoard.widget.js");
-  db_app::load("dbautocomplete.widget.js");
-  db_app::load("dbcomboBox.widget.js");
-  db_app::load("datagrid.widget.js");
-  db_app::load("estilos.css,grid.style.css");
-?>
 
 <script type="text/javascript">
-function js_findCidadao() {
-  return false;
-}
+  function js_findCidadao() {
+    return false;
+  }
 </script>
-</head>
-<body class="body-default" onLoad=" js_findCidadao(<?=@$oPost->ov02_sequencial?>);" >
-<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
-  <tr>
-    <td align="center" valign="top" bgcolor="#CCCCCC">
-    <center>
-      <?
 
-			if ((isset($oPost->cpf) && $oPost->cpf != '') || (isset($oPost->cnpj) && $oPost->cnpj != '')) {
-        require_once("forms/db_frmcadgeralmunic.php");
-      }else {
-
-        include("forms/db_frmcadgeralmunicini.php");
-			}
-			?>
-    </center>
-	</td>
-  </tr>
-</table>
+<body class="body-default" onLoad=" js_findCidadao(<?= @$oPost->ov02_sequencial ?>);">
+  <div class="container">
+    <?php
+    if ((isset($oPost->cpf) && $oPost->cpf != '') || (isset($oPost->cnpj) && $oPost->cnpj != '')) {
+      require_once(modification("forms/db_frmcadgeralmunic.php"));
+    } else {
+      require_once(modification("forms/db_frmcadgeralmunicini.php"));
+    }
+    ?>
+  </div>
 </body>
+
 </html>

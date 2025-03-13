@@ -132,10 +132,10 @@ db_input('k24_desconto',999999,$Ik24_desconto,true,'text',$db_opcao,"")
 <script>
 function js_pesquisak24_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cancdebitosproc','func_cancdebitosproc.php?funcao_js=parent.js_mostracancdebitosproc1|k23_codigo|k23_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cancdebitosproc','func_cancdebitosproc.php?funcao_js=parent.js_mostracancdebitosproc1|k23_codigo|k23_codigo','Pesquisa',true);
   }else{
      if(document.form1.k24_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cancdebitosproc','func_cancdebitosproc.php?pesquisa_chave='+document.form1.k24_codigo.value+'&funcao_js=parent.js_mostracancdebitosproc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cancdebitosproc','func_cancdebitosproc.php?pesquisa_chave='+document.form1.k24_codigo.value+'&funcao_js=parent.js_mostracancdebitosproc','Pesquisa',false);
      }else{
        document.form1.k23_codigo.value = ''; 
      }
@@ -155,10 +155,10 @@ function js_mostracancdebitosproc1(chave1,chave2){
 }
 function js_pesquisak24_cancdebitosreg(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cancdebitosreg','func_cancdebitosreg.php?funcao_js=parent.js_mostracancdebitosreg1|k21_sequencia|k21_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cancdebitosreg','func_cancdebitosreg.php?funcao_js=parent.js_mostracancdebitosreg1|k21_sequencia|k21_codigo','Pesquisa',true);
   }else{
      if(document.form1.k24_cancdebitosreg.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cancdebitosreg','func_cancdebitosreg.php?pesquisa_chave='+document.form1.k24_cancdebitosreg.value+'&funcao_js=parent.js_mostracancdebitosreg','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cancdebitosreg','func_cancdebitosreg.php?pesquisa_chave='+document.form1.k24_cancdebitosreg.value+'&funcao_js=parent.js_mostracancdebitosreg','Pesquisa',false);
      }else{
        document.form1.k21_codigo.value = ''; 
      }
@@ -177,7 +177,7 @@ function js_mostracancdebitosreg1(chave1,chave2){
   db_iframe_cancdebitosreg.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cancdebitosprocreg','func_cancdebitosprocreg.php?funcao_js=parent.js_preenchepesquisa|k24_sequencia','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cancdebitosprocreg','func_cancdebitosprocreg.php?funcao_js=parent.js_preenchepesquisa|k24_sequencia','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cancdebitosprocreg.hide();

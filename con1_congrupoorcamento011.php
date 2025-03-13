@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $oGet                     = db_utils::postMemory($_GET);
 $oRotuloCongrupoorcamento = new rotulo("congrupoorcamento");
 $oRotuloCongrupoorcamento->label();
@@ -230,7 +230,7 @@ function js_salvaGrupo () {
 function js_finalizaSalvarGrupo (oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
   
   $('c20_sequencial').value       = oRetorno.c20_sequencial;
@@ -274,7 +274,7 @@ function js_excluirGrupo() {
 function js_finalizaExcluirGrupo(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
   parent.document.formaba.conplanogrupoorcamento.disabled=true;
   $('form1').reset();
@@ -287,7 +287,7 @@ function js_liberaAba() {
 
   //desabilita aba usando js                
   parent.document.formaba.conplanogrupoorcamento.disabled=false;
-  top.corpo.iframe_conplanogrupoorcamento.location.href   = "con1_congrupoorcamento012.php?iOpcao="+iOpcao+"&c20_sequencial="+iCodigoGrupo;
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_conplanogrupoorcamento.location.href   = "con1_congrupoorcamento012.php?iOpcao="+iOpcao+"&c20_sequencial="+iCodigoGrupo;
 }
 
                 

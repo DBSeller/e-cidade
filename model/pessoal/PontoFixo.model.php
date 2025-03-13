@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once 'model/pessoal/Ponto.model.php';
+require_once modification("model/pessoal/Ponto.model.php");
 
 /**
  * DefiniÃµes sobrte ponto Fixo do Servidors
@@ -90,7 +90,7 @@ class PontoFixo extends Ponto {
       throw new DBException("Erro ao Buscar Movimentações: " . pg_last_error() );
     }
     
-    return db_utils::getColectionByRecord($rsPontofx);    
+    return db_utils::getCollectionByRecord($rsPontofx);    
   }
 
   /**

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_db_usuarios_classe.php");
-require_once("classes/db_db_usuacgm_classe.php");
-require_once("classes/db_db_userinst_classe.php");
-require_once("classes/db_db_depusu_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_db_usuarios_classe.php"));
+require_once(modification("classes/db_db_usuacgm_classe.php"));
+require_once(modification("classes/db_db_userinst_classe.php"));
+require_once(modification("classes/db_db_depusu_classe.php"));
 
 $cldb_usuarios = new cl_db_usuarios;
 $cldb_usuacgm  = new cl_db_usuacgm;
@@ -46,6 +46,10 @@ db_postmemory($HTTP_POST_VARS);
 $db_opcao = 1;
 $db_botao = true;
 $sMensagens = "configuracao.configuracao.con1_db_usuarios";
+
+$dataexpira_dia = null;
+$dataexpira_mes = null;
+$dataexpira_ano = null;
 
 if (isset($incluir)) {
 
@@ -106,10 +110,10 @@ if (isset($incluir)) {
       throw new Exception( _M("{$sMensagens}.campo_obrigatorio", (Object) array("sCampo" => "Senha")) );
     }
 
-    $cldb_usuarios->senha        = Encriptacao::encriptaSenha($senha);
-    $cldb_usuarios->usuarioativo = $usuarioativo;
-    $cldb_usuarios->nome         = "$z01_nome";
-    $cldb_usuarios->usuext       = "0";
+    $cldb_usuarios->senha         = Encriptacao::encriptaSenha($senha);
+    $cldb_usuarios->usuarioativo  = $usuarioativo;
+    $cldb_usuarios->nome          = "$z01_nome";
+    $cldb_usuarios->usuext        = "0";
     $cldb_usuarios->incluir(null);
 
     if ($cldb_usuarios->erro_status == 0) {
@@ -158,7 +162,13 @@ if (isset($incluir)) {
         $oUsuarioSistema->enviarAtivacaoSenha();
       } catch(Exception $e) { }
     }
-
+    //  Instalando o V3 para o novo usuario
+    ini_set('memory_limit', '-1');
+    $extensionData = \ECidade\V3\Extension\Data::restore('Desktop');
+    if ($extensionData->exists()) {
+        $extensionManager = new \ECidade\V3\Extension\Manager();
+        $success = $extensionManager->install('Desktop', $cldb_usuarios->login);
+    }
   } catch (Exception $e) {
 
     db_fim_transacao(true);
@@ -178,7 +188,7 @@ if (isset($incluir)) {
   </head>
   <body class="body-default" >
   	<?php
-  	  include("forms/db_frmdb_usuarios.php");
+  	  include(modification("forms/db_frmdb_usuarios.php"));
   	?>
   </body>
 </html>

@@ -136,6 +136,10 @@ for ($i = 0;$i < $iVias;$i++){
           $this->objpdf->Setfont('Arial','',8);
           $this->objpdf->text($xcol+24,$xlin+5,':  '.$this->Rcoddepart." ".$this->Rdepart);
           $this->objpdf->Setfont('Arial','b',8);
+          $this->objpdf->text($xcol+2,$xlin+9,'Atendente ');
+          $this->objpdf->Setfont('Arial','',8);
+          $this->objpdf->text($xcol+24,$xlin+9,':  '.$this->ratendente." ".$this->rcodatend);
+          $this->objpdf->Setfont('Arial','b',8);
           $this->objpdf->text($xcol+2,$xlin+14,'CGS ');
           $this->objpdf->Setfont('Arial','',8);
           $this->objpdf->text($xcol+24,$xlin+14,':  '.$this->Rnomeus);
@@ -150,10 +154,7 @@ for ($i = 0;$i < $iVias;$i++){
           $this->objpdf->Setfont('Arial','',8);
           $this->objpdf->text($xcol+150,$xlin+6,':  '.$this->Rdata);
           $this->objpdf->Setfont('Arial','b',8);
-          $this->objpdf->text($xcol+110,$xlin+14,'Atendente ');
-          $this->objpdf->Setfont('Arial','',8);
-          $this->objpdf->text($xcol+128,$xlin+14,':  '.$this->ratendente." ".$this->rcodatend);
-          $this->objpdf->Setfont('Arial','',6);
+     
 
 
 	  $this->objpdf->Roundedrect($xcol,$xlin+28,202,75,2,'DF','1234');

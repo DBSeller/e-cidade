@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -22,10 +22,10 @@
  *  02111-1307, USA.
  *
  *  Copia da licenca no diretorio licenca/licenca_en.txt
- *                                licenca/licenca_pt.txt
+ *                                licenca/licenca_pt.txt'
  */
-require_once("IItemIntegracao.interface.php");
-require_once("IntegracaoBase.model.php");
+require_once(modification("model/integracao/transparencia/IItemIntegracao.interface.php"));
+require_once(modification("model/integracao/transparencia/IntegracaoBase.model.php"));
 
 class IntegracaoContrato extends IntegracaoBase implements IItemIntegracao {
 
@@ -34,11 +34,15 @@ class IntegracaoContrato extends IntegracaoBase implements IItemIntegracao {
    */
   public function executar() {
 
+
     $this->importarAcordos();
     $this->importarAditamentos();
     $this->importarItens();
     $this->importarEmpenhos();
     $this->importarDocumentos();
+    $this->carregarContratosLicitacoes();
+    $this->importarComissao();
+
   }
 
   /**
@@ -48,7 +52,7 @@ class IntegracaoContrato extends IntegracaoBase implements IItemIntegracao {
    */
   private function importarAcordos() {
 
-    require_once (DB_CLASSES . "classes/db_acordo_classe.php");
+    require_once(modification(DB_CLASSES . "classes/db_acordo_classe.php"));
     IntegracaoPortalTransparencia::escreverTitulo("IMPORTANDO ACORDOS");
 
     $sCampos  = "ac16_sequencial           as id,                     \n";
@@ -146,6 +150,48 @@ class IntegracaoContrato extends IntegracaoBase implements IItemIntegracao {
     return true;
   }
 
+  private function importarComissao()
+  {
+    require_once DB_CLASSES . "classes/db_acordocomissaomembro_classe.php";
+    IntegracaoPortalTransparencia::escreverTitulo("IMPORTANDO COMISSOES");
+
+
+      $sCampos  = "null                  id,                     ";
+      $sCampos .= "z01_nome              as nome_membro,         ";
+      $sCampos .= "ac16_sequencial       as acordo_id,           ";
+      $sCampos .= "ac07_tipomembro       as tipo_membro_codigo,  ";
+      $sCampos .= "ac42_descricao        as tipo_membro_descr    ";
+
+      $oDaoAcordoComissaoMembro = new cl_acordocomissaomembro();
+      $sSqlAcordoComissaoMembro = $oDaoAcordoComissaoMembro->sql_query_transparencia(null,
+          $sCampos,
+          null,
+          "ac07_acordocomissao = ac08_sequencial and ac16_anousu >= {$this->iAnoInicioIntegracao}"
+      );
+
+      $rsAcordoComissaoMembro = db_query($this->rsConexaoOrigem, $sSqlAcordoComissaoMembro);
+
+      if (!$rsAcordoComissaoMembro) {
+          throw new Exception("Erro ao pesquisar os membros da comissao" . pg_last_error());
+      }
+
+      $iTotalComissaoMembro = pg_num_rows($rsAcordoComissaoMembro);
+
+      IntegracaoPortalTransparencia::escreverRegistrosProcessados($iTotalComissaoMembro, $this->sArquivoLog, $this->iTipoLog);
+
+      $oTableManagerComissaoMembro = new tableDataManager($this->rsConexaoDestino, "comissao_membros", 'id', true, 500);
+
+      for ($iIndice = 0; $iIndice < $iTotalComissaoMembro; $iIndice++) {
+
+          $oComissao = db_utils::fieldsMemory($rsAcordoComissaoMembro, $iIndice);
+          $this->inserirDadosPortalTransparencia($oComissao, $oTableManagerComissaoMembro);
+      }
+
+      $this->persistirDadosPortalTransparencia($oTableManagerComissaoMembro);
+      return true;
+
+  }
+
   /**
    * Importa os itens dos Aditamentos
    * @throws Exception
@@ -200,6 +246,7 @@ class IntegracaoContrato extends IntegracaoBase implements IItemIntegracao {
   private function importarEmpenhos() {
 
     require_once DB_CLASSES . "classes/db_empempenhocontrato_classe.php";
+    require_once DB_CLASSES . "classes/db_acordoempempenho_classe.php";
     IntegracaoPortalTransparencia::escreverTitulo("IMPORTANDO EMPENHOS DOS ACORDOS");
 
     db_query( $this->rsConexaoDestino, " create temp table tmp_acordo_empenhos( "
@@ -216,6 +263,16 @@ class IntegracaoContrato extends IntegracaoBase implements IItemIntegracao {
 
     $oDaoEmpenhocontrato = new cl_empempenhocontrato();
     $sSqlAcordoEmpenhos  = $oDaoEmpenhocontrato->sql_query_transparencia($sCampos, null, "ac16_anousu >= {$this->iAnoInicioIntegracao}");
+    $sSqlAcordoEmpenhos .= " union ";
+
+    $sCampos  = "ac54_sequencial as id,        ";
+    $sCampos .= "ac54_acordo     as acordo_id, ";
+    $sCampos .= "e60_codemp      as codigo,    ";
+    $sCampos .= "e60_anousu      as anousu     ";
+
+    $oDaoAcordoEmpenho = new cl_acordoempempenho();
+    $sSqlAcordoEmpenhos .= $oDaoAcordoEmpenho->sql_query(null, $sCampos, null, "ac16_anousu >= {$this->iAnoInicioIntegracao}");
+
     $rsAcordoEmpenhos    = db_query($this->rsConexaoOrigem, $sSqlAcordoEmpenhos);
     $iTotalEmpenhos      = pg_num_rows($rsAcordoEmpenhos);
 
@@ -252,6 +309,7 @@ class IntegracaoContrato extends IntegracaoBase implements IItemIntegracao {
    * @throws Exception
    * @return boolean
    */
+
   private function importarDocumentos() {
 
     require_once DB_CLASSES . "classes/db_acordodocumento_classe.php";
@@ -274,22 +332,91 @@ class IntegracaoContrato extends IntegracaoBase implements IItemIntegracao {
       return false;
     }
 
-    $oAcordoDocumentoTableManager = new tableDataManager($this->rsConexaoDestino, 'acordo_documentos', null, true, 500);
+    $oAcordoDocumentoTableManager = new tableDataManager($this->rsConexaoDestino, 'acordo_documentos', null, true, $iTotalDocumentos);
     for ($iIndice = 0; $iIndice < $iTotalDocumentos; $iIndice++) {
 
-      $oDocumento = db_utils::fieldsMemory($rsAcordoDocumentos, $iIndice);
+      $oDocumento       = db_utils::fieldsMemory($rsAcordoDocumentos, $iIndice);
+      if (!pg_lo_export($this->rsConexaoOrigem, $oDocumento->arquivo, ECIDADE_PATH."tmp/{$oDocumento->arquivo}.dat")) {
 
-      pg_lo_export($this->rsConexaoOrigem, $oDocumento->arquivo, "/tmp/{$oDocumento->arquivo}.dat");
-      $oDocumento->arquivo = pg_lo_import($this->rsConexaoDestino, "/tmp/{$oDocumento->arquivo}.dat");
+        $sErro      = pg_last_error($this->rsConexaoOrigem);
+        $sMensagem  = "Erro na exportação de arquivo do e-cidade: Documento de id " . $oDocumento->id;
+        $sMensagem .= "e nome ". $oDocumento->nome . ". Erro: " . $sErro;
+        throw new Exception($sMensagem);
+      }
 
+      if (!file_exists(ECIDADE_PATH."tmp/{$oDocumento->arquivo}.dat")) {
+
+        $sMensagem  = "Arquivo para importação não existe (não foi exportado do e-cidade). Documento de id ";
+        $sMensagem .= $oDocumento->id . " e nome " . $oDocumento->nome;
+        throw new Exception($sMensagem);
+      }
+
+      if (!is_readable(ECIDADE_PATH."tmp/{$oDocumento->arquivo}.dat")) {
+
+        $sMensagem  = "Arquivo exportado do e-cidade não é legível: Documento de id " . $oDocumento->id . " e nome ";
+        $sMensagem .= $oDocumento->nome;
+        throw new Exception($sMensagem);
+      }
+
+      $oDocumento->arquivo = pg_lo_import($this->rsConexaoDestino, ECIDADE_PATH."tmp/{$oDocumento->arquivo}.dat");
+      if (!$oDocumento->arquivo) {
+
+        $sErro      = pg_last_error($this->rsConexaoDestino);
+        $sMensagem  = "Erro na importação de arquivo no transparência: Documento de id " . $oDocumento->id;
+        $sMensagem .= " e nome ".$oDocumento->nome . ". Erro: " . $sErro;
+        throw new Exception($sMensagem);
+      }
       IntegracaoPortalTransparencia::logarProcessamento($iIndice, $iTotalDocumentos, $this->sArquivoLog, $this->iTipoLog);
-
       $this->inserirDadosPortalTransparencia($oDocumento, $oAcordoDocumentoTableManager);
+
+    }
+
+    for ($iIndice = 0; $iIndice < $iTotalDocumentos; $iIndice++) {
+      $oDocumento       = db_utils::fieldsMemory($rsAcordoDocumentos, $iIndice);
+      unlink(ECIDADE_PATH."tmp/{$oDocumento->arquivo}.dat");
     }
 
     $this->persistirDadosPortalTransparencia($oAcordoDocumentoTableManager);
 
     return true;
+  }
+
+  public function carregarContratosLicitacoes() {
+
+    IntegracaoPortalTransparencia::escreverTitulo("IMPORTANDO CONTRATOS DAS LICITAÇÕES");
+    require_once modification(DB_CLASSES."classes/db_liclicitem_classe.php");
+
+    $oDaoLIcilicitem = new cl_liclicitem();
+    $sSqlLiclicitem  = $oDaoLIcilicitem->sql_query_acordos(null, "distinct null id,
+                                                                 l20_codigo licitacao_id,
+                                                                 ac16_sequencial    acordo_id",
+                                                                 null,
+                                                                 " l20_anousu >= {$this->iAnoInicioIntegracao}
+                                                                  and exists(select 1
+                                                                               from liclicitem
+                                                                              where l21_codliclicita = l20_codigo)");
+    $rsLicitacaoContratos = db_query($this->rsConexaoOrigem, $sSqlLiclicitem);
+    if (!$rsLicitacaoContratos) {
+      throw new Exception("Erro ao pesquisar os contratos da licitacao ".pg_last_error());
+    }
+
+    $iTotalContratos      = pg_num_rows($rsLicitacaoContratos);
+    IntegracaoPortalTransparencia::escreverRegistrosProcessados($iTotalContratos, $this->sArquivoLog, $this->iTipoLog);
+
+    if (!$iTotalContratos) {
+      return false;
+    }
+
+    $oTableManagerLicitacoesContratos = new tableDataManager($this->rsConexaoDestino, "licitacoes_contratos", "id", true, 500);
+    for ($iContratos = 0; $iContratos < $iTotalContratos; $iContratos++) {
+
+      $oLicitacaoContrato = db_utils::fieldsMemory($rsLicitacaoContratos, $iContratos);
+      IntegracaoPortalTransparencia::logarProcessamento($iContratos, $iTotalContratos, $this->sArquivoLog, $this->iTipoLog);
+      $this->inserirDadosPortalTransparencia($oLicitacaoContrato, $oTableManagerLicitacoesContratos);
+    }
+    $this->persistirDadosPortalTransparencia($oTableManagerLicitacoesContratos);
+    return $this;
+
   }
 
 }

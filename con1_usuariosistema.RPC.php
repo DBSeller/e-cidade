@@ -1,11 +1,11 @@
 <?php
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 $oJson                  = new services_json();
 $oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -28,7 +28,7 @@ try {
 
     case "coletaInfoCliente":
 
-      require_once("std/DBCache.php");
+      require_once(modification("std/DBCache.php"));
 
       $sStringMensagem = "COLETADADOS\n";
       $sStringMensagem .= $_POST["json"];
@@ -37,6 +37,14 @@ try {
         db_logsmanual($sStringMensagem);
         DBCache::write('coleta_dado/' . db_getsession('DB_id_usuario'), $sStringMensagem);
       }
+
+    break;
+
+    case 'logHelp':
+
+      $sStringMensagem = "HELP\n";
+      $sStringMensagem .= "Acesso ao help do sistema";
+      db_logsmanual($sStringMensagem);
 
     break;
   }

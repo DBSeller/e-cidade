@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhempfolha_classe.php");
-include("classes/db_rhrubelementoprinc_classe.php");
-include("classes/db_rhlotaexe_classe.php");
-include("classes/db_rhlotavinc_classe.php");
-include("classes/db_rhlotavincele_classe.php");
-include("classes/db_rhlotavincativ_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcelemento_classe.php");
-include("classes/db_orcparametro_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhempfolha_classe.php"));
+include(modification("classes/db_rhrubelementoprinc_classe.php"));
+include(modification("classes/db_rhlotaexe_classe.php"));
+include(modification("classes/db_rhlotavinc_classe.php"));
+include(modification("classes/db_rhlotavincele_classe.php"));
+include(modification("classes/db_rhlotavincativ_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_orcparametro_classe.php"));
 $clrhrubelementoprinc = new cl_rhrubelementoprinc;
 $clrhlotaexe = new cl_rhlotaexe;
 $clrhempfolha = new cl_rhempfolha;
@@ -112,7 +112,7 @@ if(isset($confirma) || isset($gera)){
 	      where ".$sigla."anousu = $ano 
 		and ".$sigla."mesusu = $mes
 	     ";
-      $result  = pg_exec($sql);
+      $result  = db_query($sql);
 //      db_criatabela($result);
       $numrows = pg_numrows($result);
       $sqlerro = false;
@@ -339,7 +339,7 @@ if(isset($confirma) || isset($gera)){
   <tr>
     <td>
     <?
-    include("forms/db_frmrhempfolha.php");
+    include(modification("forms/db_frmrhempfolha.php"));
     ?>
     </td>
   </tr>

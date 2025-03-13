@@ -25,14 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
-include("../libs/db_sessoes.php");
-include("../libs/db_usuariosonline.php");
-include("../dbforms/db_funcoes.php");
-include("../dbforms/db_classesgenericas.php");
-include("../classes/db_veiculoscomb_classe.php");
-include("../classes/db_veiccadcomb_classe.php");
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+include_once(modification("dbforms/db_classesgenericas.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -95,7 +94,7 @@ $sSqlVeiculos .= "          where veiculoscomb.ve06_veiccadcomb = veiccadcomb.ve
 $sSqlVeiculos .= "            and veiculoscomb.ve06_veiculos = {$ve06_veiculos} limit 1) as radiomarcado ";
 $sSqlVeiculos .= "   from veiccadcomb ";
 
-$rsVeiculos = pg_query($sSqlVeiculos);
+$rsVeiculos = db_query($sSqlVeiculos);
 $iNumRows = pg_num_rows($rsVeiculos);
 //echo "$sSqlVeiculos";exit;
  for ($i=0; $i < $iNumRows;$i++) {
@@ -122,7 +121,7 @@ $iNumRows = pg_num_rows($rsVeiculos);
 }
 else{
   $sSqlVeiculos  =  "  select * from veiccadcomb order by ve26_descr ";
-  $rsVeiculos = pg_query($sSqlVeiculos);
+  $rsVeiculos = db_query($sSqlVeiculos);
   $iNumRows = pg_num_rows($rsVeiculos);
 
  for ($i=0; $i < $iNumRows;$i++) {

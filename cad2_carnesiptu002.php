@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 
 
@@ -52,7 +52,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $head3 = "CARNES DE IPTU ";
 $head5 = "ORDEM $desc_ordem";
 
-$result = pg_query("select * from iptucarnes order by matricula "); 
+$result = db_query("select * from iptucarnes order by matricula "); 
 
 if (pg_numrows($result) == 0){
      db_redireciona('db_erros.php?fechar=true&db_erro=Não existem carnes cadastrados.');

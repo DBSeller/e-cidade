@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,15 +26,15 @@
  */
  
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_utils.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('x01_matric');
@@ -67,7 +67,7 @@ $sSql = "
        order by j31_descr, cgm1.z01_nome, x01_promit";
 
 
-$result = pg_exec($sSql);
+$result = db_query($sSql);
 
 if(pg_numrows($result) == 0) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Não existem registros cadastrados.');
@@ -84,7 +84,7 @@ $oPdf->DefOrientation = "L";
 $head1 = "Relatório de Imóveis por Caracteristica: ";
 
 $sSql2   = "select j31_descr from caracter where j31_codigo in ($oGet->lista)";
-$result2 = pg_exec($sSql2);
+$result2 = db_query($sSql2);
 
 $head2 = "";
 for($h = 0; $h < pg_numrows($result2); $h++) {

@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_orcreserprev_classe.php");
+include(modification("classes/db_orcreserprev_classe.php"));
 // pesquisa a conta mae da receita
 
 $tipo_mesini = 1;
 $tipo_mesfim = 1;
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
  

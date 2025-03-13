@@ -26,7 +26,7 @@
  */
 
 //MODULO: recursoshumanos
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrhestagiocomissaomembro->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -152,10 +152,10 @@ function js_cancelar(){
 }
 function js_pesquisah60_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhestagiocomissaomembro','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagiocomissaomembro','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome','Pesquisa',true,'0');
   }else{
      if(document.form1.h60_regist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhestagiocomissaomembro','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.h60_regist.value+'&funcao_js=parent.js_mostrarhpessoal','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagiocomissaomembro','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.h60_regist.value+'&funcao_js=parent.js_mostrarhpessoal','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -175,10 +175,10 @@ function js_mostrarhpessoal1(chave1,chave2){
 }
 function js_pesquisah60_rhestagiocomissao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhestagiocomissaomembro','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?funcao_js=parent.js_mostrarhestagiocomissao1|h59_sequencial|h59_sequencial','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagiocomissaomembro','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?funcao_js=parent.js_mostrarhestagiocomissao1|h59_sequencial|h59_sequencial','Pesquisa',true,'0');
   }else{
      if(document.form1.h60_rhestagiocomissao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhestagiocomissaomembro','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?pesquisa_chave='+document.form1.h60_rhestagiocomissao.value+'&funcao_js=parent.js_mostrarhestagiocomissao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagiocomissaomembro','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?pesquisa_chave='+document.form1.h60_rhestagiocomissao.value+'&funcao_js=parent.js_mostrarhestagiocomissao','Pesquisa',false);
      }else{
        document.form1.h59_sequencial.value = ''; 
      }

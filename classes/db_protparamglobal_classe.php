@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -43,11 +43,13 @@ class cl_protparamglobal {
    var $pagina_retorno = null; 
    // cria variaveis do arquivo 
    var $p06_sequencial = 0; 
-   var $p06_tipo = 0; 
+   var $p06_tipo = 0;
+   var $p06_instituicao = 0; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  p06_sequencial = int4 = Sequencial 
                  p06_tipo = int4 = TIpo de Controle 
+                 p06_instituicao = int4 = Instituição 
                  ";
    //funcao construtor da classe 
    function cl_protparamglobal() { 
@@ -69,6 +71,7 @@ class cl_protparamglobal {
      if($exclusao==false){
        $this->p06_sequencial = ($this->p06_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["p06_sequencial"]:$this->p06_sequencial);
        $this->p06_tipo = ($this->p06_tipo == ""?@$GLOBALS["HTTP_POST_VARS"]["p06_tipo"]:$this->p06_tipo);
+       $this->p06_instituicao = ($this->p06_instituicao == ""?@$GLOBALS["HTTP_POST_VARS"]["p06_instituicao"]:$this->p06_instituicao);
      }else{
        $this->p06_sequencial = ($this->p06_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["p06_sequencial"]:$this->p06_sequencial);
      }
@@ -85,6 +88,15 @@ class cl_protparamglobal {
        $this->erro_status = "0";
        return false;
      }
+     if($this->p06_instituicao == null ){ 
+      $this->erro_sql = " Campo Instituição nao Informado.";
+      $this->erro_campo = "p06_instituicao";
+      $this->erro_banco = "";
+      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+      $this->erro_status = "0";
+      return false;
+    }
      if($p06_sequencial == "" || $p06_sequencial == null ){
        $result = db_query("select nextval('protparamglobal_p06_sequencial_seq')"); 
        if($result==false){
@@ -119,11 +131,13 @@ class cl_protparamglobal {
      }
      $sql = "insert into protparamglobal(
                                        p06_sequencial 
-                                      ,p06_tipo 
+                                      ,p06_tipo
+                                      ,p06_instituicao
                        )
                 values (
                                 $this->p06_sequencial 
                                ,$this->p06_tipo 
+                               ,$this->p06_instituicao
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -191,6 +205,19 @@ class cl_protparamglobal {
          return false;
        }
      }
+     if(trim($this->p06_instituicao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p06_instituicao"])){ 
+      $sql  .= $virgula." p06_instituicao = $this->p06_instituicao ";
+      $virgula = ",";
+      if(trim($this->p06_instituicao) == null ){ 
+        $this->erro_sql = " Campo Instituição nao Informado.";
+        $this->erro_campo = "p06_instituicao";
+        $this->erro_banco = "";
+        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+        $this->erro_status = "0";
+        return false;
+      }
+    }
      $sql .= " where ";
      if($p06_sequencial!=null){
        $sql .= " p06_sequencial = $this->p06_sequencial";
@@ -206,6 +233,8 @@ class cl_protparamglobal {
            $resac = db_query("insert into db_acount values($acount,3217,18212,'".AddSlashes(pg_result($resaco,$conresaco,'p06_sequencial'))."','$this->p06_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["p06_tipo"]) || $this->p06_tipo != "")
            $resac = db_query("insert into db_acount values($acount,3217,18213,'".AddSlashes(pg_result($resaco,$conresaco,'p06_tipo'))."','$this->p06_tipo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["p06_instituicao"]) || $this->p06_instituicao != "")
+           $resac = db_query("insert into db_acount values($acount,3217,1011785,'".AddSlashes(pg_result($resaco,$conresaco,'p06_instituicao'))."','$this->p06_instituicao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
@@ -255,6 +284,7 @@ class cl_protparamglobal {
          $resac = db_query("insert into db_acountkey values($acount,18212,'$p06_sequencial','E')");
          $resac = db_query("insert into db_acount values($acount,3217,18212,'','".AddSlashes(pg_result($resaco,$iresaco,'p06_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3217,18213,'','".AddSlashes(pg_result($resaco,$iresaco,'p06_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3217,1011785,'','".AddSlashes(pg_result($resaco,$iresaco,'p06_instituicao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from protparamglobal
@@ -392,6 +422,22 @@ class cl_protparamglobal {
        }
      }
      return $sql;
+  }
+
+  function get_parametro_numeracao()
+  {
+    $sql = '
+      SELECT 
+        p06_tipo
+      FROM
+        protparamglobal
+      WHERE
+        p06_instituicao = '. db_getsession('DB_instit') .';
+    ';
+
+    $pgObject = db_query($sql);
+
+    return pg_fetch_assoc($pgObject, 'p06_tipo');
   }
 }
 ?>

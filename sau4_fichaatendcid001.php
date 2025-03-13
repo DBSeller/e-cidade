@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-require("libs/db_app.utils.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 
 
 db_postmemory($HTTP_POST_VARS);
@@ -103,7 +103,7 @@ db_postmemory($HTTP_POST_VARS);
   }
   function js_AtualizaGrid(objAjax){
 	  alert
-	  var oRetorno = eval("("+objAjax.responseText+")");
+	  var oRetorno = JSON.parse(objAjax.responseText);
 	  objGridCid.clearAll(true);
     if(oRetorno.status==1){
 	    tam = oRetorno.aItens.length; 

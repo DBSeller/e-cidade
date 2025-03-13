@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $clrotulo = new rotulocampo();
 $clrotulo->label('j01_matric');
@@ -67,7 +67,7 @@ if ( !($oParametros->prefeitura == 't' && $oGet->sTipo == 'iptu') && !($oParamet
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <? 
-db_app::load('scripts.js, prototype.js, strings.js, datagrid.widget.js, windowAux.widget.js, DBViewImportacaoDiversos.classe.js, dbmessageBoard.widget.js');
+db_app::load('scripts.js, prototype.js, strings.js, datagrid.widget.js, windowAux.widget.js, DBViewImportacaoDiversosDiversos.classe.js, dbmessageBoard.widget.js');
 db_app::load('estilos.css, grid.style.css');
 ?>
 </head>
@@ -114,7 +114,7 @@ db_app::load('estilos.css, grid.style.css');
 
   function js_pesquisaDebitos() {
     
-    oImportacao = new DBViewImportacaoDiversos('oImportacao', 'importacao');
+    oImportacao = new DBViewImportacaoDiversosDiversos('oImportacao', 'importacao');
     oImportacao.setTipoPesquisa(2); //matricula
 
     oImportacao.setCallBackFunction( function(){ window.location.reload(); } );        
@@ -130,11 +130,11 @@ db_app::load('estilos.css, grid.style.css');
 
   	if (lMostra == true){
   	  
-  		js_OpenJanelaIframe('top.corpo','db_iframe_matric', 'func_iptubase.php?funcao_js=parent.js_mostraMatricula|j01_matric|z01_nome','Pesquisa',true);
+  		js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matric', 'func_iptubase.php?funcao_js=parent.js_mostraMatricula|j01_matric|z01_nome','Pesquisa',true);
       
     } else {
   	  
-      js_OpenJanelaIframe('top.corpo','db_iframe_matric', 'func_iptubase.php?pesquisa_chave='+document.form1.j01_matric.value+'&funcao_js=parent.js_mostraMatriculaHidden','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matric', 'func_iptubase.php?pesquisa_chave='+document.form1.j01_matric.value+'&funcao_js=parent.js_mostraMatriculaHidden','Pesquisa',false);
       
     }
   }

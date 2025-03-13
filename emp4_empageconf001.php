@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("libs/db_libtxt.php");
-include ("classes/db_empagetipo_classe.php");
-include ("classes/db_empage_classe.php");
-include ("classes/db_empagemov_classe.php");
-include ("classes/db_empagegera_classe.php");
-include ("classes/db_empageconf_classe.php");
-include ("classes/db_empageconfche_classe.php");
-include ("classes/db_empageconfgera_classe.php");
-include ("classes/db_conplanoconta_classe.php");
-include ("classes/db_empagepag_classe.php");
-include ("classes/db_pagordem_classe.php");
-include ("classes/db_db_config_classe.php");
-include ("classes/db_cfautent_classe.php");
-include ("classes/db_db_bancos_classe.php");
-include ("libs/db_libcaixa.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libtxt.php"));
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("classes/db_empage_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("classes/db_empagegera_classe.php"));
+include(modification("classes/db_empageconf_classe.php"));
+include(modification("classes/db_empageconfche_classe.php"));
+include(modification("classes/db_empageconfgera_classe.php"));
+include(modification("classes/db_conplanoconta_classe.php"));
+include(modification("classes/db_empagepag_classe.php"));
+include(modification("classes/db_pagordem_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_cfautent_classe.php"));
+include(modification("classes/db_db_bancos_classe.php"));
+include(modification("libs/db_libcaixa.php"));
 $clempage = new cl_empage;
 $clconplanoconta = new cl_conplanoconta;
 $clempagetipo = new cl_empagetipo;
@@ -177,7 +177,7 @@ if(isset($atualizar) || isset($prever)){
         db_fieldsmemory($result, 0);
      
         $sqlpar = "select k29_saldoemitechq from caiparametro where k29_instit = ".db_getsession("DB_instit");
-        $resultpar = pg_query($sqlpar);
+        $resultpar = db_query($sqlpar);
         $linhaspar = pg_num_rows($resultpar);
         if($linhaspar>0){
           db_fieldsmemory($resultpar, 0);
@@ -221,7 +221,7 @@ if(isset($atualizar) || isset($prever)){
     if($sqlerro == false){
       // Dados do fornecedor
       $sql04 = "select * from pcfornecon where pc63_numcgm=$numcgm_cre";
-      $result04 = @ pg_query($sql04);
+      $result04 = @ db_query($sql04);
       $numrows04 = @ pg_numrows($result04);
       $dad_verso = '\n';
       if($numrows04 > 0){
@@ -231,11 +231,11 @@ if(isset($atualizar) || isset($prever)){
       $sql = "select c63_banco as codbco,
 		     k13_descr 
 		  from conplanoreduz
-		   inner join conplanoconta on c61_codcon = c63_codcon and c61_anousu = c63_anousu
+		   inner join conplanoconta on c61_codcon = c63_codcon and c61_anousu = c63_anousu and c63_reduz = c61_reduz
 		   inner join saltes        on  k13_conta = c61_reduz
 		      where c61_anousu=".db_getsession("DB_anousu")." and c61_reduz = $e83_conta";
 
-      $result = pg_query($sql);
+      $result = db_query($sql);
       if($result == false || pg_numrows($result) == 0){
 	    $sqlerro = true;
 	    $erro_msg = "Conta não cadastrada no conplanoconta. Contate Contabilidade ($e83_conta).";
@@ -588,7 +588,7 @@ $ip_imprime = db_getsession("DB_ip");
 
      // Sempre que ja existir agenda entra nesta opcao  
       if(isset ($e80_codage) && empty ($pesquisar)) {
-	    include ("forms/db_frmempageconf.php");
+	    include(modification("forms/db_frmempageconf.php"));
         // Pela primeira vez que entrar neste arquivo, entra nesta opcao para digitar a data da agenda 
         // entra nesta opcao para escolher uma das agendas ou então selecionar uma jah existente
       }else{
@@ -897,7 +897,7 @@ if(isset($emiteverso)){
 <script>
 // Script responsável para selecionar a agenda...
 function js_empage(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
 }
 
 function js_mostra(codage,data){

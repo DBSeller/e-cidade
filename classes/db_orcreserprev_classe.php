@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -611,7 +611,7 @@ class cl_orcreserprev {
       $sql = " select * from ($sql) as x where atual_menos_reservado > 0 ";    
     }
 
-  	$result = pg_query($sql);
+  	$result = db_query($sql);
 
   	return $result;
 

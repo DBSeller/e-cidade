@@ -5,30 +5,25 @@
  * @author jeferson.belmiro@dbseller.com.br
  * @author vinicius@dbseller.com.br
  * @param {Object} parameters - configuracoes do componente
- * @constructor 
+ * @constructor
  *
  * @example
+ *   var oFileUpload = new DBFileUpload();
+ *   oFileUpload.show($('containerFileUpload'));
  *
- *  - apos instanciar componente, deve ser chamado metodo show 
- *
- *   // exemplo 1
- *   var oFileUpload = new DBFileUpload();   
- *       oFileUpload.show($('containerFileUpload'));
- *
- *   // exemplo 2
+ * @example
  *   var oFileUpload = new DBFileUpload({
  *     container: document.querySelector('#container'),
- *     
+ *
  *     // funcao chamada ao final do upload
- *     callBack : function(oRetorno) { 
- *       console.log(oRetorno); // objeto com nome do arquivo 
+ *     callBack : function(oRetorno) {
+ *       console.log(oRetorno); // objeto com nome do arquivo
  *     }
- *   }).show();   
+ *   }).show();
  *
  *   // apos selecionar um arquivo, a instancia do componente tera seguintes propriedades:
  *   console.log(oFileUpload.file); // nome do arquivo enviado
  *   console.log(oFileUpload.filePath); // arquivo gerado no tmp do dbportal_prj
- *
  */
 function DBFileUpload(parameters) {
 
@@ -141,7 +136,7 @@ DBFileUpload.prototype.setCallBack = function(callBack) {
  * @returns {DBFileUpload}
  */
 DBFileUpload.prototype.createElements = function() {
-  
+
   this.elements.file = document.createElement('input');
   this.elements.file.type = 'file';
   this.elements.file.name = 'file-upload-' + this.config.id;
@@ -151,15 +146,21 @@ DBFileUpload.prototype.createElements = function() {
   this.elements.container = document.createElement('div');
   this.elements.container.id = 'divFileUpload';
 
-  this.elements.button = document.createElement('input');
+  this.elements.button = document.createElement('button');
   this.elements.button.type = 'button';
-  this.elements.button.value = this.config.labelButton;  
+  this.elements.button.innerHTML = `<i class="fas fa-upload"></i> ${this.config.labelButton}`
+  this.elements.button.className = 'btnUploadFile';
+  this.elements.button.style.marginRight = '5px';
+  this.elements.button.style.minHeight   = '18px';
+
 
   this.elements.text = document.createElement('input');
-  this.elements.text.type = 'text';  
-  this.elements.text.value = ''; 
-  this.elements.text.readOnly = true; 
+  this.elements.text.type = 'text';
+  this.elements.text.value = '';
+  this.elements.text.readOnly = true;
   this.elements.text.style.color = 'black';
+  this.elements.text.className   = 'inputUploadFile';
+  this.elements.text.style.minHeight = '20px';
 
   this.elements.container.appendChild(this.elements.button);
   this.elements.container.appendChild(this.elements.text);
@@ -197,12 +198,9 @@ DBFileUpload.prototype.show = function(container) {
  */
 DBFileUpload.prototype.registerEvents = function() {
 
-  /**
-   * @this
-   */
   var self = this;
 
-  this.elements.button.addEventListener('click', function() {    
+  this.elements.button.addEventListener('click', function() {
     self.elements.file.click();
   }, false);
 
@@ -213,10 +211,10 @@ DBFileUpload.prototype.registerEvents = function() {
     var query = 'input=file-upload&id=' + self.config.id + '&sizeLimit=' + self.config.sizeLimit;
 
     self.elements.iframe = document.createElement("iframe");
-    self.elements.iframe.src = 'DBFileUpload.php?' + query;   
-    self.elements.iframe.style.display = 'none';   
-    document.body.appendChild(self.elements.iframe); 
-  }, false); 
+    self.elements.iframe.src = 'DBFileUpload.php?' + query;
+    self.elements.iframe.style.display = 'none';
+    document.body.appendChild(self.elements.iframe);
+  }, false);
 
   return this;
 }
@@ -225,10 +223,10 @@ DBFileUpload.prototype.registerEvents = function() {
  * Processa funcao de retorno, apos enviar arquivo
  * - adiciona nome do arquivo original no input gerado pelo componente
  * - adiciona propriedade com nome do arquivo na instancia do componente
- * - executa funcao de callback definida 
+ * - executa funcao de callback definida
  *
  * @returns {DBFileUpload}
- */ 
+ */
 DBFileUpload.prototype.processCallBack = function(parameters) {
 
   if (parameters.error == '') {
@@ -237,19 +235,19 @@ DBFileUpload.prototype.processCallBack = function(parameters) {
 
   for (param in parameters) {
     this[param] = parameters[param];
-  } 
+  }
 
-  js_removeObj('msgboxDBFileUpload'); 
-  this.config.callBack(parameters); 
+  js_removeObj('msgboxDBFileUpload');
+  this.config.callBack(parameters);
   return this;
-} 
+}
 
 /**
  * Instancias do componente
  *
  * @type {Array}
  */
-DBFileUpload.instances = []; 
+DBFileUpload.instances = [];
 
 /**
  * Retorna instancia do componente pelo id
@@ -258,7 +256,7 @@ DBFileUpload.instances = [];
  * @param {integer} id
  * @returns {DBFileUpload}
  */
-DBFileUpload.getInstance = function(id) {  
+DBFileUpload.getInstance = function(id) {
 
   /**
    * Busca id da ultima instancia gerada
@@ -271,8 +269,8 @@ DBFileUpload.getInstance = function(id) {
    * Caso nao exista nenhuma instancia, cria, com id 0
    */
   if (DBFileUpload.instances.length === 0) {
-    DBFileUpload.instances[id] = new DBFileUpload({id : id}); 
-  } 
+    DBFileUpload.instances[id] = new DBFileUpload({id : id});
+  }
 
   /**
    * Instancia nao encontrada
@@ -282,4 +280,11 @@ DBFileUpload.getInstance = function(id) {
   }
 
   return DBFileUpload.instances[id];
+}
+
+DBFileUpload.prototype.clear = function() {
+  this.elements.file.value = ''
+  this.elements.text.value = '';
+  this.file = ''
+  this.filePath = '';
 }

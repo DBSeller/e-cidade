@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("model/Dotacao.model.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_pcproc_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_solicita_classe.php");
-require_once("classes/db_pctipocompra_classe.php");
-require_once("classes/db_emptipo_classe.php");
-require_once("classes/db_empautoriza_classe.php");
-include("classes/db_cflicita_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("model/Dotacao.model.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_pcproc_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_solicita_classe.php"));
+require_once(modification("classes/db_pctipocompra_classe.php"));
+require_once(modification("classes/db_emptipo_classe.php"));
+require_once(modification("classes/db_empautoriza_classe.php"));
+include(modification("classes/db_cflicita_classe.php"));
 $clpcproc = new cl_pcproc;
 $clcflicita = new cl_cflicita;
 $clpcparam = new cl_pcparam;
@@ -132,7 +132,7 @@ function js_pesquisaac16_sequencial(lMostrar) {
   if (lMostrar == true) {
     
     var sUrl = 'func_acordo.php?funcao_js=parent.js_mostraacordo1|ac16_sequencial|ac16_resumoobjeto&iTipoFiltro=4';
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_acordo', 
                         sUrl,
                         'Pesquisar Acordo',
@@ -144,7 +144,7 @@ function js_pesquisaac16_sequencial(lMostrar) {
       var sUrl = 'func_acordo.php?descricao=true&pesquisa_chave='+oTxtCodigoAcordo.getValue()+
                  '&funcao_js=parent.js_mostraacordo&iTipoFiltro=4';
                  
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_acordo',
                           sUrl,
                           'Pesquisar Acordo',
@@ -203,7 +203,7 @@ function js_pesquisarAutorizacoesContrato() {
 function js_retornoGetAutorizacoesAcordo(oAjax) {
 
   js_removeObj('msgbox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   oGridAutorizacoes.clearAll(true);
   if (oRetorno.status == 1) {
     
@@ -283,7 +283,7 @@ function js_anularAutorizacoes() {
 function js_retornoAnularAutorizacoes(oResponse) {
   
   js_removeObj('msgbox');
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
   if (oRetorno.status == 1)  {
 
     alert('Autorizações anuladas com sucesso!');

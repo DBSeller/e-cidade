@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_sau_motivo_ausencia_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_sau_motivo_ausencia_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clsau_motivo_ausencia = new cl_sau_motivo_ausencia;
 $db_opcao = 1;
@@ -67,7 +67,7 @@ if(isset($incluir)){
       <fieldset style='width: 75%;'> <legend><b>Motivos de Aus&ecirc;ncia</b></legend>
 
 	<?
-	include("forms/db_frmsau_motivo_ausencia.php");
+	include(modification("forms/db_frmsau_motivo_ausencia.php"));
 	?>
 
       </fieldset>

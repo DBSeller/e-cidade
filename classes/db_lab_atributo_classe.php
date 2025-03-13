@@ -1,68 +1,74 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Laboratório
 //CLASSE DA ENTIDADE lab_atributo
-class cl_lab_atributo { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $la25_i_codigo = 0; 
-   var $la25_c_estrutural = null; 
-   var $la25_c_descr = null; 
-   var $la25_c_tipo = null; 
-   var $la25_i_nivel = 0; 
-   // cria propriedade com as variaveis do arquivo 
-   var $campos = "
-                 la25_i_codigo = int4 = Código 
-                 la25_c_estrutural = char(20) = Estrutural 
-                 la25_c_descr = char(50) = Descrição 
-                 la25_c_tipo = char(1) = Tipo 
-                 la25_i_nivel = int4 = Nível 
+class cl_lab_atributo {
+   // cria variaveis de erro
+   public $rotulo     = null;
+   public $query_sql  = null;
+   public $numrows    = 0;
+   public $numrows_incluir = 0;
+   public $numrows_alterar = 0;
+   public $numrows_excluir = 0;
+   public $erro_status= null;
+   public $erro_sql   = null;
+   public $erro_banco = null;
+   public $erro_msg   = null;
+   public $erro_campo = null;
+   public $pagina_retorno = null;
+   // cria variaveis do arquivo
+   public $la25_i_codigo = 0;
+   public $la25_c_estrutural = null;
+   public $la25_c_descr = null;
+   public $la25_c_tipo = null;
+   public $la25_i_nivel = 0;
+   public $la25_sigla = 0;
+   public $la25_formula = 0;
+   public $la25_preenchimentoobrigatorio = 'f';
+   // cria propriedade com as variaveis do arquivo
+   public $campos = "
+                 la25_i_codigo = int4 = Código
+                 la25_c_estrutural = char(20) = Estrutural
+                 la25_c_descr = char(50) = Descrição
+                 la25_c_tipo = char(1) = Tipo
+                 la25_i_nivel = int4 = Nível
+                 la25_sigla = char(5) = Sigla
+                 la25_formula = char(100) = Fórmula
+                 la25_preenchimentoobrigatorio = boolean = Campo para informar se o campo permite valor vazio
                  ";
-   //funcao construtor da classe 
-   function cl_lab_atributo() { 
+   //funcao construtor da classe
+   public function __construct() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("lab_atributo"); 
+     $this->rotulo = new rotulo("lab_atributo");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   public function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -71,21 +77,24 @@ class cl_lab_atributo {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->la25_i_codigo = ($this->la25_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["la25_i_codigo"]:$this->la25_i_codigo);
        $this->la25_c_estrutural = ($this->la25_c_estrutural == ""?@$GLOBALS["HTTP_POST_VARS"]["la25_c_estrutural"]:$this->la25_c_estrutural);
        $this->la25_c_descr = ($this->la25_c_descr == ""?@$GLOBALS["HTTP_POST_VARS"]["la25_c_descr"]:$this->la25_c_descr);
        $this->la25_c_tipo = ($this->la25_c_tipo == ""?@$GLOBALS["HTTP_POST_VARS"]["la25_c_tipo"]:$this->la25_c_tipo);
        $this->la25_i_nivel = ($this->la25_i_nivel == ""?@$GLOBALS["HTTP_POST_VARS"]["la25_i_nivel"]:$this->la25_i_nivel);
+       $this->la25_sigla = ($this->la25_sigla == ""?@$GLOBALS["HTTP_POST_VARS"]["la25_sigla"]:$this->la25_sigla);
+       $this->la25_formula = ($this->la25_formula == ""?@$GLOBALS["HTTP_POST_VARS"]["la25_formula"]:$this->la25_formula);
+       $this->la25_preenchimentoobrigatorio = ($this->la25_preenchimentoobrigatorio == "f"?@$GLOBALS["HTTP_POST_VARS"]["la25_preenchimentoobrigatorio"]:$this->la25_preenchimentoobrigatorio);
      }else{
        $this->la25_i_codigo = ($this->la25_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["la25_i_codigo"]:$this->la25_i_codigo);
      }
    }
    // funcao para inclusao
-   function incluir ($la25_i_codigo){ 
+   public function incluir ($la25_i_codigo){
       $this->atualizacampos();
-     if($this->la25_c_estrutural == null ){ 
+     if($this->la25_c_estrutural == null ){
        $this->erro_sql = " Campo Estrutural nao Informado.";
        $this->erro_campo = "la25_c_estrutural";
        $this->erro_banco = "";
@@ -94,7 +103,7 @@ class cl_lab_atributo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->la25_c_descr == null ){ 
+     if($this->la25_c_descr == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "la25_c_descr";
        $this->erro_banco = "";
@@ -103,7 +112,7 @@ class cl_lab_atributo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->la25_c_tipo == null ){ 
+     if($this->la25_c_tipo == null ){
        $this->erro_sql = " Campo Tipo nao Informado.";
        $this->erro_campo = "la25_c_tipo";
        $this->erro_banco = "";
@@ -112,7 +121,7 @@ class cl_lab_atributo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->la25_i_nivel == null ){ 
+     if($this->la25_i_nivel == null ){
        $this->erro_sql = " Campo Nível nao Informado.";
        $this->erro_campo = "la25_i_nivel";
        $this->erro_banco = "";
@@ -122,16 +131,16 @@ class cl_lab_atributo {
        return false;
      }
      if($la25_i_codigo == "" || $la25_i_codigo == null ){
-       $result = db_query("select nextval('lab_atributo_la25_i_codigo_seq')"); 
+       $result = db_query("select nextval('lab_atributo_la25_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: lab_atributo_la25_i_codigo_seq do campo: la25_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: lab_atributo_la25_i_codigo_seq do campo: la25_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->la25_i_codigo = pg_result($result,0,0); 
+       $this->la25_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from lab_atributo_la25_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $la25_i_codigo)){
@@ -142,10 +151,10 @@ class cl_lab_atributo {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->la25_i_codigo = $la25_i_codigo; 
+         $this->la25_i_codigo = $la25_i_codigo;
        }
      }
-     if(($this->la25_i_codigo == null) || ($this->la25_i_codigo == "") ){ 
+     if(($this->la25_i_codigo == null) || ($this->la25_i_codigo == "") ){
        $this->erro_sql = " Campo la25_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -154,21 +163,27 @@ class cl_lab_atributo {
        return false;
      }
      $sql = "insert into lab_atributo(
-                                       la25_i_codigo 
-                                      ,la25_c_estrutural 
-                                      ,la25_c_descr 
-                                      ,la25_c_tipo 
-                                      ,la25_i_nivel 
+                                       la25_i_codigo
+                                      ,la25_c_estrutural
+                                      ,la25_c_descr
+                                      ,la25_c_tipo
+                                      ,la25_i_nivel
+                                      ,la25_sigla
+                                      ,la25_formula
+                                      ,la25_preenchimentoobrigatorio
                        )
                 values (
-                                $this->la25_i_codigo 
-                               ,'$this->la25_c_estrutural' 
-                               ,'$this->la25_c_descr' 
-                               ,'$this->la25_c_tipo' 
-                               ,$this->la25_i_nivel 
+                                $this->la25_i_codigo
+                               ,'$this->la25_c_estrutural'
+                               ,'$this->la25_c_descr'
+                               ,'$this->la25_c_tipo'
+                               ,$this->la25_i_nivel
+                               ,'".trim($this->la25_sigla)."'
+                               ,'$this->la25_formula'
+                               ,'$this->la25_preenchimentoobrigatorio'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Atributo ($this->la25_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -202,18 +217,21 @@ class cl_lab_atributo {
        $resac = db_query("insert into db_acount values($acount,2899,16493,'','".AddSlashes(pg_result($resaco,0,'la25_c_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,2899,16494,'','".AddSlashes(pg_result($resaco,0,'la25_c_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,2899,16495,'','".AddSlashes(pg_result($resaco,0,'la25_i_nivel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2899,1010782,'','".AddSlashes(pg_result($resaco,0,'la25_sigla'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2899,1010783,'','".AddSlashes(pg_result($resaco,0,'la25_formula'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2899,1010909,'','".AddSlashes(pg_result($resaco,0,'la25_preenchimentoobrigatorio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($la25_i_codigo=null) { 
+   public function alterar ($la25_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update lab_atributo set ";
      $virgula = "";
-     if(trim($this->la25_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_i_codigo"])){ 
+     if(trim($this->la25_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_i_codigo"])){
        $sql  .= $virgula." la25_i_codigo = $this->la25_i_codigo ";
        $virgula = ",";
-       if(trim($this->la25_i_codigo) == null ){ 
+       if(trim($this->la25_i_codigo) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "la25_i_codigo";
          $this->erro_banco = "";
@@ -223,10 +241,10 @@ class cl_lab_atributo {
          return false;
        }
      }
-     if(trim($this->la25_c_estrutural)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_c_estrutural"])){ 
+     if(trim($this->la25_c_estrutural)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_c_estrutural"])){
        $sql  .= $virgula." la25_c_estrutural = '$this->la25_c_estrutural' ";
        $virgula = ",";
-       if(trim($this->la25_c_estrutural) == null ){ 
+       if(trim($this->la25_c_estrutural) == null ){
          $this->erro_sql = " Campo Estrutural nao Informado.";
          $this->erro_campo = "la25_c_estrutural";
          $this->erro_banco = "";
@@ -236,10 +254,10 @@ class cl_lab_atributo {
          return false;
        }
      }
-     if(trim($this->la25_c_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_c_descr"])){ 
+     if(trim($this->la25_c_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_c_descr"])){
        $sql  .= $virgula." la25_c_descr = '$this->la25_c_descr' ";
        $virgula = ",";
-       if(trim($this->la25_c_descr) == null ){ 
+       if(trim($this->la25_c_descr) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "la25_c_descr";
          $this->erro_banco = "";
@@ -249,10 +267,10 @@ class cl_lab_atributo {
          return false;
        }
      }
-     if(trim($this->la25_c_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_c_tipo"])){ 
+     if(trim($this->la25_c_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_c_tipo"])){
        $sql  .= $virgula." la25_c_tipo = '$this->la25_c_tipo' ";
        $virgula = ",";
-       if(trim($this->la25_c_tipo) == null ){ 
+       if(trim($this->la25_c_tipo) == null ){
          $this->erro_sql = " Campo Tipo nao Informado.";
          $this->erro_campo = "la25_c_tipo";
          $this->erro_banco = "";
@@ -262,10 +280,10 @@ class cl_lab_atributo {
          return false;
        }
      }
-     if(trim($this->la25_i_nivel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_i_nivel"])){ 
+     if(trim($this->la25_i_nivel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_i_nivel"])){
        $sql  .= $virgula." la25_i_nivel = $this->la25_i_nivel ";
        $virgula = ",";
-       if(trim($this->la25_i_nivel) == null ){ 
+       if(trim($this->la25_i_nivel) == null ){
          $this->erro_sql = " Campo Nível nao Informado.";
          $this->erro_campo = "la25_i_nivel";
          $this->erro_banco = "";
@@ -275,10 +293,26 @@ class cl_lab_atributo {
          return false;
        }
      }
+     if(trim($this->la25_sigla)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_sigla"])){
+       $sql  .= $virgula." la25_sigla = '".trim($this->la25_sigla)."' ";
+       $virgula = ",";
+     }
+
+     if(trim($this->la25_formula)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_formula"])){
+       $sql  .= $virgula." la25_formula = '$this->la25_formula' ";
+       $virgula = ",";
+     }
+
+    if(trim($this->la25_preenchimentoobrigatorio)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la25_preenchimentoobrigatorio"])){
+      $sql  .= $virgula." la25_preenchimentoobrigatorio = '$this->la25_preenchimentoobrigatorio' ";
+      $virgula = ",";
+    }
+
      $sql .= " where ";
      if($la25_i_codigo!=null){
        $sql .= " la25_i_codigo = $this->la25_i_codigo";
      }
+
      $resaco = $this->sql_record($this->sql_query_file($this->la25_i_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
@@ -296,13 +330,19 @@ class cl_lab_atributo {
            $resac = db_query("insert into db_acount values($acount,2899,16494,'".AddSlashes(pg_result($resaco,$conresaco,'la25_c_tipo'))."','$this->la25_c_tipo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["la25_i_nivel"]) || $this->la25_i_nivel != "")
            $resac = db_query("insert into db_acount values($acount,2899,16495,'".AddSlashes(pg_result($resaco,$conresaco,'la25_i_nivel'))."','$this->la25_i_nivel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["la25_sigla"]) || $this->la25_sigla != "")
+           $resac = db_query("insert into db_acount values($acount,2899,1010782,'".AddSlashes(pg_result($resaco,$conresaco,'la25_sigla'))."','$this->la25_sigla',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["la25_formula"]) || $this->la25_formula != "")
+           $resac = db_query("insert into db_acount values($acount,2899,1010783,'".AddSlashes(pg_result($resaco,$conresaco,'la25_formula'))."','$this->la25_formula',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["la25_preenchimentoobrigatorio"]) || $this->la25_preenchimentoobrigatorio != "")
+         $resac = db_query("insert into db_acount values($acount,2899,1010909,'".AddSlashes(pg_result($resaco,$conresaco,'la25_preenchimentoobrigatorio'))."','$this->la25_preenchimentoobrigatorio',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Atributo nao Alterado. Alteracao Abortada.\\n";
-         $this->erro_sql .= "Valores : ".$this->la25_i_codigo;
+       $this->erro_sql .= "Valores : ".$this->la25_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
@@ -327,14 +367,14 @@ class cl_lab_atributo {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($la25_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   public function excluir ($la25_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($la25_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -348,6 +388,10 @@ class cl_lab_atributo {
          $resac = db_query("insert into db_acount values($acount,2899,16493,'','".AddSlashes(pg_result($resaco,$iresaco,'la25_c_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,2899,16494,'','".AddSlashes(pg_result($resaco,$iresaco,'la25_c_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,2899,16495,'','".AddSlashes(pg_result($resaco,$iresaco,'la25_i_nivel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2899,1010782,'','".AddSlashes(pg_result($resaco,$iresaco,'la25_sigla'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2899,1010783,'','".AddSlashes(pg_result($resaco,$iresaco,'la25_formula'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2899,1010909,'','".AddSlashes(pg_result($resaco,$iresaco,'la25_preenchimentoobrigatorio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+
        }
      }
      $sql = " delete from lab_atributo
@@ -364,7 +408,7 @@ class cl_lab_atributo {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Atributo nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$la25_i_codigo;
@@ -392,11 +436,11 @@ class cl_lab_atributo {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   public function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -418,11 +462,11 @@ class cl_lab_atributo {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $la25_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function sql_query ( $la25_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -435,15 +479,15 @@ class cl_lab_atributo {
      $sql2 = "";
      if($dbwhere==""){
        if($la25_i_codigo!=null ){
-         $sql2 .= " where lab_atributo.la25_i_codigo = $la25_i_codigo "; 
-       } 
+         $sql2 .= " where lab_atributo.la25_i_codigo = $la25_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -452,11 +496,11 @@ class cl_lab_atributo {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $la25_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function sql_query_file ( $la25_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -469,15 +513,15 @@ class cl_lab_atributo {
      $sql2 = "";
      if($dbwhere==""){
        if($la25_i_codigo!=null ){
-         $sql2 .= " where lab_atributo.la25_i_codigo = $la25_i_codigo "; 
-       } 
+         $sql2 .= " where lab_atributo.la25_i_codigo = $la25_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -487,10 +531,10 @@ class cl_lab_atributo {
      return $sql;
   }
 
-  function sql_query_referencia ( $la25_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+  public function sql_query_referencia ( $la25_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -512,7 +556,7 @@ class cl_lab_atributo {
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -522,4 +566,3 @@ class cl_lab_atributo {
     return $sql;
   }
 }
-?>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -195,7 +195,7 @@ $db_opcao_inf = 1;
 <script>
 function js_pesquisa(){
      
- js_OpenJanelaIframe('top.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true);
  js_limpa();
 
 }
@@ -227,7 +227,7 @@ function js_consultaEmpenho(iEmpenho){
 
 function js_saida(oAjax) {
 
-  var obj = eval("(" + oAjax.responseText + ")");
+  var obj = JSON.parse(oAjax.responseText);
   if (obj.status && obj.status == 2){
     
      js_removeObj("msgBox");
@@ -485,7 +485,7 @@ function js_gerarNota() {
 function js_saidaNota(oAjax) {
 
   js_removeObj("msgBox");
-  oRetorno =  eval("("+oAjax.responseText+")");
+  oRetorno =  JSON.parse(oAjax.responseText);
   if (oRetorno.iStatus == 1) {
     
     alert(oRetorno.sMensagem.urlDecode());
@@ -687,7 +687,7 @@ function setTotal(){
 }
 
 function js_consultaNota(iCodNota) {
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_nota', 'emp2_consultanotas002.php?e69_codnota='+iCodNota, 'Pesquisa Dados da Nota', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_nota', 'emp2_consultanotas002.php?e69_codnota='+iCodNota, 'Pesquisa Dados da Nota', true);
 }  
 function js_filter(obj,sClassNeed) {
   if (obj.checked) {

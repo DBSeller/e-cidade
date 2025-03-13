@@ -1,38 +1,42 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_liborcamento.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-include("libs/JSON.php");
+use App\Domain\Configuracao\Helpers\StorageHelper;
+use App\Domain\Patrimonial\Protocolo\Services\DocumentoAndamentoService;
+use App\Domain\Patrimonial\Protocolo\Services\EmpenhoDocumentoService;
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
 db_app::import("exceptions.*");
 db_app::import("configuracao.*");
 db_app::import("contabilidade.*");
@@ -57,31 +61,26 @@ if (!isset($oParam->sSemestre)) {
 }
 
 try {
-  
 	switch ($oParam->exec) {
-
 		case "getDadosEmpenho":
-			
 			$aSiglas = explode(',', $oParam->sSigla);
-			
-			$nTotalDescontos = 0; 
+
+			$nTotalDescontos = 0;
 			$aItens          = array();
-			
+
 			foreach ($aSiglas as $sSigla) {
-				
 				$oParam->sSigla = trim($sSigla);
-				
+
 				/**
 				 * Calculamos o saldo das dotacões
 				 */
 				if (!isset($oParam->iSeqPes)) {
 					$rsDotacaoSaldo           = db_dotacaosaldo(8, 2, 2, true, "o58_instit=".db_getsession("DB_instit"), db_getsession("DB_anousu"));
-					$aDotacoes      = db_utils::getColectionByRecord($rsDotacaoSaldo);
+					$aDotacoes      = db_utils::getCollectionByRecord($rsDotacaoSaldo);
 					$aDotacoesSaldo = array();
 					foreach ($aDotacoes as $oDotacao) {
 						$aDotacoesSaldo[$oDotacao->o58_coddot] = $oDotacao;
 					}
-					
 				}
 				/**
 				 * selecionamos todos os empenhos do tipo que tenham empenho gerados e anulamos
@@ -105,6 +104,8 @@ try {
 				$sSqlEmpenhos  .= "                        rh72_tabprev,                                                                             ";
 				$sSqlEmpenhos  .= "                        o56_elemento,                                                                             ";
 				$sSqlEmpenhos  .= "                        o56_descr,                                                                                ";
+				$sSqlEmpenhos  .= "                        lpad(coalesce(o15_complemento::varchar, '0'), 4, '0') as   o15_complemento, ";
+				$sSqlEmpenhos  .= "                        o15_loaespecificacao,                                                                       ";
 				$sSqlEmpenhos  .= "                        o120_orcreserva,                                                                          ";
 				$sSqlEmpenhos  .= "                        round(sum(case when rh73_pd = 2 then rh73_valor *-1 else rh73_valor end), 2) as rh73_valor";
 				$sSqlEmpenhos  .= "                   from rhempenhofolha 																																				   ";
@@ -121,6 +122,7 @@ try {
 				$sSqlEmpenhos  .= "                                                              and rh73_instit         = rh02_instit               ";
 				$sSqlEmpenhos  .= "                        left join rhempenhofolhaempenho        on rh72_sequencial     = rh76_rhempenhofolha       ";
 				$sSqlEmpenhos  .= "                        left join orcreservarhempenhofolha     on rh72_sequencial     = o120_rhempenhofolha       ";
+				$sSqlEmpenhos  .= "                        left join orctiporec on rh72_recurso = o15_codigo      ";
 				$sSqlEmpenhos  .= "                  where rh76_rhempenhofolha is null				                                                       ";
 				$sSqlEmpenhos  .= "                    and rh72_tipoempenho = {$oParam->iTipo}                                                       ";
 				$sSqlEmpenhos  .= "                    and rh73_instit      = ".db_getsession("DB_instit"). "                                        ";
@@ -161,16 +163,18 @@ try {
 				$sSqlEmpenhos  .= "                           rh72_tabprev,       ";
 				$sSqlEmpenhos  .= "                           o56_elemento,       ";
 				$sSqlEmpenhos  .= "                           o56_descr,          ";
-				$sSqlEmpenhos  .= "                           o120_orcreserva     ";
-				$sSqlEmpenhos  .= "                order by   rh72_recurso,rh72_orgao,rh72_unidade,rh72_projativ,rh72_coddot,rh72_codele ) as x ";
+				$sSqlEmpenhos  .= "                           o120_orcreserva,     ";
+				$sSqlEmpenhos  .= "                           o15_loaespecificacao,     ";
+				$sSqlEmpenhos  .= "                           o15_complemento     ";
+				$sSqlEmpenhos  .= "                order by   rh72_recurso,o15_complemento, rh72_orgao,rh72_unidade,rh72_projativ,rh72_coddot,rh72_codele ) as x ";
 				$sSqlEmpenhos  .= "        WHERE rh73_valor <> 0                                                                    ";
-				$sSqlEmpenhos  .= "        order by rh72_recurso,rh72_orgao,rh72_unidade,rh72_projativ,rh72_coddot,rh72_codele ";
+				$sSqlEmpenhos  .= "        order by rh72_recurso,rh72_orgao,rh72_unidade,rh72_projativ,rh72_coddot,rh72_codele";
 
 				$rsDadosEmpenho = db_query($sSqlEmpenhos);
-				$aEmpenhos      = db_utils::getColectionByRecord($rsDadosEmpenho, false, false, true);
+				$aEmpenhos      = db_utils::getCollectionByRecord($rsDadosEmpenho, false, false, true);
 				$iTotalEmpenhos = count($aEmpenhos);
 				for ($iEmpenho = 0; $iEmpenho < $iTotalEmpenhos; $iEmpenho++) {
-						
+
 					$aEmpenhos[$iEmpenho]->diferencaretencao = 0;
 					$sSqlValorDesconto  = "select coalesce(sum(rh73_valor),0) as retencao ";
 					$sSqlValorDesconto .= "  from rhempenhofolha ";
@@ -198,13 +202,13 @@ try {
 								"o58_instit=".db_getsession("DB_instit")."
 								and o58_coddot = {$aEmpenhos[$iEmpenho]->rh72_coddot}"
 								, db_getsession("DB_anousu"));
-						$aDotacoes      = db_utils::getColectionByRecord($rsDotacaoSaldo);
+						$aDotacoes      = db_utils::getCollectionByRecord($rsDotacaoSaldo);
 
 						$aDotacoesSaldo = array();
 						foreach ($aDotacoes as $oDotacao) {
 							$aDotacoesSaldo[$oDotacao->o58_coddot] = $oDotacao;
 						}
-						
+
 						if (isset($aDotacoesSaldo[$aEmpenhos[$iEmpenho]->rh72_coddot])) {
 							$aEmpenhos[$iEmpenho]->saldodotacao = $aDotacoesSaldo[$aEmpenhos[$iEmpenho]->rh72_coddot]->atual_menos_reservado;
 						}
@@ -239,89 +243,96 @@ try {
 				if (  $oParam->iTipo == 2 && $oParam->sPrevidencia !== '' ){
 					$sSqlTotalDescontos  .= " and rh72_tabprev in ({$oParam->sPrevidencia}) ";
 				}
-
+				$sSqlTotalDescontos .= "  and rh73_rubric not in (select rh23_rubric from rhrubelemento where rh23_instit = ".db_getsession("DB_instit").")";
 				$rsTotalDescontos = db_query($sSqlTotalDescontos);
-				
+
 				$nTotalDescontos += db_utils::fieldsMemory($rsTotalDescontos, 0)->valor;
-				
+
 				$aItens           = array_merge($aEmpenhos, $aItens);
-				                          
+
 			}
-						
+
 			$oRetorno->nTotalDescontos = $nTotalDescontos;
 			$oRetorno->itens           = $aItens;
-				 
+
 			break;
-		 
+
 		case "getDadosEmpenhoFilho":
-			 
+
 			$oEmpenho                  = new empenhoFolha($oParam->iEmpenho);
 			$oRetorno->itens           = $oEmpenho->getInfoEmpenho();
 			$oRetorno->iProximoEmpenho = $oParam->iProximoEmpenho;
-			 
+
 			break;
 		case "getUnidades":
-			 
+
 			$clorcunidade = db_utils::getDao("orcunidade");
 			$result = $clorcunidade->sql_record($clorcunidade->sql_query(null,null,null,
 					"o41_unidade,o41_unidade::varchar||' - '||o41_descr||' -'||o41_anousu as o41_descr,o41_orgao",
 					"o41_unidade","o41_anousu=".db_getsession("DB_anousu")."
 					and o41_orgao={$oParam->orgao}")
 			);
-			$oRetorno->itens = db_utils::getColectionByRecord($result, false, false, true);
-			 
+			$oRetorno->itens = db_utils::getCollectionByRecord($result, false, false, true);
+
 			break;
 		case "getDotacoes":
-			 
 			$iAnoUsu          = db_getsession("DB_anousu");
-			$oDaoOrcParametro = db_utils::getDao('orcparametro');
-			$oDaoOrcElemento  = db_utils::getDao('orcelemento');
+			$oDaoOrcParametro = new cl_orcparametro();
+			$oDaoOrcElemento  = new cl_orcelemento();
 			$sSqlParametro    = $oDaoOrcParametro->sql_query_file($iAnoUsu,'o50_subelem');
 			$rsParametro      = $oDaoOrcParametro->sql_record($sSqlParametro);
-			 
+
 			if ( $oDaoOrcParametro->numrows > 0 ) {
 				$oParametro = db_utils::fieldsMemory($rsParametro,0);
 			} else {
 				throw new Exception("Configure os parâmetros do orçamento para o ano {$iAnoUsu}!");
 			}
 			if ( $oParametro->o50_subelem == "f" ) {
-
 				$sCamposElemento = "substr(o56_elemento,1,7)||'000000' as elemento";
 				$sWhereElemento  = "     o56_codele = {$oParam->iElemento} ";
 				$sWhereElemento .= " and o56_anousu = {$iAnoUsu}   ";
-				 
-				$sSqlElemento = $oDaoOrcElemento->sql_query_file(null,null,$sCamposElemento,null,$sWhereElemento);
-				$rsElemento   = $oDaoOrcElemento->sql_record($sSqlElemento);
-				 
-				if ( $oDaoOrcElemento->numrows > 0 ) {
 
+				$sSqlElemento = $oDaoOrcElemento->sql_query_file(
+				    null,
+                    null,
+                    $sCamposElemento,
+                    null,
+                    $sWhereElemento
+                );
+				$rsElemento   = $oDaoOrcElemento->sql_record($sSqlElemento);
+
+				if ( $oDaoOrcElemento->numrows > 0 ) {
 					$oElemento   = db_utils::fieldsMemory($rsElemento,0);
 					$sWhereParam = " and o56_elemento='{$oElemento->elemento}' ";
-
 				}
-				 
 			} else {
 				$sWhereParam = " and o58_codele = {$iElemento}";
 			}
+
+            $filtroRecurso = "";
+            if (!empty($oParam->recursos)) {
+                $recursos = implode(', ', $oParam->recursos);
+                $filtroRecurso = " and o58_codigo in ({$recursos})";
+            }
+
 			$sSql  = "select distinct o58_coddot";
 			$sSql .= "  from orcdotacao  ";
 			$sSql .= "       inner join orcelemento on o56_codele = o58_codele";
 			$sSql .= "                             and o56_anousu = o58_anousu";
+            $sSql .= "       inner join orctiporec on o15_codigo = o58_codigo";
 			$sSql .= " where o58_orgao    = {$oParam->iOrgao}   ";
 			$sSql .= "   and o58_unidade  = {$oParam->iUnidade} ";
 			$sSql .= "   and o58_projativ = {$oParam->iProjAtiv} ";
 			$sSql .= "   {$sWhereParam}";
-			$sSql .= "   and o58_codigo      = {$oParam->iRecurso}";
+			$sSql .= $filtroRecurso;
 			$sSql .= "   and o58_anousu      = ".db_getsession("DB_anousu");
 			$sSql .= "   and o58_instit      = ".db_getsession("DB_instit");
 			$rsDotacoes = db_query($sSql);
-			$oRetorno->itens = db_utils::getColectionByRecord($rsDotacoes);
-			 
+			$oRetorno->itens = db_utils::getCollectionByRecord($rsDotacoes);
+
 			break;
 		case "alterarDadosEmpenho":
-			 
 			if ($oParam->iTipo == 1) {
-
 				$iSeqPes = '';
 				if (isset($oParam->sSigla) && $oParam->sSigla == 'r20') {
 					$iSeqPes = $oParam->iSeqPes;
@@ -365,10 +376,10 @@ try {
 				db_fim_transacao(false);
 
 			}
-			 
+
 			break;
 		case "reservarSaldo":
-			 
+
 			if (isset($oParam->rescisao) && $oParam->rescisao) {
 
 				$aSeqPes = $oParam->aEmpenhos;
@@ -394,13 +405,13 @@ try {
 				}
 
 				$rsListaEmpenhos            = db_query($sSqlListaEmpenhosRescisao);
-				$oParam->aEmpenhos = db_utils::getColectionByRecord($rsListaEmpenhos);
+				$oParam->aEmpenhos = db_utils::getCollectionByRecord($rsListaEmpenhos);
 			}
 
 			db_inicio_transacao();
 
 			foreach ($oParam->aEmpenhos as $oEmpenho) {
-				 
+
 				$oEmpenho = new empenhoFolha($oEmpenho->rh72_sequencial);
 				$oEmpenho->reservarSaldo();
 			}
@@ -409,7 +420,7 @@ try {
 
 			break;
 		case "cancelarReservas":
-			 
+
 			if (isset($oParam->rescisao) && $oParam->rescisao) {
 
 				$aSeqPes = $oParam->aEmpenhos;
@@ -426,22 +437,21 @@ try {
 				$sSqlListaEmpenhosRescisao .= "  and  rh72_tipoempenho = {$oParam->iTipo}";
 				$sSqlListaEmpenhosRescisao .= "  and  rh72_siglaarq = 'r20'";
 				$rsListaEmpenhos            = db_query($sSqlListaEmpenhosRescisao);
-				$oParam->aEmpenhos = db_utils::getColectionByRecord($rsListaEmpenhos);
+				$oParam->aEmpenhos = db_utils::getCollectionByRecord($rsListaEmpenhos);
 			}
 
 			db_inicio_transacao();
 			foreach ($oParam->aEmpenhos as $oEmpenho) {
-				 
+
 				$oEmpenho = new empenhoFolha($oEmpenho->rh72_sequencial);
 				$oEmpenho->cancelarReservaSaldo();
 
 			}
 
 			db_fim_transacao(false);
-			 
+
 			break;
 		case "gerarEmpenhos":
-			 
 			db_inicio_transacao();
 			/**
 			 * Incluimos uma OP auxiliar nova
@@ -449,14 +459,11 @@ try {
 			$aRecursos       = array();
 			$oDaoOPAuxiliar  = db_utils::getDao("empageordem");
 			if (!$oParam->lOPporRecurso) {
-				 
 				$oDaoOPAuxiliar->e42_dtpagamento = date("Y-m-d",db_getsession("DB_datausu"));
 				$oDaoOPAuxiliar->incluir(null);
-
 			}
-			 
+
 			if (isset($oParam->rescisao) && $oParam->rescisao) {
-				 
 				$aSeqPes = $oParam->aEmpenhos;
 				$sListaRescisoes  = implode(",", $aSeqPes);
 				$oParam->aEmpenhos = array();
@@ -473,7 +480,7 @@ try {
 				$sSqlListaEmpenhosRescisao .= "   and rh72_anousu   = {$oParam->iAnoFolha}";
 				$sSqlListaEmpenhosRescisao .= "  and  rh72_tipoempenho = {$oParam->iTipo}";
 				$sSqlListaEmpenhosRescisao .= "   and rh72_siglaarq = 'r20'";
-				 
+
 				/**
 				 * Inclui no where condicao das tabelas da previdencia
 				 * caso seja o tipo 2 - previdencia e selecionou 1 ou mais tabelas
@@ -481,35 +488,63 @@ try {
 				if ( $oParam->iTipo == 2 && $oParam->sPrevidencia !== '' ) {
 					$sSqlListaEmpenhosRescisao .= " and rh72_tabprev in({$oParam->sPrevidencia})                                           ";
 				}
-				 
+
 				$rsListaEmpenhos   = db_query($sSqlListaEmpenhosRescisao);
-				$oParam->aEmpenhos = db_utils::getColectionByRecord($rsListaEmpenhos);
+				$oParam->aEmpenhos = db_utils::getCollectionByRecord($rsListaEmpenhos);
 			}
-			 
+
 			foreach ($oParam->aEmpenhos as $oEmpenhoFolha) {
-				 
+
 				$oEmpenho = new empenhoFolha($oEmpenhoFolha->rh72_sequencial);
-				 
+
 				if (!isset($aRecursos[$oEmpenho->getRecurso()]) && $oParam->lOPporRecurso) {
-					 
+
 					$oDaoOPAuxiliar->e42_dtpagamento = date("Y-m-d",db_getsession("DB_datausu"));
 					$oDaoOPAuxiliar->incluir(null);
 					$aRecursos[$oEmpenho->getRecurso()]  = $oDaoOPAuxiliar->e42_sequencial;
-					 
+
 				}
 				$iOPAuxiliar = $oParam->lOPporRecurso?$aRecursos[$oEmpenho->getRecurso()]:$oDaoOPAuxiliar->e42_sequencial;
 				$oEmpenho->setOPAuxiliar($iOPAuxiliar);
 				if (isset($oParam->rescisao) && $oParam->rescisao) {
 					$oParam->iNumCgm = $oEmpenhoFolha->rh01_numcgm;
 				}
-				 
+
 				$oEmpenho->gerarEmpenho($oParam->iNumCgm);
-				 
+
+                try {
+                    $configEstorage = StorageHelper::getStorageConfig();
+                } catch (Exception $exception) {
+                    $configEstorage = null;
+                }
+				if ($oEmpenho->getEmpenhoFinanceiro()) {
+					$numeroEmpenho = $oEmpenho->getEmpenhoFinanceiro()->getNumero();
+					$tipoProcesso = DocumentoAndamentoService::getTipoProcesso(6, $numeroEmpenho);
+					if (!empty($tipoProcesso) && !is_null($configEstorage)
+                        && isset($configEstorage->url) && !empty($configEstorage->url)
+                    ) {
+						$uuid = Ramsey\Uuid\Uuid::uuid4();
+						$dotenv = new \Dotenv\Dotenv('./');
+						$dotenv->load();
+						$empenho = new EmpenhoFinanceiro($numeroEmpenho);
+						$gerar_arquivo = "tmp/empenho_{$empenho->getCodigo()}_" . time() . ".pdf";
+						require("emp2_emitenotaemp002.php");
+						if (!file_exists($gerar_arquivo)) {
+							throw new Exception("Erro ao salvar PDF");
+						}
+						$metadata = new \stdClass();
+						$metadata->qrcode = $uuid;
+						$arquivo = StorageHelper::uploadArquivo($gerar_arquivo, [], false, $metadata);
+						$empenhoDocumentoService = new EmpenhoDocumentoService($empenho);
+						$processoEmpenho = $empenhoDocumentoService->gerar($arquivo, $uuid);
+						$processoCriado = "\n\nProcesso criado: $processoEmpenho->p58_numero/$processoEmpenho->p58_ano";
+					}
+				}
 				/**
 				 * caso for folha de rescisao, devemos atualizar a rescisao como empenhada
 				*/
 				if (isset($oParam->rescisao) && $oParam->rescisao) {
-					 
+
 					$oDaoPesRescisao = db_utils::getDao("rhpesrescisao");
 					$oDaoPesRescisao->rh05_empenhado = "true";
 					$oDaoPesRescisao->rh05_seqpes    = $oEmpenhoFolha->rh73_seqpes;
@@ -517,26 +552,26 @@ try {
 				}
 
 			}
-			 
+
 			$oRetorno->e42_sequencial = $iOPAuxiliar = $oParam->lOPporRecurso?implode(", ", $aRecursos):$iOPAuxiliar;
-			 
+
 			db_fim_transacao(false);
-			 
+
 			break;
 		case "getOrigemDotacao":
-			 
+
 			/**
 			 * Consulta os dados de origem da dotação ( Orgão, Unidade, Projeto, Elemento,  Recurso e Dotação )
 			 */
 			$clOrcDotacao     = db_utils::getDao('orcdotacao');
 			$sSqlDadosDotacao = $clOrcDotacao->sql_query(db_getsession('DB_anousu'),$oParam->iDotacao);
 			$rsDadosDotacao   = $clOrcDotacao->sql_record($sSqlDadosDotacao);
-			$oRetorno->itens  = db_utils::getColectionByRecord($rsDadosDotacao,false,false,true);
+			$oRetorno->itens  = db_utils::getCollectionByRecord($rsDadosDotacao,false,false,true);
 
 			if ( $clOrcDotacao->numrows > 0 && isset($oParam->iDesdobramento) && trim($oParam->iDesdobramento) != '' ) {
-				 
+
 				$oDotacao = db_utils::fieldsMemory($rsDadosDotacao,0);
-				 
+
 				$sSqlDesdobramentos  = "select orcelemento.o56_codele,                                                                    ";
 				$sSqlDesdobramentos .= "       orcelemento.o56_descr                                                                      ";
 				$sSqlDesdobramentos .= "  from ( select *                                                                                 ";
@@ -551,13 +586,13 @@ try {
 				$iNroDesdobramento   = pg_num_rows($rsDesdobramento);
 
 				if ( $iNroDesdobramento > 0 ) {
-					 
+
 					$oDesdobramento = db_utils::fieldsMemory($rsDesdobramento,0);
-					 
+
 					$lDesdobramento                = true;
 					$oRetorno->iCodDesdobramento   = $oDesdobramento->o56_codele;
 					$oRetorno->iDescrDesdobramento = $oDesdobramento->o56_descr;
-					 
+
 				} else {
 					$lDesdobramento = false;
 				}
@@ -567,8 +602,9 @@ try {
 			}
 
 			$oRetorno->lDesdobramento = $lDesdobramento;
-			 
+
 			break;
+
 		case "getMatriculasComEmpenhoRescisao":
 
 			$sListaRescisoes = implode(",", $oParam->aRescisoes);
@@ -626,10 +662,23 @@ try {
 			$sSqlEmpenhos  .= "                           rh02_seqpes,    ";
 			$sSqlEmpenhos  .= "                           rh05_recis    ";
 			$sSqlEmpenhos  .= "                order by  rh01_regist) as x ";
-			$sSqlEmpenhos  .= "        WHERE rh73_valor <> 0 ";
+			//$sSqlEmpenhos  .= "        WHERE rh73_valor <> 0 ";
 			$rsDadosEmpenho = db_query($sSqlEmpenhos);
-			$aEmpenhos      = db_utils::getColectionByRecord($rsDadosEmpenho, false, false, true);
-			$iTotalEmpenhos = count($aEmpenhos);
+			$iTotalEmpenhos = pg_num_rows($rsDadosEmpenho);
+			$aEmpenhos = array();
+			for ($iEmpenho = 0; $iEmpenho < $iTotalEmpenhos; $iEmpenho++) {
+
+				$oEmpenho = db_utils::fieldsMemory($rsDadosEmpenho,$iEmpenho,  false, false, true);
+				if ($oEmpenho->rh73_valor == 0 && !empty($oEmpenho->rh02_seqpes)) {
+
+					$oDaoPesRescisao = db_utils::getDao("rhpesrescisao");
+					$oDaoPesRescisao->rh05_empenhado = "true";
+					$oDaoPesRescisao->rh05_seqpes    = $oEmpenho->rh02_seqpes;
+					$oDaoPesRescisao->alterar($oEmpenho->rh02_seqpes);
+					continue;
+				}
+				$aEmpenhos[] = $oEmpenho;
+			}
 
 			/**
 			 * Calculamos o total de descontos da folha
@@ -640,7 +689,7 @@ try {
 			$sSqlTotalDescontos .= "       inner join rhempenhofolharubrica      on rh81_rhempenhofolharubrica = rh73_sequencial";
 			$sSqlTotalDescontos .= " where rh72_tipoempenho = {$oParam->iTipo} ";
 			$sSqlTotalDescontos     .= "   and rh73_pd          = 2 ";
-			$sSqlTotalDescontos     .= "   and rh73_tiporubrica <> 3";
+			$sSqlTotalDescontos     .= "   and rh73_tiporubrica = 2 ";
 			$sSqlTotalDescontos .= "  and rh72_siglaarq     = '{$oParam->sSigla}'";
 			$sSqlTotalDescontos .= "  and rh72_mesusu       = '{$oParam->iMesFolha}'";
 			$sSqlTotalDescontos .= "  and rh72_anousu       = '{$oParam->iAnoFolha}'";
@@ -652,38 +701,38 @@ try {
 			$oRetorno->itens = $aEmpenhos;
 
 			break;
-			 
+
 	}
- 
+
 } catch (DBException $eErro){          // DB Exception
-   
+
   db_fim_transacao(true);
-  
+
   $oRetorno->status = 2;
   $oRetorno->message = urlencode($eErro->getMessage());
-  
+
 } catch (BusinessException $eErro){     // Business Exception
-  
+
   db_fim_transacao(true);
-  
+
   $oRetorno->status = 2;
-  $oRetorno->message = urlencode($eErro->getMessage());      
-  
+  $oRetorno->message = urlencode($eErro->getMessage());
+
 } catch (ParameterException $eErro){     // Parameter Exception
-  
+
   db_fim_transacao(true);
-  
+
   $oRetorno->status = 2;
   $oRetorno->message = urlencode($eErro->getMessage());
-  
+
 } catch (Exception $eErro){
-  
+
   db_fim_transacao(true);
-  
+
   $oRetorno->status = 2;
   $oRetorno->message = urlencode($eErro->getMessage());
-  
-} 
+
+}
 
 echo $oJson->encode($oRetorno);
 

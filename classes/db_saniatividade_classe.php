@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -549,7 +549,7 @@ class cl_saniatividade {
      $sql = " update saniatividade set y83_ativprinc = '".$this->y83_estado."'";
      $sql .= " where  y83_codsani = $this->y83_codsani
 ";
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "saniatividade nao Alterado. Alteracao Abortada.\\n";

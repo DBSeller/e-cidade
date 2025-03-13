@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,5 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "finalidadepagamentofundeb.e151_sequencial,finalidadepagamentofundeb.e151_codigo,finalidadepagamentofundeb.e151_descricao";
+
+$codigos = array_keys(FinalidadePagamentoFundeb::$FINALIDADE_DESCRICAO_CNAB);
+
+$array = "ARRAY[". implode(',', $codigos)."]";
+
+$acampos = array();
+$acampos[] = "finalidadepagamentofundeb.e151_sequencial";
+$acampos[] = "finalidadepagamentofundeb.e151_codigo";
+$acampos[] = "finalidadepagamentofundeb.e151_descricao";
+$acampos[] = "
+           case when finalidadepagamentofundeb.e151_codigo = ANY($array::text[]) then
+             'CEF'
+           else 
+            ''  
+           end as tipo
+";
+
+$campos = implode(',', $acampos);
+
+
+
 ?>

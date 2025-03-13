@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: pessoal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrhlotavinc->rotulo->label();
 $clrhlotavincativ->rotulo->label();
@@ -218,21 +218,21 @@ function js_pesquisarh39_projativ(mostra){
   }
   <?
   if(isset($opcao) && $opcao=="alterar"){
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave.value  = document.form1.rh39_anousu.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave1.value = document.form1.rh39_projativ.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave2.value = document.form1.rh28_codeledef.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave3.value = document.form1.o56_descr.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave4.value = document.form1.rh28_codelenov.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave5.value = document.form1.o56_descrnov.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave6.value = document.form1.rh43_recurso.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave7.value = document.form1.o15_descr.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave.value  = document.form1.rh39_anousu.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave1.value = document.form1.rh39_projativ.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave2.value = document.form1.rh28_codeledef.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave3.value = document.form1.o56_descr.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave4.value = document.form1.rh28_codelenov.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave5.value = document.form1.o56_descrnov.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave6.value = document.form1.rh43_recurso.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave7.value = document.form1.o15_descr.value;";
   }
   ?>
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhlotavinc','db_iframe_orcprojativ','func_orcprojativ.php?funcao_js=parent.js_mostraprojativ2|o55_anousu|o55_projativ&anousu=<?=(db_getsession("DB_anousu"))?>','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhlotavinc','db_iframe_orcprojativ','func_orcprojativ.php?funcao_js=parent.js_mostraprojativ2|o55_anousu|o55_projativ&anousu=<?=(db_getsession("DB_anousu"))?>','Pesquisa',true,'0');
   }else{
     if(document.form1.rh39_projativ.value!=""){
-      js_OpenJanelaIframe('top.corpo.iframe_rhlotavinc','db_iframe_orcprojativ','func_orcprojativ.php?pesquisa_chave='+document.form1.rh39_projativ.value+'&funcao_js=parent.js_mostraprojativ2&mostraprojativ=true','Pesquisa',false,'0');
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhlotavinc','db_iframe_orcprojativ','func_orcprojativ.php?pesquisa_chave='+document.form1.rh39_projativ.value+'&funcao_js=parent.js_mostraprojativ2&mostraprojativ=true','Pesquisa',false,'0');
     }else{
       document.form1.o55_descr.value = "";
       document.form1.rh39_anousu.value = "";
@@ -265,21 +265,21 @@ function js_pesquisarh28_codeledef(mostra){
   }
   <?
   if(isset($opcao) && $opcao=="alterar"){
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave.value  = document.form1.rh39_anousu.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave1.value = document.form1.rh39_projativ.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave2.value = document.form1.rh28_codeledef.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave3.value = document.form1.o56_descr.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave4.value = document.form1.rh28_codelenov.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave5.value = document.form1.o56_descrnov.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave6.value = document.form1.rh43_recurso.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave7.value = document.form1.o15_descr.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave.value  = document.form1.rh39_anousu.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave1.value = document.form1.rh39_projativ.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave2.value = document.form1.rh28_codeledef.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave3.value = document.form1.o56_descr.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave4.value = document.form1.rh28_codelenov.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave5.value = document.form1.o56_descrnov.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave6.value = document.form1.rh43_recurso.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave7.value = document.form1.o15_descr.value;";
   }
   ?>
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhlotavinc','db_iframe_orcelemento','func_orcelementodef.php?funcao_js=parent.js_mostraorcelemento|o56_codele|o56_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhlotavinc','db_iframe_orcelemento','func_orcelementodef.php?funcao_js=parent.js_mostraorcelemento|o56_codele|o56_descr','Pesquisa',true,'0');
   }else{
     if(document.form1.rh28_codeledef.value != ''){ 
-      js_OpenJanelaIframe('top.corpo.iframe_rhlotavinc','db_iframe_orcelemento','func_orcelementodef.php?pesquisa_chave='+document.form1.rh28_codeledef.value+'&funcao_js=parent.js_mostraorcelemento&mostradescr=true','Pesquisa',false,'0');
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhlotavinc','db_iframe_orcelemento','func_orcelementodef.php?pesquisa_chave='+document.form1.rh28_codeledef.value+'&funcao_js=parent.js_mostraorcelemento&mostradescr=true','Pesquisa',false,'0');
     }else{
       document.form1.rh28_codeledef.value = '';
       document.form1.o56_descr.value = '';
@@ -303,21 +303,21 @@ function js_pesquisarh28_codelenov(mostra){
   }
   <?
   if(isset($opcao) && $opcao=="alterar"){
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave.value  = document.form1.rh39_anousu.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave1.value = document.form1.rh39_projativ.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave2.value = document.form1.rh28_codeledef.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave3.value = document.form1.o56_descr.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave4.value = document.form1.rh28_codelenov.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave5.value = document.form1.o56_descrnov.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave6.value = document.form1.rh43_recurso.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave7.value = document.form1.o15_descr.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave.value  = document.form1.rh39_anousu.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave1.value = document.form1.rh39_projativ.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave2.value = document.form1.rh28_codeledef.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave3.value = document.form1.o56_descr.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave4.value = document.form1.rh28_codelenov.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave5.value = document.form1.o56_descrnov.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave6.value = document.form1.rh43_recurso.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave7.value = document.form1.o15_descr.value;";
   }
   ?>
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhlotavinc','db_iframe_orcelemento','func_orcelementonov.php?funcao_js=parent.js_mostraorcelemento1|o56_codele|o56_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhlotavinc','db_iframe_orcelemento','func_orcelementonov.php?funcao_js=parent.js_mostraorcelemento1|o56_codele|o56_descr','Pesquisa',true,'0');
   }else{
     if(document.form1.rh28_codelenov.value != ''){ 
-       js_OpenJanelaIframe('top.corpo.iframe_rhlotavinc','db_iframe_orcelemento','func_orcelementonov.php?pesquisa_chave='+document.form1.rh28_codelenov.value+'&funcao_js=parent.js_mostraorcelemento1&mostradescr=true','Pesquisa',true,'0');
+       js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhlotavinc','db_iframe_orcelemento','func_orcelementonov.php?pesquisa_chave='+document.form1.rh28_codelenov.value+'&funcao_js=parent.js_mostraorcelemento1&mostradescr=true','Pesquisa',true,'0');
     }else{
       document.form1.rh28_codelenov.value = '';
       document.form1.o56_descrnov.value = '';
@@ -342,25 +342,25 @@ function js_pesquisarh43_recurso(mostra){
   }
   <?
   if(isset($opcao) && $opcao=="alterar"){
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave.value   = document.form1.rh39_anousu.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave1.value  = document.form1.rh39_projativ.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave2.value  = document.form1.rh28_codeledef.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave3.value  = document.form1.o56_descr.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave4.value  = document.form1.rh28_codelenov.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave5.value  = document.form1.o56_descrnov.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave6.value  = document.form1.rh43_recurso.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave7.value  = document.form1.o15_descr.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave8.value  = document.form1.rh39_programa.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave9.value  = document.form1.rh39_subfuncao.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.form1.chave10.value = document.form1.rh39_funcao.value;";
-    echo "top.corpo.iframe_rhlotavinc.document.getElementById('chave8').value  = document.form1.rh39_programa.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave.value   = document.form1.rh39_anousu.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave1.value  = document.form1.rh39_projativ.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave2.value  = document.form1.rh28_codeledef.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave3.value  = document.form1.o56_descr.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave4.value  = document.form1.rh28_codelenov.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave5.value  = document.form1.o56_descrnov.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave6.value  = document.form1.rh43_recurso.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave7.value  = document.form1.o15_descr.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave8.value  = document.form1.rh39_programa.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave9.value  = document.form1.rh39_subfuncao.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.form1.chave10.value = document.form1.rh39_funcao.value;";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhlotavinc.document.getElementById('chave8').value  = document.form1.rh39_programa.value;";
   }
   ?>
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhlotavinc','db_iframe_orctiporec','func_orctiporecnov.php?funcao_js=parent.js_mostrarecurso|o15_codigo|o15_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhlotavinc','db_iframe_orctiporec','func_orctiporecnov.php?funcao_js=parent.js_mostrarecurso|o15_codigo|o15_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.rh43_recurso.value != ''){
-			 js_OpenJanelaIframe('top.corpo.iframe_rhlotavinc',
+			 js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhlotavinc',
 													 'db_iframe_orctiporec',
 													 'func_orctiporecnov.php?pesquisa_chave='+document.form1.rh43_recurso.value +
 													 '&funcao_js=parent.js_mostrarecurso&mostradescr=true',

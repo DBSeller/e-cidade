@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_stdlib.php");
-include("libs/db_conecta.php");
+include(modification("libs/db_stdlib.php"));
+include(modification("libs/db_conecta.php"));
 /*
-pg_exec("update db_usuariosonline 
+db_query("update db_usuariosonline 
          set uol_inativo = ".time()."
 		 where uol_id = ".db_getsession("DB_id_usuario")."
 		 and uol_ip = '".(isset($_SERVER["HTTP_X_FORWARDED_FOR"])?$_SERVER["HTTP_X_FORWARDED_FOR"]:$HTTP_SERVER_VARS['REMOTE_ADDR'])."' 
 		 and uol_hora = ".db_getsession("DB_uol_hora")."
 		 ") or die("Erro(26) atualizando db_usuariosonline");
-$result = pg_exec("select uol_sol from db_usuariosonline 
+$result = db_query("select uol_sol from db_usuariosonline 
                    where uol_id = ".db_getsession("DB_id_usuario")."
     		       and uol_ip = '".(isset($_SERVER["HTTP_X_FORWARDED_FOR"])?$_SERVER["HTTP_X_FORWARDED_FOR"]:$HTTP_SERVER_VARS['REMOTE_ADDR'])."' 
 		           and uol_hora = ".db_getsession("DB_uol_hora"));
@@ -52,7 +52,7 @@ if(($str = trim(pg_result($result,0,0))) != "") {// && $verf == "1"
 		  parent.js_abrir();
 		  //parent.focus();
         </script>\n";
-  pg_exec("update db_usuariosonline 
+  db_query("update db_usuariosonline 
            set uol_sol = ' '
 	  	   where uol_id = ".db_getsession("DB_id_usuario")."
 		   and uol_ip = '".(isset($_SERVER["HTTP_X_FORWARDED_FOR"])?$_SERVER["HTTP_X_FORWARDED_FOR"]:$HTTP_SERVER_VARS['REMOTE_ADDR'])."' 

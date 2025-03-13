@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once "model/contabilidade/contacorrente/ContaCorrenteBase.model.php";
-require_once "interfaces/IContaCorrente.interface.php";
+require_once modification("model/contabilidade/contacorrente/ContaCorrenteBase.model.php");
+require_once modification("interfaces/IContaCorrente.interface.php");
 
 /**
  * Model para controle da conta corrente originada por contrato
  * @author Matheus Felini <matheus.felini@dbseller.com.br>
  * @package contabilidade
  * @subpackage contacorrente
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.7 $
  */
 class ContaCorrenteContrato extends ContaCorrenteBase implements IContaCorrente {
 

@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_usuariosonline.php';
-require_once 'libs/JSON.php';
-require_once 'libs/db_utils.php';
-include("classes/db_unidades_classe.php" );
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/JSON.php");
+require_once modification("libs/db_utils.php");
+include(modification("classes/db_unidades_classe.php" ));
 
 $objJson    = new services_json();
 $clunidades      = new cl_unidades;
@@ -123,9 +123,9 @@ if($tipo==4){
 $array="";
 if($sql!=""){
    //echo"SQL [$sql]";
-   $result   = pg_query($sql);
+   $result   = db_query($sql);
    $iNumRows = pg_num_rows($result);
-   $array    = db_utils::getColectionByRecord($result,false,false,true);
+   $array    = db_utils::getCollectionByRecord($result,false,false,true);
 }
 echo $objJson->encode($array);
 

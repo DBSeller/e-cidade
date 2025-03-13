@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_lab_laboratorio_classe.php");
-include("classes/db_lab_labdepart_classe.php");
-include("classes/db_lab_labcgm_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lab_laboratorio_classe.php"));
+include(modification("classes/db_lab_labdepart_classe.php"));
+include(modification("classes/db_lab_labcgm_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cllab_laboratorio = new cl_lab_laboratorio;
@@ -96,7 +96,7 @@ if(isset($excluir)){
     <br><br>
     <fieldset><legend><b> Laboratorio </b><legend>
 	<?
-	include("forms/db_frmlab_laboratorio.php");
+	include(modification("forms/db_frmlab_laboratorio.php"));
 	?>
     </fieldset>
     </center>

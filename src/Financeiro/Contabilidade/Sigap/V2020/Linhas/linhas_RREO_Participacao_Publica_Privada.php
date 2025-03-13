@@ -1,0 +1,147 @@
+<?php
+return [
+    0 => [
+        'conta_lrf' => '0117000000000000',
+        'descricao' => 'DEMONSTRATIVO DAS PARCERIAS PÚBLICO-PRIVADAS',
+        'nivel' => 2,
+        'linha_ecidade' => null,
+        ],
+    1 => [
+        'conta_lrf' => '0117010000000000',
+        'descricao' => 'IMPACTOS DAS CONTRATAÇÕES DE PPP',
+        'nivel' => 3,
+        'linha_ecidade' => null,
+        ],
+    2 => [
+        'conta_lrf' => '0117010100000000',
+        'descricao' => 'TOTAL DE ATIVOS',
+        'nivel' => 4,
+        'linha_ecidade' => 1,
+        ],
+    3 => [
+        'conta_lrf' => '0117010101000000',
+        'descricao' => 'Ativos Constituí­dos pela SPE',
+        'nivel' => 5,
+        'linha_ecidade' => 2,
+        ],
+    4 => [
+        'conta_lrf' => '0117010200000000',
+        'descricao' => 'TOTAL DE PASSIVOS (I)',
+        'nivel' => 4,
+        'linha_ecidade' => 3,
+        ],
+    5 => [
+        'conta_lrf' => '0117010201000000',
+        'descricao' => 'Obrigações decorrentes de Ativos Constituídos pela SPE',
+        'nivel' => 5,
+        'linha_ecidade' => 4,
+        ],
+    6 => [
+        'conta_lrf' => '0117010202000000',
+        'descricao' => 'Provisões de PPP',
+        'nivel' => 5,
+        'linha_ecidade' => 5,
+        ],
+    7 => [
+        'conta_lrf' => '0117010203000000',
+        'descricao' => 'Outros Passivos',
+        'nivel' => 5,
+        'linha_ecidade' => 6,
+        ],
+    8 => [
+        'conta_lrf' => '0117010300000000',
+        'descricao' => 'ATOS POTENCIAIS PASSIVOS',
+        'nivel' => 4,
+        'linha_ecidade' => 7,
+        ],
+    9 => [
+        'conta_lrf' => '0117010301000000',
+        'descricao' => 'Obrigações Contratuais',
+        'nivel' => 5,
+        'linha_ecidade' => 8,
+        ],
+    10 => [
+        'conta_lrf' => '0117010302000000',
+        'descricao' => 'Riscos não Provisionados',
+        'nivel' => 5,
+        'linha_ecidade' => 9,
+        ],
+    11 => [
+        'conta_lrf' => '0117010303000000',
+        'descricao' => 'Garantias Concedidas',
+        'nivel' => 5,
+        'linha_ecidade' => 10,
+        ],
+    12 => [
+        'conta_lrf' => '0117010304000000',
+        'descricao' => 'Outros Passivos Contingentes',
+        'nivel' => 5,
+        'linha_ecidade' => 11,
+        ],
+    13 => [
+        'conta_lrf' => '0117020000000000',
+        'descricao' => 'DESPESAS DE PPP',
+        'nivel' => 3,
+        'linha_ecidade' => null,
+        ],
+    14 => [
+        'conta_lrf' => '0117020100000000',
+        'descricao' => 'DO ENTE FEDERADO EXCETO ESTATAIS NÃO DEPENDENTES (I) = (I.1 + I.2)',
+        'nivel' => 4,
+        'linha_ecidade' => 12,
+        ],
+    15 => [
+        'conta_lrf' => '0117020101000000',
+        'descricao' => 'Contratadas (I.1)',
+        'nivel' => 5,
+        'linha_ecidade' => 13,
+        ],
+    16 => [
+        'conta_lrf' => '0117020102000000',
+        'descricao' => 'A contratar (I.2)',
+        'nivel' => 5,
+        'linha_ecidade' => 14,
+        ],
+    17 => [
+        'conta_lrf' => '0117020200000000',
+        'descricao' => 'DAS ESTATAIS NÃO-DEPENDENTES (II) = (II.1 + II.2)',
+        'nivel' => 4,
+        'linha_ecidade' => 15,
+        ],
+    18 => [
+        'conta_lrf' => '0117020201000000',
+        'descricao' => 'Contratadas (II.1)',
+        'nivel' => 5,
+        'linha_ecidade' => 16,
+        ],
+    19 => [
+        'conta_lrf' => '0117020202000000',
+        'descricao' => 'A contratar (II.2)',
+        'nivel' => 5,
+        'linha_ecidade' => 17,
+        ],
+    20 => [
+        'conta_lrf' => '0117020300000000',
+        'descricao' => 'TOTAL DAS DESPESAS DE PPP (III) = (I + II)',
+        'nivel' => 4,
+        'linha_ecidade' => 18,
+        ],
+    21 => [
+        'conta_lrf' => '0117020500000000',
+        'descricao' => 'RECEITA CORRENTE LÍQUIDA (RCL) (IV)',
+        'nivel' => 4,
+        'linha_ecidade' => 19,
+        ],
+    22 => [
+        'conta_lrf' => '0117020600000000',
+        'descricao' => 'TOTAL DAS DESPESAS CONSIDERADAS PARA O LIMITE ( I )',
+        'nivel' => 4,
+        'linha_ecidade' => 20,
+        ],
+    23 => [
+        'conta_lrf' => '0117020700000000',
+        'descricao' => 'TOTAL DAS DESPESAS / RCL (%) (V = I / IV)',
+        'nivel' => 4,
+        'linha_ecidade' => 21,
+        ]
+];

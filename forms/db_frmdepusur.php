@@ -40,7 +40,7 @@
     <tr> 
       <td align="center" nowrap> <select name="usuarios" onClick="document.form1.action='con1_depusur001.php?selecionar=1';document.form1.submit()" id="usuarios" size="10">
           <?  // carrega lista de usuarios
-            $result = pg_exec("select id_usuario, nome, login from db_usuarios order by nome");
+            $result = db_query("select id_usuario, nome, login from db_usuarios order by nome");
             $numrows = pg_numrows($result);
 			for ($i=0;$i<$numrows;$i++) {
 			  echo "<option value=\"".pg_result($result,$i,"id_usuario")."\" ".(pg_result($result,$i,"id_usuario")==@$HTTP_POST_VARS["usuarios"]?"selected":"").">".pg_result($result,$i,"nome") . " - " . pg_result($result,$i,"login")." </option>\n";
@@ -54,12 +54,12 @@
                   <select name="depto[]" id="select" size="10" multiple>
                     <?  // carrega lista de departamentos
 			  if(isset($HTTP_POST_VARS["usuarios"])) {
-			    $depusu = pg_exec("select coddepto from db_depusu where id_usuario = ".$HTTP_POST_VARS["usuarios"]);
+			    $depusu = db_query("select coddepto from db_depusu where id_usuario = ".$HTTP_POST_VARS["usuarios"]);
 				$depusu_coddepto[0] = "";
 			    for($i=0;$i<pg_numrows($depusu);$i++)				
 				  $depusu_coddepto[$i] = pg_result($depusu,$i,0);
 			  }
-            $depart = pg_exec("select * from db_depart order by descrdepto");
+            $depart = db_query("select * from db_depart order by descrdepto");
             $numrows = pg_numrows($depart);
 			for ($i=0;$i<$numrows;$i++) {
 			  echo "<option value=\"".pg_result($depart,$i,"coddepto")."\" ".(in_array(pg_result($depart,$i,"coddepto"),$depusu_coddepto)?"selected":"" ).">".pg_result($depart,$i,"coddepto") . " - " . pg_result($depart,$i,"descrdepto")." </option>\n";

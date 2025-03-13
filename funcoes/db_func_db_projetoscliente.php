@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "db_projetoscliente.at60_codproj,db_projetoscliente.at60_codcli,db_projetoscliente.at60_codproced,db_projetoscliente.at60_inicio,db_projetoscliente.at60_fim";
+$campos = "db_projetoscliente.at60_codproj, db_projetoscliente.at60_codcli,  at01_nomecli, db_projetoscliente.at60_codproced, descrproced,   db_projetoscliente.at60_descricao, db_projetoscliente.at60_inicio,db_projetoscliente.at60_fim";
 ?>

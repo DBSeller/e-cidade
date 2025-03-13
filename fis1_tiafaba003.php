@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("classes/db_tiaf_classe.php");
-include("classes/db_tiafprazo_classe.php");
-include("classes/db_tiafcgm_classe.php");
-include("classes/db_tiafinscr_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("classes/db_tiaf_classe.php"));
+include(modification("classes/db_tiafprazo_classe.php"));
+include(modification("classes/db_tiafcgm_classe.php"));
+include(modification("classes/db_tiafinscr_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 //db_postmemory($HTTP_SERVER_VARS,2);
 
 $cltiaf      = new cl_tiaf;
@@ -94,7 +94,7 @@ if (isset($incluir) && $incluir == "Alterar"){
 	}  
     $cltiafprazo->y96_prazo = $y96_prazo_ano."-".$y96_prazo_mes."-".$y96_prazo_dia;
 	//$cltiafprazo->y96_codtiaf = $y90_codtiaf;
-	$rsResult = pg_exec("select y96_codigo as codigo from tiafprazo where y96_codtiaf = $y90_codtiaf");
+	$rsResult = db_query("select y96_codigo as codigo from tiafprazo where y96_codtiaf = $y90_codtiaf");
 	db_fieldsmemory($rsResult,0);
 	$cltiafprazo->y96_codigo = $codigo;
 	$cltiafprazo->alterar($codigo);
@@ -166,7 +166,7 @@ if (isset($incluir) && $incluir == "Alterar"){
 					}
 			    }
 		    }
-		    include("forms/db_frmtiaf001.php");
+		    include(modification("forms/db_frmtiaf001.php"));
 		    /*if ($limpa == true){
        			echo "<script>js_limpacampos()</script>";
 		    }*/

@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -131,8 +131,8 @@ class ControleEstoque {
     $nQuantidadeAnterior = 0;
 
     if (!empty($this->oPeriodoInicial)) {
-      
-      $oUltimaPosicaoItem = PosicaoEstoque::getUltimaPosicaoDoItemNoEstoque($oMovimentacaoItem->getItem(), 
+
+      $oUltimaPosicaoItem = PosicaoEstoque::getUltimaPosicaoDoItemNoEstoque($oMovimentacaoItem->getItem(),
                                                                             $oAlmoxarifado,
                                                                             $this->oPeriodoInicial);
 
@@ -190,6 +190,7 @@ class ControleEstoque {
 
     $sWhereSaldos  = "     matestoque.m70_codmatmater = $1";
     $sWhereSaldos .= " and matestoque.m70_coddepto    = $2";
+    $sWhereSaldos .= " and m71_servico is false           ";
 
     if (!empty($this->oPeriodoInicial)) {
       $sWhereSaldos .= " and matestoqueini.m80_data between $3 and $4";
@@ -220,30 +221,30 @@ class ControleEstoque {
         $iTotalMovimentacao        = pg_num_rows($rsBuscaMovimentacaoDoItem);
 
         /**
-         * Nao encontrou movimentacao 
+         * Nao encontrou movimentacao
          */
-        if ($iTotalMovimentacao == 0) {
-          continue;
-        }
 
-        $oStdMovimentacao = db_utils::fieldsMemory($rsBuscaMovimentacaoDoItem, 0); 
+        $oStdMovimentacao = db_utils::fieldsMemory($rsBuscaMovimentacaoDoItem, 0);
         $oMovimentacaoItem = new MovimentacaoItem($oItem);
 
         if (!empty($this->oPeriodoInicial)) {
           $this->getSaldoAnteriorDoItem($oMovimentacaoItem, $oAlmoxarifado);
         }
 
-        $oMovimentacaoItem->setQuantidadeEntrada($oStdMovimentacao->quantidade_entrada);
-        $oMovimentacaoItem->setQuantidadeSaida($oStdMovimentacao->quantidade_saida);
-        $oMovimentacaoItem->setValorEntrada($oStdMovimentacao->valor_entrada);
-        $oMovimentacaoItem->setValorSaida($oStdMovimentacao->valor_saida);
+        if ($iTotalMovimentacao > 0) {
+
+          $oMovimentacaoItem->setQuantidadeEntrada($oStdMovimentacao->quantidade_entrada);
+          $oMovimentacaoItem->setQuantidadeSaida($oStdMovimentacao->quantidade_saida);
+          $oMovimentacaoItem->setValorEntrada($oStdMovimentacao->valor_entrada);
+          $oMovimentacaoItem->setValorSaida($oStdMovimentacao->valor_saida);
+        }
         $oMovimentacaoItem->setAlmoxarifado($oAlmoxarifado);
-        $aMovimentacoesItem[] = $oMovimentacaoItem;
-        unset($oStdMovimentacao);
+          unset($oStdMovimentacao);
+          yield $oMovimentacaoItem;
       }
     }
 
-    return $aMovimentacoesItem;
+//    return $aMovimentacoesItem;
   }
 
   /**

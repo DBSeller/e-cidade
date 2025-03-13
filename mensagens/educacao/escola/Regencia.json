@@ -21,4 +21,7 @@
   ,"sem_transacao_ativa"                                  : "Não há transação ativa."
   ,"erro_salvar"                                          : "Não possível salvar os dados.\n Erro: [sMsgErro]"
   ,"erro_buscar_duracao_periodo"                          : "Erro ao buscar a duração do período de vínculo da regência:\n[sErro]"
+  ,"erro_excluir_diarioregracalculo"                      : "Erro ao excluir o vínculo dos alunos com os períodos que serão calculados a proporcionalidade.\n[sErro]"
+  ,"erro_excluir_diarioavaliacaoalternativa"              : "Erro ao excluir o vínculo dos alunos com as avaliações alternativas.\n[sErro]"
+  ,"erro_excluir_diarioclassealunofalta"                  : "Erro ao excluir frequência(s) do(s) aluno(s) vinculados.\n[sErro]"
 }

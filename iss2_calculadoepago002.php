@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include("fpdf151/pdf.php");
+ include(modification("fpdf151/pdf.php"));
  parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 /*
  echo "<br>ano = $anousu <br>";
@@ -109,7 +109,7 @@ select q01_anousu as ano,
 ) as xx
 group by ano, receita,codrec
 ";
-$resultfixo= pg_query($sqlfixo);
+$resultfixo= db_query($sqlfixo);
 $linhasfixo= pg_num_rows($resultfixo);
 db_fieldsmemory($resultfixo,0);
 
@@ -173,7 +173,7 @@ select q05_ano,
 
 ) as y
 ";
-$resultvarcalc= pg_query($sqlvarcalc);
+$resultvarcalc= db_query($sqlvarcalc);
 $linhasvarcalc= pg_num_rows($resultvarcalc);
 db_fieldsmemory($resultvarcalc,0);
 
@@ -190,7 +190,7 @@ where k00_dtvenc < '".date("Y-m-d", db_getsession("DB_datausu"))."'
       and case when q05_vlrinf is null and q05_valor >= 0 then q05_valor else q05_vlrinf end >= 0  
 group by k00_inscr
 ) as x ";
-$resultvencvar= pg_query($sqlvencvar);
+$resultvencvar= db_query($sqlvencvar);
 $linhasvencvar= pg_num_rows($resultvencvar);
 db_fieldsmemory($resultvencvar,0);
 
@@ -206,7 +206,7 @@ where q05_ano = $anousu
       and case when q05_vlrinf is null and q05_valor >= 0 then q05_valor else q05_vlrinf end >= 0  
 group by k00_inscr
 ) as x ";
-$resultqtdpagvar= pg_query($sqlqtdpagvar);
+$resultqtdpagvar= db_query($sqlqtdpagvar);
 $linhasqtdpagvar= pg_num_rows($resultqtdpagvar);
 db_fieldsmemory($resultqtdpagvar,0);
 
@@ -223,7 +223,7 @@ where q05_ano = $anousu
       and case when q05_vlrinf is null and q05_valor >= 0 then q05_valor else q05_vlrinf end >= 0  
 group by k00_inscr
 ) as x ";
-$resultdivida= pg_query($sqldivida);
+$resultdivida= db_query($sqldivida);
 $linhasdivida= pg_num_rows($resultdivida);
 db_fieldsmemory($resultdivida,0);
 

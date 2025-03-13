@@ -82,10 +82,10 @@ db_input('m40_codigo',10,$Im40_codigo,true,'text',3,'')
 <script>
 function js_pesquisafa07_i_retirada(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_far_retirada','func_far_retirada.php?funcao_js=parent.js_mostrafar_retirada1|fa04_i_codigo|fa04_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_retirada','func_far_retirada.php?funcao_js=parent.js_mostrafar_retirada1|fa04_i_codigo|fa04_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.fa07_i_retirada.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_far_retirada','func_far_retirada.php?pesquisa_chave='+document.form1.fa07_i_retirada.value+'&funcao_js=parent.js_mostrafar_retirada','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_retirada','func_far_retirada.php?pesquisa_chave='+document.form1.fa07_i_retirada.value+'&funcao_js=parent.js_mostrafar_retirada','Pesquisa',false);
      }else{
        document.form1.fa04_i_codigo.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostrafar_retirada1(chave1,chave2){
 }
 function js_pesquisafa07_i_matrequi(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matrequi','func_matrequi.php?funcao_js=parent.js_mostramatrequi1|m40_codigo|m40_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matrequi','func_matrequi.php?funcao_js=parent.js_mostramatrequi1|m40_codigo|m40_codigo','Pesquisa',true);
   }else{
      if(document.form1.fa07_i_matrequi.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matrequi','func_matrequi.php?pesquisa_chave='+document.form1.fa07_i_matrequi.value+'&funcao_js=parent.js_mostramatrequi','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matrequi','func_matrequi.php?pesquisa_chave='+document.form1.fa07_i_matrequi.value+'&funcao_js=parent.js_mostramatrequi','Pesquisa',false);
      }else{
        document.form1.m40_codigo.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostramatrequi1(chave1,chave2){
   db_iframe_matrequi.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_retiradarequi','func_far_retiradarequi.php?funcao_js=parent.js_preenchepesquisa|fa07_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_retiradarequi','func_far_retiradarequi.php?funcao_js=parent.js_preenchepesquisa|fa07_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_retiradarequi.hide();

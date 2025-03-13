@@ -1,12 +1,12 @@
 <?
-require("libs/fc_sessoes.php");
-require("libs/classes.class");
-require("libs/funcoes.php");
-require("libs/form.class");
-require('fpdf151/fpdf.php');
-include ("libs/jpgraph/jpgraph.php");
-include ("libs/jpgraph/jpgraph_pie.php");
-include ("libs/jpgraph/jpgraph_pie3d.php");
+require(modification("libs/fc_sessoes.php"));
+require(modification("libs/classes.class"));
+require(modification("libs/funcoes.php"));
+require(modification("libs/form.class"));
+require(modification('fpdf151/fpdf.php'));
+include(modification("libs/jpgraph/jpgraph.php"));
+include(modification("libs/jpgraph/jpgraph_pie.php"));
+include(modification("libs/jpgraph/jpgraph_pie3d.php"));
 
 $getlogo = db_getnomelogo();
 $logo    = ($getlogo==false?'':$getlogo);

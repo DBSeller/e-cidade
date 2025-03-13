@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_protparam_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_protparam_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once('model/configuracao/DBDepartamentoRepository.model.php');
+
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
+
 $clprotparam = new cl_protparam;
 $db_opcao = 22;
 $db_botao = false;
@@ -48,22 +51,25 @@ if (isset($alterar)) {
   $sSqlParam = $clprotparam->sql_query(null,"*",null,"p90_instit=".db_getsession("DB_instit"));
   $result    = $clprotparam->sql_record($sSqlParam );
   
-  if ($clprotparam->numrows==0) { 
-    
+  $clprotparam->p90_depandamentopadrao = $p90_depandamentopadrao;
+
+  if ($clprotparam->numrows == 0) { 
     $clprotparam->p90_instit = db_getsession("DB_instit");
     $clprotparam->incluir();
+
     if ($clprotparam->erro_status == "0") {
       $sqlerro = true;
     }
   } else {
-    
-    if(empty($p90_db_documentotemplate)) {
+    if (empty($p90_db_documentotemplate)) {
       $clprotparam->p90_db_documentotemplate = $p90_db_documentotemplate;
     } else {
       $clprotparam->p90_db_documentotemplate = null;
     }
-  	$clprotparam->p90_instit = db_getsession("DB_instit");
+    
+    $clprotparam->p90_instit = db_getsession("DB_instit");
     $clprotparam->alterar_instit(db_getsession("DB_instit"));
+    
     if ($clprotparam->erro_status == "0") {
       $sqlerro = true;
     }
@@ -74,10 +80,10 @@ if (isset($alterar)) {
 $db_opcao = 2;
 $db_botao = true;
 
-if($sqlerro == false) {
+if ($sqlerro == false) {
   
   $result = $clprotparam->sql_record($clprotparam->sql_query(null,"*",null,"p90_instit=".db_getsession("DB_instit")));
-  if ($result!=false && $clprotparam->numrows>0) {
+  if ($result != false && $clprotparam->numrows>0) {
     
     db_fieldsmemory($result,0);
     $oParam = db_utils::fieldsmemory($result,0);
@@ -88,6 +94,15 @@ if($sqlerro == false) {
     }
     
   }
+
+  $Ip90_depandamentopadrao = '';
+  if (!empty($oParam->p90_depandamentopadrao)) {
+    $postgresObject = db_query("SELECT descrdepto as descricao_departamento FROM db_depart where coddepto = {$oParam->p90_depandamentopadrao}");
+  
+    if (pg_num_rows($postgresObject) > 0) {
+      db_fieldsmemory($postgresObject, 0);
+    }
+  } 
 }
 
 ?>
@@ -106,7 +121,7 @@ if($sqlerro == false) {
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
     <center>
     	<?
-    	include("forms/db_frmprotparam.php");
+    	include(modification("forms/db_frmprotparam.php"));
     	?>
     </center>
 	</td>

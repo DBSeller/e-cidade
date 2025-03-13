@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,31 +27,31 @@
 
 define("TAREFA",true);
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_tarefa_lanc_classe.php");
-include("classes/db_tarefa_aut_classe.php");
-include("classes/db_tarefaparam_classe.php");
-include("classes/db_atendimento_classe.php");
-include("classes/db_tecnico_classe.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_tarefamodulo_classe.php");
-include("classes/db_tarefaproced_classe.php");
-include("classes/db_tarefasituacao_classe.php");
-include("classes/db_tarefausu_classe.php");
-include("classes/db_atenditem_classe.php");
-include("classes/db_tarefaitem_classe.php");
-include("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefamotivo_classe.php");
-include("classes/db_tarefaclientes_classe.php");
-include("classes/db_tarefa_agenda_classe.php");
-include("classes/db_clientesenvol_classe.php");
-include("classes/db_tarefasyscadproced_classe.php");
-//include("classes/db_db_syscadproced_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tarefa_lanc_classe.php"));
+include(modification("classes/db_tarefa_aut_classe.php"));
+include(modification("classes/db_tarefaparam_classe.php"));
+include(modification("classes/db_atendimento_classe.php"));
+include(modification("classes/db_tecnico_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_tarefamodulo_classe.php"));
+include(modification("classes/db_tarefaproced_classe.php"));
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefausu_classe.php"));
+include(modification("classes/db_atenditem_classe.php"));
+include(modification("classes/db_tarefaitem_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefamotivo_classe.php"));
+include(modification("classes/db_tarefaclientes_classe.php"));
+include(modification("classes/db_tarefa_agenda_classe.php"));
+include(modification("classes/db_clientesenvol_classe.php"));
+include(modification("classes/db_tarefasyscadproced_classe.php"));
+//include(modification("classes/db_db_syscadproced_classe.php"));
 $cltarefa         = new cl_tarefa;
 $cltarefamodulo   = new cl_tarefamodulo;
 $cltarefaproced   = new cl_tarefaproced;
@@ -266,7 +266,7 @@ if(isset($incluir)) {
       
       if($sqlerro==false) {
         
-        $sqlerro = $cltarefa_agenda->gera_agenda($cltarefaparam,$cltarefa,&$erro_msg);
+        $sqlerro = $cltarefa_agenda->gera_agenda($cltarefaparam,$cltarefa,$erro_msg);
         
         if (isset($at41_proced) and ($at41_proced == 9)) { // agenda de visitas - autorizada automatico
           if ($sqlerro == false) {
@@ -363,7 +363,7 @@ if(isset($db_opcao)&&$db_opcao==11&&$tipo=="I") {
 <center>
 <?
 
-include("forms/db_frmtarefa.php");
+include(modification("forms/db_frmtarefa.php"));
 ?>
 </center>
 </td>

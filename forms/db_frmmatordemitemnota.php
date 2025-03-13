@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
-include("../libs/db_sessoes.php");
-include("../libs/db_usuariosonline.php");
-include("../classes/db_matordem_classe.php");
-include("../classes/db_matordemitem_classe.php");
-include("../dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -127,7 +127,7 @@ function js_marca(obj){
    $sSQLemp .= "       inner join pctipo     on pc05_codtipo     = pc04_codtipo";
    $sSQLemp .= " where e60_numcgm = {$e60_numcgm} {$where} {$where1}";
    $sSQLemp .="  order by e60_numemp";
-   $result   = pg_query($sSQLemp);
+   $result   = db_query($sSQLemp);
    $numrows  = pg_num_rows($result);
    
    if($numrows>0){

@@ -52,9 +52,9 @@ class cl_formulario_relcampos {
 
     if(trim($this->sqltabelas) != "" || count($this->arr_alter) > 0){
     	if(count($this->arr_alter) <= 0){
-	    	$result_tabelas = @pg_exec($this->sqltabelas);
+	    	$result_tabelas = @db_query($this->sqltabelas);
     	}else{
-    		$result_tabelas = @pg_exec("select db_sysarquivo.codarq,rotulo from db_sysarquivo where codarq in (".$this->cam_alter.")");
+    		$result_tabelas = @db_query("select db_sysarquivo.codarq,rotulo from db_sysarquivo where codarq in (".$this->cam_alter.")");
    		}
 
     	if($result_tabelas == false){
@@ -96,7 +96,7 @@ class cl_formulario_relcampos {
 
       if($$valcam != 0){
       	$sql_camposTABLES = "select distinct codarq as codigodatabela, sigla as sigladoarquivo from db_sysarquivo where db_sysarquivo.codarq = ".$$valcam;
-      	$result_camposTABLES = @pg_exec($sql_camposTABLES);
+      	$result_camposTABLES = @db_query($sql_camposTABLES);
         if($result_camposTABLES == false){
         	db_msgbox("Erro ao buscar campos da tabela escolhida");
         	exit;
@@ -118,7 +118,7 @@ class cl_formulario_relcampos {
                              where     trim(rotulo) <> ''
                                    and rotulo is not null
                             ";
-        $result_camposFKPRIN = @pg_exec($sql_camposFKPRIN);
+        $result_camposFKPRIN = @db_query($sql_camposFKPRIN);
         
         if($result_camposFKPRIN == false){
         	db_msgbox("Erro ao buscar campos referentes à tabela selecionada.");
@@ -139,7 +139,7 @@ class cl_formulario_relcampos {
 		                              where     trim(rotulo) <> ''
 	 	                                    and rotulo is not null
  		                            ";
-        $result_camposFKSECN = @pg_exec($sql_camposFKSECN);
+        $result_camposFKSECN = @db_query($sql_camposFKSECN);
         
         if($result_camposFKSECN == false){
         	db_msgbox("Erro ao buscar campos referentes à tabela selecionada.");
@@ -168,7 +168,7 @@ class cl_formulario_relcampos {
         		$where = " and db_syscampo.codcam not in (".$campo_auxilio_sselecion.")";
         	}
         	if(!isset($arr_tables[$arquivo])){
-        		$result_campos = @pg_exec("select db_syscampo.codcam, rotulo, conteudo from db_syscampo inner join db_sysarqcamp on db_sysarqcamp.codcam = db_syscampo.codcam where codarq = ".$arquivo.$where);
+        		$result_campos = @db_query("select db_syscampo.codcam, rotulo, conteudo from db_syscampo inner join db_sysarqcamp on db_sysarqcamp.codcam = db_syscampo.codcam where codarq = ".$arquivo.$where);
         		for($ii=0; $ii<pg_numrows($result_campos); $ii++){
         			db_fieldsmemory($result_campos, $ii);
         			$arr_campos[$codcam] = $rotulo;
@@ -183,7 +183,7 @@ class cl_formulario_relcampos {
         		$arr_tables[$arquivo] = $arquivo;
         	}
         	if(!isset($arr_tables[$codarq])){
-        		$result_campos = @pg_exec("select db_syscampo.codcam, rotulo, conteudo from db_syscampo inner join db_sysarqcamp on db_sysarqcamp.codcam = db_syscampo.codcam where codarq = ".$codarq.$where);
+        		$result_campos = @db_query("select db_syscampo.codcam, rotulo, conteudo from db_syscampo inner join db_sysarqcamp on db_sysarqcamp.codcam = db_syscampo.codcam where codarq = ".$codarq.$where);
         		for($ii=0; $ii<pg_numrows($result_campos); $ii++){
         			db_fieldsmemory($result_campos, $ii);
         			$arr_campos[$codcam] = $rotulo;
@@ -205,7 +205,7 @@ class cl_formulario_relcampos {
         		$where = " and db_syscampo.codcam not in (".$campo_auxilio_sselecion.")";
         	}
         	if(!isset($arr_tables[$arquivo])){
-        		$result_campos = @pg_exec("select db_syscampo.codcam, rotulo, conteudo from db_syscampo inner join db_sysarqcamp on db_sysarqcamp.codcam = db_syscampo.codcam where codarq = ".$arquivo.$where);
+        		$result_campos = @db_query("select db_syscampo.codcam, rotulo, conteudo from db_syscampo inner join db_sysarqcamp on db_sysarqcamp.codcam = db_syscampo.codcam where codarq = ".$arquivo.$where);
         		for($ii=0; $ii<pg_numrows($result_campos); $ii++){
         			db_fieldsmemory($result_campos, $ii);
         			$arr_campos[$codcam] = $rotulo;
@@ -220,7 +220,7 @@ class cl_formulario_relcampos {
         		$arr_tables[$arquivo] = $arquivo;
         	}
         	if(!isset($arr_tables[$codarq])){
-        		$result_campos = @pg_exec("select db_syscampo.codcam, rotulo, conteudo from db_syscampo inner join db_sysarqcamp on db_sysarqcamp.codcam = db_syscampo.codcam where codarq = ".$codarq.$where);
+        		$result_campos = @db_query("select db_syscampo.codcam, rotulo, conteudo from db_syscampo inner join db_sysarqcamp on db_sysarqcamp.codcam = db_syscampo.codcam where codarq = ".$codarq.$where);
         		for($ii=0; $ii<pg_numrows($result_campos); $ii++){
         			db_fieldsmemory($result_campos, $ii);
         			$arr_campos[$codcam] = $rotulo;
@@ -238,7 +238,7 @@ class cl_formulario_relcampos {
         if(isset($campo_auxilio_sselecion) && $campo_auxilio_sselecion != ""){
           $arr_selecionados = split(",",$campo_auxilio_sselecion);
           for($i=0; $i<count($arr_selecionados); $i++){
-        		$result_campos = @pg_exec("select db_syscampo.codcam, rotulo, conteudo from db_syscampo where codcam in (".$campo_auxilio_sselecion.") ");
+        		$result_campos = @db_query("select db_syscampo.codcam, rotulo, conteudo from db_syscampo where codcam in (".$campo_auxilio_sselecion.") ");
         		if($result_campos != false){
 	        		for($ii=0; $ii<pg_numrows($result_campos); $ii++){
 	        			db_fieldsmemory($result_campos, $ii);
@@ -257,7 +257,7 @@ class cl_formulario_relcampos {
 
       	$arr_camposFORK = Array();
         if(trim(implode(",",$arr_camposUSAR)) != ""){
-        	$result_camposfiltro = @pg_exec("select distinct db_syscampo.codcam, conteudo from db_syscampo left join db_sysforkey on db_sysforkey.codcam = db_syscampo.codcam left join db_sysprikey on db_sysprikey.codcam = db_syscampo.codcam where (db_sysforkey.codcam is not null or db_sysprikey.codcam is not null) and db_syscampo.codcam in (".implode(",",$arr_camposUSAR).")");
+        	$result_camposfiltro = @db_query("select distinct db_syscampo.codcam, conteudo from db_syscampo left join db_sysforkey on db_sysforkey.codcam = db_syscampo.codcam left join db_sysprikey on db_sysprikey.codcam = db_syscampo.codcam where (db_sysforkey.codcam is not null or db_sysprikey.codcam is not null) and db_syscampo.codcam in (".implode(",",$arr_camposUSAR).")");
         	if($result_camposfiltro != false){
 	        	for($ifil=0; $ifil<pg_numrows($result_camposfiltro); $ifil++){
 	        		db_fieldsmemory($result_camposfiltro, $ifil);
@@ -497,7 +497,7 @@ class cl_formulario_relcampos {
             <script>
 							var recebelistagem = '';
               function js_outrosrel(){
-                js_OpenJanelaIframe('top.corpo','db_iframe_db_relat','func_db_relat.php?funcao_js=parent.js_preenchepesquisa|db91_codrel','Pesquisa',true,'20');
+                js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_relat','func_db_relat.php?funcao_js=parent.js_preenchepesquisa|db91_codrel','Pesquisa',true,'20');
               }
 							function js_preenchepesquisa(chave){
 							  db_iframe_db_relat.hide();
@@ -541,17 +541,17 @@ class cl_formulario_relcampos {
 		              if(val != 'false'){
 		                qry += '&valor='+arr[val];
 		              }
-	                js_OpenJanelaIframe('top.corpo','db_iframe_interval','func_interval.php'+qry,'Informar filtro',true,20,0,600,150);
+	                js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_interval','func_interval.php'+qry,'Informar filtro',true,20,0,600,150);
                 }
               }
               function js_abrearquivoqbr(){
-                js_OpenJanelaIframe('top.corpo','db_iframe_quebrapag','func_quebrapag.php','Informar quebras',true,20);
+                js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_quebrapag','func_quebrapag.php','Informar quebras',true,20);
               }
               function js_abrecabec(){
-                js_OpenJanelaIframe('top.corpo','db_iframe_cabecalho','func_cabecalho.php','Informar dados do cabeçalho',true,20);
+                js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cabecalho','func_cabecalho.php','Informar dados do cabeçalho',true,20);
               }
               function js_abrenomearq(){
-                js_OpenJanelaIframe('top.corpo','db_iframe_nomearqui','func_nomearqui.php?arquivo='+document.form1.campo_camporecb_nomearq.value,'Informar filtro',true,20,0,600,150);
+                js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nomearqui','func_nomearqui.php?arquivo='+document.form1.campo_camporecb_nomearq.value,'Informar filtro',true,20,0,600,150);
               }
               function js_abrearquivosom(){
                 x = document.form1;
@@ -583,7 +583,7 @@ class cl_formulario_relcampos {
                 }
                 if(campousar != ''){
                   altura = (60+(33*quantidad));
-                  js_OpenJanelaIframe('top.corpo','db_iframe_somatorio','func_somatorio.php?sel='+document.form1.campo_camporecb_somator.value+'&campousar='+campousar,'Informar somas',true,20,0,300,altura);
+                  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_somatorio','func_somatorio.php?sel='+document.form1.campo_camporecb_somator.value+'&campousar='+campousar,'Informar somas',true,20,0,300,altura);
                 }else{
                   alert('Nenhum campo selecionado ou campos selecionados não podem ser somados.');
                 }

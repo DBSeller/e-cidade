@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -103,6 +103,8 @@ class cl_issruas {
      if($this->z01_cep == null ){ 
        $this->z01_cep = "null";
      }
+
+       $this->z01_cep =  trim(str_replace("-","",$this->z01_cep));
        $this->q02_inscr = $q02_inscr; 
      if(($this->q02_inscr == null) || ($this->q02_inscr == "") ){ 
        $this->erro_sql = " Campo q02_inscr nao declarado.";

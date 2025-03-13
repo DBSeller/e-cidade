@@ -1,16 +1,39 @@
 <?php
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_autoload.php");
-require_once("std/db_stdClass.php");
-require_once("dbforms/db_funcoes.php");
-require_once ("libs/db_app.utils.php");
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
-
-$db_opcao      = 1;
+$db_opcao = 1;
 
 if (!isset($iAnoMatricula)) {
   $iAnoMatricula = date("Y");
@@ -88,7 +111,9 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
         </table>
         <table class="form-container dadosAluno">
           <tr>
-            <td class="field-size3">Escola:</td>
+            <td class="field-size3">
+              <label>Escola:</label>
+            </td>
             <td>
               <?php
                 db_input('iTransEscolaFora', 10, '', true, 'hidden', 3 );
@@ -98,10 +123,12 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
             </td>
           </tr>
           <tr>
-            <td class="field-size3">Data Matrícula:</td>
+            <td class="field-size3">
+              <label>Data Matrícula:</label>
+            </td>
             <td>
               <?php db_input('dtMatriculaAntes', 10, '', true, 'text', 3 );?>
-              <b>Data Saída:</b>
+              <label>Data Saída:</label>
               <?php db_input('dtSaidaAntes', 10,'',  true, 'text', 3 );?>
             </td>
           </tr>
@@ -121,22 +148,28 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
             </td>
           </tr>
           <tr class="alunoComMatriculaNessaEscolaNesseAno">
-            <td class="field-size3">Matrícula:</td>
+            <td class="field-size3">
+              <label>Matrícula:</label>
+            </td>
             <td>
               <?php db_input("iMatriculaAntes", 10, '', true, 'text', 3);?>
             </td>
             <td >
-                <b> Situação: </b>
+              <label>Situação: </label>
             </td>
             <td>
               <?php db_input("sSituacaoMatriculaAntes", 30, '', true, 'text', 3);?>
             </td>
           </tr>
           <tr class="alunoComMatriculaNessaEscolaNesseAno">
-            <td class="field-size3">Data Matrícula:</td>
+            <td class="field-size3">
+              <label>Data Matrícula:</label>
+            </td>
             <td>
               <?php db_input('dtMatriculaAntes2', 10, '', true, 'text', 3 );?>
-            <td><b>Data Saída:</b></td>
+            <td>
+              <label>Data Saída:</label>
+            </td>
             <td>
               <?php db_input('dtSaidaAntes2', 10,'',  true, 'text', 3 );?>
             </td>
@@ -150,7 +183,9 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
       <legend>Dados do Destino</legend>
         <table class="form-container dadosAluno informacoesTurmaDestino">
           <tr >
-            <td class="field-size3">Tipo de Ingresso:</td>
+            <td class="field-size3">
+              <label>Tipo de Ingresso:</label>
+            </td>
             <td>
               <?php
                 $aTipoIngresso = array( 1 => "Normal", 2 => "Classificado", 3 => "Reclassificado", 4 => "Avanço" );
@@ -160,7 +195,6 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
           </tr>
           <tr>
             <td class="field-size3" nowrap="nowrap" >
-              <!-- <?$opcaoturma = $linhas_verif == 0 ? 1 : 3?> -->
               <?db_ancora( "Turma:", "js_pesquisaTurma();", 1 );?>
             </td>
             <td>
@@ -172,7 +206,9 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
             </td>
           </tr>
           <tr>
-            <td class="field-size3" nowrap="nowrap" >Curso:</td>
+            <td class="field-size3" nowrap="nowrap">
+              <label>Curso:</label>
+            </td>
             <td>
               <?php
                 db_input( 'ed31_i_curso', 10, '', true, 'text', 3, '' );
@@ -181,7 +217,9 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
             </td>
           </tr>
           <tr>
-            <td class="field-size3" nowrap="nowrap">Base Curricular:</td>
+            <td class="field-size3" nowrap="nowrap">
+              <label>Base Curricular:</label>
+            </td>
             <td>
               <?
                 db_input( 'ed57_i_base',  10, '',  true, 'text', 3, '' );
@@ -190,7 +228,9 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
             </td>
           </tr>
           <tr>
-            <td class="field-size3" nowrap="nowrap">Calendário:</td>
+            <td class="field-size3" nowrap="nowrap">
+              <label>Calendário:</label>
+            </td>
             <td>
              <?php
                db_input( 'ed57_i_calendario', 10, '', true, 'text',   3, '' );
@@ -204,14 +244,18 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
           </tr>
 
           <tr id='turmaMultietapa' style="display:none;">
-            <td class="field-size3" nowrap="nowrap">Etapa:</td>
+            <td class="field-size3" nowrap="nowrap">
+              <label>Etapa:</label>
+            </td>
             <td>
               <select id='selectMultietapa' >
               </select>
             </td>
           </tr>
           <tr id='turmaEtapaUnica' style="display:none;">
-            <td class="field-size3" nowrap="nowrap">Etapa:</td>
+            <td class="field-size3" nowrap="nowrap">
+              <label>Etapa:</label>
+            </td>
             <td>
               <?
                 db_input( 'ed11_i_codigo',  10, '',  true, 'text', 3);
@@ -221,7 +265,9 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
           </tr>
 
           <tr id='linhaTurno'>
-            <td class="field-size3" nowrap="nowrap">Turno:</td>
+            <td class="field-size3" nowrap="nowrap">
+              <label>Turno:</label>
+            </td>
             <td>
               <?php
                 db_input( 'ed57_i_turno', 10, '', true, 'text', 3);
@@ -231,7 +277,9 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
           </tr>
 
           <tr>
-            <td class="field-size3" nowrap="nowrap" >Escola:</td>
+            <td class="field-size3" nowrap="nowrap">
+              <label>Escola:</label>
+            </td>
             <td>
               <?php
                 db_input( 'ed18_i_codigo', 10, '', true, 'text', 3);
@@ -240,7 +288,9 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
             </td>
           </tr>
           <tr>
-            <td class="field-size3" nowrap="nowrap">Data da matrícula:</td>
+            <td class="field-size3" nowrap="nowrap">
+              <label>Data da matrícula:</label>
+            </td>
             <td>
               <?php
                 db_inputdata('ed60_d_datamatricula', @$ed60_d_datamatricula_dia, @$ed60_d_datamatricula_mes, @$ed60_d_datamatricula_ano, true, 'text', 1);?>
@@ -262,7 +312,9 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
             </td>
           </tr>
           <tr>
-            <td class="field-size3">Importar Aproveitamento:</td>
+            <td class="field-size3">
+              <label>Importar Aproveitamento:</label>
+            </td>
             <td >
               <select id='importarAproveitamento'>
                 <option value="S" selected="selected">Sim</option>
@@ -330,10 +382,10 @@ function js_pesquisaTransferencia() {
 
   var sUrl  = 'func_transfescolaforamatr.php?funcao_js=parent.js_mostraAluno';
       sUrl += '|ed104_i_aluno|ed47_v_nome|dl_etapa|dl_codigo|ed104_d_data|ed60_d_datamatricula|ed18_c_nome|ed104_i_codigo';
-      sUrl += '|ed104_i_escolaorigem|dl_sequencia_matricula'
+      sUrl += '|ed104_i_escolaorigem|dl_sequencia_matricula';
   var sLabelJanela = 'Pesquisa de alunos transferidos para fora da rede';
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_transfescolafora', sUrl, sLabelJanela, true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_transfescolafora', sUrl, sLabelJanela, true);
 }
 
 
@@ -415,7 +467,7 @@ function js_pesquisaTurma(iTurma) {
   sUrl += "|ed52_i_ano|ed52_c_descr|ed52_i_codigo|ed52_d_inicio|ed52_d_fim";
   // sUrl += "|ed11_i_codigo|ed11_i_sequencia|ed11_c_descr";
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_turma', sUrl, 'Pesquisa de Turmas', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_turma', sUrl, 'Pesquisa de Turmas', true);
 }
 
 /**
@@ -489,7 +541,7 @@ function js_verificaEtapaTurmaSelecionada() {
 function js_retornoVerificaEtapaTurmaSelecionada (oAjax) {
 
   js_removeObj('msgBoxB');
-  var oRetorno = eval( "(" + oAjax.responseText + ")" );
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.lMultietapa) {
 
@@ -513,7 +565,7 @@ function js_turmaDestinoMultietapa (oDadosEtapa) {
 
   oDadosEtapa.aEtapasTurma.each( function (oEtapa) {
 
-    var oOption = new Element('option', {'value':oEtapa.iCodigo, }).update(oEtapa.sDecricao.urlDecode());
+    var oOption = new Element('option', {'value':oEtapa.iCodigo }).update(oEtapa.sDecricao.urlDecode());
 
     if ( oDadosEtapa.lConsistirHistorico && !oEtapa.lEquivalente ) {
       oOption.setAttribute("disabled", "disabled");
@@ -597,7 +649,7 @@ function js_verificaMatriculaEscola() {
 function js_retornoVerificaMatriculaEscola(oAjax) {
 
   js_removeObj('msgBoxA');
-  var oRetorno = eval( "(" + oAjax.responseText + ")" );
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if ( !oRetorno.lTemMatriculaEscolaAno ) {
 
@@ -611,12 +663,12 @@ function js_retornoVerificaMatriculaEscola(oAjax) {
 
   $('iMatriculaAntes').value         = oRetorno.oDadosMatricula.iMatricula;
   $('sSituacaoMatriculaAntes').value = oRetorno.oDadosMatricula.sSituacao.urlDecode();
-  $('dtMatriculaAntes2').value       = oRetorno.oDadosMatricula.dtMatricula
-  $('dtSaidaAntes2').value           = oRetorno.oDadosMatricula.dtSaida
+  $('dtMatriculaAntes2').value       = oRetorno.oDadosMatricula.dtMatricula;
+  $('dtSaidaAntes2').value           = oRetorno.oDadosMatricula.dtSaida;
 
   var sMsg  = "Aluno " + $F('ed56_i_aluno') + " já possui matrícula em " + $F('iAnoMatricula') + " nesta escola na turma abaixo relacionada, ";
       sMsg += "com situação <br>" + $F('sSituacaoMatriculaAntes') + " a " + oRetorno.oDadosMatricula.iDiasPassados;
-      sMsg += " dia"
+      sMsg += " dia";
       sMsg += oRetorno.oDadosMatricula.iDiasPassados > 1 ? "(s).":".";
 
   $('msgAluno').update(sMsg);
@@ -658,7 +710,7 @@ function js_limpaDadosTurma() {
   $('ed18_c_nome').value   = '<?=db_getsession("DB_nomedepto");?>';
 
   var oData = new Date();
-  $('ed60_d_datamatricula_dia').value = js_strLeftPad( oData.getDate(), '2', '0')
+  $('ed60_d_datamatricula_dia').value = js_strLeftPad( oData.getDate(), '2', '0');
   $('ed60_d_datamatricula_mes').value = js_strLeftPad( oData.getMonth() + 1, '2', '0');
   $('ed60_d_datamatricula_ano').value = oData.getFullYear();
   $('ed60_d_datamatricula').value     = $F('ed60_d_datamatricula_dia') + '/' + $F('ed60_d_datamatricula_mes') + '/' + $F('ed60_d_datamatricula_ano');
@@ -683,10 +735,10 @@ function js_limpaDadosImportacaoAproveitamento() {
  */
 function js_verificaImportacaoAvaliacao() {
 
-  $aDataMatricula = $F('dtMatriculaAntes').split('/');
+  var aDataMatricula = $F('dtMatriculaAntes').split('/');
 
   //Só percisamos verificar se o ano da matricula for igual ao ano informado
-  if ( $aDataMatricula[2] != $F('iAnoMatricula') ) {
+  if ( aDataMatricula[2] != $F('iAnoMatricula') ) {
 
     js_limpaDadosImportacaoAproveitamento();
     return;
@@ -707,7 +759,7 @@ function js_validaTipoTurma() {
 
   $('gradeAproveitameno').removeAttribute('disabled');
   $('importarAproveitamento').options[0].removeAttribute('disabled');
-  $('importarAproveitamento').value = 'S'
+  $('importarAproveitamento').value = 'S';
   if ( $F('ed334_tipo') == 3 ){
 
     $('gradeAproveitameno').setAttribute('disabled', 'disabled');
@@ -742,7 +794,7 @@ function validaDadosMatricula () {
 
   var aDataMatricula         = $F('dtMatriculaAntes').split('/');
   var sDataMatriculaAnterior = aDataMatricula[2] + "" + aDataMatricula[1] + "" + aDataMatricula[0];
-  sDataInformada             = $F('ed60_d_datamatricula').split('/').reverse().toString().replace(/,/g, "");;
+  sDataInformada             = $F('ed60_d_datamatricula').split('/').reverse().toString().replace(/,/g, "");
 
   if ( parseInt( sDataMatriculaAnterior ) > parseInt( sDataInformada ) ) {
 
@@ -775,11 +827,13 @@ $('matricularAluno').observe('click', function() {
     return false;
   }
 
+  $('matricularAluno').setAttribute('disabled', 'disabled');
+
   var lImportaAvaliacao = false;
   var aDataMatricula    = $F('dtMatriculaAntes').split('/');
 
 
-  if ( $F('iEscolaOrigem') != $F('ed18_i_codigo') && ( $aDataMatricula[2] == $F('iAnoMatricula') ) ) {
+  if ( $F('iEscolaOrigem') != $F('ed18_i_codigo') && ( aDataMatricula[2] == $F('iAnoMatricula') ) ) {
     lImportaAvaliacao = $F('importarAproveitamento') == 'S';
   }
 
@@ -807,7 +861,7 @@ $('matricularAluno').observe('click', function() {
   oParametros.aTurnosReferente    = aTurnoReferenteSelecionado;
   oParametros.iEtapa              = iEtapa;
   oParametros.dtMatricula         = $F('ed60_d_datamatricula');
-  oParametros.lImportaAvaliacao   = lImportaAvaliacao
+  oParametros.lImportaAvaliacao   = lImportaAvaliacao;
 
   var oRequest          = {};
   oRequest.method       = 'post';
@@ -823,7 +877,7 @@ $('matricularAluno').observe('click', function() {
 function js_retornoMatricula (oAjax) {
 
   js_removeObj('msgBoxC');
-  var oRetorno = eval( "(" + oAjax.responseText + ")" );
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.iStatus == 2) {
 
@@ -840,9 +894,14 @@ function js_retornoMatricula (oAjax) {
    * - O tipo da matricula tem que ser diferente de 3 ( Reclassificado)
    */
 
-  if ( oRetorno.iStatus == 1 && !oRetorno.oDados.lTemProgressaoParcial
-       && $F('importarAproveitamento') == 'S' && oRetorno.iTurmaAnterior != ''
-       && $F('ed60_i_turma') != oRetorno.iTurmaAnterior && $F('ed334_tipo') != 3) {
+  if (    oRetorno.iStatus == 1
+       && !oRetorno.oDados.lTemProgressaoParcial
+       && $F('importarAproveitamento') == 'S'
+       && oRetorno.iTurmaAnterior != ''
+       && $F('ed60_i_turma') != oRetorno.iTurmaAnterior
+       && $F('ed334_tipo') != 3
+       && oRetorno.lPermiteImportarAproveitamento
+     ) {
 
 
     var sUrl  = 'edu1_matriculatransffora002.php?ed56_i_aluno=' + $F('ed56_i_aluno');

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,19 +24,20 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str( $_SERVER["QUERY_STRING"]);
+
 db_postmemory( $_POST );
 
-$clcgs           = new cl_cgs;
-$clcgs_und       = new cl_cgs_und_ext;
-$clcgs_cartaosus = new cl_cgs_cartaosus;
+$clcgs              = new cl_cgs;
+$clcgs_und          = new cl_cgs_und_ext;
+$clcgs_cartaosus    = new cl_cgs_cartaosus;
 
 $db_opcao  = 22;
 $db_opcao1 = 3;
@@ -51,8 +52,12 @@ if ( isset($alterar) ) {
   $lCNSExistente = false;
   $lErro         = false;
 
+  if ( $lObrigarCns && empty($s115_c_cartaosus) ) {
+    $lErro = true;
+  }
+
   //Cartão SUS
-  if (!empty($s115_c_cartaosus)) {
+  if ( !$lErro && !empty($s115_c_cartaosus)) {
 
     $sWhere  = " s115_c_cartaosus = '{$s115_c_cartaosus}' ";
     // Valida se o cartão do SUS informado esta presente em um CGS diferente do alterado
@@ -65,7 +70,11 @@ if ( isset($alterar) ) {
       if ( isset($s115_i_codigo) && (int)$s115_i_codigo > 0) {
 
         $clcgs_cartaosus->s115_c_cartaosus = $s115_c_cartaosus;
-        $clcgs_cartaosus->s115_c_tipo      = $s115_c_tipo;
+
+        if ( empty($s115_c_tipo) ) {
+          $clcgs_cartaosus->s115_c_tipo = 'D';
+        }
+
         $clcgs_cartaosus->alterar($s115_i_codigo);
 
         if ( $clcgs_cartaosus->erro_status == "0" ) {
@@ -74,13 +83,12 @@ if ( isset($alterar) ) {
           $clcgs_und->erro_status = $clcgs_cartaosus->erro_status;
           $clcgs_und->erro_msg    = $clcgs_cartaosus->erro_msg;
         }
-
       } else if( $s115_c_cartaosus != "" ) {
 
         // $lErro                             = true;
         $clcgs_cartaosus->s115_i_cgs       = $z01_i_cgsund;
         $clcgs_cartaosus->s115_c_cartaosus = $s115_c_cartaosus;
-        $clcgs_cartaosus->s115_c_tipo      = $s115_c_tipo;
+        $clcgs_cartaosus->s115_c_tipo      = 'D';
         $clcgs_cartaosus->s115_i_entrada   = 1;
         $clcgs_cartaosus->incluir(null);
 
@@ -98,10 +106,28 @@ if ( isset($alterar) ) {
     }
   }
 
+  if( empty( $s115_c_cartaosus ) && isset( $s115_i_codigo ) && !empty( $s115_i_codigo ) ) {
+
+    $clcgs_cartaosus->excluir( $s115_i_codigo );
+
+    if ( $clcgs_cartaosus->erro_status == "0" ) {
+
+      $lErro = true;
+      $clcgs_und->erro_status = $clcgs_cartaosus->erro_status;
+      $clcgs_und->erro_msg    = $clcgs_cartaosus->erro_msg;
+    }
+  }
 
   if ( !$lErro ) {
 
-    $clcgs_und->z01_d_ultalt = date("Y-m-d");
+    if( !isset( $z01_b_faleceu ) ) {
+
+      $clcgs_und->z01_b_faleceu     = 'false';
+      $clcgs_und->z01_d_falecimento = 'null';
+    }
+
+    $clcgs_und->z01_d_ultalt  = date("Y-m-d");
+    $clcgs_und->z01_b_inativo = isset($z01_b_inativo) ? "true" : "false";
     $clcgs_und->alterar($z01_i_cgsund);
     if ($clcgs_und->erro_status == 0) {
       $lErro = true;
@@ -121,8 +147,14 @@ if ( isset($alterar) ) {
     $sWhere = "s115_c_cartaosus = '{$sCartaoSus}'";
   }
 
-  $result    = $clcgs_und->sql_record($clcgs_und->sql_query_ext($chavepesquisa, "*", null, $sWhere));
-  db_fieldsmemory($result,0);
+  $result = $clcgs_und->sql_record($clcgs_und->sql_query_ext($chavepesquisa, "*", null, $sWhere));
+  if ($result) {
+    db_fieldsmemory($result,0);
+    $result2    = $clcgs_und->sql_record("SELECT * FROM cgs_und_ext WHERE z01_i_cgsund =" . $GLOBALS['z01_i_cgsund']);
+    if($result2) {
+      db_fieldsmemory($result2,0);
+    }
+  }
 
   $j13_codi         = @$ed225_i_bairro;
   $db_botao         = true;
@@ -151,17 +183,17 @@ if ( isset($alterar) ) {
   ?>
     parent.document.formaba.a2.disabled    = false;
     parent.document.formaba.a2.style.color = "black";
-    top.corpo.iframe_a2.location.href      = 'sau1_cgs_undoutros002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Alterar';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'sau1_cgs_undoutros002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Alterar';
     parent.document.formaba.a3.disabled    = false;
     parent.document.formaba.a3.style.color = "black";
-    top.corpo.iframe_a3.location.href      = 'sau1_cgs_doc002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Alterar';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href      = 'sau1_cgs_doc002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Alterar';
   <?php
   }
   ?>
 </script>
 </head>
 <body class="body-default">
-  <?include("forms/db_frmcgs_und.php");?>
+  <?include(modification("forms/db_frmcgs_und.php"));?>
 </body>
 </html>
 
@@ -203,7 +235,8 @@ if ( isset($alterar) ) {
     <script>
       parent.document.formaba.a2.disabled    = false;
       parent.document.formaba.a2.style.color = "black";
-      top.corpo.iframe_a2.location.href      = 'sau1_cgs_undoutros002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Alterar';
+      parent.iframe_a1.location.href         = "sau1_cgs_und002.php?chavepesquisa=<?=$z01_i_cgsund?>";
+      (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'sau1_cgs_undoutros002.php?chavepesquisa=<?=$z01_i_cgsund?>&db_value=Alterar';
       parent.mo_camada('a2');
     </script>
     <?
@@ -239,4 +272,3 @@ if ( isset($retornacgs) && isset($fechar) ) {
     echo "<script> document.form1.z01_d_nasc.focus();</script>";
   }
 }
-?>

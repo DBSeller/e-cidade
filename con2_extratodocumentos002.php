@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_orctiporec_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcorgao_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conlancamcgm_classe.php");
-include("classes/db_conlancamval_classe.php");
-include("classes/db_conlancam_classe.php");
-include("classes/db_orcsuplem_classe.php");
-include("classes/db_conlancamrec_classe.php");
-include("classes/db_conlancamemp_classe.php");
-include("classes/db_conlancamdot_classe.php");
-include("classes/db_conlancamdig_classe.php");
-include("libs/db_libcontabilidade.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_conlancamcgm_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_orcsuplem_classe.php"));
+include(modification("classes/db_conlancamrec_classe.php"));
+include(modification("classes/db_conlancamemp_classe.php"));
+include(modification("classes/db_conlancamdot_classe.php"));
+include(modification("classes/db_conlancamdig_classe.php"));
+include(modification("libs/db_libcontabilidade.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -226,7 +226,7 @@ for ($x=0; $x < $rows;$x++){
 
 
 
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf->output();
 
 ?>

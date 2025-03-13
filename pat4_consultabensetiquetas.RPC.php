@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 
 // die('dfaskjfgasdgkfjagshkjs');
@@ -103,7 +103,7 @@ if($oParam->exec == 'pesquisa'){
   $rsQueryBensEtiqueta = db_query($sQueryBensEtiqueta);
   $iNumRows = pg_num_rows($rsQueryBensEtiqueta);
   if($iNumRows > 0){
-  	$oRetorno->dados = db_utils::getColectionByRecord($rsQueryBensEtiqueta,false,false,true);
+  	$oRetorno->dados = db_utils::getCollectionByRecord($rsQueryBensEtiqueta,false,false,true);
   	$oRetorno->status  = 0;
   	$oRetorno->message = '';
   }else{
@@ -115,9 +115,9 @@ if($oParam->exec == 'pesquisa'){
 	
 	$sqlErro = false;
 	
-	require_once("model/impressaoEtiquetaGateway.php");
-	require_once("classes/db_bensplacaimpressa_classe.php");
-  require_once("classes/db_bensetiquetaimpressa_classe.php");
+	require_once(modification("model/impressaoEtiquetaGateway.php"));
+	require_once(modification("classes/db_bensplacaimpressa_classe.php"));
+  require_once(modification("classes/db_bensetiquetaimpressa_classe.php"));
 
   $clBensEtiquetaImpressa = new cl_bensetiquetaimpressa();
   $clBensPlacaImpressa    = new cl_bensplacaimpressa(); 

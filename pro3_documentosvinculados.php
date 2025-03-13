@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_utils.php");
-  require_once("libs/db_app.utils.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
 
 ?>
 <html>
@@ -54,16 +54,16 @@
 </html>
 
 <script>
-  
+
   var sUrlRPC = "prot4_processodocumento.RPC.php";
   var oGet    = js_urlToObject();
-  
+
 
   var oGridDocumento = new DBGrid('oGridDocumento');
   oGridDocumento.nameInstance = "oGridDocumento";
-  oGridDocumento.setCellWidth(new Array('100px', '400px', '100px'));
-  oGridDocumento.setCellAlign(new Array('center', 'left', 'center'));
-  oGridDocumento.setHeader(new Array('Código', 'Descrição', 'Ação'));
+  oGridDocumento.setCellWidth(new Array('10%', '10%', '20%', '50%', '10%'));
+  oGridDocumento.setCellAlign(new Array('center', 'center', 'center', 'left', 'center'));
+  oGridDocumento.setHeader(new Array('Código', 'Data', 'Usuário', 'Descrição', 'Ação'));
   oGridDocumento.show($('ctnGridDocumentosVinculados'));
 
   /**
@@ -75,8 +75,8 @@
 
     var oParam = {"exec":"carregarDocumentos", "iCodigoProcesso":oGet.codigo_processo};
 
-    new Ajax.Request(sUrlRPC, 
-                     {method: 'post', 
+    new Ajax.Request(sUrlRPC,
+                     {method: 'post',
                       parameters: 'json='+Object.toJSON(oParam),
                       onComplete: preencherGridComDocumentos
                      });
@@ -88,25 +88,27 @@
   function preencherGridComDocumentos(oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     oGridDocumento.clearAll(true);
 
     var iTotalRegistros = oRetorno.aDocumentosVinculados.length;
 
     for (var iDocumento = 0; iDocumento < iTotalRegistros; iDocumento++) {
-      
+
       var oDocumento = oRetorno.aDocumentosVinculados[iDocumento];
 
       var aLinha = new Array();
       aLinha[0]  = oDocumento.iCodigoDocumento;
-      aLinha[1]  = oDocumento.sDescricaoDocumento.urlDecode();
-      aLinha[2]  = "<input type='button' id='btnDownload"+oDocumento.iCodigoDocumento+"' value='Download' onclick='downloadDocumento("+oDocumento.iCodigoDocumento+");' />";
+      aLinha[1]  = oDocumento.sData;
+      aLinha[2]  = oDocumento.sNomeUsuario ?  oDocumento.sNomeUsuario : '' ;
+      aLinha[3]  = oDocumento.sDescricaoDocumento.urlDecode();
+      aLinha[4]  = "<input type='button' id='btnDownload"+oDocumento.iCodigoDocumento+"' value='Download' onclick='downloadDocumento("+oDocumento.iCodigoDocumento+");' />";
       oGridDocumento.addRow(aLinha);
     }
     oGridDocumento.renderRows();
   }
 
-  /** 
+  /**
    * Salva o arquivo do servidor no micro do usuário
    * @param integer
    */
@@ -115,8 +117,8 @@
     js_divCarregando(_M("patrimonial.protocolo.prot4_processodocumento.salvando_em_disco"), "msgBox");
     var oParam = {"exec":"download", "iCodigoDocumento":iCodigoDocumento};
 
-    new Ajax.Request(sUrlRPC, 
-                     {method: 'post', 
+    new Ajax.Request(sUrlRPC,
+                     {method: 'post',
                       parameters: 'json='+Object.toJSON(oParam),
                       onComplete: mostrarDocumento
                      });
@@ -125,7 +127,7 @@
   function mostrarDocumento(oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     var sCaminhoDownloadArquivo = oRetorno.sCaminhoDownloadArquivo.urlDecode();
 

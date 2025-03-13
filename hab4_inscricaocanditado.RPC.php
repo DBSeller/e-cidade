@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,27 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/db_stdClass.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/db_stdClass.php"));
 
-require_once("model/habitacao/CandidatoHabitacao.model.php");
-require_once("model/habitacao/InscricaoHabitacao.model.php");
-require_once("model/habitacao/InteresseHabitacao.model.php");
-require_once("model/habitacao/InteresseProgramaHabitacao.model.php");
-require_once("model/processoProtocolo.model.php");
-require_once("model/Avaliacao.model.php");
-require_once("model/AvaliacaoGrupo.model.php");
-require_once("model/AvaliacaoPergunta.model.php");
-require_once("model/CgmBase.model.php");
-require_once("model/CgmFisico.model.php");
-require_once("classes/db_habitcandidatointeresse_classe.php");
-require_once("classes/db_habitprograma_classe.php");
-require_once("classes/db_habitcandidato_classe.php");
+require_once(modification("model/habitacao/CandidatoHabitacao.model.php"));
+require_once(modification("model/habitacao/InscricaoHabitacao.model.php"));
+require_once(modification("model/habitacao/InteresseHabitacao.model.php"));
+require_once(modification("model/habitacao/InteresseProgramaHabitacao.model.php"));
+require_once(modification("model/processoProtocolo.model.php"));
+require_once(modification("model/Avaliacao.model.php"));
+require_once(modification("model/AvaliacaoGrupo.model.php"));
+require_once(modification("model/AvaliacaoPergunta.model.php"));
+require_once(modification("model/CgmBase.model.php"));
+require_once(modification("model/CgmFisico.model.php"));
+require_once(modification("classes/db_habitcandidatointeresse_classe.php"));
+require_once(modification("classes/db_habitprograma_classe.php"));
+require_once(modification("classes/db_habitcandidato_classe.php"));
 
 $oJson              = new services_json();
 $oRetorno           = new stdClass();
@@ -119,7 +119,7 @@ try {
                                                      );
       $rsPogramas = $oDaoProgramas->sql_record($sSqlProrama);
       
-      $oRetorno->aProgramas = db_utils::getColectionByRecord($rsPogramas, false, false, true);             
+      $oRetorno->aProgramas = db_utils::getCollectionByRecord($rsPogramas, false, false, true);             
 
       $aProgramasSelecionados = explode(",",$oParam->sProgramasSelecionados);
       
@@ -225,7 +225,6 @@ try {
       $oCandidato->setCadastroSocioEconomico($oParam->iAvaliacao);
       $oCandidato->salvar();
 
-      
       /**
        * Adiciona todos interesses nos programas selecionados
        */
@@ -234,13 +233,12 @@ try {
       }      
       
       /**
-       *  Adiciona todos interesses nos grupos selecionados 
+       *  Adiciona todos interesses nos grupos selecionados
        */
       foreach ($oParam->aGrupoInteresse as $iGrupoInteresse) {
         $oCandidato->addInteresseGrupo($iGrupoInteresse);
       }
-      
-      
+
       /**
        *  Nos casos em que foi desselecionado algum grupo então é cancelado o interesse existente 
        */

@@ -75,7 +75,7 @@ db_input('codigo',2,$Icodigo,true,'hidden',3,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_preenchepesquisa|codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_preenchepesquisa|codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_config.hide();

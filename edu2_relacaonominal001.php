@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
   <head>
@@ -176,7 +176,7 @@ function js_retornaPesquisarCalendarios(oResponse) {
   oCboTurmas.clearItens();
 
 	js_removeObj("msgBox");
-	var oRetorno = eval('('+oResponse.responseText+')');
+	var oRetorno = JSON.parse(oResponse.responseText);
 	oCboCalendario.clearItens();
 	oCboCalendario.addItem("", "Selecione o calendário");
 
@@ -220,7 +220,7 @@ function js_pesquisarTurmas() {
 function js_retornaPesquisarTurmas(oResponse) {
 
 	js_removeObj("msgBox");
-	var oRetorno = eval('('+oResponse.responseText+')');
+	var oRetorno = JSON.parse(oResponse.responseText);
 	oCboTurmas.clearItens();
 	aTurmas = oRetorno.dados;
 	oCboTurmasSelecionadas.clearItens();
@@ -344,7 +344,7 @@ function js_retornaPesquisaDiretores(oResponse) {
 
   oCboDiretor.clearItens();
   oCboDiretor.addItem("", "Selecione o diretor(a)");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.dados.length > 0) {
 

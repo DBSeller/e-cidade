@@ -1,0 +1,75 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="ouvidoriaatendimento.ov01_dataatend"   label="data_atendimento" />
+        <campo campo="ouvidoriaatendimento.ov01_horaatend"   label="hora_atendimento" />
+        <campo campo="ouvidoriaatendimento.ov01_numero"      label="numero_atendimento" />
+        <campo campo="ouvidoriaatendimento.ov01_anousu"      label="ano_atendimento" />
+        <campo campo="cidadao.ov02_nome"        label="nome_cidadao" />
+        <campo campo="cidadao.ov02_cnpjcpf"     label="cnpjcpf" />
+        <campo campo="ouvidoriaatendimento.ov01_sequencial"  label="codigo_atendimento" />
+        <campo campo="ouvidoriaatendimento.ov01_requerente"  label="nome_requerente"   />
+        <campo campo="protprocesso.p58_numero"       label="numero_processo"   />
+        <campo campo="protprocesso.p58_ano"          label="ano_processo"   />
+        <campo campo="protprocesso.p58_codproc"      label="codigo_processo"   />
+        <campo campo="ouvidoriaatendimento.ov01_tipoprocesso"           label="tipo_processo"   />
+        <campo campo="ouvidoriaatendimento.ov01_depart"                 label="departamento"   />
+        <campo campo="tipoproc.p51_descr"                               label="nome_tipo_processo"   />
+        <campo campo="(select
+                                    p69_arquivado
+                                    from
+                                    protocolo.arqproc
+                                    left join protocolo.procarquiv on
+                                    p68_codarquiv = p67_codarquiv
+                                    left join protocolo.arqandam on
+                                    p69_codarquiv = p67_codarquiv
+                                    where p67_codproc  = p58_codproc
+                                    group by
+                                    p67_codproc,
+                                    p69_arquivado
+                                    order by max(p67_codarquiv) desc
+                                limit 1)"  label="arquivado"
+        />
+    </campos>
+    <from tabela="ouvidoriaatendimento"/>
+    <juncoes>
+        <join
+            tipo="INNER"
+            tabela="protocolo.tipoproc"
+            condicao="protocolo.tipoproc.p51_codigo  =  ouvidoria.ouvidoriaatendimento.ov01_tipoprocesso"
+        />
+        <join
+            tipo="LEFT"
+            tabela="ouvidoriaatendimentocidadao"
+            condicao="ouvidoriaatendimentocidadao.ov10_ouvidoriaatendimento  = ouvidoriaatendimento.ov01_sequencial"
+        />
+        <join
+            tipo="LEFT"
+            tabela="cidadao"
+            condicao="cidadao.ov02_sequencial = ouvidoriaatendimentocidadao.ov10_cidadao
+	                  AND ouvidoriaatendimentocidadao.ov10_seq = cidadao.ov02_seq"
+        />
+        <join
+            tipo="LEFT"
+            tabela="processoouvidoria"
+            condicao="processoouvidoria.ov09_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial"
+        />
+        <join
+            tipo="LEFT"
+            tabela="protprocesso"
+            condicao="processoouvidoria.ov09_protprocesso = protprocesso.p58_codproc"
+        />
+        <join
+            tipo="LEFT"
+            tabela="ouvidoriaatendimentoprocessoeletronico"
+            condicao="ouvidoriaatendimentoprocessoeletronico.ov33_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial"
+        />
+    </juncoes>
+    <filtros>
+        <filtro label="cnpjcpf" condicao="ov02_cnpjcpf = '$cnpjcpf'" obrigatorio="false"/>
+        <filtro label="numero_atendimento" condicao="ouvidoriaatendimento.ov01_numero = $numero_atendimento" obrigatorio="false"/>
+        <filtro label="ano" condicao="ouvidoriaatendimento.ov01_anousu = $ano" obrigatorio="false"/>
+    </filtros>
+    <agrupamento campos="" />
+    <ordenacao   campos="ouvidoriaatendimento.ov01_dataatend desc,ouvidoriaatendimento.ov01_horaatend desc"/>
+</consulta>

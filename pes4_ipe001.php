@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,33 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhipe_classe.php");
-include("classes/db_rhiperegist_classe.php");
-include("classes/db_rhipenumcgm_classe.php");
-include("classes/db_ipe_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpessoalmov_classe.php");
-include("classes/db_gerffx_classe.php");
-include("classes/db_gerfsal_classe.php");
-include("classes/db_gerffer_classe.php");
-include("classes/db_gerfres_classe.php");
-include("classes/db_gerfcom_classe.php");
-include("classes/db_gerfs13_classe.php");
-include("classes/db_basesr_classe.php");
-include("classes/db_cfpess_classe.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("dbforms/db_funcoes.php"));
+
 db_postmemory($HTTP_POST_VARS);
+
 $clgerfsal = new cl_gerfsal;
 $clgerffx  = new cl_gerffx();
 $clgerffer = new cl_gerffer;
 $clgerfres = new cl_gerfres;
 $clgerfcom = new cl_gerfcom;
 $clgerfs13 = new cl_gerfs13;
+
 $clrhipe = new cl_rhipe;
 $clrhiperegist = new cl_rhiperegist;
 $clrhipenumcgm = new cl_rhipenumcgm;
@@ -62,7 +51,7 @@ $db_opcao = 1;
 $db_botao = true;
 if(isset($processar)){
   db_inicio_transacao();
-  
+
   $anousu = $r36_anousu;
   if(trim($anousu) == ""){
     $anousu = db_anofolha();
@@ -74,25 +63,25 @@ if(isset($processar)){
   }
 
   $rsCfPess = $clcfpess->sql_record($clcfpess->sql_query_file( $anousu,
-                                                               $mesusu,
-                                                               db_getsession('DB_instit'),
-                                                               "r11_recpatrafasta"));
+    $mesusu,
+    db_getsession('DB_instit'),
+    "r11_recpatrafasta"));
   if ( $clcfpess->numrows ==  0 ) {
-  	
-	  db_redireciona("db_erros.php?fechar=true&db_erro=Parâmetros do IPERGS não configurados para a competência : {$mesusu}/{$anousu}");
+
+    db_redireciona("db_erros.php?fechar=true&db_erro=Parâmetros do IPERGS não configurados para a competência : {$mesusu}/{$anousu}");
   } else {
-  	
-	  db_fieldsmemory($rsCfPess,0);  
-	  
-	  if ( $r11_recpatrafasta == 't') {
-	  	$lRecPatrAfasta = true;
-	  } else {
-	  	$lRecPatrAfasta = false;
-	  }
+
+    db_fieldsmemory($rsCfPess,0);  
+
+    if ( $r11_recpatrafasta == 't') {
+      $lRecPatrAfasta = true;
+    } else {
+      $lRecPatrAfasta = false;
+    }
   }
-  
-                                                               
-  
+
+
+
   db_sel_instit(db_getsession("DB_instit"),"lower(trim(munic)) as d08_carnes");
   db_sel_cfpess($anousu,$mesusu,"r11_valor, r11_dtipe, r11_baseipe, r11_altfer");
 
@@ -102,28 +91,26 @@ if(isset($processar)){
   $sqlerro = false;
 
   $sql_in = $clbasesr->sql_query_file($anousu,$mesusu,$r11_baseipe,null,db_getsession('DB_instit'));
-//echo "<br>  base --> $r11_baseipe   sql -->$sql_in";exit;
+  //echo "<br>  base --> $r11_baseipe   sql -->$sql_in";exit;
   $res_in = $clbasesr->sql_record($sql_in);
-	$rub  = '';
-	$virg = '';
+  $rub  = '';
+  $virg = '';
   for($x_in=0;$x_in<pg_numrows($res_in);$x_in++){
     db_fieldsmemory($res_in,$x_in);
     $rub .= $virg."'".$r09_rubric."'";
-		$virg = ',';
+    $virg = ',';
   }
 
-//echo "<br>  rubricas --> $rub";exit;
-
-  $campos = "rh14_sequencia,
-             rh14_dtvinc ,
-             rh14_estado ,
-             rh14_dtalt  ,
-             rh14_matipe ,
-             rh14_valor  ,
-             rh02_tbprev ,
-             rh30_vinculo,
-             rh01_regist ,
-             z01_numcgm  ";
+  $campos   = " rh14_sequencia,";
+  $campos  .= " rh14_dtvinc ,  ";
+  $campos  .= " rh14_estado ,  ";
+  $campos  .= " rh14_dtalt  ,  ";
+  $campos  .= " rh14_matipe ,  ";
+  $campos  .= " rh14_valor  ,  ";
+  $campos  .= " rh02_tbprev ,  ";
+  $campos  .= " rh30_vinculo,  ";
+  $campos  .= " rh01_regist ,  ";
+  $campos  .= " z01_numcgm     ";
 
   $dbwhere  = " rh14_instit = ".db_getsession("DB_instit") ;
   $dbwhere .= " and rh14_dtvinc is not null ";
@@ -132,19 +119,21 @@ if(isset($processar)){
   $dbwhere .= "     or ( extract(year from rh05_recis)= '$anousu'";
   $dbwhere .= "          and extract(month from rh05_recis)= '$mesusu'))";
 
-  $result_clrhipe = $clrhipe->sql_record($clrhipe->sql_query_ipe(null, $campos, "", $dbwhere, $anousu, $mesusu));
-//echo  ($clrhipe->sql_query_ipe(null, $campos, "", $dbwhere, $anousu, $mesusu));exit;
+  $result_clrhipe     = $clrhipe->sql_record($clrhipe->sql_query_ipe(null, $campos, "", $dbwhere, $anousu, $mesusu));
   $contador_inclusoes = 0;
   if($clrhipe->numrows > 0){
+
     $clipe->excluir($anousu,$mesusu,null,db_getsession('DB_instit'));
+
     if($clipe->erro_status == 0){
       $erro_msg = $clipe->erro_msg;
       $sqlerro=true;
     }
 
     if($sqlerro == false){
+
       $subpes = $anousu."/".$mesusu;
-                 $teste=0  ;
+      $teste=0  ;
 
 
       for($I=0;$I < $clrhipe->numrows;$I++){
@@ -155,77 +144,77 @@ if(isset($processar)){
         $prov       = 0;
         $nVlrProvFx = 0;
 
-         if(trim($rh01_regist) != "" && ($rh14_valor == 0 || trim($rh14_valor) == "")){
+        if(trim($rh01_regist) != "" && ($rh14_valor == 0 || trim($rh14_valor) == "")){
 
-           /////////////
-           // Se for funcionário e o valor do rhipe for igual a zero
-           /////////////
+          /////////////
+          // Se for funcionário e o valor do rhipe for igual a zero
+          /////////////
 
-           $dbwhere  = " r20_anousu = $anousu and r20_mesusu = $mesusu";
-					 $dbwhere .= " and r20_instit = ".db_getsession("DB_instit")." ";
-           $campos1 = "r20_valor as gprov";
-           
-           if ( $xtipo ==  1 ) {
+          $dbwhere  = " r20_anousu = $anousu and r20_mesusu = $mesusu";
+          $dbwhere .= " and r20_instit = ".db_getsession("DB_instit")." ";
+          $campos1 = "r20_valor as gprov";
 
-               $dbwhere  = " r14_anousu = $anousu and r14_mesusu = $mesusu";
-               $dbwhere .= " and r14_regist = ".$rh01_regist;
-               $dbwhere .= " and r14_rubric in ($rub) ";
-					     $dbwhere .= " and r14_instit = ".db_getsession("DB_instit")." ";
-               $campos1 = "(select sum(case when r14_pd in (1,3) then r14_valor else r14_valor *-1 end)) as r14_valor";
+          if ( $xtipo ==  1 ) {
 
-               $result_selecao = $clgerfsal->sql_record($clgerfsal->sql_query_file(null,null,null,null,$campos1,"",$dbwhere));
-               if($clgerfsal->numrows > 0){
-                 db_fieldsmemory($result_selecao, 0);
-                 $prov += $r14_valor;
-               }
+            $dbwhere  = " r14_anousu = $anousu and r14_mesusu = $mesusu";
+            $dbwhere .= " and r14_regist = ".$rh01_regist;
+            $dbwhere .= " and r14_rubric in ($rub) ";
+            $dbwhere .= " and r14_instit = ".db_getsession("DB_instit")." ";
+            $campos1 = "(select sum(case when r14_pd in (1,3) then r14_valor else r14_valor *-1 end)) as r14_valor";
 
-               $dbwhere  = " r48_anousu = $anousu and r48_mesusu = $mesusu";
-               $dbwhere .= " and r48_regist = ".$rh01_regist;
-               $dbwhere .= " and r48_rubric in ($rub) ";
-					     $dbwhere .= " and r48_instit = ".db_getsession("DB_instit")." ";
-               $campos1  = "( select sum(case when r48_pd in (1,3) then r48_valor else r48_valor *-1 end ) ) as r48_valor";
+            $result_selecao = $clgerfsal->sql_record($clgerfsal->sql_query_file(null,null,null,null,$campos1,"",$dbwhere));
+            if($clgerfsal->numrows > 0){
+              db_fieldsmemory($result_selecao, 0);
+              $prov += $r14_valor;
+            }
 
-               $result_selecao = $clgerfcom->sql_record($clgerfcom->sql_query_file(null,null,null,null,$campos1,"",$dbwhere));
-               if($clgerfcom->numrows > 0){
-                 db_fieldsmemory($result_selecao, 0);
-                 $prov += $r48_valor;
-               }
+            $dbwhere  = " r48_anousu = $anousu and r48_mesusu = $mesusu";
+            $dbwhere .= " and r48_regist = ".$rh01_regist;
+            $dbwhere .= " and r48_rubric in ($rub) ";
+            $dbwhere .= " and r48_instit = ".db_getsession("DB_instit")." ";
+            $campos1  = "( select sum(case when r48_pd in (1,3) then r48_valor else r48_valor *-1 end ) ) as r48_valor";
 
-               $dbwhere  = " r20_anousu = $anousu and r20_mesusu = $mesusu";
-               $dbwhere .= " and r20_regist = ".$rh01_regist;
-               $dbwhere .= " and r20_rubric in ($rub) ";
-					     $dbwhere .= " and r20_instit = ".db_getsession("DB_instit")." ";
-               $campos1 = "(select sum(case when r20_pd in (1,3) then r20_valor else r20_valor *-1 end)) as r20_valor";
+            $result_selecao = $clgerfcom->sql_record($clgerfcom->sql_query_file(null,null,null,null,$campos1,"",$dbwhere));
+            if($clgerfcom->numrows > 0){
+              db_fieldsmemory($result_selecao, 0);
+              $prov += $r48_valor;
+            }
 
-               $result_selecao = $clgerfres->sql_record($clgerfres->sql_query_file(null,null,null,null,null,$campos1,"",$dbwhere));
-               
-               if($clgerfres->numrows > 0){
-                 db_fieldsmemory($result_selecao, 0);
-                 $prov += $r20_valor;
-               }
+            $dbwhere  = " r20_anousu = $anousu and r20_mesusu = $mesusu";
+            $dbwhere .= " and r20_regist = ".$rh01_regist;
+            $dbwhere .= " and r20_rubric in ($rub) ";
+            $dbwhere .= " and r20_instit = ".db_getsession("DB_instit")." ";
+            $campos1 = "(select sum(case when r20_pd in (1,3) then r20_valor else r20_valor *-1 end)) as r20_valor";
 
-               $dbwhere  = " r53_anousu = $anousu and r53_mesusu = $mesusu";
-               $dbwhere .= " and r53_regist = ".$rh01_regist;
-               $dbwhere .= " and r53_rubric in ($rub) ";
-               $dbwhere .= " and r53_instit = ".db_getsession("DB_instit")." ";
-               $campos1 = "(select sum(case when r53_pd in (1,3) then r53_valor else r53_valor *-1 end)) as r53_valor";
+            $result_selecao = $clgerfres->sql_record($clgerfres->sql_query_file(null,null,null,null,null,$campos1,"",$dbwhere));
 
-               $result_selecao = $clgerffx->sql_record($clgerffx->sql_query_file(null,null,null,null,$campos1,"",$dbwhere));
-               
-               if($clgerffx->numrows > 0){
-                 db_fieldsmemory($result_selecao, 0);
-                 $nVlrProvFx += $r53_valor;
-               }
-             }
-             
-         } else {
+            if($clgerfres->numrows > 0){
+              db_fieldsmemory($result_selecao, 0);
+              $prov += $r20_valor;
+            }
 
-           /////////////
-           // Se não for funcionário ou valor do rhipe for diferente de zero
-           /////////////
-           $prov = $rh14_valor;
+            $dbwhere  = " r53_anousu = $anousu and r53_mesusu = $mesusu";
+            $dbwhere .= " and r53_regist = ".$rh01_regist;
+            $dbwhere .= " and r53_rubric in ($rub) ";
+            $dbwhere .= " and r53_instit = ".db_getsession("DB_instit")." ";
+            $campos1 = "(select sum(case when r53_pd in (1,3) then r53_valor else r53_valor *-1 end)) as r53_valor";
 
-         }
+            $result_selecao = $clgerffx->sql_record($clgerffx->sql_query_file(null,null,null,null,$campos1,"",$dbwhere));
+
+            if($clgerffx->numrows > 0){
+              db_fieldsmemory($result_selecao, 0);
+              $nVlrProvFx += $r53_valor;
+            }
+          }
+
+        } else {
+
+          /////////////
+          // Se não for funcionário ou valor do rhipe for diferente de zero
+          /////////////
+          $prov = $rh14_valor;
+
+        }
 
 
 
@@ -236,29 +225,33 @@ if(isset($processar)){
         $clipe->r36_dtvinc = $rh14_dtvinc;
         $clipe->r36_estado = $rh14_estado;
         $clipe->r36_dtalt  = $rh14_dtalt;
-        
+
         if( db_empty($prov) && ($rh14_estado == "21" || $rh14_estado == "22" )){
 
-        	if ( $lRecPatrAfasta && $nVlrProvFx > 0 && ($minimo < $nVlrProvFx)) {
-        		
-	          $clipe->r36_contr1 = 0;
-	          $clipe->r36_valorc = $nVlrProvFx;        		
-        	} else {
-        		 
-	          $clipe->r36_contr1 = 0;
-	          $clipe->r36_valorc = $minimo;
-        	}
+          if ( $lRecPatrAfasta && $nVlrProvFx > 0 && ($minimo < $nVlrProvFx)) {
+
+            $clipe->r36_contr1 = 0;
+            $clipe->r36_valorc = $nVlrProvFx;        		
+          } else {
+
+            $clipe->r36_contr1 = 0;
+            $clipe->r36_valorc = $minimo;
+          }
         } else if ( $prov < $minimo){
-        	 
+
           $clipe->r36_contr1 = $prov;
           $clipe->r36_valorc = $minimo;
         } else {
-        	
+
           $clipe->r36_contr1 = $prov;
           $clipe->r36_valorc = $prov;
         }
-        
-        if($rh14_estado == "21" || $rh14_estado == "22"){
+
+        if($rh14_estado == "21" ) {
+          continue;
+        }
+
+        if($rh14_estado == "22"){
           $clipe->r36_estado = 10;
         }
 
@@ -266,10 +259,12 @@ if(isset($processar)){
 
         $clipe->incluir($anousu,$mesusu,$rh14_sequencia,db_getsession('DB_instit'));
         $contador_inclusoes ++;
+
         if($clipe->erro_status == 0){
-           $erro_msg = $clipe->erro_msg;
-           $sqlerro = true;
-           break;
+          
+          $erro_msg = $clipe->erro_msg;
+          $sqlerro = true;
+          break;
         }
       }
     }
@@ -289,28 +284,10 @@ if(isset($processar)){
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="25%" height="18">&nbsp;</td>
-    <td width="25%" height="18">&nbsp;</td>
-    <td width="25%" height="18">&nbsp;</td>
-    <td width="25%" height="18">&nbsp;</td>
-  </tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-      <center>
-      <?
-      include("forms/db_frmipe.php");
-      ?>
-      </center>
-    </td>
-  </tr>
-</table>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+<body>
+<?php 
+include(modification("forms/db_frmipe.php"));
+db_menu();
 ?>
 </body>
 </html>
@@ -318,4 +295,3 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 if(isset($processar)){
   db_msgbox($erro_msg);
 }
-?>

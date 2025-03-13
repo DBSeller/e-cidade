@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,7 +29,7 @@
  * Classe repository para classes PeriodoEscola
  * @author  Andrio Costa - andrio.costa@dbseller.com.br
  * @package Educacao
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 class PeriodoEscolaRepository {
 
@@ -113,4 +113,92 @@ class PeriodoEscolaRepository {
     return count(PeriodoEscolaRepository::getInstance()->aItens);
   }
 
+    /**
+     * @param Turno $turno
+     * @param Escola $escola
+     * @return PeriodoEscola[]
+     */
+  public static function getPeriodoEscolaByTurnoEscola(Turno $turno, Escola $escola) {
+      $codigoTurno = $turno->getCodigoTurno();
+      $codigoEscola = $escola->getCodigo();
+
+      $periodoEscola = new \cl_periodoescola();
+      $sql = $periodoEscola->sql_query_file(null,
+          'ed17_i_codigo',
+          'ed17_i_periodoaula',
+        "ed17_i_turno = {$codigoTurno} and ed17_i_escola = {$codigoEscola}"
+      );
+      $rs = \db_query($sql);
+      if (!$rs) {
+          throw new \DBException('Erro ao buscar os periodos da turma.');
+      }
+
+      $periodos = \db_utils::makeCollectionFromRecord($rs, function ($retorno) {
+          return PeriodoEscolaRepository::getByCodigo($retorno->ed17_i_codigo);
+      });
+
+      return $periodos;
+  }
+
+    /**
+     * @param Turno $turno
+     * @param Escola $escola
+     * @return PeriodoEscola[]
+     */
+    public static function getPeriodosEscola(array $aFiltros)
+    {
+        $sWhere = implode(' and ', $aFiltros);
+
+        $periodoEscola = new \cl_periodoescola();
+
+        $sql = $periodoEscola->sql_query(
+            null,
+            ' ed17_i_codigo ',
+            ' ed17_i_periodoaula ',
+            $sWhere
+        );
+
+        $rs = \db_query($sql);
+        if (!$rs) {
+            throw new \DBException('Erro ao buscar os períodos.');
+        }
+
+        $periodos = \db_utils::makeCollectionFromRecord($rs, function ($retorno) {
+            return PeriodoEscolaRepository::getByCodigo($retorno->ed17_i_codigo);
+        });
+
+        return $periodos;
+    }
+
+    /**
+     * @param array $aFiltros
+     * @return array
+     * @throws DBException
+     * Recebe como parâmetro o código da Escola e o código do turno de referência que pode ser apenas
+     * 1-Manhã, 2-Tarde, 3-Noite, 4-Integral
+     */
+    public static function getPeriodosPorEscolaETurnoReferencia(array $aFiltros)
+    {
+        $sWhere = implode(' and ', $aFiltros);
+
+        $periodoEscola = new \cl_periodoescola();
+
+        $sql = $periodoEscola->sql_query_turnoreferencia(
+            null,
+            ' ed17_i_codigo ',
+            ' ed17_i_periodoaula ',
+            $sWhere
+        );
+
+        $rs = \db_query($sql);
+        if (!$rs) {
+            throw new \DBException('Erro ao buscar os períodos.');
+        }
+
+        $periodos = \db_utils::makeCollectionFromRecord($rs, function ($retorno) {
+            return PeriodoEscolaRepository::getByCodigo($retorno->ed17_i_codigo);
+        });
+
+        return $periodos;
+    }
 }

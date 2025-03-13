@@ -39,21 +39,12 @@ $clrotulo->label("ve17_descr");
    db_input("ve15_veiculos",10,0,true,"hidden",3);
    db_input("sequencial",   10,0,true,"hidden",3);
 ?>
-<center>
-<table border="0" width="790">
+<table class="container" border="0" width="790">
   <tr>
-    <td nowrap align="right" title="<?=@$Tve15_veiccadutilizacao?>">
+    <td nowrap align="center" title="<?=@$Tve15_veiccadutilizacao?>">
     <? 
-       db_ancora(@$Lve15_veiccadutilizacao,"js_pesquisave15_veiccadutilizacao(true);",$db_opcao) 
-    ?>
-    </td>
-    <td nowrap width="20">
-    <? 
-       db_input('ve15_veiccadutilizacao',10,$Ive15_veiccadutilizacao,true,'text',$db_opcao,"onChange='js_pesquisave15_veiccadutilizacao(false);'"); 
-    ?>
-    </td>
-    <td nowrap>
-    <? 
+       db_ancora(@$Lve15_veiccadutilizacao,"js_pesquisave15_veiccadutilizacao(true);",$db_opcao);
+       db_input('ve15_veiccadutilizacao',10,$Ive15_veiccadutilizacao,true,'text',$db_opcao,"onChange='js_pesquisave15_veiccadutilizacao(false);'");
        db_input('ve14_descr',40,0,true,'text',3); 
     ?>
     </td>
@@ -123,15 +114,14 @@ $clrotulo->label("ve17_descr");
     </td>
   </tr>
 </table>
-</center>
 </form>
 <script>
 function js_pesquisave15_veiccadutilizacao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_veicutilizacao','db_iframe_veiccadutilizacao','func_veiccadutilizacao.php?funcao_js=parent.js_mostraveiccadutilizacao1|ve14_sequencial|ve14_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicutilizacao','db_iframe_veiccadutilizacao','func_veiccadutilizacao.php?funcao_js=parent.js_mostraveiccadutilizacao1|ve14_sequencial|ve14_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.ve15_veiccadutilizacao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_veicutilizacao','db_iframe_veiccadutilizacao','func_veiccadutilizacao.php?pesquisa_chave='+document.form1.ve15_veiccadutilizacao.value+'&funcao_js=parent.js_mostraveiccadutilizacao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicutilizacao','db_iframe_veiccadutilizacao','func_veiccadutilizacao.php?pesquisa_chave='+document.form1.ve15_veiccadutilizacao.value+'&funcao_js=parent.js_mostraveiccadutilizacao','Pesquisa',false);
      }else{
        document.form1.ve14_descr.value = ''; 
      }
@@ -186,10 +176,10 @@ function js_mostraveiccadutilizacao1(chave1,chave2){
 }
 function js_pesquisave16_bens(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_veicutilizacao','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostraveicutilizacaobens1|t52_bem|t52_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicutilizacao','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostraveicutilizacaobens1|t52_bem|t52_descr','Pesquisa',true,'0');
   }else{
     if(document.form1.ve16_bens.value != ""){
-        js_OpenJanelaIframe('top.corpo.iframe_veicutilizacao','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.ve16_bens.value+'&funcao_js=parent.js_mostraveicutilizacaobens','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicutilizacao','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.ve16_bens.value+'&funcao_js=parent.js_mostraveicutilizacaobens','Pesquisa',false);
     } else {
       document.form1.t52_descr.value = "";
     }
@@ -213,10 +203,10 @@ function js_mostraveicutilizacaobens(chave,erro){
 }
 function js_pesquisave19_veiccadconvenio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_veicutilizacao','db_iframe_veiccadconvenio','func_veiccadconvenio.php?funcao_js=parent.js_mostraveiccadconvenio1|ve17_sequencial|ve17_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicutilizacao','db_iframe_veiccadconvenio','func_veiccadconvenio.php?funcao_js=parent.js_mostraveiccadconvenio1|ve17_sequencial|ve17_descr','Pesquisa',true,'0');
   }else{
     if(document.form1.ve19_veiccadconvenio.value != ""){
-        js_OpenJanelaIframe('top.corpo.iframe_veicutilizacao','db_iframe_veiccadconvenio','func_veiccadconvenio.php?pesquisa_chave='+document.form1.ve19_veiccadconvenio.value+'&funcao_js=parent.js_mostraveiccadconvenio','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicutilizacao','db_iframe_veiccadconvenio','func_veiccadconvenio.php?pesquisa_chave='+document.form1.ve19_veiccadconvenio.value+'&funcao_js=parent.js_mostraveiccadconvenio','Pesquisa',false);
     } else {
       document.form1.ve17_descr.value = "";
     }

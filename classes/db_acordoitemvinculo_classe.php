@@ -1,72 +1,72 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Acordos
 //CLASSE DA ENTIDADE acordoitemvinculo
-class cl_acordoitemvinculo { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ac33_sequencial = 0; 
-   var $ac33_acordoitempai = 0; 
-   var $ac33_acordoitemfilho = 0; 
-   var $ac33_tipo = 0; 
-   var $ac33_quantidade = 0; 
-   var $ac33_valorunitario = 0; 
-   var $ac33_valortotal = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_acordoitemvinculo {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ac33_sequencial = 0;
+   var $ac33_acordoitempai = 0;
+   var $ac33_acordoitemfilho = 0;
+   var $ac33_tipo = 0;
+   var $ac33_quantidade = 0;
+   var $ac33_valorunitario = 0;
+   var $ac33_valortotal = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 ac33_sequencial = int4 = Código Sequencial 
-                 ac33_acordoitempai = int4 = Item Original 
-                 ac33_acordoitemfilho = int4 = Item Derivado 
-                 ac33_tipo = int4 = Tipo do vinculo 
-                 ac33_quantidade = int4 = Quantidade 
-                 ac33_valorunitario = float8 = Valor unitario 
-                 ac33_valortotal = float8 = Valor total 
+                 ac33_sequencial = int4 = Código Sequencial
+                 ac33_acordoitempai = int4 = Item Original
+                 ac33_acordoitemfilho = int4 = Item Derivado
+                 ac33_tipo = int4 = Tipo do vinculo
+                 ac33_quantidade = int4 = Quantidade
+                 ac33_valorunitario = float8 = Valor unitario
+                 ac33_valortotal = float8 = Valor total
                  ";
-   //funcao construtor da classe 
-   function cl_acordoitemvinculo() { 
+   //funcao construtor da classe
+   function cl_acordoitemvinculo() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("acordoitemvinculo"); 
+     $this->rotulo = new rotulo("acordoitemvinculo");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -81,17 +81,17 @@ class cl_acordoitemvinculo {
        $this->ac33_acordoitempai = ($this->ac33_acordoitempai == ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_acordoitempai"]:$this->ac33_acordoitempai);
        $this->ac33_acordoitemfilho = ($this->ac33_acordoitemfilho == ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_acordoitemfilho"]:$this->ac33_acordoitemfilho);
        $this->ac33_tipo = ($this->ac33_tipo == ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_tipo"]:$this->ac33_tipo);
-       $this->ac33_quantidade = ($this->ac33_quantidade == ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_quantidade"]:$this->ac33_quantidade);
-       $this->ac33_valorunitario = ($this->ac33_valorunitario == ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_valorunitario"]:$this->ac33_valorunitario);
-       $this->ac33_valortotal = ($this->ac33_valortotal == ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_valortotal"]:$this->ac33_valortotal);
+       $this->ac33_quantidade = ($this->ac33_quantidade === ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_quantidade"]:$this->ac33_quantidade);
+       $this->ac33_valorunitario = ($this->ac33_valorunitario === ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_valorunitario"]:$this->ac33_valorunitario);
+       $this->ac33_valortotal = ($this->ac33_valortotal === ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_valortotal"]:$this->ac33_valortotal);
      }else{
        $this->ac33_sequencial = ($this->ac33_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["ac33_sequencial"]:$this->ac33_sequencial);
      }
    }
    // funcao para inclusao
-   function incluir ($ac33_sequencial){ 
+   function incluir ($ac33_sequencial){
       $this->atualizacampos();
-     if($this->ac33_acordoitempai == null ){ 
+     if($this->ac33_acordoitempai == null ){
        $this->erro_sql = " Campo Item Original nao Informado.";
        $this->erro_campo = "ac33_acordoitempai";
        $this->erro_banco = "";
@@ -100,7 +100,7 @@ class cl_acordoitemvinculo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ac33_acordoitemfilho == null ){ 
+     if($this->ac33_acordoitemfilho == null ){
        $this->erro_sql = " Campo Item Derivado nao Informado.";
        $this->erro_campo = "ac33_acordoitemfilho";
        $this->erro_banco = "";
@@ -109,7 +109,7 @@ class cl_acordoitemvinculo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ac33_tipo == null ){ 
+     if($this->ac33_tipo == null ){
        $this->erro_sql = " Campo Tipo do vinculo nao Informado.";
        $this->erro_campo = "ac33_tipo";
        $this->erro_banco = "";
@@ -118,7 +118,7 @@ class cl_acordoitemvinculo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ac33_quantidade == null ){ 
+     if($this->ac33_quantidade === null ){
        $this->erro_sql = " Campo Quantidade nao Informado.";
        $this->erro_campo = "ac33_quantidade";
        $this->erro_banco = "";
@@ -127,7 +127,7 @@ class cl_acordoitemvinculo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ac33_valorunitario == null ){ 
+     if($this->ac33_valorunitario === null ){
        $this->erro_sql = " Campo Valor unitario nao Informado.";
        $this->erro_campo = "ac33_valorunitario";
        $this->erro_banco = "";
@@ -136,7 +136,7 @@ class cl_acordoitemvinculo {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ac33_valortotal == null ){ 
+     if($this->ac33_valortotal === null ){
        $this->erro_sql = " Campo Valor total nao Informado.";
        $this->erro_campo = "ac33_valortotal";
        $this->erro_banco = "";
@@ -146,16 +146,16 @@ class cl_acordoitemvinculo {
        return false;
      }
      if($ac33_sequencial == "" || $ac33_sequencial == null ){
-       $result = db_query("select nextval('acordoitemvinculo_ac33_sequencial_seq')"); 
+       $result = db_query("select nextval('acordoitemvinculo_ac33_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: acordoitemvinculo_ac33_sequencial_seq do campo: ac33_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: acordoitemvinculo_ac33_sequencial_seq do campo: ac33_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->ac33_sequencial = pg_result($result,0,0); 
+       $this->ac33_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from acordoitemvinculo_ac33_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $ac33_sequencial)){
@@ -166,10 +166,10 @@ class cl_acordoitemvinculo {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->ac33_sequencial = $ac33_sequencial; 
+         $this->ac33_sequencial = $ac33_sequencial;
        }
      }
-     if(($this->ac33_sequencial == null) || ($this->ac33_sequencial == "") ){ 
+     if(($this->ac33_sequencial == null) || ($this->ac33_sequencial == "") ){
        $this->erro_sql = " Campo ac33_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -178,25 +178,25 @@ class cl_acordoitemvinculo {
        return false;
      }
      $sql = "insert into acordoitemvinculo(
-                                       ac33_sequencial 
-                                      ,ac33_acordoitempai 
-                                      ,ac33_acordoitemfilho 
-                                      ,ac33_tipo 
-                                      ,ac33_quantidade 
-                                      ,ac33_valorunitario 
-                                      ,ac33_valortotal 
+                                       ac33_sequencial
+                                      ,ac33_acordoitempai
+                                      ,ac33_acordoitemfilho
+                                      ,ac33_tipo
+                                      ,ac33_quantidade
+                                      ,ac33_valorunitario
+                                      ,ac33_valortotal
                        )
                 values (
-                                $this->ac33_sequencial 
-                               ,$this->ac33_acordoitempai 
-                               ,$this->ac33_acordoitemfilho 
-                               ,$this->ac33_tipo 
-                               ,$this->ac33_quantidade 
-                               ,$this->ac33_valorunitario 
-                               ,$this->ac33_valortotal 
+                                $this->ac33_sequencial
+                               ,$this->ac33_acordoitempai
+                               ,$this->ac33_acordoitemfilho
+                               ,$this->ac33_tipo
+                               ,$this->ac33_quantidade
+                               ,$this->ac33_valorunitario
+                               ,$this->ac33_valortotal
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        die(pg_last_error());
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -235,16 +235,16 @@ class cl_acordoitemvinculo {
        $resac = db_query("insert into db_acount values($acount,3037,17187,'','".AddSlashes(pg_result($resaco,0,'ac33_valortotal'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($ac33_sequencial=null) { 
+   function alterar ($ac33_sequencial=null) {
       $this->atualizacampos();
      $sql = " update acordoitemvinculo set ";
      $virgula = "";
-     if(trim($this->ac33_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_sequencial"])){ 
+     if(trim($this->ac33_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_sequencial"])){
        $sql  .= $virgula." ac33_sequencial = $this->ac33_sequencial ";
        $virgula = ",";
-       if(trim($this->ac33_sequencial) == null ){ 
+       if(trim($this->ac33_sequencial) == null ){
          $this->erro_sql = " Campo Código Sequencial nao Informado.";
          $this->erro_campo = "ac33_sequencial";
          $this->erro_banco = "";
@@ -254,10 +254,10 @@ class cl_acordoitemvinculo {
          return false;
        }
      }
-     if(trim($this->ac33_acordoitempai)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_acordoitempai"])){ 
+     if(trim($this->ac33_acordoitempai)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_acordoitempai"])){
        $sql  .= $virgula." ac33_acordoitempai = $this->ac33_acordoitempai ";
        $virgula = ",";
-       if(trim($this->ac33_acordoitempai) == null ){ 
+       if(trim($this->ac33_acordoitempai) == null ){
          $this->erro_sql = " Campo Item Original nao Informado.";
          $this->erro_campo = "ac33_acordoitempai";
          $this->erro_banco = "";
@@ -267,10 +267,10 @@ class cl_acordoitemvinculo {
          return false;
        }
      }
-     if(trim($this->ac33_acordoitemfilho)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_acordoitemfilho"])){ 
+     if(trim($this->ac33_acordoitemfilho)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_acordoitemfilho"])){
        $sql  .= $virgula." ac33_acordoitemfilho = $this->ac33_acordoitemfilho ";
        $virgula = ",";
-       if(trim($this->ac33_acordoitemfilho) == null ){ 
+       if(trim($this->ac33_acordoitemfilho) == null ){
          $this->erro_sql = " Campo Item Derivado nao Informado.";
          $this->erro_campo = "ac33_acordoitemfilho";
          $this->erro_banco = "";
@@ -280,10 +280,10 @@ class cl_acordoitemvinculo {
          return false;
        }
      }
-     if(trim($this->ac33_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_tipo"])){ 
+     if(trim($this->ac33_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_tipo"])){
        $sql  .= $virgula." ac33_tipo = $this->ac33_tipo ";
        $virgula = ",";
-       if(trim($this->ac33_tipo) == null ){ 
+       if(trim($this->ac33_tipo) == null ){
          $this->erro_sql = " Campo Tipo do vinculo nao Informado.";
          $this->erro_campo = "ac33_tipo";
          $this->erro_banco = "";
@@ -293,10 +293,10 @@ class cl_acordoitemvinculo {
          return false;
        }
      }
-     if(trim($this->ac33_quantidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_quantidade"])){ 
+     if(trim($this->ac33_quantidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_quantidade"])){
        $sql  .= $virgula." ac33_quantidade = $this->ac33_quantidade ";
        $virgula = ",";
-       if(trim($this->ac33_quantidade) == null ){ 
+       if(trim($this->ac33_quantidade) === null ){
          $this->erro_sql = " Campo Quantidade nao Informado.";
          $this->erro_campo = "ac33_quantidade";
          $this->erro_banco = "";
@@ -306,10 +306,10 @@ class cl_acordoitemvinculo {
          return false;
        }
      }
-     if(trim($this->ac33_valorunitario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_valorunitario"])){ 
+     if(trim($this->ac33_valorunitario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_valorunitario"])){
        $sql  .= $virgula." ac33_valorunitario = $this->ac33_valorunitario ";
        $virgula = ",";
-       if(trim($this->ac33_valorunitario) == null ){ 
+       if(trim($this->ac33_valorunitario) === null ){
          $this->erro_sql = " Campo Valor unitario nao Informado.";
          $this->erro_campo = "ac33_valorunitario";
          $this->erro_banco = "";
@@ -319,10 +319,10 @@ class cl_acordoitemvinculo {
          return false;
        }
      }
-     if(trim($this->ac33_valortotal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_valortotal"])){ 
+     if(trim($this->ac33_valortotal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ac33_valortotal"])){
        $sql  .= $virgula." ac33_valortotal = $this->ac33_valortotal ";
        $virgula = ",";
-       if(trim($this->ac33_valortotal) == null ){ 
+       if(trim($this->ac33_valortotal) === null ){
          $this->erro_sql = " Campo Valor total nao Informado.";
          $this->erro_campo = "ac33_valortotal";
          $this->erro_banco = "";
@@ -360,7 +360,7 @@ class cl_acordoitemvinculo {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "VInculos dos itens entre aditamentos nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ac33_sequencial;
@@ -388,14 +388,14 @@ class cl_acordoitemvinculo {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($ac33_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($ac33_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ac33_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -427,7 +427,7 @@ class cl_acordoitemvinculo {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "VInculos dos itens entre aditamentos nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ac33_sequencial;
@@ -455,11 +455,11 @@ class cl_acordoitemvinculo {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -481,8 +481,8 @@ class cl_acordoitemvinculo {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $ac33_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $ac33_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -502,8 +502,8 @@ class cl_acordoitemvinculo {
      $sql2 = "";
      if($dbwhere==""){
        if($ac33_sequencial!=null ){
-         $sql2 .= " where acordoitemvinculo.ac33_sequencial = $ac33_sequencial "; 
-       } 
+         $sql2 .= " where acordoitemvinculo.ac33_sequencial = $ac33_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -519,8 +519,8 @@ class cl_acordoitemvinculo {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $ac33_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $ac33_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -536,8 +536,8 @@ class cl_acordoitemvinculo {
      $sql2 = "";
      if($dbwhere==""){
        if($ac33_sequencial!=null ){
-         $sql2 .= " where acordoitemvinculo.ac33_sequencial = $ac33_sequencial "; 
-       } 
+         $sql2 .= " where acordoitemvinculo.ac33_sequencial = $ac33_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

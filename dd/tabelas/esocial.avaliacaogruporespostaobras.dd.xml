@@ -1,0 +1,91 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010828' name='esocial.avaliacaogruporespostaobras' description="Vinculo de respostas entre o formulário S1005 e o empregador" prefix="eso35" label="avaliacaogruporespostaobras" type="0">
+  <fields>
+    <field codigo="1013430"
+           campo_api=''
+           name="eso35_sequencial"
+           conteudo="int8"
+           description="Código Sequencial da tabela"
+           inivalue="0"
+           label="Código Sequencial"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código Sequencial"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='esocial.avaliacaogruporespostaobras_eso35_sequencial_seq' />
+
+    </field>
+    <field codigo="1013431"
+           campo_api=''
+           name="eso35_avaliacaogruporesposta"
+           conteudo="int8"
+           description="Código da resposta"
+           inivalue="0"
+           label="Código da Resposta"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código da Resposta"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013432"
+           campo_api=''
+           name="eso35_empregador"
+           conteudo="int8"
+           description="Código do Empregador"
+           inivalue="0"
+           label="Código do Empregador"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código do Empregador"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013433"
+           campo_api=''
+           name="eso35_cnpj"
+           conteudo="varchar(20)"
+           description="CNPJ do Órgão"
+           inivalue=""
+           label="CNPJ do Órgão"
+           size="20"
+           null="f"
+           uppercase="t"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel="CNPJ do Órgão"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="eso35_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="eso35_empregador" reference="z01_numcgm" />
+    </foreignkey>
+  </foreignkeys>
+</table>

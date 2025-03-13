@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -92,8 +92,8 @@ class cl_cgs_undalt {
                  z33_v_telef = varchar(12) = Telefone 
                  z33_v_ident = varchar(20) = Identidade 
                  z30_i_login = int4 = Login 
-                 z33_v_telcel = varchar(12) = Celular 
-                 z33_v_email = varchar(100) = Email 
+                 z33_v_telcel = varchar(15) = Celular 
+                 z33_v_email = varchar(255) = Email 
                  z33_d_nasc = date = Nascimento 
                  z33_v_sexo = varchar(1) = Sexo 
                  z33_v_tipoalt = varchar(1) = Tipo Alteração 

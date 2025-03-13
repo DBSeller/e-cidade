@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libcaixa_ze.php");
-include("libs/db_libgertxtfolha.php");
-include("classes/db_folha_classe.php");
-include("classes/db_pensao_classe.php");
-include("classes/db_rharqbanco_classe.php");
-include("classes/db_orctiporec_classe.php");
-require_once 'libs/db_utils.php';
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libcaixa_ze.php"));
+include(modification("libs/db_libgertxtfolha.php"));
+include(modification("classes/db_folha_classe.php"));
+include(modification("classes/db_pensao_classe.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+require_once modification("libs/db_utils.php");
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($_POST);
 
 
-$cllayouts_bb  = new cl_layouts_bb;
-$cllayout_BBBS = new cl_layout_BBBS;
+$cllayouts_bb  = new LayoutBB;
+$cllayout_BBBS = new LayoutBBBSFolha;
 $clfolha       = new cl_folha;
 $clpensao      = new cl_pensao;
 $clrharqbanco  = new cl_rharqbanco;
@@ -66,7 +66,7 @@ if($clrharqbanco->numrows>0){
 
   db_fieldsmemory($result_arqbanco,0);
 
-    include("dbforms/db_layouttxt.php");
+    include(modification("dbforms/db_layouttxt.php"));
     $posicao  = "A";
     if(isset($layout) && $layout == 9){
       $layoutimprime = 9;
@@ -149,7 +149,7 @@ if($clrharqbanco->numrows>0){
     $densidadearquivo = "01600";
     //////
 
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt,1);
+    db_setaPropriedadesLayoutTxt($db_layouttxt,1);
 } else {
   $sqlerro = true;
   $erro_msg = "Arquivo não encontrado";
@@ -178,6 +178,8 @@ if($sqlerro == false){
 
   if($tiparq == 0) {
 
+    $rh34_wherefolha .= " and r38_liq > 0 ";
+
     $sql = $clfolha->sql_query_gerarqbag(null,"folha.*,cgm.*, length(trim(r38_agenc)) as qtddigitosagencia,
                                                r70_descr,
                                                length(trim(z01_cgccpf)) as tam,
@@ -186,6 +188,7 @@ if($sqlerro == false){
                                               "$rh34_wherefolha");
     // echo $sql;exit;
     $result  = $clfolha->sql_record($sql);
+
     $numrows = $clfolha->numrows;
   } else {
 
@@ -205,14 +208,54 @@ if($sqlerro == false){
     }else if($qfolha == 4){
       $campovalor = " r52_valres ";
       $rh34_wherepensa .= " and r52_valres > 0 ";
+    }else if($qfolha == 5){
+      $campovalor = " r52_valor  ";
+      $rh34_wherepensa .= " and r52_valor > 0 ";
+    }
+    
+    /**
+     * Se a variável $DB_COMPLEMENTAR estiver setada, o valor do "r38_liq" será da tabela ("rhhistoricopensao")
+     * lembrando que a folha de pagamento precisa ter registros na geração de disco ("folhapagamentogeracao").
+     */
+    if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+      
+      switch ($qfolha) {
+        
+          case 1:
+            $iTipoFolha  = FolhaPagamento::TIPO_FOLHA_SALARIO;
+            $sOperacao   = "+r52_valfer";
+            break;
+          
+          case 2: 
+            $iTipoFolha  = FolhaPagamento::TIPO_FOLHA_COMPLEMENTAR; 
+            $sOperacao   = "";
+            break;
+          
+          case 5: 
+            $iTipoFolha  = FolhaPagamento::TIPO_FOLHA_SUPLEMENTAR;
+            $sOperacao   = "";
+            break;  
+      }
+      
+      $sCampo  = "(                                                                                      \n";
+      $sCampo .= " SELECT SUM(rh145_valor)                                                               \n";
+      $sCampo .= "   FROM rhhistoricopensao                                                              \n";
+      $sCampo .= "        INNER JOIN rhfolhapagamento       ON rh141_sequencial = rh145_rhfolhapagamento \n";
+      $sCampo .= "        INNER JOIN folhapagamentogeracao  ON rh141_sequencial = rh146_folhapagamento   \n";
+      $sCampo .= "  WHERE rh141_tipofolha = {$iTipoFolha}                                                \n";
+      $sCampo .= "    and rh141_aberto is false                                                          \n";
+      $sCampo .= "    and rh145_pensao    = r52_sequencial                                               \n";
+      $sCampo .= " ){$sOperacao}                                                                         \n";
+      
+      $campovalor = $sCampo;
     }
 
     $sql = $clpensao->sql_query_gerarqbag(null,null,null,null,"$campovalor as r38_liq, length(trim(r52_codage)||trim(r52_dvagencia)) as qtddigitosagencia,
                                                r52_numcgm as r38_regist,
                                                r52_codbco as r38_banco,
-	                                       trim(r52_conta)||trim(coalesce(r52_dvconta,'')) as r38_conta,
-	                                       trim(r52_codage)||trim(coalesce(r52_dvagencia,'')) as r38_agenc,
-	                                       cgm.*,func.z01_nome as nomefuncionario,
+                                               trim(r52_conta)||trim(coalesce(r52_dvconta,'')) as r38_conta,
+                                               trim(r52_codage)||trim(coalesce(r52_dvagencia,'')) as r38_agenc,
+                                               cgm.*,func.z01_nome as nomefuncionario,
                                                r70_descr,
                                                length(trim(cgm.z01_cgccpf)) as tam,
                                                $campovalor as valorori",
@@ -220,6 +263,7 @@ if($sqlerro == false){
                                               "$rh34_wherepensa and $campovalor > 0");
 
     $lPensionista = true;
+
     $result  = $clpensao->sql_record($sql);
     $numrows = $clpensao->numrows;
   }
@@ -262,7 +306,7 @@ if($sqlerro == false){
       $formalancamento = "03";
     }
     ///// HEADER DO LOTE
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 2);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 2);
     ///// FINAL DO HEADER DO LOTE
 
     $sequencialnolote       = 0;
@@ -338,7 +382,7 @@ if($sqlerro == false){
         $sSqlPensao = $oDaoPensao->sql_query_file(null, null, null, null, $sCampos, null, $sWhere);
         $rsAgencia  = $oDaoPensao->sql_record($sSqlPensao);
 
-        if ($oDaoPensao->numrows != 1) {
+        if ($oDaoPensao->numrows < 1) {
 
           $sMsgErro  = "Não foi encontrada a agencia do pensionista: ";
           $sMsgErro .= "{$r38_regist} - {$sNomeServidor}.\\nFavor verificar.";
@@ -462,12 +506,12 @@ if($sqlerro == false){
       $db_layouttxt->setByLineOfDBUtils($oDadosRegistroB, '3', "B");
 
 
-//      db_setaPropriedadesLayoutTxt(&$db_layouttxt, 3, "B");
+//      db_setaPropriedadesLayoutTxt($db_layouttxt, 3, "B");
       ///// FINAL DO REGISTRO B
 
       if($i == 0 || $pdf->gety() > $pdf->h - 30) {
 
-	      $pdf->addpage("L");
+        $pdf->addpage("L");
         $pdf->cell(15,$alt,$RLrh01_regist,1,0,"C",1);
         if ($tiparq < 5) {
 
@@ -475,13 +519,13 @@ if($sqlerro == false){
           $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
           $pdf->cell(65,$alt,$RLz01_nome,1,0,"C",1);
           $pdf->cell(65,$alt,$RLr70_descr,1,0,"C",1);
-	      } else {
+        } else {
 
           $pdf->cell(65,$alt,"Pensionista",1,0,"C",1);
           $pdf->cell(65,$alt,"Funcionário",1,0,"C",1);
           $pdf->cell(15,$alt,$RLz01_numcgm,1,0,"C",1);
           $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
-	      }
+        }
         $pdf->cell(17,$alt,$RLr38_liq,1,0,"C",1);
         $pdf->cell(13,$alt,$RLr38_agenc,1,0,"C",1);
         $pdf->cell(20,$alt,$RLr38_conta,1,1,"C",1);
@@ -522,7 +566,7 @@ if($sqlerro == false){
     $quantidadetotallote = $sequencialnolote + 2;
     $valortotallote = $valortotal;
     ///// TRAILLER DE LOTE
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 4);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 4);
     ///// FINAL DO TRAILLER DE LOTE
 
 
@@ -545,7 +589,7 @@ if($sqlerro == false){
 
     ///// TRAILLER DE ARQUIVO
     $loteservico = '9999';
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 5);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 5);
     ///// FINAL DO TRAILLER DE ARQUIVO
     //////////////////////////////////
 

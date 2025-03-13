@@ -1,38 +1,46 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("std/DBArray.php");
-require_once("model/pessoal/ServidorRepository.model.php");
-require_once("model/pessoal/RubricaRepository.model.php");
+/**
+ * @todo quando servidor dos clientes forem atualizados para versão php 5.6+
+ *       remover as funções ini_set, set_time_limit
+ */
+ini_set('memory_limit', '-1');
+set_time_limit('0');
 
-require_once("libs/JSON.php");
+
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/DBArray.php"));
+require_once(modification("model/pessoal/ServidorRepository.model.php"));
+require_once(modification("model/pessoal/RubricaRepository.model.php"));
+
+require_once(modification("libs/JSON.php"));
 
 define( "TIPO_RESUMO_GERAL"            			, "g" );
 define( "TIPO_RESUMO_ORGAO"            			, "o" );
@@ -53,7 +61,7 @@ define( "TIPO_ARQUIVOS_PDF"						 			, "pdf");
 define( "TIPO_ARQUIVOS_CSV"						 			, "csv");
 
 define( "ORDENACAO_NUMERICA"           			, "n"  );
-define( "ORDENACAO_ALFABETICA"         			, "a"  ); 
+define( "ORDENACAO_ALFABETICA"         			, "a"  );
 
 define( "QUEBRAR_PAGINAS_SIM"					 			, "s");
 define( "QUEBRAR_PAGINAS_NAO"					 			, "n");
@@ -70,30 +78,29 @@ define( "TIPO_VINCULO_INATIVOS_PENSIONISTAS", "ip");
 try {
 
   $oJson        = new services_json();
-  $oGet         = db_utils::postMemory( $_GET );
+  $oParametros  = $oJson->decode(str_replace("\\","",base64_decode($_GET["json"])));
   $iInstituicao = db_getsession( "DB_instit" );
-  $oParametros  = $oJson->decode(str_replace("\\","",$oGet->json));
   $aWhere       = array();
 
 	/**
 	 * Realiza busca das rubricas a partir do relatorio selecionado.
 	 */
-	$oDaoRelRubMov = db_utils::getdao('relrubmov');
+	$oDaoRelRubMov = new cl_relrubmov();
 	$sSelect 			 = "rh46_rubric, rh46_quantval,rh45_form as formulado,rh45_selecao,rh45_descr";
-	$sSqlRelRubMov = $oDaoRelRubMov->sql_query(null,"$sSelect","rh46_seq","rh46_codigo = {$oParametros->iRelatorio}");
-
+	$sWhere        = "rh46_codigo = {$oParametros->iRelatorio} AND rh27_instit = {$iInstituicao}";
+	$sSqlRelRubMov = $oDaoRelRubMov->sql_query(null, $sSelect, "rh46_seq", $sWhere);
 	$rsRubricas 	 = db_query($sSqlRelRubMov);
 
   /**
    * Realiza busca dos campos que devem aparecer no relatório a partir do relatório selecionado.
    */
-  $oDaoCamposRelatorio    = db_utils::getdao('relrubrelrubcampos');
+  $oDaoCamposRelatorio    = new cl_relrubrelrubcampos();
   $sSelectCamposRelatorio = "rh120_campo, rh120_tamanho, rh120_limite, rotulorel, conteudo";
-  $sSqlCamposRelatorio    = $oDaoCamposRelatorio->sql_queryCamposPorRelatorio($sSelectCamposRelatorio, "rh121_ordem", "rh121_relrub = {$oParametros->iRelatorio}");
+  $sWhereCamposRelatorio  = "rh121_relrub = {$oParametros->iRelatorio} AND rh45_instit = {$iInstituicao}";
+  $sSqlCamposRelatorio    = $oDaoCamposRelatorio->sql_queryCamposPorRelatorio($sSelectCamposRelatorio, "rh121_ordem", $sWhereCamposRelatorio);
+  $rsCamposRelatorios     = db_query($sSqlCamposRelatorio);
 
-  $rsCamposRelatorios  =  db_query($sSqlCamposRelatorio);
-
-  $aCamposRelatorios   = db_utils::getCollectionByRecord($rsCamposRelatorios);
+  $aCamposRelatorios = db_utils::getCollectionByRecord($rsCamposRelatorios);
 
   /**
    * Verifica se foi selecionado o tipo da complementar.
@@ -109,8 +116,8 @@ try {
 
   if ( pg_num_rows($rsRubricas) == 0 ) {
 		throw new BusinessException( "Nenhuma Rubrica encontrada." );
-	}	
-   
+	}
+
   /**
    * Seleciona Primeiro Registro, pois ele é repetido em todas as linhas dos resultado sql
    */
@@ -119,8 +126,10 @@ try {
 	/**
 	 * Valida se existe selecao
 	 */
-	$oDaoSelecao   = db_utils::getdao('selecao');
-	$sSqlSelecao   = $oDaoSelecao->sql_query_file( $oDadosRubricasRelatorio->rh45_selecao, null, 'r44_where', null);
+	$oDaoSelecao   = new cl_selecao();
+	$sSqlSelecao   = $oDaoSelecao->sql_query_file(
+	  $oDadosRubricasRelatorio->rh45_selecao, $iInstituicao, 'r44_where', null
+  );
 	$rsSelecao 	   = db_query($sSqlSelecao);
 
 	if ( pg_num_rows($rsSelecao) > 0 ) {
@@ -143,7 +152,7 @@ try {
   $iContadorOrdemFormula = 0;
 
 	foreach ( $aDadosRubricas as $oDadosRubrica ) {
-   
+
     $aRubricasUtilizadas[] 		                  		  = $oDadosRubrica->rh46_rubric;
     $aTipoValorRubricas[$oDadosRubrica->rh46_rubric]  = $oDadosRubrica->rh46_quantval;
     $aOrdemFormula["RUB" . ++$iContadorOrdemFormula ] = $oDadosRubrica->rh46_rubric;
@@ -152,7 +161,7 @@ try {
 
 
 	switch ($oParametros->sTipoResumo) {
-		
+
 		case TIPO_RESUMO_ORGAO:
       $sLabelTipoRelatorio          = "Órgãos";
       $sCampoCondicaoTipoRelatorio  = "rh26_orgao";
@@ -166,9 +175,9 @@ try {
       $sLabelTipoRelatorio             = "Unidade";
       $sCampoCondicaoTipoRelatorio     = "rh25_codlotavinc";
       $sCampoEstruturalTipoRelatorio   = "rh25_codlotavinc";
-      $sCampoDescricaoTipoRelatorio    = "(select o41_descr 
-                                             from orcunidade 
-                                            where rhlotaexe.rh26_anousu  = orcunidade.o41_anousu 
+      $sCampoDescricaoTipoRelatorio    = "(select o41_descr
+                                             from orcunidade
+                                            where rhlotaexe.rh26_anousu  = orcunidade.o41_anousu
                                               and rhlotaexe.rh26_orgao   = orcunidade.o41_orgao
                                               and rhlotaexe.rh26_unidade = orcunidade.o41_unidade limit 1)";
 		break;
@@ -211,7 +220,7 @@ try {
       $sCampoEstruturalTipoRelatorio = "rh30_regime";
       $sCampoDescricaoTipoRelatorio  = "(select rh52_descr from rhcadregime where rh52_regime = rh30_regime)";
 	  break;
-    
+
     case TIPO_RESUMO_GERAL:
 
 		default:
@@ -264,9 +273,9 @@ try {
 	/**
 	 * Busca Matriculas
 	 */
-  $oDaoRhPessoalMov = db_utils::getdao('rhpessoalmov');
+  $oDaoRhPessoalMov = new cl_rhpessoalmov();
   $iInstituicao     = db_getsession('DB_instit');
-  
+
   $sCampos          = "distinct rh01_regist, z01_nome, ";
 
   $sCampos         .= "{$sCampoCondicaoTipoRelatorio}   as agrupador_codigo,     ";
@@ -274,47 +283,47 @@ try {
   $sCampos         .= "{$sCampoDescricaoTipoRelatorio}  as agrupador_descricao   ";
 
   $sWhere           = implode(' and ', $aWhere);
-  
+
   $sAgrupamento     = "rh01_regist, z01_nome, {$sCampoCondicaoTipoRelatorio}, {$sCampoDescricaoTipoRelatorio}, {$sCampoEstruturalTipoRelatorio}";
 
   /**
    * Percorre os campos escolhidos para serem exibidos
    */
   foreach ($aCamposRelatorios as $oCampos) {
-    $sCampos       .= ", {$oCampos->rh120_campo}";  
+    $sCampos       .= ", {$oCampos->rh120_campo}";
     $sAgrupamento  .= ", {$oCampos->rh120_campo}";
   }
 
 	if ( $oParametros->sOrdem == ORDENACAO_NUMERICA ) {
     $sTituloOrdem = "Numérica";
     $sOrdem       = "rh01_regist";
-  } 
+  }
   if ( $oParametros->sOrdem == ORDENACAO_ALFABETICA ) {
     $sTituloOrdem = "Alfabética";
 	  $sOrdem       = "z01_nome";
-  } 
+  }
 
-  $sSqlRhPessoalMov = $oDaoRhPessoalMov->sql_query_baseServidores( $oParametros->iMesCompetencia, 
-  																															 	 $oParametros->iAnoCompetencia, 
-  																															 	 $iInstituicao, 
+  $sSqlRhPessoalMov = $oDaoRhPessoalMov->sql_query_baseServidores( $oParametros->iMesCompetencia,
+  																															 	 $oParametros->iAnoCompetencia,
+  																															 	 $iInstituicao,
   																															 	 $sCampos,
- 																																	 $sWhere, 
+ 																																	 $sWhere,
                                                                    $sOrdem,
                                                                    $sAgrupamento );
 
   $rsServidores     = db_query( $sSqlRhPessoalMov );
 
   /**
-   * Verifica se a consulta retornou algum resultado, 
-   * caso tenha retornado 0 registros exibe tela de erro 
+   * Verifica se a consulta retornou algum resultado,
+   * caso tenha retornado 0 registros exibe tela de erro
    */
   if ( pg_num_rows($rsServidores) == 0 ) {
     throw new BusinessException( "Nenhum servidor encontrado." );
-  } 
+  }
 
   $aServidores      = array();
   $aQuebras         = array();
-  $aValorRubricas   = array(); 
+  $aValorRubricas   = array();
   $aDadosServidores = array();
   $aRubricas        = db_utils::getCollectionByRecord($rsRubricas);
   $iTotalServidores = 0;
@@ -329,8 +338,8 @@ try {
     $sDescricao           = empty($oDadosServidores->agrupador_descricao) ? "Sem Grupo" : $oDadosServidores->agrupador_estrutural . ' - ' . $oDadosServidores->agrupador_descricao;
 
     $aQuebras[$sGrupo]    = $sDescricao;
-    $oServidor            = ServidorRepository::getInstanciaByCodigo( $oDadosServidores->rh01_regist, 
-                                                                      $oParametros->iAnoCompetencia, 
+    $oServidor            = ServidorRepository::getInstanciaByCodigo( $oDadosServidores->rh01_regist,
+                                                                      $oParametros->iAnoCompetencia,
                                                                       $oParametros->iMesCompetencia );
     $aDadosServidor[$oDadosServidores->rh01_regist]       = $oDadosServidores;
     $aServidores[$sGrupo][$oDadosServidores->rh01_regist] = $oServidor;
@@ -338,7 +347,7 @@ try {
 
     $lPossuiEventoFinanceiro                                 = false;    // Ninguem tem cálculo até que se verifique movimentação
     $aValorRubricas[$oDadosServidores->rh01_regist]["TOTAL"] = 0;
-    
+
     /**
      * Percorre os Tipos de Folha Verificando os seus Cálculos.
      */
@@ -354,22 +363,22 @@ try {
        */
 
       $iComplementar = $sTipoComplementar;
- 
+
       /**
-       * Verifica se a folha é do Tipo adiantamento, se for, passa a complementar como null. 
+       * Verifica se a folha é do Tipo adiantamento, se for, passa a complementar como null.
        * Complementar não utiliza Semestre
        */
       if ( $sFolha == 'gerfadi') {
         $iComplementar = null;
       }
-      
+
 
       $aEventoFinanceiro = $oCalculo->getEventosFinanceiros($iComplementar, $aRubricasUtilizadas);
 
       if ( empty($aEventoFinanceiro) ) {
         continue;
       }
-      
+
       /**
        * Se Houver Eventos Financeiros, mostra dados no Relatório
        */
@@ -380,13 +389,13 @@ try {
        */
 
       foreach ( $aEventoFinanceiro as $oEvento ) {
-        
+
         $sRubrica = $oEvento->getRubrica()->getCodigo();
 
         if ( !isset($aValorRubricas[$oDadosServidores->rh01_regist][$sRubrica]) ) {
           $aValorRubricas[$oDadosServidores->rh01_regist][$sRubrica] = 0;     // Valor Geral das Rubricas por Servidor
         }
-        
+
         if ( $aTipoValorRubricas[$sRubrica] == RUBRICA_RELATORIO_VALOR ) {
 
           $aValorRubricas[$oDadosServidores->rh01_regist][$sRubrica] += $oEvento->getValor();
@@ -434,18 +443,18 @@ try {
   }//Fim Foreach Servidores
 
   /**
-   * Verifica se a consulta retornou algum resultado, 
-   * caso tenha retornado 0 registros exibe tela de erro 
+   * Verifica se a consulta retornou algum resultado,
+   * caso tenha retornado 0 registros exibe tela de erro
    */
   if ($iTotalServidores == 0) {
     throw new BusinessException( "Nenhum servidor encontrado." );
   }
 
   if ( $oParametros->sTipoArquivo == TIPO_ARQUIVOS_PDF ) {
-    include("pes2_emissao_pdf002.php");
+    include(modification("pes2_emissao_pdf002.php"));
   } else {
 
-    include("pes2_emissao_csv002.php");
+    include(modification("pes2_emissao_csv002.php"));
 
     echo '<script type="text/javascript">';
     echo 'window.close();';

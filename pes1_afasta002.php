@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("classes/db_afasta_classe.php");
-include("classes/db_codmovsefip_classe.php");
-include("classes/db_movcasadassefip_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpessoalmov_classe.php");
-include("classes/db_pontofx_classe.php");
-include("classes/db_pontofs_classe.php");
-include("classes/db_rhrubricas_classe.php");
-include("classes/db_inssirf_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("classes/db_afasta_classe.php"));
+include(modification("classes/db_codmovsefip_classe.php"));
+include(modification("classes/db_movcasadassefip_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhpessoalmov_classe.php"));
+include(modification("classes/db_pontofx_classe.php"));
+include(modification("classes/db_pontofs_classe.php"));
+include(modification("classes/db_rhrubricas_classe.php"));
+include(modification("classes/db_inssirf_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clafasta = new cl_afasta;
 $clrhpessoal = new cl_rhpessoal;
@@ -69,7 +69,7 @@ if(isset($alterar)){
   }
 
   if($sqlerro == false){
-    $arr_possiveis = Array(2,3,4,5,6,7);
+    $arr_possiveis = Array(2,3,4,5,6,7,8);
     if(in_array($r45_situac,$arr_possiveis)){
 
       $result_pontofx = $clpontofx->sql_record($clpontofx->sql_query_file(db_anofolha(),db_mesfolha(),$r45_regist));
@@ -80,7 +80,7 @@ if(isset($alterar)){
         $subpes.= db_mesfolha();
 
       //  db_verifica_dias_trabalhados($r45_regist,db_anofolha(),db_mesfolha());
-        $result_dias_trab = pg_exec("select fc_dias_trabalhados(".$r45_regist.",".db_anofolha().",".db_mesfolha().",false,".db_getsession("DB_instit").") as dias_pagamento");
+        $result_dias_trab = db_query("select fc_dias_trabalhados(".$r45_regist.",".db_anofolha().",".db_mesfolha().",false,".db_getsession("DB_instit").") as dias_pagamento");
         if(pg_numrows($result_dias_trab) > 0){
           db_fieldsmemory($result_dias_trab, 0);
         }
@@ -107,9 +107,10 @@ if(isset($alterar)){
 	      (
 	        ($r45_situac == 6 && $numrows_sau == 0) || 
 	        ($r45_situac == 5 && $numrows_mat == 0) ||
-	        ($r45_situac == 3 && $numrows_aci == 0)
+	        ($r45_situac == 8 && $numrows_sau == 0) ||
+            ($r45_situac == 3 && $numrows_aci == 0)
 	      ))
-	      || ($dias_pagamento > 0 && $r45_situac != 6 && $r45_situac != 5 && $r45_situac != 3)
+	      || ($dias_pagamento > 0 && $r45_situac != 6 && $r45_situac != 5 && $r45_situac != 3 && $r45_situac != 8)
 	    ){
 //	  echo "<br><br>".'dias pagamento1  '.$dias_pagamento.' rubsau '.$numrows_sau.'  rubaci '.$numrows_aci;
             $result_procp = $clrhrubricas->sql_record($clrhrubricas->sql_query_file(null,db_getsession('DB_instit'),"rh27_propq","","rh27_rubric = '".$r90_rubric."' and rh27_calcp = 't'"));
@@ -155,6 +156,7 @@ if(isset($alterar)){
           }else if( $r45_situac == 2 || $r45_situac == 7    || 
                    ($r45_situac == 6  && $numrows_sau == 0) ||
                    ($r45_situac == 5  && $numrows_mat == 0) ||  
+                   ($r45_situac == 8  && $numrows_sau == 0) ||
                    ($r45_situac == 3  && $numrows_aci == 0)   ){
             $clpontofs->excluir(db_anofolha(),db_mesfolha(),$r45_regist,$r90_rubric);
             if($clpontofs->erro_status=="0"){
@@ -199,7 +201,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmafasta.php");
+	include(modification("forms/db_frmafasta.php"));
 	?>
     </center>
 	</td>

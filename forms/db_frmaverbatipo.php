@@ -34,7 +34,7 @@ $opcaoAverba = $db_opcao;
 if($db_opcao!= 1 and isset($j93_codigo)){
   //verifica se ja tem averbação para este tipo 
   $sqlAverba = "select * from averbacao where j75_tipo = $j93_codigo limit 2";
-  $rsAverba = pg_query($sqlAverba);
+  $rsAverba = db_query($sqlAverba);
   $linhasAverba = pg_num_rows($rsAverba);
   if($linhasAverba > 0){
     // não pode alterar nem excluir esse tipo 
@@ -45,76 +45,77 @@ if($db_opcao!= 1 and isset($j93_codigo)){
 	   
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tj93_codigo?>">
-       <?=@$Lj93_codigo?>
-    </td>
-    <td> 
-<?
-db_input('j93_codigo',6,$Ij93_codigo,true,'text',3,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj93_descr?>">
-       <?=@$Lj93_descr?>
-    </td>
-    <td> 
-<?
-db_input('j93_descr',20,$Ij93_descr,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj93_regra?>">
-       <?=@$Lj93_regra?>
-    </td>
-    <td> 
-<?
-$x = array('1'=>'Proprietario','2'=>'Promitente');
-db_select('j93_regra',$x,true,$opcaoAverba,"");
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj93_datalimite?>">
-       <?=@$Lj93_datalimite?>
-    </td>
-    <td> 
-<?
-db_inputdata('j93_datalimite',@$j93_datalimite_dia,@$j93_datalimite_mes,@$j93_datalimite_ano,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj93_averbagrupo?>">
-       <?
-	   db_ancora(@$Lj93_averbagrupo,"js_pesquisaj93_averbagrupo(true);",$opcaoAverba);
-       ?>
-    </td>
-    <td> 
-<?
-db_input('j93_averbagrupo',10,$Ij93_averbagrupo,true,'text',$opcaoAverba," onchange='js_pesquisaj93_averbagrupo(false);'")
-?>
-       <?
-db_input('j105_descr',40,$Ij105_descr,true,'text',3,'')
-       ?>
-    </td>
-  </tr>
-  </table>
-  </center>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+  <fieldset style="width: 500px;">
+  <legend class="bold"><?=($db_opcao==1?"Inclusão":($db_opcao==2||$db_opcao==22?"Alteração":"Exclusão"))?> de Tipo de Averbação</legend>
+    <table border="0">
+      <tr>
+        <td nowrap title="<?=@$Tj93_codigo?>">
+           <?=@$Lj93_codigo?>
+        </td>
+        <td> 
+          <?
+            db_input('j93_codigo',6,$Ij93_codigo,true,'text',3,"")
+          ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj93_descr?>">
+           <?=@$Lj93_descr?>
+        </td>
+        <td> 
+          <?
+            db_input('j93_descr',20,$Ij93_descr,true,'text',$db_opcao,"")
+          ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj93_regra?>">
+           <?=@$Lj93_regra?>
+        </td>
+        <td> 
+          <?
+            $x = array('1'=>'Proprietario','2'=>'Promitente');
+            db_select('j93_regra',$x,true,$opcaoAverba,"");
+          ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj93_datalimite?>">
+           <?=@$Lj93_datalimite?>
+        </td>
+        <td> 
+          <?
+            db_inputdata('j93_datalimite',@$j93_datalimite_dia,@$j93_datalimite_mes,@$j93_datalimite_ano,true,'text',$db_opcao,"")
+          ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj93_averbagrupo?>">
+           <?
+    	       db_ancora(@$Lj93_averbagrupo,"js_pesquisaj93_averbagrupo(true);",$opcaoAverba);
+           ?>
+        </td>
+        <td> 
+          <?
+            db_input('j93_averbagrupo',10,$Ij93_averbagrupo,true,'text',$opcaoAverba," onchange='js_pesquisaj93_averbagrupo(false);'")
+          ?>
+           <?
+            db_input('j105_descr',40,$Ij105_descr,true,'text',3,'')
+           ?>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+  <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
+  <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
 <script>
 function js_pesquisaj93_averbagrupo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_averbagrupo','func_averbagrupo.php?funcao_js=parent.js_mostraaverbagrupo1|j105_sequencial|j105_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_averbagrupo','func_averbagrupo.php?funcao_js=parent.js_mostraaverbagrupo1|j105_sequencial|j105_descr','Pesquisa',true);
   }else{
      if(document.form1.j93_averbagrupo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_averbagrupo','func_averbagrupo.php?pesquisa_chave='+document.form1.j93_averbagrupo.value+'&funcao_js=parent.js_mostraaverbagrupo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_averbagrupo','func_averbagrupo.php?pesquisa_chave='+document.form1.j93_averbagrupo.value+'&funcao_js=parent.js_mostraaverbagrupo','Pesquisa',false);
      }else{
        document.form1.j105_descr.value = ''; 
      }
@@ -133,7 +134,7 @@ function js_mostraaverbagrupo1(chave1,chave2){
   db_iframe_averbagrupo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_averbatipo','func_averbatipo.php?funcao_js=parent.js_preenchepesquisa|j93_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_averbatipo','func_averbatipo.php?funcao_js=parent.js_preenchepesquisa|j93_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_averbatipo.hide();

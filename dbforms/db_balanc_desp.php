@@ -139,7 +139,7 @@ function  db_dotacao_elemento_recurso ($anousu,$dataini,$datafim,$condicao="",$s
                 o56_elemento
 		    ";	    
 	//  echo $sql;
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	return $result;
 	// db_criatabela($result);
 	

@@ -1,37 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
   <head>
@@ -39,98 +39,102 @@ require_once("dbforms/db_funcoes.php");
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Expires" CONTENT="0">
     <?
-    db_app::load("scripts.js, prototype.js, strings.js, arrays.js, dbcomboBox.widget.js, DBFormCache.js, DBFormSelectCache.js"); 
+    db_app::load("scripts.js, prototype.js, strings.js, arrays.js, dbcomboBox.widget.js, DBFormCache.js, DBFormSelectCache.js");
     db_app::load("estilos.css");
     ?>
   </head>
-  <body style='margin-top: 25px' bgcolor="#cccccc">
+  <body class="body-default">
     <form name="form1" id='frmLivroNotas' method="post">
-    <?php 
+    <?php
       if (db_getsession("DB_modulo") == 1100747) {
         MsgAviso(db_getsession("DB_coddepto"),"escola");
       }
     ?>
-      <center>      
-        <div style='display:table;'>
-          <fieldset>
-          <legend style="font-weight: bold">Livro de Notas</legend>
-            <fieldset style='border: 0px;'>
-            <table border='0' width="100%">
-              <tr> 
-               <td nowrap title="" >
-                  <b>Escola: </b>
-                </td>
-                <td nowrap id="ctnCboEscola">
-               </td>
-              </tr>
-              <tr> 
-               <td nowrap title="" >
-                  <b>Calendário: </b>
-                </td>
-                <td nowrap id="ctnCboCalendario">
-               </td>
-              </tr>
+      <div class="container">
+        <fieldset>
+        <legend>Livro de Notas</legend>
+          <table class="form-container">
+            <tr>
+              <td nowrap title="" >
+                <label>Escola:</label>
+              </td>
+              <td nowrap id="ctnCboEscola"></td>
+            </tr>
+            <tr>
+              <td>
+                <label>Calendário:</label>
+              </td>
+              <td nowrap id="ctnCboCalendario"></td>
+            </tr>
+            <tr>
+              <td>
+                <label>Modelo do Relatório:</label>
+              </td>
+              <td>
+                <select id='modeloRelatorio' name='modeloRelatorio' onchange='js_validaModelo();'>
+                  <option value="1" selected="selected">Por Período</option>
+                  <option value="2">Por Disciplina</option>
+                  <option value="3">Por Área de Conhecimento</option>
+                </select>
+              </td>
+            </tr>
+            <tr id='exibeAssinatura' style='display: none;'>
+              <td>
+                <label>Exibir Assinatura:</label>
+              </td>
+              <td>
+                <select id='assinatura' name='assinatura'>
+                  <option value="1" selected="selected">Não</option>
+                  <option value="2">Sim</option>
+                </select>
+              </td>
+            </tr>
+            <tr id='ctnNumeroAvaliacaoPagina' style='display: none;'>
+              <td>
+                <label>Avaliações por Página:</label>
+              </td>
+              <td>
+                <select id='avaliacaoPagina' name='avaliacaoPagina'>
+                  <option value="4" selected="selected">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label>Exibir Trocas de Turma:</label>
+              </td>
+              <td>
+                <select id='trocaTurma' name='trocaTurma'>
+                  <option value="1" selected="selected">Não</option>
+                  <option value="2">Sim</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+          <fieldset class="separator">
+            <legend>Turmas</legend>
+            <table>
               <tr>
-                <td><b>Modelo do Relatório:</b></td>
+                <td id='ctnTurmas'></td>
                 <td>
-                  <select id='modeloRelatorio' name='modeloRelatorio' style="width:93%;" onchange='js_validaModelo();'>
-                    <option value="1" selected="selected">Por Período</option>
-                    <option value="2">Por Disciplina</option>
-                  </select>
+                  <button type='button' id='btnMoveOneRightToLeft' style='border:1px solid #999999; width: 40px'>&gt;</button><br>
+                  <button type='button' id='btnMoveAllRightToLeft' style='border:1px solid #999999;width: 40px'>&gt;&gt;</button><br>
+                  <button type='button' id='btnMoveOneLeftToRight' style='border:1px solid #999999;width: 40px'>&lt;</button><br>
+                  <button type='button' id='btnMoveAllLeftToRight' style='border:1px solid #999999;width: 40px'>&lt;&lt;</button>
                 </td>
-              </tr>
-              <tr id='exibeAssinatura' style='display: none;'>
-                <td><b>Exibir Assinatura:</b></td>
-                <td>
-                  <select id='assinatura' name='assinatura' style="width:93%;">
-                    <option value="1" selected="selected">Não</option>
-                    <option value="2">Sim</option>
-                  </select>
-                </td>
-              </tr>
-              <tr id='ctnNumeroAvaliacaoPagina' style='display: none;'>
-                <td><b>Avaliações por Página:</b></td>
-                <td>
-                  <select id='avaliacaoPagina' name='avaliacaoPagina' style="width:93%;">
-                    <option value="4" selected="selected">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <td><b>Exibir Trocas de Turma:</b></td>
-                <td>
-                  <select id='trocaTurma' name='trocaTurma' style="width:93%;">
-                    <option value="1" selected="selected">Não</option>
-                    <option value="2">Sim</option>
-                  </select>
-                </td>
+                <td id='ctnTurmasSelecionadas'></td>
               </tr>
             </table>
-            <fieldset style="border:none;border-top:2px groove white;font-weight: bold">
-              <legend>Turmas: </legend>
-              <table>
-                <tr>
-                  <td id='ctnTurmas'></td>
-                  <td>
-                    <button type='button' id='btnMoveOneRightToLeft' style='border:1px solid #999999; width: 40px'>&gt;</button><br>
-                    <button type='button' id='btnMoveAllRightToLeft' style='border:1px solid #999999;width: 40px'>&gt;&gt;</button><br>
-                    <button type='button' id='btnMoveOneLeftToRight' style='border:1px solid #999999;width: 40px'>&lt;</button><br>
-                    <button type='button' id='btnMoveAllLeftToRight' style='border:1px solid #999999;width: 40px'>&lt;&lt;</button>
-                  </td>
-                  <td id='ctnTurmasSelecionadas'></td>
-                </tr>
-              </table>
-            </fieldset>
           </fieldset>
-        </div>
+        </fieldset>
         <input name="btnImprimir" id="btnImprimir" type="button" value="Imprimir">
         <input name="btnLimparDados" id="btnLimparDados" type="button" value="Limpar Dados" onClick='js_limparDadosTela();'>
-      </center>
+      </div>
     </form>
   </body>
-  <? 
+  <?
     db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
   ?>
 </html>
@@ -139,16 +143,16 @@ require_once("dbforms/db_funcoes.php");
 var oCacheLivroNotas = new DBFormCache('oCacheLivroNotas', 'edu2_livronotas001.php');
     oCacheLivroNotas.setElements(new Array($('trocaTurma')));
     oCacheLivroNotas.load();
-  
+
 var sUrlRPC    = "edu_educacaobase.RPC.php";
 var aTurmas    = new Array();
 
-var oCboEscola = new DBComboBox("cboEscola", "oCboEscola", null, "330px");
+var oCboEscola = new DBComboBox("cboEscola", "oCboEscola", null, "370px");
 oCboEscola.addItem("", "Selecione");
 oCboEscola.addEvent("onChange", "js_pesquisarCalendarios();");
 oCboEscola.show($('ctnCboEscola'));
 
-var oCboCalendario = new DBComboBox("cboCalendario", "oCboCalendario", null, "330px");
+var oCboCalendario = new DBComboBox("cboCalendario", "oCboCalendario", null, "370px");
 oCboCalendario.addItem("", "Selecione");
 oCboCalendario.addEvent("onChange", "js_pesquisarTurmas();");
 oCboCalendario.show($('ctnCboCalendario'));
@@ -189,17 +193,17 @@ function js_retornaPesquisarEscolas(oResponse) {
 
   oCboEscola.clearItens();
   oCboCalendario.clearItens();
-  
+
   js_removeObj("msgBox");
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   oCboEscola.addItem("", "Selecione");
   oCboCalendario.addItem("", "Selecione");
   oRetorno.dados.each(function (oEscola, iSeq) {
 
     oCboEscola.addItem(oEscola.codigo_escola, oEscola.nome_escola.urlDecode());
     if (oRetorno.dados.length == 1) {
-      
+
       oCboEscola.setValue(oEscola.codigo_escola);
       js_pesquisarCalendarios();
     }
@@ -229,9 +233,9 @@ function js_retornaPesquisarCalendarios(oAjax) {
 
   oCboCalendario.clearItens();
   oCboTurmas.clearItens();
-  
+
 	js_removeObj("msgBox");
-	var oRetorno = eval('('+oAjax.responseText+')');
+	var oRetorno = JSON.parse(oAjax.responseText);
 	oCboCalendario.clearItens();
 	oCboCalendario.addItem("", "Selecione");
 
@@ -246,9 +250,9 @@ function js_retornaPesquisarCalendarios(oAjax) {
   	oRetorno.dados.each(function(oLinha, iContador) {
   		oCboCalendario.addItem(oLinha.ed52_i_codigo, oLinha.ed52_c_descr.urlDecode());
   	});
-  	
+
   	if (oRetorno.aResult.length == 1) {
-  
+
   		oCboCalendario.setValue(oRetorno.aResult[0].ed52_i_codigo);
   		js_pesquisarTurmas();
   	}
@@ -256,7 +260,7 @@ function js_retornaPesquisarCalendarios(oAjax) {
 }
 
 /**
- * Busca as Turmas do calendário selecionado 
+ * Busca as Turmas do calendário selecionado
  */
 function js_pesquisarTurmas() {
 
@@ -265,7 +269,7 @@ function js_pesquisarTurmas() {
 		oCboTurmas.clearItens();
 		return false;
 	}
-	
+
 	var oParametro         = new Object();
 	oParametro.exec        = 'pesquisaTurmaEtapa';
 	oParametro.iEscola     = oCboEscola.getValue();
@@ -280,15 +284,15 @@ function js_pesquisarTurmas() {
 				                         asynchronous: false,
 				                         onComplete:   js_retornaPesquisarTurmas
 			                         }
-			                        ); 
+			                        );
 }
 
 function js_retornaPesquisarTurmas(oAjax) {
 
 	js_removeObj("msgBox");
-	var oRetorno = eval('('+oAjax.responseText+')');
+	var oRetorno = JSON.parse(oAjax.responseText);
 	oCboTurmas.clearItens();
-	aTurmas = oRetorno.dados; 
+	aTurmas = oRetorno.dados;
 	oCboTurmasSelecionadas.clearItens();
 
 	oRetorno.dados.each(function(oLinha, iContador) {
@@ -301,7 +305,7 @@ function js_retornaPesquisarTurmas(oAjax) {
  * Controla ações de movimentos entre os select box
  */
 function moveSelected(oCboOrigem, oCboDestino) {
-  
+
 	if(oCboOrigem.getValue() != null) {
 
 		var aItens = oCboOrigem.getValue();
@@ -340,7 +344,7 @@ $('btnMoveAllLeftToRight').observe("click", function() {
 });
 
 $('btnImprimir').observe("click", function() {
-  
+
 	var aTurmasImpressao    = new Array();
 	var aTurmasSelecionadas = oCboTurmasSelecionadas.aItens;
 
@@ -352,7 +356,7 @@ $('btnImprimir').observe("click", function() {
   });
 
   if (aTurmasImpressao == null || aTurmasImpressao.length == 0) {
-    
+
     alert('Nenhuma turma selecionada');
     return false;
   }
@@ -360,8 +364,9 @@ $('btnImprimir').observe("click", function() {
   var sUrl = 'edu2_livronotas002.php?';
   if ($('modeloRelatorio').value == '2') {
     sUrl = 'edu2_livronotas003.php?';
+  } else if ($('modeloRelatorio').value == '3') {
+      sUrl = 'edu2_livronotas004.php?';
   }
-
   oCacheLivroNotas.save();
 	var sLocation  = sUrl;
 	sLocation     += "&iEscola="+oCboEscola.getValue();
@@ -370,8 +375,8 @@ $('btnImprimir').observe("click", function() {
 	sLocation     += "&aTurmas="+Object.toJSON(aTurmasImpressao);
 	sLocation     += "&iExibeAssinatura="+$F('assinatura');
 	sLocation     += "&iAvaliacaoPagina="+$F('avaliacaoPagina');
-	
-	jan            = window.open(sLocation, '', 
+
+	jan            = window.open(sLocation, '',
 	  	                         'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
   jan.moveTo(0,0);
 });
@@ -385,22 +390,21 @@ function js_limparDadosTela() {
   $('modeloRelatorio').value = '1';
   $('trocaTurma').value      = '1';
   js_pesquisarEscolas();
+  js_validaModelo();
 }
-
-js_pesquisarEscolas();
-
 
 function js_validaModelo() {
 
   $('exibeAssinatura').style.display          = 'none';
   $('ctnNumeroAvaliacaoPagina').style.display = 'none';
+
   if ($F('modeloRelatorio') == 2) {
+
     $('exibeAssinatura').style.display          = 'table-row';
     $('ctnNumeroAvaliacaoPagina').style.display = 'table-row';
-  } 
-
-  
+  }
 }
 
+js_pesquisarEscolas();
 js_validaModelo();
 </script>

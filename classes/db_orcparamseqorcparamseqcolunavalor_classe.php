@@ -1,72 +1,72 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Configuracoes
 //CLASSE DA ENTIDADE orcparamseqorcparamseqcolunavalor
-class cl_orcparamseqorcparamseqcolunavalor { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $o117_sequencial = 0; 
-   var $o117_orcparamseqorcparamseqcoluna = 0; 
-   var $o117_linha = 0; 
-   var $o117_valor = null; 
-   var $o117_instit = 0; 
-   var $o117_periodo = 0; 
-   var $o117_anousu = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_orcparamseqorcparamseqcolunavalor {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $o117_sequencial = 0;
+   var $o117_orcparamseqorcparamseqcoluna = 0;
+   var $o117_linha = 0;
+   var $o117_valor = null;
+   var $o117_instit = 0;
+   var $o117_periodo = 0;
+   var $o117_anousu = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 o117_sequencial = int4 = Código Sequencial 
-                 o117_orcparamseqorcparamseqcoluna = int4 = Coluna 
-                 o117_linha = int4 = Número da linha 
-                 o117_valor = varchar(100) = Valor da Coluna 
-                 o117_instit = int4 = Cod. Instituição 
-                 o117_periodo = int4 = Código Sequencial 
-                 o117_anousu = int4 = Ano do Valor 
+                 o117_sequencial = int4 = Código Sequencial
+                 o117_orcparamseqorcparamseqcoluna = int4 = Coluna
+                 o117_linha = int4 = Número da linha
+                 o117_valor = varchar(100) = Valor da Coluna
+                 o117_instit = int4 = Cod. Instituição
+                 o117_periodo = int4 = Código Sequencial
+                 o117_anousu = int4 = Ano do Valor
                  ";
-   //funcao construtor da classe 
-   function cl_orcparamseqorcparamseqcolunavalor() { 
+   //funcao construtor da classe
+   function cl_orcparamseqorcparamseqcolunavalor() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("orcparamseqorcparamseqcolunavalor"); 
+     $this->rotulo = new rotulo("orcparamseqorcparamseqcolunavalor");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -89,9 +89,9 @@ class cl_orcparamseqorcparamseqcolunavalor {
      }
    }
    // funcao para inclusao
-   function incluir ($o117_sequencial){ 
+   function incluir ($o117_sequencial){
       $this->atualizacampos();
-     if($this->o117_orcparamseqorcparamseqcoluna == null ){ 
+     if($this->o117_orcparamseqorcparamseqcoluna == null ){
        $this->erro_sql = " Campo Coluna nao Informado.";
        $this->erro_campo = "o117_orcparamseqorcparamseqcoluna";
        $this->erro_banco = "";
@@ -100,7 +100,7 @@ class cl_orcparamseqorcparamseqcolunavalor {
        $this->erro_status = "0";
        return false;
      }
-     if($this->o117_linha == null ){ 
+     if($this->o117_linha == null ){
        $this->erro_sql = " Campo Número da linha nao Informado.";
        $this->erro_campo = "o117_linha";
        $this->erro_banco = "";
@@ -109,7 +109,7 @@ class cl_orcparamseqorcparamseqcolunavalor {
        $this->erro_status = "0";
        return false;
      }
-     if($this->o117_valor == null ){ 
+     if($this->o117_valor == null ){
        $this->erro_sql = " Campo Valor da Coluna nao Informado.";
        $this->erro_campo = "o117_valor";
        $this->erro_banco = "";
@@ -118,7 +118,7 @@ class cl_orcparamseqorcparamseqcolunavalor {
        $this->erro_status = "0";
        return false;
      }
-     if($this->o117_instit == null ){ 
+     if($this->o117_instit == null ){
        $this->erro_sql = " Campo Cod. Instituição nao Informado.";
        $this->erro_campo = "o117_instit";
        $this->erro_banco = "";
@@ -127,7 +127,7 @@ class cl_orcparamseqorcparamseqcolunavalor {
        $this->erro_status = "0";
        return false;
      }
-     if($this->o117_periodo == null ){ 
+     if($this->o117_periodo == null ){
        $this->erro_sql = " Campo Código Sequencial nao Informado.";
        $this->erro_campo = "o117_periodo";
        $this->erro_banco = "";
@@ -136,20 +136,20 @@ class cl_orcparamseqorcparamseqcolunavalor {
        $this->erro_status = "0";
        return false;
      }
-     if($this->o117_anousu == null ){ 
+     if($this->o117_anousu == null ){
        $this->o117_anousu = "0";
      }
      if($o117_sequencial == "" || $o117_sequencial == null ){
-       $result = db_query("select nextval('orcparamseqorcparamseqcolunavalor_o117_sequencial_seq')"); 
+       $result = db_query("select nextval('orcparamseqorcparamseqcolunavalor_o117_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: orcparamseqorcparamseqcolunavalor_o117_sequencial_seq do campo: o117_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: orcparamseqorcparamseqcolunavalor_o117_sequencial_seq do campo: o117_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->o117_sequencial = pg_result($result,0,0); 
+       $this->o117_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from orcparamseqorcparamseqcolunavalor_o117_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $o117_sequencial)){
@@ -160,10 +160,10 @@ class cl_orcparamseqorcparamseqcolunavalor {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->o117_sequencial = $o117_sequencial; 
+         $this->o117_sequencial = $o117_sequencial;
        }
      }
-     if(($this->o117_sequencial == null) || ($this->o117_sequencial == "") ){ 
+     if(($this->o117_sequencial == null) || ($this->o117_sequencial == "") ){
        $this->erro_sql = " Campo o117_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -172,25 +172,25 @@ class cl_orcparamseqorcparamseqcolunavalor {
        return false;
      }
      $sql = "insert into orcparamseqorcparamseqcolunavalor(
-                                       o117_sequencial 
-                                      ,o117_orcparamseqorcparamseqcoluna 
-                                      ,o117_linha 
-                                      ,o117_valor 
-                                      ,o117_instit 
-                                      ,o117_periodo 
-                                      ,o117_anousu 
+                                       o117_sequencial
+                                      ,o117_orcparamseqorcparamseqcoluna
+                                      ,o117_linha
+                                      ,o117_valor
+                                      ,o117_instit
+                                      ,o117_periodo
+                                      ,o117_anousu
                        )
                 values (
-                                $this->o117_sequencial 
-                               ,$this->o117_orcparamseqorcparamseqcoluna 
-                               ,$this->o117_linha 
-                               ,'$this->o117_valor' 
-                               ,$this->o117_instit 
-                               ,$this->o117_periodo 
-                               ,$this->o117_anousu 
+                                $this->o117_sequencial
+                               ,$this->o117_orcparamseqorcparamseqcoluna
+                               ,$this->o117_linha
+                               ,'$this->o117_valor'
+                               ,$this->o117_instit
+                               ,$this->o117_periodo
+                               ,$this->o117_anousu
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Valores das Colunas ($this->o117_sequencial) nao Incluído. Inclusao Abortada.";
@@ -228,16 +228,16 @@ class cl_orcparamseqorcparamseqcolunavalor {
        $resac = db_query("insert into db_acount values($acount,2483,15454,'','".AddSlashes(pg_result($resaco,0,'o117_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($o117_sequencial=null) { 
+   function alterar ($o117_sequencial=null) {
       $this->atualizacampos();
      $sql = " update orcparamseqorcparamseqcolunavalor set ";
      $virgula = "";
-     if(trim($this->o117_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_sequencial"])){ 
+     if(trim($this->o117_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_sequencial"])){
        $sql  .= $virgula." o117_sequencial = $this->o117_sequencial ";
        $virgula = ",";
-       if(trim($this->o117_sequencial) == null ){ 
+       if(trim($this->o117_sequencial) == null ){
          $this->erro_sql = " Campo Código Sequencial nao Informado.";
          $this->erro_campo = "o117_sequencial";
          $this->erro_banco = "";
@@ -247,10 +247,10 @@ class cl_orcparamseqorcparamseqcolunavalor {
          return false;
        }
      }
-     if(trim($this->o117_orcparamseqorcparamseqcoluna)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_orcparamseqorcparamseqcoluna"])){ 
+     if(trim($this->o117_orcparamseqorcparamseqcoluna)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_orcparamseqorcparamseqcoluna"])){
        $sql  .= $virgula." o117_orcparamseqorcparamseqcoluna = $this->o117_orcparamseqorcparamseqcoluna ";
        $virgula = ",";
-       if(trim($this->o117_orcparamseqorcparamseqcoluna) == null ){ 
+       if(trim($this->o117_orcparamseqorcparamseqcoluna) == null ){
          $this->erro_sql = " Campo Coluna nao Informado.";
          $this->erro_campo = "o117_orcparamseqorcparamseqcoluna";
          $this->erro_banco = "";
@@ -260,10 +260,10 @@ class cl_orcparamseqorcparamseqcolunavalor {
          return false;
        }
      }
-     if(trim($this->o117_linha)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_linha"])){ 
+     if(trim($this->o117_linha)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_linha"])){
        $sql  .= $virgula." o117_linha = $this->o117_linha ";
        $virgula = ",";
-       if(trim($this->o117_linha) == null ){ 
+       if(trim($this->o117_linha) == null ){
          $this->erro_sql = " Campo Número da linha nao Informado.";
          $this->erro_campo = "o117_linha";
          $this->erro_banco = "";
@@ -273,10 +273,10 @@ class cl_orcparamseqorcparamseqcolunavalor {
          return false;
        }
      }
-     if(trim($this->o117_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_valor"])){ 
+     if(trim($this->o117_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_valor"])){
        $sql  .= $virgula." o117_valor = '$this->o117_valor' ";
        $virgula = ",";
-       if(trim($this->o117_valor) == null ){ 
+       if(trim($this->o117_valor) == null ){
          $this->erro_sql = " Campo Valor da Coluna nao Informado.";
          $this->erro_campo = "o117_valor";
          $this->erro_banco = "";
@@ -286,10 +286,10 @@ class cl_orcparamseqorcparamseqcolunavalor {
          return false;
        }
      }
-     if(trim($this->o117_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_instit"])){ 
+     if(trim($this->o117_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_instit"])){
        $sql  .= $virgula." o117_instit = $this->o117_instit ";
        $virgula = ",";
-       if(trim($this->o117_instit) == null ){ 
+       if(trim($this->o117_instit) == null ){
          $this->erro_sql = " Campo Cod. Instituição nao Informado.";
          $this->erro_campo = "o117_instit";
          $this->erro_banco = "";
@@ -299,10 +299,10 @@ class cl_orcparamseqorcparamseqcolunavalor {
          return false;
        }
      }
-     if(trim($this->o117_periodo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_periodo"])){ 
+     if(trim($this->o117_periodo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_periodo"])){
        $sql  .= $virgula." o117_periodo = $this->o117_periodo ";
        $virgula = ",";
-       if(trim($this->o117_periodo) == null ){ 
+       if(trim($this->o117_periodo) == null ){
          $this->erro_sql = " Campo Código Sequencial nao Informado.";
          $this->erro_campo = "o117_periodo";
          $this->erro_banco = "";
@@ -312,10 +312,10 @@ class cl_orcparamseqorcparamseqcolunavalor {
          return false;
        }
      }
-     if(trim($this->o117_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_anousu"])){ 
-        if(trim($this->o117_anousu)=="" && isset($GLOBALS["HTTP_POST_VARS"]["o117_anousu"])){ 
-           $this->o117_anousu = "0" ; 
-        } 
+     if(trim($this->o117_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["o117_anousu"])){
+        if(trim($this->o117_anousu)=="" && isset($GLOBALS["HTTP_POST_VARS"]["o117_anousu"])){
+           $this->o117_anousu = "0" ;
+        }
        $sql  .= $virgula." o117_anousu = $this->o117_anousu ";
        $virgula = ",";
      }
@@ -347,7 +347,7 @@ class cl_orcparamseqorcparamseqcolunavalor {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Valores das Colunas nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->o117_sequencial;
@@ -375,14 +375,14 @@ class cl_orcparamseqorcparamseqcolunavalor {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($o117_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($o117_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($o117_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -414,7 +414,7 @@ class cl_orcparamseqorcparamseqcolunavalor {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Valores das Colunas nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$o117_sequencial;
@@ -442,11 +442,11 @@ class cl_orcparamseqorcparamseqcolunavalor {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -468,11 +468,11 @@ class cl_orcparamseqorcparamseqcolunavalor {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $o117_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $o117_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -493,15 +493,15 @@ class cl_orcparamseqorcparamseqcolunavalor {
      $sql2 = "";
      if($dbwhere==""){
        if($o117_sequencial!=null ){
-         $sql2 .= " where orcparamseqorcparamseqcolunavalor.o117_sequencial = $o117_sequencial "; 
-       } 
+         $sql2 .= " where orcparamseqorcparamseqcoluna.o116_sequencial = $o117_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -510,11 +510,11 @@ class cl_orcparamseqorcparamseqcolunavalor {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $o117_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $o117_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -527,15 +527,15 @@ class cl_orcparamseqorcparamseqcolunavalor {
      $sql2 = "";
      if($dbwhere==""){
        if($o117_sequencial!=null ){
-         $sql2 .= " where orcparamseqorcparamseqcolunavalor.o117_sequencial = $o117_sequencial "; 
-       } 
+         $sql2 .= " where orcparamseqorcparamseqcolunavalor.o117_sequencial = $o117_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

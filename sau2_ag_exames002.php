@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,15 +29,15 @@
 
 if (!isset($arqinclude)){
   
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_utils.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_liborcamento.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_orcparamrelopcre_classe.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_utils.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_orcparamrelopcre_classe.php"));
   
   $classinatura = new cl_assinatura;
   $orcparamrel  = new cl_orcparamrel;
@@ -47,11 +47,11 @@ if (!isset($arqinclude)){
   
 }
 
-include_once("classes/db_conrelinfo_classe.php");
-include_once("classes/db_conrelvalor_classe.php");
-include_once("classes/db_orcparamrelopcre_classe.php");
-include_once("classes/db_orcparamelemento_classe.php");
-include_once("libs/db_utils.php");
+include_once(modification("classes/db_conrelinfo_classe.php"));
+include_once(modification("classes/db_conrelvalor_classe.php"));
+include_once(modification("classes/db_orcparamrelopcre_classe.php"));
+include_once(modification("classes/db_orcparamelemento_classe.php"));
+include_once(modification("libs/db_utils.php"));
 $head2          = "RELATORIO DE EXAMES CONFIRMADOS";
 $sOrder         = "";
 $sWhere         = "";
@@ -152,7 +152,7 @@ if(isset($producao) && $producao == 1){
   $sSql  .= "  where {$sWhere}";
   $sSql  .= "  order by {$sOrder}";
   $rsRelatorio = db_query($sSql);
-  $aRegistros  = db_utils::getColectionByRecord($rsRelatorio);
+  $aRegistros  = db_utils::getCollectionByRecord($rsRelatorio);
   if (pg_num_rows($rsRelatorio) == 0) {
     db_redireciona("db_erros.php?fechar=true&db_erro=Não há dados a serem impressos");
   }
@@ -245,7 +245,7 @@ if(isset($producao) && $producao == 1){
   $sSql  .= "  where {$sWhere}";
   $sSql  .= "  order by s108_i_codigo";
   $rsRelatorio = db_query($sSql);
-  $aRegistros  = db_utils::getColectionByRecord($rsRelatorio);
+  $aRegistros  = db_utils::getCollectionByRecord($rsRelatorio);
   if (pg_num_rows($rsRelatorio) == 0) {
    db_redireciona("db_erros.php?fechar=true&db_erro=Não há dados a serem impressos");
   }
@@ -289,7 +289,7 @@ if(isset($producao) && $producao == 1){
     $sSql  .= "    AND s111_i_exame = {$oLinhaRelatório->s108_i_codigo}";
     $sSql  .= "  group by  z01_nome order by z01_nome";
     $rsTotais = db_query($sSql);
-    $aTotais  = db_utils::getColectionByRecord($rsTotais); 
+    $aTotais  = db_utils::getCollectionByRecord($rsTotais); 
     $pdf->setfont('arial','',8);
   	foreach ($aTotais as $oTotal) {
       

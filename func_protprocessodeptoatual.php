@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_protprocesso_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_protprocesso_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clprotprocesso = new cl_protprocesso;
 $clprotprocesso->rotulo->label("p58_codproc");
 $clprotprocesso->rotulo->label("p58_requer");
 $clprotprocesso->rotulo->label("p58_numero");
+
 ?>
 <html>
 <head>
@@ -96,7 +97,13 @@ $clprotprocesso->rotulo->label("p58_numero");
       <?
 
       $depart_atual = db_getsession("DB_coddepto");
-      $where        = "p58_coddepto=$depart_atual";
+      $where        = "p58_coddepto = {$depart_atual}";
+
+      if (isset($processopai)) {
+        $where .= "and p58_processopai = {$processopai}";
+      } else if (isset($apenasvolumes)) {
+        $where .= "and p58_processopai != 0";
+      }
 
       if(isset($grupo) && $grupo == 1){
         $where .= " and p51_tipoprocgrupo = $grupo";
@@ -134,6 +141,7 @@ $clprotprocesso->rotulo->label("p58_numero");
         }else{
            $sql = $clprotprocesso->sql_query("",$campos,"p58_codproc desc","$where");
         }
+        
         db_lovrot($sql,15,"()","",$funcao_js);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
@@ -168,3 +176,9 @@ document.form2.chave_p58_codproc.select();
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

@@ -1,0 +1,132 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010606' name='itbi.itbitaxasavalia' description="Tabela que guarda as taxas vinculadas a guia de ITBI avaliada." prefix="it39" label="itbitaxasavalia" type="0">
+  <fields>
+    <field codigo="1011716" 
+           campo_api='' 
+           name="it39_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela itbitaxasavalia." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='itbi.itbitaxasavalia_it39_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011717" 
+           campo_api='' 
+           name="it39_guia" 
+           conteudo="int4" 
+           description="Código da guia de ITBI." 
+           inivalue="0" 
+           label="Guia" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Guia" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011718" 
+           campo_api='' 
+           name="it39_taxaslancadas" 
+           conteudo="int4" 
+           description="Código da Taxa." 
+           inivalue="0" 
+           label="Código da Taxa" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Taxa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011719" 
+           campo_api='' 
+           name="it39_valor" 
+           conteudo="float4" 
+           description="Valor da Taxa." 
+           inivalue="0" 
+           label="Valor da Taxa" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor da Taxa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011720" 
+           campo_api='' 
+           name="it39_calculasobre" 
+           conteudo="int4" 
+           description="Guarda o código que define sobre o que foi calculada a taxa de ITBI (Terreno, Construção, Ambos)." 
+           inivalue="0" 
+           label="Calcula Sobre" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Calcula Sobre" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011721" 
+           campo_api='' 
+           name="it39_aliquota" 
+           conteudo="float4" 
+           description="Guarda a alíquota que foi utilizada para calcular o valor da taxa." 
+           inivalue="0" 
+           label="Aliquota" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Aliquota" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="it39_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="itbi" inner='t'>
+      <fieldfk name="it39_guia" reference="it01_guia" /> 
+    </foreignkey>
+    <foreignkey reference="taxaslancadas" inner='t'>
+      <fieldfk name="it39_taxaslancadas" reference="ar44_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

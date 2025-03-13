@@ -1,0 +1,80 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010442' name='arrecadacao.parcvalor' description="Tabela que guarda os dados dos parcelamentos" prefix="" label="Valor/Data de parcelas" type="0">
+  <fields>
+    <field codigo="1010445" 
+           campo_api='' 
+           name="k189_numpre" 
+           conteudo="int8" 
+           description="Numpre do arrecad" 
+           inivalue="0" 
+           label="" 
+           size="1" 
+           null="f"
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+    </field> 
+    <field codigo="1010448" 
+           campo_api='' 
+           name="k189_numpar" 
+           conteudo="int8" 
+           description="Numpar do arrecad" 
+           inivalue="" 
+           label="" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010446" 
+           campo_api='' 
+           name="k189_data" 
+           conteudo="date" 
+           description="Data do parcelamento" 
+           inivalue="" 
+           label="" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010447" 
+           campo_api='' 
+           name="k189_valor" 
+           conteudo="float8" 
+           description="Campo que guarda o valor do parcelamento" 
+           inivalue="" 
+           label="" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+</table>

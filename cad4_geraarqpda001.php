@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,27 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("fpdf151/scpdf.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_sql.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_ruas_classe.php");
-include ("classes/db_bairro_classe.php");
-include ("classes/db_cgm_classe.php");
-include ("classes/db_ativid_classe.php");
-include ("classes/db_caracter_classe.php");
-include ("classes/db_cadtipo_classe.php");
-include ("classes/db_iptucale_classe.php");
-include ("classes/db_iptucalc_classe.php");
-include ("classes/db_iptucalv_classe.php");
-include ("classes/db_lote_classe.php");
-include ("classes/db_face_classe.php");
-include ("classes/db_carlote_classe.php");
-include ("classes/db_carface_classe.php");
-include ("classes/db_carconstr_classe.php");
-include ("classes/db_isscalc_classe.php");
+require(modification("fpdf151/scpdf.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_ruas_classe.php"));
+include(modification("classes/db_bairro_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_ativid_classe.php"));
+include(modification("classes/db_caracter_classe.php"));
+include(modification("classes/db_cadtipo_classe.php"));
+include(modification("classes/db_iptucale_classe.php"));
+include(modification("classes/db_iptucalc_classe.php"));
+include(modification("classes/db_iptucalv_classe.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("classes/db_face_classe.php"));
+include(modification("classes/db_carlote_classe.php"));
+include(modification("classes/db_carface_classe.php"));
+include(modification("classes/db_carconstr_classe.php"));
+include(modification("classes/db_isscalc_classe.php"));
 
 
 $clrotulo = new rotulocampo;
@@ -139,7 +139,7 @@ if (isset ($gerar)) {
 		
 		$sql .=	"   order by j01_matric, j39_idcons   ";
            
-	        $result = pg_exec($sql);
+	        $result = db_query($sql);
 
 			$numrows = pg_numrows($result);
 			if ($result == false || $numrows == 0) {

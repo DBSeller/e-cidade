@@ -1,10 +1,10 @@
 <?
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhfolhapagamento_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhfolhapagamento_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clrhfolhapagamento = new cl_rhfolhapagamento;
@@ -40,7 +40,7 @@ $clrhfolhapagamento->rotulo->label("rh141_sequencial");
       if (!isset($pesquisa_chave)){
         if (isset($campos)==false){
            if (file_exists("funcoes/db_func_rhfolhapagamento.php")==true){
-             include("funcoes/db_func_rhfolhapagamento.php");
+             include(modification("funcoes/db_func_rhfolhapagamento.php"));
            } else {
            $campos = "rhfolhapagamento.*";
            }
@@ -88,4 +88,11 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_rh141_sequencial",true,1,"chave_rh141_sequencial",true);
+</script>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

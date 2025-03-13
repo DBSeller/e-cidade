@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_desperdicio_classe.php");
-include("classes/db_mer_cardapioitem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_desperdicio_classe.php"));
+include(modification("classes/db_mer_cardapioitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $escola = db_getsession("DB_coddepto");
@@ -54,7 +54,7 @@ $escola = db_getsession("DB_coddepto");
 <?
 //select tipos de nutrientes
 $sql    ="select me09_i_codigo,me09_c_descr from mer_nutriente order by me09_c_descr";
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 $sql1   = " select distinct me01_i_codigo,me01_c_nome,me01_i_percapita,me01_f_versao from mer_cardapio ";
 $str    = "";
@@ -87,7 +87,7 @@ if (isset($cardapio)) {
   }
 }
 $sql1    .= $str;
-$result1  = pg_query($sql1);
+$result1  = db_query($sql1);
 $linhas1  = pg_num_rows($result1);
 ?>
 <br>
@@ -102,12 +102,12 @@ for ($z=0;$z<$linhas1;$z++) {
   $sql2     = " select me35_i_codigo,me35_c_nomealimento from mer_cardapioitem ";
   $sql2    .= "       inner join mer_alimento on me35_i_codigo=me07_i_alimento ";
   $sql2    .= "       where me07_i_cardapio=$me01_i_codigo";
-  $result2  = pg_query($sql2);
+  $result2  = db_query($sql2);
   $linhas2  = pg_num_rows($result2);           
   $sqltp    = " select me03_c_tipo from mer_cardapiotipo ";
   $sqltp    .= "        inner join mer_tprefeicao on me21_i_tprefeicao = me03_i_codigo ";
   $sqltp    .= "        where me21_i_cardapio=$me01_i_codigo"; 
-  $resulttp = pg_query($sqltp);
+  $resulttp = db_query($sqltp);
   $linhastp = pg_num_rows($resulttp);
   $sep      = "";
   $tipo     = "";
@@ -168,7 +168,7 @@ for ($z=0;$z<$linhas1;$z++) {
 	           $sqli   .= "                inner join mer_cardapioitem on me07_i_cardapio=me01_i_codigo "; 
 	           $sqli   .= "                inner join matunid on m61_codmatunid=me07_i_unidade ";
 	           $sqli   .= "          where me07_i_alimento=$me35_i_codigo and me07_i_cardapio=$me01_i_codigo";
-	           $resulti = pg_query($sqli);
+	           $resulti = db_query($sqli);
 	           $linhasi = pg_num_rows($resulti);
 	           if ($linhasi>0) {
 	           	
@@ -188,7 +188,7 @@ for ($z=0;$z<$linhas1;$z++) {
                  $sqln   .= "          inner join matunid on m61_codmatunid=me09_i_unidade ";
 	             $sqln   .= "            where me08_i_alimento=$me35_i_codigo ";
 	             $sqln   .= "             and me08_i_nutriente=$me09_i_codigo";	               
-	             $resultn = pg_query($sqln);
+	             $resultn = db_query($sqln);
 	             if (pg_num_rows($resultn)>0){
 	             	
 	              db_fieldsmemory($resultn,0);

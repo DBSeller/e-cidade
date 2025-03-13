@@ -1,68 +1,68 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: contabilidade
 //CLASSE DA ENTIDADE concarpeculiar
-class cl_concarpeculiar { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $c58_sequencial = null; 
-   var $c58_descr = null; 
-   var $c58_tipo = 0; 
-   var $c58_db_estruturavalor = 0; 
-   var $c58_estrutural = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_concarpeculiar {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $c58_sequencial = null;
+   var $c58_descr = null;
+   var $c58_tipo = 0;
+   var $c58_db_estruturavalor = 0;
+   var $c58_estrutural = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 c58_sequencial = varchar(100) = Sequencial 
-                 c58_descr = varchar(50) = Descrição 
-                 c58_tipo = int4 = Tipo de Conta 
-                 c58_db_estruturavalor = int4 = Código da Estrutura 
-                 c58_estrutural = varchar(100) = Código 
+                 c58_sequencial = varchar(100) = Sequencial
+                 c58_descr = varchar(50) = Descrição
+                 c58_tipo = int4 = Tipo de Conta
+                 c58_db_estruturavalor = int4 = Código da Estrutura
+                 c58_estrutural = varchar(100) = Código
                  ";
-   //funcao construtor da classe 
-   function cl_concarpeculiar() { 
+   //funcao construtor da classe
+   function cl_concarpeculiar() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("concarpeculiar"); 
+     $this->rotulo = new rotulo("concarpeculiar");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -83,9 +83,9 @@ class cl_concarpeculiar {
      }
    }
    // funcao para inclusao
-   function incluir ($c58_sequencial){ 
+   function incluir ($c58_sequencial){
       $this->atualizacampos();
-     if($this->c58_descr == null ){ 
+     if($this->c58_descr == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "c58_descr";
        $this->erro_banco = "";
@@ -94,7 +94,7 @@ class cl_concarpeculiar {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c58_tipo == null ){ 
+     if($this->c58_tipo == null ){
        $this->erro_sql = " Campo Tipo de Conta nao Informado.";
        $this->erro_campo = "c58_tipo";
        $this->erro_banco = "";
@@ -103,7 +103,7 @@ class cl_concarpeculiar {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c58_db_estruturavalor == null ){ 
+     if($this->c58_db_estruturavalor == null ){
        $this->erro_sql = " Campo Código da Estrutura nao Informado.";
        $this->erro_campo = "c58_db_estruturavalor";
        $this->erro_banco = "";
@@ -112,7 +112,7 @@ class cl_concarpeculiar {
        $this->erro_status = "0";
        return false;
      }
-     if($this->c58_estrutural == null ){ 
+     if($this->c58_estrutural == null ){
        $this->erro_sql = " Campo Código nao Informado.";
        $this->erro_campo = "c58_estrutural";
        $this->erro_banco = "";
@@ -121,8 +121,8 @@ class cl_concarpeculiar {
        $this->erro_status = "0";
        return false;
      }
-       $this->c58_sequencial = $c58_sequencial; 
-     if(($this->c58_sequencial == null) || ($this->c58_sequencial == "") ){ 
+       $this->c58_sequencial = $c58_sequencial;
+     if(($this->c58_sequencial == null) || ($this->c58_sequencial == "") ){
        $this->erro_sql = " Campo c58_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -131,21 +131,21 @@ class cl_concarpeculiar {
        return false;
      }
      $sql = "insert into concarpeculiar(
-                                       c58_sequencial 
-                                      ,c58_descr 
-                                      ,c58_tipo 
-                                      ,c58_db_estruturavalor 
-                                      ,c58_estrutural 
+                                       c58_sequencial
+                                      ,c58_descr
+                                      ,c58_tipo
+                                      ,c58_db_estruturavalor
+                                      ,c58_estrutural
                        )
                 values (
-                                '$this->c58_sequencial' 
-                               ,'$this->c58_descr' 
-                               ,$this->c58_tipo 
-                               ,$this->c58_db_estruturavalor 
-                               ,'$this->c58_estrutural' 
+                                '$this->c58_sequencial'
+                               ,'$this->c58_descr'
+                               ,$this->c58_tipo
+                               ,$this->c58_db_estruturavalor
+                               ,'$this->c58_estrutural'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Caracteristicas Pecualiares ($this->c58_sequencial) nao Incluído. Inclusao Abortada.";
@@ -181,16 +181,16 @@ class cl_concarpeculiar {
        $resac = db_query("insert into db_acount values($acount,1862,18123,'','".AddSlashes(pg_result($resaco,0,'c58_estrutural'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($c58_sequencial=null) { 
+   function alterar ($c58_sequencial=null) {
       $this->atualizacampos();
      $sql = " update concarpeculiar set ";
      $virgula = "";
-     if(trim($this->c58_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_sequencial"])){ 
+     if(trim($this->c58_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_sequencial"])){
        $sql  .= $virgula." c58_sequencial = '$this->c58_sequencial' ";
        $virgula = ",";
-       if(trim($this->c58_sequencial) == null ){ 
+       if(trim($this->c58_sequencial) == null ){
          $this->erro_sql = " Campo Sequencial nao Informado.";
          $this->erro_campo = "c58_sequencial";
          $this->erro_banco = "";
@@ -200,10 +200,10 @@ class cl_concarpeculiar {
          return false;
        }
      }
-     if(trim($this->c58_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_descr"])){ 
+     if(trim($this->c58_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_descr"])){
        $sql  .= $virgula." c58_descr = '$this->c58_descr' ";
        $virgula = ",";
-       if(trim($this->c58_descr) == null ){ 
+       if(trim($this->c58_descr) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "c58_descr";
          $this->erro_banco = "";
@@ -213,10 +213,10 @@ class cl_concarpeculiar {
          return false;
        }
      }
-     if(trim($this->c58_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_tipo"])){ 
+     if(trim($this->c58_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_tipo"])){
        $sql  .= $virgula." c58_tipo = $this->c58_tipo ";
        $virgula = ",";
-       if(trim($this->c58_tipo) == null ){ 
+       if(trim($this->c58_tipo) == null ){
          $this->erro_sql = " Campo Tipo de Conta nao Informado.";
          $this->erro_campo = "c58_tipo";
          $this->erro_banco = "";
@@ -226,10 +226,10 @@ class cl_concarpeculiar {
          return false;
        }
      }
-     if(trim($this->c58_db_estruturavalor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_db_estruturavalor"])){ 
+     if(trim($this->c58_db_estruturavalor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_db_estruturavalor"])){
        $sql  .= $virgula." c58_db_estruturavalor = $this->c58_db_estruturavalor ";
        $virgula = ",";
-       if(trim($this->c58_db_estruturavalor) == null ){ 
+       if(trim($this->c58_db_estruturavalor) == null ){
          $this->erro_sql = " Campo Código da Estrutura nao Informado.";
          $this->erro_campo = "c58_db_estruturavalor";
          $this->erro_banco = "";
@@ -239,10 +239,10 @@ class cl_concarpeculiar {
          return false;
        }
      }
-     if(trim($this->c58_estrutural)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_estrutural"])){ 
+     if(trim($this->c58_estrutural)!="" || isset($GLOBALS["HTTP_POST_VARS"]["c58_estrutural"])){
        $sql  .= $virgula." c58_estrutural = '$this->c58_estrutural' ";
        $virgula = ",";
-       if(trim($this->c58_estrutural) == null ){ 
+       if(trim($this->c58_estrutural) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "c58_estrutural";
          $this->erro_banco = "";
@@ -276,7 +276,7 @@ class cl_concarpeculiar {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Caracteristicas Pecualiares nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->c58_sequencial;
@@ -304,14 +304,14 @@ class cl_concarpeculiar {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($c58_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($c58_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($c58_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -341,7 +341,7 @@ class cl_concarpeculiar {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Caracteristicas Pecualiares nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$c58_sequencial;
@@ -369,11 +369,11 @@ class cl_concarpeculiar {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -395,11 +395,11 @@ class cl_concarpeculiar {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $c58_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $c58_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -409,18 +409,19 @@ class cl_concarpeculiar {
        $sql .= $campos;
      }
      $sql .= " from concarpeculiar ";
+     $sql .= " left  join  concarpeculiarclassificacao on c58_tipo = c09_sequencial ";
      $sql2 = "";
      if($dbwhere==""){
        if($c58_sequencial!=null ){
-         $sql2 .= " where concarpeculiar.c58_sequencial = '$c58_sequencial' "; 
-       } 
+         $sql2 .= " where concarpeculiar.c58_sequencial = '$c58_sequencial' ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -429,11 +430,11 @@ class cl_concarpeculiar {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $c58_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $c58_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -446,15 +447,15 @@ class cl_concarpeculiar {
      $sql2 = "";
      if($dbwhere==""){
        if($c58_sequencial!=null ){
-         $sql2 .= " where concarpeculiar.c58_sequencial = '$c58_sequencial' "; 
-       } 
+         $sql2 .= " where concarpeculiar.c58_sequencial = '$c58_sequencial' ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -473,10 +474,10 @@ class cl_concarpeculiar {
    * @return string
    */
   function buscaDadosCaracteristica( $c58_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "" ){
-    
+
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -486,19 +487,19 @@ class cl_concarpeculiar {
        $sql .= $campos;
      }
      $sql .= " from concarpeculiar ";
-     $sql .= "      inner join db_estruturavalor on concarpeculiar.c58_sequencial = db_estruturavalor.db121_estrutural ";
+     $sql .= "      inner join db_estruturavalor on concarpeculiar.c58_db_estruturavalor = db_estruturavalor.db121_sequencial ";
      $sql2 = "";
      if($dbwhere==""){
        if($c58_sequencial!=null ){
-         $sql2 .= " where concarpeculiar.c58_sequencial = '$c58_sequencial' "; 
-       } 
+         $sql2 .= " where concarpeculiar.c58_sequencial = '$c58_sequencial' ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -508,4 +509,4 @@ class cl_concarpeculiar {
      return $sql;
   }
 }
-?>
+

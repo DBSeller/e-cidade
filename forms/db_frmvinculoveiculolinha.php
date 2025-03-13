@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -143,7 +143,7 @@ function js_pesquisaLinhaTransporte(lMostra) {
       sUrl += '&pesquisa_chave='+$F('tre06_sequencial');
     }
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_linhatransporte', sUrl, 'Pesquisa Linha', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_linhatransporte', sUrl, 'Pesquisa Linha', lMostra);
 }
 
 /**
@@ -184,7 +184,7 @@ function js_pesquisaLinhaTransporteHorario(lMostra) {
     sUrl += '|tre07_sequencial|tre07_horasaida|tre07_horachegada';
     sUrl += '&iLinha='+$F('tre06_sequencial')+'&iTipo='+$F('iItinerario');
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_linhatransportehorario', sUrl, 'Pesquisa Horário', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_linhatransportehorario', sUrl, 'Pesquisa Horário', lMostra);
 }
 
 /**
@@ -229,7 +229,7 @@ function js_pesquisaVeiculos(lMostra) {
     sUrl += '|tre01_sequencial|ve22_descr|tre01_numeropassageiros';
     sUrl += '&iLinha='+$F('tre06_sequencial');
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_veiculos', sUrl, 'Pesquisa Veículos', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_veiculos', sUrl, 'Pesquisa Veículos', lMostra);
 }
 
 /**
@@ -301,7 +301,7 @@ function js_salvarVeiculoLinha() {
 function js_retornoSalvarVeiculoLinha(oResponse) {
 
    js_removeObj("msgBox");
-   var oRetorno = eval('('+oResponse.responseText+')');
+   var oRetorno = JSON.parse(oResponse.responseText);
 
    alert(oRetorno.message.urlDecode());
    if (oRetorno.status == 1) {
@@ -337,7 +337,7 @@ function js_buscaVeiculosHorario() {
 function js_retornoVeiculosHorario(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   if (oRetorno.status == 1) {
 
     oGridVinculo.clearAll(true);
@@ -388,7 +388,7 @@ function js_removerVeiculoHorario(iItinerarioHorario, iVeiculoHorario) {
 function js_retornoRemoverVeiculo(oResponse) {
 
    js_removeObj("msgBox");
-   var oRetorno = eval('('+oResponse.responseText+')');
+   var oRetorno = JSON.parse(oResponse.responseText);
 
    alert(oRetorno.message.urlDecode());
 

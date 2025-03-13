@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -55,11 +55,12 @@ $sql = "
            when 3    then 'AFASTADO POR ACIDENTE'
            when 4    then 'AFASTADO EXÉRCITO'
            when 5    then 'LICENÇA GESTANTE'
-           when 6    then 'AFASTADO POR DOENÇA + 15 DIAS'
+           when 6    then 'AFASTADO POR DOENÇA +15 DIAS'
            when 7    then 'AFASTADO SEM VENCIMENTOS'
+           when 8    then 'AFASTADO POR DOENÇA +30 DIAS'
            else           'NORMAL'
         end as situacao,
-        substr(db_fxxx(rh01_regist,rh02_anousu,rh02_mesusu,rh02_instit),210,20) as padrao,
+        substr(db_fxxx(rh01_regist,rh02_anousu,rh02_mesusu,rh02_instit),221,20) as padrao,
         substr(db_fxxx(rh01_regist,rh02_anousu,rh02_mesusu,rh02_instit),111,11) as f010,
         case when rh02_fpagto = 3 then 'CONTA' else 'CHEQUE' end as tip_pagto
         
@@ -90,7 +91,7 @@ $sql = "
        ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem funcionários cadastrados no período de '.$mes.' / '.$ano);
@@ -225,7 +226,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
                          r14_mesusu = $mes and 
                          r14_regist = $rh01_regist
                    order by r14_rubric";
-   $res_calculo = pg_query($sql_calculo);
+   $res_calculo = db_query($sql_calculo);
    $cabecalho = 1;
    $base_prev = 0;
    $base_irrf = 0;

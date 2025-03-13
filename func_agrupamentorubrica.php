@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_agrupamentorubrica_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_agrupamentorubrica_classe.php"));
+
+use ECidade\RecursosHumanos\Pessoal\Repository\TipoAgrupamentoRubricaRepository;
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -41,6 +43,7 @@ $clagrupamentorubrica->rotulo->label("rh113_sequencial");
 $clagrupamentorubrica->rotulo->label("rh113_codigo");
 $clagrupamentorubrica->rotulo->label("rh113_descricao");
 $clagrupamentorubrica->rotulo->label("rh113_tipo");
+$clagrupamentorubrica->rotulo->label("rh113_tipogrupo");
 
 $aTipo    = array(''  => 'Todos',
                   '1' => 'Provento', 
@@ -94,7 +97,20 @@ $aTipo    = array(''  => 'Todos',
               <?php db_select("chave_rh113_tipo", $aTipo, true, 1, null); ?>
             </td>
           </tr>
-
+          <tr>
+            <td align="right" >
+              <?php echo $Lrh113_tipogrupo; ?>
+            </td>
+            <td nowrap title="<?php echo $Trh113_tipogrupo; ?>">
+              <?php
+              $aTiposGrupos = array( 0 => 'Todos');
+              foreach (TipoAgrupamentoRubricaRepository::findAll() as $tipoAgrupamento) {
+                  $aTiposGrupos[$tipoAgrupamento->getSequencial()] = $tipoAgrupamento->getDescricao();
+              }
+              db_select("chave_rh113_tipogrupo", $aTiposGrupos, true, 1, null);
+              ?>
+            </td>
+          </tr>
           <tr> 
             <td colspan="2" align="center"> 
               <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
@@ -114,7 +130,7 @@ $aTipo    = array(''  => 'Todos',
         if ( isset($campos) == false ) {
 
           if ( file_exists("funcoes/db_func_agrupamentorubrica.php") == true ) {
-            include("funcoes/db_func_agrupamentorubrica.php");
+            include(modification("funcoes/db_func_agrupamentorubrica.php"));
           } else {
             $campos = "agrupamentorubrica.*";
           }
@@ -134,6 +150,10 @@ $aTipo    = array(''  => 'Todos',
           $aWhere[] = "rh113_tipo = $chave_rh113_tipo";
         }
 
+        if ( !empty($chave_rh113_tipogrupo) ) {
+          $aWhere[] = "rh113_tipogrupo = $chave_rh113_tipogrupo";
+        }
+
         $sWhere = implode(' and ', $aWhere);
 
         if ( !empty($chave_rh113_sequencial) ) {
@@ -143,7 +163,7 @@ $aTipo    = array(''  => 'Todos',
         }
 
         $repassa = array();
-
+        
         if ( isset($chave_rh113_sequencial) ) {
           $repassa = array(
             "chave_rh113_sequencial" => $chave_rh113_sequencial
@@ -181,4 +201,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_rh113_sequencial",true,1,"chave_rh113_sequencial",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

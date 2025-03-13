@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tipoproc_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tipoproc_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($_POST);
 $cltipoproc = new cl_tipoproc;
@@ -65,6 +65,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
    }
 
    $cltipoproc->p51_descr = $oPost->p51_descr;
+   $cltipoproc->p51_prottipodocumentoprocesso = $oPost->p51_prottipodocumentoprocesso;
   }
   if ($sqlerro == false) {
 
@@ -97,12 +98,12 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
     <td width="140">&nbsp;</td>
   </tr>
 </table>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
+<table width="790" border="0" cellspacing="0" cellpadding="0" align="center" style="margin-top:100px;">
   <tr>
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
 	<?
-	include("forms/db_frmtipoproc.php");
+	include(modification("forms/db_frmtipoproc.php"));
 	?>
     </center>
 	</td>

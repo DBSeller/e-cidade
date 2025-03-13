@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_procfiscal_classe.php");
-include("classes/db_procfiscalinscr_classe.php");
-include("classes/db_procfiscalmatric_classe.php");
-include("classes/db_procfiscalsani_classe.php");
-include("classes/db_procfiscalcgm_classe.php");
-include("classes/db_procfiscalprot_classe.php");
-include("classes/db_procfiscalfiscais_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_procfiscal_classe.php"));
+include(modification("classes/db_procfiscalinscr_classe.php"));
+include(modification("classes/db_procfiscalmatric_classe.php"));
+include(modification("classes/db_procfiscalsani_classe.php"));
+include(modification("classes/db_procfiscalcgm_classe.php"));
+include(modification("classes/db_procfiscalprot_classe.php"));
+include(modification("classes/db_procfiscalfiscais_classe.php"));
 $clprocfiscal = new cl_procfiscal;
 $clprocfiscalinscr  = new cl_procfiscalinscr;
 $clprocfiscalmatric = new cl_procfiscalmatric;
@@ -135,7 +135,7 @@ if(isset($alterar)){
 		$erro_msg = "Campo Processo não informado!";
   }else{
     $sqlprot = "	select y105_sequencial from procfiscalprot where y105_procfiscal = $y100_sequencial";
-		$resultprot = pg_query($sqlprot);
+		$resultprot = db_query($sqlprot);
 		db_fieldsmemory($resultprot,0);
 		$clprocfiscalprot->y105_sequencial= $y105_sequencial;
 		$clprocfiscalprot->y105_protprocesso = $p58_codproc;
@@ -171,7 +171,7 @@ if(isset($alterar)){
 					left  join procfiscalinscr   on y103_procfiscal                  = procfiscal.y100_sequencial
 					left  join procfiscalsani    on y104_procfiscal                  = procfiscal.y100_sequencial
 					where procfiscal.y100_sequencial = $chavepesquisa";
-	 $result = pg_query($sql);
+	 $result = db_query($sql);
 	 
 	 
    db_fieldsmemory($result,0);
@@ -191,7 +191,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmprocfiscal.php");
+	include(modification("forms/db_frmprocfiscal.php"));
 	?>
     </center>
 	</td>
@@ -216,7 +216,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.procfiscalfiscais.disabled=false;
-         top.corpo.iframe_procfiscalfiscais.location.href='fis1_procfiscalfiscais001.php?y106_procfiscal=".@$y100_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_procfiscalfiscais.location.href='fis1_procfiscalfiscais001.php?y106_procfiscal=".@$y100_sequencial."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('procfiscalfiscais');";

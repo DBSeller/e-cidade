@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,46 +25,36 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/db_usuariosonline.php');
-require_once('libs/db_utils.php');
-require_once('libs/db_stdlibwebseller.php');
-require_once('dbforms/db_funcoes.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_usuariosonline.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_stdlibwebseller.php'));
+require_once(modification('dbforms/db_funcoes.php'));
 
-$oDaoUnidades   = db_utils::getdao('unidades');
-$iUpssolicitante = db_getsession('DB_coddepto');
-$descrdepto     = db_getsession('DB_nomedepto');
-$oSauConfig     = loadConfig('sau_config');
-
-$sSqlUnid       = $oDaoUnidades->sql_query_file($iUpssolicitante);
-$oDaoUnidades->sql_record($sSqlUnid);
-
-if ($oDaoUnidades->numrows == 0) {
-  die('<center><br><br><b><big>Departamento não está cadastrado como UPS no módulo Ambulatorial!</big></b></center>');
-}
-
+$iUpssolicitante   = db_getsession('DB_coddepto');
+$oSauConfig        = loadConfig('sau_config');
+$oDepartamento     = DBDepartamentoRepository::getDBDepartamentoByCodigo($iUpssolicitante);
+$descrdepto        = $oDepartamento->getNomeDepartamento();
 $oAgendaParametros = loadConfig('sau_parametrosagendamento');
+
 if ($oAgendaParametros != null) {
   $s165_formatocomprovanteagend = $oAgendaParametros->s165_formatocomprovanteagend; 
 }
 
 $db_opcao_cotas = 1;
-$oResult = getCotasAgendamento($iUpssolicitante, null, null, null, null);
+$oResult        = getCotasAgendamento($iUpssolicitante, null, null, null, null);
+
 if ($oResult->lStatus != 1) {
 
   $sd02_i_codigo = $iUpssolicitante;
   $db_opcao_cotas = 3;
-  
 } else {
 	 
   $sd02_i_codigo  = "";
   $descrdepto     = ""; 
-  	
 }
-
-
 ?>
 <html>
 <head>
@@ -77,26 +67,29 @@ if ($oResult->lStatus != 1) {
 <script language="JavaScript" type="text/javascript" src="scripts/webseller.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
+<body class="body-default">
+<?php
+db_menu();
+try {
+  new UnidadeProntoSocorro(db_getsession("DB_coddepto"));
+} catch(\Exception $e) {
+  die("<div class='container'><h2>{$e->getMessage()}</h2></div>");
+}
+?>
 <table align="center" width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
   <tr> 
     <td height="100%" align="center" valign="top" bgcolor="#CCCCCC">
       <br><br>
       <fieldset style='width: 70%;'> <legend><b>Agendamento</b></legend>
-        <?
-        require_once("forms/db_frmagendamentounificado.php");
+        <?php
+        require_once(modification("forms/db_frmagendamentounificado.php"));
         ?>
       </fieldset>
     </td>
   </tr>
 </table>
-<?
-db_menu(db_getsession('DB_id_usuario'), db_getsession('DB_modulo'), 
-        db_getsession('DB_anousu'), db_getsession('DB_instit')
-       );
+<?php
+db_menu();
 ?>
 </body>
 </html>
-<script>
-  js_tabulacaoforms('form1', 'sd02_i_codigo', true, 1, 'sd02_i_codigo' ,true);
-</script>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_protparamglobal_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libdicionario.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_protparamglobal_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libdicionario.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clprotparamglobal = new cl_protparamglobal;
+$clprotprocessonumeracao = new cl_protprocessonumeracao;
+
 $db_opcao = 22;
 $db_botao = false;
-if(isset($alterar)){
+
+if (isset($alterar)) {
    db_inicio_transacao();
    $result = $clprotparamglobal->sql_record($clprotparamglobal->sql_query());
    if($result==false || $clprotparamglobal->numrows==0){
@@ -46,10 +49,14 @@ if(isset($alterar)){
    }else{
      $clprotparamglobal->alterar($p06_sequencial);
    }
-   db_fim_transacao();
+
+  db_fim_transacao();
 }
 $db_opcao = 2;
-$result = $clprotparamglobal->sql_record($clprotparamglobal->sql_query());
+$result = $clprotparamglobal->sql_record(
+  $clprotparamglobal->sql_query(null, '*', null, ' p06_instituicao = ' . db_getsession('DB_instit') )
+);
+
 if($result!=false && $clprotparamglobal->numrows>0){
   db_fieldsmemory($result,0);
 }
@@ -66,11 +73,11 @@ $db_botao = true;
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" style="margin-top:25px;">
 
 <table align="center" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td align="left" valign="top" bgcolor="#CCCCCC">
     <center>
       	<?
-      	include("forms/db_frmprotparamglobal.php");
+      	include(modification("forms/db_frmprotparamglobal.php"));
       	?>
     </center>
 	</td>

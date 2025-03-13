@@ -78,7 +78,7 @@ db_input('anomes',6,$Ianomes,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rubteste','func_rubteste.php?funcao_js=parent.js_preenchepesquisa|rubant|descrrub','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rubteste','func_rubteste.php?funcao_js=parent.js_preenchepesquisa|rubant|descrrub','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_rubteste.hide();

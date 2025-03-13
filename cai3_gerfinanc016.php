@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+require_once(modification("classes/db_numpref_classe.php"));
+parse_str(base64_decode($_SERVER["QUERY_STRING"]));
+
 //arreprescr k30_anulado is false
+$clnumpref = new cl_numpref();
+$resnumpref = $clnumpref->sql_record($clnumpref->sql_query_file(db_getsession("DB_anousu"), db_getsession('DB_instit'), "k03_imprimecancdebitos"));
+
+if ($resnumpref == false || $clnumpref->numrows == 0) {
+  db_msgbox("Tabela de parâmetro (numpref) não configurada! Verifique com administrador");
+  db_redireciona("corpo.php");
+  exit();
+} else {
+  db_fieldsmemory($resnumpref, 0);
+}
+
+
 ?>
 <html>
 <head>
@@ -78,7 +92,7 @@ td {
 <body bgcolor=#CCCCCC bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="parent.document.getElementById('processando').style.visibility = 'hidden'">
 <center>
 <?
-if(isset($tipo_cert) && !isset($HTTP_POST_VARS["procurar"])) {
+if(isset($tipo_cert) && !isset($_POST["procurar"])) {
 ?>
 <br><br>
 <!--form name="form1" method="post" onSubmit="return js_validar()"-->
@@ -88,7 +102,7 @@ if(isset($tipo_cert) && !isset($HTTP_POST_VARS["procurar"])) {
         <td width="12%" class="tabs" nowrap><strong>Data Inicial:</strong></td>
         <td width="88%" class="tabs"> 
           <?
-		  include("dbforms/db_funcoes.php");
+		  include(modification("dbforms/db_funcoes.php"));
     db_inputdata('datainicial',@$datainicial_dia,@$datainicial_mes,@$datainicial_ano,true,'text',4);
 	  ?>
         </td>
@@ -239,7 +253,7 @@ function js_validar() {
 	}	
 
     $sqlc .= " order by p.k00_numpre,p.k00_numpar";
-    $dados = pg_exec($sqlc);
+    $dados = db_query($sqlc);
 	
     $ConfCor1 = "#EFE029";
     $ConfCor2 = "#E4F471";
@@ -311,13 +325,13 @@ function js_validar() {
       <th width="22%" nowrap></th>
       -->
     </tr>
-
+    <?php if($k03_imprimecancdebitos == "t") : ?>
     <tr>
       <td nowrap align="center" colspan="9">
         <input type="button" name="impcanc" value="Imprimir cancelamentos" onclick="js_imprime();">
       </td>
     </tr>
-
+    <?php endif; ?>
     <tr>
         <td height="30" colspan="11" align="center" class="tabs"></td>
     </tr>
@@ -326,7 +340,7 @@ function js_validar() {
 
 function js_mostradiv(hist,mostra, object) {
   if(mostra == true){
-   var camada = top.corpo.document.createElement("DIV");
+   var camada = (window.CurrentWindow || parent.CurrentWindow).corpo.document.createElement("DIV");
    camada.setAttribute("id","info");
    camada.setAttribute("align","center");
    camada.style.backgroundColor = "#FFFF99";
@@ -339,10 +353,10 @@ function js_mostradiv(hist,mostra, object) {
    //camada.style.width = "500px";
    //camada.style.height = "60px";
    camada.innerHTML = '<table><tr><td>'+hist+'</td></tr></table>';
-   top.corpo.document.body.appendChild(camada);
+   (window.CurrentWindow || parent.CurrentWindow).corpo.document.body.appendChild(camada);
   }else{
-    if(top.corpo.document.getElementById("info")){
-     top.corpo.document.body.removeChild(top.corpo.document.getElementById("info"));
+    if((window.CurrentWindow || parent.CurrentWindow).corpo.document.getElementById("info")){
+     (window.CurrentWindow || parent.CurrentWindow).corpo.document.body.removeChild((window.CurrentWindow || parent.CurrentWindow).corpo.document.getElementById("info"));
     } 
   }
 }

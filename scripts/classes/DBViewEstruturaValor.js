@@ -134,7 +134,7 @@ function DBViewEstruturaValor(iEstrutura, sTitulo, sInstance, oNode) {
                                    parameters: 'json='+Object.toJSON(oParam), 
                                    onComplete: function(oAjax) {
                                    
-                                     var oRetorno = eval("("+oAjax.responseText+")");
+                                     var oRetorno = JSON.parse(oAjax.responseText);
                                      me.txtMascara.setValue(oRetorno.sMascara.urlDecode());
                                      me.txtEstrutural.setValue(oRetorno.sMascara.urlDecode());
                                      me.txtEstrutural.setMaxLength(me.txtMascara.getValue().length);

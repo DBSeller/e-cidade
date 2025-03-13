@@ -21,8 +21,12 @@ class AgataReport
         $this->FileName         = $params[2];
         
         $this->XmlArray         = $XmlArray = $params[4];
+        
+        if(isset($params[5]))
         $this->posAction        = $params[5];
+
         $this->layout           = $params[6];
+        if(isset($params[7]))
         $this->ReportName       = $params[7];
         
         $this->Adjustments      = Report::ExtractAdjustments($XmlArray['Report']['DataSet']);
@@ -66,7 +70,7 @@ class AgataReport
     function GetReportName()
     {
         //$this->InputBox = new InputBox(_a('Type the Report Name'), 200);
-        //$this->InputBox->button->connect_object('clicked', array(&$this,'Process'), true);
+        //$this->InputBox->button->connect_object('clicked', array($this,'Process'), true);
         $this->Process(true);
     }
     
@@ -506,8 +510,8 @@ class AgataReport
     
     function ExecPosAction()
     {
-        $obj = &$this->posAction[0];
-        $att = &$this->posAction[1];
+        $obj = $this->posAction[0];
+        $att = $this->posAction[1];
         $obj->{$att}();
     }
     

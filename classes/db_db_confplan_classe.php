@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -129,6 +129,15 @@ class cl_db_confplan {
        $this->erro_status = "0";
        return false;
      }
+     if ($this->w10_dia < 1 || $this->w10_dia > 31) {
+       $this->erro_sql    = " Campo Dia Vencimento não pode ser maior ou menor os dias do mês.";
+       $this->erro_campo  = "w10_dia";
+       $this->erro_banco  = "";
+       $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
      $sql = "insert into db_confplan(
                                        w10_valor 
                                       ,w10_receit 
@@ -228,11 +237,20 @@ class cl_db_confplan {
      if(trim($this->w10_dia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["w10_dia"])){ 
        $sql  .= $virgula." w10_dia = $this->w10_dia ";
        $virgula = ",";
-       if(trim($this->w10_dia) == null ){ 
+       if(trim($this->w10_dia) == null){
          $this->erro_sql = " Campo Dia Vencimento nao Informado.";
          $this->erro_campo = "w10_dia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+       if ($this->w10_dia < 1 || $this->w10_dia > 31) {
+         $this->erro_sql    = " Campo Dia Vencimento não pode ser maior ou menor que o período do mês.";
+         $this->erro_campo  = "w10_dia";
+         $this->erro_banco  = "";
+         $this->erro_msg    = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
          return false;

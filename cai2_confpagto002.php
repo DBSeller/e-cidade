@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
 
 
 $oGet = db_utils::postMemory($_GET);
@@ -60,7 +60,7 @@ if ( $oGet->banco != 0 ) {
   
   $sSqlNomeBanco .= "                 and k15_instit = {$iInstit} limit 1 ";
    
-  $sNomeBco = pg_result(pg_exec($sSqlNomeBanco),0,"z01_nome");
+  $sNomeBco = pg_result(db_query($sSqlNomeBanco),0,"z01_nome");
   
 } else {
 	
@@ -269,7 +269,7 @@ if ($ordem == "d") {
 	$sCampoOrdem = "k00_numpre"; 
 }
 
-$rsDadosBaixaBco = pg_query($sql) or die($sql);
+$rsDadosBaixaBco = db_query($sql) or die($sql);
 $iLinhasBaixaBco = pg_num_rows($rsDadosBaixaBco); 
 
 if ( $iLinhasBaixaBco == 0 ) {
@@ -405,7 +405,7 @@ foreach ( $aDadosBaixaBco as $iCodRet => $aDadosOrdem ) {
           $sSqlSuperSimples .= "   where q05_numpre = {$iNumpre}                                      ";
           $sSqlSuperSimples .= "     and q05_numpar = {$iNumpar}                                      ";
                                     
-          $rsSuperSimples    = pg_query($sSqlSuperSimples) or die($sSqlSuperSimples);
+          $rsSuperSimples    = db_query($sSqlSuperSimples) or die($sSqlSuperSimples);
 
 				  if ( pg_numrows($rsSuperSimples) > 0 ) {
 				    $aDadosGerais['oDados']->nValorCalc = $aDadosGerais['oDados']->nValorPago;

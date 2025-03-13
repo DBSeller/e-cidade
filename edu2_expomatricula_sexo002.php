@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_calendario_classe.php");
-include("classes/db_periodocalendario_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("classes/db_periodocalendario_classe.php"));
 $clcalendario = new cl_calendario;
 $clperiodocalendario = new cl_periodocalendario;
 $escola = db_getsession("DB_coddepto");
@@ -37,7 +37,7 @@ $sql = "select * from aluno
 			 inner join turma on ed60_i_turma=ed57_i_codigo
 		where ed57_i_escola=$escola";
 
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 
 //db_criatabela($result);
@@ -116,7 +116,7 @@ $head3 = "Mês: ".$mes;
                    and ed52_i_ano = $calendario
                    and ed60_c_concluida='N'
                    and ed57_i_escola = $escola";
-	$result2 = pg_query($sql2);
+	$result2 = db_query($sql2);
     $linhas2= pg_num_rows($result2);
     //die("Quantidade de alunos na escola: ".$linhas2);
   for($idade=6;$idade<20;$idade++){
@@ -147,7 +147,7 @@ $head3 = "Mês: ".$mes;
                  where ed47_i_codigo= $ed47_i_codigo
                       and $calendario-extract(year from ed47_d_nasc)".$part_sql2;
 
-	   	  $result3 = pg_query($sql3);
+	   	  $result3 = db_query($sql3);
           $linhas3 = pg_num_rows($result3);
 		  if($linhas3>0){
 		     $tlinha=$tlinha+1;

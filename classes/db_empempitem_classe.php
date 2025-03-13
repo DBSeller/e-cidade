@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -876,4 +876,67 @@ class cl_empempitem {
     return $sSql;
   }
 
+
+  public function sql_query_itens_nota_empenho($iSequencialEmpenho) {
+
+    $sqlitem  = " select distinct ";
+    $sqlitem .= "	       case when e62_descr = '' then pc01_descrmater else pc01_descrmater||' \\n('||e62_descr||')' end as ";
+    $sqlitem .= "        pc01_descrmater, ";
+    $sqlitem .= "        e62_sequen, ";
+    $sqlitem .= "        e62_numemp, ";
+    $sqlitem .= "        e62_quant, ";
+    $sqlitem .= "        e62_vltot, ";
+    $sqlitem .= "        e62_vlrun, ";
+    $sqlitem .= "        e62_codele, ";
+    $sqlitem .= "        o56_elemento, ";
+    $sqlitem .= "        o56_descr, ";
+    $sqlitem .= "        rp.pc81_codproc, ";
+    $sqlitem .= "        solrp.pc11_numero, ";
+    $sqlitem .= "        solrp.pc11_codigo, ";
+    $sqlitem .= "        case when pc10_solicitacaotipo = 5 then coalesce(trim(pcitemvalrp.pc23_obs), '') ";
+    $sqlitem .= "             else  coalesce(trim(pcorcamval.pc23_obs), '') end as pc23_obs ";
+    $sqlitem .= "   from empempitem ";
+    $sqlitem .= "       inner join empempenho           on empempenho.e60_numemp           = empempitem.e62_numemp ";
+    $sqlitem .= "       inner join pcmater              on pcmater.pc01_codmater           = empempitem.e62_item ";
+    $sqlitem .= "       inner join orcelemento          on orcelemento.o56_codele          = empempitem.e62_codele ";
+    $sqlitem .= "                                      and orcelemento.o56_anousu          = empempenho.e60_anousu ";
+    $sqlitem .= "       left join empempaut             on empempaut.e61_numemp            = empempenho.e60_numemp ";
+    $sqlitem .= "       left join empautitem            on empautitem.e55_autori           = empempaut.e61_autori ";
+    $sqlitem .= "                                      and e62_sequen = e55_sequen ";
+
+    // verificação de empenhos de registro de preco
+
+    $sqlitem .= "       left join empautitempcprocitem        on empautitempcprocitem.e73_autori      = empautitem.e55_autori ";
+    $sqlitem .= "                                            and empautitempcprocitem.e73_sequen      = empautitem.e55_sequen ";
+    $sqlitem .= "       left join pcprocitem rp               on rp.pc81_codprocitem                  = empautitempcprocitem.e73_pcprocitem ";
+    $sqlitem .= "       left join solicitem solrp             on solrp.pc11_codigo                    = rp.pc81_solicitem ";
+    $sqlitem .= "       left join solicita                    on solicita.pc10_numero                 = solrp.pc11_numero ";
+    $sqlitem .= "       left join solicitemvinculo            on solicitemvinculo.pc55_solicitemfilho = solrp.pc11_codigo ";
+    $sqlitem .= "       left join solicitem compilacao        on solicitemvinculo.pc55_solicitempai   = compilacao.pc11_codigo ";
+    $sqlitem .= "       left join pcprocitem proccompilacao   on pc55_solicitempai                    = proccompilacao.pc81_solicitem ";
+    $sqlitem .= "       left join liclicitem licitarp         on proccompilacao.pc81_codprocitem      = licitarp.l21_codpcprocitem ";
+    $sqlitem .= "       left join pcorcamitemlic pcitemrp     on licitarp.l21_codigo                  = pcitemrp.pc26_liclicitem ";
+    $sqlitem .= "       left join pcorcamjulg julgrp          on pcitemrp.pc26_orcamitem              = julgrp.pc24_orcamitem ";
+    $sqlitem .= "                                            and julgrp.pc24_pontuacao                = 1 ";
+    $sqlitem .= "       left join pcorcamval pcitemvalrp      on julgrp.pc24_orcamitem                = pcitemvalrp.pc23_orcamitem ";
+    $sqlitem .= "                                            and julgrp.pc24_orcamforne               = pcitemvalrp.pc23_orcamforne ";
+
+    //verficaao de empenhos gerados a partir de licitacao normal.
+
+    $sqlitem .= "       left join empautitempcprocitem  pcprocitemaut  on pcprocitemaut.e73_autori        = empautitem.e55_autori ";
+    $sqlitem .= "                                                     and pcprocitemaut.e73_sequen        = empautitem.e55_sequen ";
+    $sqlitem .= "       left join pcprocitem                           on pcprocitem.pc81_codprocitem     = pcprocitemaut.e73_pcprocitem ";
+    $sqlitem .= "       left join solicitem                            on solicitem.pc11_codigo           = pcprocitem.pc81_solicitem ";
+    $sqlitem .= "       left join liclicitem                           on liclicitem.l21_codpcprocitem    = pcprocitemaut.e73_pcprocitem ";
+    $sqlitem .= "       left join pcorcamitemlic                       on pcorcamitemlic.pc26_liclicitem  = liclicitem.l21_codigo ";
+    $sqlitem .= "       left join pcorcamjulg                          on pcorcamjulg.pc24_orcamitem      = pcorcamitemlic.pc26_orcamitem ";
+    $sqlitem .= "                                                     and pcorcamjulg.pc24_pontuacao      = 1 ";
+    $sqlitem .= "       left join pcorcamval                           on pcorcamval.pc23_orcamitem       = pcorcamjulg.pc24_orcamitem ";
+    $sqlitem .= "                                                     and pcorcamval.pc23_orcamforne      = pcorcamjulg.pc24_orcamforne ";
+
+    $sqlitem .= "  where e62_numemp = {$iSequencialEmpenho} ";
+    $sqlitem .= " order by e62_sequen, o56_elemento,pc01_descrmater";
+
+    return $sqlitem;
+  }
 }

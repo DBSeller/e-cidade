@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_itbi_classe.php");
-include("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_itbi_classe.php"));
+include(modification("libs/db_app.utils.php"));
 db_postmemory($HTTP_POST_VARS);
 
 if(!isset($setorCodigo)) {
@@ -46,7 +46,7 @@ if(!isset($lote)) {
 	$lote = '';
 }
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+parse_str($_SERVER["QUERY_STRING"]);
 $cliptubase = new cl_iptubase;
 $clitbi  = new cl_itbi;
 $cliptubase->rotulo->label("j01_matric");
@@ -58,7 +58,7 @@ $clrotulo->label("z01_nome");
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<?
+<?php
  db_app::load('estilos.css');
  db_app::load('scripts.js, prototype.js, strings.js, DBViewPesquisaSetorQuadraLote.js, dbcomboBox.widget.js');
 ?>
@@ -71,7 +71,7 @@ $clrotulo->label("z01_nome");
 		<?=$Lj01_matric?>
 	</td>
 	<td>
-		<?
+		<?php
 			db_input("j01_matric",10,$Ij01_matric,true,"text",4,"","chave_j01_matric");
 		?>
 	</td>
@@ -79,12 +79,12 @@ $clrotulo->label("z01_nome");
 
 <tr>
 	<td title="<?=$Tj14_codigo?>">
-	<?
+	<?php
 		db_ancora($Lj14_codigo,' js_mostraruas(true); ',2)
 	?> 
 	</td>
 	<td> 
-	<?
+	<?php
 		db_input("j14_codigo", 10, $Ij14_codigo, true, 'text', 4, " onchange='js_mostraruas(false);'");
 		
 		db_input("j14_nome"  , 40, $Ij14_nome  , true, 'text', 3);
@@ -97,7 +97,7 @@ $clrotulo->label("z01_nome");
 		<?=$Lz01_nome?>
 	</td>
 	<td> 
-	<?
+	<?php
 		db_input("z01_nome",40,$Iz01_nome,true,'text',4)
 	?>
 	</td>
@@ -123,41 +123,35 @@ $clrotulo->label("z01_nome");
 <tr> 
 	<td>
 
-<?
+<?php
 	if(!isset($pesquisa_chave)){
 		if(isset($campos)==false){
 			$campos = "iptubase.*";
 		}
 		$sql = "select distinct j01_matric,
-													  (select rvnome as z01_nome from fc_busca_envolvidos(false, (select fc_regrasconfig from fc_regrasconfig(1)), 'M', iptubase.j01_matric) limit 1),
-													  case when j39_numero is null then 'Terr' else 'Pred' end as Tipo,  
-													  case when ruase.j14_codigo is null then ruas.j14_nome else ruase.j14_nome end as j14_nome, 
-													  case when j39_numero is null then 0 else j39_numero end as j39_numero,
-													  j39_compl,
-													  j34_setor,
-													  j34_quadra,
-													  j34_lote, 
-													  j05_codigoproprio, 
-													  j06_quadraloc, 
-													  j06_lote 
-						  from iptubase 
-						 inner join lote on j34_idbql 				              = j01_idbql 
-							left outer join testpri on j49_idbql              = j01_idbql
-							left outer join ruas on j14_codigo                = j49_codigo
-						 inner join cgm on z01_numcgm 											= j01_numcgm 
-				      left outer join iptuconstr on j01_matric 					= j39_matric 
-						  left outer join ruas as ruase on ruase.j14_codigo = j39_codigo
-				     inner join itbimatric on j01_matric 							  = itbimatric.it06_matric
-				      left join loteloc    on j06_idbql                 = j01_idbql
-				      left join setorloc   on j05_codigo                = j06_setorloc";
+					   (select rvnome as z01_nome from fc_busca_envolvidos(false, (select fc_regrasconfig from fc_regrasconfig(1)), 'M', proprietario.j01_matric) limit 1),
+					   j01_tipoimp as Tipo,  
+					   nomepri,
+					   j39_numero,
+					   j39_compl,
+					   j34_setor,
+					   j34_quadra,
+					   j34_lote,
+					   j05_codigoproprio, 
+					   j06_quadraloc, 
+					   j06_lote 
+				  from proprietario 
+ 				 inner join itbimatric 
+				    on j01_matric = itbimatric.it06_matric";
 		$sql2 = "";
-
+        
 		if(isset($chave_j01_matric) && (trim($chave_j01_matric)!="") ){
 			//$sql = $cliptubase->sql_query($chave_j01_matric,$campos,"j01_matric");
 			$sql2 =" where j01_matric = $chave_j01_matric";			  
 		}else if(isset($j14_codigo) && (trim($j14_codigo)!="") ){
+			
 			//$sql = $cliptubase->sql_query("",$campos,"j01_numcgm"," j01_numcgm like '$chave_j01_numcgm%' ");
-			$sql2 = " where j39_codigo = $j14_codigo order by j39_numero";			  
+			$sql2 = " where codpri = $j14_codigo order by j39_numero";			  
 		}else if(isset($z01_nome) && (trim($z01_nome)!="") ){
 			$sql2 = " where z01_nome like '$z01_nome%' order by z01_nome";			  
 		}else if(isset($setor) || isset($quadra) || isset($lote)) {
@@ -187,29 +181,20 @@ $clrotulo->label("z01_nome");
 		}
 	}else{
 		$sql = "select distinct j01_matric,
-														(select rvnome as z01_nome from fc_busca_envolvidos(false, (select fc_regrasconfig from fc_regrasconfig(1)), 'M', iptubase.j01_matric) limit 1),
-														case when j39_numero is null then 'Terr' else 'Pred' end as Tipo,  
-														case when ruase.j14_codigo is null then ruas.j14_nome else ruase.j14_nome end as j14_nome, 
-														case when j39_numero is null then 0 else j39_numero end as j39_numero,
-														j39_compl,
-														j34_setor,
-														j34_quadra,
-														j34_lote,
-														j05_codigoproprio, 
-													  j06_quadraloc, 
-													  j06_lote
-														 
-							from iptubase 
-						 inner join lote on j34_idbql 					            = j01_idbql 
-							left outer join testpri on j49_idbql              = j01_idbql
-							left outer join ruas on j14_codigo    	          = j49_codigo
-						 inner join cgm on z01_numcgm	 						          = j01_numcgm 
-							left outer join iptuconstr on j01_matric          = j39_matric 
-						  left outer join ruas as ruase on ruase.j14_codigo = j39_codigo
-				     inner join itbimatric on j01_matric 							= it06_matric
-				      left join loteloc    on j06_idbql                 = j01_idbql
-				      left join setorloc   on j05_codigo                = j06_setorloc
-				     where j01_matric = $pesquisa_chave";
+					   (select rvnome as z01_nome from fc_busca_envolvidos(false, (select fc_regrasconfig from fc_regrasconfig(1)), 'M', iptubase.j01_matric) limit 1),
+					   case when j39_numero is null then 'Terr' else 'Pred' end as Tipo,  
+					   case when ruase.j14_codigo is null then ruas.j14_nome else ruase.j14_nome end as j14_nome, 
+					   case when j39_numero is null then 0 else j39_numero end as j39_numero,
+					   j39_compl,
+					   j34_setor,
+					   j34_quadra,
+					   j34_lote,
+					   j05_codigoproprio,
+					   j06_quadraloc, 
+					   j06_lote
+			  	  from proprietario						 
+				 inner join itbimatric on j01_matric 							= it06_matric
+				 where j01_matric = $pesquisa_chave";
 		$result = $clitbi->sql_record($sql);
 		if($clitbi->numrows!=0){
 			db_fieldsmemory($result,0);
@@ -237,8 +222,8 @@ function js_mostraruas(mostra){
 }
 
 function js_preencheruas_hide(chave,chave1){
-  
-	$('j14_nome').value = chave;
+    
+	$('j14_nome').value = chave1?chave1:chave;
 	
 }
 function js_preencheruas(chave,chave1){
@@ -248,14 +233,14 @@ function js_preencheruas(chave,chave1){
 	
 }
 </script>
-<?
+<?php
 if(!isset($pesquisa_chave)){
   ?>
   <script>
 document.form2.chave_j01_matric.focus();
 document.form2.chave_j01_matric.select();
   </script>
-  <?
+  <?php
 }
 
 
@@ -273,10 +258,16 @@ $db_iframe ->mostrar();
 var oPesquisa = new DBViewPesquisaSetorQuadraLote('pesquisa', 'oPesquisa');
     oPesquisa.show();
     oPesquisa.appendForm();
-<? 
+<?php 
 if (isset($setorCodigo) ||
    isset($quadra) ){
 	echo "oPesquisa.setValues('{$setorCodigo}','{$quadra}','{$lote}');"; 
 }
 ?>
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include_once ("libs/db_sql.php");
-include_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-include_once ("libs/db_stdlibwebseller.php");
-include_once ("libs/db_utils.php");
-include_once ("classes/db_prontuarios_ext_classe.php");
-include_once ("classes/db_agendamentos_ext_classe.php");
-include_once ("classes/db_prontagendamento_classe.php");
-include_once ("classes/db_sau_config_ext_classe.php");
-include_once ("classes/db_sau_proccbo_classe.php");
-include_once ("classes/db_prontproced_ext_classe.php");
-include_once ("classes/db_prontprofatend_ext_classe.php");
+include_once(modification("libs/db_sql.php"));
+include_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_stdlibwebseller.php"));
+include_once(modification("libs/db_utils.php"));
+include_once(modification("classes/db_prontuarios_ext_classe.php"));
+include_once(modification("classes/db_agendamentos_ext_classe.php"));
+include_once(modification("classes/db_prontagendamento_classe.php"));
+include_once(modification("classes/db_sau_config_ext_classe.php"));
+include_once(modification("classes/db_sau_proccbo_classe.php"));
+include_once(modification("classes/db_prontproced_ext_classe.php"));
+include_once(modification("classes/db_prontprofatend_ext_classe.php"));
 
-include_once ("dbforms/db_funcoes.php");
+include_once(modification("dbforms/db_funcoes.php"));
 
 parse_str ( $HTTP_SERVER_VARS ["QUERY_STRING"] );
 db_postmemory ( $HTTP_POST_VARS );
@@ -102,13 +102,13 @@ for( $intAgenda=0; $intAgenda < $iTam; $intAgenda++ ){
           </table>";
     exit;
   }
-  $objRetorno->prontuario  = db_utils::getColectionByRecord($resProntuario, true, false);
+  $objRetorno->prontuario  = db_utils::getCollectionByRecord($resProntuario, true, false);
   $sSql = $clprontproced->sql_query_ext(null,
                                         "*",
                                         "",
                                         " sd29_i_prontuario = $aChaveProntuarios[$intAgenda] ");
   $resProntproced          = $clprontproced->sql_record ($sSql);
-  $objRetorno->prontproced = db_utils::getColectionByRecord($resProntproced, true, false);
+  $objRetorno->prontproced = db_utils::getCollectionByRecord($resProntproced, true, false);
   
   $dia_nasc = substr ( $objRetorno->prontuario[0]->z01_d_nasc, 0, 2 );
   $mes_nasc = substr ( $objRetorno->prontuario[0]->z01_d_nasc, 3, 2 );
@@ -124,6 +124,7 @@ for( $intAgenda=0; $intAgenda < $iTam; $intAgenda++ ){
     
   }
 
+  $paciente = $objRetorno->prontuario[0]->z01_v_nome;
 ?>
   <tr>
     <td height="865px" valign="top"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" >
@@ -155,7 +156,7 @@ for( $intAgenda=0; $intAgenda < $iTam; $intAgenda++ ){
       <tr>
         <td width="10%" height="20" nowrap="nowrap">&nbsp;</td>
         <td width="50%" height="20" nowrap="nowrap">
-          <?=$objRetorno->prontuario[0]->z01_v_nome?>
+          <?=$paciente?>
         </td>
         <td width="40%" height="20" nowrap="nowrap">
           <?=$objRetorno->prontuario[0]->z01_d_nasc?>

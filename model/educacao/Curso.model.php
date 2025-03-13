@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -30,7 +30,7 @@
  * @package educacao
  * @author Iuri Guntchnigg - iuri@dbseller.com.br
  *         Fabio Esteves   - fabio.esteves@dbseller.com.br
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.13 $
  */
 class Curso {
 
@@ -57,7 +57,7 @@ class Curso {
    * @var array
    */
   private $aEtapas = array();
-  
+
   /**
    * Parametro de avaliacao parcial no curso habilitado ou nao
    * 1 - Nao
@@ -65,13 +65,21 @@ class Curso {
    * @var boolean
    */
   private $lAvaliacaoParcial = false;
-  
+
   /**
    * Verifica se o Curso gera historico
    * @var boolean
    */
   private $lGeraHistorico;
-  
+
+  /**
+   * Cursos que são equivalentes a este
+   * @return Curso[]
+   */
+  private $aCursosEquivalentes = array();
+
+    private $odem;
+
   /**
    *
    */
@@ -79,22 +87,34 @@ class Curso {
 
     if (!empty($iCodigo)) {
 
-      require_once("classes/db_cursoedu_classe.php");
+      require_once(modification("classes/db_cursoedu_classe.php"));
       $oDaoCurso = new cl_curso();
-      $sSqlCurso = $oDaoCurso->sql_query($iCodigo);
+      $sSqlCurso = $oDaoCurso->sql_query($iCodigo, '*, ensino.ed10_ordem as ordem', 'ed10_ordem');
       $rsCurso   = $oDaoCurso->sql_record($sSqlCurso);
       if ($oDaoCurso->numrows > 0) {
 
         $oDadosCurso             = db_utils::fieldsMemory($rsCurso, 0);
         $this->iCodigo           = $oDadosCurso->ed29_i_codigo;
         $this->sNome             = trim($oDadosCurso->ed29_c_descr);
-        $this->oEnsino           = new Ensino($oDadosCurso->ed29_i_ensino);
+        $this->oEnsino           = EnsinoRepository::getEnsinoByCodigo($oDadosCurso->ed29_i_ensino);
         $this->lAvaliacaoParcial = $oDadosCurso->ed29_i_avalparcial == 2 ? true : false;
         $this->lGeraHistorico    = $oDadosCurso->ed29_c_historico == 'S' ? true : false;
+        $this->setOrdem($oDadosCurso->ordem);
         $this->oEnsino->setNome($oDadosCurso->ed10_c_descr);
       }
     }
   }
+
+  public function getOrdem()
+  {
+      return $this->ordem;
+  }
+
+public function setOrdem($ordem)
+{
+    return $this->ordem = $ordem;
+}
+
 
   /**
    * @return integer
@@ -141,13 +161,16 @@ class Curso {
 
   /**
    * Retorna as Etapas vinculadas a um curso
+   *
+   *   Atenção: só retorna as etapas quando curso possui vinculo com uma escola.
+   *
    * @return Etapa | boolean | array
    */
   public function getEtapas () {
 
     if (count($this->aEtapas) == 0) {
 
-      require_once("classes/db_cursoedu_classe.php");
+      require_once(modification("classes/db_cursoedu_classe.php"));
       $oDaoCurso  = new cl_curso();
       $sSqlCurso  = $oDaoCurso->sql_query_curso_serie($this->iCodigo, "distinct ed11_i_codigo, ed11_i_sequencia",
                                                       "ed11_i_sequencia");
@@ -169,7 +192,7 @@ class Curso {
 
     return $this->aEtapas;
   }
-  
+
   /**
    * Retorna se o curso esta com a avaliacao parcial habilitada ou nao
    * @return boolean
@@ -177,14 +200,45 @@ class Curso {
   public function usaAvaliacaoParcial () {
     return $this->lAvaliacaoParcial;
   }
-  
+
   /**
    * Verifica se o curso gera histórico
    * @return boolean
    */
   public function geraHistorico() {
-    
+
     return $this->lGeraHistorico;
   }
+
+  /**
+   * Retorna os cursos que são equivalentes a este
+   * @return Curso[]
+   */
+  public function getCursosEquivalentes() {
+
+    if ( !empty($this->aCursosEquivalentes) || empty($this->iCodigo) ) {
+      return $this->aCursosEquivalentes;
+    }
+
+    $oDaoCursoEquivalencia = new cl_cursoequivalencia();
+    $sCampos               = "cursoequivalente.ed29_i_codigo, cursoequivalente.ed29_c_descr";
+    $sWhere                = "ed140_cursoedu = {$this->iCodigo}";
+    $sSqlCursoEquivalencia = $oDaoCursoEquivalencia->sql_query(null, $sCampos, null, $sWhere);
+    $rsCursoEquivalencia   = db_query( $sSqlCursoEquivalencia );
+
+    if ( !$rsCursoEquivalencia ) {
+      throw new DBException( _M(ARQUIVO_MENSAGEM_EQUIVALENCIA . "erro_buscar_cursos_equivalentes") );
+    }
+
+    $iTotalCursos = pg_num_rows($rsCursoEquivalencia);
+
+    for ( $iContador = 0; $iContador < $iTotalCursos; $iContador++ ) {
+
+      $oDadosCursoEquivalencia     = db_utils::fieldsMemory( $rsCursoEquivalencia, $iContador );
+      $oCursoEquivalente           = new Curso($oDadosCursoEquivalencia->ed29_i_codigo);
+      $this->aCursosEquivalentes[] = $oCursoEquivalente;
+    }
+
+    return $this->aCursosEquivalentes;
+  }
 }
-?>

@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
-include("classes/db_empage_classe.php");
+include(modification("classes/db_empage_classe.php"));
 $clempage = new cl_empage;
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -123,7 +123,7 @@ $sql = "select distinct e60_anousu as db_e60_anousu,
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
 function js_consultar(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_consultar','emp3_consempage002.php','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consultar','emp3_consempage002.php','Pesquisa',true);
 }
 </script>
 </head>

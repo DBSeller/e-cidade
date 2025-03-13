@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -30,133 +30,135 @@
 //|10|//é gerado uma tabela botão para selecionar  as linhas desejadas
 //|15|//[variavel] = new cl_iframe_seleciona;
 //|16|// passando db_ voce pode colocar o nome que quiser...
-class cl_iframe_seleciona {
-   var $input_hidden    = false;
+class cl_iframe_seleciona
+{
+    var $input_hidden    = false;
    //|30|//coloca um input hidden
-   var $desabilitados = true;
+    var $desabilitados = true;
    //|30|//quando for false, ele não irá retornar as chaves que estiverem desabilitas
-   var $fieldset    = true;
+    var $fieldset    = true;
    //|30|//coloca o iframe entre quatro linhas
-   var $sql        = null;
+    var $sql        = null;
    //|30|//sql para montar os campos
-   var $sql_disabled  = null;
+    var $sql_disabled  = null;
    //sql para dizer quais os campos devem iniciar marcados
-   var $sql_marca  = null;
+    var $sql_marca  = null;
    //sql para dizer quais os campos devem iniciar marcados
-   var $checked    = null;
+    var $checked    = null;
    //indica se todos as linhas devem abrir marcadas ou naum
-   var $chaves     = null;
+    var $chaves     = null;
    //|30|//campos que deseja retorna num input apenas
-   var $campos     = null;
+    var $campos     = null;
    //|30|//campos que serão mostrados
-   var $legenda    = "DADOS";
+    var $legenda    = "DADOS";
    //|30|//legenda do fieldset
-   var $alignlegenda = "center";
+    var $alignlegenda = "center";
    //|30|//Alinhamento da legenda no fieldset
-   var $msg_vazio  = "<small><b>Nenhum registro encontrado.</b><small>";
+    var $msg_vazio  = "<small><b>Nenhum registro encontrado.</b><small>";
    //|30|//mensagem a ser mostrada quando o sql não retornar nenhum registro
-   var $textocabec = 'darkblue';
+    var $textocabec = 'darkblue';
    //|30|//cor do texto do cabeçalho
-   var $textocorpo = 'black';
+    var $textocorpo = 'black';
    //|30|//cor do texto do corpo
-   var $fundocabec = '#aacccc ';
+    var $fundocabec = '#aacccc ';
    //|30|//cor do fundo do cabeçalho
-   var $fundocorpo = '#ccddcc';
+    var $fundocorpo = '#ccddcc';
    //|30|//cor do fundo do corpo
-   var $iframe_width = '750';
+    var $iframe_width = '750';
    //|30|//largura do iframe
-   var $iframe_height = '190';
+    var $iframe_height = '190';
    //|30|//altura do iframe
-   var $iframe_nome =   'nome_iframe ';
+    var $iframe_nome =   'nome_iframe ';
    //|30|//nome do iframe
-   var $cabecnowrap     = "false";
+    var $cabecnowrap     = "false";
    //|30|//quebrar linha ou não do cabeçalho
-   var $corponowrap     = "false";
+    var $corponowrap     = "false";
    //|30|//quebrar linha ou não do corpo
-   var $tamfontecabec = '10';
+    var $tamfontecabec = '10';
    //|30|//tamanho da fonte do cabeçalho
-   var $tamfontecorpo = '9';
+    var $tamfontecorpo = '9';
     //|30|//tamanho da fonte do corpo
-   var $dbscript = null;
+    var $dbscript = null;
     //|30|// função java script no campo de marcar
-   var $marcador = true;
+    var $marcador = true;
     //|30|// desabilita a opcao de clicar no marcador e inveter os checados
-   var $js_marcador = null;
+    var $js_marcador = null;
     //|30|// função java script quando clicar no marcador
-   var $mostra_totalizador  = "N";
+    var $mostra_totalizador  = "N";
    // Opcao para mostrar total de registro da consulta
-   var $posicao_totalizador = "A";
+    var $posicao_totalizador = "A";
    // Onde vai ficar o totalizador - A - Acima e B - Abaixo
-   function iframe_seleciona($db_opcao){
-         $arquivo = tempnam ("/tmp", "iframe");
+    function iframe_seleciona($db_opcao)
+    {
+         $arquivo = tempnam("/tmp", "iframe");
          $arquivo.=".php";
          umask(74);
-   $fd = fopen($arquivo,"w") or die('Erro ao abrir!');
-   fputs($fd,' <?    '."\n");
-   fputs($fd,' $textocabec="'.$this->textocabec.'";'."\n");
-   fputs($fd,' $textocorpo="'.$this->textocorpo.'";'."\n");
-   fputs($fd,' $fundocabec="'.$this->fundocabec.'";'."\n");
-   fputs($fd,' $fundocorpo="'.$this->fundocorpo.'";'."\n");
-   fputs($fd,' $cabecnowrap="'.$this->cabecnowrap.'";'."\n");
-   fputs($fd,' $corponowrap="'.$this->corponowrap.'";'."\n");
-   fputs($fd,' $tamfontecabec="'.$this->tamfontecabec.'";'."\n");
-   fputs($fd,' $tamfontecorpo="'.$this->tamfontecorpo.'";'."\n");
-   fputs($fd,' $marcador="'.$this->marcador.'";'."\n");
-         if($this->sql!=""){
-       fputs($fd,' $sql="'.base64_encode($this->sql).'";'."\n");
-     if($this->sql_disabled!=null){
-       fputs($fd,' $sql_disabled="'.base64_encode($this->sql_disabled).'";'."\n");
-     }
-     if($this->sql_marca!=null){
-       fputs($fd,' $sql_marca="'.base64_encode($this->sql_marca).'";'."\n");
-     }
-     if($this->js_marcador!=null){
-         fputs($fd,' $js_marcador="'.$this->js_marcador.'";'."\n");
-     }
-     if($this->dbscript!=null){
-         fputs($fd,' $dbscript="'.$this->dbscript.'";'."\n");
-     }
-     if($this->input_hidden == true){
-         fputs($fd,' $input_hidden  = "true";'."\n");
-     }
-     if($this->chaves!=null){
-         fputs($fd,' $chaves="'.$this->chaves.'";'."\n");
-     }
-     if(isset($this->checked) && $this->checked==true ){
-         fputs($fd,' $ckd="true";'."\n");
-     }
+        $fd = fopen($arquivo, "w") or die('Erro ao abrir!');
+        fputs($fd, ' <?    '."\n");
+        fputs($fd, ' $textocabec="'.$this->textocabec.'";'."\n");
+        fputs($fd, ' $textocorpo="'.$this->textocorpo.'";'."\n");
+        fputs($fd, ' $fundocabec="'.$this->fundocabec.'";'."\n");
+        fputs($fd, ' $fundocorpo="'.$this->fundocorpo.'";'."\n");
+        fputs($fd, ' $cabecnowrap="'.$this->cabecnowrap.'";'."\n");
+        fputs($fd, ' $corponowrap="'.$this->corponowrap.'";'."\n");
+        fputs($fd, ' $tamfontecabec="'.$this->tamfontecabec.'";'."\n");
+        fputs($fd, ' $tamfontecorpo="'.$this->tamfontecorpo.'";'."\n");
+        fputs($fd, ' $marcador="'.$this->marcador.'";'."\n");
+        if ($this->sql!="") {
+            fputs($fd, ' $sql="'.base64_encode($this->sql).'";'."\n");
+            if ($this->sql_disabled!=null) {
+                fputs($fd, ' $sql_disabled="'.base64_encode($this->sql_disabled).'";'."\n");
+            }
+            if ($this->sql_marca!=null) {
+                fputs($fd, ' $sql_marca="'.base64_encode($this->sql_marca).'";'."\n");
+            }
+            if ($this->js_marcador!=null) {
+                fputs($fd, ' $js_marcador="'.$this->js_marcador.'";'."\n");
+            }
+            if ($this->dbscript!=null) {
+                fputs($fd, ' $dbscript="'.$this->dbscript.'";'."\n");
+            }
+            if ($this->input_hidden == true) {
+                fputs($fd, ' $input_hidden  = "true";'."\n");
+            }
+            if ($this->chaves!=null) {
+                fputs($fd, ' $chaves="'.$this->chaves.'";'."\n");
+            }
+            if (isset($this->checked) && $this->checked==true) {
+                fputs($fd, ' $ckd="true";'."\n");
+            }
 
-     fputs($fd,' $mostra_totalizador="'.$this->mostra_totalizador.'";'."\n");
-     fputs($fd,' $posicao_totalizador="'.$this->posicao_totalizador.'";'."\n");
+            fputs($fd, ' $mostra_totalizador="'.$this->mostra_totalizador.'";'."\n");
+            fputs($fd, ' $posicao_totalizador="'.$this->posicao_totalizador.'";'."\n");
 
-     fputs($fd,' $msg_vazio="'.base64_encode($this->msg_vazio).'";'."\n");
-       fputs($fd,' $campos="'.base64_encode($this->campos).'";'."\n");
-       fputs($fd,' $db_opcao="'.$db_opcao.'";'."\n");
-         }
-   fputs($fd,'?>  '."\n");
+            fputs($fd, ' $msg_vazio="'.base64_encode($this->msg_vazio).'";'."\n");
+            fputs($fd, ' $campos="'.base64_encode($this->campos).'";'."\n");
+            fputs($fd, ' $db_opcao="'.$db_opcao.'";'."\n");
+        }
+        fputs($fd, '?>  '."\n");
 
-   fclose($fd) or die('erro');
+        fclose($fd) or die('erro');
 
-     if($this->fieldset==true){
-        echo " <fieldset><Legend align=\"".$this->alignlegenda."\"><b>".$this->legenda."</b></Legend>";
-     }
+        if ($this->fieldset==true) {
+            echo " <fieldset><Legend align=\"".$this->alignlegenda."\"><b>".$this->legenda."</b></Legend>";
+        }
 
-      echo "
+        echo "
               <iframe id=\"ativ\"  frameborder=\"0\" name=\"".$this->iframe_nome."\"   leftmargin=\"0\" topmargin=\"0\" src=\"dbforms/db_classes_iframe_seleciona.php?arquivo=".base64_encode($arquivo)."\" height=\"".$this->iframe_height."\" width=\"".$this->iframe_width."\">
               </iframe> ";
-     if($this->fieldset==true){
-           echo " </fieldset>";
-     }
+        if ($this->fieldset==true) {
+             echo " </fieldset>";
+        }
 
-echo "
+        echo "
         <script>";
-################## quando for setado a propriedade chaves, sera gerado um input contendo todas as chaves#################
-        if(isset($this->chaves)){
-           $matriz01=split(",",$this->chaves);
+ ################## quando for setado a propriedade chaves, sera gerado um input contendo todas as chaves#################
+        if (isset($this->chaves)) {
+            $matriz01 = explode(",", $this->chaves);
 
 
 
-           echo "
+            echo "
           function js_gera_chaves(){
             tabela=".$this->iframe_nome.".document.getElementById('tabela_seleciona');\n
             var coluna='';\n
@@ -166,12 +168,12 @@ echo "
               if(".$this->iframe_nome.".document.getElementById('CHECK_'+id).checked==true){\n";
                 echo "coluna+=sep;\n";
                 $sep="";
-                for($y=0; $y<sizeof($matriz01); $y++){
-                  echo  "colu ='$sep'+".$this->iframe_nome.".document.getElementById('".$matriz01[$y]."_'+i).innerHTML;\n
+            for ($y=0; $y<sizeof($matriz01); $y++) {
+                echo  "colu ='$sep'+".$this->iframe_nome.".document.getElementById('".$matriz01[$y]."_'+i).innerHTML;\n
                          coluna+=colu.replace('&nbsp;','');\n
                   ";
-                   $sep="-";
-                }
+                $sep="-";
+            }
              echo "
                 sep='#'; \n
               }
@@ -185,7 +187,7 @@ echo "
           }";
 
            //função que irá retornar as chaves selecionadas
-           echo "
+            echo "
 
           function js_retorna_chaves(){
             tabela=".$this->iframe_nome.".document.getElementById('tabela_seleciona');\n
@@ -193,19 +195,19 @@ echo "
             var sep='';
             for(i=1; i<tabela.rows.length; i++){\n
               id=tabela.rows[i].id.substr(6);\n";
-              if($this->desabilitados == true){
+            if ($this->desabilitados == true) {
                 echo "if(".$this->iframe_nome.".document.getElementById('CHECK_'+id).checked==true ){\n";
-              }else{
+            } else {
                 echo "if(".$this->iframe_nome.".document.getElementById('CHECK_'+id).checked==true && ".$this->iframe_nome.".document.getElementById('CHECK_'+id).disabled == false){\n";
-              }
+            }
                 echo "coluna+=sep;\n";
                 $sep="";
-                for($y=0; $y<sizeof($matriz01); $y++){
-                  echo  "colu ='$sep'+".$this->iframe_nome.".document.getElementById('".$matriz01[$y]."_'+i).innerHTML;\n
+            for ($y=0; $y<sizeof($matriz01); $y++) {
+                echo  "colu ='$sep'+".$this->iframe_nome.".document.getElementById('".$matriz01[$y]."_'+i).innerHTML;\n
                          coluna+=colu.replace('&nbsp;','');\n
                   ";
-                   $sep="-";
-                }
+                $sep="-";
+            }
              echo "
                 sep='#'; \n
               }
@@ -214,8 +216,8 @@ echo "
             return coluna ;
           }";
         }
-##########################################################################################################################
-####################ao chamar esta função será gerado um input para cada linha com os valores da coluna###################
+ ##########################################################################################################################
+ ####################ao chamar esta função será gerado um input para cada linha com os valores da coluna###################
         echo "
     function js_gera_dados(){
             tabela=".$this->iframe_nome.".document.getElementById('tabela_seleciona');
@@ -243,103 +245,104 @@ echo "
           }
         </script>
           ";
-     }
-
+    }
 }
 //|00|//cl_criatabela
 //|10|//Cria um iframe com as opções de alterar e excluir por java script. Quando usar a função "js_criaelementos()" será criado um input com os dados de cada linha
 //|15|//[variavel] = new cl_alterar_excluir_html;
-class cl_iframe_alterar_excluir_html_novo{
-   var $js_mouseover     = null;
+class cl_iframe_alterar_excluir_html_novo
+{
+    var $js_mouseover     = null;
    //|30|//função executada quando o mouse for passado por cima da linha, é retornado para ela as chaves primarias...
-   var $js_mouseout     = null;
+    var $js_mouseout     = null;
    //|30|//função executada quando o mouse for passado por cima da linha, é retornado para ela as chaves primarias...
-   var $load = '1=1';
+    var $load = '1=1';
    //|30|//função a ser executada no onload do iframe
-   var $fontecabec = '10px';
+    var $fontecabec = '10px';
    //|30|//tamanho do texto do cabeçalho
-   var $fontecorpo = '10px';
+    var $fontecorpo = '10px';
    //|30|//tamanho do texto do corpo
-   var $textocabec = 'darkblue';
+    var $textocabec = 'darkblue';
    //|30|//cor do texto do cabeçalho
-   var $textocorpo = 'black';
+    var $textocorpo = 'black';
    //|30|//cor do texto do corpo
-   var $fundocabec = '#BDC6BD';
+    var $fundocabec = '#BDC6BD';
    //|30|//cor do fundo do cabeçalho
-   var $fundocorpo = '#cccccc';
+    var $fundocorpo = '#cccccc';
    //|30|//cor do fundo do corpo
-   var $iframe_width = '750';
+    var $iframe_width = '750';
    //|30|//largura do iframe
-   var $iframe_height = '190';
+    var $iframe_height = '190';
    //|30|//altura do iframe
-   var $iframe_nome = 'criatabela';
+    var $iframe_nome = 'criatabela';
    //|30|//nome do iframe
-   var $colunas     = null; //nome da colunas
+    var $colunas     = null; //nome da colunas
    //|30|//nome das colunas
-   var $js_ex01     = null;
+    var $js_ex01     = null;
    //|30|//função executada antes de excluir uma linha, caso esta função retorne false, a exclusão da linha será abortada
-   var $js_ex02     = null;
+    var $js_ex02     = null;
    //|30|//função executada depois de excluir uma linha
-   var $sql         = null;
+    var $sql         = null;
    //|30|//sql com dados a seresm colocados na tabela por PHP
-   var $db_opcao    =  null;
+    var $db_opcao    =  null;
    //|30|//não é obrogatório
-   var $tamfontecabec = '10';
+    var $tamfontecabec = '10';
    //|30|//tamanho da fonte do cabeçalho
-   var $tamfontecorpo = '9';
+    var $tamfontecorpo = '9';
     //|30|//tamanho da fonte do corpo
     //|30|//js_incluirlinhas(campos que deseja incluir);
     //|30|//js_alterarlinhas(campos); funcao que retorna todos os camos
     //|30|//js_numlinhas funcao que retorna o numero de lmnha da tabela
     //|30|//js_dados();funcao que cria input com todas as linhas da tabela com o nome de  linha_XX XX=numero da linha
-   function iframe_alterar_excluir_html_novo(){
-     $quais_colunas="";
-     $cerca="";
-     reset($this->colunas);
+    function iframe_alterar_excluir_html_novo()
+    {
+        $quais_colunas="";
+        $cerca="";
+        reset($this->colunas);
 
-     $arquivo = tempnam ("/tmp", "iframe");
-     $arquivo.=".php";
-     umask(74);
-     $fd = fopen($arquivo,"w") or die('Erro ao abrir!');
-     fputs($fd,' <?    '."\n");
-     fputs($fd,' $textocabec="'.$this->textocabec.'";'."\n");
-     fputs($fd,' $textocorpo="'.$this->textocorpo.'";'."\n");
-     fputs($fd,' $fundocabec="'.$this->fundocabec.'";'."\n");
-     fputs($fd,' $fundocorpo="'.$this->fundocorpo.'";'."\n");
-     fputs($fd,' $tamfontecabec="'.$this->tamfontecabec.'";'."\n");
-     fputs($fd,' $tamfontecorpo="'.$this->tamfontecorpo.'";'."\n");
-     fputs($fd,' $load="'.$this->load.'";'."\n");
+        $arquivo = tempnam("/tmp", "iframe");
+        $arquivo.=".php";
+        umask(74);
+        $fd = fopen($arquivo, "w") or die('Erro ao abrir!');
+        fputs($fd, ' <?    '."\n");
+        fputs($fd, ' $textocabec="'.$this->textocabec.'";'."\n");
+        fputs($fd, ' $textocorpo="'.$this->textocorpo.'";'."\n");
+        fputs($fd, ' $fundocabec="'.$this->fundocabec.'";'."\n");
+        fputs($fd, ' $fundocorpo="'.$this->fundocorpo.'";'."\n");
+        fputs($fd, ' $tamfontecabec="'.$this->tamfontecabec.'";'."\n");
+        fputs($fd, ' $tamfontecorpo="'.$this->tamfontecorpo.'";'."\n");
+        fputs($fd, ' $load="'.$this->load.'";'."\n");
 
-     if($this->js_mouseover!=null){
-       fputs($fd,' $js_mouseover="'.$this->js_mouseover.'";'."\n");
-     }
-     if($this->js_mouseout!=null){
-       fputs($fd,' $js_mouseout="'.$this->js_mouseout.'";'."\n");
-     }
+        if ($this->js_mouseover!=null) {
+            fputs($fd, ' $js_mouseover="'.$this->js_mouseover.'";'."\n");
+        }
+        if ($this->js_mouseout!=null) {
+            fputs($fd, ' $js_mouseout="'.$this->js_mouseout.'";'."\n");
+        }
 
-     if(isset($this->db_opcao)){
-       fputs($fd,' $db_opcao="'.$this->db_opcao.'";'."\n");
-     }
-     if($this->sql!=null){
-        fputs($fd,' $sql="'.base64_encode($this->sql).'";'."\n");
-     }
-     for($q=0; $q<sizeof($this->colunas); $q++){
-       fputs($fd,' $x_'.key($this->colunas).'="'.$this->colunas[key($this->colunas)].'";'."\n");
-       $quais_colunas.=$cerca.key($this->colunas);
-       next($this->colunas);
-       $cerca = "#";
-     }
-     fputs($fd,' $quais_colunas="'.$quais_colunas.'";'."\n");
-     fputs($fd,'?>  ');
-     fclose($fd);
-     echo" <iframe id=\"\"  frameborder=\"0\" name=\"".$this->iframe_nome."\"   leftmargin=\"0\" topmargin=\"0\" src=\"dbforms/db_classes_iframe_alterar_excluir_htmlnovo.php?arquivo=".base64_encode($arquivo)."\" height=\"".$this->iframe_height."\" width=\"".$this->iframe_width."\">
+        if (isset($this->db_opcao)) {
+            fputs($fd, ' $db_opcao="'.$this->db_opcao.'";'."\n");
+        }
+        if ($this->sql!=null) {
+            fputs($fd, ' $sql="'.base64_encode($this->sql).'";'."\n");
+        }
+        for ($q=0; $q<sizeof($this->colunas); $q++) {
+            fputs($fd, ' $x_'.key($this->colunas).'="'.$this->colunas[key($this->colunas)].'";'."\n");
+            $quais_colunas.=$cerca.key($this->colunas);
+            next($this->colunas);
+            $cerca = "#";
+        }
+        fputs($fd, ' $quais_colunas="'.$quais_colunas.'";'."\n");
+        fputs($fd, '?>  ');
+        fclose($fd);
+        echo" <iframe id=\"\"  frameborder=\"0\" name=\"".$this->iframe_nome."\"   leftmargin=\"0\" topmargin=\"0\" src=\"dbforms/db_classes_iframe_alterar_excluir_htmlnovo.php?arquivo=".base64_encode($arquivo)."\" height=\"".$this->iframe_height."\" width=\"".$this->iframe_width."\">
            </iframe>
 
     ";
-     echo"
+        echo "
     <script>
     function js_dados(){
-            tabela=".$this->iframe_nome.".document.getElementById('tab');
+            tabela=" . $this->iframe_nome . ".document.getElementById('tab');
             for(i=1; i<tabela.rows.length; i++){
         y='';
         colunas='';
@@ -360,10 +363,10 @@ class cl_iframe_alterar_excluir_html_novo{
       }
           }
             function js_excluirlinhas(linha) {";
-     if($this->js_ex01){
-       echo $this->js_ex01;
-     }
-     echo "
+        if ($this->js_ex01) {
+            echo $this->js_ex01;
+        }
+        echo "
               if(confirm(\"Deseja realmente excluir esta linha?\")){
                 var tab =".$this->iframe_nome.".document.getElementById('tab');
                 for(i=0;i<tab.rows.length;i++){
@@ -373,17 +376,17 @@ class cl_iframe_alterar_excluir_html_novo{
                   }
                 }
               }";
-        if($this->js_ex02!=null){
-           echo $this->js_ex02;
+        if ($this->js_ex02!=null) {
+            echo $this->js_ex02;
         }
-     echo "
+        echo "
             }
             function js_numlinhas(){
               var tab = ".$this->iframe_nome.".document.getElementById('tab');
               return tab.rows.length;
             }";
 
-  echo "
+        echo "
             function js_alterarlinhas(linha) {
 
               var tab = ".$this->iframe_nome.".document.getElementById('tab');
@@ -402,15 +405,15 @@ class cl_iframe_alterar_excluir_html_novo{
               eval('criatabela.js_alterar('+colunas+')');
             }
     ";
-     $coluna="";
-     $virgula="";
-     $colunas= split("#",$quais_colunas);
-     $totcol=sizeof($colunas);
-     for($i=0; $i<$totcol; $i++){
-       $coluna.=$virgula.$colunas[$i];
-       $virgula=",";
-     }
-     echo"
+        $coluna="";
+        $virgula="";
+        $colunas = explode("#", $quais_colunas);
+        $totcol=sizeof($colunas);
+        for ($i=0; $i<$totcol; $i++) {
+            $coluna.=$virgula.$colunas[$i];
+            $virgula=",";
+        }
+        echo"
           function js_incluirlinhas_disabled($coluna){
             var conta_linha=".$this->iframe_nome.".document.form1.conta_linha.value;
             var tab = ".$this->iframe_nome.".document.getElementById('tab');
@@ -434,7 +437,7 @@ class cl_iframe_alterar_excluir_html_novo{
             conta_linha++;
           }
     \n";
-    echo "
+        echo "
           function js_incluirlinhas($coluna){
             var conta_linha=".$this->iframe_nome.".document.form1.conta_linha.value;
             var tab = ".$this->iframe_nome.".document.getElementById('tab');
@@ -459,105 +462,106 @@ class cl_iframe_alterar_excluir_html_novo{
           }
     \n";
 
-     echo" </script>";
-   }
-
+        echo" </script>";
+    }
 }
 
 //|00|//cl_criatabela
 //|10|//Cria um iframe com as opções de alterar e excluir por java script. Quando usar a função "js_criaelementos()" será criado um input com os dados de cada linha
 //|15|//[variavel] = new cl_alterar_excluir_html;
-class cl_iframe_alterar_excluir_html{
-   var $js_mouseover     = null;
+class cl_iframe_alterar_excluir_html
+{
+    var $js_mouseover     = null;
    //|30|//função executada quando o mouse for passado por cima da linha, é retornado para ela as chaves primarias...
-   var $js_mouseout     = null;
+    var $js_mouseout     = null;
    //|30|//função executada quando o mouse for passado por cima da linha, é retornado para ela as chaves primarias...
-   var $load = '';
+    var $load = '';
    //|30|//função a ser executada no onload do iframe
-   var $fontecabec = '10px';
+    var $fontecabec = '10px';
    //|30|//tamanho do texto do cabeçalho
-   var $fontecorpo = '10px';
+    var $fontecorpo = '10px';
    //|30|//tamanho do texto do corpo
-   var $textocabec = 'darkblue';
+    var $textocabec = 'darkblue';
    //|30|//cor do texto do cabeçalho
-   var $textocorpo = 'black';
+    var $textocorpo = 'black';
    //|30|//cor do texto do corpo
-   var $fundocabec = '#BDC6BD';
+    var $fundocabec = '#BDC6BD';
    //|30|//cor do fundo do cabeçalho
-   var $fundocorpo = '#cccccc';
+    var $fundocorpo = '#cccccc';
    //|30|//cor do fundo do corpo
-   var $iframe_width = '750';
+    var $iframe_width = '750';
    //|30|//largura do iframe
-   var $iframe_height = '190';
+    var $iframe_height = '190';
    //|30|//altura do iframe
-   var $iframe_nome = 'criatabela';
+    var $iframe_nome = 'criatabela';
    //|30|//nome do iframe
-   var $colunas     = null; //nome da colunas
+    var $colunas     = null; //nome da colunas
    //|30|//nome das colunas
-   var $js_ex01     = null;
+    var $js_ex01     = null;
    //|30|//função executada antes de excluir uma linha, caso esta função retorne false, a exclusão da linha será abortada
-   var $js_ex02     = null;
+    var $js_ex02     = null;
    //|30|//função executada depois de excluir uma linha
-   var $sql         = null;
+    var $sql         = null;
    //|30|//sql com dados a seresm colocados na tabela por PHP
-   var $db_opcao    =  null;
+    var $db_opcao    =  null;
    //|30|//não é obrogatório
-   var $tamfontecabec = '10';
+    var $tamfontecabec = '10';
    //|30|//tamanho da fonte do cabeçalho
-   var $tamfontecorpo = '9';
+    var $tamfontecorpo = '9';
     //|30|//tamanho da fonte do corpo
     //|30|//js_incluirlinhas(campos que deseja incluir);
     //|30|//js_alterarlinhas(campos); funcao que retorna todos os camos
     //|30|//js_numlinhas funcao que retorna o numero de lmnha da tabela
     //|30|//js_dados();funcao que cria input com todas as linhas da tabela com o nome de  linha_XX XX=numero da linha
-   function iframe_alterar_excluir_html(){
-     $quais_colunas="";
-     $cerca="";
-     reset($this->colunas);
+    function iframe_alterar_excluir_html()
+    {
+        $quais_colunas="";
+        $cerca="";
+        reset($this->colunas);
 
-     $arquivo = tempnam ("tmp/", "iframe");
-     $arquivo.=".php";
-     umask(74);
-     $fd = fopen($arquivo,"w") or die('Erro ao abrir!');
-     fputs($fd,' <?    '."\n");
-     fputs($fd,' $textocabec="'.$this->textocabec.'";'."\n");
-     fputs($fd,' $textocorpo="'.$this->textocorpo.'";'."\n");
-     fputs($fd,' $fundocabec="'.$this->fundocabec.'";'."\n");
-     fputs($fd,' $fundocorpo="'.$this->fundocorpo.'";'."\n");
-     fputs($fd,' $tamfontecabec="'.$this->tamfontecabec.'";'."\n");
-     fputs($fd,' $tamfontecorpo="'.$this->tamfontecorpo.'";'."\n");
-     fputs($fd,' $load="'.$this->load.'";'."\n");
+        $arquivo = tempnam("tmp/", "iframe");
+        $arquivo.=".php";
+        umask(74);
+        $fd = fopen($arquivo, "w") or die('Erro ao abrir!');
+        fputs($fd, ' <?    '."\n");
+        fputs($fd, ' $textocabec="'.$this->textocabec.'";'."\n");
+        fputs($fd, ' $textocorpo="'.$this->textocorpo.'";'."\n");
+        fputs($fd, ' $fundocabec="'.$this->fundocabec.'";'."\n");
+        fputs($fd, ' $fundocorpo="'.$this->fundocorpo.'";'."\n");
+        fputs($fd, ' $tamfontecabec="'.$this->tamfontecabec.'";'."\n");
+        fputs($fd, ' $tamfontecorpo="'.$this->tamfontecorpo.'";'."\n");
+        fputs($fd, ' $load="'.$this->load.'";'."\n");
 
-     if($this->js_mouseover!=null){
-       fputs($fd,' $js_mouseover="'.$this->js_mouseover.'";'."\n");
-     }
-     if($this->js_mouseout!=null){
-       fputs($fd,' $js_mouseout="'.$this->js_mouseout.'";'."\n");
-     }
+        if ($this->js_mouseover!=null) {
+            fputs($fd, ' $js_mouseover="'.$this->js_mouseover.'";'."\n");
+        }
+        if ($this->js_mouseout!=null) {
+            fputs($fd, ' $js_mouseout="'.$this->js_mouseout.'";'."\n");
+        }
 
-     if(isset($this->db_opcao)){
-       fputs($fd,' $db_opcao="'.$this->db_opcao.'";'."\n");
-     }
-     if($this->sql!=null){
-        fputs($fd,' $sql="'.base64_encode($this->sql).'";'."\n");
-     }
-     for($q=0; $q<sizeof($this->colunas); $q++){
-       fputs($fd,' $x_'.key($this->colunas).'="'.$this->colunas[key($this->colunas)].'";'."\n");
-       $quais_colunas.=$cerca.key($this->colunas);
-       next($this->colunas);
-       $cerca = "#";
-     }
-     fputs($fd,' $quais_colunas="'.$quais_colunas.'";'."\n");
-     fputs($fd,'?>  ');
-     fclose($fd);
-     echo" <iframe id=\"\"  frameborder=\"0\" name=\"".$this->iframe_nome."\"   leftmargin=\"0\" topmargin=\"0\" src=\"dbforms/db_classes_iframe_alterar_excluir_html.php?arquivo=".base64_encode($arquivo)."\" height=\"".$this->iframe_height."\" width=\"".$this->iframe_width."\">
+        if (isset($this->db_opcao)) {
+            fputs($fd, ' $db_opcao="'.$this->db_opcao.'";'."\n");
+        }
+        if ($this->sql!=null) {
+            fputs($fd, ' $sql="'.base64_encode($this->sql).'";'."\n");
+        }
+        for ($q=0; $q<sizeof($this->colunas); $q++) {
+            fputs($fd, ' $x_'.key($this->colunas).'="'.$this->colunas[key($this->colunas)].'";'."\n");
+            $quais_colunas.=$cerca.key($this->colunas);
+            next($this->colunas);
+            $cerca = "#";
+        }
+        fputs($fd, ' $quais_colunas="'.$quais_colunas.'";'."\n");
+        fputs($fd, '?>  ');
+        fclose($fd);
+        echo" <iframe id=\"\"  frameborder=\"0\" name=\"".$this->iframe_nome."\"   leftmargin=\"0\" topmargin=\"0\" src=\"dbforms/db_classes_iframe_alterar_excluir_html.php?arquivo=".base64_encode($arquivo)."\" height=\"".$this->iframe_height."\" width=\"".$this->iframe_width."\">
             </iframe>
 
     ";
-     echo"
+        echo "
     <script>
     function js_retorna_dados(){
-            tabela=".$this->iframe_nome.".document.getElementById('tab');
+            tabela=" . $this->iframe_nome . ".document.getElementById('tab');
       y='';
       colunas ='';
             for(i=1; i<tabela.rows.length; i++){
@@ -571,7 +575,7 @@ class cl_iframe_alterar_excluir_html{
 
 
     function js_dados(){
-            tabela=".$this->iframe_nome.".document.getElementById('tab');
+            tabela=" . $this->iframe_nome . ".document.getElementById('tab');
             for(i=1; i<tabela.rows.length; i++){
         y='';
         colunas='';
@@ -592,10 +596,10 @@ class cl_iframe_alterar_excluir_html{
       }
           }
             function js_excluirlinhas(linha) {";
-     if($this->js_ex01){
-       echo $this->js_ex01;
-     }
-     echo "
+        if ($this->js_ex01) {
+            echo $this->js_ex01;
+        }
+        echo "
               if(confirm(\"Deseja realmente excluir esta linha?\")){
                 var tab =".$this->iframe_nome.".document.getElementById('tab');
                 for(i=0;i<tab.rows.length;i++){
@@ -605,17 +609,17 @@ class cl_iframe_alterar_excluir_html{
                   }
                 }
               }";
-        if($this->js_ex02!=null){
-           echo $this->js_ex02;
+        if ($this->js_ex02!=null) {
+            echo $this->js_ex02;
         }
-     echo "
+        echo "
             }
             function js_numlinhas(){
               var tab = ".$this->iframe_nome.".document.getElementById('tab');
               return tab.rows.length;
             }";
 
-  echo "
+        echo "
             function js_alterarlinhas(linha) {
 
               var tab = ".$this->iframe_nome.".document.getElementById('tab');
@@ -634,15 +638,15 @@ class cl_iframe_alterar_excluir_html{
               eval('js_alterar('+colunas+')');
             }
     ";
-     $coluna="";
-     $virgula="";
-     $colunas= split("#",$quais_colunas);
-     $totcol=sizeof($colunas);
-     for($i=0; $i<$totcol; $i++){
-       $coluna.=$virgula.$colunas[$i];
-       $virgula=",";
-     }
-     echo"
+        $coluna="";
+        $virgula="";
+        $colunas = explode("#", $quais_colunas);
+        $totcol=sizeof($colunas);
+        for ($i=0; $i<$totcol; $i++) {
+            $coluna.=$virgula.$colunas[$i];
+            $virgula=",";
+        }
+        echo"
           function js_incluirlinhas_disabled($coluna){
             var conta_linha=".$this->iframe_nome.".document.form1.conta_linha.value;
             var tab = ".$this->iframe_nome.".document.getElementById('tab');
@@ -666,7 +670,7 @@ class cl_iframe_alterar_excluir_html{
             conta_linha++;
           }
     \n";
-    echo "
+        echo "
           function js_incluirlinhas($coluna){
             var conta_linha=".$this->iframe_nome.".document.form1.conta_linha.value;
             ".$this->iframe_nome.".document.form1.conta_linha.value= new Number(conta_linha)+1;
@@ -691,9 +695,8 @@ class cl_iframe_alterar_excluir_html{
           }
     \n";
 
-     echo" </script>";
-   }
-
+        echo" </script>";
+    }
 }
 ##############################################3CRIA ABAS########################################################
 ################################################################################################################
@@ -719,7 +722,7 @@ class cl_criaabas {
    var $scrolling = "yes";
 
   function cria_abas(){
-     ?>
+?>
         <script>
           function mo_camada(idtabela){
             var camada="div_"+idtabela;
@@ -732,15 +735,15 @@ class cl_criaabas {
             for (var j = 0; j < divs.length; j++){
               if(alvo.id == divs[j].id){
                 divs[j].style.visibility = 'visible' ;
-                divs[j].style.zIndex = 99;
-                divs[j].style.width  = (screen.availWidth-10);
-                divs[j].style.height = (screen.availHeight-184);
+                divs[j].style.zIndex = 2;
+                divs[j].style.width  = (window.outerWidth-10);
+                divs[j].style.height = (window.outerHeight-184);
               }else{
                 if(divs[j].className == 'tabela'){
                   divs[j].style.visibility = 'hidden';
-                  divs[j].style.zIndex = 98;
-                  divs[j].style.width = (screen.availWidth-10);
-                  divs[j].style.height= (screen.availHeight-184);
+                  divs[j].style.zIndex = 1;
+                  divs[j].style.width = (window.outerWidth-10);
+                  divs[j].style.height= (window.outerHeight-184);
                 }
               }
             }
@@ -843,7 +846,7 @@ class cl_criaabas {
          <table class="bordas" id="<?=$chave?>" border="0" style="border: 3px outset #666666; border-bottom-width: 0px; border-right-width: 1px ;border-right-color: #000000; border-top-color: #3c3c3c; border-right-style: inset; " cellpadding="3" cellspacing="0" >
            <tr>
              <td nowrap>
-               <input readonly <?=$disabled?>  name="<?=$chave?>" class="input-abas"  style="font-weight:bold; color:<?=$cortexto?>; background-color:<?=$corfundo?>;" type="text"  value="<?=$this->identifica[$chave]?>" title="<?=$this->title[$chave]?>" size="<?=$sizecampo?>"  onClick="<?=$funcao_js?> mo_camada('<?=$chave?>'); ">
+               <input readonly <?=$disabled?> framename="iframe_<?=$chave?>" name="<?=$chave?>" class="input-abas"  style="font-weight:bold; color:<?=$cortexto?>; background-color:<?=$corfundo?>;" type="text"  value="<?=$this->identifica[$chave]?>" title="<?=$this->title[$chave]?>" size="<?=$sizecampo?>"  onClick="<?=$funcao_js?> mo_camada('<?=$chave?>'); ">
              </td>
            </tr>
          </table>
@@ -949,17 +952,18 @@ class cl_iframe_alterar_excluir {
    var $sql_reservasaldo = "";
    var $campos_comparar  = "";
    var $strFormatar      = "1"; #se db_fieldsmemory ira formatar os valores
+   var $escondeOpcoes      = false; #se db_fieldsmemory ira formatar os valores
 
    function iframe_alterar_excluir($db_opcao){
      $query_string = "a=1";
      $quais_chaves = "";
      reset($this->chavepri);
      $cerca = "";
-     $arquivo = tempnam ("/tmp", "iframe");
+     $arquivo = tempnam ("tmp", "iframe");
      $arquivo.=".php";
      umask(74);
      $fd = fopen($arquivo,"w") or die('Erro ao abrir!');
-     fputs($fd,' <?    '."\n");
+     fputs($fd,' <?php  '."\n");
      fputs($fd,' $textocabec="'.$this->textocabec.'";'."\n");
      fputs($fd,' $textocorpo="'.$this->textocorpo.'";'."\n");
      fputs($fd,' $strFormatar="'.$this->strFormatar.'";'."\n");
@@ -969,6 +973,7 @@ class cl_iframe_alterar_excluir {
      fputs($fd,' $corponowrap="'.$this->corponowrap.'";'."\n");
      fputs($fd,' $tamfontecabec="'.$this->tamfontecabec.'";'."\n");
      fputs($fd,' $tamfontecorpo="'.$this->tamfontecorpo.'";'."\n");
+     fputs($fd,' $escondeOpcoes="'.$this->escondeOpcoes.'";'."\n");
      fputs($fd,' $sql="'.base64_encode($this->sql).'";'."\n");
      fputs($fd,' $msg_vazio="'.base64_encode($this->msg_vazio).'";'."\n");
      fputs($fd,' $campos="'.base64_encode($this->campos).'";'."\n");
@@ -1027,8 +1032,6 @@ class cl_iframe_alterar_excluir {
 }
 
 
-
-
 class cl_arquivo_auxiliar {
 //|00|//cl_arquivo_auxiliar
 //|10|//Gera no formulario um select multiple com um campo de ancora para inclusao e selecao de item
@@ -1039,7 +1042,7 @@ class cl_arquivo_auxiliar {
 //|30|//Cabecalho : Descrição que será utilizada no FieldSet
   var $top = null;
 //|30|//Tipo de montagem do formulário, 1=vertical ou 2=horizontal
-  var $localjan = "top.corpo";
+  var $localjan = "(window.CurrentWindow || parent.CurrentWindow).corpo";
 //|30|//Cabecalho : Descrição que será utilizada no FieldSet
   var $codigo = null;
 //|30|//Código    : Nome do campo para o código da âncora
@@ -1284,7 +1287,7 @@ class cl_arquivo_auxiliar {
     if($this->mostrar_botao_lancar == true)
       echo "  document.form1.".$this->nome_botao.".onclick = '';\n";
     echo "  if(chave){\n";
-    echo "    js_OpenJanelaIframe('".($this->localjan != "top.corpo"?$this->localjan:"top.corpo")."','".$this->nomeiframe."','".$this->func_arquivo."?funcao_js=parent.".$this->funcao_js."|".$this->codigo."|".$this->descr.$this->passar_query_string_para_func."'".($this->parametros != ""?$this->parametros:"").",'$this->nomejanela',true".($this->top!=null?",'".$this->top."'":"").");\n";
+    echo "    js_OpenJanelaIframe('".($this->localjan != "CurrentWindow.corpo"?$this->localjan:"CurrentWindow.corpo")."','".$this->nomeiframe."','".$this->func_arquivo."?funcao_js=parent.".$this->funcao_js."|".$this->codigo."|".$this->descr.$this->passar_query_string_para_func."'".($this->parametros != ""?$this->parametros:"").",'$this->nomejanela',true".($this->top!=null?",'".$this->top."'":"").");\n";
     echo "  }else{\n";
     if($this->completar_com_zeros_codigo == true){
 
@@ -1294,7 +1297,7 @@ class cl_arquivo_auxiliar {
       echo "    }\n";
     }
 
-    echo "    js_OpenJanelaIframe('".($this->localjan != "top.corpo"?$this->localjan:"top.corpo")."','".$this->nomeiframe."','".$this->func_arquivo."?pesquisa_chave='+document.form1.".$this->codigo.".value+'&funcao_js=parent.".$this->funcao_js_hide.$this->passar_query_string_para_func."'".($this->parametros != ""?$this->parametros:"").",'Pesquisa',false);\n";
+    echo "    js_OpenJanelaIframe('".($this->localjan != "CurrentWindow.corpo"?$this->localjan:"CurrentWindow.corpo")."','".$this->nomeiframe."','".$this->func_arquivo."?pesquisa_chave='+document.form1.".$this->codigo.".value+'&funcao_js=parent.".$this->funcao_js_hide.$this->passar_query_string_para_func."'".($this->parametros != ""?$this->parametros:"").",'Pesquisa',false);\n";
     echo "  }\n";
     echo "}\n";
 
@@ -1647,7 +1650,8 @@ class cl_db_estrut{
   tam=obj.length;
   dig=str.substr(tam,1);
   if(dig=="."){
-    document.<?=$this->nomeform?>.<?=$this->nome?>.value=obj+".";
+      document.<?=$this->nomeform?>.<?=$this->nome?>.
+      value = obj + '.';
   }
   return true;
       }else if(evt.charCode=='0'){
@@ -1657,14 +1661,15 @@ class cl_db_estrut{
       }
     }
     function js_mascara02_<?=$nome?>(obj){
-      obj=document.<?=$this->nomeform?>.<?=$this->nome?>.value;
+        obj = document.<?=$this->nomeform?>.<?=$this->nome?>.
+        value;
        while(obj.search(/\./)!='-1'){
    obj=obj.replace(/\./,'');
        }
 <?
    if($this->autocompletar==true){
 ?>
-     tam=<?=strlen(str_replace(".","",$mascara))?>;
+     tam=<?=strlen(str_replace(".", "", $mascara))?>;
      for(i=obj.length; i<tam; i++){
        obj=obj+"0";
      }
@@ -1676,7 +1681,7 @@ class cl_db_estrut{
        nada='';
        matriz=str.split(nada);
        tam=matriz.length;
-       arr=new Array();
+        arr = [];
        cont=0;
        for(i=0; i<tam; i++){
    if(matriz[i]=='.'){
@@ -1694,7 +1699,8 @@ class cl_db_estrut{
      obj=ini+"."+fim;
    }
        }
-      document.<?=$this->nomeform?>.<?=$this->nome?>.value=obj;
+        document.<?=$this->nomeform?>.<?=$this->nome?>.
+        value = obj;
 <?
     if($this->reload==true){
 ?>
@@ -1709,14 +1715,15 @@ class cl_db_estrut{
 ?>
     }
     function js_mascara03_<?=$nome?>(obj){
-      obj=document.<?=$this->nomeform?>.<?=$this->nome?>.value;
+        obj = document.<?=$this->nomeform?>.<?=$this->nome?>.
+        value;
        while(obj.search(/\./)!='-1'){
    obj=obj.replace(/\./,'');
        }
 <?
    if($this->autocompletar==true){
 ?>
-     tam=<?=strlen(str_replace(".","",$mascara))?>;
+     tam=<?=strlen(str_replace(".", "", $mascara))?>;
      for(i=obj.length; i<tam; i++){
        obj=obj+"0";
      }
@@ -1728,7 +1735,7 @@ class cl_db_estrut{
        nada='';
        matriz=str.split(nada);
        tam=matriz.length;
-       arr=new Array();
+        arr = [];
        cont=0;
        for(i=0; i<tam; i++){
    if(matriz[i]=='.'){
@@ -1746,7 +1753,8 @@ class cl_db_estrut{
      obj=ini+"."+fim;
    }
        }
-  document.<?=$this->nomeform?>.<?=$this->nome?>.value=obj;
+        document.<?=$this->nomeform?>.<?=$this->nome?>.
+        value = obj;
     }
     </script>
 
@@ -1912,11 +1920,16 @@ class cl_formulario_rel_pes {
   var $camposprevid = "r33_codtab, r33_nome";     // Campos que serão usados ao buscar tabelas da previdência e INSS
   var $linhasSelecion = 12;
   var $usaLotaFieldsetClass = false;      // Opacao para estilização adicional do fieldset
+  var $suplementar = "";      // Value do gerfsal no tipo de folha ou ponto
 
-  function cl_formulario_rel_pes(){
-    $this->rotulo = new rotulocampo;
-    $this->clarquivo_auxiliar = new cl_arquivo_auxiliar;
-  }
+    /**
+     * cl_formulario_rel_pes constructor.
+     */
+    public function __construct()
+    {
+        $this->rotulo = new rotulocampo();
+        $this->clarquivo_auxiliar = new cl_arquivo_auxiliar();
+    }
 
   function atualiza_variaveis_filtro(){
     // $arr_qualres[index] = 'm'; -> Indice equivale à tabela rhpessoal
@@ -2157,7 +2170,7 @@ class cl_formulario_rel_pes {
     $$variavelresumo = isset($GLOBALS[$this->trenome])?$GLOBALS[$this->trenome]:$this->resumopadrao;
     $$variavelfiltro = isset($GLOBALS[$this->tfinome])?$GLOBALS[$this->tfinome]:$this->filtropadrao;
     global $$variavelresumo, $$variavelfiltro;
-    if(count($arraydados) > 1){
+    if(count($arraydados) >= 1){
       echo "
             <tr>
               <td align='left' nowrap title='".$titleimp."' >
@@ -2179,12 +2192,12 @@ class cl_formulario_rel_pes {
     }
     $variavel_retorno = "
       <script>
-        function js_geraform_pesquisa".$tabela."(mostra,opcao){
+        function js_geraform_pesquisa" . $tabela . "(mostra,opcao){
           if(mostra==true){
             if(opcao == 1){
-              js_OpenJanelaIframe('top.corpo','db_iframe_".$tabela."','func_".$tabela.".php?".$testar_rescis."funcao_js=parent.js_geraform_mostra".$tabela."1|".$dcampo1."|".$dcampo2."&instit=".(db_getsession("DB_instit"))."','Pesquisa',true);
+              js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_" . $tabela . "','func_" . $tabela . ".php?" . $testar_rescis . "funcao_js=parent.js_geraform_mostra" . $tabela . "1|" . $dcampo1 . "|" . $dcampo2 . "&instit=" . (db_getsession("DB_instit")) . "','Pesquisa',true);
             }else{
-              js_OpenJanelaIframe('top.corpo','db_iframe_".$tabela."','func_".$tabela.".php?".$testar_rescis."funcao_js=parent.js_geraform_mostra".$tabela."2|".$dcampo1."|".$dcampo2."&instit=".(db_getsession("DB_instit"))."','Pesquisa',true);
+              js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_".$tabela."','func_".$tabela.".php?".$testar_rescis."funcao_js=parent.js_geraform_mostra".$tabela."2|".$dcampo1."|".$dcampo2."&instit=".(db_getsession("DB_instit"))."','Pesquisa',true);
             }
           }else{
     ";
@@ -2205,7 +2218,7 @@ class cl_formulario_rel_pes {
              if(opcao == 1){
                if(document.".$formula.".".$ndescri."){
                  if(document.".$formula.".".$ncampo1.".value != ''){
-                   js_OpenJanelaIframe('top.corpo','db_iframe_".$tabela."','func_".$tabela.".php?".$testar_rescis."pesquisa_chave='+document.".$formula.".".$ncampo1.".value+'&funcao_js=parent.js_geraform_mostra".$tabela."&instit=".db_getsession("DB_instit")."','Pesquisa',false);
+                   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_".$tabela."','func_".$tabela.".php?".$testar_rescis."pesquisa_chave='+document.".$formula.".".$ncampo1.".value+'&funcao_js=parent.js_geraform_mostra".$tabela."&instit=".db_getsession("DB_instit")."','Pesquisa',false);
                  }else{
                    document.".$formula.".".$ndescri.".value = '';
                  }
@@ -2438,21 +2451,47 @@ class cl_formulario_rel_pes {
     if($this->tipofol == true || $this->tipopon == true){
       if(trim($this->complementar) != ""){
         if((isset($GLOBALS[$this->tfonome]) && $GLOBALS[$this->tfonome] == $this->complementar) || (isset($GLOBALS[$this->tponome]) && $GLOBALS[$this->tponome] == $this->complementar)){
-          $result_complementar = db_query("select distinct r48_semest as semestralidade from gerfcom  where r48_anousu = ".$$campoano." and r48_mesusu = ".$$campomes);
-    if(pg_numrows($result_complementar) > 0){
-      $arr_selcomplementar[0] = "Todos ...";
-      for($icompl=0; $icompl<pg_numrows($result_complementar); $icompl++){
-        db_fieldsmemory($result_complementar, $icompl);
-        global $semestralidade;
-              $arr_selcomplementar[$semestralidade] = $semestralidade;
+          if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+            $result_complementar = db_query("select distinct rh141_codigo as semestralidade from rhfolhapagamento where rh141_tipofolha = 3 and rh141_anousu = ".$$campoano." and rh141_mesusu = ".$$campomes." order by semestralidade");
+          } else {
+            $result_complementar = db_query("select distinct r48_semest as semestralidade from gerfcom  where r48_anousu = ".$$campoano." and r48_mesusu = ".$$campomes);
+          }
+
+          if(pg_numrows($result_complementar) > 0){
+            $arr_selcomplementar[0] = "Todos ...";
+            for($icompl=0; $icompl<pg_numrows($result_complementar); $icompl++){
+              db_fieldsmemory($result_complementar, $icompl);
+              global $semestralidade;
+                    $arr_selcomplementar[$semestralidade] = $semestralidade;
+            }
+                  $this->monta_select_tdrtable($arr_selcomplementar,$this->comnome,"Nro.Complementar:","Número da complementar");
+          }else{
+            db_input($this->comnome,'2',true,0,'hidden');
+            echo "
+                  <tr><td colspan=2 align='center'><font color='red'>Sem complementar para este período</font></td></tr>
+                 ";
+          }
+        }
       }
-            $this->monta_select_tdrtable($arr_selcomplementar,$this->comnome,"Nro.Complementar:","Número da complementar");
-    }else{
-      db_input($this->comnome,'2',true,0,'hidden');
-      echo "
-            <tr><td colspan=2 align='center'><font color='red'>Sem complementar para este período</font></td></tr>
-           ";
-    }
+
+      if(trim($this->suplementar) != ""){
+        if((isset($GLOBALS[$this->tfonome]) && $GLOBALS[$this->tfonome] == $this->suplementar) || (isset($GLOBALS[$this->tponome]) && $GLOBALS[$this->tponome] == $this->suplementar)){
+
+          $result_suplementar = db_query("select distinct rh141_codigo as semestralidade from rhfolhapagamento where rh141_tipofolha = 6 and rh141_anousu = ".$$campoano." and rh141_mesusu = ".$$campomes." order by semestralidade");
+          if(pg_numrows($result_suplementar) > 0){
+            $arr_selsuplementar[0] = "Todos ...";
+            for($isupl=0; $isupl<pg_numrows($result_suplementar); $isupl++){
+              db_fieldsmemory($result_suplementar, $isupl);
+              global $semestralidade;
+                    $arr_selsuplementar[$semestralidade] = $semestralidade;
+            }
+                  $this->monta_select_tdrtable($arr_selsuplementar,$this->comnome,"Nro.Suplementar:","Número da suplementar");
+          }else{
+            db_input($this->comnome,'2',true,0,'hidden');
+            echo "
+                  <tr><td colspan=2 align='center'><font color='red'>Sem suplementar para este período</font></td></tr>
+                 ";
+          }
         }
       }
     }
@@ -2655,7 +2694,7 @@ class cl_formulario_rel_pes {
     if($this->testarescisaoregi == true){
       $registrosselecionados = "";
             $virgula = "";
-            $arr_registrosselecion = split(",",$GLOBALS[$this->campo_auxilio_regi]);
+        $arr_registrosselecion = explode(",", $GLOBALS[$this->campo_auxilio_regi]);
             for($i=0; $i<count($arr_registrosselecion); $i++){
                     $result_rescisoes = db_query("select rh05_recis from rhpessoalmov inner join rhpesrescisao on rh05_seqpes = rh02_seqpes where rh02_anousu = ".$ano." and rh02_mesusu = ".$mes." and rh02_regist = ".$arr_registrosselecion[$i]);
         if(pg_numrows($result_rescisoes) == 0){
@@ -2729,7 +2768,7 @@ class cl_formulario_rel_pes {
         if(isset($GLOBALS[$this->campo_auxilio_lota]) && trim($GLOBALS[$this->campo_auxilio_lota]) != ""){
           $lotacoesselecionadas = "";
           $virgula = "";
-          $arr_lotacoesselecion = split(",",$GLOBALS[$this->campo_auxilio_lota]);
+            $arr_lotacoesselecion = explode(",", $GLOBALS[$this->campo_auxilio_lota]);
           for($i=0; $i<count($arr_lotacoesselecion); $i++){
             $lotacoesselecionadas = $virgula."'".$arr_lotacoesselecion[$i]."'";
             $virgula = ", ";
@@ -2754,7 +2793,7 @@ class cl_formulario_rel_pes {
         if(isset($GLOBALS[$this->campo_auxilio_rubr]) && trim($GLOBALS[$this->campo_auxilio_rubr]) != ""){
           $rubricasselecionadas = "";
           $virgula = "";
-          $arr_rubricasselecion = split(",",$GLOBALS[$this->campo_auxilio_rubr]);
+            $arr_rubricasselecion = explode(",", $GLOBALS[$this->campo_auxilio_rubr]);
           for($i=0; $i<count($arr_rubricasselecion); $i++){
             $rubricasselecionadas = $virgula."'".$arr_rubricasselecion[$i]."'";
             $virgula = ", ";
@@ -2779,7 +2818,7 @@ class cl_formulario_rel_pes {
         if(isset($GLOBALS[$this->campo_auxilio_loca]) && trim($GLOBALS[$this->campo_auxilio_loca]) != ""){
           $locaistrabselecionados = "";
           $virgula = "";
-          $arr_locaistrabselecion = split(",",$GLOBALS[$this->campo_auxilio_loca]);
+            $arr_locaistrabselecion = explode(",", $GLOBALS[$this->campo_auxilio_loca]);
           for($i=0; $i<count($arr_locaistrabselecion); $i++){
             $locaistrabselecionados = $virgula."'".$arr_locaistrabselecion[$i]."'";
             $virgula = ", ";
@@ -2805,7 +2844,7 @@ class cl_formulario_rel_pes {
         if(isset($GLOBALS[$this->campo_auxilio_carg]) && trim($GLOBALS[$this->campo_auxilio_carg]) != ""){
           $locaistrabselecionados = "";
           $virgula = "";
-          $arr_locaistrabselecion = split(",",$GLOBALS[$this->campo_auxilio_carg]);
+            $arr_locaistrabselecion = explode(",", $GLOBALS[$this->campo_auxilio_carg]);
           for($i=0; $i<count($arr_locaistrabselecion); $i++){
             $locaistrabselecionados = $virgula.$arr_locaistrabselecion[$i];
             $virgula = ", ";
@@ -2870,6 +2909,13 @@ class cl_formulario_rel_pes {
     if(trim($this->complementar) != ""){
     echo "
         if(valor == '".$this->complementar."' || document.".$this->formnam.".".$this->comnome."){
+    document.".$this->formnam.".submit();
+              }
+   ";
+    }
+    if(trim($this->suplementar) != ""){
+    echo "
+        if(valor == '".$this->suplementar."' || document.".$this->formnam.".".$this->comnome."){
     document.".$this->formnam.".submit();
               }
    ";

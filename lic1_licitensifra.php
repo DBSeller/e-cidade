@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_pcproc_classe.php");
-require_once("classes/db_pcprocitem_classe.php");
-require_once("classes/db_liclicitem_classe.php");
-require_once("classes/db_pcorcamitemlic_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_liclicitemlote_classe.php");
-require_once("classes/db_pcorcamitem_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_pcproc_classe.php"));
+require_once(modification("classes/db_pcprocitem_classe.php"));
+require_once(modification("classes/db_liclicitem_classe.php"));
+require_once(modification("classes/db_pcorcamitemlic_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_liclicitemlote_classe.php"));
+require_once(modification("classes/db_pcorcamitem_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_GET_VARS);
@@ -109,7 +109,6 @@ if (!empty($chaves) && isset($chaves)){
   }
 
   if (isset($incluir)&&trim($incluir)!="") {
-
   	$sqlerro=false;
   	db_inicio_transacao();
 
@@ -246,8 +245,8 @@ if (!empty($chaves) && isset($chaves)){
   	    }
   	  }
     }
-
-  	db_fim_transacao($sqlerro);
+   // $sqlerro  = true;
+  	db_fim_transacao(false);
 
     if ($sqlerro==false){
       $res_pcorcam = $clpcorcamitem->sql_record($clpcorcamitem->sql_query_pcmaterlic(null,"pc22_codorc",null,"l20_codigo = $licitacao limit 1"));
@@ -291,16 +290,19 @@ if (!empty($chaves) && isset($chaves)){
    	      }
     	  }
 
-  	    db_fim_transacao($sqlerro);
+  	    db_fim_transacao(false);
       }
     }
 
   	if ($sqlerro==false){
-  		db_msgbox("Inclusão Efetivada com Sucesso!!");
+
+      db_msgbox("Inclusão Efetivada com Sucesso!!");
+      echo "<script>parent.parent.iframe_liclicita.bloquearRegistroPreco();</script>";
       if (isset($tipojulg)&&trim($tipojulg)!=""&&$tipojulg==3){
            echo "<script>
                         parent.parent.iframe_liclicitemlote.location.href = 'lic1_liclicitemlote001.php?licitacao=$licitacao&tipojulg=$tipojulg';\n
                         parent.parent.document.formaba.liclicitemlote.disabled=false;
+
                  </script>";
       }
  	}else{
@@ -361,8 +363,14 @@ function js_submit_form(){
            db_input('codprocant',10,'',true,'hidden',3);
            db_input('cods'      ,10,'',true,'hidden',3);
 
+           if ($registroPreco) {
+            $sWhere  = " and pc10_solicitacaotipo = 6";
+          } else {
+            $sWhere  = " and pc10_solicitacaotipo in(1,2)";
+          }
+
            if (isset($codproc)&&$codproc!=""){
-              $sql = $clpcprocitem->sql_query_pcmater(null,
+              $sql = $clpcprocitem->sqlItensRegistroPreco(null,
               		                                  "distinct
               		                                   pc81_codprocitem,
               		                                   pc11_seq,
@@ -374,7 +382,8 @@ function js_submit_form(){
               		                                   pc01_descrmater,
               		                                   pc11_resum",
               		                                  "pc11_seq",
-              		                                  "pc81_codproc=$codproc");
+              		                                  "pc81_codproc=$codproc $sWhere");
+
               $sql_disabled = $clpcprocitem->sql_query_pcmater(null,
                                                                "distinct pc81_codprocitem",
                                                                null,
@@ -382,7 +391,7 @@ function js_submit_form(){
                                                                 and (    l21_codliclicita <> {$licitacao}
                                                                       or l21_codliclicita = {$licitacao} and l21_codigo is not null
                                                                       or ( e54_anulad is null and e55_sequen is not null)
-                                                                    )");
+                                                                    ) $sWhere");
               if (isset($cods)&&$cods!=""){
                 $sql_marca = $clpcprocitem->sql_query_pcmater(null,
                                                               "distinct
@@ -399,6 +408,7 @@ function js_submit_form(){
                                                               "pc81_codproc=$codproc
                                                                and l21_codigo is not null
                                                                and l21_codliclicita = $licitacao
+                                                               $sWhere
                                                               ");
               }
            }
@@ -407,6 +417,8 @@ function js_submit_form(){
            $cliframe_seleciona->legenda="Itens";
            $cliframe_seleciona->sql=@$sql;
            $cliframe_seleciona->sql_marca=@$sql_marca;
+
+           
 
            if (isset($codproc)&&$codproc!="") {
 

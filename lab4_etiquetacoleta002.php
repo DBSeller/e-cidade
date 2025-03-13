@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/scpdf.php");
-include("classes/db_lab_requiitem_classe.php");
+include(modification("fpdf151/scpdf.php"));
+include(modification("classes/db_lab_requiitem_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $cllab_requiitem = new cl_lab_requisicao;

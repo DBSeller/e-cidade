@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('rh61_regist');
 $clrotulo->label('z01_nome');
@@ -77,8 +77,8 @@ $sql = "select rh01_regist as matricula,
 ;
 
 // die($sql);
-//// pg_exec - executa $sql no banco e gera um RECORDSET criado na variável $resultado_sql com os dados da execução
-//// da variável $sql no $resultado_sql = pg_exec($sql);
+//// db_query - executa $sql no banco e gera um RECORDSET criado na variável $resultado_sql com os dados da execução
+//// da variável $sql no $resultado_sql = db_query($sql);
 //// pg_numrows - verifica quantas linhas vieram no RECORDSET e coloca o resultado na variávei $qtd_linhas_sql
 $qtd_linhas_sql = pg_numrows($resultado_sql);
 if($qtd_linhas_sql == 0){

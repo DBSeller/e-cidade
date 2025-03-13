@@ -26,7 +26,7 @@
  */
 
 //MODULO: Custos
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcustoplanoanaliticacriteriorateio->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -164,13 +164,13 @@ function js_cancelar(){
 }
 function js_pesquisacc07_custocriteriorateio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_custoplanoanaliticacriteriorateio',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custoplanoanaliticacriteriorateio',
                         'db_iframe_custocriteriorateio',
                         'func_custocriteriorateio.php?funcao_js=parent.js_mostracustocriteriorateio1|cc08_sequencial|cc08_instit',
                         'Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.cc07_custocriteriorateio.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_custoplanoanaliticacriteriorateio','db_iframe_custocriteriorateio','func_custocriteriorateio.php?pesquisa_chave='+document.form1.cc07_custocriteriorateio.value+'&funcao_js=parent.js_mostracustocriteriorateio','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custoplanoanaliticacriteriorateio','db_iframe_custocriteriorateio','func_custocriteriorateio.php?pesquisa_chave='+document.form1.cc07_custocriteriorateio.value+'&funcao_js=parent.js_mostracustocriteriorateio','Pesquisa',false);
      }else{
        document.form1.cc08_instit.value = ''; 
      }
@@ -190,7 +190,7 @@ function js_mostracustocriteriorateio1(chave1,chave2){
 }
 function js_pesquisacc07_custoplanoanalitica(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_custoplanoanaliticacriteriorateio',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custoplanoanaliticacriteriorateio',
                         'db_iframe_custoplanoanalitica',
                         'func_custoplanoanalitica.php?funcao_js=parent.js_mostracustoplanoanalitica1|cc04_sequencial|cc01_estrutural',
                         'Plano de Custos',
@@ -199,7 +199,7 @@ function js_pesquisacc07_custoplanoanalitica(mostra){
                         (document.body.scrollHeight-80));
   }else{
      if(document.form1.cc07_custoplanoanalitica.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_custoplanoanaliticacriteriorateio','db_iframe_custoplanoanalitica','func_custoplanoanalitica.php?pesquisa_chave='+document.form1.cc07_custoplanoanalitica.value+'&funcao_js=parent.js_mostracustoplanoanalitica','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custoplanoanaliticacriteriorateio','db_iframe_custoplanoanalitica','func_custoplanoanalitica.php?pesquisa_chave='+document.form1.cc07_custoplanoanalitica.value+'&funcao_js=parent.js_mostracustoplanoanalitica','Pesquisa',false);
      }else{
        document.form1.cc04_custoplano.value = ''; 
      }

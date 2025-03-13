@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if(!isset($gerar)) {
-  $result = pg_exec("select corpofuncao from db_sysfuncoes where nomefuncao = '$funcao'");
+  $result = db_query("select corpofuncao from db_sysfuncoes where nomefuncao = '$funcao'");
   if(pg_numrows($result)==0){
      db_redireciona("sys1_funcoes001.php");
   }  
@@ -42,8 +42,8 @@ if(!isset($gerar)) {
     echo "Erro(10) ao tentar conectar no servidor.";
     exit;
   }
-  @pg_exec($connx,"drop function ".$funcao);
-  $result = @pg_exec($connx,"$corpofuncao");
+  @db_query($connx,"drop function ".$funcao);
+  $result = @db_query($connx,"$corpofuncao");
   if($result==false){
      echo "Erro ao criar a funcao: $funcao <br><br>".pg_errormessage();
 	 exit;

@@ -116,7 +116,7 @@ if(isset($pc10_numero) && trim($pc10_numero)!=""){
   </tr>
 </table>
 </center>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> onclick='top.corpo.document.form1.submit();' >
+<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> onclick='(window.CurrentWindow || parent.CurrentWindow).corpo.document.form1.submit();' >
 <br><br><br>
 </form>
 <script>

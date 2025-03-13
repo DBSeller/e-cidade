@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
 
 $oJson      = new Services_JSON();
 
@@ -56,7 +56,7 @@ switch ($oParametro->sExec) {
 		
 		if($oDAOLoteloc->numrows > 0) {
 			
-			$oQuadras = db_utils::getColectionByRecord($rsDAOLoteloc);
+			$oQuadras = db_utils::getCollectionByRecord($rsDAOLoteloc);
 			
 			$oRetorno->oQuadras = $oQuadras;
 			
@@ -87,7 +87,7 @@ switch ($oParametro->sExec) {
 		
 		if($oDAOLoteloc->numrows > 0) {
 			
-			$oRetorno->oLotes = db_utils::getColectionByRecord($rsDAOLoteloc);
+			$oRetorno->oLotes = db_utils::getCollectionByRecord($rsDAOLoteloc);
 			
 		} else {
 			
@@ -112,7 +112,7 @@ switch ($oParametro->sExec) {
 																																						
     if($oDAOSetorloc->numrows > 0) {
     	
-    	$oRetorno->oSetorloc = db_utils::getColectionByRecord($rsSetorloc);
+    	$oRetorno->oSetorloc = db_utils::getCollectionByRecord($rsSetorloc);
     	
     } else {
     	

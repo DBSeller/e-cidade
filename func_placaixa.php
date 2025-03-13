@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_placaixa_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_placaixa_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clplacaixa = new cl_placaixa;
@@ -76,6 +76,7 @@ $clplacaixa->rotulo->label("k80_data");
       $sWhere  = "     k80_instit = " . db_getsession("DB_instit");
       $sWhere .= " and to_char(k80_data,'YYYY') = '". db_getsession("DB_anousu") . "'";
 
+      /** [Extensao FiltroDespesa] Modificacao 1*/
 
       /**
        * Filtro para planilhas NAO AUTENTICADAS
@@ -105,6 +106,7 @@ $clplacaixa->rotulo->label("k80_data");
 
 
         $sql = $clplacaixa->sql_query(null, $campos, "k80_codpla"," {$sWhere} ");
+
         if (isset($chave_k80_codpla) && (trim($chave_k80_codpla) != "")) {
           $sql = $clplacaixa->sql_query(null, $campos, "k80_codpla"," {$sWhere} and k80_codpla = $chave_k80_codpla");
         } else if (isset($chave_k80_data) && (trim($chave_k80_data) != "")) {
@@ -134,3 +136,9 @@ $clplacaixa->rotulo->label("k80_data");
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

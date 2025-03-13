@@ -1,38 +1,39 @@
 <?php
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 set_time_limit(0);
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("fpdf151/pdf.php");
-require_once("std/DBDate.php");
-require_once("std/DBNumber.php");
-require_once("libs/db_libtributario.php");
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("std/DBNumber.php"));
+require_once(modification("libs/db_libtributario.php"));
+
 db_app::import("juridico.ProcessoForo");
 db_app::import("CgmFactory");
 
@@ -41,19 +42,18 @@ try {
   $oDaoProcessoForoPartilhaCusta = db_utils::getDao("processoforopartilhacusta");
   $oDaoConvenio                  = db_utils::getDao('cadconvenio');
   $oDaoParjuridico               = db_utils::getDao("parjuridico");
-  
+
   $oGet                          = db_utils::postMemory($_GET);
   $aTiposDebitosSelecionados     = explode(",", $oGet->tipos);
   $oData                         = new DBDate($db_datausu);
   $oDataSessao                   = new DBDate(date('Y-m-d', db_getsession("DB_datausu")));
   $DB_DATACALC                   = $oDataSessao->getTimeStamp();
-  
+
   /**
    * Buscando parametros do Juridico para utilização de partilha
    */
   $oParametrosJuridico  = $oDaoParjuridico->getParametrosJuridico(db_getsession("DB_instit"), db_getsession("DB_anousu"));
-//   db21_regracgmiptu
-  $oParametrosJuridico  = $oParametrosJuridico[0];  
+  $oParametrosJuridico  = $oParametrosJuridico[0];
 
   if ( isset ($oGet->db_datausu) ) {
 
@@ -80,20 +80,20 @@ try {
   $sOutrosDados2            = "";
   $sOutrosDados3            = "";
   $sOutrosDados4            = "";
-                           
+
   $iAnoUsu                  = db_getsession("DB_anousu");
+
   /**
-   * Configirações para o pdf
+   * Configurações para o pdf
    */
   $iAlturaLinha             = 5;
   $iCorPreenchimento        = 235;
-                            
-  $sTipoBusca               = isset($oGet->matric) ? "M" : 
-                                ( isset($oGet->inscr) ? "I" : 
-                                  ( isset($oGet->numcgm) ? "C" : 
+
+  $sTipoBusca               = isset($oGet->matric) ? "M" :
+                                ( isset($oGet->inscr) ? "I" :
+                                  ( isset($oGet->numcgm) ? "C" :
                                     ( isset($oGet->numpre) ? "N" : null) ) );
 
-  
   $sCampos          = "db21_regracgmiss, db21_regracgmiptu";
   $oDaoInstituicao  = new cl_db_config();
   $sSqlConfiguracao = $oDaoInstituicao->sql_query_file(db_getsession("DB_instit"), $sCampos);
@@ -104,48 +104,47 @@ try {
     throw new Exception("Não foi encontrado regra para definir o cgm do Iptu.");
   }
   $oDadoConfigTributario = db_utils::fieldsMemory($rsConfiguracao, 0);
-  
-  
+  $oRotulo = new rotulocampo();
   switch ($sTipoBusca) {
 
     /**
      * Matrícula
      */
     case "M":
-                             
+
       $sFuncaoDebitos        = "debitos_matricula";
       $sChavePesquisa        = $matric;
       $sSqlDadosProprietario = "select * from proprietario where j01_matric = $sChavePesquisa limit 1";
       $rsDadosProprietario   = db_query($sSqlDadosProprietario);
-      
+
       $sSqlEnvolvido    = "select * ";
       $sSqlEnvolvido   .= "  from fc_busca_envolvidos(false, {$oDadoConfigTributario->db21_regracgmiptu}, 'M', $sChavePesquisa)";
-      
+
       $rsEnvolvidoRegra = db_query($sSqlEnvolvido);
       $oEnvolvidoRegra  = CgmFactory::getInstanceByCgm(db_utils::fieldsMemory($rsEnvolvidoRegra, 0)->rinumcgm);
-      
-      
-      
+
       if ( !$rsDadosProprietario ) {
         throw new DBException("Erro ao Processar Pesquisa do Proprietário:".pg_last_error());
       }
       if ( pg_num_rows($rsDadosProprietario) == 0 ) {
         throw new BusinessException("Não Foi possivel emitir o Relatório pois não existe proprietário vinculado a Matrícula:".$sChavePesquisa);
       }
-      
+
       $oDadosPesquisa = db_utils::fieldsMemory($rsDadosProprietario, 0);
-      
+
       $sNome          = $oEnvolvidoRegra->getNome();
-      $sEndereco      = $oDadosPesquisa->tipopri    . ' '  . 
-                        $oDadosPesquisa->nomepri    . ', ' . 
-                        $oDadosPesquisa->j39_numero . ' '  . 
+      $sEndereco      = $oDadosPesquisa->tipopri    . ' '  .
+                        $oDadosPesquisa->nomepri    . ', ' .
+                        $oDadosPesquisa->j39_numero . ' '  .
                         $oDadosPesquisa->j39_compl;
+
+      $oRotulo->label("j40_refant"); 
       
-      $sOutrosDados1 = 'REF. ANTER.';
+      $sOutrosDados1 = mb_strtoupper($GLOBALS['RLj40_refant']);
       $sOutrosDados2 = $oDadosPesquisa->j40_refant;
       $sOutrosDados3 = 'MATRÍCULA';
-      $sOutrosDados4 = "Setor: "     . $oDadosPesquisa->j34_setor  . 
-                       "   Quadra: " . $oDadosPesquisa->j34_quadra . 
+      $sOutrosDados4 = "Setor: "     . $oDadosPesquisa->j34_setor  .
+                       "   Quadra: " . $oDadosPesquisa->j34_quadra .
                        "   Lote: "   . $oDadosPesquisa->j34_lote;
     break;
 
@@ -158,87 +157,85 @@ try {
       $sChavePesquisa        = $inscr;
       $sSqlDadosProprietario =  "select * from empresa where q02_inscr = $sChavePesquisa";
       $rsDadosEmpresa        = db_query($sSqlDadosProprietario);
-      
+
       if ( !$rsDadosEmpresa ) {
         throw new DBException("Erro ao Buscar Pesquisa da Empresa:".pg_last_error());
       }
       if ( pg_num_rows($rsDadosEmpresa) == 0 ) {
         throw new BusinessException("Não Foi possivel emitir o Relatório pois a Empresa não existe:".$sChavePesquisa);
       }
-      
-      
+
       $oDadosPesquisa = db_utils::fieldsMemory($rsDadosEmpresa, 0);
-      $sNome          = $oDadosPesquisa->z01_nome;                                                                                                           
-      $sEndereco      = $oDadosPesquisa->j14_tipo   . '  ' . 
-                        $oDadosPesquisa->z01_ender  . ', ' . 
-                        $oDadosPesquisa->z01_numero . '  ' . 
+      $sNome          = $oDadosPesquisa->z01_nome;
+      $sEndereco      = $oDadosPesquisa->j14_tipo   . '  ' .
+                        $oDadosPesquisa->z01_ender  . ', ' .
+                        $oDadosPesquisa->z01_numero . '  ' .
                         $oDadosPesquisa->z01_compl;
-      
+      $oRotulo->label("q02_inscmu"); 
       $sOutrosDados1  = 'ATIVIDADE';
       $sOutrosDados2  = $oDadosPesquisa->q03_descr;
       $sOutrosDados3  = 'INSCRIÇÃO';
-      $sOutrosDados4  = "";
+      $sOutrosDados4  = mb_strtoupper($GLOBALS['RLq02_inscmu'])." : ".$oDadosPesquisa->q02_inscmu;
 
     break;
-  
+
   /**
    * Cgm
    */
   case "C":
-    
+
     $sFuncaoDebitos = "debitos_numcgm";
     $sChavePesquisa = $numcgm;
     $oCgm           = CgmFactory::getInstanceByCgm($numcgm);
-    
+
     $sNome          = $oCgm->getNome();
     $sEndereco      = $oCgm->getLogradouro() . ', ' .
-                      $oCgm->getNumero()     . ' '  . 
+                      $oCgm->getNumero()     . ' '  .
                       $oCgm->getComplemento();
     $sOutrosDados1  = '';
     $sOutrosDados2  = '';
     $sOutrosDados3  = 'CGM';
     $sOutrosDados4  = "";
-    
+
   break;
-    
+
   /**
    * Numpre
    */
   case "N":
-   
-    $sFuncaoDebitos  = "debitos_numpre";
-    $sChavePesquisa  = $numpre;
-    $sSqlDadosNumpre = "select cgm.*                                                                           ";
-    $sSqlDadosNumpre.= "  from arrecad                                                                         ";
-    $sSqlDadosNumpre.= "       inner join cgm         on z01_numcgm            = k00_numcgm                    ";
-    $sSqlDadosNumpre.= "       inner join arreinstit  on arreinstit.k00_numpre = arrecad.k00_numpre            ";
-    $sSqlDadosNumpre.= "                             and arreinstit.k00_instit = ".db_getsession('DB_instit')."";
-    $sSqlDadosNumpre.= " where arrecad.k00_numpre = $sChavePesquisa                                            ";
-    $sSqlDadosNumpre.= " limit 1                                                                               ";
-    $rsDadosNumpre   = db_query($sSqlDadosNumpre);
-    
-    if ( !$rsDadosNumpre ) {
+
+    $sFuncaoDebitos   = "debitos_numpre";
+    $sChavePesquisa   = $numpre;
+    $sSqlEnvolvido    = "select * ";
+    $sSqlEnvolvido   .= "  from fc_socio_promitente( {$sChavePesquisa}, 'true',{$oDadoConfigTributario->db21_regracgmiptu}, {$oDadoConfigTributario->db21_regracgmiss} )";
+    $rsEnvolvidoRegra = db_query($sSqlEnvolvido);
+
+    if ( !$rsEnvolvidoRegra ) {
       throw new DBException( "Erro ao Buscar dados do Débito: ".pg_last_error() );
     }
-    
-    if ( pg_num_rows($rsDadosNumpre) == 0 ) {
+
+    if ( pg_num_rows($rsEnvolvidoRegra) == 0 ) {
       throw new BusinessException( "Não Foi possivel emitir o Relatório pois o debito({$sChavePesquisa}) não existe" );
     }
-    
-    $oDadosPesquisa = db_utils::fieldsMemory($rsDadosNumpre, 0);
-    $sNome          = $oDadosPesquisa->z01_nome;
-    $sEndereco      = $oDadosPesquisa->z01_ender . ', ' . $oDadosPesquisa->z01_numero . ' ' . $oDadosPesquisa->z01_compl;
+
+    $oCgm  = CgmFactory::getInstanceByCgm(db_utils::fieldsMemory($rsEnvolvidoRegra, 0)->rinumcgm);
+
+    $sNome          = $oCgm->getNome();
+    $sEndereco      = $oCgm->getLogradouro() . ', ' .
+                      $oCgm->getNumero()     . ' '  .
+                      $oCgm->getComplemento();
+
     $sOutrosDados1  = '';
     $sOutrosDados2  = '';
     $sOutrosDados3  = 'NUMPRE';
     $sOutrosDados4  = "";
   break;
-  
+
   /**
-   * Erro de Parâmetro 
+   * Erro de Parâmetro
    */
   default:
-    throw new ParameterException("Tipo de Busca de Dados Não Informado ou Inválido");  
+    throw new ParameterException("Tipo de Busca de Dados Não Informado ou Inválido");
   break;
 }
 
@@ -252,20 +249,20 @@ if ( $oGet->parReceit != '' ) {
 }
 
 if ( $oGet->dtini != "--" && $oGet->dtfim != "--" ) {
-  
+
 	$aWhere[]             = "k00_dtoper  between '{$oGet->dtini}' and '{$oGet->dtfim}'";
 	$sDataInicio          = db_formatar($oGet->dtini, "d");
 	$sDataFim             = db_formatar($oGet->dtfim, "d");
 	$sDadosPeriodo        = "De $sDataInicio até $sDataFim.";
-	
+
 } else if ($dtini != "--") {
-  
+
 	$aWhere[]             = " k00_dtoper >= '{$oGet->dtini}'  ";
-	$sDataInicio          = db_formatar($oGet->dtini, "d"); 
-  $sDataFim             = ""; 
+	$sDataInicio          = db_formatar($oGet->dtini, "d");
+  $sDataFim             = "";
 	$sDadosPeriodo        = "Apartir de $sDataInicio.";
 } else if ($dtfim != "--") {
-  
+
   $aWhere[]             = " k00_dtoper <= '{$oGet->dtfim}'   ";
   $sDataInicio          = "";
   $sDataFim             = db_formatar($oGet->dtfim, "d");
@@ -273,18 +270,19 @@ if ( $oGet->dtini != "--" && $oGet->dtfim != "--" ) {
 }
 
 if ( !empty($oGet->exercini) && !empty($oGet->exercfim) ) {
-  
-	$aWhere[]              = "fc_arrecexerc(y.k00_numpre,y.k00_numpar)  between '{$oGet->exercini}' and '{$oGet->exercfim}'  ";	
+
+	$aWhere[]              = "fc_arrecexerc(y.k00_numpre,y.k00_numpar)  between '{$oGet->exercini}' and '{$oGet->exercfim}'  ";
 	$sDadosExercicio       = "Do exercício {$oGet->exercini} até {$oGet->exercfim}.";
 } else if ( !empty($oGet->exercini) ) {
-  
-	$aWhere[]              = "fc_arrecexerc(y.k00_numpre,y.k00_numpar) >= '{$oGet->exercini}'  ";	
+
+	$aWhere[]              = "fc_arrecexerc(y.k00_numpre,y.k00_numpar) >= '{$oGet->exercini}'  ";
 	$sDadosExercicio       = "Apartir do exercício {$oGet->exercini}.";
 } else if ( !empty($oGet->exercfim) ) {
-  
-	$aWhere[]              = "fc_arrecexerc(y.k00_numpre,y.k00_numpar) <= '{$oGet->exercfim}'   ";	
+
+	$aWhere[]              = "fc_arrecexerc(y.k00_numpre,y.k00_numpar) <= '{$oGet->exercfim}'   ";
 	$sDadosExercicio       = "Até o exercício {$oGet->exercfim}.";
 }
+
 /**
  * Percorre os Tipos de Débitos encontrados e retorna os seus dados
  * para serem pre-processado para o relatorio
@@ -303,30 +301,39 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
   /**
    * Parametros da Funcao
    */
-  $aParametros   = array();
-  $aParametros[] = $sChavePesquisa;           // Valor do Tipo de Pesquisa Ex.: Numero do CGM, MATRICULA...
-  $aParametros[] = 0;                         // Limite de Registros
-  $aParametros[] = $oTipoDebito->k00_tipo;    // Tipo de Debito
-  $aParametros[] = $DB_DATACALC;              // Data Base para Calculo
-  $aParametros[] = db_getsession("DB_anousu");// Ano da Sessao
-  $aParametros[] = "";                        // Totaliza
-  $aParametros[] = "";                        // Ordem Totalizacao
-  $aParametros[] = count($aWhere) > 0 ? "and " . implode(" and ", $aWhere) : ""; // Filtros para a Pesquisa
+  $aParametros     = array();
+  $aParametros[]   = $sChavePesquisa;           // Valor do Tipo de Pesquisa Ex.: Numero do CGM, MATRICULA...
+  $aParametros[]   = 0;                         // Limite de Registros
+  $aParametros[]   = $oTipoDebito->k00_tipo;    // Tipo de Debito
+  $aParametros[]   = $DB_DATACALC;              // Data Base para Calculo
+  $aParametros[]   = db_getsession("DB_anousu");// Ano da Sessao
 
   /**
-   * Chama a Função de débitos conforme o tipo de Origem selecionada 
-   * - debitos_matricula()
-   * - debitos_inscricao()
-   * - debitos_numcgm()
-   * - debitos_numpre()
+   * Adicionamos uma posicao a mais no array para quando por pesquisa por Numpre
+   */
+  if( $sTipoBusca == 'N' ){
+    $aParametros[] = "";                        // Numpar
+  }
+  $aParametros[]   = "";                        // Totaliza
+  $aParametros[]   = "";                        // Ordem Totalizacao
+  $aParametros[]   = count($aWhere) > 0 ? "and " . implode(" and ", $aWhere) : ""; // Filtros para a Pesquisa
+  $aParametros[]   = "";                        // Justific
+  $aParametros[]   = "";                        // Instit
+
+  /**
+   * Chama a Função de débitos conforme o tipo de Origem selecionada
+   * - debitos_matricula() - debitos_matricula($matricula, $limite, $tipo, $datausu, $anousu, $totaliza="", $totalizaordem="", $db_where="",      $justific=false, $instit=null )
+   * - debitos_inscricao() - debitos_inscricao($inscricao, $limite, $tipo, $datausu, $anousu, $totaliza="", $totalizaordem="", $db_where="",      $justific=false, $instit=null)
+   * - debitos_numcgm()    - debitos_numcgm   ($numcgm,    $limite, $tipo, $datausu, $anousu, $totaliza="", $totalizaordem="", $db_where="",      $justific=false, $instit=null )
+   * - debitos_numpre()    - debitos_numpre   ($numpre,    $limite, $tipo, $datausu, $anousu, $numpar=0,    $totaliza="",      $totalizaordem="", $db_where="",    $justific=false, $instit=null )
    */
   $rsDebitos        = call_user_func_array($sFuncaoDebitos, $aParametros);
 
   if ( !is_resource($rsDebitos) ) {
-    throw new DBException( "Erro ao Buscar debitos({$oTipoDebito->k00_descr}) da Origem Selecionada.".pg_last_error() );
+    throw new DBException( "Não existem debitos({$oTipoDebito->k00_descr}) para o Exercicio/Periodo informado.");
   }
   $aNumpreDebito    = array();
-  
+
   for ( $iIndiceDebitos = 0; $iIndiceDebitos < pg_num_rows($rsDebitos); $iIndiceDebitos++ ) {
 
     $oDebitos                                   = db_utils::fieldsMemory($rsDebitos, $iIndiceDebitos);
@@ -338,54 +345,53 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
     $oValorBase->nValorDesconto                 = 0;
     $oValorBase->nValorAcrescimos               = 0;
     $oValorBase->nValorTotal                    = 0;
-    
+
     if ( isset($oDadosRelatorio->aDebitos[$oTipoDebito->k00_tipo]) ) {
       $oValorBase = $oDadosRelatorio->aDebitos[$oTipoDebito->k00_tipo];
     }
-    
+
     $oDebitosRelatorio                          = new stdClass();
-    $oDebitosRelatorio->iTipoDebito             = $oTipoDebito->k00_tipo; $oDebitosRelatorio->sDescricaoTipoDebito    = $oTipoDebito->k00_descr; 
-    $oDebitosRelatorio->nValorHistorico         = $oValorBase->nValorHistorico  + $oDebitos->vlrhis; 
-    $oDebitosRelatorio->nValorCorrigido         = $oValorBase->nValorCorrigido  + $oDebitos->vlrcor;    
+    $oDebitosRelatorio->iTipoDebito             = $oTipoDebito->k00_tipo; $oDebitosRelatorio->sDescricaoTipoDebito    = $oTipoDebito->k00_descr;
+    $oDebitosRelatorio->nValorHistorico         = $oValorBase->nValorHistorico  + $oDebitos->vlrhis;
+    $oDebitosRelatorio->nValorCorrigido         = $oValorBase->nValorCorrigido  + $oDebitos->vlrcor;
     $oDebitosRelatorio->nValorJuros             = $oValorBase->nValorJuros      + $oDebitos->vlrjuros;
-    $oDebitosRelatorio->nValorMulta             = $oValorBase->nValorMulta      + $oDebitos->vlrmulta;  
+    $oDebitosRelatorio->nValorMulta             = $oValorBase->nValorMulta      + $oDebitos->vlrmulta;
     $oDebitosRelatorio->nValorDesconto          = $oValorBase->nValorDesconto   + $oDebitos->vlrdesconto;
     $oDebitosRelatorio->nValorAcrescimos        = $oValorBase->nValorAcrescimos; //Acrescimos serão calculados depois
     $oDebitosRelatorio->nValorTotal             = $oValorBase->nValorTotal      + $oDebitos->total;
-   
+
 
     $oDadosRelatorio->aDebitos[$oTipoDebito->k00_tipo] = $oDebitosRelatorio;
-    
+
     /*
      * Caso o parametro para cobranca de custas esteja ativo, buscamos os processos do foro vinculados aos numpres
      */
     if ( $oParametrosJuridico->v19_partilha == "t") {
-      
+
        if (in_array($oTipoDebito->k03_tipo, $aTiposDebitoProcessoForo)) {
          $oProcessoForo = ProcessoForo::getInstanceByNumpre($oDebitos->k00_numpre);
          if ( $oProcessoForo ) {
            $aProcessosForo[$oProcessoForo->getCodigoProcesso()] = $oProcessoForo->getCodigoProcesso();
          }
        }
-       
     }
-    
+
   }
 
   /*
    * Caso o parametro para cobranca de custas esteja ativo, verificamos se o tipo de debito esta nos tipos que cobram custas
    * Buscamos as custas calculadas e caso não existam, calculamos as custas e somamos ao total do tipo de débito.
-   *  
+   *
    */
   if ( $oParametrosJuridico->v19_partilha == "t") {
-    
-    if ( in_array($oTipoDebito->k03_tipo, $aTiposDebitoProcessoForo) ) {  
-      
+
+    if ( in_array($oTipoDebito->k03_tipo, $aTiposDebitoProcessoForo) ) {
+
       $aValorProcesso    = array();
-      
+
       foreach ( $aProcessosForo as $iProcesso  ) {
-    
-             
+
+
         $nValorTotalCustas = 0;
         $sSqlProcessoforo  = " select v76_sequencial,v76_tipolancamento, v76_dtpagamento,                                 ";
         $sSqlProcessoforo .= "       coalesce(sum(v77_valor), 0) as v77_valor_soma                                        ";
@@ -396,47 +402,47 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
         $sSqlProcessoforo .= "                           where v76_processoforo = {$iProcesso}                            ";
         $sSqlProcessoforo .= "                         )                                                                  ";
         $sSqlProcessoforo .= " group by v76_tipolancamento, v76_sequencial, v76_dtpagamento                               ";
-    
+
         $rsProcessoForo    = db_query($sSqlProcessoforo);
-    
+
         if (!$rsProcessoForo) {
           throw new DBException( "Erro ao buscar dados das custas: " . pg_last_error() );
-        }      
-        
+        }
+
         $lCalculaEmisaoCustas = true;
         $nValorTotalCustas    = 0;
-        
+
         if (pg_num_rows($rsProcessoForo) > 0) {
-          
-          $oDadosCustas = db_utils::fieldsMemory($rsProcessoForo, 0);     
-            
-          if ($oDadosCustas->v76_tipolancamento == 1 && $oDadosCustas->v76_dtpagamento == "") {           
+
+          $oDadosCustas = db_utils::fieldsMemory($rsProcessoForo, 0);
+
+          if ($oDadosCustas->v76_tipolancamento == 1 && $oDadosCustas->v76_dtpagamento == "") {
             $nValorTotalCustas  = $oDadosCustas->v77_valor_soma;
           }
-    
+
           $lCalculaEmisaoCustas = false;
         }
-    
+
         if ( $lCalculaEmisaoCustas ) {
-           
+
           $sSqlTaxas                     = $oDaoConvenio->sql_queryTaxasConvenio();
           $rsSqlTaxas                    = db_query($sSqlTaxas);
           $aTaxas                        = db_utils::getCollectionByRecord($rsSqlTaxas);
-    
+
           $nValorProcessos               = $oDaoProcessoForoPartilhaCusta->getCustasProcesso(null,
                                                                                              $iProcesso,
                                                                                              date('Y-m-d', $DB_DATACALC),
                                                                                              $oTipoDebito->k03_tipo);
-    
+
           foreach ($aTaxas as $oTaxa) {
-    
+
             if ($oTaxa->ar36_perc == 0) {
               $nValorCusta = $oTaxa->ar36_valor;
             } else {
-    
+
               $oValor               = new DBNumber();
               $nVlrPercentualDebito = $oValor->truncate($nValorProcessos * ($oTaxa->ar36_perc / 100), 2);
-              
+
               /**
                * Verifica se valor do percentual do débito é maior que maximo ou minimo permitido
                * caso ele ultrapasse um dos limites o valor da taxa será o limite
@@ -453,18 +459,18 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
             $nValorTotalCustas += $nValorCusta;
           }
         }
-        
-        $sSqlDadosCustas                                     = $oDaoProcessoForoPartilhaCusta->sql_query();   
+
+        $sSqlDadosCustas                                     = $oDaoProcessoForoPartilhaCusta->sql_query();
         $aValorProcesso[$oProcessoForo->getCodigoProcesso()] = $nValorTotalCustas;
       }
-      
+
       $oAcrescimoRelatorio                   = $oDadosRelatorio->aDebitos[$oTipoDebito->k00_tipo];
       $oAcrescimoRelatorio->nValorAcrescimos = array_sum($aValorProcesso);
-      $oAcrescimoRelatorio->nValorTotal = $oAcrescimoRelatorio->nValorTotal + $oAcrescimoRelatorio->nValorAcrescimos;   
+      $oAcrescimoRelatorio->nValorTotal = $oAcrescimoRelatorio->nValorTotal + $oAcrescimoRelatorio->nValorAcrescimos;
     }
-    
+
   }
-   
+
    /**
     * Busca as suspensões para os tipos de Débito selecionados.
     */
@@ -475,10 +481,10 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
   $rsSuspensoes   = db_query($sSqlSuspensoes);
 
   if ( !$rsSuspensoes ) {
-    throw new DBException("Erro ao Buscar dados das Suspensões: " . pg_last_error() );   
+    throw new DBException("Erro ao Buscar dados das Suspensões: " . pg_last_error() );
   }
 
-  if (pg_num_rows($rsSuspensoes) > 0) { 
+  if (pg_num_rows($rsSuspensoes) > 0) {
 
     $oSuspensoes    = db_utils::fieldsMemory($rsSuspensoes, 0);
     $oDadosRelatorio->aSuspensoes[$oTipoDebito->k00_tipo] = $oSuspensoes;
@@ -488,45 +494,45 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
   $oPDF = new pdf();
   $oPDF->Open();
   $oPDF->AliasNbPages();
-  
+
   $head2      = "SECRETARIA DA FAZENDA";
   $head4      = "Relatório do Total dos Débitos Sintético";
   $head5      = $sDadosPeriodo;
   $head6      = $sDadosExercicio;
-  
+
   $oPDF->AddPage();
-  
+
   $oPDF->SetFillColor($iCorPreenchimento);
   $oPDF->SetLineWidth(0.5);
   $oPDF->Ln(3);
   $oPDF->Cell(191, 2           , ''                                         ,"T", 1, "R", 0);
   $oPDF->SetFont('Arial', 'B', 8);
-  $oPDF->Cell(25, $iAlturaLinha, $sOutrosDados3                             ,  0, 0, "L", 0);
+  $oPDF->Cell(35, $iAlturaLinha, $sOutrosDados3                             ,  0, 0, "L", 0);
   $oPDF->SetFont('Arial', 'I', 8);
   $oPDF->Cell(80, $iAlturaLinha, ': '.$sChavePesquisa. '  ' . $sOutrosDados4,  0, 1, "L", 0);
   $oPDF->SetFont('Arial', 'B', 8);
-  $oPDF->Cell(25, $iAlturaLinha, "NOME"                                     ,  0, 0, "L", 0);
+  $oPDF->Cell(35, $iAlturaLinha, "NOME"                                     ,  0, 0, "L", 0);
   $oPDF->SetFont('Arial', 'I', 8);
   $oPDF->Cell(80, $iAlturaLinha, ': ' . $sNome                              ,  0, 1, "L", 0);
   $oPDF->SetFont('Arial', 'B', 8);
-  $oPDF->Cell(25, $iAlturaLinha, "ENDEREÇO"                                 ,  0, 0, "L", 0);
+  $oPDF->Cell(35, $iAlturaLinha, "ENDEREÇO"                                 ,  0, 0, "L", 0);
   $oPDF->SetFont('Arial', 'I', 8);
   $oPDF->Cell(80, $iAlturaLinha, ': ' . $sEndereco                          ,  0, 1, "L", 0);
   
   if ( $sOutrosDados1 != '' ) {
-    
+
     $oPDF->SetFont('Arial', 'B', 8);
-    $oPDF->Cell(25, $iAlturaLinha,        $sOutrosDados1, 0, 0, "L", 0);
+    $oPDF->Cell(35, $iAlturaLinha,        $sOutrosDados1, 0, 0, "L", 0);
     $oPDF->SetFont('Arial', 'I', 8);
     $oPDF->Cell(80, $iAlturaLinha, ': ' . $sOutrosDados2, 0, 1, "L", 0);
   }
-  
+
   $oPDF->SetFont('Arial', 'BI', 12);
   $oPDF->Cell(191, 2, '', "B", 1, "R", 0);
   $oPDF->MultiCell(0, 20, "Valores Válidos Até a Data : " . db_formatar(date('Y-m-d'), 'd'), 0, "C", 0);
   $oPDF->SetLineWidth(0.2);
   $oPDF->SetFont('Arial', 'B', 8);
-  
+
   $oPDF->Cell(07, $iAlturaLinha, "Tipo"           , 1, 0, "C", 1);
   $oPDF->Cell(60, $iAlturaLinha, "Descrição"      , 1, 0, "C", 1);
   $oPDF->Cell(18, $iAlturaLinha, "Vlr Histórico"  , 1, 0, "C", 1);
@@ -536,7 +542,7 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
   $oPDF->Cell(18, $iAlturaLinha, "Descontos"      , 1, 0, "C", 1);
   $oPDF->Cell(18, $iAlturaLinha, "Acréscimos"     , 1, 0, "C", 1);
   $oPDF->Cell(18, $iAlturaLinha, "Total"          , 1, 1, "C", 1);
-  
+
   $aTotalDebito["nValorHistorico"] = 0;
   $aTotalDebito["nValorCorrigido"] = 0;
   $aTotalDebito["nValorJuros"]     = 0;
@@ -545,7 +551,7 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
   $aTotalDebito["nValorAcrescimo"] = 0;
   $aTotalDebito["nValorTotal"]     = 0;
 
- 
+
   foreach ( $oDadosRelatorio->aDebitos as $oValoresDebitos) {
 
    $oPDF->SetFont('Arial', '', 8);
@@ -559,14 +565,14 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
    $oPDF->Cell(18, $iAlturaLinha, db_formatar($oValoresDebitos->nValorAcrescimos, 'f'), 1, 0, "R", 0);
    $oPDF->Cell(18, $iAlturaLinha, db_formatar($oValoresDebitos->nValorTotal     , 'f'), 1, 1, "R", 0);
 
-   $aTotalDebito["nValorHistorico"] += $oValoresDebitos->nValorHistorico; 
+   $aTotalDebito["nValorHistorico"] += $oValoresDebitos->nValorHistorico;
    $aTotalDebito["nValorCorrigido"] += $oValoresDebitos->nValorCorrigido;
    $aTotalDebito["nValorJuros"]     += $oValoresDebitos->nValorJuros;
    $aTotalDebito["nValorMulta"]     += $oValoresDebitos->nValorMulta;
    $aTotalDebito["nValorDesconto"]  += $oValoresDebitos->nValorDesconto;
    $aTotalDebito["nValorAcrescimo"] += $oValoresDebitos->nValorAcrescimos;
    $aTotalDebito["nValorTotal"]     += $oValoresDebitos->nValorTotal;
-    
+
   }
 
   $oPDF->SetFont('Arial', 'B', 8);
@@ -584,14 +590,14 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
     $oPDF->multiCell(190,4,"Receitas Selecionadas: {$oGet->parReceit}");
     $oPDF->Ln();
   }
-  
+
   if ( count($oDadosRelatorio->aSuspensoes) > 0 ) {
 
     $oPDF->Ln(4);
     $oPDF->SetFont('Arial', 'BI', 12);
     $oPDF->Cell(0,5,'Débitos Suspensos',0,1,"C",0);
     $oPDF->Ln();
-     
+
     $oPDF->SetFont('Arial', 'B', 8);
     $oPDF->Cell(7 , $iAlturaLinha, "Tipo"		       ,1,0,"C",1);
     $oPDF->Cell(60, $iAlturaLinha, "Descrição"	   ,1,0,"C",1);
@@ -601,17 +607,17 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
     $oPDF->Cell(21, $iAlturaLinha, "Vlr Multa"     ,1,0,"C",1);
     $oPDF->Cell(21, $iAlturaLinha, "Vlr Desconto"  ,1,0,"C",1);
     $oPDF->Cell(21, $iAlturaLinha, "Vlr Total"	   ,1,1,"C",1);
-    
+
     $oPDF->SetFont('Arial', '', 8);
-     
+
     $aTotalSuspensao['vlrhis'] = 0;
     $aTotalSuspensao['vlrcor'] = 0;
     $aTotalSuspensao['vlrjur'] = 0;
     $aTotalSuspensao['vlrmul'] = 0;
     $aTotalSuspensao['vlrdes'] = 0;
     $aTotalSuspensao['vlrtot'] = 0;
-    
-    
+
+
     foreach ($oDadosRelatorio->aSuspensoes as $oValoresSuspencoes  ) {
 
       $oPDF->Cell(7 , $iAlturaLinha, $oValoresSuspencoes->k00_tipo                              , 1, 0, "C", 0);
@@ -623,12 +629,12 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
       $oPDF->Cell(21, $iAlturaLinha, db_formatar($oValoresSuspencoes->valor_descontos  , 'f')   , 1, 0, "R", 0);
       $oPDF->Cell(21, $iAlturaLinha, db_formatar($oValoresSuspencoes->valor_total      ,'f')    , 1, 1, "R", 0);
 
-      $aTotalSuspensao['vlrhis'] += $oValoresSuspencoes->valor_historico; 
-      $aTotalSuspensao['vlrcor'] += $oValoresSuspencoes->valor_corrigido;    
-      $aTotalSuspensao['vlrjur'] += $oValoresSuspencoes->valor_juros;    
-      $aTotalSuspensao['vlrmul'] += $oValoresSuspencoes->valor_multas;   
+      $aTotalSuspensao['vlrhis'] += $oValoresSuspencoes->valor_historico;
+      $aTotalSuspensao['vlrcor'] += $oValoresSuspencoes->valor_corrigido;
+      $aTotalSuspensao['vlrjur'] += $oValoresSuspencoes->valor_juros;
+      $aTotalSuspensao['vlrmul'] += $oValoresSuspencoes->valor_multas;
       $aTotalSuspensao['vlrdes'] += $oValoresSuspencoes->valor_descontos;
-      $aTotalSuspensao['vlrtot'] += $oValoresSuspencoes->valor_total;   
+      $aTotalSuspensao['vlrtot'] += $oValoresSuspencoes->valor_total;
 
     }
 
@@ -641,12 +647,11 @@ foreach ( $aTipoDebitos as $oTipoDebito ) {
     $oPDF->Cell(21, $iAlturaLinha, db_formatar($aTotalSuspensao['vlrdes'], 'f') , 1, 0, "R", 0);
     $oPDF->Cell(21, $iAlturaLinha, db_formatar($aTotalSuspensao['vlrtot'], 'f') , 1, 1, "R", 0);
     $oPDF->SetFont('Arial', '', 8);
-    
+
   }
-  
+
   $oPDF->Output();
 } catch (Exception $eErro) {
 
 	db_redireciona("db_erros.php?fechar=true&db_erro=[1] - {$eErro->getMessage()}");
 }
-?>

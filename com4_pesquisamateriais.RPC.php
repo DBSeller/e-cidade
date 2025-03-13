@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_usuariosonline.php';
-require_once 'libs/JSON.php';
-require_once 'libs/db_utils.php';
-require_once("classes/db_pcmater_classe.php");
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/JSON.php");
+require_once modification("libs/db_utils.php");
+require_once(modification("classes/db_pcmater_classe.php"));
 
 $oJson         = new services_json();
 $clpcmater     = new cl_pcmater;
@@ -44,7 +44,7 @@ $sql = $clpcmater->sql_query_desdobra(null,"distinct pc01_codmater as cod,
                "pc01_descrmater ilike '".$sName."%' and pc07_codele is not null and pc01_ativo is false");
 $result   = db_query($sql);
 $iNumRows = pg_num_rows($result);
-$array    = db_utils::getColectionByRecord($result);
+$array    = db_utils::getCollectionByRecord($result,false,false, true);
 echo $oJson->encode($array);
 
 ?>

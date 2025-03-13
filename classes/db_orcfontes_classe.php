@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -161,18 +161,7 @@ class cl_orcfontes {
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->o57_codfon,$this->o57_anousu));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,5275,'$this->o57_codfon','I')");
-       $resac = db_query("insert into db_acountkey values($acount,8062,'$this->o57_anousu','I')");
-       $resac = db_query("insert into db_acount values($acount,755,5275,'','".AddSlashes(pg_result($resaco,0,'o57_codfon'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,755,8062,'','".AddSlashes(pg_result($resaco,0,'o57_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,755,5272,'','".AddSlashes(pg_result($resaco,0,'o57_fonte'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,755,5273,'','".AddSlashes(pg_result($resaco,0,'o57_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,755,5274,'','".AddSlashes(pg_result($resaco,0,'o57_finali'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-     }
+
      return true;
    }
    // funcao para alteracao
@@ -242,26 +231,6 @@ class cl_orcfontes {
      }
      if($o57_anousu!=null){
        $sql .= " and  o57_anousu = $this->o57_anousu";
-     }
-     $resaco = $this->sql_record($this->sql_query_file($this->o57_codfon,$this->o57_anousu));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,5275,'$this->o57_codfon','A')");
-         $resac = db_query("insert into db_acountkey values($acount,8062,'$this->o57_anousu','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o57_codfon"]))
-           $resac = db_query("insert into db_acount values($acount,755,5275,'".AddSlashes(pg_result($resaco,$conresaco,'o57_codfon'))."','$this->o57_codfon',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o57_anousu"]))
-           $resac = db_query("insert into db_acount values($acount,755,8062,'".AddSlashes(pg_result($resaco,$conresaco,'o57_anousu'))."','$this->o57_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o57_fonte"]))
-           $resac = db_query("insert into db_acount values($acount,755,5272,'".AddSlashes(pg_result($resaco,$conresaco,'o57_fonte'))."','$this->o57_fonte',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o57_descr"]))
-           $resac = db_query("insert into db_acount values($acount,755,5273,'".AddSlashes(pg_result($resaco,$conresaco,'o57_descr'))."','$this->o57_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["o57_finali"]))
-           $resac = db_query("insert into db_acount values($acount,755,5274,'".AddSlashes(pg_result($resaco,$conresaco,'o57_finali'))."','$this->o57_finali',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
      }
      $result = db_query($sql);
      if($result==false){
@@ -394,7 +363,7 @@ class cl_orcfontes {
    function sql_query ( $o57_codfon=null,$o57_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -428,7 +397,7 @@ class cl_orcfontes {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -440,7 +409,7 @@ class cl_orcfontes {
    function sql_query_file ( $o57_codfon=null,$o57_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -469,7 +438,7 @@ class cl_orcfontes {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -481,7 +450,7 @@ class cl_orcfontes {
    function sql_query_previsao ( $o57_codfon=null,$o57_anousu=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -519,7 +488,7 @@ class cl_orcfontes {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -642,7 +611,7 @@ class cl_orcfontes {
 
     $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -687,7 +656,7 @@ class cl_orcfontes {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

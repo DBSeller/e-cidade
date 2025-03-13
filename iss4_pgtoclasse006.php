@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 set_time_limit(0);
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_SERVER_VARS);
@@ -247,7 +247,7 @@ $sSql .= "							end as z01_nome,                             ";
 
 
 $msgErro = "Ocorreu erro durante o processamento das informações!<br />Entre em contato com o Administrador do Sistema!";
-$result = pg_exec($sSql) or die(pg_last_error());
+$result = db_query($sSql) or die(pg_last_error());
 $num = pg_numrows($result);
 if ($num == 0 ) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Não existe pagamentos efetuados no período de '.$mesini."/".$ano." até ".$mesfim."/".$ano);

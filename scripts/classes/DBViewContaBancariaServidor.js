@@ -2,8 +2,8 @@
  * @fileoverview Cria elementos para cadastro de conta bancaria
  * 
  * @author Vinicius Martins <vinicius@dbseller.com.br>
- * @version $Revision: 1.14 $
- * @revision $Author: dbvinicius.martins $
+ * @version $Revision: 1.16 $
+ * @revision $Author: dbrenan.silva $
  * 
  * @param integer
  *          iCodigoContaBancaria
@@ -37,7 +37,7 @@ DBViewContaBancariaServidor = function(iCodigoContaBancaria, sInstance, lReadOnl
       parameters : 'json=' + Object.toJSON(oParam),
       onComplete : function(oAjax) {
 
-        var oRetorno = eval("(" + oAjax.responseText + ")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.status == "2") {
           alert(oRetorno.message.urlDecode());
         } else {
@@ -78,9 +78,8 @@ DBViewContaBancariaServidor = function(iCodigoContaBancaria, sInstance, lReadOnl
   /**
    * Criando HTML
    */
-
   var oFiedSetContaBancaria = document.createElement("FIELDSET");
-  oFiedSetContaBancaria.style.width = "900px";
+  oFiedSetContaBancaria.style.width = "auto";
 
   var oLegendContaBancaria = document.createElement("LEGEND");
   oLegendContaBancaria.innerHTML = "<b>Dados da Conta Bancária</b>";
@@ -327,7 +326,7 @@ DBViewContaBancariaServidor = function(iCodigoContaBancaria, sInstance, lReadOnl
       onComplete : function(oAjax) {
 
         js_removeObj('msgBox')
-        var oRetorno = eval("(" + oAjax.responseText + ")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.status == 1) {
 
           me.iSequencialContaBancaria = oRetorno.iSequencialContaBancaria;
@@ -373,7 +372,7 @@ DBViewContaBancariaServidor = function(iCodigoContaBancaria, sInstance, lReadOnl
     }
 
     js_OpenJanelaIframe('', "db_iframe_bancoagencia", sUrlAgencia, "Pesquisa de Agências", lMostrar);
-    $('Jandb_iframe_bancoagenciaconta').style.zIndex = '100000';
+    $('Jandb_iframe_bancoagencia').style.zIndex = '100000';
   }
 
   /**
@@ -442,7 +441,7 @@ DBViewContaBancariaServidor = function(iCodigoContaBancaria, sInstance, lReadOnl
                                  onComplete : function(oAjax) {
                                  
                                    js_removeObj('msgBox')
-                                   var oRetorno = eval("(" + oAjax.responseText + ")");
+                                   var oRetorno = JSON.parse(oAjax.responseText);
                                    me.inputNumeroAgencia.setValue(oRetorno.iCodigoAgencia);
                                    me.inputDvAgencia.setValue(oRetorno.iDigitoAgencia);
                                    me.inputCodigoBanco.setValue(oRetorno.iCodigoBanco);

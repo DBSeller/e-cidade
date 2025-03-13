@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 class cl_criaabasrefresh {
@@ -47,8 +47,8 @@ class cl_criaabasrefresh {
     var tabela = document.getElementById(idtabela);
     var divs = document.getElementsByTagName('DIV');
     var tab  = document.getElementsByTagName('TABLE');
-    var aba = eval('document.formaba.'+idtabela+'.name');
-    var input = eval('document.formaba.'+idtabela);
+    var aba = document.formaba[idtabela].name;
+    var input = document.formaba[idtabela];
     var alvo = document.getElementById(camada);
     for (var j = 0; j < divs.length; j++){
      if(alvo.id == divs[j].id){
@@ -209,13 +209,13 @@ class cl_criaabasrefresh {
   echo "<script>mo_camada('$chave');</script>";
  }
 }
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_regencia_classe.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_regencia_classe.php"));
 
 $clcriaabas = new cl_criaabasrefresh;
 $clregencia = new cl_regencia;
@@ -257,7 +257,7 @@ $sql3 = "SELECT ed41_i_codigo,
          WHERE ed43_i_procedimento = $ed220_i_procedimento
          ORDER BY ed41_i_sequencia
         ";
-$result3 = pg_query($sql3);
+$result3 = db_query($sql3);
 $linhas3 = pg_num_rows($result3);
 $nabas = $linhas3+2;
 $ident["G"] = "Geral";
@@ -314,7 +314,7 @@ $pagina["AM"] = "edu1_amparo001.php?regencia=$regencia&iTrocaTurma=$iTrocaTurma"
     <tr><td height="5"></td></tr>
     <tr>
      <td>
-      <input type="button" id="voltar" name="voltar" value="Fechar" title="Fechar" onclick="parent.top.corpo.document.getElementById('tab_aguarde').style.visibility = 'visible';parent.dados.location.href='edu1_diarioclasse004.php?turma=<?=$ed57_i_codigo?>&ed57_c_descr=<?=$ed57_c_descr?>&ed52_c_descr=<?=$ed52_c_descr?>&codserieregencia=<?=$ed59_i_serie?>';parent.db_iframe_avaliacoes<?=$regencia?>.hide();">
+      <input type="button" id="voltar" name="voltar" value="Fechar" title="Fechar" onclick="(window.CurrentWindow || parent.CurrentWindow).corpo.document.getElementById('tab_aguarde').style.visibility = 'visible';parent.dados.location.href='edu1_diarioclasse004.php?turma=<?=$ed57_i_codigo?>&ed57_c_descr=<?=$ed57_c_descr?>&ed52_c_descr=<?=$ed52_c_descr?>&codserieregencia=<?=$ed59_i_serie?>';parent.db_iframe_avaliacoes<?=$regencia?>.hide();">
      </td>
     </tr>
    </table>

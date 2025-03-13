@@ -26,7 +26,7 @@
  */
 
 
- include_once("fpdf151/pdf.php");
+ include_once(modification("fpdf151/pdf.php"));
 
 // db_postmemory($HTTP_SERVER_VARS,2);
 // db_msgbox($dt1);
@@ -35,7 +35,7 @@
 
    //--
    $sql=base64_decode($sql);
-   $resultsql = pg_exec(str_replace('\\','',$sql));
+   $resultsql = db_query(str_replace('\\','',$sql));
    if($resultsql==false){
        db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum registro encontrado para o gerar o relatório. Verifique');  
    }
@@ -128,8 +128,8 @@
                                                                       conplanoreduz.c61_anousu=conplano.c60_anousu and 
 		                                                        conplanoreduz.c61_reduz=$c_debito
                                             conplano.c60_anousu=".db_getsesson("DB_anousu");
-           $res_debito=pg_exec($sql_d);
-	   $res_credito=pg_exec($sql_c);
+           $res_debito=db_query($sql_d);
+	   $res_credito=db_query($sql_c);
            $pdf->setX(35); // credito_descr
            $pdf->Cell( 40,4,'Credito  ',"LRBT",0,"L",0);
               $pdf->Cell($tamanho["c50_descr"],4,pg_result($res_credito,0,"credito_descr"),"0",1,"L",0);

@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_orcparamseq_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_orcparamseq_classe.php"));
 
 $orcparamrel  = new cl_orcparamrel;
 $orcparamseq  = new cl_orcparamseq;
@@ -41,7 +41,7 @@ $classinatura = new cl_assinatura;
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 //db_criatabela($resultinst);exit;
 
 $descr_inst = '';
@@ -205,7 +205,7 @@ for ($i=0; $i<pg_num_rows($result_rec); $i++) {
     }
     
     $sql_estrut = "select o57_descr from orcfontes where o57_fonte = '$estrut' limit 1";
-    $result_estrut = @pg_query($sql_estrut);
+    $result_estrut = @db_query($sql_estrut);
     if (@pg_numrows($result_estrut) > 0) {
       $descr_receita = pg_result($result_estrut,0,"o57_descr");
     } else {
@@ -891,11 +891,11 @@ $pdf->cell(20, $alt,db_formatar($total_geral_passiva,"f"),"TB",1,"R",0);
 
 $pdf->Ln(2);
 $pdf->setfont('arial','',5);
-notasExplicativas(&$pdf,$iCodRel,"2S",190);
+notasExplicativas($pdf,$iCodRel,"2S",190);
 
 // ASSINATURAS
 $pdf->ln(25);
-assinaturas(&$pdf,&$classinatura,'BG');
+assinaturas($pdf, $classinatura,'BG');
 
 
 $pdf->Output();

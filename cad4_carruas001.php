@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_ruas_classe.php");
-include("classes/db_cargrup_classe.php");
-include("classes/db_caracter_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_ruas_classe.php"));
+include(modification("classes/db_cargrup_classe.php"));
+include(modification("classes/db_caracter_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clruas = new cl_ruas;
 $clcaracter = new cl_caracter;
@@ -82,7 +82,7 @@ function js_pesquisar(){
     alert("Selecione a rua!")
     return false;
   }
-  js_OpenJanelaIframe('top.corpo','db_iframe_carruas','cad4_carruas002.php?j14_codigo='+obj.j14_codigo.value+'&j32_grupo='+obj.j32_grupo.value,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_carruas','cad4_carruas002.php?j14_codigo='+obj.j14_codigo.value+'&j32_grupo='+obj.j32_grupo.value,'Pesquisa',true);
 }
 function js_fechar(){
    db_iframe_carruas.hide();
@@ -134,10 +134,10 @@ function js_fechar(){
 function js_ruas(mostra){
   var rua=document.form1.j14_codigo.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostrarua|j14_codigo|j14_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostrarua|j14_codigo|j14_nome','Pesquisa',true);
   }else{
     if(rua!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruas.php?pesquisa_chave='+rua+'&funcao_js=parent.js_mostrarua1','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruas.php?pesquisa_chave='+rua+'&funcao_js=parent.js_mostrarua1','Pesquisa',false);
     }else{
       document.form1.j14_codigo.value="";
       document.form1.submit();  

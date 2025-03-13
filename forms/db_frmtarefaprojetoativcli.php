@@ -82,10 +82,10 @@ db_input('at40_descr',1,$Iat40_descr,true,'text',3,'')
 <script>
 function js_pesquisaat69_seqtarefa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tarefa','func_tarefa.php?funcao_js=parent.js_mostratarefa1|at40_sequencial|at40_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefa','func_tarefa.php?funcao_js=parent.js_mostratarefa1|at40_sequencial|at40_descr','Pesquisa',true);
   }else{
      if(document.form1.at69_seqtarefa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tarefa','func_tarefa.php?pesquisa_chave='+document.form1.at69_seqtarefa.value+'&funcao_js=parent.js_mostratarefa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefa','func_tarefa.php?pesquisa_chave='+document.form1.at69_seqtarefa.value+'&funcao_js=parent.js_mostratarefa','Pesquisa',false);
      }else{
        document.form1.at40_descr.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostratarefa1(chave1,chave2){
 }
 function js_pesquisaat69_seqprojeto(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_projetosativcli','func_db_projetosativcli.php?funcao_js=parent.js_mostradb_projetosativcli1|at64_sequencial|at64_codproj','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_projetosativcli','func_db_projetosativcli.php?funcao_js=parent.js_mostradb_projetosativcli1|at64_sequencial|at64_codproj','Pesquisa',true);
   }else{
      if(document.form1.at69_seqprojeto.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_projetosativcli','func_db_projetosativcli.php?pesquisa_chave='+document.form1.at69_seqprojeto.value+'&funcao_js=parent.js_mostradb_projetosativcli','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_projetosativcli','func_db_projetosativcli.php?pesquisa_chave='+document.form1.at69_seqprojeto.value+'&funcao_js=parent.js_mostradb_projetosativcli','Pesquisa',false);
      }else{
        document.form1.at64_codproj.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostradb_projetosativcli1(chave1,chave2){
   db_iframe_db_projetosativcli.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tarefaprojetoativcli','func_tarefaprojetoativcli.php?funcao_js=parent.js_preenchepesquisa|at69_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefaprojetoativcli','func_tarefaprojetoativcli.php?funcao_js=parent.js_preenchepesquisa|at69_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tarefaprojetoativcli.hide();

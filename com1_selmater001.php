@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_liborcamento.php");
-include ("dbforms/db_funcoes.php");
-include ("dbforms/db_classesgenericas.php");
-include ("classes/db_solicitempcmater_classe.php");
-include ("classes/db_solicitemele_classe.php");
-include ("classes/db_pcdotac_classe.php");
-include ("classes/db_orcelemento_classe.php");
-include ("classes/db_orcparametro_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_solicitempcmater_classe.php"));
+include(modification("classes/db_solicitemele_classe.php"));
+include(modification("classes/db_pcdotac_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_orcparametro_classe.php"));
 $clsolicitempcmater = new cl_solicitempcmater;
 $clsolicitemele = new cl_solicitemele;
 $clpcdotac = new cl_pcdotac;
@@ -81,7 +81,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
       <?
-      include ("forms/db_frmselmater.php");
+      include(modification("forms/db_frmselmater.php"));
       ?>
     </center>
     </td>
@@ -106,7 +106,7 @@ if(isset ($incluir)) {
   }else{
     echo "
           <script>
-            top.corpo.location.href = 'com1_liberasol001.php?solicita=".$pc10_numero."';
+            (window.CurrentWindow || parent.CurrentWindow).corpo.location.href = 'com1_liberasol001.php?solicita=".$pc10_numero."';
           </script>
          ";
   }

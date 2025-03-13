@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 $clrotulo = new rotulocampo;
@@ -41,7 +41,7 @@ $clrotulo->label("e42_sequencial");
 $clrotulo->label("e87_descgera");
 $clrotulo->label("o15_descr");
 $clrotulo->label("o15_codigo");
-$clrotulo->label("k17_codigo");  
+$clrotulo->label("k17_codigo");
 $db_opcao = 1;
 ?>
 <form name="form1" method="post" action="">
@@ -64,7 +64,7 @@ $db_opcao = 1;
            <td nowrap title="<?=@$Te82_codord?>" align='left'>
            <? db_ancora(@$Le82_codord,"js_pesquisae82_codord(true);",$db_opcao);  ?>
            </td>
-          <td nowrap colspan="1"> 
+          <td nowrap colspan="1">
            <? db_input('e82_codord',15,$Ie82_codord,true,'text',$db_opcao," onchange='js_pesquisae82_codord(false);'")  ?>
           <td>
            <? db_ancora("<b>até:</b>","js_pesquisae82_codord02(true);",$db_opcao);  ?>
@@ -77,7 +77,7 @@ $db_opcao = 1;
          <td align="left" nowrap title="<?=$Te60_numemp?>">
           <? db_ancora(@$Le60_codemp,"js_pesquisae60_codemp(true);",$db_opcao);  ?>
           </td>
-         <td nowrap colspan="1"> 
+         <td nowrap colspan="1">
           <input name="e60_codemp" id='e60_codemp' title='<?=$Te60_codemp?>' size="15" type='text'  onKeyPress="return js_mascara(event);" >
         </td>
       </tr>
@@ -97,13 +97,13 @@ $db_opcao = 1;
             <td align="right" nowrap title="<?=$Tk17_codigo?>">
              <? db_ancora(@$Lk17_codigo,"js_pesquisak17_codigo(true);",$db_opcao);  ?>
              </td>
-             <td nowrap> 
+             <td nowrap>
               <input name="k17_codigo" id='k17_codigo' title='<?=$Tk17_codigo?>' size="15" type='text'>
              </td>
              <td align="right" nowrap title="<?=$Tk17_codigo?>">
               <? db_ancora("<b>Até</b>","js_pesquisak17_codigo2(true);",$db_opcao);  ?>
               </td>
-              <td nowrap> 
+              <td nowrap>
                 <input name="k17_codigo2" id='k17_codigo2' title='<?=$Tk17_codigo?>' size="15" type='text'>
              </td>
           </tr>
@@ -130,7 +130,7 @@ $db_opcao = 1;
              <td colspan="5">
              <?
               db_input("e42_sequencial", 10, $Ie42_sequencial, true,"text", 3);
-             ?> 
+             ?>
              </td>
          </tr>
          <tr>
@@ -176,9 +176,9 @@ $db_opcao = 1;
     <td nowrap title="<?=@$Tz01_numcgm?>" align='left'>
     <?
   db_ancora("<b>Credor:</b>","js_pesquisaz01_numcgm(true);",$db_opcao);
-  ?>        
+  ?>
   </td>
-  <td  colspan='7' nowrap="nowrap"> 
+  <td  colspan='7' nowrap="nowrap">
   <?
    db_input('z01_numcgm',15,$Iz01_numcgm,true,'text',$db_opcao," onchange='js_pesquisaz01_numcgm(false);'");
    db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
@@ -197,7 +197,7 @@ $db_opcao = 1;
      <td nowrap="nowrap">
        <b>Retornar:</b>
       </td>
-      <td> 
+      <td>
        <?
          $retornar = 3;
          $aTipos = array(
@@ -205,14 +205,14 @@ $db_opcao = 1;
                          2 => "Não Autorizados",
                          3 => "Todas"
                         );
-        db_select("retornar", $aTipos, true, 1);                
+        db_select("retornar", $aTipos, true, 1);
        ?>
      </td>
     </tr>
     </table>
    </fieldset>
    </td>
- </tr>   
+ </tr>
 </table>
 </fieldset>
   </td>
@@ -227,7 +227,7 @@ $db_opcao = 1;
     </td>
   </tr>
   <tr>
-  <td colspan='5'> 
+  <td colspan='5'>
   <table style='width: 100%'>
     <tr>
       <td>
@@ -240,7 +240,7 @@ $db_opcao = 1;
     </tr>
 </table>
 </center>
-</form>  
+</form>
 <div id='callback'>
 </div>
 <script type="text/javascript">
@@ -261,8 +261,8 @@ function js_pesquisae82_codord(mostra){
     ord02 = new Number(document.form1.e82_codord02.value);
     if(ord01 > ord02 && ord01 != "" && ord02 != ""){
       alert("Selecione uma ordem menor que a segunda!");
-      document.form1.e82_codord.focus(); 
-      document.form1.e82_codord.value = ''; 
+      document.form1.e82_codord.focus();
+      document.form1.e82_codord.value = '';
     }
   }
 }
@@ -288,8 +288,8 @@ function js_pesquisae82_codord02(mostra){
     ord02 = new Number(document.form1.e82_codord02.value);
     if(ord01 > ord02 && ord02 != ""  && ord01 != ""){
       alert("Selecione uma ordem maior que a primeira");
-      document.form1.e82_codord02.focus(); 
-      document.form1.e82_codord02.value = ''; 
+      document.form1.e82_codord02.focus();
+      document.form1.e82_codord02.value = '';
     }
   }
 }
@@ -330,7 +330,7 @@ function js_pesquisaz01_numcgm(mostra){
                         document.body.scrollHeight-25
                        );
   }else{
-     if(document.form1.z01_numcgm.value != ''){ 
+     if(document.form1.z01_numcgm.value != ''){
         js_OpenJanelaIframe('',
                             'func_nome',
                             'func_nome.php?pesquisa_chave='+document.form1.z01_numcgm.value+
@@ -342,15 +342,15 @@ function js_pesquisaz01_numcgm(mostra){
                             document.body.scrollHeight-25
                             );
      }else{
-       document.form1.z01_nome.value = ''; 
+       document.form1.z01_nome.value = '';
      }
   }
 }
 function js_mostracgm(erro,chave){
-  document.form1.z01_nome.value = chave; 
-  if(erro==true){ 
-    document.form1.z01_numcgm.focus(); 
-    document.form1.z01_numcgm.value = ''; 
+  document.form1.z01_nome.value = chave;
+  if(erro==true){
+    document.form1.z01_numcgm.focus();
+    document.form1.z01_numcgm.value = '';
   }
 }
 function js_mostracgm1(chave1,chave2){
@@ -362,7 +362,7 @@ function js_mostracgm1(chave1,chave2){
 function js_pesquisac62_codrec(mostra){
    if(mostra==true){
        js_OpenJanelaIframe('',
-                           'db_iframe_orctiporec', 
+                           'db_iframe_orctiporec',
                            'func_orctiporec.php?funcao_js=parent.js_mostraorctiporec1|o15_codigo|o15_descr',
                            'Pesquisar Recursos',
                            true,
@@ -372,7 +372,7 @@ function js_pesquisac62_codrec(mostra){
                            document.body.scrollHeight-25
                            );
    }else{
-       if(document.form1.o15_codigo.value != ''){ 
+       if(document.form1.o15_codigo.value != ''){
            js_OpenJanelaIframe('',
                                'db_iframe_orctiporec',
                                'func_orctiporec.php?pesquisa_chave='+
@@ -385,16 +385,16 @@ function js_pesquisac62_codrec(mostra){
                                document.body.scrollHeight-25
                              );
        }else{
-           document.form1.o15_descr.value = ''; 
+           document.form1.o15_descr.value = '';
        }
    }
 }
 function js_mostraorctiporec(chave,erro){
-   document.form1.o15_descr.value = chave; 
-   if(erro==true){ 
-      document.form1.o15_codigo.focus(); 
-      document.form1.o15_codigo.value = ''; 
-   } 
+   document.form1.o15_descr.value = chave;
+   if(erro==true){
+      document.form1.o15_codigo.focus();
+      document.form1.o15_codigo.value = '';
+   }
 }
 
 function js_mostraorctiporec1(chave1,chave2){
@@ -406,7 +406,7 @@ function js_mostraorctiporec1(chave1,chave2){
 function js_pesquisae42_sequencial(mostra){
   if(mostra==true){
     js_OpenJanelaIframe('',
-                        'func_nome', 
+                        'func_nome',
                         'func_empageordem.php?funcao_js=parent.js_mostraordem1|'+
                         'e42_sequencial|e42_dtpagamento',
                         'Pesquisa OP Auxiliar',
@@ -430,29 +430,29 @@ function js_pesquisae42_sequencial(mostra){
                          document.body.scrollHeight-25);
     } else {
       $('e42_sequencial').value = '';
-    }   
+    }
   }
 }
 
 function js_mostraordem1(chave1,chave2){
-  
+
   document.form1.e42_sequencial.value = chave1;
   document.form1.e42_dtpagamento.value = js_formatar(chave2,"d");
   func_nome.hide();
-  
+
 }
 
 function js_mostraordemagenda(chave,erro){
-  
-  if(!erro) { 
+
+  if(!erro) {
     document.form1.e42_dtpagamento.value = chave;
   } else {
-  
-    document.form1.e42_sequencial.value  = ''; 
+
+    document.form1.e42_sequencial.value  = '';
     document.form1.e42_dtpagamento.value = '';
-    
+
   }
-} 
+}
 
 function js_pesquisak17_codigo(mostra){
   if(mostra==true){
@@ -503,7 +503,7 @@ function js_pesquisarOrdens(iTipo) {
   js_liberaBotoes(false);
   if (iTipo != null) {
     iTipoOperacao              = iTipo;
-  } 
+  }
   var oParametros            = new Object();
   oParametros.iOrdemIni      = $F('e82_codord');
   oParametros.iOrdemFim      = $F('e82_codord02');
@@ -520,10 +520,10 @@ function js_pesquisarOrdens(iTipo) {
   oParametros.iTipoConsulta  = iTipoOperacao;
   oParametros.iTipoRetorno   = $F('retornar');
   var oAjax   = new Ajax.Request(
-                           sUrl, 
+                           sUrl,
                            {
-                            method    : 'post', 
-                            parameters: 'json='+Object.toJSON(oParametros) , 
+                            method    : 'post',
+                            parameters: 'json='+Object.toJSON(oParametros) ,
                             onComplete: js_retornoPesquisaOrdens
                             }
                           );
@@ -534,27 +534,27 @@ function js_retornoPesquisaOrdens(oAjax) {
   js_removeObj("msgBox");
   js_liberaBotoes(true);
   gridAutoriza.clearAll(true);
-  var oResponse = eval("("+oAjax.responseText+")");
+  var oResponse = JSON.parse(oAjax.responseText);
   for (var iNotas = 0; iNotas < oResponse.itens.length; iNotas++) {
-     
+
      with (oResponse.itens[iNotas]) {
-        
-     
+
+
         var iValMovimento = new Number(new Number(e81_valor));
-        
+
         var aLinha = new Array();
         aLinha[0]  = e81_codmov;
         aLinha[1]  = e42_sequencial;
         aLinha[2]  = e50_codord;
         if (e60_codemp != 0) {
-          
+
           aLinha[3]  = "<a onclick='js_JanelaAutomatica(\"empempenho\","+e60_numemp+");return false;' href='#'>";
           aLinha[3] += e60_codemp+"/"+e60_anousu+"</a>";
-            
+
         } else {
           aLinha[3] = "<a onclick='js_pesquisaSlip("+e50_codord+");return false;' href='#'>Slip<\a>";
         }
-        aLinha[4]   = o15_codigo; 
+        aLinha[4]   = o15_codigo;
         aLinha[5]   = "<div style='overflow:hidden'>"+z01_nome.urlDecode()+"</div>";
         aLinha[6]   = js_formatar(e50_data,"d");
         aLinha[7]   = e53_valor;
@@ -562,11 +562,11 @@ function js_retornoPesquisaOrdens(oAjax) {
         aLinha[9]   = valorretencao,
         aLinha[10]  = "<input type  = 'text' id='valorrow"+iNotas+"' style='width:100%;text-align:right;height:100%;border:1px inset'";
         aLinha[10] += " class='valores' onchange='js_calculaValor(this,"+iValMovimento+")'";
-        aLinha[10] += "                 onkeypress='return js_teclas(event)'"; 
+        aLinha[10] += "                 onkeypress='return js_teclas(event)'";
         if (new Number(valorretencao) > 0 || e60_codemp == 0) {
-          aLinha[10] += " readonly "; 
+          aLinha[10] += " readonly ";
         }
-          
+
         aLinha[10] += "       value = '"+iValMovimento+"' id='valor"+e50_codord+"'>";
         gridAutoriza.addRow(aLinha);
         if (e42_sequencial != ""  && e42_sequencial == $F('e42_sequencial')) {
@@ -575,22 +575,22 @@ function js_retornoPesquisaOrdens(oAjax) {
           gridAutoriza.aRows[iNotas].setClassName("configurada");
         }
         gridAutoriza.aRows[gridAutoriza.iRowCount].sValue  = e81_codmov;
-        
+
      }
-     
+
    }
    gridAutoriza.renderRows();
 }
 
 function js_init() {
 
-   
+
    gridAutoriza              = new DBGrid("gridAutoriza");
    gridAutoriza.nameInstance   = "gridAutoriza";
    gridAutoriza.allowSelectColumns(true);
    gridAutoriza.setCheckbox(0);
    gridAutoriza.setHeight(200);
-   gridAutoriza.setCellAlign(new Array("right", "Right", "right","center", "right", 
+   gridAutoriza.setCellAlign(new Array("right", "Right", "right","center", "right",
                                        "left", "Left", "right", "right", "right","right"));
    gridAutoriza.setHeader(new Array("Movimento",
                                     "OP Aux.",
@@ -608,18 +608,18 @@ function js_init() {
 }
 
 function js_geraOrdem() {
-    
+
    var aNotasSelecionadas = gridAutoriza.getSelection();
    if (aNotasSelecionadas.length == 0) {
-      
+
       alert('Selecione ao menos uma nota!\nProcessamento cancelado');
       return false;
    }
    if ($F('e42_dtpagamento')  == "") {
-    
+
       alert('Preencha a data de pagamento!\nProcessamento cancelado');
       return false;
-   
+
    }
    var sTipoOperacao = '';
    if (iTipoOperacao == 1) {
@@ -627,121 +627,117 @@ function js_geraOrdem() {
    } else {
      sTipoOperacao = 'Os Slips ';
    }
-   
+
    var sMsgConfirmacao = sTipoOperacao+' serão Autorizados ';
    if ($F('e42_sequencial') != "") {
-     sMsgConfirmacao += "na OP auxiliar nº "+ $F('e42_sequencial')+".\n"; 
+     sMsgConfirmacao += "na OP auxiliar nº "+ $F('e42_sequencial')+".\n";
    } else {
       sMsgConfirmacao += "em uma nova OP auxiliar.\n";
    }
-   
+
    sMsgConfirmacao += "Confirma a Operação?";
    if (!confirm(sMsgConfirmacao)) {
      return false;
    }
-   js_liberaBotoes(false); 
+   js_liberaBotoes(false);
    var oParams            = new Object();
    oParams.exec           = "lancarOrdem";
-   oParams.e42_dtpaga     = $F('e42_dtpagamento'); 
-   oParams.e42_sequencial = $F('e42_sequencial'); 
-   oParams.iTipoOperacao  = iTipoOperacao; 
+   oParams.e42_dtpaga     = $F('e42_dtpagamento');
+   oParams.e42_sequencial = $F('e42_sequencial');
+   oParams.iTipoOperacao  = iTipoOperacao;
    var aNotasEnviar = new Array();
    for (var i = 0; i < aNotasSelecionadas.length; i++) {
-     
+
      var oNota      = new Object();
-     oNota.nValor   = aNotasSelecionadas[i][11]; 
+     oNota.nValor   = aNotasSelecionadas[i][11];
      oNota.iCodMov  = aNotasSelecionadas[i][0];
      oNota.iCodNota = aNotasSelecionadas[i][3];
-     aNotasEnviar.push(oNota); 
-     
+     aNotasEnviar.push(oNota);
+
    }
    oParams.aNotas        = aNotasEnviar;
-   var sJsonPars         = oParams.toSource();
-   sJsonPars             = sJsonPars.replace("(","");
-   sJsonPars             = sJsonPars.replace(")","");
+   var sJsonPars         = JSON.stringify(oParams);
    js_divCarregando("Aguarde, processando.","msgBox");
    var oAjax   = new Ajax.Request(
-                           sUrl, 
+                           sUrl,
                            {
-                            method    : 'post', 
-                            parameters: 'json='+sJsonPars , 
+                            method    : 'post',
+                            parameters: 'json='+sJsonPars ,
                             onComplete: js_retornoGeraOrdem
                             }
                           );
 }
 
 function js_retornoGeraOrdem(oAjax) {
-  
+
   js_removeObj("msgBox");
   js_liberaBotoes(true);
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno == '2') {
-    
+
     alert(oRetorno.message.urlDecode());
-     
+
   } else {
-  
+
     alert("Operação afetuada com sucesso");
    // js_emitir(oRetorno.dtAutoriza,oRetorno.iCodAgenda);
     js_pesquisarOrdens();
-    
-  } 
+
+  }
 }
 function js_desautorizaOrdem() {
-    
+
    var aNotasSelecionadas = gridAutoriza.getSelection();
    if (aNotasSelecionadas.length == 0) {
-      
+
       alert('Selecione ao menos uma nota!\nProcessamento cancelado');
       return false;
    }
-   
+
    var sTipoOperacao = '';
    if (iTipoOperacao == 1) {
      sTipoOperacao = 'As Ordem de Pagamento ';
    } else {
      sTipoOperacao = 'Os Slips ';
    }
-   
+
    var sMsgConfirmacao = sTipoOperacao+' serão Retiradadas da ';
    if ($F('e42_sequencial') != "") {
-     sMsgConfirmacao += "na OP auxiliar nº "+ $F('e42_sequencial')+".\n"; 
+     sMsgConfirmacao += "na OP auxiliar nº "+ $F('e42_sequencial')+".\n";
    } else {
-   
+
       alert('Nenhuma OP Auxiliar Selecionada.');
       return false;
    }
-   
+
    sMsgConfirmacao += "Confirma a Operação?";
    if (!confirm(sMsgConfirmacao)) {
      return false;
    }
-   js_liberaBotoes(false); 
+   js_liberaBotoes(false);
    var oParams            = new Object();
    oParams.exec           = "cancelarOrdem";
-   oParams.e42_dtpaga     = $F('e42_dtpagamento'); 
-   oParams.e42_sequencial = $F('e42_sequencial'); 
-   oParams.iTipoOperacao  = iTipoOperacao; 
+   oParams.e42_dtpaga     = $F('e42_dtpagamento');
+   oParams.e42_sequencial = $F('e42_sequencial');
+   oParams.iTipoOperacao  = iTipoOperacao;
    var aNotasEnviar = new Array();
    for (var i = 0; i < aNotasSelecionadas.length; i++) {
-     
+
      var oNota      = new Object();
-     oNota.nValor   = aNotasSelecionadas[i][11]; 
+     oNota.nValor   = aNotasSelecionadas[i][11];
      oNota.iCodMov  = aNotasSelecionadas[i][0];
      oNota.iCodNota = aNotasSelecionadas[i][3];
-     aNotasEnviar.push(oNota); 
-     
+     aNotasEnviar.push(oNota);
+
    }
    oParams.aNotas        = aNotasEnviar;
-   var sJsonPars         = oParams.toSource();
-   sJsonPars             = sJsonPars.replace("(","");
-   sJsonPars             = sJsonPars.replace(")","");
+   var sJsonPars         = JSON.stringify(oParams);
    js_divCarregando("Aguarde, Retirando Movimentos da Autorização.","msgBox");
    var oAjax   = new Ajax.Request(
-                           sUrl, 
+                           sUrl,
                            {
-                            method    : 'post', 
-                            parameters: 'json='+sJsonPars , 
+                            method    : 'post',
+                            parameters: 'json='+sJsonPars ,
                             onComplete: js_retornoGeraOrdem
                             }
                           );
@@ -750,39 +746,39 @@ function js_desautorizaOrdem() {
 function js_liberaBotoes(lLiberar) {
 
   if (lLiberar) {
-  
+
     $('pesquisar').disabled = false;
     $('agendar').disabled   = false;
-  
+
   } else {
 
     $('pesquisar').disabled = true;
     $('agendar').disabled   = true;
-      
+
   }
 }
 
 function js_calculaValor(oTextObj,iValTot) {
-  
+
   if (oTextObj.value > iValTot || oTextObj.value == 0) {
      oTextObj.value  = iValTot;
   }
 }
 
 function js_emitir() {
-  
+
   if ($F('e42_sequencial') == "") {
-    
+
     alert('Informe a OP Auxiliar!');
     return false;
-    
+
   }
   var iAgenda = $F('e42_sequencial');
   window.open('emp2_ordempagamentoauxiliar002.php?iAgenda='+iAgenda,'','location=0');
 }
 
 function js_pesquisaSlip(iCodigoSlip) {
-  js_OpenJanelaIframe('top.corpo','db_iframe_slip2',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_slip2',
                        'cai3_conslip003.php?slip='+iCodigoSlip,'Consulta Lançamento',
                        true,
                        22,
@@ -792,29 +788,29 @@ function js_pesquisaSlip(iCodigoSlip) {
                        );
 }
 function js_alterarData() {
-  
+
    if ($F('e42_dtpagamento') == "" ) {
      alert('Informe a data para o pagamento');
    }
    var oParam             = new Object();
-   oParam.exec            = "alterarData"; 
-   oParam.e42_dtpagamento = $F('e42_dtpagamento'); 
-   oParam.e42_sequencial  = $F('e42_sequencial'); 
+   oParam.exec            = "alterarData";
+   oParam.e42_dtpagamento = $F('e42_dtpagamento');
+   oParam.e42_sequencial  = $F('e42_sequencial');
    var oAjax   = new Ajax.Request(
-                           sUrl, 
+                           sUrl,
                            {
-                            method    : 'post', 
-                            parameters: 'json='+Object.toJSON(oParam) , 
+                            method    : 'post',
+                            parameters: 'json='+Object.toJSON(oParam) ,
                             onComplete: function (oRequest) {
-                            
-                                var oRetorno = eval("("+oRequest.responseText+")");
+
+                                var oRetorno = JSON.parse(oRequest.responseText);
                                 if (oRetorno.status == 1) {
                                   alert('Data alterada com sucesso');
                                 }
                                 }
-                           }  
+                           }
                           );
-   
+
 }
 parent.$('CFdb_iframe_op').cells[0].innerHTML = "Manutenção de OP nº "+$F('e42_sequencial');
 js_init();

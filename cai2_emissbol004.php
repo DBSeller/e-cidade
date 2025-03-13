@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 db_postmemory($HTTP_SERVER_VARS);
 $seleciona_conta = '';
 $descr_conta = 'TODAS AS CONTAS';
@@ -38,7 +38,7 @@ if($conta != 0) {
                     inner join conplanoreduz on c62_reduz = c61_reduz and c61_instit = ' . db_getsession('DB_instit') .  '
                                                          and c61_anousu=c62_anousu
               where k13_conta = '.$conta;
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
   $descr_conta = "CONTA : ".$conta.' - '.$k13_descr;
 }
@@ -50,7 +50,7 @@ if($caixa != 0){
   $seleciona = ' and a.k12_id = '.$caixa;
   $ordem = ' order by a.k12_data, a.k12_conta ';
   $sql = "select * from cfautent where k11_id = $caixa and k11_instit = " . db_getsession('DB_instit');
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
   $selecao = "CAIXA : ".$caixa.' - '.$k11_local;
 }
@@ -77,7 +77,7 @@ $pdf->SetFont('Arial','',8);
 $pdf->SetTextColor(0,0,0);
 $pdf->setfillcolor(235);
 
-$res1 = pg_query("select c61_reduz 
+$res1 = db_query("select c61_reduz 
          from conplano 
 	      inner join conplanoreduz on c60_codcon = c61_codcon and c61_instit = " . db_getsession('DB_instit') . "
                                                     and c60_anousu=c61_anousu
@@ -133,7 +133,7 @@ $sql  = "
 		    ";
 //echo $sql;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 //exit;
 $num = pg_numrows($result);
@@ -209,7 +209,7 @@ $sql  = "select x.*,
 		    $ordem) as x
 		    order by corrente_data, tipo, corrente_conta";
 //echo $sql;
-$result1 = pg_exec($sql);
+$result1 = db_query($sql);
 //db_criatabela($result);
 $numrows = pg_numrows($result1);
 

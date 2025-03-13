@@ -26,25 +26,27 @@
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_lotedist_classe.php");
-include ("classes/db_testada_classe.php");
-include ("classes/db_testpri_classe.php");
-include ("classes/db_lote_classe.php");
-include ("classes/db_loteloc_classe.php");
-include ("classes/db_loteloteam_classe.php");
-include ("classes/db_loteam_classe.php");
-include ("classes/db_carlote_classe.php");
-include ("classes/db_face_classe.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_lotesetorfiscal_classe.php");
-include ("classes/db_cfiptu_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lotedist_classe.php"));
+include(modification("classes/db_testada_classe.php"));
+include(modification("classes/db_testpri_classe.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("classes/db_loteloc_classe.php"));
+include(modification("classes/db_loteloteam_classe.php"));
+include(modification("classes/db_loteam_classe.php"));
+include(modification("classes/db_carlote_classe.php"));
+include(modification("classes/db_face_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_lotesetorfiscal_classe.php"));
+include(modification("classes/db_cfiptu_classe.php"));
+include(modification("classes/db_tesinter_classe.php"));
+include(modification("classes/db_tesinterlote_classe.php"));
 
-include ("classes/db_testadanumero_classe.php");
-include ("classes/db_iptubase_classe.php");
+include(modification("classes/db_testadanumero_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -63,6 +65,8 @@ $clcfiptu = new cl_cfiptu;
 
 $cliptubase = new cl_iptubase;
 $cltestadanumero = new cl_testadanumero;
+$cltesinterlote = new cl_tesinterlote;
+$cltesinter = new cl_tesinter;
 
 //die($clcfiptu->sql_query_file(db_getsession('DB_anousu'),'j18_utilizasetfisc',"",""));
 $rsResultmostra = ($clcfiptu->sql_record($clcfiptu->sql_query_file(db_getsession('DB_anousu'), '*', "", "")));
@@ -119,6 +123,17 @@ if (isset ($excluir)) {
 			}
 		}
 
+	}
+	// exclusao da tesinter e tesinterlote
+	/*========================================================================================================================*/
+	if ($sqlerro == false) {
+		$rsTesinterlote = $cltesinter->sql_record($cltesinter->sql_query_file(null,'j39_sequencial',null,"j39_idbql = $j34_idbql"));
+		$intNumrows = $cltesinter->numrows;
+		for($intTes = 0; $intTes < $intNumrows; $intTes++){
+			db_fieldsmemory($rsTesinterlote,$intTes);
+			$cltesinterlote->excluir($j39_sequencial);
+			$cltesinter->excluir($j39_sequencial);
+		}
 	}
 
 	if ($sqlerro == false) {
@@ -261,7 +276,7 @@ if (!isset ($chavepesquisa)) {
 	<?
 
 
-include ("forms/db_frmlote.php");
+include(modification("forms/db_frmlote.php"));
 ?>
     </center>
 	</td>

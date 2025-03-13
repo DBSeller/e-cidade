@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,28 +26,28 @@
  */
 
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/db_stdClass.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/DBDate.php");
-require_once 'libs/db_liborcamento.php';
-require_once 'model/contabilidade/planoconta/ContaPlano.model.php';
-require_once 'model/contabilidade/planoconta/ContaOrcamento.model.php';
-require_once 'model/contabilidade/planoconta/ClassificacaoConta.model.php';
-require_once 'model/contabilidade/planoconta/SistemaConta.model.php';
-require_once 'model/contabilidade/planoconta/SubSistemaConta.model.php';
-require_once 'model/CgmFactory.model.php';
-require_once 'model/slip.model.php';
-require_once 'model/caixa/AutenticacaoArrecadacao.model.php';
-require_once 'model/caixa/LancamentoContabilAjusteBaixaBanco.model.php';
-require_once 'model/caixa/AutenticacaoPlanilha.model.php';
-require_once 'model/caixa/PlanilhaArrecadacao.model.php';
-require_once 'model/caixa/slip/Transferencia.model.php';
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBDate.php"));
+require_once modification("libs/db_liborcamento.php");
+require_once modification("model/contabilidade/planoconta/ContaPlano.model.php");
+require_once modification("model/contabilidade/planoconta/ContaOrcamento.model.php");
+require_once modification("model/contabilidade/planoconta/ClassificacaoConta.model.php");
+require_once modification("model/contabilidade/planoconta/SistemaConta.model.php");
+require_once modification("model/contabilidade/planoconta/SubSistemaConta.model.php");
+require_once modification("model/CgmFactory.model.php");
+require_once modification("model/slip.model.php");
+require_once modification("model/caixa/AutenticacaoArrecadacao.model.php");
+require_once modification("model/caixa/LancamentoContabilAjusteBaixaBanco.model.php");
+require_once modification("model/caixa/AutenticacaoPlanilha.model.php");
+require_once modification("model/caixa/PlanilhaArrecadacao.model.php");
+require_once modification("model/caixa/slip/Transferencia.model.php");
 
 db_app::import("exceptions.*");
 db_app::import("configuracao.Instituicao");

@@ -26,11 +26,11 @@
  */
 
   
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("dbforms/db_funcoes.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
+  include(modification("dbforms/db_funcoes.php"));
   $clrotulo = new rotulocampo;  
   $clrotulo->label("ob09_codhab");
 ?>
@@ -111,10 +111,10 @@
 <script>
 function js_pesquisaob09_codhab(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_obrashabite','func_obrashabite.php?funcao_js=parent.js_mostratermohabite1|ob09_codhab','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obrashabite','func_obrashabite.php?funcao_js=parent.js_mostratermohabite1|ob09_codhab','Pesquisa',true);
   }else{
     if(document.form1.ob09_codhab.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_obrashabite','func_obrashabite.php?pesquisa_chave='+document.form1.ob09_codhab.value+'&funcao_js=parent.js_mostratermohabite','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obrashabite','func_obrashabite.php?pesquisa_chave='+document.form1.ob09_codhab.value+'&funcao_js=parent.js_mostratermohabite','Pesquisa',false);
     }
   }
 }

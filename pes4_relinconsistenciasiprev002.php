@@ -1,115 +1,167 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
+<?php
+require_once(modification("dbforms/db_funcoes.php"));
 
-include ("fpdf151/pdf.php");
-include ("libs/db_sql.php");
-require_once("libs/JSON.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-  
-$oJson = new services_json();
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("classes/db_rharquivossiprev_classe.php"));
+require_once(modification("fpdf151/pdf.php"));
+$_SESSION['DB_itemmenu_acessado'] = 8747;
+$_SESSION['DB_modulo']            = 952;
 
-$oParam = $oJson->decode(db_stdClass::db_stripTagsJson(str_replace("\\", "", $_POST ["json"])));
-$sArquivos = $oParam;
+$erros = unserialize(file_get_contents("tmp/erros_siprev.txt"));
+ksort($erros);
+// kill($erros);
 
+define('ALTURA_LINHA', 5);
+define('PREENCHE', true);
+define('QUEBRA', true);
+define('BORDA', true);
+define('LARGURA_MAXIMA', 279);
+
+$arquivos = array(
+  "01"   => "Servidores",
+  "02"   => "Dependentes",
+  "03"   => "Órgãos",
+  "04"   => "Carreiras",
+  "05"   => "Cargos",
+  "06"   => "Alíquotas",
+  "07"   => "Pensionistas",
+  "08.1" => "Históricos Funcionais - RGPS",
+  "08.2" => "Históricos Funcionais - RPPS",
+  "09"   => "Históricos Financeiros",
+  "10"   => "Benefícios dos Servidores",
+  "11"   => "Benefícios dos Pensionistas",
+  "12"   => "Tempo de Contribuição - RGPS",
+  "13"   => "Tempo de Contribuição - RPPS",
+  "14"   => "Tempos Fictícios",
+  "15"   => "Tempo sem Contribuição",
+  "16"   => "Funções Gratificadas",
+);
+
+$head2  = "Relatório de Inconsistências SIPREV";
 $pdf = new PDF("L");
-$pdf->Open();
-$pdf->AliasNbPages();
-$pdf->SetAutoPageBreak(false);
-$total = 0;
+$pdf->open();
+$pdf->aliasNbPages();
+$pdf->setAutoPageBreak(false);
 $pdf->setfillcolor(235);
 $pdf->setfont('arial', 'b', 8);
-$troca = 1;
-$alt = 4;
-$head2  = "Relatório de Inconsistências SIPREV";
-$pdf->AddPage("L");
 
-imprimirCabecalho($pdf, $alt, true);
-// Verifica se o arquivo foi selecionado e se o array de erros possui registros
- 
-$aLista = explode(",", $sArquivos);
+$escreverPDF = function($grupo, $chave, &$pdf) use($arquivos) {
 
-if ( (count($_SESSION['erro_servidores']) > 0) && (in_array('1', $aLista))) {
-	
-  $aErrosServidores = $_SESSION ['erro_servidores'];
-  foreach ( $aErrosServidores as $aErro ) {
+  // dump(!!$grupo, $grupo);
 
-     $pdf->setfont('arial','',6);
-     $pdf->cell(20,  $alt, "{$aErro[0]}", "TBR",  0, "L", 0);
-     $pdf->cell(30,  $alt, "{$aErro[1]}", "TBL",  0, "L", 0);
-     $pdf->cell(30,  $alt, "{$aErro[2]}", "TBL",  0, "C", 0);
-     $pdf->cell(80,  $alt, "{$aErro[3]}", "TBLR", 0, "L", 0);
-     $pdf->cell(50,  $alt, "{$aErro[4]}", "TBR",  0, "C", 0);
-     $pdf->cell(50,  $alt, "{$aErro[5]}", "TBR",  0, "C", 0);
-     $pdf->cell(15,  $alt, "{$aErro[6]}", "TB",   1, "C", 0);   	
-     imprimirCabecalho($pdf, $alt, false);
+  /**
+   * Item sem erro não será impresso
+   */
+  if (!$grupo) {
+    return;
   }
-}	
 
-if ((count($_SESSION['erro_dependentes']) > 0) && (in_array('2', $aLista))) {
- 
-  $aErrosDependentes = $_SESSION ['erro_dependentes'];
-  foreach ( $aErrosDependentes as $aErroDependente ) {	
-      
-     $pdf->setfont('arial','',6);
-     $pdf->cell(20,  $alt, "{$aErroDependente[0]}", "TBR",  0, "L", 0);
-     $pdf->cell(30,  $alt, "{$aErroDependente[1]}", "TBL",  0, "L", 0);
-     $pdf->cell(30,  $alt, "{$aErroDependente[2]}", "TBL",  0, "C", 0);
-     $pdf->cell(80,  $alt, "{$aErroDependente[3]}", "TBLR", 0, "L", 0);
-     $pdf->cell(50,  $alt, "{$aErroDependente[4]}", "TBR",  0, "C", 0);
-     $pdf->cell(50,  $alt, "{$aErroDependente[5]}", "TBR",  0, "C", 0);
-     $pdf->cell(15,  $alt, "{$aErroDependente[6]}", "TB",   1, "C", 0);
-     imprimirCabecalho($pdf, $alt, false);    	
-  }
-       
-}
+  $cabecalhos = getHeaders($chave);
 
-$pdf->output('tmp/siprev.pdf', false, false);
+  escreverCabecalho("Arquivo:  {$chave} - " . $arquivos[$chave], $cabecalhos, $pdf);
 
-function imprimirCabecalho($oPdf, $iAlturalinha, $lImprime) {
-  
-  if ( $oPdf->GetY() > $oPdf->h - 25 || $lImprime ) {
-    
-    $oPdf->SetFont('arial', 'b', 6);
-    
-    if ( !$lImprime ) {
-    	
-      $oPdf->AddPage("L");
+  $linha = 0;
+
+
+  foreach ($grupo as $dados) {
+
+    if (++$linha == 31) {
+      $linha = 0;
+      escreverCabecalho("Arquivo:  {$chave} - " . $arquivos[$chave], $cabecalhos, $pdf);
     }
+    escreverLinha($dados, $cabecalhos, $pdf);
+  }
+};
 
-    $oPdf->setfont('arial','b',8);
-    $oPdf->cell(20,  $iAlturalinha, "ARQUIVO",  "TBR",  0, "C", 0);
-    $oPdf->cell(30,  $iAlturalinha, "ERRO",     "TBL",  0, "C", 0);
-    $oPdf->cell(30,  $iAlturalinha, "NUM. CGM", "TBL",  0, "C", 0);
-    $oPdf->cell(80,  $iAlturalinha, "NOME",     "TBLR", 0, "C", 0);
-    $oPdf->cell(50,  $iAlturalinha, "CPF",      "TBR",  0, "C", 0);
-    $oPdf->cell(50,  $iAlturalinha, "PIS",      "TBR",  0, "C", 0);
-    $oPdf->cell(15,  $iAlturalinha, "SEXO",     "TB",   1, "C", 0);
+array_walk($erros, $escreverPDF, $pdf);
+$pdf->output();
+
+
+function escreverCabecalho($titulo, array $itens, FPDF &$pdf) {
+
+  $pdf->addPage("L");
+  $pdf->setfont('arial','b',8);
+  $pdf->cell(LARGURA_MAXIMA, ALTURA_LINHA, mb_strtoupper($titulo), BORDA, QUEBRA, "C", PREENCHE);
+
+  for($indice = 1, $quantidade = count($itens); $indice <= $quantidade; $indice++) {
+
+    $quebra = $indice == $quantidade;
+    $item   = $itens[$indice-1];
+    $pdf->cell($item['largura'], ALTURA_LINHA, $item['conteudo'], BORDA, $quebra, "C", PREENCHE);
   }
 }
 
-?>
+function escreverLinha($dados, $cabecalhos, &$pdf) {
+
+  $pdf->setfont('arial','',8);
+
+  $itens = count($cabecalhos);
+  $indice = 0;
+  foreach ($cabecalhos as $item) {
+
+    $quebra = ++$indice == $itens;
+    list($chave, $valor)      = each($dados);
+    list($largura, $conteudo) = each($item);
+    $pdf->cell($item['largura'], ALTURA_LINHA, " " .$valor, BORDA, $quebra, "L", !PREENCHE);
+  }
+}
+
+function getHeaders($arquivoID) {
+
+  switch($arquivoID) {
+    case "01":
+    case "02":
+    case "08.1":
+    case "08.2":
+    case "10":
+    case "11":
+    case "16":
+      $headers = array(
+        array("largura" => 80,                   "conteudo" => "Instituição"),
+        array("largura" => 100,                  "conteudo" => "Servidor"),
+        array("largura" => LARGURA_MAXIMA - 180, "conteudo" => "Erro Encontrado"),
+      );
+      break;
+    case "03":
+      $headers = array(
+        array("largura" => 130,                  "conteudo" => "Instituição"),
+        array("largura" => LARGURA_MAXIMA - 130, "conteudo" => "Erro Encontrado"),
+      );
+      break;
+    case "07":
+      $headers = array(
+        array("largura" => 80,                   "conteudo" => "Instituição"),
+        array("largura" => 100,                  "conteudo" => "Pensionista"),
+        array("largura" => LARGURA_MAXIMA - 180, "conteudo" => "Erro Encontrado"),
+      );
+      break;
+    case "09":
+      $headers = array();
+      break;
+    case "12":
+      $headers = array();
+      break;
+    case "13":
+      $headers = array();
+      break;
+    case "14":
+      $headers = array();
+      break;
+    case "15":
+      $headers = array();
+      break;
+    case "04":
+    case "05":
+    case "06":
+      $headers = array();
+      break;
+  }
+
+  return $headers;
+}

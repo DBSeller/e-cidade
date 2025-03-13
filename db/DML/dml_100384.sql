@@ -1,0 +1,1 @@
+select fc_executa_ddl('ALTER TABLE avaliacaopergunta ALTER COLUMN db103_descricao TYPE text;');

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/scpdf.php");
+include(modification("fpdf151/scpdf.php"));
 
-include("libs/db_sql.php");
-include("libs/db_stdlibwebseller.php");
-include("libs/db_utils.php");
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_stdlibwebseller.php"));
+include(modification("libs/db_utils.php"));
 
-include("classes/db_prontuarios_ext_classe.php");
-include("classes/db_agendamentos_ext_classe.php");
-include("classes/db_prontagendamento_classe.php");
-include("classes/db_sau_config_ext_classe.php");
-include("classes/db_sau_proccbo_classe.php");
-include("classes/db_prontproced_ext_classe.php");
-include("classes/db_prontprofatend_ext_classe.php");
+include(modification("classes/db_prontuarios_ext_classe.php"));
+include(modification("classes/db_agendamentos_ext_classe.php"));
+include(modification("classes/db_prontagendamento_classe.php"));
+include(modification("classes/db_sau_config_ext_classe.php"));
+include(modification("classes/db_sau_proccbo_classe.php"));
+include(modification("classes/db_prontproced_ext_classe.php"));
+include(modification("classes/db_prontprofatend_ext_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);

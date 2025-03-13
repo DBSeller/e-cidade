@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_quadracemit_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_quadracemit_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clquadracemit = new cl_quadracemit;
@@ -72,7 +72,7 @@ if(isset($excluir)){
     <td height="430"  align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
      <?
-     include("forms/db_frmquadracemit.php");
+     include(modification("forms/db_frmquadracemit.php"));
      ?>
     </center>
      </td>
@@ -96,7 +96,7 @@ if(isset($cm22_i_codigo) && $cm22_i_codigo != ""){
 ?>
  <script>
   parent.document.formaba.a2.disabled=false;
-  top.corpo.iframe_a2.location.href='cem1_lotecemit001.php?cm23_i_quadracemit=<?=$cm22_i_codigo?>';
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='cem1_lotecemit001.php?cm23_i_quadracemit=<?=$cm22_i_codigo?>';
  </script>
  <?
  }

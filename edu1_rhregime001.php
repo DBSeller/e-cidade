@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhregime_classe.php");
-include("classes/db_rhcadregime_classe.php");
-include("dbforms/db_funcoes.php");
-db_postmemory($HTTP_POST_VARS);
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_rhregime_classe.php"));
+include(modification("classes/db_rhcadregime_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+$_POST['rh30_vinculoemprego'] = 'f';
+$_POST['rh30_codigocategoria'] = '0';
+db_postmemory($_POST);
 $clrhregime = new cl_rhregime;
 $clrhcadregime = new cl_rhcadregime;
 $db_opcao = 1;
@@ -40,6 +42,7 @@ $db_botao = true;
 if(isset($incluir)){
 
   db_inicio_transacao();
+
   $clrhregime->rh30_instit            = db_getsession("DB_instit");
   $clrhregime->rh30_periodogozoferias = 30;
   $clrhregime->incluir($rh30_codreg);
@@ -70,7 +73,7 @@ if(isset($incluir)){
       <br> 
       <center>
       <fieldset style="width:95%"><legend><b>Inclusão de Vínculos</b></legend>    
-      <?include("forms/db_frmrhregimeedu.php");?>
+      <?include(modification("forms/db_frmrhregimeedu.php"));?>
       </fieldset>
       </center>
     </td>

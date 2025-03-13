@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
@@ -142,8 +142,8 @@ if($ponto2 != $sigla_ponto[$ponto1] || $rh27_rub1 != $rh27_rubric || $ano2 != $a
    $camposSQL .= "#s#_valor  as r14_valor, "; 
    $camposSQL .= "#s#_quant  as r14_quant, "; 
    $camposSQL .= "#s#_lotac  as r14_lotac, ";
-   
-   if ( $ponto1 == 'r10' || $ponto1 == 'r90' ){ 
+
+   if ( ($ponto1 == 'r10' || $ponto1 == 'r90') && ($sigla[$ponto2] == 'r10' || $sigla[$ponto2] == 'r90') ){ 
      $camposSQL .= "#s#_datlim as r14_datlim,"; 
    } else if ( $ponto1 == 'r19' ) {
      $camposSQL .= "#s#_tpp as r14_tpp,";
@@ -151,30 +151,70 @@ if($ponto2 != $sigla_ponto[$ponto1] || $rh27_rub1 != $rh27_rubric || $ano2 != $a
      
      $camposSQL .= "#s#_media as r14_media,";
      $camposSQL .= "#s#_calc as r14_calc,";
+   } else if ( $sigla[$ponto2] == 'r10' || $sigla[$ponto2] == 'r90' ) {
+     $camposSQL .= "'' as r14_datlim,"; 
    }
    
    $camposSQL .= "#s#_instit as r14_instit ";
    $sql_dados  = $clgerasql->gerador_sql($ponto1,$ano1,$mes1,null,null,$camposSQL,"",$whereRESC1,db_getsession("DB_instit"));
    $result     = db_query($sql_dados);
+
    $xxnum      = pg_numrows($result);
+
+
+   /**
+    * Verificamos se nao existe duplicidade de rubricas no ponto que esta sendo copiado. Por exemplo, ponto de origem possui 2 complementares
+    * com a mesma rubrica na mesma competência, isso não é permitido, pois irá gerar duplicidade no ponto de destino. Foi solicitado uma melhoria
+    * para verificar a melhor maneira de corrigir este problema.
+    */
+   if ($ponto[$ponto1] == "Complementar") {
+
+      $sWhereVerificacao  = $whereRESC1; 
+      $sWhereVerificacao .= " group by r47_regist";
+      $sWhereVerificacao .= " having count(r47_regist) > 1";
+      $sSqlVerificacao    = $clgerasql->gerador_sql($ponto1,$ano1,$mes1,null,null,"r47_regist",null,$sWhereVerificacao,db_getsession("DB_instit"));
    
-   if ($xxnum == 0) {
-     
-      $sqlerro  = true;
-      $erro_msg = 'Nao existe a ocorrência da rubrica '.$rh27_rubric.' no ponto '.$ponto[$ponto1].' de origem';
-   } else {
-      
-      $whereRESC1 =  $whereRESC.$andwhere." #s#_rubric = '".$rh27_rub1."'";
-      $sql_dados2 = $clgerasql->gerador_sql($sigla[$ponto2],$ano2,$mes2,null,null,"#s#_regist","",$whereRESC1,db_getsession("DB_instit"));
-      $result     = db_query($sql_dados2);
-      $xxnum      = pg_numrows($result);
-      
-      if($xxnum > 0){
+      $rsVerificacao      = db_query($sSqlVerificacao);
+   
+      if (!$rsVerificacao) {
+       
+        $sqlerro  = true;
+        $erro_msg = 'Erro ao verificar tabelas de ponto.';
+      }
+   
+      $aMatriculasInvalidas = array();
+   
+      $aMatriculasInvalidas = db_utils::makeCollectionFromRecord($rsVerificacao, function ($oRegistro){
+        return $oRegistro->r47_regist;
+      });
+   
+      if (count($aMatriculasInvalidas) > 0) {
+   
+        $sqlerro   = true;
+        $erro_msg  = 'Erro ao realizar copia de rubrica. Matricula(s):' . implode(',', $aMatriculasInvalidas) . ', possuem registros duplicados no ponto de origem.';
+      }
+   }
+
+   if (!$sqlerro) {
+
+     if ($xxnum == 0) {
+       
+        $sqlerro  = true;
+        $erro_msg = 'Nao existe a ocorrência da rubrica '.$rh27_rubric.' no ponto '.$ponto[$ponto1].' de origem';
+     } else {
+        
+       $whereRESC1 =  $whereRESC.$andwhere." #s#_rubric = '".$rh27_rub1."'";
+       $sql_dados2 = $clgerasql->gerador_sql($sigla[$ponto2],$ano2,$mes2,null,null,"#s#_regist","",$whereRESC1,db_getsession("DB_instit"));
+       $result     = db_query($sql_dados2);
+       $xxnum      = pg_numrows($result);
+        
+       if($xxnum > 0){
+
          if($inserir == 1){
-            $sqlerro= true;
-            $erro_msg = 'Existe a ocorrência da rubrica '.$rh27_rub1.' no ponto '.$ponto[$ponto1].' de destino \n\n Inserir assim mesmo ?';
-         }else{
-   
+           $sqlerro= true;
+           $erro_msg = 'Existe a ocorrência da rubrica '.$rh27_rub1.' no ponto '.$ponto[$ponto1].' de destino \n\n Inserir assim mesmo ?';
+         } else {
+     
            $sql_dados1 = "delete from $ponto2 where ".$sigla[$ponto2]."_anousu = $ano2 and ".
                                                       $sigla[$ponto2]."_mesusu = $mes2 and ".
                                                       $sigla[$ponto2]."_instit = ".db_getsession("DB_instit")." and ".
@@ -186,21 +226,23 @@ if($ponto2 != $sigla_ponto[$ponto1] || $rh27_rub1 != $rh27_rubric || $ano2 != $a
            //echo "<BR> $sql_dados1"; exit;
            $result_dados = db_query($sql_dados1);
          }
-      }else{
-      
+       } else {
+          
          $sql_dados1 = "insert into $ponto2 ($sql_dados)";
          $result_dados = db_query($sql_dados1);
-      }
+       }
+     }
    }
-}else{
+ } else {
    $sqlerro= true;
-   $erro_msg = 'Tem que ser diferentes os dados informados no box "Existindo" e no box "Inserir"';
-}
+   $erro_msg = "Tem que ser diferentes os dados informados no box 'Existindo' e no box 'Inserir'";
+ }
+  
 
-if($sqlerro == true){
+if ($sqlerro === true) {
     echo "
     <script>
-      parent.js_erro('$erro_msg');
+      parent.js_erro(\"$erro_msg\");
     </script>
     ";
 }else{

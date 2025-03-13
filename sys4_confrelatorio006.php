@@ -1,38 +1,37 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_gruporelatorio_classe.php");
-include("classes/db_db_tiporelatorio_classe.php");
-
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_db_gruporelatorio_classe.php"));
+require_once(modification("classes/db_db_tiporelatorio_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $cldb_gruporelatorio = new cl_db_gruporelatorio();
 $cldb_tiporelatorio  = new cl_db_tiporelatorio();
@@ -49,14 +48,18 @@ $cldb_tiporelatorio->rotulo->label();
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/libJsonJs.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1; parent.lFinalizar = true;" bgcolor="#cccccc">
+<script>
+  (function(){
+    parent.lFinalizar = true;
+  })();
+</script>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1;" bgcolor="#cccccc">
 <form name="form1">
 <center>
 <table style="padding-top:20px;">
-  <tr> 
+  <tr>
     <td>
 	  <fieldset>
 	    <legend align="center">
@@ -92,8 +95,8 @@ $cldb_tiporelatorio->rotulo->label();
 							db_input("db14_descricao" ,40,"",true,"text",3,"");
 	          ?>
 	        </td>
-	      </tr>	      
-	      
+	      </tr>
+
 	    </table>
 	  </fieldset>
 	</td>
@@ -101,9 +104,9 @@ $cldb_tiporelatorio->rotulo->label();
   <tr align="center">
     <td>
       <input type="button" name="visualizar" id="visualizar" value="Visualizar"  onClick="js_verificaAbas('visualizar');"/>
-  	  <input type="button" name="salvar" 	   id="salvar"	   value="Salvar"		   onClick="js_verificaAbas('salvar');"	  />  		
-  	  <input type="button" name="alterar"  	 id="alterar"	   value="Alterar"	   onClick="js_verificaAbas('alterar'); " style="display:none"/> 
-  	  <input type="button" name="sair"	 	   id="sair"		   value="Sair"		     onClick="js_sair();"			  /> 	  
+  	  <input type="button" name="salvar" 	   id="salvar"	   value="Salvar"		   onClick="js_verificaAbas('salvar');"	  />
+  	  <input type="button" name="alterar"  	 id="alterar"	   value="Alterar"	   onClick="js_verificaAbas('alterar'); " style="display:none"/>
+  	  <input type="button" name="sair"	 	   id="sair"		   value="Sair"		     onClick="js_sair();"			  />
     </td>
   </tr>
 </table>
@@ -120,35 +123,35 @@ function js_verificaAbas(sAcao) {
 
   parent.iframe_ordem.js_enviaOrdem();
 
-  if ( lTestaOrdem ) {    
+  if ( lTestaOrdem ) {
     clearTimeout(temporizador);
     js_valida(sAcao);
   }else{
     temporizador  = setTimeout('js_validaAbas(\"'+sAcao+'\")',500);
   }
-  
-} 
+
+}
 
 function js_validaAbas(sAcao) {
 
-  if ( lTestaOrdem ) {    
+  if ( lTestaOrdem ) {
     clearTimeout(temporizador);
     js_valida(sAcao);
   }else{
     temporizador  = setTimeout('js_validaAbas(\"'+sAcao+'\")',500);
   }
-  
+
 }
 
 
 function js_consultaTipoGrupo(objTipoGrupo){
-	
-  $('alterar').style.display 	= "";	
-  $('salvar').style.display  	= "none";	
-	
+
+  $('alterar').style.display 	= "";
+  $('salvar').style.display  	= "none";
+
   document.form1.db13_sequencial.value = objTipoGrupo.gruporel;
   document.form1.db14_sequencial.value = objTipoGrupo.tiporel;
-  
+
   js_pesquisaTipo(false);
   js_pesquisaGrupo(false);
 
@@ -156,7 +159,7 @@ function js_consultaTipoGrupo(objTipoGrupo){
 
 
 function js_valida(sAcao){
-  if (sAcao == 'visualizar'){ 
+  if (sAcao == 'visualizar'){
   	  parent.iframe_layout.js_incluirPropriedades();
   	  js_visualizar();
   } else {
@@ -170,7 +173,7 @@ function js_valida(sAcao){
   	  if (sAcao == 'alterar') {
   	    js_alterar();
   	  } else if (sAcao == 'salvar') {
-  	    if ( parent.iframe_layout.document.form1.nomeRel.value == "" ){ 
+  	    if ( parent.iframe_layout.document.form1.nomeRel.value == "" ){
   	      alert("Favor cadastre um nome para o relatório!");
   	      return false;
   	    } else {
@@ -254,10 +257,10 @@ function js_salvar(){
  	var url           = 'sys4_consultaviewRPC.php';
  	var sQuery        = 'tipo='+ConsultaTipo;
 			sQuery 	   	 += '&grupoRelatorio='+document.form1.db13_sequencial.value;
-			sQuery 		   += '&tipoRelatorio='+document.form1.db14_sequencial.value;		
+			sQuery 		   += '&tipoRelatorio='+document.form1.db14_sequencial.value;
 	var oAjax         = new Ajax.Request( url, {
-                                               method: 'post', 
-    	                                         parameters: sQuery, 
+                                               method: 'post',
+    	                                         parameters: sQuery,
 											                         onComplete: js_retornoAlteraInclui
                                              }
                                        );
@@ -267,15 +270,15 @@ function js_alterar(){
 
 
  	js_divCarregando('Aguarde, Salvando Relatório...','msgBoxRelatorio');
- 	
+
  	var ConsultaTipo  = 'alterarRelatorio';
  	var url           = 'sys4_consultaviewRPC.php';
  	var sQuery        = 'tipo='+ConsultaTipo;
 			sQuery 		   += '&grupoRelatorio='+document.form1.db13_sequencial.value;
-			sQuery 	   	 += '&tipoRelatorio='+document.form1.db14_sequencial.value;		
+			sQuery 	   	 += '&tipoRelatorio='+document.form1.db14_sequencial.value;
  	var oAjax         = new Ajax.Request( url, {
-                                               method: 'post', 
-    	                                         parameters: sQuery, 
+                                               method: 'post',
+    	                                         parameters: sQuery,
 						                      					   onComplete: js_retornoAlteraInclui
                                              }
                                       );
@@ -284,24 +287,24 @@ function js_alterar(){
 
 
 function js_retornoAlteraInclui(oAjax){
- 
+
  js_removeObj("msgBoxRelatorio");
- 
- var aRetorno = eval("("+oAjax.responseText+")");
+
+ var aRetorno = JSON.parse(oAjax.responseText);
 
  alert(aRetorno.msg.urlDecode());
- 
+
  if (aRetorno.erro == true){
  	 return false;
  } else {
    parent.document.location.href = "sys4_geradorrelatorio001.php";
  }
-  	
+
 }
 
 
 function js_sair(){
-   
+
   if(confirm("Deseja realmente sair?")){
     parent.js_bloqueiaMenus(false);
     js_retiraObjetoSessao(js_voltaTelaInicial);
@@ -316,7 +319,7 @@ function js_retiraObjetoSessao(sCallBackFunction){
   var url   = "sys4_consultaviewRPC.php";
   var sTipo = "retiraObjetoSessao";
   var oAjax = new Ajax.Request( url,{
-                                       method: 'post', 
+                                       method: 'post',
                                        parameters:"tipo="+sTipo,
                                        onComplete:sCallBackFunction
                                     }
@@ -324,7 +327,9 @@ function js_retiraObjetoSessao(sCallBackFunction){
 }
 
 function js_voltaTelaInicial(){
-  parent.document.location.href = "sys4_geradorrelatorio001.php";	
+
+  js_removeObj("msgBoxLimpaSessao");
+  parent.document.location.href = "sys4_geradorrelatorio001.php";
 }
 
 

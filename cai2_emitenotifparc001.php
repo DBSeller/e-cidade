@@ -1,36 +1,36 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt10');
@@ -55,23 +55,25 @@ $db_botao = true;
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
 
 function js_emiteseed(){
 
   sQuery  = '?notifica='+document.form1.k50_notifica.value;
-  sQuery += '&notifparc='+true;      
+  sQuery += '&notifparc='+true;
+
   jan = window.open('cai2_emitenotif004.php'+sQuery,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
 }
 
 
 function js_emitear(){
-  
+
   sQuery  = '?notifica='+document.form1.k50_notifica.value;
   sQuery += '&notifparc='+true;
-  
+
   jan = window.open('cai2_emitenotif005.php'+sQuery,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
 
@@ -89,159 +91,196 @@ function js_emite(tiporel){
   sQuery += '&tratamento='+document.form1.selTipoSegPag.value;
   sQuery += '&imprimirmesmoembranco='+document.form1.selCgmVazio.value;
   sQuery += '&datavenc='+document.form1.datavenc_ano.value+'-'+document.form1.datavenc_mes.value+'-'+document.form1.datavenc_dia.value;
-  sQuery += '&imprimirtimbre='+document.form1.selImpTimbre.value;  
-  
+  sQuery += '&imprimirtimbre='+document.form1.selImpTimbre.value;
+  sQuery += '&rotateremetente='+document.form1.selRotateRemetente.value;
+
   jan = window.open('cai2_emitenotif002.php'+sQuery,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
 }
-</script>  
+</script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
-  <table  align="center" style='padding-top:25px;'>
+<body class="body-default">
+
+  <div class="container">
+
     <form name="form1" method="post" action="" >
-      <tr>
-        <td>
-          <fieldset>
-          	<legend align="center" ><b>Emissão de Notificações Parciais </b></legend>
-          	<table>
-          	  <tr>
-		        <td align="right">
-		          <?
-					db_ancora($Lk50_notifica,"js_pesquisaNotif(true);",4);
+
+      <fieldset>
+
+        <legend><label for="selOrdem">Emissão de Notificações Parciais </label></legend>
+
+        <table class="form-container">
+          <tr>
+		        <td nowrap title="<?=@$Tk50_notifica?>">
+		          <?php
+					      db_ancora($Lk50_notifica,"js_pesquisaNotif(true);",4);
 		          ?>
 		        </td>
-		        <td align="left">
-		          <?
+		        <td>
+		          <?php
 		          	db_input("k50_notifica",10,$Ik50_notifica,true,"text",1,"js_pesquisaNotif(false);");
 		          ?>
 		        </td>
 		      </tr>
-              <tr>
-		        <td align="right">
-		          <b>Ordem :</b>
+          <tr>
+		        <td nowrap title="Ordem para a emissão da Notificação">
+		          <label for="selOrdem">Ordem:</label>
 		        </td>
-		        <td align="left">
-		          <?
+		        <td>
+		          <?php
 		          	$aOrdem = array("a"=>"Alfabética","n"=>"Numérica",'t'=>'Notificação');
-					db_select('selOrdem',$aOrdem,true,4,"style='width:140px;'");
+					      db_select('selOrdem',$aOrdem,true,4,"style='width:250;'");
 		          ?>
 		        </td>
 		      </tr>
 		      <tr>
-		        <td align="right">
-		        	<b>Utilizar end do CGM quando estiver em branco:</b>
+		        <td nowrap title="Utilizar endereço do CGM quando estiver em branco">
+		        	<label for="selCgmVazio">Utilizar endereço do CGM quando estiver em branco:</label>
 		        </td>
-		        <td align="left">
-		          <?
+		        <td>
+		          <?php
 		          	$aCgmVazio= array("n"=>"Não","s"=>'Sim');
-		          	db_select('selCgmVazio',$aCgmVazio,true,4,"style='width:140px;'");
+		          	db_select('selCgmVazio',$aCgmVazio,true,4,"style='width:250;'");
 		          ?>
 		        </td>
 		      </tr>
 		      <tr>
-		        <td align="right">
-		        	<b>Emissão do Timbre:</b>
+		        <td nowrap title="Emissão do Timbre">
+		        	<label for="selImpTimbre">Emissão do Timbre:</label>
 		        </td>
-		        <td align="left">
-		          <?
+		        <td>
+		          <?php
 		          	$aImpTimbre = array("1"=>"Emitir Ambos","2"=>"Somente Interno","3"=>"Somente Externo","4"=>"Sem Timbre");
-		          	db_select('selImpTimbre',$aImpTimbre,true,4,"style='width:140px;'");
+		          	db_select('selImpTimbre',$aImpTimbre,true,4,"style='width:250;'");
 		          ?>
 		        </td>
 		      </tr>
 		      <tr>
-				<td align="right">
-				  <b>Vencimento Recibo:</b>
-				<td align="left">
-				  <?
-		      	    db_inputdata('datavenc',"","","", true, 'text', 4)
-				  ?>
-			    </td>
-			  </tr>
+				    <td nowrap title="Data de vencimento do recibo">
+				      <label for="datavenc">Vencimento Recibo:</label>
+				    <td>
+				      <?php
+		      	    db_inputdata('datavenc',"","","", true, 'text', 4, "onchange=js_validaDataVenc(datavenc);")
+				      ?>
+			      </td>
+			    </tr>
 		      <tr>
-		        <td align="right">
-			      <b>Fonte do Texto : </b>
-			    </td>
-			    <td align="left">
-				  <?
-		 		    $iFonte=10;
-		 		    db_input('iFonte', 10, "", true, 'text',1);
-				  ?>
+		        <td nowrap title="Tamanho da fonte do Texto">
+			        <label for="iFonte">Fonte do Texto:</label>
+			      </td>
+			      <td>
+				      <?php
+		 		        $iFonte=10;
+		 		        db_input('iFonte', 10, 1, true, 'text',1);
+				      ?>
 		        </td>
 		      </tr>
     		  <tr>
-		        <td align="right">
-		        	<b>Tipo Segunda Página :</b>
+		        <td nowrap title="Tipo da segunda página da Notificação">
+		        	<label for="selTipoSegPag">Tipo Segunda Página:</label>
 		        </td>
-		        <td align="left">
-		          <?
-		          
+
+		        <td>
+		          <?php
+
 		            $aTipoSegundaPag["1"] = "Sempre do CGM";
-		            
-		            $sSqlOrdEndEnt  = " select defcampo,	  "; 
+
+		            $sSqlOrdEndEnt  = " select defcampo,	  ";
 		            $sSqlOrdEndEnt .= "	       defdescr		  ";
-		            $sSqlOrdEndEnt .= "   from db_syscampodef "; 
+		            $sSqlOrdEndEnt .= "   from db_syscampodef ";
 		            $sSqlOrdEndEnt .= "  where codcam = 9856  ";
-		            
-		            $rsOrdEndEnt   = pg_exec($sSqlOrdEndEnt) or die($sSqlOrdEndEnt);
-		            $iNroOrdEndEnt = pg_num_rows($rsOrdEndEnt);
-		            
+
+		            $rsOrdEndEnt    = db_query($sSqlOrdEndEnt) or die($sSqlOrdEndEnt);
+		            $iNroOrdEndEnt  = pg_num_rows($rsOrdEndEnt);
+
 		            for ($x=0; $x < $iNroOrdEndEnt; $x++) {
+
 		              $oOrdEndEnt = db_utils::fieldsMemory($rsOrdEndEnt,$x);
 		              $oOrdEndEnt->defcampo += 10;
 		              $aTipoSegundaPag[$oOrdEndEnt->defcampo] = $oOrdEndEnt->defdescr;
 		            }
-		
+
 		            db_select('selTipoSegPag',$aTipoSegundaPag,true,4,"style='width:250px;'");
-		            
 		          ?>
 		        </td>
+
 		      </tr>
+			  
+			  <tr>
+			  	<td nowrap title="Remetente (Girar 180 Graus)">
+		        	<label for="selRotateRemetente">Remetente (Girar 180 Graus)</label>
+		        </td>
+				<td>
+		          <?php
+		          	$aRotateRemetente= array("n"=>"Não","s"=>'Sim');
+		          	db_select('selRotateRemetente',$aRotateRemetente,false,4,"style='width:250;'");
+		          ?>
+		        </td>
+			  </tr>
+
     		</table>
-    	  </fieldset>
-  		</td>
- 	  </tr>
-	  <tr>
-        <td colspan="2" align = "center"> 
-         
-         <!--   <input name="db_opcao"  type="button" id="db_opcao" value="Notificao sem pagina de endereco" onClick="js_emite(1);"> -->
-         
-         <input name="db_opcao"  type="button" id="db_opcao" value="Emite Notificação" onClick="js_emite(11);">
-         <input name="db_opcao3" type="button" id="db_opcao" value="Aviso Débito" 					  onClick="js_emite(3);">
-         <input name="db_opcao2" type="button" id="db_opcao" value="SEED" 							  onClick="js_emiteseed();">
-         <input name="db_opcao4" type="button" id="db_opcao" value="AR" 							  onClick="js_emitear();">
-        </td>
-      </tr>
+    	</fieldset>
+
+      <input name="db_opcao"  type="button" id="db_opcao" value="Emitir Notificação" onClick="js_emite(11);">
+      <input name="db_opcao3" type="button" id="db_opcao" value="Aviso de Débito" 	 onClick="js_emite(3);">
+      <input name="db_opcao2" type="button" id="db_opcao" value="SEED" 						   onClick="js_emiteseed();">
+      <input name="db_opcao4" type="button" id="db_opcao" value="AR" 							   onClick="js_emitear();">
     </form>
-  </table>
-<?
-  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
+    <?php
+      db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+    ?>
+  </div>
 </body>
 </html>
 <script>
 
 function js_pesquisaNotif(lMostra){
   if(lMostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_notificacoes','func_notidebitosreg.php?chave_nome=true&funcao_js=parent.js_mostraNotif1|k43_notifica','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_notificacoes','func_notidebitosreg.php?chave_nome=true&funcao_js=parent.js_mostraNotif1|k43_notifica','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_notificacoes','func_notidebitosreg.php?pesquisa_chave='+document.k50_notifica.value+'&funcao_js=parent.js_mostraNotif','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_notificacoes','func_notidebitosreg.php?pesquisa_chave='+document.k50_notifica.value+'&funcao_js=parent.js_mostraNotif','Pesquisa',false);
   }
 }
 
 function js_mostraNotif(iNotif,lErro){
-  if(lErro==true){ 
-    document.form1.k50_notifica.focus(); 
-    document.form1.k50_notifica.value = ''; 
+  if(lErro==true){
+    document.form1.k50_notifica.focus();
+    document.form1.k50_notifica.value = '';
   }else{
     document.form1.k50_notifica.value = iNotif;
-  }  
+  }
 }
 
 function js_mostraNotif1(iNotif){
   document.form1.k50_notifica.value = iNotif;
   db_iframe_notificacoes.hide();
+}
+
+function js_validaDataVenc(datavenc) {
+  if (!datavenc) {
+    return true
+  }
+
+  var dataPart = datavenc.value.split("/");
+  if (isNaN(dataPart[0]) || isNaN(dataPart[1]) || isNaN(dataPart[2])) {
+    return false;
+  }
+  var data1 = parseInt(dataPart[2] + dataPart[1] + dataPart[0]);
+  var data2 = new Date();
+  var dd   = String(data2.getDate()).padStart(2, '0');
+  var mm   = String(data2.getMonth() + 1, 2, '0').padStart(2, '0'); //Janeiro = 0, por isso somamos 1.
+  var yyyy = String(data2.getFullYear());
+  data2 = parseInt(yyyy+mm+dd);
+
+  if (data1 < data2) {
+    alert(('A data informada deve ser igual ou maior que a data atual!'));
+    document.form1.datavenc.value = '';
+    return false;
+  }
+
+  return true;
+
 }
 
 </script>

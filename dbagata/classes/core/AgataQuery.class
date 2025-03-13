@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,6 +33,7 @@ class AgataQuery
     /***********************************************************/
     /* Constructor method
     /***********************************************************/
+    static public $Query;
     function AgataQuery($agataConfig)
     {
         $this->agataConfig = $agataConfig;
@@ -88,6 +89,7 @@ class AgataQuery
     {
         $this->records ++;
         $row = $this->db->FetchRow($this->result);
+        
         if ($this->records > $this->OffSet)
         {
             if (($this->records <= ($this->Limit + $this->OffSet)) or ($this->Limit == 0))

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -30,78 +30,502 @@
  *
  * @package    Educacao
  * @author     Andrio Costa - andrio.costa@dbseller.com.br
- * @version    $Revision: 1.1 $
+ * @version    $Revision: 1.3 $
  */
-class PeriodoAula {
+class PeriodoAula
+{
+    const VINCULAR_PROFESSOR_DISCISPLINA = 1;
+    const GRADE_HORARIO = 2;
 
-  /**
-   * Periodo da escola
-   * @var PeriodoEscola
-   */
-  private $oPeriodoEscola;
+    /**
+     * Periodo da escola
+     * @var PeriodoEscola
+     */
+    private $oPeriodoEscola;
 
-  /**
-   * Disciplina no período
-   * @var Disciplina
-   */
-  private $oDisciplina;
+    /**
+     * Dia da semana no padrão da ISO ISO-8601
+     * @var int
+     */
+    private $iDiaSemana;
 
-  /**
-   * Dia da semana no padrão da ISO ISO-8601
-   * @var int
-   */
-  private $iDiaSemena;
+    /**
+     * Regência do período
+     * @var Regencia
+     */
+    private $oRegencia;
 
-  public function __construct() {
+    /**
+     * Código do período
+     * @var integer código pk
+     */
+    private $iCodigo;
 
-  }
+    /**
+     * Código do rechumano
+     * @var integer
+     */
+    private $iRegente;
 
-  /**
-   * Atribui o dia da semanna no padrão da ISO ISO-8601
-   * @param int $iDiaSemena
-   */
-  public function setDiaSemena($iDiaSemena) {
-    $this->iDiaSemena = $iDiaSemena;
-  }
+    /**
+     * Data inicial em que o regente iniciou a regencia do período
+     * @var DBDate
+     */
+    private $oDataInicio;
 
-  /**
-   * Retorna  o dia da semanna no padrão da ISO ISO-8601
-   * @return int
-   */
-  public function getDiaSemena() {
-    return $this->iDiaSemena;
-  }
+    /**
+     * Data final em que o regente encerra a regencia do período
+     * @var DBDate
+     */
+    private $oDataFim;
 
-  /**
-   * Atribui a disciplina para o Período
-   * @param Disciplina $oDisciplina
-   */
-  public function setDisciplina($oDisciplina) {
-    $this->oDisciplina = $oDisciplina;
-  }
+    private $lAtivo = false;
 
-  /**
-   * Retona a disciplina para o Período
-   * @return Disciplina
-   */
-  public function getDisciplina() {
-    return $this->oDisciplina;
-  }
+    /**
+     * Tipo de vínculo
+     * 1 - Vincular professor discisplina
+     * 2 - Criar grade de horário
+     * @var integer
+     */
+    private $iTipoVinculo;
 
-  /**
-   * Atribui o Periodo
-   * @param PeriodoEscola $oPeriodoEscola
-   */
-  public function setPeriodoEscola($oPeriodoEscola) {
-    $this->oPeriodoEscola = $oPeriodoEscola;
-  }
+    private $sMessagens = "educacao.escola.PeriodoAula.";
 
-  /**
-   * Retorna o período
-   * @return PeriodoEscola
-   */
-  public function getPeriodoEscola() {
-    return $this->oPeriodoEscola;
-  }
+    public function __construct()
+    {
 
+    }
+
+    /**
+     * Atribui o dia da semanna no padrão da ISO ISO-8601
+     * @param int $iDiaSemana
+     */
+    public function setDiaSemana($iDiaSemana)
+    {
+        $this->iDiaSemana = $iDiaSemana;
+    }
+
+    /**
+     * Retorna  o dia da semanna no padrão da ISO ISO-8601
+     * @return int
+     */
+    public function getDiaSemana()
+    {
+        return $this->iDiaSemana;
+    }
+
+    /**
+     * Retona a disciplina para o Período
+     * @return Disciplina
+     */
+    public function getDisciplina()
+    {
+        return $this->oRegencia->getDisciplina();
+    }
+
+    /**
+     * Atribui o Periodo
+     * @param PeriodoEscola $oPeriodoEscola
+     */
+    public function setPeriodoEscola($oPeriodoEscola)
+    {
+        $this->oPeriodoEscola = $oPeriodoEscola;
+    }
+
+    /**
+     * Retorna o período
+     * @return PeriodoEscola
+     */
+    public function getPeriodoEscola()
+    {
+        return $this->oPeriodoEscola;
+    }
+
+    /**
+     * Define o código do período
+     * @param integer
+     */
+    public function setCodigo($iCodigo)
+    {
+        $this->iCodigo = $iCodigo;
+    }
+
+    /**
+     * Define a regencia
+     * @param Regencia
+     */
+    public function setRegencia(Regencia $oRegencia)
+    {
+        $this->oRegencia = $oRegencia;
+    }
+
+    /**
+     * Define o código do rechumano
+     * @param integer
+     */
+    public function setRegente($iRegente)
+    {
+        $this->iRegente = $iRegente;
+    }
+
+    /**
+     *  Define a data inicial em que o regente iniciou a regencia do período
+     * @param DBDate
+     */
+    public function setDataInicio(DBDate $oDataInicio)
+    {
+        $this->oDataInicio = $oDataInicio;
+    }
+
+    /**
+     * Define a data final em que o regente encerra a regencia do período
+     * @param DBDate
+     */
+    public function setDataFim(DBDate $oDataFim)
+    {
+        $this->oDataFim = $oDataFim;
+    }
+
+    /**
+     * Código do período
+     * @return integer
+     */
+    public function getCodigo()
+    {
+        return $this->iCodigo;
+    }
+
+    /**
+     * Retorna a regencia
+     * @return Regencia
+     */
+    public function getRegencia()
+    {
+        return $this->oRegencia;
+    }
+
+    /**
+     * Código do rechumano
+     * @return integer
+     */
+    public function getRegente()
+    {
+        return $this->iRegente;
+    }
+
+    /**
+     * Data inicial em que o regente iniciou a regencia do período
+     * @return DBDate
+     */
+    public function getDataInicio()
+    {
+        return $this->oDataInicio;
+    }
+
+    /**
+     * Data final em que o regente encerra a regencia do período
+     * @return DBDate
+     */
+    public function getDataFim()
+    {
+        return $this->oDataFim;
+    }
+
+
+    /**
+     * Setter ativo
+     * @param boolean
+     */
+    public function setAtivo($lAtivo)
+    {
+        $this->lAtivo = $lAtivo;
+    }
+
+    /**
+     * verifica se esta ativo o periodo de aula
+     * @return boolean
+     */
+    public function isAtivo()
+    {
+        return $this->lAtivo;
+    }
+
+
+    /**
+     * Setter tipo de vínculo
+     * @param integer
+     */
+    public function setTipoVinculo($iTipo)
+    {
+        $this->iTipoVinculo = $iTipo;
+    }
+
+    /**
+     * Getter tipo de vínculo
+     * @param integer
+     */
+    public function getTipoVinculo()
+    {
+        return $this->iTipoVinculo;
+    }
+
+
+    public function inativarAte(DBDate $oData)
+    {
+
+
+        $oMsgErro = new stdClass();
+        $oMsgErro->dataInicio = $this->oDataInicio->convertTo(DBDate::DATA_PTBR);
+
+        if ($oData->getTimeStamp() < $this->oDataInicio->getTimeStamp()) {
+            throw new Exception(_M($this->sMessagens . "data_final_menor_que_inicio", $oMsgErro));
+        }
+
+        $oCalendario = $this->oRegencia->getTurma()->getCalendario();
+        $oMsgErro->dataCalendario = $oCalendario->getDataFinal()->convertTo(DBDate::DATA_PTBR);
+        if ($oData->getTimeStamp() > $oCalendario->getDataFinal()->getTimeStamp()) {
+            throw new Exception(_M($this->sMessagens . "data_final_maior_que_data_calendario", $oMsgErro));
+        }
+
+        $this->setDataFim($oData);
+        $this->setAtivo(false);
+        if ($this->getRegente() == 0) {
+            $this->salvarDisciplinaSemRegente();
+        } else {
+            $this->salvar();
+        }
+    }
+
+    public function salvar()
+    {
+
+        if (!db_utils::inTransaction()) {
+            throw new Exception(_M($this->sMessagens, "erro_transacao_bd"));
+        }
+        $oDaoRegenciaHorario = new cl_regenciahorario();
+
+        $oDaoRegenciaHorario->ed58_i_codigo = $this->iCodigo;
+        $oDaoRegenciaHorario->ed58_i_regencia = $this->oRegencia->getCodigo();
+        $oDaoRegenciaHorario->ed58_i_diasemana = $this->iDiaSemana + 1;
+        $oDaoRegenciaHorario->ed58_i_periodo = $this->oPeriodoEscola->getCodigo();
+        $oDaoRegenciaHorario->ed58_i_rechumano = $this->iRegente;
+        $oDaoRegenciaHorario->ed58_ativo = $this->lAtivo ? "true" : "false";
+        $oDaoRegenciaHorario->ed58_tipovinculo = $this->iTipoVinculo;
+        $oDaoRegenciaHorario->ed58_datainicio = $this->oDataInicio->getDate();
+        $oDaoRegenciaHorario->ed58_datafim = $this->oDataFim->getDate();
+
+        if (empty($this->iCodigo)) {
+            $oDaoRegenciaHorario->incluir(null);
+        } else {
+            $oDaoRegenciaHorario->alterar($this->iCodigo);
+        }
+
+        if ($oDaoRegenciaHorario->erro_status == 0) {
+            throw new Exception(_M($this->sMessagens, "erro_salvar"));
+        }
+    }
+
+    public function salvarDisciplinaSemRegente()
+    {
+        if (!db_utils::inTransaction()) {
+            throw new Exception(_M($this->sMessagens, "erro_transacao_bd"));
+        }
+        $oDaoRegenciaHorarioDiscSemReg = new cl_regenciahorariodiscsemreg();
+
+        $oDaoRegenciaHorarioDiscSemReg->ed175_codigo = $this->iCodigo;
+        $oDaoRegenciaHorarioDiscSemReg->ed175_regencia = $this->oRegencia->getCodigo();
+        $oDaoRegenciaHorarioDiscSemReg->ed175_diasemana = $this->iDiaSemana + 1;
+        $oDaoRegenciaHorarioDiscSemReg->ed175_periodo = $this->oPeriodoEscola->getCodigo();
+        $oDaoRegenciaHorarioDiscSemReg->ed175_rechumano = null;
+        $oDaoRegenciaHorarioDiscSemReg->ed175_ativo = $this->lAtivo ? "true" : "false";
+        $oDaoRegenciaHorarioDiscSemReg->ed175_tipovinculo = $this->iTipoVinculo;
+        $oDaoRegenciaHorarioDiscSemReg->ed175_datainicio = $this->oDataInicio->getDate();
+        $oDaoRegenciaHorarioDiscSemReg->ed175_datafim = $this->oDataFim->getDate();
+        if (empty($this->iCodigo)) {
+            $oDaoRegenciaHorarioDiscSemReg->incluir(null);
+        } else {
+            $oDaoRegenciaHorarioDiscSemReg->alterar($this->iCodigo);
+        }
+
+        if ($oDaoRegenciaHorarioDiscSemReg->erro_status == 0) {
+            throw new Exception(_M($this->sMessagens, "erro_salvar"));
+        }
+    }
+
+
+    /**
+     * @return [type] [description]
+     * @todo   não foi visto os professores substituto.
+     */
+    public function remover()
+    {
+
+        if (!db_utils::inTransaction()) {
+            throw new Exception(_M($this->sMessagens, "erro_transacao_bd"));
+        }
+
+        $this->removerVinculoLancamentoFalta();
+
+        $oDaoRegenciaHorario = new cl_regenciahorario();
+        $oDaoRegenciaHorario->excluir($this->iCodigo, null);
+
+        if ($oDaoRegenciaHorario->erro_status == 0) {
+            throw new DBException(_M($this->sMessagens . "erro_remover_regencia_horario"));
+        }
+
+        return true;
+    }
+
+    public function removerDisciplinaSemRegente()
+    {
+
+        if (!db_utils::inTransaction()) {
+            throw new Exception(_M($this->sMessagens, "erro_transacao_bd"));
+        }
+
+        $this->removerVinculoLancamentoFalta();
+
+        $oDaoRegenciaHorarioDiscSemReg = new cl_regenciahorariodiscsemreg();
+        $oDaoRegenciaHorarioDiscSemReg->excluir($this->iCodigo, null);
+
+        if ($oDaoRegenciaHorarioDiscSemReg->erro_status == 0) {
+            throw new DBException(_M($this->sMessagens . "erro_remover_regencia_horario"));
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Remove os vínculos do período com o lançamento de frequência / conteúdo
+     *   DB:EDUCAÇÃO > Escola > Procedimentos > Diário de Classe > Lançamentos - Frequência/Conteúdo
+     */
+    public function removerVinculoLancamentoFalta()
+    {
+
+        $this->removerOcorrenciaFalta();
+        $this->removerFaltas();
+        $this->removerVinculoPeriodoAulaDesenvolvida();
+        $this->removerAulasDesenvolvidas();
+    }
+
+    /**
+     * Remove as ocorrencias de falta
+     * @return boolean
+     * @throws DBException
+     */
+    private function removerOcorrenciaFalta()
+    {
+
+        $sSql = " select ed301_sequencial ";
+        $sSql .= "    from diarioclassealunofalta ";
+        $sSql .= "    join diarioclasseregenciahorario on diarioclassealunofalta.ed301_diarioclasseregenciahorario = diarioclasseregenciahorario.ed302_sequencial ";
+        $sSql .= "   where diarioclasseregenciahorario.ed302_regenciahorario = {$this->iCodigo} ";
+
+        $sWhere = " ed104_diarioclassealunofalta in ( {$sSql} ) ";
+        $oDao = new cl_ocorrenciafalta();
+        $oDao->excluir(null, $sWhere);
+
+        if ($oDao->erro_status == 0) {
+            throw new DBException(_M($this->sMessagens . "erro_remover_ocorrencia"));
+        }
+
+        return true;
+    }
+
+    /**
+     * Remove as faltas lançadas
+     * @return boolean
+     * @throws DBException
+     */
+    private function removerFaltas()
+    {
+        $sSql = "
+            select ed302_sequencial from diarioclasseregenciahorario where ed302_regenciahorario = {$this->iCodigo}
+        ";
+
+        $sWhere = "ed301_diarioclasseregenciahorario in ( {$sSql} )";
+        $oDao = new cl_diarioclassealunofalta();
+        $oDao->excluir(null, $sWhere);
+
+        if ($oDao->erro_status == 0) {
+            throw new DBException(_M($this->sMessagens . "erro_remover_falta"));
+        }
+
+        return true;
+    }
+
+    /**
+     * Remove as aulas desenvolvidas
+     * @return boolean
+     * @throws DBException
+     */
+    private function removerAulasDesenvolvidas()
+    {
+        $oDaoDiarioClasseRegenciaHorario = new cl_diarioclasseregenciahorario();
+        $sSql = $oDaoDiarioClasseRegenciaHorario->sql_query_file(
+            null,
+            "ed302_diarioclasse",
+            null,
+            "ed302_regenciahorario = {$this->iCodigo}"
+        );
+        $rsDias = db_query($sSql);
+
+        if (!$rsDias) {
+            throw new DBException(_M($this->sMessagens . "falha_buscar_dias"));
+        }
+
+        if (pg_num_rows($rsDias) == 0) {
+            return;
+        }
+
+        $iLinhas = pg_num_rows($rsDias);
+        for ($i = 0; $i < $iLinhas; $i++) {
+            $iCodigoDiaDiario = db_utils::fieldsMemory($rsDias, $i)->ed302_diarioclasse;
+
+            /**
+             * Valida se pode remover o dia. Ele pode estar vínculado a mais de um período
+             */
+            $sSqlValida = $oDaoDiarioClasseRegenciaHorario->sql_query_file(
+                null,
+                "1",
+                null,
+                " ed302_diarioclasse = {$iCodigoDiaDiario} "
+            );
+            $rsValida = db_query($sSqlValida);
+            if (!$rsValida) {
+                throw new DBException(_M($this->sMessagens . "falha_buscar_dias"));
+            }
+
+            if (pg_num_rows($rsValida) > 1) {
+                continue;
+            }
+
+            $oDaoDiarioClasse = new cl_diarioclasse();
+            $oDaoDiarioClasse->excluir($iCodigoDiaDiario);
+
+            if ($oDaoDiarioClasse->erro_status == 0) {
+                throw new DBException(_M($this->sMessagens . "erro_remover_aulas"));
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Remove vínculo da regenciahorario com as aulas desenvolvidas
+     * @return boolean
+     * @throws DBException
+     */
+    private function removerVinculoPeriodoAulaDesenvolvida()
+    {
+        $oDao = new cl_diarioclasseregenciahorario();
+        $oDao->excluir(null, " ed302_regenciahorario = {$this->iCodigo} ");
+
+        if ($oDao->erro_status == 0) {
+            throw new DBException(_M($this->sMessagens . "erro_remover_vinculo_aulas_desenvolvidas"));
+        }
+
+        return true;
+    }
 }

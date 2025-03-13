@@ -15,7 +15,7 @@ if [ -f $PID_FILE ]; then
 	exit 1
 fi
 
-trap "rm -f -- '$PID_FILE'" EXIT
+trap "rm -f -- '$PID_FILE'" EXIT INT KILL TERM
 echo $$ > $PID_FILE
 
 php -q auditoria_migracao_cursor.php "sequencial > $1" $2 $3

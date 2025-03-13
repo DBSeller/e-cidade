@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/JSON.php");
-require_once("std/db_stdClass.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("dbforms/db_funcoes.php");
-require_once('std/DBLargeObject.php');
-require_once("model/arrecadacao/ArquivoCobrancaRegistrada.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification('std/DBLargeObject.php'));
+require_once(modification("model/arrecadacao/ArquivoCobrancaRegistrada.model.php"));
 
 $oJson                      = new services_json();
 $oPost                      = db_utils::postMemory($_POST);

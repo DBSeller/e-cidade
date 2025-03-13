@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
@@ -105,8 +105,8 @@ input {
 		       
 //        echo $sql_mod;exit;
 
-	$result = pg_exec($sql_mod);
-	$nomemod = pg_exec("select nomemod from db_sysmodulo where codmod = $codmod");
+	$result = db_query($sql_mod);
+	$nomemod = db_query("select nomemod from db_sysmodulo where codmod = $codmod");
 	$nomemod = pg_result($nomemod,0,0);
      ?>
 	<br>

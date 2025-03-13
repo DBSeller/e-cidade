@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefa_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cltarefaenvol   = new cl_tarefaenvol;
@@ -83,7 +83,7 @@ if(isset($incluir)){
 		  $cltarefaenvol->at45_perc       = $at45_perc;
 		  $cltarefaenvol->at45_sequencial = $at45_sequencial;
 		  $cltarefaenvol->alterar($at45_sequencial);
-//		  echo "<script>top.corpo.iframe_tarefaenvol.location.href='ate1_tarefaenvol002.php?at45_tarefa=".@$at45_tarefa."'</script>";
+//		  echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaenvol.location.href='ate1_tarefaenvol002.php?at45_tarefa=".@$at45_tarefa."'</script>";
 	  }
 	}
     }
@@ -124,7 +124,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcontarefaenvol.php");
+	include(modification("forms/db_frmcontarefaenvol.php"));
 	?>
     </center>
 	</td>

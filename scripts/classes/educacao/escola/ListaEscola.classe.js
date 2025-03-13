@@ -17,7 +17,7 @@ require_once("scripts/classes/educacao/DBViewFormularioEducacao.classe.js");
  *         };
  *
  *         var fFuncaoChange = function () {
- *           alert(oEscola.getSelecionados().toSource());
+ *           alert(JSON.stringify(oEscola.getSelecionados()));
  *         };
  *
  *         oEscola.setCallBackLoad(fFuncaoLoad);       // Opcional
@@ -142,7 +142,7 @@ DBViewFormularioEducacao.ListaEscola.prototype.retornoEscola = function (oAjax) 
 
 
   js_removeObj('msgBox');
-  var oRetorno = eval ('(' +oAjax.responseText+ ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status != 1) {
 

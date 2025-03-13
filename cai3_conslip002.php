@@ -1,7 +1,7 @@
 <?PHP
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_orctiporec_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_orctiporec_classe.php"));
 //$clslip = new cl_slip;
-$get  = db_utils::postMemory($_GET);
+$get = db_utils::postMemory($_GET);
 $clrotulo = new rotulocampo;
 $clrotulo->label('k17_codigo');
 $clrotulo->label('k17_data');
@@ -51,49 +51,54 @@ $clrotulo->label('z01_nome');
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_GET_VARS,2);exit;
 
-$where  = "";
+$where = "";
 $where1 = "";
 if (($get->data != "--") && ($get->data1 != "--")) {
-    $where = " and k17_data  between '$get->data' and '$get->data1'  ";
-     }else if ($get->data != "--" ){
-       $where   = " and k17_data >= '$get->data'  ";
-     }else if ($get->data1!="--"){
-       $where = " and  k17_data <= '$get->data1'   ";
-    }
-if ($get->situacao == "A" ){
-  $where1="  ";
-  }else{
-    $where1=" and k17_situacao = ".$get->situacao;
-  }
+    $where = " and k17_data  between '$get->data' and '$get->data1' ";
+} elseif ($get->data != "--") {
+    $where = " and k17_data >= '$get->data' ";
+} elseif ($get->data1 != "--") {
+    $where = " and  k17_data <= '$get->data1' ";
+}
+if ($get->situacao == "A") {
+    $where1 = "  ";
+} else {
+    $where1 = " and k17_situacao = " . $get->situacao;
+}
 
-if(trim($get->codigos) !="" ){
-  $where .= " and k17_numcgm ";
-  $where .= " in (".$get->codigos.") ";
+if (trim($get->codigos) != "") {
+    $where .= " and k17_numcgm ";
+    $where .= " in (" . $get->codigos . ") ";
 }
 
 $whereslip = "";
 
-if(isset($get->slip1) && trim($get->slip1)!=""){
-  $whereslip = " and slip.k17_codigo >= $get->slip1 ";
+if (isset($get->slip1) && trim($get->slip1) != "") {
+    $whereslip = " and slip.k17_codigo >= $get->slip1 ";
 }
 
-if(isset($get->slip2) && trim($get->slip2)!=""){
-  if(trim($whereslip)!=""){
-    $whereslip = " and slip.k17_codigo between ".$get->slip1 ." and ". $get->slip2;
-  }else{
-    $whereslip = " and slip.k17_codigo <= ".$get->slip2;
-  }
+if (isset($get->slip2) && trim($get->slip2) != "") {
+    if (trim($whereslip) != "") {
+        $whereslip = " and slip.k17_codigo between " . $get->slip1 . " and " . $get->slip2;
+    } else {
+        $whereslip = " and slip.k17_codigo <= " . $get->slip2;
+    }
 }
 
-if(isset($get->recurso) && $get->recurso!='0'){
-    $whereslip .= " and ( r1.c61_codigo =".$get->recurso ." or r2.c61_codigo = ".$get->recurso.") ";
+if (isset($get->recurso) && $get->recurso != '0') {
+    $ids = \ECidade\Financeiro\Orcamento\Repository\RecursoRepository::getIdsRecursoPorFonteRecurso($get->recurso);
+    $ids = implode(', ', $ids);
+    $whereslip .= " and ( r1.c61_codigo in ($ids) or r2.c61_codigo in ($ids) ) ";
 }
-if(isset($get->hist) && $get->hist != ''){
+
+if (isset($get->hist) && $get->hist != '') {
     $whereslip .= " and slip.k17_hist = {$get->hist}";
 }
-if(isset($get->k145_numeroprocesso) && $get->k145_numeroprocesso != ''){
-  $whereslip .= " and slipprocesso.k145_numeroprocesso ilike '%{$get->k145_numeroprocesso}%' ";
+
+if (isset($get->k145_numeroprocesso) && $get->k145_numeroprocesso != '') {
+    $whereslip .= " and slipprocesso.k145_numeroprocesso ilike '%{$get->k145_numeroprocesso}%' ";
 }
+
 $where .= $whereslip;
 $sql = "         select slip.k17_codigo,
                         k17_data,
@@ -112,51 +117,48 @@ $sql = "         select slip.k17_codigo,
                    from slip
                    left join conplanoreduz r1 on r1.c61_reduz  = k17_debito
                                              and r1.c61_instit = k17_instit
-                                             and r1.c61_anousu =".db_getsession("DB_anousu")."
+                                             and r1.c61_anousu =" . db_getsession("DB_anousu") . "
                    left join conplano      c1 on c1.c60_codcon = r1.c61_codcon
                                              and c1.c60_anousu = r1.c61_anousu
 
                    left join conplanoreduz r2 on r2.c61_reduz = k17_credito
                                              and r2.c61_instit = k17_instit
-                                             and r2.c61_anousu=".db_getsession("DB_anousu")."
+                                             and r2.c61_anousu=" . db_getsession("DB_anousu") . "
                    left join conplano c2 on c2.c60_codcon = r2.c61_codcon      and c2.c60_anousu = r2.c61_anousu
 
                    left join slipnum on slipnum.k17_codigo = slip.k17_codigo
                    left join cgm on cgm.z01_numcgm = slipnum.k17_numcgm
                    left join slipprocesso on slip.k17_codigo = slipprocesso.k145_slip
-                  where k17_instit = " . db_getsession('DB_instit') ."
+                  where k17_instit = " . db_getsession('DB_instit') . "
                         $where $where1
-                  order by slip.k17_codigo" ;
-          //die($sql);
-
+                  order by slip.k17_codigo";
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script>
-</script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script>
+    </script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
-  <table width="100%" border="0" cellpadding="0" cellspacing="0">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tr>
-      <td width="360" height="18">&nbsp;</td>
+        <td width="360" height="18">&nbsp;</td>
     </tr>
-  </table>
-  <center>
-  <?
-  $funcao_js='teste|k17_codigo';
-  db_lovrot($sql,15,"()","",$funcao_js);
-  ?>
-  </center>
+</table>
+<center>
+    <?
+    $funcao_js = 'teste|k17_codigo';
+    db_lovrot($sql, 15, "()", "", $funcao_js);
+    ?>
+</center>
 </body>
 </html>
 <script>
-function teste(slip){
-    js_OpenJanelaIframe('top.corpo','db_iframe_slip2','cai3_conslip003.php?slip='+slip,'Slip nº '+slip,true);
-
-}
+    function teste(slip) {
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_slip2', 'cai3_conslip003.php?slip=' + slip, 'Slip nº ' + slip, true);
+    }
 </script>

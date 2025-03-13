@@ -1,0 +1,1882 @@
+{
+  "tipo_processo": 9729,
+  "descricao": "ATUALIZAÇÃO DADOS CADASTRAIS",
+  "acao": "atualizacao_cadastral",
+  "secoes": [
+    {
+      "nome": "termo",
+      "tipo": "form",
+      "label": "Termo",
+      "campos": [
+        {
+          "nome": "termo_1",
+          "tipo": "textarea",
+          "label": "Termo de veracidade das informações prestadas",
+          "valor": "Declaro para fins de direito, sob as penas da lei, que as informações abaixo prestadas e documentos que apresento para a finalidade de recadastramento, preenchidos e anexados, são verdadeiros e autênticos (fieis à verdade e condizentes com a realidade dos fatos à época) e da minha inteira responsabilidade, ficando ciente que a falsidade das informações implicará em sanções civis, administrativas e criminais previstas na legislação aplicável.",
+          "mascara": "Declaro para fins de direito, sob as penas da lei, que as informações abaixo prestadas e documentos que apresento para a finalidade de recadastramento, preenchidos e anexados, são verdadeiros e autênticos (fieis à verdade e condizentes com a realidade dos fatos à época) e da minha inteira responsabilidade, ficando ciente que a falsidade das informações implicará em sanções civis, administrativas e criminais previstas na legislação aplicável.",
+          "tamanho": 600,
+          "bloquear": true,
+          "obrigatorio": false,
+          "flexSize": "600% - 11px",
+          "resposta": "Declaro para fins de direito, sob as penas da lei, que as informações abaixo prestadas e documentos que apresento para a finalidade de recadastramento, preenchidos e anexados, são verdadeiros e autênticos (fieis à verdade e condizentes com a realidade dos fatos à época) e da minha inteira responsabilidade, ficando ciente que a falsidade das informações implicará em sanções civis, administrativas e criminais previstas na legislação aplicável."
+        },
+        {
+          "nome": "termo_2",
+          "tipo": "textarea",
+          "label": "Termo de uso e Politíca de Privacidade em conformidade com a Lei nº 13.709-LGPD",
+          "valor": "Coleta de Dados. Reconheço que a EMPREGADORA, para fins de persecução das suas atividades ou cumprimento de obrigações legais e em consonância com a Lei Geral de Proteção de Dados, irá coletar dados de natureza pessoal por meio de seus equipamentos, sistemas, colaboradores e outros meios lícitos para obtenção dessas informações. Tais dados pessoais podem ser compartilhados com outros órgãos da administração municipal ou fornecidos a autoridades mediante ordem judicial, como também para o devido cumprimento legal das obrigações trabalhistas e previdenciárias.",
+          "mascara": "Coleta de Dados. Reconheço que a EMPREGADORA, para fins de persecução das suas atividades ou cumprimento de obrigações legais e em consonância com a Lei Geral de Proteção de Dados, irá coletar dados de natureza pessoal por meio de seus equipamentos, sistemas, colaboradores e outros meios lícitos para obtenção dessas informações. Tais dados pessoais podem ser compartilhados com outros órgãos da administração municipal ou fornecidos a autoridades mediante ordem judicial, como também para o devido cumprimento legal das obrigações trabalhistas e previdenciárias.",
+          "tamanho": 600,
+          "bloquear": true,
+          "obrigatorio": false,
+          "flexSize": "600% - 11px",
+          "resposta": "Coleta de Dados. Reconheço que a EMPREGADORA, para fins de persecução das suas atividades ou cumprimento de obrigações legais e em consonância com a Lei Geral de Proteção de Dados, irá coletar dados de natureza pessoal por meio de seus equipamentos, sistemas, colaboradores e outros meios lícitos para obtenção dessas informações. Tais dados pessoais podem ser compartilhados com outros órgãos da administração municipal ou fornecidos a autoridades mediante ordem judicial, como também para o devido cumprimento legal das obrigações trabalhistas e previdenciárias."
+        },
+        {
+          "nome": "aceite_termo_ativos",
+          "tipo": "lista",
+          "label": "Li e aceito os termos em questão",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 25,
+          "obrigatorio": true,
+          "flexSize": "25% - 11px",
+          "resposta": {
+            "codigo": 1,
+            "descricao": "Sim"
+          }
+        }
+      ]
+    },
+    {
+      "nome": "dados_pessoais",
+      "tipo": "form",
+      "label": "Dados Pessoais",
+      "campos": [
+        {
+          "nome": "cpf_servidor",
+          "tipo": "cpfCnpj",
+          "label": "CPF",
+          "change": {
+            "endpoint": {
+              "path": "v4/api/patrimonial/ouvidoria/atendimento/processo-eletronico/servidor/cpf",
+              "local": "ecidade",
+              "params": [
+                {
+                  "name": "cpf",
+                  "type": "string",
+                  "located": "query",
+                  "required": true
+                }
+              ]
+            },
+            "showLoading": true,
+            "campos_preencher": [
+              {
+                "campo": "nome_funcionario",
+                "valor": "nome_funcionario"
+              },
+              {
+                "campo": "sexo_funcionario",
+                "valor": "sexo_funcionario"
+              },
+              {
+                "campo": "data_nascimento_funcionario",
+                "valor": "data_nascimento_funcionario"
+              },
+              {
+                "campo": "estado_civil",
+                "valor": "estado_civil"
+              },
+              {
+                "campo": "raca",
+                "valor": "raca"
+              },
+              {
+                "campo": "mae",
+                "valor": "nome_mae"
+              },
+              {
+                "campo": "pai",
+                "valor": "nome_pai"
+              },
+              {
+                "campo": "escolaridade",
+                "valor": "escolaridade"
+              },
+              {
+                "campo": "nacionalidade",
+                "valor": "nacionalidade"
+              },
+              {
+                "campo": "municipio_nasc_esocial",
+                "valor": "naturalidade"
+              },
+              {
+                "campo": "cpf_conjuge",
+                "valor": "cpf_conjuge"
+              },
+              {
+                "campo": "data_nasc_conjuge",
+                "valor": "nasc_conjuge"
+              },
+              {
+                "campo": "rg_func",
+                "secao": "documentos_ativos",
+                "valor": "numero_rg"
+              },
+              {
+                "campo": "orgao_rg_emissor",
+                "secao": "documentos_ativos",
+                "valor": "nome_orgao"
+              },
+              {
+                "campo": "data_emissao_rg",
+                "secao": "documentos_ativos",
+                "valor": "data_emissao"
+              },
+              {
+                "campo": "titulo_eleitoral",
+                "secao": "documentos_ativos",
+                "valor": "titulo_eleitor"
+              },
+              {
+                "campo": "secao_titulo_eleitor",
+                "secao": "documentos_ativos",
+                "valor": "secao_titulo"
+              },
+              {
+                "campo": "zona_titulo_eleitor",
+                "secao": "documentos_ativos",
+                "valor": "zona_eleitoral"
+              },
+              {
+                "campo": "certificado_reservista",
+                "secao": "documentos_ativos",
+                "valor": "reservista"
+              },
+              {
+                "campo": "pispasep",
+                "secao": "documentos_ativos",
+                "valor": "pis"
+              },
+              {
+                "campo": "cnh_carteira_de_motorista",
+                "secao": "documentos_ativos",
+                "valor": "cnh"
+              },
+              {
+                "campo": "cnh_categoria",
+                "secao": "documentos_ativos",
+                "valor": "categoria_cnh"
+              },
+              {
+                "campo": "data_validade_cnh",
+                "secao": "documentos_ativos",
+                "valor": "validade_cnh"
+              },
+              {
+                "campo": "cep_endereco",
+                "secao": "rendereco",
+                "valor": "cep"
+              },
+              {
+                "campo": "uf_endereco",
+                "secao": "rendereco",
+                "valor": "uf"
+              },
+              {
+                "campo": "municipio_endereco",
+                "secao": "rendereco",
+                "valor": "municipio"
+              },
+              {
+                "campo": "bairro",
+                "secao": "rendereco",
+                "valor": "bairro"
+              },
+              {
+                "campo": "logradouro",
+                "secao": "rendereco",
+                "valor": "endereco"
+              },
+              {
+                "campo": "numero_endereco",
+                "secao": "rendereco",
+                "valor": "numero"
+              },
+              {
+                "campo": "complemento_endereco",
+                "secao": "rendereco",
+                "valor": "complemento"
+              },
+              {
+                "campo": "deficiencia_fisica_ativos",
+                "secao": "pcd_ativos",
+                "valor": "pcd_fisica"
+              },
+              {
+                "campo": "deficiencia_visual_ativos",
+                "secao": "pcd_ativos",
+                "valor": "pcd_visual"
+              },
+              {
+                "campo": "deficiencia_auditiva_ativos",
+                "secao": "pcd_ativos",
+                "valor": "pcd_auditiva"
+              },
+              {
+                "campo": "deficiencia_intelectual_ativos",
+                "secao": "pcd_ativos",
+                "valor": "pcd_intelectual"
+              },
+              {
+                "campo": "reabilitado_ativos",
+                "secao": "pcd_ativos",
+                "valor": "pcd_reabilitado"
+              },
+              {
+                "campo": "celular",
+                "secao": "contato",
+                "valor": "celular"
+              },
+              {
+                "campo": "email",
+                "secao": "contato",
+                "valor": "email"
+              },
+              {
+                "campo": "telefone",
+                "secao": "contato",
+                "valor": "telefone"
+              },
+              {
+                "campo": "termo_1",
+                "secao": "termo",
+                "valor": "termo_1"
+              },
+              {
+                "campo": "termo_2",
+                "secao": "termo",
+                "valor": "termo_2"
+              }
+            ]
+          },
+          "mascara": "000.000.000-00",
+          "tamanho": 25,
+          "bloquear": true,
+          "obrigatorio": true,
+          "flexSize": "25% - 11px",
+          "resposta": "02160672009"
+        },
+        {
+          "nome": "nome_funcionario",
+          "tipo": "string",
+          "label": "Nome",
+          "tamanho": 75,
+          "bloquear": true,
+          "obrigatorio": true,
+          "flexSize": "75% - 11px",
+          "resposta": "Usuário teste"
+        },
+        {
+          "nome": "nome_social_esocial",
+          "tipo": "string",
+          "label": "Nome Social (Caso seja Travesti ou Transexual)",
+          "tamanho": 75,
+          "obrigatorio": false,
+          "flexSize": "75% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "sexo_funcionario",
+          "tipo": "lista",
+          "label": "Sexo",
+          "opcoes": [
+            {
+              "codigo": "M",
+              "descricao": "Masculino"
+            },
+            {
+              "codigo": "F",
+              "descricao": "Feminino"
+            }
+          ],
+          "tamanho": 25,
+          "obrigatorio": true,
+          "flexSize": "25% - 11px",
+          "resposta": {
+            "codigo": "F",
+            "descricao": "Feminino"
+          }
+        },
+        {
+          "nome": "data_nascimento_funcionario",
+          "tipo": "string",
+          "label": "Data de Nascimento",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": true,
+          "flexSize": "12% - 11px",
+          "resposta": "05/09/1975"
+        },
+        {
+          "nome": "genero",
+          "tipo": "lista",
+          "label": "Gênero",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Masc.Trans"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Feminino.Trans"
+            },
+            {
+              "codigo": 3,
+              "descricao": "Não Binário"
+            }
+          ],
+          "tamanho": 25,
+          "obrigatorio": false,
+          "flexSize": "25% - 11px",
+          "resposta": ""
+        },
+        {
+          "nome": "raca",
+          "tipo": "lista",
+          "label": "Raça",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Branca"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Preta"
+            },
+            {
+              "codigo": 3,
+              "descricao": "Parda"
+            },
+            {
+              "codigo": 4,
+              "descricao": "Amarela"
+            },
+            {
+              "codigo": 5,
+              "descricao": "Indígena"
+            },
+            {
+              "codigo": 6,
+              "descricao": "Não Informado"
+            }
+          ],
+          "tamanho": 25,
+          "obrigatorio": true,
+          "flexSize": "25% - 11px",
+          "resposta": {
+            "codigo": 1,
+            "descricao": "Branca"
+          }
+        },
+        {
+          "nome": "estado_civil",
+          "tipo": "lista",
+          "label": "Estado Civil",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Solteiro"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Casado"
+            },
+            {
+              "codigo": 3,
+              "descricao": "Divorciado"
+            },
+            {
+              "codigo": 4,
+              "descricao": "Separado"
+            },
+            {
+              "codigo": 5,
+              "descricao": "Viúvo"
+            },
+            {
+              "codigo": 9,
+              "descricao": "Outros"
+            }
+          ],
+          "tamanho": 25,
+          "obrigatorio": true,
+          "flexSize": "25% - 11px",
+          "resposta": {
+            "codigo": 2,
+            "descricao": "Casado"
+          }
+        },
+        {
+          "nome": "mae",
+          "tipo": "string",
+          "label": "Nome Mãe",
+          "tamanho": 75,
+          "obrigatorio": false,
+          "flexSize": "75% - 11px",
+          "resposta": "Nome mãe teste"
+        },
+        {
+          "nome": "pai",
+          "tipo": "string",
+          "label": "Nome Pai",
+          "tamanho": 75,
+          "obrigatorio": false,
+          "flexSize": "75% - 11px",
+          "resposta": "Nome Pai Teste"
+        },
+        {
+          "nome": "escolaridade",
+          "tipo": "lista",
+          "label": "Escolaridade",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Analfabeto"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Até 4 série incompleto do ensino fundamental"
+            },
+            {
+              "codigo": 3,
+              "descricao": "4 série completa"
+            },
+            {
+              "codigo": 4,
+              "descricao": "De 5 a 8 série"
+            },
+            {
+              "codigo": 5,
+              "descricao": "Ensino Fundamental completo"
+            },
+            {
+              "codigo": 6,
+              "descricao": "Ensino médio incompleto"
+            },
+            {
+              "codigo": 7,
+              "descricao": "Ensino médio completo"
+            },
+            {
+              "codigo": 8,
+              "descricao": "Educação superior Completo"
+            },
+            {
+              "codigo": 9,
+              "descricao": "Educação superior Incompleto"
+            },
+            {
+              "codigo": 10,
+              "descricao": "Pós Graduação"
+            },
+            {
+              "codigo": 11,
+              "descricao": "Mestrado"
+            },
+            {
+              "codigo": 12,
+              "descricao": "Doutorado"
+            }
+          ],
+          "tamanho": 25,
+          "obrigatorio": true,
+          "flexSize": "25% - 11px",
+          "resposta": {
+            "codigo": 10,
+            "descricao": "Pós Graduação"
+          }
+        },
+        {
+          "nome": "descricao_do_curso",
+          "tipo": "string",
+          "label": "Descrição do Curso (Se tiver Nível Superior)",
+          "tamanho": 100,
+          "obrigatorio": false,
+          "flexSize": "100%",
+          "resposta": "Medicina"
+        },
+        {
+          "nome": "dados_conjuge",
+          "tipo": "string",
+          "label": "Nome Cônjuge",
+          "tamanho": 75,
+          "obrigatorio": false,
+          "flexSize": "75% - 11px",
+          "resposta": "Nome cônjuge teste"
+        },
+        {
+          "nome": "cpf_conjuge",
+          "tipo": "cpf",
+          "label": "CPF Cônjuge",
+          "change": {
+            "endpoint": "pesquisa-cidadao_atendimento",
+            "campos_preencher": [
+              "nome",
+              "sexo",
+              "cep",
+              "pais",
+              "estado",
+              "municipio",
+              "logradouro",
+              "bairro",
+              "complemento",
+              "numero",
+              "nascimento",
+              "telefone",
+              "celular"
+            ]
+          },
+          "mascara": "000.000.000-00",
+          "tamanho": 25,
+          "obrigatorio": false,
+          "flexSize": "25% - 11px",
+          "resposta": "40483817090"
+        },
+        {
+          "nome": "data_nasc_conjuge",
+          "tipo": "string",
+          "label": "Data de Nascimento Cônjuge",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": "04/03/1978"
+        },
+        {
+          "nome": "municipio_nasc_esocial",
+          "tipo": "autocomplete",
+          "label": "Municipio de nascimento(Servidor)",
+          "opcoes": {
+            "endpoint": {
+              "path": "cidades",
+              "method": "GET",
+              "params": [
+                {
+                  "name": "uf",
+                  "type": "string",
+                  "located": "query",
+                  "required": false
+                }
+              ]
+            }
+          },
+          "tamanho": 50,
+          "resposta": {
+            "id": 7043,
+            "descricao": "RIO DE JANEIRO",
+            "estados": [
+              {
+                "uf": "RJ",
+                "descricao": "RIO DE JANEIRO"
+              }
+            ]
+          },
+          "obrigatorio": true,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "uf_nasc_esocial",
+          "tipo": "autocomplete",
+          "label": "UF de nascimento(Servidor)",
+          "opcoes": {
+            "endpoint": {
+              "path": "ufs",
+              "method": "GET",
+              "params": null
+            }
+          },
+          "tamanho": 2,
+          "resposta": {
+            "uf": "RJ",
+            "descricao": "RJ"
+          },
+          "obrigatorio": true,
+          "flexSize": "2% - 11px"
+        },
+        {
+          "nome": "pais_nasc_esocial",
+          "tipo": "lista_dinamica",
+          "label": "Pais de nascimento(Servidor)",
+          "opcoes": {
+            "endpoint": {
+              "path": "paises",
+              "method": "GET",
+              "params": null
+            }
+          },
+          "tamanho": 50,
+          "resposta": {
+            "id": 1,
+            "descricao": "BRASIL"
+          },
+          "obrigatorio": true,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "nacionalidade",
+          "tipo": "lista",
+          "label": "Nacionalidade",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Brasileiro"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Estrangeiro"
+            }
+          ],
+          "tamanho": 25,
+          "obrigatorio": true,
+          "flexSize": "25% - 11px",
+          "resposta": {
+            "codigo": 1,
+            "descricao": "Brasileiro"
+          }
+        }
+      ]
+    },
+    {
+      "nome": "documentos_ativos",
+      "tipo": "form",
+      "label": "Documentos",
+      "campos": [
+        {
+          "nome": "rg_func",
+          "tipo": "string",
+          "label": "RG ",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "07916193-1"
+        },
+        {
+          "nome": "orgao_rg_emissor",
+          "tipo": "string",
+          "label": "Órgão emissor (RG)",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "DETRAN RJ"
+        },
+        {
+          "nome": "data_emissao_rg",
+          "tipo": "string",
+          "label": "Data de emissão (RG)",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": "12/03/2007"
+        },
+        {
+          "nome": "data_validade_rg",
+          "tipo": "string",
+          "label": "Data de Validade (RG)",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "titulo_eleitoral",
+          "tipo": "string",
+          "label": "Número (Título Eleitoral) ",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "86085730353"
+        },
+        {
+          "nome": "secao_titulo_eleitor",
+          "tipo": "string",
+          "label": "Seção emissor (Título Eleitoral)",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "0289"
+        },
+        {
+          "nome": "zona_titulo_eleitor",
+          "tipo": "string",
+          "label": "Zona (Título Eleitoral)",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "0072"
+        },
+        {
+          "nome": "certificado_reservista",
+          "tipo": "string",
+          "label": "Certificado Reservista (Somente para o Sexo Masculino)",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": ""
+        },
+        {
+          "nome": "pispasep",
+          "tipo": "string",
+          "label": "PIS/PASEP",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "12821996561"
+        },
+        {
+          "nome": "registro_orgao_de_classe",
+          "tipo": "string",
+          "label": "Registro (Dados órgão de classe)",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "52675423"
+        },
+        {
+          "nome": "data_orgao_classe",
+          "tipo": "string",
+          "label": "Data de Emissão (Dados órgão de classe)",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": "19/08/2009"
+        },
+        {
+          "nome": "orgao_emissor_orgao_classe",
+          "tipo": "string",
+          "label": "Órgão emissor (Dados órgão de classe)",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "CREMERJ"
+        },
+        {
+          "nome": "data_orgao_classe",
+          "tipo": "string",
+          "label": "Data de Validade (Dados órgão de classe)",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": "19/08/2009"
+        },
+        {
+          "nome": "cnh_carteira_de_motorista ",
+          "tipo": "string",
+          "label": "CNH (Dados Carteira Nacional de Habilitação)",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "00084506786"
+        },
+        {
+          "nome": "cnh_categoria",
+          "tipo": "string",
+          "label": "Categoria (Dados Carteira Nacional de Habilitação)",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": "B"
+        },
+        {
+          "nome": "uf_cnh",
+          "tipo": "autocomplete",
+          "label": "UF (Dados Carteira Nacional de Habilitação)  ",
+          "opcoes": {
+            "endpoint": {
+              "path": "ufs",
+              "method": "GET",
+              "params": null
+            }
+          },
+          "tamanho": 2,
+          "resposta": {
+            "uf": "RJ",
+            "descricao": "RJ"
+          },
+          "obrigatorio": false,
+          "flexSize": "2% - 11px"
+        },
+        {
+          "nome": "data_emissao_cnh",
+          "tipo": "string",
+          "label": "Data de Emissão (Dados Carteira Nacional de Habilitação)",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": "02/06/2021"
+        },
+        {
+          "nome": "data_validade_cnh",
+          "tipo": "string",
+          "label": "Data de Validade (Dados Carteira Nacional de Habilitação)",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": "25/05/2031"
+        },
+        {
+          "nome": "rne",
+          "tipo": "string",
+          "label": "Registro Nacional de Estrangeiro (RNE) ",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "orgao_emissor_rne",
+          "tipo": "string",
+          "label": "Órgão emissor (RNE)",
+          "tamanho": 20,
+          "obrigatorio": false,
+          "flexSize": "20% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "data_emissao_rne",
+          "tipo": "string",
+          "label": "Data de emissão (RNE)",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "data_validade_rne",
+          "tipo": "string",
+          "label": "Data de Validade (RNE)",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "data_entrada_rne",
+          "tipo": "string",
+          "label": "Data de Entrada (RNE)",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": null
+        }
+      ]
+    },
+    {
+      "nome": "rendereco",
+      "tipo": "form",
+      "label": "Endereço",
+      "campos": [
+        {
+          "nome": "cep_endereco",
+          "tipo": "string",
+          "label": "CEP",
+          "change": {
+            "endpoint": {
+              "path": "endereco",
+              "method": "GET",
+              "params": [
+                {
+                  "name": "cep",
+                  "type": "string",
+                  "located": "query",
+                  "required": true
+                }
+              ]
+            },
+            "campos_preencher": [
+              {
+                "campo": "municipio_endereco",
+                "valor": "cidade"
+              },
+              {
+                "campo": "logradouro",
+                "valor": "logradouro.descricao"
+              },
+              {
+                "campo": "bairro",
+                "valor": "bairro.descricao"
+              },
+              {
+                "campo": "uf_endereco",
+                "valor": "uf"
+              }
+            ]
+          },
+          "mascara": "00000-000",
+          "tamanho": 50,
+          "maxlength": 9,
+          "obrigatorio": true,
+          "flexSize": "50% - 11px",
+          "resposta": "24230240"
+        },
+        {
+          "nome": "uf_endereco",
+          "tipo": "autocomplete",
+          "label": "UF",
+          "opcoes": {
+            "endpoint": {
+              "path": "ufs",
+              "method": "GET",
+              "params": null
+            }
+          },
+          "tamanho": 2,
+          "resposta": {
+            "uf": "RJ",
+            "descricao": "RJ"
+          },
+          "obrigatorio": true,
+          "flexSize": "2% - 11px"
+        },
+        {
+          "nome": "municipio_endereco",
+          "tipo": "autocomplete",
+          "label": "Municipio",
+          "opcoes": {
+            "endpoint": {
+              "path": "cidades",
+              "method": "GET",
+              "params": [
+                {
+                  "name": "uf",
+                  "type": "string",
+                  "located": "query",
+                  "required": false
+                }
+              ]
+            }
+          },
+          "tamanho": 50,
+          "resposta": {
+            "id": 6989,
+            "descricao": "NITEROI",
+            "estados": [
+              {
+                "uf": "RJ",
+                "descricao": "RIO DE JANEIRO"
+              }
+            ]
+          },
+          "obrigatorio": true,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "bairro",
+          "tipo": "string",
+          "label": "Bairro",
+          "change": {
+            "endpoint": {
+              "path": "bairros/{bairroId}?/ruas",
+              "method": "GET",
+              "params": [
+                {
+                  "name": "bairroId",
+                  "type": "integer",
+                  "located": "path",
+                  "required": true
+                }
+              ]
+            },
+            "campos_preencher": [
+              {
+                "campo": "logradouro",
+                "valor": false,
+                "opcoes": {
+                  "id": "id",
+                  "descricao": "descricao"
+                }
+              }
+            ]
+          },
+          "opcoes": {
+            "endpoint": {
+              "path": "bairros",
+              "method": "GET",
+              "params": []
+            }
+          },
+          "tamanho": 75,
+          "endpoint": {
+            "path": "bairros",
+            "method": "GET",
+            "params": []
+          },
+          "resposta": "ICARAI",
+          "obrigatorio": true,
+          "flexSize": "75% - 11px"
+        },
+        {
+          "nome": "tipo_de_logradouro",
+          "tipo": "string",
+          "label": "Tipo Logradouro (buscar formulário esocial)",
+          "tamanho": 100,
+          "obrigatorio": true,
+          "flexSize": "100%",
+          "resposta": "RUA"
+        },
+        {
+          "nome": "logradouro",
+          "tipo": "string",
+          "label": "Logradouro (Endereço)",
+          "opcoes": [],
+          "tamanho": 100,
+          "resposta": "PROFESSOR MIGUEL COUTO",
+          "obrigatorio": true,
+          "flexSize": "100%"
+        },
+        {
+          "nome": "numero_endereco",
+          "tipo": "inteiro",
+          "label": "Número (caso não tenha, preencher com zero):",
+          "tamanho": 50,
+          "obrigatorio": true,
+          "flexSize": "50% - 11px",
+          "resposta": 427
+        },
+        {
+          "nome": "complemento_endereco",
+          "tipo": "string",
+          "label": "Complemento",
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px",
+          "resposta": "APT 1305"
+        },
+        {
+          "nome": "residencia_propria",
+          "tipo": "lista",
+          "label": "Possui imóvel/Residência Própria",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": {
+            "codigo": 1,
+            "descricao": "Sim"
+          },
+          "obrigatorio": true,
+          "flexSize": "50% - 11px"
+        }
+      ]
+    },
+    {
+      "nome": "endereco_exterior",
+      "tipo": "form",
+      "label": "Endereço Exterior (Caso Possua)",
+      "campos": [
+        {
+          "nome": "pais_exterior",
+          "tipo": "string",
+          "label": "País (lista)",
+          "tamanho": 75,
+          "obrigatorio": false,
+          "flexSize": "75% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "cep_exterior",
+          "tipo": "string",
+          "label": "CEP",
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "uf_exterior",
+          "tipo": "string",
+          "label": "UF",
+          "tamanho": 2,
+          "obrigatorio": false,
+          "flexSize": "2% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "municipio_exterior",
+          "tipo": "string",
+          "label": "Municipio",
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "bairro_exterior",
+          "tipo": "string",
+          "label": "Bairro/Distrito",
+          "tamanho": 75,
+          "obrigatorio": false,
+          "flexSize": "75% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "logradouro_exterior",
+          "tipo": "string",
+          "label": "Logradouro",
+          "tamanho": 100,
+          "obrigatorio": false,
+          "flexSize": "100%",
+          "resposta": null
+        },
+        {
+          "nome": "numero_exterior",
+          "tipo": "inteiro",
+          "label": "Número",
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "complemento_exterior",
+          "tipo": "string",
+          "label": "Complemento",
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px",
+          "resposta": null
+        }
+      ]
+    },
+    {
+      "nome": "estrangeiro",
+      "tipo": "form",
+      "label": "Estrangeiro (Preenchimento exclusivo de Trabalhador Imigrante)",
+      "campos": [
+        {
+          "nome": "tempo_de_residenci",
+          "tipo": "lista",
+          "label": "Tempo de Residência",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Prazo indeterminado"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Prazo determinado"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": "",
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "cond_ingre_traba",
+          "tipo": "lista",
+          "label": "Condição de ingresso do trabalhador imigrante ",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Refugiado"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Solicitante de refúgio"
+            },
+            {
+              "codigo": 3,
+              "descricao": "Permanência no Brasil em razão de reunião familiar "
+            },
+            {
+              "codigo": 4,
+              "descricao": "Beneficiado pelo acordo entre países do Mercasul"
+            },
+            {
+              "codigo": 4,
+              "descricao": "Dependente de agente diplomático e/ou consulado de países que matém acordo de reciprocidade para o exercício de atividade remunerada no Brasil"
+            },
+            {
+              "codigo": 4,
+              "descricao": "beneficiado pelo tratado de Amizade , Cooperação e Consulta entre a República Federativa do Brasil e a Republica Portuguesa"
+            },
+            {
+              "codigo": 4,
+              "descricao": "Outra Condição"
+            }
+          ],
+          "tamanho": 200,
+          "resposta": "",
+          "obrigatorio": false,
+          "flexSize": "200% - 11px"
+        },
+        {
+          "nome": "casado_com_brasileiro",
+          "tipo": "lista",
+          "label": "Casado com brasileiro(a)",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 25,
+          "obrigatorio": false,
+          "flexSize": "25% - 11px",
+          "resposta": ""
+        },
+        {
+          "nome": "filho_de_brasileiro",
+          "tipo": "lista",
+          "label": "Filho de brasileiro(a)",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 25,
+          "obrigatorio": false,
+          "flexSize": "25% - 11px",
+          "resposta": ""
+        }
+      ]
+    },
+    {
+      "nome": "pcd_ativos",
+      "tipo": "form",
+      "label": "PcD(Pessoas com Deficiência)",
+      "campos": [
+        {
+          "nome": "deficiencia_fisica_ativos",
+          "tipo": "lista",
+          "label": "Deficiência física",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": {
+            "codigo": 2,
+            "descricao": "Não"
+          },
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "deficiencia_visual_ativos",
+          "tipo": "lista",
+          "label": "Deficiência Visual",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": {
+            "codigo": 2,
+            "descricao": "Não"
+          },
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "deficiencia_auditiva_ativos",
+          "tipo": "lista",
+          "label": "Deficiência Auditiva",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": {
+            "codigo": 2,
+            "descricao": "Não"
+          },
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "deficiencia_intelectual_ativos",
+          "tipo": "lista",
+          "label": "Deficiência Intelectual ",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": {
+            "codigo": 2,
+            "descricao": "Não"
+          },
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "deficiencia_mental_ativos",
+          "tipo": "lista",
+          "label": "Deficiência Mental ",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": "",
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "reabilitado_ativos",
+          "tipo": "lista",
+          "label": "É Reabilitado ?",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": {
+            "codigo": 2,
+            "descricao": "Não"
+          },
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "readaptado_ativos",
+          "tipo": "lista",
+          "label": "É Readaptado ?",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": "",
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "pre_cota_ativos",
+          "tipo": "lista",
+          "label": "Preenche cota por Reabilitação ?",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": "",
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        }
+      ]
+    },
+    {
+      "nome": "dependentes_ativos",
+      "tipo": "tabela",
+      "label": "Dependentes",
+      "campos": [
+        {
+          "nome": "tipo_de_Dependentes_ativos",
+          "tipo": "lista",
+          "label": "Tipo de Dependentes (lista esocial) ",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Cônjuge"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Companheiro(a) com o(a) qual tenha filho ou viva há mais de 5(cinco) anos ou possua declaração de união estável"
+            },
+            {
+              "codigo": 3,
+              "descricao": "Filho(a) ou enteado(a)"
+            },
+            {
+              "codigo": 4,
+              "descricao": "Filho(a) ou enteado(a), universitário(a) ou cursando escola técnica de 2º grau"
+            },
+            {
+              "codigo": 6,
+              "descricao": "Irmão(ã), neto(a) ou bisneto(a) sem arrimo dos pais, do(a) qual detenha a guarda judicial"
+            },
+            {
+              "codigo": 7,
+              "descricao": "Irmão(ã), neto(a) ou bisneto(a) sem arrimo dos pais, universitário(a) ou cursando escola técnica de 2° grau, do(a) qual detenha a guarda judicial"
+            },
+            {
+              "codigo": 9,
+              "descricao": "Pais, avós e bisavós"
+            },
+            {
+              "codigo": 10,
+              "descricao": "Menor pobre do qual detenha a guarda judicial"
+            },
+            {
+              "codigo": 11,
+              "descricao": "A pessoa absolutamente incapaz, da qual seja tutor ou curador"
+            },
+            {
+              "codigo": 12,
+              "descricao": "Ex-cônjuge"
+            },
+            {
+              "codigo": 99,
+              "descricao": "Agregado/Outros"
+            }
+          ],
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "nome_dependentes_ativos",
+          "tipo": "string",
+          "label": "Nome Dependente",
+          "tamanho": 75,
+          "obrigatorio": false,
+          "flexSize": "75% - 11px"
+        },
+        {
+          "nome": "data_nasc_dependente_ativos",
+          "tipo": "string",
+          "label": "Data de Nascimento",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px"
+        },
+        {
+          "nome": "sexo_dependente_ativos",
+          "tipo": "lista",
+          "label": "Sexo",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Masculino"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Feminino"
+            }
+          ],
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "cpf_dependente_ativos",
+          "tipo": "cpf",
+          "label": "CPF",
+          "change": {
+            "endpoint": "pesquisa-cidadao_atendimento",
+            "campos_preencher": [
+              "nome",
+              "sexo",
+              "cep",
+              "pais",
+              "estado",
+              "municipio",
+              "logradouro",
+              "bairro",
+              "complemento",
+              "numero",
+              "nascimento",
+              "telefone",
+              "celular"
+            ]
+          },
+          "mascara": "000.000.000-00",
+          "tamanho": 25,
+          "obrigatorio": false,
+          "flexSize": "25% - 11px"
+        },
+        {
+          "nome": "dependente_irrf_ativos",
+          "tipo": "lista",
+          "label": "Dependente IRRF",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "": {
+            "nome": "dependente_salario_familia_ativos",
+            "tipo": "lista",
+            "label": "Dependente Salário Família",
+            "opcoes": [
+              {
+                "codigo": 1,
+                "descricao": "Sim"
+              },
+              {
+                "codigo": 2,
+                "descricao": "Não"
+              }
+            ],
+            "tamanho": 50,
+            "resposta": {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            "obrigatorio": false
+          },
+          "nome": "dependente_incapacidade_ativos",
+          "tipo": "lista",
+          "label": "Dependente tem incapacidade fisíca ou mental",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "dependente_fins_previdenciarios_ativos",
+          "tipo": "lista",
+          "label": "Dependente para fins previdenciarios ",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        }
+      ],
+      "resposta": [
+        {
+          "codigo": 1,
+          "tipo_de_Dependentes_ativos": {
+            "codigo": 3,
+            "descricao": "Filho(a) ou enteado(a)"
+          },
+          "nome_dependentes_ativos": "Nome dependente Teste",
+          "data_nasc_dependente_ativos": "06/06/2008",
+          "sexo_dependente_ativos": {
+            "codigo": 2,
+            "descricao": "Feminino"
+          },
+          "cpf_dependente_ativos": "32839214075",
+          "dependente_irrf_ativos": {
+            "codigo": 1,
+            "descricao": "Sim"
+          },
+          "dependente_incapacidade_ativos": {
+            "codigo": 2,
+            "descricao": "Não"
+          },
+          "dependente_fins_previdenciarios_ativos": {
+            "codigo": 1,
+            "descricao": "Sim"
+          }
+        },
+        {
+          "codigo": 2,
+          "tipo_de_Dependentes_ativos": {
+            "codigo": 3,
+            "descricao": "Filho(a) ou enteado(a)"
+          },
+          "nome_dependentes_ativos": "Nome dependente teste 2",
+          "data_nasc_dependente_ativos": "30/09/2011",
+          "sexo_dependente_ativos": {
+            "codigo": 2,
+            "descricao": "Feminino"
+          },
+          "cpf_dependente_ativos": "62955978078",
+          "dependente_irrf_ativos": {
+            "codigo": 1,
+            "descricao": "Sim"
+          },
+          "dependente_incapacidade_ativos": {
+            "codigo": 2,
+            "descricao": "Não"
+          },
+          "dependente_fins_previdenciarios_ativos": {
+            "codigo": 1,
+            "descricao": "Sim"
+          }
+        }
+      ]
+    },
+    {
+      "nome": "contato",
+      "tipo": "form",
+      "label": "Contato",
+      "campos": [
+        {
+          "nome": "celular",
+          "tipo": "string",
+          "label": "Celular",
+          "mascara": "(00) 00000-0000",
+          "tamanho": 25,
+          "obrigatorio": true,
+          "flexSize": "25% - 11px",
+          "resposta": "(21) 96819-9192"
+        },
+        {
+          "nome": "email",
+          "tipo": "email",
+          "label": "Email",
+          "tamanho": 50,
+          "obrigatorio": true,
+          "flexSize": "50% - 11px",
+          "resposta": "teste@gmail.com"
+        },
+        {
+          "nome": "telefone",
+          "tipo": "string",
+          "label": "Telefone",
+          "mascara": "(00) 0000-0000",
+          "tamanho": 25,
+          "obrigatorio": false,
+          "flexSize": "25% - 11px",
+          "resposta": "(21) 2610-1533"
+        }
+      ]
+    },
+    {
+      "nome": "outras_informacoes_ativos",
+      "tipo": "form",
+      "label": "Sucessão de Vínculo(eSocial)",
+      "campos": [
+        {
+          "nome": "primeiro_emprego_ativos",
+          "tipo": "lista",
+          "label": "Primeiro Emprego",
+          "opcoes": [
+            {
+              "codigo": 1,
+              "descricao": "Sim"
+            },
+            {
+              "codigo": 2,
+              "descricao": "Não"
+            }
+          ],
+          "tamanho": 50,
+          "resposta": {
+            "codigo": 2,
+            "descricao": "Não"
+          },
+          "obrigatorio": false,
+          "flexSize": "50% - 11px"
+        },
+        {
+          "nome": "data_trasferencia_ativos",
+          "tipo": "string",
+          "label": "Data de transferência (caso seja Sucessão de Vinculo",
+          "mascara": "00/00/0000",
+          "tamanho": 12,
+          "obrigatorio": false,
+          "flexSize": "12% - 11px",
+          "resposta": null
+        },
+        {
+          "nome": "cnpj_empregador_anterior_ativos",
+          "tipo": "cnpj",
+          "label": "CNPJ do empregador Anterior",
+          "mascara": "00.000.000/0000-00",
+          "tamanho": 25,
+          "obrigatorio": false,
+          "flexSize": "25% - 11px",
+          "resposta": "98.775.396/0001-43"
+        },
+        {
+          "nome": "matricula_anterior_ativos",
+          "tipo": "inteiro",
+          "label": "Matricula Anterior (caso seja Suceção de Vinculo)",
+          "tamanho": 50,
+          "obrigatorio": false,
+          "flexSize": "50% - 11px",
+          "resposta": ""
+        }
+      ]
+    },
+    {
+      "nome": "anexo",
+      "tipo": "anexo",
+      "label": "Anexo",
+      "campos": [],
+      "origens": [],
+      "endpoint": {
+        "path": "solicitacoes/tipos/{tipoId}/documentos",
+        "method": "GET",
+        "params": [
+          {
+            "name": "tipoId",
+            "type": "string",
+            "located": "path",
+            "required": true
+          }
+        ]
+      },
+      "resposta": [
+        {
+          "codigo": 133,
+          "descricao": "IDENTIDADE PAT.pdf",
+          "nome": "rg_documento_obrigatrio_866"
+        },
+        {
+          "codigo": 135,
+          "descricao": "COMPR RESID PAT.pdf",
+          "nome": "comprovante_de_residncia_867"
+        },
+        {
+          "codigo": 136,
+          "descricao": "CERT CASAMENTO PAT.pdf",
+          "nome": "certido_de_casamentounio_estvel_conjuge_868"
+        },
+        {
+          "codigo": 143,
+          "descricao": "TITULO ELEITOR PAT.jpg",
+          "nome": "ttulo_de_eleitor_869"
+        },
+        {
+          "codigo": 134,
+          "descricao": "CPF PAT.pdf",
+          "nome": "cpf_870"
+        },
+        {
+          "codigo": 132,
+          "descricao": "CERTIF VACINA COVID PAT.pdf",
+          "nome": "comprovante_vacina_covid19_871"
+        },
+        {
+          "codigo": 138,
+          "descricao": "DIPLOMA PAT.pdf",
+          "nome": "comprovante_de_escolaridade_nvel_superior_873"
+        },
+        {
+          "codigo": 139,
+          "descricao": "CERT NASC ISA.pdf",
+          "nome": "certido_de_nascimento_filhos_874"
+        },
+        {
+          "codigo": 140,
+          "descricao": "CERT NASC CLA.pdf",
+          "nome": "certido_de_nascimento_filhos_874"
+        },
+        {
+          "codigo": 141,
+          "descricao": "PIS PAT.pdf",
+          "nome": "pispasep_875"
+        },
+        {
+          "codigo": 142,
+          "descricao": "CRM PAT.pdf",
+          "nome": "oc_registro_profissional_de_rgo_de_classe_876"
+        },
+        {
+          "codigo": 137,
+          "descricao": "CNH PAT.pdf",
+          "nome": "cnh_carteira_nacional_de_habilitao_877"
+        }
+      ]
+    }
+  ]
+}

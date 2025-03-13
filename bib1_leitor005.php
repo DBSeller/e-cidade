@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_aluno_classe.php");
-include("classes/db_alunoalt_classe.php");
-include("classes/db_alunoaltcampos_classe.php");
-include("classes/db_alunoaltconf_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_aluno_classe.php"));
+include(modification("classes/db_alunoalt_classe.php"));
+include(modification("classes/db_alunoaltcampos_classe.php"));
+include(modification("classes/db_alunoaltconf_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $claluno = new cl_aluno;
@@ -58,11 +58,11 @@ if(isset($confirmar)){
  <?
  exit;
 }
-$result = pg_query("SELECT ed47_v_nome FROM aluno WHERE ed47_i_codigo = $aluno");
+$result = db_query("SELECT ed47_v_nome FROM aluno WHERE ed47_i_codigo = $aluno");
 $nomealuno = trim(pg_result($result,0,0));
 function NomeUsuario($usuario){
  if($usuario!=""){
-  $result = pg_query("SELECT nome FROM db_usuarios WHERE id_usuario = $usuario");
+  $result = db_query("SELECT nome FROM db_usuarios WHERE id_usuario = $usuario");
   return trim(pg_result($result,0,0));
  }else{
   return "";
@@ -101,7 +101,7 @@ $array_modulo = array("1"=>"ESCOLA","2"=>"BIBLIOTECA");
                            )
              ORDER BY ed275_i_data DESC
             ";
-    $result3 = pg_query($sql3);
+    $result3 = db_query($sql3);
     for($x=0;$x<pg_num_rows($result3);$x++){
      db_fieldsmemory($result3,$x);
      $codigo_alunoalt .= $sep.$ed275_i_codigo;

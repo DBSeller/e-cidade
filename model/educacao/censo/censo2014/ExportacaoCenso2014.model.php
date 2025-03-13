@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -57,12 +57,13 @@ class ExportacaoCenso2014 extends ExportacaoCensoBase implements IExportacaoCens
 
   protected function getTurmasUnicas() {
 
-    $sCampo  = " ed342_censoetapa, ed343_turma, ed343_principal, ed342_nome, ed342_sequencial";
+    $sCampo  = " ed134_censoetapa, ed343_turma, ed343_principal, ed342_nome, ed342_sequencial";
     $sWhere  = "     ed52_i_ano = {$this->iAnoCenso} ";
     $sWhere .= " and ed57_i_escola = {$this->iCodigoEscola} ";
+    $sWhere .= " and ed134_ano = {$this->iAnoCenso}";
 
     $oDaoTurmaUnica  = new cl_turmacensoturma();
-    $sSqlTurmaUnicia = $oDaoTurmaUnica->sql_query(null, $sCampo, null, $sWhere);
+    $sSqlTurmaUnicia = $oDaoTurmaUnica->sql_query2(null, $sCampo, null, $sWhere);
     $rsTurmaUnica    = db_query($sSqlTurmaUnicia);
 
     if ( !$rsTurmaUnica ) {
@@ -122,7 +123,7 @@ class ExportacaoCenso2014 extends ExportacaoCensoBase implements IExportacaoCens
       if ( isset($this->aTurmasUnicas[$iCodigosTurma]) ) {
 
         $oTurmaCenso->setCodigoTurmaCenso($this->aTurmasUnicas[$iCodigosTurma]->ed342_sequencial);
-        $oTurmaCenso->setEtapaTurmaCenso($this->aTurmasUnicas[$iCodigosTurma]->ed342_censoetapa);
+        $oTurmaCenso->setEtapaTurmaCenso($this->aTurmasUnicas[$iCodigosTurma]->ed134_censoetapa);
         $oTurmaCenso->setNomeTurmaCenso($this->aTurmasUnicas[$iCodigosTurma]->ed342_nome);
 
       }

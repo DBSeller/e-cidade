@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_custocriteriorateio_classe.php");
-require_once("model/custoPlanilha.model.php");
-require_once("model/custoPlanilhaLinha.model.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_custocriteriorateio_classe.php"));
+require_once(modification("model/custoPlanilha.model.php"));
+require_once(modification("model/custoPlanilhaLinha.model.php"));
+include(modification("libs/JSON.php"));
 
 $oJson       = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));

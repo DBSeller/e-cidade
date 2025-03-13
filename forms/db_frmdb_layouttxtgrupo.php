@@ -76,10 +76,10 @@ db_input('db56_descr',40,$Idb56_descr,true,'text',$db_opcao,"")
 <script>
 function js_pesquisadb56_layouttxtgrupotipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_layouttxtgrupotipo','func_db_layouttxtgrupotipo.php?funcao_js=parent.js_mostradb_layouttxtgrupotipo1|db57_sequencial|db57_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_layouttxtgrupotipo','func_db_layouttxtgrupotipo.php?funcao_js=parent.js_mostradb_layouttxtgrupotipo1|db57_sequencial|db57_descr','Pesquisa',true);
   }else{
      if(document.form1.db56_layouttxtgrupotipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_layouttxtgrupotipo','func_db_layouttxtgrupotipo.php?pesquisa_chave='+document.form1.db56_layouttxtgrupotipo.value+'&funcao_js=parent.js_mostradb_layouttxtgrupotipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_layouttxtgrupotipo','func_db_layouttxtgrupotipo.php?pesquisa_chave='+document.form1.db56_layouttxtgrupotipo.value+'&funcao_js=parent.js_mostradb_layouttxtgrupotipo','Pesquisa',false);
      }else{
        document.form1.db57_descr.value = ''; 
      }
@@ -98,7 +98,7 @@ function js_mostradb_layouttxtgrupotipo1(chave1,chave2){
   db_iframe_db_layouttxtgrupotipo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_layouttxtgrupo','func_db_layouttxtgrupo.php?funcao_js=parent.js_preenchepesquisa|db56_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_layouttxtgrupo','func_db_layouttxtgrupo.php?funcao_js=parent.js_preenchepesquisa|db56_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_layouttxtgrupo.hide();

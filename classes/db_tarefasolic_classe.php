@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,7 +33,7 @@
 		var $erro_status;
 		
 		function sql_record ($sql) {
-		     $result = @pg_query($sql);
+		     $result = @db_query($sql);
 		     if($result==false){
 		       $this->numrows    = 0;
 		       $this->erro_banco = str_replace("\n","",@pg_last_error());

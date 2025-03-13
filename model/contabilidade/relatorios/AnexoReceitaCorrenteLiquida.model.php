@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("RelatoriosLegaisBase.model.php");
+require_once(modification("model/contabilidade/relatorios/RelatoriosLegaisBase.model.php"));
 
 class AnexoReceitaCorrenteLiquida extends RelatoriosLegaisBase {
   
@@ -48,7 +48,7 @@ class AnexoReceitaCorrenteLiquida extends RelatoriosLegaisBase {
      * este trecho configura a variável de instituições
      */
     $rsBuscaInstit = db_query("select codigo from db_config");
-    $aDadosInstit  = db_utils::getColectionByRecord($rsBuscaInstit);
+    $aDadosInstit  = db_utils::getCollectionByRecord($rsBuscaInstit);
     $sVirgula      = "";
     $sDadosInstit  = "";
     

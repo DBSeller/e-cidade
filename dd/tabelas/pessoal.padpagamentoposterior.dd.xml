@@ -1,0 +1,277 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010525' name='pessoal.padpagamentoposterior' description="Guarda os dados a serem utilizados no arquivo de Pagamento Posterior do PAD." prefix="rh237" label="padpagamentoposterior" type="0">
+  <fields>
+    <field codigo="1011040" 
+           campo_api='' 
+           name="rh237_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela identificadorfolhapagamento." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='pessoal.padpagamentoposterior_rh237_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011041" 
+           campo_api='' 
+           name="rh237_identificador" 
+           conteudo="varchar(12)" 
+           description="Número identificador da linha enviada no arquivo de folha de pagamento do PAD." 
+           inivalue="" 
+           label="Identificador" 
+           size="12" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Identificador" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011042" 
+           campo_api='' 
+           name="rh237_matricula" 
+           conteudo="int4" 
+           description="Matrícula referente ao identificador." 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011043" 
+           campo_api='' 
+           name="rh237_instituicao" 
+           conteudo="int4" 
+           description="Instituição de vínculo do identificador/matrícula." 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011044" 
+           campo_api='' 
+           name="rh237_ano" 
+           conteudo="int4" 
+           description="Ano referente ao envio do identificador." 
+           inivalue="0" 
+           label="Ano" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011045" 
+           campo_api='' 
+           name="rh237_mes" 
+           conteudo="int4" 
+           description="Mês referente ao envio do identificador." 
+           inivalue="0" 
+           label="Mês" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Mês" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011046" 
+           campo_api='' 
+           name="rh237_tipofolha" 
+           conteudo="int4" 
+           description="Tipo de folha a qual se refere o identificador. Valores válidos com base no manual do arquivo TCE_4810:
+1 - Folha Normal(Salário)
+2 - 13º Salário
+3 - Férias
+4 - Rescisão
+5 - Complementar/Suplementar
+6 - Afastamento
+9 - Outros" 
+           inivalue="0" 
+           label="Tipo de Folha" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Folha" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011070" 
+           campo_api='' 
+           name="rh237_valor" 
+           conteudo="float8" 
+           description="Valor da Vantagem/Desconto/Totalizador layout 4810." 
+           inivalue="0" 
+           label="Valor" 
+           size="20" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011071" 
+           campo_api='' 
+           name="rh237_identificacaovalor" 
+           conteudo="char(1)" 
+           description="Identificação da Operação layout 4810.
+Preencher com:
+V = Vantagem;
+D = Desconto;
+T = Totalizador
+O = Outros (Especificar no campo Observações)" 
+           inivalue="" 
+           label="Identificação do valor" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Identificação do valor" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011072" 
+           campo_api='' 
+           name="rh237_banco" 
+           conteudo="varchar(5)" 
+           description="Código do Banco do Depósito da Folha de Pagamento da Entidade." 
+           inivalue="" 
+           label="Banco" 
+           size="5" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Banco" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011073" 
+           campo_api='' 
+           name="rh237_agencia" 
+           conteudo="varchar(5)" 
+           description="Código da Agência do Banco do Depósito da Folha de Pagamento da Entidade." 
+           inivalue="" 
+           label="Agência" 
+           size="5" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Agência" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011074" 
+           campo_api='' 
+           name="rh237_contacorrente" 
+           conteudo="varchar(20)" 
+           description="Código da Conta-Corrente do Banco do Depósito da Folha de Pagamento da Entidade." 
+           inivalue="" 
+           label="Conta Corrente" 
+           size="20" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Conta Corrente" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011075" 
+           campo_api='' 
+           name="rh237_datapagamento" 
+           conteudo="date" 
+           description="Data de Pagamento da folha." 
+           inivalue="null" 
+           label="Data de Pagamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data de Pagamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh237_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="rh237_instituicao" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="rh237_matricula" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,33 +1,7 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-/*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -174,15 +148,15 @@ if ($db_opcao == 1) {
     function js_pesquisarh41_conta(lExibeJanela) {
 
       if (lExibeJanela) {
-        js_OpenJanelaIframe( 'top.corpo', 
+        js_OpenJanelaIframe( 'CurrentWindow.corpo', 
                              'db_iframe_saltes', 
-                             'func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr', 
+                             'func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr&lFiltroContaBanco=true',
                              'Pesquisa', true);
       } else {
         if (document.form1.rh41_conta.value != '') {
-          js_OpenJanelaIframe( 'top.corpo', 
+          js_OpenJanelaIframe( 'CurrentWindow.corpo', 
                                'db_iframe_saltes', 
-                               'func_saltes.php?pesquisa_chave=' + document.form1.rh41_conta.value + '&funcao_js=parent.js_mostrasaltes', 
+                               'func_saltes.php?pesquisa_chave=' + document.form1.rh41_conta.value + '&funcao_js=parent.js_mostrasaltes&lFiltroContaBanco=true',
                                'Pesquisa', false);
         } else {
           document.form1.k13_descr.value = ''; 
@@ -210,13 +184,13 @@ if ($db_opcao == 1) {
     function js_pesquisarh41_codigo(lExibeJanela) {
 
       if (lExibeJanela) {
-        js_OpenJanelaIframe( 'top.corpo', 
+        js_OpenJanelaIframe( 'CurrentWindow.corpo', 
                              'db_iframe_orctiporec', 
                              'func_orctiporec.php?funcao_js=parent.js_mostraorctiporec1|o15_codigo|o15_descr', 
                              'Pesquisa', true);
       } else {
         if (document.form1.rh41_codigo.value != '') {
-          js_OpenJanelaIframe( 'top.corpo', 
+          js_OpenJanelaIframe( 'CurrentWindow.corpo', 
                                'db_iframe_orctiporec', 
                                'func_orctiporec.php?pesquisa_chave=' + document.form1.rh41_codigo.value + '&funcao_js=parent.js_mostraorctiporec', 
                                'Pesquisa', false);
@@ -246,13 +220,13 @@ if ($db_opcao == 1) {
     function js_pesquisarh41_instit(lExibeJanela) {
 
       if (lExibeJanela) {
-        js_OpenJanelaIframe( 'top.corpo', 
+        js_OpenJanelaIframe( 'CurrentWindow.corpo', 
                              'db_iframe_db_config', 
                              'func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst', 
                              'Pesquisa', true);
       } else {
         if (document.form1.rh41_instit.value != '') {
-          js_OpenJanelaIframe( 'top.corpo', 
+          js_OpenJanelaIframe( 'CurrentWindow.corpo', 
                                'db_iframe_db_config', 
                                'func_db_config.php?pesquisa_chave=' + document.form1.rh41_instit.value + '&funcao_js=parent.js_mostradb_config', 
                                'Pesquisa', false);
@@ -280,7 +254,7 @@ if ($db_opcao == 1) {
     }
 
     function js_pesquisa() {
-      js_OpenJanelaIframe( 'top.corpo', 
+      js_OpenJanelaIframe( 'CurrentWindow.corpo', 
                            'db_iframe_rhcontasrec', 
                            'func_rhcontasrec.php?funcao_js=parent.js_preenchepesquisa|k13_conta|rh41_codigo|rh41_anousu', 
                            'Pesquisa', true);

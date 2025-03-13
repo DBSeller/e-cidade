@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -102,7 +102,7 @@ class cl_proctipoa {
                                ,$this->sd20_i_tipoatend 
                       )";
 
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -160,7 +160,7 @@ class cl_proctipoa {
      }
      $sql .= " where ";
 $sql .= "sd20_i_procedimento = $procedimento and sd20_i_tipoatend = $tipoatend ";
-$result = @pg_exec($sql);
+$result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Tipo de Atendimento para o Procedimento nao Alterado. Alteracao Abortada.\\n";
@@ -194,7 +194,7 @@ $result = @pg_exec($sql);
      $sql = " delete from proctipoa
                     where ".$dbwhere;
 
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Tipo de Atendimento para o Procedimento nao Excluído. Exclusão Abortada.\\n";
@@ -225,7 +225,7 @@ $result = @pg_exec($sql);
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

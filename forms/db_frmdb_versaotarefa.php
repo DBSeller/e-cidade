@@ -82,10 +82,10 @@ db_input('at40_descr',1,$Iat40_descr,true,'text',3,'')
 <script>
 function js_pesquisadb29_codver(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_versao','func_db_versao.php?funcao_js=parent.js_mostradb_versao1|db30_codver|db30_codversao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_versao','func_db_versao.php?funcao_js=parent.js_mostradb_versao1|db30_codver|db30_codversao','Pesquisa',true);
   }else{
      if(document.form1.db29_codver.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_versao','func_db_versao.php?pesquisa_chave='+document.form1.db29_codver.value+'&funcao_js=parent.js_mostradb_versao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_versao','func_db_versao.php?pesquisa_chave='+document.form1.db29_codver.value+'&funcao_js=parent.js_mostradb_versao','Pesquisa',false);
      }else{
        document.form1.db30_codversao.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostradb_versao1(chave1,chave2){
 }
 function js_pesquisadb29_tarefa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tarefa','func_tarefa.php?funcao_js=parent.js_mostratarefa1|at40_sequencial|at40_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefa','func_tarefa.php?funcao_js=parent.js_mostratarefa1|at40_sequencial|at40_descr','Pesquisa',true);
   }else{
      if(document.form1.db29_tarefa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tarefa','func_tarefa.php?pesquisa_chave='+document.form1.db29_tarefa.value+'&funcao_js=parent.js_mostratarefa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefa','func_tarefa.php?pesquisa_chave='+document.form1.db29_tarefa.value+'&funcao_js=parent.js_mostratarefa','Pesquisa',false);
      }else{
        document.form1.at40_descr.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostratarefa1(chave1,chave2){
   db_iframe_tarefa.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_versaotarefa','func_db_versaotarefa.php?funcao_js=parent.js_preenchepesquisa|db29_seqvertar','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_versaotarefa','func_db_versaotarefa.php?funcao_js=parent.js_preenchepesquisa|db29_seqvertar','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_versaotarefa.hide();

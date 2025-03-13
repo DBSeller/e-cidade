@@ -13,11 +13,11 @@ $sNumeroProtocolo = $this->p58_numero."/".$this->p58_ano;
 
 $this->objpdf->cell(50, 5, "PROTOCOLO Nº: ", 0, 0, 'L');
 $this->objpdf->Setfont("Times", "", 12);
-$this->objpdf->cell(30, 5, $sNumeroProtocolo, 0, 0, 'L');
+$this->objpdf->cell(30, 5, $sNumeroProtocolo, 0, 1, 'L');
 $this->objpdf->Setfont("Times", "B", 14);
-$this->objpdf->cell(40, 5, "Nº CONTROLE: ", 0, 0, 'L');
+$this->objpdf->cell(50, 5, "Nº CONTROLE: ", 0, 0, 'L');
 $this->objpdf->Setfont("Times", "", 12);
-$this->objpdf->cell(20, 5, $this->p58_codproc, 0, 0, 'L');
+$this->objpdf->cell(40, 5, $this->p58_codproc, 0, 0, 'L');
 $this->objpdf->Setfont("Times", "B", 14);
 $this->objpdf->cell(20, 5, "CGM: ", 0, 0, 'L');
 $this->objpdf->Setfont("Times", "", 12);
@@ -66,7 +66,7 @@ if ($this->p58_dtproc  != "") {
 	$this->objpdf->Setfont("Times", "", 12);
 	$this->objpdf->cell(75, 5, db_formatar($this->p58_dtproc , 'd'), 0, 1, 'L');
 }
-$result_impusu = pg_exec("select p90_impusuproc from protparam where p90_instit=".db_getsession("DB_instit"));
+$result_impusu = db_query("select p90_impusuproc from protparam where p90_instit=".db_getsession("DB_instit"));
 if (pg_numrows($result_impusu) > 0) {
 	$p90_impusuproc = pg_result($result_impusu,0,0);
 	if ($p90_impusuproc == 't') {
@@ -78,11 +78,11 @@ if (pg_numrows($result_impusu) > 0) {
 		}
 	}
 }
-$sqlproc = "select coddepto,descrdepto,p51_descr 
-	   		from andpadrao 
-				inner join db_depart on coddepto = p53_coddepto 
+$sqlproc = "select coddepto,descrdepto,p51_descr
+	   		from andpadrao
+				inner join db_depart on coddepto = p53_coddepto
 				inner join tipoproc on p51_codigo = p53_codigo where p53_codigo = ".$this->p58_codigo ."";
-$resproc = pg_query($sqlproc);
+$resproc = db_query($sqlproc);
 if (pg_num_rows($resproc)) {
 	$coddepto   = pg_result($resproc,0,0);
 	$descrdepto = pg_result($resproc,0,1);
@@ -90,7 +90,7 @@ if (pg_num_rows($resproc)) {
 	$this->objpdf->setfillcolor(235);
 	$this->objpdf->Setfont("Times", "B", 8);
     $sqldepto = "select p90_impdepto from protparam where p90_instit = ".db_getsession('DB_instit');
-	$resultdepto = pg_exec($sqldepto);
+	$resultdepto = db_query($sqldepto);
 	$impdepto = pg_result($resultdepto,0,0);
 	if ($impdepto == 't') {
 		$this->objpdf->cell(180, 6, "DEPARTAMENTO PADRÃO: $coddepto - $descrdepto", 0, 1, 'L', 1);
@@ -104,23 +104,20 @@ $this->objpdf->sety(153);
 $this->objpdf->cell(180, 5, 'OUTROS DADOS', 0, 1, "C");
 
 $this->objpdf->Setfont("Times", "", 10);
-/*
-$imprime_str = "";
-$linha       = split("\n",$this->p58_obs);
-$numlinhas   = count($linha);
-$tamstr = 290;
-$barraN      = "";
-for($i = 0; $i < $numlinhas; $i++){
-     $imprime_str .= $barraN.$linha[$i];
-     $barraN = "\n";
-     if ($i == 7){
-          break;
-     }
-}
-*/
 
-$texto = db_formatatexto(8, 90, $this->p58_obs, "t");
-$this->objpdf->multicell(185, 5,$texto,0,1,"L"); 
+$texto         = $this->p58_obs;
+$iLinhas       = $this->objpdf->NbLines(185, $this->p58_obs);
+$iLinhasMaximo = 10;
+$iCaracteres   = 800;
+
+while ($iLinhas > $iLinhasMaximo) {
+
+	$texto        = DBString::retornaStringLimitada($this->p58_obs, $iCaracteres);
+	$iCaracteres -= 20;
+	$iLinhas      = $this->objpdf->NbLines(185, $texto);
+}
+
+$this->objpdf->multicell(185, 5, $texto,0,1,"L");
 
 // Variaveis
 if ($this->result_vars != ""){
@@ -134,10 +131,10 @@ if ($this->result_vars != ""){
 	   if (($i+1) == $numrows){
 	        $separador = "";
 	   }
-           $imprime_str .= ucfirst($rotulo).": ".$conteudo.$separador; 
+           $imprime_str .= ucfirst($rotulo).": ".$conteudo.$separador;
      }
 
-     $this->objpdf->multicell(185, 5, $imprime_str,0,1,"L"); 
+     $this->objpdf->multicell(185, 5, $imprime_str,0,1,"L");
 }
 $this->objpdf->Setfont("Times", "", 12);
 
@@ -148,10 +145,10 @@ $this->objpdf->roundedrect(10, 204, 190, 31, 2, 'df', 1234);
 $this->objpdf->roundedrect(10, 204, 190, 5, 2, 'DF', 12);
 $this->objpdf->sety(204);
 $this->objpdf->cell(180, 5, 'DOCUMENTOS', 0, 1, "C");
-$sql_doc = "select p81_doc,p56_descr from procprocessodoc 
+$sql_doc = "select p81_doc,p56_descr from procprocessodoc
                inner join procdoc on p81_coddoc = p56_coddoc
 	        where p81_codproc=".$this->p58_codproc ;
-$result_doc = pg_query($sql_doc);
+$result_doc = db_query($sql_doc);
 $numrows_doc = pg_numrows($result_doc);
 if ($numrows_doc > 0) {
 	$m = 0;

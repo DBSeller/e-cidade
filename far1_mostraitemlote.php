@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/requisicaoMaterial.model.php");
-require_once("classes/materialestoque.model.php");
-require_once("classes/db_far_matersaude_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/requisicaoMaterial.model.php"));
+require_once(modification("classes/materialestoque.model.php"));
+require_once(modification("classes/db_far_matersaude_classe.php"));
 
-require_once "libs/db_app.utils.php";
+require_once modification("libs/db_app.utils.php");
 //db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 //db_app::import("Acordo");
 //db_app::import("AcordoComissao");
@@ -191,7 +191,7 @@ function js_consultaItens(iCodMater,iCodEstoque, nValor){
 function js_saida(oAjax) {
 
   js_removeObj("msgBox");
-  var obj               = eval("(" + oAjax.responseText + ")");
+  var obj               = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
 
     alert(obj.message.urlDecode());
@@ -365,7 +365,7 @@ function js_menorQue(dData1,dData2){
 function js_saidaSave(oAjax) {
 
   js_removeObj("msgBox");
-  var obj               = eval("(" + oAjax.responseText + ")");
+  var obj               = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
 
     alert(obj.message.urlDecode());
@@ -421,7 +421,7 @@ function js_rateioAutomatico() {
 function js_saidaCancelar(oAjax) {
 
   js_removeObj("msgBox");
-  var obj = eval("(" + oAjax.responseText + ")");
+  var obj = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
 
     alert(obj.message.urlDecode());

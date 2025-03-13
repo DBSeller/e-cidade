@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <processamento>
+
+  <transacao>true</transacao>
+
   <parametros>
     <parametro nome="cpf"                  obrigatorio="false" tipo="cpf"     />
     <parametro nome="cnpj"                 obrigatorio="false" tipo="cnpj"    />
-    <parametro nome="nome"                 obrigatorio="true"  tipo="nome"    /> 
+    <parametro nome="nome"                 obrigatorio="true"  tipo="nome"    />
     <parametro nome="endereco"             obrigatorio="true"  tipo="boolean" />
     <parametro nome="codigo_logradouro"    obrigatorio="false" tipo="integer"  />
     <parametro nome="descricao_logradouro" obrigatorio="true"  tipo="string"  />
@@ -18,7 +21,7 @@
     <parametro nome="celular"              obrigatorio="false" tipo="integer" />
     <parametro nome="cep"                  obrigatorio="true"  tipo="integer"  />
   </parametros>
-  
+
   <configuracoes>
     <classe nome="CadastroCgmWebService" parametros="" caminho="model/protocolo/cgm/CadastroCgmWebService.model.php">
       <metodos>
@@ -42,5 +45,5 @@
       </metodos>
     </classe>
   </configuracoes>
-  
+
 </processamento>

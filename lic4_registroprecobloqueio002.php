@@ -28,16 +28,16 @@
 /**
  * 
  * @author I
- * @revision $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.3 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -123,7 +123,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
   function js_retornoGetRegistroPreco(oAjax) {
   
     js_removeObj('msgBox'); 
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     ogridSolicita.clearAll(true);
     if (oRetorno.status == 1) {
     

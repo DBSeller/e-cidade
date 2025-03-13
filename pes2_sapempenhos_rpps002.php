@@ -1,33 +1,33 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
  *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
  *  detalhes.                                                         
  *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
  *  02111-1307, USA.                                                  
  *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_inssirf_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_inssirf_classe.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -37,16 +37,15 @@ $clrotulo->label('r06_pd');
 
 $clinssirf = new cl_inssirf;
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-//db_postmemory($HTTP_SERVER_VARS,2);exit;
-//$ano = 2006;
-//$mes = 3;
+
+
 if($prev == 's'){
   $tbp = 4;
-  $especial = '2.90';
+  $especial = ($ano >= 2019 ? '9.69' :'2.90');
   $head2 = "EMPENHOS DO RPPS - SERVIDORES";
 }else{
   $tbp = 6;
-  $especial = '1.22';
+  $especial = ($ano >= 2019 ? '9.69' : '1.22');
   $head2 = "EMPENHOS DO RPPS - MAGISTERIO";
 }
 $res_prev = $clinssirf->sql_record($clinssirf->sql_query_file(null,
@@ -228,7 +227,6 @@ $result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=No existem movimentos cadastrados no perodo de '.$mes.' / '.$ano);
-
 }
 
 $pdf = new PDF();
@@ -237,12 +235,12 @@ $pdf->AliasNbPages();
 $total = 0;
 $pdf->setfillcolor(235);
 $pdf->setfont('arial','b',8);
-$troca = 1;
-$alt = 4;
-$proj  = '';
-$orgao = '';
+$troca   = 1;
+$alt     = 4;
+$proj    = '';
+$orgao   = '';
 $unidade = '';
-//$pdf->addpage();
+
 $val_fgts     = 0;
 $val_fgts_seg = 0;
 $val_fgts_pad = 0;
@@ -251,8 +249,9 @@ $val_pat      = 0;
 $val_ad_pat   = 0;
 $pat60        = 0;
 $pat40        = 0;
-$pat      = 0;
-$teste = 0;
+$pat          = 0;
+$teste        = 0;
+$aListaRecurso = [40,4502,1458,1412];
 
 for($x = 0; $x < pg_numrows($result);$x++){
    db_fieldsmemory($result,$x);
@@ -261,8 +260,9 @@ for($x = 0; $x < pg_numrows($result);$x++){
       $pdf->setfont('arial','B',8);
       $pdf->cell(105,$alt,'DESCRIÇÃO',1,0,"C",0);
       $pdf->cell(20,$alt,'BASE',1,0,"R",0);
-      $pdf->cell(20,$alt,'PATRONAL',1,0,"R",0);
-      $pdf->cell(20,$alt,'TAXA ADM',1,0,"R",0);
+      $pdf->cell(15,$alt,'TX.ESP',1,0,"R",0);
+      $pdf->cell(15,$alt,'PATR.',1,0,"R",0);
+      $pdf->cell(15,$alt,'TX.ADM',1,0,"R",0);
       $pdf->cell(20,$alt,'TOTAL',1,1,"R",0);
       $troca = 0;
    }
@@ -278,7 +278,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
      $pdf->cell(0,$alt,$o41_descr,0,1,"L",1);
      $unidade = $rh26_orgao.$rh26_unidade;
    }
-   if($proj != $rh25_projativ){
+   if(($proj != $rh25_projativ) || ($proj = $rh25_projativ && $unidade = $rh26_orgao.$rh26_unidade)){
      $pdf->cell(5,$alt,'',0,0,"C",1);
      $pdf->cell(15,$alt,$rh25_projativ,0,0,"C",1);
      $pdf->cell(0,$alt,$o55_descr,0,1,"L",1);
@@ -286,72 +286,85 @@ for($x = 0; $x < pg_numrows($result);$x++){
    }
    $pdf->setfont('arial','',7);
    if($sub != 0){
-      //$pat1 = $sub / 100 * 21;
       $pdf->cell(10,$alt,'',0,0,"C",0);
       $pdf->cell(15,$alt,$rh25_recurso,0,0,"C",0);
       $pdf->cell(80,$alt,$o15_descr.'  (SUBSDIO) ',0,0,"L",0);
       $pdf->cell(20,$alt,db_formatar($sub,'f'),0,0,"R",0);
-      $pdf->cell(20,$alt,db_formatar($pat_sub,'f'),0,0,"R",0);
-      $pdf->cell(20,$alt,db_formatar($ad_pat_sub,'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar(($sub/100*$especial),'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar($pat_sub,'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar($ad_pat_sub,'f'),0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar(($pat_sub + $ad_pat_sub),'f'),0,1,"R",0);
    }
    if($rh25_recurso == 31){
      $pdf->cell(25,$alt,'',0,0,"C",0);
-     //$pat60 = $fund60 /100 * 21;
-     $pdf->cell(80,$alt,'FUNDEB 60%',0,0,"L",0);
+     $pdf->cell(80,$alt,'FUNDEB 70%',0,0,"L",0);
      $pdf->cell(20,$alt,db_formatar($fund60,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar($pat60,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar($ad_pat60,'f'),0,0,"R",0);
+     $pdf->cell(15,$alt,db_formatar(($fund60/100*$especial),'f'),0,0,"R",0);
+     $pdf->cell(15,$alt,db_formatar($pat60,'f'),0,0,"R",0);
+     $pdf->cell(15,$alt,db_formatar($ad_pat60,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar(($pat60 + $ad_pat60),'f'),0,1,"R",0);
 
      $pdf->cell(25,$alt,'',0,0,"C",0);
-     //$pat40 = $fund40 / 100 * 21;
-     $pdf->cell(80,$alt,'FUNDEB 40%',0,0,"L",0);
+     $pdf->cell(80,$alt,'FUNDEB 30%',0,0,"L",0);
      $pdf->cell(20,$alt,db_formatar($fund40,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar($pat40,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar($ad_pat40,'f'),0,0,"R",0);
+     $pdf->cell(15,$alt,db_formatar(($fund40/100*$especial),'f'),0,0,"R",0);
+     $pdf->cell(15,$alt,db_formatar($pat40,'f'),0,0,"R",0);
+     $pdf->cell(15,$alt,db_formatar($ad_pat40,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar(($pat40 + $ad_pat40),'f'),0,1,"R",0);
-     $pat     = $pat60  + $pat40;
+     $pat     = $pat60     + $pat40;
      $ad_pat  = $ad_pat60  + $ad_pat40;
-     $ded     = $ded60  + $ded40;
-     $inss    = $fund60 + $fund40;
+     $ded     = $ded60     + $ded40;
+     $inss    = $fund60    + $fund40;
    }else{
-   //  if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){
-   //    $pat = $inss / 100 * 20;
-   //  }else{
-   //    $pat = $inss / 100 * 21;
-   //  }
-     $pdf->cell(10,$alt,'',0,0,"C",0);
-     $pdf->cell(15,$alt,$rh25_recurso,0,0,"C",0);
-     $pdf->cell(80,$alt,$o15_descr,0,0,"L",0);
-     $pdf->cell(20,$alt,db_formatar($inss,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar($pat,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar($ad_pat,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar(($pat + $ad_pat),'f'),0,1,"R",0);
+     if (in_array($rh25_recurso, $aListaRecurso)){
+      $pdf->cell(10,$alt,'',0,0,"C",0);
+      $pdf->cell(15,$alt,$rh25_recurso,0,0,"C",0);
+      $pdf->cell(80,$alt,$o15_descr,0,0,"L",0);
+      $pdf->cell(20,$alt,db_formatar($inss,'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar((0),'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar($pat,'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar($ad_pat,'f'),0,0,"R",0);
+      $pdf->cell(20,$alt,db_formatar(($pat + $ad_pat),'f'),0,1,"R",0);
+
+      $pdf->cell(10,$alt,'',0,0,"C",0);
+      $pdf->cell(15,$alt,1,0,0,"C",0);
+      $pdf->cell(80,$alt,'LIVRE',0,0,"L",0);
+      $pdf->cell(20,$alt,db_formatar(0,'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar(($inss/100*$especial),'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar(0,'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar(0,'f'),0,0,"R",0);
+      $pdf->cell(20,$alt,'',0,1,"R",0);
+ 
+     } else {
+      $pdf->cell(10,$alt,'',0,0,"C",0);
+      $pdf->cell(15,$alt,$rh25_recurso,0,0,"C",0);
+      $pdf->cell(80,$alt,$o15_descr,0,0,"L",0);
+      $pdf->cell(20,$alt,db_formatar($inss,'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar(($inss/100*$especial),'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar($pat,'f'),0,0,"R",0);
+      $pdf->cell(15,$alt,db_formatar($ad_pat,'f'),0,0,"R",0);
+      $pdf->cell(20,$alt,db_formatar(($pat + $ad_pat),'f'),0,1,"R",0);
+     }
    }
-  // if(db_formatar($rh26_orgao,'orgao').db_formatar($rh26_unidade,'orgao') == '0203'){
-  //   $val_pat      += (($inss+$sub)/100)*20;
-  // }else{
-  //   $val_pat      += (($inss+$sub)/100)*21;
-   //}
-   $val_pat      += $pat + $pat_sub;
+   $val_pat      += $pat    + $pat_sub;
    $val_ad_pat   += $ad_pat + $ad_pat_sub;
-   $val_fgts     += $inss+$sub;
+   $val_fgts     += $inss   + $sub;
    $val_ded      += $ded;
 }
 
 $pdf->ln(5);
 
-//echo $teste;exit;
 $pdf->setfont('arial','B',8);
-$pdf->cell(105,$alt,'SUB-TOTAL ','T',0,"C",0);
+$pdf->cell(105,$alt,'TOTAL ','T',0,"C",0);
 $pdf->cell(20,$alt,db_formatar($val_fgts,'f'),'T',0,"R",0);
-$pdf->cell(20,$alt,db_formatar($val_pat ,'f'),'T',0,"R",0);
-$pdf->cell(20,$alt,db_formatar($val_ad_pat,'f'),'T',0,"R",0);
+$pdf->cell(15,$alt,db_formatar(($val_fgts/100*$especial),'f'),'T',0,"R",0);
+$pdf->cell(15,$alt,db_formatar($val_pat ,'f'),'T',0,"R",0);
+$pdf->cell(15,$alt,db_formatar($val_ad_pat,'f'),'T',0,"R",0);
 $pdf->cell(20,$alt,db_formatar($val_pat + $val_ad_pat,'f'),'T',1,"R",0);
 
 $pdf->setfont('arial','B',8);
 $pdf->ln(3);
+/*
 $pdf->cell(0,10,'ALÍQUOTA ESPECIAL',0,1,"L",1);
 $pdf->cell(15,$alt,'05',0,0,"C",1);
 $pdf->cell(0,$alt,'SECRETARIA DA FAZENDA',0,1,"L",1);
@@ -366,7 +379,7 @@ $pdf->cell(0,$alt,'AMORTIZACAO DA DIVIDA',0,1,"L",1);
 
 $pdf->setfont('arial','',7);
 
-$taxa_ad = $val_fgts/100*$especial;
+$taxa_ad = (($val_fgts/100)*$especial);
 $pdf->cell(10,$alt,'',0,0,"C",0);
 $pdf->cell(15,$alt,'1',0,0,"C",0);
 $pdf->cell(80,$alt,'LIVRE',0,0,"L",0);
@@ -377,13 +390,13 @@ $pdf->cell(20,$alt,db_formatar($taxa_ad,'f'),0,1,"R",0);
 
 $pdf->ln(5);
 
-//echo $teste;exit;
-   $pdf->setfont('arial','B',8);
-   $pdf->cell(105,$alt,'TOTAL GERAL','T',0,"C",0);
-   $pdf->cell(20,$alt,db_formatar($val_fgts,'f'),'T',0,"R",0);
-   $pdf->cell(20,$alt,db_formatar($val_pat + $taxa_ad,'f'),'T',0,"R",0);
-   $pdf->cell(20,$alt,db_formatar($val_ad_pat,'f'),'T',0,"R",0);
-   $pdf->cell(20,$alt,db_formatar($val_pat + $taxa_ad + $val_ad_pat,'f'),'T',1,"R",0);
+$pdf->setfont('arial','B',8);
+$pdf->cell(105,$alt,'TOTAL GERAL','T',0,"C",0);
+$pdf->cell(20,$alt,db_formatar($val_fgts,'f'),'T',0,"R",0);
+$pdf->cell(20,$alt,db_formatar($val_pat + $taxa_ad,'f'),'T',0,"R",0);
+$pdf->cell(20,$alt,db_formatar($val_ad_pat,'f'),'T',0,"R",0);
+$pdf->cell(20,$alt,db_formatar($val_pat + $taxa_ad + $val_ad_pat,'f'),'T',1,"R",0);
+ */
 
 $pdf->Output();
 

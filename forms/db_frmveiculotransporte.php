@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -214,13 +214,13 @@ function js_pesquisaVeiculos(lMostra) {
   if (lMostra) {
     
     sUrl += '|ve01_codigo|ve22_descr|ve01_placa';
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_veiculos', sUrl, 'Pesquisa Veículos', true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_veiculos', sUrl, 'Pesquisa Veículos', true);
   } else {
 
     if ($('ve01_codigo').value != '') {
 
       sUrl += '&pesquisa_chave='+$('ve01_codigo').value;
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_veiculos', sUrl, 'Pesquisa Veículos', false);
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_veiculos', sUrl, 'Pesquisa Veículos', false);
     }
   }
 }
@@ -263,13 +263,13 @@ function js_pesquisaCgm(lMostra) {
   if (lMostra) {
 
     sUrl += '|z01_numcgm|z01_nome';
-    js_OpenJanelaIframe('top.corpo', 'func_nome', sUrl, 'Pesquisa Empresa', true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'func_nome', sUrl, 'Pesquisa Empresa', true);
   } else {
 
     if ($('z01_numcgm').value != '') {
 
       sUrl += '&pesquisa_chave='+$('z01_numcgm').value;
-      js_OpenJanelaIframe('top.corpo', 'func_nome', sUrl, 'Pesquisa Empresa', false);
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'func_nome', sUrl, 'Pesquisa Empresa', false);
     }
   }
 }
@@ -301,7 +301,7 @@ function js_pesquisaVeiculoTransporte() {
   var sUrl  = 'func_veiculotransportemunicipal.php?funcao_js=parent.js_mostraVeiculoTransporte';
       sUrl += '|tre01_sequencial&iLinha=1';
     
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_veiculotransportemunicipal', sUrl, 'Pesquisa Veículo Transporte', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_veiculotransportemunicipal', sUrl, 'Pesquisa Veículo Transporte', true);
 }
 
 /**
@@ -336,7 +336,7 @@ function js_mostraVeiculoTransporte() {
 function js_dadosVeiculoTransporte(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   $('btnAcao').disabled = false;
   
@@ -419,7 +419,7 @@ function js_salvar() {
 function js_retornoSalvar(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   
   alert(oRetorno.message.urlDecode());
   if (oRetorno.status == 1) {
@@ -458,7 +458,7 @@ function js_excluir() {
 function js_retornoExcluir(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.message.urlDecode());
   if (oRetorno.status == 1) {

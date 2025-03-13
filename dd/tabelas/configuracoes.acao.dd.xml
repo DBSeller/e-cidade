@@ -1,0 +1,52 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010468' name='configuracoes.transicao' description="Tabela que guarda as transições de atividades" prefix="" label="Transições" type="0">
+  <fields>
+    <field codigo="1010746"
+           campo_api=''
+           name="db176_sequencial"
+           conteudo="int8"
+           description="Sequencial da tabela"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+    <sequence name='configuracoes.acao_db176_sequencial_seq' />
+
+    </field>
+    <field codigo="1010747"
+           campo_api=''
+           name="db176_descricao"
+           conteudo="varchar(100)"
+           description="Descrição da ação"
+           inivalue="0"
+           label=""
+           size="100"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="f"
+           hassequence="f" >
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="db176_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>
+
+
+

@@ -1,50 +1,50 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
- 
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_usuariosonline.php';
-require_once 'libs/db_utils.php';
-require_once 'libs/db_app.utils.php';
-require_once 'dbforms/db_funcoes.php';
-require_once 'libs/db_sql.php';
-require_once 'std/DBNumber.php';
-require_once 'libs/exceptions/ParameterException.php';
-require_once 'libs/exceptions/BusinessException.php';
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("std/DBNumber.php"));
+require_once(modification("libs/exceptions/ParameterException.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
 
 $oRotulo = new rotulocampo;
 $oRotulo->label("k00_numpre");
 $oRotulo->label("z01_nome");
 $oRotulo->label("z01_numcgm");
 $oRotulo->label("k00_valor");
-$oRotulo->label("k00_descr"); 
+$oRotulo->label("k00_descr");
 $oRotulo->label("k00_numpar");
-$oRotulo->label("k00_receit"); 
+$oRotulo->label("k00_receit");
 $oRotulo->label("k00_histtxt");
 
 $aParcelas = array('0' => 'Todas parcelas');
@@ -68,26 +68,18 @@ try {
   $iNumpre = $oPost->k00_numpre;
 
   if ( !DBNumber::isInteger($iNumpre) ) {
-    throw new ParameterException("Numpre não é válido");   
+    throw new ParameterException("Numpre não é válido");
   }
 
   if ( !Desconto::validarProcessamento($iNumpre) ) {
-    // throw new BusinessException(" Débito com recibos válidos emitidos, desconto não pode ser aplicado.");    
+    // throw new BusinessException(" Débito com recibos válidos emitidos, desconto não pode ser aplicado.");
   }
-  
-  $sDataHoje = date( "Y-m-d", db_getsession("DB_datausu") );
-  $sWhere   = "not exists ( select 1                                 ";
-  $sWhere  .= "               from recibopaga rp                     ";
-  $sWhere  .= "              where rp.k00_numpre = y.k00_numpre      ";
-  $sWhere  .= "                and rp.k00_numpar = y.k00_numpar      ";
-  $sWhere  .= "                and rp.k00_dtpaga >= '{$sDataHoje}'   ";
-  $sWhere  .= "                and rp.k00_conta =  0 )               ";  
-  
-  
-  
-	$rsDebitosNumpre = debitos_numpre($iNumpre, 0, 0, db_getsession("DB_datausu"), db_getsession("DB_anousu"), 0, '', '', " and y.k00_hist <> 918 and $sWhere");
 
-	if ( !$rsDebitosNumpre || pg_num_rows($rsDebitosNumpre) == 0 ) {
+  $sDataHoje = date( "Y-m-d", db_getsession("DB_datausu") );
+
+	$rsDebitosNumpre = debitos_numpre($iNumpre, 0, 0, db_getsession("DB_datausu"), db_getsession("DB_anousu"), 0, '', '', " and y.k00_hist <> 918");
+
+  if ( !$rsDebitosNumpre || pg_num_rows($rsDebitosNumpre) == 0 ) {
 		throw new Exception('Débitos para o numpre ' . $iNumpre .', não encontrados');
 	}
 
@@ -115,7 +107,7 @@ try {
 		$aReceitas[$oDebitoNumpre->k00_receit] = $oDebitoNumpre->k02_descr;
 		$nValorHistorico += $oDebitoNumpre->vlrhis;
 		$nValorTotal     += $oDebitoNumpre->total;
-		
+
 	}
 
 	$nValorHistorico = trim(db_formatar($nValorHistorico, 'f'));
@@ -132,204 +124,187 @@ try {
 	db_msgbox( $oErro->getMessage() );
 	db_redireciona("arr4_descontomanual001.php");
 	exit;
-	
 }
-
-
 ?>
 <html>
 <head>
   <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta http-equiv="Expires" CONTENT="0">
-  <?php db_app::load("estilos.css, scripts.js, strings.js, prototype.js, datagrid.widget.js, grid.style.css"); ?>
+  <?php db_app::load("estilos.css, scripts.js, numbers.js, strings.js, prototype.js, datagrid.widget.js, grid.style.css"); ?>
   <style>
     #k00_numpar, #k00_receit {
       width: 316px;
     }
   </style>
 </head>
-<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#cccccc">
+<body class="body-default">
+  <div class="container">
+    <form name="form1" action="" method="post">
 
-<form name="form1" action="" method="post">
+      <fieldset>
 
-  <fieldset style="width:580px;margin:30px auto 0 auto;">
+        <legend>Numpre do Débito</legend>
 
-    <legend>
-      <strong>Numpre do Débito:</strong>
-    </legend>
+        <table>
 
-    <table>
+          <tr>
+            <td nowrap>
+              <strong>Numpre:</strong>
+            </td>
+            <td nowrap>
+              <?php db_input('k00_numpre', 8, $Ik00_numpre, true, 'text', 3); ?>
+            </td>
+          </tr>
 
-      <tr>
-        <td nowrap>
-          <strong>Numpre:</strong>
-        </td>
-        <td nowrap>
-          <?php db_input('k00_numpre', 8, $Ik00_numpre, true, 'text', 3); ?>
-        </td>
-      </tr>
+        </table>
 
-    </table>
+      </fieldset>
 
-  </fieldset>
+      <div id="dadosNumpre">
 
-  <div id="dadosNumpre">
+        <fieldset>
 
-    <fieldset style="width:580px;margin:5px auto 0 auto;">
+          <legend>Informações do Débito</legend>
 
-      <legend>
-        <strong>Informações do Débito: </strong>
-      </legend>
+          <table width="100%">
 
-      <table width="100%">
+            <tr>
+              <td nowrap title="<?php echo $Tz01_numcgm; ?>">
+                <?php echo $Lz01_numcgm; ?>
+              </td>
+              <td nowrap colspan="3">
+                <?php db_input('z01_numcgm', 42, $Iz01_numcgm, true, 'text', 3); ?>
+              </td>
+            </tr>
 
-        <tr>
-          <td nowrap title="<?php echo $Tz01_numcgm; ?>">
-            <?php echo $Lz01_numcgm; ?>
-          </td>
-          <td nowrap colspan="3">
-            <?php db_input('z01_numcgm', 42, $Iz01_numcgm, true, 'text', 3); ?>
-          </td>
-        </tr>
+            <tr>
+              <td nowrap title="<?php echo $Tz01_nome; ?>">
+                <?php echo $Lz01_nome; ?>
+              </td>
+              <td nowrap colspan="3">
+                <?php db_input('z01_nome', 42, $Iz01_nome, true, 'text', 3); ?>
+              </td>
+            </tr>
 
-        <tr>
-          <td nowrap title="<?php echo $Tz01_nome; ?>">
-            <?php echo $Lz01_nome; ?>
-          </td>
-          <td nowrap colspan="3">
-            <?php db_input('z01_nome', 42, $Iz01_nome, true, 'text', 3); ?>
-          </td>
-        </tr>
+            <tr>
+              <td nowrap title="<?php echo $Tk00_descr; ?>">
+                <?php echo $Lk00_descr; ?>
+              </td>
+              <td nowrap colspan="3">
+                <?php db_input('k00_descr', 42, $Ik00_descr, true, 'text', 3); ?>
+              </td>
+            </tr>
 
-        <tr>
-          <td nowrap title="<?php echo $Tk00_descr; ?>">
-            <?php echo $Lk00_descr; ?>
-          </td>
-          <td nowrap colspan="3">
-            <?php db_input('k00_descr', 42, $Ik00_descr, true, 'text', 3); ?>
-          </td>
-        </tr>
-        
-        <tr>
-          <td nowrap title="<?php echo $Tk00_numpar; ?>" width="160">
-            <?php echo $Lk00_numpar; ?>
-          </td>
-          <td nowrap colspan="3">
-            <?php db_select('k00_numpar', $aParcelas, true, 2, "onChange=\"js_calculaValorComDesconto();\""); ?>
-          </td>
-        </tr>
+            <tr>
+              <td nowrap title="<?php echo $Tk00_numpar; ?>" width="160">
+                <?php echo $Lk00_numpar; ?>
+              </td>
+              <td nowrap colspan="3">
+                <?php db_select('k00_numpar', $aParcelas, true, 2, "onChange=\"js_calculaValorComDesconto();\""); ?>
+              </td>
+            </tr>
 
-        <tr>
-          <td nowrap title="<?php echo $Tk00_receit; ?>">
-            <?php echo $Lk00_receit; ?>
-          </td>
-          <td nowrap colspan="3">
-            <?php db_select('k00_receit', $aReceitas, true, 2, "onChange=\"js_calculaValorComDesconto();\""); ?>
-          </td>
-        </tr>
-        
-        
-        <tr>
-        	<td colspan='4'>
-        	  <fieldset>
-        	  	<legend>Composição</legend>
-        			<div id="gridComposicao"></div>
-        		</fieldset>
-        	</td>
-        </tr>
-        
-        <?php 
-        	db_input('k00_valor', 15, 0, true,'hidden', 3, '', 'nValorTotal');
-        	db_input('k00_valor', 15, "", true, 'hidden', 3,'', 'nValorHistorico');
-        	
-        ?>
-      </table>
+            <tr>
+              <td nowrap title="<?php echo $Tk00_receit; ?>">
+                <?php echo $Lk00_receit; ?>
+              </td>
+              <td nowrap colspan="3">
+                <?php db_select('k00_receit', $aReceitas, true, 2, "onChange=\"js_calculaValorComDesconto();\""); ?>
+              </td>
+            </tr>
 
-    </fieldset>
+            <tr>
+            	<td colspan='4'>
+            	  <fieldset>
+            	  	<legend>Composição</legend>
+            			<div id="gridComposicao"></div>
+            		</fieldset>
+            	</td>
+            </tr>
 
-    <fieldset style="width:580px;margin:5px auto 0 auto;">
+            <?php
+            	db_input('k00_valor', 15, 0, true,'hidden', 3, '', 'nValorTotal');
+            	db_input('k00_valor', 15, "", true, 'hidden', 3,'', 'nValorHistorico');
+            ?>
+          </table>
 
-      <legend>
-        <strong>Desconto:</strong>
-      </legend>
+        </fieldset>
 
-      <table>
+        <fieldset>
 
-        <tr>
-          <td nowrap title="Valor Total" width="160">
-            <strong>Liberado para desconto:</strong>
-          </td>
-          <td nowrap>
-            <?php db_input('k00_valor', 15, 0, true,'text', 3, '', 'nValorLimite'); ?>
-          </td>
-        </tr>
+          <legend>Desconto</legend>
 
-        <tr>
-          <td nowrap title="Percentual de desconto">
-            <strong>Percentual:</strong>
-          </td>
-          <td nowrap>
-            <?php db_input('nPercentual', 15, 4, true, 'text', 1, 'onChange="js_calculaDesconto(\'porcentagem\');"'); ?>
-            <?php db_input('nPercentualCompleto', 15, 4, true, 'hidden', 3); ?>
-          </td>
-        </tr>
+          <table>
 
-        <tr>
-          <td nowrap title="Valor de desconto">
-            <strong>Valor:</strong>
-          </td>
-          <td nowrap>
-            <?php db_input('nValorDesconto', 15, 4, true, 'text', 1, 'onChange="js_calculaDesconto(\'valor\');"'); ?>
-          </td>
-        </tr>
+            <tr>
+              <td nowrap title="Valor Total" width="160">
+                <strong>Liberado para desconto:</strong>
+              </td>
+              <td nowrap>
+                <?php db_input('k00_valor', 15, 0, true,'text', 3, '', 'nValorLimite'); ?>
+              </td>
+            </tr>
 
-        <tr>
-          <td nowrap title="<?php echo $Tk00_histtxt; ?>" colspan="4">
-            <fieldset>
-              <legend><?php echo $Lk00_histtxt; ?> </legend>
-              <?php db_textarea('k00_histtxt', 5, 73, $Ik00_histtxt, true, 'text', 2); ?>
-            </fieldset>
-          </td>
-        </tr>
+            <tr>
+              <td nowrap title="Percentual de desconto">
+                <strong>Percentual:</strong>
+              </td>
+              <td nowrap>
+                <?php db_input('nPercentual', 15, 4, true, 'text', 1, 'onChange="js_calculaDesconto(\'porcentagem\');"'); ?>
+                <?php db_input('nPercentualCompleto', 15, 4, true, 'hidden', 3); ?>
+              </td>
+            </tr>
 
-      </table>
+            <tr>
+              <td nowrap title="Valor de desconto">
+                <strong>Valor:</strong>
+              </td>
+              <td nowrap>
+                <?php db_input('nValorDesconto', 15, 4, true, 'text', 1, 'onChange="js_calculaDesconto(\'valor\');"'); ?>
+              </td>
+            </tr>
 
-    </fieldset>
+            <tr>
+              <td nowrap title="<?php echo $Tk00_histtxt; ?>" colspan="4">
+                <fieldset>
+                  <legend><?php echo $Lk00_histtxt; ?> </legend>
+                  <?php db_textarea('k00_histtxt', 5, 73, $Ik00_histtxt, true, 'text', 2); ?>
+                </fieldset>
+              </td>
+            </tr>
+          </table>
 
-    <br />
-    <center>
-      <input type="button" name="incluir" onClick="js_incluirDesconto();" value="Incluir Desconto" />
-      <input type="button" name="voltar" value="Voltar" onClick="js_voltar()" />
-    </center>
+        </fieldset>
 
-  </div>
+        <input type="button" name="incluir" onClick="js_incluirDesconto();" value="Incluir Desconto" />
+        <input type="button" name="voltar"  onClick="js_voltar()"           value="Voltar"  />
 
-</form>
+      </div>
+    </form>
 
+</div>
 <?php db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit")); ?>
-
+</body>
+</html>
 <script type="text/javascript">
 
-require_once('scripts/numbers.js');
-
 /**
- * Arquivo de RPC 
+ * Arquivo de RPC
  */
-var sUrlRPC = 'arr4_descontomanual.RPC.php';  
+var sUrlRPC = 'arr4_descontomanual.RPC.php';
 
 js_gridComposicao();
 js_calculaValorComDesconto();
 
 function js_gridComposicao() {
-	
+
 	oGridComposicao = new DBGrid('gridComposicao');
 	oGridComposicao.nameInstance = 'gridComposicao';
 	oGridComposicao.setCellAlign(new Array('left', 'right', 'right', 'right'));
 	oGridComposicao.setCellWidth(new Array('15%', '25%', '30%', '30%'));
 	oGridComposicao.setHeader(new Array('Débito' , 'Antes', 'Desconto',  'Após'));
 	oGridComposicao.show($('gridComposicao'));
-	
 }
 
 function js_calculaValorComDesconto() {
@@ -338,103 +313,102 @@ function js_calculaValorComDesconto() {
     return false;
   }
 
-  var oParametros                 = new Object();
-  oParametros.exec                = 'getValorComDesconto';  
-  oParametros.iNumpre             = $F('k00_numpre');
-  oParametros.iNumpar             = $F('k00_numpar');
-  oParametros.iReceita            = $F('k00_receit');
-  oParametros.nPercentual         = $F('nPercentualCompleto').replace(/,/,'.').replace(/ /,'');
+  var oParametros          = new Object();
+  oParametros.exec         = 'getValorComDesconto';
+  oParametros.iNumpre      = $F('k00_numpre');
+  oParametros.iNumpar      = $F('k00_numpar');
+  oParametros.iReceita     = $F('k00_receit');
+  oParametros.nPercentual  = $F('nPercentualCompleto').getNumber();
 
   js_divCarregando("Buscando dados do numpre...\nAguarde", 'msgBox');
-   
-  var oAjax = new Ajax.Request(sUrlRPC, 
+
+  var oAjax = new Ajax.Request(sUrlRPC,
                                {method     : 'post',
                                 parameters : 'json=' + Object.toJSON(oParametros),
                                 onComplete : js_retornoCalculaValorComDesconto }
-  );   
+  );
 }
 
 function js_retornoCalculaValorComDesconto(oAjax) {
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode();
 
   if ( oRetorno.iStatus > 1 ) {
-	  
+
     alert( sMensagem );
     return false;
-    
+
   }
 
   js_montaGridComposicao(oRetorno);
-  
-  $('nValorHistorico').value   = oRetorno.nValorHistorico;  
-  $('nValorLimite').value      = js_formatar(oRetorno.nValorLimite, 'f');
+
+  $('nValorHistorico').value = oRetorno.nValorHistorico;
+  $('nValorLimite').value    = js_formatar(oRetorno.nValorLimite, 'f');
 
   js_removeObj('msgBox');
-  
 }
 
 function js_montaGridComposicao(oValores) {
 
 	sLabelHistorico         = '<strong>Histórico</strong>';
   sLabelCorrigido         = '<strong>Corrigido</strong>';
-  sLabelJuros             = '<strong>Juros</strong>';    
-  sLabelMulta             = '<strong>Multa</strong>';   
-  sLabelTotal             = '<strong>Total</strong>';    
+  sLabelJuros             = '<strong>Juros</strong>';
+  sLabelMulta             = '<strong>Multa</strong>';
+  sLabelTotal             = '<strong>Total</strong>';
 
   nValorHistoricoAnterior = oValores.nValorHistoricoAnterior;
   nValorCorrigidoAnterior = oValores.nValorCorrigidoAnterior;
-  nValorJurosAnterior     = oValores.nValorJurosAnterior    ;    
-  nValorMultaAnterior     = oValores.nValorMultaAnterior    ;    
+  nValorJurosAnterior     = oValores.nValorJurosAnterior    ;
+  nValorMultaAnterior     = oValores.nValorMultaAnterior    ;
   nValorTotalAnterior     = oValores.nValorTotalAnterior    ;
 
   nValorHistoricoDepois   = oValores.nValorHistorico;
   nValorCorrigidoDepois   = oValores.nValorCorrigido;
-  nValorJurosDepois       = oValores.nValorJuros    ;     
-  nValorMultaDepois       = oValores.nValorMulta    ;    
+  nValorJurosDepois       = oValores.nValorJuros    ;
+  nValorMultaDepois       = oValores.nValorMulta    ;
   nValorTotalDepois       = oValores.nValorTotal    ;
 
   nValorHistoricoDesconto = nValorHistoricoAnterior - nValorHistoricoDepois;
   nValorCorrigidoDesconto = nValorCorrigidoAnterior - nValorCorrigidoDepois;
   nValorJurosDesconto     = nValorJurosAnterior     - nValorJurosDepois    ;
   nValorMultaDesconto     = nValorMultaAnterior     - nValorMultaDepois    ;
-  nValorTotalDesconto     = nValorTotalAnterior     - nValorTotalDepois    ;   
+  nValorTotalDesconto     = nValorTotalAnterior     - nValorTotalDepois    ;
 
   var aLinhaHistorico = [sLabelHistorico,
-                         js_formatar( nValorHistoricoAnterior, "f"), 
-                         js_formatar( nValorHistoricoDesconto, "f"), 
+                         js_formatar( nValorHistoricoAnterior, "f"),
+                         js_formatar( nValorHistoricoDesconto, "f"),
                          js_formatar( nValorHistoricoDepois, "f")];
-  var aLinhaCorrigido = [sLabelCorrigido, 
-                         js_formatar( nValorCorrigidoAnterior, "f"), 
-                         js_formatar( nValorCorrigidoDesconto, "f"), 
+  var aLinhaCorrigido = [sLabelCorrigido,
+                         js_formatar( nValorCorrigidoAnterior, "f"),
+                         js_formatar( nValorCorrigidoDesconto, "f"),
                          js_formatar( nValorCorrigidoDepois, "f")];
-  var aLinhaJuros     = [sLabelJuros, 
-                         js_formatar( nValorJurosAnterior, "f"), 
-                         js_formatar( nValorJurosDesconto, "f"), 
+  var aLinhaJuros     = [sLabelJuros,
+                         js_formatar( nValorJurosAnterior, "f"),
+                         js_formatar( nValorJurosDesconto, "f"),
                          js_formatar( nValorJurosDepois, "f")];
-  var aLinhaMulta     = [sLabelMulta, 
-                         js_formatar( nValorMultaAnterior, "f"), 
-                         js_formatar( nValorMultaDesconto, "f"), 
+  var aLinhaMulta     = [sLabelMulta,
+                         js_formatar( nValorMultaAnterior, "f"),
+                         js_formatar( nValorMultaDesconto, "f"),
                          js_formatar( nValorMultaDepois, "f")];
-  var aLinhaTotal     = [sLabelTotal, 
-                         js_formatar( nValorTotalAnterior, "f"), 
-                         js_formatar( nValorTotalDesconto, "f"), 
+  var aLinhaTotal     = [sLabelTotal,
+                         js_formatar( nValorTotalAnterior, "f"),
+                         js_formatar( nValorTotalDesconto, "f"),
                          js_formatar( nValorTotalDepois, "f")];
-  
+
   oGridComposicao.clearAll(true);
 	oGridComposicao.addRow(aLinhaHistorico);
 	oGridComposicao.addRow(aLinhaCorrigido);
 	oGridComposicao.addRow(aLinhaJuros);
 	oGridComposicao.addRow(aLinhaMulta);
 	oGridComposicao.addRow(aLinhaTotal);
-	oGridComposicao.renderRows();	
-	
+	oGridComposicao.renderRows();
+
 }
 
 /**
- * Incluir desconto 
- * 
+ * Incluir desconto
+ *
  * @access public
  * @return void
  */
@@ -445,34 +419,34 @@ function js_incluirDesconto() {
   }
 
   var oParametros                 = new Object();
-  oParametros.exec                = 'incluirDesconto';  
+  oParametros.exec                = 'incluirDesconto';
   oParametros.iCgm                = $F('z01_numcgm');
   oParametros.iNumpre             = $F('k00_numpre');
   oParametros.iNumpar             = $F('k00_numpar');
   oParametros.iReceita            = $F('k00_receit');
-  oParametros.nPercentualLimitado = $F('nPercentual').replace(/,/,'.').replace(/ /,'');
-  oParametros.nValorHistorico     = $F('nValorHistorico').replace(/,/,'.').replace(/ /,'');
-  oParametros.nValorDesconto      = $F('nValorDesconto').replace(/,/,'.').replace(/ /,'');
-  oParametros.nPercentual         = $F('nPercentualCompleto').replace(/,/,'.').replace(/ /,'');
-  oParametros.sObservacao         = $F('k00_histtxt');
+  oParametros.nPercentualLimitado = $F('nPercentual').getNumber();
+  oParametros.nValorHistorico     = $F('nValorHistorico').getNumber();
+  oParametros.nValorDesconto      = $F('nValorDesconto').getNumber();
+  oParametros.nPercentual         = $F('nPercentualCompleto').getNumber();
+  oParametros.sObservacao         = encodeURIComponent(tagString( $F('k00_histtxt') ) );
 
   js_divCarregando("Incluindo desconto...\nAguarde", 'msgBox');
-   
+
   var oAjax = new Ajax.Request(
-    sUrlRPC, 
+    sUrlRPC,
     {
       method     : 'post',
       parameters : 'json=' + Object.toJSON(oParametros),
       onComplete : js_retornoIncluirDesconto
     }
-  );   
+  );
 
 }
 
 /**
- * Chamada pela funcao js_incluirDesconto no retorno do rpc  
- * 
- * @param oAjax $oAjax 
+ * Chamada pela funcao js_incluirDesconto no retorno do rpc
+ *
+ * @param oAjax $oAjax
  * @access public
  * @return bool
  */
@@ -480,12 +454,12 @@ function js_retornoIncluirDesconto(oAjax) {
 
   js_removeObj('msgBox');
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode();
 
   /**
    * Erro
-   */   
+   */
   if ( oRetorno.iStatus > 1 ) {
 
     alert( sMensagem );
@@ -497,19 +471,19 @@ function js_retornoIncluirDesconto(oAjax) {
 }
 
 /**
- * Funcao para validar formulario 
- * 
+ * Funcao para validar formulario
+ *
  * @access public
  * @return bool
  */
 function js_validaFormulario() {
 
   /**
-   * Valida se foi informado valor/porcentagem do desconto 
+   * Valida se foi informado valor/porcentagem do desconto
    */
-  var nValorLimite    = parseFloat($F('nValorLimite').replace(/,/,'.').replace(/ /,''));
-  var nValorHistorico = parseFloat($F('nValorHistorico').replace(/,/,'.').replace(/ /,''));
-  
+  var nValorLimite    = parseFloat($F('nValorLimite').getNumber());
+  var nValorHistorico = parseFloat($F('nValorHistorico').getNumber());
+
   if ( nValorHistorico == nValorLimite ) {
 
     alert('Desconto não Informado.');
@@ -517,7 +491,7 @@ function js_validaFormulario() {
   }
 
   /**
-   * Valida o campo com observacao 
+   * Valida o campo com observacao
    */
   if ( $F('k00_histtxt') == '' ) {
 
@@ -529,32 +503,35 @@ function js_validaFormulario() {
 }
 
 /**
- * Calcula desconto 
- * 
+ * Calcula desconto
+ *
  * @param sTipo $sTipo - tipo de calculo, pelo valor ou por porcentagem
  * @access public
  * @return void
  */
 function js_calculaDesconto(sTipo) {
-  
+
   var nValorTotal    = $F('nValorTotal');
   var nValorDesconto = $F('nValorDesconto');
   var nPercentual    = $F('nPercentual');
-  var nValorLimite   = parseFloat($F('nValorLimite').replace(/,/,'.').replace(/ /,''));
+  var nValorLimite   = $F('nValorLimite');
+  var nValorLimite   = parseFloat($F('nValorLimite').getNumber());
   var oRegex         = /-/;
 
   if ( oRegex.test(nPercentual) || oRegex.test(nValorDesconto) ) {
+
     nPercentual    = 0;
     nValorDesconto = 0;
     alert('Desconto não pode ser negativo.');
   }
 
   /**
-   * Calcular valor desconto 
+   * Calcular valor desconto
    */
   if ( sTipo == 'valor' ) {
-    nPercentual = nValorDesconto * 100 / nValorLimite; 
-  
+
+    nPercentual = nValorDesconto * 100 / nValorLimite;
+
     /**
      * Percentual invalido, erro no calculo
      */
@@ -564,11 +541,11 @@ function js_calculaDesconto(sTipo) {
   }
 
   /**
-   * Calcular valor desconto pela porcentagem 
+   * Calcular valor desconto pela porcentagem
    */
   if ( sTipo == 'porcentagem' ) {
 
-    nValorDesconto = nPercentual * nValorLimite / 100; 
+    nValorDesconto = nPercentual * nValorLimite / 100;
 
     /**
      * valor de desconto invalido, erro no calculo
@@ -577,20 +554,25 @@ function js_calculaDesconto(sTipo) {
       return false;
     }
   }
- 
+
+
+
+
+
+
   nValorDesconto = new Number(nValorDesconto);
   nValorLimite   = new Number(nValorLimite);
- 
+
   if ( nValorDesconto >= nValorLimite ) {
 
     var sErro  = 'Valor calculado para o desconto igual ao valor histórico.\n';
-        sErro += 'Para cancelamento total de um debito, use a opção Cancelamento de débito na consulta geral financeira.';    
+        sErro += 'Para cancelamento total de um debito, use a opção Cancelamento de débito na consulta geral financeira.';
     alert(sErro);
     return false;
-  } 
+  }
 
   /**
-   * Atualiza campos 
+   * Atualiza campos
    */
   $('nPercentualCompleto').value = nPercentual;
   $('nValorDesconto').value      = js_formatar(nValorDesconto, 'f');
@@ -603,8 +585,4 @@ function js_calculaDesconto(sTipo) {
 function js_voltar() {
   window.location.href = 'arr4_descontomanual001.php'
 }
-
 </script>
-
-</body>
-</html>

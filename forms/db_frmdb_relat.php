@@ -97,7 +97,7 @@ db_input('db91_nomearq',40,$Idb91_nomearq,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_db_relat','db_iframe_db_relat','func_db_relat.php?funcao_js=parent.js_preenchepesquisa|db91_codrel','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_relat','db_iframe_db_relat','func_db_relat.php?funcao_js=parent.js_preenchepesquisa|db91_codrel','Pesquisa',true,'0','1','775','390');
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_relat.hide();

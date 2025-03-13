@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt15');
 $clrotulo->label('DBtxt16');
@@ -78,7 +78,7 @@ $valpar    = $DBtxt17;
 $numpar    = $DBtxt18;
 
    $sql1 = "select * from procdiver where procdiver = $procdiver";
-   db_fieldsmemory(pg_exec($sql1),0);
+   db_fieldsmemory(db_query($sql1),0);
 
    $sql = " select j01_matric,
 				j01_numcgm 
@@ -86,19 +86,19 @@ $numpar    = $DBtxt18;
 				inner join iptubase on j01_idbql = j34_idbql 
 			where j34_loteam = $loteam 
 			and j01_baixa is null";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
    	db_fieldsmemory($result,0);
 	for($i = 0;$i < pg_numrows($result);$i++) {
     	db_fieldsmemory($result,$i);
 		$valortotal = $numpar * $valpar;
-		$numpre = pg_result(pg_exec("select nextval('numpref_k03_numpre_seq')"),0);
-		$coddiver = pg_result(pg_exec("select nextval('diversos_coddiver_seq')"),0);
+		$numpre = pg_result(db_query("select nextval('numpref_k03_numpre_seq')"),0);
+		$coddiver = pg_result(db_query("select nextval('diversos_coddiver_seq')"),0);
    	$sqlins = "insert into diversos values($coddiver,$j01_numcgm,'".date('Y-m-d',db_getsession("DB_datausu"))."',".db_getsession("DB_anousu").",$numpre,1,1,0,$valortotal,$procdiver,'PARCELAMENTO DE LOTEAMENTO REFERENTE AO EXERCICIO - ".db_getsession("DB_anousu")."','$datpri','$datpri',$valortotal)";
-   	pg_exec($sqlins);
+   	db_query($sqlins);
     $sqlins3 = "insert into divermatric values($coddiver,$j01_matric)";
-		pg_exec($sqlins3);
+		db_query($sqlins3);
 		$sqlins4 = "insert into arrematric  values($numpre,$j01_matric)";
-		pg_exec($sqlins4);
+		db_query($sqlins4);
     	for($ii = 0 ; $ii < $numpar ; $ii++) {
   			$parcelas = $ii+1;
 			if( $ii == 0 ) {
@@ -107,10 +107,10 @@ $numpar    = $DBtxt18;
     		   $vencimento = date('Y-m-d',mktime (0, 0, 0, substr($datpri,6,2)+$ii, $diapar,db_getsession("DB_anousu")));
 			}
     		$sqlins2 = "insert into arrecad values($j01_numcgm,'".date('Y-m-d',db_getsession("DB_datausu"))."',$receita,$k00_hist,$valpar,'$vencimento',$numpre,$parcelas,$numpar,0,25,0)";
-    		pg_exec($sqlins2);
+    		db_query($sqlins2);
 		}
 	}
-	pg_exec("commit");
+	db_query("commit");
     echo "<script> alert('Processamento Concluído.')</script>";
 	echo "<script> location.href='dvr4_parclote001.php'</script>";
 }else{

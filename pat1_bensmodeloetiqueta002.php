@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_bensmodeloetiqueta_classe.php");
-require_once("classes/db_bensmodeloetiquetapadrao_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("model/dbModeloEtiqueta.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_bensmodeloetiqueta_classe.php"));
+require_once(modification("classes/db_bensmodeloetiquetapadrao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/dbModeloEtiqueta.model.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -83,7 +83,7 @@ if(isset($alterar)){
 ?></head>
 <body bgcolor=#CCCCCC>
 	<?
-	include("forms/db_frmbensmodeloetiqueta.php");
+	include(modification("forms/db_frmbensmodeloetiqueta.php"));
 	?>
 <?
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
@@ -147,7 +147,7 @@ function js_retornoSalvaXml(oAjax){
 
   js_removeObj("msgBox");
  
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   var sExpReg  = new RegExp('\\\\n','g');
     

@@ -69,7 +69,7 @@ db_input('sd92_c_nome',60,$Isd92_c_nome,true,'text',$db_opcao,"")
     </td>
     <td>
        <?
-       include("classes/db_sau_tipoproc_classe.php");
+       include(modification("classes/db_sau_tipoproc_classe.php"));
        $clsau_tipoproc = new cl_sau_tipoproc;
        $result = $clsau_tipoproc->sql_record($clsau_tipoproc->sql_query("","*"));
        db_selectrecord("sd92_i_tipoproc",$result,true,$db_opcao);
@@ -94,7 +94,7 @@ db_input('sd92_i_mescomp',2,$Isd92_i_mescomp,true,'text',$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_siasih','func_sau_siasih.php?funcao_js=parent.js_preenchepesquisa|sd92_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_siasih','func_sau_siasih.php?funcao_js=parent.js_preenchepesquisa|sd92_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_siasih.hide();

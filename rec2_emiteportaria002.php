@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/scpdf.php");
-include("libs/db_sql.php");
-include ("fpdf151/assinatura.php");
+include(modification("fpdf151/scpdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/assinatura.php"));
 
 $classinatura = new cl_assinatura;
 $clrotulo = new rotulocampo;
@@ -103,7 +103,7 @@ where h31_sequencial = $port;
        ";
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);exit;
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
@@ -124,7 +124,7 @@ $xlin = 10;
 $pdf->SetLineWidth(0.4);
 for($x = 0; $x < pg_numrows($result);$x++){
    db_fieldsmemory($result,$x);
-   $dados = pg_exec($conn,"select nomeinst,ender,munic,uf,telef,email,url,logo from db_config where codigo = ".db_getsession("DB_instit"));
+   $dados = db_query($conn,"select nomeinst,ender,munic,uf,telef,email,url,logo from db_config where codigo = ".db_getsession("DB_instit"));
    $pdf->addpage();
    $pdf->Image('imagens/files/'.pg_result($dados,0,"logo"),20,$xlin -7, 25);
    //$pdf->Image('imagens/files/logo_boleto.png', 20, $xlin -7, 25); //.$this->logo

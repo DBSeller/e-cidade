@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 //------------------------------------------------------
 //   Arquivos que verificam se o boletim já foi liberado ou naum
-  include("classes/db_boletim_classe.php");
+  include(modification("classes/db_boletim_classe.php"));
   $clverficaboletim =  new cl_verificaboletim(new cl_boletim);
 //------------------------------------------------------
 
@@ -56,7 +56,7 @@ if(isset($pesquisa)){
                 where k00_numpre = $np and k00_numpar = $pa
 				      and k00_receit = k02_codigo 
 		        group by k00_receit,k02_drecei,k00_dtoper,z01_nome";
-        $result = pg_exec($sql);
+        $result = db_query($sql);
         if(pg_numrows($result)==0){
           $erro = "Código de Arrecadação não Pago.";
         }else{
@@ -78,7 +78,7 @@ if(isset($pesquisa)){
 				     left outer join cgm on k00_numcgm = z01_numcgm
                 where k00_numpre = $np and k00_numpar = $pa
 				      and k00_receit = ".$HTTP_POST_VARS["receitas"];
-        $result = pg_exec($sql);
+        $result = db_query($sql);
         if(pg_numrows($result)==0){
           $erro = "Código de Arrecadação não Pago.";
         }else{
@@ -87,7 +87,7 @@ if(isset($pesquisa)){
 	  }
   }
 }
-$result_conta = pg_exec(
+$result_conta = db_query(
                 "select saltes.k13_conta as c01_reduz,k13_descr as c01_descr,c60_estrut 
 		         from saltes
 				      inner join conplanoexe on c62_reduz = k13_conta and c62_anousu=". db_getsession("DB_anousu")."

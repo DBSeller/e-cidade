@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_cgm_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $db_botao=1;
@@ -53,9 +53,14 @@ $clcgm->rotulo->label("z01_nome");
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/datagrid.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/Collection.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DatagridCollection.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/classes/http/http.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <style type="text/css">
-<!--
+/*
 td {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 12px;
@@ -66,7 +71,7 @@ input {
         height: 17px;
         border: 1px solid #999999;
 }
--->
+*/
 </style>
 </head>
 <body bgcolor=#CCCCCC>
@@ -83,7 +88,7 @@ function js_testacamp(){
   return true;  
 }   
 </script>
-<form class="container" name="form1" method="post" action="dvr3_diversos005.php?pri=true"  onSubmit="return js_verifica_campos_digitados();" >
+<form class="container" name="form1" method="post" action="dvr3_diversos005.php?pri=true" enctype="multipart/form-data" onSubmit="return js_verifica_campos_digitados();" >
   <fieldset>
     <legend>Procedimentos - Diversos</legend>
     <table class="form-container">
@@ -126,22 +131,240 @@ function js_testacamp(){
           ?>
         </td>
       </tr>
+      <tr>
+        <td><strong>Inclusão em lote:</strong></td>
+        <td>
+          <select style="width:83px;" name="selectImportarPlanilha" id="selectImportarPlanilha">
+            <option value="">Selecionar</option>
+            <option value="cgm">CGM</option>
+            <option value="matric">Matrícula</option>
+            <option value="inscr">Inscrição</option>
+          </select>
+
+          <input type="file" id="importarplanilha" name="importarplanilha" onchange="js_montaGridPLanilha()" style="width:298px; height: 23px;">
+          <input type="hidden"id="dadosValidos" name="dadosValidos" >
+          <input type="hidden"id="dadosInvalidos" name="dadosInvalidos" >
+
+        </td>
+      </tr>
     </table> 	 
   </fieldset>
   <input type="submit" name="pesquisar" value="Pesquisar" onclick="return js_testacamp();" >
+  <input type="button" name="importar" value="Importar Lista" onclick="js_verificaPlanilha();" disabled='true'>
 </form>
 <?
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
+
+<br>
+<fieldset id="fieldsetDadosValidos" style="width:15%;float:left;margin-left:33.2%;display:none">
+  <legend>Dados Validos</legend>
+    <div id="container_dados_validos"></div>
+</fieldset>
+<fieldset id="fieldsetDadosInvalidos" style="width:15%;float:left;display:none">
+  <legend>Dados Inválidos ou Inexistentes</legend>
+  <div id="container_dados_invalidos"></div>
+</fieldset>
+
 </body>
 </html>
 <script>
+function js_verificaPlanilha() {
+  const selectImportarPlanilha = document.getElementById('selectImportarPlanilha').value;
+
+  if (selectImportarPlanilha == "") {
+    alert("Selecione uma origem.");
+    return false;
+  }
+
+  const file = document.getElementById('importarplanilha');
+  const reader = new FileReader();
+  reader.readAsText(file.files[0]);
+
+  reader.onload = function(csv) {
+    var linhaCSV = csv.target.result.split('\n');
+    const aLabels = linhaCSV[0].split(",");
+
+    var indice = null;
+
+    for (let index = 0; index < aLabels.length; index++) {
+      const element = aLabels[index];
+
+      if (selectImportarPlanilha == element) {
+        indice = index;
+      }
+
+    }
+
+    if (indice == null) {
+      alert("Coluna não encontrada no documento selecionado");
+      return false;
+    } else {
+      document.form1.submit();
+    }
+
+  };
+}
+
+
+function js_montaGridPLanilha() {
+
+  const selectImportarPlanilha = document.getElementById('selectImportarPlanilha').value;
+
+  if (selectImportarPlanilha == "") {
+    alert("Selecione uma origem.");
+    return false;
+  } else {
+
+    // Pega e manipula dados da planilha
+    const file = document.getElementById('importarplanilha');
+    const reader = new FileReader();
+    reader.readAsText(file.files[0]);
+
+    reader.onload = function(csv) {
+      var linhaCSV = csv.target.result.split('\n');
+      const aLabels = linhaCSV[0].split(",");
+
+      var indice = null;
+
+      for (let index = 0; index < aLabels.length; index++) {
+        const element = aLabels[index];
+
+        if (selectImportarPlanilha == element) {
+          indice = index;
+        }
+
+      }
+
+      if (indice == null) {
+        alert("Coluna não encontrada no documento selecionado");
+        document.getElementById('importarplanilha').value = "";
+        return false;
+      } else {
+        document.form1.pesquisar.disabled = true;
+        document.form1.importar.disabled = false;
+        document.form1.selectImportarPlanilha.required = true;
+
+        // Revela os fieldsets
+        document.getElementById("fieldsetDadosValidos").style.display = 'block';
+        document.getElementById("fieldsetDadosInvalidos").style.display = 'block';
+
+        // Cria as Grids para inserir os dados da planilha
+        const oGridDadosValidosCollection = new Collection().setId('id');
+        const oGridDadosInvalidosCollection = new Collection().setId('id');
+
+        const oGridDadosValidos = DatagridCollection.create(oGridDadosValidosCollection).configure({"order" : false, "height" : "400px"});
+        const oGridDadosInvalidos = DatagridCollection.create(oGridDadosInvalidosCollection).configure({"order" : false, "height" : "400px"});
+
+        oGridDadosValidos.addColumn('matric',   {label : 'Válidos',   "width" : "15%"}).setOption("align","center");
+        oGridDadosInvalidos.addColumn('matric',   {label : 'Inválidos',   "width" : "15%"}).setOption("align","center");
+
+        oGridDadosValidos.show($('container_dados_validos'));
+        oGridDadosInvalidos.show($('container_dados_invalidos'));
+
+        const arrayEnvioValidos = [];
+        const arrayEnvioInvalidos = [];
+        const arrayDadosValidos = [];
+        const arrayDadosInvalidos = [];
+
+        oGridDadosValidos.clear();
+        oGridDadosInvalidos.clear();
+
+        var oDadosValidos = {};
+        var oDadosInvalidos = {};
+
+        for (var i=1; i < linhaCSV.length; i++) {
+          
+          const aLinha = linhaCSV[i].split(',');
+
+          const item = aLinha[indice];
+
+          if (item == undefined || item == "") {
+            continue;
+          }
+
+          // Verifica se os campos da planilha são números inteiros
+          if (Number.isInteger(parseInt(item, 10))) {
+            arrayDadosValidos.push(item);
+          } else {
+            arrayDadosInvalidos.push(item);
+          }
+
+        }
+
+        // Verifica os dados válidos se são existentes nas tabelas do banco
+        var request = new AjaxRequest(
+          'dvr3_diversos004.RPC.php',
+          {
+            exec: 'verificaDadosValidos',
+            tipoDados: selectImportarPlanilha,
+            dadosValidos: arrayDadosValidos
+          },
+          function(response) {
+
+            if (response.erro) {
+              alert(response.sMensagem);
+              return;
+            }
+
+            // Insere na grid de Dados Válidos
+            for (var i=0; i < response.arrayDadosExistentes.length; i++) {
+
+              const aLinha = response.arrayDadosExistentes[i].split(',');
+              const item = aLinha[0];
+
+              arrayEnvioValidos.push(item);
+              oDadosValidos = {id: i, matric: item};
+              oGridDadosValidosCollection.add(oDadosValidos);
+
+            }
+
+            // Desmembra array de Dados Invalidos (que não são numeros inteiros) da planilha e insere na array de dados inexistentes
+            for (var i=0; i < arrayDadosInvalidos.length; i++) {
+              const aLinha = arrayDadosInvalidos[i].split(',');
+              const item = aLinha[0];
+              response.arrayDadosInexistentes.push(item);
+            }
+
+            // Insere na grid de Dados Inválidos ou Inexistentes
+            for (var i=0; i < response.arrayDadosInexistentes.length; i++) {
+
+              const aLinha = response.arrayDadosInexistentes[i].split(',');
+              const item = aLinha[0];
+
+              arrayEnvioInvalidos.push(item);
+              oDadosInvalidos = {id: i, matric: item};
+              oGridDadosInvalidosCollection.add(oDadosInvalidos);
+
+            }
+
+console.log(arrayEnvioInvalidos);
+          }
+        );
+
+        request
+        .setMessage('Aguarde, buscando dados da planilha.')
+        .asynchronous(false)
+        .execute();
+
+        oGridDadosValidos.reload();
+        oGridDadosInvalidos.reload();
+
+        document.getElementById('dadosValidos').value = JSON.stringify(arrayEnvioValidos);
+        document.getElementById('dadosInvalidos').value = JSON.stringify(arrayEnvioInvalidos);
+      }
+    };
+
+  }
+
+}
+
 function js_matri(mostra){
   var matri=document.form1.j01_matric.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe3','func_iptubase.php?funcao_js=parent.js_mostramatri|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe3','func_iptubase.php?funcao_js=parent.js_mostramatri|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe3','func_iptubase.php?pesquisa_chave='+matri+'&funcao_js=parent.js_mostramatri1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe3','func_iptubase.php?pesquisa_chave='+matri+'&funcao_js=parent.js_mostramatri1','Pesquisa',false);
   }
 }
 function js_mostramatri(chave1,chave2){
@@ -161,9 +384,9 @@ function js_mostramatri1(chave,erro){
 function js_inscr(mostra){
   var inscr=document.form1.q02_inscr.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_issbase.php?funcao_js=parent.js_mostrainscr|q02_inscr|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_issbase.php?funcao_js=parent.js_mostrainscr|q02_inscr|z01_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_issbase.php?pesquisa_chave='+inscr+'&funcao_js=parent.js_mostrainscr1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_issbase.php?pesquisa_chave='+inscr+'&funcao_js=parent.js_mostrainscr1','Pesquisa',false);
   }
 }
 function js_mostrainscr(chave1,chave2){
@@ -183,9 +406,9 @@ function js_mostrainscr1(chave,erro){
 function js_cgm(mostra){
   var cgm=document.form1.z_numcgm.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_mostracgm|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_mostracgm|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?pesquisa_chave='+cgm+'&funcao_js=parent.js_mostracgm1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?pesquisa_chave='+cgm+'&funcao_js=parent.js_mostracgm1','Pesquisa',false);
   }
 }
 function js_mostracgm(chave1,chave2){

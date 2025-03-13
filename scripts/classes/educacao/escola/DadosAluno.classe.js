@@ -201,7 +201,7 @@ DBViewFormularioEducacao.DadosAluno.prototype.pesquisaDadosAluno = function (iCo
 DBViewFormularioEducacao.DadosAluno.prototype.retornoDadosAluno = function (oAjax) {
   
   js_removeObj('msgBox');
-  var oRetorno = eval("(" + oAjax.responseText + ")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   if (oRetorno.status == 2) {
     

@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
   
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_vistorias_classe.php");
-include("classes/db_auto_classe.php");
-include("classes/db_fiscal_classe.php");
-include("classes/db_levanta_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_vistorias_classe.php"));
+include(modification("classes/db_auto_classe.php"));
+include(modification("classes/db_fiscal_classe.php"));
+include(modification("classes/db_levanta_classe.php"));
 db_postmemory($HTTP_GET_VARS,0);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clvistorias = new cl_vistorias;
@@ -46,13 +46,13 @@ $where = "";
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script>
 function js_vist(cod){
-	js_OpenJanelaIframe('top.corpo','db_iframe_consulta','fis3_consultavist002.php?y70_codvist='+cod,'Consulta Vistoria',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consulta','fis3_consultavist002.php?y70_codvist='+cod,'Consulta Vistoria',true);
 }
 function js_auto(cod){
-	js_OpenJanelaIframe('top.corpo','db_iframe','fis3_consautoinf002.php?codauto='+cod,'Consulta Auto de Infração',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','fis3_consautoinf002.php?codauto='+cod,'Consulta Auto de Infração',true);
 }
 function js_notific(cod){
-	js_OpenJanelaIframe('top.corpo','db_iframe','fis3_consnotificinf002.php?codfiscal='+cod,'Consulta Notificação',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','fis3_consnotificinf002.php?codfiscal='+cod,'Consulta Notificação',true);
 }
 </script>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -107,7 +107,7 @@ if ($solicitacao == "VISTORIA") {
   $pesquisaLocalizada = true;
 }
 if ($pesquisaLocalizada==true) {
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if(pg_numrows($result) == 0){
     echo "<br><br><b>Nenhum Registro Cadastrado!!<b>";
   }else{  	

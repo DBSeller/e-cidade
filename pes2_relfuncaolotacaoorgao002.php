@@ -1,35 +1,34 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("fpdf151/pdf.php");
-require_once("classes/db_selecao_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("fpdf151/pdf.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r01_regist');
@@ -49,11 +48,11 @@ $iMesUsu    = $mes;
  * $tipo > l - Lotação
  * 				 o - Secretaria
  * 				 c - Cargo
- * 
+ *
  * $func > lista servidor 't' ou 'f'
- * 
+ *
  * $lShowRemuneracao > imprimir remuneração 't' ou 'f'
- * 
+ *
  * $lShowEndereco > mostrar endereço 't' ou 'f'
  */
 
@@ -155,7 +154,7 @@ if( !empty( $oRequest->selecao ) ) {
  * Caso seja selecionada selação sera o unico criterio do where
  */
 if( !empty( $sWhereSelecao ) ){
-	$sWhere = ' and ' . $sWhereSelecao;
+	$sWhere .= ' and ' . $sWhereSelecao;
 }else{
 	$head3 .= $sFiltro;
 	$head3 .= $sIntervalo;
@@ -171,9 +170,9 @@ if ( pg_numrows($rsDAORhpessoalmov) == 0 ){
   db_redireciona('db_erros.php?fechar=true&db_erro=Não existem funcionários no período de '.$iMesUsu.' / '.$iAnoUsu);
 }
 
-$pdf    = new PDF(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
+$pdf    = new PDF();
+$pdf->Open();
+$pdf->AliasNbPages();
 $pdf->setfillcolor(235);
 $pdf->setfont('arial','b',8);
 $func    = 0;
@@ -186,25 +185,25 @@ $funcao  = '';
 $head5   = "PERÍODO : ".$iMesUsu." / ".$iAnoUsu;
 
 for( $iRegistro = 0; $iRegistro < pg_numrows($rsDAORhpessoalmov); $iRegistro++ ){
-	
+
   db_fieldsmemory( $rsDAORhpessoalmov, $iRegistro );
-  
+
   if ($pdf->gety() > $pdf->h - 30 || $troca != 0 ){
-  	
+
     if($lShowEndereco){
       $pdf->addpage("L");
     }else{
       $pdf->addpage();
     }
-      
+
     if($funcion == 't'){
       $pdf->setfont('arial','b',8);
       $pdf->cell(15,$alt,'MATRÍC.',1,0,"C",1);
       if($lShowEndereco == 't'){
-      	
+
         $pdf->cell(60,$alt,'NOME' ,1,0,"C",1);
         $pdf->cell(20,$alt,'ADMISSÃO',1,0,"C",1);
-        
+
         if($tipo == 'o'){
           $pdf->cell(50,$alt,'FUNÇÃO'   ,1,0,"C",1);
           $pdf->cell(45,$alt,'ENDEREÇO' ,1,0,"C",1);
@@ -219,9 +218,9 @@ for( $iRegistro = 0; $iRegistro < pg_numrows($rsDAORhpessoalmov); $iRegistro++ )
           $pdf->cell(10,$alt,'UF'		    ,1,0,"C",1);
           $pdf->cell(20,$alt,'CEP'		  ,1,1,"C",1);
         }
-      
+
       } else {
-      
+
       	$pdf->cell(60,$alt,'NOME'	      ,1,0,"C",1);
         $pdf->cell(20,$alt,'C.HORÁRIA'  ,1,0,"C",1);
         if($lShowRemuneracao == 't'){
@@ -235,39 +234,39 @@ for( $iRegistro = 0; $iRegistro < pg_numrows($rsDAORhpessoalmov); $iRegistro++ )
           $pdf->cell(20,$alt,'ADMISSÃO'    ,1,0,"C",1);
           $pdf->cell(80,$alt,'LOTAÇÃO'  ,1,0,"C",1);
           $pdf->cell(60,$alt,'CARGO'    ,1,1,"C",1);
-        } 
+        }
       }
     }
 
     $troca = 0;
   }
-   
+
   if ( $funcao != $quebra1 ){
-  	
+
    if($funcao != ''){
      $pdf->ln(1);
      $pdf->cell(75,$alt,'Total: '.$func_c,0,0,"L",0);
 	   $func_c = 0;
 	   $tot_c  = 0;
-	   
+
      if ( $quebrar == 's' ){
-     	
+
        $pdf->ln(1);
        if($lShowEndereco){
          $pdf->addpage("L");
        }else{
          $pdf->addpage();
        }
-         
+
        if($funcion == 't'){
          $pdf->setfont('arial','b',8);
          $pdf->cell(15,$alt,'MATRÍC.',1,0,"C",1);
-         
+
          if($lShowEndereco == 't'){
-         	
+
            $pdf->cell(60,$alt,'NOME'    ,1,0,"C",1);
            $pdf->cell(20,$alt,'ADMISSÃO',1,0,"C",1);
-           
+
            if($tipo == 'o'){
              $pdf->cell(50,$alt,'FUNÇÃO'   ,1,0,"C",1);
              $pdf->cell(50,$alt,'ENDEREÇO' ,1,0,"C",1);
@@ -282,9 +281,9 @@ for( $iRegistro = 0; $iRegistro < pg_numrows($rsDAORhpessoalmov); $iRegistro++ )
              $pdf->cell(10,$alt,'UF'	     ,1,0,"C",1);
              $pdf->cell(15,$alt,'CEP'	     ,1,1,"C",1);
            }
-            
+
          }else{
-         	
+
             $pdf->cell(60,$alt,'NOME'	     ,1,0,"C",1);
             $pdf->cell(20,$alt,'C.HORÁRIA' ,1,0,"C",1);
             if($lShowRemuneracao == 't'){
@@ -301,31 +300,31 @@ for( $iRegistro = 0; $iRegistro < pg_numrows($rsDAORhpessoalmov); $iRegistro++ )
                $pdf->cell(60,$alt,'CARGO'      ,1,1,"C",1);
             }
          }
-       } 
+       }
      }
    }
-   
+
    $pdf->setfont('arial','b',9);
    $pdf->ln(6);
-   
+
    if($tipo == 'f'){
      $pdf->cell(100,$alt,$imprime.'    Vagas: '.$rh37_vagas,0,1,"L",1);
    }else{
      $pdf->cell(95,$alt,$imprime,0,1,"L",1);
    }
-   
+
    $funcao = $quebra1;
   }
-  
+
   if($funcion == 't'){
-  	
+
     $pdf->setfont('arial','',7);
     $pdf->cell(15,$alt,$r01_regist,0,0,"C",0);
-    
+
      if($lShowEndereco == 't'){
        $pdf->cell(60,$alt,$z01_nome					   				 ,0,0,"L",0);
        $pdf->cell(20,$alt,db_formatar($rh01_admiss,'d'),0,0,"C",0);
-       
+
        if($tipo == 'o'){
          $pdf->cell(50,$alt,$rh37_descr ,0,0,"L",0);
          $pdf->cell(45,$alt,substr($endereco,0,25),0,0,"L",0);
@@ -340,12 +339,12 @@ for( $iRegistro = 0; $iRegistro < pg_numrows($rsDAORhpessoalmov); $iRegistro++ )
          $pdf->cell(10,$alt,$z01_uf     ,0,0,"C",0);
          $pdf->cell(20,$alt,db_formatar($z01_cep,'cep') ,0,1,"C",0);
        }
-       
+
      }else{
-     	
+
        $pdf->cell(60,$alt,$z01_nome   ,0,0,"L",0);
        $pdf->cell(20,$alt,$rh02_hrsmen,0,0,"C",0);
-       
+
        if($lShowRemuneracao == 't'){
          if($tipo == 'l'){
            $pdf->cell(80,$alt, $rh37_descr ,0,0,"L",0);

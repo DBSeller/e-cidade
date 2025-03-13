@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010512' name='laboratorio.lab_importacaorequisicaoinconsistencia' description="Tabela para guardar as inconsistencias" prefix="" label="lab_importacaorequisicaoinconsistencia" type="0">
+  <fields>
+    <field codigo="1010954" 
+           campo_api='' 
+           name="la64_sequencial" 
+           conteudo="int4" 
+           description="Campo para guardar o sequencial" 
+           inivalue="0" 
+           label="la64_sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="la64_sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='laboratorio.lab_importacaorequisicaoinconsistencia_la64_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010955" 
+           campo_api='' 
+           name="la64_requisicao" 
+           conteudo="int4" 
+           description="Campo para guardar a requisicao" 
+           inivalue="0" 
+           label="la64_requisicao" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="la64_requisicao" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010956" 
+           campo_api='' 
+           name="la64_inconsistencias" 
+           conteudo="varchar(100)" 
+           description="Campo para guardar as inconsistencias" 
+           inivalue="" 
+           label="la64_inconsistencias" 
+           size="100" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="la64_inconsistencias" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="la64_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="lab_requisicao" inner='t'>
+      <fieldfk name="la64_requisicao" reference="la22_i_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

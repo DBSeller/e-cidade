@@ -1,0 +1,276 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010591' name='issqn.ordemservico' description="Tabela que guarda uma ordem de serviço para criação de alvará de eventos" prefix="q168" label="Ordem de Serviço" type="0">
+  <fields>
+    <field codigo="1011618" 
+           campo_api='' 
+           name="q168_codigo" 
+           conteudo="int8" 
+           description="Sequencial da tabela" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011633" 
+           campo_api='' 
+           name="q168_processo" 
+           conteudo="int8" 
+           description="Processo do protocolo vinculado a Ordem de serviço" 
+           inivalue="0" 
+           label="Processo" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011632" 
+           campo_api='' 
+           name="q168_cgm" 
+           conteudo="int8" 
+           description="CGM da ordem de serviço" 
+           inivalue="0" 
+           label="CGM" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="CGM" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011620" 
+           campo_api='' 
+           name="q168_inscricao" 
+           conteudo="int8" 
+           description="Inscrição da ordem de serviço" 
+           inivalue="0" 
+           label="Inscrição" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Inscrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011621" 
+           campo_api='' 
+           name="q168_descricao" 
+           conteudo="varchar(255)" 
+           description="Nome do evento" 
+           inivalue="" 
+           label="Nome do evento" 
+           size="255" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nome do evento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011622" 
+           campo_api='' 
+           name="q168_localizacao" 
+           conteudo="varchar(255)" 
+           description="Localização do evento" 
+           inivalue="" 
+           label="Localização" 
+           size="255" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Localização" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011623" 
+           campo_api='' 
+           name="q168_dataemissao" 
+           conteudo="date" 
+           description="Data de emissão da ordem de serviço" 
+           inivalue="null" 
+           label="Data de Emissão" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data de Emissão" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011624" 
+           campo_api='' 
+           name="q168_datainicio" 
+           conteudo="date" 
+           description="Data de Inicio do evento" 
+           inivalue="null" 
+           label="Data de Inicio" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Inicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011625" 
+           campo_api='' 
+           name="q168_datafim" 
+           conteudo="date" 
+           description="Data de fim do evento" 
+           inivalue="null" 
+           label="Data de Fim" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Final" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011626" 
+           campo_api='' 
+           name="q168_horainicio" 
+           conteudo="varchar(8)" 
+           description="Hora inicial do evento" 
+           inivalue="" 
+           label="Hora inicial" 
+           size="8" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Hora inicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011627" 
+           campo_api='' 
+           name="q168_horafim" 
+           conteudo="varchar(8)" 
+           description="Hora final do evento" 
+           inivalue="" 
+           label="Hora final" 
+           size="8" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Hora final" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011675" 
+           campo_api='' 
+           name="q168_processoexterno" 
+           conteudo="varchar(255)" 
+           description="Processo que não foi gerado pelo módulo Protocolo do e-Cidade." 
+           inivalue="" 
+           label="Processo Externo" 
+           size="255" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Processo Externo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011676" 
+           campo_api='' 
+           name="q168_titularprocessoexterno" 
+           conteudo="varchar(255)" 
+           description="Titular do processe que não foi gerado pelo módulo Protocolo do e-Cidade." 
+           inivalue="" 
+           label="Titular Processo Externo" 
+           size="255" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Titular Processo Externo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011677" 
+           campo_api='' 
+           name="q168_dataprocessoexterno" 
+           conteudo="date" 
+           description="Data do processo externo." 
+           inivalue="null" 
+           label="Data Processo Externo" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Processo Externo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q168_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

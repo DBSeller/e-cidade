@@ -63,7 +63,7 @@ class TreeHandler extends GtkBox
         $this->OpenAction = new GtkButton();
         $botao = $FileTree->BotaoOk;
         
-        $botao->connect_object('clicked', array(&$this, 'Pop'));
+        $botao->connect_object('clicked', array($this, 'Pop'));
 
         GtkVBox::show_all();
     }
@@ -89,19 +89,19 @@ class TreeHandler extends GtkBox
 
         if (!$names)
         {
-            $this->ItemOpen = $Menuitem1 = new MyNormalMenuItem($Pixmaps['menu_open'], _a('Open'), array(&$this, 'Open'));
-            $this->ItemDel  = $Menuitem2 = new MyNormalMenuItem($Pixmaps['menu_del'], _a('Delete'), array(&$this, 'Delete'));
+            $this->ItemOpen = $Menuitem1 = new MyNormalMenuItem($Pixmaps['menu_open'], _a('Open'), array($this, 'Open'));
+            $this->ItemDel  = $Menuitem2 = new MyNormalMenuItem($Pixmaps['menu_del'], _a('Delete'), array($this, 'Delete'));
         }
         else
         {
             if ($names[0])
             {
-                $this->ItemOpen = $Menuitem1 = new MyNormalMenuItem($names[0][0], _a($names[0][1]) , array(&$this, 'Open'));
+                $this->ItemOpen = $Menuitem1 = new MyNormalMenuItem($names[0][0], _a($names[0][1]) , array($this, 'Open'));
             }
             
             if ($names[1])
             {
-                $this->ItemDel  = $Menuitem2 = new MyNormalMenuItem($names[1][0], _a($names[1][1]), array(&$this, 'Delete'));
+                $this->ItemDel  = $Menuitem2 = new MyNormalMenuItem($names[1][0], _a($names[1][1]), array($this, 'Delete'));
             }
         }
         
@@ -133,9 +133,9 @@ class TreeHandler extends GtkBox
 
         GtkBox::pack_start($ButtonBox, false, false);
 
-        $ButtonBox->pack_start($a = new Button(array(&$this, 'CreateFolder'),  _a('Create Folder'), $Pixmaps['folder_new'], ICONBUTTON), false, false);
-        $ButtonBox->pack_start($b = new Button(array(&$this, 'Open'),          _a('Open'),          $Pixmaps['file_open'],  ICONBUTTON), false, false);
-        $ButtonBox->pack_start($c = new Button(array(&$this, 'Delete'),        _a('Delete'),        $Pixmaps['file_del'],   ICONBUTTON), false, false);
+        $ButtonBox->pack_start($a = new Button(array($this, 'CreateFolder'),  _a('Create Folder'), $Pixmaps['folder_new'], ICONBUTTON), false, false);
+        $ButtonBox->pack_start($b = new Button(array($this, 'Open'),          _a('Open'),          $Pixmaps['file_open'],  ICONBUTTON), false, false);
+        $ButtonBox->pack_start($c = new Button(array($this, 'Delete'),        _a('Delete'),        $Pixmaps['file_del'],   ICONBUTTON), false, false);
 
         $a->set_relief(GTK_RELIEF_NONE);
         $b->set_relief(GTK_RELIEF_NONE);
@@ -152,7 +152,7 @@ class TreeHandler extends GtkBox
         GtkVBox::pack_start($ButtonBox, false, false);
         $ButtonBox->pack_start(new GtkHBox);
         $pixmap = Gdk::pixmap_create_from_xpm($this->window, null, images . 'ico_require.xpm');
-        $ButtonBox->pack_start($b = new Button(array(&$this, 'Open'),    _a('Apply'), $pixmap, IMAGEBUTTON), false, false);
+        $ButtonBox->pack_start($b = new Button(array($this, 'Open'),    _a('Apply'), $pixmap, IMAGEBUTTON), false, false);
         
         $b->set_relief(GTK_RELIEF_NONE);
     }
@@ -171,7 +171,7 @@ class TreeHandler extends GtkBox
             {
                 $this->InputBox = new InputBox(_a('Folder Name'), 180, '');
                 $button =  $this->InputBox->button;
-                $button->connect_object('clicked', array(&$this,'MakeFolder'), $node, $info);
+                $button->connect_object('clicked', array($this,'MakeFolder'), $node, $info);
             }
             else
             {
@@ -182,7 +182,7 @@ class TreeHandler extends GtkBox
         {
             $this->InputBox = new InputBox(_a('Folder Name'), 180, '');
             $button =  $this->InputBox->button;
-            $button->connect_object('clicked', array(&$this,'MakeFolder'), null, $FileTree->entries[0]);
+            $button->connect_object('clicked', array($this,'MakeFolder'), null, $FileTree->entries[0]);
         }
     }
 
@@ -250,7 +250,7 @@ class TreeHandler extends GtkBox
         
         if (!$flag)
         {
-            $b = new Ask(_a('Do you really want to delete ?'), array(&$this,'Delete'), null, array(true));
+            $b = new Ask(_a('Do you really want to delete ?'), array($this,'Delete'), null, array(true));
             return true;
         }
         else

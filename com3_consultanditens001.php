@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,27 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_solicita_classe.php");
-include("classes/db_solicitatipo_classe.php");
-include("classes/db_solicitem_classe.php");
-include("classes/db_solicitempcmater_classe.php");
-include("classes/db_solicitemunid_classe.php");
-include("classes/db_pcorcam_classe.php");
-include("classes/db_pcorcamitem_classe.php");
-include("classes/db_pcorcamitemsol_classe.php");
-include("classes/db_pcorcamitemproc_classe.php");
-include("classes/db_pcorcamval_classe.php");
-include("classes/db_pcorcamjulg_classe.php");
-include("classes/db_pcdotac_classe.php");
-include("classes/db_pcproc_classe.php");
-include("classes/db_pcprocitem_classe.php");
-include("classes/db_solicitemprot_classe.php");
-include("classes/db_solandam_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_solicita_classe.php"));
+include(modification("classes/db_solicitatipo_classe.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_solicitempcmater_classe.php"));
+include(modification("classes/db_solicitemunid_classe.php"));
+include(modification("classes/db_pcorcam_classe.php"));
+include(modification("classes/db_pcorcamitem_classe.php"));
+include(modification("classes/db_pcorcamitemsol_classe.php"));
+include(modification("classes/db_pcorcamitemproc_classe.php"));
+include(modification("classes/db_pcorcamval_classe.php"));
+include(modification("classes/db_pcorcamjulg_classe.php"));
+include(modification("classes/db_pcdotac_classe.php"));
+include(modification("classes/db_pcproc_classe.php"));
+include(modification("classes/db_pcprocitem_classe.php"));
+include(modification("classes/db_solicitemprot_classe.php"));
+include(modification("classes/db_solandam_classe.php"));
 $clsolicita         = new cl_solicita;
 $clsolicitatipo     = new cl_solicitatipo;
 $clsolicitem        = new cl_solicitem;
@@ -81,7 +81,7 @@ db_postmemory($HTTP_POST_VARS);
 </script>
 <script>
 function js_anda(codigo){
-	js_OpenJanelaIframe('top.corpo','db_iframe_pcforne','com3_anditem001.php?codigo='+codigo,'Andamentos',true);	
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcforne','com3_anditem001.php?codigo='+codigo,'Andamentos',true);	
 }
 </script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
@@ -96,12 +96,12 @@ if(isset($solicitacao)){
     	echo "<table>";
     	for($w=0;$w<$clsolicitemprot->numrows;$w++){
     		db_fieldsmemory($result_and,$w);
-    		$result_loc=$clsolandam->sql_record($clsolandam->sql_query(null,"*","pc43_codigo desc limit 1","pc43_solicitem=$pc11_codigo"));
+    		$result_loc=$clsolandam->sql_record($clsolandam->sql_query_proc(null,"*","pc43_codigo desc limit 1","pc43_solicitem=$pc11_codigo"));
     		if ($clsolandam->numrows>0){
     			db_fieldsmemory($result_loc,0);
     		}    		
     		echo "<tr>";
-    		echo "<td><b>Item:</b> <a href='#' onclick='js_anda($pc11_codigo);' > $pc11_codigo-$pc01_descrmater</a > <b>Andamento:</b>$coddepto-$descrdepto</td>";
+    		echo "<td><b>Item:</b> <a href='#' onclick='js_anda($pc11_codigo);' > $pc11_codigo-$pc01_descrmater</a><b>Andamento:</b>&nbsp;$coddepto-$descrdepto&nbsp;(<b>$pc44_descr</b>)</td>";
     		echo "</tr>";    		    	
         }
         echo "</table>";

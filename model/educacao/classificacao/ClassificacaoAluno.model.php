@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -34,7 +34,7 @@ define("URL_MENSAGEM_CLASSIFICACAOALUNO", "educacao.escola.ClassificacaoAluno.")
  * @package educacao
  * @subpackage classificacao
  * @author Andrio Costa <andrio.costa@dbseller.com>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  *
  */
 final class ClassificacaoAluno {
@@ -235,7 +235,7 @@ final class ClassificacaoAluno {
     if ( empty($oHistoricoAluno) ) {
       $oHistoricoAluno = new HistoricoAluno();
     }
-    $oHistoricoAluno->setCurso($oCurso->getCodigo());
+    $oHistoricoAluno->setCodigoCurso($oCurso->getCodigo());
     $oHistoricoAluno->setEscola($oTurma->getEscola());
 
     $oHistoricoAluno->setAluno($this->oAluno);
@@ -254,7 +254,7 @@ final class ClassificacaoAluno {
     $oHistoricoEtapaRede->setJustificativa(null);
     $oHistoricoEtapaRede->setCargaHoraria(null);
 
-    foreach ( $oMatricula->getTurma()->getDisciplinas() as $oRegencia) {
+    foreach ( $oMatricula->getTurma()->getDisciplinasPorEtapa( $oMatricula->getEtapaDeOrigem() ) as $oRegencia) {
 
       $oHistoricoDisciplina = new DisciplinaHistoricoRede();
       $oHistoricoDisciplina->setDisciplina($oRegencia->getDisciplina());
@@ -268,6 +268,7 @@ final class ClassificacaoAluno {
       $oHistoricoDisciplina->setOrdem(null);
       $oHistoricoDisciplina->setTermoFinal(null);
       $oHistoricoDisciplina->setLancamentoAutomatico(true);
+      $oHistoricoDisciplina->setTipoBase($oRegencia->getTipoBase());
 
       $oHistoricoEtapaRede->adicionarDisciplina($oHistoricoDisciplina);
     }

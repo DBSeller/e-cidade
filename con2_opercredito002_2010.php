@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,22 +27,22 @@
 
 if (!isset($arqinclude)){
   
-  require_once("fpdf151/pdf.php");
-  require_once("fpdf151/assinatura.php");
-  require_once("libs/db_sql.php");
-  require_once("libs/db_utils.php");
-  require_once("libs/db_libcontabilidade.php");
-  require_once("libs/db_liborcamento.php");
-  require_once("classes/db_orcparamrel_classe.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("classes/db_orcparamrelopcre_classe.php");
-  require_once("classes/db_conrelinfo_classe.php");
-  require_once("classes/db_conrelvalor_classe.php");
-  require_once("classes/db_orcparamrelopcre_classe.php");
-  require_once("classes/db_orcparamelemento_classe.php");
-  require_once("libs/db_utils.php");
-  require_once("model/linhaRelatorioContabil.model.php");  
-  require_once("model/relatorioContabil.model.php");  
+  require_once(modification("fpdf151/pdf.php"));
+  require_once(modification("fpdf151/assinatura.php"));
+  require_once(modification("libs/db_sql.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_libcontabilidade.php"));
+  require_once(modification("libs/db_liborcamento.php"));
+  require_once(modification("classes/db_orcparamrel_classe.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("classes/db_orcparamrelopcre_classe.php"));
+  require_once(modification("classes/db_conrelinfo_classe.php"));
+  require_once(modification("classes/db_conrelvalor_classe.php"));
+  require_once(modification("classes/db_orcparamrelopcre_classe.php"));
+  require_once(modification("classes/db_orcparamelemento_classe.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("model/linhaRelatorioContabil.model.php"));  
+  require_once(modification("model/relatorioContabil.model.php"));  
   
   $classinatura = new cl_assinatura;
   $orcparamrel  = new cl_orcparamrel;
@@ -57,7 +57,7 @@ if (!isset($arqinclude)){
 }
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,munic,nomeinst,nomeinstabrev from db_config");
+$resultinst = db_query("select codigo,munic,nomeinst,nomeinstabrev from db_config");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -197,7 +197,7 @@ $where            = "  c61_instit in ({$sInstituicoes})   ";
  * Faz a pesquisa 
  */
 $rsDadosRelatorio = db_planocontassaldo_matriz($anousu,$dt_ini,$dt_fim,false,$where);
-@pg_exec("drop table work_pl");
+@db_query("drop table work_pl");
 $iNumRows = pg_num_rows($rsDadosRelatorio);
 for ($iParam = 1; $iParam <= 18; $iParam++) {
   
@@ -377,7 +377,7 @@ $aOperacaoCredito["externa"]     = array();//linhas operacoes externas
 $aOperacaoCredito["antecipacao"] = array();//linhas operacoes antecipadas;
 $sTodasInstit = null;
 
-$rsInstit =  pg_query("select codigo from db_config");
+$rsInstit =  db_query("select codigo from db_config");
 for ($xinstit=0; $xinstit < pg_num_rows($rsInstit); $xinstit++) {
   db_fieldsmemory($rsInstit, $xinstit);
   $sTodasInstit .= $codigo . ($xinstit==pg_num_rows($rsInstit)-1?"":",");

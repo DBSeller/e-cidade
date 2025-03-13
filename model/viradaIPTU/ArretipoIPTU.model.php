@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,7 +29,7 @@
  * Implementa interface iViradaIPTU.interface.php
  * @method public vira()
  */
-require_once('interfaces/iViradaIPTU.interface.php');
+require_once(modification('interfaces/iViradaIPTU.interface.php'));
 
 class ArretipoIPTU implements iViradaIPTU {
 
@@ -351,6 +351,9 @@ class ArretipoIPTU implements iViradaIPTU {
                 $oDaoArretipo->$sNomeCampoArretipo = "true";
               }
 
+            } elseif( trim($sNomeCampoArretipo) == 'k00_taxaespecifica' && $oDaoArretipo->$sNomeCampoArretipo == null ){
+
+              $oDaoArretipo->$sNomeCampoArretipo = "null";             
             } else {
               $oDaoArretipo->$sNomeCampoArretipo = $oDadosArretipo->$sNomeCampoArretipo;
 	          }

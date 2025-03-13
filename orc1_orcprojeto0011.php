@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcprojeto_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcprojeto_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clorcprojeto = new cl_orcprojeto;
 
@@ -75,7 +75,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcprojeto.php");
+	include(modification("forms/db_frmorcprojeto.php"));
 	?>
     </center>
 	</td>
@@ -103,7 +103,7 @@ if(isset($incluir)){
        echo "<script>
  	       // libera segunda aba
                parent.document.formaba.suplem.disabled=false;\n
-               top.corpo.iframe_suplem.location.href='orc1_orcprojeto0012.php?o39_codproj=$o39_codproj';\n
+               (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_suplem.location.href='orc1_orcprojeto0012.php?o39_codproj=$o39_codproj';\n
                parent.mo_camada('suplem');    //envia direto para outra aba     
            </script>";
 
@@ -113,7 +113,7 @@ if (isset($o39_codproj) && ($o39_codproj!="")){
         echo "<script>
  	       // libera segunda aba
                parent.document.formaba.suplem.disabled=false;\n
-               top.corpo.iframe_suplem.location.href='orc1_orcprojeto0012.php?o39_codproj=$o39_codproj';\n
+               (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_suplem.location.href='orc1_orcprojeto0012.php?o39_codproj=$o39_codproj';\n
              </script>";
 }  
 

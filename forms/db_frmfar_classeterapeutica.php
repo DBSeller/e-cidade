@@ -58,7 +58,7 @@ db_input('fa18_c_classetera',40,$Ifa18_c_classetera,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_classeterapeutica','func_far_classeterapeutica.php?funcao_js=parent.js_preenchepesquisa|fa18_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_classeterapeutica','func_far_classeterapeutica.php?funcao_js=parent.js_preenchepesquisa|fa18_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_classeterapeutica.hide();

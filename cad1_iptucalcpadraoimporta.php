@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptucalcpadrao_classe.php");
-include("classes/db_iptucalcpadraoconstr_classe.php");
-include("classes/db_iptucalcpadraoorigem_classe.php");
-include("classes/db_iptucalcpadraolog_classe.php");
-include("classes/db_iptutaxamatric_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptucalcpadrao_classe.php"));
+include(modification("classes/db_iptucalcpadraoconstr_classe.php"));
+include(modification("classes/db_iptucalcpadraoorigem_classe.php"));
+include(modification("classes/db_iptucalcpadraolog_classe.php"));
+include(modification("classes/db_iptutaxamatric_classe.php"));
 
 $cliptucalcpadrao       = new cl_iptucalcpadrao;
 $cliptucalcpadraolog    = new cl_iptucalcpadraolog;
@@ -62,7 +62,7 @@ $sqliptucalcpadrao       = "select j10_sequencial
                               from iptucalcpadrao 
                              where j10_matric = $matric   
                                and j10_anousu = ".db_getsession("DB_anousu");
-$resultiptucalcpadrao    = pg_query($sqliptucalcpadrao);
+$resultiptucalcpadrao    = db_query($sqliptucalcpadrao);
 $linhasiptucalcpadrao    = pg_num_rows($resultiptucalcpadrao);
 
 if($linhasiptucalcpadrao > 0 ){
@@ -76,7 +76,7 @@ if($linhasiptucalcpadrao > 0 ){
                                 from iptucalcpadraoconstr 
                                where j11_iptucalcpadrao = $j10_sequencial";
   
-  $resultiptucalcpadraoconstr = pg_query($sqliptucalcpadraoconstr);
+  $resultiptucalcpadraoconstr = db_query($sqliptucalcpadraoconstr);
   $linhasiptucalcpadraoconstr = pg_num_rows($resultiptucalcpadraoconstr);
   if($linhasiptucalcpadraoconstr>0){
     for($c=0;$c<$linhasiptucalcpadraoconstr;$c++){
@@ -95,7 +95,7 @@ if($linhasiptucalcpadrao > 0 ){
   $sqliptutaxamatric       = "select j09_iptutaxamatric 
                                 from iptutaxamatric 
                                where j09_matric = $matric ";
-  $resultiptutaxamatric    = pg_query($sqliptutaxamatric);
+  $resultiptutaxamatric    = db_query($sqliptutaxamatric);
   $linhasiptutaxamatric    = pg_num_rows($resultiptutaxamatric); 
   
   if($linhasiptutaxamatric>0){
@@ -118,7 +118,7 @@ if($linhasiptucalcpadrao > 0 ){
                                 from iptucalcpadraoorigem 
                                where j27_matric         = $matric 
                                  and j27_iptucalcpadrao = $j10_sequencial";
-  $resultiptucalcpadraoorigem    = pg_query($sqliptucalcpadraoorigem);
+  $resultiptucalcpadraoorigem    = db_query($sqliptucalcpadraoorigem);
   $linhasiptucalcpadraoorigem    = pg_num_rows($resultiptucalcpadraoorigem); 
   
   if($linhasiptucalcpadraoorigem>0){
@@ -142,7 +142,7 @@ if($linhasiptucalcpadrao > 0 ){
   $sqliptucalcpadraolog    = "select j19_sequencial 
                                 from iptucalcpadraolog 
                                where j19_iptucalcpadrao = $j10_sequencial";
-  $resultiptucalcpadraolog = pg_query($sqliptucalcpadraolog);
+  $resultiptucalcpadraolog = db_query($sqliptucalcpadraolog);
   $linhasiptucalcpadraolog = pg_num_rows($resultiptucalcpadraolog); 
   if($linhasiptucalcpadraolog>0){
     db_fieldsmemory($resultiptucalcpadraolog,0);
@@ -173,7 +173,7 @@ if($linhasiptucalcpadrao > 0 ){
                      where j23_matric = $matric 
                        and j23_anousu = $exec ";
                        
-    $resultiptucalc = pg_query($sqliptucalc);
+    $resultiptucalc = db_query($sqliptucalc);
     $linhasiptucalc = pg_num_rows($resultiptucalc);
     if($linhasiptucalc>0){
       db_fieldsmemory($resultiptucalc,0);
@@ -232,7 +232,7 @@ if($linhasiptucalcpadrao > 0 ){
                        inner join iptucale on j39_idcons = j22_idcons 
                                           and j39_matric = j22_matric  
                        where j39_matric = $matric  and j22_anousu = $exec";
-     $resultiptuconstr = pg_query($sqliptuconstr);
+     $resultiptuconstr = db_query($sqliptuconstr);
      $linhasiptuconstr = pg_num_rows($resultiptuconstr);
      if($linhasiptuconstr>0){
        for($ic=0;$ic<$linhasiptuconstr;$ic++){         
@@ -274,7 +274,7 @@ if($linhasiptucalcpadrao > 0 ){
              						  where j21_matric = $matric 
                             and j21_anousu = $exec ";
      
-     $resultiptucadtaxa = pg_query($sqliptucadtaxa);
+     $resultiptucadtaxa = db_query($sqliptucadtaxa);
      $linhasiptucadtaxa = pg_num_rows($resultiptucadtaxa);
      if($linhasiptucadtaxa>0){
        for($it=0;$it<$linhasiptucadtaxa;$it++){
@@ -310,7 +310,7 @@ if($sqlerro==false){
                    left join iptucalc             on j23_anousu     = j27_anousu 
                                                  and j27_matric     = j23_matric 
                    where j10_matric = $matric and j10_anousu = ".db_getsession("DB_anousu");
-    $resultpadrao = pg_query($sqlpadrao);
+    $resultpadrao = db_query($sqlpadrao);
     $linhaspadrao = pg_num_rows($resultpadrao);
     if($linhaspadrao>0){
       db_fieldsmemory($resultpadrao,0);
@@ -335,7 +335,7 @@ if($sqlerro==false){
 }
 /*
 $sql = "select j23_vlrter, j23_aliq from iptucalc where j23_matric=$j01_matric and j23_anousu =$exec ";
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $linhas = pg_num_rows($result);
   if($linhas>0){
     db_fieldsmemory($result,0);

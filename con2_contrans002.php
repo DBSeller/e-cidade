@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_contranslan_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_contranslan_classe.php"));
 
 $clcontranslan = new cl_contranslan;
 
@@ -118,7 +118,7 @@ if($numrows>0){
 	             from conplano 
 	                 inner join conplanoreduz on c61_codcon=c60_codcon and c61_anousu=c60_anousu
 	             where c60_anousu = ".db_getsession("DB_anousu")." and c61_reduz = $c47_debito ";
-      $rc = pg_exec($sql);
+      $rc = db_query($sql);
 	 @db_fieldsmemory($rc,0);
       $pdf->cell(75,4,substr($c60_descr,0,40),1,0,"L",0); 
       $pdf->cell(40,4,"($c47_credito)  $cred_estrut",1,0,"C",0);
@@ -126,7 +126,7 @@ if($numrows>0){
 	             from conplano 
 	                 inner join conplanoreduz on c61_codcon=c60_codcon and c61_anousu=c60_anousu
 	             where c60_anousu = ".db_getsession("DB_anousu")." and c61_reduz = $c47_credito ";
-      $rc = pg_exec($sql);
+      $rc = db_query($sql);
 	  @db_fieldsmemory($rc,0);
       $pdf->cell(75,4,substr($c60_descr,0,40),1,1,"L",0); 
        

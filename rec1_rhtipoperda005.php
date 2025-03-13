@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_rhtipoperda_classe.php");
-require_once("classes/db_rhtipoperdatipoassentamento_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhtipoperda_classe.php"));
+require_once(modification("classes/db_rhtipoperdatipoassentamento_classe.php"));
 $clrhtipoperda = new cl_rhtipoperda;
   /*
 $clrhtipoperdatipoassentamento = new cl_rhtipoperdatipoassentamento;
@@ -75,7 +75,7 @@ if (isset($alterar)) {
 	    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
 	    <center>
 				<?
-				 require_once("forms/db_frmrhtipoperda.php");
+				 require_once(modification("forms/db_frmrhtipoperda.php"));
 				?>
 	    </center>
 		</td>
@@ -104,7 +104,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.rhtipoperdatipoassentamento.disabled=false;
-         top.corpo.iframe_rhtipoperdatipoassentamento.location.href='rec1_rhtipoperdatipoassentamento001.php?h71_rhtipoperda=".@$h70_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhtipoperdatipoassentamento.location.href='rec1_rhtipoperdatipoassentamento001.php?h71_rhtipoperda=".@$h70_sequencial."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('rhtipoperdatipoassentamento');";

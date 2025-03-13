@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -44,7 +44,7 @@ parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
 function js_processa(tarefa){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tarefa','ate2_contarefa001.php?menu=false&chavepesquisa='+tarefa,'Pesquisa',true,'30');
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefa','ate2_contarefa001.php?menu=false&chavepesquisa='+tarefa,'Pesquisa',true,'30');
 }
 </script>
 </head>
@@ -129,7 +129,7 @@ if($scodigo!=""){
   $sql .= " and ".$campos[0]." = ".$campos[1];
 }
 
-$result = pg_query("select count(*) from (select distinct at40_sequencial from ($sql) as x ) as x ");
+$result = db_query("select count(*) from (select distinct at40_sequencial from ($sql) as x ) as x ");
 echo "<strong>Tarefas Envolvidas:</strong>".pg_result($result,0,0)."<br>";
 
 

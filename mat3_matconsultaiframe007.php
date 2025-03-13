@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
@@ -44,10 +44,10 @@ $clrotulo->label("");
   <link href="estilos.css" rel="stylesheet" type="text/css">
   <script>
   function js_devolucao(codigo){
-    js_OpenJanelaIframe('top.corpo','db_iframe_devolucao','mat3_consultadevolucao001.php?codigo='+codigo,'Consulta Devolução',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_devolucao','mat3_consultadevolucao001.php?codigo='+codigo,'Consulta Devolução',true);
   }
   function js_atendrequi(codigo){
-    js_OpenJanelaIframe('top.corpo','db_iframe_atendrequi','mat3_consultaatendrequi001.php?codigo='+codigo,'Consulta Atendimento da Requisição',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atendrequi','mat3_consultaatendrequi001.php?codigo='+codigo,'Consulta Atendimento da Requisição',true);
   }
   </script>
   <style>
@@ -111,7 +111,7 @@ $clrotulo->label("");
     $repassa = array('dblov'=>'0');
   db_lovrot(@$sql,15,"()","","","","NoMe",$repassa);
   
-  /*$result=pg_exec($sql);
+  /*$result=db_query($sql);
   $numrows = pg_numrows($result);
   if($numrows>0){
     echo "<tr class='bordas'>

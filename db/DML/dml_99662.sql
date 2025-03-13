@@ -1,0 +1,1 @@
+update db_itensmenu set libcliente = false where id_item in (10221, 10225);

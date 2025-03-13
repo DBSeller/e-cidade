@@ -26,8 +26,8 @@
  */
 
 set_time_limit(0);
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //echo $exerc;
 //exit;
@@ -58,12 +58,12 @@ $sql = "select v01_exerc,
 		left outer join proced 
 		         on v01_proced = v03_codigo 
          " ;
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 $num = pg_numrows($result);
 /*
-pg_exec("drop table totproced");			
-pg_exec("create table totproced(v01_exerc int4,v01_proced int4,k00_numpre int4,k00_numpar float8,vlrhis float8,vlrcor float8,vlrjuros float8,vlrmulta float8,vlrdesconto float8,total float8)");
+db_query("drop table totproced");			
+db_query("create table totproced(v01_exerc int4,v01_proced int4,k00_numpre int4,k00_numpar float8,vlrhis float8,vlrcor float8,vlrjuros float8,vlrmulta float8,vlrdesconto float8,total float8)");
 
 for($x=0;$x<$num;$x++){
   db_fieldsmemory($result,$x,true);
@@ -86,7 +86,7 @@ for($x=0;$x<$num;$x++){
          $ttotal+=$total;
      }
   }
-  pg_exec("insert into totproced values($v01_exerc,$v01_proced,$k00_numpre,$k00_numpar,$vlrhis,$vlrcor,$vlrjuros,$vlrmulta,$vlrdesconto,$total)");
+  db_query("insert into totproced values($v01_exerc,$v01_proced,$k00_numpre,$k00_numpar,$vlrhis,$vlrcor,$vlrjuros,$vlrmulta,$vlrdesconto,$total)");
 }
 
 */
@@ -106,7 +106,7 @@ $sql = "select v01_exerc,
         where v01_exerc between $valorminimo 
 	  and $valormaximo 
 	  $xordem ";
-$result2 = pg_exec($sql);
+$result2 = db_query($sql);
 db_fieldsmemory($result2,0);
 if ( $ordem == 'v01_proced' ){
    $quebra = $v01_proced.'-'.$v03_dcomp;

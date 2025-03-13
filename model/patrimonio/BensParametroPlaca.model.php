@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -132,7 +132,7 @@ class BensParametroPlaca {
    * Retorna o próximo sequencial se Parâmetro for do tipo sequencial
    * @return Integer
    */
-  public function getSequencial() {
+  public static function getSequencial() {
     return self::getInstance()->sSequencialCfPatriPlaca++;
   }
 
@@ -190,5 +190,25 @@ class BensParametroPlaca {
       $oCfPatriPlaca = db_utils::fieldsMemory($rsCfPatriPlaca, 0)->t07_sequencial;
     }
     return $oCfPatriPlaca;
+  }
+
+  /**
+   * @return int|null
+   */
+  public static function getPlacaDisponivel($iInstituicao) {
+
+    $oParametro = BensParametroPlaca::getInstance();
+    $iNovaPlaca = null;
+    switch ($oParametro->iTipoConfiguracaoPlaca) {
+
+      case BensParametroPlaca::PLACA_SEQUENCIAL_AUTOMATICO:
+
+        $oDaoBensPlaca  = new cl_bensplaca();
+        $sSqlBuscaPlaca = $oDaoBensPlaca->sql_query_placa_bem(null, 'max(t41_placaseq)+1 as nova_placa', null, "t52_instit = {$iInstituicao}");
+        $iNovaPlaca     = db_utils::fieldsMemory(db_query($sSqlBuscaPlaca), 0)->nova_placa;
+
+        break;
+    }
+    return $iNovaPlaca;
   }
 }

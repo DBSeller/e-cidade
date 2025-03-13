@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,56 +25,136 @@
  *                                licenca/licenca_pt.txt
  */
 
-
 /**
  * Classe repository para classe Recurso
  */
-class RecursoRepository {
+class RecursoRepository
+{
 
-  /**
-   * @var Recurso[]
-   */
-  private $aRecurso = array();
+    /**
+     * @var Recurso[]
+     */
+    private $aRecurso = array();
 
-  /**
-   * Instancia da classe
-   * @var RecursoRepository
-   */
-  private static $oInstance;
+    /**
+     * Instancia da classe
+     * @var RecursoRepository
+     */
+    private static $oInstance;
 
-  /**
-   * Construtor privado para não ser possível instanciar a classe
-   */
-  private function __construct() {}
+    private $scope = [];
 
-  private function __clone() {}
-
-  /**
-   * Retorno uma instancia do Recurso pelo Codigo
-   *
-   * @param integer $iCodigo
-   * @return Dotacao
-   */
-  public static function getRecursoPorCodigo($iCodigo) {
-
-    if (!array_key_exists($iCodigo, RecursoRepository::getInstance()->aRecurso)) {
-      RecursoRepository::getInstance()->aRecurso[$iCodigo] = new Recurso($iCodigo);
+    /**
+     * Construtor privado para não ser possível instanciar a classe
+     */
+    private function __construct()
+    {
     }
 
-    return RecursoRepository::getInstance()->aRecurso[$iCodigo];
-  }
-
-  /**
-   * Retorna a instancia da classe
-   *
-   * @return RecursoRepository
-   */
-  protected static function getInstance() {
-
-    if (self::$oInstance == null) {
-      self::$oInstance = new RecursoRepository();
+    public function resetScopes()
+    {
+        $this->scope = [];
+        return $this;
     }
 
-    return self::$oInstance;
-  }
+    private function __clone()
+    {
+    }
+
+    /**
+     * Retorno uma instancia do Recurso pelo Codigo
+     * @todo não tipar o recurso retornado como use ECidade\Financeiro\Orcamento\Recurso\Recurso;
+     *       pois vai quebrar metade do sistema
+     *
+     * @param integer $iCodigo
+     * @return Recurso
+     */
+    public static function getRecursoPorCodigo($iCodigo)
+    {
+
+        if (!array_key_exists($iCodigo, RecursoRepository::getInstance()->aRecurso)) {
+            RecursoRepository::getInstance()->aRecurso[$iCodigo] = new Recurso($iCodigo);
+        }
+
+        return RecursoRepository::getInstance()->aRecurso[$iCodigo];
+    }
+
+    /**
+     * Retorna a instancia da classe
+     *
+     * @return RecursoRepository
+     */
+    public static function getInstance()
+    {
+
+        if (self::$oInstance == null) {
+            self::$oInstance = new RecursoRepository();
+        }
+
+        return self::$oInstance;
+    }
+
+    /**
+     * @param string $codigoRecurso
+     * @param integer $complemento
+     * @return Recurso
+     * @throws Exception
+     */
+    public static function getRecursoPorCodigoRecursoAndComplemento($codigoRecurso, $complemento)
+    {
+        $where = [
+            "o15_complemento = {$complemento}",
+            "o15_recurso = '{$codigoRecurso}'"
+        ];
+        $dao = new cl_orctiporec();
+        $sql = $dao->sql_query_file(null, '*', null, implode(' and ', $where));
+        $rs = db_query($sql);
+        if (!$rs) {
+            throw new Exception("Erro ao buscar recurso.");
+        }
+
+        if (pg_num_rows($rs) === 0) {
+            throw new Exception(sprintf(
+                "Não foi encontrado o recurso com o Código %s e o Complemento %s.",
+                $codigoRecurso,
+                $complemento
+            ));
+        }
+
+        return self::getRecursoPorCodigo(db_utils::fieldsMemory($rs, 0)->o15_codigo);
+    }
+
+    public function scopeFonteRecurso($recurso)
+    {
+        $this->scope[] = "o15_recurso = '{$recurso}'";
+        return $this;
+    }
+
+    public function scopeComplemento($complemento)
+    {
+        $this->scope = "o15_complemento = {$complemento}";
+        return $this;
+    }
+
+    public function get()
+    {
+        $dao = new cl_orctiporec();
+        $sql = $dao->sql_query_file(null, '*', null, implode(' and ', $this->scope));
+
+        $rs = db_query($sql);
+        if (!$rs) {
+            throw new Exception("Erro ao buscar recurso.");
+        }
+
+        if (pg_num_rows($rs) === 0) {
+            throw new Exception("Não foi encontrado nenhum recurso com os filtros informados. ");
+        }
+
+        $recursos = [];
+        while ($state = pg_fetch_array($rs)) {
+            $recursos[] = self::getRecursoPorCodigo($state['o15_codigo']);
+        }
+
+        return $recursos;
+    }
 }

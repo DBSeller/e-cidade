@@ -1,54 +1,56 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/JSON.php");
-require_once ("std/db_stdClass.php");
-require_once ("std/DBDate.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("model/educacao/avaliacao/iFormaObtencao.interface.php");
-require_once ("model/educacao/avaliacao/iElementoAvaliacao.interface.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
+require_once(modification("model/educacao/avaliacao/iElementoAvaliacao.interface.php"));
 
 define("URL_MENSAGEM_TURMA_RPC", "educacao.escola.edu4_turmas_RPC.");
 
 $iEscola           = db_getsession("DB_coddepto");
+$iModuloEscola     = 1100747;
 $oJson             = new Services_JSON();
 $oParam            = $oJson->decode(str_replace("\\", "", $_POST["json"]));
 $oRetorno          = new stdClass();
 $oRetorno->status  = 1;
 $oRetorno->message = '';
+$oRetorno->erro    = false;
 
 define( "AVALIACAO_RESULTADO", 1 );      // Todos Períodos de avaliação + resultados
-define( "AVALIACAO", 2 );                // Somente Períodos de avaliação 
+define( "AVALIACAO", 2 );                // Somente Períodos de avaliação
 define( "RESULTADO", 3 );                // Somente Resultados
 define( "AVALIACAO_RESULTADO_FINAL", 4); // Todos Períodos de avaliação + resultado final
 
@@ -82,7 +84,11 @@ try {
       $sCamposMatricula = "ed60_i_codigo, turma.ed57_i_codigo as ed57_i_codigo, ed221_i_serie";
       $sWhereMatricula  = "ed60_matricula = {$oMatricula->getMatricula()} AND ed60_c_situacao = 'TROCA DE TURMA'";
       $sSqlMatricula    = $oDaoMatricula->sql_query(null, $sCamposMatricula, "ed60_i_codigo desc", $sWhereMatricula);
-      $rsMatricula      = $oDaoMatricula->sql_record($sSqlMatricula);
+      $rsMatricula      = db_query( $sSqlMatricula );
+
+      if ( !$rsMatricula ) {
+        throw new DBException('Falha ao buscar os dados da matrícula do aluno.');
+      }
 
       $oRetorno->iMatriculaOrigem = '';
       $oRetorno->sTurmaOrigem     = '';
@@ -90,7 +96,7 @@ try {
       $oRetorno->sSituacaoOrigem  = '';
       $oRetorno->sTurnoOrigem     = '';
 
-      if ($oDaoMatricula->numrows > 0) {
+      if (pg_num_rows($rsMatricula) > 0) {
 
         $oDadosMatricula  = db_utils::fieldsMemory($rsMatricula, 0);
         $oMatriculaOrigem = MatriculaRepository::getMatriculaByCodigo($oDadosMatricula->ed60_i_codigo);
@@ -198,13 +204,48 @@ try {
      */
     case 'salvarTrocaTurmaSemRegistro':
 
+      if( empty( $oParam->iTurmaDestino ) ) {
+        throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC + 'turma_destino_nao_informada' ) );
+      }
+
+      if( empty( $oParam->sTurno ) ) {
+        throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC + 'turno_nao_informado' ) );
+      }
+
+      $aTurnosSelecionados = explode(',', $oParam->sTurno);
+      $oTurmaDestino       = new Turma($oParam->iTurmaDestino);
+
+      foreach( $aTurnosSelecionados as $iTurnoReferenteSelecionado ) {
+
+        if( !$oTurmaDestino->temVagaDisponivel( $iTurnoReferenteSelecionado ) ) {
+          throw new BusinessException( _M( URL_MENSAGEM_TURMA_RPC . 'nao_ha_vaga' ) );
+        }
+      }
+
       db_inicio_transacao();
 
-      if (isset($oParam->iMatricula) && isset($oParam->iTurmaDestino)) {
+      $oRetorno->lProcedimentosInconsistentes      = false;
+      $oRetorno->aDisciplinasProcedimentoDiferente = array();
+
+      foreach( $oParam->aDisciplinasVinculadas as $oDisciplinasVincular ) {
+
+        if( empty( $oDisciplinasVincular->iCodigoOrigem ) || empty( $oDisciplinasVincular->iCodigoDestino ) ) {
+          continue;
+        }
+
+        $oRegenciaOrigem  = RegenciaRepository::getRegenciaByCodigo( $oDisciplinasVincular->iCodigoOrigem );
+        $oRegenciaDestino = RegenciaRepository::getRegenciaByCodigo( $oDisciplinasVincular->iCodigoDestino );
+        if( !$oRegenciaOrigem->possuiMesmoProcedimentoAvaliacao( $oRegenciaDestino ) ) {
+
+          $oRetorno->lProcedimentosInconsistentes        = true;
+          $oRetorno->aDisciplinasProcedimentoDiferente[] = urlencode( $oRegenciaOrigem->getDisciplina()->getNomeDisciplina() );
+        }
+      }
+
+      if ( isset($oParam->iMatricula) && !$oRetorno->lProcedimentosInconsistentes ) {
 
         $aRegenciasVinculadas = array();
         $oMatricula           = new Matricula($oParam->iMatricula);
-        $oTurmaDestino        = new Turma($oParam->iTurmaDestino);
         $oTrocaTurma          = new TrocaTurma($oMatricula, $oTurmaDestino, $oParam->sTurno);
 
         if (count($oParam->aDisciplinasVinculadas) > 0) {
@@ -220,19 +261,19 @@ try {
         $oTrocaTurma->trocarTurmaSemRegistro($aRegenciasVinculadas);
       }
 
-      db_fim_transacao(false);
+      db_fim_transacao();
       break;
 
     case 'getRegencias':
 
-      $oTurma = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
-      $oEtapa = EtapaRepository::getEtapaByCodigo($oParam->iEtapa);
+      $oTurma = EducacaoSessionManager::carregarTurma($oParam->iTurma);
+      $oEtapa = EducacaoSessionManager::carregarEtapa($oParam->iEtapa);
 
       $oDocente   = null;
       $lProfessor = false;
-      if ($oParam->lDisciplinasProfessor) {
+      if ( isset($oParam->lDisciplinasProfessor) && $oParam->lDisciplinasProfessor) {
 
-        $oDocente = DocenteRepository::getDocenteLogado(db_getsession("DB_id_usuario"));
+        $oDocente = DocenteRepository::getDocenteLogado( db_getsession("DB_id_usuario"), $iEscola );
 
         /**
          * Como a classe Docente retorna uma instancia de qualquer cgm da base, devemos verificar se
@@ -253,11 +294,28 @@ try {
           continue;
         }
 
-        $oDisciplina                   = new stdClass();
-        $oDisciplina->iRegencia        = $oRegencia->getCodigo();
-        $oDisciplina->iDisciplina      = $oRegencia->getDisciplina()->getCodigoDisciplina();
-        $oDisciplina->sDisciplina      = urlencode($oRegencia->getDisciplina()->getNomeDisciplina());
-        $oDisciplina->lTemGradeHorario = $oRegencia->temGradeHorario();
+        if( isset( $oParam->lSomenteDisciplinasParecer ) ) {
+
+          if( $oParam->lSomenteDisciplinasParecer && $oRegencia->getProcedimentoAvaliacao()->getFormaAvaliacao()->getTipo() != 'PARECER' ) {
+            continue;
+          }
+
+          if( !$oParam->lSomenteDisciplinasParecer && $oRegencia->getProcedimentoAvaliacao()->getFormaAvaliacao()->getTipo() == 'PARECER' ) {
+            continue;
+          }
+        }
+
+        if (isset($oParam->somenteDisciplinasControlaFrequencia) && !in_array($oRegencia->getFrequenciaGlobal(), array('F', 'FA', 'I'))) {
+            continue;
+        }
+
+        $oDisciplina                         = new stdClass();
+        $oDisciplina->iRegencia              = $oRegencia->getCodigo();
+        $oDisciplina->iDisciplina            = $oRegencia->getDisciplina()->getCodigoDisciplina();
+        $oDisciplina->sDisciplina            = urlencode($oRegencia->getDisciplina()->getNomeDisciplina());
+        $oDisciplina->lTemGradeHorario       = $oRegencia->temGradeHorario();
+        $oDisciplina->iProcedimentoAvaliacao = $oRegencia->getProcedimentoAvaliacao()->getCodigo();
+        $oDisciplina->sProcedimentoAvaliacao = urlencode($oRegencia->getProcedimentoAvaliacao()->getDescricao());
         /**
          * Se o usuário logado for um Docente, devemos retornar as diciplinas este leciona,
          * se não for um docente, retornamos todas as disciplinas
@@ -277,12 +335,11 @@ try {
 
       if (!empty($oParam->iTurma)) {
 
-        $oTurma = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
-
+        $oTurma             = EducacaoSessionManager::carregarTurma($oParam->iTurma);
         $aAlunosMatriculado = array();
         if (!empty($oParam->iEtapa)) {
 
-          $oEtapa             = EtapaRepository::getEtapaByCodigo($oParam->iEtapa);
+          $oEtapa             = EducacaoSessionManager::carregarEtapa($oParam->iEtapa);
           $aAlunosMatriculado = $oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa);
         } else {
           $aAlunosMatriculado = $oTurma->getAlunosMatriculados(false);
@@ -293,7 +350,19 @@ try {
           if ($oMatricula->getSituacao() != 'MATRICULADO') {
             continue;
           }
-          
+
+          if( isset( $oParam->lSomenteAlunosOrigemForaRede )
+              && $oParam->lSomenteAlunosOrigemForaRede
+              && !$oMatricula->matriculaMaiorDataInicioPrimeiroPeriodoCalendario() ) {
+            continue;
+          }
+
+          if( isset( $oParam->lMatriculaMaiorPrimeiroPeriodoCalendario )
+              && $oParam->lMatriculaMaiorPrimeiroPeriodoCalendario
+              && !$oMatricula->matriculaMaiorDataInicioPrimeiroPeriodoCalendario() ) {
+            continue;
+          }
+
           if (isset($oParam->lTrazerAlunosEncerrados) && !$oParam->lTrazerAlunosEncerrados) {
             db_inicio_transacao();
             $aDiarioAvaliacaoDisciplina = $oMatricula->getDiarioDeClasse()->getDisciplinas();
@@ -302,26 +371,136 @@ try {
             }
             db_fim_transacao();
           }
-          
-          $oDadosAluno             = new stdClass();
-          $oDadosAluno->iMatricula = $oMatricula->getCodigo();
-          $oDadosAluno->sNome      = urlencode($oMatricula->getAluno()->getNome());
-          $oRetorno->aAlunos[]     = $oDadosAluno;
+
+          $oDadosAluno              = new stdClass();
+          $oDadosAluno->iMatricula  = $oMatricula->getCodigo();
+          $oDadosAluno->sNome       = urlencode($oMatricula->getAluno()->getNome());
+          $oDadosAluno->dtMatricula = urlencode( $oMatricula->getDataMatricula()->getDate( DBDate::DATA_PTBR ) );
+          $oRetorno->aAlunos[]      = $oDadosAluno;
         }
       }
-      TurmaRepository::removerTurma($oTurma);
-      if (isset($oEtapa)) {
-        EtapaRepository::removerEtapa($oEtapa); 
-      }
+
       break;
+
+      case 'pesquisaAlunosTurmaNaoMatriculados': // 2018-06-19 Wallace (ATMA) criado para buscar apenas alunos que não estiverem matriculados ou Trocados de turma
+
+          $oRetorno->aAlunos = array();
+
+          if (!empty($oParam->iTurma)) {
+
+              $oTurma             = EducacaoSessionManager::carregarTurma($oParam->iTurma);
+              $aAlunosMatriculado = array();
+              if (!empty($oParam->iEtapa)) {
+
+                  $oEtapa             = EducacaoSessionManager::carregarEtapa($oParam->iEtapa);
+                  $aAlunosMatriculado = $oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa);
+              } else {
+                  $aAlunosMatriculado = $oTurma->getAlunosMatriculados(false);
+              }
+
+              foreach ($aAlunosMatriculado as $oMatricula) {
+
+                  if ($oMatricula->getSituacao() == 'MATRICULADO' &&  !$oMatricula->isConcluida()) {
+                      continue;
+                  }
+//
+
+
+                  if( isset( $oParam->lSomenteAlunosOrigemForaRede )
+                      && $oParam->lSomenteAlunosOrigemForaRede
+                      && !$oMatricula->matriculaMaiorDataInicioPrimeiroPeriodoCalendario() ) {
+                      continue;
+                  }
+
+                  if( isset( $oParam->lMatriculaMaiorPrimeiroPeriodoCalendario )
+                      && $oParam->lMatriculaMaiorPrimeiroPeriodoCalendario
+                      && !$oMatricula->matriculaMaiorDataInicioPrimeiroPeriodoCalendario() ) {
+                      continue;
+                  }
+
+                  if (isset($oParam->lTrazerAlunosEncerrados) && !$oParam->lTrazerAlunosEncerrados) {
+                      db_inicio_transacao();
+                      $aDiarioAvaliacaoDisciplina = $oMatricula->getDiarioDeClasse()->getDisciplinas();
+                      if ($aDiarioAvaliacaoDisciplina[0]->isEncerrado()) {
+                          continue;
+                      }
+                      db_fim_transacao();
+                  }
+
+
+
+                  $oDadosAluno              = new stdClass();
+                  $oDadosAluno->iMatricula  = $oMatricula->getCodigo();
+                  $oDadosAluno->sNome       = urlencode($oMatricula->getAluno()->getNome());
+                  $oDadosAluno->dtMatricula = urlencode( $oMatricula->getDataMatricula()->getDate( DBDate::DATA_PTBR ) );
+                  $oRetorno->aAlunos[]      = $oDadosAluno;
+              }
+          }
+
+          break;
+
+      case 'pesquisaExAlunos': // 2018-06-19 Wallace (ATMA) criado para buscar apenas alunos que não estiverem matriculados ou Trocados de turma
+
+          $oRetorno->aAlunos = array();
+
+          $codigoAluno = $oParam->iAluno;
+          $nomeAluno = $oParam->nAluno;
+          $codigoEscola = $oParam->iEscola;
+
+          $sql = "SELECT *
+                        FROM (
+                           SELECT DISTINCT ON (aluno.ed47_v_nome)
+                                             aluno.ed47_i_codigo,
+                                              matricula.ed60_i_codigo,
+                                              aluno.ed47_v_nome
+
+                      FROM aluno
+                             INNER JOIN matricula ON (matricula.ed60_i_aluno = aluno.ed47_i_codigo)
+                             INNER JOIN turma ON (turma.ed57_i_codigo = matricula.ed60_i_turma)
+                             INNER JOIN calendario ON (calendario.ed52_i_codigo = turma.ed57_i_calendario) ";
+
+              $sql  .= " WHERE ed52_i_ano < (SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP)) "; // 2018-06-20 Wallace (ATMA) Selecionar Calendário Apenas do Ano Vigente
+//              $sql .= " AND ed47_i_codigo = 0 ";
+//
+//              if(isset($codigoAluno) && (trim($codigoAluno)!="") ){
+//
+//                  $sql .= " AND ed47_i_codigo = $codigoAluno ";
+//              }
+              if(isset($nomeAluno) && (trim($nomeAluno)!="") ){
+
+                  $sql .= " AND ed47_v_nome like '".strtoupper($nomeAluno)."%' ";
+              }
+
+              $sql .= " AND turma.ed57_i_escola = $iEscola ";
+              $sql .= "  ORDER BY aluno.ed47_v_nome ) AS exAlunos";  // <- To ascii ADD
+
+
+              $resultado = db_query($sql);
+
+
+              for($i=0; $i < pg_numrows($resultado) ; $i++){
+                  $codigoMatricula = db_utils::fieldsMemory($resultado,$i)->ed60_i_codigo;
+                  $objetoMatricula = MatriculaRepository::getMatriculaByCodigo($codigoMatricula);
+
+                  $oDadosAluno              = new stdClass();
+                  $oDadosAluno->iMatricula  = $objetoMatricula->getCodigo();
+                  $oDadosAluno->sNome       = urlencode($objetoMatricula->getAluno()->getNome());
+                  $oDadosAluno->dtMatricula = urlencode( $objetoMatricula->getDataMatricula()->getDate( DBDate::DATA_PTBR ) );
+                  $oRetorno->aAlunos[]      = $oDadosAluno;
+              }
+
+
+          $oRetorno->aAlunos;
+
+          break;
 
     case 'pesquisaPeriodosTurma':
 
       $oRetorno->aPeriodos = array();
       if (!empty($oParam->iTurma) && !empty($oParam->iEtapa)) {
 
-        $oTurma     = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
-        $oEtapa     = EtapaRepository::getEtapaByCodigo($oParam->iEtapa);
+        $oTurma     = EducacaoSessionManager::carregarTurma($oParam->iTurma);
+        $oEtapa     = EducacaoSessionManager::carregarEtapa($oParam->iEtapa);
         $aElementos = $oTurma->getProcedimentoDeAvaliacaoDaEtapa($oEtapa)->getElementos();
 
         foreach ($aElementos as $oElemento) {
@@ -333,13 +512,13 @@ try {
           if ( $oParam->iTipoBusca == RESULTADO && $oElemento instanceof AvaliacaoPeriodica ) {
             continue;
           }
-          
+
           /**
            * Valida se o elemento de avaliação é um resultado que gera resultado final
            */
           $lResultadoFinal = false; // Se o Resultado é um resultado final
           if ( $oParam->iTipoBusca == AVALIACAO_RESULTADO_FINAL ) {
-            
+
             if ($oElemento instanceof ResultadoAvaliacao && !$oElemento->geraResultadoFinal()) {
               continue;
             } else if ($oElemento instanceof ResultadoAvaliacao && $oElemento->geraResultadoFinal()) {
@@ -373,24 +552,24 @@ try {
       break;
 
     case 'dadosProcedimentoAvaliacao':
-      
+
       if (empty($oParam->iTurma)) {
         throw new ParameterException("Nenhuma turma informada");
-      } 
-      
+      }
+
       $oTurma = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
       $oEtapa = null;
-      
+
       if (!empty($oParam->iEtapa)) {
         $oEtapa = EtapaRepository::getEtapaByCodigo($oParam->iEtapa);
       } else {
-        
+
         $aEtapas = $oTurma->getEtapas();
         $oEtapa  = $aEtapas[0]->getEtapa();
       }
-      
+
       $oProcedimentoAvaliacao = $oTurma->getProcedimentoDeAvaliacaoDaEtapa($oEtapa);
-      
+
       $oRetorno->oProcedimento                        = new stdClass();
       $oRetorno->oProcedimento->iCodigo               = $oProcedimentoAvaliacao->getCodigo();
       $oRetorno->oProcedimento->sTipoFormaAvaliacao   = $oProcedimentoAvaliacao->getFormaAvaliacao()->getTipo();
@@ -398,22 +577,49 @@ try {
       $oRetorno->oProcedimento->iMenorValor           = $oProcedimentoAvaliacao->getFormaAvaliacao()->getMenorValor();
       $oRetorno->oProcedimento->mAproveitamentoMinimo = $oProcedimentoAvaliacao->getFormaAvaliacao()->getAproveitamentoMinino();
       $oRetorno->oProcedimento->nVariacao             = $oProcedimentoAvaliacao->getFormaAvaliacao()->getVariacao();
-      
-      
+
+
       break;
-      
+    // Pega os Periodos do Calendario
+      case 'getPeriodoCalendario':
+
+          $oRetorno->aPeriodos = array();
+          if (!empty($oParam->iTurma) && !empty($oParam->iCodigo)) {
+
+              $oTurma     = EducacaoSessionManager::carregarTurma($oParam->iTurma);
+              $oAvaliacaoPeriodica = AvaliacaoPeriodicaRepository::getAvaliacaoPeriodicaByCodigo($oParam->iCodigo );
+              $oPeriodoAvaliacao = $oAvaliacaoPeriodica->getPeriodoAvaliacao();
+
+
+              $oPeriodoCalendario = $oTurma->getCalendario()->getPeriodoCalendarioPorPeriodoAvaliacao($oPeriodoAvaliacao);
+              $sDataInicio        = $oPeriodoCalendario->getDataInicio()->convertTo(DBDate::DATA_PTBR);
+              $sDataFim           = $oPeriodoCalendario->getDataTermino()->convertTo(DBDate::DATA_PTBR);
+
+              $oDadosPeriodo                    = new stdClass();
+              $oDadosPeriodo->iPeriodo          = $oPeriodoAvaliacao->getCodigo();
+              $oDadosPeriodo->iPeriodoAvaliacao = null;
+
+              $oDadosPeriodo->sAbreviatura    = urlencode($oPeriodoAvaliacao->getDescricaoAbreviada());
+              $oDadosPeriodo->sDescricao      = urlencode($oPeriodoAvaliacao->getDescricao());
+              $oDadosPeriodo->iOrdem          = $oPeriodoAvaliacao->getOrdemPeriodo();
+              $oDadosPeriodo->sDataInicio     = $sDataInicio;
+              $oDadosPeriodo->sDataFim        = $sDataFim;
+
+              $oRetorno->aPeriodos[]         = $oDadosPeriodo;
+          }
+          break;
     /**
      * Gera classificação numerica da turma em ordem alfabética
      */
     case 'gerarNumeracao':
-      
+
       foreach ($oParam->aTurmas as $oTurmaEtapa) {
-      	
+
         db_inicio_transacao();
         $oTurma = TurmaRepository::getTurmaByCodigo( $oTurmaEtapa->iTurma );
-        
+
         if ( $oTurma->isClassificada() ) {
-        	continue;
+          continue;
         }
 
         $lTrocaTurma = $oParam->iTrocaTurma == "2";
@@ -421,27 +627,27 @@ try {
         $oTurma->reclassificarNumeracaoDaTurma(false, $lTrocaTurma);
         db_fim_transacao();
       }
-      
+
       $oRetorno->message = urlencode( _M(URL_MENSAGEM_TURMA_RPC."gerar_numeracao") );
-      
+
       break;
-      
+
     /**
      * Remove a classificação numérica da turma
      */
     case 'cancelarNumeracao':
-      
+
       foreach ($oParam->aTurmas as $oTurmaEtapa) {
-         
+
         db_inicio_transacao();
         $oTurma = TurmaRepository::getTurmaByCodigo( $oTurmaEtapa->iTurma );
         $oTurma->zerarNumeracaoDaTurma();
         db_fim_transacao();
       }
-      
+
       $oRetorno->message = urlencode( _M(URL_MENSAGEM_TURMA_RPC."cancelar_numeracao") );
-      
-    
+
+
       break;
 
     /**
@@ -497,12 +703,12 @@ try {
 
       if ( !isset($oParam->iTurma) || $oParam->iTurma == "" ) {
         throw new Exception( _M(URL_MENSAGEM_TURMA_RPC."informe_turma") );
-        
+
       }
 
       if ( !isset($oParam->iEtapa) || $oParam->iEtapa == "" ) {
         throw new Exception( _M(URL_MENSAGEM_TURMA_RPC."informe_etapa") );
-        
+
       }
 
       $oTurma     = TurmaRepository::getTurmaByCodigo( $oParam->iTurma );
@@ -589,7 +795,7 @@ try {
         $oTurma->salvarVinculoOutrosProfissionais( $oParam->iProfissional, $oParam->iAtividade );
 
         $oRetorno->message = urlencode( _M(URL_MENSAGEM_TURMA_RPC."salvo_sucesso") );
-      } 
+      }
 
       break;
 
@@ -618,37 +824,658 @@ try {
       if ( !isset($oParam->iTurma) || $oParam->iTurma == "" ) {
         throw new ParameterException( _M(URL_MENSAGEM_TURMA_RPC."informe_turma") );
       }
-      
+
       $oTurma = TurmaRepository::getTurmaByCodigo( $oParam->iTurma );
-      $oTurma->excluirProfissionalVinculado( $oParam->iCodigoVinculo ); 
+      $oTurma->excluirProfissionalVinculado( $oParam->iCodigoVinculo );
 
       $oRetorno->message = urlencode( _M(URL_MENSAGEM_TURMA_RPC."vinculo_excluido") );
       break;
-      
+
     case 'getTermosResultadoFinal' :
-      
-      $oTurma  = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
+
+      $oTurma  = EducacaoSessionManager::carregarTurma($oParam->iTurma);
       $oEnsino = $oTurma->getBaseCurricular()->getCurso()->getEnsino();
-      
+
       $oRetorno->aTermos = array();
       foreach ($oEnsino->getTermosResultadoFinal($oTurma->getCalendario()->getAnoExecucao()) as $oTermo) {
-        
+
         $oTermoRF = new stdClass();
         $oTermoRF->sDescricao   = urlencode($oTermo->ed110_descricao) ;
         $oTermoRF->sAbreviatura = urlencode($oTermo->ed110_abreviatura) ;
         $oTermoRF->sReferencia  = urlencode($oTermo->ed110_referencia);
-        
+
         $oRetorno->aTermos[] = $oTermoRF;
       }
-      
+
       break;
+
+    /**
+     * Verifica se o Procedimento de Avaliação informado para Regencia é diferente, se for, exclui o Diário do mesmo e
+     * define o novo Procedimento de Avaliação
+     */
+    case 'salvarProcedimentoAvaliacao' :
+
+      db_inicio_transacao();
+
+      $sMensagem        = "";
+
+      foreach ($oParam->aTurmas as $oDadosTurma) {
+
+        $oTurma                      = TurmaRepository::getTurmaByCodigo( $oDadosTurma->iTurma );
+        $oEtapa                      = EtapaRepository::getEtapaByCodigo( $oDadosTurma->iEtapa );
+        $oProcedimentoAvaliacaoTurma = $oTurma->getProcedimentoDeAvaliacaoDaEtapa( $oEtapa );
+        $sTipoFormaAvaliacaoTurma    = $oProcedimentoAvaliacaoTurma->getFormaAvaliacao()->getTipo();
+        $lPossuiProcedimentoDaTurma  = false;
+
+        foreach ($oParam->aDisciplinas as $oDadosDisciplina ) {
+
+          $oProcedimentoAvaliacaoNovo = ProcedimentoAvaliacaoRepository::getProcedimentoByCodigo($oDadosDisciplina->iProcedimentoAvaliacao);
+          $sTipoAvaliacaoNovo         = $oProcedimentoAvaliacaoNovo->getFormaAvaliacao()->getTipo();
+
+          if ( $sTipoAvaliacaoNovo == $sTipoFormaAvaliacaoTurma ) {
+            $lPossuiProcedimentoDaTurma = true;
+          }
+        }
+
+        if ( !$lPossuiProcedimentoDaTurma ) {
+
+          $sMensagem .= " - {$oTurma->getDescricao()}\n";
+          continue;
+        }
+
+        foreach ($oParam->aDisciplinas as $oDadosDisciplina ) {
+
+          $oDisciplina = DisciplinaRepository::getDisciplinaByCodigo( $oDadosDisciplina->iDisciplina );
+          $oRegencia   = RegenciaRepository::getRegenciaByTurmaEtapaDisciplina( $oTurma, $oEtapa, $oDisciplina );
+
+          if ( $oRegencia->getProcedimentoAvaliacao()->getCodigo() != $oDadosDisciplina->iProcedimentoAvaliacao ) {
+
+            $oRegencia->excluirVinculoDiario();
+            $oProcedimentoAvaliacao = ProcedimentoAvaliacaoRepository::getProcedimentoByCodigo($oDadosDisciplina->iProcedimentoAvaliacao);
+            $oRegencia->setProcedimentoAvaliacao( $oProcedimentoAvaliacao );
+            $oRegencia->salvar();
+          }
+        }
+      }
+
+      if( !empty($sMensagem) ) {
+
+        $oMensagem            = new stdClass();
+        $oMensagem->sMensagem = $sMensagem;
+        $oRetorno->message    = urlencode( _M( URL_MENSAGEM_TURMA_RPC . 'turmas_nao_alteradas', $oMensagem ) );
+        $oRetorno->erro       = true;
+        db_fim_transacao();
+        break;
+      }
+
+      $oRetorno->message = urlencode( _M( URL_MENSAGEM_TURMA_RPC . 'procedimentos_salvo_sucesso' ) );
+      db_fim_transacao();
+      break;
+
+    /**
+     * Busca todas as turmas que estejam no calendário e escola informados
+     * Parâmetros( opcionais ):
+     * - lSomenteComAlunosMatriculados: retorna somente turmas com alunos matriculados
+     * - lSomenteComCriterioAvaliacao:  retorna somente turmas com critério de avaliação configurado
+     * - lSomenteAtivas:                retorna somente turmas ainda não encerradas
+     * - lSomenteProgressaoEncerrada:   retorna somente turmas que tenham alunos em progressão para alguma disciplina,
+     *                                  e que estejam todas as progressões encerradas
+     */
+    case 'buscaTurmasPorCalendarioEscola' :
+
+      if ( db_getsession("DB_modulo") != $iModuloEscola && ( !isset($oParam->iEscola) || empty($oParam->iEscola) ) ) {
+        throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC . 'informe_escola' ) );
+      }
+
+      if ( !isset($oParam->iCalendario) || empty($oParam->iCalendario) ) {
+        throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC . 'informe_calendario' ) );
+      }
+
+      $oRetorno->aTurmas = array();
+      $iCodigoEscola     = !empty( $oParam->iEscola ) ? $oParam->iEscola : $iEscola;
+      $oEscola           = EscolaRepository::getEscolaByCodigo( $iCodigoEscola );
+      $oCalendario       = CalendarioRepository::getCalendarioByCodigo( $oParam->iCalendario );
+      $oEtapa            = null;
+      $aTipoTurmaFora    = isset( $oParam->aTipoTurmaFora ) ? $oParam->aTipoTurmaFora : array();
+
+      if ( isset( $oParam->iEtapa ) && !empty($oParam->iEtapa) ) {
+        $oEtapa = EtapaRepository::getEtapaByCodigo( $oParam->iEtapa );
+      }
+
+      $aTurmas = TurmaRepository::getTurmaPorCalendarioEscola( $oEscola, $oCalendario );
+
+      foreach( $aTurmas as $oTurma ) {
+
+        if(    isset( $oParam->lSomenteComAlunosMatriculados )
+            && $oParam->lSomenteComAlunosMatriculados
+            && !empty($oEtapa)
+            && count( $oTurma->getAlunosMatriculadosNaTurmaPorSerie( $oEtapa ) ) == 0
+          ) {
+          continue;
+        }
+
+        if(    isset( $oParam->lSomenteComCriterioAvaliacao )
+            && $oParam->lSomenteComCriterioAvaliacao
+            && !$oTurma->possuiCriterioAvaliacao()
+          ) {
+          continue;
+        }
+
+        if( isset( $oParam->lSomenteProgressaoEncerrada ) && $oParam->lSomenteProgressaoEncerrada ) {
+
+          $lTemProgressaoEncerrada = false;
+
+          foreach( $oTurma->getDisciplinas() as $oRegencia ) {
+
+            if( count( ProgressaoParcialAlunoRepository::getProgressoesVinculadasRegencia( $oRegencia, 1 ) ) > 0 ) {
+              $lTemProgressaoEncerrada = true;
+            }
+          }
+
+          if( !$lTemProgressaoEncerrada ) {
+            continue;
+          }
+        }
+
+        foreach( $oTurma->getEtapas() as $oEtapaTurma ) {
+
+          if( !empty( $oEtapa ) && $oEtapaTurma->getEtapa()->getCodigo() != $oEtapa->getCodigo() ) {
+            continue;
+          }
+
+          if(    isset( $oParam->lSomenteAtivas )
+              && $oParam->lSomenteAtivas
+              && ( $oTurma->encerradaNaEtapa( $oEtapaTurma->getEtapa() ) || $oTurma->encerradaParcial( $oEtapaTurma->getEtapa() ) )
+            ) {
+            continue;
+          }
+
+          if ( in_array($oTurma->getTipoDaTurma(), $aTipoTurmaFora) ) {
+            continue;
+          }
+
+          $oDadosTurma         = new stdClass();
+          $oDadosTurma->iTurma = $oTurma->getCodigo();
+          $oDadosTurma->sTurma = urlencode( $oTurma->getDescricao() );
+          $oDadosTurma->iEtapa = $oEtapaTurma->getEtapa()->getCodigo();
+          $oDadosTurma->sEtapa = urlencode( $oEtapaTurma->getEtapa()->getNome() );
+
+          $oDadosTurma->turno  = new stdClass();
+          $oDadosTurma->turno->codigoTurno = $oTurma->getTurno()->getCodigoTurno();
+          $oDadosTurma->turno->descricao = urlencode($oTurma->getTurno()->getDescricao());
+          $oDadosTurma->turno->periodos = array();
+
+          foreach ($oTurma->getPeriodos() as $periodo) {
+              $dadosPeriodo = new stdClass();
+              $dadosPeriodo->codigoPeriodo = $periodo->getCodigo();
+              $dadosPeriodo->descricaoPeriodo = urlencode($periodo->getDescricao());
+              $dadosPeriodo->periodoAula = $periodo->getPeriodoAula();
+              $dadosPeriodo->horaInicial = $periodo->getHoraInicio();
+              $dadosPeriodo->horaFinal   = $periodo->getHoraFim();
+
+              $oDadosTurma->turno->periodos[] = $dadosPeriodo;
+          }
+
+          $oRetorno->aTurmas[] = $oDadosTurma;
+        }
+      }
+
+      break;
+
+      case 'buscaTurmasEspeciaisPorCalendarioEscola' :
+
+          if ( db_getsession("DB_modulo") != $iModuloEscola && ( !isset($oParam->iEscola) || empty($oParam->iEscola) ) ) {
+              throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC . 'informe_escola' ) );
+          }
+
+          if ( !isset($oParam->iCalendario) || empty($oParam->iCalendario) ) {
+              throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC . 'informe_calendario' ) );
+          }
+
+          $oRetorno->aTurmas = array();
+          $iCodigoEscola     = !empty( $oParam->iEscola ) ? $oParam->iEscola : $iEscola;
+          $oEscola           = EscolaRepository::getEscolaByCodigo( $iCodigoEscola );
+          $oCalendario       = CalendarioRepository::getCalendarioByCodigo( $oParam->iCalendario );
+          $oEtapa            = null;
+          $aTipoTurmaFora    = isset( $oParam->aTipoTurmaFora ) ? $oParam->aTipoTurmaFora : array();
+
+          if ( isset( $oParam->iEtapa ) && !empty($oParam->iEtapa) ) {
+              $oEtapa = EtapaRepository::getEtapaByCodigo( $oParam->iEtapa );
+          }
+
+          $aTurmas = TurmaRepository::getTurmaEspecialPorCalendarioEscola( $oEscola, $oCalendario );
+
+          foreach( $aTurmas as $oTurma ) {
+
+              if(    isset( $oParam->lSomenteComAlunosMatriculados )
+                  && $oParam->lSomenteComAlunosMatriculados
+                  && !empty($oEtapa)
+                  && count( $oTurma->getAlunosMatriculadosNaTurmaPorSerie( $oEtapa ) ) == 0
+              ) {
+                  continue;
+              }
+
+              if(    isset( $oParam->lSomenteComCriterioAvaliacao )
+                  && $oParam->lSomenteComCriterioAvaliacao
+                  && !$oTurma->possuiCriterioAvaliacao()
+              ) {
+                  continue;
+              }
+
+              if( isset( $oParam->lSomenteProgressaoEncerrada ) && $oParam->lSomenteProgressaoEncerrada ) {
+
+                  $lTemProgressaoEncerrada = false;
+
+                  foreach( $oTurma->getDisciplinas() as $oRegencia ) {
+
+                      if( count( ProgressaoParcialAlunoRepository::getProgressoesVinculadasRegencia( $oRegencia, 1 ) ) > 0 ) {
+                          $lTemProgressaoEncerrada = true;
+                      }
+                  }
+
+                  if( !$lTemProgressaoEncerrada ) {
+                      continue;
+                  }
+              }
+
+              $oDadosTurma         = new stdClass();
+              $oDadosTurma->iTurma = $oTurma->getCodigo();
+              $oDadosTurma->sTurma = urlencode( $oTurma->getDescricao() );
+              $oRetorno->aTurmas[] = $oDadosTurma;
+
+          }
+
+          break;
+
+    /**
+     * Compara entre duas Turmas se suas Disciplinas possuem o mesmo Procedimento de Avaliação vinculados há Regência
+     */
+    case 'comparaRegenciasEntreTurmas' :
+
+      if ( !isset($oParam->iTurmaAtual) || empty($oParam->iTurmaAtual) ) {
+        throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC . 'turma_atual_nao_informada' ) );
+      }
+
+      if ( !isset($oParam->iTurmaDestino) || empty($oParam->iTurmaDestino) ) {
+        throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC . 'turma_destino_nao_informada' ) );
+      }
+
+      $oEtapaOrigem   = EtapaRepository::getEtapaByCodigo($oParam->iEtapaOrigem);
+      $aEtapasDestino = explode(',', $oParam->sEtapasDestino);
+      $oEtapaDestino  = null;
+
+      /**
+       * Como turma de destino pode ser uma turma multietapa verifica-se a etapa da turma de
+       * origem encontra na(s) etapa(s) de destino. Se não, valida se há etapa de destino são equivalente
+       */
+      if ( in_array($oEtapaOrigem->getCodigo(), $aEtapasDestino) ) {
+        $oEtapaDestino = $oEtapaOrigem;
+      } else {
+
+        foreach ( $oEtapaOrigem->buscaEtapaEquivalente() as $oEtapaEquivalente) {
+
+          if ( in_array($oEtapaEquivalente->getCodigo(), $aEtapasDestino) ) {
+
+            $oEtapaDestino = $oEtapaEquivalente;
+            break;
+          }
+        }
+      }
+
+      if ( is_null($oEtapaDestino) ) {
+        $oRetorno->lPossuiMesmoProcedimentos = false;
+      }
+
+      $oTurmaAtual                         = TurmaRepository::getTurmaByCodigo($oParam->iTurmaAtual);
+      $oTurmaDestino                       = TurmaRepository::getTurmaByCodigo($oParam->iTurmaDestino);
+      if ($oEtapaOrigem->getEnsino()->getCodigo() == $oEtapaDestino->getEnsino()->getCodigo() &&
+          $oTurmaAtual->getCalendario()->getCodigo() != $oTurmaDestino->getCalendario()->getCodigo()) {
+
+          $oRetorno->lPossuiMesmoProcedimentos = true;
+      } else {
+          $oTurmaAtual->possuiMesmoProcedimentosAvaliacao($oTurmaDestino,
+              $oEtapaOrigem,
+              $oEtapaDestino);
+      }
+
+
+      break;
+
+    case 'buscaTurmasComMaisUmProcedimentoAvaliacao' :
+      /**
+       * Assim que a rotina:
+       * Procedimento > Diário de Classe > Lancamento por período
+       * Sair do ar em 2015, podemos remover esse case
+       */
+
+      $sCampos  = " ed52_i_codigo, trim(ed52_c_descr) as calendario, ed57_i_codigo, trim(ed57_c_descr) as turma, ";
+      $sCampos .= " trim(ed11_c_descr) as serie, ed223_i_serie, ed220_i_procedimento ";
+
+      $sWhere    = " ed57_i_escola =  " . $iEscola;
+      $sGroupBy  = " group by ed52_i_codigo, ed52_c_descr, ed57_i_codigo, ed57_c_descr, ed11_c_descr, ";
+      $sGroupBy .= " ed223_i_serie, ed220_i_procedimento,ed11_i_sequencia ";
+
+      $sHaving  = "  having  (select count(*) ";
+      $sHaving .= "            from regencia ";
+      $sHaving .= "           where ed59_i_turma = ed57_i_codigo ";
+      $sHaving .= "             and ed59_i_serie = ed223_i_serie ";
+      $sHaving .= "             and ed59_procedimento <> ed220_i_procedimento) > 0 ";
+
+      $sOrdem = " ed52_i_ano, ed11_i_sequencia ";
+
+      $oDaoTurma  = new cl_turma();
+      $sSqlTurmas = $oDaoTurma->sql_query_turma(null, $sCampos, $sOrdem , $sWhere . $sGroupBy . $sHaving);
+      $rsTurmas   = db_query($sSqlTurmas);
+
+      $aTurmas = array();
+      if ($rsTurmas && pg_num_rows($rsTurmas) > 0) {
+
+        $iLinhas = pg_num_rows($rsTurmas);
+
+        for ($i = 0; $i < $iLinhas; $i ++) {
+
+          $oDados      = db_utils::fieldsMemory($rsTurmas, $i);
+          $sTurmaEtapa = "{$oDados->turma} - {$oDados->serie}";
+
+          if (!array_key_exists($oDados->ed52_i_codigo, $aTurmas)) {
+
+            $oCalendario          = new stdClass();
+            $oCalendario->sNome   = urlencode($oDados->calendario);
+            $oCalendario->aTurmas = array();
+            $aTurmas[$oDados->ed52_i_codigo] = $oCalendario;
+          }
+
+          $aTurmas[$oDados->ed52_i_codigo]->aTurmas[] = urlencode($sTurmaEtapa);
+        }
+      }
+      $oRetorno->lPossue = count($aTurmas) > 0;
+      $oRetorno->aTurmas = $aTurmas;
+
+      break;
+
+    case 'periodosCompoemResultado':
+
+      if ( !isset($oParam->iTurma) || empty($oParam->iTurma) ) {
+        throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC . 'informe_turma' ) );
+      }
+
+      if ( !isset($oParam->iEtapa) || empty($oParam->iEtapa) ) {
+        throw new ParameterException( _M( URL_MENSAGEM_TURMA_RPC . 'informe_etapa' ) );
+      }
+
+      $oRetorno->aPeriodos    = array();
+      $oTurma                 = EducacaoSessionManager::carregarTurma($oParam->iTurma);
+      $oEtapa                 = EducacaoSessionManager::carregarEtapa($oParam->iEtapa);
+      $oProcedimentoAvaliacao = $oTurma->getProcedimentoDeAvaliacaoDaEtapa( $oEtapa );
+      $aResultadoFinal        = array();
+
+      /**
+       * Pega o primeiro resultado que gera resultado final
+       */
+      foreach ($oProcedimentoAvaliacao->getResultados() as $oElementoResultado) {
+
+        if( $oElementoResultado->utilizaProporcionalidade() ) {
+          $aResultadoFinal[] = $oElementoResultado;
+        }
+      }
+
+      if ( count($aResultadoFinal) == 0) {
+        throw new Exception( _M( URL_MENSAGEM_TURMA_RPC . 'turma_sem_procedimento_resultado_final' ) );
+      }
+
+      foreach( $aResultadoFinal as $oResultadoFinal ) {
+
+        $aElementosResultado   = $oResultadoFinal->getElementosComposicaoResultado();
+        $iElementosPercorridos = 0;
+        $iTotalElementos       = count($aElementosResultado);
+        foreach ($aElementosResultado as $oElemento) {
+
+          $iElementosPercorridos++;
+          $oDadosElemento         = new stdClass();
+
+          if ( $oElemento instanceof ResultadoAvaliacao) {
+
+            $oDadosElemento->iOrdem     = $oElemento->getOrdemSequencia();
+            $oDadosElemento->sDescricao = urlencode( $oElemento->getDescricao() );
+          } else if ($oElemento instanceof ResultadoAvaliacaoComposicao) {
+
+            $oDadosElemento->iOrdem     = $oElemento->getOrdem();
+            $oDadosElemento->sDescricao = urlencode( $oElemento->getElementoAvaliacao()->getDescricao() );
+          } else {
+
+            /**
+             * Quando elemento for AvaliacaoPeriodica
+             */
+            $oDadosElemento->iOrdem     = $oElemento->getOrdemSequencia();
+            $oDadosElemento->sDescricao = urlencode( $oElemento->getDescricao() );
+          }
+          $oDadosElemento->lBloqueia = $iElementosPercorridos == $iTotalElementos;
+          $oRetorno->aPeriodos[]     = $oDadosElemento;
+        }
+      }
+
+      break;
+    case 'buscarRegentePorRegencia':
+        $regencia = RegenciaRepository::getRegenciaByCodigo($oParam->regencia);
+        $docentes = $regencia->getDocentes();
+        $regentes = array();
+        foreach ($docentes as $docente) {
+            $regentes[] = (object) array(
+                'cgm' => $docente->getCgm()->getCodigo(),
+                'nome' => urlencode($docente->getCgm()->getNome())
+            );
+        }
+        $oRetorno->regentes = $regentes;
+        break;
+
+    case 'getAtividades':
+      $oDaoFuncaoAtividade = new cl_funcaoatividade();
+      $sWhere              = " ed119_sequencial in (1, 3, 4) ";
+      $sSqlFuncaoAtividade = $oDaoFuncaoAtividade->sql_query_file(null, "*", "ed119_descricao", $sWhere);
+      $rsFuncaoAtividade   = $oDaoFuncaoAtividade->sql_record( $sSqlFuncaoAtividade );
+
+      $iLinhas = $oDaoFuncaoAtividade->numrows;
+
+      $oRetorno->aFuncoes = array();
+      for ( $i = 0; $i < $iLinhas; $i++ ) {
+        $oDados = db_utils::fieldsMemory($rsFuncaoAtividade, $i, true);
+        $oRetorno->aFuncoes[] = $oDados;
+      }
+
+      break;
+    case 'vincularAtividadeComplementar':
+
+      $iEscola = db_getsession('DB_coddepto');
+      $escola = new Escola($iEscola);
+
+      if ($escola->ofereceAtividadeComplementar() == Escola::NAO_OFERECE_ATIVIDADE_COMPLEMENTAR) {
+          throw new Exception('Esta escola não oferece atividades complementares!');
+      }
+
+      db_inicio_transacao();
+
+      $clturmaatividadecomplementar = new cl_turmaatividadecomplementar;
+      $clrechumanoescola =  new cl_rechumanoescola;
+
+      $rs = $clturmaatividadecomplementar->sql_record($clturmaatividadecomplementar->sql_query_file(null, "count(distinct(ed146_censoativcompl)) as numativ", null, " ed146_turma = {$oParam->turma} and ed146_censoativcompl != {$oParam->atividadeComplementar}"));
+      $count = db_utils::fieldsMemory($rs, 0)->numativ + 1;
+      if ($count > 6) {
+        throw new Exception('Uma turma só pode ter até 6 atividades complementares cadastradas!');
+      }
+
+      foreach($oParam->diasSemana as $diaSemana) {
+
+        $rsAtividades = $clturmaatividadecomplementar->sql_record($clturmaatividadecomplementar->sql_query_file(null, "*", null, " ed146_diasemana = $diaSemana AND ed146_censoativcompl = {$oParam->atividadeComplementar} AND ed146_turma = {$oParam->turma}"));
+        if ($rsAtividades) {
+            throw new Exception('Uma turma não pode ter uma mesma atividade mais de uma vez no mesmo dia!');
+        }
+
+        $rsRechumanoEscola = $clrechumanoescola->sql_record($clrechumanoescola->sql_query_file(null, "ed75_i_codigo", null, " ed75_i_rechumano = {$oParam->recHumano}"));
+        if (!$rsRechumanoEscola) {
+            throw new Exception("Erro ao localizar o profissional relativo a atividade: {$clrechumanoescola->erro_banco}");
+        }
+
+        $clturmaatividadecomplementar->ed146_turma = $oParam->turma;
+        $clturmaatividadecomplementar->ed146_censoativcompl = $oParam->atividadeComplementar;
+        $clturmaatividadecomplementar->ed146_funcaoatividade = $oParam->funcaoAtividade;
+        $clturmaatividadecomplementar->ed146_rechumanoescola = db_utils::fieldsMemory($rsRechumanoEscola, 0)->ed75_i_codigo;
+        $clturmaatividadecomplementar->ed146_turnoreferente = $oParam->turnoReferente;
+        $clturmaatividadecomplementar->ed146_diasemana = $diaSemana;
+        $clturmaatividadecomplementar->ed146_horainicial = $oParam->horaInicial;
+        $clturmaatividadecomplementar->ed146_horafinal = $oParam->horaFinal;
+
+        $clturmaatividadecomplementar->incluir(null);
+
+        if ($clturmaatividadecomplementar->erro_status == 0) {
+            throw new Exception($clturmaatividadecomplementar->erro_msg);
+        }
+      }
+
+      $oRetorno->message = 'Atividades vinculadas com sucesso!';
+
+      db_fim_transacao();
+      break;
+    case 'getAtividadesComplementares':
+      $clturmaatividadecomplementar = new cl_turmaatividadecomplementar;
+
+      $sCampos  = " ed146_sequencial,";
+      $sCampos .= " case";
+      $sCampos .= "    when ed20_i_tiposervidor = 1";
+      $sCampos .= "      then trim(cgmrh.z01_nome)";
+      $sCampos .= "    else";
+      $sCampos .= "      trim(cgmcgm.z01_nome)";
+      $sCampos .= " end as profissional,";
+      $sCampos .= " ed119_sequencial,";
+      $sCampos .= " ed119_descricao,";
+      $sCampos .= " ed32_i_codigo,";
+      $sCampos .= " ed133_c_descr,";
+      $sCampos .= " ed146_horainicial,";
+      $sCampos .= " ed146_horafinal";
+
+      $rs = $clturmaatividadecomplementar->sql_record($clturmaatividadecomplementar->sql_query_profissional(null, $sCampos, 'ed32_i_codigo, ed146_horainicial', "ed146_turma = {$oParam->turma}"));
+      $oRetorno->atividades = array();
+
+      if ($rs) {
+          $numAtividades = pg_num_rows($rs);
+          for($i = 0; $i < $numAtividades; $i++) {
+            $ativ = db_utils::fieldsMemory($rs, $i);
+
+            $ret = new stdClass();
+            $ret->codigoVinculo = $ativ->ed146_sequencial;
+            $ret->horaInicial = $ativ->ed146_horainicial;
+            $ret->horaFinal = $ativ->ed146_horafinal;
+            $ret->iDiaSemana = $ativ->ed32_i_codigo;
+            $ret->profissional = $ativ->profissional;
+            $ret->sAtividade = $ativ->ed133_c_descr;
+
+            $oRetorno->atividades[] = $ret;
+        }
+      }
+
+      break;
+    case 'removeAtividadeComplementar':
+      $clturmaatividadecomplementar = new cl_turmaatividadecomplementar;
+
+      db_inicio_transacao();
+
+      $clturmaatividadecomplementar->excluir($oParam->iVinculo);
+      if ($clturmaatividadecomplementar->erro_status == 0) {
+          throw new Exception($clturmaatividadecomplementar->erro_msg);
+      }
+
+      $oRetorno->message = 'Atividade desvinculada com sucesso!';
+
+      db_fim_transacao();
+
+      break;
+
+    case 'getTurnosDisponiveis':
+      $clturma = new cl_turma;
+      $clhorarioescola = new cl_horarioescola;
+
+      $iEscola = db_getsession('DB_coddepto');
+
+      // Turnos de aula da turma
+      $rs = $clturma->sql_record($clturma->sql_query_turnos_referentes($oParam->turma, 'distinct ed231_i_referencia'));
+      $turnosTurma = array();
+      if ($rs) {
+        $numLinhas = pg_num_rows($rs);
+        for($i = 0; $i < $numLinhas; $i++) {
+            $turnoRef = db_utils::fieldsMemory($rs, $i);
+            $turnosTurma[] = $turnoRef->ed231_i_referencia;
+        }
+      }
+
+      // Turnos de funcionamento da escola
+      $rs = $clhorarioescola->sql_record($clhorarioescola->sql_query_file(null, 'distinct ed123_turnoreferencia', null, "horarioescola.ed123_escola = {$iEscola}"));
+      $turnosEscola = array();
+      if ($rs) {
+        $numLinhas = pg_num_rows($rs);
+        for($i = 0; $i < $numLinhas; $i++) {
+            $turnoRef = db_utils::fieldsMemory($rs, $i);
+            $turnosEscola[] = $turnoRef->ed123_turnoreferencia;
+        }
+      }
+
+      // Turnos que a *escola* funciona, mas que a *turma* não tem aula
+      $turnosDisponiveis = array_diff($turnosEscola, $turnosTurma);
+      sort($turnosDisponiveis);
+
+      // Cosntrói um array chaveado pelo id do turno de referência e com valor da string do turno
+      // Ex: [ 1 => "Manhã", 2 => "Tarde" ]
+      $retornoTurnos = array();
+      foreach($turnosDisponiveis as $turno) {
+          $retornoTurnos[$turno] = urlencode(Turno::$aTurnoReferente[$turno]);
+      }
+
+      $oRetorno->turnos = $retornoTurnos;
+
+      break;
+      case 'turnosTurma':
+          if (empty($oParam->turma)) {
+              throw new Exception("Informe a turma.");
+          }
+          if (empty($oParam->etapa)) {
+              throw new Exception("Informe a etapa.");
+          }
+          $oRetorno->permite = true;
+          $turma = new Turma($oParam->turma);
+          $turnoReferente = $turma->getTurnoReferente();
+          if (count($turnoReferente) === 1) {
+              $oRetorno->permite = false;
+              break;
+          }
+
+          $etapa = new Etapa($oParam->etapa);
+
+          if (!$etapa->getEnsino()->isInfantil()) {
+              $oRetorno->permite = false;
+              break;
+          }
+          $turno = $turma->getTurno();
+          $oRetorno->turnos = array();
+          $oRetorno->turnos[] = (object)array(
+              'codigo' => $turno->getCodigoTurno(),
+              'nome' => $turno->getDescricao(),
+              'original' => true
+          );
+
+          foreach ($turno->getTurnoReferente() as $referencia) {
+              $oRetorno->turnos[] = (object)array(
+                  'codigo' => $referencia,
+                  'nome' => urlencode(Turno::getDescricaoTurno($referencia)),
+                  'original' => false
+              );
+          }
+
+          break;
   }
 } catch (Exception $oErro) {
 
   db_fim_transacao(true);
   $oRetorno->status  = 2;
   $oRetorno->message = urlencode($oErro->getMessage());
+  $oRetorno->erro    = true;
 }
 
 echo $oJson->encode($oRetorno);
-?>

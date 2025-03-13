@@ -1,10 +1,10 @@
 <?php
 
-require_once ("fpdf151/scpdf.php");
-require_once ("libs/db_sql.php");
-require_once ('libs/db_utils.php');
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_stdlib.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlib.php"));
 
 
 $oGet                  = db_utils::postMemory($_GET);
@@ -293,7 +293,7 @@ $oPdf->Cell(63,  $iAltLinha, "R$ " . db_formatar($nDepositosAnexoI, "f"),       
 $oPdf->SetY($iAltRetanguloInicial+23);
 $oPdf->SetX(42);
 $oPdf->SetFont('Arial','B',6);
-$oPdf->Cell(123, $iAltLinha, "2- Depósitos vários não contabilizados - ANEXO II",  0, 0, "L");
+$oPdf->Cell(123, $iAltLinha, "2- Débitos vários não contabilizados - ANEXO II",  0, 0, "L");
 $oPdf->SetFont('Arial','',6);
 $oPdf->SetX(175);
 $oPdf->Cell(63,  $iAltLinha, "R$ " . db_formatar($nDebitosAnexoII, "f"),              0, 1, "L");
@@ -439,7 +439,8 @@ function dadosBasicos($oGet) {
   $sSqlBasico .= "                  from extratosaldo                                     ";
   $sSqlBasico .= "                 where k97_contabancaria = {$oGet->iConta}              ";
   $sSqlBasico .= "                   and k97_dtsaldofinal <= k68_data                     ";
-  $sSqlBasico .= "                 order by k97_dtsaldofinal desc, k97_sequencial desc limit 1) ";
+  //$sSqlBasico .= "                 order by k97_dtsaldofinal desc, k97_sequencial desc limit 1) ";
+  $sSqlBasico .= "                 order by k97_dtsaldofinal desc, k97_extrato desc limit 1) ";
   $sSqlBasico .= "        end as saldoextrato,                                            ";
   $sSqlBasico .= "        nomeinst,                                                       ";
   $sSqlBasico .= "        munic,                                                          ";
@@ -475,7 +476,8 @@ function dadosBasicos($oGet) {
     $sSqlBasico .= "                  from extratosaldo                                     ";
     $sSqlBasico .= "                 where k97_contabancaria = {$oGet->iConta}              ";
     $sSqlBasico .= "                   and k97_dtsaldofinal <= k68_data                     ";
-    $sSqlBasico .= "                 order by k97_dtsaldofinal desc, k97_sequencial desc limit 1) ";
+    //$sSqlBasico .= "                 order by k97_dtsaldofinal desc, k97_sequencial desc limit 1) ";
+    $sSqlBasico .= "                 order by k97_dtsaldofinal desc, k97_extrato desc limit 1) ";
     $sSqlBasico .= "        end as saldoextrato,                                            ";
     $sSqlBasico .= "        nomeinst,                                                       ";
     $sSqlBasico .= "        munic,                                                          ";

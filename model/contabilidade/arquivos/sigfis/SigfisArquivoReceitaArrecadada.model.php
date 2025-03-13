@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 
-require_once ("interfaces/iPadArquivoTxtBase.interface.php");
-require_once ("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php");
+require_once modification ("interfaces/iPadArquivoTxtBase.interface.php");
+require_once modification ("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php");
 
 /**
  *
@@ -37,42 +37,54 @@ require_once ("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php")
  * @subpackage sigfis
  *
  */
+
 class SigfisArquivoReceitaArrecadada extends SigfisArquivoBase implements iPadArquivoTXTBase {
-  
-  protected $iCodigoLayout     = 122;
-  protected $sNomeArquivo      = 'RecLanc';
-  
-  /**
-  * Busca os dados para gerar o Arquivo do Receita Arrecadada
-  */
-  public function gerarDados() {
-  
+
+    protected $iCodigoLayout     = 122;
+    protected $sNomeArquivo      = 'RecLanc';
+
     /**
-     * Busca os dados da db_config
+     * Busca os dados para gerar o Arquivo do Receita Arrecadada
+     * @throws Exception
      */
-    $oDbConfig        = new db_stdClass();
-    $oDadoConfig      = $oDbConfig->getDadosInstit();
-                     
-    $iInstituicaoSessao = db_getsession('DB_instit');
+    public function gerarDados() {
 
-    $clConLanCamRec   = db_utils::getDao('conlancamrec');
+        /**
+         * Busca os dados da db_config
+         */
+        $oDbConfig        = new db_stdClass();
+        $oDadoConfig      = $oDbConfig->getDadosInstit();
 
-    $sCampos          = "conlancam.c70_valor, extract(month from c70_data) as mes, orcfontes.o57_fonte, c74_codlan, ";
-    $sCampos         .= "orcfontes.o57_codfon, "; 
-    $sCampos         .= "case conlancamdoc.c71_coddoc when 100 then 1 ";
-    $sCampos         .= "                             when 101 then 2 ";
-    $sCampos         .= "                             else 0 end as codigo_documento ";
-    $sOrder           = "conlancamrec.c74_codlan";
-    $sWhere           = "conlancamrec.c74_anousu = {$this->iAnoUso} and orcreceita.o70_instit = {$iInstituicaoSessao} ";
-    $sWhere          .= "and conlancamrec.c74_data between '{$this->dtDataInicial}' and '{$this->dtDataFinal}'";
-    $sSqlConLanCamRec = $clConLanCamRec->sql_query_conPlanoCodDoc(null, $sCampos, $sOrder, $sWhere);
+        $iInstituicaoSessao = db_getsession('DB_instit');
 
-    $sSqlConLanCamRec = "select sum(c70_valor)as c70_valor
-                                , mes, 
+        $clConLanCamRec   = db_utils::getDao('conlancamrec');
+
+        $sCampos          = "conlancam.c70_valor, extract(month from c70_data) as mes, orcfontes.o57_fonte, c74_codlan, ";
+        $sCampos         .= "orcfontes.o57_codfon, ";
+        $sCampos         .= "case conlancamdoc.c71_coddoc when 100 then 1 ";
+        $sCampos         .= "                             when 107 then 1 ";
+        $sCampos         .= "                             when 101 then 2 ";
+        $sCampos         .= "                             when 108 then 2 ";
+        $sCampos         .= "                             when 109 then 1 ";
+        $sCampos         .= "                             when 110 then 2 ";
+        $sCampos         .= "                             when 418 then 2 ";
+        $sCampos         .= "                             when 415 then 1 ";
+        $sCampos         .= "                             when 416 then 1 ";
+        $sCampos         .= "                             when 417 then 2 ";
+        $sCampos         .= "                             when 117 then 1 ";
+        $sCampos       .= "                 when 118 then 2 ";
+        $sCampos         .= "                             else 0 end as codigo_documento ";
+        $sOrder           = "conlancamrec.c74_codlan";
+        $sWhere           = "conlancamrec.c74_anousu = {$this->iAnoUso} and orcreceita.o70_instit = {$iInstituicaoSessao} ";
+        $sWhere          .= "and conlancamrec.c74_data between '{$this->dtDataInicial}' and '{$this->dtDataFinal}' ";
+        $sSqlConLanCamRec = $clConLanCamRec->sql_query_conPlanoCodDoc(null, $sCampos, $sOrder, $sWhere);
+
+        $sSqlConLanCamRec = "select sum(c70_valor) as c70_valor, mes, 
                                 case when substr(o57_fonte,1,1) = '9'
                                      then '99'||substr(o57_fonte,3,13)
                                      else o57_fonte
-                                end as o57_fonte, 
+                                end as o57_fonte2, 
+                                o57_fonte,
                                 o57_codfon, 
                                 case when substr(o57_fonte,1,1) = '9' and codigo_documento = 1 
                                      then 2
@@ -84,43 +96,59 @@ class SigfisArquivoReceitaArrecadada extends SigfisArquivoBase implements iPadAr
                          group by mes, o57_fonte, o57_codfon, o57_fonte, codigo_documento 
                          order by o57_fonte";
 
-    $rsConLanCamRec   = $clConLanCamRec->sql_record($sSqlConLanCamRec);
-//    die("$sSqlConLanCamRec");
-    
-    $this->addLog("=====Arquivo: ".$this->getNomeArquivo()." Erros:\n");
-    if ($clConLanCamRec->numrows > 0) {
-      
-      if (empty($this->sCodigoTribunal)) {
-        throw new Exception("O código do tribunal deve ser informado para geração do arquivo");
-      }
-      
-      for ($i = 0; $i < $clConLanCamRec->numrows; $i++) {
-        
-        $oDadosQuery = new stdClass();
-        $oDadosQuery = db_utils::fieldsMemory($rsConLanCamRec, $i);
-        $oDados      = new stdClass();
-        
-        if ($oVinculo = SigfisVinculoReceita::getVinculoReceita($oDadosQuery->o57_codfon)) {
-        
-          $oDados->tp_AtualizacaoReceitaLancada = $oDadosQuery->codigo_documento;
-          $oDados->cd_unidade                   = str_pad($this->sCodigoTribunal,              4, ' ', STR_PAD_LEFT);
-//          $oDados->cd_ItemReceita               = str_pad(substr($oVinculo->receitatce, 0, 8), 8, ' ', STR_PAD_LEFT);
-          $oDados->cd_ItemReceita               = str_pad(substr($oDadosQuery->o57_fonte, 1, 8), 8, ' ', STR_PAD_LEFT);
-          $oDados->dt_AnoMes                    = $this->iAnoUso . str_pad($oDadosQuery->mes,    2, '0', STR_PAD_LEFT);
-          $oDados->vl_Lancamento                = str_pad(number_format($oDadosQuery->c70_valor, 2, '',''),   16, ' ', STR_PAD_LEFT); 
-          
-          $oDados->codigolinha     = 409;
-          
-          $this->aDados[] = $oDados;  
-        } else {
-        
-          $sErroLog  = "Receita {$oDadosQuery->o57_fonte} do ano de {$this->iAnoUso} ";
-          $sErroLog .= "não tem vinculo com Receita Sigfis.\n";
-          $this->addLog($sErroLog);
+        $clausulaWhen = SigfisArquivoItemReceita::getCaseWhen();
+        $sSqlConLanCamRec = "
+        select sum(c70_valor) as c70_valor, 
+               mes,  
+               {$clausulaWhen} as o57_fonte, 
+               min(o57_codfon) as o57_codfon, 
+               codigo_documento 
+          from ( {$sSqlConLanCamRec} ) as x 
+         group by mes, 
+                  {$clausulaWhen}, 
+                  codigo_documento 
+            order by {$clausulaWhen}";
+
+        $rsConLanCamRec   = $clConLanCamRec->sql_record($sSqlConLanCamRec);
+
+        $this->addLog("=====Arquivo: ".$this->getNomeArquivo()." Erros:\n");
+        if ($clConLanCamRec->numrows > 0) {
+
+            if (empty($this->sCodigoTribunal)) {
+                throw new Exception("O código do tribunal deve ser informado para geração do arquivo");
+            }
+
+            for ($i = 0; $i < $clConLanCamRec->numrows; $i++) {
+
+                $oDadosQuery = db_utils::fieldsMemory($rsConLanCamRec, $i);
+                $oDados      = new stdClass();
+
+                $oVinculo = SigfisVinculoReceita::getVinculoReceita($oDadosQuery->o57_codfon);
+                if (empty($oVinculo)) {
+
+                    $sErroLog  = "Receita {$oDadosQuery->o57_fonte} do ano de {$this->iAnoUso} ";
+                    $sErroLog .= "não tem vinculo com Receita Sigfis.\n";
+                    $this->addLog($sErroLog);
+                    continue;
+                }
+
+                if ( $oDadosQuery->codigo_documento == "0" ){
+                    continue;
+                }
+
+                $oDados->tp_AtualizacaoReceitaLancada = $oDadosQuery->codigo_documento;
+                $oDados->cd_unidade                   = str_pad($this->sCodigoTribunal,              4, ' ', STR_PAD_LEFT);
+                $oDados->cd_ItemReceita               = str_pad(substr($oDadosQuery->o57_fonte, 0, 13), 13, ' ', STR_PAD_RIGHT);
+                $oDados->dt_AnoMes                    = $this->iAnoUso . str_pad($oDadosQuery->mes,    2, '0', STR_PAD_LEFT);
+                $oDados->vl_Lancamento                = str_pad(number_format($oDadosQuery->c70_valor, 2, '',''),   16, ' ', STR_PAD_LEFT);
+                $oDados->codigolinha     = 409;
+
+                $this->aDados[] = $oDados;
+
+            }
         }
-      } 
+
+        $this->addLog("===== Fim do Arquivo: ".$this->getNomeArquivo()."\n");
     }
-    
-    $this->addLog("===== Fim do Arquivo: ".$this->getNomeArquivo()."\n");
-  }
+
 }

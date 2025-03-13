@@ -1,37 +1,37 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Classe para arredondamento de notas
  * @package Educacao
  * @author iuri@dbseller.com
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.24 $
  */
-require_once('model/educacao/IEducacaoArredondamento.interface.php');
+require_once(modification('model/educacao/IEducacaoArredondamento.interface.php'));
 class ArredondamentoNota implements IEducacaoArredondamento {
 
   /**
@@ -53,6 +53,7 @@ class ArredondamentoNota implements IEducacaoArredondamento {
 
     $this->oEducacaoArredondamento = new EducacaoArredondamento();
     $this->iCasasDecimais          = 0;
+
     $oDaoAvaliacaoArredondamento   = new cl_avaliacaoestruturanota();
     $sWhere                        = " ed315_escola = ".$_SESSION["DB_coddepto"];
     $sWhere                       .= " and ed315_ativo is true";
@@ -63,7 +64,7 @@ class ArredondamentoNota implements IEducacaoArredondamento {
                                                                                                null,
                                                                                                $sWhere
                                                                                               );
-    
+
     $rsRegraArredondamento       = $oDaoAvaliacaoArredondamento->sql_record($sSqlRegraArredondamento);
     if ($oDaoAvaliacaoArredondamento->numrows > 0) {
 
@@ -79,29 +80,13 @@ class ArredondamentoNota implements IEducacaoArredondamento {
         $oDadosRegra->iCasasDecimaisArredondamento = $oDadosAvaliacao->ed316_casasdecimaisarredondamento;
         $oDadosRegra->aRegras                      = array();
         $aPartesMascara                            = explode(".", $oDadosAvaliacao->db77_estrut);
-        
+
         if (isset($aPartesMascara[1])) {
           $oDadosRegra->iCasasDecimais = strlen($aPartesMascara[1]);
         }
-        
+
         if (count($aPartesMascara) == 2 && $oDadosAvaliacao->ed318_regraarredondamento != "") {
-
-          $oDaoRegras           = new cl_regraarredondamentofaixa();
-          $sWhereRegras         = "ed317_regraarredondamento = {$oDadosAvaliacao->ed318_regraarredondamento}";
-          $sSqlFaixas           = $oDaoRegras->sql_query_file(null, "*", null, "{$sWhereRegras}");
-          $rsFaixas             = $oDaoRegras->sql_record($sSqlFaixas);
-          $aFaixasArredontamento = db_utils::getCollectionByRecord($rsFaixas);
-          foreach ($aFaixasArredontamento as $oFaixa) {
-
-            $oRegra                 = new StdClass();
-            $oRegra->inicio         = $oFaixa->ed317_inicial;
-            $oRegra->fim            = $oFaixa->ed317_final;
-            $oRegra->arrendondar    = $oFaixa->ed317_arredondar;
-            $oDadosRegra->aRegras[] = $oRegra;
-
-            unset($oFaixa);
-          }
-          unset($aFaixasArredontamento);
+          $oDadosRegra->aRegras = $this->retornarFaixasRegraArrendodamento( $oDadosAvaliacao->ed318_regraarredondamento );
         }
         $this->oEducacaoArredondamento->adicionarRegras($oDadosAvaliacao->ed315_ano, $oDadosRegra);
       }
@@ -109,23 +94,49 @@ class ArredondamentoNota implements IEducacaoArredondamento {
   }
 
   /**
+   * Retorna as faixas de uma regra de arredondamento
+   * @param  integer $iCodigoRegra código da regra
+   * @return array
+   */
+  protected function retornarFaixasRegraArrendodamento( $iCodigoRegra ) {
+
+    $aRegras    = array();
+    $sWhere     = "ed317_regraarredondamento = {$iCodigoRegra}";
+    $oDaoRegra  = new cl_regraarredondamentofaixa();
+    $sSqlFaixas = $oDaoRegra->sql_query_file(null, "*", null, $sWhere);
+    $rsFaixas   = $oDaoRegra->sql_record($sSqlFaixas);
+
+    $aFaixasArredontamento = db_utils::getCollectionByRecord($rsFaixas);
+    foreach ($aFaixasArredontamento as $oFaixa) {
+
+      $oRegra                 = new StdClass();
+      $oRegra->inicio         = $oFaixa->ed317_inicial;
+      $oRegra->fim            = $oFaixa->ed317_final;
+      $oRegra->arrendondar    = $oFaixa->ed317_arredondar;
+      $aRegras[] = $oRegra;
+    }
+
+    return $aRegras;
+  }
+
+  /**
    * método para retorna a instancia da classe.
    * @return ArredondamentoNota
    */
-  protected function getInstance() {
+  protected static function getInstance() {
 
-    if (self::$sInstance == null) {
-      self::$sInstance = new ArredondamentoNota();
+    if (static::$sInstance == null) {
+      static::$sInstance = new static();
     }
-    return self::$sInstance;
+    return static::$sInstance;
   }
 
   /**
    * Retorna a instancia de EducacaoArredondamento
    * @return EducacaoArredondamento
    */
-  protected function getArredondamento() {
-    return ArredondamentoNota::getInstance()->oEducacaoArredondamento;
+  protected static function getArredondamento() {
+    return static::getInstance()->oEducacaoArredondamento;
   }
 
   /**
@@ -137,7 +148,7 @@ class ArredondamentoNota implements IEducacaoArredondamento {
    * @return float
    */
   public static function arredondar($nNota, $iAno) {
-    return ArredondamentoNota::getArredondamento()->arredondar($nNota, $iAno);
+    return static::getArredondamento()->arredondar($nNota, $iAno);
   }
 
   /**
@@ -146,7 +157,7 @@ class ArredondamentoNota implements IEducacaoArredondamento {
    * @return integer;
    */
   public static function getFaixasDeArredondamento($iAno) {
-    return ArredondamentoNota::getArredondamento()->getFaixasDeArredondamento($iAno);
+    return static::getArredondamento()->getFaixasDeArredondamento($iAno);
   }
 
   /**
@@ -154,7 +165,7 @@ class ArredondamentoNota implements IEducacaoArredondamento {
    * @return integer;
    */
   public static function getMascara($iAno) {
-    return ArredondamentoNota::getArredondamento()->getMascara($iAno);
+    return static::getArredondamento()->getMascara($iAno);
   }
 
   /**
@@ -163,7 +174,7 @@ class ArredondamentoNota implements IEducacaoArredondamento {
    * @return integer;
    */
   public static function getNumeroCasasDecimais($iAno) {
-    return ArredondamentoNota::getArredondamento()->getNumeroCasasDecimais($iAno);
+    return static::getArredondamento()->getNumeroCasasDecimais($iAno);
   }
 
   /**
@@ -172,7 +183,7 @@ class ArredondamentoNota implements IEducacaoArredondamento {
    * @return boolean
    */
   public static function arredondaValor($iAno) {
-    return ArredondamentoNota::getArredondamento()->arredondaValor($iAno);
+    return static::getArredondamento()->arredondaValor($iAno);
   }
 
   /**
@@ -182,7 +193,7 @@ class ArredondamentoNota implements IEducacaoArredondamento {
    * @return string retorna a nota formatada
    */
   public static function formatar($nNota, $iAno) {
-    return ArredondamentoNota::getArredondamento()->formatar($nNota, $iAno);
+    return static::getArredondamento()->formatar($nNota, $iAno);
   }
   /**
    * Marcamos o clone como privado para evitar de existir
@@ -191,7 +202,7 @@ class ArredondamentoNota implements IEducacaoArredondamento {
   protected function __clone(){}
 
   public function destroy() {
-    self::$sInstance = null;
+    static::$sInstance = null;
   }
 }
 ?>

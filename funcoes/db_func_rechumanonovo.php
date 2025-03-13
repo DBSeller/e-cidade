@@ -1,33 +1,33 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 $campospessoal = "rhpessoal.rh01_regist,
                   rhpessoal.rh01_numcgm,
-                  cgmrh.z01_nome,
+                  cgmrh.z01_nomecomple,
                   rhpessoal.rh01_nasc,
                   rhpessoal.rh01_sexo,
                   rhpessoal.rh01_estciv,
@@ -77,7 +77,7 @@ $campospessoal = "rhpessoal.rh01_regist,
                   regimerh.rh30_descr,
                   rechumano.ed20_i_zonaresidencia
                  ";
-$camposcgm = "cgmcgm.z01_nome,
+$camposcgm = "cgmcgm.z01_nomecomple,
               cgmcgm.z01_nasc as rh01_nasc,
               cgmcgm.z01_sexo as rh01_sexo,
               cgmcgm.z01_estciv as rh01_estciv,
@@ -128,23 +128,23 @@ $camposcgm = "cgmcgm.z01_nome,
               rechumano.ed20_i_zonaresidencia
               ";
 $camposrechumano = "case when ed20_i_tiposervidor = 1
-                     then cgmrh.z01_nome
-                     else cgmcgm.z01_nome
-                    end as z01_nome,
+                     then cgmrh.z01_nomecomple
+                     else cgmcgm.z01_nomecomple
+                    end as z01_nomecomple,
                     case when ed20_i_tiposervidor = 1
                      then cgmrh.z01_numcgm
                      else cgmcgm.z01_numcgm
                     end as z01_numcgm,
                     case when ed20_i_tiposervidor = 1
-                     then cgmrh.z01_nasc 
+                     then cgmrh.z01_nasc
                      else cgmcgm.z01_nasc
                     end as rh01_nasc,
                     case when ed20_i_tiposervidor = 1
-                     then cgmrh.z01_sexo 
+                     then cgmrh.z01_sexo
                      else cgmcgm.z01_sexo
                     end as rh01_sexo,
                     case when ed20_i_tiposervidor = 1
-                     then cgmrh.z01_estciv 
+                     then cgmrh.z01_estciv
                      else cgmcgm.z01_estciv
                     end as rh01_estciv,
                     rechumano.ed20_i_codigoinep,
@@ -154,7 +154,7 @@ $camposrechumano = "case when ed20_i_tiposervidor = 1
                      then cgmrh.z01_ident
                      else cgmcgm.z01_ident
                     end as z01_ident,
-                    case when ed20_i_tiposervidor = 1 
+                    case when ed20_i_tiposervidor = 1
                      then cgmrh.z01_cgccpf
                      else cgmcgm.z01_cgccpf
                     end as z01_cgccpf,
@@ -194,27 +194,27 @@ $camposrechumano = "case when ed20_i_tiposervidor = 1
                      then rhpessoal.rh01_natura
                      else cgmdoc.z02_c_naturalidade
                     end as rh01_natura,
-                    case when ed20_i_tiposervidor = 1 
+                    case when ed20_i_tiposervidor = 1
                      then rhpesdoc.rh16_ctps_s::char
                      else cgmdoc.z02_c_ctpsserie
                     end as rh16_ctps_s,
-                    case when ed20_i_tiposervidor = 1 
+                    case when ed20_i_tiposervidor = 1
                      then rhpesdoc.rh16_reserv
                      else null
                     end as rh16_reserv,
-                    case when ed20_i_tiposervidor = 1 
+                    case when ed20_i_tiposervidor = 1
                      then rhpesdoc.rh16_catres
                      else null
                     end as rh16_catres,
-                    case when ed20_i_tiposervidor = 1 
+                    case when ed20_i_tiposervidor = 1
                      then rhpesdoc.rh16_ctps_d
                      else null
                     end as rh16_ctps_d,
-                    case when ed20_i_tiposervidor = 1 
+                    case when ed20_i_tiposervidor = 1
                      then rhpesdoc.rh16_ctps_uf
                      else cgmdoc.z02_c_ctpsuf
                     end as rh16_ctps_uf,
-                    case when ed20_i_tiposervidor = 1 
+                    case when ed20_i_tiposervidor = 1
                      then case when trim(rhpesdoc.rh16_pis) = '' then  null else rhpesdoc.rh16_pis::bigint end
                      else cgmdoc.z02_i_pis
                     end as rh16_pis,
@@ -235,6 +235,8 @@ $camposrechumano = "case when ed20_i_tiposervidor = 1
                     rechumano.ed20_i_censoufident,
                     rechumano.ed20_d_dataident,
                     rechumano.ed20_c_identcompl,
+                    censoufident.ed260_c_sigla,
+                    censoorgemissrg.ed132_c_descr,
                     rechumano.ed20_i_certidaotipo,
                     rechumano.ed20_c_certidaonum,
                     rechumano.ed20_c_certidaofolha,
@@ -313,6 +315,9 @@ $camposrechumano = "case when ed20_i_tiposervidor = 1
                     case when ed20_i_tiposervidor = 1
                      then rechumanopessoal.ed284_i_rhpessoal
                      else rechumanocgm.ed285_i_cgm
-                    end as identificacao
+                    end as identificacao,
+                    ed20_tipoensinomedio,
+                    ed20_localizacaodiferenciada,
+                    ed20_paisresidencia
                     ";
 ?>

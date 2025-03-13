@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -262,9 +262,9 @@ class GeracaoArquivoPitIptu {
   private function escreveImovel($oMatricula){
 
     $this->oImovel = $this->oDomDocument->createElement('imovel');
-    $this->oImovel->setAttribute('matricula'        , $oMatricula->matricula);
-    $this->oImovel->setAttribute('zona'             , $oMatricula->zona);
-    $this->oImovel->setAttribute('nro_registro_iptu', $oMatricula->nro_registro_iptu);
+    $this->oImovel->setAttribute('matricula'        , utf8_encode($oMatricula->matricula));
+    $this->oImovel->setAttribute('zona'             , utf8_encode($oMatricula->zona));
+    $this->oImovel->setAttribute('nro_registro_iptu', utf8_encode($oMatricula->nro_registro_iptu));
   }
 
   /**
@@ -396,33 +396,33 @@ class GeracaoArquivoPitIptu {
    *         -true: Todos os paramentros obrigatorios válidos.
    *         -false: Um ou mais parâmetros obrigatórios inválidos.
    */
-  private function escreveTerreno($iLote, $iGuiaIPTU) {
+  private function escreveTerreno($iLote, $iMatricula) {
 
     $lTerrenoValido = true;
-    $oDadosTerreno  = $this->getTerreno($iLote);
+    $oDadosTerreno  = $this->getTerreno($iLote, $iMatricula);
     $oTerreno       = $this->oDomDocument->createElement('terreno');
 
     if ( empty($oDadosTerreno->area_total) ) {
 
-      $this->registraErros("MATRÍCULA: ". $iGuiaIPTU . " - TERRENO - Área Total é obrigatório.");
+      $this->registraErros("MATRÍCULA: ". $iMatricula . " - TERRENO - Área Total é obrigatório.");
       $lTerrenoValido = false;
     }
 
     if ( empty($oDadosTerreno->testada) ) {
 
-      $this->registraErros("MATRÍCULA: ". $iGuiaIPTU . " - TERRENO - Testada é obrigatório.");
+      $this->registraErros("MATRÍCULA: ". $iMatricula . " - TERRENO - Testada é obrigatório.");
       $lTerrenoValido = false;
     }
 
     if ( empty($oDadosTerreno->codigo_situacao_quadra) ) {
 
-      $this->registraErros("MATRÍCULA: ". $iGuiaIPTU . " - TERRENO - Situação da Quadra é obrigatório.");
+      $this->registraErros("MATRÍCULA: ". $iMatricula . " - TERRENO - Situação da Quadra é obrigatório.");
       $lTerrenoValido = false;
     }
 
     if ( empty($oDadosTerreno->valor) ) {
 
-      $this->registraErros("MATRÍCULA: ". $iGuiaIPTU . " - TERRENO - Valor é obrigatório.");
+      $this->registraErros("MATRÍCULA: ". $iMatricula . " - TERRENO - Valor é obrigatório.");
       $lTerrenoValido = false;
     }
 
@@ -517,6 +517,9 @@ class GeracaoArquivoPitIptu {
         continue;
       }
 
+
+      $oDadosBenfeitoria = DBString::utf8_encode_all($oDadosBenfeitoria);
+
       $oEdificacao->setAttribute('codigo_especie_urbana'    , $oDadosBenfeitoria->codigo_especie_urbana);
       $oEdificacao->setAttribute('area_total'               , number_format($oDadosBenfeitoria->area_total, 2, ',', ''));
       $oEdificacao->setAttribute('area_privativa'           , $oDadosBenfeitoria->area_privativa);
@@ -574,12 +577,12 @@ class GeracaoArquivoPitIptu {
     $sSql .= "  from iptubase as matricula                                                           ";
     $sSql .= "       inner join lote lote                on lote.j34_idbql = matricula.j01_idbql     ";
     $sSql .= "       left  join iptubaseregimovel imovel on imovel.j04_matric = matricula.j01_matric ";
-    $sSql .= " where j01_baixa is null                                                               ";
+    $sSql .= " where j01_baixa is null order by j01_matric                                           ";
 
     $rsImoveis = db_query($sSql);
 
     if ( !$rsImoveis ) {
-      throw new DBException(_M(GeracaoArquivoPitIptu::MENSAGENS . 'erro_imoveis'));
+      throw new DBException( _M(GeracaoArquivoPitIptu::MENSAGENS . 'erro_imoveis') );
     }
 
     if ( pg_num_rows($rsImoveis) == 0 ) {}
@@ -651,10 +654,11 @@ class GeracaoArquivoPitIptu {
 
   /**
    * Retorna os dados referente ao terreno do imovel
-   * @param  integer $iLote Código do lote pelo qual será realizado a busca
+   * @param  integer $iLote       Código do lote pelo qual será realizada a busca
+   * @param  integer $$iMatricula Código da matrícula pela qual será realizada a busca
    * @return Object         Dados do terreno
    */
-  private function getTerreno($iLote) {
+  private function getTerreno($iLote, $iMatricula) {
 
     $sSql  = "select j34_area   as area_total,                                                                   ";
     $sSql .= "       j36_testad as testada,                                                                      ";
@@ -673,7 +677,8 @@ class GeracaoArquivoPitIptu {
     $sSql .= "       inner join testpri tp  on tp.j49_idbql        = l.j34_idbql                                 ";
     $sSql .= "       inner join testada     on testada.j36_codigo  = tp.j49_codigo                               ";
     $sSql .= "                             and testada.j36_idbql   = tp.j49_idbql                                ";
-    $sSql .= " where j34_idbql = $iLote                                                                          ";
+    $sSql .= " where j34_idbql    = $iLote                                                                       ";
+    $sSql .= "   and m.j01_matric = $iMatricula                                                                  ";
 
     $rsTerreno = db_query($sSql);
 

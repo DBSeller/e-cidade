@@ -121,10 +121,10 @@ db_textarea('ve10_motivo',10,80,$Ive10_motivo,true,'text',$db_opcao,"")
 <script>
 function js_pesquisave10_veiccaditensobrigtipobaixa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_veiccaditensobrigtipobaixa','func_veiccaditensobrigtipobaixa.php?funcao_js=parent.js_mostraveiccaditensobrigtipobaixa1|ve11_sequencial|ve11_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccaditensobrigtipobaixa','func_veiccaditensobrigtipobaixa.php?funcao_js=parent.js_mostraveiccaditensobrigtipobaixa1|ve11_sequencial|ve11_descr','Pesquisa',true);
   }else{
      if(document.form1.ve10_veiccaditensobrigtipobaixa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_veiccaditensobrigtipobaixa','func_veiccaditensobrigtipobaixa.php?pesquisa_chave='+document.form1.ve10_veiccaditensobrigtipobaixa.value+'&funcao_js=parent.js_mostraveiccaditensobrigtipobaixa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccaditensobrigtipobaixa','func_veiccaditensobrigtipobaixa.php?pesquisa_chave='+document.form1.ve10_veiccaditensobrigtipobaixa.value+'&funcao_js=parent.js_mostraveiccaditensobrigtipobaixa','Pesquisa',false);
      }else{
        document.form1.ve11_descr.value = ''; 
      }
@@ -144,10 +144,10 @@ function js_mostraveiccaditensobrigtipobaixa1(chave1,chave2){
 }
 function js_pesquisave10_veicitensobrig(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_veicitensobrig','func_veicitensobrig.php?funcao_js=parent.js_mostraveicitensobrig1|ve09_sequencial|ve08_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veicitensobrig','func_veicitensobrig.php?funcao_js=parent.js_mostraveicitensobrig1|ve09_sequencial|ve08_descr','Pesquisa',true);
   }else{
      if(document.form1.ve10_veicitensobrig.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_veicitensobrig','func_veicitensobrig.php?pesquisa_chave='+document.form1.ve10_veicitensobrig.value+'&funcao_js=parent.js_mostraveicitensobrig','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veicitensobrig','func_veicitensobrig.php?pesquisa_chave='+document.form1.ve10_veicitensobrig.value+'&funcao_js=parent.js_mostraveicitensobrig','Pesquisa',false);
      }else{
        document.form1.ve09_veiculos.value = ''; 
      }
@@ -166,7 +166,7 @@ function js_mostraveicitensobrig1(chave1,chave2){
   db_iframe_veicitensobrig.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veicitensobrigbaixa','func_veicitensobrigbaixa.php?funcao_js=parent.js_preenchepesquisa|ve10_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veicitensobrigbaixa','func_veicitensobrigbaixa.php?funcao_js=parent.js_preenchepesquisa|ve10_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veicitensobrigbaixa.hide();

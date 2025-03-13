@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -44,7 +44,7 @@
             where o58_anousu is not null
    	   ";
 	
-    $result = pg_exec($sql);
+    $result = db_query($sql);
 
     $sql = "";
     $union = " ";
@@ -61,7 +61,7 @@
     }	
 
     $sql .= "  order by o58_anousu,o56_elemento ";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     //db_criatabela($result);
 
     for($i=0;$i<pg_numrows($result);$i++){
@@ -88,7 +88,7 @@
 
     fclose($this->arq);
 
-    pg_exec("commit");
+    db_query("commit");
 
 
     $teste = "true";

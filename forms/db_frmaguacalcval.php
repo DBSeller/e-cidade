@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: Agua
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $claguacalcval->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -129,10 +129,10 @@ function js_cancelar(){
 }
 function js_pesquisax23_codcalc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguacalcval','db_iframe_aguacalc','func_aguacalc.php?funcao_js=parent.js_mostraaguacalc1|x22_codcalc|x22_matric','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacalcval','db_iframe_aguacalc','func_aguacalc.php?funcao_js=parent.js_mostraaguacalc1|x22_codcalc|x22_matric','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x23_codcalc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguacalcval','db_iframe_aguacalc','func_aguacalc.php?pesquisa_chave='+document.form1.x23_codcalc.value+'&funcao_js=parent.js_mostraaguacalc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacalcval','db_iframe_aguacalc','func_aguacalc.php?pesquisa_chave='+document.form1.x23_codcalc.value+'&funcao_js=parent.js_mostraaguacalc','Pesquisa',false);
      }else{
        document.form1.x22_matric.value = ''; 
      }
@@ -152,10 +152,10 @@ function js_mostraaguacalc1(chave1,chave2){
 }
 function js_pesquisax23_codconsumotipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguacalcval','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?funcao_js=parent.js_mostraaguaconsumotipo1|x25_codconsumotipo|x25_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacalcval','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?funcao_js=parent.js_mostraaguaconsumotipo1|x25_codconsumotipo|x25_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x23_codconsumotipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguacalcval','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?pesquisa_chave='+document.form1.x23_codconsumotipo.value+'&funcao_js=parent.js_mostraaguaconsumotipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacalcval','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?pesquisa_chave='+document.form1.x23_codconsumotipo.value+'&funcao_js=parent.js_mostraaguaconsumotipo','Pesquisa',false);
      }else{
        document.form1.x25_descr.value = ''; 
      }

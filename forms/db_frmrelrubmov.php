@@ -1,32 +1,33 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: pessoal
-include("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_conecta.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrelrubmov->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -41,7 +42,7 @@ if(isset($db_opcaoal)){
 }else if(isset($opcao) && $opcao=="excluir"){
     $db_opcao = 3;
     $db_botao=true;
-}else{  
+}else{
     $db_opcao = 1;
     $db_botao=true;
     if(isset($novo) || isset($alterar) ||   isset($excluir) || (isset($incluir) && $sqlerro==false ) ){
@@ -50,7 +51,7 @@ if(isset($db_opcaoal)){
      $rh27_descr = "";
      $rh46_quantval = "";
    }
-} 
+}
 ?>
 <form name="form1" method="post" action="">
 <center>
@@ -59,7 +60,7 @@ if(isset($db_opcaoal)){
     <td nowrap title="<?=@$Trh46_seq?>">
        <?=@$Lrh46_seq?>
     </td>
-    <td> 
+    <td>
 <?
 db_input('rh46_seq',10,$Irh46_seq,true,'text',3,"")
 ?>
@@ -71,7 +72,7 @@ db_input('rh46_seq',10,$Irh46_seq,true,'text',3,"")
        db_ancora(@$Lrh46_codigo,"js_pesquisarh46_codigo(true);", 3);
        ?>
     </td>
-    <td> 
+    <td>
 <?
 db_input('rh46_codigo',6,$Irh46_codigo,true,'text',3," onchange='js_pesquisarh46_codigo(false);'")
 ?>
@@ -86,7 +87,7 @@ db_input('rh45_descr',40,$Irh45_descr,true,'text',3,'')
        db_ancora(@$Lrh46_rubric, "js_pesquisarh46_rubric(true);", $db_opcao);
        ?>
     </td>
-    <td> 
+    <td>
 <?
 db_input('rh46_rubric',6,$Irh46_rubric,true,'text',$db_opcao,"onchange='js_pesquisarh46_rubric(false);'");
 db_input('rh27_descr', 40, $Irh27_descr, true, 'text', 3, '');
@@ -97,7 +98,7 @@ db_input('rh27_descr', 40, $Irh27_descr, true, 'text', 3, '');
     <td nowrap title="<?=@$Trh46_quantval?>">
        <?=@$Lrh46_quantval?>
     </td>
-    <td> 
+    <td>
 <?
 $arr_quantval = array('V'=>'Valor','Q'=>'Quantidade');
 db_select("rh46_quantval",$arr_quantval,true,$db_opcao);
@@ -113,7 +114,7 @@ db_select("rh46_quantval",$arr_quantval,true,$db_opcao);
   </table>
  <table width="90%">
   <tr>
-    <td valign="top"  align="center" width="100%">  
+    <td valign="top"  align="center" width="100%">
     <?
    $dbwhere  = "";
    $dbwhere1 = "";
@@ -160,13 +161,13 @@ db_select("rh46_quantval",$arr_quantval,true,$db_opcao);
 <script>
 function js_pesquisarh46_rubric(mostra){
   if(mostra==true){
-    // js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricasnovo.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr|rh27_limdat|formula|rh27_obs&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
-    js_OpenJanelaIframe('top.corpo.iframe_relrubmov','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true,'0');
+    // js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricasnovo.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr|rh27_limdat|formula|rh27_obs&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_relrubmov','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true,'0');
   }else{
      if(document.form1.rh46_rubric.value != ''){
        js_completa_rubricas(document.form1.rh46_rubric);
-       // js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricasnovo.php?pesquisa_chave='+document.form1.r90_rubric.value+'&funcao_js=parent.js_mostrarubricas&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
-       js_OpenJanelaIframe('top.corpo.iframe_relrubmov','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh46_rubric.value+'&funcao_js=parent.js_mostrarubricas&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+       // js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricasnovo.php?pesquisa_chave='+document.form1.r90_rubric.value+'&funcao_js=parent.js_mostrarubricas&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo.iframe_relrubmov','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+document.form1.rh46_rubric.value+'&funcao_js=parent.js_mostrarubricas&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
      }else{
        document.form1.rh27_descr.value = '';
      }
@@ -194,20 +195,20 @@ function js_cancelar(){
 }
 function js_pesquisarh46_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_relrubmov','db_iframe_relrub','func_relrub.php?funcao_js=parent.js_mostrarelrub1|rh45_codigo|rh45_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_relrubmov','db_iframe_relrub','func_relrub.php?funcao_js=parent.js_mostrarelrub1|rh45_codigo|rh45_descr','Pesquisa',true,'0','1','775','390');
   }else{
-     if(document.form1.rh46_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_relrubmov','db_iframe_relrub','func_relrub.php?pesquisa_chave='+document.form1.rh46_codigo.value+'&funcao_js=parent.js_mostrarelrub','Pesquisa',false);
+     if(document.form1.rh46_codigo.value != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_relrubmov','db_iframe_relrub','func_relrub.php?pesquisa_chave='+document.form1.rh46_codigo.value+'&funcao_js=parent.js_mostrarelrub','Pesquisa',false);
      }else{
-       document.form1.rh45_descr.value = ''; 
+       document.form1.rh45_descr.value = '';
      }
   }
 }
 function js_mostrarelrub(chave,erro){
-  document.form1.rh45_descr.value = chave; 
-  if(erro==true){ 
-    document.form1.rh46_codigo.focus(); 
-    document.form1.rh46_codigo.value = ''; 
+  document.form1.rh45_descr.value = chave;
+  if(erro==true){
+    document.form1.rh46_codigo.focus();
+    document.form1.rh46_codigo.value = '';
   }
 }
 function js_mostrarelrub1(chave1,chave2){

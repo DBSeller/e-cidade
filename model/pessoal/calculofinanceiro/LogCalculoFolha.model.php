@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -40,26 +40,8 @@ abstract class LogCalculoFolha {
   const ARR                  = 2;
   const HTML                 = 2;
   static private $iIndiceLog = 0;
-  const ESPACADOR            = ">";
+  const ESPACADOR            = "_";
 
-  public static $TIPO_CALCULO = array(
-    TIPO_CALCULO_GERAL   => 'TIPO_CALCULO_GERAL', 
-    TIPO_CALCULO_PARCIAL => 'TIPO_CALCULO_PARCIAL'
-  );
-  /**
-   * Tipos de Folha de Pagamento 
-   */
-  public static $TIPO_FOLHA_PAGAMENTO = array (
-    PONTO_SALARIO             => "PONTO_SALARIO",
-    PONTO_ADIANTAMENTO        => "PONTO_ADIANTAMENTO",
-    PONTO_FERIAS              => "PONTO_FERIAS",
-    PONTO_RESCISAO            => "PONTO_RESCISAO",
-    PONTO_13_SALARIO          => "PONTO_13_SALARIO",
-    PONTO_COMPLEMENTAR        => "PONTO_COMPLEMENTAR",
-    PONTO_FIXO                => "PONTO_FIXO",
-    PONTO_PROVISAO_FERIAS     => "PONTO_PROVISAO_FERIAS",
-    PONTO_PROVISAO_13_SALARIO => "PONTO_PROVISAO_13_SALARIO"
-  );
   /**
    * Guarda os Dados do log do Cálculo 
    */
@@ -104,6 +86,11 @@ abstract class LogCalculoFolha {
    */
   static public function write( $sLog = '' ) {
 
+    global $db_debug;
+
+    if ( empty($db_debug) ) {
+      return;
+    }
     $iIndiceLog = LogCalculoFolha::$iIndiceLog++;
     $aPartes    = explode("\n", $sLog);
     $aRastros   = debug_backtrace();
@@ -112,8 +99,8 @@ abstract class LogCalculoFolha {
     $sArquivo   = $sArquivo[count($sArquivo) - 1];
     $aFunction  = $aRastros[1];
     $aRastros   = $aRastros[0];
-    $sInfo      = str_pad($sArquivo, 25,".", STR_PAD_RIGHT);
-    $sInfo     .= str_pad("$iLinha", 6,".", STR_PAD_RIGHT)."|";
+    $sInfo      = str_pad($sArquivo, 40,".", STR_PAD_RIGHT);
+    $sInfo     .= str_pad($iLinha,    6,".", STR_PAD_RIGHT) . "|";
     $sInfo     .= str_pad("{$aFunction['function']}", 30,".", STR_PAD_RIGHT);
     $sCola      = "[$sInfo]";  
     $iEspacos   = (count(debug_backtrace()) - 2)  * 2;

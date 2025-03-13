@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 //$conn=$conn->con();
 
@@ -36,7 +36,7 @@ $base=db_getsession("DB_NBASE");
 $ipbase="$DB_SERVIDOR";
 $aborta=0;
 $sql    = "select db30_codversao,db30_codrelease from db_versao order by db30_codver desc limit 1";
-$result = pg_exec($sql);
+$result = db_query($sql);
 $numrows= pg_numrows($result);
 if ($numrows==0)
 {

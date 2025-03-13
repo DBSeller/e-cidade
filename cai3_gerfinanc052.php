@@ -1,38 +1,38 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("libs/db_app.utils.php");
-include("model/arrecadacao/abatimento/Desconto.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_app.utils.php"));
+include(modification("model/arrecadacao/abatimento/Desconto.model.php"));
 
 $oGet  = db_utils::postMemory($_GET);
 
@@ -42,7 +42,7 @@ $oGet  = db_utils::postMemory($_GET);
 <title>Documento sem t&iacute;tulo</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <?php
- 
+
  db_app::load('scripts.js');
  db_app::load('prototype.js');
  db_app::load('estilos.css');
@@ -58,42 +58,79 @@ $oGet  = db_utils::postMemory($_GET);
    * Busca as Compensações.
    */
 
+  $iInstit = db_getsession('DB_instit');
+
   if ( isset($oGet->numcgm) ) {
+
     $sInnerCredito = " inner join arrenumcgm on arrenumcgm.k00_numpre = abatimentorecibo.k127_numprerecibo ";
-    $sWhereCredito = " and arrenumcgm.k00_numcgm = ".$oGet->numcgm; 
+    $sWhereCredito = " and arrenumcgm.k00_numcgm = ".$oGet->numcgm;
     $sTipoPesquisa = "C";
     $sChavePesquisa= $oGet->numcgm;
 
+    $sInnerCompensacao = " inner join arrenumcgm on arrenumcgm.k00_numpre =  abatimentoutilizacaodestino.k170_numpre ";
+    $sInnerDevolucao   = " inner join arrenumcgm on arrenumcgm.k00_numpre = arreckey.k00_numpre ";
+    $sWhereCompensacao = $sWhereCredito;
+    $sWhereDevolucao   = $sWhereCompensacao;
+
   } else if ( isset($oGet->matric) ) {
+
     $sInnerCredito = " inner join arrematric on arrematric.k00_numpre = abatimentorecibo.k127_numprerecibo ";
-    $sWhereCredito = " and arrematric.k00_matric = ".$oGet->matric; 
+    $sWhereCredito = " and arrematric.k00_matric = " . $oGet->matric;
     $sTipoPesquisa = "M";
-    $sChavePesquisa= $oGet->matric;   
+    $sChavePesquisa= $oGet->matric;
+
+    $sInnerCompensacao = " inner join arrematric on arrematric.k00_numpre = abatimentoutilizacaodestino.k170_numpre ";
+    $sInnerDevolucao   = " inner join arrematric on arrematric.k00_numpre = arreckey.k00_numpre ";
+    $sWhereCompensacao = $sWhereCredito;
+    $sWhereDevolucao   = $sWhereCompensacao;
+
   } else if ( isset($oGet->inscr) ) {
+
     $sInnerCredito = " inner join arreinscr on arreinscr.k00_numpre = abatimentorecibo.k127_numprerecibo ";
-    $sWhereCredito = " and arreinscr.k00_inscr = ".$oGet->inscr;         
+    $sWhereCredito = " and arreinscr.k00_inscr = " . $oGet->inscr;
     $sTipoPesquisa = "I";
-    $sChavePesquisa= $oGet->inscr;          
+    $sChavePesquisa= $oGet->inscr;
+
+    $sInnerCompensacao = " inner join arreinscr on arreinscr.k00_numpre = abatimentoutilizacaodestino.k170_numpre ";
+    $sInnerDevolucao   = " inner join arreinscr on arreinscr.k00_numpre = arreckey.k00_numpre ";
+    $sWhereCompensacao = $sWhereCredito;
+    $sWhereDevolucao   = $sWhereCompensacao;
+
   } else {
+
     $sInnerCredito = "";
-    $sWhereCredito = " and abatimentorecibo.k127_numprerecibo = ".$oGet->numpre;   
+    $sWhereCredito = " and abatimentorecibo.k127_numprerecibo = " . $oGet->numpre;
+
+    $sInnerCompensacao = "";
+    $sWhereCompensacao = " abatimentoutilizacaodestino.k170_numpre = " . $oGet->numpre;
+
+    $sInnerDevolucao = "";
+    $sWhereDevolucao = " arreckey.k00_numpre = " . $oGet->numpre;
+
   }
-  
-  $sSqlCreditosDisponiveis  = " select abatimento.*,                                                                            ";
-  $sSqlCreditosDisponiveis .= "        recibo    .*,                                                                            ";
-  $sSqlCreditosDisponiveis .= "        tabrec    .*,                                                                            ";
-  $sSqlCreditosDisponiveis .= "        histcalc  .*,                                                                            ";
-  $sSqlCreditosDisponiveis .= "        arretipo  .*                                                                             ";
-  $sSqlCreditosDisponiveis .= "   from abatimentorecibo                                                                         "; 
+
+  $sSqlCreditosDisponiveis  = " select k01_codigo,                                                                              ";
+  $sSqlCreditosDisponiveis .= "        k125_datalanc,                                                                           ";
+  $sSqlCreditosDisponiveis .= "        k125_sequencial,                                                                         ";
+  $sSqlCreditosDisponiveis .= "        recibo.k00_tipo,                                                                         ";
+  $sSqlCreditosDisponiveis .= "        recibo.k00_numpre,                                                                       ";
+  $sSqlCreditosDisponiveis .= "        recibo.k00_numpar,                                                                       ";
+  $sSqlCreditosDisponiveis .= "        sum(recibo.k00_valor) as k00_valor,                                                      ";
+  $sSqlCreditosDisponiveis .= "        recibo.k00_tipo,                                                                         ";
+  $sSqlCreditosDisponiveis .= "        arretipo.k00_descr                                                                       ";
+  $sSqlCreditosDisponiveis .= "   from abatimentorecibo                                                                         ";
   $sSqlCreditosDisponiveis .= "        inner join abatimento on abatimento.k125_sequencial = abatimentorecibo.k127_abatimento   ";
   $sSqlCreditosDisponiveis .= "        inner join recibo     on recibo.k00_numpre          = abatimentorecibo.k127_numprerecibo ";
   $sSqlCreditosDisponiveis .= "        inner join arretipo   on arretipo.k00_tipo          = recibo.k00_tipo                    ";
   $sSqlCreditosDisponiveis .= "        inner join tabrec     on tabrec.k02_codigo          = recibo.k00_receit                  ";
   $sSqlCreditosDisponiveis .= "        inner join histcalc   on histcalc.k01_codigo        = recibo.k00_hist                    ";
   $sSqlCreditosDisponiveis .= "        {$sInnerCredito}                                                                         ";
-  $sSqlCreditosDisponiveis .= "  where abatimento.k125_tipoabatimento = 4                                                       "; 
+  $sSqlCreditosDisponiveis .= "  where abatimento.k125_tipoabatimento = 4 and abatimento.k125_instit = {$iInstit}               ";
   $sSqlCreditosDisponiveis .= "        {$sWhereCredito}                                                                         ";
-    
+  $sSqlCreditosDisponiveis .= " group by                                                                                        ";
+  $sSqlCreditosDisponiveis .= "      k01_codigo, k125_sequencial, recibo.k00_numpre, recibo.k00_numpar, arretipo.k00_descr,     ";
+  $sSqlCreditosDisponiveis .= "      recibo.k00_tipo, k125_datalanc";
+
   $rsCreditosDisponiveis    = db_query($sSqlCreditosDisponiveis);
   $iLinhasCreditos          = pg_num_rows($rsCreditosDisponiveis);
   $aDadosSaida = array();
@@ -102,9 +139,10 @@ $oGet  = db_utils::postMemory($_GET);
    * BUSCA OS DESCONTOS CONCEDIDOS
    * ADICIONANDO A VARIAVEL $aDadosSaida[]
    */
-  $aDescontos = !isset($sChavePesquisa) ? 
-                array() : 
-                Desconto::getDescontosPorOrigem($sTipoPesquisa,$sChavePesquisa);
+  // TODO: Verificar se deve aparecer no relatório das compensações utilizadas
+  $aDescontos = !isset($sChavePesquisa) ?
+                array() :
+                Desconto::getDescontosPorOrigem($sTipoPesquisa, $sChavePesquisa);
 
   foreach ( $aDescontos as $oDescontos) {
 
@@ -116,16 +154,23 @@ $oGet  = db_utils::postMemory($_GET);
     $oDados->k125_datalanc   = $oDescontos->getDataLancamento()->getDate();
     $oDados->k00_hist        = Desconto::HISTORICO;
     $oDados->k01_descr       = 'DESCONTO';
-    
-    if ( $oDescontos->getSituacao() == Abatimento::SITUACAO_CANCELADO ) {  
+    $oDados->k170_numpre     = $oDescontos->getNumpre();
+    $oDados->k170_numpar     = $oDescontos->getNumpar();
+    $oDados->k02_descr       = $oDescontos->getDescRec();
+
+    if ( $oDescontos->getSituacao() == Abatimento::SITUACAO_CANCELADO ) {
 
       $oDados->k00_hist      = Desconto::HISTORICO_CANCELAMENTO;
       $oDados->k01_descr     = 'DESCONTO CANCELADO';
     }
-    
+
     $oDados->k00_valor       = $oDescontos->getValor();
     $oDados->sTipo           = 'desconto';
     $aDadosSaida[]           = $oDados;
+  }
+
+  if (isset($oGet->devolucao)) {
+    $iLinhasCreditos = 0;
   }
 
   if ( $iLinhasCreditos > 0 ) {
@@ -134,71 +179,274 @@ $oGet  = db_utils::postMemory($_GET);
      * Somente compensações
      */
     for ( $iInd=0; $iInd < $iLinhasCreditos; $iInd++ ) {
-      
+
       $oCredito = db_utils::fieldsMemory($rsCreditosDisponiveis,$iInd);
       $oDados = new stdClass();
       $oDados->k01_codigo      = $oCredito->k01_codigo;
       $oDados->k125_datalanc   = $oCredito->k125_datalanc;
       $oDados->k125_sequencial = $oCredito->k125_sequencial;
-      $oDados->k02_descr       = $oCredito->k02_descr;
+      $oDados->k02_descr       = $oCredito->k00_descr;
       $oDados->k00_tipo        = $oCredito->k00_tipo;
       $oDados->k00_descr       = $oCredito->k00_descr;
       $oDados->k01_descr       = 'COMPENSAÇÃO';
+      $oDados->k170_numpre     = $oCredito->k00_numpre;
+      $oDados->k170_numpar     = $oCredito->k00_numpar;
       $oDados->k00_valor       = $oCredito->k00_valor;
       $oDados->sTipo           = 'compensação';
 
       $aDadosSaida[] = $oDados;
     }
+  }
 
-}
+  $sSqlCreditosCompensados  = "select k157_abatimento, k157_observacao,                                               ";
+  $sSqlCreditosCompensados .= "       sum(k170_valor) as k157_valor,                                                  ";
+  $sSqlCreditosCompensados .= "       k157_data,                                                                      ";
+  $sSqlCreditosCompensados .= "       k170_numpre, k170_numpar,                                                       ";
+  $sSqlCreditosCompensados .= "       k170_receit,                                                                    ";
+  $sSqlCreditosCompensados .= "       k170_tipo,                                                                      ";
+  $sSqlCreditosCompensados .= "       arretipo.k00_descr                                                              ";
+  $sSqlCreditosCompensados .= "  from abatimentoutilizacao                                                            ";
+  $sSqlCreditosCompensados .= "       inner join abatimentoutilizacaodestino on k170_utilizacao = k157_sequencial     ";
+  $sSqlCreditosCompensados .= "       inner join abatimento                  on k125_sequencial = k157_abatimento     ";
+  $sSqlCreditosCompensados .= "       inner join arretipo                    on arretipo.k00_tipo = k170_tipo         ";
+  $sSqlCreditosCompensados .= "       inner join tabrec                      on k02_codigo = k170_receit              ";
+  $sSqlCreditosCompensados .= "        {$sInnerCompensacao}                                                           ";
+  $sSqlCreditosCompensados .= " where k157_tipoutilizacao = '2' and abatimento.k125_instit = {$iInstit} ". $sWhereCompensacao;
+  $sSqlCreditosCompensados .= " group by k157_abatimento, k157_observacao, k170_numpre, k170_numpar,                  ";
+  $sSqlCreditosCompensados .= "          k170_receit, k170_tipo, k157_data, arretipo.k00_descr            ";
+  $sSqlCreditosCompensados .= " order by k170_numpre, k170_numpar, k157_data asc";
 
+  $rsCreditosCompensados      = db_query($sSqlCreditosCompensados);
+  $iLinhasCreditosCompensados = pg_num_rows($rsCreditosCompensados);
+
+  if (isset($oGet->devolucao)) {
+    $iLinhasCreditosCompensados = 0;
+  }
+
+  if ( $iLinhasCreditosCompensados > 0 ) {
+
+    for ( $iInd=0; $iInd < $iLinhasCreditosCompensados; $iInd++ ) {
+
+      $oCredito = db_utils::fieldsMemory($rsCreditosCompensados,$iInd);
+      $oDados = new stdClass();
+      $oDados->k01_codigo      = '';
+      $oDados->k125_datalanc   = $oCredito->k157_data;
+      $oDados->k125_sequencial = $oCredito->k157_abatimento;
+      $oDados->k00_descr       = $oCredito->k00_descr;
+      $oDados->k00_tipo        = $oCredito->k170_tipo;
+      $oDados->k01_descr       = 'COMPENSAÇÃO';
+      $oDados->k170_numpre     = $oCredito->k170_numpre;
+      $oDados->k170_numpar     = $oCredito->k170_numpar;
+      $oDados->k00_receit      = $oCredito->k170_receit;
+      $oDados->k00_valor       = $oCredito->k157_valor;
+      $oDados->sTipo           = 'compensação';
+      $oDados->k157_observacao = $oCredito->k157_observacao;
+
+      $aDadosSaida[] = $oDados;
+    }
+
+  }
+
+  // TRANSFERÊNCIAS
+
+  $sqlTransferenciaOrigemDestino = "
+    SELECT distinct
+      k158_abatimentoorigem, k158_abatimentodestino
+    FROM abatimentoutilizacao                                                                              
+        LEFT JOIN abatimentoutilizacaodestino 
+          on k170_utilizacao = k157_sequencial                       
+        INNER JOIN abatimento                  
+          on k125_sequencial = k157_abatimento                       
+        INNER JOIN abatimentorecibo            
+          on k125_sequencial = k127_abatimento                       
+        INNER JOIN recibo                      
+          on recibo.k00_numpre = k127_numprerecibo                   
+        INNER JOIN abatimentoarreckey 
+          on abatimentoarreckey.k128_abatimento = abatimento.k125_sequencial  
+        INNER JOIN arreckey 
+          on arreckey.k00_sequencial = abatimentoarreckey.k128_arreckey                 
+        INNER JOIN arretipo
+          on arretipo.k00_tipo = arreckey.k00_tipo                   
+        {$sInnerDevolucao}                                                                               
+        INNER JOIN abatimentotransferencia 
+          on abatimento.k125_sequencial = k158_abatimentoorigem
+    WHERE 
+      abatimento.k125_instit = {$iInstit} {$sWhereDevolucao}
+      AND k170_utilizacao is null
+  ";
+
+  $rsTransferencia      = db_query($sqlTransferenciaOrigemDestino);
+
+  $origemAbatimento = array();
+  $idsAbatimentoDevolucao = '';
+  while ($row = pg_fetch_assoc($rsTransferencia)) {
+    $idsAbatimentoDevolucao .= $idsAbatimentoDevolucao ? ", {$row['k158_abatimentodestino']}" : $row['k158_abatimentodestino'];
+    $origemAbatimento[$row['k158_abatimentodestino']] = $row['k158_abatimentoorigem'];
+  }
+
+  $sSqlTransferenciaDados = "
+    SELECT 
+      x.*, recibo.k00_receit, recibo.k00_numpre, abatimento.k125_sequencial,
+      recibo.k00_numpar, arretipo.k00_descr, x.k158_abatimentoorigem,
+      COALESCE (abatimentoregracompensacao.k156_observacao, x.k157_observacao) as observacao
+    FROM   abatimento
+      INNER JOIN abatimentorecibo
+              ON abatimento.k125_sequencial = abatimentorecibo.k127_abatimento
+      INNER JOIN recibo
+              ON recibo.k00_numpre = k127_numprerecibo
+      INNER JOIN arretipo
+              ON recibo.k00_tipo = arretipo.k00_tipo
+      INNER JOIN (
+                SELECT 
+                  abatimentoutilizacao.*, abatimentotransferencia.k158_abatimentodestino,
+                  abatimentotransferencia.k158_abatimentoorigem
+                FROM abatimentoutilizacao
+                INNER JOIN abatimentotransferencia
+                        ON abatimentoutilizacao.k157_abatimento = abatimentotransferencia.k158_abatimentoorigem
+                WHERE abatimentotransferencia.k158_abatimentodestino in ({$idsAbatimentoDevolucao})
+      ) x ON x.k158_abatimentodestino  = abatimento.k125_sequencial
+      LEFT JOIN abatimentoregracompensacao
+                ON abatimentoregracompensacao.k156_abatimento = x.k158_abatimentodestino
+    WHERE  
+      abatimento.k125_instit = 1 
+      AND k125_sequencial in ({$idsAbatimentoDevolucao});
+  ";
+  
+  $rsTransferenciaDados = db_query($sSqlTransferenciaDados);
+  $iLinhasTransferencia = pg_num_rows($rsTransferenciaDados);
+
+  if (isset($oGet->compensacao)) {
+    $iLinhasTransferencia = 0;
+  }
+
+  if ( $iLinhasTransferencia > 0 ) {
+
+    for ( $iInd=0; $iInd < $iLinhasTransferencia; $iInd++ ) {
+
+      $oCredito = db_utils::fieldsMemory($rsTransferenciaDados, $iInd);
+      
+      $oDados = new stdClass();
+      $oDados->k01_codigo      = '';
+      $oDados->k125_datalanc   = $oCredito->k157_data;
+      $oDados->k125_sequencial = $oCredito->k125_sequencial;
+      $oDados->abatimentoorigem = $oCredito->k158_abatimentoorigem;
+      $oDados->k00_descr       = $oCredito->k00_descr;
+      $oDados->k00_tipo        = $oCredito->k00_tipo;
+      $oDados->k01_descr       = 'DEVOLUÇÃO';
+      $oDados->k170_numpre     = $oCredito->k00_numpre;
+      $oDados->k170_numpar     = $oCredito->k00_numpar;
+      $oDados->k00_valor       = $oCredito->k157_valor;
+      $oDados->k157_observacao = $oCredito->observacao;
+      $oDados->k02_descr       = '';
+      $oDados->k00_receit      = $oCredito->k00_receit;
+      $oDados->sTipo           = 'devolução';
+
+      $aDadosSaida[] = $oDados;
+    }
+  }
+
+  // Devolucao
+
+  $sqlDevolucao = "
+    SELECT DISTINCT on (k157_abatimento)                                                                                    
+         k157_abatimento, abatimentorecibo.k127_numprerecibo, arreckey.k00_numpar, recibo.k00_receit,                     
+         arretipo.k00_tipo, k00_descr, k157_valor, k157_usuario, k157_data, k157_hora, k157_observacao     
+    FROM abatimentoutilizacao                                                                              
+         left  join abatimentoutilizacaodestino on k170_utilizacao = k157_sequencial                       
+         inner join abatimento                  on k125_sequencial = k157_abatimento                       
+         inner join abatimentorecibo            on k125_sequencial = k127_abatimento                       
+         inner join recibo                      on recibo.k00_numpre = k127_numprerecibo                   
+         inner join abatimentoarreckey on abatimentoarreckey.k128_abatimento = abatimento.k125_sequencial  
+         inner join arreckey on arreckey.k00_sequencial = abatimentoarreckey.k128_arreckey                 
+         inner join arretipo                    on arretipo.k00_tipo = arreckey.k00_tipo                   
+         {$sInnerDevolucao}                                                                                
+   WHERE 
+    abatimento.k125_instit = {$iInstit} 
+    AND abatimentoutilizacao.k157_tipoutilizacao = '3'
+    {$sWhereDevolucao}
+    AND k170_utilizacao is null
+  ";
+  // die($sqlDevolucao);
+  $rsDevolucao = db_query($sqlDevolucao);
+  $iLinhasDevolucao = pg_num_rows($rsDevolucao);
+
+  if (isset($oGet->compensacao)) {
+    $iLinhasDevolucao = 0;
+  }
+
+  if ( $iLinhasDevolucao > 0 ) {
+    for ( $iInd=0; $iInd < $iLinhasDevolucao; $iInd++ ) {
+      $oCredito = db_utils::fieldsMemory($rsDevolucao, $iInd);
+      
+      $oDados = new stdClass();
+      $oDados->k01_codigo      = '';
+      $oDados->k125_datalanc   = $oCredito->k157_data;
+      $oDados->k125_sequencial = $oCredito->k157_abatimento;
+      $oDados->k00_descr       = $oCredito->k00_descr;
+      $oDados->k00_tipo        = $oCredito->k00_tipo;
+      $oDados->k01_descr       = 'DEVOLUÇÃO';
+      $oDados->k170_numpre     = $oCredito->k127_numprerecibo;
+      $oDados->k170_numpar     = $oCredito->k00_numpar;
+      $oDados->k00_valor       = $oCredito->k157_valor;
+      $oDados->k157_observacao = $oCredito->k157_observacao;
+      $oDados->k02_descr       = '';
+      $oDados->k00_receit      = $oCredito->k00_receit;
+      $oDados->sTipo           = 'Devolução';
+
+      $aDadosSaida[] = $oDados;
+    }
+  }
+ 
  if ( count( $aDadosSaida ) > 0 ) {
 
     ?>
     <table border="1" cellspacing="0" cellpadding="3">
-      <tr bgcolor="#FFCC66"> 
+      <tr bgcolor="#FFCC66">
         <th nowrap>MI                  </th>
-        <th nowrap>Tipo                </th>
-        <th nowrap>Descrição Tipo      </th>
-        <th nowrap>Tipo de Movimento   </th>        
+        <th nowrap>Cód. Abatimento     </th>
+        <th nowrap>Numpre              </th>
+        <th nowrap>Tipo de Movimento   </th>
+        <th nowrap>Receita             </th>
         <th nowrap>Valor               </th>
-        <th nowrap>Data Lançamento     </th>
+        <th nowrap>Data                </th>
+        <th nowrap>Observação          </th>
       </tr>
     <?
-    
+
     $sCor1   = "#EFE029";
-    $sCor2   = "#E4F471";    
+    $sCor2   = "#E4F471";
     $sCorRow = $sCor1;
   }
     foreach ($aDadosSaida as $oCredito ) {
-      
+
       if ($sCorRow == $sCor1) {
         $sCorRow = $sCor2;
-      } else { 
+      } else {
         $sCorRow = $sCor1;
-      }      
+      }
     ?>
-      <tr bgcolor="<?=$sCorRow?>"> 
+      <tr bgcolor="<?=$sCorRow?>">
         <td align="center" nowrap >
           <?php
             /**
              * Verifica se deve exibir as informações do desconto ou da compensação
              */
-            
-            if ( $oCredito->sTipo == 'desconto' ) {  
+            if ( $oCredito->sTipo == 'desconto' ) {
               db_ancora('MI',"js_consultaDesconto({$oCredito->k125_sequencial})",1,'');
             } else {
-              db_ancora('MI',"js_consultaOrigemCredito({$oCredito->k125_sequencial})",1,'');
+              db_ancora('MI',"js_consultaOrigemCredito({$oCredito->k125_sequencial}, {$oCredito->abatimentoorigem})",1,'');
             }
 
           ?>
-        </td>      
-        <td align="center" nowrap ><?=$oCredito->k00_tipo  ?>&nbsp;</td>
-        <td align="center" nowrap ><?=$oCredito->k00_descr ?>&nbsp;</td>        
+        </td>
+        <td align="center" nowrap ><?=$oCredito->k125_sequencial ?>&nbsp;</td>
+        <td align="center" nowrap ><?=$oCredito->k170_numpre ?>&nbsp;</td>
         <td align="center" nowrap ><?=$oCredito->k01_descr ?>&nbsp;</td>
-        <td align="right"  nowrap ><?=db_formatar($oCredito->k00_valor,'f')   ?></td>
+        <td align="center" nowrap ><?= (isset($oCredito->k00_receit) ? $oCredito->k00_receit : ' - ') ?></td>
+        <td align="right"  nowrap ><?=db_formatar($oCredito->k00_valor,'f')   ?>&nbsp;</td>
         <td align="center" nowrap ><?=db_formatar($oCredito->k125_datalanc, 'd') ?>&nbsp;</td>
-      </tr>      
+        <td align="left" nowrap ><?= (isset($oCredito->k157_observacao) ? $oCredito->k157_observacao  : '') ?>&nbsp;</td>
+      </tr>
     <?
     }
 
@@ -208,31 +456,31 @@ $oGet  = db_utils::postMemory($_GET);
 </body>
 </html>
 <script type="text/javascript">
-        
-  function js_consultaOrigemCredito(iAbatimento) {
-    
-    var sUrl = 'func_compensacao.php?iAbatimento='+iAbatimento;
-    js_OpenJanelaIframe('top.corpo','db_iframe_compensacao',sUrl,'Origem da Compensação',true);
-    
+
+  function js_consultaOrigemCredito(iAbatimento, abatimentoOrigem) {
+
+    var sUrl = 'func_compensacao.php?iAbatimento='+iAbatimento+'&abatimentoOrigem='+abatimentoOrigem;
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_compensacao',sUrl,'Origem da Compensação',true);
+
   }
 
   function js_consultaDesconto(iAbatimento) {
 
     var sUrl = 'func_compensacaodesconto.php?iAbatimento='+iAbatimento;
-    js_OpenJanelaIframe('top.corpo','db_iframe_desconto',sUrl,'Origem do Desconto',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_desconto',sUrl,'Origem do Desconto',true);
   }
 
-            
+
 </script>
 <?php
 /**
- * 
+ *
  */
 function getDescricaoTipoDebito( $iTipoDebito ) {
 
  static $aTiposDebito;
- 
- if (empty($aTiposDebito[$iTipoDebito])) { 
+
+ if (empty($aTiposDebito[$iTipoDebito])) {
 
   $oDaoArretipo = new cl_arretipo();
   $sSql         = $oDaoArretipo->sql_query_file($iTipoDebito);

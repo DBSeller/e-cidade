@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-chdir('..');
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once('model/configuracao/SkinService.service.php');
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification('model/configuracao/SkinService.service.php'));
 
 $oGet  = db_utils::postMemory($_GET);
 $oSkin = new SkinService();
 
-header('Location: ../' . $oSkin->getPathFile("img/{$oGet->file}") . "?_=" . time() );
+header('Location: '. ECIDADE_REQUEST_PATH . $oSkin->getPathFile("img/{$oGet->file}"));
 
 ?>

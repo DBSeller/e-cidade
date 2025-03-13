@@ -26,14 +26,14 @@
  */
 
 //programas
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_db_sysprikey_classe.php");
-include ("classes/db_db_sysarqcamp_classe.php");
-include ("classes/db_db_sysarquivo_classe.php");
-include ("classes/db_db_sysarqmod_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_sysprikey_classe.php"));
+include(modification("classes/db_db_sysarqcamp_classe.php"));
+include(modification("classes/db_db_sysarquivo_classe.php"));
+include(modification("classes/db_db_sysarqmod_classe.php"));
 $cldb_sysarqcamp = new cl_db_sysarqcamp ( );
 $cldb_sysprikey = new cl_db_sysprikey ( );
 $cldb_sysarquivo = new cl_db_sysarquivo ( );
@@ -92,12 +92,12 @@ for($u = 0; $u < count ( $arr_arqaba ); $u ++) {
 	$arq = $root . "/" . $siglamod . "1_" . $nometab . $arr_arqaba [$u];
 	$fd1 = fopen ( strtolower ( $arq ), "w" );
 	fputs ( $fd1, "<?\n" );
-	fputs ( $fd1, 'require("libs/db_stdlib.php");' . "\n" );
-	fputs ( $fd1, 'require("libs/db_conecta.php");' . "\n" );
-	fputs ( $fd1, 'include("libs/db_sessoes.php");' . "\n" );
-	fputs ( $fd1, 'include("libs/db_usuariosonline.php");' . "\n" );
-	fputs ( $fd1, 'include("dbforms/db_funcoes.php");' . "\n" );
-	fputs ( $fd1, 'include("dbforms/db_classesgenericas.php");' . "\n" );
+	fputs ( $fd1, 'require(modification("libs/db_stdlib.php"));' . "\n" );
+	fputs ( $fd1, 'require(modification("libs/db_conecta.php"));' . "\n" );
+	fputs ( $fd1, 'include(modification("libs/db_sessoes.php"));' . "\n" );
+	fputs ( $fd1, 'include(modification("libs/db_usuariosonline.php"));' . "\n" );
+	fputs ( $fd1, 'include(modification("dbforms/db_funcoes.php"));' . "\n" );
+	fputs ( $fd1, 'include(modification("dbforms/db_classesgenericas.php"));' . "\n" );
 	fputs ( $fd1, '$clcriaabas     = new cl_criaabas;' . "\n" );
 	fputs ( $fd1, '$db_opcao = 1;' . "\n" );
 	fputs ( $fd1, '?>' . "\n" );
@@ -175,16 +175,16 @@ for($u = 0; $u < count ( $arr_arqaba ); $u ++) {
 	$resultcamp = $cldb_sysarqcamp->sql_record ( $cldb_sysarqcamp->sql_query ( $codarq, null, null, "db_syscampo.*", "db_sysarqcamp.seqarq" ) );
 	$numrowscamp = $cldb_sysarqcamp->numrows;
 	if ($numrowscamp > 0) {
-		fputs ( $fd1, 'require("libs/db_stdlib.php");' . "\n" );
-		fputs ( $fd1, 'require("libs/db_conecta.php");' . "\n" );
-		fputs ( $fd1, 'include("libs/db_sessoes.php");' . "\n" );
-		fputs ( $fd1, 'include("libs/db_usuariosonline.php");' . "\n" );
-		fputs ( $fd1, 'include("dbforms/db_funcoes.php");' . "\n" );
-		fputs ( $fd1, 'include("classes/db_' . $nometab . '_classe.php");' . "\n" );
+		fputs ( $fd1, 'require(modification("libs/db_stdlib.php"));' . "\n" );
+		fputs ( $fd1, 'require(modification("libs/db_conecta.php"));' . "\n" );
+		fputs ( $fd1, 'include(modification("libs/db_sessoes.php"));' . "\n" );
+		fputs ( $fd1, 'include(modification("libs/db_usuariosonline.php"));' . "\n" );
+		fputs ( $fd1, 'include(modification("dbforms/db_funcoes.php"));' . "\n" );
+		fputs ( $fd1, 'include(modification("classes/db_' . $nometab . '_classe.php"));' . "\n" );
 		
 		//rotina que inclui todas as classes filhas
 		for($l = 0; $l < count ( $arr_nometabfilho ); $l ++) {
-			fputs ( $fd1, 'include("classes/db_' . $arr_nometabfilho [$l] . '_classe.php");' . "\n" );
+			fputs ( $fd1, 'include(modification("classes/db_' . $arr_nometabfilho [$l] . '_classe.php"));' . "\n" );
 		}
 		
 		fputs ( $fd1, '$cl' . $nometab . ' = new cl_' . $nometab . ';' . "\n" );
@@ -318,7 +318,7 @@ for($u = 0; $u < count ( $arr_arqaba ); $u ++) {
 		fputs ( $fd1, '    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> ' . "\n" );
 		fputs ( $fd1, '    <center>' . "\n" );
 		fputs ( $fd1, '	<?' . "\n" );
-		fputs ( $fd1, '	include("forms/db_frm' . $nometab . '.php");' . "\n" );
+		fputs ( $fd1, '	include(modification("forms/db_frm' . $nometab . '.php"));' . "\n" );
 		fputs ( $fd1, '	?>' . "\n" );
 		fputs ( $fd1, '    </center>' . "\n" );
 		fputs ( $fd1, '	</td>' . "\n" );
@@ -385,7 +385,7 @@ for($u = 0; $u < count ( $arr_arqaba ); $u ++) {
 				db_fieldsmemory ( $resultpkfilho, 0 );
 				
 				fputs ( $fd1, '         parent.document.formaba.' . $nometabfilho . '.disabled=false;' . "\n" );
-				fputs ( $fd1, '         top.corpo.iframe_' . $nometabfilho . '.location.href=\'' . strtolower ( $siglamod . '1_' . $nometabfilho ) . '001.php?' . ($arr_arqnom [$u] == "excluir" ? "db_opcaoal=33&" : "") . $nomecamfilho . '=".@$' . $nomecam . '."\';' . "\n" );
+				fputs ( $fd1, '         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_' . $nometabfilho . '.location.href=\'' . strtolower ( $siglamod . '1_' . $nometabfilho ) . '001.php?' . ($arr_arqnom [$u] == "excluir" ? "db_opcaoal=33&" : "") . $nomecamfilho . '=".@$' . $nomecam . '."\';' . "\n" );
 			}
 			fputs ( $fd1, '     ";' . "\n" );
 			
@@ -433,7 +433,7 @@ for($l = 0; $l < count ( $arr_nometabfilho ); $l ++) {
 			   on a.codarq = am.codarq
 			   $qr
 			   order by codmod";
-	$result = pg_exec ( $sql );
+	$result = db_query ( $sql );
 	$numrows = pg_numrows ( $result );
 	
 	$arq003 = $root . "/" . substr ( $siglamod, 0, 3 ) . "1_" . trim ( $nometabfilho ) . "001.php";
@@ -462,13 +462,13 @@ for($l = 0; $l < count ( $arr_nometabfilho ); $l ++) {
 	$numrowscamp = $cldb_sysarqcamp->numrows;
 	
 	if ($numrowscamp > 0) {
-		fputs ( $fd2, 'require("libs/db_stdlib.php");' . "\n" );
-		fputs ( $fd2, 'require("libs/db_conecta.php");' . "\n" );
-		fputs ( $fd2, 'include("libs/db_sessoes.php");' . "\n" );
-		fputs ( $fd2, 'include("libs/db_usuariosonline.php");' . "\n" );
-		fputs ( $fd2, 'include("classes/db_' . $nometabfilho . '_classe.php");' . "\n" );
-		fputs ( $fd2, 'include("classes/db_' . $nometab . '_classe.php");' . "\n" );
-		fputs ( $fd2, 'include("dbforms/db_funcoes.php");' . "\n" );
+		fputs ( $fd2, 'require(modification("libs/db_stdlib.php"));' . "\n" );
+		fputs ( $fd2, 'require(modification("libs/db_conecta.php"));' . "\n" );
+		fputs ( $fd2, 'include(modification("libs/db_sessoes.php"));' . "\n" );
+		fputs ( $fd2, 'include(modification("libs/db_usuariosonline.php"));' . "\n" );
+		fputs ( $fd2, 'include(modification("classes/db_' . $nometabfilho . '_classe.php"));' . "\n" );
+		fputs ( $fd2, 'include(modification("classes/db_' . $nometab . '_classe.php"));' . "\n" );
+		fputs ( $fd2, 'include(modification("dbforms/db_funcoes.php"));' . "\n" );
 		fputs ( $fd2, 'parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);' . "\n" );
 		fputs ( $fd2, 'db_postmemory($HTTP_POST_VARS);' . "\n" );
 		fputs ( $fd2, '$cl' . $nometabfilho . ' = new cl_' . $nometabfilho . ';' . "\n" );
@@ -572,7 +572,7 @@ for($l = 0; $l < count ( $arr_nometabfilho ); $l ++) {
 		fputs ( $fd2, '    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> ' . "\n" );
 		fputs ( $fd2, '    <center>' . "\n" );
 		fputs ( $fd2, '	<?' . "\n" );
-		fputs ( $fd2, '	include("forms/db_frm' . $nometabfilho . '.php");' . "\n" );
+		fputs ( $fd2, '	include(modification("forms/db_frm' . $nometabfilho . '.php"));' . "\n" );
 		fputs ( $fd2, '	?>' . "\n" );
 		fputs ( $fd2, '    </center>' . "\n" );
 		fputs ( $fd2, '	</td>' . "\n" );
@@ -640,7 +640,7 @@ for($l = 0; $l < count ( $arr_nometabfilho ); $l ++) {
 	fputs ( $fd, "<?\n" );
 	for($i = 0; $i < $numrows; $i ++) {
 		$varpk = "";
-		$pk = pg_exec ( "select a.nomearq,c.nomecam,p.sequen
+		$pk = db_query ( "select a.nomearq,c.nomecam,p.sequen
 			   from db_sysprikey p
 				inner join db_sysarquivo a on a.codarq = p.codarq
 				inner join db_syscampo c   on c.codcam = p.codcam
@@ -653,19 +653,19 @@ for($l = 0; $l < count ( $arr_nometabfilho ); $l ++) {
 				$varpk .= "##" . trim ( pg_result ( $pk, $p, "nomecam" ) );
 			}
 		}
-		$campo = pg_exec ( "select c.*
+		$campo = db_query ( "select c.*
 			      from db_syscampo c
 				   inner join db_sysarqcamp a   on a.codcam = c.codcam
 			      where codarq = " . $codarq . " order by a.seqarq" );
 		$Ncampos = pg_numrows ( $campo );
 		if ($Ncampos > 0) {
 			fputs ( $fd, "//MODULO: " . trim ( pg_result ( $result, $i, "nomemod" ) ) . "\n" );
-			fputs ( $fd, "include(\"dbforms/db_classesgenericas.php\");\n" );
+			fputs ( $fd, "include(modification(\"dbforms/db_classesgenericas.php\"));\n" );
 			fputs ( $fd, '$cliframe_alterar_excluir = new cl_iframe_alterar_excluir;' . "\n" );
 			fputs ( $fd, '$cl' . $nometabfilho . '->rotulo->label();' . "\n" );
 			
 			// testar se existe chaves estrangeiras deste arquivo
-			$forkey = pg_exec ( "select distinct f.codcam,b.nomecam as nomecerto,f.referen, q.nomearq, c.camiden,x.nomecam as nomepri, a.nomecam, a.tamanho,f.tipoobjrel
+			$forkey = db_query ( "select distinct f.codcam,b.nomecam as nomecerto,f.referen, q.nomearq, c.camiden,x.nomecam as nomepri, a.nomecam, a.tamanho,f.tipoobjrel
 			      from db_sysforkey f 
 							   inner join db_sysprikey c on c.codarq = f.referen 
 							   inner join db_syscampo a on a.codcam = c.camiden 
@@ -746,7 +746,7 @@ for($l = 0; $l < count ( $arr_nometabfilho ); $l ++) {
 					for($fk = 0; $fk < $Nforkey; $fk ++) {
 						if (pg_result ( $campo, $j, "codcam" ) == pg_result ( $forkey, $fk, 'codcam' ) && pg_result ( $forkey, $fk, 'tipoobjrel' ) == 1) {
 							fputs ( $fd, '       <?' . "\n" );
-							fputs ( $fd, '       include("classes/db_' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . '_classe.php");' . "\n" );
+							fputs ( $fd, '       include(modification("classes/db_' . trim ( pg_result ( $forkey, $fk, 'nomearq' )) ) . '_classe.php");' . "\n" );
 							fputs ( $fd, '       $cl' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ' = new cl_' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ';' . "\n" );
 							fputs ( $fd, '       $result = $cl' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . '->sql_record($cl' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . '->sql_query(' );
 							$virgulapk = "";
@@ -769,7 +769,7 @@ for($l = 0; $l < count ( $arr_nometabfilho ); $l ++) {
 					$verificadep = "select defcampo,defdescr
 			      from db_syscampodef
 			      where codcam = " . pg_result ( $campo, $j, "codcam" );
-					$verres = pg_exec ( $verificadep );
+					$verres = db_query ( $verificadep );
 					if ($verres == false || pg_numrows ( $verres ) == 0) {
 						
 						if (substr ( $xc, 0, 4 ) != "date") {
@@ -915,10 +915,10 @@ for($l = 0; $l < count ( $arr_nometabfilho ); $l ++) {
 			for($fk = 0; $fk < $Nforkey; $fk ++) {
 				fputs ( $fd, 'function js_pesquisa' . trim ( pg_result ( $forkey, $fk, "nomecerto" ) ) . '(mostra){' . "\n" );
 				fputs ( $fd, '  if(mostra==true){' . "\n" );
-				fputs ( $fd, "    js_OpenJanelaIframe('top.corpo.iframe_" . $nometabfilho . "','db_iframe_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ".php?funcao_js=parent.js_mostra" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "1|" . trim ( pg_result ( $forkey, $fk, 'nomepri' ) ) . "|" . trim ( pg_result ( $forkey, $fk, 'nomecam' ) ) . "','Pesquisa',true,'0','1','775','390');" . "\n" );
+				fputs ( $fd, "    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_" . $nometabfilho . "','db_iframe_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ".php?funcao_js=parent.js_mostra" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "1|" . trim ( pg_result ( $forkey, $fk, 'nomepri' ) ) . "|" . trim ( pg_result ( $forkey, $fk, 'nomecam' ) ) . "','Pesquisa',true,'0','1','775','390');" . "\n" );
 				fputs ( $fd, "  }else{" . "\n" );
 				fputs ( $fd, "     if(document.form1." . trim ( pg_result ( $forkey, $fk, 'nomecerto' ) ) . ".value != ''){ " . "\n" );
-				fputs ( $fd, "        js_OpenJanelaIframe('top.corpo.iframe_" . $nometabfilho . "','db_iframe_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ".php?pesquisa_chave='+document.form1." . trim ( pg_result ( $forkey, $fk, 'nomecerto' ) ) . ".value+'&funcao_js=parent.js_mostra" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','Pesquisa',false);" . "\n" );
+				fputs ( $fd, "        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_" . $nometabfilho . "','db_iframe_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ".php?pesquisa_chave='+document.form1." . trim ( pg_result ( $forkey, $fk, 'nomecerto' ) ) . ".value+'&funcao_js=parent.js_mostra" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','Pesquisa',false);" . "\n" );
 				fputs ( $fd, "     }else{" . "\n" );
 				fputs ( $fd, "       document.form1." . trim ( pg_result ( $forkey, $fk, 'nomecam' ) ) . ".value = ''; " . "\n" );
 				fputs ( $fd, "     }" . "\n" );
@@ -960,7 +960,7 @@ $codarq = $codarqpai;
 $sql = "select nomearq as nometab
           from db_sysarquivo
                where codarq = $codarq";
-$resulta = pg_exec ( $sql );
+$resulta = db_query ( $sql );
 db_fieldsmemory ( $resulta, 0 );
 
 // Tabelas
@@ -973,7 +973,7 @@ $sql = "select a.codarq,a.nomearq,m.codmod,m.nomemod, a.rotulo
                      on a.codarq = am.codarq
                      $qr
                      order by codmod";
-$result = pg_exec ( $sql );
+$result = db_query ( $sql );
 $numrows = pg_numrows ( $result );
 $RecordsetTabMod = $result;
 if ($numrows == 0) {
@@ -1017,7 +1017,7 @@ if ($numrows == 0) {
 	fputs ( $fd, "<?\n" );
 	for($i = 0; $i < $numrows; $i ++) {
 		$varpk = "";
-		$pk = pg_exec ( "select a.nomearq,c.nomecam,p.sequen
+		$pk = db_query ( "select a.nomearq,c.nomecam,p.sequen
                        from db_sysprikey p
                             inner join db_sysarquivo a on a.codarq = p.codarq
                             inner join db_syscampo c   on c.codcam = p.codcam
@@ -1030,7 +1030,7 @@ if ($numrows == 0) {
 				$varpk .= "##" . trim ( pg_result ( $pk, $p, "nomecam" ) );
 			}
 		}
-		$campo = pg_exec ( "select c.*
+		$campo = db_query ( "select c.*
                           from db_syscampo c
                                inner join db_sysarqcamp a   on a.codcam = c.codcam
                           where codarq = " . pg_result ( $result, $i, "codarq" ) . " order by a.seqarq" );
@@ -1040,7 +1040,7 @@ if ($numrows == 0) {
 			fputs ( $fd, '$cl' . trim ( pg_result ( $result, $i, "nomearq" ) ) . '->rotulo->label();' . "\n" );
 			
 			// testar se existe chaves estrangeiras deste arquivo
-			$forkey = pg_exec ( "select distinct f.codcam,b.nomecam as nomecerto,f.referen, q.nomearq, c.camiden,x.nomecam as nomepri, a.nomecam, a.tamanho,f.tipoobjrel
+			$forkey = db_query ( "select distinct f.codcam,b.nomecam as nomecerto,f.referen, q.nomearq, c.camiden,x.nomecam as nomepri, a.nomecam, a.tamanho,f.tipoobjrel
                           from db_sysforkey f 
 						       inner join db_sysprikey c on c.codarq = f.referen 
 						       inner join db_syscampo a on a.codcam = c.camiden 
@@ -1106,7 +1106,7 @@ if ($numrows == 0) {
 					for($fk = 0; $fk < $Nforkey; $fk ++) {
 						if (pg_result ( $campo, $j, "codcam" ) == pg_result ( $forkey, $fk, 'codcam' ) && pg_result ( $forkey, $fk, 'tipoobjrel' ) == 1) {
 							fputs ( $fd, '       <?' . "\n" );
-							fputs ( $fd, '       include("classes/db_' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . '_classe.php");' . "\n" );
+							fputs ( $fd, '       include(modification("classes/db_' . trim ( pg_result ( $forkey, $fk, 'nomearq' )) ) . '_classe.php");' . "\n" );
 							fputs ( $fd, '       $cl' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ' = new cl_' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ';' . "\n" );
 							fputs ( $fd, '       $result = $cl' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . '->sql_record($cl' . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . '->sql_query(' );
 							$virgulapk = "";
@@ -1129,7 +1129,7 @@ if ($numrows == 0) {
 					$verificadep = "select defcampo,defdescr
 	                  from db_syscampodef
 			  where codcam = " . pg_result ( $campo, $j, "codcam" );
-					$verres = pg_exec ( $verificadep );
+					$verres = db_query ( $verificadep );
 					if ($verres == false || pg_numrows ( $verres ) == 0) {
 						
 						if (substr ( $xc, 0, 4 ) != "date") {
@@ -1231,14 +1231,14 @@ if ($numrows == 0) {
 				//fputs($fd,"    db_iframe.jan.location.href = 'func_".trim(pg_result($forkey,$fk,'nomearq')).".php?funcao_js=parent.js_mostra".trim(pg_result($forkey,$fk,'nomearq'))."1|0|1';"."\n");
 				
 
-				fputs ( $fd, "    js_OpenJanelaIframe('top.corpo.iframe_" . $nometab . "','db_iframe_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ".php?funcao_js=parent.js_mostra" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "1|" . trim ( pg_result ( $forkey, $fk, 'nomepri' ) ) . "|" . trim ( pg_result ( $forkey, $fk, 'nomecam' ) ) . "','Pesquisa',true,'0','1','775','390');" . "\n" );
+				fputs ( $fd, "    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_" . $nometab . "','db_iframe_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ".php?funcao_js=parent.js_mostra" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "1|" . trim ( pg_result ( $forkey, $fk, 'nomepri' ) ) . "|" . trim ( pg_result ( $forkey, $fk, 'nomecam' ) ) . "','Pesquisa',true,'0','1','775','390');" . "\n" );
 				
 				//fputs($fd,"    db_iframe.mostraMsg();"."\n");
 				//fputs($fd,"    db_iframe.show();"."\n");
 				//fputs($fd,"    db_iframe.focus();"."\n"); 
 				fputs ( $fd, "  }else{" . "\n" );
 				fputs ( $fd, "     if(document.form1." . trim ( pg_result ( $forkey, $fk, 'nomecerto' ) ) . ".value != ''){ " . "\n" );
-				fputs ( $fd, "        js_OpenJanelaIframe('top.corpo.iframe_" . $nometab . "','db_iframe_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ".php?pesquisa_chave='+document.form1." . trim ( pg_result ( $forkey, $fk, 'nomecerto' ) ) . ".value+'&funcao_js=parent.js_mostra" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','Pesquisa',false,'0','1','775','390');" . "\n" );
+				fputs ( $fd, "        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_" . $nometab . "','db_iframe_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . ".php?pesquisa_chave='+document.form1." . trim ( pg_result ( $forkey, $fk, 'nomecerto' ) ) . ".value+'&funcao_js=parent.js_mostra" . trim ( pg_result ( $forkey, $fk, 'nomearq' ) ) . "','Pesquisa',false,'0','1','775','390');" . "\n" );
 				fputs ( $fd, "     }else{" . "\n" );
 				fputs ( $fd, "       document.form1." . trim ( pg_result ( $forkey, $fk, 'nomecam' ) ) . ".value = ''; " . "\n" );
 				fputs ( $fd, "     }" . "\n" );
@@ -1268,7 +1268,7 @@ if ($numrows == 0) {
 
 			if (pg_numrows ( $pk ) > 0) {
 				
-				fputs ( $fd, "  js_OpenJanelaIframe('top.corpo.iframe_" . $nometab . "','db_iframe_" . trim ( pg_result ( $result, $i, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $result, $i, 'nomearq' ) ) . ".php?funcao_js=parent.js_preenchepesquisa|" . trim ( pg_result ( $pk, 0, 'nomecam' ) ) );
+				fputs ( $fd, "  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_" . $nometab . "','db_iframe_" . trim ( pg_result ( $result, $i, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $result, $i, 'nomearq' ) ) . ".php?funcao_js=parent.js_preenchepesquisa|" . trim ( pg_result ( $pk, 0, 'nomecam' ) ) );
 				
 				$Npk = pg_numrows ( $pk );
 				$virgula = "";
@@ -1277,7 +1277,7 @@ if ($numrows == 0) {
 					fputs ( $fd, "|" . trim ( pg_result ( $pk, $p, 'nomecam' ) ) );
 				}
 			} else {
-				fputs ( $fd, "  js_OpenJanelaIframe('top.corpo.iframe_" . $nometab . "','db_iframe_" . trim ( pg_result ( $result, $i, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $result, $i, 'nomearq' ) ) . ".php?funcao_js=parent.js_preenchepesquisa|0" );
+				fputs ( $fd, "  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_" . $nometab . "','db_iframe_" . trim ( pg_result ( $result, $i, 'nomearq' ) ) . "','func_" . trim ( pg_result ( $result, $i, 'nomearq' ) ) . ".php?funcao_js=parent.js_preenchepesquisa|0" );
 			
 			}
 			

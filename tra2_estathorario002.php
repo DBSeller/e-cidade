@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include("fpdf151/pdf.php");
-  //$rs = pg_exec($sql);
+ include(modification("fpdf151/pdf.php"));
+  //$rs = db_query($sql);
  $pdf = new pdf();
  $head3 = 'Resumo dos acidentes Em Sapiranga';
  $head4 = 'Acidentos por Intervalo de Hora';
@@ -106,7 +106,7 @@
                        and    extract(year from tr07_data) = $ano) as x
                 group by horas";
 
-          $rs2      = pg_exec($sql2);
+          $rs2      = db_query($sql2);
             $numrows2 = pg_num_rows($rs2);
            // if (!$rs2 or ($k == 14 and $i == 8)){
           //   echo $sql2;exit;

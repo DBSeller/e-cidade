@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $oRotulo = new rotulocampo();
 $oRotulo->label("c70_codlan");
@@ -217,7 +217,7 @@ function js_processar() {
 function js_retornoProcessar(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode();
 
   alert(sMensagem);
@@ -303,13 +303,13 @@ function js_pesquisak17_codigo(mostra){
 
   if( mostra == true){
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_slip','func_slipOperacaoExtraOrcamentaria.php?iDocumento=' + $F('iDocumento') + '&funcao_js=parent.js_mostraslip1|k17_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_slip','func_slipOperacaoExtraOrcamentaria.php?iDocumento=' + $F('iDocumento') + '&funcao_js=parent.js_mostraslip1|k17_codigo','Pesquisa',true);
   } else {
 
     var slip01 = $("k17_codigo").value;
 
     if (slip01 != "" ){
-       js_OpenJanelaIframe('top.corpo','db_iframe_slip','func_slipOperacaoExtraOrcamentaria.php?iDocumento=' + $F('iDocumento') + '&pesquisa_chave=' + slip01 + '&funcao_js=parent.js_mostraslip','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_slip','func_slipOperacaoExtraOrcamentaria.php?iDocumento=' + $F('iDocumento') + '&pesquisa_chave=' + slip01 + '&funcao_js=parent.js_mostraslip','Pesquisa',false);
     }else{
         $("k17_codigo").value='';
     }
@@ -335,12 +335,12 @@ function js_mostraslip1(chave1, chave2 ) {
 function js_pesquisak17_codigo02(mostra){
 
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_slip','func_slipOperacaoExtraOrcamentaria.php?iDocumento=' + $F('iDocumento') + '&funcao_js=parent.js_mostraslip12|k17_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_slip','func_slipOperacaoExtraOrcamentaria.php?iDocumento=' + $F('iDocumento') + '&funcao_js=parent.js_mostraslip12|k17_codigo','Pesquisa',true);
   } else {
 
     slip01 = $("k17_codigo02").value;
     if(slip01 != ""){
-       js_OpenJanelaIframe('top.corpo','db_iframe_slip','func_slipOperacaoExtraOrcamentaria.php?iDocumento=' + $F('iDocumento') + '&pesquisa_chave='+slip01+'&funcao_js=parent.js_mostraslip2','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_slip','func_slipOperacaoExtraOrcamentaria.php?iDocumento=' + $F('iDocumento') + '&pesquisa_chave='+slip01+'&funcao_js=parent.js_mostraslip2','Pesquisa',false);
     } else {
         $("k17_codigo02").value = '';
     }

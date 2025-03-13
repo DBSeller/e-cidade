@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,14 +24,13 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhregime_classe.php");
-include("classes/db_rhcadregime_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhregime_classe.php"));
+include(modification("classes/db_rhcadregime_classe.php"));
 $clrhregime = new cl_rhregime;
 $clrhcadregime = new cl_rhcadregime;
 $rotulocampo = new rotulocampo;
@@ -47,7 +46,6 @@ if(!isset($datai_dia) &&
    $datai_ano  = date('Y',db_getsession("DB_datausu"));
    $dataf_ano  = date('Y',db_getsession("DB_datausu"));
 }
-
 ?>
 <html>
 <head>
@@ -201,7 +199,7 @@ if(!isset($datai_dia) &&
 	              $result_regime = $clrhcadregime->sql_record($clrhcadregime->sql_query_file(null,"rh52_regime,rh52_regime||' - '||rh52_descr as rh52_descr  "));
                 db_multiploselect("rh52_regime", "rh52_descr", "nselecionados", "sselecionados", $result_regime, array(), 5, 250);
               }else{
-  	            $result_regime = $clrhregime->sql_record($clrhregime->sql_query_file(null,"rh30_codreg,rh30_codreg||' - '||rh30_descr as rh30_descr  "));
+  	            $result_regime = $clrhregime->sql_record($clrhregime->sql_query_file(null,"rh30_codreg,rh30_codreg||' - '||rh30_descr as rh30_descr  ", null, "rh30_instit = ".db_getsession('DB_instit')));
                 db_multiploselect("rh30_codreg", "rh30_descr", "nselecionados", "sselecionados", $result_regime, array(), 5, 250);
               }
               ?>

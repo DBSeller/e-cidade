@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -227,7 +227,7 @@ function js_verifica_hora(valor,campo){
   }
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_orcam','db_iframe_pcorcam','func_pcorcamlancval.php?exc=true&sol=false&funcao_js=parent.js_preenchepesquisa|pc20_codorc','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcam','db_iframe_pcorcam','func_pcorcamlancval.php?bloqueiaRegistroPreco=1&exc=true&sol=false&funcao_js=parent.js_preenchepesquisa|pc20_codorc','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_pcorcam.hide();

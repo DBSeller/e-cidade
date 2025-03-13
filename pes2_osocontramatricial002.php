@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_layouttxt.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_layouttxt.php"));
 db_postmemory($HTTP_SERVER_VARS,2);exit;
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $sql = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$result = pg_exec($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 
 $xtipo = "'x'";
@@ -113,7 +113,7 @@ $sql = "select distinct
       		substr(r70_estrut,1,7) as estrut,
           ".$sigla."regist as regist,
         	substr(db_fxxx(".$sigla."regist,$ano,$mes,".db_getsession("DB_instit")."),111,11) as f010, 
-      		substr(db_fxxx(".$sigla."regist,$ano,$mes,".db_getsession("DB_instit")."),210,8) as padrao,
+      		substr(db_fxxx(".$sigla."regist,$ano,$mes,".db_getsession("DB_instit")."),221,8) as padrao,
           rhlocaltrab.*
           from (select distinct ".$sigla."regist,".$sigla."anousu,".$sigla."mesusu 
 	                from ".$arquivo."
@@ -135,7 +135,7 @@ $sql = "select distinct
              and ".$sigla."mesusu = $mes
 	           $txt_where
          	order by estrut,z01_nome ";
-$res = pg_query($sql);
+$res = db_query($sql);
 $num = pg_numrows($res);
 if($num == 0){
   echo "<script>parent.js_detectaarquivo('',true,'Não existe Cálculo no período de $mes / $ano')</script>";
@@ -189,7 +189,7 @@ for($i=0;$i<$num;$i++){
   $somadependentesirfv = 0;
   $somafaixairrf = 0;
 
-  $res_env = pg_exec($sql);
+  $res_env = db_query($sql);
   for($x=0; $x<pg_num_rows($res_env); $x++){
     db_fieldsmemory($res_env, $x);
 

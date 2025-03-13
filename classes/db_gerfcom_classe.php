@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -270,7 +270,7 @@ class cl_gerfcom {
      return true;
    } 
    // funcao para alteracao
-   public function alterar ($r48_anousu=null,$r48_mesusu=null,$r48_regist=null,$r48_rubric=null) { 
+   public function alterar ($r48_anousu=null,$r48_mesusu=null,$r48_regist=null,$r48_rubric=null, $r48_semest=null) { 
       $this->atualizacampos();
      $sql = " update gerfcom set ";
      $virgula = "";
@@ -417,6 +417,10 @@ class cl_gerfcom {
      if($r48_rubric!=null){
        $sql .= " and  r48_rubric = '$this->r48_rubric'";
      }
+     // Adicionado parametro para nao atualizar todos os semest da folha do mesmo periodo
+     if($r48_semest!==null){
+       $sql .= " and  r48_semest = $r48_semest";
+     }
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
@@ -557,6 +561,7 @@ class cl_gerfcom {
      } else {
        $sql2 = $dbwhere;
      }
+     
      $result = db_query($sql.$sql2);
      if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
@@ -853,6 +858,140 @@ class cl_gerfcom {
     $sSql        .= "                            and r48_mesusu = {$iMesUsu}      ";
     $sSql        .= "                            and r48_instit = {$iInstituicao} ";
     $sSql        .= "                            and rh141_tipofolha = 3          ";
+
+    return $sSql;
+  }
+
+  /**
+   * Retorna dados que estao na rhhistoricocalculo e insere 
+   * novamente na gerfcom na competência informada.
+   * @param  Integer $iAno
+   * @param  Integer $iMes
+   * @return boolean
+   */
+  public function retornarDadosGerfCom($iAno, $iMes){
+
+    $sSql  = " insert into gerfcom(                                                                                        ";
+    $sSql .= "                      r48_anousu,                                                                            ";
+    $sSql .= "                      r48_mesusu,                                                                            ";
+    $sSql .= "                      r48_regist,                                                                            ";
+    $sSql .= "                      r48_rubric,                                                                            ";
+    $sSql .= "                      r48_valor,                                                                             ";
+    $sSql .= "                      r48_pd,                                                                                ";
+    $sSql .= "                      r48_quant,                                                                             ";
+    $sSql .= "                      r48_lotac,                                                                             ";
+    $sSql .= "                      r48_semest,                                                                            ";
+    $sSql .= "                      r48_instit                                                                             ";
+    $sSql .= " )                                                                                                           ";
+    $sSql .= "                                                                                                             ";
+    $sSql .= " select rh141_anousu,                                                                                        ";
+    $sSql .= "        rh141_mesusu,                                                                                        ";
+    $sSql .= "        rh143_regist,                                                                                        ";
+    $sSql .= "        rh143_rubrica,                                                                                       ";
+    $sSql .= "        rh143_valor,                                                                                         ";
+    $sSql .= "        rh143_tipoevento,                                                                                    ";
+    $sSql .= "        rh143_quantidade,                                                                                    ";
+    $sSql .= "        rh02_lota,                                                                                           ";
+    $sSql .= "        0,                                                                                                   ";
+    $sSql .= "        rh141_instit                                                                                         ";
+    $sSql .= "        from (                                                                                               ";
+    $sSql .= "          select rh141_anousu,                                                                               ";
+    $sSql .= "                 rh141_mesusu,                                                                               ";
+    $sSql .= "                 rh143_regist,                                                                               ";
+    $sSql .= "                 rh143_rubrica,                                                                              ";
+    $sSql .= "                 sum(rh143_valor) as rh143_valor,                                                            ";
+    $sSql .= "                 rh143_tipoevento,                                                                           ";
+    $sSql .= "                 max(rh143_quantidade) as rh143_quantidade,                                                  ";
+    $sSql .= "                 rh141_instit                                                                                ";
+    $sSql .= "            from rhfolhapagamento                                                                            ";
+    $sSql .= "                 inner join rhhistoricocalculo on rh141_sequencial = rh143_folhapagamento                    ";
+    $sSql .= "           where rh141_anousu     = {$iAno}                                                                  ";
+    $sSql .= "             and rh141_mesusu     = {$iMes}                                                                  ";
+    $sSql .= "             and rh141_tipofolha  = 3                                                                        ";
+    $sSql .= "           group by rh141_anousu, rh141_mesusu, rh143_regist, rh143_rubrica, rh143_tipoevento, rh141_instit  ";
+    $sSql .= "             ) as base                                                                                       ";
+    $sSql .= "             inner join rhpessoalmov on rh02_anousu      = base.rh141_anousu                                 ";
+    $sSql .= "                                    and rh02_mesusu      = rh141_mesusu                                      ";
+    $sSql .= "                                    and rh02_regist      = rh143_regist                                      ";
+    $sSql .= "                                    and rh02_instit      = rh141_instit;                                     ";
+
+    return $sSql;
+  }
+
+  public function migraGerfCom($iInstituicao) {
+
+    $sSql  = "create table w_migracao_rhfolhapagamento as                                                                                                "; 
+    $sSql .= "select distinct r48_anousu,                                                                                                                ";
+    $sSql .= "                r48_mesusu,                                                                                                                ";
+    $sSql .= "                r48_semest,                                                                                                                ";
+    $sSql .= "                r48_instit                                                                                                                 ";
+    $sSql .= "  from gerfcom                                                                                                                             ";
+    $sSql .= "     inner join pontocom on r47_regist = r48_regist                                                                                        ";
+    $sSql .= "                        and r47_anousu = r48_anousu                                                                                        ";
+    $sSql .= "                        and r47_mesusu = r48_mesusu                                                                                        ";
+    $sSql .= "                        and r47_instit = {$iInstituicao}                                                                                   ";
+    $sSql .= "order by r48_anousu asc,                                                                                                                   ";
+    $sSql .= "         r48_mesusu asc,                                                                                                                   ";
+    $sSql .= "         r48_semest asc;                                                                                                                   ";
+                                                                                                                                                         
+    $sSql .= "  insert into rhfolhapagamento                                                                                                             ";
+    $sSql .= "select nextval('rhfolhapagamento_rh141_sequencial_seq'),                                                                                   ";
+    $sSql .= "       r48_semest,                                                                                                                         ";
+    $sSql .= "       r48_anousu,                                                                                                                         ";
+    $sSql .= "       r48_mesusu,                                                                                                                         ";
+    $sSql .= "       r48_anousu,                                                                                                                         ";
+    $sSql .= "       r48_mesusu,                                                                                                                         ";
+    $sSql .= "       r48_instit,                                                                                                                         ";
+    $sSql .= "       3,                                                                                                                                  ";
+    $sSql .= "       false,                                                                                                                              ";
+    $sSql .= "       'Folha complementar número: ' || r48_semest || ' da competência: ' || r48_anousu || '/' || r48_mesusu || ' gerada automaticamente.' ";
+    $sSql .= "  from w_migracao_rhfolhapagamento                                                                                                         ";
+    $sSql .= "order by r48_anousu asc,                                                                                                                   ";
+    $sSql .= "          r48_mesusu asc,                                                                                                                  ";
+    $sSql .= "          r48_semest asc;                                                                                                                  ";
+                                                                                                                                                         
+    $sSql .= "    create table w_ultimafolhadecadacompetencia as                                                                                         ";
+    $sSql .= "select max(rh141_codigo) as ultimafolha,                                                                                                   ";
+    $sSql .= "                           rh141_anousu,                                                                                                   ";
+    $sSql .= "                           rh141_mesusu,                                                                                                   ";
+    $sSql .= "                           rh141_instit                                                                                                    ";
+    $sSql .= "  from rhfolhapagamento                                                                                                                    ";
+    $sSql .= "group by rh141_anousu,rh141_mesusu, rh141_instit;                                                                                          ";
+                                                                                                                                                         
+    $sSql .= "insert into rhhistoricoponto                                                                                                               ";
+    $sSql .= "  (rh144_sequencial,rh144_regist,rh144_folhapagamento,rh144_rubrica,rh144_quantidade,rh144_valor)                                          ";
+    $sSql .= "select nextval('rhhistoricoponto_rh144_sequencial_seq'),                                                                                   ";
+    $sSql .= "       r47_regist,                                                                                                                         ";
+    $sSql .= "       rhfolhapagamento.rh141_sequencial,                                                                                                  ";
+    $sSql .= "       r47_rubric,                                                                                                                         ";
+    $sSql .= "       r47_quant,                                                                                                                          ";
+    $sSql .= "       r47_valor                                                                                                                           ";
+    $sSql .= "  from pontocom                                                                                                                            ";
+    $sSql .= "  inner join w_ultimafolhadecadacompetencia on w_ultimafolhadecadacompetencia.rh141_anousu = r47_anousu                                    ";
+    $sSql .= "                                           and w_ultimafolhadecadacompetencia.rh141_mesusu = r47_mesusu                                    ";
+    $sSql .= "                                           and w_ultimafolhadecadacompetencia.rh141_instit = r47_instit                                    ";
+    $sSql .= "  inner join rhfolhapagamento               on w_ultimafolhadecadacompetencia.rh141_mesusu = rhfolhapagamento.rh141_mesusu                 ";
+    $sSql .= "                                           and w_ultimafolhadecadacompetencia.rh141_anousu = rhfolhapagamento.rh141_anousu                 ";
+    $sSql .= "                                           and w_ultimafolhadecadacompetencia.rh141_instit = rhfolhapagamento.rh141_instit                 ";
+    $sSql .= "                                           and w_ultimafolhadecadacompetencia.ultimafolha  = rhfolhapagamento.rh141_codigo                 ";
+    $sSql .= "order by rh141_sequencial;                                                                                                                 ";
+                                                                                                                                                         
+    $sSql .= "insert into rhhistoricocalculo                                                                                                             ";
+    $sSql .= "select nextval('rhhistoricocalculo_rh143_sequencial_seq'),                                                                                 ";
+    $sSql .= "       r48_regist,                                                                                                                         ";
+    $sSql .= "       rhfolhapagamento.rh141_sequencial,                                                                                                  ";
+    $sSql .= "       r48_rubric,                                                                                                                         ";
+    $sSql .= "       r48_quant,                                                                                                                          ";
+    $sSql .= "       r48_valor,                                                                                                                          ";
+    $sSql .= "       r48_pd                                                                                                                              ";
+    $sSql .= "  from gerfcom                                                                                                                             ";
+    $sSql .= "inner join rhfolhapagamento                 on  r48_anousu      = rh141_anousu                                                             ";
+    $sSql .= "                                           and  r48_mesusu      = rh141_mesusu                                                             ";
+    $sSql .= "                                           and  r48_instit      = rh141_instit                                                             ";
+    $sSql .= "                                           and  rh141_codigo    = r48_semest                                                               ";
+    $sSql .= "                                           and  rh141_tipofolha = 3                                                                        ";
+    $sSql .= "order by rh141_sequencial;                                                                                                                 ";
+                                                                                                                                                                                                                               
 
     return $sSql;
   }

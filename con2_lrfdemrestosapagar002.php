@@ -26,16 +26,16 @@
  */
 
 if (!isset($arqinclude)){
-require_once("libs/db_liborcamento.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("fpdf151/assinatura.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_empresto_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_orcparamrelnota_classe.php");
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_empresto_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_orcparamrelnota_classe.php"));
 
 $clempresto   	   = new cl_empresto();
 $classinatura 	   = new cl_assinatura(); 
@@ -123,7 +123,7 @@ $sSqlPeriodoAnt .= "        order by o58_orgao,o58_codigo,db21_tipoinstit		  			
 //die($sSqlPeriodoAnt);
 //db_criatabela($rsPeriodoAnt);exit;
 
-$rsPeriodoAnt 		 = pg_query($sSqlPeriodoAnt);
+$rsPeriodoAnt 		 = db_query($sSqlPeriodoAnt);
 $iNroLinhaPeriodoAnt = pg_num_rows($rsPeriodoAnt);
 
 $aPagProc	 = 0;
@@ -170,7 +170,7 @@ for ($iInd = 0; $iInd < $iNroLinhaPeriodoAnt; $iInd++){
    $sSqlEmpresto .= "   where e91_anousu = ".($iAnoUsu+1)."			   "; 
    $sSqlEmpresto .= "     and e91_numemp  = {$oPeriodoAnt->e60_numemp} ";
    
-   $rsEmpresto = pg_query($sSqlEmpresto);
+   $rsEmpresto = db_query($sSqlEmpresto);
    
    if(pg_num_rows($rsEmpresto) > 0){
    	 $oEmpresto = db_utils::fieldsMemory($rsEmpresto,0);
@@ -251,7 +251,7 @@ $sSqlDotacaoSaldo .= "          x.o58_orgao, 														  ";
 $sSqlDotacaoSaldo .= "          db21_tipoinstit,  													  ";
 $sSqlDotacaoSaldo .= "          x.o58_codigo 														  ";
 
-$rsDotacaoSaldo 		= pg_query($sSqlDotacaoSaldo);
+$rsDotacaoSaldo 		= db_query($sSqlDotacaoSaldo);
 $iNroLinhasDotacaoSaldo = pg_num_rows($rsDotacaoSaldo);
 
 //die($sSqlDotacaoSaldo);
@@ -307,7 +307,7 @@ for ($iInd=0; $iInd < $iNroLinhasDotacaoSaldo; $iInd++) {
   $sSqlEmpCanc .= "    and e94_empanuladotipo = 1						    ";
 
   
-  $rsEmpCanc = pg_query($sSqlEmpCanc);
+  $rsEmpCanc = db_query($sSqlEmpCanc);
   $oEmpCanc  = db_utils::fieldsMemory($rsEmpCanc,0);
   $nEmpCancNaoProcessado = $oEmpCanc->e94_valor;
 
@@ -352,7 +352,7 @@ for ($iInd=0; $iInd < $iNroLinhasDotacaoSaldo; $iInd++) {
 
 
 $lGerarPDF = false;
-include("con2_lrfdispcaixa002_2008.php");
+include(modification("con2_lrfdispcaixa002_2008.php"));
 
 // Antigamente
 //$nTotSufAntInscr = $nSuficiencia; - $nTotalRPinscritos;

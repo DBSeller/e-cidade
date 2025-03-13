@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010605' name='itbi.itbitaxasitbi' description="Tabela de vinculo entre a guia de ITBI e os tipos de taxas." prefix="it38" label="itbitaxasitbi" type="0">
+  <fields>
+    <field codigo="1011713" 
+           campo_api='' 
+           name="it38_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela itbitaxasitbi." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='itbi.itbitaxasitbi_it38_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011714" 
+           campo_api='' 
+           name="it38_itbi" 
+           conteudo="int4" 
+           description="Código da Guia de ITBI" 
+           inivalue="0" 
+           label="Guia de ITBI" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Guia de ITBI" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011715" 
+           campo_api='' 
+           name="it38_taxasitbi" 
+           conteudo="int4" 
+           description="Código do tipo cadastrado nas Taxas de ITBI." 
+           inivalue="0" 
+           label="Código do Tipo" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Tipo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="it38_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="itbi" inner='t'>
+      <fieldfk name="it38_itbi" reference="it01_guia" /> 
+    </foreignkey>
+    <foreignkey reference="taxasitbi" inner='t'>
+      <fieldfk name="it38_taxasitbi" reference="it36_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,89 +25,82 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
+if(!isset($opcao_gml)){
+  $opcao_gml = "m";
+}
+if(!isset($opcao_filtro)){
+  $opcao_filtro = "s";
+}
+
+include(modification("dbforms/db_classesgenericas.php"));
+$geraform = new cl_formulario_rel_pes;
+
+$geraform->manomes = false;                     // PARA NÃO MOSTRAR ANO E MES DE COMPETÊNCIA DA FOLHA
+
+$geraform->usaregi = true;                      // PERMITIR SELEÇÃO DE MATRÍCULAS
+
+$geraform->re1nome = "r110_regisi";             // NOME DO CAMPO DA MATRÍCULA INICIAL
+$geraform->re2nome = "r110_regisf";             // NOME DO CAMPO DA MATRÍCULA FINAL
+
+$geraform->trenome = "opcao_gml";               // NOME DO CAMPO TIPO DE RESUMO
+$geraform->tfinome = "opcao_filtro";            // NOME DO CAMPO TIPO DE FILTRO
+
+$geraform->filtropadrao = "s";                  // TIPO DE FILTRO PADRÃO
+$geraform->resumopadrao = "m";                  // TIPO DE RESUMO PADRÃO
+
+$geraform->campo_auxilio_regi = "faixa_regis";  // NOME DO DAS MATRÍCULAS SELECIONADAS
+
+$geraform->strngtipores = "gm";                // OPÇÕES PARA MOSTRAR NO TIPO DE RESUMO g - geral,
+//                                       m - Matrícula,
+//                                       r - Resumo
+$geraform->testarescisaoregi = "ra";
+$geraform->onchpad      = true;                // MUDAR AS OPÇÕES AO SELECIONAR OS TIPOS DE FILTRO OU RESUMO
 ?>
 <html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<center>
-<table width="60%" border="0" cellspacing="4" cellpadding="0">
-  <tr><td colspan="2">&nbsp;</td></tr>
-  <form name="form1" method="post" action="">
-  <?
-
-  if(!isset($opcao_gml)){
-    $opcao_gml = "m";
-  }
-  if(!isset($opcao_filtro)){
-    $opcao_filtro = "s";
-  }
-
-  include("dbforms/db_classesgenericas.php");
-  $geraform = new cl_formulario_rel_pes;
-
-  $geraform->manomes = false;                     // PARA NÃO MOSTRAR ANO E MES DE COMPETÊNCIA DA FOLHA
-
-  $geraform->usaregi = true;                      // PERMITIR SELEÇÃO DE MATRÍCULAS
-
-  $geraform->re1nome = "r110_regisi";             // NOME DO CAMPO DA MATRÍCULA INICIAL
-  $geraform->re2nome = "r110_regisf";             // NOME DO CAMPO DA MATRÍCULA FINAL
-	
-  $geraform->trenome = "opcao_gml";               // NOME DO CAMPO TIPO DE RESUMO
-  $geraform->tfinome = "opcao_filtro";            // NOME DO CAMPO TIPO DE FILTRO
-
-  $geraform->filtropadrao = "s";                  // TIPO DE FILTRO PADRÃO
-  $geraform->resumopadrao = "m";                  // TIPO DE RESUMO PADRÃO
-
-  $geraform->campo_auxilio_regi = "faixa_regis";  // NOME DO DAS MATRÍCULAS SELECIONADAS
-
-  $geraform->strngtipores = "gm";                // OPÇÕES PARA MOSTRAR NO TIPO DE RESUMO g - geral,
-                                                  //                                       m - Matrícula,
-                                                  //                                       r - Resumo
-  $geraform->testarescisaoregi = "ra";
-  $geraform->onchpad      = true;                // MUDAR AS OPÇÕES AO SELECIONAR OS TIPOS DE FILTRO OU RESUMO
-  $geraform->gera_form(null,null);
-  ?>
-  <tr>
-    <td colspan='2' align='center'>
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+  </head>
+  <body >
+    <form name="form1" method="post" action="" class="container">
+      <fieldset>
+        <legend>Diferença de Férias:</legend>
+        <table width="60%" border="0" cellspacing="4" cellpadding="0" class="form-container">
+          <?php $geraform->gera_form(null,null); ?>
+        </table>
+      </fieldset>
       <input type="submit" name="processar" value="Processar" onclick="return js_enviar_dados();">
-    </td>
-  </tr>
-  </form>
-</table>
-</center>
-<? 
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
-</body>
-<script>
-function js_enviar_dados(){
-  if(document.form1.selregist){
-    valores = '';
-    virgula = '';
-    for(i=0; i < document.form1.selregist.length; i++){
-      valores+= virgula+document.form1.selregist.options[i].value;
-      virgula = ',';
-    }
-    document.form1.faixa_regis.value = valores;
-    document.form1.selregist.selected = 0;
-  }  
-  document.form1.action = 'pes4_differias002.php';
-  return true;
+    </form>
+    <? 
+    db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+    ?>
+    </body>
+    <script>
+    function js_enviar_dados(){
+      if(document.form1.selregist){
+        valores = '';
+        virgula = '';
+        for(i=0; i < document.form1.selregist.length; i++){
+          valores+= virgula+document.form1.selregist.options[i].value;
+          virgula = ',';
+        }
+        document.form1.faixa_regis.value = valores;
+        document.form1.selregist.selected = 0;
+      }  
+      document.form1.action = 'pes4_differias002.php';
+      return true;
 
-}
-js_trocacordeselect();
-</script>
+    }
+    js_trocacordeselect();
+    </script>
 </html>

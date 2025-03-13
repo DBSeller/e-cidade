@@ -1,42 +1,47 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("fpdf151/pdf.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/db_libpessoal.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_libpostgres.php");
 
-db_app::import("pessoal.arquivos.dirf.Dirf");
-db_app::import("pessoal.arquivos.dirf.Dirf2012");
+require_once(modification("libs/db_autoload.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_libpostgres.php"));
+
+global $db_debug;
+
+use ECidade\RecursosHumanos\Pessoal\Arquivos\Dirf\Ano2017\Dirf as Dirf2017;
+use ECidade\RecursosHumanos\Pessoal\Arquivos\Dirf\Ano2018\Dirf as Dirf2018;
+use ECidade\RecursosHumanos\Pessoal\Factory\DirfFactory;
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode((str_replace("\\","",$_POST["json"])));
@@ -49,7 +54,7 @@ $oRetorno->aListaMatriculas = array();
 switch($oParam->exec) {
 
   case "processarDirf":
-
+      
     $subpes = $oParam->iAno.'/'.db_mesfolha();
     $subini = $oParam->iAno."/01";
 
@@ -57,10 +62,17 @@ switch($oParam->exec) {
 
       db_inicio_transacao();
 
-      $oDirf = new Dirf2012($oParam->iAno, $oParam->sCnpj);
+      if(isset($oParam->lDebug) && $oParam->lDebug) {
+        $db_debug         = $oParam->lDebug;
+        $oRetorno->lDebug = true;
+      }
+
+      $oDirf = new Dirf2017($oParam->iAno, $oParam->sCnpj);
 
       $oDirf->setDesdobramentos($oParam->aDesdobramentos);
       $oDirf->processar($oParam->lProcessaEmpenho);
+
+      file_put_contents("tmp/LogDirf.txt", LogDirf::getLog(LogDirf::STR) );
       $oRetorno->aArquivosInconsistentes = array();
 
       if ($oDirf->hasInconsistencias()) {
@@ -89,7 +101,8 @@ switch($oParam->exec) {
 
     $iValor = db_formatar((int) $oParam->iValor,'p');
 
-    $oDirf = new Dirf2012($oParam->iAno, $oParam->sCnpj);
+    $oDirf = DirfFactory::create($oParam->iAno, $oParam->sCnpj);
+
     $oDirf->setValorLimite($iValor);
     $oDirf->setCodigoArquivo($oParam->sCodigoArquivo);
 
@@ -107,7 +120,7 @@ switch($oParam->exec) {
   case "getMatriculasDirf":
 
     $iValor = db_formatar((int) $oParam->iValor,'p');
-    
+
     $oDirf = new Dirf($oParam->iAno, $oParam->sCnpj);
     $oDirf->setValorLimite($iValor);
 
@@ -122,18 +135,57 @@ switch($oParam->exec) {
 
       $oDaoRhDirfGeracao = db_utils::getDao("rhdirfgeracao");
 
-      $sSql = $oDaoRhDirfGeracao->sql_query_file( null, 
-                                                  "*", 
+      $sSql = $oDaoRhDirfGeracao->sql_query_file( null,
+                                                  "*",
                                                   null,
                                                   " rh95_ano = {$oParam->iAno} and rh95_fontepagadora = '{$oParam->sFontePagadora}'" );
-      $oDaoRhDirfGeracao->sql_record($sSql);
+      $rsRhDirfGeracao = db_query($sSql);
 
-      if ($oDaoRhDirfGeracao->numrows > 0) {
+      if ($rsRhDirfGeracao && pg_num_rows($rsRhDirfGeracao) > 0) {
         $oRetorno->lProcessado = true;
       }
     }
 
   break;
+
+  case 'validarBasesRRA' :
+
+
+    $oRetorno->avisarfaltabases = false;
+    $oCompetenciaAtual   = DBPessoal::getCompetenciaFolha();
+    $oParametros         = ParametrosPessoalRepository::getParametros($oCompetenciaAtual);
+    $aBases             = array();
+    if (!$oParametros->getBaseRraParcelaIsenta()) {
+      $aBases[] = " - Parcela isenta do RRA";
+    }
+
+    if (!$oParametros->getBaseRraRendimentosTributaveis()) {
+      $aBases[] = " - Rendimentos tributáveis do RRA";
+    }
+
+    if (!$oParametros->getBaseRraPrevidenciaSocial()) {
+      $aBases[] = " - Previdência Social do RRA";
+    }
+
+    if (!$oParametros->getBaseRraPensaoAlimenticia()) {
+      $aBases[] = " - Pensão Alimentícia do RRA";
+    }
+    if (!$oParametros->getBaseRraIrrf()) {
+      $aBases[] = " - Imposto Retido RRA";
+    }
+
+    if (count($aBases) > 0) {
+
+      $sMensagem  = "As Bases abaixo não foram configuradas. Seus valores não serão computados na DIRF.\n";
+      $sMensagem .= implode(",\n", $aBases);
+      $sMensagem .= "\nPara configura-las, acessar a rotina Procedimentos > Manutenção de Parâmetros > Bases Especiais.\n";
+      $sMensagem .= "Deseja continuar o processamento da Dirf?";
+
+      $oRetorno->avisarfaltabases = true;
+      $oRetorno->message          = urlencode($sMensagem);
+
+    }
+    break;
 
 }
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -33,9 +33,9 @@ class PostgreSQLUtils {
   function query($sql) {
 		$this->_sql = $sql;
 		if($this->_conexao != null) {
-			$result = pg_query($this->_conexao, $sql);
+			$result = db_query($this->_conexao, $sql);
 		} else {
-			$result = pg_query($sql);
+			$result = db_query($sql);
 		}
 		$this->_numrows = pg_num_rows($result);
 		return $result;
@@ -84,7 +84,7 @@ class PostgreSQLUtils {
 		if( strpos($versao, "8.1") ) {
       if(($pid != 0) || ($pid != '')) {
 			  $sqlCancel = "select pg_cancel_backend($pid);";
-			  $resultCancel = pg_query($sqlCancel);
+			  $resultCancel = db_query($sqlCancel);
 			  return pg_result($resultCancel, 0, 0)=='t'?true:false;
 			}
 		}
@@ -114,7 +114,7 @@ class PostgreSQLUtils {
     if ($sEsquema != null) {
       $sSqlRelacao .= " and n.nspname = '{$sEsquema}' ";
     }
-    $rsRelacao = pg_query($sSqlRelacao);
+    $rsRelacao = db_query($sSqlRelacao);
     if (pg_num_rows($rsRelacao)== 1) {
       return true;
     } else {

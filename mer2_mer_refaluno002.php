@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
  
-include("fpdf151/pdfwebseller.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_mer_cardapioturma_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_mer_cardapioturma_classe.php"));
 $clmer_cardapioturma = new cl_mer_cardapioturma;
 $escola              = db_getsession("DB_coddepto");
 $campos = " me01_c_nome, ";

@@ -1,32 +1,32 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -37,17 +37,24 @@ $clrotulo->label('r06_pd');
 $clgerasql = new cl_gera_sql_folha;
 $clgerasql->inicio_rh = false;
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+$get = db_utils::postMemory($_GET);
+parse_str($_SERVER['QUERY_STRING']);
+$ponts = $get->pontos;
+
+$get->rubricas = json_decode(str_replace('\"', '"', $get->rubricas));
+$get->recursos = json_decode(str_replace('\"', '"', $get->recursos));
 
 $dbwhere = " rh23_rubric is null and 1=1 ";
 $dbwhererubs = "";
 
-if(trim($recrs) != ""){
-  $dbwhere = " rh25_recurso in (".$recrs.")";
+if (!empty($get->recursos)) {
+    $recursos = implode("', '", $get->recursos);
+    $dbwhere = " o15_recurso in ('{$recursos}')";
 }
 
-if(trim($rubrs) != ""){
-  $dbwhererubs = " and #s#_rubric in ('".str_replace(",","','",$rubrs)."')";
+if (!empty($get->rubricas)) {
+    $rubricas = implode("', '", $get->rubricas);
+    $dbwhererubs = " and #s#_rubric in ('{$rubricas}')";
 }
 
 $arr_pontos = split(",",$ponts);
@@ -150,22 +157,15 @@ $clgerasql->subsqlmes = $sigla."_mesusu";
 $clgerasql->subsqlreg = $sigla."_regist";
 $clgerasql->subsqlrub = $sigla."_rubric";
 $clgerasql->trancaGer = true;
-$sqlFinal = $clgerasql->gerador_sql("",
-                                    $ano, $mes, null, null,
-                                    "rh25_recurso,
-                                     o15_descr,
-                                     rh27_descr,
-				                             ".$sigla."_pd as tipo,
-                                     ".$sigla."_rubric as rubrica,
-                                     round(sum(".$sigla."_valor),2) as valor",
-                                    $sigla."_rubric, rh25_recurso",
-                                    $dbwhere .
-                                    "group by rh25_recurso,
-                                              o15_descr,
-					                                    ".$sigla."_pd,
-                                              ".$sigla."_rubric,
-                                              rh27_descr"
-                                   );
+$sqlFinal = $clgerasql->gerador_sql(
+    "",
+    $ano, $mes, null, null,
+    "o15_recurso as rh25_recurso, o15_descr, rh27_descr, ".$sigla."_pd as tipo, ".$sigla."_rubric as rubrica,
+    round(sum(".$sigla."_valor),2) as valor",
+    $sigla."_rubric, rh25_recurso",
+    $dbwhere .
+    "group by o15_recurso, o15_descr, ".$sigla."_pd, ".$sigla."_rubric, rh27_descr"
+);
 
 $result = $clgerasql->sql_record($sqlFinal);
 if($result === false || ($result !== false && $clgerasql->numrows_exec == 0)){
@@ -247,18 +247,16 @@ $pdf->cell(165,$alt,"Total geral ","T",0,"R",1);
 $pdf->cell( 25,$alt,db_formatar($total_ger, "f"),"T",1,"R",1);
 
 if($totaliza == 's') {
-  $sqlFinal = $clgerasql->gerador_sql("",
-                                    $ano, $mes, null, null,
-                                    "rh25_recurso,
-                                     o15_descr,
-                                     round(sum(case when ".$sigla."_pd = 2 then ".$sigla."_valor
-                                                    when ".$sigla."_pd = 1 then ".$sigla."_valor *(-1) end ),2) as valor",
-                                    "rh25_recurso , o15_descr",
-                                    $dbwhere .
-                                    "group by rh25_recurso,
-                                              o15_descr"
-                                   );
-  // die($sqlFinal);
+  $sqlFinal = $clgerasql->gerador_sql(
+    "",
+    $ano, $mes, null, null,
+    "o15_recurso as rh25_recurso, o15_descr,
+    round(sum(case when ".$sigla."_pd = 2 then ".$sigla."_valor
+        when ".$sigla."_pd = 1 then ".$sigla."_valor *(-1) end ),2) as valor",
+    "rh25_recurso , o15_descr",
+    $dbwhere .
+    "group by o15_recurso,o15_descr"
+);
   $result = $clgerasql->sql_record($sqlFinal);
   $pdf->setfont('arial','B',9);
   if($pdf->gety() > $pdf->h - 30 || $troca != 0 ){

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include ("libs/db_utils.php");
-include("classes/db_listainscrcab_classe.php");
-include("classes/db_listainscr_classe.php");
-include("classes/db_escrito_classe.php");
-include("libs/smtp.class.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_listainscrcab_classe.php"));
+include(modification("classes/db_listainscr_classe.php"));
+include(modification("classes/db_escrito_classe.php"));
+include(modification("libs/smtp.class.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -64,7 +64,7 @@ if(isset($acumula)&&!empty($acumula)){
      $sqlVerificaEscrito .= "   where q10_numcgm = {$oLista->p11_numcgm}  ";
      $sqlVerificaEscrito .= "     and q10_inscr  = {$oLista->p12_inscr}   "; 
     
-     $rsVerificaEscrito = pg_query($sqlVerificaEscrito);
+     $rsVerificaEscrito = db_query($sqlVerificaEscrito);
      $iVerificaEscrito  = pg_numrows($rsVerificaEscrito);
         
 	 if (isset($oLista->p12_tipolanc) && $oLista->p12_tipolanc == 1) {
@@ -72,7 +72,7 @@ if(isset($acumula)&&!empty($acumula)){
         $sqlEscrito .= "    from escrito                           ";
         $sqlEscrito .= "   where q10_inscr = {$oLista->p12_inscr}  ";
                                             
-        $rsEscrito = pg_query($sqlEscrito);
+        $rsEscrito = db_query($sqlEscrito);
         $iEscrito  = pg_numrows($rsEscrito);
         
         if ($iEscrito > 0) {
@@ -83,7 +83,7 @@ if(isset($acumula)&&!empty($acumula)){
            $sqlVerificaNull .= "   where q10_inscr  = {$oLista->p12_inscr} "; 
            $sqlVerificaNull .= "     and q10_dtfim is null                 ";
                                                
-           $rsVerificaNull = pg_query($sqlVerificaNull);
+           $rsVerificaNull = db_query($sqlVerificaNull);
            $iVerificaNull  = pg_numrows($rsVerificaNull);
 
            if ($iVerificaNull > 0) {
@@ -181,7 +181,7 @@ if ($cllistainscrcab->erro_banco != "") {
 	
 //busca dados da instituição
 $sqlBuscaDadosInst = " select * from db_config where codigo = ".db_getsession('DB_instit');
-$rsBuscaDadosInst  = pg_query($sqlBuscaDadosInst);
+$rsBuscaDadosInst  = db_query($sqlBuscaDadosInst);
 $iBuscaDadosInst   = pg_numrows($rsBuscaDadosInst);
 
 if ($iBuscaDadosInst > 0) {

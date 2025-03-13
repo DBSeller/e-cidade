@@ -26,7 +26,7 @@
  */
 
 //MODULO: orcamento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clorcsuplementacaoparametrocriterio->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -173,10 +173,10 @@ function js_cancelar(){
 }
 function js_pesquisao135_orcsuplementacaoparametro(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_orcsuplementacaoparametrocriterio','db_iframe_orcsuplementacaoparametro','func_orcsuplementacaoparametro.php?funcao_js=parent.js_mostraorcsuplementacaoparametro1|o134_anousu|o134_anousu','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcsuplementacaoparametrocriterio','db_iframe_orcsuplementacaoparametro','func_orcsuplementacaoparametro.php?funcao_js=parent.js_mostraorcsuplementacaoparametro1|o134_anousu|o134_anousu','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.o135_orcsuplementacaoparametro.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_orcsuplementacaoparametrocriterio','db_iframe_orcsuplementacaoparametro','func_orcsuplementacaoparametro.php?pesquisa_chave='+document.form1.o135_orcsuplementacaoparametro.value+'&funcao_js=parent.js_mostraorcsuplementacaoparametro','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcsuplementacaoparametrocriterio','db_iframe_orcsuplementacaoparametro','func_orcsuplementacaoparametro.php?pesquisa_chave='+document.form1.o135_orcsuplementacaoparametro.value+'&funcao_js=parent.js_mostraorcsuplementacaoparametro','Pesquisa',false);
      }else{
        document.form1.o134_anousu.value = ''; 
      }
@@ -195,7 +195,7 @@ function js_mostraorcsuplementacaoparametro1(chave1,chave2){
   db_iframe_orcsuplementacaoparametro.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcsuplementacaoparametrocriterio','func_orcsuplementacaoparametrocriterio.php?funcao_js=parent.js_preenchepesquisa|o135_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcsuplementacaoparametrocriterio','func_orcsuplementacaoparametrocriterio.php?funcao_js=parent.js_preenchepesquisa|o135_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcsuplementacaoparametrocriterio.hide();

@@ -26,7 +26,7 @@
  */
 
 //MODULO: licitação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clpccflicitapar->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -154,10 +154,10 @@ function js_cancelar(){
 }
 function js_pesquisal25_codcflicita(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_pccflicitapar','db_iframe_cflicita','func_cflicita.php?funcao_js=parent.js_mostracflicita1|l03_codigo|l03_codigo','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pccflicitapar','db_iframe_cflicita','func_cflicita.php?funcao_js=parent.js_mostracflicita1|l03_codigo|l03_codigo','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.l25_codcflicita.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_pccflicitapar','db_iframe_cflicita','func_cflicita.php?pesquisa_chave='+document.form1.l25_codcflicita.value+'&funcao_js=parent.js_mostracflicita','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pccflicitapar','db_iframe_cflicita','func_cflicita.php?pesquisa_chave='+document.form1.l25_codcflicita.value+'&funcao_js=parent.js_mostracflicita','Pesquisa',false);
      }else{
        document.form1.l03_codigo.value = ''; 
      }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <servico>
-  <operadora nome=""></operadora>
-  <mensagemamarela  texto=""></mensagemamarela>
-  <mensagemvermelha texto=""></mensagemvermelha>
+  <operadora nome="convect"></operadora>
+  <mensagemamarela  texto="#aluno# faltou nos periodos #periodos# no dia #datafalta#, mas esta presente na escola">.</mensagemamarela>
+  <mensagemvermelha texto="#aluno# faltou no dia #datafalta#">.</mensagemvermelha>
 </servico>

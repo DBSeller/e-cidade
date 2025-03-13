@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -93,9 +93,9 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
   /**
    * Construtor da classe. Recebe Turma, Etapa e AvaliacaoPeriodica como parâmetro, e instância o construtor da classe
    * RelatorioDiarioClasseBase
-   * @param Turma              $oTurma              
-   * @param Etapa              $oEtapa              
-   * @param AvaliacaoPeriodica $oAvaliacaoPeriodica 
+   * @param Turma              $oTurma
+   * @param Etapa              $oEtapa
+   * @param AvaliacaoPeriodica $oAvaliacaoPeriodica
    */
   public function __construct( Turma $oTurma, Etapa $oEtapa, AvaliacaoPeriodica $oAvaliacaoPeriodica ) {
 
@@ -177,8 +177,15 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
 
     $this->SetFont( 'arial', 'b', 7 );
     $sTexto = "Assinatura do professor: " . str_repeat("_", 60);
-    $this->Cell( $this->iLarguraPagina, 5, $sTexto, 1, 0, "L" );
+    $this->Cell( $this->iLarguraPagina, 5, $sTexto, 1, 1, "L" );
+
+    if ( $this->lPossuiMatriculaPorTurnoReferencia ) {
+
+      $this->SetFont("arial", '', 7);
+      $this->Cell( 280, 5, "Legenda: Alunos matriculados somente em um turno ¹ - Manhã | ² - Tarde | ³ - Noite ", 1, 0, "L" );
+    }
   }
+
 
   /**
    * Verifica quais legendas devem aparecerem, conforme preenchido na tela
@@ -201,7 +208,7 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
     $aLegendasImprimir = array();
 
     foreach ($aLegendas as $sLegenda => $lLeganda) {
-      
+
       if( $lLeganda ) {
 
        $aLegendasImprimir[$sLegenda] = $sDescricaoLegenda[$sLegenda];
@@ -418,7 +425,7 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
    * Como muitas colunas são dinâmicas, foi construido um array dinâmico.
    * @param $iRegencia
    */
-  private function organizaCabecalhoSegundaPagina(  ) {
+  private function organizaCabecalhoSegundaPagina( $iRegencia ) {
 
     $iColuna = 0;
     $this->aCabecalhoSegundaPagina[$iColuna][0] = $this->iLarguraColunaPadrao;
@@ -486,7 +493,8 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
     }
 
     $iColuna ++;
-    $sLabelAvaliacaoPeriodo = $this->oTurma->getProcedimentoDeAvaliacaoDaEtapa($this->oEtapa)->getFormaAvaliacao()->getTipo();
+    $oRegencia                                  = RegenciaRepository::getRegenciaByCodigo( $iRegencia );
+    $sLabelAvaliacaoPeriodo                     = $oRegencia->getProcedimentoAvaliacao()->getFormaAvaliacao()->getTipo();
     $this->aCabecalhoSegundaPagina[$iColuna][0] = $this->iLarguraColunaNota;
     $this->aCabecalhoSegundaPagina[$iColuna][1] = $sLabelAvaliacaoPeriodo;
 
@@ -514,7 +522,6 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
       $this->aCabecalhoSegundaPagina[$iColuna][0] = $this->iLarguraColunaPadrao * 3;
       $this->aCabecalhoSegundaPagina[$iColuna][1] = 'Parecer';
     }
-
   }
 
   /**
@@ -540,8 +547,9 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
         $oDataNascimento = new DBDate($oDadosAluno->oMatricula->getAluno()->getDataNascimento());
         $sDataNascimento = $oDataNascimento->convertTo(DBDate::DATA_PTBR);
 
+        $sNomeAluno = $this->getNomeAluno( $oDadosAluno->oMatricula );
         $this->Cell( $this->iLarguraColunaPadrao, 4, $oDadosAluno->oMatricula->getNumeroOrdemAluno(), 1, 0, 'C' );
-        $this->Cell( $this->iLarguraColunaNome, 4, $oDadosAluno->oMatricula->getAluno()->getNome(), 1, 0, 'L' );
+        $this->Cell( $this->iLarguraColunaNome, 4, $sNomeAluno, 1, 0, 'L' );
 
         $this->escreverColunaSexo( $oDadosAluno->oMatricula->getAluno()->getSexo() );
         $this->escreverColunaNascimento($sDataNascimento);
@@ -549,20 +557,16 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
         $this->escreverColunaResultadoAnterior( $oDadosAluno->oMatricula->getResultadoFinalAnterior() );
         $this->escreverColunaCodigoAluno($oDadosAluno->oMatricula->getAluno()->getCodigoAluno());
 
-//        (!$this->lSomenteMatriculados || $this->lExibirTrocaTurma) && ($oDadosAluno->oMatricula->getSituacao() != 'MATRICULADO')
-
         if ( $oDadosAluno->oMatricula->getSituacao() == 'MATRICULADO') {
-
-          $iValorNota       = 0;
-          $iPeriodosComNota = 0;
 
           /**
            * Imprime as avaliações dos períodos de avaliação anterior ao período selecionado
            */
+
           foreach ( $oProcedimentoAvaliacao->getElementosAvaliacoesAnteriores($this->oAvaliacaoPeriodica) as $oAvaliacaoPeriodica ) {
 
             $oAvaliacaoAproveitamento = $oDadosAluno->oMatricula->getDiarioDeClasse()->getAvaliacoesPorDisciplina( $this->oRegenciaAtual->getDisciplina(), $oAvaliacaoPeriodica );
-            $this->escreverAvaliacaoAlunoPeriodo($oAvaliacaoAproveitamento);
+            $this->escreverAvaliacaoAlunoPeriodo($oAvaliacaoAproveitamento, $oDadosAluno->oMatricula->isAvaliadoPorParecer());
           }
 
           $oAvaliacaoDisciplina = $this->getDiarioAvaliacaoDisciplinaAluno($oDadosAluno->oMatricula);
@@ -572,14 +576,24 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
            */
           if ( $this->exibirNotaParcial() ) {
 
-            $iAvaliacaoParcial     = $oAvaliacaoDisciplina->getNotaParcial($oProcedimentoAvaliacao->getElementoAvaliacaoAnterior($this->oAvaliacaoPeriodica));
+            $oElementoAvaliacaoAnterior = $oProcedimentoAvaliacao->getElementoAvaliacaoAnterior($this->oAvaliacaoPeriodica);
 
-            if ( $iAvaliacaoParcial < $mAproveitamentoMinimo ) {
-              $this->SetFont("arial", 'B', 7);
+            if ( !empty($oElementoAvaliacaoAnterior) ) {
+
+              $iAvaliacaoParcial = $oAvaliacaoDisciplina->getNotaParcial($oElementoAvaliacaoAnterior);
+
+              if ( $iAvaliacaoParcial < $mAproveitamentoMinimo ) {
+                $this->SetFont("arial", 'B', 7);
+              }
+
+              $this->Cell( $this->iLarguraColunaNota, 4, $iAvaliacaoParcial, 1, 0, 'C' );
+              $this->SetFont("arial", '', $this->iTamanhoFonteGrade);
+
+            } else {
+
+              // Linhas da coluna do Periodo de Avaliação
+              $this->cell($this->iLarguraColunaNota, 4, '', 1, 0);
             }
-
-            $this->Cell( $this->iLarguraColunaNota, 4, $iAvaliacaoParcial, 1, 0, 'C' );
-            $this->SetFont("arial", '', $this->iTamanhoFonteGrade);
           }
 
           /**
@@ -596,7 +610,7 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
            * Imprime a avaliação do período selecionado
            */
           $oAvaliacaoPeriodo = $oAvaliacaoDisciplina->getAvaliacoesPorOrdem( $this->oAvaliacaoPeriodica->getOrdemSequencia() );
-          $this->escreverAvaliacaoAlunoPeriodo($oAvaliacaoPeriodo);
+          $this->escreverAvaliacaoAlunoPeriodo($oAvaliacaoPeriodo, $oDadosAluno->oMatricula->isAvaliadoPorParecer());
 
           /**
            * Calcula as faltas do aluno para o período selecionado
@@ -634,14 +648,13 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
 
       $this->escreverAssinaturaPaginaAvaliacao();
     }
-
   }
 
   /**
-   * Escreve a Avaliação obitida do aluno no período de avaliação tratando os tipos
+   * Escreve a Avaliação obtida do aluno no período de avaliação tratando os tipos
    * @param AvaliacaoAproveitamento $oAvaliacaoAproveitamento
    */
-  private function escreverAvaliacaoAlunoPeriodo(AvaliacaoAproveitamento $oAvaliacaoAproveitamento) {
+  private function escreverAvaliacaoAlunoPeriodo(AvaliacaoAproveitamento $oAvaliacaoAproveitamento, $lAvaliadoparecer = false) {
 
     $sNota = $oAvaliacaoAproveitamento->getValorAproveitamento()->getAproveitamento();
     $sNota = ArredondamentoNota::arredondar($sNota , $this->oTurma->getCalendario()->getAnoExecucao() );
@@ -658,6 +671,15 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
          $sNota = 'PARECER';
        }
      }
+
+
+    if ($oAvaliacaoAproveitamento->isAvaliacaoExterna() && $sNota != '' ) {
+      $sNota = "*{$sNota}";
+    }
+
+    if ($lAvaliadoparecer && !empty($sNota)) {
+      $sNota = "PD";
+    }
 
     if ( $oAvaliacaoAproveitamento->isAmparado() ) {
       $sNota = 'AMP';
@@ -716,19 +738,17 @@ class RelatorioDiarioClasseCompleto extends RelatorioDiarioClasseBase {
       throw new Exception ("Nenhuma regência(s) selecionada(s) possuem grade de horário.");
     }
 
-    $this->organizaCabecalhoSegundaPagina();
-
     $this->Open();
     foreach ( $this->aEstruturaCabecalho as $iRegencia => $oEstrutura ) {
 
+      $this->organizaCabecalhoSegundaPagina( $iRegencia );
+
       $this->oRegenciaAtual = RegenciaRepository::getRegenciaByCodigo($iRegencia);
       $this->escreverCorpo( $this->getAlunos($iRegencia), $oEstrutura );
-
       $this->escreverAlunosSegundaPagina( $this->getAlunos($iRegencia) );
 
     }
 
     $this->Output();
-
   }
 }

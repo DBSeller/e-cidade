@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_atendusucli_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_atendusucli_classe.php"));
 $clatendusucli = new cl_atendusucli;
 db_postmemory($HTTP_POST_VARS);
 $db_opcao = 22;
@@ -67,7 +67,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
       <center>
       <?
-      include("forms/db_frmatendusucli.php");
+      include(modification("forms/db_frmatendusucli.php"));
       ?>
       </center>
     </td>
@@ -95,7 +95,7 @@ if(isset($chavepesquisa)){
         <script>
           function js_db_libera(){
             parent.document.formaba.atendusucliitem.disabled=false;
-            top.corpo.iframe_atendusucliitem.location.href='ate1_atendusucliitem001.php?at81_codatendcli=".@$at80_codatendcli."';
+            (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_atendusucliitem.location.href='ate1_atendusucliitem001.php?at81_codatendcli=".@$at80_codatendcli."';
        ";
   if(isset($liberaaba)){
     echo "  parent.mo_camada('atendusucliitem');";

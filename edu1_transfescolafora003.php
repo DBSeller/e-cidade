@@ -1,39 +1,39 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_logmatricula_classe.php");
-require_once("libs/db_utils.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_logmatricula_classe.php"));
+require_once(modification("libs/db_utils.php"));
 $iEscola              = db_getsession("DB_coddepto");
 $oDaoMatricula        = db_utils::getdao('matricula');
 $oDaoLogMatricula     = db_utils::getdao('logmatricula');
@@ -136,6 +136,10 @@ if (isset($incluir)) {
  $sSqlAlunoCurso .= " WHERE ed56_i_codigo = $ed56_i_codigo ";
  $rsAlunoCurso    = db_query($sSqlAlunoCurso);
 
+    $sqlTransferenciaFora = $oDaoTransfEscolaFora->sql_query_file($codigotransf);
+    $rsTransferenciaFora = db_query($sqlTransferenciaFora);
+    $dadosTransferencia = pg_fetch_object($rsTransferenciaFora);
+
  $oDaoTransfEscolaFora->excluir($codigotransf);
 
  $sSqlUpHistorico  = " UPDATE historico SET ";
@@ -163,6 +167,18 @@ if (isset($incluir)) {
  $oDaoLogMatricula->ed248_c_tipo    = "T";
  $oDaoLogMatricula->incluir(null);
 
+
+    $matriculaAluno = MatriculaRepository::getMatriculaByCodigo($matriculaorig);
+    $matriculaAluno->getDiarioDeClasse()->getDiarioAlunoService()->cancelarEncerramento();
+
+    $notificacaoService = new \ECidade\Educacao\Escola\Service\NotificacaoTransferenciaService(
+        $dadosTransferencia->ed104_i_escolaorigem,
+        $dadosTransferencia->ed104_i_escoladestino,
+        $dadosTransferencia->ed104_i_aluno,
+        "TF",
+        DBDate::now()->getDate()
+    );
+    $notificacaoService->notificarCancelamento($descrturmaorig);
  //db_query("rollback");
  db_fim_transacao();
  db_msgbox("Cancelamento efetuado com sucesso!");

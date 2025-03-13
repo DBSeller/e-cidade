@@ -25,7 +25,7 @@
             <Name>timeB</Name>
         </DataSource>
         <Query>
-            <Select>ac16_numeroacordo   as numero_acordo,ac16_anousu         as ano_acordo,ac16_lei            as lei,ac16_datainicio     as vigencia_inicial,ac16_datafim        as vigencia_final,ac16_dataassinatura as data_assinatura,ac16_objeto         as objeto,ac16_numeroprocesso as numero_processo,z01_nome            as cgm_favorecido,ac16_valor          as valor,nomeresponsavel     as responsavel_departamento,nomeinst            as instituicao,munic               as municipio</Select>
+            <Select>ac16_numeroacordo   as numero_acordo,  ac16_anousu         as ano_acordo,ac16_lei            as lei,ac16_datainicio     as vigencia_inicial,ac16_datafim        as vigencia_final,ac16_dataassinatura as data_assinatura,ac16_objeto         as objeto,ac16_numeroprocesso as numero_processo,z01_nome            as cgm_favorecido,ac16_valor          as valor,nomeresponsavel     as responsavel_departamento,nomeinst            as instituicao,munic               as municipio, ac16_numero as acordo_numero</Select>
             <From>acordo inner join db_depart on acordo.ac16_deptoresponsavel = db_depart.coddepto inner join cgm on acordo.ac16_contratado = cgm.z01_numcgm  inner join db_config on ac16_instit = codigo</From>
             <Where>ac16_sequencial = $iAcordo</Where>
             <GroupBy></GroupBy>

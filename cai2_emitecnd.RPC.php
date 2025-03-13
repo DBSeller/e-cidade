@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("classes/db_certidao_classe.php");
-require_once ("classes/db_db_certidaoweb_classe.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/JSON.php");
-require_once ("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("classes/db_certidao_classe.php"));
+require_once(modification("classes/db_db_certidaoweb_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 define('MENSAGENS', 'tributario.arrecadacao.cai2_emitecnd.');
 
@@ -66,7 +66,7 @@ try {
     	$oDaoCertidao     = new cl_certidao();
     	$sSqlCertidao  = $oDaoCertidao->sql_query_certidao_prazos( $oParametros->sOrigem, $oParametros->iCodigoOrigem );
     	$rsDAOCertidao = db_query( $sSqlCertidao );
-    	 
+
     	if(!$rsDAOCertidao){
     		 
     		$oMensagem = (object)array('sErro'=>pg_last_error());
@@ -124,7 +124,81 @@ try {
     	exit;
     	
     break;
+      /**
+       * Valida se existe template configurado
+       */
+    case 'getValidaTemplate' :
+
+        /**
+         * Seta a coluna de acordo com o tipo de certidão
+         * 0 - Regular
+         * 1 - Positiva
+         * Qualquer diferente - Negativa
+        */
+
+        if ($oParametros->iTipo == 1) {
+            if ($oParametros->sTitulo == "CGM") {
+                $sCampo = "k03_templatecertidaopositiva_cgm";
+            } else {
+                if ($oParametros->sTitulo == "MATRICULA") {
+                    $sCampo = "k03_templatecertidaopositiva_matric";
+                } else {
+                    $sCampo = "k03_templatecertidaopositiva_inscr";
+                }
+            }
+        } else {
+            if ($oParametros->iTipo == 0) {
+                if ($oParametros->sTitulo == "CGM") {
+                    $sCampo = "k03_templatecertidao_cgm";
+                } else {
+                    if ($oParametros->sTitulo == "MATRICULA") {
+                        $sCampo = "k03_templatecertidao_matric";
+                    } else {
+                        $sCampo = "k03_templatecertidao_inscr";
+                    }
+                }
+            } else {
+                if ($oParametros->sTitulo == "CGM") {
+                    $sCampo = "k03_templatecertidaonegativa_cgm";
+                } else {
+                    if ($oParametros->sTitulo == "MATRICULA") {
+                        $sCampo = "k03_templatecertidaonegativa_matric";
+                    } else {
+                        $sCampo = "k03_templatecertidaonegativa_inscr";
+                    }
+                }
+            }
+        }
+
+        $sSql = "SELECT 1 
+                   FROM numpref
+                  WHERE numpref.k03_anousu = " . db_getsession("DB_anousu") . "
+                    AND numpref.k03_instit = " . db_getsession("DB_instit") . "
+                    AND {$sCampo} IS NOT NULL
+                    AND (SELECT COUNT(*)
+                           FROM db_documentotemplate dt
+                          WHERE dt.db82_sequencial   = numpref.{$sCampo}
+                            AND dt.db82_templatetipo = 57) > 0;";
+
+        $oDaoTemplate = new cl_numpref();
+        $sSqlTemplate = $oDaoTemplate->sql_record($sSql);
+
+        $oRetorno->bValidaTemplate = true;
+        $oRetorno->erro            = "";
+
+        if (!$sSqlTemplate) {
+            $oRetorno->bValidaTemplate = false;
+            $oRetorno->erro            = 2;
+        }
+
+    break;
   }
     
 } catch (Exception $oErro) {
-  $oRetorno->iStatus  = 2;  $oRetorno->sMensagem = $oErro->getMessage();}    $oRetorno->sMensagem = urlencode( $oRetorno->sMensagem );  echo $oJson->encode( $oRetorno );
+
+  $oRetorno->iStatus  = 2;
+  $oRetorno->sMensagem = $oErro->getMessage();
+}
+  
+  $oRetorno->sMensagem = urlencode( $oRetorno->sMensagem );
+  echo $oJson->encode( $oRetorno );

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once('model/pessoal/Ponto.model.php');
-require_once('libs/db_libpessoal.php');
+require_once(modification('model/pessoal/Ponto.model.php'));
+require_once(modification('libs/db_libpessoal.php'));
 
 /**
  * Classe para ponto de Ferias
@@ -73,7 +73,6 @@ class PontoFerias extends Ponto {
    *
    * @param Servidor $oServidor
    * @access public
-   * @return void
    */
   public function __construct( Servidor $oServidor) {
 
@@ -102,7 +101,9 @@ class PontoFerias extends Ponto {
    * Gerar ponto de ferias
    *
    * @access public
-   * @return boolean
+   * @return bool
+   * @throws DBException
+   * @throws Exception
    */
   public function gerar() {
 
@@ -128,6 +129,7 @@ class PontoFerias extends Ponto {
      * Percorre os registros do ponto e inclui na tabela de ferias(pontofe)
      */
     foreach ( $this->aRegistros as $oRegistro ) {
+
       $oDaoPontoFe = new cl_pontofe();
       $oDaoPontoFe->r29_anousu = $this->getServidor()->getAnoCompetencia();
       $oDaoPontoFe->r29_mesusu = $this->getServidor()->getMesCompetencia();
@@ -174,10 +176,12 @@ class PontoFerias extends Ponto {
   }
 
   /**
-   * Adiciona as rubricas de férias padrão para todos os servidores 
+   * Adiciona as rubricas de férias padrão para todos os servidores
    *
    * @access public
-   * @return boolean
+   * @return bool
+   * @throws BusinessException
+   * @throws Exception
    */
   public function adicionarRubricasPadrao() {
   	
@@ -235,13 +239,15 @@ class PontoFerias extends Ponto {
   public function getComposicao() {
     return new ComposicaoPontoFerias( $this->getServidor() );
   }
-  
+
   /**
    * Carrega em memória os registros do ponto do servidor guardados na tabela.
    *
    * @param mixed $mRubrica - array de rubricas ou string com codigo da rubrica
+   * @return bool|void
+   * @throws BusinessException
+   * @throws DBException
    * @access public
-   * @return void
    */
   public function carregarRegistros( $mRubrica = null ) {
      
@@ -300,9 +306,32 @@ class PontoFerias extends Ponto {
       $oRegistro->setQuantidade( $oDadosRegistro->quantidade_rubrica );
       $oRegistro->setValor( $oDadosRegistro->valor_rubrica );
       $oRegistro->setTipoPagamento($oDadosRegistro->tipo_pagamento);
-      $this->aRegistros [$oRubrica->getCodigo()] = $oRegistro;
+      $this->aRegistros [$oRubrica->getCodigo().$oDadosRegistro->tipo_pagamento] = $oRegistro;
     }
     
+    return true;
+  }
+  /**
+   * Adiciona um registro ao ponto
+   * @param RegistroPontoFerias $oRegistro
+   * @return bool
+   */
+  public function adicionarRegistro( RegistroPontoFerias $oRegistroPonto, $lSubstituir = true ) {
+
+    $sCodigoRubrica = $oRegistroPonto->getRubrica()->getCodigo().$oRegistroPonto->getTipoPagamento();
+
+    if ( array_key_exists($sCodigoRubrica, $this->aRegistros) && !$lSubstituir) {
+
+      $oRegistroAtual = $this->aRegistros[$sCodigoRubrica];
+      $nQuantidade    = $oRegistroAtual->getQuantidade() + $oRegistroPonto->getQuantidade();
+      $nValor         = $oRegistroAtual->getValor()      + $oRegistroPonto->getValor();
+
+      $oRegistroAtual->setQuantidade($nQuantidade);
+      $oRegistroAtual->setValor($nValor);
+      return true;
+    }
+
+    $this->aRegistros[$sCodigoRubrica] = $oRegistroPonto;
     return true;
   }
 }

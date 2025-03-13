@@ -1,7 +1,7 @@
 <?php
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -21,12 +21,12 @@
  *                                 licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
 
 
 $oJson        = new services_json();
@@ -98,6 +98,62 @@ try {
       }
       break;
 
+      case 'getValorReferenciaAtributo' :
+
+      if(!empty($oParam->iCodigo)) {
+        $oValorReferencia = new AtributoValorReferenciaNumerico($oParam->iCodigo);
+
+        $oValor                = new stdClass();
+
+        $oLimiteIdadeInicial          = new stdClass();
+        $oLimiteIdadeInicial->anos    = '';
+        $oLimiteIdadeInicial->meses   = '';
+        $oLimiteIdadeInicial->dias    = '';
+        $oValorIdade           = $oValorReferencia->getIdadeInicial();
+        if (!empty($oValorIdade)) {
+
+          $oLimiteIdadeInicial->anos  = $oValorReferencia->getIdadeInicial()->getYears();
+          $oLimiteIdadeInicial->meses = $oValorReferencia->getIdadeInicial()->getMonths();
+          $oLimiteIdadeInicial->dias  = $oValorReferencia->getIdadeInicial()->getDays();
+        }
+
+        $oLimiteIdadeFinal          = new stdClass();
+        $oLimiteIdadeFinal->anos    = '';
+        $oLimiteIdadeFinal->meses   = '';
+        $oLimiteIdadeFinal->dias    = '';
+        $oValorIdade           = $oValorReferencia->getIdadeFinal();
+        if (!empty($oValorIdade)) {
+
+          $oLimiteIdadeFinal->anos  = $oValorReferencia->getIdadeFinal()->getYears();
+          $oLimiteIdadeFinal->meses = $oValorReferencia->getIdadeFinal()->getMonths();
+          $oLimiteIdadeFinal->dias  = $oValorReferencia->getIdadeFinal()->getDays();
+        }
+
+        $iCasasDecimais        = $oValorReferencia->getCasasDecimaisApresentacao();
+        $oValor->casas_decimais = $iCasasDecimais;
+        $oValor->valor_inicial = MascaraValorAtributoExame::mascarar( $iCasasDecimais, $oValorReferencia->getValorMinimo());
+        $oValor->valor_final   = MascaraValorAtributoExame::mascarar( $iCasasDecimais, $oValorReferencia->getValorMaximo());
+        $oValor->absurdo_minimo = MascaraValorAtributoExame::mascarar( $iCasasDecimais, $oValorReferencia->getValorAbsurdoMinimo());
+        $oValor->absurdo_maximo = MascaraValorAtributoExame::mascarar( $iCasasDecimais, $oValorReferencia->getValorAbsurdoMaximo());
+        $oValor->sexo          = $oValorReferencia->getSexos();
+        $oValor->codigo        = $oValorReferencia->getCodigo();
+        $oValor->limite_idade_inicial  = $oLimiteIdadeInicial;
+        $oValor->limite_idade_final  = $oLimiteIdadeFinal;
+        $oValor->tipo_calculo = $oValorReferencia->getTipoCalculo();
+        $oValor->calculavel = $oValorReferencia->getCalculavel();
+
+        $oValor->atributo_base = null;
+        $oValor->atributo_base_nome = null;
+        if($oValorReferencia->getAtributoBase()) {
+          $oValor->atributo_base = $oValorReferencia->getAtributoBase()->getCodigo();
+          $oValor->atributo_base_nome = $oValorReferencia->getAtributoBase()->getNome();
+        }
+
+
+        $oRetorno->oValorReferencia = $oValor;
+      }
+      break;
+
     case "salvarReferenciaNumerica":
 
       if (empty($oParam->iCodigoReferencia)) {
@@ -121,6 +177,42 @@ try {
           }
         }
       }
+
+      if (!empty($oParam->iCodigoReferencia)) {
+
+        $oDaoValorReferencia = new cl_lab_valorreferencia();
+        /**
+         * Verificamos se já não existe nenhuma referencia cadastrada
+         */
+        $sSqlVerificaReferencia = $oDaoValorReferencia->sql_query_file(null, "la27_i_codigo",
+                                                                       null, "la27_i_atributo = {$oParam->iAtributo}"
+                                                                      );
+
+        $rsVerificaReferencia = $oDaoValorReferencia->sql_record($sSqlVerificaReferencia);
+
+        if ($oDaoValorReferencia->numrows > 0) {
+
+          $oValorReferencia       = db_utils::fieldsmemory($rsVerificaReferencia, 0);
+          $iCodigoValorReferencia = $oValorReferencia->la27_i_codigo;
+
+          $oDaoValorReferencia->la27_i_codigo   = $iCodigoValorReferencia;
+          $oDaoValorReferencia->la27_i_atributo = $oParam->iAtributo;
+          $oDaoValorReferencia->la27_i_unidade  = $oParam->iUnidadeMedida;
+
+          $oDaoValorReferencia->alterar($iCodigoValorReferencia);
+        } else {
+
+
+          $oDaoValorReferencia->la27_i_atributo = $oParam->iAtributo;
+          $oDaoValorReferencia->la27_i_unidade  = $oParam->iUnidadeMedida;
+          $oDaoValorReferencia->incluir(null);
+          if ($oDaoValorReferencia->erro_status == 0) {
+            throw new BusinessException ("Erro ao incluir dados da referência");
+          }
+        }
+      }
+
+
       $oDaoValorReferenciaGrupo = new cl_lab_valorrefselgrupo();
       $oDaoValorReferenciaAlfa  = new cl_lab_tiporeferenciaalfa();
       $oAtributo                = new AtributoExame($oParam->iAtributo);
@@ -141,24 +233,30 @@ try {
         throw new BusinessException ("Erro ao remover dados  da referência alfa numerica");
       }
       $oReferencia      = $oParam->oReferencia;
-      $oValorReferencia = new AtributoValorReferenciaNumerico();
+      if($oReferencia->iCodigo) {
+        $oValorReferencia = new AtributoValorReferenciaNumerico($oReferencia->iCodigo);
+      } else {
+        $oValorReferencia = new AtributoValorReferenciaNumerico();
+      }
+      $oValorReferencia->setCalculavel($oReferencia->sCalculavel);
       $oValorReferencia->setValorMinimo($oReferencia->iValorMinimo);
       $oValorReferencia->setValorMaximo($oReferencia->iValorMaximo);
       $oValorReferencia->setValorAbsurdoMinimo($oReferencia->iValorAbsurdoMinimo);
       $oValorReferencia->setValorAbsurdoMaximo($oReferencia->iValorAbsurdoMaximo);
       $oValorReferencia->setCasasDecimaisApresentacao($oReferencia->iCasasDecimais);
+
+      $oValorReferencia->limpaSexos();
       foreach($oReferencia->aSexos as $sSexo) {
         $oValorReferencia->adicionarSexo($sSexo);
       }
 
-      $sIntervalor = "{$oReferencia->iDiasInicial} days {$oReferencia->iDiasInicial} months {$oReferencia->iAnosInicial} years";
+      $sIntervalor = "{$oReferencia->iDiasInicial} days {$oReferencia->iMesesInicial} months {$oReferencia->iAnosInicial} years";
       $oValorReferencia->setIdadeInicial(new DBInterval($sIntervalor));
 
-      $sIntervalo= "{$oReferencia->iDiasFinal} days {$oReferencia->iDiasFinal} months {$oReferencia->iAnosFinal} years";
+      $sIntervalo = "{$oReferencia->iDiasFinal} days {$oReferencia->iMesesFinal} months {$oReferencia->iAnosFinal} years";
       $oValorReferencia->setIdadeFinal(new DBInterval($sIntervalo));
-      if ($oReferencia->iTipoCalculo > 0) {
-
-        $oValorReferencia->setTipoCalculo($oReferencia->iTipoCalculo);
+      $oValorReferencia->setTipoCalculo($oReferencia->iTipoCalculo);
+      if ($oReferencia->iTipoCalculo == 2) {
         $oValorReferencia->setAtributoBase(new AtributoExame($oReferencia->iAtributoBase));
       }
       $oValorReferencia->salvar($oAtributo->getCodigoReferencia());

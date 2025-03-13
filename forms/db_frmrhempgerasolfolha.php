@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_gerfcom_classe.php");
+include(modification("classes/db_gerfcom_classe.php"));
 $clgerfcom = new cl_gerfcom;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -66,7 +66,7 @@ parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
     </td>
   </tr>
   <tr>
-    <td><b>Ponto:</b</td>
+    <td><b>Ponto:</b></td>
     <td>
      <?
        $x = array("s"=>"Salário","c"=>"Complementar","d"=>"13o. Salário","r"=>"Rescisão","a"=>"Adiantamento");
@@ -150,10 +150,10 @@ function js_verifica(){
 }
 function js_pesquisapc21_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','func_nome','func_nome.php?testanome=true&funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','func_nome','func_nome.php?testanome=true&funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.pc21_numcgm.value != ''){
-        js_OpenJanelaIframe('top.corpo','func_nome','func_nome.php?pesquisa_chave='+document.form1.pc21_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','func_nome','func_nome.php?pesquisa_chave='+document.form1.pc21_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = '';
      }

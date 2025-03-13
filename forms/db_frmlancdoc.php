@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -108,6 +108,9 @@ $clrotulo->label("db44_descricao");
 </table>
 <div id='btnVoltarCgm'>
 <?
+  if(!isset($lMostrarBotaoVoltar)) {
+    $lMostrarBotaoVoltar = false;
+  }
   if (isset($z06_numcgm) && $z06_numcgm > 0 && $lMostrarBotaoVoltar) {
     
 ?>
@@ -152,10 +155,10 @@ function js_voltarCadCgm() {
 
 function js_pesquisacgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.z06_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.z06_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.z06_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -223,7 +226,7 @@ function js_retorno_consultaDocumentos(oAjax) {
   
   js_removeObj("msgBox");
    
-  var oRetorno    = eval("("+oAjax.responseText+")");
+  var oRetorno    = JSON.parse(oAjax.responseText);
   var aDocumentos = oRetorno.aDocumentos;
   
   oDBGrid.clearAll(true);
@@ -287,7 +290,7 @@ function js_retorno_excluiDocumento(oAjax) {
   
   js_removeObj("msgBox");
    
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   alert(oRetorno.sMsg.urlDecode());
   
@@ -335,7 +338,7 @@ function js_retornoIncluirDocumento(oAjax) {
   
   js_removeObj("msgBox");
    
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   alert(oRetorno.sMsg.urlDecode());
   

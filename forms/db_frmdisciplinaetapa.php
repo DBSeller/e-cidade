@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -30,6 +30,7 @@ $oRotulo->label("ed34_i_disciplina");
 $oRotulo->label("ed232_c_descr");
 $oRotulo->label("ed34_i_qtdperiodo");
 
+
 ?>
 <div id="ctnAbas"></div>
 
@@ -46,21 +47,37 @@ $oRotulo->label("ed34_i_qtdperiodo");
       <table class="form-container">
 
         <tr>
-          <td nowrap='nowrap'>
-            <?php db_ancora($Led34_i_disciplina,"js_buscaDisciplina(true);", 1);?>
+          <td>
+            <label for="ed34_i_disciplina">
+              <?php
+              db_ancora($Led34_i_disciplina, "js_buscaDisciplina(true);", 1);
+              ?>
+            </label>
           </td>
-          <td nowrap='nowrap' colspan="3">
+          <td colspan="3">
             <?php
-              db_input('ed34_i_disciplina',10, $Ied34_i_disciplina, true, 'text', 1, " onchange='js_buscaDisciplina(false);'");
-              db_input('ed232_c_descr',    40 , $Ied232_c_descr,     true, 'text', 1, '');
+            db_input('ed34_i_disciplina', 10, $Ied34_i_disciplina, true, 'text', 1, " onchange='js_buscaDisciplina(false);'");
+            db_input('ed232_c_descr',     40, $Ied232_c_descr,     true, 'text', 1, '');
             ?>
           </td>
         </tr>
-
+        <tr>
+          <td>
+            <label for="codigoAreaConhecimento">
+              <a id="ancoraAreaConhecimento" href="#">Área de Conhecimento:</a>
+            </label>
+          </td>
+          <td colspan="3">
+            <input type="text" value="" id="codigoAreaConhecimento" name="codigoAreaConhecimento" lang="ed293_sequencial" class="field-size2" />
+            <input type="text" id="descricaoAreaConhecimento" name="descricaoAreaConhecimento" lang="ed293_descr" class="readonly field-size8" />
+          </td>
+        </tr>
 
         <tr id="ctnDisciplinaGlobalBase">
-          <td nowrap='nowrap'>Disciplina Global:</td>
-          <td nowrap='nowrap' colspan="3">
+          <td>
+            <label for="disciplinaGlobal">Disciplina Global:</label>
+          </td>
+          <td colspan="3">
             <select id="disciplinaGlobal" onchange="validaDisciplinaGlobal()">
               <option value="N" selected="selected">Não</option>
               <option value="S">Sim</option>
@@ -69,10 +86,12 @@ $oRotulo->label("ed34_i_qtdperiodo");
         </tr>
 
         <tr id="ctnDisciplinaGlobalTurma">
-          <td nowrap='nowrap'>Controle de Frequência:</td>
-          <td nowrap='nowrap' colspan="3">
+          <td>
+            <label for="tipoControleFrequencia">Controle de Frequência:</label>
+          </td>
+          <td colspan="3">
             <select id="tipoControleFrequencia">
-              <option value="A" selected = "selected">SOMENTE AVALIAÇÃO</option>
+              <option value="A" selected="selected">SOMENTE AVALIAÇÃO</option>
               <option value="F">GLOBALIZADA (F)</option>
               <option value="FA">GLOBALIZADA (FA)</option>
             </select>
@@ -80,16 +99,19 @@ $oRotulo->label("ed34_i_qtdperiodo");
         </tr>
 
         <tr>
-          <td nowrap='nowrap'>Tipo de Base:</td>
-          <td nowrap='nowrap'>
+          <td>
+            <label for="tipoBase">Tipo de Base:</label>
+          </td>
+          <td>
             <select id="tipoBase">
-              <option value="C" selected="selected">Comum</option>
-              <option value="D">Diversificada</option>
+              <option value="">Selecione</option>
             </select>
           </td>
 
-          <td nowrap='nowrap'>Carácter Reprobatório</td>
-          <td nowrap='nowrap'>
+          <td>
+            <label for="caraterReprobatorio">Caráter Reprobatório:</label>
+          </td>
+          <td>
             <select id="caraterReprobatorio">
               <option value="S" selected="selected">Possui</option>
               <option value="N">Não Possui</option>
@@ -98,25 +120,31 @@ $oRotulo->label("ed34_i_qtdperiodo");
         </tr>
 
         <tr>
-          <td nowrap='nowrap'>Quantidade de horas-aula:</td>
-          <td nowrap='nowrap'>
+          <td>
+            <label for="horasAula">Quantidade de horas-aula:</label>
+          </td>
+          <td>
             <?php
-              db_input('horasAula', 10, $Ied34_i_qtdperiodo, true, 'text', 1, '');
+            db_input('horasAula', 10, $Ied34_i_qtdperiodo, true, 'text', 1, '');
             ?>
           </td>
         </tr>
 
         <tr>
-          <td nowrap='nowrap'>Matrícula:</td>
-          <td nowrap='nowrap'>
+          <td>
+            <label for="tipoMatricula">Matrícula:</label>
+          </td>
+          <td>
             <select id="tipoMatricula" onchange="js_validaTipoMatricula()">
               <option value="OB" selected="selected">Obrigatória</option>
               <option value="OP">Opcional</option>
             </select>
           </td>
 
-          <td nowrap='nowrap'>Lançar na Documentação:</td>
-          <td nowrap='nowrap'>
+          <td>
+            <label for="lancarDocumentacao">Lançar na Documentação:</label>
+          </td>
+          <td>
             <select id="lancarDocumentacao" disabled="disabled">
               <option value="S" selected="selected">Sim</option>
               <option value="N">Não</option>
@@ -126,36 +154,55 @@ $oRotulo->label("ed34_i_qtdperiodo");
 
       </table>
     </fieldset>
-    <input type="hidden" name="iEtapaAtual"    id="iEtapaAtual"      />
-    <input type="hidden" name="iCodigoVinculo" id="iCodigoVinculo"   />
-    <input type="hidden" name="iTurma"         id="iTurma"           />
-    <input type="button" name="salvar"        value="Salvar"              id="salvar"        onclick="js_salvar();" />
-    <input type="button" name="atualizarBase" value="Atualizar pela base" id="atualizarBase" style="display: none;" />
-    <input type="button" name="cancelar" value="Cancelar" id="cancelar" disabled="disabled" onclick="js_cancelar();" />
-    <input type="button" name="ordenar"  value="Ordenar"  id="ordenar"  />
+    <input type="hidden" name="iEtapaAtual" id="iEtapaAtual" />
+    <input type="hidden" name="iCodigoVinculo" id="iCodigoVinculo" />
+    <input type="hidden" name="iTurma" id="iTurma" />
+    <input type="button" name="salvar" id="salvar" value="Salvar" onclick="js_salvar();" />
+    <input type="button" name="atualizarBase" id="atualizarBase" value="Atualizar pela base" style="display: none;" />
+    <input type="button" name="cancelar" id="cancelar" value="Cancelar" disabled="disabled" onclick="js_cancelar();" />
+    <input type="button" name="ordenar" id="ordenar" value="Ordenar" />
   </form>
 </div>
 
 <div class="subcontainer">
-  <fieldset style="width: 1000px;">
+  <fieldset style="width: 1300px;">
     <legend>Disciplinas</legend>
 
     <div id="ctnGridDisciplinas"></div>
   </fieldset>
 </div>
-
+<script rel="script" type="text/javascript" src="scripts/widgets/DBLookUp.widget.js"></script>
+<script rel="script" type="text/javascript" src="scripts/session.js"></script>
+<script rel="script" type="text/javascript" src="scripts/classes/http/http.js"></script>
 <script type="text/javascript">
-
+  window.addEventListener('load', async () => {
+    await PHPSession.loadData();
+    HttpClient.get(`${PHPSession.requestApi}/educacao/secretaria/tipo-base/buscarTodos`).then(response => {
+      response.data.each((base) => {
+        document.querySelector('#tipoBase').add(new Option(base.ed182_descricao, base.ed182_id));
+      });
+    });
+  });
   const MSG_DB_FRMDISCIPLINAETAPA = "educacao.escola.db_frmdisciplinaetapa.";
 
   var oGet = js_urlToObject();
-  var sRpc = 'edu4_vinculodisciplinaetapa.RPC.php'
+  var sRpc = 'edu4_vinculodisciplinaetapa.RPC.php';
+  const ancoraAreaConhecimento = document.getElementById('ancoraAreaConhecimento');
+  const codigoAreaConhecimento = document.getElementById('codigoAreaConhecimento');
+  const descricaoAreaConhecimento = document.getElementById('descricaoAreaConhecimento');
+  const lookUpFase = new DBLookUp(ancoraAreaConhecimento, codigoAreaConhecimento, descricaoAreaConhecimento, {
+    'sArquivo': 'func_areaconhecimento.php',
+    'sLabel': 'Pesquisar Fase',
+    'sObjetoLookUp': "db_iframe_areaconhecimento"
+  });
+
+
 
   /**
    * Array com os dados das disciplinas da etapa selencionada
    * @var Array
    */
-  var aDisciplinasEtapa  = [];
+  var aDisciplinasEtapa = [];
 
   /**
    * Array com o código das disciplinas inclusas na etapa
@@ -167,18 +214,18 @@ $oRotulo->label("ed34_i_qtdperiodo");
    *  - Cadastro > Bases Currículares
    *  - Cadastro > Turmas
    */
-  var lVisaoCadastroBase          = oGet.cadastroBase == 'S';
-  $('legendDisicplina').innerHTML = "Disciplina da base currícular: " + oGet.sBase;
+  var lVisaoCadastroBase = oGet.cadastroBase == 'S';
+  $('legendDisicplina').innerHTML = "Disciplina da base curricular: " + oGet.sBase;
   if (!lVisaoCadastroBase) {
-    $('legendDisicplina').innerHTML = "Disciplina da base currícular: " + oGet.sTurma;
+    $('legendDisicplina').innerHTML = "Disciplina da base curricular: " + oGet.sTurma;
   }
 
   /**
    * Função de carga inicial
    */
-  ( function() {
+  (function() {
 
-    if ( lVisaoCadastroBase ) {
+    if (lVisaoCadastroBase) {
 
       $('ctnDisciplinaGlobalTurma').style.display = 'none';
       if (oGet.sDisciplinaGlobal == 'N') {
@@ -187,8 +234,8 @@ $oRotulo->label("ed34_i_qtdperiodo");
     } else {
 
       $('atualizarBase').style.display = '';
-      $('iTurma').value                = oGet.iTurma;
-        $('ctnDisciplinaGlobalBase').style.display = 'none';
+      $('iTurma').value = oGet.iTurma;
+      $('ctnDisciplinaGlobalBase').style.display = 'none';
       if (oGet.sDisciplinaGlobal == 'N') {
         $('ctnDisciplinaGlobalTurma').style.display = 'none';
       }
@@ -207,9 +254,37 @@ $oRotulo->label("ed34_i_qtdperiodo");
    * @type {DBGrid}
    */
   var oGridDisciplina = new DBGrid('ctnGridDisciplinas');
-  var aHeadersGrid    = new Array("Tipo Base", "Disciplina", sDescricaoColunaGrid, "Horas-Aula", "Matrícula", "Carácter Reprobatório", "Ação");
-  var aCellWidthGrid  = new Array("15%", "20%", "15%","10%", "10%", "15%", "10%");
-  var aCellAlign      = new Array("left", "left", "left", "center", "left", "left", "center");
+  var aHeadersGrid = new Array();
+  var aCellWidthGrid = new Array();
+  var aCellAlign = new Array();
+
+  if (lVisaoCadastroBase) {
+
+    aHeadersGrid.push("Tipo Base",
+      "Área de Conhecimento",
+      "Disciplina",
+      sDescricaoColunaGrid,
+      "Horas-Aula",
+      "Matrícula",
+      "Caráter Reprobatório",
+      "Documentação",
+      "Ação");
+    aCellWidthGrid.push("10%", "14%", "20%", "10%", "8%", "7%", "12%", "10%", "9%");
+    aCellAlign.push("left", "left", "left", "left", "center", "left", "left", "left", "center");
+  } else {
+    aHeadersGrid.push("Tipo Base",
+      "Área de Conhecimento",
+      "Disciplina",
+      sDescricaoColunaGrid,
+      "Horas-Aula",
+      "Matrícula",
+      "Caráter Reprobatório",
+      "Documentação",
+      "Proc. Avaliação",
+      "Ação");
+    aCellWidthGrid.push("9%", "11%", "15%", "10%", "7%", "7%", "12%", "8%", "15%", "6%");
+    aCellAlign.push("left", "left", "left", "left", "center", "left", "left", "left", "left", "center")
+  }
 
   oGridDisciplina.nameInstance = 'oGridDisciplina';
   oGridDisciplina.setCellWidth(aCellWidthGrid);
@@ -218,72 +293,86 @@ $oRotulo->label("ed34_i_qtdperiodo");
   oGridDisciplina.setHeight(130);
   oGridDisciplina.show($('ctnGridDisciplinas'));
 
-  var oDisiciplinaEtapa = new DBViewDisciplinasEtapa(oGet.iBase, oGet.iTurma, lVisaoCadastroBase);
+  var oDisiciplinaEtapa = new DBViewDisciplinasEtapa(oGet.iBase, oGet.iTurma, lVisaoCadastroBase, oGet.lModuloEscola);
 
   function js_buscaDisciplina(lMostra) {
 
-    var sUrl  = 'func_disciplina.php';
-        sUrl += '?curso='+oGet.iCurso;
+    var sUrl = 'func_disciplina.php';
+    sUrl += '?curso=' + oGet.iCurso;
 
     var sFiltroDisciplina = '&disciplinas=0';
-    if ( aCodigoDisciplinas.length > 0) {
+    if (aCodigoDisciplinas.length > 0) {
       sFiltroDisciplina = '&disciplinas=' + aCodigoDisciplinas.implode(',');
     }
     sUrl += sFiltroDisciplina;
     if (lMostra) {
 
-      sUrl += '&funcao_js=parent.js_mostraDisciplina|ed12_i_codigo|ed232_c_descr';
+      sUrl += '&funcao_js=parent.js_mostraDisciplina|ed12_i_codigo|ed232_c_descr|db_area';
       js_OpenJanelaIframe('', 'db_iframe_disciplina', sUrl, 'Pesquisa de Disciplinas', true);
     } else if ($F('ed34_i_disciplina')) {
 
-      sUrl += '&pesquisa_chave='+$F('ed34_i_disciplina');
+      sUrl += '&pesquisa_chave=' + $F('ed34_i_disciplina');
       sUrl += '&funcao_js=parent.js_mostraDisciplina';
       js_OpenJanelaIframe('', 'db_iframe_disciplina', sUrl, 'Pesquisa de Disciplinas', false);
-    } else{
+    } else {
       $('ed232_c_descr').value = '';
+      setaAeraConhecimentoId('');
     }
 
   }
 
+  const setaAeraConhecimentoId = (id) => {
+
+    if (empty(id)) {
+      codigoAreaConhecimento.value = '';
+      descricaoAreaConhecimento.value = '';
+      return;
+    }
+
+    codigoAreaConhecimento.value = id;
+    codigoAreaConhecimento.dispatchEvent(new Event('change'));
+  }
+
   function js_mostraDisciplina() {
 
-    if ( typeof arguments[1] == 'boolean' ) {
-
+    if (typeof arguments[1] == 'boolean') {
       $('ed232_c_descr').value = arguments[0];
-      if (arguments[1]){
+      setaAeraConhecimentoId(arguments[2]);
+      if (arguments[1]) {
         $('ed34_i_disciplina').value = '';
       }
+
     } else {
       $('ed34_i_disciplina').value = arguments[0];
-      $('ed232_c_descr').value     = arguments[1];
+      $('ed232_c_descr').value = arguments[1];
+      setaAeraConhecimentoId(arguments[2]);
+
     }
     db_iframe_disciplina.hide();
   }
 
 
   function buscaDisciplinasEtapa(iEtapa) {
-
     oGridDisciplina.clearAll(true);
-    var oParametros    = {};
-    oParametros.exec   = "getDisciplinasVinculadasEtapaTurma";
+    var oParametros = {};
+    oParametros.exec = "getDisciplinasVinculadasEtapaTurma";
     if (lVisaoCadastroBase) {
-      oParametros.exec   = "getDisciplinasVinculadasEtapaBase";
+      oParametros.exec = "getDisciplinasVinculadasEtapaBase";
     }
-    oParametros.iBase  = oGet.iBase;
+    oParametros.iBase = oGet.iBase;
     oParametros.iTurma = oGet.iTurma;
     oParametros.iEtapa = iEtapa;
 
-    var oRequest          = {};
+    var oRequest = {};
     oRequest.asynchronous = false;
-    oRequest.method       = 'post';
-    oRequest.parameters   = 'json='+Object.toJSON(oParametros);
-    oRequest.onComplete   = function(oAjax) {
+    oRequest.method = 'post';
+    oRequest.parameters = 'json=' + Object.toJSON(oParametros);
+    oRequest.onComplete = function(oAjax) {
 
       js_removeObj("msgBoxB");
-      var oRetorno = eval ( "(" + oAjax.responseText + ")" );
+      var oRetorno = JSON.parse(oAjax.responseText);
 
-      if ( parseInt(oRetorno.sStatus) == 2) {
-
+      if (parseInt(oRetorno.sStatus) == 2) {
         alert(oRetorno.sMessage.urlDecode());
         return;
       }
@@ -291,49 +380,71 @@ $oRotulo->label("ed34_i_qtdperiodo");
       /**
        * Estrutura com os tipos de constrole de frequência para Base e Turma
        */
-      var aTiposControleFrequencia = {'S':'SIM', 'N':'NÃO', 'F':'GLOBALIZADA (F)',
-                                      'FA': 'GLOBALIZADA (FA)', 'A': 'SOMENTE AVALIAÇÃO', 'I': 'INDIVIDUAL'};
+      var aTiposControleFrequencia = {
+        'S': 'SIM',
+        'N': 'NÃO',
+        'F': 'GLOBALIZADA (F)',
+        'FA': 'GLOBALIZADA (FA)',
+        'A': 'SOMENTE AVALIAÇÃO',
+        'I': 'INDIVIDUAL'
+      };
 
       $('disciplinaGlobal').removeAttribute('disabled');
-      $('tipoBase').removeAttribute( "disabled" );
-      $('tipoMatricula').removeAttribute( "disabled" );
+      $('tipoBase').removeAttribute("disabled");
+      $('tipoMatricula').removeAttribute("disabled");
       if (oRetorno.lTemDisciplinaGlobalizada) {
 
         $('tipoControleFrequencia').value = 'A';
-        $('disciplinaGlobal').value       = 'N';
+        $('disciplinaGlobal').value = 'N';
 
         $('tipoControleFrequencia').setAttribute('disabled', 'disabled');
         $('disciplinaGlobal').setAttribute('disabled', 'disabled');
       }
 
       aCodigoDisciplinas = [];
-      oRetorno.aDisciplinas.each( function (oDisciplina, id) {
-
+      oRetorno.aDisciplinas.each(function(oDisciplina, id) {
         var sControleFrequencia = '';
-        sControleFrequencia     = aTiposControleFrequencia[oDisciplina.sTipoControleFrequencia];
+        sControleFrequencia = aTiposControleFrequencia[oDisciplina.sTipoControleFrequencia];
         if (lVisaoCadastroBase) {
 
           var sTipo = oDisciplina.lGlobalizada ? 'S' : 'N';
           sControleFrequencia = aTiposControleFrequencia[sTipo];
         }
 
-        var oBtnExcluir = new Element('input', {'type':'button', 'value':'E' , 'id':'excluir'+oDisciplina.iCodigo});
-        var oBtnAlterar = new Element('input', {'type':'button', 'value':'A' , 'id':'excluir'+oDisciplina.iCodigo});
+        var oBtnExcluir = new Element('input', {
+          'type': 'button',
+          'value': 'E',
+          'id': 'excluir' + oDisciplina.iCodigo
+        });
+        var oBtnAlterar = new Element('input', {
+          'type': 'button',
+          'value': 'A',
+          'id': 'excluir' + oDisciplina.iCodigo
+        });
+        oBtnExcluir.setAttribute('onclick', 'js_excluirDisciplina(' + oDisciplina.iCodigo + ', ' + oDisciplina.lEncerrada + ')');
+        oBtnAlterar.setAttribute('onclick', 'js_alterarDisciplina(' + oDisciplina.iCodigo + ')');
 
-        oBtnExcluir.setAttribute('onclick', 'js_excluirDisciplina('+oDisciplina.iCodigo+', '+oDisciplina.lEncerrada+')');
-        oBtnAlterar.setAttribute('onclick', 'js_alterarDisciplina('+oDisciplina.iCodigo+')');
+        var sTipoBase = oDisciplina.iTipoBase.ed182_descricao.urlDecode();
 
-        var sTipoBase             = oDisciplina.lBaseComum ? 'Base Comum' : 'Base Diversificada';
-        var sTipoMatricula        = oDisciplina.lObrigatoria ? 'Sim' : 'Não';
+        var sTipoMatricula = oDisciplina.lObrigatoria ? 'Obrigatória' : 'Opcional';
         var sCaracterReprobatorio = oDisciplina.lCaracterReprobatorio ? 'Possui' : 'Não Possui';
-        var aLinha                = [];
-        aLinha.push(sTipoBase);
+        var sDocumentacao = oDisciplina.lLancarDocumentacao ? 'Lançar' : 'Não Lançar';
+        var aLinha = [];
+
+        aLinha.push(sTipoBase.replace(/[+ %]/g, " "));
+        aLinha.push(oDisciplina.descricaoAreaConhecimento.urlDecode());
         aLinha.push(oDisciplina.sDisciplina.urlDecode());
         aLinha.push(sControleFrequencia);
         aLinha.push(oDisciplina.iQtdPeriodo);
         aLinha.push(sTipoMatricula);
         aLinha.push(sCaracterReprobatorio);
-        aLinha.push( oBtnAlterar.outerHTML + ' ' + oBtnExcluir.outerHTML);
+        aLinha.push(sDocumentacao);
+
+        if (!lVisaoCadastroBase) {
+          aLinha.push(oDisciplina.sProcedimentoAvalicao.urlDecode());
+        }
+
+        aLinha.push(oBtnAlterar.outerHTML + ' ' + oBtnExcluir.outerHTML);
 
         aCodigoDisciplinas.push(oDisciplina.iDisicplina);
         oGridDisciplina.addRow(aLinha);
@@ -347,7 +458,7 @@ $oRotulo->label("ed34_i_qtdperiodo");
       js_autocompleteDisciplina();
     }
 
-    js_divCarregando( _M(MSG_DB_FRMDISCIPLINAETAPA+"verificando_disciplinas"), "msgBoxB" );
+    js_divCarregando(_M(MSG_DB_FRMDISCIPLINAETAPA + "verificando_disciplinas"), "msgBoxB");
     new Ajax.Request(sRpc, oRequest);
   }
 
@@ -357,75 +468,73 @@ $oRotulo->label("ed34_i_qtdperiodo");
    */
   function js_excluirDisciplina(iCodigoVinculo, lEncerrada) {
 
-    var sMsgConfirm = _M(MSG_DB_FRMDISCIPLINAETAPA+'confirma_exclusao');
+    var sMsgConfirm = _M(MSG_DB_FRMDISCIPLINAETAPA + 'confirma_exclusao');
 
     if (!lVisaoCadastroBase) {
 
-      sMsgConfirm = _M(MSG_DB_FRMDISCIPLINAETAPA+'confirma_exclusao_turma');
+      sMsgConfirm = _M(MSG_DB_FRMDISCIPLINAETAPA + 'confirma_exclusao_turma');
       if (lEncerrada) {
 
-        alert(_M(MSG_DB_FRMDISCIPLINAETAPA+'disciplina_encerrada'));
+        alert(_M(MSG_DB_FRMDISCIPLINAETAPA + 'disciplina_encerrada'));
         return false;
       }
     }
-    if ( !confirm( sMsgConfirm ) ) {
+    if (!confirm(sMsgConfirm)) {
       return false;
     }
 
-    var oParametros    = {};
-    oParametros.exec   = "excluirDisciplinaTurma";
+    var oParametros = {};
+    oParametros.exec = "excluirDisciplinaTurma";
     if (lVisaoCadastroBase) {
       oParametros.exec = "excluirDisciplinaBase";
     }
     oParametros.iCodigoVinculo = iCodigoVinculo
-    oParametros.iBase          = oGet.iBase;
-    oParametros.iTurma         = $F('iTurma');
+    oParametros.iBase = oGet.iBase;
+    oParametros.iTurma = $F('iTurma');
 
-    var oRequest          = {};
+    var oRequest = {};
     oRequest.asynchronous = false;
-    oRequest.method       = 'post';
-    oRequest.parameters   = 'json='+Object.toJSON(oParametros);
-    oRequest.onComplete   = function(oAjax) {
+    oRequest.method = 'post';
+    oRequest.parameters = 'json=' + Object.toJSON(oParametros);
+    oRequest.onComplete = function(oAjax) {
 
       js_removeObj("msgBox");
-      var oRetorno = eval ( "(" + oAjax.responseText + ")" );
+      var oRetorno = JSON.parse(oAjax.responseText);
 
       alert(oRetorno.sMessage.urlDecode());
-      if ( parseInt(oRetorno.sStatus) == 2) {
+      if (parseInt(oRetorno.sStatus) == 2) {
         return;
       }
       document.form1.reset();
       buscaDisciplinasEtapa($F('iEtapaAtual'));
     };
 
-    js_divCarregando( _M(MSG_DB_FRMDISCIPLINAETAPA+"excluir_vinculo"), "msgBox" );
+    js_divCarregando(_M(MSG_DB_FRMDISCIPLINAETAPA + "excluir_vinculo"), "msgBox");
     new Ajax.Request(sRpc, oRequest);
   }
 
   function js_alterarDisciplina(iCodigoVinculo) {
-
-    aDisciplinasEtapa.each ( function (oDisciplina) {
-
+    aDisciplinasEtapa.each(function(oDisciplina) {
       if (oDisciplina.iCodigo != iCodigoVinculo) {
         return;
       }
 
-      $('tipoControleFrequencia').options[0].removeAttribute('disabled');
-      if ( oDisciplina.lGlobalizada ){
-        $('tipoControleFrequencia').options[0].setAttribute('disabled', 'disabled');
-      }
-
-      $('iCodigoVinculo').value         = iCodigoVinculo;
-      $('ed34_i_disciplina').value      = oDisciplina.iDisicplina;
-      $('ed232_c_descr').value          = oDisciplina.sDisciplina.urlDecode();
-      $('tipoBase').value               = oDisciplina.lBaseComum ? 'C' : 'D';
-      $('caraterReprobatorio').value    = oDisciplina.lCaracterReprobatorio ? 'S' : 'N';
-      $('horasAula').value              = oDisciplina.iQtdPeriodo
-      $('tipoMatricula').value          = oDisciplina.lObrigatoria ? 'OB' : 'OP';
-      $('lancarDocumentacao').value     = oDisciplina.lLancarDocumentacao ? 'S' : 'N';
-      $('disciplinaGlobal').value       = oDisciplina.lGlobalizada ? 'S' : 'N';
+      $('iCodigoVinculo').value = iCodigoVinculo;
+      $('ed34_i_disciplina').value = oDisciplina.iDisicplina;
+      $('ed232_c_descr').value = oDisciplina.sDisciplina.urlDecode();
+      Object.values(document.querySelector('#tipoBase').options).each(opt => {
+        if (opt.value == oDisciplina.iTipoBase.ed182_id && opt.value != undefined) {
+          opt.selected = true;
+        }
+      })
+      $('caraterReprobatorio').value = oDisciplina.lCaracterReprobatorio ? 'S' : 'N';
+      $('horasAula').value = oDisciplina.iQtdPeriodo
+      $('tipoMatricula').value = oDisciplina.lObrigatoria ? 'OB' : 'OP';
+      $('lancarDocumentacao').value = oDisciplina.lLancarDocumentacao ? 'S' : 'N';
+      $('disciplinaGlobal').value = oDisciplina.lGlobalizada ? 'S' : 'N';
       $('tipoControleFrequencia').value = oDisciplina.sTipoControleFrequencia;
-
+      codigoAreaConhecimento.value = oDisciplina.codigoAreaConhecimento;
+      descricaoAreaConhecimento.value = oDisciplina.descricaoAreaConhecimento.urlDecode();
     });
 
     validaDisciplinaGlobal();
@@ -433,20 +542,20 @@ $oRotulo->label("ed34_i_qtdperiodo");
   }
 
 
-  var sMsgConfirmReplicarDisciplina = _M(MSG_DB_FRMDISCIPLINAETAPA+"deseja_replicar");
+  var sMsgConfirmReplicarDisciplina = _M(MSG_DB_FRMDISCIPLINAETAPA + "deseja_replicar");
 
   /**
    * Salva a disciplina na Base / Turma
    */
   function js_salvar() {
 
-    var oParametros    = {};
-    oParametros.exec   = "salvarDisciplinaTurma";
+    var oParametros = {};
+    oParametros.exec = "salvarDisciplinaTurma";
     if (lVisaoCadastroBase) {
       oParametros.exec = "salvarDisciplinaBase";
     }
 
-    if( !js_validaDados() ) {
+    if (!js_validaDados()) {
       return;
     }
 
@@ -458,30 +567,31 @@ $oRotulo->label("ed34_i_qtdperiodo");
       sTipoControleFrequencia = $F('tipoControleFrequencia');
     }
 
-    oParametros.iBase                   = oGet.iBase;
-    oParametros.iTurma                  = $F('iTurma');
-    oParametros.iEtapa                  = $F('iEtapaAtual');
-    oParametros.iCodigoVinculo          = $F('iCodigoVinculo');
-    oParametros.iDisicplina             = $F('ed34_i_disciplina');
-    oParametros.iQtdPeriodo             = $F('horasAula');
-    oParametros.lObrigatoria            = $F('tipoMatricula')       == 'OB';
-    oParametros.lLancarDocumentacao     = $F('lancarDocumentacao')  == 'S';
-    oParametros.lCaracterReprobatorio   = $F('caraterReprobatorio') == 'S';
-    oParametros.lBaseComum              = $F('tipoBase')            == 'C';
-    oParametros.lGlobalizada            = $F('disciplinaGlobal')    == 'S';
+    oParametros.iBase = oGet.iBase;
+    oParametros.iTurma = $F('iTurma');
+    oParametros.iEtapa = $F('iEtapaAtual');
+    oParametros.iCodigoVinculo = $F('iCodigoVinculo');
+    oParametros.iDisicplina = $F('ed34_i_disciplina');
+    oParametros.areaConhecimento = codigoAreaConhecimento.value;
+    oParametros.iQtdPeriodo = $F('horasAula');
+    oParametros.lObrigatoria = $F('tipoMatricula') == 'OB';
+    oParametros.lLancarDocumentacao = $F('lancarDocumentacao') == 'S';
+    oParametros.lCaracterReprobatorio = $F('caraterReprobatorio') == 'S';
+    oParametros.lTipoBase = $F('tipoBase');
+    oParametros.lGlobalizada = $F('disciplinaGlobal') == 'S';
     oParametros.sTipoControleFrequencia = sTipoControleFrequencia;
 
-    var oRequest          = {};
+    var oRequest = {};
     oRequest.asynchronous = false;
-    oRequest.method       = 'post';
-    oRequest.parameters   = 'json='+Object.toJSON(oParametros);
-    oRequest.onComplete   = function(oAjax) {
+    oRequest.method = 'post';
+    oRequest.parameters = 'json=' + Object.toJSON(oParametros);
+    oRequest.onComplete = function(oAjax) {
 
       js_removeObj("msgBox");
-      var oRetorno = eval ( "(" + oAjax.responseText + ")" );
+      var oRetorno = JSON.parse(oAjax.responseText);
 
       alert(oRetorno.sMessage.urlDecode());
-      if ( parseInt(oRetorno.iStatus) == 2) {
+      if (parseInt(oRetorno.iStatus) == 2) {
         return;
       }
 
@@ -490,9 +600,10 @@ $oRotulo->label("ed34_i_qtdperiodo");
        */
       if (oDisiciplinaEtapa.aEtapas.length > 1) {
 
-        var sMsgConfirm = sMsgConfirmReplicarDisciplina
+        var sMsgConfirm = oRetorno.sMessage.urlDecode() + "\n";
+        sMsgConfirm += sMsgConfirmReplicarDisciplina
         if (lVisaoCadastroBase && oParametros.lGlobalizada) {
-          sMsgConfirm += "\n" + _M( MSG_DB_FRMDISCIPLINAETAPA+"aviso_disciplina_globalizada" );
+          sMsgConfirm += "\n" + _M(MSG_DB_FRMDISCIPLINAETAPA + "aviso_disciplina_globalizada");
         }
 
         if (confirm(sMsgConfirm)) {
@@ -511,7 +622,7 @@ $oRotulo->label("ed34_i_qtdperiodo");
 
     };
 
-    js_divCarregando( _M(MSG_DB_FRMDISCIPLINAETAPA+"salvando_vinculo"), "msgBox" );
+    js_divCarregando(_M(MSG_DB_FRMDISCIPLINAETAPA + "salvando_vinculo"), "msgBox");
     new Ajax.Request(sRpc, oRequest);
   }
 
@@ -520,15 +631,15 @@ $oRotulo->label("ed34_i_qtdperiodo");
    */
   function js_validaDados() {
 
-    if ( $F('ed34_i_disciplina') == '' ) {
+    if ($F('ed34_i_disciplina') == '') {
 
-      alert(_M(MSG_DB_FRMDISCIPLINAETAPA+"informe_disciplina"));
+      alert(_M(MSG_DB_FRMDISCIPLINAETAPA + "informe_disciplina"));
       return false;
     }
 
-    if ( $F('horasAula') == '' ) {
+    if ($F('horasAula') == '') {
 
-      alert(_M(MSG_DB_FRMDISCIPLINAETAPA+"informe_hora_aula"));
+      alert(_M(MSG_DB_FRMDISCIPLINAETAPA + "informe_hora_aula"));
       return false;
     }
 
@@ -545,7 +656,7 @@ $oRotulo->label("ed34_i_qtdperiodo");
      * Atenção deixar no else o código, pois dependendo de como definimos o valor do tipo da matricula, não podemos
      * atribuir o value 'S'
      */
-    if ( $F('tipoMatricula') == 'OP' ) {
+    if ($F('tipoMatricula') == 'OP') {
       $('lancarDocumentacao').removeAttribute('disabled');
     } else {
 
@@ -558,15 +669,15 @@ $oRotulo->label("ed34_i_qtdperiodo");
 
     document.form1.reset();
     $('cancelar').setAttribute('disabled', 'disabled');
-    $('iCodigoVinculo').value     = '';
+    $('iCodigoVinculo').value = '';
     $('lancarDocumentacao').value = 'S';
-    $('tipoBase').removeAttribute( "disabled" );
-    $('tipoMatricula').removeAttribute( "disabled" );
+    $('tipoBase').removeAttribute("disabled");
+    $('tipoMatricula').removeAttribute("disabled");
     $('lancarDocumentacao').setAttribute('disabled', 'disabled');
   }
 
 
-  function js_sinalizarLinhaGrid (oObjeto, lPintar) {
+  function js_sinalizarLinhaGrid(oObjeto, lPintar) {
 
     if (oObjeto.nodeName == 'TR') {
       oLinha = oObjeto;
@@ -574,41 +685,43 @@ $oRotulo->label("ed34_i_qtdperiodo");
     if (oObjeto.nodeName == 'INPUT') {
       oLinha = oObjeto.parentNode.parentNode;
     }
-    var sCor      = 'white';
+    var sCor = 'white';
     var sCorFonte = 'black';
     if (lPintar) {
-      sCor       = 'rgb(240, 240, 240)';
+      sCor = 'rgb(240, 240, 240)';
     }
     oLinha.style.backgroundColor = sCor;
-    oLinha.style.color           = sCorFonte;
+    oLinha.style.color = sCorFonte;
   }
 
   /**
    * Atualiza as disciplinas da turma com a base curricular
    */
-  $('atualizarBase').observe( 'click', function() {
+  $('atualizarBase').observe('click', function() {
 
-    if ( !confirm( _M(MSG_DB_FRMDISCIPLINAETAPA+"confirma_atualizar_base", {'sNomeBase' : oGet.sBase}) ) ) {
+    if (!confirm(_M(MSG_DB_FRMDISCIPLINAETAPA + "confirma_atualizar_base", {
+        'sNomeBase': oGet.sBase
+      }))) {
       return;
     }
 
-    var oParametros    = {};
-    oParametros.exec   = 'atualizarBase';
+    var oParametros = {};
+    oParametros.exec = 'atualizarBase';
     oParametros.iTurma = $F('iTurma');
     oParametros.iEtapa = $F('iEtapaAtual');
-    oParametros.iBase  = oGet.iBase;
+    oParametros.iBase = oGet.iBase;
 
-    var oRequest          = {};
+    var oRequest = {};
     oRequest.asynchronous = false;
-    oRequest.method       = 'post';
-    oRequest.parameters   = 'json='+Object.toJSON(oParametros);
-    oRequest.onComplete   = function(oAjax) {
+    oRequest.method = 'post';
+    oRequest.parameters = 'json=' + Object.toJSON(oParametros);
+    oRequest.onComplete = function(oAjax) {
 
       js_removeObj("msgBox");
-      var oRetorno = eval( '(' + oAjax.responseText + ')');
+      var oRetorno = JSON.parse(oAjax.responseText);
 
       alert(oRetorno.sMessage.urlDecode());
-      if (parseInt(oRetorno.sStatus) == 2 ){
+      if (parseInt(oRetorno.sStatus) == 2) {
         return;
       }
 
@@ -616,7 +729,7 @@ $oRotulo->label("ed34_i_qtdperiodo");
       buscaDisciplinasEtapa($F('iEtapaAtual'));
     };
 
-    js_divCarregando( _M(MSG_DB_FRMDISCIPLINAETAPA+"atualizar_base"), "msgBox" );
+    js_divCarregando(_M(MSG_DB_FRMDISCIPLINAETAPA + "atualizar_base"), "msgBox");
     new Ajax.Request(sRpc, oRequest);
   });
 
@@ -626,8 +739,8 @@ $oRotulo->label("ed34_i_qtdperiodo");
     /**
      * Função AutoComplete
      */
-    var sUrlAutoComplete  = 'edu4_disciplinaautocomplete.RPC.php?iBase='+oGet.iBase;
-    sUrlAutoComplete += '&iCurso='+oGet.iCurso+'&iEtapa='+$F('iEtapaAtual')+'&iTurma='+$F('iTurma');
+    var sUrlAutoComplete = 'edu4_disciplinaautocomplete.RPC.php?iBase=' + oGet.iBase;
+    sUrlAutoComplete += '&iCurso=' + oGet.iCurso + '&iEtapa=' + $F('iEtapaAtual') + '&iTurma=' + $F('iTurma');
     sUrlAutoComplete += '&sFiltroExclusive=turma';
 
     if (lVisaoCadastroBase) {
@@ -635,14 +748,14 @@ $oRotulo->label("ed34_i_qtdperiodo");
     }
 
     $('ed232_c_descr').onkeydown = '';
-    var oDisciplinaAutoComplete = new dbAutoComplete( $('ed232_c_descr'), sUrlAutoComplete );
-    oDisciplinaAutoComplete.setTxtFieldId( $('ed232_c_descr') );
+    var oDisciplinaAutoComplete = new dbAutoComplete($('ed232_c_descr'), sUrlAutoComplete);
+    oDisciplinaAutoComplete.setTxtFieldId($('ed232_c_descr'));
     oDisciplinaAutoComplete.setHeightList(300);
     oDisciplinaAutoComplete.show();
-    oDisciplinaAutoComplete.setCallBackFunction( function(id, label) {
-
+    oDisciplinaAutoComplete.setCallBackFunction(function(id, label, parametros) {
+      setaAeraConhecimentoId(parametros.area);
       $('ed34_i_disciplina').value = id;
-      $('ed232_c_descr').value     = label;
+      $('ed232_c_descr').value = label;
     });
   }
 
@@ -653,46 +766,46 @@ $oRotulo->label("ed34_i_qtdperiodo");
 
     var oWindow = new windowAux("wndOrdenarDisciplina", "Ordenar disciplinas", 500, 500);
 
-    var sConteudo  = " <div > ";
-        sConteudo += "   <table style='width: 450px;'> ";
+    var sConteudo = " <div > ";
+    sConteudo += "   <table style='width: 450px;'> ";
 
-        sConteudo += "     <tr id='cntOrderBaseComum' style='display: none;'> ";
-        sConteudo += "       <td> ";
-        sConteudo += "         <fieldset > ";
-        sConteudo += "           <legend>Base Comum</legend>";
-        sConteudo += "           <div id='cntGridDisciplinasBaseComum'> </div>";
-        sConteudo += "         </fieldset> ";
-        sConteudo += "       </td> ";
-        sConteudo += "       <td> ";
-        sConteudo += "         <input type='button' id='btnMoveUpComum'  value='^'>";
-        sConteudo += "         <br>";
-        sConteudo += "         <input type='button' id='btnMoveDownComum' value='v'>";
-        sConteudo += "       </td> ";
-        sConteudo += "     </tr> ";
+    sConteudo += "     <tr id='cntOrderBaseComum' style='display: none;'> ";
+    sConteudo += "       <td> ";
+    sConteudo += "         <fieldset > ";
+    sConteudo += "           <legend>Base Comum</legend>";
+    sConteudo += "           <div id='cntGridDisciplinasBaseComum'> </div>";
+    sConteudo += "         </fieldset> ";
+    sConteudo += "       </td> ";
+    sConteudo += "       <td> ";
+    sConteudo += "         <input type='button' id='btnMoveUpComum'  value='^'>";
+    sConteudo += "         <br>";
+    sConteudo += "         <input type='button' id='btnMoveDownComum' value='v'>";
+    sConteudo += "       </td> ";
+    sConteudo += "     </tr> ";
 
-        sConteudo += "     <tr id='cntOrderBaseDiversificada' style='display: none;'> ";
-        sConteudo += "       <td> ";
-        sConteudo += "         <fieldset > ";
-        sConteudo += "           <legend>Base Diversificada</legend>";
-        sConteudo += "           <div id='cntGridDisciplinasBaseDiversificada'> </div>";
-        sConteudo += "         </fieldset> ";
-        sConteudo += "       </td> ";
-        sConteudo += "       <td> ";
-        sConteudo += "         <input type='button' id='btnMoveUpDiversificada'  value='^'>";
-        sConteudo += "         <br>";
-        sConteudo += "         <input type='button' id='btnMoveDownDiversificada' value='v'>";
-        sConteudo += "       </td> ";
-        sConteudo += "     </tr> ";
+    sConteudo += "     <tr id='cntOrderBaseDiversificada' style='display: none;'> ";
+    sConteudo += "       <td> ";
+    sConteudo += "         <fieldset > ";
+    sConteudo += "           <legend>Base Diversificada</legend>";
+    sConteudo += "           <div id='cntGridDisciplinasBaseDiversificada'> </div>";
+    sConteudo += "         </fieldset> ";
+    sConteudo += "       </td> ";
+    sConteudo += "       <td> ";
+    sConteudo += "         <input type='button' id='btnMoveUpDiversificada'  value='^'>";
+    sConteudo += "         <br>";
+    sConteudo += "         <input type='button' id='btnMoveDownDiversificada' value='v'>";
+    sConteudo += "       </td> ";
+    sConteudo += "     </tr> ";
 
-        sConteudo += "   </table> ";
-        sConteudo += "   <center><input type='button' name='ordenarDisciplinas' value='Salvar' id='btnOrdenarDisciplinas'  /></center>";
-        sConteudo += " </div> ";
+    sConteudo += "   </table> ";
+    sConteudo += "   <center><input type='button' name='ordenarDisciplinas' value='Salvar' id='btnOrdenarDisciplinas'  /></center>";
+    sConteudo += " </div> ";
 
-    oWindow.setShutDownFunction( function() {
+    oWindow.setShutDownFunction(function() {
       oWindow.destroy();
     });
 
-    var sMsg        = 'Ordenar disciplinas';
+    var sMsg = 'Ordenar disciplinas';
     var sHelpMsgBox = 'Selecione a disciplina na grade e utilize os botões para ordenar as disciplinas.';
 
     oWindow.setContent(sConteudo);
@@ -700,12 +813,12 @@ $oRotulo->label("ed34_i_qtdperiodo");
     oWindow.show();
 
     $('cntOrderBaseComum').style.display = 'table-row';
-    $('cntOrderBaseComum').style.width   = '100%';
+    $('cntOrderBaseComum').style.width = '100%';
 
     var aDisciplinasDiversificadas = [];
     oDisciplinasComum.show($('cntGridDisciplinasBaseComum'));
     oDisciplinasComum.clearAll(true);
-    aDisciplinasEtapa.each (function (oDisciplina) {
+    aDisciplinasEtapa.each(function(oDisciplina) {
 
       if (oDisciplina.lBaseComum) {
 
@@ -718,7 +831,10 @@ $oRotulo->label("ed34_i_qtdperiodo");
       }
     });
     oDisciplinasComum.renderRows();
-    oDisciplinasComum.enableOrderRows({btnMoveUp:$('btnMoveUpComum'), btnMoveDown:$('btnMoveDownComum')});
+    oDisciplinasComum.enableOrderRows({
+      btnMoveUp: $('btnMoveUpComum'),
+      btnMoveDown: $('btnMoveDownComum')
+    });
 
     if (aDisciplinasDiversificadas.length > 0) {
 
@@ -726,7 +842,7 @@ $oRotulo->label("ed34_i_qtdperiodo");
 
       oDisciplinasDiversificada.show($('cntGridDisciplinasBaseDiversificada'));
       oDisciplinasDiversificada.clearAll(true);
-      aDisciplinasDiversificadas.each(function (oDisciplina) {
+      aDisciplinasDiversificadas.each(function(oDisciplina) {
 
         var aLinha = [];
         aLinha.push(oDisciplina.sDisciplina.urlDecode());
@@ -734,52 +850,61 @@ $oRotulo->label("ed34_i_qtdperiodo");
         oDisciplinasDiversificada.addRow(aLinha);
       });
       oDisciplinasDiversificada.renderRows();
-      oDisciplinasDiversificada.enableOrderRows({btnMoveUp:$('btnMoveUpDiversificada'), btnMoveDown:$('btnMoveDownDiversificada')});
+      oDisciplinasDiversificada.enableOrderRows({
+        btnMoveUp: $('btnMoveUpDiversificada'),
+        btnMoveDown: $('btnMoveDownDiversificada')
+      });
     }
 
     $('btnOrdenarDisciplinas').observe('click', function() {
 
-      var aDisciplinasComumOrdenada         = [];
+      var aDisciplinasComumOrdenada = [];
       var aDisciplinasDiversificadaOrdenada = [];
       oDisciplinasComum.aRows.each(function(aRow, iSeq) {
-        aDisciplinasComumOrdenada.push({ iCodigo : aRow.aCells[1].getValue(), iOrdem :  iSeq+1});
+        aDisciplinasComumOrdenada.push({
+          iCodigo: aRow.aCells[1].getValue(),
+          iOrdem: iSeq + 1
+        });
       });
 
-      if ( oDisciplinasDiversificada.aRows.length > 0 ) {
+      if (oDisciplinasDiversificada.aRows.length > 0) {
 
         oDisciplinasDiversificada.aRows.each(function(aRow, iSeq) {
-          aDisciplinasDiversificadaOrdenada.push({ iCodigo : aRow.aCells[1].getValue(), iOrdem :  iSeq+1});
+          aDisciplinasDiversificadaOrdenada.push({
+            iCodigo: aRow.aCells[1].getValue(),
+            iOrdem: iSeq + 1
+          });
         });
       }
 
-      var oParametros  = {};
+      var oParametros = {};
       oParametros.exec = 'reordenarDisciplinasTurma';
 
       if (lVisaoCadastroBase) {
         oParametros.exec = 'reordenarDisciplinasBase';
       }
-      oParametros.aDisciplinasComumOrdenada         = aDisciplinasComumOrdenada;
+      oParametros.aDisciplinasComumOrdenada = aDisciplinasComumOrdenada;
       oParametros.aDisciplinasDiversificadaOrdenada = aDisciplinasDiversificadaOrdenada;
 
       var oRequest = {};
       oRequest.asynchronous = false;
-      oRequest.method       = 'post';
-      oRequest.parameters   = 'json='+Object.toJSON(oParametros);
-      oRequest.onComplete   = function(oAjax) {
+      oRequest.method = 'post';
+      oRequest.parameters = 'json=' + Object.toJSON(oParametros);
+      oRequest.onComplete = function(oAjax) {
 
         js_removeObj("msgBox");
-        var oRetorno = eval( '(' + oAjax.responseText + ')');
+        var oRetorno = JSON.parse(oAjax.responseText);
 
         alert(oRetorno.sMessage.urlDecode());
-        if (parseInt(oRetorno.sStatus) == 2 ){
+        if (parseInt(oRetorno.sStatus) == 2) {
           return;
         }
 
         oWindow.destroy();
-        buscaDisciplinasEtapa( $F('iEtapaAtual') );
+        buscaDisciplinasEtapa($F('iEtapaAtual'));
       };
 
-      js_divCarregando( _M(MSG_DB_FRMDISCIPLINAETAPA+"salvando_ordenacao"), "msgBox" );
+      js_divCarregando(_M(MSG_DB_FRMDISCIPLINAETAPA + "salvando_ordenacao"), "msgBox");
       new Ajax.Request(sRpc, oRequest);
 
     });
@@ -790,43 +915,42 @@ $oRotulo->label("ed34_i_qtdperiodo");
    * Grid com as disciplinas de base comum
    * @type {DBGrid}
    */
-    var oDisciplinasComum          = new DBGrid('gridDisciplinaComum');
-    oDisciplinasComum.nameInstance = 'oDisciplinasComum';
-    oDisciplinasComum.setHeader( ["Disciplina", "Código"] );
-    oDisciplinasComum.aHeaders[1].lDisplayed = false;
-    oDisciplinasComum.setHeight(100);
+  var oDisciplinasComum = new DBGrid('gridDisciplinaComum');
+  oDisciplinasComum.nameInstance = 'oDisciplinasComum';
+  oDisciplinasComum.setHeader(["Disciplina", "Código"]);
+  oDisciplinasComum.aHeaders[1].lDisplayed = false;
+  oDisciplinasComum.setHeight(100);
 
 
   /**
    * Grid com as disciplinas de base diversificada
    * @type {DBGrid}
    */
-    var oDisciplinasDiversificada          = new DBGrid('gridDisciplinaDiversificada');
-    oDisciplinasDiversificada.nameInstance = 'oDisciplinasDiversificada';
-    oDisciplinasDiversificada.setHeader( ["Disciplina", "Código"]);
-    oDisciplinasDiversificada.aHeaders[1].lDisplayed = false;
-    oDisciplinasDiversificada.setHeight(100);
+  var oDisciplinasDiversificada = new DBGrid('gridDisciplinaDiversificada');
+  oDisciplinasDiversificada.nameInstance = 'oDisciplinasDiversificada';
+  oDisciplinasDiversificada.setHeader(["Disciplina", "Código"]);
+  oDisciplinasDiversificada.aHeaders[1].lDisplayed = false;
+  oDisciplinasDiversificada.setHeight(100);
 
   /**
    * Valida para desabilitar campos Tipo de Base e Matrícula quando Disciplina Global for SIM
    */
   function validaDisciplinaGlobal() {
 
-    if ( $F('disciplinaGlobal') == "S") {
-
-      $('tipoBase').value = 'C';
-      $('tipoBase').setAttribute('disabled', 'disabled');
+    if ($F('disciplinaGlobal') == "S") {
       $('tipoMatricula').value = 'OB';
       $('tipoMatricula').setAttribute('disabled', 'disabled');
-            
     } else {
-
-      $('tipoBase').removeAttribute('disabled');
       $('tipoMatricula').removeAttribute('disabled');
     }
-
     js_validaTipoMatricula();
   }
 
-  
+  $('ed34_i_disciplina').className = 'field-size2';
+  $('ed232_c_descr').className = 'field-size7';
+  $('tipoBase').className = 'field-size-max';
+  $('caraterReprobatorio').className = 'field-size-max';
+  $('horasAula').className = 'field-size2';
+  $('tipoMatricula').className = 'field-size-max';
+  $('lancarDocumentacao').className = 'field-size-max';
 </script>

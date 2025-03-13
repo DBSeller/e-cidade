@@ -1,0 +1,13 @@
+<?xml version='1.0' ?>
+<processamento>
+    <versao>1.2</versao>    
+    <parametros>        
+        <parametro nome="matricula" obrigatorio="true"  tipo="integer"/>
+    </parametros>
+    <configuracoes>
+        <classe nome="\Ecidade\Tributario\Grm\WebService\Contribuinte" referencia="Contribuinte" parametros="" caminho="src/Tributario/Grm/WebService/Contribuinte.php" />
+        <exec>
+            <metodo referencia="Contribuinte" nome="getDadosContribuinteSetorFiscal" parametros="$matricula" />
+        </exec>
+    </configuracoes>
+</processamento>

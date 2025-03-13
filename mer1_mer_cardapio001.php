@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_cardapio_classe.php");
-include("classes/db_mer_cardapiotipo_classe.php");
-include("classes/db_mer_tprefeicao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_cardapio_classe.php"));
+include(modification("classes/db_mer_cardapiotipo_classe.php"));
+include(modification("classes/db_mer_tprefeicao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmer_cardapio     = new cl_mer_cardapio;
 $clmer_cardapiotipo = new cl_mer_cardapiotipo;
@@ -81,7 +81,7 @@ if (isset($incluir)) {
       <br>
       <center>
       <fieldset style="width:95%"><legend><b>Inclusão de Refeição</b></legend>
-        <?include("forms/db_frmmer_cardapio.php");?>
+        <?include(modification("forms/db_frmmer_cardapio.php"));?>
       </fieldset>
       </center>
     </td>

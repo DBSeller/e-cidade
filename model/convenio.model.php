@@ -1,36 +1,53 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
+use ECidade\Tributario\Arrecadacao\Convenio as RegistroConvenio;
+use ECidade\V3\Extension\Registry;
 
+/**
+ * Class convenio
+ */
 class convenio {
-	
+
+  const MODALIDADE_COBRANCA     = 1;
+  const MODALIDADE_ARRECADACAO  = 2;
+  const MODALIDADE_CAIXA_PADRAO = 3;
+
+  const TIPO_CONVENIO_COMPENSACAO_BDL     = 1;
+  const TIPO_CONVENIO_COMPENSACAO_BSJ     = 2;
+  const TIPO_CONVENIO_ARRECADACAO         = 3;
+  const TIPO_CONVENIO_CAIXA_PADRAO        = 4;
+  const TIPO_CONVENIO_COMPENSACAO_SICOB   = 5;
+  const TIPO_CONVENIO_COMPENSACAO_SIGCB   = 6;
+  const TIPO_CONVENIO_COBRANCA_REGISTRADA = 7;
+
   private $iModalidadeConvenio  = null;
   private $iCodConvenio		      = null;
-  private $iFormatoVenc 	      = null;	
+  private $iFormatoVenc 	      = null;
   private $sLinhaDigitavel 	    = "";
   private $sSegmento  		      = "";
   private $sCodigoBarra	 	      = "";
@@ -40,7 +57,7 @@ class convenio {
   private $sCarteira	 	        = "";
   private $sVariacao	 	        = "";
   private $sConvenioArrecadacao	= "";
-  private $sConvenioCobranca	  = "";  
+  private $sConvenioCobranca	  = "";
   private $sCedente  		        = "";
   private $sNossoNumero			    = "";
   private $sCampoLivre			    = "";
@@ -49,168 +66,115 @@ class convenio {
   private $sDigitoCedente       = "";
   private $sOperacao            = "";
   private $sEspecie             = "";
-  
-  
-  function __construct($iCodConvenio="",$iNumpre,$iNumpar,$sValor,$sVlrbar,$dDataVenc,$iTercDig) {
-	
-  	if(empty($iCodConvenio)){
-      throw new Exception("Nenhum código de convênio informado!");
-  	}
-  	
-  	$sSqlConvenio  = " select ar12_cadconveniomodalidade,	                                                                         		         ";
-  	$sSqlConvenio .= "        ar12_sigla,                                                                                                      ";
-    $sSqlConvenio .= "        ar12_sequencial,                                                                                                 ";
-  	$sSqlConvenio .= "        ar11_sequencial,                                                         									                       ";  	
-    $sSqlConvenio .= "        ar13_carteira,                                                         						                   			       ";    
-    $sSqlConvenio .= "        ar13_variacao,                                                                         									         ";    
-    $sSqlConvenio .= "        ar13_operacao,                                                                                                   ";
-    $sSqlConvenio .= "        ar13_cedente,                                                         									                         ";
-    $sSqlConvenio .= "        ar13_especie,                                                         									                         ";
-    $sSqlConvenio .= "        ar13_digcedente,                                                                                                 ";
-    $sSqlConvenio .= "        ar13_convenio,                                                          									                       ";    
-    $sSqlConvenio .= "        ar16_convenio,                                                          									                       ";  	
-    $sSqlConvenio .= "        ar16_segmento,                                                         									   	                     ";
-    $sSqlConvenio .= "        ar16_formatovenc,                                                           									                   ";
-    $sSqlConvenio .= "        case 																											                                                       ";
-	  $sSqlConvenio .= "          when ar13_sequencial is not null then a.db89_db_bancos  else b.db89_db_bancos								                   ";
- 	  $sSqlConvenio .= "        end as codbco, 																								                                                   ";
-	  $sSqlConvenio .= "        case 																											                                                       ";
-	  $sSqlConvenio .= "          when ar13_sequencial is not null then a.db89_codagencia                     								                   ";
-	  $sSqlConvenio .= "          else b.db89_codagencia								   									                                                     ";
-	  $sSqlConvenio .= "        end as codagencia, 																							                                                 ";
-    $sSqlConvenio .= "        case                                                                                                             ";
-    $sSqlConvenio .= "          when ar13_sequencial is not null then a.db89_digito                                                            ";
-    $sSqlConvenio .= "          else b.db89_digito                                                                                             ";
-    $sSqlConvenio .= "        end as digagencia                                                                                                ";    	      
-    $sSqlConvenio .= "   from cadconvenio                                                               									                     ";
-    $sSqlConvenio .= "        inner join cadtipoconvenio     on cadtipoconvenio.ar12_sequencial      = cadconvenio.ar11_cadtipoconvenio        ";
-    $sSqlConvenio .= "        left  join conveniocobranca    on conveniocobranca.ar13_cadconvenio    = cadconvenio.ar11_sequencial      	     ";
-	  $sSqlConvenio .= "        left  join bancoagencia  a     on a.db89_sequencial                    = conveniocobranca.ar13_bancoagencia	     ";
-    $sSqlConvenio .= "        left  join convenioarrecadacao on convenioarrecadacao.ar14_cadconvenio = cadconvenio.ar11_sequencial     		     ";
-	  $sSqlConvenio .= "        left  join bancoagencia  b     on b.db89_sequencial                    = convenioarrecadacao.ar14_bancoagencia   ";    
-    $sSqlConvenio .= "        left  join cadarrecadacao      on cadarrecadacao.ar16_sequencial 		   = convenioarrecadacao.ar14_cadarrecadacao ";
-	  $sSqlConvenio .= "  where ar11_sequencial = {$iCodConvenio}																				                                         ";    
+  private $iCodigoAgencia       = null;
+  private $oBanco               = null;
+  private $custasHonorarios     = false;
+  private $vencimento     = null;
 
-		$rsConvenio = pg_query($sSqlConvenio);
-		$iNroLinhas = pg_num_rows($rsConvenio);
-		
-		if ( $iNroLinhas > 0 ) {
-		  
-		  $oConvenio = db_utils::fieldsMemory($rsConvenio,0); 	
-	
-		  $this->iModalidadeConvenio  = $oConvenio->ar12_cadconveniomodalidade;
-		  $this->iCodConvenio  		    = $oConvenio->ar11_sequencial;
-		  $this->sSegmento    		    = $oConvenio->ar16_segmento;
-		  $this->iFormatoVenc 		    = $oConvenio->ar16_formatovenc;
-		  $this->sConvenioArrecadacao = $oConvenio->ar16_convenio;
-	   	$this->iCodBanco	 	        = $oConvenio->codbco;
-	   	$this->sCarteira	 	        = $oConvenio->ar13_carteira;
-	   	$this->sVariacao	 	        = $oConvenio->ar13_variacao;
-		  $this->sConvenioCobranca    = $oConvenio->ar13_convenio;
-	   	$this->sCedente  		        = $oConvenio->ar13_cedente;
-	   	$this->sDigitoCedente       = $oConvenio->ar13_digcedente;
-	   	$this->sOperacao            = $oConvenio->ar13_operacao;
-	   	$this->iCadTipoConvenio     = $oConvenio->ar12_sequencial; 
-	   	$this->iDigAgencia          = $oConvenio->digagencia;
-	   	$this->sEspecie             = $oConvenio->ar13_especie;
-	   	 
-	   	if ( $this->iCadTipoConvenio == 5 ) {
-	   		if ( $oConvenio->ar13_carteira == '9' ) {
-	   		  $this->sTipoConvenio = 'CR';
-	   		} else {
-	   			$this->sTipoConvenio = 'SR';
-	   		}
-	   		$this->iCodAgencia   = substr(str_pad($oConvenio->codagencia,5,"0",STR_PAD_LEFT),1,4);
 
-	   	} else if ( $this->iCadTipoConvenio == 6 ) {
-	   	  
-        $this->sTipoConvenio = $oConvenio->ar12_sigla;
-        $this->iCodAgencia   = $oConvenio->codagencia;	   		
-            
-        /**
-         *  Calcula dígito do cedente
-         */
-        $sSqlDigCedente  = " select 11 - fc_modulo11('{$oConvenio->ar13_cedente}',2,9) as digito ";
-        $rsDigCedente    = db_query($sSqlDigCedente);
-        $iDigitoCendente = db_utils::fieldsMemory($rsDigCedente,0)->digito;
-        
-        if ( $iDigitoCendente > 9 ) {
-          $iDigitoCendente = 0;
-        }
-        
-        $this->sDigitoCedente = $iDigitoCendente;
-        
-	   	} else {
-		   	$this->sTipoConvenio = $oConvenio->ar12_sigla;
-	  	  $this->iCodAgencia	 = $oConvenio->codagencia."-".$oConvenio->digagencia;
-	   	}
-		  
-		} else {
-		  throw new Exception("Nenhum convênio encontrado!");
-		}
-		
-		$this->geraLinhaBarra($iNumpre,$iNumpar,$sValor,$sVlrbar,$dDataVenc,$iTercDig);
-	
-	
+  function __construct($iCodConvenio="",$iNumpre,$iNumpar,$sValor,$sVlrbar,$dDataVenc,$iTercDig, $dataVencimento = null) {
+    $this->custasHonorarios = (boolean) Registry::get('app.config')->get('custas_honorarios');
+    $oConvenio = new RegistroConvenio($iCodConvenio);
+
+	  $this->iModalidadeConvenio  = $oConvenio->getModalidadeConvenio();
+	  $this->iCodConvenio  		    = $oConvenio->getCodConvenio();
+	  $this->sSegmento    		    = $oConvenio->getSegmento();
+	  $this->iFormatoVenc 		    = $oConvenio->getFormatoVenc();
+	  $this->sConvenioArrecadacao = $oConvenio->getConvenioArrecadacao();
+   	$this->iCodBanco	 	        = $oConvenio->getCodBanco();
+   	$this->sCarteira	 	        = $oConvenio->getCarteira();
+   	$this->sVariacao	 	        = $oConvenio->getVariacao();
+	  $this->sConvenioCobranca    = $oConvenio->getConvenioCobranca();
+   	$this->sCedente  		        = $oConvenio->getCedente();
+   	$this->sOperacao            = $oConvenio->getOperacao();
+   	$this->iCadTipoConvenio     = $oConvenio->getTipoConvenio();
+   	$this->iDigAgencia          = $oConvenio->getDigAgencia();
+   	$this->sEspecie             = $oConvenio->getEspecie();
+    $this->iCodigoAgencia       = $oConvenio->getCodigoAgencia();
+
+	  $this->sTipoConvenio  = $oConvenio->getSiglaTipoConvenio();
+ 		$this->iCodAgencia    = $oConvenio->getCodAgencia();
+    $this->sDigitoCedente = $oConvenio->getDigitoCedente();
+
+		$this->geraLinhaBarra($iNumpre,$iNumpar,$sValor,$sVlrbar,$dDataVenc,$iTercDig, $dataVencimento);
   }
-  
 
-  private function geraLinhaBarra($iNumpre,$iNumpar,$sValor,$sVlrbar,$dDataVenc,$iTercDig) {
-  	
-    $sDataVencimento = str_replace("-","",$dDataVenc);
-  	
-    if ( $this->iModalidadeConvenio == 1 ) {
-      
+
+  private function geraLinhaBarra($iNumpre,$iNumpar,$sValor,$sVlrbar,$dDataVenc,$iTercDig,$dataVencimento = null) {
+    if ($dataVencimento != null) {
+      $dataSelecionada = new \DBDate($dDataVenc);
+      $dataSelecionada = $dataSelecionada->convertTo(\DBDate::DATA_EN);
+      $dataVencimento = new \DBDate($dataVencimento);
+      $dataVencimento = $dataVencimento->convertTo(\DBDate::DATA_EN);
+      $data = $dataVencimento >= $dataSelecionada ? $dataVencimento : $dataSelecionada;
+
+      $dataVencimento = new \DBDate($data);
+      $dDataVenc = $dataVencimento->convertTo(\DBDate::DATA_PTBR);
+    }else{
+      $data = $dDataVenc;
+      $data = str_replace("/","",$data);
+    }
+    $sDataVencimento = str_replace("-","",$data);
+
+    $this->vencimento = new \DBDate($dDataVenc);
+
+    if ($this->iModalidadeConvenio == 1) {
+
       $sSqlFichaCompensacao  = "select * 																	                ";
       $sSqlFichaCompensacao .= "  from fc_fichacompensacao( {$this->iCodConvenio},			  ";
       $sSqlFichaCompensacao .= " 				             		    {$iNumpre},										";
       $sSqlFichaCompensacao .= " 					            	    {$iNumpar},										";
       $sSqlFichaCompensacao .= " 						               '{$dDataVenc}',					  		";
       $sSqlFichaCompensacao .= " 						                {$sValor})										";
-      
-      $rsFichaCompensacao    = pg_query($sSqlFichaCompensacao); 
+
+      $rsFichaCompensacao    = db_query($sSqlFichaCompensacao);
       $oFichaCompensacao     = db_utils::fieldsMemory($rsFichaCompensacao,0);
-      
-      if($oFichaCompensacao->erro == 'f'){
-      	
+
+      if ($oFichaCompensacao->erro == 'f') {
+
         $this->sCodigoBarra    = $oFichaCompensacao->codigobarras;
         $this->sLinhaDigitavel = $oFichaCompensacao->linhadigitavel;
         $this->sNossoNumero    = $oFichaCompensacao->nossonumero;
         $this->sCampoLivre	   = $oFichaCompensacao->campolivre;
-        
+
       } else {
-	      throw new Exception("Ficha Compensação: ".$oFichaCompensacao->mensagem);	
+	      throw new Exception("Ficha Compensação: ".$oFichaCompensacao->mensagem);
       }
-      
-    } else if($this->iModalidadeConvenio == 2) {
-    	
-      if ( $this->iFormatoVenc == 1 ) {
+    } else if ($this->iModalidadeConvenio == 2) {
+
+      if ($this->iFormatoVenc == 1) {
         $sVencBar	       = $sDataVencimento.'000000';
       } else if ($this->iFormatoVenc == 2) {
-        
+
         $sDataVencimento = substr($sDataVencimento, 6, 2).substr($sDataVencimento, 4, 2).substr($sDataVencimento, 2, 2);
         $sVencBar  	     = $sDataVencimento.'00000000';
       }
-    
-      $sInibar      = "8".$this->sSegmento.$iTercDig;
-      $iNumpre      = db_numpre($iNumpre,0).db_formatar($iNumpar, 's', "0", 3, "e");
-      $sSqlFebraban = " select fc_febraban('$sInibar'||'$sVlrbar'||'".$this->sConvenioArrecadacao."'||'".$sVencBar."'||'$iNumpre')";
-      
-      $rsFebraban   = pg_query($sSqlFebraban);
+
+      $sInibar          = "8".$this->sSegmento.$iTercDig;
+
+      if ($this->custasHonorarios) {
+        $iNumpreFormatado = db_numpre($iNumpre,0).db_formatar(0, 's', "0", 3, "e");
+      } else {
+        $iNumpreFormatado = db_numpre($iNumpre,0).db_formatar($iNumpar, 's', "0", 3, "e");
+      }
+
+      $sSqlFebraban     = " select fc_febraban('$sInibar'||'$sVlrbar'||'".$this->sConvenioArrecadacao."'||'".$sVencBar."'||'$iNumpreFormatado')";
+
+      $rsFebraban   = db_query($sSqlFebraban);
       $oFebraban    = db_utils::fieldsMemory($rsFebraban,0);
-        
+
       if ($oFebraban->fc_febraban == "") {
         throw new Exception("Erro ao gerar código de barras(2)");
       }
-        
+
       $this->sCodigoBarra     = substr($oFebraban->fc_febraban,0,strpos($oFebraban->fc_febraban, ','));
       $this->sLinhaDigitavel  = substr($oFebraban->fc_febraban, strpos($oFebraban->fc_febraban, ',') + 1);
     } else {
-    	
-      $this->sCodigoBarra     = str_pad($iNumpre,8,'0',STR_PAD_LEFT).str_pad($iNumpar,3,'0',STR_PAD_LEFT);
-      $this->sLinhaDigitavel  = str_pad($iNumpre,8,'0',STR_PAD_LEFT).str_pad($iNumpar,3,'0',STR_PAD_LEFT);      
+
+      $this->sCodigoBarra     = str_pad($iNumpre, 8, '0', STR_PAD_LEFT).str_pad($iNumpar, 3, '0', STR_PAD_LEFT);
+      $this->sLinhaDigitavel  = str_pad($iNumpre, 8, '0', STR_PAD_LEFT).str_pad($iNumpar, 3, '0', STR_PAD_LEFT);
     }
-    
+
     /**
      * Verificamos se o numpre é um numpre de recibo
      * Se a condição for verdadeira, inserimos registro do numpre, código de barra e linha digitavel na tabela recibocodbar
@@ -222,7 +186,7 @@ class convenio {
     $sSqlRecibo .= "select 1                       ";
     $sSqlRecibo .= "  from recibo                  ";
     $sSqlRecibo .= " where k00_numpre = {$iNumpre} ";
-    $rsRecibo    = db_query($sSqlRecibo);    
+    $rsRecibo    = db_query($sSqlRecibo);
 
     if (pg_num_rows($rsRecibo) > 0) {
       /**
@@ -230,14 +194,14 @@ class convenio {
        */
       $rsVerificaExistenciaTabela = db_query("select * from pg_class where relname = 'recibocodbar' and relkind = 'r'");
       if (pg_num_rows($rsVerificaExistenciaTabela)>0) {
-      
+
         $oDaoReciboCodBar         = db_utils::getDao("recibocodbar");
         /**
          * Valida se existem registros na tabela recibocodbar
          */
         $sSqlVerificaReciboCodBar = $oDaoReciboCodBar->sql_query_file( null,"1",null,"k00_numpre = {$iNumpre} or k00_codbar = '{$this->sCodigoBarra}' ");
         $rsVerificaReciboCodBar   = db_query($sSqlVerificaReciboCodBar);
-        
+
         if (!$rsVerificaReciboCodBar){
           throw new Exception("Codigo de Barras: ".$oDaoReciboCodBar->erro_banco);
         }
@@ -245,16 +209,17 @@ class convenio {
          * Caso não exista tenta incluir
          */
         if (pg_num_rows($rsVerificaReciboCodBar) == 0) {
-          
+
           $oDaoReciboCodBar->k00_numpre          = $iNumpre;
           $oDaoReciboCodBar->k00_codbar          = $this->sCodigoBarra;
           $oDaoReciboCodBar->k00_linhadigitavel  = $this->sLinhaDigitavel;
+          $oDaoReciboCodBar->k00_nossonumero     = $this->sNossoNumero;
           $oDaoReciboCodBar->incluir($iNumpre);
           /**
            * Não conseguindo incluir dispara erro
            */
           if ($oDaoReciboCodBar->erro_status == "0") {
-            
+
             $sMsgErro  = "Erro ao incluir registros do numpre na tabela recibocodbar.\\n\\n";
             $sMsgErro .= "Erro da Classe:\\n";
             $sMsgErro .= "{$oDaoReciboCodBar->erro_msg}";
@@ -265,53 +230,65 @@ class convenio {
     }
   }
 
-  
+
   function getImagemBanco(){
-	
-    $sSqlBanco  = " select  * 						 			                  "; 
-    $sSqlBanco .= "   from db_bancos							                "; 
+
+    $sSqlBanco  = " select  * 						 			                  ";
+    $sSqlBanco .= "   from db_bancos							                ";
 	  $sSqlBanco .= "  where db90_codban = '{$this->getCodBanco()}' ";
-	
-    $rsBanco    	   = pg_query($sSqlBanco);
+
+    $rsBanco    	   = db_query($sSqlBanco);
     $iNroLinhasBanco = pg_num_rows($rsBanco);
-    
+
     if($iNroLinhasBanco > 0 ){
-		
-      $oBanco = db_utils::fieldsMemory($rsBanco,0);	
+
+      $oBanco = db_utils::fieldsMemory($rsBanco,0);
+
+      $this->oBanco = $oBanco;
 
       if($oBanco->db90_digban=="" || $oBanco->db90_abrev=="" || $oBanco->db90_logo=="")	{
      	  throw new Exception("Configure o banco no Cadastro de Bancos!");
    	  }
- 
-  	  pg_query("begin");
-	  
+
+      global $conn;
+
+      //Ajustado transações para poder gerar recibo a partir da API do Laravel
+      if (is_null($conn)) {
+          \DB::beginTransaction();
+      } else {
+          db_query($conn, "begin");
+      }
+
+
   	  $sCaminho = "tmp/".$this->getCodBanco().".jpg";
-      
-  	  global $conn;
-	    pg_lo_export  ( "$oBanco->db90_logo",$sCaminho,$conn);
-      
-      pg_query("commit");
-   
+	    pg_lo_export  ( "$oBanco->db90_logo",$sCaminho);
+
+        if (is_null($conn)) {
+            \DB::commit();
+        } else {
+            db_query($conn, "commit");
+        }
+
 	    return $sCaminho;
-  
+
   	} else {
   	  throw new Exception("Não existe Banco cadastrado para o código {$this->getCodBanco()}!");
     }
-    
+
   }
-  
+
   function getDigitoAgencia(){
   	return $this->iDigAgencia;
   }
-  
+
   function getDigitoCedente(){
     return $this->sDigitoCedente;
-  }  
-  
+  }
+
   function getOperacao(){
   	return $this->sOperacao;
   }
-  
+
   function getLinhaDigitavel(){
     return $this->sLinhaDigitavel;
   }
@@ -319,7 +296,7 @@ class convenio {
   function getCodigoBarra(){
   	return $this->sCodigoBarra;
   }
-  
+
   function getCodBanco(){
   	return $this->iCodBanco;
   }
@@ -327,39 +304,39 @@ class convenio {
   function getCodAgencia(){
   	return $this->iCodAgencia;
   }
-  
+
   function getCarteira(){
 	  return $this->sCarteira."-".str_pad($this->sVariacao.db_CalculaDV($this->sVariacao, 11),4,"0",STR_PAD_LEFT);
   }
-  
+
   function getCedente(){
   	return $this->sCedente;
-  }  
-  
+  }
+
   function getConvenioCobranca(){
   	return $this->sConvenioCobranca;
   }
-  
+
   function getConvenioArrecadacao(){
   	return $this->sConvenioArrecadacao;
-  }  
-  
+  }
+
   function getNossoNumero(){
   	return $this->sNossoNumero;
   }
-  
+
   function getCampoLivre(){
   	return $this->sCampoLivre;
   }
-  
+
   function getTipoConvenio(){
   	return $this->sTipoConvenio;
   }
-  
+
   function getiCadTipoConvenio(){
   	return $this->iCadTipoConvenio;
-  }  
-  
+  }
+
   function getAgenciaCedente(){
     switch ($this->iCadTipoConvenio) {
     	case 5:
@@ -367,20 +344,20 @@ class convenio {
         $sAgenciaCedente = $this->getCodAgencia()."/".$sCedente;
     	break;
       case 6:
-      case 7:
+      case regraEmissao::getConveioCustaBoleto():
         $sCedente        = $this->getCedente()."-".$this->getDigitoCedente();
-        $sAgenciaCedente = $this->getCodAgencia()."/".$sCedente;      
-      break;    	
+        $sAgenciaCedente = $this->getCodAgencia()."/".$sCedente;
+      break;
     	default:
         $sCedente        = substr($this->getCedente(),0,strlen($this->getCedente())-1)."-". substr($this->getCedente(),strlen($this->getCedente())-1,1);
-        $sAgenciaCedente = $this->getCodAgencia()."/".$sCedente;    		
+        $sAgenciaCedente = $this->getCodAgencia()."/".$sCedente;
     	break;
     }
-    
+
     return $sAgenciaCedente;
-    
+
   }
-  
+
   /**
    * Retorna Espécie do documento gerado.
    * @return string - Especie do documento
@@ -388,6 +365,30 @@ class convenio {
   function getEspecieDocumento() {
     return $this->sEspecie;
   }
-}
 
-?>
+  /**
+   * Retorna o código da agência sem o digito verificador
+   * @return integer
+   */
+  public function getCodigoAgencia() {
+    return $this->iCodigoAgencia;
+  }
+
+  /**
+   * Retorna os dados do banco gerados na consulta do método getImagemBanco
+   * @return stdClass
+   */
+  public function getBanco()
+  {
+      return $this->oBanco;
+  }
+
+
+    /**
+     * @return null|DBDate
+     */
+    public function getVencimento()
+    {
+        return $this->vencimento;
+    }
+}

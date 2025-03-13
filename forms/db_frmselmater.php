@@ -118,7 +118,7 @@ if(isset($pc16_solicitem) && trim($pc16_solicitem)!=""){
          }
       ?> 
       >
-      <input name="voltar" type="button" id="voltar" value="Fechar" onClick="top.corpo.db_iframe_selmater.hide();">
+      <input name="voltar" type="button" id="voltar" value="Fechar" onClick="CurrentWindow.corpo.db_iframe_selmater.hide();">
     </td>
   </tr>  
 </table>
@@ -132,10 +132,10 @@ function js_limparmater(){
 function js_pesquisapc16_codmater(mostra){
   qry = "&o56_codele="+document.form1.o56_codele.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pcmater','func_pcmater.php?funcao_js=top.corpo.db_iframe_selmater.jan.js_mostrapcmater1|pc01_codmater|pc01_descrmater<?=$db_opcao==1?"&opcao_bloq=3&opcao=f":"&opcao_bloq=1&opcao=i"?>'+qry,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcmater','func_pcmater.php?funcao_js=parent.CurrentWindow.corpo.db_iframe_selmater.jan.js_mostrapcmater1|pc01_codmater|pc01_descrmater<?=$db_opcao==1?"&opcao_bloq=3&opcao=f":"&opcao_bloq=1&opcao=i"?>'+qry,'Pesquisa',true);
   }else{
     if(document.form1.pc16_codmater.value != ''){ 
-       js_OpenJanelaIframe('top.corpo','db_iframe_pcmater','func_pcmater.php?pesquisa_chave='+document.form1.pc16_codmater.value+'&funcao_js=top.corpo.db_iframe_selmater.jan.js_mostrapcmater<?=$db_opcao==1?"&opcao_bloq=3&opcao=f":"&opcao_bloq=1&opcao=i"?>'+qry,'Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcmater','func_pcmater.php?pesquisa_chave='+document.form1.pc16_codmater.value+'&funcao_js=parent.CurrentWindow.corpo.db_iframe_selmater.jan.js_mostrapcmater<?=$db_opcao==1?"&opcao_bloq=3&opcao=f":"&opcao_bloq=1&opcao=i"?>'+qry,'Pesquisa',false);
     }else{
       document.form1.pc01_descrmater.value = ''; 
     }
@@ -151,6 +151,6 @@ function js_mostrapcmater(chave,erro){
 function js_mostrapcmater1(chave1,chave2){
   document.form1.pc16_codmater.value = chave1;  
   document.form1.pc01_descrmater.value = chave2;
-  top.corpo.db_iframe_pcmater.hide();
+  CurrentWindow.corpo.db_iframe_pcmater.hide();
 }
 </script>

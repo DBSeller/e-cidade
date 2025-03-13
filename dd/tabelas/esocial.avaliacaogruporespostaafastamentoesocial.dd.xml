@@ -1,0 +1,113 @@
+<?xml version="1.0" standalone="yes"?>
+<table codigo="1010284" name="esocial.avaliacaogruporespostaafastamentoesocial"
+       description="vínculo do afastamento do eSocial e o formulário" prefix="eso13"
+       label="avaliacaogruporespostaafastamentoesocial" type="0">
+    <fields>
+        <field codigo="1009756"
+               campo_api=""
+               name="eso13_sequencial"
+               conteudo="int4"
+               description="Código"
+               inivalue=""
+               label="Código"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Código"
+               reference=""
+               ispk="t"
+               hassequence="t">
+            <sequence name='esocial.avaliacaogruporespostaafastamentoesocial_eso13_sequencial_seq'/>
+        </field>
+        <field codigo="1009757"
+               campo_api=""
+               name="eso13_avaliacaogruporesposta"
+               conteudo="int4"
+               description="Preenchimento"
+               inivalue=""
+               label="Preenchimento"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Preenchimento"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+        <field codigo="1009758"
+               campo_api=""
+               name="eso13_afastamentoservidoresocial"
+               conteudo="int4"
+               description="Afastamento do eSocial"
+               inivalue=""
+               label="Afastamento do eSocial"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Afastamento do eSocial"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+        <field codigo="1010312"
+               campo_api=""
+               name="eso13_avaliacao"
+               conteudo="int8"
+               description="Avaliação"
+               inivalue="0"
+               label="Avaliação"
+               size="8"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Avaliação"
+               reference=""
+               ispk="f"
+               hassequence="f">
+        </field>
+        <field codigo="1010313"
+               campo_api=""
+               name="eso13_empregador"
+               conteudo="int8"
+               description="Empregador"
+               inivalue="0"
+               label="Empregador"
+               size="8"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Empregador"
+               reference=""
+               ispk="f"
+               hassequence="f">
+        </field>
+    </fields>
+    <primarykey/>
+    <foreignkeys>
+        <foreignkey reference="avaliacaogruporesposta" inner="t">
+            <fieldfk name="eso13_avaliacaogruporesposta" reference="db107_sequencial"/>
+        </foreignkey>
+        <foreignkey reference="afastamentoservidoresocial" inner="t">
+            <fieldfk name="eso13_afastamentoservidoresocial" reference="eso12_sequencial"/>
+        </foreignkey>
+        <foreignkey reference="avaliacao" inner="t">
+            <fieldfk name="eso13_avaliacao" reference="db101_sequencial"/>
+        </foreignkey>
+        <foreignkey reference="cgm" inner="t">
+            <fieldfk name="eso13_empregador" reference="z01_numcgm"/>
+        </foreignkey>
+    </foreignkeys>
+</table>

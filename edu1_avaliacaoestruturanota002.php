@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,97 +25,97 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_usuariosonline.php");
-  require_once("libs/db_utils.php");
-  require_once("classes/db_avaliacaoestruturanota_classe.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("libs/db_stdlibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 
-  parse_str($_SERVER["QUERY_STRING"]);
-  db_postmemory($_POST);
-  $oDaoAvaliacaoEstruturaNota     = db_utils::getDao("avaliacaoestruturanota");
-  $oDaoAvaliacaoEstruturaRegra    = db_utils::getDao("avaliacaoestruturaregra");
-  $oDaoNovaAvaliacaoEstruturaNota = db_utils::getDao("avaliacaoestruturanota");
-  $db_opcao   = 22;
-  $db_botao   = true;
-  $iContador  = 0;
-  $iCodEscola = db_getsession("DB_coddepto");
+parse_str($_SERVER["QUERY_STRING"]);
+db_postmemory($_POST);
 
-  if (isset($alterar)) {
+$oDaoAvaliacaoEstruturaNota     = new cl_avaliacaoestruturanota();
+$oDaoAvaliacaoEstruturaRegra    = new cl_avaliacaoestruturaregra();
+$oDaoNovaAvaliacaoEstruturaNota = new cl_avaliacaoestruturanota();
 
-    $sWhereAvaliacaoEstruturaNota  = "ed315_ano = {$ed315_ano} AND ed315_escola = {$iCodEscola} ";
-    $sWhereAvaliacaoEstruturaNota .= " and ed315_sequencial <> {$ed315_sequencial}";
-    $sSqlAvaliacaoEstruturaNota    = $oDaoAvaliacaoEstruturaNota->sql_query_file(null, "*", null, $sWhereAvaliacaoEstruturaNota);
-    $rsAvaliacaoEstruturaNota      = $oDaoAvaliacaoEstruturaNota->sql_record($sSqlAvaliacaoEstruturaNota);
+$db_opcao   = 22;
+$db_botao   = true;
+$iContador  = 0;
+$iCodEscola = db_getsession("DB_coddepto");
 
-    if ($oDaoAvaliacaoEstruturaNota->numrows > 0) {
+if (isset($alterar)) {
 
-      db_msgbox("Já existe uma estrutura de nota configurada para o ano informado.");
-      db_redireciona("edu1_avaliacaoestruturanota001.php");
-      break;
-    }
+  $sWhereAvaliacaoEstruturaNota  = "ed315_ano = {$ed315_ano} AND ed315_escola = {$iCodEscola} ";
+  $sWhereAvaliacaoEstruturaNota .= " and ed315_sequencial <> {$ed315_sequencial}";
+  $sSqlAvaliacaoEstruturaNota    = $oDaoAvaliacaoEstruturaNota->sql_query_file(null, "*", null, $sWhereAvaliacaoEstruturaNota);
+  $rsAvaliacaoEstruturaNota      = $oDaoAvaliacaoEstruturaNota->sql_record($sSqlAvaliacaoEstruturaNota);
 
-    db_inicio_transacao();
-    $db_opcao = 2;
+  if ($oDaoAvaliacaoEstruturaNota->numrows > 0) {
 
-    $sWhereCodigo       = " ed318_avaliacaoestruturanota = {$ed315_sequencial}";
-    $oDaoAvaliacaoEstruturaRegra->excluir(null, $sWhereCodigo);
-    if ($ed315_arredondamedia == 't' && $ed316_sequencial != "") {
+    db_msgbox("Já existe uma estrutura de nota configurada para o ano informado.");
+    db_redireciona("edu1_avaliacaoestruturanota001.php");
+  }
 
-      $oDaoAvaliacaoEstruturaRegra->ed318_avaliacaoestruturanota = $ed315_sequencial;
-      $oDaoAvaliacaoEstruturaRegra->ed318_regraarredondamento    = $ed316_sequencial;
-      $oDaoAvaliacaoEstruturaRegra->incluir(null);
-    }
-    $oDaoAvaliacaoEstruturaNota->ed315_sequencial = $ed315_sequencial;
-    $oDaoAvaliacaoEstruturaNota->alterar($ed315_sequencial);
+  db_inicio_transacao();
+  $db_opcao = 2;
 
-    if ($ed315_ativo == 't') {
+  $sWhereCodigo       = " ed318_avaliacaoestruturanota = {$ed315_sequencial}";
+  $oDaoAvaliacaoEstruturaRegra->excluir(null, $sWhereCodigo);
+  if ($ed315_arredondamedia == 't' && $ed316_sequencial != "") {
 
-      $sWhere  = " ed315_ativo is true and ed315_escola = {$iCodEscola} and ed315_ano = {$ed315_ano}";
-      $sWhere .= " and ed315_sequencial <> {$ed315_sequencial}";
-      $sSqlAvaliacaoEstruturaNota    = $oDaoNovaAvaliacaoEstruturaNota->sql_query(null,
-                                                                                  'avaliacaoestruturanota.*',
-                                                                                  null,
-                                                                                  $sWhere
-                                                                                 );
-      $rsAvaliacaoEstruturaNota      = $oDaoNovaAvaliacaoEstruturaNota->sql_record($sSqlAvaliacaoEstruturaNota);
-      $iLinhasAvaliacaoEstruturaNota = $oDaoNovaAvaliacaoEstruturaNota->numrows;
-      if ($iLinhasAvaliacaoEstruturaNota > 0) {
+    $oDaoAvaliacaoEstruturaRegra->ed318_avaliacaoestruturanota = $ed315_sequencial;
+    $oDaoAvaliacaoEstruturaRegra->ed318_regraarredondamento    = $ed316_sequencial;
+    $oDaoAvaliacaoEstruturaRegra->incluir(null);
+  }
+  $oDaoAvaliacaoEstruturaNota->ed315_sequencial = $ed315_sequencial;
+  $oDaoAvaliacaoEstruturaNota->alterar($ed315_sequencial);
 
-        for ($iContador = 0; $iContador < $iLinhasAvaliacaoEstruturaNota; $iContador++) {
+  if ($ed315_ativo == 't') {
 
-          $oDadosAvaliacaoEstruturaNota = db_utils::fieldsMemory($rsAvaliacaoEstruturaNota, $iContador);
-          $sArredondar = $oDadosAvaliacaoEstruturaNota->ed315_arredondamedia=="t"?"true":"false";
-          $oDaoNovaAvaliacaoEstruturaNota->ed315_sequencial     = $oDadosAvaliacaoEstruturaNota->ed315_sequencial;
-          $oDaoNovaAvaliacaoEstruturaNota->ed315_db_estrutura   = $oDadosAvaliacaoEstruturaNota->ed315_db_estrutura;
-          $oDaoNovaAvaliacaoEstruturaNota->ed315_ativo          = 'false';
-          $oDaoNovaAvaliacaoEstruturaNota->ed315_arredondamedia = $sArredondar;
-          $oDaoNovaAvaliacaoEstruturaNota->ed315_observacao     = $oDadosAvaliacaoEstruturaNota->ed315_observacao;
-          $oDaoNovaAvaliacaoEstruturaNota->ed315_escola         = $iCodEscola;
-          $oDaoNovaAvaliacaoEstruturaNota->ed315_ano            = $oDadosAvaliacaoEstruturaNota->ed315_ano;
-          $oDaoNovaAvaliacaoEstruturaNota->alterar($oDadosAvaliacaoEstruturaNota->ed315_sequencial);
-        }
+    $sWhere  = " ed315_ativo is true and ed315_escola = {$iCodEscola} and ed315_ano = {$ed315_ano}";
+    $sWhere .= " and ed315_sequencial <> {$ed315_sequencial}";
+    $sSqlAvaliacaoEstruturaNota    = $oDaoNovaAvaliacaoEstruturaNota->sql_query(null,
+                                                                                'avaliacaoestruturanota.*',
+                                                                                null,
+                                                                                $sWhere
+                                                                               );
+    $rsAvaliacaoEstruturaNota      = $oDaoNovaAvaliacaoEstruturaNota->sql_record($sSqlAvaliacaoEstruturaNota);
+    $iLinhasAvaliacaoEstruturaNota = $oDaoNovaAvaliacaoEstruturaNota->numrows;
+    if ($iLinhasAvaliacaoEstruturaNota > 0) {
+
+      for ($iContador = 0; $iContador < $iLinhasAvaliacaoEstruturaNota; $iContador++) {
+
+        $oDadosAvaliacaoEstruturaNota = db_utils::fieldsMemory($rsAvaliacaoEstruturaNota, $iContador);
+        $sArredondar = $oDadosAvaliacaoEstruturaNota->ed315_arredondamedia=="t"?"true":"false";
+        $oDaoNovaAvaliacaoEstruturaNota->ed315_sequencial     = $oDadosAvaliacaoEstruturaNota->ed315_sequencial;
+        $oDaoNovaAvaliacaoEstruturaNota->ed315_db_estrutura   = $oDadosAvaliacaoEstruturaNota->ed315_db_estrutura;
+        $oDaoNovaAvaliacaoEstruturaNota->ed315_ativo          = 'false';
+        $oDaoNovaAvaliacaoEstruturaNota->ed315_arredondamedia = $sArredondar;
+        $oDaoNovaAvaliacaoEstruturaNota->ed315_observacao     = $oDadosAvaliacaoEstruturaNota->ed315_observacao;
+        $oDaoNovaAvaliacaoEstruturaNota->ed315_escola         = $iCodEscola;
+        $oDaoNovaAvaliacaoEstruturaNota->ed315_ano            = $oDadosAvaliacaoEstruturaNota->ed315_ano;
+        $oDaoNovaAvaliacaoEstruturaNota->alterar($oDadosAvaliacaoEstruturaNota->ed315_sequencial);
       }
     }
-    if ($oDaoAvaliacaoEstruturaNota->erro_status == 0) {
-
-      db_msgbox($oDaoAvaliacaoEstruturaNota->erro_msg);
-      $sqlerro = true;
-    } else {
-      db_msgbox($oDaoAvaliacaoEstruturaNota->erro_msg);
-    }
-    db_fim_transacao();
-  } else if (isset($chavepesquisa)) {
-
-     $db_opcao                 = 2;
-     $sSqlDadosAvaliacao       = $oDaoAvaliacaoEstruturaNota->sql_query_configuracao_escola($chavepesquisa);
-     $rsAvaliacaoEstruturaNota = $oDaoAvaliacaoEstruturaNota->sql_record($sSqlDadosAvaliacao);
-     db_fieldsmemory($rsAvaliacaoEstruturaNota, 0);
-     $db_botao = true;
   }
+  if ($oDaoAvaliacaoEstruturaNota->erro_status == 0) {
+
+    db_msgbox($oDaoAvaliacaoEstruturaNota->erro_msg);
+    $sqlerro = true;
+  } else {
+    db_msgbox($oDaoAvaliacaoEstruturaNota->erro_msg);
+  }
+  db_fim_transacao();
+} else if (isset($chavepesquisa)) {
+
+   $db_opcao                 = 2;
+   $sSqlDadosAvaliacao       = $oDaoAvaliacaoEstruturaNota->sql_query_configuracao_escola($chavepesquisa);
+   $rsAvaliacaoEstruturaNota = $oDaoAvaliacaoEstruturaNota->sql_record($sSqlDadosAvaliacao);
+   db_fieldsmemory($rsAvaliacaoEstruturaNota, 0);
+   $db_botao = true;
+}
 ?>
 <html>
   <head>
@@ -129,7 +129,7 @@
   <body bgcolor=#CCCCCC style="margin-top: 25px" >
     <center>
     	<?
-        require_once("forms/db_frmavaliacaoestruturanota.php");
+        require_once(modification("forms/db_frmavaliacaoestruturanota.php"));
       ?>
     </center>
     <?
@@ -142,7 +142,6 @@
 
     if ($oDaoAvaliacaoEstruturaNota->erro_status == "0") {
 
-      //$oDaoAvaliacaoEstruturaNota->erro(true,false);
       $db_botao = true;
       echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
       if ($oDaoAvaliacaoEstruturaNota->erro_campo != "") {
@@ -150,8 +149,6 @@
         echo "<script> document.form1.".$oDaoAvaliacaoEstruturaNota->erro_campo.".style.backgroundColor='#99A9AE';</script>";
         echo "<script> document.form1.".$oDaoAvaliacaoEstruturaNota->erro_campo.".focus();</script>";
       }
-    } else {
-      //$oDaoAvaliacaoEstruturaNota->erro(true,true);
     }
   }
   if ($db_opcao == 22) {

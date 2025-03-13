@@ -1,0 +1,135 @@
+{
+    "Principal": {
+        "nome": "Principal",
+        "campo_pai": "",
+        "campos_filho": [{
+            "Paciente": {
+                "nome": "Paciente",
+                "campo_pai": "Principal",
+                "campos_filho": [{
+                        "CodigoLis": {
+                            "nome": "CodigoLis",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "Nome": {
+                            "nome": "Nome",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "Sexo": {
+                            "nome": "Sexo",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "CodPac": {
+                            "nome": "CodPac",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "Nacsimento": {
+                            "nome": "Nascimento",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "Idade": {
+                            "nome": "Idade",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "Medico": {
+                            "nome": "Medico",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "Data": {
+                            "nome": "Data",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "Hora": {
+                            "nome": "Hora",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "Unidade": {
+                            "nome": "Unidade",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "OrigemMaterial": {
+                            "nome": "OrigemMaterial",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "DadosClinicos": {
+                            "nome": "DadosClinicos",
+                            "campo_pai": "Paciente",
+                            "campos_filho": null
+                        }
+                    },
+                    {
+                        "Exames": {
+                            "nome": "Exames",
+                            "campo_pai": "Paciente",
+                            "campos_filho": [{
+                                "Exame": {
+                                    "nome": "Exame",
+                                    "campo_pai": "Exames",
+                                    "unico": false,
+                                    "campos_filho": [{
+                                            "Codigo": {
+                                                "nome": "Codigo",
+                                                "campo_pai": "Exame",
+                                                "unico": false,
+                                                "campos_filho": null
+                                            }
+                                        },
+                                        {
+                                            "Amostra": {
+                                                "nome": "Amostra",
+                                                "campo_pai": "Exame",
+                                                "unico": false,
+                                                "campos_filho": null
+                                            }
+                                        },
+                                        {
+                                            "Material": {
+                                                "nome": "Material",
+                                                "campo_pai": "Exame",
+                                                "unico": false,
+                                                "campos_filho": null
+                                            }
+                                        }
+                                    ]
+                                }
+                            }]
+                        }
+                    }
+                ]
+            }
+        }]
+    }
+}

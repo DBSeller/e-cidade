@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-	require_once ("libs/db_stdlib.php");
-	require_once ("libs/db_conecta.php");
-	require_once ("libs/db_sessoes.php");
-	require_once ("libs/db_usuariosonline.php");
-	require_once ("libs/db_app.utils.php");
-	require_once ("libs/db_utils.php");
-	require_once ("dbforms/db_funcoes.php");
+	require_once(modification("libs/db_stdlib.php"));
+	require_once(modification("libs/db_conecta.php"));
+	require_once(modification("libs/db_sessoes.php"));
+	require_once(modification("libs/db_usuariosonline.php"));
+	require_once(modification("libs/db_app.utils.php"));
+	require_once(modification("libs/db_utils.php"));
+	require_once(modification("dbforms/db_funcoes.php"));
 	
 ?>
 <html>
@@ -115,7 +115,7 @@
     oDadosRequisicao.parameters   = 'json='+Object.toJSON(oParametros);
     oDadosRequisicao.onComplete   = function(oAjax){
 
-      var oRetorno = eval("("+oAjax.responseText+")");
+      var oRetorno = JSON.parse(oAjax.responseText);
       if (oRetorno.iStatus == "2") {
 
         alert( oRetorno.sMensagem.urlDecode() );
@@ -163,7 +163,7 @@
 	      $('db140_sequencial').innerHTML = '';
 	      oGridVinculacao.clearAll( true );
 	      
-	      var oRetorno = eval("("+oAjax.responseText+")");
+	      var oRetorno = JSON.parse(oAjax.responseText);
 	      if (oRetorno.iStatus == "2") {
 
 	        alert( oRetorno.sMensagem.urlDecode() );
@@ -209,7 +209,7 @@
 
 	      oGridVinculacao.clearAll( true );
 	      
-	      var oRetorno = eval("("+oAjax.responseText+")");
+	      var oRetorno = JSON.parse(oAjax.responseText);
 	      if (oRetorno.iStatus == "2") {
 
 	        alert( oRetorno.sMensagem.urlDecode() );
@@ -257,7 +257,7 @@
 	    oDadosRequisicao.parameters      = 'json='+Object.toJSON(oParametros);
 	    oDadosRequisicao.onComplete      = function(oAjax){
 
-	      var oRetorno = eval("("+oAjax.responseText+")");
+	      var oRetorno = JSON.parse(oAjax.responseText);
 	      if (oRetorno.iStatus == "2") {
 
 	        alert( oRetorno.sMensagem.urlDecode() );

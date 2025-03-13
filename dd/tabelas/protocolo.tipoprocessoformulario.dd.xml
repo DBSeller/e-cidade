@@ -1,0 +1,88 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010558' name='protocolo.tipoprocessoformulario' description="tabela que guarda o json contendo a estrutura do atendimento para esse tipo de processo" prefix="p108" label="formulário tipo processo" type="0">
+  <fields>
+    <field codigo="1011245" 
+           campo_api='' 
+           name="p108_sequencial" 
+           conteudo="int8" 
+           description="sequencial da tabela" 
+           inivalue="0" 
+           label="sequencial" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.tipoprocessoformulario_p108_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011246" 
+           campo_api='' 
+           name="p108_formulario" 
+           conteudo="text" 
+           description="formulario do tipo de processo" 
+           inivalue="" 
+           label="formulario" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="formulario" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011247" 
+           campo_api='' 
+           name="p108_tipoproc" 
+           conteudo="int8" 
+           description="tipo do processo do formulario" 
+           inivalue="0" 
+           label="tipo processo" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="tipo processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1012586" 
+           campo_api='' 
+           name="p108_rota" 
+           conteudo="varchar(255)" 
+           description="A rota quer deve ser redirecionado ao clicar no link do card no processo eletrônico." 
+           inivalue="" 
+           label="Rota" 
+           size="255" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Rota" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="p108_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

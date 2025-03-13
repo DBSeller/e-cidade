@@ -35,6 +35,8 @@ class FPDF
 //|20|//                  - ou um valor personalizado na forma de um array com dois elementos contendo a largura e a altura
 //|20|//                    (expressas na unidade obtida por unit).
 {
+    const FORMAT_ETIQUETA_60x25 = 'etiqueta60x25';
+
 //Private properties
 var $widths;
 var $aligns;
@@ -114,9 +116,8 @@ var $arquivo_retorno;
 *                              Public methods                               *
 *                                                                           *
 ****************************************************************************/
-function FPDF($orientation='P',$unit='mm',$format='A4')
-
-{
+    public function __construct($orientation = 'P', $unit = 'mm', $format = 'A4')
+    {
   //Check for PHP locale-related bug
   setlocale(LC_ALL,"bra");
 //  $locale = setlocale(LC_NUMERIC,0);
@@ -190,6 +191,8 @@ function FPDF($orientation='P',$unit='mm',$format='A4')
       $format=array(612,1008);
     elseif($format=='carta')
       $format=array(501.736,1190.55);
+    elseif($format == self::FORMAT_ETIQUETA_60x25)
+      $format=array(240, 96);
     else
       $this->Error('Unknown page format: '.$format);
     $this->fwPt=$format[0];
@@ -683,7 +686,7 @@ function AddFont($family,$style='',$file='')
     $file=str_replace(' ','',$family).strtolower($style).'.php';
   if(defined('FPDF_FONTPATH'))
     $file=FPDF_FONTPATH.$file;
-  include($file);
+  include(modification($file));
   if(!isset($name))
     $this->Error('Could not include font definition file');
   $i=count($this->fonts)+1;
@@ -747,7 +750,7 @@ function SetFont($family,$style='',$size=0)
 //#99#//    - Eles estão no diretório definido pela constante FPDF_FONTPATH
 //#99#//Exemplo para o último caso (observe a barra no final):
 //#99#//define('FPDF_FONTPATH','/home/www/font/');
-//#99#//require('fpdf.php');
+//#99#//require(modification('fpdf.php'));
 //#99#//Se o arquivo que  corresponde à  fonte solicitada não existir, o erro "Could not include font metric file"  (não
 //#99#//foi possível incluir o arquivo de fonte) é gerado.
 {
@@ -792,7 +795,7 @@ function SetFont($family,$style='',$size=0)
         $file.='.php';
         if(defined('FPDF_FONTPATH'))
           $file=FPDF_FONTPATH.$file;
-        include($file);
+        include(modification($file));
         if(!isset($fpdf_charwidths[$fontkey]))
           $this->Error('Could not include font metric file');
       }
@@ -1370,14 +1373,12 @@ function Image($file,$x,$y,$w,$h=0,$type='',$link='')
     }
     $type=strtolower($type);
     $mqr=get_magic_quotes_runtime();
-    set_magic_quotes_runtime(0);
     if($type=='jpg' or $type=='jpeg')
       $info=$this->_parsejpg($file);
     elseif($type=='png')
       $info=$this->_parsepng($file);
     else
       $this->Error('Unsupported image file type: '.$type);
-    set_magic_quotes_runtime($mqr);
     $info['i']=count($this->images)+1;
     $this->images[$file]=$info;
   }
@@ -1660,8 +1661,7 @@ function _putfonts()
     $this->_out('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences ['.$diff.']>>');
     $this->_out('endobj');
   }
-  $mqr=get_magic_quotes_runtime();
-  set_magic_quotes_runtime(0);
+
   foreach($this->FontFiles as $file=>$info)
   {
     //Font file embedding
@@ -1684,7 +1684,7 @@ function _putfonts()
     fclose($f);
     $this->_out('endobj');
   }
-  set_magic_quotes_runtime($mqr);
+
   foreach($this->fonts as $k=>$font)
   {
     //Font objects
@@ -2547,97 +2547,144 @@ function Row($data,$altura=5,$borda=true,$espaco=5,$preenche=0,$naousaespaco=fal
      }
 }
 
+/**
+ * Função para testar o retorno do restante de uma string ao quebrar de página.
+ * Imprime todo o conteúdo possível na página e retorna uma string com o conteúdo que não coube na página.
+ *
+ * @param array   $data
+ * @param integer $altura
+ * @param boolean $borda
+ * @param integer $espaco
+ * @param integer $preenche
+ * @param boolean $naousaespaco
+ * @param boolean $usar_quebra
+ * @param mixed   $campo_testar
+ * @param mixed   $altpag
+ * @param integer $lagurafixa
+ * @param array   $aNegritos
+ *
+ * @return string Retorna a porção da string que não coube na página ou uma string vazia caso tenha imprimido tudo.
+ */
+function Row_multicell($data,
+                       $altura = 5,
+                       $borda = true,
+                       $espaco = 5,
+                       $preenche = 0,
+                       $naousaespaco = false,
+                       $usar_quebra = false,
+                       $campo_testar = null,
+                       $altpag = null,
+                       $lagurafixa = 0,
+                       $aNegritos = null) {
 
-///FUNÇÃO PARA TESTAR O RETORNO DO RESTANTE DE UMA STRING AO QUEBRAR DE PÁGINA
-function Row_multicell($data,$altura=5, $borda=true, $espaco=5, $preenche=0, $naousaespaco=false, $usar_quebra=false,
-                       $campo_testar=null, $altpag=null, $lagurafixa=0, $aNegritos = null) {
-  //precisa ser feita melhoria nesse metodo. Acerto temporario realizado na tarefa 61771
- //Calculate the height of the row
- if($altpag == null){
-   $altpag = $this->h;
- }
-  $nb=0;
-  for($i=0;$i<count($data);$i++) {
+  //Calculate the height of the row
+  if($altpag == null){
+    $altpag = $this->h;
+  }
 
-     $nb=max($nb,$this->NbLines($this->widths[$i],$data[$i]));
-     $h=$espaco*$nb;
-     //Issue a page break first if needed
-     // Carlos >>  $this->CheckPageBreak($h);
-     //Draw the cells of the row
-     $posinicial=$this->GetY();
-     $posfinal=0;
+  $nb = 0;
 
-     // Variável que retorna o restante da string
-     $retorno_quebra_string = "";
-     for ($i=0;$i<count($data);$i++) {
-        $w=$this->widths[$i];
-        $a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'L';
+  for($i = 0; $i < count($data); $i++) {
 
-        //Save the current position
-        $x=$this->GetX();
-        $y=$this->GetY();
 
-        //Draw the border
-        if ($borda == true) {
-         $this->Rect($x,$y,$w,$h);
-        }
+    $nb = max($nb, $this->NbLines($this->widths[$i], $data[$i]));
+    $h  = $espaco * $nb;
 
-        $imprime_dados_string = $data[$i];
+    // Draw the cells of the row
+    $posinicial = $this->GetY();
+    $posfinal   = 0;
 
-        // Se for para retornar string no limite da quebra de página
-        // e campo corrente for o informado por parâmetro
-        if ($usar_quebra==true && $i==$campo_testar ) {
-           $yy = split("\n",$data[$i]);
-           $imprime_dados_string="";
+    // Variável que retorna o restante da string
+    $retorno_quebra_string = "";
+    for ($i = 0; $i < count($data); $i++) {
 
-          for ($xx=0;$xx<count($yy);$xx++) {
-            $alturatesta = ($this->GetY() + ($altura * $xx));
-            $alturatesta = (int)$alturatesta;
-            $qtdlinhas = $this->NbLines($w,$yy[$xx].($xx + 1 == count($yy)?"":"\n"));
-            $altpag -= ($qtdlinhas - 1) * $altura;
+      $w = $this->widths[$i];
+      $a = isset($this->aligns[$i]) ? $this->aligns[$i] : 'L';
 
-            if ($alturatesta < $altpag) {
-              $imprime_dados_string .= $yy[$xx].($xx + 1 == count($yy)?"":"\n");
-            } else {
-              $retorno_quebra_string .= $yy[$xx].($xx + 1 == count($yy)?"":"\n");
-            }
+      // Save the current position
+      $x = $this->GetX();
+      $y = $this->GetY();
+
+      // Draw the border
+      if ($borda == true) {
+        $this->Rect($x, $y, $w, $h);
+      }
+
+
+      $imprime_dados_string = $data[$i];
+
+      // Se for para retornar string no limite da quebra de página
+      // e campo corrente for o informado por parâmetro
+      if ($usar_quebra == true && $i == $campo_testar) {
+
+        /**
+         * Se a string não tem quebra de linha (uma linha gigante)
+         * A lógica aplicada, remove a ultima palavra da string recursivamente até que a a mesma caiba na página.
+         */
+        $iAlturaDeImpressao = $altpag;
+        $sImprimeString     = $sBkpString = $data[$i];
+
+        $lTesta = true;
+        while ($lTesta) {
+
+          $iLinhasOcupadasString = $this->NbLines($this->widths[$i], $sImprimeString);
+
+          // não cabe na pagina
+          if ($iLinhasOcupadasString > 1 && $this->getY() +  ($iLinhasOcupadasString * $altura) > $iAlturaDeImpressao ) {
+
+            $aString        = explode(' ', $sImprimeString);
+
+            unset($aString[ count($aString) - 1]); // remove ultima palavra da string
+            $sImprimeString = implode(' ', $aString);
+          } else {
+            $lTesta = false;
           }
         }
 
-        if (isset($aNegritos[$i]) && $aNegritos[$i] === true) {
-          $this->bold();
-        }
-       //Print the text
-       if ($lagurafixa==0) {
-         $this->MultiCell($w,$altura,$imprime_dados_string,0,$a,$preenche);
-       } else {
-         $this->MultiCell($lagurafixa,$altura,$imprime_dados_string,0,$a,$preenche);
-       }
-       if (isset($aNegritos[$i]) && $aNegritos[$i] === true) {
-         $this->endbold();
-       }
-       //Put the position to the right of the cell
-       if ($this->GetY() > $posfinal) {
-         $posfinal=$this->GetY();
-       }
-       $this->SetXY($x+$w,$y);
-     }
+        $sRetornaString = str_replace($sImprimeString, '', $sBkpString);
 
-     // Adicionado novo parâmetro:
-     // Parârametro: NAOUSAESPACO
-     // Se $naousaespaco não for setado ao chamar a função ROW ou for setado com FALSE, o ln() continuará
-     // usando a variável $h para pular para a próxima linha. Caso contrário, o ln() será a posição final
-     // do maior multicell menos a posição em que este começou a ser impresso...
-     if ($naousaespaco==true) {
-       //Go to the next line
-       $this->Ln($posfinal-$posinicial);
-     }else{
-       //Go to the next line
-       $this->Ln($h);
-     }
+        $imprime_dados_string  = $sImprimeString;
+        $retorno_quebra_string = $sRetornaString;
+      }
 
-    return $retorno_quebra_string;
+      if (isset($aNegritos[$i]) && $aNegritos[$i] === true) {
+        $this->bold();
+      }
+
+      // Print the text
+      if ($lagurafixa == 0) {
+        $this->MultiCell($w, $altura, $imprime_dados_string, 0, $a, $preenche);
+      } else {
+        $this->MultiCell($lagurafixa, $altura, $imprime_dados_string, 0, $a, $preenche);
+      }
+
+      if (isset($aNegritos[$i]) && $aNegritos[$i] === true) {
+        $this->endbold();
+      }
+
+      // Put the position to the right of the cell
+      if ($this->GetY() > $posfinal) {
+        $posfinal = $this->GetY();
+      }
+
+      $this->SetXY($x + $w, $y);
+    }
+
+    // Adicionado novo parâmetro:
+    // Parârametro: NAOUSAESPACO
+    // Se $naousaespaco não for setado ao chamar a função ROW ou for setado com FALSE, o ln() continuará
+    // usando a variável $h para pular para a próxima linha. Caso contrário, o ln() será a posição final
+    // do maior multicell menos a posição em que este começou a ser impresso...
+    if ($naousaespaco == true) {
+      //Go to the next line
+      $this->Ln($posfinal - $posinicial);
+    }else{
+      //Go to the next line
+      $this->Ln($h);
+    }
+
   }
+    return $retorno_quebra_string;
 }
 
 function CheckPageBreak($h)

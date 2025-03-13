@@ -1,33 +1,7 @@
 <?php
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -54,6 +28,7 @@
  */
 class ResultadoExameAtributo {
 
+  const FONTE_MSG = "saude.laboratorio.ResultadoExameAtributo.";
 
   protected $oAtributo;
 
@@ -68,6 +43,12 @@ class ResultadoExameAtributo {
    * @var AtributoValorReferenciaNumerico
    */
   protected $oFaixaUtilizada = null;
+
+  /**
+   * Titulação do atributo do exame
+   * @var string
+   */
+  protected $sTitulacao;
 
   /**
    * instancia o valor do Resultado
@@ -156,16 +137,32 @@ class ResultadoExameAtributo {
    */
   public function salvar($iCodigoResultado = null) {
 
+    $oDaoResultadoItem = new cl_lab_resultadoitem();
+
+    /**
+     * Quando já temos o atributo do exame salvo, podemos alterar apenas a titulação
+     */
+    if ( !empty($this->iCodigo) ) {
+
+      $oDaoResultadoItem->la39_i_codigo  = $this->iCodigo;
+      $oDaoResultadoItem->la39_titulacao = $this->sTitulacao;
+      $oDaoResultadoItem->alterar($this->iCodigo);
+    }
+
+    // Inclui o atributo do exame
     if (empty($this->iCodigo)) {
 
       $oDaoResultadoItem                   = new cl_lab_resultadoitem();
       $oDaoResultadoItem->la39_i_atributo  = $this->getAtributo()->getCodigo();
       $oDaoResultadoItem->la39_i_resultado = $iCodigoResultado;
+      $oDaoResultadoItem->la39_titulacao   = $this->sTitulacao;
       $oDaoResultadoItem->incluir(null);
-      if ($oDaoResultadoItem->erro_status = 0) {
-        throw new BusinessException("Erro ao salvar resultados do atributo para o exame");
-      }
+
       $this->iCodigo = $oDaoResultadoItem->la39_i_codigo;
+    }
+
+    if ($oDaoResultadoItem->erro_status == 0) {
+      throw new BusinessException( _M( self::FONTE_MSG . "erro_salvar_resultado") );
     }
 
     switch ($this->getAtributo()->getTipoReferencia()) {
@@ -201,8 +198,12 @@ class ResultadoExameAtributo {
     if ($oDaoResultadoItemNumerico->erro_status == 0) {
       throw new BusinessException("Erro ao salvar resultados numericos do atributo para o exame");
     }
-    $oDaoResultadoItemNumerico->la41_f_valor         = "{$this->getValorAbsoluto()}";
-    $oDaoResultadoItemNumerico->la41_valorpercentual = "{$this->getValorPercentual()}";
+    if($this->getValorAbsoluto() != ''){
+      $oDaoResultadoItemNumerico->la41_f_valor         = "{$this->getValorAbsoluto()}";
+    }
+    if($this->getValorPercentual() != ''){
+      $oDaoResultadoItemNumerico->la41_valorpercentual         = "{$this->getValorPercentual()}";
+    }
     $oDaoResultadoItemNumerico->la41_i_result        = $this->iCodigo;
     if (!empty($this->oFaixaUtilizada)) {
       $oDaoResultadoItemNumerico->la41_faixaescolhida = $this->getFaixaUtilizada()->getCodigo();
@@ -236,5 +237,23 @@ class ResultadoExameAtributo {
     if ($oDaoResultadoItemAlfa->erro_status == 0) {
       throw new BusinessException("Erro ao salvar resultados alfanumericos do atributo para o exame");
     }
+  }
+
+  /**
+   * Informa uma titulação do atributo do exame
+   * @param string $sTitulacao
+   */
+  public function setTitulacao($sTitulacao) {
+
+    $this->sTitulacao = $sTitulacao;
+  }
+
+  /**
+   * retorna a titulação do atributo do exame
+   * @return string
+   */
+  public function getTitulacao() {
+
+    return $this->sTitulacao;
   }
 }

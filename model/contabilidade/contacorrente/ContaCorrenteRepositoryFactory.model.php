@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
 
-require_once("model/contabilidade/contacorrente/DomicilioBancario.model.php");
-require_once("model/contabilidade/contacorrente/DomicilioBancarioRepository.model.php");
-require_once("model/contabilidade/contacorrente/AdiantamentoConcessao.model.php");
-require_once("model/contabilidade/contacorrente/AdiantamentoConcessaoRepository.model.php");
-require_once("model/contabilidade/contacorrente/CredorFornecedorDevedor.model.php");
-require_once("model/contabilidade/contacorrente/CredorFornecedorDevedorRepository.model.php");
-require_once("model/contabilidade/contacorrente/DisponibilidadeFinanceira.model.php");
-require_once("model/contabilidade/contacorrente/DisponibilidadeFinanceiraRepository.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteContrato.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteContratoRepository.model.php");
+require_once(modification("model/contabilidade/contacorrente/DomicilioBancario.model.php"));
+require_once(modification("model/contabilidade/contacorrente/DomicilioBancarioRepository.model.php"));
+require_once(modification("model/contabilidade/contacorrente/AdiantamentoConcessao.model.php"));
+require_once(modification("model/contabilidade/contacorrente/AdiantamentoConcessaoRepository.model.php"));
+require_once(modification("model/contabilidade/contacorrente/CredorFornecedorDevedor.model.php"));
+require_once(modification("model/contabilidade/contacorrente/CredorFornecedorDevedorRepository.model.php"));
+require_once(modification("model/contabilidade/contacorrente/DisponibilidadeFinanceira.model.php"));
+require_once(modification("model/contabilidade/contacorrente/DisponibilidadeFinanceiraRepository.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteContrato.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteContratoRepository.model.php"));
 
 /**
  * Factory que retorna o objeto adequado com os dados para os relatórios

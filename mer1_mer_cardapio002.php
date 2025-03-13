@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_cardapio_classe.php");
-include("classes/db_mer_cardapiodata_classe.php");
-include("classes/db_mer_cardapiodia_classe.php");
-include("classes/db_mer_cardapiotipo_classe.php");
-include("classes/db_mer_tprefeicao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_cardapio_classe.php"));
+include(modification("classes/db_mer_cardapiodata_classe.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("classes/db_mer_cardapiotipo_classe.php"));
+include(modification("classes/db_mer_tprefeicao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_cardapio     = new cl_mer_cardapio;
@@ -129,17 +129,17 @@ if (isset($alterar)) {
    parent.document.formaba.a5.disabled = false;
    parent.document.formaba.a6.disabled = false;
    parent.document.formaba.a7.disabled = false;
-   top.corpo.iframe_a2.location.href   = 'mer1_mer_cardapioitem001.php?me07_i_cardapio=<?=$me01_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'mer1_mer_cardapioitem001.php?me07_i_cardapio=<?=$me01_i_codigo?>'+
                                           '&me01_c_nome=<?=$me01_c_nome?>&naopode=<?=$naopode?>';
-   top.corpo.iframe_a3.location.href   = 'mer1_mer_modpreparo001.php?me05_i_cardapio=<?=$me01_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href   = 'mer1_mer_modpreparo001.php?me05_i_cardapio=<?=$me01_i_codigo?>'+
                                           '&me01_c_nome=<?=$me01_c_nome?>&naopode=<?=$naopode?>';
-   top.corpo.iframe_a4.location.href   = 'mer1_mer_caractpreparo001.php?me06_i_cardapio=<?=$me01_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href   = 'mer1_mer_caractpreparo001.php?me06_i_cardapio=<?=$me01_i_codigo?>'+
                                           '&me01_c_nome=<?=$me01_c_nome?>&naopode=<?=$naopode?>';   
-   top.corpo.iframe_a5.location.href   = 'mer1_mer_alunorestrialimentar001.php?me06_i_cardapio=<?=$me01_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a5.location.href   = 'mer1_mer_alunorestrialimentar001.php?me06_i_cardapio=<?=$me01_i_codigo?>'+
                                           '&me01_c_nome=<?=$me01_c_nome?>&naopode=<?=$naopode?>';  
-   top.corpo.iframe_a6.location.href   = 'mer1_mer_escolarefeicao001.php?me06_i_cardapio=<?=$me01_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a6.location.href   = 'mer1_mer_escolarefeicao001.php?me06_i_cardapio=<?=$me01_i_codigo?>'+
                                           '&me01_c_nome=<?=$me01_c_nome?>';
-   top.corpo.iframe_a7.location.href   = 'mer1_mer_cardapionutri001.php?me04_i_cardapio=<?=$me01_i_codigo?>'+
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a7.location.href   = 'mer1_mer_cardapionutri001.php?me04_i_cardapio=<?=$me01_i_codigo?>'+
                                          '&me01_c_nome=<?=$me01_c_nome?>';
   </script>
   <?
@@ -160,7 +160,7 @@ if (isset($alterar)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Refeição </b></legend>
-    <?include("forms/db_frmmer_cardapio.php");?>
+    <?include(modification("forms/db_frmmer_cardapio.php"));?>
    </fieldset>
    </center>
   </td>

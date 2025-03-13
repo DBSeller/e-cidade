@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("fpdf151/pdf.php");
-include("dbforms/db_funcoes.php");
+require(modification("fpdf151/pdf.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 $sql = "select * from loteam where j34_loteam = $loteam";
-$result = pg_exec($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 
 $sql = "select  b.j01_matric,
@@ -50,7 +50,7 @@ $sql = "select  b.j01_matric,
 		where j34_loteam = $loteam
 		order by z01_nome;
 		";
-$principal= pg_exec($sql);
+$principal= db_query($sql);
 $tipo = 25;   
 //flush();
 $head3 = 'LOTEAMENTO : '.$j34_descr;

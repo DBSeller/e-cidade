@@ -28,17 +28,17 @@
 /**
  * 
  * @author I
- * @revision $Author: dbiuri $
- * @version $Revision: 1.9 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.11 $
  */
-include ("fpdf151/pdf.php");
-include ("libs/db_liborcamento.php");
-require("libs/db_utils.php");
-require_once("model/cronogramaFinanceiro.model.php");
-require_once("model/cronogramaBaseReceita.model.php");
-require_once("model/cronogramaMetaReceita.model.php");
-require_once("model/cronogramaMetaDespesa.model.php");
-require_once("model/relatorioContabil.model.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+require(modification("libs/db_utils.php"));
+require_once(modification("model/cronogramaFinanceiro.model.php"));
+require_once(modification("model/cronogramaBaseReceita.model.php"));
+require_once(modification("model/cronogramaMetaReceita.model.php"));
+require_once(modification("model/cronogramaMetaDespesa.model.php"));
+require_once(modification("model/relatorioContabil.model.php"));
 $oParams = db_utils::postMemory($_POST);
 /**
  * Preparamos os dados

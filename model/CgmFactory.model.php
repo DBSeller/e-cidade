@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,10 +29,14 @@
  * Factory que retorna a instancia da classe CgmFisico ou CgmJuridico
  * @package issqn
  * @author Felipe Nunes Ribeiro
- * @revision $Author: dbmatheus.felini $
- * @version $Revision: 1.6 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.7 $
  */
  abstract class CgmFactory {
+
+  const
+    FISICO = 1,
+    JURIDICO = 2;
 
   function __construct() {
 
@@ -49,15 +53,15 @@
    */
   public static function getInstance( $iTipo='', $iCgm='' ){
 
-  	require_once('model/CgmBase.model.php');
-  	require_once('model/CgmFisico.model.php');
-  	require_once('model/CgmJuridico.model.php');
+  	require_once(modification('model/CgmBase.model.php'));
+  	require_once(modification('model/CgmFisico.model.php'));
+  	require_once(modification('model/CgmJuridico.model.php'));
 
     if ( trim($iTipo) != '' ) {
 
-    	if ( $iTipo == 1 ) {
+    	if ( $iTipo == self::FISICO ) {
     		return new CgmFisico();
-    	} else if ( $iTipo == 2 ) {
+    	} else if ( $iTipo == self::JURIDICO ) {
    		  return new CgmJuridico();
     	}
 
@@ -117,6 +121,15 @@
       throw new Exception($eException->getMessage());
     }
 
+  }
+
+  public static function  getCgmByCnpjCpf($sCnpjCpf) {
+      
+      if (empty($sCnpjCpf)) {
+          return null;
+      }
+
+      return self::getInstanceByCnpjCpf($sCnpjCpf);
   }
 
   public static function  getInstanceByCnpjCpf($sCnpjCpf) {

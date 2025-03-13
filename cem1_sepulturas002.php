@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_sepulturas_classe.php");
-include("classes/db_lotecemit_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_sepulturas_classe.php"));
+include(modification("classes/db_lotecemit_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clsepulturas = new cl_sepulturas;
@@ -50,8 +50,8 @@ if(isset($alterar)){
   if( $cllotecemit->numrows != 0 and ($cm05_i_lotecemit_ant != $cm05_i_lotecemit)){
      $sql1 = " update lotecemit set cm23_b_selecionado = 'true' where cm23_i_codigo = $cm05_i_lotecemit";
      $sql2 = " update lotecemit set cm23_b_selecionado = 'false' where cm23_i_codigo = $cm05_i_lotecemit_ant";
-     @pg_exec($sql1);
-     @pg_exec($sql2);
+     @db_query($sql1);
+     @db_query($sql2);
   }else if($cm05_i_lotecemit_ant != $cm05_i_lotecemit){
       $erro = true;
       $db_opcao = 22;
@@ -64,7 +64,7 @@ if(isset($alterar)){
 }else if(isset($chavepesquisa)){
    $db_opcao = 2;
    if(file_exists("funcoes/db_func_sepulturas.php")==true){
-      include("funcoes/db_func_sepulturas.php");
+      include(modification("funcoes/db_func_sepulturas.php"));
    }else{
       $campos = "*";
    }
@@ -89,7 +89,7 @@ if(isset($alterar)){
     <center>
     <br><br>
      <?
-     include("forms/db_frmsepulturas.php");
+     include(modification("forms/db_frmsepulturas.php"));
      ?>
     </center>
      </td>

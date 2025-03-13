@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $db_opcao = 1;
 $db_botao = true;
@@ -117,7 +117,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
              from escola_sequencias
              where ed129_i_escola = $depto
              ";
-     $result = pg_query($sql);
+     $result = db_query($sql);
      $iniciosequencia = pg_result($result,0,'ed129_i_inicio');
      $finalsequencia = pg_result($result,0,'ed129_i_final');
      $ultatualizse = pg_result($result,0,'ed129_i_ultatualizse');
@@ -136,7 +136,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
               and ed130_c_tipo = 'ES'
               order by ed130_i_sequencia desc
              ";
-     $result1 = pg_query($sql1);
+     $result1 = db_query($sql1);
      $linhas1 = pg_num_rows($result1);
      for($t=0;$t<$linhas1;$t++){
       $dados1 = pg_fetch_array($result1);
@@ -164,7 +164,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                  and ed130_c_tipo = 'ES'
                  order by ed130_i_sequencia asc
                 ";
-     $result_ins = pg_query($sql_ins);
+     $result_ins = db_query($sql_ins);
      $linhas_ins = pg_num_rows($result_ins);
      for($t=0;$t<$linhas_ins;$t++){
       $dados1 = pg_fetch_array($result_ins);
@@ -176,7 +176,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
        $sql = "SELECT * FROM alunocurso
                WHERE ed56_i_escola = $depto
               ";
-       $result = pg_query($sql);
+       $result = db_query($sql);
        $linhas = pg_num_rows($result);
        $ncampos = pg_num_fields($result);
        if($linhas>0){
@@ -195,7 +195,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
          $sql1 = "SELECT * FROM alunopossib
                   WHERE ed79_i_alunocurso = $cod_alunocurso
                  ";
-         $result1 = pg_query($sql1);
+         $result1 = db_query($sql1);
          $linhas1 = pg_num_rows($result1);
          $ncampos1 = pg_num_fields($result1);
          if($linhas1>0){
@@ -245,7 +245,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                   WHERE ed49_i_aluno = $cod_aluno
                   AND ed49_i_escola = $depto
                  ";
-         $result3 = pg_query($sql3);
+         $result3 = db_query($sql3);
          $linhas3 = pg_num_rows($result3);
          $ncampos3 = pg_num_fields($result3);
          if($linhas3>0){
@@ -324,7 +324,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
          $sql2 = "SELECT * FROM aluno
                   WHERE ed47_i_codigo = $cod_aluno
                   ";
-         $result2 = pg_query($sql2);
+         $result2 = db_query($sql2);
          $linhas2 = pg_num_rows($result2);
          $ncampos2 = pg_num_fields($result2);
          if($linhas2>0){
@@ -376,10 +376,10 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                    inner join base on ed31_i_codigo = ed56_i_base
                   WHERE ed56_i_codigo = $cod_alunocurso
                  ";
-         $result3 = pg_query($sql3);
+         $result3 = db_query($sql3);
          $cod_curso = pg_result($result3,0,'ed31_i_curso');
          $sql4 = "SELECT * FROM historico WHERE ed61_i_aluno = $cod_aluno AND ed61_i_curso = $cod_curso";
-         $result4 = pg_query($sql4);
+         $result4 = db_query($sql4);
          $linhas4 = pg_num_rows($result4);
          $ncampos4 = pg_num_fields($result4);
          if($linhas4>0){
@@ -399,7 +399,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                    WHERE ed61_i_aluno = $cod_aluno
                    AND ed61_i_curso = $cod_curso
                   ";
-          $result5 = pg_query($sql5);
+          $result5 = db_query($sql5);
           $linhas5 = pg_num_rows($result5);
           $ncampos5 = pg_num_fields($result5);
           if($linhas5>0){
@@ -461,7 +461,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                    WHERE ed61_i_aluno = $cod_aluno
                    AND ed61_i_curso = $cod_curso
                   ";
-          $result5 = pg_query($sql5);
+          $result5 = db_query($sql5);
           $linhas5 = pg_num_rows($result5);
           $ncampos5 = pg_num_fields($result5);
           if($linhas5>0){
@@ -514,7 +514,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                    WHERE ed61_i_aluno = $cod_aluno
                    AND ed61_i_curso = $cod_curso
                   ";
-          $result5 = pg_query($sql5);
+          $result5 = db_query($sql5);
           $linhas5 = pg_num_rows($result5);
           $ncampos5 = pg_num_fields($result5);
           if($linhas5>0){
@@ -566,7 +566,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                    WHERE ed61_i_aluno = $cod_aluno
                    AND ed61_i_curso = $cod_curso
                   ";
-          $result5 = pg_query($sql5);
+          $result5 = db_query($sql5);
           $linhas5 = pg_num_rows($result5);
           $ncampos5 = pg_num_fields($result5);
           if($linhas5>0){
@@ -580,7 +580,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                         AND ((ed62_i_codigo<$iniciosequencia OR ed62_i_codigo>$finalsequencia)
                         OR (ed99_i_codigo<$iniciosequencia OR ed99_i_codigo>$finalsequencia))
                        ";
-            $result_ver = pg_query($sql_ver);
+            $result_ver = db_query($sql_ver);
             $linhas_ver = pg_num_rows($result_ver);
             if($cod_historico>=$iniciosequencia && $cod_historico<=$finalsequencia && $linhas_ver==0){
              $delete5 = "DELETE FROM historico WHERE ed61_i_codigo = $cod_historico;";
@@ -681,7 +681,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                 and $prikey <= $finalsequencia
                ";
       }
-      $result2 = pg_query($sql2);
+      $result2 = db_query($sql2);
       $linhas2 = pg_num_rows($result2);
       if($linhas2>0){
        system("echo \"--\">> $destino");
@@ -724,7 +724,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
      system("echo \"$up_timees\" >> ".$destino);
      system("echo \"$up_timese\" >> ".$destino);
      $sql_tr = "SELECT * FROM transflocal WHERE ed131_i_escola = $depto AND ed131_c_situacao = 'A'";
-     $result_tr = pg_query($sql_tr);
+     $result_tr = db_query($sql_tr);
      $linhas_tr = pg_num_rows($result_tr);
      if($linhas_tr>0){
       system("echo \"--\">> $destino");
@@ -748,7 +748,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
                 WHERE ed103_i_escolaorigem = $depto
                 AND ed103_c_situacao = 'A'
                 ";
-     $result_tl = pg_query($sql_tl);
+     $result_tl = db_query($sql_tl);
      $linhas_tl = pg_num_rows($result_tl);
      if($linhas_tl>0){
       for($q=0;$q<$linhas_tl;$q++){
@@ -756,7 +756,7 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
        $cod_alcurso = pg_result($result_tl,$q,'cod_alcurso');
        $update6 = "UPDATE alunocurso SET ed56_i_escola = $codescoladestino, ed56_c_situacao = 'TRANSFERIDO REDE' WHERE ed56_i_codigo = $cod_alcurso;";
        system("echo \"$update6\" >> ".$destino);
-       pg_exec("UPDATE alunocurso SET ed56_i_escola = $codescoladestino, ed56_c_situacao = 'TRANSFERIDO REDE' WHERE ed56_i_codigo = $cod_alcurso");
+       db_query("UPDATE alunocurso SET ed56_i_escola = $codescoladestino, ed56_c_situacao = 'TRANSFERIDO REDE' WHERE ed56_i_codigo = $cod_alcurso");
       }
      }
      ///*
@@ -775,24 +775,24 @@ $ed18_c_nome = db_getsession("DB_nomedepto");
               and db_usumod.id_item = 1100747
               and b.login = 'eduescolalocal'
              ";
-     $result3 = pg_query($sql3);
+     $result3 = db_query($sql3);
      $linhas3 = pg_num_rows($result3);
      if($linhas3>0){
       //pega codigo do perfil eduescolalocal
-      $result4 = pg_exec("select id_usuario from db_usuarios where trim(login) = 'eduescolalocal'");
+      $result4 = db_query("select id_usuario from db_usuarios where trim(login) = 'eduescolalocal'");
       $perfil_local = pg_result($result4,0,'id_usuario');
       //pega codigo do perfil edubloqueado
-      $result5 = pg_exec("select id_usuario from db_usuarios where trim(login) = 'edubloqueado'");
+      $result5 = db_query("select id_usuario from db_usuarios where trim(login) = 'edubloqueado'");
       $perfil_bloq = pg_result($result5,0,'id_usuario');
       for($d=0;$d<$linhas3;$d++){
        $cod_usu = pg_result($result3,$d,'cod_usuarios');
-       $update_perfil = pg_exec("UPDATE db_permherda SET id_perfil = $perfil_bloq
+       $update_perfil = db_query("UPDATE db_permherda SET id_perfil = $perfil_bloq
                                  WHERE id_usuario = $cod_usu
                                  AND id_perfil = $perfil_local
                                 ");
       }
      }
-     $result6 = pg_exec("update escola_sequencias set ed129_c_ulttransacao = 'ES' where ed129_i_escola = $depto");
+     $result6 = db_query("update escola_sequencias set ed129_c_ulttransacao = 'ES' where ed129_i_escola = $depto");
      db_redireciona("edu4_exportar_es.php?destino=".$destino_tar.".bz2");
      //*/
     }

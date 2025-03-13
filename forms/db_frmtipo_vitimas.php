@@ -68,7 +68,7 @@ db_input('tr06_descr',35,$Itr06_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipo_vitimas','func_tipo_vitimas.php?funcao_js=parent.js_preenchepesquisa|tr06_id','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipo_vitimas','func_tipo_vitimas.php?funcao_js=parent.js_preenchepesquisa|tr06_id','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tipo_vitimas.hide();

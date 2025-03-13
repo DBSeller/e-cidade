@@ -154,7 +154,7 @@ function js_listar() {
 
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_vac_dose',
                       'func_vac_dose.php?funcao_js=parent.js_preenchepesquisa|vc03_i_codigo',
                       'Pesquisa',

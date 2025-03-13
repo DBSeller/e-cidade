@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -453,7 +453,7 @@ class cl_turmaserieregimemat {
    function sql_query ( $ed220_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -485,7 +485,7 @@ class cl_turmaserieregimemat {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -498,7 +498,7 @@ class cl_turmaserieregimemat {
    function sql_query_file ( $ed220_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+         $campos_sql = explode("#", $campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -519,7 +519,54 @@ class cl_turmaserieregimemat {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#", $ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+
+   // funcao do sql 
+   function sql_query_censo ( $ed220_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+     $sql = "select ";
+     if($campos != "*" ){
+         $campos_sql = explode("#", $campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from turmaserieregimemat ";
+     $sql .= "      inner join serieregimemat  on  serieregimemat.ed223_i_codigo = turmaserieregimemat.ed220_i_serieregimemat";
+     $sql .= "      inner join regimemat  on  regimemat.ed218_i_codigo = serieregimemat.ed223_i_regimemat";
+     $sql .= "      left  join regimematdiv  on  regimematdiv.ed219_i_codigo = serieregimemat.ed223_i_regimematdiv";
+     $sql .= "      inner join serie  on  serie.ed11_i_codigo = serieregimemat.ed223_i_serie";
+     $sql .= "      inner join seriecensoetapa  on  seriecensoetapa.ed133_serie = serie.ed11_i_codigo";
+     $sql .= "      inner join turma  on  turma.ed57_i_codigo = turmaserieregimemat.ed220_i_turma";
+     $sql .= "      inner join escola  on  escola.ed18_i_codigo = turma.ed57_i_escola";
+     $sql .= "      inner join turno  on  turno.ed15_i_codigo = turma.ed57_i_turno";
+     $sql .= "      inner join sala  on  sala.ed16_i_codigo = turma.ed57_i_sala";
+     $sql .= "      inner join calendario  on  calendario.ed52_i_codigo = turma.ed57_i_calendario";
+     $sql .= "      inner join base  on  base.ed31_i_codigo = turma.ed57_i_base";
+     $sql .= "      inner join procedimento  on  procedimento.ed40_i_codigo = turmaserieregimemat.ed220_i_procedimento";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($ed220_i_codigo!=null ){
+         $sql2 .= " where turmaserieregimemat.ed220_i_codigo = $ed220_i_codigo "; 
+       } 
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+         $campos_sql = explode("#", $ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

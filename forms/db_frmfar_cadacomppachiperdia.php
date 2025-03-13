@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -826,7 +826,7 @@ function js_verificaHipertensaoDiabetes() {
 }
 function js_retornoVerificaHipertensaoDiabetes(oRetorno) {
   
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   
   if (oRetorno.lHipertensao == 'true') {
 
@@ -1092,7 +1092,7 @@ function js_getAcompanhamentos() {
 
 function js_retornoGetAcompanhamentos(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
 
@@ -1192,7 +1192,7 @@ function js_getMedicamentosCadAcomp() {
 function js_retornoGetMedicamentosCadAcomp(oRetorno) {
 
   iNumSelect = parseInt($F('numMedSelect'), 10);
-  oRetorno   = eval("("+oRetorno.responseText+")");
+  oRetorno   = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
     return false;
@@ -1277,7 +1277,7 @@ function js_getCbosProfissional() {
 
 function js_retornoGetCbosProfissional(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
     return false;
@@ -1311,7 +1311,7 @@ function js_pesquisafa50_i_cgsund (mostra) {
   sQuery = 'func_cgs_und.php?funcao_js=parent.js_mostracgs|z01_i_cgsund|z01_v_nome';
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_cgs_und',
                         sQuery,
                         'Pesquisa',
@@ -1323,7 +1323,7 @@ function js_pesquisafa50_i_cgsund (mostra) {
 
         sQuery += '&chave_z01_i_cgsund='+$F('fa50_i_cgsund');
         sQuery += '&nao_mostra=true';
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_cgs_und',
                             sQuery,
                             'Pesquisa',

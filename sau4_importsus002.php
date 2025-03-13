@@ -1,39 +1,32 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("classes/db_sau_config_classe.php");
-require_once ("classes/db_cgs_und_classe.php");
-require_once ("classes/db_cgs_cartaosus_classe.php");
-require_once ("classes/db_sau_cadsus_classe.php");
-require_once ("classes/db_sau_cadsusreg_classe.php");
-require_once ("classes/db_sau_cadsusversao_classe.php");
-require_once ("classes/db_cgs_classe.php");
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_utils.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_utils.php"));
 
 /*
 *  Função atualiza cadsus
@@ -59,7 +52,7 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
 
   //Criando arquivo de LOG
   global $arq1;
-  $arq1 = "tmp/log_importacao_cadsus_" . date ( "Y-m-d", db_getsession ( "DB_datausu" ) ) . ".txt";
+  $arq1 = "tmp/log_importacao_cadsus_" . date ( "Y-m-d_Hi", db_getsession ( "DB_datausu" ) ) . ".txt";
 
   //Buscar informações de conexão
   $sql_conf = sql_query_ext ( "", "*", "", "" );
@@ -69,9 +62,9 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
     $obj1 = db_utils::fieldsmemory ( $result, 0 );
 
     //Seleciona ip dinamico ou fixo
-    if($obj1->s103_c_ipauto=='f'){
+    if($obj1->s103_c_ipauto=='f') {
       $ip_con = $obj1->s103_c_ip;
-    }else{
+    } else {
       $ip_con = $_SERVER['REMOTE_ADDR'];
     }
 
@@ -94,9 +87,9 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
       //Verificando versao do Banco
       $sql_ver = "SELECT TB_MS_VERSAO_BANCO.NU_VERSAO as versao FROM TB_MS_VERSAO_BANCO;";
       if($obj1->s103_i_tipodb == 1){
-        $result_versao = @ibase_query ( $con_cadsus, $sql_ver ) or log_erro ( "Falha durante select na base cadsus", "Erro durante select da versao do banco",$arq1);
+        $result_versao = @ibase_query ( $con_cadsus, $sql_ver ) or log_erro ( "Falha durante select na base cadsus\nErro durante select da versao do banco",$arq1);
       }else{
-        $result_versao = @db_query ( $con_cadsus, $sql_ver ) or log_erro ( "Falha durante select na base cadsus", "Erro durante select da versao do banco",$arq1);
+        $result_versao = @db_query ( $con_cadsus, $sql_ver ) or log_erro ( "Falha durante select na base cadsus\nErro durante select da versao do banco",$arq1);
       }
 
       //Pegando a versão do banco
@@ -122,7 +115,7 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
 
             $sWhere .= " where ( '$obj_cgs->z01_v_ident' in ( select rl_ms_usuario_documentos.nu_documento
                                                                 from rl_ms_usuario_documentos
-                                                                     inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento 
+                                                                     inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento
                                                                                                     and rl_ms_usuario_documentos.co_usuario    = tb_ms_usuario.co_usuario
                                                                where tb_ms_tipo_documento.co_tipo_documento = '10'
                                                             ) or trim(tb_ms_usuario.NO_USUARIO) = trim('$obj_cgs->z01_v_nome')) ";
@@ -153,9 +146,9 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
       $sql .= $sWhere;
 
       if($obj1->s103_i_tipodb==1){
-        $ib_linhas = @ibase_query ( $con_cadsus, $sql ) or log_erro ( "Falha durante select na base cadsus", "erro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
+        $ib_linhas = ibase_query ( $con_cadsus, $sql ) or log_erro ( "Falha durante select na base cadsus\nErro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
       }else{
-        $ib_linhas = @db_query ( $con_cadsus, $sql ) or log_erro ( "Falha durante select na base cadsus", "erro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
+        $ib_linhas = @db_query ( $con_cadsus, $sql ) or log_erro ( "Falha durante select na base cadsus\nErro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
       }
 
       //Executando a query
@@ -173,65 +166,65 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
 
                   ( select rl_ms_usuario_documentos.nu_documento
                       from rl_ms_usuario_documentos
-                           inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento 
+                           inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento
                                                           and rl_ms_usuario_documentos.co_usuario    = tb_ms_usuario.co_usuario
                      where tb_ms_tipo_documento.co_tipo_documento = '91'
                   )                                   as certidao,
 
                  ( select rl_ms_usuario_documentos.NU_LIVRO
                      from rl_ms_usuario_documentos
-                          inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento 
+                          inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento
                                                          and rl_ms_usuario_documentos.co_usuario    = tb_ms_usuario.co_usuario
                     where tb_ms_tipo_documento.co_tipo_documento = '91'
                   )                                   as livro,
 
                   ( select rl_ms_usuario_documentos.NU_FOLHA
                       from rl_ms_usuario_documentos
-                           inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento 
+                           inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento
                                                           and rl_ms_usuario_documentos.co_usuario    = tb_ms_usuario.co_usuario
                       where tb_ms_tipo_documento.co_tipo_documento = '91'
                   )                                   as folha,
 
                   ( select rl_ms_usuario_documentos.nu_documento
                       from rl_ms_usuario_documentos
-                           inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento 
+                           inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento
                                                           and rl_ms_usuario_documentos.co_usuario    = tb_ms_usuario.co_usuario
                      where tb_ms_tipo_documento.co_tipo_documento = '10'
                    )                                  as ident,
 
                   ( select rl_ms_usuario_documentos.nu_documento
                       from rl_ms_usuario_documentos
-                           inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento 
+                           inner join tb_ms_tipo_documento on tb_ms_tipo_documento.co_tipo_documento = rl_ms_usuario_documentos.co_tipo_documento
                                                           and rl_ms_usuario_documentos.co_usuario    = tb_ms_usuario.co_usuario
                      where tb_ms_tipo_documento.co_tipo_documento = '02'
                    )                                  as cpf,
 
                    tb_ms_municipio.SG_uf              as uf
                   from tb_ms_usuario
-                       left join tb_ms_usuario_cns_elos tab_provisorio on tab_provisorio.co_usuario          = tb_ms_usuario.co_usuario 
-                                                                      and tab_provisorio.tp_cartao           = 'P' 
+                       left join tb_ms_usuario_cns_elos tab_provisorio on tab_provisorio.co_usuario          = tb_ms_usuario.co_usuario
+                                                                      and tab_provisorio.tp_cartao           = 'P'
                                                                       and tab_provisorio.st_excluido         = '0'
-                       left join tb_ms_usuario_cns_elos tab_definitivo on tab_definitivo.co_usuario          = tb_ms_usuario.co_usuario 
-                                                                      and tab_definitivo.tp_cartao           = 'D' 
+                       left join tb_ms_usuario_cns_elos tab_definitivo on tab_definitivo.co_usuario          = tb_ms_usuario.co_usuario
+                                                                      and tab_definitivo.tp_cartao           = 'D'
                                                                       and tab_definitivo.st_excluido         = '0'
-                       left join rl_ms_usuario_endereco                on rl_ms_usuario_endereco.co_usuario  = tb_ms_usuario.co_usuario 
+                       left join rl_ms_usuario_endereco                on rl_ms_usuario_endereco.co_usuario  = tb_ms_usuario.co_usuario
                                                                       and rl_ms_usuario_endereco.st_excluido = '0'
                        left join tb_ms_endereco                        on tb_ms_endereco.co_endereco         = rl_ms_usuario_endereco.co_endereco
                        left join tb_ms_municipio                       on tb_ms_municipio.co_municipio       = tb_ms_endereco.co_municipio
                        left join tb_ms_sexo                            on tb_ms_sexo.co_sexo                 = tb_ms_usuario.co_sexo ";
 
       $sql .= $sWhere;
-      $sql .= "order by tb_ms_usuario.no_usuario, tab_definitivo.co_numero_cartao;";
+      $sql .= "order by tb_ms_usuario.no_usuario, tab_definitivo.co_numero_cartao ;";
 
       //Query do CADSUS
       if($obj1->s103_i_tipodb==1){
-        $ib_result = @ibase_query ( $con_cadsus, $sql ) or log_erro ( "Falha durante select na base cadsus", "erro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
+        $ib_result = ibase_query ( $con_cadsus, $sql ) or log_erro ( "Falha durante select na base cadsus\nErro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
       }else{
-        $ib_result = @db_query ( $con_cadsus, $sql )    or log_erro ( "Falha durante select na base cadsus", "erro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
+        $ib_result = @db_query ( $con_cadsus, $sql )    or log_erro ( "Falha durante select na base cadsus\nErro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
       }
 
       if (!$ib_result) {
-        log_erro ( "Falha durante select na base cadsus", "erro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
+        log_erro ( "Falha durante select na base cadsus\nErro durante a execucao do select na base cadsus SQL=[$sql]", $arq1 );
       }
 
       //Gerando termometro
@@ -269,14 +262,15 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
       if($clsau_cadsusversao->numrows==0){
 
         $erro = " Versao do Cadsus Incompativel ";
-        $log  = " Versao do Cadsus Incompativel ";
         log_erro_versao ( $versao );
       }
 
       /***
        * Iniciando transacao
        */
-      db_query ( 'begin' );
+      db_inicio_transacao();
+
+      $lErroRegistroAtualizacao = false;
 
       $clsau_cadsus->s136_d_data = date ( "Y-m-d" );
       $clsau_cadsus->s136_c_hora = date ( "H:i" );
@@ -285,12 +279,14 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
 
       if ($clsau_cadsus->erro_status == 0) {
 
+        $lErroRegistroAtualizacao = true;
         $erro = " Inclusao cartaosus ";
         $log  = "[Atualiza cartão] Erro durante inclusao do clcgs_cartaosus -> " . $clsau_cadsus->erro_msg;
         $log .= "\n user=$user \n";
-        log_erro ( $erro, $log, $arq1 );
+        log_erro ( $erro."\n".$log, $arq1 );
       }
 
+      db_fim_transacao( $lErroRegistroAtualizacao );
       $import = $clsau_cadsus->s136_i_codigo;
 
       while ( $cont < $limite ) {
@@ -300,12 +296,14 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
 
           if($obj1->s103_i_tipodb==1){
 
-            $row = @ibase_fetch_object ( $ib_result );
+            $row = ibase_fetch_object ( $ib_result );
+
 
             if($row==false){
               jogar_erro("Falha de conexão(InterBase)");
             }
             $row = convert_obj_interbase($row);
+
           }else{
 
             $row = @db_utils::fieldsmemory ( $ib_result,$cont);
@@ -313,12 +311,11 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
               jogar_erro("Falha de conexão(Postgres) ");
             }
           }
-
         } catch (Exception $e) {
 
           $erro = "!".$e->getMessage() ;
           $log  = "Erro: ".$e->getMessage()."! Conexão perdida durante o processo";
-          log_erro ( $erro, $log, $arq1 );
+          log_erro ( $erro."\n".$log, $arq1 );
         }
 
         //Incrementa termometro
@@ -337,6 +334,7 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
          * 1.procura no DBPortal pelo código do cartao provisorio do CADSUS
          */
         $result01 = null;
+
         if ( ($row->provisorio != "") && ($row->provisorio != null) ) {
 
           $sql1     = "select * from cgs_cartaosus where s115_c_cartaosus = '" . $row->provisorio . "' ";
@@ -404,7 +402,6 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
                 }
               }
             }
-
           } else {
 
             if ( cruza_dados ( $row, $obj3->s115_i_cgs, $conn ) ) {
@@ -420,93 +417,140 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
            */
         } else {
 
-            /**
-             * 1.procura pelo Cartão definitivo
-             */
-             $result03 = null;
-             if ( ($row->definitivo != "") && ($row->definitivo != null) ) {
+          /**
+           * 1.procura pelo Cartão definitivo
+           */
+           $result03 = null;
+           if ( ($row->definitivo != "") && ($row->definitivo != null) ) {
 
-              $sql03    = "select * from cgs_cartaosus where s115_c_cartaosus='" . $row->definitivo . "' ";
-              $result03 = db_query ($conn, $sql03 ) or die ("Erro 03 - " . pg_errormessage () . " sql -> [$sql03] ");
-             }
-              
-            /**
-             * 1.se achou
-             */
-            if ( (isset ( $result03 )) && (pg_num_rows ( $result03 ) > 0) ) {
+            $sql03    = "select * from cgs_cartaosus where s115_c_cartaosus='" . $row->definitivo . "' ";
+            $result03 = db_query ($conn, $sql03 ) or die ("Erro 03 - " . pg_errormessage () . " sql -> [$sql03] ");
+           }
 
-              $obj4 = db_utils::fieldsmemory ( $result03, 0 );
-              if($obj4->s115_c_tipo!="D"){
-                atualiza_cartao ( $arq1, $obj4->s115_i_codigo, $obj4->s115_i_cgs, $row->definitivo, "D" );
+          /**
+           * 1.se achou
+           */
+          if ( (isset ( $result03 )) && (pg_num_rows ( $result03 ) > 0) ) {
+
+            $obj4 = db_utils::fieldsmemory ( $result03, 0 );
+            if($obj4->s115_c_tipo!="D"){
+              atualiza_cartao ( $arq1, $obj4->s115_i_codigo, $obj4->s115_i_cgs, $row->definitivo, "D" );
+            }
+
+            if (cruza_dados ( $row, $obj4->s115_i_cgs, $conn )) {
+
+              atualiza_dados ( $arq1, $row, $obj4->s115_i_cgs, 3, $clcgs_und, $clcgs_cartaosus );
+              get_log ( $arq1, $import, 1, $row, $clcgs_cartaosusreg );
+            }else{
+
+              if( ($row->provisorio!=null) && ($row->provisorio!="") ){
+                atualiza_cartao($arq1,null,$obj4->s115_i_cgs,$row->provisorio,"P");
+              }
+            }
+
+           /**
+            * 2. se não axou
+            */
+          } else {
+
+            /**
+             * 1. procura pelo RG no CGS
+             */
+            $result04 = null;
+            if ( ($row->ident != '') && ($row->ident != null) ) {
+
+              $sql4  = "select *                                                    ";
+              $sql4 .= "  from cgs_und                                              ";
+              $sql4 .= "       left join cgs_cartaosus on s115_i_cgs = z01_i_cgsund ";
+              $sql4 .= " where z01_v_ident = '$row->ident'                          ";
+              $result04 = db_query ($conn, $sql4 ) or die ( "Erro 04 - " . pg_errormessage () . " sql -> [$sql4] " );
+            }
+
+            /**
+             * 1. se achou
+             */
+            if ( (isset ( $result04 ) ) && (pg_num_rows ( @$result04 ) > 0) && (($row->ident != '') && ($row->ident != null)) ) {
+
+              $obj5 = db_utils::fieldsmemory ( $result04, 0 );
+
+              /**
+               * 1.Verifica se não tem um cartão registrado errado
+               */
+              if ( (($obj5->s115_c_cartaosus != null) && ($obj5->s115_c_cartaosus != "")) && ($obj5->s115_c_cartaosus == $row->definitivo) ) {
+                $log = 5;
+              } else {
+                $log = 6;
               }
 
-              if (cruza_dados ( $row, $obj4->s115_i_cgs, $conn )) {
+              $op = 1;
 
-                atualiza_dados ( $arq1, $row, $obj4->s115_i_cgs, 3, $clcgs_und, $clcgs_cartaosus );
-                get_log ( $arq1, $import, 1, $row, $clcgs_cartaosusreg );
-              }else{
+              /**
+               * 2. atualiza todas informacoes cadastrais obrigatorias do CADSUS no CGS encontrado
+               */
+              if (($obj5->z01_i_cgsund != "") && ($obj5->z01_i_cgsund != null)) {
 
-                if( ($row->provisorio!=null) && ($row->provisorio!="") ){
-                  atualiza_cartao($arq1,null,$obj4->s115_i_cgs,$row->provisorio,"P");
+                if (cruza_dados ( $row, $obj5->z01_i_cgsund, $conn )) {
+
+                  atualiza_dados ( $arq1, $row, $obj5->z01_i_cgsund, $op, $clcgs_und, $clcgs_cartaosus );
+                  get_log ( $arq1, $import, $log, $row, $clcgs_cartaosusreg );
+                }else{
+
+                  if( ($row->provisorio!=null) && ($row->provisorio!="") ){
+                    atualiza_cartao( $arq1, null, $obj5->z01_i_cgsund, $row->provisorio, "P" );
+                  }
+
+                  if( ($row->definitivo!=null) && ($row->definitivo!="") ){
+                    atualiza_cartao( $arq1, null, $obj5->z01_i_cgsund, $row->definitivo, "D" );
+                  }
                 }
+
               }
 
-             /**
-              * 2. se não axou
-              */
+              /**
+               * 2.se não achou
+               */
             } else {
 
-              /**       
-               * 1. procura pelo RG no CGS
+              /**
+               * 1.procura pelos campos: 1. nro da certidão
+               *                         2. nro do livro
+               *                         3. nro da folha
                */
-              $result04 = null;
-              if ( ($row->ident != '') && ($row->ident != null) ) {
+              $result05 = null;
+              if ( ($row->certidao != '') && ($row->certidao != null) &&
+                   ($row->livro != '')    && ($row->livro != null)    &&
+                   ($row->folha != '')    && ($row->folha != null)) {
 
-                $sql4  = "select *                                                    ";
-                $sql4 .= "  from cgs_und                                              ";
-                $sql4 .= "       left join cgs_cartaosus on s115_i_cgs = z01_i_cgsund ";
-                $sql4 .= " where z01_v_ident = '$row->ident'                          ";
-                $result04 = db_query ($conn, $sql4 ) or die ( "Erro 04 - " . pg_errormessage () . " sql -> [$sql4] " );
+                $sql      = "select *
+                               from cgs_und
+                              where z01_c_certidaonum   = '$row->certidao'
+                                and z01_c_certidaolivro = '$row->livro'
+                                and z01_c_certidaofolha = '$row->folha' ";
+                $result05 = db_query ($conn, $sql );
               }
 
               /**
                * 1. se achou
                */
-              if ( (isset ( $result04 ) ) && (pg_num_rows ( @$result04 ) > 0) && (($row->ident != '') && ($row->ident != null)) ) {
-
-                $obj5 = db_utils::fieldsmemory ( $result04, 0 );
-
-                /**           
-                 * 1.Verifica se não tem um cartão registrado errado
-                 */
-                if ( (($obj5->s115_c_cartaosus != null) && ($obj5->s115_c_cartaosus != "")) && ($obj5->s115_c_cartaosus == $row->definitivo) ) {
-                  $log = 5;
-                } else {
-                  $log = 6;
-                }
-
-                $op = 1;
+              if ((isset ( $result05 )) && (pg_num_rows ( @$result05 ) > 0) ) {
 
                 /**
-                 * 2. atualiza todas informacoes cadastrais obrigatorias do CADSUS no CGS encontrado
+                 * 1.faz o mesmo que o item 2.1.1.1 (achou pelo RG)
                  */
-                if (($obj5->z01_i_cgsund != "") && ($obj5->z01_i_cgsund != null)) {
+                $obj6 = db_utils::fieldsmemory ( $result05, 0 );
+                if ( cruza_dados ( $row, $obj6->z01_i_cgsund, $conn ) ) {
 
-                  if (cruza_dados ( $row, $obj5->z01_i_cgsund, $conn )) {
+                  atualiza_dados ( $arq1, $row, $obj6->z01_i_cgsund, 1, $clcgs_und, $clcgs_cartaosus );
+                  get_log ( $arq1, $import, 7, $row, $clcgs_cartaosusreg );
+                }else{
 
-                    atualiza_dados ( $arq1, $row, $obj5->z01_i_cgsund, $op, $clcgs_und, $clcgs_cartaosus );
-                    get_log ( $arq1, $import, $log, $row, $clcgs_cartaosusreg );
-                  }else{
-
-                    if( ($row->provisorio!=null) && ($row->provisorio!="") ){
-                      atualiza_cartao( $arq1, null, $obj5->z01_i_cgsund, $row->provisorio, "P" );
-                    }
-
-                    if( ($row->definitivo!=null) && ($row->definitivo!="") ){
-                      atualiza_cartao( $arq1, null, $obj5->z01_i_cgsund, $row->definitivo, "D" );
-                    }
+                  if( ($row->provisorio!=null) && ($row->provisorio!="") ){
+                    atualiza_cartao($arq1,null,$obj6->z01_i_cgsund,$row->provisorio,"P");
                   }
 
+                  if( ($row->definitivo!=null) && ($row->definitivo!="") ){
+                    atualiza_cartao($arq1,null,$obj6->z01_i_cgsund,$row->definitivo,"D");
+                  }
                 }
 
                 /**
@@ -514,45 +558,51 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
                  */
               } else {
 
-                /**          
-                 * 1.procura pelos campos: 1. nro da certidão 
-                 *                         2. nro do livro 
-                 *                         3. nro da folha
+                /**
+                 * 1.Procurar pelo nome
                  */
-                $result05 = null;
-                if ( ($row->certidao != '') && ($row->certidao != null) && 
-                     ($row->livro != '')    && ($row->livro != null)    && 
-                     ($row->folha != '')    && ($row->folha != null)) {
+                $result06 = null;
+                if ( ($row->nome != '') && ($row->nome != null) ) {
 
-                  $sql      = "select * 
-                                 from cgs_und 
-                                where z01_c_certidaonum   = '$row->certidao' 
-                                  and z01_c_certidaolivro = '$row->livro' 
-                                  and z01_c_certidaofolha = '$row->folha' ";
-                  $result05 = db_query ($conn, $sql );
+                  $sql = "select *
+                            from cgs_und
+                                 left join cgs_cartaosus on s115_i_cgs = z01_i_cgsund
+                           where z01_v_nome like '" . nome40 ( $row->nome ) . "'";
+                  $result06 = db_query ($conn, $sql ) or die ( "Erro 06 - " . pg_errormessage () . " sql -> [$sql] " );
                 }
 
-                /**
-                 * 1. se achou
-                 */
-                if ((isset ( $result05 )) && (pg_num_rows ( @$result05 ) > 0) ) {
+                if ((isset ( $result06 )) && (pg_num_rows ( @$result06 ) > 0)) {
 
                   /**
                    * 1.faz o mesmo que o item 2.1.1.1 (achou pelo RG)
                    */
-                  $obj6 = db_utils::fieldsmemory ( $result05, 0 );
-                  if ( cruza_dados ( $row, $obj6->z01_i_cgsund, $conn ) ) {
+                  $cartaonovo = $row->provisorio == null ? $row->definitivo : $row->provisorio;
+                  $tipocartao = $row->provisorio == null ? "D" : "P";
 
-                    atualiza_dados ( $arq1, $row, $obj6->z01_i_cgsund, 1, $clcgs_und, $clcgs_cartaosus );
-                    get_log ( $arq1, $import, 7, $row, $clcgs_cartaosusreg );
+                  for( $x=0; pg_num_rows ( @$result06 ) > $x; $x++){
+
+                    $obj7 = db_utils::fieldsmemory ( $result06, $x );
+                    if( $obj7->s115_c_cartaosus == $row->provisorio || $obj7->s115_c_cartaosus == $row->definitivo ){
+
+                      $cartaonovo = 0;
+                      break;
+                    }
+                  }
+
+                  $obj7 = db_utils::fieldsmemory ( $result06, 0 );
+
+                  if ( cruza_dados ( $row, $obj7->z01_i_cgsund, $conn ) ) {
+
+                    atualiza_dados ( $arq1, $row, $obj7->z01_i_cgsund, 1, $clcgs_und, $clcgs_cartaosus );
+                    get_log ( $arq1, $import, 9, $row, $clcgs_cartaosusreg );
                   }else{
 
-                    if( ($row->provisorio!=null) && ($row->provisorio!="") ){
-                      atualiza_cartao($arq1,null,$obj6->z01_i_cgsund,$row->provisorio,"P");
+                    if( ($row->provisorio != null) && ($row->provisorio!="") ){
+                      atualiza_cartao($arq1,null,$obj7->z01_i_cgsund,$row->provisorio,"P");
                     }
 
-                    if( ($row->definitivo!=null) && ($row->definitivo!="") ){
-                      atualiza_cartao($arq1,null,$obj6->z01_i_cgsund,$row->definitivo,"D");
+                    if( ($row->definitivo != null ) && ($row->definitivo!="") ){
+                      atualiza_cartao($arq1,null,$obj7->z01_i_cgsund,$row->definitivo,"D");
                     }
                   }
 
@@ -562,108 +612,16 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
                 } else {
 
                   /**
-                   * 1.Procurar pelo nome
+                   * 1.criar um CGS novo com todas as informacoes vindas do Cartao SUS;
                    */
-                  $result06 = null;
-                  if ( ($row->nome != '') && ($row->nome != null) ) {
-
-                    $sql = "select * 
-                              from cgs_und 
-                                   left join cgs_cartaosus on s115_i_cgs = z01_i_cgsund 
-                             where z01_v_nome like '" . nome40 ( $row->nome ) . "'";
-                    $result06 = db_query ($conn, $sql ) or die ( "Erro 06 - " . pg_errormessage () . " sql -> [$sql] " );
-                  }
-
-                  if ((isset ( $result06 )) && (pg_num_rows ( @$result06 ) > 0)) {
-
-                    /**
-                     * 1.faz o mesmo que o item 2.1.1.1 (achou pelo RG)
-                     */
-                    $cartaonovo = $row->provisorio == null ? $row->definitivo : $row->provisorio;
-                    $tipocartao = $row->provisorio == null ? "D" : "P";
-
-                    for( $x=0; pg_num_rows ( @$result06 ) > $x; $x++){
-
-                      $obj7 = db_utils::fieldsmemory ( $result06, $x );
-                      if( $obj7->s115_c_cartaosus == $row->provisorio || $obj7->s115_c_cartaosus == $row->definitivo ){
-
-                        $cartaonovo = 0;
-                        break;
-                      }
-                    }
-
-                    $obj7 = db_utils::fieldsmemory ( $result06, 0 );
-                    
-                    if ( cruza_dados ( $row, $obj7->z01_i_cgsund, $conn ) ) {
-
-                      atualiza_dados ( $arq1, $row, $obj7->z01_i_cgsund, 1, $clcgs_und, $clcgs_cartaosus );
-                      get_log ( $arq1, $import, 9, $row, $clcgs_cartaosusreg );
-                    }else{
-
-                      if( ($row->provisorio != null) && ($row->provisorio!="") ){
-                        atualiza_cartao($arq1,null,$obj7->z01_i_cgsund,$row->provisorio,"P");
-                      }
-
-                      if( ($row->definitivo != null ) && ($row->definitivo!="") ){
-                        atualiza_cartao($arq1,null,$obj7->z01_i_cgsund,$row->definitivo,"D");
-                      }
-                    }
-
-                    /**
-                     * 2.se não achou
-                     */
-                  } else {
-
-                    /**
-                     * 1.criar um CGS novo com todas as informacoes vindas do Cartao SUS;
-                     */
-                    novo_cgs ( $arq1, $row, $clcgs_cartaosus, $clcgs, $clcgs_und );
-                    get_log ( $arq1, $import, 8, $row, $clcgs_cartaosusreg );
-                  }
+                  novo_cgs ( $arq1, $row, $clcgs_cartaosus, $clcgs, $clcgs_und );
+                  get_log ( $arq1, $import, 8, $row, $clcgs_cartaosusreg );
                 }
               }
             }
+          }
         }
       }// fim while
-
-      /**
-       * Selecione todos os cartões com entrada manual = 1
-       */
-      $result_cartaosus = db_query($conn,"select s115_c_cartaosus, s115_c_tipo from cgs_cartaosus where s115_i_entrada = 1");
-
-      //Pega numero de linhas
-      $linhas_cartao = pg_num_rows($result_cartaosus);
-
-      //Percorre todos verificando se eles existem no cadastro do cadsus
-      $cont = 0;
-      for( $icartao = 0; $icartao < $linhas_cartao; $icartao++ ){
-
-        //Pega o codigo do cartão sus da tabela cgs_cartãosus
-        $obj_cartao = db_utils::fieldsmemory ($result_cartaosus,$icartao);
-
-        //Busca nos registros do cad sus o CGS que foi posto manuamente
-        $quant_cartao = 0;
-        for($y=0; $y < $limite; $y++){
-
-          if($obj1->s103_i_tipodb == 1){
-
-            $row = ibase_fetch_object ( $ib_result );
-            $row = convert_obj_interbase($row);
-
-          }else{
-            $row = db_utils::fieldsmemory ( $ib_result,$cont) ;
-          }
-          if( ($obj_cartao->s115_c_cartaosus == $row->definitivo) || ($obj_cartao->s115_c_cartaosus == $row->provisorio) ){
-            $quant_cartao=1;
-          }
-        }
-
-        //Se não encontrar o codigo no cadsus significa que ele não existe
-        if($quant_cartao == 0){
-          $cont++;
-        }
-      }
-
     } else {
 
       $erro = true;
@@ -673,13 +631,12 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
       } else {
 
         if($termometro == 0){
-          log_erro ( "Falha ao conectar no banco CADSUS", "Erro - Ao conectar no banco CADSUS verifique os parâmetros em procedimentos", $arq1 );
+          log_erro ( "Falha ao conectar no banco CADSUS\nErro - Ao conectar no banco CADSUS verifique os parâmetros em procedimentos", $arq1 );
         }else{
           return 3;
         }
       }
-
-   }
+    }
 
   } else {
 
@@ -690,7 +647,7 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
     } else {
 
       if($termometro == 0){
-        log_erro ( "Falha configurações não encontradas!", "Configurações não encontradas! Operção Abortada! [SQL = $sql_conf ]", $arq1 );
+        log_erro ( "Falha configurações não encontradas!\nConfigurações não encontradas! Operção Abortada! [SQL = $sql_conf ]", $arq1 );
       }else{
         return 2;
       }
@@ -699,12 +656,11 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
   }
 
   //Finalizando movimentações no banco
-  db_query ( "commit" );
   if ($erro == false) {
 
     if ($termometro == 1) {
 
-      db_msgbox ( 'Operação concluida com Sucesso!' );
+      db_msgbox ( 'Operação concluída com sucesso!' );
 
       //Liberando botão emitir
       ?><script>
@@ -715,7 +671,7 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
     } else {
 
       if($termometro == 0){
-        echo ("\n Operação Concluida com Sucesso! \n");
+        echo ("\n Operação concluída com sucesso! \n");
       }else{
         return 1;
       }
@@ -731,6 +687,10 @@ function atualiza_cadsus($termometro = 0, $conn, $cod_cgs = null ,$DB_SERVIDOR ,
  *  4: inclui nenhum
  */
 function atualiza_dados( $arq1, $row, $cgs, $op, $clcgs_und, $clcgs_cartaosus ) {
+
+  db_inicio_transacao();
+  $lErroTransacao = false;
+
 
   $clcgs_und->z01_i_cgsund = $cgs;
   $clcgs_und->z01_v_ident  = $row->ident;
@@ -765,6 +725,22 @@ function atualiza_dados( $arq1, $row, $cgs, $op, $clcgs_und, $clcgs_cartaosus ) 
   $clcgs_und->z01_d_datapais      = "";
   $clcgs_und->z01_d_dtemissaocnh  = "";
 
+  $clcgs_und->z01_b_faleceu      = 'f';
+  $clcgs_und->z01_d_falecimento  = '';
+  $clcgs_und->z01_b_descnomemae  = 'f';
+  $clcgs_und->z01_i_naturalidade = '';
+  $clcgs_und->z01_i_paisorigem   = '';
+  $clcgs_und->z01_v_municnasc    = 'null';
+  $clcgs_und->z01_v_ufnasc       = 'null';
+  $clcgs_und->z01_codigoibgenasc = '';
+  $clcgs_und->z01_i_codocupacao  = '';
+  $clcgs_und->z01_i_escolaridade = '';
+  $clcgs_und->z01_i_cgm          = '';
+  $clcgs_und->z01_i_cge          = '';
+  $clcgs_und->z01_i_cidadao      = '';
+  $clcgs_und->z01_b_inativo      = 'f';
+
+
 
   if( ( $clcgs_und->z01_v_bairro  != "") && ($clcgs_und->z01_v_bairro != null )
       &&( $clcgs_und->z01_v_cep   != "") && ($clcgs_und->z01_v_cep    != null )
@@ -777,9 +753,10 @@ function atualiza_dados( $arq1, $row, $cgs, $op, $clcgs_und, $clcgs_cartaosus ) 
     $clcgs_und->alterar ( $cgs );
     if ($clcgs_und->erro_status == 0) {
 
+      $lErroTransacao = true;
       $erro = " Alteração cartaosus \n";
       $log  = "$erro Erro durante alteracao do clcgs_und -> " . $clcgs_und->erro_msg;
-      log_erro ( $erro, $log, $arq1 );
+      log_erro ( $log, $arq1 );
     }
 
     $inc = false;
@@ -813,27 +790,31 @@ function atualiza_dados( $arq1, $row, $cgs, $op, $clcgs_und, $clcgs_cartaosus ) 
 
       if ($clcgs_cartaosus->erro_status == 0) {
 
+        $lErroTransacao = true;
         $erro = " Inclusao cartaosus ";
         $log  = "[Atualiza dados]Erro durante inclusao do clcgs_cartaosus -> " . $clcgs_cartaosus->erro_msg;
         $log .= "\n CGS=$cgs \n cartão D=$row->definitivo \n cartão p=$row->provisorio; \n";
-        log_erro ( $erro, $log, $arq1 );
+        log_erro ( $erro."\n".$log, $arq1 );
       }
     }
 
   }else{
 
-    system ( "> $arq1" );
-
     $msg = "Erro ao Atualizar CGS->$cgs Campos : [nome=$clcgs_und->z01_v_nome] [nomemae=$clcgs_und->z01_v_mae]
             [cep=$clcgs_und->z01_v_cep] [munic=$clcgs_und->z01_v_munic] [ender=$clcgs_und->z01_v_ender]
             [bairro=$clcgs_und->z01_v_bairro] [sexo=$clcgs_und->z01_v_sexo] [uf=$clcgs_und->z01_v_uf] \n";
 
-    system ( "echo \"$msg\" >> $arq1" );
+    log_erro ( $msg, $arq1 );
   }
 
+
+  db_fim_transacao( $lErroTransacao );
 }
 
 function atualiza_cartao( $arq1, $codigo, $cgs, $cartao, $tipo ) {
+
+  db_inicio_transacao();
+  $lErroTransacao = false;
 
   $erro = validaCNS($cartao,'');
 
@@ -852,11 +833,14 @@ function atualiza_cartao( $arq1, $codigo, $cgs, $cartao, $tipo ) {
 
   if ($clcgs_cartaosus->erro_status == 0) {
 
+    $lErroTransacao = true;
     $erro = " Inclusao cartaosus ";
     $log  = "[Atualiza cartão]Erro durante inclusao do clcgs_cartaosus -> " . $clcgs_cartaosus->erro_msg;
     $log .= "\n CGS=$cgs \n cartão=$cartao \n Tipo=$tipo \n";
-    log_erro ( $erro, $log, $arq1 );
+    log_erro ( $erro."\n".$log, $arq1 );
   }
+
+  db_fim_transacao( $lErroTransacao );
 }
 
 function get_log($arq1, $import, $num, $row, $clcgs_cartaosusreg) {
@@ -887,20 +871,24 @@ function get_log($arq1, $import, $num, $row, $clcgs_cartaosusreg) {
 
       $erro = " Inclusao cadsusreg ";
       $log = "Erro durante inclusao do clcgs_cartaosusreg -> " . $clcgs_cartaosusreg->erro_msg;
-      log_erro ( $erro, $log, $arq1 );
+      log_erro ( $erro."\n".$log, $arq1 );
     }
   }
 }
 
 function novo_cgs($arq1, $row, $clcgs_cartaosus, $clcgs, $clcgs_und) {
-  
+
+  db_inicio_transacao();
+  $lErroTransacao = false;
+
   $inc = false;
   $clcgs->incluir ( null );
   if ($clcgs->erro_status == 0) {
 
     $erro = " Inclusao CGS ";
     $log  = "Erro durante inclusao do cgs -> " . $clcgs->erro_msg;
-    log_erro ( $erro, $log, $arq1 );
+    log_erro ( $erro."\n".$log, $arq1 );
+    $lErroTransacao = true;
   }
 
   $clcgs_und->z01_i_cgsund = $clcgs->z01_i_numcgs;
@@ -931,6 +919,21 @@ function novo_cgs($arq1, $row, $clcgs_cartaosus, $clcgs, $clcgs_und) {
   $clcgs_und->z01_i_login         = db_getsession ( "DB_id_usuario" );
   $clcgs_und->z01_o_oid           = 'null';
 
+  $clcgs_und->z01_b_faleceu      = 'f';
+  $clcgs_und->z01_d_falecimento  = '';
+  $clcgs_und->z01_b_descnomemae  = 'f';
+  $clcgs_und->z01_i_naturalidade = '';
+  $clcgs_und->z01_i_paisorigem   = '';
+  $clcgs_und->z01_v_municnasc    = 'null';
+  $clcgs_und->z01_v_ufnasc       = 'null';
+  $clcgs_und->z01_codigoibgenasc = '';
+  $clcgs_und->z01_i_codocupacao  = '';
+  $clcgs_und->z01_i_escolaridade = '';
+  $clcgs_und->z01_i_cgm          = '';
+  $clcgs_und->z01_i_cge          = '';
+  $clcgs_und->z01_i_cidadao      = '';
+  $clcgs_und->z01_b_inativo      = 'f';
+
   if( ($clcgs_und->z01_v_bairro  != "" ) && ( $clcgs_und->z01_v_bairro !=null )
       &&($clcgs_und->z01_v_cep   != "" ) && ( $clcgs_und->z01_v_cep    !=null )
       &&($clcgs_und->z01_v_munic != "" ) && ( $clcgs_und->z01_v_munic  !=null )
@@ -942,9 +945,10 @@ function novo_cgs($arq1, $row, $clcgs_cartaosus, $clcgs, $clcgs_und) {
      $clcgs_und->incluir ( $clcgs->z01_i_numcgs );
      if ($clcgs_und->erro_status == 0) {
 
+        $lErroTransacao = true;
         $erro = " Inclusao Novo CGS \n";
         $log  = "$erro Erro durante inclusao do cgs_und -> " . $row->nome . " \n " . $clcgs_und->erro_sql. " \n ".pg_errormessage();
-        log_erro ( $erro, $log, $arq1 );
+        log_erro ( $log, $arq1 );
      }
 
      if (($row->definitivo != null) && ($row->definitivo != "")) {
@@ -971,28 +975,31 @@ function novo_cgs($arq1, $row, $clcgs_cartaosus, $clcgs, $clcgs_und) {
        $inc = true;
      }
 
-    } else{
+    } else {
 
-      system ( "> $arq1" );
+      $lErroTransacao = true;
+      $sMensagem  = "Erro ao incluir CGS. Dados inconsistentes, favor atualizar as informações no centralizador.\n";
+      $sMensagem .= "Nome: {$clcgs_und->z01_v_nome} - Cartão Provisório: {$row->provisorio} / Cartão Permanente: {$row->definitivo}";
+      $sMensagem .= "\nCampos Obrigatórios: Nome da mãe = [$clcgs_und->z01_v_mae]";
+      $sMensagem .= " CEP = [$clcgs_und->z01_v_cep] Município = [$clcgs_und->z01_v_munic] Endereço = [$clcgs_und->z01_v_ender]";
+      $sMensagem .= " Bairro = [$clcgs_und->z01_v_bairro] Sexo = [$clcgs_und->z01_v_sexo] UF = [$clcgs_und->z01_v_uf]\n";
 
-      $msg="Erro ao incluir CGS->$clcgs->z01_i_numcgs (cartão Provisório:{$row->provisorio} Permanente: {$row->definitivo})
-            Campos : [nome=$clcgs_und->z01_v_nome] [nome=$clcgs_und->z01_v_mae]
-            [cep=$clcgs_und->z01_v_cep] [munic=$clcgs_und->z01_v_munic] [ender=$clcgs_und->z01_v_ender]
-            [bairro=$clcgs_und->z01_v_bairro] [sexo=$clcgs_und->z01_v_sexo] [uf=$clcgs_und->z01_v_uf] \n";
-
-      system ( "echo \"$msg\" >> $arq1" );
+      log_erro( $sMensagem, $arq1 );
     }
 
   if ($inc == true) {
 
     if ($clcgs_cartaosus->erro_status == 0) {
 
+      $lErroTransacao = true;
       $erro = " Inclusao cadsus ";
       $log  = "[Novo CGS]Erro durante inclusao do clcgs_cartaosus -> " . $clcgs_cartaosus->erro_msg;
       $log .= "\n CGS=$cgs \n cartão D=$row->definitivo \n cartão p=$row->provisorio; \n";
-      log_erro ( $erro, $log, $arq1 );
+      log_erro ( $erro."\n".$log, $arq1 );
     }
   }
+
+  db_fim_transacao( $lErroTransacao );
 
 }
 
@@ -1017,7 +1024,7 @@ function cruza_dados($row, $cgs, $conn) {
                  z01_v_cgccpf,
                  z01_v_uf,
                  z01_v_mae
-            from cgs_und 
+            from cgs_und
            where z01_i_cgsund = $cgs";
 
   if ( ($cgs != "") && ($cgs != null) ) {
@@ -1050,7 +1057,7 @@ function cruza_dados($row, $cgs, $conn) {
       $atualiza = ( trim( $objCGS->z01_v_ident )         != str_replace ( "'", "", trim( $row->ident )    ) && $row->ident    != null )      ? true : $atualiza;
       $atualiza = ( trim( $objCGS->z01_v_cgccpf )        != trim( $row->cpf )                               && $row->cpf      != null )      ? true : $atualiza;
       $atualiza = ( trim( $objCGS->z01_v_uf )            != trim( $row->uf )                                && $row->uf       != null )      ? true : $atualiza;
-     
+
     }
   }
 
@@ -1137,42 +1144,38 @@ function nome40($nome) {
   return $nome;
 }
 
-function log_erro($erro, $log, $arq) {
-
-  echo "<div align='center'><p><strong> *** ERRO DURANTE O PROCESSO *** </strong><br/>";
-  echo "ERRO [$erro] <br/> <strong>ARQUIVO CONTENDO LOG:</strong> [$arq]";
-  echo "<br/> <fieldset style='width: 40%;'><legend>LOG</legend>" . str_replace("\\n", "<br>", $log) . "</fieldset></div>";
-  system ( "> $arq" );
+function log_erro($log, $arq) {
   system ( "echo \"$log\" >> $arq" );
 }
 
 function log_erro_versao($versao) {
 
-    db_msgbox ("Caro usuário sua versão do Cadsus não é compativel entre em contato com o administrador do sistema (versão:".$versao.")");
-    exit ();
+   db_msgbox ("Caro usuário sua versão do Cadsus não é compativel entre em contato com o administrador do sistema (versão:".$versao.")");
+   exit ();
 }
 
 function convert_obj_interbase($row){
 
-     $obj->definitivo = @$row->DEFINITIVO;
-     $obj->provisorio = @$row->PROVISORIO;
-     $obj->nome       = @$row->NOME;
-     $obj->nasc       = @$row->NASC;
-     $obj->endereco   = @$row->ENDERECO;
-     $obj->numero     = @$row->NUMERO;
-     $obj->bairro     = @$row->BAIRRO;
-     $obj->cep        = @$row->CEP;
-     $obj->cidade     = @$row->CIDADE;
-     $obj->sexo       = @$row->SEXO;
-     $obj->certidao   = @$row->CERTIDAO;
-     $obj->livro      = @$row->LIVRO;
-     $obj->folha      = @$row->FOLHA;
-     $obj->ident      = @$row->IDENT;
-     $obj->cpf        = @$row->CPF;
-     $obj->uf         = @$row->UF;
-     $obj->nomemae    = @$row->NOMEMAE;
+  $obj             = new stdClass();
+  $obj->definitivo = @$row->DEFINITIVO;
+  $obj->provisorio = @$row->PROVISORIO;
+  $obj->nome       = @$row->NOME;
+  $obj->nasc       = @$row->NASC;
+  $obj->endereco   = @$row->ENDERECO;
+  $obj->numero     = @$row->NUMERO;
+  $obj->bairro     = @$row->BAIRRO;
+  $obj->cep        = @$row->CEP;
+  $obj->cidade     = @$row->CIDADE;
+  $obj->sexo       = @$row->SEXO;
+  $obj->certidao   = @$row->CERTIDAO;
+  $obj->livro      = @$row->LIVRO;
+  $obj->folha      = @$row->FOLHA;
+  $obj->ident      = @$row->IDENT;
+  $obj->cpf        = @$row->CPF;
+  $obj->uf         = @$row->UF;
+  $obj->nomemae    = @$row->NOMEMAE;
 
-     return $obj;
+  return $obj;
 }
 
 function jogar_erro($msg){
@@ -1260,7 +1263,7 @@ function validaCNS( $cns, $sTipoCartao=null, $arq1="" ) {
     $erro = " Numero do Cartão Sus Inválido! ";
     $log  = " Erro durante manutenção dos dados do cgs - Numero do Cartão Sus Inválido!";
     $log .= "\nCNS=".@$cns." CGS=".@$cgs." \n Tipo cartão= $sTipoCartao \n";
-    log_erro ( $erro, $log, $arq1 );
+    log_erro ( $erro."\n".$log, $arq1 );
 
     return $erro;
   }

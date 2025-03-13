@@ -220,7 +220,7 @@ dbViewNotificaFornecedor = function (iNumCgm, iOrigem, iCodigoNotificaBloqueioFo
                                                 /*
                                                  * Trata o retorno da function notificar()
                                                  */
-                                                 var oRetorno = eval("("+oAjax.responseText+")");
+                                                 var oRetorno = JSON.parse(oAjax.responseText);
                                                  if (oRetorno.iStatus == 1) {
                                                  
                                                    me.windowNotificacaoDebitos.destroy();                                                   
@@ -267,7 +267,7 @@ dbViewNotificaFornecedor = function (iNumCgm, iOrigem, iCodigoNotificaBloqueioFo
                                                 /*
                                                  * Trata o retorno da function verificaEmail()
                                                  */
-                                                 var oRetorno = eval("("+oAjax.responseText+")");
+                                                 var oRetorno = JSON.parse(oAjax.responseText);
                                                  if (oRetorno.iStatus == 1) {
                                                  
                                                    if (oRetorno.lPermissaoMenu == true) {
@@ -394,7 +394,7 @@ dbViewNotificaFornecedor = function (iNumCgm, iOrigem, iCodigoNotificaBloqueioFo
                                                      /*
                                                       * Trata o retorno evento do btnSalvarEmail
                                                       */
-                                                     var oRetorno = eval("("+oAjax.responseText+")");
+                                                     var oRetorno = JSON.parse(oAjax.responseText);
                                                      if (oRetorno.iStatus == 1) {
                                                        
                                                        /**

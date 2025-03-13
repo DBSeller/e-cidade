@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,58 +25,87 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//MODULO: agua
 $claguacortesituacao->rotulo->label();
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tx43_codsituacao?>">
-       <?=@$Lx43_codsituacao?>
-    </td>
-    <td> 
-<?
-db_input('x43_codsituacao',5,$Ix43_codsituacao,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tx43_descr?>">
-       <?=@$Lx43_descr?>
-    </td>
-    <td> 
-<?
-db_input('x43_descr',40,$Ix43_descr,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tx43_regra?>">
-       <?=@$Lx43_regra?>
-    </td>
-    <td> 
-<?
-$x = array('0'=>'Normal','1'=>'Inicia Procedimento de Corte','2'=>'Finaliza Procedimento de Corte','3'=>'Bloqueia Corte');
-db_select('x43_regra',$x,true,$db_opcao,"");
-?>
-    </td>
-  </tr>
-  </table>
-  </center>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+  <fieldset>
+    <legend>Situação de Corte</legend>
+    <table>
+      <tr>
+        <td title="Código da Situação">
+          <label for="x43_codsituacao" class="bold">Situação:</label>
+        </td>
+        <td>
+          <?php db_input('x43_codsituacao', 5, 1, true, 'text', 3, "") ?>
+        </td>
+      </tr>
+
+      <tr>
+        <td title="Descrição da situação de corte">
+          <label for="x43_descr" class="bold">Descrição:</label>
+        </td>
+        <td>
+          <?php db_input('x43_descr', 40, 0, true, 'text', $db_opcao, "") ?>
+        </td>
+      </tr>
+
+      <tr>
+        <td title="Regra da situação de corte">
+          <label for="x43_regra" class="bold">Regra:</label>
+        </td>
+        <td>
+          <?php
+            $aRegras = array(
+              0 => 'Normal',
+              1 => 'Inicia Procedimento de Corte',
+              2 => 'Finaliza Procedimento de Corte',
+              3 => 'Bloqueia Corte'
+            );
+            db_select('x43_regra', $aRegras, true, $db_opcao, "");
+          ?>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label for="x43_realizacobranca" class="bold">Realiza Cobrança:</label>
+        </td>
+        <td>
+          <?php
+            if (!isset($x43_realizacobranca) || $x43_realizacobranca == 't') {
+              $x43_realizacobranca = 1;
+            }
+            db_select('x43_realizacobranca', array(1 => 'Sim', 0 => 'Não'), true, $db_opcao);
+          ?>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+
+  <input name="<?= ($db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir")) ?>" type="submit" id="db_opcao" value="<?= ($db_opcao == 1 ? "Incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "Alterar" : "Excluir")) ?>" <?= ($db_botao == false ? "disabled" : "") ?>>
+  <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
-<script>
-function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguacortesituacao','func_aguacortesituacao.php?funcao_js=parent.js_preenchepesquisa|x43_codsituacao','Pesquisa',true);
-}
-function js_preenchepesquisa(chave){
-  db_iframe_aguacortesituacao.hide();
-  <?
-  if($db_opcao!=1){
-    echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
+
+<script type="text/javascript">
+
+  function js_pesquisa() {
+
+    js_OpenJanelaIframe(
+      'CurrentWindow.corpo',
+      'db_iframe_aguacortesituacao',
+      'func_aguacortesituacao.php?funcao_js=parent.js_preenchepesquisa|x43_codsituacao',
+      'Pesquisa',
+      true
+    );
   }
-  ?>
-}
+
+  function js_preenchepesquisa(chave) {
+
+    db_iframe_aguacortesituacao.hide();
+    <?php
+      if ($db_opcao != 1) {
+        echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
+      }
+    ?>
+  }
 </script>

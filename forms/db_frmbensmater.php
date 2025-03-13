@@ -1,32 +1,32 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: patrim
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clbensmater->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -182,12 +182,12 @@ function js_mudaProc(sTipoProc){
 
 function js_pesquisae60_numemp(mostra,opcao){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_bensmater','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_mostraempempenho1|e60_numemp|e60_codemp|e60_anousu|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_bensmater','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_mostraempempenho1|e60_numemp|e60_codemp|e60_anousu|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.e60_numemp.value != '' && opcao == 'emp'){
-        js_OpenJanelaIframe('top.corpo.iframe_bensmater','db_iframe_empempenho','func_empempenhopat.php?pesquisa_chave='+document.form1.e60_numemp.value+'&funcao_js=parent.js_mostraempempenho','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_bensmater','db_iframe_empempenho','func_empempenhopat.php?pesquisa_chave='+document.form1.e60_numemp.value+'&funcao_js=parent.js_mostraempempenho','Pesquisa',false);
      }else if(document.form1.e60_codemp.value != '' && opcao == 'cod'){
-        js_OpenJanelaIframe('top.corpo.iframe_bensmater','db_iframe_empempenho','func_empempenhopat.php?funcao_js=parent.js_mostraempempenho1|e60_numemp|e60_codemp|e60_anousu|z01_nome&chave_e60_codemp='+document.form1.e60_codemp.value,'Pesquisa',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_bensmater','db_iframe_empempenho','func_empempenhopat.php?funcao_js=parent.js_mostraempempenho1|e60_numemp|e60_codemp|e60_anousu|z01_nome&chave_e60_codemp='+document.form1.e60_codemp.value,'Pesquisa',true);
      }else{
        document.form1.z01_nome.value = '';
        document.form1.e60_numemp.value = '';
@@ -215,7 +215,11 @@ function js_mostraempempenho1(chave1,chave2,chave3,chave4){
 
 function getCodigoItemNaNota() {
 
+  if ($F('t53_codbem') == "") {
+    return;
+  }
   js_divCarregando("Aguarde, verificando vínculo do bem com empenho do sistema...", "msgBox");
+
   var oParam = {"exec":"getCodigoDoItemNaNota", "iCodigoBem": $F('t53_codbem')};
 
   new Ajax.Request("pat1_bensnovo.RPC.php",
@@ -225,7 +229,7 @@ function getCodigoItemNaNota() {
                       onComplete: function (oAjax) {
 
                         js_removeObj("msgBox");
-                        var oRetorno = eval("("+oAjax.responseText+")");
+                        var oRetorno = JSON.parse(oAjax.responseText);
                         if (oRetorno.lEmpenhoVinculado) {
                           getDadosEmpenho(oRetorno.iCodigoItemNaNota);
                         }
@@ -258,7 +262,13 @@ function preencheFormularioComDadosDoEmpenho(oAjax) {
 
   js_removeObj("msgBox");
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
+
+  if (oRetorno.erro) {
+    return alert(oRetorno.message.urlDecode());
+  }
+
+  oRetorno = oRetorno.aNotas[0];
 
   $("emp_sistema").disabled = true;
   $("e60_numemp").readOnly  = true;
@@ -290,10 +300,10 @@ function preencheFormularioComDadosDoEmpenho(oAjax) {
 if(isset($incluir) || isset($excluir)){
   $clbensmater->sql_record($clbensmater->sql_query_file($t53_codbem));
   if($clbensmater->numrows > 0){
-    echo "top.corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?desabilita=true&t54_codbem=$t53_codbem';";
+    echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?desabilita=true&t54_codbem=$t53_codbem';";
   }else{
     if(isset($excluir)){
-      echo "top.corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?t54_codbem=$t53_codbem';";
+      echo "(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?t54_codbem=$t53_codbem';";
     }
   }
 }

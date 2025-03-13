@@ -31,7 +31,7 @@ class FileList extends GtkCList
     {
         $this->names = $names;
         GtkCList::GtkCList(1, array($title));
-        GtkCList::connect_object('select-row', array(&$this, 'Pop'));
+        GtkCList::connect_object('select-row', array($this, 'Pop'));
         
         $this->BotaoOk = new GtkButton;
         GtkCList::show();
@@ -89,19 +89,19 @@ class FileList extends GtkCList
 
         if (!$names)
         {
-            $this->ItemOpen = $Menuitem1 = new MyNormalMenuItem($Pixmaps['menu_open'], _a('Open'), array(&$this, 'Open'));
-            $this->ItemDel  = $Menuitem2 = new MyNormalMenuItem($Pixmaps['menu_del'], _a('Delete'), array(&$this, 'Delete'));
+            $this->ItemOpen = $Menuitem1 = new MyNormalMenuItem($Pixmaps['menu_open'], _a('Open'), array($this, 'Open'));
+            $this->ItemDel  = $Menuitem2 = new MyNormalMenuItem($Pixmaps['menu_del'], _a('Delete'), array($this, 'Delete'));
         }
         else
         {
             if ($names[0])
             {
-                $this->ItemOpen = $Menuitem1 = new MyNormalMenuItem($Pixmaps['menu_open'], _a($names[0][1]) , array(&$this, 'Open'));
+                $this->ItemOpen = $Menuitem1 = new MyNormalMenuItem($Pixmaps['menu_open'], _a($names[0][1]) , array($this, 'Open'));
             }
             
             if ($names[1])
             {
-                $this->ItemDel  = $Menuitem2 = new MyNormalMenuItem($Pixmaps['menu_del'], _a($names[1][1]), array(&$this, 'Delete'));
+                $this->ItemDel  = $Menuitem2 = new MyNormalMenuItem($Pixmaps['menu_del'], _a($names[1][1]), array($this, 'Delete'));
             }
         }
         
@@ -140,7 +140,7 @@ class FileList extends GtkCList
 
         if (!$flag)
         {
-            $b = new Ask(_a('Do you really want to delete ?'), array(&$this,'Delete'), null, array(true));
+            $b = new Ask(_a('Do you really want to delete ?'), array($this,'Delete'), null, array(true));
             return true;
         }
         else

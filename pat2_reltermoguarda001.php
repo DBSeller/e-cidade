@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $oRotulo = new rotulocampo;
 $oRotulo->label("t21_codigo");
@@ -171,7 +171,7 @@ function js_pesquisaBensGuarda(lMostra) {
   if (lMostra) {
 
     sUrl += '&funcao_js=parent.js_bensGuarda|t21_codigo|t21_numcgm|z01_nome';
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_bensguarda', sUrl, 'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_bensguarda', sUrl, 'Pesquisa',true);
   } else {
     
      if ($F('t21_codigo') != '') {

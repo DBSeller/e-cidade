@@ -64,8 +64,12 @@ END
 $$
 LANGUAGE plpgsql;
 
+
 select recreate_views('ALTER TABLE cgm ALTER COLUMN z01_telef  TYPE varchar(20),ALTER COLUMN z01_telcon TYPE varchar(20),ALTER COLUMN z01_celcon TYPE varchar(20),ALTER COLUMN z01_telcel TYPE varchar(20), ALTER COLUMN z01_fax  TYPE varchar(20);', array_accum(viewname)) from pg_views where definition ilike '%z01_telef%' or definition ilike '%z01_telcon%' or definition ilike '%z01_celcon%' or definition ilike '%z01_telcel%' or definition ilike '%z01_fax%';
 ALTER TABLE cgmalt ALTER COLUMN z05_telef  TYPE varchar(20),ALTER COLUMN z05_telcon TYPE varchar(20),ALTER COLUMN z05_celcon TYPE varchar(20),ALTER COLUMN z05_telcel TYPE varchar(20), ALTER COLUMN z05_fax  TYPE varchar(20);
+
+
+
 
 /**
  * --------------------------------------------------------------------------------------------------------------------

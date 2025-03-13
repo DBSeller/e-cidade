@@ -214,7 +214,7 @@ for ($i = 0;$i < $iVias;$i++){
 
           }
 
- $result_endent = pg_exec("select j14_nome as j14_nome_almox, numero as numero_almox, compl as compl_almox, j13_descr as j13_descr_almox, fonedepto as fone_almox, ramaldepto as ramal_almox, faxdepto as fax_almox
+ $result_endent = db_query("select j14_nome as j14_nome_almox, numero as numero_almox, compl as compl_almox, j13_descr as j13_descr_almox, fonedepto as fone_almox, ramaldepto as ramal_almox, faxdepto as fax_almox
                                                                                                                 from db_departender 
                                                                                                                 inner join db_depart on db_depart.coddepto = db_departender.coddepto
                                                                                                                 inner join ruas on j14_codigo = codlograd 

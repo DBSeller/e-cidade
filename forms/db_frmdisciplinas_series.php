@@ -82,10 +82,10 @@ db_input('ed03_c_nome',40,$Ied03_c_nome,true,'text',3,'')
 <script>
 function js_pesquisaed31_i_series(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_series','func_series.php?funcao_js=parent.js_mostraseries1|ed03_i_codigo|ed03_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_series','func_series.php?funcao_js=parent.js_mostraseries1|ed03_i_codigo|ed03_c_nome','Pesquisa',true);
   }else{
      if(document.form1.ed31_i_series.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_series','func_series.php?pesquisa_chave='+document.form1.ed31_i_series.value+'&funcao_js=parent.js_mostraseries','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_series','func_series.php?pesquisa_chave='+document.form1.ed31_i_series.value+'&funcao_js=parent.js_mostraseries','Pesquisa',false);
      }else{
        document.form1.ed03_c_nome.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostraseries1(chave1,chave2){
 }
 function js_pesquisaed31_i_disciplina(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_disciplinas','func_disciplinas.php?funcao_js=parent.js_mostradisciplinas1|ed27_i_codigo|ed27_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_disciplinas','func_disciplinas.php?funcao_js=parent.js_mostradisciplinas1|ed27_i_codigo|ed27_c_nome','Pesquisa',true);
   }else{
      if(document.form1.ed31_i_disciplina.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_disciplinas','func_disciplinas.php?pesquisa_chave='+document.form1.ed31_i_disciplina.value+'&funcao_js=parent.js_mostradisciplinas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_disciplinas','func_disciplinas.php?pesquisa_chave='+document.form1.ed31_i_disciplina.value+'&funcao_js=parent.js_mostradisciplinas','Pesquisa',false);
      }else{
        document.form1.ed27_c_nome.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostradisciplinas1(chave1,chave2){
   db_iframe_disciplinas.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_disciplinas_series','func_disciplinas_series.php?funcao_js=parent.js_preenchepesquisa|ed31_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_disciplinas_series','func_disciplinas_series.php?funcao_js=parent.js_preenchepesquisa|ed31_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_disciplinas_series.hide();

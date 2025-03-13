@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/scpdf.php");
+include(modification("fpdf151/scpdf.php"));
 //db_postmemory($HTTP_SERVER_VARS);
 $sql = "select uf, db12_extenso, logo, munic 
 			from db_config  
 				inner join db_uf on db12_uf = uf
 			where codigo = ".db_getsession("DB_instit");
 			
-$result = pg_query($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 
 $pdf = new SCPDF();
@@ -97,7 +97,7 @@ $pdf->Ln(3);
 //$pdf->Cell(270,2,'______________________________________________',0,1,"L",0);
 //Busca numero de dias para venciemnto 
 $sql = "select *  from db_confplan;";
-$result = pg_query($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 
 $pdf->Cell(270,3,'Nome e Assinatura do Reponsável pelas Informações',0,1,"L",0);

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tabrec_classe.php");
-include("classes/db_proced_classe.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_arreold_classe.php");
-include("classes/db_divida_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tabrec_classe.php"));
+include(modification("classes/db_proced_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arreold_classe.php"));
+include(modification("classes/db_divida_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $cltabrec = new cl_tabrec;
 $clarrecad = new cl_arrecad;
@@ -57,7 +57,7 @@ if(isset($cod_k02_codigo) && trim($cod_k02_codigo)!="" && isset($cod_v03_codigo)
       $cod_k02_codigo = $codigo_k02[$ii];
       $cod_v03_codigo = $codigo_v03[$ii];
       if($k00_receit==$cod_k02_codigo){	
-	$nextval_numpre=pg_exec("select nextval('numpref_k03_numpre_seq') as numpre_novo");
+	$nextval_numpre=db_query("select nextval('numpref_k03_numpre_seq') as numpre_novo");
 	db_fieldsmemory($nextval_numpre,0); 
 	$cldivida->v01_numcgm  =  $k00_numcgm;
 	$cldivida->v01_dtinsc  =  date("Y-m-d");
@@ -239,3 +239,9 @@ if($teste==true){
   db_msgbox($erro_msg);
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

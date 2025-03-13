@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("fpdf151/scpdf.php");
-include("classes/db_db_docparag_classe.php");
-include("classes/db_levanta_classe.php");
-include("classes/db_levantanotas_classe.php");
-include("classes/db_levvalor_classe.php");
-include("classes/db_levinscr_classe.php");
-include("classes/db_ativprinc_classe.php");
-include("classes/db_ativid_classe.php");
-include("classes/db_tabativ_classe.php");
-include("classes/db_parissqn_classe.php");
-include("classes/db_levusu_classe.php");
-include("classes/db_cgm_classe.php");
-//include("debug.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/scpdf.php"));
+include(modification("classes/db_db_docparag_classe.php"));
+include(modification("classes/db_levanta_classe.php"));
+include(modification("classes/db_levantanotas_classe.php"));
+include(modification("classes/db_levvalor_classe.php"));
+include(modification("classes/db_levinscr_classe.php"));
+include(modification("classes/db_ativprinc_classe.php"));
+include(modification("classes/db_ativid_classe.php"));
+include(modification("classes/db_tabativ_classe.php"));
+include(modification("classes/db_parissqn_classe.php"));
+include(modification("classes/db_levusu_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+//include(modification("debug.php"));
 $clativid          = new cl_ativid;
 $cltabativ         = new cl_tabativ;
 $cllevanta         = new cl_levanta;
@@ -259,14 +259,14 @@ for($x=0;$x<$numrows01;$x++){
 
         $dtoper = date("Y-m-d",db_getsession("DB_datausu"));
       
-	$result = pg_query("select fc_corre(".$receit.",'".$y63_dtvenc."',".$y63_saldo.",'".$dtoper."',".db_getsession("DB_anousu").",'$y63_dtvenc') as correcao");
+	$result = db_query("select fc_corre(".$receit.",'".$y63_dtvenc."',".$y63_saldo.",'".$dtoper."',".db_getsession("DB_anousu").",'$y63_dtvenc') as correcao");
 	db_fieldsmemory($result,0,true);
 
-	$result = pg_query("select fc_juros(".$receit.",'".$y63_dtvenc."','".$dtoper."','".$y63_dtvenc."','f',".db_getsession("DB_anousu").") as juro");
+	$result = db_query("select fc_juros(".$receit.",'".$y63_dtvenc."','".$dtoper."','".$y63_dtvenc."','f',".db_getsession("DB_anousu").") as juro");
 	db_fieldsmemory($result,0,true);
 	$juro = $correcao * $juro;
 
-	$result = pg_query("select fc_multa(".$receit.",'".$y63_dtvenc."','".$dtoper."','".$y63_dtvenc."',".db_getsession("DB_anousu").") as multa");
+	$result = db_query("select fc_multa(".$receit.",'".$y63_dtvenc."','".$dtoper."','".$y63_dtvenc."',".db_getsession("DB_anousu").") as multa");
 	db_fieldsmemory($result,0,true);
 	
 	$multa = $correcao * $multa;

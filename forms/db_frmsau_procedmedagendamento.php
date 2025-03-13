@@ -195,7 +195,7 @@ function js_incluirProcedimento() {
 }
 function js_retornoIncluirProcedimento(oRetorno) {
   
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   alert(oRetorno.sMessage.urlDecode().replace(/\\n/g, "\n"));
   if (oRetorno.iStatus != 1) {
     return false;
@@ -235,7 +235,7 @@ function js_excluirProcedimento(iCodigo, sProced) {
 }
 function js_retornoExcluirProcedimento(oRetorno) {
   
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   alert(oRetorno.sMessage.urlDecode().replace(/\\n/g, "\n"));
   if (oRetorno.iStatus != 1) {
     return false;
@@ -302,7 +302,7 @@ function js_getProcedimentosAgendaProfissional() {
 
 function js_retornoGetProcedimentosAgendaProfissional(oRetorno) {
   
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
     return false;

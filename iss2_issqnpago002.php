@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -51,11 +51,19 @@ $sql .= "       left  join tabrec  on k02_codigo = k00_receit ";
 $sql .= " where q01_anousu = {$anousu} ";
 $sql .= "   and q01_cadcal = 2 "; // CADCALC 2 = ISS FIXO
 $sql .= "   and k00_dtpaga between '{$datai}' and '{$dataf}' ";
+$sql .= "   and not exists(
+              select 1 from abatimentoutilizacaodestino
+                inner join abatimentoutilizacao on k157_sequencial = k170_utilizacao
+                inner join abatimento on k125_sequencial = k157_abatimento
+                where k170_numpre = arrepaga.k00_numpre
+                  and k170_numpar = arrepaga.k00_numpar
+                  and k125_tipoabatimento = 3
+            )";
 $sql .= "group by k00_receit, ";
 $sql .= "         k02_drecei  ";
 $sql .= "order by k00_receit  ";
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 $linha = 0;
 $pdf->ln(2);
@@ -125,12 +133,20 @@ $sql .= "           q05_valor ";
 $sql .= "         else ";
 $sql .= "           q05_vlrinf ";
 $sql .= "       end >= 0 ";
+$sql .= "   and not exists(
+              select 1 from abatimentoutilizacaodestino
+                inner join abatimentoutilizacao on k157_sequencial = k170_utilizacao
+                inner join abatimento on k125_sequencial = k157_abatimento
+                where k170_numpre = arrepaga.k00_numpre
+                  and k170_numpar = arrepaga.k00_numpar
+                  and k125_tipoabatimento = 3
+            )";
 $sql .= "group by k00_receit, ";
 $sql .= "         k02_drecei  ";
 $sql .= "order by k00_receit  ";
 
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 $pdf->SetFont('Arial','B',9);
 $imposto = "ISSQN VARIÁVEL";
@@ -180,11 +196,19 @@ $sql .= "       left  join tabrec  on k02_codigo = k00_receit ";
 $sql .= " where q01_anousu = {$anousu} ";
 $sql .= "   and q01_cadcal = 1 "; // CADCALC 1 = ALVARA
 $sql .= "   and k00_dtpaga between '{$datai}' and '{$dataf}' ";
+$sql .= "   and not exists(
+              select 1 from abatimentoutilizacaodestino
+                inner join abatimentoutilizacao on k157_sequencial = k170_utilizacao
+                inner join abatimento on k125_sequencial = k157_abatimento
+                where k170_numpre = arrepaga.k00_numpre
+                  and k170_numpar = arrepaga.k00_numpar
+                  and k125_tipoabatimento = 3
+            )";
 $sql .= "group by k00_receit, ";
 $sql .= "         k02_drecei  ";
 $sql .= "order by k00_receit  ";
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 $pdf->SetFont('Arial','B',9);
 $imposto = "ALVARÁ";
@@ -236,11 +260,19 @@ $sql .= "       inner join vistorias on y70_codvist = y69_codvist ";
 $sql .= "       left  join tabrec    on k02_codigo  = k00_receit ";
 $sql .= " where k00_dtpaga between '{$datai}' and '{$dataf}' ";
 $sql .= "   and extract(year from y70_data) = {$anousu} ";
+$sql .= "   and not exists(
+              select 1 from abatimentoutilizacaodestino
+                inner join abatimentoutilizacao on k157_sequencial = k170_utilizacao
+                inner join abatimento on k125_sequencial = k157_abatimento
+                where k170_numpre = arrepaga.k00_numpre
+                  and k170_numpar = arrepaga.k00_numpar
+                  and k125_tipoabatimento = 3
+            )";
 $sql .= "group by k00_receit, ";
 $sql .= "         k02_drecei  ";
 $sql .= "order by k00_receit  ";
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 $pdf->SetFont('Arial','B',9);
 $imposto = "VISTORIAS";

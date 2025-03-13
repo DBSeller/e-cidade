@@ -1,0 +1,342 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1210' name='protocolo.protparam' description="Tabela de Manutenção de Parametros do Modulo Protocolo" prefix="p90" label="Manutenção de Parametros do Protocolo" type="1">
+  <fields>
+    <field codigo="7291" 
+           campo_api='' 
+           name="p90_emiterecib" 
+           conteudo="bool" 
+           description="Emite recibo na inclusão do processo" 
+           inivalue="f" 
+           label="Emite recibo na inclusão do processo" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Emite recibo na inclusão do processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="7872" 
+           campo_api='' 
+           name="p90_alteracgmprot" 
+           conteudo="bool" 
+           description="Se obriga usuario a atualizar o cgm durante a inclusao do processo de protocolo" 
+           inivalue="f" 
+           label="Obriga alterar CGM durante a inclusão de processo" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Obriga alterar CGM na inclusão processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="7896" 
+           campo_api='' 
+           name="p90_valcpfcnpj" 
+           conteudo="bool" 
+           description="Valida CPF/CNPJ na inclusão de Processo de Protocolo,ou seja ,permite incluir processo para um CPF/CNPJ em branco" 
+           inivalue="f" 
+           label="Valida CPF/CNPJ na inclusão de Processo" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Valida CPF/CNPJ na inclusão de Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8115" 
+           campo_api='' 
+           name="p90_impusuproc" 
+           conteudo="bool" 
+           description="Imprime o usuário q criou o processo na capa do processo" 
+           inivalue="f" 
+           label="Imprime o usuário na capa do processo" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Imprime o usuário na capa do processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8256" 
+           campo_api='' 
+           name="p90_debiaber" 
+           conteudo="bool" 
+           description="Verifica se o contribuinte tem debitos em aberto na inclusão do processo" 
+           inivalue="f" 
+           label="Verifica se o contribuinte tem debitos em aberto" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Verifica se o contribuinte tem debitos" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8680" 
+           campo_api='' 
+           name="p90_taxagrupo" 
+           conteudo="int4" 
+           description="Código do grupo de taxas" 
+           inivalue="0" 
+           label="Código do grupo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do grupo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8672" 
+           campo_api='' 
+           name="p90_histpadcert" 
+           conteudo="text" 
+           description="Historico padrão para certidões" 
+           inivalue="" 
+           label="Historico padrão para certidões" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Historico padrão para certidões" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8808" 
+           campo_api='' 
+           name="p90_despachoob" 
+           conteudo="bool" 
+           description="Despacho Obrigatório.Se quando for transferir o processo é obrigatorio incluir um despacho para os processos." 
+           inivalue="f" 
+           label="Despacho Obrigatório" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Despacho Obrigatório" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8809" 
+           campo_api='' 
+           name="p90_minchardesp" 
+           conteudo="int4" 
+           description="Minímo de Caracteres p/ o despacho." 
+           inivalue="0" 
+           label="Minímo de Caracteres p/ o despacho" 
+           size="6" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Minímo de Caracteres p/ o despacho" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="9214" 
+           campo_api='' 
+           name="p90_andatual" 
+           conteudo="bool" 
+           description="Mostra andamento atual na consulta processos" 
+           inivalue="f" 
+           label="Mostra andamento atual" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Mostra andamento atual" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="9430" 
+           campo_api='' 
+           name="p90_traminic" 
+           conteudo="int4" 
+           description="1. permitir escolher departamentos diferentes;
+2. nào permitir escolher departamentos diferentes;
+3. permitir escolher departamentos diferentes, mas avisar o usuário;" 
+           inivalue="0" 
+           label="Trâmite" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Trâmite" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="9563" 
+           campo_api='' 
+           name="p90_modelcapaproc" 
+           conteudo="int4" 
+           description="Modelo da Capa do Processo" 
+           inivalue="0" 
+           label="Modelo da Capa do Processo" 
+           size="4" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Modelo da Capa do Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="9610" 
+           campo_api='' 
+           name="p90_imprimevar" 
+           conteudo="bool" 
+           description="Configura a impressão ou não de variáveis da capa de processo." 
+           inivalue="f" 
+           label="Impressão de variáveis" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Impressão de variáveis" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="10678" 
+           campo_api='' 
+           name="p90_instit" 
+           conteudo="int4" 
+           description="Código da Instituição" 
+           inivalue="0" 
+           label="Cod. Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Cod. Instituição" 
+           reference="codigo" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="15445" 
+           campo_api='' 
+           name="p90_impdepto" 
+           conteudo="bool" 
+           description="Imprime Departamento" 
+           inivalue="f" 
+           label="Imprime Departamento" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Imprime Departamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="18402" 
+           campo_api='' 
+           name="p90_db_documentotemplate" 
+           conteudo="int4" 
+           description="Documento Template" 
+           inivalue="0" 
+           label="Documento Template" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Documento Template" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011849" 
+           campo_api='' 
+           name="p90_depandamentopadrao" 
+           conteudo="int4" 
+           description="Departamento para inclusão automática do andamento  padrão. 
+
+Ao incluir um tipo de processo, será gerado um andamento padrão automaticamente, baseado no departamento informado nos parâmetros institucionais. Este, será vinculado ao tipo de processo." 
+           inivalue="0" 
+           label="Dep. para inclusão automática do andamento  padrão" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Dep. para inclusão automática  andameto" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="p90_instit" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="taxagrupo" inner='t'>
+      <fieldfk name="p90_taxagrupo" reference="k06_taxagrupo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

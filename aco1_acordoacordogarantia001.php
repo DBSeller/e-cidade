@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,47 +25,46 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("std/db_stdClass.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_acordoacordogarantia_classe.php");
-include("classes/db_acordo_classe.php");
-include("dbforms/db_funcoes.php");
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+parse_str($_SERVER["QUERY_STRING"], $queryString);
+db_postmemory($_POST);
+
 $clacordoacordogarantia = new cl_acordoacordogarantia();
 $clacordo = new cl_acordo;
 $db_opcao = 22;
 $db_botao = false;
 ?>
-<html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
+  <html>
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+      <?php
+      db_app::load("scripts.js, datagrid.widget.js, strings.js, prototype.js");
+      db_app::load("grid.style.css, estilos.css");
+      ?>
+  </head>
+  <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
+  <center>
+      <?php
+      include(modification("forms/db_frmacordoacordogarantia.php"));
+      ?>
+  </center>
+  </body>
+  </html>
 <?php
-db_app::load("scripts.js, datagrid.widget.js, strings.js, prototype.js");
-db_app::load("grid.style.css, estilos.css");
-?>
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-    <center>
-	<?
-	include("forms/db_frmacordoacordogarantia.php");
-	?>
-    </center>
-</body>
-</html>
-<?
-if(isset($alterar) || isset($excluir) || isset($incluir)){
+if (isset($alterar) || isset($excluir) || isset($incluir)) {
     db_msgbox($erro_msg);
-    if($clacordoacordogarantia->erro_campo!=""){
-        echo "<script> document.form1.".$clacordoacordogarantia->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-        echo "<script> document.form1.".$clacordoacordogarantia->erro_campo.".focus();</script>";
+    if ($clacordoacordogarantia->erro_campo != "") {
+        echo "<script> document.form1." . $clacordoacordogarantia->erro_campo . ".style.backgroundColor='#99A9AE';</script>";
+        echo "<script> document.form1." . $clacordoacordogarantia->erro_campo . ".focus();</script>";
     }
 }
-?>

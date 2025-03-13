@@ -1,4 +1,30 @@
 <?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
 /**
  * Classe para processamento de inclusão de Imóveis no Recadastro Imobiliario
  * 
@@ -6,7 +32,7 @@
  * @package  Recadastro Imobiliario
  * @author   Alberto Ferri Neto <alberto@dbseller.com.br> 
  * @revision $Author dbalberto $
- * @version  $Revision: 1.12 $
+ * @version  $Revision: 1.15 $
  */
 require_once(PATH_IMPORTACAO . "RecadastroImobiliarioImoveis.interface.php");
 
@@ -116,7 +142,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sUpdateRecadastroImobiliarioImoveis .= "       ie28_observacoes = '{$this->sMensagemLog}'   ";
     $sUpdateRecadastroImobiliarioImoveis .= " where ie28_sequencial  =  {$this->iCodigoRegistro} ";
     
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sUpdateRecadastroImobiliarioImoveis)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sUpdateRecadastroImobiliarioImoveis)) {
       
       $sMensagem = "Erro ao salvar log das operações do setor/quadra/lote: {$this->sSQL}.";
       
@@ -165,7 +191,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertCaracteristica    .= "        1,                               ";
     $sInsertCaracteristica    .= "        710)";
     
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
     
       $sMensagem = "ERRO ao incluir característica de construção para a matrícula {$iMatricula} do setor/quadra/lote:" . $this->sSQL;
     
@@ -217,7 +243,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
       $sInsertCaracteristica    .= "        $iCodigoCaracteristicaConstrucao)";
 
 
-      if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
+      if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
 
         $sMensagem = "ERRO ao incluir característica de construção para a matrícula {$iMatricula} do setor/quadra/lote:" . $this->sSQL;
         
@@ -268,7 +294,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
       $sInsertCaracteristica    .= "                     $iCodigoCaracteristicaLote,";
       $sInsertCaracteristica    .= "                     '$this->dDataInclusao')    ";                                     
       
-      if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
+      if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
         
         $sMensagem = "ERRO ao incluir características {$sGrupo} para o setor/quadra/lote: " . $this->sSQL;
 
@@ -295,7 +321,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertCaracteristica    .= "                     $iCodigoCaracteristicaLote,";
     $sInsertCaracteristica    .= "                     '$this->dDataInclusao')    ";
     
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
       $sMensagem = "ERRO ao incluir características Posição Fiscal para o setor/quadra/lote: " . $this->sSQL;
       $this->log($sMensagem, DBLog::LOG_ERROR );
       throw new Exception("#-- Erro --# - ".$sMensagem);
@@ -316,7 +342,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertCaracteristica    .= "                     $iCodigoCaracteristicaLote,";
     $sInsertCaracteristica    .= "                     '$this->dDataInclusao')    ";
     
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertCaracteristica)) {
       $sMensagem = "ERRO ao incluir características Posição Fiscal para o setor/quadra/lote: " . $this->sSQL;
       $this->log($sMensagem, DBLog::LOG_ERROR );
       throw new Exception("#-- Erro --# - ".$sMensagem);
@@ -329,7 +355,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
   
   public function novaMatricula($iCodigoLote, $iCodigoCgm) {
      
-    $rsMatricula       = pg_query(Conexao::getInstancia()->getConexao(), "select nextval('iptubase_j01_matric_seq') as matricula");
+    $rsMatricula       = db_query(Conexao::getInstancia()->getConexao(), "select nextval('iptubase_j01_matric_seq') as matricula");
 
     $iMatricula        = db_utils::fieldsMemory($rsMatricula, 0)->matricula; 
 
@@ -347,7 +373,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertMatricula .= "        1,                     ";
     $sInsertMatricula .= "        0)                     ";
 
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertMatricula)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertMatricula)) {
 
       $sMensagem = "Não foi possível gerar uma matricula para o novo setor/quadra/lote: " . $this->sSQL;
       
@@ -408,7 +434,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertIptuconstr       .= "        true, ";
     $sInsertIptuconstr       .= "        '$sObservacao')          ";
 
-    if ( !pg_query(Conexao::getInstancia()->getConexao(), $sInsertIptuconstr)) {
+    if ( !db_query(Conexao::getInstancia()->getConexao(), $sInsertIptuconstr)) {
       
       $sMensagem = "#-- Erro --# - Não foi possível incluir a construção {$iCodigoConstrucao} para a matrícula {$iMatricula} do setor/quadra/lote: " . $this->sSQL;
       $this->log($sMensagem, DBLog::LOG_ERROR );
@@ -427,7 +453,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
 
       $sSqlCgm = "select distinct j01_numcgm from iptubase where j01_idbql = {$iCodigoLote}";
 
-      $rsCgm   = pg_query(Conexao::getInstancia()->getConexao(), $sSqlCgm);
+      $rsCgm   = db_query(Conexao::getInstancia()->getConexao(), $sSqlCgm);
 
       /**
        *  A matrícula será vinculada ao cgm apenas se o lote for vinculado a 1(um) proprietário
@@ -444,7 +470,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
       $sSqlCgm .= "  from cgm                                                                        ";
       $sSqlCgm .= " where cgm.z01_cgccpf = '".trim($this->oRegistroArquivo->sCPFProprietarioNovo)."' ";
 
-      $rsCgm    = pg_query(Conexao::getInstancia()->getConexao(), $sSqlCgm);
+      $rsCgm    = db_query(Conexao::getInstancia()->getConexao(), $sSqlCgm);
 
       if ( pg_num_rows($rsCgm) > 0) {
         return db_utils::fieldsMemory($rsCgm, 0)->z01_numcgm;
@@ -468,7 +494,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     
     $sSqlCgm        = "select * from cgm where z01_numcgm = '".$aConfiguracoes->geral['cgm_recadastramento']."'";
 
-    $rsCgm          = pg_query(Conexao::getInstancia()->getConexao(), $sSqlCgm);
+    $rsCgm          = db_query(Conexao::getInstancia()->getConexao(), $sSqlCgm);
 
     if (pg_num_rows($rsCgm) == 0) {
 
@@ -493,7 +519,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sSqlLote .= "   and j34_quadra = '$sQuadra' ";
     $sSqlLote .= "   and j34_lote   = '$sLote'   ";
 
-    $rsLote    = pg_query(Conexao::getInstancia()->getConexao(), $sSqlLote);
+    $rsLote    = db_query(Conexao::getInstancia()->getConexao(), $sSqlLote);
 
     if ( pg_num_rows($rsLote) > 0) {
       return db_utils::fieldsMemory($rsLote, 0)->j34_idbql;
@@ -504,7 +530,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
 
   public function incluirLote() {
 
-    $rsLote       = pg_query(Conexao::getInstancia()->getConexao(), "select nextval('lote_j34_idbql_seq') as codigo_lote");
+    $rsLote       = db_query(Conexao::getInstancia()->getConexao(), "select nextval('lote_j34_idbql_seq') as codigo_lote");
     $iCodigoLote  = db_utils::fieldsMemory($rsLote, 0)->codigo_lote;
     
     $sSetor          = (string) $this->oRegistroArquivo->sSetorCartograficoNovo ;
@@ -539,7 +565,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertLote .= "        '0',                     ";
     $sInsertLote .= "        '0');                    ";
 
-    if ( pg_query(Conexao::getInstancia()->getConexao(), $sInsertLote) ){
+    if ( db_query(Conexao::getInstancia()->getConexao(), $sInsertLote) ){
 
       $this->incluirTestadaLote($iCodigoLote);
       
@@ -564,11 +590,11 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sSqlLoteamento .= "  from loteam                                                                      ";
     $sSqlLoteamento .= " where j34_descr ~ '{$this->oRegistroArquivo->iPlantaLoteamentoNovo}'";
     
-    $rsLoteamento    = pg_query(Conexao::getInstancia()->getConexao(), $sSqlLoteamento);
+    $rsLoteamento    = db_query(Conexao::getInstancia()->getConexao(), $sSqlLoteamento);
   
     if (pg_num_rows($rsLoteamento) == 0) {
       
-      $rsCodigoLoteamento = pg_query(Conexao::getInstancia()->getConexao(), "select nextval('loteam_j34_loteam_seq') as codigo_loteamento");
+      $rsCodigoLoteamento = db_query(Conexao::getInstancia()->getConexao(), "select nextval('loteam_j34_loteam_seq') as codigo_loteamento");
 
       $iCodigoLoteamento  = db_utils::fieldsMemory($rsCodigoLoteamento, 0)->codigo_loteamento;
       
@@ -584,7 +610,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
       $sInsertLoteamento .= "        0,                                                                   ";
       $sInsertLoteamento .= "        0)                                                                   ";
 
-      if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertLoteamento)) {                            
+      if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertLoteamento)) {                            
       
         $sMensagem = "[0]Erro ao incluir novo loteamento para o setor/quadra/lote: " .$this->sSQL. "Descricao do Erro : ".pg_last_error();
         
@@ -604,7 +630,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertLoteLoteam  = "insert into loteloteam (j34_idbql,    j34_loteam)        ";
     $sInsertLoteLoteam .= "                values ($iCodigoLote, $iCodigoLoteamento)"; 
 
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertLoteLoteam)) {                            
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertLoteLoteam)) {                            
 
       $sMensagem = "Erro ao vincular lote ao loteamento para o setor/quadra/lote: " . $this->sSQL . "Descricao do Erro : ".pg_last_error();
 
@@ -622,7 +648,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
 
   public function incluirLoteLocalizacao ($iCodigoLote) {
     
-    $rsLoteloc = pg_query(Conexao::getInstancia()->getConexao(), "select * from loteloc where j06_idbql = {$iCodigoLote}");
+    $rsLoteloc = db_query(Conexao::getInstancia()->getConexao(), "select * from loteloc where j06_idbql = {$iCodigoLote}");
 
     if (pg_num_rows($rsLoteloc) > 0) {
 
@@ -647,7 +673,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertLoteloc .= "        '{$this->oRegistroArquivo->iQuadraLoteamentoNovo}',";
     $sInsertLoteloc .= "        '{$this->oRegistroArquivo->iLoteLoteamentoNovo}')  ";
 
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertLoteloc)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertLoteloc)) {
 
       $sMensagem = "Erro ao incluir Lote de Localização o setor/quadra/lote: " . $this->sSQL; 
 
@@ -669,7 +695,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertSetorFiscal .= "values ($iCodigoLote,       ";
     $sInsertSetorFiscal .= "        99)                 ";
 
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertSetorFiscal)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertSetorFiscal)) {
     
       $sMensagem = "Erro ao incluir Lote Setor Fiscal para o setor/quadra/lote: " . $this->sSQL;
       
@@ -689,7 +715,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sSqlSetorLoc .= "  from setorloc                                                              ";
     $sSqlSetorLoc .= " where j05_codigoproprio = '{$this->oRegistroArquivo->iPlantaLoteamentoNovo}'";
     
-    $rsSetorLoc    = pg_query(Conexao::getInstancia()->getConexao(), $sSqlSetorLoc);
+    $rsSetorLoc    = db_query(Conexao::getInstancia()->getConexao(), $sSqlSetorLoc);
 
     if (!$rsSetorLoc) {              
 
@@ -703,7 +729,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
 
     if (pg_num_rows($rsSetorLoc) == 0) {
 
-      $rsSetorLoc       = pg_query(Conexao::getInstancia()->getConexao(), "select max(j05_codigo) + 1 as codigo_setorloc from setorloc");
+      $rsSetorLoc       = db_query(Conexao::getInstancia()->getConexao(), "select max(j05_codigo) + 1 as codigo_setorloc from setorloc");
       $iCodigoSetorLoc  = db_utils::fieldsMemory($rsSetorLoc, 0)->codigo_setorloc;
 
       $sInsertSetorloc  = "insert into setorloc                                                         ";
@@ -714,7 +740,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
       $sInsertSetorloc .= "        '{$this->oRegistroArquivo->iPlantaLoteamentoNovo} - RECADASTRAMENTO',";
       $sInsertSetorloc .= "        '{$this->oRegistroArquivo->iPlantaLoteamentoNovo}')                  ";
        
-      if (!pg_query( Conexao::getInstancia()->getConexao() , $sInsertSetorloc)) {
+      if (!db_query( Conexao::getInstancia()->getConexao() , $sInsertSetorloc)) {
 
         $sMensagem = "Erro ao incluir Setor de Localização para o setor/quadra/lote: " . $this->sSQL;
        
@@ -765,7 +791,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
       $sInsertTestada .= "        {$nValorTestada},        ";
       $sInsertTestada .= "        0)                       ";
 
-      if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertTestada)) {
+      if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertTestada)) {
 
         $sMensagem = "Erro ao incluir testada para o setor/quadra/lote: " . $this->sSQL;
         $this->log("#-- Erro --# - " . $sMensagem, DBLog::LOG_ERROR);
@@ -780,7 +806,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
       $sInsertTestpri .= "        {$iCodigoFace},                                  ";
       $sInsertTestpri .= "        {$iCodigoLogradouro})";
 
-      if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertTestpri)) {
+      if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertTestpri)) {
 
         $sMensagem = "Erro ao incluir testpri para o setor/quadra/lote: " . $this->sSQL;
 
@@ -804,7 +830,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
       $sInsertTestadaNumero .= "        '{$sComplemento}',                                                                       ";
       $sInsertTestadaNumero .= "        'Testada número incluído pelo recadastramento. Nome do arquivo: {$this->sNomeArquivo}.') ";
 
-      if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertTestadaNumero)) {
+      if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertTestadaNumero)) {
                       
         $sMensagem = "Erro ao incluir testadanumero para o setor/quadra/lote: " . $this->sSQL;
 
@@ -825,7 +851,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sSqlFace .= "   and j37_quadra = '{$iCodigoQuadra}'    ";
     $sSqlFace .= "   and j37_codigo = {$iCodigoLogradouro}  ";
 
-    $rsFace  = pg_query(Conexao::getInstancia()->getConexao(), $sSqlFace);
+    $rsFace  = db_query(Conexao::getInstancia()->getConexao(), $sSqlFace);
 
     if (!$rsFace  || pg_num_rows($rsFace) == 0) {
     
@@ -864,7 +890,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertHistocorrencia .= "         'Imóvel incluído pelo recadastramento. Nome do arquivo: {$this->sNomeArquivo}.',";
     $sInsertHistocorrencia .= "         'Imóvel incluído pelo recadastramento. Nome do arquivo: {$this->sNomeArquivo}.')";
 
-    if (pg_query (Conexao::getInstancia()->getConexao(), $sInsertHistocorrencia)) {
+    if (db_query (Conexao::getInstancia()->getConexao(), $sInsertHistocorrencia)) {
 
       $sInsertHistocorrenciaMatric  = "insert into histocorrenciamatric                            ";
       $sInsertHistocorrenciaMatric .= "       (ar25_sequencial   ,                                 ";
@@ -874,7 +900,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
       $sInsertHistocorrenciaMatric .= "        {$this->iMatricula},                                ";
       $sInsertHistocorrenciaMatric .= "        currval('histocorrencia_ar23_sequencial_seq'))      ";
 
-      if (pg_query(Conexao::getInstancia()->getConexao(), $sInsertHistocorrenciaMatric)) {
+      if (db_query(Conexao::getInstancia()->getConexao(), $sInsertHistocorrenciaMatric)) {
 
         $this->log( "Incluindo histórico de ocorrência para a matrícula {$this->iMatricula} do setor/quadra/lote: " . $this->sSQL, DBLog::LOG_INFO );
 
@@ -902,7 +928,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
     $sInsertIptuRefAnt .= "values ({$iMatricula},                \n";
     $sInsertIptuRefAnt .= "       '{$sCodigoReferenciaAnterior}')\n";
 
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sInsertIptuRefAnt)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sInsertIptuRefAnt)) {
 
       $sMensagem = "Erro ao incluir referencia anterior para a matrícula {$this->iMatricula} do setor/quadra/lote: " . $this->sSQL; 
 
@@ -968,7 +994,7 @@ class RecadastroImobiliarioImoveisInclusao implements RecadastroImobiliarioImove
   public function validarExistenciaLote() {
 
     $sSql  = "select * from iptuant where j40_refant ~ '{$this->getCodigoAnteriorConstrucao(true, false)}'";
-    $rsSql = pg_query($sSql);
+    $rsSql = db_query($sSql);
 
     if ( !$rsSql ) {
       throw new Exception("#-- Erro --# - ".'Erro ao Buscar dados da Referencia Anterior'); 

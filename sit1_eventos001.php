@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
 if(isset($retorno)) {
-  $result = pg_exec("select s_codigo as codigo,                            
+  $result = db_query("select s_codigo as codigo,                            
                             s_horainicio as horainicio,
                             s_horafim as horafim,
                             s_secretaria as secretaria,
@@ -54,7 +54,7 @@ if(isset($retorno)) {
 }
 if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select max(s_codigo) + 1 from db_calendario");
+  $result = db_query("select max(s_codigo) + 1 from db_calendario");
   $codigo = pg_result($result,0,0);
   $codigo = $codigo==""?1:$codigo;
   $SQL = "insert into db_calendario values(
@@ -70,14 +70,14 @@ if(isset($HTTP_POST_VARS["incluir"])) {
     '$email',
 	'$obs',
 	'$intext')";
-  $result = pg_exec($SQL);
+  $result = db_query($SQL);
   if(pg_cmdtuples($result) > 0) {
     echo "<script>location.href = 'sit1_eventos001.php'</script>\n";
 	exit;
   }
 } else if(isset($HTTP_POST_VARS["alterar"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("UPDATE db_calendario SET
+  $result = db_query("UPDATE db_calendario SET
                        s_datainicio = ".($datainicio_ano==""?"null":"'$datainicio_ano-$datainicio_mes-$datainicio_dia'").",
                        s_horainicio = '$horainicio',
                        s_datafim = ".($datafim_ano==""?"null":"'$datafim_ano-$datafim_mes-$datafim_dia'").",
@@ -95,7 +95,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
 	exit;
   }					
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  $result = pg_exec("delete from db_calendario where s_codigo = ".$HTTP_POST_VARS["codigo"]);
+  $result = db_query("delete from db_calendario where s_codigo = ".$HTTP_POST_VARS["codigo"]);
   if(pg_cmdtuples($result) > 0) {
     db_redireciona();
 	exit;
@@ -156,7 +156,7 @@ input {
         <td width="78%" nowrap>
 		<input type="hidden" value="<?=@$codigo?>" name="codigo">
 		<?
-	    include("dbforms/db_funcoes.php");
+	    include(modification("dbforms/db_funcoes.php"));
 		db_data("datainicio",@$datainicio_dia,@$datainicio_mes,@$datainicio_ano);
 		?>
 		<!--input name="datainicio_dia" type="text" value="<?=@$datainicio_dia?>" size="2" maxlength="2" onkeyUp="js_digitadata(this.name)">
@@ -190,7 +190,7 @@ input {
           <select name="secretaria">
 		  <option value="0">Evento</option>
 		  <?
-		  $result = pg_exec($conn,"select cs_odigo,s_descricao from db_secretaria order by s_codigo");
+		  $result = db_query($conn,"select cs_odigo,s_descricao from db_secretaria order by s_codigo");
 		  $numrows = pg_numrows($result);
 		  for($i = 0;$i < $numrows;$i++) {
 		    echo "<option value=\"".pg_result($result,$i,"codigo")."\" ".(@$secretaria==pg_result($result,$i,"codigo")?"selected":"").">".pg_result($result,$i,"descricao")."</option>\n";

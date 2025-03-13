@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//include("dbforms/db_classesgenericas.php");
+//include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clsolicitem->rotulo->label();
 $clpcdotac->rotulo->label();
@@ -272,10 +272,10 @@ function js_pesquisapc13_coddot(mostra){
   qry+= '&retornadepart=true';
   if(mostra==true){
     qry+= '&funcao_js=parent.js_mostraorcdotacao1|o58_coddot';
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcdotacao','func_permorcdotacao.php?'+qry,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcdotacao','func_permorcdotacao.php?'+qry,'Pesquisa',true);
   }else{
     qry+= '&pesquisa_chave='+document.form1.pc13_coddot; 
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcdotacao','func_permorcdotacao.php?'+qry+'&funcao_js=parent.js_mostraorcdotacao','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcdotacao','func_permorcdotacao.php?'+qry+'&funcao_js=parent.js_mostraorcdotacao','Pesquisa',false);
   }
 }
 function js_mostraorcdotacao1(chave1,chave2){
@@ -291,7 +291,7 @@ function js_mostraorcdotacao(chave1){
 }
 function js_pesquisapc13_depto(){
   if(document.form1.pc13_depto.value != ''){
-     js_OpenJanelaIframe('top.corpo','db_iframe_depart','func_db_depart.php?pesquisa_chave='+document.form1.pc13_depto.value+'&funcao_js=parent.lanc_dotac.js_mostradb_depart','Pesquisa',false,'0','1','790','405');
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_depart','func_db_depart.php?pesquisa_chave='+document.form1.pc13_depto.value+'&funcao_js=parent.lanc_dotac.js_mostradb_depart','Pesquisa',false,'0','1','790','405');
   }else{
     document.form1.descrdepto.value = '';
   }

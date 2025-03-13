@@ -26,16 +26,16 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
-include("libs/db_utils.php");
-include("classes/db_selecao_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_portaria_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_selecao_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_portaria_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 
@@ -78,7 +78,7 @@ $oJson       = new services_json();
       $sSqlConsultaFuncionarios .=  "  where {$oSelecao->r44_where}											  		   ";
     }
     
-    $rsConsultaFuncionarios = @pg_query($sSqlConsultaFuncionarios);
+    $rsConsultaFuncionarios = @db_query($sSqlConsultaFuncionarios);
     
     if ( $rsConsultaFuncionarios == false) {
       echo $oJson->encode(array("iStatus"=>2, "sMensagem"=>urlencode("Funcionários não Encontrados")));
@@ -103,7 +103,7 @@ $oJson       = new services_json();
   
   if ( $iNroLinhas > 0 ) {
   	
-    $aRetornaCampos = db_utils::getColectionByRecord($rsConsultaFuncionarios,false,false,true);
+    $aRetornaCampos = db_utils::getCollectionByRecord($rsConsultaFuncionarios,false,false,true);
   
   } else {
   	

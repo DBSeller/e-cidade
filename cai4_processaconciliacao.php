@@ -1,45 +1,45 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/JSON.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_concilia_classe.php");
-require_once("classes/db_conciliaitem_classe.php");
-require_once("classes/db_conciliacor_classe.php");
-require_once("classes/db_conciliapendcorrente_classe.php");
-require_once("classes/db_conciliaextrato_classe.php");
-require_once("classes/db_conciliapendextrato_classe.php");
-require_once("std/db_stdClass.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_concilia_classe.php"));
+require_once(modification("classes/db_conciliaitem_classe.php"));
+require_once(modification("classes/db_conciliacor_classe.php"));
+require_once(modification("classes/db_conciliapendcorrente_classe.php"));
+require_once(modification("classes/db_conciliaextrato_classe.php"));
+require_once(modification("classes/db_conciliapendextrato_classe.php"));
+require_once(modification("std/db_stdClass.php"));
 
 $clconcilia             = new cl_concilia;
 $clconciliaitem         = new cl_conciliaitem;
@@ -72,15 +72,19 @@ if ($solicitacao == 'gravarJustificativaPendente') {
 
     if ( $lJustificativaCaixa == "true" ) {
 
+      $oDataConciliacao = new DBDate($sDataConciliacao);
+      $sData            = $oDataConciliacao->convertTo(DBDate::DATA_EN);
+
       $oDaoConciliaPendenteCorrente= new cl_conciliapendcorrente();
-      $sSqlCodigo                  = $oDaoConciliaPendenteCorrente->sql_query_file( 
+      $sSqlCodigo                  = $oDaoConciliaPendenteCorrente->sql_query_file(
           null,
           "k89_sequencial",
           null,
           "   k89_id       = {$iCodigoCaixaLinha}
           and k89_autent   = {$iCodigoAutenticacao}
-          and k89_concilia = {$iCodigoConciliacao}  "
-          ); 
+          and k89_concilia = {$iCodigoConciliacao}
+          and k89_data     = '{$sData}' "
+          );
       $rsCodigo                    = $oDaoConciliaPendenteCorrente->sql_record($sSqlCodigo);
 
       if ( $oDaoConciliaPendenteCorrente->erro_status == "0" ) {
@@ -105,13 +109,13 @@ if ($solicitacao == 'gravarJustificativaPendente') {
     } else {
 
       $oDaoConciliaPendenteExtrato = new cl_conciliapendextrato();
-      $sSqlCodigo                  = $oDaoConciliaPendenteExtrato->sql_query_file( 
+      $sSqlCodigo                  = $oDaoConciliaPendenteExtrato->sql_query_file(
           null,
           "k88_sequencial",
           null,
-          "   k88_extratolinha = {$iCodigoExtratoLinha} 
+          "   k88_extratolinha = {$iCodigoExtratoLinha}
           and k88_concilia     = {$iCodigoConciliacao}  "
-      ); 
+      );
       $rsCodigo                    = $oDaoConciliaPendenteExtrato->sql_record($sSqlCodigo);
 
       if ( $oDaoConciliaPendenteExtrato->erro_status == "0" ) {
@@ -145,7 +149,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
 } else if ($solicitacao == 'manual') {
 
   db_inicio_transacao();
-  /* insere o item */ 
+  /* insere o item */
   $clconciliaitem->k83_conciliatipo = 1;
   $clconciliaitem->k83_concilia     = $concilia;
   $clconciliaitem->k83_hora         = db_hora();
@@ -175,7 +179,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
         $rsConciliaExtrato   = $clconciliaextrato->sql_record($sSqlConciliaExtrato);
         if ($clconciliaextrato->numrows > 0) {
 
-           $oDados = db_utils::fieldsMemory($rsConciliaExtrato, 0, true); 
+           $oDados = db_utils::fieldsMemory($rsConciliaExtrato, 0, true);
            $sqlerro  = true;
            $erromsg  = "Não foi possível realizar a conciliação da linha do extrato {$objExtrato->extratolinha} - {$objExtrato->numeroDocumento}\n";
            $erromsg .= "Registro conciliado na data {$oDados->k68_data} na conta {$oDados->k68_contabancaria}";
@@ -185,7 +189,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
         // so concilia se nao estiver conciliado
         if($objExtrato->classe != 'conciliado'){
           // verifica se esta tentando conciliar uma pendencia, se sim, deleta a pendencia das conciliacoes posteriores
-          $sqlPendenciasExtrato  = " select k88_sequencial ";     
+          $sqlPendenciasExtrato  = " select k88_sequencial ";
           $sqlPendenciasExtrato .= "   from conciliapendextrato ";
           $sqlPendenciasExtrato .= "        inner join concilia on k88_concilia = k68_sequencial ";
           $sqlPendenciasExtrato .= "  where k68_data         >= '".$data."'";
@@ -195,15 +199,15 @@ if ($solicitacao == 'gravarJustificativaPendente') {
           $rsPendenciasExtrato   = $clconciliapendextrato->sql_record($sqlPendenciasExtrato);
           $intPendenciasExtrato  = $clconciliapendextrato->numrows;
           if ($intPendenciasExtrato > 0) {
-            
+
             $conciliaorigem = 2;
             for ($ind = 0; $ind < $intPendenciasExtrato; $ind ++) {
-              
+
               db_fieldsmemory($rsPendenciasExtrato,$ind);
               $clconciliapendextrato->excluir($k88_sequencial);
-                
+
               if ($clconciliapendextrato->erro_status == 0) {
-                
+
                 $sqlerro = true;
                 $erromsg = "conciliapendextrato - ".$clconciliapendextrato->erro_msg;
                 break;
@@ -212,7 +216,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
           } else {
             $conciliaorigem = 1;
           }
-        
+
           $clconciliaextrato->k87_conciliaitem   = $clconciliaitem->k83_sequencial;
           $clconciliaextrato->k87_extratolinha   = $objExtrato->extratolinha;
           $clconciliaextrato->k87_conciliaorigem = $conciliaorigem;
@@ -244,8 +248,8 @@ if ($solicitacao == 'gravarJustificativaPendente') {
         /*
          * verificamos se existe uma conciliação para a autenticação em alguma data
          */
-        $sSqlConciliaCorrente = "select k68_data, 
-                                        k68_contabancaria 
+        $sSqlConciliaCorrente = "select k68_data,
+                                        k68_contabancaria
                                from conciliacor
                                     inner join conciliaitem on conciliaitem.k83_sequencial = conciliacor.k84_conciliaitem
                                     inner join concilia     on concilia.k68_sequencial     = conciliaitem.k83_concilia
@@ -256,8 +260,8 @@ if ($solicitacao == 'gravarJustificativaPendente') {
         $rsConciliaCorrente   = $clconciliacor->sql_record($sSqlConciliaCorrente);
         if ($clconciliacor->numrows > 0) {
 
-           $oDados = db_utils::fieldsMemory($rsConciliaCorrente, 0, true);  
-           
+           $oDados = db_utils::fieldsMemory($rsConciliaCorrente, 0, true);
+
            $sqlerro  = true;
            $erromsg  = "Não foi possível realizar a conciliação da autenticação do caixa {$objAutent->caixa} na data {$objAutent->data} com o autent. {$objAutent->autent} \n";
            $erromsg .= "Registro já conciliado na data {$oDados->k68_data} na conta {$oDados->k68_contabancaria}";
@@ -281,7 +285,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
             $conciliaorigem = 2;
             for($ind = 0; $ind < $intPendenciasAutent; $ind ++ ){
               db_fieldsmemory($rsPendenciasAutent,$ind);
-              $clconciliapendcorrente->excluir($k89_sequencial);  
+              $clconciliapendcorrente->excluir($k89_sequencial);
               if( $clconciliapendcorrente->erro_status == 0){
                 $sqlerro = true;
                 $erromsg = "conciliapendcorrente - ".$clconciliapendcorrente->erro_msg;
@@ -316,12 +320,12 @@ if ($solicitacao == 'gravarJustificativaPendente') {
   }
 
 }else if ($solicitacao == 'gerarpendencias') {
-  
+
   $erromsg = "";
 
   db_inicio_transacao();
   if ($strJSONExtrato != '') {
-     
+
     $arrayObjExtrato = $objJSON->decode($strJSONExtrato);
 
     foreach ($arrayObjExtrato as $i => $objExtrato){
@@ -331,14 +335,14 @@ if ($solicitacao == 'gravarJustificativaPendente') {
       }
 
       if (is_object($objExtrato)) {
-        
+
         $clconciliapendextrato->k88_concilia       = $concilia;
         $clconciliapendextrato->k88_extratolinha   = $objExtrato->extratolinha;
-        $clconciliapendextrato->k88_conciliaorigem = 1; 
+        $clconciliapendextrato->k88_conciliaorigem = 1;
         $clconciliapendextrato->k88_justificativa  = corrigeCodificacaoCaracteres($objExtrato->justificativa);
         $clconciliapendextrato->incluir(null); //2
         if ($clconciliapendextrato->erro_status == 0) {
-          
+
           $sqlerro = true;
           $erromsg = "conciliapendextrato - ".$clconciliapendextrato->erro_msg;
           break;
@@ -348,35 +352,35 @@ if ($solicitacao == 'gravarJustificativaPendente') {
   }
 
   if ($sqlerro == false) {
-    
+
     if ($strJSONAutent != '') {
-       
+
       $arrayObjAutent = $objJSON->decode($strJSONAutent);
-      
+
       foreach ($arrayObjAutent as $i => $objAutent) {
-  
+
         $objAutent->detalhe = db_stdClass::db_stripTagsJson($objAutent->detalhe);
-        
+
         if ($objAutent->classe == 'pendente') {
           continue;
         }
-        
+
         if ($objAutent->classe == 'preselecionado') {
-          
-          $sSqlCadastrado = "select * 
-                               from conciliapendcorrente 
-                              where k89_concilia = {$concilia} 
+
+          $sSqlCadastrado = "select *
+                               from conciliapendcorrente
+                              where k89_concilia = {$concilia}
                                 and k89_id = {$objAutent->caixa}
                                 and k89_data = '".substr($objAutent->data,6,4)."-".substr($objAutent->data,3,2)."-".substr($objAutent->data,0,2)."'
                                 and k89_autent = {$objAutent->autent}";
           $rsCadastrado   = db_query($sSqlCadastrado);
           if (pg_num_rows($rsCadastrado) > 0) {
-            continue;  
+            continue;
           }
         }
-        
+
         if (is_object($objAutent)) {
-          
+
           $clconciliapendcorrente->k89_concilia       = $concilia;
           $clconciliapendcorrente->k89_id             = $objAutent->caixa;
           $clconciliapendcorrente->k89_data           = substr($objAutent->data,6,4)."-".substr($objAutent->data,3,2)."-".substr($objAutent->data,0,2);
@@ -385,7 +389,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
           $clconciliapendcorrente->k89_conciliaorigem = 1;
           $clconciliapendcorrente->incluir(null);
           if($clconciliapendcorrente->erro_status == "0") {
-            
+
             $sqlerro = true;
             $erromsg = "conciliapendcorrente - ".$clconciliapendcorrente->erro_msg."\n$objAutent->classe Concilia: $concilia - Caixa: $objAutent->caixa - Autent: $objAutent->autent - Data: $clconciliapendcorrente->k89_data";
             break;
@@ -394,9 +398,9 @@ if ($solicitacao == 'gravarJustificativaPendente') {
       }
     }
   }
-  
+
   if($sqlerro == false){
-    
+
     $clconcilia->k68_conciliastatus = 2;
     $clconcilia->k68_sequencial     = $concilia;
     $clconcilia->alterar($concilia);
@@ -405,9 +409,9 @@ if ($solicitacao == 'gravarJustificativaPendente') {
       $sqlerro = true;
       $erromsg = "concilia - ".$clconcilia->erro_msg;
     }
-    
+
   }
-  
+
   db_fim_transacao($sqlerro);
 
   if ($sqlerro == true) {
@@ -415,13 +419,13 @@ if ($solicitacao == 'gravarJustificativaPendente') {
   }else{
     echo '1';
   }
- 
+
 }else if ($solicitacao == 'desprocessaritem'){
 
   db_inicio_transacao();
 //  $erromsg .= "inicio 111 ||||";
   $arrayItens = array();
-  if ($strJSONExtrato != ''){ 
+  if ($strJSONExtrato != ''){
     $arrayObjExtrato = $objJSON->decode($strJSONExtrato);
     foreach ($arrayObjExtrato as $i => $objExtrato){
       if (is_object($objExtrato)){
@@ -442,7 +446,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
         $rsRetornoPendenciasExtrato = $clconciliaextrato->sql_record($sqlRetornoPendenciasExtrato);
         $intNumRows = $clconciliaextrato->numrows;
         for($x = 0 ; $x < $intNumRows; $x++){
-          
+
           db_fieldsmemory($rsRetornoPendenciasExtrato,$x);
           $clconciliapendextrato->k88_concilia       = $k68_sequencial;
           $clconciliapendextrato->k88_extratolinha   = $objExtrato->extratolinha;
@@ -454,7 +458,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
             break;
           }
         }
-                                         
+
         $clconciliaextrato->excluir(null,"k87_extratolinha = ".$objExtrato->extratolinha);
         if($clconciliaextrato->erro_status == 0){
           $sqlerro = true;
@@ -465,7 +469,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
     }
   }
 
-  if ($strJSONAutent != ''){ 
+  if ($strJSONAutent != ''){
     $arrayObjAutent = $objJSON->decode($strJSONAutent);
     foreach ($arrayObjAutent as $i => $objAutent){
       if (is_object($objAutent)){
@@ -490,7 +494,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
         for($x = 0 ; $x < $intNumRows; $x++){
           db_fieldsmemory($rsRetornoPendenciasAutent,$x);
 
-          $dDataConcilia = substr($objAutent->data,6,4)."-".substr($objAutent->data,3,2)."-".substr($objAutent->data,0,2);           
+          $dDataConcilia = substr($objAutent->data,6,4)."-".substr($objAutent->data,3,2)."-".substr($objAutent->data,0,2);
 
           $clconciliapendcorrente->k89_concilia       = $k68_sequencial;
           $clconciliapendcorrente->k89_id             = $objAutent->caixa;
@@ -505,9 +509,9 @@ if ($solicitacao == 'gravarJustificativaPendente') {
             break;
           }
         }
-             
-        $clconciliacor->excluir(null,"k84_id = ".$objAutent->caixa." 
-                                  and k84_data = '".substr($objAutent->data,6,4)."-".substr($objAutent->data,3,2)."-".substr($objAutent->data,0,2)."' 
+
+        $clconciliacor->excluir(null,"k84_id = ".$objAutent->caixa."
+                                  and k84_data = '".substr($objAutent->data,6,4)."-".substr($objAutent->data,3,2)."-".substr($objAutent->data,0,2)."'
                                   and k84_autent = ".$objAutent->autent."
                                   and k84_conciliaitem = ".$objAutent->itemconciliacao);
         if($clconciliacor->erro_status == 0){
@@ -523,7 +527,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
       $sqlVerificaItem  = " select (select k84_conciliaitem from conciliacor     where k84_conciliaitem = $item limit 1) as k84_conciliaitem, ";
       $sqlVerificaItem .= "        (select k87_conciliaitem from conciliaextrato where k87_conciliaitem = $item limit 1) as k87_conciliaitem ";
       $sqlVerificaItem .= "   from conciliaitem ";
-      $sqlVerificaItem .= "  where k83_sequencial = $item ";  
+      $sqlVerificaItem .= "  where k83_sequencial = $item ";
       $rsVerificaItem  = $clconciliaitem->sql_record($sqlVerificaItem);
       if($clconciliaitem->numrows  > 0){
         db_fieldsmemory($rsVerificaItem,$i);
@@ -545,11 +549,11 @@ if ($solicitacao == 'gravarJustificativaPendente') {
 
   // select pegando todas as conciliacoes para incluir os itens desprocessados como pendente de todas as conciliacoes posteriores
   //$rsConcilia = $clconcilia->sql_record($clconcilia->sql_query_file(null," k68_sequencial ","k68_saltes = (select k68_saltes from concilia where k68_sequencial = $concilia limit 1) and k68_data > (select k68_data from concilia where k68_sequencial = $concilia limit 1)"));
-  $rsConcilia = db_query("select k68_sequencial 
-                            from concilia 
-                           where k68_contabancaria = (select k68_contabancaria 
-                                                        from concilia 
-                                                       where k68_sequencial = $concilia) 
+  $rsConcilia = db_query("select k68_sequencial
+                            from concilia
+                           where k68_contabancaria = (select k68_contabancaria
+                                                        from concilia
+                                                       where k68_sequencial = $concilia)
                              and k68_data >= (select k68_data from concilia where k68_sequencial = $concilia);");
   $intNumrows = pg_numrows($rsConcilia); //$clconcilia->numrows;
 
@@ -558,10 +562,10 @@ if ($solicitacao == 'gravarJustificativaPendente') {
     $arrayObjExtrato = null;
     $arrayObjAutent  = null;
 
-    if ($strJSONExtrato != ''){ 
+    if ($strJSONExtrato != ''){
       $arrayObjExtrato = $objJSON->decode($strJSONExtrato);
       foreach ($arrayObjExtrato as $i => $objExtrato){
-        
+
         if ($objExtrato->classe == 'pendente') {
           continue;
         }
@@ -581,11 +585,11 @@ if ($solicitacao == 'gravarJustificativaPendente') {
           }
 
           $clconciliapendextrato->k88_concilia       = $k68_sequencial;
-          $clconciliapendextrato->k88_extratolinha   = $objExtrato->extratolinha;  
+          $clconciliapendextrato->k88_extratolinha   = $objExtrato->extratolinha;
           $clconciliapendextrato->k88_conciliaorigem = 1;
           $clconciliapendextrato->incluir(null);                                  // 1
-          if($clconciliapendextrato->erro_status == 0){                          
-            $sqlerro = true;                                                     
+          if($clconciliapendextrato->erro_status == 0){
+            $sqlerro = true;
             $erromsg = "conciliapendextrato inclusao - ".$clconciliapendextrato->erro_msg;
             break;
           }
@@ -594,7 +598,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
     }
 
 
-    if ($strJSONAutent != ''){ 
+    if ($strJSONAutent != ''){
       $arrayObjAutent = $objJSON->decode($strJSONAutent);
 
       foreach ($arrayObjAutent as $i => $objAutent){
@@ -616,7 +620,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
           $rsValidaExistenciaConciliaPendCorrente     = $clconciliapendcorrente->sql_record($sSqlValidaExistenciaConciliaPendCorrente);
           if ($clconciliapendcorrente->numrows > 0) {
             continue;
-          }  
+          }
 
           $clconciliapendcorrente->k89_concilia       = $k68_sequencial;
           $clconciliapendcorrente->k89_id             = $objAutent->caixa;
@@ -633,7 +637,7 @@ if ($solicitacao == 'gravarJustificativaPendente') {
       }
     }
   }
-  
+
 //  $sqlerro = true;
 
   db_fim_transacao($sqlerro);

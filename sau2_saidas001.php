@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_medicos_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_medicos_classe.php"));
 $cl_medicos = new cl_medicos;
 $clrotulo = new rotulocampo;
 $clrotulo->label("sd27_i_prontuario");
@@ -99,7 +99,7 @@ $clrotulo->label("sd28_i_cgm");
     </form>
     <script>
     function js_pesquisa_cgm(){
-       js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm|z01_numcgm|z01_nome','Pesquisa',true);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm|z01_numcgm|z01_nome','Pesquisa',true);
     }
     function js_mostracgm(chave1,chave2){
       document.form1.sd28_i_cgm.value = chave1;
@@ -108,7 +108,7 @@ $clrotulo->label("sd28_i_cgm");
     }
 
     function js_pesquisa_prontuario(){
-     js_OpenJanelaIframe('top.corpo','db_iframe_pront','func_prontuarios.php?funcao_js=parent.js_mostrapront|sd24_i_id|sd24_c_atendimento','Pesquisa',true);
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pront','func_prontuarios.php?funcao_js=parent.js_mostrapront|sd24_i_id|sd24_c_atendimento','Pesquisa',true);
     }
     function js_mostrapront(chave1,chave2){
       document.form1.sd27_i_prontuario.value = chave1;

@@ -3,13 +3,13 @@ set_time_limit(0);
 if(!defined('DB_BIBLIOT')){
    session_cache_limiter('none');
    session_start();
-   require("libs/db_stdlib.php");
-   require("libs/db_conecta.php");
-   include("libs/db_sessoes.php");
-   include("libs/db_usuariosonline.php");
+   require(modification("libs/db_stdlib.php"));
+   require(modification("libs/db_conecta.php"));
+   include(modification("libs/db_sessoes.php"));
+   include(modification("libs/db_usuariosonline.php"));
    db_postmemory($HTTP_POST_VARS);
    db_postmemory($HTTP_SERVER_VARS);
-   include('fpdf.php');
+   include(modification('fpdf151/fpdf.php'));
 }
 
    define('FPDF_FONTPATH','fpdf151/font/');

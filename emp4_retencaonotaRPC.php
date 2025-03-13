@@ -1,61 +1,84 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
-require("model/retencaoNota.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("model/retencaoNota.model.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("classes/empenho.php"));
+require_once(modification("classes/ordemPagamento.model.php"));
+
+use ECidade\Financeiro\Empenho\Repository\TipoServicoNotaFiscalRepository;
+use ECidade\Financeiro\Empenho\Model\TipoServicoNotaFiscal;
+
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
+$oRetorno = new stdClass();
 if ($oParam->exec == "addRetencao") {
-  
-   //print_r($oParam);
-  
-   try {
-     
-     $oRetencaoNota = new retencaoNota($oParam->params[0]->oRetencao->iCodNota);
-     $oRetencaoNota->setInSession($oParam->params[0]->inSession);
-     $oRetencaoNota->addRetencao($oParam->params[0]->oRetencao, $oParam->params[0]->inSession, $oParam->params[0]->isUpdate);
-     
-     $oRetorno->aRetencoes = $oRetencaoNota->getRetencoes();
-     $oRetorno->status     = 1;
-     $oRetorno->message    = ""; 
-     echo $oJson->encode($oRetorno);
-     
-   }
-   
-   catch (Exception $eErro) {
-     echo $oJson->encode(array("status" => 2, "message"=> urlencode($eErro->getMessage())));
-   }
-   //$oRetencao = new retencaoNota($oParam->params[0]->oRetencao->iCodNota);
+
+  try {
+
+    $oRetencaoNota = new retencaoNota($oParam->params[0]->oRetencao->iCodNota);
+    $oRetencaoNota->setCodigoOrdem($oParam->params[0]->oRetencao->codigoOrdem);
+    $oRetencaoNota->setInSession($oParam->params[0]->inSession);
+
+    if (!$oRetencaoNota->validaValorRetencoes($oParam->params[0]->oRetencao)) {
+      throw new Exception("Valor da retenção é maior que o valor da nota!");
+    }
+    $dataEFDReinf = $oRetencaoNota->validaDataEFD($oParam->params[0]->oRetencao, 'r2010');
+    if ($dataEFDReinf) {
+      $dataEFDReinf = db_formatar($dataEFDReinf, 'd');
+      $mensagem  = "Atenção: a partir do dia {$dataEFDReinf} é necessário informar o Tipo de Serviço da Nota Fiscal ";
+      $mensagem .= "para lançar retenções de Contribuição Previdenciária. \n\n";
+
+      throw new Exception($mensagem);
+    }
+
+    $oRetencaoNota->addRetencao($oParam->params[0]->oRetencao, $oParam->params[0]->inSession, $oParam->params[0]->isUpdate);
+
+    $oRetorno->aRetencoes = $oRetencaoNota->getRetencoes();
+    $oRetorno->status     = 1;
+    $oRetorno->message    = "";
+    echo $oJson->encode($oRetorno);
+
+  }
+  catch (Exception $eErro) {
+    echo $oJson->encode(
+      array(
+        "status" => 2,
+        "message"=> urlencode($eErro->getMessage())
+      )
+    );
+  }
 } else if ($oParam->exec == 'apagarRetencao') {
 
   try {
@@ -67,75 +90,101 @@ if ($oParam->exec == "addRetencao") {
     $oRetorno->aRetencoes = $oRetencaoNota->getRetencoes();
     $oRetorno->status     = 1;
     $oRetorno->message    = "";
-    db_fim_transacao(false); 
+    db_fim_transacao(false);
     echo $oJson->encode($oRetorno);
   }
   catch (Exception $eErro) {
-    
+
     db_fim_transacao(true);
     echo $oJson->encode(array("status" => 2, "message"=> urlencode($eErro->getMessage())));
-    
+
   }
-  
+
 } else if ($oParam->exec == 'getRetencoes') {
 
-  $oRetencaoNota = new retencaoNota($oParam->params[0]->iCodNota);
-  if (isset($oParam->params[0]->iCodMov)) {
-    $oRetencaoNota->setCodigoMovimento($oParam->params[0]->iCodMov);
-  }
-  $iAnoUsu = "";
-  $iMesUsu = "";
-  if ($oParam->params[0]->dtCalculo != "") {
-     
-    $aData   = explode("/", $oParam->params[0]->dtCalculo);
-    $iMesUsu = $aData[1];
-    $iAnoUsu = $aData[2];
-    
-  }
-  $oRetencaoNota->getRetencoesFromDB($oParam->params[0]->iCodOrd, true, 2);
-  $oRetencaoNota->setInSession(true);
-  $oRetorno->aRetencoes   = $oRetencaoNota->getRetencoes();
-  $oRetorno->status       = 1;
-  $oRetorno->message      = "";
-  echo $oJson->encode($oRetorno);
-  
-} else if ($oParam->exec == "saveRetencoes") {
-  
-  try {
-  
-    db_inicio_transacao();
-     
-    $oRetencaoNota = new retencaoNota($oParam->params[0]->iCodNota);
-    if ($oParam->params[0]->iCodMov != "") {
-      $oRetencaoNota->setCodigoMovimento($oParam->params[0]->iCodMov);
+    $response = new stdClass();
+
+    try {
+        $codigoNota = $oParam->params[0]->iCodNota;
+        $oRetencaoNota = new retencaoNota($codigoNota);
+
+        if (isset($oParam->params[0]->iCodMov)) {
+            $oRetencaoNota->setCodigoMovimento($oParam->params[0]->iCodMov);
+        }
+
+        $iAnoUsu = '';
+        $iMesUsu = '';
+
+        if ($oParam->params[0]->dtCalculo != '') {
+            $aData = explode('/', $oParam->params[0]->dtCalculo);
+            $iMesUsu = $aData[1];
+            $iAnoUsu = $aData[2];
+        }
+
+        $oRetencaoNota->getRetencoesFromDB($oParam->params[0]->iCodOrd, true, 2);
+        $oRetencaoNota->setInSession(true);
+        $response->aRetencoes = $oRetencaoNota->getRetencoes();
+
+        $status = 1;
+        $message = '';
+        $erro = false;
+    } catch (Exception $exception) {
+        $status = 2;
+        $message = $exception->getMessage();
+        $erro = true;
     }
-    $oRetencaoNota->setInSession(true);
-    $oRetencaoNota->salvar($oParam->params[0]->iCodOrd, $oParam->params[0]->aMovimentos);
-    $oRetencaoNota->unsetSession();
-    db_fim_transacao(false);
-    $lMesAnterior = $oRetencaoNota->hasRetencoesMesAnterior(); 
-    echo $oJson->encode(array("status" => 1, 
-                        "message"=> urlencode("Retenções lançadas com sucesso"),
-                        "lMesAnterior"=> $lMesAnterior)
-                      );
-    
-  } 
-  
-  catch (Exception $eErro) {
-    
-    db_fim_transacao(true);
-    echo $oJson->encode(array("status" => 2, "message"=> urlencode($eErro->getMessage())));
-   
-  }
+
+    $response->status = $status;
+    $response->message = $message;
+    $response->erro = $erro;
+
+    echo JSON::create()->stringify($response);
+} else if ($oParam->exec == "saveRetencoes") {
+    try {
+        if (count($oParam->params[0]->aMovimentos) == 0) {
+            throw new Exception("Antes de confirmar, é necessário lançar retenções.");
+        }
+
+        db_inicio_transacao();
+        $oRetencaoNota = new retencaoNota($oParam->params[0]->iCodNota);
+
+        if ($oParam->params[0]->iCodMov != "") {
+            $oRetencaoNota->setCodigoMovimento($oParam->params[0]->iCodMov);
+        }
+        if ($oParam->params[0]->codigoOrdem != "") {
+            $oRetencaoNota->setCodigoOrdem($oParam->params[0]->codigoOrdem);
+        }
+        $oRetencaoNota->setInSession(true);
+
+        if (!$oRetencaoNota->validaValorRetencoes()) {
+            throw new Exception("Valor da retenção é maior que o valor da nota!");
+        }
+
+        $oRetencaoNota->salvar($oParam->params[0]->iCodOrd, $oParam->params[0]->aMovimentos);
+        $oRetencaoNota->unsetSession();
+
+        db_fim_transacao(false);
+
+        $lMesAnterior = $oRetencaoNota->hasRetencoesMesAnterior();
+        $mensagem = "Retenções lançadas com sucesso.";
+        echo $oJson->encode([
+            "status" => 1,
+            "message" => urlencode($mensagem),
+            "lMesAnterior" => $lMesAnterior
+        ]);
+
+    } catch (Exception $eErro) {
+        db_fim_transacao(true);
+        echo $oJson->encode(array("status" => 2, "message" => urlencode($eErro->getMessage())));
+    }
 } else if ($oParam->exec == "calculaRetencao") {
-  
-  require_once 'model/calculoRetencao.model.php';
-  
+
+  require_once modification("model/calculoRetencao.model.php");
+
   /*
    * Calcula o valor da Retencao
    */
   try {
-  
     $oCalculoretencao = new calculoRetencao($oParam->params[0]->iTipoCalc, $oParam->params[0]->iCpfCnpj);
     $oCalculoretencao->setAliquota($oParam->params[0]->nAliquota);
     $oCalculoretencao->setValorNota($oParam->params[0]->nValorNota);
@@ -150,12 +199,12 @@ if ($oParam->exec == "addRetencao") {
      * de ISSQN, e somamos o valor retido no valor a deduzir da base de calculo.
      */
     if ($oParam->params[0]->iTipoCalc == 1 || $oParam->params[0]->iTipoCalc == 2) {
-      
+
       $oRetencaoNota = new retencaoNota($oParam->params[0]->iCodNota);
       $oRetencaoNota->setInSession(true);
       $aRetencoes    = $oRetencaoNota->getRetencoes();
       foreach ($aRetencoes as $oRetencaoAtiva) {
-        
+
         if ($oRetencaoAtiva->e21_retencaotipocalc == 3 || $oRetencaoAtiva->e21_retencaotipocalc == 7) {
           $oParam->params[0]->nValorDeducao += $oRetencaoAtiva->e23_valorretencao;
         }
@@ -166,56 +215,93 @@ if ($oParam->exec == "addRetencao") {
     $nValorRetencao = $oCalculoretencao->calcularRetencao();
     $nAliquota      = $oCalculoretencao->getAliquota();
     $nValorBase     = $oCalculoretencao->getValorBaseCalculo();
-    echo $oJson->encode(array("status" => 1,
-                              "message"=> "",
-                              "nValorRetencao" => $nValorRetencao,
-                              "nAliquota"      => $nAliquota,
-                              "nValorBase"     => $nValorBase
-                             )
-                        );
-    
+    echo $oJson->encode(["status" => 1,
+        "erro" => false,
+        "message" => "",
+        "nValorRetencao" => $nValorRetencao,
+        "nAliquota" => $nAliquota,
+        "nValorBase" => $nValorBase
+    ]);
   }
   catch (Exception $eErro) {
-    
-    echo $oJson->encode(array("status" => 2, "message"=> urlencode($eErro->getMessage())));
-    
+
+    echo $oJson->encode(["status" => 2, "erro" => true, "message"=> urlencode($eErro->getMessage())]);
+
   }
 } else if ($oParam->exec == "getRetencoesMovimento") {
-  
-  $iMesUsu       = date("m", db_getsession("DB_datausu")); 
-  $iAnoUsu       = date("Y", db_getsession("DB_datausu")); 
+
+  $iMesUsu       = date("m", db_getsession("DB_datausu"));
+  $iAnoUsu       = date("Y", db_getsession("DB_datausu"));
   $oRetencaoNota = new retencaoNota($oParam->iCodNota);
   $oRetorno->status = 1;
   $oRetorno->aRetencoes = $oRetencaoNota->getRetencoesByMovimento($oParam->iCodMov,null, true, true);
   if ($oRetorno->aRetencoes == false || (count($oRetorno->aRetencoes) == 0 ) ) {
-    $oRetorno->status == 2;
+    $oRetorno->status = 2;
   } else {
-    $oDaoRetencaoCorGrupo = db_utils::getDao("retencaocorgrupocorrente");
+    $oDaoRetencaoCorGrupo = new cl_retencaocorgrupocorrente();
     for ($i = 0 ; $i < count($oRetorno->aRetencoes); $i++) {
-    
-     $sWhere    = " e47_retencaoreceita = {$oRetorno->aRetencoes[$i]->e23_sequencial}";
-     $sWhere   .= " and corrente.k12_estorn is false and k112_ativo is true ";
-     $sOrder    = " corrente.k12_data,corrente.k12_autent desc limit 1";    
-     $sSqlSlip  = $oDaoRetencaoCorGrupo->sql_query_numpre_slip(null,
-                                                              "slipcorrente.*",
-                                                              $sOrder,
-                                                              $sWhere
-                                                              );
+
+      $oRetorno->aRetencoes[$i]->permite_estornar = true;
+      $sWhere    = " e47_retencaoreceita = {$oRetorno->aRetencoes[$i]->e23_sequencial}";
+      $sWhere   .= " and corrente.k12_estorn is false and k112_ativo is true ";
+      $sOrder    = " corrente.k12_data,corrente.k12_autent desc limit 1";
+      $sSqlSlip  = $oDaoRetencaoCorGrupo->sql_query_numpre_slip(null,
+                                                                "slipcorrente.*",
+                                                                $sOrder,
+                                                                $sWhere
+      );
+
       $rsSlips   = $oDaoRetencaoCorGrupo->sql_record($sSqlSlip);
-      if ($oDaoRetencaoCorGrupo->numrows > 0 ) {
-        $oRetorno->aRetencoes[$i]->k17_slip   = @db_utils::fieldsMemory($rsSlips, 0)->k112_slip;
+      $sequencial_slip = $oRetorno->aRetencoes[$i]->k108_slip;
+
+      if ($rsSlips && pg_num_rows($rsSlips) > 0) {
+
+          $sequencial_slip = pg_fetch_result($rsSlips, 0, 'k112_slip');
+          $oRetorno->aRetencoes[$i]->k17_slip   = $sequencial_slip;
+          $oRetorno->aRetencoes[$i]->permite_estornar = false;
       }
-    }  
+
+      /**
+       * Valida se a slip ja foi autenticada
+       */
+      $oRetorno->aRetencoes[$i]->slip_autenticada = false;
+      if (!empty($sequencial_slip)) {
+
+          $sqlConlancamslip = "SELECT 1 FROM conlancamslip where c84_slip = {$sequencial_slip}";
+          $rsConlancamslip = pg_query($sqlConlancamslip);
+         if ($rsConlancamslip && pg_num_rows($rsConlancamslip) > 0) {
+             $oRetorno->aRetencoes[$i]->slip_autenticada = true;
+             $oRetorno->aRetencoes[$i]->permite_estornar = false;
+         }
+      }
+
+      $codigoSlip = !empty($oRetorno->aRetencoes[$i]->k108_slip) ? $oRetorno->aRetencoes[$i]->k108_slip : $oRetorno->aRetencoes[$i]->k17_slip;
+      if (!empty($codigoSlip)) {
+
+          $slip = TransferenciaFactory::getInstance(null, $codigoSlip);
+          $oRetorno->aRetencoes[$i]->slip_anulado = false;
+          if ($slip->anulado()) {
+              $oRetorno->aRetencoes[$i]->slip_anulado = true;
+              $oRetorno->aRetencoes[$i]->permite_estornar = false;
+          }
+      }
+
+      if ((empty($oRetorno->aRetencoes[$i]->k108_slip) && empty($oRetorno->aRetencoes[$i]->k17_slip))) {
+          $oRetorno->aRetencoes[$i]->permite_estornar = true;
+      }
+
+
+    }
   }
   echo $oJson->encode($oRetorno);
-  
+
 } else if ($oParam->exec == "getRecibosRetencao") {
-  
-  
+
+
   $oRetorno           = new stdClass;
   $oRetorno->status   = 1;
   $oRetorno->aRecibos = array();
-  
+
   $sSqlRecibos  = "SELECT e21_descricao,";
   $sSqlRecibos .= "       e21_retencaotipocalc , ";
   $sSqlRecibos .= "       case when k12_numnov<> k12_numpre then k12_numnov else k12_numpre end as codarrecad, ";
@@ -233,7 +319,7 @@ if ($oParam->exec == "addRetencao") {
   $sSqlRecibos .= "      (case when k00_tipo is null then ";
   $sSqlRecibos .= "        (select k00_tipo from recibo where recibo.k00_numpre = k12_numpre) ";
   $sSqlRecibos .= "      else k00_tipo  ";
-  $sSqlRecibos .= "      end ) as k00_tipo ";     
+  $sSqlRecibos .= "      end ) as k00_tipo ";
   $sSqlRecibos .= " from retencaoreceitas  ";
   $sSqlRecibos .= "       inner join retencaopagordem         on e20_sequencial      = e23_retencaopagordem ";
   $sSqlRecibos .= "       inner join retencaocorgrupocorrente on e23_sequencial      = e47_retencaoreceita ";
@@ -250,7 +336,7 @@ if ($oParam->exec == "addRetencao") {
   $sSqlRecibos .= "      inner join retencaotiporec           on e23_retencaotiporec = e21_sequencial ";
   $sSqlRecibos .= "      inner join tabrec                    on e21_receita         = k02_codigo ";
   $sSqlRecibos .= " where e23_recolhido is true and e23_ativo is true  and  e21_instit = ".db_getsession("DB_instit");
-  
+
   if ($oParam->iCodOrdem != "") {
     $sSqlRecibos .= "   and e20_pagordem  = {$oParam->iCodOrdem}";
   }
@@ -259,15 +345,18 @@ if ($oParam->exec == "addRetencao") {
   }
   $rsRecibos    = db_query($sSqlRecibos);
   if ($rsRecibos) {
-    $oRetorno->aRecibos = db_utils::getColectionByRecord($rsRecibos,false,false,true);
+    $oRetorno->aRecibos = db_utils::getCollectionByRecord($rsRecibos,false,false,true);
   }
   echo $oJson->encode($oRetorno);
 }  else if ($oParam->exec == "configurarRetencoes") {
-  
+
   try {
-  
+
     db_inicio_transacao();
-     
+
+    $oEmpenho = new EmpenhoFinanceiro($oParam->params[0]->iNumemp);
+    $lEmpenhoFolha = $oEmpenho->isFolhaPagamento();
+
     $oRetencaoNota = new retencaoNota($oParam->params[0]->iCodNota);
     $oRetencaoNota->setINotaLiquidacao($oParam->params[0]->iCodOrd);
     if ($oParam->params[0]->iCodMov != "") {
@@ -275,16 +364,55 @@ if ($oParam->exec == "addRetencao") {
     }
     $oRetencaoNota->setInSession(true);
     $oRetencaoNota->configurarPagamentoRetencoes();
+
+    $ordemPagamento = new ordemPagamento($oParam->params[0]->iCodOrd);
+    $sSlipsGeradoAutomatico = implode(", ", $ordemPagamento->getSlipsGeradosAutomaticamente(1));
+
+//    dd("FINAL APROPRIACAO" , $sSlipsGeradoAutomatico );
+
     db_fim_transacao(false);
-    echo $oJson->encode(array("status" => 1, "message"=> urlencode("Retenções Configuradas com sucesso")));
-    
-  } 
-  
+
+    $mensagemRetorno =  "Retenções Configuradas com sucesso.";
+    $lApropriaRetencao = APROPRIACAO_RETENCAO;
+
+    if ($lApropriaRetencao && !$lEmpenhoFolha) {
+        $mensagemRetorno =  "As retenções foram apropriadas com sucesso.";
+    }
+
+    echo $oJson->encode(array("status" => 1,
+                              "message"=> urlencode($mensagemRetorno),
+                              "sSlipsGeradoAutomatico" => $sSlipsGeradoAutomatico ));
+  }
+
   catch (Exception $eErro) {
-    
+
     db_fim_transacao(true);
     echo $oJson->encode(array("status" => 2, "message"=> urlencode($eErro->getMessage())));
-   
+
+  }
+} else if ($oParam->exec == "getTipoServicos") {
+  $oRetorno->status   = 1;
+  $oRetorno->tiposServicosNotaFiscal = array();
+  try {
+
+    db_inicio_transacao();
+
+    $tiposServicoNotaFiscalRepository = TipoServicoNotaFiscalRepository::getInstance();
+    $tiposServicoNotaFiscal = $tiposServicoNotaFiscalRepository->all();
+
+    db_fim_transacao(false);
+    $oRetorno->tiposServicosNotaFiscal = array_map(function(TipoServicoNotaFiscal $tipoServicoNotaFiscal) {
+      return $tipoServicoNotaFiscal->toArray();
+    }, $tiposServicoNotaFiscal);
+    $oRetorno->message = "Consulta realizada com sucesso!";
+    $oRetorno->erro = false;
+    echo JSON::create()->stringify($oRetorno);
+  }
+
+  catch (Exception $eErro) {
+
+    db_fim_transacao(true);
+    echo $oJson->encode(array("status" => 2, "message"=> urlencode($eErro->getMessage())));
+
   }
 }
-?>

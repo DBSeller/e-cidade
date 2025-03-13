@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("fpdf151/scpdf.php");
-include("fpdf151/impcarne.php");
-include("libs/db_sql.php");
+require(modification("fpdf151/scpdf.php"));
+include(modification("fpdf151/impcarne.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 
 $sqlpref = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 db_fieldsmemory($resultpref,0);
 
 $head3 = "CADASTRO DE CÓDIGOS";
@@ -144,9 +144,9 @@ order by rh02_lota, z01_nome;
        ";
 //echo $sql ; exit;
 //$conect = pg_connect("host='192.168.1.1' dbname=sam30 user=postgres");
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);exit;
-include("libs/db_conecta.php");
+include(modification("libs/db_conecta.php"));
 $xxnum = pg_numrows($result);
 //if ($xxnum == 0){
 //   db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);

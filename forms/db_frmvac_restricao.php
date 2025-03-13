@@ -69,7 +69,7 @@ $clvac_restricao->rotulo->label();
 <script>
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_vac_restricao',
                       'func_vac_restricao.php?funcao_js=parent.js_preenchepesquisa|vc02_i_codigo',
                       'Pesquisa',

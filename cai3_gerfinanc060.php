@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,21 +26,21 @@
  */
 
 set_time_limit(0);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("classes/db_notificacao_classe.php");
-include("classes/db_notiusu_classe.php");
-include("classes/db_notidebitos_classe.php");
-include("classes/db_notimatric_classe.php");
-include("classes/db_notiinscr_classe.php");
-include("classes/db_notinumcgm_classe.php");
-include("classes/db_notitipo_classe.php");
-include("classes/db_notiagenda_classe.php");
-include("classes/db_notisitu_classe.php");
-include("classes/db_noticonf_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_notificacao_classe.php"));
+include(modification("classes/db_notiusu_classe.php"));
+include(modification("classes/db_notidebitos_classe.php"));
+include(modification("classes/db_notimatric_classe.php"));
+include(modification("classes/db_notiinscr_classe.php"));
+include(modification("classes/db_notinumcgm_classe.php"));
+include(modification("classes/db_notitipo_classe.php"));
+include(modification("classes/db_notiagenda_classe.php"));
+include(modification("classes/db_notisitu_classe.php"));
+include(modification("classes/db_noticonf_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clnotificacao = new cl_notificacao;
 $clnotiusu = new cl_notiusu;
 $clnotidebitos = new cl_notidebitos;
@@ -183,7 +183,7 @@ if(isset($notificacao)){
 	      $numm = ",";
 	    }
 	    $numpres .= ")";
-	    $result = pg_exec($numpres);
+	    $result = db_query($numpres);
 	    for($i=0;$i<pg_numrows($result);$i++){
 	      db_fieldsmemory($result,$i);
 	      $clnotidebitos->k53_notifica = $clnotificacao->k50_notifica;

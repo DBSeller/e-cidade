@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_app.utils.php"));
 
 $cRotulo = new rotulocampo();
 $cRotulo->label('x01_matric');
@@ -118,7 +118,7 @@ function js_pesquisa_aguabase(lMostra) {
   if(lMostra) {
     sQueryString += 'funcao_js=parent.js_mostra_matricula_iframe|x01_matric|z01_nome|x01_codrua|j14_nome|x01_numero|x11_complemento';
   } 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_aguabase', sQueryString, 'Pesquisa', lMostra, 20);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguabase', sQueryString, 'Pesquisa', lMostra, 20);
 }
 
 function js_mostra_matricula_iframe(matricula, nome, codlogradouro, logradouro, numero, complemento) {

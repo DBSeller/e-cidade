@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 
 $xinstit = db_getsession("DB_instit");
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in ($xinstit) ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in ($xinstit) ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -151,7 +151,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
    }else{
      $pdf->setfont('arial','',7);
    }
-   $resconta = pg_query("select * from conplanoconta where c63_anousu = ".db_getsession("DB_anousu")." and  c63_codcon = $c61_codcon");
+   $resconta = db_query("select * from conplanoconta where c63_anousu = ".db_getsession("DB_anousu")." and  c63_codcon = $c61_codcon");
    if(pg_numrows($resconta) > 0)
      db_fieldsmemory($resconta,0);
    
@@ -159,7 +159,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
    $pdf->cell(15,$alt,($c61_reduz == 0?'':$c61_reduz),0,0,"C",0,0); 
 
    $sql = "select fc_saltessaldo($c61_reduz,'$perini','$perfin',null)";
-   $resultc = pg_exec($sql);
+   $resultc = db_query($sql);
    $saldo = pg_result($resultc,0,0);
 
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,11 +26,11 @@
  */
 
 
-include ("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include ("libs/db_sql.php");
-include ("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -179,7 +179,31 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 			$pdf->cell(20, $alt, db_formatar($proj + $ativ + $oper, 'f'), 0, 1, "R", 0);
 		} else {
 
-			if ($o58_programa == 0 && $o58_subfuncao == 0) {
+      if ($o58_programa == 0 && $o58_subfuncao == 0 && $o58_funcao == 0 && empty($o58_unidade) && $o58_orgao != 0) {
+
+        $descr = $o40_descr;
+        $pdf->cell(15, $alt, $o58_orgao, 0, 0, "L", 0);
+        $pdf->cell(80, $alt, $descr, 0, 0, "L", 0);
+        $pdf->cell(20, $alt, db_formatar($proj, 'f'), 0, 0, "R", 0);
+        $pdf->cell(20, $alt, db_formatar($ativ, 'f'), 0, 0, "R", 0);
+        $pdf->cell(20, $alt, db_formatar($oper, 'f'), 0, 0, "R", 0);
+        $pdf->cell(20, $alt, db_formatar($proj + $ativ + $oper, 'f'), 0, 1, "R", 0);
+      }
+
+      if ($o58_programa == 0 && $o58_subfuncao == 0 && $o58_funcao == 0 && !empty($o58_unidade)) {
+
+        $descr = $o41_descr;
+        $pdf->ln(2);
+        $pdf->cell(15, $alt, db_formatar($o58_unidade, 'orgao'), 0, 0, "L", 0);
+        $pdf->cell(80, $alt, $descr, 0, 0, "L", 0);
+        $pdf->cell(20, $alt, db_formatar($proj, 'f'), 0, 0, "R", 0);
+        $pdf->cell(20, $alt, db_formatar($ativ, 'f'), 0, 0, "R", 0);
+        $pdf->cell(20, $alt, db_formatar($oper, 'f'), 0, 0, "R", 0);
+        $pdf->cell(20, $alt, db_formatar($proj + $ativ + $oper, 'f'), 0, 1, "R", 0);
+      }
+
+			if ($o58_programa == 0 && $o58_subfuncao == 0 && $o58_funcao != 0) {
+
 				$descr = $o52_descr;
 				$pdf->ln(2);
 				$pdf->cell(15, $alt, db_formatar($o58_funcao, 'orgao'), 0, 0, "L", 0);
@@ -191,8 +215,8 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 				$totproj += $proj;
 				$totativ += $ativ;
 				$totoper += $oper;
-			}
-			elseif ($o58_programa == 0) {
+			} else if ($o58_programa == 0 && $o58_subfuncao != 0) {
+
 				$descr = $o53_descr;
 				$pdf->cell(15, $alt, db_formatar($o58_funcao, 'orgao').".".db_formatar($o58_subfuncao, 's', '0', 3, 'e'), 0, 0, "L", 0);
 				$pdf->cell(80, $alt, $descr, 0, 0, "L", 0);
@@ -200,7 +224,9 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 				$pdf->cell(20, $alt, db_formatar($ativ, 'f'), 0, 0, "R", 0);
 				$pdf->cell(20, $alt, db_formatar($oper, 'f'), 0, 0, "R", 0);
 				$pdf->cell(20, $alt, db_formatar($proj + $ativ + $oper, 'f'), 0, 1, "R", 0);
-			} else {
+			}
+      if ($o58_programa != 0) {
+
 				$descr = $o54_descr;
 				$pdf->cell(15, $alt, db_formatar($o58_funcao, 'orgao').".".db_formatar($o58_subfuncao, 's', '0', 3, 'e').'.'.db_formatar($o58_programa, 's', '0', 4, 'e'), 0, 0, "L", 0);
 				$pdf->cell(80, $alt, $descr, 0, 0, "L", 0);
@@ -243,7 +269,7 @@ $pdf->ln(14);
 
 if ($origem != "O") {
 
-  assinaturas(&$pdf,&$classinatura,'BG');
+  assinaturas($pdf, $classinatura,'BG');
 
 }
 

@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  include("fpdf151/pdfwebseller.php");
-  include("classes/db_calendario_classe.php");
-  include("classes/db_periodocalendario_classe.php");
+  include(modification("fpdf151/pdfwebseller.php"));
+  include(modification("classes/db_calendario_classe.php"));
+  include(modification("classes/db_periodocalendario_classe.php"));
   $clcalendario = new cl_calendario;
   $clperiodocalendario = new cl_periodocalendario;
   $escola = db_getsession("DB_coddepto");
@@ -37,7 +37,7 @@
 			   inner join turma on ed60_i_turma=ed57_i_codigo
 		  where ed57_i_escola=$escola";
 
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $linhas = pg_num_rows($result);
 
   if($linhas==0){?>
@@ -125,7 +125,7 @@
            where      ed10_i_tipoensino = 2
            order by   ed11_i_ensino";
 
-  $result1 = pg_query($sql1);
+  $result1 = db_query($sql1);
   $linhas1= pg_num_rows($result1);  
 
   for($x=0;$x<$linhas1;$x++){
@@ -161,7 +161,7 @@
                      and ed57_i_escola=$escola
 					 and ed10_i_tipoensino = 2
 				  group by ed47_v_sexo";
-		 $result2 = pg_query($sql2);
+		 $result2 = db_query($sql2);
          $linhas2= pg_num_rows($result2);
 		 
 		 $masculino=0;
@@ -237,7 +237,7 @@
            where      ed10_i_tipoensino = 2
            order by   ed11_i_ensino";
 
-  $result1 = pg_query($sql1);
+  $result1 = db_query($sql1);
   $linhas1= pg_num_rows($result1);  
 
   for($x=0;$x<$linhas1;$x++){
@@ -272,7 +272,7 @@
                      and ed52_i_ano=$calendario
                      and ed57_i_escola=$escola
 					 and ed10_i_tipoensino = 2";
-		 $result2 = pg_query($sql2);
+		 $result2 = db_query($sql2);
          $linhas2= pg_num_rows($result2);
 		 db_fieldsmemory($result2,0);
 
@@ -325,7 +325,7 @@
            where      ed10_i_tipoensino = 2
            order by   ed11_i_ensino";
 
-  $result1 = pg_query($sql1);
+  $result1 = db_query($sql1);
   $linhas1= pg_num_rows($result1);  
 
   for($x=0;$x<$linhas1;$x++){
@@ -356,7 +356,7 @@
                      and ed52_i_ano=$calendario
                      and ed57_i_escola=$escola
 					 and ed10_i_tipoensino = 2";
-		 $result2 = pg_query($sql2);
+		 $result2 = db_query($sql2);
          $linhas2= pg_num_rows($result2);
 		 db_fieldsmemory($result2,0);
 
@@ -399,7 +399,7 @@
            where      ed10_i_tipoensino = 2
            order by   ed11_i_ensino";
 
-  $result1 = pg_query($sql1);
+  $result1 = db_query($sql1);
   $linhas1= pg_num_rows($result1);
 
   $quebra=0;
@@ -428,7 +428,7 @@
            where      ed10_i_tipoensino = 2
            order by   ed11_i_ensino";
 
-  $result1 = pg_query($sql1);
+  $result1 = db_query($sql1);
   $linhas1= pg_num_rows($result1);  
 
   for($idade=15;$idade<25;$idade++){
@@ -468,7 +468,7 @@
                      and ed57_i_escola=$escola
 					 and ed10_i_tipoensino = 2
 				  group by ed47_v_sexo";
-		 $result2 = pg_query($sql2);
+		 $result2 = db_query($sql2);
          $linhas2= pg_num_rows($result2);
          $masculino=0;
 		 $feminino=0;

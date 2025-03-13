@@ -1,34 +1,35 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
 $cledu_parametros->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("ed18_c_nome");
+$clrotulo->label("ed233_apresentarnotaproporcional");
 $ed233_i_escola = db_getsession("DB_coddepto");
 $ed18_c_nome    = db_getsession("DB_nomedepto");
 ?>
@@ -49,7 +50,7 @@ $ed18_c_nome    = db_getsession("DB_nomedepto");
           <?=$Led233_i_escola?>
         </td>
         <td>
-          <?php 
+          <?php
             db_input('ed233_i_escola',20,$Ied233_i_escola,true,'text',3,"class='field-size2' onchange='js_pesquisaed233_i_escola(false);'");
             db_input('ed18_c_nome',50,@$Ied18_c_nome,true,'text',3,"class='field-size7'")
           ?>
@@ -182,7 +183,7 @@ $ed18_c_nome    = db_getsession("DB_nomedepto");
       </tr>
       <tr>
         <td colspan='2'>
-  
+
           <fieldset class="separator">
             <legend>Diário de Classe</legend>
             <table class="subtable">
@@ -197,9 +198,20 @@ $ed18_c_nome    = db_getsession("DB_nomedepto");
                   ?>
                 </td>
               </tr>
+              <tr>
+                <td>
+                    <label for="ed233_apresentarnotaproporcional"> <?=$Led233_apresentarnotaproporcional?> </label>
+                </td>
+                <td>
+                  <?php
+                    db_select('ed233_apresentarnotaproporcional', array('t'=>'SIM','f'=>'NÃO'), true, $db_opcao);
+                  ?>
+                </td>
+              </tr>
+
             </table>
           </fieldset>
-  
+
         </td>
       </tr>
     </table>

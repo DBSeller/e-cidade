@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impfarmacia.php");
-require_once("libs/db_sql.php");
-//include("classes/db_far_devolucao_classe.php");
-//include("classes/db_far_devolucaomed_classe.php");
-//include("classes/db_db_depart_classe.php");
-require_once('libs/db_utils.php');
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impfarmacia.php"));
+require_once(modification("libs/db_sql.php"));
+//include(modification("classes/db_far_devolucao_classe.php"));
+//include(modification("classes/db_far_devolucaomed_classe.php"));
+//include(modification("classes/db_db_depart_classe.php"));
+require_once(modification('libs/db_utils.php'));
 $oDaoFarDev       = db_utils::getdao("far_devolucao");//$clfar_devolucao    = new cl_far_devolucao;
 $oDaoFarDevMed    = db_utils::getdao("far_devolucaomed");//$clfar_devolucaomed = new cl_far_devolucaomed;
 $oDaoDbDepart     = db_utils::getdao("db_depart"); //$cldb_depart        = new cl_db_depart;
@@ -88,7 +88,10 @@ for ($iContador = 0; $iContador < $iLinhasDev; $iContador++) {
   $oPdf1->ratendente    = $oDaoDevo->fa22_i_login;
   $oPdf1->rcodatend     = $oDaoDevo->nome;
   $oPdf1->Rhora         = $dHoraRelatorio;
-  $oPdf1->Rnomeus       = $oDaoDevo->fa22_i_cgsund." ".$oDaoDevo->z01_v_nome;
+
+  $paciente = "{$oDaoDevo->fa22_i_cgsund} {$oDaoDevo->z01_v_nome}";
+
+  $oPdf1->Rnomeus       = $paciente;
   $oPdf1->emissao       = date("Y-m-d",db_getsession("DB_datausu"));
   $oPdf1->Rdepart       = $oDepart->descrdepto;
   $oPdf1->recorddata    = "fa22_d_data";

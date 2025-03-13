@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,22 +26,22 @@
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_libcontabilidade.php");
-include ("libs/db_liborcamento.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
 
-include ("dbforms/db_funcoes.php");
-include ("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
-include ("classes/db_orcorgao_classe.php");
-include ("classes/db_orcunidade_classe.php");
-include ("classes/db_orcprograma_classe.php");
-include ("classes/db_orcprojativ_classe.php");
-include ("classes/db_orcelemento_classe.php");
-include ("classes/db_orcdotacao_classe.php");
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcunidade_classe.php"));
+include(modification("classes/db_orcprograma_classe.php"));
+include(modification("classes/db_orcprojativ_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
 
 $cliframe_seleciona = new cl_iframe_seleciona;
 

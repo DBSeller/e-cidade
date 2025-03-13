@@ -82,10 +82,10 @@ db_input('j13_descr',40,$Ij13_descr,true,'text',3,'')
 <script>
 function js_pesquisaed225_i_aluno(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_aluno','func_aluno.php?funcao_js=parent.js_mostraaluno1|ed47_i_codigo|ed47_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aluno','func_aluno.php?funcao_js=parent.js_mostraaluno1|ed47_i_codigo|ed47_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.ed225_i_aluno.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_aluno','func_aluno.php?pesquisa_chave='+document.form1.ed225_i_aluno.value+'&funcao_js=parent.js_mostraaluno','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aluno','func_aluno.php?pesquisa_chave='+document.form1.ed225_i_aluno.value+'&funcao_js=parent.js_mostraaluno','Pesquisa',false);
      }else{
        document.form1.ed47_i_codigo.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostraaluno1(chave1,chave2){
 }
 function js_pesquisaed225_i_bairro(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr','Pesquisa',true);
   }else{
      if(document.form1.ed225_i_bairro.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bairro','func_bairro.php?pesquisa_chave='+document.form1.ed225_i_bairro.value+'&funcao_js=parent.js_mostrabairro','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bairro','func_bairro.php?pesquisa_chave='+document.form1.ed225_i_bairro.value+'&funcao_js=parent.js_mostrabairro','Pesquisa',false);
      }else{
        document.form1.j13_descr.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostrabairro1(chave1,chave2){
   db_iframe_bairro.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_alunobairro','func_alunobairro.php?funcao_js=parent.js_preenchepesquisa|ed225_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_alunobairro','func_alunobairro.php?funcao_js=parent.js_preenchepesquisa|ed225_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_alunobairro.hide();

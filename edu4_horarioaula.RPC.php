@@ -2,7 +2,7 @@
 
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,16 +26,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/JSON.php");
-require_once ("std/db_stdClass.php");
-require_once ("std/DBDate.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
 define( 'MSG_EDU4_HORARIOAULA_RPC', 'educacao.escola.edu4_horarioaulaRPC.' );
 
@@ -60,6 +60,7 @@ try {
         $oDado               = new stdClass();
         $oDado->iCodigo      = $oTurno->getCodigoTurno();
         $oDado->sDescricao   = urlencode($oTurno->getDescricao());
+        $oDado->aTurnosReferente = $oTurno->getTurnoReferente();
         $oRetorno->aTurnos[] = $oDado;
       }
 
@@ -125,6 +126,10 @@ try {
 
         $oPeriodoEscola = new PeriodoEscola();
 
+        if($oPeriodo->aTurnoReferentePeriodo[0] == "null") {
+          throw new Exception(_M(MSG_EDU4_HORARIOAULA_RPC . "erro_periodo_sem_referencia"));
+        }
+
         if ( !empty($oPeriodo->iCodigoVinculo) ) {
           $oPeriodoEscola = new PeriodoEscola($oPeriodo->iCodigoVinculo);
         }
@@ -134,7 +139,7 @@ try {
         $oPeriodoEscola->setHoraInicio($oPeriodo->sHoraInicio);
         $oPeriodoEscola->setHoraFim($oPeriodo->sHoraFim);
         $oPeriodoEscola->setDuracao($oPeriodo->sDuracao);
-
+        $oPeriodoEscola->setTurnoReferentePeriodo( $oPeriodo->aTurnoReferentePeriodo );
         $oPeriodoEscola->salvar();
 
       }
@@ -185,9 +190,12 @@ try {
       foreach ($oEscola->getPeriodosEscola() as $oPeriodoEscola) {
 
         $iTurno = $oPeriodoEscola->getTurno()->getCodigoTurno();
+        $iOrdem = $oPeriodoEscola->getTurno()->getOrdem();
         $sTurno = urlencode( $oPeriodoEscola->getTurno()->getDescricao() );
 
-        if ( !array_key_exists($iTurno, $aPeriodosEscola) ) {
+        $sHash = "{$iOrdem}#{$iTurno}";
+
+        if ( !array_key_exists($sHash, $aPeriodosEscola) ) {
 
           $oDadosTurno              = new stdClass();
           $oDadosTurno->iTurno      = $iTurno;
@@ -195,27 +203,29 @@ try {
           $oDadosTurno->sHoraInicio = "";
           $oDadosTurno->sHoraFim    = "";
           $oDadosTurno->aPeriodos   = array();
-          $aPeriodosEscola[$iTurno] = $oDadosTurno;
+          $aPeriodosEscola[$sHash] = $oDadosTurno;
         }
 
-        $oPeriodo                    = new stdClass();
-        $oPeriodo->iTurno            = $iTurno;
-        $oPeriodo->iTurno            = $sTurno;
-        $oPeriodo->iCodigoVinculo    = $oPeriodoEscola->getCodigo();
-        $oPeriodo->iCodigoPeriodo    = $oPeriodoEscola->getPeriodoAula();
-        $oPeriodo->sDescricaoPeriodo = urlencode( $oPeriodoEscola->getDescricao() );
-        $oPeriodo->iOrdem            = $oPeriodoEscola->getOrdem();
-        $oPeriodo->sHoraInicio       = $oPeriodoEscola->getHoraInicio();
-        $oPeriodo->sHoraFim          = $oPeriodoEscola->getHoraFim();
-        $oPeriodo->sDuracao          = $oPeriodoEscola->getDuracao();
+        $oPeriodo                           = new stdClass();
+        $oPeriodo->iTurno                   = $iTurno;
+        $oPeriodo->sTurno                   = $sTurno;
+        $oPeriodo->iCodigoVinculo           = $oPeriodoEscola->getCodigo();
+        $oPeriodo->iCodigoPeriodo           = $oPeriodoEscola->getPeriodoAula();
+        $oPeriodo->sDescricaoPeriodo        = urlencode( $oPeriodoEscola->getDescricao() );
+        $oPeriodo->iOrdem                   = $oPeriodoEscola->getOrdem();
+        $oPeriodo->sHoraInicio              = $oPeriodoEscola->getHoraInicio();
+        $oPeriodo->sHoraFim                 = $oPeriodoEscola->getHoraFim();
+        $oPeriodo->sDuracao                 = $oPeriodoEscola->getDuracao();
+        $oPeriodo->aTurnosReferentesPeriodo = $oPeriodoEscola->getTurnoReferentePeriodo();
 
-        $aPeriodosEscola[$iTurno]->aPeriodos[] = $oPeriodo;
+        $aPeriodosEscola[$sHash]->aPeriodos[] = $oPeriodo;
       }
+
 
       /**
        * Percorre os períodos de cada turno para verificar o horário inicial e final de cada turno
        */
-      foreach ($aPeriodosEscola as $iTurno => $oPeriodosTurno) {
+      foreach ($aPeriodosEscola as $sHash => $oPeriodosTurno) {
 
         $sHoraInicio  = "";
         $sHoraFim     = "";

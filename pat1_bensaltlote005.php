@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_bens_classe.php");
-include("classes/db_clabens_classe.php");
-include("classes/db_bensmater_classe.php");
-include("classes/db_bensimoveis_classe.php");
-include("classes/db_bensbaix_classe.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_cfpatri_classe.php");
-include("classes/db_bensplaca_classe.php");
-include("classes/db_benslote_classe.php");
-include("classes/db_benstransfcodigo_classe.php");
-include("classes/db_departdiv_classe.php");
-include("classes/db_bensdiv_classe.php");
-include("classes/db_db_departorg_classe.php");
-include_once("classes/db_cfpatriplaca_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_bens_classe.php"));
+include(modification("classes/db_clabens_classe.php"));
+include(modification("classes/db_bensmater_classe.php"));
+include(modification("classes/db_bensimoveis_classe.php"));
+include(modification("classes/db_bensbaix_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_cfpatri_classe.php"));
+include(modification("classes/db_bensplaca_classe.php"));
+include(modification("classes/db_benslote_classe.php"));
+include(modification("classes/db_benstransfcodigo_classe.php"));
+include(modification("classes/db_departdiv_classe.php"));
+include(modification("classes/db_bensdiv_classe.php"));
+include(modification("classes/db_db_departorg_classe.php"));
+include_once(modification("classes/db_cfpatriplaca_classe.php"));
 $cldepartorg    = new cl_db_departorg;
 $cldb_estrut    = new cl_db_estrut;
 $clbens         = new cl_bens;
@@ -110,7 +110,7 @@ if(isset($alterar)){
     	 if ($sqlerro == false) {
     		 
     	 	if ($update_ident == "true") {
-    	 		$seq = pg_result(pg_query("select max(t41_placaseq) from bensplaca where t41_placa = '$t64_class' "),0,0)+1;
+    	 		$seq = pg_result(db_query("select max(t41_placaseq) from bensplaca where t41_placa = '$t64_class' "),0,0)+1;
     	 		if ($seq == "" || $seq == 0) {
     	 			$seq = 1;
     	 		}
@@ -216,7 +216,7 @@ if(isset($chavepesquisa)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	  include("forms/db_frmbensaltlote.php");
+	  include(modification("forms/db_frmbensaltlote.php"));
 	?>
     </center>
     </td>
@@ -246,9 +246,9 @@ if(isset($chavepesquisa)){
          parent.document.formaba.bensbaix.disabled=false;
          parent.document.formaba.bensimoveis.disabled=false;
          parent.document.formaba.bensmater.disabled=false;
-         top.corpo.iframe_bensbaix.location.href='pat1_bensbaix001.php?t55_codbem=".@$chavepesquisa."';
-         top.corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?db_opcaoal=22&t54_codbem=".@$chavepesquisa."';
-         top.corpo.iframe_bensmater.location.href='pat1_bensmater001.php?db_opcaoal=22&t53_codbem=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensbaix.location.href='pat1_bensbaix001.php?t55_codbem=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?db_opcaoal=22&t54_codbem=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensmater.location.href='pat1_bensmater001.php?db_opcaoal=22&t53_codbem=".@$chavepesquisa."';
        }\n
     js_db_libera();
   </script>\n
@@ -260,9 +260,9 @@ if(isset($chavepesquisa)){
 	 parent.document.formaba.bensbaix.disabled=false;
          parent.document.formaba.bensimoveis.disabled=false;
          parent.document.formaba.bensmater.disabled=false;
-         top.corpo.iframe_bensbaix.location.href='pat1_bensbaix001.php?t55_codbem=".@$chavepesquisa."';
-         top.corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?db_opcaoal=33&t54_codbem=".@$chavepesquisa."';
-         top.corpo.iframe_bensmater.location.href='pat1_bensmater001.php?db_opcaoal=33&t53_codbem=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensbaix.location.href='pat1_bensbaix001.php?t55_codbem=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?db_opcaoal=33&t54_codbem=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensmater.location.href='pat1_bensmater001.php?db_opcaoal=33&t53_codbem=".@$chavepesquisa."';
       }\n
     js_db_bloqueia();
   </script>\n   

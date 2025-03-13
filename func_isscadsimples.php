@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_isscadsimples_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_isscadsimples_classe.php"));
 $mostra  = "T";
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -38,6 +38,9 @@ $clisscadsimples = new cl_isscadsimples;
 $clisscadsimples->rotulo->label("q38_sequencial");
 $clisscadsimples->rotulo->label("q38_inscr");
 $clisscadsimples->rotulo->label("z01_nome");
+$clrotulo = new rotulocampo;
+$clrotulo->label("DBtxt30");
+$clrotulo->label("DBtxt31");
 ?>
 <html>
 <head>
@@ -71,6 +74,28 @@ $clisscadsimples->rotulo->label("z01_nome");
 		       ?>
             </td>
           </tr>
+
+          <tr>
+						<td align="right">
+            <label for="cpf"><?=$DBtxt30?>:</label>
+						</td>
+						<td>
+							<?
+								db_input('z01_cgccpf',20,$Iz01_cgccpf,true,'text',1,"onkeyup='js_ValidaCampos(this,1,\"CPF\",\"\",\"\",event);'",'cpf');
+							?>
+						</td>
+					</tr>
+          <tr>
+						<td align="right">
+            <label for="cnpj"><?=$DBtxt31?>:</label>
+						</td>
+						<td>
+							<?
+								db_input('z01_cgccpf',20,$Iz01_cgccpf,true,'text',1,"onkeyup='js_ValidaCampos(this,1,\"CNPJ\",\"\",\"\",event);'",'cnpj');
+							?>
+						</td>
+					</tr>
+
 					<?
 
 			    if (!isset($_GET["sbaixa"])){
@@ -125,7 +150,7 @@ $clisscadsimples->rotulo->label("z01_nome");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_isscadsimples.php")==true){
-             include("funcoes/db_func_isscadsimples.php");
+             include(modification("funcoes/db_func_isscadsimples.php"));
            }else{
            $campos = "isscadsimples.*,z01_nome,q39_dtbaixa";
            }
@@ -134,6 +159,10 @@ $clisscadsimples->rotulo->label("z01_nome");
 	         $sql = $clisscadsimples->sql_query_baixa($chave_q38_sequencial,$campos,"q38_sequencial");
         }else if(isset($chave_q38_inscr) && (trim($chave_q38_inscr)!="") ){
 	         $sql = $clisscadsimples->sql_query_baixa("",$campos,"q38_inscr","$where q38_inscr like '$chave_q38_inscr%' ");
+        }else if(isset($cpf) && (trim($cpf)!="") )  {
+          $sql = $clisscadsimples->sql_query_baixa("",$campos,"z01_cgccpf"," z01_cgccpf = '{$cpf}' ");
+        }else if(isset($cnpj) && (trim($cnpj)!="") ) {
+          $sql = $clisscadsimples->sql_query_baixa("",$campos,"z01_cgccpf"," z01_cgccpf = '{$cnpj}' ");
         }else{
            $sql = $clisscadsimples->sql_query_baixa("",$campos,"q38_sequencial","$where 1=1");
         }
@@ -171,4 +200,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_q38_inscr",true,1,"chave_q38_inscr",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

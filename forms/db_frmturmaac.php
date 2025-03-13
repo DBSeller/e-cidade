@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
@@ -33,16 +33,16 @@ $result         = $clescola->sql_record($clescola->sql_query($ed268_i_escola));
 db_fieldsmemory($result,0);
 
 if ($db_opcao != 1 && isset($ed268_i_codigo) && !empty($ed268_i_codigo)) {
-  
-  $sSqlTurmaAc = $clturmaacmatricula->sql_query_censo("", 
-                                                      "count(*) as qtdmatr", 
-                                                      "", 
+
+  $sSqlTurmaAc = $clturmaacmatricula->sql_query_censo("",
+                                                      "count(*) as qtdmatr",
+                                                      "",
                                                       "ed269_i_turmaac = ".@$ed268_i_codigo
                                                      );
   $result4 = $clturmaacmatricula->sql_record($sSqlTurmaAc);
   if ($clturmaacmatricula->numrows > 0) {
     db_fieldsmemory($result4,0);
-  } 
+  }
 }
 ?>
 <form name="form1" method="post" action="">
@@ -116,28 +116,34 @@ if ($db_opcao != 1 && isset($ed268_i_codigo) && !empty($ed268_i_codigo)) {
       }
       ?>
       <fieldset id="AEE" style="padding:0px;visibility:<?=$visible?>;"><legend><?=$Led268_c_aee?></legend>
-       <input <?=substr(@$ed268_c_aee,0,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
-              name="ed268_c_aee[]" type="checkbox" value="1"> Ensino do Sistema Braile<br>                    
-       <input <?=substr(@$ed268_c_aee,2,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
-              name="ed268_c_aee[]" type="checkbox" value="3"> Ensino de uso de recursos ópticos e não ópticos<br>
-       <input <?=substr(@$ed268_c_aee,3,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
+       <input <?=substr(@$ed268_c_aee,0,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="1"> Ensino do Sistema Braille<br>
+       <input <?=substr(@$ed268_c_aee,2,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="3"> Ensino do uso de recursos ópticos e não ópticos<br>
+       <input <?=substr(@$ed268_c_aee,3,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
               name="ed268_c_aee[]" type="checkbox" value="4"> Estratégias para o desenvolvimento de processos mentais<br>
-       <input <?=substr(@$ed268_c_aee,4,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
+       <input <?=substr(@$ed268_c_aee,4,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
               name="ed268_c_aee[]" type="checkbox" value="5"> Técnicas de orientação e mobilidade<br>
-       <input <?=substr(@$ed268_c_aee,5,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
-              name="ed268_c_aee[]" type="checkbox" value="6"> Ensino de Língua Brasileira de Sinais - LIBRAS<br>
-       <input <?=substr(@$ed268_c_aee,6,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
-              name="ed268_c_aee[]" type="checkbox" value="7"> Ensino de uso da comunicação alternativa e aumentativa<br>
-       <input <?=substr(@$ed268_c_aee,7,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
-              name="ed268_c_aee[]" type="checkbox" value="8"> Estrategias para enriquecimento curricular<br>
-       <input <?=substr(@$ed268_c_aee,8,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
-              name="ed268_c_aee[]" type="checkbox" value="9"> Ensino do uso do Soroban<br>
-       <input <?=substr(@$ed268_c_aee,9,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
-              name="ed268_c_aee[]" type="checkbox" value="10"> Ensino da usabilidade e das funcionalidades da informática<br>
-       <input <?=substr(@$ed268_c_aee,10,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
-              name="ed268_c_aee[]" type="checkbox" value="11"> Ensino da Língua Portuguesa e modalidade escrita<br>
-       <input <?=substr(@$ed268_c_aee,11,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee" 
+       <input <?=substr(@$ed268_c_aee,5,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="6"> Ensino de Língua Brasileira de Sinais - Libras<br>
+       <input <?=substr(@$ed268_c_aee,6,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="7"> Ensino de uso da Comunicação Alternativa e Aumentativa - CAA<br>
+       <input <?=substr(@$ed268_c_aee,7,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="8"> Estratégias para enriquecimento curricular<br>
+       <input <?=substr(@$ed268_c_aee,8,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="9"> Ensino das técnicas de cálculo no Soroban<br>
+       <input <?=substr(@$ed268_c_aee,9,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="10"> Ensino da usabilidade e das funcionalidades da informática acessível<br>
+       <input <?=substr(@$ed268_c_aee,10,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="11"> Ensino da Língua Portuguesa na modalidade escrita<br>
+       <input <?=substr(@$ed268_c_aee,11,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
               name="ed268_c_aee[]" type="checkbox" value="12"> Estratégias para autonomia no ambiente escolar<br>
+       <input <?=substr(@$ed268_c_aee,12,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="13"> Desenvolvimento de funções cognitivas<br>
+       <input <?=substr(@$ed268_c_aee,13,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="14"> Desenvolvimento de vida autônoma<br>
+       <input <?=substr(@$ed268_c_aee,14,1)=="1"?"checked":""?> style="height:13px;" id="ed268_c_aee"
+              name="ed268_c_aee[]" type="checkbox" value="15"> Ensino da Língua Portuguesa como Segunda Língua<br>
       </fieldset>
      </td>
     </tr>
@@ -231,13 +237,13 @@ if ($db_opcao != 1 && isset($ed268_i_codigo) && !empty($ed268_i_codigo)) {
 </table>
 </center>
 
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" 
-       type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" 
+<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>"
+       type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"
        <?=($db_botao==false?"disabled":"")?> onclick="return js_valida();">
 <?if (!isset($abre)) { ?>
-    <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" 
+    <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar"
            onclick="js_pesquisa();" <?=($db_botao2==false?"disabled":"")?>>
-    <input name="novo" type="button" id="novo" value="Novo Registro" 
+    <input name="novo" type="button" id="novo" value="Novo Registro"
            onclick="js_novo()" <?=$db_opcao==1?"disabled":""?> <?=($db_botao2==false?"disabled":"")?>>
 <?}?>
 </form>
@@ -255,29 +261,29 @@ $('ed268_i_tipoatend').observe("change", function() {
 });
 
 function js_pesquisaed268_i_calendario(mostra) {
-	
+
   if (mostra == true) {
-	  
+
     js_OpenJanelaIframe('','db_iframe_calendarioturma','func_calendarioturma.php?funcao_js=parent.js_mostracalendario1'+
     	                    '|ed52_i_codigo|ed52_c_descr','Pesquisa de Calendários',true);
-    
+
   } else {
-	  
+
     if (document.form1.ed268_i_calendario.value != '') {
-        
+
       js_OpenJanelaIframe('','db_iframe_calendarioturma',
     	                  'func_calendarioturma.php?pesquisa_chave='+document.form1.ed268_i_calendario.value+
     	                  '&funcao_js=parent.js_mostracalendario','Pesquisa',false);
-      
+
     } else {
       document.form1.ed52_c_descr.value = '';
     }
-    
+
   }
 }
 
 function js_checaDependencia() {
-  
+
   iDependencia = $('ed268_i_sala').value;
 
   if (iDependencia == "") {
@@ -286,9 +292,9 @@ function js_checaDependencia() {
     $('ed16_i_capacidade').value = "";
 
   }
-  
+
   if (parseInt(iDependencia, 10) > 0) {
-  
+
     var oParam = new Object();
 
     oParam.exec         = "getDependenciaTurmaAc";
@@ -304,7 +310,7 @@ function js_checaDependencia() {
 
 function js_retornoChecaDependencia(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
 
@@ -320,12 +326,12 @@ function js_retornoChecaDependencia(oRetorno) {
     $('ed268_i_sala').value      = oRetorno.ed16_i_codigo;
     $('ed16_c_descr').value      = oRetorno.ed16_c_descr.urlDecode();
     $('ed16_i_capacidade').value = oRetorno.ed16_i_capacidade;
-    
-    if ($('ed268_i_numvagas').value == "" 
+
+    if ($('ed268_i_numvagas').value == ""
         || $('ed268_i_numvagas').value == "0") {
 
       $('ed268_i_numvagas').value  = oRetorno.ed16_i_capacidade;
-    
+
     }
 
     js_calcvagas();
@@ -357,107 +363,107 @@ function js_checaNumVagas() {
 }
 
 function js_mostracalendario(chave,erro) {
-	
+
   document.form1.ed52_c_descr.value = chave;
-  
+
   if (erro == true) {
-	  
+
     document.form1.ed268_i_calendario.focus();
     document.form1.ed268_i_calendario.value = '';
-    
+
   }
 }
 
 function js_mostracalendario1(chave1,chave2) {
-	
+
   document.form1.ed268_i_calendario.value = chave1;
   document.form1.ed52_c_descr.value       = chave2;
   db_iframe_calendarioturma.hide();
-  
+
 }
 
 function js_pesquisaed268_i_turno(mostra) {
-	
+
   if (mostra == true) {
-	  
+
     js_OpenJanelaIframe('','db_iframe_turno','func_turnoturmaac.php?funcao_js=parent.js_mostraturno1|ed15_i_codigo|'+
     	                  'ed15_c_nome','Pesquisa de Turnos',true);
-    
+
   } else {
-	  
+
     if (document.form1.ed268_i_turno.value != '') {
-        
+
       js_OpenJanelaIframe('','db_iframe_turno','func_turnoturmaac.php?pesquisa_chave='+$('ed268_i_turno').value+
     	                    '&funcao_js=parent.js_mostraturno','Pesquisa',false);
-      
+
     } else {
       document.form1.ed15_c_nome.value = '';
     }
-    
+
   }
 }
 
 function js_mostraturno(chave,erro) {
-	
+
   document.form1.ed15_c_nome.value       = chave;
   document.form1.ed268_i_sala.value      = "";
   document.form1.ed16_c_descr.value      = "";
   document.form1.ed16_i_capacidade.value = "";
-  
+
   if (erro == true) {
-	  
+
     document.form1.ed268_i_turno.focus();
     document.form1.ed268_i_turno.value = '';
-    
+
   }
-  
+
 }
 
 function js_mostraturno1(chave1,chave2) {
-	
+
   document.form1.ed268_i_turno.value     = chave1;
   document.form1.ed15_c_nome.value       = chave2;
   document.form1.ed268_i_sala.value      = "";
   document.form1.ed16_c_descr.value      = "";
   document.form1.ed16_i_capacidade.value = "";
   db_iframe_turno.hide();
-  
+
 }
 
 function js_pesquisaed268_i_sala(mostra){
-	
+
   if (document.form1.ed268_i_turno.value == "") {
-	  
+
     alert("Informe o Turno!");
     document.form1.ed268_i_sala.value                  = '';
     document.form1.ed268_i_turno.style.backgroundColor = '#99A9AE';
     document.form1.ed268_i_turno.focus();
-     
+
   } else if (document.form1.ed268_i_calendario.value == "") {
-	  
+
     alert("Informe o Calendário!");
     document.form1.ed268_i_sala.value                       = '';
     document.form1.ed268_i_calendario.style.backgroundColor = '#99A9AE';
     document.form1.ed268_i_calendario.focus();
-    
+
   } else {
-	  
+
     if (mostra == true) {
-        
+
       js_OpenJanelaIframe('','db_iframe_sala','func_sala.php?funcao_js=parent.js_mostrasala1|ed16_i_codigo|'+
     	                  'ed16_c_descr|ed16_i_capacidade','Pesquisa de Salas',true);
-      
+
     } else {
-        
+
       if (document.form1.ed268_i_sala.value != '') {
-          
+
         js_OpenJanelaIframe('','db_iframe_sala','func_sala.php?pesquisa_chave='+document.form1.ed268_i_sala.value+
                             '&funcao_js=parent.js_mostrasala|ed16_i_codigo|ed16_c_descr|ed16_i_capacidade','Pesquisa',false);
-        
+
       } else {
         document.form1.ed16_c_descr.value = '';
       }
-      
+
     }
   }
 }
@@ -465,44 +471,44 @@ function js_pesquisaed268_i_sala(mostra){
 function js_mostrasala(chave1,erro,chave2) {
 
   if (erro == true) {
-	 
+
     alert("Dependência não encontrada,\n verifique o código ou pesquise!");
     document.form1.ed268_i_sala.focus();
     document.form1.ed268_i_sala.value = '';
-    
+
   } else {
     document.form1.ed16_c_descr.value      = chave1;
     document.form1.ed16_i_capacidade.value = chave2;
     document.form1.ed268_i_numvagas.value  = chave2;
     js_calcvagas();
   }
-  
+
 }
 
 function js_mostrasala1(chave1,chave2,chave3) {
-	
+
  document.form1.ed268_i_sala.value      = chave1;
  document.form1.ed16_c_descr.value      = chave2;
  document.form1.ed16_i_capacidade.value = chave3;
  document.form1.ed268_i_numvagas.value  = chave3;
  js_calcvagas();
  db_iframe_sala.hide();
- 
+
 }
 
 function js_pesquisa() {
-	
+
   js_OpenJanelaIframe('','db_iframe_turmaac','func_turmaac.php?funcao_js=parent.js_preenchepesquisa|ed268_i_codigo'+
 		              '|ed268_i_tipoatend','Pesquisa de Turmas com Atividade Complementar',true);
-  
+
 }
 
 function js_preenchepesquisa(chave,tipo) {
-	
+
   db_iframe_turmaac.hide();
   <?
   if ($db_opcao != 1) {
-  	
+
     if ($db_opcao == 3 || $db_opcao == 33) {
       $n_arquivo = "003";
     } else {
@@ -522,7 +528,7 @@ function js_calcvagas(evento) {
   var iNumVagas        = $('ed268_i_numvagas').value;
   var iCapacidade      = $('ed16_i_capacidade').value;
   var iNumMatriculados = $('ed268_i_nummatr').value;
-  
+
   if (evento != undefined) {
 
     var iTecla           = evento.which;
@@ -530,7 +536,7 @@ function js_calcvagas(evento) {
     if (iTecla != 13 && iTecla != 27) {
 
       if ($('ed268_i_sala').value == "") {
-    
+
         if (parseInt(iNumVagas, 10) > 0) {
 
           if (iNumVagas-iNumMatriculados < 0) {
@@ -548,9 +554,9 @@ function js_calcvagas(evento) {
       } else {
 
         if (parseInt(iNumVagas, 10) > 0) {
-      
+
           if (parseInt(iNumVagas, 10) > parseInt(iCapacidade, 10)) {
-      
+
             alert('Número maior do que o suportado pela sala.');
             $('ed268_i_numvagas').value = "";
             $('restantes').value        = "";
@@ -574,11 +580,11 @@ function js_calcvagas(evento) {
 }
 
 function js_tipoatend(valor) {
-	
+
   if (valor == "5") {
     document.getElementById("AEE").style.visibility = "visible";
   } else {
-	  
+
     document.getElementById("AEE").style.visibility = "hidden";
     document.form1.ed268_c_aee[0].checked           = false;
     document.form1.ed268_c_aee[1].checked           = false;
@@ -589,23 +595,23 @@ function js_tipoatend(valor) {
     document.form1.ed268_c_aee[6].checked           = false;
     document.form1.ed268_c_aee[7].checked           = false;
     document.form1.ed268_c_aee[8].checked           = false;
-    document.form1.ed268_c_aee[9].checked           = false;
+    document.form1.ed268_c_aee[9].checked           = true;
     document.form1.ed268_c_aee[10].checked          = false;
-    
+
   }
-  
+
 }
 
 function js_valida() {
-	
+
   tam  = document.form1.ed268_c_aee.length;
   cont = 0;
   for (i = 0; i < tam; i++) {
-	  
+
     if (document.form1.ed268_c_aee[i].checked == true) {
       cont++;
     }
-    
+
   }
 
   var iNumVagas   = document.form1.ed268_i_numvagas.value;
@@ -614,13 +620,13 @@ function js_valida() {
   js_checaNumVagas();
 
   if (js_checaDependencia()) {
-    
+
     if (document.form1.ed268_i_numvagas.value == "") {
-    
+
       alert("A quantidade de vagas deve ser informado.");
       document.form1.ed268_i_numvagas.focus();
       return false;
-  
+
     }
 
     if (document.form1.ed268_i_sala.value != "") {
@@ -655,53 +661,53 @@ function js_valida() {
     }
 
   }
-  
+
   if (cont == 0 && document.form1.ed268_i_tipoatend.value == 5) {
-	  
+
     alert("Campo Tipo de Atendimento Educ. Especial - AEE não informado!");
     return false;
-    
+
   }
-  
+
   return true;
 }
 
 function mascara_hora(hora,x) {
-	
+
   var myhora = '';
   myhora     = myhora + hora;
   if (myhora.length == 2) {
-	  
+
     if ( (myhora < 00 ) || (myhora > 23) ) {
-        
+
       alert("E R R O !!!\n\nHora inválida!\nPreencha corretamente o campo!");
       document.form1[x].value = "";
       document.form1[x].focus();
-      
+
     }
-    
+
     myhora = myhora + ':';
     document.form1[x].value = myhora;
-  } 
-  
+  }
+
   if (myhora.length == 5) {
     verifica_hora(x);
   }
 }
 
 function verifica_hora(x) {
-	
+
   hrs = (document.form1[x].value.substring(0,2));
   min = (document.form1[x].value.substring(3,5));
   situacao = "";
   // verifica hora
   if ( (hrs < 00 ) || (hrs > 23) || ( min < 00) || ( min > 59) ) {
-	  
+
     alert("E R R O !!!\n\nHora inválida!\nPreencha corretamente o campo!");
     document.form1[x].value = "";
     document.form1[x].focus();
-    
-  }  
+
+  }
 }
 
 if (document.form1.ed268_i_nummatr.value == "") {

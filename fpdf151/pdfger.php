@@ -3,15 +3,15 @@ if(!defined('DB_BIBLIOT')){
 
   session_cache_limiter('none');
   session_start();
-  require("../libs/db_stdlib.php");
-  require("../libs/db_conecta.php");
-  include("../libs/db_sessoes.php");
-  include("../libs/db_usuariosonline.php");
+  require(modification("fpdf151/libs/db_stdlib.php"));
+  require(modification("fpdf151/libs/db_conecta.php"));
+  include(modification("fpdf151/libs/db_sessoes.php"));
+  include(modification("fpdf151/libs/db_usuariosonline.php"));
   db_postmemory($HTTP_POST_VARS);
   db_postmemory($HTTP_SERVER_VARS);
 
-  define('FPDF_FONTPATH','font/');
-  require('fpdf.php');
+  define('FPDF_FONTPATH','fpdf151/font/');
+  require(modification('fpdf151/fpdf.php'));
 }
 
 /*
@@ -34,7 +34,7 @@ class PDF extends FPDF {
 	global $result;
 	global $url;
 	//Dados da instituição
-    $dados = @pg_exec("select nomeinst,trim(ender)||','||trim(cast(numero as text)) as ender,munic,uf,telef,email,url,logo from db_config where codigo = ".@$GLOBALS["DB_instit"]);
+    $dados = @db_query("select nomeinst,trim(ender)||','||trim(cast(numero as text)) as ender,munic,uf,telef,email,url,logo from db_config where codigo = ".@$GLOBALS["DB_instit"]);
 	$url = @pg_result($dados,0,"url");
 	$this->SetXY(1,1);
     $this->Image('../imagens/files/'.pg_result($dados,0,"logo"),7,3,20);

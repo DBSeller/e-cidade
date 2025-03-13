@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 
-require_once("classes/db_db_layoutcampos_classe.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("libs/db_libdocumento.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_libpessoal.php");
+require_once(modification("classes/db_db_layoutcampos_classe.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_libpessoal.php"));
 
 /**
  * Classe para geracao de arquivos dos coletores
@@ -95,10 +95,10 @@ class clArqExpColetor {
 		$this->iTermometro    = $iTermometro;
 		
 
-		require_once("classes/db_aguacoletorexporta_classe.php");
-		require_once("classes/db_aguacoletorexportadados_classe.php");
-		require_once("classes/db_aguacoletorexportadadosleitura_classe.php");
-		require_once("classes/db_aguacoletorexportadadosreceita_classe.php");
+		require_once(modification("classes/db_aguacoletorexporta_classe.php"));
+		require_once(modification("classes/db_aguacoletorexportadados_classe.php"));
+		require_once(modification("classes/db_aguacoletorexportadadosleitura_classe.php"));
+		require_once(modification("classes/db_aguacoletorexportadadosreceita_classe.php"));
 
 		$clAguaColetorExporta  = new cl_aguacoletorexporta();
 		$rsAguaColetorExporta  = $clAguaColetorExporta->sql_record($clAguaColetorExporta->sql_query_file(null, "*", null, "x49_sequencial = $this->iCodExportacao"));
@@ -120,7 +120,7 @@ class clArqExpColetor {
 		$sCamposAguaColetorExportaDados .= "x50_natureza, x50_categorias, x50_areaconstruida, x50_nrohidro, x50_dtleituraatual, x50_dtleituraanterior, ";
 		$sCamposAguaColetorExportaDados .= "x50_consumo, x50_diasleitura,  x50_mediadiaria, x50_vencimento, x50_valoracrescimo, x50_valordesconto, ";
 		$sCamposAguaColetorExportaDados .= "x50_valortotal, x50_linhadigitavel, x50_codigobarras, x50_imprimeconta, x50_consumopadrao, x50_consumomaximo,";
-    $sCamposAguaColetorExportaDados .= "x50_avisoleiturista";
+    	$sCamposAguaColetorExportaDados .= "x50_avisoleiturista";
 		
 		$sSqlAguaColetorExportaDados = $clAguaColetorExportaDados->sql_query_dados(null, $sCamposAguaColetorExportaDados, "x50_sequencial", "x50_aguacoletorexporta = $this->iCodExportacao");
 		$rsAguaColetorExportaDados   = $clAguaColetorExportaDados->sql_record($sSqlAguaColetorExportaDados);
@@ -241,10 +241,11 @@ class clArqExpColetor {
 			$rsAguaLeiturasAnteriores   = $clAguaColetorExportaDados->sql_record($sSqlAguaLeiturasAnteriores);
 			
 			$numRowsLeiturasAnteriores  = $clAguaColetorExportaDados->numrows;
-			
+			$iSaldoCompensar = 0;
 			if($numRowsLeiturasAnteriores > 0) {
-			  
-			  $numero = 2;
+
+			  $dt_referencia = new DateTime($oAguaColetorExportaDados->x49_anousu."-".$oAguaColetorExportaDados->x49_mesusu."-01");
+			  $numero        = 2;
 			  for($l = 0; $l <= $numRowsLeiturasAnteriores; $l++) {
 			    
 			    $oLeiturasAnteriores        = db_utils::fieldsMemory($rsAguaLeiturasAnteriores, $l);
@@ -257,15 +258,21 @@ class clArqExpColetor {
 			    }
 			    
 			    if($numero <= 6) {
+            $cldb_layouttxt->setCampo("leitura_".$numero."_ano",      $oLeiturasAnteriores->x21_exerc);
+            $cldb_layouttxt->setCampo("leitura_".$numero."_mes",      $oLeiturasAnteriores->x21_mes);
+            $cldb_layouttxt->setCampo("leitura_".$numero."_situacao", $oLeiturasAnteriores->x21_situacao);
+            $cldb_layouttxt->setCampo("leitura_".$numero."_leitura",  $oLeiturasAnteriores->x21_leitura);
+            $cldb_layouttxt->setCampo("leitura_".$numero."_consumo",  $oLeiturasAnteriores->x21_consumo);
+            $cldb_layouttxt->setCampo("leitura_".$numero."_excesso",  $oLeiturasAnteriores->x21_excesso);
+            $cldb_layouttxt->setCampo("leitura_".$numero."_dias",     $diasUltimaLeitura);
 
-	          $cldb_layouttxt->setCampo("leitura_".$numero."_ano",      $oLeiturasAnteriores->x21_exerc);
-	          $cldb_layouttxt->setCampo("leitura_".$numero."_mes",      $oLeiturasAnteriores->x21_mes);
-	          $cldb_layouttxt->setCampo("leitura_".$numero."_situacao", $oLeiturasAnteriores->x21_situacao);
-	          $cldb_layouttxt->setCampo("leitura_".$numero."_leitura",  $oLeiturasAnteriores->x21_leitura);
-	          $cldb_layouttxt->setCampo("leitura_".$numero."_consumo",  $oLeiturasAnteriores->x21_consumo);
-	          $cldb_layouttxt->setCampo("leitura_".$numero."_excesso",  $oLeiturasAnteriores->x21_excesso);
-	          $cldb_layouttxt->setCampo("leitura_".$numero."_dias",     $diasUltimaLeitura);
-	          
+
+            $oDiferencaDatas = date_diff(new DateTime($oLeiturasAnteriores->x21_dtleitura), $dt_referencia);
+            $iMesesDiferenca  = $oDiferencaDatas->m + $oDiferencaDatas->y * 12;
+
+            if ( $iMesesDiferenca <= 6){
+              $iSaldoCompensar +=  $oLeiturasAnteriores->x21_saldo ?: 0;
+            }
 			    }
           
           $numero++;
@@ -274,13 +281,14 @@ class clArqExpColetor {
 			  }
 			  
 			}
+			$cldb_layouttxt->setCampo("consumo_saldo", $iSaldoCompensar);
 			
 			$sCampos = "x52_receita, x52_descricao, x52_numpar, x52_numtot, x52_valor, x52_numpre";
 			$sSqlAguaColetorExportaDadosReceita = $clAguaColetorExportaDadosReceita->sql_query(null, $sCampos, "x52_receita", "x52_aguacoletorexportadados = $oAguaColetorExportaDados->x50_sequencial");
 			$rsAguaColetorExportaDadosReceita   = $clAguaColetorExportaDadosReceita->sql_record($sSqlAguaColetorExportaDadosReceita);
-      
+      $iNumeroReceitas = 8;
 			if ($clAguaColetorExportaDadosReceita->numrows) {
-				for($r = 0; $r < $clAguaColetorExportaDadosReceita->numrows; $r++) {
+				for($r = 0; $r < $clAguaColetorExportaDadosReceita->numrows && ($r+1) <= $iNumeroReceitas; $r++) {
 
 					$oAguaColetorExportaDadosReceita = db_utils::fieldsMemory($rsAguaColetorExportaDadosReceita, $r);
 
@@ -352,7 +360,7 @@ class clArqExpColetor {
 	
 	public function arquivoDadosSitLeitura() {
 
-		require_once("classes/db_aguasitleitura_classe.php");
+		require_once(modification("classes/db_aguasitleitura_classe.php"));
 
 		$nomeArquivo      = "tmp/".$this->geraNomeArquivo("exportacoletor02");
 		$claguasitleitura = new cl_aguasitleitura();
@@ -392,7 +400,7 @@ class clArqExpColetor {
 
 	public function arquivoDadosLeituristas() {
 
-		require_once("classes/db_agualeiturista_classe.php");
+		require_once(modification("classes/db_agualeiturista_classe.php"));
 
 		$nomeArquivo      = "tmp/".$this->geraNomeArquivo("exportacoletor03");
 		$clagualeiturista = new cl_agualeiturista();
@@ -434,8 +442,8 @@ class clArqExpColetor {
 
 	public function arquivoDadosConfiguracoes() {
 
-		require_once("classes/db_cadarrecadacao_classe.php");
-		require_once("classes/db_arretipo_classe.php");
+		require_once(modification("classes/db_cadarrecadacao_classe.php"));
+		require_once(modification("classes/db_arretipo_classe.php"));
 
 		$nomeArquivo      = "tmp/".$this->geraNomeArquivo("exportacoletor04");
 		$clCadArrecadacao = new cl_cadarrecadacao();
@@ -461,7 +469,7 @@ class clArqExpColetor {
 
 		$oArretipo = db_utils::fieldsMemory($rsArretipo,0);
 
-		$cldb_layouttxt->setCampo("digito_vencimento", $oArretipo->k00_tercdigrecnormal);
+		$cldb_layouttxt->setCampo("digito_vencimento", isset($oArretipo->k00_tercdigrecnormal) ? $oArretipo->k00_tercdigrecnormal : "");
 		$cldb_layouttxt->geraDadosLinha();
 
 		$cldb_layouttxt->fechaArquivo();
@@ -505,23 +513,21 @@ class clArqExpColetor {
 
 	}
 
+  public function geraNomeArquivo($prefixo, $layout=false) {
 
-	public function geraNomeArquivo($prefixo, $layout=false) {
+    $nomeArquivo            = "$prefixo"; //01 = arquivos rotas e leituras
+    $nomeArquivo           .= str_pad($this->iCodigoColetor, 2, "0", STR_PAD_LEFT);
+    $nomeArquivo           .= str_pad($this->iAnoExportacao, 4, "0", STR_PAD_LEFT);
+    $nomeArquivo           .= str_pad($this->iMesExportacao, 2, "0", STR_PAD_LEFT);
+    $nomeArquivo           .= str_pad(db_getsession('DB_id_usuario'), 4, "0", STR_PAD_LEFT);
+    $nomeArquivo           .= date("YmdHm");
+    if($layout == false){
+      $nomeArquivo           .= str_pad($this->iNumMatriculas, 5, "0", STR_PAD_LEFT);
+    }
+    $nomeArquivo           .= ".txt";
 
-		$nomeArquivo            = "$prefixo"; //01 = arquivos rotas e leituras
-		$nomeArquivo           .= str_pad($this->iCodigoColetor, 2, "0", STR_PAD_LEFT);
-		$nomeArquivo           .= str_pad($this->iAnoExportacao, 4, "0", STR_PAD_LEFT);
-		$nomeArquivo           .= str_pad($this->iMesExportacao, 2, "0", STR_PAD_LEFT);
-		$nomeArquivo           .= str_pad(db_getsession('DB_id_usuario'), 4, "0", STR_PAD_LEFT);
-		$nomeArquivo           .= date("YmdHm");
-		if($layout == false){
-		  $nomeArquivo           .= str_pad($this->iNumMatriculas, 5, "0", STR_PAD_LEFT);
-		}
-		$nomeArquivo           .= ".txt";
-		
-		return $nomeArquivo;
-
-	}
+    return $nomeArquivo;
+  }
 	
 	public function iniciaTermometro() {
 	  db_criatermometro ( 'termometro', 'Concluido...', 'blue', 1, 'Processando Arquivos Exportacao' );

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-//require_once("classes/db_aguacoletorexportadados_classe.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_db_layoutcampos_classe.php");
-require_once("agu3_conscadastro_002_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("libs/db_libpessoal.php");
-require_once("libs/db_libdocumento.php");
-require_once("model/recibo.model.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+//require_once(modification("classes/db_aguacoletorexportadados_classe.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_db_layoutcampos_classe.php"));
+require_once(modification("agu3_conscadastro_002_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("model/recibo.model.php"));
 
-include("model/regraEmissao.model.php");
-include("model/convenio.model.php");
+include(modification("model/regraEmissao.model.php"));
+include(modification("model/convenio.model.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 

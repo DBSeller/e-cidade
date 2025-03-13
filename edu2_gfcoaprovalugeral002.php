@@ -1,32 +1,32 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_stdlibwebseller.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 
 $clturma   = new cl_turma;
 $escola    = db_getsession("DB_coddepto");
@@ -39,7 +39,7 @@ $sSqlTurma     = $clturma->sql_query_turmaserie( "", $sCamposTurma, "" , " ed220
 $result        = $clturma->sql_record( $sSqlTurma );
 
 if ( $clturma->numrows > 0 ) {
-  
+
   db_fieldsmemory( $result, 0 );
 
   //seleciona medias do aluno escolhido
@@ -65,9 +65,11 @@ if ( $clturma->numrows > 0 ) {
   $sql1   .= "   AND ed59_i_turma     = ed60_i_turma ";
   $sql1   .= "   AND ed60_c_ativa     = 'S' ";
   $sql1   .= "   AND ed95_i_aluno     = {$aluno} ";
-  $sql1   .= " ORDER BY ed41_i_sequencia, ed59_i_ordenacao, ed232_i_codigo ";
+  $sql1   .= " ORDER BY ed41_i_sequencia, ed59_basecomum, ed59_i_ordenacao, disciplina ";
+
 
   $result1 = db_query( $sql1 );
+
   $linhas1 = pg_num_rows( $result1 );
 
   $aCadDisciplina = array();
@@ -114,7 +116,7 @@ if ( $clturma->numrows > 0 ) {
   $sql4 .= "   AND matriculaserie.ed221_c_origem  = 'S' ";
   $sql4 .= "   AND regencia.ed59_c_freqglob      != 'F' ";
   $sql4 .= "   AND ed232_i_codigo                in ({$sCadDisciplina}) ";
-  $sql4 .= " ORDER BY ed59_i_ordenacao ";
+  $sql4 .= " ORDER BY ed59_basecomum, ed59_i_ordenacao, disciplina ";
 
   $result4 = db_query( $sql4 );
   $linhas4 = pg_num_rows( $result4 );
@@ -123,7 +125,7 @@ if ( $clturma->numrows > 0 ) {
   $sql2  = "SELECT DISTINCT substr(ed232_c_descr,0,20) as disciplina, ";
   $sql2 .= "       ed232_c_abrev as abrev, ";
   $sql2 .= "       ed59_i_ordenacao, ";
-  $sql2 .= "       ed59_i_codigo ";
+  $sql2 .= "       ed59_i_codigo,ed59_basecomum ";
   $sql2 .= "  FROM matricula ";
   $sql2 .= "       inner join aluno           on ed47_i_codigo  = ed60_i_aluno ";
   $sql2 .= "       inner join diario          on ed95_i_aluno   = ed47_i_codigo ";
@@ -137,7 +139,8 @@ if ( $clturma->numrows > 0 ) {
   $sql2 .= "   AND ed72_c_amparo    = 'N' ";
   $sql2 .= "   AND ed60_c_ativa     = 'S' ";
   $sql2 .= "   AND ed59_c_freqglob != 'F' ";
-  $sql2 .= " ORDER BY ed59_i_ordenacao, disciplina ";
+  $sql2 .= " ORDER BY ed59_basecomum, ed59_i_ordenacao, disciplina ";
+
 
   $result2 = db_query( $sql2 );
   $linhas2 = pg_num_rows( $result2 );
@@ -241,7 +244,7 @@ if ( $clturma->numrows > 0 ) {
     $numero_valores = sizeof( $valores );
 
     // ------ obtém o valor máximo de y ----------
-    $y_maximo = $max-5;
+    $y_maximo = $max - 5;
 
     // ------ calcula o intervalo de variação entre os pontos de y ----------
 
@@ -257,9 +260,9 @@ if ( $clturma->numrows > 0 ) {
       $variacao = $fator / 2;
     } else if( $y_maximo < 10 * $fator ) {
       $variacao = $fator;
-    } else {
-      $variacao = 5;
     }
+    $variacao = 5;
+
 
     // ------ calcula o número de pontos no eixo y ----------
     $num_pontos_eixo_y = 0;
@@ -318,6 +321,7 @@ if ( $clturma->numrows > 0 ) {
 
         // imprime as barras
         ImageLine( $imagem, $posx, $inicio_grafico_y, $posx, $inicio_grafico_y + 5, $preto );
+
 
         for( $j = $i; $j < $numero_valores; $j += $numero_colunas ) {
 

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_emppresta_classe.php");
-require_once("classes/db_empprestaitem_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_emppresta_classe.php"));
+require_once(modification("classes/db_empprestaitem_classe.php"));
 $clemppresta = new cl_emppresta;
   /*
 $clempprestaitem = new cl_empprestaitem;
@@ -82,7 +82,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmemppresta.php");
+	include(modification("forms/db_frmemppresta.php"));
 	?>
     </center>
 	</td>
@@ -115,7 +115,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.empprestaitem.disabled=false;
-         top.corpo.iframe_empprestaitem.location.href='emp1_empprestaitem001.php?db_opcaoal=33&e46_numemp=".@$e45_numemp."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_empprestaitem.location.href='emp1_empprestaitem001.php?db_opcaoal=33&e46_numemp=".@$e45_numemp."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('empprestaitem');";

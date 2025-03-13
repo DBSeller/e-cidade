@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("model/configuracao/SkinService.service.php");
-require_once("libs/smtp.class.php");
+require_once(modification("model/configuracao/SkinService.service.php"));
+require_once(modification("libs/smtp.class.php"));
 
 $oSkin = new SkinService();
 $oSkin->setCookie();
+
+
 
 /**
  * Busca preferencias para verificar qual class
@@ -81,10 +83,9 @@ try {
   $lMostraLinkPrimeiroAcesso = true;
 }
 
-error_reporting(null);
-require_once("libs/db_conn.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_stdlib.php");
+require_once(modification("libs/db_conn.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
 
 $sDiretorio         = "config/require_extensions.xml";
 $lValidaLogin       = false;
@@ -152,16 +153,36 @@ if(!session_id()){
 
 $oTentativasAcesso = new StdClass();
 
-if ( !empty($_SESSION['DB_tentativasAcesso'] ) ) {
-  $oTentativasAcesso = DB_getsession('DB_tentativasAcesso');
+if ( !empty($_SESSION['DB_tentativasAcesso']) ) {
+   $oTentativasAcesso = DB_getsession('DB_tentativasAcesso');
 }
 
 $iTotalTentativas = array_sum((array) $oTentativasAcesso);
 
-$lCaptcha = (isset($lUtilizaCaptcha) && $lUtilizaCaptcha && $iTotalTentativas >= 3);
+$lCaptcha = (isset($lUtilizaCaptcha) && $lUtilizaCaptcha);
+
+if (isset($lVeriricaIpPrivado) && $lVeriricaIpPrivado && $lCaptcha){
+
+   if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+       $lIpPrivado = verifica_ip_privado($_SERVER["HTTP_X_FORWARDED_FOR"]);
+   
+   } else {
+       $lIpPrivado = verifica_ip_privado($HTTP_SERVER_VARS["REMOTE_ADDR"]);
+   
+   }
+
+   if ($lIpPrivado == true){
+      $lCaptcha = false;
+      
+   }
+}
+
+if ( $iTotalTentativas >= 3){
+   $lCaptcha = true;
+}
 
 if ( $lValidaLogin ) {
-  include($sScriptLogin);
+  include(modification($sScriptLogin));
 }
 
 ?>
@@ -261,4 +282,22 @@ if ( $lValidaLogin ) {
     document.form1.usu_login.focus();
     js_verifica_cookie();
   }
+
+
+/**
+ * Valida se a versão do Firefox utilizada pelo usuário é válida.
+ * Este bloco de código, deve ser removido em 2018.
+ */
+(function(){
+
+  var sAgent                 = navigator.userAgent;
+  var iVersaoCompletaFirefox = sAgent.substring(sAgent.indexOf("Firefox") + 8);
+  var iVersaoFirefox         = parseInt(''+iVersaoCompletaFirefox,10);
+  var dtAtual                = new Date();
+
+  if (isNaN(iVersaoFirefox)) {
+    iVersaoFirefox = parseInt(navigator.appVersion,10);
+  }
+
+})();
 </script>

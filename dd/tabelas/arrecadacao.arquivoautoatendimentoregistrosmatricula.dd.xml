@@ -1,0 +1,50 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010436' name='arrecadacao.arquivoautoatendimentoregistrosmatricula' description="Matricula do débito enviado no arquivo de autoatendimento." prefix="k186" label="arquivoautoatendimentoregistrosmatricula" type="0">
+  <fields>
+    <field codigo="1010400" 
+           campo_api='' 
+           name="k186_autoatendimentoregistros" 
+           conteudo="int8" 
+           description="Campo que armazena os registros." 
+           inivalue="0" 
+           label="Campo registros" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo registros" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010401" 
+           campo_api='' 
+           name="k186_matricula" 
+           conteudo="int8" 
+           description="Campo que armazena a matricula" 
+           inivalue="0" 
+           label="Campo matricula" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo matricula" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="arquivoautoatendimentoregistros" inner='t'>
+      <fieldfk name="k186_autoatendimentoregistros" reference="k183_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

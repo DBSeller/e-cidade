@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("classes/db_iptuconstr_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_lote_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("classes/db_iptuconstr_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_lote_classe.php"));
 
 $cllote = new cl_lote;
 $cliptuconstr = new cl_iptuconstr;

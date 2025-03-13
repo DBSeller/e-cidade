@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_orcparametro_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_orcparametro_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 
 <html>
@@ -173,7 +173,7 @@ require_once("dbforms/db_funcoes.php");
 	function js_preencheGridPC(oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if (oRetorno.status == 2) {
         
@@ -291,7 +291,7 @@ require_once("dbforms/db_funcoes.php");
 	function js_concluiExclusao(oAjax) {
 	
 		 js_removeObj("msgBox");
-	   var oRetorno = eval("("+oAjax.responseText+")");
+	   var oRetorno = JSON.parse(oAjax.responseText);
 		 alert(oRetorno.message.urlDecode());
 	   if (oRetorno.status == 1) {
 	     js_getProcessos($F('iLicitacao'));
@@ -302,7 +302,7 @@ require_once("dbforms/db_funcoes.php");
 	function js_preencheGridItens(oAjax) {
 
     js_removeObj("msgBox1");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
 		if (oRetorno.aItens.length == 0) {
 
@@ -338,7 +338,7 @@ require_once("dbforms/db_funcoes.php");
 			sLocation   = "func_liclicita.php?tipo=1&funcao_js=parent.js_preencheLicitacao|l20_codigo";
 			lOpenIframe = true;
 		}
-		js_OpenJanelaIframe('top.corpo', 'db_iframe_liclicita', sLocation, 'Pesquisa', lOpenIframe);
+		js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_liclicita', sLocation, 'Pesquisa', lOpenIframe);
 	}
 
 	function js_preencheLicitacao(iCodLicita) {

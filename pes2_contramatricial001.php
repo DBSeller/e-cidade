@@ -1,40 +1,40 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_layouttxt.php");
-include("libs/db_libpessoal.php");
-include("libs/db_sql.php");
-include("classes/db_db_layouttxt_classe.php");
-include_once("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_layouttxt.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_db_layouttxt_classe.php"));
+include_once(modification("libs/db_utils.php"));
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
 $cldb_layouttxt = new cl_db_layouttxt;
@@ -51,10 +51,10 @@ $cldb_layouttxt->rotulo->label("db50_descr");
 <script>
 function js_pesquisardb50_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_layouttxt' ,'func_db_layouttxt.php?funcao_js=parent.js_mostralayout1|db50_codigo|db50_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_layouttxt' ,'func_db_layouttxt.php?funcao_js=parent.js_mostralayout1|db50_codigo|db50_descr','Pesquisa',true,'0');
   }else{
     if(document.form1.db50_codigo.value != ''){
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_layouttxt' ,'func_db_layouttxt.php?pesquisa_chave='+document.form1.db50_codigo.value+'&funcao_js=parent.js_mostralayout','Pesquisa',false','0');
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_layouttxt' ,'func_db_layouttxt.php?pesquisa_chave='+document.form1.db50_codigo.value+'&funcao_js=parent.js_mostralayout','Pesquisa',false','0');
     }else{
       document.form1.db50_descr.value = '';
     }
@@ -100,7 +100,7 @@ function js_mostralayout1(chave1,chave2){
   $ncodfim = "cod_fim";
   $nlista  = "lista";
 
-  include("dbforms/db_classesgenericas.php");
+  include(modification("dbforms/db_classesgenericas.php"));
   $geraform = new cl_formulario_rel_pes;
 
 
@@ -123,7 +123,7 @@ function js_mostralayout1(chave1,chave2){
   $geraform->re1nome = $ncodini;                  // NOME DO CAMPO DA MATRÃCULA INICIAL
   $geraform->re2nome = $ncodfim;                  // NOME DO CAMPO DA MATRÃCULA FINAL
   $geraform->re3nome = $nlista;                   // NOME DO CAMPO DE SELEÃ‡ÃƒO DE MATRÃCULAS
-  
+
   $geraform->tr1nome = $ncodini;                  // NOME DO CAMPO DA LOCAL DE TRABALHO INICIAL
   $geraform->tr2nome = $ncodfim;                  // NOME DO CAMPO DA LOCAL DE TRABALHO FINAL
   $geraform->tr3nome = $nlista;                   // NOME DO CAMPO DE SELEÃ‡ÃƒO DE LOCAL DE TRABALHO
@@ -140,9 +140,10 @@ function js_mostralayout1(chave1,chave2){
                                  "complementar"=>"Complementar",
                                  "rescisao"=>"Rescisão",
                                  "13salario"=>"13o. Salário",
-                                 "adiantamento"=>"Adiantamento"
+                                 "adiantamento"=>"Adiantamento",
+                                 "suplementar"=>"Suplementar"
                                 );
-  $geraform->complementar = "complementar";                // VALUE DA COMPLEMENTAR PARA BUSCAR SEMEST 
+  $geraform->complementar = "complementar";                // VALUE DA COMPLEMENTAR PARA BUSCAR SEMEST
 
   $geraform->trenome = "tipo";                    // NOME DO CAMPO TIPO DE RESUMO
   $geraform->mostord = true;
@@ -152,17 +153,17 @@ function js_mostralayout1(chave1,chave2){
   $geraform->gera_form($anofolha,$mesfolha);
   ?>
   <tr>
-    <td nowrap align="right" title="<?=@$Tdb50_codigo?>">
+    <td nowrap align="right" title="<?=$Tdb50_codigo?>">
       <?
-      db_ancora(@$Ldb50_codigo,"js_pesquisardb50_codigo(true);",1);
+      db_ancora($Ldb50_codigo,"js_pesquisardb50_codigo(true);",1);
       ?>
     </td>
-    <td colspan="3"> 
+    <td colspan="3">
 <?
       if(!isset($db50_codigo)){
-         $db50_codigo = 22; 
+         $db50_codigo = 22;
          $db50_descr  = "CONTRA CHEQUE MATRICIAL GENERICO";
-      }   
+      }
       db_input('db50_codigo',6,$Idb50_codigo,true,'text',1," onchange='js_pesquisardb50_codigo(false);'")
       ?>
       <?
@@ -179,7 +180,7 @@ function js_mostralayout1(chave1,chave2){
             <td nowrap align="right">
         <b>Linha 1:</b>
             </td>
-            <td> 
+            <td>
               <?
               db_input('mensagem1',70,0,true,'text',1,"")
               ?>
@@ -189,7 +190,7 @@ function js_mostralayout1(chave1,chave2){
             <td nowrap align="right">
         <b>Linha 2:</b>
             </td>
-            <td> 
+            <td>
               <?
               db_input('mensagem2',70,0,true,'text',1,"")
               ?>
@@ -199,7 +200,7 @@ function js_mostralayout1(chave1,chave2){
             <td nowrap align="right">
         <b>Linha 3:</b>
             </td>
-            <td> 
+            <td>
               <?
               db_input('mensagem3',70,0,true,'text',1,"")
               ?>
@@ -210,7 +211,7 @@ function js_mostralayout1(chave1,chave2){
     </td>
   </tr>
   <tr>
-    <td colspan="2" align="center"> 
+    <td colspan="2" align="center">
       <input name="emite2" id="emite2" type="submit" value="Processar" onclick="return js_selecionaselect();">
     </td>
   </tr>
@@ -291,6 +292,9 @@ if(isset($emite2)){
   }elseif ($tipofol == 'irf'){
     $sigla   = 'r61';
     $qualarquivo = 'Ajuste do IRRF';
+  }elseif ($tipofol == 'suplementar'){
+    $sigla   = 'sup';
+    $qualarquivo = 'Suplementar';
   }
 
   $ordenacao = "z01_nome";
@@ -323,7 +327,7 @@ if(isset($emite2)){
 
     if (isset($lista)&&count($lista)>0){
       $dados = "";
-      $vir = "";      
+      $vir = "";
       for($i=0; $i<count($lista); $i++){
         $dados .= $vir.$lista[$i];
         $vir = ",";
@@ -380,10 +384,10 @@ if(isset($emite2)){
                                            padroes.*
                                           ",
                                           $ordenacao,
-                                          $txt_where 
-                                         ); 
+                                          $txt_where
+                                         );
   //echo "<BR> $sqlDentro";exit;
-  $res = pg_query($sqlDentro);
+  $res = db_query($sqlDentro);
   $num = pg_numrows($res);
   if($num == 0){
     $erro_msg = "Não existe cálculo no período de $mesfolha / $anofolha";
@@ -396,13 +400,13 @@ if(isset($emite2)){
     define("CABECALHOARQUIVO",1);
     define("REGISTROSARQUIVO",3);
     define("RODAPEARQUIVO",5);
-  
+
   $sql = "select * from db_config where codigo = ".db_getsession("DB_instit");
   $result = db_query($sql);
   db_fieldsmemory($result,0);
 
     $nomeinstcgc = $nomeinst.' - '.db_formatar($cgc,'cnpj');
-    $endereco    = $ender.' '.$numero; 
+    $endereco    = $ender.' '.$numero;
 
     $db_layouttxt->adicionaLinha(chr(15));
     $db_layouttxt->adicionaLinha($db_layouttxt->quebraLinha(1));
@@ -433,14 +437,14 @@ if(isset($emite2)){
                                           round(#s#_valor,2) as valorrubrica,
                                           round(#s#_quant,2) as quantrubrica,
                                         ".$xtipo." as tipo ,
-                                          case when rh27_rubric >= 'R950' 
-                                               then 'B' 
-                                               else case when #s#_pd = 1 
-                                                         then 'P' 
-                                                    else case when #s#_pd = 2 
-                                                              then 'D' 
-                                                    end 
-                                               end 
+                                          case when rh27_rubric >= 'R950'
+                                               then 'B'
+                                               else case when #s#_pd = 1
+                                                         then 'P'
+                                                    else case when #s#_pd = 2
+                                                              then 'D'
+                                                    end
+                                               end
                                            end as provdesc
                                         ",
                                         "rh27_rubric",
@@ -474,34 +478,34 @@ if(isset($emite2)){
             $somadescontos += $valorrubrica;
             $somaprovdesc -= $valorrubrica;
           }
-       
+
           if($rh27_rubric > "R900" && $rh27_rubric < "R910"){
             $somaconprev+= $valorrubrica;
           }
-       
+
           if($rh27_rubric == "R991"){
             $somafgts+= $valorrubrica;
           }
-       
+
           if($rh27_rubric >= "R981" && $rh27_rubric < "R984"){
             $somabaseirrf+= $valorrubrica;
           }
-       
+
           if($rh27_rubric == "R984"){
             $somadependentesirfv+= $valorrubrica;
             $somadependentesirfq+= $quantrubrica;
           }
-       
+
           if($rh27_rubric >= "R913" && $rh27_rubric <= "R915"){
             $somafaixairrf += $quantrubrica;
           }
-       
+
           if($rh27_rubric >= "R985" && $rh27_rubric <= "R987"){
             $somabaseprevidencia += $valorrubrica;
           }
-       
+
           $somabaseliquida = $somabaseirrf - $somadependentesirfv - $somaconprev;
-       
+
           $antestotalproventos = trim(db_formatar($somaproventos,"f"));
           $antestotaldescontos = trim(db_formatar($somadescontos,"f"));
           $antestotalprovdesc  = trim(db_formatar($somaprovdesc,"f"));
@@ -530,7 +534,7 @@ if(isset($emite2)){
               $totalproventos = "";
               $totaldescontos = "";
               $totalprovdesc  = "";
-              db_setaPropriedadesLayoutTxt(&$db_layouttxt,RODAPEARQUIVO);
+              db_setaPropriedadesLayoutTxt($db_layouttxt, RODAPEARQUIVO);
               $contapaginas ++;
             }
             $periodo = "01/$mesfolha/$anofolha a ".db_dias_mes($anofolha,$mesfolha)."/$mesfolha/$anofolha";
@@ -543,8 +547,8 @@ if(isset($emite2)){
             $dvagencia     = $rh44_dvagencia;
             $lotacao_local = ' LOTACAO : '.$r70_estrut.'-'.$r70_descr.'    Local : '.$rh55_estrut.'-'.$rh55_descr ;
             $lotacao       = ' LOTACAO : '.$r70_estrut.'-'.$r70_descr;
-      
-            db_setaPropriedadesLayoutTxt(&$db_layouttxt,CABECALHOARQUIVO);
+
+            db_setaPropriedadesLayoutTxt($db_layouttxt, CABECALHOARQUIVO);
           }
 
           if($provdesc != "B"){
@@ -556,7 +560,7 @@ if(isset($emite2)){
               $valorprov = trim(db_formatar($valorrubrica,"f"));
               $valordesc = "";
             }
-            db_setaPropriedadesLayoutTxt(&$db_layouttxt,REGISTROSARQUIVO);
+            db_setaPropriedadesLayoutTxt($db_layouttxt, REGISTROSARQUIVO);
           }
         }
 
@@ -567,8 +571,8 @@ if(isset($emite2)){
         $multiplic *= $db_layouttxt->_quantLinhasLay;
         $multiplic -= $linhas;
         $db_layouttxt->quebraLinha($multiplic);
-       
-        db_setaPropriedadesLayoutTxt(&$db_layouttxt,RODAPEARQUIVO);
+
+        db_setaPropriedadesLayoutTxt($db_layouttxt,RODAPEARQUIVO);
       }
 
     }
@@ -589,17 +593,17 @@ if(isset($emite2)){
 }else if(isset($arquivoimprime)&&$arquivoimprime!=""){
  echo "<script>
           js_arquivo_abrir('$arquivoimprime');
-          document.form1.arquivoimprime.value = '';     
+          document.form1.arquivoimprime.value = '';
       </script>";
 }
 ?>
 <script>
 function js_pesquisardb50_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_layouttxt' ,'func_db_layouttxt.php?funcao_js=parent.js_mostralayout1|db50_codigo|db50_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_layouttxt' ,'func_db_layouttxt.php?funcao_js=parent.js_mostralayout1|db50_codigo|db50_descr','Pesquisa',true);
   }else{
     if(document.form1.db50_codigo.value != ''){
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_layouttxt' ,'func_db_layouttxt.php?pesquisa_chave='+document.form1.db50_codigo.value+'&funcao_js=parent.js_mostralayout','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_layouttxt' ,'func_db_layouttxt.php?pesquisa_chave='+document.form1.db50_codigo.value+'&funcao_js=parent.js_mostralayout','Pesquisa',false);
     }else{
       document.form1.db50_descr.value = '';
     }

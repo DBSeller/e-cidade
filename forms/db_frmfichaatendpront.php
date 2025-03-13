@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -26,7 +26,7 @@
  */
 
 //MODULO: saude
-//echo
+
 $clprontuarios->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("sd15_c_descr");
@@ -46,6 +46,7 @@ $clrotulo->label("sd04_i_cbo");
 <table>
 	<tr>
 		<td>
+
   			<fieldset><legend><b>Triagem</b></legend>
   <table border="0">
 
@@ -54,7 +55,7 @@ $clrotulo->label("sd04_i_cbo");
        <?=@$Lsd24_i_codigo?>
     </td>
     <td colspan="4">
-      <?
+      <?php
         db_input('sd24_i_codigo',10,$Isd24_i_codigo,true,'text',3);
         db_input('sd24_i_unidade',10,$Isd24_i_unidade,true,'hidden',3);
       ?>
@@ -67,7 +68,7 @@ $clrotulo->label("sd04_i_cbo");
        <?=@$Lsd24_v_motivo?>
     </td>
     <td colspan="3">
-      <?
+      <?php
         db_input('sd24_v_motivo',74,$Isd24_v_motivo,true,'text',$db_opcao,'')
       ?>
     </td>
@@ -76,19 +77,17 @@ $clrotulo->label("sd04_i_cbo");
   <!-- MOTIVO SI/SIH
   <tr>
     <td nowrap title="<?=@$Tsd24_i_siasih?>" valign="middle" align="top">
-       <?
+       <?php
        db_ancora(@$Lsd24_i_siasih,"js_pesquisasd24_i_siasih(true);",$db_opcao);
        ?>
     </td>
     <td valign="middle" align="top">
-      <?
-        //db_input('sd24_i_cid',10,$Isd24_i_cid,true,'hidden',$db_opcao);
+      <?php
         db_input('sd24_i_siasih',10,$Isd70_c_cid,true,'text',$db_opcao,"onchange='js_pesquisasd24_i_siasih(false);'")
       ?>
     </td>  
     <td>
-      <?
-        //db_input('sd70_c_nome',60,$Isd70_c_nome,true,'text',3,'')
+      <?php
          db_textarea('sd92_c_nome',1,57,@$Isd92_c_nome,true,'text',3,"")
       ?>
     </td>
@@ -140,17 +139,17 @@ $clrotulo->label("sd04_i_cbo");
   <!-- PROFISSIONAL -->
   <tr>
     <td nowrap title="<?=@$Tsd03_i_codigo?>">
-       <?
+       <?php
        db_ancora(@$Lsd03_i_codigo,"js_pesquisasd03_i_codigo(true);",$db_opcao);
        ?>
     </td>
     <td>
-       <?
+       <?php
           db_input('sd03_i_codigo',10,$Isd03_i_codigo,true,'text',$db_opcao," onchange='js_pesquisasd03_i_codigo(false);'")
        ?>
     </td>
     <td>
-       <?
+       <?php
           db_input('profissional',60,@$profissional,true,'text',3,'')
        ?>
     </td>
@@ -158,19 +157,19 @@ $clrotulo->label("sd04_i_cbo");
   <!-- CBO -->
        <tr>
          <td nowrap title="<?=@$Tsd04_i_cbo?>">
-            <?
+            <?php
             db_ancora(@$Lsd04_i_cbo,"js_pesquisasd04_i_cbo(true);",$db_opcao);
             ?>
          </td>
          <td>
-          <?
+          <?php
           db_input('sd24_i_profissional',10,$Isd24_i_profissional,true,'hidden',$db_opcao," onchange='js_pesquisasd04_i_cbo(false);'");
           db_input('rh70_sequencial',10,$Irh70_sequencial,true,'hidden',$db_opcao,"");
           db_input('rh70_estrutural',10,$Irh70_estrutural,true,'text',$db_opcao," onchange='js_pesquisasd04_i_cbo(false);'");
           ?>
          </td>
          <td>
-          <?
+          <?php
           db_input('rh70_descr',60,$Irh70_descr,true,'text',3,'');
           ?>
          </td>
@@ -184,7 +183,7 @@ $clrotulo->label("sd04_i_cbo");
        <?=@$Lsd24_t_diagnostico?>
     </td>
     <td colspan="3">
-      <?
+      <?php
          $sd24_t_diagnostico=!isset($sd24_t_diagnostico)?' ':$sd24_t_diagnostico;
          db_textarea('sd24_t_diagnostico',1,74,@$sd24_t_diagnostico,true,'text',$db_opcao,"")
       ?>
@@ -194,19 +193,18 @@ $clrotulo->label("sd04_i_cbo");
   <!-- CID 
   <tr>
     <td nowrap title="<?=@$Tsd70_c_cid?>" valign="top" align="top">
-       <?
+       <?php
        db_ancora(@$Lsd70_c_cid,"js_pesquisasd70_c_cid(true);",$db_opcao);
        ?>
     </td>
     <td valign="top" align="top">
-      <?
+      <?php
         db_input('sd24_i_cid',10,$Isd24_i_cid,true,'hidden',$db_opcao,"");
         db_input('sd70_c_cid',10,$Isd70_c_cid,true,'text',$db_opcao,"onchange='js_pesquisasd70_c_cid(false);'")
       ?>
     </td>  
     <td>
-      <?
-        //db_input('sd70_c_nome',60,$Isd70_c_nome,true,'text',3,'')
+      <?php
          db_textarea('sd70_c_nome',1,57,@$Isd70_c_nome,true,'text',3,"")
       ?>
     </td>
@@ -298,7 +296,6 @@ function js_pesquisasd03_i_codigo(mostra){
   }
 }
 
-
 function js_mostramedicos(chave,erro){
   document.form1.profissional.value = chave;
   if(erro==true){
@@ -307,6 +304,7 @@ function js_mostramedicos(chave,erro){
   }
   js_pesquisasd04_i_cbo(true);
 }
+
 function js_mostramedicos1(chave1,chave2){
   document.form1.sd03_i_codigo.value = chave1;
   document.form1.profissional.value = chave2;
@@ -314,13 +312,11 @@ function js_mostramedicos1(chave1,chave2){
   js_pesquisasd04_i_cbo(true);
 }
 
-
 function js_pesquisasd70_c_cid(mostra){
   if(mostra==true){
     js_OpenJanelaIframe('','db_iframe_sau_cid','func_sau_cid.php?funcao_js=parent.js_mostrasd70_c_cid1|sd70_i_codigo|sd70_c_cid|sd70_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd70_c_cid.value != ''){
-        //js_OpenJanelaIframe('','db_iframe_sau_cid','func_sau_cid.php?pesquisa_chave='+document.form1.sd70_c_cid.value+'&funcao_js=parent.js_mostrasd70_c_cid','Pesquisa',false);
         document.form1.sd24_i_cid.value = '';
         document.form1.sd70_c_nome.value = '';
         js_OpenJanelaIframe('','db_iframe_sau_cid','func_sau_cid.php?chave_sd70_c_cid='+document.form1.sd70_c_cid.value+'&funcao_js=parent.js_mostrasd70_c_cid1|sd70_i_codigo|sd70_c_cid|sd70_c_nome','Pesquisa',false);
@@ -331,6 +327,7 @@ function js_pesquisasd70_c_cid(mostra){
      }
   }
 }
+
 function js_mostrasd70_c_cid(chave, erro){
   document.form1.sd70_c_nome.value = chave;
   if(erro==true){
@@ -338,6 +335,7 @@ function js_mostrasd70_c_cid(chave, erro){
     document.form1.sd70_c_cid.value = '';
   }
 }
+
 function js_mostrasd70_c_cid1(chave1,chave2,chave3){
   document.form1.sd24_i_cid.value = chave1;
   document.form1.sd70_c_cid.value = chave2;
@@ -345,12 +343,11 @@ function js_mostrasd70_c_cid1(chave1,chave2,chave3){
   db_iframe_sau_cid.hide();
 }
 
-
 function js_pesquisasd04_i_cbo(mostra){
   if(mostra==true){
     js_OpenJanelaIframe('','db_iframe_especmedico','func_especmedico.php?funcao_js=parent.js_mostrarhcbo1|sd27_i_codigo|rh70_estrutural|rh70_descr|rh70_sequencial&chave_sd04_i_unidade='+document.form1.sd24_i_unidade.value+'&chave_sd04_i_medico='+document.form1.sd03_i_codigo.value,'Pesquisa',true);
   }else{
-     if(document.form1.rh70_estrutural.value != ''){ 
+     if(document.form1.rh70_estrutural.value != ''){
         js_OpenJanelaIframe('','db_iframe_especmedico','func_especmedico.php?chave_rh70_estrutural='+document.form1.rh70_estrutural.value+'&funcao_js=parent.js_mostrarhcbo1|sd27_i_codigo|rh70_estrutural|rh70_descr|rh70_estrutural&chave_sd04_i_unidade='+document.form1.sd24_i_unidade.value+'&chave_sd04_i_medico='+document.form1.sd03_i_codigo.value,'Pesquisa',false);
         document.form1.rh70_estrutural.value = '';
         document.form1.rh70_descr.value = '';
@@ -359,6 +356,7 @@ function js_pesquisasd04_i_cbo(mostra){
      }
   }
 }
+
 function js_mostrarhcbo(erro,chave1, chave2, chave3,chave4){
   document.form1.rh70_descr.value = chave1;
   document.form1.rh70_estrutural.value = chave2;
@@ -369,6 +367,7 @@ function js_mostrarhcbo(erro,chave1, chave2, chave3,chave4){
     document.form1.rh70_estrutural.value = ''; 
   }
 }
+
 function js_mostrarhcbo1(chave1,chave2,chave3,chave4){
   document.form1.sd24_i_profissional.value = chave1;
   document.form1.rh70_estrutural.value = chave2;

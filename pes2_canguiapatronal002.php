@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/impcarne.php");
-include("fpdf151/scpdf.php");
-include("libs/db_sql.php");
-include("classes/db_basesr_classe.php");
+include(modification("fpdf151/impcarne.php"));
+include(modification("fpdf151/scpdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_basesr_classe.php"));
 $clbasesr = new cl_basesr;
 
 $sql_in = $clbasesr->sql_query_file($ano,$mes,"B995",null,db_getsession("DB_instit"),"r09_rubric");
@@ -37,7 +37,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 
 $sql_inst = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$result_inst = pg_exec($sql_inst);
+$result_inst = db_query($sql_inst);
 
 db_fieldsmemory($result_inst,0);
 
@@ -53,7 +53,7 @@ $sql_nome = "SELECT distinct cast(r33_codtab as integer)-2 as r33_codtab,
 	            and r33_codtab in ($previdencia)
 	            and r33_codtab > 2
 	            and r33_instit = ".db_getsession("DB_instit");
-$res_nome = pg_query($sql_nome);
+$res_nome = db_query($sql_nome);
 $virg_nome = '';
 $descr_nome = '';
 
@@ -574,7 +574,7 @@ for($inome=0;$inome<pg_numrows($res_nome);$inome++){
                ";
       }
     }
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     //echo $sql;
     //db_criatabela($result);exit;
     $xxnum = pg_numrows($result);

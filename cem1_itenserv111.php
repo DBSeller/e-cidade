@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_propricemit_classe.php");
-include("classes/db_itenserv_classe.php");
-include("classes/db_txossoariojazigo_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_propricemit_classe.php"));
+include(modification("classes/db_itenserv_classe.php"));
+include(modification("classes/db_txossoariojazigo_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -94,7 +94,7 @@ if(isset($incluir)){
     <center>
     <br><br>
      <?
-     include("forms/db_frmitenserv111.php");
+     include(modification("forms/db_frmitenserv111.php"));
      ?>
     </center>
      </td>
@@ -113,11 +113,12 @@ if(isset($incluir)){
       echo "<script> document.form1.".$clitenserv->erro_campo.".focus();</script>";
     };
   }else{
-    //$clitenserv->erro(true,true);
+
     db_msgbox( $clitenserv->erro_msg );
     echo "<script>";
     echo " parent.document.formaba.a2.disabled=true; ";
-    echo " top.corpo.iframe_a1.location.href='cem1_propricemit001.php?db_opcao=1';";
+    echo " parent.document.formaba.a3.disabled=true; ";
+    echo " (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href='cem1_propricemit001.php?db_opcao=1';";
     echo " parent.mo_camada('a1'); ";
     echo "</script>";
 

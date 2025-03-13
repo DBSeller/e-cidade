@@ -1,94 +1,95 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  *
  * @author Iuri Guntchnigg
- * @revision $Author: dbrafael.lopes $
- * @version $Revision: 1.21 $
+ * @revision $Author: dbmatheus.felini $
+ * @version $Revision: 1.29 $
  */
 
-class slip {
+class slip
+{
 
   /**
    * Código do Slip
    *
    * @var integer
    */
-  protected $iSlip;
+    protected $iSlip;
 
   /**
    * Arrecadacoes vinculadas ao slip (quanto receita extra)
    *
    * @var array
    */
-  protected $aArrecadacoes = array();
+    protected $aArrecadacoes = array();
 
   /**
    * Valor do recurso
    *
    * @var float
    */
-  protected $nValor;
+    protected $nValor;
 
   /**
    * Conta debito do slip
    *
    * @var integer
    */
-  protected $iContaDebito;
+    protected $iContaDebito;
 
   /**
    * Conta credito do slip
    *
    * @var integer
    */
-  protected $iContaCredito;
+    protected $iContaCredito;
 
   /**
    * Observações do Historico
    *
    * @var string
    */
-  protected $sObservacoes;
+    protected $sObservacoes;
 
   /**
    * Data de emissão do slip
    *
    * @var string
    */
-  protected $dtData;
+    protected $dtData;
 
   /**
    * Situacao do slip 1 - Emitido  2 - Autenticado - 3 - Estornado  4 - Anulado
    *
    * @var integer
    */
-  protected $iSituacao;
+    protected $iSituacao;
 
   /**
    * Tipos de pagamento do slip - 0 Nenhum (Contas Orçamentarias) 1 - saldo Inicial 2- Arrecacadações 3 -> sem pag
@@ -96,28 +97,28 @@ class slip {
    *
    * @var unknown_type
    */
-  protected $iTipoPagamento;
+    protected $iTipoPagamento;
 
   /**
    * Autenticacoes Realizadas pelo slip (coleção de objetos)
    *
    * @var array
    */
-  protected $aPagamentos;
+    protected $aPagamentos;
 
   /**
    * Lista de Recursos no slip (colecao de objetos com codigo do slip, descricao, valor)
    *
    * @var array
    */
-  protected $aRecursos;
+    protected $aRecursos;
 
   /**
    * Numero do cgm
    *
    * @var integer
    */
-  protected $iNumCgm;
+    protected $iNumCgm;
 
 
   /**
@@ -125,50 +126,66 @@ class slip {
    *
    * @var integer
    */
-  protected $iHistorico;
+    protected $iHistorico;
 
   /**
    * Codigo do Movimento da agenda
    *
    * @var integer
    */
-  protected $iMovimento;
+    protected $iMovimento;
 
 
   /**
    * Motivo do Estorno
    * @var string
    */
-  protected $sMotivoEstornoAnulacao;
+    protected $sMotivoEstornoAnulacao;
 
 
   /**
    * Data Autenticacao
    * @var date
    */
-  protected $dtDataAutenticacao;
+    protected $dtDataAutenticacao;
 
 
   /**
    * Tipo Autenticacao
    * @var integer
    */
-  protected $iTipoAutenticacao;
+    protected $iTipoAutenticacao;
 
   /**
    * Instituicao que criou o slip
    * @var integer
    */
-  protected $iInstituicao;
+    protected $iInstituicao;
+
+    /**
+     * @var array
+     */
+    protected $retencoes = array();
 
 
   /**
    * Codigo da Caracteristica Peculiar Credito
    * @var string
    */
-  protected $sCodigoCaracteristicaPeculiarCredito;
+    protected $sCodigoCaracteristicaPeculiarCredito;
 
-  protected $sCodigoCaracteristicaPeculiarDebito;
+    protected $sCodigoCaracteristicaPeculiarDebito;
+
+  /**
+   * @var
+   */
+    protected $iRecursoCredito;
+
+  /**
+   * @var
+   */
+    protected $iRecursoDebito;
+
 
   /**
    * Método contrutor, carrega os dados de um slip
@@ -176,527 +193,715 @@ class slip {
    * @throws Exception
    * @return slip
    */
-  function __construct ($iSlip = null) {
+    function __construct($iSlip = null)
+    {
 
-    $this->iSlip = $iSlip;
-    if (!empty($iSlip)) {
+        $this->iSlip = $iSlip;
+        if (!empty($iSlip)) {
 
-      /**
-       * Caso o slip foi preenchido, pesquisamos seus dados e preenchemos
-       * os dados
-       */
-      $oDaoSlip  = db_utils::getDao("slip");
-      $sSqlSlip  = $oDaoSlip->sql_query_file($iSlip);
-      $rsSlip    = $oDaoSlip->sql_record($sSqlSlip);
-      if ($oDaoSlip->numrows > 0) {
+          /**
+           * Caso o slip foi preenchido, pesquisamos seus dados e preenchemos
+           * os dados
+           */
+            $oDaoSlip  = new cl_slip();
+            $sSqlSlip  = $oDaoSlip->sql_query_file($iSlip);
+            $rsSlip    = $oDaoSlip->sql_record($sSqlSlip);
+            if ($oDaoSlip->numrows > 0) {
+                 $oDadosSlip = db_utils::fieldsMemory($rsSlip, 0);
+                 $this->setTipoPagamento($oDadosSlip->k17_tipopagamento);
+                 $this->setContaCredito($oDadosSlip->k17_credito);
+                 $this->setContaDebito($oDadosSlip->k17_debito);
+                 $this->setData(db_formatar($oDadosSlip->k17_data, "d"));
+                 $this->setObservacoes($oDadosSlip->k17_texto);
+                 $this->setHistorico($oDadosSlip->k17_hist);
+                 $this->setSituacao($oDadosSlip->k17_situacao);
+                 $this->setValor($oDadosSlip->k17_valor);
+                 $this->dtDataAutenticacao = $oDadosSlip->k17_dtaut;
+                 $this->iTipoAutenticacao  = $oDadosSlip->k17_autent;
+                 $this->iSlip = $iSlip;
+                 $this->iInstituicao = $oDadosSlip->k17_instit;
 
-         $oDadosSlip = db_utils::fieldsMemory($rsSlip, 0);
-         $this->setTipoPagamento($oDadosSlip->k17_tipopagamento);
-         $this->setContaCredito($oDadosSlip->k17_credito);
-         $this->setContaDebito($oDadosSlip->k17_debito);
-         $this->setData(db_formatar($oDadosSlip->k17_data, "d"));
-         $this->setObservacoes($oDadosSlip->k17_texto);
-         $this->setHistorico($oDadosSlip->k17_hist);
-         $this->setSituacao($oDadosSlip->k17_situacao);
-         $this->setValor($oDadosSlip->k17_valor);
-         $this->dtDataAutenticacao = $oDadosSlip->k17_dtaut;
-         $this->iTipoAutenticacao  = $oDadosSlip->k17_autent;
-         $this->iSlip = $iSlip;
-         $this->iInstituicao = $oDadosSlip->k17_instit;
+                 /**
+                  * Pesquisamos as informacoes do recurso
+                  */
+                 $oDaoSlipRecurso = new cl_sliprecurso();
+                 $sSqlRecursos    = $oDaoSlipRecurso->sql_query(null, "*", "k29_recurso", "k29_slip = {$this->iSlip}");
+                 $rsRecursos      = $oDaoSlipRecurso->sql_record($sSqlRecursos);
+                 $aRecursos       = db_utils::getCollectionByRecord($rsRecursos);
+                foreach ($aRecursos as $oRecurso) {
+                    $this->addRecurso($oRecurso->k29_recurso, $oRecurso->k29_valor);
+                }
+            } else {
+                throw new Exception("Slip {$iSlip} não encontrado!");
+            }
+          /**
+           * Pesquisamos as arrecadacoes vinculadas ao slip
+           */
+            $sSqlArrecadacoes   = "select cornump.k12_numpre ";
+            $sSqlArrecadacoes  .= "  from corrente  ";
+            $sSqlArrecadacoes  .= "       inner join cornump on corrente.k12_data   = cornump.k12_data ";
+            $sSqlArrecadacoes  .= "                         and corrente.k12_id     = cornump.k12_id ";
+            $sSqlArrecadacoes  .= "                         and corrente.k12_autent = cornump.k12_autent ";
+            $sSqlArrecadacoes  .= "       inner join reciborecurso on k00_numpre = cornump.k12_numpre  ";
+            $sSqlArrecadacoes  .= "       inner join slipcorrente on corrente.k12_data   = k112_data ";
+            $sSqlArrecadacoes  .= "                             and corrente.k12_id     = k112_id ";
+            $sSqlArrecadacoes  .= "                             and corrente.k12_autent = k112_autent ";
+            $sSqlArrecadacoes  .= " where k112_slip = {$this->iSlip} ";
+            $sSqlArrecadacoes  .= "   and k112_ativo is true ";
+            $rsRegistos         = db_query($sSqlArrecadacoes);
+            $aArrecadacoes      = db_utils::getCollectionByRecord($sSqlArrecadacoes);
+            foreach ($aArrecadacoes as $oArrecadacao) {
+                $this->aArrecadacoes[] = $oArrecadacao->k12_numpre;
+            }
 
-         /**
-          * Pesquisamos as informacoes do recurso
-          */
-         $oDaoSlipRecurso = db_utils::getDao('sliprecurso');
-         $sSqlRecursos    = $oDaoSlipRecurso->sql_query(null,"*", "k29_recurso","k29_slip = {$this->iSlip}");
-         $rsRecursos      = $oDaoSlipRecurso->sql_record($sSqlRecursos);
-         $aRecursos       = db_utils::getCollectionByRecord($rsRecursos);
-         foreach ($aRecursos as $oRecurso) {
-           $this->addRecurso($oRecurso->k29_sequencial, $oRecurso->k29_valor);
-         }
+            $oDaoSlipCaracteristica      = new cl_slipconcarpeculiar();
+            $sSqlBuscaCaracteristicaSlip = $oDaoSlipCaracteristica->sql_query_file(null, "*", "k131_tipo", "k131_slip = {$iSlip}");
+            $rsBuscaCaracteristica       = $oDaoSlipCaracteristica->sql_record($sSqlBuscaCaracteristicaSlip);
+            if ($oDaoSlipCaracteristica->numrows > 0) {
+                for ($iRowCP = 0; $iRowCP < $oDaoSlipCaracteristica->numrows; $iRowCP++) {
+                    $oDadoCP = db_utils::fieldsMemory($rsBuscaCaracteristica, $iRowCP);
+                    if ($oDadoCP->k131_tipo == 1) {
+                        $this->setCaracteristicaPeculiarDebito($oDadoCP->k131_concarpeculiar);
+                    } else {
+                        $this->setCaracteristicaPeculiarCredito($oDadoCP->k131_concarpeculiar);
+                    }
+                    unset($oDadoCP);
+                }
+            }
+            unset($oDaoSlipCaracteristica);
 
-      } else {
-        throw new Exception("Slip {$iSlip} não encontrado!");
-      }
-      /**
-       * Pesquisamos as arrecadacoes vinculadas ao slip
-       */
-      $sSqlArrecadacoes   = "select cornump.k12_numpre ";
-      $sSqlArrecadacoes  .= "  from corrente  ";
-      $sSqlArrecadacoes  .= "       inner join cornump on corrente.k12_data   = cornump.k12_data ";
-      $sSqlArrecadacoes  .= "                         and corrente.k12_id     = cornump.k12_id ";
-      $sSqlArrecadacoes  .= "                         and corrente.k12_autent = cornump.k12_autent ";
-      $sSqlArrecadacoes  .= "       inner join reciborecurso on k00_numpre = cornump.k12_numpre  ";
-      $sSqlArrecadacoes  .= "       inner join slipcorrente on corrente.k12_data   = k112_data ";
-      $sSqlArrecadacoes  .= "                             and corrente.k12_id     = k112_id ";
-      $sSqlArrecadacoes  .= "                             and corrente.k12_autent = k112_autent ";
-      $sSqlArrecadacoes  .= " where k112_slip = {$this->iSlip} ";
-      $sSqlArrecadacoes  .= "   and k112_ativo is true ";
-      $rsRegistos         = db_query($sSqlArrecadacoes);
-      $aArrecadacoes      = db_utils::getCollectionByRecord($sSqlArrecadacoes);
-      foreach ($aArrecadacoes as $oArrecadacao) {
-        $this->aArrecadacoes[] = $oArrecadacao->k12_numpre;
-      }
-
-      $oDaoSlipCaracteristica      = db_utils::getDao('slipconcarpeculiar');
-      $sSqlBuscaCaracteristicaSlip = $oDaoSlipCaracteristica->sql_query_file(null, "*", "k131_tipo", "k131_slip = {$iSlip}");
-      $rsBuscaCaracteristica       = $oDaoSlipCaracteristica->sql_record($sSqlBuscaCaracteristicaSlip);
-      if ($oDaoSlipCaracteristica->numrows > 0) {
-
-        for ($iRowCP = 0; $iRowCP < $oDaoSlipCaracteristica->numrows; $iRowCP++) {
-
-          $oDadoCP = db_utils::fieldsMemory($rsBuscaCaracteristica, $iRowCP);
-          if ($oDadoCP->k131_tipo == 1) {
-            $this->setCaracteristicaPeculiarDebito($oDadoCP->k131_concarpeculiar);
-          } else {
-            $this->setCaracteristicaPeculiarCredito($oDadoCP->k131_concarpeculiar);
-          }
-          unset($oDadoCP);
+            $oDaoSlipNum  = new cl_slipnum();
+            $sSqlBuscaCGM = $oDaoSlipNum->sql_query_file($iSlip);
+            $rsBuscaCGM   = $oDaoSlipNum->sql_record($sSqlBuscaCGM);
+            if ($oDaoSlipNum->numrows > 0) {
+                $this->iNumCgm = db_utils::fieldsMemory($rsBuscaCGM, 0)->k17_numcgm;
+            }
+            $this->carregarRetencoes();
         }
-      }
-      unset($oDaoSlipCaracteristica);
-
-      $oDaoSlipNum  = db_utils::getDao('slipnum');
-      $sSqlBuscaCGM = $oDaoSlipNum->sql_query_file($iSlip);
-      $rsBuscaCGM   = $oDaoSlipNum->sql_record($sSqlBuscaCGM);
-      if ($oDaoSlipNum->numrows > 0) {
-        $this->iNumCgm = db_utils::fieldsMemory($rsBuscaCGM, 0)->k17_numcgm;
-      }
     }
-  }
+
+    public function getSlipPagamentoOperacaoExtra($situacao = null)
+    {
+        $aSlips = array();
+        $aWhere = array();
+        $aWhere[] =  "k208_recebimento = {$this->iSlip}";
+        if (!empty($situacao)) {
+            $aWhere[] = "slippagamento.k17_situacao = {$situacao}";
+        }
+
+        $sWhere = implode(" and ", $aWhere);
+        $oDao = new cl_slipoperacaoextra;
+        $sql = $oDao->sql_query(null, "k208_pagamento", null,$sWhere);
+        $rs = $oDao->sql_record($sql);
+        if ($oDao->numrows > 0) {
+
+            for ($i = 0; $i < $oDao->numrows ; $i++) {
+                $aSlips[] = db_utils::fieldsMemory($rs, $i)->k208_pagamento;
+            }
+        }
+        return $aSlips;
+    }
+
+
+    public static function getParametroSlipAutomatico()
+    {
+        $lAtivado = false;
+        /**
+        * parametro para gerar slip automatico para as receitas extras das retenções
+        */
+        $oDaoParametro = new cl_caiparametro;
+        $sqlParametroSlipAutomatico = $oDaoParametro->sql_query_file(db_getsession("DB_instit"),
+                                          "k29_gerarslipautomaticoreceitaretencao",
+                                          null,
+                                          "k29_gerarslipautomaticoreceitaretencao is true");
+        $oDaoParametro->sql_record($sqlParametroSlipAutomatico);
+        if ($oDaoParametro->numrows > 0) {
+            $lAtivado = true;
+        }
+        return  $lAtivado;
+    }
+
+    public static function vincularSlipOperacaoExtra($recebimento, $pagamento)
+    {
+
+        $oDao = new cl_slipoperacaoextra;
+        $oDao->k208_sequencial = null;
+        $oDao->k208_recebimento = $recebimento;
+        $oDao->k208_pagamento = $pagamento;
+        $oDao->incluir(null);
+        if ($oDao->erro_status == 0) {
+            $sMensagemErro  = "Não foi possível víncular o slip de recebimento ao slip de pagamento.\n\n";
+            $sMensagemErro .= "Erro Técnico: {$oDao->erro_msg}";
+            throw new Exception($sMensagemErro);
+        }
+    }
+
+    public static function vincularTipoOperacaoSlip($iSlip, $iOperacao)
+    {
+
+        $oDaoTipoOperacaoVinculo = new cl_sliptipooperacaovinculo;
+        $oDaoTipoOperacaoVinculo->k153_slip = $iSlip;
+        $oDaoTipoOperacaoVinculo->k153_slipoperacaotipo = $iOperacao;
+        $oDaoTipoOperacaoVinculo->incluir($iSlip);
+        if ($oDaoTipoOperacaoVinculo->erro_status == 0) {
+            $sMensagemErro  = "Não foi possível víncular o tipo de slip ao slip.\n\n";
+            $sMensagemErro .= "Erro Técnico: {$oDaoTipoOperacaoVinculo->erro_msg}";
+            throw new Exception($sMensagemErro);
+        }
+    }
+
+    /**
+    * vincular o slip com as receitas das retencoes
+    */
+    public static function vincularSlipReceitaRetencao($slip , $retencaoReceita)
+    {
+
+      $oDao = new cl_slipretencaoreceitas;
+      $oDao->k206_sequencial = null;
+      $oDao->k206_slip = $slip;
+      $oDao->k206_retencaoreceitas = $retencaoReceita;
+      $oDao->incluir(null);
+      if ($oDao->erro_status == "0") {
+          throw new Exception("Erro ao vincular o slip com a receita da retençao.");
+      }
+
+    }
+
+    /**
+     * vincular o slip com as receitas extras de uma planilha
+     */
+    public static function vincularSlipReceitaPlanilha($slip, $placaixaRec) {
+
+        $oDao = new cl_slipplacaixarec;
+        $oDao->k207_sequencial = null;
+        $oDao->k207_placaixarec = $placaixaRec;
+        $oDao->k207_slip = $slip;
+        $oDao->incluir(null);
+        if ($oDao->erro_status == "0") {
+            throw new Exception("Erro ao vincular o slip com a receita da planilha.");
+        }
+
+    }
+
+
+    /**
+     * vincular o slip automatico com a OP.
+     */
+    public static function vincularSlipOrdemPagamento($slip, $pagOrdem) {
+
+        $oDao = new cl_slippagordem;
+        $oDao->k209_sequencial = null;
+        $oDao->k209_pagordem = $pagOrdem;
+        $oDao->k209_slip = $slip;
+        $oDao->incluir(null);
+        if ($oDao->erro_status == "0") {
+            throw new Exception("Erro ao vincular o slip com Ordem de Pagamento.");
+        }
+    }
+
+    /**
+     * vincular o slip automatico com numero do CGM
+     */
+    public static function vincularSlipNumCgm($slip, $numCGM) {
+
+        $oDao = new cl_slipnum;
+        $oDao->k17_numcgm = $numCGM;
+        $oDao->incluir($slip);
+        if ($oDao->erro_status == "0") {
+            throw new Exception("Erro ao vincular o slip com o número do CGM.");
+        }
+    }
+
+
+    public function getContaPrincipalPorContaExtra()
+    {
+
+        $iAno = db_getsession('DB_anousu');
+        $oDaoSaltesExtra = new cl_saltesextra;
+        $where  = "k109_contaextra = {$this->getContaCredito()} ";
+        $where .= " and c56_contabancaria in (select c56_contabancaria ";
+        $where .= "                             from conplanocontabancaria";
+        $where .= "                            where c56_reduz = {$this->getContaCredito()} ";
+        $where .= "                              and c56_anousu = {$iAno})";
+
+        $sql = $oDaoSaltesExtra->sql_query_extra_bancaria(null, "k13_conta", null, $where);
+        $rs = $oDaoSaltesExtra->sql_record($sql);
+        if ($oDaoSaltesExtra->numrows == 0) {
+            throw new Exception("Erro ao Buscar a Conta vinculada a conta extra:{$this->getContaCredito()} ");
+        }
+        return db_utils::fieldsMemory($rs, 0)->k13_conta;
+    }
+
+
+
+  /**
+   * @return bool
+   */
+    public function isSlipRecurso()
+    {
+
+        $oDaoSlipRecurso = new cl_sliprecurso;
+        $sql = $oDaoSlipRecurso->sql_query_file(null, "1", null, "k29_slip = {$this->getSlip()}");
+        $oDaoSlipRecurso->sql_record($sql);
+        if ($oDaoSlipRecurso->numrows > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+
 
   /**
    * salva o slip
    */
- public function save() {
+    public function save()
+    {
 
-    if (trim($this->getContaDebito()) == "") {
-      $sMsgErro = "Conta a Debitar(Receber) não Informada";
-    }
-
-    if (trim($this->getContaCredito()) == "") {
-      $sMsgErro = "Conta a Creditar(Pagar) não Informada";
-    }
-
-    if ($this->iSlip != "" ) {
-
-      $numslip = $this->iSlip;
-      $clsliprecurso = db_utils::getDao("sliprecurso");
-      $clsliprecurso->excluir(null," k29_slip =".$this->iSlip);
-
-      if ($clsliprecurso->erro_status == 0) {
-
-        $sMsgErro = $clsliprecurso->erro_msg;
-        throw new Exception($sMsgErro);
-      }
-
-      $clslipnum = db_utils::getDao("slipnum");
-      $clslipnum->excluir($numslip);
-
-      if ($clslipnum->erro_status == 0) {
-
-        $sMsgErro = $clslipnum->erro_msg;
-        throw new Exception($sMsgErro);
-      }
-
-      $clempageslip = db_utils::getDao("empageslip");
-      $sSqlMov = $clempageslip->sql_query_file(null,$numslip);
-      $rsMovSlip = $clempageslip->sql_record($sSqlMov);
-
-      if ($clempageslip->numrows > 0) {
-
-        $oMovimentoSlip = db_utils::fieldsMemory($rsMovSlip, 0);
-        $clempageslip->excluir($oMovimentoSlip->e89_codmov);
-        if ($clempageslip->erro_status == 0){
-
-          $sMsgErro = $clempageslip->erro_msg;
-          throw new Exception($sMsgErro);
-
+        if (trim($this->getContaDebito()) == "") {
+            $sMsgErro = "Conta a Debitar(Receber) não Informada";
         }
 
-        $oDaoEmpPag = db_utils::getDao("empagepag");
-        $oDaoEmpPag->excluir($oMovimentoSlip->e89_codmov);
-        if ($oDaoEmpPag->erro_status == 0){
-
-          $sMsgErro = $oDaoEmpPag->erro_msg;
-          throw new Exception($sMsgErro);
-
-        }
-        $oDaoNotasOrdem = db_utils::getDao("empagenotasordem");
-        $oDaoNotasOrdem->excluir(null,"e43_empagemov={$oMovimentoSlip->e89_codmov}");
-        if ($oDaoNotasOrdem->erro_status == 0){
-
-           $sMsgErro = $oDaoNotasOrdem->erro_msg;
-           throw new Exception($sMsgErro);
+        if (trim($this->getContaCredito()) == "") {
+            $sMsgErro = "Conta a Creditar(Pagar) não Informada";
         }
 
+        if ($this->iSlip != "") {
+            $numslip = $this->iSlip;
+            $clsliprecurso = new cl_sliprecurso();
+            $clsliprecurso->excluir(null, " k29_slip =".$this->iSlip);
 
-        /**
-         * verificamos na empagemovforma, se possui movimentos atualizado para o slip
-         * se houver, o slip deve antes ser reconfigurado na agenda, para NDA, e depois sim ser alterado
-         * 
-         */
-        $oDaoEmpAgeMovForma = db_utils::getDao("empagemovforma");
-        $sSqlEmpAgeMovForma = $oDaoEmpAgeMovForma->sql_query_file($oMovimentoSlip->e89_codmov);
-        $oDaoEmpAgeMovForma->sql_record($sSqlEmpAgeMovForma);
+            if ($clsliprecurso->erro_status == 0) {
+                $sMsgErro = $clsliprecurso->erro_msg;
+                throw new Exception($sMsgErro);
+            }
 
-        if ( $oDaoEmpAgeMovForma->numrows > 0 ) {
+            $clslipnum = new cl_slipnum();
+            $clslipnum->excluir($numslip);
 
-          $sMensagemErroSlip  = "O Slip possui movimentação atualizada na agenda de pagamentos.";
-          $sMensagemErroSlip .= "\nDeve ser alterado a forma de pagamento para NDA, para alteração do Slip"; 
-          throw new Exception($sMensagemErroSlip);
+            if ($clslipnum->erro_status == 0) {
+                $sMsgErro = $clslipnum->erro_msg;
+                throw new Exception($sMsgErro);
+            }
+
+            $clempageslip = new cl_empageslip();
+            $sSqlMov = $clempageslip->sql_query_file(null, $numslip);
+            $rsMovSlip = $clempageslip->sql_record($sSqlMov);
+
+            if ($clempageslip->numrows > 0) {
+                $oMovimentoSlip = db_utils::fieldsMemory($rsMovSlip, 0);
+                $clempageslip->excluir($oMovimentoSlip->e89_codmov);
+                if ($clempageslip->erro_status == 0) {
+                    $sMsgErro = $clempageslip->erro_msg;
+                    throw new Exception($sMsgErro);
+                }
+
+                $oDaoEmpPag = new cl_empagepag();
+                $oDaoEmpPag->excluir($oMovimentoSlip->e89_codmov);
+                if ($oDaoEmpPag->erro_status == 0) {
+                    $sMsgErro = $oDaoEmpPag->erro_msg;
+                    throw new Exception($sMsgErro);
+                }
+                $oDaoNotasOrdem = new cl_empagenotasordem();
+                $oDaoNotasOrdem->excluir(null, "e43_empagemov={$oMovimentoSlip->e89_codmov}");
+                if ($oDaoNotasOrdem->erro_status == 0) {
+                    $sMsgErro = $oDaoNotasOrdem->erro_msg;
+                    throw new Exception($sMsgErro);
+                }
+
+
+              /**
+               * verificamos na empagemovforma, se possui movimentos atualizado para o slip
+               * se houver, o slip deve antes ser reconfigurado na agenda, para NDA, e depois sim ser alterado
+               *
+               */
+                $oDaoEmpAgeMovForma = new cl_empagemovforma();
+                $sSqlEmpAgeMovForma = $oDaoEmpAgeMovForma->sql_query_file($oMovimentoSlip->e89_codmov);
+                $oDaoEmpAgeMovForma->sql_record($sSqlEmpAgeMovForma);
+
+                if ($oDaoEmpAgeMovForma->numrows > 0) {
+                    $sMensagemErroSlip  = "O Slip possui movimentação atualizada na agenda de pagamentos.";
+                    $sMensagemErroSlip .= "\nDeve ser alterado a forma de pagamento para NDA, para alteração do Slip";
+                    throw new Exception($sMensagemErroSlip);
+                }
+
+                $oDaoEmpAgeConfGera = new cl_empageconfgera();
+                $oDaoEmpAgeConfGera->excluir(null, null, "e90_codmov = {$oMovimentoSlip->e89_codmov} ");
+                if ($oDaoEmpAgeConfGera->erro_status == '0') {
+                    throw new Exception("ERRO[1] - ao desvincular cheques do movimento\n".$oDaoEmpAgeConfGera->erro_msg);
+                }
+              /**
+               * exclui os cheques que foram emitidos para o movimento
+               */
+                $oDaoEmpAgeConfChe = new cl_empageconfche();
+                $oDaoEmpAgeConfChe->excluir(null, "e91_codmov = {$oMovimentoSlip->e89_codmov}");
+                if ($oDaoEmpAgeConfChe->erro_status == '0') {
+                    throw new Exception("ERRO[2] - ao desvincular cheques do movimento\n".$oDaoEmpAgeConfChe->erro_msg);
+                }
+
+                $oDaoEmpageMov = new cl_empagemov();
+                $oDaoEmpageMov->excluir($oMovimentoSlip->e89_codmov);
+                if ($oDaoEmpageMov->erro_status == 0) {
+                    $sMsgErro = $oDaoEmpageMov->erro_msg;
+                    throw new Exception($sMsgErro);
+                }
+            }
         }
 
-        $oDaoEmpAgeConfGera = new cl_empageconfgera();
-        $oDaoEmpAgeConfGera->excluir(null,null, "e90_codmov = {$oMovimentoSlip->e89_codmov} ");
-        if ($oDaoEmpAgeConfGera->erro_status == '0') {
-          throw new Exception("ERRO[1] - ao desvincular cheques do movimento\n".$oDaoEmpAgeConfGera->erro_msg);
+        $clslip                    = new cl_slip();
+        $clslip->k17_data          = date("Y-m-d", db_getsession("DB_datausu"));
+        $clslip->k17_debito        = $this->getContaDebito();
+        $clslip->k17_credito       = $this->getContaCredito();
+        $clslip->k17_valor         = $this->getValor();
+        $clslip->k17_hist          = $this->getHistorico();
+        $clslip->k17_texto         = $this->getObservacoes();
+        $clslip->k17_instit        = db_getsession("DB_instit");
+        $clslip->k17_dtanu         = "";
+        $clslip->k17_tipopagamento = $this->getTipoPagamento();
+        $clslip->k17_situacao      = $this->getSituacao();
+
+        if ($this->iSlip == null) {
+            $clslip->incluir(null);
+
+            /**
+             * Vinculamos o slip ao departamento que o usuario esta logado
+             */ 
+            $clSlipDepartamento = new cl_slipdepartamento();
+            $clSlipDepartamento->k211_depart = db_getsession("DB_coddepto");
+            $clSlipDepartamento->incluir($clslip->k17_codigo);
+            if ($clSlipDepartamento->erro_status == "0") {
+              throw new Exception("Não foi possível incluir vinculo do slip com departamento\n".$clSlipDepartamento->erro_msg);
+            } 
+            /**
+             * Fim do vinculo com o departamento
+             */  
+
+        } else {
+            $clslip->k17_codigo    = $this->iSlip;
+            $clslip->alterar($this->iSlip);
         }
-        /**
-           exclui os cheques que foram emitidos para o movimento
-         */
-        $oDaoEmpAgeConfChe = new cl_empageconfche();
-        $oDaoEmpAgeConfChe->excluir(null, "e91_codmov = {$oMovimentoSlip->e89_codmov}");
-        if ($oDaoEmpAgeConfChe->erro_status == '0') {
-          throw new Exception("ERRO[2] - ao desvincular cheques do movimento\n".$oDaoEmpAgeConfChe->erro_msg);
+
+        $this->iSlip = $clslip->k17_codigo;
+        if ($clslip->erro_status == 0) {
+            $sMsgErro = $clslip->erro_msg;
+            throw new Exception($sMsgErro);
         }
-
-        $oDaoEmpageMov = db_utils::getDao("empagemov");
-        $oDaoEmpageMov->excluir($oMovimentoSlip->e89_codmov);
-        if ($oDaoEmpageMov->erro_status == 0){
-
-          $sMsgErro = $oDaoEmpageMov->erro_msg;
-          throw new Exception($sMsgErro);
-
-        }
-      }
-
-      $oDaoSlipCorrente = db_utils::getDao("slipcorrente");
-      $oDaoSlipCorrente->excluir(null,"k112_slip = ".$this->iSlip);
-      if ($oDaoSlipCorrente->erro_status == 0) {
-
-        $sMsgErro = $oDaoSlipCorrente->erro_msg;
-        throw new Exception($sMsgErro);
-
-      }
-    }
-
-    $clslip                    =  db_utils::getDao("slip");
-    $clslip->k17_data          = date("Y-m-d",db_getsession("DB_datausu"));
-    $clslip->k17_debito        = $this->getContaDebito();
-    $clslip->k17_credito       = "".$this->getContaCredito()."";
-    $clslip->k17_valor         = "".$this->getValor()."";
-    $clslip->k17_hist          = $this->getHistorico();
-    $clslip->k17_texto         = $this->getObservacoes();
-    $clslip->k17_instit        = db_getsession("DB_instit");
-    $clslip->k17_dtanu         = "";
-    $clslip->k17_tipopagamento = "".$this->getTipoPagamento()."";
-    $clslip->k17_situacao      = $this->getSituacao();
-
-    if ($this->iSlip == null) {
-      $clslip->incluir(null);
-    } else {
-
-      $clslip->k17_codigo    = $this->iSlip;
-      $clslip->alterar($this->iSlip);
-
-    }
-    $this->iSlip = $clslip->k17_codigo;
-    if ($clslip->erro_status == 0) {
-
-      $sMsgErro = $clslip->erro_msg;
-      throw new Exception($sMsgErro);
-    }
 
     /**
      * Inserimos a caracteristica peculiar para a conta debito, caso esta esteja setada
      */
-    if ($this->getCaracteristicaPeculiarDebito() != "") {
+        if ($this->getCaracteristicaPeculiarDebito() != "") {
+            $oDaoConCarPeculiarDebito = new cl_slipconcarpeculiar();
+            $sWhereDebito = "k131_slip = {$this->iSlip} and k131_tipo = 1";
+            $oDaoConCarPeculiarDebito->excluir(null, $sWhereDebito);
 
-      $oDaoConCarPeculiarDebito = db_utils::getDao('slipconcarpeculiar');
-      $sWhereDebito = "k131_slip = {$this->iSlip} and k131_tipo = 1";
-      $oDaoConCarPeculiarDebito->excluir(null, $sWhereDebito);
 
-
-      $oDaoConCarPeculiarDebito->k131_sequencial     = null;
-      $oDaoConCarPeculiarDebito->k131_slip           = $this->iSlip;
-      $oDaoConCarPeculiarDebito->k131_tipo           = 1;
-      $oDaoConCarPeculiarDebito->k131_concarpeculiar = $this->getCaracteristicaPeculiarDebito();
-      $oDaoConCarPeculiarDebito->incluir(null);
-      if ($oDaoConCarPeculiarDebito->erro_status == "0") {
-        throw new Exception("Não foi possível incluir a característica peculiar para a conta débito");
-      }
-    }
+            $oDaoConCarPeculiarDebito->k131_sequencial     = null;
+            $oDaoConCarPeculiarDebito->k131_slip           = $this->iSlip;
+            $oDaoConCarPeculiarDebito->k131_tipo           = 1;
+            $oDaoConCarPeculiarDebito->k131_concarpeculiar = $this->getCaracteristicaPeculiarDebito();
+            $oDaoConCarPeculiarDebito->incluir(null);
+            if ($oDaoConCarPeculiarDebito->erro_status == "0") {
+                throw new Exception("Não foi possível incluir a característica peculiar para a conta débito");
+            }
+        }
 
     /**
      * Inserimos a caracteristica peculiar para a conta credito, caso esta esteja setada
      */
-    if ($this->getCaracteristicaPeculiarCredito() != "") {
+        if ($this->getCaracteristicaPeculiarCredito() != "") {
+            $oDaoConCarPeculiarCredito = new cl_slipconcarpeculiar();
+            $sWhereCredito = "k131_slip = {$this->iSlip} and k131_tipo = 2";
+            $oDaoConCarPeculiarCredito->excluir(null, $sWhereCredito);
 
-      $oDaoConCarPeculiarCredito = db_utils::getDao('slipconcarpeculiar');
-      $sWhereCredito = "k131_slip = {$this->iSlip} and k131_tipo = 2";
-      $oDaoConCarPeculiarCredito->excluir(null, $sWhereCredito);
-
-      $oDaoConCarPeculiarCredito->k131_sequencial     = null;
-      $oDaoConCarPeculiarCredito->k131_slip           = $this->iSlip;
-      $oDaoConCarPeculiarCredito->k131_tipo           = 2;
-      $oDaoConCarPeculiarCredito->k131_concarpeculiar = $this->getCaracteristicaPeculiarCredito();
-      $oDaoConCarPeculiarCredito->incluir(null);
-      if ($oDaoConCarPeculiarCredito->erro_status == "0") {
-        throw new Exception("Não foi possível incluir a característica peculiar para a conta débito");
-      }
-    }
+            $oDaoConCarPeculiarCredito->k131_sequencial     = null;
+            $oDaoConCarPeculiarCredito->k131_slip           = $this->iSlip;
+            $oDaoConCarPeculiarCredito->k131_tipo           = 2;
+            $oDaoConCarPeculiarCredito->k131_concarpeculiar = $this->getCaracteristicaPeculiarCredito();
+            $oDaoConCarPeculiarCredito->incluir(null);
+            if ($oDaoConCarPeculiarCredito->erro_status == "0") {
+                throw new Exception("Não foi possível incluir a característica peculiar para a conta débito");
+            }
+        }
 
 
     /**
      * Agendamos o slip caso o parametro emparametro.e30_agendaautomatico = true.
      */
-    require_once("model/agendaPagamento.model.php");
-    $oInstit = db_stdClass::getDadosInstit();
-    if ($this->getNumCgm() == "") {
-      $this->setNumCgm($oInstit->numcgm);
-    }
+        require_once(modification(Modification::getFile('model/agendaPagamento.model.php')));
+        $oInstit = db_stdClass::getDadosInstit();
+        if ($this->getNumCgm() == "") {
+            $this->setNumCgm($oInstit->numcgm);
+        }
 
-    $oAgendaPagamento = new agendaPagamento();
-    $oSlipAgenda = new stdClass();
-    $oSlipAgenda->iCodigoSlip = $clslip->k17_codigo;
-    $oSlipAgenda->nValor      = "".$this->getValor()."";
+        $oAgendaPagamento = new agendaPagamento();
+        $oSlipAgenda = new stdClass();
+        $oSlipAgenda->iCodigoSlip = $clslip->k17_codigo;
+        $oSlipAgenda->nValor      = "".$this->getValor()."";
 
     /**
       * Procuramos se a conta credito do slip é uma conta pagadora no caixa.
       * caso for. setamos essa conta como conta pagadora na agenda.
       */
-    $oParametroAgenda = (db_stdClass::getParametro("empparametro",array(db_getsession('DB_anousu')),"e30_agendaautomatico"));
-    if ($oParametroAgenda[0]->e30_agendaautomatico == "t" ) {
-
-      if ($this->getContaCredito() != 0 ) {
-
-        $oDaoEmpAgeTipo = db_utils::getDao("empagetipo");
-        $sSqlConta      = $oDaoEmpAgeTipo->sql_query_file(null,
-                                                          "e83_codtipo",
-                                                           null,
-                                                          "e83_conta = ".$this->getContaCredito());
-        $rsConta        = $oDaoEmpAgeTipo->sql_record($sSqlConta);
-        if ($oDaoEmpAgeTipo->numrows > 0 ) {
-          $oSlipAgenda->iCodTipo = db_utils::fieldsMemory($rsConta,0)->e83_codtipo;
+        $oParametroAgenda = (db_stdClass::getParametro("empparametro", array(db_getsession('DB_anousu')), "e30_agendaautomatico"));
+        if ($oParametroAgenda[0]->e30_agendaautomatico == "t") {
+            if ($this->getContaCredito() != 0) {
+                $oDaoEmpAgeTipo = new cl_empagetipo();
+                $sSqlConta      = $oDaoEmpAgeTipo->sql_query_file(
+                    null,
+                    "e83_codtipo",
+                    null,
+                    "e83_conta = ".$this->getContaCredito()
+                );
+                $rsConta        = $oDaoEmpAgeTipo->sql_record($sSqlConta);
+                if ($oDaoEmpAgeTipo->numrows > 0) {
+                      $oSlipAgenda->iCodTipo = db_utils::fieldsMemory($rsConta, 0)->e83_codtipo;
+                }
+            }
+            $this->iMovimento =  $oAgendaPagamento->addMovimentoAgenda(2, $oSlipAgenda);
         }
-      }
-      $this->iMovimento =  $oAgendaPagamento->addMovimentoAgenda(2, $oSlipAgenda);
-      
-    }
 
-    if ($this->getNumCgm() != "") {
-
-      $clslipnum = db_utils::getDao("slipnum");
-      $clslipnum->k17_numcgm = $this->getNumCgm();
-      $clslipnum->incluir($this->getSlip());
-      if ($clslipnum->erro_status == 0) {
-
-        $sMsgErro = $clslipnum->erro_msg;
-        throw new Exception($sMsgErro);
-
-      }
-    }
-
-    if (isset($this->aRecursos) && count($this->getRecursos()) > 0) {
-
-      $clsliprecurso = db_utils::getDao("sliprecurso");
-      /**
-       * Incluimos os recursos
-       */
-      foreach ($this->getRecursos() as $iRecurso => $nValor) {
-
-        $clsliprecurso->k29_slip     = $this->iSlip;
-        $clsliprecurso->k29_recurso  = $iRecurso;
-        $clsliprecurso->k29_valor    = "$nValor";
-        $clsliprecurso->incluir(null);
-        if ($clsliprecurso->erro_status == 0) {
-
-          $sMsgErro = $clsliprecurso->erro_msg;
-          throw new Exception($sMsgErro);
-          break;
-
+        if ($this->getNumCgm() != "") {
+            $clslipnum = new cl_slipnum();
+            $clslipnum->k17_numcgm = $this->getNumCgm();
+            $clslipnum->incluir($this->getSlip());
+            if ($clslipnum->erro_status == 0) {
+                $sMsgErro = $clslipnum->erro_msg;
+                throw new Exception($sMsgErro);
+            }
         }
-      }
-    }
+
+        if (isset($this->aRecursos) && count($this->getRecursos()) > 0) {
+            $clsliprecurso = new cl_sliprecurso();
+         /**
+          * Incluimos os recursos
+          */
+            foreach ($this->getRecursos() as $iRecurso => $nValor) {
+                $clsliprecurso->k29_slip     = $this->iSlip;
+                $clsliprecurso->k29_recurso  = $iRecurso;
+                $clsliprecurso->k29_valor    = "$nValor";
+                $clsliprecurso->incluir(null);
+                if ($clsliprecurso->erro_status == 0) {
+                    $sMsgErro = $clsliprecurso->erro_msg;
+                    throw new Exception($sMsgErro);
+                    break;
+                }
+            }
+        }
     /**
      * vinculamos as arrecacoes com o slip
      */
 
-    if ($this->getTipoPagamento() == 2) {
-
-      foreach ($this->aArrecadacoes as $iArrecadacao) {
-
-        $sSqlCornump       = "select cornump.k12_data,cornump.k12_id,cornump.k12_autent";
-        $sSqlCornump      .= "  from cornump ";
-        $sSqlCornump      .= "  inner join corrente on cornump.k12_data   = corrente.k12_data ";
-        $sSqlCornump      .= "                     and cornump.k12_autent = corrente.k12_autent ";
-        $sSqlCornump      .= "                     and cornump.k12_id     = corrente.k12_id ";
-        $sSqlCornump      .= " where k12_numpre = {$iArrecadacao}";
-        $sSqlCornump      .= "   and k12_estorn is false ";
-        $sSqlCornump      .= "  order by corrente.k12_data desc, corrente.k12_id desc limit 1";
-        $rsCorrente       = db_query($sSqlCornump);
-        if (pg_num_rows($rsCorrente) == 1) {
-
-          $oCorrente        = db_utils::fieldsMemory($rsCorrente, 0);
-          $oDaoSlipCorrente = db_utils::getDao("slipcorrente");
-          $oDaoSlipCorrente->k112_ativo  = "true";
-          $oDaoSlipCorrente->k112_data   = $oCorrente->k12_data;
-          $oDaoSlipCorrente->k112_id     = $oCorrente->k12_id;
-          $oDaoSlipCorrente->k112_autent = $oCorrente->k12_autent;
-          $oDaoSlipCorrente->k112_slip   = $this->iSlip;
-          $oDaoSlipCorrente->incluir(null);
-          if ($oDaoSlipCorrente->erro_status == 0) {
-
-            $sMsgErro  = "Não foi possível vincular slip com a arrecadação {$iArrecadacao}.\n";
-            $sMsgErro .= "{$oDaoSlipCorrente->erro_msg}";
-            throw new Exception($sMsgErro);
-
-          }
-        } else {
-          $sMsgErro   = "Foi encontrado mais de uma autentição para a arrecadação {$iArrecadacao}.\n";
-          $sMsgErro  .= "Processamento cancelado.\nVerifique Suporte.";
-          throw new Exception($sMsgErro);
+        if ($this->getTipoPagamento() == 2) {
+            foreach ($this->aArrecadacoes as $iArrecadacao) {
+                $sSqlCornump       = "select cornump.k12_data,cornump.k12_id,cornump.k12_autent";
+                $sSqlCornump      .= "  from cornump ";
+                $sSqlCornump      .= "  inner join corrente on cornump.k12_data   = corrente.k12_data ";
+                $sSqlCornump      .= "                     and cornump.k12_autent = corrente.k12_autent ";
+                $sSqlCornump      .= "                     and cornump.k12_id     = corrente.k12_id ";
+                $sSqlCornump      .= " where k12_numpre = {$iArrecadacao}";
+                $sSqlCornump      .= "   and k12_estorn is false ";
+                $sSqlCornump      .= "  order by corrente.k12_data desc, corrente.k12_id desc limit 1";
+                $rsCorrente       = db_query($sSqlCornump);
+                if (pg_num_rows($rsCorrente) == 1) {
+                    $oCorrente        = db_utils::fieldsMemory($rsCorrente, 0);
+                    $oDaoSlipCorrente = new cl_slipcorrente();
+                    $oDaoSlipCorrente->k112_ativo  = "true";
+                    $oDaoSlipCorrente->k112_data   = $oCorrente->k12_data;
+                    $oDaoSlipCorrente->k112_id     = $oCorrente->k12_id;
+                    $oDaoSlipCorrente->k112_autent = $oCorrente->k12_autent;
+                    $oDaoSlipCorrente->k112_slip   = $this->iSlip;
+                    $oDaoSlipCorrente->incluir(null);
+                    if ($oDaoSlipCorrente->erro_status == 0) {
+                        $sMsgErro  = "Não foi possível vincular slip com a arrecadação {$iArrecadacao}.\n";
+                        $sMsgErro .= "{$oDaoSlipCorrente->erro_msg}";
+                        throw new Exception($sMsgErro);
+                    }
+                } else {
+                    $sMsgErro   = "Foi encontrado mais de uma autentição para a arrecadação {$iArrecadacao}.\n";
+                    $sMsgErro  .= "Processamento cancelado.\nVerifique Suporte.";
+                    throw new Exception($sMsgErro);
+                }
+            }
         }
-      }
+        $this->salvarVinculoRetencoes();
+        return true;
     }
-    return true;
-  }
 
   /**
    * Método privado que estorna um slip. Este método é chamado exclusivamente pelo método anular
    * @throws Exception
    * @return boolean true
    */
-  public function estornar($lExcluirCheque = true, Transferencia $oTransferencia = null) {
+    public function estornar($lExcluirCheque = true, Transferencia $oTransferencia = null)
+    {
 
-    $iInstituicaoSessao = db_getsession("DB_instit");
-    $dtSessao           = date("Y-m-d", db_getsession("DB_datausu"));
-    $sIPSessao          = db_getsession("DB_ip");
+        $iInstituicaoSessao = db_getsession("DB_instit");
+        $dtSessao           = date("Y-m-d", db_getsession("DB_datausu"));
+        $sIPSessao          = db_getsession("DB_ip");
 
-    $oDaocfautent      = db_utils::getDao('cfautent');
-    $sSqlAutenticadora  = $oDaocfautent->sql_query_file(null,
-                                                       "k11_id,
+        $oDaocfautent      = new cl_cfautent();
+        $sSqlAutenticadora  = $oDaocfautent->sql_query_file(
+            null,
+            "k11_id,
                                                         k11_tipautent",
-                                                        '',
-                                                        "k11_ipterm = '{$sIPSessao}'
+            '',
+            "k11_ipterm = '{$sIPSessao}'
                                                         and k11_instit = {$iInstituicaoSessao}"
-                                                      );
-    $rsAutenticador    = $oDaocfautent->sql_record($sSqlAutenticadora);
+        );
+        $rsAutenticador    = $oDaocfautent->sql_record($sSqlAutenticadora);
 
-    if ($oDaocfautent->numrows == '0') {
-      throw new Exception("Cadastre o ip {$sIPSessao} como um caixa.");
-    }
-    /*
-     * Verificamos existencia do slip na agenda de pagamento
-     */
-    $iCodigoMovimentoConfAgenda = "0";
-    $iCodigoMovimentoAgenda     = "0";
-    $sCamposBuscaSlip    = "e86_cheque, e91_codcheque as e86_codmov, e81_codmov";
-    $sWhereBuscaSlip     = "e80_instit = {$iInstituicaoSessao} and empageslip.e89_codigo = {$this->getSlip()}";
-    $oDaoEmpAgeSlip      = db_utils::getDao('empageslip');
-    $sSqlBuscaSlipAgenda = $oDaoEmpAgeSlip->sql_query_configura(null,null, $sCamposBuscaSlip, null, $sWhereBuscaSlip);
-   // echo $sSqlBuscaSlipAgenda."\n";
+        if ($oDaocfautent->numrows == '0') {
+            throw new Exception("Cadastre o ip {$sIPSessao} como um caixa.");
+        }
+      /*
+       * Verificamos existencia do slip na agenda de pagamento
+       */
+        $iCodigoMovimentoConfAgenda = "0";
+        $iCodigoMovimentoAgenda     = "0";
+        $sCamposBuscaSlip    = "e86_cheque, e91_codcheque as e86_codmov, e81_codmov";
+        $sWhereBuscaSlip     = "e80_instit = {$iInstituicaoSessao} and empageslip.e89_codigo = {$this->getSlip()}";
+        $oDaoEmpAgeSlip      = new cl_empageslip();
+        $sSqlBuscaSlipAgenda = $oDaoEmpAgeSlip->sql_query_configura(null, null, $sCamposBuscaSlip, null, $sWhereBuscaSlip);
+     // echo $sSqlBuscaSlipAgenda."\n";
 
-    $rsBuscaSlipAgenda   = $oDaoEmpAgeSlip->sql_record($sSqlBuscaSlipAgenda);
-    if ($oDaoEmpAgeSlip->numrows > 0) {
+        $rsBuscaSlipAgenda   = $oDaoEmpAgeSlip->sql_record($sSqlBuscaSlipAgenda);
+        if ($oDaoEmpAgeSlip->numrows > 0) {
+            $oDadoAgenda = db_utils::fieldsMemory($rsBuscaSlipAgenda, 0);
+            $iCodigoMovimentoConfAgenda = $oDadoAgenda->e86_codmov != "" ? $iCodigoMovimentoConfAgenda = $oDadoAgenda->e86_codmov : $iCodigoMovimentoConfAgenda = "0";
+            $iCodigoMovimentoAgenda     = $oDadoAgenda->e81_codmov != "" ? $iCodigoMovimentoAgenda =  $oDadoAgenda->e81_codmov : $iCodigoMovimentoAgenda = "0";
+        }
 
-      $oDadoAgenda = db_utils::fieldsMemory($rsBuscaSlipAgenda, 0);
-      $iCodigoMovimentoConfAgenda = $oDadoAgenda->e86_codmov != "" ? $iCodigoMovimentoConfAgenda = $oDadoAgenda->e86_codmov : $iCodigoMovimentoConfAgenda = "0";
-      $iCodigoMovimentoAgenda     = $oDadoAgenda->e81_codmov != "" ? $iCodigoMovimentoAgenda =  $oDadoAgenda->e81_codmov : $iCodigoMovimentoAgenda = "0";
-    }
-
-    /*
-     * Validamos a situação do slip
-     */
-    if ($iCodigoMovimentoConfAgenda != "0" || $iCodigoMovimentoAgenda != "0" && $this->possuiAutenticacao()) {
-
-      $sSqlValidaSlip     = "select fc_auttransf({$this->getSlip()},
+      /*
+       * Validamos a situação do slip
+       */
+        if ($iCodigoMovimentoConfAgenda != "0" || $iCodigoMovimentoAgenda != "0" && $this->possuiAutenticacao()) {
+            $sSqlValidaSlip     = "select fc_auttransf({$this->getSlip()},
                                                  '{$dtSessao}',
                                                  '{$sIPSessao}',
                                                  false,
                                                  '{$iCodigoMovimentoConfAgenda}',
                                                  {$iInstituicaoSessao}) as autentica_slip";
 
-      $rsExecutaValidacao = db_query($sSqlValidaSlip);
-      if (!$rsExecutaValidacao) {
-        throw new Exception("Não foi possível validar a existência e autenticação do slip {$this->getSlip()}.");
-      }
+            $rsExecutaValidacao = db_query($sSqlValidaSlip);
+            if (!$rsExecutaValidacao) {
+                throw new Exception("Não foi possível validar a existência e autenticação do slip {$this->getSlip()}.");
+            }
 
-      $sDadoAutenticacaoSlip = db_utils::fieldsMemory($rsExecutaValidacao, 0)->autentica_slip;
-      $iSubStringValidacao   = substr($sDadoAutenticacaoSlip, 0, 1);
-      if ($iSubStringValidacao != 1) {
-        throw new Exception($sDadoAutenticacaoSlip);
-      }
-      if (!empty($oTransferencia)) {
+            $sDadoAutenticacaoSlip = db_utils::fieldsMemory($rsExecutaValidacao, 0)->autentica_slip;
+            $iSubStringValidacao   = substr($sDadoAutenticacaoSlip, 0, 1);
+            if ($iSubStringValidacao != 1) {
+                throw new Exception($sDadoAutenticacaoSlip);
+            }
+            if (!empty($oTransferencia)) {
+                $iCodigoTerminal = db_utils::fieldsMemory($rsAutenticador, 0)->k11_id;
+                $oTransferencia->setIDTerminal($iCodigoTerminal);
+                $oTransferencia->setDataAutenticacao($dtSessao);
+                $oTransferencia->setNumeroAutenticacao(substr($sDadoAutenticacaoSlip, 1, 7));
+            }
+        }
 
-        $iCodigoTerminal = db_utils::fieldsMemory($rsAutenticador, 0)->k11_id;
-        $oTransferencia->setIDTerminal($iCodigoTerminal);
-        $oTransferencia->setDataAutenticacao($dtSessao);
-        $oTransferencia->setNumeroAutenticacao(substr($sDadoAutenticacaoSlip, 1, 7));
-      }
+      /*
+       * Caso o slip esteja autenticado, podemos estornar ele
+       */
+        $oDaoSlip                    = new cl_slip();
+        $oDaoSlip->k17_dtestorno     = date("Y-m-d", db_getsession("DB_datausu"));
+        $oDaoSlip->k17_motivoestorno = $this->sMotivoEstornoAnulacao;
+        $oDaoSlip->k17_codigo        = $this->getSlip();
+        $oDaoSlip->alterar($this->getSlip());
+        if ($oDaoSlip->erro_status == 0) {
+            $sMensagemErro  = "Não foi possível estornar o slip {$this->getSlip()}.\n\n";
+            $sMensagemErro .= "Erro Técnico: {$oDaoSlip->erro_msg}";
+            throw new Exception($sMensagemErro);
+        }
+
+      /*
+       * Cancelamos os dados inclusos no processamento da agenda e devolvemos para a agenda
+       */
+        if ($iCodigoMovimentoConfAgenda != "0" || $iCodigoMovimentoAgenda != "0") {
+            $oAgendaPagamento = new agendaPagamento();
+
+          /**
+           * Verificamos se o o cheque realmente foi emitido.
+           */
+
+            $oDaoEmpageconfChe = new cl_empageconfche();
+            $sSqlCheque        = $oDaoEmpageconfChe->sql_query_file(null, "*", null, "e91_codmov = {$iCodigoMovimentoAgenda} and e91_ativo is true");
+            $rsCheque          = $oDaoEmpageconfChe->sql_record($sSqlCheque);
+            if ($oDaoEmpageconfChe->numrows > 0) {
+                $oAgendaPagamento->cancelarCheque($iCodigoMovimentoAgenda);
+            }
+
+            $oDaoEmpAgeMov = new cl_empagemov();
+            $oDaoEmpAgeMov->e81_cancelado = date("Y-m-d", db_getsession("DB_datausu"));
+            $oDaoEmpAgeMov->e81_codmov    = $iCodigoMovimentoAgenda;
+            $oDaoEmpAgeMov->alterar($iCodigoMovimentoAgenda);
+            if ($oDaoEmpAgeMov->erro_status == 0) {
+                $sMensagemErro  = "Não foi possível cancelar o movimento na agenda.\n\n";
+                $sMensagemErro .= "Erro Técnico: {$oDaoEmpAgeMov->erro_msg}";
+                throw new Exception($sMensagemErro);
+            }
+
+            $oSlipAgenda              = new stdClass();
+            $oSlipAgenda->iCodigoSlip = $this->getSlip();
+            $oSlipAgenda->nValor      = "{$this->getValor()}";
+            if ($this->getContaCredito() != 0) {
+                $oDaoEmpAgeTipo = new cl_empagetipo();
+                $sSqlConta      = $oDaoEmpAgeTipo->sql_query_file(null, "e83_codtipo", null, "e83_conta = {$this->getContaCredito()}");
+                $rsConta        = $oDaoEmpAgeTipo->sql_record($sSqlConta);
+                if ($oDaoEmpAgeTipo->numrows > 0) {
+                    $oSlipAgenda->iCodTipo = db_utils::fieldsMemory($rsConta, 0)->e83_codtipo;
+                }
+            }
+            $oAgendaPagamento->addMovimentoAgenda(2, $oSlipAgenda);
+        }
+        return true;
     }
 
-    /*
-     * Caso o slip esteja autenticado, podemos estornar ele
-     */
-    $oDaoSlip                    = db_utils::getDao('slip');
-    $oDaoSlip->k17_dtestorno     = date("Y-m-d", db_getsession("DB_datausu"));
-    $oDaoSlip->k17_motivoestorno = $this->sMotivoEstornoAnulacao;
-    $oDaoSlip->k17_codigo        = $this->getSlip();
-    $oDaoSlip->alterar($this->getSlip());
-    if ($oDaoSlip->erro_status == 0) {
-
-      $sMensagemErro  = "Não foi possível estornar o slip {$this->getSlip()}.\n\n";
-      $sMensagemErro .= "Erro Técnico: {$oDaoSlip->erro_msg}";
-      throw new Exception($sMensagemErro);
-    }
-
-    /*
-     * Cancelamos os dados inclusos no processamento da agenda e devolvemos para a agenda
-     */
-    if ($iCodigoMovimentoConfAgenda != "0" || $iCodigoMovimentoAgenda != "0") {
-
-      $oAgendaPagamento = new agendaPagamento();
+  /**
+   * retorna se o slip é da folha ou não
+   * @return bool
+   */
+    public function isFolha()
+    {
 
       /**
-       * Verificamos se o o cheque realmente foi emitido.
+       * se o Slip for gerado pela folha sendo pagto extra de folha
        */
+        $oDaoSlip = new cl_slip;
 
-      $oDaoEmpageconfChe = db_utils::getDao("empageconfche");
-      $sSqlCheque        = $oDaoEmpageconfChe->sql_query_file(null,"*", null,"e91_codmov = {$iCodigoMovimentoAgenda} and e91_ativo is true");
-      $rsCheque          = $oDaoEmpageconfChe->sql_record($sSqlCheque);
-      if ($oDaoEmpageconfChe->numrows > 0) {
-        $oAgendaPagamento->cancelarCheque($iCodigoMovimentoAgenda);
-      }
+        $sqlGeradosFolha = $oDaoSlip->sql_query_rhemprubricas(
+            null,
+            "distinct k17_codigo",
+            null,
+            "k17_codigo = {$this->getSlip()} "
+        );
 
-      $oDaoEmpAgeMov = db_utils::getDao("empagemov");
-      $oDaoEmpAgeMov->e81_cancelado = date("Y-m-d",db_getsession("DB_datausu"));
-      $oDaoEmpAgeMov->e81_codmov    = $iCodigoMovimentoAgenda;
-      $oDaoEmpAgeMov->alterar($iCodigoMovimentoAgenda);
-      if ($oDaoEmpAgeMov->erro_status == 0) {
+        $sqlSlipComRetencao = $oDaoSlip->sql_query_folhaRetencao(
+            null,
+            "k17_codigo",
+            null,
+            "k17_codigo = {$this->getSlip()}"
+        );
 
-        $sMensagemErro  = "Não foi possível cancelar o movimento na agenda.\n\n";
-        $sMensagemErro .= "Erro Técnico: {$oDaoEmpAgeMov->erro_msg}";
-        throw new Exception($sMensagemErro);
-      }
+       /**
+        * se o slip da folha for gerado pelo financeiro que é o recolhimento
+        * de retenções da folha
+        */
+        $sql = " $sqlGeradosFolha
+               union
+               $sqlSlipComRetencao
+             ";
 
-      $oSlipAgenda              = new stdClass();
-      $oSlipAgenda->iCodigoSlip = $this->getSlip();
-      $oSlipAgenda->nValor      = "{$this->getValor()}";
-      if ($this->getContaCredito() != 0 ) {
-
-        $oDaoEmpAgeTipo = db_utils::getDao("empagetipo");
-        $sSqlConta      = $oDaoEmpAgeTipo->sql_query_file(null, "e83_codtipo", null, "e83_conta = {$this->getContaCredito()}");
-        $rsConta        = $oDaoEmpAgeTipo->sql_record($sSqlConta);
-        if ($oDaoEmpAgeTipo->numrows > 0 ) {
-          $oSlipAgenda->iCodTipo = db_utils::fieldsMemory($rsConta,0)->e83_codtipo;
+        $oDaoSlip->sql_record($sql);
+        if ($oDaoSlip->numrows > 0) {
+            return true;
         }
-      }
-      $oAgendaPagamento->addMovimentoAgenda(2, $oSlipAgenda);
+
+        return false;
     }
-    return true;
-  }
+
 
   /**
    * Anula um slip
@@ -704,236 +909,236 @@ class slip {
    * @param  string $sMotivo
    * @throws Exception
    */
-  public function anular($sMotivo, $lExcluirCheque=true, Transferencia $oTransferencia = null) {
+    public function anular($sMotivo, $lExcluirCheque = true, Transferencia $oTransferencia = null)
+    {
 
-    if ($this->isAnulado()) {
-      throw new Exception("A transferência {$this->iSlip} já está anulada. Procedimento abortado.");
-    }
-
-    $dtDataAtual = date("Y-m-d",db_getsession("DB_datausu"));
-
-    if (!empty($this->dtDataAutenticacao) && ($this->dtDataAutenticacao > $dtDataAtual || $this->dtDataAutenticacao = '')) {
-
-      $sMsgErro    = "Não foi possível anular o slip {$this->iSlip}!\n";
-      $sMsgErro   .= "Data de Autenticação é um período posterior a data atual:\n";
-      throw new Exception($sMsgErro);
-    }
-
-    $this->sMotivoEstornoAnulacao = $sMotivo;
-    $this->estornar($lExcluirCheque, $oTransferencia);
-    $oDaoEmpageslip = db_utils::getDao("empageslip");
-    $sCamposBusca     = "e97_codforma,e96_descr,e90_codgera, e81_codmov,e91_cheque";
-    $sWhere           = "e89_codigo = {$this->iSlip} and e81_cancelado is null";
-
-    $oDaoPlaCaixaRecSlip = db_utils::getDao("placaixarecslip");
-    $oDaoPlaCaixaRecSlip->excluir(null,"k110_slip = {$this->getSlip()}");
-
-    if ( $oDaoPlaCaixaRecSlip->erro_status == 0 ) {
-
-      $sMensagemUsuario  = "Erro 1 - Não foi possível anular o slip.\n\n Erro técnico: ";
-      $sMensagemUsuario .= " {$oDaoPlaCaixaRecSlip->erro_msg}";
-      throw new Exception($sMensagemUsuario);
-    }
-
-
-    $oDaorhSlipFolhaSlip = db_utils::getDao("rhslipfolhaslip");
-    $oDaorhSlipFolhaSlip->excluir(null,"rh82_slip = {$this->getSlip()}");
-
-    if ( $oDaorhSlipFolhaSlip->erro_status == 0 ) {
-
-      $sMensagemUsuario  = "Erro 2 - Não foi possível anular o slip.\n\n Erro técnico: ";
-      $sMensagemUsuario .= " {$oDaorhSlipFolhaSlip->erro_msg}";
-      throw new Exception($sMensagemUsuario);
-    }
-
-
-    $oDaoSlipAnul             = db_utils::getDao("slipanul");
-    $oDaoSlipAnul->k18_codigo = $this->getSlip();
-    $oDaoSlipAnul->k18_motivo = $this->sMotivoEstornoAnulacao;
-    $oDaoSlipAnul->incluir($this->getSlip());
-
-    if ($oDaoSlipAnul->erro_status == 0) {
-
-      $sMensagemUsuario  = "Não foi possível incluir a anulação.\n\n";
-      $sMensagemUsuario .= "Erro Técnico: {$oDaoSlipAnul->erro_msg}";
-      throw new Exception($sMensagemUsuario);
-    }
-
-    $oDaoSlip               = db_utils::getDao('slip');
-    $oDaoSlip->k17_codigo   = $this->getSlip();
-    $oDaoSlip->k17_situacao = 4;
-    $oDaoSlip->k17_dtanu    = date("Y-m-d",db_getsession("DB_datausu"));
-    $oDaoSlip->alterar($this->getSlip());
-
-    if ($oDaoSlip->erro_status == 0) {
-
-      $sMensagemUsuario  = "Não foi possível alterar a situação do slip.\n\n";
-      $sMensagemUsuario .= "Erro Técnico: {$oDaoSlip->erro_msg}";
-      throw new Exception($sMensagemUsuario);
-    }
-
-    $oDaoSlipMov = db_utils::getDao("slipempagemovslips");
-    $oDaoSlipMov->excluir(null, "k108_slip = {$this->getSlip()}");
-
-    if ($oDaoSlipMov->erro_status == 0) {
-
-      $sMensagemUsuario  = "Erro 3 - Não foi possível anular o slip.\n\n";
-      $sMensagemUsuario .= "Erro Técnico: {$oDaoSlipMov->erro_msg}";
-      throw new Exception($sMensagemUsuario);
-    }
-
-    $oDaoSlipCorrente = db_utils::getDao("slipcorrente");
-    $sSqlCorrente     = $oDaoSlipCorrente->sql_query_file(null,"*", null,"k112_slip= {$this->getSlip()}");
-    $rsCorrente       = $oDaoSlipCorrente->sql_record($sSqlCorrente);
-
-    if ($oDaoSlipCorrente->numrows > 0) {
-
-      $iNumRows = $oDaoSlipCorrente->numrows;
-      for ($iRowsSlipcorrente = 0; $iRowsSlipcorrente < $iNumRows; $iRowsSlipcorrente++) {
-
-        $oCorrente  = db_utils::fieldsMemory($rsCorrente, $iRowsSlipcorrente);
-        $oDaoSlipCorrente->k112_ativo       = "false";
-        $oDaoSlipCorrente->k112_sequencial  = $oCorrente->k112_sequencial;
-        $oDaoSlipCorrente->alterar($oCorrente->k112_sequencial);
-
-        if ($oDaoSlipCorrente->erro_status == 0) {
-
-           $sMensagemUsuario  = "Erro 4 - Não foi possível anular o slip.\n\n";
-           $sMensagemUsuario .= "Erro Técnico: {$oDaoSlipCorrente->erro_msg}";
-           throw new Exception($sMensagemUsuario);
+        if ($this->isAnulado()) {
+            throw new Exception("A transferência {$this->iSlip} já está anulada. Procedimento abortado.");
         }
-      }
+
+        $dtDataAtual = date("Y-m-d", db_getsession("DB_datausu"));
+
+        if (!empty($this->dtDataAutenticacao) && ($this->dtDataAutenticacao > $dtDataAtual || $this->dtDataAutenticacao = '')) {
+            $sMsgErro    = "Não foi possível anular o slip {$this->iSlip}!\n";
+            $sMsgErro   .= "Data de Autenticação é um período posterior a data atual:\n";
+            throw new Exception($sMsgErro);
+        }
+
+        $this->sMotivoEstornoAnulacao = $sMotivo;
+        $this->estornar($lExcluirCheque, $oTransferencia);
+        $oDaoEmpageslip = new cl_empageslip();
+        $sCamposBusca     = "e97_codforma,e96_descr,e90_codgera, e81_codmov,e91_cheque";
+        $sWhere           = "e89_codigo = {$this->iSlip} and e81_cancelado is null";
+
+        $oDaoPlaCaixaRecSlip = new cl_placaixarecslip();
+        $oDaoPlaCaixaRecSlip->excluir(null, "k110_slip = {$this->getSlip()}");
+
+        if ($oDaoPlaCaixaRecSlip->erro_status == 0) {
+            $sMensagemUsuario  = "Erro 1 - Não foi possível anular o slip.\n\n Erro técnico: ";
+            $sMensagemUsuario .= " {$oDaoPlaCaixaRecSlip->erro_msg}";
+            throw new Exception($sMensagemUsuario);
+        }
+
+
+        $oDaorhSlipFolhaSlip = new cl_rhslipfolhaslip();
+        $oDaorhSlipFolhaSlip->excluir(null, "rh82_slip = {$this->getSlip()}");
+
+        if ($oDaorhSlipFolhaSlip->erro_status == 0) {
+            $sMensagemUsuario  = "Erro 2 - Não foi possível anular o slip.\n\n Erro técnico: ";
+            $sMensagemUsuario .= " {$oDaorhSlipFolhaSlip->erro_msg}";
+            throw new Exception($sMensagemUsuario);
+        }
+
+
+        $oDaoSlipAnul             = new cl_slipanul();
+        $oDaoSlipAnul->k18_codigo = $this->getSlip();
+        $oDaoSlipAnul->k18_motivo = $this->sMotivoEstornoAnulacao;
+        $oDaoSlipAnul->incluir($this->getSlip());
+
+        if ($oDaoSlipAnul->erro_status == 0) {
+            $sMensagemUsuario  = "Não foi possível incluir a anulação.\n\n";
+            $sMensagemUsuario .= "Erro Técnico: {$oDaoSlipAnul->erro_msg}";
+            throw new Exception($sMensagemUsuario);
+        }
+
+        $oDaoSlip               = new cl_slip();
+        $oDaoSlip->k17_codigo   = $this->getSlip();
+        $oDaoSlip->k17_situacao = 4;
+        $oDaoSlip->k17_dtanu    = date("Y-m-d", db_getsession("DB_datausu"));
+        $oDaoSlip->alterar($this->getSlip());
+
+        if ($oDaoSlip->erro_status == 0) {
+            $sMensagemUsuario  = "Não foi possível alterar a situação do slip.\n\n";
+            $sMensagemUsuario .= "Erro Técnico: {$oDaoSlip->erro_msg}";
+            throw new Exception($sMensagemUsuario);
+        }
+
+
+        $oDaoSlipCorrente = new cl_slipcorrente();
+        $sSqlCorrente     = $oDaoSlipCorrente->sql_query_file(null, "*", null, "k112_slip= {$this->getSlip()}");
+        $rsCorrente       = $oDaoSlipCorrente->sql_record($sSqlCorrente);
+
+        if ($oDaoSlipCorrente->numrows > 0) {
+            $iNumRows = $oDaoSlipCorrente->numrows;
+            for ($iRowsSlipcorrente = 0; $iRowsSlipcorrente < $iNumRows; $iRowsSlipcorrente++) {
+                $oCorrente  = db_utils::fieldsMemory($rsCorrente, $iRowsSlipcorrente);
+                $oDaoSlipCorrente->k112_ativo       = "false";
+                $oDaoSlipCorrente->k112_sequencial  = $oCorrente->k112_sequencial;
+                $oDaoSlipCorrente->alterar($oCorrente->k112_sequencial);
+
+                if ($oDaoSlipCorrente->erro_status == 0) {
+                     $sMensagemUsuario  = "Erro 4 - Não foi possível anular o slip.\n\n";
+                     $sMensagemUsuario .= "Erro Técnico: {$oDaoSlipCorrente->erro_msg}";
+                     throw new Exception($sMensagemUsuario);
+                }
+            }
+        }
+        return true;
     }
-    return true;
-  }
 
   /**
    * Verifica se o slip já está anulado.
    * @return boolean
    */
-  public function isAnulado() {
+    public function isAnulado()
+    {
 
-    $oDaoSlipAnul     = db_utils::getDao('slipanul');
-    $sSqlBuscaAnulado = $oDaoSlipAnul->sql_query_file($this->iSlip);
-    $rsBuscaAnulado   = $oDaoSlipAnul->sql_record($sSqlBuscaAnulado);
-    if ($oDaoSlipAnul->numrows > 0) {
-      return true;
+        $oDaoSlipAnul     = new cl_slipanul();
+        $sSqlBuscaAnulado = $oDaoSlipAnul->sql_query_file($this->iSlip);
+        $rsBuscaAnulado   = $oDaoSlipAnul->sql_record($sSqlBuscaAnulado);
+        if ($oDaoSlipAnul->numrows > 0) {
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
 
-  public function possuiAutenticacao() {
+    public function possuiAutenticacao()
+    {
 
-    if ($this->iTipoAutenticacao != 0 ){
-      return true;
+        if ($this->iTipoAutenticacao != 0) {
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
-  public function getDataAutenticacao() {
-    return $this->dtDataAutenticacao;
-  }
+    public function getDataAutenticacao()
+    {
+        return $this->dtDataAutenticacao;
+    }
 
   /**
    * Seta a instituicao que criou o slip
    * @param integer $iInstituicao
    */
-  public function setInstituicao($iInstituicao) {
-    $this->iInstituicao = $iInstituicao;
-  }
+    public function setInstituicao($iInstituicao)
+    {
+        $this->iInstituicao = $iInstituicao;
+    }
   /**
    * Retorna a instituicao que criou o slip
    * @return integer $iInstituicao
    */
-  public function getInstituicao() {
-    return $this->iInstituicao;
-  }
+    public function getInstituicao()
+    {
+        return $this->iInstituicao;
+    }
 
   /**
    * Seta o codigo da caracteristica peculiar
    * @param string $sCaracteristica
    */
-  public function setCaracteristicaPeculiarCredito($sCaracteristica) {
-    $this->sCodigoCaracteristicaPeculiarCredito = $sCaracteristica;
-  }
+    public function setCaracteristicaPeculiarCredito($sCaracteristica)
+    {
+        $this->sCodigoCaracteristicaPeculiarCredito = $sCaracteristica;
+    }
 
   /**
    * Retorna o código da caracteristica peculiar
    * @return string
    */
-  public function getCaracteristicaPeculiarCredito() {
-    return $this->sCodigoCaracteristicaPeculiarCredito;
-  }
+    public function getCaracteristicaPeculiarCredito()
+    {
+        return $this->sCodigoCaracteristicaPeculiarCredito;
+    }
 
   /**
    * Seta o codigo da caracteristica peculiar debito
    * @param string $sCaracteristica
    */
-  public function setCaracteristicaPeculiarDebito($sCaracteristica) {
-    $this->sCodigoCaracteristicaPeculiarDebito = $sCaracteristica;
-  }
+    public function setCaracteristicaPeculiarDebito($sCaracteristica)
+    {
+        $this->sCodigoCaracteristicaPeculiarDebito = $sCaracteristica;
+    }
 
   /**
    * Retorna o código da caracteristica peculiar debito
    * @return string
    */
-  public function getCaracteristicaPeculiarDebito() {
-    return $this->sCodigoCaracteristicaPeculiarDebito;
-  }
+    public function getCaracteristicaPeculiarDebito()
+    {
+        return $this->sCodigoCaracteristicaPeculiarDebito;
+    }
   /**
    * Retorna o codigo sequencial do slip
    * @return integer
    */
-  final public function getSlip() {
-    return $this->iSlip;
-  }
+    final public function getSlip()
+    {
+        return $this->iSlip;
+    }
 
   /**
    * Seta o codigo sequencial do slip
    * @param integer $iCodigoSlip
    */
-  final public function setSlip($iCodigoSlip) {
-    $this->iSlip = $iCodigoSlip;
-  }
+    final public function setSlip($iCodigoSlip)
+    {
+        $this->iSlip = $iCodigoSlip;
+    }
 
   /**
    * Retorna as arrecadações do slip
    * @return array
    */
-  final public function getArrecacoes() {
-    return $this->aArrecacoes;
-  }
+    final public function getArrecacoes()
+    {
+        return $this->aArrecacoes;
+    }
 
   /**
    * @param integer $iArrecacoes
    */
-  final public function addArrecadacao($iArrecadacoes) {
-    if (!in_array($iArrecadacoes, $this->aArrecadacoes)) {
-      $this->aArrecadacoes[] = $iArrecadacoes;
+    final public function addArrecadacao($iArrecadacoes)
+    {
+        if (!in_array($iArrecadacoes, $this->aArrecadacoes)) {
+            $this->aArrecadacoes[] = $iArrecadacoes;
+        }
     }
-  }
 
   /**
    * @return array
    */
-  final public function getPagamentos() {
-    return $this->aPagamentos;
-  }
+    final public function getPagamentos()
+    {
+        return $this->aPagamentos;
+    }
 
   /**
    * @param array $aPagamentos
    */
-  final private function setPagamentos($aPagamentos) {
-    $this->aPagamentos = $aPagamentos;
-  }
+    final private function setPagamentos($aPagamentos)
+    {
+        $this->aPagamentos = $aPagamentos;
+    }
 
   /**
    * @return array
    */
-  final public function getRecursos() {
-    return $this->aRecursos;
-  }
+    final public function getRecursos()
+    {
+        return $this->aRecursos;
+    }
 
   /**
    * Adiciona um Recurso ao Slip
@@ -941,155 +1146,610 @@ class slip {
    * @param integer $iRecurso codigo do recurso
    * @param float   $nValor valor do Recurso
    */
-  final public function addRecurso($iRecurso, $nValor = 0) {
-    if ($this->aRecursos[$iRecurso]) {
-      $this->aRecursos[$iRecurso] += $nValor;
-    } else {
-      $this->aRecursos[$iRecurso] = $nValor;
+    final public function addRecurso($iRecurso, $nValor = 0)
+    {
+        if ($this->aRecursos[$iRecurso]) {
+            $this->aRecursos[$iRecurso] += $nValor;
+        } else {
+            $this->aRecursos[$iRecurso] = $nValor;
+        }
     }
-  }
 
   /**
    * @return string
    */
 
-  final public function getData() {
-    return $this->dtData;
-  }
+    final public function getData()
+    {
+        return $this->dtData;
+    }
 
   /**
    * @param string $dtData
    */
 
-  final public function setData($dtData) {
-    $this->dtData = $dtData;
-  }
+    final public function setData($dtData)
+    {
+        $this->dtData = $dtData;
+    }
 
   /**
    * @return integer
    */
-  final public function getContaCredito() {
-    return $this->iContaCredito;
-  }
+    final public function getContaCredito()
+    {
+        return $this->iContaCredito;
+    }
 
   /**
    * @param integer $iContaCredito
    */
-  final public function setContaCredito($iContaCredito) {
-    $this->iContaCredito = $iContaCredito;
-  }
+    final public function setContaCredito($iContaCredito)
+    {
+        $this->iContaCredito = $iContaCredito;
+    }
 
   /**
    * @return integer
    */
-  final public function getContaDebito() {
-    return $this->iContaDebito;
-  }
+    final public function getContaDebito()
+    {
+        return $this->iContaDebito;
+    }
 
   /**
    * @param integer $iContaDebito
    */
-  final public function setContaDebito($iContaDebito) {
-    $this->iContaDebito = $iContaDebito;
-  }
+    final public function setContaDebito($iContaDebito)
+    {
+        $this->iContaDebito = $iContaDebito;
+    }
 
   /**
    * @return integer
    */
-  final public function getSituacao() {
-    return $this->iSituacao;
-  }
+    final public function getSituacao()
+    {
+        return $this->iSituacao;
+    }
 
   /**
    * @param integer $iSituacao
    */
-  final public function setSituacao($iSituacao) {
-    $this->iSituacao = $iSituacao;
-  }
+    final public function setSituacao($iSituacao)
+    {
+        $this->iSituacao = $iSituacao;
+    }
 
   /**
    * @return unknown_type
    */
-  final public function getTipoPagamento() {
-    return $this->iTipoPagamento;
-  }
+    final public function getTipoPagamento()
+    {
+        return $this->iTipoPagamento;
+    }
 
   /**
    * @param unknown_type $iTipoPagamento
    */
-  final public function setTipoPagamento($iTipoPagamento) {
-    $this->iTipoPagamento = $iTipoPagamento;
-  }
+    final public function setTipoPagamento($iTipoPagamento)
+    {
+        $this->iTipoPagamento = $iTipoPagamento;
+    }
 
   /**
    * @return float
    */
-  final public function getValor() {
-    return $this->nValor;
-  }
+    final public function getValor()
+    {
+        return $this->nValor;
+    }
 
   /**
    * @param float $nValor
    */
-  final public function setValor($nValor) {
-    $this->nValor = $nValor;
-  }
+    final public function setValor($nValor)
+    {
+        $this->nValor = $nValor;
+    }
 
   /**
    * @return string
    */
-  final public function getObservacoes() {
-    return $this->sObservacoes;
-  }
+    final public function getObservacoes()
+    {
+        return $this->sObservacoes;
+    }
 
   /**
    * @param string $sObservacoes
    */
-  final public function setObservacoes($sObservacoes) {
-    $this->sObservacoes = $sObservacoes;
-  }
+    final public function setObservacoes($sObservacoes)
+    {
+        $this->sObservacoes = $sObservacoes;
+    }
   /**
    * @return integer
    */
-  public function getNumCgm() {
-    return $this->iNumCgm;
-  }
+    public function getNumCgm()
+    {
+        return $this->iNumCgm;
+    }
 
   /**
    * @param integer $iNumCgm
    */
-  public function setNumCgm($iNumCgm) {
-    $this->iNumCgm = $iNumCgm;
-  }
+    public function setNumCgm($iNumCgm)
+    {
+        $this->iNumCgm = $iNumCgm;
+    }
   /**
    * @return integer
    */
-  public function getHistorico() {
-    return $this->iHistorico;
-  }
+    public function getHistorico()
+    {
+        return $this->iHistorico;
+    }
 
   /**
    * Seta o código do historico
    * @param integer $iHistorico
    */
-  public function setHistorico($iHistorico) {
-    $this->iHistorico = $iHistorico;
-  }
+    public function setHistorico($iHistorico)
+    {
+        $this->iHistorico = $iHistorico;
+    }
 
   /**
    * Retorna o codigo do movimento
    * @return integer
    */
-  public function getMovimento() {
-    return $this->iMovimento;
-  }
+    public function getMovimento()
+    {
+        return $this->iMovimento;
+    }
 
   /**
    * Seta o codigo de um movimento
    * @param integer $iCodigoMovimento
    */
-  public function setMovimento($iCodigoMovimento) {
-    $this->iMovimento = $iCodigoMovimento;
-  }
+    public function setMovimento($iCodigoMovimento)
+    {
+        $this->iMovimento = $iCodigoMovimento;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRetencoes()
+    {
+        return array_unique($this->retencoes);
+    }
+
+    /**
+     * Adiciona um registro de retnecao (empagemovslip)
+     * @param array $retencoes
+     */
+    public function adicionarRetencao($retencao)
+    {
+        $this->retencoes[] = $retencao;
+    }
+
+    /**
+     * Carrega todas as retencoes;
+     */
+    private function carregarRetencoes()
+    {
+
+        $sql  = "select k108_empagemovslips as codigo";
+        $sql .= "  from slipempagemovslips";
+        $sql .= " where k108_slip = {$this->iSlip}";
+        $rsRentecoes = db_query($sql);
+        $linhas = pg_num_rows($rsRentecoes);
+
+        for ($i = 0; $i < $linhas; $i++) {
+            $this->retencoes[] = db_utils::fieldsMemory($rsRentecoes, $i)->codigo;
+        }
+    }
+
+    /**
+     * @throws BusinessException
+     */
+    private function salvarVinculoRetencoes()
+    {
+        $daoSlipRetencao = new cl_slipempagemovslips();
+        $daoSlipRetencao->excluir(null, "k108_slip = {$this->iSlip}");
+        if ($daoSlipRetencao->erro_status == 0) {
+            throw new \BusinessException("Errp salvar slip. As retenções não foram desvinculadas do slip.");
+        }
+        foreach ($this->retencoes as $retencao) {
+            $daoSlipRetencao->k108_empagemovslips = $retencao;
+            $daoSlipRetencao->k108_slip            = $this->iSlip;
+            $daoSlipRetencao->incluir(null);
+            if ($daoSlipRetencao->erro_status == 0) {
+                throw new \BusinessException("Errp ao salvar slip. As retenções não foram vinculadas do slip.");
+            }
+        }
+    }
+
+    /**
+     * @return bool|Recurso
+     * @throws DBException
+     */
+    public function getRecursoCredito()
+    {
+        $this->carregarRecursos();
+        if (!empty($this->iRecursoCredito)) {
+            return RecursoRepository::getRecursoPorCodigo($this->iRecursoCredito);
+        }
+        return false;
+    }
+
+    /**
+     * @return bool|Recurso
+     * @throws DBException
+     */
+    public function getRecursoDebito()
+    {
+
+        $this->carregarRecursos();
+        if (!empty($this->iRecursoDebito)) {
+            return RecursoRepository::getRecursoPorCodigo($this->iRecursoDebito);
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws DBException
+     */
+    protected function carregarRecursos()
+    {
+        $daoSlipRecurso = new cl_sliprecursocontas();
+        $buscaRecurso = $daoSlipRecurso->sql_query_file(null, "*", null, "k181_slip = {$this->iSlip}");
+        $buscaRecurso = db_query($buscaRecurso);
+        if (!$buscaRecurso) {
+            throw new DBException("Ocorreu um erro ao consultar os recursos do slip.");
+        }
+
+        if (pg_num_rows($buscaRecurso) === 0) {
+            return false;
+        }
+        $stdRecursos = db_utils::fieldsMemory($buscaRecurso, 0);
+        $this->iRecursoCredito = $stdRecursos->k181_recursocredito;
+        $this->iRecursoDebito  = $stdRecursos->k181_recursodebito;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotivoEstornoAnulacao()
+    {
+        return $this->sMotivoEstornoAnulacao;
+    }
+
+    /**
+     * Seta o código do slip
+     * @param integer $slip
+     * @return cl_slipretencaoreceitas $slipRetencaoReceitas
+    */
+    public static function getSlipRetencaoReceitas ($slip){
+
+        $oDaoSlipRetencaoReceitas  = new cl_slipretencaoreceitas();
+        $whereSlipReceitas = "k206_slip = $slip";
+        $sqlSlipRetencaoReceitas  = $oDaoSlipRetencaoReceitas->sql_query_file(null,"*",null,$whereSlipReceitas);
+        $rsSlipRetencaoReceitas    = db_query($sqlSlipRetencaoReceitas);
+        
+        $slipRetencaoReceitas = [];
+        if(pg_num_rows($rsSlipRetencaoReceitas) > 0){
+            $slipRetencaoReceitas = db_utils::fieldsMemory($rsSlipRetencaoReceitas, 0);
+        }
+        return $slipRetencaoReceitas;
+    
+    }
+
+    /**
+     * Seta o código do slip
+     * @param integer $slip
+     * @return cl_slipplacaixarec $slipReceitaPlanilha
+    */
+    public static function getSlipReceitaPlanilha ($slip){
+
+        $oDaoSlipPlaCaixaRec  = new cl_slipplacaixarec();
+        $whereSlipPlaCaixaRec = "k207_slip = $slip";
+        $sqlSlipPlaCaixaRec  = $oDaoSlipPlaCaixaRec->sql_query_file(null,"*",null,$whereSlipPlaCaixaRec);
+        $rsSlipPlaCaixaRec    = db_query($sqlSlipPlaCaixaRec);
+        $slipReceitaPlanilha = [];
+
+        if(pg_num_rows($rsSlipPlaCaixaRec) > 0){
+            $slipReceitaPlanilha = db_utils::fieldsMemory($rsSlipPlaCaixaRec, 0);
+        }
+        return $slipReceitaPlanilha;
+    
+    }
+
+    /**
+     * Seta o código do slip
+     * @param integer $slip
+     * @return cl_slipoperacaoextra $slipOperacaoExtra
+    */
+    public static function getSlipOperacaoExtra($slip){
+
+
+        $oDaoSlipOperacaoExtra  = new cl_slipoperacaoextra();
+        $whereSlipOperacaoExtra = "k208_pagamento = $slip";
+        $sqlSlipOperacaoExtra  = $oDaoSlipOperacaoExtra->sql_query_file(null,"*",null,$whereSlipOperacaoExtra);
+        $rsSlipOperacaoExtra    = db_query($sqlSlipOperacaoExtra);
+        $slipOperacaoExtra = [];
+
+        if(pg_num_rows($rsSlipOperacaoExtra) > 0){
+            $slipOperacaoExtra = db_utils::fieldsMemory($rsSlipOperacaoExtra, 0);
+        }
+        return $slipOperacaoExtra;
+    }
+
+    /**
+     * Seta o código do slip
+     * @param integer $slip
+     * @return cl_slipoperacaoextra $slipOperacaoExtra
+    */
+    public static function getSlipTipoOperacao($slip){
+
+
+        $oDaoSlipTipoOperacao  = new cl_sliptipooperacaovinculo();
+        $whereSlipTipoOperacao = "k153_slip = $slip";
+        $sqlSlipTipoOperacao  = $oDaoSlipTipoOperacao->sql_query_file(null,"*",null,$whereSlipTipoOperacao);
+        $rsSlipTipoOperacao    = db_query($sqlSlipTipoOperacao);
+        $slipTipoOperacao = [];
+        if(pg_num_rows($rsSlipTipoOperacao) > 0){
+            $slipTipoOperacao = db_utils::fieldsMemory($rsSlipTipoOperacao, 0);
+        }
+        return $slipTipoOperacao;
+    }
+
+    /**
+     * Seta o código do slip
+     * @param integer $slip
+     * @return cl_slipnum $slipOperacaoExtra
+    */
+    public static function getSlipNumCgm($slip){
+
+
+        $oDaoSlipNum = new cl_slipnum();
+        $whereSlipNum = "k17_codigo = $slip";
+        $sqlSlipNum  = $oDaoSlipNum->sql_query_file(null,"*",null,$whereSlipNum);
+        $rsSlipNum    = db_query($sqlSlipNum);
+        $slipNum = [];
+        if(pg_num_rows($rsSlipNum) > 0){
+            $slipNum = db_utils::fieldsMemory($rsSlipNum, 0);
+        }
+        return $slipNum;
+    }
+
+   /**
+     * Seta o código do slip
+     * @param integer $slip
+     * @return cl_slip $slip
+    */
+    public static function getSlipCompleto($codSlip){
+
+        $oDaoSlip  = new cl_slip();
+        $sqlSlip  = $oDaoSlip->sql_query_file($codSlip);
+        $rsSlip = db_query($sqlSlip);
+        
+        $slip = [];
+        if(pg_num_rows($rsSlip) > 0){
+            $slip = db_utils::fieldsMemory($rsSlip, 0);
+        }
+        return $slip;
+    }
+
+    /**
+     *  O objetivo deste metodo é fornecer os vinculos do slip importado para o novo slip gerado.
+     */
+    /**
+     * Seta o código do slip da importacao
+     * @param Slip $slipImportacao
+     * Seta o código do novo slip
+     * @param integer $iCodigoNovoSlip
+     */
+    public static function salvarVinculoImportacao($slipImportacao,$iCodigoNovoSlip){
+        /**
+         * O vinculo da importacao só deve ser fornecido para slips de importacao com situacao 3 ou 4.
+         */
+        $aSlipSituacaoVinculo = [3,4];
+        if(!empty($slipImportacao) && in_array($slipImportacao->k17_situacao,$aSlipSituacaoVinculo)){
+            
+            $slipRetencaoReceitas = Slip::getSlipRetencaoReceitas($slipImportacao->k17_codigo);
+
+            if(!empty($slipRetencaoReceitas)){
+                $retencaoReceitas = $slipRetencaoReceitas->k206_retencaoreceitas;
+                Slip::vincularSlipReceitaRetencao($iCodigoNovoSlip,$retencaoReceitas);
+            }
+        
+            $slipReceitaPlanilha = Slip::getSlipReceitaPlanilha($slipImportacao->k17_codigo);
+
+            if(!empty($slipReceitaPlanilha)){
+
+                $receitaPlanilha = $slipReceitaPlanilha->k207_placaixarec;
+                Slip::vincularSlipReceitaPlanilha($iCodigoNovoSlip,$receitaPlanilha);
+            }
+         
+            $slipOperacaoExtra = Slip::getSlipOperacaoExtra($slipImportacao->k17_codigo);
+
+            if(!empty($slipOperacaoExtra)){
+                $recebimentoSlip = $slipOperacaoExtra->k208_recebimento;
+                Slip::vincularSlipOperacaoExtra($recebimentoSlip,$iCodigoNovoSlip);
+            }
+        }   
+    }
+
+    /**
+     *  O objetivo deste metodo é preparar o pagamento de um slip parcialmente, gerando um
+     * novo slip com valor residual.
+     */
+    /**
+     * Seta o código do slip
+     * @param integer $codSlip
+     * Seta o código do movimento
+     * @param integer $codMovimento
+     * Seta o valor parcial do slip
+     * @param number $valorParcial
+     * @return cl_slip $slip
+     */
+    public static function prepararPagamentoParcialSlip($codSlip,$codMovimento,$valorParcial){
+        
+        $slip = Slip::getSlipCompleto($codSlip);
+        $oDaoSlip = new cl_slip();
+        $codNovoSlip  = null;
+
+        if($valorParcial < $slip->k17_valor){
+            // Alterar o valor do slip 
+            $oDaoSlip->k17_codigo = $codSlip;
+            $oDaoSlip->k17_valor = $valorParcial;
+            $oDaoSlip->alterar($codSlip);
+            if($oDaoSlip->erro_status == "0"){
+                throw new Exception("Não foi possível alterar o valor do Slip");
+            }
+            //Alterar o valor do movimento na agenda de pagamento
+            $oDaoEmpageMov  = new cl_empagemov();
+            $oDaoEmpageMov->e81_codmov = $codMovimento;
+            $oDaoEmpageMov->e81_valor = $valorParcial;
+            $oDaoEmpageMov->alterar($codMovimento);
+            if($oDaoEmpageMov->erro_status == "0"){
+                throw new Exception("Não foi possível alterar o valor do movimento na agenda");
+            }
+            // Gerar novo slip com valor residual
+            $oDaoSlip->k17_data          = date("Y-m-d", db_getsession("DB_datausu"));
+            $oDaoSlip->k17_debito        = $slip->k17_debito;
+            $oDaoSlip->k17_credito       = $slip->k17_credito;
+            $valorResidual = $slip->k17_valor - $valorParcial;
+            $oDaoSlip->k17_valor         = $valorResidual;
+            $oDaoSlip->k17_hist          = $slip->k17_hist;
+            $historicoNovoSlip = "Correspondente ao complemento de pagamento parcial do Slip ";
+            $historicoNovoSlip .= $slip->k17_codigo;
+            $historicoNovoSlip .= " , cujo histórico importamos: \n";
+            $historicoNovoSlip .= $slip->k17_texto;
+            $oDaoSlip->k17_texto         = $historicoNovoSlip;
+            $oDaoSlip->k17_instit        = $slip->k17_instit;
+            $oDaoSlip->k17_dtanu         = $slip->k17_dtanu;
+            $oDaoSlip->k17_tipopagamento = $slip->k17_tipopagamento;
+            $oDaoSlip->k17_situacao      = $slip->k17_situacao;
+            $oDaoSlip->incluir(null);   
+
+            if($oDaoSlip->erro_status == "0"){
+                throw new Exception("Não foi possível incluir o novo slip");
+            }
+
+            $codNovoSlip = $oDaoSlip->k17_codigo;
+            
+            // Manter vínculos específicos do slip anterior
+            Slip::salvarVinculoSlipParcial($slip,$codNovoSlip);
+            
+            /**
+             * Incluindo como padrao a caracteristica peculiar do slip para 000 tanto credito
+             * como debito
+             */
+            $oDaoConCarPeculiarCredito = new cl_slipconcarpeculiar;
+            $oDaoConCarPeculiarCredito->k131_sequencial     = null;
+            $oDaoConCarPeculiarCredito->k131_slip           = $codNovoSlip;
+            $oDaoConCarPeculiarCredito->k131_tipo           = 1;
+            $oDaoConCarPeculiarCredito->k131_concarpeculiar = "000";
+            $oDaoConCarPeculiarCredito->incluir(null);
+            if ($oDaoConCarPeculiarCredito->erro_status == "0") {
+                throw new Exception("Não foi possível incluir a característica peculiar para a conta débito");
+            }
+            
+            $oDaoConCarPeculiarCredito->k131_sequencial     = null;
+            $oDaoConCarPeculiarCredito->k131_slip           = $codNovoSlip;
+            $oDaoConCarPeculiarCredito->k131_tipo           = 2;
+            $oDaoConCarPeculiarCredito->k131_concarpeculiar = "000";
+            $oDaoConCarPeculiarCredito->incluir(null);
+            if ($oDaoConCarPeculiarCredito->erro_status == "0") {
+                throw new Exception("Não foi possível incluir a característica peculiar para a conta crédito");
+            }
+            //======================================================================= //
+
+            /**
+             * Agendamos o slip caso o parametro emparametro.e30_agendaautomatico = true.
+             */
+            require_once(modification(Modification::getFile('model/agendaPagamento.model.php')));
+            $oAgendaPagamento = new agendaPagamento();
+            $oSlipAgenda = new stdClass();
+            $oSlipAgenda->iCodigoSlip = $codNovoSlip;
+            $oSlipAgenda->nValor      = $valorResidual;
+        
+            $oParametroAgenda = (db_stdClass::getParametro(
+                                "empparametro", 
+                                 array(db_getsession('DB_anousu'))
+                                 , "e30_agendaautomatico"
+                                 ))                                 ;
+            if ($oParametroAgenda[0]->e30_agendaautomatico == "t") {
+                
+                $oDaoEmpAgeTipo = new cl_empagetipo();
+                $sSqlConta      = $oDaoEmpAgeTipo->sql_query_file(
+                    null,
+                    "e83_codtipo",
+                    null,
+                    "e83_conta = ".$slip->k17_credito
+                );
+                $rsConta        = db_query($sSqlConta);
+                if (pg_num_rows($rsConta) > 0) {
+                    $oSlipAgenda->iCodTipo = db_utils::fieldsMemory($rsConta, 0)->e83_codtipo;
+                }
+                
+                $movimento =  $oAgendaPagamento->addMovimentoAgenda(2, $oSlipAgenda);
+            }
+            return $codNovoSlip;
+        }
+        return $codNovoSlip;
+    }
+
+    /**
+     *  O objetivo deste metodo é fornecer os vinculos do slip anterior para o novo slip parcial.
+     */
+    /**
+     * Seta o código do slip da importacao
+     * @param Slip $slip
+     * Seta o código do novo slip
+     * @param integer $codNovoSlip
+     */
+    public static function salvarVinculoSlipParcial($slip,$codNovoSlip){
+
+        $slipTipoOperacao = Slip::getSlipTipoOperacao($slip->k17_codigo);
+
+        if(!empty($slipTipoOperacao)){
+            $tipoOperacao = $slipTipoOperacao->k153_slipoperacaotipo;
+            Slip::vincularTipoOperacaoSlip($codNovoSlip,$tipoOperacao);
+        }
+
+        $slipNumCGM = Slip::getSlipNumCgm($slip->k17_codigo);
+
+        if(!empty($slipNumCGM)){
+            $numCGM = $slipNumCGM->k17_numcgm;
+            Slip::vincularSlipNumCgm($codNovoSlip,$numCGM);
+        }
+
+        $slipRetencaoReceitas = Slip::getSlipRetencaoReceitas($slip->k17_codigo);
+
+        if(!empty($slipRetencaoReceitas)){
+            $retencaoReceitas = $slipRetencaoReceitas->k206_retencaoreceitas;
+            Slip::vincularSlipReceitaRetencao($codNovoSlip,$retencaoReceitas);
+        }
+    
+        $slipReceitaPlanilha = Slip::getSlipReceitaPlanilha($slip->k17_codigo);
+
+        if(!empty($slipReceitaPlanilha)){
+
+            $receitaPlanilha = $slipReceitaPlanilha->k207_placaixarec;
+            Slip::vincularSlipReceitaPlanilha($codNovoSlip,$receitaPlanilha);
+        }
+     
+        $slipOperacaoExtra = Slip::getSlipOperacaoExtra($slip->k17_codigo);
+
+        if(!empty($slipOperacaoExtra)){
+            $recebimentoSlip = $slipOperacaoExtra->k208_recebimento;
+            Slip::vincularSlipOperacaoExtra($recebimentoSlip,$codNovoSlip);
+        }
+    }
 }
-?>

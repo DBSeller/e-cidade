@@ -72,10 +72,10 @@ db_input('k13_descr',40,$Ik13_descr,true,'text',3,'')
 <script>
 function js_pesquisak16_id(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cfautent','func_cfautent.php?funcao_js=parent.js_mostracfautent1|k11_id|k11_local','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cfautent','func_cfautent.php?funcao_js=parent.js_mostracfautent1|k11_id|k11_local','Pesquisa',true);
   }else{
      if(document.form1.k16_id.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cfautent','func_cfautent.php?pesquisa_chave='+document.form1.k16_id.value+'&funcao_js=parent.js_mostracfautent','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cfautent','func_cfautent.php?pesquisa_chave='+document.form1.k16_id.value+'&funcao_js=parent.js_mostracfautent','Pesquisa',false);
      }else{
        document.form1.k11_local.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostracfautent1(chave1,chave2){
 }
 function js_pesquisak16_conta(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
   }else{
      if(document.form1.k16_conta.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k16_conta.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k16_conta.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
      }else{
        document.form1.k13_descr.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostrasaltes1(chave1,chave2){
   db_iframe_saltes.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cfautentconta','func_cfautentconta.php?funcao_js=parent.js_preenchepesquisa|k16_id','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cfautentconta','func_cfautentconta.php?funcao_js=parent.js_preenchepesquisa|k16_id','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cfautentconta.hide();

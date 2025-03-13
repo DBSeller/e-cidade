@@ -2,7 +2,7 @@
 
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
 /**
  * Classe representa um orçamento do processo de compra 
  * @author $Author: dbiuri $
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.5 $
  */
 class OrcamentoCompra {
 
@@ -123,6 +123,7 @@ class OrcamentoCompra {
    */
   private $aItens = array();
 
+
   /**
    * Construtor da classe
    *
@@ -142,7 +143,7 @@ class OrcamentoCompra {
     $sCampos .= "   when exists(select 1 from pcorcamitem inner join pcorcamitemproc on pc31_orcamitem = pc22_orcamitem  where pc22_codorc = pc20_codorc) then 1";
     $sCampos .= "   when exists(select 1 from pcorcamitem inner join pcorcamitemsol  on pc29_orcamitem = pc22_orcamitem  where pc22_codorc = pc20_codorc) then 2";
     $sCampos .= "   when exists(select 1 from pcorcamitem inner join pcorcamitemlic  on pc26_orcamitem = pc22_orcamitem  where pc22_codorc = pc20_codorc) then 3";
-    $sCampos .= "   end as tipo_orcamento";
+    $sCampos .= "   end as tipo_orcamento ";
 
     $sQueryOrcamentoCompra = $oDaoOrcamentoCompra->sql_query_file($iCodigo, $sCampos);
     $rsOrcamentoCompra     = $oDaoOrcamentoCompra->sql_record($sQueryOrcamentoCompra);
@@ -182,6 +183,19 @@ class OrcamentoCompra {
    */
   public function getDataLimite() {
     return $this->oDataLimite;
+  }
+
+  /**
+   * Verifica se o Orcamneto possui alguma Cotacao;
+   * @return bool
+   */
+  public function temCotacao() {
+
+    $oDaoOrcamval   = new cl_pcorcamval();
+    $sWhereCotacoes = "pc22_codorc = {$this->getCodigo()}";
+    $sSqlCotacoes   = $oDaoOrcamval->sql_query(null, null, "count(*)", null, $sWhereCotacoes);
+    $oDaoOrcamval->sql_record($sSqlCotacoes);
+    return $oDaoOrcamval->numrows > 0;
   }
 
   /**
@@ -337,7 +351,7 @@ class OrcamentoCompra {
     $oDaoOrcamentoCompraFornecedor = new cl_pcorcamforne();
 
     $sWhere                          = "pc21_codorc = {$this->getCodigo()}";
-    $sQueryOrcamentoCompraFornecedor = $oDaoOrcamentoCompraFornecedor->sql_query(null, "pc21_numcgm" , null, $sWhere);
+    $sQueryOrcamentoCompraFornecedor = $oDaoOrcamentoCompraFornecedor->sql_query(null, "pc21_numcgm" , "z01_nome", $sWhere);
     $rsOrcamentoCompraFornecedor     = $oDaoOrcamentoCompraFornecedor->sql_record($sQueryOrcamentoCompraFornecedor);
 
     if ($rsOrcamentoCompraFornecedor || $oDaoOrcamentoCompraFornecedor->numrows > 0) {
@@ -455,4 +469,107 @@ class OrcamentoCompra {
     return $iTipoJulgamento;
   }
 
+  /**
+   * Remove os dados do Orcamento
+   */
+  public function remover() {
+
+    $oDaoOrcamItemJulg = new cl_pcorcamjulg;
+    $oDaoOrcamVal      = new cl_pcorcamval();
+    $oDaoOrcamDescla   = new cl_pcorcamdescla();
+    $oDaoOrcamItem     = new cl_pcorcamitem();
+    $oDaoOrcamento     = new cl_pcorcam();
+    switch ($this->getTipoOrcamento()) {
+
+      case OrcamentoCompra::TIPO_ORCAMENTO_LICITACAO:
+
+        $oDaoItem = new cl_pcorcamitemlic();
+        break;
+
+      case OrcamentoCompra::TIPO_ORCAMENTO_SOLICITACAO:
+
+        $oDaoItem = new cl_pcorcamitemsol();
+        break;
+
+      case OrcamentoCompra::TIPO_ORCAMENTO_PROCESSO:
+
+        $oDaoItem = new cl_pcorcamitemproc();
+        break;
+    }
+
+    foreach ($this->getItens() as $oItem) {
+
+      $oDaoOrcamItemJulg->excluir($oItem->getCodigo());
+      if ($oDaoOrcamItemJulg->erro_status == 0) {
+        throw new BusinessException(_M(self::ARQUIVO_MENSAGEM . "erro_exclusao_itens_julgamento"));
+      }
+
+      $oDaoOrcamVal->excluir(null, $oItem->getCodigo());
+      if ($oDaoOrcamVal->erro_status == 0) {
+        throw new BusinessException(_M(self::ARQUIVO_MENSAGEM . "erro_exclusao_valor_fornecedores"));
+      }
+
+      $oDaoOrcamDescla->excluir($oItem->getCodigo());
+      if ($oDaoOrcamDescla->erro_status == 0) {
+        throw new BusinessException(_M(self::ARQUIVO_MENSAGEM . "erro_exclusao_fornecedores_desclassificados"));
+      }
+
+      $oDaoOrcamDescla->excluir($oItem->getCodigo());
+      if ($oDaoOrcamDescla->erro_status == 0) {
+        throw new BusinessException(_M(self::ARQUIVO_MENSAGEM . "erro_exclusao_fornecedores_desclassificados"));
+      }
+
+      $oDaoItem->excluir($oItem->getCodigo());
+      if ($oDaoItem->erro_status == 0) {
+        throw new BusinessException(_M(self::ARQUIVO_MENSAGEM . "erro_exclusao_item"));
+      }
+
+      $oDaoOrcamItem->excluir($oItem->getCodigo());
+      if ($oDaoOrcamItem->erro_status == 0) {
+        throw new BusinessException(_M(self::ARQUIVO_MENSAGEM . "erro_exclusao_item"));
+      }
+
+    }
+
+    $oDaoOrcamForne   = new cl_pcorcamforne();
+    $oDaoOrcamForne->excluir(null, "pc21_codorc = {$this->getCodigo()}");
+    if ($oDaoOrcamForne->erro_status == 0) {
+      throw new BusinessException(_M(self::ARQUIVO_MENSAGEM . "erro_exclusao_fornecedores"));
+    }
+
+    $oDaoOrcamento->excluir($this->getCodigo());
+    if ($oDaoOrcamento->erro_status == 0) {
+      throw new BusinessException(_M(self::ARQUIVO_MENSAGEM . "erro_exclusao_orcamento"));
+    }
+  }
+
+  /**
+   * Retorna os dados do ORcamento do Fornecedor
+   * @param CgmBase $oFornecedor
+   * @return OrcamentoFornecedor
+   */
+  public function getOrcamentoDoFornecedor(CgmBase $oFornecedor) {
+
+    $oDaoFornecedores    = new cl_pcorcamforne();
+    $sWhereOrcamento     = " pc21_numcgm={$oFornecedor->getCodigo()}";
+    $sWhereOrcamento    .= " and pc21_codorc = {$this->getCodigo()}";
+    $sSqlDadosFornecedor = $oDaoFornecedores->sql_query_file(null, "*", null, $sWhereOrcamento);
+    $rsOrcamento         = $oDaoFornecedores->sql_record($sSqlDadosFornecedor);
+    if (!$rsOrcamento || $oDaoFornecedores->numrows == 0) {
+      return false;
+    }
+
+    $oDadosOrcamento = db_utils::fieldsMemory($rsOrcamento, 0);
+    $oOrcamento      = new OrcamentoFornecedor();
+    $oOrcamento->setCodigo($oDadosOrcamento->pc21_orcamforne);
+    $oOrcamento->setFornecedor($oFornecedor);
+    $oOrcamento->setOrcamento($this);
+    if (!empty($oDadosOrcamento->pc21_prazoent)) {
+      $oOrcamento->setPrazoEntrega(new DBDate($oDadosOrcamento->pc21_prazoent));
+    }
+    if (!empty($oDadosOrcamento->pc21_validadorc)) {
+      $oOrcamento->setValidadeOrcamento(new DBDate($oDadosOrcamento->pc21_validadorc));
+    }
+    return $oOrcamento;
+  }
 }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if(isset($HTTP_POST_VARS["enviar"])) {
   $organizacao = $HTTP_POST_VARS["organizacao"];
@@ -45,10 +45,10 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   $email = $HTTP_POST_VARS["email"];
   $pagina = $HTTP_POST_VARS["pagina"];
 
-  $result = pg_exec("SELECT max(id) FROM db_contatos");
+  $result = db_query("SELECT max(id) FROM db_contatos");
   $id = pg_result($result,0,0)==""?"1":((integer)pg_result($result,0,0) + 1);
-  pg_exec("BEGIN");
-  $result = pg_exec("INSERT INTO db_contatos VALUES($id,
+  db_query("BEGIN");
+  $result = db_query("INSERT INTO db_contatos VALUES($id,
 	                                             '$organizacao',
                                                  '$nome',
                                                  '$rua',
@@ -62,7 +62,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
                                                  '$obs',
                                                  '$email',
                                                  '$pagina')") or die("Erro(49) inserindo em db_contatos.");
-  pg_exec("COMMIT");
+  db_query("COMMIT");
   unset($id,$organizacao,$nome,$rua,$bairro,$cidade,$uf,$cep,$telefone,$fax,$celular,$obs,$email,$pagina);
 }
   
@@ -89,7 +89,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"><br><br>
 	<?
-    include("forms/db_frmagenda.php");   
+    include(modification("forms/db_frmagenda.php"));   
     ?>
 	</td>
   </tr>

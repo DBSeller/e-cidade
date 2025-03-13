@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhfuncao_classe.php");
-include("classes/db_rhregime_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhfuncao_classe.php"));
+require_once(modification("classes/db_rhregime_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 
@@ -42,6 +42,18 @@ $clrhregime = new cl_rhregime;
 $clrhfuncao->rotulo->label();
 $clrotulo = new rotulocampo;
 $saldo = 0;
+
+$selecao_cargo = "";
+$lotacao_cargo = "";
+
+if(isset($selecao)){
+  $selecao_cargo = $selecao;
+}
+
+if(isset($lotacao)){
+  $lotacao_cargo = $lotacao;
+}
+
 if(!isset($ano) || (isset($ano) && trim($ano)=="")){
   $ano = db_anofolha();
 }
@@ -55,6 +67,7 @@ if(!isset($mes) || (isset($mes) && trim($mes)=="")){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBDownload.widget.js"></script>
 <style type="text/css">
 <!--
 .tabcols {
@@ -113,16 +126,96 @@ function js_MudaLink(nome) {
 }
 
 function js_relatorio(){
-    <?
-    if(!empty($funcao)) {
+
+    var sFonte1 = "pes2_consrhfuncao002.php";
+    var sFonte2 = "pes2_consrhfuncao003.php";
+    var sFormatoEmissao = document.form1.tipoimpressao.value;
+
+    if (sFormatoEmissao == "pdf"){
       
-      echo "jan = window.open('pes2_consrhfuncao003.php?funcao='+document.form1.rh37_funcao.value+'&ano=$ano&mes=$mes&colunas1=".@$colunas1."','sdjklsdklsdf','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');";
-    }else{
-      echo "jan = window.open('pes2_consrhfuncao002.php?ano=$ano&mes=$mes&colunas1=".@$colunas1."','sdjklsdklsdf','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');";
+      <?php 
+      
+        if(!empty($funcao)) {
+          
+          $jan  = "jan = window.open(sFonte2+";
+          $jan .= "'?funcao='+document.form1.rh37_funcao.value+";
+          $jan .= "'&ano=$ano&mes=$mes&colunas1=".@$colunas1."'+";
+          $jan .= "'&lotacao=$lotacao_cargo'+";
+          $jan .= "'&selecao=$selecao_cargo'+";
+          $jan .= "'&formato_emissao='+sFormatoEmissao,";
+          $jan .= "'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40));";
+        
+          echo $jan;
+
+        } else {
+        
+          $jan  = "jan = window.open(sFonte1+";
+          $jan .= "'?ano=$ano&mes=$mes&colunas1=".@$colunas1."'+";
+          $jan .= "'&lotacao=$lotacao_cargo'+";
+          $jan .= "'&selecao=$selecao_cargo'+";
+          $jan .= "'&formato_emissao='+sFormatoEmissao,";
+          $jan .= "'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40));";
+          
+          echo $jan;
+        }
+        
+        ?>
+       
+
     }
-    ?>
-    jan.moveTo(0,0);
+    else{
+
+        var sAjaxUrl = "";
+        var sNomeArquivo = '<?php echo "consrhfuncao".date("YmdHis").db_getsession("DB_id_usuario").".csv" ?>'; 
+        var lFuncao = '<?php echo !empty($funcao) ? "true" : "false"; ?>';
+  
+        sAjaxUrl     = sFonte1;
+        sAjaxUrl    += '?formato_emissao='+sFormatoEmissao;
+  
+        if (lFuncao == 'true'){
+            sAjaxUrl     = sFonte2;
+            sAjaxUrl    += '?formato_emissao='+sFormatoEmissao;
+            sAjaxUrl    += '&funcao='+document.form1.rh37_funcao.value;
+        }
+
+        sAjaxUrl    += '&lotacao='+'<?php echo $lotacao_cargo?>';
+        sAjaxUrl    += '&selecao='+'<?php echo $selecao_cargo?>';
+        sAjaxUrl    += '&ano='+'<?php echo @$ano?>';
+        sAjaxUrl    += '&mes='+'<?php echo @$mes?>';
+        sAjaxUrl    += '&colunas1='+'<?php echo @$colunas1?>';
+        
+        js_divCarregando('Aguarde... Carregando Documento CSV','msgbox');
+        var oAjax        = new Ajax.Request(
+                          sAjaxUrl,
+                          { 
+                            parameters:{
+                              'sNomeArquivo':sNomeArquivo
+                            },
+                            method: 'get',
+                            asynchronous:false,
+                            onComplete : mostraArquivoCsv
+                          }); 
+        
+    }
 }
+
+function mostraArquivoCsv(oAjax){
+
+    js_removeObj("msgbox");
+
+    if (oAjax.status == 200) {
+        sNomeArquivo = oAjax.request.parameters.sNomeArquivo;
+        sCaminhoArquivo = "tmp/"+sNomeArquivo;
+        var oDownload = new DBDownload(); 
+        oDownload.addFile(sCaminhoArquivo, sNomeArquivo);
+        oDownload.show();
+
+    } else {
+       alert("Problema ao carregar CSV");
+    }
+
+}
+
 </script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
@@ -146,13 +239,41 @@ function js_relatorio(){
 </table>
 
     <center>
-    <?      	
+    <?php      	
 	  if(isset($funcao) && trim($funcao)!=""){
 
       $where = " ";
        if(isset($colunas1) && $colunas1!=""){
-         $where = " and rh30_codreg in (".$colunas1.") ";
+         $where .= " and rh30_codreg in (".$colunas1.") ";
        }
+
+       if (isset($lotacao) && !empty($lotacao)){
+        $where .= " and rhlota.r70_codigo = $lotacao ";
+       }
+      
+      //verificamos se foi informada selecao, buscamos a condicao e aplicamos na consulta
+      if(isset($selecao) && !empty($selecao)) {
+          
+        $oSelecao = new Selecao($selecao);  
+        $where .= " and rhpessoalmov.rh02_regist in (select rhpessoalmov.rh02_regist 
+                                          from rhpessoal 
+                                               inner join rhpessoalmov   on rhpessoal.rh01_regist     = rhpessoalmov.rh02_regist 
+                                                                        and rhpessoalmov.rh02_anousu  = " . $ano. "
+                                                                        and rhpessoalmov.rh02_mesusu  = " . $mes . "
+                                                                        and rhpessoalmov.rh02_instit  = " . db_getsession("DB_instit") . "
+                                               left join  rhlota         on rhlota.r70_codigo         = rhpessoalmov.rh02_lota
+                                                                        and rhlota.r70_instit         = rhpessoalmov.rh02_instit
+                                               left join  rhregime       on rhregime.rh30_codreg      = rhpessoalmov.rh02_codreg
+                                               left join  rhpescargo     on rhpescargo.rh20_seqpes    = rhpessoalmov.rh02_seqpes
+                                               left join  rhpespadrao    on rhpespadrao.rh03_seqpes   = rhpessoalmov.rh02_seqpes             
+                                                                        and rhpespadrao.rh03_anousu   = rhpessoalmov.rh02_anousu             
+                                                                        and rhpespadrao.rh03_mesusu   = rhpessoalmov.rh02_mesusu
+                                               left join  rhpesrescisao  on rhpesrescisao.rh05_seqpes = rhpessoalmov.rh02_seqpes
+                                        where " . $oSelecao->getWhere() . ")";
+        
+      }
+
+
 			
 	  	$porfuncao = true;
 
@@ -185,9 +306,9 @@ function js_relatorio(){
                rh30_vinculo,
                rh37_vagas
 		";	
-		 $result_funcao = pg_query($sql1);
+		 $result_funcao = db_query($sql1);
         if(pg_numrows($result_funcao) == 0){
-      	  db_msgbox("Cargo nÃ£o encontrado");
+      	  db_msgbox("Cargo não encontrado");
       	  echo "<script>location.href = 'pes3_consrhfuncao001.php'</script>";
         }else{
           db_fieldsmemory($result_funcao,0);
@@ -203,17 +324,21 @@ function js_relatorio(){
         }
 	  }else{
 	  	$porfuncao = false;
-        $result_funcoes = $clrhfuncao->sql_record($clrhfuncao->sql_query_file(null,db_getsession("DB_instit"),"rh37_funcao,
+      $result_funcoes = $clrhfuncao->sql_record($clrhfuncao->sql_query_file(null,db_getsession("DB_instit"),"rh37_funcao,
                                                                                                                rh37_descr,
                                                                                                                rh37_vagas",
-                                                                                                              "rh37_funcao"));
-        if($clrhfuncao->numrows == 0){
-      	  db_msgbox("Nenhum cargo encontrado");
-      	  echo "<script>location.href = 'pes3_consrhfuncao001.php'</script>";
-        }
+                                                                                                            "rh37_funcao"));
+      if($clrhfuncao->numrows == 0){
+        db_msgbox("Nenhum cargo encontrado");
+        echo "<script>location.href = 'pes3_consrhfuncao001.php'</script>";
+      }
 	  }
+   
+   $result_regime = null;
+   if (!empty($colunas1)){
+    $result_regime = $clrhregime->sql_record($clrhregime->sql_query_file(null, "rh30_vinculo","", " rh30_instit = ".db_getsession('DB_instit')." and rh30_codreg in (".$colunas1.")"));
+   }
 
-   $result_regime = $clrhregime->sql_record($clrhregime->sql_query_file(null, "rh30_vinculo","", " rh30_instit = ".db_getsession('DB_instit')." and rh30_codreg in (".@$colunas1.")"));
    $colunas = "";    
    $virgula = "";
    for($x = 0; $x < $clrhregime->numrows; $x ++) {
@@ -228,21 +353,21 @@ function js_relatorio(){
             <td colspan="2"> 
 	          <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr> 
-                   <? 
+                   <?php
                    if($porfuncao == true){
                    ?>
                      <td nowrap class="tabcols" width="10%" align="right">
                        <strong style=\"color:blue\">
-                         <?
+                         <?php
                          db_ancora("$Lrh37_funcao","","3");
                          ?>
                        </strong>
                      </td>
                      <td class="tabcols" nowrap width="30%"> 
-                       <?
+                       <?php
                        db_input('rh37_funcao', 8, $Irh37_funcao, true, 'text', 3);
                        ?>
-                       <?
+                       <?php
                        db_input('rh37_descr', 30, $Irh37_descr, true, 'text', 3);
                        ?>
                      </td>
@@ -262,7 +387,7 @@ function js_relatorio(){
                            </td>
                            <td nowrap class="tabcols" align="right">
                              <strong  class="links2">
-                               <?=$rh37_vagas?>
+                               <?php echo $rh37_vagas?>
                              </strong>
                            </td>
                          </tr>
@@ -274,7 +399,7 @@ function js_relatorio(){
                            </td>
                            <td nowrap class="tabcols" align="right">
                              <strong  class="links2">
-                               <?=$ocupados?>
+                               <?php echo $ocupados?>
                              </strong>
                            </td>
                          </tr>
@@ -286,14 +411,14 @@ function js_relatorio(){
                            </td>
                            <td nowrap class="tabcols" align="right">
                              <strong  class="links2">
-                               <?=$saldo?>
+                               <?php echo $saldo?>
                              </strong>
                            </td>
                          </tr>
                          <tr>
                            <td class="tabcols" nowrap align="right" colspan="2">
                              <strong  class="links2">
-                               <?
+                               <?php
                                db_ancora("VER CARGOS","location.href = 'pes3_consrhfuncao002.php';","1");
                                ?>
                              </strong>
@@ -301,14 +426,14 @@ function js_relatorio(){
                          </tr>
                        </table>
                      </td>
-                   <?
+                   <?php
                    }else{
                    ?>
                      <td nowrap class="tabcols">
                        <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                        <b>TODOS OS CARGOS</b>
                      </td>
-                   <?
+                   <?php
                    }
                    ?>
                 </tr>
@@ -320,7 +445,7 @@ function js_relatorio(){
 	          <table width="100%" height="90%" border="0" cellspacing="0" cellpadding="0">
                 <tr> 
                   <td align="center">
-                    <?
+                    <?php
                     $qry = "";
                     $rog = "?";
                     if(isset($funcao) && trim($funcao)!=""){
@@ -339,14 +464,24 @@ function js_relatorio(){
                       $qry .= $rog."colunas1=$colunas1";
                       $rog = "&";
                     }
-                    //echo $qry;
+          
+                    if(isset($lotacao) && !empty($lotacao)){
+                      $qry .= $rog."lotacao=$lotacao";
+                      $rog = "&";
+                    }
+        
+                    if(isset($selecao) && !empty($selecao)){
+                      $qry .= $rog."selecao=$selecao";
+                      $rog = "&";
+                    }
+        
                     ?> 
-                    <iframe id="registros" height="95%" width="95%" name="registros" src="pes3_consrhfuncao021.php<?=$qry?>"></iframe>
-                    <? 
+                    <iframe id="registros" height="95%" width="95%" name="registros" src="pes3_consrhfuncao021.php<?php echo $qry?>"></iframe>
+                    <?php 
                     if(isset($funcao) && trim($funcao)!=""){
                     ?>
-                    <input type="hidden" name="funcao"  value="<?=$funcao?>">
-                    <?
+                    <input type="hidden" name="funcao"  value="<?php echo $funcao?>">
+                    <?php
                     }
                     ?>
                   </td>
@@ -359,18 +494,27 @@ function js_relatorio(){
               <input name="retornar" type="button" id="retornar" value="Nova Pesquisa" title="Inicio da Consulta" onclick="location.href='pes3_consrhfuncao001.php'"> 
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
               <input name="pesquisar" type="submit" id="pesquisar"  title="Atualiza a Consulta" value="Atualizar">
-              &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; 
-	          <input name="imprimir" type="button" id="imprimir" value="Imprimir" title="Imprimir" onclick="js_relatorio();">
+              &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+              <label><b>Tipo da geração</b></label>
+              <?php 
+              $aOpcoesFiltro = array(
+                'pdf' => 'PDF',
+                'csv' => 'CSV',
+              );              
+              ?>
+              <?php db_select("tipoimpressao", $aOpcoesFiltro, true, 1); ?> 
+	            &nbsp;&nbsp;
+              <input name="imprimir" type="button" id="imprimir" value="Gerar" title="Imprimir" onclick="js_relatorio();">
               <strong>
                 &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
                 Período:
               </strong>
               &nbsp;&nbsp;
-       	      <?
+       	      <?php
     	      db_input("ano",4,'',true,'text',4)
 	          ?>
 	          &nbsp;/&nbsp;
-	          <?
+	          <?php
     	      db_input("mes",2,'',true,'text',4);
     	      db_input("colunas1",2,'',true,'hidden',3);
 	          ?>
@@ -379,7 +523,7 @@ function js_relatorio(){
         </table>
       </form>
   </center>
-<? 
+<?php 
  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>

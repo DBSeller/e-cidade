@@ -163,7 +163,7 @@ function js_completaGrid(oAjax){
 
   js_removeObj("msgBox");
   
-  var oRetorno = eval("("+oAjax.responseText+")");   
+  var oRetorno = JSON.parse(oAjax.responseText);   
   var aTiposAcordos = oRetorno.aTipoAcordo;
   
   oGridTiposAcordos.clearAll(true);
@@ -236,7 +236,7 @@ function js_retornoDadosGarantia(oAjax) {
 
   js_removeObj("msgBox");
   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   var oAcordoGarantia = oRetorno.oAcordoGarantia;
   
   oGridTiposAcordos.clearAll(true);
@@ -295,7 +295,7 @@ function js_salvaGarantia() {
     alert("Operação Cancelada, você deve selecionar ao menos um Tipo de Acordo!");
     return false;    
   }
-   
+    
   var oAjax   = new Ajax.Request( sUrl, {
                                            method: 'post', 
                                            parameters: 'json='+js_objectToJson(oParam), 
@@ -307,7 +307,7 @@ function js_salvaGarantia() {
 function js_retornoSalvaGarantia(oAjax) {
 
   js_removeObj("msgBox");   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   oGridTiposAcordos.clearAll(true);
   if (oRetorno.status == 2) {
   
@@ -354,7 +354,7 @@ function js_retornoExcluiGarantia(oAjax) {
 
   js_removeObj("msgBox");   
   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   oGridTiposAcordos.clearAll(true);
   

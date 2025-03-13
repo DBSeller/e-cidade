@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
  function xx($fd,$parq){
-	  $fk = pg_exec("select a.nomearq,c.nomecam,f.sequen,f.referen,c.codcam 
+	  $fk = db_query("select a.nomearq,c.nomecam,f.sequen,f.referen,c.codcam 
                      from db_sysforkey f 
                           inner join db_sysarquivo a on a.codarq = f.codarq 
                           inner join db_syscampo c   on c.codcam = f.codcam 
@@ -49,7 +49,7 @@ include("libs/db_usuariosonline.php");
               fputs($fd,'";'."\n");
 			}
             $arq = pg_result($fk,$f,"referen");
-	        $qarq = pg_exec("select nomearq
+	        $qarq = db_query("select nomearq
                          from db_sysarquivo
 						 where codarq = ".$arq);
 	        if(strpos($GLOBALS["temalias"],trim(pg_result($qarq,0,0))) > 0){
@@ -77,7 +77,7 @@ include("libs/db_usuariosonline.php");
             fputs($fd,'     $sql .= "      inner join '.trim(pg_result($qarq,0,0))." ".($qalias==""?"":" as ".$qalias)." on ");
 			$virgula = "";
 		  }
-	      $qk = pg_exec("select q.nomecam
+	      $qk = db_query("select q.nomecam
                              from db_sysprikey p
 			          inner join db_syscampo q on q.codcam = p.codcam 
 			     where codarq = ".$arq." and
@@ -183,7 +183,7 @@ input {
                      on a.codarq = am.codarq
                      $qr
                      order by codmod";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $numrows = pg_numrows($result);
   $RecordsetTabMod = $result;
   if($numrows == 0) {
@@ -197,7 +197,7 @@ input {
 
     
     for($i = 0;$i < $numrows;$i++) {
-      $campo = pg_exec("select c.codcam,
+      $campo = db_query("select c.codcam,
 	                           aa.nomearq,
 	                           c.nomecam,
 		                       c.conteudo,
@@ -280,7 +280,7 @@ input {
 	fputs($fd,'   function atualizacampos($exclusao=false) {'."\n");			
 
         $varpk = ""; 
-        $pk = pg_exec("select a.nomearq,c.nomecam,p.sequen
+        $pk = db_query("select a.nomearq,c.nomecam,p.sequen
                        from db_sysprikey p
                             inner join db_sysarquivo a on a.codarq = p.codarq
                             inner join db_syscampo c   on c.codcam = p.codcam
@@ -333,7 +333,7 @@ input {
         fputs($fd,"   // funcao para inclusao\n");
 	fputs($fd,"   function incluir (");
 	// Chave Primaria
-        $pk = pg_exec("select p.codcam,a.nomearq,c.nomecam,p.sequen,c.conteudo
+        $pk = db_query("select p.codcam,a.nomearq,c.nomecam,p.sequen,c.conteudo
                        from db_sysprikey p
                             inner join db_sysarquivo a on a.codarq = p.codarq
                             inner join db_syscampo c   on c.codcam = p.codcam
@@ -388,7 +388,7 @@ input {
 	  if( $x != 0){
 	    $temsequencia = true;
    	    fputs($fd,'     if($'.trim(pg_result($campo,$j,"nomecam")).' == "" || $'.trim(pg_result($campo,$j,"nomecam")).' == null ){'."\n");
-	    fputs($fd,'       $result = @pg_query("select nextval(\''.trim(pg_result($campo,$j,"nomesequencia"))."')\"); \n");
+	    fputs($fd,'       $result = @db_query("select nextval(\''.trim(pg_result($campo,$j,"nomesequencia"))."')\"); \n");
    	    fputs($fd,'       if($result==false){'."\n");
 	    fputs($fd,'         $this->erro_banco = str_replace("\n","",@pg_last_error());'."\n");
 	    fputs($fd,'         $this->erro_sql   = "Verifique o cadastro da sequencia: '.trim(pg_result($campo,$j,"nomesequencia")).' do campo: '.trim(pg_result($campo,$j,"nomecam"))."\"; \n");
@@ -399,7 +399,7 @@ input {
 	    fputs($fd,"       }\n");
  	    fputs($fd,'       $this->'.trim(pg_result($campo,$j,"nomecam")).' = pg_result($result,0,0); '."\n");
 	    fputs($fd,"     }else{\n");
-	    fputs($fd,'       $result = @pg_query("select last_value from '.trim(pg_result($campo,$j,"nomesequencia")).'");'."\n");
+	    fputs($fd,'       $result = @db_query("select last_value from '.trim(pg_result($campo,$j,"nomesequencia")).'");'."\n");
 	    fputs($fd,'       if(($result != false) && (pg_result($result,0,0) < $'.trim(pg_result($campo,$j,"nomecam")).')){'."\n");
 	    fputs($fd,'         $this->erro_sql = " Campo '.trim(pg_result($campo,$j,"nomecam")).' maior que último número da sequencia.";'."\n");
 	    fputs($fd,'         $this->erro_banco = "Sequencia menor que este número.";'."\n");
@@ -436,7 +436,7 @@ input {
           } 
         }
         // insert
-	fputs($fd,'     $'.'result = @pg_query("insert into '.trim(pg_result($result,$i,"nomearq"))."(\n");
+	fputs($fd,'     $'.'result = @db_query("insert into '.trim(pg_result($result,$i,"nomearq"))."(\n");
         $virgula = " ";
  	for($j = 0;$j < $Ncampos;$j++) {
 	  fputs($fd,"                                      ".$virgula.trim(pg_result($campo,$j,"nomecam"))." \n");
@@ -504,16 +504,16 @@ input {
  	  }
 	  fputs($fd,'));'."\n");
 	  fputs($fd,'     if(($resaco!=false)||($this->numrows!=0)){'."\n");
-          fputs($fd,'       $resac = pg_query("select nextval(\'db_acount_id_acount_seq\') as acount");'."\n");
+          fputs($fd,'       $resac = db_query("select nextval(\'db_acount_id_acount_seq\') as acount");'."\n");
           fputs($fd,'       $acount = pg_result($resac,0,0);'."\n");
           if(pg_numrows($pk) > 0) {
             $Npk = pg_numrows($pk);
             for($p = 0;$p < $Npk;$p++) {
-              fputs($fd,'       $resac = pg_query("insert into db_acountkey values($acount,'.pg_result($pk,$p,"codcam").',\'$this->'.trim(pg_result($pk,$p,"nomecam")).'\',\'I\')");'."\n");
+              fputs($fd,'       $resac = db_query("insert into db_acountkey values($acount,'.pg_result($pk,$p,"codcam").',\'$this->'.trim(pg_result($pk,$p,"nomecam")).'\',\'I\')");'."\n");
             } 
  	  }
 	  for($j = 0;$j < $Ncampos;$j++) {
-            fputs($fd,'       $resac = pg_query("insert into db_acount values($acount,'.pg_result($result,$i,'codarq').','.pg_result($campo,$j,"codcam").',\'\',\'".pg_result($resaco,0,\''.trim(pg_result($campo,$j,"nomecam")).'\')."\',".db_getsession(\'DB_datausu\').",".db_getsession(\'DB_id_usuario\').")");'."\n");  
+            fputs($fd,'       $resac = db_query("insert into db_acount values($acount,'.pg_result($result,$i,'codarq').','.pg_result($campo,$j,"codcam").',\'\',\'".pg_result($resaco,0,\''.trim(pg_result($campo,$j,"nomecam")).'\')."\',".db_getsession(\'DB_datausu\').",".db_getsession(\'DB_id_usuario\').")");'."\n");  
 	  }
 	  fputs($fd,'     }'."\n");		  
         }
@@ -525,7 +525,7 @@ input {
         fputs($fd,"   // funcao para alteracao\n");
 	fputs($fd,"   function alterar (");
 	// Chave Primaria
-        $pk = pg_exec("select c.codcam,a.nomearq,c.nomecam,p.sequen, c.conteudo
+        $pk = db_query("select c.codcam,a.nomearq,c.nomecam,p.sequen, c.conteudo
                        from db_sysprikey p
                             inner join db_sysarquivo a on a.codarq = p.codarq
                             inner join db_syscampo c   on c.codcam = p.codcam
@@ -653,22 +653,22 @@ input {
 	    }
 	    fputs($fd,'));'."\n");
    	    fputs($fd,'     if($this->numrows>0){');
-            fputs($fd,'       $resac = pg_query("select nextval(\'db_acount_id_acount_seq\') as acount");'."\n");
+            fputs($fd,'       $resac = db_query("select nextval(\'db_acount_id_acount_seq\') as acount");'."\n");
             fputs($fd,'       $acount = pg_result($resac,0,0);'."\n");
             if(pg_numrows($pk) > 0) {
               $Npk = pg_numrows($pk);
               for($p = 0;$p < $Npk;$p++) {
-  	        fputs($fd,'       $resac = pg_query("insert into db_acountkey values($acount,'.pg_result($pk,$p,"codcam").',\'$this->'.trim(pg_result($pk,$p,"nomecam")).'\',\'A\')");'."\n");
+  	        fputs($fd,'       $resac = db_query("insert into db_acountkey values($acount,'.pg_result($pk,$p,"codcam").',\'$this->'.trim(pg_result($pk,$p,"nomecam")).'\',\'A\')");'."\n");
               } 
     	    }
   	    for($j = 0;$j < $Ncampos;$j++) {
               fputs($fd,'       if(isset($GLOBALS["HTTP_POST_VARS"]["'.trim(pg_result($campo,$j,"nomecam")).'"]))'."\n");
-	      fputs($fd,'         $resac = pg_query("insert into db_acount values($acount,'.pg_result($result,$i,'codarq').','.pg_result($campo,$j,"codcam").',\'".pg_result($resaco,0,\''.trim(pg_result($campo,$j,"nomecam")).'\')."\',\'$this->'.trim(pg_result($campo,$j,"nomecam")).'\',".db_getsession(\'DB_datausu\').",".db_getsession(\'DB_id_usuario\').")");'."\n");  
+	      fputs($fd,'         $resac = db_query("insert into db_acount values($acount,'.pg_result($result,$i,'codarq').','.pg_result($campo,$j,"codcam").',\'".pg_result($resaco,0,\''.trim(pg_result($campo,$j,"nomecam")).'\')."\',\'$this->'.trim(pg_result($campo,$j,"nomecam")).'\',".db_getsession(\'DB_datausu\').",".db_getsession(\'DB_id_usuario\').")");'."\n");  
 	    }
 	    fputs($fd,'     }'."\n");
           }
           //
-	  fputs($fd,'     $'.'result = @pg_exec($sql);'."\n");		
+	  fputs($fd,'     $'.'result = @db_query($sql);'."\n");		
 	  fputs($fd,'     if($result==false){ '."\n");
           fputs($fd,'       $this->erro_banco = str_replace("\n","",@pg_last_error());'."\n");
           fputs($fd,'       $this->erro_sql   = "'.pg_result($result,$i,'rotulo').' nao Alterado. Alteracao Abortada.\\\n";'."\n");
@@ -707,7 +707,7 @@ input {
           fputs($fd,"   // funcao para exclusao \n");
 	  fputs($fd,"   function excluir (");
 	  // Chave Primaria
-          $pk = pg_exec("select c.codcam,a.nomearq,c.nomecam,p.sequen,c.conteudo
+          $pk = db_query("select c.codcam,a.nomearq,c.nomecam,p.sequen,c.conteudo
                        from db_sysprikey p
                             inner join db_sysarquivo a on a.codarq = p.codarq
                             inner join db_syscampo c   on c.codcam = p.codcam
@@ -738,16 +738,16 @@ input {
 	    }
 	    fputs($fd,'));'."\n");
   	    fputs($fd,'     if(($resaco!=false)||($this->numrows!=0)){'."\n");
-            fputs($fd,'       $resac = pg_query("select nextval(\'db_acount_id_acount_seq\') as acount");'."\n");
+            fputs($fd,'       $resac = db_query("select nextval(\'db_acount_id_acount_seq\') as acount");'."\n");
             fputs($fd,'       $acount = pg_result($resac,0,0);'."\n");
             if(pg_numrows($pk) > 0) {
               $Npk = pg_numrows($pk);
               for($p = 0;$p < $Npk;$p++) {
-  	        fputs($fd,'       $resac = pg_query("insert into db_acountkey values($acount,'.pg_result($pk,$p,"codcam").',\'$this->'.trim(pg_result($pk,$p,"nomecam")).'\',\'E\')");'."\n");
+  	        fputs($fd,'       $resac = db_query("insert into db_acountkey values($acount,'.pg_result($pk,$p,"codcam").',\'$this->'.trim(pg_result($pk,$p,"nomecam")).'\',\'E\')");'."\n");
               } 
 	    }
 	    for($j = 0;$j < $Ncampos;$j++) {
-              fputs($fd,'       $resac = pg_query("insert into db_acount values($acount,'.pg_result($result,$i,'codarq').','.pg_result($campo,$j,"codcam").',\'\',\'".pg_result($resaco,0,\''.trim(pg_result($campo,$j,"nomecam")).'\')."\',".db_getsession(\'DB_datausu\').",".db_getsession(\'DB_id_usuario\').")");'."\n");  
+              fputs($fd,'       $resac = db_query("insert into db_acount values($acount,'.pg_result($result,$i,'codarq').','.pg_result($campo,$j,"codcam").',\'\',\'".pg_result($resaco,0,\''.trim(pg_result($campo,$j,"nomecam")).'\')."\',".db_getsession(\'DB_datausu\').",".db_getsession(\'DB_id_usuario\').")");'."\n");  
    	    }
 	    fputs($fd,'     }'."\n");		  
           }
@@ -780,7 +780,7 @@ input {
 	   }
          }
 
-         fputs($fd,'     $'.'result = @pg_exec($sql.$sql2);'."\n");
+         fputs($fd,'     $'.'result = @db_query($sql.$sql2);'."\n");
 	 fputs($fd,'     if($result==false){ '."\n");
          fputs($fd,'       $this->erro_banco = str_replace("\n","",@pg_last_error());'."\n");
          fputs($fd,'       $this->erro_sql   = "'.pg_result($result,$i,'rotulo').' nao Excluído. Exclusão Abortada.\\\n";'."\n");
@@ -818,7 +818,7 @@ input {
          // gera o metodo do recordset
          fputs($fd,"   // funcao do recordset \n");
          fputs($fd,'   function sql_record($sql) { '."\n");
-         fputs($fd,'     $'.'result = @pg_query($sql);'."\n");
+         fputs($fd,'     $'.'result = @db_query($sql);'."\n");
          fputs($fd,'     if($result==false){'."\n");
          fputs($fd,'       $this->numrows    = 0;'."\n");
          fputs($fd,'       $this->erro_banco = str_replace("\n","",@pg_last_error());'."\n");
@@ -870,7 +870,7 @@ input {
 	 global $temalias;
 	 global $qualalias;
          xx($fd,pg_result($result,$i,"codarq"));
-	 $fk = pg_exec("select distinct f.referen ,f.codcam
+	 $fk = db_query("select distinct f.referen ,f.codcam
                      from db_sysforkey f 
                      where codarq = ".pg_result($result,$i,"codarq")." 
 					 order by f.referen");
@@ -880,7 +880,7 @@ input {
            }
 	 }
 	 if(pg_numrows($pk) > 0) {
-	   $tabfilho = pg_exec("select * 
+	   $tabfilho = db_query("select * 
 	                        from db_sysarqarq aa
 			 			          inner join db_sysarquivo a on aa.codarq = a.codarq
 						     where aa.codarqpai = ".pg_result($result,$i,"codarq"));
@@ -890,7 +890,7 @@ input {
              $virgula = "";
              for($p = 0;$p < $Npk;$p++) {          
                fputs($fd,$virgula.trim(pg_result($result,$i,"nomearq")).'.'.trim(pg_result($pk,$p,'nomecam'))." = ");
-   	       $qk = pg_exec("select q.nomecam
+   	       $qk = db_query("select q.nomecam
                             from db_sysprikey p
 				 inner join db_syscampo q on q.codcam = p.codcam 
 			    where codarq = ".pg_result($tabfilho,$f,"codarq")." and
@@ -1025,7 +1025,7 @@ input {
          $sql = "select codigoclass 
 	         from db_sysclasses
              where codarq = ".pg_result($result,0,'codarq');
-         $resultclass = pg_exec($sql);
+         $resultclass = db_query($sql);
          if(pg_numrows($resultclass)>0){
 	   for($c=0;$c<pg_numrows($resultclass);$c++){		   
 //		   fputs($fd,trim(pg_result($recultclass,$c,'descrclass'))."\n");

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("std/db_stdClass.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("dbforms/verticalTab.widget.php");
-require_once ("model/Acordo.model.php");
-require_once ("model/AcordoComissao.model.php");
-require_once ("model/AcordoComissaoMembro.model.php");
-require_once ("model/CgmFactory.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
+require_once(modification("model/Acordo.model.php"));
+require_once(modification("model/AcordoComissao.model.php"));
+require_once(modification("model/AcordoComissaoMembro.model.php"));
+require_once(modification("model/CgmFactory.model.php"));
 
 $oGet = db_utils::postMemory($_GET);
 $oAcordoComissao = new AcordoComissao ($oGet->iComissao);
@@ -143,37 +143,19 @@ function js_completaGrid(oAjax) {
 
   js_removeObj("msgBox");
  
-  var oRetorno = eval("("+oAjax.responseText+")");   
+  var oRetorno = JSON.parse(oAjax.responseText);   
   var aMembros = oRetorno.oAcordo.aMembros;   
  
   oGridMembrosComissao.clearAll(true);
     
   aMembros.each(function (oMembro, id) {
-   
-    sResponsabilidade = "";
-   
-    switch (oMembro.iResponsabilidade) {
-    
-      case "1":
-        sResponsabilidade = "Principal";
-        break;
-      case "2":
-        sResponsabilidade = "Secundário";
-        break;
-      case "3":
-        sResponsabilidade = "Suplente";
-      break;
-      case "4":
-    	  sResponsabilidade = "Fiscal";
-      break;    
-   }
-    
+
    var aLinha = new Array();
    
    aLinha[0] = oMembro.iCodigo;
    aLinha[1] = oMembro.iCodigoCgm;
    aLinha[2] = oMembro.sNome.urlDecode();
-   aLinha[3] = sResponsabilidade;
+   aLinha[3] = oMembro.sResponsabilidade.urlDecode();
    oGridMembrosComissao.addRow(aLinha);     
    
  });

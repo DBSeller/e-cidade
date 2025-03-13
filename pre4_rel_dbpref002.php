@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-    //require("libs/db_stdlib.php");
-    //require("libs/db_conecta.php");
-    //include("libs/db_sessoes.php");
-    //include("libs/db_usuariosonline.php");
-    include("fpdf151/pdf.php");
-    include("dbforms/db_funcoes.php");
-    include("dbforms/db_classesgenericas.php");
+    //require(modification("libs/db_stdlib.php"));
+    //require(modification("libs/db_conecta.php"));
+    //include(modification("libs/db_sessoes.php"));
+    //include(modification("libs/db_usuariosonline.php"));
+    include(modification("fpdf151/pdf.php"));
+    include(modification("dbforms/db_funcoes.php"));
+    include(modification("dbforms/db_classesgenericas.php"));
 
 if( !isset($HTTP_GET_VARS["data1"]) && !isset( $HTTP_GET_VARS["data2"])){
 
@@ -134,7 +134,7 @@ if( !isset($HTTP_GET_VARS["data1"]) && !isset( $HTTP_GET_VARS["data2"])){
                                       and k00_numpar = q50_numpar )
                 order by q50_data,q50_hora";
 
-    $result = pg_exec($str_sql) or die("FALHA: <br>$str_sql" );
+    $result = db_query($str_sql) or die("FALHA: <br>$str_sql" );
     if(pg_numrows($result)==0){
       db_redireciona('db_erros.php?fechar=true&db_erro=Não existem informações pata gerar o relatório.');
     }

@@ -2,7 +2,7 @@
 
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,8 +26,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("classes/db_db_logsacessa_classe.php" );
-require_once("libs/db_stdlib.php" );
+require_once(modification("classes/db_db_logsacessa_classe.php" ));
+require_once(modification("libs/db_stdlib.php" ));
 
 /**
  * ConsultaDados
@@ -83,12 +83,42 @@ class ConsultaDados {
    */
   public function consultar( $sMetodo, $aParametrosEntrada , $aResultado ) {
 
-    global $conn;
+    try {
 
-    $this->rsConn             = $conn;
-    $this->aParametrosEntrada = $aParametrosEntrada;
-    $this->aResultado         = $aResultado;
-    return $this->getResultadoSQL( $sMetodo );
+      global $conn;
+
+      $this->rsConn             = $conn;
+      $this->aParametrosEntrada = $aParametrosEntrada;
+      $this->aResultado         = $aResultado;
+
+      return $this->getResultadoSQL( $sMetodo );
+
+    } catch ( DBException $oErro ) {
+
+      $oDaoDBLogsAcessa            = new cl_db_logsacessa();
+      $oDaoDBLogsAcessa->ip        = $_SERVER['REMOTE_ADDR'];
+      $oDaoDBLogsAcessa->data      = date("Y-m-d");
+      $oDaoDBLogsAcessa->hora      = date("H:i");
+      $oDaoDBLogsAcessa->obs       = pg_escape_string($oErro->getMessage());
+      $oDaoDBLogsAcessa->arquivo   = $sMetodo;
+      $oDaoDBLogsAcessa->id_usuario= 1;
+      $oDaoDBLogsAcessa->id_modulo = $_SESSION['DB_modulo'];
+      $oDaoDBLogsAcessa->id_item   = isset($_SESSION['DB_itemmenu_acessado']) ? $_SESSION['DB_itemmenu_acessado'] : 9605;
+      $oDaoDBLogsAcessa->coddepto  = 1;
+      $oDaoDBLogsAcessa->instit    = $oErro->getCode();
+      $oDaoDBLogsAcessa->incluir(null);
+      $_SESSION = $oDaoDBLogsAcessa->codsequen;
+
+      if ( $oDaoDBLogsAcessa->erro_status == "0" ) {
+        throw new SoapFault("e-Cidade","Erro ao processar registros de Log.\n" . utf8_encode($oDaoDBLogsAcessa->erro_msg));
+      }
+
+      throw new SoapFault("e-Cidade", "Erro ao Buscar os Dados do WebService. Contate Suporte. " . pg_last_error());
+    } catch ( SoapFault $oErro ) {
+      throw new Exception( $oErro->faultstring );
+    } catch ( Exception $oErro ) {
+      throw $oErro;
+    }
   }
 
   /**
@@ -114,6 +144,9 @@ class ConsultaDados {
     }
 
     $sCaminhoMetodo = DBFileExplorer::getCaminhoArquivo(ConsultaDados::PATH_REQUISICOES, $sMetodo.'.xml');
+
+    // verifica se tem modificacao para o xml
+    $sCaminhoMetodo = modification($sCaminhoMetodo);
 
     if ( !$sCaminhoMetodo ) {
       throw new SoapFault("e-Cidade", "Metodo nao Encontrado. Contate Suporte.");
@@ -149,36 +182,24 @@ class ConsultaDados {
     }
 
     $rsSQL = pg_get_result( $this->rsConn );
+    $sErro = pg_last_error();
 
-    if ( !$rsSQL ) {
-      throw new SoapFault("e-Cidade", "Erro ao Buscar os Dados do WebService. Contate Suporte. " . pg_last_error());
-    }
-    $sLog                        = "--------------------------------------------------------------------\n";
-    $sLog                       .= "CHAMADA PARA O MÉTODO: \n{$sMetodo}                                 \n";
-    $sLog                       .= "--------------------------------------------------------------------\n";
-    $sLog                       .= "FILTROS PARA CONSULTA:\n".print_r($this->aParametrosEntrada, 1)."   \n";
-    $sLog                       .= "--------------------------------------------------------------------\n";
-    $sLog                       .= "CAMPOS INFORMADOS PARA RETORNO:\n ". print_r($this->aResultado, 1)."\n";
-    $sLog                       .= "--------------------------------------------------------------------\n";
-    $sLog                       .= "QUERY EXECUTADA:\n". $sSQL;
-    $sLog                       .= "--------------------------------------------------------------------\n";
-    $sLog                       .= "TEMPO DE EXECUCAO: \n".$iTempoExecucaoQuery . "seg\n";
+    if ( !empty($sErro) ) {
 
-    $oDaoDBLogsAcessa            = new cl_db_logsacessa();
-    $oDaoDBLogsAcessa->ip        = $_SERVER['REMOTE_ADDR'];
-    $oDaoDBLogsAcessa->data      = date("Y-m-d");
-    $oDaoDBLogsAcessa->hora      = date("H:i");
-    $oDaoDBLogsAcessa->obs       = pg_escape_string($sLog);
-    $oDaoDBLogsAcessa->arquivo   = "1";
-    $oDaoDBLogsAcessa->id_usuario= 1;
-    $oDaoDBLogsAcessa->id_modulo = 1;
-    $oDaoDBLogsAcessa->id_item   = isset($_SESSION['DB_itemmenu_acessado']) ? $_SESSION['DB_itemmenu_acessado'] : 9605;
-    $oDaoDBLogsAcessa->coddepto  = 1;
-    $oDaoDBLogsAcessa->instit    = $oDados->codigo;
-    $oDaoDBLogsAcessa->incluir(null);
+      $sLog                        = "--------------------------------------------------------------------\n";
+      $sLog                       .= "CHAMADA PARA O MÉTODO: \n{$sMetodo}                                 \n";
+      $sLog                       .= "--------------------------------------------------------------------\n";
+      $sLog                       .= "FILTROS PARA CONSULTA:\n".print_r($this->aParametrosEntrada, 1)."   \n";
+      $sLog                       .= "--------------------------------------------------------------------\n";
+      $sLog                       .= "CAMPOS INFORMADOS PARA RETORNO:\n ". print_r($this->aResultado, 1)."\n";
+      $sLog                       .= "--------------------------------------------------------------------\n";
+      $sLog                       .= "QUERY EXECUTADA:\n". $sSQL;
+      $sLog                       .= "--------------------------------------------------------------------\n";
+      $sLog                       .= "ERRO OCORRIDO:\n". pg_last_error() . "\n";
+      $sLog                       .= "--------------------------------------------------------------------\n";
+      $sLog                       .= "TEMPO DE EXECUCAO: \n".$iTempoExecucaoQuery . "seg\n";
 
-    if ( $oDaoDBLogsAcessa->erro_status == "0" ) {
-      throw new SoapFault("e-Cidade","Erro ao processar registros de Log.\n" . utf8_encode($oDaoDBLogsAcessa->erro_msg));
+      throw new DBException($sLog, $oDados->codigo);
     }
 
     $iMemoriaLimite = preg_replace('/[a-zA-Z]/',"",ini_get("memory_limit")) * 1024 * 1024;
@@ -212,6 +233,8 @@ class ConsultaDados {
 
     try {
 
+      file_put_contents('tmp/debug', print_r(['recurso solicitado: ', $sCaminhoXML], true));
+
       $aLabelsInformados  = $this->aResultado;
       $aFiltrosInformados = $this->aParametrosEntrada;
 
@@ -244,6 +267,12 @@ class ConsultaDados {
       foreach ( $oNodeCampos->getElementsByTagName("campo") as $iIndiceNode => $oNodeCampo ) {
 
         $sNomeCampo               = $oNodeCampo->getAttribute("campo");
+        if ( strpos($sNomeCampo,'$') ) {
+          foreach ($aFiltrosInformados as $key => $variavel) {
+
+            $sNomeCampo = str_replace("\${$key}", $variavel, $sNomeCampo);
+          }
+        }
         $sLabelCampo              = $oNodeCampo->getAttribute("label");
         $aCamposXML[$sLabelCampo] = "{$sNomeCampo} as {$sLabelCampo}";
       }
@@ -275,12 +304,18 @@ class ConsultaDados {
        * Montando Filtros
        */
       $aFiltros = array();
+      file_put_contents('tmp/debug', print_r(['filtros informados: ', $aFiltrosInformados], true), FILE_APPEND);
       foreach ( $oNodeFiltros->getElementsByTagName('filtro') as $oNodeFiltro ) {
 
         $sLabelFiltro         = $oNodeFiltro->getAttribute("label");
         $sCondicao            = $oNodeFiltro->getAttribute("condicao");
         $lCondicaoObrigatorio = $oNodeFiltro->getAttribute("obrigatorio") == "true";
+        $lAutoexecuta         = $oNodeFiltro->getAttribute("autoexecuta");
 
+        if (!empty($lAutoexecuta)) {
+            $aFiltros[] = $sCondicao;
+            continue;
+        }
 
         if ( !empty($sLabelFiltro)  && !array_key_exists($sLabelFiltro, $aFiltrosInformados) && $lCondicaoObrigatorio ) {
           throw new Exception("O Campo $sLabelFiltro deve ser passado por parametro");
@@ -296,6 +331,7 @@ class ConsultaDados {
         }
         $aFiltros[] = $sCondicao;
       }
+      file_put_contents('tmp/debug', print_r(['filtros: ', $aFiltros], true), FILE_APPEND);
 
       $sGroupBy         = $oNodeAgrupamento->getAttribute("campos");
       $sOrderBy         = $oNodeOrdenacao->getAttribute("campos");
@@ -327,6 +363,7 @@ class ConsultaDados {
       $sSQL.= " {$sGroupBy}       \n";
       $sSQL.= " {$sOrderBy}       \n";
 
+      file_put_contents('tmp/sql.sql', $sSQL);
       return $sSQL;
     } catch ( Exception $eErro ) {
 

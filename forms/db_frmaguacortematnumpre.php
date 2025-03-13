@@ -26,7 +26,7 @@
  */
 
 //MODULO: agua
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $claguacortematnumpre->rotulo->label();
 
 $clrotulo = new rotulocampo;
@@ -114,7 +114,7 @@ $clrotulo->label("x44_total");
 		     where x44_codcortemat = $x44_codcortemat";
 
 	//db_lovrot($sql2, 15, "()", "", "");
-	$result = pg_exec($sql2);
+	$result = db_query($sql2);
 	$rows   = pg_num_rows($result);
 	
 	db_fieldsmemory($result, 0);

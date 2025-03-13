@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_usuariosonline.php';
-require_once 'libs/JSON.php';
-require_once 'libs/db_utils.php';
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/JSON.php");
+require_once modification("libs/db_utils.php");
 
-include("classes/db_unidades_classe.php" );
+include(modification("classes/db_unidades_classe.php" ));
 $objJson = new services_json();
 $sName   = $_POST["string"];
 $array   ="";
 $sql     ="";
 
 //Classe envolvida
-include_once("classes/db_lab_sinonima_classe.php");
+include_once(modification("classes/db_lab_sinonima_classe.php"));
 $olab_sinonima = new cl_lab_sinonima;
 
 $rResult = $olab_sinonima->sql_record($olab_sinonima->sql_query(""," la10_i_codigo as cod, la10_c_descr as label","","  la10_c_descr ilike '$sName%' "));
 if ($olab_sinonima->numrows > 0){
-   $array = db_utils::getColectionByRecord($rResult,false,false,true);
+   $array = db_utils::getCollectionByRecord($rResult,false,false,true);
 }
 
 echo $objJson->encode($array);

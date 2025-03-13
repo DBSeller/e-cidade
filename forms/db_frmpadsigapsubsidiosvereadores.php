@@ -108,14 +108,14 @@ function js_pesquisac16_numcgm(mostra) {
 
   if (mostra==true) {
   
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_cgm',
                         'func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome',
                         'Pesquisar',
                         true);
   } else {
      if (document.form1.c16_numcgm.value != '') { 
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_cgm',
                             'func_nome.php?pesquisa_chave='+document.form1.c16_numcgm.value+
                             '&funcao_js=parent.js_mostracgm',
@@ -143,7 +143,7 @@ function js_mostracgm1(chave1, chave2) {
   db_iframe_cgm.hide();
 }
 function js_pesquisa() {
-  js_OpenJanelaIframe('top.corpo', 
+  js_OpenJanelaIframe('CurrentWindow.corpo', 
                       'db_iframe_padsigapsubsidiosvereadores',
                       'func_padsigapsubsidiosvereadores.php?funcao_js=parent.js_preenchepesquisa|c16_sequencial',
                       'Pesquisar Subsídios',

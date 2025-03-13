@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_taxa_classe.php");
-include("dbforms/db_funcoes.php");
-require_once("classes/db_favorecidotaxa_classe.php");
+require_once (modification("libs/db_stdlib.php"));
+require_once (modification("libs/db_conecta.php"));
+require_once (modification("libs/db_sessoes.php"));
+require_once (modification("libs/db_usuariosonline.php"));
+require_once (modification("classes/db_taxa_classe.php"));
+require_once (modification("dbforms/db_funcoes.php"));
+require_once (modification("classes/db_favorecidotaxa_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($_POST);
 $cltaxa           = new cl_taxa;
@@ -67,7 +67,7 @@ if (isset($excluir)) {
 <body class='body-default' >
 <div class ='container'>
   <?php
-    include("forms/db_frmtaxa.php");
+    include(modification("forms/db_frmtaxa.php"));
   ?>
 </div>
 </body>
@@ -94,7 +94,7 @@ if (isset($chavepesquisa)) {
   <script>
       function js_db_libera(){
          parent.document.formaba.favorecido.disabled = false;
-         top.corpo.iframe_favorecido.location.href='arr1_taxaFavorecido001.php?ar36_sequencial=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_favorecido.location.href='arr1_taxaFavorecido001.php?ar36_sequencial=".@$chavepesquisa."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('favorecido');";

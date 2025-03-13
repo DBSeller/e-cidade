@@ -26,7 +26,7 @@
  */
 
 //MODULO: issqn
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clissnotaavulsaservico->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -59,7 +59,7 @@ if(isset($db_opcaoal)){
 $SQLTotLinhas  = "select q62_discriminacao";
 $SQLTotLinhas .= "  from issnotaavulsaservico ";
 $SQLTotLinhas .= " where q62_issnotaavulsa = {$get->q51_sequencial}";
-$rsTotLInhas  = pg_query($SQLTotLinhas);
+$rsTotLInhas  = db_query($SQLTotLinhas);
 $totlinhas    = 0;
 if (pg_num_rows($rsTotLInhas) > 0){
 
@@ -186,7 +186,7 @@ db_textarea('q62_obs',0,57,$Iq62_obs,true,'text',$db_opcao,"onkeyup='js_controla
       $sql .= "sum(q62_vlrbasecalc) as q62_vlrbasecalc";
 			$sql .= " from issnotaavulsaservico
  									where q62_issnotaavulsa = ".$q62_issnotaavulsa;
-      $oTotal = db_utils::fieldsMemory(pg_query($sql),0);            
+      $oTotal = db_utils::fieldsMemory(db_query($sql),0);            
       $totalissqn = $oTotal->totalissqn;
       if (($lGeraNota and $emitenota) or ($oPar->q60_notaavulsavlrmin > $totalissqn )){
 
@@ -258,10 +258,10 @@ function js_cancelar(){
 }
 function js_pesquisaq62_issnotaavulsa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_issnotaavulsaservico','db_iframe_issnotaavulsa','func_issnotaavulsa.php?funcao_js=parent.js_mostraissnotaavulsa1|q51_sequencial|q51_sequencial','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_issnotaavulsaservico','db_iframe_issnotaavulsa','func_issnotaavulsa.php?funcao_js=parent.js_mostraissnotaavulsa1|q51_sequencial|q51_sequencial','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.q62_issnotaavulsa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_issnotaavulsaservico','db_iframe_issnotaavulsa','func_issnotaavulsa.php?pesquisa_chave='+document.form1.q62_issnotaavulsa.value+'&funcao_js=parent.js_mostraissnotaavulsa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_issnotaavulsaservico','db_iframe_issnotaavulsa','func_issnotaavulsa.php?pesquisa_chave='+document.form1.q62_issnotaavulsa.value+'&funcao_js=parent.js_mostraissnotaavulsa','Pesquisa',false);
      }else{
        document.form1.q51_sequencial.value = ''; 
      }

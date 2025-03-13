@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
-$oDaoMatricula  = db_utils::getdao("matricula");
-$oDaoCalendario = db_utils::getdao("calendario");
+$oDaoMatricula  = new cl_matricula();
+$oDaoCalendario = new cl_calendario();
 $db_opcao       = 1;
 $db_botao       = true;
 $sNomeEscola    = db_getsession("DB_nomedepto");
@@ -55,8 +55,8 @@ $iModulo        = db_getsession("DB_modulo");
   <link href="estilos.css" rel="stylesheet" type="text/css">
  </head>
  <body class="body-default">
-  <div class="container">
-  <?MsgAviso(db_getsession("DB_coddepto"),"escola");?>
+  <div class="container" style="padding-left: 170px; padding-right: 170px ">
+  <?php MsgAviso(db_getsession("DB_coddepto"),"escola"); ?>
   <a name="topo"></a>
   <form name="form1" method="post" action="">
 
@@ -69,7 +69,7 @@ $iModulo        = db_getsession("DB_modulo");
 
               echo '<td align="left">';
               echo ' <strong>Selecione a escola:</strong>';
-                     $oDaoEscola     = db_utils::getdao('escola');
+                     $oDaoEscola     = new cl_escola();
                      $sSqlEscola     = $oDaoEscola->sql_query_file("", "ed18_i_codigo, ed18_c_nome", "", "");
                      $rsResultEscola = $oDaoEscola->sql_record($sSqlEscola);
                      $iLinhas        = $oDaoEscola->numrows;
@@ -170,7 +170,7 @@ function js_escola(escola) {
 function js_retornoPesquisaCalendario(oRetorno) {
 
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
   if (oRetorno.iStatus  != 1) {
@@ -232,7 +232,7 @@ function js_etapa(calendario) {
 function js_retornoPesquisaEtapa(oRetorno) {
 
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
   if (oRetorno.iStatus  != 1) {

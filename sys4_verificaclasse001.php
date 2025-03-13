@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 db_postmemory($HTTP_POST_VARS);
 
 if(isset($verifica)){
@@ -75,7 +75,7 @@ if(isset($verifica)){
 
 	// drop a tabela
 	$sqldrop = "DROP TABLE temp_classeatualiza";
-	$resultdrop = @pg_query($sqldrop);
+	$resultdrop = @db_query($sqldrop);
 	// cria a tabela
 	$sqlcria = "
 				CREATE TABLE temp_classeatualiza(
@@ -88,7 +88,7 @@ if(isset($verifica)){
 				operacao varchar(20)
 				);
 				";
-	$resultcria=pg_query($sqlcria);
+	$resultcria=db_query($sqlcria);
 
 	$dir = "classes/";
 
@@ -157,7 +157,7 @@ if(isset($verifica)){
 
 													// para pegaro codigo da tabela
 													$sqltab = "select codarq from db_sysarquivo where nomearq = '$tabela'";
-													$resulttab = pg_query($sqltab);
+													$resulttab = db_query($sqltab);
 													$linhatab = pg_numrows($resulttab);
 													if($linhatab>0){
 														
@@ -182,7 +182,7 @@ if(isset($verifica)){
 														$sql = "select * from db_sysclasses where codarq = $codigo and nomclasse = '$met'";
 	
 														// ver tabela db_sysclasses
-														$result = pg_query($sql);
+														$result = db_query($sql);
 														$linhasres = pg_num_rows($result);
 														if($linhasres>0){
 															db_fieldsmemory($result,0);
@@ -216,7 +216,7 @@ if(isset($verifica)){
 																										 '".addslashes($fontenovo)."',
 																										 '$operacao')";
 
-													$resultinc = pg_query($sqlinc) or die($sqlinc);
+													$resultinc = db_query($sqlinc) or die($sqlinc);
 													}
 													/*
 														echo"

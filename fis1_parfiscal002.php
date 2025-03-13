@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,27 +25,27 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_parfiscal_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 
-$clparfiscal = new cl_parfiscal;
-$db_opcao    = 22;
-$db_botao    = false;
-$lSqlErro    = false;
-$y32_instit  = db_getsession('DB_instit');
+$oDaoParfiscal = new cl_parfiscal;
+$db_opcao      = 22;
+$db_botao      = false;
+$lSqlErro      = false;
+$y32_instit    = db_getsession('DB_instit');
 
 if (isset($alterar)) {
 
   $y32_instit = db_getsession('DB_instit');
 
   if( $utilizadocpadrao == 0 ){
+
     $HTTP_POST_VARS['y32_templateautoinfracao'] = "null";
     $y32_templateautoinfracao                   = "null";
   }
@@ -58,32 +58,36 @@ if (isset($alterar)) {
     $y32_templatealvarasanitariopermanente                   = "null";
   } else if (empty($y32_templatealvarasanitarioprovisorio)) {
 
-    $clparfiscal->erro_msg    = "Campo Template Padrão Alvará Sanitário Provisório não informado.";
-    $clparfiscal->erro_status = "0";
-    $clparfiscal->erro_campo  = "y32_templatealvarasanitarioprovisorio";
+    $oDaoParfiscal->erro_msg    = "Campo Template Padrão Alvará Sanitário Provisório não informado.";
+    $oDaoParfiscal->erro_status = "0";
+    $oDaoParfiscal->erro_campo  = "y32_templatealvarasanitarioprovisorio";
   }else if (empty($y32_templatealvarasanitariopermanente)) {
 
-    $clparfiscal->erro_msg    = "Campo Template Padrão Alvará Sanitário Permanente não informado.";
-    $clparfiscal->erro_status = "0";
-    $clparfiscal->erro_campo  = "y32_templatealvarasanitariopermanente";
+    $oDaoParfiscal->erro_msg    = "Campo Template Padrão Alvará Sanitário Permanente não informado.";
+    $oDaoParfiscal->erro_status = "0";
+    $oDaoParfiscal->erro_campo  = "y32_templatealvarasanitariopermanente";
   }
 
-  if ($clparfiscal->erro_status != "0") {
+  if ($oDaoParfiscal->erro_status != "0") {
+
+    $oDaoParfiscal->y32_calculavistoriamei = "true";
+    if($y32_calculavistoriamei == 'f'){
+      $oDaoParfiscal->y32_calculavistoriamei = "false";
+    }
 
     db_inicio_transacao();
 
-    $result = $clparfiscal->sql_record($clparfiscal->sql_query_param());
-    if($result == false || $clparfiscal->numrows == 0) {
+    $result = $oDaoParfiscal->sql_record($oDaoParfiscal->sql_query_param());
+    if($result == false || $oDaoParfiscal->numrows == 0) {
 
-      $clparfiscal->incluir($y32_instit);
-      if ($clparfiscal->erro_status == '0') {
+      $oDaoParfiscal->incluir($y32_instit);
+      if ($oDaoParfiscal->erro_status == '0') {
         $lSqlErro = true;
       }
     } else {
 
-      $clparfiscal->alterar($y32_instit);
-
-      if ($clparfiscal->erro_status == '0') {
+      $oDaoParfiscal->alterar($y32_instit);
+      if ($oDaoParfiscal->erro_status == '0') {
         $lSqlErro = true;
       }
     }
@@ -92,9 +96,9 @@ if (isset($alterar)) {
   }
 } else {
 
-  $result   = $clparfiscal->sql_record($clparfiscal->sql_query_param($y32_instit,"*",null,""));
+  $result = $oDaoParfiscal->sql_record($oDaoParfiscal->sql_query_param($y32_instit,"*",null,""));
 
-  if ($result != false && $clparfiscal->numrows > 0) {
+  if ($result != false && $oDaoParfiscal->numrows > 0) {
     db_fieldsmemory($result,0);
   }
 }
@@ -114,7 +118,7 @@ $db_botao = true;
   <body class="body-default">
     <div class="container">
       <?php
-    	  include("forms/db_frmparfiscal.php");
+    	  require_once(modification("forms/db_frmparfiscal.php"));
     	?>
     </div>
     <?php
@@ -129,19 +133,19 @@ $db_botao = true;
 
 if (isset($alterar)) {
 
-  if ($clparfiscal->erro_status == "0") {
+  if ($oDaoParfiscal->erro_status == "0") {
 
-    $clparfiscal->erro(true, false);
+    $oDaoParfiscal->erro(true, false);
     $db_botao = true;
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
 
-    if ($clparfiscal->erro_campo != "") {
+    if ($oDaoParfiscal->erro_campo != "") {
 
-      echo "<script> document.form1.".$clparfiscal->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$clparfiscal->erro_campo.".focus();</script>";
+      echo "<script> document.form1.".$oDaoParfiscal->erro_campo.".style.backgroundColor='#99A9AE';</script>";
+      echo "<script> document.form1.".$oDaoParfiscal->erro_campo.".focus();</script>";
     }
   } else {
-    $clparfiscal->erro(true,true);
+    $oDaoParfiscal->erro(true,true);
   }
 }
 

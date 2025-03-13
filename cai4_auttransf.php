@@ -1,39 +1,39 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libcaixa.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("model/agendaPagamento.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libcaixa.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification(Modification::getFile('model/agendaPagamento.model.php')));
 
 /**
  * Chamada de função criada para bloquear o acesso ao usuário no menu
@@ -42,17 +42,17 @@ db_validarMenuPCASP(db_getsession("DB_itemmenu_acessado", false));
 
 //------------------------------------------------------
 //   Arquivos que verificam se o boletim já foi liberado ou naum
-include ("classes/db_boletim_classe.php");
+include(modification("classes/db_boletim_classe.php"));
 $clverficaboletim = new cl_verificaboletim(new cl_boletim);
 //------------------------------------------------------
 
-include ("classes/db_slipanul_classe.php");
-include ("classes/db_cfautent_classe.php");
-include ("classes/db_empageslip_classe.php");
-include ("classes/db_empagemov_classe.php");
-include ("classes/db_saltes_classe.php");
-include ("classes/db_slip_classe.php");
-include ("classes/db_corconf_classe.php");
+include(modification("classes/db_slipanul_classe.php"));
+include(modification("classes/db_cfautent_classe.php"));
+include(modification("classes/db_empageslip_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("classes/db_saltes_classe.php"));
+include(modification("classes/db_slip_classe.php"));
+include(modification("classes/db_corconf_classe.php"));
 
 $clslipanul = new cl_slipanul;
 $clcorconf = new cl_corconf;
@@ -82,7 +82,7 @@ $ip = db_getsession("DB_ip");
 $porta = 4444;
 
 $sqltipaut = "select k11_tipautent from cfautent where k11_ipterm = '$ip' and k11_instit = ".db_getsession("DB_instit");
-$resulttipaut = pg_exec($sqltipaut);
+$resulttipaut = db_query($sqltipaut);
 if (pg_numrows($resulttipaut) > 0) {
 	db_fieldsmemory($resulttipaut, 0);
 }
@@ -134,7 +134,7 @@ if (isset ($retorno) || isset ($autentica) || isset ($estorna)) {
 				       left outer join conhist 		on slip.k17_hist = conhist.c50_codhist
 		          where slip.k17_codigo = $retorno and k17_instit = ".db_getsession('DB_instit')."
 							  and k17_situacao <> 4";
-		$result = @ pg_query($sql);
+		$result = @ db_query($sql);
 		if (pg_numrows($result) > 0) {
 			db_fieldsmemory($result, 0);
 			$credito = $k17_credito;
@@ -150,12 +150,12 @@ if (isset ($autentica) || isset ($estorna)) {
 	if (!isset ($e86_codmov) || ($e86_codmov == '')) {
 		$e86_codmov = '0';
 	}
-	pg_exec("begin");
+	db_query("begin");
 	if (isset ($autentica)) {
 		$sql = "select k17_debito,k17_credito
 			        from slip
 		                where slip.k17_codigo = $numslip and k17_instit = ".db_getsession('DB_instit');
-		$result = pg_exec($sql);
+		$result = db_query($sql);
 		if (pg_numrows($result) == 0) {
 			echo "<script>alert('Slip nao Encontrado.');
 				                 location.href='cai4_auttransf.php';
@@ -165,17 +165,17 @@ if (isset ($autentica) || isset ($estorna)) {
 		if ($k17_debito == 0) {
 			$sql = "update slip set k17_debito = $debito
 					     where k17_codigo = $numslip";
-			$result = pg_exec($sql);
+			$result = db_query($sql);
 		}
 		if ($k17_credito == 0) {
 			$sql = "update slip set k17_credito = $credito
 					     where k17_codigo = $numslip";
-			$result = pg_exec($sql);
+			$result = db_query($sql);
 		}
 		//Aqui limpa os campos de data e motivo do estorno se ele for autenticado novamente
 		$sql = "update slip set k17_dtestorno = null, k17_motivoestorno = ''
 					     where k17_codigo = $numslip";
-		$result = pg_exec($sql);
+		$result = db_query($sql);
 
 		$sql = "select fc_auttransf($numslip,'".date("Y/m/d", db_getsession("DB_datausu"))."','".$ip."',true,$e86_codmov,".db_getsession("DB_instit").")";
 	} else {
@@ -272,11 +272,11 @@ if (isset ($autentica) || isset ($estorna)) {
 	}
 
 	if ($db_erro == "") {
-       pg_exec('commit');
-		//pg_exec('rollback');
+       db_query('commit');
+		//db_query('rollback');
 		db_fieldsmemory($result, 0);
 	} else {
-		pg_exec('rollback');
+		db_query('rollback');
 	}
 	//rotina que irá retorna a variavel k17_autent....
 	//o paulo deve reduzir esse sql... eu tentei mais deu alguns problemas... 18-11-2004
@@ -298,7 +298,7 @@ if (isset ($autentica) || isset ($estorna)) {
 			       left outer join conhist 		on slip.k17_hist = conhist.c50_codhist
 	          where slip.k17_codigo = $retorno and k17_instit = ".db_getsession("DB_instit");
 	//  echo $sql;
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	db_fieldsmemory($result, 0);
 }
 
@@ -425,7 +425,7 @@ if (!isset ($pesquisa) && ($altera == false)) {
 
 	} else {
 		$read_only = "readonly";
-		include ("forms/db_frmslipcons.php");
+		include(modification("forms/db_frmslipcons.php"));
 	}
 }
 
@@ -438,11 +438,11 @@ db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsessio
 //------------SLIP
 function js_slip(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_slip','func_slip.php?valida=<>4&funcao_js=parent.js_mostraslip|k17_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_slip','func_slip.php?valida=<>4&funcao_js=parent.js_mostraslip|k17_codigo','Pesquisa',true);
   }else{
     codigo  =  document.form1.k17_codigo.value;
     if(codigo != ''){
-       js_OpenJanelaIframe('top.corpo','db_iframe_slip','func_slip.php?valida=<>4&pesquisa_chave='+codigo+'&funcao_js=parent.js_mostraslip02','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_slip','func_slip.php?valida=<>4&pesquisa_chave='+codigo+'&funcao_js=parent.js_mostraslip02','Pesquisa',false);
     }
   }
 }
@@ -495,7 +495,7 @@ if ($k11_tipautent == 1) {
 /////////////////////////////////////////////////////////////////////////////////
 
 if ((isset ($autentica) || isset ($estorna)) && isset ($fc_auttransf)) {
-	$autent = pg_exec("select k11_aut1,k11_aut2 from cfautent where k11_instit = ".db_getsession("DB_instit")." and k11_ipterm = '".$ip."'");
+	$autent = db_query("select k11_aut1,k11_aut2 from cfautent where k11_instit = ".db_getsession("DB_instit")." and k11_ipterm = '".$ip."'");
 	$aut1 = split(",", pg_result($autent, 0, 0));
 	$aut2 = split(",", pg_result($autent, 0, 1));
 	$str_aut1 = "";
@@ -525,7 +525,7 @@ if (isset ($reautentica) || (isset ($autentica) || isset ($estorna)) && isset ($
 
 		//die($fc_auttransf);
 
-    require_once 'model/impressaoAutenticacao.php';
+    require_once modification("model/impressaoAutenticacao.php");
     $oImpressao = new impressaoAutenticacao($str_aut1);
     $oModelo = $oImpressao->getModelo();
 		$oModelo->imprimir();

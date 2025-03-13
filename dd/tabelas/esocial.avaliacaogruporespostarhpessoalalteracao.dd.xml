@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010312' name='avaliacaogruporespostarhpessoalalteracao' description="avaliacaogruporespostarhpessoalalteracao" prefix="eso17" label="avaliacaogruporespostarhpessoalalteracao" type="0">
+  <fields>
+    <field codigo="1009929" 
+           campo_api='' 
+           name="eso17_avaliacaogruporesposta" 
+           conteudo="int4" 
+           description="Grupo de Resposta" 
+           inivalue="0" 
+           label="Grupo de Resposta" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Grupo de Resposta" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009930" 
+           campo_api='' 
+           name="eso17_rhpessoal" 
+           conteudo="int4" 
+           description="Matrícula" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009928" 
+           campo_api='' 
+           name="eso17_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.avaliacaogruporespostarhpessoalalteracao_eso17_sequencial_seq' />
+     
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso17_avaliacaogruporesposta"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="eso17_rhpessoal" reference="rh01_regist" /> 
+    </foreignkey>
+    <foreignkey reference="avaliacaogruporesposta" inner='t'>
+      <fieldfk name="eso17_avaliacaogruporesposta" reference="db107_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

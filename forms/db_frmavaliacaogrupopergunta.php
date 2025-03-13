@@ -1,32 +1,32 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Habitacao
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo                 = new rotulocampo;
 
@@ -34,44 +34,45 @@ $clavaliacao->rotulo->label();
 $clavaliacaogrupopergunta->rotulo->label();
 
 if (isset($oPost->db_opcaoal)) {
-	
+
   $db_opcao = 33;
   $db_botao = false;
 } else if (isset($oPost->opcao) && $oPost->opcao == "alterar") {
-	
+
   $db_botao = true;
   $db_opcao = 2;
   echo "<script>parent.document.formaba.avaliacaopergunta.disabled=false;</script>";
   echo "<script>
           var sUrl = 'hab1_avaliacaopergunta001.php?db103_avaliacaogrupopergunta=".$db102_sequencial."';
-          top.corpo.iframe_avaliacaopergunta.location.href=sUrl;
+          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_avaliacaopergunta.location.href=sUrl;
         </script>";
 } else if (isset($oPost->opcao) && $oPost->opcao == "excluir") {
-	
+
   $db_opcao = 3;
   $db_botao = true;
   echo "<script>parent.document.formaba.avaliacaopergunta.disabled=true;</script>";
 } else {
-	  
+
   $db_opcao = 1;
   $db_botao = true;
   if (isset($oPost->novo) || isset($oPost->excluir) && $sqlerro == false) {
-  	
-    $db102_descricao  = "";
+
+    $db102_descricao      = "";
+		$db102_identificador  = "";
     echo "<script>parent.document.formaba.avaliacaopergunta.disabled=true;</script>";
   }
-  
+
   if (isset($oPost->incluir) && $sqlerro == false || isset($oPost->alterar) && $sqlerro == false) {
-  	
-  	$db_opcao = 2;  	
+
+  	$db_opcao = 2;
     echo "<script>parent.document.formaba.avaliacaopergunta.disabled=false;</script>";
     echo "<script>
             var sUrl = 'hab1_avaliacaopergunta001.php?db103_avaliacaogrupopergunta=".$db102_sequencial."';
-            top.corpo.iframe_avaliacaopergunta.location.href=sUrl;
+            (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_avaliacaopergunta.location.href=sUrl;
           </script>";
   }
-  
-} 
+
+}
 ?>
 <form name="form1" method="post" action="">
 <fieldset>
@@ -81,7 +82,7 @@ if (isset($oPost->db_opcaoal)) {
     <td nowrap title="<?=@$Tdb102_avaliacao?>">
       <b>Código da Avaliação:</b>
     </td>
-    <td width="10"> 
+    <td width="10">
 			<?
 			  db_input('db102_sequencial',10,$Idb102_sequencial,true,'hidden',3,"");
 			  db_input('db102_avaliacao',10,$Idb102_avaliacao,true,'text',3," onchange='js_pesquisadb102_avaliacao(false);'");
@@ -97,7 +98,7 @@ if (isset($oPost->db_opcaoal)) {
     <td nowrap title="<?=@$Tdb102_descricao?>">
       <?=@$Ldb102_descricao?>
     </td>
-    <td colspan="2"> 
+    <td colspan="2">
 			<?
 			  db_input('db102_descricao',50,$Idb102_descricao,true,'text',$db_opcao,"")
 			?>
@@ -107,12 +108,22 @@ if (isset($oPost->db_opcaoal)) {
     <td nowrap title="<?=@$Tdb102_identificador?>">
       <?=@$Ldb102_identificador?>
     </td>
-    <td colspan="2"> 
+    <td colspan="2">
 			<?
 			  db_input('db102_identificador',65,$Idb102_identificador,true,'text',$db_opcao,"")
 			?>
     </td>
   </tr>
+    <tr>
+        <td nowrap title="<?php echo $Tdb102_ordem; ?>" >
+            <label class="bold" for="db102_ordem" id="lbl_db102_ordem"><?php echo $Sdb102_ordem; ?>:</label>
+        </td>
+        <td>
+            <?php
+            db_input('db102_ordem', 4, $Idb102_ordem, true, 'text', $db_opcao,"");
+            ?>
+        </td>
+    </tr>
 </table>
 </fieldset>
 <table>
@@ -121,14 +132,14 @@ if (isset($oPost->db_opcaoal)) {
   </tr>
   <tr>
     <td>
-      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" 
-             type="submit" id="db_opcao" onclick="js_validaCaracteres();";
-             value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" 
+      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>"
+             type="submit" id="db_opcao" onclick="return js_validaCaracteres();";
+             value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"
              <?=($db_botao==false?"disabled":"")?>  >
     </td>
     <td>
-      <input name="novo" 
-             type="button" id="cancelar" value="Novo" onclick="js_cancelar();" 
+      <input name="novo"
+             type="button" id="cancelar" value="Novo" onclick="js_cancelar();"
              <?=($db_opcao==1||isset($db_opcaoal)?"style='visibility:hidden;'":"")?> >
     </td>
   </tr>
@@ -138,13 +149,13 @@ if (isset($oPost->db_opcaoal)) {
 </table>
 <table>
   <tr>
-    <td valign="top"  align="center">  
+    <td valign="top"  align="center">
 	    <?
 	      $sWhere   = "db102_avaliacao = {$db102_avaliacao}";
 			  $chavepri = array("db102_sequencial"=>@$db102_sequencial);
 			  $cliframe_alterar_excluir->chavepri=$chavepri;
 			  $cliframe_alterar_excluir->sql     = $clavaliacaogrupopergunta->sql_query_file(null, "*", "db102_sequencial", $sWhere);
-			  $cliframe_alterar_excluir->campos  ="db102_sequencial,db102_avaliacao,db102_descricao, db102_identificador";
+			  $cliframe_alterar_excluir->campos  ="db102_sequencial,db102_avaliacao,db102_descricao, db102_identificador, db102_ordem";
 			  $cliframe_alterar_excluir->legenda="ITENS LANÇADOS";
 			  $cliframe_alterar_excluir->iframe_height ="160";
 			  $cliframe_alterar_excluir->iframe_width ="600";
@@ -162,7 +173,7 @@ function js_validar(){
 
   var sOpcao = $('db_opcao').value;
   if (sOpcao == 'Excluir') {
-  
+
     if (!confirm('Excluir todas as perguntas para esse grupo?')) {
       return false;
     }
@@ -196,8 +207,8 @@ function js_validaCaracteres() {
     alert('É necessário informar um identificador');
     $('db102_identificador').focus();
     return false;
-  } 
-  
+  }
+
   if (lResultadoInicial) {
 
     var sValorCaracteres      = $F('db102_identificador').substring(1);
@@ -206,12 +217,12 @@ function js_validaCaracteres() {
     var lResultadoCaracteres  = sRegExpCaracteres.test(sValorCaracteres);
     if (!lResultadoCaracteres) {
 
-      alert('São permitidas apenas letras, números e/ou caracter "_" (underline)');
+      alert('Não são permitidos caracteres especiais e espaços');
       return false;
     }
   } else {
 
-    alert('É permitido apenas letra no caracter inicial');
+    alert('Não são permitidos caracteres especiais e espaços');
     return false;
   }
   return true;

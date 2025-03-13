@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_avaliacaoperguntaopcao_classe.php");
-require_once("classes/db_avaliacaopergunta_classe.php");
-require_once("classes/db_avaliacaoresposta_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_avaliacaoperguntaopcao_classe.php"));
+require_once(modification("classes/db_avaliacaopergunta_classe.php"));
+require_once(modification("classes/db_avaliacaoresposta_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -57,6 +57,7 @@ if (isset($oPost->incluir)) {
     $clavaliacaoperguntaopcao->db104_identificador     = $oPost->db104_identificador;
     $clavaliacaoperguntaopcao->db104_aceitatexto       = $oPost->db104_aceitatexto;
     $clavaliacaoperguntaopcao->db104_peso              = $oPost->db104_peso;
+    $clavaliacaoperguntaopcao->db104_valorresposta     = $oPost->db104_valorresposta;
     $clavaliacaoperguntaopcao->incluir(null);
     $erro_msg = $clavaliacaoperguntaopcao->erro_msg;
     if ($clavaliacaoperguntaopcao->erro_status == 0) {
@@ -77,6 +78,7 @@ if (isset($oPost->incluir)) {
     $clavaliacaoperguntaopcao->db104_identificador     = $oPost->db104_identificador;
     $clavaliacaoperguntaopcao->db104_aceitatexto       = $oPost->db104_aceitatexto;
     $clavaliacaoperguntaopcao->db104_peso              = $oPost->db104_peso;
+    $clavaliacaoperguntaopcao->db104_valorresposta     = $oPost->db104_valorresposta;
     $clavaliacaoperguntaopcao->alterar($clavaliacaoperguntaopcao->db104_sequencial);
     $erro_msg = $clavaliacaoperguntaopcao->erro_msg;
     if ($clavaliacaoperguntaopcao->erro_status == 0) {
@@ -165,7 +167,7 @@ fieldset table td:first-child {
   <tr> 
     <td valign="top" bgcolor="#CCCCCC"> 
       <?
-        include("forms/db_frmavaliacaoperguntaopcao.php");
+        include(modification("forms/db_frmavaliacaoperguntaopcao.php"));
       ?>
     </td>
   </tr>

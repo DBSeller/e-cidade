@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcreserva_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcdotacao_classe.php");
-include("libs/db_liborcamento.php");      // funções do orçamento
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcreserva_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("libs/db_liborcamento.php"));      // funções do orçamento
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -78,6 +78,9 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
        echo "<script> alert('Datas inconsistentes ! '); </script>";
   } else {
      db_inicio_transacao();
+     if (!empty($_POST["o80_planoorcamentariolinhapacto"])) {
+         $clorcreserva->o80_planoorcamentariolinhapacto = $_POST["o80_planoorcamentariolinhapacto"];
+     }
      $clorcreserva->incluir($o80_codres);
      db_fim_transacao();      
   } 
@@ -146,7 +149,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-   	  include("forms/db_frmorcreserva.php");
+   	  include(modification("forms/db_frmorcreserva.php"));
 	?>
     </center>
 	</td>
@@ -189,3 +192,4 @@ function js_imprime(res){
   jan.moveTo(0,0);
 }
 </script>
+

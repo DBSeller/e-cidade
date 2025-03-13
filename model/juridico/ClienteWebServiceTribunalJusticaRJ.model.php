@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('std/DBSoapClient.php');
-require_once("classes/db_parjuridico_classe.php");
+require_once(modification('std/DBSoapClient.php'));
+require_once(modification("classes/db_parjuridico_classe.php"));
 /**
  * Classe para cliente de webservice do tribunal de justiça RJ
  * @author Alberto Ferri Neto <alberto@dbseller.com.br>

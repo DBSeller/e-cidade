@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,7 +31,6 @@
  */
  $ConfigINI = parse_ini_file("db_config.ini");
 
- 
 /**
  *  Configuração base Prefeitura
  */
@@ -61,6 +60,11 @@
 		                    user={$ConfigConexaoDestino["user"]} 
 		                    password={$ConfigConexaoDestino["password"]}";
 
+
+/**
+ * Adicionado time() para leitura pelo Zabbix.
+ */
+db_log(time(), $sArquivoLog,$iParamLog);
 	                   
  db_log("- BASE PARA IMPORTACAO  Destino: $sDataSourceDestino", $sArquivoLog,$iParamLog);
 

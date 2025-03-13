@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $db_opcao = 1;
 $db_botao = true;
@@ -120,7 +120,7 @@ $db_botao = true;
          $where
          ORDER BY datahr desc,campotext asc,db_acountkey.id_acount desc,db_syscampo.codcam asc
         ";
- $result = pg_query($sql);
+ $result = db_query($sql);
  $linhas = pg_num_rows($result);
  //db_criatabela($result);
  if($linhas>0){
@@ -203,7 +203,7 @@ $db_botao = true;
 </html>
 <script>
 function js_pesquisaed90_c_tabela(){
- js_OpenJanelaIframe('top.corpo','db_iframe_tabela','func_tabelalog_edu.php?funcao_js=parent.js_mostratabela|nomearq|nomemod','Pesquisa de Tabelas',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabela','func_tabelalog_edu.php?funcao_js=parent.js_mostratabela|nomearq|nomemod','Pesquisa de Tabelas',true);
 }
 function js_mostratabela(chave1,chave2){
  document.form1.ed90_c_tabela.value = chave1;
@@ -245,7 +245,7 @@ function Registro($tabela,$valor){
   $sql = "";
  }
  if($sql!=""){
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $linhas = pg_num_rows($result);
   if($linhas>0){
    $ncampos = pg_num_fields($result);

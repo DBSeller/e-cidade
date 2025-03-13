@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -776,6 +776,32 @@ class cl_vtffunc {
        }
      }
      return $sql;
+  }
+
+  /**
+   * @param array $aCampos
+   * @param array $aWhere
+   * @return string
+   */
+  public function sqlVTServidorDia($aCampos = array(), $aWhere = array(), $sOrdem = '') {
+
+      $sCampos = count($aCampos) == 0 ? '*' : implode(', ', $aCampos);
+      $sWhere = count($aWhere) == 0 ? '' : ' where ' . implode(' AND ', $aWhere);
+      $sOrdem = !empty($sOrdem) ? ' order by ' . $sOrdem : '';
+
+      $sSql  = "select {$sCampos} ";
+      $sSql .= " from vtffunc ";
+      $sSql .= "      inner join vtfempr      on vtfempr.r16_anousu      = vtffunc.r17_anousu ";
+      $sSql .= "                             and vtfempr.r16_mesusu      = vtffunc.r17_mesusu ";
+      $sSql .= "                             and vtfempr.r16_codigo      = vtffunc.r17_codigo ";
+      $sSql .= "      inner join rhempresavt  on rhempresavt.rh35_codigo = vtfempr.r16_empres::integer ";
+      $sSql .= "      inner join vtfdias      on vtfdias.r63_anousu      = vtffunc.r17_anousu ";
+      $sSql .= "                             and vtfdias.r63_mesusu      = vtffunc.r17_mesusu ";
+      $sSql .= "                             and vtfdias.r63_regist      = vtffunc.r17_regist ";
+      $sSql .= " {$sWhere} ";
+      $sSql .= " {$sOrdem} ";
+
+      return $sSql;
   }
 }
 ?>

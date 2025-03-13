@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 $oJson                  = new services_json();
 $oParametros            = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -97,33 +97,37 @@ try {
 
       db_inicio_transacao();
 
-      $oDaoEmpreendimento->am05_nome        = db_stdClass::normalizeStringJsonEscapeString($oParametros->sNome);
-      $oDaoEmpreendimento->am05_nomefanta   = db_stdClass::normalizeStringJsonEscapeString($oParametros->sNomeFanta);
-      $oDaoEmpreendimento->am05_numero      = $oParametros->iNumero;
-      $oDaoEmpreendimento->am05_complemento = db_stdClass::normalizeStringJsonEscapeString($oParametros->sComplemento);
-      $oDaoEmpreendimento->am05_cep         = $oParametros->iCep;
-      $oDaoEmpreendimento->am05_bairro      = $oParametros->iCodigoBairro;
-      $oDaoEmpreendimento->am05_ruas        = $oParametros->iCodigoLogradouro;
-      $oDaoEmpreendimento->am05_cnpj        = $oParametros->iCnpj;
-      $oDaoEmpreendimento->am05_cgm         = $oParametros->iNumcgm;
-
       if ( !empty( $oParametros->iCodigoEmpreendimento ) ) {
 
-        $oDaoEmpreendimento->am05_sequencial = $oParametros->iCodigoEmpreendimento;
-        $oDaoEmpreendimento->alterar( $oDaoEmpreendimento->am05_sequencial );
-        $oRetorno->iCodigoEmpreendimento = $oDaoEmpreendimento->am05_sequencial;
-        $oRetorno->sMensagem             = urlencode( _M( MENSAGENS . 'sucesso_alterar_empreendimento' ) . " \nCódigo: {$oRetorno->iCodigoEmpreendimento}" );
+        $oEmpreendimento                 = new Empreendimento( $oParametros->iCodigoEmpreendimento );
+        $oRetorno->sMensagem             = _M( MENSAGENS . 'sucesso_alterar_empreendimento' );
       } else {
 
-        $oDaoEmpreendimento->incluir(null);
-        $oRetorno->iCodigoEmpreendimento = $oDaoEmpreendimento->am05_sequencial;
-        $oRetorno->sMensagem             = urlencode( _M( MENSAGENS . 'sucesso_cadastrar_empreendimento' ) . " \nCódigo: {$oRetorno->iCodigoEmpreendimento}" );
+        $oEmpreendimento                 = new Empreendimento();
+        $oRetorno->sMensagem             = _M( MENSAGENS . 'sucesso_cadastrar_empreendimento' );
       }
 
-      if ($oDaoEmpreendimento->erro_status == "0") {
+      $oEmpreendimento->setNome(db_stdClass::normalizeStringJsonEscapeString($oParametros->sNome));
+      $oEmpreendimento->setNomeFantasia(db_stdClass::normalizeStringJsonEscapeString($oParametros->sNomeFanta));
+      $oEmpreendimento->setNumero($oParametros->iNumero);
+      $oEmpreendimento->setComplemento(db_stdClass::normalizeStringJsonEscapeString($oParametros->sComplemento));
+      $oEmpreendimento->setCep($oParametros->iCep);
+      $oEmpreendimento->setBairro($oParametros->iCodigoBairro);
+      $oEmpreendimento->setRuas($oParametros->iCodigoLogradouro);
+      $oEmpreendimento->setCnpj($oParametros->iCnpj);
+      $oEmpreendimento->setCgm( CgmFactory::getInstanceByCgm( $oParametros->iNumcgm ) );
+      $oEmpreendimento->setAreaTotal($oParametros->nAreaTotal);
+      $oEmpreendimento->setProtocolo($oParametros->iProcesso);
+
+      try {
+
+        $oEmpreendimento->processar();
+        $oRetorno->iCodigoEmpreendimento = $oEmpreendimento->getSequencial();
+        $oRetorno->sMensagem = urlencode( $oRetorno->sMensagem . " \nCódigo: {$oRetorno->iCodigoEmpreendimento}" );
+      } catch (Exception $oError) {
 
         db_fim_transacao(true);
-        throw new BusinessException( _M( MENSAGENS . 'erro_incluir_empreendimento' ) );
+        throw BusinessException( _M( MENSAGENS . $oError->getMessage() ) );
       }
 
       db_fim_transacao(false);

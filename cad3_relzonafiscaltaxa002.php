@@ -1,63 +1,83 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_zonastaxa_classe.php");
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-$clzonastaxa = new cl_zonastaxa;
-$clrotulo = new rotulocampo;
-$clrotulo->label("j50_zona");
-$clrotulo->label("j50_descr");
-$clrotulo->label("j57_valor");
-$pdf = new PDF(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
-$pdf->AddPage();
-$pdf->SetTextColor(0,0,0);
-$pdf->SetFillColor(220);
-$pdf->SetFont('Arial','',11);
-$head1 = "RELATÓRIO DE VALOR DE TAXAS POR ZONA FISCAL: " . $anousu;
-$result = $clzonastaxa->sql_record($clzonastaxa->sql_query(null,null,$anousu,"*","j57_zona"));
-$num = $clzonastaxa->numrows;
-$pdf->SetFont('Arial','B',9);
-$pdf->Cell(15,6,$RLj50_zona."",1,0,"C",1);
-$pdf->Cell(50,6,$RLj50_descr."",1,0,"C",1);
-$pdf->Cell(15,6,"Cod. Rec",1,0,"C",1);
-$pdf->Cell(50,6,"Desc. Receita",1,0,"C",1);
-$pdf->Cell(40,6,$RLj57_valor."",1,1,"C",1);
-for($i=0;$i<$num;$i++) {
-  db_fieldsmemory($result,$i);
-  $pdf->cell(15,6,$j50_zona,1,0,"C");
-  $pdf->cell(50,6,$j50_descr,1,0,"C");
-  $pdf->cell(15,6,$j57_receit,1,0,"C");
-  $pdf->cell(50,6,$k02_descr,1,0,"C");
-  $pdf->cell(40,6,db_formatar($j57_valor,'f'),1,1,"R");
-}
-$pdf->Ln(5);
-$pdf->Output();
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("fpdf151/PDFDocument.php"));
+require_once(modification("fpdf151/fpdf.php"));
+require_once(modification("fpdf151/PDFTable.php"));
 
-?>
+$oGet    = db_utils::postMemory($_GET);
+$iAnousu = $oGet->anousu;
+
+parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+
+$oPdfTable = new PDFTable(PDFDocument::PRINT_LANDSCAPE);
+$aCabecalho     = array( "Código", "Desrição", "Código da Receita", "Descrição da Receita", "Valor" );
+$aLarguraColuna = array( 5, 35, 15, 30, 15 );
+$aLinhamento    = array( PDFDocument::ALIGN_CENTER, PDFDocument::ALIGN_LEFT, PDFDocument::ALIGN_CENTER,
+                         PDFDocument::ALIGN_LEFT, PDFDocument::ALIGN_CENTER );
+
+$oPdfTable->setTotalByPage(true);
+$oPdfTable->setPercentWidth(true);
+$oPdfTable->setHeaders($aCabecalho);
+$oPdfTable->setColumnsWidth($aLarguraColuna);
+$oPdfTable->setColumnsAlign($aLinhamento);
+
+$oPdfTable->addHeaderDescription("Relatório de Valor de Taxas por Zona Fiscal");
+$oPdfTable->addHeaderDescription("");
+$oPdfTable->addHeaderDescription("Exercício: " . $iAnousu);
+
+$oDaoZonasTaxa = new cl_zonastaxa;
+$sSql          = $oDaoZonasTaxa->sql_query(null, null, $iAnousu, "*", "j57_zona");
+$rsZonasTaxa   = $oDaoZonasTaxa->sql_record( $sSql );
+$iTotal        = pg_num_rows($rsZonasTaxa);
+
+if( $rsZonasTaxa ){
+
+  for ($iRow = 0; $iRow < $iTotal; $iRow++) {
+
+    $oZonasTaxas = db_utils::fieldsMemory($rsZonasTaxa, $iRow);
+
+    $oPdfTable->addLineInformation(
+      array(
+        $oZonasTaxas->j50_zona,
+        $oZonasTaxas->j50_descr,
+        $oZonasTaxas->j57_receit,
+        $oZonasTaxas->k02_descr,
+        trim(db_formatar($oZonasTaxas->j57_valor,'f'))
+      )
+    );
+  }
+}
+
+$oPdfTable->printOut();

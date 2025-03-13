@@ -1,0 +1,222 @@
+<?php
+
+use Classes\PostgresMigration;
+
+class M12874ReceitaSaldoArray extends PostgresMigration
+{
+    /**
+     * Change Method.
+     *
+     * Write your reversible migrations using this method.
+     *
+     * More information on writing migrations is available here:
+     * http://docs.phinx.org/en/latest/migrations.html#the-abstractmigration-class
+     *
+     * The following commands can be used in this method and Phinx will
+     * automatically reverse them when rolling back:
+     *
+     *    createTable
+     *    renameTable
+     *    addColumn
+     *    renameColumn
+     *    addIndex
+     *    addForeignKey
+     *
+     * Remember to call "create()" or "update()" and NOT "save()" when working
+     * with the Table class.
+     */
+    public function up()
+    {
+
+        $this->execute(<<<SQL
+
+  create or replace function fc_receitasaldo_array(integer, integer, integer, date, date)
+  returns numeric[]
+language plpgsql
+as $$
+DECLARE
+
+  ANOUSU   	ALIAS FOR $1;
+  CODREC  	ALIAS FOR $2;
+  TIPO     	ALIAS FOR $3;
+  -- 1 SALDO INICIAL DA RECEITA - ORCAMENTO
+  -- 2 SALDO DA RECEITA  MENOS O ARRECADADO
+  -- 3 SALDO DA RECEITA  PELA CONTABILIDADE ...
+  -- 4 SALDO ACUMULADO POR MES
+  DATAUSU	ALIAS FOR $4;
+  DATAFIM	ALIAS FOR $5;
+
+  VALORINI  	FLOAT8 DEFAULT 0;
+  -- VARIAVEL PARA VALOR DA DOTACAO
+  VALORRES	FLOAT8 DEFAULT 0;
+  -- VARIAVEL PARA VALOR DAS RESERVAS DE SALDO
+  VALOR_PREVADICA	FLOAT8 DEFAULT 0;
+  VALOR_PREVADIC	FLOAT8 DEFAULT 0;
+  -- PREVISAO ADICIONAL DA RECEITA
+  SALDO_ANTERIOR	FLOAT8 DEFAULT 0;
+  VALOR_ARRECADADO	FLOAT8 DEFAULT 0;
+
+  VALOR_ARRECADADOA 	FLOAT8 DEFAULT 0;
+
+  VALOR_A_ARRECADAR	FLOAT8 DEFAULT 0;
+
+  --DATAU DATE;
+
+  FONTE VARCHAR(15);
+
+  V_RAISE BOOLEAN DEFAULT FALSE;
+
+BEGIN
+
+  SELECT O70_VALOR,O57_FONTE
+      INTO VALORINI,FONTE
+  FROM ORCRECEITA
+         INNER JOIN ORCFONTES  ON O57_CODFON = O70_CODFON
+                                    AND O70_ANOUSU = O57_ANOUSU
+  WHERE O70_ANOUSU = ANOUSU
+    AND O70_CODREC = CODREC;
+
+  IF VALORINI IS NULL THEN
+    RETURN array[0];
+  END IF;
+
+  IF TIPO = 1 THEN
+    -- RETORNO O VALOR DA DOTACAO COM OU SEM RESERVA
+    RETURN array[1, VALORINI];
+  END IF;
+
+  -- VALOR EMPENHADO
+  IF TIPO IN (2, 4) THEN
+
+    SELECT SUM( CASE C53_TIPO WHEN 100 THEN ROUND(O71_VALOR,2)::FLOAT8
+                              WHEN 101 THEN ROUND(O71_VALOR,2)::FLOAT8
+                              ELSE 0::FLOAT8 END ) AS ARRECADADO,
+           SUM( CASE C53_TIPO WHEN 110 THEN ROUND(O71_VALOR,2)::FLOAT8
+                              WHEN 111 THEN ROUND(O71_VALOR,2)::FLOAT8
+                              ELSE 0::FLOAT8 END ) AS PREVADIC
+        INTO VALOR_ARRECADADOA,
+          VALOR_PREVADICA
+    FROM ORCRECEITAVAL
+           INNER JOIN CONHISTDOC ON O71_CODDOC = C53_CODDOC
+    WHERE O71_ANOUSU = ANOUSU
+      AND O71_CODREC = CODREC
+      AND O71_MES    < EXTRACT(MONTH FROM DATAUSU); /*TO_CHAR(DATAUSU,'MM')::INTEGER ;*/
+
+    /* Tratamento valores nulos */
+    VALOR_ARRECADADOA := COALESCE(VALOR_ARRECADADOA, 0::FLOAT8);
+    VALOR_PREVADICA   := COALESCE(VALOR_PREVADICA,   0::FLOAT8);
+
+    SELECT SUM( CASE C53_TIPO WHEN 100 THEN ROUND(O71_VALOR,2)::FLOAT8
+                              WHEN 101 THEN ROUND(O71_VALOR,2)::FLOAT8
+                              ELSE 0::FLOAT8 END ) AS ARRECADADO,
+           SUM( CASE C53_TIPO WHEN 110 THEN ROUND(O71_VALOR,2)::FLOAT8
+                              WHEN 111 THEN ROUND(O71_VALOR,2)::FLOAT8
+                              ELSE 0::FLOAT8 END ) AS PREVADIC
+        INTO VALOR_ARRECADADO,
+          VALOR_PREVADIC
+    FROM ORCRECEITAVAL
+           INNER JOIN CONHISTDOC ON C53_CODDOC = o71_CODDOC
+    WHERE O71_ANOUSU = ANOUSU
+      AND O71_CODREC = CODREC
+      AND O71_MES   >= EXTRACT(MONTH FROM DATAUSU) /*TO_CHAR(DATAUSU,'MM')::INTEGER*/
+      AND O71_MES   <= EXTRACT(MONTH FROM DATAFIM); /*TO_CHAR(DATAFIM,'MM')::INTEGER* ;*/
+
+  ELSE
+
+    SELECT SUM( CASE C53_TIPO WHEN 100 THEN ROUND(C70_VALOR,2)::FLOAT8
+                              WHEN 101 THEN ROUND(C70_VALOR*-1,2)::FLOAT8
+                              ELSE 0::FLOAT8 END ) AS ARRECADADO,
+           SUM( CASE C53_TIPO WHEN 110 THEN ROUND(C70_VALOR,2)::FLOAT8
+                              WHEN 111 THEN ROUND(C70_VALOR*-1,2)::FLOAT8
+                              ELSE 0::FLOAT8 END ) AS PREVADIC
+        INTO VALOR_ARRECADADOA,
+          VALOR_PREVADICA
+    FROM CONLANCAMREC
+           INNER JOIN CONLANCAM    ON C74_CODLAN = C70_CODLAN
+           INNER JOIN CONLANCAMDOC ON C71_CODLAN = C74_CODLAN
+           INNER JOIN CONHISTDOC ON C53_CODDOC = C71_CODDOC
+    WHERE C74_ANOUSU = ANOUSU
+      AND C74_CODREC = CODREC
+      AND C74_DATA BETWEEN TO_DATE(ANOUSU::TEXT||'-01-01'::TEXT,'YYYY-MM-DD') AND (DATAUSU-1);
+
+    /* Tratamento valores nulos */
+    VALOR_ARRECADADOA := COALESCE(VALOR_ARRECADADOA, 0::FLOAT8);
+    VALOR_PREVADICA   := COALESCE(VALOR_PREVADICA,   0::FLOAT8);
+
+    SELECT SUM( CASE C53_TIPO WHEN 100 THEN ROUND(C70_VALOR,2)::FLOAT8
+                              WHEN 101 THEN ROUND(C70_VALOR*-1,2)::FLOAT8
+                              ELSE 0::FLOAT8 END ) AS ARRECADADO,
+           SUM( CASE C53_TIPO WHEN 110 THEN ROUND(C70_VALOR,2)::FLOAT8
+                              WHEN 111 THEN ROUND(C70_VALOR*-1,2)::FLOAT8
+                              ELSE 0::FLOAT8 END ) AS PREVADIC
+        INTO VALOR_ARRECADADO,VALOR_PREVADIC
+    FROM CONLANCAMREC
+           INNER JOIN CONLANCAM    ON C74_CODLAN = C70_CODLAN
+           INNER JOIN CONLANCAMDOC ON C71_CODLAN = C74_CODLAN
+           INNER JOIN CONHISTDOC   ON C53_CODDOC = C71_CODDOC
+    WHERE C74_ANOUSU = ANOUSU
+      AND C74_CODREC = CODREC
+      AND C74_DATA   BETWEEN DATAUSU AND DATAFIM;
+
+    IF V_RAISE IS TRUE THEN
+      RAISE NOTICE '%',DATAFIM;
+    END IF;
+
+    IF fc_conplano_grupo(ANOUSU,SUBSTR(FONTE,1,2)||'%',9000) IS TRUE THEN
+      VALOR_ARRECADADO  := (VALOR_ARRECADADO  * -1);
+      VALOR_ARRECADADOA := (VALOR_ARRECADADOA * -1);
+      VALOR_PREVADICA   := (VALOR_PREVADICA   * -1);
+      VALOR_PREVADIC    := (VALOR_PREVADIC    * -1);
+    END IF;
+
+  END IF;
+
+  /* Tratamento valores nulos */
+  VALOR_ARRECADADO := COALESCE(VALOR_ARRECADADO, 0::FLOAT8);
+  VALOR_PREVADIC   := COALESCE(VALOR_PREVADIC,   0::FLOAT8);
+
+  IF V_RAISE IS TRUE THEN
+    RAISE NOTICE '%',VALOR_ARRECADADOA;
+    RAISE NOTICE '%',VALOR_ARRECADADO;
+    RAISE NOTICE 'A ARRECADAR %',  (VALOR_ARRECADADO + VALOR_ARRECADADOA) - (VALORINI+VALOR_PREVADICA+VALOR_PREVADIC);
+  END IF;
+
+  -- SALDO inicial
+  -- SALDO ADICIONAL ACUMULADO
+  -- TOTAL INICIAL COM ADICIONAL
+  -- SALDO ANTERIOR ARRECADADO
+  -- SALDO ARRECADADO NO PERIODO
+  -- SALDO ATUAL A ARRECADAR
+  -- SALDO ARRECADADO ACUMULADO
+  -- SALDO ADICIONAL ANTERIOR AO PERIODO
+
+
+  VALOR_A_ARRECADAR :=  (VALORINI+VALOR_PREVADICA+VALOR_PREVADIC) - (VALOR_ARRECADADO + VALOR_ARRECADADOA);
+
+  return ARRAY[1,
+      VALORINI,
+      VALOR_PREVADIC+VALOR_PREVADICA,
+      VALORINI+VALOR_PREVADIC+VALOR_PREVADICA,
+      VALOR_ARRECADADOA,
+      VALOR_ARRECADADO,
+      VALOR_A_ARRECADAR,
+      VALOR_ARRECADADO+VALOR_ARRECADADOA,
+      VALOR_PREVADICA
+]
+  ;
+
+END;
+$$;
+
+
+
+SQL
+    );
+    }
+
+    public function down()
+    {
+
+       $this->execute("drop function fc_receitasaldo_array(integer, integer, integer, date, date)");
+    }
+}

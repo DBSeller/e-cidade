@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
  
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_utils.php");
-  require_once("libs/db_app.utils.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_libdicionario.php");
-  require_once("libs/db_libcontabilidade.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_usuariosonline.php");
-  require_once("dbforms/db_classesgenericas.php");
-  require_once("classes/db_conparametro_classe.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_libdicionario.php"));
+  require_once(modification("libs/db_libcontabilidade.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("dbforms/db_classesgenericas.php"));
+  require_once(modification("classes/db_conparametro_classe.php"));
   
   $oGet = db_utils::postMemory($_GET);
 ?>
@@ -123,7 +123,7 @@ function js_preencheGridContaOrcamento(oAjax) {
 
   js_removeObj("msgBox");
   oGridContasOrcamento.clearAll(true);
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   oRetorno.aContasOrcamento.each(function (oContaOrcamento, iLinha) {
 
     var aLinha = new Array();
@@ -155,7 +155,7 @@ function js_excluirVinculo(iCodigoContaOrcamento) {
                                  onComplete: function(oAjax) {
                                    
                                    js_removeObj("msgBox");
-                                   var oRetorno = eval("("+oAjax.responseText+")");
+                                   var oRetorno = JSON.parse(oAjax.responseText);
                                    alert(oRetorno.message.urlDecode());
                                    js_loadContasOrcamento();
                                  }
@@ -189,7 +189,7 @@ $("btnIncluirContaOrcamento").observe("click", function() {
 function js_retornoVinculaPlanoOrcamento(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
   js_loadContasOrcamento();
   $("iCodigoContaOrcamento").value = "";
@@ -200,11 +200,11 @@ function js_pesquisaContaOrcamento(lMostraWindow) {
 
   if (lMostraWindow) {
     var sUrl = 'func_conplanoorcamento.php?funcao_js=parent.js_preencheContaOrcamento|c60_codcon|c60_descr';
-    js_OpenJanelaIframe('top.corpo.iframe_vinculo','db_iframe_conta_orcamento',sUrl,'Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_vinculo','db_iframe_conta_orcamento',sUrl,'Pesquisa',true,'0');
   } else {
     if($("iCodigoContaOrcamento").value != ''){ 
       var sUrl = 'func_conplanoorcamento.php?pesquisa_chave='+$("iCodigoContaOrcamento").value+'&funcao_js=parent.js_completaContaOrcamento';
-      js_OpenJanelaIframe('top.corpo.iframe_vinculo','db_iframe_conta_orcamento',sUrl,'Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_vinculo','db_iframe_conta_orcamento',sUrl,'Pesquisa',false);
     } else {
       $("sDescricaoContaOrcamento").value = ''; 
     }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -102,11 +102,11 @@ $clrotulo->label("cm14_i_codigo");
 function js_pesquisacm16_i_cemiterio(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cemiterio','func_cemiterio.php?funcao_js=parent.js_mostracemiterio1|cm14_i_codigo|cm14_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cemiterio','func_cemiterio.php?funcao_js=parent.js_mostracemiterio1|cm14_i_codigo|cm14_i_codigo','Pesquisa',true);
   }else{
 
      if(document.form1.cm16_i_cemiterio.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_cemiterio','func_cemiterio.php?pesquisa_chave='+document.form1.cm16_i_cemiterio.value+'&funcao_js=parent.js_mostracemiterio','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cemiterio','func_cemiterio.php?pesquisa_chave='+document.form1.cm16_i_cemiterio.value+'&funcao_js=parent.js_mostracemiterio','Pesquisa',false);
      }else{
        document.form1.cm14_i_codigo.value = '';
      }
@@ -127,7 +127,7 @@ function js_mostracemiterio1(chave1,chave2){
   db_iframe_cemiterio.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cemiteriorural','func_cemiteriorural.php?funcao_js=parent.js_preenchepesquisa|cm16_i_cemiterio','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cemiteriorural','func_cemiteriorural.php?funcao_js=parent.js_preenchepesquisa|cm16_i_cemiterio','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
 

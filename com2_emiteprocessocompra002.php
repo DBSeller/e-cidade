@@ -1,49 +1,49 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_solicita_classe.php");
-require_once("classes/db_solicitem_classe.php");
-require_once("classes/db_pcdotac_classe.php");
-require_once("classes/db_pcsugforn_classe.php");
-require_once("classes/db_db_departorg_classe.php");
-require_once("classes/db_orcreservasol_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_empparametro_classe.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_solicita_classe.php"));
+require_once(modification("classes/db_solicitem_classe.php"));
+require_once(modification("classes/db_pcdotac_classe.php"));
+require_once(modification("classes/db_pcsugforn_classe.php"));
+require_once(modification("classes/db_db_departorg_classe.php"));
+require_once(modification("classes/db_orcreservasol_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_empparametro_classe.php"));
 
 /*
  * Configurações GED
 */
-require_once ("integracao_externa/ged/GerenciadorEletronicoDocumento.model.php");
-require_once ("integracao_externa/ged/GerenciadorEletronicoDocumentoConfiguracao.model.php");
-require_once ("libs/exceptions/BusinessException.php");
+require_once(modification("integracao_externa/ged/GerenciadorEletronicoDocumento.model.php"));
+require_once(modification("integracao_externa/ged/GerenciadorEletronicoDocumentoConfiguracao.model.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
 
 $oGet = db_utils::postMemory($_GET);
 $oConfiguracaoGed = GerenciadorEletronicoDocumentoConfiguracao::getInstance();
@@ -71,6 +71,7 @@ db_fieldsmemory($resultpref,0);
 
 $iNumeroViasDocumento              = 1;
 $iNumeroCasasDecimaisValorUnitario = 2;
+$iNumeroCasasDecimaisValorUnitarioMedicamentos = 4;
 
 $sSqlParametroEmpenho = $oDaoEmparametro->sql_query_file(db_getsession("DB_anousu"), "e30_nroviaaut,e30_numdec");
 $rsParametrosEmpenho  = $oDaoEmparametro->sql_record($sSqlParametroEmpenho);
@@ -83,31 +84,27 @@ if ($oDaoEmparametro->numrows > 0) {
 }
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-$sWhereProcessoCompras = "";
-if (isset($pc80_codproc_inicial) && trim($pc80_codproc_inicial)!="") {
-  $sWhereProcessoCompras = " pc80_codproc >= {$pc80_codproc_inicial}";
-}
-if (isset($pc80_codproc_final) && trim($pc80_codproc_final) != "") {
+$oGet = db_utils::postMemory($_GET);
 
-  if ($sWhereProcessoCompras == "") {
-    $sWhereProcessoCompras = " pc80_codproc <= {$pc80_codproc_final}";
-  } else {
-    $sWhereProcessoCompras = " pc80_codproc between {$pc80_codproc_inicial} and {$pc80_codproc_final}";
-  }
+$aWhereProcessoCompras = array();
+if (!empty($oGet->pc80_codproc_inicial)) {
+  $aWhereProcessoCompras[] = " pc80_codproc >= {$oGet->pc80_codproc_inicial} ";
+}
+if (!empty($oGet->pc80_codproc_final)) {
+  $aWhereProcessoCompras[] = " pc80_codproc <= {$oGet->pc80_codproc_final} ";
 }
 
-$sWhereProcessoCompras_data = "";
-if (isset($pc80_data_inicial) && trim($pc80_data_inicial) != "") {
-  $sWhereProcessoCompras_data = " pc80_data >= '{$pc80_data_inicial}'";
+if ( !empty($oGet->pc80_data_inicial) ) {
+  $oGet->pc80_data_inicial = new DBDate($oGet->pc80_data_inicial);
+  $aWhereProcessoCompras[] = " pc80_data >= '{$oGet->pc80_data_inicial->getDate()}'";
 }
-if (isset($pc80_data_final) && trim($pc80_data_final) != "") {
-  if ($sWhereProcessoCompras_data == "") {
-    $sWhereProcessoCompras_data = " pc80_data <= '{$pc80_data_final}' ";
-  } else {
-    $sWhereProcessoCompras_data = " pc80_data BETWEEN '{$pc80_data_inicial}' AND '{$pc80_data_final}' ";
-  }
+if (!empty($oGet->pc80_data_final)) {
+
+  $oGet->pc80_data_final = new DBDate($oGet->pc80_data_final);
+  $aWhereProcessoCompras[] = " pc80_data <= '{$oGet->pc80_data_final->getDate()}' ";
 }
-$sWhereProcessoCompras .= $sWhereProcessoCompras_data;
+
+$sWhereProcessoCompras  = implode(' and ', $aWhereProcessoCompras);
 $sSqlProcessoCompras    = $oDaoPcProc->sql_query(null,
                                                "distinct pc80_codproc,
                                                 pc80_data,
@@ -133,10 +130,10 @@ $pdf1 = new db_impcarne($pdf, '77');
 $pdf1->objpdf->SetTextColor(0,0,0);
 $pdf1->Snumero_ant = "";
 $pdf1->logo        = $logo;
+
 for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
 
   $oDadosProcessoDeCompras = db_utils::fieldsMemory($rsDadosProcessoCompras, $iContador);
-
   $pdf1->prefeitura = $nomeinst;
   $pdf1->enderpref  = trim($ender).",".$numero;
   $pdf1->municpref  = $munic;
@@ -154,7 +151,7 @@ for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
 
   $pdf1->Snumero     = $oDadosProcessoDeCompras->pc80_codproc;
   $pdf1->Sdata       = $oDadosProcessoDeCompras->pc80_data;
-  $pdf1->Sresumo     = substr(stripslashes(addslashes($oDadosProcessoDeCompras->pc80_resumo)), 0, 735);
+  $pdf1->Sresumo     = substr(htmlspecialchars_decode(stripslashes($oDadosProcessoDeCompras->pc80_resumo)), 0, 735);
   $pdf1->Sdepart     = $oDadosProcessoDeCompras->coddepto.' - '.$oDadosProcessoDeCompras->descrdepto;
   $pdf1->Srespdepart = $oDadosProcessoDeCompras->nomeresponsavel;
   $pdf1->Susuarioger = $oDadosProcessoDeCompras->nome;
@@ -183,6 +180,7 @@ for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
   $sCamposItem .= "          pc11_pgto,                                      ";
   $sCamposItem .= "          pc11_resum,                                     ";
   $sCamposItem .= "          pc11_just,                                      ";
+  $sCamposItem .= "          pc11_servicoquantidade,                         ";
   $sCamposItem .= "          m61_abrev,                                      ";
   $sCamposItem .= "          m61_descr,                                      ";
   $sCamposItem .= "          pc17_quant,                                     ";
@@ -216,6 +214,7 @@ for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
                                                                                   $sCamposItem,
                                                                                    'pc11_seq',
                                                                                    "pc81_codproc = {$oDadosProcessoDeCompras->pc80_codproc}");
+  
 
   $rsDadosItem                   = $oDaoSolicitem->sql_record($sSqlItensDoProcessoDeCompras);
   $iTotalLinhasItens             = $oDaoSolicitem->numrows;
@@ -230,16 +229,33 @@ for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
   $pdf1->spgto                   = 'pc11_pgto';
   $pdf1->sresum                  = 'pc11_resum';
   $pdf1->sjust                   = 'pc11_just';
+  $pdf1->sservicoquant           = 'pc11_servicoquantidade';
   $pdf1->sunidade                = 'm61_descr';
   $pdf1->sabrevunidade           = 'm61_abrev';
   $pdf1->pc10_numero             = 'pc10_numero';
   $pdf1->processo_administrativo = 'processo_administrativo';
-  $pdf1->sservico                = 'pc01_servico';
+  $pdf1->sservico                = 'm61_descr';
   $pdf1->svalortot               = 'pc11_valtot';
   $pdf1->susaquant               = 'm61_usaquant';
   $pdf1->scodpcmater             = 'pc01_codmater';
   $pdf1->selemento               = 'so56_elemento';
   $pdf1->sdelemento              = 'descrele';
+
+  $aItem = pg_fetch_assoc($rsDadosItem);
+  // Traz o grupo
+  $sSqlPcGrupo = "SELECT
+      pc03_codgrupo, pc04_codsubgrupo
+    FROM
+      solicitem
+      join solicitempcmater ON solicitempcmater.pc16_solicitem = solicitem.pc11_codigo
+      join pcmater ON pcmater.pc01_codmater = solicitempcmater.pc16_codmater
+      join pcsubgrupo ON pcsubgrupo.pc04_codsubgrupo = pcmater.pc01_codsubgrupo
+      join pcgrupo ON pcgrupo.pc03_codgrupo = pcsubgrupo.pc04_codgrupo where solicitem.pc11_codigo = ";
+  $sSqlPcGrupo .= $aItem['pc11_codigo'];
+
+  $grupo = pg_fetch_assoc( $oDaoSolicitem->sql_record($sSqlPcGrupo) );
+  $pdf1->grupo = $grupo['pc03_codgrupo'];
+  $pdf1->subgrupo = $grupo['pc04_codsubgrupo'];
 
   $oDaoPcParam    = db_utils::getDao('pcparam');
   $result_emissao = $oDaoPcParam->sql_record($oDaoPcParam->sql_query_file(db_getsession("DB_instit"),"pc30_tipoemiss"));
@@ -247,7 +263,6 @@ for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
     db_fieldsmemory($result_emissao, 0);
   }
   $pdf1->sImprimeDadosDotacao = $pc30_tipoemiss;
-
   if ($pc30_tipoemiss == "t") {
 
     $sSqlDotacoesItens = $oDaoPcProcItem->sql_query_dotacao_reserva(
@@ -260,7 +275,7 @@ for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
                                                                 pc19_orctiporec,
                                                                 o56_elemento as do56_elemento,
                                                                 o41_descr,
-                                                                o15_codigo,
+                                                                o15_recurso,
                                                                 o15_descr,
                                                                 o55_projativ,
                                                                 o55_descr,
@@ -269,7 +284,6 @@ for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
                                                                 "pc81_codproc = {$oDadosProcessoDeCompras->pc80_codproc}"
                                                                );
     $rsDotacoesItens      = $oDaoPcProcItem->sql_record($sSqlDotacoesItens);
-
     $iTotalDotacoesItens  = $oDaoPcProcItem->numrows;
     $pdf1->recorddasdotac = $rsDotacoesItens;
     $pdf1->linhasdasdotac = $iTotalDotacoesItens;
@@ -277,7 +291,7 @@ for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
   $pdf1->descrunid      = 'o41_descr';
   $pdf1->dcprojativ     = 'o55_projativ';
   $pdf1->dprojativ      = 'o55_descr';
-  $pdf1->dctiporec      = 'o15_codigo';
+  $pdf1->dctiporec      = 'o15_recurso';
   $pdf1->dtiporec       = 'o15_descr';
   $pdf1->dcodigo        = 'pc13_codigo';
   $pdf1->dcoddot        = 'pc13_coddot';
@@ -287,7 +301,6 @@ for ($iContador = 0;$iContador < $iTotalLinhasProcessoDeCompras; $iContador++) {
   $pdf1->dvalor         = 'pc13_valor';
   $pdf1->delemento      = 'do56_elemento';
   $pdf1->ddescrest      = 'descrestrutural';
-
 
   $pdf1->imprime();
 	$pdf1->Snumero_ant = $oDadosProcessoDeCompras->pc80_codproc;
@@ -316,7 +329,6 @@ if ($oConfiguracaoGed->utilizaGED()) {
   }
 
 } else {
-
   $pdf1->objpdf->Output();
 }
 ?>

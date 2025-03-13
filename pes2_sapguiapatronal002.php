@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/impcarne.php");
-include("fpdf151/scpdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/impcarne.php"));
+include(modification("fpdf151/scpdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 
 $sql_inst = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$result_inst = pg_exec($sql_inst);
+$result_inst = db_query($sql_inst);
 
 db_fieldsmemory($result_inst,0);
 
@@ -77,7 +77,7 @@ if($previdencia != 0 ){
 	     and r33_mesusu = $mes
 	     and r33_codtab = $previdencia+2 limit 1
 	  ";
-  $res1 = pg_query($sql1);
+  $res1 = db_query($sql1);
   db_fieldsmemory($res1,0);
   $perc_patro = $r33_ppatro;
 }else{
@@ -233,7 +233,7 @@ where r35_anousu = $ano
 }
 //echo $sql ; exit;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);exit;
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){

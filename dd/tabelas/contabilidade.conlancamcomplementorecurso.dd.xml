@@ -1,0 +1,92 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010564' name='conlancamcomplementorecurso' description="conlancamcomplementorecurso" prefix="o201" label="conlancamcomplementorecurso" type="0">
+  <fields>
+    <field codigo="1011287"
+           campo_api=''
+           name="o201_sequencial"
+           conteudo="int4"
+           description="Sequencial"
+           inivalue="0"
+           label="Sequencial"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sequencial"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='conlancamcomplementorecurso_o201_sequencial_seq' />
+
+    </field>
+    <field codigo="1011288"
+           campo_api=''
+           name="o201_codlan"
+           conteudo="int4"
+           description="Código do Lançamento"
+           inivalue="0"
+           label="Código do Lançamento"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código do Lançamento"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1011289"
+           campo_api=''
+           name="o201_complemento"
+           conteudo="int4"
+           description="Complemento da Fonte de Recurso"
+           inivalue="0"
+           label="Complemento da Fonte de Recurso"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Complemento da Fonte de Recurso"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+    </field>
+      <field codigo="1013369"
+             campo_api=''
+             name="o201_orctiporec"
+             conteudo="int4"
+             description="Recurso"
+             inivalue="0"
+             label="Recurso"
+             size="10"
+             null="f"
+             uppercase="f"
+             autocompl="f"
+             aceitatipo="1"
+             tipoobj="text"
+             labelrel="Recurso"
+             reference=""
+             ispk="f"
+             hassequence="f" >
+      </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="o201_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="conlancam" inner='t'>
+      <fieldfk name="o201_codlan" reference="c70_codlan" />
+    </foreignkey>
+    <foreignkey reference="complementofonterecurso" inner='t'>
+      <fieldfk name="o201_complemento" reference="o200_sequencial" />
+    </foreignkey>
+  </foreignkeys>
+</table>

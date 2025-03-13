@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -106,9 +106,13 @@ for ($i=0; $i<$iNumrows; $i++) {
 	/* Inicia Transacao */
 	$sSqlLimpa  = "BEGIN; " . PHP_EOL;
 
+	$lDropPartition = (db_numrows($rsVerifica, $sArquivoLog) == 0);
+	$sDropMessage   = "> nao existe(m) lista(s) gerada(s) para essa particao... REMOVENDO particao {$oParticao->tabela}...";
+
 	if (db_numrows($rsVerifica, $sArquivoLog) > 0) {
 
-		$sSqlListas  = "SELECT string_agg(k60_codigo::TEXT, ', ') AS listas ";
+		$sSqlListas  = "SELECT string_agg(k60_codigo::TEXT, ', ') AS listas, ";
+		$sSqlListas .= "       date_part('month', age(current_date, '{$oParticao->data}')) + (date_part('year', age(current_date, '{$oParticao->data}')) * 12) AS meses";
 		$sSqlListas .= "  FROM lista ";
 		$sSqlListas .= " WHERE k60_datadeb = '{$oParticao->data}' ";
 		$sSqlListas .= "   AND k60_instit  = {$oParticao->instit} ";
@@ -116,38 +120,48 @@ for ($i=0; $i<$iNumrows; $i++) {
 		$rsListas = db_query($pConexaoDestino, $sSqlListas, $sArquivoLog);
 		$oLista = db_utils::fieldsMemory($rsListas, 0);
 
-		db_log("> existe(m) a(s) seguinte(s) lista(s) gerada(s) para essa particao: {$oLista->listas} ... LIMPANDO particao {$oParticao->tabela}...", $sArquivoLog);
+		if ($oLista->meses < 12) {
+			db_log("> existe(m) a(s) seguinte(s) lista(s) gerada(s) para essa particao: {$oLista->listas} ... LIMPANDO particao {$oParticao->tabela}...", $sArquivoLog);
 
-		$sTempTable1 = "w_limpa_{$oParticao->tabela}_1";
-		$sTempTable2 = "w_limpa_{$oParticao->tabela}_2";
+			$sTempTable1 = "w_limpa_{$oParticao->tabela}_1";
+			$sTempTable2 = "w_limpa_{$oParticao->tabela}_2";
 
-		/* Cria tabela Temporaria COM Numpres que permanecerao */
-		$sSqlLimpa .= "CREATE TEMP TABLE {$sTempTable1} AS ";
-		$sSqlLimpa .= "SELECT DISTINCT ";
-		$sSqlLimpa .= "       k61_numpre, ";
-		$sSqlLimpa .= "       k61_numpar ";
-		$sSqlLimpa .= "  FROM lista ";
-		$sSqlLimpa .= "       JOIN listadeb ON k61_codigo = k60_codigo ";
-		$sSqlLimpa .= " WHERE k60_datadeb = '{$oParticao->data}' ";
-		$sSqlLimpa .= "   AND k60_instit  = {$oParticao->instit}; " . PHP_EOL;
+			/* Cria tabela Temporaria COM Numpres que permanecerao */
+			$sSqlLimpa .= "CREATE TEMP TABLE {$sTempTable1} AS ";
+			$sSqlLimpa .= "SELECT DISTINCT ";
+			$sSqlLimpa .= "       k61_numpre, ";
+			$sSqlLimpa .= "       k61_numpar ";
+			$sSqlLimpa .= "  FROM lista ";
+			$sSqlLimpa .= "       JOIN listadeb ON k61_codigo = k60_codigo ";
+			$sSqlLimpa .= " WHERE k60_datadeb = '{$oParticao->data}' ";
+			$sSqlLimpa .= "   AND k60_instit  = {$oParticao->instit}; " . PHP_EOL;
 
-		/* Cria tabela Temporaria COM debitos que permanecerao */
-		$sSqlLimpa .= "CREATE TEMP TABLE {$sTempTable2} AS ";
-		$sSqlLimpa .= "SELECT {$oParticao->tabela}.* ";
-		$sSqlLimpa .= "  FROM {$sTempTable1} ";
-		$sSqlLimpa .= "       JOIN {$oParticao->tabela}  ON k22_numpre = k61_numpre ";
-		$sSqlLimpa .= "                                 AND k22_numpar = k61_numpar; " . PHP_EOL;
+			/* Cria tabela Temporaria COM debitos que permanecerao */
+			$sSqlLimpa .= "CREATE TEMP TABLE {$sTempTable2} AS ";
+			$sSqlLimpa .= "SELECT {$oParticao->tabela}.* ";
+			$sSqlLimpa .= "  FROM {$sTempTable1} ";
+			$sSqlLimpa .= "       JOIN {$oParticao->tabela}  ON k22_numpre = k61_numpre ";
+			$sSqlLimpa .= "                                 AND k22_numpar = k61_numpar; " . PHP_EOL;
 
-		/* Reconstrucao da particao somente com debitos que permanecerao */
-		$sSqlLimpa .= "TRUNCATE {$oParticao->tabela}; " . PHP_EOL;
-		$sSqlLimpa .= "INSERT INTO {$oParticao->tabela} SELECT * FROM {$sTempTable2}; " . PHP_EOL;
+			/* Reconstrucao da particao somente com debitos que permanecerao */
+			$sSqlLimpa .= "TRUNCATE {$oParticao->tabela}; " . PHP_EOL;
+			$sSqlLimpa .= "INSERT INTO {$oParticao->tabela} SELECT * FROM {$sTempTable2}; " . PHP_EOL;
+			$sSqlLimpa .= "DROP TABLE {$sTempTable1}; " . PHP_EOL;
+			$sSqlLimpa .= "DROP TABLE {$sTempTable2}; " . PHP_EOL;
 
-		/* Atualizacao das estatisticas da particao que permanecerao */
-		$sSqlLimpa .= "ANALYZE {$oParticao->tabela}; " . PHP_EOL;
+			/* Atualizacao das estatisticas da particao que permanecerao */
+			$sSqlLimpa .= "ANALYZE {$oParticao->tabela}; " . PHP_EOL;
 
-	} else {
-		db_log("> nao existe(m) lista(s) gerada(s) para essa particao... REMOVENDO particao {$oParticao->tabela}...", $sArquivoLog);
-		$sSqlLimpa .= "DROP TABLE {$oParticao->tabela}; " . PHP_EOL;
+		} else {
+			$lDropPartition = true;
+			$sDropMessage   = "> existe(m) a(s) seguinte(s) lista(s) há mais de 12 meses gerada(s) para essa particao: {$oLista->listas} ... REMOVENDO particao {$oParticao->tabela}...";
+		}
+
+	}
+
+	if ($lDropPartition) {
+		db_log($sDropMessage, $sArquivoLog);
+		$sSqlLimpa .= "DROP TABLE IF EXISTS {$oParticao->tabela}; " . PHP_EOL;
 	}
 
 	$sSqlLimpa .= "DELETE ";

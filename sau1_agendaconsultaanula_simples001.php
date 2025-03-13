@@ -1,7 +1,8 @@
-<?
+<?php
+
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +26,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_agendaconsultaanula_classe.php");
-require_once("classes/db_agendamentos_classe.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_agendaconsultaanula_classe.php"));
+require_once(modification("classes/db_agendamentos_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+/*Require plugin SMSAgendamento - SMSAgendamentoConsulta - NÃO APAGAR*/
 
-db_postmemory($HTTP_POST_VARS);
+db_postmemory( $_POST );
 
 $oDaoAgendaConsultaAnula = new cl_agendaconsultaanula;
-$oDaoagendamentos = new cl_agendamentos;
+$oDaoagendamentos        = new cl_agendamentos;
 
 $db_opcao = 1;
 $db_botao = true;
@@ -46,7 +48,6 @@ $s114_d_data_ano = date("Y");
 $s114_d_data_mes = date("m");
 $s114_d_data_dia = date("d");
 
-
 if(isset($incluir)){	
 
   db_inicio_transacao();
@@ -54,21 +55,22 @@ if(isset($incluir)){
   if($oDaoagendamentos->excluir_prontuario_agendamento($s114_i_agendaconsulta)) {
     $oDaoAgendaConsultaAnula->s114_v_motivo = $s114_v_motivo." POSSUÍA FAA: $oDaoagendamentos->sd23_i_codigo ";
   }
+
   if($oDaoagendamentos->erro_status == '0') {
 
     $oDaoagendamentos->erro(true,false);
     db_fim_transacao(true);
-
   } else {
 
     $oDaoAgendaConsultaAnula->s114_i_login = db_getsession('DB_id_usuario');
     $oDaoAgendaConsultaAnula->s114_c_hora = date('H:i');
     $oDaoAgendaConsultaAnula->s114_d_data = date('Y-m-d');
 	  $oDaoAgendaConsultaAnula->incluir(null);
-
+    
+    /*Inclusão código Plugin SMS Cancelamento de Consulta - NÃO APAGAR*/
+    
 	}
   db_fim_transacao($oDaoAgendaConsultaAnula->erro_status=="0");
-
 }
 ?>
 <html>
@@ -85,8 +87,8 @@ if(isset($incluir)){
   <tr> 
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
     <fieldset><legend><b>Anulação</b></legend>  
-	<?
-	require_once("forms/db_frmagendaconsultaanula.php");
+	<?php
+	require_once(modification("forms/db_frmagendaconsultaanula.php"));
 	?>
     </fieldset>
 	</td>
@@ -98,45 +100,47 @@ if(isset($incluir)){
 <script>
 js_tabulacaoforms("form1","s114_v_motivo",true,1,"s114_v_motivo",true);
 </script>
-<?
-if(isset($incluir)){
-  if($oDaoAgendaConsultaAnula->erro_status=="0"){
+<?php
+if( isset( $incluir ) ) {
+
+  if( $oDaoAgendaConsultaAnula->erro_status == "0" ) {
+
     $oDaoAgendaConsultaAnula->erro(true,false);
-    $db_botao=true;
+    $db_botao = true;
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if($oDaoAgendaConsultaAnula->erro_campo!=""){
+
+    if( $oDaoAgendaConsultaAnula->erro_campo != "" ) {
+
       echo "<script> document.form1.".$oDaoAgendaConsultaAnula->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$oDaoAgendaConsultaAnula->erro_campo.".focus();</script>";
     }
-  }else{
-    //$oDaoAgendaConsultaAnula->erro(true,true);
-    ?><script>
-    	/*
-    	if( parent.document.getElementById('framecalendario') != undefined ){
-			parent.document.getElementById('framecalendario').contentDocument.location.reload(true);
-		}
-		if( parent.document.getElementById('frameagendados') != undefined ){
-			parent.document.getElementById('frameagendados').contentDocument.location.reload(true);
-		}
-		*/
-        
-        parent.document.form1.sd23_i_codigo.value='';
-        parent.document.form1.z01_i_cgsund.value='';
-        parent.document.form1.z01_v_nome.value='';
-        parent.document.form1.anula.disabled=true;
-        parent.document.form1.faa.disabled=true;
-        parent.document.form1.prontuario.disabled=true;
-        parent.document.form1.comprovante.disabled=true;
-        parent.document.form1.nova.disabled=true;
-        saldo=parseInt(parent.document.form1.saldo.value);
-        saldo=parent.document.form1.saldo.value=saldo+1;
-        parent.document.getElementById('saldo_div').innerHTML = saldo+' Fichas';
-        alert('Agendamento anulado!');
-        parent.document.getElementById('consultas').click();
-        parent.db_iframe_agendamento.hide();
-        
-            	
-    </script><?    
+  } else {
+
+    ?>
+    <script>
+
+      parent.document.form1.sd23_i_codigo.value    = '';
+      parent.document.form1.z01_i_cgsund.value     = '';
+      parent.document.form1.z01_v_nome.value       = '';
+      parent.document.form1.z01_v_nome.value       = '';
+      parent.document.form1.s115_c_cartaosus.value = '';
+      parent.document.form1.z01_v_telcel.value     = '';
+      parent.document.form1.anula.disabled         = true;
+      parent.document.form1.faa.disabled           = true;
+      parent.document.form1.prontuario.disabled    = true;
+      parent.document.form1.comprovante.disabled   = true;
+      parent.document.form1.nova.disabled          = true;
+
+      saldo = parseInt(parent.document.form1.saldo.value);
+      saldo = parent.document.form1.saldo.value = saldo + 1;
+
+      parent.document.getElementById('saldo_div').innerHTML = saldo+' Fichas';
+
+      alert('Agendamento anulado!');
+
+      parent.document.getElementById('consultas').click();
+      parent.db_iframe_agendamento.hide();
+    </script><?php
   }
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
+require_once(modification("fpdf151/pdf.php"));
 
 $cliptuconstr  = new cl_iptuconstr;
 $cliptuconstr1 = new cl_iptuconstr;
@@ -145,8 +145,8 @@ if (isset($setor) && $setor != "") {
 
 $sql  = "select distinct face.*, j14_nome                       ";
 $sql .= "  from face                                            ";
-$sql .= "       inner join carface  on j38_face   = j37_face    ";
-$sql .= "       inner join caracter on j31_codigo = j38_caract  ";
+$sql .= "       left join carface  on j38_face   = j37_face    ";
+$sql .= "       left join caracter on j31_codigo = j38_caract  ";
 
 $testruas = "";
 if ($ruas != "") {
@@ -202,13 +202,13 @@ $sSql  = "select distinct * ";
 $sSql .= "  from (select * ";
 $sSql .= "          from (select * ";
 $sSql .= "                  from ({$sql}) as tudo ";
-$sSql .= "                       inner join (select j38_face, ";
-$sSql .= "                                          sum(j31_pontos) as j31_pontos ";
-$sSql .= "                                     from carface ";
-$sSql .= "                                          inner join face     on j37_face          = j38_face ";
-$sSql .= "                                          inner join caracter on j38_caract        = j31_codigo ";
-$sSql .= "                                    group by j38_face) as pontos ";
-$sSql .= "                               on tudo.j37_face = pontos.j38_face {$pontuacao} ";
+$sSql .= "                       inner join (select j37_face, ";
+$sSql .= "                                          sum(coalesce(j31_pontos, 0)) as j31_pontos ";
+$sSql .= "                                     from  face ";
+$sSql .= "                                          left join   carface   on j37_face          = j38_face ";
+$sSql .= "                                          left join caracter on j38_caract        = j31_codigo ";
+$sSql .= "                                    group by j37_face) as pontos ";
+$sSql .= "                               on tudo.j37_face = pontos.j37_face {$pontuacao} ";
 $sSql .= "               ) as ordem ";
 $sSql .= "       ) as distincao {$ordem} {$order}";
 

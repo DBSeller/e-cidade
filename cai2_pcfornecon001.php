@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 
 //---  parser POST/GET
@@ -70,15 +70,6 @@ function js_emite() {
 </head>
 <body bgcolor=#CCCCCC bgcolor="#CCCCCC"  >
 
- <table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
- <!--
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>-->
       <br><br><br><br>
      <form name="form1" method="post" action="">
       <table border="0" align='center'>

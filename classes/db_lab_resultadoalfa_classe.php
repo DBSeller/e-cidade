@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -51,7 +51,7 @@ class cl_lab_resultadoalfa {
                  la40_i_codigo = int4 = Código 
                  la40_i_result = int4 = Resultado 
                  la40_i_valorrefsel = int4 = Valor Referencial Selecionável 
-                 la40_c_valor = char(100) = Valor 
+                 la40_c_valor = char(50) = Valor 
                  ";
    //funcao construtor da classe 
    function cl_lab_resultadoalfa() { 

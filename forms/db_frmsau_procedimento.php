@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -71,7 +71,7 @@ db_input('sd63_c_nome',50,$Isd63_c_nome,true,'text',$db_opcao,"")
     </td>
     <td>
        <?
-       include("classes/db_sau_complexidade_classe.php");
+       include(modification("classes/db_sau_complexidade_classe.php"));
        $clsau_complexidade = new cl_sau_complexidade;
        $result = $clsau_complexidade->sql_record($clsau_complexidade->sql_query("","*"));
        db_selectrecord("sd63_i_complexidade",$result,true,$db_opcao);
@@ -175,7 +175,7 @@ db_input('sd63_f_sp',10,$Isd63_f_sp,true,'text',3,"")
     </td>
     <td>
        <?
-       include("classes/db_sau_financiamento_classe.php");
+       include(modification("classes/db_sau_financiamento_classe.php"));
        $clsau_financiamento = new cl_sau_financiamento;
        $result = $clsau_financiamento->sql_record($clsau_financiamento->sql_query("","sd65_i_codigo, sd65_c_nome",""));
        db_selectrecord("sd63_i_financiamento",$result,true,$db_opcao);
@@ -216,10 +216,10 @@ db_input('sd63_i_mescomp',2,$Isd63_i_mescomp,true,'text',$db_opcao,"");
 <script>
 function js_pesquisasd63_i_complexidade(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_sau_complexidade','func_sau_complexidade.php?funcao_js=parent.js_mostrasau_complexidade1|sd69_i_codigo|sd69_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_complexidade','func_sau_complexidade.php?funcao_js=parent.js_mostrasau_complexidade1|sd69_i_codigo|sd69_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd63_i_complexidade.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_sau_complexidade','func_sau_complexidade.php?pesquisa_chave='+document.form1.sd63_i_complexidade.value+'&funcao_js=parent.js_mostrasau_complexidade','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_complexidade','func_sau_complexidade.php?pesquisa_chave='+document.form1.sd63_i_complexidade.value+'&funcao_js=parent.js_mostrasau_complexidade','Pesquisa',false);
      }else{
        document.form1.sd69_c_nome.value = '';
      }
@@ -239,10 +239,10 @@ function js_mostrasau_complexidade1(chave1,chave2){
 }
 function js_pesquisasd63_i_financiamento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_sau_financiamento','func_sau_financiamento.php?funcao_js=parent.js_mostrasau_financiamento1|sd65_i_codigo|sd65_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_financiamento','func_sau_financiamento.php?funcao_js=parent.js_mostrasau_financiamento1|sd65_i_codigo|sd65_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd63_i_financiamento.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_sau_financiamento','func_sau_financiamento.php?pesquisa_chave='+document.form1.sd63_i_financiamento.value+'&funcao_js=parent.js_mostrasau_financiamento','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_financiamento','func_sau_financiamento.php?pesquisa_chave='+document.form1.sd63_i_financiamento.value+'&funcao_js=parent.js_mostrasau_financiamento','Pesquisa',false);
      }else{
        document.form1.sd65_c_nome.value = '';
      }
@@ -262,10 +262,10 @@ function js_mostrasau_financiamento1(chave1,chave2){
 }
 function js_pesquisasd63_i_rubrica(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_sau_rubrica','func_sau_rubrica.php?funcao_js=parent.js_mostrasau_rubrica1|sd64_i_codigo|sd64_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_rubrica','func_sau_rubrica.php?funcao_js=parent.js_mostrasau_rubrica1|sd64_i_codigo|sd64_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd63_i_rubrica.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_sau_rubrica','func_sau_rubrica.php?pesquisa_chave='+document.form1.sd63_i_rubrica.value+'&funcao_js=parent.js_mostrasau_rubrica','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_rubrica','func_sau_rubrica.php?pesquisa_chave='+document.form1.sd63_i_rubrica.value+'&funcao_js=parent.js_mostrasau_rubrica','Pesquisa',false);
      }else{
        document.form1.sd64_c_nome.value = '';
      }
@@ -284,7 +284,7 @@ function js_mostrasau_rubrica1(chave1,chave2){
   db_iframe_sau_rubrica.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_procedimento','func_sau_procedimento.php?funcao_js=parent.js_preenchepesquisa|sd63_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_procedimento','func_sau_procedimento.php?funcao_js=parent.js_preenchepesquisa|sd63_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_procedimento.hide();

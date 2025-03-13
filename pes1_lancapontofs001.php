@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_convenio_classe.php");
-require_once("classes/db_relac_classe.php");
-require_once("classes/db_movrel_classe.php");
-require_once("classes/db_pontofs_classe.php");
-require_once("classes/db_rhpessoal_classe.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_convenio_classe.php"));
+require_once(modification("classes/db_relac_classe.php"));
+require_once(modification("classes/db_movrel_classe.php"));
+require_once(modification("classes/db_pontofs_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clconvenio = new cl_convenio;
@@ -339,7 +339,7 @@ function processarDadosConvenio() {
 function js_retornoCompletaRubricas(oAjax) {
     
     js_removeObj('msgBox');
-    var oRetorno        = eval("("+oAjax.responseText+")");
+    var oRetorno        = JSON.parse(oAjax.responseText);
     var sPessoalRecisao = "";
     
     if (oRetorno.status == 1) {
@@ -441,7 +441,7 @@ function processarRubricas(){
 function js_retornoProcessarRubricas(oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.status == 1) {
       
@@ -467,10 +467,10 @@ function js_abrejan(){
 }
 function js_pesquisar54_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=r&funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=r&funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
   }else{
     if(document.form1.r54_regist.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=r&pesquisa_chave='+document.form1.r54_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?testarescisao=r&pesquisa_chave='+document.form1.r54_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
     }else{
       document.form1.z01_nome.value = '';
     }
@@ -490,10 +490,10 @@ function js_mostrapessoal1(chave1,chave2){
 }
 function js_pesquisar54_codeve(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_relac','func_relac.php?funcao_js=parent.js_mostrarelac1|r55_codeve|r55_descr|r56_dirarq&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true,'20');
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_relac','func_relac.php?funcao_js=parent.js_mostrarelac1|r55_codeve|r55_descr|r56_dirarq&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true,'20');
   }else{
     if(document.form1.r54_codeve.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_relac','func_relac.php?pesquisa_chave='+document.form1.r54_codeve.value+'&funcao_js=parent.js_mostrarelac&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false,'0');
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_relac','func_relac.php?pesquisa_chave='+document.form1.r54_codeve.value+'&funcao_js=parent.js_mostrarelac&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false,'0');
     }else{
       document.form1.r55_descr.value = '';
     }
@@ -501,10 +501,10 @@ function js_pesquisar54_codeve(mostra){
 }
 function js_pesquisar54_codrel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_convenio','func_convenioalt.php?funcao_js=parent.js_mostraconvenio1|r56_codrel|r56_descr|r56_dirarq&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true,20);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_convenio','func_convenioalt.php?funcao_js=parent.js_mostraconvenio1|r56_codrel|r56_descr|r56_dirarq&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true,20);
   }else{
     if(document.form1.r54_codrel.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_convenio','func_convenioalt.php?pesquisa_chave='+document.form1.r54_codrel.value+'&funcao_js=parent.js_mostraconvenio&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false,'0');
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_convenio','func_convenioalt.php?pesquisa_chave='+document.form1.r54_codrel.value+'&funcao_js=parent.js_mostraconvenio&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false,'0');
     }else{
       document.form1.r56_descr.value = '';
       document.form1.diretorio_arquivo.value = ''; 

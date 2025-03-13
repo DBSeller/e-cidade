@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -101,7 +101,7 @@ class cl_procgrupoa {
                                 $this->sd17_i_procedimento 
                                ,$this->sd17_i_grupoatend 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -159,7 +159,7 @@ class cl_procgrupoa {
      }
      $sql .= " where ";
      $sql .= "sd17_i_procedimento = $procedimento and sd17_i_grupoatend = $grupoatend ";
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Grupo de Atendimento para o Procedimento  nao Alterado. Alteracao Abortada.\\n";
@@ -192,7 +192,7 @@ class cl_procgrupoa {
    function excluir ( $dbwhere=null) {
      $sql = " delete from procgrupoa
                     where ".$dbwhere;
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Grupo de Atendimento para o Procedimento  nao Excluído. Exclusão Abortada.\\n";
@@ -223,7 +223,7 @@ class cl_procgrupoa {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

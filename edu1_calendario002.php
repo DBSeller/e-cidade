@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_calendario_classe.php");
-include("classes/db_feriado_classe.php");
-include("classes/db_regencia_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+parse_str( $_SERVER["QUERY_STRING"] );
 
 db_postmemory($_POST);
 db_postmemory($_GET);
 
-$clcalendario       = new cl_calendario;
+$clcalendario = new cl_calendario;
 $clcalendario->rotulo->label();
+
 $clcalendario = new cl_calendario;
 $clferiado    = new cl_feriado;
 $clregencia   = new cl_regencia;
@@ -68,8 +66,8 @@ if(isset($chavepesquisa)) {
     parent.document.formaba.a2.style.color = "black";
     parent.document.formaba.a3.disabled = false;
     parent.document.formaba.a3.style.color = "black";
-    top.corpo.iframe_a2.location.href='edu1_periodocalendario001.php?ed53_i_calendario=<?=$ed52_i_codigo?>&ed52_c_descr=<?=$ed52_c_descr?>';
-    top.corpo.iframe_a3.location.href='edu1_feriado001.php?ed54_i_calendario=<?=$ed52_i_codigo?>&ed52_c_descr=<?=$ed52_c_descr?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='edu1_periodocalendario001.php?ed53_i_calendario=<?=$ed52_i_codigo?>&ed52_c_descr=<?=$ed52_c_descr?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href='edu1_feriado001.php?ed54_i_calendario=<?=$ed52_i_codigo?>&ed52_c_descr=<?=$ed52_c_descr?>';
   </script>
   <?
   if($clregencia->numrows>0) {
@@ -95,8 +93,11 @@ if(isset($chavepesquisa)) {
   <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
    <br>
    <center>
-   <fieldset style="width:95%"><legend><b>Alteração de Calendário</b></legend>
-    <?include("forms/db_frmcalendario.php");?>
+   <fieldset style="width:95%">
+     <legend><b>Alteração de Calendário</b></legend>
+     <?php
+     include(modification("forms/db_frmcalendario.php"));
+     ?>
    </fieldset>
    </center>
   </td>

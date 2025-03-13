@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once "libs/db_libpessoal.php";
-require_once "libs/exceptions/DBException.php";
+require_once modification("libs/db_libpessoal.php");
+require_once modification("libs/exceptions/DBException.php");
 
 /**
  * Composicao do ponto de ferias
@@ -98,25 +98,34 @@ class ComposicaoPontoFerias {
    * - salva na rhferiasperiodopontofe
    *
    * @access public
-   * @return boolean
+   * @return bool
+   * @throws DBException
    */
   public function gerarRegistrosPonto() {
 
-    db_utils::getDao('rhferiasperiodopontofe', true);
+    $oDaoRhferiasperiodopontofe = new cl_rhferiasperiodopontofe;
 
     /**
      * Percorre os periodos do gozo
      * - Procura as rubricas do perido aquisitivo ou especifico
      * - inclue na tabela de composicao do ponto, rhferiasperiodopontofe 
      */
+
     foreach( $this->aPeriodosGozo as $oPeriodoGozo ) {
+
+      $oDaoRhferiasperiodopontofe->excluir(null, "rh112_rhferiasperiodo = {$oPeriodoGozo->getCodigoPeriodo()}");
+      if ($oDaoRhferiasperiodopontofe->erro_status == 0) {
+
+        $sMensagemErro = _M(self::MENSAGENS . 'erro_remover_ponto_ferias');
+        throw new DBException($sMensagemErro);
+      }
 
       /**
        * Retorna o cálculo das médias de rubricas dentro do periodo de gozo 
        * @var CalculoMediaRubrica[]
        */
       $aCalculoRubricas = $oPeriodoGozo->calcularMediaRubricas();
-      
+
       /**
        * Define Como Será a Proporcao do Pagamento
        *
@@ -157,19 +166,21 @@ class ComposicaoPontoFerias {
        *     +--Tipo Pgto (TPP) : 'F' ( "F"ÉRIAS )       || Usar Constante PontoFerias::TIPO_PAGAMENTO_FERIAS
        *   
        */
-      $aDiasProporcaoPagamento[PontoFerias::TIPO_PAGAMENTO_FERIAS]       = $oPeriodoGozo->getDiasGozo() - $oPeriodoGozo->getDiasAdiantamento();
-      $aDiasProporcaoPagamento[PontoFerias::TIPO_PAGAMENTO_ADIANTAMENTO] = $oPeriodoGozo->getDiasAdiantamento();
+      $aDiasProporcaoPagamento[PontoFerias::TIPO_PAGAMENTO_FERIAS]       = $oPeriodoGozo->getDiasAPagar();
       $aDiasProporcaoPagamento[PontoFerias::TIPO_PAGAMENTO_ABONO]        = $oPeriodoGozo->getDiasAbono();
+      $aDiasProporcaoPagamento[PontoFerias::TIPO_PAGAMENTO_ADIANTAMENTO] = 0; //$oPeriodoGozo->getDiasAdiantamento(); 
+
       /**
        * Percorremos os cálculos de média de rubricas e lançamos os valores proporcionais a cada tipo de pagamento
        */
+
       foreach ($aCalculoRubricas as $oCalculoMediaRubrica) { 
 
         $nValorBase      = $oCalculoMediaRubrica->getValorCalculado(); 
         $nQuantidadeBase = $oCalculoMediaRubrica->getQuantidadeCalculada();
-        
+
         foreach ( $aDiasProporcaoPagamento as $sTipoPagamento => $iDiasProporcionalidade ) {
-          
+
           if ( $iDiasProporcionalidade == 0 ) {
             continue;
           }
@@ -279,7 +290,7 @@ class ComposicaoPontoFerias {
       $nQuantidadeProporcional = $oDadosRegistro->quantidade;
 
       if ( $nQuantidadeProporcional > 0 ) {
-        $nQuantidadeProporcional = round($nQuantidadeProporcional/30 * $oDadosRegistro->dias, 2);
+        //$nQuantidadeProporcional = round($nQuantidadeProporcional/30 * $oDadosRegistro->dias, 2);
       }
      
       $oRegistroPontoFerias = new RegistroPontoFerias();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 //ini_set('display_errors', 'Off');
-include("fpdf151/pdfwebseller.php");
-require("libs/db_utils.php");
-include("classes/db_regenciahorario_classe.php");
-include("classes/db_periodoescola_classe.php");
-include("classes/db_diasemana_classe.php");
-include("classes/db_turmaachorario_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+require(modification("libs/db_utils.php"));
+include(modification("classes/db_regenciahorario_classe.php"));
+include(modification("classes/db_periodoescola_classe.php"));
+include(modification("classes/db_diasemana_classe.php"));
+include(modification("classes/db_turmaachorario_classe.php"));
 
 // Função de comparação para ordenar pelo período, dia da semana e turma
 function cmpPeriodo($a1, $a2) {
@@ -158,7 +158,7 @@ for ($x = 0; $x < $cldiasemana->numrows-1; $x++) {
 
 ////////Grade dos horários
 $pdf->setX($tabela1_left);
-$top_ini = $tabela1_top+5;
+$top_ini = $tabela1_top+6;
 $tt      = 0;
 for ($t = $horainicial; $t <= $horafinal; $t += 1) {
 	
@@ -181,7 +181,7 @@ for ($t = $horainicial; $t <= $horafinal; $t += 1) {
     
   }
    }
-  $top_ini += 0.2;
+  $top_ini += 0.22;
 }
 
 $pdf->setfont('arial','',6);
@@ -378,7 +378,7 @@ if (count($aSimult) > 0) { // Tem atendimento simultâneo
   $tabela1_leftbaixo = 20;
   $larg_dia1 = 20;
   $pdf->setFont('arial', 'B', 7);
-  $pdf->setXY(20,$fim_tabelafundo + 5);
+  $pdf->setXY(20,$fim_tabelafundo + 15);
   $pdf->cell($larg_dia * $iNumDias,5,"Atendimento Simultâneo",1,1,"C",0);
   $pdf->setX(20);
   for ($x = 0; $x < $cldiasemana->numrows; $x++) {
@@ -431,8 +431,9 @@ if (count($aSimult) > 0) { // Tem atendimento simultâneo
       }
       $pdf->setFont('arial', 'B', 7);
       $pdf->setXY(20, $nYmaior);
-      $sTextoPeriodo = $aSimult[$a]->sNomePeriodo.' Período / '.$aSimult[$a]->sNomeTurno;
-      $pdf->cell($larg_dia * $iNumDias, 3, '', 1, 1, 'C', true, 0);
+      $sTextoPeriodo = $aSimult[$a]->sNomePeriodo;
+      $sTextoPeriodoTurno = ' Período / '.$aSimult[$a]->sNomeTurno;
+      $pdf->cell($larg_dia * $iNumDias, 7, '', 1, 1, 'C', true, 0);
       $nYini    = $pdf->getY();
       $sHoraIni = $aSimult[$a]->sHoraInicio;
       $lNovoPer = true;
@@ -460,12 +461,13 @@ if (count($aSimult) > 0) { // Tem atendimento simultâneo
 
       $pdf->setXY($nX, $nYTmp - 2.5);
       $pdf->setFont('arial', 'B', 7);
-      $pdf->cell($larg_dia - 1, $alt_multi, $sTextoPeriodo, 0, 0, 'C', false, 0);
+      $pdf->cell($larg_dia - 1, $alt_multi-6, $sTextoPeriodo, 0, 0, 'C', false, 0);
+      $pdf->cell($larg_dia - 72, $alt_multi-1, $sTextoPeriodoTurno, 0, 0, 'C', false, 0);
       $pdf->setFont('arial', '', 7);
       
     }
     $pdf->setXY($nX, $nYTmp);
-    $texto  = $sQuebra."Turma: ". substr(trim($aSimult[$a]->sNomeTurma),0,8)."\n";
+    $texto  = $sQuebra."\n Turma: ". substr(trim($aSimult[$a]->sNomeTurma),0,8)."\n";
     $texto .= "Disciplina: ".substr(trim($aSimult[$a]->sNomeDisciplina),0,10);
     $pdf->multicell($larg_dia - 2, $alt_multi, $texto, 0, 1, 'J', false, 0);
     

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_projmelhorias_classe.php");
-include("classes/db_projmelhoriasmatric_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_projmelhorias_classe.php"));
+include(modification("classes/db_projmelhoriasmatric_classe.php"));
 $clprojmelhorias = new cl_projmelhorias;
 $clprojmelhorias->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -48,7 +48,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script>
 function js_relatorio1() {
-  jan = window.open('con2_reledital004.php?edital='+document.form1.d01_codedi.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+  jan = window.open('con2_reledital004.php?edital='+document.form1.d01_codedi.value+'&iOrdena='+document.form1.ordem.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan.moveTo(0,0);
 }
 </script>
@@ -84,6 +84,18 @@ function js_relatorio1() {
          ?>
         </td>
       </tr>
+      <tr>
+      <br>
+        <td colspan="2" height="25">
+           <strong>Ordem: </strong>
+            <?
+              $aOrdem = array(0 => "Matrícula",
+                              1 => "Nome",
+                              2 => "Nome e Matrícula");
+              db_select("ordem", $aOrdem, true, $db_opcao);
+            ?>
+        </td>
+      </tr>
             <tr>
               <td colspan="2"   height="25" align="center"><input name="boletim" type="button" id="boletim" onClick="js_relatorio1()" value="Gerar relatório">
 	      </td>
@@ -113,9 +125,9 @@ $func_iframe->mostrar();
 <script>
 function js_edi(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_edital.php?funcao_js=parent.js_mostracontri1|d01_codedi|d01_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_edital.php?funcao_js=parent.js_mostracontri1|d01_codedi|d01_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_edital.php?pesquisa_chave='+document.form1.d01_codedi.value+'&funcao_js=parent.js_mostracontri','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_edital.php?pesquisa_chave='+document.form1.d01_codedi.value+'&funcao_js=parent.js_mostracontri','Pesquisa',false);
   }
 }
 function js_mostracontri(chave,erro){

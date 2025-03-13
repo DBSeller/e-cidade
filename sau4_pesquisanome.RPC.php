@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/db_usuariosonline.php');
-require_once('libs/JSON.php');
-require_once('libs/db_utils.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_usuariosonline.php'));
+require_once(modification('libs/JSON.php'));
+require_once(modification('libs/db_utils.php'));
 
 $oJson       = new services_json();
 $sName       = html_entity_decode(crossUrlDecode($_POST['string']));
@@ -52,7 +52,7 @@ switch($iTipo) {
     break;
 
   case 2: // Médico pelo CGM
-    
+
     $oDaoMedicos = db_utils::getdao('medicos');
     $sSql        = $oDaoMedicos->sql_query_cgm(null, 'sd03_i_codigo as cod, z01_nome as label', '',
                                                "z01_nome like upper('$sName%') limit 40"
@@ -73,7 +73,7 @@ switch($iTipo) {
 }
 
 if ($iLinhas > 0) {
-  $aResultados = db_utils::getColectionByRecord($rs, false, false, true);
+  $aResultados = db_utils::getCollectionByRecord($rs, false, false, true);
 }
 
 echo $oJson->encode($aResultados);

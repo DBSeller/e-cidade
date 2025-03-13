@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -173,7 +173,7 @@ function js_pesquisaEstados() {
 function js_retornoPesquisaEstados(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.aEstados.length > 0) {
 
@@ -218,7 +218,7 @@ function js_pesquisaMunicipios() {
 function js_retornoPesquisaMunicipios(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oCboMunicipios.length > 0) {
     js_limpaMunicipios();
@@ -291,7 +291,7 @@ function js_salvarBairro() {
 function js_retornoSalvarBairro(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.sMensagem.urlDecode());
   if (oRetorno.iStatus == 1) {
@@ -336,11 +336,11 @@ function js_limpaCampos() {
  */
 function js_pesquisaBairros(lMostra) {
 
-  var sUrl  = 'func_cadenderbairro';
+  var sUrl  = 'func_cadenderbairro.php';
       sUrl += '?funcao_js=parent.js_mostraBairros|db73_sequencial|db73_descricao|db72_sequencial|db71_sequencial|db73_sigla';
       sUrl += '&lMunicipioEstado';
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_cadenderbairro', sUrl, 'Pesquisa Bairros', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_cadenderbairro', sUrl, 'Pesquisa Bairros', true);
 }
 
 /**

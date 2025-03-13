@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $sql = "select ag30_codigo,ag30_codage,ag30_data,ag30_hora,j01_nome,w03_nome,ag30_regist,ag30_depend,
                      (CASE WHEN ag40_codate IS NULL THEN 'Aguardando' ELSE 'Atendido' END) as situacao
@@ -43,7 +43,7 @@ $sql = "select ag30_codigo,ag30_codage,ag30_data,ag30_hora,j01_nome,w03_nome,ag3
                      where ag30_codage = $codage 					 
 					 and ag30_data = '$dataini'
 					 ";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   $numrows = pg_numrows($result);		 
   if($numrows == 0) {
     $DB_MSG = "Não existe atendimento para esta agenda.";

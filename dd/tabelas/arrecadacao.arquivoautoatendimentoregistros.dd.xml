@@ -1,0 +1,113 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010428' name='arrecadacao.arquivoautoatendimentoregistros' description="Tabela responsável por guardar os débitos do arquivo." prefix="k183" label="arquivoautoatendimentoregistros" type="0">
+  <fields>
+    <field codigo="1010377" 
+           campo_api='' 
+           name="k183_codigo" 
+           conteudo="int8" 
+           description="Campo que armazena o sequencial da chave primária." 
+           inivalue="0" 
+           label="Código" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='arrecadacao.arquivoautoatendimentoregistros_k183_codigo_seq' />
+     
+    </field> 
+    <field codigo="1010378" 
+           campo_api='' 
+           name="k183_autoatendimento" 
+           conteudo="int8" 
+           description="Armazena a chave estrangeira do campo k182_codigo da tabela arquivoautoatendimento." 
+           inivalue="0" 
+           label="Código" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010379" 
+           campo_api='' 
+           name="k183_tipodebito" 
+           conteudo="int8" 
+           description="Armazena a chave estrangeira do campo k184_codigo da tabela arquivoautoatendimentotipo." 
+           inivalue="0" 
+           label="Tipo de Débito" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Débito" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010381" 
+           campo_api='' 
+           name="k183_situacao" 
+           conteudo="char(2)" 
+           description="Situação do débito informada pelo banco, ao enviar campo fica nulo." 
+           inivalue="" 
+           label="Situação" 
+           size="2" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="2" 
+           tipoobj="text" 
+           labelrel="Situação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010382" 
+           campo_api='' 
+           name="k183_numnov" 
+           conteudo="int8" 
+           description="Numpre gerado na emissão do Recibo." 
+           inivalue="0" 
+           label="Numpre Recibo" 
+           size="2000000" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Numpre Recibo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k183_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="arquivoautoatendimentotipo" inner='t'>
+      <fieldfk name="k183_tipodebito" reference="k184_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="arquivoautoatendimento" inner='t'>
+      <fieldfk name="k183_autoatendimento" reference="k182_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

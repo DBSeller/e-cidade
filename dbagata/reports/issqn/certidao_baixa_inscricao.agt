@@ -29,7 +29,7 @@
             <From>issbase                   inner join empresa             on empresa.q02_inscr      = issbase.q02_inscr         inner join cgm                 on cgm.z01_numcgm         = issbase.q02_numcgm         INNER JOIN tabativbaixa        on q11_inscr              = issbase.q02_inscr</From>
             <Where>issbase.q02_inscr = $inscr</Where>
             <GroupBy></GroupBy>
-            <OrderBy></OrderBy>
+            <OrderBy>q11_data desc limit 1</OrderBy>
         </Query>
         <Groups>
             <Config>

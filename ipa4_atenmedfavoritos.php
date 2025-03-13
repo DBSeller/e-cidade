@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select max(codigo) + 1 from favoritos");
+  $result = db_query("select max(codigo) + 1 from favoritos");
   $codigo = pg_result($result,0,0);
   $codigo = $codigo==""?"1":$codigo;
-  pg_exec("insert into favoritos values($codigo,".db_getsession("DB_id_usuario").",'$descr')") or die("Erro(12) inserindo em favoritos");
+  db_query("insert into favoritos values($codigo,".db_getsession("DB_id_usuario").",'$descr')") or die("Erro(12) inserindo em favoritos");
 }
 if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("delete from favoritos where codigo = ".$HTTP_POST_VARS["favoritos"]) or die("Erro(15) deletando tabela favoritos");
+  db_query("delete from favoritos where codigo = ".$HTTP_POST_VARS["favoritos"]) or die("Erro(15) deletando tabela favoritos");
 }
 ?>
 <html>
@@ -98,7 +98,7 @@ function js_excluir() {
     <tr> 
       <td align="left" valign="top"><strong>Favoritos:</strong><br> <select onDblClick="js_inserir(this.options[this.selectedIndex].text)" style="width:136px;font-size:9px;" name="favoritos" size="10" id="select">
           <?			 
-			  $result = pg_exec("select codigo,descr from favoritos where codmed = ".db_getsession("DB_id_usuario")." order by upper(descr)");
+			  $result = db_query("select codigo,descr from favoritos where codmed = ".db_getsession("DB_id_usuario")." order by upper(descr)");
 			  $numrows = pg_numrows($result);
 			  for($i = 0;$i < $numrows;$i++) {
 			    db_fieldsmemory($result,$i);

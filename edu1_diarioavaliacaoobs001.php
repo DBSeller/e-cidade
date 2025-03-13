@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_diarioavaliacao_classe.php");
-include("classes/db_diario_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_periodoavaliacao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_diarioavaliacao_classe.php"));
+include(modification("classes/db_diario_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_periodoavaliacao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $resultedu= eduparametros(db_getsession("DB_coddepto"));
 $cldiarioavaliacao = new cl_diarioavaliacao;
@@ -50,7 +50,7 @@ if(isset($alterar)){
               inner join diario on ed95_i_codigo = ed72_i_diario
              WHERE ed72_i_codigo = $ed93_i_diarioavaliacao
             ";
- $result_reg = pg_query($sql_reg);
+ $result_reg = db_query($sql_reg);
  db_fieldsmemory($result_reg,0);
  $cldiarioavaliacao->ed72_i_valornota = $nota;
  $cldiarioavaliacao->ed72_c_valorconceito = $conceito;
@@ -71,7 +71,7 @@ if(isset($alterar)){
             OR diarioavaliacao.ed72_c_valorconceito != ''
             OR diarioavaliacao.ed72_t_parecer != '')
           ";
- $result_r = pg_query($sql_r);
+ $result_r = db_query($sql_r);
  $linhas = pg_num_rows($result_r);
  db_fieldsmemory($result_r,0);
  if($max==""){
@@ -116,7 +116,7 @@ if(isset($alterar)){
               OR diarioavaliacao.ed72_c_valorconceito != ''
               OR diarioavaliacao.ed72_t_parecer != '')
             ";
-   $result_r = pg_query($sql_r);
+   $result_r = db_query($sql_r);
    $linhas = pg_num_rows($result_r);
    db_fieldsmemory($result_r,0);
    if($max==""){
@@ -167,7 +167,7 @@ if(isset($alterar)){
  <tr>
   <td valign="top" bgcolor="#CCCCCC">
    <center>
-    <?include("forms/db_frmdiarioavaliacaoobs.php");?>
+    <?include(modification("forms/db_frmdiarioavaliacaoobs.php"));?>
    </center>
   </td>
  </tr>

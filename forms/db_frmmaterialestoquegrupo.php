@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -77,10 +77,10 @@ db_select('m65_ativo',$x,true,$db_opcao,"");
 <script>
 function js_pesquisam65_db_estruturavalor(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_estruturavalor','func_db_estruturavalor.php?funcao_js=parent.js_mostradb_estruturavalor1|db121_sequencial|db121_sequencial','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_estruturavalor','func_db_estruturavalor.php?funcao_js=parent.js_mostradb_estruturavalor1|db121_sequencial|db121_sequencial','Pesquisa',true);
   }else{
      if(document.form1.m65_db_estruturavalor.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_estruturavalor','func_db_estruturavalor.php?pesquisa_chave='+document.form1.m65_db_estruturavalor.value+'&funcao_js=parent.js_mostradb_estruturavalor','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_estruturavalor','func_db_estruturavalor.php?pesquisa_chave='+document.form1.m65_db_estruturavalor.value+'&funcao_js=parent.js_mostradb_estruturavalor','Pesquisa',false);
      }else{
        document.form1.db121_sequencial.value = ''; 
      }
@@ -99,7 +99,7 @@ function js_mostradb_estruturavalor1(chave1,chave2){
   db_iframe_db_estruturavalor.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_materialestoquegrupo','func_materialestoquegrupo.php?funcao_js=parent.js_preenchepesquisa|m65_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_materialestoquegrupo','func_materialestoquegrupo.php?funcao_js=parent.js_preenchepesquisa|m65_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_materialestoquegrupo.hide();

@@ -72,10 +72,10 @@ db_input('e69_codnota',6,$Ie69_codnota,true,'text',3,'')
 <script>
 function js_pesquisam72_codordem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matordem','func_matordem.php?funcao_js=parent.js_mostramatordem1|m51_codordem|m51_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matordem','func_matordem.php?funcao_js=parent.js_mostramatordem1|m51_codordem|m51_data','Pesquisa',true);
   }else{
      if(document.form1.m72_codordem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matordem','func_matordem.php?pesquisa_chave='+document.form1.m72_codordem.value+'&funcao_js=parent.js_mostramatordem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matordem','func_matordem.php?pesquisa_chave='+document.form1.m72_codordem.value+'&funcao_js=parent.js_mostramatordem','Pesquisa',false);
      }else{
        document.form1.m51_data.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostramatordem1(chave1,chave2){
 }
 function js_pesquisam72_codnota(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empnota','func_empnota.php?funcao_js=parent.js_mostraempnota1|e69_codnota|e69_codnota','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empnota','func_empnota.php?funcao_js=parent.js_mostraempnota1|e69_codnota|e69_codnota','Pesquisa',true);
   }else{
      if(document.form1.m72_codnota.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_empnota','func_empnota.php?pesquisa_chave='+document.form1.m72_codnota.value+'&funcao_js=parent.js_mostraempnota','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empnota','func_empnota.php?pesquisa_chave='+document.form1.m72_codnota.value+'&funcao_js=parent.js_mostraempnota','Pesquisa',false);
      }else{
        document.form1.e69_codnota.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostraempnota1(chave1,chave2){
   db_iframe_empnota.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empnotaord','func_empnotaord.php?funcao_js=parent.js_preenchepesquisa|m72_codordem|m72_codnota','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empnotaord','func_empnotaord.php?funcao_js=parent.js_preenchepesquisa|m72_codordem|m72_codnota','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_empnotaord.hide();

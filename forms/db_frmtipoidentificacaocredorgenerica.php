@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -79,10 +79,10 @@ db_input('c25_descricao',68,$Ic25_descricao,true,'text',$db_opcao,"")
 <script>
 function js_pesquisac25_tipoidentificacaocredor(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tipoidentificacaocredor','func_tipoidentificacaocredor.php?lCadastroGenerico=true&funcao_js=parent.js_mostratipoidentificacaocredor1|c24_sequencial|c24_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoidentificacaocredor','func_tipoidentificacaocredor.php?lCadastroGenerico=true&funcao_js=parent.js_mostratipoidentificacaocredor1|c24_sequencial|c24_descricao','Pesquisa',true);
   }else{
      if(document.form1.c25_tipoidentificacaocredor.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tipoidentificacaocredor','func_tipoidentificacaocredor.php?lCadastroGenerico=true&pesquisa_chave='+document.form1.c25_tipoidentificacaocredor.value+'&funcao_js=parent.js_mostratipoidentificacaocredor','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoidentificacaocredor','func_tipoidentificacaocredor.php?lCadastroGenerico=true&pesquisa_chave='+document.form1.c25_tipoidentificacaocredor.value+'&funcao_js=parent.js_mostratipoidentificacaocredor','Pesquisa',false);
      }else{
        document.form1.c24_descricao.value = ''; 
      }
@@ -101,7 +101,7 @@ function js_mostratipoidentificacaocredor1(chave1,chave2){
   db_iframe_tipoidentificacaocredor.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipoidentificacaocredorgenerica','func_tipoidentificacaocredorgenerica.php?lCadastroGenerico=true&funcao_js=parent.js_preenchepesquisa|c25_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoidentificacaocredorgenerica','func_tipoidentificacaocredorgenerica.php?lCadastroGenerico=true&funcao_js=parent.js_preenchepesquisa|c25_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tipoidentificacaocredorgenerica.hide();

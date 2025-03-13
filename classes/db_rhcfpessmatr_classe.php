@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -523,17 +523,17 @@ class cl_rhcfpessmatr {
      $resaco = $this->sql_record($this->sql_query_file($this->rh13_sequencia));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,9977,'$this->rh13_sequencia','A')");
+         $resac = db_query("insert into db_acountkey values($acount,9977,'$this->rh13_sequencia','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["rh13_sequencia"]))
-           $resac = pg_query("insert into db_acount values($acount,1713,9977,'".AddSlashes(pg_result($resaco,$conresaco,'rh13_sequencia'))."','$this->rh13_sequencia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1713,9977,'".AddSlashes(pg_result($resaco,$conresaco,'rh13_sequencia'))."','$this->rh13_sequencia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["rh13_instit"]))
-           $resac = pg_query("insert into db_acount values($acount,1713,9978,'".AddSlashes(pg_result($resaco,$conresaco,'rh13_instit'))."','$this->rh13_instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1713,9978,'".AddSlashes(pg_result($resaco,$conresaco,'rh13_instit'))."','$this->rh13_instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["rh13_matricula"]))
-           $resac = pg_query("insert into db_acount values($acount,1713,9979,'".AddSlashes(pg_result($resaco,$conresaco,'rh13_matricula'))."','$this->rh13_matricula',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1713,9979,'".AddSlashes(pg_result($resaco,$conresaco,'rh13_matricula'))."','$this->rh13_matricula',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["rh13_unificada"]))
-           $resac = pg_query("insert into db_acount values($acount,1713,9980,'".AddSlashes(pg_result($resaco,$conresaco,'rh13_unificada'))."','$this->rh13_unificada',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1713,9980,'".AddSlashes(pg_result($resaco,$conresaco,'rh13_unificada'))."','$this->rh13_unificada',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql2 = "";
@@ -547,7 +547,7 @@ class cl_rhcfpessmatr {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Controle de inclusão de matrículas nao Alterado. Alteracao Abortada.\\n";

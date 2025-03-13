@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_itbipropriold_classe.php");
-include("classes/db_itbirural_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_itbipropriold_classe.php"));
+include(modification("classes/db_itbirural_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clitbipropriold = new cl_itbipropriold;
 $clitbirural = new cl_itbirural;
@@ -57,7 +57,7 @@ if(isset($Incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmitbipropriold.php");
+	include(modification("forms/db_frmitbipropriold.php"));
 	$result = $clitbirural->sql_record($clitbirural->sql_query($it20_guia)); 
 	if($clitbirural->numrows == 0){
 	  echo "<script>parent.document.formaba.old.disabled = true</script>";

@@ -47,7 +47,7 @@ $clrotulo->label("me19_i_matrequi");
      <? 
       $sql  = " select * from calendarioescola "; 
       $sql .= " inner join calendario on ed52_i_codigo=ed38_i_calendario where ed38_i_escola=".$escola; 
-      $result=pg_query($sql);
+      $result=db_query($sql);
 	  $linhas=pg_num_rows($result);
 	  ?><select name="calendario" value=""><?
 	  for ($y=0;$y<$linhas;$y++) {
@@ -78,7 +78,7 @@ $clrotulo->label("me19_i_matrequi");
 <?if (isset($codrequi)) {
 	
 	$sql = $cl_matrequiitem->sql_query("","*","","m41_codmatrequi=".$codrequi);
-	$result=pg_query($sql);
+	$result=db_query($sql);
 	$linhas=pg_num_rows($result);
 	?>
 	  <table border="3">
@@ -149,7 +149,7 @@ function js_pesquisame19_i_matrequi(mostra) {
 	
   if(mostra==true){
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_matrequi',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matrequi',
     	                'func_matrequi_mer.php?funcao_js=parent.js_mostramatrequi1|m40_codigo|m40_codigo',
     	                'Pesquisa',true
     	               );
@@ -158,7 +158,7 @@ function js_pesquisame19_i_matrequi(mostra) {
 	  
     if (document.form1.me19_i_matrequi.value != '') {
          
-      js_OpenJanelaIframe('top.corpo','db_iframe_matrequi',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matrequi',
     	                  'func_matrequi_mer.php?pesquisa_chave='+document.form1.me19_i_matrequi.value+
     	                  '&funcao_js=parent.js_mostramatrequi','Pesquisa',false
     	                 );

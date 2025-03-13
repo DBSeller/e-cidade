@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -794,6 +794,38 @@ class cl_aguabase {
      }
      return $sql;
   }
+
+  public function sql_query_calculo_taxa_parcial($iAnoExercicio, $iMes, $iMatricula, $iTipoMovimento, $lTrocaNumpre, $lGeraFinanceiro) {
+
+    $lGeraFinanceiro = $lGeraFinanceiro ? 'true': 'false';
+    $lTrocaNumpre    = $lTrocaNumpre    ? 'true': 'false';
+
+    $sSql = sprintf(
+      "select fc_agua_calculoparcial(%s, %s, %s, %s, %s, %s);",
+      $iAnoExercicio, $iMes, $iMatricula, $iTipoMovimento, $lTrocaNumpre, $lGeraFinanceiro
+    );
+
+    return $sSql;
+  }
+
+  public function sql_query_matriculas_ativas($sCampos, $sOrderBy = null, $sLimit = null) {
+
+    $sSql  = "select {$sCampos} ";
+    $sSql .= " from aguabase ";
+    $sSql .= "    left join aguabasebaixa on x08_matric = x01_matric";
+    $sSql .= " where x08_matric is null";
+
+    if ($sOrderBy) {
+      $sSql .= " order by {$sOrderBy} ";
+    }
+
+    if ($sLimit) {
+      $sSql .= " limit {$sLimit} ";
+    }
+
+    return $sSql;
+  }
+
    function sql_query_aguahidromatric ( $x01_matric=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){

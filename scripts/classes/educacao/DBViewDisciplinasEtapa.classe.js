@@ -1,6 +1,6 @@
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -33,7 +33,7 @@ const MSG_DISCIPLINAS_ETAPA = "educacao.escola.DBViewDisciplinasEtapa.";
  * @param lVisaoCadastroBase
  * @constructor
  */
-DBViewDisciplinasEtapa = function(iBase, iTurma, lVisaoCadastroBase) {
+DBViewDisciplinasEtapa = function(iBase, iTurma, lVisaoCadastroBase, lFiltarEscola) {
 
   /**
    * Código da base
@@ -56,13 +56,28 @@ DBViewDisciplinasEtapa = function(iBase, iTurma, lVisaoCadastroBase) {
   this.lVisaoCadastroBase = lVisaoCadastroBase;
 
   /**
+   * Se cadastro de base foi acessado da Secretaria de Educação ou da Escola, acessando da Secretaria, não devemos
+   * filtrar a escola
+   * @type {Boolean}
+   */
+  this.lFiltarEscola = false;
+  if ( !!lFiltarEscola ) {
+    this.lFiltarEscola = lFiltarEscola == 'true' ? true : false;
+  }
+
+  // sempre que informado a turma esta acessando da escola
+  if ( this.iTurma != '' ) {
+    this.lFiltarEscola = true;
+  }
+
+  /**
    * Array com as etapas da base ou turma selecionada
    * De acordo com a visão
    * @type {Array}
    */
   this.aEtapas    = [];
 
-  this.oDBAba     = new DBAbas($('ctnAbas'));
+  this.oDBAba = new DBAbas($('ctnAbas'));
   this.sRPC   = 'edu4_vinculodisciplinaetapa.RPC.php'
 
   this.getAbas();
@@ -84,15 +99,17 @@ DBViewDisciplinasEtapa.oGridEpatas.aHeaders[1].lDisplayed = false;
  */
 DBViewDisciplinasEtapa.prototype.getAbas = function() {
 
-  var oParametros   = {};
+  var oParametros   = {
+    'iBase'         : this.iBase,
+    'iTurma'        : this.iTurma,
+    'lFiltarEscola' : this.lFiltarEscola
+  };
 
   oParametros.exec  = "getEtapasTurma";
   if (this.lVisaoCadastroBase) {
     oParametros.exec  = "getEtapasBase";
   }
-
-  oParametros.iBase  = this.iBase;
-  oParametros.iTurma = this.iTurma;
+  oParametros.teste = false;
 
   oSelf        = this;
   var oRequest = {};
@@ -102,7 +119,7 @@ DBViewDisciplinasEtapa.prototype.getAbas = function() {
   oRequest.onComplete   = function(oAjax) {
 
     js_removeObj("msgBoxA");
-    var oRetorno = eval ( "(" + oAjax.responseText + ")" );
+    var oRetorno = JSON.parse(oAjax.responseText);
     oRetorno.aEtapas.each( function (oEtapa) {
 
       oEtapa.sDescricao   = oEtapa.sDescricao.urlDecode();
@@ -254,7 +271,7 @@ DBViewDisciplinasEtapa.prototype.salvarReplicar = function(oDadosDisciplina) {
   oRequest.onComplete   = function(oAjax) {
 
     js_removeObj("msgBoxC");
-    var oRetorno = eval ( "(" + oAjax.responseText + ")" );
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     alert(oRetorno.sMessage.urlDecode());
     if ( parseInt(oRetorno.iStatus) == 2) {

@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-//include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_ossoariopart_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+//include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_ossoariopart_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clossoariopart = new cl_ossoariopart;
@@ -62,7 +62,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
 	<?
-	include("forms/db_frmossoariopart.php");
+	include(modification("forms/db_frmossoariopart.php"));
 	?>
     </center>
 	</td>
@@ -84,7 +84,7 @@ if(isset($alterar)){
    db_msgbox($clossoariopart->erro_msg);
    echo "<script>";
    echo " parent.document.formaba.a2.disabled=false; ";
-   echo " top.corpo.iframe_a2.location.href='dvr3_diversos004.php?tp=1&z01_numcgm=$cm02_i_proprietario';";
+   echo " (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='dvr3_diversos004.php?tp=1&z01_numcgm=$cm02_i_proprietario';";
    echo " parent.mo_camada('a2'); ";
    echo "</script>";
   };

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("classes/empenho.php");
+require(modification("classes/empenho.php"));
 class empenhoMigra extends empenho {
 
   private $lMigrar = false;
@@ -137,9 +137,9 @@ class empenhoMigra extends empenho {
 
         }
         $sUpdate = "update empnotaele set e70_vlrliq = {$nValortotal} where e70_codnota = {$this->iCodNota}";
-        pg_query($sUpdate);
+        db_query($sUpdate);
         $sUpdate = "update empnota set e69_anousu = {$iAnoUsu[2]} where e69_codnota = {$this->iCodNota}";
-        pg_query($sUpdate);
+        db_query($sUpdate);
       }
       if ($this->lMigrar == true) {
         

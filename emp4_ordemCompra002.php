@@ -1,27 +1,27 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
  *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
  *  detalhes.                                                         
  *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
  *  02111-1307, USA.                                                  
  *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
 
@@ -29,28 +29,28 @@
 /**
  * Cadastro de ordem de compras por empenho
  * @package compras
- * @author Iuri Guntchnigg Revisão$Author: dbrafael.lopes $
- * @version $Revision: 1.17 $
+ * @author Iuri Guntchnigg Revisão$Author: dbjeferson.belmiro $
+ * @version $Revision: 1.21 $
 */
 //echo ($HTTP_SERVER_VARS['QUERY_STRING']);exit;
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_libdocumento.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_matparam_classe.php");
-require_once ("classes/db_pcparam_classe.php");
-require_once ("classes/db_empempitem_classe.php");
-require_once ("classes/db_cgm_classe.php");
-require_once ("classes/db_matordem_classe.php");
-require_once ("classes/db_matordemitem_classe.php");
-require_once ("classes/db_empempenho_classe.php");
-require_once ("classes/db_matordemmail_classe.php");
-require_once ("classes/db_empparametro_classe.php");
-require_once ("classes/db_empempenholiberado_classe.php");
-require_once ('std/DBNumber.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_matparam_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_empempitem_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_matordem_classe.php"));
+require_once(modification("classes/db_matordemitem_classe.php"));
+require_once(modification("classes/db_empempenho_classe.php"));
+require_once(modification("classes/db_matordemmail_classe.php"));
+require_once(modification("classes/db_empparametro_classe.php"));
+require_once(modification("classes/db_empempenholiberado_classe.php"));
+require_once(modification('std/DBNumber.php'));
 
 $clmatparam			      = new cl_matparam;
 $clpcparam			      = new cl_pcparam;
@@ -70,6 +70,7 @@ $oPost     = db_utils::Postmemory($_POST);
 $dbopcao   = 1;
 $sDisable  = '';
 $lBloquear = false;
+$lDesdobramentoBloqueado = false;
 $result    = $clempparametro->sql_record($clempparametro->sql_query(db_getsession("DB_anousu")));
 
 if($result != false && $clempparametro->numrows > 0){
@@ -84,16 +85,16 @@ if($result != false && $clempparametro->numrows > 0){
 if ($oParam->e30_liberaempenho == 't') {
 	
 	if (isset($oGet->e60_numemp) && !empty($oGet->e60_numemp)) {
-		$sCampos = "empempenholiberado.*";
+		$sCampos = "empempenholiberado.*, o56_elemento, pc33_sequencial";
     $sWhere  = "e22_numemp = {$oGet->e60_numemp} ";
     $sWhere .= "and exists(select 1 from empempenholiberado where e22_numemp= e60_numemp)";
-    $sWhere .= "and exists(select 1 from desdobramentosliberadosordemcompra where pc33_codele = e64_codele ";
-    $sWhere .= "                                                              and pc33_anousu = ".db_getsession("DB_anousu").")";
      
-    $sSqlEmpenhosLiberados  = $clempempenholiberado->sql_query(null,$sCampos,null,$sWhere);
-    $rsSqlEmpenhosLiberados = $clempempenholiberado->sql_record($sSqlEmpenhosLiberados);
+    $sSqlEmpenhosLiberados  = $clempempenholiberado->sql_query(null,$sCampos,null,$sWhere, true);
+    $rsSqlEmpenhosLiberados = pg_fetch_assoc($clempempenholiberado->sql_record($sSqlEmpenhosLiberados));
 
-    if ($clempempenholiberado->numrows == 0) {
+    if ($clempempenholiberado->numrows && empty($rsSqlEmpenhosLiberados['pc33_sequencial'])) {
+      $lDesdobramentoBloqueado = true;
+    } elseif ($clempempenholiberado->numrows == 0) {
       $dbopcao   = 3;
       $sDisable  = "disabled";
       $lBloquear = true;
@@ -211,6 +212,7 @@ if (isset($oPost->incluir)){
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/numbers.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/notaliquidacao.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
@@ -229,7 +231,7 @@ if (isset($oPost->incluir)){
   <tr> 
     <td  align="left" valign="top" bgcolor="#CCCCCC">
     <?
-    include("forms/db_frmmatordemNota.php");
+    include(modification("forms/db_frmmatordemNota.php"));
     ?>
     </td>
   </tr>
@@ -275,6 +277,13 @@ if (isset($incluir)){
    "; 
   }
 }
+
+if ($lDesdobramentoBloqueado) {
+  db_msgbox("Desdobramento ({$rsSqlEmpenhosLiberados['o56_elemento']}) não liberado para a ordem de compra!");
+  // $rsSqlEmpenhosLiberados['o56_elemento']
+  db_redireciona('emp4_ordemCompra001.php');
+}
+
 if (isset($lBloquear) && $lBloquear == true) {
   db_msgbox("Empenho ({$oGet->e60_numemp}) não liberado para a ordem de compra!");
   db_redireciona('emp4_ordemCompra001.php');

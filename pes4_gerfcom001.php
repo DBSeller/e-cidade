@@ -1,41 +1,41 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_gerfcom_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_gerfcom_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 
-if ( isset($DB_COMPLEMENTAR) ) {
+if ( DBPessoal::verificarUtilizacaoEstruturaSuplementar() ) {
 
-  require_once("pes4_fechamentocomplementar001.php");
+  require_once(modification("pes4_fechamentocomplementar001.php"));
   exit;
 }
 
@@ -48,8 +48,7 @@ $r48_anousu = db_anofolha();
 $r48_mesusu = db_mesfolha();
 
 if(isset($incluir)){
-
-  $result_semest  = $clgerfcom->sql_record($clgerfcom->sql_query_file($r48_anousu, $r48_mesusu, null, null," r48_regist, r48_rubric",""," r48_anousu = ".$r48_anousu." and r48_mesusu = ".$r48_mesusu." and r48_semest = 0 "));
+  $result_semest  = $clgerfcom->sql_record($clgerfcom->sql_query_file($r48_anousu, $r48_mesusu, null, null," r48_regist, r48_rubric",""," r48_anousu = ".$r48_anousu." and r48_mesusu = ".$r48_mesusu." and r48_semest = 0 and r48_instit = " . db_getsession('DB_instit')));
   $numrows_result = $clgerfcom->numrows;
   db_inicio_transacao();
   for($i=0; $i<$numrows_result; $i++){
@@ -67,7 +66,8 @@ if(isset($incluir)){
   db_fim_transacao();
 }else{
   $semestatual = "0";
-  $result_semest = $clgerfcom->sql_record($clgerfcom->sql_query_file($r48_anousu, $r48_mesusu, null, null," max(r48_semest) as semestatual"));
+  $sql = $clgerfcom->sql_query_file($r48_anousu, $r48_mesusu, null, null," max(r48_semest) as semestatual", null," r48_anousu = ".$r48_anousu." and r48_mesusu = ".$r48_mesusu." and r48_instit = " . db_getsession('DB_instit'));
+  $result_semest = $clgerfcom->sql_record($sql);
   if($clgerfcom->numrows > 0){
     db_fieldsmemory($result_semest, 0);
   }
@@ -84,7 +84,7 @@ if(isset($incluir)){
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
+  <tr>
     <td width="360" height="18">&nbsp;</td>
     <td width="263">&nbsp;</td>
     <td width="25">&nbsp;</td>
@@ -92,11 +92,11 @@ if(isset($incluir)){
   </tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
       <center>
       <?
-      include("forms/db_frmgerfcom.php");
+      include(modification("forms/db_frmgerfcom.php"));
       ?>
       </center>
     </td>

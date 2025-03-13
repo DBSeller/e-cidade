@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 function db_fputs($variavel,$conteudo){
 
@@ -54,7 +54,7 @@ function db_fputs($variavel,$conteudo){
   global $fd;
   $fd = "";
   db_fputs($fd,"--DROP TABLE:\n");
-          $campos  = pg_exec("select a.codarq,a.nomearq,m.codmod,m.nomemod
+          $campos  = db_query("select a.codarq,a.nomearq,m.codmod,m.nomemod
                               from   db_sysmodulo m
                                      inner join db_sysarqmod am
                                      on am.codmod = m.codmod
@@ -65,11 +65,11 @@ function db_fputs($variavel,$conteudo){
 	    
            if(pg_numrows($campos) > 0){
                db_fieldsmemory($campos,0);
-               @pg_exec("DROP TABLE ".trim($nomearq));      	  
+               @db_query("DROP TABLE ".trim($nomearq));      	  
 	  }
   //cria drop sequences;
   db_fputs($fd,"--Criando drop sequences\n");
-         $seq = pg_exec("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
+         $seq = db_query("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
 	                  from db_syssequencia s
 					  inner join db_sysarqcamp a
 					  on a.codsequencia = s.codsequencia
@@ -77,11 +77,11 @@ function db_fputs($variavel,$conteudo){
 					  and a.codarq = $codarq");
 	   if (pg_numrows($seq) > 0){
               $rsseq = pg_fetch_array($seq);
-  	      @pg_exec("DROP SEQUENCE ".$rsseq["nomesequencia"]);      	 
+  	      @db_query("DROP SEQUENCE ".$rsseq["nomesequencia"]);      	 
            }
   //cria  sequences;
   db_fputs($fd, "\n\n-- Criando  sequences\n");
-         $cseq = pg_exec("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
+         $cseq = db_query("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
 	                  from db_syssequencia s
 					  inner join db_sysarqcamp a
 					  on a.codsequencia = s.codsequencia
@@ -99,7 +99,7 @@ function db_fputs($variavel,$conteudo){
            }
    //cria as tabelas e sua estrutura
      db_fputs($fd,"-- TABELAS E ESTRUTURA\n");
-          $tabela  = pg_exec("select a.codarq,a.nomearq,m.codmod,m.nomemod
+          $tabela  = db_query("select a.codarq,a.nomearq,m.codmod,m.nomemod
                               from   db_sysmodulo m
                                      inner join db_sysarqmod am
                                      on am.codmod = m.codmod
@@ -111,7 +111,7 @@ function db_fputs($variavel,$conteudo){
            if(pg_numrows($tabela) > 0){
                 db_fieldsmemory($tabela,0);
            }
-          $campo = pg_exec("select c.nomecam,c.conteudo,c.valorinicial,s.nomesequencia,s.codsequencia
+          $campo = db_query("select c.nomecam,c.conteudo,c.valorinicial,s.nomesequencia,s.codsequencia
                           from db_syscampo c
                           inner join db_sysarqcamp a
                              on a.codcam = c.codcam
@@ -127,7 +127,7 @@ function db_fputs($variavel,$conteudo){
           if($j == $Ncampos - 1) {
             // Chave Primaria
             if(true) {
-              $pk = pg_exec("select a.nomearq,c.nomecam,p.sequen,c.conteudo
+              $pk = db_query("select a.nomearq,c.nomecam,p.sequen,c.conteudo
                              from db_sysprikey p
                                   inner join db_sysarquivo a on a.codarq = p.codarq
                                   inner join db_syscampo c on c.codcam = p.codcam
@@ -191,14 +191,14 @@ function db_fputs($variavel,$conteudo){
       }
 // Foreign Key
    db_fputs ($fd,"\n\n\n-- CHAVE ESTRANGEIRA\n\n\n");
-          $grupo = pg_exec("select count(referen),referen
+          $grupo = db_query("select count(referen),referen
                             from db_sysforkey
                             where codarq = $codarq
                             group by referen");
-          $nome = pg_exec("select nomearq from db_sysarquivo where codarq = $codarq");
+          $nome = db_query("select nomearq from db_sysarquivo where codarq = $codarq");
     $Ngrupo = pg_numrows($grupo);
     for($j = 0;$j < $Ngrupo;$j++) {
-      $fk = pg_exec("select pai.nomearq as t_pai,c.nomecam
+      $fk = db_query("select pai.nomearq as t_pai,c.nomecam
                      from db_sysforkey f
                      inner join db_sysarquivo pai
                      on pai.codarq = f.referen
@@ -221,11 +221,15 @@ function db_fputs($variavel,$conteudo){
         else if(strlen(strstr(strtoupper(@$cc[1]),"MESEXE")) > 0)
           $NomeFK = $NomeFK."me_";
         else {
-          $ICC = sizeof($cc) == 1?0:1;
-          if(strlen($cc[$ICC]) >=4 )
-		    $NomeFK = $NomeFK.$cc[$ICC][0].$cc[$ICC][1].$cc[$ICC][2].$cc[$ICC][3]."_";
-          else			
+          //$ICC = sizeof($cc) == 1?0:1;
+          //alterado para webseller
+          $ICC = sizeof($cc) == 1?0:(sizeof($cc) > 2 ?2:1);
+
+          if(strlen($cc[$ICC]) >=4 ) {
+		        $NomeFK = $NomeFK.$cc[$ICC][0].$cc[$ICC][1].$cc[$ICC][2].$cc[$ICC][3]."_";
+          } else {
             $NomeFK = $NomeFK.@$cc[$ICC];
+          } 
 		}
         $TabPai = trim(pg_result($fk,$f,"t_pai"));
       }
@@ -236,15 +240,15 @@ function db_fputs($variavel,$conteudo){
     }
 // Indices
    db_fputs ($fd,"\n\n\n-- INDICES\n\n\n");
-         $ind = pg_exec("select i.codind,i.nomeind,i.campounico
+         $ind = db_query("select i.codind,i.nomeind,i.campounico
                          from db_sysindices i
                               inner join db_sysarquivo a
                                on a.codarq = i.codarq
                          where a.codarq = $codarq");
-          $nome = pg_exec("select nomearq from db_sysarquivo where codarq = $codarq");
+          $nome = db_query("select nomearq from db_sysarquivo where codarq = $codarq");
     if ($Ni = pg_numrows($ind) > 0) {
         for ($j = 0;$j < $Ni;$j++) {
-        $Ncam = pg_exec("select c.nomecam
+        $Ncam = db_query("select c.nomecam
                          from db_syscampo c
                          inner join db_syscadind ci
                          on ci.codcam = c.codcam
@@ -264,7 +268,7 @@ function db_fputs($variavel,$conteudo){
 }
 
 
-    $result = pg_exec($fd);
+    $result = db_query($fd);
     if($result==false){
 ?>
 <center><h3>Erro processamento<br><?=$fd?></h3></center>

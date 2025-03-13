@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("fpdf151/pdf1.php");
-include("classes/db_varfix_classe.php");
-include("classes/db_varfixval_classe.php");
-include("classes/db_db_docparag_classe.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf1.php"));
+include(modification("classes/db_varfix_classe.php"));
+include(modification("classes/db_varfixval_classe.php"));
+include(modification("classes/db_db_docparag_classe.php"));
 
 $cldb_docparag = new cl_db_docparag;
 $clvarfix      = new cl_varfix;
@@ -125,7 +125,7 @@ for($w=0;$w<$clfiscalusuario->numrows;$w++){
         			inner join db_tipodoc on db08_codigo  = db03_tipodoc
 		     		inner join db_paragrafo on db04_idparag = db02_idparag
 			 where db03_tipodoc = 8 and db03_instit = " . db_getsession("DB_instit")." order by db04_ordem ";			 
-$reshead = pg_query($sqlhead);
+$reshead = db_query($sqlhead);
 */
 
 $head1 = 'SECRETARIA DA FAZENDA';

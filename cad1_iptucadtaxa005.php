@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,35 +25,39 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptucadtaxa_classe.php");
-include("classes/db_iptucadtaxaexe_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_iptucadtaxa_classe.php"));
+require_once(modification("classes/db_iptucadtaxaexe_classe.php"));
+
 $cliptucadtaxa = new cl_iptucadtaxa;
-  /*
-$cliptucadtaxaexe = new cl_iptucadtaxaexe;
-  */
-db_postmemory($HTTP_POST_VARS);
-   $db_opcao = 22;
+db_postmemory($_POST);
+$db_opcao = 22;
 $db_botao = false;
-if(isset($alterar)){
-  $sqlerro=false;
+
+if (isset($alterar)) {
+  $sqlerro = false;
+  
   db_inicio_transacao();
   $cliptucadtaxa->alterar($j07_iptucadtaxa);
-  if($cliptucadtaxa->erro_status==0){
+
+  if ($cliptucadtaxa->erro_status == 0) {
     $sqlerro=true;
   } 
+
   $erro_msg = $cliptucadtaxa->erro_msg; 
   db_fim_transacao($sqlerro);
+  $db_opcao = 2;
+  $db_botao = true;  
+
+} else if (isset($chavepesquisa)) {
+
    $db_opcao = 2;
    $db_botao = true;
-}else if(isset($chavepesquisa)){
-   $db_opcao = 2;
-   $db_botao = true;
-   $result = $cliptucadtaxa->sql_record($cliptucadtaxa->sql_query($chavepesquisa)); 
+   $result   = $cliptucadtaxa->sql_record($cliptucadtaxa->sql_query($chavepesquisa)); 
    db_fieldsmemory($result,0);
 }
 ?>
@@ -65,48 +69,45 @@ if(isset($alterar)){
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmiptucadtaxa.php");
+<body class="body-default" onLoad="a=1">
+	<?php
+	 include(modification("forms/db_frmiptucadtaxa.php"));
 	?>
-    </center>
-	</td>
-  </tr>
-</table>
 </body>
 </html>
-<?
-if(isset($alterar)){
-  if($sqlerro==true){
+<?php
+if (isset($alterar)) {
+  if ($sqlerro == true) {
+
     db_msgbox($erro_msg);
-    if($cliptucadtaxa->erro_campo!=""){
+    
+    if($cliptucadtaxa->erro_campo != "") {
       echo "<script> document.form1.".$cliptucadtaxa->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$cliptucadtaxa->erro_campo.".focus();</script>";
-    };
-  }else{
+    }
+
+  } else {
    db_msgbox($erro_msg);
   }
 }
-if(isset($chavepesquisa)){
+
+if (isset($chavepesquisa)) {
  echo "
   <script>
-      function js_db_libera(){
-         parent.document.formaba.iptucadtaxaexe.disabled=false;
-         top.corpo.iframe_iptucadtaxaexe.location.href='cad1_iptucadtaxaexe001.php?j08_iptucadtaxa=".@$j07_iptucadtaxa."&j07_descr=".@$j07_descr."';
-     ";
-         if(isset($liberaaba)){
-           echo "  parent.mo_camada('iptucadtaxaexe');";
-         }
- echo"}\n
+    function js_db_libera() {
+      parent.document.formaba.iptucadtaxaexe.disabled=false;
+      (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_iptucadtaxaexe.location.href='cad1_iptucadtaxaexe001.php?j08_iptucadtaxa=".@$j07_iptucadtaxa."&j07_descr=".@$j07_descr."';";
+      
+      if (isset($liberaaba)) {
+        echo "  parent.mo_camada('iptucadtaxaexe');";
+      }
+
+    echo"}\n
     js_db_libera();
-  </script>\n
- ";
+  </script>\n";
 }
- if($db_opcao==22||$db_opcao==33){
-    echo "<script>document.form1.pesquisar.click();</script>";
- }
+
+if ($db_opcao == 22 || $db_opcao == 33) {
+   echo "<script>document.form1.pesquisar.click();</script>";
+}
 ?>

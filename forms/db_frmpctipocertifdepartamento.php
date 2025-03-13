@@ -26,7 +26,7 @@
  */
 
 //MODULO: Compras
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clpctipocertifdepartamento->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -146,10 +146,10 @@ function js_cancelar(){
 }
 function js_pesquisapc34_coddepto(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_pctipocertifdepartamento','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pctipocertifdepartamento','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true,'0','1');
   }else{
      if(document.form1.pc34_coddepto.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_pctipocertifdepartamento','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.pc34_coddepto.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pctipocertifdepartamento','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.pc34_coddepto.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
      }else{
        document.form1.descrdepto.value = ''; 
      }

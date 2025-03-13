@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_dialetivo_classe.php");
-include("classes/db_diasemana_classe.php");
-include("classes/db_rechumanohoradisp_classe.php");
-include("classes/db_regenciahorario_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_dialetivo_classe.php"));
+include(modification("classes/db_diasemana_classe.php"));
+include(modification("classes/db_rechumanohoradisp_classe.php"));
+include(modification("classes/db_regenciahorario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $cldialetivo = new cl_dialetivo;
 $cldiasemana = new cl_diasemana;
@@ -97,7 +97,7 @@ if(isset($gravar)){
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Dias Letivos na Escola</b></legend>
-    <?include("forms/db_frmdialetivo.php");?>
+    <?include(modification("forms/db_frmdialetivo.php"));?>
    </fieldset>
    </center>
   </td>

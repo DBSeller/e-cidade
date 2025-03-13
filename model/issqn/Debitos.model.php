@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -79,7 +79,7 @@ class Debitos{
     $sSqlDebitos  = $oDaoArreInscr->sql_query_arrecad(null,null, "arrecad.*", null, $sWhereDebitos);
     $rsSqlDebitos = $oDaoArreInscr->sql_record($sSqlDebitos);
 
-    $oDebitosVencidos = db_utils::getColectionByRecord($rsSqlDebitos);
+    $oDebitosVencidos = db_utils::getCollectionByRecord($rsSqlDebitos);
 
     return $oDebitosVencidos;
   }

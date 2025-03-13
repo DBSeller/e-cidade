@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_utils.php';
-require_once 'libs/db_app.utils.php';
-require_once 'dbforms/db_funcoes.php';
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_utils.php");
+require_once modification("libs/db_app.utils.php");
+require_once modification("dbforms/db_funcoes.php");
 
 $oRotulo  = new rotulocampo;
 $db_opcao = 2;
@@ -184,7 +184,7 @@ function js_retornoGetDadosAgrupamentoRubrica(oAjax) {
 
   js_removeObj('divCarregando');
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode().replace(/\\n/g,'\n');
   
   /**
@@ -253,7 +253,7 @@ function js_retornoProcessar(oAjax) {
 
   js_removeObj('divCarregando');
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode().replace(/\\n/g,'\n');
 
   if ( oRetorno.iStatus > 1 ) {

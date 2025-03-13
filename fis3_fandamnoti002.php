@@ -30,20 +30,20 @@ if(!isset($abas)){
   echo "<script>location.href='fis3_fandamnoti005.php?db_opcao=2'</script>";
   exit;
 }
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_fiscal_classe.php");
-include("classes/db_fiscaltipo_classe.php");
-include("classes/db_fiscalandam_classe.php");
-include("classes/db_fiscalultandam_classe.php");
-include("classes/db_fandam_classe.php");
-include("classes/db_fandamusu_classe.php");
-include("classes/db_fiscalrua_classe.php");
-include("classes/db_fiscbairro_classe.php");
-include("classes/db_fiscalusuario_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_fiscal_classe.php"));
+include(modification("classes/db_fiscaltipo_classe.php"));
+include(modification("classes/db_fiscalandam_classe.php"));
+include(modification("classes/db_fiscalultandam_classe.php"));
+include(modification("classes/db_fandam_classe.php"));
+include(modification("classes/db_fandamusu_classe.php"));
+include(modification("classes/db_fiscalrua_classe.php"));
+include(modification("classes/db_fiscbairro_classe.php"));
+include(modification("classes/db_fiscalusuario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo        = new rotulocampo;
 $clfiscal     = new cl_fiscal;
@@ -135,7 +135,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
 	  $db_opcao=22;
         }
         $db_botao = true;
-	include("forms/db_frmfandam.php");
+	include(modification("forms/db_frmfandam.php"));
         if($db_opcao==22 && !isset($chavepesquisa)){
           echo "<script>document.form1.pesquisar.click();</script>";
         }

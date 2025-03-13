@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require("std/db_stdClass.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_ruas_classe.php");
-include("classes/db_face_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_ruas_classe.php"));
+require_once(modification("classes/db_face_classe.php"));
 $oStd = new db_stdClass();
-db_postmemory($HTTP_POST_VARS);
-db_postmemory($HTTP_GET_VARS);
+db_postmemory($_POST);
+db_postmemory($_GET);
 $clface = new cl_face;
 $clruas = new cl_ruas;
 $clruas->rotulo->label("j14_codigo");
@@ -62,7 +62,7 @@ $idsetor  = $oStd->db_stripTagsJson($idsetor);
               <?=$Lj14_codigo?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
+              <?php
 		       db_input("j14_codigo",7,$Ij14_codigo,true,"text",4,"","chave_j14_codigo");
 		       ?>
             </td>
@@ -72,7 +72,7 @@ $idsetor  = $oStd->db_stripTagsJson($idsetor);
               <?=$Lj14_nome?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
+              <?php
 		       db_input("j14_nome",40,$Ij14_nome,true,"text",4,"","chave_j14_nome");
 		       ?>
             </td>
@@ -90,13 +90,13 @@ $idsetor  = $oStd->db_stripTagsJson($idsetor);
   </tr>
   <tr> 
     <td align="center" valign="top"> 
-      <?
+      <?php
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            $campos = "ruas.*";
         }
           
-        $sql= $clface->sql_query('','j37_codigo#j14_nome',''," j37_setor = '$idsetor' and j37_quadra = '$idquadra'");
+        $sql= $clface->sql_query('','j37_codigo, j14_nome',''," j37_setor = '$idsetor' and j37_quadra = '$idquadra'");
         db_lovrot($sql,15,"()","",$funcao_js);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
@@ -117,13 +117,19 @@ $idsetor  = $oStd->db_stripTagsJson($idsetor);
 </table>
 </body>
 </html>
-<?
+<?php
 if(!isset($pesquisa_chave)){
   ?>
   <script>
 document.form2.chave_j14_codigo.focus();
 document.form2.chave_j14_codigo.select();
   </script>
-  <?
+  <?php
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

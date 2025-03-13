@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -150,7 +150,7 @@ function js_CarregaLotes() {
 
 function js_RetornoCarregaLotes(oAjax) {
 
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.iStatus == 1) {
 
     oGridLotes.clearAll(true);
@@ -208,7 +208,7 @@ function js_pesquisavc15_i_lote(mostra) {
 
     if (mostra == true) {
 
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_matestoqueitemlote',
                           'func_vac_matestoqueitemlote.php?iVacina='+document.form2.vc06_i_vacina.value+
                           '&funcao_js=parent.js_mostramatestoqueitemlote1|m77_sequencial|m77_lote|m77_dtvalidade|m71_quant',
@@ -220,7 +220,7 @@ function js_pesquisavc15_i_lote(mostra) {
 
        if (document.form2.vc15_i_lote.value != '') {  
 
-          js_OpenJanelaIframe('top.corpo',
+          js_OpenJanelaIframe('CurrentWindow.corpo',
                               'db_iframe_matestoqueitemlote',
                               'func_vac_matestoqueitemlote.php?iVacina='+document.form2.vc06_i_vacina.value+
                               '&pesquisa_chave='+document.form2.vc15_i_lote.value+
@@ -275,7 +275,7 @@ function js_pesquisavc15_i_vacina(mostra) {
 	
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_vac_vacina',
                         'func_vac_vacina.php?funcao_js=parent.js_mostravac_vacina1|'+
                         'vc06_i_codigo|vc06_c_descr|vc06_i_vacina|m61_descr',
@@ -286,7 +286,7 @@ function js_pesquisavc15_i_vacina(mostra) {
 
      if (document.form2.vc15_i_vacina.value != '') {  
 
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_vac_vacina',
                             'func_vac_vacina.php?pesquisa_chave='+document.form2.vc15_i_vacina.value+
                             '&funcao_js=parent.js_mostravac_vacina',
@@ -330,7 +330,7 @@ function js_mostravac_vacina1(chave1,chave2,vacina,unidade) {
 
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_vac_vacinalote',
                       'func_vac_vacinalote.php?funcao_js=parent.js_preenchepesquisa|vc15_i_codigo',
                       'Pesquisa',

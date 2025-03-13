@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_pcorcam_classe.php");
-include("classes/db_solicita_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_pcorcam_classe.php"));
+include(modification("classes/db_solicita_classe.php"));
 $clpcorcam = new cl_pcorcam;
 $clsolicita = new cl_solicita;
 $clpcorcam->rotulo->label();
@@ -48,7 +48,7 @@ db_postmemory($HTTP_POST_VARS);
 <script>
 function js_abre(){
   if(document.form1.pc20_codorc.value=="" && document.form1.pc10_numero.value!=""){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pcorcam','func_pcorcamlancval.php?numero='+document.form1.pc10_numero.value+'&sol=true&rel=true&funcao_js=parent.js_mostrapcorcamsol|pc20_codorc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcorcam','func_pcorcamlancval.php?flagReemissaoOrcamentoSC=1&chave_pc10_numero='+document.form1.pc10_numero.value+'&sol=true&rel=true&funcao_js=parent.js_mostrapcorcamsol|pc20_codorc','Pesquisa',true);
   }else if(document.form1.pc20_codorc.value == ""){
     document.form1.pc20_codorc.focus();
     alert("Informe o código do pcorcamamento");
@@ -64,7 +64,7 @@ function js_abre(){
       }
     }
     if(forne==""){
-      alert("Informe no mínimo um fornecedor.");
+      alert("Não é possível reemitir este orçamento. Orçamento do Processo de Compras.");
     }else{
       jan = window.open('com2_solorc002.php?pc20_codorc='+document.form1.pc20_codorc.value+'&forne='+forne,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
       jan.moveTo(0,0);
@@ -142,10 +142,10 @@ function js_limparcampos(){
 }
 function js_pesquisa_pcorcam(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pcorcam','func_pcorcamlancval.php?sol=true&sel=true&numero=true&funcao_js=parent.js_mostrapcorcam1|pc20_codorc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcorcam','func_pcorcamlancval.php?sol=true&sel=true&numero=true&funcao_js=parent.js_mostrapcorcam1|pc20_codorc','Pesquisa',true);
   }else{
      if(document.form1.pc20_codorc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pcorcam','func_pcorcamlancval.php?pesquisa_chave='+document.form1.pc20_codorc.value+'&numero=true&sol=true&sel=true&funcao_js=parent.js_mostrapcorcam','Pesquisa',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcorcam','func_pcorcamlancval.php?pesquisa_chave='+document.form1.pc20_codorc.value+'&numero=true&sol=true&sel=true&funcao_js=parent.js_mostrapcorcam','Pesquisa',true);
      }
   }
 }
@@ -165,10 +165,10 @@ function js_mostrapcorcam1(chave1,chave2){
 }
 function js_pesquisapc10_numero(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_solicita','func_solicita.php?funcao_js=parent.js_mostrasolicita1|pc10_numero&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicita','func_solicita.php?funcao_js=parent.js_mostrasolicita1|pc10_numero&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
   }else{
      if(document.form1.pc10_numero.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_solicita','func_solicita.php?pesquisa_chave='+document.form1.pc10_numero.value+'&funcao_js=parent.js_mostrasolicita&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_solicita','func_solicita.php?pesquisa_chave='+document.form1.pc10_numero.value+'&funcao_js=parent.js_mostrasolicita&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',false);
      }else{
        document.form1.pc10_numero.value = '';
      }

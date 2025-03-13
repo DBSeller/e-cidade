@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 ?>
 
@@ -44,7 +44,7 @@ db_postmemory($HTTP_POST_VARS);
 
 
 function js_erro(msg){
-  top.corpo.db_iframe_bbconverte.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_bbconverte.hide();
   alert(msg);
 }
 
@@ -98,7 +98,7 @@ if(isset($gera) && $AArquivo != ""){
   $nometmp     = $_FILES["AArquivo"]["tmp_name"];
   // Faz um upload do arquivo para o local especificado
   move_uploaded_file($nometmp,$nomearquivo) or $erro_msg = "ERRO: Contate o suporte.";
-  echo "<script> js_OpenJanelaIframe('top.corpo','db_iframe_bbconverte','pes2_guaimportaguiabaprev002.php?AArquivo=$nomearquivo','Gerando Importação',true);</script>";
+  echo "<script> js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bbconverte','pes2_guaimportaguiabaprev002.php?AArquivo=$nomearquivo','Gerando Importação',true);</script>";
 }
 ?>
   </form>

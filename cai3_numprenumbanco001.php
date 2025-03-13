@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,20 +28,20 @@
 /**
  * 
  * @author I
- * @revision $Author: dbevandro $
- * @version $Revision: 1.3 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.7 $
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_arrebanco_classe.php");
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_arrebanco_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -238,7 +238,7 @@ function js_retornoPesquisa(oAjax) {
   
   $("fielsetGrid").className = 'display-on';
   
-  var oRetorno        = eval("("+oAjax.responseText+")");   
+  var oRetorno        = JSON.parse(oAjax.responseText);   
   var aNumpreNumbanco = oRetorno.aNumpreNumbanco;
   var iNumrows        = aNumpreNumbanco.length;
   var sTipoPesquisa   = oRetorno.TipoPesquisa.trim();
@@ -334,7 +334,7 @@ function js_limpacampos(lCampo) {
  */
 function js_pesquisaMi(iNumpre,iNumpar,iReceita) {
 
-  js_OpenJanelaIframe('top.corpo','db_iframe_consultanumprenumbanco',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consultanumprenumbanco',
                       'func_consultanumprenumbanco.php?numpre='+iNumpre+'&numpar='+iNumpar+'&receita='+iReceita,
                       'Pesquisa',true);
 }

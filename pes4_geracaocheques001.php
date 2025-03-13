@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_gerfcom_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_gerfcom_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 
@@ -54,7 +54,6 @@ $clrotulo->label('r18_numcheque');
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/libJsonJs.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
@@ -124,7 +123,7 @@ $clrotulo->label('r18_numcheque');
 						  	$mesfolha = $oPost->mesfolha;
 						  }
 						  
-						  include("dbforms/db_classesgenericas.php");
+						  include(modification("dbforms/db_classesgenericas.php"));
 						  $geraform = new cl_formulario_rel_pes;
 						
 						  $geraform->usaregi = true;                      // PERMITIR SELEÇÃO DE MATRÍCULAS
@@ -318,7 +317,7 @@ function js_retornoGeracao(oAjax){
   js_removeObj('msgBox');
 
   var sExpReg = new RegExp('\\\\n','g');
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
     
   alert(aRetorno.msg.urlDecode().replace(sExpReg,'\n'));
   
@@ -358,7 +357,7 @@ function js_retornoEmissao(oAjax){
   js_removeObj('msgBox');
 
   var sExpReg = new RegExp('\\\\n','g');
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
     
   alert(aRetorno.msg.urlDecode().replace(sExpReg,'\n'));
   

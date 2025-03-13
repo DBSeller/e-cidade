@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
 $sSqlEmpresa  = "select '90'    as tipo_de_registro, ";
 $sSqlEmpresa .= "       'Nome do Parametro' as nome_do_parametro, ";
 $sSqlEmpresa .= "       'Valor do Parametro' as valor_do_parametro";
-$rsEmpresa    = pg_query($sSqlEmpresa);
+$rsEmpresa    = db_query($sSqlEmpresa);
 $oEmpresa     = db_utils::fieldsMemory($rsEmpresa,0);
 
 // var_dump($oEmpresa);

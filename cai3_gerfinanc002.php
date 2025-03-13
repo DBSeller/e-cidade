@@ -1,33 +1,33 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
-require_once("ext/php/adodb-time.inc.php");
-require_once("libs/db_utils.php");
+require_once(modification("ext/php/adodb-time.inc.php"));
+require_once(modification("libs/db_utils.php"));
 
 set_time_limit(0);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -38,8 +38,8 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //se for submit, ele cria o recibo
 if(isset($HTTP_POST_VARS["ver_matric"]) && !isset($HTTP_POST_VARS["calculavalor"])) {
   global $HTTP_SESSION_VARS;
-  if(isset($db_datausu)){
-    if(!checkdate(substr($db_datausu,5,2),substr($db_datausu,8,2),substr($db_datausu,0,4))){
+  if(isset($db_datausu) && !empty($db_datausu)){
+    if($db_datausu == '--' || !checkdate(substr($db_datausu,5,2),substr($db_datausu,8,2),substr($db_datausu,0,4))){
       echo "Data para cálculo inválida. <br><br>";
       echo "Data deverá se superior a : ".adodb_date('Y-m-d',$HTTP_SESSION_VARS["DB_datausu"]);
       //	 exit;
@@ -57,24 +57,38 @@ if(isset($HTTP_POST_VARS["ver_matric"]) && !isset($HTTP_POST_VARS["calculavalor"
 
 if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] != "" ) || ( isset($HTTP_POST_VARS["geracarne"]) && !isset($HTTP_POST_VARS["calculavalor"]))) {
 
-  include("cai3_gerfinanc033.php");
+  include(modification("cai3_gerfinanc033.php"));
   exit;
 }
 
-  include("fpdf151/scpdf.php");
-  include("cai3_gerfinanc003.php");
+  include(modification("fpdf151/scpdf.php"));
+  include(modification("cai3_gerfinanc003.php"));
   exit;
 
 } else {
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_sql.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_sql.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
 
   db_postmemory($HTTP_POST_VARS);
   db_postmemory($HTTP_GET_VARS);
 
+  db_sel_instit(null, "db21_usasisagua, db21_regracgmiptu, db21_regracgmiss");
+  $db21_usasisagua = isset($db21_usasisagua) && $db21_usasisagua == 't';
 
+  // variavel de controle para saber se deve ou não mostrar a coluna de contrato e economia do modulo agua
+  $aguaColunaContrato = false;
+
+  if ($db21_usasisagua === true) {
+    $resultAguaConf = db_query("select x18_arretipo from aguaconf where x18_anousu = " . db_getsession("DB_anousu"));
+    $x18_arretipo = $resultAguaConf && pg_num_rows($resultAguaConf) ? db_utils::fieldsMemory($resultAguaConf, 0)->x18_arretipo : null;
+    // se o tipo de debito configurado na tabela aguaconf for igual ao tipo de debito selecionado, mostramos a coluna
+    // esta validacao vem pelo motivo de que em 2017 mudou o tipo da receita, portanto a tabela da receita antiga
+    // estaria mostrando as colunas indevidamente
+    $aguaColunaContrato = isset($tipo) ? $tipo == $x18_arretipo : false;
+  }
 
   if(isset($HTTP_POST_VARS["calculavalor"])) {
 
@@ -84,7 +98,7 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
     reset($vt);
     $j = 0;
     for($i = 0;$i < $tam;$i++) {
-      if(db_indexOf(key($vt) ,"VAL_ISS") > 0) 
+      if(db_indexOf(key($vt) ,"VAL_ISS") > 0)
       				//echo "xxx: " . $vt[key($vt)] . "\n";
       $valores[$j++] = $vt[key($vt)];
       next($vt);
@@ -103,9 +117,10 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
       if(sizeof($valores) != sizeof($numpres)) {
         db_erro("Matriz inválida!",1);
       }
-      
+
       $tam = sizeof($valores);
-      db_query("BEGIN");
+      // Removido inicio de trasacao com db query
+      db_inicio_transacao();
       for($i = 0;$i < $tam;$i++) {
         $mat = split("P",$numpres[$i]);
         $numpre = $mat[0];
@@ -129,14 +144,15 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
 
         db_query($sql) or die("Erro(37) atualizando issvar: ".pg_errormessage());
       }
-      db_query("COMMIT");
+      // Removido fim de trasacao com db query
+      db_fim_transacao(false);
     }
 
     $tipo = 3;
   }
 
-  if(isset($db_datausu)){
-    if(!checkdate(substr($db_datausu,5,2),substr($db_datausu,8,2),substr($db_datausu,0,4))){
+  if(isset($db_datausu) && !empty($db_datausu)){
+    if($db_datausu == '--' || !checkdate(substr($db_datausu,5,2),substr($db_datausu,8,2),substr($db_datausu,0,4))){
       echo "Data para Cálculo Inválida. <br><br>";
       echo "Data deverá se superior a : ".adodb_date('Y-m-d',db_getsession("DB_datausu"));
       //	 exit;
@@ -154,7 +170,7 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
 
 if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] != "" ) || ( isset($HTTP_POST_VARS["geracarne"]) && !isset($HTTP_POST_VARS["calculavalor"]))) {
 
-	include("cai3_gerfinanc033.php");
+	include(modification("cai3_gerfinanc033.php"));
   exit;
 }
 
@@ -317,9 +333,11 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
     if(abilitabotoesUnica == true){
       if(emrec=='t') {
         parent.document.getElementById("btcarne").disabled = false;
+        parent.document.getElementById("btnTef").disabled = false;
       }
     }else{
       parent.document.getElementById("btcarne").disabled = true;
+      parent.document.getElementById("btnTef").disabled = true;
     }
   }
 
@@ -352,11 +370,6 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
 
   function js_validatamanho(valor,btn,inputvalor){
 
-    console.info('----------------------------------------entro no js_validatamanho-----------------------------------');
-    console.info('valor' + valor);
-    console.info('btn'+btn);
-    console.info('inputvalor' + inputvalor);
-
     var nValorInteiro = valor.split(".");
 
     if (nValorInteiro[0].length > 8) {
@@ -371,7 +384,7 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
       js_putInputValue(inputvalor, document.getElementById(inputvalor).value);
     }
     document.getElementById(btn).disabled = false;
-    console.info('-----------------------------saiu js_validatamanho---------------------------------');
+
     return true;
   }
 
@@ -448,8 +461,6 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
 
   function js_soma(linha) {
 
-    console.info('------------entra js_soma------------------------');
-
     parent.$('marcartodas').value     = true;
     $('marcartodas').value            = true;
 
@@ -485,9 +496,9 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
         parent.document.getElementById("enviar").disabled 	  = false;//botao emite recibo
         parent.document.getElementById("btcarne").disabled 	  = false;//botao carne
 
-        if ( (agpar == 't' || agnum == 't') || (k03_tipo == 3) ) {
+        // if ( (agpar == 't') || (k03_tipo == 3) ) {
           parent.document.getElementById("geranotif").disabled 	  = false;
-        }
+        // }
       }
       parent.document.getElementById("emisscarne").disabled   = false;//select outros exercicios
       parent.document.getElementById("btnotifica").disabled   = false;
@@ -497,7 +508,12 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
       parent.document.getElementById("btcancela").disabled 	  = true; // botao cancela debitos
       parent.document.getElementById("btnSuspender").disabled = true; // botao suspender
       parent.document.getElementById("btjust").disabled 	    = true; // botao justifica
+      parent.document.getElementById("btncustas").disabled 	    = true; // botao Mostrar Custas
+      parent.document.getElementById("btnTef").disabled 	    = false; // botao TEF
 
+      if (k03_tipo == 13 && linha > 1) {
+	      parent.document.getElementById("btncustas").disabled = false;
+      }
 
       if (document.form1.k03_permparc.value == 't' && permissao_parcelamento == true && linha > 1 && k03_tipo != '18') {
         parent.document.getElementById("btparc").disabled = false; // botao parcelamento
@@ -515,7 +531,7 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
         parent.document.getElementById("btnSuspender").disabled = false; // botao cancela debitos
       }
 
-      if (permissao_justif == true && linha > 1 && k03_tipo != '18') {
+      if (permissao_justif == true && linha > 1) {
         parent.document.getElementById("btjust").disabled = false; // botao justifique debitos
       }
 
@@ -533,7 +549,7 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
         parent.document.getElementById("btparc").disabled		    = true; // botao parcelamento
         parent.document.getElementById("btcda").disabled 	      = true; // botao certidao
         parent.document.getElementById("btcancela").disabled 	  = true; // botao cancela debitos
-        parent.document.getElementById("btjust").disabled 	    = true; // botao justific
+        //parent.document.getElementById("btjust").disabled 	    = true; // botao justific
       }
 
       // incluido teste para liberação de importação de diversos ps: somente IPTU/AGUA Exercicio
@@ -602,6 +618,8 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
         parent.document.getElementById("emisscarne").disabled = true;
         parent.document.getElementById("btnotifica").disabled = true;
         parent.document.getElementById("btimpdiverso").disabled = true;
+        parent.document.getElementById("btncustas").disabled = true;
+          parent.document.getElementById("btnTef").disabled 	    = true; // botao Mostrar Custas
         document.getElementById('marca').innerHTML = "M";
         parent.document.getElementById('btmarca').value = "Marcar Todas";
         parent.document.getElementById('btmarcavencidas').value = "Marcar Vencidas";
@@ -611,7 +629,7 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
         $('marcarvencidas').value  = false;
 
         parent.document.getElementById("geranotif").disabled = true;
-        
+
       }
     }
 
@@ -621,7 +639,6 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
       parent.document.getElementById("btcarne").disabled = true;
     }
 
-    console.info(' ----sai js_soma ----------------------------- ');
 
   }
 
@@ -769,7 +786,7 @@ if((isset($HTTP_POST_VARS["numpre_unica"]) && $HTTP_POST_VARS["numpre_unica"] !=
 
   function js_retornoDadosVencidas(oAjax) {
 
-	  var oRetorno = eval("("+oAjax.responseText+")");
+	  var oRetorno = JSON.parse(oAjax.responseText);
 
 	  if (oRetorno.status == 2) {
 
@@ -998,11 +1015,18 @@ if(isset($tipo)) {
   echo "<th title=\"Total de Parcela\" class=\"borda\" style=\"font-size:12px\" nowrap>T</th>\n";
 
   //Se for divida ativa mostra o exercicio da divida
-  if($k03_tipo==5){
+  if($k03_tipo==5 or $k03_tipo==7){
     echo "<th title=\"Exercício\" class=\"borda\" style=\"font-size:12px\" nowrap>Exercício</th>\n";
-    echo "<th title=\"Coddiv\" class=\"borda\" style=\"font-size:12px\" nowrap>Coddiv</th>\n";
+    if($k03_tipo==5){
+      echo "<th title=\"Coddiv\" class=\"borda\" style=\"font-size:12px\" nowrap>Coddiv</th>\n";
+    } else if ($k03_tipo==7){
+      echo "<th title=\"Coddiver\" class=\"borda\" style=\"font-size:12px\" nowrap>Coddiver</th>\n";
+    }
   }else if($k03_tipo==6 or $k03_tipo==13 or $k03_tipo==16 or $k03_tipo==17){//Se for parcelamento mostra o Nº do parcelamento
     echo "<th title=\"Parcelamento\" class=\"borda\" style=\"font-size:12px\" nowrap>Parcelamento</th>\n";
+  } elseif ($aguaColunaContrato === true) {
+    echo "<th title=\"Número do Contrato\" class=\"borda\" style=\"font-size:12px\" nowrap>Contrato</th>\n";
+    echo "<th title=\"Identificador da Economia\" class=\"borda\" style=\"font-size:12px\" nowrap>Economia</th>\n";
   }
 
   echo "<th title=\"Data de Lançamento\" class=\"borda\" style=\"font-size:12px\" nowrap>Dt. oper.</th>\n";
@@ -1175,6 +1199,9 @@ if(isset($tipo)) {
 
       // unica
       //	  if($elementos_parcelas[$i]==1){
+
+        $datacalc = date('Y-m-d', $DB_DATACALC);
+
       $sql_resultunica = "select *,
           substr(fc_calcula,2,13)::float8 as uvlrhis,
           substr(fc_calcula,15,13)::float8 as uvlrcor,
@@ -1187,9 +1214,9 @@ if(isset($tipo)) {
           substr(fc_calcula,54,13)::float8) as utotal
           from (
           select r.k00_numpre,r.k00_dtvenc as dtvencunic, r.k00_dtoper as dtoperunic,r.k00_percdes,
-          fc_calcula(r.k00_numpre,0,0,r.k00_dtvenc,r.k00_dtvenc,".db_getsession("DB_anousu").")
+          fc_calcula(r.k00_numpre,0,0,r.k00_dtvenc, r.k00_dtvenc,".db_getsession("DB_anousu").")
           from recibounica r
-          where r.k00_numpre = ".$elementos[$i]." and r.k00_dtvenc >= '".date('Y-m-d', $DB_DATACALC)."'
+          where r.k00_numpre = ".$elementos[$i]." and r.k00_dtvenc >= '{$datacalc}'
           ) as unica";
 
       $resultunica = db_query($sql_resultunica);
@@ -1217,13 +1244,24 @@ if(isset($tipo)) {
           echo "<tr bgcolor=\"$corunica\">\n";
           echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
           echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
-          echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap title=\"".$histdesc."\">".$k00_numpre;
+          echo "  <td class=\"borda\" style=\"font-size:13px;font-family:ubuntu;padding:7px;\" align=\"right\" nowrap title=\"".$histdesc."\">".$k00_numpre;
           echo "    <input type=\"hidden\" name=\"np_unica_".($iContadorUnica)."\" value=\"".$k00_numpre."\"> ";
           echo "  </td>\n";
           echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap>00</td>\n";
           echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap>00</td>\n";
-          echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap>".$dtoperunic."</td>\n";
-          echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap>".$dtvencunic;
+          if ($k03_tipo == 5 || $k03_tipo == 7) {
+              $result_diver = db_query("select distinct dv05_coddiver, dv05_exerc from diversos where dv05_numpre =".$k00_numpre." limit 1");
+              db_fieldsmemory($result_diver,0);
+              if (!empty($dv05_coddiver) && !empty($dv05_exerc)) {
+                 echo "  <td class=\"borda\" style=\"padding:6px;font-size:11px\" align=\"right\" nowrap>$dv05_exerc</td>\n";
+                 echo "  <td class=\"borda\" style=\"padding:6px;font-size:11px\" align=\"right\" nowrap>$dv05_coddiver</td>\n";
+              } else {
+                 echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
+                 echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
+              }
+          }
+          echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap>".implode('-',explode('/',$dtoperunic))."</td>\n";
+          echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap>".implode('-',explode('/',$dtvencunic));
           echo "    <input type=\"hidden\" name=\"dt_unica_".($iContadorUnica)."\"  value=\"".implode('-',array_reverse(explode('/',$dtvencunic)))."\"> ";
           echo "    <input type=\"hidden\" name=\"unica_np_dt".($iContadorUnica)."\" value=\"".$k00_numpre."_".implode('-',array_reverse(explode('/',$dtvencunic)))."\"> ";
           echo "  </td> \n";
@@ -1268,7 +1306,7 @@ if(isset($tipo)) {
 
       echo "<td class=\"borda\" style=\"font-size:11px\" nowrap><input style=\"border:none;background-color:$cor\" onclick=\"location.href='cai3_gerfinanc008.php?".base64_encode("numpre=".$REGISTRO[$i]["k00_numpre"])."'\" type=\"button\" value=\"".$REGISTRO[$i]["k00_numpre"]."\"></td>\n";
       echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>
-        <input type=\"hidden\" id=\"parc$i\" value=\"0#".$REGISTRO[$i]["k00_numtot"]."#".$REGISTRO[$i]["k00_numpre"]."\">0 </td>\n";
+        <input type=\"hidden\" id=\"parc$i\" value=\"0#".$REGISTRO[$i]["k00_numtot"]."#".$REGISTRO[$i]["k00_numpre"]."\"> </td>\n";
       echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>".$REGISTRO[$i]["k00_numtot"]."</td>\n";
 
       //Se for divida ativa mostra o exercicio Select para buscar o exercicio
@@ -1283,6 +1321,11 @@ if(isset($tipo)) {
           db_fieldsmemory($result_parcel,0);
         }
         echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"\" value=\"\">".@$v07_parcel."&nbsp;</td>\n";
+      }else if($k03_tipo==7){
+        $result_exerc = db_query("select distinct dv05_coddiver, dv05_exerc from diversos where dv05_numpre =".$REGISTRO[$i]["k00_numpre"]." limit 1");
+        db_fieldsmemory($result_exerc,0);
+        echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"\" value=\"\">".@$dv05_exerc."&nbsp;</td>\n";
+        echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"\" value=\"\">".@$dv05_coddiver."&nbsp;</td>\n";
       }
       echo "<td class=\"borda\" style=\"font-size:11px\" ".($corDtoper==""?"":"bgcolor=$corDtoper")." nowrap>".adodb_date("d-m-Y",$dtoper)."</td>\n";
       echo "<td class=\"borda\" style=\"font-size:11px\" ".($corDtvenc==""?"":"bgcolor=$corDtvenc")." nowrap>".adodb_date("d-m-Y",$dtvenc)."</td>\n";
@@ -1305,6 +1348,7 @@ if(isset($tipo)) {
         </td>\n";
 
       echo "</tr></label>\n";
+
       /***************************/
     }
     //agrupar por parcela
@@ -1424,6 +1468,7 @@ if(isset($tipo)) {
 
         // unica
         if($elementos_parcelas[$i]==1){
+          $datacalc = date('Y-m-d', $DB_DATACALC);
           $sqlunica = "select k00_numpre,dtvencunic,dtoperunic,k00_percdes,
             substr(fc_calcula,2,13)::float8 as uvlrhis,
             substr(fc_calcula,15,13)::float8 as uvlrcor,
@@ -1436,9 +1481,9 @@ if(isset($tipo)) {
             substr(fc_calcula,54,13)::float8) as utotal
             from (
             select r.k00_numpre,r.k00_dtvenc as dtvencunic, r.k00_dtoper as dtoperunic,r.k00_percdes,
-            fc_calcula(k00_numpre,0,0,k00_dtvenc,k00_dtvenc,".db_getsession("DB_anousu").")
+            fc_calcula(r.k00_numpre,0,0,r.k00_dtvenc, r.k00_dtvenc,".db_getsession("DB_anousu").")
             from recibounica r
-            where r.k00_numpre = ".$elementos_numpres[$x]." and r.k00_dtvenc >= '".date('Y-m-d', $DB_DATACALC)."'
+            where r.k00_numpre = ".$elementos_numpres[$x]." and r.k00_dtvenc >= '{$datacalc}'
             ) as unica";
           $resultunica = db_query($sqlunica);
 
@@ -1465,19 +1510,30 @@ if(isset($tipo)) {
               echo "<tr bgcolor=\"$corunica\">\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
-              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap title=\"".$histdesc."\">".$k00_numpre;
+              echo "<td class=\"borda\" style=\"font-size:13px;font-family:ubuntu;padding:7px;\" nowrap title=\"".$histdesc."\">".$k00_numpre;
               echo "   <input type=\"hidden\" name=\"np_unica_".($iContadorUnica)."\" value=\"".$k00_numpre."\"> ";
           	  echo "  </td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>00</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>00</td>\n";
-              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>".$dtoperunic."</td>\n";
-              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>".$dtvencunic;
+              if ($k03_tipo == 5 || $k03_tipo == 7) {
+                $result_diver = db_query("select distinct dv05_coddiver, dv05_exerc from diversos where dv05_numpre =".$k00_numpre." limit 1");
+                db_fieldsmemory($result_diver,0);
+                if (!empty($dv05_coddiver) && !empty($dv05_exerc)) {
+                   echo "<td class=\"borda\" style=\"padding:6px;font-size:11px\" align=\"right\" nowrap>$dv05_exerc</td>\n";
+                   echo "<td class=\"borda\" style=\"padding:6px;font-size:11px\" align=\"right\" nowrap>$dv05_coddiver</td>\n";
+                } else {
+                   echo "<td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
+                   echo "<td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
+                }
+              }
+              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>".implode('-',explode('/',$dtoperunic))."</td>\n";
+              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>".implode('-',explode('/',$dtvencunic));
               echo "    <input type=\"hidden\" name=\"dt_unica_".($iContadorUnica)."\"  value=\"".implode('-',array_reverse(explode('/',$dtvencunic)))."\"> ";
               echo "    <input type=\"hidden\" name=\"unica_np_dt".($iContadorUnica)."\" value=\"".$k00_numpre."_".implode('-',array_reverse(explode('/',$dtvencunic)))."\"> ";
               echo "  </td> \n";
               echo "<td colspan=\"3\" class=\"borda\" style=\"font-size:11px;color:white\" nowrap>Parcela Única com $k00_percdes% desconto</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrhis,"f")."</td>\n";
-              echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrcorr,"f")."</td>\n";
+              echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrcor,"f")."</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrjuros,"f")."</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrmulta,"f")."</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrdesconto,"f")."</td>\n";
@@ -1544,7 +1600,14 @@ if(isset($tipo)) {
             db_fieldsmemory($result_parcel,0);
           }
           echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"\" value=\"\">".@$v07_parcel."&nbsp;</td>\n";
+        }else if($k03_tipo==7){
+          $result_exerc = db_query("select distinct dv05_coddiver, dv05_exerc from diversos where dv05_numpre =".$REGISTRO[$i]["k00_numpre"]." limit 1");
+          db_fieldsmemory($result_exerc,0);
+          echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"\" value=\"\">".@$dv05_exerc."&nbsp;</td>\n";
+          echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"\" value=\"\">".@$dv05_coddiver."&nbsp;</td>\n";
         }
+
+
         $datajust = $REGISTRO[$i]["datajust"];
         //$data = date("Y-m-d");
         //echo "parcela = $datajust <br>";
@@ -1563,8 +1626,8 @@ if(isset($tipo)) {
         echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"multa$ContadorUnico\" value=\"".$multa."\">".db_formatar($multa,"f")."</td>\n";
         echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"desconto$ContadorUnico\" value=\"".$desconto."\">".db_formatar($desconto,"f")."</td>\n";
         echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"total$ContadorUnico\" value=\"".$total."\">".db_formatar($total,"f")."</td>\n";
-        echo "<td class=\"borda\" style=\"font-size:11px\" id=\"coluna$ContadorUnico\" nowrap>".($tipo==3?"<input type=\"submit\" name=\"calculavalor\" id=\"calculavalor$ContadorUnico\" value=\"Calcular\">":"")."<input class='{$sClassVenc}' style=\"visibility:'visible'\" type=\"".($tipo==3?"hidden":"checkbox")."\" value=\"".$numpres."\" onclick=\"js_soma(2)\" id=\"CHECK$ContadorUnico\" name=\"CHECK".$ContadorUnico++."\" ".((abs($REGISTRO[$i]["k00_valor"])!=0 && $tipo==3)?"disabled":"").">
-          <input style=\"visibility:'visible'\" type=\"hidden\" value=\"".$numpres_valores."\" id=\"_VALORES$ContadorUnico\" name=\"_VALORES".$ContadorUnico++."\">
+        echo "<td class=\"borda\" style=\"font-size:11px\" id=\"coluna$ContadorUnico\" nowrap>".($tipo==3?"<input type=\"submit\" name=\"calculavalor\" id=\"calculavalor$ContadorUnico\" value=\"Calcular\">":"")."<input class='{$sClassVenc}' style=\"visibility:'visible'\" type=\"".($tipo==3?"hidden":"checkbox")."\" value=\"".$numpres."\" onclick=\"js_soma(2)\" id=\"CHECK$ContadorUnico\" name=\"CHECK".$ContadorUnico."\" ".((abs($REGISTRO[$i]["k00_valor"])!=0 && $tipo==3)?"disabled":"").">
+          <input style=\"visibility:'visible'\" type=\"hidden\" value=\"".$numpres_valores."\" id=\"_VALORES$ContadorUnico\" name=\"_VALORES".$ContadorUnico."\">
           </td>\n";
         /*
 
@@ -1581,6 +1644,7 @@ if(isset($tipo)) {
         //	      echo "<td class=\"borda\" style=\"font-size:11px\" id=\"coluna$ContadorUnico\" nowrap>&nbsp;</td>\n";
         echo "</tr></label>\n";
         /***************************/
+        $ContadorUnico++;
       }
       ////////////////////////////////////// AGRUPAMENTO POR RECEITA ///////////////////////////////
     }
@@ -1715,6 +1779,7 @@ if(isset($tipo)) {
       // unica
       if($tipo!=3){
         if(($elementos_numpres[$cont] == pg_result($result,$i,"k00_numpre")) && $listaunica) {
+            $datacalc = date('Y-m-d', $DB_DATACALC);
           //	    if($verf_parc != pg_result($result,$i,"k00_numpar") && $emrec == "t") {
           $listaunica = false;
           $resultunica = db_query(
@@ -1730,9 +1795,9 @@ if(isset($tipo)) {
               substr(fc_calcula,54,13)::float8) as utotal
               from (
               select r.k00_numpre,r.k00_dtvenc as dtvencunic, r.k00_dtoper as dtoperunic, r.k00_percdes,
-              fc_calcula(r.k00_numpre,0,0,r.k00_dtvenc,r.k00_dtvenc,".db_getsession("DB_anousu").")
+              fc_calcula(r.k00_numpre,0,0,r.k00_dtvenc, r.k00_dtvenc,".db_getsession("DB_anousu").")
               from recibounica r
-              where r.k00_numpre = ".pg_result($result,$i,"k00_numpre")." and r.k00_dtvenc >= '".date('Y-m-d', $DB_DATACALC)."'
+              where r.k00_numpre = ".pg_result($result,$i,"k00_numpre")." and r.k00_dtvenc >= '{$datacalc}'
               ) as unica");
 
 
@@ -1759,19 +1824,30 @@ if(isset($tipo)) {
               echo "<tr bgcolor=\"$corunica\">\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
-              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap title=\"".$histdesc."\">".$k00_numpre;
+              echo "<td class=\"borda\" style=\"font-size:13px;font-family:ubuntu;padding:7px;\" nowrap title=\"".$histdesc."\">".$k00_numpre;
               echo "   <input type=\"hidden\" name=\"np_unica_".($iContadorUnica)."\" value=\"".$k00_numpre."\"> ";
           	  echo "  </td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>00</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>00</td>\n";
-              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>".$dtoperunic."</td>\n";
-              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>".$dtvencunic;
+              if ($k03_tipo == 5 || $k03_tipo == 7) {
+                $result_diver = db_query("select distinct dv05_coddiver, dv05_exerc from diversos where dv05_numpre =".$k00_numpre." limit 1");
+                db_fieldsmemory($result_diver,0);
+                if (!empty($dv05_coddiver) && !empty($dv05_exerc)) {
+                   echo "  <td class=\"borda\" style=\"padding:6px;font-size:11px\" align=\"right\" nowrap>$dv05_exerc</td>\n";
+                   echo "  <td class=\"borda\" style=\"padding:6px;font-size:11px\" align=\"right\" nowrap>$dv05_coddiver</td>\n";
+                } else {
+                   echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
+                   echo "  <td class=\"borda\" style=\"font-size:11px\" nowrap></td>\n";
+                }
+              }
+              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>".implode('-',explode('/',$dtoperunic))."</td>\n";
+              echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>".implode('-',explode('/',$dtvencunic));
               echo "    <input type=\"hidden\" name=\"dt_unica_".($iContadorUnica)."\"  value=\"".implode('-',array_reverse(explode('/',$dtvencunic)))."\"> ";
               echo "    <input type=\"hidden\" name=\"unica_np_dt".($iContadorUnica)."\" value=\"".$k00_numpre."_".implode('-',array_reverse(explode('/',$dtvencunic)))."\"> ";
               echo "  </td> \n";
               echo "<td colspan=\"3\" class=\"borda\" style=\"font-size:11px;color:white\" nowrap>Parcela Única com $k00_percdes% desconto</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrhis,"f")."</td>\n";
-              echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrcorr,"f")."</td>\n";
+              echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrcor,"f")."</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrjuros,"f")."</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrmulta,"f")."</td>\n";
               echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap>".db_formatar($uvlrdesconto,"f")."</td>\n";
@@ -1830,6 +1906,27 @@ if(isset($tipo)) {
           db_fieldsmemory($result_parcel,0);
         }
         echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"\" value=\"\">".@$v07_parcel."&nbsp;</td>\n";
+      }else if($k03_tipo==7){
+        $result_exerc = db_query("select distinct dv05_coddiver, dv05_exerc from diversos where dv05_numpre =".pg_result($result,$i,"k00_numpre")." limit 1");
+        db_fieldsmemory($result_exerc,0);
+        echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"\" value=\"\">".@$dv05_exerc."&nbsp;</td>\n";
+        echo "<td class=\"borda\" style=\"font-size:11px\" align=\"right\" nowrap><input type=\"hidden\" id=\"\" value=\"\">".@$dv05_coddiver."&nbsp;</td>\n";
+      } elseif ($aguaColunaContrato === true) {
+
+        // buscamos o numero do contrato e o numero da economia do contrato (caso exista)
+        $resultAguaContrato = db_query("select x22_aguacontrato, (case when x22_manual = '1' then x22_aguacontratoeconomia else null end) as x22_aguacontratoeconomia from aguacalc where x22_numpre = " . pg_result($result,$i,"k00_numpre") . " limit 1");
+
+        $x22_aguacontrato = '';
+        $x22_aguacontratoeconomia = '';
+
+        if ($resultAguaContrato && pg_num_rows($resultAguaContrato) > 0) {
+
+          $x22_aguacontrato = pg_result($resultAguaContrato, 0, "x22_aguacontrato");
+          $x22_aguacontratoeconomia = pg_result($resultAguaContrato, 0, "x22_aguacontratoeconomia");
+        }
+
+        echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>" . $x22_aguacontrato . "</td>\n";
+        echo "<td class=\"borda\" style=\"font-size:11px\" nowrap>" . $x22_aguacontratoeconomia . "</td>\n";
       }
 
         $datajust =  pg_result($result,$i,"datajust");

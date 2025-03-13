@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_relrub_classe.php");
-include("classes/db_relrubmov_classe.php");
-include("classes/db_selecao_classe.php");
-include("classes/db_db_sysarquivo_classe.php");
-include("classes/db_db_relat_classe.php");
-include("classes/db_db_relattabelas_classe.php");
-include("classes/db_db_relatselecionados_classe.php");
-include("classes/db_db_relatfiltros_classe.php");
-include("classes/db_db_relatcabec_classe.php");
-include("classes/db_db_relatsoma_classe.php");
-include("classes/db_db_relatquebra_classe.php");
-include("dbforms/db_geraformulario.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_relrub_classe.php"));
+include(modification("classes/db_relrubmov_classe.php"));
+include(modification("classes/db_selecao_classe.php"));
+include(modification("classes/db_db_sysarquivo_classe.php"));
+include(modification("classes/db_db_relat_classe.php"));
+include(modification("classes/db_db_relattabelas_classe.php"));
+include(modification("classes/db_db_relatselecionados_classe.php"));
+include(modification("classes/db_db_relatfiltros_classe.php"));
+include(modification("classes/db_db_relatcabec_classe.php"));
+include(modification("classes/db_db_relatsoma_classe.php"));
+include(modification("classes/db_db_relatquebra_classe.php"));
+include(modification("dbforms/db_geraformulario.php"));
 
 $clrelrub = new cl_relrub;
 $clrelrubmov = new cl_relrubmov;
@@ -151,7 +151,7 @@ if(isset($salvarrelatorio)){
   }else{
 	  if(trim($campo_camporecb_cabecal) == ""){
 	  	if(trim($db91_codrel) == ""){
-				$result = @pg_query("select nextval('db_relat_db91_codrel_seq') as db91_codrel");
+				$result = @db_query("select nextval('db_relat_db91_codrel_seq') as db91_codrel");
 				if($result && pg_numrows($result) > 0){
 					db_fieldsmemory($result,0);
 				}
@@ -404,7 +404,7 @@ if(isset($salvarrelatorio)){
   <tr>
     <td align="center">
       <table border="0">
-			include("dbforms/db_classesgenericas.php");
+			include(modification("dbforms/db_classesgenericas.php"));
 			$geraform = new cl_formulario_rel_pes;
 			$geraform->manomes = false;
 			$geraform->usaregi = true;

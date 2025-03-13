@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("classes/db_pensao_classe.php");
-include("classes/db_pensaoretencao_classe.php");
-include("classes/db_pensaocontabancaria_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_pensao_classe.php"));
+require_once(modification("classes/db_pensaoretencao_classe.php"));
+require_once(modification("classes/db_pensaocontabancaria_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-db_postmemory($HTTP_POST_VARS);
-db_postmemory($HTTP_GET_VARS);
+db_postmemory($_POST);
+db_postmemory($_GET);
 
 /*
  * seta o id a instituição selecionada 
  */
 $instit                = db_getsession('DB_instit');
+
 $clpensao              = new cl_pensao();
 $clpensaoretencao      = new cl_pensaoretencao();
 $clpensaocontabancaria = new cl_pensaocontabancaria();
@@ -70,12 +71,22 @@ if(isset($incluir)){
     $clpensao->r52_percadiantamento13 = "0";
   }
 
+
+  if (!DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+    global $r52_pagasuplementar;
+    $r52_pagasuplementar                              = 'f';
+    $GLOBALS["HTTP_POST_VARS"]["r52_pagasuplementar"] = 'f';
+    $clpensao->r52_pagasuplementar                    = 'f';
+  }
+
+
+  $clpensao->r52_sequencial = null; 
   $clpensao->r52_codbco     = $inputCodigoBanco; 
   $clpensao->r52_codage     = $inputNumeroAgencia; 
-  $clpensao->r52_conta      = $inputNumeroConta; 
+  $clpensao->r52_relacaodependencia  = $r52_relacaodependencia;
+  $clpensao->r52_conta      = $inputNumeroConta;
   $clpensao->r52_dvagencia  = $inputDvAgencia; 
   $clpensao->r52_dvconta    = $inputDvConta; 
-  $clpensao->db83_tipoconta = $cboTipoConta; 
   $clpensao->incluir($r52_anousu,$r52_mesusu,$r52_regist,$r52_numcgm);
 
   
@@ -160,7 +171,7 @@ if(isset($incluir)){
   $clpensao->r52_conta      = $inputNumeroConta; 
   $clpensao->r52_dvagencia  = $inputDvAgencia; 
   $clpensao->r52_dvconta    = $inputDvConta;
-  $clpensao->db83_tipoconta = $cboTipoConta;
+  $clpensao->r52_relacaodependencia  = $r52_relacaodependencia;
   $clpensao->alterar($r52_anousu,$r52_mesusu,$r52_regist,$r52_numcgm);
 
   $sWhere = "rh139_regist = $r52_regist 
@@ -258,8 +269,7 @@ if(isset($incluir)){
   $sWhereRetencao  = "    rh77_regist = {$r52_regist} ";
   $sWhereRetencao .= "and rh77_anousu = {$r52_anousu} ";
   $sWhereRetencao .= "and rh77_mesusu = {$r52_mesusu} ";
-  $sWhereRetencao .= "and rh77_regist = {$r52_regist} ";
-  
+
   if ( trim($numcgm) != '') {  
     $sWhereRetencao .= "and rh77_numcgm = {$numcgm}   ";
   }
@@ -270,19 +280,30 @@ if(isset($incluir)){
   	$lErro = true;  
   }
 
+  $oDaoPensao    = new cl_pensao();
+  $iSequencial   = $oDaoPensao->getSequencial($r52_regist, $r52_numcgm, $r52_anousu, $r52_mesusu );
+
+  $oDAOHistorico = new cl_rhhistoricopensao();
+  $oDAOHistorico->excluir(null, "rh145_pensao = $iSequencial");
+
+  if ( $oDAOHistorico->erro_status == "0" ) {
+    $lErro = true;  
+  }
+
+  $iSequencial   = $oDaoPensao->getSequencial($r52_regist, $r52_numcgm, $r52_anousu, $r52_mesusu );
+
   if ( !$lErro ) {
-	  $clpensao->excluir($r52_anousu,$r52_mesusu,$r52_regist,$numcgm);
-	  if($clpensao->erro_status=="0"){
-	  	$lErro = true;
-	  }
+    $clpensao->excluir($r52_anousu,$r52_mesusu,$r52_regist,$numcgm);
+    if($clpensao->erro_status=="0"){
+      $lErro = true;
+    }
   }
   
   if( $lErro ){
   	$db_opcao = "3";
   }else{
   	if(isset($db_opcaoal) && $db_opcaoal==33){
-  	  unset($r52_regist,$z01_nome);
-      unset($clicar);
+  	  unset($r52_regist, $z01_nome, $clicar);
   	}else if(isset($db_opcaoal) && $db_opcaoal==22){
   	  $clicar = "clicar";
   	}
@@ -317,6 +338,7 @@ if(isset($incluir)){
                                      r52_pagres,
                                      r52_pagfer,
                                      r52_pagcom,
+                                     r52_pagasuplementar,
                                      r52_valor,
                                      r52_valcom,
                                      r52_val13,
@@ -327,9 +349,12 @@ if(isset($incluir)){
                                      r52_valfer,
                                      r52_adiantamento13,
                                      r52_percadiantamento13,
+                                     r52_pagasuplementar,
                                      rh77_retencaotiporec,
                                      e21_descricao,
-                                     rh139_contabancaria
+                                     rh139_contabancaria,
+                                     r52_relacaodependencia,
+                                     r52_observacao
                                     ",
                                     "
                                      z01_nome
@@ -357,8 +382,8 @@ if(isset($incluir)){
   }
 }
 if($limpar_campos == true){
-  unset($z01_nome02,$r52_formul,$r52_perc,$r52_numcgm,$r52_codbco,$db90_descr,$r52_codage,$r52_conta,$r52_vlrpen,$r52_dtincl,$r52_pagres,$r52_pag13,$r52_pagfer,$r52_pagcom,$r52_valor,$r52_valcom,$r52_val13,$r52_valres,$r52_limite,$r52_dvagencia,$r52_dvconta,$rh77_retencaotiporec,$e21_descricao);
-  unset($r52_valfer,$r52_adiantamento13,$r52_percadiantamento13);
+  unset($z01_nome02,$r52_formul,$r52_perc,$r52_numcgm,$r52_codbco,$db90_descr,$r52_codage,$r52_conta,$r52_vlrpen,$r52_dtincl,$r52_pagres,$r52_pag13,$r52_pagfer,$r52_pagcom,$r52_valor,$r52_valcom,$r52_val13,$r52_valres,$r52_limite,$r52_dvagencia,$r52_dvconta,$rh77_retencaotiporec,$e21_descricao, $r52_relacaodependencia);
+  unset($r52_valfer,$r52_adiantamento13,$r52_percadiantamento13,$r52_observacao);
 }
 
 if (isset($r52_percadiantamento13)) {
@@ -383,36 +408,17 @@ if (isset($r52_percadiantamento13)) {
 
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="<?=((isset($r52_regist) && trim($r52_regist)!="")?((isset($r52_numcgm) && trim($r52_numcgm)!="")?"document.form1.r52_formul.select();":"document.form1.r52_numcgm.focus();"):"document.form1.r52_regist.focus();")?>" >
-<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<!--
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
--->
-	<?
-	include("forms/db_frmpensao.php");
-	?>
-<!--
-    </center>
-	</td>
-  </tr>
-</table>
--->
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+<body onLoad="<?=((isset($r52_regist) && trim($r52_regist)!="")?((isset($r52_numcgm) && trim($r52_numcgm)!="")?"document.form1.r52_formul.select();":"document.form1.r52_numcgm.focus();"):"document.form1.r52_regist.focus();")?>" >
+<div class="container">
+<?php
+ include(modification("forms/db_frmpensao.php"));
 ?>
+</div>
 </body>
 </html>
-<?
+<?php
+db_menu();
+
 if(isset($incluir) || isset($alterar) || isset($excluir)){
   if($clpensao->erro_status=="0" && !isset($sqlerro)){
     $clpensao->erro(true,false);

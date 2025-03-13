@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -172,7 +172,7 @@ final class HorarioAulaMatriculaAlunoWebservice {
                                                   );
     $rsDiaSemana = $oDaoDiaSemana->sql_record($sSqlDiaSemana);
     if ($rsDiaSemana) {
-      $aDiasemana = db_utils::getColectionByRecord($rsDiaSemana);
+      $aDiasemana = db_utils::getCollectionByRecord($rsDiaSemana);
     }
     return $aDiasemana;
   }
@@ -200,7 +200,7 @@ final class HorarioAulaMatriculaAlunoWebservice {
     );
     $rsRegencia = $oDaoRegenciaHorario->sql_record($sSqlRegente);
     if ($rsRegencia && $oDaoRegenciaHorario->numrows > 0) {
-      $this->aRegenciasComProfessor = db_utils::getColectionByRecord($rsRegencia);
+      $this->aRegenciasComProfessor = db_utils::getCollectionByRecord($rsRegencia);
     }
   }
 }

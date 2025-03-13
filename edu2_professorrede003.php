@@ -1,40 +1,40 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_stdlib.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/DBLargeObject.php");
-require_once("std/DBDate.php");
-require_once("model/educacao/avaliacao/iElementoAvaliacao.interface.php");
-require_once("model/educacao/avaliacao/iFormaObtencao.interface.php");
-require_once("classes/db_cursoedu_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBLargeObject.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("model/educacao/avaliacao/iElementoAvaliacao.interface.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
+require_once(modification("classes/db_cursoedu_classe.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -42,13 +42,16 @@ $dtPeriodoInicial = "";
 $dtPeriodoFinal   = "";
 $sEscola          = "Todas";
 $sEnsino          = "Todos";
+$sAreaTrabalho    = "Todas";
 
 /**
  * Valida os filtros passados pela interface
  */
 $aFiltros = array();
-if (!empty($oGet->periodoInicial)) {
 
+$sDataFinalFiltroSaida = date('Y-m-d', db_getsession("DB_datausu"));
+
+if (!empty($oGet->periodoInicial)) {
   $oData            = new DBDate($oGet->periodoInicial);
   $aFiltros[]       = "ed75_d_ingresso >= '" . $oData->getDate(DBDate::DATA_EN) . "'";
   $dtPeriodoInicial = $oData->getDate(DBDate::DATA_PTBR);
@@ -56,15 +59,14 @@ if (!empty($oGet->periodoInicial)) {
 }
 
 if (!empty($oGet->periodoFinal)) {
-
   $oData          = new DBDate($oGet->periodoFinal);
+  $sDataFinalFiltroSaida = $oData->getDate(DBDate::DATA_EN);
   $aFiltros[]     = "ed75_d_ingresso <= '" . $oData->getDate(DBDate::DATA_EN) . "'";
   $dtPeriodoFinal = $oData->getDate(DBDate::DATA_PTBR);
   unset($oData);
 }
 
 if (!empty($oGet->iEscola) && $oGet->iEscola != 0) {
-
   $aFiltros[] = " ed18_i_codigo = {$oGet->iEscola}";
   $oEscola    = EscolaRepository::getEscolaByCodigo($oGet->iEscola);
   $sEscola    = $oEscola->getCodigo() . " - " . $oEscola->getNome();
@@ -72,26 +74,41 @@ if (!empty($oGet->iEscola) && $oGet->iEscola != 0) {
 }
 
 if (!empty($oGet->iEnsino) && $oGet->iEnsino != 0) {
-
   $aFiltros[] = " ed10_i_codigo = ($oGet->iEnsino) ";
   $oEnsino    = new Ensino($oGet->iEnsino);
   $sEnsino    = $oEnsino->getNome();
   unset($oEnsino);
 }
 
+if (!empty($oGet->iAreaTrabalho)) {
+    $aFiltros[] = " ed25_i_codigo = ($oGet->iAreaTrabalho) ";
+    $dao = new cl_areatrabalho();
+    $rs = db_query($dao->sql_query_file($oGet->iAreaTrabalho));
+    if (!$rs || pg_num_rows($rs) === 0) {
+        throw new Exception("Não foi encontrada Área de Trabalho.");
+    }
+    $sAreaTrabalho = db_utils::fieldsMemory($rs, 0)->ed25_c_descr;
+}
+
+/*
+ * Filtrando recursos humanos pela data de saida, solicitado pelo Tiago Silva
+ * -- listar somente ativos do periodo selecionado.
+ * -- caso nao informar o periodo, listar ate a data de hoje
+ */
+    $aFiltros[] = " ( ed75_i_saidaescola > '{$sDataFinalFiltroSaida}' or ed75_i_saidaescola is null )";
 
 /**
  * Constrói a clausula where
  */
+
 $sWhere = "";
 if (count($aFiltros) > 0) {
 
   $sWhere = "where ";
   $sWhere .= implode(" and ", $aFiltros);
 }
-
 /**
- * 
+ *
  */
 $sSql  = " select distinct                                                                                            ";
 $sSql .= "        ed18_i_codigo        as codigo_escola,                                                              ";
@@ -170,7 +187,6 @@ for ($i = 0; $i < $iLinhas; $i++) {
     $aProfessorRede[$oDadosProfessor->codigo_escola] = $oEscola;
   }
 
-
   $iChaveEnsino = "{$iEscola}#{$iEnsino}";
   if ( !array_key_exists($iChaveEnsino, $aProfessorRede[$iEscola]->aEnsino) ) {
 
@@ -182,7 +198,6 @@ for ($i = 0; $i < $iLinhas; $i++) {
     $aProfessorRede[$iEscola]->aEnsino[$iChaveEnsino] = $oEnsino;
   }
 
-
   $iChaveDisciplina = "{$iEscola}#{$iEnsino}#{$iDisciplina}";
   if ( !array_key_exists($iChaveDisciplina, $aProfessorRede[$iEscola]->aEnsino[$iChaveEnsino]->aDisciplinas) ) {
 
@@ -190,14 +205,14 @@ for ($i = 0; $i < $iLinhas; $i++) {
     $oDisciplina->iCodigo      = $oDadosProfessor->codigo_disciplina;
     $oDisciplina->sDisciplina  = $oDadosProfessor->disciplina;
     $oDisciplina->iTotal       = 0;
-    
+
     $aProfessorRede[$iEscola]->aEnsino[$iChaveEnsino]->aDisciplinas[$iChaveDisciplina] = $oDisciplina;
   }
-  
+
   /**
-   * Incrementa quantas matriculas de professores estão lecionando a disciplina 
+   * Incrementa quantas matriculas de professores estão lecionando a disciplina
    */
-  $aProfessorRede[$iEscola]->aEnsino[$iChaveEnsino]->aDisciplinas[$iChaveDisciplina]->iTotal ++; 
+  $aProfessorRede[$iEscola]->aEnsino[$iChaveEnsino]->aDisciplinas[$iChaveDisciplina]->iTotal ++;
 
   /**
    * Incrementa os arrays indexando sempre o cgm para que seja possivel contar os professores sem repetilos.
@@ -227,7 +242,8 @@ $head2 = "Tipo: Sintético";
 $head3 = "Período de: {$dtPeriodoInicial} até: {$dtPeriodoFinal}";
 $head4 = "Escola: {$sEscola}";
 $head5 = "Ensino: {$sEnsino}";
-$head6 = "Disciplina: {$sDisciplina}";
+$head6 = "Área de Trabalho: {$sAreaTrabalho}";
+$head7 = "Disciplina: {$sDisciplina}";
 
 $oPdf = new PDF();
 $oPdf->Open();
@@ -252,7 +268,7 @@ foreach ($aProfessorRede as $oEscola) {
   foreach ($oEscola->aEnsino as $oEnsino) {
 
     validaQuebraPagina($oPdf);
-    
+
     $oPdf->SetFont('arial', 'b', 8);
     $oPdf->Cell(20, $iHeight, "Ensino: ", 0, 0, "L");
     $oPdf->SetFont('arial', '', 7);
@@ -263,7 +279,7 @@ foreach ($aProfessorRede as $oEscola) {
     foreach ($oEnsino->aDisciplinas as $oDisciplina) {
 
       if ($lPrimeiraPagina) {
-        
+
         $lPrimeiraPagina = false;
         imprimeCabecalho($oPdf, $iHeight);
       }
@@ -288,7 +304,7 @@ foreach ($aProfessorRede as $oEscola) {
   if($oPdf->GetStringWidth($sStringTotalizador) > 160) {
     $oPdf->SetFont('arial', 'b', 7);
   }
-  
+
   $oPdf->Cell(160, $iHeight, $sStringTotalizador, "TBR", 0, "R");
   $oPdf->Cell(30, $iHeight, count($aTotalProfessorEscola[$oEscola->iCodigo]), "TBL", 1, "R");
   $oPdf->Ln();
@@ -298,7 +314,7 @@ foreach ($aProfessorRede as $oEscola) {
  * Só imprime total da rede quanto imprimir todas escolas
  */
 if ($oGet->iEscola == 0) {
-  
+
   validaQuebraPagina($oPdf);
   $oPdf->SetFont('arial', 'b', 8);
   $oPdf->Cell(160, $iHeight, "Total de Professores na Rede", "TBR", 0, "R");
@@ -306,7 +322,7 @@ if ($oGet->iEscola == 0) {
 }
 
 /**
- * 
+ *
  * @param FPDF $oPdf
  * @param integer $iHeight
  */
@@ -322,10 +338,10 @@ function imprimeCabecalho(FPDF $oPdf, $iHeight) {
  * @param FPDF $oPdf
  */
 function validaQuebraPagina(FPDF $oPdf) {
-  
+
   if ($oPdf->GetY() > $oPdf->h - 20) {
     $oPdf->AddPage("P");
   }
-} 
+}
 
 $oPdf->Output();

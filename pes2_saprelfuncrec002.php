@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -53,10 +53,10 @@ select rh02_regist as r01_regist,
        z01_nome,
        o15_codigo,
        case when substr(r70_estrut,10,2) = '03' 
-			then 'FUNDEB 60%' 
+			then 'FUNDEB 70%' 
             else 
 			case when  substr(r70_estrut,10,2) = '04' 
-				 then 'FUNDEB 40%'
+				 then 'FUNDEB 30%'
 	             else o15_descr
 	        end
        end as recurso,
@@ -93,10 +93,10 @@ $sql = "
 select count(rh02_regist) as r01_regist,
        o15_codigo,
        case when substr(r70_estrut,10,2) = '03' 
-			      then 'FUNDEF 60%' 
+			      then 'FUNDEB 70%' 
             else 
 							case when  substr(r70_estrut,10,2) = '04' 
-							   then 'FUNDEF 40%'
+							   then 'FUNDEB 30%'
 	               else o15_descr
 	            end
        end as recurso
@@ -127,7 +127,7 @@ group by o15_codigo,recurso
 //echo $sql ; exit;
 }
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);
@@ -151,11 +151,11 @@ if ($tipo_rel=="a"){
      if ($pdf->gety() > $pdf->h - 30 || $troca != 0 ){
 	$pdf->addpage("L");
 	$pdf->setfont('arial','b',8);
-	$pdf->cell(20,$alt,'MATRÍCULA',1,0,"C",1);
-	$pdf->cell(60,$alt,'NOME',1,0,"C",1);
-	$pdf->cell(50,$alt,'RECURSO',1,0,"C",1);
-	$pdf->cell(60,$alt,'ATIVIDADE',1,0,"C",1);
-	$pdf->cell(60,$alt,'UNIDADE',1,1,"C",1);
+	$pdf->cell(18,$alt,'MATRÍCULA',1,0,"C",1);
+	$pdf->cell(62,$alt,'NOME',1,0,"C",1);
+	$pdf->cell(65,$alt,'RECURSO',1,0,"C",1);
+	$pdf->cell(68,$alt,'ATIVIDADE',1,0,"C",1);
+	$pdf->cell(70,$alt,'UNIDADE',1,1,"C",1);
 	$troca = 0;
 	$pre = 1;
      }
@@ -165,11 +165,11 @@ if ($tipo_rel=="a"){
 	$pre = 1;
      }
      $pdf->setfont('arial','',7);
-     $pdf->cell(20,$alt,$r01_regist,0,0,"C",$pre);
-     $pdf->cell(60,$alt,$z01_nome,0,0,"L",$pre);
-     $pdf->cell(50,$alt,$o15_codigo.'-'.$recurso,0,0,"L",$pre);
-     $pdf->cell(60,$alt,$rh25_projativ.'-'.$o55_descr,0,0,"L",$pre);
-     $pdf->cell(60,$alt,$o41_descr,0,1,"L",$pre);
+     $pdf->cell(18,$alt,$r01_regist,0,0,"C",$pre);
+     $pdf->cell(62,$alt,$z01_nome,0,0,"L",$pre);
+     $pdf->cell(65,$alt,$o15_codigo.'-'.$recurso,0,0,"L",$pre);
+     $pdf->cell(68,$alt,$rh25_projativ.'-'.$o55_descr,0,0,"L",$pre);
+     $pdf->cell(70,$alt,$o41_descr,0,1,"L",$pre);
      $funcion += 1;
   }
   $pdf->setfont('arial','b',8);
@@ -180,7 +180,7 @@ if ($tipo_rel=="a"){
      if ($pdf->gety() > $pdf->h - 30 || $troca != 0 ){
 	$pdf->addpage("L");
 	$pdf->setfont('arial','b',8);
-	$pdf->cell(60,$alt,'RECURSO',1,0,"C",1);
+	$pdf->cell(70,$alt,'RECURSO',1,0,"C",1);
 	$pdf->cell(60,$alt,'QUANT. REGISTROS',1,1,"C",1);
 	$troca = 0;
 	$pre = 1;
@@ -191,13 +191,13 @@ if ($tipo_rel=="a"){
 	$pre = 1;
      }
      $pdf->setfont('arial','',7);
-     $pdf->cell(60,$alt,$o15_codigo.'-'.$recurso,0,0,"L",$pre);
+     $pdf->cell(70,$alt,$o15_codigo.'-'.$recurso,0,0,"L",$pre);
      $pdf->cell(60,$alt,$r01_regist,0,1,"C",$pre);
      $funcion += 1;
      $totalregist += $r01_regist;
   }
   $pdf->setfont('arial','b',8);
-  $pdf->cell(60,$alt,'TOTAL DE RECURSOS: '.$funcion ,"T",0,"L",0);
+  $pdf->cell(70,$alt,'TOTAL DE RECURSOS: '.$funcion ,"T",0,"L",0);
   $pdf->cell(60,$alt,'TOTAL DE REGISTROS: '.$totalregist ,"T",0,"R",0);
 }
 

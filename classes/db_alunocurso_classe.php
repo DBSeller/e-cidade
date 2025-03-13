@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
@@ -503,7 +503,7 @@ class cl_alunocurso {
    function sql_query ( $ed56_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -532,7 +532,7 @@ class cl_alunocurso {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -544,7 +544,7 @@ class cl_alunocurso {
    function sql_query_file ( $ed56_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -565,7 +565,7 @@ class cl_alunocurso {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -574,8 +574,8 @@ class cl_alunocurso {
      }
      return $sql;
   }
-  
-  function sql_query_alunotransf($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
+
+  function sql_query_alunotransf($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
 
     $sSql = 'select ';
     if ($sCampos != '*') {
@@ -595,12 +595,12 @@ class cl_alunocurso {
     $sSql .= " from alunocurso ";
     $sSql .= "      inner join alunopossib on ed79_i_alunocurso = ed56_i_codigo ";
     $sSql .= "      inner join serie on ed11_i_codigo = ed79_i_serie ";
-    $sSql .= "      inner join escola on ed18_i_codigo = ed56_i_escola ";    
+    $sSql .= "      inner join escola on ed18_i_codigo = ed56_i_escola ";
     $sSql2 = '';
     if ($sDbWhere == '') {
 
       if ($iCodigo != null ){
-        $sSql2 .= " where alunocurso.ed56_i_codigo = $iCodigo "; 
+        $sSql2 .= " where alunocurso.ed56_i_codigo = $iCodigo ";
       }
 
     } elseif ($sDbWhere != '') {
@@ -625,8 +625,8 @@ class cl_alunocurso {
     return $sSql;
 
   }
-  
-  function sql_query_relatorio($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
+
+  function sql_query_relatorio($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
 
     $sSql = 'select ';
     if ($sCampos != '*') {
@@ -651,7 +651,7 @@ class cl_alunocurso {
     if ($sDbWhere == '') {
 
       if ($iCodigo != null ){
-        $sSql2 .= " where alunocurso.ed56_i_codigo = $iCodigo "; 
+        $sSql2 .= " where alunocurso.ed56_i_codigo = $iCodigo ";
       }
 
     } elseif ($sDbWhere != '') {
@@ -676,6 +676,5 @@ class cl_alunocurso {
     return $sSql;
 
   }
-  
+
 }
-?>

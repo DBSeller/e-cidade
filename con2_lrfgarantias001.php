@@ -1,37 +1,37 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 $clcriaabas      = new cl_criaabas;
 
@@ -51,10 +51,16 @@ $codrel = 7;
 $anousu = db_getsession("DB_anousu");
 $sProgramaParametros = "con2_conrelparametros.php";
 if ($anousu >= 2010) {
-  
+
   $codrel = 91;
   $sProgramaParametros = "con4_parametrosrelatorioslegais001.php";
 }
+
+if ($anousu >= 2018 ) {
+    $codrel = 184;
+    $sProgramaParametros = "con4_parametrosrelatorioslegais001.php";
+}
+
 ?>
 <html>
 <head>
@@ -74,8 +80,8 @@ if ($anousu >= 2010) {
   </tr>
 </table>
 <table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
     <?
     if ($anousu <= 2007){
@@ -86,25 +92,25 @@ if ($anousu >= 2010) {
                           			      "parametro"=>"con2_conrelparametros.php?c83_codrel=$codrel");
       $clcriaabas->sizecampo  = array("relatorio"=>"23","variaveis"=>"23","parametro"=>"23");
     } else {
-      
-      $clcriaabas->identifica = array("relatorio" => "Relatorio",
+
+      $clcriaabas->identifica = array("relatorio" => "Relatório",
                                       "notas"     => "Fonte/Notas Explicativas",
-                                      "parametro" => "Parametros");
-      
-      $clcriaabas->title      = array("relatorio" => "Relatorio",
+                                      "parametro" => "Parâmetros");
+
+      $clcriaabas->title      = array("relatorio" => "Relatório",
                                       "notas"     => "Fonte/Notas Explicativas",
-                                      "parametro" => "Parametros");
-      
+                                      "parametro" => "Parâmetros");
+
       $clcriaabas->src        = array("relatorio" => "con2_lrfgarantias011.php?c83_codrel={$codrel}",
-                                      "notas"     => "con2_conrelnotas.php?c83_codrel=$codrel",  
+                                      "notas"     => "con2_conrelnotas.php?c83_codrel=$codrel",
                           			      "parametro" => "{$sProgramaParametros}?c83_codrel=$codrel");
-      
+
       $clcriaabas->sizecampo  = array("relatorio" => "23",
                                       "notas"     => "23",
                                       "parametro" => "23");
     }
 
-    $clcriaabas->cria_abas();    
+    $clcriaabas->cria_abas();
     ?>
     </center>
   </td>

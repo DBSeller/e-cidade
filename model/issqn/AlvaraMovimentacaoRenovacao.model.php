@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/issqn/AlvaraMovimentacao.model.php");
+require_once(modification("model/issqn/AlvaraMovimentacao.model.php"));
 
 /**
  * @deprecated
  * @see model/issqn/alvara/RenovacaoAlvara.model.php
  *
- * @fileoverview - Classe de Modelo para movimentaÁıes da RenovaÁ„o do Alvar·
+ * @fileoverview - Classe de Modelo para movimenta√ß√µes da Renova√ß√£o do Alvar√°
  * @author    Vinicius Silva  - vinicius.silva@dbseller.com.br	
  * @package   ISSQN
- * @revision  $Author: dbjeferson.belmiro $
- * @version   $Revision: 1.4 $
+ * @revision  $Author: dbstephano.ramos $
+ * @version   $Revision: 1.8 $
  */
 class AlvaraRenovacao extends AlvaraMovimentacao {
 		
 	/**
-	 * MÈtodo construtor
+	 * M√©todo construtor
 	 * @param integer $iCodigoAlvara
 	 */
   function __construct($iCodigoAlvara) {
@@ -49,7 +49,7 @@ class AlvaraRenovacao extends AlvaraMovimentacao {
   }
   
   /**
-   * Busca a quantidade de vezes que o alvar· pode ser modificado
+   * Busca a quantidade de vezes que o alvar√° pode ser modificado
    * @return integer quantidade de vezes que pode ser modificado
    */
   function getRenovacoesAlvara() {
@@ -65,8 +65,8 @@ class AlvaraRenovacao extends AlvaraMovimentacao {
   }
 
   /**
-   * Valida quantas vezes a renovaÁ„o foi cancelada
-   * @return integer  - Numero de renovaÁıes
+   * Valida quantas vezes a renova√ß√£o foi cancelada
+   * @return integer  - Numero de renova√ß√µes
    */
   function getCancelamentosRenovacoesAlvara() {
      
@@ -81,8 +81,8 @@ class AlvaraRenovacao extends AlvaraMovimentacao {
   }
   
   /**
-   * valida a quantidade de renovaÁıes do alvar·
-   * @param integer $iQuantRenovacoesRealizadas quantas vezes o alvar· j· foi modificado
+   * valida a quantidade de renova√ß√µes do alvar√°
+   * @param integer $iQuantRenovacoesRealizadas quantas vezes o alvar√° j√° foi modificado
    */
   function validaQuantidadeDeRenovacoesAlvara($iQuantRenovacoesRealizadas) {
   	
@@ -95,12 +95,12 @@ class AlvaraRenovacao extends AlvaraMovimentacao {
     $rsBuscaQuantidadePermitidaDeRenovacoes     = $oDaoIsstipoalvara->sql_record($sSqlBuscaQuantidadePermitidaDeRenovacoes);
     $iQuantidadeRenovacoesPermitidas = db_utils::fieldsMemory($rsBuscaQuantidadePermitidaDeRenovacoes, 0)->q98_quantrenovacao;
     if ($iQuantRenovacoesRealizadas >= $iQuantidadeRenovacoesPermitidas) {
-  	  throw new ErrorException("O alvar· j· alcanÁou o limite de renovaÁıes permitido.");
+  	  throw new ErrorException("O alvar√° j√° alcan√ßou o limite de renova√ß√µes permitido.");
     }
   }
   
   /**
-   * salva a renovaÁ„o do alvar· usando o mÈtodo da classe abstrata
+   * salva a renova√ß√£o do alvar√° usando o m√©todo da classe abstrata
    */
   function renovaAlvara() {
   	parent::salvar();

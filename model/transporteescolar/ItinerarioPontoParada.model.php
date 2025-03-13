@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
  * Itinerário Ponto Parada
  * @author Trucolo <trucolo@dbseller.com.br>
  * @package transporteescolar
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 
 class ItinerarioPontoParada {
@@ -74,8 +74,9 @@ class ItinerarioPontoParada {
   /**
    * Instancia um ponto de parada no intinerario
    * Caso seja informado um codigo valido, a classe tera seus dados conforme o cadastro do ponto de parada
-   * @param string $iCodigo
+   * @param  integer $iCodigo
    * @throws BusinessException
+   * @throws ParameterException
    */
   public function __construct($iCodigo = null) {
 
@@ -216,7 +217,7 @@ class ItinerarioPontoParada {
       throw new DBException('Não existe transação com o banco de dados.');
     }
     
-    $iTotalAlunos = count($this->getAlunos());
+    $iTotalAlunos = count($this->getVinculoAlunos());
     if ($iTotalAlunos > 0) {
       
       $sMensagem                 = 'educacao.transporteescolar.ItinerarioPontoParada.existem_alunos_vinculados';
@@ -233,7 +234,7 @@ class ItinerarioPontoParada {
 
         $sMensagem            = 'educacao.transporteescolar.ItinerarioPontoParada.erro_remover_dados';
         $oVariaveis           = new stdClass();
-        $oVariaveis->erro_dao = $oDaoPontoParada->erro_msg;
+        $oVariaveis->erro_dao = $oDaoItinerarioPontoParada->erro_msg;
         throw new BusinessException(_M($sMensagem, $oVariaveis));
       }
     }
@@ -262,7 +263,7 @@ class ItinerarioPontoParada {
       }
       $this->lAlunosCarregados = true;
     }
+
     return $this->aVinculoAlunos;
   }
 }
-?>

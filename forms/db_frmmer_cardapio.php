@@ -33,7 +33,7 @@ $clrotulo->label("me14_i_codigo");
 $clrotulo->label("ed18_i_codigo");
 $escola     = db_getsession("DB_coddepto");
 $sql        = "select descrdepto from db_depart where coddepto=$escola";
-$escolanome = pg_result(pg_query($sql),0,0);
+$escolanome = pg_result(db_query($sql),0,0);
 ?>
 <form name="form1" method="post" action="">
 <center>

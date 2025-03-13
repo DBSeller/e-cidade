@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
 
 $oGet        = db_utils::postMemory($_GET);
 $oDaoPcproc  = db_utils::getDao("pcproc");
@@ -70,7 +70,7 @@ $sSQL        = $oDaoPcproc->sql_query_proc_solicita_abertura(null,$sCampos, null
           
   function js_mostraSolicitacao(iSolicitacao) {
 
-     js_OpenJanelaIframe('top.corpo', 
+     js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_pesquisasolicitacao',
                         'com4_consabertregistro003.php?pc10_numero='+(iSolicitacao),
                         'Dados da Solicitação',

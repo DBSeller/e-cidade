@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBseller Servicos de Informatica             
+ *  Copyright (C) 2009  DBseller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,11 +26,12 @@
  */
 
 //MODULO: itbi
-require_once("classes/db_db_config_classe.php");
+require_once(modification("classes/db_db_config_classe.php"));
 $clitbicancela->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("it01_guia");
 $cldb_config = new cl_db_config;
+$clparitbi   = new cl_paritbi;
 
 ?>
 <form name="form1" method="post" action="">
@@ -50,29 +51,10 @@ $cldb_config = new cl_db_config;
         </td>
       </tr>
 
-      <?
-
-      /*
-           Implementação para Maricá e Carazinho
-      */
-      $iInstitSessao = db_getsession('DB_instit');
-      $result        = $cldb_config->sql_record($cldb_config->sql_query_file($iInstitSessao, "cgc, db21_codcli"));
-      db_fieldsmemory($result, 0);
-
-      $iUsuarioSessao = db_getsession('DB_id_usuario');
-      $sUsuarioSessao = db_getsession('DB_login');
-      $result_cartorio = db_query("select count(*) as quant_perfil_cartorio from db_usuarios a inner join db_permherda b on a.id_usuario = b.id_usuario and b.id_perfil = 4251 where a.id_usuario = $iUsuarioSessao");
-      db_fieldsmemory($result_cartorio, 0);
-
-      $bEmiteDeclarQuit = false;
-
-      if ($db21_codcli == 19985) {
-        if ( $quant_perfil_cartorio == 0 || $sUsuarioSessao == 'dbseller' ) {
-          $bEmiteDeclarQuit = true;
-        }
-      } elseif ($db21_codcli == 18 || $db21_codcli == 74 || $db21_codcli == 15){
-         $bEmiteDeclarQuit = true;
-      }
+      <?php
+        $rsparitbi = $clparitbi->sql_record($clparitbi->sql_query_file(db_getsession("DB_anousu"), "it24_emiteguiaquitacao"));
+        db_fieldsmemory($rsparitbi, 0);
+        $bEmiteDeclarQuit = $it24_emiteguiaquitacao=='t'?true:false;
       ?>
       <tr>
         <td align='right'>
@@ -132,7 +114,7 @@ function js_emitir() {
 function js_pesquisait01_guia(mostra){
   if(mostra==true){
     var sUrl = 'func_itbiliberadomostrarguias.php?mostrarguias=l&funcao_js=parent.js_mostraitbi1|it01_guia|it01_guia';
-    js_OpenJanelaIframe('top.corpo','db_iframeitbi',sUrl,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframeitbi',sUrl,'Pesquisa',true);
   }
 }
 

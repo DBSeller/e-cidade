@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
   //MODULO: Agua
-  include("dbforms/db_classesgenericas.php");
-  require ("libs/db_app.utils.php");
+  include(modification("dbforms/db_classesgenericas.php"));
+  require(modification("libs/db_app.utils.php"));
 
   $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
   $claguarotarua->rotulo->label();
@@ -252,7 +252,7 @@
 
 	  js_removeObj('msgbox');
 
-	  var oRetorno = eval("("+oAjax.responseText+")");
+	  var oRetorno = JSON.parse(oAjax.responseText);
 	  var msg      = "";
 	  var virgula  = "";
 	
@@ -281,13 +281,13 @@
 
   function js_pesquisax07_codrota(mostra) {
 	  if (mostra == true) {
-		  js_OpenJanelaIframe('top.corpo.iframe_aguarotarua', 'db_iframe_aguarota', 
+		  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguarotarua', 'db_iframe_aguarota', 
 				'func_aguarota.php?funcao_js=parent.js_mostraaguarota1|x06_codrota|x06_descr',
 				'Pesquisa', true, '0', '1', '775', '390');
 		} else {
 
 		  if (document.form1.x07_codrota.value != '') { 
-        js_OpenJanelaIframe('top.corpo.iframe_aguarotarua', 'db_iframe_aguarota', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguarotarua', 'db_iframe_aguarota', 
           'func_aguarota.php?pesquisa_chave=' + document.form1.x07_codrota.value +
             '&funcao_js=parent.js_mostraaguarota', 'Pesquisa', false);
       } else {
@@ -318,13 +318,13 @@
   function js_pesquisax07_codrua(mostra){
 
 	  if (mostra == true) {
-		  js_OpenJanelaIframe('top.corpo.iframe_aguarotarua', 'db_iframe_ruas', 
+		  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguarotarua', 'db_iframe_ruas', 
 				'func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome','Pesquisa',true,'0','1','775','390');
 		}else{
 
 		  if(document.form1.x07_codrua.value != ''){ 
 
-		    js_OpenJanelaIframe('top.corpo.iframe_aguarotarua','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.x07_codrua.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
+		    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguarotarua','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.x07_codrua.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
 
       }else{
         document.form1.j14_nome.value = ''; 

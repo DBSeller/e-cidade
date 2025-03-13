@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-include ("dbforms/db_funcoes.php");
-require ("classes/db_arrejust_classe.php");
-require ("classes/db_arrejustreg_classe.php");
-require ("classes/db_numpref_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("classes/db_arrejust_classe.php"));
+require(modification("classes/db_arrejustreg_classe.php"));
+require(modification("classes/db_numpref_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -106,12 +106,12 @@ if (isset($inicial) && $inicial == true) {
         } else {
             
 	        //    echo "if if ....  | $i --- $v<br>";
-	        $rsnumpre = pg_query("select v59_numpre from inicialnumpre where v59_inicial = $v");
+	        $rsnumpre = db_query("select v59_numpre from inicialnumpre where v59_inicial = $v");
 	        //    db_criatabela($rsnumpre);
 	        $numrows  = pg_numrows($rsnumpre);
 	        for($ii = 0; $ii < $numrows; $ii++ ){
 	          db_fieldsmemory($rsnumpre,$ii);
-	          $rsArrecad  = pg_query(" select distinct k00_numpre,k00_numpar from arrecad where k00_numpre = $v59_numpre "); 
+	          $rsArrecad  = db_query(" select distinct k00_numpre,k00_numpar from arrecad where k00_numpre = $v59_numpre "); 
 	          $numArrecad = pg_numrows($rsArrecad);
 	          for($ia = 0 ;$ia < $numArrecad; $ia++ ){
 	            db_fieldsmemory($rsArrecad,$ia);
@@ -124,12 +124,12 @@ if (isset($inicial) && $inicial == true) {
       } else {
           
 	      //    echo "if if ....  | $i --- $v<br>";
-	      $rsnumpre = pg_query("select v59_numpre from inicialnumpre where v59_inicial = $v");
+	      $rsnumpre = db_query("select v59_numpre from inicialnumpre where v59_inicial = $v");
 	      //    db_criatabela($rsnumpre);
 	      $numrows  = pg_numrows($rsnumpre);
 	      for($ii = 0; $ii < $numrows; $ii++ ){
 	        db_fieldsmemory($rsnumpre,$ii);
-	        $rsArrecad  = pg_query(" select distinct k00_numpre,k00_numpar from arrecad where k00_numpre = $v59_numpre "); 
+	        $rsArrecad  = db_query(" select distinct k00_numpre,k00_numpar from arrecad where k00_numpre = $v59_numpre "); 
 	        $numArrecad = pg_numrows($rsArrecad);
 	        for($ia = 0 ;$ia < $numArrecad; $ia++ ){
 	          db_fieldsmemory($rsArrecad,$ia);
@@ -250,7 +250,7 @@ if(isset($submit)){
      $sqlreceita = "select k00_numpre, k00_numpar,k00_receit 
                     from arrecad 
                     where k00_numpre= $numpre and k00_numpar = $numpar";
-     $resultreceita = pg_query($sqlreceita);
+     $resultreceita = db_query($sqlreceita);
      $linhasreceita = pg_num_rows($resultreceita);
      for($r=0;$r<$linhasreceita;$r++){
        db_fieldsmemory($resultreceita,$r);

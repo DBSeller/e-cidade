@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
 
 $oPdf  = new PDF();
 
@@ -151,7 +151,7 @@ $head7 = 'Período: '      . ($dDataInicial    != '' ? $dDataInicial    : '00/00/
 
 $sSql = "select * from ($sSql $sWhere $sGroupBy $sHaving ) as x order by $sOrdenar ";
 
-$rSql = pg_query($sSql);
+$rSql = db_query($sSql);
         
 $oPdf->Open();
 $oPdf->AliasNBPages();

@@ -1,47 +1,47 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_orcunidade_classe.php");
-include("classes/db_rhlota_classe.php");
-include("classes/db_rhlotavinc_classe.php");
-include("classes/db_rhlotavincele_classe.php");
-include("classes/db_rhlotavincativ_classe.php");
-include("classes/db_rhlotavincrec_classe.php");
-include("classes/db_rhlotaexe_classe.php");
-include("classes/db_rhlotacalend_classe.php");
-include("classes/db_cfpess_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_cgm_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcunidade_classe.php"));
+include(modification("classes/db_rhlota_classe.php"));
+include(modification("classes/db_rhlotavinc_classe.php"));
+include(modification("classes/db_rhlotavincele_classe.php"));
+include(modification("classes/db_rhlotavincativ_classe.php"));
+include(modification("classes/db_rhlotavincrec_classe.php"));
+include(modification("classes/db_rhlotaexe_classe.php"));
+include(modification("classes/db_rhlotacalend_classe.php"));
+include(modification("classes/db_cfpess_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_cgm_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrhlota = new cl_rhlota;
 $clrhlotavinc = new cl_rhlotavinc;
@@ -63,7 +63,7 @@ if(isset($incluir) || isset($importar)){
   $anofolha = db_anofolha();
   $mesfolha = db_mesfolha();
   db_inicio_transacao();
-  
+
   $result = $clcfpess->sql_record($clcfpess->sql_query_file($anofolha,$mesfolha,db_getsession("DB_instit"),"r11_codestrut"));
   if($clcfpess->numrows > 0){
     db_fieldsmemory($result,0);
@@ -98,22 +98,30 @@ $erro_msg="CNPJ Inválido";
     $clrhlota->r70_analitica      = "$r70_analitica";
     $clrhlota->r70_instit         = $r70_instit;
     $clrhlota->r70_numcgm         = $z01_numcgm;
-    $clrhlota->r70_concarpeculiar = $r70_concarpeculiar; 
-    
-    $clrhlota->incluir($r70_codigo);
-    $r70_codigo = $clrhlota->r70_codigo;
-    if($r70_analitica != "t"){
-      $erro_msg = "Inclusão efetuada com sucesso!";
+    $clrhlota->r70_concarpeculiar = $r70_concarpeculiar;
+
+    $validaDuplicidadeLotacao = $clrhlota->sql_record($clrhlota->sql_query_file(null, "r70_codigo", null, "r70_estrut = '{$clrhlota->r70_estrut}' and r70_instit = {$r70_instit}"));
+
+    if(!empty($validaDuplicidadeLotacao)){
+        $erro_msg = "Lotação já cadastrada com o mesmo estrutural da lotação para esta instituição.";
+        $sqlerro=true;
     }
-    if($clrhlota->erro_status == 0){
-      $sqlerro = true;
-      $erro_msg = $clrhlota->erro_msg;
-    }else{
-      if($r70_analitica != "t"){
-         $erro_msg = "Inclusão efetuada com sucesso!";
-      }
+    if(!$sqlerro){
+        $clrhlota->incluir($r70_codigo);
+        $r70_codigo = $clrhlota->r70_codigo;
+        if($r70_analitica != "t"){
+            $erro_msg = "Inclusão efetuada com sucesso!";
+        }
+        if($clrhlota->erro_status == 0){
+            $sqlerro = true;
+            $erro_msg = $clrhlota->erro_msg;
+        }else{
+            if($r70_analitica != "t"){
+                $erro_msg = "Inclusão efetuada com sucesso!";
+            }
+        }
     }
-  }  
+  }
 
   if(isset($importar) && $sqlerro == false){
     $result_lotavinc = $clrhlotavinc->sql_record($clrhlotavinc->sql_query_file(null,"rh25_codlotavinc as codigo_do_vinculo,rh25_codigo,rh25_projativ,rh25_vinculo,rh25_recurso",""," rh25_codigo=$importar "));
@@ -126,7 +134,7 @@ $erro_msg="CNPJ Inválido";
         $clrhlotavinc->rh25_recurso  = $rh25_recurso;
         $clrhlotavinc->rh25_anousu   = $anofolha;
         $clrhlotavinc->incluir(null);
-        $rh25_codlotavinc = $clrhlotavinc->rh25_codlotavinc;  
+        $rh25_codlotavinc = $clrhlotavinc->rh25_codlotavinc;
         if($clrhlotavinc->erro_status == 0){
           $erro_msg = $clrhlotavinc->erro_msg;
           $sqlerro=true;
@@ -168,7 +176,7 @@ $erro_msg="CNPJ Inválido";
           }
         }
       }
-      
+
       if($sqlerro == false){
         $result_importarec = $clrhlotavincrec->sql_record($clrhlotavincrec->sql_query_file($codigo_do_vinculo,null,"rh43_codelenov,rh43_recurso"));
         $numrows_importarec = $clrhlotavincrec->numrows;
@@ -206,7 +214,7 @@ $erro_msg="CNPJ Inválido";
       $sqlerro = true;
       $erro_msg = $clrhlotaexe->erro_msg;
     }
-  } 
+  }
 
   if($sqlerro == false && $rh64_calend != ""){
     $clrhlotacalend->rh64_calend = $rh64_calend;
@@ -233,11 +241,11 @@ $erro_msg="CNPJ Inválido";
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
 	<?
-	include("forms/db_frmrhlota.php");
+	include(modification("forms/db_frmrhlota.php"));
 	?>
     </center>
 	</td>

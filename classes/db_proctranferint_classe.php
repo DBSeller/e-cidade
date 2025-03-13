@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -132,7 +132,7 @@ class cl_proctranferint {
        return false;
      }
      if($p88_codigo == "" || $p88_codigo == null ){
-       $result = @pg_query("select nextval('proctranferint_p88_codigo_seq')"); 
+       $result = @db_query("select nextval('proctranferint_p88_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: proctranferint_p88_codigo_seq do campo: p88_codigo"; 
@@ -143,7 +143,7 @@ class cl_proctranferint {
        }
        $this->p88_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from proctranferint_p88_codigo_seq");
+       $result = @db_query("select last_value from proctranferint_p88_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $p88_codigo)){
          $this->erro_sql = " Campo p88_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -177,7 +177,7 @@ class cl_proctranferint {
                                ,$this->p88_usuario 
                                ,'$this->p88_despacho' 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -203,14 +203,14 @@ class cl_proctranferint {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->p88_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,6498,'$this->p88_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,1069,6498,'','".AddSlashes(pg_result($resaco,0,'p88_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1069,6500,'','".AddSlashes(pg_result($resaco,0,'p88_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1069,6499,'','".AddSlashes(pg_result($resaco,0,'p88_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1069,6501,'','".AddSlashes(pg_result($resaco,0,'p88_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1069,6502,'','".AddSlashes(pg_result($resaco,0,'p88_despacho'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,6498,'$this->p88_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,1069,6498,'','".AddSlashes(pg_result($resaco,0,'p88_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1069,6500,'','".AddSlashes(pg_result($resaco,0,'p88_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1069,6499,'','".AddSlashes(pg_result($resaco,0,'p88_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1069,6501,'','".AddSlashes(pg_result($resaco,0,'p88_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1069,6502,'','".AddSlashes(pg_result($resaco,0,'p88_despacho'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -305,22 +305,22 @@ class cl_proctranferint {
      $resaco = $this->sql_record($this->sql_query_file($this->p88_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,6498,'$this->p88_codigo','A')");
+         $resac = db_query("insert into db_acountkey values($acount,6498,'$this->p88_codigo','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["p88_codigo"]))
-           $resac = pg_query("insert into db_acount values($acount,1069,6498,'".AddSlashes(pg_result($resaco,$conresaco,'p88_codigo'))."','$this->p88_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1069,6498,'".AddSlashes(pg_result($resaco,$conresaco,'p88_codigo'))."','$this->p88_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["p88_data"]))
-           $resac = pg_query("insert into db_acount values($acount,1069,6500,'".AddSlashes(pg_result($resaco,$conresaco,'p88_data'))."','$this->p88_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1069,6500,'".AddSlashes(pg_result($resaco,$conresaco,'p88_data'))."','$this->p88_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["p88_hora"]))
-           $resac = pg_query("insert into db_acount values($acount,1069,6499,'".AddSlashes(pg_result($resaco,$conresaco,'p88_hora'))."','$this->p88_hora',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1069,6499,'".AddSlashes(pg_result($resaco,$conresaco,'p88_hora'))."','$this->p88_hora',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["p88_usuario"]))
-           $resac = pg_query("insert into db_acount values($acount,1069,6501,'".AddSlashes(pg_result($resaco,$conresaco,'p88_usuario'))."','$this->p88_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1069,6501,'".AddSlashes(pg_result($resaco,$conresaco,'p88_usuario'))."','$this->p88_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["p88_despacho"]))
-           $resac = pg_query("insert into db_acount values($acount,1069,6502,'".AddSlashes(pg_result($resaco,$conresaco,'p88_despacho'))."','$this->p88_despacho',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1069,6502,'".AddSlashes(pg_result($resaco,$conresaco,'p88_despacho'))."','$this->p88_despacho',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "tranferencia interna nao Alterado. Alteracao Abortada.\\n";
@@ -361,14 +361,14 @@ class cl_proctranferint {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,6498,'".pg_result($resaco,$iresaco,'p88_codigo')."','E')");
-         $resac = pg_query("insert into db_acount values($acount,1069,6498,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1069,6500,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1069,6499,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1069,6501,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1069,6502,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_despacho'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,6498,'".pg_result($resaco,$iresaco,'p88_codigo')."','E')");
+         $resac = db_query("insert into db_acount values($acount,1069,6498,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1069,6500,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1069,6499,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1069,6501,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1069,6502,'','".AddSlashes(pg_result($resaco,$iresaco,'p88_despacho'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from proctranferint
@@ -384,7 +384,7 @@ class cl_proctranferint {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "tranferencia interna nao Excluído. Exclusão Abortada.\\n";
@@ -418,7 +418,7 @@ class cl_proctranferint {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

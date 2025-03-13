@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -117,7 +117,7 @@ class cl_usuariosunidade {
                                ,$this->sd25_i_unidade 
                                ,'$this->sd25_b_ativo' 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -143,13 +143,13 @@ class cl_usuariosunidade {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->sd25_i_usuario,$this->sd25_i_unidade));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,100111,'$this->sd25_i_usuario','I')");
-       $resac = pg_query("insert into db_acountkey values($acount,100110,'$this->sd25_i_unidade','I')");
-       $resac = pg_query("insert into db_acount values($acount,100019,100111,'','".AddSlashes(pg_result($resaco,0,'sd25_i_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,100019,100110,'','".AddSlashes(pg_result($resaco,0,'sd25_i_unidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,100019,1000000,'','".AddSlashes(pg_result($resaco,0,'sd25_b_ativo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,100111,'$this->sd25_i_usuario','I')");
+       $resac = db_query("insert into db_acountkey values($acount,100110,'$this->sd25_i_unidade','I')");
+       $resac = db_query("insert into db_acount values($acount,100019,100111,'','".AddSlashes(pg_result($resaco,0,'sd25_i_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,100019,100110,'','".AddSlashes(pg_result($resaco,0,'sd25_i_unidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,100019,1000000,'','".AddSlashes(pg_result($resaco,0,'sd25_b_ativo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -207,19 +207,19 @@ class cl_usuariosunidade {
      $resaco = $this->sql_record($this->sql_query_file($this->sd25_i_usuario,$this->sd25_i_unidade));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,100111,'$this->sd25_i_usuario','A')");
-         $resac = pg_query("insert into db_acountkey values($acount,100110,'$this->sd25_i_unidade','A')");
+         $resac = db_query("insert into db_acountkey values($acount,100111,'$this->sd25_i_usuario','A')");
+         $resac = db_query("insert into db_acountkey values($acount,100110,'$this->sd25_i_unidade','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["sd25_i_usuario"]))
-           $resac = pg_query("insert into db_acount values($acount,100019,100111,'".AddSlashes(pg_result($resaco,$conresaco,'sd25_i_usuario'))."','$this->sd25_i_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,100019,100111,'".AddSlashes(pg_result($resaco,$conresaco,'sd25_i_usuario'))."','$this->sd25_i_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["sd25_i_unidade"]))
-           $resac = pg_query("insert into db_acount values($acount,100019,100110,'".AddSlashes(pg_result($resaco,$conresaco,'sd25_i_unidade'))."','$this->sd25_i_unidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,100019,100110,'".AddSlashes(pg_result($resaco,$conresaco,'sd25_i_unidade'))."','$this->sd25_i_unidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["sd25_b_ativo"]))
-           $resac = pg_query("insert into db_acount values($acount,100019,1000000,'".AddSlashes(pg_result($resaco,$conresaco,'sd25_b_ativo'))."','$this->sd25_b_ativo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,100019,1000000,'".AddSlashes(pg_result($resaco,$conresaco,'sd25_b_ativo'))."','$this->sd25_b_ativo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Usuários para Unidade nao Alterado. Alteracao Abortada.\\n";
@@ -260,13 +260,13 @@ class cl_usuariosunidade {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,100111,'$this->sd25_i_usuario','E')");
-         $resac = pg_query("insert into db_acountkey values($acount,100110,'$this->sd25_i_unidade','E')");
-         $resac = pg_query("insert into db_acount values($acount,100019,100111,'','".AddSlashes(pg_result($resaco,$iresaco,'sd25_i_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,100019,100110,'','".AddSlashes(pg_result($resaco,$iresaco,'sd25_i_unidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,100019,1000000,'','".AddSlashes(pg_result($resaco,$iresaco,'sd25_b_ativo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,100111,'$this->sd25_i_usuario','E')");
+         $resac = db_query("insert into db_acountkey values($acount,100110,'$this->sd25_i_unidade','E')");
+         $resac = db_query("insert into db_acount values($acount,100019,100111,'','".AddSlashes(pg_result($resaco,$iresaco,'sd25_i_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,100019,100110,'','".AddSlashes(pg_result($resaco,$iresaco,'sd25_i_unidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,100019,1000000,'','".AddSlashes(pg_result($resaco,$iresaco,'sd25_b_ativo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from usuariosunidade
@@ -288,7 +288,7 @@ class cl_usuariosunidade {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Usuários para Unidade nao Excluído. Exclusão Abortada.\\n";
@@ -322,7 +322,7 @@ class cl_usuariosunidade {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

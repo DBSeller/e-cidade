@@ -26,7 +26,7 @@
  */
 
 //MODULO: cadastro
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cliptunaogeracarnesetqua->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -133,7 +133,7 @@ db_input('j67_quadra',4,$Ij67_quadra,true,'text',3,"")
 </form>
 <script>
 function js_selface(){
-  js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarnesetqua','db_iframe_selface','cad4_selfaces001.php?j67_naogeracarne='+document.form1.j67_naogeracarne.value,'Seleciona faces',true,0);	
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarnesetqua','db_iframe_selface','cad4_selfaces001.php?j67_naogeracarne='+document.form1.j67_naogeracarne.value,'Seleciona faces',true,0);	
 }
 function js_cancelar(){
   var opcao = document.createElement("input");
@@ -146,10 +146,10 @@ function js_cancelar(){
 
 function js_pesquisaj37_face(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarnesetqua','db_iframe_face','func_facealt.php?funcao_js=parent.js_mostraface1|j37_face|j37_setor|j30_descr|j37_quadra','Pesquisa');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarnesetqua','db_iframe_face','func_facealt.php?funcao_js=parent.js_mostraface1|j37_face|j37_setor|j30_descr|j37_quadra','Pesquisa');
   }else{
      if(document.form1.j37_face.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarnesetqua','db_iframe_face','func_facealt.php?pesquisa_chave='+document.form1.j37_face.value+'&funcao_js=parent.js_mostraface','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarnesetqua','db_iframe_face','func_facealt.php?pesquisa_chave='+document.form1.j37_face.value+'&funcao_js=parent.js_mostraface','Pesquisa',false);
      }else{
        document.form1.j67_setor.value = ''; 
        document.form1.j30_descr.value = ''; 

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("dbforms/verticalTab.widget.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
 
 $oGet              = db_utils::postMemory($_GET);
 $oCidadao          = new Cidadao($oGet->codigoCidadao);
@@ -195,7 +195,7 @@ $iCodigoFamilia  = $oCidadao->getFamilia()->getCodigoSequencial();
 $('linkFamilia').observe("click", function(event) {
 
   var sUrlPesquisa = 'soc3_consultafamilia003.php?codigoFamilia=<?php echo $iCodigoFamilia?>';
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_consulta_familia',
                       sUrlPesquisa,
                       'Consulta Família',

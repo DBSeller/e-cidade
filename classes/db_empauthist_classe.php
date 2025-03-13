@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -320,6 +320,7 @@ class cl_empauthist {
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = empautoriza.e54_numcgm";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = empautoriza.e54_login";
      $sql .= "      inner join pctipocompra  on  pctipocompra.pc50_codcom = empautoriza.e54_codcom";
+     $sql .= "      inner join db_usuarios users on users.id_usuario = empautoriza.e54_logincriador";
      $sql2 = "";
      if($dbwhere==""){
        if($e57_autori!=null ){

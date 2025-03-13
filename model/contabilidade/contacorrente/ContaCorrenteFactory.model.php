@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -28,7 +28,7 @@
 /**
  * Model responsável por descobrir a qual conta corrente o reduzido do plano de contas pertence
  * @author Acácio Schneider <acacio.schneider@dbseller.com.br>
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.26 $
  * @package contabilidade
  * @subpackage contacorrente
  */
@@ -37,11 +37,26 @@ class ContaCorrenteFactory {
   private function __construct() {}
 
   /**
-   * Descobre a que conta corrente o código reduzido do plano de contas pertence
-   * @param integer $iCodigoLancamento - Código da tabela conlancamval
-   * @param integer $iCodigoReduzido   - Código reduzido do plano de contas PCASP
-   * @param ILancamentoAuxiliar $oLancamentoAuxiliar - Classe que implemente a interface ILancamentoAuxiliar
-   * @return IContaCorrente - Retorna um objeto conta corrente que implementa a inteface IContaCorrente
+   * @param integer                     $iCodigoLancamento
+   * @param integer                      $iCodigoReduzido
+   * @param ILancamentoAuxiliar          $oLancamentoAuxiliar
+   * @param DocumentoEventoContabil|null $oDocumentoEventoContabil
+   *
+   * @return DisponibilidadeFinanceira |
+   *         DomicilioBancario |
+   *         CredorFornecedorDevedor |
+   *         AdiantamentoConcessao |
+   *         ContaCorrenteContrato |
+   *         ContaCorrenteReceitaOrcamentaria |
+   *         ContaCorrenteDotacao |
+   *         ContaCorrenteDespesaOrcamentaria |
+   *         ContaCorrenteFonteRecurso |
+   *         ContaCorrenteCredor |
+   *         ContaCorrenteMovimentacaoFinanceira |
+   *         ContaCorrenteRestosPagar |
+   *         ContaCorrenteContratosPassivos |
+   *         ContaCorrenteAcordo
+   * @throws BusinessException
    */
   public static function getInstance($iCodigoLancamento, $iCodigoReduzido, ILancamentoAuxiliar $oLancamentoAuxiliar) {
 
@@ -108,7 +123,7 @@ class ContaCorrenteFactory {
     }
 
     $sNomeClasse = $aClassesContaCorrente[$oStdContaCorrente->c17_sequencial];
-    require_once "model/contabilidade/contacorrente/{$sNomeClasse}.model.php";
+    require_once modification("model/contabilidade/contacorrente/{$sNomeClasse}.model.php");
     $sNomeClasse = basename($sNomeClasse);
     return new $sNomeClasse($iCodigoLancamento, $iCodigoReduzido, $oLancamentoAuxiliar);
   }

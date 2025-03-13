@@ -1,0 +1,80 @@
+#!/usr/bin/env php
+<?php
+use \ECidade\V3\Extension\Registry;
+use \ECidade\Task\TaskInterface;
+
+$startTime = microtime(true);
+
+require_once "bootstrap.php";
+
+ini_set('display_errors', false);
+
+function trace_filter(& $trace)
+{
+    foreach ($trace as $index => & $data) {
+        if (isset($data['file']) && is_vendor_file($data['file'])) {
+            return array_slice($trace, 0, $index);
+        }
+    }
+    return $trace;
+}
+
+function is_vendor_file($path)
+{
+    return strpos($path, 'vendor/jeremeamia/SuperClosure') !== false;
+}
+
+function error_handler($event)
+{
+    global $task;
+    $params = $event->getParams();
+    $entity = $params[0];
+    $error = array(
+      'message' => $entity->getMessage(),
+      'file' => $entity->getFile(),
+      'line' => $entity->getLine(),
+      'type' => $entity->getType(),
+      'error' => array(),
+    );
+
+    if (is_vendor_file($error['file'])) {
+        $error['file'] = '{closure}';
+        $error['line'] -= 1;
+    } else {
+        $error['trace'] = trace_filter($entity->getTrace()->getSanitizedData());
+    }
+
+    if (strpos($error['message'], 'Uncaught exception') !== false) {
+        $error['message'] = preg_replace("/(.*with message ')(.*?)('.*)/s", '$2', $error['message']);
+    }
+
+    $task->state(TaskInterface::STATE_ERROR);
+
+    if ($error['type'] & E_FATAL) {
+        $task->state(TaskInterface::STATE_FAIL);
+    }
+
+    $task->addError($error);
+}
+
+$dataPath = $argv[1];
+
+$task = unserialize(file_get_contents($dataPath));
+
+register_shutdown_function(function() use (& $task, $startTime, $dataPath) {
+    $task->elapsed(microtime(true) - $startTime);
+    $task->output(ob_get_clean());
+    file_put_contents($dataPath, serialize($task));
+});
+
+if (!$task->errorHandler()) {
+    $task->errorHandler('error_handler');
+}
+
+Registry::get('app.eventManager')->register('app.error', $task->errorHandler());
+Registry::get('app.container')->get('app.configData')->loadEvents();
+
+ob_start();
+$task->state(TaskInterface::STATE_RUNNING);
+$task->run();
+$task->state(TaskInterface::STATE_SUCCESS);

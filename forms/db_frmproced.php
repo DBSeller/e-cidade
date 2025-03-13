@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: dividaativa
@@ -44,7 +44,7 @@ $clrotulo->label("receita");
 				<td nowrap title="<?=@$Tv03_codigo?>">
 					<?=@$Lv03_codigo?>
 				</td>
-				<td> 
+				<td>
 					<?
 						db_input('v03_codigo',6,$Iv03_codigo,true,'text',3,"")
 					?>
@@ -54,7 +54,7 @@ $clrotulo->label("receita");
 				<td nowrap title="<?=@$Tv03_descr?>">
 					<?=@$Lv03_descr?>
 				</td>
-				<td> 
+				<td>
 					<?
 						db_input('v03_descr',40,$Iv03_descr,true,'text',$db_opcao,"")
 					?>
@@ -64,7 +64,7 @@ $clrotulo->label("receita");
 				<td nowrap title="<?=@$Tv03_dcomp?>">
 					<?=@$Lv03_dcomp?>
 				</td>
-				<td> 
+				<td>
 					<?
 						db_input('v03_dcomp',40,$Iv03_dcomp,true,'text',$db_opcao,"")
 					?>
@@ -76,7 +76,7 @@ $clrotulo->label("receita");
 						db_ancora(@$Lv03_receit,"js_pesquisav03_receit(true);",$db_opcao);
 					?>
 				</td>
-				<td> 
+				<td>
 					<?
 						db_input('v03_receit',6,$Iv03_receit,true,'text',$db_opcao," onchange='js_pesquisav03_receit(false);'");
 						db_input('k02_descr',30,$Ik02_descr,true,'text',3,'');
@@ -89,7 +89,7 @@ $clrotulo->label("receita");
 						db_ancora(@$Lk00_hist,"js_pesquisak00_hist(true);",$db_opcao);
 					?>
 				</td>
-				<td> 
+				<td>
 					<?
 						db_input('k00_hist',6,$Ik00_hist,true,'text',$db_opcao," onchange='js_pesquisak00_hist(false);'");
 						db_input('k01_descr',30,$Ik01_descr,true,'text',3,'');
@@ -107,18 +107,18 @@ $clrotulo->label("receita");
 					?>
 				</td>
 			</tr>
-	
-      
-      
-      
-      
+
+
+
+
+
       <tr>
         <td nowrap title="<?=@$Tar36_receita?>"><b>
            <?
            db_ancora("Grupo de Procedência","js_pesquisaprocedtipo(true);",$db_opcao);
            ?></b>
         </td>
-        <td> 
+        <td>
     				<?
     				  db_input('v03_procedtipo',8,"",true,'text',$db_opcao," onchange='js_pesquisaprocedtipo(false);'")
     				?>
@@ -126,24 +126,24 @@ $clrotulo->label("receita");
               db_input('v28_descricao',30,"",true,'text',3,'')
            ?>
         </td>
-      </tr>      
-      
-      
-      
-      
-      
-      		
+      </tr>
+
+
+
+
+
+
 			<tr>
 				<td nowrap title="<?=@$Treceita?>">
 					<?
 						db_ancora(@$Lreceita,"js_pesquisareceita(true);",$db_opcao);
 					?>
 				</td>
-				<td> 
+				<td>
 					<?
 						db_input('receita',6,$Ireceita,true,'text',$db_opcao," onchange='js_pesquisareceita(false);'")
 					?>
-					<?       
+					<?
 						db_input('descr_2',30,"",true,'text',3,'');
 					?>
 				</td>
@@ -152,7 +152,7 @@ $clrotulo->label("receita");
 				<td>
 					<b>Tipo de Débito Padrão:</b>
 				</td>
-				<td> 
+				<td>
 					<?
 						$rsArretipo = $clarretipo->sql_record($clarretipo->sql_query_file(null,"k00_tipo, k00_descr","k00_descr","k03_tipo = 5")) ;
 						db_selectrecord('v06_arretipo',$rsArretipo,true,$db_opcao,"","","","0-Nenhum","");
@@ -165,25 +165,35 @@ $clrotulo->label("receita");
             db_ancora(@$Lv24_procedagrupa,"js_pesquisav24_procedagrupa(true);",$db_opcaoagrupa);
           ?>
         </td>
-        <td> 
+        <td>
           <?
             db_input('v24_procedagrupa',6,$Ireceita,true,'text', $db_opcaoagrupa," onchange='js_pesquisav24_procedagrupa(false);'")
           ?>
-          <?       
+          <?
             db_input('v24_procedagrupadescr',30,"",true,'text',3,'');
           ?>
         </td>
-      </tr>	
-   
-			
-			<!-- 
+      </tr>
+      <tr>
+              <td nowrap title="<?php echo $Tv03_limite; ?>" >
+                <label class="bold" for="v03_limite" id="lbl_v03_limite"><?php echo $Sv03_limite; ?>:</label>
+              </td>
+              <td>
+                <?php db_inputdata( 'v03_limite', 
+                                    @$v03_limite_dia,
+                                    @$v03_limite_mes,
+                                    @$v03_limite_ano, true, 'text', $db_opcao, ""); ?>
+              </td>
+            </tr>
+
+			<!--
 			<tr>
 				<td nowrap title="<?=@$Treceita?>">
 					<?
 						db_ancora("<b>Receita procdiver</b>","js_pesquisareceitad(true);",$db_opcao);
 					?>
 				</td>
-				<td> 
+				<td>
 					<?
 						db_input('receitad',10,$Ireceita,true,'text',$db_opcao," onchange='js_pesquisareceitad(false);'")
 					?>
@@ -193,8 +203,8 @@ $clrotulo->label("receita");
 				</td>
 			</tr>
 			-->
-		
-		
+
+
 		</table>
 		</fieldset>
 	</center>
@@ -204,7 +214,7 @@ $clrotulo->label("receita");
   </tr>
 </table>
 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>"
-      type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" 
+      type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"
       <?=($db_botao==false?"disabled":"")?> onclick="return js_validar();" >
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
@@ -216,18 +226,18 @@ function js_pesquisaprocedtipo(mostra){
 	  if(mostra==true){
 	    js_OpenJanelaIframe('','db_iframe_receita','func_procedtipo.php?funcao_js=parent.js_mostraprocedtipo1|v28_sequencial|v28_descricao','Pesquisa',true);
 	  }else{
-	     if(document.form1.v03_procedtipo.value != ''){ 
+	     if(document.form1.v03_procedtipo.value != ''){
 	        js_OpenJanelaIframe('','db_iframe_receita','func_procedtipo.php?pesquisa_chave='+document.form1.v03_procedtipo.value+'&funcao_js=parent.js_mostraprocedtipo','Pesquisa',false);
 	     }else{
-	       document.form1.v28_descricao.value = ''; 
+	       document.form1.v28_descricao.value = '';
 	     }
 	  }
 	}
 	function js_mostraprocedtipo(chave,erro){
-	  document.form1.v28_descricao.value = chave; 
-	  if(erro==true){ 
-	    document.form1.v03_procedtipo.focus(); 
-	    document.form1.v03_procedtipo.value = ''; 
+	  document.form1.v28_descricao.value = chave;
+	  if(erro==true){
+	    document.form1.v03_procedtipo.focus();
+	    document.form1.v03_procedtipo.value = '';
 	  }
 	}
 	function js_mostraprocedtipo1(chave1,chave2){
@@ -237,7 +247,7 @@ function js_pesquisaprocedtipo(mostra){
 	  db_iframe_receita.hide();
 	}
 
-	
+
 
 
 
@@ -251,21 +261,21 @@ function js_validar(){
 
 function js_pesquisak00_hist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true);
   }else{
-     if(document.form1.k00_hist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.k00_hist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false);
+     if(document.form1.k00_hist.value != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.k00_hist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false);
      }else{
-       document.form1.k01_descr.value = ''; 
+       document.form1.k01_descr.value = '';
      }
   }
 }
 
 function js_mostrahistcalc(chave,erro){
-  document.form1.k01_descr.value = chave; 
-  if(erro==true){ 
-    document.form1.k00_hist.focus(); 
-    document.form1.k00_hist.value = ''; 
+  document.form1.k01_descr.value = chave;
+  if(erro==true){
+    document.form1.k00_hist.focus();
+    document.form1.k00_hist.value = '';
   }
 }
 
@@ -277,52 +287,54 @@ function js_mostrahistcalc1(chave1,chave2){
 
 function js_pesquisav03_receit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec_todas.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec_todas.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr<?php echo isset($somenteTipoReceitaPrincipal) ? '&k02_tabrectipo=1' : ''?>','Pesquisa',true);
   }else{
-     if(document.form1.v03_receit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec_todas.php?pesquisa_chave='+document.form1.v03_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
+     if(document.form1.v03_receit.value != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec_todas.php?pesquisa_chave='+document.form1.v03_receit.value+'&funcao_js=parent.js_mostratabrec<?php echo isset($somenteTipoReceitaPrincipal) ? '&k02_tabrectipo=1' : ''?>','Pesquisa',false);
      }else{
-       document.form1.k02_descr.value = ''; 
+       document.form1.k02_descr.value = '';
      }
   }
 }
 
 function js_mostratabrec(chave,erro){
 
-  document.form1.k02_descr.value = chave; 
+  document.form1.k02_descr.value = chave;
   if (erro==true) {
-   
-    document.form1.v03_receit.focus(); 
+
+    document.form1.v03_receit.focus();
     document.form1.v03_receit.value = '';
-     
+
   }
 }
 
 function js_mostratabrec1(chave1,chave2) {
 
   document.form1.v03_receit.value = chave1;
-  document.form1.k02_descr.value = chave2;
+    document.form1.k02_descr.value = chave2;
+    document.form1.k02_tabrectipo.value = 1;
+
   db_iframe_tabrec.hide();
-  
+
 }
 
 function js_pesquisareceita(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec_todas.php?funcao_js=parent.js_mostratabrec2|k02_codigo|k02_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec_todas.php?funcao_js=parent.js_mostratabrec2|k02_codigo|k02_descr<?php echo isset($somenteTipoReceitaPrincipal) ? '&k02_tabrectipo=1' : ''?>','Pesquisa',true);
   }else{
-     if(document.form1.receita.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec_todas.php?pesquisa_chave='+document.form1.receita.value+'&funcao_js=parent.js_mostratabrec22','Pesquisa',false);
+     if(document.form1.receita.value != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec_todas.php?pesquisa_chave='+document.form1.receita.value+'&funcao_js=parent.js_mostratabrec22<?php echo isset($somenteTipoReceitaPrincipal) ? '&k02_tabrectipo=1' : ''?>','Pesquisa',false);
      }else{
-       document.form1.descr_2.value = ''; 
+       document.form1.descr_2.value = '';
      }
   }
 }
 
 function js_mostratabrec22(chave,erro){
-  document.form1.descr_2.value = chave; 
-  if(erro==true){ 
-    document.form1.receita.focus(); 
-    document.form1.receita.value = ''; 
+  document.form1.descr_2.value = chave;
+  if(erro==true){
+    document.form1.receita.focus();
+    document.form1.receita.value = '';
   }
 }
 
@@ -334,34 +346,34 @@ function js_mostratabrec2(chave1,chave2){
 
 function js_pesquisav24_procedagrupa(mostra){
   if (mostra==true) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_procedagrupa',
                         'func_proced.php?funcao_js=parent.js_mostraprocedagrupa2|v03_codigo|v03_descr',
                         'Pesquisar Procedências',
                         true
                         );
   }else{
-    
-     if (document.form1.v24_procedagrupa.value != '') { 
-        js_OpenJanelaIframe('top.corpo', 
+
+     if (document.form1.v24_procedagrupa.value != '') {
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_procedagrupa',
                             'func_proced?pesquisa_chave='+document.form1.v24_procedagrupa.value+
                             '&funcao_js=parent.js_mostraprocedagrupa1',
                             'Pesquisar Procedências',
                             false);
      }else{
-       document.form1.v24_procedagrupadescr.value = ''; 
+       document.form1.v24_procedagrupadescr.value = '';
      }
-     
+
   }
 }
 
 function js_mostraprocedagrupa1(chave,erro) {
 
-  document.form1.v24_procedagrupadescr.value = chave; 
-  if(erro==true){ 
-    document.form1.v24_procedagrupa.focus(); 
-    document.form1.v24_procedagrupa.value = ''; 
+  document.form1.v24_procedagrupadescr.value = chave;
+  if(erro==true){
+    document.form1.v24_procedagrupa.focus();
+    document.form1.v24_procedagrupa.value = '';
   }
 }
 
@@ -370,26 +382,26 @@ function js_mostraprocedagrupa2(chave1,chave2) {
   document.form1.v24_procedagrupa.value = chave1;
   document.form1.v24_procedagrupadescr.value = chave2;
   db_iframe_procedagrupa.hide();
-  
+
 }
 
 function js_pesquisareceitad(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec_todas.php?funcao_js=parent.js_mostratabrec2d|k02_codigo|k02_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec_todas.php?funcao_js=parent.js_mostratabrec2d|k02_codigo|k02_descr','Pesquisa',true);
   }else{
-     if(document.form1.receita.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec_todas.php?pesquisa_chave='+document.form1.receita.value+'&funcao_js=parent.js_mostratabrec22d','Pesquisa',false);
+     if(document.form1.receita.value != ''){
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec_todas.php?pesquisa_chave='+document.form1.receita.value+'&funcao_js=parent.js_mostratabrec22d','Pesquisa',false);
      }else{
-       document.form1.k02_descrd.value = ''; 
+       document.form1.k02_descrd.value = '';
      }
   }
 }
 
 function js_mostratabrec22d(chave,erro){
-  document.form1.k02_descrd.value = chave; 
-  if(erro==true){ 
-    document.form1.receitad.focus(); 
-    document.form1.receitad.value = ''; 
+  document.form1.k02_descrd.value = chave;
+  if(erro==true){
+    document.form1.receitad.focus();
+    document.form1.receitad.value = '';
   }
 }
 
@@ -400,7 +412,7 @@ function js_mostratabrec2d(chave1,chave2){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_proced','func_proced.php?funcao_js=parent.js_preenchepesquisa|v03_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_proced','func_proced.php?funcao_js=parent.js_preenchepesquisa|v03_codigo','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave){

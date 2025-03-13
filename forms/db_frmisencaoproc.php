@@ -82,10 +82,10 @@ db_input('v10_isencaotipo',10,$Iv10_isencaotipo,true,'text',3,'')
 <script>
 function js_pesquisav17_isencao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_isencao','func_isencao.php?funcao_js=parent.js_mostraisencao1|v10_sequencial|v10_isencaotipo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_isencao','func_isencao.php?funcao_js=parent.js_mostraisencao1|v10_sequencial|v10_isencaotipo','Pesquisa',true);
   }else{
      if(document.form1.v17_isencao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_isencao','func_isencao.php?pesquisa_chave='+document.form1.v17_isencao.value+'&funcao_js=parent.js_mostraisencao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_isencao','func_isencao.php?pesquisa_chave='+document.form1.v17_isencao.value+'&funcao_js=parent.js_mostraisencao','Pesquisa',false);
      }else{
        document.form1.v10_isencaotipo.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostraisencao1(chave1,chave2){
 }
 function js_pesquisav17_protprocesso(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
   }else{
      if(document.form1.v17_protprocesso.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.v17_protprocesso.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.v17_protprocesso.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
      }else{
        document.form1.p58_codproc.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostraprotprocesso1(chave1,chave2){
   db_iframe_protprocesso.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_isencaoproc','func_isencaoproc.php?funcao_js=parent.js_preenchepesquisa|v17_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_isencaoproc','func_isencaoproc.php?funcao_js=parent.js_preenchepesquisa|v17_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_isencaoproc.hide();

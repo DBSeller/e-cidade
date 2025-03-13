@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/JSON.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("model/contabilidade/planoconta/ContaCorrente.model.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("model/contabilidade/planoconta/ContaCorrente.model.php"));
 
 
 // objeto com variaveis passadas por querystring
@@ -96,11 +96,11 @@ if ($oGet->iPrestacaoContas != "" && $iContaCorrente == 19) {
 	$sWhereContaCorrenteDetalhe .= " and e45_tipo = {$oGet->iPrestacaoContas} ";
 }
 
-require_once "classes/db_contacorrentedetalhe_classe.php";
+require_once modification("classes/db_contacorrentedetalhe_classe.php");
 $oDaoContaCorrenteDetalhe = new cl_contacorrentedetalhe;
 $sSqlContaCorrenteDetalhe = $oDaoContaCorrenteDetalhe->sql_query_fileAtributos(null, $sCamposContaCorrenteDetalhe, "c19_reduz, z01_nome", "$sWhereContaCorrenteDetalhe" );
 $rsContaCorrenteDetalhe   = $oDaoContaCorrenteDetalhe->sql_record($sSqlContaCorrenteDetalhe);
-$aContacorrenteDetalhe    = db_utils::getColectionByRecord($rsContaCorrenteDetalhe);
+$aContacorrenteDetalhe    = db_utils::getCollectionByRecord($rsContaCorrenteDetalhe);
 if ($oDaoContaCorrenteDetalhe->erro_status == "0") {
 
   db_redireciona("db_erros.php?fechar=true&db_erro=Nenhum registro encontrado para os filtros selecionados.");
@@ -156,7 +156,7 @@ function getLancamentosContaCorrenteDetalhe($iNumcgm, $dtInicial, $dtFinal, $iFi
   $sSqlLancamentos .= "  order by c69_codlan, c53_coddoc " ;
 
   $rsLancamentos    = db_query($sSqlLancamentos);
-  $aLancamento      = db_utils::getColectionByRecord($rsLancamentos);
+  $aLancamento      = db_utils::getCollectionByRecord($rsLancamentos);
 
   return $aLancamento;
 }

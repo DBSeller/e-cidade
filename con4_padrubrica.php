@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-//include("classes/db_conarquivospad_classe.php");
+//include(modification("classes/db_conarquivospad_classe.php"));
 
 class rubrica {
 
@@ -106,7 +106,7 @@ class rubrica {
 	            ) as x";      
 	   
          // echo $sql;exit;
-       $result = pg_exec(analiseQueryPlanoOrcamento($sql));
+       $result = db_query(analiseQueryPlanoOrcamento($sql));
          
        for($i=0;$i<pg_numrows($result);$i++){
             db_fieldsmemory($result,$i);
@@ -154,7 +154,7 @@ class rubrica {
 
       fclose($this->arq);
 
-      pg_exec("commit");
+      db_query("commit");
 
 
       $teste = "true";

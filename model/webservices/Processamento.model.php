@@ -2,7 +2,7 @@
 
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,9 +26,9 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once('std/DBString.php');
-require_once('std/DBNumber.php');
-require_once('std/DBDate.php');
+require_once(modification('std/DBString.php'));
+require_once(modification('std/DBNumber.php'));
+require_once(modification('std/DBDate.php'));
 
 db_app::import('exceptions.*');
 
@@ -50,11 +50,18 @@ class Processamento {
   const PATH_REQUISICOES = 'webservices/processamento_dados/requisicoes/';
 
   /**
-   * VersÃ£o
+   * Versao
    *
    * @var string
    */
   private $sVersao;
+
+  /**
+   * Transacao
+   * Defini se a chamada ira utilizar transacao ou nao
+   * @var boolean
+   */
+  private $lTransacao;
 
   /**
    * Nome do Método( tambem nome do XML da pasta requisições ).xml
@@ -122,7 +129,7 @@ class Processamento {
   public function processar($sMetodo, $aParametros) {
 
     $this->log('INICIO PROCESSAMENTO DA CLASSE', 1);
-
+    
     $this->sNomeMetodo     = $sMetodo;
     $this->aDadosRecebidos = $aParametros;
 
@@ -140,8 +147,8 @@ class Processamento {
 
   /**
    * Abre o arquivo a partir do metodo informado
-   *
-   * @return Boolean
+   * @return bool
+   * @throws \Exception
    */
   private function abrirArquivo() {
 
@@ -155,9 +162,13 @@ class Processamento {
     $oDadosClasse->sCaminhoArquivo       = '';
     $oDadosClasse->aMetodos              = array();
 
-    $sCaminhoArquivo                     = DBFileExplorer::getCaminhoArquivo(Processamento::PATH_REQUISICOES,
-                                                                             $this->sNomeMetodo.'.xml'
-                                                                            );
+    $sCaminhoArquivo = DBFileExplorer::getCaminhoArquivo(
+        Processamento::PATH_REQUISICOES,
+        $this->sNomeMetodo.'.xml'
+    );
+
+    // verifica se tem modificacao para o xml
+    $sCaminhoArquivo = modification($sCaminhoArquivo);
 
     if (!$sCaminhoArquivo) {
 
@@ -192,6 +203,15 @@ class Processamento {
     }
 
     /**
+     * Verifica se deve abrir transacao para o processamento
+     */
+    $this->lTransacao = false;
+    $oTransacao       = $oArquivoXML->getElementsByTagName('transacao')->item(0);
+    if(isset($oTransacao->nodeValue)){
+      $this->lTransacao = $oTransacao->nodeValue == 'false' ? false : true;
+    }
+
+    /**
      * Leitura e processamento conforme a versao setada no arquivo XML
      *
      * @tutorial A versão deve ser informada no arquivo XML com a tag <versao>
@@ -203,11 +223,16 @@ class Processamento {
         // Classes que serão instanciadas
         foreach ($oXmlConfiguracoes->getElementsByTagName('classe') as $oXmlClasse) {
 
-          $oAtributos                          = $oXmlClasse->attributes;
+          $oAtributos      = $oXmlClasse->attributes;
+          $oAttrReferencia = $oAtributos->getNamedItem('referencia');
+
+          if (empty($oAttrReferencia)) {
+            throw new Exception("Attributo referencia não definido na tag classe do XML.");
+          }
 
           $oDadosClasse                        = new stdClass();
           $oDadosClasse->sNome                 = $oAtributos->getNamedItem('nome')->nodeValue;
-          $oDadosClasse->sReferencia           = $oAtributos->getNamedItem('referencia')->nodeValue;
+          $oDadosClasse->sReferencia           = $oAttrReferencia->nodeValue;
           $oDadosClasse->sCaminhoArquivo       = $oAtributos->getNamedItem('caminho')->nodeValue;
           $oDadosClasse->aParametrosConstrutor = array();
           if ($oAtributos->getNamedItem('parametros')->nodeValue) {
@@ -550,8 +575,8 @@ class Processamento {
 
   /**
    * Executa Classes
-   *
    * @return mixed
+   * @throws \Exception
    */
   private function executarClasse() {
 
@@ -559,16 +584,21 @@ class Processamento {
     $this->log('INICIO PROCESSAMENTO DAS CLASSE(S)', 1);
     $this->log('');
 
+    $methodsNotLogged = array(
+        'getFotoPrincipal'
+    );
+
     switch ($this->sVersao) {
 
       case '1.2' :
+
         $iTotalMetodos = count($this->aMetodosExecucao);
         $iPosicaoAtual = 0;
         $mResposta     = null;
 
         foreach ($this->aClassesExecucao as $oClasseExecucao) {
 
-          require_once ($oClasseExecucao->sCaminhoArquivo);
+          require_once(modification($oClasseExecucao->sCaminhoArquivo));
 
           // Instancia a classe
           $oReflection = new ReflectionClass($oClasseExecucao->sNome);
@@ -581,24 +611,45 @@ class Processamento {
         }
 
         // Executa seus Métodos, quando for o ultimo responde ao webservice
-        foreach ($this->aMetodosExecucao as $oDadosMetodoExecucao) {
-          foreach ($oDadosMetodoExecucao as $oDadosMetodo) {
+        try {
 
-            $sNomeClasse = $this->aClassesExecucao[$oDadosMetodo->sReferencia]->sNome;
-            $oMetodo     = new ReflectionMethod($sNomeClasse, $oDadosMetodo->sNome);
-            $mResposta   = $oMetodo->invokeArgs($oClasse[$oDadosMetodo->sReferencia], $oDadosMetodo->aParametrosValores);
-            $this->gravaDbLogAcessa("{$sNomeClasse}->{$oDadosMetodo->sNome}", $oDadosMetodo->aParametrosValores, $mResposta);
-            $iPosicaoAtual++;
+          if ($this->lTransacao) {
+            db_inicio_transacao();
           }
+
+          foreach ($this->aMetodosExecucao as $oDadosMetodoExecucao) {
+            foreach ($oDadosMetodoExecucao as $oDadosMetodo) {
+
+              $sNomeClasse = $this->aClassesExecucao[$oDadosMetodo->sReferencia]->sNome;
+              $oMetodo     = new ReflectionMethod($sNomeClasse, $oDadosMetodo->sNome);
+              $mResposta   = $oMetodo->invokeArgs($oClasse[$oDadosMetodo->sReferencia], $oDadosMetodo->aParametrosValores);
+
+              if (!in_array($oDadosMetodo->sNome, $methodsNotLogged)) {
+                  $this->gravaDbLogAcessa("{$sNomeClasse}->{$oDadosMetodo->sNome}", $oDadosMetodo->aParametrosValores, $mResposta);
+              }
+
+              $iPosicaoAtual++;
+            }
+          }
+
+          if ($this->lTransacao) {
+            db_fim_transacao(false);
+          }
+
+        }catch (Exception $eErro){
+
+          if ($this->lTransacao) {
+            db_fim_transacao(true);
+          }
+          throw new Exception($eErro->getMessage());
         }
 
         return $mResposta;
-
-        break;
+      break;
 
       default :
         // Carrega o arquivo da classe informada no XML.
-        require_once($this->oClasseExecucao->sCaminhoArquivo);
+        require_once(modification($this->oClasseExecucao->sCaminhoArquivo));
 
         // Instancia a classe
         $oReflection     = new ReflectionClass($this->oClasseExecucao->sNome);
@@ -606,16 +657,38 @@ class Processamento {
         $iTotalMetodos   = count($this->oClasseExecucao->aMetodos);
 
         // Executa seus Métodos, quando for o ultimo responde ao webservice
-        foreach ($this->oClasseExecucao->aMetodos as $iIndiceMetodo => $oDadosMetodo ) {
+        try {
 
-          $oMetodo       = new ReflectionMethod( $this->oClasseExecucao->sNome, $oDadosMetodo->sNome);
-          $mResposta     = $oMetodo->invokeArgs($oClasse, $oDadosMetodo->aParametros);
-          $this->gravaDbLogAcessa("{$this->oClasseExecucao->sNome}->{$oDadosMetodo->sNome}", $oDadosMetodo->aParametros, $mResposta);
-          $iPosicaoAtual = $iIndiceMetodo + 1;
-
-          if ($iPosicaoAtual == $iTotalMetodos) {
-            return $mResposta;
+          if ($this->lTransacao) {
+            db_inicio_transacao();
           }
+
+          foreach ($this->oClasseExecucao->aMetodos as $iIndiceMetodo => $oDadosMetodo ) {
+
+            $oMetodo       = new ReflectionMethod( $this->oClasseExecucao->sNome, $oDadosMetodo->sNome);
+            $mResposta     = $oMetodo->invokeArgs($oClasse, $oDadosMetodo->aParametros);
+
+              if (!in_array($oDadosMetodo->sNome, $methodsNotLogged)) {
+                  $this->gravaDbLogAcessa("{$this->oClasseExecucao->sNome}->{$oDadosMetodo->sNome}", $oDadosMetodo->aParametros, $mResposta);
+              }
+
+            $iPosicaoAtual = $iIndiceMetodo + 1;
+
+            if ($iPosicaoAtual == $iTotalMetodos) {
+
+              if ($this->lTransacao) {
+                db_fim_transacao(false);
+              }
+              return $mResposta;
+            }
+          }
+
+        }catch (Exception $eErro){
+
+          if ($this->lTransacao) {
+            db_fim_transacao(true);
+          }
+          throw new Exception($eErro->getMessage());
         }
     }
 
@@ -656,19 +729,23 @@ class Processamento {
     $sLog                       .= "--------------------------------------------------------------------\n";
     $sLog                       .= "TEMPO DE EXECUCAO: \n" . "seg\n";
 
+    /**
+     * Escpando caracteres para namespace, pgsql interpreta \'caracteres' como unicode.
+     */
+    $sMetodo = str_replace('\\', '\\\\', $sMetodo);
     $oDaoDBLogsAcessa            = new cl_db_logsacessa();
     $oDaoDBLogsAcessa->ip        = $_SERVER['REMOTE_ADDR'];
     $oDaoDBLogsAcessa->data      = date("Y-m-d");
     $oDaoDBLogsAcessa->hora      = date("H:i");
     $oDaoDBLogsAcessa->obs       = pg_escape_string($sLog);
-    $oDaoDBLogsAcessa->arquivo   = "1";
+    $oDaoDBLogsAcessa->arquivo   = $sMetodo;
     $oDaoDBLogsAcessa->id_usuario= 1;
-    $oDaoDBLogsAcessa->id_modulo = 1;
+    $oDaoDBLogsAcessa->id_modulo = $_SESSION['DB_modulo'];
     $oDaoDBLogsAcessa->id_item   = (isset($_SESSION['DB_itemmenu_acessado'])) ? $_SESSION['DB_itemmenu_acessado'] : 9638;
     $oDaoDBLogsAcessa->coddepto  = 1;
     $oDaoDBLogsAcessa->instit    = $_SESSION['DB_instit'];
     $oDaoDBLogsAcessa->incluir(null);
-
+    $_SESSION['DB_acessado']    = $oDaoDBLogsAcessa->codsequen;
     if ( $oDaoDBLogsAcessa->erro_status == "0" ) {
       throw new SoapFault("e-Cidade","Erro ao processar registros de Log.\n". '-'.$oDaoDBLogsAcessa->erro_status. '-' . utf8_encode($oDaoDBLogsAcessa->erro_msg));
     }

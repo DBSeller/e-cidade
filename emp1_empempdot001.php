@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("classes/db_empautidot_classe.php");
-include("classes/db_orcsuplemval_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcreserva_classe.php");
-include("classes/db_orcreservaaut_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empautitem_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_empautidot_classe.php"));
+include(modification("classes/db_orcsuplemval_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcreserva_classe.php"));
+include(modification("classes/db_orcreservaaut_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empautitem_classe.php"));
 $clempautitem = new cl_empautitem;
 
 
@@ -78,7 +78,7 @@ if(isset($e56_autori)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmempempdot.php");
+	include(modification("forms/db_frmempempdot.php"));
 	?>
     </center>
 	</td>

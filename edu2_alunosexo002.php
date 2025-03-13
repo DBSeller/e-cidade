@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_utils.php");
-require_once("fpdf151/pdfwebseller.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("fpdf151/pdfwebseller.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -36,8 +36,10 @@ $oGet = db_utils::postMemory($_GET);
 $oParametros                    = new stdClass();
 $oParametros->iEscola           = $oGet->iEscola;
 $oParametros->sListaCalendarios = $oGet->aCalendarios;
+$oParametros->iEnsino           = $oGet->iEnsino;
 $oParametros->iEtapa            = $oGet->iEtapa;
 $oParametros->iAno              = $oGet->iAno;
+/* PLUGIN - cria $oNomeCal*/
 
 /**
  * Altura padrão das linhas
@@ -59,6 +61,7 @@ $iTotalFemininoEscola  = 0;
 
 $aFiltros    = array();
 $sNomeEscola = "TODAS";
+$sNomeEnsino ="TODAS";
 $sNomeEtapa  = "TODAS";
 
 if (!empty($oParametros->iEscola)) {
@@ -72,15 +75,21 @@ if (!empty($oParametros->sListaCalendarios)) {
   $aFiltros[] = " ed57_i_calendario in({$oParametros->sListaCalendarios})";
 }
 
-if (!empty($oParametros->iEtapa)) {
+if (!empty($oParametros->iEnsino)) {
+    $aFiltros[] = "ed11_i_ensino = {$oParametros->iEnsino}";
+    $oEnsino = EnsinoRepository::getEnsinoByCodigo($oParametros->iEnsino);
+    $sNomeEnsino = $oEnsino->getNome();
+}
 
+if (!empty($oParametros->iEtapa)) {
   $aFiltros[] = "ed11_i_codigo = {$oParametros->iEtapa}";
-  $oEtapa     = EtapaRepository::getEtapaByCodigo($oParametros->iEtapa);
-  $sNomeEtapa = $oEtapa->getNome()." - ". $oEtapa->getEnsino()->getNome();
+    $oEtapa     = EtapaRepository::getEtapaByCodigo($oParametros->iEtapa);
+    $sNomeEtapa = $oEtapa->getNome();
 }
 
 $aFiltros[] = "ed60_c_situacao = 'MATRICULADO' ";
 $aFiltros[] = "ed221_c_origem  = 'S'           ";
+/* PLUGIN - Adiciona $NomeCal*/
 $sWhere     = implode(' and ', $aFiltros);
 
 $sCampos    = " DISTINCT ed18_i_codigo, trim(escola.ed18_c_nome) as escola, trim(ed11_c_descr) as etapa,";
@@ -176,17 +185,22 @@ $oPdf = new PDF('P');
 $oPdf->AliasNbPages();
 $oPdf->Open();
 $oPdf->SetAutoPageBreak(false, 20);
+/* PLUGIN adiciona novo header */
 
+/* Inicio do header */
 $head1 = "RELATÓRIO DE ALUNOS POR SEXO";
 $head2 = "Escola: {$sNomeEscola}";
 $head3 = "Etapa: {$sNomeEtapa}";
-$head4 = "Ano: {$oParametros->iAno}";
+$head4 = "Ensino: {$sNomeEnsino}";
+$head5 = "Ano: {$oParametros->iAno}";
 $oPdf->SetFillColor(210);
-
+/* Fim do header */
 $oTotalGeralEscolas = new stdClass();
 $oTotalGeralEscolas->iMasculino = 0;
 $oTotalGeralEscolas->iFeminino  = 0;
+$oTotalGeralEscolas->iTotal = 0;
 $oTotalGeralEscolas->aEtapas    = 0;
+
 
 foreach ($aAlunos as $oEscola) {
 
@@ -259,7 +273,7 @@ foreach ($aAlunos as $oEscola) {
 
   $oTotalGeralEscolas->iMasculino += $oEscola->iMasculino;
   $oTotalGeralEscolas->iFeminino  += $oEscola->iFeminino;
-  $oTotalGeralEscolas->iTotal     += $oEscola->iTotal;
+  $oTotalGeralEscolas->iTotal    += $oEscola->iTotal;
 }
 
 /** *************************** *
@@ -294,6 +308,7 @@ if (count($aAlunos) > 1) {
  * @param FPDF     $oPdf           instancia de FPDF
  * @param stdClass $oParametros    Configurações do relatório
  * @param string   $sEscola        Nome da Escola
+ * @param string $sEnsino          Nome do Ensino
  * @param string   $sEtapa         Nome da Etapa
  * @param boolean  $lNovaPagina    Se devemos quebrar a página
  * @return void

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,19 +27,19 @@
 
 set_time_limit(7000000000);
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("libs/db_libtxt.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_conrelinfo_classe.php");
-include("classes/db_empresto_classe.php");
-include("classes/db_conrelvalor_classe.php");
-require("libs/db_libpostgres.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libtxt.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_conrelinfo_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
+include(modification("classes/db_conrelvalor_classe.php"));
+require(modification("libs/db_libpostgres.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -64,7 +64,7 @@ if ($bimestre == "2S"|| $bimestre == "6B") {
 if ($emite_rec_desp==1||$emite_proj==1){
   // seleciona instituio do RPPS
   $sql         = "select codigo  from db_config where db21_tipoinstit in (5,6) ";
-  $resultinst  = pg_exec($sql);
+  $resultinst  = db_query($sql);
   $xvirg       = '';
   for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
     db_fieldsmemory($resultinst,$xins);
@@ -138,7 +138,7 @@ if ($emite_balorc_rec==1||$emite_balorc_desp==1){
   // RECEITAS
   $db_filtro  = ' o70_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
       $result_rec = db_receitasaldo(11,1,3,true,$db_filtro,$anousu,$dt_ini,$dt_fin);
-      @pg_exec("drop table work_receita");
+      @db_query("drop table work_receita");
       for($i = 0;$i < pg_numrows($result_rec); $i++) {
       db_fieldsmemory($result_rec,$i);
       $estrutural = $o57_fonte;
@@ -622,12 +622,12 @@ if ($emite_desp_funcsub==1){
 
 // RECEITA CORRENTE LIQUIDA - RCL
 if ($emite_rcl==1||$emite_ppp==1){     
-  /* @pg_query("begin"); 
-     @pg_query("drop table work_receita"); 
-     @pg_query("drop table work_pl");
-     @pg_query("drop table work_pl_estrut");
-     @pg_query("drop table work_pl_estrutmae");     
-     @pg_query("rollback"); 
+  /* @db_query("begin"); 
+     @db_query("drop table work_receita"); 
+     @db_query("drop table work_pl");
+     @db_query("drop table work_pl_estrut");
+     @db_query("drop table work_pl_estrutmae");     
+     @db_query("rollback"); 
    */
 
   // se o ano atual  bissexto deve subtrair 366 somente se a data for superior a 28/02/200X
@@ -646,7 +646,7 @@ if ($emite_rcl==1||$emite_ppp==1){
   $dtfin      = "";
   $arqinclude = true;
 
-  //include("con2_lrfreceitacorrente002_2008.php");
+  //include(modification("con2_lrfreceitacorrente002_2008.php"));
 
   $Trec[0][13]  = 0; 
   $Trec[1][13]  = 0; 
@@ -681,7 +681,7 @@ if ($emite_rcl==1||$emite_ppp==1){
     }
    */
   $sTodasInstit = null;
-  $rsInstit =  pg_query("select codigo from db_config");
+  $rsInstit =  db_query("select codigo from db_config");
   for ($xinstit=0; $xinstit < pg_num_rows($rsInstit); $xinstit++) {
     db_fieldsmemory($rsInstit, $xinstit);
     $sTodasInstit .= $codigo . ($xinstit==pg_num_rows($rsInstit)-1?"":",");
@@ -698,16 +698,16 @@ if ($emite_rcl==1||$emite_ppp==1){
 // RECEITAS/DESPESAS DO RPPS
 if ($emite_rec_desp==1){
   if (PostgreSQLUtils::isTableExists("work_receita")) { 
-    pg_query("drop table work_receita"); 
+    db_query("drop table work_receita"); 
   }
   if (PostgreSQLUtils::isTableExists("work_pl")) { 
-    pg_query("drop table work_pl");
+    db_query("drop table work_pl");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrut")) { 
-    pg_query("drop table work_pl_estrut");
+    db_query("drop table work_pl_estrut");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrutmae")) { 
-    pg_query("drop table work_pl_estrutmae");
+    db_query("drop table work_pl_estrutmae");
   }
   $arqinclude = true;
 
@@ -717,7 +717,7 @@ if ($emite_rec_desp==1){
     $executar = "con2_lrfrecdesprpps002_2008.php";
   }
   $periodo         = $bimestre;   
-  include($executar);
+  include(modification($executar));
    
   $total_rpps_rec_nobim    = $total_rec_bimestre;
   $total_rpps_rec_atebim   = $total_rec_exercicio;
@@ -739,16 +739,16 @@ if ($emite_rec_desp==1){
 if ($emite_resultado==1){
 
   if (PostgreSQLUtils::isTableExists("work_receita")) { 
-    pg_query("drop table work_receita"); 
+    db_query("drop table work_receita"); 
   }
   if (PostgreSQLUtils::isTableExists("work_pl")) { 
-    pg_query("drop table work_pl");
+    db_query("drop table work_pl");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrut")) { 
-    pg_query("drop table work_pl_estrut");
+    db_query("drop table work_pl_estrut");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrutmae")) { 
-    pg_query("drop table work_pl_estrutmae");
+    db_query("drop table work_pl_estrutmae");
   }
   $arqinclude = true;
 
@@ -757,7 +757,7 @@ if ($emite_resultado==1){
 
   $periodo = $sPeriodo;
 
-  include("con2_lrfnominal002.php");    
+  include(modification("con2_lrfnominal002.php"));    
 
   $tot_bi  = (($somador_III_bim  + $somador_IV_bim) - $somador_V_bim );
   $tot_ant = (($somador_III_ant + $somador_IV_ant) - $somador_V_ant);
@@ -770,7 +770,7 @@ if ($emite_resultado==1){
   $arqinclude = true;
 
   $META_PRIMARIA = 0;
-  include("con2_lrfprimario002_$anousu.php");
+  include(modification("con2_lrfprimario002_$anousu.php"));
 
   $result_info = $clconrelinfo->sql_record($clconrelinfo->sql_query_valores(17,str_replace('-',',',$db_selinstit)));
   if ($clconrelinfo->numrows > 0 ){
@@ -793,7 +793,7 @@ if ($emite_rp == 1){
 
   $db_filtro  = ' e60_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
 
-      include("con2_lrfdemonstrativorp002_{$anousu}.php");
+      include(modification("con2_lrfdemonstrativorp002_{$anousu}.php"));
 
       // Totais do Poder Executivo
       $total_proc_insc       = $tot_restos_pc_insc_ant_exec + $tot_restos_pc_inscritos_exec;
@@ -835,20 +835,20 @@ if ($emite_rp == 1){
 // FUNDEB - MDE
 if ($emite_mde==1) {
   if (PostgreSQLUtils::isTableExists("work_receita")) { 
-    pg_query("drop table work_receita"); 
+    db_query("drop table work_receita"); 
   }
   if (PostgreSQLUtils::isTableExists("work_pl")) { 
-    pg_query("drop table work_pl");
+    db_query("drop table work_pl");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrut")) { 
-    pg_query("drop table work_pl_estrut");
+    db_query("drop table work_pl_estrut");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrutmae")) { 
-    pg_query("drop table work_pl_estrutmae");
+    db_query("drop table work_pl_estrutmae");
   }
   $arqinclude = true;
 
-  include("con2_lrfmdefundeb002_2008.php");
+  include(modification("con2_lrfmdefundeb002_2008.php"));
 
   
   
@@ -923,16 +923,16 @@ if ($emite_mde==1) {
 // OPERACOES DE CREDITO E DESPESAS DE CAPITAL
 if ($emite_oper==1){
   if (PostgreSQLUtils::isTableExists("work_receita")) { 
-    pg_query("drop table work_receita"); 
+    db_query("drop table work_receita"); 
   }
   if (PostgreSQLUtils::isTableExists("work_pl")) { 
-    pg_query("drop table work_pl");
+    db_query("drop table work_pl");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrut")) { 
-    pg_query("drop table work_pl_estrut");
+    db_query("drop table work_pl_estrut");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrutmae")) { 
-    pg_query("drop table work_pl_estrutmae");
+    db_query("drop table work_pl_estrutmae");
   }
 
   $total_oper     = 0;
@@ -946,7 +946,7 @@ if ($emite_oper==1){
 
   $sele_work      = ' o70_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
       $result_oper    = db_receitasaldo(11,1,3,true,$sele_work,$anousu,$dt_ini,$dt_fin,false);
-      @pg_exec("drop table work_receita");
+      @db_query("drop table work_receita");
 
       $sele_work      = 'o58_instit in ('.str_replace('-', ', ', $db_selinstit).')   ';
       $result_desp    = db_dotacaosaldo(8,2,3,true,$sele_work,$anousu,$dt_ini,$dt_fin);
@@ -972,16 +972,16 @@ if ($emite_oper==1){
 // PROJECAO ATUARIAL DO RPPS
 if ($emite_proj==1){
   if (PostgreSQLUtils::isTableExists("work_receita")) { 
-    pg_query("drop table work_receita"); 
+    db_query("drop table work_receita"); 
   }
   if (PostgreSQLUtils::isTableExists("work_pl")) { 
-    pg_query("drop table work_pl");
+    db_query("drop table work_pl");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrut")) { 
-    pg_query("drop table work_pl_estrut");
+    db_query("drop table work_pl_estrut");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrutmae")) { 
-    pg_query("drop table work_pl_estrutmae");
+    db_query("drop table work_pl_estrutmae");
   }
 
 
@@ -1079,13 +1079,13 @@ if ($emite_proj==1){
 
   // Exercicio Atual
   $result_rec = db_receitasaldo(11,1,3,true,$db_filtro,$anousu,$dt_ini,$dt_fin);
-  @pg_exec("drop table work_receita");
+  @db_query("drop table work_receita");
 
   $sele_work = ' c61_instit in ('.$instit_rpps.')';
 
       // Exercicio Atual
       $result_res_rep = db_planocontassaldo_matriz($anousu,$dt_ini,$dt_fin,false,$sele_work); 
-      @pg_exec("drop table work_pl"); 
+      @db_query("drop table work_pl"); 
 
       $db_filtro = "o58_instit in (".$instit_rpps.") ";
 
@@ -1141,16 +1141,16 @@ if ($emite_proj==1){
 // RECEITA DA ALIENACAO DE ATIVOS E APLICACAO DOS RECURSOS 
 if ($emite_alienacao==1){
   if (PostgreSQLUtils::isTableExists("work_receita")) { 
-    pg_query("drop table work_receita"); 
+    db_query("drop table work_receita"); 
   }
   if (PostgreSQLUtils::isTableExists("work_pl")) { 
-    pg_query("drop table work_pl");
+    db_query("drop table work_pl");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrut")) { 
-    pg_query("drop table work_pl_estrut");
+    db_query("drop table work_pl_estrut");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrutmae")) { 
-    pg_query("drop table work_pl_estrutmae");
+    db_query("drop table work_pl_estrutmae");
   }
 
 
@@ -1161,7 +1161,7 @@ if ($emite_alienacao==1){
 
   $sele_work     = ' o70_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
       $result_rec    = db_receitasaldo(11,1,3,true,$sele_work,$anousu,$dt_ini,$dt_fin,false);
-      @pg_exec("drop table work_receita");
+      @db_query("drop table work_receita");
 
       for($i = 0; $i < pg_numrows($result_rec); $i++){
       db_fieldsmemory($result_rec, $i);
@@ -1179,23 +1179,23 @@ if ($emite_alienacao==1){
       // DESPESAS COM SAUDE
       if ($emite_saude==1){
       if (PostgreSQLUtils::isTableExists("work_receita")) { 
-      pg_query("drop table work_receita"); 
+      db_query("drop table work_receita"); 
       }
       if (PostgreSQLUtils::isTableExists("work_pl")) { 
-        pg_query("drop table work_pl");
+        db_query("drop table work_pl");
       }
       if (PostgreSQLUtils::isTableExists("work_pl_estrut")) { 
-        pg_query("drop table work_pl_estrut");
+        db_query("drop table work_pl_estrut");
       }
       if (PostgreSQLUtils::isTableExists("work_pl_estrutmae")) { 
-        pg_query("drop table work_pl_estrutmae");
+        db_query("drop table work_pl_estrutmae");
       }
 
 
       $arqinclude = true;
       $txtper     = "";
       $periodo    = $bimestre;
-      include("con2_lrfimpostossaude002_2008.php"); 
+      include(modification("con2_lrfimpostossaude002_2008.php")); 
 
       $total_saude       = $total_V_atebim;
       if ($lUltimoBimestre) {
@@ -1211,16 +1211,16 @@ if ($emite_alienacao==1){
 // DESPESA DE PPP
 if ($emite_ppp==1){
   if (PostgreSQLUtils::isTableExists("work_receita")) { 
-    pg_query("drop table work_receita"); 
+    db_query("drop table work_receita"); 
   }
   if (PostgreSQLUtils::isTableExists("work_pl")) { 
-    pg_query("drop table work_pl");
+    db_query("drop table work_pl");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrut")) { 
-    pg_query("drop table work_pl_estrut");
+    db_query("drop table work_pl_estrut");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrutmae")) { 
-    pg_query("drop table work_pl_estrutmae");
+    db_query("drop table work_pl_estrutmae");
   }
 
 
@@ -1247,19 +1247,19 @@ if ($emite_ppp==1){
 if ($emite_oper == 1) {   
  
   if (PostgreSQLUtils::isTableExists("work_receita")) { 
-    pg_query("drop table work_receita"); 
+    db_query("drop table work_receita"); 
   }
   if (PostgreSQLUtils::isTableExists("work_pl")) { 
-    pg_query("drop table work_pl");
+    db_query("drop table work_pl");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrut")) { 
-    pg_query("drop table work_pl_estrut");
+    db_query("drop table work_pl_estrut");
   }
   if (PostgreSQLUtils::isTableExists("work_pl_estrutmae")) { 
-    pg_query("drop table work_pl_estrutmae");
+    db_query("drop table work_pl_estrutmae");
   }
   $lNaoGeraPDF              = true;
-  require_once("con2_lrfdemrecopcreddesp002.php");
+  require_once(modification("con2_lrfdemrecopcreddesp002.php"));
   $nOperacoesCreditoApurado = $aRecOperCreditoVal["ReceitaAteBim"];
   $nOperacoesARealizar      = $aRecOperCreditoVal["SaldoRealizar"];
   $nDespesaCapitalLiquidada = $aTotDespesaCapitalLiq["DespLiqAteBim"]+$aTotDespesaCapitalLiq["InscrRestPagNaoProc"];
@@ -1269,7 +1269,7 @@ if ($emite_oper == 1) {
 }
 //////////////////////////////// Impresso do PDF /////////////////////////////////
 $xinstit    = split("-",$db_selinstit);
-$resultinst = pg_exec("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 db_fieldsmemory($resultinst,0);
 
 unset($arqinclude);

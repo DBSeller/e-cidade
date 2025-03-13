@@ -1,0 +1,314 @@
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+
+namespace ECidade\RecursosHumanos\Pessoal\Repository;
+
+use cl_servidoroperadorasaude;
+use ECidade\RecursosHumanos\Pessoal\Model\OperadoraSaude;
+use ECidade\RecursosHumanos\Pessoal\Model\ServidorOperadoraSaude;
+use Exception;
+use Instituicao;
+use Rubrica;
+use Servidor;
+
+/**
+ * Class ServidorOperadoraSaudeRepository
+ * @package ECidade\RecursosHumanos\Pessoal\Repository
+ */
+class ServidorOperadoraSaudeRepository
+{
+    /**
+     * @var array
+     */
+    private $scopes = array();
+
+    /**
+     * @param array|int $ids
+     * @return int
+     * @throws Exception
+     */
+    public static function destroy($ids)
+    {
+        $count = 0;
+        $ids = is_array($ids) ? $ids : func_get_args();
+
+        $self = new self();
+
+        foreach ($ids as $id) {
+            $self->delete(self::find($id));
+            $count++;
+        }
+
+        return $count;
+    }
+
+    /**
+     * @param ServidorOperadoraSaude|null $servidorOperadoraSaude
+     * @throws Exception
+     */
+    public function delete(ServidorOperadoraSaude $servidorOperadoraSaude = null)
+    {
+        $id = $servidorOperadoraSaude instanceof ServidorOperadoraSaude ? $servidorOperadoraSaude->getSequencial() : null;
+
+        $dao = new cl_servidoroperadorasaude();
+        $dao->excluir($id, implode(' AND ', $this->scopes));
+
+        if ($dao->erro_status === '0') {
+            throw new Exception("Não foi possível excluir o vínculo da operadora de saúde com o servidor.\nContate o suporte.");
+        }
+    }
+
+    /**
+     * @param $id
+     * @param array $columns
+     * @return bool|ServidorOperadoraSaude
+     * @throws Exception
+     */
+    public static function find($id, $columns = array('*'))
+    {
+        $dao = new cl_servidoroperadorasaude();
+        $sql = $dao->sql_query($id, implode(', ', $columns));
+        $rs = db_query($sql);
+
+        if (!$rs) {
+            throw new Exception("Não foi possível buscar o vínculo do servidor com sua operadora de saúde.\nContate o suporte.");
+        }
+
+        if (pg_num_rows($rs) === 0) {
+            return false;
+        }
+
+        $resultado = pg_fetch_array($rs);
+
+        return ServidorOperadoraSaude::fromState($resultado);
+    }
+
+    /**
+     * @param array $columns
+     * @return ServidorOperadoraSaude[]
+     * @throws Exception
+     */
+    public function all($columns = array('*'))
+    {
+        $dao = new cl_servidoroperadorasaude();
+        $sql = $dao->sql_query(null, implode(', ', $columns));
+        $rs = db_query($sql);
+
+        $servidorOperadorasSaude = array();
+
+        if (pg_num_rows($rs) === 0) {
+            return $servidorOperadorasSaude;
+        }
+
+        while ($servidorOperadoraSaude = pg_fetch_array($rs)) {
+            $servidorOperadorasSaude[] = ServidorOperadoraSaude::fromState($servidorOperadoraSaude);
+        }
+
+        return $servidorOperadorasSaude;
+    }
+
+    /**
+     * @return ServidorOperadoraSaude[]
+     * @throws Exception
+     */
+    public function get()
+    {
+        $dao = new cl_servidoroperadorasaude();
+        $sql = $dao->sql_query(null, '*', null, implode(' AND ', $this->scopes));
+        $rs = db_query($sql);
+
+        if (!$rs) {
+            throw new Exception("Não foi possível buscar os vínculos dos servidores com suas operadoras de saúde.\nContate o suporte.");
+        }
+
+        $servidorOperadorasSaude = array();
+
+        if (pg_num_rows($rs) === 0) {
+            return $servidorOperadorasSaude;
+        }
+
+        while ($servidorOperadoraSaude = pg_fetch_array($rs)) {
+            $servidorOperadorasSaude[] = ServidorOperadoraSaude::fromState($servidorOperadoraSaude);
+        }
+
+        return $servidorOperadorasSaude;
+    }
+
+    /**
+     * @return int
+     * @throws Exception
+     */
+    public function count()
+    {
+        $dao = new cl_servidoroperadorasaude();
+        $sql = $dao->sql_query(null, 'count(*)', null, implode(' AND ', $this->scopes));
+        $rs = db_query($sql);
+
+        if (!$rs) {
+            throw new Exception("Não foi possível buscar os vínculos dos servidores com suas operadoras de saúde.\nContate o suporte.");
+        }
+
+        return (int)pg_fetch_result($rs, 0, 'count');
+    }
+
+    /**
+     * @param ServidorOperadoraSaude $servidorOperadoraSaude
+     * @return ServidorOperadoraSaude
+     * @throws Exception
+     */
+    public function save(ServidorOperadoraSaude $servidorOperadoraSaude)
+    {
+        $dao = new cl_servidoroperadorasaude();
+        $dao->rh222_sequencial = $servidorOperadoraSaude->getSequencial();
+        $dao->rh222_valor = $servidorOperadoraSaude->getValor();
+        $dao->rh222_ano = $servidorOperadoraSaude->getAno();
+        $dao->rh222_mes = $servidorOperadoraSaude->getMes();
+        $dao->rh222_instituicao = $servidorOperadoraSaude->getInstituicao()->getCodigo();
+        $dao->rh222_operadorasaude = $servidorOperadoraSaude->getOperadoraSaude()->getSequencial();
+        $dao->rh222_servidor = $servidorOperadoraSaude->getServidor()->getMatricula();
+        $dao->rh222_rubrica = $servidorOperadoraSaude->getRubrica()->getCodigo();
+        $dao->rh222_sequencial ? $dao->alterar($servidorOperadoraSaude->getSequencial()) : $dao->incluir(null);
+
+        if ($dao->erro_status === '0') {
+            throw new Exception("Não foi possível salvar as informações.\nContate o suporte.");
+        }
+
+        $servidorOperadoraSaude->setSequencial($dao->rh222_sequencial);
+
+        return $servidorOperadoraSaude;
+    }
+
+    /**
+     * @param $valor
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeValor($valor, $operator = '=')
+    {
+        $this->scopes['valor'] = "rh222_valor {$operator} {$valor}";
+        return $this;
+    }
+
+    /**
+     * @param $ano
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeAno($ano, $operator = '=')
+    {
+        $this->scopes['ano'] = "rh222_ano {$operator} {$ano}";
+        return $this;
+    }
+
+    /**
+     * @param $mes
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeMes($mes, $operator = '=')
+    {
+        $this->scopes['mes'] = "rh222_mes {$operator} {$mes}";
+        return $this;
+    }
+
+    /**
+     * @param Instituicao $instituicao
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeInstituicao(Instituicao $instituicao, $operator = '=')
+    {
+        $this->scopes['instituicao'] = "rh222_instituicao {$operator} {$instituicao->getCodigo()}";
+        return $this;
+    }
+
+    /**
+     * @param OperadoraSaude $operadoraSaude
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeOperadoraSaude(OperadoraSaude $operadoraSaude, $operator = '=')
+    {
+        $this->scopes['operadorasaude'] = "rh222_operadorasaude {$operator} {$operadoraSaude->getSequencial()}";
+        return $this;
+    }
+
+    /**
+     * @param Servidor $servidor
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeServidor(Servidor $servidor, $operator = '=')
+    {
+        $this->scopes['servidor'] = "rh222_servidor {$operator} {$servidor->getMatricula()}";
+        return $this;
+    }
+
+    /**
+     * @param Rubrica $rubrica
+     * @param string $operator
+     * @return $this
+     */
+    public function scopeRubrica(Rubrica $rubrica, $operator = 'ILIKE')
+    {
+        $this->scopes['rubrica'] = "rh222_rubrica {$operator} '%{$rubrica->getCodigo()}%'";
+        return $this;
+    }
+
+    /**
+     * @param $id
+     * @param string $operador
+     * @return $this
+     */
+    public function scopeSequencial($id, $operador = '=')
+    {
+        $this->scopes['sequencial'] = "rh222_sequencial {$operador} {$id}";
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetScopes()
+    {
+        $this->scopes = array();
+        return $this;
+    }
+
+    /**
+     * @param $key
+     * @return ServidorOperadoraSaudeRepository
+     */
+    public function removeScope($key)
+    {
+        if (array_key_exists($key, $this->scopes)) {
+            unset($this->scopes[$key]);
+        }
+
+        return $this;
+    }
+}

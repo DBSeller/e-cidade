@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_liclicitaminuta_classe.php");
+include(modification("libs/db_sql.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_liclicitaminuta_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -41,7 +41,7 @@ $clliclicitaminuta = new cl_liclicitaminuta;
 
 if ( isset($oGet->oid_arq) && $oGet->oid_arq != "" ){
 	
-   pg_query ($conn, "begin");
+   db_query ($conn, "begin");
    
    $loid = pg_lo_open($conn,$oGet->oid_arq, "r");
    
@@ -56,7 +56,7 @@ if ( isset($oGet->oid_arq) && $oGet->oid_arq != "" ){
    
    pg_lo_read_all($loid);
    pg_lo_close($loid);
-   pg_query($conn, "commit"); 
+   db_query($conn, "commit"); 
    
    exit;
 }

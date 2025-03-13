@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orctiporec_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt21');
 $clrotulo->label('DBtxt22');
+$display = "display: none";
+$displayAntigo = "";
+if ( FONTE_RECURSO_UNIAO ) {
+    $display       = "";
+    $displayAntigo = "display: none";
+
+}
 
 ?>
 
@@ -44,8 +51,12 @@ $clrotulo->label('DBtxt22');
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/windowAux.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/classes/DBViewFiltroRecursos.classe.js"></script>
 
-<script>
+
+    <script>
 
 function js_abre(opcao){
   sel_instit  = new Number(document.form1.db_selinstit.value);
@@ -59,7 +70,7 @@ function js_abre(opcao){
       return false
     else
       js_OpenJanelaIframe('','db_iframe_orgao','func_selorcdotacao.php?nivel='+document.form1.nivel.value+'&db_selinstit='+document.form1.db_selinstit.value,'pesquisa',true);
- }else if(top.corpo.db_iframe_orgao != undefined){
+ }else if((window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_orgao != undefined){
 //   alert('entrou');
    
    if(document.form1.nivel.value == document.form1.vernivel.value){
@@ -70,10 +81,7 @@ function js_abre(opcao){
  }else{
    js_OpenJanelaIframe('','db_iframe_orgao','func_selorcdotacao.php?&nivel='+document.form1.nivel.value+'&db_selinstit='+document.form1.db_selinstit.value,'pesquisa',true);
  }
- 
- 
 }
-
 
 variavel = 1;
 function js_emite(opcao,origem){
@@ -118,8 +126,13 @@ function js_emite(opcao,origem){
      perini = <?=db_getsession("DB_anousu")?>+'-01-01';
      perfin = <?=db_getsession("DB_anousu")?>+'-01-01';
   }
-		      
-  jan = window.open('con2_balancdesp002_csv.php?&vernivel='+document.form1.vernivel.value+'&orgaos='+document.form1.orgaos.value+'&totaliza='+document.form1.totaliza.value+'&perfin='+perfin+'&perini='+perini+'&opcao='+opcao+'&origem='+origem+'&db_selinstit='+document.form1.db_selinstit.value+'&recurso='+document.form1.recurso.value+'&recursodescr='+document.form1.recursodescr.value+'&totaliza_atividade='+document.form1.totaliza_atividade.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
+
+  var recursos_selecionados = '';
+  if (filtroRecursos !== false) {
+      recursos_selecionados =  filtroRecursos.getListaRecursos();
+  }
+
+  jan = window.open('con2_balancdesp002_csv.php?recursos_selecionados='+recursos_selecionados+'&vernivel='+document.form1.vernivel.value+'&orgaos='+document.form1.orgaos.value+'&totaliza='+document.form1.totaliza.value+'&perfin='+perfin+'&perini='+perini+'&opcao='+opcao+'&origem='+origem+'&db_selinstit='+document.form1.db_selinstit.value+'&recurso='+document.form1.recurso.value+'&recursodescr='+document.form1.recursodescr.value+'&totaliza_atividade='+document.form1.totaliza_atividade.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
   jan.moveTo(0,0);
 }
 
@@ -183,8 +196,16 @@ function js_emite(opcao,origem){
         </td>
       </tr>
 
+          <tr style="<?php echo $display; ?>">
+              <td colspan="1" align="right"><strong>Fonte de Recursos:&nbsp;</strong></td>
+              <td colspan=2>
+                  <input type="button" name="gerar" id="gerar" value="Selecionar Recursos" onclick="abrirJanela()" />
+              </td>
+          </tr>
 
-	      <tr>
+
+
+          <tr style="<?php echo $displayAntigo; ?>">
         <td align="right" ><strong>Recurso:</strong></td>
 	<td>
 	<?
@@ -218,4 +239,15 @@ function js_emite(opcao,origem){
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
+
+<script>
+    var filtroRecursos = false;
+    function abrirJanela() {
+        if ( ! filtroRecursos) {
+            filtroRecursos = new DBViewFiltroRecursos();
+            filtroRecursos.construirJanela();
+        }
+        filtroRecursos.show();
+    }
+</script>
 </html>

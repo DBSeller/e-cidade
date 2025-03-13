@@ -79,7 +79,7 @@ $this->objpdf->cell(160,$alt,'02 - CONTRIBUIÇÃO PREVIDÊNCIARIA OFICIAL',1,0,'L',
 $this->objpdf->cell(40 ,$alt,db_formatar($this->w_contr,'f'),1,1,'R',0);
 $this->objpdf->cell(160,$alt,'03 - CONTRIBUIÇÃO A PREVIDÊNCIA PRIVADA',1,0,'L',0);
 $this->objpdf->cell(40 ,$alt,db_formatar($this->w_privad,'f'),1,1,'R',0);
-$this->objpdf->cell(160,$alt,'04 - PENSÃO JUDICIAL (INFORME O BENEFÍCIO NO CAMPO 06)',1,0,'L',0);
+$this->objpdf->cell(160,$alt,'04 - PENSÃO JUDICIAL (INFORME O BENEFÍCIO NO CAMPO 07)',1,0,'L',0);
 $this->objpdf->cell(40 ,$alt,db_formatar($this->w_pensao,'f'),1,1,'R',0);
 $this->objpdf->cell(160,$alt,'05 - IMPOSTO SOBRE A RENDA RETIDO NA FONTE',1,0,'L',0);
 $this->objpdf->cell(40 ,$alt,db_formatar($this->w_irfonte,'f'),1,1,'R',0);
@@ -119,31 +119,33 @@ $this->objpdf->cell(200,$alt, '5 - RENDIMENTOS SUJEITOS A TRIBUTAÇÃO EXCLUSIVA (
 $this->objpdf->Setfont('Arial', '', 7);
 $this->objpdf->cell(160,$alt,'01 - DÉCIMO TERCEIRO SALÁRIO',1,0,'L',0);
 $this->objpdf->cell(40 ,$alt,db_formatar($this->w_sal13,'f'),1,1,'R',0);
-$this->objpdf->cell(160,$alt,'02 - OUTROS',1,0,'L',0);
+$this->objpdf->cell(160,$alt,'02 - IMPOSTO SOBRE RENDA RETIDO NA FONTE SOBRE 13º SALÁRIO',1,0,'L',0);
+$this->objpdf->cell(40 ,$alt,db_formatar($this->w_irrf13,'f'),1,1,'R',0);
+$this->objpdf->cell(160,$alt,'03 - OUTROS',1,0,'L',0);
 $this->objpdf->cell(40 ,$alt,db_formatar($this->w_outros6,'f'),1,1,'R',0);
 
 $this->objpdf->ln(5);
 $this->objpdf->Setfont('Arial', 'B', 7);
-$this->objpdf->cell(200,$alt,'6 - RENDIMENTOS RECEBIDOS ACUMULADAMENTO - Art. 12-A da Lei no.7.713, de 1988 (sujeito a tributação exclusiva)',1,1,'L',1);
+$this->objpdf->cell(200,$alt,'6 - RENDIMENTOS RECEBIDOS ACUMULADAMENTE - Art. 12-A da Lei no.7.713, de 1988 (sujeito a tributação exclusiva)',1,1,'L',1);
 $this->objpdf->Setfont('Arial', '', 7);
 $this->objpdf->cell(110,$alt,'6.1 - NÚMERO DO PROCESSO:',1,0,'L',0);
 $this->objpdf->cell(30 ,$alt,'QUANT. DE MESES ',1,0,'R',0);
-$this->objpdf->cell(20 ,$alt,db_formatar(0 ,'f') ,1,1,'R',0);
+$this->objpdf->cell(20 ,$alt,$this->iRRAQuantidadeMeses ,1,1,'R',0);
 $this->objpdf->cell(160 ,$alt,'NATUREZA DO RENDIMENTO ',1,1,'L',0);
 $this->objpdf->cell(160,$alt,'01 - TOTAL DOS RENDIMENTOS TRIBUTÁVEIS (INCLUSIVE FÉRIAS E DÉCIMO TERCEIRO SALÁRIO)',1,0,'L',0);
-$this->objpdf->cell(40 ,$alt,db_formatar(0,'f'),1,1,'R',0);
+$this->objpdf->cell(40 ,$alt,db_formatar($this->nRRARentimentosTributaveis,'f'),1,1,'R',0);
 $this->objpdf->cell(160,$alt,'02 - EXCLUSÃO: DESPESAS COM A AÇÃO JUDICIAL',1,0,'L',0);
-$this->objpdf->cell(40 ,$alt,db_formatar(0,'f'),1,1,'R',0);
+$this->objpdf->cell(40 ,$alt,db_formatar($this->nRRADespesasAcaoJudicial,'f'),1,1,'R',0);
 $this->objpdf->cell(160,$alt,'03 - DEDUÇÃO: CONTRIBUIÇÃO PREVIDENCIÁRIA OFICIAL',1,0,'L',0);
-$this->objpdf->cell(40 ,$alt,db_formatar(0,'f'),1,1,'R',0);
+$this->objpdf->cell(40 ,$alt,db_formatar($this->nRRAPrevidencia,'f'),1,1,'R',0);
 $this->objpdf->cell(160,$alt,'04 - DEDUÇÃO: PENSÃO ALIMENTÍCIA (PREENCHER TAMBEM O QUADRO 7)',1,0,'L',0);
-$this->objpdf->cell(40 ,$alt,db_formatar(0,'f'),1,1,'R',0);
+$this->objpdf->cell(40 ,$alt,db_formatar($this->nRRAPensao,'f'),1,1,'R',0);
 $this->objpdf->cell(160,$alt,'05 - IMPOSTO SOBRE A RENDA RETIDO NA FONTE',1,0,'L',0);
-$this->objpdf->cell(40 ,$alt,db_formatar(0,'f'),1,1,'R',0);
+$this->objpdf->cell(40 ,$alt,db_formatar($this->nRRAIRRF,'f'),1,1,'R',0);
 $this->objpdf->cell(160,$alt,'06 - RENDIMENTOS ISENTOS DE PENSÃO, PROVENTOS DE APOSENTADORIA OU REFORMA POR MOLÉSTIA GRAVE','LRT',0,'L',0);
 $this->objpdf->cell(40,$alt,'','LRT',1,'L',0);
 $this->objpdf->cell(160,$alt,'OU APOSENTADORIA OU REFORMA POR ACIDENTE EM SERVIÇO','LRB',0,'L',0);
-$this->objpdf->cell(40 ,$alt,db_formatar(0,'f'),'LRB',1,'R',0);
+$this->objpdf->cell(40 ,$alt,db_formatar($this->nRRARendimentosIsentos,'f'),'LRB',1,'R',0);
 
 $this->objpdf->ln(5);
 $this->objpdf->Setfont('Arial', 'B', 7);
@@ -154,6 +156,10 @@ if($this->w_dmedic > 0){
   $soma_des_med += 4;
   $this->objpdf->cell(160,$alt,'DESP MÉDICAS, PLANOS DE SAÚDE E REEMBOLSO P/ EMPREGADOR','LTB',0,'L',0);
   $this->objpdf->cell(40 ,$alt,db_formatar($this->w_dmedic,'f'),'RTB',1,'R',0);
+}
+for($i=0;$i < count($this->aRubricas);$i++){
+  $this->objpdf->cell(160,$alt,'4.07 - '.$this->aRubricas[$i]['rubrica'],'LTB',0,'L',0);
+  $this->objpdf->cell(40 ,$alt,db_formatar($this->aRubricas[$i]['valor'],'f'),'RTB',1,'R',0);
 }
 
 if(trim($this->pensionistas) != ''){

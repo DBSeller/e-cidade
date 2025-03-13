@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,67 +27,95 @@
 
 //MODULO: pessoal
 $clrhsindicato->rotulo->label();
+
+use ECidade\RecursosHumanos\Pessoal\Model\Sindicato;
+
+$sindicato = isset($sindicato) && $sindicato instanceof Sindicato ? $sindicato : new Sindicato();
+
 ?>
-<form name="form1" method="post" action="">
+<form name="form1" method="post">
+    <fieldset style="width:400px;">
+        <legend>Sindicato</legend>
 
-<fieldset style="width:400px;">
+        <table class="form-container">
+            <tr style="display:none;">
+                <td title="<?php echo $Trh116_sequencial; ?>">
+                    <?php echo $Lrh116_sequencial; ?>
+                </td>
+                <td>
+                    <?php db_input('rh116_sequencial', 10, $Irh116_sequencial, true, 'text', $db_opcao, "") ?>
+                </td>
+            </tr>
 
-	<legend><strong>Sindicato</strong></legend>
+            <tr>
+                <td title="<?php echo $Trh116_codigo; ?>">
+                    <?php echo $Lrh116_codigo; ?>
+                </td>
+                <td>
+                    <?php db_input('rh116_codigo', 40, $Irh116_codigo, true, 'text', $db_opcao, "") ?>
+                </td>
+            </tr>
 
-	<table border="0">
-		<tr style="display:none;">
-			<td nowrap title="<?php echo $Trh116_sequencial; ?>">
-				 <?php echo $Lrh116_sequencial; ?>
-			</td>
-			<td> 
-				<?php db_input('rh116_sequencial',10,$Irh116_sequencial,true,'text',$db_opcao,"") ?>
-			</td>
-		</tr>
-		 
-		<tr>
-			<td nowrap title="<?php echo $Trh116_codigo; ?>">
-				 <?php echo $Lrh116_codigo; ?>
-			</td>
-			<td> 
-				<?php db_input('rh116_codigo',40,$Irh116_codigo,true,'text',$db_opcao,"") ?>
-			</td>
-		</tr>
-		 
-		<tr>
-			<td nowrap title="<?php echo $Trh116_cnpj; ?>">
-				 <?php echo $Lrh116_cnpj; ?>
-			</td>
-			<td> 
-				<?php db_input('rh116_cnpj',40,$Irh116_cnpj,true,'text',$db_opcao,"") ?>
-			</td>
-		</tr>
+            <tr>
+                <td title="<?php echo $Trh116_cnpj; ?>"><?php echo $Lrh116_cnpj; ?></td>
+                <td>
+                    <?php db_input('rh116_cnpj', 40, $Irh116_cnpj, true, 'text', $db_opcao, "") ?>
+                </td>
+            </tr>
 
-		<tr>
-			<td nowrap title="<?php echo $Trh116_descricao; ?>">
-				 <?php echo $Lrh116_descricao; ?>
-			</td>
-			<td> 
-				<?php db_input('rh116_descricao', 40, $Irh116_descricao, true, 'text', $db_opcao,"") ?>
-			</td>
-		</tr>
-		</table>
-	</fieldset>
+            <tr>
+                <td title="Informe a razão social do sindicato">Razão Social:</td>
+                <td>
+                    <?php db_input('rh116_descricao', 40, $Irh116_descricao, true, 'text', $db_opcao, "") ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>
+                        <label for="mes_data_base"
+                               title="Mês relativo à data base da categoria profissional do trabalhador">
+                            Mês da Data Base:
+                        </label>
+                    </b>
+                </td>
+                <td>
+                    <input type="text" name="mes_data_base" id="mes_data_base"
+                           value="<?php echo $sindicato->getMesDataBase() ?: ''; ?>"
+                        <?php echo $db_opcao === 3 ? 'disabled' : ''; ?>>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
 
-	<br />
-	<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-	<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+    <input name="<?= ($db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir")) ?>"
+           type="submit" id="db_opcao"
+           value="<?= ($db_opcao == 1 ? "Incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "Alterar" : "Excluir")) ?>" <?= ($db_botao == false ? "disabled" : "") ?> >
+    <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();">
 
 </form>
+<script src="scripts/widgets/DBInputMes.js"></script>
 <script>
-function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhsindicato','func_rhsindicato.php?funcao_js=parent.js_preenchepesquisa|rh116_sequencial','Pesquisa',true);
-}
-function js_preenchepesquisa(chave){
-  db_iframe_rhsindicato.hide();
-  <?
-  if($db_opcao!=1){
-    echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
-  }
-  ?>
-}
+    new DBInputMes(document.getElementById('mes_data_base'));
+    new DBInputCNPJ($('rh116_cnpj'));
+
+    function js_pesquisa() {
+        js_OpenJanelaIframe(
+            'CurrentWindow.corpo',
+            'db_iframe_rhsindicato',
+            'func_rhsindicato.php?funcao_js=parent.js_preenchepesquisa|rh116_sequencial',
+            'Pesquisa',
+            true
+        );
+    }
+
+    function js_preenchepesquisa(chave) {
+        db_iframe_rhsindicato.hide();
+        <?php
+
+        if ($db_opcao != 1) {
+            echo " location.href = '" . basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]) . "?chavepesquisa='+chave";
+        }
+
+        ?>
+    }
 </script>

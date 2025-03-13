@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libcaixa_ze.php");
-require_once("libs/db_libgertxtfolha.php");
-require_once("classes/db_folha_classe.php");
-require_once("classes/db_pensao_classe.php");
-require_once("classes/db_rharqbanco_classe.php");
-require_once("classes/db_orctiporec_classe.php");
-require_once("classes/db_rhgeracaofolhareg_classe.php");
-require_once("classes/db_rhgeracaofolhaarquivo_classe.php");
-require_once("classes/db_rhgeracaofolhaarquivoreg_classe.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libcaixa_ze.php"));
+require_once(modification("libs/db_libgertxtfolha.php"));
+require_once(modification("classes/db_folha_classe.php"));
+require_once(modification("classes/db_pensao_classe.php"));
+require_once(modification("classes/db_rharqbanco_classe.php"));
+require_once(modification("classes/db_orctiporec_classe.php"));
+require_once(modification("classes/db_rhgeracaofolhareg_classe.php"));
+require_once(modification("classes/db_rhgeracaofolhaarquivo_classe.php"));
+require_once(modification("classes/db_rhgeracaofolhaarquivoreg_classe.php"));
+require_once(modification("libs/db_utils.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($HTTP_POST_VARS);
 $oGet = db_utils::postMemory($_GET);
 
-$cllayouts_bb               = new cl_layouts_bb;
+$cllayouts_bb               = new LayoutBB;
 $clfolha                    = new cl_folha;
 $clpensao                   = new cl_pensao;
 $clrharqbanco               = new cl_rharqbanco;
@@ -75,7 +75,7 @@ if($clrharqbanco->numrows>0){
   db_fieldsmemory($result_arqbanco,0);
 
 
-    include("dbforms/db_layouttxt.php");
+    include(modification("dbforms/db_layouttxt.php"));
     $posicao = "A";
     $layoutimprime = 2;
     $idcaixa = "P";
@@ -146,7 +146,7 @@ if($clrharqbanco->numrows>0){
     //////
 
 
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt,1);
+    db_setaPropriedadesLayoutTxt($db_layouttxt,1);
 
  ///// }
 
@@ -243,7 +243,7 @@ if($sqlerro == false){
   }
 
   // Coleta os dados da consulta sql e coloca em um vetor
-  $oDados  = db_utils::getColectionByRecord($result);
+  $oDados  = db_utils::getCollectionByRecord($result);
   //echo $sql;exit;
   if ($numrows > 0) {
     
@@ -318,7 +318,7 @@ if($sqlerro == false){
           $quantidadetotallote = $sequencialnolote + 2;
           //$valortotallote = $valortotal;
           ///// TRAILLER DE LOTE
-          db_setaPropriedadesLayoutTxt(&$db_layouttxt, 4);
+          db_setaPropriedadesLayoutTxt($db_layouttxt, 4);
           ///// FINAL DO TRAILLER DE LOTE
           $sequencialnolote = 0;
           $valortotallote   = 0;
@@ -327,7 +327,7 @@ if($sqlerro == false){
         ///// HEADER DO LOTE
         $loteservico       += 1;
         $formalancamento    = $tipo_pagamento;
-        db_setaPropriedadesLayoutTxt(&$db_layouttxt, 2);
+        db_setaPropriedadesLayoutTxt($db_layouttxt, 2);
         ///// FINAL DO HEADER DO LOTE
         $troca_header       = $tipo_pagamento;
         $sequencialnolote == 0;
@@ -365,7 +365,7 @@ if($sqlerro == false){
       $dataprocessamento  = $datadedeposito;
 
       ///// REGISTRO A
-      db_setaPropriedadesLayoutTxt(&$db_layouttxt, 3, $posicao);
+      db_setaPropriedadesLayoutTxt($db_layouttxt, 3, $posicao);
       ///// FINAL DO REGISTRO A
      /**
       * Grava Registro N
@@ -382,7 +382,7 @@ if($sqlerro == false){
       $valorvencimento  = $oRegistros->rh104_vlrliquido;
       //$db90_codban
       ///// REGISTRO B
-      db_setaPropriedadesLayoutTxt(&$db_layouttxt, 3, "");
+      db_setaPropriedadesLayoutTxt($db_layouttxt, 3, "");
       ///// FINAL DO REGISTRO B
 
       if($i == 0 || $pdf->gety() > $pdf->h - 30){
@@ -439,7 +439,7 @@ if($sqlerro == false){
     $quantidaderegistarq ++;
     //$valortotallote = $valortotal;
     ///// TRAILLER DE LOTE
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 4);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 4);
     ///// FINAL DO TRAILLER DE LOTE
 
 
@@ -462,7 +462,7 @@ if($sqlerro == false){
     ///// TRAILLER DE ARQUIVO
     $loteservico = '9999';
     $quantidaderegistarq ++;
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 5);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 5);
     ///// FINAL DO TRAILLER DE ARQUIVO
     //////////////////////////////////
 

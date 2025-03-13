@@ -82,10 +82,10 @@ db_input('sd21_i_codigo',10,$Isd21_i_codigo,true,'text',3,'')
 <script>
 function js_pesquisasd28_i_procedimento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_procedimentos','func_procedimentos.php?funcao_js=parent.js_mostraprocedimentos1|sd09_i_codigo|sd09_c_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedimentos','func_procedimentos.php?funcao_js=parent.js_mostraprocedimentos1|sd09_i_codigo|sd09_c_descr','Pesquisa',true);
   }else{
      if(document.form1.sd28_i_procedimento.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_procedimentos','func_procedimentos.php?pesquisa_chave='+document.form1.sd28_i_procedimento.value+'&funcao_js=parent.js_mostraprocedimentos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedimentos','func_procedimentos.php?pesquisa_chave='+document.form1.sd28_i_procedimento.value+'&funcao_js=parent.js_mostraprocedimentos','Pesquisa',false);
      }else{
        document.form1.sd09_c_descr.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostraprocedimentos1(chave1,chave2){
 }
 function js_pesquisasd28_i_nivel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_nivelhierar','func_nivelhierar.php?funcao_js=parent.js_mostranivelhierar1|sd21_i_codigo|sd21_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nivelhierar','func_nivelhierar.php?funcao_js=parent.js_mostranivelhierar1|sd21_i_codigo|sd21_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.sd28_i_nivel.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_nivelhierar','func_nivelhierar.php?pesquisa_chave='+document.form1.sd28_i_nivel.value+'&funcao_js=parent.js_mostranivelhierar','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nivelhierar','func_nivelhierar.php?pesquisa_chave='+document.form1.sd28_i_nivel.value+'&funcao_js=parent.js_mostranivelhierar','Pesquisa',false);
      }else{
        document.form1.sd21_i_codigo.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostranivelhierar1(chave1,chave2){
   db_iframe_nivelhierar.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_procnivel','func_procnivel.php?funcao_js=parent.js_preenchepesquisa|sd28_i_seq','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procnivel','func_procnivel.php?funcao_js=parent.js_preenchepesquisa|sd28_i_seq','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_procnivel.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-include_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-include_once("classes/db_lab_atributo_componente_classe.php");
-include_once("classes/db_lab_requiitem_classe.php");
-include_once("classes/db_lab_resultado_classe.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+include_once(modification("classes/db_lab_atributo_componente_classe.php"));
+include_once(modification("classes/db_lab_requiitem_classe.php"));
+include_once(modification("classes/db_lab_resultado_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
 $oAtributos = new cl_lab_atributo_componente;
 $oRequiitem = new cl_lab_requiitem;
 $oResultado = new cl_lab_resultado;
@@ -65,6 +65,7 @@ db_app::load("webseller.js");
    $la52_i_codigo="";
    if(isset($iRequiitem)){
    	   $sSql=$oRequiitem->sql_query_nova($iRequiitem,"la08_i_codigo,la42_i_atributo");
+
    	   $rResult=$oRequiitem->sql_record($sSql);
    	   if($oRequiitem->numrows>0){
    	   	  db_fieldsmemory($rResult,0);
@@ -191,7 +192,7 @@ echo"</center>";
        }
    }
    function js_retornoIncluir(objAjax){
-	   oAjax=eval("("+objAjax.responseText+")");
+	   oAjax=JSON.parse(objAjax.responseText);
 		if(oAjax.status==1){
 			alert('Inclusão efetuada com sucesso!');
 			parent.location.href="lab4_digitacaoexa001.php";
@@ -227,7 +228,7 @@ echo"</center>";
        }
    }
    function js_retornoAlterar(objAjax){
-	   oAjax=eval("("+objAjax.responseText+")");
+	   oAjax=JSON.parse(objAjax.responseText);
 		if(oAjax.status==1){
 			alert('Alteração efetuada com sucesso!');
 			parent.location.href="lab4_digitacaoexa001.php";
@@ -248,4 +249,7 @@ echo"</center>";
 		                         }
 		                        );
 	}
+
+
+
 </script>

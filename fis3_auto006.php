@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_auto_classe.php");
-include("classes/db_autolocal_classe.php");
-include("classes/db_autoexec_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_auto_classe.php"));
+include(modification("classes/db_autolocal_classe.php"));
+include(modification("classes/db_autoexec_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clauto          = new cl_auto;
 $clautolocal     = new cl_autolocal;
@@ -70,7 +70,7 @@ $db_opcao = 3;
     <center>
 	<?
 	$consulta = 1;
-	include("forms/db_frmauto.php");
+	include(modification("forms/db_frmauto.php"));
 	echo "<script>document.form1.db_opcao.type='hidden'</script>"; 
 	echo "<script>document.form1.pesquisar.type='hidden'</script>"; 
 	?>

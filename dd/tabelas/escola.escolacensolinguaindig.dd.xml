@@ -1,0 +1,108 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010440' name='escola.escolacensolinguaindig' description="Escola Censo Lingua Indigena" prefix="ed144" label="Escola Censo Lingua Indigena" type="0">
+  <fields>
+    <field codigo="1010424" 
+           campo_api='' 
+           name="ed144_i_codigo" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010428" 
+           campo_api='' 
+           name="ed144_i_escola" 
+           conteudo="int4" 
+           description="Escola" 
+           inivalue="0" 
+           label="Escola" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Escola" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010425" 
+           campo_api='' 
+           name="ed144_i_linguaindigena1" 
+           conteudo="int4" 
+           description="Lingua Indigena 1" 
+           inivalue="0" 
+           label="Lingua Indigena 1" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Lingua Indigena 1" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010426" 
+           campo_api='' 
+           name="ed144_i_linguaindigena2" 
+           conteudo="int4" 
+           description="Lingua Indigena 2" 
+           inivalue="0" 
+           label="Lingua Indigena 2" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Lingua Indigena 2" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010427" 
+           campo_api='' 
+           name="ed144_i_linguaindigena3" 
+           conteudo="int4" 
+           description="Lingua Indigena 3" 
+           inivalue="0" 
+           label="Lingua Indigena 3" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Lingua Indigena 3" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="ed144_i_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="escola" inner='t'>
+      <fieldfk name="ed144_i_escola" reference="ed18_i_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -25,27 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_rhsolicita_classe.php");
+include(modification("classes/db_rhsolicita_classe.php"));
 
 // Classes usadas no módulo COMPRAS para gerar solicitação de compras
-include("classes/db_solicita_classe.php");
-include("classes/db_solicitem_classe.php");
-include("classes/db_solicitempcmater_classe.php");
-include("classes/db_solicitemele_classe.php");
-include("classes/db_solicitemunid_classe.php");
+include(modification("classes/db_solicita_classe.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_solicitempcmater_classe.php"));
+include(modification("classes/db_solicitemele_classe.php"));
+include(modification("classes/db_solicitemunid_classe.php"));
 
 // Se houver dotacao (rh40_coddot)
-include("classes/db_pcdotac_classe.php");
-include("classes/db_orcreserva_classe.php");
-include("classes/db_orcreservasol_classe.php");
+include(modification("classes/db_pcdotac_classe.php"));
+include(modification("classes/db_orcreserva_classe.php"));
+include(modification("classes/db_orcreservasol_classe.php"));
 
 // Orçamento da solicitação
-include("classes/db_pcorcam_classe.php");
-include("classes/db_pcorcamitem_classe.php");
-include("classes/db_pcorcamitemsol_classe.php");
-include("classes/db_pcorcamforne_classe.php");
-include("classes/db_pcorcamval_classe.php");
-include("classes/db_pcorcamjulg_classe.php");
+include(modification("classes/db_pcorcam_classe.php"));
+include(modification("classes/db_pcorcamitem_classe.php"));
+include(modification("classes/db_pcorcamitemsol_classe.php"));
+include(modification("classes/db_pcorcamforne_classe.php"));
+include(modification("classes/db_pcorcamval_classe.php"));
+include(modification("classes/db_pcorcamjulg_classe.php"));
 
 $clrhsolicita       = new cl_rhsolicita;
 

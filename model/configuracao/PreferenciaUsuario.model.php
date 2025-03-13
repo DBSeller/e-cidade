@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -89,6 +89,45 @@ class PreferenciaUsuario {
    */
   private $aFiltrosPersonalizados;
 
+
+    /**
+     * Permite usuário visualizar documento em aba separada
+     * @var boolean
+     */
+    private $visulizarEmOutraJanela;
+
+    /**
+     * @return bool
+     */
+    public function isVisulizarEmOutraJanela()
+    {
+        return $this->visulizarEmOutraJanela;
+    }
+
+    /**
+     * @param bool $visulizarEmOutraJanela
+     */
+    public function setVisulizarEmOutraJanela($visulizarEmOutraJanela)
+    {
+        $this->visulizarEmOutraJanela = $visulizarEmOutraJanela;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSOrdencao()
+    {
+        return $this->sOrdencao;
+    }
+
+    /**
+     * @param string $sOrdencao
+     */
+    public function setSOrdencao($sOrdencao)
+    {
+        $this->sOrdencao = $sOrdencao;
+    }
+
     /**
      * Função construtura, recebe como parametro uma instância de UsuarioSistema e
      * realiza o LazyLoad carregando as preferências do usuário
@@ -112,10 +151,10 @@ class PreferenciaUsuario {
 
       $sPreferencias = file_get_contents( PreferenciaUsuario::CAMINHO_ARQUIVO . $this->sNomeArquivo );
       $oPreferencias = json_decode($sPreferencias);
-
       $this->sOrdencao          = $oPreferencias->ordenacao;
       $this->sExibeBusca        = $oPreferencias->busca;
-      
+      $this->visulizarEmOutraJanela = !empty($oPreferencias->visulizarEmOutraJanela) ? $oPreferencias->visulizarEmOutraJanela : false;
+
       if ( property_exists($oPreferencias, 'skin') ) {
         $this->sSkin = $oPreferencias->skin;
       }
@@ -123,7 +162,7 @@ class PreferenciaUsuario {
       if ( property_exists($oPreferencias, 'lHabilitaCacheMenu') ) {
         $this->lHabilitaCacheMenu = $oPreferencias->lHabilitaCacheMenu;
       }
-      
+
       if ( property_exists($oPreferencias, "oFiltrosPersonalizados") ) {
         $this->aFiltrosPersonalizados = (array) $oPreferencias->oFiltrosPersonalizados;
       }
@@ -200,7 +239,7 @@ class PreferenciaUsuario {
 
   /**
    * Adiciona um filtro personalizado a rotina especificada
-   *  
+   *
    * @param String $sRotina -Fução de pesquisa
    * @param String $sFiltro -Nome do filtro
    * @param boolean $lAtivo -Define se o filtro vai ser exibido ou não
@@ -223,7 +262,7 @@ class PreferenciaUsuario {
 
   /**
    * Limpa todos os filtros
-   * 
+   *
    * @return void
    */
   public function limparFiltrosPersonalizados() {
@@ -239,7 +278,7 @@ class PreferenciaUsuario {
    * @return Boolean
    */
   public function removerFiltroPersonalizado( $sRotina, $sFiltro ) {
-     
+
     if ( !array_key_exists($sRotina, $this->aFiltrosPersonalizados) ) {
       return false;
     }
@@ -249,7 +288,7 @@ class PreferenciaUsuario {
     if ( !array_key_exists($sFiltro, $aFiltroInvertido) ) {
       return false;
     }
-    
+
     $iChaveExclusao = $aFiltroInvertido[$sFiltro];
     unset($this->aFiltrosPersonalizados[$sRotina][$iChaveExclusao]);
     sort($this->aFiltrosPersonalizados[$sRotina]);
@@ -310,6 +349,7 @@ class PreferenciaUsuario {
     $oPreferencias->skin                   = $this->sSkin;
     $oPreferencias->lHabilitaCacheMenu     = $this->lHabilitaCacheMenu;
     $oPreferencias->oFiltrosPersonalizados = (object)$this->aFiltrosPersonalizados;
+    $oPreferencias->visulizarEmOutraJanela = $this->visulizarEmOutraJanela;
     return  json_encode($oPreferencias);
   }
 }

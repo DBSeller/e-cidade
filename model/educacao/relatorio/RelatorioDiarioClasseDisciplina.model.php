@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -32,35 +32,40 @@
  * @package    educacao
  * @subpackage relatorio
  */
-class RelatorioDiarioClasseDisciplina extends RelatorioDiarioClasseBase {
+class RelatorioDiarioClasseDisciplina extends RelatorioDiarioClasseBase
+{
+    /**
+     * Construtor da classe. Recebe Turma, Etapa e AvaliacaoPeriodica como parâmetro, e instância o construtor da classe
+     * RelatorioDiarioClasseBase
+     * @param Turma $oTurma
+     * @param Etapa $oEtapa
+     * @param AvaliacaoPeriodica $oAvaliacaoPeriodica
+     */
+    public function __construct(Turma $oTurma, Etapa $oEtapa, AvaliacaoPeriodica $oAvaliacaoPeriodica)
+    {
+        parent::__construct($oTurma, $oEtapa, $oAvaliacaoPeriodica);
 
-  /**
-   * Construtor da classe. Recebe Turma, Etapa e AvaliacaoPeriodica como parâmetro, e instância o construtor da classe
-   * RelatorioDiarioClasseBase
-   * @param Turma              $oTurma              
-   * @param Etapa              $oEtapa              
-   * @param AvaliacaoPeriodica $oAvaliacaoPeriodica 
-   */
-  public function __construct( Turma $oTurma, Etapa $oEtapa, AvaliacaoPeriodica $oAvaliacaoPeriodica ) {
+        $this->lExibirLinhaDataPeriodo = true;
+        $this->iNumeroColunasAvaliacao = 7;
+        $this->iNumeroAlunosPagina = 36;
+    }
 
-    parent::__construct( $oTurma, $oEtapa, $oAvaliacaoPeriodica );
-    $this->lExibirLinhaDataPeriodo = true;
-    $this->iNumeroColunasAvaliacao = 7;
-  }
-  /**
-   * Define se devemos exibir a coluna de avaliação
-   * @param boolean $lExibirAvaliacao
-   */
-  public function setExibirAvaliacao($lExibirAvaliacao) {
-    $this->lExibirAvaliacao = $lExibirAvaliacao;
-  }
+    /**
+     * Define se devemos exibir a coluna de avaliação
+     * @param boolean $lExibirAvaliacao
+     */
+    public function setExibirAvaliacao($lExibirAvaliacao)
+    {
+        $this->lExibirAvaliacao = $lExibirAvaliacao;
+    }
 
-  /**
-   * Define se devemos exibir a coluna de faltas
-   * @param boolean $lExibirFaltas
-   */
-  public function setExibirFaltas($lExibirFaltas) {
-    $this->lExibirFaltas = $lExibirFaltas;
-  }
+    /**
+     * Define se devemos exibir a coluna de faltas
+     * @param boolean $lExibirFaltas
+     */
+    public function setExibirFaltas($lExibirFaltas)
+    {
+        $this->lExibirFaltas = $lExibirFaltas;
+    }
 
 }

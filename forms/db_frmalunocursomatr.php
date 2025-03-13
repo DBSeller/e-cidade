@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
@@ -388,18 +388,18 @@ function js_mostraturma1(chave1,chave2,chave3,chave4,chave5,chave6,chave7,chave8
   parent.document.formaba.date_ed60_d_datamatricula.value = document.form2.ed60_d_datamatricula.value;
   parent.document.formaba.ed52_i_ano.value                = chave14;
   db_iframe_turma.hide();
-  
+
   if ( oTurmaTurno instanceof DBViewFormularioEducacao.TurmaTurnoReferente) {
     oTurmaTurno.limpaLinhasCriadas();
   }
-  
+
   js_mostraTurnosTurma();
 
   document.form2.submit();
 }
 
 function js_mostraTurnosTurma() {
-  
+
   oTurmaTurno = new DBViewFormularioEducacao.TurmaTurnoReferente($('linhaTurnoTurma'), $F('ed60_i_turma'));
   oTurmaTurno.show();
   $('incluirMatricula').removeAttribute("disabled");
@@ -438,18 +438,18 @@ function js_mostraturma2(chave1,chave2,chave3,chave4,chave5,chave6,chave7,chave8
  * Verifica qual tipo de validação deve ser feita
  */
 function js_validaturma() {
-  
+
   var lValidacoesTurma = false;
-  
+
   if (oTurmaTurno.lEnsinoInfantil && oTurmaTurno.lTurnoIntegral) {
     lValidacoesTurma = js_validaTurmaInfantilIntegral();
   } else {
     lValidacoesTurma = js_validaTurmaNormal();
   }
 
-  if (lValidacoesTurma) { 
+  if (lValidacoesTurma) {
     lValidacoesTurma = js_validacoesGerais();
-  } 
+  }
 
   return lValidacoesTurma;
 }
@@ -461,30 +461,30 @@ function js_validaTurmaInfantilIntegral() {
 
   var aTurnoReferencia = new Array();
 
-  // Verifica quais referências estão selecionadas e adicionas elas ao array aTurnoReferencia 
+  // Verifica quais referências estão selecionadas e adicionas elas ao array aTurnoReferencia
   for (var i = 1; i < 4; i++) {
-    
+
     if ( $("check_turno"+i) && $("check_turno"+i).checked ) {
       aTurnoReferencia.push( $F("check_turno"+i) );
     }
   }
 
-  // Verifica se ao menos 1 checkbox esta selecionado 
+  // Verifica se ao menos 1 checkbox esta selecionado
   if (aTurnoReferencia.length == 0) {
 
     alert(_M('educacao.escola.db_frmalunocursomatr.selecione_turno'));
     //alert( _M('educacao.escola.db_frmalunocursomatr.selecione_turno') );
-    return false; 
+    return false;
   }
 
-  // Verifica se existe vagas disponíveis nos turnos referentes 
+  // Verifica se existe vagas disponíveis nos turnos referentes
   var lTemVagas = true;
   var sMsg      = "Turma não possui vaga no(s) turno(s):";
   for (var index = 0; index < aTurnoReferencia.length; index++) {
 
     var aVagasTurno = new Array();
     aVagasTurno     = oTurmaTurno.getVagasDisponiveis(aTurnoReferencia[index]);
-    
+
     if (aVagasTurno.length == 0) {
       lTemVagas = false;
       sMsg += "\n - " + aNomeTurnoReferencia[aTurnoReferencia[index]];
@@ -495,7 +495,7 @@ function js_validaTurmaInfantilIntegral() {
     alert(sMsg);
   }
   return lTemVagas;
-    
+
 }
 
 /**
@@ -503,7 +503,7 @@ function js_validaTurmaInfantilIntegral() {
  */
 function js_validaTurmaNormal() {
 
-  // Verifica se existe vagas disponíveis na turma 
+  // Verifica se existe vagas disponíveis na turma
   if( !oTurmaTurno.temVagasDisponiveis() ) {
     alert(_M('educacao.escola.db_frmalunocursomatr.turno_sem_vagas'));
     return false;
@@ -556,7 +556,7 @@ function js_validacoesGerais() {
   }
 
   return true;
-  
+
 }
 
 function js_data() {
@@ -576,7 +576,8 @@ if (parent.document.formaba.int_ed57_i_codigo.value != "") {
 
   js_OpenJanelaIframe('','db_iframe_turma',
                       'func_alunocursoturma.php?pesquisa_chave='+parent.document.formaba.int_ed57_i_codigo.value+
-                                '&funcao_js=parent.js_mostraturma2',
+                      '&aluno='+document.form2.ed56_i_aluno.value+
+                      '&funcao_js=parent.js_mostraturma2',
                       'Pesquisa de Turmas',false,0,0);
 
 }

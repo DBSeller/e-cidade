@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_regimemat_classe.php");
-include("classes/db_regimematdiv_classe.php");
-include("classes/db_serieregimemat_classe.php");
-include("classes/db_serie_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_regimemat_classe.php"));
+include(modification("classes/db_regimematdiv_classe.php"));
+include(modification("classes/db_serieregimemat_classe.php"));
+include(modification("classes/db_serie_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clregimemat = new cl_regimemat;
 $clregimematdiv = new cl_regimematdiv;
 $clserieregimemat = new cl_serieregimemat;
@@ -45,7 +45,7 @@ $oPost = db_utils::postMemory($_POST);
 
 if($oPost->sAction == 'PesquisaRegime') {
  $result = $clserieregimemat->sql_record($clserieregimemat->sql_query("","DISTINCT ed218_i_codigo,ed218_c_nome,ed218_c_divisao","ed218_c_nome"," ed11_i_ensino = {$oPost->ensino}"));
- $aResult = db_utils::getColectionByRecord($result, false, false, true);
+ $aResult = db_utils::getCollectionByRecord($result, false, false, true);
  $oJson = new services_json();
  echo $oJson->encode($aResult);
 }
@@ -53,8 +53,8 @@ if($oPost->sAction == 'PesquisaRegime') {
 if($oPost->sAction == 'PesquisaDivisao') {
  $result = $clserie->sql_record($clserie->sql_query("","ed11_i_codigo,ed11_c_descr","ed11_i_sequencia"," ed11_i_ensino = {$oPost->ensino}"));
  $result1 = $clserieregimemat->sql_record($clserieregimemat->sql_query("","ed223_i_codigo,ed219_c_nome,ed11_c_descr","ed223_i_ordenacao,ed223_i_codigo"," ed223_i_regimemat = {$oPost->regime} AND ed11_i_ensino = {$oPost->ensino}"));
- $aResult = db_utils::getColectionByRecord($result, false, false, true);
- $aResult1 = db_utils::getColectionByRecord($result1, false, false, true);
+ $aResult = db_utils::getCollectionByRecord($result, false, false, true);
+ $aResult1 = db_utils::getCollectionByRecord($result1, false, false, true);
  $oJson = new services_json();
  echo $oJson->encode(array($aResult,$aResult1));
 }
@@ -62,8 +62,8 @@ if($oPost->sAction == 'PesquisaDivisao') {
 if($oPost->sAction == 'PesquisaSerie') {
  $result = $clserie->sql_record($clserie->sql_query("","ed11_i_codigo,ed11_c_descr","ed11_i_sequencia"," ed11_i_ensino = {$oPost->ensino}"));
  $result1 = $clserieregimemat->sql_record($clserieregimemat->sql_query("","ed223_i_codigo,ed11_c_descr","ed223_i_ordenacao,ed223_i_codigo"," ed223_i_regimemat = {$oPost->regime} AND ed11_i_ensino = {$oPost->ensino}"));
- $aResult = db_utils::getColectionByRecord($result, false, false, true);
- $aResult1 = db_utils::getColectionByRecord($result1, false, false, true);
+ $aResult = db_utils::getCollectionByRecord($result, false, false, true);
+ $aResult1 = db_utils::getCollectionByRecord($result1, false, false, true);
  $oJson = new services_json();
  echo $oJson->encode(array($aResult,$aResult1));
 }

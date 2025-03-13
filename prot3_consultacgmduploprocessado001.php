@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("dbforms/db_classesgenericas.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_solicita_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_solicita_classe.php"));
 
 $clrotulo = new rotulocampo();
 $clrotulo->label("z10_numcgm");
@@ -184,10 +184,10 @@ db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsessio
 
 function js_pesquisaz10_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','func_cgmcorreto','func_cgmcorretoconsulta.php?funcao_js=parent.js_mostranumcgmcorreto|z10_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','func_cgmcorreto','func_cgmcorretoconsulta.php?funcao_js=parent.js_mostranumcgmcorreto|z10_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.z10_numcgm.value != ''){
-        js_OpenJanelaIframe('top.corpo','func_cgmcorreto','func_cgmcorretoconsulta.php?pesquisa_chave='+document.form1.z10_numcgm.value+'&funcao_js=parent.js_mostranumcgmcorretoerro','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','func_cgmcorreto','func_cgmcorretoconsulta.php?pesquisa_chave='+document.form1.z10_numcgm.value+'&funcao_js=parent.js_mostranumcgmcorretoerro','Pesquisa',false);
       }
      else{
        document.form1.z01_nome.value = "";
@@ -198,10 +198,10 @@ function js_pesquisaz10_numcgm(mostra){
 function js_pesquisaz11_numcgm(mostra){
  
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','func_cgmerrado','func_cgmerradoconsulta.php?funcao_js=parent.js_mostranumcgmerrado|z11_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','func_cgmerrado','func_cgmerradoconsulta.php?funcao_js=parent.js_mostranumcgmerrado|z11_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.z11_numcgm.value != ''){
-        js_OpenJanelaIframe('top.corpo','func_cgmerrado','func_cgmerradoconsulta.php?pesquisa_chave='+document.form1.z11_numcgm.value+'&funcao_js=parent.js_mostranumcgmerradoerro','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','func_cgmerrado','func_cgmerradoconsulta.php?pesquisa_chave='+document.form1.z11_numcgm.value+'&funcao_js=parent.js_mostranumcgmerradoerro','Pesquisa',false);
       }
      else{
        document.form1.z11_nome.value = "";
@@ -221,7 +221,7 @@ function js_pesquisar(){
 			  
 			  }
 			  
-			      js_OpenJanelaIframe('top.corpo', 
+			      js_OpenJanelaIframe('CurrentWindow.corpo', 
 			                          'func_cgmduplofiltroconsulta',
 			                          'func_cgmduplofiltroconsulta.php?cgmcorreto='+document.form1.z10_numcgm.value+
 			                                                         '&cgmerrado='+document.form1.z11_numcgm.value+
@@ -276,7 +276,7 @@ function js_mostranumcgmerrado(chave1,chave2){
 //funcao que envia por get os paramentros de pequisa para o iframe 
 function js_mostracgmduplo(chave1, chave2, chave3, chave4, chave5, chave6){
   
-   js_OpenJanelaIframe('top.corpo','func_cgmduploconsulta','func_cgmduploconsulta.php?z10_numcgm='+chave1+
+   js_OpenJanelaIframe('CurrentWindow.corpo','func_cgmduploconsulta','func_cgmduploconsulta.php?z10_numcgm='+chave1+
                                                                                       '&z01_nome='+chave2+
                                                                                       '&z10_data='+chave3+
                                                                                       '&z10_hora='+chave4+

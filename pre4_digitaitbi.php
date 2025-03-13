@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_sql.php"));
 
 if(isset($HTTP_POST_VARS['id_itbi'])) {
   db_postmemory($HTTP_POST_VARS);
   if(empty($id_itbi)) {
-    $result = pg_exec("select max(id_itbi) from db_itbi");
+    $result = db_query("select max(id_itbi) from db_itbi");
     $id_itbi = (integer)pg_result($result,0,0) + 1;
-    pg_exec("BEGIN");
+    db_query("BEGIN");
     //Soma das caracteristicas e grava
     $tam_vetor = sizeof($HTTP_POST_VARS);
     $areaedificada = 0;
@@ -44,12 +44,12 @@ if(isset($HTTP_POST_VARS['id_itbi'])) {
     for($i = 0;$i < $tam_vetor;$i++) {
       if(db_indexOf(key($HTTP_POST_VARS),"CARAC") > 0) {
         $str = "insert into db_caritbilan values($id_itbi,".db_parse_int(key($HTTP_POST_VARS)).",".$HTTP_POST_VARS[key($HTTP_POST_VARS)].")";
-        pg_exec($str);
+        db_query($str);
         $areaedificada += $HTTP_POST_VARS[key($HTTP_POST_VARS)];	
       }
       next($HTTP_POST_VARS);
     }  
-    $result = pg_exec("insert into db_itbi(matricula,
+    $result = db_query("insert into db_itbi(matricula,
                                        areaterreno,
                                        areaedificada,
 				   nomecomprador,
@@ -92,12 +92,12 @@ if(isset($HTTP_POST_VARS['id_itbi'])) {
 				   $id_itbi,
 				   '".date("Y-m-d")."')
 				   ") or die('Erro no Sql');
-    pg_exec("COMMIT");
+    db_query("COMMIT");
 	echo("Solicitação gerada com o número $id_itbi");
 	db_redireciona("digitamatricula.php");
 	exit;
   }else{
-    pg_exec("BEGIN");
+    db_query("BEGIN");
     //Soma das caracteristicas e grava
     $tam_vetor = sizeof($HTTP_POST_VARS);
     $areaedificada = 0;
@@ -106,12 +106,12 @@ if(isset($HTTP_POST_VARS['id_itbi'])) {
       if(db_indexOf(key($HTTP_POST_VARS),"CARAC") > 0) {
         $str = "update db_caritbilan  set area = ".$HTTP_POST_VARS[key($HTTP_POST_VARS)]."
 			   where codigo = ".db_parse_int(key($HTTP_POST_VARS));
-        pg_exec($str);
+        db_query($str);
         $areaedificada += $HTTP_POST_VARS[key($HTTP_POST_VARS)];	
       }
       next($HTTP_POST_VARS);
     }  
-    $result = pg_exec("update db_itbi set matricula ='$cod_matricula' ,
+    $result = db_query("update db_itbi set matricula ='$cod_matricula' ,
                                        areaterreno=$areaterreno,
                                        areaedificada=$areaedificada,
 									   nomecomprador='$nomecomprador',
@@ -132,12 +132,12 @@ if(isset($HTTP_POST_VARS['id_itbi'])) {
 									   obs='$obs'
 							   where id_itbi = $id_itbi") or die('Erro no Sql');
     if(pg_cmdtuples($result) == 0) {
-      pg_exec("rollback");
+      db_query("rollback");
 	  echo('Erro ao Gravar Solicitação.');
 	  db_redireciona("digitamatricula.php");
 	  exit;
     } else {
-	  pg_exec("commit");
+	  db_query("commit");
   	  echo('Solicitação alterada com sucesso');
 	  db_redireciona("digitamatricula.php");
 	  exit;
@@ -152,25 +152,25 @@ if ( !is_int($cod_matricula) or $cod_matricula == "" ){
    db_redireciona("digitamatriculaitbi.php");
 }
 
-$result = pg_exec("select * from db_itbi where matricula = $cod_matricula and libpref = 't'");
+$result = db_query("select * from db_itbi where matricula = $cod_matricula and libpref = 't'");
 if (pg_numrows($result) > 0){
   echo("Socilitação de Guia de ITBI está em processo de avaliação. Volte mais tarde.");
   // db_logs("$cod_matricula","",0,"Socilitação de Guia de ITBI está em processo de avaliação. Volte mais tarde. Numero: $cod_matricula");
   //db_redireciona("opcoesitbi.php?".base64_encode("matricula=".$cod_matricula));
 }
-$result = pg_exec("select * from db_itbi where matricula = $cod_matricula and liberado = 1 and ( datavencimento is null or datavencimento >= CURRENT_DATE)");
+$result = db_query("select * from db_itbi where matricula = $cod_matricula and liberado = 1 and ( datavencimento is null or datavencimento >= CURRENT_DATE)");
 if (pg_numrows($result) != 0){
    //msgbox("Verifique Liberação de Guia.");
    //db_logs("$cod_matricula","",0,"Verifique Liberacao da Guia. Numero: $cod_matricula");
    db_redireciona("opcoesitbi.php?".base64_encode("matricula=".$cod_matricula));
 }
-$result = pg_exec("select * from db_itbi where matricula = $cod_matricula and liberado is null");
+$result = db_query("select * from db_itbi where matricula = $cod_matricula and liberado is null");
 if (pg_numrows($result) != 0){
   //msgbox("Socilitação Recentemente Encaminhada. Proceda as Alterações.");
   //db_logs("$cod_matricula","",0,"Socilitação Recentemente Encaminhada. Proceda as Alterações. Numero: $cod_matricula");
   db_fieldsmemory($result,0);
 }
-$result = pg_exec("select p.*,pm.z01_nome as promitente, m.z01_nome as imobiliaria
+$result = db_query("select p.*,pm.z01_nome as promitente, m.z01_nome as imobiliaria
                    from proprietario p
                    left outer join promitente o 
                      on o.j41_matric = p.j01_matric
@@ -509,9 +509,9 @@ function js_link(arq) {
 			      <!--select name="caracteristicas"-->
 			      <?
 						    if(@$id_itbi == "")
-						      $result = pg_exec("select * from db_caritbi");
+						      $result = db_query("select * from db_caritbi");
 						    else
-						      $result = pg_exec("select c.codigo,c.descricao,i.area 
+						      $result = db_query("select c.codigo,c.descricao,i.area 
 									     from db_caritbi c,db_caritbilan i
 											     where c.codigo = i.codigo
 											     and i.id_itbi = $id_itbi");

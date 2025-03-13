@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include ("libs/db_liborcamento.php");
-include ("classes/db_orcdotacao_classe.php");
-include ("classes/db_empempenho_classe.php");
-include ("classes/db_empanulado_classe.php");
-include ("classes/db_empanuladoele_classe.php");
-include ("classes/db_empelemento_classe.php");
-include ("classes/db_empresto_classe.php");
-include ("classes/db_empanuladotipo_classe.php");
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_empanulado_classe.php"));
+include(modification("classes/db_empanuladoele_classe.php"));
+include(modification("classes/db_empelemento_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
+include(modification("classes/db_empanuladotipo_classe.php"));
 
 $clempempenho = new cl_empempenho;
 $clempanulado = new cl_empanulado;
@@ -48,16 +48,16 @@ $clorcdotacao = new cl_orcdotacao;
 $clempresto  = new cl_empresto;
 
 //lançamentos
-include ("classes/db_conlancam_classe.php");
-include ("classes/db_conlancamele_classe.php");
-include ("classes/db_conlancamcompl_classe.php");
-include ("classes/db_conlancamlr_classe.php");
-include ("classes/db_conlancamcgm_classe.php");
-include ("classes/db_conlancamemp_classe.php");
-include ("classes/db_conlancamval_classe.php");
-include ("classes/db_conlancamdot_classe.php");
-include ("classes/db_conlancamdoc_classe.php");
-include ("classes/db_conplanoreduz_classe.php");
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamele_classe.php"));
+include(modification("classes/db_conlancamcompl_classe.php"));
+include(modification("classes/db_conlancamlr_classe.php"));
+include(modification("classes/db_conlancamcgm_classe.php"));
+include(modification("classes/db_conlancamemp_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("classes/db_conlancamdot_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
 $clconlancam = new cl_conlancam;
 $clconlancamele = new cl_conlancamele;
 $clconlancamcompl = new cl_conlancamcompl;
@@ -69,18 +69,18 @@ $clconlancamdot = new cl_conlancamdot;
 $clconlancamdoc = new cl_conlancamdoc;
 $clconplanoreduz = new cl_conplanoreduz;
 
-include ("libs/db_libcontabilidade.php");
+include(modification("libs/db_libcontabilidade.php"));
 //retorna os arrays de lancamento...
 $cltranslan = new cl_translan;
-include("classes/db_pcparam_classe.php");
-include("classes/db_empautitem_classe.php");
-include("classes/db_solicitemprot_classe.php");
-include("classes/db_solandam_classe.php");
-include("classes/db_solandpadraodepto_classe.php");
-include("classes/db_proctransfer_classe.php");
-include("classes/db_proctransferproc_classe.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_solordemtransf_classe.php");
+include(modification("classes/db_pcparam_classe.php"));
+include(modification("classes/db_empautitem_classe.php"));
+include(modification("classes/db_solicitemprot_classe.php"));
+include(modification("classes/db_solandam_classe.php"));
+include(modification("classes/db_solandpadraodepto_classe.php"));
+include(modification("classes/db_proctransfer_classe.php"));
+include(modification("classes/db_proctransferproc_classe.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_solordemtransf_classe.php"));
 $clpcparam = new cl_pcparam;
 $clempautitem = new cl_empautitem;
 $clsolicitemprot = new cl_solicitemprot;
@@ -674,7 +674,7 @@ if (isset ($e60_numemp)) {
 <tr>
 <td height="425" align="left" valign="top" bgcolor="#CCCCCC">
 
-<?  include ("forms/db_frmempanulacaorp.php");  ?>
+<?  include(modification("forms/db_frmempanulacaorp.php"));  ?>
 
 </td>
 </tr>

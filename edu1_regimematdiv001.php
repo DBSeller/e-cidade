@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_regimematdiv_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_regimematdiv_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clregimematdiv = new cl_regimematdiv;
 $db_opcao = 1;
@@ -64,7 +64,7 @@ if(isset($atualizar)){
            ed219_i_ordenacao = ".($i+1)."
           WHERE ed219_i_codigo = $campos[$i]
          ";
-  $query = pg_query($sql);
+  $query = db_query($sql);
  }
  echo "<script>location.href='".$clregimematdiv->pagina_retorno."'</script>";
 }
@@ -85,7 +85,7 @@ if(isset($atualizar)){
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Divisões do Regime de Matrícula</b></legend>
-    <?include("forms/db_frmregimematdiv.php");?>
+    <?include(modification("forms/db_frmregimematdiv.php"));?>
    </fieldset>
    </center>
   </td>

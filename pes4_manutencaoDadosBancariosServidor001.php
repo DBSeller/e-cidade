@@ -1,0 +1,233 @@
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+$oGet  = db_utils::postMemory($_GET);
+$oPost = db_utils::postMemory($_POST);
+
+$oRotulos = new rotulocampo();
+$oRotulos->label('rh01_regist');
+$oRotulos->label('z01_nome');
+?>
+<html>
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <link href='estilos.css' rel='stylesheet' type='text/css'/>
+    <script language='JavaScript' type='text/javascript' src='scripts/scripts.js'></script>
+    <script language='JavaScript' type='text/javascript' src='scripts/strings.js'></script>
+    <script language='JavaScript' type='text/javascript' src='scripts/prototype.js'></script> 
+    <script language='JavaScript' type='text/javascript' src='scripts/widgets/windowAux.widget.js'></script>
+    <script language='JavaScript' type='text/javascript' src='scripts/widgets/messageboard.widget.js'></script>
+  </head>
+  <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#cccccc">
+   <div id="base" class="container">
+     <fieldset>
+       <legend>Manutenção dados bancários do servidor</legend>
+       <table class="form-container">
+         <tr>
+           <td title="<?=@$Trh01_regist?>">
+             <?php
+               db_ancora($Lrh01_regist,"js_pesquisaMatricula(true);",1);
+             ?>
+           </td>
+           <td>
+             <?php
+               db_input('rh01_regist',6 ,$Irh01_regist,true,'text',1,"onchange='js_pesquisaMatricula(false);'");
+               db_input('z01_nome'   ,40,$Iz01_nome   ,true,'text',3,'');
+             ?>
+           </td>
+         </tr>
+         <tr>
+           <td>
+             Mês/Ano:
+           </td>
+           <td>
+             <?php
+               $mes = DBPessoal::getMesFolha();
+               $ano = DBPessoal::getAnoFolha();
+               db_input('mes',2,1,true,'text',1,'');
+               echo "/";
+               db_input('ano',4,1,true,'text',1,'');
+             ?>
+           </td>
+         </tr>         
+       </table>
+     </fieldset>
+     <input type="button" value="Pesquisar" name="pesquisar" onclick="js_processaConsulta();">
+   </div>
+  <?php
+  db_menu();
+  ?>
+  </body>
+</html>
+<script>
+/**
+ * Escopo geral do script
+ */
+ var me = this;
+/**
+ * Mostra tela de manutenção de LocalTrabalho
+ */
+function js_abreJanelaManutencao() {
+  
+  var sUrl = "pes4_rhpesbanco001.php?rh01_regist="+$F("rh01_regist")+"&ano="+$F("ano")+"&mes="+$F("mes");
+  
+  me.iframe_rhpesbanco                    = new windowAux('iframe_rhpesbanco','Dados bancários do servidor', (screen.availWidth-100), 700);                      
+  me.iframe_rhpesbanco.setContent         ("<div id='messageDadosBancarios'></div><div id='conteudoDadosBancarios'></div>");
+  me.iframe_rhpesbanco.setShutDownFunction(function() {  
+    if($('iframe_rhpesbanco')){
+      js_fechaJanelaManutencao();
+    }
+  });
+      
+  me.iframe_rhpesbanco.show(); 
+  
+  var sTitle        = "Manutenção Dados Bancarios";
+  var sMessage      = "<B>Matrícula:</B> "+$F('rh01_regist')+"<br>";
+      sMessage     += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Servidor:</B>  "+$F('z01_nome');
+      
+  me.oMessageBoard = new messageBoard('msgboard1',sTitle,sMessage,$('messageDadosBancarios'));
+  me.oMessageBoard . show();
+  $('msgboard1').style.width = '';
+  var oIframeConteudo = document.createElement("iframe");
+      oIframeConteudo.src         = sUrl;
+      oIframeConteudo.frameBorder = 0;
+      oIframeConteudo.id          = 'db_iframe_manutencaoDadosBancarios';
+      oIframeConteudo.name        = 'db_iframe_manutencaoDadosBancarios';
+      oIframeConteudo.scrolling   = 'auto';
+      oIframeConteudo.width       = me.iframe_rhpesbanco.getWidth() - 50  + 'px';
+      
+  var Altura = me.iframe_rhpesbanco.getHeight() - $('msgboard1').clientHeight - 35;
+  
+  oIframeConteudo.height      = Altura+'px';
+  
+  $('conteudoDadosBancarios').appendChild(oIframeConteudo);
+  return false;
+}
+/**
+ * Processa formulário com os dados digitados
+ */
+function js_processaConsulta() {
+  
+  if ( $('rh01_regist').value == '' ) {
+    alert('Informe a matrícula do funcionário.');
+    return false;
+  }
+
+  if ( $('mes').value == '' ) {
+    alert('Informe o mês da competência.');
+    return false;
+  }
+
+  if ( $('ano').value == '' ) {
+    alert('Informe o ano da competência.');
+    return false;
+  }    
+
+  if($('iframe_rhpesbanco')){
+    js_fechaJanelaManutencao();
+  }
+  
+  return js_abreJanelaManutencao();
+  
+}
+
+/**
+ * Pesquisa dados da matricula conforme variável de visualização
+ */
+function js_pesquisaMatricula(lShowWindow){
+  
+  if($('iframe_rhpesbanco')){
+    js_fechaJanelaManutencao();
+  }
+  if ( lShowWindow ) {
+    
+    js_OpenJanelaIframe('',
+                        'db_iframe_rhpessoal',
+                        'func_rhpessoal.php?funcao_js=parent.js_retornaDadosAncora|rh01_regist|z01_nome&somenteAtivos=true&filtro_lotacao=true&instit=<?=(db_getsession("DB_instit"))?>',
+                        'Pesquisa',
+                        true);
+  } else {
+    
+    if ($('rh01_regist').value != '') { 
+      js_OpenJanelaIframe('', 
+                          'db_iframe_rhpessoal', 
+                          'func_rhpessoal.php?pesquisa_chave='+$('rh01_regist').value+'&funcao_js=parent.js_retornaDadosDigitacao&somenteAtivos=true&filtro_lotacao=true&instit=<?=(db_getsession("DB_instit"))?>',
+                          'Pesquisa',
+                          false);
+    } else {
+      $('z01_nome').value = '';
+    }
+  }
+}
+
+/**
+ * Retorna os dados buscados apartir do evento change do campo matricula
+ */
+function js_retornaDadosDigitacao(sChave,lErro) {
+
+   if($('iframe_rhpesbanco')){
+     js_fechaJanelaManutencao();
+   }
+  $('z01_nome').value    = sChave; 
+  
+  if ( lErro == true ) { 
+    
+    $('rh01_regist').focus(); 
+    $('rh01_regist').value = ''; 
+  }
+}
+/**
+ * Retorna os dados buscados da OpenJanelaIframe
+ */
+function js_retornaDadosAncora(sBusca1, sBusca2) {
+  
+  if($('iframe_rhpesbanco')){
+    js_fechaJanelaManutencao();
+  }
+  
+  $('rh01_regist').value = sBusca1;
+  $('z01_nome')   .value = sBusca2;
+  db_iframe_rhpessoal.hide();
+}
+
+function js_fechaJanelaManutencao(){
+  me.iframe_rhpesbanco.destroy();
+
+  $('rh01_regist').value = '';
+  $('z01_nome').value = '';
+  
+}
+</script>

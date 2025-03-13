@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_rhrubricas_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_sql.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhrubricas_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
-//db_postmemory($HTTP_GET_VARS,2);
 
 $clrhrubricas = new cl_rhrubricas;
 $clrhrubricas->rotulo->label();
@@ -46,18 +45,19 @@ $clrotulo->label("rh137_datainicio");
 $clrotulo->label("rh137_datafim");
 $clrotulo->label("rh137_descricao");
 
+$iAno = isset($ano) ? $ano : $iAno;
+$iMes = isset($mes) ? $mes : $iMes;
 
-if(!isset($iAno) || (isset($iAno) && trim($iAno)=="")){
+if(!isset($iAno) || trim($iAno) == "") {
   $iAno = db_anofolha();
 }
-if(!isset($iMes) || (isset($iMes) && trim($iMes)=="")){
+if(!isset($iMes) || trim($iMes) == "") {
   $iMes = db_mesfolha();
 }
 
 /*
  * Buscamos os dados da rubrica, funcamentação legal e os pontes existentes para a rubrica
  */
-
 $sCamposRubricas = " rh27_rubric,
                      rh27_descr,
                      case
@@ -109,6 +109,7 @@ function montaLinkPontos($iRubrica, $iAno, $iMes) {
 		$sSqlPonto = "select *
 	                	from {$sPonto}
 		               where {$sWhere}";
+
 		$rsDadosPonto = db_query($sSqlPonto);
 		if (pg_num_rows($rsDadosPonto) > 0) {
 			
@@ -312,7 +313,8 @@ function montaLinkPontos($iRubrica, $iAno, $iMes) {
 	    	sUrl = sUrl+"&rubrica=<?=$rubrica?>";
 	      sUrl = sUrl+"&ano=<?=$iAno?>"
 	    	sUrl = sUrl+"&mes=<?=$iMes?>";
-	  jan = window.open(sUrl,'sdjklsdklsdf','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
+
+	  jan = window.open(sUrl,'relatorio_codigo_financeiro','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
 	  jan.moveTo(0,0);
 	}
 </script>

@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_fiscaltipo_classe.php");
-include("classes/db_fiscalrec_classe.php");
-include("classes/db_fiscalprocrec_classe.php");
-include("classes/db_fiscalandam_classe.php");
-include("classes/db_fiscalultandam_classe.php");
-include("classes/db_fiscalusuario_classe.php");
-include("classes/db_fandam_classe.php");
-include("classes/db_fandamusu_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_fiscaltipo_classe.php"));
+include(modification("classes/db_fiscalrec_classe.php"));
+include(modification("classes/db_fiscalprocrec_classe.php"));
+include(modification("classes/db_fiscalandam_classe.php"));
+include(modification("classes/db_fiscalultandam_classe.php"));
+include(modification("classes/db_fiscalusuario_classe.php"));
+include(modification("classes/db_fandam_classe.php"));
+include(modification("classes/db_fandamusu_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clfiscaltipo     = new cl_fiscaltipo;
@@ -108,7 +108,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmfiscaltipo.php");
+	include(modification("forms/db_frmfiscaltipo.php"));
 	?>
     </center>
 	</td>

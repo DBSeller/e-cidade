@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -37,20 +37,32 @@ $clrotulo->label("la25_c_descr");
 $clrotulo->label("la30_casasdecimaisapresentacao");
 $clrotulo->label("la51_i_valorrefsel");
 
-$sNomeBotao = "incluir";
+$sNomeBotao      = "incluir";
+$iBloqueiaAncora = 1;
 switch ($db_opcao) {
   case 2:
   case 22:
-    $sNomeBotao = "alterar";
+    $sNomeBotao      = "alterar";
+    $iBloqueiaAncora = 3;
     break;
   case 3:
   case 33:
     $sNomeBotao = "excluir";
+    $iBloqueiaAncora = 3;
     break;
   default:
     $sNomeBotao = "incluir";
     break;
 }
+
+$lab_parametros = new \cl_lab_parametros();
+$rsParametros = pg_fetch_all(db_query($lab_parametros->sql_query_file('')));
+
+$habilitarAbsurdo = true;
+if (!empty($rsParametros)) {
+    $habilitarAbsurdo = $rsParametros[0]['la49_habilitarabsurdo'] === 't' ? true : false;
+}
+
 ?>
 
 <fieldset >
@@ -83,13 +95,13 @@ switch ($db_opcao) {
       <tr>
         <td nowrap title="<?=@$Tla27_i_atributo?>">
           <?php
-            db_ancora(@$Lla27_i_atributo,"js_pesquisala27_i_atributo(true);",$db_opcao);
+            db_ancora(@$Lla27_i_atributo,"js_pesquisala27_i_atributo(true);",$iBloqueiaAncora);
           ?>
         </td>
         <td>
           <?php
             db_input('la27_i_atributo', 10, $Ila27_i_atributo, true, 'text',
-                     $db_opcao," onchange='js_pesquisala27_i_atributo(false);'");
+                     $iBloqueiaAncora," onchange='js_pesquisala27_i_atributo(false);'");
             db_input('la25_c_descr',50,$Ila25_c_descr,true,'text',3,'');
           ?>
         </td>
@@ -199,7 +211,11 @@ switch ($db_opcao) {
           </td>
           <td>
             <?
-            db_input('la30_f_absurdomin',5,$Ila30_f_absurdomin,true,'text',$db_opcao,"onchange=\"js_validaAbsurdo();\"","","","parent.js_validaAbsurdo();")
+              if ($habilitarAbsurdo == true) {
+                db_input('la30_f_absurdomin', 5, $Ila30_f_absurdomin, true, 'text', $db_opcao, "onchange=\"js_validaAbsurdo();\"", "", "", "parent.js_validaAbsurdo();");
+              } else {
+                echo '<input name="la30_f_absurdomin" type="text" id="la30_f_absurdomin" value="" size="5" readonly="" style="background-color:#DEB887;" tabindex="10">';
+              }
             ?>
           </td>
           <td nowrap title="<?=@$Tla30_f_absurdomax?>">
@@ -209,12 +225,17 @@ switch ($db_opcao) {
           </td>
           <td>
             <?
-              db_input('la30_f_absurdomax',5, $Ila30_f_absurdomax, true, 'text', $db_opcao,
-                       "onchange=\"js_validaAbsurdo();\"","","","parent.js_validaAbsurdo();"
-                      );
+              if ($habilitarAbsurdo == true) {
+                db_input('la30_f_absurdomax', 5, $Ila30_f_absurdomax, true, 'text', $db_opcao,
+                   "onchange=\"js_validaAbsurdo();\"", "", "", "parent.js_validaAbsurdo();"
+                );
+              } else {
+                echo '<input name="la30_f_absurdomax" type="text" id="la30_f_absurdomax" value="" size="5" readonly="" style="background-color:#DEB887;" tabindex="11">';
+              }
             ?>
            </td>
         </tr>
+
         <tr>
           <td colspan = '2' class="bold">Casas decimais para apresentação:</td>
           <td colspan = '2'>
@@ -226,16 +247,6 @@ switch ($db_opcao) {
               <option value='4'>4</option>
               <option value='5'>5</option>
             </select>
-          </td>
-        </tr>
-        <tr>
-          <td nowrap title="<?=@$Tla30_c_calculavel?>">
-            <?=@$Lla30_c_calculavel?>
-          </td>
-          <td colspan="5">
-           <?php
-            db_input('la30_c_calculavel',60,$Ila30_c_calculavel,true,'text',$db_opcao, "")
-           ?>
           </td>
         </tr>
         <tr>
@@ -320,7 +331,7 @@ switch ($db_opcao) {
             </fieldset>
           </td>
         </tr>
-        <tr>
+        <tr hidden>
           <td colspan="6">
             <fieldset class="separator" style="border-bottom: 2px groove white">
               <legend>Cálculo</legend>
@@ -330,7 +341,7 @@ switch ($db_opcao) {
                     <b>Cálculo:</b>
                   </td>
                   <td>
-                    <select id="tipocalculo">
+                    <select id="tipocalculo" onchange="showHideCampoCalculavel(this.value);">
                       <option value="0">Sem Cálculo</option>
                       <option value="1">Valor Absoluto</option>
                       <option value="2">Percentual</option>
@@ -338,17 +349,27 @@ switch ($db_opcao) {
                   </td>
                   <td nowrap>
                     <?php
-                    db_ancora("Atributo Base:","js_pesquisala27_i_atributobase(true);",$db_opcao);
+                    db_ancora("Atributo Base:","js_pesquisala27_i_atributobase(true);",$db_opcao, "", "link-atributo-base");
                     ?>
                   </td>
                   <td nowrap>
                     <?
                     db_input('la27_i_atributobase', 10, $Ila27_i_atributo, true, 'text',
-                      $db_opcao," onchange='js_pesquisala27_i_atributobase(false);'");
+                      $db_opcao," onchange='js_pesquisala27_i_atributobase(false);' disabled");
                     db_input('la25_c_descrbase', 25,$Ila25_c_descr,true,'text',3,'');
                     ?>
                   </td>
                 </tr>
+                <tr>
+          <td nowrap title="<?=@$Tla30_c_calculavel?>">
+            <?=@$Lla30_c_calculavel?>
+          </td>
+          <td colspan="5">
+           <?php
+            db_input('la30_c_calculavel',60,$Ila30_c_calculavel,true,'text',$db_opcao, "disabled")
+           ?>
+          </td>
+        </tr>
               </table>
             </fieldset>
           </td>
@@ -375,7 +396,52 @@ switch ($db_opcao) {
     <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
   </form>
 </fieldset>
+
+
 <script>
+var $JQuery = jQuery.noConflict();//retirar conflito jquery com outras bibliotecas
+
+/* INICIO - Mostra e oculta campo calculavel
+MARCO adicionado 11-02-2015*/
+
+var campoCalculavel = document.getElementById('la30_c_calculavel');//pega o campo Calculavel
+campoCalculavel.value = 'Altere o valor do campo Cálculo para habilitar este campo';//insere a mensagem de inicio
+
+var campo_atri_base = document.getElementById('la27_i_atributobase');//campo Atributo Base
+
+//habilita e desabilita campo
+function showHideCampoCalculavel(valor)
+{
+    if(valor == 1)
+    {
+        campoCalculavel.disabled = 0;//ativa
+        campoCalculavel.value = '';//limpa campo
+    }
+    else
+    {
+        campoCalculavel.disabled = 1;//desativa
+        campoCalculavel.value = 'Altere o valor do campo Cálculo para habilitar este campo';//limpa campo
+    }
+
+   if(valor == 2)
+   {
+      campo_atri_base.disabled = 0;//ativa
+   }
+   else
+   {
+      campo_atri_base.disabled = 1;//desativa
+   }
+}
+
+//aceita apenas caracteres ==>  ( ) . * / % numeros
+$JQuery(document).ready(function() {
+    $JQuery('input#la30_c_calculavel').filter_input({regex:'[0-9-*+/^().]'});//plugin jquery
+
+});
+
+/* FIM - Mostra e oculta campo calculavel*/
+
+
 var sUrlRPC = 'lab4_atributosexame.RPC.php';
 document.form1.la29_i_fixo.disabled=true;
 F = document.form1;
@@ -389,7 +455,7 @@ F = document.form1;
 var URL_MSG_DB_FRMLAB_VALORREFERENCIA = 'saude.laboratorio.db_frmlab_valorreferencia.';
 var oGridValores          = new DBGrid("gridValores");
 oGridValores.nameInstance = 'oGridValores';
-oGridValores.setHeader(['Faixa', 'Mínimo', 'Máximo', 'Idade', 'Sexo', 'Ação']);
+oGridValores.setHeader(['Faixa', 'Normal Min', 'Normal Max', 'Idade Final', 'Sexo', 'Ação']);
 oGridValores.show($('ctnGridValores'));
 
 function js_valida(){
@@ -459,10 +525,10 @@ function js_trocatipo(tipo) {
 // Lookup
 function js_pesquisala27_i_unidade(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_lab_undmedida','func_lab_undmedida.php?funcao_js=parent.js_mostralab_undmedida1|la13_i_codigo|la13_c_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_undmedida','func_lab_undmedida.php?funcao_js=parent.js_mostralab_undmedida1|la13_i_codigo|la13_c_descr','Pesquisa',true);
   }else{
      if(document.form1.la27_i_unidade.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_lab_undmedida','func_lab_undmedida.php?pesquisa_chave='+document.form1.la27_i_unidade.value+'&funcao_js=parent.js_mostralab_undmedida','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_undmedida','func_lab_undmedida.php?pesquisa_chave='+document.form1.la27_i_unidade.value+'&funcao_js=parent.js_mostralab_undmedida','Pesquisa',false);
      }else{
        document.form1.la13_c_descr.value = '';
      }
@@ -483,10 +549,10 @@ function js_mostralab_undmedida1(chave1,chave2){
 
 function js_pesquisala27_i_atributo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_lab_atributo','func_lab_atributo.php?analitico=1&funcao_js=parent.js_mostralab_atributo1|la25_i_codigo|la25_c_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_atributo','func_lab_atributo.php?analitico=1&funcao_js=parent.js_mostralab_atributo1|la25_i_codigo|la25_c_descr','Pesquisa',true);
   }else{
      if(document.form1.la27_i_atributo.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_lab_atributo','func_lab_atributo.php?analitico=1&pesquisa_chave='+document.form1.la27_i_atributo.value+'&funcao_js=parent.js_mostralab_atributo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_atributo','func_lab_atributo.php?analitico=1&pesquisa_chave='+document.form1.la27_i_atributo.value+'&funcao_js=parent.js_mostralab_atributo','Pesquisa',false);
      }else{
        document.form1.la25_i_codigo.value = '';
      }
@@ -507,10 +573,12 @@ function js_mostralab_atributo1(chave1,chave2){
 
 function js_pesquisala27_i_atributobase(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_lab_atributo','func_lab_atributo.php?analitico=1&funcao_js=parent.js_mostralab_atributobase1|la25_i_codigo|la25_c_descr','Pesquisa',true);
+      //MARCO adicionado 12/02/2015
+      if(document.getElementById('tipocalculo').value == 2)//para nao deixar a pessoa clicar no link
+         js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_atributo','func_lab_atributo.php?analitico=1&funcao_js=parent.js_mostralab_atributobase1|la25_i_codigo|la25_c_descr','Pesquisa',true);
   }else{
     if(document.form1.la27_i_atributo.value != ''){
-      js_OpenJanelaIframe('top.corpo','db_iframe_lab_atributo','func_lab_atributo.php?analitico=1&pesquisa_chave='+document.form1.la27_i_atributo.value+'&funcao_js=parent.js_mostralab_atributobase','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_atributo','func_lab_atributo.php?analitico=1&pesquisa_chave='+document.form1.la27_i_atributo.value+'&funcao_js=parent.js_mostralab_atributobase','Pesquisa',false);
     }else{
       document.form1.la25_i_codigo.value = '';
     }
@@ -529,7 +597,7 @@ function js_mostralab_atributobase1(chave1,chave2){
   db_iframe_lab_atributo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lab_valorreferencia','func_lab_valorreferencia.php?funcao_js=parent.js_preenchepesquisa|la27_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_valorreferencia','func_lab_valorreferencia.php?funcao_js=parent.js_preenchepesquisa|la27_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
 
@@ -635,7 +703,7 @@ function js_getValoresReferencia() {
                                 onComplete: function(oResponse) {
 
                                   js_removeObj('msgBox');
-                                  var oRetorno = eval("("+oResponse.responseText+")");
+                                  var oRetorno = JSON.parse(oResponse.responseText);
                                   js_preencheGridValoresNumericos(oRetorno.aValoresNumericos);
                                   if (oRetorno.aValoresNumericos.length > 0) {
                                     $('iTipo').disabled = true;
@@ -643,12 +711,10 @@ function js_getValoresReferencia() {
                                 }
                                }
                                )
-
 }
 
 
 function js_preencheGridValoresNumericos(aValores) {
-
   oGridValores.clearAll(true);
 
   aValores.each(function(oValor, iSeq) {
@@ -660,6 +726,7 @@ function js_preencheGridValoresNumericos(aValores) {
     aLinha[3]  = js_montaStringIdade(oValor.limite_idade);
     aLinha[4]  = oValor.sexo.implode(",");
     aLinha[5]  = '<input type="button" value="E" onclick="js_excluirReferencia('+oValor.codigo+')">';
+    aLinha[5]  += '<input type="button" style="margin-left:15px" value="A" onclick="js_alterarReferencia('+oValor.codigo+')">';
     oGridValores.addRow(aLinha);
   });
   oGridValores.renderRows();
@@ -698,19 +765,31 @@ function js_salvarReferenciaNumerica() {
   if ($('feminino').checked) {
     aSexos.push('F');
   }
+
+  //MARCO adicionado 12-02-2015
+  //altera o caracter de + para @, depois na hora de inserir volta o @ para + no BD
+  var valorCalculavel = $F('la30_c_calculavel');
+  if(!$JQuery('input#la30_c_calculavel').attr('disabled'))
+    valorCalculavel = valorCalculavel.replace('+', '@');
+  else
+    valorCalculavel = '';
+  //END MARCO
+
   var oReferencia                 = {};
+  oReferencia.iCodigo             = $F('la30_i_codigo');
   oReferencia.iValorMinimo        = $F('la30_f_normalmin');
   oReferencia.iValorMaximo        = $F('la30_f_normalmax');
   oReferencia.iValorAbsurdoMinimo = $F('la30_f_absurdomin');
   oReferencia.iValorAbsurdoMaximo = $F('la30_f_absurdomax');
   oReferencia.iCasasDecimais      = $F('la30_casasdecimaisapresentacao');
-  oReferencia.sCalculavel         = $F('la30_c_calculavel');
+  //oReferencia.sCalculavel         = $F('la30_c_calculavel');
+  oReferencia.sCalculavel         = valorCalculavel;//MARCO adicionado 12-02-2015
   oReferencia.iAnosInicial        = $F('anosinicial') == '' ? 0 : $F('anosinicial');
   oReferencia.iMesesInicial       = $F('mesesinicial') == '' ? 0 : $F('mesesinicial');
   oReferencia.iDiasInicial        = $F('diasinicial') == '' ? 0 : $F('diasinicial');
   oReferencia.iAnosFinal          = $F('anosfinal') == '' ? 0 : $F('anosfinal');
-  oReferencia.iMesesFinal         = $F('mesesfinal') == '' ? 0 : $F('anosfinal');
-  oReferencia.iDiasFinal          = $F('diasfinal') == '' ? 0 : $F('anosfinal');
+  oReferencia.iMesesFinal         = $F('mesesfinal') == '' ? 0 : $F('mesesfinal');
+  oReferencia.iDiasFinal          = $F('diasfinal') == '' ? 0 : $F('diasfinal');
   oReferencia.aSexos              = aSexos;
   oReferencia.iTipoCalculo        = $F('tipocalculo');
   oReferencia.iAtributoBase       = $F('la27_i_atributobase');
@@ -723,18 +802,22 @@ function js_salvarReferenciaNumerica() {
       onComplete: function(oResponse) {
 
         js_removeObj('msgBox');
-        var oRetorno = eval("("+oResponse.responseText+")");
+        var oRetorno = JSON.parse(oResponse.responseText);
         alert(oRetorno.message.urlDecode());
         if (oRetorno.status == 1) {
 
+          $('la30_i_codigo').value       = '';
           $('la30_f_normalmin').value    = '';
           $('la30_f_normalmax').value    = '';
           $('la30_f_absurdomin').value   = '';
           $('la30_f_absurdomax').value   = '';
           $('la30_c_calculavel').value   = '';
-          $('anosinicial').value         = $F('anosfinal');
-          $('mesesinicial').value        = $F('mesesfinal');
-          $('diasinicial').value         = $F('diasfinal');
+          //$('anosinicial').value         = $F('anosfinal');
+          //$('mesesinicial').value        = $F('mesesfinal');
+          //$('diasinicial').value         = $F('diasfinal');
+          $('anosinicial').value         = '';
+          $('mesesinicial').value        = '';
+          $('diasinicial').value         = '';
           $('anosfinal').value           = '';
           $('mesesfinal').value          = '';
           $('diasfinal').value           = '';
@@ -747,6 +830,7 @@ function js_salvarReferenciaNumerica() {
       }
     }
   )
+document.getElementById('la30_casasdecimaisapresentacao').value = null;
 }
 
 function js_excluirReferencia(iReferencia) {
@@ -764,7 +848,7 @@ function js_excluirReferencia(iReferencia) {
       onComplete: function(oResponse) {
 
         js_removeObj('msgBox');
-        var oRetorno = eval("("+oResponse.responseText+")");
+        var oRetorno = JSON.parse(oResponse.responseText);
         alert(oRetorno.message.urlDecode());
         js_getValoresReferencia();
 
@@ -802,4 +886,53 @@ $('mesesfinal').oninput = function() {
 $('diasfinal').oninput = function() {
   js_ValidaCampos( $('diasfinal'), 4, 'Dias Final', 't', 'f' );
 };
+
+function js_alterarReferencia(iReferencia){
+  var oParam = {exec:'getValorReferenciaAtributo', iCodigo: iReferencia};
+  js_divCarregando("Aguarde, Editando referencia", 'msgBox');
+
+  var oAjax  = new Ajax.Request(sUrlRPC,
+    {
+      method:'post',
+      parameters:'json='+Object.toJSON(oParam),
+      onComplete: function(oResponse) {
+        js_removeObj('msgBox');
+        var response = oResponse.responseText.evalJSON();
+        $('la30_i_codigo').value = response.oValorReferencia.codigo;
+        $('la30_f_normalmin').value = response.oValorReferencia.valor_inicial;
+        $('la30_f_normalmax').value = response.oValorReferencia.valor_final;
+        <?php if ($habilitarAbsurdo) { ?>
+          $('la30_f_absurdomin').value = response.oValorReferencia.absurdo_minimo;
+          $('la30_f_absurdomax').value = response.oValorReferencia.absurdo_maximo;
+        <?php } ?>
+        $('anosinicial').value = response.oValorReferencia.limite_idade_inicial.anos;
+        $('mesesinicial').value = response.oValorReferencia.limite_idade_inicial.meses;
+        $('diasinicial').value = response.oValorReferencia.limite_idade_inicial.dias;
+
+        $('anosfinal').value = response.oValorReferencia.limite_idade_final.anos;
+        $('mesesfinal').value = response.oValorReferencia.limite_idade_final.meses;
+        $('diasfinal').value = response.oValorReferencia.limite_idade_final.dias;
+
+        $('masculino').checked = false;
+        $('feminino').checked = false;
+
+        if(jQuery.inArray('M', response.oValorReferencia.sexo) >= 0) {
+          $('masculino').checked = true;
+        }
+
+        if(jQuery.inArray('F', response.oValorReferencia.sexo) >= 0) {
+          $('feminino').checked = true;
+        }
+
+        $('tipocalculo').value = response.oValorReferencia.tipo_calculo;
+        showHideCampoCalculavel(response.oValorReferencia.tipo_calculo);
+        $('la27_i_atributobase').value = response.oValorReferencia.atributo_base;
+        $('la25_c_descrbase').value = response.oValorReferencia.atributo_base_nome;
+        $('la30_c_calculavel').value = response.oValorReferencia.calculavel;
+
+      }
+    }
+  )
+}
+
 </script>

@@ -26,7 +26,7 @@
  */
 
 //MODULO: Configuracoes
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cldb_estrut = new cl_db_estrut;
 
 $cltipoempresa->rotulo->label();
@@ -116,7 +116,7 @@ db_inputdata('db98_datafin',@$db98_datafin_dia,@$db98_datafin_mes,@$db98_datafin
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipoempresa','func_tipoempresa.php?funcao_js=parent.js_preenchepesquisa|db98_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoempresa','func_tipoempresa.php?funcao_js=parent.js_preenchepesquisa|db98_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tipoempresa.hide();

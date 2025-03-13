@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "conplano.c60_codcon,conplano.c60_estrut,conplanoreduz.c61_reduz,fc_nivel_plano2005(conplano.c60_estrut) as dl_Nivel,conplanoreduz.c61_instit,conplano.c60_descr,conplano.c60_finali,consistema.c52_descr,conclass.c51_descr,conplano.c60_codsis as DB_codsis,conplano.c60_codcla as DB_codcla";
+$campos = "conplano.c60_codcon,conplano.c60_estrut,conplanoreduz.c61_reduz,fc_nivel_plano2005(conplano.c60_estrut) as dl_Nivel,conplanoreduz.c61_instit,conplano.c60_descr,conplano.c60_finali,consistema.c52_descr,conclass.c51_descr,conplano.c60_codsis as DB_codsis,conplano.c60_codcla as DB_codcla,conplano.c60_identificadorfinanceiro";
 ?>

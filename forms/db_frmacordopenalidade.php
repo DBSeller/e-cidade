@@ -169,7 +169,7 @@ function js_retornoDadosTipoAcordo(oAjax){
   
   js_removeObj("msgBoxTipoAcordo");
   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
       
   oDBGridTipoAcordo.clearAll(true);
      
@@ -266,7 +266,7 @@ function js_retornoDadosPenalidade(oAjax) {
 
   js_removeObj("msgBoxAcordoPenalidade");
   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
       
   oDBGridTipoAcordo.clearAll(true);
   
@@ -375,7 +375,7 @@ function js_retornoProcessarDados(oAjax) {
   
   oDBGridTipoAcordo.clearAll(true);
   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   if (oRetorno.status == 2) {
   

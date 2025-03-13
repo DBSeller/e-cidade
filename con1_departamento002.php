@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if (isset($HTTP_POST_VARS["alterar"])) {
    db_postmemory($HTTP_POST_VARS); 
-   pg_exec("begin");
-   pg_exec("UPDATE db_depart SET descrdepto='$descrdepto' WHERE coddepto=$coddepto") or die ("Erro: (10). Processo de alteracao.");
-   pg_exec("UPDATE db_depart SET nomeresponsavel='$nomeresponsavel' WHERE coddepto=$coddepto") or die ("Erro: (11). Processo de alteracao.");
-   pg_exec("UPDATE db_depart SET emailresponsavel='$emailresponsavel' WHERE coddepto=$coddepto") or die ("Erro: (12). Processo de alteracao.");
-   pg_exec("end");
+   db_query("begin");
+   db_query("UPDATE db_depart SET descrdepto='$descrdepto' WHERE coddepto=$coddepto") or die ("Erro: (10). Processo de alteracao.");
+   db_query("UPDATE db_depart SET nomeresponsavel='$nomeresponsavel' WHERE coddepto=$coddepto") or die ("Erro: (11). Processo de alteracao.");
+   db_query("UPDATE db_depart SET emailresponsavel='$emailresponsavel' WHERE coddepto=$coddepto") or die ("Erro: (12). Processo de alteracao.");
+   db_query("end");
    db_redireciona();
 } else 
   if (isset($HTTP_POST_VARS["excluir"])) {
     db_postmemory($HTTP_POST_VARS);
-    $result = @pg_exec("delete from db_depart where coddepto=$coddepto");
+    $result = @db_query("delete from db_depart where coddepto=$coddepto");
 	if (!$result) {
 	  db_msgbox("Este departamento está sendo usado por outros registros. Não será possível sua exclusão.");
 	} else {db_msgbox("Departamento excluído com sucesso.");}
@@ -88,7 +88,7 @@ function js_verificaFormulario() {
   <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <? 
 	  if (!isset($HTTP_POST_VARS["procurar"])) {
-	    include("forms/db_frmdepartamento002.php"); 
+	    include(modification("forms/db_frmdepartamento002.php")); 
 	  } else { ?>
     <p><a href="con1_departamento002.php" style="font-size:13px" > << voltar a pagina anterior.</a></p><br>
     <table width="80%" border="1" align="center" cellpadding="0" cellspacing="0">
@@ -99,7 +99,7 @@ function js_verificaFormulario() {
           <tr> 
 		    <?
 			  db_postmemory($HTTP_POST_VARS);
-			  $result = pg_exec("select * from db_depart where descrdepto like '".$descrdepto."%'");
+			  $result = db_query("select * from db_depart where descrdepto like '".$descrdepto."%'");
 			  $num = pg_numrows($result);
 			  for ($i=0;$i<$num;$i++) {
 			?>

@@ -172,10 +172,10 @@ db_input('k97_limite',10,$Ik97_limite,true,'text',$db_opcao,"")
 <script>
 function js_pesquisak97_extrato(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_extrato','func_extrato.php?funcao_js=parent.js_mostraextrato1|k85_sequencial|k85_nomearq','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_extrato','func_extrato.php?funcao_js=parent.js_mostraextrato1|k85_sequencial|k85_nomearq','Pesquisa',true);
   }else{
      if(document.form1.k97_extrato.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_extrato','func_extrato.php?pesquisa_chave='+document.form1.k97_extrato.value+'&funcao_js=parent.js_mostraextrato','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_extrato','func_extrato.php?pesquisa_chave='+document.form1.k97_extrato.value+'&funcao_js=parent.js_mostraextrato','Pesquisa',false);
      }else{
        document.form1.k85_nomearq.value = ''; 
      }
@@ -195,10 +195,10 @@ function js_mostraextrato1(chave1,chave2){
 }
 function js_pesquisak97_contabancaria(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_contabancaria','func_contabancaria.php?funcao_js=parent.js_mostracontabancaria1|db83_sequencial|db83_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contabancaria','func_contabancaria.php?funcao_js=parent.js_mostracontabancaria1|db83_sequencial|db83_descricao','Pesquisa',true);
   }else{
      if(document.form1.k97_contabancaria.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_contabancaria','func_contabancaria.php?pesquisa_chave='+document.form1.k97_contabancaria.value+'&funcao_js=parent.js_mostracontabancaria','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_contabancaria','func_contabancaria.php?pesquisa_chave='+document.form1.k97_contabancaria.value+'&funcao_js=parent.js_mostracontabancaria','Pesquisa',false);
      }else{
        document.form1.db83_descricao.value = ''; 
      }
@@ -217,7 +217,7 @@ function js_mostracontabancaria1(chave1,chave2){
   db_iframe_contabancaria.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_extratosaldo','func_extratosaldo.php?funcao_js=parent.js_preenchepesquisa|k97_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_extratosaldo','func_extratosaldo.php?funcao_js=parent.js_preenchepesquisa|k97_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_extratosaldo.hide();

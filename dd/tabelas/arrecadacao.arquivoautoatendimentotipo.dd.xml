@@ -1,0 +1,50 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010433' name='arrecadacao.arquivoautoatendimentotipo' description="Tabela responsável por guardar os tipos de débitos do arquivo." prefix="k184" label="arquivoautoatendimentotipo" type="0">
+  <fields>
+    <field codigo="1010388" 
+           campo_api='' 
+           name="k184_codigo" 
+           conteudo="int8" 
+           description="Campo que armazena o sequencial da chave primária." 
+           inivalue="0" 
+           label="Campo código" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='arrecadacao.arquivoautoatendimentotipo_k184_codigo_seq' />
+     
+    </field> 
+    <field codigo="1010389" 
+           campo_api='' 
+           name="k184_descricao" 
+           conteudo="varchar(50)" 
+           description="Campo que armazena a descrição do tipos de débito." 
+           inivalue="" 
+           label="Campos descrição" 
+           size="50" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Campos descrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k184_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

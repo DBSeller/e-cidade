@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,430 +25,319 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+db_postmemory($_POST);
+
 $oRotuloCampo = new rotulocampo();
 $oRotuloCampo->label("ed52_d_inicio");
 $oRotuloCampo->label("ed52_d_fim");
 
-$oDaoCalendarioEscola = db_utils::getdao("calendarioescola");
-$db_opcao   =  1;
-$iEscola    = db_getsession("DB_coddepto");
-$ed52_i_ano = date("Y");
-if (isset($ed52_i_ano)) {
+$oDaoCalendarioEscola = new cl_calendarioescola;
+$db_opcao = 1;
+$iEscola = db_getsession("DB_coddepto");
 
-  for ($iConta = 0; $iConta <= 31; $iConta++) {
-
-    $iDiferencaTempo   = mktime(0, 0, 0, 5, $iConta, $ed52_i_ano);
-
-    $iDiaSemana = date("w", $iDiferencaTempo);
-
-    if ( $iDiaSemana == 3) {
-
-      $data_censo_dia = strlen($iConta) == 1?"0".$iConta:$iConta;
-      $data_censo_mes = "05";
-      $data_censo_ano = $ed52_i_ano;
-    }
-  }
+if (empty($ed52_i_ano)) {
+    $ed52_i_ano = date("Y");
 }
-$sEscolaOrder    = " ed52_d_inicio asc, ed52_d_fim desc ";
-$sCampos         = " ed52_d_inicio , ed52_d_fim ";
-$sWhere          = " ed52_i_ano = $ed52_i_ano AND ed38_i_escola = $iEscola ";
 
-$sSqlAnoCenso    = $oDaoCalendarioEscola->sql_query("",$sCampos, $sEscolaOrder ,"$sWhere");
-$rsAnoCenso      = $oDaoCalendarioEscola->sql_record($sSqlAnoCenso);
-$oDadosInicioFim = db_utils::fieldsmemory($rsAnoCenso,0);
+$censo = new ECidade\Educacao\Escola\Censo\Censo($ed52_i_ano);
 
+$dataCenso = $censo->getDataCenso();
+$data_censo_dia = $dataCenso->getDia();
+$data_censo_mes = $dataCenso->getMes();
+$data_censo_ano = $dataCenso->getAno();
+
+$sEscolaOrder = " ed52_d_inicio asc, ed52_d_fim desc ";
+$sCampos = " ed52_d_inicio , ed52_d_fim ";
+$sWhere = " ed52_i_ano = $ed52_i_ano AND ed38_i_escola = $iEscola ";
+
+$sSqlAnoCenso = $oDaoCalendarioEscola->sql_query("", $sCampos, $sEscolaOrder, "$sWhere");
+//die($sSqlAnoCenso);
+$rsAnoCenso = $oDaoCalendarioEscola->sql_record($sSqlAnoCenso);
+//d($oDadosInicioFim);
+$oDadosInicioFim = db_utils::fieldsmemory($rsAnoCenso, 0);
 
 $bVerif = false;
 
-$ed52_d_inicio     = db_formatar($oDadosInicioFim->ed52_d_inicio,'d');
-$aDataIni          = explode ('/',$ed52_d_inicio);
+$ed52_d_inicio = db_formatar($oDadosInicioFim->ed52_d_inicio, 'd');
+
+$aDataIni = explode('/', $ed52_d_inicio);
 $ed52_d_inicio_dia = $aDataIni[0];
 $ed52_d_inicio_mes = $aDataIni[1];
 $ed52_d_inicio_ano = $aDataIni[2];
 
-$ed52_d_fim        = db_formatar($oDadosInicioFim->ed52_d_fim,'d');
-$aDataFim          = explode ('/',$ed52_d_fim);
+$ed52_d_fim = db_formatar($oDadosInicioFim->ed52_d_fim, 'd');
+$aDataFim = explode('/', $ed52_d_fim);
 $ed52_d_fim_dia = $aDataFim[0];
 $ed52_d_fim_mes = $aDataFim[1];
 $ed52_d_fim_ano = $aDataFim[2];
 
-
 ?>
 <html>
-  <head>
+<head>
     <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Expires" CONTENT="0">
-    <?
-      db_app::load("scripts.js, strings.js, datagrid.widget.js, prototype.js, arrays.js");
-      db_app::load("estilos.css, grid.style.css");
-    ?>
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/classes/http/http.js"></script>
+    <script type="text/javascript" src="scripts/widgets/DBDownload.widget.js"></script>
+    <script type="text/javascript" src="scripts/arrays.js"></script>
+    <script type="text/javascript" src="scripts/datagrid.widget.js"></script>
     <link href="estilos.css" rel="stylesheet" type="text/css">
+    <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
     <style type="text/css">
-     .interno {
+        .interno {
+            border: 0px;
+            border-top: 2px groove white;
+        }
 
-        border:0px;
-        border-top: 2px groove white;
-     }
-     div.formulario table tr td:FIRST-CHILD {
-       width:100px;
-     }
+        div.formulario table tr td:FIRST-CHILD {
+            width: 100px;
+        }
     </style>
-  </head>
-  <body bgcolor="#CCCCCC" style='margin-top: 25px'>
-    <?MsgAviso(db_getsession("DB_coddepto"),"escola");?>
-    <form name="form1" method="post" action="" align = "center">
-    <center>
-    <div style="display: table;text-align: center" class='formulario'>
-      <fieldset >
-        <legend><b>Gerar Arquivo de solicitação de código INEP - Docente/Aluno </b></legend>
-        <table border="0">
-          <tr>
-            <td>
-              <fieldset style="border:0px">
-                <table>
-                  <tr>
-                    <td>
-                      <b>Data do Censo:</b>
-                    </td>
-                    <td>
-                      <?db_inputdata('data_censo',@$data_censo_dia,@$data_censo_mes,@$data_censo_ano,true,'text',1,
-                                     "onchange=\"js_ano();\"","","","parent.js_ano();")?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <b>Ano do Censo:</b>
-                    </td>
-                    <td>
-                      <?
-                         if (!isset($ed52_i_ano)) {
-
-                           $ed52_i_ano = date("Y")-1;
-
-                           for ($iDia = 1; $iDia <= 31; $iDia++) {
-
-                             if ( date("w", mktime(0, 0, 0, 5, $iDia, $ed52_i_ano)) == 3) {
-
-                               $data_censo_dia = strlen($x)==1?"0".$x:$x;
-                               $data_censo_mes = "05";
-                               $data_censo_ano = $ed52_i_ano;
-                             }
-                           }
-
-                         }
-
-                         $iAno = date("Y");
-                         $iOp1 = $iAno;//opçao 1 do combobox de data, ano atual - 1;
-                         $iOp2 = $iOp1 - 1;//opçao 2 do combobox da data, ano atual - 2;
-                         // Arrumar a variavel ed52_i_ano que mostrara o ano que deve ser gerado as informações da rotina
-
-                         $aOptions=array($iOp1 => $iOp1,
-                                         $iOp2 => $iOp2
-                                         );
-                         db_select("ed52_i_ano",$aOptions,false,1,'onChange= "js_completaData()"');
-                       ?>
-                     </td>
-                   </tr>
-                   </table>
-                 </fieldset>
-                </td>
-                </tr>
-                <tr>
-                  <td colspan="3">
-                    <fieldset class='interno'>
-                      <legend><b>Calendário</b></legend>
-                      <table style="width:100%">
-                        <tr>
-                          <td nowrap="nowrap">
-                            <?=$Led52_d_inicio?>
-                          </td>
-                          <td nowrap="nowrap">
-
-                           <? db_inputdata('ed52_d_inicio',@$ed52_d_inicio_dia,@$ed52_d_inicio_mes,
-                                          @$ed52_d_inicio_ano,true,'text',$db_opcao,"");?>
-                          </td>
-                          <td nowrap="nowrap">
-                            <?=$Led52_d_fim?>
-                          </td >
-                          <td nowrap="nowrap">
-                            <? db_inputdata('ed52_d_fim',@$ed52_d_fim_dia,@$ed52_d_fim_mes,
-                                       @$ed52_d_fim_ano,true,'text',$db_opcao,"");?>
-                          </td>
-                        </tr>
-                      </table>
-                    </fieldset>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="6">
-                   <fieldset class='interno'>
-                     <legend><b>Outras Opções</b></legend>
-                       <table style="width:100%">
-                         <tr>
-                           <td>
-                             <b>Tipo de Arquivos:</b>
-                          </td>
-                          <td>
-                            <?
-                            $aOptions=array("1"=>"Todos","2"=>"Docentes", "3"=>"Alunos");
-                            db_select("tipoarquivo",$aOptions,"",1);
+</head>
+<body bgcolor="#CCCCCC" style='margin-top: 25px'>
+<?php MsgAviso(db_getsession("DB_coddepto"), "escola"); ?>
+<form name="form1" method="post" action="" align="center">
+    <div class='container'>
+        <fieldset>
+            <legend>Gerar Arquivo de Identificação</legend>
+            <fieldset class="separator">
+                <legend>Dados do Censo</legend>
+                <table class="form-container">
+                    <tr>
+                        <td class="field-size3">Data do Censo:</td>
+                        <td>
+                            <?php
+                            db_inputdata('data_censo', $data_censo_dia, $data_censo_mes, $data_censo_ano, true, 'text', 1, "onchange=\"js_ano();\"", "", "", "parent.js_ano();")
                             ?>
-                          </td>
-                          <td style="text-align: right">
-                            <b>Formato de Arquivo:</b>
-                          </td>
-                          <td  style="text-align: right">
-                          <?
-                          $aOptions=array("1"=>"TXT","2"=>"PDF");
-                          db_select("formatoarquivo",$aOptions,"",1);
-                          ?>
-                          </td>
-                         </tr>
-                       </table>
-                    </fieldset>
-                  </td>
-                </tr>
-              </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ano do Censo:</td>
+                        <td><?php db_input("ed52_i_ano", 10, 1, true, 'text'); ?></td>
+                    </tr>
+                </table>
             </fieldset>
-          </div>
-         <div style= 'width: 30%'>
-           <fieldset>
-             <legend><b>Escolas</b></legend>
-             <div id="ctnEscolas">
-             </div>
-           </fieldset>
-         </div>
-         <input name="gerararquivo" type="button" id="arquivo"  value="Gerar Arquivo" onclick = 'return js_geraArquivo();'; >
-    </form>
-  </center>
-  </body>
+            <fieldset class='interno'>
+                <legend><b>Calendário</b></legend>
+                <table class="form-container">
+                    <tr>
+                        <td class="field-size3"><?= $Led52_d_inicio ?></td>
+                        <td>
+                            <?php db_inputdata('ed52_d_inicio', $ed52_d_inicio_dia, $ed52_d_inicio_mes,
+                                $ed52_d_inicio_ano, true, 'text', $db_opcao, ""); ?>
+                        </td>
+                        <td>
+                            <?= $Led52_d_fim ?>
+                        </td>
+                        <td>
+                            <?php db_inputdata('ed52_d_fim', $ed52_d_fim_dia, $ed52_d_fim_mes,
+                                $ed52_d_fim_ano, true, 'text', $db_opcao, ""); ?>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset class='interno'>
+                <legend><b>Outras Opções</b></legend>
+                <table class="form-container">
+                    <tr>
+                        <td class="field-size3">
+                            <b>Formato de Arquivo:</b>
+                        </td>
+                        <td>
+                            <?php
+                            $aOptions = array("1" => "TXT", "2" => "PDF");
+                            db_select("formatoarquivo", $aOptions, "", 1);
+                            ?>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </fieldset>
+        <div class="subcontainer" style='width: 500px'>
+            <fieldset>
+                <legend><b>Escolas</b></legend>
+                <div id="ctnEscolas">
+                </div>
+            </fieldset>
+        </div>
+        <input id='gerarArquivo' name="gerararquivo" type="button" id="arquivo" value="Gerar Arquivo" >
+    </div>
+</form>
+</body>
 </html>
-  <?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),
-    db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
-<script>
-function js_completaData() {
+<?php db_menu(); ?>
+<script type="text/javascript">
 
-<?
-completaData();
-?>
+    sUrlRPC = 'edu4_censoalunosseminep.RPC.php';
 
-}
+    function js_ano() {
 
-function validaFormulario() {
+        datacenso = document.form1.data_censo.value;
 
-  datacenso = document.form1.data_censo.value ;
-  if (datacenso == "" || datacenso == null ) {
+        if (datacenso != "" && datacenso.length == 10) {
 
-    alert ("Selecione o ano do censo");
-    document.form1.datacenso.focus();
-  }
-}
-</script>
-<?
-  function completaData() {
+            datacenso = datacenso.split("/");
+            document.form1.ed52_i_ano.value = datacenso[2];
 
+            document.form1.submit();
+        } else {
 
-    if (!empty($ed52_i_ano)) {
-
-      for($x = 1; $x <= 31; $x++) {
-
-        if (date("w", mktime(0, 0, 0, 5, $x, $ed52_i_ano)) == 3) {
-
-          $data_censo_dia = strlen($x) == 1 ? "0".$x:$x;
-          $data_censo_mes = "05";
-          $data_censo_ano = $ed52_i_ano;
+            document.form1.ed52_i_ano.value = "";
+            document.form1.ed52_d_inicio.value = "";
+            document.form1.ed52_d_fim.value = "";
 
         }
 
-      }
     }
 
-  }
+    function js_valida() {
 
-?>
+        if (   document.form1.data_censo.value == ""
+            || document.form1.ed52_i_ano.value == ""
+            || document.form1.ed52_d_inicio.value == ""
+            || document.form1.ed52_d_fim.value == "") {
 
-<script>
-sUrlRPC = 'edu4_censoalunosseminep.RPC.php';
-  function js_ano() {
+            alert("Preencha todos os  campos do formulário!");
+            return false;
+        }
 
-    datacenso = document.form1.data_censo.value;
+        if (document.form1.ed52_i_ano.value != document.form1.ed52_d_inicio_ano.value
+            || document.form1.ed52_i_ano.value != document.form1.ed52_d_fim_ano.value) {
 
-    if (datacenso != "" && datacenso.length == 10) {
+            alert("Data Inicial e Final do Calendário deve estar dentro do Ano do Censo!");
+            return false;
+        }
 
-      datacenso                       = datacenso.split("/");
-      document.form1.ed52_i_ano.value = datacenso[2];
-      document.form1.submit();
-    } else {
+        dataini = document.form1.ed52_d_inicio_ano.value + document.form1.ed52_d_inicio_mes.value;
+        dataini += document.form1.ed52_d_inicio_dia.value;
+        datafim = document.form1.ed52_d_fim_ano.value + document.form1.ed52_d_fim_mes.value;
+        datafim += document.form1.ed52_d_fim_dia.value;
 
-       document.form1.ed52_i_ano.value    = "";
-       document.form1.ed52_d_inicio.value = "";
-       document.form1.ed52_d_fim.value    = "";
+        if (parseInt(dataini) >= parseInt(datafim)) {
+            alert("Data Final do Calendário deve ser maior que a Data Inicial!");
+            return false;
+        }
 
+        if (oDataGridEscola.getSelection("object").length == 0) {
+            alert('Nenhuma escola selecionada.');
+            return false;
+        }
+
+        return true;
     }
 
-   }
+    $('ed52_i_ano').style.width = '100%';
+    $('formatoarquivo').style.width = '100%';
 
-function js_valida() {
+    $('gerarArquivo').addEventListener('click', function() {
+        if (!js_valida()) {
+            return false;
+        }
 
-  if (document.form1.data_censo.value == "" || document.form1.ed52_i_ano.value == ""
-             || document.form1.ed52_d_inicio.value == "" || document.form1.ed52_d_fim.value == "") {
-
-    alert("Preencha todos os campos do formulário!");
-    return false;
-
-  }
-
-  if (document.form1.ed52_i_ano.value != document.form1.ed52_d_inicio_ano.value
-         || document.form1.ed52_i_ano.value != document.form1.ed52_d_fim_ano.value) {
-
-    alert("Data Inicial e Final do Calendário deve estar dentro do Ano do Censo!");
-    return false;
-
-  }
-
-  dataini  = document.form1.ed52_d_inicio_ano.value+document.form1.ed52_d_inicio_mes.value;
-  dataini += document.form1.ed52_d_inicio_dia.value;
-  datafim  = document.form1.ed52_d_fim_ano.value+document.form1.ed52_d_fim_mes.value;
-  datafim += document.form1.ed52_d_fim_dia.value;
-
-  if (parseInt(dataini) >= parseInt(datafim)) {
-
-    alert("Data Final do Calendário deve ser maior que a Data Inicial!");
-    return false;
-
-  }
-  return true;
-}
-
-$('ed52_i_ano').style.width     = '100%';
-$('formatoarquivo').style.width = '100%';
-$('tipoarquivo').style.width    = '100%';
-
-function js_geraArquivo() {
-
-  if (!js_valida()) {
-    return false;
-  }
-
-  var iFormato  = document.form1.formatoarquivo.value;
-  var iTipo     = document.form1.tipoarquivo.value;
-  var iAno      = document.form1.ed52_i_ano.value;
-  var aLinhas = oDataGridEscola.getSelection("object");
-  if (aLinhas.length == 0) {
-
-  	alert('Nenhuma escola selecionada.');
-    return false;
-  }
-  if (iFormato == 1 ) { // iFormato = 1, tipo de relatorio TXT
-
-    js_divCarregando('Aguarde, processando os dados', 'msgBox');
-    var oParam          = new Object();
-    oParam.iTipoGeracao = iTipo;
-    oParam.iAno         = iAno;
-    oParam.exec         = 'gerarArquivosCensoSemInep';
-    oParam.aEscola      = new Array();
-  	aLinhas.each(function(iAut, iSeq){
-  		oParam.aEscola.push(iAut.aCells[0].getValue());
+        if (document.form1.formatoarquivo.value == 1) {
+            gerarArquivo()
+        } else {
+            gerarPdf();
+        }
     });
-    var oAjax = new Ajax.Request(sUrlRPC,
-                                {
-                                 method:'post',
-                                 parameters:'json='+Object.toJSON(oParam),
-                                 onComplete: js_downloadArquivos
-                                }
-                                );
 
-  } else {
+    gerarPdf = () => {
+        const linhas = oDataGridEscola.getSelection("object");
+        const escolas = [];
+        linhas.each(function (linha) {
+            escolas.push(linha.aCells[0].getValue());
+        });
 
-     var aEscolas = new Array();
-     aLinhas.each(function(iAut, iSeq) {
-      aEscolas.push(iAut.aCells[0].getValue());
-    });
-    var sEscolas = aEscolas.implode(',', aEscolas);
-    janPdfDoc = window.open('edu2_alunosdocentesseminep002.php?ano='+iAno+'&tipo='+iTipo+'&sEscola='+sEscolas,
-                             '',
-                             'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0'
-                             );
-  }
-}
+        const filtros = {
+            "ano" : $F('ed52_i_ano'),
+            "escolas": escolas
+        }
 
-function js_downloadArquivos(oResponse) {
+        window.open('edu2_alunosdocentesseminep002.php?filtros=' + btoa(JSON.stringify(filtros)), '', 'scrollbars=1,location=0');
+    };
 
-   js_removeObj('msgBox');
-   var oRetorno = eval("("+oResponse.responseText+")");
-   if (oRetorno.arquivos.length == 0) {
+    gerarArquivo = () => {
+        const aLinhas = oDataGridEscola.getSelection("object");
 
-     alert('Nenhum Aluno/Docente encontrado para o envio do arquivo.');
-     return false;
-   }
-   var sListagemArquivos = '';
-   var sSeparador        = '';
-   oRetorno.arquivos.each(function(sArquivo, id) {
+        const data = new FormData();
+        data.append('acao', 'gerarArquivoIdentificacao');
+        data.append('ano', $F('ed52_i_ano'));
 
-      sListagemArquivos += sSeparador+sArquivo+"#"+sArquivo;
-      sSeparador        = "|";
-   });
-  js_montarlista(sListagemArquivos, 'form1');
-}
-
-function js_pesquisaEscola() {
-
-
-	var oParametro          = new Object();
-	oParametro.exec         = 'getEscolas';
-	oParametro.filtraModulo = true;
-
-  var oAjax = new Ajax.Request(
-  		                         sUrlRPC,
-  		                         {
-  			                         method:     'post',
-  			                         parameters: 'json='+Object.toJSON(oParametro),
-  			                         onComplete: js_retornaPesquisaEscola
-  		                         }
-  		                        );
-}
-
-function js_retornaPesquisaEscola(oResponse) {
-
-	var oRetorno = eval('('+oResponse.responseText+')');
-	oDataGridEscola.clearAll(true);
-	oRetorno.aDados.each(function(oLinha, iContador) {
-
-	  var aLinha = new Array();
-    aLinha[0] = oLinha.codigo_escola;
-    aLinha[1] = oLinha.nome_escola.urlDecode();
-    if (oRetorno.iTotalLinhas == 1) {
-      oDataGridEscola.addRow(aLinha, false, false, true);
-    } else {
-    	oDataGridEscola.addRow(aLinha);
+        aLinhas.each(function (linha) {
+            data.append('escolas[]', linha.aCells[0].getValue());
+        });
+        HttpClient.post('edu4_novoCenso.RPC.php', {body: data}).then(response => {
+            if (response.erro) {
+                alert(response.mensagem);
+                return;
+            }
+            if (response.arquivo_censo != '') {
+                dowloadArquivoCenso(response.arquivo_censo, "Arquivo de Exportação.");
+            }
+        });
     }
-	});
 
-	oDataGridEscola.renderRows();
-}
+    dowloadArquivoCenso = (arquivo, label) => {
+        var oDownload = new DBDownload();
+        oDownload.addFile(arquivo, label);
+        oDownload.show();
+    };
 
-function js_gridEscola() {
+    function js_pesquisaEscola() {
+        var oParametro = {};
+        oParametro.exec = 'getEscolas';
+        oParametro.filtraModulo = true;
 
-	oDataGridEscola              = new DBGrid("gridEscola");
-	oDataGridEscola.nameInstance = 'oDataGridEscola';
-	oDataGridEscola.setCheckbox(0);
-	oDataGridEscola.setCellAlign(new Array("center", "left"));
-	oDataGridEscola.setHeader(new Array("Código", "Nome"));
-	oDataGridEscola.setCellWidth(new Array("20%","80%"));
-	oDataGridEscola.show($('ctnEscolas'));
-}
+        var oAjax = new Ajax.Request(
+            sUrlRPC,
+            {
+                method: 'post',
+                parameters: 'json=' + Object.toJSON(oParametro),
+                onComplete: js_retornaPesquisaEscola
+            }
+        );
+    }
 
-js_gridEscola();
-js_pesquisaEscola();
+    function js_retornaPesquisaEscola(oResponse) {
+
+        var oRetorno = JSON.parse(oResponse.responseText);
+        oDataGridEscola.clearAll(true);
+        oRetorno.aDados.each(function (oLinha, iContador) {
+            var aLinha = [];
+
+            aLinha[0] = oLinha.codigo_escola;
+            aLinha[1] = oLinha.nome_escola.urlDecode();
+            if (oRetorno.iTotalLinhas == 1) {
+                oDataGridEscola.addRow(aLinha, false, false, true);
+            } else {
+                oDataGridEscola.addRow(aLinha);
+            }
+        });
+
+        oDataGridEscola.renderRows();
+    }
+
+    function js_gridEscola() {
+        oDataGridEscola = new DBGrid("gridEscola");
+        oDataGridEscola.nameInstance = 'oDataGridEscola';
+        oDataGridEscola.setCheckbox(0);
+        oDataGridEscola.setCellAlign(new Array("center", "left"));
+        oDataGridEscola.setHeader(new Array("Código", "Nome"));
+        oDataGridEscola.setCellWidth(new Array("20%", "80%"));
+        oDataGridEscola.show($('ctnEscolas'));
+    }
+
+    js_gridEscola();
+    js_pesquisaEscola();
 </script>

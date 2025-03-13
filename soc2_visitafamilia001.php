@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $db_opcao = 1;
 
@@ -114,7 +114,7 @@ function js_pesquisaCidadao(lMostra, lNis) {
   if (lMostra) {
 
     sUrl += 'funcao_js=parent.js_mostraCidadao|ov02_sequencial|ov02_nome|as02_nis'; 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisa Cidadão',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisa Cidadão',true);
   } else {
 
     if ($F('as02_nis') != '' && lNis) {
@@ -136,7 +136,7 @@ function js_pesquisaCidadao(lMostra, lNis) {
 
     if ($F('as02_nis') != '' || $F('codigoCidadao') != '') {
 
-     js_OpenJanelaIframe('top.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisa Cidadão', false);
+     js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_cidadaofamilia', sUrl, 'Pesquisa Cidadão', false);
     } else {
       
       $('codigoCidadao').value = "";

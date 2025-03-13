@@ -58,7 +58,7 @@ db_input('sd01_i_familia',5,$Isd01_i_familia,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cgm_saude','func_cgm_saude.php?funcao_js=parent.js_preenchepesquisa|sd01_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm_saude','func_cgm_saude.php?funcao_js=parent.js_preenchepesquisa|sd01_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cgm_saude.hide();

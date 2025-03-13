@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,14 +24,14 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
@@ -57,6 +57,25 @@ function validaCNS( $oPost ) {
   }
 
   return true;
+}
+
+function validaCartaoDefinitivo($iCgs) {
+
+  $oDaoCGSCartaoSus = new cl_cgs_cartaosus();
+
+  $sWhereValidaDefinitivo  = "EXISTS(select 1 ";
+  $sWhereValidaDefinitivo .= "         from cgs_cartaosus cgs_teste";
+  $sWhereValidaDefinitivo .= "        where cgs_teste.s115_i_cgs = {$iCgs}";
+  $sWhereValidaDefinitivo .= "          AND cgs_teste.s115_c_tipo = 'D')";
+
+  $sSqlValidaDefinitivo = $oDaoCGSCartaoSus->sql_query_file(null, 's115_i_codigo', null, $sWhereValidaDefinitivo);
+  $rsValidaDefinitivo   = db_query($sSqlValidaDefinitivo);
+
+  if($rsValidaDefinitivo && pg_num_rows($rsValidaDefinitivo) > 0) {
+    return true;
+  }
+
+  return false;
 }
 
 //altera exclui inicio
@@ -91,7 +110,9 @@ if( isset( $opcao ) ) {
   }
 }
 
-$lErroCNS = false;
+$lErroCNS          = false;
+$lExisteDefinitivo = false;
+
 if( isset( $incluir ) ) {
 
 
@@ -105,7 +126,11 @@ if( isset( $incluir ) ) {
     $lErroCNS = true;
   }
 
-  if (!$lErroCNS) {
+  if($s115_c_tipo == 'D') {
+    $lExisteDefinitivo = validaCartaoDefinitivo($s115_i_cgs);
+  }
+
+  if (!$lErroCNS && !$lExisteDefinitivo) {
 
     db_inicio_transacao();
     $clcgs_cartaosus->incluir($s115_i_codigo);
@@ -119,10 +144,17 @@ if( isset( $alterar ) ) {
     db_redireciona( 'sau1_cgs_cartaosus001.php?s115_i_cgs=' . $oPost->s115_i_cgs . '&z01_v_nome=' . $oPost->z01_v_nome );
   }
 
-  db_inicio_transacao();
-  $db_opcao = 2;
-  $clcgs_cartaosus->alterar($s115_i_codigo);
-  db_fim_transacao();
+  if($oPost->s115_c_tipo == 'D') {
+    $lExisteDefinitivo = validaCartaoDefinitivo($oPost->s115_i_cgs);
+  }
+
+  if(!$lExisteDefinitivo) {
+
+    db_inicio_transacao();
+    $db_opcao = 2;
+    $clcgs_cartaosus->alterar($s115_i_codigo);
+    db_fim_transacao();
+  }
 }
 
 if( isset( $excluir ) ) {
@@ -153,7 +185,7 @@ if( isset( $excluir ) ) {
 <body class="body-default">
   <div class="container" >
     <?php
-    include("forms/db_frmcgs_cartaosus.php");
+    include(modification("forms/db_frmcgs_cartaosus.php"));
     ?>
   </div>
   <?php
@@ -171,6 +203,13 @@ if( ( isset( $incluir ) ) || ( isset( $alterar ) ) || ( isset( $excluir ) ) ) {
 
     echo "<script> document.form1.s115_c_cartaosus.focus();</script>";
     db_msgBox("Cartão SUS já esta cadastrado no sistema.");
+    exit();
+  }
+
+  if($lExisteDefinitivo) {
+
+    echo "<script> document.form1.s115_c_cartaosus.focus();</script>";
+    db_msgBox("CGS já possui cartão SUS definitivo cadastrado.");
     exit();
   }
 

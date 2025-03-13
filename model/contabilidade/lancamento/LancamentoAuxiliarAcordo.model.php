@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,191 +25,205 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("interfaces/ILancamentoAuxiliar.interface.php");
-require_once ("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
 
 /**
  * Salva os lançamentos auxiliares do Acordo (contrato)
- * @author Matheus Felini <matheus.felini@dbseller.com.br>
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.6 $
  */
-class LancamentoAuxiliarAcordo extends LancamentoAuxiliarBase implements ILancamentoAuxiliar {
-
-  /**
-   * Dados da tabela conhist
-   * @var integer
-   */
-  private $iHistorico;
-
-  /**
-   * Valor total do empenho
-   * @var float
-   */
-  private $nValorTotal;
-
-  /**
-   * Acordo
-   * @var Acordo
-   */
-  private $oAcordo;
-
-  /**
-   * Empenho Financeiro
-   * @var EmpenhoFinanceiro
-   */
-  private $oEmpenhoFinanceiro;
-
-  /**
-   * Executa os lançamentos auxiliares dos Movimentos de uma liquidacao
-   * @see ILancamentoAuxiliar::executaLancamentoAuxiliar()
-   * @param integer $iCodigoLancamento - Código do Lancamento (conlancam)
-   * @param date    $dtLancamento      - data do lancamento
-   */
-  public function executaLancamentoAuxiliar($iCodigoLancamento, $dtLancamento)  {
-
-    $this->setCodigoLancamento($iCodigoLancamento);
-    $this->setDataLancamento($dtLancamento);
-    $this->setNumeroEmpenho($this->getEmpenho()->getNumero());
-    $this->salvarVinculoAcordo();
-    $this->salvarVinculoEmpenho();
-    if ($this->getCodigoNotaLiquidacao() != "") {
-      $this->salvarVinculoNotaDeLiquidacao();
-    }
-    return true;
-  }
-
-  /**
-   * Salva o vínculo do lançamento com o acordo
-   * @throws BusinessException
-   * @return boolean
-   */
-  protected function salvarVinculoAcordo() {
-
-    $oDaoConLancamAcordo                 = db_utils::getDao('conlancamacordo');
-    $oDaoConLancamAcordo->c87_sequencial = null;
-    $oDaoConLancamAcordo->c87_codlan     = $this->iCodigoLancamento;
-    $oDaoConLancamAcordo->c87_acordo     = $this->getAcordo()->getCodigoAcordo();
-    $oDaoConLancamAcordo->incluir($this->iCodigoLancamento);
-    if ($oDaoConLancamAcordo->erro_status == "0") {
-
-      $sMsgErro = "Não foi possível salvar o vínculo do acordo {$this->getAcordo()->getCodigoAcordo()} com o contrato.";
-      $sMsgErro = $oDaoConLancamAcordo->erro_msg;
-      throw new BusinessException($sMsgErro);
-    }
-    return true;
-  }
-
-  /**
-   * @see ILancamentoAuxiliar::setHistorico()
-   */
-  public function setHistorico($iHistorico) {
-    $this->iHistorico = $iHistorico;
-  }
-
-  /**
-   * @see ILancamentoAuxiliar::getHistorico()
-   */
-  public function getHistorico() {
-    return $this->iHistorico;
-  }
-
-  /**
-   * @see ILancamentoAuxiliar::setValorTotal()
-   */
-  public function setValorTotal($nValorTotal) {
-    $this->nValorTotal = $nValorTotal;
-  }
-
-  /**
-   * @see ILancamentoAuxiliar::getValorTotal()
-   */
-  public function getValorTotal() {
-    return $this->nValorTotal;
-  }
-
-  /**
-   * Seta o acordo que iremos lançar contábilmente
-   * @param Acordo $oAcordo
-   */
-  public function setAcordo(Acordo $oAcordo) {
-    $this->oAcordo = $oAcordo;
-  }
-
-  /**
-   * Retorna o objeto Acordo
-   * @return Acordo
-   */
-  public function getAcordo() {
-    return $this->oAcordo;
-  }
-
-  /**
-   * Seta o empenho do do acordo
-   * @param EmpenhoFinanceiro $oEmpenho
-   */
-  public function setEmpenho(EmpenhoFinanceiro $oEmpenho) {
-    $this->oEmpenhoFinanceiro = $oEmpenho;
-  }
-
-  /**
-   * Retorna o empenho financeiro
-   * @return EmpenhoFinanceiro
-   */
-  public function getEmpenho() {
-    return $this->oEmpenhoFinanceiro;
-  }
-  
-  /**
-   * Função da classe que constroi uma instância de LancamentoAuxiliarAcordo, 
-   * de acordo com código do lançamento, passado como parâmetro
-   * @param  integer $iCodigoLancamento
-   * @return LancamentoAuxiliarAcordo
-   */
-  public static function getInstance($iCodigoLancamento) {
-    
-    $oDaoConlancamacordo = db_utils::getDao("conlancamacordo");
-    $sCampos             = "c87_acordo, c75_numemp, c70_valor, c70_data, c66_codnota";
-    $sSql                = $oDaoConlancamacordo->sql_query_dadoslancamento($iCodigoLancamento, $sCampos);
-    $rsResultado         = $oDaoConlancamacordo->sql_record($sSql);
-    
-    if ($oDaoConlancamacordo->numrows != 1) {
-      throw new BusinessException("Erro técnico: erro ao buscar os dados do lançamento do acordo");
-    }
-    
-    $oStdLancamentoAcordo  = db_utils::fieldsMemory($rsResultado, 0); 
-    $iAcordo               = $oStdLancamentoAcordo->c87_acordo;
-    $iEmpenho              = $oStdLancamentoAcordo->c75_numemp;
-    $nValorTotal           = $oStdLancamentoAcordo->c70_valor;
-    $dtLancamento          = $oStdLancamentoAcordo->c70_data;
-    $iCodigoNotaLiquidacao = $oStdLancamentoAcordo->c66_codnota;
-    
-    /**
-     * Seta as propriedades para criar uma instância da classe, de acordo com dados do lançamento
-     */
-    $oLancamento  = new LancamentoAuxiliarAcordo();
-    $oAcordo      = new Acordo($iAcordo);
-    $oEmpenho     = new EmpenhoFinanceiro($iEmpenho);
-    $oLancamento->setAcordo($oAcordo);
-    $oLancamento->setEmpenho($oEmpenho);
-    $oLancamento->setValorTotal($nValorTotal);
-    $oLancamento->setCodigoLancamento($iCodigoLancamento);
-    $oLancamento->setDataLancamento($dtLancamento);
+class LancamentoAuxiliarAcordo extends LancamentoAuxiliarBase implements ILancamentoAuxiliar
+{
 
     /**
-     * informacoes para conta corrente contratos e contratos Passivos
+     * Dados da tabela conhist
+     * @var integer
      */
-    $oContaCorrenteDetalhe = new ContaCorrenteDetalhe();
-    $oContaCorrenteDetalhe->setEmpenho($oEmpenho);
-    $oContaCorrenteDetalhe->setAcordo($oAcordo);
-    $oLancamento->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
-    
-    if (!empty($iCodigoNotaLiquidacao)) {
-      $oLancamento->setCodigoNotaLiquidacao($iCodigoNotaLiquidacao);
+    private $iHistorico;
+
+    /**
+     * Valor total do empenho
+     * @var float
+     */
+    private $nValorTotal;
+
+    /**
+     * Acordo
+     * @var Acordo
+     */
+    private $oAcordo;
+
+    /**
+     * Empenho Financeiro
+     * @var EmpenhoFinanceiro
+     */
+    private $oEmpenhoFinanceiro;
+
+    /**
+     * @param int $iCodigoLancamento
+     * @param string $dtLancamento
+     * @return bool
+     * @throws BusinessException
+     */
+    public function executaLancamentoAuxiliar($iCodigoLancamento, $dtLancamento)
+    {
+
+        $this->setCodigoLancamento($iCodigoLancamento);
+        $this->setDataLancamento($dtLancamento);
+        $this->setNumeroEmpenho($this->getEmpenho()->getNumero());
+        $this->salvarVinculoAcordo();
+        $this->salvarVinculoEmpenho();
+        if ($this->getCodigoNotaLiquidacao() != "") {
+            $this->salvarVinculoNotaDeLiquidacao();
+        }
+
+        $this->iFavorecido = $this->getEmpenho()->getCgm()->getCodigo();
+        $this->salvarVinculoCgm();
+
+        return true;
     }
 
-    return $oLancamento;
-  }
+    /**
+     * Salva o vínculo do lançamento com o acordo
+     * @return boolean
+     * @throws BusinessException
+     */
+    protected function salvarVinculoAcordo()
+    {
 
+        $oDaoConLancamAcordo = new cl_conlancamacordo();
+        $oDaoConLancamAcordo->c87_sequencial = null;
+        $oDaoConLancamAcordo->c87_codlan = $this->iCodigoLancamento;
+        $oDaoConLancamAcordo->c87_acordo = $this->getAcordo()->getCodigoAcordo();
+        $oDaoConLancamAcordo->incluir($this->iCodigoLancamento);
+        if ($oDaoConLancamAcordo->erro_status == "0") {
+
+            $sMsgErro  = "Não foi possível salvar o vínculo do acordo {$this->getAcordo()->getCodigoAcordo()} com o contrato.\n\n";
+            $sMsgErro .= $oDaoConLancamAcordo->erro_msg;
+            throw new BusinessException($sMsgErro);
+        }
+        return true;
+    }
+
+    /**
+     * @param int $iHistorico
+     */
+    public function setHistorico($iHistorico)
+    {
+        $this->iHistorico = $iHistorico;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHistorico()
+    {
+        return $this->iHistorico;
+    }
+
+    /**
+     * @param float $nValorTotal
+     */
+    public function setValorTotal($nValorTotal)
+    {
+        $this->nValorTotal = $nValorTotal;
+    }
+
+    /**
+     * @see ILancamentoAuxiliar::getValorTotal()
+     */
+    public function getValorTotal()
+    {
+        return $this->nValorTotal;
+    }
+
+    /**
+     * Seta o acordo que iremos lançar contábilmente
+     * @param Acordo $oAcordo
+     */
+    public function setAcordo(Acordo $oAcordo)
+    {
+        $this->oAcordo = $oAcordo;
+    }
+
+    /**
+     * Retorna o objeto Acordo
+     * @return Acordo
+     */
+    public function getAcordo()
+    {
+        return $this->oAcordo;
+    }
+
+    /**
+     * Seta o empenho do do acordo
+     * @param EmpenhoFinanceiro $oEmpenho
+     */
+    public function setEmpenho(EmpenhoFinanceiro $oEmpenho)
+    {
+        $this->oEmpenhoFinanceiro = $oEmpenho;
+    }
+
+    /**
+     * Retorna o empenho financeiro
+     * @return EmpenhoFinanceiro
+     */
+    public function getEmpenho()
+    {
+        return $this->oEmpenhoFinanceiro;
+    }
+
+    /**
+     * Função da classe que constroi uma instância de LancamentoAuxiliarAcordo,
+     * de acordo com código do lançamento, passado como parâmetro
+     * @param $iCodigoLancamento
+     * @return LancamentoAuxiliarAcordo
+     * @throws BusinessException
+     */
+    public static function getInstance($iCodigoLancamento)
+    {
+
+        $oDaoConlancamacordo = new cl_conlancamacordo();
+        $sCampos = "c87_acordo, c75_numemp, c70_valor, c70_data, c66_codnota";
+        $sSql = $oDaoConlancamacordo->sql_query_dadoslancamento($iCodigoLancamento, $sCampos);
+        $rsResultado = $oDaoConlancamacordo->sql_record($sSql);
+
+        if ($oDaoConlancamacordo->numrows != 1) {
+            throw new BusinessException("Erro técnico: erro ao buscar os dados do lançamento do acordo");
+        }
+
+        $oStdLancamentoAcordo = db_utils::fieldsMemory($rsResultado, 0);
+        $iAcordo = $oStdLancamentoAcordo->c87_acordo;
+        $iEmpenho = $oStdLancamentoAcordo->c75_numemp;
+        $nValorTotal = $oStdLancamentoAcordo->c70_valor;
+        $dtLancamento = $oStdLancamentoAcordo->c70_data;
+        $iCodigoNotaLiquidacao = $oStdLancamentoAcordo->c66_codnota;
+
+        /**
+         * Seta as propriedades para criar uma instância da classe, de acordo com dados do lançamento
+         */
+        $oLancamento = new LancamentoAuxiliarAcordo();
+        $oAcordo = new Acordo($iAcordo);
+        $oEmpenho = new EmpenhoFinanceiro($iEmpenho);
+        $oLancamento->setAcordo($oAcordo);
+        $oLancamento->setEmpenho($oEmpenho);
+        $oLancamento->setValorTotal($nValorTotal);
+        $oLancamento->setCodigoLancamento($iCodigoLancamento);
+        $oLancamento->setDataLancamento($dtLancamento);
+
+        /**
+         * informacoes para conta corrente contratos e contratos Passivos
+         */
+        $oContaCorrenteDetalhe = new ContaCorrenteDetalhe();
+        $oContaCorrenteDetalhe->setEmpenho($oEmpenho);
+        $oContaCorrenteDetalhe->setAcordo($oAcordo);
+        $oLancamento->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
+
+        if (!empty($iCodigoNotaLiquidacao)) {
+            $oLancamento->setCodigoNotaLiquidacao($iCodigoNotaLiquidacao);
+        }
+
+        return $oLancamento;
+    }
 }

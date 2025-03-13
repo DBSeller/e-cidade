@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_aguacorte_classe.php");
-  include("classes/db_aguacortemat_classe.php");
-  include("classes/db_aguacortematmov_classe.php");
-  include("classes/db_aguacortematnumpre_classe.php");
-  include("classes/db_aguacortetipodebito_classe.php");
-  include("classes/db_aguabasecar_classe.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_aguacorte_classe.php"));
+  include(modification("classes/db_aguacortemat_classe.php"));
+  include(modification("classes/db_aguacortematmov_classe.php"));
+  include(modification("classes/db_aguacortematnumpre_classe.php"));
+  include(modification("classes/db_aguacortetipodebito_classe.php"));
+  include(modification("classes/db_aguabasecar_classe.php"));
 
   $claguacorte = new cl_aguacorte;
   $claguacortemat = new cl_aguacortemat;
@@ -61,7 +61,7 @@
         <tr> 
           <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 	          <?
-	            include("forms/db_frmaguacorte_processalista.php");
+	            include(modification("forms/db_frmaguacorte_processalista.php"));
 	          ?>
           </td>
         </tr>
@@ -77,7 +77,7 @@
   if  (isset($processa) && $acao == 'gerar') {
 ?>
   <script>
-    js_OpenJanelaIframe('top.corpo', 'db_iframe1', 'agu4_aguacorte_processalista001.php?x40_codcorte=' +
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe1', 'agu4_aguacorte_processalista001.php?x40_codcorte=' +
     	document.form1.x40_codcorte.value + '&x41_dtprazo_ano=' + document.form1.x41_dtprazo_ano.value +
     	'&x41_dtprazo_mes=' + document.form1.x41_dtprazo_mes.value + '&x41_dtprazo_dia=' +
     	document.form1.x41_dtprazo_dia.value, 'Processa Lista', true, 20);
@@ -86,7 +86,7 @@
   } elseif(isset($processa) && $acao == 'reprocessar') {
 ?>
   <script>
-    js_OpenJanelaIframe('top.corpo', 'db_iframe', 'agu4_aguacorte_processalista003.php?x40_codcorte=' + 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe', 'agu4_aguacorte_processalista003.php?x40_codcorte=' + 
     	document.form1.x40_codcorte.value + '&x43_codsituacao=' + document.form1.x43_codsituacao.value +
     	'&x43_codsituacao2=' + document.form1.x43_codsituacao2.value + '&x43_codsituacao3=' +
     	document.form1.x43_codsituacao3.value, 'Reprocessa Lista', true, 20);

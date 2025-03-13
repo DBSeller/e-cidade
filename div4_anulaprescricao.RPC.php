@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("classes/db_prescricaolista_classe.php");
-require_once("classes/db_arrecant_classe.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_arreprescr_classe.php");
-require_once("classes/db_prescricao_classe.php");
-require_once("classes/db_prescricaoanula_classe.php");
-require_once("classes/db_prescricaoanulareg_classe.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("classes/db_prescricaolista_classe.php"));
+require_once(modification("classes/db_arrecant_classe.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_arreprescr_classe.php"));
+require_once(modification("classes/db_prescricao_classe.php"));
+require_once(modification("classes/db_prescricaoanula_classe.php"));
+require_once(modification("classes/db_prescricaoanulareg_classe.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(db_stdClass::db_stripTagsJson(str_replace("\\","",$_POST["json"])));
@@ -74,7 +74,7 @@ try {
                                                                                      )
                                                  );
   
-      $aDivida = db_utils::getColectionByRecord($rsDivida);
+      $aDivida = db_utils::getCollectionByRecord($rsDivida);
       $oRetorno->dados = $aDivida;	
         
       
@@ -120,7 +120,7 @@ try {
                                                                                  k30_numpar = {$oDebito->numpar}  
                                                                                  "));   
                                                                                  
-        $aArreprescr = db_utils::getColectionByRecord($rsArreprescr);
+        $aArreprescr = db_utils::getCollectionByRecord($rsArreprescr);
       
         foreach ($aArreprescr as $oDeb) {
           
@@ -191,7 +191,7 @@ try {
                                  and listadeb.k61_numpar = {$oDebito->numpar} ";
         
          $rsPrescricaoCodigo = db_query($sSqlPrescricao);
-         $aPrescricaoCodigo = db_utils::getColectionByRecord($rsPrescricaoCodigo); 
+         $aPrescricaoCodigo = db_utils::getCollectionByRecord($rsPrescricaoCodigo); 
         
          foreach ($aPrescricaoCodigo as $oPrescricaoCodigo) {
   
@@ -262,7 +262,7 @@ try {
                                                                                        "    k61_codigo = {$oParam->iCodLista} 
                                                                                         and k30_anulado is false "));
   
-      $aDebitosDivida = db_utils::getColectionByRecord($rsDivida);
+      $aDebitosDivida = db_utils::getCollectionByRecord($rsDivida);
       
       if (count($aDebitosDivida) == 0 ) {
         throw new Exception('Nenhum registro encontrado!');
@@ -296,7 +296,7 @@ try {
                                                                                  k30_numpar = {$oDebito->numpar}  
                                                                                  "));   
                                                                                  
-        $aArreprescr = db_utils::getColectionByRecord($rsArreprescr);
+        $aArreprescr = db_utils::getCollectionByRecord($rsArreprescr);
       
         foreach ($aArreprescr as $oDeb){
           
@@ -363,7 +363,7 @@ try {
                                  and listadeb.k61_numpar = {$oDebito->numpar} ";
         
          $rsPrescricaoCodigo = db_query($sSqlPrescricao);
-         $aPrescricaoCodigo = db_utils::getColectionByRecord($rsPrescricaoCodigo); 
+         $aPrescricaoCodigo = db_utils::getCollectionByRecord($rsPrescricaoCodigo); 
         
          foreach ($aPrescricaoCodigo as $oPrescricaoCodigo) {
   

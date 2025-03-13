@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_tipoasse_classe.php");
-include("classes/db_portariatipo_classe.php");
-include("classes/db_portariaenvolv_classe.php");
-include("classes/db_portariatipoato_classe.php");
-include("classes/db_portariaproced_classe.php");
-include("classes/db_portariatipodocindividual_classe.php");
-include("classes/db_portariatipodoccoletiva_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tipoasse_classe.php"));
+include(modification("classes/db_portariatipo_classe.php"));
+include(modification("classes/db_portariaenvolv_classe.php"));
+include(modification("classes/db_portariatipoato_classe.php"));
+include(modification("classes/db_portariaproced_classe.php"));
+include(modification("classes/db_portariatipodocindividual_classe.php"));
+include(modification("classes/db_portariatipodoccoletiva_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -57,8 +57,24 @@ $db_opcao = 33;
 $sqlerro  = false;
 
 if(isset($excluir)){
+
   db_inicio_transacao();
   $db_opcao = 3;
+
+  /**
+   * Verica se o tipo de assentamento possui algum assentamento vinculado,
+   * se possuir nao permite a exclusao
+   */
+  $oDaoAssenta = new cl_assenta();
+  $sSqlAssenta = $oDaoAssenta->sql_query_file(null, "h16_codigo", null, "h16_assent = {$h12_codigo}");
+  $rsAssenta   = db_query($sSqlAssenta);
+
+  if (pg_num_rows($rsAssenta) > 0) {
+
+    db_msgbox("Tipo de assentamento, já possui um assentamento vinculado. Não é possível realizar a exclusão.");
+    db_redireciona("");
+  }
+  
 
   if (isset($h30_sequencial) && trim($h30_sequencial)!=""){
            
@@ -78,14 +94,48 @@ if(isset($excluir)){
             $sqlerro  = true;
        }
   }       
-
-  if ($sqlerro == false){
-       $cltipoasse->excluir($h12_codigo);
-       if ($cltipoasse->erro_status == 0){
-            $sqlerro  = true;
-       }
-  }
   
+  if (!$sqlerro) {                                                                          
+    
+    $oDaoTipoassedb_cadattdinamico = new cl_tipoassedb_cadattdinamico();
+    $oDaoTipoassedb_cadattdinamico->excluir(null,null, "h79_tipoasse = {$h12_codigo}");
+
+    if ($oDaoTipoassedb_cadattdinamico->erro_sql == '0') {
+      $sqlerro = true;
+    }
+
+    if(!$sqlerro) {
+      
+      $db_cadattdinamicoatributos = new cl_db_cadattdinamicoatributos();
+      
+      if(isset($h79_db_cadattdinamico) && !empty($h79_db_cadattdinamico)) {
+
+        $db_cadattdinamicoatributos->excluir(null, " db109_db_cadattdinamico = {$h79_db_cadattdinamico}");
+
+        if($db_cadattdinamicoatributos->erro_sql == '0') {
+          $sqlerro = true;
+        }
+
+        if(!$sqlerro) {
+
+          $db_cadattdinamico = new cl_db_cadattdinamico();
+          $db_cadattdinamico->excluir($h79_db_cadattdinamico);
+
+          if($db_cadattdinamico->erro_sql == '0') {
+            $sqlerro = true;
+          }
+        }
+      }
+    }
+  }
+
+  if (!$sqlerro) {
+
+    $cltipoasse->excluir($h12_codigo);
+    if ($cltipoasse->erro_status == 0){
+         $sqlerro  = true;
+    }
+  }
   db_fim_transacao($sqlerro);
 
 } else if(isset($chavepesquisa)){
@@ -100,12 +150,12 @@ if(isset($excluir)){
   }
 
   // Consulta Modelo de Portaria Individual
-  
   if ( !empty($h30_sequencial) ) {
 
     $rsConsultaModIndividual = $clportariatipodocindividual->sql_record($clportariatipodocindividual->sql_query(null,"h37_modportariaindividual, db63_nomerelatorio as descrModIndividual",null," h37_portariatipo = {$h30_sequencial}"));
 
-    if($clportariatipodocindividual->numrows > 0){
+    if ($clportariatipodocindividual->numrows > 0) {
+
       db_fieldsmemory($rsConsultaModIndividual,0);
       $descrModIndividual = $descrmodindividual;    
     }
@@ -116,11 +166,34 @@ if(isset($excluir)){
     
     $rsConsultaModColetiva   = $clportariatipodoccoletiva->sql_record($clportariatipodoccoletiva->sql_query(null,"h38_modportariacoletiva, db63_nomerelatorio as descrModColetiva",null, "h38_portariatipo = {$h30_sequencial} "));
     
-    if($clportariatipodoccoletiva->numrows > 0){
+    if ($clportariatipodoccoletiva->numrows > 0) {
 
       db_fieldsmemory($rsConsultaModColetiva,0);
       $descrModColetiva = $descrmodcoletiva; 
     }
+  }
+
+  $oDaoTipoassedb_cadattdinamico = new cl_tipoassedb_cadattdinamico();
+  $sSqlTipoAsseCadDinamico       = $oDaoTipoassedb_cadattdinamico->sql_query(null,null, "h79_db_cadattdinamico", null, "h79_tipoasse = {$h12_codigo}");
+
+  $rsTipoAsseCadDinamico         = db_query($sSqlTipoAsseCadDinamico);
+
+  if (pg_num_rows($rsTipoAsseCadDinamico) > 0) {
+
+    db_fieldsmemory($rsTipoAsseCadDinamico, 0);
+  }
+
+  /**
+   * Verica se o tipo de assentamento possui algum assentamento vinculado,
+   * se possuir criamos a variavel $lAssentamentoVinculado, para avisar o usuario no momento
+   * que ele for efetuar a manutenção de Campos dinamicos
+   */
+  $oDaoAssenta = new cl_assenta();
+  $sSqlAssenta = $oDaoAssenta->sql_query_file(null, "h16_codigo", null, "h16_assent = {$h12_codigo}");
+  $rsAssenta   = db_query($sSqlAssenta);
+
+  if (pg_num_rows($rsAssenta) > 0) {
+    $lAssentamentoVinculado = true;
   }
   
   $db_botao = true;
@@ -150,7 +223,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
       <center>
       <?
-      include("forms/db_frmtipoasse.php");
+      include(modification("forms/db_frmtipoasse.php"));
       ?>
       </center>
     </td>

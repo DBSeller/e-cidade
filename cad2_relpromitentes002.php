@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 set_time_limit(0);
-include("libs/db_sql.php");
-include("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $pdf = new pdf();
@@ -88,7 +88,7 @@ select z.*, proprietario_nome.proprietario from (
   on x.j41_matric = y.j41_matric) as z
 inner join proprietario_nome on proprietario_nome.j01_matric = z.j41_matric $where $ordem $modo  
 ";
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 $pdf->AddPage();
 $pdf->SetFont('Arial','B',7);
@@ -124,7 +124,7 @@ if($resumido == 't'){
     $pdf->Cell(20,05,$secundario,1,0,"C",1);
     $pdf->Cell(100,05,$proprietario,1,0,"L",1);
     $pdf->Cell(20,05,$j41_promitipo,1,1,"C",1);
-    $resultp = pg_query("SELECT z01_nome,j41_tipopro from promitente inner join cgm on z01_numcgm = j41_numcgm where j41_matric = $j41_matric");
+    $resultp = db_query("SELECT z01_nome,j41_tipopro from promitente inner join cgm on z01_numcgm = j41_numcgm where j41_matric = $j41_matric");
     for($i=0;$i<pg_numrows($resultp);$i++){
       db_fieldsmemory($resultp,$i);
       if($j41_tipopro == 't'){

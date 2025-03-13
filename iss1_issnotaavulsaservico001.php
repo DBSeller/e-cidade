@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_issnotaavulsaservico_classe.php");
-include("classes/db_issnotaavulsa_classe.php");
-include("classes/db_issnotaavulsatomador_classe.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_arrehist_classe.php");
-include("classes/db_arreinscr_classe.php");
-include("classes/db_parissqn_classe.php");
-include("classes/db_issnotaavulsanumpre_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_issnotaavulsaservico_classe.php"));
+include(modification("classes/db_issnotaavulsa_classe.php"));
+include(modification("classes/db_issnotaavulsatomador_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arrehist_classe.php"));
+include(modification("classes/db_arreinscr_classe.php"));
+include(modification("classes/db_parissqn_classe.php"));
+include(modification("classes/db_issnotaavulsanumpre_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 function db_calculaLinhasTexto22($texto){
  
@@ -152,10 +152,10 @@ if (isset($post->recibo)){
 			db_inicio_transacao();
 		  $clarrecad  = new cl_arrecad();
 		  $clarrehist = new cl_arrehist();
-			$rsNum      = pg_exec("select nextval('numpref_k03_numpre_seq') as k03_numpre");
+			$rsNum      = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
 			$oNum       = db_utils::fieldsMemory($rsNum,0);
       //Codigo numpre do Recibo 
-			$rsNumnov   = pg_exec("select nextval('numpref_k03_numpre_seq') as k03_numnov");
+			$rsNumnov   = db_query("select nextval('numpref_k03_numpre_seq') as k03_numnov");
 			$oNumnov    = db_utils::fieldsMemory($rsNumnov,0);
       $aDataPgto  = explode("-",$oNot->q51_dtemiss);
       $dataPagto  = date("Y-m-d",mktime(0,0,0,$aDataPgto[1],$aDataPgto[2]+$oPar->q60_notaavulsadiasprazo,$aDataPgto[0]));
@@ -294,7 +294,7 @@ if (isset($post->notaavulsa)){
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
     <center>
 	<?
-	include("forms/db_frmissnotaavulsaservico.php");
+	include(modification("forms/db_frmissnotaavulsaservico.php"));
 	?>
     </center>
   </body>

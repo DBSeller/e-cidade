@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -203,10 +203,10 @@ function js_pesquisam70_codmatmater(mostra){
   qry  = "&setdepart=true";
   qry += "&codigododepartamento=<?=(db_getsession("DB_coddepto"))?>";
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matmater','func_matmaterdepto.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr'+qry,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matmater','func_matmaterdepto.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr'+qry,'Pesquisa',true);
   }else{
      if(document.form1.m70_codmatmater.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matmater','func_matmaterdepto.php?pesquisa_chave='+document.form1.m70_codmatmater.value+'&funcao_js=parent.js_mostramatmater'+qry,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matmater','func_matmaterdepto.php?pesquisa_chave='+document.form1.m70_codmatmater.value+'&funcao_js=parent.js_mostramatmater'+qry,'Pesquisa',false);
      }else{
        document.form1.m60_descr.value = ''; 
      }
@@ -229,10 +229,10 @@ function js_mostramatmater1(chave1,chave2){
 }
 function js_pesquisam82_matestoqueini(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueini','func_matestoqueini.php?funcao_js=parent.js_mostramatestoqueini1|m80_codigo|m80_matestoqueitem','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueini','func_matestoqueini.php?funcao_js=parent.js_mostramatestoqueini1|m80_codigo|m80_matestoqueitem','Pesquisa',true);
   }else{
      if(document.form1.m82_matestoqueini.value != ''){ 11
-        js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueini','func_matestoqueini.php?pesquisa_chave='+document.form1.m82_matestoqueini.value+'&funcao_js=parent.js_mostramatestoqueini','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueini','func_matestoqueini.php?pesquisa_chave='+document.form1.m82_matestoqueini.value+'&funcao_js=parent.js_mostramatestoqueini','Pesquisa',false);
      }else{
        document.form1.m80_matestoqueitem.value = ''; 
      }
@@ -252,10 +252,10 @@ function js_mostramatestoqueini1(chave1,chave2){
 }
 function js_pesquisam82_matestoqueitem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?funcao_js=parent.js_mostramatestoqueitem1|m71_codlanc|m71_codmatestoque','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?funcao_js=parent.js_mostramatestoqueitem1|m71_codlanc|m71_codmatestoque','Pesquisa',true);
   }else{
      if(document.form1.m82_matestoqueitem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?pesquisa_chave='+document.form1.m82_matestoqueitem.value+'&funcao_js=parent.js_mostramatestoqueitem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?pesquisa_chave='+document.form1.m82_matestoqueitem.value+'&funcao_js=parent.js_mostramatestoqueitem','Pesquisa',false);
      }else{
        document.form1.m71_codmatestoque.value = ''; 
      }
@@ -274,7 +274,7 @@ function js_mostramatestoqueitem1(chave1,chave2){
   db_iframe_matestoqueitem.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueinimei','func_matestoqueinimei.php?funcao_js=parent.js_preenchepesquisa|m82_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueinimei','func_matestoqueinimei.php?funcao_js=parent.js_preenchepesquisa|m82_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_matestoqueinimei.hide();
@@ -360,7 +360,7 @@ function js_cancelarSaidaMaterial () {
 function js_saidaAtendimento(oAjax) {
 
   js_removeObj("msgBox");
-  var obj               = eval("(" + oAjax.responseText + ")");
+  var obj               = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
   
     alert(obj.message.urlDecode());

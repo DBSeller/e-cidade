@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_parecerresult_classe.php");
-include("classes/db_diarioresultado_classe.php");
-include("classes/db_diario_classe.php");
-include("classes/db_parecer_classe.php");
-include("classes/db_parecerturma_classe.php");
-include("classes/db_parecerlegenda_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_parecerresult_classe.php"));
+include(modification("classes/db_diarioresultado_classe.php"));
+include(modification("classes/db_diario_classe.php"));
+include(modification("classes/db_parecer_classe.php"));
+include(modification("classes/db_parecerturma_classe.php"));
+include(modification("classes/db_parecerlegenda_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clparecerresult = new cl_parecerresult;
 $clparecerlegenda = new cl_parecerlegenda;
@@ -53,10 +53,10 @@ if(isset($alterar2)){
               inner join diario on ed95_i_codigo = ed73_i_diario
              WHERE ed73_i_codigo = $ed63_i_diarioresultado
             ";
- $result_reg = pg_query($sql_reg);
+ $result_reg = db_query($sql_reg);
  db_fieldsmemory($result_reg,0);
  $sql = "UPDATE diarioresultado SET ed73_t_parecer = '$ed73_t_parecer' WHERE ed73_i_codigo = $ed63_i_diarioresultado";
- $query = pg_query($sql);
+ $query = db_query($sql);
  $tam = sizeof(@$reg_outras);
  if($tam>0){
   $regs = "";
@@ -92,7 +92,7 @@ if(isset($alterar2)){
     }
    }
    $sql = "UPDATE diarioresultado SET ed73_t_parecer = '$ed73_t_parecer' WHERE ed73_i_codigo = $ed63_i_diarioresultado";
-   $query = pg_query($sql);
+   $query = db_query($sql);
   }
  }
  db_fim_transacao();
@@ -141,7 +141,7 @@ if(isset($alterar2)){
     <tr>
      <td colspan="2">
       <center>
-      <?include("forms/db_frmparecerresult001.php");?>
+      <?include(modification("forms/db_frmparecerresult001.php"));?>
       </center>
      </td>
     </tr>

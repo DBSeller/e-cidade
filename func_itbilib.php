@@ -1,37 +1,37 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_itbi_classe.php");
-include("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_itbi_classe.php"));
+include(modification("libs/db_app.utils.php"));
 
 $situacao = "";
 $tipo     = "";
@@ -52,7 +52,6 @@ if(!isset($lote)) {
 }
 
 $clitbi = new cl_itbi;
-$clitbi->rotulo->label("it01_guia");
 $clitbi->rotulo->label("it01_guia");
 
 $clrotulo = new rotulocampo;
@@ -111,7 +110,7 @@ $clrotulo->label("it18_nomelograd");
 
 <tr>
 	<td title="Setor/Quadra/Lote"><strong>Setor/Quadra/Lote:</strong></td>
-	
+
 	<td>
 	<?
 		db_input('j34_setor',10,$Ij34_setor,true,'text',1);
@@ -129,7 +128,7 @@ $clrotulo->label("it18_nomelograd");
 		$aTipo = array( 't'=>'Todos',
 	                             'u'=>'Urbano',
 	                             'r'=>'Rural' );
-	
+
 		db_select('tipo',$aTipo,true,2," style='width:295px;'");
 	?>
 	</td>
@@ -140,7 +139,7 @@ $clrotulo->label("it18_nomelograd");
 	<td>
 	<?
 		db_inputdata('dtIni', '', '', '', true, 'text', 1, '');
-	?> &nbsp; <b> a </b> &nbsp; 
+	?> &nbsp; <b> a </b> &nbsp;
 	<?
 		db_inputdata('dtFim', '', '', '', true, 'text', 1, '');
 	?>
@@ -161,16 +160,16 @@ $clrotulo->label("it18_nomelograd");
 	</td>
 </tr>
 
-<tr> 
-	<td colspan="2" align="center"> 
+<tr>
+	<td colspan="2" align="center">
 		<div id="pesquisa"></div>
 	</td>
-</tr>	
+</tr>
 
 <tr>
 	<td colspan="2" align="center">
-		<input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-		<input name="limpar" type="reset" id="limpar" value="Limpar"> 
+		<input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
+		<input name="limpar" type="reset" id="limpar" value="Limpar">
 		<input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframeitbi.hide();">
 	</td>
 </tr>
@@ -180,10 +179,11 @@ $clrotulo->label("it18_nomelograd");
 	<tr>
 		<td>
 		<?
+
 		if(!isset($pesquisa_chave)){
 			if(isset($campos)==false){
 				if(file_exists("funcoes/db_func_itbi.php")==true){
-					include("funcoes/db_func_itbi.php");
+					include(modification("funcoes/db_func_itbi.php"));
 				}else{
 					$campos = "itbi.*";
 				}
@@ -204,7 +204,7 @@ $clrotulo->label("it18_nomelograd");
 			$sWhere .= "     end                                                                             ";
 
 			if(isset($chave_it01_guia) && (trim($chave_it01_guia)!="") ){
-				$sWhere .= " and it01_guia like '$chave_it01_guia%' ";
+				$sWhere .= " and it01_guia = {$chave_it01_guia} ";
 			}
 
 			if (isset($j01_matric) && trim($j01_matric) != "" ) {
@@ -241,9 +241,9 @@ $clrotulo->label("it18_nomelograd");
 			if ( isset($j34_lote) && $j34_lote != "" ) {
 				$sWhere  .= " and j34_lote = '" . str_pad($j34_lote,4,"0",STR_PAD_LEFT)."'";
 			}
-			
+
 			if(isset($setorCodigo) || isset($quadra) || isset($lote)) {
-				
+
 				if(isset($setor) and $setor != '') {
 					$sWhere .= " and j05_codigoproprio = '{$setorCodigo}' ";
 				}
@@ -253,10 +253,11 @@ $clrotulo->label("it18_nomelograd");
 				if(isset($lote) and $lote != '') {
 					$sWhere .= " and j06_lote = '{$lote}' ";
 				}
-					
-			}				
+
+			}
 
 			if ( $situacao == "2" ) {
+
 				$sWhere         .= " and arrepaga.k00_numpre is null";
 				$sWhere         .= " and it16_guia is null";
 			} else if ( $situacao == "3" ) {
@@ -271,10 +272,20 @@ $clrotulo->label("it18_nomelograd");
 				$sWhere     .= " and it18_guia is not null ";
 			}
 
-			$sql = $clitbi->sql_query_itbi("","distinct ".$campos,"it01_guia",$sWhere,$sWhereLogradouro);
-			db_lovrot($sql,15,"()","",$funcao_js);
-			
+			if( !empty($j01_matric) ||
+				  !empty($j34_setor)  ||
+				  !empty($situacao)   ||
+				  !empty($tipo)       ||
+				  !empty($j34_quadra) ||
+				  !empty($j34_lote)   ||
+				  !empty($it18_nomelograd) ) {
+
+				$sql = $clitbi->sql_query_itbi("","distinct ".$campos,"it01_guia",$sWhere,$sWhereLogradouro);
+				db_lovrot($sql,15,"()","",$funcao_js);
+			}
+
 		}else{
+
 			if($pesquisa_chave!=null && $pesquisa_chave!=""){
 				$result = $clitbi->sql_record($clitbi->sql_query_lib($pesquisa_chave));
 				if($clitbi->numrows!=0){
@@ -297,7 +308,7 @@ function js_matri(mostra){
   var matri=document.form2.j01_matric.value;
   w = document.body.clientWidth - 20;
   h = document.body.clientHeight - 20;
-  
+
   if(mostra==true){
     js_OpenJanelaIframe('','db_iframe3','func_matricitbi.php?valida=false&funcao_js=parent.js_mostramatri|0|1','Pesquisa',true, null, null, w, h);
   }else{
@@ -310,10 +321,10 @@ function js_mostramatri(chave1,chave2){
   db_iframe3.hide();
 }
 function js_mostramatri1(chave,erro){
-  document.form2.z01_nomematri.value = chave; 
-  if(erro==true){ 
-    document.form2.j01_matric.focus(); 
-    document.form2.j01_matric.value = ''; 
+  document.form2.z01_nomematri.value = chave;
+  if(erro==true){
+    document.form2.j01_matric.focus();
+    document.form2.j01_matric.value = '';
   }
 }
 </script>
@@ -333,7 +344,13 @@ if(!isset($pesquisa_chave)){
 var oPesquisa = new DBViewPesquisaSetorQuadraLote('pesquisa', 'oPesquisa');
     oPesquisa.show();
     oPesquisa.appendForm();
-<? 
-	echo "oPesquisa.setValues('{$setorCodigo}','{$quadra}','{$lote}');"; 
+<?
+	echo "oPesquisa.setValues('{$setorCodigo}','{$quadra}','{$lote}');";
 ?>
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,15 +24,18 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-
-require_once('fpdf151/pdf.php');
-require_once('libs/db_utils.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification('libs/db_utils.php'));
 
 $oDaoTfdVeiculoDestino    = db_utils::getdao('tfd_veiculodestino');
 
 function retanguloVeiculo($oPdf, $oVeiculo) {
 
-  $oPdf->Rect($oPdf->getX(), $oPdf->getY(), 135.0, 24.0);
+  $oPdf->Rect($oPdf->getX(), $oPdf->getY(), 139.0, 24.0);
   $oPdf->setXY($oPdf->getX(), $oPdf->getY() + 1);
   $oPdf->setfont('arial', 'b', 8);
   $oPdf->cell(23, 4, "  Local Destino: ", 0, 0, "L", 0);
@@ -54,8 +57,8 @@ function retanguloVeiculo($oPdf, $oVeiculo) {
 
 function retanguloSaida($oPdf, $oSaida, $iY) {
 
-  $oPdf->Rect($oPdf->getX() + 136, $iY, 135.0, 24.0);
-  $oPdf->setXY($oPdf->getX() + 135, $iY + 1);
+  $oPdf->Rect($oPdf->getX() + 140, $iY, 139.0, 24.0);
+  $oPdf->setXY($oPdf->getX() + 140, $iY + 1);
   $oPdf->setfont('arial', 'b', 8);
   $oPdf->cell(33, 4, "  Data Saída: ", 0, 0, "L", 0);
   $oPdf->setfont('arial', '', 8);
@@ -64,7 +67,7 @@ function retanguloSaida($oPdf, $oSaida, $iY) {
   $oPdf->cell(20, 4, " Hora Saída: ", 0, 0, "L", 0);
   $oPdf->setfont('arial', '', 8);
   $oPdf->cell(45, 4, $oSaida->HoraSaida, 0, 1, "L", 0);
-  $oPdf->setXY($oPdf->getX() + 135, $oPdf->getY());
+  $oPdf->setXY($oPdf->getX() + 140, $oPdf->getY());
   $oPdf->setfont('arial', 'b', 8);
   $oPdf->cell(33, 4, "  Data Retorno: ", 0, 0, "L", 0);
   $oPdf->setfont('arial', '', 8);
@@ -73,12 +76,12 @@ function retanguloSaida($oPdf, $oSaida, $iY) {
   $oPdf->cell(20, 4, "Hora Retorno: ", 0, 0, "L", 0);
   $oPdf->setfont('arial', '', 8);
   $oPdf->cell(45, 4, $oSaida->HoraRetorno, 0, 1, "L", 0);
-  $oPdf->setXY($oPdf->getX() + 135, $oPdf->getY() + 3);
+  $oPdf->setXY($oPdf->getX() + 140, $oPdf->getY() + 3);
   $oPdf->setfont('arial', 'b', 8);
   $oPdf->cell(33, 4, "  Vagas Utilizadas Ida: ", 0, 0, "L", 0);
   $oPdf->setfont('arial', '', 8);
   $oPdf->cell(32, 4, $oSaida->TotalIda, 0, 1, "L", 0);
-  $oPdf->setXY($oPdf->getX() + 135, $oPdf->getY() + 2);
+  $oPdf->setXY($oPdf->getX() + 140, $oPdf->getY() + 2);
   $oPdf->setfont('arial', 'b', 8);
   $oPdf->cell(33, 4, "  Vagas Utilizadas Volta: ", 0, 0, "L", 0);
   $oPdf->setfont('arial', '', 8);
@@ -93,29 +96,55 @@ function impCabecalho($oPdf) {
 
   $oPdf->cell( 15, 4, "CGS",               1, 0, "L", 1 );
   $oPdf->cell( 55, 4, "Paciente",          1, 0, "L", 1 );
-  $oPdf->cell( 20, 4, "Nro. Acomp.",       1, 0, "L", 1 );
   $oPdf->cell( 46, 4, "Local de Saída",    1, 0, "L", 1 );
   $oPdf->cell( 40, 4, "Municipio Destino", 1, 0, "L", 1 );
-  $oPdf->cell( 40, 4, "Local Destino",     1, 0, "L", 1 );
-  $oPdf->cell( 10, 4, "Hora",              1, 0, "L", 1 );
-  $oPdf->cell( 30, 4, "Telefone",          1, 0, "L", 1 );
-  $oPdf->cell( 15, 4, "Direção",           1, 1, "L", 1 );
+  $oPdf->cell( 60, 4, "Local Destino",     1, 0, "L", 1 );
+  $oPdf->cell( 9, 4, "Hora",              1, 0, "L", 1 );
+  $oPdf->cell( 39, 4, "Telefone",          1, 0, "L", 1 );
+  $oPdf->cell( 14, 4, "Direção",           1, 1, "L", 1 );
 
   $oPdf->setfillcolor(255);
 }
 
-function impPaciente($oPdf, $oPaciente) {
+function impPaciente(\ECidade\Pdf\Pdf $oPdf, $oPaciente) {
+  $altura = $oPdf->nbLines(46, $oPaciente->tf17_c_localsaida) * 4;
+  if ($oPdf->getAvailableHeight() < $altura) {
+      novaPagina($oPdf);
+      impCabecalho($oPdf);
+  }
 
   $oPdf->setfont('arial', '', 8);
-  $oPdf->cell( 15, 4, $oPaciente->z01_i_cgsund,           1, 0, "C", 1 );
-  $oPdf->cell( 55, 4, $oPaciente->z01_v_nome,             1, 0, "L", 1 );
-  $oPdf->cell( 20, 4, $oPaciente->nro_acompanhantes,      1, 0, "C", 1 );
-  $oPdf->cell( 46, 4, $oPaciente->tf18_c_localsaida,      1, 0, "L", 1 );
-  $oPdf->cell( 40, 4, $oPaciente->tf03_c_descr,           1, 0, "L", 1 );
-  $oPdf->cell( 40, 4, $oPaciente->nomeempresa,            1, 0, "L", 1 );
-  $oPdf->cell( 10, 4, $oPaciente->tf16_c_horaagendamento, 1, 0, "L", 1 );
-  $oPdf->cell( 30, 4, $oPaciente->telefone,               1, 0, "L", 1 );
-  $oPdf->cell( 15, 4, $oPaciente->direcao,                1, 1, "L", 1 );
+  $oPdf->cell( 15, $altura, $oPaciente->z01_i_cgsund,                         1, 0, "C", 1 );
+  $oPdf->cell( 55, $altura, limitaString( $oPaciente->z01_v_nome, 28 ),        1, 0, "L", 1 );
+  $x = $oPdf->getX();
+  $y = $oPdf->getY();
+  $oPdf->multicell(46, 4, $oPaciente->tf17_c_localsaida, 1, 'L', 1);
+  $oPdf->setXY($x + 46, $y);
+  $oPdf->cell( 40, $altura, limitaString( $oPaciente->tf03_c_descr, 20 ),     1, 0, "L", 1 );
+  $oPdf->cell( 60, $altura, limitaString( $oPaciente->nomeempresa, 36 ),          1, 0, "L", 1 );
+  $oPdf->cell( 9, $altura, $oPaciente->tf16_c_horaagendamento,               1, 0, "L", 1 );
+  $oPdf->cell( 39, $altura, $oPaciente->telefone,                             1, 0, "L", 1 );
+  $oPdf->cell( 14, $altura, $oPaciente->direcao,                              1, 1, "L", 1 );
+
+
+  $oPedido = new PedidoTFD( $oPaciente->tf01_i_codigo );
+
+  foreach ($oPedido->getAcompanhantes() as $oAcompanhante) {
+
+    $aContatos   = array();
+    $aContatos[] = $oAcompanhante->getTelefone();
+    $aContatos[] = $oAcompanhante->getCelular();
+    $aContatos   = array_filter( $aContatos );
+
+    $oPdf->cell( 15, 4, $oAcompanhante->getCodigo(), 1, 0, "C", 1 );
+    $oPdf->cell( 55, 4, "+AC - " . $oAcompanhante->getNome(), 1, 0, "L", 1 );
+    $oPdf->cell( 46, 4, '', 1, 0, "L", 1 );
+    $oPdf->cell( 40, 4, '', 1, 0, "L", 1 );
+    $oPdf->cell( 60, 4, '', 1, 0, "L", 1 );
+    $oPdf->cell( 9, 4, '', 1, 0, "L", 1 );
+    $oPdf->cell( 39, 4, implode( " / ", $aContatos ), 1, 0, "L", 1 );
+    $oPdf->cell( 14, 4, '', 1, 1, "L", 1 );
+  }
 }
 
 function novaPagina($oPdf) {
@@ -160,6 +189,10 @@ function getVeiculo($rs) {
   return $oVeiculo;
 }
 
+function limitaString( $sString, $iMaxLength = 36, $sSimbolo="..." ) {
+    return (strlen( $sString ) > $iMaxLength ) ? substr( $sString, 0, $iMaxLength ) . $sSimbolo : $sString;
+}
+
 if (isset($iChavePesquisa) && ! empty($iChavePesquisa)) {
   $sWhere = " tf18_i_codigo = $iChavePesquisa ";
 } else {
@@ -175,15 +208,24 @@ if (isset($iChavePesquisa) && ! empty($iChavePesquisa)) {
   $sWhere    .= " and tf18_c_horasaida = '$hora'";
 }
 
-$sWhere .= ' and tf19_i_tipopassageiro = 1';
-$sWhere .= ' and tf01_i_situacao = 1 ';
+if ($situacao == "E"){
+  $sSituacao = "2";
+} else if ($situacao == "AE") {
+  $sSituacao = "1, 2";
+} else if ($situacao == "D"){
+    $sSituacao = "4";
+} else {
+  $sSituacao = "1";
+}
 
-$sCampos   = 'z01_i_cgsund, z01_v_nome, tf16_c_horaagendamento, a.z01_nome, ';
+$sWhere .= ' and tf19_i_tipopassageiro = 1';
+$sWhere .= ' and tf01_i_situacao in (' .$sSituacao. ') ';
+$sCampos   = ' tf01_i_codigo, z01_i_cgsund, z01_v_nome, tf16_c_horaagendamento, a.z01_nome, ';
 $sCampos  .= " (case when z01_v_telef <> '' and z01_v_telcel <> '' then  z01_v_telef||' / '||z01_v_telcel";
 $sCampos  .= " when z01_v_telcel <> '' then z01_v_telcel when z01_v_telef <> '' then z01_v_telef else '' end)";
 $sCampos  .= " as telefone, a.z01_munic||' - '||a.z01_uf as cidadeempresa, ";
 $sCampos  .= 've01_placa, tf18_d_datasaida, tf18_c_horasaida, tf03_c_descr,  ';
-$sCampos  .= 'tf18_i_veiculo, tf18_c_localsaida, tf18_i_codigo, z01_v_cgccpf, ';
+$sCampos  .= 'tf18_i_veiculo, tf17_c_localsaida, tf18_i_codigo, z01_v_cgccpf, ';
 $sCampos  .= 'z01_c_certidaonum, tf19_i_fica, a.z01_nome as nomeempresa, tf18_d_dataretorno, ';
 $sCampos  .= "tf18_c_horaretorno, (case when tf19_i_fica = 2 THEN 'Ida/Volta' else 'Ida' end) as direcao,";
 $sCampos  .= "tf18_i_motorista||' - '||cgm.z01_nome as motorista, ve01_quantcapacidad, ";
@@ -192,9 +234,9 @@ $sCampos  .= "tf18_i_veiculo||' - '||ve21_descr||' '||ve22_descr||' - '||ve01_pl
 $sNroAcmp  = '(select count(*) from tfd_acompanhantes where tf13_i_pedidotfd = tfd_pedidotfd.tf01_i_codigo) ';
 $sNroAcmp .= "as nro_acompanhantes";
 $sCampos  .= $sNroAcmp;
-
-$sSql     = $oDaoTfdVeiculoDestino->sql_query_lista_daer(null, $sCampos, ', nomeempresa', $sWhere);
+$sSql     = $oDaoTfdVeiculoDestino->sql_query_lista_daer(null, $sCampos, 'z01_v_nome, nomeempresa', $sWhere);
 $rs       = $oDaoTfdVeiculoDestino->sql_record($sSql);
+
 $iLinhas  = $oDaoTfdVeiculoDestino->numrows;
 
 if ($iLinhas == 0) {
@@ -205,18 +247,17 @@ if ($iLinhas == 0) {
       <td align='center'>
         <font color='#FF0000' face='arial'>
           <b>Nenhum registro encontrado<br>
-          <input type='button' value='Fechar' onclick='wicidadeempresandow.close()'><die($sSql);/b>
+          <input type='button' value='Fechar' onclick='wicidadeempresandow.close()'>
         </font>
       </td>
     </tr>
   </table>
-  <?
+  <?php
   exit;
 }
 
-$oPdf = new PDF();
-$oPdf->Open();
-$oPdf->AliasNbPages();
+$oPdf = new \ECidade\Pdf\Pdf();
+$oPdf->aliasNbPages();
 $head1 = "Relatório de Saída de Veículo";
 novaPagina($oPdf);
 $iY = $oPdf->getY();
@@ -230,4 +271,4 @@ for ($iI = 0; $iI < $iLinhas; $iI++) {
   impPaciente($oPdf, $oPaciente);
 }
 
-$oPdf->Output();
+$oPdf->output();

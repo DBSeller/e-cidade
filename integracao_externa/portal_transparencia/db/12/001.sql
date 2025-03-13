@@ -1,0 +1,1 @@
+alter table transparencia.licitacoes_itens alter column unidade_medida type varchar (40);

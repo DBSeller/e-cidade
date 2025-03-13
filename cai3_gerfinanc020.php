@@ -1,48 +1,47 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("classes/db_arreprescr_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
-//db_postmemory($HTTP_SERVER_VARS,2);exit;
+
 $clarreprescr = new cl_arreprescr;
 ?>
 <html>
 <head>
-<title>Documento sem t&iacute;tulo</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" src="scripts/scripts.js" ></script>
 <script>
 function js_imprime() {
-  
+
   var frm      = document.form1;
   var queryStr = '';
   var matric   = frm.matric.value;
@@ -58,15 +57,14 @@ function js_imprime() {
   }else if(numpre != ''){
 		queryStr = 'tipoorigem=numpre&valororigem='+numpre;
   }
-//	js_OpenRelatorio('','db_iframe_relatorio','cai3_gerfinanc021.php?'+queryStr,'Pesquisa',false);
-	//js_OpenJanelaIframe('top.corpo','db_iframe_relatorio','cai3_gerfinanc021.php?'+queryStr,'Pesquisa',true);
+
   window.open('cai3_gerfinanc021.php?'+queryStr,'',
-              'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ') 
+              'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ')
 }
 function js_OpenRelatorio(xxaondeJanela,xxnomeJanela,xxarquivoJanela,xxtituloJanela,xxmostraJanela){
   alert('1');
 	eval('var nomeIframe = '+xxnomeJanela+'_status;');
-  js_OpenJanelaIframe('top.corpo',nomeIframe,'janelaStatus.php','Aguarde Processando',true,30,30,100,60);
+  js_OpenJanelaIframe('CurrentWindow.corpo',nomeIframe,'janelaStatus.php','Aguarde Processando',true,30,30,100,60);
   alert('2');
   js_OpenJanelaIframe(xxaondeJanela,nomeIframe,xxarquivoJanela,xxtituloJanela,xxmostraJanela);
   alert('3');
@@ -83,7 +81,7 @@ function js_OpenRelatorio(xxaondeJanela,xxnomeJanela,xxarquivoJanela,xxtituloJan
 <?
   $where = "";
   $inner = "";
-//	die($tipo_filtro);
+
   if ($tipo_filtro=="CGM"){
 		 $numcgm = $cod_filtro;
      $inner = " inner join arrenumcgm on arrenumcgm.k00_numpre = arreprescr.k30_numpre   ";
@@ -107,14 +105,13 @@ function js_OpenRelatorio(xxaondeJanela,xxnomeJanela,xxarquivoJanela,xxtituloJan
   $sqlArreprescr  =  " select $campos from arreprescr ";
 	$sqlArreprescr .=  "        inner join arreinstit  on arreinstit.k00_numpre =	arreprescr.k30_numpre ";
 	$sqlArreprescr .=  "                              and arreinstit.k00_instit =	".db_getsession('DB_instit') ;
-  $sqlArreprescr .=  "        inner join prescricao  on k31_codigo  = k30_prescricao and k31_situacao in (1,3)";
+  $sqlArreprescr .=  "        inner join prescricao  on k31_codigo  = k30_prescricao";
   $sqlArreprescr .=  "        inner join db_usuarios on k31_usuario = id_usuario ";
   $sqlArreprescr .=  "        inner join tabrec      on k30_receit  = k02_codigo ";
   $sqlArreprescr .=  "        inner join histcalc    on k30_hist    = k01_codigo ";
   $sqlArreprescr .=  $inner;
   $sqlArreprescr .=  $where." and k30_anulado is false ";
-//  $sqlArreprescr .=  "  where k30_numcgm = $cgm ";
-//  echo $sqlArreprescr; exit;
+
   $rsArreprescr  =  $clarreprescr->sql_record($sqlArreprescr);
 
   $ConfCor1 = "#EFE029";
@@ -124,10 +121,11 @@ function js_OpenRelatorio(xxaondeJanela,xxnomeJanela,xxarquivoJanela,xxtituloJan
 	$qcor= $ConfCor1;
   $intNumrows = $clarreprescr->numrows;
   if($intNumrows > 0) {
+
       echo " 	<table width='100%' border='0' cellspacing='0' cellpadding='3'> ";
       echo "     <tr bgcolor='#ffcc66'>  ";
       echo "       <th width='11%' nowrap> Numpre    </th> ";
-      echo "       <th width='9%'  nowrap> Operacao  </th> ";
+      echo "       <th width='9%'  nowrap> Opera&ccedil;&atilde;o  </th> ";
       echo "       <th width='4%'  nowrap> Par       </th> ";
       echo "       <th width='4%'  nowrap> Tot       </th> ";
       echo "       <th width='10%' nowrap> Venc      </th> ";
@@ -155,11 +153,10 @@ function js_OpenRelatorio(xxaondeJanela,xxnomeJanela,xxarquivoJanela,xxtituloJan
 	      }
 
         $histdesc = db_formatar($k31_data, 'd') . " - $k31_hora - $login - $k31_obs";
-//        db_msgbox($histdesc);
         echo " <tr bgcolor='$qcor'>  ";
         ?>
-        <td width="9%" nowrap align="center"> 
-         <a OnMouseOut="parent.js_label('false','');"  OnMouseOver="parent.js_label('true','<?=db_jsspecialchars($histdesc)?>');" href="javascript:parent.document.getElementById('processando').style.visibility = 'visible';history.back()"><?=$k30_numpre?></a></td> 
+        <td width="9%" nowrap align="center">
+         <a OnMouseOut="parent.js_label('false','');"  OnMouseOver="parent.js_label('true','<?=db_jsspecialchars($histdesc)?>');" href="javascript:parent.document.getElementById('processando').style.visibility = 'visible';history.back()"><?=$k30_numpre?></a></td>
         <?
         echo "   <td width='9%'  nowrap align='right'>  ".db_formatar($k30_dtoper,'d')." </td> ";
         echo "   <td width='4%'  nowrap align='right'>  ".$k30_numpar."                  </td> ";
@@ -171,17 +168,15 @@ function js_OpenRelatorio(xxaondeJanela,xxnomeJanela,xxarquivoJanela,xxtituloJan
         echo "   <td width='12%' align='center' nowrap> ".str_pad($k02_drecei,40)."      </td> ";
         echo "   <td width='9%'  nowrap align='right'>  ".db_formatar($valor,'f')."&nbsp;</td> ";
         echo " </tr> ";
-      
+
         $total += $valor;
       }
   }else{
-      db_msgbox("Débitos prescritos nao encontrados !");  
+      db_msgbox("Débitos prescritos nao encontrados !");
   }
-
-	?> 
-
-    <tr bgcolor="#ffcc66"> 
-      <th width="10%" align="center" colspan="9" nowrap>Total Prescrito : </th>  
+	?>
+    <tr bgcolor="#ffcc66">
+      <th width="10%" align="center" colspan="9" nowrap>Total Prescrito: </th>
       <th width="8%"  nowrap><?=db_formatar($total,'f')?></th>
     </tr>
     <tr>
@@ -198,17 +193,14 @@ function js_OpenRelatorio(xxaondeJanela,xxnomeJanela,xxarquivoJanela,xxtituloJan
 </form>
 </body>
 </html>
-<?
- //fim do isset($tipo_cert) acima
+<?php
 if(isset($DB_ERRO)) {
   ?>
   <script>
-
-
     alert('<?=$DB_ERRO?>');
     parent.document.getElementById('processando').style.visibility = 'visible';
    	history.back();
   </script>
-  <?
+  <?php
 }
 ?>

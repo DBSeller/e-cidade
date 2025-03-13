@@ -1,39 +1,39 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Carregamos as bibliotecas necessárias para o funcionamento do programa
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 /**
  * Instanciamos o objteto JSON e o que recebe as informações passadas pelopróprio JSON.
@@ -51,17 +51,20 @@ $oRetorno->message = '';
  * @return string
  */
 function getEstruturalFromReduzido($iReduzido) {
-  
-  $oDaoConplanoReduz     = db_utils::getDao('conplanoreduz');
-  $sWhereBuscaEstrutural = " c61_reduz = {$iReduzido} ";
-  $sSqlBuscaEstrutural   = $oDaoConplanoReduz->sql_query(null, null, " conplano.c60_estrut, conplano.c60_descr ", 
+
+  $oDaoConplanoReduz     = new cl_conplanoreduz;
+  $iAnousu = db_getsession('DB_anousu');
+  $iInstituicao = db_getsession("DB_instit");
+
+  $sWhereBuscaEstrutural = " c61_reduz = {$iReduzido} and c61_instit = {$iInstituicao} and c61_anousu = {$iAnousu}";
+  $sSqlBuscaEstrutural   = $oDaoConplanoReduz->sql_query(null, null, " conplano.c60_estrut, conplano.c60_descr ",
                                                          null, $sWhereBuscaEstrutural);
   $rsBuscaEstrutural     = $oDaoConplanoReduz->sql_record($sSqlBuscaEstrutural);
   if ($oDaoConplanoReduz->numrows > 0) {
-    
+
     $oEstrutural = db_utils::fieldsMemory($rsBuscaEstrutural, 0);
     return array('c60_estrut' => (string)$oEstrutural->c60_estrut,
-                 'c60_descr'  => $oEstrutural->c60_descr);    
+                 'c60_descr'  => $oEstrutural->c60_descr);
   }
   return array('c60_estrut' => "0",
                'c60_descr' => "Nenhuma conta informada");
@@ -73,25 +76,42 @@ function getEstruturalFromReduzido($iReduzido) {
  * @return string
  */
 function getDescricaoDocumentoTransacao($iCodigoDocumento) {
-  
-  $oDaoConhistdoc = db_utils::getDao('conhistdoc');
+
+  $oDaoConhistdoc = new cl_conhistdoc;
   $sSqlBuscaDocumento = $oDaoConhistdoc->sql_query_file($iCodigoDocumento);
   $rsBuscaDocumento = $oDaoConhistdoc->sql_record($sSqlBuscaDocumento);
   if ($oDaoConhistdoc->numrows > 0) {
-    
+
     $oDocumento = db_utils::fieldsMemory($rsBuscaDocumento, 0);
     return $oDocumento->c53_descr;
   }
   return "Descrição do documento não encontrada.";
 }
 
+
+/**
+ * para cada contranslr , buscamos o elemento contranslrelemento
+ */
+function getElementoTransacao($sequencialTransacao)
+{
+
+  $oDaoContranslrElemento = new cl_contranslrelemento;
+  $sqlElementos = $oDaoContranslrElemento->sql_query_file(null, "*", null, "c114_contranslr = {$sequencialTransacao}");
+  $sElemento = "";
+  $rsElemento = $oDaoContranslrElemento->sql_record($sqlElementos);
+  if ($oDaoContranslrElemento->numrows > 0) {
+    $sElemento = db_utils::fieldsMemory( $rsElemento, 0)->c114_elemento;
+  }
+  return $sElemento;
+}
+
 switch ($oParam->exec) {
-  
+
   /**
    * Criamos o arquivo xml com as informações das transações
    */
   case 'exportarTransacoes':
-    
+
     /**
      * Instanciamos o objeto que manipula o XML e percorremos os dados jogando as informações no arquivo
      */
@@ -101,20 +121,20 @@ switch ($oParam->exec) {
     $oXmlWriter->startDocument('1.0', 'ISO-8859-1');
     $oXmlWriter->endDtd();
     $oXmlWriter->startElement('transacoes');
-    
+
     /**
 		 * O ponto inicial é a pesquisa de todos os registros da contrans (transações) com o ano e intiuição da sessão
      */
-    $oDaoContrans          = db_utils::getDao('contrans');
+    $oDaoContrans          = new cl_contrans;
     $iAnoUsuLogado         = db_getsession("DB_anousu");
     $iInstituicaoLogada    = db_getsession("DB_instit");
-    $sWhereBuscaTransacoes = " c45_anousu = {$iAnoUsuLogado} and c45_instit = {$iInstituicaoLogada} ";
-    $sSqlBuscaTransacoes   = $oDaoContrans->sql_query_file(null, "*", null, $sWhereBuscaTransacoes);
+    $sWhereBuscaTransacoes = " c45_anousu = {$iAnoUsuLogado} and c45_instit = {$iInstituicaoLogada}";
+    $sSqlBuscaTransacoes   = $oDaoContrans->sql_query_file(null, "*", "c45_coddoc", $sWhereBuscaTransacoes);
     $rsBuscaTransacoes     = $oDaoContrans->sql_record($sSqlBuscaTransacoes);
     if ($oDaoContrans->numrows > 0) {
-      
+
       for ($iRowTransacao = 0; $iRowTransacao < $oDaoContrans->numrows; $iRowTransacao++) {
-        
+
         $oTransacao = db_utils::fieldsMemory($rsBuscaTransacoes, $iRowTransacao);
         $oXmlWriter->startElement('transacao');
         $oXmlWriter->writeAttribute('c45_seqtrans', $oTransacao->c45_seqtrans);
@@ -122,18 +142,18 @@ switch ($oParam->exec) {
         $oXmlWriter->writeAttribute('c45_coddoc', $oTransacao->c45_coddoc);
         $oXmlWriter->writeAttribute('c53_descr', utf8_encode(getDescricaoDocumentoTransacao($oTransacao->c45_coddoc)));
         $oXmlWriter->writeAttribute('c45_instit', $oTransacao->c45_instit);
-        
+
         /**
          * Pesquisamos os lançamentos das transações encontradas na pesquisa anterior
          */
-        $oDaoContranslan        = db_utils::getDao('contranslan');
+        $oDaoContranslan        = new cl_contranslan;
         $sWhereBuscaLancamentos = " c46_seqtrans = {$oTransacao->c45_seqtrans} ";
-        $sSqlBuscaLancamentos   = $oDaoContranslan->sql_query_file(null, "*", null, $sWhereBuscaLancamentos);
+        $sSqlBuscaLancamentos   = $oDaoContranslan->sql_query_file(null, "*", "c46_ordem", $sWhereBuscaLancamentos);
         $rsBuscaLancamentos     = $oDaoContranslan->sql_record($sSqlBuscaLancamentos);
         if ($oDaoContranslan->numrows > 0) {
-          
+
           for ($iRowLancamento = 0; $iRowLancamento < $oDaoContranslan->numrows; $iRowLancamento++) {
-            
+
             $oLancamento = db_utils::fieldsMemory($rsBuscaLancamentos, $iRowLancamento);
             $oXmlWriter->startElement('lancamento');
             $oXmlWriter->writeAttribute('c46_seqtranslan', $oLancamento->c46_seqtranslan);
@@ -145,18 +165,18 @@ switch ($oParam->exec) {
             $oXmlWriter->writeAttribute('c46_evento', $oLancamento->c46_evento);
             $oXmlWriter->writeAttribute('c46_descricao', utf8_encode($oLancamento->c46_descricao." "));
             $oXmlWriter->writeAttribute('c46_ordem', $oLancamento->c46_ordem);
-            
+
             /**
              * Pesquisamos as contas dos lançamentos encontrados na pesquisa anterior
              */
-            $oDaoContranslr    = db_utils::getDao('contranslr');
+            $oDaoContranslr    = new cl_contranslr;
             $sWhereBuscaContas = " c47_seqtranslan = {$oLancamento->c46_seqtranslan} ";
-            $sSqlBuscaContas   = $oDaoContranslr->sql_query_file(null, "*", null, $sWhereBuscaContas);
+            $sSqlBuscaContas   = $oDaoContranslr->sql_query_file(null, "*", "c47_seqtranslr", $sWhereBuscaContas);
             $rsBuscaContas     = $oDaoContranslr->sql_record($sSqlBuscaContas);
             if ($oDaoContranslr->numrows > 0) {
-              
+
               for ($iRowRegrasLancamento = 0; $iRowRegrasLancamento < $oDaoContranslr->numrows; $iRowRegrasLancamento++) {
-                
+
                 $oConta = db_utils::fieldsMemory($rsBuscaContas, $iRowRegrasLancamento);
                 $oXmlWriter->startElement('conta');
                 $oXmlWriter->writeAttribute('c47_seqtranslr', $oConta->c47_seqtranslr);
@@ -173,25 +193,26 @@ switch ($oParam->exec) {
                 $oXmlWriter->writeAttribute('c47_instit', $oConta->c47_instit);
                 $oXmlWriter->writeAttribute('c47_compara', utf8_encode($oConta->c47_compara." "));
                 $oXmlWriter->writeAttribute('c47_tiporesto', utf8_encode($oConta->c47_tiporesto." "));
+                $oXmlWriter->writeAttribute('c114_elemento', getElementoTransacao($oConta->c47_seqtranslr));
                 $oXmlWriter->endElement();
                 unset($oConta);
               }
             }
-            
+
             $oXmlWriter->endElement();
             unset($oLancamento);
           }
         }
-        
+
         $oXmlWriter->endElement();
         unset($oTransacao);
       }
     } else {
-      
+
       $oRetorno->status  = 2;
-      $oRetorno->message = "Não foi encontrada nenhuma transação para o ano e intituição logados.\nFavor verificar.";
+      $oRetorno->message = "Não foi encontrada nenhuma transação para o ano e instituição logados.\nFavor verificar.";
     }
-    
+
     $oXmlWriter->endElement();
     $strBuffer = $oXmlWriter->outputMemory();
     /**

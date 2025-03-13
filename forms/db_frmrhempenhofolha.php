@@ -1,28 +1,36 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
- *                            www.dbseller.com.br
- *                         e-cidade@dbseller.com.br
- *
- *  Este programa e software livre; voce pode redistribui-lo e/ou
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
- *  publicada pela Free Software Foundation; tanto a versao 2 da
- *  Licenca como (a seu criterio) qualquer versao mais nova.
- *
- *  Este programa e distribuido na expectativa de ser util, mas SEM
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
- *  detalhes.
- *
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
- *  junto com este programa; se nao, escreva para a Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
- *  02111-1307, USA.
- *
- *  Copia da licenca no diretorio licenca/licenca_en.txt
- *                                licenca/licenca_pt.txt
+<?php
+
+/**
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
+/**
+ * Representa a tela da geração do empenho da folha.
+ * 
+ * @author $Author: dbmarcos $
+ * @version $Revision: 1.27 $
  */
 
 $clrotulo  = new rotulocampo;
@@ -31,7 +39,7 @@ $clrotulo->label('DBtxt25');
 ?>
 <center>
 	<form name="form1" method="post" action="">
-  <input type="hidden" value="<?= isset($DB_COMPLEMENTAR) ? "1" : "0"; ?>" id="db_complementar" name = 'db_complementar' >
+  <input type="hidden" value="<?php echo  DBPessoal::verificarUtilizacaoEstruturaSuplementar() ? '1' : '0'; ?>" id="db_complementar" name = 'db_complementar' >
 	<table>
 	  <tr>
 	  <td>
@@ -59,59 +67,30 @@ $clrotulo->label('DBtxt25');
 			      <strong>Ponto:</strong>
 			    </td>
 			    <td>
-			     <?
+			     <?php
+           
+			        $aSigla = array( "r14"=>"Salário",
+					                     "r48"=>"Complementar",
+					                     "r35"=>"13o. Salário",
+					                     "r20"=>"Rescisão",
+					                     "r22"=>"Adiantamento",
+                               "sup"=>"Suplementar"
+                             );
 
-			       $aSigla = array( "r14"=>"Salário",
-					                    "r48"=>"Complementar",
-					                    "r35"=>"13o. Salário",
-					                    "r20"=>"Rescisão",
-					                    "r22"=>"Adiantamento",
-                              "sup"=>"Suplementar"
-                              );
-          try {
-            $oCompetencia         = new DBCompetencia($anofolha, $mesfolha);
-  
-            /**
-            * Valida se a variável está ativa no db_conn, estando ativa, valida-se se a folha está aberta, caso esteja aberta, 
-            * não é possível fazer a geração para aquela folha, entao retiramos ela do select. E verifica-se também se
-            * existe uma folha, caso não exista, ele retira também do select a folha.
-            */
-
-            if (isset($DB_COMPLEMENTAR)) {
-      
-              if( (FolhaPagamentoSalario::hasFolhaAberta(DBPessoal::getCompetenciaFolha()) && FolhaPagamento::getFolhaCompetenciaTipo($oCompetencia, FolhaPagamento::TIPO_FOLHA_SALARIO)) 
-                   || !FolhaPagamento::getFolhaCompetenciaTipo($oCompetencia, FolhaPagamento::TIPO_FOLHA_SALARIO) ) {
-                unset($aSigla['r14']);
-              }
-              if ( (FolhaPagamentoComplementar::hasFolhaAberta(DBPessoal::getCompetenciaFolha()) && FolhaPagamento::getFolhaCompetenciaTipo($oCompetencia, FolhaPagamento::TIPO_FOLHA_COMPLEMENTAR)) 
-                   || !FolhaPagamento::getFolhaCompetenciaTipo($oCompetencia, FolhaPagamento::TIPO_FOLHA_COMPLEMENTAR) ) {
-                unset($aSigla['r48']);
-              }
-              if ( (FolhaPagamentoSuplementar::hasFolhaAberta(DBPessoal::getCompetenciaFolha()) && FolhaPagamento::getFolhaCompetenciaTipo( $oCompetencia, FolhaPagamento::TIPO_FOLHA_SUPLEMENTAR)) 
-                   || !FolhaPagamento::getFolhaCompetenciaTipo($oCompetencia, FolhaPagamento::TIPO_FOLHA_SUPLEMENTAR) ) {
+              if (!DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
                 unset($aSigla['sup']);
               }
-      
-            } else if ( !isset($DB_COMPLEMENTAR) ) {
-               unset($aSigla['sup']);
-            }
-         
-          } catch (Exception $eException) {
-            db_msgbox($eException->getMessage());
-          }
-			       db_select('ponto',$aSigla,true,4,"onChange='js_validaTipoPonto()'");
+              
+			        db_select('ponto',$aSigla,true,4,"onChange='js_validaTipoPonto()'");
 			     ?>
 			    </td>
         <tr style="display: none;" id="ComboContainer">
-          <td align='left' title='Nro. Complementar'>
+          <td align='left' title="Número da folha de pagamento">
             <strong>Número:</strong>
           </td>
           <td id="ComboContent">
           </td>
         </tr>
-		    </tr>
-        <tr id='linhaComplementar' style='display:none'>
-		    </tr>
 		  </table>
 	  </fieldset>
 
@@ -163,189 +142,166 @@ $clrotulo->label('DBtxt25');
     </table>
 	</form>
 </center>
-<script src="scripts/classes/DBViewFormularioFolha/ComboListaFolha.js"></script>
 <script>
 
  var sUrl     = 'pes1_rhempenhofolhaRPC.php';
  var MENSAGEM = 'recursoshumanos/pessoal/db_frmrhempenhofolha.';
 
- function js_consultaPontoSuplementar(){
-
-  // Força tipo da folha ser suplementar.
-  var iTipoFolha = 6;
-
-  // Remove todo conteudo da DIV
-  $('linhaRescisoes').style.display       = 'none';
-  $('linhaComplementar').style.display    = 'none';
-  $('filtroRescisao').style.display       = 'none';
-  $('ComboContainer').style.display       = 'none';
-  $('ComboContent').innerHTML             = '';
-
-  // Cria uma objeto ComboListaFolha
-  var oComboLista = new DBViewFormularioFolha.ComboListaFolha();
-
-  // Pega o valor dos meses
-  var iMes = $F('mesfolha');
-  var iAno = $F('anofolha');
-  var oComboBox = oComboLista.pesquisarFolhas(iTipoFolha, iAno, iMes, false);
-
-    if (oComboBox.aItens.length > 0) {
-
-      oComboBox.sStyle = "width: 106px;";
-      oComboBox.show($('ComboContent'));
-      $('ComboContainer').style.display = '';
-    }
- }
-
-
-
- function js_consultaPontoComplementar(){
-
-   js_divCarregando( _M( MENSAGEM + 'consultando_complementar'),'msgBox');
-   js_bloqueiaTela(true);
-
-   if ($F("db_complementar") == "1"){
-    var sQuery  = 'sMethod=consultaComplementaresFechadas';
-   } else {
-    var sQuery  = 'sMethod=consultaPontoComplementar';
-        sQuery += '&sSigla='+$F('ponto');
-   }
-   
-   sQuery += '&iAnoFolha='+$F('anofolha');
-   sQuery += '&iMesFolha='+$F('mesfolha');
-
-	 var oAjax   = new Ajax.Request( sUrl, {
-	                                          method: 'post',
-	                                          parameters: sQuery,
-	                                          onComplete: js_retornoPontoComplementar
-	                                        }
-	                                );
-
- }
-
- function js_retornoPontoComplementar(oAjax){
-
-   js_removeObj("msgBox");
-   js_bloqueiaTela(false);
-
-   var aRetorno = eval("("+oAjax.responseText+")");
-   var sExpReg  = new RegExp('\\\\n','g');
-
-
-   if ( aRetorno.lErro ) {
-     alert(aRetorno.sMsg.urlDecode().replace(sExpReg,'\n'));
-     return false;
-   }
-
-   var sLinha          = "";
-   var iLinhasSemestre = aRetorno.aSemestre.length;
-
-  if ( iLinhasSemestre > 0 ) {
-
-    sLinha += " <td align='left' title='Nro. Complementar'> ";
-    sLinha += "   <strong>Nro. Complementar:</strong>       ";
-    sLinha += " </td>                                       ";
-    
-    sLinha += " <td>                                        ";
-    sLinha += "   <select id='semestre' name='semestre'>    ";
-
-    for ( var iInd=0; iInd < iLinhasSemestre; iInd++ ) {
-
-      var oSemestre = aRetorno.aSemestre[iInd];
-      
-      if ($F("db_complementar") == "1"){   
-        sLinha += " <option value = '"+oSemestre.rh141_codigo+"'>"+oSemestre.rh141_codigo+"</option>";
-      } else {
-        sLinha += " <option value = '"+oSemestre.semestre+"'>"+oSemestre.semestre+"</option>";
-      }
-    }
-    sLinha += " </td>                                       ";
-  } else {
-
-     sLinha += " <td colspan='2' align='center'>                                ";
-     sLinha += "   <font color='red'>Sem complementar para este período.</font> ";
-     sLinha += " </td>                                                          ";
-
-   }
-
-   $('linhaComplementar').innerHTML     = sLinha;
-   $('linhaComplementar').style.display = '';
-
- }
-
- function js_validaTipoPonto(){
-
-  $('ComboContent').innerHTML = '';
-  $('ComboContainer').style.display = 'none';
+  function js_consultaFolhaSuplementar(){
   
-   if ( $F('ponto') == 'r48') {
+    js_divCarregando(_M( MENSAGEM + 'carregando'), 'msgBox', true);
+  
+    var oParam           = new Object();
+        oParam.sMethod   = "consultaSuplementaresFechadas";
+        oParam.iAnoFolha = $F('anofolha');
+        oParam.iMesFolha = $F('mesfolha');
+  
+    new Ajax.Request( sUrl, {
+                              method    : 'post',
+	                            parameters: oParam,
+	                            onComplete: js_retornoFolhaPagamento
+	                          }
+	                  );
+  }
 
-     js_consultaPontoComplementar();
-     $('linhaRescisoes').style.display    = 'none';
-     $('filtroRescisao').style.display    = 'none';
-   } else if ($F('ponto') == 'r20') {
+  function js_consultaFolhaComplementar(){
 
-	   $('linhaComplementar').style.display = 'none';
-     $('filtroRescisao').style.display    = '';
-     js_getRescisoes();
-   } else if ( $F('ponto') == 'sup') {
-
-     js_consultaPontoSuplementar();
-     $('linhaRescisoes').style.display    = 'none';
-     $('filtroRescisao').style.display    = 'none';
+    js_divCarregando( _M( MENSAGEM + 'carregando'),'msgBox', true);
+    
+    var oParam           = new Object();
+        oParam.iAnoFolha = $F('anofolha');
+        oParam.iMesFolha = $F('mesfolha');
+        
+    if ($F("db_complementar") == "1"){
+        oParam.sMethod   = "consultaComplementaresFechadas";
     } else {
+        oParam.sMethod   = "consultaPontoComplementar";
+        oParam.sSigla    = $F('ponto');
+    }
+  
+	  new Ajax.Request( sUrl, {
+	                            method    : 'post',
+	                            parameters: oParam,
+	                            onComplete: js_retornoFolhaPagamento
+	                          }
+	                  );
+  }
 
-     $('linhaRescisoes').style.display    = 'none';
-     $('linhaComplementar').style.display = 'none';
-     $('filtroRescisao').style.display    = 'none';
-   }
+  function js_retornoFolhaPagamento(oAjax){
+  
+    js_removeObj("msgBox");
+  
+    var aRetorno = JSON.parse(oAjax.responseText);
+    
+    if (aRetorno.lErro) {
+      
+      $('gera').disabled = true;
+      alert(aRetorno.sMsg.urlDecode());
+      return false;
+    }
+    
+    var iLinhasSemestre = aRetorno.aSemestre.length;
+  
+    if (iLinhasSemestre > 0) {
+      
+      var oDBComboBox = new DBComboBox('semestre', null, []);
+      
+      for (var iIndice = 0 ; iIndice < iLinhasSemestre; iIndice++) {
+       
+        var oSemestre   = aRetorno.aSemestre[iIndice];
+       
+        if ($F("db_complementar") == "1"){    
+          oDBComboBox.addItem(oSemestre, oSemestre);
+        } else {
+          oDBComboBox.addItem(oSemestre.semestre, oSemestre.semestre);
+        }
+      }
+      
+      oDBComboBox.sStyle = "width: 105px;";  
+      oDBComboBox.show($('ComboContent'));
+      
+    } else {
+      
+      var sLinha  = " <td> ";
+          sLinha += "   <font color='red'>Sem folha.</font> ";
+          sLinha += " </td> ";
+      $('ComboContent').innerHTML = sLinha;
+      $('gera').disabled          = true;
+      
+    }
+  
+    $('ComboContainer').style.display = '';
+    
+  }
 
- }
+  function js_validaTipoPonto(){
+  
+    js_limparLayout();
+    
+    var iAnoInformado  = $("anofolha").getValue();
+    var iMesInformado  = $("mesfolha").getValue();
+    var oCompetencia   = new DBViewFormularioFolha.CompetenciaFolha(false);
+    var lCompetencia   = oCompetencia.isCompetenciaValida(iAnoInformado, iMesInformado);
+    
+    if (!lCompetencia) {
+      
+      $('gera').disabled = true;
+      alert(_M(MENSAGEM + 'competencia_invalida'));
+      return false;
+    }
+    
+    if ( $F('ponto') == 'r48') {
+      js_consultaFolhaComplementar();
+    } else if ($F('ponto') == 'r20') {
+      js_getRescisoes();
+    } else if ( $F('ponto') == 'sup') {
+      js_consultaFolhaSuplementar();
+    }
+  
+  }
 
- function js_verifica(){
-
-   if ( $F('anofolha') == '' || $F('mesfolha') == '' ) {
-
-     alert( _M( MENSAGEM + 'campo_obrigatorio', {sCampo: 'Ano / Mês'} ) );
-     return false;
-   }
+  function js_verifica(){
+ 
+    if ( $F('anofolha') == '' || $F('mesfolha') == '' ) {
+ 
+      alert( _M( MENSAGEM + 'campo_obrigatorio', {sCampo: 'Ano / Mês'} ) );
+      return false;
+    }
     if ($F('ponto') == 'r20') {
-
+ 
      if (oGridrescisoes.getSelection().length == 0) {
-
+ 
        alert( _M( MENSAGEM + 'selecione_rescisao' ) );
        return false;
      }
-   }
-   
-   if ($F('ponto') == 'r48') {
-     if (!$('semestre') || $F('semestre') == "0") {
-       
-       alert('Complementar em aberto. Execute o fechamento');
-		   return false;
-	    }
-   }
-
-   if ($F('ponto') == 'r14' && $F("db_complementar") == "1"){
-     
-     require_once('scripts/classes/DBViewFormularioFolha/ValidarFolhaPagamento.js');
+    }
     
-     var iMesFolha = $F('mesfolha'); 
-     var iAnoFolha = $F('anofolha');
-      
-     var oFolhaComplementar = new DBViewFormularioFolha.ValidarFolhaPagamento();
-     var lFolhaComplementar = oFolhaComplementar.verificarFolhaPagamentoAberta(oFolhaComplementar.TIPO_FOLHA_SALARIO, iAnoFolha, iMesFolha);
-      
-     if (lFolhaComplementar == true){
-       
-       alert("A folha de salário esta fechada. Execute o fechamento.");
-       return false;
+    if ($F('ponto') == 'r48') {
+      if (!$('semestre') || $F('semestre') == "0") {
+        
+        alert('Complementar em aberto. Execute o fechamento');
+ 	   return false;
      }
-   }
-   
-   js_consultaEmpenhos();
-
- }
+    }
+    
+    if ($F("db_complementar") == "1" && $F('ponto') == 'r14') {
+      
+      var iMesFolha = $F('mesfolha'); 
+      var iAnoFolha = $F('anofolha');
+         
+      var oFolhaPagamento = new DBViewFormularioFolha.ValidarFolhaPagamento();
+      var lFolhaSalario   = oFolhaPagamento.verificarFolhaPagamentoAberta(oFolhaPagamento.TIPO_FOLHA_SALARIO, iAnoFolha, iMesFolha);
+         
+      if (lFolhaSalario == true){
+        
+        alert(_M(MENSAGEM + 'folha_salario_fechada'));
+        return false;
+      }
+    } 
+    
+    js_consultaEmpenhos();
+ 
+  }
 
 
  function js_consultaEmpenhos(){
@@ -367,7 +323,7 @@ $clrotulo->label('DBtxt25');
    js_removeObj("msgBox");
    js_bloqueiaTela(false);
 
-   var aRetorno = eval("("+oAjax.responseText+")");
+   var aRetorno = JSON.parse(oAjax.responseText);
    var sExpReg  = new RegExp('\\\\n','g');
 
    if ( aRetorno.lErro ) {
@@ -416,7 +372,7 @@ $clrotulo->label('DBtxt25');
    js_removeObj("msgBox");
    js_bloqueiaTela(false);
 
-   var aRetorno = eval("("+oAjax.responseText+")");
+   var aRetorno = JSON.parse(oAjax.responseText);
    var sExpReg  = new RegExp('\\\\n','g');
 
 
@@ -473,7 +429,7 @@ $clrotulo->label('DBtxt25');
        sQuery += '&sDataInicial=' + $F('sDataInicial');
        sQuery += '&sDataFinal='   + $F('sDataFinal');
 
-   if ( $F('ponto') == 'r48' ) {
+   if ( $F('ponto') == 'r48' || $F('ponto') == 'sup' ) {
 
      if ($('semestre')) {
        sQuery += '&sSemestre='+$F('semestre');
@@ -500,6 +456,8 @@ $clrotulo->label('DBtxt25');
 
 
  function js_getRescisoes() {
+
+  $('filtroRescisao').style.display    = '';
 
    var sDataInicial = $F('sDataInicial'),
        sDataFinal   = $F('sDataFinal');
@@ -534,7 +492,7 @@ $clrotulo->label('DBtxt25');
    js_removeObj('msgBox');
    js_bloqueiaTela(false);
    oGridrescisoes.clearAll(true);
-   var oRetorno = eval("("+oAjax.responseText+")");
+   var oRetorno = JSON.parse(oAjax.responseText);
    oRetorno.sListaRescisoes.each(function (oRescisao, id) {
 
       var aLinha = new Array();
@@ -556,5 +514,19 @@ $clrotulo->label('DBtxt25');
    oGridrescisoes.setHeader(new Array("Seqpes","Matrícula","Nome","Data"));
    oGridrescisoes.show($('ctnGridRescisoes'));
  }
+
+  /**
+   * Método responsável por limpar as DIV da tela. 
+   */
+  function js_limparLayout() {
+    
+    $('gera').disabled                = false;
+    $('ComboContainer').style.display = 'none';
+    $('linhaRescisoes').style.display = 'none';
+    $('filtroRescisao').style.display = 'none';
+    $('sDataInicial').value           = '';
+    $('sDataFinal').value             = '';
+  }
+  
  js_montaGrid();
 </script>

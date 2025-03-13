@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -339,7 +339,7 @@ class cl_mer_nutriente {
        $sql .= $campos;
      }
      $sql .= " from mer_nutriente ";
-     $sql .= "      inner join matunid on matunid.m61_codmatunid = mer_nutriente.me09_i_unidade ";
+     $sql .= "      left join matunid on matunid.m61_codmatunid = mer_nutriente.me09_i_unidade ";
      $sql2 = "";
      if($dbwhere==""){
        if($me09_i_codigo!=null ){

@@ -1,0 +1,25 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="j29_cep"        label="cep" />
+    <campo campo="j13_codi"       label="codigo_bairro" />
+    <campo campo="j13_descr"      label="nome_bairro" />
+    <campo campo="j14_codigo"     label="codigo_rua"  />
+    <campo campo="j14_nome"       label="nome_rua"    />
+    <campo campo="0"              label="codigo_uf"   />
+    <campo campo="não encontrado" label="nome_uf"     />
+    <campo campo="0"              label="codigo_pais" />
+    <campo campo="não encontrado" label="nome_pais"   />
+  </campos>
+  <from tabela="ruascep" />
+  <juncoes>
+      <join tipo="inner" tabela="ruas       "    condicao=" j14_codigo          = j29_codigo" />
+      <join tipo="left"  tabela="ruasbairro "    condicao=" j16_lograd          = j14_codigo" />
+      <join tipo="left"  tabela="bairro     "    condicao=" j13_codi            = j16_bairro" />
+  </juncoes>
+  <filtros>
+       <filtro label="cep" condicao=" j29_cep = '$cep' " obrigatorio="false" />
+  </filtros>
+  <agrupamento campos="" />
+  <ordenacao   campos="codigo_rua" />
+</consulta>

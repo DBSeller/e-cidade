@@ -1,41 +1,41 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("model/ordemCompra.model.php");
-require_once("libs/exceptions/BusinessException.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("model/ordemCompra.model.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
 
 $iInstituicaoSessao = db_getsession("DB_instit");
 $oDaoMatEstoqueIni  = db_utils::getDao("matestoqueini");
@@ -147,28 +147,6 @@ switch ($oParam->exec) {
         throw new BusinessException("Não foi possível alterar a quantidade da tabela matestoqueinimei.\n\n{$oDaoMatEstoqueIniMei->erro_msg}");
       }
 
-      $timestamp  = "to_timestamp('{$oDadoMatEstoqueItem->m80_data}'::date|| ' ' || ";
-      $timestamp .= "'{$oDadoMatEstoqueItem->m80_hora}'::time, 'YYYY-MM-DD HH24:MI:SS')";
-
-      $sSqlMovimentacoes = "select m82_quant,";
-      $sSqlMovimentacoes .= "      m82_matestoqueini,                                                                 ";
-      $sSqlMovimentacoes .= "      m82_codigo                                                                         ";
-      $sSqlMovimentacoes .= " from matestoqueinimei                                                                   ";
-      $sSqlMovimentacoes .= "      inner join matestoqueini  on m82_matestoqueini  = m80_codigo                       ";
-      $sSqlMovimentacoes .= "      inner join matestoqueitem on m82_matestoqueitem = m71_codlanc                      ";
-      $sSqlMovimentacoes .= "      inner join matestoque     on m70_codigo         = m71_codmatestoque                ";
-      $sSqlMovimentacoes .= "where to_timestamp(m80_data || ' ' || m80_hora, 'YYYY-MM-DD HH24:MI:SS') >= {$timestamp} ";
-      $sSqlMovimentacoes .= "  and m82_codigo <> {$oDadoMatEstoqueItem->m82_codigo}                                    ";
-      $sSqlMovimentacoes .= "  and m70_codmatmater = {$oDadoMatEstoqueItem->m70_codmatmater}                          ";
-      $sSqlMovimentacoes .= "order by to_timestamp(m80_data || ' ' || m80_hora, 'YYYY-MM-DD HH24:MI:SS')              ";
-      $rsOutrosMovimentos = db_query($sSqlMovimentacoes);
-      $iTotalLinhas       = pg_num_rows($rsOutrosMovimentos);
-      for ($i = 0; $i < $iTotalLinhas; $i++) {
-
-        $o    = db_utils::fieldsMemory($rsOutrosMovimentos, $i);
-        $sSql = "select fc_calculaprecomedio({$o->m82_codigo}, {$o->m82_matestoqueini}, {$o->m82_quant}, false);";
-        db_query($sSql);
-      }
       $oRetorno->message = urlencode("Movimentação salva com sucesso.");
       db_fim_transacao(false);
 

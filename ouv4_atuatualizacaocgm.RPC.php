@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("std/db_stdClass.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
-include("classes/db_cidadao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("classes/db_cidadao_classe.php"));
 
 $clcidado = new cl_cidadao();
 
@@ -63,7 +63,7 @@ if ($oParam->acao == "pesquisar") {
 		$rsQueryCidadao = $clcidado->sql_record($clcidado->sql_query(null,null,$sCampos,'ov02_nome,ov02_sequencial',$sWhere));
 		
 		if($clcidado->numrows > 0){
-			$oRetorno->cidadoes = db_utils::getColectionByRecord($rsQueryCidadao,false,false,true);
+			$oRetorno->cidadoes = db_utils::getCollectionByRecord($rsQueryCidadao,false,false,true);
 			$oRetorno->status 	= 1;	
 		}else{
 			$oRetorno->status  = 1;
@@ -108,7 +108,7 @@ if ($oParam->acao == "pesquisar") {
 				$rsQueryCidadao = $clcidado->sql_record($clcidado->sql_query(null,null,$sCampos,'ov02_nome,ov02_sequencial',$sWhere));
 			
 				if($clcidado->numrows > 0){
-					$oRetorno->cidadoes = db_utils::getColectionByRecord($rsQueryCidadao,false,false,true);
+					$oRetorno->cidadoes = db_utils::getCollectionByRecord($rsQueryCidadao,false,false,true);
 					$oRetorno->status 	= 1;	
 				}
 			}else{
@@ -117,7 +117,7 @@ if ($oParam->acao == "pesquisar") {
 				$rsQueryCidadao = $clcidado->sql_record($clcidado->sql_query(null,null,$sCampos,'ov02_nome,ov02_sequencial',$sWhere));
 			
 				if($clcidado->numrows > 0){
-					$oRetorno->cidadoes = db_utils::getColectionByRecord($rsQueryCidadao,false,false,true);
+					$oRetorno->cidadoes = db_utils::getCollectionByRecord($rsQueryCidadao,false,false,true);
 					$oRetorno->status 	= 1;	
 				}								
 			}
@@ -168,7 +168,7 @@ if ($oParam->acao == "pesquisar") {
 				$rsQueryCidadao = $clcidado->sql_record($clcidado->sql_query(null,null,$sCampos,'ov02_nome,ov02_sequencial',$sWhere));
 			
 				if($clcidado->numrows > 0){
-					$oRetorno->cidadoes = db_utils::getColectionByRecord($rsQueryCidadao,false,false,true);
+					$oRetorno->cidadoes = db_utils::getCollectionByRecord($rsQueryCidadao,false,false,true);
 					$oRetorno->status 	= 1;
 				
 				}else {

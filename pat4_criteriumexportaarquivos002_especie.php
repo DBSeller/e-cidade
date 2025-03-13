@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -38,7 +38,7 @@ $sSqlEspecie	.=	"       t64_descr   	as nome_da_especie";
 $sSqlEspecie	.= 	" from clabens ";
 $sSqlEspecie	.= 	" 	where t64_analitica is true order by t64_codcla"; //t64_class ilike '%000000' ORDER BY t64_class";  // where t64_analitica is true
 
-$rsEspecie 		 =	pg_query($sSqlEspecie);
+$rsEspecie 		 =	db_query($sSqlEspecie);
 $iNumeroLinhas =	pg_num_rows($rsEspecie);
 
 for ($i=0;$i<$iNumeroLinhas;$i++)	{
@@ -54,7 +54,7 @@ $sSqlEmpresa .= "       '10001' as id_da_especie, ";
 $sSqlEmpresa .= "       'TESTE ESPECIE EXPORTACAO CRITERIUM' as nome_da_especie";
 */
 
-//$rsEmpresa    = pg_query($sSqlEmpresa);
+//$rsEmpresa    = db_query($sSqlEmpresa);
 // var_dump($oEmpresa);
 //$oLayoutTxt->setByLineOfDBUtils($oEmpresa,3,"04");
 //$iCountItemSub = 5;

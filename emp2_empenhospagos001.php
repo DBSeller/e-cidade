@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $oRotuloSaltes = new rotulo('saltes');
 $oRotuloSaltes->label();
@@ -205,7 +205,7 @@ $oRotuloSaltes->label();
     if(!lMostra){
       sUrlQueryConta = "func_saltes.php?pesquisa_chave="+$F("k13_conta")+"&funcao_js=parent.js_completaContaPagadora";
     }
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_saltes', sUrlQueryConta, 'Pesquisa Conta Pagadora', lMostra);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_saltes', sUrlQueryConta, 'Pesquisa Conta Pagadora', lMostra);
   }
   function js_completaContaPagadora(chave,erro){
 

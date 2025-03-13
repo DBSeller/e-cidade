@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Repositoy para os alunos
  * @package   Educacao
  * @author    Andrio Costa - andrio.costa@dbseller.com.br
- * @version   $Revision: 1.6 $
+ * @version   $Revision: 1.13 $
  */
 class AlunoRepository {
 
@@ -47,7 +47,7 @@ class AlunoRepository {
    * Retorna a instancia do Repositorio
    * @return AlunoRepository
    */
-  protected function getInstance() {
+  protected static function getInstance() {
 
     if(self::$oInstance == null) {
       self::$oInstance = new AlunoRepository();
@@ -87,56 +87,73 @@ class AlunoRepository {
   }
 
   /**
-   * Busca os Alunos de uma turma
-   * @param integer $iTurma
-   * @return array Aluno
+   * Busca o aluno pelo cpf
+   * @param integer $iMatricula
+   * @return Aluno
    */
-  public static function getAlunosByTurma(Turma $oTurma) {
+  public static function getAlunoByCpf($cpf) {
 
-    $oDaoMatricula = db_utils::getDao('matricula');
-    $sWhere        = " ed60_i_turma         = {$oTurma->getCodigo()}";
-    $sSqlMatricula = $oDaoMatricula->sql_query_aluno_matricula(null, "ed60_i_aluno, ed60_i_numaluno",
-                                                    "ed60_i_numaluno, ed47_v_nome", $sWhere);
-    $rsMatricula   = $oDaoMatricula->sql_record($sSqlMatricula);
-    $iTotalLinhas  = $oDaoMatricula->numrows;
-    $aAlunosTurma  = array();
-
-    if ($iTotalLinhas > 0) {
-
-      for ($i = 0; $i < $iTotalLinhas; $i++) {
-
-       $iCodigoAluno   = db_utils::fieldsMemory($rsMatricula, $i)->ed60_i_aluno;
-       $aAlunosTurma[] = AlunoRepository::getInstance()->getAlunoByCodigo($iCodigoAluno);
-      }
+    if (empty($cpf) || is_null($cpf)) {
+      return new Aluno();
     }
-    return $aAlunosTurma;
+
+    $oAluno = null;
+    $oDaoAluno = new cl_aluno();
+    $sWhereAluno = "ed47_v_cpf = '{$cpf}'";
+    $sql = $oDaoAluno->sql_query_file( null, "ed47_i_codigo", null, $sWhereAluno );
+    $rsAluno = db_query($sql);
+    if ( pg_num_rows( $rsAluno ) > 0 ) {
+      $iCodigoAluno = pg_fetch_assoc($rsAluno);
+      $oAluno = AlunoRepository::getAlunoByCodigo($iCodigoAluno['ed47_i_codigo']);
+    }
+    return $oAluno;
   }
 
-  /**
-   * Busca os Alunos de uma turma
-   * @param integer $iTurma
-   * @return array Aluno
-   */
-  public static function getAlunosByTurmaOrdemAlfabetica(Turma $oTurma) {
+    /**
+     * @param Turma $turma
+     * @param array $ordem
+     * @return array
+     * @throws Exception
+     */
+    public static function getAlunosByTurma(Turma $turma, array $ordem = array('ed60_i_numaluno', 'ed47_v_nome'))
+    {
+        $dao = new cl_matricula();
+        $campos = array('ed60_i_aluno', 'ed60_i_numaluno');
+        $where = array("ed60_i_turma = {$turma->getCodigo()}");
+        $sql = $dao->sql_query_aluno_matricula(
+            null,
+            implode(', ', $campos),
+            implode(', ', $ordem),
+            implode(' AND ', $where)
+        );
+        $rs = db_query($sql);
 
-    $oDaoMatricula = db_utils::getDao('matricula');
-    $sWhere        = " ed60_i_turma = {$oTurma->getCodigo()}";
-    $sSqlMatricula = $oDaoMatricula->sql_query_aluno_matricula(null, "ed60_i_aluno, ed60_i_numaluno",
-                                                              "ed47_v_nome, ed60_i_numaluno", $sWhere);
-    $rsMatricula   = $oDaoMatricula->sql_record($sSqlMatricula);
-    $iTotalLinhas  = $oDaoMatricula->numrows;
-    $aAlunosTurma  = array();
+        if (!$rs) {
+            throw new Exception("Não foi possível buscar os alunos da turma {$turma->getDescricao()}. Contate o suporte.");
+        }
 
-    if ($iTotalLinhas > 0) {
+        $alunos = array();
 
-      for ($i = 0; $i < $iTotalLinhas; $i++) {
+        if (pg_num_rows($rs) === 0) {
+            return $alunos;
+        }
 
-        $iCodigoAluno   = db_utils::fieldsMemory($rsMatricula, $i)->ed60_i_aluno;
-        $aAlunosTurma[] = AlunoRepository::getInstance()->getAlunoByCodigo($iCodigoAluno);
-      }
+        while ($aluno = pg_fetch_object($rs)) {
+            $alunos[] = AlunoRepository::getAlunoByCodigo($aluno->ed60_i_aluno);
+        }
+
+        return $alunos;
     }
-    return $aAlunosTurma;
-  }
+
+    /**
+     * @param Turma $turma
+     * @return array
+     * @throws Exception
+     */
+    public static function getAlunosByTurmaOrdemAlfabetica(Turma $turma)
+    {
+        return static::getAlunosByTurma($turma, array('ed47_v_nome', 'ed60_i_numaluno'));
+    }
 
   /**
    * Adiciona um Aluno ao repositorio
@@ -163,30 +180,30 @@ class AlunoRepository {
     }
     return true;
   }
-  
+
   /**
    * Retorna uma instancia de Aluno encontrado de acordo com os dados recebidos por parâmetro
    * @param string $sNomeAluno
    * @param string $sNomeMae
    * @param DBDate $oDataNascimento
-   * 
+   *
    * @return Aluno $oAluno
    */
   public static function getAlunoPorNomeDataNascimentoNomeMae( $sNomeAluno, $sNomeMae, DBDate $oDataNascimento ) {
-    
+
     $oAluno       = null;
     $oDaoAluno    = new cl_aluno();
     $sWhereAluno  = "     ed47_v_nome = '{$sNomeAluno}' AND ed47_v_mae = '{$sNomeMae}'";
     $sWhereAluno .= " AND ed47_d_nasc = '{$oDataNascimento->getDate()}' ";
     $sSqlAluno    = $oDaoAluno->sql_query_file( null, "ed47_i_codigo", null, $sWhereAluno );
     $rsAluno      = db_query( $sSqlAluno );
-    
+
     if ( pg_num_rows( $rsAluno ) > 0 ) {
-      
+
       $iCodigoAluno = db_utils::fieldsMemory( $rsAluno, 0 )->ed47_i_codigo;
       $oAluno       = AlunoRepository::getAlunoByCodigo( $iCodigoAluno );
     }
-    
+
     return $oAluno;
   }
 }

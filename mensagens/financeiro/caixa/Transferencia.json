@@ -11,5 +11,9 @@
   "exclusao_agenda" : "Não é possível excluir a transferência da agenda de pagamentos.",
   "exclusao_transferencia" : "Não foi possível excluir a transferência. Contate o suporte.",
   "exclusao_processo" : "Não foi possível excluir o vínculo do processo com o slip.",
-  "vinculo_processo" : "Não foi possível vincular o processo ao slip."
+  "vinculo_processo" : "Não foi possível vincular o processo ao slip.",
+  "exclusao_vinculo_slipempagemovslips" : "Não foi possível excluir o movimento do slip na agenda de pagamento.",
+  "exclusao_slip_corrente" : "Não foi possível excluir o item da tesouraria vinculada ao slip.",
+  "erro_busca_slip_com_cheque_emitido" : "Ocorreu um erro ao consultar a emissão de cheque do slip.",
+  "slip_com_cheque_emitido" : "O slip encontra-se com cheque emitido. Cancele a emissão do cheque antes de excluir o slip."
 }

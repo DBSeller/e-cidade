@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_cardapiodia_classe.php");
-include("classes/db_mer_tipocardapio_classe.php");
-include("classes/db_mer_cardapioaluno_classe.php");
-include("classes/db_mer_cardapioalunorepet_classe.php");
-include("classes/db_mer_cardapioescola_classe.php");
-include("classes/db_matricula_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("classes/db_mer_tipocardapio_classe.php"));
+include(modification("classes/db_mer_cardapioaluno_classe.php"));
+include(modification("classes/db_mer_cardapioalunorepet_classe.php"));
+include(modification("classes/db_mer_cardapioescola_classe.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clmer_cardapiodia     = new cl_mer_cardapiodia;
 $clmer_cardapioaluno   = new cl_mer_cardapioaluno;
 $clmer_cardapioalunorepet   = new cl_mer_cardapioalunorepet;
@@ -58,7 +58,7 @@ if ($oPost->sAction == 'PesquisaEscola') {
                                                AND me32_i_escola = $escola" 
                                               )
                                               );
-  $aResult = db_utils::getColectionByRecord($result, false, false, true);
+  $aResult = db_utils::getCollectionByRecord($result, false, false, true);
   $oJson   = new services_json();
   echo $oJson->encode($aResult);
   
@@ -137,8 +137,8 @@ if ($oPost->sAction == 'PesquisaTurma_e_Refeicao') {
                                        serie.ed11_c_descr"
                                       ));
                                              
-  $aResult1 = db_utils::getColectionByRecord($result1, false, false, true);
-  $aResult2 = db_utils::getColectionByRecord($result2, false, false, true);
+  $aResult1 = db_utils::getCollectionByRecord($result1, false, false, true);
+  $aResult2 = db_utils::getCollectionByRecord($result2, false, false, true);
   $oJson    = new services_json();
   echo $oJson->encode(array($aResult1,$aResult2));
  
@@ -201,9 +201,9 @@ if ($oPost->sAction == 'PesquisaAluno') {
                                              )
                                              );
                                              
-  $aResult1 = db_utils::getColectionByRecord($result1, false, false, true);
-  $aResult2 = db_utils::getColectionByRecord($result2, false, false, true);
-  $aResult3 = db_utils::getColectionByRecord($result3, false, false, true);  
+  $aResult1 = db_utils::getCollectionByRecord($result1, false, false, true);
+  $aResult2 = db_utils::getCollectionByRecord($result2, false, false, true);
+  $aResult3 = db_utils::getCollectionByRecord($result3, false, false, true);  
   $oJson    = new services_json();
   echo $oJson->encode(array($aResult1,$aResult2,$aResult3));
   

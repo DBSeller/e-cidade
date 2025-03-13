@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_liborcamento.php");
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("libs/db_liborcamento.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -127,9 +127,9 @@ if($tipo_agrupa==1){
 	  where o58_anousu = ".db_getsession("DB_anousu");
 }
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 
-//$result = pg_exec("select * from work");
+//$result = db_query("select * from work");
 //db_criatabela($result);exit;
 
 
@@ -185,7 +185,7 @@ $where .= ") and o58_instit in (".str_replace('-',', ',$db_selinstit).")";
 
   
   $result_rec = db_dotacaosaldo(7,2,$opcao,true,$where,$anousu,$perini,$perfin,2,$nivelele,null,$tipo_balanco,false);
-  pg_exec("rollback");
+  db_query("rollback");
 //  db_criatabela($result_rec);
   $valor = 0;
 
@@ -207,11 +207,11 @@ $where .= ") and o58_instit in (".str_replace('-',', ',$db_selinstit).")";
       $sql = "update work set vlr1 = vlr1+$dot_ini, vlr2 = vlr2+$suplementado_acumulado, vlr3 = vlr3+$reduzido_acumulado, vlr4 = vlr4+$valor where work.campo = '".$$qcampo."' and orgao = ".$o58_orgao." and unidade = ".$o58_unidade;
     }
     //echo $sql;
-    $result = pg_exec($sql);
+    $result = db_query($sql);
   }  
   // pesquisa as dotacoes
 
-// $res = pg_query("select * from work");
+// $res = db_query("select * from work");
  
 //    db_criatabela($res) ;exit;
 $pdf = new PDF(); 
@@ -236,10 +236,10 @@ if($tipo_rel==2){
 		from work 
 		group by campo, descr
         order by campo";
-     $result = pg_exec($sql);
+     $result = db_query($sql);
    } else {
      $sql = "select * from work order by orgao,unidade,campo";
-     $result = pg_exec($sql);
+     $result = db_query($sql);
      $qorgao = pg_result($result,0,'orgao');
      $qunidade = pg_result($result,0,'unidade');
    }
@@ -252,7 +252,7 @@ if($tipo_rel==2){
            from work 
 	   group by orgao,unidade
 	   order by orgao,unidade";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     $qorgao = pg_result($result,0,'orgao');
     $qunidade = pg_result($result,0,'unidade');
 }
@@ -339,7 +339,7 @@ if($tipo_rel==2){
   	  	 from orcorgao 
 		 where o40_anousu = ".db_getsession("DB_anousu")." and
 		       o40_orgao = ".$orgao;
-        $resorg = pg_exec($sql);      
+        $resorg = db_query($sql);      
         db_fieldsmemory($resorg,0);
 
         $pdf->cell(0,0.5,'',"TB",1,"C",0);
@@ -352,7 +352,7 @@ if($tipo_rel==2){
 		   from orcunidade 
 		   where o41_anousu = ".db_getsession("DB_anousu")." and
 			 o41_orgao = ".$orgao." and o41_unidade = ".$unidade;
-	  $resorg = pg_exec($sql);      
+	  $resorg = db_query($sql);      
 	  db_fieldsmemory($resorg,0);
 	  $pdf->cell(10,$alt,db_formatar($orgao,'orgao').db_formatar($unidade,'orgao'),0,0,"L",0);
 	  $pdf->cell(50,$alt,$o41_descr,0,1,"L",0);
@@ -473,7 +473,7 @@ if($tipo_rel==2){
 		 from orcorgao 
 		 where o40_anousu = ".db_getsession("DB_anousu")." and
 		       o40_orgao = ".$orgao;
-     $resorg = pg_exec($sql);      
+     $resorg = db_query($sql);      
      db_fieldsmemory($resorg,0);
      $pdf->cell(20,$alt,db_formatar($orgao,'orgao'),0,0,"L",$pre);
      $pdf->cell(55,$alt,$o40_descr,0,0,"L",$pre);
@@ -483,7 +483,7 @@ if($tipo_rel==2){
 		   from orcunidade 
 		   where o41_anousu = ".db_getsession("DB_anousu")." and
 			 o41_orgao = ".$orgao." and o41_unidade = ".$unidade;
-     $resorg = pg_exec($sql);      
+     $resorg = db_query($sql);      
      db_fieldsmemory($resorg,0);
      $pdf->cell(20,$alt,db_formatar($orgao,'orgao').db_formatar($unidade,'orgao'),0,0,"L",$pre);
      $pdf->cell(55,$alt,$o41_descr,0,0,"L",$pre);
@@ -535,6 +535,6 @@ $pdf->cell(20,$alt,db_formatar($ttperc,'f'),1,0,"R",0);
 $pdf->cell(20,$alt,db_formatar($ttval_emp - $ttvlr4,'f'),1,1,"R",$pre);
 
 
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf->Output();
 ?>

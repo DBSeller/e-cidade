@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("interfaces/iPadArquivoTxtBase.interface.php");
-require_once ("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php");
-require_once ("model/contabilidade/arquivos/sigfis/SigfisVinculoOrgaoResponsavel.model.php");
+require_once(modification("interfaces/iPadArquivoTxtBase.interface.php"));
+require_once(modification("model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php"));
+require_once(modification("model/contabilidade/arquivos/sigfis/SigfisVinculoOrgaoResponsavel.model.php"));
 
 
 /**
@@ -60,7 +60,7 @@ class SigfisArquivoOrgao extends SigfisArquivoBase implements iPadArquivoTXTBase
 		$sSqlBuscaOrgaos     = $oDaoOrcorgao->sql_query_dotacao(null, null, $sCampos, null , $sWhereBuscaOrgaos);
 		
 		$rsSqlBuscaOrgaos    = $oDaoOrcorgao->sql_record($sSqlBuscaOrgaos);
-		$aOrgaos             = db_utils::getColectionByRecord($rsSqlBuscaOrgaos);
+		$aOrgaos             = db_utils::getCollectionByRecord($rsSqlBuscaOrgaos);
 		
 		if (count($aOrgaos) > 0) {
 			

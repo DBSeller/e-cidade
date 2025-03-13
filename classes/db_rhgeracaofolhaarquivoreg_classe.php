@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -95,7 +95,7 @@ class cl_rhgeracaofolhaarquivoreg {
        return false;
      }
      if($rh106_sequencial == "" || $rh106_sequencial == null ){
-       $result = @pg_query("select nextval('rhgeracaofolhaarquivoreg_rh106_sequencial_seq')"); 
+       $result = @db_query("select nextval('rhgeracaofolhaarquivoreg_rh106_sequencial_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: rhgeracaofolhaarquivoreg_rh106_sequencial_seq do campo: rh106_sequencial"; 
@@ -106,7 +106,7 @@ class cl_rhgeracaofolhaarquivoreg {
        }
        $this->rh106_sequencial = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from rhgeracaofolhaarquivoreg_rh106_sequencial_seq");
+       $result = @db_query("select last_value from rhgeracaofolhaarquivoreg_rh106_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $rh106_sequencial)){
          $this->erro_sql = " Campo rh106_sequencial maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -126,7 +126,7 @@ class cl_rhgeracaofolhaarquivoreg {
        $this->erro_status = "0";
        return false;
      }
-     $result = @pg_query("insert into rhgeracaofolhaarquivoreg(
+     $result = @db_query("insert into rhgeracaofolhaarquivoreg(
                                        rh106_sequencial 
                                       ,rh106_rhgeracaofolhaarquivo 
                                       ,rh106_rhgeracaofolhareg 
@@ -159,12 +159,12 @@ class cl_rhgeracaofolhaarquivoreg {
      $this->erro_status = "1";
      $resaco = $this->sql_record($this->sql_query_file($this->rh106_sequencial));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,18143,'$this->rh106_sequencial','I')");
-       $resac = pg_query("insert into db_acount values($acount,3202,18143,'','".pg_result($resaco,0,'rh106_sequencial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3202,18144,'','".pg_result($resaco,0,'rh106_rhgeracaofolhaarquivo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3202,18145,'','".pg_result($resaco,0,'rh106_rhgeracaofolhareg')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,18143,'$this->rh106_sequencial','I')");
+       $resac = db_query("insert into db_acount values($acount,3202,18143,'','".pg_result($resaco,0,'rh106_sequencial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3202,18144,'','".pg_result($resaco,0,'rh106_rhgeracaofolhaarquivo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3202,18145,'','".pg_result($resaco,0,'rh106_rhgeracaofolhareg')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -224,17 +224,17 @@ class cl_rhgeracaofolhaarquivoreg {
      $sql .= " where  rh106_sequencial = $this->rh106_sequencial
 ";
      $resaco = $this->sql_record($this->sql_query_file($this->rh106_sequencial));
-     if($this->numrows>0){       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     if($this->numrows>0){       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,18143,'$this->rh106_sequencial','A')");
+       $resac = db_query("insert into db_acountkey values($acount,18143,'$this->rh106_sequencial','A')");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh106_sequencial"]))
-         $resac = pg_query("insert into db_acount values($acount,3202,18143,'".pg_result($resaco,0,'rh106_sequencial')."','$this->rh106_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3202,18143,'".pg_result($resaco,0,'rh106_sequencial')."','$this->rh106_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh106_rhgeracaofolhaarquivo"]))
-         $resac = pg_query("insert into db_acount values($acount,3202,18144,'".pg_result($resaco,0,'rh106_rhgeracaofolhaarquivo')."','$this->rh106_rhgeracaofolhaarquivo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3202,18144,'".pg_result($resaco,0,'rh106_rhgeracaofolhaarquivo')."','$this->rh106_rhgeracaofolhaarquivo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["rh106_rhgeracaofolhareg"]))
-         $resac = pg_query("insert into db_acount values($acount,3202,18145,'".pg_result($resaco,0,'rh106_rhgeracaofolhareg')."','$this->rh106_rhgeracaofolhareg',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3202,18145,'".pg_result($resaco,0,'rh106_rhgeracaofolhareg')."','$this->rh106_rhgeracaofolhareg',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "rhgeracaofolhaarquivoreg nao Alterado. Alteracao Abortada.\\n";
@@ -268,12 +268,12 @@ class cl_rhgeracaofolhaarquivoreg {
      $this->atualizacampos(true);
      $resaco = $this->sql_record($this->sql_query_file($this->rh106_sequencial));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,18143,'$this->rh106_sequencial','E')");
-       $resac = pg_query("insert into db_acount values($acount,3202,18143,'','".pg_result($resaco,0,'rh106_sequencial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3202,18144,'','".pg_result($resaco,0,'rh106_rhgeracaofolhaarquivo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,3202,18145,'','".pg_result($resaco,0,'rh106_rhgeracaofolhareg')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,18143,'$this->rh106_sequencial','E')");
+       $resac = db_query("insert into db_acount values($acount,3202,18143,'','".pg_result($resaco,0,'rh106_sequencial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3202,18144,'','".pg_result($resaco,0,'rh106_rhgeracaofolhaarquivo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,3202,18145,'','".pg_result($resaco,0,'rh106_rhgeracaofolhareg')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      $sql = " delete from rhgeracaofolhaarquivoreg
                     where ";
@@ -284,7 +284,7 @@ class cl_rhgeracaofolhaarquivoreg {
       }
       $sql2 .= " rh106_sequencial = $this->rh106_sequencial ";
 }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "rhgeracaofolhaarquivoreg nao Excluído. Exclusão Abortada.\\n";
@@ -315,7 +315,7 @@ class cl_rhgeracaofolhaarquivoreg {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

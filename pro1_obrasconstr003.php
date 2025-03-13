@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_obrasconstr_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_obrasender_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_obrasconstr_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_obrasender_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clobrasconstr = new cl_obrasconstr;
@@ -69,9 +69,9 @@ if(isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"]=="Excluir")
 	<?
 	if(isset($func_alvara)){
 	  global $func_alvara;
-  	  include("forms/db_frmobrasconstr1.php");
+  	  include(modification("forms/db_frmobrasconstr1.php"));
 	}else{
-  	  include("forms/db_frmobrasconstr.php");
+  	  include(modification("forms/db_frmobrasconstr.php"));
 	}
 	?>
     </center>

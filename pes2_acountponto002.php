@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -68,7 +68,7 @@ if(isset($rub)){
 $head3 = "RELATÓRIO DAS ALTERAÇÕES DA FOLHA";
 $head5 = "PERIODO : ".db_formatar($dataini,'d').' a '.db_formatar($datafin,'d');
 
-pg_query("create temporary table 
+db_query("create temporary table 
           ww_acount(
                     regist int,
                     nomefunc char(40),
@@ -118,7 +118,7 @@ order by d.id_acount;
 
 //echo $sql1 ; exit;
 
-$result1 = pg_exec($sql1);
+$result1 = db_query($sql1);
 //db_criatabela($result1);exit;
 $xxnum1  = pg_numrows($result1);
 
@@ -151,7 +151,7 @@ for($xx = 0; $xx < pg_numrows($result1);$xx++){
          and d.codcam not in ($dcodcamnot)
          and trim(contant) <> trim(contatu) 
        ";
-   $result2 = pg_exec($sql2);
+   $result2 = db_query($sql2);
 //   db_criatabela($result2);
    $xxnum2  = pg_numrows($result2);
 
@@ -175,7 +175,7 @@ for($xx = 0; $xx < pg_numrows($result1);$xx++){
                       substr('".addslashes($atual)."',1,20),
                       substr('$nome',1,40)
                      )";
-      $res_ins2 = pg_query($sql_ins2);
+      $res_ins2 = db_query($sql_ins2);
       if($res_ins2 == false){
         echo "Erro ao inserir na tabela temporária : $sql_ins2 ";exit;
       }
@@ -209,7 +209,7 @@ if($tipo_alt == 'a'){
 
 $sql_temp = "select * from ww_acount $xtipo $xordem";
 //echo $sql_temp;
-$res_temp = pg_query($sql_temp);
+$res_temp = db_query($sql_temp);
 $xxnum = pg_numrows($res_temp);
 //db_criatabela($res_temp);exit;
 

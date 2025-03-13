@@ -124,10 +124,10 @@ db_input('k66_sigla',3,$Ik66_sigla,true,'text',$db_opcao,"")
 
 function js_pesquisak66_codbco(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_codbco','func_bancos.php?funcao_js=parent.js_mostrabancos1|codbco|nomebco','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_codbco','func_bancos.php?funcao_js=parent.js_mostrabancos1|codbco|nomebco','Pesquisa',true);
   }else{
      if(document.form1.k66_codbco.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_codbco','func_bancos.php?pesquisa_chave='+document.form1.k66_codbco.value+'&funcao_js=parent.js_mostrabancos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_codbco','func_bancos.php?pesquisa_chave='+document.form1.k66_codbco.value+'&funcao_js=parent.js_mostrabancos','Pesquisa',false);
      }else{
        document.form1.k66_codbco.value = ''; 
      }
@@ -154,10 +154,10 @@ function js_mostrabancos1(chave1,chave2){
 
 function js_pesquisak66_bancoshistmovcategoria(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bancoshistmovcategoria','func_bancoshistmovcategoria.php?funcao_js=parent.js_mostrabancoshistmovcategoria1|k67_sequencial|k67_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bancoshistmovcategoria','func_bancoshistmovcategoria.php?funcao_js=parent.js_mostrabancoshistmovcategoria1|k67_sequencial|k67_descricao','Pesquisa',true);
   }else{
      if(document.form1.k66_bancoshistmovcategoria.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bancoshistmovcategoria','func_bancoshistmovcategoria.php?pesquisa_chave='+document.form1.k66_bancoshistmovcategoria.value+'&funcao_js=parent.js_mostrabancoshistmovcategoria','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bancoshistmovcategoria','func_bancoshistmovcategoria.php?pesquisa_chave='+document.form1.k66_bancoshistmovcategoria.value+'&funcao_js=parent.js_mostrabancoshistmovcategoria','Pesquisa',false);
      }else{
        document.form1.k67_descricao.value = ''; 
      }
@@ -176,7 +176,7 @@ function js_mostrabancoshistmovcategoria1(chave1,chave2){
   db_iframe_bancoshistmovcategoria.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bancoshistmov','func_bancoshistmov.php?funcao_js=parent.js_preenchepesquisa|k66_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bancoshistmov','func_bancoshistmov.php?funcao_js=parent.js_preenchepesquisa|k66_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bancoshistmov.hide();

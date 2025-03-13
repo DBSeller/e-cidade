@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,59 +25,60 @@
  *                                licenca/licenca_pt.txt
  */
 
-//MODULO: ambulatorial
-//CLASSE DA ENTIDADE sau_config
-class cl_sau_config { 
+class cl_sau_config
+{
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $s103_c_lancafaa = null; 
-   var $s103_v_msgagenda = null; 
-   var $s103_c_agendaproc = null; 
-   var $s103_c_emitircomprovante = null; 
-   var $s103_i_departamentos = 0; 
-   var $s103_c_emitirfaa = null; 
-   var $s103_c_cancelafa = null; 
-   var $s103_i_modalidade = 0; 
-   var $s103_c_sgdb = null; 
-   var $s103_c_ip = null; 
-   var $s103_i_porta = 0; 
-   var $s103_c_senha = null; 
-   var $s103_c_usuario = null; 
-   var $s103_c_apareceragenda = null; 
-   var $s103_c_idadeproc = null; 
-   var $s103_c_servicoproc = null; 
-   var $s103_c_ipauto = 'f'; 
-   var $s103_c_agendaprog = null; 
-   var $s103_i_validaagenda = 0; 
-   var $s103_i_revisacgs = 0; 
-   var $s103_i_tipodb = 0; 
-   var $s103_i_datahorafaa = 0; 
-   var $s103_i_modelofaa = 0; 
-   var $s103_c_bpasecrdestino = null; 
-   var $s103_c_bpasigla = null; 
-   var $s103_c_bpaibge = null; 
-   var $s103_i_todacomp = 0; 
-   var $s103_procsemcbo = null; 
+    public $rotulo = null; 
+    public $query_sql = null; 
+    public $numrows = 0; 
+    public $numrows_incluir = 0; 
+    public $numrows_alterar = 0; 
+    public $numrows_excluir = 0; 
+    public $erro_status = null; 
+    public $erro_sql = null; 
+    public $erro_banco = null;  
+    public $erro_msg = null;  
+    public $erro_campo = null;  
+    public $pagina_retorno = null; 
+    /* Variáveis do Arquivo */
+    public $s103_c_lancafaa = null; 
+    public $s103_v_msgagenda = null; 
+    public $s103_c_agendaproc = null; 
+    public $s103_c_emitircomprovante = null; 
+    public $s103_i_departamentos = 0; 
+    public $s103_c_emitirfaa = null; 
+    public $s103_c_cancelafa = null; 
+    public $s103_i_modalidade = 0; 
+    public $s103_c_sgdb = null; 
+    public $s103_c_ip = null; 
+    public $s103_i_porta = 0; 
+    public $s103_c_senha = null; 
+    public $s103_c_usuario = null; 
+    public $s103_c_apareceragenda = null; 
+    public $s103_c_idadeproc = null; 
+    public $s103_c_servicoproc = null; 
+    public $s103_c_ipauto = 'f'; 
+    public $s103_c_agendaprog = null; 
+    public $s103_i_validaagenda = 0; 
+    public $s103_i_revisacgs = 0; 
+    public $s103_i_tipodb = 0; 
+    public $s103_i_datahorafaa = 0; 
+    public $s103_i_modelofaa = 0; 
+    public $s103_c_bpasecrdestino = null; 
+    public $s103_c_bpasigla = null; 
+    public $s103_c_bpaibge = null; 
+    public $s103_i_todacomp = 0; 
+    public $s103_procsemcbo = null; 
+    public $s103_obrigarcns = 'f'; 
+    public $s103_validamicroarea = 'f'; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+    public $campos = "
                  s103_c_lancafaa = char(1) = Lançamento FAA 
                  s103_v_msgagenda = varchar(200) = Mensagem Agenda 
                  s103_c_agendaproc = char(1) = Procedimento Agenda 
                  s103_c_emitircomprovante = char(1) = Emitir Comprovante 
                  s103_i_departamentos = int4 = Controle UPS 
-                 s103_c_emitirfaa = char(1) = Gerar FA automatica 
+                 s103_c_emitirfaa = char(1) = Gerar FA Automática 
                  s103_c_cancelafa = char(1) = Cancelar FA anteriores 
                  s103_i_modalidade = int8 = Modalidade 
                  s103_c_sgdb = char(150) = Nome do Banco 
@@ -98,26 +99,30 @@ class cl_sau_config {
                  s103_c_bpasecrdestino = char(50) = Secretaria Destino 
                  s103_c_bpasigla = char(5) = Sigla 
                  s103_c_bpaibge = char(30) = Codigo do IBGE 
-                 s103_i_todacomp = int4 = Apresentar Todas Competência 
+                 s103_i_todacomp = int4 = Apresentar Todas Competências 
                  s103_procsemcbo = char(1) = Exibir Procedimentos sem CBO 
+                 s103_obrigarcns = bool = Obrigar Informar CNS 
+                 s103_validamicroarea = bool = Valida Cadastro Paciente Micro Area 
                  ";
-   //funcao construtor da classe 
-   function cl_sau_config() { 
-     //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("sau_config"); 
-     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+
+    public function __construct()
+    {
+        $this->rotulo = new rotulo("sau_config"); 
+        $this->pagina_retorno = basename($_SERVER['PHP_SELF']);
+    }
+
+    public function erro($mostra, $retorna)
+    {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
-        echo "<script>alert(\"".$this->erro_msg."\");</script>";
+        echo "<script>alert(\"".$this->erro_msg."\")</script>";
         if($retorna==true){
            echo "<script>location.href='".$this->pagina_retorno."'</script>";
         }
      }
    }
-   // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+
+    public function atualizacampos($exclusao = false)
+    {
      if($exclusao==false){
        $this->s103_c_lancafaa = ($this->s103_c_lancafaa == ""?@$GLOBALS["HTTP_POST_VARS"]["s103_c_lancafaa"]:$this->s103_c_lancafaa);
        $this->s103_v_msgagenda = ($this->s103_v_msgagenda == ""?@$GLOBALS["HTTP_POST_VARS"]["s103_v_msgagenda"]:$this->s103_v_msgagenda);
@@ -147,11 +152,14 @@ class cl_sau_config {
        $this->s103_c_bpaibge = ($this->s103_c_bpaibge == ""?@$GLOBALS["HTTP_POST_VARS"]["s103_c_bpaibge"]:$this->s103_c_bpaibge);
        $this->s103_i_todacomp = ($this->s103_i_todacomp == ""?@$GLOBALS["HTTP_POST_VARS"]["s103_i_todacomp"]:$this->s103_i_todacomp);
        $this->s103_procsemcbo = ($this->s103_procsemcbo == ""?@$GLOBALS["HTTP_POST_VARS"]["s103_procsemcbo"]:$this->s103_procsemcbo);
+       $this->s103_obrigarcns = ($this->s103_obrigarcns == "f"?@$GLOBALS["HTTP_POST_VARS"]["s103_obrigarcns"]:$this->s103_obrigarcns);
+       $this->s103_validamicroarea = ($this->s103_validamicroarea == "f"?@$GLOBALS["HTTP_POST_VARS"]["s103_validamicroarea"]:$this->s103_validamicroarea);
      }else{
      }
    }
-   // funcao para inclusao
-   function incluir (){ 
+
+    public function incluir()
+    {
       $this->atualizacampos();
      if($this->s103_c_emitircomprovante == null ){ 
        $this->s103_c_emitircomprovante = "S";
@@ -166,7 +174,7 @@ class cl_sau_config {
        return false;
      }
      if($this->s103_c_emitirfaa == null ){ 
-       $this->erro_sql = " Campo Gerar FA automatica não informado.";
+       $this->erro_sql = " Campo Gerar FA Automática não informado.";
        $this->erro_campo = "s103_c_emitirfaa";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -253,7 +261,7 @@ class cl_sau_config {
        return false;
      }
      if($this->s103_i_todacomp == null ){ 
-       $this->erro_sql = " Campo Apresentar Todas Competência não informado.";
+       $this->erro_sql = " Campo Apresentar Todas Competências não informado.";
        $this->erro_campo = "s103_i_todacomp";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -261,7 +269,24 @@ class cl_sau_config {
        $this->erro_status = "0";
        return false;
      }
-
+     if($this->s103_obrigarcns == null ){ 
+       $this->erro_sql = " Campo Obrigar Informar CNS não informado.";
+       $this->erro_campo = "s103_obrigarcns";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->s103_validamicroarea == null ){ 
+       $this->erro_sql = " Campo Valida Cadastro Paciente Micro Area não informado.";
+       $this->erro_campo = "s103_validamicroarea";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
      $sql = "insert into sau_config(
                                        s103_c_lancafaa 
                                       ,s103_v_msgagenda 
@@ -291,6 +316,8 @@ class cl_sau_config {
                                       ,s103_c_bpaibge 
                                       ,s103_i_todacomp 
                                       ,s103_procsemcbo 
+                                      ,s103_obrigarcns 
+                                      ,s103_validamicroarea 
                        )
                 values (
                                 '$this->s103_c_lancafaa' 
@@ -321,17 +348,19 @@ class cl_sau_config {
                                ,'$this->s103_c_bpaibge' 
                                ,$this->s103_i_todacomp 
                                ,'$this->s103_procsemcbo' 
+                               ,'$this->s103_obrigarcns' 
+                               ,'$this->s103_validamicroarea' 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Configuração parâmetros () nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Configuração parâmetros () não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Configuração parâmetros já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Configuração parâmetros () nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Configuração parâmetros () não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -340,7 +369,7 @@ class cl_sau_config {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
@@ -352,8 +381,9 @@ class cl_sau_config {
      }
      return true;
    } 
-   // funcao para alteracao
-   public function alterar ( $oid=null ) { 
+
+    public function alterar( $oid=null )
+    {
       $this->atualizacampos();
      $sql = " update sau_config set ";
      $virgula = "";
@@ -390,7 +420,7 @@ class cl_sau_config {
        $sql  .= $virgula." s103_c_emitirfaa = '$this->s103_c_emitirfaa' ";
        $virgula = ",";
        if(trim($this->s103_c_emitirfaa) == null ){ 
-         $this->erro_sql = " Campo Gerar FA automatica não informado.";
+         $this->erro_sql = " Campo Gerar FA Automática não informado.";
          $this->erro_campo = "s103_c_emitirfaa";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -552,7 +582,7 @@ class cl_sau_config {
        $sql  .= $virgula." s103_i_todacomp = $this->s103_i_todacomp ";
        $virgula = ",";
        if(trim($this->s103_i_todacomp) == null ){ 
-         $this->erro_sql = " Campo Apresentar Todas Competência não informado.";
+         $this->erro_sql = " Campo Apresentar Todas Competências não informado.";
          $this->erro_campo = "s103_i_todacomp";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -561,7 +591,7 @@ class cl_sau_config {
          return false;
        }
      }
-     if(trim($this->s103_procsemcbo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s103_procsemcbo"])){
+     if(trim($this->s103_procsemcbo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s103_procsemcbo"])){ 
        $sql  .= $virgula." s103_procsemcbo = '$this->s103_procsemcbo' ";
        $virgula = ",";
        if(trim($this->s103_procsemcbo) == null ){
@@ -574,12 +604,36 @@ class cl_sau_config {
          return false;
        }
      }
-
-     $result = db_query($sql);
-
+     if(trim($this->s103_obrigarcns)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s103_obrigarcns"])){ 
+       $sql  .= $virgula." s103_obrigarcns = '$this->s103_obrigarcns' ";
+       $virgula = ",";
+       if(trim($this->s103_obrigarcns) == null ){ 
+         $this->erro_sql = " Campo Obrigar Informar CNS não informado.";
+         $this->erro_campo = "s103_obrigarcns";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(trim($this->s103_validamicroarea)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s103_validamicroarea"])){ 
+       $sql  .= $virgula." s103_validamicroarea = '$this->s103_validamicroarea' ";
+       $virgula = ",";
+       if(trim($this->s103_validamicroarea) == null ){ 
+         $this->erro_sql = " Campo Valida Cadastro Paciente Micro Area não informado.";
+         $this->erro_campo = "s103_validamicroarea";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+    $result = db_query($sql);
      if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Configuração parâmetros nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Configuração parâmetros não Alterado. Alteração Abortada.\\n";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
@@ -588,7 +642,7 @@ class cl_sau_config {
      } else {
        if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Configuração parâmetros nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Configuração parâmetros não foi Alterado. Alteração Executada.\\n";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
@@ -596,7 +650,7 @@ class cl_sau_config {
          return true;
        } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
@@ -605,9 +659,9 @@ class cl_sau_config {
        } 
      } 
    } 
-   // funcao para exclusao 
-   public function excluir ( $oid=null ,$dbwhere=null) { 
 
+    public function excluir( $oid=null , $dbwhere = null)
+    {
      $sql = " delete from sau_config
                     where ";
      $sql2 = "";
@@ -619,7 +673,7 @@ class cl_sau_config {
      $result = db_query($sql.$sql2);
      if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Configuração parâmetros nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Configuração parâmetros não Excluído. Exclusão Abortada.\\n";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
@@ -628,7 +682,7 @@ class cl_sau_config {
      } else {
        if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Configuração parâmetros nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Configuração parâmetros não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
@@ -636,7 +690,7 @@ class cl_sau_config {
          return true;
        } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
@@ -645,8 +699,9 @@ class cl_sau_config {
        } 
      } 
    } 
-   // funcao do recordset 
-   public function sql_record($sql) { 
+
+    public function sql_record($sql)
+    {
      $result = db_query($sql);
      if (!$result) {
        $this->numrows    = 0;
@@ -668,8 +723,8 @@ class cl_sau_config {
       }
      return $result;
    }
-   // funcao do sql 
-   public function sql_query ($oid = null, $campos = "sau_config.oid,*", $ordem = null, $dbwhere = "") { 
+
+    public function sql_query($oid = null, $campos = "sau_config.oid,*", $ordem = null, $dbwhere = "") { 
 
      $sql  = "select {$campos}";
      $sql .= "  from sau_config ";
@@ -688,8 +743,8 @@ class cl_sau_config {
      }
      return $sql;
   }
-   // funcao do sql 
-   public function sql_query_file ($oid = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+    public function sql_query_file($oid = null, $campos = "*", $ordem = null, $dbwhere = "") {
 
      $sql  = "select {$campos} ";
      $sql .= "  from sau_config ";

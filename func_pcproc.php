@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once "libs/db_stdlib.php";
-require_once "libs/db_conecta.php";
-require_once "libs/db_sessoes.php";
-require_once "libs/db_usuariosonline.php";
-require_once "libs/db_utils.php";
-require_once "dbforms/db_funcoes.php";
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/db_utils.php");
+require_once modification("dbforms/db_funcoes.php");
 
-db_postmemory($HTTP_POST_VARS);
+db_postmemory($_POST);
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+parse_str($_SERVER["QUERY_STRING"]);
 
 $clpcproc 	  = new cl_pcproc;
 $clpcprocitem = new cl_pcprocitem;
@@ -63,7 +63,7 @@ if (!isset($pesquisar)) {
 }
 $sWhereContrato = " and 1 = 1 ";
 
-
+$lFiltrarProcessoAutomatico = !empty($lBuscarProcessoAutomatico) && $lBuscarProcessoAutomatico == "true";
 
 ?>
 <html>
@@ -135,6 +135,9 @@ $sWhereContrato = " and 1 = 1 ";
   <tr>
     <td align="center" valign="top">
       <?
+
+      $sWhereSolicitaAnulada = " not exists (select 1 from solicitaanulada where pc67_solicita = pc10_numero) ";
+
       if (isset($orc)) {
         $result_chave = $clpcprocitem->sql_record($clpcprocitem->sql_query_orcam(null," distinct pc81_codproc as chave_pc80_codproc",""," pc22_codorc=$orc "));
         if ($clpcprocitem->numrows>0) {
@@ -143,7 +146,7 @@ $sWhereContrato = " and 1 = 1 ";
       }
       if (isset($campos)==false) {
         if (file_exists("funcoes/db_func_pcproc.php")==true) {
-          include("funcoes/db_func_pcproc.php");
+          include(modification("funcoes/db_func_pcproc.php"));
         } else {
           $campos = "pcproc.*";
         }
@@ -154,8 +157,6 @@ $sWhereContrato = " and 1 = 1 ";
       }
       $where_lic="";
       if (isset($orclic)&&$orclic==true) {
-
-        $where_lic  = " and l21_codigo is null  ";
 
         $rsConsultaPcparam = $clpcparam->sql_record($clpcparam->sql_query_file(db_getsession("DB_instit"), "pc30_contrandsol"));
         $oPcparam = db_utils::fieldsMemory($rsConsultaPcparam,0);
@@ -172,6 +173,16 @@ $sWhereContrato = " and 1 = 1 ";
       }
       $campos = " distinct ".$campos;
 
+      /**
+       * Bloqueado para não trazer os processos de compra que já tem todos os itens vinculados a um orçamento
+       */
+      if (isset($lBloqueiaVinculadosOrcamento) && $lBloqueiaVinculadosOrcamento) {
+
+        $dbwhere .= " and exists(select *                                                                ";
+        $dbwhere .= "              from pcprocitem                                                       ";
+        $dbwhere .= "                   left join pcorcamitemproc on pc31_pcprocitem = pc81_codprocitem  ";
+        $dbwhere .= "             where pc31_pcprocitem is null and pc81_codproc = pcproc.pc80_codproc ) ";
+      }
 
       if (!isset($pesquisa_chave)) {
 
@@ -183,19 +194,29 @@ $sWhereContrato = " and 1 = 1 ";
 
         if (isset($chave_pc80_codproc) && (trim($chave_pc80_codproc)!="") ) {
 
-          $sql = $clpcproc->sql_query_proc_and(null,$campos, null,"pc80_codproc = ".$chave_pc80_codproc." $where_lic and db_depart.instit = ".db_getsession("DB_instit").$dbwhere. $sWhereContrato);
+          $sql = $clpcproc->sql_query_proc_and(null,$campos, null,"pc80_codproc = ".$chave_pc80_codproc." $where_lic and db_depart.instit = ".db_getsession("DB_instit").$dbwhere. $sWhereContrato ." and {$sWhereSolicitaAnulada}");
 
         } else if (isset($chave_pc10_numero) && (trim($chave_pc10_numero)!="") ) {
 
-          $sql = $clpcproc->sql_query_proc_and("",$campos, null," pc10_numero=$chave_pc10_numero $where_lic and db_depart.instit = ".db_getsession("DB_instit").$dbwhere . $sWhereContrato);
+          $sql = $clpcproc->sql_query_proc_and("",$campos, null," pc10_numero=$chave_pc10_numero $where_lic and db_depart.instit = ".db_getsession("DB_instit").$dbwhere . $sWhereContrato." and {$sWhereSolicitaAnulada}");
         } else {
-
-          $sql = $clpcproc->sql_query_proc_and("",$campos, null," db_depart.instit = ".db_getsession("DB_instit").$dbwhere.$where_lic." and pc80_data between '{$dataini}' and '{$datafim}' $sWhereContrato ");
+          if ($dataini && $datafim) {
+            $sql = $clpcproc->sql_query_proc_and("",$campos, null," db_depart.instit = ".db_getsession("DB_instit").$dbwhere.$where_lic." and pc80_data between '{$dataini}' and '{$datafim}' $sWhereContrato and {$sWhereSolicitaAnulada}");
+          } else {
+            $sql = $clpcproc->sql_query_proc_and("",$campos, null," db_depart.instit = ".db_getsession("DB_instit").$dbwhere.$where_lic." $sWhereContrato and {$sWhereSolicitaAnulada}");
+          }
         }
         if (isset($iAtivo) && !empty($iAtivo)) {
           $sql .=  " and pc80_situacao = $iAtivo";
         }
+        
+      if ($lFiltrarProcessoAutomatico) {
 
+        $sql .= " and pc10_solicitacaotipo not in (5,6) ";
+        $sql .= " and not exists (select 1 from pcsugforn where pc40_solic = pc10_numero) ";
+      }
+
+        $sql .= " and pc10_solicitacaotipo <> 8 ";
         $sql .= " order by pc80_codproc desc ";
         $repassa = array("dataini" => $dataini, "datafim" => $datafim);
 
@@ -216,10 +237,11 @@ $sWhereContrato = " and 1 = 1 ";
           }
 
 
-          $sql = $clpcproc->sql_query_autitem(null,"*", null,"pc80_codproc = ".$pesquisa_chave." $where_lic and pc10_instit = ".db_getsession("DB_instit").$dbwhere . $sWhereContrato);
+          $sql = $clpcproc->sql_query_autitem(null,"*", null,"pc80_codproc = ".$pesquisa_chave." $where_lic and pc10_instit = ".db_getsession("DB_instit").$dbwhere . $sWhereContrato." and {$sWhereSolicitaAnulada}");
           if (isset($iAtivo) && !empty($iAtivo)) {
             $sql .= " and pc80_situacao = $iAtivo";
           }
+          $sql .= " and pc10_solicitacaotipo <> 8 ";
           $sql .= " order by pc80_codproc desc ";
 
 
@@ -248,3 +270,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

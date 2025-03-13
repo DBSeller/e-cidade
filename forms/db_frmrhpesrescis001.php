@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 //MODULO: pessoal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrhpesrescisao->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -41,7 +41,7 @@ $clrotulo->label("rh02_codreg");
 $db_opcao = 2;
 $rh05_causa  = $causa;     
 $rh05_caub   = $caub;     
-$rh05_recis  = $rescisao;  
+$rh05_recis  = $rescisao;
 $rh05_recis_dia = $recis_dia;
 $rh05_recis_mes = $recis_mes;
 $rh05_recis_ano = $recis_ano;
@@ -53,6 +53,7 @@ $rh05_aviso_ano = $aviso_ano;
 $rh05_mremun = $remun;
 $r59_descr1 = $descr1;
 $r59_descr = $descr;
+$dataPagamentoOriginal = $dataPagamento;
 ?>
 <form name="form1" method="post" action="">
 <center>
@@ -118,7 +119,6 @@ $r59_descr = $descr;
               db_input('r59_menos1',4,0,true,'hidden',3);
               db_input('r30_regist', 7, 0, true, 'hidden', 3);
               db_input('campomatriculas', 4, 0, true, 'hidden', 3);
-              db_input('r30_regist', 7, 0, true, 'hidden', 3);
               db_input('selecao', 4, 0, true, 'hidden', 3);
               db_input('tipo', 4, 0, true, 'hidden', 3);
               db_input('r59_anousu', 4, 0, true, 'hidden', 3);
@@ -141,6 +141,8 @@ $r59_descr = $descr;
               db_input('aviso_dia', 2, 0, true, 'hidden', 3);
               db_input('descr',40,0,true,'hidden',3);
               db_input('descr1',40,0,true,'hidden',3);
+              db_input('dataPagamentoOriginal', 40, 0, true, 'hidden', 3);
+
               ?>
             </td>
           </tr>
@@ -177,10 +179,26 @@ $r59_descr = $descr;
             </td>
             <td>
               <?
-              db_input('rh05_mremun',6,$Irh05_mremun,true,'text',$db_opcao,"")
+                db_input('rh05_mremun',6,$Irh05_mremun,true,'text',$db_opcao,"", "", "", "width: 111px");
               ?>
             </td>
-            <td colspan="2" id="caixa_de_texto">
+              <td align="right">
+                  <label for="dataPagamento" class="bold">Data de Pagamento:</label>
+              </td>
+              <td>
+                  <?php
+                      db_inputdata('dataPagamento',
+                                 $dataPagamento_dia,
+                                 $dataPagamento_mes,
+                                 $dataPagamento_ano,
+                                 true,
+                                 'text',
+                                 1);
+                  ?>
+              </td>
+          </tr>
+          <tr>
+            <td colspan="4" id="caixa_de_texto">
             </td>
           </tr>
         </table>
@@ -203,13 +221,21 @@ $r59_descr = $descr;
 function js_faltas(registro){
 	qry = 'opcao=enviarescis';
   qry+= '&causa='+document.form1.rh05_causa.value;
+  qry+= '&subcausa='+document.form1.rh05_caub.value;
+  qry+= '&menos1='+document.form1.r59_menos1.value;  
   qry+= '&regime='+document.form1.rh02_codreg.value;
   qry+= '&regist='+document.form1.r30_regist.value;
   qry+= '&rh05_recis_ano='+document.form1.rh05_recis_ano.value;
   qry+= '&rh05_recis_mes='+document.form1.rh05_recis_mes.value;
-  js_OpenJanelaIframe('top.corpo','db_iframe_faltas','func_scriptsdb.php?'+qry,'Pesquisa',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_faltas','func_scriptsdb.php?'+qry,'Pesquisa',false);
 }
-function js_verificadados(){
+function js_verificadados() {
+
+  if (document.form1.dataPagamento.value == '') {
+    alert('Informe a data de pagamento.');
+    return false;
+  }
+
   if(document.form1.r30_regist.value == ""){
     alert("Informe a matrícula do funcionário.");
     document.form1.r30_regist.focus();
@@ -355,10 +381,10 @@ function js_disabdata(valor){
 }
 function js_pesquisarh05_causa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rescisao','func_rescisaoaviso.php?testarescisao=raf&funcao_js=parent.js_mostrarescisao1|r59_causa|r59_descr|r59_caub|r59_descr1|r59_aviso|r59_menos1&chave_r59_anousu=<?=db_anofolha()?>&chave_r59_mesusu=<?=db_mesfolha()?>&regime='+document.form1.rh02_codreg.value,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rescisao','func_rescisaoaviso.php?testarescisao=raf&funcao_js=parent.js_mostrarescisao1|r59_causa|r59_descr|r59_caub|r59_descr1|r59_aviso|r59_menos1&chave_r59_anousu=<?=db_anofolha()?>&chave_r59_mesusu=<?=db_mesfolha()?>&regime='+document.form1.rh02_codreg.value,'Pesquisa',true);
   }else{
     if(document.form1.rh05_causa.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_rescisao','func_rescisaoaviso.php?testarescisao=raf&pesquisa_chave='+document.form1.rh05_causa.value+'&funcao_js=parent.js_mostrarescisao&ano=<?=db_mesfolha()?>&mes=<?=db_mesfolha()?>&regime='+document.form1.rh02_codreg.value,'Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rescisao','func_rescisaoaviso.php?testarescisao=raf&pesquisa_chave='+document.form1.rh05_causa.value+'&funcao_js=parent.js_mostrarescisao&ano=<?=db_mesfolha()?>&mes=<?=db_mesfolha()?>&regime='+document.form1.rh02_codreg.value,'Pesquisa',false);
     }else{
       document.form1.rh05_caub.value  = '';
       document.form1.r59_descr.value  = '';

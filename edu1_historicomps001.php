@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,24 +25,26 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oDaoHistoricoMps = new cl_historicomps();
 $oDaoHistorico    = new cl_historico();
 $oDaoMatricula    = new cl_matricula();
 
 db_postmemory( $_POST );
+db_postmemory( $_GET  );
 
 $db_opcao         = 1;
 $db_opcao1        = 1;
 $ed62_i_historico = $ed62_i_historico;
-$sSqlHistorico    = $oDaoHistorico->sql_query("","ed61_i_escola",""," ed61_i_codigo = $ed62_i_historico");
+$sCamposHistorico = "ed61_i_escola, ed10_i_codigo as ed11_i_ensino";
+$sSqlHistorico    = $oDaoHistorico->sql_query("", $sCamposHistorico, "", " ed61_i_codigo = $ed62_i_historico");
 $rsHistorico      = $oDaoHistorico->sql_record($sSqlHistorico);
 db_fieldsmemory( $rsHistorico, 0 );
 
@@ -67,34 +69,41 @@ if (isset($incluir)) {
     $erro = true;
   } else {
 
-  	$sCamposHistMps   = "ed62_i_codigo,ed62_i_anoref as anoref,ed62_i_periodoref as periodo,ed11_c_descr as nomeserie";
-  	$sWhereHistMps    = " ed61_i_aluno = $ed61_i_aluno AND ed62_i_serie = $ed62_i_serie ";
-  	$sWhereHistMps   .= " AND ed62_i_anoref = $ed62_i_anoref ";
-  	$sSqlHistoricoMps = $oDaoHistoricoMps->sql_query("",$sCamposHistMps,"",$sWhereHistMps);
-    $rsHistoricoMps   = $oDaoHistoricoMps->sql_record($sSqlHistoricoMps);
+    $oEtapa = EtapaRepository::getEtapaByCodigo( $ed62_i_serie );
+    $oAluno = AlunoRepository::getAlunoByCodigo( $ed61_i_aluno );
+    $erro   = HistoricoEscolar::temInconsistenciaEtapaSelecionada( $oEtapa, $oAluno, $ed62_i_anoref, $ed62_c_resultadofinal, $ed62_i_periodoref );
 
-    if ($oDaoHistoricoMps->numrows > 0) {
+    if( !$erro ) {
 
-      db_fieldsmemory($rsHistoricoMps,0);
-      db_msgbox("Já existe etapa $nomeserie com o ano $ed62_i_anoref \\npara o aluno $ed47_v_nome !");
-      $erro = true;
-    } else {
+      $sCamposHistMps   = "ed62_i_codigo,ed62_i_anoref as anoref,ed62_i_periodoref as periodo,ed11_c_descr as nomeserie";
+      $sWhereHistMps    = " ed61_i_aluno = $ed61_i_aluno AND ed62_i_serie = $ed62_i_serie ";
+      $sWhereHistMps   .= " AND ed62_i_anoref = $ed62_i_anoref ";
+      $sSqlHistoricoMps = $oDaoHistoricoMps->sql_query("",$sCamposHistMps,"",$sWhereHistMps);
+      $rsHistoricoMps   = $oDaoHistoricoMps->sql_record($sSqlHistoricoMps);
 
-      if ($ed62_c_situacao == "AMPARADO") {
-        $ed62_c_resultadofinal = "A";
-      } else if ( $ed62_c_situacao == "CONCLUÍDO" || $ed62_c_situacao == "RECLASSIFICADO" ) {
-        $ed62_c_resultadofinal = $ed62_c_resultadofinal;
+      if ($oDaoHistoricoMps->numrows > 0) {
+
+        db_fieldsmemory($rsHistoricoMps,0);
+        db_msgbox("Já existe etapa $nomeserie com o ano $ed62_i_anoref \\npara o aluno $ed47_v_nome !");
+        $erro = true;
       } else {
-        $ed62_c_resultadofinal = "R";
-      }
 
-      db_inicio_transacao();
-      $oDaoHistoricoMps->ed62_lancamentoautomatico = 'false';
-      $oDaoHistoricoMps->ed62_percentualfrequencia = "{$ed62_percentualfrequencia}";
-      $oDaoHistoricoMps->ed62_c_resultadofinal     = $ed62_c_resultadofinal;
-      $oDaoHistoricoMps->ed62_observacao           = "{$ed62_observacao}";
-      $oDaoHistoricoMps->incluir($ed62_i_codigo);
-      db_fim_transacao();
+        if ($ed62_c_situacao == "AMPARADO") {
+          $ed62_c_resultadofinal = "A";
+        } else if (in_array($ed62_c_situacao, ["CONCLUÍDO", "RECLASSIFICADO", "AVANÇO"])) {
+          $ed62_c_resultadofinal = $ed62_c_resultadofinal;
+        } else {
+          $ed62_c_resultadofinal = "R";
+        }
+
+        db_inicio_transacao();
+        $oDaoHistoricoMps->ed62_lancamentoautomatico = 'false';
+        $oDaoHistoricoMps->ed62_percentualfrequencia = "{$ed62_percentualfrequencia}";
+        $oDaoHistoricoMps->ed62_c_resultadofinal     = $ed62_c_resultadofinal;
+        $oDaoHistoricoMps->ed62_observacao           = "{$ed62_observacao}";
+        $oDaoHistoricoMps->incluir($ed62_i_codigo);
+        db_fim_transacao();
+      }
     }
   }
 }
@@ -106,6 +115,7 @@ if (isset($incluir)) {
   <meta http-equiv="Expires" CONTENT="0">
   <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
   <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/classes/educacao/escola/HistoricoEscolar.classe.js"></script>
   <link href="estilos.css" rel="stylesheet" type="text/css">
  </head>
  <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -114,7 +124,7 @@ if (isset($incluir)) {
     <td align="left" valign="top" bgcolor="#CCCCCC">
      <center>
       <fieldset style="width:95%;"><legend><b>Etapa cursada na Rede Municipal</b></legend>
-       <?include("forms/db_frmhistoricomps.php");?>
+       <?php include(modification("forms/db_frmhistoricomps.php")); ?>
       </fieldset>
      </center>
     </td>
@@ -143,7 +153,7 @@ if (isset($incluir) && $erro == false) {
   } else {
 
     $oDaoHistoricoMps->erro(true,false);
-    $result = @db_query("select last_value from historicomps_ed62_i_codigo_seq");
+    $result = db_query("select last_value from historicomps_ed62_i_codigo_seq");
     $ultimo = pg_result($result,0,0);
     ?>
     <script>

@@ -1,37 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $db_opcao = 1;
 $oRotulo  = new rotulocampo();
@@ -115,11 +115,11 @@ var sUrlRPC = 'edu04_controleacessofrequencia.RPC.php';
 
 function js_init() {
 
-  aAlunos         = new Array(); 
+  aAlunos         = new Array();
 	lCarregouTurmas = false;
 	oTxtData        = new DBTextFieldData('oTxtDataFiltro', 'oTxtData');
 	oTxtData.show($('ctnInputData'));
-  
+
   js_atualizarDadosLeitura();
 	js_gridAlunos();
 	js_montaComboTurmas();
@@ -129,20 +129,20 @@ function js_init() {
 }
 
 function js_atualizarDadosLeitura() {
-  
+
   var oParametros = new Object();
   oParametros.exec = 'atualizarDados';
 
   js_divCarregando('Aguarde, Atualizando leituras...<br>Esse procedimento pode levar algum tempo.', 'msgBox')
   var oAjax = new Ajax.Request('edu03_consultaacessoalunos.RPC.php' ,
-                             { 
-                               method:'post', 
+                             {
+                               method:'post',
                                parameters: 'json='+Object.toJSON(oParametros),
                                onComplete: js_pesquisarAlunos
                              }
 
               );
-    
+
   }
 /**
  * Cria a grid dos alunos presentes na escola
@@ -150,7 +150,7 @@ function js_atualizarDadosLeitura() {
 function js_gridAlunos() {
 
 	var iHeight                  = document.body.getHeight();
-	
+
 	oDataGridAlunos              = new DBGrid("gridAlunos");
 	oDataGridAlunos.nameInstance = "oDataGridAlunos";
 	oDataGridAlunos.setCheckbox(0);
@@ -193,12 +193,12 @@ function js_pesquisarTurmas() {
  */
 function js_retornaPesquisarTurmas(oResponse) {
 
-	var oRetorno = eval('('+oResponse.responseText+')');
+	var oRetorno = JSON.parse(oResponse.responseText);
 
 	if (oRetorno.status == 1) {
 
 		oRetorno.aTurmas.each(function(oTurma, iSeq) {
-			
+
 			oComboTurmas.addItem(oTurma.iCodigoTurma, oTurma.sDescricao.urlDecode());
 			lCarregouTurmas = true;
 		});
@@ -233,17 +233,17 @@ function js_pesquisarAlunos() {
 function js_retornaPesquisarAlunos(oResponse) {
 
   js_removeObj("msgBox");
-  aAlunos      = new Array(); 
-	var oRetorno = eval('('+oResponse.responseText+')');
+  aAlunos      = new Array();
+	var oRetorno = JSON.parse(oResponse.responseText);
 
 	if (oRetorno.status == 1) {
-    
-    aAlunos      = oRetorno.aAlunos;   
+
+    aAlunos      = oRetorno.aAlunos;
 		oDataGridAlunos.clearAll(true);
 		oRetorno.aAlunos.each(function(oAluno, iSeq) {
-      
+
       var iMatricula = oAluno.iMatricula;
-      oAluno.aPeriodos = new Array(); 
+      oAluno.aPeriodos = new Array();
 			var aLinha = new Array();
 			aLinha[0]  = '<a href="#" onclick="js_dadosaAlunos('+oAluno.iCodigoAluno+');return false;">'+oAluno.iMatricula+'</a>';
 			aLinha[1]  = oAluno.sDescricao.urlDecode();
@@ -251,7 +251,7 @@ function js_retornaPesquisarAlunos(oResponse) {
 		  if (oAluno.lAmarelo) {
 		    sColorBackground  = 'yellow';
 		  }
-			
+
 			aLinha[2]  = oAluno.sTurma.urlDecode()+" / "+oAluno.sSala.urlDecode();
 			aLinha[3]  = "<div style='background-color:"+sColorBackground+"; width:70%; height: 70%; margin: 0 auto;' ";
 			aLinha[3] += " id="+oAluno.iMatricula+" onclick=\"js_montaWindowPeriodos("+oAluno.iMatricula+",";
@@ -259,7 +259,7 @@ function js_retornaPesquisarAlunos(oResponse) {
 			aLinha[3] += "                                                           '"+oAluno.dtPesquisa+"',";
 			aLinha[3] += "                                                            "+iSeq+")\">";
 			aLinha[3] += " </div>";
-			aLinha[4]  = eval("oTextoSMS"+iMatricula+" = new DBTextField('oTextoSMS"+iMatricula+"','oTextoSMS"+iMatricula+"','')");
+			aLinha[4]  = new DBTextField(`oTextoSMS${iMatricula}`, `oTextoSMS${iMatricula}`, '');
       aLinha[4].addStyle("height","100%");
       aLinha[4].addStyle("width","100%");
       aLinha[4].setMaxLength(160);
@@ -300,14 +300,14 @@ function js_montaWindowPeriodos(iMatricula, sNome, dtPesquisa, iLinha) {
 	 sConteudo         += "  <center>";
 	 sConteudo         += "    <input type='button' value='Salvar' id='btnSalvarPeriodos' ";
 	 sConteudo         += "           onclick='js_salvarPeriodos("+iMatricula+", "+iLinha+");'>";
-	 sConteudo         += "  </center>"; 
+	 sConteudo         += "  </center>";
 	 sConteudo         += "</div>";
-   
+
 	 oWindowPeriodos.setContent(sConteudo);
 	 oWindowPeriodos.setShutDownFunction(function() {
-		 
+
 		 oWindowPeriodos.destroy();
-		
+
 	 });
 
 	 var sHelp = '<b>Matricula:</b> '+iMatricula+'<b> Aluno:</b> '+sNome;
@@ -363,7 +363,7 @@ function js_carregaPeriodos(iMatricula, dtPesquisa) {
  */
 function js_retornaCarregaPeriodos(oResponse) {
 
-	var oRetorno = eval('('+oResponse.responseText+')');
+	var oRetorno = JSON.parse(oResponse.responseText);
 
 	if (oRetorno.status == 1) {
 
@@ -387,11 +387,11 @@ function js_retornaCarregaPeriodos(oResponse) {
 
 			oAlunoCorrente.aPeriodos.each(function(iCodigoPeriodoMarcado, iSeqPeriodo) {
 			  if (iCodigoPeriodoMarcado == oPeriodo.iCodigoFalta) {
-			  
+
 			    lMarcado = true;
-			    throw $break;  
+			    throw $break;
 			  }
-			}); 
+			});
 		  oDataGridPeriodos.addRow(aLinha, false, lBloqueado, lMarcado);
 		  oDataGridPeriodos.aRows[iSeq].aCells[1].sStyle += ";background-color:"+sCor+"';font-weight:bold;";
     });
@@ -403,25 +403,25 @@ function js_retornaCarregaPeriodos(oResponse) {
  * Salva as alteracoes realizadas nos periodos do dia do aluno
  */
 function js_salvarPeriodos(iMatricula, iLinha) {
-  
+
   var oPeriodosNotificar = oDataGridPeriodos.getSelection("object");
   oAluno                 = getAlunoPorMatricula(iMatricula);
   oAluno.aPeriodos       = new Array();
-  
+
   var sTextoPeriodos = '';
   var sVirgula       = '';
   oPeriodosNotificar.each(function(oPeriodo, iSeq) {
-    
+
     sTextoPeriodos += sVirgula+oPeriodo.aCells[1].getValue();
     sVirgula        = ", ";
     oAluno.aPeriodos.push(oPeriodo.aCells[3].getValue());
   });
-  sMensagem  = oAluno.sMensagemVermelha.urlDecode().replace('#periodos#', sTextoPeriodos);  
+  sMensagem  = oAluno.sMensagemVermelha.urlDecode().replace('#periodos#', sTextoPeriodos);
   if (oAluno.lAmarelo) {
     sMensagem  = oAluno.sMensagemAmarela.urlDecode().replace('#periodos#', sTextoPeriodos);
   }
   if (oPeriodosNotificar.length > 0) {
-  
+
     oDataGridAlunos.aRows[iLinha].select(true);
     oDataGridAlunos.aRows[iLinha].aCells[5].content.setValue(sMensagem);
     oDataGridAlunos.aRows[iLinha].aCells[5].content.setReadOnly(false);
@@ -430,12 +430,12 @@ function js_salvarPeriodos(iMatricula, iLinha) {
 }
 
 function getAlunoPorMatricula(iMatricula) {
-   
+
    var oAlunoRetorno = '';
    aAlunos.each(function(oAluno, iSeq) {
-    
+
      if (oAluno.iMatricula == iMatricula) {
-     
+
        oAlunoRetorno = oAluno;
        throw $break
      }
@@ -443,7 +443,7 @@ function getAlunoPorMatricula(iMatricula) {
    return oAlunoRetorno;
 }
 
- 
+
 $('btnFiltrar').observe("click", function() {
 
 	js_atualizarDadosLeitura();
@@ -463,52 +463,52 @@ $('btnEnviarMensagens').observe("click", function() {
 	var oAlunosSelecionados = oDataGridAlunos.getSelection("object");
 	var lErro               = false;
 	if (oAlunosSelecionados.length == 0) {
-	
+
 	  alert('Informe ao menos um aluno!');
 	  return false;
 	}
 	oAlunosSelecionados.each(function(oLinha, iSeq) {
-	  
+
 	    var oAluno = new Object();
 	    oAluno.iMatricula = oLinha.aCells[1].getValue();
 	    oAluno.sMensagem  = encodeURIComponent(tagString(oLinha.aCells[5].getValue()));
 	    oAluno.aFaltas    = getAlunoPorMatricula(oAluno.iMatricula).aPeriodos;
 	    if (oAluno.aFaltas.length == 0) {
-	    
+
 	      alert('Não foi selecionado nenhuma falta para notificar o aluno '+oLinha.aCells[2].getValue()+".");
   	    lErro = true;
 	      throw $break;
 	    }
-	    aAlunos.push(oAluno); 
+	    aAlunos.push(oAluno);
 	});
 	if (lErro) {
 	  return false;
-	} 
+	}
 	if (!confirm('Confirma a emissão de emails/SMS para os responsáveis dos alunos selecionados?')) {
 	  return false;
 	}
-	
+
 	var oParametros     = new Object();
 	oParametros.exec    = 'enviarNotificacao';
 	oParametros.aAlunos = aAlunos;
-	
+
 	js_divCarregando('Aguarde, enviando notificacões.', 'msgBox');
 	var oAjax = new Ajax.Request(sUrlRPC,
 	                             {method:'post',
 	                              parameters:'?json='+Object.toJSON(oParametros),
 	                              onComplete:function (oResponse) {
-	                                 
+
 	                                 js_removeObj('msgBox');
-	                                 var oRetorno = eval("("+oResponse.responseText+")");
+	                                 var oRetorno = JSON.parse(oResponse.responseText);
 	                                 if (oRetorno.status == 1) {
-	                                 
+
 	                                   alert('Notificacoes Enviadas com sucesso!');
 	                                   js_atualizarDadosLeitura();
 	                                 } else {
 	                                   alert(oRetorno.message.urlDecode());
 	                                 }
 	                              }
-	                             });   
+	                             });
 });
 
 js_init();

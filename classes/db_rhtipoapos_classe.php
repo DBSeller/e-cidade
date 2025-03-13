@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -49,12 +49,16 @@ class cl_rhtipoapos {
                  rh88_sequencial = int4 = Sequencial 
                  rh88_descricao = varchar(50) = Descrição 
                  ";
-   //funcao construtor da classe 
-   function cl_rhtipoapos() { 
-     //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("rhtipoapos"); 
-     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
+
+    /**
+     * cl_rhtipoapos constructor.
+     */
+    public function __construct()
+    {
+        $this->rotulo = new rotulo("rhtipoapos");
+        $this->pagina_retorno = basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
+    }
+
    //funcao erro 
    function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){

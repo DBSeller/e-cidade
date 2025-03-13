@@ -72,10 +72,10 @@ db_input('e69_codnota',6,$Ie69_codnota,true,'text',3,'')
 <script>
 function js_pesquisam74_codmatestoqueitem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?funcao_js=parent.js_mostramatestoqueitem1|m71_codlanc|m71_codmatestoque','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?funcao_js=parent.js_mostramatestoqueitem1|m71_codlanc|m71_codmatestoque','Pesquisa',true);
   }else{
      if(document.form1.m74_codmatestoqueitem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?pesquisa_chave='+document.form1.m74_codmatestoqueitem.value+'&funcao_js=parent.js_mostramatestoqueitem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueitem','func_matestoqueitem.php?pesquisa_chave='+document.form1.m74_codmatestoqueitem.value+'&funcao_js=parent.js_mostramatestoqueitem','Pesquisa',false);
      }else{
        document.form1.m71_codmatestoque.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostramatestoqueitem1(chave1,chave2){
 }
 function js_pesquisam74_codempnota(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empnota','func_empnota.php?funcao_js=parent.js_mostraempnota1|e69_codnota|e69_codnota','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empnota','func_empnota.php?funcao_js=parent.js_mostraempnota1|e69_codnota|e69_codnota','Pesquisa',true);
   }else{
      if(document.form1.m74_codempnota.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_empnota','func_empnota.php?pesquisa_chave='+document.form1.m74_codempnota.value+'&funcao_js=parent.js_mostraempnota','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empnota','func_empnota.php?pesquisa_chave='+document.form1.m74_codempnota.value+'&funcao_js=parent.js_mostraempnota','Pesquisa',false);
      }else{
        document.form1.e69_codnota.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostraempnota1(chave1,chave2){
   db_iframe_empnota.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_matestoqueitemnota','func_matestoqueitemnota.php?funcao_js=parent.js_preenchepesquisa|m74_codmatestoqueitem|m74_codempnota','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matestoqueitemnota','func_matestoqueitemnota.php?funcao_js=parent.js_preenchepesquisa|m74_codmatestoqueitem|m74_codempnota','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_matestoqueitemnota.hide();

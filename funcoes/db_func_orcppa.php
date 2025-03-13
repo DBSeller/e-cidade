@@ -25,5 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "orcppa.o23_codppa,orcppa.o23_codleippa,orcppa.o23_anoexe,orcppa.o23_orgao,orcppa.o23_unidade,orcppa.o23_funcao,orcppa.o23_subfuncao,orcppa.o23_programa,orcppa.o23_programatxt,orcppa.o23_acao,orcppa.o23_acaotxt,orcppa.o23_produto,orcppa.o23_unimed";
+$campos = "	orcppa.o23_codppa,
+						orcppa.o23_anoexe,
+						orcppa.o23_orgao			|| ' - ' || orcorgao.o40_descr				as o23_orgao,
+						orcppa.o23_unidade		|| ' - ' || orcunidade.o41_descr			as o23_unimed,
+						orcppa.o23_funcao			|| ' - ' || orcfuncao.o52_descr				as o23_funcao,
+						orcppa.o23_subfuncao  || ' - ' || orcsubfuncao.o53_descr		as o23_subfuncao,
+						orcppa.o23_programa   || ' - ' || orcprograma.o54_descr			as o23_programa,
+						orcppa.o23_acao				|| ' - ' || orcprojativ.o55_descr			as o23_acao,
+						orcppa.o23_acaotxt,
+						orcppa.o23_produto    || ' - ' || orcproduto.o22_descrprod	as o23_produto,
+						orcppa.o23_unimed";
 ?>

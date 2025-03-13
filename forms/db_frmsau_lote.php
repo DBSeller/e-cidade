@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: saude
@@ -79,7 +79,7 @@ $clrotulo->label("sd24_t_diagnostico");
 				</tr>
 				<!-- Incluí segunda parte do formulário -->
 				<?
-				include("db_frmsau_lote001.php");
+				include(modification("forms/db_frmsau_lote001.php"));
 				?>
 
 			</table>
@@ -88,14 +88,22 @@ $clrotulo->label("sd24_t_diagnostico");
 	</tr>
 	<tr>
 		<td align="center">
-			<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22||@$idarq==2||@$idarq==22?"alterar":"excluir"))?>"
-			       type="submit"
-			       id="db_opcao"
-			       value="<?=($db_opcao==1?"Incluir FAA":($db_opcao==2||$db_opcao==22||@$idarq==2||@$idarq==22?"Alterar FAA":"Excluir FAA"))?>" <?=($db_botao==false?"disabled":"")?>
-			       onFocus='js_foco(this, "prosseguir");'
-			       <?=($db_botao==false?"disabled":"")?>
-			       onClick="<?=($db_opcao==3||$db_opcao==33) ? "return js_excluirFAA(); " : "return js_db_opcao();" ?>"
-			>
+
+      <?php
+      $sOculta = "style = 'display: none;'";
+      if ( in_array($db_opcao, array(1,2)) ) {
+        $sOculta = "";
+      }
+      ?>
+        <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22||@$idarq==2||@$idarq==22?"alterar":"excluir"))?>"
+             type="submit"
+             <?=$sOculta?>
+             id="db_opcao"
+             value="<?=($db_opcao==1?"Incluir FAA":($db_opcao==2||$db_opcao==22||@$idarq==2||@$idarq==22?"Alterar FAA":"Excluir FAA"))?>" <?=($db_botao==false?"disabled":"")?>
+             onFocus='js_foco(this, "prosseguir");'
+             <?=($db_botao==false?"disabled":"")?>
+             onClick="<?=($db_opcao==3||$db_opcao==33) ? "return js_excluirFAA(); " : "return js_db_opcao();" ?>">
+
 			<input name="prosseguir"
 				type="button"
 				id="prosseguir"
@@ -107,7 +115,7 @@ $clrotulo->label("sd24_t_diagnostico");
 
 			<?
   			if($db_opcao==3){
-  			?><input name="excluirlote" type="submit" id="excluirlote" value="Excluir Lote" <?=($db_botao==false?"disabled":"")?>  onClick="return confirm('Voce quer realmente excluir este registro?')"  ><?
+  			?><input name="excluirlote" type="submit" id="excluirlote" value="Excluir Lote" <?=($db_botao==false?"disabled":"")?>  onClick="return confirm('Você quer realmente excluir este registro?')"  ><?
   			}
   			if(@$idarq==2||@$idarq==3||@$idarq==22){
     		?><input name="pesquisarlote" type="button" id="pesquisarlote" value="Consulta Lote" onclick="js_pesquisalote();"> <?
@@ -185,7 +193,7 @@ function js_excluirFAA() {
 	if (objGridLote.getNumRows() <= 1) {
 		return confirm('\nO lote possui apenas esta FAA e será excluído também. \nDeseja realmente excluir FAA?\n');
 	} else {
-    return confirm('\nVoce quer realmente excluir este registro?\n');
+    return confirm('\nVocê quer realmente excluir este registro?\n');
 	}
 
 }
@@ -201,7 +209,7 @@ function js_init() {
 	objGridLote              = new DBGrid('objGridLote');
 	objGridLote.nameInstance = 'objGridLote';
 	objGridLote.setHeader( arrHeader );
-	//objGridLote.aHeaders[0].lDisplayed = false;
+  objGridLote.setCellAlign(['left', 'left', 'left', 'left', 'left', 'center'])
 	objGridLote.show($('gridLote'));
 	js_reloadlote();
 }
@@ -298,7 +306,7 @@ function js_preencheprontuario(chave){
  * retorna FAA
  */
 function js_retornoFAA( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
   	var objForm    = document.form1;
 
 	if (objRetorno.status == 1) {
@@ -422,7 +430,7 @@ function js_mostrasd70_c_cid1(chave1,chave2,chave3){
  * retorno CID
  */
 function js_retornoCID( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
   	var objForm    = document.form1;
 
 	objForm.sd55_i_cid.value = '';
@@ -529,7 +537,7 @@ var booRetorno = false;
  * Retorno Incluir
  */
 function js_retornoIncluir( objAjax ){
-var objRetorno = eval("("+objAjax.responseText+")");
+var objRetorno = JSON.parse(objAjax.responseText);
 
 	$('db_opcao').disabled = false;
 
@@ -556,7 +564,8 @@ function js_reloadlote(){
 	var objParam           = new Object();
   	objParam.exec          = "getLote";
   	objParam.sd58_i_codigo = $F('sd58_i_codigo');
-  	if( $('db_opcao').name != 'incluir' || 	$F('sd58_i_codigo') != '' ){
+
+  	if( $('db_opcao').name != 'incluir' || 	$F('sd58_i_codigo') != '' ) {
   		js_ajax( objParam, 'Aguarde, Pesquisando....', 'js_retornoLote' );
   	}
 
@@ -565,7 +574,7 @@ function js_reloadlote(){
  * retorna lote FAA
  */
 function js_retornoLote( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
 
   	if (objRetorno.status == 1) {
      	if (objRetorno.itens.length > 0) {
@@ -579,9 +588,7 @@ function js_retornoLote( objAjax ){
 	          	arrLinha[3]  = objLote.z01_i_cgsund;
 	          	arrLinha[4]  = objLote.z01_v_nome.urlDecode();
 	          	arrLinha[5]  = '';
-	          	if (objLote.sd24_c_digitada == 'N') {
-	          	  arrLinha[5] =  "<input type='button' value='Excluir' onclick='js_excluirLoteFaa("+objLote.sd59_i_codigo+")'>";
-	          	}
+	          	arrLinha[5] =  "<input type='button' value='Excluir' onclick='js_excluirLoteFaa("+objLote.sd59_i_codigo+")'>";
 
 	          	objGridLote.addRow(arrLinha);
          	});
@@ -592,42 +599,37 @@ function js_retornoLote( objAjax ){
   	}
 }
 
-function js_excluirLoteFaa(iCodigoLoteFaa) {
 
+
+
+function js_excluirLoteFaa(iCodigoLoteFaa) {
 
   if (!confirm('Você deseja realmente excluir esta FAA?')) {
     return false;
   }
 
-  js_divCarregando("Aguarde, excluindo FAA", "msgBox");
+  var oParametro    = {'sExecucao': 'excluirFaaLote','iCodigoLote': $F('sd58_i_codigo'), 'iCodigoLoteFaa': iCodigoLoteFaa};
+  var oAjaxRequest  = new AjaxRequest('sau4_manutencaofaaresumida.RPC.php', oParametro, js_retornoExcluirFaa);
+  oAjaxRequest.setMessage('Aguarde, excluindo FAA');
+  oAjaxRequest.execute();
 
-  var oParametro            = new Object();
-  oParametro.exec           = 'excluirFaa';
-  oParametro.iCodigoLote    = $F('sd58_i_codigo');
-  oParametro.iCodigoLoteFaa = iCodigoLoteFaa;
-
-  var oAjax = new Ajax.Request(strURL,
-                               {
-                                 method:     'post',
-                                 parameters: 'json='+Object.toJSON(oParametro),
-                                 onComplete: js_retornoExcluirFaa
-                               }
-                              );
 }
 
-function js_retornoExcluirFaa(oResponse) {
+function js_retornoExcluirFaa(oRetorno, lErro) {
 
-  js_removeObj('msgBox');
-  var oRetorno = eval('('+oResponse.responseText+')');
-
-  if (oRetorno.status == 1) {
-
-    js_reloadlote();
-    if (oRetorno.lLoteExcluido) {
-
-    		js_retorna();
-    }
+  if (lErro) {
+    alert ( oRetorno.sMensagem.urlDecode() );
+    return false;
   }
+
+  if (oRetorno.lLoteExcluido) {
+
+    js_retorna();
+    return;
+  }
+
+  js_reloadlote();
+
 }
 
 </script>

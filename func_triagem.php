@@ -1,54 +1,76 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-db_postmemory( $_POST );
 parse_str( $_SERVER["QUERY_STRING"] );
 
-$clprontuarios = new cl_prontuarios;
-$clprontuarios->rotulo->label();
+
+$oPost = db_utils::postMemory($_POST);
+$oData = new DBDate( date('d/m/Y') );
+
+$oDaoProntuarios = new cl_prontuarios;
+$oDaoProntuarios->rotulo->label();
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("z01_i_cgsund");
 $clrotulo->label("z01_v_nome");
 
-if( !isset( $data_ini ) ) {
+if ( !isset($oPost->pesquisar) && empty($oPost->data_ini) ) {
 
-  $data_ini     = date( "d-m-Y", db_getsession("DB_datausu") );
-  $data_ini_dia = date( "d",     db_getsession("DB_datausu") );
-  $data_ini_mes = date( "m",     db_getsession("DB_datausu") );
-  $data_ini_ano = date( "Y",     db_getsession("DB_datausu") );
+  $data_ini     = $oData->convertTo(DBDate::DATA_PTBR);
+  $data_ini_dia = $oData->getDia();
+  $data_ini_mes = $oData->getMes();
+  $data_ini_ano = $oData->getAno();
 }
 
-$dHoje = date("Y-m-d",db_getsession("DB_datausu"));
+if(!isset($oPost->pesquisar) && empty( $oPost->data_fim ) ) {
+
+  $data_fim     = $oData->convertTo(DBDate::DATA_PTBR);
+  $data_fim_dia = $oData->getDia();
+  $data_fim_mes = $oData->getMes();
+  $data_fim_ano = $oData->getAno();
+}
+
+$aWhere   = array();
+$aWhere[] = " sd24_i_unidade = " . DB_getsession( "DB_coddepto" );
+$aWhere[] = " sd24_c_digitada = 'N'";
+
+$sCampos  = "  prontuarios.sd24_i_codigo ";
+$sCampos .= " ,prontuarios.sd24_d_cadastro ";
+$sCampos .= " ,prontuarios.sd24_c_cadastro ";
+$sCampos .= " ,prontuarios.sd24_i_numcgs ";
+$sCampos .= " ,cgs_und.z01_v_nome ";
+$sCampos .= " ,cgs_und.z01_d_nasc ";
+$sCampos .= " ,cast('<div style=\'background-color: ' || classificacaorisco.sd78_cor || ';width: 150px;height: 16px;display:inline-block;text-align:center;\'>' || classificacaorisco.sd78_descricao || '</div>' as varchar) as dl_Prioridade ";
+
 ?>
 <html>
 <head>
@@ -64,16 +86,6 @@ $dHoje = date("Y-m-d",db_getsession("DB_datausu"));
         <legend>Filtros</legend>
         <table>
           <tr>
-            <td nowrap title="<?=$Tz01_v_nome?>">
-              <?=$Lz01_v_nome?>
-            </td>
-            <td nowrap colspan="4">
-              <?php
-              db_input( "z01_v_nome", 40, $Iz01_v_nome, true, "text", 4, "", "chave_z01_v_nome" );
-              ?>
-            </td>
-          </tr>
-          <tr> 
             <td title="<?=$Tsd24_i_codigo?>">
               <?=$Lsd24_i_codigo?>
             </td>
@@ -82,32 +94,34 @@ $dHoje = date("Y-m-d",db_getsession("DB_datausu"));
               db_input( "sd24_i_codigo", 11, $Isd24_i_codigo, true, "text", 4, "", "chave_sd24_i_codigo" );
               ?>
             </td>
-            <td>
-              <label class="bold">Início:</label>
+          </tr>
+
+          <tr>
+            <td nowrap title="<?=$Tz01_v_nome?>">
+              <label class="bold">Paciente:</label>
             </td>
-            <td>
+            <td nowrap colspan="4">
               <?php
-              db_inputdata( 'data_ini', @$data_ini_dia, @$data_ini_mes, @$data_ini_ano, true, 'text', 4, "", 'chave_data_ini' );
+              db_input( "z01_v_nome", 35, $Iz01_v_nome, true, "text", 4, "", "chave_z01_v_nome" );
               ?>
             </td>
           </tr>
-          <tr> 
-            <td nowrap title="<?=$Tsd24_i_ano.'|'.$Tsd24_i_mes.'|'.$Tsd24_i_seq?>">
-              <?=$Lsd24_i_ano.'|'.$Lsd24_i_mes.'|'.$Lsd24_i_seq?>
+
+          <tr>
+            <td>
+              <label class="bold">Data de Atendimento de:</label>
             </td>
-            <td nowrap>
+            <td>
               <?php
-              db_input( "sd24_i_ano", 4, $Isd24_i_ano, true, "text", 4, "", "chave_sd24_i_ano" );
-              db_input( "sd24_i_mes", 2, $Isd24_i_mes, true, "text", 4, "", "chave_sd24_i_mes" );
-              db_input( "sd24_i_seq", 5, $Isd24_i_seq, true, "text", 4, "", "chave_sd24_i_seq" );
+              db_inputdata( 'data_ini', $data_ini_dia, $data_ini_mes, $data_ini_ano, true, 'text', 4 );
               ?>
             </td>
             <td>
-              <label class="bold">Fim:</label>
+              <label class="bold">até</label>
             </td>
             <td>
               <?php
-              db_inputdata( 'data_fim', @$data_fim_dia, @$data_fim_mes, @$data_fim_ano, true, 'text', 4, "", 'chave_data_fim' );
+              db_inputdata( 'data_fim', $data_fim_dia, $data_fim_mes, $data_fim_ano, true, 'text', 4 );
               ?>
             </td>
           </tr>
@@ -124,121 +138,69 @@ $dHoje = date("Y-m-d",db_getsession("DB_datausu"));
     <tr>
       <td>
         <?php
-        $sSql     = '';
-        $lFiltrou = false;
-        $sOrder   = 'sd24_i_codigo';
-        $sWhere   = '';
-        $aWhere   = array();
-        $aWhere[] = "sd24_i_unidade = " . DB_getsession( "DB_coddepto" );
 
-        if( !isset( $pesquisa_chave ) ) {
+        $lFiltrou = isset($oPost->pesquisar);
 
-          if( isset( $campos ) == false ) {
-
-            if( file_exists( "funcoes/db_func_triagem.php" ) == true ) {
-              require_once("funcoes/db_func_triagem.php");
-            } else {
-              $campos = "prontuarios.*";
-            }
-          }
-
-          if( isset( $chave_sd24_i_codigo ) && ( trim( $chave_sd24_i_codigo ) != "" ) ) {
-
-            $lFiltrou = true;
-            $aWhere[] = "sd24_i_codigo = {$chave_sd24_i_codigo}";
-          }
-
-          if(    isset( $chave_sd24_i_ano ) && ( trim( $chave_sd24_i_ano ) != "" )
-                     && isset( $chave_sd24_i_mes ) && ( trim( $chave_sd24_i_mes ) != "" )
-                     && isset( $chave_sd24_i_seq ) && ( trim( $chave_sd24_i_seq ) != "" )
-                   ) {
-
-            $lFiltrou = true;
-            $aWhere[] = "sd24_i_ano = {$chave_sd24_i_ano}";
-            $aWhere[] = "sd24_i_mes = {$chave_sd24_i_mes}";
-            $aWhere[] = "sd24_i_seq = {$chave_sd24_i_seq}";
-          }
-
-          if( isset( $chave_z01_v_nome ) && ( trim( $chave_z01_v_nome ) != "" ) ) {
-
-            $lFiltrou = true;
-            $aWhere[] = "cgs_und.z01_v_nome like '{$chave_z01_v_nome}%'";
-            $sOrder   = "cgs_und.z01_v_nome, sd24_i_codigo";
-          }
-
-          if( isset( $chave_data_ini ) && ( $chave_data_ini != "" ) ) {
-
-            $lFiltrou    = true;
-            $oDataInicio = new DBDate( $chave_data_ini );
-            $sWhereData  = "sd24_d_cadastro >= '{$oDataInicio->convertTo( DBDate::DATA_EN )}'";
-
-            if( isset( $chave_data_fim ) && $chave_data_fim != "" ) {
-
-              $oDataFim    = new DBDate( $chave_data_fim );
-              $sWhereData  = "( sd24_d_cadastro between '{$oDataInicio->convertTo( DBDate::DATA_EN )}'";
-              $sWhereData .= "and '{$oDataFim->convertTo( DBDate::DATA_EN )}' )";
-             }
-
-            $aWhere[] = $sWhereData;
-          }
-
-          if( !$lFiltrou ) {
-
-            $sSql  = "select distinct sd24_i_codigo, sd24_i_ano, sd24_i_mes, z01_v_nome, sd24_i_numcgs ";
-            $sSql .= "  from prontuarios ";
-            $sSql .= "       inner join cgs_und           on cgs_und.z01_i_cgsund         = prontuarios.sd24_i_numcgs ";
-            $sSql .= "       left  join especmedico       on especmedico.sd27_i_codigo    = prontuarios.sd24_i_profissional ";
-            $sSql .= "       left  join unidademedicos    on unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed ";
-            $sSql .= "       left  join medicos           on medicos.sd03_i_codigo        = unidademedicos.sd04_i_medico ";
-            $sSql .= "       left  join cgm               on cgm.z01_numcgm               = medicos.sd03_i_cgm ";
-            $sSql .= "       left  join rhcbo             on rhcbo.rh70_sequencial        =  especmedico.sd27_i_rhcbo ";
-            $sSql .= "       left  join unidades          on unidades.sd02_i_codigo       = prontuarios.sd24_i_unidade ";
-            $sSql .= "       left  join db_depart         on db_depart.coddepto           = unidades.sd02_i_codigo ";
-            $sSql .= "       left  join sau_triagemavulsa on s152_i_cgsund                = cgs_und.z01_i_cgsund ";
-            $sSql .= "                                   and s152_d_dataconsulta = '{$dHoje}' ";
-            $sSql .= " where ( sd24_v_motivo is null or sd24_v_motivo = '' ) ";
-            $sSql .= "   and sd24_c_digitada = 'N' ";
-            $sSql .= "   and sd24_i_unidade = " . DB_getsession("DB_coddepto");
-            $sSql .= "   and s152_i_codigo is null ";
-            $sSql .= "   and sd24_d_cadastro = '{$dHoje}' ";
-            $sSql .= " {$sWhere} ";
-            $sSql .= " order by sd24_i_codigo";
-          }
-
-          $repassa = array();
-          if( isset( $chave_sd24_i_codigo ) ) {
-            $repassa = array( "chave_sd24_i_codigo" => $chave_sd24_i_codigo );
-          }
-
-          $sWhere = implode( " and ", $aWhere );
-
-          $lAutomatico = false;
-
-          if ( $lFiltrou ) {
-
-
-            $sSql        = $clprontuarios->sql_query( null, $campos, $sOrder, $sWhere );
-            $lAutomatico = true;
-          }
-
-          db_lovrot( $sSql, 15, "()", "", $funcao_js, "", "NoMe", $repassa, $lAutomatico );
-        } else {
-
-          if( $pesquisa_chave != null && $pesquisa_chave != "" ) {
-
-            $result = $clprontuarios->sql_record( $clprontuarios->sql_query( $pesquisa_chave ) );
-
-            if( $clprontuarios->numrows != 0 ) {
-
-              db_fieldsmemory( $result, 0 );
-              echo "<script>" . $funcao_js . "('$sd24_i_codigo',false);</script>";
-            } else {
-              echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
-            }
-          } else {
-            echo "<script>".$funcao_js."('',false);</script>";
-          }
+        /**
+         * Filtros realizados no formulário
+         */
+        if ( !empty($chave_sd24_i_codigo) ) {
+          $aWhere[] = "sd24_i_codigo = {$chave_sd24_i_codigo}";
         }
+
+        if ( !empty($chave_z01_v_nome) )  {
+          $aWhere[] = "z01_v_nome ilike '$chave_z01_v_nome%' ";
+        }
+
+        /**
+         * sempre que for para pesquisar qualquer pronturario
+         */
+        if ( !isset($pesquisa_chave) && !empty($data_ini) ) {
+
+          $oDataInicio = new DBDate($data_ini);
+          $aWhere[]    = " sd24_d_cadastro >= '" .  $oDataInicio->getDate() . "'";
+        }
+
+        if ( !isset($pesquisa_chave) && !empty($data_fim) ) {
+
+          $oDataFim = new DBDate($data_fim);
+          $aWhere[] = " sd24_d_cadastro <= '" . $oDataFim->getDate() . "'";
+        }
+
+        $sOrdem  = " COALESCE(sd78_peso,0) desc, sd24_d_cadastro, sd24_c_cadastro::time ";
+
+        if ( isset($lFiltrarMovimentados) ) {
+          $aWhere[] = "sd91_local in (2, 4)";
+        }
+
+        $sWhere  = implode(" and ", $aWhere);
+
+        $sSql  = "select {$sCampos}";
+        $sSql .= "  from prontuarios ";
+        $sSql .= "       inner join cgs_und                       on cgs_und.z01_i_cgsund          = prontuarios.sd24_i_numcgs ";
+        $sSql .= "       left  join especmedico                   on especmedico.sd27_i_codigo     = prontuarios.sd24_i_profissional ";
+        $sSql .= "       left  join unidademedicos                on unidademedicos.sd04_i_codigo  = especmedico.sd27_i_undmed ";
+        $sSql .= "       left  join medicos                       on medicos.sd03_i_codigo         = unidademedicos.sd04_i_medico ";
+        $sSql .= "       left  join cgm                           on cgm.z01_numcgm                = medicos.sd03_i_cgm ";
+        $sSql .= "       left  join rhcbo                         on rhcbo.rh70_sequencial         =  especmedico.sd27_i_rhcbo ";
+        $sSql .= "       left  join unidades                      on unidades.sd02_i_codigo        = prontuarios.sd24_i_unidade ";
+        $sSql .= "       left  join db_depart                     on db_depart.coddepto            = unidades.sd02_i_codigo ";
+        $sSql .= "       left  join prontuariosclassificacaorisco on sd101_prontuarios             = sd24_i_codigo";
+        $sSql .= "       left  join classificacaorisco            on sd78_codigo                   = sd101_classificacaorisco";
+        $sSql .= "       left  join setorambulatorial             on setorambulatorial.sd91_codigo = prontuarios.sd24_setorambulatorial";
+        $sSql .= " where {$sWhere}  ";
+        $sSql .= " order by {$sOrdem}";
+        $aRepassa                 = array();
+        $aRepassa["data_ini"]     = $data_ini;
+        $aRepassa["data_ini_dia"] = $data_ini_dia;
+        $aRepassa["data_ini_mes"] = $data_ini_mes;
+        $aRepassa["data_ini_ano"] = $data_ini_ano;
+        $aRepassa["data_fim"]     = $data_fim;
+        $aRepassa["data_fim_dia"] = $data_fim_dia;
+        $aRepassa["data_fim_mes"] = $data_fim_mes;
+        $aRepassa["data_fim_ano"] = $data_fim_ano;
+
+        db_lovrot( $sSql, 15, "()", "", $funcao_js, "", "NoMe", $aRepassa, false);
         ?>
        </td>
      </tr>
@@ -246,8 +208,40 @@ $dHoje = date("Y-m-d",db_getsession("DB_datausu"));
 </div>
 </body>
 </html>
+<script rel="script" type="text/javascript" src="scripts/classes/saude/ValidaCgs.js"></script>
 <script>
 js_tabulacaoforms( "form2", "chave_sd24_i_codigo", true, 1, "chave_sd24_i_codigo", true );
+
+const validaCgs = new ValidaCgs();
+
+window.onload = () => {
+  validaCgs.getParametros().then(response => {
+    if(response.s103_validamicroarea) {
+      mapeiaLovrot();
+    }
+  });
+};
+
+const mapeiaLovrot = () => {
+  const table = document.getElementById('TabDbLov');
+  const linhasLovrot = table.querySelectorAll('tr');
+  linhasLovrot.forEach(tr => {
+    if (tr.childElementCount > 4) {
+      let cgs = tr.children[3].childNodes[0].innerHTML;
+      if (cgs != undefined) {
+        validaCgs.isCadastradoMicroarea(cgs).then(cadastrado => {
+          if (!cadastrado) {
+            let colunas = tr.querySelectorAll('td');
+            colunas.forEach(td => {
+              td.bgColor = '';
+            });
+            tr.addClassName('alert-danger');
+          }
+        });
+      }
+    }
+  });
+}
 
 function js_emitelista() {
 
@@ -258,23 +252,19 @@ function js_emitelista() {
                    );
   jan.moveTo(0,0);
 }
-  
+
 function js_limpar(){
 
   document.form2.chave_sd24_i_codigo.value = "";
-  document.form2.chave_sd24_i_ano.value    = "";
-  document.form2.chave_sd24_i_mes.value    = "";
-  document.form2.chave_sd24_i_seq.value    = "";
   document.form2.chave_z01_v_nome.value    = "";
 }
 
 $('chave_z01_v_nome').focus();
 
-$('chave_sd24_i_codigo').className = 'field-size4';
-$('chave_data_ini').className      = 'field-size2';
-$('chave_sd24_i_ano').className    = 'field-size1';
-$('chave_sd24_i_mes').className    = 'field-size1';
-$('chave_sd24_i_seq').className    = 'field-size1';
-$('chave_data_fim').className      = 'field-size2';
-$('chave_z01_v_nome').className    = 'field-size7';
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

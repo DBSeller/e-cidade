@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_ativid_classe.php");
-require("libs/db_utils.php");
-require("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_ativid_classe.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/JSON.php"));
 
 $clativid = new cl_ativid();
 $get      = db_utils::postmemory($_GET); 

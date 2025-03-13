@@ -1,64 +1,64 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: compras
 //CLASSE DA ENTIDADE pcorcamjulg
-class cl_pcorcamjulg { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $pc24_orcamitem = 0; 
-   var $pc24_pontuacao = 0; 
-   var $pc24_orcamforne = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_pcorcamjulg {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $pc24_orcamitem = 0;
+   var $pc24_pontuacao = 0;
+   var $pc24_orcamforne = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 pc24_orcamitem = int4 = Código sequencial do item no orçamento 
-                 pc24_pontuacao = int4 = Pontuação 
-                 pc24_orcamforne = int8 = Código do orcamento deste fornecedor 
+                 pc24_orcamitem = int4 = Código sequencial do item no orçamento
+                 pc24_pontuacao = int4 = Pontuação
+                 pc24_orcamforne = int8 = Código do orcamento deste fornecedor
                  ";
-   //funcao construtor da classe 
-   function cl_pcorcamjulg() { 
+   //funcao construtor da classe
+   function cl_pcorcamjulg() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("pcorcamjulg"); 
+     $this->rotulo = new rotulo("pcorcamjulg");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -78,9 +78,9 @@ class cl_pcorcamjulg {
      }
    }
    // funcao para inclusao
-   function incluir ($pc24_orcamitem,$pc24_orcamforne){ 
+   function incluir ($pc24_orcamitem,$pc24_orcamforne){
       $this->atualizacampos();
-     if($this->pc24_pontuacao == null ){ 
+     if($this->pc24_pontuacao == null ){
        $this->erro_sql = " Campo Pontuação nao Informado.";
        $this->erro_campo = "pc24_pontuacao";
        $this->erro_banco = "";
@@ -89,9 +89,9 @@ class cl_pcorcamjulg {
        $this->erro_status = "0";
        return false;
      }
-       $this->pc24_orcamitem = $pc24_orcamitem; 
-       $this->pc24_orcamforne = $pc24_orcamforne; 
-     if(($this->pc24_orcamitem == null) || ($this->pc24_orcamitem == "") ){ 
+       $this->pc24_orcamitem = $pc24_orcamitem;
+       $this->pc24_orcamforne = $pc24_orcamforne;
+     if(($this->pc24_orcamitem == null) || ($this->pc24_orcamitem == "") ){
        $this->erro_sql = " Campo pc24_orcamitem nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -99,7 +99,7 @@ class cl_pcorcamjulg {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->pc24_orcamforne == null) || ($this->pc24_orcamforne == "") ){ 
+     if(($this->pc24_orcamforne == null) || ($this->pc24_orcamforne == "") ){
        $this->erro_sql = " Campo pc24_orcamforne nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -108,17 +108,17 @@ class cl_pcorcamjulg {
        return false;
      }
      $sql = "insert into pcorcamjulg(
-                                       pc24_orcamitem 
-                                      ,pc24_pontuacao 
-                                      ,pc24_orcamforne 
+                                       pc24_orcamitem
+                                      ,pc24_pontuacao
+                                      ,pc24_orcamforne
                        )
                 values (
-                                $this->pc24_orcamitem 
-                               ,$this->pc24_pontuacao 
-                               ,$this->pc24_orcamforne 
+                                $this->pc24_orcamitem
+                               ,$this->pc24_pontuacao
+                               ,$this->pc24_orcamforne
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Julgamento dos valores dos itens dos orçamentos ($this->pc24_orcamitem."-".$this->pc24_orcamforne) nao Incluído. Inclusao Abortada.";
@@ -153,16 +153,16 @@ class cl_pcorcamjulg {
        $resac = db_query("insert into db_acount values($acount,860,6496,'','".AddSlashes(pg_result($resaco,0,'pc24_orcamforne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($pc24_orcamitem=null,$pc24_orcamforne=null,$dbwhere=null) { 
+   function alterar ($pc24_orcamitem=null,$pc24_orcamforne=null,$dbwhere=null) {
       $this->atualizacampos();
      $sql = " update pcorcamjulg set ";
      $virgula = "";
-     if(trim($this->pc24_orcamitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc24_orcamitem"])){ 
+     if(trim($this->pc24_orcamitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc24_orcamitem"])){
        $sql  .= $virgula." pc24_orcamitem = $this->pc24_orcamitem ";
        $virgula = ",";
-       if(trim($this->pc24_orcamitem) == null ){ 
+       if(trim($this->pc24_orcamitem) == null ){
          $this->erro_sql = " Campo Código sequencial do item no orçamento nao Informado.";
          $this->erro_campo = "pc24_orcamitem";
          $this->erro_banco = "";
@@ -172,10 +172,10 @@ class cl_pcorcamjulg {
          return false;
        }
      }
-     if(trim($this->pc24_pontuacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc24_pontuacao"])){ 
+     if(trim($this->pc24_pontuacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc24_pontuacao"])){
        $sql  .= $virgula." pc24_pontuacao = $this->pc24_pontuacao ";
        $virgula = ",";
-       if(trim($this->pc24_pontuacao) == null ){ 
+       if(trim($this->pc24_pontuacao) == null ){
          $this->erro_sql = " Campo Pontuação nao Informado.";
          $this->erro_campo = "pc24_pontuacao";
          $this->erro_banco = "";
@@ -185,10 +185,10 @@ class cl_pcorcamjulg {
          return false;
        }
      }
-     if(trim($this->pc24_orcamforne)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc24_orcamforne"])){ 
+     if(trim($this->pc24_orcamforne)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc24_orcamforne"])){
        $sql  .= $virgula." pc24_orcamforne = $this->pc24_orcamforne ";
        $virgula = ",";
-       if(trim($this->pc24_orcamforne) == null ){ 
+       if(trim($this->pc24_orcamforne) == null ){
          $this->erro_sql = " Campo Código do orcamento deste fornecedor nao Informado.";
          $this->erro_campo = "pc24_orcamforne";
          $this->erro_banco = "";
@@ -209,9 +209,9 @@ class cl_pcorcamjulg {
        $sql .= " and  pc24_orcamforne = $this->pc24_orcamforne";
      }
      }
-     
+
      $resaco = $this->sql_record($this->sql_query_file($this->pc24_orcamitem,$this->pc24_orcamforne));
-     
+
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
          $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
@@ -228,7 +228,7 @@ class cl_pcorcamjulg {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Julgamento dos valores dos itens dos orçamentos nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->pc24_orcamitem."-".$this->pc24_orcamforne;
@@ -256,14 +256,14 @@ class cl_pcorcamjulg {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($pc24_orcamitem=null,$pc24_orcamforne=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($pc24_orcamitem=null,$pc24_orcamforne=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($pc24_orcamitem,$pc24_orcamforne));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -298,7 +298,7 @@ class cl_pcorcamjulg {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Julgamento dos valores dos itens dos orçamentos nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$pc24_orcamitem."-".$pc24_orcamforne;
@@ -326,11 +326,11 @@ class cl_pcorcamjulg {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -352,8 +352,8 @@ class cl_pcorcamjulg {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -375,16 +375,16 @@ class cl_pcorcamjulg {
      $sql2 = "";
      if($dbwhere==""){
        if($pc24_orcamitem!=null ){
-         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem "; 
-       } 
+         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem ";
+       }
        if($pc24_orcamforne!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne "; 
-       } 
+         }
+         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -400,8 +400,8 @@ class cl_pcorcamjulg {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -417,16 +417,16 @@ class cl_pcorcamjulg {
      $sql2 = "";
      if($dbwhere==""){
        if($pc24_orcamitem!=null ){
-         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem "; 
-       } 
+         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem ";
+       }
        if($pc24_orcamforne!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne "; 
-       } 
+         }
+         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -442,7 +442,7 @@ class cl_pcorcamjulg {
      }
      return $sql;
   }
-   function sql_query_geraut( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_geraut( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -465,7 +465,7 @@ class cl_pcorcamjulg {
      $sql .= "      inner join pcproc on pcproc.pc80_codproc=pcprocitem.pc81_codproc ";
      $sql .= "      inner join pcdotac on pc13_codigo=pcprocitem.pc81_solicitem ";
      $sql .= "      left join pcdotaccontrapartida on pc13_sequencial=pc19_pcdotac ";
-     $sql .= "      inner join pcorcamval on pcorcamval.pc23_orcamforne=pcorcamjulg.pc24_orcamforne 
+     $sql .= "      inner join pcorcamval on pcorcamval.pc23_orcamforne=pcorcamjulg.pc24_orcamforne
                            and pcorcamval.pc23_orcamitem=pcorcamitem.pc22_orcamitem ";
      $sql .= "      inner join solicitem on solicitem.pc11_codigo= pcprocitem.pc81_solicitem ";
      $sql .= "      inner join solicita on solicita.pc10_numero = solicitem.pc11_numero  ";
@@ -479,16 +479,16 @@ class cl_pcorcamjulg {
      $sql2 = "";
      if($dbwhere==""){
        if($pc24_orcamitem!=null ){
-         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem "; 
-       } 
+         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem ";
+       }
        if($pc24_orcamforne!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne "; 
-       } 
+         }
+         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -504,7 +504,7 @@ class cl_pcorcamjulg {
      }
      return $sql;
   }
-   function sql_query_gerautlic( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_gerautlic( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -546,16 +546,16 @@ class cl_pcorcamjulg {
      $sql2 = "";
      if($dbwhere==""){
        if($pc24_orcamitem!=null ){
-         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem "; 
-       } 
+         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem ";
+       }
        if($pc24_orcamforne!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne "; 
-       } 
+         }
+         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -571,7 +571,7 @@ class cl_pcorcamjulg {
      }
      return $sql;
   }
-   function sql_query_relmotivo ( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_relmotivo ( $pc24_orcamitem=null,$pc24_orcamforne=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -591,16 +591,16 @@ class cl_pcorcamjulg {
      $sql2 = "";
      if($dbwhere==""){
        if($pc24_orcamitem!=null ){
-         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem "; 
-       } 
+         $sql2 .= " where pcorcamjulg.pc24_orcamitem = $pc24_orcamitem ";
+       }
        if($pc24_orcamforne!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne "; 
-       } 
+         }
+         $sql2 .= " pcorcamjulg.pc24_orcamforne = $pc24_orcamforne ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -654,6 +654,8 @@ class cl_pcorcamjulg {
     }
     $sql .= " from pcorcamjulg ";
     $sql .= "      inner join pcorcamforne on pcorcamforne.pc21_orcamforne = pcorcamjulg.pc24_orcamforne ";
+    $sql .= "      inner join pcorcamfornelic on pcorcamfornelic.pc31_orcamforne = pcorcamforne.pc21_orcamforne ";
+    $sql .= "      inner join pcorcamfornelichabilitacao on pcorcamfornelichabilitacao.l17_pcorcamfornelic = pcorcamfornelic.pc31_orcamforne ";
     $sql .= "      inner join pcorcamitem on pcorcamitem.pc22_orcamitem = pcorcamjulg.pc24_orcamitem ";
     $sql .= "      inner join cgm on cgm.z01_numcgm = pcorcamforne.pc21_numcgm ";
     $sql .= "      inner join pcorcam on pcorcam.pc20_codorc = pcorcamforne.pc21_codorc ";
@@ -762,4 +764,59 @@ class cl_pcorcamjulg {
     }
     return $sql;
   }
+
+  public function sql_query_orcamento_licitacao($sCampos, $sWhere) {
+
+    if (empty($sCampos)) {
+      $sCampos = " * ";
+    }
+
+    $sSql  = " select                                                                                                 ";
+    $sSql .= "    {$sCampos}                                                                                          ";
+    $sSql .= " from liclicitem                                                                                        ";
+    $sSql .= "  inner join pcorcamitemlic on liclicitem.l21_codigo      = pcorcamitemlic.pc26_liclicitem              ";
+    $sSql .= "  inner join pcorcamitem    on pcorcamitem.pc22_orcamitem = pcorcamitemlic.pc26_orcamitem               ";
+    $sSql .= "  inner join pcorcamval     on pcorcamitem.pc22_orcamitem = pcorcamval.pc23_orcamitem                   ";
+    $sSql .= "  inner join pcorcamforne   on pcorcamval.pc23_orcamforne = pcorcamforne.pc21_orcamforne                ";
+    $sSql .= "  inner join pcorcamjulg    on pcorcamitem.pc22_orcamitem = pcorcamjulg.pc24_orcamitem                  ";
+    $sSql .= "                              and pcorcamforne.pc21_orcamforne = pcorcamjulg.pc24_orcamforne            ";
+    $sSql .= "  inner join cgm            on pcorcamforne.pc21_numcgm    = cgm.z01_numcgm                             ";
+    $sSql .= "  left join liclicitemlote on l04_liclicitem = l21_codigo ";
+
+    if (!empty($sWhere)) {
+      $sSql .= " where {$sWhere} ";
+    }
+
+    return $sSql;
+  }
+
+  public function sql_query_orcamento_licitacao_contrato($sCampos, $sWhere) {
+
+    if (empty($sCampos)) {
+      $sCampos = " * ";
+    }
+
+    $sSql  = " select ";
+    $sSql .= "    {$sCampos} ";
+    $sSql .= " from liclicitem ";
+    $sSql .= "  inner join pcorcamitemlic  on liclicitem.l21_codigo            = pcorcamitemlic.pc26_liclicitem ";
+    $sSql .= "  inner join pcorcamitem     on pcorcamitem.pc22_orcamitem       = pcorcamitemlic.pc26_orcamitem ";
+    $sSql .= "  inner join pcorcamval      on pcorcamitem.pc22_orcamitem       = pcorcamval.pc23_orcamitem ";
+    $sSql .= "  inner join pcorcamforne    on pcorcamval.pc23_orcamforne       = pcorcamforne.pc21_orcamforne                ";
+    $sSql .= "  inner join pcorcamjulg     on pcorcamitem.pc22_orcamitem       = pcorcamjulg.pc24_orcamitem ";
+    $sSql .= "                                and pcorcamforne.pc21_orcamforne = pcorcamjulg.pc24_orcamforne ";
+    $sSql .= "  inner join cgm             on pcorcamforne.pc21_numcgm         = cgm.z01_numcgm ";
+    $sSql .= "  left join liclicitemlote   on l04_liclicitem                   = l21_codigo ";
+    $sSql .= "  left join acordoliclicitem on ac24_liclicitem                  = l21_codigo ";
+    $sSql .= "  left join acordoitem       on ac24_acordoitem                  = ac20_sequencial ";
+    $sSql .= "  left join acordoposicao    on ac20_acordoposicao               = ac26_sequencial ";
+    $sSql .= "  left join acordo           on ac26_acordo                      = ac16_sequencial ";
+
+    if (!empty($sWhere)) {
+      $sSql .= " where {$sWhere} ";
+    }
+
+    return $sSql;
+  }
+
 }

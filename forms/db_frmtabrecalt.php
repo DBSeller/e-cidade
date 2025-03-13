@@ -24,20 +24,20 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-?
+
    if(isset($HTTP_POST_VARS)) {
      db_postmemory($HTTP_POST_VARS);
 	 if(!empty($verfEstrut)) {
 	   $verfEstrut = "";
 	   if($k02_tipo == "O") {
 	     $tipo = "Orçamentária";
-	     $result = pg_exec("select o02_descr 
+	     $result = db_query("select o02_descr 
 	                        from orcam 
 				where o02_anousu = ".db_getsession("DB_anousu")." 
 				  and o02_codigo = '$k02_estrut'");
 	   } else if($k02_tipo == "E") {
 	     $tipo = "Extra-orçamentária";
-	     $result = pg_exec("select c01_descr 
+	     $result = db_query("select c01_descr 
 	                        from conplano 
 				where c01_anousu = ".db_getsession("DB_anousu")." 
 				and c01_estrut = '$k02_estrut'");	   

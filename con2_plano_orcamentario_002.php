@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -26,17 +26,17 @@
  */
 
 
-include ("fpdf151/pdf.php");
-include ("libs/db_sql.php");
-include ("libs/db_liborcamento.php");
-include ("libs/db_libcontabilidade.php");
-include ("classes/db_conplanoorcamento_classe.php");
-include ("classes/db_conplanoorcamentoanalitica_classe.php");
-include ("classes/db_db_config_classe.php");
-include ("classes/db_conplanosis_classe.php");
-include ("classes/db_orctiporec_classe.php");
-include ("classes/db_conplanoconta_classe.php");
-include ("classes/db_conplanoref_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("classes/db_conplanoorcamento_classe.php"));
+require_once(modification("classes/db_conplanoorcamentoanalitica_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_conplanosis_classe.php"));
+require_once(modification("classes/db_orctiporec_classe.php"));
+require_once(modification("classes/db_conplanoconta_classe.php"));
+require_once(modification("classes/db_conplanoref_classe.php"));
 
 $clconplanoref = new cl_conplanoref;
 $clconplanoconta = new cl_conplanoconta;
@@ -48,7 +48,7 @@ $clconplanoorcamentoanalitica = new cl_conplanoorcamentoanalitica;
 $clrotulo = new rotulocampo;
 $clrotulo->label("o15_descr");
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+parse_str($_SERVER['QUERY_STRING']);
 $anousu = db_getsession("DB_anousu");
 
 $instit = str_replace("-", ",", $instit);
@@ -87,21 +87,36 @@ if(isset($estrutural)&&$estrutural!="") {
     $where .= " and c60_estrut like '".$estrutural."%'";
 }
 $where .= " and substr(c60_estrut, 1, 1) in ('4', '3', '9') ";
+$exercicio = $anousu < 2022 ? "2021" : $anousu;
 
-$sSql = "select conplanoorcamento.c60_codcon, conplanoorcamento.c60_anousu, conplanoorcamento.c60_estrut, conplanoorcamento.c60_descr, conplanoorcamento.c60_finali, conplanoorcamento.c60_codsis, conplanoorcamento.c60_codcla, consistema.c52_codsis, consistema.c52_descr, consistema.c52_descrred, conclass.c51_codcla, conclass.c51_descr, conplanoorcamentoanalitica.c61_codcon, conplanoorcamentoanalitica.c61_anousu, conplanoorcamentoanalitica.c61_reduz, conplanoorcamentoanalitica.c61_instit, conplanoorcamentoanalitica.c61_codigo, conplanoorcamentoanalitica.c61_contrapartida, orctiporec.o15_codigo, orctiporec.o15_descr, orctiporec.o15_codtri, orctiporec.o15_finali, orctiporec.o15_tipo, orctiporec.o15_datalimite, db_config.codigo, db_config.nomeinst, db_config.ender, db_config.munic, db_config.uf, db_config.telef, db_config.email, db_config.ident, db_config.tx_banc, db_config.numbanco, db_config.url, db_config.logo, db_config.figura, db_config.dtcont, db_config.diario, db_config.pref, db_config.vicepref, db_config.fax, db_config.cgc, db_config.cep, db_config.tpropri, db_config.tsocios, db_config.prefeitura, db_config.bairro, db_config.numcgm, db_config.codtrib, db_config.tribinst, db_config.segmento, db_config.formvencfebraban, db_config.numero, db_config.nomedebconta, db_config.db21_tipoinstit, db_config.db21_ativo, db_config.db21_regracgmiss, db_config.db21_regracgmiptu, db_config.db21_codcli, db_config.nomeinstabrev, db_config.db21_usasisagua, db_config.db21_codigomunicipoestado, db_config.db21_datalimite, db_config.db21_criacao, db_config.db21_compl 
-from ((((
+$sSql = "select conplanoorcamento.c60_codcon, conplanoorcamento.c60_anousu, conplanoorcamento.c60_estrut, 
+conplanoorcamento.c60_descr, conplanoorcamento.c60_finali, conplanoorcamento.c60_codsis, conplanoorcamento.c60_codcla, 
+consistema.c52_codsis, consistema.c52_descr, consistema.c52_descrred, conclass.c51_codcla, conclass.c51_descr, 
+conplanoorcamentoanalitica.c61_codcon, conplanoorcamentoanalitica.c61_anousu, conplanoorcamentoanalitica.c61_reduz, 
+conplanoorcamentoanalitica.c61_instit, conplanoorcamentoanalitica.c61_codigo, orctiporec.o15_recurso,
+conplanoorcamentoanalitica.c61_contrapartida, orctiporec.o15_codigo, 
+orctiporec.o15_descr, orctiporec.o15_codtri, orctiporec.o15_finali, orctiporec.o15_tipo, 
+orctiporec.o15_datalimite, db_config.codigo, db_config.nomeinst, db_config.ender, db_config.munic, 
+db_config.uf, db_config.telef, db_config.email, db_config.ident, db_config.tx_banc, db_config.numbanco, 
+db_config.url, db_config.logo, db_config.figura, db_config.dtcont, db_config.diario, db_config.pref, 
+db_config.vicepref, db_config.fax, db_config.cgc, db_config.cep, db_config.tpropri, db_config.tsocios, 
+db_config.prefeitura, db_config.bairro, db_config.numcgm, db_config.codtrib, db_config.tribinst, 
+db_config.segmento, db_config.formvencfebraban, db_config.numero, db_config.nomedebconta, 
+db_config.db21_tipoinstit, db_config.db21_ativo, db_config.db21_regracgmiss, db_config.db21_regracgmiptu, 
+db_config.db21_codcli, db_config.nomeinstabrev, db_config.db21_usasisagua, db_config.db21_codigomunicipoestado, 
+db_config.db21_datalimite, db_config.db21_criacao, db_config.db21_compl 
+from (((((
 	(contabilidade.conplanoorcamento join contabilidade.consistema on ((conplanoorcamento.c60_codsis = consistema.c52_codsis))) 
 	join contabilidade.conclass on ((conplanoorcamento.c60_codcla = conclass.c51_codcla))) 
 	left join contabilidade.conplanoorcamentoanalitica on (((conplanoorcamento.c60_codcon = conplanoorcamentoanalitica.c61_codcon) and (conplanoorcamento.c60_anousu = conplanoorcamentoanalitica.c61_anousu)))) 
 	left join orcamento.orctiporec on ((conplanoorcamentoanalitica.c61_codigo = orctiporec.o15_codigo))) 
 	left join configuracoes.db_config on ((db_config.codigo = conplanoorcamentoanalitica.c61_instit)))
+	left join orcamento.fonterecurso on ((fonterecurso.orctiporec_id = orctiporec.o15_codigo and fonterecurso.exercicio = $exercicio)))
 where $where order by c60_estrut,c61_instit";
 
-//die($sSql);
+$result = db_query($sSql);
 
-$result = $clconplanoorcamento->sql_record($sSql);
-
-if ($clconplanoorcamento->numrows == 0) {
+if (pg_num_rows($result) == 0) {
 	db_redireciona("db_erros.php?fechar=true&db_erro=Plano de Contas não Cadastrado. Exercício: ".db_getsession("DB_anousu"));
 }
 
@@ -116,7 +131,6 @@ $pdf->setfillcolor(245);
 
 $alt = 4;
 $pagina = 1;
-
 
 for ($i = 0; $i < pg_numrows($result); $i ++) {
 	db_fieldsmemory($result, $i);
@@ -148,12 +162,8 @@ for ($i = 0; $i < pg_numrows($result); $i ++) {
 	$pdf->cell(80, $alt, "$espaco".substr($c60_descr,0,42), 0, 0, "L", $cfundo);
 	$pdf->cell(6, $alt, substr($c51_descr, 0, 1), 0, 0, "L", $cfundo);
 	$pdf->cell(6, $alt, "$c52_descrred", 0, 0, "L", $cfundo);
-	 // $pdf->cell(11, $alt, "$c62_codrec", 0, 0, "C", $cfundo);
-      	 // $pdf->cell(30, $alt, $o15_descr, 0, 0, "L", $cfundo);
-	 // agora o recurso eh do complanoreduz
-	$pdf->cell(11, $alt, "$c61_codigo", 0, 0, "C", $cfundo);
-      	$pdf->cell(30, $alt, $o15_descr, 0, 0, "L", $cfundo);
-	 
+	$pdf->cell(11, $alt, "$o15_recurso", 0, 0, "C", $cfundo);
+	$pdf->cell(30, $alt, $o15_descr, 0, 0, "L", $cfundo);
 	$pdf->cell(60, $alt, $c61_instit ." ".$nomeinstabrev , 0, 1, "L", $cfundo);
 	
 }

@@ -60,7 +60,7 @@ db_input('m89_nome',20,$Im89_nome,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tabela_mar','func_tabela_mar.php?funcao_js=parent.js_preenchepesquisa|m89_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabela_mar','func_tabela_mar.php?funcao_js=parent.js_preenchepesquisa|m89_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tabela_mar.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("fpdf151/assinatura.php");
-include("classes/db_orcparamrel_classe.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_libtxt.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conrelinfo_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_libtxt.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_conrelinfo_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
@@ -183,7 +183,7 @@ $sql = " select
          from ($sql_dotacao) as x
 	    inner join conplano on c60_anousu = $anousu and substr(conplano.c60_estrut,1,13)=x.o58_elemento
 	";
- $result_desp = pg_query($sql);
+ $result_desp = db_query($sql);
  
  $result_subfunc = db_dotacaosaldo(4,3,2,true,"o58_codigo=20 and o58_instit in (".str_replace('-',', ',$db_selinstit)." ) ",$anousu,$dt_ini,$dt_fin);
 
@@ -214,7 +214,7 @@ $sql = " select
 $INTERFERENCIA_MDE = 0;
 $INTERFERENCIA_FUNDEF= 0;
 $INTERFERENCIA_FUNDEF_DEMAIS = 0;
-@pg_exec("drop table work_pl");
+@db_query("drop table work_pl");
 $result_bal_mde = db_planocontassaldo_matriz($anousu,$dt_ini,$dt_fin,false,' c61_instit in ('.str_replace('-',', ',$db_selinstit)   .' ) ');
 for($i=0;$i<pg_numrows($result_bal_mde);$i++){
   db_fieldsmemory($result_bal_mde,$i);  
@@ -228,7 +228,7 @@ for($i=0;$i<pg_numrows($result_bal_mde);$i++){
   	 $INTERFERENCIA_FUNDEF_DEMAIS += $saldo_final ;     
   } 
 }
-@pg_exec("drop table work_pl");
+@db_query("drop table work_pl");
 $data_inicial = $anousu."-01-01";
 $result_bal_acumulado = db_planocontassaldo_matriz($anousu,$data_inicial,$dt_fin,false,' c61_instit in ('.str_replace('-',', ',$db_selinstit)   .' ) ');
 $INTERFERENCIA_MDE_AC = 0;
@@ -262,7 +262,7 @@ $total_saldo_arrecadado_acumulado=0;
 $total_saldo_a_arrecadar        = 0;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -1712,6 +1712,6 @@ $pdf->multicell($largura,2,$ass_controle,0,"C",0,0);
 
 $pdf->Output();
 
-// pg_exec("commit");
+// db_query("commit");
 
 ?>

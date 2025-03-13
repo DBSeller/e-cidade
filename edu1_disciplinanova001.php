@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_disciplina_classe.php");
-include("classes/db_ensino_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_disciplina_classe.php"));
+include(modification("classes/db_ensino_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $cldisciplina = new cl_disciplina;
 $clensino = new cl_ensino;
@@ -72,7 +72,7 @@ if(isset($excluir)){
    <br>
    <center>
    <fieldset style="width:90%"><legend><b>Cadastro de Disciplina</b></legend>
-    <?include("forms/db_frmdisciplinanova.php");?>
+    <?include(modification("forms/db_frmdisciplinanova.php"));?>
    </fieldset>
    </center>
   </td>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  /**
-   * Classe repository para classes EventoContabil
-   * @author Iuri Guntchnigg <iuri@dbseller.com.br>
-   * @package
-   */
-  class EventoContabilRepository {
+/**
+ * Classe repository para classes EventoContabil
+ * @author Iuri Guntchnigg <iuri@dbseller.com.br>
+ * @package
+ */
+class EventoContabilRepository {
 
     /**
      * Collection de EventoContabil
@@ -52,17 +52,44 @@
     }
 
     /**
-     * Retorno uma instancia do EventoContabil pelo Codigo
-     * @param integer $iCodigo Codigo do EventoContabil
+     * @param null $iCodigoDocumento
+     * @param null $iAno
+     * @param null $iInstituicao
+     * @return mixed
+     * @throws Exception
+     */
+    /**
+     * @param null $iCodigoDocumento
+     * @param null $iAno
+     * @param null $iInstituicao
      * @return EventoContabil
+     * @throws Exception
      */
     public static function getEventoContabilByCodigo($iCodigoDocumento = null, $iAno = null, $iInstituicao = null) {
 
-      $sHash = "{$iCodigoDocumento}{$iAno}{$iInstituicao}";
-      if (!array_key_exists($sHash, EventoContabilRepository::getInstance()->aInstancia)) {
-        EventoContabilRepository::getInstance()->aInstancia[$sHash] = new EventoContabil($iCodigoDocumento, $iAno, $iInstituicao);
-      }
-      return EventoContabilRepository::getInstance()->aInstancia[$sHash];
+        $sHash = "{$iCodigoDocumento}{$iAno}{$iInstituicao}";
+        if (!array_key_exists($sHash, EventoContabilRepository::getInstance()->aInstancia)) {
+            EventoContabilRepository::getInstance()->aInstancia[$sHash] = new EventoContabil($iCodigoDocumento, $iAno, $iInstituicao);
+        }
+        return EventoContabilRepository::getInstance()->aInstancia[$sHash];
+    }
+
+    /**
+     * @param $codigo
+     * @return mixed|EventoContabil
+     * @throws DBException|Exception
+     */
+    public static function getPorCodigo($codigo)
+    {
+
+        $daoTransacao   = new cl_contrans();
+        $buscaTransacao = $daoTransacao->sql_query_file($codigo);
+        $buscaTransacao = db_query($buscaTransacao);
+        if (!$buscaTransacao) {
+            throw new DBException("Ocorreu um erro ao consultar o código do documento.");
+        }
+        $stdDados = db_utils::fieldsMemory($buscaTransacao, 0);
+        return self::getEventoContabilByCodigo($stdDados->c45_coddoc, $stdDados->c45_anousu, $stdDados->c45_instit);
     }
 
     /**
@@ -71,11 +98,10 @@
      */
     protected static function getInstance() {
 
-      if (self::$oInstance == null) {
-
-        self::$oInstance = new EventoContabilRepository();
-      }
-      return self::$oInstance;
+        if (self::$oInstance == null) {
+            self::$oInstance = new EventoContabilRepository();
+        }
+        return self::$oInstance;
     }
 
     /**
@@ -85,11 +111,11 @@
      */
     public static function adicionarEventoContabil(EventoContabil $oEventoContabil) {
 
-      $sHash = "{$oEventoContabil->getCodigoDocumento()}{$oEventoContabil->getAnoUso()}";
-      if (!array_key_exists($sHash, EventoContabilRepository::getInstance()->aInstancia)) {
-        EventoContabilRepository::getInstance()->aInstancia[$sHash] = $oEventoContabil;
-      }
-      return true;
+        $sHash = "{$oEventoContabil->getCodigoDocumento()}{$oEventoContabil->getAnoUso()}";
+        if (!array_key_exists($sHash, EventoContabilRepository::getInstance()->aInstancia)) {
+            EventoContabilRepository::getInstance()->aInstancia[$sHash] = $oEventoContabil;
+        }
+        return true;
     }
 
     /**
@@ -99,11 +125,11 @@
      */
     public static function removerEventoContabil(EventoContabil $oEventoContabil) {
 
-      $sHash = "{$oEventoContabil->getCodigoDocumento()}{$oEventoContabil->getAnoUso()}";
-      if (array_key_exists($sHash, EventoContabilRepository::getInstance()->aInstancia)) {
-        unset(EventoContabilRepository::getInstance()->aInstancia[$sHash]);
-      }
-      return true;
+        $sHash = "{$oEventoContabil->getCodigoDocumento()}{$oEventoContabil->getAnoUso()}";
+        if (array_key_exists($sHash, EventoContabilRepository::getInstance()->aInstancia)) {
+            unset(EventoContabilRepository::getInstance()->aInstancia[$sHash]);
+        }
+        return true;
     }
 
     /**
@@ -111,6 +137,6 @@
      * @return integer;
      */
     public static function getTotalEventoContabil() {
-      return count(EventoContabilRepository::getInstance()->aInstancia);
+        return count(EventoContabilRepository::getInstance()->aInstancia);
     }
-  }
+}

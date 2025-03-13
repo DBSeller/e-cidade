@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_libsys.php");
-require_once("dbagata/classes/core/AgataAPI.class");
-require_once("model/documentoTemplate.model.php");
-require("model/DeclaracaoQuitacao.model.php");
-require("model/DeclaracaoQuitacaoExporta.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_libsys.php"));
+require_once(modification("dbagata/classes/core/AgataAPI.class"));
+require_once(modification("model/documentoTemplate.model.php"));
+require(modification("model/DeclaracaoQuitacao.model.php"));
+require(modification("model/DeclaracaoQuitacaoExporta.model.php"));
 
 $oGet    = db_utils::postMemory($_GET);
 

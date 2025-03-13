@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,6 +27,7 @@
 
 $campos = "rhrubricas.rh27_rubric,
            rhrubricas.rh27_descr,
+           rhrubricas.rh27_presta,
            case 
              when rhrubricas.rh27_pd = 1 then 'PROVENTO' 
              when rhrubricas.rh27_pd = 2 then 'DESCONTO'
@@ -39,5 +40,10 @@ $campos = "rhrubricas.rh27_rubric,
               else 't' 
            end as DB_formula,
            rh27_tipo as DB_rh27_tipo, 
-           rh27_obs ";
+           regexp_replace(rh27_obs, E'[\\n\\r]+', ' ', 'g') as rh27_obs,
+           rh27_valorlimite,
+           rh27_quantidadelimite,
+           rh27_tipobloqueio,
+           rh27_periodolancamento
+           ";
 ?>

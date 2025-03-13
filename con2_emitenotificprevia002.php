@@ -26,15 +26,15 @@
  */
 
 set_time_limit(0);
-require ("libs/db_stdlib.php");
-require ("libs/db_utils.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_libsys.php");
-include_once 'dbagata/classes/core/AgataAPI.class';
-require ("model/documentoTemplate.model.php");
-require_once("std/db_stdClass.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libsys.php"));
+include_once modification("dbagata/classes/core/AgataAPI.class");
+require(modification("model/documentoTemplate.model.php"));
+require_once(modification("std/db_stdClass.php"));
 
 ini_set("error_reporting","E_ALL & ~NOTICE");
 

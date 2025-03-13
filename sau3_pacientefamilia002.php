@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgs_und_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgs_und_classe.php"));
 $cl_cgs_und = new cl_cgs_und;
 ?>
 <html>
@@ -48,9 +48,9 @@ $cl_cgs_und = new cl_cgs_und;
 if(isset($Processar)){
 
    $campos=" z01_i_cgsund,z01_v_nome ";
-	 $sql=$cl_cgs_und->sql_query("",$campos,""," z01_i_familiamicroarea = $z01_i_familiamicroarea ");
+	 $sql=$cl_cgs_und->sql_query("",$campos,""," z01_i_familiamicroarea = '$z01_i_familiamicroarea' ");
    $repassa = array("chave_z01_i_cgsund"=>@$chave_z01_i_cgsund);
-   db_lovrot($sql,15,"()","","js_cgs|z01_i_cgsund|z01_v_nome");
+   db_lovrot($sql,10,"()","","js_cgs|z01_i_cgsund|z01_v_nome");
     
 }
 ?>

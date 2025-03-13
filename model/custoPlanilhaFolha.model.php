@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-require_once ('interfaces/iCustoPlanilha.interface.php');
+require_once(modification('interfaces/iCustoPlanilha.interface.php'));
 
 /**
  * custos de Consumo de almoxarifado
@@ -190,9 +190,9 @@ final class custoPlanilhaFolha implements iCustoPlanilha {
     $rsCustos      = db_query($sSqlCusto);
     $iTotalCustos  = pg_num_rows($rsCustos);
     
-    require_once("model/custoPlanilhaLinha.model.php");
-    require_once("model/custorateio.model.php");
-    require_once("model/custoRegraRateio.model.php");
+    require_once(modification("model/custoPlanilhaLinha.model.php"));
+    require_once(modification("model/custorateio.model.php"));
+    require_once(modification("model/custoRegraRateio.model.php"));
     $oDaoPesLocalTrab = db_utils::getDao("rhpeslocaltrab");
     /**
      * Percorremos todos os custos encontrados e Incluimos na planilha
@@ -274,7 +274,7 @@ final class custoPlanilhaFolha implements iCustoPlanilha {
      * Consultamos e excluimos todos os custos do tipo no mes
      */
     $oDaoCustoLinha  = db_utils::getDao("custoplanilhaapuracao");
-    require_once("model/custoPlanilhaLinha.model.php");
+    require_once(modification("model/custoPlanilhaLinha.model.php"));
     $sWhere          = "cc17_custoplanilha = {$iPlanilha} ";      
     $sWhere         .= "and cc17_custoplanilhaorigem  = 1";      
     $sSqlCustosProcessadosMes = $oDaoCustoLinha->sql_query(null, "*", null, $sWhere);

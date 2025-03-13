@@ -95,10 +95,10 @@ db_inputdata('t81_venc',@$t81_venc_dia,@$t81_venc_mes,@$t81_venc_ano,true,'text'
 <script>
 function js_pesquisat81_codseg(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_apolice','db_iframe_seguradoras','func_seguradoras.php?funcao_js=parent.js_mostraseguradoras1|t80_segura|t80_contato','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_apolice','db_iframe_seguradoras','func_seguradoras.php?funcao_js=parent.js_mostraseguradoras1|t80_segura|t80_contato','Pesquisa',true);
   }else{
      if(document.form1.t81_codseg.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_apolice','db_iframe_seguradoras','func_seguradoras.php?pesquisa_chave='+document.form1.t81_codseg.value+'&funcao_js=parent.js_mostraseguradoras','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_apolice','db_iframe_seguradoras','func_seguradoras.php?pesquisa_chave='+document.form1.t81_codseg.value+'&funcao_js=parent.js_mostraseguradoras','Pesquisa',false);
      }else{
        document.form1.t80_contato.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostraseguradoras1(chave1,chave2){
   db_iframe_seguradoras.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_apolice','db_iframe_apolice','func_apolice.php?funcao_js=parent.js_preenchepesquisa|t81_codapo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_apolice','db_iframe_apolice','func_apolice.php?funcao_js=parent.js_preenchepesquisa|t81_codapo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_apolice.hide();

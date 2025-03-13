@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include("fpdf151/pdf.php");
-  //$rs = pg_exec($sql);
+ include(modification("fpdf151/pdf.php"));
+  //$rs = db_query($sql);
  $pdf = new pdf();
  $head3 = 'Resumo dos acidentes Em Sapiranga';
  $head4 = 'Acidentos por Causa';
@@ -42,7 +42,7 @@
                  tr02_sigla
           from   causas
           order by tr02_id";
- $rs1 = pg_exec($sql1);
+ $rs1 = db_query($sql1);
  $num_rows = pg_num_rows($rs1) + 2;
  $pdf->setfont("Arial","",7);
  while ($ln1 = pg_fetch_array($rs1)){
@@ -95,7 +95,7 @@
               and    extract(year from tr07_data)  = $ano
               group by tr07_idcausa";
          // echo $sql2;exit;
-          $rs2      = pg_exec($sql2);
+          $rs2      = db_query($sql2);
           $numrows2 = pg_num_rows($rs2);
           $ln       = pg_fetch_array($rs2);
           $sum      +=  $ln["quantidade"];

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,39 +25,39 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_matrequiitem_classe.php");
-require_once("classes/db_matrequi_classe.php");
-require_once("classes/db_atendrequi_classe.php");
-require_once("classes/db_atendrequiitem_classe.php");
-require_once("classes/db_atendrequiitemmei_classe.php");
-require_once("classes/db_matestoque_classe.php");
-require_once("classes/db_matestoqueini_classe.php");
-require_once("classes/db_matestoqueinimei_classe.php");
-require_once("classes/db_matestoqueinimeiari_classe.php");
-require_once("classes/db_matestoqueitem_classe.php");
-require_once("classes/db_db_almoxdepto_classe.php");
-require_once("classes/db_matmater_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_matparam_classe.php");
-require_once("classes/db_db_departorg_classe.php");
-require_once("classes/requisicaoMaterial.model.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_matrequiitem_classe.php"));
+require_once(modification("classes/db_matrequi_classe.php"));
+require_once(modification("classes/db_atendrequi_classe.php"));
+require_once(modification("classes/db_atendrequiitem_classe.php"));
+require_once(modification("classes/db_atendrequiitemmei_classe.php"));
+require_once(modification("classes/db_matestoque_classe.php"));
+require_once(modification("classes/db_matestoqueini_classe.php"));
+require_once(modification("classes/db_matestoqueinimei_classe.php"));
+require_once(modification("classes/db_matestoqueinimeiari_classe.php"));
+require_once(modification("classes/db_matestoqueitem_classe.php"));
+require_once(modification("classes/db_db_almoxdepto_classe.php"));
+require_once(modification("classes/db_matmater_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_matparam_classe.php"));
+require_once(modification("classes/db_db_departorg_classe.php"));
+require_once(modification("classes/requisicaoMaterial.model.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
-require_once("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php");
-require_once("model/contabilidade/contacorrente/ContaCorrenteBase.model.php");
-require_once("model/financeiro/ContaBancaria.model.php");
-require_once("model/contabilidade/planoconta/ContaPlano.model.php");
-require_once("model/contabilidade/planoconta/ClassificacaoConta.model.php");
-require_once("model/contabilidade/planoconta/ContaCorrente.model.php");
-require_once("model/contabilidade/planoconta/ContaOrcamento.model.php");
-require_once("model/contabilidade/planoconta/ContaPlanoPCASP.model.php");
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteFactory.model.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteBase.model.php"));
+require_once(modification("model/financeiro/ContaBancaria.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlano.model.php"));
+require_once(modification("model/contabilidade/planoconta/ClassificacaoConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaCorrente.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaOrcamento.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlanoPCASP.model.php"));
 
 db_app::import("Acordo");
 db_app::import("AcordoComissao");
@@ -89,23 +89,27 @@ $db_botao                 = true;
 $rsParam                  = $clmatparam->sql_record($clmatparam->sql_query_file());
 $oParam                   = db_utils::fieldsMemory($rsParam,0);
 $tobserva                 = $oParam->m90_modrelsaidamat;
-$aParamKeys = array(
-                    db_getsession("DB_anousu")
-                   );
-$aParametrosCustos   = db_stdClass::getParametro("parcustos",$aParamKeys);
-$iTipoControleCustos = 0;
 
-if (count($aParametrosCustos) > 0) {
-  $iTipoControleCustos = $aParametrosCustos[0]->cc09_tipocontrole;
+$iTipoControleCustos = 0;
+$oDaoParcustos = new cl_parcustos();
+$sWhereParametros = 'cc09_anousu = '. db_getsession("DB_anousu") . ' and cc09_instit = ' . db_getsession('DB_instit');
+$sSqlParametros = $oDaoParcustos->sql_query_file(null, 'cc09_tipocontrole', null, $sWhereParametros);
+$rsParametros = db_query($sSqlParametros); 
+
+if ($rsParametros && pg_num_rows($rsParametros) > 0) {
+  $iTipoControleCustos = db_utils::fieldsMemory($rsParametros, 0)->cc09_tipocontrole;
 }
+
 if (isset($m40_codigo)) {
 
   $sSqlAlmox   = "select m40_depto ";
   $sSqlAlmox  .= "  from matrequi  ";
   $sSqlAlmox  .= " where m40_codigo = {$m40_codigo}";
-  $oDeptoRequi = db_utils::fieldsMemory($clmatrequi->sql_record($sSqlAlmox),0);
 
+  $rsDeptoRequi = $clmatrequi->sql_record($sSqlAlmox);
+  $oDeptoRequi = ($clmatrequi->numrows > 0) ? db_utils::fieldsMemory($rsDeptoRequi, 0) : null;
 }
+
 if (isset($incluir)) {
   $sqlerro=false;
   db_inicio_transacao();
@@ -234,7 +238,7 @@ if (isset($incluir)) {
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
    <center>
 	<?
-	include("forms/db_frmmatrequiitemauto.php");
+	include(modification("forms/db_frmmatrequiitemauto.php"));
 	?>
     </center>
 </body>

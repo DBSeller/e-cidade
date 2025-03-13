@@ -28,21 +28,21 @@
 /**
  * 
  * @author I
- * @revision $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.3 $
  */
-require("libs/db_stdlib.php");
-require("std/db_stdClass.php");
-require("libs/db_app.utils.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_custocriteriorateio_classe.php");
-include("classes/db_custoplanilha_classe.php");
-include("classes/db_custoliberaplanilhamovimentos_classe.php");
-require_once("model/custoPlanilha.model.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_custocriteriorateio_classe.php"));
+include(modification("classes/db_custoplanilha_classe.php"));
+include(modification("classes/db_custoliberaplanilhamovimentos_classe.php"));
+require_once(modification("model/custoPlanilha.model.php"));
+include(modification("dbforms/db_funcoes.php"));
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
 db_postmemory($_POST);

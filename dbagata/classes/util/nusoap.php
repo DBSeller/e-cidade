@@ -3798,7 +3798,7 @@ class soap_transport_http extends nusoap_base {
                                         }
                                         if (isset($this->schemas[$ns])) {
                                             for ($i = 0; $i < count($this->schemas[$ns]); $i++) {
-                                                $xs = &$this->schemas[$ns][$i];
+                                                $xs = $this->schemas[$ns][$i];
                                                 $t = $xs->getTypeDef($type);
                                                 $this->appendDebug($xs->getDebug());
                                                 $xs->clearDebug();
@@ -5106,13 +5106,13 @@ class soap_transport_http extends nusoap_base {
                                                                     } elseif($this->message[$pos]['type'] == 'array' || $this->message[$pos]['type'] == 'Array'){
                                                                         $this->debug('adding array '.$this->message[$pos]['name']);
                                                                         foreach($children as $child_pos){
-                                                                            $params[] = &$this->message[$child_pos]['result'];
+                                                                            $params[] = $this->message[$child_pos]['result'];
                                                                         }
                                                                         // apache Map type: java hashtable
                                                                     } elseif($this->message[$pos]['type'] == 'Map' && $this->message[$pos]['type_namespace'] == 'http://xml.apache.org/xml-soap'){
                                                                         foreach($children as $child_pos){
                                                                             $kv = explode("|",$this->message[$child_pos]['children']);
-                                                                            $params[$this->message[$kv[1]]['result']] = &$this->message[$kv[2]]['result'];
+                                                                            $params[$this->message[$kv[1]]['result']] = $this->message[$kv[2]]['result'];
                                                                         }
                                                                         // generic compound type
                                                                         //} elseif($this->message[$pos]['type'] == 'SOAPStruct' || $this->message[$pos]['type'] == 'struct') {
@@ -5133,16 +5133,16 @@ class soap_transport_http extends nusoap_base {
                                                                             //
                                                                             foreach($children as $child_pos){
                                                                                 if(isset($notstruct)){
-                                                                                    $params[] = &$this->message[$child_pos]['result'];
+                                                                                    $params[] = $this->message[$child_pos]['result'];
                                                                                 } else {
                                                                                     if (isset($params[$this->message[$child_pos]['name']])) {
                                                                                         // de-serialize repeated element name into an array
                                                                                         if (!is_array($params[$this->message[$child_pos]['name']])) {
                                                                                             $params[$this->message[$child_pos]['name']] = array($params[$this->message[$child_pos]['name']]);
                                                                                         }
-                                                                                        $params[$this->message[$child_pos]['name']][] = &$this->message[$child_pos]['result'];
+                                                                                        $params[$this->message[$child_pos]['name']][] = $this->message[$child_pos]['result'];
                                                                                     } else {
-                                                                                        $params[$this->message[$child_pos]['name']] = &$this->message[$child_pos]['result'];
+                                                                                        $params[$this->message[$child_pos]['name']] = $this->message[$child_pos]['result'];
                                                                                     }
                                                                                 }
                                                                             }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_pagordem_classe.php");
-require_once("classes/db_empagetipo_classe.php");
-require_once("classes/db_empord_classe.php");
-require_once("classes/db_empagemov_classe.php");
-require_once("classes/db_empageconf_classe.php");
-require_once("classes/db_empagepag_classe.php");
+require_once(modification("classes/db_pagordem_classe.php"));
+require_once(modification("classes/db_empagetipo_classe.php"));
+require_once(modification("classes/db_empord_classe.php"));
+require_once(modification("classes/db_empagemov_classe.php"));
+require_once(modification("classes/db_empageconf_classe.php"));
+require_once(modification("classes/db_empagepag_classe.php"));
 
-require_once("classes/db_slip_classe.php");
-require_once("classes/db_slipnum_classe.php");
+require_once(modification("classes/db_slip_classe.php"));
+require_once(modification("classes/db_slipnum_classe.php"));
 
 $clempagetipo = new cl_empagetipo;
 $clpagordem   = new cl_pagordem;
@@ -54,7 +54,7 @@ $clslip       = new cl_slip;
 $clslipnum    = new cl_slipnum;
 
 
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 
 

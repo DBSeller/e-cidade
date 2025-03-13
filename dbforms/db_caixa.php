@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
-include("../libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 $segue = true;
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $instit = db_getsession("DB_instit");
@@ -45,7 +45,7 @@ if(isset($retorno)) {
             where     k07_codigo = ".$ret[2]." 
                   and k07_instit = $instit 
             order by k07_valorv desc";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if($ret[2] != $ret[0]){
     if(pg_numrows($result)>0){
       $segue = false;
@@ -121,7 +121,7 @@ else
 	            from histcalc
 			    where k01_codigo = ".$chave_valor."
 		        order by k01_codigo";
-        $result = pg_exec($sql);
+        $result = db_query($sql);
 	    if(pg_numrows($result)==1){
           $ret = explode("##",pg_result($result,0,0));
           echo "
@@ -158,7 +158,7 @@ else
   			         inner join tabrecjm on tabrecjm.k02_codjm = tabrec.k02_codjm
 			    where k02_codigo = ".$chave_valor."
 		        order by k02_codigo";
-        $result = pg_exec($sql);
+        $result = db_query($sql);
 		$sqltem = true;
 	    if(pg_numrows($result)==1){
           $ret = explode("##",pg_result($result,0,0));
@@ -170,7 +170,7 @@ else
                         and k07_codigo = ".$ret[0]." 
                         and k07_instit = $instit 
                   order by k07_valorv desc";
-          $result = pg_exec($sql);
+          $result = db_query($sql);
           if(pg_numrows($result) == 0){
             echo "
             <script>

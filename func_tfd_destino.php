@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_tfd_destino_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_tfd_destino_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $oDaotfd_destino = new cl_tfd_destino;
@@ -100,7 +100,7 @@ $oDaotfd_destino->rotulo->label("tf03_c_descr");
         if(isset($campos) == false) {
           
            if(file_exists("funcoes/db_func_tfd_destino.php") == true) {
-             require_once("funcoes/db_func_tfd_destino.php");
+             require_once(modification("funcoes/db_func_tfd_destino.php"));
            } else {
              $campos = "tfd_destino.*";
            }
@@ -165,4 +165,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_tf03_i_codigo",true,1,"chave_tf03_i_codigo",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

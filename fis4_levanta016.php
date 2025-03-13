@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_levinscr_classe.php");
-include("classes/db_levcgm_classe.php");
-include("classes/db_levanta_classe.php");
-include("classes/db_levantanotas_classe.php");
-include("classes/db_levvalor_classe.php");
-include("classes/db_levusu_classe.php");
-include("classes/db_levvalorpgtos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_levinscr_classe.php"));
+include(modification("classes/db_levcgm_classe.php"));
+include(modification("classes/db_levanta_classe.php"));
+include(modification("classes/db_levantanotas_classe.php"));
+include(modification("classes/db_levvalor_classe.php"));
+include(modification("classes/db_levusu_classe.php"));
+include(modification("classes/db_levvalorpgtos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cllevanta = new cl_levanta;
@@ -153,7 +153,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmlevanta.php");
+	include(modification("forms/db_frmlevanta.php"));
 	?>
     </center>
 	</td>
@@ -190,8 +190,8 @@ if(isset($excluir)){
               function js_xy(){
                 parent.document.formaba.levvalor.disabled=false;\n
                 parent.document.formaba.levusu.disabled=false;\n
-		top.corpo.iframe_levvalor.location.href='fis1_levvalor001.php?db_opcaoal=true&y60_contato=$y60_contato&y63_codlev=$y60_codlev';\n
-		top.corpo.iframe_levusu.location.href='fis1_levusu001.php?db_opcaoal=true&y60_contato=$y60_contato&y61_codlev=$y60_codlev';\n
+		(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_levvalor.location.href='fis1_levvalor001.php?db_opcaoal=true&y60_contato=$y60_contato&y63_codlev=$y60_codlev';\n
+		(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_levusu.location.href='fis1_levusu001.php?db_opcaoal=true&y60_contato=$y60_contato&y61_codlev=$y60_codlev';\n
               }
               js_xy();
            </script>

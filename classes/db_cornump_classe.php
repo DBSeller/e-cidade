@@ -1,81 +1,81 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: caixa
 //CLASSE DA ENTIDADE cornump
-class cl_cornump { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $k12_id = 0; 
-   var $k12_data_dia = null; 
-   var $k12_data_mes = null; 
-   var $k12_data_ano = null; 
-   var $k12_data = null; 
-   var $k12_autent = 0; 
-   var $k12_numpre = 0; 
-   var $k12_numpar = 0; 
-   var $k12_numtot = 0; 
-   var $k12_numdig = 0; 
-   var $k12_receit = 0; 
-   var $k12_valor = 0; 
-   var $k12_numnov = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_cornump {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $k12_id = 0;
+   var $k12_data_dia = null;
+   var $k12_data_mes = null;
+   var $k12_data_ano = null;
+   var $k12_data = null;
+   var $k12_autent = 0;
+   var $k12_numpre = 0;
+   var $k12_numpar = 0;
+   var $k12_numtot = 0;
+   var $k12_numdig = 0;
+   var $k12_receit = 0;
+   var $k12_valor = 0;
+   var $k12_numnov = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 k12_id = int4 = Autenticação 
-                 k12_data = date = Data Autenticação 
-                 k12_autent = int4 = Código Autenticação 
-                 k12_numpre = int4 = Código de Arrecadação 
-                 k12_numpar = int4 = Número Parcela 
-                 k12_numtot = int4 = Numero Total 
-                 k12_numdig = int4 = Digito 
-                 k12_receit = int4 = Código da receita 
-                 k12_valor = float8 = Valor Autenticação 
-                 k12_numnov = int4 = Numpre Novo 
+                 k12_id = int4 = Autenticação
+                 k12_data = date = Data Autenticação
+                 k12_autent = int4 = Código Autenticação
+                 k12_numpre = int4 = Código de Arrecadação
+                 k12_numpar = int4 = Número Parcela
+                 k12_numtot = int4 = Numero Total
+                 k12_numdig = int4 = Digito
+                 k12_receit = int4 = Código da receita
+                 k12_valor = float8 = Valor Autenticação
+                 k12_numnov = int4 = Numpre Novo
                  ";
-   //funcao construtor da classe 
-   function cl_cornump() { 
+   //funcao construtor da classe
+   function cl_cornump() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("cornump"); 
+     $this->rotulo = new rotulo("cornump");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -113,9 +113,9 @@ class cl_cornump {
      }
    }
    // funcao para inclusao
-   function incluir ($k12_id,$k12_data,$k12_autent,$k12_numpre,$k12_numpar,$k12_receit){ 
+   function incluir ($k12_id,$k12_data,$k12_autent,$k12_numpre,$k12_numpar,$k12_receit){
       $this->atualizacampos();
-     if($this->k12_numtot == null ){ 
+     if($this->k12_numtot == null ){
        $this->erro_sql = " Campo Numero Total nao Informado.";
        $this->erro_campo = "k12_numtot";
        $this->erro_banco = "";
@@ -124,7 +124,7 @@ class cl_cornump {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k12_numdig == null ){ 
+     if($this->k12_numdig == null ){
        $this->erro_sql = " Campo Digito nao Informado.";
        $this->erro_campo = "k12_numdig";
        $this->erro_banco = "";
@@ -133,7 +133,7 @@ class cl_cornump {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k12_valor == null ){ 
+     if($this->k12_valor == null ){
        $this->erro_sql = " Campo Valor Autenticação nao Informado.";
        $this->erro_campo = "k12_valor";
        $this->erro_banco = "";
@@ -142,16 +142,16 @@ class cl_cornump {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k12_numnov == null ){ 
+     if($this->k12_numnov == null ){
        $this->k12_numnov = "0";
      }
-       $this->k12_id = $k12_id; 
-       $this->k12_data = $k12_data; 
-       $this->k12_autent = $k12_autent; 
-       $this->k12_numpre = $k12_numpre; 
-       $this->k12_numpar = $k12_numpar; 
-       $this->k12_receit = $k12_receit; 
-     if(($this->k12_id == null) || ($this->k12_id == "") ){ 
+       $this->k12_id = $k12_id;
+       $this->k12_data = $k12_data;
+       $this->k12_autent = $k12_autent;
+       $this->k12_numpre = $k12_numpre;
+       $this->k12_numpar = $k12_numpar;
+       $this->k12_receit = $k12_receit;
+     if(($this->k12_id == null) || ($this->k12_id == "") ){
        $this->erro_sql = " Campo k12_id nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -159,7 +159,7 @@ class cl_cornump {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->k12_data == null) || ($this->k12_data == "") ){ 
+     if(($this->k12_data == null) || ($this->k12_data == "") ){
        $this->erro_sql = " Campo k12_data nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -167,7 +167,7 @@ class cl_cornump {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->k12_autent == null) || ($this->k12_autent == "") ){ 
+     if(($this->k12_autent == null) || ($this->k12_autent == "") ){
        $this->erro_sql = " Campo k12_autent nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -175,7 +175,7 @@ class cl_cornump {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->k12_numpre == null) || ($this->k12_numpre == "") ){ 
+     if(($this->k12_numpre == null) || ($this->k12_numpre == "") ){
        $this->erro_sql = " Campo k12_numpre nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -183,7 +183,7 @@ class cl_cornump {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->k12_numpar == null) || ($this->k12_numpar == "") ){ 
+     if(($this->k12_numpar == null) || ($this->k12_numpar == "") ){
        $this->erro_sql = " Campo k12_numpar nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -191,7 +191,7 @@ class cl_cornump {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->k12_receit == null) || ($this->k12_receit == "") ){ 
+     if(($this->k12_receit == null) || ($this->k12_receit == "") ){
        $this->erro_sql = " Campo k12_receit nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -200,31 +200,31 @@ class cl_cornump {
        return false;
      }
      $sql = "insert into cornump(
-                                       k12_id 
-                                      ,k12_data 
-                                      ,k12_autent 
-                                      ,k12_numpre 
-                                      ,k12_numpar 
-                                      ,k12_numtot 
-                                      ,k12_numdig 
-                                      ,k12_receit 
-                                      ,k12_valor 
-                                      ,k12_numnov 
+                                       k12_id
+                                      ,k12_data
+                                      ,k12_autent
+                                      ,k12_numpre
+                                      ,k12_numpar
+                                      ,k12_numtot
+                                      ,k12_numdig
+                                      ,k12_receit
+                                      ,k12_valor
+                                      ,k12_numnov
                        )
                 values (
-                                $this->k12_id 
-                               ,".($this->k12_data == "null" || $this->k12_data == ""?"null":"'".$this->k12_data."'")." 
-                               ,$this->k12_autent 
-                               ,$this->k12_numpre 
-                               ,$this->k12_numpar 
-                               ,$this->k12_numtot 
-                               ,$this->k12_numdig 
-                               ,$this->k12_receit 
-                               ,$this->k12_valor 
-                               ,$this->k12_numnov 
+                                $this->k12_id
+                               ,".($this->k12_data == "null" || $this->k12_data == ""?"null":"'".$this->k12_data."'")."
+                               ,$this->k12_autent
+                               ,$this->k12_numpre
+                               ,$this->k12_numpar
+                               ,$this->k12_numtot
+                               ,$this->k12_numdig
+                               ,$this->k12_receit
+                               ,$this->k12_valor
+                               ,$this->k12_numnov
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Autenticações Numpres ($this->k12_id."-".$this->k12_data."-".$this->k12_autent."-".$this->k12_numpre."-".$this->k12_numpar."-".$this->k12_receit) nao Incluído. Inclusao Abortada.";
@@ -270,16 +270,16 @@ class cl_cornump {
        $resac = db_query("insert into db_acount values($acount,201,2022,'','".AddSlashes(pg_result($resaco,0,'k12_numnov'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($k12_id=null,$k12_data=null,$k12_autent=null,$k12_numpre=null,$k12_numpar=null,$k12_receit=null) { 
+   function alterar ($k12_id=null,$k12_data=null,$k12_autent=null,$k12_numpre=null,$k12_numpar=null,$k12_receit=null) {
       $this->atualizacampos();
      $sql = " update cornump set ";
      $virgula = "";
-     if(trim($this->k12_id)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_id"])){ 
+     if(trim($this->k12_id)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_id"])){
        $sql  .= $virgula." k12_id = $this->k12_id ";
        $virgula = ",";
-       if(trim($this->k12_id) == null ){ 
+       if(trim($this->k12_id) == null ){
          $this->erro_sql = " Campo Autenticação nao Informado.";
          $this->erro_campo = "k12_id";
          $this->erro_banco = "";
@@ -289,10 +289,10 @@ class cl_cornump {
          return false;
        }
      }
-     if(trim($this->k12_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["k12_data_dia"] !="") ){ 
+     if(trim($this->k12_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["k12_data_dia"] !="") ){
        $sql  .= $virgula." k12_data = '$this->k12_data' ";
        $virgula = ",";
-       if(trim($this->k12_data) == null ){ 
+       if(trim($this->k12_data) == null ){
          $this->erro_sql = " Campo Data Autenticação nao Informado.";
          $this->erro_campo = "k12_data_dia";
          $this->erro_banco = "";
@@ -301,11 +301,11 @@ class cl_cornump {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["k12_data_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["k12_data_dia"])){
          $sql  .= $virgula." k12_data = null ";
          $virgula = ",";
-         if(trim($this->k12_data) == null ){ 
+         if(trim($this->k12_data) == null ){
            $this->erro_sql = " Campo Data Autenticação nao Informado.";
            $this->erro_campo = "k12_data_dia";
            $this->erro_banco = "";
@@ -316,10 +316,10 @@ class cl_cornump {
          }
        }
      }
-     if(trim($this->k12_autent)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_autent"])){ 
+     if(trim($this->k12_autent)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_autent"])){
        $sql  .= $virgula." k12_autent = $this->k12_autent ";
        $virgula = ",";
-       if(trim($this->k12_autent) == null ){ 
+       if(trim($this->k12_autent) == null ){
          $this->erro_sql = " Campo Código Autenticação nao Informado.";
          $this->erro_campo = "k12_autent";
          $this->erro_banco = "";
@@ -329,10 +329,10 @@ class cl_cornump {
          return false;
        }
      }
-     if(trim($this->k12_numpre)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numpre"])){ 
+     if(trim($this->k12_numpre)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numpre"])){
        $sql  .= $virgula." k12_numpre = $this->k12_numpre ";
        $virgula = ",";
-       if(trim($this->k12_numpre) == null ){ 
+       if(trim($this->k12_numpre) == null ){
          $this->erro_sql = " Campo Código de Arrecadação nao Informado.";
          $this->erro_campo = "k12_numpre";
          $this->erro_banco = "";
@@ -342,10 +342,10 @@ class cl_cornump {
          return false;
        }
      }
-     if(trim($this->k12_numpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numpar"])){ 
+     if(trim($this->k12_numpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numpar"])){
        $sql  .= $virgula." k12_numpar = $this->k12_numpar ";
        $virgula = ",";
-       if(trim($this->k12_numpar) == null ){ 
+       if(trim($this->k12_numpar) == null ){
          $this->erro_sql = " Campo Número Parcela nao Informado.";
          $this->erro_campo = "k12_numpar";
          $this->erro_banco = "";
@@ -355,10 +355,10 @@ class cl_cornump {
          return false;
        }
      }
-     if(trim($this->k12_numtot)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numtot"])){ 
+     if(trim($this->k12_numtot)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numtot"])){
        $sql  .= $virgula." k12_numtot = $this->k12_numtot ";
        $virgula = ",";
-       if(trim($this->k12_numtot) == null ){ 
+       if(trim($this->k12_numtot) == null ){
          $this->erro_sql = " Campo Numero Total nao Informado.";
          $this->erro_campo = "k12_numtot";
          $this->erro_banco = "";
@@ -368,10 +368,10 @@ class cl_cornump {
          return false;
        }
      }
-     if(trim($this->k12_numdig)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numdig"])){ 
+     if(trim($this->k12_numdig)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numdig"])){
        $sql  .= $virgula." k12_numdig = $this->k12_numdig ";
        $virgula = ",";
-       if(trim($this->k12_numdig) == null ){ 
+       if(trim($this->k12_numdig) == null ){
          $this->erro_sql = " Campo Digito nao Informado.";
          $this->erro_campo = "k12_numdig";
          $this->erro_banco = "";
@@ -381,10 +381,10 @@ class cl_cornump {
          return false;
        }
      }
-     if(trim($this->k12_receit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_receit"])){ 
+     if(trim($this->k12_receit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_receit"])){
        $sql  .= $virgula." k12_receit = $this->k12_receit ";
        $virgula = ",";
-       if(trim($this->k12_receit) == null ){ 
+       if(trim($this->k12_receit) == null ){
          $this->erro_sql = " Campo Código da receita nao Informado.";
          $this->erro_campo = "k12_receit";
          $this->erro_banco = "";
@@ -394,10 +394,10 @@ class cl_cornump {
          return false;
        }
      }
-     if(trim($this->k12_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_valor"])){ 
+     if(trim($this->k12_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_valor"])){
        $sql  .= $virgula." k12_valor = $this->k12_valor ";
        $virgula = ",";
-       if(trim($this->k12_valor) == null ){ 
+       if(trim($this->k12_valor) == null ){
          $this->erro_sql = " Campo Valor Autenticação nao Informado.";
          $this->erro_campo = "k12_valor";
          $this->erro_banco = "";
@@ -407,10 +407,10 @@ class cl_cornump {
          return false;
        }
      }
-     if(trim($this->k12_numnov)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numnov"])){ 
-        if(trim($this->k12_numnov)=="" && isset($GLOBALS["HTTP_POST_VARS"]["k12_numnov"])){ 
-           $this->k12_numnov = "0" ; 
-        } 
+     if(trim($this->k12_numnov)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k12_numnov"])){
+        if(trim($this->k12_numnov)=="" && isset($GLOBALS["HTTP_POST_VARS"]["k12_numnov"])){
+           $this->k12_numnov = "0" ;
+        }
        $sql  .= $virgula." k12_numnov = $this->k12_numnov ";
        $virgula = ",";
      }
@@ -468,7 +468,7 @@ class cl_cornump {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Autenticações Numpres nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->k12_id."-".$this->k12_data."-".$this->k12_autent."-".$this->k12_numpre."-".$this->k12_numpar."-".$this->k12_receit;
@@ -496,14 +496,14 @@ class cl_cornump {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($k12_id=null,$k12_data=null,$k12_autent=null,$k12_numpre=null,$k12_numpar=null,$k12_receit=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($k12_id=null,$k12_data=null,$k12_autent=null,$k12_numpre=null,$k12_numpar=null,$k12_receit=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($k12_id,$k12_data,$k12_autent,$k12_numpre,$k12_numpar,$k12_receit));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,null,null,null,null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -573,7 +573,7 @@ class cl_cornump {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Autenticações Numpres nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$k12_id."-".$k12_data."-".$k12_autent."-".$k12_numpre."-".$k12_numpar."-".$k12_receit;
@@ -601,11 +601,11 @@ class cl_cornump {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -627,8 +627,8 @@ class cl_cornump {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $k12_id=null,$k12_data=null,$k12_autent=null,$k12_numpre=null,$k12_numpar=null,$k12_receit=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $k12_id=null,$k12_data=null,$k12_autent=null,$k12_numpre=null,$k12_numpar=null,$k12_receit=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -650,48 +650,48 @@ class cl_cornump {
      $sql2 = "";
      if($dbwhere==""){
        if($k12_id!=null ){
-         $sql2 .= " where cornump.k12_id = $k12_id "; 
-       } 
+         $sql2 .= " where cornump.k12_id = $k12_id ";
+       }
        if($k12_data!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_data = '$k12_data' "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_data = '$k12_data' ";
+       }
        if($k12_autent!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_autent = $k12_autent "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_autent = $k12_autent ";
+       }
        if($k12_numpre!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_numpre = $k12_numpre "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_numpre = $k12_numpre ";
+       }
        if($k12_numpar!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_numpar = $k12_numpar "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_numpar = $k12_numpar ";
+       }
        if($k12_receit!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_receit = $k12_receit "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_receit = $k12_receit ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -707,8 +707,8 @@ class cl_cornump {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $k12_id=null,$k12_data=null,$k12_autent=null,$k12_numpre=null,$k12_numpar=null,$k12_receit=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $k12_id=null,$k12_data=null,$k12_autent=null,$k12_numpre=null,$k12_numpar=null,$k12_receit=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -724,48 +724,48 @@ class cl_cornump {
      $sql2 = "";
      if($dbwhere==""){
        if($k12_id!=null ){
-         $sql2 .= " where cornump.k12_id = $k12_id "; 
-       } 
+         $sql2 .= " where cornump.k12_id = $k12_id ";
+       }
        if($k12_data!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_data = '$k12_data' "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_data = '$k12_data' ";
+       }
        if($k12_autent!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_autent = $k12_autent "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_autent = $k12_autent ";
+       }
        if($k12_numpre!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_numpre = $k12_numpre "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_numpre = $k12_numpre ";
+       }
        if($k12_numpar!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_numpar = $k12_numpar "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_numpar = $k12_numpar ";
+       }
        if($k12_receit!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " cornump.k12_receit = $k12_receit "; 
-       } 
+         }
+         $sql2 .= " cornump.k12_receit = $k12_receit ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -781,7 +781,7 @@ class cl_cornump {
      }
      return $sql;
   }
-  
+
   function sql_query_plano_conta ($k12_id=null,$k12_data=null,$k12_autent=null,$k12_numpre=null,$k12_numpar=null,$k12_receit=null,$campos="*",$ordem=null,$dbwhere=""){
   	$sql = "select ";
   	if($campos != "*" ){
@@ -866,10 +866,68 @@ class cl_cornump {
   }
   return $sql;
   }
-  
-  
-  
-  
-  
+
+
+
+  public function sql_query_recibo_autenticado($campos = "*", $where = null) {
+
+       $sql  = "select {$campos}";
+       $sql .= "  from cornump ";
+       $sql .= "       inner join conlancamcorrente on conlancamcorrente.c86_id     = cornump.k12_id ";
+       $sql .= "                                   and conlancamcorrente.c86_data   = cornump.k12_data ";
+       $sql .= "                                   and conlancamcorrente.c86_autent = cornump.k12_autent ";
+       $sql .= "       inner join tabrec on tabrec.k02_codigo = cornump.k12_receit";
+       $sql .= "       inner join taborc on taborc.k02_codigo = tabrec.k02_codigo";
+       $sql .= "       inner join orcreceita on orcreceita.o70_codrec = taborc.k02_codrec";
+       $sql .= "                            and orcreceita.o70_anousu = taborc.k02_anousu";
+
+       if (!empty($where)) {
+            $sql .= " where {$where} ";
+       }
+       return $sql;
+  }
+
+
+  /**
+   * verifica se o debito é de uma retencao apropriada
+   */
+  public function sql_query_debitoRetencao($campos = "*", $where = null) {
+
+    $sql  = "select {$campos}";
+    $sql .= "  from cornump ";
+
+    $sql .= "
+
+           join arrecad on cornump.k12_numpre = arrecad.k00_numpre
+                       and cornump.k12_numpar = arrecad.k00_numpar
+       join corrente on cornump.k12_id = corrente.k12_id
+                    and cornump.k12_data = corrente.k12_data
+                    and cornump.k12_autent = corrente.k12_autent
+       left join cancdebitosreg on cornump.k12_numpre = k21_numpre
+                               and cornump.k12_numpar = k21_numpar
+       join corgrupocorrente on corgrupocorrente.k105_data = corrente.k12_data
+                            and corgrupocorrente.k105_autent = corrente.k12_autent
+                            and corgrupocorrente.k105_id = corrente.k12_id
+       join retencaocorgrupocorrente on retencaocorgrupocorrente.e47_corgrupocorrente = corgrupocorrente.k105_sequencial
+       join retencaoreceitas on retencaoreceitas.e23_sequencial = retencaocorgrupocorrente.e47_retencaoreceita
+                            and retencaoreceitas.e23_ativo is false
+                            and retencaoreceitas.e23_recolhido is true
+       join retencaotiporec on retencaotiporec.e21_sequencial = retencaoreceitas.e23_retencaotiporec
+                           and retencaotiporec.e21_retencaotiporecgrupo = 1
+                           and retencaotiporec.e21_instit = corrente.k12_instit
+       join retencaopagordem on e23_retencaopagordem = e20_sequencial
+       join pagordem on e20_pagordem = e50_codord
+       join empempenho on e60_numemp = e50_numemp
+
+    ";
+
+    if (!empty($where)) {
+         $sql .= " where {$where} ";
+    }
+    return $sql;
+}
+
+
+
 }
 ?>

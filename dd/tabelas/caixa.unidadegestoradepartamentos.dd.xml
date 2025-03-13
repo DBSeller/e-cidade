@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010336' name='unidadegestoradepartamentos' description="Departamentos da Unidade Gestora" prefix="k180" label="unidadegestoradepartamentos" type="0">
+  <fields>
+    <field codigo="1010070" 
+           campo_api='' 
+           name="k180_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='caixa.unidadegestoradepartamentos_k180_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010071" 
+           campo_api='' 
+           name="k180_unidadegestora" 
+           conteudo="int4" 
+           description="Código da Unidade Gestora" 
+           inivalue="0" 
+           label="Código da Unidade Gestora" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Unidade Gestora" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010072" 
+           campo_api='' 
+           name="k180_depart" 
+           conteudo="int4" 
+           description="Código do Departamento" 
+           inivalue="0" 
+           label="Código do Departamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Departamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k180_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_depart" inner='t'>
+      <fieldfk name="k180_depart" reference="coddepto" /> 
+    </foreignkey>
+    <foreignkey reference="unidadegestora" inner='t'>
+      <fieldfk name="k180_unidadegestora" reference="k171_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

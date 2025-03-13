@@ -26,8 +26,8 @@
  */
 
 //MODULO: ouvidori a
-include ("classes/db_tiporetorno_classe.php");
-include ("classes/db_telefonetipo_classe.php");
+include(modification("classes/db_tiporetorno_classe.php"));
+include(modification("classes/db_telefonetipo_classe.php"));
 
 $cltelefonetipo 		= new cl_telefonetipo();
 $cltiporetorno 			= new cl_tiporetorno();
@@ -303,7 +303,7 @@ $clrotulo->label("z01_nome");
 			
 		js_removeObj("msgBox");
 	  
-	  var aRetorno = eval("("+oAjax.responseText+")");
+	  var aRetorno = JSON.parse(oAjax.responseText);
 	  
 	  var sExpReg  = new RegExp('\\\\n','g');
 	  
@@ -416,7 +416,7 @@ $clrotulo->label("z01_nome");
 	    
 	  js_removeObj("msgBox");
 	  
-	  var aRetorno = eval("("+oAjax.responseText+")");
+	  var aRetorno = JSON.parse(oAjax.responseText);
 	  var sExpReg  = new RegExp('\\\\n','g');
 	  
 	  if ( aRetorno.status == 1) {

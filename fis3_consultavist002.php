@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_vistorias_classe.php");
-include("classes/db_vistlocal_classe.php");
-include("classes/db_vistexec_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_vistorias_classe.php"));
+include(modification("classes/db_vistlocal_classe.php"));
+include(modification("classes/db_vistexec_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clvistorias = new cl_vistorias;
@@ -259,7 +259,7 @@ if(isset($y70_codvist) && (trim($y70_codvist)!="") ){
   if($clvistlocal->numrows > 0){
     db_fieldsmemory($resultexec,0);
   }
-  include("forms/db_frmvistorias.php");
+  include(modification("forms/db_frmvistorias.php"));
   echo "<script>document.form1.db_opcao.type='hidden'</script>";
   echo "<script>document.form1.pesquisar.type='hidden'</script>";
 ?>

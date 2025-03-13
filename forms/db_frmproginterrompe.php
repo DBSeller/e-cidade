@@ -84,10 +84,10 @@ $clrotulo->label("nome");
 <script>
 function js_pesquisaed123_i_progmatricula(mostra){
  if(mostra==true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_progmatricula','func_progmatricula.php?funcao_js=parent.js_mostraprogmatricula1|ed112_i_codigo|ed112_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_progmatricula','func_progmatricula.php?funcao_js=parent.js_mostraprogmatricula1|ed112_i_codigo|ed112_i_codigo','Pesquisa',true);
  }else{
   if(document.form1.ed123_i_progmatricula.value != ''){
-   js_OpenJanelaIframe('top.corpo','db_iframe_progmatricula','func_progmatricula.php?pesquisa_chave='+document.form1.ed123_i_progmatricula.value+'&funcao_js=parent.js_mostraprogmatricula','Pesquisa',false);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_progmatricula','func_progmatricula.php?pesquisa_chave='+document.form1.ed123_i_progmatricula.value+'&funcao_js=parent.js_mostraprogmatricula','Pesquisa',false);
   }else{
    document.form1.ed112_i_codigo.value = '';
   }
@@ -107,10 +107,10 @@ function js_mostraprogmatricula1(chave1,chave2){
 }
 function js_pesquisaed123_i_usuario(mostra){
  if(mostra==true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
  }else{
   if(document.form1.ed123_i_usuario.value != ''){
-   js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.ed123_i_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.ed123_i_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
   }else{
    document.form1.nome.value = '';
   }
@@ -129,7 +129,7 @@ function js_mostradb_usuarios1(chave1,chave2){
  db_iframe_db_usuarios.hide();
 }
 function js_pesquisa(){
- js_OpenJanelaIframe('top.corpo','db_iframe_proginterrompe','func_proginterrompe.php?funcao_js=parent.js_preenchepesquisa|ed123_i_codigo','Pesquisa',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_proginterrompe','func_proginterrompe.php?funcao_js=parent.js_preenchepesquisa|ed123_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
  db_iframe_proginterrompe.hide();

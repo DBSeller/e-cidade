@@ -1,0 +1,92 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010338' name='contabilidade.conplanosistemaatributos' description="Atributos do sistema de conta (conta corrente)" prefix="c129" label="Atributos do sistema de conta" type="0">
+  <fields>
+    <field codigo="1010083" 
+           campo_api='' 
+           name="c129_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010085" 
+           campo_api='' 
+           name="c129_conplanosistema" 
+           conteudo="int4" 
+           description="Código do Sistema" 
+           inivalue="0" 
+           label="Código do Sistema" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Sistema" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010086" 
+           campo_api='' 
+           name="c129_conplanoinfocomplementar" 
+           conteudo="int4" 
+           description="Informações Complementar" 
+           inivalue="0" 
+           label="Informação Complementar" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Informação Complementar" 
+           reference="c121_sequencial" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010089" 
+           campo_api='' 
+           name="c129_ordem" 
+           conteudo="int4" 
+           description="Ordem de execução" 
+           inivalue="0" 
+           label="Ordem" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ordem" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c129_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="conplanoinfocomplementar" inner='t'>
+      <fieldfk name="c129_conplanoinfocomplementar" reference="c121_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="conplanosistema" inner='t'>
+      <fieldfk name="c129_conplanosistema" reference="c122_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

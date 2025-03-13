@@ -460,9 +460,9 @@ function js_volta(){
 }
 function js_pesquisak13_conta(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k13_conta.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k13_conta.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
   }
 }
 function js_mostrasaltes(chave,erro){
@@ -478,7 +478,7 @@ function js_mostrasaltes1(chave1,chave2){
   db_iframe_saltes.hide();
 }
 function js_pesquisa_pagamentos(empenho){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pagordem','func_pagordem002.php?e60_numemp='+empenho,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pagordem','func_pagordem002.php?e60_numemp='+empenho,'Pesquisa',true);
 }
 
 <?
@@ -532,7 +532,7 @@ if (isset ($e60_numemp)) {
 ?>
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_empempenho.hide();
@@ -564,7 +564,7 @@ echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?e
 
 
 function js_cheque(abrejanela){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cheque','emp1_emppagamentoestorna003.php?js_funcao=parent.js_vai|e91_codcheque|e83_conta|e91_cheque|k13_descr|e91_valor&e50_codord=<?=@$e50_codord?>&e60_numemp=<?=@$e60_numemp?>','Pesquisa Cheques',abrejanela);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cheque','emp1_emppagamentoestorna003.php?js_funcao=parent.js_vai|e91_codcheque|e83_conta|e91_cheque|k13_descr|e91_valor&e50_codord=<?=@$e50_codord?>&e60_numemp=<?=@$e60_numemp?>','Pesquisa Cheques',abrejanela);
 }
 <?
 

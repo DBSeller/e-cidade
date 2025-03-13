@@ -1,7 +1,8 @@
-<?
-/*
+<?php
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +26,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
+/**
+ * Representa a tela da consulta de slip.
+ * 
+ * @author $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.14 $
+ */
+
 $clrotulo  = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
 ?>
 <center>
 	<form name="form1" method="post" action="">
-    <input type="hidden" value="<?= isset($DB_COMPLEMENTAR) ? "1" : "0"; ?>" id="db_complementar" name = 'db_complementar' >
+    <input type="hidden" value="<?php echo DBPessoal::verificarUtilizacaoEstruturaSuplementar() ? '1' : '0'; ?>" id="db_complementar" name = 'db_complementar' >
 	  
     <table>
 	  <tr>
@@ -68,14 +76,24 @@ $clrotulo->label('DBtxt25');
 					                    "r48"=>"Complementar",
 					                    "r35"=>"13o. Salário",
 					                    "r20"=>"Rescisão",
-					                    "r22"=>"Adiantamento");
+					                    "r22"=>"Adiantamento",
+                              "sup"=>"Suplementar");
 			       
+             if (!DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+               unset($aSigla['sup']);
+             }
+             
 			       db_select('ponto',$aSigla,true,4,"onChange='js_validaTipoPonto()'");
 			     ?>
 			    </td>
 		    </tr>
-		    <tr id='linhaComplementar' style='display:none'>
-		    </tr>
+		    <tr style="display: none;" id="ComboContainer">
+          <td align='left' title="Número da folha de pagamento">
+            <strong>Número:</strong>
+          </td>
+          <td id="ComboContent">
+          </td>
+        </tr>
 		  </table> 
 	  </fieldset>
 	  </td>
@@ -98,144 +116,150 @@ $clrotulo->label('DBtxt25');
 </center>	
 <script>
 
- var sUrl = 'pes1_rhempenhofolhaRPC.php';
+  var sUrl     = 'pes1_rhempenhofolhaRPC.php';
+  var MENSAGEM = 'recursoshumanos/pessoal/db_frmrhslipfolha.';
   
- function js_consultaPontoComplementar(){
- 
-   js_divCarregando('Consultando ponto complementar...','msgBox');
-   js_bloqueiaTela(true);
- 
-   if ($F("db_complementar") == "1"){
-    var sQuery  = 'sMethod=consultaComplementaresFechadas';
-   } else {
-    var sQuery  = 'sMethod=consultaPontoComplementar';
-        sQuery += '&sSigla='+$F('ponto');
-   }
-   sQuery += '&iAnoFolha='+$F('anofolha');
-   sQuery += '&iMesFolha='+$F('mesfolha');
- 
-   var oAjax   = new Ajax.Request( sUrl, {
-                                             method: 'post',
-                                             parameters: sQuery,
-                                             onComplete: js_retornoPontoComplementar
-                                           }
-                                   );
- 
- }
+  function js_consultaFolhaPagamento(iTipoFolha){
+  
+    js_divCarregando(_M( MENSAGEM + 'carregando'), 'msgBox', true);
+  
+    var oParam            = new Object();
+        oParam.iAnoFolha  = $F('anofolha');
+        oParam.iMesFolha  = $F('mesfolha');
+        oParam.iTipoFolha = iTipoFolha;
+        
+    if ($F("db_complementar") == "1"){
+        oParam.sMethod    = "getFolhasComPreSlipGerado";
+    } else {
+        oParam.sMethod    = "consultaPontoComplementar";
+        oParam.sSigla     = $F('ponto');
+    }
+  
+    new Ajax.Request( sUrl, {
+                              method    : 'post',
+	                            parameters: oParam,
+	                            onComplete: js_retornoFolhaPagamento
+	                          }
+	                  );
+  }
 
- function js_retornoPontoComplementar(oAjax){
-
-   js_removeObj("msgBox");
-   js_bloqueiaTela(false);
-   
-   var aRetorno = eval("("+oAjax.responseText+")");
-   var sExpReg  = new RegExp('\\\\n','g');
+  function js_retornoFolhaPagamento(oAjax){
+  
+    js_removeObj("msgBox");
+  
+    var aRetorno = JSON.parse(oAjax.responseText);
     
+    if (aRetorno.lErro) {
+      
+      $('consulta').disabled = true;
+      alert(aRetorno.sMsg.urlDecode());
+      return false;
+    }
+    
+    var iLinhasSemestre = aRetorno.aSemestre.length;
   
-   if ( aRetorno.lErro ) {
-     alert(aRetorno.sMsg.urlDecode().replace(sExpReg,'\n'));
-     return false;
-   }
-
-   var sLinha          = "";
-   var iLinhasSemestre = aRetorno.aSemestre.length;
-   
-   if ( iLinhasSemestre > 0 ) {
-   
-   
-     sLinha += " <td align='left' title='Nro. Complementar'> ";
-     sLinha += "   <strong>Nro. Complementar:</strong>       ";
-     sLinha += " </td>                                       ";
-     sLinha += " <td>                                        ";
-     sLinha += "   <select id='semestre' name='semestre'>    ";
-     
-    for ( var iInd=0; iInd < iLinhasSemestre; iInd++ ) {
+    if (iLinhasSemestre > 0) {
       
-      var oSemestre = aRetorno.aSemestre[iInd];
-      if ($F("db_complementar") == "1"){
-        sLinha += " <option value = '"+oSemestre.rh141_codigo+"'>"+oSemestre.rh141_codigo+"</option>";
-      } else {
-        sLinha += " <option value = '"+oSemestre.semestre+"'>"+oSemestre.semestre+"</option>";
-      }    
-    }
-     
-     sLinha += " </td>                                       ";
-   
-   } else {
-   
-     sLinha += " <td colspan='2' align='center'>                                ";
-     sLinha += "   <font color='red'>Sem complementar para este período.</font> ";
-     sLinha += " </td>                                                          ";
-   
-   }
-   
-   $('linhaComplementar').innerHTML     = sLinha;
-   $('linhaComplementar').style.display = '';
-
- }
-
- function js_validaTipoPonto(){
- 
-   if ( $F('ponto') == 'r48') {
-     
-     $('linhaRescisoes').style.display = 'none';
-     js_consultaPontoComplementar();
-   } else if ($F('ponto') == 'r20') {
-	   $('linhaComplementar').style.display = 'none';
-     js_getRescisoes(); 
-   } else {
-   
-     $('linhaRescisoes').style.display = 'none';
-     $('linhaComplementar').style.display = 'none';
-   }
-   
- }
- 
- function js_verifica(){
- 
-   if ( $F('anofolha') == '' || $F('mesfolha') == '' ) {
-     alert('Ano / Mês não informado!');
-     return false;
-   }
-
-   if ($F('ponto') == 'r48') {
-		 if (!$('semestre') || $F('semestre') == "0") {
-			 alert('Complementar em aberto. Execute o fechamento');
-			 return false;
-		 } 
-	 }
-	 
-   if ($F('ponto') == 'r20') {
-     
-     var sListarescisoes = ""; 
-     var aRescisoes      = oGridrescisoes.getSelection("object")
-     var sVirgula        = "";
-     if (oGridrescisoes.getSelection().length == 0) {
-   
-       alert('selecione alguma rescisão para continuar.');
-       return false;
-    }
-   }
-   
-   if ($F('ponto') == 'r14' && $F("db_complementar") == "1"){
+      var oDBComboBox = new DBComboBox('semestre', null, []);
       
-      require_once('scripts/classes/DBViewFormularioFolha/ValidarFolhaPagamento.js');
+      for (var iIndice = 0 ; iIndice < iLinhasSemestre; iIndice++) {
+       
+        var oSemestre   = aRetorno.aSemestre[iIndice];
+       
+        if ($F("db_complementar") == "1"){    
+          oDBComboBox.addItem(oSemestre, oSemestre);
+        } else {
+          oDBComboBox.addItem(oSemestre.semestre, oSemestre.semestre);
+        }
+      }
+      
+      oDBComboBox.sStyle = "width: 105px;";  
+      oDBComboBox.show($('ComboContent'));
+      
+    } else {
+      
+      var sLinha  = " <td> ";
+          sLinha += "   <font color='red'>Sem folha.</font> ";
+          sLinha += " </td> ";
+      $('ComboContent').innerHTML = sLinha;
+      $('consulta').disabled          = true;
+      
+    }
+  
+    $('ComboContainer').style.display = '';
+    
+  }
+
+  function js_validaTipoPonto(){
+ 
+    js_limparLayout();
+    
+    var iAnoInformado  = $("anofolha").getValue();
+    var iMesInformado  = $("mesfolha").getValue();
+    var oCompetencia   = new DBViewFormularioFolha.CompetenciaFolha(false);
+    var lCompetencia   = oCompetencia.isCompetenciaValida(iAnoInformado, iMesInformado);
+    
+    if (!lCompetencia) {
+      
+      $('consulta').disabled = true;
+      alert(_M(MENSAGEM + 'competencia_invalida'));
+      return false;
+    }
+    
+    if ( $F('ponto') == 'r48') {
+      js_consultaFolhaPagamento(3);
+    } else if ($F('ponto') == 'r20') {
+      js_getRescisoes();
+    } else if ( $F('ponto') == 'sup') {
+      js_consultaFolhaPagamento(6);
+    }
+    
+  }
+ 
+  function js_verifica(){
+  
+    if ( $F('anofolha') == '' || $F('mesfolha') == '' ) {
+      alert('Ano / Mês não informado!');
+      return false;
+    }
+ 
+    if ($F('ponto') == 'r48') {
+ 		 if (!$('semestre') || $F('semestre') == "0") {
+ 			 alert('Complementar em aberto. Execute o fechamento');
+ 			 return false;
+ 		 } 
+ 	 }
+ 	 
+    if ($F('ponto') == 'r20') {
+      
+      var sListarescisoes = ""; 
+      var aRescisoes      = oGridrescisoes.getSelection("object")
+      var sVirgula        = "";
+      if (oGridrescisoes.getSelection().length == 0) {
+    
+        alert('selecione alguma rescisão para continuar.');
+        return false;
+     }
+    }
+   
+    if ($F("db_complementar") == "1" && $F('ponto') == 'r14') {
+      
       var iMesFolha = $F('mesfolha'); 
       var iAnoFolha = $F('anofolha');
-      
-      var oFolhaComplementar = new DBViewFormularioFolha.ValidarFolhaPagamento();
-      var lFolhaComplementar = oFolhaComplementar.verificarFolhaPagamentoAberta(oFolhaComplementar.TIPO_FOLHA_SALARIO, iAnoFolha, iMesFolha);
-      
-      if (lFolhaComplementar == true){
-      
-        alert("A folha de salário esta fechada. Execute o fechamento.");
+         
+      var oFolhaPagamento = new DBViewFormularioFolha.ValidarFolhaPagamento();
+      var lFolhaSalario   = oFolhaPagamento.verificarFolhaPagamentoAberta(oFolhaPagamento.TIPO_FOLHA_SALARIO, iAnoFolha, iMesFolha);
+         
+      if (lFolhaSalario == true){
+        
+        alert(_M(MENSAGEM + 'folha_salario_fechada'));
         return false;
       }
-   }
+    } 
    
-   js_consultaSLIP();    
+    js_consultaSLIP();    
  
- }
+  }
  
  
  function js_consultaSLIP(){
@@ -257,7 +281,7 @@ $clrotulo->label('DBtxt25');
    js_removeObj("msgBox");
    js_bloqueiaTela(false);
   
-   var aRetorno = eval("("+oAjax.responseText+")");
+   var aRetorno = JSON.parse(oAjax.responseText);
    var sExpReg  = new RegExp('\\\\n','g');
   
    if ( aRetorno.lErro ) {
@@ -319,7 +343,7 @@ $clrotulo->label('DBtxt25');
        sQuery += '&iMesFolha='+$F('mesfolha');
        sQuery += '&sSigla='+$F('ponto');
         
-       if ( $F('ponto') == 'r48' ) {
+       if ( $F('ponto') == 'r48' || $F('ponto') == 'sup' ) {
          if ($('semestre')) {
            sQuery += '&sSemestre='+$F('semestre');
          }
@@ -348,8 +372,8 @@ $clrotulo->label('DBtxt25');
  }
  
   function js_geraSlip() {
-   
-   js_OpenJanelaIframe('top.corpo',
+    
+   js_OpenJanelaIframe('CurrentWindow.corpo',
                        'db_iframe_geraslip',
                        'pes1_rhgeralistaslip001.php?'+js_getQueryTela(''),
                        'Gera SLIP - '+$F('mesfolha')+'/'+$F('anofolha'),
@@ -384,7 +408,7 @@ $clrotulo->label('DBtxt25');
    js_removeObj('msgBox');
    js_bloqueiaTela(false);
    oGridrescisoes.clearAll(true);
-   var oRetorno = eval("("+oAjax.responseText+")");
+   var oRetorno = JSON.parse(oAjax.responseText);
    oRetorno.sListaRescisoes.each(function (oRescisao, id) {
    
       var aLinha = new Array();
@@ -406,6 +430,17 @@ $clrotulo->label('DBtxt25');
    oGridrescisoes.setHeader(new Array("Seq","Mátricula","Nome","Data"));
    oGridrescisoes.show($('ctnGridRescisoes'));
  }
+ 
+  /**
+   * Método responsável por limpar as DIV da tela. 
+   */
+  function js_limparLayout() {
+    
+    $('consulta').disabled            = false;
+    $('ComboContainer').style.display = 'none';
+    $('linhaRescisoes').style.display = 'none';
+  }
+  
  js_montaGrid(); 
  
 </script>

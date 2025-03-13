@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('rh61_regist');
 $clrotulo->label('z01_nome');
@@ -87,9 +87,9 @@ $sql = "select rh01_regist,
 				order by ".$orderby;
       
 // die($sql);
-//// pg_exec - executa $sql no banco e gera um RECORDSET criado na variável $resultado_sql com os dados da execução
+//// db_query - executa $sql no banco e gera um RECORDSET criado na variável $resultado_sql com os dados da execução
 //// da variável $sql no banco
-$resultado_sql = pg_exec($sql);
+$resultado_sql = db_query($sql);
 //// pg_numrows - verifica quantas linhas vieram no RECORDSET e coloca o resultado na variávei $qtd_linhas_sql
 $qtd_linhas_sql = pg_numrows($resultado_sql);
 if($qtd_linhas_sql == 0){
@@ -128,7 +128,7 @@ for($x=0; $x<$qtd_linhas_sql; $x++){
   $pdf->cell(90,$alt,$z01_nome,0,0,"L",$pre);
   if($rh01_nasc != ""){
      $pdf->cell(40,$alt,db_formatar($rh01_nasc,'d'),0,0,"L",$pre);
-     $result_idade = pg_exec("select fc_idade('$rh01_nasc','".date("Y-m-d",db_getsession("DB_datausu"))."')as idade");
+     $result_idade = db_query("select fc_idade('$rh01_nasc','".date("Y-m-d",db_getsession("DB_datausu"))."')as idade");
      db_fieldsmemory($result_idade,0);
      $pdf->cell(20,$alt,$idade,0,1,"C",$pre);
   }

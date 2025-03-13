@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 /* Duplicação Laboratório */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-include_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $oDaolabControlefisicoFinanceiro = db_utils::getdao('lab_controlefisicofinanceiro');
@@ -67,7 +67,7 @@ $db_opcao                        = 1;
         <tr> 
           <td height="600" align="center" valign="top" bgcolor="#CCCCCC"> 
             <center>
-              <?include("forms/db_frmlab_controlefisfinduplicar.php");?>
+              <?include(modification("forms/db_frmlab_controlefisfinduplicar.php"));?>
             </center>
           </td>
         </tr>

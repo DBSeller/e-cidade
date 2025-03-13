@@ -225,7 +225,7 @@ $this->objpdf->SetTextColor(0,0,0);
 		     inner join db_docparag on db03_docum = db04_docum 
 		     inner join db_paragrafo on db04_idparag = db02_idparag 
 		     where db03_docum = 26 and db02_descr ilike '%Assinatura Alvara%' and db03_instit = " . db_getsession("DB_instit");
-	$resparag = pg_query($sqlparag);
+	$resparag = db_query($sqlparag);
 
 	if ( pg_numrows($resparag) == 0 ) {
 	  db_redireciona('db_erros.php?fechar=true&db_erro=Configure o documento 26 com os paragrafos do alvara!');

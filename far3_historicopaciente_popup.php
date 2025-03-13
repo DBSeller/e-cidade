@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/db_app.utils.php');
-require_once('libs/db_utils.php');
-include("dbforms/db_funcoes.php");
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_app.utils.php'));
+require_once(modification('libs/db_utils.php'));
+include(modification("dbforms/db_funcoes.php"));
 
-$oDaoFarRetiradaitens = db_utils::getdao('far_retiradaitens');
+$oDaoFarRetiradaitens = new cl_far_retiradaitens;
 
 function novaLinha($iReq, $sLote, $dData, $iQuantidade, $iCodMedicamento, $sMedicamento, 
                    $sLogin, $dValLote, $sTipo, $sMotivo, $iTipo) {
@@ -106,27 +106,32 @@ function formataData($dData, $iTipo = 1) {
 
 }
 
-$sCampos  = 'fa04_d_data, fa01_i_codigo, m60_descr, fa06_f_quant, m77_lote, fa07_i_matrequi, login, tipo,';
-$sCampos .= " case when fa04_tiporetirada = 1 and tipo = 1 then"; 
-$sCampos .= "     'Normal' ";
-$sCampos .= " else case when fa04_tiporetirada = 2 and tipo = 1 then "; 
-$sCampos .= "        'Não padronizada' ";
-$sCampos .= "      else case when fa23_i_cancelamento = 2 and tipo = 2 then "; 
-$sCampos .= "             'Devolução' ";
-$sCampos .= "           else case when fa23_i_cancelamento = 1 and fa04_tiporetirada = 1 and tipo = 2 then "; 
-$sCampos .= "                  'Cancelamento' ";
-$sCampos .= "                else ";
-$sCampos .= "                  'Cancelamento N. P.' ";
-$sCampos .= "                end ";
-$sCampos .= "           end ";
-$sCampos .= "      end "; 
-$sCampos .= " end as stipo, ";
-$sCampos .= "m77_dtvalidade, fa23_c_motivo, ";
+// Alterado busca da quantidade retirada quando a retirada foi fracionada em lotes. Busca a quantidade retirada de cada lote.
+// Se não busca o total retirado
+$sCampos  = 'fa04_d_data, fa01_i_codigo, m60_descr,  m77_lote, fa07_i_matrequi, login, tipo,';
+$sCampos  .= ' case ';
+$sCampos  .= '   when fa09_f_quant is not null ';
+$sCampos  .= '     then fa09_f_quant ';
+$sCampos  .= '   else fa06_f_quant ';
+$sCampos  .= ' end as fa06_f_quant, ';
+$sCampos .= "  CASE ";
+$sCampos .= "    WHEN fa04_tiporetirada = 1 AND tipo = 1 ";
+$sCampos .= "      THEN 'Normal' ";
+$sCampos .= "    WHEN fa04_tiporetirada = 2 AND tipo = 1 ";
+$sCampos .= "      THEN 'Não padronizada' ";
+$sCampos .= "    WHEN fa23_i_cancelamento = 2 AND tipo = 2 ";
+$sCampos .= "      THEN 'Devolução' ";
+$sCampos .= "    WHEN fa23_i_cancelamento = 1 AND fa04_tiporetirada = 1 AND tipo = 2 ";
+$sCampos .= "      THEN 'Cancelamento' ";
+$sCampos .= "    ELSE 'Cancelamento N. P.' ";
+$sCampos .= "  END AS stipo, ";
+$sCampos .= " m77_dtvalidade, fa23_c_motivo, ";
 $sCampos .= 'fa22_d_data, fa23_i_quantidade ';
 $sSql     = $oDaoFarRetiradaitens->sql_query_historicoretiradasdevolucoes($cgs_get, 
                                                                           $sCampos, 
                                                                           'fa06_i_codigo desc, tipo asc'
                                                                          );
+
 $rs       = $oDaoFarRetiradaitens->sql_record($sSql);
 $iLinhas  = $oDaoFarRetiradaitens->numrows;
 

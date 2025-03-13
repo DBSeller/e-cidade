@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_far_farmacia_classe.php");
-include("classes/db_far_modelolivro_classe.php");
-include("classes/db_far_fechalivro_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_far_farmacia_classe.php"));
+include(modification("classes/db_far_modelolivro_classe.php"));
+include(modification("classes/db_far_fechalivro_classe.php"));
 $fa13_i_departamento = db_getsession("DB_coddepto");
 $clfar_farmacia = new cl_far_farmacia;
 $clfar_modelolivro = new cl_far_modelolivro;

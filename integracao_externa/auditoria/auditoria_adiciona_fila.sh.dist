@@ -1,0 +1,16 @@
+#!/bin/bash
+
+PID_FILE=/tmp/auditoria_adiciona_fila.pid
+
+if [ -f $PID_FILE ]; then
+	echo "ERRO: script já rodando com o pid $(cat $PID_FILE)"
+	exit 1
+fi
+
+trap "rm -f -- '$PID_FILE'" EXIT INT KILL TERM
+echo $$ > $PID_FILE
+
+php -q auditoria_adiciona_fila.php
+
+yes | cp -af log/auditoria_adiciona_fila.log log/auditoria_adiciona_fila-zabbix.log
+

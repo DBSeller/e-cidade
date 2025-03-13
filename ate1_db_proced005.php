@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_proced_classe.php");
-include("classes/db_db_procedgrupos_classe.php");
-include("classes/db_db_procedusu_classe.php");
-include("classes/db_db_procedcliente_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_proced_classe.php"));
+include(modification("classes/db_db_procedgrupos_classe.php"));
+include(modification("classes/db_db_procedusu_classe.php"));
+include(modification("classes/db_db_procedcliente_classe.php"));
 $cldb_proced = new cl_db_proced;
   /*
 $cldb_procedusu = new cl_db_procedusu;
@@ -74,7 +74,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_proced.php");
+	include(modification("forms/db_frmdb_proced.php"));
 	?>
     </center>
 	</td>
@@ -99,11 +99,11 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_procedgrupos.disabled=false;
-         top.corpo.iframe_db_procedgrupos.location.href='ate1_db_procedgrupos001.php?at52_proced=".@$at30_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_procedgrupos.location.href='ate1_db_procedgrupos001.php?at52_proced=".@$at30_codigo."';
          parent.document.formaba.db_procedusu.disabled=false;
-         top.corpo.iframe_db_procedusu.location.href='ate1_db_procedusu001.php?at31_proced=".@$at30_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_procedusu.location.href='ate1_db_procedusu001.php?at31_proced=".@$at30_codigo."';
          parent.document.formaba.db_procedcliente.disabled=false;
-         top.corpo.iframe_db_procedcliente.location.href='ate1_db_procedcliente001.php?at50_proced=".@$at30_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_procedcliente.location.href='ate1_db_procedcliente001.php?at50_proced=".@$at30_codigo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_procedgrupos');";

@@ -1,4 +1,4 @@
-<?xml version='1.0' ?>                                                                    
+<?xml version='1.0' ?>
 <consulta distinct="false">
   <campos>
     <campo campo="true" label="optante_simples" />
@@ -9,8 +9,9 @@
   </juncoes>
   <filtros>
     <filtro label="inscricao_municipal" condicao="q38_inscr = '$inscricao_municipal'" obrigatorio="true" />
-    <filtro label="data"                
-            condicao="(q38_dtinicial &lt;= '$data') and (q39_dtbaixa >= '$data' or q39_dtbaixa is null)" 
+    <filtro label="data"
+            condicao="(('$data' &gt;= q38_dtinicial and '$data' &lt;= q39_dtbaixa and q39_dtbaixa is not null) or 
+                       ('$data' &gt;= q38_dtinicial and q39_dtbaixa is null))"
             obrigatorio="true" />
   </filtros>
   <agrupamento />

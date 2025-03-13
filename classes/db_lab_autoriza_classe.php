@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -515,5 +515,61 @@ class cl_lab_autoriza {
      }
      return $sql;
   }
+
+  function sql_query_controle( $la48_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "", $lProcedAtivo = true) {
+
+    $sql = "select ";
+    if($campos != "*" ) {
+
+      $campos_sql = split("#",$campos);
+      $virgula    = "";
+
+      for($i = 0; $i < sizeof($campos_sql); $i++) {
+
+        $sql    .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    } else {
+      $sql .= $campos;
+    }
+
+    $sql .= " from lab_autoriza ";
+    $sql .= "      inner join lab_requisicao  on lab_requisicao.la22_i_codigo    = lab_autoriza.la48_i_requisicao";
+    $sql .= "      inner join lab_requiitem   on lab_requiitem.la21_i_requisicao = lab_requisicao.la22_i_codigo";
+    $sql .= "      inner join lab_setorexame  on lab_setorexame.la09_i_codigo    = lab_requiitem.la21_i_setorexame";
+    $sql .= "      inner join lab_exame       on lab_exame.la08_i_codigo         = lab_setorexame.la09_i_exame";
+    $sql .= "      left  join lab_exameproced on lab_exameproced.la53_i_exame    = lab_exame.la08_i_codigo";
+    if ($lProcedAtivo) {
+      $sql .= " and lab_exameproced.la53_i_ativo = 1";
+    }
+    $sql .= "      left  join sau_procedimento on sau_procedimento.sd63_i_codigo = lab_exameproced.la53_i_procedimento";
+    $sql .= "      inner join lab_labsetor     on lab_labsetor.la24_i_codigo     = lab_setorexame.la09_i_labsetor";
+    $sql .= "      inner join db_depart        on db_depart.coddepto             = lab_requisicao.la22_i_departamento";
+    $sql2 = "";
+
+    if($dbwhere == "") {
+
+      if($la48_i_codigo != null ) {
+        $sql2 .= " where lab_autoriza.la48_i_codigo = $la48_i_codigo ";
+      }
+    } else if($dbwhere != "") {
+      $sql2 = " where $dbwhere";
+    }
+
+    $sql .= $sql2;
+    if($ordem != null ) {
+
+      $sql       .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula    = "";
+
+      for($i = 0; $i < sizeof($campos_sql); $i++) {
+
+        $sql    .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+
+    return $sql;
+  }
 }
-?>

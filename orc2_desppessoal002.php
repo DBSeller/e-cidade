@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("libs/db_libcontabilidade.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -41,7 +41,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_POST_VARS,2);exit;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -86,7 +86,7 @@ $sqlele  = "select *
 	                       from orcparamelemento 
 			            inner join orcelemento on o44_codele = o56_codele and o56_anousu = $anousu ) 
            ";
-$resultele = pg_query($sqlele);
+$resultele = db_query($sqlele);
 //db_criatabela($resultele);
 
 $sele_rec = ' d.o70_instit in ('.str_replace('-',', ',$db_selinstit).') ';
@@ -97,7 +97,7 @@ $sqlrec = "select *
 	   where o57_fonte in (select distinct o57_fonte 
 	                       from orcparamfontes 
 			            inner join orcfontes on o43_codfon = o57_codfon and o57_anousu = $anousu)";
-$resultrec = pg_query($sqlrec);
+$resultrec = db_query($sqlrec);
 //db_criatabela($resultrec);exit;
 
 $pdf = new PDF(); 

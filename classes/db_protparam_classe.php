@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -58,6 +58,7 @@ class cl_protparam {
    var $p90_instit = 0; 
    var $p90_impdepto = 'f'; 
    var $p90_db_documentotemplate = 0; 
+   var $p90_depandamentopadrao = 0; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  p90_emiterecib = bool = Emite recibo na inclusão do processo 
@@ -76,6 +77,7 @@ class cl_protparam {
                  p90_instit = int4 = Cod. Instituição 
                  p90_impdepto = bool = Imprime Departamento 
                  p90_db_documentotemplate = int4 = Documento Template 
+                 p90_depandamentopadrao = int4 = Departamento default na inclusão automática de um Andamento Padrão ao incluir um Tipo de Processo
                  ";
    //funcao construtor da classe 
    function cl_protparam() { 
@@ -111,6 +113,7 @@ class cl_protparam {
        $this->p90_instit = ($this->p90_instit == ""?@$GLOBALS["HTTP_POST_VARS"]["p90_instit"]:$this->p90_instit);
        $this->p90_impdepto = ($this->p90_impdepto == "f"?@$GLOBALS["HTTP_POST_VARS"]["p90_impdepto"]:$this->p90_impdepto);
        $this->p90_db_documentotemplate = ($this->p90_db_documentotemplate == ""?@$GLOBALS["HTTP_POST_VARS"]["p90_db_documentotemplate"]:$this->p90_db_documentotemplate);
+       $this->p90_depandamentopadrao = ($this->p90_depandamentopadrao == ""?@$GLOBALS["HTTP_POST_VARS"]["p90_depandamentopadrao"]:$this->p90_depandamentopadrao);
      }else{
      }
    }
@@ -246,9 +249,15 @@ class cl_protparam {
        $this->erro_status = "0";
        return false;
      }
+
      if($this->p90_db_documentotemplate == null ){ 
        $this->p90_db_documentotemplate = "0";
      }
+
+     if(empty($this->p90_depandamentopadrao)){ 
+      $this->p90_depandamentopadrao = 0;
+     }
+
      $sql = "insert into protparam(
                                        p90_emiterecib 
                                       ,p90_alteracgmprot 
@@ -266,6 +275,7 @@ class cl_protparam {
                                       ,p90_instit 
                                       ,p90_impdepto 
                                       ,p90_db_documentotemplate 
+                                      ,p90_depandamentopadrao
                        )
                 values (
                                 '$this->p90_emiterecib' 
@@ -284,6 +294,7 @@ class cl_protparam {
                                ,$this->p90_instit 
                                ,'$this->p90_impdepto' 
                                ,$this->p90_db_documentotemplate 
+                               ,$this->p90_depandamentopadrao
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -511,8 +522,18 @@ class cl_protparam {
        $sql  .= $virgula." p90_db_documentotemplate = $this->p90_db_documentotemplate ";
        $virgula = ",";
      }
+
+     if(trim($this->p90_depandamentopadrao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p90_depandamentopadrao"])){ 
+      $sql  .= $virgula." p90_depandamentopadrao = '$this->p90_depandamentopadrao' ";
+      $virgula = ",";
+    }
+
+
      $sql .= " where ";
-$sql .= "oid = '$oid'";     $result = db_query($sql);
+     $sql .= "oid = '$oid'";     
+     
+     $result = db_query($sql);
+
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Manutenção de Parametros do Protocolo nao Alterado. Alteracao Abortada.\\n";
@@ -607,7 +628,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
    function sql_query ( $oid = null,$campos="protparam.oid,*",$ordem=null,$dbwhere=""){ 
        $sql = "select ";
        if($campos != "*" ){
-         $campos_sql = split("#",$campos);
+         $campos_sql = explode("#",$campos);
          $virgula = "";
          for($i=0;$i<sizeof($campos_sql);$i++){
            $sql .= $virgula.$campos_sql[$i];
@@ -633,7 +654,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
        $sql .= $sql2;
        if($ordem != null ){
          $sql .= " order by ";
-         $campos_sql = split("#",$ordem);
+         $campos_sql = explode("#",$ordem);
          $virgula = "";
          for($i=0;$i<sizeof($campos_sql);$i++){
            $sql .= $virgula.$campos_sql[$i];
@@ -646,7 +667,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
    function sql_query_file ( $oid = null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -664,7 +685,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -874,7 +895,15 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
        
        $sql  .= $virgula." p90_db_documentotemplate = null";
        $virgula = ",";
-     } 
+     }
+
+     if(trim($this->p90_depandamentopadrao)!="" ){
+      $sql  .= $virgula." p90_depandamentopadrao = {$this->p90_depandamentopadrao} ";
+      $virgula = ",";
+    } else {
+      $sql  .= $virgula." p90_depandamentopadrao = null ";
+      $virgula = ",";
+    }
      
      $sql .= " where ";
      
@@ -883,7 +912,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      }else{
       $sql .= "p90_instit = $this->p90_instit";
      }
-          
+     
      $result = db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
@@ -926,7 +955,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
    function sql_query_documentos ( $oid = null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -945,7 +974,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

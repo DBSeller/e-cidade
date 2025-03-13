@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_renovacoes_classe.php");
-include("classes/db_sepulta_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_renovacoes_classe.php"));
+include(modification("classes/db_sepulta_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clrenovacoes = new cl_renovacoes;
 $clsepulta = new cl_sepulta;
@@ -83,7 +83,7 @@ $sql = "select distinct z01_nome,
             and ( extract(month from '$data2'::date) = extract(month from cm24_d_entrada::date)) 
           order by z01_nome,cm07_d_vencimento";       
 
-$result = pg_query($sql);
+$result = db_query($sql);
 if(pg_numrows($result) == 0){
  echo "<table width='100%'>
        <tr>

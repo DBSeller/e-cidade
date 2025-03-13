@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("dbforms/db_classesgenericas.php");
-include ("classes/db_orcparamrecursoval_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_orcparamrecursoval_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -198,9 +198,9 @@ function js_receita(){
 <script>
 function js_pesquisarec(mostra){
      if(mostra==true){
-       js_OpenJanelaIframe('top.corpo.iframe_e','db_iframe_rec','func_orctiporec.php?funcao_js=parent.js_mostrarec1|0|3','Pesquisa',true,'15');
+       js_OpenJanelaIframe('CurrentWindow.corpo.iframe_e','db_iframe_rec','func_orctiporec.php?funcao_js=parent.js_mostrarec1|0|3','Pesquisa',true,'15');
      }else{
-       js_OpenJanelaIframe('top.corpo.iframe_e','db_iframe_rec','func_orctiporec.php?pesquisa_chave='+document.form1.o48_codrec.value+'&funcao_js=parent.js_mostrarec','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo.iframe_e','db_iframe_rec','func_orctiporec.php?pesquisa_chave='+document.form1.o48_codrec.value+'&funcao_js=parent.js_mostrarec','Pesquisa',false);
      }
 }
 function js_mostrarec(chave,erro){

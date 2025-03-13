@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,28 +25,32 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 $oGet = db_utils::postMemory($_GET);
 if ( !empty($oGet->lLimparHistorico) ) {
   unset($_SESSION['oMensagensMenu']);
 }
 
-$iMenuAtual    = (int) db_getsession('DB_itemmenu_acessado');
-$sCaminhoMenu  = db_stdClass::getCaminhoMenu($iMenuAtual);
+$iMenuAtual    = !empty($_SESSION['DB_itemmenu_acessado']) ? (int) $_SESSION['DB_itemmenu_acessado'] : null;
 $sJsonArquivos = '{}';
+$sCaminhoMenu  = '';
+
+if ( empty($iMenuAtual) ) {
+  $sCaminhoMenu  = db_stdClass::getCaminhoMenu($iMenuAtual);
+}
 
 if ( !empty($_SESSION['oMensagensMenu']) ) {
 
-  $oJson = new Services_JSON();
+  $oJson          = new Services_JSON();
   $oMensagensMenu = $_SESSION['oMensagensMenu'];
-  $sJsonArquivos      = $oJson->encode($oMensagensMenu->aArquivos);
+  $sJsonArquivos  = $oJson->encode($oMensagensMenu->aArquivos);
 }
 ?>
 <html>
@@ -151,9 +155,14 @@ const MENSAGENS = 'configuracao.configuracao.con4_mensagens001.';
  */
 const RPC = 'con4_mensagens.RPC.php';
 
-var oLinhaTituloJanela  = parent.document.getElementById('CFdb_iframe_mensagens_sistema');
-var oColunaTituloJanela = oLinhaTituloJanela.getElementsByTagName('td')[0]; 
-oColunaTituloJanela.innerHTML = '&nbsp;Mensagens: <?php echo $sCaminhoMenu; ?>';
+sCaminhoMenu = '<?php echo $sCaminhoMenu; ?>';
+
+if ( !empty(sCaminhoMenu) ) {
+
+  var oLinhaTituloJanela  = parent.document.getElementById('CFdb_iframe_mensagens_sistema');
+  var oColunaTituloJanela = oLinhaTituloJanela.getElementsByTagName('td')[0]; 
+  oColunaTituloJanela.innerHTML = '&nbsp;Mensagens: <?php echo $sCaminhoMenu; ?>';
+}
 
 var oArquivos = <?php echo $sJsonArquivos; ?>;
 
@@ -232,7 +241,7 @@ function js_editarArquivo() {
       onComplete: function(oAjax) {
 
         js_removeObj("msgbox");
-        var oRetorno = eval("(" + oAjax.responseText + ")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         var sMensagem = oRetorno.mensagem.urlDecode();
         alert(sMensagem);
       }
@@ -264,7 +273,7 @@ function js_montarMensagensArquivo(sArquivo, aMensagens, oFieldsetArquivo) {
        */
       onComplete: function(oAjax) {
         
-        var oRetorno = eval("(" + oAjax.responseText + ")");
+        var oRetorno = JSON.parse(oAjax.responseText);
 
         /**
          * Erro RPC 

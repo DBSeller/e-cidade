@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("classes/db_inicialdoc_classe.php");
-include ("classes/db_inicial_classe.php");
-include ("classes/db_processoforoinicial_classe.php");
-include ("classes/db_db_config_classe.php");
-include ("classes/db_iptubase_classe.php");
-include ("classes/db_issbase_classe.php");
-include ("classes/db_promitente_classe.php");
-include ("classes/db_propri_classe.php");
-include ("classes/db_advog_classe.php");
-include ("classes/db_socios_classe.php");
-include ("classes/db_cgm_classe.php");
-include ("classes/db_termoini_classe.php");
-include ("classes/db_termo_classe.php");
-include ("classes/db_arrecad_classe.php");
-include ("classes/db_averba_classe.php");
-include ("fpdf151/pdf1.php");
-include ("classes/db_db_docparag_classe.php");
+include(modification("classes/db_inicialdoc_classe.php"));
+include(modification("classes/db_inicial_classe.php"));
+include(modification("classes/db_processoforoinicial_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_promitente_classe.php"));
+include(modification("classes/db_propri_classe.php"));
+include(modification("classes/db_advog_classe.php"));
+include(modification("classes/db_socios_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_termoini_classe.php"));
+include(modification("classes/db_termo_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_averba_classe.php"));
+include(modification("fpdf151/pdf1.php"));
+include(modification("classes/db_db_docparag_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -125,7 +125,7 @@ for ($q = 0; $q < sizeof($matriz); $q ++) {
 		if ($modo == "matricula") {
 			$j01_matric = $chave;
 			$sql_p = "select z01_nome as proprietario, pql_localizacao, j40_refant from proprietario where j01_matric=$j01_matric";
-			$result = pg_query($sql_p);
+			$result = db_query($sql_p);
 			db_fieldsmemory($result, 0); //pega o nome do proprietario
 			//---------------------Busca nome do antigo proprietario do imovel----------------
 

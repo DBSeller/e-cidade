@@ -1,33 +1,7 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-/*
  *     E-cidade Software Publico para Gestao Municipal
-*  Copyright (C) 2014  DBSeller Servicos de Informatica
+*  Copyright (C) 2009  DBSeller Servicos de Informatica
 *                            www.dbseller.com.br
 *                         e-cidade@dbseller.com.br
 *
@@ -51,73 +25,83 @@
 *                                licenca/licenca_pt.txt
 */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $escola = db_getsession("DB_coddepto");
 
-$cltrocaserie                = new cl_trocaserie;
-$clturmaserieregimemat       = new cl_turmaserieregimemat;
-$clmatricula                 = new cl_matricula;
-$clmatriculaserie            = new cl_matriculaserie;
-$clamparo                    = new cl_amparo;
-$cldiariofinal               = new cl_diariofinal;
-$clparecerresult             = new cl_parecerresult;
-$cldiarioresultado           = new cl_diarioresultado;
-$clpareceraval               = new cl_pareceraval;
-$clabonofalta                = new cl_abonofalta;
-$cldiarioavaliacao           = new cl_diarioavaliacao;
-$claprovconselho             = new cl_aprovconselho;
-$cldiario                    = new cl_diario;
-$clmatriculamov              = new cl_matriculamov;
-$clalunotransfturma          = new cl_alunotransfturma;
-$cltransfescolarede          = new cl_transfescolarede;
-$cltransfescolafora          = new cl_transfescolafora;
-$cllogmatricula              = new cl_logmatricula;
-$oDaoMatriculaTurnoReferente = new cl_matriculaturnoreferente();
+$cltrocaserie                   = new cl_trocaserie;
+$clturmaserieregimemat          = new cl_turmaserieregimemat;
+$clmatricula                    = new cl_matricula;
+$clmatriculaserie               = new cl_matriculaserie;
+$clamparo                       = new cl_amparo;
+$cldiariofinal                  = new cl_diariofinal;
+$clparecerresult                = new cl_parecerresult;
+$cldiarioresultado              = new cl_diarioresultado;
+$clpareceraval                  = new cl_pareceraval;
+$clabonofalta                   = new cl_abonofalta;
+$cltransfaprov                  = new cl_transfaprov;
+$cldiarioavaliacao              = new cl_diarioavaliacao;
+$claprovconselho                = new cl_aprovconselho;
+$cldiario                       = new cl_diario;
+$clmatriculamov                 = new cl_matriculamov;
+$clalunotransfturma             = new cl_alunotransfturma;
+$cltransfescolarede             = new cl_transfescolarede;
+$cltransfescolafora             = new cl_transfescolafora;
+$cllogmatricula                 = new cl_logmatricula;
+$oDaoMatriculaTurnoReferente    = new cl_matriculaturnoreferente();
+$oDaoDiarioAvaliacaoAlternativa = new cl_diarioavaliacaoalternativa();
 
 if ( isset( $incluir ) ) {
-  
+
   db_inicio_transacao();
-  
+
   $sql_exc = "SELECT DISTINCT ed95_i_codigo as coddiario
                 FROM diarioavaliacao
                      inner join diario on ed95_i_codigo = ed72_i_diario
                WHERE ed95_i_aluno = {$codigoaluno}
-                 AND ed95_i_regencia in (select ed59_i_codigo 
-                                           from regencia 
-                                          where ed59_i_turma = {$codturmadest} 
+                 AND ed95_i_regencia in (select ed59_i_codigo
+                                           from regencia
+                                          where ed59_i_turma = {$codturmadest}
                                             AND ed59_i_serie = {$codseriedest})";
   $result_exc = db_query( $sql_exc );
   $linhas_exc = pg_num_rows( $result_exc );
-  
+
   for ( $z = 0; $z < $linhas_exc; $z++ ) {
-    
+
     db_fieldsmemory( $result_exc, $z );
-    
+
     $clamparo->excluir( "", "ed81_i_diario = {$coddiario}" );
     $cldiariofinal->excluir( "", "ed74_i_diario = {$coddiario}" );
-    
+
     $result5 = db_query( "select ed73_i_codigo from diarioresultado where ed73_i_diario = {$coddiario}" );
-    
+
     $sWhereParecerResult = " ed63_i_diarioresultado in (select ed73_i_codigo from diarioresultado where ed73_i_diario = {$coddiario})";
     $clparecerresult->excluir( "", $sWhereParecerResult );
     $cldiarioresultado->excluir( "", "ed73_i_diario = {$coddiario}" );
-    
+
     $sWhereParecerAval = "ed93_i_diarioavaliacao in (select ed72_i_codigo from diarioavaliacao where ed72_i_diario = {$coddiario})";
     $clpareceraval->excluir( "", $sWhereParecerAval );
-    
+
     $sWhereAbonoFalta = "ed80_i_diarioavaliacao in (select ed72_i_codigo from diarioavaliacao where ed72_i_diario = {$coddiario})";
     $clabonofalta->excluir( "", $sWhereAbonoFalta );
+
+    $sqlDiarioAvaliacao = $cldiarioavaliacao->sql_query_file(null, '*', null, "ed72_i_diario = {$coddiario}");
+    $rsDiarioAvaliacao = db_query($sqlDiarioAvaliacao);
+
+    $codigosDiarioAvaliacao = implode(', ', array_pluck(pg_fetch_all($rsDiarioAvaliacao), 'ed72_i_codigo'));
+    $cltransfaprov->excluir("", "ed251_i_diariodestino in ($codigosDiarioAvaliacao)");
+
     $cldiarioavaliacao->excluir( "", "ed72_i_diario = {$coddiario}" );
     $claprovconselho->excluir( "", "ed253_i_diario = {$coddiario}" );
+    $oDaoDiarioAvaliacaoAlternativa->excluir(null, " ed136_diario = {$coddiario} " );
     $cldiario->excluir( "", "ed95_i_codigo = {$coddiario}" );
   }
-  
+
   $clmatriculamov->excluir( "", "ed229_i_matricula = {$matriculadest}" );
   $clalunotransfturma->excluir( "", "ed69_i_matricula = {$matriculadest}" );
   $cltransfescolarede->excluir( "", "ed103_i_matricula = {$matriculadest}" );
@@ -125,22 +109,22 @@ if ( isset( $incluir ) ) {
   $clmatriculaserie->excluir( "", "ed221_i_matricula = {$matriculadest}" );
   $oDaoMatriculaTurnoReferente->excluir( null, "ed337_matricula = {$matriculadest}" );
   $clmatricula->excluir( $matriculadest );
-  
+
   $sCamposMatricula = "ed221_i_serie as serieant, ed11_i_sequencia as seqant";
   $sSqlMatricula    = $clmatricula->sql_query( "", $sCamposMatricula, "", "ed60_i_codigo = {$matriculaorig}" );
   $result_seqant    = $clmatricula->sql_record( $sSqlMatricula );
   db_fieldsmemory( $result_seqant, 0 );
-  
-  $sql1 = "SELECT ed56_i_codigo 
+
+  $sql1 = "SELECT ed56_i_codigo
              FROM alunocurso
             WHERE ed56_i_aluno = {$codigoaluno}";
   $query1  = db_query( $sql1 );
   $linhas1 = pg_num_rows( $query1 );
-  
+
   if($linhas1>0){
-    
+
     db_fieldsmemory( $query1, 0 );
-    
+
     $sql1 = "UPDATE alunocurso SET
                     ed56_i_escola        = {$codescolaorig},
                     ed56_i_base          = {$codbaseorig},
@@ -151,7 +135,7 @@ if ( isset( $incluir ) ) {
                     ed56_c_situacaoant   = ''
               WHERE ed56_i_codigo = {$ed56_i_codigo}";
     $result1 = db_query( $sql1 );
-    
+
     $sql1 = "UPDATE alunopossib SET
                     ed79_i_serie    = {$serieant},
                     ed79_i_turno    = {$codturnoorig},
@@ -161,14 +145,14 @@ if ( isset( $incluir ) ) {
               WHERE ed79_i_alunocurso = {$ed56_i_codigo}";
     $result1 = db_query( $sql1 );
   }
-  
+
   $sCamposMatricula3 = "ed60_d_datamodifant as datamodifant, turma.ed57_i_tipoturma";
   $sSqlMatricula3    = $clmatricula->sql_query( "", $sCamposMatricula3, "", "ed60_i_codigo = {$matriculaorig}" );
   $result_modif      = $clmatricula->sql_record( $sSqlMatricula3 );
   db_fieldsmemory( $result_modif, 0 );
-  
+
   $sDataModificacaoAnterior = !empty( $datamodifant ) ? "'{$datamodifant}'" : 'null';
-  
+
   $sql1 = "UPDATE matricula SET
                   ed60_c_situacao     = 'MATRICULADO',
                   ed60_c_concluida    = 'N',
@@ -179,49 +163,53 @@ if ( isset( $incluir ) ) {
                   ed60_d_datasaida    = null
             WHERE ed60_i_codigo = {$matriculaorig}";
   $query1 = db_query( $sql1 );
-  
+
   $sql1 = "DELETE FROM matriculamov
             WHERE ed229_i_matricula = {$matriculaorig}
               AND ed229_c_procedimento like 'PROGRESS%'";
   $query1 = db_query( $sql1 );
-  
+
+  $sql1 = "DELETE FROM avaliacaoclassificacao
+            WHERE ed335_trocaserie = {$codigoprogressao}";
+  $query1 = db_query( $sql1 );
+
   $sql1 = "DELETE FROM trocaserie
             WHERE ed101_i_codigo = {$codigoprogressao}";
   $query1 = db_query( $sql1 );
-  
+
   $sql1 = "UPDATE diario SET
                   ed95_c_encerrado = 'N'
             WHERE ed95_i_aluno = {$codigoaluno}
-              AND ed95_i_regencia in (select ed59_i_codigo 
-                                        from regencia 
-                                       where ed59_i_turma = {$codturmaorig} 
+              AND ed95_i_regencia in (select ed59_i_codigo
+                                        from regencia
+                                       where ed59_i_turma = {$codturmaorig}
                                          AND ed59_i_serie = {$codserieorig})";
   $result1 = db_query( $sql1 );
-  
+
   $sql1 = "UPDATE historico SET
                   ed61_t_obs = ''
             WHERE ed61_i_aluno = {$codigoaluno}
               AND ed61_i_curso = {$codcursoorig}";
   $result1 = db_query( $sql1 );
-  
+
   if ( $ed57_i_tipoturma == 2 ) {
     $condicao = " AND ed11_i_sequencia >= {$seqant}";
   } else {
     $condicao = " AND ed11_i_sequencia = {$seqant}";
   }
-  
-  $sSqlTurmaSerieRegimeMat = $clturmaserieregimemat->sql_query( 
-                                                                "", 
-                                                                "ed223_i_serie", 
-                                                                "ed223_i_ordenacao", 
-                                                                "ed220_i_turma = {$codturmaorig} {$condicao}" 
+
+  $sSqlTurmaSerieRegimeMat = $clturmaserieregimemat->sql_query(
+                                                                "",
+                                                                "ed223_i_serie",
+                                                                "ed223_i_ordenacao",
+                                                                "ed220_i_turma = {$codturmaorig} {$condicao}"
                                                               );
   $result_etpant           = $clturmaserieregimemat->sql_record( $sSqlTurmaSerieRegimeMat );
-  
+
   for ( $r = 0; $r < $clturmaserieregimemat->numrows; $r++ ) {
-    
+
     db_fieldsmemory( $result_etpant, $r );
-    
+
     $sql1 = "DELETE FROM histmpsdisc
               WHERE ed65_i_codigo in (select ed65_i_codigo
                                         from histmpsdisc
@@ -232,7 +220,7 @@ if ( isset( $incluir ) ) {
                                          and ed61_i_aluno  = {$codigoaluno}
                                          and ed61_i_curso  = {$codcursoorig})";
     $result1 = db_query( $sql1 );
-    
+
     $sql1 = "DELETE FROM historicomps
               WHERE ed62_i_codigo in (select ed62_i_codigo
                                         from historicomps
@@ -243,15 +231,15 @@ if ( isset( $incluir ) ) {
                                          and ed61_i_curso  = {$codcursoorig})";
     $result1 = db_query( $sql1 );
   }
-  
+
   $descr_origem  = "Matrícula n°: {$matriculadest}\nTurma: {$descrturmadest}\nEscola: ".db_getsession("DB_nomedepto")."";
   $descr_origem .= "\nCalendário: {$descrcalendariodest}";
-  
+
   $cllogmatricula->ed248_i_usuario = db_getsession("DB_id_usuario");
   $cllogmatricula->ed248_i_motivo  = null;
   $cllogmatricula->ed248_i_aluno   = $codigoaluno;
   $cllogmatricula->ed248_t_origem  = $descr_origem;
-  
+
   $sObservacao                     = "Cancelamento de Progressão ( Aluno retornado da turma {$descrturmadest} para";
   $sObservacao                    .= " a turma {$descrturmaorig} )";
   $cllogmatricula->ed248_t_obs     = $sObservacao;
@@ -259,7 +247,7 @@ if ( isset( $incluir ) ) {
   $cllogmatricula->ed248_c_hora    = date( "H:i" );
   $cllogmatricula->ed248_c_tipo    = "E";
   $cllogmatricula->incluir(null);
-  
+
   db_fim_transacao();
   db_msgbox( "Cancelamento efetuado com sucesso!" );
   db_redireciona( "edu4_cancelaprogressao001.php" );
@@ -300,10 +288,10 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
                    if ( $cltrocaserie->numrows == 0 ) {
                      echo "<option value=''>Nenhum registro de progressão</option>";
                    } else {
-  
+
                      echo "<option value=''></option>";
                      for ( $x = 0; $x < $cltrocaserie->numrows; $x++ ) {
-  
+
                        db_fieldsmemory($result,$x);
                        $sSituacao = "CLASSIFICADO";
                        if ( $ed101_c_tipo == "R" ) {
@@ -311,7 +299,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
                        } else if ( $ed101_c_tipo = "A" ) {
                          $sSituacao = "AVANÇADO";
                        }
-                       
+
                        echo "<option value='$ed101_i_codigo' ".($ed101_i_codigo==@$aluno?"selected":"").">$ed47_i_codigo - $ed47_v_nome ( ".$sSituacao." em ".db_formatar($ed101_d_data,'d')." )</option>";
                      }
                    }
@@ -321,14 +309,14 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
                </tr>
                <?php
                  if ( isset( $aluno ) ) {
-  
+
                    $sSituacao = "CLASSIFICADO";
                    if ( $ed101_c_tipo == "R" ) {
                      $sSituacao = "RECLASSIFICADO";
                    } else if ( $ed101_c_tipo = "A" ) {
                      $sSituacao = "AVANÇADO";
                    }
-      
+
                  $campos = "turmaorig.ed57_i_codigo as codturmaorig,
                             turmaorig.ed57_c_descr as descrturmaorig,
                             baseorig.ed31_i_codigo as codbaseorig,
@@ -349,7 +337,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
                             trocaserie.ed101_i_codigo";
                  $result1 = $cltrocaserie->sql_record( $cltrocaserie->sql_query( "", $campos, "", "ed101_i_codigo = {$aluno}" ) );
                  db_fieldsmemory( $result1, 0 );
-                 
+
                  $sCamposMatricula2  = "ed60_i_codigo as matriculaorig, ed60_c_situacao as situacaoorig";
                  $sCamposMatricula2 .= ", ed60_c_concluida as conclusaoorig, cursoedu.ed29_i_codigo as codcursoorig";
                  $sCamposMatricula2 .= ", ed11_c_descr as descrserieorig,ed221_i_serie as codserieorig";
@@ -358,13 +346,13 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
                  $sWhereMatricula2  .= " OR ed60_c_situacao = 'RECLASSIFICADO')";
                  $sSqlMatricula2     = $clmatricula->sql_query( "", $sCamposMatricula2, "", $sWhereMatricula2 );
                  $result2            = $clmatricula->sql_record( $sSqlMatricula2 );
-                 
+
                  if ( $clmatricula->numrows > 0 ) {
-  
+
                    db_fieldsmemory( $result2, 0 );
                    $conclusaoorig = $conclusaoorig == "S" ? "SIM" : "NAO";
                  }
-                 
+
                  $sCamposMatricula3  = "ed60_i_codigo as matriculadest, ed60_c_situacao as situacaodest";
                  $sCamposMatricula3 .= ", ed60_c_concluida as conclusaodest, ed11_c_descr as descrseriedest";
                  $sCamposMatricula3 .= ", ed221_i_serie as codseriedest";
@@ -372,9 +360,9 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
                  $sWhereMatricula3  .= " AND ed60_c_situacao = 'MATRICULADO'";
                  $sSqlMatricula3     = $clmatricula->sql_query( "", $sCamposMatricula3, "", $sWhereMatricula3);
                  $result3            = $clmatricula->sql_record( $sSqlMatricula3 );
-                 
+
                  if ( $clmatricula->numrows > 0 ) {
-  
+
                    db_fieldsmemory( $result3, 0 );
                    $conclusaodest = $conclusaodest == "S" ? "SIM" : "NAO";
                  }
@@ -516,31 +504,31 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
             sitorig = document.form1.situacaoorig.value.substr(0,4);
             sitdest = document.form1.situacaodest.value;
             var sMensagem = "";
-            
+
             if ( sitdest != 'MATRICULADO' ) {
-              
+
               if ( sitdest == "" ) {
                 alert("Aluno não está mais matriculado na turma de destino. Cancelamento de Progressão não permitido!");
               } else {
-            
+
                 sMensagem  = "Aluno não está mais na situação de MATRICULADO na turma <?=$descrturmadest?>.";
                 sMensagem += " Cancelamento de Progressão não permitido!";
                 alert( sMensagem );
               }
-              
+
               document.form1.incluir.disabled = true;
             }else if(sitorig != 'CLAS' && sitorig != 'AVAN' && sitorig != 'RECL') {
-              
+
               if ( sitorig == "" ) {
                 alert("Aluno não está mais matriculado na turma de origem. Cancelamento de Progressão não permitido!");
               } else {
-              
+
                 sMensagem  = "Aluno não está mais na situação de <?=$sSituacao?> na turma <?=$descrturmaorig?>.";
                 sMensagem += " Cancelamento de Progressão não permitido!";
                 alert( sMensagem );
               }
             } else if ( document.form1.conclusaodest.value == 'SIM' ) {
-            
+
               sMensagem  = "Aluno já possui matrícula concluída na turma <?=$descrturmadest?>.";
               sMensagem += " Cancelamento de Progressão não permitido!";
               alert( sMensagem );
@@ -562,7 +550,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 </html>
 <script>
 function js_pesquisa() {
-  
+
   if ( document.form1.aluno.value == "" ) {
     location.href = 'edu4_cancelaprogressao001.php';
   } else {
@@ -571,9 +559,9 @@ function js_pesquisa() {
 }
 
 function js_confirma() {
-  
+
   if ( confirm( 'Confirmar cancelamento de progressão para este aluno?' ) ) {
-    
+
     document.form1.incluir.style.visibility = "hidden";
     return true;
   } else {

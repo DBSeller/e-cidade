@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 define("ARQUIVO_MENSAGEM_TRIAGEM_AVULSA", "saude.ambulatorial.TriagemAvulsa.");
@@ -120,11 +120,57 @@ Class TriagemAvulsa {
   private $nTemperatura = null;
 
   /**
+   * A evolução do paciente
+   * @var string
+   */
+  private $sObjetivo = '';
+
+  /**
+   * Medição do perímetro cefálico
+   *
+   * @var string
+   */
+  private $iPerimetroCefalico = '';
+
+  /**
+   * medição da frequencia respiratoria
+   *
+   * @var string
+   */
+  private $iFrequenciaRespiratoria = '';
+
+  /**
+   * Medição da frequencia cardíaca
+   *
+   * @var string
+   */
+  private $iFrequenciaCardiaca = '';
+
+  /**
+   * Data de ultima menstruação DUM
+   *
+   * @var string
+   */
+  private $dtUltimaMenstruacao;
+
+  private $iSaturacao;
+
+  private $sSubjetivo;
+
+  /**
+   * Idade gestacional em semanas
+   *
+   * @var int
+   */
+  private $iIdadeGestacional;
+
+  /**
    * Construtor da Triagem
-   * @param integer $iCodigo
+   * @param null $iCodigo
+   * @throws DBException
    */
   public function __construct( $iCodigo = null ) {
-    
+
     if ( $iCodigo != null ) {
 
       $oDaoTriagemAvulsa = new cl_sau_triagemavulsa();
@@ -141,26 +187,33 @@ Class TriagemAvulsa {
 
       $oTriagemAvulsa = db_utils::fieldsMemory($rsTriagemAvulsa, 0);
 
-      $this->iCodigo                   = $oTriagemAvulsa->s152_i_codigo;
-      $this->iCboProfissional          = $oTriagemAvulsa->s152_i_cbosprofissional;
-      $this->iCgsUnd                   = $oTriagemAvulsa->s152_i_cgsund;
-      $this->iLogin                    = $oTriagemAvulsa->s152_i_login;
-      $this->iPressaoSistolica          = $oTriagemAvulsa->s152_i_pressaosistolica;
-      $this->iPressaoDiastolica        = $oTriagemAvulsa->s152_i_pressaodiastolica;
-      $this->iCintura                  = $oTriagemAvulsa->s152_i_cintura;
-      $this->nPeso                     = $oTriagemAvulsa->s152_n_peso;
-      $this->iAltura                   = $oTriagemAvulsa->s152_i_altura;
-      $this->iGlicemia                 = $oTriagemAvulsa->s152_i_glicemia;
-      $this->iAlimentacaoExameGlicose  = $oTriagemAvulsa->s152_i_alimentacaoexameglicemia;
-      $this->dtDataConsulta            = $oTriagemAvulsa->s152_d_dataconsulta;
-      $this->dtDataSistema             = $oTriagemAvulsa->s152_d_datasistema;
-      $this->dtHoraSistema             = $oTriagemAvulsa->s152_c_horasistema;
-      $this->nTemperatura              = $oTriagemAvulsa->s152_n_temperatura;
+      $this->iCodigo                  = $oTriagemAvulsa->s152_i_codigo;
+      $this->iCboProfissional         = $oTriagemAvulsa->s152_i_cbosprofissional;
+      $this->iCgsUnd                  = $oTriagemAvulsa->s152_i_cgsund;
+      $this->iLogin                   = $oTriagemAvulsa->s152_i_login;
+      $this->iPressaoSistolica        = $oTriagemAvulsa->s152_i_pressaosistolica;
+      $this->iPressaoDiastolica       = $oTriagemAvulsa->s152_i_pressaodiastolica;
+      $this->iCintura                 = $oTriagemAvulsa->s152_i_cintura;
+      $this->nPeso                    = $oTriagemAvulsa->s152_n_peso;
+      $this->iAltura                  = $oTriagemAvulsa->s152_i_altura;
+      $this->iGlicemia                = $oTriagemAvulsa->s152_i_glicemia;
+      $this->iAlimentacaoExameGlicose = $oTriagemAvulsa->s152_i_alimentacaoexameglicemia;
+      $this->dtDataConsulta           = $oTriagemAvulsa->s152_d_dataconsulta;
+      $this->dtDataSistema            = $oTriagemAvulsa->s152_d_datasistema;
+      $this->dtHoraSistema            = $oTriagemAvulsa->s152_c_horasistema;
+      $this->nTemperatura             = $oTriagemAvulsa->s152_n_temperatura;
+      $this->sObjetivo                = $oTriagemAvulsa->s152_evolucao;
+      $this->iPerimetroCefalico       = $oTriagemAvulsa->s152_perimetrocefalico;
+      $this->iFrequenciaRespiratoria  = $oTriagemAvulsa->s152_frequenciarespiratoria;
+      $this->iFrequenciaCardiaca      = $oTriagemAvulsa->s152_frequenciacardiaca;
+      $this->dtUltimaMenstruacao      = $oTriagemAvulsa->s152_dum;
+      $this->iSaturacao               = $oTriagemAvulsa->s152_saturacao;
+      $this->sSubjetivo               = $oTriagemAvulsa->s152_subjetivo;
     }
   }
 
   /**
-   * Retorna o código da Triagem 
+   * Retorna o código da Triagem
    * @return integer
    */
   public function getCodigo() {
@@ -345,7 +398,7 @@ Class TriagemAvulsa {
 
   /**
    * Retorna a data do sistema em que a triagem foi salva
-   * @return string
+   * @return DBDate
    */
   public function getDataSistema() {
     return $this->dtDataSistema;
@@ -369,7 +422,7 @@ Class TriagemAvulsa {
 
   /**
    * Define a hora em que a triagem foi salva
-   * @param string $oHoraSistema
+   * @param string $sHoraSistema
    */
   public function setHoraSistema( $sHoraSistema ) {
     $this->dtHoraSistema = $sHoraSistema;
@@ -391,6 +444,22 @@ Class TriagemAvulsa {
     $this->nTemperatura = $nTemperatura;
   }
 
+  public function getObjetivo() {
+    return $this->sObjetivo;
+  }
+
+  public function setObjetivo( $sObjetivo ) {
+    $this->sObjetivo = $sObjetivo;
+  }
+
+  public function getSubjetivo() {
+    return $this->sSubjetivo;
+  }
+
+  public function setSubjetivo( $sSubjetivo ) {
+    $this->sSubjetivo = $sSubjetivo;
+  }
+
   /**
    * Inclui ou altera uma Triagem
    */
@@ -405,21 +474,27 @@ Class TriagemAvulsa {
     $oDaoTriagemAvulsa->s152_i_cbosprofissional         = $this->iCboProfissional;
     $oDaoTriagemAvulsa->s152_i_cgsund                   = $this->iCgsUnd;
     $oDaoTriagemAvulsa->s152_i_login                    = $this->iLogin;
-    $oDaoTriagemAvulsa->s152_i_pressaosistolica         = $this->iPressaoSistolica;
+    $oDaoTriagemAvulsa->s152_i_pressaosistolica         = empty($this->iPressaoSistolica) ? null : $this->iPressaoSistolica;
     $oDaoTriagemAvulsa->s152_i_pressaodiastolica        = $this->iPressaoDiastolica;
-    $oDaoTriagemAvulsa->s152_i_cintura                  = $this->iCintura;
-    $oDaoTriagemAvulsa->s152_n_peso                     = $this->nPeso;
-    $oDaoTriagemAvulsa->s152_i_altura                   = $this->iAltura;
-    $oDaoTriagemAvulsa->s152_i_glicemia                 = $this->iGlicemia;
+    $oDaoTriagemAvulsa->s152_i_cintura                  = empty($this->iCintura)  ? null : $this->iCintura;
+    $oDaoTriagemAvulsa->s152_n_peso                     = empty($this->nPeso)     ? null : $this->nPeso;
+    $oDaoTriagemAvulsa->s152_i_altura                   = empty($this->iAltura)   ? null : $this->iAltura;
+    $oDaoTriagemAvulsa->s152_i_glicemia                 = empty($this->iGlicemia) ? null : $this->iGlicemia;
     $oDaoTriagemAvulsa->s152_i_alimentacaoexameglicemia = $this->iAlimentacaoExameGlicose;
     $oDaoTriagemAvulsa->s152_d_dataconsulta             = $this->dtDataConsulta;
     $oDaoTriagemAvulsa->s152_d_datasistema              = $this->dtDataSistema;
     $oDaoTriagemAvulsa->s152_c_horasistema              = $this->dtHoraSistema;
     $oDaoTriagemAvulsa->s152_n_temperatura              = $this->nTemperatura;
+    $oDaoTriagemAvulsa->s152_evolucao                   = $this->sObjetivo;
+    $oDaoTriagemAvulsa->s152_perimetrocefalico          = $this->iPerimetroCefalico;
+    $oDaoTriagemAvulsa->s152_frequenciarespiratoria     = $this->iFrequenciaRespiratoria;
+    $oDaoTriagemAvulsa->s152_frequenciacardiaca         = $this->iFrequenciaCardiaca;
+    $oDaoTriagemAvulsa->s152_dum                        = $this->dtUltimaMenstruacao;
+    $oDaoTriagemAvulsa->s152_saturacao                  = $this->iSaturacao;
+    $oDaoTriagemAvulsa->s152_subjetivo                  = $this->sSubjetivo;
 
     if ( empty($this->iCodigo) ) {
       $oDaoTriagemAvulsa->incluir(null);
-
     } else {
       $oDaoTriagemAvulsa->alterar($this->iCodigo);
     }
@@ -437,6 +512,7 @@ Class TriagemAvulsa {
   /**
    * Retorna o médico vinculado a Triagem
    * @return Medico
+   * @throws DBException
    */
   public function getMedico() {
 
@@ -457,4 +533,88 @@ Class TriagemAvulsa {
     return new Medico( $iMedico );
   }
 
+  /**
+   * Busca o agravo da triagem e retorna em forma de stdClass
+   * @return _db_fields|null|stdClass|void
+   * @throws DBException
+   */
+  public function getAgravo() {
+
+    if ( empty($this->iCodigo) ) {
+      return null;
+    }
+
+    $oTriagemAvulsaAgravoDao = new cl_sau_triagemavulsaagravo();
+    $sWhereAgravo            = " s167_sau_triagemavulsa = {$this->iCodigo}";
+    $sSqlAgravo              = $oTriagemAvulsaAgravoDao->sql_query_file(null, '*', null, $sWhereAgravo);
+    $rsAgravo                = db_query( $sSqlAgravo );
+
+    if ( !$rsAgravo ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+      throw new DBException( _M(ARQUIVO_MENSAGEM_TRIAGEM_AVULSA . "erro_buscar_agravo", $oErro) );
+    }
+
+    if ( pg_num_rows($rsAgravo) == 0 ) {
+      return null;
+    }
+
+    return db_utils::fieldsMemory( $rsAgravo, 0 );
+  }
+
+
+  public function setPerimetroCefalico($iPerimetroCefalico) {
+    $this->iPerimetroCefalico = $iPerimetroCefalico;
+    return $this;
+  }
+
+  public function getPerimetroCefalico() {
+    return $this->iPerimetroCefalico;
+  }
+
+  public function setFrequenciaRespiratoria($iFrequenciaRespiratoria) {
+    $this->iFrequenciaRespiratoria = $iFrequenciaRespiratoria;
+    return $this;
+  }
+
+  public function getFrequenciaRespiratoria() {
+    return $this->iFrequenciaRespiratoria;
+  }
+
+  public function setFrequenciaCardiaca($iFrequenciaCardiaca) {
+    $this->iFrequenciaCardiaca = $iFrequenciaCardiaca;
+    return $this;
+  }
+
+  public function getFrequenciaCardiaca() {
+    return $this->iFrequenciaCardiaca;
+  }
+
+  public function setUltimaMenstruacao($dtUltimaMenstruacao) {
+    $this->dtUltimaMenstruacao = $dtUltimaMenstruacao;
+    return $this;
+  }
+
+  public function getUltimaMenstruacao() {
+    return $this->dtUltimaMenstruacao;
+  }
+
+  public function setSaturacao($iSaturacao) {
+    $this->iSaturacao = $iSaturacao;
+    return $this;
+  }
+
+  public function getSaturacao() {
+    return $this->iSaturacao;
+  }
+
+  public function setIdadeGestacional($iIdadeGestacional) {
+    $this->iIdadeGestacional = $iIdadeGestacional;
+    return $this;
+  }
+
+  public function getIdadeGestacional() {
+    return $this->iIdadeGestacional;
+  }
 }

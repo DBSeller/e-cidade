@@ -1,0 +1,91 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010400' name='esocial.dataenvioefd' description="Data de envio dos eventos do EFD-Reinf" prefix="efd06" label="data-envio-efd" type="0">
+  <fields>
+    <field codigo="1010266" 
+           campo_api='' 
+           name="efd06_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela" 
+           inivalue="0" 
+           label="" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+
+           <sequence name='dataenvioefd_efd06_sequencial_seq' />
+            
+    </field> 
+    <field codigo="1010269" 
+           campo_api='' 
+           name="efd06_instituicao" 
+           conteudo="int4" 
+           description="Instituição" 
+           inivalue="0" 
+           label="" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010268" 
+           campo_api='' 
+           name="efd06_arquivo" 
+           conteudo="varchar(50)" 
+           description="Nome do arquivo" 
+           inivalue="" 
+           label="" 
+           size="50" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010267" 
+           campo_api='' 
+           name="efd06_dataenvio" 
+           conteudo="date" 
+           description="Data do envio do arquivo" 
+           inivalue="null" 
+           label="" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="efd06_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="efd06_instituicao" reference="codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

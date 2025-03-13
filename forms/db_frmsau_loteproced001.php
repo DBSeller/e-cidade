@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -98,7 +98,7 @@ $clrotulo->label ( "sd70_c_nome" );
 				<!-- Segunda parte do formulário -->
 				<?
 					unset($intQuant);
-					include 'db_frmsau_loteproced002.php';
+					include modification("forms/db_frmsau_loteproced002.php");
 				?>
 
 		</table>
@@ -330,7 +330,7 @@ function js_gravar(){
  * Retorno Grid Procedimentos
  */
 function js_retornoGridProcedimentos( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
 
   	objGridProcedimento.clearAll(true);
 
@@ -429,7 +429,7 @@ function js_opcoesProcedimentoAlterar( sd29_i_codigo, intIterator, opcao ){
  * Retorno Procedimento Alterar
  */
 function js_retornoProcedimentoAlterar( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
 
 	if (objRetorno.status == 1) {
 		if (objRetorno.itens.length > 0) {
@@ -555,7 +555,7 @@ function js_mostramedicos1(chave1,chave2){
  * Retorno pesquisa especialidade do profissional
  */
 function js_retornoEspecialidade( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
 
 	if (objRetorno.status == 1) {
 		if (objRetorno.itens.length > 0) {
@@ -689,7 +689,7 @@ function js_mostraprocedimentos1(chave1,chave2,chave3){
  * Retorno Pesquisa Procedimento
  */
 function js_retornoProcedimento( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
 
 	if (objRetorno.status == 1) {
 		if (objRetorno.itens.length > 0) {
@@ -720,7 +720,7 @@ function js_voltar(){
  * Retorno Voltar/Sair
  */
 function js_retornoSair( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
 	if( objRetorno.status == 1 ){
     	parent.document.formaba.a1.disabled = false;
     	parent.document.formaba.a2.disabled = true;
@@ -771,7 +771,7 @@ function js_processar(){
  * Retorno Processar
  */
 function js_retornoProcessar( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
 
   	message_ajax( objRetorno.message.urlDecode() );
 
@@ -877,7 +877,7 @@ function js_mostrasd70_c_cid1(chave1,chave2,chave3){
  * retorno CID
  */
 function js_retornoCID( objAjax ){
-  	var objRetorno = eval("("+objAjax.responseText+")");
+  	var objRetorno = JSON.parse(objAjax.responseText);
   	var objForm    = document.form1;
 
 	$('sd70_i_codigo').value = '';

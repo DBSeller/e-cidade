@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -254,7 +254,7 @@ if($sqlerro==false) {
 
     if (($linhasdeporigem > 0) && ($linhasdepdestino == 0 )) {
       
-      include("classes/db_orcparamrecursoval_classe.php");
+      include(modification("classes/db_orcparamrecursoval_classe.php"));
       $cl_orcparamrecursoval = new cl_orcparamrecursoval;
       for ($v=0; $linhasdeporigem > $v; $v++) {
         db_fieldsmemory($resultdeporigem,$v);

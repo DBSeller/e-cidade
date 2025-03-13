@@ -1,53 +1,53 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: configuracoes
 //CLASSE DA ENTIDADE db_bancos
-class cl_db_bancos { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $db90_codban = null; 
-   var $db90_descr = null; 
-   var $db90_digban = null; 
-   var $db90_abrev = null; 
-   var $db90_logo = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_db_bancos {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $db90_codban = null;
+   var $db90_descr = null;
+   var $db90_digban = null;
+   var $db90_abrev = null;
+   var $db90_logo = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  db90_codban = varchar(10) = Código do banco FEBRABAN 
                  db90_descr = varchar(40) = Descrição 
@@ -55,14 +55,14 @@ class cl_db_bancos {
                  db90_abrev = varchar(20) = Nome Abreviado do Banco 
                  db90_logo = oid = Arquivo do logo 
                  ";
-   //funcao construtor da classe 
-   function cl_db_bancos() { 
+   //funcao construtor da classe
+   function cl_db_bancos() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("db_bancos"); 
+     $this->rotulo = new rotulo("db_bancos");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -83,9 +83,9 @@ class cl_db_bancos {
      }
    }
    // funcao para inclusao
-   function incluir ($db90_codban){ 
+   function incluir ($db90_codban){
       $this->atualizacampos();
-     if($this->db90_descr == null ){ 
+     if($this->db90_descr == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "db90_descr";
        $this->erro_banco = "";
@@ -94,8 +94,8 @@ class cl_db_bancos {
        $this->erro_status = "0";
        return false;
      }
-       $this->db90_codban = $db90_codban; 
-     if(($this->db90_codban == null) || ($this->db90_codban == "") ){ 
+       $this->db90_codban = $db90_codban;
+     if(($this->db90_codban == null) || ($this->db90_codban == "") ){
        $this->erro_sql = " Campo db90_codban nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -117,8 +117,8 @@ class cl_db_bancos {
                                ,'$this->db90_abrev' 
                                ,$this->db90_logo 
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Cadastro de bancos ($this->db90_codban) nao Incluído. Inclusao Abortada.";
@@ -154,16 +154,16 @@ class cl_db_bancos {
        $resac = db_query("insert into db_acount values($acount,1185,11726,'','".AddSlashes(pg_result($resaco,0,'db90_logo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($db90_codban=null) { 
+   function alterar ($db90_codban=null) {
       $this->atualizacampos();
      $sql = " update db_bancos set ";
      $virgula = "";
-     if(trim($this->db90_codban)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_codban"])){ 
+     if(trim($this->db90_codban)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_codban"])){
        $sql  .= $virgula." db90_codban = '$this->db90_codban' ";
        $virgula = ",";
-       if(trim($this->db90_codban) == null ){ 
+       if(trim($this->db90_codban) == null ){
          $this->erro_sql = " Campo Código do banco FEBRABAN nao Informado.";
          $this->erro_campo = "db90_codban";
          $this->erro_banco = "";
@@ -173,10 +173,10 @@ class cl_db_bancos {
          return false;
        }
      }
-     if(trim($this->db90_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_descr"])){ 
+     if(trim($this->db90_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_descr"])){
        $sql  .= $virgula." db90_descr = '$this->db90_descr' ";
        $virgula = ",";
-       if(trim($this->db90_descr) == null ){ 
+       if(trim($this->db90_descr) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "db90_descr";
          $this->erro_banco = "";
@@ -186,15 +186,15 @@ class cl_db_bancos {
          return false;
        }
      }
-     if(trim($this->db90_digban)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_digban"])){ 
+     if(trim($this->db90_digban)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_digban"])){
        $sql  .= $virgula." db90_digban = '$this->db90_digban' ";
        $virgula = ",";
      }
-     if(trim($this->db90_abrev)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_abrev"])){ 
+     if(trim($this->db90_abrev)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_abrev"])){
        $sql  .= $virgula." db90_abrev = '$this->db90_abrev' ";
        $virgula = ",";
      }
-     if(trim($this->db90_logo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_logo"])){ 
+     if(trim($this->db90_logo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["db90_logo"])){
        $sql  .= $virgula." db90_logo = $this->db90_logo ";
        $virgula = ",";
      }
@@ -222,7 +222,7 @@ class cl_db_bancos {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cadastro de bancos nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->db90_codban;
@@ -250,14 +250,14 @@ class cl_db_bancos {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($db90_codban=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($db90_codban=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($db90_codban));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -287,7 +287,7 @@ class cl_db_bancos {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cadastro de bancos nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$db90_codban;
@@ -315,11 +315,11 @@ class cl_db_bancos {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -341,7 +341,7 @@ class cl_db_bancos {
       }
      return $result;
    }
-   function sql_query ( $db90_codban=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $db90_codban=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -357,8 +357,8 @@ class cl_db_bancos {
      $sql2 = "";
      if($dbwhere==""){
        if($db90_codban!=null ){
-         $sql2 .= " where db_bancos.db90_codban = '$db90_codban' "; 
-       } 
+         $sql2 .= " where db_bancos.db90_codban = '$db90_codban' ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -388,7 +388,8 @@ class cl_db_bancos {
      }
      $sql .= " from db_bancos ";
      $sql .= "      inner join conplanoconta on conplanoconta.c63_banco = db_bancos.db90_codban and c63_anousu=".db_getsession("DB_anousu");
-     $sql .= "      inner join conplanoreduz on conplanoreduz.c61_codcon = conplanoconta.c63_codcon and c61_anousu=c63_anousu";
+     $sql .= "      inner join conplanoreduz on c61_anousu = c63_anousu 
+                                            and conplanoreduz.c61_reduz = conplanoconta.c63_reduz ";
      $sql .= "      inner join empagetipo on empagetipo.e83_conta = conplanoreduz.c61_reduz ";
      $sql .= "      inner join empagepag on empagepag.e85_codtipo = empagetipo.e83_codtipo ";
      $sql .= "      inner join empageconf on empageconf.e86_codmov = empagepag.e85_codmov ";
@@ -396,8 +397,8 @@ class cl_db_bancos {
      $sql2 = "";
      if($dbwhere==""){
        if($db90_codban!=null ){
-         $sql2 .= " where db_bancos.db90_codban = '$db90_codban' "; 
-       } 
+         $sql2 .= " where db_bancos.db90_codban = '$db90_codban' ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -413,7 +414,7 @@ class cl_db_bancos {
      }
      return $sql;
   }
-   function sql_query_file ( $db90_codban=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $db90_codban=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -429,8 +430,8 @@ class cl_db_bancos {
      $sql2 = "";
      if($dbwhere==""){
        if($db90_codban!=null ){
-         $sql2 .= " where db_bancos.db90_codban = '$db90_codban' "; 
-       } 
+         $sql2 .= " where db_bancos.db90_codban = '$db90_codban' ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -445,6 +446,30 @@ class cl_db_bancos {
        }
      }
      return $sql;
+  }
+
+  public static function exportarLogoPorCodigoBanco($iCodigoBanco) {
+
+    $oDao = new cl_db_bancos();
+    $rsBuscaLogo = db_query($oDao->sql_query_file($iCodigoBanco, "*"));
+    if (!$rsBuscaLogo) {
+      throw new Exception("Ocorreu um erro ao buscar o logo do banco.");
+    }
+
+    if (pg_num_rows($rsBuscaLogo) == 0) {
+      throw new Exception("Logotipo não cadastrado para o banco.");
+    }
+
+    $iOidLogo = db_utils::fieldsMemory($rsBuscaLogo, 0)->db90_logo;
+    db_query("begin");
+
+    $sCaminho = "tmp/".$iCodigoBanco.".jpg";
+    global $conn;
+    pg_lo_export($iOidLogo, $sCaminho, $conn);
+    db_query("commit");
+
+    return $sCaminho;
+
   }
 }
 ?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -318,6 +318,7 @@ class cl_obrasresp {
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = obrasresp.ob10_numcgm";
      $sql .= "      inner join obras  on  obras.ob01_codobra = obrasresp.ob10_codobra";
      $sql .= "      inner join obrastiporesp  on  obrastiporesp.ob02_cod = obras.ob01_tiporesp";
+     $sql .= "      inner join obrastec       on  obras.ob01_arquitetoobra = obrastec.ob15_sequencial";
      $sql2 = "";
      if($dbwhere==""){
        if($ob10_codobra!=null ){

@@ -1,11 +1,13 @@
 <?xml version='1.0' ?>
 <processamento>
 
+  <transacao>true</transacao>
+
   <parametros>
      <parametro nome="codigo_planilha" obrigatorio="true" tipo="integer" />
     <parametro  nome="data"            obrigatorio="true" tipo="date"    />
   </parametros>
-  
+
   <configuracoes>
     <classe nome="GeracaoGuiaTomadorWebService"  parametros="$codigo_planilha" caminho="model/issqn/GeracaoGuiaTomadorWebService.model.php">
       <metodos>
@@ -14,5 +16,5 @@
       </metodos>
     </classe>
   </configuracoes>
-  
+
 </processamento>

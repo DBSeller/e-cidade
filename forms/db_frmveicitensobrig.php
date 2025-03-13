@@ -40,21 +40,12 @@ if (!isset($ve09_usuario)){
    db_input("sequencial",   10,0,true,"hidden",3);
    db_input("ve09_usuario", 10,0,true,"hidden",3);
 ?>
-<center>
-<table border="0" width="790">
+<table class="container" border="0" width="790">
   <tr>
-    <td nowrap align="right" title="<?=@$Tve09_veiccaditensobrig?>">
+    <td nowrap align="center" title="<?=@$Tve09_veiccaditensobrig?>">
     <? 
-       db_ancora(@$Lve09_veiccaditensobrig,"js_pesquisave09_veiccaditensobrig(true);",$db_opcao) 
-    ?>
-    </td>
-    <td nowrap width="20">
-    <? 
-       db_input('ve09_veiccaditensobrig',10,$Ive09_veiccaditensobrig,true,'text',$db_opcao,"onChange='js_pesquisave09_veiccaditensobrig(false);'"); 
-    ?>
-    </td>
-    <td nowrap>
-    <? 
+       db_ancora(@$Lve09_veiccaditensobrig,"js_pesquisave09_veiccaditensobrig(true);",$db_opcao);
+       db_input('ve09_veiccaditensobrig',10,$Ive09_veiccaditensobrig,true,'text',$db_opcao,"onChange='js_pesquisave09_veiccaditensobrig(false);'");
        db_input('ve08_descr',40,0,true,'text',3); 
     ?>
     </td>
@@ -91,15 +82,14 @@ if (!isset($ve09_usuario)){
     </td>
   </tr>
 </table>
-</center>
 </form>
 <script>
 function js_pesquisave09_veiccaditensobrig(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_veicitensobrig','db_iframe_veiccaditensobrig','func_veiccaditensobrig.php?funcao_js=parent.js_mostraveiccaditensobrig1|ve08_sequencial|ve08_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicitensobrig','db_iframe_veiccaditensobrig','func_veiccaditensobrig.php?funcao_js=parent.js_mostraveiccaditensobrig1|ve08_sequencial|ve08_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.ve09_veiccaditensobrig.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_veicitensobrig','db_iframe_veiccaditensobrig','func_veiccaditensobrig.php?pesquisa_chave='+document.form1.ve09_veiccaditensobrig.value+'&funcao_js=parent.js_mostraveiccaditensobrig','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veicitensobrig','db_iframe_veiccaditensobrig','func_veiccaditensobrig.php?pesquisa_chave='+document.form1.ve09_veiccaditensobrig.value+'&funcao_js=parent.js_mostraveiccaditensobrig','Pesquisa',false);
      }else{
        document.form1.ve08_descr.value = ''; 
      }
@@ -122,7 +112,7 @@ function js_mostraveiccaditensobrig1(chave1,chave2){
   db_iframe_veiccaditensobrig.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_conplano','func_conplanogeral.php?funcao_js=parent.js_preenchepesquisa|c60_codcon','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_conplano','func_conplanogeral.php?funcao_js=parent.js_preenchepesquisa|c60_codcon','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_conplano.hide();

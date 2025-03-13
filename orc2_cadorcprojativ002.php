@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
-include("classes/db_orcprojativ_classe.php");
+include(modification("classes/db_orcprojativ_classe.php"));
 
 $clorcprojativ = new cl_orcprojativ;
 $clorcprojativ->rotulo->label();
 
 
-if($tipo=="0"){
+if($tipo=="3"){
   $tipod = "OPERAÇÕES ESPECIAIS";
   $Rtipod = "Operações";
 }else if($tipo=="1"){

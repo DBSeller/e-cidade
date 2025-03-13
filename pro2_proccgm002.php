@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -35,8 +35,8 @@
   *       - andamento1 - setor - obs
   *       - andamento2 - setor - obs
   */
- include("fpdf151/pdf.php");
- include("classes/db_protprocesso_classe.php");
+ include(modification("fpdf151/pdf.php"));
+ include(modification("classes/db_protprocesso_classe.php"));
 
  $aux    = new cl_protprocesso;
  $aux02  = new cl_protprocesso;
@@ -120,6 +120,7 @@
 
  // resumido
  if ($tipo == "resumido"){
+     
      if ($aux->numrows > 0 ) { 
          $cgm = ""; 
          for ($x=0;$x < $aux->numrows ; $x++){      
@@ -133,7 +134,7 @@
                $pdf->cell(120,4,"$z01_nome",  0,1,'L','0'); //<br>
                $pdf->setfont('Arial','',7);
                $pdf->setx(15); 	    
-               $pdf->cell(20,4,'PROCESSO','B',0,'R',0);
+               $pdf->cell(30,4,'PROCESSO','B',0,'R',0);
                $pdf->cell(20,4,'DATA','B',0,'C',0);
                $pdf->cell(60,4,'REQUERENTE','B',0,'L',0);
                $pdf->cell(40,4,'OBS','B',0,'L',0);
@@ -151,7 +152,7 @@
               $sNumeroProcesso = "";
             }
             
-            $pdf->cell(20,4,$sNumeroProcesso,0,0,'R',$cor);
+            $pdf->cell(30,4,$sNumeroProcesso,0,0,'R',$cor);
             $pdf->cell(20,4,"$p58_dtproc", 0,0,'C',$cor);
             $pdf->cell(60,4,substr($p58_requer,0,40), 0,0,'L',$cor);
             $pdf->cell(40,4,substr($p58_obs,0,32 ),   0,0,'L',$cor);
@@ -189,24 +190,24 @@
          for ($x=0;$x < $aux->numrows ; $x++){      
             db_fieldsmemory($res,$x,true);	 
             if ($cgm != $p58_numcgm){
-	       $cor=0;
-	       $pdf->Ln();
-               $pdf->setx(10); 	    
-	       $pdf->setfont('Arial','B','8');
-               $pdf->cell(20,4,"$p58_numcgm",0,0,'R','0');
-               $pdf->cell(120,4,"$z01_nome",  0,1,'L','0'); //<br>
-               $pdf->setfont('Arial','',7);
-	       /*
-               $pdf->setx(15); 	    
-               $pdf->cell(20,4,'PROCESSO','B',0,'R',0);  // top do detalhe
-               $pdf->cell(20,4,'DATA','B',0,'C',0);
-               $pdf->cell(60,4,'REQUERENTE','B',0,'L',0);
-               $pdf->cell(60,4,'OBS','B',1,'L',0);
-	       */
-  	       $cgm = $p58_numcgm;
+                $cor=0;
+                $pdf->Ln();
+                    $pdf->setx(10); 	    
+                $pdf->setfont('Arial','B','8');
+                    $pdf->cell(20,4,"$p58_numcgm",0,0,'R','0');
+                    $pdf->cell(120,4,"$z01_nome",  0,1,'L','0'); //<br>
+                    $pdf->setfont('Arial','',7);
+                /*
+                    $pdf->setx(15); 	    
+                    $pdf->cell(20,4,'PROCESSO','B',0,'R',0);  // top do detalhe
+                    $pdf->cell(20,4,'DATA','B',0,'C',0);
+                    $pdf->cell(60,4,'REQUERENTE','B',0,'L',0);
+                    $pdf->cell(60,4,'OBS','B',1,'L',0);
+                */
+                $cgm = $p58_numcgm;
             }  
 	    $pdf->setx(15); 	    
-            $pdf->cell(20,4,'PROCESSO','B',0,'R',0);  // top do detalhe
+            $pdf->cell(30,4,'PROCESSO','B',0,'R',0);
             $pdf->cell(20,4,'DATA','B',0,'C',0);
             $pdf->cell(70,4,'REQUERENTE','B',0,'L',0);
             $pdf->cell(65,4,'OBS','B',1,'L',0);
@@ -221,7 +222,7 @@
             if ($p58_numero == "") {
               $sNumeroProcesso = "";
             }
-            $pdf->cell(20,4,$sNumeroProcesso,0,0,'R',$cor);
+            $pdf->cell(30,4,$sNumeroProcesso,0,0,'R',$cor);
             $pdf->cell(20,4,"$p58_dtproc", 0,0,'C',$cor);
             $pdf->cell(70,4,substr($p58_requer,0,50), 0,0,'L',$cor);
             $pdf->cell(65,4,substr($p58_obs,0,40 ),   0,1,'L',$cor);

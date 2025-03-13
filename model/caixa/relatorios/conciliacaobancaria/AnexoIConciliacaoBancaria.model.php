@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ('IAnexoConciliacaoBancaria.interface.php');
+require_once(modification('model/caixa/relatorios/conciliacaobancaria/IAnexoConciliacaoBancaria.interface.php'));
 /**
  * Class AnexoIConciliacaoBancaria
  */
@@ -82,11 +82,15 @@ class AnexoIConciliacaoBancaria implements IAnexoConciliacaoBancaria {
     $iCodigoConta       = $this->oContabancaria->getSequencialContaBancaria();
     $sWhereConciliacao  = "     k89_concilia = (select max(k68_sequencial) ";
     $sWhereConciliacao .= "                       from concilia ";
-    $sWhereConciliacao .= "                      where extract(month from k68_data) = {$this->oCompetencia->getMes()}";
-    $sWhereConciliacao .= "                        and extract(year from k68_data)  = {$this->oCompetencia->getAno()}";
+    $sWhereConciliacao .= "                      where extract(month from k68_data) = '{$this->oCompetencia->getMes()}'";
+    $sWhereConciliacao .= "                        and extract(year from k68_data)  =  '{$this->oCompetencia->getAno()}'";
     $sWhereConciliacao .= "                        and k68_contabancaria            = {$iCodigoConta})";
-    $sWhereConciliacao .= "     and rnvalordebito <> 0";
-    $sWhereConciliacao .= "     and rnvalordebito is not null ";
+    $sWhereConciliacao .= "     and ((rnvalordebito <> 0";
+    $sWhereConciliacao .= "          and rnvalordebito is not null)";
+    $sWhereConciliacao .= "          or ";
+    $sWhereConciliacao .= "        (rivalorcredito is not null ";
+    $sWhereConciliacao .= "        and rivalorcredito <> 0 )";
+    $sWhereConciliacao .= "                                  )";
     $sWhereConciliacao .= "     and not exists (select 1";
     $sWhereConciliacao .= "                       from corgrupocorrente";
     $sWhereConciliacao .= "                      where k105_autent = k89_autent";
@@ -102,7 +106,7 @@ class AnexoIConciliacaoBancaria implements IAnexoConciliacaoBancaria {
     $sCamposPendencia .= "   when rnvalordebito  is not null ";
     $sCamposPendencia .= "    and rnvalordebito <> 0 ";
     $sCamposPendencia .= "   then rnvalordebito";
-    $sCamposPendencia .= "   else rivalorcredito";
+    $sCamposPendencia .= "   else rivalorcredito * -1";
     $sCamposPendencia .= " end) as valor";
 
     $oDaoConciliacaoPendente = new cl_conciliapendcorrente();

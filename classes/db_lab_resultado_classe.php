@@ -1,33 +1,7 @@
-<?
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -53,49 +27,49 @@
 
 //MODULO: Laboratório
 //CLASSE DA ENTIDADE lab_resultado
-class cl_lab_resultado { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $la52_i_codigo = 0; 
-   var $la52_i_requiitem = 0; 
-   var $la52_i_usuario = 0; 
-   var $la52_c_hora = null; 
-   var $la52_d_data_dia = null; 
-   var $la52_d_data_mes = null; 
-   var $la52_d_data_ano = null; 
-   var $la52_d_data = null; 
-   var $la52_t_motivo = null; 
-   var $la52_diagnostico = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_lab_resultado {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $la52_i_codigo = 0;
+   var $la52_i_requiitem = 0;
+   var $la52_i_usuario = 0;
+   var $la52_c_hora = null;
+   var $la52_d_data_dia = null;
+   var $la52_d_data_mes = null;
+   var $la52_d_data_ano = null;
+   var $la52_d_data = null;
+   var $la52_t_motivo = null;
+   var $la52_diagnostico = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 la52_i_codigo = int4 = Código 
-                 la52_i_requiitem = int4 = Exame 
-                 la52_i_usuario = int4 = Usuário 
-                 la52_c_hora = char(5) = Hora 
-                 la52_d_data = date = Data 
-                 la52_t_motivo = text = Motivo 
-                 la52_diagnostico = text = Diagnóstico 
+                 la52_i_codigo = int4 = Código
+                 la52_i_requiitem = int4 = Exame
+                 la52_i_usuario = int4 = Usuário
+                 la52_c_hora = char(5) = Hora
+                 la52_d_data = date = Data
+                 la52_t_motivo = text = Motivo
+                 la52_diagnostico = text = Diagnóstico
                  ";
-   //funcao construtor da classe 
-   function cl_lab_resultado() { 
+   //funcao construtor da classe
+   function cl_lab_resultado() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("lab_resultado"); 
+     $this->rotulo = new rotulo("lab_resultado");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -125,9 +99,9 @@ class cl_lab_resultado {
      }
    }
    // funcao para inclusao
-   function incluir ($la52_i_codigo){ 
+   function incluir ($la52_i_codigo){
       $this->atualizacampos();
-     if($this->la52_i_requiitem == null ){ 
+     if($this->la52_i_requiitem == null ){
        $this->erro_sql = " Campo Exame não informado.";
        $this->erro_campo = "la52_i_requiitem";
        $this->erro_banco = "";
@@ -136,7 +110,7 @@ class cl_lab_resultado {
        $this->erro_status = "0";
        return false;
      }
-     if($this->la52_i_usuario == null ){ 
+     if($this->la52_i_usuario == null ){
        $this->erro_sql = " Campo Usuário não informado.";
        $this->erro_campo = "la52_i_usuario";
        $this->erro_banco = "";
@@ -145,7 +119,7 @@ class cl_lab_resultado {
        $this->erro_status = "0";
        return false;
      }
-     if($this->la52_c_hora == null ){ 
+     if($this->la52_c_hora == null ){
        $this->erro_sql = " Campo Hora não informado.";
        $this->erro_campo = "la52_c_hora";
        $this->erro_banco = "";
@@ -154,7 +128,7 @@ class cl_lab_resultado {
        $this->erro_status = "0";
        return false;
      }
-     if($this->la52_d_data == null ){ 
+     if($this->la52_d_data == null ){
        $this->erro_sql = " Campo Data não informado.";
        $this->erro_campo = "la52_d_data_dia";
        $this->erro_banco = "";
@@ -164,16 +138,16 @@ class cl_lab_resultado {
        return false;
      }
      if($la52_i_codigo == "" || $la52_i_codigo == null ){
-       $result = db_query("select nextval('lab_resultado_la52_i_codigo_seq')"); 
+       $result = db_query("select nextval('lab_resultado_la52_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: lab_resultado_la52_i_codigo_seq do campo: la52_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: lab_resultado_la52_i_codigo_seq do campo: la52_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->la52_i_codigo = pg_result($result,0,0); 
+       $this->la52_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from lab_resultado_la52_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $la52_i_codigo)){
@@ -184,10 +158,10 @@ class cl_lab_resultado {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->la52_i_codigo = $la52_i_codigo; 
+         $this->la52_i_codigo = $la52_i_codigo;
        }
      }
-     if(($this->la52_i_codigo == null) || ($this->la52_i_codigo == "") ){ 
+     if(($this->la52_i_codigo == null) || ($this->la52_i_codigo == "") ){
        $this->erro_sql = " Campo la52_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -196,25 +170,25 @@ class cl_lab_resultado {
        return false;
      }
      $sql = "insert into lab_resultado(
-                                       la52_i_codigo 
-                                      ,la52_i_requiitem 
-                                      ,la52_i_usuario 
-                                      ,la52_c_hora 
-                                      ,la52_d_data 
-                                      ,la52_t_motivo 
-                                      ,la52_diagnostico 
+                                       la52_i_codigo
+                                      ,la52_i_requiitem
+                                      ,la52_i_usuario
+                                      ,la52_c_hora
+                                      ,la52_d_data
+                                      ,la52_t_motivo
+                                      ,la52_diagnostico
                        )
                 values (
-                                $this->la52_i_codigo 
-                               ,$this->la52_i_requiitem 
-                               ,$this->la52_i_usuario 
-                               ,'$this->la52_c_hora' 
-                               ,".($this->la52_d_data == "null" || $this->la52_d_data == ""?"null":"'".$this->la52_d_data."'")." 
-                               ,'$this->la52_t_motivo' 
-                               ,'$this->la52_diagnostico' 
+                                $this->la52_i_codigo
+                               ,$this->la52_i_requiitem
+                               ,$this->la52_i_usuario
+                               ,'$this->la52_c_hora'
+                               ,".($this->la52_d_data == "null" || $this->la52_d_data == ""?"null":"'".$this->la52_d_data."'")."
+                               ,'$this->la52_t_motivo'
+                               ,'$this->la52_diagnostico'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Resultado do exame ($this->la52_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -258,16 +232,16 @@ class cl_lab_resultado {
        }
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($la52_i_codigo=null) { 
+   function alterar ($la52_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update lab_resultado set ";
      $virgula = "";
-     if(trim($this->la52_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_i_codigo"])){ 
+     if(trim($this->la52_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_i_codigo"])){
        $sql  .= $virgula." la52_i_codigo = $this->la52_i_codigo ";
        $virgula = ",";
-       if(trim($this->la52_i_codigo) == null ){ 
+       if(trim($this->la52_i_codigo) == null ){
          $this->erro_sql = " Campo Código não informado.";
          $this->erro_campo = "la52_i_codigo";
          $this->erro_banco = "";
@@ -277,10 +251,10 @@ class cl_lab_resultado {
          return false;
        }
      }
-     if(trim($this->la52_i_requiitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_i_requiitem"])){ 
+     if(trim($this->la52_i_requiitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_i_requiitem"])){
        $sql  .= $virgula." la52_i_requiitem = $this->la52_i_requiitem ";
        $virgula = ",";
-       if(trim($this->la52_i_requiitem) == null ){ 
+       if(trim($this->la52_i_requiitem) == null ){
          $this->erro_sql = " Campo Exame não informado.";
          $this->erro_campo = "la52_i_requiitem";
          $this->erro_banco = "";
@@ -290,10 +264,10 @@ class cl_lab_resultado {
          return false;
        }
      }
-     if(trim($this->la52_i_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_i_usuario"])){ 
+     if(trim($this->la52_i_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_i_usuario"])){
        $sql  .= $virgula." la52_i_usuario = $this->la52_i_usuario ";
        $virgula = ",";
-       if(trim($this->la52_i_usuario) == null ){ 
+       if(trim($this->la52_i_usuario) == null ){
          $this->erro_sql = " Campo Usuário não informado.";
          $this->erro_campo = "la52_i_usuario";
          $this->erro_banco = "";
@@ -303,10 +277,10 @@ class cl_lab_resultado {
          return false;
        }
      }
-     if(trim($this->la52_c_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_c_hora"])){ 
+     if(trim($this->la52_c_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_c_hora"])){
        $sql  .= $virgula." la52_c_hora = '$this->la52_c_hora' ";
        $virgula = ",";
-       if(trim($this->la52_c_hora) == null ){ 
+       if(trim($this->la52_c_hora) == null ){
          $this->erro_sql = " Campo Hora não informado.";
          $this->erro_campo = "la52_c_hora";
          $this->erro_banco = "";
@@ -316,10 +290,10 @@ class cl_lab_resultado {
          return false;
        }
      }
-     if(trim($this->la52_d_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_d_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["la52_d_data_dia"] !="") ){ 
+     if(trim($this->la52_d_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_d_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["la52_d_data_dia"] !="") ){
        $sql  .= $virgula." la52_d_data = '$this->la52_d_data' ";
        $virgula = ",";
-       if(trim($this->la52_d_data) == null ){ 
+       if(trim($this->la52_d_data) == null ){
          $this->erro_sql = " Campo Data não informado.";
          $this->erro_campo = "la52_d_data_dia";
          $this->erro_banco = "";
@@ -328,11 +302,11 @@ class cl_lab_resultado {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["la52_d_data_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["la52_d_data_dia"])){
          $sql  .= $virgula." la52_d_data = null ";
          $virgula = ",";
-         if(trim($this->la52_d_data) == null ){ 
+         if(trim($this->la52_d_data) == null ){
            $this->erro_sql = " Campo Data não informado.";
            $this->erro_campo = "la52_d_data_dia";
            $this->erro_banco = "";
@@ -343,11 +317,11 @@ class cl_lab_resultado {
          }
        }
      }
-     if(trim($this->la52_t_motivo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_t_motivo"])){ 
+     if(trim($this->la52_t_motivo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_t_motivo"])){
        $sql  .= $virgula." la52_t_motivo = '$this->la52_t_motivo' ";
        $virgula = ",";
      }
-     if(trim($this->la52_diagnostico)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_diagnostico"])){ 
+     if(trim($this->la52_diagnostico)!="" || isset($GLOBALS["HTTP_POST_VARS"]["la52_diagnostico"])){
        $sql  .= $virgula." la52_diagnostico = '$this->la52_diagnostico' ";
        $virgula = ",";
      }
@@ -386,7 +360,7 @@ class cl_lab_resultado {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Resultado do exame nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->la52_i_codigo;
@@ -414,11 +388,11 @@ class cl_lab_resultado {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($la52_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($la52_i_codigo=null,$dbwhere=null) {
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
@@ -427,7 +401,7 @@ class cl_lab_resultado {
        if ($dbwhere==null || $dbwhere=="") {
 
          $resaco = $this->sql_record($this->sql_query_file($la52_i_codigo));
-       } else { 
+       } else {
          $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
        }
        if (($resaco != false) || ($this->numrows!=0)) {
@@ -462,7 +436,7 @@ class cl_lab_resultado {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Resultado do exame nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$la52_i_codigo;
@@ -490,11 +464,11 @@ class cl_lab_resultado {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -516,8 +490,8 @@ class cl_lab_resultado {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $la52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $la52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -537,8 +511,8 @@ class cl_lab_resultado {
      $sql2 = "";
      if($dbwhere==""){
        if($la52_i_codigo!=null ){
-         $sql2 .= " where lab_resultado.la52_i_codigo = $la52_i_codigo "; 
-       } 
+         $sql2 .= " where lab_resultado.la52_i_codigo = $la52_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -555,7 +529,7 @@ class cl_lab_resultado {
      return $sql;
   }
    // funcao do sql + lab_resultadoitem
-   function sql_query_item ( $la52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_item ( $la52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -578,8 +552,8 @@ class cl_lab_resultado {
      $sql2 = "";
      if($dbwhere==""){
        if($la52_i_codigo!=null ){
-         $sql2 .= " where lab_resultado.la52_i_codigo = $la52_i_codigo "; 
-       } 
+         $sql2 .= " where lab_resultado.la52_i_codigo = $la52_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -629,5 +603,32 @@ class cl_lab_resultado {
     }
     return $sql;
   }
+
+    public function sql_query_exames($la52_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "")
+    {
+        $sql = "select {$campos} ";
+        $sql .= "  from lab_resultado ";
+        $sql .= "       join lab_requiitem  on lab_requiitem.la21_i_codigo  = lab_resultado.la52_i_requiitem ";
+        $sql .= "       join lab_requisicao on lab_requisicao.la22_i_codigo = lab_requiitem.la21_i_requisicao ";
+        $sql .= "       join lab_setorexame on lab_setorexame.la09_i_codigo = lab_requiitem.la21_i_setorexame ";
+        $sql .= "       join lab_exame      on lab_exame.la08_i_codigo      = lab_setorexame.la09_i_exame ";
+        $sql .= "       join lab_labsetor   on lab_labsetor.la24_i_codigo   = lab_setorexame.la09_i_labsetor ";
+
+        $sql2 = "";
+        if (empty($dbwhere)) {
+            if (!empty($ed128_codigo)) {
+                $sql2 .= " where lab_resultado.la52_i_codigo = $la52_i_codigo ";
+            }
+        } else {
+            if (!empty($dbwhere)) {
+                $sql2 = " where $dbwhere";
+            }
+        }
+        $sql .= $sql2;
+        if (!empty($ordem)) {
+            $sql .= " order by {$ordem}";
+        }
+
+        return $sql;
+    }
 }
-?>

@@ -58,7 +58,7 @@ db_input('y27_descr',40,$Iy27_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipofiscaliza','func_tipofiscaliza.php?funcao_js=parent.js_preenchepesquisa|y27_codtipo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipofiscaliza','func_tipofiscaliza.php?funcao_js=parent.js_preenchepesquisa|y27_codtipo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tipofiscaliza.hide();

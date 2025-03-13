@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_caddocumentoatributo_classe.php");
-require_once("classes/db_cgmdocumento_classe.php");
-require_once("classes/db_documento_classe.php");
-require_once("classes/db_caddocumento_classe.php");
-require_once("classes/db_caddocumentoatributovalor_classe.php");
-require_once("classes/db_db_sysarqcamp_classe.php");
+require_once(modification("classes/db_caddocumentoatributo_classe.php"));
+require_once(modification("classes/db_cgmdocumento_classe.php"));
+require_once(modification("classes/db_documento_classe.php"));
+require_once(modification("classes/db_caddocumento_classe.php"));
+require_once(modification("classes/db_caddocumentoatributovalor_classe.php"));
+require_once(modification("classes/db_db_sysarqcamp_classe.php"));
 
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
-require_once("model/Documento.model.php");
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/Documento.model.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -66,8 +66,7 @@ try {
 	 */
   if ($oParam->sMethod == 'carregaFormDocumento' ) {
 
-  	
-  	$oRetorno->aAtributos = $oDocumento->getAtributosByCadDocumento($oParam->iCodCadDocumento);
+  	$oRetorno->aAtributos = Documento::getAtributosByCadDocumento($oParam->iCodCadDocumento);
   	
   /**
    * 
@@ -116,16 +115,16 @@ try {
    *  utilizado para visualizar os dados na rotina de alteração de documento 
    * 
    */  
-  } else if ($oParam->sMethod == 'loadDocumento') {  	
+  } else if ($oParam->sMethod == 'loadDocumento') {
 
     $iCodDocumento     = $oParam->iCodDocumento;
     $oDaoAtributoValor = new cl_caddocumentoatributovalor();
     
     $sSqlAtributoValor = $oDaoAtributoValor->sql_query_file(null, "*", "", "db43_documento={$iCodDocumento}");
     $rsAtributoValor   = $oDaoAtributoValor->sql_record($sSqlAtributoValor);
-    $aValores          = db_utils::getColectionByRecord($rsAtributoValor, false, false, true);
+    $aValores          = db_utils::getCollectionByRecord($rsAtributoValor, false, false, true);
 
-    $oRetorno->aAtributos    = $oDocumento->getAtributosByDocumento($iCodDocumento);
+    $oRetorno->aAtributos    = Documento::getAtributosByDocumento($iCodDocumento);
     $oRetorno->aValores      = $aValores;
     $oRetorno->iCodDocumento = $oParam->iCodDocumento;
     
@@ -144,5 +143,4 @@ try {
 }
 
 
-echo $oJson->encode($oRetorno);   
-?>
+echo $oJson->encode($oRetorno);

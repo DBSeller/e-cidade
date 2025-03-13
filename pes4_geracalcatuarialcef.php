@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_selecao_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_selecao_classe.php"));
 ?>
 <html>
 <head>
@@ -71,11 +71,12 @@ if ($_POST["vinculo"] == "A"){
    */
   $arq = 'tmp/calc_aticef.csv';
 
-  $arquivo = fopen($arq,'w');
+  $arquivo = fopen($arq, 'w');
 
-  if ($versao == 1) {
+  switch ($versao) {
+    case '1':
 
-    $sSqlAtivos = "
+      $sSqlAtivos = "
               select distinct(rh01_regist) as matricula,
                      trim(substr(z01_nome,1,40))
                      ||'#'
@@ -130,10 +131,9 @@ if ($_POST["vinculo"] == "A"){
                                         r14_instit = ".db_getsession('DB_instit')."
                                group by r14_regist ) as sal on r14_regist = rh01_regist
                where rh30_vinculo = 'A' and rh30_regime = 1 $wh";
-
-  } elseif ($versao == 2) {
-
-    $sSqlAtivos = "select distinct(rh01_regist) as matricula,
+    break;
+    case '2':
+      $sSqlAtivos = "select distinct(rh01_regist) as matricula,
                    (select trim(nomeinstabrev) from db_config where rh02_instit = db_config.codigo)
                     ||'#'
                     ||trim(to_char(rh01_regist,'999999'))
@@ -208,11 +208,92 @@ if ($_POST["vinculo"] == "A"){
                      group by r14_regist ) as sal on r14_regist = rh01_regist
              where rh30_vinculo = 'A'
                and rh30_regime = 1 $wh";
+    break;
+    case '3':
+      $sSqlAtivos = "select distinct(rh01_regist) as matricula,
+                   (select trim(nomeinstabrev) from db_config where rh02_instit = db_config.codigo)
+                    ||'#'
+                    ||trim(to_char(rh01_regist,'999999'))
+                    ||'#'
+                    ||trim(to_char(rh30_regime,'9'))
+                    ||'#'
+                    ||case when rh30_regime = 3 then 'N' else 'S' end
+                    ||'#'
+                    ||rh01_sexo
+                    ||'#'
+                    ||to_char(rh01_nasc,'DD/MM/YYYY')
+                    ||'#'
+                    ||to_char(rh01_admiss,'DD/MM/YYYY')
+                    ||'#'
+                    ||to_char(rh01_admiss,'DD/MM/YYYY')
+                    ||'#'
+                    ||trim(translate(to_char(round(base,2),'99999999.99'),'.',''))
+                    ||'#'
+                    ||
+                      case
+                        when rhfuncao.rh37_funcaogrupo = 0 then 4 else rhfuncao.rh37_funcaogrupo
+                      end
+                    ||'#'
+                    ||'1'/**criterio de aposentadoria*/
+                    ||'#'
+                    ||
+  	                  case
+                        when rhpessoal.rh01_tipadm = 1
+                          then '0'
+                        when rhpessoal.rh01_tipadm = 2
+                          then
+  	                        case
+  	                          when ( select sum(h16_quant)
+																	     from assenta
+																		        inner join tipoasse on h16_assent = h12_codigo
+																		  where h16_regist = rhpessoal.rh01_regist and h12_reltot > 1
+															  	 ) is not null
+															  	   then ( select trim(cast(sum(h16_quant) as varchar))
+                                            from assenta
+                                                 inner join tipoasse on h16_assent = h12_codigo
+                                            where h16_regist = rhpessoal.rh01_regist and h12_reltot > 1
+                                          )
+															else ''
+													  end
+                        else ''
+                      end as todo
+              from rhpessoal
+                   inner join cgm          on rh01_numcgm = z01_numcgm
+                   inner join rhpessoalmov on rh02_regist = rh01_regist
+                                          and rh02_anousu = $ano
+                                          and rh02_mesusu = $mes
+                                          and rh02_instit = ".db_getsession('DB_instit')."
+                    left join rhfuncao on rhfuncao.rh37_funcao = rhpessoalmov.rh02_funcao
+                                      and rhfuncao.rh37_instit = rhpessoalmov.rh02_instit
+                   inner join rhlota       on r70_codigo = rh02_lota
+                   inner join rhregime on rh30_codreg = rh02_codreg
+                   inner join (select r14_regist,
+                                      sum( case
+                                             when r14_pd = 1 then r14_valor
+                                             else 0
+                                           end ) as prov,
+                                			sum( case
+                                			       when r14_pd = 2 then r14_valor
+                                			       else 0
+                                			      end ) as desco,
+                               			sum( case
+                               			       when r14_rubric = 'R992' then r14_valor
+                               			       else 0
+                             			       end ) as base
+                         from gerfsal
+                        where r14_anousu = $ano
+                          and r14_mesusu = $mes
+                          and r14_instit = ".db_getsession('DB_instit')."
+                     group by r14_regist ) as sal on r14_regist = rh01_regist
+             where rh30_vinculo = 'A'
+               and rh30_regime = 1 $wh";
+    break;
+
   }
 
   $rsAtivos      = db_query($sSqlAtivos);
   $iLinhasAtivos = pg_numrows($rsAtivos);
-  
+
   for($x = 0; $x < $iLinhasAtivos; $x++){
 
     db_atutermometro($x,$iLinhasAtivos,'termometro');
@@ -271,7 +352,7 @@ if ($_POST["vinculo"] == "A"){
       $dtnespec = pg_result($rsFilhoNaoEspecial,0,'nasc');
     }
 
-  fputs($arquivo,pg_result($rsAtivos,$x,'todo')."#".$temconj."#".$dtconj."#".$dtespec."#".$dtnespec."#\r\n");
+    fputs($arquivo,pg_result($rsAtivos,$x,'todo')."#".$temconj."#".$dtconj."#".$dtespec."#".$dtnespec."#\r\n");
 
   }
   fclose($arquivo);
@@ -285,9 +366,10 @@ if ($_POST["vinculo"] == "A"){
 
   $arquivo = fopen($arq,'w');
 
-  if ($versao == 1) {
+  switch ($versao) {
 
-    $sSqlVersaoInativos = "
+    case '1':
+      $sSqlVersaoInativos = "
         select rh01_regist as matricula,
                trim(substr(z01_nome,1,40))
                ||'#'
@@ -333,29 +415,28 @@ if ($_POST["vinculo"] == "A"){
                               and r14_instit = ".db_getsession('DB_instit')."
                          group by r14_regist ) as sal on r14_regist = rh01_regist
          where rh30_vinculo = 'I' $wh";
+      break;
+    case '2':
 
-  } elseif ($versao == 2) {
-
-    $sSqlVersaoInativos = "
+      $sSqlVersaoInativos = "
         select rh01_regist as matricula,
                trim(to_char(rh01_regist,'999999'))
-               ||'#'
-               ||rh01_sexo
-               ||'#'
-               ||to_char(rh01_nasc,'DD/MM/YYYY')
-               ||'#'
-               ||to_char(rh01_admiss,'DD/MM/YYYY')
-               ||'#'
-               ||trim(translate(to_char(round(prov,2),'99999999.99'),'.',''))
-               ||'#'
-               ||case
-                   when rhpessoalmov.rh02_rhtipoapos = 4 then 1
-                   when rhpessoalmov.rh02_rhtipoapos = 2 then 2
-                   when rhpessoalmov.rh02_rhtipoapos = 3 then 3
-                   when rhpessoalmov.rh02_rhtipoapos = 5 then 4
-                 end
-               ||'#'
-               ||to_char(rh01_admiss,'DD/MM/YYYY') as todo
+               ||'#'||rh01_sexo
+               ||'#'||to_char(rh01_nasc,'DD/MM/YYYY')
+               ||'#'||to_char(( select rh01_admiss
+                                  from rhpessoal as duplo
+                                 where duplo.rh01_numcgm = rhpessoal.rh01_numcgm
+                              order by duplo.rh01_admiss asc
+                                 limit 1
+                               ), 'DD/MM/YYYY')
+               ||'#'||trim(translate(to_char(round(prov,2),'99999999.99'),'.',''))
+               ||'#'||case
+                        when rhpessoalmov.rh02_rhtipoapos in ('0302', '0301') then 1
+                        when rhpessoalmov.rh02_rhtipoapos in ('0101', '0102') then 2
+                        when rhpessoalmov.rh02_rhtipoapos in ('0103') then 3
+                        when rhpessoalmov.rh02_rhtipoapos in ('0106', '0105') then 4
+                      end
+               ||'#'||to_char(rh01_admiss,'DD/MM/YYYY') as todo
           from rhpessoal
                inner join cgm          on rh01_numcgm = z01_numcgm
                inner join rhpessoalmov on rh02_regist = rh01_regist
@@ -383,13 +464,68 @@ if ($_POST["vinculo"] == "A"){
                               and r14_instit = ".db_getsession('DB_instit')."
                          group by r14_regist ) as sal on r14_regist = rh01_regist
          where rh30_vinculo = 'I'
-           and rhpessoalmov.rh02_rhtipoapos <> 1 $wh";
+           and rhpessoalmov.rh02_rhtipoapos <> '0601' and rhpessoalmov.rh02_rhtipoapos <> '0603' $wh";
+      break;
+    case '3':
 
+      $sSqlVersaoInativos = "
+        select rh01_regist as matricula,
+               (select trim(nomeinstabrev) from db_config where rh02_instit = db_config.codigo)
+               ||'#'||
+               trim(to_char(rh01_regist,'999999'))
+               ||'#'||rh01_sexo
+               ||'#'||to_char(rh01_nasc,'DD/MM/YYYY')
+               ||'#'||to_char(( select rh01_admiss
+                                  from rhpessoal as duplo
+                                 where duplo.rh01_numcgm = rhpessoal.rh01_numcgm
+                              order by duplo.rh01_admiss asc
+                                 limit 1
+                               ), 'DD/MM/YYYY')
+               ||'#'||trim(translate(to_char(round(prov,2),'99999999.99'),'.',''))
+               ||'#'||(case rh37_funcaogrupo when 2 then 2 else 3 end)
+               ||'#'||case
+                        when rhpessoalmov.rh02_rhtipoapos in ('0302', '0301') then 1
+                        when rhpessoalmov.rh02_rhtipoapos in ('0101', '0102') then 2
+                        when rhpessoalmov.rh02_rhtipoapos in ('0103') then 3
+                        when rhpessoalmov.rh02_rhtipoapos in ('0106', '0105') then 4
+                      end
+               ||'#'||''/**Tipo de beneficio se militar*/
+               ||'#'||to_char(rh01_admiss,'DD/MM/YYYY') as todo
+          from rhpessoal
+               inner join cgm          on rh01_numcgm = z01_numcgm
+               inner join rhpessoalmov on rh02_regist = rh01_regist
+                                       and rh02_anousu = $ano
+                                       and rh02_mesusu = $mes
+                                       and rh02_instit   = ".db_getsession('DB_instit')."
+               inner join rhlota       on r70_codigo = rh02_lota
+               inner join rhregime     on rh30_codreg = rh02_codreg
+               left  join rhfuncao     on rh37_funcao = rh02_funcao and rh37_instit = rh02_instit
+               inner join (select r14_regist,
+                                  sum( case
+                                         when r14_pd = 1 then r14_valor
+                                         else 0
+                                       end ) as prov,
+                                  sum( case
+                                         when r14_pd = 2 then r14_valor
+                                         else 0
+                                       end ) as desco,
+                                  sum( case
+                                         when r14_rubric = 'R992' then r14_valor
+                                         else 0
+                                       end ) as base
+                             from gerfsal
+                            where r14_anousu = $ano
+                              and r14_mesusu = $mes
+                              and r14_instit = ".db_getsession('DB_instit')."
+                         group by r14_regist ) as sal on r14_regist = rh01_regist
+         where rh30_vinculo = 'I'
+           and rhpessoalmov.rh02_rhtipoapos <> '0601' and rhpessoalmov.rh02_rhtipoapos <> '0603' $wh";
+      break;
   }
 
   $rsVersaoInativos = db_query($sSqlVersaoInativos);
   $iLinhasInativos  = pg_numrows($rsVersaoInativos);
-  
+
   for($x = 0; $x < $iLinhasInativos; $x++){
 
     db_atutermometro($x,$iLinhasInativos,'termometro');
@@ -448,7 +584,25 @@ if ($_POST["vinculo"] == "A"){
       $dtnespec = pg_result($rsFilhoNaoEspecial,'nasc');
     }
 
-  fputs($arquivo,pg_result($rsVersaoInativos,$x,'todo')."#".$temconj."#".$dtconj."#".$dtespec."#".$dtnespec."#x#\r\n");
+    //Verifica se grupo capitalizado ou financeiro
+    $sSegragacaoMassa = 'F';
+    //Localiza a data de admissão (último campo)
+    preg_match("/[m|f]#[\d\/]+#([\d\/]+)/i", pg_result($rsVersaoInativos,$x,'todo'), $sPadraoDataAdmissaoEncontrado);
+    $sDataAdmissaoAposentao = $sPadraoDataAdmissaoEncontrado[1];
+
+    if(!empty($sDataAdmissaoAposentao)) {
+
+      $oDataAdmissaoAposentao = new DBDate($sDataAdmissaoAposentao);
+      $sDataAdmissaoAposentao = $oDataAdmissaoAposentao->convertTo(DBDate::DATA_EN);
+
+      //Compara se a data de admissão for a partir de 21122012
+      if((int)str_replace("-", "", $sDataAdmissaoAposentao) >= 20121221) {
+        $sSegragacaoMassa = 'C';
+      }
+    }
+
+
+    fputs($arquivo,pg_result($rsVersaoInativos,$x,'todo')."#".$temconj."#".$dtconj."#".$dtespec."#".$dtnespec."#".$sSegragacaoMassa."#\r\n");
   }
 
   fclose($arquivo);
@@ -462,106 +616,152 @@ if ($_POST["vinculo"] == "A"){
 
   $arquivo = fopen($arq,'w');
 
-  if ($versao == 1) {
+  switch ($versao) {
 
-    $sSqlVersaoPensionistas = "
-    select p.rh01_regist as matricula,
-           case when c.z01_nome is null then 'NAO CADASTRADO' else trim(substr(c.z01_nome,1,40)) end
-           ||'#'
-           ||lpad(cgm.z01_cgccpf,11,0)
-           ||'#'
-           ||trim(to_char(p.rh01_regist,'999999'))
-           ||'#'
-           ||trim(translate(to_char(round(prov,2),'99999999,99'),',',''))
-           ||'#'
-           ||trim(translate(to_char(round(prov-desco,2),'99999999,99'),',',''))
-           ||'#'
-           ||'2'
-           ||'#'
-           ||p.rh01_sexo as todo
-      from rhpessoal p
-           inner join rhpesorigem  on rh21_regist   = p.rh01_regist
-           left  join rhpessoal q  on q.rh01_regist = rh21_regpri
-           left  join cgm c        on c.z01_numcgm  = q.rh01_numcgm
-           inner join cgm          on p.rh01_numcgm = cgm.z01_numcgm
-           inner join rhpessoalmov on rh02_regist   = p.rh01_regist
-                and rh02_anousu   = $ano
-                and rh02_mesusu   = $mes
-                and rh02_instit   = ".db_getsession('DB_instit')."
-           inner join rhlota       on r70_codigo    = rh02_lota
-           inner join rhregime     on rh30_codreg   = rh02_codreg
-           inner join (select r14_regist,
-                              sum( case
-                                     when r14_pd = 1 then r14_valor
-                                     else 0
-                                   end ) as prov,
-                              sum( case
-                                     when r14_pd = 2 then r14_valor
-                                     else 0
-                                   end ) as desco,
-                              sum( case
-                                     when r14_rubric = 'R992' then r14_valor
-                                     else 0
-                                   end ) as base
-           from gerfsal
-           where r14_anousu = $ano
-             and r14_mesusu = $mes
-             and r14_instit = ".db_getsession('DB_instit')."
-        group by r14_regist ) as sal on r14_regist = p.rh01_regist
-    where rh30_vinculo = 'P' $wh ";
+    case '1':
 
-  } elseif ($versao == 2) {
+      $sSqlVersaoPensionistas = "
+          select p.rh01_regist as matricula,
+            case when c.z01_nome is null then 'NAO CADASTRADO' else trim(substr(c.z01_nome,1,40)) end
+            ||'#'
+            ||lpad(cgm.z01_cgccpf,11,0)
+            ||'#'
+            ||trim(to_char(p.rh01_regist,'999999'))
+            ||'#'
+            ||trim(translate(to_char(round(prov,2),'99999999,99'),',',''))
+            ||'#'
+            ||trim(translate(to_char(round(prov-desco,2),'99999999,99'),',',''))
+            ||'#'
+            ||'2'
+            ||'#'
+            ||p.rh01_sexo as todo
+          from rhpessoal p
+          inner join rhpesorigem  on rh21_regist   = p.rh01_regist
+          left  join rhpessoal q  on q.rh01_regist = rh21_regpri
+          left  join cgm c        on c.z01_numcgm  = q.rh01_numcgm
+          inner join cgm          on p.rh01_numcgm = cgm.z01_numcgm
+          inner join rhpessoalmov on rh02_regist   = p.rh01_regist
+                                 and rh02_anousu   = $ano
+                                 and rh02_mesusu   = $mes
+                                 and rh02_instit   = " . db_getsession('DB_instit') . "
+          inner join rhlota       on r70_codigo    = rh02_lota
+          inner join rhregime     on rh30_codreg   = rh02_codreg
+          inner join (select r14_regist,
+                        sum( case
+                               when r14_pd = 1 then r14_valor
+                               else 0
+                             end ) as prov,
+                        sum( case
+                               when r14_pd = 2 then r14_valor
+                               else 0
+                             end ) as desco,
+                        sum( case
+                               when r14_rubric = 'R992' then r14_valor
+                               else 0
+                             end ) as base
+          from gerfsal
+          where r14_anousu = $ano
+            and r14_mesusu = $mes
+            and r14_instit = " . db_getsession('DB_instit') . "
+          group by r14_regist ) as sal on r14_regist = p.rh01_regist
+          where rh30_vinculo = 'P' $wh ";
+      break;
+    case '2':
 
-    $sSqlVersaoPensionistas = "
-      select p.rh01_regist as matricula,
-             case when c.z01_nome is null then 'NAO CADASTRADO' else trim(substr(c.z01_nome,1,40)) end
-               ||'#'
-               ||trim(to_char(q.rh01_regist,'999999'))
-               ||'#'
-               ||to_char(q.rh01_admiss,'DD/MM/YYYY')
-               ||'#'
-               ||trim(translate(to_char(round(prov,2),'99999999.99'),'.',''))
-               ||'#'
-               ||to_char(p.rh01_admiss,'DD/MM/YYYY')
-               ||'#'
-               ||p.rh01_sexo
-               ||'#'
-               ||to_char(p.rh01_nasc,'DD/MM/YYYY') as todo
-        from rhpessoal p
-             inner join rhpesorigem  on rh21_regist   = p.rh01_regist
-              left join rhpessoal q  on q.rh01_regist = rh21_regpri
-              left join cgm c        on c.z01_numcgm  = q.rh01_numcgm
-             inner join cgm          on p.rh01_numcgm = cgm.z01_numcgm
-             inner join rhpessoalmov on rh02_regist   = p.rh01_regist
-                                     and rh02_anousu  = $ano
-                                     and rh02_mesusu  = $mes
-                                     and rh02_instit  = ".db_getsession('DB_instit')."
-             inner join rhlota       on r70_codigo    = rh02_lota
-             inner join rhregime     on rh30_codreg   = rh02_codreg
-             inner join (select r14_regist,
-                                sum( case
-                                        when r14_pd = 1 then r14_valor
-                                        else 0
-                                     end ) as prov,
-                                sum( case
-                                        when r14_pd = 2 then r14_valor
-                                        else 0
-                                     end ) as desco,
-                                sum( case
-                                        when r14_rubric = 'R992' then r14_valor
-                                        else 0
-                                     end ) as base
-                           from gerfsal
-                          where r14_anousu     = $ano
-                                and r14_mesusu = $mes
-                                and r14_instit = ".db_getsession('DB_instit')."
-                       group by r14_regist ) as sal on r14_regist = p.rh01_regist
-       where rh30_vinculo = 'P' $wh";
+      $sSqlVersaoPensionistas = "
+          select p.rh01_regist as matricula,
+            case when c.z01_nome is null then 'NAO CADASTRADO' else trim(substr(c.z01_nome,1,40)) end
+            ||'#'||trim(to_char(q.rh01_regist,'999999'))
+            ||'#'||to_char(q.rh01_admiss,'DD/MM/YYYY')
+            ||'#'||trim(translate(to_char(round(prov,2),'99999999.99'),'.',''))
+            ||'#'||to_char(p.rh01_admiss,'DD/MM/YYYY')
+            ||'#'||p.rh01_sexo
+            ||'#'||to_char(p.rh01_nasc,'DD/MM/YYYY') as todo
+          from rhpessoal p
+          inner join rhpesorigem  on rh21_regist   = p.rh01_regist
+          left join rhpessoal q  on q.rh01_regist = rh21_regpri
+          left join cgm c        on c.z01_numcgm  = q.rh01_numcgm
+          inner join cgm          on p.rh01_numcgm = cgm.z01_numcgm
+          inner join rhpessoalmov on rh02_regist   = p.rh01_regist
+                                 and rh02_anousu  = $ano
+                                 and rh02_mesusu  = $mes
+                                 and rh02_instit  = " . db_getsession('DB_instit') . "
+          inner join rhlota       on r70_codigo    = rh02_lota
+          inner join rhregime     on rh30_codreg   = rh02_codreg
+          inner join (select r14_regist,
+                         sum( case
+                                 when r14_pd = 1 then r14_valor
+                                 else 0
+                              end ) as prov,
+                         sum( case
+                                 when r14_pd = 2 then r14_valor
+                                 else 0
+                              end ) as desco,
+                         sum( case
+                                 when r14_rubric = 'R992' then r14_valor
+                                 else 0
+                              end ) as base
+                    from gerfsal
+                   where r14_anousu = $ano
+                     and r14_mesusu = $mes
+                     and r14_instit = " . db_getsession('DB_instit') . "
+                group by r14_regist ) as sal on r14_regist = p.rh01_regist
+         where rh30_vinculo = 'P' $wh";
+      break;
+    case '3':
+
+      $sSqlVersaoPensionistas = "
+          select p.rh01_regist as matricula,
+             (select trim(nomeinstabrev) from db_config where pmov.rh02_instit = db_config.codigo)
+             ||'#'||case when c.z01_nome is null then 'NAO CADASTRADO' else trim(substr(c.z01_nome,1,40)) end
+             ||'#'||trim(to_char(q.rh01_regist,'999999'))
+             ||'#'||to_char(q.rh01_admiss,'DD/MM/YYYY')
+             ||'#'||(case rh37_funcaogrupo when 2 then 2 else 3 end)
+             ||'#'||(case pmov.rh02_rhtipoapos WHEN '0601' or '0603' then (case when qreg.rh30_vinculo = 'A' then '1' when qreg.rh30_vinculo = 'I' and qmov.rh02_rhtipoapos in ('0302', '0301') then '2' when qreg.rh30_vinculo = 'I' and qmov.rh02_rhtipoapos not in ('0302', '0301') then '3' else '' end) else '' end)
+             ||'#'||trim(translate(to_char(round(prov,2),'99999999.99'),'.',''))
+             ||'#'||to_char(p.rh01_admiss,'DD/MM/YYYY')
+             ||'#'||p.rh01_sexo
+             ||'#'||to_char(p.rh01_nasc,'DD/MM/YYYY') as todo
+          from rhpessoal p
+          inner join rhpesorigem  on rh21_regist   = p.rh01_regist
+          left join rhpessoal q   on q.rh01_regist = rh21_regpri
+          left join cgm c         on c.z01_numcgm  = q.rh01_numcgm
+          inner join cgm          on p.rh01_numcgm = cgm.z01_numcgm
+          inner join rhpessoalmov pmov on pmov.rh02_regist   = p.rh01_regist
+                                      and pmov.rh02_anousu  = $ano
+                                      and pmov.rh02_mesusu  = $mes
+                                      and pmov.rh02_instit  = " . db_getsession('DB_instit') . "
+          inner join rhpessoalmov qmov on qmov.rh02_regist   = q.rh01_regist
+                                      and qmov.rh02_anousu  = $ano
+                                      and qmov.rh02_mesusu  = $mes
+          inner join rhregime qreg on qreg.rh30_codreg   = qmov.rh02_codreg
+          inner join rhregime preg on preg.rh30_codreg   = pmov.rh02_codreg
+          left  join rhfuncao     on rh37_funcao = qmov.rh02_funcao and rh37_instit = qmov.rh02_instit
+          inner join (select r14_regist,
+                        sum( case
+                                when r14_pd = 1 then r14_valor
+                                else 0
+                             end ) as prov,
+                        sum( case
+                                when r14_pd = 2 then r14_valor
+                                else 0
+                             end ) as desco,
+                        sum( case
+                                when r14_rubric = 'R992' then r14_valor
+                                else 0
+                             end ) as base
+                   from gerfsal
+                  where r14_anousu     = $ano
+                        and r14_mesusu = $mes
+                        and r14_instit = " . db_getsession('DB_instit') . "
+               group by r14_regist ) as sal on r14_regist = p.rh01_regist
+          where preg.rh30_vinculo = 'P' $wh";
+     break;
   }
 
   $rsQueryPensionistas = db_query($sSqlVersaoPensionistas);
   $iLinhasPensionistas = pg_numrows($rsQueryPensionistas);
-  
+
   for($x = 0; $x < $iLinhasPensionistas; $x++){
 
     db_atutermometro($x,$iLinhasPensionistas,'termometro');
@@ -620,13 +820,30 @@ if ($_POST["vinculo"] == "A"){
       $dtnespec = pg_result($rsSqlFilhoNaoEspecial,0,'nasc');
     }
 
-  fputs($arquivo,pg_result($rsQueryPensionistas,$x,'todo')."#".$dtespec."#".$dtnespec."#x#\r\n");
+    $sDadosPensionista = pg_result($rsQueryPensionistas,$x,'todo');
+    //Verifica se grupo capitalizado ou financeiro
+    $sSegragacaoMassa = 'F';
+    //Localiza a data de admissão (último campo)
+    preg_match("/([\d\/]+)#[m|f]/i", $sDadosPensionista, $sPadraoDataConcessaoEncontrado);
+    $sDataConcessaoPensao = $sPadraoDataConcessaoEncontrado[1];
+
+    if(!empty($sDataConcessaoPensao)) {
+
+      $oDataConcessaoPensao = new DBDate($sDataConcessaoPensao);
+      $sDataConcessaoPensao = $oDataConcessaoPensao->convertTo(DBDate::DATA_EN);
+
+      //Compara se a data de admissão for a partir de 21122012
+      if((int)str_replace("-", "", $sDataConcessaoPensao) >= 20121221) {
+        $sSegragacaoMassa = 'C';
+      }
+    }
+    fputs($arquivo, $sDadosPensionista."#".$dtespec."#".$dtnespec."#{$sSegragacaoMassa}#\r\n");
   }
 
   fclose($arquivo);
 }
 
-  $sJsRetorno = "js_montarlista('$arq#Arquivo gerado em: $arq','form1');";
+  $sJsRetorno = "js_montarlista('$arq#Arquivo gerado em: $arq|','form1');";
 
   if( $iLinhasAtivos == 0 && $iLinhasInativos == 0 && $iLinhasPensionistas == 0 ){
     $sJsRetorno = "alert('Não há dados para geração do cálculo atuarial.')";
@@ -636,14 +853,7 @@ if ($_POST["vinculo"] == "A"){
 ?>
 <form name='form1' id='form1'></form>
 <script>
-
-<?=$sJsRetorno?>
-
-function js_manda(){
-  location.href='pes4_geracalcaturial001.php?banco=104';
-}
-
-setTimeout(js_manda,300);
+  location.href='pes4_geracalcaturial001.php?banco=104&funcao_downloadArquivo=<?=base64_encode($sJsRetorno)?>';
 </script>
 </body>
 </html>

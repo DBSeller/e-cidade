@@ -166,10 +166,10 @@ db_input('fa13_c_regiao',15,$Ifa13_c_regiao,true,'text',$db_opcao,"")
 <script>
 function js_pesquisafa13_i_departamento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true);
   }else{
      if(document.form1.fa13_i_departamento.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.fa13_i_departamento.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.fa13_i_departamento.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
      }else{
        document.form1.descrdepto.value = ''; 
      }
@@ -189,10 +189,10 @@ function js_mostradb_depart1(chave1,chave2){
 }
 function js_pesquisafa13_i_farprof(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_far_farmaceutico','func_far_farmaceutico.php?funcao_js=parent.js_mostrafar_farmaceutico1|fa25_i_codigo|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_farmaceutico','func_far_farmaceutico.php?funcao_js=parent.js_mostrafar_farmaceutico1|fa25_i_codigo|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.fa13_i_farprof.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_far_farmaceutico','func_far_farmaceutico.php?pesquisa_chave='+document.form1.fa13_i_farprof.value+'&funcao_js=parent.js_mostrafar_farmaceutico','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_farmaceutico','func_far_farmaceutico.php?pesquisa_chave='+document.form1.fa13_i_farprof.value+'&funcao_js=parent.js_mostrafar_farmaceutico','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -211,7 +211,7 @@ function js_mostrafar_farmaceutico1(chave1,chave2){
   db_iframe_far_farmaceutico.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_farmacia','func_far_farmacia.php?funcao_js=parent.js_preenchepesquisa|fa13_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_farmacia','func_far_farmacia.php?funcao_js=parent.js_preenchepesquisa|fa13_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_farmacia.hide();

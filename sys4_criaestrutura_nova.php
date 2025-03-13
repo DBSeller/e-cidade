@@ -1,37 +1,37 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-$rstab = pg_exec("select d.nomemod,m.codarq,a.nomearq
+$rstab = db_query("select d.nomemod,m.codarq,a.nomearq
                    from   db_sysarquivo a
                           inner join db_sysarqmod m
                           on a.codarq = m.codarq
@@ -59,12 +59,12 @@ function mo_camada(camada){
 }
 function valida_submit(){
     if (document.estrut.nome_arq == ""){
-       alert('O nome do arquivo deve ser informado!!!'); 
+       alert('O nome do arquivo deve ser informado!!!');
        return false;
     }else{
        return true
     }
-}	
+}
 </script>
 <style type="text/css">
 .tabela {border:1px solid black; top:25px; left:150}
@@ -83,10 +83,10 @@ function valida_submit(){
 <table width='100%' align='center' bgcolor="#CCCCCC">
   <tr>
      <td height=25>&nbsp;</td>
-  </tr>		
+  </tr>
 </table>
 
-<?if(!isset($HTTP_POST_VARS["b_estrut"])) {?>
+<?php if(!isset($HTTP_POST_VARS["b_estrut"])) {?>
 
 <center>
 <table border='0' width='70%' align='center'>
@@ -96,15 +96,15 @@ function valida_submit(){
 
 <table border="0" cellspacing="0" cellpadding="0" bgcolor="#cccccc" style='border:1px solid black'>
   <form method="post" name="estrut" onsubmit="return valida_submit();" action="<?echo $PHP_SELF;?>">
-  <tr> 
+  <tr>
      <td colspan=4 align='center' style='border-bottom:1px solid black'>
        <font size='4'><b>Módulos</b></font>
      </td>
   </tr>
   <tr>
   <td colspan=2>
- <? 
-      $rsmod = pg_exec("select m.codmod,m.nomemod 
+ <?php
+      $rsmod = db_query("select m.codmod,m.nomemod
      	                from   db_sysmodulo m
 	               	       inner join db_sysarqmod s
 			       on s.codmod = m.codmod
@@ -112,7 +112,7 @@ function valida_submit(){
    	                order by nomemod");
       echo  "<select  name='modulos' size='10' onchange=\"mo_camada(document.estrut.modulos.value);\">";
      for ($i = 0;$i < pg_numrows($rsmod); $i++) {
-          echo "<option value='".trim(pg_result($rsmod,$i,"nomemod"))."'>".trim(pg_result($rsmod,$i,"nomemod"))."</option>\n";  
+          echo "<option value='".trim(pg_result($rsmod,$i,"nomemod"))."'>".trim(pg_result($rsmod,$i,"nomemod"))."</option>\n";
       }
  ?>
     </select>
@@ -134,7 +134,7 @@ function valida_submit(){
 
 <td width="90%" rowspan='3' valign="top">
 
-<?
+<?php
 // cria as layers com o conteúdo das tabelas
 $j = 0;
 $modulo = "";
@@ -149,7 +149,7 @@ while ($j < pg_numrows($rstab)) {
   db_fieldsmemory($rstab,$j);
 
   $sqlexistetabela = "select * from pg_class where relname = '$nomearq' and relkind = 'r'";
-  $existetabela = pg_query($sqlexistetabela);
+  $existetabela = db_query($sqlexistetabela);
 
   if(pg_num_rows($existetabela)>0) {
     $db_htmlcor = "";
@@ -158,7 +158,7 @@ while ($j < pg_numrows($rstab)) {
     $db_htmlcor = "bgcolor='red'";
     $db_checked = "checked";
   }
-  
+
   if ($modulo == $nomemod) {
     if ($quebratab == 4) {
       $quebratab = 1;
@@ -168,7 +168,7 @@ while ($j < pg_numrows($rstab)) {
     }
     $sHtml .= " <td width=135 $db_htmlcor nowrap>
                   <input type='checkbox' id='".$nomemod.$j."'  name='chk".$nomearq.$codarq."' onClick=\"js_preenchenome('$nomemod',chk".$nomearq.$codarq.")\" value='".$codarq."' $db_checked>
-                  ".$nomearq." 
+                  ".$nomearq."
                 </td>\n";
   } else {
     $quebratab=1;
@@ -194,7 +194,7 @@ while ($j < pg_numrows($rstab)) {
                     <a onClick='js_desmarcatodos(\"".$nomemod."\",\"".strlen($nomemod)."\");return false'href='' title='Desmarcar todos'>Demarcar todos</a>
                   </td>
                 </tr>";
-    
+
     $sHtml .= "<tr style='height:1em'>\n
                  <td width=135 $db_htmlcor nowrap>
                    <input id='".$nomemod.$j."' type='checkbox' name='chk".$nomearq.$codarq."' value='".$codarq."' onClick=\"js_preenchenome('$nomemod',chk".$nomearq.$codarq.")\" $db_checked>
@@ -210,7 +210,7 @@ $sHtml .= "</table>";
 
 echo $sHtml ;
 
-?>      
+?>
 
 </td>
 </tr>
@@ -219,7 +219,7 @@ echo $sHtml ;
 <td>
 
 <table border=0 cellspacing=0 width="100%" style="border:1px solid black">
-  <tr> 
+  <tr>
      <td colspan=2 align='center' style='border-bottom:1px solid black'>
        <font size='4'><b>Opções</b></font>
      </td>
@@ -227,7 +227,7 @@ echo $sHtml ;
    <tr>
       <td>
         <b>Incluir Indices:</b></td>
-      <td> 
+      <td>
         <input type="checkbox" class="radio" id="indi" name="indice" checked>
       </td>
    </tr>
@@ -262,7 +262,7 @@ echo $sHtml ;
 
   <tr>
     <td colspan=2 align='left'>
-    <?
+    <?php
       $versoes = array("3" => "PostgreSQL 8.2", "2" => "PostgreSQL 8.1","1" => "PostgreSQL 7.2");
       db_select("versao_banco",$versoes,true,1,"","","","","");
     ?>
@@ -280,15 +280,15 @@ echo $sHtml ;
 
 </center>
 
-  </form> 
-  <?
+  </form>
+  <?php
   } else {
     if (empty($_POST["nome_arq"])){
       db_msgbox('O nome do Arquivo não pode estar vazio');
-      db_redireciona(); 
+      db_redireciona();
     }
-    //cria o arquivo 
-    umask(74); 
+    //cria o arquivo
+    umask(74);
     $root = substr($HTTP_SERVER_VARS['SCRIPT_FILENAME'],0,strrpos($HTTP_SERVER_VARS['SCRIPT_FILENAME'],"/"));
     $arquivo = "/tmp/".$_POST["nome_arq"];
     $fd = fopen($arquivo,'w');
@@ -303,19 +303,19 @@ echo $sHtml ;
     fputs($fd,"--DROP TABLE:\n");
     while (list($campo,$valor) = each($_POST)){
       if (substr($campo,0,3) == "chk"){
-        $campos  = pg_exec("select a.codarq,a.nomearq,m.codmod,m.nomemod
+        $campos  = db_query("select a.codarq,a.nomearq,m.codmod,m.nomemod
             from   db_sysmodulo m
             inner join db_sysarqmod am
             on am.codmod = m.codmod
             inner join db_sysarquivo a
             on a.codarq = am.codarq
-            where a.codarq = $valor  
+            where a.codarq = $valor
             order by codmod");
 
         if(pg_numrows($campos) > 0){
           db_fieldsmemory($campos,0);
           $sIfExists = $versao_banco=="3"?"IF EXISTS":"";
-          fputs($fd, "DROP TABLE {$sIfExists} ".trim($nomearq)." CASCADE;\n");      	  
+          fputs($fd, "DROP TABLE {$sIfExists} ".trim($nomearq)." CASCADE;\n");
         }
       }
     }
@@ -323,7 +323,7 @@ echo $sHtml ;
     fputs($fd,"--Criando drop sequences\n");
     while (list($campo1,$valor1) = each($sequencias)){
       if (substr($campo1,0,3) == "chk"){
-        $seq = pg_exec("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
+        $seq = db_query("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
             from db_syssequencia s
             inner join db_sysarqcamp a
             on a.codsequencia = s.codsequencia
@@ -332,15 +332,15 @@ echo $sHtml ;
         if (pg_numrows($seq) > 0){
           $rsseq = pg_fetch_array($seq);
           $sIfExists = $versao_banco=="3"?"IF EXISTS":"";
-          fputs($fd, "DROP SEQUENCE {$sIfExists} ".$rsseq["nomesequencia"].";\n");      	 
+          fputs($fd, "DROP SEQUENCE {$sIfExists} ".$rsseq["nomesequencia"].";\n");
         }
-      } 
-    } 
+      }
+    }
     //cria  sequences;
     fputs($fd, "\n\n-- Criando  sequences\n");
     while (list($campo2,$valor2) = each($csequencias)){
       if (substr($campo2,0,3) == "chk"){
-        $cseq = pg_exec("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
+        $cseq = db_query("select s.nomesequencia,s.incrseq,s.minvalueseq,maxvalueseq,startseq,s.cacheseq
             from db_syssequencia s
             inner join db_sysarqcamp a
             on a.codsequencia = s.codsequencia
@@ -351,44 +351,44 @@ echo $sHtml ;
           fputs($fd,"CREATE SEQUENCE ".$rscseq["nomesequencia"]."\n");
           fputs($fd,"INCREMENT ".trim($rscseq["incrseq"])."\n");
           fputs($fd, "MINVALUE ".trim($rscseq["minvalueseq"])."\n");
-          fputs($fd, "MAXVALUE ".trim($rscseq["maxvalueseq"])."\n");		 
-          fputs($fd, "START ".trim($rscseq["startseq"])."\n");		 		 
+          fputs($fd, "MAXVALUE ".trim($rscseq["maxvalueseq"])."\n");
+          fputs($fd, "START ".trim($rscseq["startseq"])."\n");
           fputs($fd, "CACHE ".trim($rscseq["cacheseq"]).";\n");
-          fputs($fd,"\n\n"); 
+          fputs($fd,"\n\n");
         }
-      } 
+      }
     }
     //cria as tabelas e sua estrutura
     fputs($fd,"-- TABELAS E ESTRUTURA\n");
     while (list($campo3,$valor3) = each($camp)){;
       if (substr($campo3,0,3) == "chk"){
-        $tabela  = pg_exec("select a.codarq,a.nomearq,m.codmod,m.nomemod
+        $tabela  = db_query("select a.codarq,a.nomearq,m.codmod,m.nomemod
             from   db_sysmodulo m
             inner join db_sysarqmod am
             on am.codmod = m.codmod
             inner join db_sysarquivo a
             on a.codarq = am.codarq
-            where a.codarq = $valor3  
+            where a.codarq = $valor3
             order by codmod");
 
         if(pg_numrows($tabela) > 0){
           db_fieldsmemory($tabela,0);
         }
-        $campo = pg_exec("select c.nomecam,c.conteudo,c.valorinicial,c.nulo,s.nomesequencia,s.codsequencia
+        $campo = db_query("select c.nomecam,c.conteudo,c.valorinicial,c.nulo,s.nomesequencia,s.codsequencia
             from db_syscampo c
                  inner join db_sysarqcamp a   on a.codcam       = c.codcam
-                 inner join db_syssequencia s on s.codsequencia = a.codsequencia
+                 left join db_syssequencia s on s.codsequencia = a.codsequencia
             where codarq = ".$valor3.
-            "order by a.seqarq");
+            " order by a.seqarq");
         $Ncampos = pg_numrows($campo);
         if ($Ncampos > 0) {
           fputs($fd, "\n-- Módulo: ".trim($nomemod)."\n");
-          fputs($fd, "CREATE TABLE ".trim($nomearq)."(\n");      
+          fputs($fd, "CREATE TABLE ".trim($nomearq)."(\n");
           for($j = 0;$j < $Ncampos;$j++) {
             if($j == $Ncampos - 1) {
               // Chave Primaria
               if(isset($pk)) {
-                $pk = pg_exec("select a.nomearq,c.nomecam,p.sequen,c.conteudo
+                $pk = db_query("select a.nomearq,c.nomecam,p.sequen,c.conteudo
                     from db_sysprikey p
                     inner join db_sysarquivo a on a.codarq = p.codarq
                     inner join db_syscampo c on c.codcam = p.codcam
@@ -455,20 +455,20 @@ echo $sHtml ;
           }
         }
       }
-    }  
+    }
     // Foreign Key
     if (isset($fk)) {
       fputs ($fd,"\n\n\n-- CHAVE ESTRANGEIRA\n\n\n");
       while (list($campo5,$valor5) = each($FKs)){
         if (substr($campo5,0,3) == "chk"){
-          $grupo = pg_exec("select count(referen),referen
+          $grupo = db_query("select count(referen),referen
               from db_sysforkey
               where codarq = $valor5
               group by referen");
-          $nome = pg_exec("select nomearq from db_sysarquivo where codarq = $valor5");
+          $nome = db_query("select nomearq from db_sysarquivo where codarq = $valor5");
           $Ngrupo = pg_numrows($grupo);
           for($j = 0;$j < $Ngrupo;$j++) {
-            $fk = pg_exec("select pai.nomearq as t_pai,c.nomecam
+            $fk = db_query("select pai.nomearq as t_pai,c.nomecam
                 from db_sysforkey f
                 inner join db_sysarquivo pai
                 on pai.codarq = f.referen
@@ -530,12 +530,12 @@ echo $sHtml ;
             inner join db_sysarquivo a
             on a.codarq = i.codarq
             where a.codarq = $valor6";
-          $ind = pg_exec($sqlind);
-          $nome = pg_exec("select nomearq from db_sysarquivo where codarq = $valor6");
+          $ind = db_query($sqlind);
+          $nome = db_query("select nomearq from db_sysarquivo where codarq = $valor6");
           $Ni = pg_numrows($ind);
           if ($Ni > 0) {
             for ($j = 0;$j < $Ni;$j++) {
-              $Ncam = pg_exec("select c.nomecam
+              $Ncam = db_query("select c.nomecam
                   from db_syscampo c
                   inner join db_syscadind ci on ci.codcam = c.codcam
                   inner join db_sysindices i on i.codind = ci.codind
@@ -549,7 +549,7 @@ echo $sHtml ;
               }
               $campos = $campos.");";
               fputs($fd,"CREATE ".( pg_result($ind,$j,"campounico")=="1"?"UNIQUE":"")." INDEX ".trim(pg_result($ind,$j,"nomeind"))." ON ".trim(pg_result($nome,0,"nomearq")).$campos."\n\n");
-            } 
+            }
           }
         }
       }
@@ -558,13 +558,13 @@ echo $sHtml ;
     //Funções
     if(isset($funcoes)) {
       fputs($fd,"\n\n\n-- FUNÇÕES\n\n\n");
-      $result = pg_exec("select triggerfuncao,nomefuncao,corpofuncao from db_sysfuncoes where triggerfuncao = '0'");
+      $result = db_query("select triggerfuncao,nomefuncao,corpofuncao from db_sysfuncoes where triggerfuncao = '0'");
       $numrows = pg_numrows($result);
       for($i = 0;$i < $numrows;$i++) {
         $sIfExists = $versao_banco=="3"?"IF EXISTS":"";
-        fputs($fd,"DROP FUNCTION {$sIfExists} ".trim(pg_result($result,$i,"nomefuncao")).";\n");	
-      }  
-      fputs($fd,"\n\n\n");  
+        fputs($fd,"DROP FUNCTION {$sIfExists} ".trim(pg_result($result,$i,"nomefuncao")).";\n");
+      }
+      fputs($fd,"\n\n\n");
       for($i = 0;$i < $numrows;$i++) {
         fputs($fd,pg_result($result,$i,"corpofuncao").";\n\n\n");
       }
@@ -572,13 +572,13 @@ echo $sHtml ;
     //Views
     if(isset($views)) {
       fputs($fd,"\n\n\n-- VISÕES\n\n\n");
-      $result = pg_exec("select triggerfuncao,nomefuncao,corpofuncao from db_sysfuncoes where triggerfuncao = '2'");
+      $result = db_query("select triggerfuncao,nomefuncao,corpofuncao from db_sysfuncoes where triggerfuncao = '2'");
       $numrows = pg_numrows($result);
       for($i = 0;$i < $numrows;$i++) {
         $sIfExists = $versao_banco=="3"?"IF EXISTS":"";
         fputs($fd,"DROP VIEW {$sIfExists} ".trim(pg_result($result,$i,"nomefuncao")).";\n");
-      }  
-      fputs($fd,"\n\n\n");  
+      }
+      fputs($fd,"\n\n\n");
       for($i = 0;$i < $numrows;$i++) {
         fputs($fd,pg_result($result,$i,"corpofuncao").";\n\n\n");
       }
@@ -591,7 +591,7 @@ echo $sHtml ;
           $meta = "where a.codarq=$valor7";
         }else{
           $meta = "";
-          $RecordsetTabMod  = pg_exec("select a.codarq,a.nomearq,m.codmod,m.nomemod
+          $RecordsetTabMod  = db_query("select a.codarq,a.nomearq,m.codmod,m.nomemod
               from   db_sysmodulo m
               inner join db_sysarqmod am
               on am.codmod = m.codmod
@@ -608,7 +608,7 @@ echo $sHtml ;
             $str .= $c.pg_result($RecordsetTabMod,$i,"codarq");
             $c = ",";
           }
-          $result = pg_exec("select f.corpofuncao,f.nomefuncao,t.nometrigger,t.quandotrigger,t.eventotrigger,tab.nomearq
+          $result = db_query("select f.corpofuncao,f.nomefuncao,t.nometrigger,t.quandotrigger,t.eventotrigger,tab.nomearq
               from   db_sysfuncoes f
               inner join db_systriggers t
               on t.codfuncao = f.codfuncao
@@ -623,13 +623,13 @@ echo $sHtml ;
             fputs($fd,"DROP TRIGGER {$sIfExists} ".trim(pg_result($result,$i,"nometrigger"))." ON ".trim(pg_result($result,$i,"nomearq")).";\n");
           }
           //drop functions
-          fputs($fd,"\n\n\n");  
+          fputs($fd,"\n\n\n");
           for ($i = 0;$i < $numrows;$i++) {
             $sIfExists = $versao_banco=="3"?"IF EXISTS":"";
             fputs($fd,"DROP FUNCTION {$sIfExists} ".trim(pg_result($result,$i,"nomefuncao")).";\n");
           }
           //cria as funções das triggers
-          fputs($fd,"\n\n\n");  
+          fputs($fd,"\n\n\n");
           for ($i = 0;$i < $numrows;$i++) {
             fputs ($fd,pg_result($result,$i,"corpofuncao").";\n\n\n");
           }
@@ -684,7 +684,7 @@ function js_desmarcatodos(nome,tam){
   }
 }
 
-<?
+<?php
 if(!isset($salvando)){
   ?>
     arquivo = '';
@@ -697,7 +697,7 @@ if(!isset($salvando)){
     }
   }
   document.estrut.nome_arq.value = '';
-  <?
+  <?php
 }
 ?>
 function js_preenchenome(obj,obj1){

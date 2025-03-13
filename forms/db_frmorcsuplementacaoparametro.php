@@ -72,7 +72,7 @@ $clorcsuplementacaoparametro->rotulo->label();
 </div>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_orcsuplementacaoparametro','db_iframe_orcsuplementacaoparametro','func_orcsuplementacaoparametro.php?funcao_js=parent.js_preenchepesquisa|o134_anousu','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcsuplementacaoparametro','db_iframe_orcsuplementacaoparametro','func_orcsuplementacaoparametro.php?funcao_js=parent.js_preenchepesquisa|o134_anousu','Pesquisa',true,'0','1','775','390');
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcsuplementacaoparametro.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -103,7 +103,7 @@ class cl_turma_matriculas {
                                 $this->ed36_i_turma 
                                ,$this->ed36_i_matricula 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -129,12 +129,12 @@ class cl_turma_matriculas {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->ed36_i_turma,$this->ed36_i_matricula));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,1006318,'$this->ed36_i_turma','I')");
-       $resac = pg_query("insert into db_acountkey values($acount,1006319,'$this->ed36_i_matricula','I')");
-       $resac = pg_query("insert into db_acount values($acount,1006050,1006318,'','".AddSlashes(pg_result($resaco,0,'ed36_i_turma'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1006050,1006319,'','".AddSlashes(pg_result($resaco,0,'ed36_i_matricula'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,1006318,'$this->ed36_i_turma','I')");
+       $resac = db_query("insert into db_acountkey values($acount,1006319,'$this->ed36_i_matricula','I')");
+       $resac = db_query("insert into db_acount values($acount,1006050,1006318,'','".AddSlashes(pg_result($resaco,0,'ed36_i_turma'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1006050,1006319,'','".AddSlashes(pg_result($resaco,0,'ed36_i_matricula'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -179,17 +179,17 @@ class cl_turma_matriculas {
      $resaco = $this->sql_record($this->sql_query_file($this->ed36_i_turma,$this->ed36_i_matricula));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,1006318,'$this->ed36_i_turma','A')");
-         $resac = pg_query("insert into db_acountkey values($acount,1006319,'$this->ed36_i_matricula','A')");
+         $resac = db_query("insert into db_acountkey values($acount,1006318,'$this->ed36_i_turma','A')");
+         $resac = db_query("insert into db_acountkey values($acount,1006319,'$this->ed36_i_matricula','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["ed36_i_turma"]))
-           $resac = pg_query("insert into db_acount values($acount,1006050,1006318,'".AddSlashes(pg_result($resaco,$conresaco,'ed36_i_turma'))."','$this->ed36_i_turma',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1006050,1006318,'".AddSlashes(pg_result($resaco,$conresaco,'ed36_i_turma'))."','$this->ed36_i_turma',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["ed36_i_matricula"]))
-           $resac = pg_query("insert into db_acount values($acount,1006050,1006319,'".AddSlashes(pg_result($resaco,$conresaco,'ed36_i_matricula'))."','$this->ed36_i_matricula',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1006050,1006319,'".AddSlashes(pg_result($resaco,$conresaco,'ed36_i_matricula'))."','$this->ed36_i_matricula',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Matrículas para Turma nao Alterado. Alteracao Abortada.\\n";
@@ -230,12 +230,12 @@ class cl_turma_matriculas {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,1006318,'$ed36_i_turma','E')");
-         $resac = pg_query("insert into db_acountkey values($acount,1006319,'$ed36_i_matricula','E')");
-         $resac = pg_query("insert into db_acount values($acount,1006050,1006318,'','".AddSlashes(pg_result($resaco,$iresaco,'ed36_i_turma'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1006050,1006319,'','".AddSlashes(pg_result($resaco,$iresaco,'ed36_i_matricula'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,1006318,'$ed36_i_turma','E')");
+         $resac = db_query("insert into db_acountkey values($acount,1006319,'$ed36_i_matricula','E')");
+         $resac = db_query("insert into db_acount values($acount,1006050,1006318,'','".AddSlashes(pg_result($resaco,$iresaco,'ed36_i_turma'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006050,1006319,'','".AddSlashes(pg_result($resaco,$iresaco,'ed36_i_matricula'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from turma_matriculas
@@ -257,7 +257,7 @@ class cl_turma_matriculas {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Matrículas para Turma nao Excluído. Exclusão Abortada.\\n";
@@ -291,7 +291,7 @@ class cl_turma_matriculas {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

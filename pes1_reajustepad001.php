@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpessoalmov_classe.php");
-include("classes/db_padroes_classe.php");
-include("classes/db_pesdiver_classe.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhpessoalmov_classe.php"));
+include(modification("classes/db_padroes_classe.php"));
+include(modification("classes/db_pesdiver_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 ini_set('error_reporting', E_ALL);
 
+use ECidade\RecursosHumanos\ESocial\Repository\ServidorAlteracao;
+use ECidade\RecursosHumanos\ESocial\Model\Formulario\Tipo;
+
+$daoSalarioEsocial = new \cl_rhreajustesalarialesocial;
 $clrhpessoal = new cl_rhpessoal;
 $clrhpessoalmov = new cl_rhpessoalmov;
 $clpadroes = new cl_padroes;
@@ -87,12 +91,18 @@ if(isset($incluir)){
   }
   $contador = 0;
 //echo "<br><br>". ($clpadroes->sql_query_cgmmovpad(null,null,null,null," distinct r02_codigo as pad, r02_regime as reg, r02_form, r02_valor","",$dbwhere));
-  $result_padrao = $clpadroes->sql_record($clpadroes->sql_query_cgmmovpad(null,null,null,null," distinct r02_codigo as pad, r02_regime as reg, r02_form, r02_valor","",$dbwhere));
+
+  $sSqlReajuste = $clpadroes->sql_reajusteAposentados($h12_tiporeajuste, " distinct r02_codigo as pad, r02_regime as reg, r02_form, r02_valor", "", $dbwhere);
+
+  $result_padrao = $clpadroes->sql_record($sSqlReajuste);
   $numrows_padrao = $clpadroes->numrows;
   if($numrows_padrao == 0){
-    $erro_msg = "Nenhum registro encontrado.";
+    $sMensagem = "Nenhum registro encontrado.";
     $sqlerro = true;
   }else{
+
+    $iCountAlterados = 0;
+
     for($i=0;$i<$numrows_padrao;$i++){
       db_fieldsmemory($result_padrao, $i);
       $alterar_padrao = false;
@@ -135,9 +145,45 @@ if(isset($incluir)){
         //echo "<BR> valorpadrao --> $valorpadrao";
         $clpadroes->r02_instit = db_getsession('DB_instit');
         $clpadroes->alterar($anofolha, $mesfolha, $reg, $pad,db_getsession('DB_instit'));
-        $erro_msg = $clpadroes->erro_msg;
+        
         if($clpadroes->erro_status == "0"){
+          $sMensagem = $clpadroes->erro_msg;
           $sqlerro = true;
+        } else {
+          $iCountAlterados++;
+          $sqlListaMatriculas = $clpadroes->sqlReajustePadraoByCompetencia($pad, $anofolha, $mesfolha);
+          $resultadoListaMatriculas = $clpadroes->sql_record($sqlListaMatriculas);
+          if ($clpadroes->numrows > 0 ) {
+            for($z = 0; $z < $clpadroes->numrows; $z++){
+              db_fieldsmemory($resultadoListaMatriculas, $z);
+              /**
+              * Inclui dados do reajuste salarial padrão para o eSocial.
+              */
+              $camposReajuste = ['eso39_sequencial',
+                                 'eso39_matricula',
+                                 'eso39_dataefeito',
+                                 'eso39_tipo',
+                                 'eso39_descricao'
+            ];
+              $sqlVerificaReajuste = $daoSalarioEsocial->sql_query_file(null, 
+                implode(', ', $camposReajuste), 
+                null,
+                "eso39_matricula = {$rh02_regist} and eso39_dataefeito = '{$eso39_dataefeito}' and eso39_tipo = '{$eso39_tipo}' ");
+              $rsVerificaReajuste = $daoSalarioEsocial->sql_record($sqlVerificaReajuste);
+
+              if ($daoSalarioEsocial->numrows == 0) {
+                $daoSalarioEsocial->eso39_matricula = $rh02_regist;
+                $daoSalarioEsocial->eso39_dataefeito = $eso39_dataefeito;
+                $daoSalarioEsocial->eso39_tipo = $eso39_tipo;
+                $daoSalarioEsocial->eso39_descricao = $eso39_descricao;
+                $daoSalarioEsocial->incluir(null);
+
+                $servidorAlteracao = ServidorAlteracao::findMatriculaByLayout($rh02_regist, Tipo::S2206);
+                $servidorAlteracao->setDataS2206(new DBDate($eso39_dataefeito));
+                $servidorAlteracao->save();
+              }
+            }
+          }
         }
       }
     }
@@ -150,7 +196,10 @@ if(isset($incluir)){
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/json2.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script type="text/javascript" src="scripts/widgets/DBDownload.widget.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
@@ -164,13 +213,13 @@ if(isset($incluir)){
 </table>
   <tr>
     <td>
-      <?
-      include("forms/db_frmreajustepad.php");
+      <?php
+      include(modification("forms/db_frmreajustepad.php"));
       ?>
     </td>
   </tr>
 </table>
-<?
+<?php
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
@@ -178,8 +227,11 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 js_setfocus(true);
 </script>
-<?
+<?php
 if(isset($incluir)){
-  db_msgbox($erro_msg);
+  if (!$sqlerro) {
+    $sMensagem = "Foram alterado(s) {$iCountAlterados} registro(s).";
+  }
+  db_msgbox($sMensagem);
 }
 ?>

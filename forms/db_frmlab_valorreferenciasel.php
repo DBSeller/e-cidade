@@ -58,7 +58,7 @@ db_input('la28_c_descr',40,$Ila28_c_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lab_valorreferenciasel','func_lab_valorreferenciasel.php?funcao_js=parent.js_preenchepesquisa|la28_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_valorreferenciasel','func_lab_valorreferenciasel.php?funcao_js=parent.js_preenchepesquisa|la28_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_lab_valorreferenciasel.hide();

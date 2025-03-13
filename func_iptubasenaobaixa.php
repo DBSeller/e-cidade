@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_setorloc_classe.php");
-include("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_setorloc_classe.php"));
+include(modification("libs/db_app.utils.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cliptubase = new cl_iptubase;
@@ -232,12 +232,20 @@ $clrotulo->label("j06_lote");
           }
         
         }else{
-					$sql2 = " where j01_baixa is null  ";
+			$sql2 = " where j01_baixa is null  ";
         }
-				if($sql2!="" || isset($dblov)){			
-           $repassa = array('dblov'=>'0');
-           db_lovrot(@$sql.@$sql2,15,"()","",$funcao_js,"","NoMe",$repassa);
+
+		if($sql2!="" || isset($dblov)){			
+			$rs = db_query($sql.$sql2);
+			$baixa = db_utils::fieldsMemory($rs, 0);
+		   if ($baixa->j01_matric == ''){
+			echo 'A matrícula do imóvel está baixada.';
+		   } else {
+			$repassa = array('dblov'=>'0');
+			db_lovrot(@$sql.@$sql2,15,"()","",$funcao_js,"","NoMe",$repassa);
+		   }
         }
+
       }else{
         $result = $cliptubase->sql_record($cliptubase->sql_query(null,"*",null,"j01_baixa is null and  j01_matric =".$pesquisa_chave));
         if($cliptubase->numrows!=0){
@@ -318,7 +326,7 @@ function js_carregaQuadra(iCodSetor) {
 
 function js_retornaQuadra(oAjax) {
 	
-	var oRetorno = eval("("+oAjax.responseText+")"); 
+	var oRetorno = JSON.parse(oAjax.responseText); 
 	var aQuadras = new Array(); 
 
 	if(oRetorno.status == 1) {
@@ -353,7 +361,7 @@ function js_carregaLote(sQuadra) {
 
 function js_retornaLote(oAjax) {
 
-	var oRetorno = eval("("+oAjax.responseText+")");
+	var oRetorno = JSON.parse(oAjax.responseText);
 	var aLotes   = new Array(); 
 	aLotes['']   = 'Todos...';
 	
@@ -390,3 +398,9 @@ $db_iframe ->iniciarVisivel = false;
 $db_iframe ->mostrar();
 
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

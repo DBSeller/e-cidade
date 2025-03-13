@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 //MODULO:saude
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cgs_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_stdlibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cgs_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_stdlibwebseller.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcgs = new cl_cgs;
 $clcgs_und = new cl_cgs_und;
@@ -51,7 +51,7 @@ $clrotulo->label("DBtxt5");
 //select * from prontuarios inner join cgs_und on z01_i_cgsund = sd24_i_numcgs where sd24_i_numcgs = ( select sd24_i_numcgs from prontuarios where sd24_i_codigo = 4 order by sd24_i_codigo) 
 
 $sql = "select * from cgs_und where z01_i_cgsund = ( select sd24_i_numcgs from prontuarios where sd24_i_codigo = $chave_sd24_i_codigo order by sd24_i_codigo)";
- $query = pg_query($sql);
+ $query = db_query($sql);
  $linhas4 = pg_num_rows($query);
 db_fieldsmemory($query,0);
 ?>

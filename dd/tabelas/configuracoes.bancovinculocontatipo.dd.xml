@@ -1,0 +1,48 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010419' name='configuracoes.bancovinculocontatipo' description="Tipos de vinculos de contas" prefix="db59" label="Tipos de vinculos de contas" type="0">
+  <fields>
+    <field codigo="1010329" 
+           campo_api='' 
+           name="db501_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010330"
+           campo_api='' 
+           name="db501_descricao" 
+           conteudo="varchar(100)" 
+           description="Descrição" 
+           inivalue="" 
+           label="Descrição" 
+           size="100" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db501_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

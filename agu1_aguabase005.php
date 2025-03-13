@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_aguabase_classe.php");
-  include("classes/db_aguabaseresp_classe.php");
-  include("classes/db_aguabasecorresp_classe.php");
-  include("classes/db_aguabasecar_classe.php");
-  include("classes/db_aguaconstr_classe.php");
-  include("classes/db_aguabasevenc_classe.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_aguabase_classe.php"));
+  include(modification("classes/db_aguabaseresp_classe.php"));
+  include(modification("classes/db_aguabasecorresp_classe.php"));
+  include(modification("classes/db_aguabasecar_classe.php"));
+  include(modification("classes/db_aguaconstr_classe.php"));
+  include(modification("classes/db_aguabasevenc_classe.php"));
   
   $claguabase = new cl_aguabase;
   $claguabasecar = new cl_aguabasecar;
@@ -71,7 +71,7 @@
       $sqlerro = true;
     }
   
-    $matriz = split("X", $caracteristica);
+    $matriz = explode("X", $caracteristica);
 
     for ($i = 0; $i < sizeof($matriz); $i++) {
       
@@ -133,7 +133,7 @@
           <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
             <center>
 	            <?
-	              include("forms/db_frmaguabase.php");
+	              include(modification("forms/db_frmaguabase.php"));
 	            ?>
             </center>
 	        </td>
@@ -165,18 +165,18 @@
       <script>
         function js_db_libera(){
           parent.document.formaba.aguabaseresp.disabled=false;
-          top.corpo.iframe_aguabaseresp.location.href='agu1_aguabaseresp001.php?x14_matric=" . @$x01_matric . "';
+          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguabaseresp.location.href='agu1_aguabaseresp001.php?x14_matric=" . @$x01_matric . "';
           parent.document.formaba.aguabasecorresp.disabled=false;
-          top.corpo.iframe_aguabasecorresp.location.href='agu1_aguabasecorresp001.php?x32_matric=" . @$x01_matric . "';
+          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguabasecorresp.location.href='agu1_aguabasecorresp001.php?x32_matric=" . @$x01_matric . "';
           //parent.document.formaba.aguabasecar.disabled=false;
-          //top.corpo.iframe_aguabasecar.location.href='agu1_aguabasecar001.php?x30_matric=" . @$x01_matric . "';
+          //(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguabasecar.location.href='agu1_aguabasecar001.php?x30_matric=" . @$x01_matric . "';
           parent.document.formaba.aguaconstr.disabled=false;
-          //top.corpo.iframe_aguaconstr.location.href='agu1_aguaconstr001.php?x11_codconstr=" . @$x01_matric . "';
-          top.corpo.iframe_aguaconstr.location.href='agu1_aguaconstr001.php?x11_matric=" . @$x01_matric . "';
+          //(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguaconstr.location.href='agu1_aguaconstr001.php?x11_codconstr=" . @$x01_matric . "';
+          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguaconstr.location.href='agu1_aguaconstr001.php?x11_matric=" . @$x01_matric . "';
           parent.document.formaba.aguabasevenc.disabled=false;
-          top.corpo.iframe_aguabasevenc.location.href='agu1_aguabasevenc001.php?x27_matric=" . @$x01_matric . "';
+          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguabasevenc.location.href='agu1_aguabasevenc001.php?x27_matric=" . @$x01_matric . "';
           parent.document.formaba.histocorrencia.disabled=false;
-          top.corpo.iframe_histocorrencia.location.href='agu1_histocorrencia001.php?ar25_matric=" . @$x01_matric . "';
+          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_histocorrencia.location.href='agu1_histocorrencia001.php?ar25_matric=" . @$x01_matric . "';
      ";
     if (isset($liberaaba)) {
       echo "  parent.mo_camada('aguabaseresp');";

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -29,43 +29,61 @@
 $clrotulo = new rotulocampo;
 $clrotulo->label("pc76_pcforne");
 $clrotulo->label("z01_nome");
-$result=$clpcforne->sql_record($clpcforne->sql_query($pc76_pcforne));
-if ($clpcforne->numrows>0){
-  db_fieldsmemory($result,0);
+$result = $clpcforne->sql_record($clpcforne->sql_query($pc76_pcforne));
+if ($clpcforne->numrows > 0) {
+  db_fieldsmemory($result, 0);
 }
 ?>
 
-<form name="form1" method="post" action="">
-<center>
-<br>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tpc76_pcforne?>" align="right">
-       <?=@$Lpc76_pcforne?>
-    </td>
-    <td> 
-<?
+<html>
 
+<head>
+  <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Expires" CONTENT="0">
+  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <link href="estilos.css" rel="stylesheet" type="text/css">
+</head>
 
-db_input('pc76_pcforne', 8, $Ipc76_pcforne, true, 'text', 3)
-?>
-       <?
+<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="document.form1.q80_ativ.focus();">
 
- db_input('z01_nome', 40, $Iz01_nome, true, 'text', 3, '')
-?>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center">
-      <input name="atualizar" type="button"  id="db_opcao" value="Atualizar" onclick="subgrupo.js_atualizar();" >
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-       <iframe id="subgrupo"  frameborder="0" name="subgrupo"   leftmargin="0" topmargin="0" src="com1_pcfornesubiframe.php?pc76_pcforne=<?=@$pc76_pcforne?>" height="300" width="500">
-       </iframe> 
-    </td>  
-  </tr>
-  </table>
-  </center>
-</form>
+  <form name="form1" method="post" action="">
+    <div class="container">
+      <fieldset>
+        <legend>Fornecedor</legend>
+        <table border="0">
+          <tr>
+            <td>
+              <?php
+              db_input('pc76_pcforne', 8, $Ipc76_pcforne, true, 'text', 3);
+              db_input('z01_nome', 40, $Iz01_nome, true, 'text', 3, '');
+              ?>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+      <tr>
+        <td colspan="2" align="center">
+          <input name="atualizar" type="button" id="db_opcao" value="Atualizar" onclick="subgrupo.js_atualizar();">
+        </td>
+      </tr>
+    </div>
+
+    <div class="container">
+      <fieldset>
+        <legend>Subgrupos</legend>
+        <table>
+          <tr>
+            <td colspan="2">
+              <iframe id="subgrupo" frameborder="0" name="subgrupo" leftmargin="0" topmargin="0" src="com1_pcfornesubiframe.php?pc76_pcforne=<?= $pc76_pcforne ?>" height="300" width="500">
+              </iframe>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+    </div>
+  </form>
+
+</body>
+
+</html>

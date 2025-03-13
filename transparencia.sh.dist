@@ -1,0 +1,12 @@
+#!/bin/bash
+
+sDiretorioEcidade="/dados/www/ecidade"
+
+cd $sDiretorioEcidade
+/usr/bin/php -q FrontIntegracaoExterna.php --executable integracao_externa/portal_transparencia/con4_portaltransparencia001.php --dir integracao_externa/portal_transparencia > /dev/null 2>&1
+_ARQ=$(ls -t integracao_externa/portal_transparencia/log/ | grep processamento | head -1)
+yes | cp -af integracao_externa/portal_transparencia/log/$_ARQ integracao_externa/portal_transparencia/log/portaldatransparencia-zabbix.log
+sed -i '/^$/d' integracao_externa/portal_transparencia/log/portaldatransparencia-zabbix.log
+sed -i '/^PHP Notice*/d' integracao_externa/portal_transparencia/log/portaldatransparencia-zabbix.log
+exit 0
+

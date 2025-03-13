@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("libs/db_sql.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_empagegera_classe.php");
-require_once("classes/db_empagemovconta_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_empagegera_classe.php"));
+require_once(modification("classes/db_empagemovconta_classe.php"));
 
 $clempagegera = new cl_empagegera;
 $clempagemovconta = new cl_empagemovconta;
@@ -48,8 +48,8 @@ $clrotulo->label("e60_codemp");
 $clrotulo->label("z01_nome");
 $clrotulo->label("z01_numcgm");
 $clrotulo->label("z01_cgccpf");
-db_postmemory($HTTP_POST_VARS);
-//db_postmemory($HTTP_SERVER_VARS,2);exit;
+$clrotulo->label("e150_numeroprocesso");
+db_postmemory($_POST);
 
 $HEAD3 = "RELATÓRIO DE ARQUIVOS GERADOS";
 $HEAD5 = @$e87_codgera;
@@ -60,11 +60,6 @@ if(isset($e83_codtipo) && $e83_codtipo!="0"){
   $HEAD3 = "TIPO";
   $HEAD5 = @$e83_codtipo;
   $HEAD6 = @$e83_codtipodescr;
-//  $e87_codgera = "select distinct e90_codgera
-//                  from empageconfgera
-//	               inner join empagepag
-//	                 on e85_codmov=e90_codmov
-//	          where e85_codtipo = $e83_codtipo";
   $xtipo = ' and e85_codtipo = '.$e83_codtipo;
 }
 
@@ -79,82 +74,83 @@ $head1 = $HEAD3;
 $head3 = "ARQUIVO :  ".$HEAD5.' - '.$HEAD6 ;
 
 $db_where ='';
+$db_where = ' e80_instit = ' . db_getsession("DB_instit");
 if(isset($e87_codgera) && trim($e87_codgera)!=""){
   $db_where = ' empagegera.e87_codgera in ('.$e87_codgera.')';
-} else {
-  $db_where = ' e80_instit = ' . db_getsession("DB_instit");
-}
-
-if (isset($lCancelado) && $lCancelado == "0") {
-
-
-  $db_where .= " and empageconfgera.e90_cancelado is false ";
 }
 
 $sqlOrdem = "
-  select  distinct
-	  e90_codgera,
-	  e90_codmov,
-	  e87_data,
-	  e87_dataproc,
-	  c63_banco,
-	  c63_agencia,
-	  coalesce(c63_dvagencia,'0') as c63_dvagencia,
-	  c63_conta,
-	  coalesce(c63_dvconta,'0') as c63_dvconta,
-	  pc63_agencia::varchar,
-      coalesce(pc63_agencia_dig,'0') as pc63_agencia_dig,
-	  pc63_conta::varchar,
-	  pc63_contabanco::varchar,
-      coalesce(pc63_conta_dig,'0') as pc63_conta_dig,
-	  translate(to_char(round(e81_valor- coalesce(fc_valorretencaomov(e81_codmov,false),0),2),'99999999999.99'),'.','') as valor,
-	  e81_valor- coalesce(fc_valorretencaomov(e81_codmov,false),0) as valorori,
-	  case when  pc63_banco = c63_banco then '01' else '03' end as  lanc,
-	  coalesce(pc63_banco,'000') as pc63_banco,
-	  e83_convenio as convenio,
-	  z01_numcgm as z01_numcgm,
-	  substr(z01_nome,1,40) as z01_nome,
-	  case when pc63_cnpjcpf = '0' or trim(pc63_cnpjcpf) = '' or pc63_cnpjcpf is null then length(trim(z01_cgccpf)) else length(trim(pc63_cnpjcpf)) end as tam,
-	  case when  pc63_cnpjcpf = '0' or trim(pc63_cnpjcpf) = '' or pc63_cnpjcpf is null then z01_cgccpf else pc63_cnpjcpf end as cnpj,
-	  e88_codmov as cancelado,
-	  z01_ender,
-	  z01_numero,
-	  z01_compl,
-	  z01_bairro,
-	  z01_munic,
-	  z01_cep,
-	  z01_uf,
-	  empagetipo.*,
-	  e85_codtipo,
-	  e81_valor,
-	  e81_codmov,
-	  e81_numemp,
-	  e87_dataproc as dataprocessa,
-	  e87_hora,
-	  pc63_dataconf,
-	  e60_codemp,
-	  e82_codord,
-	  fc_valorretencaomov(e81_codmov, false) as vlrretencao
+  select distinct
+    e90_codgera,
+    e90_codmov,
+    e87_data,
+    e87_dataproc,
+    c63_banco,
+    c63_agencia,
+    coalesce(c63_dvagencia,'0') as c63_dvagencia,
+    c63_conta,
+    coalesce(c63_dvconta,'0') as c63_dvconta,
+    pc63_agencia::varchar,
+    coalesce(pc63_agencia_dig,'0') as pc63_agencia_dig,
+    pc63_conta::varchar,
+    pc63_contabanco::varchar,
+    coalesce(pc63_conta_dig,'0') as pc63_conta_dig,
+    translate(to_char(round(e81_valor - coalesce(fc_valorretencaomov(e81_codmov,false),0),2),'99999999999.99'),'.','') as valor,
+    e81_valor - coalesce(fc_valorretencaomov(e81_codmov,false),0) as valorori,
+    case when  pc63_banco = c63_banco then '01' else '03' end as  lanc,
+    coalesce(pc63_banco,'000') as pc63_banco,
+    e83_convenio as convenio,
+    cgm.z01_numcgm as z01_numcgm,
+    substr(cgm.z01_nome,1,40) as z01_nome,
+    case when pc63_cnpjcpf = '0' or trim(pc63_cnpjcpf) = '' or pc63_cnpjcpf is null
+         then length(trim(cgm.z01_cgccpf)) else length(trim(pc63_cnpjcpf)) end as tam,
+    case when  pc63_cnpjcpf = '0' or trim(pc63_cnpjcpf) = '' or pc63_cnpjcpf is null
+         then cgm.z01_cgccpf else pc63_cnpjcpf end as cnpj,
+    e88_codmov as cancelado,
+    cgm.z01_ender,
+    cgm.z01_numero,
+    cgm.z01_compl,
+    cgm.z01_bairro,
+    cgm.z01_munic,
+    cgm.z01_cep,
+    cgm.z01_uf,
+    empagetipo.*,
+    e85_codtipo,
+    e81_valor,
+    e81_codmov,
+    e81_numemp,
+    e87_dataproc as dataprocessa,
+    e87_hora,
+    pc63_dataconf,
+    e60_codemp,
+    e60_anousu,
+    e82_codord,
+    fc_valorretencaomov(e81_codmov, false) as vlrretencao,
+    coalesce(e150_numeroprocesso,'') as e150_numeroprocesso
   from empageconfgera
-	  inner join empagegera on e90_codgera=e87_codgera
-	  inner join empagemov on e90_codmov = e81_codmov
-      inner join empage  on  empage.e80_codage = empagemov.e81_codage
-	  inner join empempenho on e60_numemp = e81_numemp
-	  inner join empagepag on e81_codmov = e85_codmov
-	  inner join empagetipo on e85_codtipo = e83_codtipo
-	  inner join empord on e81_codmov = e82_codmov
-	  left join empageslip on e81_codmov = e89_codmov
-	  inner join conplanoreduz on e83_conta = c61_reduz and c61_anousu = ".db_getsession("DB_anousu")."
-	  inner join conplanoconta on c63_codcon = c61_codcon and c63_anousu = c61_anousu
-	  left join slip on slip.k17_codigo = e89_codigo
-	  left join slipnum on slipnum.k17_codigo = slip.k17_codigo
-	  left join empageconfcanc on e88_codmov = e90_codmov
-	  left join empagemovconta on e90_codmov = e98_codmov
-	  left join pcfornecon on pc63_contabanco = e98_contabanco
-	  left join cgm on z01_numcgm = pc63_numcgm
+	  inner join empagegera          on e90_codgera        = e87_codgera
+                                  and e90_cancelado      = false
+	  inner join empagemov           on e90_codmov         = e81_codmov
+          inner join empage              on empage.e80_codage  = empagemov.e81_codage
+	  inner join empempenho          on e60_numemp         = e81_numemp
+          inner join empempaut           on e61_numemp         = e81_numemp
+	  inner join empagepag           on e81_codmov         = e85_codmov
+	  inner join empagetipo          on e85_codtipo        = e83_codtipo
+	  inner join empord              on e81_codmov         = e82_codmov
+	  inner join conplanoreduz       on e83_conta          = c61_reduz and c61_anousu = ".db_getsession("DB_anousu")."
+	  inner join conplanoconta       on c63_anousu         = c61_anousu
+	                                and c63_reduz          = c61_reduz
+          left  join empautorizaprocesso on e150_empautoriza   = e61_autori
+	  left  join empageslip          on e81_codmov         = e89_codmov
+	  left  join slip                on slip.k17_codigo    = e89_codigo
+	  left  join slipnum             on slipnum.k17_codigo = slip.k17_codigo
+	  left  join empageconfcanc      on e88_codmov         = e90_codmov
+	  left  join empagemovconta      on e90_codmov         = e98_codmov
+	  left  join pcfornecon          on pc63_contabanco    = e98_contabanco
+	  left  join cgm                 on cgm.z01_numcgm     = pc63_numcgm
  where e80_instit = " . db_getsession("DB_instit") . " and  $db_where
 	 ";
-  $sqlSlip = "
+$sqlSlip = "
   select  distinct
 	  e90_codgera,
 	  e90_codmov,
@@ -180,8 +176,8 @@ $sqlOrdem = "
     coalesce((case when pc63_conta_dig is null then descrconta.c63_dvconta
      else pc63_conta_dig end ),'0')::varchar as pc63_conta_dig,
 
-	  translate(to_char(round(e81_valor - coalesce(fc_valorretencaomov(e81_codmov,false),0),2),'99999999999.99'),'.','') as valor,
-	  e81_valor - coalesce(fc_valorretencaomov(e81_codmov,false),0) as valorori,
+	  translate(to_char(round(empagemov.e81_valor - coalesce(fc_valorretencaomov(empagemov.e81_codmov,false),0),2),'99999999999.99'),'.','') as valor,
+	  empagemov.e81_valor - coalesce(fc_valorretencaomov(empagemov.e81_codmov,false),0) as valorori,
 	  case when  (pc63_banco = conplanoconta.c63_banco or descrconta.c63_banco = conplanoconta.c63_banco)
 	       then '01' else '03' end as  lanc,
 
@@ -207,78 +203,83 @@ $sqlOrdem = "
 	  case when cgm.z01_uf is null then cgmslip.z01_uf else cgm.z01_uf end as z01_uf,
 	  empagetipo.*,
 	  e85_codtipo,
-	  e81_valor,
-	  e81_codmov,
-	  e81_numemp,
+	  empagemov.e81_valor,
+	  empagemov.e81_codmov,
+	  0 as e81_numemp,
 	  e87_dataproc as dataprocessa,
 	  e87_hora,
 	  pc63_dataconf,
 	  'slip' as e60_codemp,
+    0 as e60_anousu,
 	  e89_codigo as e82_codord,
-	  0 as  vlrretencao
+	  0 as  vlrretencao,
+    coalesce(k145_numeroprocesso,'') as e150_numeroprocesso
   from empageconfgera
-       inner join empagegera               on e90_codgera        = e87_codgera
-       inner join empagemov                on e90_codmov         = e81_codmov
-       inner join empage                   on empage.e80_codage  = empagemov.e81_codage
-       inner join empagepag                on e81_codmov         = e85_codmov
-       inner join empagetipo               on e85_codtipo        = e83_codtipo
-       inner join empageslip               on e81_codmov         = e89_codmov
-       inner join conplanoreduz            on c61_reduz          = e83_conta
-                                          and c61_anousu         = ".db_getsession("DB_anousu")."
-       inner join conplanoconta            on c63_codcon         = c61_codcon
-                                          and c63_anousu         = c61_anousu
-       inner join slip                     on slip.k17_codigo    = e89_codigo
-       inner join slipnum                  on slipnum.k17_codigo = slip.k17_codigo
+       inner join empagegera               on e90_codgera            = e87_codgera
+                                          and e90_cancelado          = false
+       inner join empagemov                on e90_codmov             = empagemov.e81_codmov
+       inner join empage                   on empage.e80_codage      = empagemov.e81_codage
+       inner join empagepag                on empagemov.e81_codmov   = e85_codmov
+       inner join empagetipo               on e85_codtipo            = e83_codtipo
+       inner join empageslip               on e81_codmov             = e89_codmov
+       inner join conplanoreduz            on c61_reduz              = e83_conta
+                                          and c61_anousu             = ".db_getsession("DB_anousu")."
+       inner join conplanoconta            on c63_anousu             = c61_anousu
+                                          and c63_reduz              = c61_reduz
+       inner join slip                     on slip.k17_codigo        = e89_codigo
+       inner join slipnum                  on slipnum.k17_codigo     = slip.k17_codigo
+       left  join slipprocesso              on k145_slip             = slip.k17_codigo
+       left  join empageconfcanc            on e88_codmov            = e90_codmov
+       left  join empagemovconta            on e90_codmov            = e98_codmov
+       left  join pcfornecon                on pc63_contabanco       = e98_contabanco
+       left  join cgm                       on z01_numcgm            = pc63_numcgm
+       left  join cgm cgmslip               on cgmslip.z01_numcgm    = slipnum.k17_numcgm
+       left  join conplanoreduz cre         on cre.c61_reduz         = k17_debito
+                                           and cre.c61_anousu        = ".db_getsession("DB_anousu")."
+       left  join conplano concre           on concre.c60_codcon     = cre.c61_codcon
+                                           and concre.c60_anousu     = cre.c61_anousu
+       left  join conplanoconta descrconta  on concre.c60_anousu     = descrconta.c63_anousu
+                                           and cre.c61_reduz         = descrconta.c63_reduz
 
-       left join empageconfcanc            on e88_codmov         = e90_codmov
-       left join empagemovconta            on e90_codmov         = e98_codmov
-       left join pcfornecon                on pc63_contabanco    = e98_contabanco
-       left join cgm                       on z01_numcgm         = pc63_numcgm
-       left join cgm cgmslip               on cgmslip.z01_numcgm = slipnum.k17_numcgm
-
-       left join conplanoreduz cre         on cre.c61_reduz      = k17_debito
-                                          and cre.c61_anousu     = ".db_getsession("DB_anousu")."
-
-       left join conplano concre           on concre.c60_codcon  = cre.c61_codcon
-                                          and concre.c60_anousu  = cre.c61_anousu
-
-       left join conplanoconta descrconta  on concre.c60_codcon  = descrconta.c63_codcon
-                                          and concre.c60_anousu  = descrconta.c63_anousu
-
-  where e80_instit = " . db_getsession("DB_instit") . " and  $db_where
+  where e80_instit = " . db_getsession("DB_instit") . " and $db_where
   order by e85_codtipo,z01_nome,pc63_banco,pc63_agencia";
-	$sqlMov = $sqlOrdem." union ".$sqlSlip;
-
-//die($sqlMov);
+$sqlMov = $sqlOrdem." union ".$sqlSlip;
 $result_empagegera = $clempagegera->sql_record($sqlMov);
-echo pg_last_error();
+
+if (!$result_empagegera){
+   echo pg_last_error();
+}
 $numrows_empagegera = $clempagegera->numrows;
+
 if($numrows_empagegera==0){
   db_redireciona("db_erros.php?fechar=true&db_erro=Nenhum registro encontrado.");
 }
-
 db_fieldsmemory($result_empagegera,0);
 
+$dtPagamento = null;
 
-//$oEmpenhoFinanceiro = EmpenhoFinanceiro::getInstanceByCodigo($e60_codemp, db_getsession('DB_anousu'));
-$oConlancamEmp = new cl_conlancamemp();
-$sWhere  = " c75_numemp = {$e81_numemp} ";
-$sWhere .= " and c53_tipo   = 30 order by c75_codlan desc limit 1";
-$sSqlLancamentoEmpenho = $oConlancamEmp->sql_query_documentos(null, 'c75_data', null, $sWhere);
-$rsBuscaLancamento = db_query($sSqlLancamentoEmpenho);
-$dtPagamento = $dataprocessa;
-if ($rsBuscaLancamento) {
-  $dtPagamento = db_utils::fieldsMemory($rsBuscaLancamento, 0)->c75_data;
+if (!empty($e87_codgera)) {
+  $oConlancamEmp = new cl_conlancamemp();
+  $sWhere  = " c75_numemp = {$e81_numemp} and e87_codgera = {$e87_codgera} ";
+  $sWhere .= " and c53_tipo = 30 order by c75_codlan desc limit 1";
+  $sSqlLancamentoEmpenho = $oConlancamEmp->sql_query_arquivo_lancamento(null, 'c75_data', null, $sWhere);
+  $rsBuscaLancamento = db_query($sSqlLancamentoEmpenho);
+  $dtPagamento = $dataprocessa;
+  if ($rsBuscaLancamento) {
+    $dtPagamento = db_utils::fieldsMemory($rsBuscaLancamento, 0)->c75_data;
+  }
 }
 
-$head5 = "GERAÇÃO  :  ". db_formatar($e87_data,"d").' AS '.$e87_hora.' HS';
-$head6 = "PAGAMENTO:  ".db_formatar($dtPagamento,"d");
+$head5 = "GERAÇÃO  :  ". db_formatar($e87_data,"d").' ÀS '.$e87_hora.'H';
+if (!empty($dtPagamento)) {
+  $head6 = "PAGAMENTO:  ".db_formatar($dtPagamento,"d");
+}
 
 // seleciona o nome do banco
 $sql = "select db90_descr from db_bancos where trim(db90_codban)= '$c63_banco'";
 $rbanco = db_query($sql);
 if (pg_numrows($rbanco) > 0 ){
-   db_fieldsmemory($rbanco,0);
+  db_fieldsmemory($rbanco,0);
 }
 
 if($c63_banco == '041'){
@@ -288,103 +289,113 @@ if($c63_banco == '041'){
 }else{
   $head7 = 'BANCO ('.$c63_banco.'): '.$db90_descr;
 }
-$head9 = "** - Contas já usadas em arquivos ou conferidas";
-
-//$head8 = 'AGENDA : '.$e81_codage;
+$head8 = "** - Contas já usadas em arquivos ou conferidas";
 
 $pdf->addpage("L");
-$xvalor    = 0;
-$xvaltotal = 0;
-$xbanco    = '';
-$ant_codgera = "";
-$total_geral =0;
 
-$soma_dep = 0;
-$soma_doc = 0;
-$soma_ted = 0;
-$tota_dep = 0;
-$tota_doc = 0;
-$tota_ted = 0;
-
-$nTotalBruto = 0;
+$xbanco          = '';
+$ant_codgera     = "";
+$xvalor          = 0;
+$xvaltotal       = 0;
+$total_geral     = 0;
+$soma_dep        = 0;
+$soma_doc        = 0;
+$soma_ted        = 0;
+$tota_dep        = 0;
+$tota_doc        = 0;
+$tota_ted        = 0;
+$nTotalBruto     = 0;
 $nTotalRetencoes = 0;
 
-for($i =0 ; $i < $numrows_empagegera;$i++) {
+for ($i =0 ; $i < $numrows_empagegera;$i++) {
 
   db_fieldsmemory($result_empagegera,$i);
   $e81_valor -= $vlrretencao;
 
-  $pdf->setfont('arial','b',8);
-  if($pdf->gety() > $pdf->h - 30 || $i==0){
-    if($pdf->gety() > $pdf->h - 30){
+  $pdf->setfont('arial','b',7);
+
+  if ($pdf->gety() > $pdf->h - 30 || $i==0) {
+    
+    if ($pdf->gety() > $pdf->h - 30) { 
       $pdf->cell(260,0.1,"","T",1,"L",0);
       $pdf->addpage("L");
     }
+
     $pdf->cell(15,$alt,"ARQUIVO",1,0,"C",1);
     $pdf->cell(260,$alt,"DESCRIÇÃO",1,1,"C",1);
     $pdf->cell(15,$alt, 'Nº Emp.',1,0,"C",0);
-    $pdf->cell(15,$alt,"OP/Slip",1,0,"C",0);
-    $pdf->cell(15,$alt,$RLz01_numcgm,1,0,"C",0);
+    $pdf->cell(12,$alt,"OP/Slip",1,0,"C",0);
+    $pdf->cell(12,$alt,$RLz01_numcgm,1,0,"C",0);
     $pdf->cell(60,$alt,$RLz01_nome,1,0,"C",0);
-    $pdf->cell(25,$alt,$RLz01_cgccpf,1,0,"C",0);
+    $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",0);
     $pdf->cell(20,$alt,$RLe81_valor,1,0,"C",0);
     $pdf->cell(20,$alt,"Retenção",1,0,"C",0);
-    $pdf->cell(15,$alt,"Cod.Pgto.",1,0,"C",0);
-    $pdf->cell(15,$alt,$RLpc63_banco,1,0,"C",0);
-    $pdf->cell(15,$alt,$RLpc63_agencia,1,0,"C",0);
-    $pdf->cell(20,$alt,$RLpc63_conta,1,0,"C",0);
-    $pdf->cell(20,$alt,$RLe81_codmov,1,0,"C",0);
-    $pdf->cell(20,$alt,$RLe81_numemp,1,1,"C",0);
+    $pdf->cell(12,$alt,"Cod.Pgto.",1,0,"C",0);
+    $pdf->cell(12,$alt,$RLpc63_banco,1,0,"C",0);
+    $pdf->cell(12,$alt,$RLpc63_agencia,1,0,"C",0);
+    $pdf->cell(15,$alt,$RLpc63_conta,1,0,"C",0);
+    $pdf->cell(15,$alt,$RLe81_codmov,1,0,"C",0);
+    $pdf->cell(15,$alt,$RLe81_numemp,1,0,"C",0);
+    $pdf->cell(35,$alt,$RLe150_numeroprocesso,1,1,"C",0);
   }
+
   if($ant_codgera!=$e85_codtipo.'-'.$e87_codgera){
 
     if($i !=0){
-      $pdf->cell(130,$alt,'DEP',1,0,"C",1);
+      $pdf->cell(119,$alt,'DEP',1,0,"C",1);
       $pdf->cell(20,$alt,db_formatar($soma_dep,'f'),1,0,"R",1);
-      $pdf->cell(125,$alt,'',1,1,"C",1);
+      $pdf->cell(136,$alt,'',1,1,"C",1);
 
-      $pdf->cell(130,$alt,'DOC',1,0,"C",1);
+      $pdf->cell(119,$alt,'DOC',1,0,"C",1);
       $pdf->cell(20,$alt,db_formatar($soma_doc,'f'),1,0,"R",1);
-      $pdf->cell(125,$alt,'',1,1,"C",1);
+      $pdf->cell(136,$alt,'',1,1,"C",1);
 
-      $pdf->cell(130,$alt,'TED',1,0,"C",1);
+      $pdf->cell(119,$alt,'TED',1,0,"C",1);
       $pdf->cell(20,$alt,db_formatar($soma_ted,'f'),1,0,"R",1);
-      $pdf->cell(125,$alt,'',1,1,"C",1);
+      $pdf->cell(136,$alt,'',1,1,"C",1);
 
-      $pdf->cell(130,$alt,'Total Banco',1,0,"C",1);
+      $pdf->cell(119,$alt,'Total Banco',1,0,"C",1);
       $pdf->cell(20,$alt,db_formatar($xtotal,'f'),1,0,"R",1);
-      $pdf->cell(125,$alt,'',1,1,"C",1);
+      $pdf->cell(136,$alt,'',1,1,"C",1);
       $soma_dep = 0;
       $soma_doc = 0;
       $soma_ted = 0;
 
       $pdf->ln(3);
     }
+
     $pdf->ln(3);
     $pdf->cell(15,$alt,$e85_codtipo,1,0,"C",1);
-    $pdf->cell(220,$alt,$e83_descr.'   ('.$e87_codgera.'-'.$e87_descgera.')'." - CONTA $e83_conta","LTB",0,"L",1);
-    $pdf->cell(40,$alt,"COVÊNIO - $e83_convenio","RTB",1,"L",1);
+    $pdf->cell(230,$alt,$e83_descr. " - CONTA $e83_conta - $c63_banco/$c63_agencia-$c63_dvagencia/$c63_conta-$c63_dvconta","LTB",0,"L",1);
+    $pdf->cell(30,$alt,"CONVÊNIO - $e83_convenio","RTB",1,"L",1);
     $xtotal = 0;
     $ant_codgera=$e85_codtipo.'-'.$e87_codgera;
   }
-  /*
-  if($xbanco != $pc63_banco && $i !=0){
-    $pdf->cell(125,$alt,'Total do Banco',1,0,"C",1);
-    $pdf->cell(20,$alt,db_formatar($xtotal,'f'),1,0,"R",1);
-    $pdf->cell(115,$alt,'',1,1,"C",1);
-    $pdf->ln(4);
-    $pdf->cell(20,$alt,$e87_codgera,1,0,"C",1);
-    $pdf->cell(240,$alt,$e87_descgera,1,1,"L",1);
-    $xbanco = $pc63_banco;
-    $xtotal = 0;
+
+  $lPagamentoBradesco = false;
+
+  if (!empty($e87_codgera)) {
+
+    $oDaoNumeroPagFor   = new cl_pagfornumeracao();
+    $sSqlBuscaNumero    = $oDaoNumeroPagFor->sql_query_file(null, "*", null, "o152_empagegera = {$e87_codgera}");
+    $rsBuscaNumero      = db_query($sSqlBuscaNumero);
+    $lPagamentoBradesco = false;
+
+    if ($rsBuscaNumero && pg_num_rows($rsBuscaNumero) == 1) {
+      $codpgto            = "TED";
+      $lPagamentoBradesco = true;
+    }
   }
-  */
-  if ( $pc63_banco == $c63_banco ) {
+
+  if ($pc63_banco == $c63_banco) {
+
     $codpgto   = "DEP";
     $soma_dep += $e81_valor;
     $tota_dep += $e81_valor;
+
   } else {
-    if ( $e81_valor < 3000 ){
+
+    if ($e81_valor < 3000 && !$lPagamentoBradesco) {
       $codpgto   = "DOC";
       $soma_doc += $e81_valor;
       $tota_doc += $e81_valor;
@@ -395,35 +406,96 @@ for($i =0 ; $i < $numrows_empagegera;$i++) {
     }
   }
 
-  if(trim($pc63_agencia_dig)!=""){
+  if (trim($pc63_agencia_dig)!="") {
     $pc63_agencia_dig = "-".$pc63_agencia_dig;
   }
-  if(trim($pc63_conta_dig)!=""){
+  if (trim($pc63_conta_dig)!="") {
     $pc63_conta_dig = "-".$pc63_conta_dig;
   }
-  $pdf->setfont('arial','',7);
-  $pdf->cell(15,$alt,$e60_codemp,1,0,"C",0);
-  $pdf->cell(15,$alt,$e82_codord,1,0,"C",0);
-  $pdf->cell(15,$alt,$z01_numcgm,1,0,"C",0);
+  $pdf->setfont('arial','',6);
+  
+  if ($e60_anousu != 0) {
+    $pdf->cell(15,$alt,$e60_codemp."/".$e60_anousu,1,0,"C",0);
+  }
+  else{
+    $pdf->cell(15,$alt,$e60_codemp,1,0,"C",0);
+  }
+  $pdf->cell(12,$alt,$e82_codord,1,0,"C",0);
+  $pdf->cell(12,$alt,$z01_numcgm,1,0,"C",0);
 
   $asteriscos = "";
-  $result_asteriscos = $clempagemovconta->sql_record($clempagemovconta->sql_query_conta(null,"pc63_contabanco","","pc63_contabanco=$pc63_contabanco and e90_codmov is not null"));
-  if($clempagemovconta->numrows > 0 || $pc63_dataconf!=""){
+  $sWhereContaBanco = '';
+  if (!empty($pc63_contabanco)) {
+    $sWhereContaBanco = " pc63_contabanco={$pc63_contabanco} and ";
+  }
+  $result_asteriscos = $clempagemovconta->sql_record($clempagemovconta->sql_query_conta(null,"pc63_contabanco","","{$sWhereContaBanco} e90_codmov is not null"));
+  if ($clempagemovconta->numrows > 0 || $pc63_dataconf!="") {
     $asteriscos = "** ";
   }
 
   $pdf->cell(60,$alt,$asteriscos.$z01_nome,1,0,"L",0);
-  $pdf->cell(25,$alt,$cnpj,1,0,"R",0);
+  $pdf->cell(20,$alt,$cnpj,1,0,"R",0);
   $pdf->cell(20,$alt,db_formatar($e81_valor,'f'),1,0,"R",0);
   $pdf->cell(20,$alt,db_formatar($vlrretencao,'f'),1,0,"R",0);
-  $pdf->cell(15,$alt,$codpgto,1,0,"C",0);
+  $pdf->cell(12,$alt,$codpgto,1,0,"C",0);
 
-  $pdf->cell(15,$alt,$pc63_banco,1,0,"C",0);
-  $pdf->cell(15,$alt,$pc63_agencia.$pc63_agencia_dig,1,0,"R",0);
-  $pdf->cell(20,$alt,$pc63_conta.$pc63_conta_dig,1,0,"R",0);
+  $pdf->cell(12,$alt,$pc63_banco,1,0,"C",0);
+  $pdf->cell(12,$alt,$pc63_agencia.$pc63_agencia_dig,1,0,"R",0);
+  $pdf->cell(15,$alt,$pc63_conta.$pc63_conta_dig,1,0,"R",0);
 
-  $pdf->cell(20,$alt,$e81_codmov,1,0,"C",0);
-  $pdf->cell(20,$alt,$e81_numemp,1,1,"C",0);
+  $pdf->cell(15,$alt,$e81_codmov,1,0,"C",0);
+  $pdf->cell(15,$alt,$e81_numemp,1,0,"C",0);
+  $pdf->cell(35,$alt,$e150_numeroprocesso,1,1,"C",0);
+  
+   // Busca dados de boletos do movimento
+  $cl_empagemovdetalhetransmissao = new cl_empagemovdetalhetransmissao();
+  $sSql = "select e74_codigodebarra,
+                  e74_valornominal,
+                  e74_valorjuros,
+                  e74_valormulta,
+                  e74_valordesconto,
+                  e74_valorabatimento
+             from empagemovdetalhetransmissao 
+            where e74_empagemov = {$e81_codmov}";
+  
+
+  $resultadoboletos = $cl_empagemovdetalhetransmissao->sql_record($sSql);
+  if ($cl_empagemovdetalhetransmissao->numrows > 0) {
+   
+   $pdf->setfont('arial', 'b', 8);
+   $pdf->cell(100, $alt, "Dados Boleto(s): ",                     "TL", 0, "L", 0);
+   $pdf->cell(175, $alt, "",                     "TR", 1, "L", 0);
+  }
+  
+  for ($x=0; $x < $cl_empagemovdetalhetransmissao->numrows; $x++) {
+  
+    db_fieldsmemory($resultadoboletos,$x);
+
+    $pdf->setfont('arial', 'b', 8);
+    $pdf->cell(10, $alt, "Valor: ",                     "LB", 0, "L", 0);
+    $pdf->setfont('arial', '', 8);
+    $pdf->cell(20, $alt, db_formatar($e74_valornominal,"f"),  "B", 0, "R", 0); 
+    $pdf->setfont('arial', 'b', 8);
+    $pdf->cell(10, $alt, "Juros: ",                     "B", 0, "L", 0);
+    $pdf->setfont('arial', '', 8);
+    $pdf->cell(15, $alt, db_formatar($e74_valorjuros,"f"),  "B", 0, "R", 0); 
+    $pdf->setfont('arial', 'b', 8);
+    $pdf->cell(10, $alt, "Multa: ",                     "B", 0, "L", 0);
+    $pdf->setfont('arial', '', 8);
+    $pdf->cell(15, $alt, db_formatar($e74_valormulta,"f"), "B", 0, "R", 0); 
+    $pdf->setfont('arial', 'b', 8);
+    $pdf->cell(10, $alt, "Desconto: ",                     "B", 0, "L", 0);
+    $pdf->setfont('arial', '', 8);
+    $pdf->cell(20, $alt, db_formatar($e74_valordesconto,"f"), "B", 0, "R", 0);   
+    $pdf->setfont('arial', 'b', 8);
+    $pdf->cell(10, $alt, "Abatimento: ",                     "B", 0, "L", 0);
+    $pdf->setfont('arial', '', 8);
+    $pdf->cell(20, $alt, db_formatar($e74_valorabatimento,"f"), "B", 0, "R", 0); 
+    $pdf->setfont('arial', 'b', 8);
+    $pdf->cell(20, $alt, "Cod. Barras: ",               "B", 0, "L", 0);
+    $pdf->setfont('arial', '', 8);
+    $pdf->cell(115, $alt, $e74_codigodebarra,                   "RB", 1, "L", 0);
+  }
 
   $total++;
   $xtotal    += $e81_valor;
@@ -434,50 +506,35 @@ for($i =0 ; $i < $numrows_empagegera;$i++) {
 
 $nTotalBruto = $xvaltotal + $nTotalRetencoes;
 
-$pdf->setfont('arial','b',8);
-
-$pdf->cell(130,$alt,'DEP',1,0,"C",1);
+$pdf->setfont('arial','b',7);
+$pdf->cell(119,$alt,'DEP',1,0,"C",1);
 $pdf->cell(20,$alt,db_formatar($soma_dep,'f'),1,0,"R",1);
-$pdf->cell(125,$alt,'',1,1,"C",1);
-
-$pdf->cell(130,$alt,'DOC',1,0,"C",1);
+$pdf->cell(136,$alt,'',1,1,"C",1);
+$pdf->cell(119,$alt,'DOC',1,0,"C",1);
 $pdf->cell(20,$alt,db_formatar($soma_doc,'f'),1,0,"R",1);
-$pdf->cell(125,$alt,'',1,1,"C",1);
-
-$pdf->cell(130,$alt,'TED',1,0,"C",1);
+$pdf->cell(136,$alt,'',1,1,"C",1);
+$pdf->cell(119,$alt,'TED',1,0,"C",1);
 $pdf->cell(20,$alt,db_formatar($soma_ted,'f'),1,0,"R",1);
-$pdf->cell(125,$alt,'',1,1,"C",1);
-
-$pdf->cell(130,$alt,'Total Banco',1,0,"C",1);
+$pdf->cell(136,$alt,'',1,1,"C",1);
+$pdf->cell(119,$alt,'Total Banco',1,0,"C",1);
 $pdf->cell(20,$alt,db_formatar($xtotal,'f'),1,0,"R",1);
-$pdf->cell(125,$alt,'',1,1,"C",1);
-
-$pdf->cell(130,$alt,'Valor total retenções',1,0,"C",1);
+$pdf->cell(136,$alt,'',1,1,"C",1);
+$pdf->cell(119,$alt,'Valor total retenções',1,0,"C",1);
 $pdf->cell(20,$alt,db_formatar($nTotalRetencoes,'f'),1,0,"R",1);
-$pdf->cell(125,$alt,'',1,1,"C",1);
-
-$pdf->cell(130,$alt,'Valor total bruto',1,0,"C",1);
+$pdf->cell(136,$alt,'',1,1,"C",1);
+$pdf->cell(119,$alt,'Valor total bruto',1,0,"C",1);
 $pdf->cell(20,$alt,db_formatar($nTotalBruto,'f'),1,0,"R",1);
-$pdf->cell(125,$alt,'',1,1,"C",1);
-
+$pdf->cell(136,$alt,'',1,1,"C",1);
 $pdf->ln(2);
-$pdf->cell(130,$alt,'Total Geral',1,0,"C",1);
+$pdf->cell(119,$alt,'Total Geral',1,0,"C",1);
 $pdf->cell(20,$alt,db_formatar($xvaltotal,'f'),1,0,"R",1);
-$pdf->cell(125,$alt,'',1,1,"C",1);
-
-//$pdf->cell(260,$alt,"TOTAL DE REGISTROS  : ".$total,"T",1,"L",0);
+$pdf->cell(136,$alt,'',1,1,"C",1);
 
 $tes =  "______________________________";
 $pref =  "______________________________";
-//$ass_pref = $classinatura->assinatura(1000,$pref);
-//$ass_pref = $classinatura->assinatura_usuario();
-
-
-//echo $ass_pref;
 $largura = ( $pdf->w ) / 2;
 $pdf->ln(10);
 $pos = $pdf->gety();
-
 
 $pdf->text(40,$pdf->h - 14,'______________________________',0,4);
 $pdf->text(57,$pdf->h - 11,'Prefeito',0,4);
@@ -486,12 +543,4 @@ $pdf->text(129,$pdf->h - 11,'Secretário da Fazenda',0,4);
 $pdf->text(200,$pdf->h - 14,'______________________________',0,4);
 $pdf->text(217,$pdf->h - 11,'Tesoureiro',0,4);
 
-
-/*
-$pdf->multicell($largura,3,$ass_pref,0,"C",0,0);
-$pdf->setxy($largura,$pos);
-$pdf->multicell($largura,3,$ass_tes,0,"C",0,0);
-*/
-
 $pdf->Output();
-?>

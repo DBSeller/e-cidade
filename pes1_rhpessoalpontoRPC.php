@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,27 +26,27 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
-require_once("model/pontoFolha.model.php");
+require_once(modification("model/pontoFolha.model.php"));
 
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_pessoal_classe.php");
-include("classes/db_pontofx_classe.php");
-include("classes/db_pontofs_classe.php");
-include("classes/db_pontofa_classe.php");
-include("classes/db_pontofe_classe.php");
-include("classes/db_pontofr_classe.php");
-include("classes/db_pontof13_classe.php");
-include("classes/db_pontocom_classe.php");
-include("classes/db_rhrubricas_classe.php");
-include("classes/db_lotacao_classe.php");
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_pessoal_classe.php"));
+include(modification("classes/db_pontofx_classe.php"));
+include(modification("classes/db_pontofs_classe.php"));
+include(modification("classes/db_pontofa_classe.php"));
+include(modification("classes/db_pontofe_classe.php"));
+include(modification("classes/db_pontofr_classe.php"));
+include(modification("classes/db_pontof13_classe.php"));
+include(modification("classes/db_pontocom_classe.php"));
+include(modification("classes/db_rhrubricas_classe.php"));
+include(modification("classes/db_lotacao_classe.php"));
 
 $oPost  = db_utils::postMemory($_POST);
 $oJson  = new services_json();

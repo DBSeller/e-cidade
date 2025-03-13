@@ -69,7 +69,7 @@ db_input('p70_descr',40,$Ip70_descr,true,'text',3,'')
   </tr>
   <?
   if(isset($p71_codtipo)){
-    include("classes/db_pctipocontrato_classe.php");
+    include(modification("classes/db_pctipocontrato_classe.php"));
     $clpctipocontrato = new cl_pctipocontrato;
     $res = $clpctipocontrato->sql_record($clpctipocontrato->sql_query(@$p71_codtipo));
     if($clpctipocontrato->numrows > 0){
@@ -110,7 +110,7 @@ db_input('p74_perc',20,$Ip74_perc,true,'text',$db_opcao,"")
     </td>
     <td> 
 <?
-include("classes/db_cflicita_classe.php");
+include(modification("classes/db_cflicita_classe.php"));
 $clcflicita = new cl_cflicita;
 $result = $clcflicita->sql_record($clcflicita->sql_query());
 db_selectrecord("p75_tipo",$result,true,($db_opcao == 1?1:3),"","p75_tipo");
@@ -142,7 +142,7 @@ db_input('p75_numero',8,$Ip75_numero,true,'text',$db_opcao,"")
     </td>
     <td> 
 <?
-include("classes/db_pctipocompra_classe.php");
+include(modification("classes/db_pctipocompra_classe.php"));
 $clpctipocompra = new cl_pctipocompra;
 $result = $clpctipocompra->sql_record($clpctipocompra->sql_query());
 db_selectrecord("p72_codcom",$result,true,($db_opcao == 1?1:3),"","p72_codcom");

@@ -26,7 +26,7 @@
  */
 
 //MODULO: ISSQN
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcadescritoresp->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -133,10 +133,10 @@ function js_cancelar(){
 }
 function js_pesquisaq84_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadescritoresp','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true,'0','1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadescritoresp','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true,'0','1');
   }else{
      if(document.form1.q84_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadescritoresp','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.q84_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadescritoresp','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.q84_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }

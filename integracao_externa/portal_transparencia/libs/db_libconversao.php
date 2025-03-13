@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -56,7 +56,7 @@ function db_testaduplo($nome,$endereco,$numero,$cidade,$uf,$cpf){
   if (strlen($cpf) > 0) {
 
     $sql6 = "select z01_numcgm from cgm where z01_cgccpf = '$cpf'";
-    $result6 = pg_exec($sql6);
+    $result6 = db_query($sql6);
     if ($result6 == false) {
       echo "sql executado: $sql6\n";
       return 9999999999;
@@ -74,7 +74,7 @@ function db_testaduplo($nome,$endereco,$numero,$cidade,$uf,$cpf){
     // nome, endereco, numero, cidade, uf...
    
     $sql6 = "select z01_numcgm from cgm where z01_nome = '$nome' and z01_ender = '$endereco' and z01_numero = $numero and z01_munic = '$cidade' and z01_uf = '$uf'";
-    $result6 = pg_exec($sql6);
+    $result6 = db_query($sql6);
     if ($result6 == false) {
       echo "sql executado: $sql6\n";
       return 9999999999;
@@ -115,7 +115,7 @@ function db_busca_usuario( $conn1, $str_login ) {
 	 
          $str_sql = "select id_usuario from DB_USUARIOS
                       where login = '" . trim($str_login) . "'";
-         $res_db_usuarios = pg_exec( $conn1, $str_sql ) or die ( "FALHA: $str_sql \n" );
+         $res_db_usuarios = db_query( $conn1, $str_sql ) or die ( "FALHA: $str_sql \n" );
          $int_linhas = pg_num_rows( $res_db_usuarios );
          if( $int_linhas == 0 )
              $id_usuario = 1;
@@ -461,7 +461,7 @@ db_log("\n \n ", null, 1, false, false);
     }
     // for no numero de dados encontrados na tabela origem
     //db_log("\n", null, 1, false, false);
-    pg_query($pConexaoOri, "copy $sTabelaWork from stdin");
+    db_query($pConexaoOri, "copy $sTabelaWork from stdin");
     for($iDados=0; $iDados<$iNumRowsDados; $iDados++) {
       $nPercentual = round((($iDados+1)/$iNumRowsDados) * 100, 2);
       db_log("\rProcessando {$sTabela} {$nPercentual}% .... registro ".($iDados+1)." de {$iNumRowsDados}             ", null, 1, false, false);
@@ -645,7 +645,7 @@ function dbConverteTabela( $pConexaoOrigem, $pConexaoDestino,  $sTabela, $aCampo
   // Cria tabela na base aux
   db_ddl_tabela($pConexaoDestino, $sTabela,'public',$pConexaoOrigem);
   
-  pg_query($pConexaoDestino, "copy {$sTabela} from stdin");  
+  db_query($pConexaoDestino, "copy {$sTabela} from stdin");  
 
   db_log("Inicio Processamento Tabela {$sTabela}...\n", $sArquivoInfos, true, true);
 

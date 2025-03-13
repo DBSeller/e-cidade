@@ -99,7 +99,7 @@ function js_pesquisame19_i_merestoque(mostra){
 	
   if (mostra==true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_mer_estoque',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_estoque',
     	                'func_mer_estoque.php?funcao_js=parent.js_mostramer_estoque1|me18_i_codigo|me18_i_codigo',
     	                'Pesquisa',true
     	               );
@@ -108,7 +108,7 @@ function js_pesquisame19_i_merestoque(mostra){
 	  
     if (document.form1.me19_i_merestoque.value != '') {
          
-      js_OpenJanelaIframe('top.corpo','db_iframe_mer_estoque',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_estoque',
     	                  'func_mer_estoque.php?pesquisa_chave='+document.form1.me19_i_merestoque.value+
     	                  '&funcao_js=parent.js_mostramer_estoque','Pesquisa',false
     	                 );
@@ -139,7 +139,7 @@ function js_mostramer_estoque1(chave1,chave2) {
 
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_estoqueitem',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_estoqueitem',
 		              'func_mer_estoqueitem.php?funcao_js=parent.js_preenchepesquisa|me19_i_codigo','Pesquisa',true
 		             );
   

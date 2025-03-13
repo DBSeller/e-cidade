@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_sanitario_classe.php");
-require_once("classes/db_fiscal_classe.php");
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_sanitario_classe.php"));
+require_once(modification("classes/db_fiscal_classe.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);

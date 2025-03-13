@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,13 +26,13 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 define('MOVIMENTACAO_PATRIMONIAL', 4);
 
@@ -280,7 +280,7 @@ function js_processar() {
 function js_retornoProcessar(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode();
 
   alert(sMensagem);
@@ -382,7 +382,7 @@ function js_buscarEmpenho(lMostra) {
 
   if ( lMostra ) {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_empempenho',
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_empempenho',
                         'func_empempenhoMovimentacaoPatrimonial.php?iDocumento='+ iDocumento +'&funcao_js=parent.js_retornoBuscaEmpenhoAncora|e60_numemp|e60_codemp|z01_nome',
                         'Pesquisa',true);
     return true;
@@ -398,7 +398,7 @@ function js_buscarEmpenho(lMostra) {
       sParametroAnoEmpenho = '&iAnoEmpenho=' + aCodigoEmpenho[1];
     }
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_empempenho',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho',
                         'func_empempenhoMovimentacaoPatrimonial.php?iDocumento=' + iDocumento + '&lPesquisaPorCodigoEmpenho=true' + sParametroAnoEmpenho +
                         '&pesquisa_chave=' + iCodigoEmpenho +
                         '&funcao_js=parent.js_retornoBuscaEmpenhoInput',
@@ -471,7 +471,7 @@ function js_buscarNota(lMostra) {
 
   if ( lMostra ) {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_nota',
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_nota',
                         'func_empnotaMovimentacaoPatrimonial.php?iDocumento='+$F('iDocumento')+'&chave_e60_numemp=' + $F('e60_numemp') + '&funcao_js=parent.js_retornoBuscaNotaAncora|e69_codnota',
                         'Pesquisa',true);
     return true;
@@ -479,7 +479,7 @@ function js_buscarNota(lMostra) {
 
   if ( $F('e69_codnota') != '' ) {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_nota',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nota',
                         'func_empnotaMovimentacaoPatrimonial.php?iDocumento' + $F('iDocumento') + '&chave_e60_numemp=' + $F('e60_numemp') + 'pesquisa_chave=' + $F('e69_codnota') + '&descricao=true&lLancamento=true&funcao_js=parent.js_retornoBuscaNotaInput',
                         'Pesquisa', false);
   }

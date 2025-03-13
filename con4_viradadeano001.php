@@ -1,48 +1,85 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Público para Gestão Municipal
+ *  Copyright (C) 2009  DBseller Serviços de Informática
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa é software livre; você pode redistribuí-lo e/ou
+ *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versão 2 da
+ *  Licença como (a seu critério) qualquer versão mais nova.
+ *
+ *  Este programa e distribuído na expectativa de ser útil, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implícita de
+ *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM
+ *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Você deve ter recebido uma cópia da Licença Pública Geral GNU
+ *  junto com este programa; se não, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Cópia da licença no diretório licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 db_postmemory($HTTP_POST_VARS);
 
 $anoorigem  = db_getsession("DB_anousu");
 $anodestino = $anoorigem + 1;
 
-$sqlitem  = " select distinct         "; 
+$sqlitem  = " select distinct         ";
 $sqlitem .= "        c33_sequencial,  ";
-$sqlitem .= "        c33_descricao    ";
+$sqlitem .= "        c33_descricao  , case
+                                      when c33_sequencial = 1 then  'CONFIGURA&Ccedil&AtildeO              '
+                                      when c33_sequencial = 2 then  'DEPARTAMENTOS                         '
+                                      when c33_sequencial = 3 then  'RECURSOS HUMANOS                      '
+                                      when c33_sequencial = 4 then  'FINANCEIRO                            '
+                                      when c33_sequencial = 5 then  'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 6 then  'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 7 then  'FINANCEIRO                            '
+                                      when c33_sequencial = 8 then  'FINANCEIRO                            '
+                                      when c33_sequencial = 9 then  'CONFIGURA&Ccedil&AtildeO              '
+                                      when c33_sequencial = 10 then 'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 11 then 'FINANCEIRO                            '
+                                      when c33_sequencial = 12 then 'FINANCEIRO                            '
+                                      when c33_sequencial = 13 then 'FINANCEIRO                            '
+                                      when c33_sequencial = 14 then 'FINANCEIRO                            '
+                                      when c33_sequencial = 15 then 'RECURSOS HUMANOS                      '
+                                      when c33_sequencial = 16 then 'TRIBUT&AacuteRIO/EDUCA&Ccedil&AtildeO '
+                                      when c33_sequencial = 17 then 'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 18 then 'PATRIMONIAL                           '
+                                      when c33_sequencial = 19 then 'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 20 then 'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 21 then 'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 22 then 'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 23 then 'FINANCEIRO                            '
+                                      when c33_sequencial = 24 then 'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 25 then 'TRIBUT&AacuteRIO                      '
+                                      when c33_sequencial = 26 then 'PATRIMONIAL                           '
+                                      when c33_sequencial = 27 then 'PATRIMONIAL                           '
+                                      when c33_sequencial = 28 then 'PATRIMONIAL                           '
+                                      when c33_sequencial = 29 then 'EDUCA&Ccedil&AtildeO                  '
+                                      when c33_sequencial = 30 then 'EDUCA&Ccedil&AtildeO                  '
+                                      when c33_sequencial = 31 then 'PATRIMONIAL                           '
+                                      when c33_sequencial = 32 then 'EDUCA&Ccedil&AtildeO                  '
+                                      when c33_sequencial = 33 then 'EDUCA&Ccedil&AtildeO                  '
+                                      when c33_sequencial = 34 then 'EDUCA&Ccedil&AtildeO                  '
+                                      when c33_sequencial = 35 then 'EDUCA&Ccedil&AtildeO                  '
+                                      when c33_sequencial = 36 then 'EDUCA&Ccedil&AtildeO                  '
+                                      end as area ";
 $sqlitem .= "   from db_viradacaditem ";
 $sqlitem .= "  order by c33_sequencial";
 
-$sqlitem_disabled  = "  select distinct                                                                 "; 
+$sqlitem_disabled  = "  select distinct                                                                 ";
 $sqlitem_disabled .= "         c33_sequencial,                                                          ";
 $sqlitem_disabled .= "         c33_descricao                                                            ";
 $sqlitem_disabled .= "    from db_viradacaditem                                                         ";
@@ -59,11 +96,11 @@ $sqlitem_disabled .= "         end"; //acrescentado o item 23 CONFIGURAÇÕES PADR
 
 /*
  * Desabilitar os itens quando o usuário utilizar o pcasp
- * Variavel da sessão ou anodestino igual ao ano da implantação do pcasp (pcasp.txt)     
+ * Variavel da sessão ou anodestino igual ao ano da implantação do pcasp (pcasp.txt)
  */
 $aPcasp    = array();
 $aPcasp[0] = "";
-if ( file_exists("config/pcasp.txt") ) {	
+if ( file_exists("config/pcasp.txt") ) {
 	$aPcasp = file("config/pcasp.txt");
 }
 
@@ -73,17 +110,17 @@ if ( USE_PCASP ) {
   $sqlitem_disabled .= "  union                          ";
   $sqlitem_disabled .= " select c33_sequencial,          ";
   $sqlitem_disabled .= "        c33_descricao            ";
-  $sqlitem_disabled .= "   from db_viradacaditem         ";      
+  $sqlitem_disabled .= "   from db_viradacaditem         ";
   $sqlitem_disabled .= " where c33_sequencial in (26,27) ";
 */
 
   /*
    * Caso seja utilizado pcasp, incluimos os dados da virada do item 14.
    */
-  $sSqlValidaViradaItem14 = "select db_virada.c30_sequencial 
-  		                         from db_virada 
-  		                              inner join db_viradaitem on db_viradaitem.c31_db_virada = db_virada.c30_sequencial 
-  		                        where c30_anodestino = {$anoorigem} 
+  $sSqlValidaViradaItem14 = "select db_virada.c30_sequencial
+  		                         from db_virada
+  		                              inner join db_viradaitem on db_viradaitem.c31_db_virada = db_virada.c30_sequencial
+  		                        where c30_anodestino = {$anoorigem}
   		                          and c31_db_viradacaditem = 14;";
   $rsValidaViradaItem14   = db_query($sSqlValidaViradaItem14);
   if (pg_num_rows($rsValidaViradaItem14) == 0) {
@@ -94,13 +131,15 @@ if ( USE_PCASP ) {
   	                                                       from db_virada
   	                                                      where c30_anodestino = {$anoorigem}";
   	$rsInsertViradaItem14 = db_query($sSqlInsertViradaItem14);
-  }		                                 
-  
-} 
+  }
+
+}
 
 /*
  * Desabilitamos os itens quando o cliente não é PCASP em 2013.
  */
+
+/*
 if ( $aPcasp[0] != 2013 ) {
 	$sqlitem_disabled .= "  union                       ";
 	$sqlitem_disabled .= " select c33_sequencial,       ";
@@ -108,6 +147,8 @@ if ( $aPcasp[0] != 2013 ) {
 	$sqlitem_disabled .= "   from db_viradacaditem      ";
 	$sqlitem_disabled .= " where c33_sequencial in (11,14,26,27) ";
 }
+ */
+
 
 ?>
 <html>
@@ -128,7 +169,7 @@ function js_processa(){
          document.form1.itensprocessa.value = document.form1.itensprocessa.value+'_'+objForm[i].value
 
        }
-     }    
+     }
   }
 }
 
@@ -141,11 +182,11 @@ function js_emite(){
 		                                                   +'&anodestino='+document.form1.anodestino.value,
 		                  'Processamento da Virada '+document.form1.anoorigem.value+' para '+document.form1.anodestino.value,
 		                  true);
-     
-} 
- 
 
-</script>  
+}
+
+
+</script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
@@ -166,12 +207,12 @@ function js_emite(){
       </tr>
       <tr>
         <td align='center'><b> Ano origem :<? db_input("anoorigem", 10, "", true, "text", 3)?> </b></td>
-		    <td><b> Ano destino :<? db_input("anodestino", 10, "", true, "text",3)?> </b></td>		
+		    <td><b> Ano destino :<? db_input("anodestino", 10, "", true, "text",3)?> </b></td>
       </tr>
       <tr>
         <td colspan="2">
           <?
-            $cliframe_seleciona->campos        = "c33_sequencial,c33_descricao";
+            $cliframe_seleciona->campos        = "c33_sequencial,c33_descricao, area";
             $cliframe_seleciona->legenda       = "Itens";
             $cliframe_seleciona->sql           = $sqlitem;
             $cliframe_seleciona->sql_disabled  = $sqlitem_disabled;
@@ -182,12 +223,12 @@ function js_emite(){
             $cliframe_seleciona->dbscript      = "onClick='parent.js_processa()'";
             $cliframe_seleciona->marcador      = true;
             $cliframe_seleciona->js_marcador   = "parent.js_processa()";
-            $cliframe_seleciona->iframe_seleciona(null);    
+            $cliframe_seleciona->iframe_seleciona(null);
           ?>
         </td>
       </tr>
       <tr>
-        <td colspan="2" align = "center"> 
+        <td colspan="2" align = "center">
           <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >
         </td>
       </tr>

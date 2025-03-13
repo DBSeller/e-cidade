@@ -58,7 +58,7 @@ db_input('x03_nomemarca',50,$Ix03_nomemarca,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguahidro','func_aguahidro.php?funcao_js=parent.js_preenchepesquisa|x03_codmarca','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguahidro','func_aguahidro.php?funcao_js=parent.js_preenchepesquisa|x03_codmarca','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguahidro.hide();

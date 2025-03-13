@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_liborcamento.php");
-include("classes/db_bens_classe.php");
-include("classes/db_bensmater_classe.php");
-include("classes/db_bensimoveis_classe.php");
-include("classes/db_bensbaix_classe.php");
-include("classes/db_apolitem_classe.php");
-include("classes/db_db_estruturanivel_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_bens_classe.php"));
+include(modification("classes/db_bensmater_classe.php"));
+include(modification("classes/db_bensimoveis_classe.php"));
+include(modification("classes/db_bensbaix_classe.php"));
+include(modification("classes/db_apolitem_classe.php"));
+include(modification("classes/db_db_estruturanivel_classe.php"));
 
 $clbens = new cl_bens;
 $clbensmater = new cl_bensmater;

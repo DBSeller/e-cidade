@@ -1,7 +1,7 @@
 <?
 /*
 *     E-cidade Software Publico para Gestao Municipal
-*  Copyright (C) 2014  DBSeller Servicos de Informatica
+*  Copyright (C) 2009  DBSeller Servicos de Informatica
 *                            www.dbseller.com.br
 *                         e-cidade@dbseller.com.br
 *
@@ -25,15 +25,15 @@
 *                                licenca/licenca_pt.txt
 */
 
-require ( "libs/db_stdlibwebseller.php" );
-require ( "libs/db_stdlib.php" );
-require ( "libs/db_conecta.php" );
-include ( "libs/db_sessoes.php" );
-include ( "libs/db_usuariosonline.php" );
-include ( "classes/db_amparo_classe.php" );
-include ( "classes/db_regencia_classe.php" );
-include ( "classes/db_diarioavaliacao_classe.php" );
-include ( "dbforms/db_funcoes.php" );
+require(modification( "libs/db_stdlibwebseller.php" ));
+require(modification( "libs/db_stdlib.php" ));
+require(modification( "libs/db_conecta.php" ));
+include(modification( "libs/db_sessoes.php" ));
+include(modification( "libs/db_usuariosonline.php" ));
+include(modification( "classes/db_amparo_classe.php" ));
+include(modification( "classes/db_regencia_classe.php" ));
+include(modification( "classes/db_diarioavaliacao_classe.php" ));
+include(modification( "dbforms/db_funcoes.php" ));
 db_postmemory ($HTTP_POST_VARS);
 $clamparo = new cl_amparo;
 $clregencia = new cl_regencia;
@@ -249,19 +249,19 @@ if (isset( $incluir ) || isset( $alterar ) || isset( $excluir )) {
           ?>
           <fieldset style="width:95%">
           <legend><b>Inclusão de Amparo</b></legend><?
-          include ( "forms/db_frmamparo001.php" );
+          include(modification( "forms/db_frmamparo001.php" ));
           ?></fieldset><?
         } elseif (isset( $opcao ) && $opcao == "A") {
           ?>
           <fieldset style="width:95%">
           <legend><b>Alteração de Amparo</b></legend><?
-          include ( "forms/db_frmamparo002.php" );
+          include(modification( "forms/db_frmamparo002.php" ));
           ?></fieldset><?
         } elseif (isset( $opcao ) && $opcao == "E") {
           ?>
           <fieldset style="width:95%">
           <legend><b>Exclusão de Amparo</b></legend><?
-          include ( "forms/db_frmamparo003.php" );
+          include(modification( "forms/db_frmamparo003.php" ));
           ?></fieldset><?
         }
         ?>

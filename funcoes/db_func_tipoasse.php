@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,5 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "tipoasse.h12_codigo,tipoasse.h12_assent,tipoasse.h12_descr,tipoasse.h12_dias,tipoasse.h12_relvan,tipoasse.h12_relass,tipoasse.h12_reltot,tipoasse.h12_relgra,tipoasse.h12_tipo,tipoasse.h12_graefe,tipoasse.h12_efetiv,tipoasse.h12_tipefe,tipoasse.h12_regenc,tipoasse.h12_vinculaperiodoaquisitivo";
+$campos = "tipoasse.h12_codigo,
+tipoasse.h12_assent,
+tipoasse.h12_descr,
+tipoasse.h12_dias,
+tipoasse.h12_relvan,
+tipoasse.h12_relass,
+tipoasse.h12_reltot,
+tipoasse.h12_relgra,
+tipoasse.h12_tipo,
+tipoasse.h12_graefe,
+tipoasse.h12_efetiv,
+tipoasse.h12_tipefe,
+tipoasse.h12_regenc,
+tipoasse.h12_vinculaperiodoaquisitivo,
+tipoasse.h12_pagacomportaria,
+tipoasse.h12_gerafaltas";
 ?>

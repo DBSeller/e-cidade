@@ -69,7 +69,7 @@ db_select('c50_compl',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conhist','func_conhist.php?funcao_js=parent.js_preenchepesquisa|c50_codhist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conhist','func_conhist.php?funcao_js=parent.js_preenchepesquisa|c50_codhist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conhist.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_rhestagioagendadata_classe.php");
-include("classes/db_rhestagioresultado_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_rhestagioagendadata_classe.php"));
+include(modification("classes/db_rhestagioresultado_classe.php"));
 
 $clrhestagioresultado  = new cl_rhestagioresultado;
 $clrhestagioagendadata = new cl_rhestagioagendadata();
@@ -52,7 +52,7 @@ $oGet                  = db_utils::postMemory($_GET);
 
 <script>
 function js_mostraEstagio(iCodEstagio){
-   js_OpenJanelaIframe('top.corpo','db_iframe_estagio','rec3_rhestagioavaliacoes003.php?h57_sequencial='+iCodEstagio,'Dados do Estagio',true);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_estagio','rec3_rhestagioavaliacoes003.php?h57_sequencial='+iCodEstagio,'Dados do Estagio',true);
 }
 </script>
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libsys.php");
-include("libs/JSON.php");
-include("dbagata/classes/core/AgataAPI.class");
-require_once("model/dbGeradorRelatorio.model.php");
-require_once("model/dbColunaRelatorio.php");
-require_once("model/dbFiltroRelatorio.php");
-require_once("model/dbOrdemRelatorio.model.php");
-require_once("model/dbPropriedadeRelatorio.php");
-require_once("model/dbVariaveisRelatorio.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libsys.php"));
+include(modification("libs/JSON.php"));
+include(modification("dbagata/classes/core/AgataAPI.class"));
+require_once(modification("model/dbGeradorRelatorio.model.php"));
+require_once(modification("model/dbColunaRelatorio.php"));
+require_once(modification("model/dbFiltroRelatorio.php"));
+require_once(modification("model/dbOrdemRelatorio.model.php"));
+require_once(modification("model/dbPropriedadeRelatorio.php"));
+require_once(modification("model/dbVariaveisRelatorio.php"));
 
 ini_set("error_reporting","E_ALL & ~NOTICE");
+
 
 $oGet  = db_utils::postMemory($_GET);
 $oJson = new services_json();
@@ -67,7 +68,12 @@ if ( isset($_SESSION['objetoXML']) ) {
 	        
   $sArquivo          = "geraRelatorio".date("YmdHis").db_getsession("DB_id_usuario").".agt";
   $sCaminhoRelatorio = "tmp/".$sArquivo;
-	$sFormatoSaida     = $oXML->getPropriedades()->getTipoSaida();
+  if( $oGet->nova_saida !=  $oXML->getPropriedades()->getTipoSaida() ) {  
+	  $sFormatoSaida     = $oGet->nova_saida;
+  }else{
+	  $sFormatoSaida     = $oXML->getPropriedades()->getTipoSaida();
+  }
+
   $sOutputPath 			 = "tmp/geraRelatorio".date("YmdHis").db_getsession("DB_id_usuario").".".$sFormatoSaida;
 	      
   $rsRelatorioTemp   = fopen($sCaminhoRelatorio,"w");
@@ -110,7 +116,7 @@ if ( isset($_SESSION['objetoXML']) ) {
 	  	  $sPrefix = "";
 	    }
 	    
-	    $api->setParameter('$head'.$iLinha,$sPrefix.(substr($sNomeOrdem,$iIni,$iFim)));
+	//    $api->setParameter('$head'.$iLinha,$sPrefix.(substr($sNomeOrdem,$iIni,$iFim)));
 	    $iLinha++;
 	    $iIni += $iFim;
 	    
@@ -129,27 +135,34 @@ if ( isset($_SESSION['objetoXML']) ) {
 	  foreach ( $aXMLVariaveis as $sIndXmlVar => $oXmlVariavel) {
 		  foreach ( $aObjVariaveis as $iInd => $oVariavel) {
  	  	  if ( $oVariavel->sNome == $oXmlVariavel->getNome()) {
+	                $api->setParameter('$head'.$iLinha++, $oXmlVariavel->getLabel().":".$oVariavel->sValor );
  	  	  	if ( $oXmlVariavel->getTipoDado() == 'date') {
  	  	  		$sValor = implode('-',array_reverse(explode('/',$oVariavel->sValor)));
  	  	  	} else {
  	  	  		$sValor = $oVariavel->sValor;
  	  	  	}
 		  	  $api->setParameter($oVariavel->sNome,$sValor);
-		  	}
+                          
+		  }
+
 		  }
 	  }
 	  
 	}
 	
 	$api->setFormat($sFormatoSaida);
-  $api->setOutputPath($sOutputPath);
+        $api->setOutputPath($sOutputPath);
 
 	$ok = $api->generateReport();
 		
 	if(!$ok){
 	  echo $api->getError();
 	}else{ 
-		db_redireciona($sOutputPath);
+		if ( $sFormatoSaida == 'html' ){
+			include("$sOutputPath");
+		}else{
+			db_redireciona($sOutputPath);
+		}
 	}
 
 } else {

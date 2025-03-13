@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $db_opcao = 1;
 $db_botao = true;
 db_postmemory($HTTP_POST_VARS);
@@ -53,7 +53,7 @@ function js_matricontri(){
   db_iframe.focus();
 }
 function js_matricontri1(matric){
-  js_OpenJanelaIframe('top.corpo','db_iframe','con1_contrib006.php?j01_matric='+matric,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','con1_contrib006.php?j01_matric='+matric,'Pesquisa',true);
 }
 function js_matricontri2(matri,refant,nome,setor,quadra,lote,zona,total,desconto,idbql,testada){
   matriculas.js_incluirlinha(matri,refant,nome,setor,quadra,lote,zona,total,desconto,idbql,testada);
@@ -140,9 +140,9 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 function js_contri(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_editalrua.php?funcao_js=parent.js_mostracontri1|d02_contri|j14_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_editalrua.php?funcao_js=parent.js_mostracontri1|d02_contri|j14_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_editalrua.php?pesquisa_chave='+document.form1.d02_contri.value+'&funcao_js=parent.js_mostracontri','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_editalrua.php?pesquisa_chave='+document.form1.d02_contri.value+'&funcao_js=parent.js_mostracontri','Pesquisa',false);
   }  
 }
 function js_mostracontri(chave,erro){

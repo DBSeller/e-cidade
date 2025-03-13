@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_loteamcgm_classe.php");
-require_once("classes/db_loteam_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_loteamcgm_classe.php"));
+require_once(modification("classes/db_loteam_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet       = db_utils::postMemory($_GET);
 $oPost      = db_utils::postMemory($_POST);
@@ -101,7 +101,7 @@ if ( isset( $oPost->excluir ) ) {
   <tr align="center" valign="top">
     <td>
       <?
-        include("forms/db_frmloteam.php");
+        include(modification("forms/db_frmloteam.php"));
       ?>    
     </td>
   </tr>

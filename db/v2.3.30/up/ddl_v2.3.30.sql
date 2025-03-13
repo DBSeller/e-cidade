@@ -162,7 +162,7 @@ j05_valor       float8 default 0 )');
 alter table periodoescola ADD COLUMN ed17_duracao varchar(5);
 update periodoescola set ed17_h_fim    = replace(ed17_h_fim, ';', ':');
 update periodoescola set ed17_h_inicio = replace(ed17_h_inicio, ';', ':');
-update periodoescola set ed17_duracao  = replace(to_char( (ed17_h_fim::time - ed17_h_inicio::time), 'HH24:MI'), '-', '');
+update periodoescola set ed17_duracao  = to_char(  (ed17_h_fim::time - ed17_h_inicio::time), 'HH24:MI');
 
 CREATE SEQUENCE horarioescola_ed123_sequencial_seq
 INCREMENT 1
@@ -265,5 +265,4 @@ alter table materialtipogrupovinculo
       alter column m04_materialestoquegrupo set not null,
       add constraint materialtipogrupovinculo_materialestoquegrupo_fk foreign key (m04_materialestoquegrupo) references materialestoquegrupo;
 create unique index materialtipogrupovinculo_materialtipogrupo_in on materialtipogrupovinculo (m04_materialtipogrupo, m04_materialestoquegrupo);
-
-
+----------------------------------------------------

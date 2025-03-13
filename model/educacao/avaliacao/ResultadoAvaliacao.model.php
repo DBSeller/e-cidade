@@ -1,39 +1,39 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
-require_once("model/educacao/avaliacao/iElementoAvaliacao.interface.php");
+require_once(modification("model/educacao/avaliacao/iElementoAvaliacao.interface.php"));
 /**
  * Resultado da Avaliacao
  * @package educacao
  * @subpackage avaliacao
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
  *         Iuri Guntchnigg <iuri@dbseller.com.br>
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.27 $
  */
 class ResultadoAvaliacao implements IElementoAvaliacao {
 
@@ -99,6 +99,18 @@ class ResultadoAvaliacao implements IElementoAvaliacao {
   private $lReprovaPorFrequencia = false;
 
   /**
+   * Verifica se utiliza a regra de proporcionalidade para realizar o cálculo da aprovação do aluno
+   * @var boolean
+   */
+  private $lUtilizaProporcionalidade = false;
+
+  /**
+   * Caso procedimento de avaliação seja soma, este pode ter configurado avaliações alternativas.
+   * @var AvaliacaoAlternativa[]
+   */
+  private $aAvaliacoesAlternativas = array();
+
+  /**
    * Método construtor
    * @param integer $iCodigo Código da avaliacao periodica
    */
@@ -113,16 +125,16 @@ class ResultadoAvaliacao implements IElementoAvaliacao {
       if ($oDaoResultadoAvaliacao->numrows > 0) {
 
         $oResultadoAvaliacao = db_utils::fieldsMemory($rsResultadoAvaliacao, 0);
-
-        $this->iCodigo              = $oResultadoAvaliacao->ed43_i_codigo;
-        $this->oFormaAvaliacao      = new FormaAvaliacao($oResultadoAvaliacao->ed43_i_formaavaliacao);
-        $this->oTipoResultado       = new TipoResultado($oResultadoAvaliacao->ed43_i_resultado);
-        $this->iOrdemSequencia      = $oResultadoAvaliacao->ed43_i_sequencia;
-        $this->sFormaObtencao       = $oResultadoAvaliacao->ed43_c_obtencao;
-        $this->lResultadoFinal      = $oResultadoAvaliacao->ed43_c_geraresultado == 'S' ? true : false;
-        $this->nMinimoParaAprovacao  = $oResultadoAvaliacao->ed43_c_minimoaprov;
-        $this->lReprovaPorFrequencia = $oResultadoAvaliacao->ed43_c_reprovafreq == 'S' ? true: false;
-        $this->lApareceNoBoletim     = $oResultadoAvaliacao->ed43_c_boletim == "S" ? true : false;
+        $this->iCodigo                   = $oResultadoAvaliacao->ed43_i_codigo;
+        $this->oFormaAvaliacao           = FormaAvaliacaoRepository::getByCodigo($oResultadoAvaliacao->ed43_i_formaavaliacao);
+        $this->oTipoResultado            = new TipoResultado($oResultadoAvaliacao->ed43_i_resultado);
+        $this->iOrdemSequencia           = $oResultadoAvaliacao->ed43_i_sequencia;
+        $this->sFormaObtencao            = $oResultadoAvaliacao->ed43_c_obtencao;
+        $this->lResultadoFinal           = $oResultadoAvaliacao->ed43_c_geraresultado == 'S' ? true : false;
+        $this->nMinimoParaAprovacao      = $oResultadoAvaliacao->ed43_c_minimoaprov;
+        $this->lReprovaPorFrequencia     = $oResultadoAvaliacao->ed43_c_reprovafreq == 'S' ? true: false;
+        $this->lApareceNoBoletim         = $oResultadoAvaliacao->ed43_c_boletim == "S" ? true : false;
+        $this->lUtilizaProporcionalidade = $oResultadoAvaliacao->ed43_proporcionalidade == 't';
         unset($oResultadoAvaliacao);
       }
     }
@@ -236,7 +248,7 @@ class ResultadoAvaliacao implements IElementoAvaliacao {
 
   /**
    * Busca os Elementos que compoem o resultado de uma avaliacao
-   * @return ResultadoAvaliacao | AvaliacaoPeriodica
+   * @return ResultadoAvaliacaoComposicao[]
    */
   public function getElementosComposicaoResultado() {
 
@@ -260,9 +272,9 @@ class ResultadoAvaliacao implements IElementoAvaliacao {
           $oComposicaoResultado->setMinimoAprovacao($oDadosComposicaoResultado->minimo);
           $oComposicaoResultado->setOrdem($oDadosComposicaoResultado->sequencia);
           if ($oDadosComposicaoResultado->tipo_elemento == 'R') {
-            $oElementoAvaliacao  = new ResultadoAvaliacao($oDadosComposicaoResultado->elemento);
+            $oElementoAvaliacao  = ResultadoAvaliacaoRepository::getResultadoAvaliacaoByCodigo($oDadosComposicaoResultado->elemento);
           } else {
-            $oElementoAvaliacao  = new AvaliacaoPeriodica($oDadosComposicaoResultado->elemento);
+            $oElementoAvaliacao  = AvaliacaoPeriodicaRepository::getAvaliacaoPeriodicaByCodigo($oDadosComposicaoResultado->elemento);
           }
 
           $oComposicaoResultado->setElementoAvaliacao($oElementoAvaliacao);
@@ -276,17 +288,19 @@ class ResultadoAvaliacao implements IElementoAvaliacao {
 
   /**
    * Retorna o valor do resultado/conceito/parecer dependendo da forma de Obtencao:
-   * @param array $aElementosAvaliacao
-   * @return string
+   * @param array   $aElementosAvaliacao
+   * @param bool    $lCalculoParcial
+   * @param integer $iAno
+   * @throws Exception
    */
-  public function getResultado($aElementosAvaliacao, $lCalculoParcial = false) {
+  public function getResultado( $aElementosAvaliacao, $lCalculoParcial = false, $iAno = null ) {
 
     try {
 
       $oForma = $this->getInstanciaFormaObtencao();
       $oForma->setResultadoAvaliacao($this);
       $oForma->setCalculoNotaParcial($lCalculoParcial);
-      return $oForma->processarResultado($aElementosAvaliacao);
+      return $oForma->processarResultado( $aElementosAvaliacao, $iAno );
     } catch ( Exception $oErro ) {
       throw new Exception ( $oErro->getMessage() );
     }
@@ -378,81 +392,81 @@ class ResultadoAvaliacao implements IElementoAvaliacao {
 
   /**
    * Retorna uma instância de Forma de Obtenção do calculo da nota
-   * @return FormaObtencaoAtribuida|FormaObtencaoMaiorNota|FormaObtencaoMediaAritmetica|FormaObtencaoMediaPonderada|FormaObtencaoSoma|FormaObtencaoUltimoNivel|null
+   * @return FormaObtencaoAtribuida|FormaObtencaoMaiorNota|FormaObtencaoMediaAritmetica|FormaObtencaoMediaPonderada|FormaObtencaoSoma|FormaObtencaoUltimoNivel|FormaObtencaoAprovacaoPeriodo|null
    * @throws BusinessException
    */
-  protected function getInstanciaFormaObtencao() {
+    protected function getInstanciaFormaObtencao()
+    {
+        switch ($this->getFormaDeObtencao()) {
+            /**
+             * AT - Atribuido
+             */
+            case 'AT':
+                $oForma = new FormaObtencaoAtribuida();
+                break;
 
-    $oForma = null;
-    switch ($this->getFormaDeObtencao()) {
+            /**
+             * ME - Media
+             */
+            case 'ME':
+                $oForma = new FormaObtencaoMediaAritmetica();
+                break;
 
-      /**
-       * AT - Atribuido
-       */
-      case 'AT':
+            /**
+             * MN - Maior Nota
+             */
+            case 'MN':
+                $oForma = new FormaObtencaoMaiorNota();
+                break;
 
-        $oForma = new FormaObtencaoAtribuida();
-        break;
-      /**
-       * ME - Media
-       */
-      case 'ME':
+            /**
+             * MP - Media Ponderada
+             */
+            case 'MP':
+                $oForma = new FormaObtencaoMediaPonderada();
+                break;
 
-        $oForma = new FormaObtencaoMediaAritmetica();
-        break;
+            /**
+             * SO - Soma
+             */
+            case 'SO':
+                $oForma = new FormaObtencaoSoma();
+                break;
 
-      /**
-       * MN - Maior Nota
-       */
-      case 'MN':
+            /**
+             * UC - Ultima Nivel
+             */
+            case 'UC':
+                $oForma = new FormaObtencaoUltimoNivel();
+                break;
 
-        $oForma = new FormaObtencaoMaiorNota();
-        break;
+            /**
+             * UC - Ultima Nivel
+             */
+            case 'MC':
+                $oForma = new FormaObtencaoMaiorNivel();
+                break;
 
-      /**
-       * MP - Media Ponderada
-       */
-      case 'MP':
+            /**
+             * UN - Ultima Nota
+             */
+            case 'UN':
+                $oForma = new FormaObtencaoUltimaNota();
+                break;
 
-        $oForma = new FormaObtencaoMediaPonderada();
-        break;
+            /**
+             * AP - Aprovação por Período
+             */
+            case 'AP':
+                $oForma = new FormaObtencaoAprovacaoPeriodo();
+                break;
 
-      /**
-       * SO - Soma
-       */
-      case 'SO':
-
-        $oForma = new FormaObtencaoSoma();
-        break;
-
-      /**
-       * UC - Ultima Nivel
-       */
-      case 'UC':
-
-        $oForma = new FormaObtencaoUltimoNivel();
-        break;
-      /**
-       * UC - Ultima Nivel
-       */
-      case 'MC':
-
-        $oForma = new FormaObtencaoMaiorNivel();
-        break;
-      /**
-       * UN - Ultima Nota
-       */
-      case 'UN':
-
-        $oForma = new FormaObtencaoUltimaNota();
-        break;
-      default:
-
-        throw new BusinessException("Não foi possível identificar a forma de Obtenção para o resultado {$this->getCodigo()} - {$this->getFormaDeObtencao()}");
-        break;
+            default:
+                throw new BusinessException("Não foi possível identificar a forma de Obtenção para o resultado {$this->getCodigo()} - {$this->getFormaDeObtencao()}");
+                break;
+        }
+        return $oForma;
     }
-    return $oForma;
-  }
 
   /**
    * Retorna a nota projetada do aluno
@@ -471,5 +485,34 @@ class ResultadoAvaliacao implements IElementoAvaliacao {
       throw new Exception ( $oErro->getMessage() );
     }
 
+  }
+
+  /**
+   * Define se utiliza ou não a Proporcionalidade para calcular a aprovação do aluno
+   * @param boolean $lUtilizaProporcionalidade
+   */
+  public function setUtilizaProporcionalidade( $lUtilizaProporcionalidade ) {
+    $this->lUtilizaProporcionalidade = $lUtilizaProporcionalidade;
+  }
+
+  /**
+   * Retorna se utiliza a Proporcionalidade para calcular a aprovação do aluno
+   * @return boolean
+   */
+  public function utilizaProporcionalidade() {
+    return $this->lUtilizaProporcionalidade;
+  }
+
+  /**
+   * Retorna as avaliações alternativas para o resultado.
+   * Somente quando resultado for igual a SOMA
+   * @return AvaliacaoAlternativa[]|array()
+   */
+  public function getAvaliacoesAlternativas() {
+
+    if ($this->getFormaDeObtencao() == 'SO') {
+      $this->aAvaliacoesAlternativas = AvaliacaoAlternativaRepository::getByResultado($this);
+    }
+    return $this->aAvaliacoesAlternativas;
   }
 }

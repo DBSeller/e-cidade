@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_levanta_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_procfiscallevanta_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_levanta_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_procfiscallevanta_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -124,7 +124,7 @@ if(isset($alterar)){
   	   echo "<h4 style='color:#FF0000;'>Já Exportado!</h4>";
   	 }
 
-  	 include("forms/db_frmlevanta.php");
+  	 include(modification("forms/db_frmlevanta.php"));
 
   	 if(isset($nops)){
   		db_msgbox("Levantamento já Exportado!!");
@@ -149,8 +149,8 @@ if(isset($alterar)){
      echo "
            <script>
               function js_xz(){
-                 top.corpo.iframe_levvalor.document.form1.y60_contato.value='$y60_contato';\n
-                 top.corpo.iframe_levusu.document.form1.y60_contato.value='$y60_contato';\n
+                 (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_levvalor.document.form1.y60_contato.value='$y60_contato';\n
+                 (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_levusu.document.form1.y60_contato.value='$y60_contato';\n
 	      }
 	      js_xz();
       </script>
@@ -168,8 +168,8 @@ if(isset($alterar)){
               function js_xy(){
                 parent.document.formaba.levvalor.disabled=false;\n
                 parent.document.formaba.levusu.disabled=false;\n
-		top.corpo.iframe_levvalor.location.href='fis1_levvalor001.php?".$query."y60_contato=$y60_contato&y63_codlev=$y60_codlev';\n
-		top.corpo.iframe_levusu.location.href='fis1_levusu001.php?".$query."y60_contato=$y60_contato&y61_codlev=$y60_codlev';\n";
+		(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_levvalor.location.href='fis1_levvalor001.php?".$query."y60_contato=$y60_contato&y63_codlev=$y60_codlev';\n
+		(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_levusu.location.href='fis1_levusu001.php?".$query."y60_contato=$y60_contato&y61_codlev=$y60_codlev';\n";
 		if(empty($alterando) && empty($excluindo)){
                      echo "parent.mo_camada('levvalor');";
 	        }

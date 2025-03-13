@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_reserva_classe.php");
-include("classes/db_carteira_classe.php");
-include("classes/db_biblioteca_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_reserva_classe.php"));
+include(modification("classes/db_carteira_classe.php"));
+include(modification("classes/db_biblioteca_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clreserva = new cl_reserva;
 $clcarteira = new cl_carteira;
@@ -174,7 +174,7 @@ function somadata($dias,$ano,$mes,$dia){
                AND bi06_seq = $bi14_acervo
                LIMIT 1
               ";
-      $result1 = pg_query($sql1);
+      $result1 = db_query($sql1);
       $lista = pg_result($result1,0,'bi23_codigo');
       $codreserva = $bi14_codigo;
       $leitor = $bi14_carteira;

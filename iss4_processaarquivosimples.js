@@ -129,7 +129,7 @@ function js_getVariasInscricoes(iCnpj, iLinha) {
 function js_variasInscricoes(oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.iStatus == 1) {
     
@@ -205,7 +205,7 @@ function js_criarVinculo () {
 function js_retornoVinculo(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   if (oRetorno.iStatus == 1) {
   
@@ -348,7 +348,7 @@ function js_getVariosCnpj(iCnpj, iLinha) {
 function js_variosCnpj(oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.iStatus == 1) {
     
@@ -516,7 +516,7 @@ function js_salvarDadosISSQNComplementar(iRegistroBase) {
                                           
                                           js_removeObj('msgSalvaDadosComplementar');
                                           
-                                          var oRetorno = eval("("+oAjax.responseText+")");
+                                          var oRetorno = JSON.parse(oAjax.responseText);
                                           
                                           if (oRetorno.iStatus == 1) {
                                         	  

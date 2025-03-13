@@ -1,37 +1,37 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 db_postmemory($_POST);
 
 $oGet           = db_utils::postMemory($_GET);
@@ -55,7 +55,7 @@ $oDaoTurno->rotulo->label("ed15_c_nome");
           <table class="form-container">
             <tr>
               <td>
-                <?=$Led15_i_codigo?>
+                <label for="chave_ed15_i_codigo"><?=$Led15_i_codigo?></label>
               </td>
               <td>
                 <?db_input("ed15_i_codigo",10,$Ied15_i_codigo,true,"text",4,"","chave_ed15_i_codigo");?>
@@ -63,7 +63,7 @@ $oDaoTurno->rotulo->label("ed15_c_nome");
             </tr>
             <tr>
               <td title="<?=$Ted15_c_nome?>">
-                <?=$Led15_c_nome?>
+                <label for="chave_ed15_c_nome"><?=$Led15_c_nome?></label>
               </td>
               <td>
                 <?db_input("ed15_c_nome",20,$Ied15_c_nome,true,"text",4,"","chave_ed15_c_nome");?>
@@ -90,7 +90,7 @@ $oDaoTurno->rotulo->label("ed15_c_nome");
       }
 
       if(!isset($pesquisa_chave)) {
-  
+
         $sCampos  = " turno.ed15_i_codigo,              ";
         $sCampos .= " turno.ed15_c_nome,                ";
         $sCampos .= " turno.ed15_i_sequencia,           ";
@@ -101,17 +101,17 @@ $oDaoTurno->rotulo->label("ed15_c_nome");
         $sCampos .= "                   then 'TARDE'              ";
         $sCampos .= "                 else 'NOITE'                ";
         $sCampos .= "               end  ),                       ";
-        $sCampos .= "  ', ') as ed231_i_referencia                "; 
-        
+        $sCampos .= "  ', ') as ed231_i_referencia                ";
+
 
         $sGroupBy = " group by ed15_i_codigo, ed15_c_nome, ed15_i_sequencia ";
-          
+
         if ( isset($chave_ed15_i_codigo) && (trim($chave_ed15_i_codigo)!="") ) {
-          $aWhere[] = "ed15_i_codigo = {$chave_ed15_i_codigo} "; 
+          $aWhere[] = "ed15_i_codigo = {$chave_ed15_i_codigo} ";
         } else if (isset($chave_ed15_c_nome) && (trim($chave_ed15_c_nome)!="") ) {
           $aWhere[] = "ed15_c_nome like '{$chave_ed15_c_nome}%'";
         }
-        
+
         $sWhere = implode(" and  ", $aWhere);
         $sSql   = $oDaoCursoTurno->sql_query_turno_referente(null, $sCampos, 'ed15_i_sequencia', $sWhere . $sGroupBy);
 
@@ -147,3 +147,9 @@ $oDaoTurno->rotulo->label("ed15_c_nome");
   </div>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

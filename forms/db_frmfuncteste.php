@@ -78,7 +78,7 @@ db_input('funcnova',5,$Ifuncnova,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_functeste','func_functeste.php?funcao_js=parent.js_preenchepesquisa|funcant|descrfunc','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_functeste','func_functeste.php?funcao_js=parent.js_preenchepesquisa|funcant|descrfunc','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_functeste.hide();

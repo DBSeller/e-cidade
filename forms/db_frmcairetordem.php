@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -84,10 +84,10 @@ $clrotulo->label("e50_numemp");
 <script>
 function js_pesquisak32_ordpag(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pagordem','func_pagordem.php?funcao_js=parent.js_mostrapagordem1|e50_codord|e60_codemp','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pagordem','func_pagordem.php?funcao_js=parent.js_mostrapagordem1|e50_codord|e60_codemp','Pesquisa',true);
   }else{
      if(document.form1.k32_ordpag.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pagordem','func_pagordem.php?pesquisa_chave='+document.form1.k32_ordpag.value+'&funcao_js=parent.js_mostrapagordem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pagordem','func_pagordem.php?pesquisa_chave='+document.form1.k32_ordpag.value+'&funcao_js=parent.js_mostrapagordem','Pesquisa',false);
      }else{
        document.form1.e50_numemp.value = ''; 
      }
@@ -107,7 +107,7 @@ function js_mostrapagordem1(chave1,chave2){
 }
 function js_validanumpre(numpre){
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_pagordem','cai1_cairetordemvalida.php?iNumpre='+numpre+'&funcao_js=parent.js_retornanumpre','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pagordem','cai1_cairetordemvalida.php?iNumpre='+numpre+'&funcao_js=parent.js_retornanumpre','Pesquisa',false);
 }
 function js_retornanumpre(retorno, valor,tipo){
 
@@ -124,7 +124,7 @@ function js_retornanumpre(retorno, valor,tipo){
 
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cairetordem','func_cairetordem.php?funcao_js=parent.js_preenchepesquisa|k32_sequencia','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cairetordem','func_cairetordem.php?funcao_js=parent.js_preenchepesquisa|k32_sequencia','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cairetordem.hide();

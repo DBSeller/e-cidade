@@ -71,8 +71,8 @@ DBComboBox.prototype.addItem  = function (sValue, sDescription, sIdGroup, aParam
   if ($(this.sName)) {
 
     var oOption = new Option(sDescription, sValue);
-    aParameters.each(function(oParam, iSeq) {
-      oOption.setAttribute(oParam.nome, oParam.valor);
+     aParameters.each(function(oParam, iSeq) {
+        oOption.setAttribute(oParam.nome, oParam.valor);
     });
 
     if (sIdGroup != null) {
@@ -543,4 +543,10 @@ DBComboBox.prototype.getAttribute = function(sName) {
     sAttribute = $(this.sName).getAttribute(sName);
   }
   return sAttribute;
+};
+
+DBComboBox.prototype.getAttributeOptionSelected = function(sName) {
+
+    const elemento = this.getElement();
+    return  elemento.options[elemento.selectedIndex].getAttribute(sName);
 };

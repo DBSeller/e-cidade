@@ -80,7 +80,7 @@ db_inputdata('c70_data', @ $c70_data_dia, @ $c70_data_mes, @ $c70_data_ano, true
 
 			echo "<script>
 				      function js_mostra(tipo){
-			                js_OpenJanelaIframe('top.corpo','db_iframeboletim','forms/db_frmboletim002.php?tipo='+tipo+'&data=$data&boletim=$k11_numbol','Saldoa',true);
+			                js_OpenJanelaIframe('CurrentWindow.corpo','db_iframeboletim','forms/db_frmboletim002.php?tipo='+tipo+'&data=$data&boletim=$k11_numbol','Saldoa',true);
 				      }
 				      </script>";
 			echo "<br>";

@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010291' name='juridico.integracaoprocessoeletronicoconfiguracao' description="Configurações do Processo Eletrônico" prefix="v41" label="Configurações do Processo Eletrônico" type="0">
+  <fields>
+    <field codigo="1009793" 
+           campo_api='' 
+           name="v41_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='juridico.integracaoprocessoeletronicoconfiguracao_v41_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009794" 
+           campo_api='' 
+           name="v41_instituicao" 
+           conteudo="int4" 
+           description="Instituição" 
+           inivalue="" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009795" 
+           campo_api='' 
+           name="v41_usuario" 
+           conteudo="varchar(100)" 
+           description="usuário" 
+           inivalue="" 
+           label="Usuário" 
+           size="100" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Usuário" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009796" 
+           campo_api='' 
+           name="v41_senha" 
+           conteudo="varchar(255)" 
+           description="Senha" 
+           inivalue="" 
+           label="Senha" 
+           size="255" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Senha" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009797" 
+           campo_api='' 
+           name="v41_codigolocalidade" 
+           conteudo="int4" 
+           description="Código da Localidade" 
+           inivalue="" 
+           label="Código da Localidade" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Localidade" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="v41_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="v41_instituicao" reference="codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

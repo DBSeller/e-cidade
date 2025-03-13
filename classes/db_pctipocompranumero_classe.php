@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -319,7 +319,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
          return false;
        }
      }
-      $result = @pg_exec($sql);
+      $result = @db_query($sql);
      if($dbwhere==""){
        if( $oid != "" && $oid != null){
       	 $sql .= " where ";
@@ -328,7 +328,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      }else if($dbwhere != ""){
        $sql .= " where $dbwhere ";
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "pctipocompranumero nao Alterado. Alteracao Abortada.\\n";

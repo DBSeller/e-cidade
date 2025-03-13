@@ -1,45 +1,45 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_pagordem_classe.php");
-require_once("classes/db_pagordemele_classe.php");
-require_once("model/retencaoNota.model.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_pagordem_classe.php"));
+require_once(modification("classes/db_pagordemele_classe.php"));
+require_once(modification("model/retencaoNota.model.php"));
 
 
 /*
  * Configurações GED
 */
-require_once ("integracao_externa/ged/GerenciadorEletronicoDocumento.model.php");
-require_once ("integracao_externa/ged/GerenciadorEletronicoDocumentoConfiguracao.model.php");
-require_once ("libs/exceptions/BusinessException.php");
+require_once(modification("integracao_externa/ged/GerenciadorEletronicoDocumento.model.php"));
+require_once(modification("integracao_externa/ged/GerenciadorEletronicoDocumentoConfiguracao.model.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
 
 $oGet           = db_utils::postMemory($_GET);
 $clpagordem     = new cl_pagordem;
@@ -47,7 +47,7 @@ $clpagordemele  = new cl_pagordemele;
 
 $sFornecedor = null;
 if ( isset($oGet) && !empty($oGet) ) {
-  $sFornecedor = $oGet->aFornecedor;
+  $sFornecedor = !empty($oGet->aFornecedor) ? $oGet->aFornecedor : null;
 }
 
 $oConfiguracaoGed = GerenciadorEletronicoDocumentoConfiguracao::getInstance();
@@ -98,22 +98,27 @@ if(isset($e60_codemp_ini) && $e60_codemp_ini != "") {
     $dbwhere = " {$str} ";
 }
 
+
 if(isset($codordem) && $codordem != ''){
   if(strlen($dbwhere) > 0) {
 	  $dbwhere .= " and ";
   }
   $dbwhere .= " e50_codord in ($codordem) ";
+  $codigoOrdem = $codordem;
 }elseif(isset($e50_codord) && $e50_codord != ''){
   if(strlen($dbwhere) > 0) {
 	  $dbwhere .= " and ";
   }
   $dbwhere .= " e50_codord=$e50_codord ";
+  $codigoOrdem = $e50_codord;
 }else{
   if(strlen($dbwhere) > 0) {
 	  $dbwhere .= " and ";
   }
   $dbwhere .= "1=1 ";
 }
+
+
 
 if(isset($dtini) && $dtini!=""){
   if(strlen($dbwhere) > 0) {
@@ -139,7 +144,7 @@ if (isset($e60_numemp) && $e60_numemp != '') {
 }
 
 if ( !empty($sFornecedor) ) {
-  
+
   if(strlen($dbwhere) > 0) {
 	  $dbwhere .= " and ";
   }
@@ -201,13 +206,14 @@ for($i = 0;$i < $clpagordem->numrows;$i++){
 				        inner join emptipo 		    on emptipo.e41_codtipo = empempenho.e60_codtipo
 					      left  join pagordemconta  on e50_codord          = e49_codord
 					      left  join pagordemprocesso on  pagordem.e50_codord = pagordemprocesso.e03_pagordem
+					      left join pagordemoutrosdados on pagordem.e50_codord = pagordemoutrosdados.e172_pagordem
 					where pagordem.e50_codord = {$e50_codord} ) as x
            inner join cgm 			on cgm.z01_numcgm = _numcgm
            left  join pcfornecon on pc63_numcgm = _numcgm
 	   ";
 
-   
-   
+
+
   $resultord = db_query($sql);
 
   if (pg_numrows($resultord)==0) continue;
@@ -239,7 +245,7 @@ for($i = 0;$i < $clpagordem->numrows;$i++){
 		   inner join empelemento on empelemento.e64_numemp = empempenho.e60_numemp
 		   			 and orcelemento.o56_codele = empelemento.e64_codele
 
-		   where pagordem.e50_codord <> {$e50_codord}
+		   where pagordem.e50_codord < {$e50_codord}
 		     and pagordem.e50_numemp = {$e50_numemp}) as x";
 
   $resultoutrasordens = db_query($sqloutrasordens);
@@ -258,11 +264,17 @@ for($i = 0;$i < $clpagordem->numrows;$i++){
      $cgc      = $o41_cnpj;
 
    }
+   $pdf1->codigo_ordem     = $codigoOrdem;
    $pdf1->numeronota       = $e69_numero;
    $pdf1->datanota         = $e69_dtnota;
    $pdf1->valor_ordem      = '';
+   if(isParaiba() && isset($e172_dados)){
+       $outrosDados = json_decode($e172_dados);
+       $codigoAgrupamento = $outrosDados->codigo_agrupamento;
+       $pdf1->codigoAgrupamento = $codigoAgrupamento;
+   }
    $pdf1->logo             = $logo;
-   $pdf1->processo         = $processo; 
+   $pdf1->processo         = $processo;
    $pdf1->prefeitura       = $nomeinst;
    $pdf1->enderpref        = $ender;
    $pdf1->municpref        = $munic;
@@ -274,6 +286,7 @@ for($i = 0;$i < $clpagordem->numrows;$i++){
    $pdf1->agenciadv        = $pc63_agencia_dig;
    $pdf1->conta            = $pc63_conta;
    $pdf1->contadv          = $pc63_conta_dig;
+   $pdf1->codigooperacao   = $pc63_codigooperacao;
    $pdf1->numcgm           = $z01_numcgm;
    $pdf1->nome             = $z01_nome;
    $pdf1->cnpj             = $z01_cgccpf;
@@ -312,7 +325,7 @@ for($i = 0;$i < $clpagordem->numrows;$i++){
    $pdf1->descr_programa   = $o54_descr;
    $pdf1->projativ         = $o58_projativ;
    $pdf1->descr_projativ   = $o55_descr;
-   $pdf1->recurso          = $o58_codigo;
+   $pdf1->recurso          = $o15_recurso;
    $pdf1->descr_recurso    = $o15_descr;
    $pdf1->elemento     	   = $o56_elemento;
    $pdf1->descr_elemento   = $o56_descr;

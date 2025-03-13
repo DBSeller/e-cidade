@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_app.utils.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -226,7 +226,7 @@ function js_buscaCategorias() {
 function js_retornoCategoria(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   // Limpa o combo de categoria
   $('categoriaCurso').options.length = 0;
@@ -279,7 +279,7 @@ function js_buscaDadosCurso(iCurso) {
 function js_retornoDadosCurso(oAjax) {
   
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   $('as19_nome').value        = oRetorno.oCursoSocial.sNomeCurso.urlDecode();
   $('codigoCurso').value      = oRetorno.oCursoSocial.iCodigo;
@@ -401,7 +401,7 @@ function js_buscaResponsavel(lMostra) {
 
       sUrl += 'pesquisa_chave='+$F('iCgmResponsavel');
       sUrl += '&funcao_js=parent.js_mostraResponsavel';
-      js_OpenJanelaIframe('top.corpo','func_nome', sUrl,'Pesquisa Ministrante',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','func_nome', sUrl,'Pesquisa Ministrante',false);
     } else {
       $('iCgmResponsavel').value = "";
     }
@@ -555,7 +555,7 @@ $('salvarCurso').observe("click", function () {
 function js_retornoSalvarCurso(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   alert(oRetorno.message.urlDecode());
 
@@ -604,7 +604,7 @@ function js_gerarAgenda(iCodigoCurso) {
 function js_retornoGerarAgenda(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   js_buscaDiasAgendaCurso();
 }
 
@@ -630,7 +630,7 @@ function js_buscaDiasAgendaCurso() {
 function js_retornoDiasAgendaCurso(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   oGridDiasAula.clearAll(true);
   oRetorno.aDias.each(function (oDiaAula) {
@@ -677,7 +677,7 @@ $('excluirCurso').observe("click", function () {
 function js_retornoExcluiCurso(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
 
   if (oRetorno.status == 1) {
@@ -716,7 +716,7 @@ function js_excluiDiaAgenda (iCodigoDiaAula) {
 function js_retornoExcluiDiaAgenda(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
   js_buscaDiasAgendaCurso();
 }
@@ -775,7 +775,7 @@ $('adicionarDia').observe("click", function () {
 function js_retornoAdicionarDiaAgenda(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
   $('novoDia').value = '';
   js_buscaDiasAgendaCurso();

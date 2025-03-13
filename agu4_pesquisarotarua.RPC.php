@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,56 +25,54 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-
-
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_sessoes.php"));
+require(modification("libs/JSON.php"));
 
 $oPost    = db_utils::postMemory($_POST);
-
 $oJson    = new services_json();
+$oParam   = $oJson->decode(str_replace("\\", "", $oPost->json));
+$oRetorno = (object) array(
+	"status"  => 1,
+	"message" => ""
+);
 
-$oRetorno = new stdClass();
+try {
 
-$oRetorno->status  = 1;
+	switch ($oParam->exec) {
 
-$oRetorno->message = '';
+		case 'perquisarPorRota':
 
-$oParam = $oJson->decode(str_replace("\\","",$oPost->json));
+			$oDaoAguaRotaRua  = new cl_aguarotarua;
+			$sWhere = "x07_codrua = {$oParam->rua} and {$oParam->nro} between x07_nroini and x07_nrofim";
+			$sSqlAguaRotaRua  = $oDaoAguaRotaRua->sql_query(null, 'x07_codrota, x06_descr', null, $sWhere);
+			$rsDaoAguaRotaRua = $oDaoAguaRotaRua->sql_record($sSqlAguaRotaRua);
 
-switch ($oParam->exec) {
-  
-  case 'perquisarPorRota':
- 
-	  $oDaoAguaRotaRua = db_utils::getDao('aguarotarua');
-	  
-	  $sSqlAguaRotaRua = $oDaoAguaRotaRua->sql_query(null, 'x07_codrota, x06_descr', null, "x07_codrua = {$oParam->rua} and {$oParam->nro} between x07_nroini and x07_nrofim");
-	  
-	  $rDaoAguaRotaRua = $oDaoAguaRotaRua->sql_record($sSqlAguaRotaRua);
-	  
-	  if($oDaoAguaRotaRua->numrows > 0) {
-	    
-	    $oAguaRotaRua = db_utils::fieldsMemory($rDaoAguaRotaRua, 0);
-	    
-	    $oRetorn->status      = 1;
-	    
-	    $oRetorno->iCodRota   = $oAguaRotaRua->x07_codrota;
-	    
-	    $oRetorno->sDescricao = $oAguaRotaRua->x06_descr;
-	  
-	  } else {
-	    
-	    $oRetorno->status     = 0;
-	    
-	  }
-	
-	  echo $oJson->encode($oRetorno);
-	  
-	  break;
-		
+			if (!$rsDaoAguaRotaRua) {
+				throw new DBException("Não foi possível encontrar informações de rota.");
+			}
+
+			if ($oDaoAguaRotaRua->numrows  == 0) {
+				throw new Exception("Nenhuma rota foi encontrada para o logradouro informado.");
+			}
+
+			$oAguaRotaRua = db_utils::fieldsMemory($rsDaoAguaRotaRua, 0);
+			$oRetorno->status      = 1;
+			$oRetorno->iCodRota    = $oAguaRotaRua->x07_codrota;
+			$oRetorno->sDescricao  = $oAguaRotaRua->x06_descr;
+
+			break;
+
+		default:
+			throw new Exception("Nenhuma opção definida.");
+	}
+
+} catch (Exception $exception) {
+
+	$oRetorno->status = 0;
+	$oRetorno->message = $exception->getMessage();
 }
 
-?>
+echo $oJson->encode($oRetorno);

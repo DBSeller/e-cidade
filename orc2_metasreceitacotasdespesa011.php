@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,19 +28,19 @@
 /**
  * 
  * @author I
- * @revision $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.6 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_ppaestimativa_classe.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_ppaestimativa_classe.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clppaestimativa = new cl_ppaestimativa();
 $oPost           = db_utils::postMemory($_POST);
 $oListaRecurso   = new cl_arquivo_auxiliar;
@@ -177,7 +177,7 @@ function js_pesquisao125_cronogramaperspectiva(mostra) {
     js_OpenJanelaIframe('',
                         'db_iframe_cronogramaperspectiva',
                         'func_cronogramaperspectiva.php?funcao_js='+
-                        'top.corpo.iframe_g1.js_mostracronogramaperspectiva1|o124_sequencial|o124_descricao|o124_ano',
+                        'parent.CurrentWindow.corpo.iframe_g1.js_mostracronogramaperspectiva1|o124_sequencial|o124_descricao|o124_ano',
                         'Perspectivas do Cronograma',true);
   }else{
      if(document.form1.o124_sequencial.value != ''){ 
@@ -185,7 +185,7 @@ function js_pesquisao125_cronogramaperspectiva(mostra) {
                             'db_iframe_cronogramaperspectiva',
                             'func_cronogramaperspectiva.php?pesquisa_chave='+
                             document.form1.o124_sequencial.value+
-                            '&funcao_js=top.corpo.iframe_g1.js_mostracronogramaperspectiva',
+                            '&funcao_js=parent.CurrentWindow.corpo.iframe_g1.js_mostracronogramaperspectiva',
                             'Perspectivas do Cronograma',
                             false);
      }else{

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_layouttxt_classe.php");
-include("classes/db_db_layoutlinha_classe.php");
-include("classes/db_db_layoutcampos_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_layouttxt_classe.php"));
+include(modification("classes/db_db_layoutlinha_classe.php"));
+include(modification("classes/db_db_layoutcampos_classe.php"));
 $cldb_layouttxt = new cl_db_layouttxt;
 $cldb_layoutlinha = new cl_db_layoutlinha;
 $cldb_layoutcampos = new cl_db_layoutcampos;
@@ -71,7 +71,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_layouttxt.php");
+	include(modification("forms/db_frmdb_layouttxt.php"));
 	?>
     </center>
 	</td>
@@ -99,7 +99,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_layoutlinha.disabled=false;
-         top.corpo.iframe_db_layoutlinha.location.href='con1_db_layoutlinha001.php?db51_layouttxt=".@$db50_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_layoutlinha.location.href='con1_db_layoutlinha001.php?db51_layouttxt=".@$db50_codigo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_layoutlinha');";

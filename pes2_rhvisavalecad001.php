@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
@@ -98,7 +98,7 @@ function js_emite(){
       </tr>
       -->
                 <?
-                include("dbforms/db_classesgenericas.php");
+                include(modification("dbforms/db_classesgenericas.php"));
                 $geraform = new cl_formulario_rel_pes;
 
                 $geraform->manomes = true;
@@ -113,6 +113,7 @@ function js_emite(){
                 $geraform->mesnome = "DBtxt25";
                 $geraform->trenome = "resumo";
                 $geraform->qbrnome = "quebra";
+                $geraform->tipresumo = "Tipo de Quebra";
                 $geraform->arr_tipores = Array(
                                                "g"=>"Geral",
                                                "o"=>"Órgão",

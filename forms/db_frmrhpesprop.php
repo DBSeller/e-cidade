@@ -58,7 +58,7 @@ db_input('rh19_propi',15,$Irh19_propi,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpesprop','func_rhpesprop.php?funcao_js=parent.js_preenchepesquisa|rh19_regist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpesprop','func_rhpesprop.php?funcao_js=parent.js_preenchepesquisa|rh19_regist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpesprop.hide();

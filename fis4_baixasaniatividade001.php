@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_saniatividade_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_sanitario_classe.php");
-require_once("classes/db_sanibaixa_classe.php");
-require_once("classes/db_sanibaixaproc_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_saniatividade_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_sanitario_classe.php"));
+require_once(modification("classes/db_sanibaixa_classe.php"));
+require_once(modification("classes/db_sanibaixaproc_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -67,7 +67,7 @@ if(isset($HTTP_POST_VARS["db_opcao"]) && $db_opcao == "Baixar"){
     $db_opcao = 2;
     $sqlqtativ = "select * from saniatividade
 					where y83_codsani = $y83_codsani and y83_dtfim is null";
-    $resultqtativ = pg_query($sqlqtativ);
+    $resultqtativ = db_query($sqlqtativ);
     $linhasqtativ = pg_num_rows($resultqtativ);
     $linhaschave = sizeof($chaves);
 
@@ -81,7 +81,7 @@ if(isset($HTTP_POST_VARS["db_opcao"]) && $db_opcao == "Baixar"){
       //q60_sanbaixadiv =1 - permite
 
       $sqlpar = "select * from parfiscal";
-      $resultpar = pg_query($sqlpar);
+      $resultpar = db_query($sqlpar);
       $linhaspar = pg_num_rows($resultpar);
       if($linhaspar>0){
         db_fieldsmemory($resultpar,0);
@@ -89,7 +89,7 @@ if(isset($HTTP_POST_VARS["db_opcao"]) && $db_opcao == "Baixar"){
       if(($y81_oficio == 'f')&& ($y32_sanbaixadiv==0)){
          
         $sqlinscr = "select * from sanitarioinscr where y18_codsani = $y83_codsani";
-        $resultinscr = pg_query($sqlinscr);
+        $resultinscr = db_query($sqlinscr);
         $linhasinscr = pg_num_rows($resultinscr);
         if($linhasinscr>0){
           db_fieldsmemory($resultinscr,0);
@@ -103,7 +103,7 @@ if(isset($HTTP_POST_VARS["db_opcao"]) && $db_opcao == "Baixar"){
 				where  k00_inscr= $y18_inscr 
 				   and k00_dtvenc < current_date
 				   and k03_tipo not in (2,9,19)";
-          $resultdebito = pg_query($sqldebito);
+          $resultdebito = db_query($sqldebito);
           $linhasdebito = pg_num_rows($resultdebito);
           if($linhasdebito>0){
             $erro_msg = "Não permite baixa de alvara com debitos. (Inscrição: $y18_inscr)";
@@ -120,7 +120,7 @@ if(isset($HTTP_POST_VARS["db_opcao"]) && $db_opcao == "Baixar"){
 				where  k00_inscr= $y18_inscr 
 				   and k00_dtvenc < current_date
 				   and k03_tipo = 3";
-            $resultdebito3 = pg_query($sqldebito3);
+            $resultdebito3 = db_query($sqldebito3);
             $linhasdebito3 = pg_num_rows($resultdebito3);
             if($linhasdebito3>0){
               $erro_msg = "Não permite baixa de alvara com debitos. (Inscrição: $y18_inscr)";
@@ -377,10 +377,10 @@ function js_mostrasanitario1(chave1,chave2){
 }
 function js_pesquisay82_codproc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_processo','func_protprocesso.php?funcao_js=parent.js_mostraprocesso1|p58_codproc|p58_requer','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processo','func_protprocesso.php?funcao_js=parent.js_mostraprocesso1|p58_codproc|p58_requer','Pesquisa',true);
   }else{
      if(document.form1.y82_codproc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_processo','func_protprocesso.php?pesquisa_chave='+document.form1.y82_codproc.value+'&funcao_js=parent.js_mostraprocesso','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processo','func_protprocesso.php?pesquisa_chave='+document.form1.y82_codproc.value+'&funcao_js=parent.js_mostraprocesso','Pesquisa',false);
      }else{
        document.form1.y82_codproc.value = ''; 
      }

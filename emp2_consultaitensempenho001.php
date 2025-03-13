@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,11 +26,11 @@
  */
 
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_utils.php");
-  require_once("libs/db_app.utils.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
 
 ?>
 <html>
@@ -152,7 +152,7 @@
   function preencherGrid(oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     oGridItensEmpenho.clearAll(true);
 
@@ -184,7 +184,7 @@
   function preencherGridItensAnulado(oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     oGridItensAnuladoEmpenho.clearAll(true);
 
@@ -193,7 +193,7 @@
 
       var aLinha = new Array();
       aLinha[0] = oDado.pc01_codmater;
-      aLinha[1] = oDado.pc01_descrmater;
+      aLinha[1] = oDado.pc01_descrmater.urlDecode();
       aLinha[2] = js_formatar(oDado.e37_qtd, "f");
       aLinha[3] = js_formatar(oDado.e37_vlranu, "f");
       aLinha[4] = js_formatar(oDado.e94_data, "d");

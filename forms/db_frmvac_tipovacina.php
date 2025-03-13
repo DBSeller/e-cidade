@@ -61,7 +61,7 @@ $clvac_tipovacina->rotulo->label();
 <script>
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_vac_tipovacina',
                       'func_vac_tipovacina.php?funcao_js=parent.js_preenchepesquisa|vc04_i_codigo',
                       'Pesquisa',

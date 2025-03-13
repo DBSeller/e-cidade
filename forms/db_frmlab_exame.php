@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -174,7 +174,7 @@ db_input('la08_i_dias',10,$Ila08_i_dias,true,'text',$db_opcao,"")
           <?db_ancora(@$Lla10_i_codigo,"js_pesquisala18_i_sinonima(true);",$db_opcao);?>  
       </td>
       <td colspan="2">
-                <? $rResult=pg_query("select la10_i_codigo as chave, la10_c_descr as descricao from lab_sinonima");?>
+                <? $rResult=db_query("select la10_i_codigo as chave, la10_c_descr as descricao from lab_sinonima");?>
                    <? /*<select name="sinonimia" >
                          <?for($x=0;$x<pg_num_rows($rResult);$x++){
                               db_fieldsmemory($rResult,$x);

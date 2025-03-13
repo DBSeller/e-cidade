@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once("libs/db_stdlibwebseller.php");
-require_once("fpdf151/scpdf.php");
-require_once("classes/db_calendario_classe.php");
-require_once("classes/db_periodocalendario_classe.php");
-require_once("classes/db_escoladiretor_classe.php");
-require_once("classes/db_escola_classe.php");
-require_once("classes/db_edu_parametros_classe.php");
-require_once("classes/db_matricula_classe.php");  
-require_once("classes/db_edu_relatmodel_classe.php"); 
-require_once("classes/db_telefoneescola_classe.php");
-require_once("libs/db_utils.php");   
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("classes/db_calendario_classe.php"));
+require_once(modification("classes/db_periodocalendario_classe.php"));
+require_once(modification("classes/db_escoladiretor_classe.php"));
+require_once(modification("classes/db_escola_classe.php"));
+require_once(modification("classes/db_edu_parametros_classe.php"));
+require_once(modification("classes/db_matricula_classe.php"));  
+require_once(modification("classes/db_edu_relatmodel_classe.php")); 
+require_once(modification("classes/db_telefoneescola_classe.php"));
+require_once(modification("libs/db_utils.php"));   
 $iEscola            = db_getsession("DB_coddepto");
 $sNomeEscola        = db_getsession("DB_nomedepto");
 $clMatricula        = new cl_matricula();
@@ -140,14 +140,14 @@ $sResultParametros = $clEduParametros->sql_record($clEduParametros->sql_query(""
                                                   );
                                                   
 $sCampos             = "ed217_t_cabecalho,ed217_t_rodape,ed217_t_obs";
-$sSqlDadosRelatModel = $clEduRelatmodel->sql_query("",$sCampos,"","ed217_i_codigo = 3");
+$sSqlDadosRelatModel = $clEduRelatmodel->sql_query("",$sCampos,"","ed217_i_codigo = {$iTipoModelo}");
 $rsDadosRelatModel   = $clEduRelatmodel->sql_record($sSqlDadosRelatModel);
 
 if ($clEduRelatmodel->numrows > 0) {
     
-  $oDadosRelatModel  = db_utils::fieldsMemory($rsDadosRelatModel,0);
-  $sCabecalho        = $oDadosRelatModel->ed217_t_cabecalho;
-  
+  $oDadosRelatModel = db_utils::fieldsMemory($rsDadosRelatModel,0);
+  $sCabecalho       = $oDadosRelatModel->ed217_t_cabecalho;
+  $sObservacao      = $oDadosRelatModel->ed217_t_obs;
 }
                                           
 $fpdf = new FPDF();
@@ -172,7 +172,16 @@ $mes_extenso  = array("01"=>"janeiro",
                       "11"=>"novembro",
                       "12"=>"dezembro"
                      );
-$cidade = strtolower($mun_escola);     
+
+$cidade = mb_strtolower($mun_escola);
+$ArrayNomeCidade = explode(" ", $cidade);
+
+for($i = 0; $i < count($ArrayNomeCidade); $i++){
+  $ArrayNomeCidade[$i] = ucfirst($ArrayNomeCidade[$i]);
+}
+
+$cidade = implode(" ", $ArrayNomeCidade);
+
 $cidadeescola =   ucfirst($cidade);   
 $sDataFinal = $cidadeescola.", ".$sDataExtenso;
 db_fieldsmemory($sResult,0);
@@ -211,14 +220,24 @@ for ($x = 0; $x < $clMatricula->numrows; $x++) {
   db_fieldsmemory($sResult,$x);
   db_fieldsmemory($sResultParametros,0);
 
-  if ($iCodigo != $ed57_i_codigo) {             
+  if ($iCodigo != $ed57_i_codigo) {   
+
+    if ($fpdf->getY() >= $fpdf->h - 50 ) {
+      
+      escreveRodape($fpdf, $rua_escola, $num_escola, $bairro_escola, $mun_escola, $uf_escola, $cep_escola, $sTelEscola, $email_escola);
+      $fpdf->addPage('P');
+      escreveCabecalho( $fpdf, $sNomeEscola, $iData, $sCabecalho );
+    }
+
+    escreveObservacao($fpdf, $sObservacao);
+
     if ($x != 0) {
     	
   	  $fpdf->setfont('times','',11);
   	  $final =$fpdf->getY();
       $fpdf->setY($final+2);
       $fpdf->cell(137,5,"Total : " .$iTotal,0,0,"L",0);
-      $fpdf->cell(222,5,$sDataFinal ,0,0,"L",0);
+      $fpdf->multicell(75,4,$sDataFinal,0,"L",0,0);
       $fpdf->setfont('times','',10);
       $fim = $fpdf->getY();
       $fpdf->setY($fim+10);    
@@ -318,10 +337,10 @@ for ($x = 0; $x < $clMatricula->numrows; $x++) {
    }   
 }
 $fpdf->setfont('times','',11);
-$final =$fpdf->getY();
+$final = $fpdf->getY();
 $fpdf->setY($final+10);
 $fpdf->cell(137,5,"Total : " .$iTotal,0,0,"L",0);
-$fpdf->cell(222,5,$sDataFinal ,0,0,"L",0);
+$fpdf->multicell(75,4,$sDataFinal,0,"L",0,0);
 $fpdf->setfont('times','',10);
 $fim = $fpdf->getY();
 $fpdf->setY($fim+13);
@@ -347,6 +366,42 @@ $fpdf->setfont('times','b',7);
 $fpdf->cell(40, 5, "RUA $rua_escola, $num_escola - $bairro_escola - $mun_escola / $uf_escola - $cep_escola 
                     Fone/Fax : $sTelEscola - e-mail: $email_escola", 0, 1, "C", 0
            ); 
-           
+
+function escreveObservacao($fpdf, $sObservacao) {
+
+  if ( empty($sObservacao) ) {
+    return;
+  }
+
+  $fpdf->Ln();
+  $fpdf->setfont('times','b',7);
+  $fpdf->cell(65, 5, "Observações", 0, 1,"L", 0);
+  $fpdf->setfont('times','',7);
+  $fpdf->multicell(192, 5, $sObservacao, 1, 1, "L");
+}
+
+function escreveCabecalho( $fpdf, $sNomeEscola, $iData, $sCabecalho ) {
+  
+  $fpdf->setfont('times','',12);
+  $fpdf->setXY(10,5);
+  $fpdf->cell(100,5,"Estabelecimento: ".$sNomeEscola,0,0,"J",0);
+  $fpdf->setXY(50,12);
+  $fpdf->cell(100,5,"ELEIÇÃO DO DIRETOR ESCOLAR - Data da votação: $iData",0,1,"C",0);
+  $fpdf->setXY(10,20);
+  $fpdf->setfont('times','',12);
+  $fpdf->multicell(180,5,"                    ".$sCabecalho,0,"J",0,0);
+}
+
+function escreveRodape($fpdf, $rua_escola, $num_escola, $bairro_escola, $mun_escola, $uf_escola, $cep_escola, $sTelEscola, $email_escola) {
+
+  $fpdf->setY(289);  
+  $fpdf->line(10, $fpdf->getY(), 200, $fpdf->getY());
+  $fpdf->setX(85);
+  $fpdf->setfont('times','b',7);
+  $fpdf->cell(40, 5, "RUA $rua_escola, $num_escola - $bairro_escola - $mun_escola / $uf_escola - $cep_escola 
+                      Fone/Fax : $sTelEscola - e-mail: $email_escola", 0, 1, "C", 0
+             ); 
+}
+
 $fpdf->Output();
 ?>

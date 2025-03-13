@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_contlot_classe.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_editalrua_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_editalrua_classe.php"));
 $cleditalrua = new cl_editalrua;
 $clcontlot = new cl_contlot;
 $cliptubase = new cl_iptubase;
@@ -65,7 +65,7 @@ $db_opcao = 1;
   function js_consultar(){
     obj=document.form1;
     if(obj.j01_matric.value!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe','con3_conscontri011.php?contri='+obj.d02_contri.value+'&cod_matricula='+obj.j01_matric.value,'Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','con3_conscontri011.php?contri='+obj.d02_contri.value+'&cod_matricula='+obj.j01_matric.value,'Pesquisa',true);
     }else{
       alert("Selecione a matrícula.");
     }  
@@ -122,7 +122,7 @@ $db_opcao = 1;
       <br>
        <?
        $legenda="Contribuição $d02_contri";
-       include("con3_conscontri008.php");
+       include(modification("con3_conscontri008.php"));
        ?> 
       <br>
       </td>

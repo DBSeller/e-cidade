@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_stdlibwebseller.php");
-include("classes/db_mer_cardapioaluno_classe.php");
-include("classes/db_calendario_classe.php");
-include("classes/db_mer_cardapio_classe.php");
-include("classes/db_mer_tipocardapio_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_stdlibwebseller.php"));
+include(modification("classes/db_mer_cardapioaluno_classe.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("classes/db_mer_cardapio_classe.php"));
+include(modification("classes/db_mer_tipocardapio_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmer_cardapioaluno = new cl_mer_cardapioaluno;
 $clmer_cardapio      = new cl_mer_cardapio;
@@ -214,7 +214,7 @@ function js_cardapio(cardapio) {
 function js_retornoPesquisaRefeicao(oAjax) {
 	
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   sHtml = '';
   if (oRetorno.length==0) {
     sHtml += '<option value="">Nenhuma refeição consumida para o cardápio e/ou escola selecionados!</option>';
@@ -260,7 +260,7 @@ function js_refeicao(refeicao) {
 function js_retornoPesquisaTurma(oAjax) {
     
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   sHtml = '';
   if(oRetorno.length==0){
     sHtml += '  <option value="">Nenhuma turma vinculada ao cardápio selecionado!</option>';

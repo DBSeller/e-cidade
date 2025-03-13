@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,24 +25,26 @@
  *                                licenca/licenca_pt.txt
  */
 
+function db_autoload($sClassName) {
 
-function __autoload($sClassName) {
-
-  //echo "$sClassName\n";
   $aIncludeDirs = array();
 
   $aIncludeDirs[] = "model/";
+  $aIncludeDirs[] = "model/agua/";
   $aIncludeDirs[] = "model/ambulatorial/";
   $aIncludeDirs[] = "model/arrecadacao/";
   $aIncludeDirs[] = "model/arrecadacao/abatimento/";
+  $aIncludeDirs[] = "model/arrecadacao/boletos/";
+  $aIncludeDirs[] = "model/arrecadacao/relatorio/";
   $aIncludeDirs[] = "model/cadastro/";
   $aIncludeDirs[] = "model/caixa/";
   $aIncludeDirs[] = "model/caixa/arquivos/";
-  $aIncludeDirs[] = "model/caixa/slip/";
+  $aIncludeDirs[] = "model/caixa/arquivos/interfaces/";
+  $aIncludeDirs[] = "model/caixa/relatorios/";
   $aIncludeDirs[] = "model/caixa/relatorios/conciliacaobancaria/";
+  $aIncludeDirs[] = "model/caixa/slip/";
   $aIncludeDirs[] = "model/compras/";
   $aIncludeDirs[] = "model/configuracao/";
-  $aIncludeDirs[] = "model/integracao/transparencia/";
   $aIncludeDirs[] = "model/configuracao/avaliacao/";
   $aIncludeDirs[] = "model/configuracao/endereco/";
   $aIncludeDirs[] = "model/configuracao/inconsistencia/";
@@ -56,48 +58,86 @@ function __autoload($sClassName) {
   $aIncludeDirs[] = "model/contabilidade/lancamento/";
   $aIncludeDirs[] = "model/contabilidade/planoconta/";
   $aIncludeDirs[] = "model/contabilidade/relatorios/";
-  $aIncludeDirs[] = "model/contabilidade/relatorios/sigfis/";
   $aIncludeDirs[] = "model/contabilidade/relatorios/dcasp/";
   $aIncludeDirs[] = "model/contabilidade/relatorios/rpps/";
+  $aIncludeDirs[] = "model/contabilidade/relatorios/sigfis/";
+  $aIncludeDirs[] = "model/contabilidade/relatorios/siconfi/";
+  $aIncludeDirs[] = "model/contabilidade/relatorios/lrf/rreo/";
   $aIncludeDirs[] = "model/contrato/";
   $aIncludeDirs[] = "model/contrato/mensageria/";
+  $aIncludeDirs[] = "model/contrato/relatorio/";
   $aIncludeDirs[] = "model/diversos/";
   $aIncludeDirs[] = "model/divida/";
   $aIncludeDirs[] = "model/educacao/";
-  $aIncludeDirs[] = "model/educacao/avaliacao/";
   $aIncludeDirs[] = "model/educacao/ausencia/";
+  $aIncludeDirs[] = "model/educacao/avaliacao/";
   $aIncludeDirs[] = "model/educacao/censo/";
+  $aIncludeDirs[] = "model/educacao/censo/censo2015/";
+  $aIncludeDirs[] = "model/educacao/censo/censo2016/";
+  $aIncludeDirs[] = "model/educacao/censo/censo2017/";
+  $aIncludeDirs[] = "model/educacao/censo/censo2018/";
   $aIncludeDirs[] = "model/educacao/classificacao/";
-  $aIncludeDirs[] = "model/educacao/recursohumano/";
+  $aIncludeDirs[] = "model/educacao/matriculaonline/";
+  $aIncludeDirs[] = "model/educacao/matriculaonline/criterios/";
   $aIncludeDirs[] = "model/educacao/ocorrencia/";
   $aIncludeDirs[] = "model/educacao/progressaoparcial/";
+  $aIncludeDirs[] = "model/educacao/recursohumano/";
   $aIncludeDirs[] = "model/educacao/relatorio/";
+  $aIncludeDirs[] = "model/educacao/transferencia/";
   $aIncludeDirs[] = "model/empenho/";
+  $aIncludeDirs[] = "model/empenho/relatorio/";
+  $aIncludeDirs[] = "model/empenho/classificacaocredor/";
+  $aIncludeDirs[] = "model/empenho/classificacaocredor/regras/";
+  $aIncludeDirs[] = "model/esocial/";
   $aIncludeDirs[] = "model/estoque/";
   $aIncludeDirs[] = "model/farmacia/";
-  $aIncludeDirs[] = "model/laboratorio/";
+  $aIncludeDirs[] = "model/farmacia/horus/";
   $aIncludeDirs[] = "model/financeiro/";
+  $aIncludeDirs[] = "model/licitacao/";
+  $aIncludeDirs[] = "model/licitacao/regras/";
+  $aIncludeDirs[] = "model/licitacao/arquivos/";
+  $aIncludeDirs[] = "model/licitacao/arquivos/licitacon/";
   $aIncludeDirs[] = "model/fiscal/";
   $aIncludeDirs[] = "model/fiscal/webservice/";
   $aIncludeDirs[] = "model/habitacao/";
+  $aIncludeDirs[] = "model/impressoras/";
+  $aIncludeDirs[] = "model/integracao/transparencia/";
   $aIncludeDirs[] = "model/issqn/";
+  $aIncludeDirs[] = "model/issqn/paralisacao/";
+  $aIncludeDirs[] = "model/issqn/alvara/";
   $aIncludeDirs[] = "model/juridico/";
+  $aIncludeDirs[] = "model/laboratorio/";
   $aIncludeDirs[] = "model/material/";
+  $aIncludeDirs[] = "model/material/";
+  $aIncludeDirs[] = "model/material/relatorios/";
+  $aIncludeDirs[] = "model/meioambiente/";
+  $aIncludeDirs[] = "model/meioambiente/mensageria/";
   $aIncludeDirs[] = "model/orcamento/";
   $aIncludeDirs[] = "model/orcamento/programa/";
+  $aIncludeDirs[] = "model/orcamento/relatorio/";
   $aIncludeDirs[] = "model/orcamento/suplementacao/";
   $aIncludeDirs[] = "model/patrimonio/";
+  $aIncludeDirs[] = "model/patrimonio/patrimonio/";
+  $aIncludeDirs[] = "model/patrimonio/depreciacao/";
   $aIncludeDirs[] = "model/patrimonio/material/";
   $aIncludeDirs[] = "model/patrimonio/material/relatorio/";
-  $aIncludeDirs[] = "model/material/";
-  $aIncludeDirs[] = "model/patrimonio/depreciacao/";
+  $aIncludeDirs[] = "model/patrimonio/relatorios/";
+  $aIncludeDirs[] = "model/patrimonio/veiculo/";
   $aIncludeDirs[] = "model/pessoal/";
   $aIncludeDirs[] = "model/pessoal/arquivos/";
+  $aIncludeDirs[] = "model/pessoal/arquivos/consignado/";
+  $aIncludeDirs[] = "model/pessoal/arquivos/consignet/";
   $aIncludeDirs[] = "model/pessoal/arquivos/dirf/";
+  $aIncludeDirs[] = "model/pessoal/arquivos/econsig/";
+  $aIncludeDirs[] = "model/pessoal/arquivos/refeisul/";
   $aIncludeDirs[] = "model/pessoal/arquivos/siprev/";
   $aIncludeDirs[] = "model/pessoal/calculofinanceiro/";
   $aIncludeDirs[] = "model/pessoal/ferias/";
   $aIncludeDirs[] = "model/pessoal/folhapagamento/";
+  $aIncludeDirs[] = "model/pessoal/ponto/";
+  $aIncludeDirs[] = "model/pessoal/ponto/processamento/";
+  $aIncludeDirs[] = "model/pessoal/gratificacao/";
+  $aIncludeDirs[] = "model/pessoal/progressaofuncional/";
   $aIncludeDirs[] = "model/pessoal/relatorios/";
   $aIncludeDirs[] = "model/pessoal/std/";
   $aIncludeDirs[] = "model/protocolo/";
@@ -110,9 +150,7 @@ function __autoload($sClassName) {
   $aIncludeDirs[] = "model/veiculos/";
   $aIncludeDirs[] = "model/viradaIPTU/";
   $aIncludeDirs[] = "model/webservices/";
-  $aIncludeDirs[] = "model/arrecadacao/boletos/";
-  $aIncludeDirs[] = "model/impressoras/";
-
+  $aIncludeDirs[] = "model/psf/";
 
   $aArquivosCLasseErradas['clExpDadosColetores']                                  = 'model/agua/ExportaDadosColetores.model.php';
   $aArquivosCLasseErradas['clArqExpColetor']                                      = 'model/agua/ArquivoExportaColetor.model.php';
@@ -131,7 +169,7 @@ function __autoload($sClassName) {
   $aArquivosCLasseErradas['impressaoOS214_plus']                                  = 'model/impressao.argoxOS214_plus.php';
   $aArquivosCLasseErradas['impressaoOS214']                                       = 'model/impressao.argoxOS214.php';
   $aArquivosCLasseErradas['tableDataManager']                                     = 'model/dataManager.php';
-  $aArquivosCLasseErradas['LancamentoAuxiliarInscricaoRestosAPagarNaoProcessado'] = 'model/contabilidade/lancamento/LancamentoAuxiliarInscricaoRestosAPagarNaoProcessados.model.php';
+  $aArquivosCLasseErradas['LancamentoAuxiliarInscricaoRestosAPagarNaoProcessado'] = 'model/contabilidade/lancamento/LancamentoAuxiliarInscricaoRestosAPagar.model.php';
   $aArquivosCLasseErradas['SingletonRegraDocumentoContabil']                      = 'model/contabilidade/SingletonDocumentoContabil.model.php';
   $aArquivosCLasseErradas['AlvaraCancelamento']                                   = 'model/issqn/AlvaraMovimentacaoCancelamento.model.php';
   $aArquivosCLasseErradas['AlvaraRenovacao']                                      = 'model/issqn/AlvaraMovimentacaoRenovacao.model.php';
@@ -149,40 +187,46 @@ function __autoload($sClassName) {
   $aArquivosCLasseErradas['modeloEtiqueta']                                       = 'model/dbModeloEtiqueta.model.php';
   $aArquivosCLasseErradas['loginscricao']                                         = 'model/logInscricao.model.php';
   $aArquivosCLasseErradas['modelo4CMPlus']                                        = 'model/modelo.4CM.Plus.php';
+  $aArquivosCLasseErradas['db_app']                                               = 'libs/db_app.utils.php';
+  $aArquivosCLasseErradas['Services_JSON']                                        = 'libs/JSON.php';
+  $aArquivosCLasseErradas['db_layouttxt']                                         = 'dbforms/db_layouttxt.php';
+  $aArquivosCLasseErradas['db_layoutlinha']                                       = 'dbforms/db_layoutlinha.php';
+  $aArquivosCLasseErradas['cl_permusuario_dotacao']                               = 'libs/db_liborcamento.php';
 
   /**
    * Opcoes alternativas aos diretorios padroes
    */
+  $aExceptions[] = "legacy/";
+  $aExceptions[] = "legacy/classes/";
   $aExceptions[] = "std/";
+  $aExceptions[] = "std/dd/";
+  $aExceptions[] = "std/label/";
+  $aExceptions[] = "std/Polyfill/";
   $aExceptions[] = "libs/";
+  $aExceptions[] = "fpdf151/";
   $aExceptions[] = "libs/exceptions/";
 
   foreach ($aExceptions as $sDiretorioExcecao) {
 
     $sArquivoExcecao = $sDiretorioExcecao . $sClassName . '.php';
 
-    if (file_exists($sArquivoExcecao)) {
-
-      require_once($sArquivoExcecao);
-      return true;
+    if (file_exists(ECIDADE_PATH . $sArquivoExcecao)) {
+      return require_once(modification(ECIDADE_PATH . $sArquivoExcecao));
     }
 
   }
 
   /**
-   * Verificamos se o arquivo nao consta na lista de excessï¿½es de arquivos
+   * Verificamos se o arquivo nao consta na lista de excessões de arquivos
    */
   if (isset($aArquivosCLasseErradas[$sClassName])) {
-
-    require_once $aArquivosCLasseErradas[$sClassName];
-    return true;
+    return require_once(modification(ECIDADE_PATH . $aArquivosCLasseErradas[$sClassName]));
   }
 
   if (substr($sClassName, 0, 3) == 'cl_') {
 
     $sClassNameDao = str_replace("cl_", "db_", $sClassName);
-    require_once "classes/{$sClassNameDao}_classe.php";
-    return true;
+    return require_once(modification(ECIDADE_PATH . "classes/{$sClassNameDao}_classe.php"));
 
   } else {
 
@@ -190,21 +234,25 @@ function __autoload($sClassName) {
 
       $sFile = "{$sDirectory}{$sClassName}.model.php";
 
-      if (file_exists($sFile)) {
-
-        require_once($sFile);
-        break;
+      if (file_exists(ECIDADE_PATH . $sFile)) {
+        return require_once(modification(ECIDADE_PATH . $sFile));
       }
 
       $sFile = "{$sDirectory}{$sClassName}.service.php";
 
-      if (file_exists($sFile)) {
+      if (file_exists(ECIDADE_PATH . $sFile)) {
+        return require_once(modification(ECIDADE_PATH . $sFile));
+      }
 
-        require_once($sFile);
-        break;
+      $sFile = "{$sDirectory}{$sClassName}.interface.php";
+
+      if (file_exists(ECIDADE_PATH . $sFile)) {
+        return require_once(modification(ECIDADE_PATH . $sFile));
       }
     }
   }
 
-  return true;
+  return false;
 }
+
+spl_autoload_register('db_autoload');

@@ -1,42 +1,42 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
 /**
  * Cadastro de ordem de compras por empenho
- * 
+ *
  * @package compras
- * @author dbluizmarcelo Revisão $Author: dbacacio.schneider $Author: dbacacio.schneider $
- * @version $Revision: 1.25 $
+ * @author dbluizmarcelo Revisão $Author: dbjeferson.belmiro $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.32 $
 */
 
 //MODULO: empenho
-include("classes/db_db_almox_classe.php");
-include("classes/db_db_almoxdepto_classe.php");
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
 $cldb_almox = new cl_db_almox;
 $cldb_almoxdepto = new cl_db_almoxdepto;
 $clempempenho->rotulo->label();
@@ -48,6 +48,8 @@ $clrotulo->label("descrdepto");
 $clrotulo->label("m51_obs");
 $clrotulo->label("m51_prazoent");
 
+$lTemServico = false;
+
 $where   = " 1=1 ";
 $where1  = "";
 $where2  = "";
@@ -56,7 +58,7 @@ $pesqemp = false;
 $coddepto = db_getsession("DB_coddepto");
 $instit   = db_getsession("DB_instit");
 
-$resultdepto = pg_query("select descrdepto from db_depart where coddepto = $coddepto");
+$resultdepto = db_query("select descrdepto from db_depart where coddepto = $coddepto");
 db_fieldsmemory($resultdepto,0);
 
 $m51_prazoent = 3;
@@ -77,11 +79,11 @@ if (isset($e60codemp) && $e60_codemp){
 if((isset($e60_numcgm) && $e60_numcgm!='')||(isset($e60_numemp) && $e60_numemp!='' )||(isset($e60_codemp) && $e60_codemp)){
 
   //rotina que traz os dados do empenho
-  $result = $clempempenho->sql_record($clempempenho->sql_query_empnome(null,"*","","$where $where1 $where2")); 
+  $result = $clempempenho->sql_record($clempempenho->sql_query_empnome(null,"*","","$where $where1 $where2"));
   db_fieldsmemory($result,0,true);
-  //fim  
+  //fim
 
-}    
+}
 
 if ($lBloquear) {
 	$pesqemp = false;
@@ -124,25 +126,25 @@ border: 1px solid #cccccc;
 <td><?db_input('z01_cgccpf',20,$Iz01_cgccpf,true,'text',3)?></td>
 <td nowrap align="right" title="<?=@$z01_email?>"><?=@$Lz01_email?></td>
 <td nowrap><?db_input('z01_email',45,$Iz01_email,true,'text',3)?>
-<input name="Alterar CGM" type="button" id="alterarcgm" value="Alterar CGM" 
+<input name="Alterar CGM" type="button" id="alterarcgm" value="Alterar CGM"
        onclick="js_AlteraCGM(document.form1.e60_numcgm.value);" <?=$sDisable?>>
-</td>                    
+</td>
 </tr>
 <?
 $result_pcparam = $clpcparam->sql_record($clpcparam->sql_query_file(db_getsession("DB_instit")));
 if ($clpcparam->numrows > 0) {
   db_fieldsmemory($result_pcparam, 0);
-  
+
   if(($pc30_importaresumoemp == 't') and ($clempempenho->numrows == 1)) {
     $m51_obs = $e60_resumo;
   }
-  
+
   if ($pc30_emiteemail == 't'){
-    $sSql = "select usuext 
+    $sSql = "select usuext
       from db_usuarios u
       inner join db_usuacgm c on u.id_usuario = c.id_usuario
       where cgmlogin = $z01_numcgm";
-    $rs = pg_query($sSql);						
+    $rs = db_query($sSql);
     if (pg_num_rows($rs) > 0){
       db_fieldsmemory($rs,0);
       if ($usuext == 1){
@@ -153,14 +155,14 @@ if ($clpcparam->numrows > 0) {
           <td nowrap></td>
           <td nowrap></td>
           <td align="right"><input id='manda_email' name="manda_mail" type="checkbox" value="X"></td>
-          <td nowrap><label for='manda_email'><b>Mandar e-mail para o fornecedor.</b></label></td>         
+          <td nowrap><label for='manda_email'><b>Mandar e-mail para o fornecedor.</b></label></td>
           </tr>
           <?//end if parametro
       }
     }
   }
 }
-?>		 
+?>
 <tr>
 <td nowrap align="right" title="<?=@$z01_ender?>"><?=@$Lz01_ender?></td>
 <td><?db_input('z01_ender',30,"$Iz01_ender",true,'text',3);if (@$z01_numero!=0){db_input('z01_numero',4,@$Iz01_numero,true,'text',3);}?></td>
@@ -188,44 +190,85 @@ if ($clpcparam->numrows > 0) {
 }
 db_inputdata('m51_data',@$m51_data_dia,@$m51_data_mes,@$m51_data_ano,true,'text',3);?>
 </td>
-<?
+<?php
 $result_matparam=$clmatparam->sql_record($clmatparam->sql_query_file());
 if ($clmatparam->numrows>0){
   db_fieldsmemory($result_matparam,0);
-  if($m90_tipocontrol=='F'){
 
-    echo "<td nowrap align='right' title='Almox'><b>Almoxarifado :</b></td>";
-    
+if ((isset($e60_numcgm) && $e60_numcgm!= "")){
+    $where = "";
+    $where1 = "";
+    if (isset($e60_numemp)) {
+        $where = "and e60_numemp = $e60_numemp";
+    }
+
+    if (isset($e60_codemp)) {
+        $where1 = "and e60_codemp = '$e60_codemp'";
+    }
+    $sSQLemp = "select e60_numemp, ";
+    $sSQLemp .= "       e60_codemp, ";
+    $sSQLemp .= "       e62_item, ";
+    $sSQLemp .= "       pc01_descrmater, ";
+    $sSQLemp .= "       e62_sequen, ";
+    $sSQLemp .= "	      e62_descr, ";
+    $sSQLemp .= "	      e62_vlrun, ";
+    $sSQLemp .= "       e62_sequencial,";
+    $sSQLemp .= "	      pc01_servico,";
+    $sSQLemp .= "	      pc01_fraciona,";
+    $sSQLemp .= "	     (select rnsaldoitem  from  fc_saldoitensempenho(e60_numemp, e62_sequencial)) as e62_quant,";
+    $sSQLemp .= "	     (select round(rnsaldovalor,2) from fc_saldoitensempenho(e60_numemp, e62_sequencial)) as e62_vltot,";
+    $sSQLemp .= "	      e62_servicoquantidade";
+    $sSQLemp .= "  from empempenho ";
+    $sSQLemp .= "       inner join empempitem on e62_numemp       = e60_numemp ";
+    $sSQLemp .= "       inner join pcmater    on pc01_codmater    = e62_item";
+    $sSQLemp .= "       inner join pcsubgrupo on pc04_codsubgrupo = pc01_codsubgrupo";
+    $sSQLemp .= "       inner join pctipo     on pc05_codtipo     = pc04_codtipo";
+    $sSQLemp .= " where e60_numcgm = {$e60_numcgm} {$where} {$where1}";
+    $sSQLemp .= "  order by e60_numemp";
+
+    $rsEmpenho = db_query($sSQLemp);
+    while($ordemCompra = pg_fetch_array($rsEmpenho)) {
+        if ($ordemCompra['pc01_servico'] == 't') {
+            $lTemServico = true;
+            break;
+        }
+    }
+
+}
+
+  if(!$lTemServico){
+    echo "<td nowrap align='right' title='Almox'><b>Depósito :</b></td>";
+
 		if ($m90_almoxordemcompra == "2") {
-			
+
 			$sSqlOrigemEmpenho = "select * from fc_origem_empenho($e60_numemp)";
-			$rsOrigemEmpenho   = pg_query($sSqlOrigemEmpenho) or die($sSqlOrigemEmpenho);
-			
+			$rsOrigemEmpenho   = db_query($sSqlOrigemEmpenho) or die($sSqlOrigemEmpenho);
+
 			for ($i = 0; $i < pg_num_rows($rsOrigemEmpenho); $i++) {
 				$oOrigemEmpenho = db_utils::fieldsMemory($rsOrigemEmpenho,$i);
-			  $aDeptoEmp[]	  = $oOrigemEmpenho->ridepto; 		
+			  $aDeptoEmp[]	  = $oOrigemEmpenho->ridepto;
 			}
-			
-			$rsAlmox = $cldb_almoxdepto->sql_record($cldb_almoxdepto->sql_query(null,null,"distinct m91_depto,a.descrdepto",null," m92_depto in (".implode(",",array_unique($aDeptoEmp)).") and a.instit = $instit")); 
 
-			if ($cldb_almoxdepto->numrows > 1){			
-				$rsAlmox    = $cldb_almoxdepto->sql_record($cldb_almoxdepto->sql_query(null,null,"'0' as m91_depto, 'Nenhum' as descrdepto union all select distinct m91_depto,a.descrdepto",null," m92_depto in (".implode(",",array_unique($aDeptoEmp)).") and a.instit = $instit")); 
+			$rsAlmox = $cldb_almoxdepto->sql_record($cldb_almoxdepto->sql_query(null,null,"distinct m91_depto,a.descrdepto",null," m92_depto in (".implode(",",array_unique($aDeptoEmp)).") and a.instit = $instit"));
+
+			if ($cldb_almoxdepto->numrows > 1){
+				$rsAlmox    = $cldb_almoxdepto->sql_record($cldb_almoxdepto->sql_query(null,null,"'0' as m91_depto, 'Nenhum' as descrdepto union all select distinct m91_depto,a.descrdepto",null," m92_depto in (".implode(",",array_unique($aDeptoEmp)).") and a.instit = $instit"));
 			}
-			
+
 			$iLinhasAlmox = $cldb_almoxdepto->numrows;
-		
+
 		}else{
-			
+
 			$rsAlmox			= $cldb_almox->sql_record($cldb_almox->sql_query(null,"m91_depto,descrdepto",null,"db_depart.instit = $instit"));
 			$iLinhasAlmox = $cldb_almox->numrows;
-		
+
 		}
-		
+
     if ($iLinhasAlmox == 0){
-      db_msgbox("Sem Almoxarifados cadastrados!!");
+      db_msgbox("Sem Depósitos cadastrados!!");
       echo "<script>location.href='emp4_ordemCompra001.php';</script>";
     }
-    
+
 		echo "<td>";
 			db_selectrecord("coddepto",$rsAlmox,true,$dbopcao);
     echo "</td>";
@@ -246,19 +289,19 @@ if ($clmatparam->numrows>0){
     </td>
     <?}?>
     </tr>
-    <tr> 
+    <tr>
     <td align='right'><b>Obs:</b></td>
     <td colspan='3' align='left'>
-    <? 
+    <?
     db_textarea("m51_obs","","110",$Im51_obs,true,'text',$dbopcao);
 
     ?>
     </td>
 
-    </tr>  
-    <tr> 
+    </tr>
+    <tr>
     <td colspan='4' align='center'></td>
-    </tr> 
+    </tr>
     </table>
     </fieldset>
     </td>
@@ -266,7 +309,7 @@ if ($clmatparam->numrows>0){
     <tr>
     <td colspan='4' align='center'>
     <?if ($e60_numcgm!=""){
-      $result=pg_exec("select * from empempenho inner join empempitem on e62_numemp = e60_numemp inner join pcmater on pc01_codmater = e62_item where e60_numcgm=$e60_numcgm");
+      $result=db_query("select * from empempenho inner join empempitem on e62_numemp = e60_numemp inner join pcmater on pc01_codmater = e62_item where e60_numcgm=$e60_numcgm");
       if (pg_numrows($result)>0){?>
         <input name="incluir" type="submit"  value="Incluir" onclick=" return js_valida()" <?=$sDisable?>>
           <input name="voltar" type="button" value="Voltar" onclick="location.href='emp4_ordemCompra001.php';" <?=$sDisable?>>
@@ -278,15 +321,15 @@ if ($clmatparam->numrows>0){
       <input name="incluir" type="submit" disabled  value="Incluir" onclick=" return js_valida()" <?=$sDisable?>>
         <input name="voltar" type="button" value="Voltar" onclick="location.href='emp4_ordemCompra001.php';" <?=$sDisable?>><?}?>
         </td>
-      
+
     </tr>
 <tr>
 <td align='center' valign='top' colspan='2'>
 <fieldset><legend><b>Dados da Ordem</b></legend>
-<?
+<?php
 if($pesqemp == true){
-  ?>  
-    <table border='0' cellspacing="0" cellpadding="0" 
+  ?>
+    <table border='0' cellspacing="0" cellpadding="0"
     style='border:2px inset white' width='100%' bgcolor="white">
     <tr class=''>
     <td class='table_header' title='Marca/desmarca todos' align='center'>
@@ -302,76 +345,43 @@ if($pesqemp == true){
     <td class='table_header' align='center'><b>Valor Total</b></td>
     <td class='table_header' align='center'><b>Vlr. Uni.</b></td>
     <td class='table_header' align='center'><b>Quantidade</b></td>
-    <td class='table_header' align='center'><b>Valor</b></td>         
-    <td class='table_header' style='width:18px' align='center'><b>&nbsp;</b></td> 
+    <td class='table_header' align='center'><b>Valor</b></td>
+    <td class='table_header' style='width:18px' align='center'><b>&nbsp;</b></td>
     </tr>
     <tbody id='dados' style='height:150;width:95%;overflow:scroll;overflow-x:hidden;background-color:white'>
-    <?
-
-
+    <?php
     if ((isset($e60_numcgm) && $e60_numcgm!= "")){
-
-      $where="";
-      $where1=""; 
-      if (isset($e60_numemp)){
-        $where = "and e60_numemp = $e60_numemp";
-      }
-
-      if (isset($e60_codemp)){
-        $where1 = "and e60_codemp = '$e60_codemp'";
-      }    
-      $sSQLemp  = "select e60_numemp, ";
-      $sSQLemp .= "       e60_codemp, ";
-      $sSQLemp .= "       e62_item, ";
-      $sSQLemp .= "       pc01_descrmater, ";
-      $sSQLemp .= "       e62_sequen, ";
-      $sSQLemp .= "	      e62_descr, ";
-      $sSQLemp .= "	      e62_vlrun, ";
-      $sSQLemp .= "       e62_sequencial,";   
-      $sSQLemp .= "	      pc01_servico,";
-      $sSQLemp .= "	      pc01_fraciona,";
-      $sSQLemp .= "	     (select rnsaldoitem  from  fc_saldoitensempenho(e60_numemp, e62_sequencial)) as e62_quant,";
-      $sSQLemp .= "	     (select round(rnsaldovalor,2) from fc_saldoitensempenho(e60_numemp, e62_sequencial)) as e62_vltot,";
-      $sSQLemp .= "	      e62_servicoquantidade";
-      $sSQLemp .= "  from empempenho ";
-      $sSQLemp .= "       inner join empempitem on e62_numemp       = e60_numemp ";
-      $sSQLemp .= "       inner join pcmater    on pc01_codmater    = e62_item";
-      $sSQLemp .= "       inner join pcsubgrupo on pc04_codsubgrupo = pc01_codsubgrupo";
-      $sSQLemp .= "       inner join pctipo     on pc05_codtipo     = pc04_codtipo";
-      $sSQLemp .= " where e60_numcgm = {$e60_numcgm} {$where} {$where1}";
-      $sSQLemp .="  order by e60_numemp";
-      $result   = pg_query($sSQLemp);
+      $result   = db_query($sSQLemp);
       $numrows  = pg_num_rows($result);
       $sClassName = 'normal';
       $sChecked   = '';
       if ($numrows == 1) {
-        
         $sChecked   = " checked ";
         $sClassName = " marcado ";
       }
-      
+
       for ($i = 0; $i < $numrows; $i++) {
 
         $disabled    = null;
         $iOpcao      = 1;
         $sClassName  = "normal";
         db_fieldsmemory($result,$i);
+
         if ($e62_vltot <= 0  || $e62_quant <= 0){
-          
           $disabled   = " disabled ";
           $sChecked   =  '';
           $iOpcao     = 3;
           $sClassName  = "disabled";
         }
-        echo "<tr id='trchk{$e62_sequencial}' class='{$sClassName}'>";	    
+        echo "<tr id='trchk{$e62_sequencial}' class='{$sClassName}'>";
         echo "  <td class='linhagrid' title='Inverte a marcação' align='center'>";
         echo "  <input type='checkbox' {$sChecked} {$disabled} id='chk{$e62_sequencial}' class='itensEmpenho'";
         echo "    name='itensOrdem[]' value='{$e62_sequencial}' onclick='js_marcaLinha(this)'></td>";
         echo "  <td class='linhagrid' align='center'>";
-					 				db_ancora($e60_codemp,"js_pesquisaEmpenho({$e60_numemp});","1"); 
+					 				db_ancora($e60_codemp,"js_pesquisaEmpenho({$e60_numemp});","1");
 				echo "	</td>";
         echo "  <td class='linhagrid'id='empenho{$e62_sequencial}' align='center'>$e60_numemp</td>";
-        echo "  <td class='linhagrid' align='center'><small>$e62_item  </small></td>";		    
+        echo "  <td class='linhagrid' align='center'><small>$e62_item  </small></td>";
         echo "  <td class='linhagrid' id='e62_descr{$e62_sequencial}' nowrap align='left' title='$pc01_descrmater'><small>".substr($pc01_descrmater,0,20)."&nbsp;</small></td>";
         echo "  <td class='linhagrid' id='sequen{$e62_sequencial}' align='center'>$e62_sequen</td>";
         echo "  <td class='linhagrid' nowrap align='left' title='$e62_descr'><small>".substr($e62_descr,0,20)."&nbsp;</small></td>";
@@ -383,7 +393,7 @@ if($pesqemp == true){
         ${"quantidade{$e62_sequencial}"} =  $e62_quant;
         ${"valor{$e62_sequencial}"}      =  $e62_vltot;
         if ($pc01_servico == 'f') {
-          
+
           $pc01_fraciona = $pc01_fraciona == 'f' ? "false" : "true";
           echo"<td class='linhagrid' align='center'>";
           db_input("quantidade{$e62_sequencial}",6,0,true,
@@ -393,7 +403,7 @@ if($pesqemp == true){
           echo "</td>
             <td class='linhagrid' align='center'>";
           db_input("valor{$e62_sequencial}",6,0,true,'text',3,
-              "onkeyPress='return js_teclas(event)' 
+              "onkeyPress='return js_teclas(event)'
               onchange='js_verifica($e62_vltot,this.value,this.name,$e62_vlrun,$e60_numemp,$e62_sequencial)'",'','','text-align:right');
           echo "</td>";
           echo "</tr> ";
@@ -414,7 +424,7 @@ if($pesqemp == true){
               $iControlaValor = $iOpcao;
             }
           }
-          
+
           if ($e62_vltot <= 0  || $e62_quant <= 0){
           	$iControlaQuantidade = 3;
           	$iControlaValor      = 3;
@@ -430,17 +440,16 @@ if($pesqemp == true){
           echo "</tr> ";
         }
        }
-
     }
     ?>
     <tr style='height: auto'><td>&nbsp;</td>
             </tr>
-     </tbody>   
+     </tbody>
      </table>
-     
+
      <?
     }
-  ?>  
+  ?>
     </td>
     </tr>
     </table>
@@ -455,23 +464,23 @@ if($pesqemp == true){
 
 
 	function js_pesquisaEmpenho(iNumEmp){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empempenho','func_empempenho001.php?e60_numemp='+iNumEmp,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho','func_empempenho001.php?e60_numemp='+iNumEmp,'Pesquisa',true);
   }
 
 	function js_AlteraCGM(cgm) {
-      js_OpenJanelaIframe('','db_iframe_altcgm','prot1_cadcgm002.php?chavepesquisa='+cgm+'&testanome=true&autoc=true','Altera Cgm',true);
+      js_OpenJanelaIframe('','db_iframe_altcgm','prot1_cadgeralmunic005.php?chavepesquisa='+cgm+'&testanome=true&autoc=true','Altera Cgm',true);
   }
-  
+
 	function js_coddepto(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostracoddepto1|coddepto|descrdepto','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostracoddepto1|coddepto|descrdepto','Pesquisa',true);
     }else{
       coddepto = document.form1.coddepto.value;
       if(coddepto!=""){
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+coddepto+'&funcao_js=parent.js_mostracoddepto','Pesquisa',false);
-      }else{ 	
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+coddepto+'&funcao_js=parent.js_mostracoddepto','Pesquisa',false);
+      }else{
         document.form1.descrdepto.value='';
-      } 	
+      }
     }
   }
   function js_mostracoddepto1(chave1,chave2){
@@ -480,31 +489,29 @@ if($pesqemp == true){
     db_iframe_db_depart.hide();
   }
   function js_mostracoddepto(chave,erro){
-    
-    document.form1.descrdepto.value = chave; 
-    if (erro){ 
-    
-      document.form1.coddepto.focus(); 
-      document.form1.coddepto.value = ''; 
-      
+
+    document.form1.descrdepto.value = chave;
+    if (erro){
+
+      document.form1.coddepto.focus();
+      document.form1.coddepto.value = '';
+
     }
   }
   function js_valida(){
-      
-    
 		if (document.form1.coddepto.value == 0){
-			alert("Favor escolha algum almoxarifado!");
+			alert("Favor escolha algum Depósito!");
 			return false;
 		}
-		
+
     //buscamos todos os itens marcados pelo usuário, e validos ele.
 	var itensOrdem = js_getElementbyClass(form1,"itensEmpenho");
-    
+
     itensMarcados  = new Number(0);
     for (i = 0; i < itensOrdem.length; i++) {
-      
+
       if (itensOrdem[i].checked) {
-      
+
         //codigo do item
         iItem = itensOrdem[i].value;
         //valor do item (identificamos pela string "valor" seguido do sequencial do empenho.
@@ -513,7 +520,6 @@ if($pesqemp == true){
        var nValorEmpenho = new Number($('e62_vltot' + iItem).innerHTML);
        var nQteEmpenho   = new Number($('e62_quant' + iItem).innerHTML);
        if ( nValor > nValorEmpenho || nQuantidade > nQteEmpenho || (nValor == 0 || nQuantidade == 0) ) {
-        
           var iSequen  = js_stripTags($('e62_descr' + iItem).innerHTML);
           var iEmpenho = $('empenho' + iItem).innerHTML
            alert("Item (" + iSequen + ") do Empenho " + iEmpenho + " possui valores/quantidade inválidas.\nVerifique");
@@ -521,7 +527,7 @@ if($pesqemp == true){
         } else {
           itensMarcados++;
         }
-      }  
+      }
     }
     if (itensMarcados == 0) {
       alert("Não há itens Selecionados.\nVerifique.");
@@ -529,24 +535,22 @@ if($pesqemp == true){
     } else {
       return true;
     }
-  
 
 	}
-  
+
   function js_verifica(max,quan,nome,valoruni,numemp,sequencia){
     if (max<quan){
-      
+
       alert("Informe uma quantidade valida!!");
       eval("document.form1."+nome+".value='';");
       eval("document.form1."+nome+".focus();");
-      
+
     } else{
-      
-      $("valor"+sequencia).value = quan*valoruni;
+      $("valor"+sequencia).value = round(new Number(quan * valoruni), 2);
     }
   }
 function js_marca(){
-  
+
 	 obj = document.getElementById('mtodos');
 	 if (obj.checked){
 		 obj.checked = false;
@@ -567,7 +571,7 @@ function js_marca(){
 	 }
 }
 function js_marcaLinha(obj){
- 
+
   if (obj.checked){
    $('tr'+obj.id).className='marcado';
   }else{

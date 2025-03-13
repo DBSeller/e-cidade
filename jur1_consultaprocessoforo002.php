@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/verticalTab.widget.php");
-require_once("classes/db_processoforo_classe.php");
-require_once("classes/db_processoforomov_classe.php");
-require_once("classes/db_parjuridico_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
+require_once(modification("classes/db_processoforo_classe.php"));
+require_once(modification("classes/db_processoforomov_classe.php"));
+require_once(modification("classes/db_parjuridico_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -50,6 +50,7 @@ $lPartilha = false;
 $sWhere           = "v70_sequencial = {$oGet->v70_sequencial}";
 $sSqlProcessoForo = $clprocessoforo->sql_query_cgm_nome(null, " * ", null, $sWhere,true);
 $rsProcessoForo   = $clprocessoforo->sql_record($sSqlProcessoForo);
+
 if ($clprocessoforo->numrows > 0) {
 	db_fieldsmemory($rsProcessoForo, 0);
 }
@@ -151,12 +152,12 @@ $lPartilha = db_utils::fieldsMemory($rsParJuridico, 0)->v19_partilha;
 	  </td>
   </tr>
 </table>
-  <fieldset>
+  <fieldset >
     <legend>
       <b>Outras Informações</b>
     </legend>
 	  <?
-	    $oTabDetalhes = new verticalTab("detalhesprocessoforo",300);
+	    $oTabDetalhes = new verticalTab("detalhesprocessoforo",550);
 	    $oTabDetalhes->add("iniciaisvinculadas","Iniciais Vinculadas",
 	                       "func_processoforoinicial.php?v71_processoforo={$v70_sequencial}&detalhamento=true&funcao_js=parent.js_consultaInicial|v71_inicial");
 	    $oTabDetalhes->add("movimentacoes","Movimentações",
@@ -177,7 +178,7 @@ $lPartilha = db_utils::fieldsMemory($rsParJuridico, 0)->v19_partilha;
 function js_consultaInicial(iInicial) {
 
   var sUrl = 'func_inicialmovcert.php?v50_inicial='+iInicial+'&funcao_js=parent.js_oculta';
-  js_OpenJanelaIframe('top.corpo','db_iframe_inicialmovcert', sUrl, 'Dados da Inicial',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inicialmovcert', sUrl, 'Dados da Inicial',true);
 }
 </script>
 </html>

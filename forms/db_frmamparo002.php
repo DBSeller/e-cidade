@@ -46,7 +46,7 @@ $clrotulo->label("ed06_i_codigo");
            AND ed95_c_encerrado = 'N'
            ORDER BY ed47_v_nome
           ";
-   $result = pg_query($sql);
+   $result = db_query($sql);
    $linhas = pg_num_rows($result);
    ?>
    <b>Selecione o aluno:</b><br>
@@ -76,7 +76,7 @@ $clrotulo->label("ed06_i_codigo");
              AND ed72_i_diario = $diario
              AND ed72_c_amparo = 'N'
             ";
-     $result1 = pg_query($sql1);
+     $result1 = db_query($sql1);
      $linhas1 = pg_num_rows($result1);
      ?>
      <b>Períodos:</b><br>
@@ -140,7 +140,7 @@ $clrotulo->label("ed06_i_codigo");
                 AND ed72_i_diario = $diario
                 AND ed72_c_amparo = 'S'
                ";
-        $result2 = pg_query($sql2);
+        $result2 = db_query($sql2);
         $linhas2 = pg_num_rows($result2);
         ?>
         <b>Períodos com Amparo:</b><br>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcelemento_classe.php");
-include("classes/db_orcparametro_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_orcparametro_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clorcelemento = new cl_orcelemento;
@@ -109,18 +109,13 @@ if ($clorcparametro->numrows > 0 ){
         if( isset( $lBuscaElementoExcecao ) ){
 
           $sWhere = '';
-          if( isset($chave_o56_codele) && (trim($chave_o56_codele)!="") ){
-            $sWhere = "and o58_codele = $chave_o56_codele";
-          }
-
-          $sSqlExcecao  = " select *                                         ";
+       
+          $sSqlExcecao  = " select orcelemento.*                                         ";
           $sSqlExcecao .= "   from orcelemento                               ";
+          $sSqlExcecao .= "        inner join rhelementoemp on rhelementoemp.rh38_codele = orcelemento.o56_codele  ";
+          $sSqlExcecao .= "                                and rhelementoemp.rh38_anousu = orcelemento.o56_anousu  ";
           $sSqlExcecao .= "  where o56_anousu = $o58_anousu                  ";
-          $sSqlExcecao .= "    and o56_codele IN (                           ";
-          $sSqlExcecao .= " select o58_codele                                ";
-          $sSqlExcecao .= "   from orcdotacao                                ";
-          $sSqlExcecao .= "  where o58_anousu         = $o58_anousu          ";
-          $sSqlExcecao .= "    and o58_instit         = $o58_instit          ";
+       
           $sSqlExcecao .=      $sWhere;
 
           if(isset( $pesquisa_chave )){
@@ -138,12 +133,17 @@ if ($clorcparametro->numrows > 0 ){
           if(isset($chave_o56_descr) && (trim($chave_o56_descr)!="") ){
             $sSqlExcecao .= " and o56_descr like '$chave_o56_descr%'        ";
           }
-
-          $sSqlExcecao .= "    and o58_orgao          = $o58_orgao           ";
+          $sSqlExcecao .= "     and exists(";
+          $sSqlExcecao .= "                select 1 from orcdotacao";
+          $sSqlExcecao .= "                       inner join orcelemento eledotacao on eledotacao.o56_codele = orcdotacao.o58_codele";
+          $sSqlExcecao .= "                             and eledotacao.o56_anousu = orcdotacao.o58_anousu";
+          $sSqlExcecao .= "                  where";
+          $sSqlExcecao .= "    o58_orgao          = $o58_orgao           ";
           $sSqlExcecao .= "    and o58_unidade        = $o58_unidade         ";
           $sSqlExcecao .= "    and o58_projativ       = $o58_projativ        ";
           $sSqlExcecao .= "    and o58_codigo         = $o58_codigo          ";
           $sSqlExcecao .= "    and o58_concarpeculiar = '$o58_concarpeculiar'";
+          $sSqlExcecao .= "    and  substr(eledotacao.o56_elemento, 1, 7) = substr(orcelemento.o56_elemento, 1, 7) ";
 
           if( !empty($o58_programa) ) {
             $sSqlExcecao .= "  and o58_programa       = $o58_programa        ";
@@ -156,16 +156,17 @@ if ($clorcparametro->numrows > 0 ){
           if( !empty( $o58_subfuncao ) ) {
             $sSqlExcecao .= "  and o58_subfuncao      = $o58_subfuncao       ";
           }
-          $sSqlExcecao   .= ")";
-        }
 
+          $sSqlExcecao   .= ")";
+          
+        }
 
       if( !isset( $pesquisa_chave ) ) {
 
         if( isset ( $campos ) == false ) {
 
            if( file_exists("funcoes/db_func_orcelemento.php") == true ) {
-             include("funcoes/db_func_orcelemento.php");
+             include(modification("funcoes/db_func_orcelemento.php"));
            }else{
              $campos = "orcelemento.*";
            }
@@ -184,7 +185,7 @@ if ($clorcparametro->numrows > 0 ){
         if(isset($sSqlExcecao)){
           $sql = $sSqlExcecao;
         }
-
+         
         db_lovrot($sql,15,"()","",$funcao_js);
       }else{
 
@@ -224,3 +225,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

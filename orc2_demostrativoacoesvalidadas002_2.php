@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-//include ("fpdf151/fpdf.php");
-include ("libs/db_utils.php");
-include ("libs/db_sql.php");
-require_once("classes/db_ppadotacao_classe.php");
-require_once("classes/db_ppaestimativa_classe.php");
-require_once("model/ppaVersao.model.php");
+include(modification("fpdf151/pdf.php"));
+//include(modification("fpdf151/fpdf.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_sql.php"));
+require_once(modification("classes/db_ppadotacao_classe.php"));
+require_once(modification("classes/db_ppaestimativa_classe.php"));
+require_once(modification("model/ppaVersao.model.php"));
 
 $oGet = db_utils::postMemory($_GET);
 $iModelo = $oGet->iModelo;
@@ -188,13 +188,11 @@ foreach ( $aEstimativa as $iInd => $oEstimativa ) {
   }
 }
  
-
-
-
 //echo "<pre>";
 //var_dump($aEstimativa);
 //echo "</pre>";
 //exit;
+
 $sSqlPPALei  = $oDaoPPALei->sql_query($oGet->ppalei);
 $rsPPALei    = $oDaoPPALei->sql_record($sSqlPPALei);
 $oLeiPPA     = db_utils::fieldsMemory($rsPPALei, 0);
@@ -217,9 +215,9 @@ if ($iModelo == 1) {
   //
   
 } else {
-  
   $head2  = "LEI DE DIRETRIZES ORÇAMENTÁRIAS - EXERCÍCIO DE $oGet->iAno";
-}	
+}
+
 $head5 = "Perspectiva: ".$oPPAVersao->getVersao()."(".db_formatar($oPPAVersao->getDatainicio(),"d").")";
 $pdf = new PDF();
 $pdf->Open();
@@ -280,7 +278,7 @@ if ( $oGet->selforma == "s" ) {
 	  	$pdf->cell(100,$alt, $oEstimativa->sOrgao, 0, 1, "L"); 
 	  	$iOrgaoAtual = $oEstimativa->iOrgao;
 		} else {	
-			validaNovaPagina(&$pdf, 40); 
+			validaNovaPagina($pdf, 40); 
 		}
 	  $pdf->setfont('arial','B', 8);
 	  $pdf->cell(18,$alt, "Programa:",0,0,"L");
@@ -312,7 +310,10 @@ if ( $oGet->selforma == "s" ) {
 	      $pdf->Cell(26,$alt,"Unidade Medida"  					,"TRL" ,0,"C",1);
 	      $pdf->Cell(26,$alt,"Ano"    					,"TRBL" ,0,"C",1);
 	      $pdf->Cell(40,$alt,"Metas"    					,"TRL" ,0,"C",1);
-	      $pdf->Cell(40,$alt,"Valor R$"    					,"TL" ,1,"C",1);
+        if ($imprimevalores == 1) {
+          $pdf->Cell(40,$alt,"Valor R$"    					,"TL" ,0,"C",1);
+        }
+        $pdf->ln();
 	      $iPosYAntes  = $pdf->GetY();
 	    	
 	      $pdf->setfont('arial','', 8);
@@ -352,7 +353,10 @@ if ( $oGet->selforma == "s" ) {
 	  	    $pdf->SetX(176);
 	  	    $pdf->Cell(26,$alt,$iExercicio  			     			,"BR" ,0,"C",0);
 	  	    $pdf->Cell(40,$alt,$aDadosExerc['nQuantFisica']	,"TBR",0,"R",0);
-	  	    $pdf->Cell(40,$alt,db_formatar($aDadosExerc['nValor'],$tipo)	,"TBL",1,"R",0);
+          if ($imprimevalores == 1) {
+	  	      $pdf->Cell(40,$alt,db_formatar($aDadosExerc['nValor'],$tipo)	,"TBL",0,"R",0);
+          }
+          $pdf->ln();
 	  	    $iLinhasExerc++;
 	  
 	      }
@@ -367,13 +371,18 @@ if ( $oGet->selforma == "s" ) {
 	  	    $pdf->Cell(26,$alt,"",$sBorda ,0);
 	  	    $pdf->Cell(26,$alt,"",$sBorda ,0);
 	  	    $pdf->Cell(26,$alt,"",$sBorda ,0);
-	        $pdf->Cell(26,$alt,"",$sBorda ,1);
+          if ($imprimevalores == 1) {
+	          $pdf->Cell(26,$alt,"",$sBorda ,0);
+          }
+          $pdf->ln();
 	      }	
 	  	  $pdf->setfont('arial','B', 8);	
 	  	  $pdf->Cell(192,$alt,"Total da ação para os exercícios" ,"TBR",0,"R",0);
 	  	  $pdf->setfont('arial','' , 8);
 	  	  $pdf->Cell(40 ,$alt, $nTotalMetas ,"TBR",0,"R",0);
-	  	  $pdf->Cell(40 ,$alt,db_formatar($nTotalGeral,"f")	   ,"TBL",1,"R",0);  	
+        if ($imprimevalores == 1) {
+	  	    $pdf->Cell(40 ,$alt,db_formatar($nTotalGeral,"f")	   ,"TBL",1,"R",0);  	
+        }
 	      $pdf->setfont('arial','B', 8);
 	      $pdf->ln();
 	  	}
@@ -785,7 +794,6 @@ if ( $oGet->selforma == "s" ) {
 }
 
 $pdf->Output();
-
 
 function validaNovaPagina($pdf, $iAltura){
 	

@@ -114,7 +114,7 @@ for($x=0;$x<$intnumrows;$x++){
    //$this->objpdf->Text($reccol+82, $bklin,db_formatar($this->arrayvalreceitas[$x],'f'));
    $this->objpdf->cell($reccol + 85,3,db_formatar($this->arrayvalreceitas[$x],'f'),0,1,"R",0);
 
-   $iFormaCorrecao = pg_result(pg_query("select k03_separajurmulparc
+   $iFormaCorrecao = pg_result(db_query("select k03_separajurmulparc
                                            from numpref
                                           where k03_instit = ".db_getsession("DB_instit")."
                                             and k03_anousu = ".db_getsession("DB_anousu")),0,0); 
@@ -228,6 +228,6 @@ $this->objpdf->TextWithDirection(135,$xlin+107,$sTexto,'F');
  
 /*********************************************************************************************************************************************************/
 // incluir a ficha de compensação
-include("fpdf151/impmodelos/mod_imprime48.php"); 
+include(modification("fpdf151/impmodelos/mod_imprime48.php")); 
  
 ?>

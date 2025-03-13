@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -772,7 +772,7 @@ class cl_db_auditoria {
       }
     }
 
-    $sWhere = "where 1=1 ";
+    $sWhere = "1=1 ";
 
     if ($aParametros["iTipoAcesso"] == 1) {
       $sWhere .= "   and db_logsacessa.auditoria is false \n";
@@ -803,9 +803,12 @@ class cl_db_auditoria {
       $sWhere = "   and db_logsacessa.codsequen = {$iCodigoAcesso}                                           \n";
     }
 
-    $sSql = "select {$sCampos},                                 \n";
-    $sSql .= "       db_itensmenu.descricao as descricao_menu,  \n";
-    $sSql .= "       db_logsacessa.auditoria as modificacoes    \n";
+    $sSql  = "with db_logsacessa (codsequen, ip, data, hora, arquivo, obs, id_usuario, id_modulo, id_item, coddepto, instit, auditoria) as ( ";
+    $sSql .= " select * from fc_logsacessa_consulta('{$dDataInicio} {$sHoraInicio}', '{$dDataFim} {$sHoraFim}', {$iInstituicao}, '$sWhere') ";
+    $sSql .= ") ";
+    $sSql .= "select {$sCampos},                                 \n";
+    $sSql .= "       db_itensmenu.descricao as descricao_menu,   \n";
+    $sSql .= "       db_logsacessa.auditoria as modificacoes     \n";
 
     /**
      * Se tem esquema é porque os usuario selecinou consulta tipo 2
@@ -813,32 +816,31 @@ class cl_db_auditoria {
      */
     if ( $lTemEsquema ) {
 
-      $sSql .= "FROM configuracoes.fc_auditoria_consulta_acessos('{$dDataInicio} {$sHoraInicio}', \n";
-      $sSql .= "                                                 '{$dDataFim} {$sHoraFim}'      , \n";
-      $sSql .= "                                                 {$sEsquema}                    , \n";
-      $sSql .= "                                                 {$sTabela}                     , \n";
-      $sSql .= "                                                 {$sUsuario}                    , \n";
-      $sSql .= "                                                 {$iInstituicao}                , \n";
-      $sSql .= "                                                 {$sCampo}                      , \n";
-      $sSql .= "                                                 {$mValor}                      , \n";
-      $sSql .= "                                                 {$mValor}) as logsacessa         \n";
+      $sSql .= "FROM configuracoes.fc_auditoria_consulta_acessos('{$dDataInicio} {$sHoraInicio}',    \n";
+      $sSql .= "                                                 '{$dDataFim} {$sHoraFim}'      ,    \n";
+      $sSql .= "                                                 {$sEsquema}                    ,    \n";
+      $sSql .= "                                                 {$sTabela}                     ,    \n";
+      $sSql .= "                                                 {$sUsuario}                    ,    \n";
+      $sSql .= "                                                 {$iInstituicao}                ,    \n";
+      $sSql .= "                                                 {$sCampo}                      ,    \n";
+      $sSql .= "                                                 {$mValor}                      ,    \n";
+      $sSql .= "                                                 {$mValor}) as logsacessa            \n";
 
-      $sSql .= "JOIN db_logsacessa ON codsequen              = logsacessa                        \n";
-      $sSql .= "JOIN db_usuarios   ON db_usuarios.id_usuario = db_logsacessa.id_usuario          \n";
-      $sSql .= "JOIN db_itensmenu  ON db_itensmenu.id_item   = db_logsacessa.id_item             \n";
+      $sSql .= "JOIN db_logsacessa ON codsequen              = logsacessa                            \n";
+      $sSql .= "JOIN db_usuarios   ON db_usuarios.id_usuario = db_logsacessa.id_usuario              \n";
+      $sSql .= "JOIN db_itensmenu  ON db_itensmenu.id_item   = db_logsacessa.id_item                 \n";
 
     } else {
 
-      $sSql .= "  from db_logsacessa                                                                                    \n";
-      $sSql .= "       inner join db_usuarios  on db_usuarios.id_usuario = db_logsacessa.id_usuario                     \n";
-      $sSql .= "       inner join db_itensmenu on db_itensmenu.id_item   = db_logsacessa.id_item                        \n";
+      $sSql .= "  from db_logsacessa                                                                 \n";
+      $sSql .= "       inner join db_usuarios  on db_usuarios.id_usuario = db_logsacessa.id_usuario  \n";
+      $sSql .= "       inner join db_itensmenu on db_itensmenu.id_item   = db_logsacessa.id_item     \n";
 
-      $sWhere .= " and db_logsacessa.instit     = {$iInstituicao}                           \n";
-      $sWhere .= " and db_logsacessa.data between '{$dDataInicio}' and '{$dDataFim}' \n";
+      $sWhere .= " and db_logsacessa.instit     = {$iInstituicao}                                    \n";
+      $sWhere .= " and db_logsacessa.data between '{$dDataInicio}' and '{$dDataFim}'                 \n";
     }
 
-
-    $sSql .= $sWhere;
+    $sSql .= "order by data, hora, login";
 
     return $sSql;
   }
@@ -905,6 +907,10 @@ class cl_db_auditoria {
     $sSql.= "       db_syscampo.nomecam,                                                               \n";
     $sSql.= "       fc_auditoria.nome_campo,                                                           \n";
     $sSql.= "       fc_auditoria.operacao,                                                             \n";
+    $sSql.= "       case when fc_auditoria.operacao = 'I' then 'Inclusão'                              \n";
+    $sSql.= "            when fc_auditoria.operacao = 'U' then 'Alteração'                             \n";
+    $sSql.= "            else 'Exclusão'                                                               \n";
+    $sSql.= "       end as descricao_operacao,                                                         \n";
     $sSql.= "       fc_auditoria.logsacessa,                                                           \n";
     $sSql.= "       fc_auditoria.valor_antigo,                                                         \n";
     $sSql.= "       fc_auditoria.valor_novo,                                                           \n";

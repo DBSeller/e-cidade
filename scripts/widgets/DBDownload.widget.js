@@ -6,23 +6,22 @@ require_once('scripts/strings.js');
 require_once('scripts/widgets/windowAux.widget.js');
 require_once('scripts/widgets/dbmessageBoard.widget.js');
 /**
- * @fileoverview Cria janela com lista de itens para download
+ * Cria janela com lista de itens para download
  *
  * @author Rafael Nery      <rafael.nery@dbseller.com.br>
  * @author Jeferson Belmiro <jeferson.belmiro@dbseller.com.br>
- */
-
-/**
- * DBDownload - Construtor da classe
  *
+ * @constructor
  * @return void
  */
-var DBDownload = function() {
+var DBDownload = function(iWidth=350) {
 
   /**
    * Array com objeto contendo descricao e link dos arquivos para download
    */
   this.aFiles         = new Array();
+
+  this.iWidth         = iWidth;
 
  /**
   * Agrupadores de Url's dos arquivos
@@ -49,6 +48,18 @@ var DBDownload = function() {
    * Objeto de Destino da Escrita
    */
   this.oTarget       = null;
+
+  /**
+   * Label do WindowAux
+   * @type String
+   */
+  this.sWindowLabel = 'Arquivos para Download';
+
+  /**
+   * Texto de ajuda do message board
+   * @type String
+   */
+  this.sHelpMessage = ' Arquivos para Download.';
 
   /**
    * Objeto do MessageBoard
@@ -126,21 +137,20 @@ DBDownload.prototype.createWindow = function() {
 
   var oSelf = this;
 
-  this.oWindowAux = new windowAux(null, 'Arquivos para Download', 350, 300);
+  this.oWindowAux = new windowAux(null, this.sWindowLabel, this.iWidth, 300);
   this.oWindowAux.show();
 
   $( this.oWindowAux.idWindow ).appendChild(this.oElementosHTML.oDivMessageBoard);
   $( this.oWindowAux.idWindow ).appendChild(this.oElementosHTML.oDivList);
 
   var oMessageBoard = new DBMessageBoard('msgboard1',
-                                         ' Arquivos para Download.',
+                                         this.sHelpMessage,
                                          '',
                                          this.oElementosHTML.oDivMessageBoard);
   oMessageBoard.show();
 
   this.oElementosHTML.oDivList.style.height    = 205;
-  this.oElementosHTML.oDivList.style.border    = "2px groove #cccccc";
-  this.oElementosHTML.oDivList.style.padding   = "3px";
+  this.oElementosHTML.oDivList.style.padding   = "6px";
   this.oElementosHTML.oDivList.style.margin    = "3px";
   return this.oElementosHTML.oDivList;
 }
@@ -213,8 +223,16 @@ DBDownload.prototype.show = function( oTarget ) {
   if ( this.oWindowAux instanceof windowAux ) {
     this.oWindowAux.show();
   }
-}
 
+  var iHeight = 0;
+
+  for (var oElemento of this.oTarget.children) {
+    iHeight += oElemento.clientHeight;
+  }
+
+  this.oTarget.style['overflow-y'] = (this.oTarget.clientHeight < iHeight) ? "scroll" : "visible";
+
+}
 
 /**
  * Limpa a Lista de arquivos e fecha a janela
@@ -223,6 +241,11 @@ DBDownload.prototype.show = function( oTarget ) {
 DBDownload.prototype.clear = function() {
 
   this.aFiles = new Array();
+
+  for (var iGroup in this.aGroups) {
+    this.aGroups[iGroup].aFiles = []
+  }
+
   this.close();
   return;
 }
@@ -233,6 +256,41 @@ DBDownload.prototype.clear = function() {
  */
 DBDownload.prototype.close = function() {
 
-  this.oWindowAux.destroy();
+  if (this.oWindowAux) {
+
+    this.oWindowAux.destroy();
+    this.oWindowAux = null;
+
+    this.oElementosHTML.oDivMessageBoard = document.createElement("DIV");
+    this.oElementosHTML.oDivList         = document.createElement("DIV");
+    this.oTarget = null;
+  }
+
+  return;
+}
+
+/**
+ * Seta o label da Window da janela de download
+ * @param string sLabel - label da janela
+ * @return void
+ */
+DBDownload.prototype.setWindowLabel = function (sLabel){
+
+  if( !js_empty(sLabel) ){
+    this.sWindowLabel = sLabel;
+  }
+  return;
+}
+
+/**
+ * Seta o texto de ajuda do messageboard da Window
+ * @param string sMessage - mensagem de ajuda
+ * @return void
+ */
+DBDownload.prototype.setHelpMessage = function (sMessage){
+
+  if( !js_empty(sMessage) ){
+    this.sHelpMessage = sMessage;
+  }
   return;
 }

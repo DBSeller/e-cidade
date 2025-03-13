@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -303,7 +303,7 @@ $alt = 4;
 $pdf->addpage();
 
 
-$result1 = pg_query($sql1);
+$result1 = db_query($sql1);
 $xxnum = pg_numrows($result1);
 $pdf->cell(0,$alt,'CC FORA DO LOCAL DE TRABALHO',1,1,"C",1);
 $pdf->ln(3);
@@ -340,7 +340,7 @@ $pdf->ln(6);
 
 
 
-$result2 = pg_query($sql2);
+$result2 = db_query($sql2);
 $xxnum = pg_numrows($result2);
 $pdf->cell(0,$alt,'AUXILIO DOENCA/MATERNIDADE COM SALARIO',1,1,"C",1);
 $pdf->ln(3);
@@ -375,7 +375,7 @@ $pdf->ln(6);
 
 
 
-$result3 = pg_query($sql3);
+$result3 = db_query($sql3);
 $xxnum = pg_numrows($result3);
 $pdf->cell(0,$alt,'EDUCACAO SEM LETRA CADASTRADA',1,1,"C",1);
 $pdf->ln(3);
@@ -409,7 +409,7 @@ $pdf->cell(0,$alt,'Nao tem Educacao sem Letra.',"T",0,"C",0);
 $pdf->ln(6);
 
 
-$result4 = pg_query($sql4);
+$result4 = db_query($sql4);
 $xxnum = pg_numrows($result4);
 $pdf->cell(0,$alt,'INATIVO/PENSIONISTA COM SALARIO',1,1,"C",1);
 $pdf->ln(3);
@@ -443,7 +443,7 @@ $pdf->cell(0,$alt,'Nao tem Inativo/Pensionista com Salario.',"T",0,"C",0);
 $pdf->ln(6);
 
 
-$result7 = pg_query($sql7);
+$result7 = db_query($sql7);
 $xxnum = pg_numrows($result7);
 $pdf->cell(0,$alt,'INATIVO/PENSIONISTAS FORA DO LOCAL DE TRABALHO',1,1,"C",1);
 $pdf->ln(3);
@@ -480,7 +480,7 @@ $pdf->ln(6);
 
 
 
-$result5 = pg_query($sql5);
+$result5 = db_query($sql5);
 $xxnum = pg_numrows($result5);
 $pdf->cell(0,$alt,'FUNCIONARIO SEM LOCAL DE TRABALHO',1,1,"C",1);
 $pdf->ln(3);
@@ -514,7 +514,7 @@ $pdf->cell(0,$alt,'Funcionarios sem local de trabalho.',"T",0,"C",0);
 $pdf->ln(6);
 
 
-$result6 = pg_query($sql6);
+$result6 = db_query($sql6);
 $xxnum = pg_numrows($result6);
 $pdf->cell(0,$alt,'FUNCIONARIO SEM SALARIO',1,1,"C",1);
 $pdf->ln(3);
@@ -548,7 +548,7 @@ $pdf->cell(0,$alt,'Funcionarios sem salario.',"T",0,"C",0);
 $pdf->ln(6);
 
 
-$result8 = pg_query($sql8);
+$result8 = db_query($sql8);
 $xxnum = pg_numrows($result8);
 $pdf->cell(0,$alt,'LOCAL = FUNDO E LOTACAO <> FUNDO',1,1,"C",1);
 $pdf->ln(3);
@@ -582,7 +582,7 @@ $pdf->cell(0,$alt,'Sem Funcionarios Com Diferenca.',"T",0,"C",0);
 $pdf->ln(6);
 
 
-$result9 = pg_query($sql9);
+$result9 = db_query($sql9);
 $xxnum = pg_numrows($result9);
 $pdf->cell(0,$alt,'LOTACAO = FUNDO E LOCAL DE TRABALHO <> FUNDO',1,1,"C",1);
 $pdf->ln(3);

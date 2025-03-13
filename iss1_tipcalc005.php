@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_tipcalc_classe.php");
-require_once("classes/db_tipcalcexe_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_tipcalc_classe.php"));
+require_once(modification("classes/db_tipcalcexe_classe.php"));
 $cltipcalc    = new cl_tipcalc;
 $cltipcalcexe = new cl_tipcalcexe;
   
@@ -83,7 +83,7 @@ if(isset($alterar)){
 
     <center>
     	<?
-    	  require_once("forms/db_frmtipcalc.php");
+    	  require_once(modification("forms/db_frmtipcalc.php"));
     	?>
     </center>
     
@@ -106,7 +106,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.tipcalcexe.disabled=false;
-         top.corpo.iframe_tipcalcexe.location.href='iss1_tipcalcexe001.php?iVencSimples=".$q81_cadcalc."&q83_tipcalc=".@$q81_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tipcalcexe.location.href='iss1_tipcalcexe001.php?iVencSimples=".$q81_cadcalc."&q83_tipcalc=".@$q81_codigo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('tipcalcexe');";

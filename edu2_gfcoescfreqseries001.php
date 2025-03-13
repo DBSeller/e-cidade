@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_calendario_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $escola = db_getsession("DB_coddepto");
 $clcalendario = new cl_calendario;
 ?>
@@ -92,7 +92,7 @@ $clcalendario = new cl_calendario;
               WHERE ed60_c_situacao = 'MATRICULADO'
               ORDER BY ed10_c_abrev
              ";
-      $result= pg_query($sql);
+      $result= db_query($sql);
       $linhas = pg_num_rows($result);
       if($linhas==0){
        $x = array(' '=>'NENHUM REGISTRO');
@@ -124,7 +124,7 @@ $clcalendario = new cl_calendario;
               AND ed11_i_ensino = $ensino
               ORDER BY ed11_i_sequencia
              ";
-      $result= pg_query($sql);
+      $result= db_query($sql);
       $linhas = pg_num_rows($result);
       if($linhas==0){
        $x = array(' '=>'NENHUM REGISTRO');
@@ -165,7 +165,7 @@ $clcalendario = new cl_calendario;
             AND ed221_c_origem = 'S'
             ORDER BY ed18_c_nome
            ";
-    $result= pg_query($sql);
+    $result= db_query($sql);
     $linhas = pg_num_rows($result);?>
     <select name="escola" style="font-size:9px;width:300px;height:100px;" multiple>
      <?

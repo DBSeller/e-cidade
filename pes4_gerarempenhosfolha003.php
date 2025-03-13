@@ -1,44 +1,44 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
  *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
  *  detalhes.                                                         
  *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
  *  02111-1307, USA.                                                  
  *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
 
 /**
  *
  * @author I
- * @revision $Author: dbtales.baz $
- * @version $Revision: 1.2 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.6 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -505,7 +505,7 @@ function js_retornoConsultaEmpenhos(oResponse) {
 
   js_removeObj('msgbox');
 
-  var oRetorno =  eval("("+oResponse.responseText+")");
+  var oRetorno =  JSON.parse(oResponse.responseText);
   var lReservadoSaldo = false;
   if (oRetorno.itens.length > 0) {
     var lReservadoSaldo = true  ;
@@ -786,7 +786,7 @@ function getEmpenhosFilhos(iSequencial, iProximoEmpenho) {
 
 function js_retornoGetDadosEmpenhoFilho(oResponse) {
 
-  oRetorno  = eval("("+oResponse.responseText+")");
+  oRetorno  = JSON.parse(oResponse.responseText);
   if (oRetorno.status == 1) {
 
     for (var j = 0; j < oRetorno.itens.length; j++) {
@@ -1434,7 +1434,7 @@ function js_getUnidades() {
 
 function js_retornoGetUnidades(oRequest) {
 
-  var oRetorno = eval("("+oRequest.responseText+")");
+  var oRetorno = JSON.parse(oRequest.responseText);
   if (oRetorno.status == 1) {
    $('rh72_unidade').options.length = 0;
    oRetorno.itens.each(function (oUnidade, iIndice) {
@@ -1518,7 +1518,7 @@ function js_getOrigemDotacao(iDotacao){
 
 function js_retornoGetOrigemDotacao(oRequest) {
 
-  var oRetorno = eval("("+oRequest.responseText+")");
+  var oRetorno = JSON.parse(oRequest.responseText);
 
   if ( oRetorno.itens.length > 0 ) {
     with( oRetorno.itens[0] ){
@@ -1602,7 +1602,7 @@ function js_getDotacoes() {
 
 function js_retornoGetDotacoes(oRequest) {
 
-  var oRetorno = eval("("+oRequest.responseText+")");
+  var oRetorno = JSON.parse(oRequest.responseText);
   if (oRetorno.status == 1) {
 
     $('rh72_coddot').options.length = 0;
@@ -1681,7 +1681,7 @@ function js_alterarDadosEmpenho(iCodigoEmpenho, iTipo, iSeqPes, iTabPrev) {
 
 function js_retornoAlterarEmpenho(oRequest) {
 
-  var oRetorno = eval("("+oRequest.responseText+")");
+  var oRetorno = JSON.parse(oRequest.responseText);
   if (oRetorno.status == 1) {
 
     $('fecharDotacao').click();
@@ -1733,7 +1733,7 @@ function js_retornoReservarSaldo(oRequest) {
   $('modal').style.display = "none";
   $('modal').style.width   = document.width+"px";
   $('modal').style.height  = (document.body.scrollHeight - 180)+"px";
-  var oRetorno = eval("("+oRequest.responseText+")");
+  var oRetorno = JSON.parse(oRequest.responseText);
   if (oRetorno.status == 1) {
 
     alert('Saldos reservados com Sucesso');
@@ -1787,7 +1787,7 @@ function js_retornoCancelaReservas(oRequest) {
   $('modal').style.display = "none";
   $('modal').style.width   = document.width+"px";
   $('modal').style.height  = (document.body.scrollHeight - 180)+"px";
-  var oRetorno = eval("("+oRequest.responseText+")");
+  var oRetorno = JSON.parse(oRequest.responseText);
   if (oRetorno.status == 1) {
 
     alert('Reservas canceladas com Sucesso');
@@ -1854,7 +1854,7 @@ function js_retornoGerarEmpenhos(oRequest) {
   $('modal').style.display = "none";
   $('modal').style.width   = document.width+"px";
   $('modal').style.height  = (document.body.scrollHeight - 180)+"px";
-  var oRetorno = eval("("+oRequest.responseText+")");
+  var oRetorno = JSON.parse(oRequest.responseText);
   var sExpReg  = new RegExp('\\\\n','g');
 
   if (oRetorno.status == 1) {
@@ -1878,14 +1878,14 @@ function js_gerarTotalizacoes() {
 
    if (oParametros.sSigla == 'r20' && oParametros.iTipo == 1) {
 
-     if (oGridrescisoes.getSelection().lenght == 0) {
+     if (oGridrescisoes.getSelection().length == 0) {
 
        alert('selecione alguma rescisão para continuar.');
        return false;
      }
    }
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_liberarempenhos',
                       'pes4_liberarempenhosfolha002.php?json='+parent.js_getQueryTela(),
                       'Gerar Empenhos',

@@ -68,7 +68,7 @@ db_input('ve31_descrcompleta',40,$Ive31_descrcompleta,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veiccadpotencia','func_veiccadpotencia.php?funcao_js=parent.js_preenchepesquisa|ve31_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadpotencia','func_veiccadpotencia.php?funcao_js=parent.js_preenchepesquisa|ve31_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiccadpotencia.hide();

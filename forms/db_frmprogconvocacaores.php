@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -159,7 +159,7 @@ function js_pesquisaed127_i_progmatricula(mostra) {
 	
   if (mostra == true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_progmatricula',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_progmatricula',
     	                'func_progmatricula.php?funcao_js=parent.js_mostraprogmatricula1|ed112_i_codigo|'+
     	                'ed112_i_rhpessoal|z01_nome|ed112_d_datainicio|ed107_c_descr','Pesquisa de Matrículas',true);
     
@@ -269,7 +269,7 @@ function js_convocacao(valor) {
 
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_progconvocacaores',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_progconvocacaores',
 		              'func_progconvocacaores.php?funcao_js=parent.js_preenchepesquisa|ed127_i_codigo','Pesquisa',true
 		             );
   

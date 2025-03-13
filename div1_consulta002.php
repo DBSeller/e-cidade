@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-	require("libs/db_stdlib.php");
-	require("libs/db_conecta.php");
-	include("libs/db_sessoes.php");
-	include("libs/db_usuariosonline.php");
-	require("classes/db_divida_classe.php");
-	require("classes/db_certid_classe.php");
-	require("classes/db_termodiv_classe.php");
-	require("classes/db_termo_classe.php");
-	require("classes/db_termoini_classe.php");
-	require("classes/db_inicialcert_classe.php");
-	require("classes/db_certdiv_classe.php");
-	require("classes/db_certter_classe.php");
-	include("dbforms/db_funcoes.php");
+	require(modification("libs/db_stdlib.php"));
+	require(modification("libs/db_conecta.php"));
+	include(modification("libs/db_sessoes.php"));
+	include(modification("libs/db_usuariosonline.php"));
+	require(modification("classes/db_divida_classe.php"));
+	require(modification("classes/db_certid_classe.php"));
+	require(modification("classes/db_termodiv_classe.php"));
+	require(modification("classes/db_termo_classe.php"));
+	require(modification("classes/db_termoini_classe.php"));
+	require(modification("classes/db_inicialcert_classe.php"));
+	require(modification("classes/db_certdiv_classe.php"));
+	require(modification("classes/db_certter_classe.php"));
+	include(modification("dbforms/db_funcoes.php"));
 	db_postmemory($HTTP_SERVER_VARS);
 	parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 	db_postmemory($HTTP_POST_VARS);

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_usuariosonline.php");
-  require_once("libs/db_utils.php");
-  require_once("dbforms/db_funcoes.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
 
   $clrhferias   = new cl_rhferias;
   $clrhferias->rotulo->label();
@@ -90,7 +90,7 @@
               </center>
               
               <br />
-              <input name="enviar" value="Processar" type="submit" <?=($db_botao==false?"disabled":"")?> onblur="document.form1.rh109_regist.focus();" onClick="return js_processar()" >
+              <input name="enviar" value="Pesquisar" type="submit" <?=($db_botao==false?"disabled":"")?> onblur="document.form1.rh109_regist.focus();" onClick="return js_processar()" >
             </form>
             
           </center>
@@ -109,10 +109,10 @@ js_tabulacaoforms("form1","rh109_regist",true,1,"rh109_regist",true);
 
 function js_pesquisarh109_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?sQuery=4&afasta=true&funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome|r45_dtafas|r45_dtreto&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?sQuery=4&afasta=true&funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome|r45_dtafas|r45_dtreto&instit=<?=(db_getsession("DB_instit"))?>&condition=somenteAtivos','Pesquisa',true);
   }else{
     if(document.form1.rh109_regist.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?sQuery=4&afasta=true&pesquisa_chave='+document.form1.rh109_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?sQuery=4&afasta=true&pesquisa_chave='+document.form1.rh109_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=(db_getsession("DB_instit"))?>&condition=somenteAtivos','Pesquisa',false);
     }else{
       document.form1.z01_nome.value = '';
     }

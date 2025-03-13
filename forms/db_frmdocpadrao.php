@@ -136,8 +136,8 @@ function js_retornaimport(cod,descr,erro){
 
       	alert("Foi incluido o Documento "+cod+"-"+descr);
       	parent.document.formaba.parag.disabled=false;
-      	top.corpo.iframe_parag.location.href='con4_docpadrao003.php?db60_coddoc='+cod;
-        top.corpo.iframe_doc.location.href='con4_docpadrao004.php?chavepesquisa='+cod;
+      	(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_parag.location.href='con4_docpadrao003.php?db60_coddoc='+cod;
+        (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_doc.location.href='con4_docpadrao004.php?chavepesquisa='+cod;
      }
 }
 </script>

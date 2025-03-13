@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet  = db_utils::postMemory($_GET);
 $oPost = db_utils::postMemory($_POST);
@@ -116,10 +116,10 @@ $db_opcao = 1;
       
 			function js_pesquisarh125_rhcadregime(mostra){
 			  if(mostra==true){
-			    js_OpenJanelaIframe('top.corpo','db_iframe_rhcadregime','func_rhcadregime.php?funcao_js=parent.js_mostrarhcadregime1|rh52_regime|rh52_descr','Pesquisa',true);
+			    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhcadregime','func_rhcadregime.php?funcao_js=parent.js_mostrarhcadregime1|rh52_regime|rh52_descr','Pesquisa',true);
 			  }else{
 			     if(document.form1.rh125_rhcadregime.value != ''){ 
-			        js_OpenJanelaIframe('top.corpo','db_iframe_rhcadregime','func_rhcadregime.php?pesquisa_chave='+document.form1.rh125_rhcadregime.value+'&funcao_js=parent.js_mostrarhcadregime','Pesquisa',false);
+			        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhcadregime','func_rhcadregime.php?pesquisa_chave='+document.form1.rh125_rhcadregime.value+'&funcao_js=parent.js_mostrarhcadregime','Pesquisa',false);
 			     }else{
 			       document.form1.rh52_regime.value = ''; 
 			     }
@@ -141,7 +141,7 @@ $db_opcao = 1;
 			}
 			
 			function js_pesquisa(){
-			  js_OpenJanelaIframe('top.corpo','db_iframe_rhcadregimefaltasperiodoaquisitivo','func_rhcadregimefaltasperiodoaquisitivo.php?funcao_js=parent.js_preenchepesquisa|rh125_sequencial','Pesquisa',true);
+			  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhcadregimefaltasperiodoaquisitivo','func_rhcadregimefaltasperiodoaquisitivo.php?funcao_js=parent.js_preenchepesquisa|rh125_sequencial','Pesquisa',true);
 			}
 			
 			function js_preenchepesquisa(chave){

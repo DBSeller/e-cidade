@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-require("libs/db_app.utils.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_numprebloqpag_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+require(modification("libs/db_app.utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_numprebloqpag_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clnumprebloqpag = new cl_numprebloqpag;
 $db_opcao = 1;
@@ -64,7 +64,7 @@ db_app::load("widgets/windowAux.widget.js");
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <br><br><br><center>
 	<?
-	include("forms/db_frmnumprebloqpag.php");
+	include(modification("forms/db_frmnumprebloqpag.php"));
 	?>
     </center>
 	</td>

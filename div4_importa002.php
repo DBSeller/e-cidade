@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,12 +27,12 @@
 
 // select k00_numpre,k00_numpar,k00_receit from arrecad where k00_numpre = 11111454;
 set_time_limit(0);
-require("libs/db_stdlib.php");
+require(modification("libs/db_stdlib.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //se for submit, ele cria o recibo
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_sql.php");
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_sql.php"));
   if(isset($HTTP_POST_VARS["calculavalor"])) {
 
   $vt = $HTTP_POST_VARS;

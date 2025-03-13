@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include ("libs/db_app.utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_bens_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_app.utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_bens_classe.php"));
 $clbens = new cl_bens;
 $clrotulo = new rotulocampo;
 $clbens->rotulo->label();
@@ -124,16 +124,16 @@ function js_imprimeEtiquetas(){
 	     sQuery += "&t52_beminicial="+t52_bemInicial;
 	     sQuery += "&t52_bemfinal="+t52_bemFinal;
 	 
-	 js_OpenJanelaIframe('top.corpo','db_iframe_pesquisa','pat4_imprimeetiqueta002.php'+sQuery,'Pesquisa de Bens a Imprimir',true);
+	 js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesquisa','pat4_imprimeetiqueta002.php'+sQuery,'Pesquisa de Bens a Imprimir',true);
 
 } 
   
 function js_pesquisa_bem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostrabem1|t52_bem|t52_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostrabem1|t52_bem|t52_descr','Pesquisa',true);
   }else{
      if(document.form1.t52_bem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.t52_bem.value+'&funcao_js=parent.js_mostrabem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.t52_bem.value+'&funcao_js=parent.js_mostrabem','Pesquisa',false);
      }else{
        document.form1.t52_descr.value = ''; 
      }
@@ -156,10 +156,10 @@ function js_mostrabem1(chave1,chave2){
 
 function js_pesquisa_bemFinal(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostrabemFinal1|t52_bem|t52_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostrabemFinal1|t52_bem|t52_descr','Pesquisa',true);
   }else{
      if(document.form1.t52_bemfinal.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.t52_bemfinal.value+'&funcao_js=parent.js_mostrabemFinal','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.t52_bemfinal.value+'&funcao_js=parent.js_mostrabemFinal','Pesquisa',false);
      }else{
        //document.form1.t52_descr.value = ''; 
      }
@@ -183,10 +183,10 @@ function js_mostrabemFinal1(chave1,chave2){
 /*JavaScript Departamentos */
 function js_pesquisa_depart(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_depart','func_db_depart.php?funcao_js=parent.js_mostradepart1|coddepto|descrdepto','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_depart','func_db_depart.php?funcao_js=parent.js_mostradepart1|coddepto|descrdepto','Pesquisa',true);
   }else{
      if(document.form1.t52_depart.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_depart','func_db_depart.php?pesquisa_chave='+document.form1.t52_depart.value+'&funcao_js=parent.js_mostradepart','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_depart','func_db_depart.php?pesquisa_chave='+document.form1.t52_depart.value+'&funcao_js=parent.js_mostradepart','Pesquisa',false);
      }else{
        document.form1.descrdepto.value = ''; 
      }
@@ -209,12 +209,12 @@ function js_mostradepart1(chave1,chave2){
 /*JavaScript Divisoes */
 function js_pesquisa_divisao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_departdiv',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_departdiv',
                         'func_departdiv.php?funcao_js=parent.js_mostradepartdiv1|t30_codigo|t30_descr',
                         'Pesquisa',true);
   }else{
      if(document.form1.t30_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_departdiv',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_departdiv',
                             'func_departdiv.php?pesquisa_chave='+document.form1.t30_codigo.value+'&funcao_js=parent.js_mostradepartdiv',
                             'Pesquisa',false);
      }else{

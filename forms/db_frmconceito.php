@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,7 +26,7 @@
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clconceito->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -63,21 +63,21 @@ if(isset($atualizar)){
 <table border="0" width="100%">
  <tr>
   <td nowrap title="<?=@$Ted39_c_conceito?>">
-   <?=@$Led39_c_conceito?>
+   <label for="ed39_c_conceito"><?=@$Led39_c_conceito?></label>
    <?db_input('ed39_c_conceito',3,$Ied39_c_conceito,true,'text',$db_opcao,"")?>
-   <?=@$Led39_c_nome?>
+   <label for="ed39_c_nome"><?=@$Led39_c_nome?></label>
    <?db_input('ed39_c_nome',30,$Ied39_c_nome,true,'text',$db_opcao,"")?>
    <br>
-   <?=@$Led39_c_conceitodescr?>
+   <label for="ed39_c_conceitodescr"><?=@$Led39_c_conceitodescr?></label>
    <?db_input('ed39_c_conceitodescr',100,$Ied39_c_conceitodescr,true,'text',$db_opcao,"")?>
   </td>
  </tr>
  <tr>
   <td>
-   <input name="ed39_i_codigo" type="hidden" value="<?=@$ed39_i_codigo?>">
-   <input name="ed39_i_formaavaliacao" type="hidden" value="<?=@$ed39_i_formaavaliacao?>">
-   <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-   <input name="cancelar" type="submit" value="Cancelar" <?=($db_botao1==false?"disabled":"")?> >
+   <input id='ed39_i_codigo' name="ed39_i_codigo" type="hidden" value="<?=@$ed39_i_codigo?>">
+   <input id='ed39_i_formaavaliacao' name="ed39_i_formaavaliacao" type="hidden" value="<?=@$ed39_i_formaavaliacao?>">
+   <input id='btnAcao'  name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
+   <input id='cancelar' name="cancelar" type="submit" value="Cancelar" <?=($db_botao1==false?"disabled":"")?> >
   </td>
 </table>
 <table width="100%">

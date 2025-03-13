@@ -1,56 +1,34 @@
 <?php
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 /**
  * @fileoverview Controla Ações no cadastro de contrução da obra
  * @version   $Revision: 1.8 $
  * @revision  $Author: dbfabio.esteves $
  */
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/JSON.php");  
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));  
 
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once ("classes/db_iptuconstrobrasconstr_classe.php");
-require_once ("classes/db_obrasalvara_classe.php");
-require_once ("classes/db_obrasconstr_classe.php");
-require_once ("classes/db_obrasconstrcaracter_classe.php");
+require_once(modification("classes/db_iptuconstrobrasconstr_classe.php"));
+require_once(modification("classes/db_obrasalvara_classe.php"));
+require_once(modification("classes/db_obrasconstr_classe.php"));
+require_once(modification("classes/db_obrasconstrcaracter_classe.php"));
 
-require_once ("model/cadastro/Imovel.model.php");
+require_once(modification("model/cadastro/Imovel.model.php"));
 
 define('CONSTRUCAO_MODULO_CADASTRO',1);
 define('CONSTRUCAO_MODULO_PROJETOS',2);
 
-$oJson                  = new services_json();
-$oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
+if (array_key_exists("json", $_POST)) {
+  $oJson = new services_json();
+  $oParam = $oJson->decode(str_replace("\\", "", $_POST["json"]));
+} else {
+  $oParam = JSON::requestParameters();
+}
 
 $oRetorno               = new stdClass();
 $oRetorno->iStatus      = 1;
@@ -181,38 +159,67 @@ try {
         $oRetorno->aCaracteristicas = $oConstrucao->getCaracteristicasConstrucao();
         
       } else if ($oParam->iTipoConstrucao == CONSTRUCAO_MODULO_PROJETOS) {
+      
+
+        $sSqlCaracteristicas = "
+
+                      select j32_grupo,
+                             ob34_caracter
+                        from obrasconstrcaracter 
+                        inner join caracter on ob34_caracter = j31_codigo
+                        inner join cargrup on j31_grupo = j32_grupo
+                       where ob34_obrasconstr = {$oParam->iCodigoConstrucao};
+        ";
+
+        $rsCaracteristicas       = db_query($sSqlCaracteristicas);
         
-    	  $oDaoObrasConstrCaracter = new cl_obrasconstrcaracter();
-                                 
-    	  $sSqlCaracteristicas     = $oDaoObrasConstrCaracter->sql_query_file(null, 
-    	                                                                      "ob34_caracter", 
-    	                                                                      null, 
-    	                                                                      "ob34_obrasconstr = {$oParam->iCodigoConstrucao}");
-    	  $rsCaracteristicas       = db_query($sSqlCaracteristicas);
     	  
     	  if ( !$rsCaracteristicas ) {
     	  	throw new Exception('Erro ao retornar caracteristicas da construcao\n'.pg_last_error());
     	  }
     	  
     	  $oRetorno->aCaracteristicas  = array();
-    	  
-    	  if ( pg_num_rows($rsCaracteristicas) ) {
-    	  	
-    	  	$aCaracteristicas          = db_utils::getCollectionByRecord($rsCaracteristicas, false, false,true );
-    	  	foreach ($aCaracteristicas as $oCaracteristica) {
-    	  		$oRetorno->aCaracteristicas[] = $oCaracteristica->ob34_caracter;
-    	  	}
-    	  }
+        $aCaracteristicas = array();
+        
+    	  if ( pg_numrows($rsCaracteristicas) ) {
+
+           for ( $iCarct = 0; $iCarct <  pg_numrows($rsCaracteristicas); $iCarct++ ) {
+            
+              $oDadosCaract = db_utils::fieldsMemory($rsCaracteristicas, $iCarct);
+              $oDadosRetorno = new stdClass();
+              $oDadosRetorno->iGrupo = $oDadosCaract->j32_grupo;
+              $oDadosRetorno->iCaracteristica = $oDadosCaract->ob34_caracter;
+
+              $aCaracteristicas[] = $oDadosRetorno;
+
+           }
+        }
+        
+        $oRetorno->aCaracteristicas = $aCaracteristicas;
+
       }
     	break;
+
+    case 'buscarInscricaoImobiliaria':
+
+      $sql = "select j40_refant from iptuant where j40_matric = {$oParam->matricula}";
+      $result = db_query($sql);
+
+      if (!$result) {
+        throw new DBException("Erro ao Inscrição Imobiliária.");
+      }
+      
+      if(pg_num_rows($result) > 0) {
+        $ors = db_utils::fieldsMemory($result,0);
+        $oRetorno->j40_refant = $ors->j40_refant;
+      }
+      break;
     default:
       throw new Exception("Nenhuma Opção Definida");
     break;
   }
 
-
-  $oRetorno->sMessage = urlencode($oRetorno->sMessage);
-  echo $oJson->encode($oRetorno);
+  echo JSON::create()->stringify($oRetorno);
   
 } catch (Exception $eErro) {
   

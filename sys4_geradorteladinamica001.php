@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libsys.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
-include("dbagata/classes/core/AgataAPI.class");
-include("classes/db_db_relatorio_classe.php");
-include("model/dbColunaRelatorio.php");
-include("model/dbFiltroRelatorio.php");
-include("model/dbVariaveisRelatorio.php");
-include("model/dbGeradorRelatorio.model.php");
-include("model/dbOrdemRelatorio.model.php");
-include("model/dbPropriedadeRelatorio.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libsys.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("dbagata/classes/core/AgataAPI.class"));
+include(modification("classes/db_db_relatorio_classe.php"));
+include(modification("model/dbColunaRelatorio.php"));
+include(modification("model/dbFiltroRelatorio.php"));
+include(modification("model/dbVariaveisRelatorio.php"));
+include(modification("model/dbGeradorRelatorio.model.php"));
+include(modification("model/dbOrdemRelatorio.model.php"));
+include(modification("model/dbPropriedadeRelatorio.php"));
 
 $oGet   		   		 = db_utils::postMemory($_GET);
 $cldb_relatorio    = new cl_db_relatorio();
@@ -124,6 +124,13 @@ foreach ($oGeradorRelatorio->aVariaveis as $oVariavel) {
                       "f" => "Não" );
       db_select(str_replace('$','',$oVariavel->getNome()),$aTipos,true,1,"");
       break;
+    case 'select':
+          if( substr( strtolower(trim($oVariavel->getSql())) ,0,6)  == "select" ){
+	     $res_sql = pg_query($oVariavel->getSql());
+	     db_selectrecord(str_replace('$','',$oVariavel->getNome()), $res_sql, true, 2);
+	  }
+      break;
+
 
   }
 

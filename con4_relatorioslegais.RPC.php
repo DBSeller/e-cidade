@@ -1,33 +1,7 @@
 <?php
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -44,171 +18,330 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  *   02111-1307, USA.
  *   Cópia da licença no diretório licenca/licenca_en.txt
- *                                 licenca/licenca_pt.txt
+ *                                 licenca/licenca_pt.txt.
  */
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/db_liborcamento.php");
+require_once modification('dbforms/db_funcoes.php');
+require_once modification('libs/JSON.php');
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_utils.php');
+require_once modification('std/db_stdClass.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_libcontabilidade.php');
+require_once modification('libs/db_liborcamento.php');
 
-$oJson    = new services_json();
-$oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
+use ECidade\Configuracao\RelatorioLegal\Enum\OrigemDadosEnum;
+use ECidade\Configuracao\RelatorioLegal\Servico\ColunaEstruturalServico;
+use ECidade\Configuracao\RelatorioLegal\Servico\Importar;
+use ECidade\Financeiro\Contabilidade\Relatorio\RelatoriosLegaisBaseMSC;
+
+$oJson = new services_json();
+$oParam = $oJson->decode(str_replace('\\', '', $_POST['json']));
 $oRetorno = new stdClass();
-$oRetorno->status  = 1;
+$oRetorno->status = 1;
+$oRetorno->erro = false;
 $oRetorno->message = '';
 
 try {
+    switch ($oParam->exec) {
+        case 'getVariaveis':
+            $oVariaveis = new stdClass();
+            $oVariaveis->campos_relatorios = [];
+            $oVariaveis->colunas_linha = [];
 
-  switch($oParam->exec) {
+            switch ($oParam->iOrigemDados) {
+                case OrigemDadosEnum::BALANCETE_DESPESA:
+                    $oVariaveis->campos_relatorios = RelatoriosLegaisBase::$aCamposDespesa;
+                    break;
+                case OrigemDadosEnum::BALANCETE_RECEITA:
+                    $oVariaveis->campos_relatorios = RelatoriosLegaisBase::$aCamposReceita;
+                    break;
+                case OrigemDadosEnum::BALANCETE_VERIFICACAO:
+                    $oVariaveis->campos_relatorios = RelatoriosLegaisBase::$aCamposVerificacao;
+                    break;
+                case OrigemDadosEnum::RESTOS_PAGAR:
+                    $oVariaveis->campos_relatorios = RelatoriosLegaisBase::$aCamposRestoPagar;
+                    break;
+                case OrigemDadosEnum::MSC:
+                    $oVariaveis->campos_relatorios = RelatoriosLegaisBaseMSC::$camposMSC;
+                    break;
+            }
 
-    case 'getVariaveis':
+            /**
+             * Buscamos todas as variaveis que são as Colunas Cadastradas na linha do Relatorio.
+             */
+            $oLinhaRelatorio = new linhaRelatorioContabil($oParam->iCodigoRelatorio, $oParam->iCodigoLinha);
+            foreach ($oLinhaRelatorio->getCols() as $oColuna) {
+                if (!in_array($oColuna->o115_nomecoluna, $oVariaveis->colunas_linha)) {
+                    $oVariaveis->colunas_linha[] = $oColuna->o115_nomecoluna;
+                }
+            }
+            $oRetorno->oListaVariaveis = $oVariaveis;
+            break;
 
-      $oVariaveis                    = new stdClass();
-      $oVariaveis->campos_relatorios = array();
-      $oVariaveis->colunas_linha     = array();
-      switch ($oParam->iOrigemDados) {
+        case 'getRelatorios':
+            $oDaoOrcParamRel = new cl_orcparamrel();
 
-        case RelatoriosLegaisBase::TIPO_CALCULO_DESPESA :
+            $sWhere = '';
+            if (!empty($oParam->iTipo)) {
+                $sWhere = " o42_orcparamrelgrupo = {$oParam->iTipo} ";
+            }
+            $oRetorno->aRelatorios = [];
+            $sSqlRelatorios = $oDaoOrcParamRel->sql_query_file(null, '*', 'o42_codparrel', $sWhere);
+            $rsRelatorios = $oDaoOrcParamRel->sql_record($sSqlRelatorios);
+            if ($rsRelatorios) {
+                for ($iRelatorio = 0; $iRelatorio < $oDaoOrcParamRel->numrows; ++$iRelatorio) {
+                    $oDadosRelatorio = db_utils::fieldsMemory($rsRelatorios, $iRelatorio);
 
-          $oVariaveis->campos_relatorios = RelatoriosLegaisBase::$aCamposDespesa;
-         break;
+                    $oStdRelatorio = new stdClass();
+                    $oStdRelatorio->iCodigo = $oDadosRelatorio->o42_codparrel;
+                    $oStdRelatorio->sNome = urlencode($oDadosRelatorio->o42_descrrel);
+                    unset($oDadosRelatorio);
+                    $oRetorno->aRelatorios[] = $oStdRelatorio;
+                }
+            }
+            break;
 
-        case RelatoriosLegaisBase::TIPO_CALCULO_RECEITA:
+        case 'getPeriodosDoRelatorio':
+            $oRetorno->aPeriodos = [];
+            $oRelatorio = new relatorioContabil($oParam->iCodigo, false);
+            $aPeriodos = $oRelatorio->getPeriodos();
+            foreach ($aPeriodos as $oPeriodo) {
+                $oStdPeriodo = new stdClass();
+                $oStdPeriodo->iCodigo = $oPeriodo->o114_sequencial;
+                $oStdPeriodo->sDescricao = urlencode($oPeriodo->o114_descricao);
+                $oRetorno->aPeriodos[] = $oStdPeriodo;
+            }
+            break;
 
-          $oVariaveis->campos_relatorios = RelatoriosLegaisBase::$aCamposReceita;
-          break;
+        case 'processarConferencia':
+            $oConsistentencia = new ConsistenciaContabil(
+                db_getsession('DB_anousu'),
+                $oParam->iCodigoRelatorio,
+                $oParam->iCodigoPeriodo
+            );
 
-        case RelatoriosLegaisBase::TIPO_CALCULO_VERIFICACAO:
+            $oConsistentencia->setInstituicoes(implode(',', $oParam->aInstituicoes));
+            $aLinhas = $oConsistentencia->getDados();
+            $oRetorno->arquivo = urlencode($oConsistentencia->gerarCSV());
 
-          $oVariaveis->campos_relatorios = RelatoriosLegaisBase::$aCamposVerificacao;
-          break;
+            foreach ($aLinhas as $oLinha) {
+                $oLinha->descricao = urlencode($oLinha->descricao);
+                foreach ($oLinha->colunas as $oColuna) {
+                    $oColuna->descricao = urlencode($oColuna->descricao);
+                }
+            }
 
-        case RelatoriosLegaisBase::TIPO_CALCULO_RESTO:
+            $oRetorno->aLinhasConsistencia = $aLinhas;
+            break;
 
-          $oVariaveis->campos_relatorios = RelatoriosLegaisBase::$aCamposRestoPagar;
-          break;
-      }
+        case 'importarRelatorio':
+            db_inicio_transacao();
 
-      /**
-       * Buscamos todas as variaveis que são as Colunas Cadastradas na linha do Relatorio
-       */
-      $oLinhaRelatorio = new linhaRelatorioContabil($oParam->iCodigoRelatorio, $oParam->iCodigoLinha);
-      foreach ($oLinhaRelatorio->getCols() as $oColuna) {
-        if (!in_array($oColuna->o115_nomecoluna, $oVariaveis->colunas_linha)) {
-          $oVariaveis->colunas_linha[] = $oColuna->o115_nomecoluna;
-        }
-      }
-      $oRetorno->oListaVariaveis = $oVariaveis;
-      break;
+            if (empty($oParam->sCaminhoArquivo)) {
+                throw new ParameterException('Caminho do arquivo não informado.');
+            }
 
-    case 'getRelatorios' :
+            $sCaminhoArquivo = $oParam->sCaminhoArquivo;
 
-      $oDaoOrcParamRel = new cl_orcparamrel();
+            if (!file_exists($sCaminhoArquivo)) {
+                throw new Exception('Arquivo não encontrado para o caminho informado.');
+            }
 
-      $sWhere = '';
-      if (!empty($oParam->iTipo)) {
-        $sWhere = " o42_orcparamrelgrupo = {$oParam->iTipo} ";
-      }
-      $oRetorno->aRelatorios = array();
-      $sSqlRelatorios        = $oDaoOrcParamRel->sql_query_file(null, "*", 'o42_codparrel', $sWhere);
-      $rsRelatorios          = $oDaoOrcParamRel->sql_record($sSqlRelatorios);
-      if ($rsRelatorios) {
-
-         for ($iRelatorio = 0; $iRelatorio < $oDaoOrcParamRel->numrows; $iRelatorio++) {
-
-           $oDadosRelatorio = db_utils::fieldsMemory($rsRelatorios, $iRelatorio);
-
-           $oStdRelatorio          = new stdClass();
-           $oStdRelatorio->iCodigo = $oDadosRelatorio->o42_codparrel;
-           $oStdRelatorio->sNome   = urlencode($oDadosRelatorio->o42_descrrel);
-           unset($oDadosRelatorio);
-           $oRetorno->aRelatorios[] = $oStdRelatorio;
-         }
-      }
-      break;
-
-    case 'getPeriodosDoRelatorio':
-
-      $oRetorno->aPeriodos = array();
-      $oRelatorio = new relatorioContabil($oParam->iCodigo, false);
-      $aPeriodos  = $oRelatorio->getPeriodos();
-      foreach ($aPeriodos as $oPeriodo) {
-
-        $oStdPeriodo             = new stdClass();
-        $oStdPeriodo->iCodigo    = $oPeriodo->o114_sequencial;
-        $oStdPeriodo->sDescricao = urlencode($oPeriodo->o114_descricao);
-        $oRetorno->aPeriodos[]   = $oStdPeriodo;
-      }
-      break;
+            if (pathinfo($sCaminhoArquivo, PATHINFO_EXTENSION) !== 'json') {
+                throw new Exception('Arquivo informado deve ser do tipo Json.');
+            }
 
 
-    case 'processarConferencia':
+            if (!empty($oParam->iCodigoRelatorio)) {
+                excluirRelatorio($oParam->iCodigoRelatorio);
+            }
+            $oImportacaoRelatorio = new Importar(file_get_contents($sCaminhoArquivo));
+            $oImportacaoRelatorio->processar();
 
-      $oConsistentencia = new ConsistenciaContabil(db_getsession("DB_anousu"),
-                                                   $oParam->iCodigoRelatorio,
-                                                   $oParam->iCodigoPeriodo
-                                                  );
+            db_fim_transacao();
+            $oRetorno->message = 'Relatório importado com sucesso!';
+            break;
+        case 'buscarContasVinculasColuna':
+            if (empty($oParam->coluna)) {
+                throw new Exception('Código da coluna não informado.');
+            }
 
-      $oConsistentencia->setInstituicoes(implode(",", $oParam->aInstituicoes));
-      $aLinhas           = $oConsistentencia->getDados();
-      $oRetorno->arquivo = urlencode($oConsistentencia->gerarCSV());
+            if (empty($oParam->ano)) {
+                throw new Exception('Ano não informado.');
+            }
 
-      foreach ($aLinhas as $oLinha) {
+            $service = new ColunaEstruturalServico($oParam);
+            $contas = $service->buscarColunaEstruturalPorColuna();
 
-        $oLinha->descricao = urlencode($oLinha->descricao);
-        foreach ($oLinha->colunas as $oColuna) {
-          $oColuna->descricao = urlencode($oColuna->descricao);
-        }
-      }
+            $oRetorno->contas = [];
 
-      $oRetorno->aLinhasConsistencia = $aLinhas;
-      break;
-      
-    case "exportarRelatorio" :
-      
-      db_inicio_transacao();
+            foreach ($contas as $conta) {
+                $oRetorno->contas[] = $conta->toArray();
+            }
+            break;
+        case 'getContas':
+            $anoSessao = db_getsession('DB_anousu');
 
-      $iCodigoRelatorio   = $oParam->iCodigoRelatorio;
-      $oExportarRelatorio = new ExportacaoRelatorioLegal($iCodigoRelatorio);
-      $sCaminhoArquivo    = $oExportarRelatorio->exportar();
-      if (!empty($sCaminhoArquivo)) {
-        
-        $oRetorno->sCaminho = urlencode($sCaminhoArquivo); 
-        $oRetorno->message  = urlencode("Relatório exportado com sucesso.");
-      } 
+            $sql = "
+                SELECT DISTINCT c60_estrut AS estrutural
+                FROM conplano
+                 JOIN conplanoreduz ON conplanoreduz.c61_codcon = c60_codcon AND conplanoreduz.c61_anousu = c60_anousu
+                 INNER JOIN contabilidade.conplanoatributos
+                                    ON conplano.c60_codcon = contabilidade.conplanoatributos.c120_conplano AND
+                                       conplano.c60_anousu = contabilidade.conplanoatributos.c120_anousu
+                         INNER JOIN conplanosistema
+                              ON conplanosistema.c122_sequencial = contabilidade.conplanoatributos.c120_conplanosistema
+                WHERE c60_anousu = {$anoSessao}
+                  AND c60_estrut ILIKE '{$oParam->estrutural}%'
+                  AND c120_conplanosistema > 1
+                ORDER BY c60_estrut;
+            ";
 
-      db_fim_transacao();
+            $rs = db_query($sql);
 
-    break;
+            if (!$rs) {
+                throw new Exception('Não foi possível buscar as contas.');
+            }
 
-    case "importarRelatorio" :
-    
-      db_inicio_transacao();
+            $oRetorno->estruturais = [];
 
-      $iCodigoRelatorio = $oParam->iCodigoRelatorio;
-      $sCaminhoArquivo  = $oParam->sCaminhoArquivo;
-      $oImportacaoRelatorio = new ImportacaoRelatorioLegal($iCodigoRelatorio, $sCaminhoArquivo  );
-      if ($oImportacaoRelatorio->importar()) {
-        $oRetorno->message  = urlencode("Relatório importado com sucesso.");
-      }
+            if (pg_num_rows($rs) === 0) {
+                $oRetorno->estruturais[] = $oParam->estrutural;
+            } else {
+                while ($conta = pg_fetch_object($rs)) {
+                    $oRetorno->estruturais[] = $conta->estrutural;
+                }
+            }
 
-      $oRetorno->iCodigoRelatorio = $oImportacaoRelatorio->getCodigoRelatorio();
+            break;
+        case 'buscarPeriodosRelatorio':
+            if (empty($oParam->codigoRelatorio)) {
+                throw new Exception('Código do relatório não informado.');
+            }
 
-      db_fim_transacao();
-      
-    break;  
-  }
+            $campos = ' o114_sequencial as codigo, o114_descricao as descricao, ';
+            $campos .= " (select 1 from orcparamrelperiodos
+                                  where orcparamrelperiodos.o113_periodo = periodo.o114_sequencial
+                                    AND o113_orcparamrel = {$oParam->codigoRelatorio} limit 1) as periodo_relatorio ";
+            $ordem = 'o114_sequencial, o114_ordem';
+            $daoPeriodos = new cl_periodo();
+            $sql = $daoPeriodos->sql_query_file(null, $campos, $ordem);
+            $rs = db_query($sql);
 
+            if (!$rs) {
+                throw new Exception('Erro ao buscar os períodos');
+            }
+
+            $oRetorno->periodos = db_utils::getCollectionByRecord($rs);
+            break;
+
+        case 'salvarPeriodosRelatorio':
+            if (empty($oParam->codigoRelatorio)) {
+                throw new Exception('Código do relatório não informado.');
+            }
+
+            db_inicio_transacao();
+
+            $daoRelatorioPeriodos = new cl_orcparamrelperiodos();
+            $daoRelatorioPeriodos->excluir(null, "o113_orcparamrel = {$oParam->codigoRelatorio}");
+            if ($daoRelatorioPeriodos->erro_status == '0') {
+                throw new Exception('Erro ao remover o(s) período(s) vinculado(s) ao relatório.');
+            }
+
+            foreach ($oParam->periodos as $codigoPeriodo) {
+                $daoRelatorioPeriodos->o113_sequencial = null;
+                $daoRelatorioPeriodos->o113_periodo = $codigoPeriodo;
+                $daoRelatorioPeriodos->o113_orcparamrel = $oParam->codigoRelatorio;
+                $daoRelatorioPeriodos->incluir(null);
+
+                if ($daoRelatorioPeriodos->erro_status == '0') {
+                    throw new Exception('Erro ao vincular o(s) período(s) selecionado(s) ao relatório.');
+                }
+            }
+
+            db_fim_transacao();
+            $oRetorno->message = 'Período(s) vinculado(s) ao relatório com sucesso.';
+            break;
+    }
 } catch (Exception $oErro) {
-
-  db_fim_transacao(true);
-  $oRetorno->status = 2;
-  $oRetorno->message = urlencode($oErro->getMessage());
+    db_fim_transacao(true);
+    $oRetorno->erro = true;
+    $oRetorno->status = 2;
+    $oRetorno->message = $oErro->getMessage();
 }
 
-echo $oJson->encode($oRetorno);
+$oRetorno->message = urlencode($oRetorno->message);
+
+echo JSON::create()->stringify($oRetorno);
+
+function excluirRelatorio($codigoRelatorio)
+{
+    $sqlDelete = "delete from orcparamreltemplate where o163_orcparamrel = {$codigoRelatorio}";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamreltemplate');
+    }
+
+    $sqlDelete = "delete from conrelinfo where c83_codrel    = {$codigoRelatorio}";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela conrelinfo');
+    }
+    $sqlDelete = "delete from orcparamfontes where o43_codparrel = {$codigoRelatorio}";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamfontes');
+    }
+    $sqlDelete = "delete from orcparamrelnota where o42_codparrel = {$codigoRelatorio}";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamrelnota');
+    }
+    $sqlDelete = "delete from orcparamrelperiodos where o113_orcparamrel = {$codigoRelatorio}";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamrelperiodos');
+    }
+
+    $sqlDelete = ' delete from orcparamseqorcparamseqcolunavalor';
+    $sqlDelete .= "  where o117_orcparamseqorcparamseqcoluna in
+                        (select o116_sequencial
+                             from orcparamseqorcparamseqcoluna where o116_codparamrel = {$codigoRelatorio});";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamseqorcparamseqcolunavalor');
+    }
+
+    $sqlDelete = " delete from orcparamseqfiltroorcamento where o133_orcparamrel = {$codigoRelatorio}; ";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamseqorcparamseqcolunavalor');
+    }
+
+    $sqlDelete = "delete from orcparamseqfiltrousuario where o72_orcparamrel  = {$codigoRelatorio}";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamseqfiltrousuario');
+    }
+    $sqlDelete = "delete from orcparamseqorcparamseqcoluna where o116_codparamrel = {$codigoRelatorio}";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamseqorcparamseqcoluna');
+    }
+    $sqlDelete = " delete from orcparamseqfiltropadrao      where o132_orcparamrel = {$codigoRelatorio}";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamseqfiltropadrao');
+    }
+    $sqlDelete = " delete from orcparamseq where o69_codparamrel = {$codigoRelatorio} ";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamseq');
+    }
+    $sqlDelete = " delete from orcparamrel where o42_codparrel= {$codigoRelatorio} ";
+    $rsDelete = db_query($sqlDelete);
+    if (!$rsDelete) {
+        throw new Exception('Erro ao excluir dados do relatório na tabela orcparamrel '.pg_last_error());
+    }
+}

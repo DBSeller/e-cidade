@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_prontproced_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_prontproced_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $clprontproced = new cl_prontproced;
@@ -52,7 +52,7 @@ $sql = "SELECT  count(*) as quantidade,
         ORDER BY especialidades.sd05_i_codigo, especialidades.sd05_c_descr
         ";
         
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 //db_criatabela($result);
 //exit;

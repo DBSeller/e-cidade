@@ -51,7 +51,7 @@ DBViewCriterioAvaliacaoTurma.prototype.buscarTurmasVinculadas = function () {
   oRequest.asynchronous = false;
   oRequest.onComplete = function ( oAjax ) {
 
-    var oRetorno =  eval('('+ oAjax.responseText +')');
+    var oRetorno =  JSON.parse(oAjax.responseText);
     aTurmasVinculadas = oRetorno.aTurmasVinculadas
     return aTurmasVinculadas;
   }
@@ -140,7 +140,7 @@ DBViewCriterioAvaliacaoTurma.prototype.vincularCriterioTurma = function () {
   oRequest.onComplete   = function( oAjax ){
 
     js_removeObj('sMsgA');
-    var oRetorno = eval('('+ oAjax.responseText +')');
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     alert( oRetorno.sMensagem.urlDecode() );
 

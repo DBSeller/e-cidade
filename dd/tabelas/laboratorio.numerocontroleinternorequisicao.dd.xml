@@ -1,0 +1,89 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010560' name='laboratorio.numerocontroleinternorequisicao' description="Vincula requisição com número de controle interno da requisição do cliente." prefix="la65" label="Número de Controle Interno da Requisição" type="0">
+  <fields>
+    <field codigo="1011260" 
+           campo_api='' 
+           name="la65_sequencial" 
+           conteudo="int4" 
+           description="Chave primária da tabela." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+      <sequence name='laboratorio.numerocontroleinternorequisicao_la65_sequencial_seq' ></sequence>      
+    </field> 
+    <field codigo="1011261" 
+           campo_api='' 
+           name="la65_numero" 
+           conteudo="int4" 
+           description="Número de Controle Interno da Requisição." 
+           inivalue="0" 
+           label="Número Controle Interno Requisição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Número Controle Interno Requisição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011262" 
+           campo_api='' 
+           name="la65_ano" 
+           conteudo="int4" 
+           description="Ano cujo Número de Controle Interno se refere." 
+           inivalue="0" 
+           label="Ano do Número de Controle Interno" 
+           size="4" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano do Número de Controle Interno" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011263" 
+           campo_api='' 
+           name="la65_requisicao" 
+           conteudo="int4" 
+           description="Chave estrangeira referente a Requisição." 
+           inivalue="0" 
+           label="Requisição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Requisição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="la65_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="lab_requisicao" inner='t'>
+      <fieldfk name="la65_requisicao" reference="la22_i_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

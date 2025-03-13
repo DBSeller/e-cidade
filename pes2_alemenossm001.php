@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
@@ -94,7 +94,7 @@ function js_emite(){
         </td>
       <td>
       <?
-      $result = pg_exec("select r07_valor from pesdiver where r07_anousu = $DBtxt23 and r07_mesusu = $DBtxt25 and r07_codigo = 'D912'" );
+      $result = db_query("select r07_valor from pesdiver where r07_anousu = $DBtxt23 and r07_mesusu = $DBtxt25 and r07_codigo = 'D912'" );
       db_fieldsmemory($result,0);
       $minimo = $r07_valor;
       db_input('minimo',15,$minimo,true,'text',2,"");
@@ -139,10 +139,10 @@ if(isset($proces)){
 }
 if(isset($confirma)){
   //echo ("select * from pontofs where r10_anousu = $DBtxt23 and r10_anousu = $DBtxt25 and r10_rubric = '0290'");
-  $res_cons = pg_exec("select * from pontofs where r10_anousu = $DBtxt23 and r10_mesusu = $DBtxt25 and r10_rubric = '0290'");
+  $res_cons = db_query("select * from pontofs where r10_anousu = $DBtxt23 and r10_mesusu = $DBtxt25 and r10_rubric = '0290'");
   
   if(pg_numrows($res_cons) > 0){
-    pg_exec("delete from pontofs where  r10_anousu = $DBtxt23 and r10_mesusu = $DBtxt25 and r10_rubric = '0290'");
+    db_query("delete from pontofs where  r10_anousu = $DBtxt23 and r10_mesusu = $DBtxt25 and r10_rubric = '0290'");
   }
   
  $sql = "
@@ -171,8 +171,8 @@ if(isset($confirma)){
   where r14_valor < $minimo
   ) as xx
   ";
-  pg_exec("begin");
-  $result = pg_exec($sql);
+  db_query("begin");
+  $result = db_query($sql);
   for($x = 0; $x < pg_numrows($result);$x++){
      db_fieldsmemory($result,$x);
      $sql_exec = "insert into pontofs values($r14_anousu,
@@ -184,15 +184,15 @@ if(isset($confirma)){
 				  '$r14_lotac',
 				  null,
     				  $r14_instit)";
-    $exec =  pg_exec($sql_exec);
+    $exec =  db_query($sql_exec);
     if($exec == false){
       echo "<script>
       alert('Erro : '+$sql);
       
       </script>";
-      pg_exec("rollback");
+      db_query("rollback");
     }else{
-    pg_exec("commit");
+    db_query("commit");
     }
   }
 }

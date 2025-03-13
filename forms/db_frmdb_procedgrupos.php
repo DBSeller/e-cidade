@@ -26,7 +26,7 @@
  */
 
 //MODULO: atendimento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_procedgrupos->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -126,10 +126,10 @@ function js_cancelar(){
 }
 function js_pesquisaat52_grupo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_procedgrupos','db_iframe_db_procedcadgrupos','func_db_procedcadgrupos.php?funcao_js=parent.js_mostradb_procedcadgrupos1|at51_codigo|at51_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_procedgrupos','db_iframe_db_procedcadgrupos','func_db_procedcadgrupos.php?funcao_js=parent.js_mostradb_procedcadgrupos1|at51_codigo|at51_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.at52_grupo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_procedgrupos','db_iframe_db_procedcadgrupos','func_db_procedcadgrupos.php?pesquisa_chave='+document.form1.at52_grupo.value+'&funcao_js=parent.js_mostradb_procedcadgrupos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_procedgrupos','db_iframe_db_procedcadgrupos','func_db_procedcadgrupos.php?pesquisa_chave='+document.form1.at52_grupo.value+'&funcao_js=parent.js_mostradb_procedcadgrupos','Pesquisa',false);
      }else{
        document.form1.at51_descr.value = ''; 
      }

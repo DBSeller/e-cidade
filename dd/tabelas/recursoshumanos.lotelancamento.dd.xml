@@ -1,0 +1,87 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo="1010449" name="lotelancamento" description="Guarda os lotes de assentamentos" prefix="h24"
+       label="lotelancamento"
+       type="0">
+    <fields>
+        <field codigo="1010522"
+               name="h23_sequencial"
+               conteudo="int4"
+               description="Sequencial"
+               inivalue="0"
+               label="Sequencial"
+               size="15"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Sequencial"
+               reference=""
+               ispk="t"
+               hassequence="t">
+            <sequence name="loteassentamento_h23_sequencial_seq"></sequence>
+        </field>
+        <field codigo="1010523"
+               name="h23_data"
+               conteudo="date"
+               description="Data"
+               inivalue="null"
+               label="Data"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Data"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+        <field codigo="1010523"
+               name="h23_instituicao"
+               conteudo="int4"
+               description="Instituição"
+               inivalue="null"
+               label="int4"
+               size="3"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Instituição"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+        <field codigo="1010537"
+               name="h23_tipoassentamento"
+               conteudo="int4"
+               description="Tipo"
+               inivalue="null"
+               label="int4"
+               size="3"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Tipo"
+               reference=""
+               ispk="f"
+               hassequence="t">
+        </field>
+    </fields>
+    <primarykey>
+        <fieldpk name="h23_sequencial"></fieldpk>
+    </primarykey>
+    <foreignkeys>
+        <foreignkey reference="db_config">
+            <fieldfk name="h23_instituicao" reference="codigo" inner='t'></fieldfk>
+        </foreignkey>
+        <foreignkey reference="tipoasse">
+            <fieldfk name="h23_tipoassentamento" reference="h12_codigo" inner='t'></fieldfk>
+        </foreignkey>
+    </foreignkeys>
+</table>

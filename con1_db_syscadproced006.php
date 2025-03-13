@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_syscadproced_classe.php");
-include("classes/db_db_syscadproceditem_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_syscadproced_classe.php"));
+include(modification("classes/db_db_syscadproceditem_classe.php"));
 $cldb_syscadproced = new cl_db_syscadproced;
 $cldb_syscadproceditem = new cl_db_syscadproceditem;
 
@@ -78,7 +78,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_syscadproced.php");
+	include(modification("forms/db_frmdb_syscadproced.php"));
 	?>
     </center>
 	</td>
@@ -111,7 +111,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_syscadproceditem.disabled=false;
-         top.corpo.iframe_db_syscadproceditem.location.href='con1_db_syscadproceditem001.php?db_opcaoal=33&seqproitem=".@$codproced."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_syscadproceditem.location.href='con1_db_syscadproceditem001.php?db_opcaoal=33&seqproitem=".@$codproced."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_syscadproceditem');";

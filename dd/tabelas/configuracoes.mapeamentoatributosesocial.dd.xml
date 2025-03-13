@@ -1,0 +1,53 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010275' name='configuracoes.mapeamentoatributosesocial' description="Tabela para mapear os atributos do eSocial para outro grupo da db_cadattdinamico." prefix="db39" label="mapeamentoatributosesocial" type="0">
+  <fields>
+    <field codigo="1009702" 
+           campo_api='' 
+           name="db39_camponovo" 
+           conteudo="int4" 
+           description="Sequencial novo para os atributos do eSocial." 
+           inivalue="0" 
+           label="db39_camponovo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="db39_camponovo" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009701" 
+           campo_api='' 
+           name="db39_campoorigem" 
+           conteudo="int4" 
+           description="Sequencial de origem do atributo eSocial" 
+           inivalue="0" 
+           label="db39_campoorigem" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="db39_campoorigem" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db39_camponovo"></fieldpk> 
+    <fieldpk name="db39_campoorigem"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_cadattdinamicoatributos" inner='t'>
+      <fieldfk name="db39_camponovo" reference="db109_sequencial" /> 
+      <fieldfk name="db39_campoorigem" reference="db109_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("std/db_stdClass.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_processoouvidoriaprorrogacao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_processoouvidoriaprorrogacao_classe.php"));
 
 $clprotprocesso = new cl_protprocesso();
 $clprocessoouvidoriaprorrogacao = new cl_processoouvidoriaprorrogacao();
@@ -61,7 +61,7 @@ if ($oParam->acao == "pesquisar") {
 		
 		$oRetorno->status = 1;
 		
-		$oRetorno->processo = db_utils::getColectionByRecord($rsProcesso,false,false,true);
+		$oRetorno->processo = db_utils::getCollectionByRecord($rsProcesso,false,false,true);
 		
 		$sWhere 	= "ov15_protprocesso = ".$oRetorno->processo[0]->p58_codproc." and ov15_ativo is true";
 		$sCampos  = "ov15_coddepto,depart.descrdepto,ov15_dtini,ov15_dtfim,ov15_sequencial,";
@@ -100,7 +100,7 @@ if ($oParam->acao == "pesquisar") {
 		$rsProcOuvidoriaProrrogacao = $clprocessoouvidoriaprorrogacao->sql_record($sQueryPocessoProrrogacao);
 		
 		if ($clprocessoouvidoriaprorrogacao->numrows > 0){
-			$oRetorno->andamentos = db_utils::getColectionByRecord($rsProcOuvidoriaProrrogacao,false,false,true);
+			$oRetorno->andamentos = db_utils::getCollectionByRecord($rsProcOuvidoriaProrrogacao,false,false,true);
 		}else{
 			$oRetorno->andamentos = array();
 		}
@@ -114,7 +114,7 @@ if ($oParam->acao == "pesquisar") {
 	
 	$oRetorno->linhas = array();
 	
-	//require_once("classes/db_calend_classe.php");
+	//require_once(modification("classes/db_calend_classe.php"));
 	
 	$iNumRows = count($oParam->linhas);
 	$linha		= $oParam->linha;

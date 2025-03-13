@@ -1,28 +1,31 @@
 <?php
+use ECidade\Tributario\Cadastro\Repository\SetorlocRepository;
+use ECidade\Tributario\Cadastro\Model\Setorloc;
+
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -30,17 +33,17 @@
 *
 * @author   Alberto Ferri Neto alberto@dbseller.com.br
 * @package  Cadastro
-* @revision $Author: dbalberto $
-* @version  $Revision: 1.7 $
+* @revision $Author: dbanderson $
+* @version  $Revision: 1.9 $
 */
 class Lote {
-  
+
   /**
    * Código do lote
    * @var integer
    */
   private $iCodigoLote;
-  
+
   /**
    * Código do setor do lote
    * @var integer
@@ -126,34 +129,41 @@ class Lote {
    * @var string
    */
   private $sLogradouro;
-  
-  
+
+
+  /**
+   * Relação através da tabela loteloc
+   *
+   * @var SetorLoc[]
+   */
+  private $setorLocs;
+
   private $nValorTestadaLote;
-  
+
   private $iCodigoTipoLogradouro;
-  
+
   private $sSiglaTipoLogradouro;
-  
+
   private $iCodigoLoteamento;
 
   private $sDescricaoLoteamento;
-  
+
   private $iCep;
 
   public function __construct($iCodigoLote = null) {
-    
+
     if (empty($iCodigoLote)) {
       return;
     }
-    
+
     $oDaoLote = db_utils::getDao('lote');
-     
+
     $rsLote   = $oDaoLote->sql_record($oDaoLote->sql_query_lote($iCodigoLote));
-    
+
     if ($rsLote || $oDaoLote->numrows > 0) {
-         
+
       $oLote = db_utils::fieldsMemory($rsLote, 0);
-    
+
       $this->setCodigoSetor          ($oLote->j34_setor);
       $this->setSetor                ($oLote->j30_descr);
       $this->setQuadra               ($oLote->j34_quadra);
@@ -169,17 +179,33 @@ class Lote {
       $this->setCodigoLote           ($oLote->j34_idbql);
       $this->setCodigoLogradouro     ($oLote->j14_codigo);
       $this->setLogradouro           ($oLote->j14_nome);
-      $this->setCep                  ($oLote->j29_cep);    
+      $this->setCep                  ($oLote->j29_cep);
       $this->setValorTestadaLote     ($oLote->j36_testad);
       $this->setCodigoLoteamento     ($oLote->j34_loteam);
       $this->setDescricaoLoteamento  ($oLote->j34_descr);
       $this->setCodigoTipoLogradouro ($oLote->j88_codigo);
       $this->setSiglaTipoLogradouro  ($oLote->j88_sigla);
-    
+
     }
-    
+
   }
-  
+
+  /**
+   * @return $this
+   */
+  public function withSetorLoc()
+  {
+    $setorlocRepository = SetorlocRepository::getInstance();
+
+    if ($this->setorLocs === null) {
+      $this->setorLocs = $setorlocRepository
+        ->scopeIdbql($this->getCodigoLote())
+        ->get();
+    }
+
+    return $this;
+  }
+
   /**
    * Define o codigo do lote
    * @param integer $iCodigoLote
@@ -187,7 +213,7 @@ class Lote {
   public function setCodigoLote($iCodigoLote) {
     $this->iCodigoLote = $iCodigoLote;
   }
-  
+
   /**
    * Retorna o codigo do lote
    * @return integer
@@ -387,7 +413,7 @@ class Lote {
   public function setAreaPreservada($nAreaPreservada) {
     $this->nAreaPreservada = $nAreaPreservada;
   }
-  
+
   /**
    * Retorna o codigo do logradouro do lote
    * @return integer
@@ -395,7 +421,7 @@ class Lote {
   public function getCodigoLogradouro() {
     return $this->iCodigoLogradouro;
   }
-  
+
   /**
    * Define o código do logradouro
    * @param integer $iCodigoLogradouro
@@ -403,7 +429,7 @@ class Lote {
   public function setCodigoLogradouro ($iCodigoLogradouro) {
     $this->iCodigoLogradouro = $iCodigoLogradouro;
   }
-  
+
   /**
    * Retorna a descrição do logradouro
    * @return string
@@ -411,7 +437,7 @@ class Lote {
   public function getLogradouro() {
     return $this->sLogradouro;
   }
-  
+
   /**
    * Define a descrição do logradouro
    * @param string $sLogradouro
@@ -419,7 +445,7 @@ class Lote {
   public function setLogradouro ($sLogradouro) {
     $this->sLogradouro = $sLogradouro;
   }
-    
+
   /**
    * Define o cep
    * @param integer $iCep
@@ -427,68 +453,68 @@ class Lote {
   public function setCep($iCep) {
     $this->iCep = $iCep;
   }
-  
+
   /**
    * Retorna o cep
-   * @return integer 
+   * @return integer
    */
   public function getCep() {
     return $this->iCep;
   }
-  
+
   public function getValorTestadaLote() {
     return $this->nValorTestadaLote;
   }
-  
+
   public function setValorTestadaLote($nValorTestadaLote) {
     $this->nValorTestadaLote = $nValorTestadaLote;
   }
-  
+
   public function setCodigoTipoLogradouro($iCodigoTipoLogradouro) {
     $this->iCodigoTipoLogradouro = $iCodigoTipoLogradouro;
   }
-  
+
   public function getCodigoTipoLogradouro() {
     return $this->iCodigoTipoLogradouro;
   }
-  
+
   public function setSiglaTipoLogradouro($sSiglaTipoLogradouro) {
     $this->sSiglaTipoLogradouro = $sSiglaTipoLogradouro;
   }
-  
+
   public function getSiglaTipoLogradouro() {
     return $this->sSiglaTipoLogradouro;
   }
-  
+
   public function getCodigoLoteamento() {
     return $this->iCodigoLoteamento;
   }
-  
+
   public function setCodigoLoteamento($iCodigoLoteamento) {
     $this->iCodigoLoteamento = $iCodigoLoteamento;
   }
-  
+
   public function getDescricaoLoteamento() {
     return $this->sDescricaoLoteamento;
   }
-  
+
   public function setDescricaoLoteamento($sDescricaoLoteamento) {
-    $this->sDescricaoLoteamento = $sDescricaoLoteamento;  
+    $this->sDescricaoLoteamento = $sDescricaoLoteamento;
   }
-  
+
   /**
   * $iOpcao = 1; Todas
   * $iOpcao = 2; Ativas
   * $iOpcao = 3; Baixadas
   */
   public function getImoveis ($iOpcao = 1) {
-    
+
     db_app::import('cadastro.Imovel');
-    
+
     if (empty($this->iCodigoLote)) {
       throw new Exception('Codigo do lote não informado para busca de imóveis');
     }
-    
+
     $sBaixa = '';
     if ($iOpcao != 1) {
       if ($iOpcao == 2) {
@@ -497,96 +523,104 @@ class Lote {
         $sBaixa = ' and j01_baixa is not null ';
       }
     }
-    
+
     $oDaoIptubase = db_utils::getDao('iptubase');
-    
-    $rsIptubase   = $oDaoIptubase->sql_record($oDaoIptubase->sql_query_file(null, 
+
+    $rsIptubase   = $oDaoIptubase->sql_record($oDaoIptubase->sql_query_file(null,
      																																		    "j01_matric",
      																																		    "j01_matric",
      																																		    "j01_idbql = {$this->iCodigoLote}
                                                                              {$sBaixa}"));
-    
+
     if (!$rsIptubase || $oDaoIptubase->numrows == 0) {
       throw new Exception('Erro ao consultar matriculas do lote.');
     }
-    
+
     $aImoveis    = array();
-    
+
     $aMatriculas = db_utils::getCollectionByRecord($rsIptubase);
-    
+
     foreach ($aMatriculas as $oMatricula) {
-      
-      $aImoveis[] = new Imovel($oMatricula->j01_matric); 
-      
+
+      $aImoveis[] = new Imovel($oMatricula->j01_matric);
+
     }
-    
+
     return $aImoveis;
   }
 
   public function getCaracteristicasLote() {
-    
+
     if(empty($this->iCodigoLote)) {
       throw new Exception('Código do lote não informado');
     }
-    
+
     $oDaoCarlote = db_utils::getDao('carlote');
-    
+
     $sSqlCarlote = $oDaoCarlote->sql_query($this->iCodigoLote);
-    
+
     $rsCarlote   = $oDaoCarlote->sql_record($sSqlCarlote);
-    
+
     $aCarlote    = db_utils::getCollectionByRecord($rsCarlote);
-    
+
     $aCaracteristicas = array();
-    
+
     foreach ($aCarlote as $oCarlote) {
-      
+
       $oCaracteristica = new stdClass();
-      
+
       $oCaracteristica->iCodigoCaracteristica = $oCarlote->j31_codigo;
       $oCaracteristica->sCaracteristica       = $oCarlote->j31_descr ;
       $oCaracteristica->iNumeroPontos         = $oCarlote->j31_pontos;
       $oCaracteristica->iCodigoGrupo          = $oCarlote->j32_grupo ;
       $oCaracteristica->sDescricaoGrupo       = $oCarlote->j32_descr ;
-      
+
       $aCaracteristicas[] = $oCaracteristica;
     }
-    
+
     return $aCaracteristicas;
-    
+
   }
-  
+
   public function getCaracteristicasFace() {
 
     if(empty($this->iCodigoLote)) {
       throw new Exception('Código do lote não informado');
     }
-  
+
     $oDaoCarface = db_utils::getDao('carface');
-  
+
     $sSqlCarface = $oDaoCarface->sql_queryCaracteristicasFace($this->iCodigoLote);
-  
+
     $rsCarface   = $oDaoCarface->sql_record($sSqlCarface);
-  
+
     $aCarface    = db_utils::getCollectionByRecord($rsCarface);
-    
+
     $aCaracteristicas = array();
-    
+
     foreach ($aCarface as $oCarface) {
-      
+
       $oCaracteristica = new stdClass();
-      
+
       $oCaracteristica->iCodigoCaracteristica = $oCarface->j31_codigo;
       $oCaracteristica->sCaracteristica       = $oCarface->j31_descr ;
       $oCaracteristica->iCodigoGrupo          = $oCarface->j32_grupo ;
       $oCaracteristica->sDescricaoGrupo       = $oCarface->j32_descr ;
       $oCaracteristica->iNumeroPontos         = $oCarface->j31_pontos;
-              
+
       $aCaracteristicas[] = $oCaracteristica;
-      
+
     }
     return $aCaracteristicas;
-  
+
   }
-  
+
+
+    /**
+     * @return  Setorloc[]
+     */
+    public function getSetorLocs()
+    {
+        return $this->setorLocs;
+    }
 }

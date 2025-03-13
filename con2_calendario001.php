@@ -26,16 +26,16 @@
  */
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("db_calendario.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_calend_classe.php");
-include("classes/db_clientes_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_tarefacadsituacao_classe.php");
-include("classes/db_db_proced_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("db_calendario.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_calend_classe.php"));
+include(modification("classes/db_clientes_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_tarefacadsituacao_classe.php"));
+include(modification("classes/db_db_proced_classe.php"));
 
 
 $clclientes          = new cl_clientes;

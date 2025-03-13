@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rharqbanco_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrharqbanco = new cl_rharqbanco;
 $clrotulo = new rotulocampo;
@@ -67,7 +67,7 @@ function js_valores(){
     qry += "&fopag_cc_deposito="+document.form1.rh34_conta.value;
     qry += "&fopag_dv_cc_deposito="+document.form1.rh34_dvconta.value;
     qry += "&fopag_sequen="+document.form1.rh34_sequencial.value;
-    js_OpenJanelaIframe('top.corpo','db_iframe_gerarhpasep','pes4_rhfopag90002.php?'+qry,'Gerando Arquivo',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_gerarhpasep','pes4_rhfopag90002.php?'+qry,'Gerando Arquivo',false);
     return true;
   }
 
@@ -75,13 +75,13 @@ function js_valores(){
 }
 
 function js_detectaarquivo(arquivo){
-  top.corpo.db_iframe_gerarhpasep.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_gerarhpasep.hide();
   listagem = arquivo+"#Download arquivo TXT";
   js_montarlista(listagem,"form1");
 }
 
 function js_erro(msg){
-  top.corpo.db_iframe_gerarhpasep.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_gerarhpasep.hide();
   alert(msg);
 }
 function js_fechaiframe(){

@@ -1,31 +1,31 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clsaniatividade->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -52,15 +52,15 @@ if(isset($opcao) && $opcao == "excluir"){
        $Ly83_codsani
        ?>
     </td>
-    <td> 
+    <td>
 <?
 if (isset($y83_codsani)&&$y83_codsani!=""){
-      
+
 	$result_nome = $clsanitario->sql_record($clsanitario->sql_query($y83_codsani,"z01_nome"));
 	if ($clsanitario->numrows>0){
-   		db_fieldsmemory($result_nome,0);	
+   		db_fieldsmemory($result_nome,0);
 	}
-	
+
 }
 
 db_input('y83_codsani',10,$Iy83_codsani,true,'text',3," onchange='js_pesquisay83_codsani(false);'");
@@ -75,7 +75,7 @@ db_input('z01_nome',35,$Iz01_nome,true,'text',3,'');
     <td nowrap title="<?=@$Ty83_seq?>">
        <?=@$Ly83_seq?>
     </td>
-    <td> 
+    <td>
 <?
 if($db_opcao == 1){
   $result = $clsaniatividade->sql_record($clsaniatividade->sql_query_max("y83_seq",$y83_codsani));
@@ -97,7 +97,7 @@ db_input('y83_seq',10,$Iy83_seq,true,'text',3,"");
        db_ancora(@$Ly83_ativ,"js_pesquisay83_ativ(true);",$db_opcao);
        ?>
     </td>
-    <td> 
+    <td>
 <?
 db_input('y83_ativ',8,$Iy83_ativ,true,'text',$db_opcao," onchange='js_pesquisay83_ativ(false);'");
 ?>
@@ -110,7 +110,7 @@ db_input('q03_descr',40,$Iq03_descr,true,'text',3,'');
     <td nowrap title="<?=@$Ty83_ativprinc?>">
        <?=@$Ly83_ativprinc?>
     </td>
-    <td> 
+    <td>
 <?
 $arr = array("t"=>"SIM","f"=>"NÃO");
 if($db_opcao == 1){
@@ -146,13 +146,13 @@ db_select('y83_perman',$xe,true,$db_opcao,"onchange='js_testadata(this.value);'"
     <td nowrap title="<?=@$Ty83_dtini?>">
        <?=@$Ly83_dtini?>
     </td>
-    <td> 
+    <td>
 <?
 if(empty($y83_dtini_dia)){
   $y83_dtini_dia = date("d",db_getsession("DB_datausu"));
   $y83_dtini_mes = date("m",db_getsession("DB_datausu"));
   $y83_dtini_ano = date("Y",db_getsession("DB_datausu"));
-} 
+}
 db_inputdata('y83_dtini',@$y83_dtini_dia,@$y83_dtini_mes,@$y83_dtini_ano,true,'text',$db_opcao,"")
 ?>
     </td>
@@ -161,7 +161,7 @@ db_inputdata('y83_dtini',@$y83_dtini_dia,@$y83_dtini_mes,@$y83_dtini_ano,true,'t
     <td nowrap title="<?=@$Ty83_dtfim?>">
        <?=@$Ly83_dtfim?>
     </td>
-    <td> 
+    <td>
 <?
 db_inputdata('y83_dtfim',@$y83_dtfim_dia,@$y83_dtfim_mes,@$y83_dtfim_ano,true,'text',$db_opcao,"")
 ?>
@@ -171,11 +171,12 @@ db_inputdata('y83_dtfim',@$y83_dtfim_dia,@$y83_dtfim_mes,@$y83_dtfim_ano,true,'t
     <td nowrap title="<?=@$Ty83_area?>">
        <?=@$Ly83_area?>
     </td>
-    <td> 
+    <td>
 <?
 db_input('y83_area',10,$Iy83_area,true,'text',$db_opcao);
 ?>
 <input type="hidden" name="area" value="<?=@$y83_arean?>">
+<input type="hidden" name="z01_cgccpf" value="<?=@$z01_cgccpf?>">
 <input type="hidden" name="opcaoExec" value="">
 
 <script>
@@ -188,12 +189,12 @@ if(opcao==1 ||opcao==2||opcao==22){
   }else{
   	js_submet('Excluir')
   }
-  
+
 }
 function  js_submet(opcao){
 	//alert('gjhgjh');
 	document.form1.opcaoExec.value = opcao;
-	document.form1.submit(); 
+	document.form1.submit();
 }
 </script>
     </td>
@@ -221,7 +222,7 @@ function  js_submet(opcao){
     $cliframe_alterar_excluir->fundocabec ="#aacccc";
     $cliframe_alterar_excluir->fundocorpo ="#ccddcc";
     $cliframe_alterar_excluir->iframe_height ="170";
-    $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);    
+    $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);
     $clsaniatividade1 = new cl_saniatividade;
     $clsaniatividade1->sql_record($clsaniatividade1->sql_query("","","  saniatividade.*,ativid.q03_descr ",""," y83_codsani = $y83_codsani"));
     if($clsaniatividade1->numrows == 0){
@@ -230,7 +231,7 @@ function  js_submet(opcao){
     //die($clsaniatividade1->sql_query("","","  saniatividade.*,ativid.q03_descr ",""," y83_codsani = $y83_codsani"));
    ?>
    </td>
- </tr>  
+ </tr>
   </table>
   </center>
 </form>
@@ -247,9 +248,9 @@ function js_pesquisay83_codsani(mostra){
     js_OpenJanelaIframe('','db_iframe_sanitario','func_sanitario.php?pesquisa_chave='+document.form1.y83_codsani.value+'&funcao_js=parent.js_mostrasanitario','Pesquisa',false);
 }
 function js_mostrasanitario(chave,erro){
-  if(erro==true){ 
-    document.form1.y83_codsani.focus(); 
-    document.form1.y83_codsani.value = ''; 
+  if(erro==true){
+    document.form1.y83_codsani.focus();
+    document.form1.y83_codsani.value = '';
   }
 }
 function js_mostrasanitario1(chave1,chave2){
@@ -257,18 +258,24 @@ function js_mostrasanitario1(chave1,chave2){
   document.form1.y80_numcgm.value = chave2;
   db_iframe_sanitario.hide();
 }
-function js_pesquisay83_ativ(mostra){
-  if(mostra==true){
-    js_OpenJanelaIframe('','db_iframe_ativid','func_ativid.php?funcao_js=parent.js_mostraativid1|q03_ativ|q03_descr','Pesquisa',true,0);
+function js_pesquisay83_ativ(mostra) {
+
+  if ( document.form1.z01_cgccpf.value.length == 14 ) {
+    tipo='cnpj';
   }else{
-    js_OpenJanelaIframe('','db_iframe_ativid','func_ativid.php?pesquisa_chave='+document.form1.y83_ativ.value+'&funcao_js=parent.js_mostraativid','Pesquisa',false);
+    tipo='cpf';
+  }
+  if(mostra==true){
+    js_OpenJanelaIframe('','db_iframe_ativid','func_ativid.php?tipo_pesquisa='+tipo+'&funcao_js=parent.js_mostraativid1|q03_ativ|q03_descr','Pesquisa',true,0);
+  }else{
+    js_OpenJanelaIframe('','db_iframe_ativid','func_ativid.php?tipo_pesquisa='+tipo+'&pesquisa_chave='+document.form1.y83_ativ.value+'&funcao_js=parent.js_mostraativid','Pesquisa',false);
   }
 }
 function js_mostraativid(chave,erro){
-  document.form1.q03_descr.value = chave; 
-  if(erro==true){ 
-    document.form1.y83_ativ.focus(); 
-    document.form1.y83_ativ.value = ''; 
+  document.form1.q03_descr.value = chave;
+  if(erro==true){
+    document.form1.y83_ativ.focus();
+    document.form1.y83_ativ.value = '';
   }
 }
 function js_mostraativid1(chave1,chave2){
@@ -289,12 +296,12 @@ function js_testadata(valor){
     document.form1.y83_dtfim_ano.style.backgroundColor = '#DEB887';
     document.form1.y83_dtfim_dia.style.backgroundColor = '#DEB887';
     document.form1.y83_dtfim_mes.style.backgroundColor = '#DEB887';
-    
+
     // comentar este paratarefa 8832 e descomentar para 1366
     //document.form1.y83_dtfim.value="";
    // document.form1.y83_dtfim.disabled=true;
    // document.form1.y83_dtfim.style.backgroundColor = '#DEB887';
-      
+
   }else {
     document.form1.y83_dtfim_dia.disabled=false;
     document.form1.y83_dtfim_ano.disabled=false;
@@ -302,12 +309,12 @@ function js_testadata(valor){
     document.form1.y83_dtfim_ano.style.backgroundColor = '';
     document.form1.y83_dtfim_dia.style.backgroundColor = '';
     document.form1.y83_dtfim_mes.style.backgroundColor = '';
-    
+
     // comentar este paratarefa 8832 e descomentar para 1366
     //document.form1.y83_dtfim.disabled=false;
     //document.form1.y83_dtfim.style.backgroundColor = '';
   }
-  
+
 }
 js_testadata(document.form1.y83_perman.value);
 

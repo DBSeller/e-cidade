@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 db_putsession('temp_file','temp');
 
@@ -38,20 +38,20 @@ if(isset($HTTP_POST_VARS["atualizarperm"])) {
   $modulo = $HTTP_POST_VARS["modulos"];
   $ambiente = $HTTP_POST_VARS["ambiente"];
 
-  pg_exec("BEGIN");
+  db_query("BEGIN");
   //primeiro delete os itens
-  pg_exec("delete from ".db_getsession("temp_file")."
+  db_query("delete from ".db_getsession("temp_file")."
            where id_modulo = $modulo") or die("Excluir Itens: ".pg_errormessage());
   //inclui novamente os itens
   $tam_vetor = sizeof($HTTP_POST_VARS);
   reset($HTTP_POST_VARS);
   for($i = 0;$i < $tam_vetor;$i++) {
     if(db_indexOf(key($HTTP_POST_VARS),"CHECK") > 0) {
-      pg_exec("insert into ".db_getsession("temp_file")." values($modulo,".$HTTP_POST_VARS[key($HTTP_POST_VARS)].")") or die("Erro(18) inserindo em db_permissao: ".pg_errormessage());
+      db_query("insert into ".db_getsession("temp_file")." values($modulo,".$HTTP_POST_VARS[key($HTTP_POST_VARS)].")") or die("Erro(18) inserindo em db_permissao: ".pg_errormessage());
     }
     next($HTTP_POST_VARS);
   }
-  pg_exec("COMMIT");  
+  db_query("COMMIT");  
   //
   unset($HTTP_POST_VARS['mod']);
   $selecionar = true;
@@ -170,7 +170,7 @@ input {
 	    <td> <strong>M&oacute;dulo:</strong><br> 
 	  <select onDblClick="document.form1.mod.click()" name="modulos" size="18"  >
         <?
-	    $result = pg_exec("select id_item,nome_modulo,descr_modulo 
+	    $result = db_query("select id_item,nome_modulo,descr_modulo 
 	    from db_modulos 
 	    order by lower(nome_modulo)");
 	    $numrows = pg_numrows($result);
@@ -188,7 +188,7 @@ input {
 	  </table>
 	  <?
 	  } else if(isset($HTTP_POST_VARS["mod"])) {
-		  $result = pg_exec("select nome_modulo,descr_modulo from db_modulos where id_item = ".$HTTP_POST_VARS["modulos"]);
+		  $result = db_query("select nome_modulo,descr_modulo from db_modulos where id_item = ".$HTTP_POST_VARS["modulos"]);
 	      $mod = pg_result($result,0,0);
 	      $des = pg_result($result,0,1);
 	  ?>
@@ -233,7 +233,7 @@ input {
 			  global $wid;
 			  global $ambiente;
 			  global $HTTP_POST_VARS;
-              $sub = pg_exec("select temp.id_item as perm ,m.id_item_filho,i.descricao,i.help,i.funcao,m.id_item,m.modulo 
+              $sub = db_query("select temp.id_item as perm ,m.id_item_filho,i.descricao,i.help,i.funcao,m.id_item,m.modulo 
                               from db_menu m 
 							       inner join db_itensmenu i on i.id_item = m.id_item_filho 
 								   left outer join ".db_getsession("temp_file")."  temp on temp.id_modulo = $mod and temp.id_item = m.id_item_filho 
@@ -262,7 +262,7 @@ input {
 	                           where m.modulo = ".$HTTP_POST_VARS["modulos"]."
 							   and i.itemativo = $ambiente							   
 							   and m.id_item = ".$HTTP_POST_VARS["modulos"];
-            $result = pg_exec($SQL);			
+            $result = db_query($SQL);			
             for($i = 0;$i < pg_numrows($result);$i++) {
 			  $valor = pg_result($result,$i,"id_item_filho");
               echo "<td id=\"col$i\" valign=\"top\" nowrap>\n<input onclick=\"js_marca('col$i',this)\" type=\"checkbox\" id=\"ID$valor\" name=\"CHECK$valor\" value=\"$valor\" ".(pg_result($result,$i,"perm")==""?"":"checked").">

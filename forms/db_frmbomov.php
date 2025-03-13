@@ -122,10 +122,10 @@ db_input('bo04_saida',3,$Ibo04_saida,true,'text',$db_opcao,"")
 <script>
 function js_pesquisabo04_codbo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bo','func_bo.php?funcao_js=parent.js_mostrabo1|bo01_codbo|bo01_obs','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bo','func_bo.php?funcao_js=parent.js_mostrabo1|bo01_codbo|bo01_obs','Pesquisa',true);
   }else{
      if(document.form1.bo04_codbo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bo','func_bo.php?pesquisa_chave='+document.form1.bo04_codbo.value+'&funcao_js=parent.js_mostrabo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bo','func_bo.php?pesquisa_chave='+document.form1.bo04_codbo.value+'&funcao_js=parent.js_mostrabo','Pesquisa',false);
      }else{
        document.form1.bo01_obs.value = ''; 
      }
@@ -145,10 +145,10 @@ function js_mostrabo1(chave1,chave2){
 }
 function js_pesquisabo04_coddepto_ori(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true);
   }else{
      if(document.form1.bo04_coddepto_ori.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.bo04_coddepto_ori.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.bo04_coddepto_ori.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
      }else{
        document.form1.descrdepto.value = ''; 
      }
@@ -167,7 +167,7 @@ function js_mostradb_depart1(chave1,chave2){
   db_iframe_db_depart.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bomov','func_bomov.php?funcao_js=parent.js_preenchepesquisa|bo04_codmov','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bomov','func_bomov.php?funcao_js=parent.js_preenchepesquisa|bo04_codmov','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bomov.hide();

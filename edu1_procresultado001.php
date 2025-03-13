@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
 db_postmemory($HTTP_POST_VARS);
 $oDaoProcResultado = db_utils::getdao("procresultado"); 
 $db_opcao          = 1;
@@ -41,7 +41,7 @@ $db_botao          = true;
 function ElementosFreq($ed67_i_procresultado) {
 	
   $sSql          = "SELECT * FROM avalfreqres WHERE ed67_i_procresultado = $ed67_i_procresultado ";
-  $rsAvalFreqRes = pg_query($sSql);
+  $rsAvalFreqRes = db_query($sSql);
   $iLinhas        = pg_num_rows($rsAvalFreqRes);
   return $iLinhas;
  
@@ -78,7 +78,7 @@ if (isset($incluir)) {
   $sSqlUnion   .= " FROM procresultado ";
   $sSqlUnion   .= " WHERE ed43_i_procedimento = $ed43_i_procedimento ";
   $sSqlUnion   .= " ORDER BY ed41_i_sequencia ";
-  $rsUnion      = pg_query($sSqlUnion);
+  $rsUnion      = db_query($sSqlUnion);
   $iLinhasUnion = pg_num_rows($rsUnion);
   
   if ($iLinhasUnion == 0) {
@@ -87,14 +87,15 @@ if (isset($incluir)) {
     $max = pg_result($rsUnion, $iLinhasUnion-1, "ed41_i_sequencia");
   }
   
-  $oDaoProcResultado->ed43_c_minimoaprov   = $minimoaprov;
-  $oDaoProcResultado->ed43_c_obtencao      = "AT";
-  $oDaoProcResultado->ed43_c_geraresultado = "N";
-  $oDaoProcResultado->ed43_c_boletim       = "N";
-  $oDaoProcResultado->ed43_c_reprovafreq   = "N";
-  $oDaoProcResultado->ed43_c_arredmedia    = "N";
-  $oDaoProcResultado->ed43_i_sequencia     = ($max+1);
-  $oDaoProcResultado->ed43_c_tipoarred     = "C";
+  $oDaoProcResultado->ed43_c_minimoaprov     = $minimoaprov;
+  $oDaoProcResultado->ed43_c_obtencao        = "AT";
+  $oDaoProcResultado->ed43_c_geraresultado   = "N";
+  $oDaoProcResultado->ed43_c_boletim         = "N";
+  $oDaoProcResultado->ed43_c_reprovafreq     = "N";
+  $oDaoProcResultado->ed43_c_arredmedia      = "N";
+  $oDaoProcResultado->ed43_i_sequencia       = ($max+1);
+  $oDaoProcResultado->ed43_c_tipoarred       = "C";
+  $oDaoProcResultado->ed43_proporcionalidade = 'false';
   $oDaoProcResultado->incluir($ed43_i_codigo);
   db_fim_transacao();
 
@@ -108,6 +109,7 @@ if (isset($incluir)) {
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta http-equiv="Expires" CONTENT="0">
   <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
   <link href="estilos.css" rel="stylesheet" type="text/css">
  </head>
  <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -117,7 +119,7 @@ if (isset($incluir)) {
      <br>
      <center>
       <fieldset style="width:95%"><legend><b>Inclusão de Resultados do Procedimento de Avaliação <?=$ed40_c_descr?></b></legend>
-       <?include("forms/db_frmprocresultado.php");?>
+       <?include(modification("forms/db_frmprocresultado.php"));?>
       </fielset>
      </center>
     </td>
@@ -149,7 +151,7 @@ if (isset($incluir)) {
     $oDaoProcResultado->erro(true, false);    
     ?>
     <script>
-      top.corpo.iframe_a2.location.href = "edu1_avaliacoes.php?ed15_c_nome=RESULTADO"+
+      (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href = "edu1_avaliacoes.php?ed15_c_nome=RESULTADO"+
                                           "&ed41_i_codigo=<?=$oDaoProcResultado->ed43_i_codigo?>"+
                                           "&opcao=alterar&procedimento=<?=$ed43_i_procedimento?>"+
                                           "&forma=<?=$forma?>&ed40_c_descr=<?=$ed40_c_descr?>"

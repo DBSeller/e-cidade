@@ -98,7 +98,7 @@ db_input('ed131_c_situacao',1,$Ied131_c_situacao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_transflocal','func_transflocal.php?funcao_js=parent.js_preenchepesquisa|ed131_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_transflocal','func_transflocal.php?funcao_js=parent.js_preenchepesquisa|ed131_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_transflocal.hide();

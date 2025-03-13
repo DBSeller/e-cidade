@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_sql.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_sql.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -402,12 +402,14 @@ for ($i = 0; $i < $iTotalFuncionarios; $i++) {
   $sSqlUltimoPeriodoGozado .= "       r30_per2f,";
   $sSqlUltimoPeriodoGozado .= "       r30_dias1,";
   $sSqlUltimoPeriodoGozado .= "       r30_dias2,";
-  $sSqlUltimoPeriodoGozado .= "       r30_ndias ";
+  $sSqlUltimoPeriodoGozado .= "       r30_ndias,";
+  $sSqlUltimoPeriodoGozado .= "       r30_abono ";
   $sSqlUltimoPeriodoGozado .= "  from cadferia ";
   $sSqlUltimoPeriodoGozado .= " where r30_anousu = {$iAno}";
   $sSqlUltimoPeriodoGozado .= "   and r30_mesusu = {$iMes} ";
   $sSqlUltimoPeriodoGozado .= "   and r30_regist = {$oDados->rh01_regist}";
   $sSqlUltimoPeriodoGozado .= " order by r30_perai desc limit 1";
+
   $rsULtimoPeriodoGozado    = db_query($sSqlUltimoPeriodoGozado);
   $iTemFerias               = pg_num_rows($rsULtimoPeriodoGozado); 
 
@@ -441,7 +443,8 @@ for ($i = 0; $i < $iTotalFuncionarios; $i++) {
   $sSqlFeriasCadastradas .= "       r30_dias1,";
   $sSqlFeriasCadastradas .= "       r30_dias2,";
   $sSqlFeriasCadastradas .= "       r30_ndias, ";
-  $sSqlFeriasCadastradas .= "       coalesce(r30_dias1,0)+coalesce(r30_dias2,0) as diasgozados ";
+  $sSqlFeriasCadastradas .= "       coalesce(r30_dias1,0)+coalesce(r30_dias2,0) as diasgozados, ";
+  $sSqlFeriasCadastradas .= "       r30_abono";
   $sSqlFeriasCadastradas .= "  from cadferia ";
   $sSqlFeriasCadastradas .= " where coalesce(r30_dias1,0)+coalesce(r30_dias2,0) < r30_ndias ";
   $sSqlFeriasCadastradas .= "   and r30_peraf <= '{$sDataPesquisa}'"; 
@@ -473,6 +476,7 @@ for ($i = 0; $i < $iTotalFuncionarios; $i++) {
         $oPeriodo->diasgozados = $oDadosFerias->diasgozados;
         $oPeriodo->datainicial = $oDadosFerias->r30_perai; 
         $oPeriodo->datafinal   = $oDadosFerias->r30_peraf; 
+        $oPeriodo->diasabono   = $oDadosFerias->r30_abono; 
         $aDataFinal  = explode("-", $oPeriodo->datafinal);
         $sDataLimite = date("Y-m-d", mktime(0, 0, 0, $aDataFinal[1], $aDataFinal[2]-30, $aDataFinal[0]+1)); 
         $oPeriodo->limite      = $sDataLimite; 
@@ -505,6 +509,7 @@ for ($i = 0; $i < $iTotalFuncionarios; $i++) {
     $aDataFinal   = explode("-", $oPeriodo->datafinal);
     $sDataLimite = date("Y-m-d", mktime(0, 0, 0, $aDataFinal[1]+12, $aDataFinal[2]-30, $aDataFinal[0]));
     $oPeriodo->limite      = $sDataLimite;
+    $oPeriodo->diasabono   = '';
     if (db_strtotime($oPeriodo->datafinal) >= db_strtotime($sDataPesquisa)) {
       $lTemFeriasVencidas = false;
     } else {
@@ -639,10 +644,10 @@ foreach ($aAgrupador as $iAgrupador => $oAgrupador) {
       $sPeriodoAquisitivo = db_formatar($oPeriodo->datainicial, "d")." - ".db_formatar($oPeriodo->datafinal, "d");
       $pdf->cell(50, $iAlt, $sPeriodoAquisitivo, "LR", 0, "C");
       $pdf->cell(15, $iAlt, $oPeriodo->diasgozados, "LR", 0, "C");
-      $pdf->cell(15, $iAlt, ($oPeriodo->diasgozo - $oPeriodo->diasgozados), "LR", 0, "C");
+      $pdf->cell(15, $iAlt, ($oPeriodo->diasgozo - $oPeriodo->diasgozados - $oPeriodo->diasabono), "LR", 0, "C");
       $pdf->cell(20, $iAlt, db_formatar($oPeriodo->limite, "d"), "LR", 0, "C");
       $pdf->cell(50, $iAlt, "____/____/_______ a ____/____/______", "LR", 0, "C");
-      $pdf->cell(15, $iAlt, "", "LR", 0, "C");
+      $pdf->cell(15, $iAlt, $oPeriodo->diasabono, "LR", 0, "C");
       $pdf->cell(60, $iAlt, "", "L", 0, "C");
       $pdf->ln();
     }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_issnotaavulsa_classe.php");
-include("classes/db_issnotaavulsanumpre_classe.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_issnotaavulsa_classe.php"));
+include(modification("classes/db_issnotaavulsanumpre_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 $clissnotaavulsanumpre = new cl_issnotaavulsanumpre();
 $get                   = db_utils::postmemory($_GET);
@@ -63,7 +63,7 @@ $sSql = "select k00_dtpaga,
                                      and arrepaga.k00_numpar = arrecant.k00_numpar
                   inner join histcalc on k01_codigo          =  arrepaga.k00_hist                   
          where  arrepaga.k00_numpre = ".$objNumpreNota->q52_numpre;                          
-$rsPago   = pg_query($sSql);       
+$rsPago   = db_query($sSql);       
 $iNumRows = pg_num_rows($rsPago);
 if ($iNumRows == 0){       
 
@@ -76,7 +76,7 @@ if ($iNumRows == 0){
                                             and k00_numpar = k21_numpar
                    inner join cancdebitos    on k20_codigo = k21_codigo                         
             where  k00_numpre = ".$objNumpreNota->q52_numpre;                          
-   $rsCanc  = pg_query($sSql);       
+   $rsCanc  = db_query($sSql);       
    $iNumRows = pg_num_rows($rsCanc);
    if ($iNumRows == 0){       
      $sSql = "select k00_dtvenc, 

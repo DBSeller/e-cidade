@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
-include("classes/db_rhregime_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_rhregime_classe.php"));
+  
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clrotulo = new rotulocampo;
 $clrotulo->label("rh37_funcao");
@@ -49,20 +50,18 @@ $clrhregime = new cl_rhregime;
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="if(document.form1.rh37_funcao)document.form1.rh37_funcao.focus();">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
+<br><br><br>
+<div align="center">
+<form name="form1" method="post">
+
+<table>
   <tr>
-    <td width="360">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-      <center>
-      <form name="form1" method="post">
+  <td>
+  <fieldset>
+  <legend><b>Consultas de cargos</b></legend>
+
 	  <table border="0">
+
         <tr>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
@@ -71,63 +70,107 @@ $clrhregime = new cl_rhregime;
           <td>&nbsp;</td>
           <td>&nbsp;</td>
         </tr>
+        
         <tr>
-          <td align="left" nowrap title="Digite o Ano / Mes de competência" >
-            <strong>Ano / Mês :&nbsp;&nbsp;</strong>
+          <td align="right" nowrap title="Digite o Ano / Mes de competência" >
+            <strong>Ano / Mês :</strong>
           </td>
           <td>
-            <?
+            <?php
             $ano = db_anofolha();
             db_input('ano',4,$IDBtxt23,true,'text',2,'')
             ?>
             &nbsp;/&nbsp;
-            <?
+            <?php
             $mes = db_mesfolha();
             db_input('mes',2,$IDBtxt25,true,'text',2,'')
             ?>
           </td>
         </tr>
         <tr>
-          <td align="right" title="<?=$Trh37_funcao?>">
-            <?
+          <td align="right" title="<?php echo $Trh37_funcao?>">
+            <?php
             db_ancora(@ $Lrh37_funcao, "js_pesquisarfuncao(true);", 1);
     		?>
           </td>
           <td>
-            <?
+            <?php
             db_input('rh37_funcao', 8, $Irh37_funcao, true, 'text', 1, " onchange='js_pesquisarfuncao(false);'")
             ?>
-            <?
+            <?php
             db_input('rh37_descr', 30, $Irh37_descr, true, 'text', 3, '');
             ?>
           </td>
         </tr>
-  <tr>
-    <td colspan="2" >
-            <tr>
-              <td align="center" colspan="2">
-                <?
-                $result_regime = $clrhregime->sql_record($clrhregime->sql_query_file(null, "rh30_codreg, rh30_codreg||'-'||rh30_descr as rh30_descr", "rh30_descr" , " rh30_instit = ".db_getsession('DB_instit') ));
-                db_multiploselect("rh30_codreg", "rh30_descr", "nselecionados", "sselecionados", $result_regime, array(), 5, 250);
-                ?>
-              </td>
-            </tr>
-    </td>
-  </tr>
+
         <tr>
-          <td height="25" colspan="2" align="center">
-            <input type="button" value="Consultar" name="pesquisar" onclick="js_abrejan();">
+          <td align="right" title="Lotação">
+            <?php
+            db_ancora("Lotação:", "js_pesquisarlotacao(true);", 1);
+    		    ?>
+          </td>
+          <td>
+            <?php
+            db_input('r70_codigo', 8, 3, true, 'text', 1, " onchange='js_pesquisarlotacao(false);'")
+            ?>
+            <?php
+            db_input('r70_descr', 30, 3, true, 'text', 3, '');
+            ?>
           </td>
         </tr>
+
+        <tr>
+          <td align="right" title="Seleção">
+            <?php
+                db_ancora("Seleção:", "js_pesquisarselecao(true);", 1);
+    		    ?>
+          </td>
+          <td>
+            <?php
+                db_input('r44_selec', 8, 3, true, 'text', 1, " onchange='js_pesquisarselecao(false);'")
+            ?>
+            <?php
+                db_input('r44_descr', 30, 3, true, 'text', 3, '');
+            ?>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" >
+                  <tr>
+                    <td align="center" colspan="2">
+                      <?php
+                      $result_regime = $clrhregime->sql_record($clrhregime->sql_query_file(null, "rh30_codreg, rh30_codreg||'-'||rh30_descr as rh30_descr", "rh30_descr" , " rh30_instit = ".db_getsession('DB_instit') ));
+                      db_multiploselect("rh30_codreg", "rh30_descr", "nselecionados", "sselecionados", $result_regime, array(), 5, 250);
+                      ?>
+                    </td>
+                  </tr>
+          </td>
+        </tr>
+ 
       </table>
-      </form>
-      </center>
+      
+  
+  </fieldset>
+  </td>
+  </tr>
+  
+</table>
+
+<table>
+  <tr>
+    <td height="25" colspan="2" align="center">
+      <input type="button" value="Consultar" name="pesquisar" onclick="js_abrejan();">
     </td>
   </tr>
 </table>
-<?
+
+</form>
+<?php
  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
+
+</div>
 </body>
 </html>
 <script>
@@ -146,6 +189,15 @@ function js_abrejan(){
     qry += rog+"ano="+document.form1.ano.value;
 
   }
+  if(document.form1.r70_codigo.value!=""){
+    qry += rog+"lotacao="+document.form1.r70_codigo.value;
+
+  }
+  if(document.form1.r44_selec.value!=""){
+    qry += rog+"selecao="+document.form1.r44_selec.value;
+
+  }
+
   selecionados = "";
   virgula_ssel = "";
   for(var i=0; i<document.form1.sselecionados.length; i++){
@@ -162,10 +214,10 @@ function js_abrejan(){
 }
 function js_pesquisarfuncao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhfuncao','func_rhfuncao.php?funcao_js=parent.js_mostrafuncao1|rh37_funcao|rh37_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhfuncao','func_rhfuncao.php?funcao_js=parent.js_mostrafuncao1|rh37_funcao|rh37_descr','Pesquisa',true);
   }else{
      if(document.form1.rh37_funcao.value != ''){
-       js_OpenJanelaIframe('top.corpo','db_iframe_rhfuncao','func_rhfuncao.php?pesquisa_chave='+document.form1.rh37_funcao.value+'&funcao_js=parent.js_mostrafuncao','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhfuncao','func_rhfuncao.php?pesquisa_chave='+document.form1.rh37_funcao.value+'&funcao_js=parent.js_mostrafuncao','Pesquisa',false);
      }else{
        document.form1.rh37_descr.value = '';
      }
@@ -183,4 +235,60 @@ function js_mostrafuncao1(chave1,chave2){
   document.form1.rh37_descr.value  = chave2;
   db_iframe_rhfuncao.hide();
 }
+
+
+
+function js_pesquisarselecao(mostra){
+  if(mostra==true){
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_mostraselecao1|r44_selec|r44_descr','Pesquisa',true);
+  }else{
+     if(document.form1.r44_selec.value != ''){
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostraselecao','Pesquisa',false);
+     }else{
+       document.form1.r44_descr.value = '';
+     }
+  }
+}
+
+function js_mostraselecao(chave,erro){
+  document.form1.r44_descr.value  = chave;
+  if(erro==true){
+    document.form1.r44_descr.value = '';
+    document.form1.r44_descr.focus();
+  }
+}
+
+function js_mostraselecao1(chave1,chave2){
+  document.form1.r44_selec.value  = chave1;
+  document.form1.r44_descr.value  = chave2;
+  db_iframe_selecao.hide();
+}
+
+
+function js_pesquisarlotacao(mostra){
+  if(mostra==true){
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlota','func_rhlota.php?funcao_js=parent.js_mostralotacao1|r70_codigo|r70_descr','Pesquisa',true);
+  }else{
+     if(document.form1.r70_codigo.value != ''){
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlota','func_rhlota.php?pesquisa_chave='+document.form1.r70_codigo.value+'&funcao_js=parent.js_mostralotacao','Pesquisa',false);
+     }else{
+       document.form1.r70_descr.value = '';
+     }
+  }
+}
+
+function js_mostralotacao(chave,erro){
+  document.form1.r70_descr.value  = chave;
+  if(erro==true){
+    document.form1.r70_descr.value = '';
+    document.form1.r70_descr.focus();
+  }
+}
+
+function js_mostralotacao1(chave1,chave2){
+  document.form1.r70_codigo.value  = chave1;
+  document.form1.r70_descr.value  = chave2;
+  db_iframe_rhlota.hide();
+}
+
 </script>

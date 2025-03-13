@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_processoforo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_processoforo_classe.php"));
 
 $clprocessoforo = new cl_processoforo;
 $clprocessoforo->rotulo->label();
@@ -142,7 +142,7 @@ $clRotulo->label("z01_nome");
 
 function js_pesquisa() {
   //cria um iframe
-  js_OpenJanelaIframe('top.corpo','db_iframe_processoforo','','Processo Foro', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processoforo','','Processo Foro', true);
   $('form1').method  = 'post';
   $('form1').action  = 'func_processoforo.php';
   $('form1').action += '?&lSituacao=true&funcao_js=parent.js_detalhesProcesso|v70_sequencial';
@@ -152,7 +152,7 @@ function js_pesquisa() {
 
 function js_detalhesProcesso(iCodigoProcessoForo) {
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
       							  'db_iframe_processoforo', 
       								'jur1_consultaprocessoforo002.php?v70_sequencial='+iCodigoProcessoForo,
       								'Consulta',

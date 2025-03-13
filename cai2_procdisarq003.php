@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
 $sqlhead = "select * from disarq where codret = $codret ";
-$resulthead = pg_query($sqlhead);
+$resulthead = db_query($sqlhead);
 $linhashead = pg_num_rows($resulthead);
 if($linhashead >0){
   db_fieldsmemory($resulthead,0);
@@ -78,7 +78,7 @@ $primeiro =0;
 $total = 0;
  
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $linhas= pg_num_rows($result);
 if($linhas>0){
   for($i=0;$i<$linhas;$i++) {

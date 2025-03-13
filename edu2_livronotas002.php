@@ -1,48 +1,41 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("fpdf151/scpdf.php");
-require_once ("libs/db_sql.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/JSON.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("std/DBDate.php");
-require_once ("model/educacao/avaliacao/iFormaObtencao.interface.php");
-require_once ("model/educacao/avaliacao/iElementoAvaliacao.interface.php");
-require_once ("model/CgmFactory.model.php");
-
-db_app::import("educacao.*");
-db_app::import("educacao.avaliacao.*");
-db_app::import("exceptions.*");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBDate.php"));
 
 $oDados         = db_utils::postMemory($_GET);
 $oJson          = new services_json();
@@ -116,7 +109,11 @@ foreach ($aRetornoTurmas as $oRetornoTurma) {
 
   $oConselheiro = $oTurma->getProfessorConselheiro();
   if (!empty($oConselheiro)) {
-    $oDadosRelatorio->sDocente = $oTurma->getProfessorConselheiro()->getNome();
+
+    $oDocente = $oTurma->getProfessorConselheiro();
+    if ( !is_null($oDocente->getCodigoDocente()) ) {
+      $oDadosRelatorio->sDocente = $oTurma->getProfessorConselheiro()->getNome();
+    }
   }
 
   /**
@@ -157,6 +154,7 @@ foreach ($aRetornoTurmas as $oRetornoTurma) {
   foreach ($oElemento->getElementos() as $oPeriodo) {
 
     $oDadosRelatorio->iPeriodo = $oPeriodo->getCodigo();
+    $oDadosRelatorio->iOrdem   = $oPeriodo->getOrdemSequencia();
 
     /**
      * Validamos o tipo de instancia do periodo, para atribuir a descricao e um tipo de acordo com o retornado
@@ -192,7 +190,7 @@ foreach ($aRetornoTurmas as $oRetornoTurma) {
 /**
  * Imprimimos a grade de aproveitamento de cada aluno
  */
-function imprimeGradeAproveitamentoAluno($oPdf, $aDisciplinasPagina, $oDadosRelatorio) {
+function imprimeGradeAproveitamentoAluno( scpdf $oPdf, $aDisciplinasPagina, $oDadosRelatorio ) {
 
   $iLinhasImpressas = 1;
   $oPdf->SetY(54);
@@ -250,25 +248,33 @@ function imprimeGradeAproveitamentoAluno($oPdf, $aDisciplinasPagina, $oDadosRela
       foreach ($aDisciplinasPagina as $oRegencia) {
 
         db_inicio_transacao();
+        $oAproveitamentoPeriodo     = '';
         $oDiarioClasse              = $oMatricula->getDiarioDeClasse();
         $oDiarioAvaliacaoDisciplina = $oMatricula->getDiarioDeClasse()
                                                  ->getDisciplinasPorRegencia(new Regencia($oRegencia->getCodigo()));
         db_fim_transacao();
 
-        $oAproveitamentoPeriodo = $oDiarioAvaliacaoDisciplina->getAproveitamentosDoPeriodo($oDadosRelatorio->iPeriodo);
-        
+        foreach( $oDiarioAvaliacaoDisciplina->getAvaliacoes() as $oAvaliacaoAproveitamento ) {
+
+          if( $oAvaliacaoAproveitamento->getElementoAvaliacao()->getOrdemSequencia() == $oDadosRelatorio->iOrdem ) {
+            $oAproveitamentoPeriodo = $oAvaliacaoAproveitamento;
+          }
+        }
+
         $sAproveitamento = "";
         $iNumeroFaltas   = "";
         $sResultadoFinal = "";
+        $lNotaExterna    = false;
         $iAnoCalendario  = $oRegencia->getTurma()->getCalendario()->getAnoExecucao();
 
+
         if ( $oAproveitamentoPeriodo != "" ) {
-          
-          $sAproveitamento = $oAproveitamentoPeriodo->getValorAproveitamento()->getAproveitamento();
+
+          $sAproveitamento = $oAproveitamentoPeriodo->getValorAproveitamento()->getAproveitamentoReal();
           $sAproveitamento = ArredondamentoNota::formatar($sAproveitamento, $iAnoCalendario);
+          $lNotaExterna    = $oAproveitamentoPeriodo->isAvaliacaoExterna();
           $iNumeroFaltas   = $oAproveitamentoPeriodo->getNumeroFaltas();
         }
-        
 
         /**
          * Verificamos se trata-se do resultado da avaliacao ($oPdf->iTipoPeriodo = 2), buscando o total de faltas
@@ -307,22 +313,28 @@ function imprimeGradeAproveitamentoAluno($oPdf, $aDisciplinasPagina, $oDadosRela
          * Se o aluno for amparado para a disciplina no periodo, é apresentado 'Amp'
          */
         if ( $oAproveitamentoPeriodo != "" ) {
-          
-          if ( $oAproveitamentoPeriodo->getElementoAvaliacao()->getFormaDeAvaliacao()->getTipo() == 'PARECER' ) {
-  
+
+          if ( $oRegencia->getProcedimentoAvaliacao()->getFormaAvaliacao()->getTipo() == 'PARECER') {
+
             $sAproveitamento                  = "PD";
             $oDadosRelatorio->sFormaAvaliacao = 'PARECER';
             $iTemObservacao++;
-          } else if ($oAproveitamentoPeriodo->isAmparado()) {
+          }
+
+          if ($oAproveitamentoPeriodo->isAmparado()) {
             $sAproveitamento = "Amp";
           }
         }
-        
+
         /**
          * Altera o resultado quando aluno é avaliado por parecer
          */
         if ( $oMatricula->isAvaliadoPorParecer() ) {
           $sAproveitamento = "PD";
+        }
+
+        if ( $lNotaExterna && $sAproveitamento != '' ) {
+          $sAproveitamento = "*{$sAproveitamento}";
         }
 
         if (empty($sAproveitamento)) {
@@ -346,6 +358,7 @@ function imprimeGradeAproveitamentoAluno($oPdf, $aDisciplinasPagina, $oDadosRela
             && !$oAproveitamentoPeriodo->isAmparado()) {
           $oPdf->SetFont('arial', 'b', 7);
         }
+
         $oPdf->Cell($oDadosRelatorio->iTamanhoColunasDisciplinas, $oDadosRelatorio->iAltura, "{$sAproveitamento}", 1, 0, "C");
 
         $oPdf->SetFont('arial', '', 7);
@@ -409,7 +422,7 @@ function imprimeGradeAproveitamentoAluno($oPdf, $aDisciplinasPagina, $oDadosRela
 /**
  * Montamos o cabecalho das disciplinas/faltas por periodo
  */
-function cabecalhoPeriodosDisciplinas($oPdf, $aDisciplinasPagina, $oDadosRelatorio) {
+function cabecalhoPeriodosDisciplinas( scpdf $oPdf, $aDisciplinasPagina, $oDadosRelatorio ) {
 
   /**
    * Controlador de disciplinas impressas
@@ -468,7 +481,7 @@ function cabecalhoPeriodosDisciplinas($oPdf, $aDisciplinasPagina, $oDadosRelator
 /**
  * Metodo com as posicoes padroes dos periodos e disciplinas/faltas
  */
-function posicionamentoCabecalho($oPdf, $oDadosRelatorio) {
+function posicionamentoCabecalho( scpdf $oPdf, $oDadosRelatorio) {
 
   $oPdf->SetXY(127, 10);
 
@@ -481,7 +494,7 @@ function posicionamentoCabecalho($oPdf, $oDadosRelatorio) {
 /**
  * Montamos o cabecalho padrao do relatorio
  */
-function cabecalhoPadrao($oPdf, $oDadosRelatorio) {
+function cabecalhoPadrao( scpdf $oPdf, $oDadosRelatorio ) {
 
   $oPdf->SetXY(10, 10);
 
@@ -497,7 +510,6 @@ function cabecalhoPadrao($oPdf, $oDadosRelatorio) {
   if ( $iCodigoReferencia != null ) {
     $sNomeEscola = "{$iCodigoReferencia} - {$sNomeEscola}";
   }
-
 
   $oDadosRelatorio->sEscola = $sNomeEscola;
   $sTituloPadrao            = "DADOS DE IDENTIFICAÇÃO - LIVRO NOTAS";
@@ -525,7 +537,7 @@ function cabecalhoPadrao($oPdf, $oDadosRelatorio) {
  * @param SCPF $oPdf
  * @param object $oDadosRelatorio
  */
-function mostraObservacoes($oPdf, $oDadosRelatorio) {
+function mostraObservacoes( scpdf $oPdf, $oDadosRelatorio ) {
 
   $sObservacoes = '';
 
@@ -551,4 +563,3 @@ function mostraObservacoes($oPdf, $oDadosRelatorio) {
 }
 
 $oPdf->Output();
-?>

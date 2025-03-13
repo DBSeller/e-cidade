@@ -1,43 +1,43 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_aluno_classe.php");
-include("classes/db_serie_classe.php");
-include("classes/db_alunocurso_classe.php");
-include("classes/db_alunopossib_classe.php");
-include("classes/db_cursoescola_classe.php");
-include("libs/db_jsplibwebseller.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_aluno_classe.php"));
+include(modification("classes/db_serie_classe.php"));
+include(modification("classes/db_alunocurso_classe.php"));
+include(modification("classes/db_alunopossib_classe.php"));
+include(modification("classes/db_cursoescola_classe.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $claluno = new cl_aluno;
@@ -55,6 +55,22 @@ $clrotulo->label("ed56_c_situacao");
 $clrotulo->label("ed223_i_serie");
 $clrotulo->label("ed31_i_curso");
 $clrotulo->label("ed56_i_escola");
+
+/**
+ * Buscamos nos parametros se esta habilitado a consulta de alunos por escola
+ */
+$escola = $_SESSION['DB_coddepto'];
+$clsecparametros = new cl_sec_parametros();
+$sqlSecParametros = $clsecparametros->sql_query("", "ed290_habilitaconsultaalunoporescola");
+$resultSecParametros = $clsecparametros->sql_record($sqlSecParametros);
+$sHabilConsAlunoPorEscola = pg_fetch_result($resultSecParametros, 0, "ed290_habilitaconsultaalunoporescola");
+
+$bloqueiaConsultaTodasEscolas = false;
+if ($sHabilConsAlunoPorEscola == 't') {
+    if (db_getsession("DB_modulo") != 7159) {
+        $bloqueiaConsultaTodasEscolas = true;
+    }
+}
 ?>
 <html>
 <head>
@@ -77,7 +93,7 @@ function keyDown(DnEvents){
   if(nextfield == 'done'){
    return true; // envia quando termina os campos
   }else {
-   eval(" document.getElementById('"+nextfield+"').focus()" );
+   document.getElementById(nextfield).focus();
    return false;
   }
  }
@@ -130,19 +146,19 @@ function js_redireciona(chave){
      </td>
     </tr>
     <tr>
-     <td nowrap title="<?=$Ted47_v_pai?>">
-      <?=$Led47_v_pai?>
-     </td>
-     <td nowrap>
-      <?db_input("ed47_v_pai",50,@$ed47_v_pai,true,"text",1,"onFocus=\"nextfield='pesquisar'\"");?>
-     </td>
-    </tr>
-    <tr>
      <td nowrap title="<?=$Ted47_v_mae?>">
       <?=$Led47_v_mae?>
      </td>
      <td nowrap>
       <?db_input("ed47_v_mae",50,@$ed47_v_mae,true,"text",1,"onFocus=\"nextfield='pesquisar'\"");?>
+     </td>
+    </tr>
+    <tr>
+     <td nowrap title="<?=$Ted47_v_pai?>">
+      <?=$Led47_v_pai?>
+     </td>
+     <td nowrap>
+      <?db_input("ed47_v_pai",50,@$ed47_v_pai,true,"text",1,"onFocus=\"nextfield='pesquisar'\"");?>
      </td>
     </tr>
    </table>
@@ -155,14 +171,22 @@ function js_redireciona(chave){
      </td>
      <td>
       <?
-      $result_escola = $clalunocurso->sql_record($clalunocurso->sql_query("","DISTINCT ed18_i_codigo,ed18_c_nome"," ed18_c_nome",""));
+      $sWhere = '';
+      if ($bloqueiaConsultaTodasEscolas) {
+          $sWhere = "ed18_i_codigo = {$escola} ";
+      }
+      $result_escola = $clalunocurso->sql_record($clalunocurso->sql_query("","DISTINCT ed18_i_codigo,ed18_c_nome"," ed18_c_nome",$sWhere));
       if($clalunocurso->numrows==0){
        $x = array(''=>'NENHUM REGISTRO');
        db_select('ed56_i_escola',$x,true,1,"style='width:300px;'");
       }else{
        ?>
        <select name="ed56_i_escola" id="ed56_i_escola" onchange="js_escola(this.value);" style="width:300px;">
-        <option value=""></option>
+       <?
+        if (!$bloqueiaConsultaTodasEscolas) {
+            ?>
+           <option value=""></option>
+        <?}?>
         <?
         for($x=0;$x<$clalunocurso->numrows;$x++){
          db_fieldsmemory($result_escola,$x);
@@ -343,7 +367,7 @@ function js_redireciona(chave){
      $sql .= " AND ed60_i_codigo = $ed60_i_codigo ";
     }
     if(isset($ed47_v_nome) && (trim($ed47_v_nome)!="") ){
-     $sql .= " AND ed47_v_nome like '".strtoupper($ed47_v_nome)."%' ";
+     $sql .= " AND fc_remove_acentos(ed47_v_nome) ilike fc_remove_acentos('".($ed47_v_nome)."%') ";
     }
     if(isset($ed47_v_pai) && (trim($ed47_v_pai)!="") ){
      $sql .= " AND ed47_v_pai like '".strtoupper($ed47_v_pai)."%' ";

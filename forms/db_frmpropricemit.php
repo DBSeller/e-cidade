@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,7 +25,6 @@
  *                                licenca/licenca_pt.txt
  */
 
-//MODULO: cemiterio
 $clpropricemit->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("p51_descr");
@@ -43,126 +42,125 @@ $clrotulo->label("cm22_i_cemiterio");
 $clrotulo->label("z01_nome");
 ?>
 <form name="form1" method="post" action="">
-<center>
 <fieldset>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tcm28_i_codigo?>">
-       <?=@$Lcm28_i_codigo?>
-    </td>
-    <td>
-<?
-db_input('cm28_i_codigo',10,$Icm28_i_codigo,true,'text',3,"readonly")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tcm28_i_processo?>">
-       <?
-       db_ancora(@$Lcm28_i_processo,"js_pesquisacm28_i_processo(true);",$db_opcao);
-       ?>
-    </td>
-    <td>
-        <?db_input('cm28_i_processo',10,$Icm28_i_processo,true,'text',3,"onchange='js_pesquisacm28_i_processo(false);'")?>
-        <?db_input('p51_descr',40,$Ip51_descr,true,'text',3,'');?>
-    </td>
-  </tr>
-  <tr>
-     <td nowrap title="<?=@$Tp58_requer?>"><?=@$Lp58_requer?></td>
-     <td>
-         <?db_input('p58_requer',40,$Ip58_requer,true,'text',3,'');?>
-     </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tcm28_i_proprietario?>">
-       <?
-       db_ancora(@$Lcm28_i_proprietario,"js_pesquisacm28_i_proprietario(true);",$db_opcao);
-       ?>
-    </td>
-    <td>
-<?
-db_input('cm28_i_proprietario',10,$Icm28_i_proprietario,true,'text',$db_opcao," onchange='js_pesquisacm28_i_proprietario(false);'")
-?>
-       <?
-db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
-       ?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tcm28_i_ossoariojazigo?>">
-       <?
-       db_ancora(@$Lcm28_i_ossoariojazigo,"js_pesquisacm28_i_ossoariojazigo(true);",$db_opcao);
-       ?>
-    </td>
-    <td>
-<?
-db_input('cm28_i_ossoariojazigo',10,$Icm28_i_ossoariojazigo,true,'hidden',3);
-db_input('cm25_c_numero',10,@$cm25_c_numero,true,'text',3);
-?>
+  <legend>Proprietário</legend>
+    <table border="0">
+      <tr>
+        <td nowrap title="<?=@$Tcm28_i_codigo?>">
+           <?=@$Lcm28_i_codigo?>
+        </td>
+        <td>
+            <?
+            db_input('cm28_i_codigo',10,$Icm28_i_codigo,true,'text',3,"readonly")
+            ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tcm28_i_processo?>">
+           <?
+           db_ancora(@$Lcm28_i_processo,"js_pesquisacm28_i_processo(true);",$db_opcao);
+           ?>
+        </td>
+        <td>
+            <?db_input('cm28_i_processo',10,$Icm28_i_processo,true,'text',3,"onchange='js_pesquisacm28_i_processo(false);'")?>
+            <?db_input('p51_descr',40,$Ip51_descr,true,'text',3,'');?>
+        </td>
+      </tr>
+      <tr>
+         <td nowrap title="<?=@$Tp58_requer?>"><?=@$Lp58_requer?></td>
+         <td>
+             <?db_input('p58_requer',40,$Ip58_requer,true,'text',3,'');?>
+         </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tcm28_i_proprietario?>">
+           <?
+           db_ancora(@$Lcm28_i_proprietario,"js_pesquisacm28_i_proprietario(true);",$db_opcao);
+           ?>
+        </td>
+        <td>
+    <?
+    db_input('cm28_i_proprietario',10,$Icm28_i_proprietario,true,'text',$db_opcao," onchange='js_pesquisacm28_i_proprietario(false);'")
+    ?>
+           <?
+    db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
+           ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tcm28_i_ossoariojazigo?>">
+           <?
+           db_ancora(@$Lcm28_i_ossoariojazigo,"js_pesquisacm28_i_ossoariojazigo(true);",$db_opcao);
+           ?>
+        </td>
+        <td>
+    <?
+    db_input('cm28_i_ossoariojazigo',10,$Icm28_i_ossoariojazigo,true,'hidden',3);
+    db_input('cm25_c_numero',10,@$cm25_c_numero,true,'text',3);
+    ?>
 
-       <?
-db_input('cm25_c_tipo',10,@$cm25_c_tipo,true,'text',3,'')
-       ?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tcm25_i_lotecemit?>">
-       <?=@$Lcm25_i_lotecemit?>
-    </td>
-    <td>
-       <?
-        db_input('cm25_i_lotecemit',10,$Icm25_i_lotecemit,true,'hidden',3," onchange='js_pesquisacm25_i_lotecemit(false);'")
-       ?>
-       <?
-        db_input('cm23_i_lotecemit',10,$Icm23_i_lotecemit,true,'text',3,'');
-        db_input('cm23_c_situacao',10,$Icm23_c_situacao,true,'hidden',3,'');
-       ?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tcm23_i_quadracemit?>">
-       <?=@$Lcm23_i_quadracemit?>
-    </td>
-    <td>
-       <?
-         db_input('cm23_i_quadracemit',10,$Icm23_i_quadracemit,true,'hidden',3,"");
-         db_input('cm22_c_quadra',10,$Icm22_c_quadra,true,'text',3,"");
-       ?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tcm22_i_cemiterio?>">
-       <?=@$Lcm22_i_cemiterio?>
-    </td>
-    <td>
-       <?
-         db_input('cm22_i_cemiterio',10,$Icm22_i_cemiterio,true,'text',3,"");
-         db_input('cm22_c_cemiterio',40,@$cm22_c_cemiterio,true,'text',3,"");
-       ?>
-    </td>
-  </tr>
+           <?
+    db_input('cm25_c_tipo',10,@$cm25_c_tipo,true,'text',3,'')
+           ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tcm25_i_lotecemit?>">
+           <?=@$Lcm25_i_lotecemit?>
+        </td>
+        <td>
+           <?
+            db_input('cm25_i_lotecemit',10,$Icm25_i_lotecemit,true,'hidden',3," onchange='js_pesquisacm25_i_lotecemit(false);'")
+           ?>
+           <?
+            db_input('cm23_i_lotecemit',10,$Icm23_i_lotecemit,true,'text',3,'');
+            db_input('cm23_c_situacao',10,$Icm23_c_situacao,true,'hidden',3,'');
+           ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tcm23_i_quadracemit?>">
+           <?=@$Lcm23_i_quadracemit?>
+        </td>
+        <td>
+           <?
+             db_input('cm23_i_quadracemit',10,$Icm23_i_quadracemit,true,'hidden',3,"");
+             db_input('cm22_c_quadra',10,$Icm22_c_quadra,true,'text',3,"");
+           ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tcm22_i_cemiterio?>">
+           <?=@$Lcm22_i_cemiterio?>
+        </td>
+        <td>
+           <?
+             db_input('cm22_i_cemiterio',10,$Icm22_i_cemiterio,true,'text',3,"");
+             db_input('cm22_c_cemiterio',40,@$cm22_c_cemiterio,true,'text',3,"");
+           ?>
+        </td>
+      </tr>
 
-  <tr>
-    <td nowrap title="<?=@$Tcm28_d_aquisicao?>">
-       <?=@$Lcm28_d_aquisicao?>
-    </td>
-    <td>
-<?
-if(!isset($cm28_d_aquisicao) && $db_opcao==1){
-  $cm28_d_aquisicao_dia = date('d',db_getsession("DB_datausu"));
-  $cm28_d_aquisicao_mes = date('m',db_getsession("DB_datausu"));
-  $cm28_d_aquisicao_ano = date('Y',db_getsession("DB_datausu"));
-}
+      <tr>
+        <td nowrap title="<?=@$Tcm28_d_aquisicao?>">
+           <?=@$Lcm28_d_aquisicao?>
+        </td>
+        <td>
+    <?
+    if(!isset($cm28_d_aquisicao) && $db_opcao==1){
+      $cm28_d_aquisicao_dia = date('d',db_getsession("DB_datausu"));
+      $cm28_d_aquisicao_mes = date('m',db_getsession("DB_datausu"));
+      $cm28_d_aquisicao_ano = date('Y',db_getsession("DB_datausu"));
+    }
 
-db_inputdata('cm28_d_aquisicao',@$cm28_d_aquisicao_dia,@$cm28_d_aquisicao_mes,@$cm28_d_aquisicao_ano,true,'text',$db_opcao,"");
-?>
-    </td>
-  </tr>
-  </table>
+    db_inputdata('cm28_d_aquisicao',@$cm28_d_aquisicao_dia,@$cm28_d_aquisicao_mes,@$cm28_d_aquisicao_ano,true,'text',$db_opcao,"");
+    ?>
+        </td>
+      </tr>
+    </table>
   </fieldset>
-  </center>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+  <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
+  <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
 <script>
 function js_pesquisacm28_i_processo(mostra){

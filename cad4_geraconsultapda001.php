@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 ?>
 <html>
@@ -41,7 +41,7 @@ db_postmemory($HTTP_POST_VARS);
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
 function js_pesquisa_lev(codimp){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lev','cad4_geraconsultapda002.php?codimp='+codimp,'Pesquisa Matrículas',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lev','cad4_geraconsultapda002.php?codimp='+codimp,'Pesquisa Matrículas',true);
 }
 </script>
 </head>

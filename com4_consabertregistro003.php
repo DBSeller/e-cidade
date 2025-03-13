@@ -1,41 +1,40 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_utils.php");
-require ("libs/db_app.utils.php");
-require ("std/db_stdClass.php");
-require ("libs/db_conecta.php");
-require ("libs/db_sessoes.php");
-require ("libs/db_usuariosonline.php"); 
-//require ("libs/db_liborcamento.php");
-require ("dbforms/db_funcoes.php");
-require ("dbforms/verticalTab.widget.php");
-require_once ("model/aberturaRegistroPreco.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_sessoes.php"));
+require(modification("libs/db_usuariosonline.php"));
+require(modification("dbforms/db_funcoes.php"));
+require(modification("dbforms/verticalTab.widget.php"));
+require_once(modification("model/aberturaRegistroPreco.model.php"));
 
 $clrotulo = new rotulocampo;
 $db_opcao = 3;
@@ -46,7 +45,7 @@ $clrotulo->label("pc67_motivo");
 
 $oGet = db_utils::postMemory($_GET);
 
-$clAbertRegPreco = new aberturaRegistroPreco($oGet->pc10_numero);  
+$clAbertRegPreco = new aberturaRegistroPreco($oGet->pc10_numero);
 
 ?>
 <html>
@@ -77,19 +76,19 @@ db_app::load("estilos.css, grid.style.css,tab.style.css");
         <td width="200">
           <b>Abertura de Registro de preço:</b>
         </td>
-        <td style="background-color:#FFFFFF;color: #000000">  
+        <td style="background-color:#FFFFFF;color: #000000">
           <?=$clAbertRegPreco->getCodigoSolicitacao(); ?>
         </td>
         <td width="120" style="text-align: right;">
           <b>Vigência de:</b>
         </td>
-        <td width="" style="background-color:#FFFFFF;color: #000000">  
+        <td width="" style="background-color:#FFFFFF;color: #000000">
           <?=db_formatar($clAbertRegPreco->getDataInicio(),'d'); ?>
         </td>
         <td width="20" style="text-align: center;">
           <b>A</b>
         </td>
-        <td style="background-color:#FFFFFF;color: #000000">  
+        <td style="background-color:#FFFFFF;color: #000000">
           <?=db_formatar($clAbertRegPreco->getDataTermino(),'d'); ?>
         </td>
       </tr>
@@ -97,38 +96,46 @@ db_app::load("estilos.css, grid.style.css,tab.style.css");
         <td width="200">
           <b>Departamento:</b>
         </td>
-        <td colspan="5" style="background-color:#FFFFFF;color: #000000">  
-          <?=$clAbertRegPreco->getDescricaoDepartamento(); ?>          
+        <td colspan="5" style="background-color:#FFFFFF;color: #000000">
+          <?=$clAbertRegPreco->getDescricaoDepartamento(); ?>
         </td>
       </tr>
       <tr>
         <td width="200">
           <b>Data Inclusão:</b>
         </td>
-        <td style="background-color:#FFFFFF;color: #000000">  
+        <td style="background-color:#FFFFFF;color: #000000">
           <?=db_formatar($clAbertRegPreco->getDataInicio(),'d'); ?>
         </td>
         <td width="120" style="text-align: right;">
           <b>data da anulação:</b>
         </td>
-        <td width="" style="background-color:#FFFFFF;color: #000000">  
+        <td width="" style="background-color:#FFFFFF;color: #000000">
           <?=db_formatar($clAbertRegPreco->getDataAnulacao(),'d'); ?>
         </td>
         <td width="20" style="text-align: center;">
           &nbsp;
         </td>
-        <td >  
+        <td >
           &nbsp;
+        </td>
+      </tr>
+      <tr>
+        <td width="200">
+          <b>Forma de Controle:</b>
+        </td>
+        <td style="background-color:#FFFFFF;color: #000000">
+          <?=$clAbertRegPreco->getFormaDeControle() == aberturaRegistroPreco::CONTROLA_VALOR ?" Por Valor":"Por Quantidade";?>
         </td>
       </tr>
       <tr>
         <td width="200">
           <b>Resumo:</b>
         </td>
-        <td colspan="5" style="background-color:#FFFFFF;color: #000000">  
+        <td colspan="5" style="background-color:#FFFFFF;color: #000000">
           <?=$clAbertRegPreco->getResumo(); ?>
         </td>
-      </tr>     
+      </tr>
     </table>
  </fieldset>
  </td>
@@ -143,10 +150,10 @@ db_app::load("estilos.css, grid.style.css,tab.style.css");
                        "com4_consabertregistodetalhes001.php?pc10_numero={$oGet->pc10_numero}&exec=compilacao");
     $oTabDetalhes->add("compilacao" , "Ítens" ,
                        "com4_consabertregistodetalhes001.php?pc10_numero={$oGet->pc10_numero}&exec=itens");
-        
+
     $oTabDetalhes->show();
     ?>
-    
+
     </fieldset>
 </center>
 <div style='position:absolute;top: 200px; left:15px;
@@ -162,8 +169,8 @@ db_app::load("estilos.css, grid.style.css,tab.style.css");
 
 <script>
 
-var sUrlRC = 'com4_solicitacaoComprasRegistroPreco.RPC.php';
-
+var sUrlRC                      = 'com4_solicitacaoComprasRegistroPreco.RPC.php';
+var iFormaControleRegistroPreco = '<?=$clAbertRegPreco->getFormaDeControle()?>';
 function js_completaPesquisa(iSolicitacao) {
 
    var oParam          = new Object();
@@ -181,9 +188,9 @@ function js_completaPesquisa(iSolicitacao) {
 
 function js_retornoCompletaPesquisa(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
-  
+
     $('pc54_datainicio').value  = oRetorno.datainicio;
     $('pc54_datatermino').value = oRetorno.datatermino;
     $('pc10_resumo').value      = oRetorno.resumo.urlDecode();
@@ -191,15 +198,15 @@ function js_retornoCompletaPesquisa(oAjax) {
     $('pc54_solicita').value    = oRetorno.codigoabertura;
     js_preencheGrid(oRetorno.itens);
     $('btnProcessar').disabled = false;
-    
+
   } else {
-	  
+
 	  if(oRetorno.message != ''){
-	  
+
     	alert(oRetorno.message.urlDecode());
 	  }
   }
-  
+
 }
 
 function js_imprimeEstimativa ( iSolicita ){
@@ -214,7 +221,7 @@ function js_showItens(iTipo, iSolicita, sDepartamento) {
   }
   var sTituloJanela = 'Itens';
   switch (iTipo) {
-    case 1: 
+    case 1:
       sTituloJanela += " estimados pelo departamento "+sDepartamento.urlDecode();
       break;
   }
@@ -230,9 +237,9 @@ function js_showItens(iTipo, iSolicita, sDepartamento) {
 	  	sConteudo += " 		<input name='imprimir' value='Imprimir' id='imprimir' type='button' onclick='js_imprimeEstimativa("+iSolicita+"); return false;'>";
 	  	sConteudo += " 	</center>                                                                                                                          ";
 	  	sConteudo += "</fieldset>                                                                                                                         ";
-	  							 
+
   windowAuxiliar.setContent(sConteudo);
-		  
+
   windowAuxiliar.setShutDownFunction(function() {
      windowAuxiliar.destroy();
   });
@@ -255,7 +262,7 @@ function js_showItens(iTipo, iSolicita, sDepartamento) {
                                       'right',
                                       'right'
                                       ));
-                                          
+
       oGrvDetalhes.setHeader(new Array('Seq',
                                        'Código',
                                        'Descricao',
@@ -269,7 +276,7 @@ function js_showItens(iTipo, iSolicita, sDepartamento) {
                                        'Saldo',
                                        'CodItemSol'
                                       ));
-      
+
 			oGrvDetalhes.aHeaders[11].lDisplayed = false;
       oGrvDetalhes.setHeight(230);
       oGrvDetalhes.show($('itens'));
@@ -295,18 +302,18 @@ function getItensTipo(iTipo, iSolicita) {
 }
 
 function js_retornoCompletaPesquisaItens(oAjax) {
-    
+
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     oGrvDetalhes.clearAll(true);
     if (oRetorno.dados != false) {
-       
-      var iNumDados = oRetorno.dados.length;  
+
+      var iNumDados = oRetorno.dados.length;
       if (iNumDados > 0) {
-        
-        oRetorno.dados.each( 
+
+        oRetorno.dados.each(
           function (oDado, iInd) {
-          
+
             var aRow = new Array();
             aRow[0] = iInd+1;
             aRow[1] = oDado.codigo;
@@ -321,7 +328,7 @@ function js_retornoCompletaPesquisaItens(oAjax) {
             if (oDado.iQtdCedida == 0) {
               aRow[5] = oDado.iQtdCedida;
             } else {
-                
+
             	aRow[5]  = "<a href='#' onclick='js_showItensCedidosRecebidos("+oDado.iCodItemSol+", \""+oDado.material+"\", 1)'>";
             	aRow[5] += oDado.iQtdCedida+"</a>";
             }
@@ -329,11 +336,11 @@ function js_retornoCompletaPesquisaItens(oAjax) {
             if (oDado.iQtdRecebida == 0) {
             	aRow[6] = oDado.iQtdRecebida;
             } else {
-                
+
             	aRow[6]  = "<a href='#' onclick='js_showItensCedidosRecebidos("+oDado.iCodItemSol+", \""+oDado.material+"\", 2)'>";
             	aRow[6] += oDado.iQtdRecebida+"</a>";
             }
-            
+
             aRow[7]  = oDado.iQtdSolicitada;
             aRow[8]  = oDado.iQtdEmpenhada;
             aRow[9]  = oDado.iQtdeExecedido;
@@ -346,7 +353,7 @@ function js_retornoCompletaPesquisaItens(oAjax) {
             sHtmlTxtAjuda += "<b>Resumo: </b>"+oDado.resumo.urlDecode();
             oGrvDetalhes.aRows[iInd].aCells[2].sEvents  = "onmouseover='js_setAjuda(\""+encodeURIComponent(sHtmlTxtAjuda)+"\",true)'";
             oGrvDetalhes.aRows[iInd].aCells[2].sEvents += "onmouseOut='js_setAjuda(null,false)'";
-          }     
+          }
         );
         oGrvDetalhes.renderRows();
       }
@@ -361,25 +368,43 @@ function js_showItensCompilacao(iCompilacao) {
   if ($('wndCompilacao')) {
     windowCompilacao.destroy();
   }
-  var sLarguraJanela = document.width /1.3; 
-  windowCompilacao = new windowAux('wndCompilacao', 'Itens da Compilação', sLarguraJanela, 400);
+  var sLarguraJanela = screen.availWidth / 1.3;
+  windowCompilacao   = new windowAux('wndCompilacao', 'Itens da Compilação', sLarguraJanela, 400);
   windowCompilacao.setContent("<fieldset><div  id='griditens'></div></fieldset>");
   windowCompilacao.setShutDownFunction(function() {
      windowCompilacao.destroy();
   });
+
+  var aHeader = ["Seq",
+                 "Codigo",
+                 "Descrição",
+                 "Vlr Uni.",
+                 "Fornecedor",
+                 "Unidade",
+                 "Qtd. Min.",
+                 "Qtd. Max.",
+                 "Ativo"
+               ];
+
+  if (iFormaControleRegistroPreco == 2) {
+
+    aHeader[3] = 'Desc.(%)';
+    aHeader[6] = 'Vlr Sol.';
+  }
   oMessagaBoard = new DBMessageBoard ('sMessageBoard2', "Itens da Compilação "+iCompilacao, 'Itens lançados',
                                       $('windowwndCompilacao_content'));
   oMessagaBoard.show();
-
   oGridItens 					    = new DBGrid('gridItens');
   oGridItens.nameInstance = "oGridItens";
   oGridItens.setHeight(200);
-  oGridItens.setCellAlign(new Array("right","right","Left","right","left","right","right", "right"));
-  oGridItens.setCellWidth(new Array("4%","10%","45%",'10%', "30%","5%",'16%','16%','16%'));
-  oGridItens.setHeader(new Array("Seq","Codigo","Descrição","Vlr Uni.", "Fornecedor","Unidade","Qtd. Min.","Qtd. Max.",
-                                 "Ativo"));
+  oGridItens.setCellAlign(new Array("right","right","Left","right","left","center","right", "right"));
+  oGridItens.setCellWidth(new Array("4%","10%","45%",'10%', "30%","14%",'16%','16%','16%'));
+  oGridItens.setHeader(aHeader);
+  if (iFormaControleRegistroPreco == 2) {
+    oGridItens.aHeaders[7].lDisplayed = false;
+  }
   oGridItens.show($('griditens'));
-  js_getItensCompilacao(iCompilacao); 
+  js_getItensCompilacao(iCompilacao);
   windowCompilacao.show();
 }
 
@@ -387,7 +412,7 @@ function js_showItensCompilacao(iCompilacao) {
  * Utiliza o AJAX para resgatar os itens de uma compilação
  */
 function js_getItensCompilacao(iCompilacao) {
-  
+
    js_divCarregando('Aguarde, carregando itens...', 'msgBox');
    var oParam           = new Object();
    oParam.exec         = "consAberturaDetalhes";
@@ -405,32 +430,36 @@ function js_getItensCompilacao(iCompilacao) {
  * Preenche a grid dos itens com o retorno do ajax
  */
 function js_preencheGridCompilacao(oAjax) {
-  
+
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   oGridItens.clearAll(true);
   for(var i = 0; i < oRetorno.dados.length; i++) {
-    
-    with (oRetorno.dados[i]) {
-    
-      var aLinha = new Array();
-      aLinha[0]  = i+1;
-      aLinha[1]  = codigo;
-      aLinha[2]  = material.urlDecode();
-      aLinha[3]  = js_formatar(valorunitario,"f");  
-      aLinha[4]  = fornecedor.urlDecode();  
-      aLinha[5]  = unidade.urlDecode();
-      aLinha[6]  = quantmin;
-      aLinha[7]  = quantmax;
-      aLinha[8]  = ativo?"Sim":"Não";
-      oGridItens.addRow(aLinha);
-      if (!automatico) {
-         oGridItens.aRows[i].setClassName("fora");
-      }
-      oGridItens.aRows[i].aCells[0].sStyle +="background-color:#DED5CB;font-weight:bold;padding:1px;";
-      for (iCell = 0; iCell < aLinha.length; iCell++) {
-        oGridItens.aRows[i].aCells[iCell].sStyle += ";padding: 1px;";
-      }
+
+    var oItem = oRetorno.dados[i];
+
+    if (iFormaControleRegistroPreco == 2) {
+
+      oItem.valorunitario = oItem.percentual;
+      oItem.quantmin      = js_formatar(oItem.valortotal, 'f');
+    }
+    var aLinha = new Array();
+    aLinha[0]  = i+1;
+    aLinha[1]  = oItem.codigo;
+    aLinha[2]  = oItem.material.urlDecode();
+    aLinha[3]  = js_formatar(oItem.valorunitario,"f");
+    aLinha[4]  = oItem.fornecedor.urlDecode();
+    aLinha[5]  = oItem.unidade.urlDecode();
+    aLinha[6]  = oItem.quantmin;
+    aLinha[7]  = oItem.quantmax;
+    aLinha[8]  = oItem.ativo?"Sim":"Não";
+    oGridItens.addRow(aLinha);
+    if (!oItem.automatico) {
+       oGridItens.aRows[i].setClassName("fora");
+    }
+    oGridItens.aRows[i].aCells[0].sStyle +="background-color:#DED5CB;font-weight:bold;padding:1px;";
+    for (iCell = 0; iCell < aLinha.length; iCell++) {
+      oGridItens.aRows[i].aCells[iCell].sStyle += ";padding: 1px;";
     }
   }
   oGridItens.renderRows();
@@ -468,7 +497,7 @@ function js_showItensCedidosRecebidos(iCodItemCedido, sDescrItem, iTipoBusca) {
 	oGridItensDepart.setCellWidth(new Array("10%", "10%","30%","10%","10%","30%"));
 	oGridItensDepart.setHeader(new Array("Cedência","Depart.","Descrição","Qtd.", "Data", "Resumo"));
 	oGridItensDepart.show($('ctnDadosItensCedidosRecebidos'));
-	
+
 	js_getItensCedidosRecebidos(iCodItemCedido, iTipoBusca);
 }
 
@@ -476,14 +505,14 @@ function js_getItensCedidosRecebidos(iCodItemCedido, iTipo) {
 
 	js_divCarregando("Aguarde, pesquisando...", "msgBox");
 	var oParam = new Object();
-	
+
 	if (iTipo == 1) {
   	oParam.exec = "getItensCedidos";
 	} else {
 		oParam.exec = "getItensRecebidos";
 	}
 	oParam.iCodItemSol = iCodItemCedido;
-	
+
   var oAjax = new Ajax.Request(sUrlRC,
            											{
             											method: "post",
@@ -495,7 +524,7 @@ function js_getItensCedidosRecebidos(iCodItemCedido, iTipo) {
 function js_preencheItensCedidosRecebidos(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.aDados.length == 0) {
 
@@ -523,7 +552,7 @@ function js_preencheItensCedidosRecebidos(oAjax) {
 
 
 createDivModal = function (oNode) {
-	   
+
 	   var oDiv          = document.createElement('div');
 	   oDiv.id           = "modalfor"+oNode.id;
 	   oDiv.style.width  = oNode.clientWidth;
@@ -537,24 +566,24 @@ createDivModal = function (oNode) {
 	   oDiv.style.zIndex           = oNode.style.zIndex + 1;
 	   oNode.appendChild(oDiv);
 	   oNode.setAttribute('modal', oDiv.id);
-	   
-	   
+
+
 	}
 
 destroyDivModal = function (oNode) {
 
   if (oNode.getAttribute('modal')) {
-    
+
     var oDiv = $(oNode.getAttribute('modal'));
     oDiv.parentNode.removeChild(oDiv);
-    oNode.setAttribute('modal',''); 
+    oNode.setAttribute('modal','');
   }
 }
 
 function js_setAjuda(sTexto, lShow) {
 
 	  if (lShow) {
-	  
+
 	    el =  $('itens');
 	    var x = 0;
 	    var y = el.offsetHeight;
@@ -572,7 +601,7 @@ function js_setAjuda(sTexto, lShow) {
 	   $('ajudaItem').style.top     = y+10;
 	   $('ajudaItem').style.left    = x;
 	   $('ajudaItem').style.zIndex  = 100000;
-	   
+
 	  } else {
 	   $('ajudaItem').style.display = 'none';
 	  }

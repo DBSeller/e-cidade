@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -102,7 +102,7 @@ class cl_matestoquerec {
                                 $this->m84_matestoqueinitrans 
                                ,$this->m84_matestoqueinirec 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -128,11 +128,11 @@ class cl_matestoquerec {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->m84_matestoqueinitrans));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,6935,'$this->m84_matestoqueinitrans','I')");
-       $resac = pg_query("insert into db_acount values($acount,1143,6935,'','".AddSlashes(pg_result($resaco,0,'m84_matestoqueinitrans'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1143,6936,'','".AddSlashes(pg_result($resaco,0,'m84_matestoqueinirec'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,6935,'$this->m84_matestoqueinitrans','I')");
+       $resac = db_query("insert into db_acount values($acount,1143,6935,'','".AddSlashes(pg_result($resaco,0,'m84_matestoqueinitrans'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1143,6936,'','".AddSlashes(pg_result($resaco,0,'m84_matestoqueinirec'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -174,16 +174,16 @@ class cl_matestoquerec {
      $resaco = $this->sql_record($this->sql_query_file($this->m84_matestoqueinitrans));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,6935,'$this->m84_matestoqueinitrans','A')");
+         $resac = db_query("insert into db_acountkey values($acount,6935,'$this->m84_matestoqueinitrans','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["m84_matestoqueinitrans"]))
-           $resac = pg_query("insert into db_acount values($acount,1143,6935,'".AddSlashes(pg_result($resaco,$conresaco,'m84_matestoqueinitrans'))."','$this->m84_matestoqueinitrans',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1143,6935,'".AddSlashes(pg_result($resaco,$conresaco,'m84_matestoqueinitrans'))."','$this->m84_matestoqueinitrans',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["m84_matestoqueinirec"]))
-           $resac = pg_query("insert into db_acount values($acount,1143,6936,'".AddSlashes(pg_result($resaco,$conresaco,'m84_matestoqueinirec'))."','$this->m84_matestoqueinirec',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1143,6936,'".AddSlashes(pg_result($resaco,$conresaco,'m84_matestoqueinirec'))."','$this->m84_matestoqueinirec',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Confirma recebimento de transferência nao Alterado. Alteracao Abortada.\\n";
@@ -224,11 +224,11 @@ class cl_matestoquerec {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,6935,'$m84_matestoqueinitrans','E')");
-         $resac = pg_query("insert into db_acount values($acount,1143,6935,'','".AddSlashes(pg_result($resaco,$iresaco,'m84_matestoqueinitrans'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1143,6936,'','".AddSlashes(pg_result($resaco,$iresaco,'m84_matestoqueinirec'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,6935,'$m84_matestoqueinitrans','E')");
+         $resac = db_query("insert into db_acount values($acount,1143,6935,'','".AddSlashes(pg_result($resaco,$iresaco,'m84_matestoqueinitrans'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1143,6936,'','".AddSlashes(pg_result($resaco,$iresaco,'m84_matestoqueinirec'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from matestoquerec
@@ -244,7 +244,7 @@ class cl_matestoquerec {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Confirma recebimento de transferência nao Excluído. Exclusão Abortada.\\n";
@@ -278,7 +278,7 @@ class cl_matestoquerec {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

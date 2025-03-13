@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_caitransf_classe.php");
-include("classes/db_caitransfdest_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_caitransf_classe.php"));
+include(modification("classes/db_caitransfdest_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 
 $clcaitransf     = new cl_caitransf;
@@ -101,7 +101,7 @@ else if(isset($chavepesquisa)) {
 
 	// agora atualiza a segunda aba com o codigo da transferencia
         echo "<script> 
-	       top.corpo.iframe_lanc.location.href='cai1_caitransflanc001.php?k93_transf=$k91_transf';
+	       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_lanc.location.href='cai1_caitransflanc001.php?k93_transf=$k91_transf';
 	      </script>
 	      ";
 }
@@ -120,7 +120,7 @@ else if(isset($chavepesquisa)) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcaitransf.php");
+	include(modification("forms/db_frmcaitransf.php"));
 	?>
     </center>
 	</td>
@@ -148,7 +148,7 @@ if (isset ($chavepesquisa)) {
 	echo "
   <script>
       function js_db_libera(){
-         top.corpo.iframe_lanc.location.href='cai1_caitransflanc001.php?k93_transf=".@$k91_transf."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_lanc.location.href='cai1_caitransflanc001.php?k93_transf=".@$k91_transf."';
      ";
 	if (isset ($liberaaba)) {
 		if(isset($erro_horario)&&$erro_horario==false) {

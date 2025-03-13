@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,10 +31,14 @@
  * Implementação de Singleton com Register
  * Garante uma única instancia para cada tipo de Documento Contábil
  * @author Andrio Costa
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.5 $
  */
 class SingletonRegraDocumentoContabil {
 
+  /**
+   * Lista de Documento Contabil
+   * @var DocumentoContabil[]
+   */
   static private $aDocumento = array();
 
   private function __construct() {
@@ -44,14 +48,15 @@ class SingletonRegraDocumentoContabil {
   /**
    * Implementa o Register indexando $aInstance com o tipo de codumento
    * @param integer $iTipoDocumento
+   * @return DocumentoContabil
    */
   public static function getDocumento ($iTipoDocumento) {
-    
+
     if (!array_key_exists($iTipoDocumento, self::$aDocumento)) {
-      self::$aDocumento[$iTipoDocumento] = new DocumentoContabil($iTipoDocumento);  
-    } 
+      self::$aDocumento[$iTipoDocumento] = new DocumentoContabil($iTipoDocumento);
+    }
     return self::$aDocumento[$iTipoDocumento];
-  } 
+  }
   /**
    * Hack para não deixar ter uma segunda instancia de OperacaoContabil
    */

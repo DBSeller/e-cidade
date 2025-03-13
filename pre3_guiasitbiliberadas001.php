@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 ?>
 <html>
@@ -102,7 +102,7 @@ input {
         <td nowrap><strong>Data da Solicita&ccedil;&atilde;o:</strong></td>
         <td nowrap>
 		  <?
-		    include("dbforms/db_funcoes.php");
+		    include(modification("dbforms/db_funcoes.php"));
 			db_data("datasolicitacao");
 		  ?>
 		<!--input name="datasolicitacao_dia" type="text" id="datasolicitacao_dia" value="<?=@$datasolicitacao_dia?>" size="2" maxlength="2"> 

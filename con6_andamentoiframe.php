@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
   parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 ?>
 
@@ -51,7 +51,7 @@
     <td height="400" align="left" valign="top" bgcolor="#CCCCCC">
 <?
   // SQL que localiza andamentos a serem exibidos
-  $result = pg_exec("select o.codordem,  o.dataprev,to_char(o.dataordem,'DD/MM/YYYY') as dataordem, o.descricao, o.id_usuario, o.usureceb, o.coddepto,
+  $result = db_query("select o.codordem,  o.dataprev,to_char(o.dataordem,'DD/MM/YYYY') as dataordem, o.descricao, o.id_usuario, o.usureceb, o.coddepto,
 		  			 p.descrdepto, u.nome, no.nome as nomeusureceb , to_char(o.dtrecebe,'DD/MM/YYYY') as dtrecebe
 					 from db_ordem o
   					 inner join db_depusu d on d.coddepto = o.coddepto  
@@ -102,7 +102,7 @@
 	for ($i=0;$i<$num;$i++) {
        //Loaliza o destinatario do ultimo andamento, caso a ordem tenha mais de um andamento.
 	   $ordemAtual = pg_result($result,$i,"codordem");
-	   $selecionaDestinatarioUltimoAndamento = pg_exec("select o.codordem, o.dtini, o.id_usuario, u.nome 
+	   $selecionaDestinatarioUltimoAndamento = db_query("select o.codordem, o.dtini, o.id_usuario, u.nome 
 	                                                    from db_ordemandam o
 														inner join db_usuarios u on u.id_usuario = o.id_usuario
 													    where o.codordem = $ordemAtual
@@ -124,7 +124,7 @@
 	   // Define a cor do fundo da linha
 	   if ($i%2==0) {$cor="#97B5E6";} else {$cor="#E796A4";}
 	   // mostra imagem com link sinalizando que esta ordem tem arquivo anexo.
-	   $pesquisaImagem = pg_exec("select codordem from db_ordemimagens where codordem = $ordemAtual limit 1");
+	   $pesquisaImagem = db_query("select codordem from db_ordemimagens where codordem = $ordemAtual limit 1");
 	   $numPesquisaImagem = pg_numrows($pesquisaImagem);
 	   if ($numPesquisaImagem == 0) {
 	     $tagAnexo = "<td>&nbsp;</td>";

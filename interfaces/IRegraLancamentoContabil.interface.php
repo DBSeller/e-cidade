@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,7 +30,7 @@
  * @author Andrio Costa 
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.3 $ 
  */
 interface IRegraLancamentoContabil {
   

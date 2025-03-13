@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("std/DBDate.php");
-require_once ("fpdf151/pdf.php");
-require_once ("classes/db_edu_parametros_classe.php");
-require_once ("model/educacao/avaliacao/iFormaObtencao.interface.php");
-require_once ("model/educacao/avaliacao/iElementoAvaliacao.interface.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("classes/db_edu_parametros_classe.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
+require_once(modification("model/educacao/avaliacao/iElementoAvaliacao.interface.php"));
 
 $oGet = db_utils::postMemory($_GET);
 db_app::import("CgmFactory");
@@ -77,11 +77,11 @@ foreach ($aTurmas as $oTurma) {
   $oDadosTurma->sEtapa          = $aEtapas[0]->getEtapa()->getNome();
   $oDadosTurma->sTurma          = $oTurma->getDescricao();
   $oDadosTurma->iTotalAulas     = 0;
-
+  $oDadosTurma->iTotalHorasAula = 0;
 
   foreach ($oTurma->getDisciplinas() as $oRegencia) {
-
     $oDadosTurma->iTotalAulas += $oRegencia->getTotalDeAulas();
+    $oDadosTurma->iTotalHorasAula += $oRegencia->getTotalHorasAula();
   }
 
   /**
@@ -179,7 +179,7 @@ foreach ($aTurmaProcessada as $oTurma) {
   $oPdf->Cell(35,  $iHeigth, "Total de Alunos na Turma: ",  0, 0, "L");
   $oPdf->Cell(80,  $iHeigth, count($oTurma->aAlunos),       0, 0, "L");
   $oPdf->Cell(30,  $iHeigth, "Total da Carga Horária: ",    0, 0, "L");
-  $oPdf->Cell(60,  $iHeigth, "{$oTurma->iTotalAulas}",      0, 1, "L");
+  $oPdf->Cell(60,  $iHeigth, "{$oTurma->iTotalHorasAula}",      0, 1, "L");
 
   $oPdf->Cell(115,  $iHeigth, "Data: _____/_____/__________",                  0, 0, "L");
   $oPdf->Cell(80,  $iHeigth, "Assinatura: ________________________________",  0, 1, "L");

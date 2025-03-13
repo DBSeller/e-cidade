@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -46,7 +46,8 @@ $sSqlDividaAtiva .= "                proced.v03_descr               ,           
 $sSqlDividaAtiva .= "                arrematric.k00_matric as v01_matric,                            ";
 $sSqlDividaAtiva .= "                arreinscr.k00_inscr as v01_inscr ,                              ";
 $sSqlDividaAtiva .= "                cgm.z01_nome,                                                   ";
-$sSqlDividaAtiva .= "                informacaodebito.*                                              ";
+$sSqlDividaAtiva .= "                informacaodebito.*             ,                                ";
+$sSqlDividaAtiva .= "                termoinscrreg.v93_termo                                         ";
 $sSqlDividaAtiva .= " from divida                                                                    ";
 $sSqlDividaAtiva .= " left outer join cgm            on cgm.z01_numcgm          = divida.v01_numcgm  ";
 $sSqlDividaAtiva .= " left outer join proced         on divida.v01_proced       = proced.v03_codigo  ";
@@ -55,6 +56,7 @@ $sSqlDividaAtiva .= " left outer join arreinscr      on arreinscr.k00_numpre    
 $sSqlDividaAtiva .= " left join divold               on k10_coddiv              = divida.v01_coddiv  ";
 $sSqlDividaAtiva .= " left join informacaodebito     on k163_numpre             = divold.k10_numpre  ";
 $sSqlDividaAtiva .= "                               and k163_numpar             = divold.k10_numpar  ";
+$sSqlDividaAtiva .= " left join termoinscrreg        on v93_coddiv              = divida.v01_coddiv  ";
 
 $sSqlDividaAtiva .= " where divida.v01_numpre = {$numpre} {$sSqlNumpar} and                          ";
 $sSqlDividaAtiva .= "       divida.v01_instit = {$iInstituicao}                                      ";
@@ -82,6 +84,7 @@ if (pg_numrows($rsResult) == 0) {
   $v01_obs         = $oDividaAtiva->v01_obs   ;
   $v03_descr       = $oDividaAtiva->v03_descr ;
   $z01_nome        = $oDividaAtiva->z01_nome  ;
+  $v93_termo       = $oDividaAtiva->v93_termo ;
   $dDataLancamento = $oDividaAtiva->k163_data != '' ? $oDividaAtiva->k163_data : $oDividaAtiva->v01_dtoper;
   
 }
@@ -117,6 +120,10 @@ $v01_obs .= $sParcelasDivOld;
     <tr> 
       <td>C&oacute;digo D&iacute;vida:</td>
       <td><?php echo $v01_coddiv; ?></td>
+    </tr>
+    <tr> 
+      <td>Termo Inscr. em D&iacute;vida:</td>
+      <td><?php echo $v93_termo; ?></td>
     </tr>
     <tr> 
       <td>Nome:</td>

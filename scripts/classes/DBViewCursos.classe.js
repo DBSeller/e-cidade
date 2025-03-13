@@ -206,7 +206,7 @@ var DBViewCursos           = function (sInstaceName) {
   this.retornoDadosGrid   	 = function (oAjax) {
     
     js_removeObj('msgAjax');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.iStatus == 2) {
       alert(oRetorno.sMessage.urlDecode().replace(/\\n/g, '\n') );

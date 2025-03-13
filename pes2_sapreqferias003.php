@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf2.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf2.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('rh27_rubric');
@@ -35,45 +35,23 @@ $clrotulo->label('rh27_elemen');
 $clrotulo->label('rh27_pd');
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-//db_postmemory($HTTP_SERVER_VARS,2);
-//db_postmemory($HTTP_POST_VARS,2);exit;
-
-//$ano = 2005;
-//$mes = 9;
-//$matric = 182;
 
 $sqlpref = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 db_fieldsmemory($resultpref,0);
 
 $sql = "
 select cadferia.*,
-       case rh25_recurso       
-            when 1  then 'PROPRIO/LIVRE'
-            when 1004 then 'PAB'
-            when 4510 then 'PAB'
-            when 20 then 'MDE'
-            when 31 then 'FUNDEB'
-            when 1049 then 'PACS'
-            when 4530 then 'PACS'
-            when 40 then 'FMS/PROPRIOS'
-            when 1058 then 'VIGILANCIA EPIDEMIOLOGICA'
-            when 4710 then 'VIGILANCIA EPIDEMIOLOGICA'
-            when 50 then 'FAPS'
-            when 1155 then 'FARM. POPULAR'
-            when 4840 then 'FARM. POPULAR'
-       else 'SEM RECURSO'
-       end as recurso,
-                  case when r30_per2i is null 
-                       then r30_per1i - 30
-		  else r30_per2i - 30 end as data, 
-                  case when r30_per2i is null 
-                       then r30_per1i
-		  else r30_per2i end as gozoi, 
-                  case when r30_per2f is null 
-                       then r30_per1f
-		  else r30_per2f end as gozof, 
-		  z01_nome, rh37_descr as r37_descr 
+       case when r30_per2i is null
+                        then r30_per1i - 30
+       else r30_per2i - 30 end as data, 
+                   case when r30_per2i is null 
+                        then r30_per1i
+       else r30_per2i end as gozoi, 
+                   case when r30_per2f is null 
+                        then r30_per1f
+       else r30_per2f end as gozof,
+ 		  z01_nome, rh37_descr as r37_descr 
 from cadferia 
      inner join rhpessoalmov on rh02_regist = r30_regist
                             and rh02_anousu = r30_anousu
@@ -84,18 +62,15 @@ from cadferia
      inner join rhfuncao on rh01_funcao = rh37_funcao
                          and rh02_instit = rh37_instit 
      inner join rhlota   on r70_codigo = rh02_lota
-		                    and r70_instit = rh02_instit 
-     inner join (select distinct rh25_codigo, rh25_recurso from rhlotavinc) as rhlotavinc on rh25_codigo = r70_codigo 
+		                    and r70_instit = rh02_instit
 where r30_anousu = $ano
   and r30_mesusu = $mes
   and r30_regist = $matric
 order by r30_regist, 
          R30_PERAI desc limit 1;
        ";
-//echo $sql ; exit;
 
-$result = pg_exec($sql);
-//db_criatabela($result); exit;
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem dados no período de '.$mes.' / '.$ano);
@@ -123,12 +98,9 @@ for($x = 0; $x < pg_numrows($result);$x++){
       $parag1 = $z01_nome.', abaixo assinado, servidor desta Prefeitura Municipal, exercendo o cargo de '.$r37_descr.' vem mui respeitosamente, requerer a V. Sa., as férias referentes ao período de '.substr($r30_perai,8,2).' de '.db_mes(substr($r30_perai,5,2)).' de '.substr($r30_perai,0,4).' à '.substr($r30_peraf,8,2).' de '.db_mes(substr($r30_peraf,5,2)).' de '.substr($r30_peraf,0,4).' a serem gozadas a partir de '.substr($gozoi,8,2).' de '.db_mes(substr($gozoi,5,2)).' de '.substr($gozoi,0,4).' à '.substr($gozof,8,2).' de '.db_mes(substr($gozof,5,2)).' de '.substr($gozof,0,4).'.';
       $pdf->setfont('arial','',12);
       $pdf->ln(10);
-      $pdf->cell(40,5,$recurso,0,1,"L",0);
-      $pdf->ln(10);
       $pdf->cell(40,5,'NOME :  '.$z01_nome.'      MATRÍCULA :  '.$r30_regist,0,1,"L",0);
       $pdf->ln(10);
       $pdf->multicell(0,5,'PROVENIENTE : de '.$r30_dias1.' de férias, referente ao período de '.substr($r30_perai,8,2).' de '.db_mes(substr($r30_perai,5,2)).' de '.substr($r30_perai,0,4).' à '.substr($r30_peraf,8,2).' de '.db_mes(substr($r30_peraf,5,2)).' de '.substr($r30_peraf,0,4).' a serem gozadas a partir de '.substr($gozoi,8,2).' de '.db_mes(substr($gozoi,5,2)).' de '.substr($gozoi,0,4).' à '.substr($gozof,8,2).' de '.db_mes(substr($gozof,5,2)).' de '.substr($gozof,0,4).'.',0,"J",0);
-      //$pdf->cell(100,5,strtoupper($munic).'-'.strtoupper($uf).', '.substr($data,8,2).' de '.db_mes(substr($data,5,2)).' de '.substr($data,0,4),0,1,"L",0);
 
 $sql1 = 
 
@@ -170,8 +142,7 @@ where r48_regist = $r30_regist
   and r48_pd != 3 
 
 ";
-$result1 = pg_query($sql1);
-//db_criatabela($result1);
+$result1 = db_query($sql1);
 
 $tot_prov = 0;
 $tot_desc = 0;

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -53,5 +53,42 @@ class CalculoFolhaSalario extends CalculoFolha {
   public function calcular() {}
 
   public function gerar() {}
+
+  /**
+   * Método que calcula o valor da isenção para o servidor atual
+   *
+   * @access public
+   * @return Number
+   */
+  public function ajustarParcelaIsentaAposentadoPensionista($sRubrica, $nValorIsencao, $nValorAtual) {
+
+    $oServidorAtual    = $this->getServidor();
+    $nValorMaximoAtual = $nValorAtual; 
+
+    LogCalculoFolha::write('');
+    LogCalculoFolha::write('Ajustando parcela de isencao para o servidor: '.$oServidorAtual->getMatricula());
+
+    if($oServidorAtual->getCalculoFinanceiro(CalculoFolha::CALCULO_COMPLEMENTAR) instanceof CalculoFolha) {
+      $aEventosFinanceirosComplementarServidorAtual = $oServidorAtual->getCalculoFinanceiro(CalculoFolha::CALCULO_COMPLEMENTAR)->getEventosFinanceiros(null, $sRubrica);;
+
+      if(!empty($aEventosFinanceirosComplementarServidorAtual) && count($aEventosFinanceirosComplementarServidorAtual) > 0) {
+
+        LogCalculoFolha::write("Verificando eventos financeiros de complementar do servidor atual.");
+
+        $oEventoFinanceiroComplementarServidorAtual = $aEventosFinanceirosComplementarServidorAtual[0];
+        $nValorMaximoAtual                          = $nValorAtual;
+        $nValorAtual                               -= $oEventoFinanceiroComplementarServidorAtual->getValor();
+        LogCalculoFolha::write('Valor da isencao da folha complementar do servidor atual....: ' . $oEventoFinanceiroComplementarServidorAtual->getValor());
+      }
+    }
+
+    $mValorVinculado = $this->verificarParcelaIsentaAposentadoPensionistaServidorVinculado($oServidorAtual, $sRubrica);
+
+    if($mValorVinculado !== false) {
+      return $this->calcularParcelaIsentaAposentadoPensionista($nValorIsencao, $nValorMaximoAtual, $nValorAtual, $mValorVinculado);
+    }
+
+    return $this->calcularParcelaIsentaAposentadoPensionista($nValorIsencao, $nValorMaximoAtual, $nValorAtual);
+  }
 
 }

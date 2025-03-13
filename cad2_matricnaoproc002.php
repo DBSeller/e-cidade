@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_iptucalc_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_iptucalc_classe.php"));
 
 $cliptubase = new cl_iptubase;
 $cliptucalc = new cl_iptucalc;
@@ -69,7 +69,7 @@ $sql= "select * from
 
 
 
-$result = pg_exec($sql); 
+$result = db_query($sql); 
 
 if (pg_numrows($result) == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem registros cadastrados.');

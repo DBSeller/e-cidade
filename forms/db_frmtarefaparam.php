@@ -89,7 +89,7 @@ db_input('at53_horafim_tarde',5,$Iat53_horafim_tarde,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tarefaparam','func_tarefaparam.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefaparam','func_tarefaparam.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tarefaparam.hide();

@@ -1,0 +1,1 @@
+select setval('prontproced_sd29_i_codigo_seq', (select max(sd29_i_codigo) from prontproced));

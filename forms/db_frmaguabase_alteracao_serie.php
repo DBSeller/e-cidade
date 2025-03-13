@@ -26,7 +26,7 @@
  */
 
 //MODULO: agua
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("x01_codrua");
@@ -151,10 +151,10 @@ function js_cancelar(){
 
 function js_pesquisax01_codrua(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome','Pesquisa',true,'20','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome','Pesquisa',true,'20','1','775','390');
   }else{
      if(document.form1.x01_codrua.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.x01_codrua.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false,'20','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.x01_codrua.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false,'20','1','775','390');
      }else{
        document.form1.j14_nome.value = ''; 
      }

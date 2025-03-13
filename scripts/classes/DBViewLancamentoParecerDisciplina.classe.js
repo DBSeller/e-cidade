@@ -11,19 +11,21 @@ DBViewLancamentoParecerDisciplina = function (sNameInstancia, iTurma, iRegencia,
   this.iCodigoPeriodo  = '';
   this.iOrdem          = null;
   this.sRPC            = "edu4_lancamentoavaliacao.RPC.php";
+
   if (sRPCAlterado && sRPCAlterado != '') {
     this.sRPC = sRPCAlterado;
   }
 
-  this.metodoSalvarRpc         = 'salvarParecer';
-  this.getParecerRpc           = 'getParecer';
-  this.iCodigoEtapa            = '';
-  this.lMostrarPesquisaAluno   = false;
-  this.lMostrarPesquisaPeriodo = false;
-  this.oAlunoTurma             = null;
-  this.oPeriodoTurma           = null;
-  this.lProfessorLogado        = false;
-  this.oWindowPai              = oWindowAuxAvaliacao;
+  this.metodoSalvarRpc                          = 'salvarParecer';
+  this.getParecerRpc                            = 'getParecer';
+  this.iCodigoEtapa                             = '';
+  this.lMostrarPesquisaAluno                    = false;
+  this.lMostrarPesquisaPeriodo                  = false;
+  this.oAlunoTurma                              = null;
+  this.oPeriodoTurma                            = null;
+  this.lProfessorLogado                         = false;
+  this.oWindowPai                               = oWindowAuxAvaliacao;
+  this.lDisciplinasProcedimentoAvaliacaoParecer = true;
 
   var me = this;
 
@@ -81,7 +83,7 @@ DBViewLancamentoParecerDisciplina = function (sNameInstancia, iTurma, iRegencia,
 	this.retornaBuscarPareceresDisciplina = function (oResponse) {
 
 		js_removeObj("msgBox");
-		var oRetorno = eval('('+oResponse.responseText+')');
+		var oRetorno = JSON.parse(oResponse.responseText);
 		var aOption  = new Array();
 
 		oRetorno.aLegendas.each(function(oLegenda, iSeq) {
@@ -173,7 +175,7 @@ DBViewLancamentoParecerDisciplina = function (sNameInstancia, iTurma, iRegencia,
 	 */
 	this.retornaSalvarParecer = function (oResponse) {
 
-		var oRetorno = eval('('+oResponse.responseText+')');
+		var oRetorno = JSON.parse(oResponse.responseText);
 		if (oRetorno.status == 1) {
       me.oCallback(me);
     }
@@ -215,7 +217,7 @@ DBViewLancamentoParecerDisciplina.prototype.getParecer  = function() {
   oJson.onComplete = function (oResponse) {
 
     js_removeObj('msgBox');
-    var oRetorno       = eval("("+oResponse.responseText+")");
+    var oRetorno       = JSON.parse(oResponse.responseText);
     $('parecer').value = oRetorno.sParecer.urlDecode();
 
     var aPartesParecerPadronizado = oRetorno.sParecerPadronizado.urlDecode().split("**");
@@ -442,6 +444,7 @@ DBViewLancamentoParecerDisciplina.prototype.criarPesquisaAluno = function () {
 
   this.oDisciplinasTurma = new DBViewAvaliacao.DisciplinaTurma(this.iTurma, this.iCodigoEtapa, this.lProfessorLogado);
   this.oDisciplinasTurma.naoListarAsRegencias([this.iRegencia]);
+  this.oDisciplinasTurma.somenteDisciplinasParecer( this.lDisciplinasProcedimentoAvaliacaoParecer );
   this.oDisciplinasTurma.show($('ctnDisciplinasTurmas'));
 
   $('ctnFieldSetAlunos').style.display = sDisplay;
@@ -470,4 +473,12 @@ DBViewLancamentoParecerDisciplina.prototype.getParecerAluno = function() {
  */
 DBViewLancamentoParecerDisciplina.prototype.setProfessorLogado = function(lProfessorLogado) {
   this.lProfessorLogado = lProfessorLogado;
+};
+
+/**
+ * Seta se devem ser apresentadas somente disciplinas com procedimento de avaliação do tipo PARECER
+ * @param {bool} lDisciplinasProcedimentoAvaliacaoParecer
+ */
+DBViewLancamentoParecerDisciplina.prototype.disciplinasProcedimentoAvaliacaoParecer = function( lDisciplinasProcedimentoAvaliacaoParecer ) {
+  this.lDisciplinasProcedimentoAvaliacaoParecer = lDisciplinasProcedimentoAvaliacaoParecer;
 };

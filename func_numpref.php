@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_numpref_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_numpref_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clnumpref = new cl_numpref;
 $clnumpref->rotulo->label("k03_anousu");
+$clnumpref->rotulo->label("k03_instit");
 $clnumpref->rotulo->label("k03_anousu");
-$instit = db_getsession("DB_instit");
 ?>
 <html>
 <head>
@@ -50,6 +50,16 @@ $instit = db_getsession("DB_instit");
     <td height="63" align="center" valign="top">
         <table width="35%" border="0" align="center" cellspacing="0">
 	     <form name="form2" method="post" action="" >
+          <tr> 
+            <td width="4%" align="right" nowrap title="<?=$Tk03_instit?>">
+              <?=$Lk03_instit?>
+            </td>
+            <td width="96%" align="left" nowrap> 
+              <?
+		       db_input("k03_instit",10,$Ik03_instit,true,"text",4,"","chave_k03_instit");
+		       ?>
+            </td>
+          </tr>
           <tr> 
             <td width="4%" align="right" nowrap title="<?=$Tk03_anousu?>">
               <?=$Lk03_anousu?>
@@ -77,24 +87,26 @@ $instit = db_getsession("DB_instit");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_numpref.php")==true){
-             include("funcoes/db_func_numpref.php");
+             include(modification("funcoes/db_func_numpref.php"));
            }else{
            $campos = "numpref.*";
            }
         }
-        if(isset($chave_) && (trim($chave_)!="") ){
-	         $sql = $clnumpref->sql_query(db_getsession('DB_anousu'),$instit,$campos,"");
+        if(isset($chave_k03_instit) && (trim($chave_k03_instit)!="") ){
+	         $sql = $clnumpref->sql_query(db_getsession('DB_anousu'),$chave_k03_instit,$campos,"k03_instit"," k03_anousu = ".db_getsession('DB_anousu')." k03_instit = ".db_getsession('DB_instit') );
         }else if(isset($chave_k03_anousu) && (trim($chave_k03_anousu)!="") ){
-	         $sql = $clnumpref->sql_query(db_getsession('DB_anousu'),$instit,$campos,"k03_anousu"," k03_anousu like '$chave_k03_anousu%' ");
+	         $sql = $clnumpref->sql_query(db_getsession('DB_anousu'),"",$campos,"k03_anousu"," k03_anousu like '$chave_k03_anousu%' and  k03_instit = ".db_getsession('DB_instit'));
         }else{
-           $sql = $clnumpref->sql_query(db_getsession('DB_anousu'),$instit,$campos,"k03_anousu","");
+           $sql = $clnumpref->sql_query(db_getsession('DB_anousu'),"",$campos,"k03_anousu#k03_instit","k03_anousu = ".db_getsession('DB_anousu')."and  k03_instit = ".db_getsession('DB_instit'));
         }
-                
-        db_lovrot($sql,15,"()","",$funcao_js);
+        $repassa = array();
+        if(isset($chave_k03_anousu)){
+          $repassa = array("chave_k03_anousu"=>$chave_k03_anousu,"chave_k03_anousu"=>$chave_k03_anousu);
+        }
+        db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
-                   
-          $result = $clnumpref->sql_record($clnumpref->sql_query(db_getsession("DB_anousu"),$pesquisa_chave));
+          $result = $clnumpref->sql_record($clnumpref->sql_query(db_getsession("DB_anousu"),$pesquisa_chave,"*",null," k03_anousu = ".db_getsession('DB_anousu')." k03_instit = ".db_getsession('DB_instit') ));
           if($clnumpref->numrows!=0){
             db_fieldsmemory($result,0);
             echo "<script>".$funcao_js."('$k03_anousu',false);</script>";
@@ -119,3 +131,12 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script>
+js_tabulacaoforms("form2","chave_k03_anousu",true,1,"chave_k03_anousu",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

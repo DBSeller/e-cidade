@@ -1,6 +1,7 @@
 {
   "infrome_departamento"   : "Campo Departamento do destino não Informado.",
   "inclusao_nao_efetuada"  : "Inclusão não efetuada. \nVerifique o departamento de destino.",
-  "data_invalida"          : "Informe uma data válida. \nA data deve ser igual ou superior ao dia atual.",
-  "alteracao_nao_efetuada" : "Alteração não efetuada. \nVerifique o departamento de destino."
+  "data_invalida"          : "Informe uma data válida. \nA data deve ser igual ou superior a data da sessão.",
+  "alteracao_nao_efetuada" : "Alteração não efetuada. \nVerifique o departamento de destino.",
+  "inclusao_nao_efetuada_data_maior" : "Informe uma data válida. \nA data não pode ser superior a data da sessão."
 }

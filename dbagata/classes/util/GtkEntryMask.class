@@ -49,7 +49,7 @@ class GtkEntryMask extends GtkEntry
 
         # en: Any change, call method Filter
         # pt: Método chamado quando há alguma alteração no campo
-        GtkEntry::connect_object_after('changed', array(&$this, "Filter"));
+        GtkEntry::connect_object_after('changed', array($this, "Filter"));
     }
     
     /***********************************************************/

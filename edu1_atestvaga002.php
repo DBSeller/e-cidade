@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_atestvaga_classe.php");
-require_once("libs/db_jsplibwebseller.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_atestvaga_classe.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $ed102_d_data_dia = date("d", db_getsession("DB_datausu"));
 $ed102_d_data_mes = date("m", db_getsession("DB_datausu"));
@@ -98,7 +98,7 @@ if (isset($alterar)) {
      <br>
      <center>
       <fieldset style="width:95%"><legend><b>Alteração de Atestado de Vaga</b></legend>
-       <?include("forms/db_frmatestvagaalt.php");?>
+       <?include(modification("forms/db_frmatestvagaalt.php"));?>
       </fieldset>
      </center>
     </td>

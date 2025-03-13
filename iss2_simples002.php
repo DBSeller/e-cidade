@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 $sqlinst = "select munic as municipio from db_config where codigo = ".db_getsession("DB_instit");
-$resultinst = pg_exec($sqlinst);
+$resultinst = db_query($sqlinst);
 db_fieldsmemory($resultinst, 0);
 $municipio = strtoupper($municipio);
 if($municipio =='BAGE' and 1==2){
@@ -39,7 +39,7 @@ if($municipio =='BAGE' and 1==2){
     exit;
   }
 }
-include("classes/db_numpref_classe.php");
+include(modification("classes/db_numpref_classe.php"));
 $clnumpref = new cl_numpref;
 $resnumpref = $clnumpref->sql_record($clnumpref->sql_query_file(db_getsession("DB_anousu"),db_getsession("DB_instit"),"k03_certissvar"));
 if($resnumpref==false || $clnumpref->numrows==0){
@@ -107,7 +107,7 @@ fc_tipocertidao(z01_numcgm, 'c', '$datausu', $whereissvar) as tipocert
 order by x.z01_cgccpf;
 ";
 //die($sql);
-$result = pg_exec($conn, $sql) or die($sql);
+$result = db_query($conn, $sql) or die($sql);
 $linhas = pg_num_rows($result);
 // GERA PDF
      if($cons_debvenc=="s"){
@@ -148,7 +148,7 @@ for ($x=0; $x < $linhas; $x++) {
                 inner join arrenumcgm on z01_numcgm = arrenumcgm.k00_numcgm
                 inner join arrecad    on arrenumcgm.k00_numpre = arrecad.k00_numpre
                 where z01_cgccpf = '$z01_cgccpf'";
-    $result_daeb = pg_exec($conn2,$sql_daeb) or die($sql_daeb);
+    $result_daeb = db_query($conn2,$sql_daeb) or die($sql_daeb);
     if (pg_numrows($result_daeb) > 0 and $tipo == 1) {
       $vaitxt=false;
     }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -174,7 +174,7 @@ function db_sql_blocos_acount($iIdIni=0, $iIdFim=0) {
   return $sSql;
 }
 
-function db_sql_blocos_acount_cursor($iIdIni=0, $iIdFim=0, $sSufixo='') {
+function db_sql_blocos_acount_cursor($oMigracao, $sSufixo='') {
 
   /* Definicao do SQL na base de Origem para Carga dos Dados */
   $sArquivoSQL = "sql/01_select_blocos_acount_cursor.sql";
@@ -188,9 +188,14 @@ function db_sql_blocos_acount_cursor($iIdIni=0, $iIdFim=0, $sSufixo='') {
     exit(1);
   }
 
-  $sSql = str_replace('{$acount_ini}', $iIdIni, $sSql);
-  $sSql = str_replace('{$acount_fim}', $iIdFim, $sSql);
-  $sSql = str_replace('{$sufixo}', $sSufixo, $sSql);
+  $sSql = str_replace('{$acount_ini}',   $oMigracao->id_acount_ini, $sSql);
+  $sSql = str_replace('{$acount_fim}',   $oMigracao->id_acount_fim, $sSql);
+  $sSql = str_replace('{$datahora_ini}', $oMigracao->datahora_ini, $sSql);
+  $sSql = str_replace('{$datahora_fim}', $oMigracao->datahora_fim, $sSql);
+  $sSql = str_replace('{$data_ini}',     $oMigracao->data_ini, $sSql);
+  $sSql = str_replace('{$data_fim}',     $oMigracao->data_fim, $sSql);
+  $sSql = str_replace('{$instit}',       $oMigracao->instit, $sSql);
+  $sSql = str_replace('{$sufixo}',       $sSufixo, $sSql);
 
   return $sSql;
 }

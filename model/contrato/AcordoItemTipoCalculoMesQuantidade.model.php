@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/contrato/IAcordoItemTipoCalculo.interface.php");
+require_once(modification("model/contrato/IAcordoItemTipoCalculo.interface.php"));
 /**
  * Model para efetuar o tipo de cálculo quantidade
  * @author  matheus.felini@dbseller.com.br
  * @package contrato
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 class AcordoItemTipoCalculoMesQuantidade implements IAcordoItemTipoCalculo {
 

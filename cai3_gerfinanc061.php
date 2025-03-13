@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 set_time_limit(0);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("classes/db_notificacao_classe.php");
-include("classes/db_notidebitos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_notificacao_classe.php"));
+include(modification("classes/db_notidebitos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clnotificacao = new cl_notificacao;
 $clrotulo = new rotulocampo;
 $clrotulo->label("k50_notifica");
@@ -129,7 +129,7 @@ if(!isset($notifica)){
 	       left outer join histcalc hh on a.k00_hist = hh.k01_codigo
 	 where k53_notifica = $notifica
 	 ";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
 
   if(pg_numrows($result)>0){
     ?>

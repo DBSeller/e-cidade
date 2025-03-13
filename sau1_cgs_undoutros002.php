@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,13 +24,13 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_jsplibwebseller.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
 
 parse_str( $_SERVER["QUERY_STRING"] );
 db_postmemory($_POST);
@@ -114,6 +114,10 @@ if( isset( $chavepesquisa ) ) {
   $result    = $clcgs_und->sql_record( $clcgs_und->sql_query_etnia( $chavepesquisa ) );
 
   db_fieldsmemory( $result, 0 );
+  $result2    = $clcgs_und->sql_record("SELECT * FROM cgs_und_ext WHERE z01_i_cgsund =" . $GLOBALS['z01_i_cgsund']);
+  if($result2) {
+    db_fieldsmemory($result2,0);
+  }
   $db_botao = true;
 }
 
@@ -128,7 +132,7 @@ if( isset( $chavepesquisa ) ) {
   <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body class="body-default">
-  <?include("forms/db_frmcgs_undoutros.php");?>
+  <?include(modification("forms/db_frmcgs_undoutros.php"));?>
 </body>
 </html>
 <?php

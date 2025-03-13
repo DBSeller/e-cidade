@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/scpdf.php");
+include(modification("fpdf151/scpdf.php"));
 db_postmemory($HTTP_SERVER_VARS);
 
 $sql = " select * from empresa where q02_inscr = $inscricao" ;
-$result = pg_exec($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
  
 $pdf = new SCPDF();

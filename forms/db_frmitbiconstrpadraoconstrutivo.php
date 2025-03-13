@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -66,10 +66,10 @@ db_input('it34_caract',5,$Iit34_caract,true,'text',$db_opcao,"")
 <script>
 function js_pesquisait34_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_itbiconstr','func_itbiconstr.php?funcao_js=parent.js_mostraitbiconstr1|it08_codigo|it08_guia','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbiconstr','func_itbiconstr.php?funcao_js=parent.js_mostraitbiconstr1|it08_codigo|it08_guia','Pesquisa',true);
   }else{
      if(document.form1.it34_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_itbiconstr','func_itbiconstr.php?pesquisa_chave='+document.form1.it34_codigo.value+'&funcao_js=parent.js_mostraitbiconstr','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbiconstr','func_itbiconstr.php?pesquisa_chave='+document.form1.it34_codigo.value+'&funcao_js=parent.js_mostraitbiconstr','Pesquisa',false);
      }else{
        document.form1.it08_guia.value = ''; 
      }
@@ -88,7 +88,7 @@ function js_mostraitbiconstr1(chave1,chave2){
   db_iframe_itbiconstr.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_itbiconstrpadraoconstrutivo','func_itbiconstrpadraoconstrutivo.php?funcao_js=parent.js_preenchepesquisa|it34_codigo|it34_caract','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbiconstrpadraoconstrutivo','func_itbiconstrpadraoconstrutivo.php?funcao_js=parent.js_preenchepesquisa|it34_codigo|it34_caract','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_itbiconstrpadraoconstrutivo.hide();

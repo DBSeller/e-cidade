@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label("ed61_i_aluno");
 $clrotulo->label("ed47_i_codigo");
@@ -186,7 +186,7 @@ $db_opcao = 1;
   js_retornoPreencheEscolas = function (oAjax) {
 
 	 js_removeObj('msgBox');
-	 var oRetorno = eval("("+oAjax.responseText+")");
+	 var oRetorno = JSON.parse(oAjax.responseText);
 
 	   oCboEscola.clearItens();
 	   oCboEscola.addItem("", "Selecione");
@@ -227,7 +227,7 @@ $db_opcao = 1;
   function js_retornoPesquisarCalendario(oResponse) {
 
 	js_removeObj('msgBox');
-	var oRetorno = eval("("+oResponse.responseText+")");
+	var oRetorno = JSON.parse(oResponse.responseText);
 		oRetorno.aResult.each(function(oCalendario, iSeq) {
 		  oCboCalendario.addItem(oCalendario.ed52_i_codigo, oCalendario.ed52_c_descr.urlDecode());
         });
@@ -268,7 +268,7 @@ $db_opcao = 1;
   function js_retornoPesquisarCurso(oResponse) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
   	  oRetorno.aResultCursoEscola.each(function(oCurso, iSeq) {
   	    oCboCurso.addItem(oCurso.codigo_curso, oCurso.nome_curso.urlDecode());
   	  });
@@ -307,7 +307,7 @@ $db_opcao = 1;
   function js_retornoPesquisarTurma(oResponse) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
     oRetorno.aTurmas.each(function(aTurma, iSeq) {
       oCboTurma.addItem(aTurma.codigo_turma, aTurma.nome_turma.urlDecode());
     });
@@ -394,7 +394,7 @@ $db_opcao = 1;
   function js_openVisualizadorImpressao(oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno            = eval("("+oAjax.responseText+")");
+    var oRetorno            = JSON.parse(oAjax.responseText);
     $('sSessionNome').value = oRetorno.sSessionNome;
     var iWidth  = document.body.getWidth() - 10;
     oWindow = new windowAux('oWindow', 'Visualizar Impressão', iWidth);

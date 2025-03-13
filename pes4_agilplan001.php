@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_libpessoal.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $DB_SERVIDOR = '192.168.0.24';
 $DB_BASE     = 'auto_bage_20110427_v2_2_51';
 $DB_PORTA    = '5432';
@@ -203,7 +203,7 @@ if (isset($_POST["processar"])) {
   $sSqlFuncionarios .= "                                  extract(month from rh05_recis) = '$iMes')) ";
   $sSqlFuncionarios .= "     and  rh30_vinculo = 'A'";
                                                           
-  $rsDados      = pg_query($sSqlFuncionarios);                                                        
+  $rsDados      = db_query($sSqlFuncionarios);                                                        
   $iNumRows     = pg_num_rows($rsDados);
   $sNomeArquivo = "tmp/agilplan{$iMes}{$iAno}.txt";
   $rsArquivo    = fopen($sNomeArquivo, "w");

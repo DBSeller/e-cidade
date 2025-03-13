@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,29 +25,29 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("fpdf151/scpdf.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_sql.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_ruas_classe.php");
-include ("classes/db_bairro_classe.php");
-include ("classes/db_cgm_classe.php");
-include ("classes/db_ativid_classe.php");
-include ("classes/db_caracter_classe.php");
-include ("classes/db_cadtipo_classe.php");
-include ("classes/db_iptucale_classe.php");
-include ("classes/db_iptucalc_classe.php");
-include ("classes/db_iptucalv_classe.php");
-include ("classes/db_lote_classe.php");
-include ("classes/db_face_classe.php");
-include ("classes/db_carlote_classe.php");
-include ("classes/db_carface_classe.php");
-include ("classes/db_carconstr_classe.php");
-include ("classes/db_isscalc_classe.php");
-require_once('libs/db_utils.php');
-require_once("libs/db_libpostgres.php");
+require(modification("fpdf151/scpdf.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_ruas_classe.php"));
+include(modification("classes/db_bairro_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_ativid_classe.php"));
+include(modification("classes/db_caracter_classe.php"));
+include(modification("classes/db_cadtipo_classe.php"));
+include(modification("classes/db_iptucale_classe.php"));
+include(modification("classes/db_iptucalc_classe.php"));
+include(modification("classes/db_iptucalv_classe.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("classes/db_face_classe.php"));
+include(modification("classes/db_carlote_classe.php"));
+include(modification("classes/db_carface_classe.php"));
+include(modification("classes/db_carconstr_classe.php"));
+include(modification("classes/db_isscalc_classe.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_libpostgres.php"));
 
 $instit = db_getsession("DB_instit");
 db_postmemory($HTTP_POST_VARS);
@@ -161,7 +161,7 @@ if (isset ($gerar)) {
 			}
 		}
 		if ($info == "matricula") {
-			$result = pg_exec("  select j01_matric,
+			$result = db_query("  select j01_matric,
 								        j01_idbql,
 								        j39_idcons,
 										j39_codigo,
@@ -228,7 +228,7 @@ if (isset ($gerar)) {
 			}
 		}
 		if ($info == "inscricao") {
-			$result = pg_exec("select * 
+			$result = db_query("select * 
 							   from issbase
 						      inner join tabativ on tabativ.q07_inscr = issbase.q02_inscr
 						      inner join cgm on cgm.z01_numcgm = issbase.q02_numcgm
@@ -248,9 +248,9 @@ if (isset ($gerar)) {
 			}
 		}
 		if ($info == "debitos") {
-			$result_data=pg_exec("select k22_data as data_ult from debitos where k22_instit = $instit order by k22_data desc limit 1");
+			$result_data=db_query("select k22_data as data_ult from debitos where k22_instit = $instit order by k22_data desc limit 1");
 			db_fieldsmemory($result_data,0);
-			$result=pg_exec("select k22_numcgm,z01_nome,z01_ender,z01_munic,z01_uf,k22_matric,
+			$result=db_query("select k22_numcgm,z01_nome,z01_ender,z01_munic,z01_uf,k22_matric,
 			                        k22_inscr,k22_tipo,
 						k03_descr,k22_numpre,k22_numpar,
 						k22_dtvenc,sum(k22_vlrhis) as k22_vlrhis,
@@ -572,7 +572,7 @@ if (isset ($gerar)) {
 								} else {
 									fputs($clabre_arquivo->arquivo, str_pad("00", 15));
 								}
-								$result_tipocal=pg_exec("select  q85_descr, q85_var from tabativ inner join ativtipo on q07_ativ = q80_ativ inner join tipcalc on q81_codigo = q80_tipcal inner join cadcalc on q81_cadcalc = q85_codigo where q07_inscr = $q02_inscr and q81_tipo = 1 and q07_databx is null and q07_datafi>".date("Y-m-d", db_getsession("DB_datausu")));
+								$result_tipocal=db_query("select  q85_descr, q85_var from tabativ inner join ativtipo on q07_ativ = q80_ativ inner join tipcalc on q81_codigo = q80_tipcal inner join cadcalc on q81_cadcalc = q85_codigo where q07_inscr = $q02_inscr and q81_tipo = 1 and q07_databx is null and q07_datafi>".date("Y-m-d", db_getsession("DB_datausu")));
 								if (pg_numrows($result_tipocal)>0){
 									db_fieldsmemory($result_tipocal,0);
 									fputs($clabre_arquivo->arquivo, str_pad($q85_descr, 40));

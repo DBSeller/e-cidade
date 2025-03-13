@@ -11,4 +11,7 @@
  ,"erro_deve_selecionar_turno"   : "Dever ser selecionado ao menos um turno."
  ,"selecione_turno"              : "Selecione ao menos um turno."
  ,"turma_sem_vagas"              : "Turma não possui vagas disponíveis."
+ ,"informe_data"                 : "Informe campo Data."
+ ,"ano_data_deve_ser_igual_calendario" : "Data de matrícula e data da Reclassificação deve esta no mesmo calendário."
+ ,"data_deve_ser_maior_data_matricula" : "Campo data, tem que ser maior que a data de matrícula."
 }

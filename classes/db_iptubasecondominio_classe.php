@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -357,10 +357,10 @@ class cl_iptubasecondominio {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $j108_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $j108_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -385,7 +385,7 @@ class cl_iptubasecondominio {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -398,7 +398,7 @@ class cl_iptubasecondominio {
    function sql_query_file ( $j108_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -419,7 +419,7 @@ class cl_iptubasecondominio {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -428,5 +428,29 @@ class cl_iptubasecondominio {
      }
      return $sql;
   }
+
+  // funcao do sql 
+  function sql_query_condominio($j108_sequencial=null,$campos="*",$ordem=null,$dbwhere="")
+  {
+    $sql = "select {$campos}";
+    $sql .= "from iptubasecondominio ";
+    $sql .= "     join condominio on j107_sequencial = j108_condominio ";
+    $sql .= "     left join iptubasepredio on j109_matric = j108_matric ";
+    $sql .= "     left join predio on j111_sequencial = j109_predio ";
+    $sql2 = "";
+    if ($dbwhere == "") {
+        if ($j108_sequencial != null) {
+          $sql2 .= " where iptubasecondominio.j108_sequencial = $j108_sequencial "; 
+        } 
+    }else if ($dbwhere != "") {
+        $sql2 = " where $dbwhere";
+    }
+
+    $sql .= $sql2;
+    if ($ordem != null) {
+        $sql .= " order by {$ordem}";
+    }
+
+    return $sql;
+  }
 }
-?>

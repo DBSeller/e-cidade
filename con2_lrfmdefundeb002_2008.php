@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,17 +29,17 @@
 if (!isset($arqinclude)){
   // se este arquivo no esta incluido por outro
   
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_liborcamento.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_libtxt.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_conrelinfo_classe.php");
-  include("classes/db_conrelvalor_classe.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("classes/db_empresto_classe.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_libtxt.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("classes/db_conrelvalor_classe.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_empresto_classe.php"));
   
   parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
   db_postmemory($HTTP_SERVER_VARS);
@@ -518,7 +518,7 @@ $sqlperiodo = " select e91_recurso,o15_descr,e60_anousu,sum(vlranu) as vlranu, s
                 group by e91_recurso,o15_descr,e60_anousu
 	          		order by e91_recurso,e60_anousu";
 
-$result_restos_mde1  = @pg_query($sqlperiodo);
+$result_restos_mde1  = @db_query($sqlperiodo);
 $numrows_restos_mde1 = @pg_numrows($result_restos_mde1);
 
 $cancelado = 0;
@@ -598,7 +598,7 @@ $fluxo[5]["valor"] = $m_fluxo_fundeb["valor_atual"];
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 if (!isset($arqinclude)){
   $xinstit    = split("-",$db_selinstit);
-  $resultinst = pg_exec("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+  $resultinst = db_query("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
   db_fieldsmemory($resultinst,0);
 
   $descr_inst = strtoupper($munic);

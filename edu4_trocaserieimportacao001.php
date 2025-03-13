@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,19 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once('libs/db_stdlibwebseller.php');
-require_once('libs/db_stdlib.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/db_usuariosonline.php');
-require_once('libs/db_utils.php');
-require_once('dbforms/db_funcoes.php');
-require_once('libs/db_jsplibwebseller.php');
+use ECidade\Educacao\Escola\Registry\BaseCurricularRegistry;
+use ECidade\Educacao\Escola\Repository\BaseCurricularDisciplinaRepository;
 
-db_postmemory($HTTP_POST_VARS);
+require_once(modification('libs/db_stdlibwebseller.php'));
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_usuariosonline.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification('libs/db_jsplibwebseller.php'));
+
+db_postmemory( $_POST );
 $oGet = db_utils::postMemory( $_GET );
 
 function formataData($dData, $iTipo = 1) {
@@ -50,9 +53,9 @@ function formataData($dData, $iTipo = 1) {
     return $dData;
   }
 
- $dData = explode('-', $dData);
- $dData = @$dData[2].'/'.@$dData[1].'/'.@$dData[0];
- return $dData;
+  $dData = explode('-', $dData);
+  $dData = $dData[2].'/'.$dData[1].'/'.$dData[0];
+  return $dData;
 }
 
 $iEscola   = db_getsession('DB_coddepto');
@@ -95,431 +98,432 @@ $db_botao = false;
   </td>
  </tr>
 </table>
-  <?
-  if (!isset($incluir)) {
-  ?>
-    <html>
-      <head>
-        <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-        <meta http-equiv="Expires" CONTENT="0">
-        <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-        <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
-        <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-        <link href="estilos.css" rel="stylesheet" type="text/css">
-      </head>
-      <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-        <form name="form1" METHOD="POST" action="">
-         <table border="0">
-            <tr>
-              <td>
-                <input id="sTurno" name="sTurno" type="hidden" value="<?=$oGet->sTurno;?>" />
-              </td>
-              <td>
-                <b>Importar aproveitamento da turma de origem:</b>
-                 <select name="import" id="import" onchange="js_importar(this.value);">
-                   <option value="N">NÃO</option>
-                   <option value="S">SIM</option>
-                </select>
-              </td>
-            </tr>
-          </table>
+<?php
+if (!isset($incluir)) {
+?>
+  <html>
+    <head>
+      <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+      <meta http-equiv="Expires" CONTENT="0">
+      <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+      <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+      <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+      <link href="estilos.css" rel="stylesheet" type="text/css">
+    </head>
+    <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
+      <form name="form1" METHOD="POST" action="">
+        <table border="0">
+          <tr>
+            <td>
+              <input id="sTurno" name="sTurno" type="hidden" value="<?=$oGet->sTurno;?>" />
+            </td>
+            <td>
+              <b>Importar aproveitamento da turma de origem:</b>
+               <select name="import" id="import" onchange="js_importar(this.value);">
+                 <option value="N">NÃO</option>
+                 <option value="S">SIM</option>
+              </select>
+            </td>
+          </tr>
+        </table>
 
-          <table border="0" cellspacing="0" cellpadding="0" id="tabelaDadosImportacao" style="display: none;">
+        <table border="0" cellspacing="0" cellpadding="0" id="tabelaDadosImportacao" style="display: none;">
+          <tr>
+            <td colspan="4" valign="top" bgcolor="#CCCCCC">
+              <br>
+              <b>
+              Caso as turmas de origem e destino tenham disciplinas e/ou períodos de avaliação diferentes,
+              informe abaixo quais disciplinas e períodos de avaliação da turma de destino que vão receber
+              as informações do aluno.
+              </b>
+              <br><br>
+            </td>
+          </tr>
+          <tr>
+            <td width="28%" valign="top" bgcolor="#CCCCCC" nowrap>
+              <b>Disciplinas TURMA DE ORIGEM:</b>
+            </td>
+            <td width="20"></td>
+            <td width="28%" valign="top" bgcolor="#CCCCCC" nowrap>
+              <b>Disciplinas TURMA DE DESTINO:</b>
+            </td>
+            <td valign="top" bgcolor="#CCCCCC" nowrap>
+              <b>Aproveitamento na TURMA DE ORIGEM:</b>
+            </td>
+          </tr>
+          <?
+          $sSql = $oDaoMatricula->sql_query('', 'ed60_i_aluno, ed221_i_serie as etapaorigem', '',
+                                            " ed60_i_codigo = $matricula"
+                                           );
+          $rs   = $oDaoMatricula->sql_record($sSql);
+          db_fieldsmemory($rs, 0);
+          $sSql        = $oDaoRegencia->sql_query('', 'ed59_i_codigo, ed232_i_codigo, ed232_c_descr, ed232_c_abrev, '.
+                                                  'ed220_i_procedimento as procorigem, ed59_i_ordenacao',
+                                                  'ed59_i_ordenacao',
+                                                  " ed59_i_turma = $turmaorigem and ed59_i_serie in ($etapaorigem)"
+                                                 );
+          $rs          = $oDaoRegencia->sql_record($sSql);
+          $procorigem  = pg_result($rs, 0, 'procorigem');
+          $linhas      = $oDaoRegencia->numrows;
+          $sSql        = $oDaoRegencia->sql_query('', 'ed59_i_codigo as regdestino, ed232_i_codigo as coddestino, '.
+                                                  'ed232_c_descr as descrdestino, '.
+                                                  'ed220_i_procedimento as procdestino, ed59_i_ordenacao',
+                                                  'ed59_i_ordenacao',
+                                                " ed59_i_turma = $turmadestino and ed59_i_serie in ($codetapadestino)"
+                                                 );
+          $rs2         = $oDaoRegencia->sql_record($sSql);
+          $procdestino = pg_result($rs2, 0, 'procdestino');
+          $linhas1     = $oDaoRegencia->numrows;
+          $regmarcadas = '';
+          for ($iCont = 0; $iCont < $linhas; $iCont++) {
+
+            db_fieldsmemory($rs, $iCont);
+          ?>
             <tr>
-              <td colspan="4" valign="top" bgcolor="#CCCCCC">
-                <br>
-                <b>
-                Caso as turmas de origem e destino tenham disciplinas e/ou períodos de avaliação diferentes,
-                informe abaixo quais disciplinas e períodos de avaliação da turma de destino que vão receber
-                as informações do aluno.
-                </b>
-                <br><br>
-              </td>
-            </tr>
-            <tr>
-              <td width="28%" valign="top" bgcolor="#CCCCCC" nowrap>
-                <b>Disciplinas TURMA DE ORIGEM:</b>
-              </td>
-              <td width="20"></td>
-              <td width="28%" valign="top" bgcolor="#CCCCCC" nowrap>
-                <b>Disciplinas TURMA DE DESTINO:</b>
-              </td>
               <td valign="top" bgcolor="#CCCCCC" nowrap>
-                <b>Aproveitamento na TURMA DE ORIGEM:</b>
+                <input name="regenciaorigem" type="text" value="<?=$ed59_i_codigo?>" size="10"
+                  readonly style="width:75px">
+                <input name="regorigemdescr" type="text" value="<?=$ed232_c_descr?>" size="30"
+                  readonly style="width:180px">
+              </td>
+              <td align="center" nowrap>--></td>
+              <td nowrap>
+                <?
+                $temreg = false;
+                for ($iCont2 = 0; $iCont2 < $linhas1; $iCont2++) {
+
+                  db_fieldsmemory($rs2, $iCont2);
+                  if ($ed232_i_codigo == $coddestino) {
+
+                    $temreg          = true;
+                    $regenciadestino = $regdestino;
+                    $regdestinodescr = $descrdestino;
+                    $regmarcadas    .= '#'.$regdestino.'#';
+
+                  }
+
+                }
+                if ($temreg == true) {
+                ?>
+                  <input name="regenciadestino" type="text" value="<?=$regenciadestino?>"
+                    size="10" readonly style="width:75px">
+                  <input name="regdestinodescr" type="text" value="<?=$regdestinodescr?>"
+                    size="30" readonly style="width:180px">
+                <?
+                } else {
+
+                  $sql2 = "select ed59_i_codigo as regsobra,trim(ed232_c_descr) as descrsobra
+                           from regencia
+                           inner join disciplina on ed12_i_codigo = ed59_i_disciplina
+                           inner join caddisciplina on ed232_i_codigo = ed12_i_caddisciplina
+                           where ed59_i_turma = $turmadestino
+                           and ed232_i_codigo not in(select ed232_i_codigo from regencia
+                                                     inner join disciplina on ed12_i_codigo = ed59_i_disciplina
+                                                     inner join caddisciplina on ed232_i_codigo = ed12_i_caddisciplina
+                                                     where ed59_i_turma = $turmaorigem
+                                                     and ed59_i_serie = $etapaorigem
+                                                     )";
+                  $rs3     = db_query($sql2);
+                  $linhas2 = pg_num_rows($rs3);
+                ?>
+                  <select name="regenciadestino" style="padding:0px;width:75px;height:16px;font-size:12px;"
+                    onchange="js_eliminareg(this.value,<?=$iCont?>)">
+                  <option value=""></option>
+                  <?
+                  for ($iCont2 = 0; $iCont2 < $linhas2; $iCont2++) {
+
+                    db_fieldsmemory($rs3, $iCont2);
+                    echo "<option value='$regsobra'>$regsobra</option>";
+
+                  }
+                  ?>
+                  </select>
+                  <select name="regdestinodescr" style="padding:0px;width:180px;height:16px;font-size:12px;"
+                    onchange="js_eliminareg(this.value,<?=$iCont?>)">
+                  <option value=""></option>
+                  <?
+                  for ($iCont2 = 0; $iCont2 < $linhas2; $iCont2++) {
+
+                    db_fieldsmemory($rs3, $iCont2);
+                    echo "<option value='$regsobra'>$descrsobra</option>";
+
+                  }
+                  ?>
+                  </select>
+                  <input type="hidden" name="combo" value="<?=$iCont?>">
+                  <input type="hidden" name="comboselect<?=$iCont?>" value="">
+                <?
+                }
+                ?>
+              </td>
+              <td nowrap>
+                <table border="1" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <?
+                    $sSql = $oDaoDiarioAvaliacao->sql_query('', 'ed09_c_abrev, ed72_i_valornota, '.
+                                                            'ed72_c_valorconceito, ed72_t_parecer, '.
+                                                            'ed37_c_tipo', 'ed41_i_sequencia asc',
+                                                            " ed95_i_aluno = $ed60_i_aluno ".
+                                                            "and ed95_i_regencia = $ed59_i_codigo ".
+                                                            "and ed09_c_somach = 'S'"
+                                                           );
+                    $rs3  = $oDaoDiarioAvaliacao->sql_record($sSql);
+                    echo "<td width='60px' style='background:#444444;color:#DEB887;font-size:9px;'>".
+                         "<b>$ed232_c_abrev</b></td>";
+                    if ($oDaoDiarioAvaliacao->numrows == 0) {
+                      echo "<td width='160px' style='background:#f3f3f3;'>Nenhum registro.</td>";
+                    } else {
+
+                      for ($iCont2 = 0; $iCont2 < $oDaoDiarioAvaliacao->numrows; $iCont2++) {
+
+                        db_fieldsmemory($rs3, $iCont2);
+                        if (trim($ed37_c_tipo) == 'NOTA') {
+
+                          if ($resultedu == 'S') {
+
+                            $aproveitamento = $ed72_i_valornota != '' ?
+                              number_format($ed72_i_valornota, 2, ',', '.') : '';
+
+                          } else {
+                            $aproveitamento = $ed72_i_valornota != '' ? number_format($ed72_i_valornota, 0) : '';
+                          }
+
+                        } elseif (trim($ed37_c_tipo) == 'NIVEL') {
+                          $aproveitamento = $ed72_c_valorconceito;
+                        } else {
+                          $aproveitamento = $ed72_t_parecer != '' ? "<font size='1'>Parecer</font>" : '';
+                        }
+                        echo "<td width='80px' style='background:#f3f3f3;font-size:9px;'><b>".
+                              $ed09_c_abrev.":</b></td>
+                              <td width='80px' style='font-size:9px;' align='center'>".
+                              ($aproveitamento == '' ? '&nbsp;' : $aproveitamento).'</td>';
+
+                      }
+
+                    }
+                    ?>
+                  </tr>
+                </table>
               </td>
             </tr>
-            <?
-            $sSql = $oDaoMatricula->sql_query('', 'ed60_i_aluno, ed221_i_serie as etapaorigem', '',
-                                              " ed60_i_codigo = $matricula"
-                                             );
-            $rs   = $oDaoMatricula->sql_record($sSql);
-            db_fieldsmemory($rs, 0);
-            $sSql        = $oDaoRegencia->sql_query('', 'ed59_i_codigo, ed232_i_codigo, ed232_c_descr, ed232_c_abrev, '.
-                                                    'ed220_i_procedimento as procorigem, ed59_i_ordenacao',
-                                                    'ed59_i_ordenacao',
-                                                    " ed59_i_turma = $turmaorigem and ed59_i_serie in ($etapaorigem)"
-                                                   );
-            $rs          = $oDaoRegencia->sql_record($sSql);
-            $procorigem  = pg_result($rs, 0, 'procorigem');
-            $linhas      = $oDaoRegencia->numrows;
-            $sSql        = $oDaoRegencia->sql_query('', 'ed59_i_codigo as regdestino, ed232_i_codigo as coddestino, '.
-                                                    'ed232_c_descr as descrdestino, '.
-                                                    'ed220_i_procedimento as procdestino, ed59_i_ordenacao',
-                                                    'ed59_i_ordenacao', " ed59_i_turma = $turmadestino"
-                                                   );
-            $rs2         = $oDaoRegencia->sql_record($sSql);
-            $procdestino = pg_result($rs2, 0, 'procdestino');
-            $linhas1     = $oDaoRegencia->numrows;
-            $regmarcadas = '';
-            for ($iCont = 0; $iCont < $linhas; $iCont++) {
+          <?
+          }
+          ?>
+          <tr>
+            <td valign="top" bgcolor="#CCCCCC" nowrap>
+              <b>Períodos de Avaliação TURMA DE ORIGEM:</b>
+            </td>
+            <td width="10"></td>
+            <td valign="top" bgcolor="#CCCCCC" nowrap>
+              <b>Períodos de Avaliação  TURMA DE DESTINO:</b>
+            </td>
+          </tr>
+          <?
+          $sSql    = $oDaoProcAvaliacao->sql_query('', 'ed41_i_codigo, ed09_i_codigo, ed09_c_descr, '.
+                                                   'ed37_c_tipo, ed37_i_menorvalor, ed37_i_maiorvalor',
+                                                   'ed41_i_sequencia', " ed41_i_procedimento = $procorigem"
+                                                  );
+          $rs      = $oDaoProcAvaliacao->sql_record($sSql);
+          $linhas  = $oDaoProcAvaliacao->numrows;
+          $sSql    = $oDaoProcAvaliacao->sql_query('', 'ed41_i_codigo as codaval, ed09_i_codigo as codperaval, '.
+                                                   'ed09_c_descr as descraval, ed37_c_tipo as tipodest, '.
+                                                   'ed37_i_menorvalor as menordest, ed37_i_maiorvalor as maiordest',
+                                                   'ed41_i_sequencia', " ed41_i_procedimento = $procdestino"
+                                                  );
+          $rs2     = $oDaoProcAvaliacao->sql_record($sSql);
+          $linhas1 = $oDaoProcAvaliacao->numrows;
+          for ($iCont = 0; $iCont < $linhas; $iCont++) {
 
-              db_fieldsmemory($rs, $iCont);
+            db_fieldsmemory($rs, $iCont);
+            $tipoavaliacao = $ed37_c_tipo.($ed37_c_tipo == 'NOTA' ?
+                                           ' ('.$ed37_i_menorvalor.' a '.$ed37_i_maiorvalor.')' : ''
+                                          );
             ?>
-              <tr>
-                <td valign="top" bgcolor="#CCCCCC" nowrap>
-                  <input name="regenciaorigem" type="text" value="<?=$ed59_i_codigo?>" size="10"
-                    readonly style="width:75px">
-                  <input name="regorigemdescr" type="text" value="<?=$ed232_c_descr?>" size="30"
+            <tr>
+              <td valign="top" bgcolor="#CCCCCC" nowrap>
+                <input name="periodoorigem" type="text" value="<?=$ed41_i_codigo?>" size="10"
+                  readonly style="width:75px">
+                <input name="perorigemdescr" type="text" value="<?=$ed09_c_descr.' - '.$tipoavaliacao?>"
+                  size="30" readonly style="width:180px">
+              </td>
+              <td align="center" nowrap>--></td>
+              <td nowrap>
+                <?
+                $temper = false;
+                for ($iCont2 = 0; $iCont2 < $linhas1; $iCont2++) {
+
+                  db_fieldsmemory($rs2, $iCont2);
+                  if ($ed09_i_codigo == $codperaval) {
+
+                    $temper          = true;
+                    $periododestino  = $codaval;
+                    $tipoavaliacao1  = $tipodest.($tipodest == 'NOTA' ? ' ('.$menordest.' a '.$maiordest.')':'');
+                    $perdestinodescr = $descraval.' - '.$tipoavaliacao1;
+
+                  }
+
+                }
+                if ($temper == true) {
+                ?>
+                  <input name="periododestino" type="text" value="<?=$periododestino?>" size="10" readonly
+                    style="width:75px">
+                  <input name="perdestinodescr" type="text" value="<?=$perdestinodescr?>" size="30"
                     readonly style="width:180px">
-                </td>
-                <td align="center" nowrap>--></td>
-                <td nowrap>
+                <?
+                } else {
+
+                  $sql2 = "select ed41_i_codigo as persobra,ed09_c_descr as descrsobra,ed37_c_tipo as tipodest,
+                           ed37_i_menorvalor as menordest,ed37_i_maiorvalor as maiordest
+                           from procavaliacao
+                            inner join periodoavaliacao on ed09_i_codigo = ed41_i_periodoavaliacao
+                            inner join formaavaliacao on ed37_i_codigo = ed41_i_formaavaliacao
+                            inner join procedimento on ed40_i_codigo = ed41_i_procedimento
+                            inner join turmaserieregimemat on ed220_i_procedimento = ed40_i_codigo
+                            inner join serieregimemat on ed223_i_codigo = ed220_i_serieregimemat
+                            inner join turma on ed57_i_codigo = ed220_i_turma
+                           where ed57_i_codigo = $turmadestino
+                           and ed223_i_serie = $etapaorigem
+                           and ed09_i_codigoa
+                             not in(select ed09_i_codigo from procavaliacao
+                                    inner join periodoavaliacao on ed09_i_codigo = ed41_i_periodoavaliacao
+                                    inner join procedimento on ed40_i_codigo = ed41_i_procedimento
+                                    inner join turmaserieregimemat on ed220_i_procedimento = ed40_i_codigo
+                                    inner join serieregimemat on ed223_i_codigo = ed220_i_serieregimemat
+                                    inner join turma on ed57_i_codigo = ed220_i_turma
+                                    where ed57_i_codigo = $turmaorigem
+                                    and ed223_i_serie = $etapaorigem)
+                           order by ed41_i_sequencia";
+                  $rs3     = db_query($sql2);
+                  $linhas2 = pg_num_rows($rs3);
+                  ?>
+                  <select name="periododestino" style="padding:0px;width:75px;height:16px;font-size:12px;"
+                    onchange="js_eliminaper(this.value,<?=$iCont?>)">
+                  <option value=""></option>
                   <?
-                  $temreg = false;
-                  for ($iCont2 = 0; $iCont2 < $linhas1; $iCont2++) {
+                  for ($iCont2 = 0; $iCont2 < $linhas2; $iCont2++) {
 
-                    db_fieldsmemory($rs2, $iCont2);
-                    if ($ed232_i_codigo == $coddestino) {
-
-                      $temreg          = true;
-                      $regenciadestino = $regdestino;
-                      $regdestinodescr = $descrdestino;
-                      $regmarcadas    .= '#'.$regdestino.'#';
-
-                    }
+                    db_fieldsmemory($rs3, $iCont2);
+                    echo "<option value='$persobra'>$persobra</option>";
 
                   }
-                  if ($temreg == true) {
                   ?>
-                    <input name="regenciadestino" type="text" value="<?=$regenciadestino?>"
-                      size="10" readonly style="width:75px">
-                    <input name="regdestinodescr" type="text" value="<?=$regdestinodescr?>"
-                      size="30" readonly style="width:180px">
+                  </select>
+                  <select name="perdestinodescr" style="padding:0px;width:180px;height:16px;font-size:12px;"
+                    onchange="js_eliminaper(this.value,<?=$iCont?>)">
+                  <option value=""></option>
                   <?
-                  } else {
+                  for ($iCont2 = 0; $iCont < $linhas2; $iCont2++) {
 
-                    $sql2 = "select ed59_i_codigo as regsobra,trim(ed232_c_descr) as descrsobra
-                             from regencia
-                             inner join disciplina on ed12_i_codigo = ed59_i_disciplina
-                             inner join caddisciplina on ed232_i_codigo = ed12_i_caddisciplina
-                             where ed59_i_turma = $turmadestino
-                             and ed232_i_codigo not in(select ed232_i_codigo from regencia
-                                                       inner join disciplina on ed12_i_codigo = ed59_i_disciplina
-                                                       inner join caddisciplina on ed232_i_codigo = ed12_i_caddisciplina
-                                                       where ed59_i_turma = $turmaorigem
-                                                       and ed59_i_serie = $etapaorigem
-                                                       )";
-                    $rs3     = db_query($sql2);
-                    $linhas2 = pg_num_rows($rs3);
-                  ?>
-                    <select name="regenciadestino" style="padding:0px;width:75px;height:16px;font-size:12px;"
-                      onchange="js_eliminareg(this.value,<?=$iCont?>)">
-                    <option value=""></option>
-                    <?
-                    for ($iCont2 = 0; $iCont2 < $linhas2; $iCont2++) {
+                    db_fieldsmemory($rs3, $iCont2);
+                    $tipoavaliacao2 = $tipodest.($tipodest == 'NOTA' ? ' ('.$menordest.' a '.$maiordest.')' : '');
+                    echo "<option value='$persobra'>$descrsobra - $tipoavaliacao2</option>";
 
-                      db_fieldsmemory($rs3, $iCont2);
-                      echo "<option value='$regsobra'>$regsobra</option>";
-
-                    }
-                    ?>
-                    </select>
-                    <select name="regdestinodescr" style="padding:0px;width:180px;height:16px;font-size:12px;"
-                      onchange="js_eliminareg(this.value,<?=$iCont?>)">
-                    <option value=""></option>
-                    <?
-                    for ($iCont2 = 0; $iCont2 < $linhas2; $iCont2++) {
-
-                      db_fieldsmemory($rs3, $iCont2);
-                      echo "<option value='$regsobra'>$descrsobra</option>";
-
-                    }
-                    ?>
-                    </select>
-                    <input type="hidden" name="combo" value="<?=$iCont?>">
-                    <input type="hidden" name="comboselect<?=$iCont?>" value="">
-                  <?
                   }
                   ?>
-                </td>
-                <td nowrap>
-                  <table border="1" cellspacing="0" cellpadding="0">
-                    <tr>
-                      <?
-                      $sSql = $oDaoDiarioAvaliacao->sql_query('', 'ed09_c_abrev, ed72_i_valornota, '.
-                                                              'ed72_c_valorconceito, ed72_t_parecer, '.
-                                                              'ed37_c_tipo', 'ed41_i_sequencia asc',
-                                                              " ed95_i_aluno = $ed60_i_aluno ".
-                                                              "and ed95_i_regencia = $ed59_i_codigo ".
-                                                              "and ed09_c_somach = 'S'"
-                                                             );
-                      $rs3  = $oDaoDiarioAvaliacao->sql_record($sSql);
-                      echo "<td width='60px' style='background:#444444;color:#DEB887;font-size:9px;'>".
-                           "<b>$ed232_c_abrev</b></td>";
-                      if ($oDaoDiarioAvaliacao->numrows == 0) {
-                        echo "<td width='160px' style='background:#f3f3f3;'>Nenhum registro.</td>";
-                      } else {
+                  </select>
+                  <input type="hidden" name="pcombo" value="<?=$iCont?>">
+                  <input type="hidden" name="pcomboselect<?=$iCont?>" value="">
+                <?
+                }
+                ?>
+              </td>
+              <td></td>
+            </tr>
+          <?
+          }
 
-                        for ($iCont2 = 0; $iCont2 < $oDaoDiarioAvaliacao->numrows; $iCont2++) {
+          $sSql = $oDaoTurmaSerieRegimeMat->sql_query(null, 'ed223_i_serie, ed11_c_descr as descretapa',
+                                                      'ed223_i_ordenacao', " ed220_i_turma = $turmadestino and ed223_i_serie = {$oGet->codetapadestino} "
+                                                     );
+          $rs   = $oDaoTurmaSerieRegimeMat->sql_record($sSql);
+          if ($oDaoTurmaSerieRegimeMat->numrows > 1) {
+          ?>
+            <tr>
+              <td colspan="3">
+                <?
+                $tem = false;
+                for ($iCont = 0; $iCont < $oDaoTurmaSerieRegimeMat->numrows; $iCont++) {
 
-                          db_fieldsmemory($rs3, $iCont2);
-                          if (trim($ed37_c_tipo) == 'NOTA') {
+                  db_fieldsmemory($rs, $iCont);
+                  if ($ed223_i_serie == $etapaorigem) {
 
-                            if ($resultedu == 'S') {
+                    $tem = true;
+                    break;
 
-                              $aproveitamento = $ed72_i_valornota != '' ?
-                                number_format($ed72_i_valornota, 2, ',', '.') : '';
+                  }
 
-                            } else {
-                              $aproveitamento = $ed72_i_valornota != '' ? number_format($ed72_i_valornota, 0) : '';
-                            }
+                }
+                if ($tem == true) {
+                ?>
+                  <input name="codetapadestino" type="hidden" value="<?=$ed223_i_serie?>">
+                <?
+                } else {
+                ?>
+                  <b>Informe a Etapa na turma de destino:</b>
+                  <select name="codetapadestino">
+                    <?
+                    $sSql = $oDaoSerieEquiv->sql_query(null, 'ed234_i_serieequiv', '',
+                                                       " ed234_i_serie = $etapaorigem"
+                                                      );
+                    $rs2  = $oDaoSerieEquiv->sql_record($sSql);
+                    for ($iCont = 0; $iCont < $oDaoTurmaSerieRegimeMat->numrows; $iCont++) {
 
-                          } elseif (trim($ed37_c_tipo) == 'NIVEL') {
-                            $aproveitamento = $ed72_c_valorconceito;
-                          } else {
-                            $aproveitamento = $ed72_t_parecer != '' ? "<font size='1'>Parecer</font>" : '';
+                      db_fieldsmemory($rs, $iCont);
+                      $selected = "";
+                      $disabled = "disabled";
+                      if ($oDaoSerieEquiv->numrows>0) {
+
+                        for ($iCont2 = 0; $iCont2 < $oDaoSerieEquiv->numrows; $iCont2++) {
+
+                          db_fieldsmemory($rs2, $iCont2);
+                          if ($ed234_i_serieequiv == $ed223_i_serie) {
+
+                            $selected = "selected";
+                            $disabled = "";
+                            break;
+
                           }
-                          echo "<td width='80px' style='background:#f3f3f3;font-size:9px;'><b>".
-                                $ed09_c_abrev.":</b></td>
-                                <td width='80px' style='font-size:9px;' align='center'>".
-                                ($aproveitamento == '' ? '&nbsp;' : $aproveitamento).'</td>';
 
                         }
 
                       }
                       ?>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            <?
-            }
-            ?>
-            <tr>
-              <td valign="top" bgcolor="#CCCCCC" nowrap>
-                <b>Períodos de Avaliação TURMA DE ORIGEM:</b>
-              </td>
-              <td width="10"></td>
-              <td valign="top" bgcolor="#CCCCCC" nowrap>
-                <b>Períodos de Avaliação  TURMA DE DESTINO:</b>
+                      <option value="<?=$ed223_i_serie?>" <?=$selected?> <?=$disabled?>><?=$descretapa?></option>
+                     <?
+                    }
+                  ?>
+                  </select>
+                <?
+                }
+                ?>
               </td>
             </tr>
-            <?
-            $sSql    = $oDaoProcAvaliacao->sql_query('', 'ed41_i_codigo, ed09_i_codigo, ed09_c_descr, '.
-                                                     'ed37_c_tipo, ed37_i_menorvalor, ed37_i_maiorvalor',
-                                                     'ed41_i_sequencia', " ed41_i_procedimento = $procorigem"
-                                                    );
-            $rs      = $oDaoProcAvaliacao->sql_record($sSql);
-            $linhas  = $oDaoProcAvaliacao->numrows;
-            $sSql    = $oDaoProcAvaliacao->sql_query('', 'ed41_i_codigo as codaval, ed09_i_codigo as codperaval, '.
-                                                     'ed09_c_descr as descraval, ed37_c_tipo as tipodest, '.
-                                                     'ed37_i_menorvalor as menordest, ed37_i_maiorvalor as maiordest',
-                                                     'ed41_i_sequencia', " ed41_i_procedimento = $procdestino"
-                                                    );
-            $rs2     = $oDaoProcAvaliacao->sql_record($sSql);
-            $linhas1 = $oDaoProcAvaliacao->numrows;
-            for ($iCont = 0; $iCont < $linhas; $iCont++) {
+          <?
+          } else {
 
-              db_fieldsmemory($rs, $iCont);
-              $tipoavaliacao = $ed37_c_tipo.($ed37_c_tipo == 'NOTA' ?
-                                             ' ('.$ed37_i_menorvalor.' a '.$ed37_i_maiorvalor.')' : ''
-                                            );
-              ?>
-              <tr>
-                <td valign="top" bgcolor="#CCCCCC" nowrap>
-                  <input name="periodoorigem" type="text" value="<?=$ed41_i_codigo?>" size="10"
-                    readonly style="width:75px">
-                  <input name="perorigemdescr" type="text" value="<?=$ed09_c_descr.' - '.$tipoavaliacao?>"
-                    size="30" readonly style="width:180px">
-                </td>
-                <td align="center" nowrap>--></td>
-                <td nowrap>
-                  <?
-                  $temper = false;
-                  for ($iCont2 = 0; $iCont2 < $linhas1; $iCont2++) {
-
-                    db_fieldsmemory($rs2, $iCont2);
-                    if ($ed09_i_codigo == $codperaval) {
-
-                      $temper          = true;
-                      $periododestino  = $codaval;
-                      $tipoavaliacao1  = $tipodest.($tipodest == 'NOTA' ? ' ('.$menordest.' a '.$maiordest.')':'');
-                      $perdestinodescr = $descraval.' - '.$tipoavaliacao1;
-
-                    }
-
-                  }
-                  if ($temper == true) {
-                  ?>
-                    <input name="periododestino" type="text" value="<?=$periododestino?>" size="10" readonly
-                      style="width:75px">
-                    <input name="perdestinodescr" type="text" value="<?=$perdestinodescr?>" size="30"
-                      readonly style="width:180px">
-                  <?
-                  } else {
-
-                    $sql2 = "select ed41_i_codigo as persobra,ed09_c_descr as descrsobra,ed37_c_tipo as tipodest,
-                             ed37_i_menorvalor as menordest,ed37_i_maiorvalor as maiordest
-                             from procavaliacao
-                              inner join periodoavaliacao on ed09_i_codigo = ed41_i_periodoavaliacao
-                              inner join formaavaliacao on ed37_i_codigo = ed41_i_formaavaliacao
-                              inner join procedimento on ed40_i_codigo = ed41_i_procedimento
-                              inner join turmaserieregimemat on ed220_i_procedimento = ed40_i_codigo
-                              inner join serieregimemat on ed223_i_codigo = ed220_i_serieregimemat
-                              inner join turma on ed57_i_codigo = ed220_i_turma
-                             where ed57_i_codigo = $turmadestino
-                             and ed223_i_serie = $etapaorigem
-                             and ed09_i_codigoa
-                               not in(select ed09_i_codigo from procavaliacao
-                                      inner join periodoavaliacao on ed09_i_codigo = ed41_i_periodoavaliacao
-                                      inner join procedimento on ed40_i_codigo = ed41_i_procedimento
-                                      inner join turmaserieregimemat on ed220_i_procedimento = ed40_i_codigo
-                                      inner join serieregimemat on ed223_i_codigo = ed220_i_serieregimemat
-                                      inner join turma on ed57_i_codigo = ed220_i_turma
-                                      where ed57_i_codigo = $turmaorigem
-                                      and ed223_i_serie = $etapaorigem)
-                             order by ed41_i_sequencia";
-                    $rs3     = db_query($sql2);
-                    $linhas2 = pg_num_rows($rs3);
-                    ?>
-                    <select name="periododestino" style="padding:0px;width:75px;height:16px;font-size:12px;"
-                      onchange="js_eliminaper(this.value,<?=$iCont?>)">
-                    <option value=""></option>
-                    <?
-                    for ($iCont2 = 0; $iCont2 < $linhas2; $iCont2++) {
-
-                      db_fieldsmemory($rs3, $iCont2);
-                      echo "<option value='$persobra'>$persobra</option>";
-
-                    }
-                    ?>
-                    </select>
-                    <select name="perdestinodescr" style="padding:0px;width:180px;height:16px;font-size:12px;"
-                      onchange="js_eliminaper(this.value,<?=$iCont?>)">
-                    <option value=""></option>
-                    <?
-                    for ($iCont2 = 0; $iCont < $linhas2; $iCont2++) {
-
-                      db_fieldsmemory($rs3, $iCont2);
-                      $tipoavaliacao2 = $tipodest.($tipodest == 'NOTA' ? ' ('.$menordest.' a '.$maiordest.')' : '');
-                      echo "<option value='$persobra'>$descrsobra - $tipoavaliacao2</option>";
-
-                    }
-                    ?>
-                    </select>
-                    <input type="hidden" name="pcombo" value="<?=$iCont?>">
-                    <input type="hidden" name="pcomboselect<?=$iCont?>" value="">
-                  <?
-                  }
-                  ?>
-                </td>
-                <td></td>
-              </tr>
-            <?
-            }
-
-            $sSql = $oDaoTurmaSerieRegimeMat->sql_query(null, 'ed223_i_serie, ed11_c_descr as descretapa',
-                                                        'ed223_i_ordenacao', " ed220_i_turma = $turmadestino"
-                                                       );
-            $rs   = $oDaoTurmaSerieRegimeMat->sql_record($sSql);
-            if ($oDaoTurmaSerieRegimeMat->numrows > 1) {
+            db_fieldsmemory($rs, 0);
             ?>
-              <tr>
-                <td colspan="3">
-                  <?
-                  $tem = false;
-                  for ($iCont = 0; $iCont < $oDaoTurmaSerieRegimeMat->numrows; $iCont++) {
+            <input name="codetapadestino" type="hidden" value="<?=$ed223_i_serie?>">
+          <?
+          }
+          ?>
+          <tr>
+            <td height="10" colspan="3"></td>
+          </tr>
+        </table>
 
-                    db_fieldsmemory($rs, $iCont);
-                    if ($ed223_i_serie == $etapaorigem) {
+        <table border="0">
+          <tr>
+            <td>
+              <input type="button" name="incluir" value="Incluir" onclick="js_processar();"
+                <?=isset($incluir) ? "style='visibility:hidden;'" : "style='position:absolute;visibility:visible;'"?>>
+            </td>
+          </tr>
+        </table>
+      </form>
 
-                      $tem = true;
-                      break;
-
-                    }
-
-                  }
-                  if ($tem == true) {
-                  ?>
-                    <input name="codetapadestino" type="hidden" value="<?=$ed223_i_serie?>">
-                  <?
-                  } else {
-                  ?>
-                    <b>Informe a Etapa na turma de destino:</b>
-                    <select name="codetapadestino">
-                      <?
-                      $sSql = $oDaoSerieEquiv->sql_query(null, 'ed234_i_serieequiv', '',
-                                                         " ed234_i_serie = $etapaorigem"
-                                                        );
-                      $rs2  = $oDaoSerieEquiv->sql_record($sSql);
-                      for ($iCont = 0; $iCont < $oDaoTurmaSerieRegimeMat->numrows; $iCont++) {
-
-                        db_fieldsmemory($rs, $iCont);
-                        $selected = "";
-                        $disabled = "disabled";
-                        if ($oDaoSerieEquiv->numrows>0) {
-
-                          for ($iCont2 = 0; $iCont2 < $oDaoSerieEquiv->numrows; $iCont2++) {
-
-                            db_fieldsmemory($rs2, $iCont2);
-                            if ($ed234_i_serieequiv == $ed223_i_serie) {
-
-                              $selected = "selected";
-                              $disabled = "";
-                              break;
-
-                            }
-
-                          }
-
-                        }
-                        ?>
-                        <option value="<?=$ed223_i_serie?>" <?=$selected?> <?=$disabled?>><?=$descretapa?></option>
-                       <?
-                      }
-                    ?>
-                    </select>
-                  <?
-                  }
-                  ?>
-                </td>
-              </tr>
-            <?
-            } else {
-
-              db_fieldsmemory($rs, 0);
-              ?>
-              <input name="codetapadestino" type="hidden" value="<?=$ed223_i_serie?>">
-            <?
-            }
-            ?>
-            <tr>
-              <td height="10" colspan="3"></td>
-            </tr>
-          </table>
-
-          <table border="0">
-            <tr>
-              <td>
-                <input type="button" name="incluir" value="Incluir" onclick="js_processar();"
-                  <?=isset($incluir) ? "style='visibility:hidden;'" : "style='position:absolute;visibility:visible;'"?>>
-              </td>
-            </tr>
-          </table>
-        </form>
-
-        <script>
+      <script>
         function js_eliminareg(valor,seq) {
          C = document.form1.combo;
          RD = document.form1.regenciadestino;
@@ -527,7 +531,7 @@ $db_botao = false;
          tamC = C.length;
          tamC = tamC==undefined?1:tamC;
          campo = "comboselect"+seq;
-         valorant = eval("document.form1."+campo+".value");
+         valorant = document.form1[campo].value;
          if (tamC==1) {
           tamRD = RD.length;
           for (r=0;r<tamRD;r++) {
@@ -568,7 +572,7 @@ $db_botao = false;
            }
           }
          }
-         eval("document.form1."+campo+".value = valor");
+         document.form1[campo].value = valor;
         }
         function js_eliminaper(valor,seq) {
          C = document.form1.pcombo;
@@ -577,7 +581,7 @@ $db_botao = false;
          tamC = C.length;
          tamC = tamC==undefined?1:tamC;
          campo = "pcomboselect"+seq;
-         valorant = eval("document.form1."+campo+".value");
+         valorant = document.form1[campo].value;
          if (tamC==1) {
           tamPD = PD.length;
           for (r=0;r<tamPD;r++) {
@@ -618,7 +622,7 @@ $db_botao = false;
            }
           }
          }
-         eval("document.form1."+campo+".value = valor");
+         document.form1[campo].value = valor;
         }
 
         function js_validaDadosPai() {
@@ -687,8 +691,27 @@ $db_botao = false;
 
           }
 
-          return true;
+          var dtMatricula = parent.form1.ed60_d_datamatricula.value
+          var dtAvanco    = parent.form1.ed101_d_data.value
+          if ( dtAvanco == '' ) {
 
+            alert("Informe campo Data.");
+            return;
+          }
+
+          var iAnoDataMatricula = dtMatricula.split('/')[2];
+          var iAnoDataAvanco    = parent.form1.ed101_d_data_ano.value;
+          if ( iAnoDataMatricula != iAnoDataAvanco ) {
+
+            alert("Data de matrícula e data do avanço deve esta no mesmo calendário.");
+            return;
+          }
+          if ( js_comparadata( dtMatricula , dtAvanco, ' > ') ) {
+
+            alert( "Campo data, tem que ser maior que a data de matrícula." );
+            return;
+          }
+          return true;
         }
 
         function js_processar() {
@@ -807,9 +830,7 @@ $db_botao = false;
 
               alert('Informe algum período de avaliação da turma de destino para receber as informações da origem!');
               return false;
-
             }
-
           }
 
           var sGet = '';
@@ -849,6 +870,8 @@ $db_botao = false;
           }
 
         }
+
+
         function js_importar(valor) {
 
           if (valor == 'N') {
@@ -867,906 +890,878 @@ $db_botao = false;
         </script>
       </body>
     </html>
-  <?
-    } else {
+<?
+  } else {
 
-      $lErroTransacao = false;
-      $sPalavra1      = $sTipo == 'A' ? 'AVANÇO' : 'CLASSIFICAÇÃO';
-      $sPalavra2      = $sTipo == 'A' ? 'AVANÇADO' : 'CLASSIFICADO';
-      $sPalavra3      = $sTipo == 'A' ? 'AVANÇO' : 'CLASSIF';
+    $lErroTransacao = false;
+    $sPalavra1      = $sTipo == 'A' ? 'AVANÇO' : 'CLASSIFICAÇÃO';
+    $sPalavra2      = $sTipo == 'A' ? 'AVANÇADO' : 'CLASSIFICADO';
+    $sPalavra3      = $sTipo == 'A' ? 'AVANÇO' : 'CLASSIF';
 
-      db_inicio_transacao();
+    db_inicio_transacao();
 
-      /********* INÍCIO DO BLOCO QUE RESPONSÁVEL POR REALIZAR A PROGRESSÃO DO ALUNO */
-      $oDaoTrocaSerie->ed101_i_aluno     = $ed101_i_aluno;
-      $oDaoTrocaSerie->ed101_i_turmaorig = $ed101_i_turmaorig;
-      $oDaoTrocaSerie->ed101_i_turmadest = $ed101_i_turmadest;
-      $oDaoTrocaSerie->ed101_t_obs       = $ed101_t_obs;
-      $oDaoTrocaSerie->ed101_d_data      = formataData($ed101_d_data);
-      $oDaoTrocaSerie->ed101_c_tipo      = $sTipo;
-      $oDaoTrocaSerie->incluir(null);
+    /********* INÍCIO DO BLOCO QUE RESPONSÁVEL POR REALIZAR A PROGRESSÃO DO ALUNO */
+    $oDaoTrocaSerie->ed101_i_aluno     = $ed101_i_aluno;
+    $oDaoTrocaSerie->ed101_i_turmaorig = $ed101_i_turmaorig;
+    $oDaoTrocaSerie->ed101_i_turmadest = $ed101_i_turmadest;
+    $oDaoTrocaSerie->ed101_t_obs       = $ed101_t_obs;
+    $oDaoTrocaSerie->ed101_d_data      = formataData($ed101_d_data);
+    $oDaoTrocaSerie->ed101_c_tipo      = $sTipo;
+    $oDaoTrocaSerie->incluir(null);
 
-      if ($oDaoTrocaSerie->erro_status != '0') { // Se não houve erro
+    if ($oDaoDiario->erro_status == '0') {
 
-        $sSql = $oDaoMatricula->sql_query('', 'ed60_i_codigo as codmatricula, ed29_i_codigo as codcurso, '.
-                                          'turma.ed57_c_descr as nometurma,ed11_i_sequencia as seqorigem, '.
-                                          'calendario.ed52_i_ano as anoref, calendario.ed52_i_semletivas as semanas, '.
-                                          'turmaserieregimemat.ed220_i_procedimento as codproc, calendario.ed52_i_codigo, '.
-                                          'turma.ed57_i_base as baseant, ed60_d_datamodif as datamodif, '.
-                                          'ed60_c_tipo as tipomatricula, turma.ed57_i_tipoturma as tipoturma, '.
-                                          'procedimento.ed40_i_codigo', '',
-                                          " ed60_i_aluno = $ed101_i_aluno and ed60_i_turma = $ed101_i_turmaorig ".
-                                          "and ed221_i_serie = $ed11_i_codorigem and ed60_c_ativa = 'S'"
-                                         );
-        $rs   = $oDaoMatricula->sql_record($sSql);
-        if ($oDaoMatricula->numrows <= 0) {
+      $lErroTransacao           = true;
+      $oDaoTrocaSerie->erro_msg = $oDaoDiario->erro_msg;
+    }
 
-          $oDaoTrocaSerie->erro_status = '0';
-          $oDaoTrocaSerie->erro_msg    = 'Não foi possível encontrar a matrícula do aluno para realizar a progressão.';
+    if ( !$lErroTransacao ) { // Se não houve erro
 
-        } else { // Encontrou a matrícula
+      $sSql = $oDaoMatricula->sql_query('', 'ed60_i_codigo as codmatricula, ed29_i_codigo as codcurso, '.
+                                        'turma.ed57_c_descr as nometurma,ed11_i_sequencia as seqorigem, '.
+                                        'calendario.ed52_i_ano as anoref, calendario.ed52_i_semletivas as semanas, '.
+                                        'turmaserieregimemat.ed220_i_procedimento as codproc, calendario.ed52_i_codigo, '.
+                                        'turma.ed57_i_base as baseant, ed60_d_datamodif as datamodif, '.
+                                        'ed60_c_tipo as tipomatricula, turma.ed57_i_tipoturma as tipoturma, '.
+                                        'procedimento.ed40_i_codigo', '',
+                                        " ed60_i_aluno = $ed101_i_aluno and ed60_i_turma = $ed101_i_turmaorig ".
+                                        "and ed221_i_serie = $ed11_i_codorigem and ed60_c_ativa = 'S'"
+                                       );
 
-          $oDadosMatricula =  db_utils::fieldsmemory($rs, 0);
+      $rs = $oDaoMatricula->sql_record($sSql);
+      if ($oDaoMatricula->numrows <= 0) {
 
-          /* Busco os procedimentos de avaliação para caso tenha que incluir um diário por ainda não ter sido incluído */
-          $sSql          = $oDaoProcAvaliacao->sql_query(null, 'ed41_i_codigo', '',
-                                                         ' ed41_i_procedimento = '.$oDadosMatricula->ed40_i_codigo
-                                                        );
-          $rs           = $oDaoProcAvaliacao->sql_record($sSql);
-          $iNumProcAval = $oDaoProcAvaliacao->numrows;
-          $aProcAval    = array();
-          for ($iCont = 0; $iCont < $iNumProcAval; $iCont++) {
+        $lErroTransacao              = true;
+        $oDaoTrocaSerie->erro_msg    = 'Não foi possível encontrar a matrícula do aluno para realizar a progressão.';
+      } else { // Encontrou a matrícula
 
-            $aProcAval[$iCont] = db_utils::fieldsmemory($rs, $iCont)->ed41_i_codigo;
+        $oDadosMatricula =  db_utils::fieldsmemory($rs, 0);
 
-          }
+        /* Busco os procedimentos de avaliação para caso tenha que incluir um diário por ainda não ter sido incluído */
+        $sSql          = $oDaoProcAvaliacao->sql_query(null, 'ed41_i_codigo', '',
+                                                       ' ed41_i_procedimento = '.$oDadosMatricula->ed40_i_codigo
+                                                      );
+        $rs           = $oDaoProcAvaliacao->sql_record($sSql);
+        $iNumProcAval = $oDaoProcAvaliacao->numrows;
+        $aProcAval    = array();
+        for ($iCont = 0; $iCont < $iNumProcAval; $iCont++) {
+          $aProcAval[$iCont] = db_utils::fieldsmemory($rs, $iCont)->ed41_i_codigo;
+        }
 
-          /* Busco todas as regências (disciplinas) em que o aluno estava matriculado e as encerro no diário,
-             ou incluo já como encerradas, se ainda nao havia registros no diário para elas */
-          $sSql = $oDaoRegencia->sql_query_file(null, 'ed59_i_codigo', '',
-                                                " ed59_i_turma = $ed101_i_turmaorig and".
-                                                " ed59_i_serie = $ed11_i_codorigem"
-                                               );
-          $rs   = $oDaoRegencia->sql_record($sSql);
-          for ($iCont = 0; $iCont < $oDaoRegencia->numrows; $iCont++) {
+        /* Busco todas as regências (disciplinas) em que o aluno estava matriculado e as encerro no diário,
+           ou incluo já como encerradas, se ainda nao havia registros no diário para elas */
+        $sWhere = " ed59_i_turma = $ed101_i_turmaorig and ed59_i_serie = $ed11_i_codorigem ";
+        $sSql   = $oDaoRegencia->sql_query_file(null, 'ed59_i_codigo', '', $sWhere);
+        $rs     = $oDaoRegencia->sql_record($sSql);
 
-            $iCodRegencia = db_utils::fieldsmemory($rs, $iCont)->ed59_i_codigo;
+        /**
+         * Encerra os diários da turma de origem
+         */
+        for ($iCont = 0; $iCont < $oDaoRegencia->numrows; $iCont++) {
 
-            /* Obtenho os diários (acredito que sempre vai ser um só) para a regência */
-            $sSql  = $oDaoDiario->sql_query_file(null, 'ed95_i_codigo', '',
-                                                 ' ed95_i_aluno = '.$ed101_i_aluno.
-                                                 ' and ed95_i_regencia = '.$iCodRegencia.
-                                                 ' and ed95_i_serie = '.$ed11_i_codorigem
-                                                );
-            $rsTmp = $oDaoDiario->sql_record($sSql);
-            if ($oDaoDiario->numrows > 0) {
+          $iCodRegencia = db_utils::fieldsmemory($rs, $iCont)->ed59_i_codigo;
 
-              $iNumRowsDiario = $oDaoDiario->numrows;
-              for ($iCont2 = 0; $iCont2 < $iNumRowsDiario; $iCont2++) {
+          /* Obtenho os diários (acredito que sempre vai ser um só) para a regência */
+          $sSql  = $oDaoDiario->sql_query_file(null, 'ed95_i_codigo', '',
+                                               ' ed95_i_aluno = '.$ed101_i_aluno.
+                                               ' and ed95_i_regencia = '.$iCodRegencia.
+                                               ' and ed95_i_serie = '.$ed11_i_codorigem
+                                              );
+          $rsTmp = $oDaoDiario->sql_record($sSql);
+          if ($oDaoDiario->numrows > 0) {
 
-                $iCodDiario                   = db_utils::fieldsmemory($rsTmp, $iCont2)->ed95_i_codigo;
-                $oDaoDiario->ed95_i_codigo    = $iCodDiario;
-                $oDaoDiario->ed95_c_encerrado = 'S';
-                $oDaoDiario->alterar($iCodDiario);
-                if ($oDaoDiario->erro_status == '0') {
+            $iNumRowsDiario = $oDaoDiario->numrows;
+            for ($iCont2 = 0; $iCont2 < $iNumRowsDiario; $iCont2++) {
 
-                  $oDaoTrocaSerie->erro_status = '0';
-                  $oDaoTrocaSerie->erro_msg    = $oDaoDiario->erro_msg;
-                  break 2;
-
-                }
-
-              }
-
-            } else { // Incluo o diário já encerrado
-
-
-              $oDaoDiario->ed95_c_encerrado  = 'S';
-              $oDaoDiario->ed95_i_escola     = $iEscola;
-              $oDaoDiario->ed95_i_calendario = $oDadosMatricula->ed52_i_codigo;
-              $oDaoDiario->ed95_i_aluno      = $ed101_i_aluno;
-              $oDaoDiario->ed95_i_serie      = $ed11_i_codorigem;
-              $oDaoDiario->ed95_i_regencia   = $iCodRegencia;
-              $oDaoDiario->incluir(null);
+              $iCodDiario                   = db_utils::fieldsmemory($rsTmp, $iCont2)->ed95_i_codigo;
+              $oDaoDiario->ed95_i_codigo    = $iCodDiario;
+              $oDaoDiario->ed95_c_encerrado = 'S';
+              $oDaoDiario->alterar($iCodDiario);
               if ($oDaoDiario->erro_status == '0') {
 
-                $oDaoTrocaSerie->erro_status = '0';
-                $oDaoTrocaSerie->erro_msg    = $oDaoDiario->erro_msg;
-                break;
-
-              } else {
-
-                 for ($iCont2 = 0; $iCont2 < $iNumProcAval; $iCont2++) {
-
-
-                   $oDaoDiarioAvaliacao->ed72_i_diario        = $oDaoDiario->ed95_i_codigo;
-                   $oDaoDiarioAvaliacao->ed72_i_procavaliacao = $aProcAval[$iCont2];
-                   $oDaoDiarioAvaliacao->ed72_c_aprovmin      = 'N';
-                   $oDaoDiarioAvaliacao->ed72_c_amparo        = 'N';
-                   $oDaoDiarioAvaliacao->ed72_i_escola        = $iEscola;
-                   $oDaoDiarioAvaliacao->ed72_c_tipo          = 'M';
-                   $oDaoDiarioAvaliacao->ed72_c_convertido    = 'N';
-                   $oDaoDiarioAvaliacao->incluir(null);
-                   if ($oDaoDiarioAvaliacao->erro_status == '0') {
-
-                     $oDaoTrocaSerie->erro_status = '0';
-                     $oDaoTrocaSerie->erro_msg    = $oDaoDiarioAvaliacao->erro_msg;
-                     break 2;
-
-                   }
-
-                 }
-
+                $lErroTransacao           = true;
+                $oDaoTrocaSerie->erro_msg = $oDaoDiario->erro_msg;
+                break 2;
               }
-
             }
+          } else { // Incluo o diário já encerrado
 
-          }
+            $oDaoDiario->ed95_c_encerrado  = 'S';
+            $oDaoDiario->ed95_i_escola     = $iEscola;
+            $oDaoDiario->ed95_i_calendario = $oDadosMatricula->ed52_i_codigo;
+            $oDaoDiario->ed95_i_aluno      = $ed101_i_aluno;
+            $oDaoDiario->ed95_i_serie      = $ed11_i_codorigem;
+            $oDaoDiario->ed95_i_regencia   = $iCodRegencia;
+            $oDaoDiario->incluir(null);
+            if ($oDaoDiario->erro_status == '0') {
 
-          if ($oDaoTrocaSerie->erro_status != '0') { // Se não houve nenhum erro até então
-
-            $sSql = $oDaoMatricula->sql_query_file(null, 'max(ed60_i_numaluno) as max', '',
-                                                   " ed60_i_turma = $ed101_i_turmadest"
-                                                  );
-            $rs   = $oDaoMatricula->sql_record($sSql);
-            $iMax = db_utils::fieldsmemory($rs, 0)->max;
-            $iMax = $iMax == '' ? 'null' : ($iMax + 1);
-
-            /* Data da Matrícula */
-            $aData          = explode('/', $ed101_d_data);
-            $dDataMatricula = $aData[2].'-'.$aData[1].'-'.$aData[0];
-
-            /* Observação da nova matrícula */
-            $sObs  = $sPalavra2.'(A) DA ETAPA '.(trim($ed11_c_origem)).' PARA ETAPA '.(trim($ed11_c_destino));
-            $sObs .= ' EM '.$ed101_d_data.', CONFORME LEI FEDERAL N° 9394/96 - ARTIGO 23, § 1o , ';
-            $sObs .= 'PARECER CEED N° 740/99 E REGIMENTO ESCOLAR';
-
-            /* Matricula o aluno na nova turma */
-            $oDaoMatricula->ed60_i_aluno         = $ed101_i_aluno;
-            $oDaoMatricula->ed60_i_turma         = $ed101_i_turmadest;
-            $oDaoMatricula->ed60_i_numaluno      = $iMax;
-            $oDaoMatricula->ed60_c_situacao      = 'MATRICULADO';
-            $oDaoMatricula->ed60_c_concluida     = 'N';
-            $oDaoMatricula->ed60_i_turmaant      = $ed101_i_turmaorig;
-            $oDaoMatricula->ed60_c_rfanterior    = 'A';
-            $oDaoMatricula->ed60_d_datamatricula = $dDataMatricula;
-            $oDaoMatricula->ed60_d_datamodif     = $dDataMatricula;
-            $oDaoMatricula->ed60_d_datamodifant  = null;
-            $oDaoMatricula->ed60_d_datasaida     = "null";
-            $oDaoMatricula->ed60_t_obs           = $sObs;
-            $oDaoMatricula->ed60_c_ativa         = 'S';
-            $oDaoMatricula->ed60_c_tipo          = $oDadosMatricula->tipomatricula;
-            $oDaoMatricula->ed60_c_parecer       = 'N';
-            $oDaoMatricula->incluir(null);
-            if ($oDaoMatricula->erro_status == '0') {
-
-              $oDaoTrocaSerie->erro_status = '0';
-              $oDaoTrocaSerie->erro_msg    = $oDaoMatricula->erro_msg;
+              $lErroTransacao           = true;
+              $oDaoTrocaSerie->erro_msg = $oDaoDiario->erro_msg;
+              break;
 
             } else {
 
-              $iNovaMatricula = $oDaoMatricula->ed60_i_codigo;
+              for ($iCont2 = 0; $iCont2 < $iNumProcAval; $iCont2++) {
 
-              $sWhereTurmaTurnoReferente = "ed336_turma = {$ed101_i_turmadest} AND ed336_turnoreferente in ( {$sTurno} )";
-              $sSqlTurmaTurnoReferente = $oDaoTurmaTurnoReferente->sql_query_file(
-                                                                                   null,
-                                                                                   "ed336_codigo",
-                                                                                   null,
-                                                                                   $sWhereTurmaTurnoReferente
-                                                                                 );
-              $rsTurmaTurnoReferente     = db_query( $sSqlTurmaTurnoReferente );
-              $iTotalTurmaTurnoReferente = pg_num_rows( $rsTurmaTurnoReferente );
+                $oDaoDiarioAvaliacao->ed72_i_diario        = $oDaoDiario->ed95_i_codigo;
+                $oDaoDiarioAvaliacao->ed72_i_procavaliacao = $aProcAval[$iCont2];
+                $oDaoDiarioAvaliacao->ed72_c_aprovmin      = 'N';
+                $oDaoDiarioAvaliacao->ed72_c_amparo        = 'N';
+                $oDaoDiarioAvaliacao->ed72_i_escola        = $iEscola;
+                $oDaoDiarioAvaliacao->ed72_c_tipo          = 'M';
+                $oDaoDiarioAvaliacao->ed72_c_convertido    = 'N';
+                $oDaoDiarioAvaliacao->incluir(null);
+                if ($oDaoDiarioAvaliacao->erro_status == '0') {
 
-              for( $iContador = 0; $iContador < $iTotalTurmaTurnoReferente; $iContador++ ) {
+                  $lErroTransacao           = true;
+                  $oDaoTrocaSerie->erro_msg = $oDaoDiarioAvaliacao->erro_msg;
+                  break 2;
+                }
+              }
+            }
+          }
+        }
 
-                $iCodigoTurmaTurnoReferente = db_utils::fieldsMemory( $rsTurmaTurnoReferente, $iContador )->ed336_codigo;
-                $oDaoMatriculaTurnoReferente->ed337_matricula           = $iNovaMatricula;
-                $oDaoMatriculaTurnoReferente->ed337_turmaturnoreferente = $iCodigoTurmaTurnoReferente;
-                $oDaoMatriculaTurnoReferente->incluir( null );
+        if ( !$lErroTransacao ) { // Se não houve nenhum erro até então
 
-                if ( $oDaoMatriculaTurnoReferente->erro_status == '0' ) {
+          $sSql = $oDaoMatricula->sql_query_file(null, 'max(ed60_i_numaluno) as max', '',
+                                                 " ed60_i_turma = $ed101_i_turmadest"
+                                                );
+          $rs   = $oDaoMatricula->sql_record($sSql);
+          $iMax = db_utils::fieldsmemory($rs, 0)->max;
+          $iMax = $iMax == '' ? 'null' : ($iMax + 1);
 
-                  $oDaoTrocaSerie->erro_status = '0';
-                  $oDaoTrocaSerie->erro_msg    = $oDaoMatriculaTurnoReferente->erro_msg;
+          /* Data da Matrícula */
+          $aData          = explode('/', $ed101_d_data);
+          $dDataMatricula = $aData[2].'-'.$aData[1].'-'.$aData[0];
+
+          /* Observação da nova matrícula */
+          $sObs  = $sPalavra2.'(A) DA ETAPA '.(trim($ed11_c_origem)).' PARA ETAPA '.(trim($ed11_c_destino));
+          $sObs .= ' EM '.$ed101_d_data.', CONFORME LEI FEDERAL N° 9394/96 - ARTIGO 23, § 1o , ';
+          $sObs .= 'PARECER CEED N° 740/99 E REGIMENTO ESCOLAR';
+
+          /* Matricula o aluno na nova turma */
+          $oDaoMatricula->ed60_i_aluno         = $ed101_i_aluno;
+          $oDaoMatricula->ed60_i_turma         = $ed101_i_turmadest;
+          $oDaoMatricula->ed60_i_numaluno      = $iMax;
+          $oDaoMatricula->ed60_c_situacao      = 'MATRICULADO';
+          $oDaoMatricula->ed60_c_concluida     = 'N';
+          $oDaoMatricula->ed60_i_turmaant      = $ed101_i_turmaorig;
+          $oDaoMatricula->ed60_c_rfanterior    = 'A';
+          $oDaoMatricula->ed60_d_datamatricula = $dDataMatricula;
+          $oDaoMatricula->ed60_d_datamodif     = $dDataMatricula;
+          $oDaoMatricula->ed60_d_datamodifant  = null;
+          $oDaoMatricula->ed60_d_datasaida     = "null";
+          $oDaoMatricula->ed60_t_obs           = $sObs;
+          $oDaoMatricula->ed60_c_ativa         = 'S';
+          $oDaoMatricula->ed60_c_tipo          = $oDadosMatricula->tipomatricula;
+          $oDaoMatricula->ed60_c_parecer       = 'N';
+          $oDaoMatricula->incluir(null);
+          if ($oDaoMatricula->erro_status == '0') {
+
+            $lErroTransacao           = true;
+            $oDaoTrocaSerie->erro_msg = $oDaoMatricula->erro_msg;
+
+          } else {
+
+            $iNovaMatricula = $oDaoMatricula->ed60_i_codigo;
+
+            $oTurmaDestino    = TurmaRepository::getTurmaByCodigo( $ed101_i_turmadest );
+            $aVagasTurma      = $oTurmaDestino->getVagasDisponiveis();
+            $lVagaDisponivel  = true;
+            $aTurnosValidacao = explode( ',', $aTurnosSelecionados );
+
+            foreach( $aTurnosValidacao as $iTurno ) {
+
+              if( !array_key_exists( $iTurno, $aVagasTurma ) ) {
+                continue;
+              }
+
+              if( $aVagasTurma[ $iTurno ] <= 0 ) {
+                $lVagaDisponivel = false;
+              }
+            }
+
+            if ( !$lVagaDisponivel ) {
+
+              $lErroTransacao = true;
+              db_msgbox( "Não há vagas para o(s) turno(s) selecionado(s)." );
+            }
+
+            $sWhereTurmaTurnoReferente = "ed336_turma = {$ed101_i_turmadest} AND ed336_turnoreferente in ( {$sTurno} )";
+            $sSqlTurmaTurnoReferente = $oDaoTurmaTurnoReferente->sql_query_file(
+                                                                                 null,
+                                                                                 "ed336_codigo",
+                                                                                 null,
+                                                                                 $sWhereTurmaTurnoReferente
+                                                                               );
+            $rsTurmaTurnoReferente     = db_query( $sSqlTurmaTurnoReferente );
+            $iTotalTurmaTurnoReferente = pg_num_rows( $rsTurmaTurnoReferente );
+
+            for( $iContador = 0; $iContador < $iTotalTurmaTurnoReferente; $iContador++ ) {
+
+              $iCodigoTurmaTurnoReferente = db_utils::fieldsMemory( $rsTurmaTurnoReferente, $iContador )->ed336_codigo;
+              $oDaoMatriculaTurnoReferente->ed337_matricula           = $iNovaMatricula;
+              $oDaoMatriculaTurnoReferente->ed337_turmaturnoreferente = $iCodigoTurmaTurnoReferente;
+              $oDaoMatriculaTurnoReferente->incluir( null );
+
+              if ( $oDaoMatriculaTurnoReferente->erro_status == '0' ) {
+
+                $lErroTransacao           = true;
+                $oDaoTrocaSerie->erro_msg = $oDaoMatriculaTurnoReferente->erro_msg;
+              }
+            }
+
+            /* Inserção do registro de movimentação da nova matrícula do aluno */
+            $oAluno               = AlunoRepository::getAlunoByCodigo( $ed101_i_aluno );
+            $oSituacaoAluno       = $oAluno->getSituacao();
+            $sSituacaoAnterior    = $oSituacaoAluno->getSituacaoAnterior() == "CANDIDATO" ? "MATRICULAR"  : "REMATRICULAR";
+            $sSituacaoAnteriorMov = $oSituacaoAluno->getSituacaoAnterior() == "CANDIDATO" ? "MATRICULADO" : "REMATRICULADO";
+
+            $oDaoMatriculaMov->ed229_i_matricula    = $iNovaMatricula;
+            $oDaoMatriculaMov->ed229_i_usuario      = db_getsession('DB_id_usuario');
+            $oDaoMatriculaMov->ed229_c_procedimento = "REMATRICULAR ALUNO";
+            $oDaoMatriculaMov->ed229_t_descr        = "ALUNO {$sSituacaoAnteriorMov} NA TURMA ";
+            $oDaoMatriculaMov->ed229_t_descr       .= trim($ed57_c_descrdest) . ". SITUAÇÃO ANTERIOR: {$sSituacaoAnterior}";
+            $oDaoMatriculaMov->ed229_d_dataevento   = $dDataMatricula;
+            $oDaoMatriculaMov->ed229_c_horaevento   = date('H:i');
+            $oDaoMatriculaMov->ed229_d_data         = date('Y-m-d', db_getsession('DB_datausu'));
+            $oDaoMatriculaMov->incluir(null);
+            if ($oDaoMatriculaMov->erro_status == '0') {
+
+              $lErroTransacao           = true;
+              $oDaoTrocaSerie->erro_msg = $oDaoMatriculaMov->erro_msg;
+
+            } else {
+
+              /* Obtenho todas as séries (etapas) da turma de destino para realizar a matrícula nas mesmas */
+              $sSql = $oDaoTurmaSerieRegimeMat->sql_query(null, 'ed223_i_serie', 'ed223_i_ordenacao',
+                                                          " ed220_i_turma = $ed101_i_turmadest"
+                                                         );
+              $rs   = $oDaoTurmaSerieRegimeMat->sql_record($sSql);
+              for ($iCont = 0; $iCont < $oDaoTurmaSerieRegimeMat->numrows; $iCont++) {
+
+                $iSerie = db_utils::fieldsmemory($rs, $iCont)->ed223_i_serie;
+                $oDaoMatriculaSerie->ed221_c_origem = 'N';
+                if ($iSerie == $ed11_i_coddestino) {
+                  $oDaoMatriculaSerie->ed221_c_origem = 'S';
+                }
+                $oDaoMatriculaSerie->ed221_i_matricula = $iNovaMatricula;
+                $oDaoMatriculaSerie->ed221_i_serie = $iSerie;
+                $oDaoMatriculaSerie->incluir(null);
+                if ($oDaoMatriculaSerie->erro_status == '0') {
+
+                  $lErroTransacao           = true;
+                  $oDaoTrocaSerie->erro_msg = $oDaoMatriculaSerie->erro_msg;
+                  break;
                 }
               }
 
+              if ( !$lErroTransacao ) {
 
-              /* Inserção do registro de movimentação da nova matrícula do aluno */
-              $oDaoMatriculaMov->ed229_i_matricula    = $iNovaMatricula;
-              $oDaoMatriculaMov->ed229_i_usuario      = db_getsession('DB_id_usuario');
-              $oDaoMatriculaMov->ed229_c_procedimento = 'PROGRESSÃO DE ALUNO -> '.$sPalavra1;
-              $oDaoMatriculaMov->ed229_t_descr        = 'ALUNO '.$sPalavra2.' DA TURMA '.trim($ed57_c_descrorig).' / '.
-                                                        trim($ed11_c_origem).' PARA A TURMA '.trim($ed57_c_descrdest).
-                                                        ' / '.trim($ed11_c_destino);
-              $oDaoMatriculaMov->ed229_d_dataevento   = $dDataMatricula;
-              $oDaoMatriculaMov->ed229_c_horaevento   = date('H:i');
-              $oDaoMatriculaMov->ed229_d_data         = date('Y-m-d', db_getsession('DB_datausu'));
-              $oDaoMatriculaMov->incluir(null);
-              if ($oDaoMatriculaMov->erro_status == '0') {
+                /* Atualizo matrícula de origem */
+                $oDaoMatricula                      = null;
+                $oDaoMatricula                      = db_utils::getdao('matricula'); // Faço isso pra limpar os atr do obj
+                $oDaoMatricula->ed60_c_situacao     = $sPalavra2;
+                $oDaoMatricula->ed60_c_concluida    = 'S' ;
+                $oDaoMatricula->ed60_t_obs          = $sObs;
+                $oDaoMatricula->ed60_d_datasaida    = $dDataMatricula;
+                $oDaoMatricula->ed60_d_datamodifant = $oDadosMatricula->datamodif;
+                $oDaoMatricula->ed60_d_datamodif    = $dDataMatricula;
+                $oDaoMatricula->ed60_i_codigo       = $oDadosMatricula->codmatricula;
 
-                $oDaoTrocaSerie->erro_status = '0';
-                $oDaoTrocaSerie->erro_msg    = $oDaoMatriculaMov->erro_msg;
+                $oDaoMatricula->alterar($oDadosMatricula->codmatricula);
+                if ($oDaoMatricula->erro_status == '0') {
 
-              } else {
+                  $lErroTransacao           = true;
+                  $oDaoTrocaSerie->erro_msg = $oDaoMatricula->erro_msg;
 
-                /* Obtenho todas as séries (etapas) da turma de destino para realizar a matrícula nas mesmas */
-                $sSql = $oDaoTurmaSerieRegimeMat->sql_query(null, 'ed223_i_serie', 'ed223_i_ordenacao',
-                                                            " ed220_i_turma = $ed101_i_turmadest"
-                                                           );
-                $rs   = $oDaoTurmaSerieRegimeMat->sql_record($sSql);
-                for ($iCont = 0; $iCont < $oDaoTurmaSerieRegimeMat->numrows; $iCont++) {
+                } else {
 
-                  $iSerie = db_utils::fieldsmemory($rs, $iCont)->ed223_i_serie;
-                  if ($iSerie == $ed11_i_coddestino) {
-                    $oDaoMatriculaSerie->ed221_c_origem = 'S';
-                  } else {
-                    $oDaoMatriculaSerie->ed221_c_origem = 'N';
-                  }
-                  $oDaoMatriculaSerie->ed221_i_matricula = $iNovaMatricula;
-                  $oDaoMatriculaSerie->ed221_i_serie = $iSerie;
-                  $oDaoMatriculaSerie->incluir(null);
-                  if ($oDaoMatriculaSerie->erro_status == '0') {
+                  /* Inserção do registro de movimentação da matrícula antiga do aluno */
+                  $oDaoMatriculaMov->ed229_i_matricula    = $oDadosMatricula->codmatricula;
+                  $oDaoMatriculaMov->ed229_i_usuario      = db_getsession('DB_id_usuario');
+                  $oDaoMatriculaMov->ed229_c_procedimento = 'PROGRESSÃO DE ALUNO -> '.$sPalavra1;
+                  $oDaoMatriculaMov->ed229_t_descr        = 'ALUNO '.$sPalavra2.' DA TURMA '.trim($ed57_c_descrorig).' / '.
+                                                            trim($ed11_c_origem).' PARA A TURMA '.trim($ed57_c_descrdest).
+                                                            ' / '.trim($ed11_c_destino);
+                  $oDaoMatriculaMov->ed229_d_dataevento   = $dDataMatricula;
+                  $oDaoMatriculaMov->ed229_c_horaevento   = date('H:i');
+                  $oDaoMatriculaMov->ed229_d_data         = date('Y-m-d', db_getsession('DB_datausu'));
+                  $oDaoMatriculaMov->incluir(null);
+                  if ($oDaoMatriculaMov->erro_status == '0') {
 
-                    $oDaoTrocaSerie->erro_status = '0';
-                    $oDaoTrocaSerie->erro_msg    = $oDaoMatriculaSerie->erro_msg;
-                    break;
-
-                  }
-
-                }
-
-                if ($oDaoTrocaSerie->erro_status != '0') {
-
-                  /* Atualizo matrícula de origem */
-                  $oDaoMatricula                      = null;
-                  $oDaoMatricula                      = db_utils::getdao('matricula'); // Faço isso pra limpar os atr do obj
-                  $oDaoMatricula->ed60_c_situacao     = $sPalavra2;
-                  $oDaoMatricula->ed60_c_concluida    = 'S' ;
-                  $oDaoMatricula->ed60_t_obs          = $sObs;
-                  $oDaoMatricula->ed60_d_datasaida    = $dDataMatricula;
-                  $oDaoMatricula->ed60_d_datamodifant = $oDadosMatricula->datamodif;
-                  $oDaoMatricula->ed60_d_datamodif    = $dDataMatricula;
-                  $oDaoMatricula->ed60_i_codigo       = $oDadosMatricula->codmatricula;
-                  $oDaoMatricula->alterar($oDadosMatricula->codmatricula);
-                  if ($oDaoMatricula->erro_status == '0') {
-
-                    $oDaoTrocaSerie->erro_status = '0';
-                    $oDaoTrocaSerie->erro_msg    = $oDaoMatricula->erro_msg;
-
+                    $lErroTransacao           = true;
+                    $oDaoTrocaSerie->erro_msg = $oDaoMatriculaMov->erro_msg;
                   } else {
 
-                    /* Inserção do registro de movimentação da matrícula antiga do aluno */
-                    $oDaoMatriculaMov->ed229_i_matricula    = $oDadosMatricula->codmatricula;
-                    $oDaoMatriculaMov->ed229_i_usuario      = db_getsession('DB_id_usuario');
-                    $oDaoMatriculaMov->ed229_c_procedimento = 'PROGRESSÃO DE ALUNO -> '.$sPalavra1;
-                    $oDaoMatriculaMov->ed229_t_descr        = 'ALUNO '.$sPalavra2.' DA TURMA '.trim($ed57_c_descrorig).
-                                                              ' / '.
-                                                              trim($ed11_c_origem)." PARA A TURMA ".
-                                                              trim($ed57_c_descrdest).' / '.trim($ed11_c_destino);
-                    $oDaoMatriculaMov->ed229_d_dataevento   = $dDataMatricula;
-                    $oDaoMatriculaMov->ed229_c_horaevento   = date('H:i');
-                    $oDaoMatriculaMov->ed229_d_data         = date('Y-m-d', db_getsession('DB_datausu'));
-                    $oDaoMatriculaMov->incluir(null);
-                    if ($oDaoMatriculaMov->erro_status == '0') {
+                    /* Atualizo a quantidade de matrículas da turma de destino */
+                    $sSql = $oDaoMatricula->sql_query_file(null, ' count(*) as qtdematricula', '',
+                                                           " ed60_i_turma = $ed101_i_turmadest ".
+                                                           "and ed60_c_situacao = 'MATRICULADO'"
+                                                          );
+                    $rs    = $oDaoMatricula->sql_record($sSql);
+                    $iQtde = db_utils::fieldsmemory($rs, 0)->qtdematricula;
+                    $iQtde = $iQtde == '' ? 0 : $iQtde;
 
-                      $oDaoTrocaSerie->erro_status = '0';
-                      $oDaoTrocaSerie->erro_msg    = $oDaoMatriculaMov->erro_msg;
+                    $oDaoTurma->ed57_i_nummatr = $iQtde;
+                    $oDaoTurma->ed57_i_codigo  = $ed101_i_turmadest;
+                    $oDaoTurma->alterar($ed101_i_turmadest);
+                    if ($oDaoTurma->erro_status == '0') {
 
+                      $lErroTransacao           = true;
+                      $oDaoTrocaSerie->erro_msg = $oDaoTurma->erro_msg;
                     } else {
 
-                      /* Atualizo a quantidade de matrículas da turma de destino */
+                      /* Atualizo a quantidade de matrículas da turma de origem */
                       $sSql = $oDaoMatricula->sql_query_file(null, ' count(*) as qtdematricula', '',
-                                                             " ed60_i_turma = $ed101_i_turmadest ".
+                                                             " ed60_i_turma = $ed101_i_turmaorig ".
                                                              "and ed60_c_situacao = 'MATRICULADO'"
                                                             );
+
                       $rs    = $oDaoMatricula->sql_record($sSql);
                       $iQtde = db_utils::fieldsmemory($rs, 0)->qtdematricula;
                       $iQtde = $iQtde == '' ? 0 : $iQtde;
 
                       $oDaoTurma->ed57_i_nummatr = $iQtde;
-                      $oDaoTurma->ed57_i_codigo  = $ed101_i_turmadest;
-                      $oDaoTurma->alterar($ed101_i_turmadest);
+                      $oDaoTurma->ed57_i_codigo  = $ed101_i_turmaorig;
+                      $oDaoTurma->alterar($ed101_i_turmaorig);
                       if ($oDaoTurma->erro_status == '0') {
 
-                        $oDaoTrocaSerie->erro_status = '0';
-                        $oDaoTrocaSerie->erro_msg    = $oDaoTurma->erro_msg;
-
+                        $lErroTransacao           = true;
+                        $oDaoTrocaSerie->erro_msg = $oDaoTurma->erro_msg;
                       } else {
 
-                        /* Atualizo a quantidade de matrículas da turma de origem */
-                        $sSql = $oDaoMatricula->sql_query_file(null, ' count(*) as qtdematricula', '',
-                                                               " ed60_i_turma = $ed101_i_turmaorig ".
-                                                               "and ed60_c_situacao = 'MATRICULADO'"
-                                                              );
-
-                        $rs    = $oDaoMatricula->sql_record($sSql);
-                        $iQtde = db_utils::fieldsmemory($rs, 0)->qtdematricula;
-                        $iQtde = $iQtde == '' ? 0 : $iQtde;
-
-                        $oDaoTurma->ed57_i_nummatr = $iQtde;
-                        $oDaoTurma->ed57_i_codigo  = $ed101_i_turmaorig;
-                        $oDaoTurma->alterar($ed101_i_turmaorig);
-                        if ($oDaoTurma->erro_status == '0') {
-
-                          $oDaoTrocaSerie->erro_status = '0';
-                          $oDaoTrocaSerie->erro_msg    = $oDaoTurma->erro_msg;
-
+                        /* Incluo dados da progressão no histórico do aluno */
+                        if ($oDadosMatricula->tipoturma == 2) {
+                          $sCondicao = ' and ed11_i_sequencia >= '.$oDadosMatricula->seqorigem;
                         } else {
+                          $sCondicao = ' and ed11_i_sequencia = '.$oDadosMatricula->seqorigem;
+                        }
+                        $sSql = $oDaoTurmaSerieRegimeMat->sql_query(null, 'ed223_i_serie', 'ed223_i_ordenacao',
+                                                                    " ed220_i_turma = $ed101_i_turmaorig $sCondicao"
+                                                                   );
 
-                          /* Incluo dados da progressão no histórico do aluno */
-                          if ($oDadosMatricula->tipoturma == 2) {
-                            $sCondicao = ' and ed11_i_sequencia >= '.$oDadosMatricula->seqorigem;
+
+                        $rs   = $oDaoTurmaSerieRegimeMat->sql_record($sSql);
+                        for ($iCont = 0; $iCont < $oDaoTurmaSerieRegimeMat->numrows; $iCont++) {
+
+                          /* Incluo histórico para todas as séries (etapas) da turma de origem */
+                          $iSerie = db_utils::fieldsmemory($rs, $iCont)->ed223_i_serie;
+                          $sSql   = $oDaoHistorico->sql_query_file(null, 'ed61_i_codigo', '',
+                                                                   " ed61_i_aluno = $ed101_i_aluno ".
+                                                                   "and ed61_i_curso = $oDadosMatricula->codcurso"
+                                                                  );
+                          $rs2    = $oDaoHistorico->sql_record($sSql);
+                          if ($oDaoHistorico->numrows == 0) {
+
+                            $oDaoHistorico->ed61_i_escola = $iEscola;
+                            $oDaoHistorico->ed61_i_aluno  = $ed101_i_aluno;
+                            $oDaoHistorico->ed61_i_curso  = $oDadosMatricula->codcurso;
+                            $oDaoHistorico->ed61_t_obs    = '';
+                            $oDaoHistorico->incluir(null);
+                            if ($oDaoHistorico->erro_status == '0') {
+
+                              $lErroTransacao           = true;
+                              $oDaoTrocaSerie->erro_msg = $oDaoHistorico->erro_msg;
+                              break;
+                            } else {
+                              $iCodHistorico = $oDaoHistorico->ed61_i_codigo;
+                            }
                           } else {
-                            $sCondicao = ' and ed11_i_sequencia = '.$oDadosMatricula->seqorigem;
+                            $iCodHistorico = db_utils::fieldsmemory($rs2, 0)->ed61_i_codigo;
                           }
-                          $sSql = $oDaoTurmaSerieRegimeMat->sql_query(null, 'ed223_i_serie', 'ed223_i_ordenacao',
-                                                                      " ed220_i_turma = $ed101_i_turmaorig $sCondicao"
-                                                                     );
-                          $rs   = $oDaoTurmaSerieRegimeMat->sql_record($sSql);
-                          for ($iCont = 0; $iCont < $oDaoTurmaSerieRegimeMat->numrows; $iCont++) {
 
-                            /* Incluo histórico para todas as séries (etapas) da turma de origem */
-                            $iSerie = db_utils::fieldsmemory($rs, $iCont)->ed223_i_serie;
-                            $sSql   = $oDaoHistorico->sql_query_file(null, 'ed61_i_codigo', '',
-                                                                     " ed61_i_aluno = $ed101_i_aluno ".
-                                                                     "and ed61_i_curso = $oDadosMatricula->codcurso"
-                                                                    );
-                            $rs2    = $oDaoHistorico->sql_record($sSql);
-                            if ($oDaoHistorico->numrows == 0) {
+                          if ( !$lErroTransacao ) {
 
-                              $oDaoHistorico->ed61_i_escola = $iEscola;
-                              $oDaoHistorico->ed61_i_aluno  = $ed101_i_aluno;
-                              $oDaoHistorico->ed61_i_curso  = $oDadosMatricula->codcurso;
-                              $oDaoHistorico->ed61_t_obs    = '';
-                              $oDaoHistorico->incluir(null);
-                              if ($oDaoHistorico->erro_status == '0') {
+                            /* Incluo histórico mps */
+                            $oDaoHistoricoMps->ed62_i_historico          = $iCodHistorico;
+                            $oDaoHistoricoMps->ed62_i_escola             = $iEscola;
+                            $oDaoHistoricoMps->ed62_i_serie              = $iSerie;
+                            $oDaoHistoricoMps->ed62_i_turma              = $oDadosMatricula->nometurma;
+                            $oDaoHistoricoMps->ed62_i_anoref             = $oDadosMatricula->anoref;
+                            $oDaoHistoricoMps->ed62_i_justificativa      = null;
+                            $oDaoHistoricoMps->ed62_i_periodoref         = '0';
+                            $oDaoHistoricoMps->ed62_c_resultadofinal     = 'A';
+                            $oDaoHistoricoMps->ed62_c_situacao           = 'CONCLUÍDO';
+                            $oDaoHistoricoMps->ed62_i_diasletivos        = 200;
+                            $oDaoHistoricoMps->ed62_i_qtdch              = 0;
+                            $oDaoHistoricoMps->ed62_lancamentoautomatico = 'true';
+                            $oDaoHistoricoMps->incluir(null);
+                            if ($oDaoHistoricoMps->erro_status == '0') {
 
-                                $oDaoTrocaSerie->erro_status = '0';
-                                $oDaoTrocaSerie->erro_msg    = $oDaoHistorico->erro_msg;
-                                break;
+                              $lErroTransacao           = true;
+                              $oDaoTrocaSerie->erro_msg = "Etapa:{$oDaoHistoricoMps->erro_msg}";
+                              break;
+                            } else { // Incluo no historicompsdisc
 
-                              } else {
-                                $iCodHistorico = $oDaoHistorico->ed61_i_codigo;
-                              }
+                              $iCodMps   = $oDaoHistoricoMps->ed62_i_codigo;
+                              $sSql      = $oDaoProcedimento->sql_query(null, 'substr(ed37_c_tipo,1,1) as ed37_c_tipo',
+                                                                        '',
+                                                                        ' ed40_i_codigo = '.$oDadosMatricula->codproc
+                                                                       );
+                              $rs2       = $oDaoProcedimento->sql_record($sSql);
+                              $sTipoAval = db_utils::fieldsmemory($rs2, 0)->ed37_c_tipo;
 
-                            } else {
-                              $iCodHistorico = db_utils::fieldsmemory($rs2, 0)->ed61_i_codigo;
-                            }
+                              $sCampos = 'ed59_i_codigo as regencia, ed12_i_codigo as disciplina, ed59_basecomum, ed59_i_qtdperiodo, ed59_tipobase ';
+                              //$iSerie é a série da etapa sendo inclusa
+                              $sWhere  = " ed59_i_turma = $ed101_i_turmaorig and ed59_i_serie = {$iSerie}";
+                              $sSql    = $oDaoRegencia->sql_query('', $sCampos, '', $sWhere);
+                              $rs2     = $oDaoRegencia->sql_record($sSql);
+                              for ($iCont2 = 0; $iCont2 < $oDaoRegencia->numrows; $iCont2++) {
 
-                            if ($oDaoTrocaSerie->erro_status != '0') {
+                                /* Para cada registro no histórico, tenho uma série (etapa) e para cada série tenho
+                                   várias disciplinas que devem ser inseridas no histórico */
+                                $oDadosRegencia = db_utils::fieldsmemory($rs2, $iCont2);
+                                $sBaseComum     = $oDadosRegencia->ed59_basecomum == 't' ? 'true' : 'false';
 
-                              /* Incluo histórico mps */
-                              $oDaoHistoricoMps->ed62_i_historico          = $iCodHistorico;
-                              $oDaoHistoricoMps->ed62_i_escola             = $iEscola;
-                              $oDaoHistoricoMps->ed62_i_serie              = $iSerie;
-                              $oDaoHistoricoMps->ed62_i_turma              = $oDadosMatricula->nometurma;
-                              $oDaoHistoricoMps->ed62_i_anoref             = $oDadosMatricula->anoref;
-                              $oDaoHistoricoMps->ed62_i_justificativa      = null;
-                              $oDaoHistoricoMps->ed62_i_periodoref         = '0';
-                              $oDaoHistoricoMps->ed62_c_resultadofinal     = 'A';
-                              $oDaoHistoricoMps->ed62_c_situacao           = 'CONCLUÍDO';
-                              $oDaoHistoricoMps->ed62_i_diasletivos        = 200;
-                              $oDaoHistoricoMps->ed62_i_qtdch              = 0;
-                              $oDaoHistoricoMps->ed62_lancamentoautomatico = 'true';
-                              $oDaoHistoricoMps->incluir(null);
-                              if ($oDaoHistoricoMps->erro_status == '0') {
+                                $iAulas = $oDadosMatricula->semanas * $oDadosRegencia->ed59_i_qtdperiodo;
+                                /* Incluo histórico de cada disciplina da etapa (série) */
+                                $oDaoHistMpsDisc->ed65_i_historicomps       = $iCodMps;
+                                $oDaoHistMpsDisc->ed65_i_disciplina         = $oDadosRegencia->disciplina;
+                                $oDaoHistMpsDisc->ed65_i_justificativa      = null;
+                                $oDaoHistMpsDisc->ed65_i_qtdch              = $iAulas;
+                                $oDaoHistMpsDisc->ed65_c_resultadofinal     = 'A';
+                                $oDaoHistMpsDisc->ed65_t_resultobtido       = $sPalavra3;
+                                $oDaoHistMpsDisc->ed65_c_situacao           = 'CONCLUÍDO';
+                                $oDaoHistMpsDisc->ed65_c_tiporesultado      = $sTipo;
+                                $oDaoHistMpsDisc->ed65_lancamentoautomatico = "true";
+                                $oDaoHistMpsDisc->ed65_basecomum            = "{$sBaseComum}";
+                                $oDaoHistMpsDisc->ed65_tipobase             = $oDadosRegencia->ed59_tipobase;
+                                $oDaoHistMpsDisc->incluir(null);
+                                if ($oDaoHistMpsDisc->erro_status == '0') {
 
-                                $oDaoTrocaSerie->erro_status = '0';
-                                $oDaoTrocaSerie->erro_msg    = "Etapa:{$oDaoHistoricoMps->erro_msg}";
-                                break;
-
-                              } else { // Incluo no historicompsdisc
-
-
-                                $iCodMps   = $oDaoHistoricoMps->ed62_i_codigo;
-                                $sSql      = $oDaoProcedimento->sql_query(null, 'substr(ed37_c_tipo,1,1) as ed37_c_tipo',
-                                                                          '',
-                                                                          ' ed40_i_codigo = '.$oDadosMatricula->codproc
-                                                                         );
-                                $rs2       = $oDaoProcedimento->sql_record($sSql);
-                                $sTipoAval = db_utils::fieldsmemory($rs2, 0)->ed37_c_tipo;
-                                $sSql      = $oDaoRegencia->sql_query('', 'ed59_i_codigo as regencia, '.
-                                                                      'ed12_i_codigo as disciplina, ed59_basecomum,'.
-                                                                      'ed59_i_qtdperiodo', '',
-                                                                      " ed59_i_turma = $ed101_i_turmaorig"
-                                                                     );
-                                $rs2       = $oDaoRegencia->sql_record($sSql);
-                                for ($iCont2 = 0; $iCont2 < $oDaoRegencia->numrows; $iCont2++) {
-
-                                  /* Para cada registro no histórico, tenho uma série (etapa) e para cada série tenho
-                                     várias disciplinas que devem ser inseridas no histórico */
-                                  $oDadosRegencia = db_utils::fieldsmemory($rs2, $iCont2);
-
-                                  $iAulas = $oDadosMatricula->semanas * $oDadosRegencia->ed59_i_qtdperiodo;
-                                  /* Incluo histórico de cada disciplina da etapa (série) */
-                                  $oDaoHistMpsDisc->ed65_i_historicomps       = $iCodMps;
-                                  $oDaoHistMpsDisc->ed65_i_disciplina         = $oDadosRegencia->disciplina;
-                                  $oDaoHistMpsDisc->ed65_i_justificativa      = null;
-                                  $oDaoHistMpsDisc->ed65_i_qtdch              = $iAulas;
-                                  $oDaoHistMpsDisc->ed65_c_resultadofinal     = 'A';
-                                  $oDaoHistMpsDisc->ed65_t_resultobtido       = $sPalavra3;
-                                  $oDaoHistMpsDisc->ed65_c_situacao           = 'CONCLUÍDO';
-                                  $oDaoHistMpsDisc->ed65_c_tiporesultado      = $sTipo;
-                                  $oDaoHistMpsDisc->ed65_lancamentoautomatico = "true";
-                                  $oDaoHistMpsDisc->ed65_basecomum            = $oDadosRegencia->ed59_basecomum;
-                                  $oDaoHistMpsDisc->incluir(null);
-                                  if ($oDaoHistMpsDisc->erro_status == '0') {
-
-                                    $oDaoTrocaSerie->erro_status = '0';
-                                    $oDaoTrocaSerie->erro_msg    = "serie:".$oDaoHistMpsDisc->erro_msg;
-                                    break 2;
-
-                                  }
-
+                                  $lErroTransacao           = true;
+                                  $oDaoTrocaSerie->erro_msg = "serie:".$oDaoHistMpsDisc->erro_msg;
+                                  break 2;
                                 }
-
                               }
-
                             }
-
                           }
-
-                          if ($oDaoTrocaSerie->erro_status != '0') { // Se não houve erro até então
-
-                            /* Atualizo alunocurso */
-                            $sSql        = $oDaoTurma->sql_query_file('', '*', '', " ed57_i_codigo = $ed101_i_turmadest");
-                            $rs          = $oDaoTurma->sql_record($sSql);
-                            $oDadosTurma = db_utils::fieldsmemory($rs, 0);
-                            $sSql        = $oDaoAlunoCurso->sql_query('', 'ed56_i_codigo', '',
-                                                                      " ed56_i_aluno = $ed101_i_aluno"
-                                                                     );
-                            $rs          = $oDaoAlunoCurso->sql_record($sSql);
-                            $iAlunoCurso = db_utils::fieldsmemory($rs, 0)->ed56_i_codigo;
-                            $oDaoAlunoCurso->ed56_i_codigo   = $iAlunoCurso;
-                            $oDaoAlunoCurso->ed56_c_situacao = 'MATRICULADO';
-                            $oDaoAlunoCurso->ed56_i_base     = $oDadosTurma->ed57_i_base;
-                            $oDaoAlunoCurso->ed56_i_baseant  = $oDadosMatricula->baseant;
-                            $oDaoAlunoCurso->alterar($iAlunoCurso);
-                            if ($oDaoAlunoCurso->erro_status == '0') {
-
-                              $oDaoTrocaSerie->erro_status = '0';
-                              $oDaoTrocaSerie->erro_msg    = $oDaoAlunoCurso->erro_msg;
-
-                            } else {
-
-                              $sSql       = $oDaoAlunoPossib->sql_query_file(null, 'ed79_i_codigo', '',
-                                                                             " ed79_i_alunocurso = $iAlunoCurso"
-                                                                            );
-                              $rs         = $oDaoAlunoPossib->sql_record($sSql);
-                              $iCodPossib = db_utils::fieldsmemory($rs, 0)->ed79_i_codigo;
-                              $oDaoAlunoPossib->ed79_i_codigo     = $iCodPossib;
-                              $oDaoAlunoPossib->ed79_i_alunocurso = $iAlunoCurso;
-                              $oDaoAlunoPossib->ed79_i_serie      = $ed11_i_coddestino;
-                              $oDaoAlunoPossib->ed79_i_turno      = $oDadosTurma->ed57_i_turno;
-                              $oDaoAlunoPossib->ed79_i_turmaant   = $ed101_i_turmaorig;
-                              $oDaoAlunoPossib->ed79_c_resulant   = 'A';
-                              $oDaoAlunoPossib->ed79_c_situacao   = 'A';
-                              $oDaoAlunoPossib->alterar($iCodPossib);
-                              if ($oDaoAlunoPossib->erro_status == '0') {
-
-                                $oDaoTrocaSerie->erro_status = '0';
-                                $oDaoTrocaSerie->erro_msg    = $oDaoAlunoPossib->erro_msg;
-
-                              }
-
-                            }
-
-                          }
-
                         }
 
+                        if ( !$lErroTransacao ) { // Se não houve erro até então
+
+                          /* Atualizo alunocurso */
+                          $sSql        = $oDaoTurma->sql_query_file('', '*', '', " ed57_i_codigo = $ed101_i_turmadest");
+                          $rs          = $oDaoTurma->sql_record($sSql);
+                          $oDadosTurma = db_utils::fieldsmemory($rs, 0);
+                          $sSql        = $oDaoAlunoCurso->sql_query('', 'ed56_i_codigo', '',
+                                                                    " ed56_i_aluno = $ed101_i_aluno"
+                                                                   );
+                          $rs          = $oDaoAlunoCurso->sql_record($sSql);
+                          $iAlunoCurso = db_utils::fieldsmemory($rs, 0)->ed56_i_codigo;
+                          $oDaoAlunoCurso->ed56_i_codigo   = $iAlunoCurso;
+                          $oDaoAlunoCurso->ed56_c_situacao = 'MATRICULADO';
+                          $oDaoAlunoCurso->ed56_i_base     = $oDadosTurma->ed57_i_base;
+                          $oDaoAlunoCurso->ed56_i_baseant  = $oDadosMatricula->baseant;
+                          $oDaoAlunoCurso->alterar($iAlunoCurso);
+                          if ($oDaoAlunoCurso->erro_status == '0') {
+
+                            $lErroTransacao           = true;
+                            $oDaoTrocaSerie->erro_msg = $oDaoAlunoCurso->erro_msg;
+                          } else {
+
+                            $sSql       = $oDaoAlunoPossib->sql_query_file(null, 'ed79_i_codigo', '',
+                                                                           " ed79_i_alunocurso = $iAlunoCurso"
+                                                                          );
+                            $rs         = $oDaoAlunoPossib->sql_record($sSql);
+                            $iCodPossib = db_utils::fieldsmemory($rs, 0)->ed79_i_codigo;
+                            $oDaoAlunoPossib->ed79_i_codigo     = $iCodPossib;
+                            $oDaoAlunoPossib->ed79_i_alunocurso = $iAlunoCurso;
+                            $oDaoAlunoPossib->ed79_i_serie      = $ed11_i_coddestino;
+                            $oDaoAlunoPossib->ed79_i_turno      = $oDadosTurma->ed57_i_turno;
+                            $oDaoAlunoPossib->ed79_i_turmaant   = $ed101_i_turmaorig;
+                            $oDaoAlunoPossib->ed79_c_resulant   = 'A';
+                            $oDaoAlunoPossib->ed79_c_situacao   = 'A';
+                            $oDaoAlunoPossib->alterar($iCodPossib);
+                            if ($oDaoAlunoPossib->erro_status == '0') {
+
+                              $lErroTransacao           = true;
+                              $oDaoTrocaSerie->erro_msg = $oDaoAlunoPossib->erro_msg;
+                            }
+                          }
+                        }
                       }
-
                     }
-
                   }
-
                 }
-
               }
-
             }
-
           }
+        }
+      }
+    }
+    /* FIM DO BLOCO QUE FAZ A PROGRESSÃO DO ALUNO *****************/
+
+    /**************** INÍCIO DO BLOCO RESPONSÁVEL PELA IMPORTAÇÃO DE APROVEITAMENTO DO ALUNO */
+    if ($import == 'S' && !$lErroTransacao) {
+
+      /* $perequiv contém os períodos equivalentes informados pelo usuário no seguinte formato:
+          per1|perequiv1Xper2|perequiv2...
+      */
+      $periodos      = explode('X', $perequiv);
+      $msg_conversao = '';
+      $sep_conversao = '';
+      for ($iCont = 0; $iCont < count($periodos); $iCont++) {
+
+        $divideperiodos = explode('|', $periodos[$iCont]);
+        $periodoorigem  = $divideperiodos[0];
+        $periododestino = $divideperiodos[1];
+
+        /* Busco as informações do período de avaliação de destino */
+        $sSql           = $oDaoProcAvaliacao->sql_query(null, 'ed09_i_codigo, ed09_c_descr as perdestdescricao, '.
+                                                        'ed37_c_tipo as tipodestino, '.
+                                                        'ed37_i_maiorvalor as mvdestino', '',
+                                                        " ed41_i_codigo = $periododestino"
+                                                       );
+        $rs             = $oDaoProcAvaliacao->sql_record($sSql);
+        if ($oDaoProcAvaliacao->erro_status == '0' || $oDaoProcAvaliacao->numrows == 0) {
+
+          $lErroTransacao              = true;
+          $oDaoTrocaSerie->erro_msg    = 'Não foi possível obter as informações dos períodos de avalição. ';
+          $oDaoTrocaSerie->erro_msg   .= 'Operação cancelada.';
+          break;
 
         }
 
-      }
-      /* FIM DO BLOCO QUE FAZ A PROGRESSÃO DO ALUNO *****************/
+        /* Busco as informações do período de avaliação de orgiem */
+        $oDadosPerDest  = db_utils::fieldsmemory($rs, 0);
+        $sSql           = $oDaoProcAvaliacao->sql_query('', 'ed37_c_tipo as tipoorigem, '.
+                                                        'ed37_i_maiorvalor as mvorigem', '',
+                                                        " ed41_i_codigo = $periodoorigem"
+                                                       );
+        $rs             = $oDaoProcAvaliacao->sql_record($sSql);
+        if ($oDaoProcAvaliacao->erro_status == '0' || $oDaoProcAvaliacao->numrows == 0) {
 
-      /**************** INÍCIO DO BLOCO RESPONSÁVEL PELA IMPORTAÇÃO DE APROVEITAMENTO DO ALUNO */
-      if ($import == 'S' && $oDaoTrocaSerie->erro_status != '0') {
+          $lErroTransacao              = true;
+          $oDaoTrocaSerie->erro_msg    = 'Não foi possível obter as informações dos períodos de avalição. ';
+          $oDaoTrocaSerie->erro_msg   .= 'Operação cancelada.';
+          break;
 
-        /* $perequiv contém os períodos equivalentes informados pelo usuário no seguinte formato:
-            per1|perequiv1Xper2|perequiv2...
+        }
+
+        $oDadosPerOrig = db_utils::fieldsmemory($rs, 0);
+
+        /* Verifico as diferenças nas formas de avaliação dos procedimentos de avaliação dos dois períodos
+           verificando a compatibilidade
         */
-        $periodos      = explode('X', $perequiv);
-        $msg_conversao = '';
-        $sep_conversao = '';
-        for ($iCont = 0; $iCont < count($periodos); $iCont++) {
+        if (trim($oDadosPerOrig->tipoorigem) != trim($oDadosPerDest->tipodestino)
+            || (trim($oDadosPerOrig->tipoorigem) == trim($oDadosPerDest->tipodestino)
+                && $oDadosPerOrig->mvorigem != $oDadosPerDest->mvdestino)) {
 
-          $divideperiodos = explode('|', $periodos[$iCont]);
-          $periodoorigem  = $divideperiodos[0];
-          $periododestino = $divideperiodos[1];
+          $msg_conversao .= $sep_conversao." ".$perdestdescricao;
+          $sep_conversao  = ',';
 
-          /* Busco as informações do período de avaliação de destino */
-          $sSql           = $oDaoProcAvaliacao->sql_query(null, 'ed09_i_codigo, ed09_c_descr as perdestdescricao, '.
-                                                          'ed37_c_tipo as tipodestino, '.
-                                                          'ed37_i_maiorvalor as mvdestino', '',
-                                                          " ed41_i_codigo = $periododestino"
-                                                         );
-          $rs             = $oDaoProcAvaliacao->sql_record($sSql);
-          if ($oDaoProcAvaliacao->erro_status == '0' || $oDaoProcAvaliacao->numrows == 0) {
+        }
 
-            $oDaoTrocaSerie->erro_status = '0';
-            $oDaoTrocaSerie->erro_msg    = 'Não foi possível obter as informações dos períodos de avalição. ';
-            $oDaoTrocaSerie->erro_msg   .= 'Operação cancelada.';
-            break;
+        /* $regequiv contém as regências (disciplinas nas séries) equivalentes informadas no seguinte formato:
+            reg1|regequiv1Xreg2|regequiv2...
+        */
+        $regencias = explode('X', $regequiv);
+        for ($iCont2 = 0; $iCont2<count($regencias);$iCont2++) {
+
+          $divideregencias = explode('|', $regencias[$iCont2]);
+          $regenciaorigem  = $divideregencias[0];
+          $regenciadestino = $divideregencias[1];
+
+          /* Busco o Diário do aluno para a regencia de origem. Se não existir, não poderá ser importado (óbvio) */
+          $sSql            = $oDaoDiario->sql_query_file(null, 'ed95_i_codigo as coddiarioorigem', '',
+                                                         ' ed95_i_regencia = '.$regenciaorigem.
+                                                         ' and ed95_i_aluno = '.$ed101_i_aluno
+                                                        );
+          $rs              = $oDaoDiario->sql_record($sSql);
+          if ($oDaoDiario->numrows > 0) {
+            $coddiarioorigem = db_utils::fieldsmemory($rs, 0)->coddiarioorigem;
+          } else {
+            $coddiarioorigem = -1; // Não vai existir diário com este código, logo, nas querys virá record vazio
+          }
+
+          /* Busco o Diário do aluno para a regencia de destinho. Se não existir, então insiro um novo diário */
+          $sSql = $oDaoDiario->sql_query_file(null, 'ed95_i_codigo', '',
+                                              ' ed95_i_regencia = '.$regenciadestino.
+                                              ' and ed95_i_aluno = '.$ed101_i_aluno
+                                             );
+          $rs   = $oDaoDiario->sql_record($sSql);
+          if ($oDaoDiario->numrows == 0) {
+
+            $oDaoDiario->ed95_c_encerrado  = 'N';
+            $oDaoDiario->ed95_i_escola     = $oDadosTurma->ed57_i_escola;
+            $oDaoDiario->ed95_i_calendario = $oDadosTurma->ed57_i_calendario;
+            $oDaoDiario->ed95_i_aluno      = $ed101_i_aluno;
+            $oDaoDiario->ed95_i_serie      = $codetapadestino;
+            $oDaoDiario->ed95_i_regencia   = $regenciadestino;
+            $oDaoDiario->incluir(null);
+            if ($oDaoDiario->erro_status == '0') {
+
+              $lErroTransacao           = true;
+              $oDaoTrocaSerie->erro_msg = $oDaoDiario->erro_msg;
+              break 2;
+            }
+
+            $iDiarioDest = $oDaoDiario->ed95_i_codigo;
+          } else {
+
+            $iDiarioDest                  = db_utils::fieldsmemory($rs, 0)->ed95_i_codigo;
+            $oDaoDiario                   = db_utils::getdao('diario'); // Faço isso para limpar o valor dos atributos
+            $oDaoDiario->ed95_i_codigo    = $iDiarioDest;
+            $oDaoDiario->ed95_c_encerrado = 'N'; // Abro o diário, se estava encerrado
+            $oDaoDiario->alterar($iDiarioDest);
+            if ($oDaoDiario->erro_status == '0') {
+
+              $lErroTransacao           = true;
+              $oDaoTrocaSerie->erro_msg = $oDaoDiario->erro_msg;
+              break 2;
+            }
+          }
+
+          /* Importação dos amparos */
+          $sSql = $oDaoAmparo->sql_query_file(null, 'ed81_i_codigo as codamparoorigem, '.
+                                              'ed81_i_justificativa, ed81_i_convencaoamp, '.
+                                              'ed81_c_todoperiodo, ed81_c_aprovch', '',
+                                              "ed81_i_diario = $coddiarioorigem"
+                                             );
+          $rs   = $oDaoAmparo->sql_record($sSql);
+          if ($oDaoAmparo->numrows > 0) { // Se tinha amparo, importa
+
+            $oDadosAmparoOrig = db_utils::fieldsmemory($rs, 0);
+            $sSql             = $oDaoAmparo->sql_query_file(null, 'ed81_i_codigo', '',
+                                                            " ed81_i_diario = $iDiarioDest"
+                                                           );
+            $rs               = $oDaoAmparo->sql_record($sSql);
+            if ($oDaoAmparo->numrows == 0) {
+
+              $oDaoAmparo->ed81_i_diario        = $iDiarioDest;
+              $oDaoAmparo->ed81_c_aprovch       = $oDadosAmparoOrig->ed81_c_aprovch;
+              $oDaoAmparo->ed81_c_todoperiodo   = $oDadosAmparoOrig->ed81_c_todoperiodo;
+              $oDaoAmparo->ed81_i_justificativa = $oDadosAmparoOrig->ed81_i_justificativa;
+              $oDaoAmparo->ed81_i_convencaoamp  = $oDadosAmparoOrig->ed81_i_convencaoamp;
+              $oDaoAmparo->incluir(null);
+              if ($oDaoAmparo->erro_status == '0') {
+
+                $lErroTransacao           = true;
+                $oDaoTrocaSerie->erro_msg = $oDaoAmparo->erro_msg;
+                break 2;
+              }
+            } else {
+
+              $iAmparoDest                      = db_fieldsmemory($rs, 0)->ed81_i_codigo;
+              $oDaoAmparo->ed81_i_diario        = $iDiarioDest;
+              $oDaoAmparo->ed81_c_aprovch       = $oDadosAmparoOrig->ed81_c_aprovch;
+              $oDaoAmparo->ed81_c_todoperiodo   = $oDadosAmparoOrig->ed81_c_todoperiodo;
+              $oDaoAmparo->ed81_i_justificativa = $oDadosAmparoOrig->ed81_i_justificativa;
+              $oDaoAmparo->ed81_i_convencaoamp  = $oDadosAmparoOrig->ed81_i_convencaoamp;
+              $oDaoAmparo->ed81_i_codigo        = $iAmparoDest;
+              $oDaoAmparo->alterar($iAmparoDest);
+              if ($oDaoAmparo->erro_status == '0') {
+
+                $lErroTransacao           = true;
+                $oDaoTrocaSerie->erro_msg = $oDaoAmparo->erro_msg;
+                break 2;
+              }
+            }
+          }
+
+          /* Verifico se já foi gerado registro no diariofinal para o diário de destino. Se ainda não foi, incluo. */
+          $sSql = $oDaoDiarioFinal->sql_query_file(null, 'ed74_i_diario', '',
+                                                   " ed74_i_diario = $iDiarioDest"
+                                                  );
+          $rs   = $oDaoDiarioFinal->sql_record($sSql);
+          if ($oDaoDiarioFinal->numrows == 0) {
+
+            $oDaoDiarioFinal->ed74_i_diario = $iDiarioDest;
+            $oDaoDiarioFinal->incluir(null);
+            if ($oDaoDiarioFinal->erro_status == '0') {
+
+              $lErroTransacao           = true;
+              $oDaoTrocaSerie->erro_msg = $oDaoDiarioFinal->erro_msg;
+              break 2;
+            }
+          }
+
+          /* Busco os dados do diário de avaliação de origem para importar para o de destino */
+          $sSql = $oDaoDiarioAvaliacao->sql_query_file(null, 'ed72_i_codigo as codavalorigem, '.
+                                                       'ed72_i_numfaltas, ed72_i_valornota, '.
+                                                       'ed72_c_valorconceito, ed72_t_parecer, '.
+                                                       'ed72_c_aprovmin, ed72_c_amparo, '.
+                                                       'ed72_t_obs, ed72_i_escola, ed72_c_tipo', '',
+                                                       " ed72_i_diario = $coddiarioorigem ".
+                                                       "and ed72_i_procavaliacao = $periodoorigem"
+                                                      );
+          $rs   = $oDaoDiarioAvaliacao->sql_record($sSql);
+
+          if ($oDaoDiarioAvaliacao->numrows > 0) {
+            $oDadosDiarioAval = db_utils::fieldsmemory($rs, 0);
+          } else {
+
+            $oDadosDiarioAval = new stdClass();
+            $oDadosDiarioAval->codavalorigem        = '';
+            $oDadosDiarioAval->ed72_i_numfaltas     = null;
+            $oDadosDiarioAval->ed72_i_valornota     = null;
+            $oDadosDiarioAval->ed72_c_valorconceito = '';
+            $oDadosDiarioAval->ed72_t_parecer       = '';
+            $oDadosDiarioAval->ed72_c_aprovmin      = 'N';
+            $oDadosDiarioAval->ed72_c_amparo        = 'N';
+            $oDadosDiarioAval->ed72_t_obs           = '';
+            $oDadosDiarioAval->ed72_i_escola        = db_getsession('DB_coddepto');
+            $oDadosDiarioAval->ed72_c_tipo          = 'M';
 
           }
 
-          /* Busco as informações do período de avaliação de orgiem */
-          $oDadosPerDest  = db_utils::fieldsmemory($rs, 0);
-          $sSql           = $oDaoProcAvaliacao->sql_query('', 'ed37_c_tipo as tipoorigem, '.
-                                                          'ed37_i_maiorvalor as mvorigem', '',
-                                                          " ed41_i_codigo = $periodoorigem"
-                                                         );
-          $rs             = $oDaoProcAvaliacao->sql_record($sSql);
-          if ($oDaoProcAvaliacao->erro_status == '0' || $oDaoProcAvaliacao->numrows == 0) {
-
-            $oDaoTrocaSerie->erro_status = '0';
-            $oDaoTrocaSerie->erro_msg    = 'Não foi possível obter as informações dos períodos de avalição. ';
-            $oDaoTrocaSerie->erro_msg   .= 'Operação cancelada.';
-            break;
-
-          }
-
-          $oDadosPerOrig = db_utils::fieldsmemory($rs, 0);
-
-          /* Verifico as diferenças nas formas de avaliação dos procedimentos de avaliação dos dois períodos
-             verificando a compatibilidade
-          */
           if (trim($oDadosPerOrig->tipoorigem) != trim($oDadosPerDest->tipodestino)
               || (trim($oDadosPerOrig->tipoorigem) == trim($oDadosPerDest->tipodestino)
                   && $oDadosPerOrig->mvorigem != $oDadosPerDest->mvdestino)) {
 
-            $msg_conversao .= $sep_conversao." ".$perdestdescricao;
-            $sep_conversao  = ',';
+            if ($oDadosDiarioAval->ed72_i_valornota == ''
+                && $oDadosDiarioAval->ed72_c_valorconceito == ''
+                && $oDadosDiarioAval->ed72_t_parecer =='') {
+              $oDadosDiarioAval->ed72_c_convertido = 'N';
+            } else {
+              $oDadosDiarioAval->ed72_c_convertido = 'S';
+            }
 
+          } else {
+            $oDadosDiarioAval->ed72_c_convertido = 'N';
           }
 
-          /* $regequiv contém as regências (disciplinas nas séries) equivalentes informadas no seguinte formato:
-              reg1|regequiv1Xreg2|regequiv2...
-          */
-          $regencias = explode('X', $regequiv);
-          for ($iCont2 = 0; $iCont2<count($regencias);$iCont2++) {
+          /* Verifico se já tem um diario de avaliação de destino para importar os dados para ele */
+          $sSql = $oDaoDiarioAvaliacao->sql_query_file(null, 'ed72_i_codigo', '',
+                                                       " ed72_i_diario = $iDiarioDest ".
+                                                       "and ed72_i_procavaliacao = $periododestino"
+                                                      );
+          $rs   = $oDaoDiarioAvaliacao->sql_record($sSql);
 
-            $divideregencias = explode('|', $regencias[$iCont2]);
-            $regenciaorigem  = $divideregencias[0];
-            $regenciadestino = $divideregencias[1];
+          $etapaDestino = new Etapa($codetapadestino);
+          $baseCurricular = BaseCurricularRegistry::get($oTurmaDestino->getBaseCurricular()->getCodigoSequencial());
+          $baseCurricularDisciplinaRepository = new BaseCurricularDisciplinaRepository();
+          $baseCurricularDisciplinas = $baseCurricularDisciplinaRepository
+              ->scopeBaseCurricular($baseCurricular)
+              ->scopeEtapa($etapaDestino)
+              ->get();
+            $oRegenciaDestino = new Regencia($regenciadestino);
 
-            /* Busco o Diário do aluno para a regencia de origem. Se não existir, não poderá ser importado (óbvio) */
-            $sSql            = $oDaoDiario->sql_query_file(null, 'ed95_i_codigo as coddiarioorigem', '',
-                                                           ' ed95_i_regencia = '.$regenciaorigem.
-                                                           ' and ed95_i_aluno = '.$ed101_i_aluno
-                                                          );
-            $rs              = $oDaoDiario->sql_record($sSql);
-            if ($oDaoDiario->numrows > 0) {
-              $coddiarioorigem = db_utils::fieldsmemory($rs, 0)->coddiarioorigem;
-            } else {
-              $coddiarioorigem = -1; // Não vai existir diário com este código, logo, nas querys virá record vazio
-            }
-
-            /* Busco o Diário do aluno para a regencia de destinho. Se não existir, então insiro um novo diário */
-            $sSql = $oDaoDiario->sql_query_file(null, 'ed95_i_codigo', '',
-                                                ' ed95_i_regencia = '.$regenciadestino.
-                                                ' and ed95_i_aluno = '.$ed101_i_aluno
-                                               );
-            $rs   = $oDaoDiario->sql_record($sSql);
-            if ($oDaoDiario->numrows == 0) {
-
-              $oDaoDiario->ed95_c_encerrado  = 'N';
-              $oDaoDiario->ed95_i_escola     = $oDadosTurma->ed57_i_escola;
-              $oDaoDiario->ed95_i_calendario = $oDadosTurma->ed57_i_calendario;
-              $oDaoDiario->ed95_i_aluno      = $ed101_i_aluno;
-              $oDaoDiario->ed95_i_serie      = $codetapadestino;
-              $oDaoDiario->ed95_i_regencia   = $regenciadestino;
-              $oDaoDiario->incluir(null);
-              if ($oDaoDiario->erro_status == '0') {
-
-                echo 'Sim!';
-
-                $oDaoTrocaSerie->erro_status = '0';
-                $oDaoTrocaSerie->erro_msg    = $oDaoDiario->erro_msg;
-                break 2;
-
-              }
-              $iDiarioDest = $oDaoDiario->ed95_i_codigo;
-
-            } else {
-
-              $iDiarioDest                  = db_utils::fieldsmemory($rs, 0)->ed95_i_codigo;
-              $oDaoDiario                   = db_utils::getdao('diario'); // Faço isso para limpar o valor dos atributos
-              $oDaoDiario->ed95_i_codigo    = $iDiarioDest;
-              $oDaoDiario->ed95_c_encerrado = 'N'; // Abro o diário, se estava encerrado
-              $oDaoDiario->alterar($iDiarioDest);
-              if ($oDaoDiario->erro_status == '0') {
-
-                $oDaoTrocaSerie->erro_status = '0';
-                $oDaoTrocaSerie->erro_msg    = $oDaoDiario->erro_msg;
-                break 2;
-
-              }
-
-            }
-
-            /* Importação dos amparos */
-            $sSql = $oDaoAmparo->sql_query_file(null, 'ed81_i_codigo as codamparoorigem, '.
-                                                'ed81_i_justificativa, ed81_i_convencaoamp, '.
-                                                'ed81_c_todoperiodo, ed81_c_aprovch', '',
-                                                "ed81_i_diario = $coddiarioorigem"
-                                               );
-            $rs   = $oDaoAmparo->sql_record($sSql);
-            if ($oDaoAmparo->numrows > 0) { // Se tinha amparo, importa
-
-              $oDadosAmparoOrig = db_utils::fieldsmemory($rs, 0);
-              $sSql             = $oDaoAmparo->sql_query_file(null, 'ed81_i_codigo', '',
-                                                              " ed81_i_diario = $iDiarioDest"
-                                                             );
-              $rs               = $oDaoAmparo->sql_record($sSql);
-              if ($oDaoAmparo->numrows == 0) {
-
-                $oDaoAmparo->ed81_i_diario        = $iDiarioDest;
-                $oDaoAmparo->ed81_c_aprovch       = $oDadosAmparoOrig->ed81_c_aprovch;
-                $oDaoAmparo->ed81_c_todoperiodo   = $oDadosAmparoOrig->ed81_c_todoperiodo;
-                $oDaoAmparo->ed81_i_justificativa = $oDadosAmparoOrig->ed81_i_justificativa;
-                $oDaoAmparo->ed81_i_convencaoamp  = $oDadosAmparoOrig->ed81_i_convencaoamp;
-                $oDaoAmparo->incluir(null);
-                if ($oDaoAmparo->erro_status == '0') {
-
-                  $oDaoTrocaSerie->erro_status = '0';
-                  $oDaoTrocaSerie->erro_msg    = $oDaoAmparo->erro_msg;
-                  break 2;
-
+            $baseCurricularDisciplina = array_filter($baseCurricularDisciplinas, function ($base) use ($oRegenciaDestino) {
+                return $base->getDisciplina()->getCodigoDisciplina() == $oRegenciaDestino->getDisciplina()->getCodigoDisciplina();
+            });
+            $baseCurricularDisciplina = array_shift($baseCurricularDisciplina);
+            $periododestinodisciplina = null;
+            if ($baseCurricularDisciplina->getProcedimento()) {
+                $avaliacaoPeriodica = new AvaliacaoPeriodica($periododestino);
+                foreach ($baseCurricularDisciplina->getProcedimento()->getElementos() as $elementoAvaliacao) {
+                    if ($elementoAvaliacao instanceof AvaliacaoPeriodica &&
+                        $elementoAvaliacao->getPeriodoAvaliacao()->getCodigo() == $avaliacaoPeriodica->getPeriodoAvaliacao()->getCodigo()) {
+                        $periododestinodisciplina = $elementoAvaliacao->getCodigo();
+                        break;
+                    }
                 }
-
-              } else {
-
-                $iAmparoDest                      = db_fieldsmemory($rs, 0)->ed81_i_codigo;
-                $oDaoAmparo->ed81_i_diario        = $iDiarioDest;
-                $oDaoAmparo->ed81_c_aprovch       = $oDadosAmparoOrig->ed81_c_aprovch;
-                $oDaoAmparo->ed81_c_todoperiodo   = $oDadosAmparoOrig->ed81_c_todoperiodo;
-                $oDaoAmparo->ed81_i_justificativa = $oDadosAmparoOrig->ed81_i_justificativa;
-                $oDaoAmparo->ed81_i_convencaoamp  = $oDadosAmparoOrig->ed81_i_convencaoamp;
-                $oDaoAmparo->ed81_i_codigo        = $iAmparoDest;
-                $oDaoAmparo->alterar($iAmparoDest);
-                if ($oDaoAmparo->erro_status == '0') {
-
-                  $oDaoTrocaSerie->erro_status = '0';
-                  $oDaoTrocaSerie->erro_msg    = $oDaoAmparo->erro_msg;
-                  break 2;
-
-                }
-
-              }
-
             }
 
-            /* Verifico se já foi gerado registro no diariofinal para o diário de destino. Se ainda não foi, incluo. */
-            $sSql = $oDaoDiarioFinal->sql_query_file(null, 'ed74_i_diario', '',
-                                                     " ed74_i_diario = $iDiarioDest"
-                                                    );
-            $rs   = $oDaoDiarioFinal->sql_record($sSql);
-            if ($oDaoDiarioFinal->numrows == 0) {
-
-              $oDaoDiarioFinal->ed74_i_diario = $iDiarioDest;
-              $oDaoDiarioFinal->incluir(null);
-              if ($oDaoDiarioFinal->erro_status == '0') {
-
-                $oDaoTrocaSerie->erro_status = '0';
-                $oDaoTrocaSerie->erro_msg    = $oDaoDiarioFinal->erro_msg;
-                break 2;
-
-              }
-
-            }
-
-            /* Busco os dados do diário de avaliação de origem para importar para o de destino */
-            $sSql = $oDaoDiarioAvaliacao->sql_query_file(null, 'ed72_i_codigo as codavalorigem, '.
-                                                         'ed72_i_numfaltas, ed72_i_valornota, '.
-                                                         'ed72_c_valorconceito, ed72_t_parecer, '.
-                                                         'ed72_c_aprovmin, ed72_c_amparo, '.
-                                                         'ed72_t_obs, ed72_i_escola, ed72_c_tipo', '',
-                                                         " ed72_i_diario = $coddiarioorigem ".
-                                                         "and ed72_i_procavaliacao = $periodoorigem"
-                                                        );
-            $rs   = $oDaoDiarioAvaliacao->sql_record($sSql);
-
-            if ($oDaoDiarioAvaliacao->numrows > 0) {
-              $oDadosDiarioAval = db_utils::fieldsmemory($rs, 0);
-            } else {
-
-              $oDadosDiarioAval = new stdClass();
-              $oDadosDiarioAval->codavalorigem        = '';
-              $oDadosDiarioAval->ed72_i_numfaltas     = null;
-              $oDadosDiarioAval->ed72_i_valornota     = null;
-              $oDadosDiarioAval->ed72_c_valorconceito = '';
-              $oDadosDiarioAval->ed72_t_parecer       = '';
-              $oDadosDiarioAval->ed72_c_aprovmin      = 'N';
-              $oDadosDiarioAval->ed72_c_amparo        = 'N';
-              $oDadosDiarioAval->ed72_t_obs           = '';
-              $oDadosDiarioAval->ed72_i_escola        = db_getsession('DB_coddepto');
-              $oDadosDiarioAval->ed72_c_tipo          = 'M';
-
-            }
-
-            if (trim($oDadosPerOrig->tipoorigem) != trim($oDadosPerDest->tipodestino)
-                || (trim($oDadosPerOrig->tipoorigem) == trim($oDadosPerDest->tipodestino)
-                    && $oDadosPerOrig->mvorigem != $oDadosPerDest->mvdestino)) {
-
-              if ($oDadosDiarioAval->ed72_i_valornota == ''
-                  && $oDadosDiarioAval->ed72_c_valorconceito == ''
-                  && $oDadosDiarioAval->ed72_t_parecer =='') {
-                $oDadosDiarioAval->ed72_c_convertido = 'N';
-              } else {
-                $oDadosDiarioAval->ed72_c_convertido = 'S';
-              }
-
-            } else {
-              $oDadosDiarioAval->ed72_c_convertido = 'N';
-            }
-
-            /* Verifico se já tem um diario de avaliação de destino para importar os dados para ele */
-            $sSql = $oDaoDiarioAvaliacao->sql_query_file(null, 'ed72_i_codigo', '',
-                                                         " ed72_i_diario = $iDiarioDest ".
-                                                         "and ed72_i_procavaliacao = $periododestino"
-                                                        );
-            $rs   = $oDaoDiarioAvaliacao->sql_record($sSql);
             if ($oDaoDiarioAvaliacao->numrows == 0) {
 
-              $oDaoDiarioAvaliacao->ed72_i_diario        = $iDiarioDest;
-              $oDaoDiarioAvaliacao->ed72_i_procavaliacao = $periododestino;
-              $oDaoDiarioAvaliacao->ed72_i_numfaltas     = $oDadosDiarioAval->ed72_i_numfaltas;
-              $oDaoDiarioAvaliacao->ed72_i_valornota     = $oDadosDiarioAval->ed72_i_valornota;
-              $oDaoDiarioAvaliacao->ed72_c_valorconceito = $oDadosDiarioAval->ed72_c_valorconceito;
-              $oDaoDiarioAvaliacao->ed72_t_parecer       = $oDadosDiarioAval->ed72_t_parecer;
-              $oDaoDiarioAvaliacao->ed72_c_aprovmin      = $oDadosDiarioAval->ed72_c_aprovmin;
-              $oDaoDiarioAvaliacao->ed72_c_amparo        = $oDadosDiarioAval->ed72_c_amparo;
-              $oDaoDiarioAvaliacao->ed72_t_obs           = $oDadosDiarioAval->ed72_t_obs;
-              $oDaoDiarioAvaliacao->ed72_i_escola        = $oDadosDiarioAval->ed72_i_escola;
-              $oDaoDiarioAvaliacao->ed72_c_tipo          = $oDadosDiarioAval->ed72_c_tipo;
-              $oDaoDiarioAvaliacao->ed72_c_convertido    = $oDadosDiarioAval->ed72_c_convertido;
-              $oDaoDiarioAvaliacao->incluir(null);
-              if ($oDaoDiarioAvaliacao->erro_status == '0') {
+            $oDaoDiarioAvaliacao->ed72_i_diario        = $iDiarioDest;
+            $oDaoDiarioAvaliacao->ed72_i_procavaliacao = $periododestinodisciplina ?: $periododestino;
+            $oDaoDiarioAvaliacao->ed72_i_numfaltas     = $oDadosDiarioAval->ed72_i_numfaltas;
+            $oDaoDiarioAvaliacao->ed72_i_valornota     = $oDadosDiarioAval->ed72_i_valornota;
+            $oDaoDiarioAvaliacao->ed72_c_valorconceito = $oDadosDiarioAval->ed72_c_valorconceito;
+            $oDaoDiarioAvaliacao->ed72_t_parecer       = $oDadosDiarioAval->ed72_t_parecer;
+            $oDaoDiarioAvaliacao->ed72_c_aprovmin      = $oDadosDiarioAval->ed72_c_aprovmin;
+            $oDaoDiarioAvaliacao->ed72_c_amparo        = $oDadosDiarioAval->ed72_c_amparo;
+            $oDaoDiarioAvaliacao->ed72_t_obs           = $oDadosDiarioAval->ed72_t_obs;
+            $oDaoDiarioAvaliacao->ed72_i_escola        = $oDadosDiarioAval->ed72_i_escola;
+            $oDaoDiarioAvaliacao->ed72_c_tipo          = $oDadosDiarioAval->ed72_c_tipo;
+            $oDaoDiarioAvaliacao->ed72_c_convertido    = $oDadosDiarioAval->ed72_c_convertido;
+            $oDaoDiarioAvaliacao->incluir(null);
+            if ($oDaoDiarioAvaliacao->erro_status == '0') {
 
-                 $oDaoTrocaSerie->erro_status = '0';
-                 $oDaoTrocaSerie->erro_msg    = $oDaoDiarioAvaliacao->erro_msg;
+               $lErroTransacao           = true;
+               $oDaoTrocaSerie->erro_msg = $oDaoDiarioAvaliacao->erro_msg;
+               break 2;
+            }
+
+            $iDiarioAvalDest = $oDaoDiarioAvaliacao->ed72_i_codigo;
+          } else {
+
+            $iDiarioAvalDest                           = db_utils::fieldsmemory($rs, 0)->ed72_i_codigo;
+            $oDaoDiarioAvaliacao->ed72_i_diario        = $iDiarioDest;
+            $oDaoDiarioAvaliacao->ed72_i_procavaliacao = $periododestinodisciplina ?: $periododestino;
+            $oDaoDiarioAvaliacao->ed72_i_numfaltas     = $oDadosDiarioAval->ed72_i_numfaltas;
+            $oDaoDiarioAvaliacao->ed72_i_valornota     = $oDadosDiarioAval->ed72_i_valornota;
+            $oDaoDiarioAvaliacao->ed72_c_valorconceito = $oDadosDiarioAval->ed72_c_valorconceito;
+            $oDaoDiarioAvaliacao->ed72_t_parecer       = $oDadosDiarioAval->ed72_t_parecer;
+            $oDaoDiarioAvaliacao->ed72_c_aprovmin      = $oDadosDiarioAval->ed72_c_aprovmin;
+            $oDaoDiarioAvaliacao->ed72_c_amparo        = $oDadosDiarioAval->ed72_c_amparo;
+            $oDaoDiarioAvaliacao->ed72_t_obs           = $oDadosDiarioAval->ed72_t_obs;
+            $oDaoDiarioAvaliacao->ed72_i_escola        = $oDadosDiarioAval->ed72_i_escola;
+            $oDaoDiarioAvaliacao->ed72_c_tipo          = $oDadosDiarioAval->ed72_c_tipo;
+            $oDaoDiarioAvaliacao->ed72_c_convertido    = $oDadosDiarioAval->ed72_c_convertido;
+            $oDaoDiarioAvaliacao->ed72_i_codigo        = $iDiarioAvalDest;
+            $oDaoDiarioAvaliacao->alterar($iDiarioAvalDest);
+            if ($oDaoDiarioAvaliacao->erro_status == '0') {
+
+               $lErroTransacao           = true;
+               $oDaoTrocaSerie->erro_msg = $oDaoDiarioAvaliacao->erro_msg;
+               break 2;
+            }
+          }
+
+          /* Se os dados foram importados do diário de avaliação de origem, tenho que registrar na transfaprov.
+             Importo também os dados da pareceraval da abonofalta
+          */
+          if ($oDadosDiarioAval->codavalorigem != '') {
+
+            $sSql = $oDaoTransfAprov->sql_query_file(null, 'ed251_i_codigo', '',
+                                                     ' ed251_i_diariodestino = '.$oDadosDiarioAval->codavalorigem
+                                                    );
+            $rs   = $oDaoTransfAprov->sql_record($sSql);
+            if ($oDaoTransfAprov->numrows > 0) {
+
+              $iTransfAprov                           = db_utils::fieldsmemory($rs, 0)->ed251_i_codigo;
+              $oDaoTransfAprov->ed251_i_diariodestino = $ed72_i_codigo;
+              $oDaoTransfAprov->ed251_i_codigo        = $iTransfAprov;
+              $oDaoTransfAprov->alterar($iTransfAprov);
+              if ($oDaoTransfAprov->erro_status == '0') {
+
+                 $lErroTransacao           = true;
+                 $oDaoTrocaSerie->erro_msg = $oDaoTransfAprov->erro_msg;
                  break 2;
-
               }
-              $iDiarioAvalDest = $oDaoDiarioAvaliacao->ed72_i_codigo;
-
             } else {
 
-              $iDiarioAvalDest                           = db_utils::fieldsmemory($rs, 0)->ed72_i_codigo;
-              $oDaoDiarioAvaliacao->ed72_i_diario        = $iDiarioDest;
-              $oDaoDiarioAvaliacao->ed72_i_procavaliacao = $periododestino;
-              $oDaoDiarioAvaliacao->ed72_i_numfaltas     = $oDadosDiarioAval->ed72_i_numfaltas;
-              $oDaoDiarioAvaliacao->ed72_i_valornota     = $oDadosDiarioAval->ed72_i_valornota;
-              $oDaoDiarioAvaliacao->ed72_c_valorconceito = $oDadosDiarioAval->ed72_c_valorconceito;
-              $oDaoDiarioAvaliacao->ed72_t_parecer       = $oDadosDiarioAval->ed72_t_parecer;
-              $oDaoDiarioAvaliacao->ed72_c_aprovmin      = $oDadosDiarioAval->ed72_c_aprovmin;
-              $oDaoDiarioAvaliacao->ed72_c_amparo        = $oDadosDiarioAval->ed72_c_amparo;
-              $oDaoDiarioAvaliacao->ed72_t_obs           = $oDadosDiarioAval->ed72_t_obs;
-              $oDaoDiarioAvaliacao->ed72_i_escola        = $oDadosDiarioAval->ed72_i_escola;
-              $oDaoDiarioAvaliacao->ed72_c_tipo          = $oDadosDiarioAval->ed72_c_tipo;
-              $oDaoDiarioAvaliacao->ed72_c_convertido    = $oDadosDiarioAval->ed72_c_convertido;
-              $oDaoDiarioAvaliacao->ed72_i_codigo        = $iDiarioAvalDest;
-              $oDaoDiarioAvaliacao->alterar($iDiarioAvalDest);
-              if ($oDaoDiarioAvaliacao->erro_status == '0') {
+              if ($oDadosDiarioAval->ed72_c_convertido == 'S') {
 
-                 $oDaoTrocaSerie->erro_status = '0';
-                 $oDaoTrocaSerie->erro_msg    = $oDaoDiarioAvaliacao->erro_msg;
-                 break 2;
-
-              }
-
-            }
-
-            /* Se os dados foram importados do diário de avaliação de origem, tenho que registrar na transfaprov.
-               Importo também os dados da pareceraval da abonofalta
-            */
-            if ($oDadosDiarioAval->codavalorigem != '') {
-
-              $sSql = $oDaoTransfAprov->sql_query_file(null, 'ed251_i_codigo', '',
-                                                       ' ed251_i_diariodestino = '.$oDadosDiarioAval->codavalorigem
-                                                      );
-              $rs   = $oDaoTransfAprov->sql_record($sSql);
-              if ($oDaoTransfAprov->numrows > 0) {
-
-                $iTransfAprov                           = db_utils::fieldsmemory($rs, 0)->ed251_i_codigo;
-                $oDaoTransfAprov->ed251_i_diariodestino = $ed72_i_codigo;
-                $oDaoTransfAprov->ed251_i_codigo        = $iTransfAprov;
-                $oDaoTransfAprov->alterar($iTransfAprov);
+                $oDaoTransfAprov->ed251_i_diariodestino = $iDiarioAvalDest;
+                $oDaoTransfAprov->ed251_i_diarioorigem  = $oDadosDiarioAval->codavalorigem;
+                $oDaoTransfAprov->incluir(null);
                 if ($oDaoTransfAprov->erro_status == '0') {
 
-                   $oDaoTrocaSerie->erro_status = '0';
-                   $oDaoTrocaSerie->erro_msg    = $oDaoTransfAprov->erro_msg;
-                   break 2;
-
+                  $lErroTransacao           = true;
+                  $oDaoTrocaSerie->erro_msg = $oDaoTransfAprov->erro_msg;
+                  break 2;
                 }
-
-              } else {
-
-                if ($oDadosDiarioAval->ed72_c_convertido == 'S') {
-
-                  $oDaoTransfAprov->ed251_i_diariodestino = $iDiarioAvalDest;
-                  $oDaoTransfAprov->ed251_i_diarioorigem  = $oDadosDiarioAval->codavalorigem;
-                  $oDaoTransfAprov->incluir(null);
-                  if ($oDaoTransfAprov->erro_status == '0') {
-
-                    $oDaoTrocaSerie->erro_status = '0';
-                    $oDaoTrocaSerie->erro_msg    = $oDaoTransfAprov->erro_msg;
-                    break 2;
-
-                  }
-
-                }
-
               }
+            }
 
-              /* Importo os dados da tabela pareceraval */
+            /* Importo os dados da tabela pareceraval */
 
-              $sSql    = $oDaoParecerAval->sql_query_file('', 'ed93_t_parecer', '',
-                                                          ' ed93_i_diarioavaliacao = '.
-                                                          $oDadosDiarioAval->codavalorigem
-                                                         );
-              $rs      = $oDaoParecerAval->sql_record($sSql);
-              $iLinhas = $oDaoParecerAval->numrows;
-              if ($iLinhas > 0) {
+            $sSql    = $oDaoParecerAval->sql_query_file('', 'ed93_t_parecer', '',
+                                                        ' ed93_i_diarioavaliacao = '.
+                                                        $oDadosDiarioAval->codavalorigem
+                                                       );
+            $rs      = $oDaoParecerAval->sql_record($sSql);
+            $iLinhas = $oDaoParecerAval->numrows;
+            if ($iLinhas > 0) {
 
-                for ($iCont3 = 0; $iCont3 < $iLinhas; $iCont3++) {
+              for ($iCont3 = 0; $iCont3 < $iLinhas; $iCont3++) {
 
-                  $sParecer                                = db_utils::fieldsmemory($rs, $iCont3)->ed93_t_parecer;
-                  $oDaoParecerAval->ed93_i_diarioavaliacao = $iDiarioAvalDest;
-                  $oDaoParecerAval->ed93_t_parecer         = $sParecer;
-                  $oDaoParecerAval->incluir(null);
-                  if ($oDaoParecerAval->erro_status == '0') {
+                $sParecer                                = db_utils::fieldsmemory($rs, $iCont3)->ed93_t_parecer;
+                $oDaoParecerAval->ed93_i_diarioavaliacao = $iDiarioAvalDest;
+                $oDaoParecerAval->ed93_t_parecer         = $sParecer;
+                $oDaoParecerAval->incluir(null);
+                if ($oDaoParecerAval->erro_status == '0') {
 
-                    $oDaoTrocaSerie->erro_status = '0';
-                    $oDaoTrocaSerie->erro_msg    = $oDaoParecerAval->erro_msg;
-                    break 3;
-
-                  }
-
-                }
-
-              }
-
-              /* A importação dos abonos de faltas */
-              $sSql    = $oDaoAbonoFalta->sql_query_file(null, '*', '',
-                                                         ' ed80_i_diarioavaliacao = '.
-                                                         $oDadosDiarioAval->codavalorigem
-                                                        );
-              $rs      = $oDaoAbonoFalta->sql_record($sSql);
-              $iLinhas = $oDaoAbonoFalta->numrows;
-              if ($iLinhas > 0) {
-
-                for ($iCont3 = 0; $iCont3 < $iLinhas; $iCont3++) {
-
-                  $oDadosAbono                            = db_utils::fieldsmemory($rs, $iCont3);
-                  $oDaoAbonoFalta->ed80_i_diarioavaliacao = $iDiarioAvalDest;
-                  $oDaoAbonoFalta->ed80_i_justificativa   = $oDadosAbono->ed80_i_justificativa;
-                  $oDaoAbonoFalta->ed80_i_numfaltas       = $oDadosAbono->ed80_i_numfaltas;
-                  $oDaoAbonoFalta->incluir(null);
-                  if ($oDaoAbonoFalta->erro_status == '0') {
-
-                    $oDaoTrocaSerie->erro_status = '0';
-                    $oDaoTrocaSerie->erro_msg    = $oDaoAbonoFalta->erro_msg;
-                    break 3;
-
-                  }
+                  $lErroTransacao           = true;
+                  $oDaoTrocaSerie->erro_msg = $oDaoParecerAval->erro_msg;
+                  break 3;
 
                 }
 
@@ -1774,37 +1769,57 @@ $db_botao = false;
 
             }
 
-          } // Fim do for das regências
+            /* A importação dos abonos de faltas */
+            $sSql    = $oDaoAbonoFalta->sql_query_file(null, '*', '',
+                                                       ' ed80_i_diarioavaliacao = '.
+                                                       $oDadosDiarioAval->codavalorigem
+                                                      );
+            $rs      = $oDaoAbonoFalta->sql_record($sSql);
+            $iLinhas = $oDaoAbonoFalta->numrows;
+            if ($iLinhas > 0) {
 
-        } // Fim do for dos períodos de avaliação
+              for ($iCont3 = 0; $iCont3 < $iLinhas; $iCont3++) {
 
-      } // Fim do if que verifica se é para realizar a importação do aproveitamento escolar
+                $oDadosAbono                            = db_utils::fieldsmemory($rs, $iCont3);
+                $oDaoAbonoFalta->ed80_i_diarioavaliacao = $iDiarioAvalDest;
+                $oDaoAbonoFalta->ed80_i_justificativa   = $oDadosAbono->ed80_i_justificativa;
+                $oDaoAbonoFalta->ed80_i_numfaltas       = $oDadosAbono->ed80_i_numfaltas;
+                $oDaoAbonoFalta->incluir(null);
+                if ($oDaoAbonoFalta->erro_status == '0') {
 
-      //db_fim_transacao(true);
-      db_fim_transacao($oDaoTrocaSerie->erro_status == '0');
+                  $lErroTransacao           = true;
+                  $oDaoTrocaSerie->erro_msg = $oDaoAbonoFalta->erro_msg;
+                  break 3;
+                }
+              }
+            }
+          }
+        } // Fim do for das regências
+      } // Fim do for dos períodos de avaliação
+    } // Fim do if que verifica se é para realizar a importação do aproveitamento escolar
 
-      if ($oDaoTrocaSerie->erro_status != '0') {
+    db_fim_transacao( $lErroTransacao );
 
-        if (isset($msg_conversao) && $msg_conversao != '') {
+    if ( !$lErroTransacao ) {
 
-          $mensagem  = "ATENÇÃO!\\n\\n Caso o aluno tenha algum aproveitamento nos períodos abaixo relacionados, ";
-          $mensagem .= 'os mesmos deverão ser convertidos no Diário de Classe, devido a forma de avaliação da turma ';
-          $mensagem .= "de origem ser diferente da turma de destino:\\n\\n$msg_conversao";
-          db_msgbox($mensagem);
+      if (isset($msg_conversao) && $msg_conversao != '') {
 
-        }
-
-        db_msgbox('Progressão do aluno realizada com sucesso!');
-        echo "<script>parent.window.location = '$sUrlRetorno';</script>"; // $sUrlRetorno vem por GET
-
-      } else {
-
-        db_msgbox('Progressão do aluno NÃO realizada.');
-        $oDaoTrocaSerie->erro(true, false);
-        echo "<script>parent.window.location = '$sUrlRetorno';</script>"; // $sUrlRetorno vem por GET
+        $mensagem  = "ATENÇÃO!\\n\\n Caso o aluno tenha algum aproveitamento nos períodos abaixo relacionados, ";
+        $mensagem .= 'os mesmos deverão ser convertidos no Diário de Classe, devido a forma de avaliação da turma ';
+        $mensagem .= "de origem ser diferente da turma de destino:\\n\\n$msg_conversao";
+        db_msgbox($mensagem);
 
       }
 
+      db_msgbox('Progressão do aluno realizada com sucesso!');
+      echo "<script>parent.window.location = '$sUrlRetorno';</script>"; // $sUrlRetorno vem por GET
+
+    } else {
+
+      db_msgbox('Progressão do aluno NÃO realizada.');
+      $oDaoTrocaSerie->erro(true, false);
+      echo "<script>parent.window.location = '$sUrlRetorno';</script>"; // $sUrlRetorno vem por GET
     }
+  }
 ?>
 <script>document.getElementById("tab_aguarde").style.visibility = "hidden";</script>

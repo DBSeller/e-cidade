@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_inicial_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_promitente_classe.php");
-require_once("classes/db_propri_classe.php");
-require_once("classes/db_jurpeticoes_classe.php");
-require_once("classes/db_parjuridico_classe.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_inicial_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_promitente_classe.php"));
+require_once(modification("classes/db_propri_classe.php"));
+require_once(modification("classes/db_jurpeticoes_classe.php"));
+require_once(modification("classes/db_parjuridico_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -92,7 +92,7 @@ if(isset($iniciais)){
       left outer join arrematric on arrematric.k00_numpre=v59_numpre
       where v59_inicial = $inicial";
       
-      $result = pg_query($sql);
+      $result = db_query($sql);
       if (pg_numrows($result)!=0){
         db_fieldsmemory($result,0);
       }

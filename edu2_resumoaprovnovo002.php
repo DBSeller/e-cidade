@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,12 +24,12 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-require_once ("fpdf151/FpdfMultiCellBorder.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_stdlibwebseller.php" );
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/JSON.php");
-require_once ("libs/db_libdocumento.php");
+require_once(modification("fpdf151/FpdfMultiCellBorder.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlibwebseller.php" ));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_libdocumento.php"));
 
 $oGet   = db_utils::postMemory( $_GET );
 $oEtapa = EtapaRepository::getEtapaByCodigo( $oGet->iEtapa );
@@ -100,7 +100,10 @@ foreach( $oDadosRelatorio->aEstruturaGeral as $oDisciplina ) {
    * Dentro da disciplina, percorre os períodos configurados para a turma
    */
   foreach( $oDisciplina->aPeriodos as $iPeriodo => $aPaginaPeriodo ) {
-
+  if ($oDadosRelatorio->lTemNotaParcial && (count($aPaginaPeriodo))) {
+      $oDadosRelatorio->iColunaPeriodo        = 18;
+      $oDadosRelatorio->iColunaAvaliacao      = 13;
+  }
     $iContadorPaginasAluno = 0;
     $iTotalPaginasAluno    = count( $oDisciplina->aAlunos );
 
@@ -168,6 +171,9 @@ foreach( $oDadosRelatorio->aEstruturaGeral as $oDisciplina ) {
           /**
            * Preenche as demais colunas em branco
            */
+            if ($oDadosRelatorio->lTemNotaParcial) {
+                $iColunasEmBranco++;
+            }
           colunasEmBranco( $oPdf, $oDadosRelatorio, $iColunasEmBranco );
 
           /**
@@ -236,8 +242,7 @@ foreach( $oDadosRelatorio->aEstruturaGeral as $oDisciplina ) {
  */
 function linhaPeriodos( FpdfMultiCellBorder $oPdf, $aPaginaPeriodo, $oDadosRelatorio ) {
 
-  $sNotaParcial     = $oDadosRelatorio->lTemNotaParcial ? 'NP' : '';
-  $iColunasEmBranco = $oDadosRelatorio->iMaximoPeriodosPagina - count( $aPaginaPeriodo ) - 1;
+  $iColunasEmBranco = $oDadosRelatorio->iMaximoPeriodosPagina - count( $aPaginaPeriodo );
 
   $oPdf->Cell( $oDadosRelatorio->iColunaNumero, $oDadosRelatorio->iAltura, '', 1, 0 );
   $oPdf->Cell( $oDadosRelatorio->iColunaAluno,  $oDadosRelatorio->iAltura, '', 1, 0 );
@@ -246,8 +251,9 @@ function linhaPeriodos( FpdfMultiCellBorder $oPdf, $aPaginaPeriodo, $oDadosRelat
     $oPdf->Cell( $oDadosRelatorio->iColunaPeriodo, $oDadosRelatorio->iAltura, $oPeriodo->sPeriodo, 1, 0, 'C' );
   }
 
-  $oPdf->Cell( $oDadosRelatorio->iColunaPeriodo, $oDadosRelatorio->iAltura, $sNotaParcial, 1, 0, 'C' );
-
+  if ($oDadosRelatorio->lTemNotaParcial) {
+      $oPdf->Cell($oDadosRelatorio->iColunaPeriodo, $oDadosRelatorio->iAltura, 'NP', 1, 0, 'C');
+  }
   colunasEmBranco( $oPdf, $oDadosRelatorio, $iColunasEmBranco, false );
 
   $oPdf->Cell( $oDadosRelatorio->iColunaResultadoFinal, $oDadosRelatorio->iAltura, '', 1, 1 );
@@ -281,6 +287,7 @@ function linhaSubCabecalho( FpdfMultiCellBorder $oPdf, $aPaginaPeriodo, $oDadosR
     $sAproveitamento = 'Aprov';
     $sFrequencia     = '% Freq';
     $sResultadoFinal = 'RF';
+    $sFormaAvaliacao = 'AVAL.';
   }
 
   $iColunasEmBranco = $oDadosRelatorio->iMaximoPeriodosPagina - count( $aPaginaPeriodo );
@@ -288,16 +295,15 @@ function linhaSubCabecalho( FpdfMultiCellBorder $oPdf, $aPaginaPeriodo, $oDadosR
   $oPdf->Cell( $oDadosRelatorio->iColunaNumero, $oDadosRelatorio->iAltura, $sNumero,    1, 0, 'C' );
   $oPdf->Cell( $oDadosRelatorio->iColunaAluno,  $oDadosRelatorio->iAltura, $sNomeAluno, 1, 0, 'C' );
 
-  foreach( $aPaginaPeriodo as $oPeriodo ) {
-
-    if( $iTipoImpressao == 1 ) {
-      $sFormaAvaliacao = $oPeriodo->sFormaAvaliacao;
-    }
+  for( $iContador = 0; $iContador < count( $aPaginaPeriodo ); $iContador++ ) {
 
     $oPdf->Cell( $oDadosRelatorio->iColunaAvaliacao, $oDadosRelatorio->iAltura, $sFormaAvaliacao, 1, 0, 'C' );
     $oPdf->Cell( $oDadosRelatorio->iColunaFalta,     $oDadosRelatorio->iAltura, $sFalta         , 1, 0, 'C' );
   }
 
+  if ($oDadosRelatorio->lTemNotaParcial) {
+      $iColunasEmBranco++;
+  }
   colunasEmBranco( $oPdf, $oDadosRelatorio, $iColunasEmBranco );
 
   $oPdf->Cell( $oDadosRelatorio->iColunaResultadoFinal / 3, $oDadosRelatorio->iAltura, $sAproveitamento, 1, 0, 'C' );
@@ -336,7 +342,9 @@ function linhaAulas( FpdfMultiCellBorder $oPdf, $aPaginaPeriodo, $oDadosRelatori
       $oPdf->Cell( $oDadosRelatorio->iColunaPeriodo, $oDadosRelatorio->iAltura, $iAulas, 1, 0, 'C' );
     }
   }
-
+  if ($oDadosRelatorio->lTemNotaParcial) {
+    $iColunasEmBranco++;
+  }
   colunasEmBranco( $oPdf, $oDadosRelatorio, $iColunasEmBranco, false );
 
   $oPdf->Cell( $oDadosRelatorio->iColunaResultadoFinal, $oDadosRelatorio->iAltura, '', 1, 1 );
@@ -380,7 +388,12 @@ function imprimeAvaliacao( FpdfMultiCellBorder $oPdf, $oAvaliacao, $oDadosRelato
       $oPdf->SetFont( 'arial', 'b', 7 );
     }
 
-    $oPdf->Cell( $oDadosRelatorio->iColunaAvaliacao, $oDadosRelatorio->iAltura, $oAvaliacao->mAproveitamento, 1, 0, 'C' );
+    $mAproveitamento = $oAvaliacao->mAproveitamento;
+    if ($oAvaliacao->lAvaliacaoExterna && $oAvaliacao->mAproveitamento != '') {
+      $mAproveitamento = "*" . $oAvaliacao->mAproveitamento;
+    }
+
+    $oPdf->Cell( $oDadosRelatorio->iColunaAvaliacao, $oDadosRelatorio->iAltura, $mAproveitamento, 1, 0, 'C' );
 
     $oPdf->SetFont( 'arial', '', 7 );
     $oPdf->Cell( $oDadosRelatorio->iColunaFalta, $oDadosRelatorio->iAltura, $oAvaliacao->iFaltas, 1, 0, 'C' );
@@ -572,6 +585,10 @@ function montaEstruturaImpressaoAlunos( Turma $oTurma, Etapa $oEtapa, $oDadosRel
           $oElementoResultadoFinal                = $oDiarioAvaliacaoDisciplina->getResultadoFinal();
           $oDadosDisciplina->sAproveitamentoFinal = $oElementoResultadoFinal->getValorAprovacao();
 
+          if ($oElementoResultadoFinal->getResultadoAvaliacao()->getFormaDeObtencao() == 'AP') {
+              $oDadosDisciplina->sAproveitamentoFinal = '-';
+          }
+
           if( $oElementosAvaliacao->getElementoAvaliacao()->getFormaDeAvaliacao()->getTipo() == 'PARECER' ) {
             $oDadosDisciplina->sAproveitamentoFinal = 'Parec';
           }
@@ -591,13 +608,20 @@ function montaEstruturaImpressaoAlunos( Turma $oTurma, Etapa $oEtapa, $oDadosRel
               $oDadosDisciplina->sFrequencia          = '';
             }
 
-            if(    $oDiarioAvaliacaoDisciplina->getAmparo()->getTipoAmparo() == AmparoDisciplina::AMPARO_JUSTIFICATIVA
-              && $oDiarioAvaliacaoDisciplina->getAmparo()->isTotal()
-            ) {
+              if(    $oDiarioAvaliacaoDisciplina->getAmparo()->getTipoAmparo() == AmparoDisciplina::AMPARO_JUSTIFICATIVA
+                  && $oDiarioAvaliacaoDisciplina->getAmparo()->isTotal()
+              ) {
 
-              $oDadosDisciplina->sAproveitamentoFinal = 'Amp';
-              $oDadosDisciplina->sFrequencia          = '';
-            }
+                  $oDadosDisciplina->sAproveitamentoFinal = 'Amp';
+                  $oDadosDisciplina->sFrequencia          = '';
+              }
+              if(    $oDiarioAvaliacaoDisciplina->getAmparo()->getTipoAmparo() == AmparoDisciplina::AMPARO_JUSTIFICATIVA
+                  && $oDiarioAvaliacaoDisciplina->getAmparo()->isTotal()
+              ) {
+
+                  $oDadosDisciplina->sAproveitamentoFinal = 'Amp';
+                  $oDadosDisciplina->sFrequencia          = '';
+              }
           }
 
           /**
@@ -717,6 +741,7 @@ function montaEstruturaImpressaoAlunos( Turma $oTurma, Etapa $oEtapa, $oDadosRel
         }
 
         $oDadosAvaliacao->lAproveitamentoMinimo = $oElementosAvaliacao->temAproveitamentoMinimo();
+        $oDadosAvaliacao->lAvaliacaoExterna     = $oElementosAvaliacao->isAvaliacaoExterna();
         $oDadosAvaliacao->iFaltas               = $oElementosAvaliacao->getNumeroFaltas();
 
         if( empty( $oDadosAvaliacao->iFaltas ) ) {

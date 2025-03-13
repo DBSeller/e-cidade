@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require('fpdf151/pdfipa.php');
-$result = pg_exec("select *,to_char(ag40_dataatestado,'DD') as dataat_dia,to_char(ag40_dataatestado,'MM') as dataat_mes,to_char(ag40_dataatestado,'YYYY') as dataat_ano,to_char(ag40_data,'DD') as ag40_data_dia,to_char(ag40_data,'MM') as ag40_data_mes,to_char(ag40_data,'YYYY') as ag40_data_ano from atendmed where ag40_codigo = $ag40_codigo");
+require(modification('fpdf151/pdfipa.php'));
+$result = db_query("select *,to_char(ag40_dataatestado,'DD') as dataat_dia,to_char(ag40_dataatestado,'MM') as dataat_mes,to_char(ag40_dataatestado,'YYYY') as dataat_ano,to_char(ag40_data,'DD') as ag40_data_dia,to_char(ag40_data,'MM') as ag40_data_mes,to_char(ag40_data,'YYYY') as ag40_data_ano from atendmed where ag40_codigo = $ag40_codigo");
 if(pg_numrows($result) > 0)
 db_fieldsmemory($result,0);
 $pdf = new PDF(); // abre a classe
@@ -60,20 +60,20 @@ $pdf->MultiCell(0,6,'ATESTADO ('.@$marcado.')',0,"J",0,30);
 $pdf->MultiCell(0,6,'COMPROVANTE ('.@$marcado1.')',0,"J",0,30);
 $pdf->Ln(3);
 if(isset($ag40_altcid) && $ag40_altcid == "t") {
-  $result = pg_exec("select ag40_codcid from atendmedcid where ag40_codigo = $ag40_codigo");
+  $result = db_query("select ag40_codcid from atendmedcid where ag40_codigo = $ag40_codigo");
   if(pg_numrows($result) != 0){
     $pdf->MultiCell(0,6,'CID:',0,"J",0,30);
     for($i = 0; $i < pg_numrows($result); $i++){  
       db_fieldsmemory($result,$i);
-      $result = pg_exec("select descr from cid10 where codcid = '$ag40_codcid'");
+      $result = db_query("select descr from cid10 where codcid = '$ag40_codcid'");
       $pdf->MultiCell(0,6,pg_result($result,0,0),0,"J",0,30);
     }
   }  
 }
 if(db_getsession("w03_codigo") != ""){
-  $result = pg_exec("select w03_nome as nome from depen where w03_codigo = '".str_pad(trim(db_getsession("w03_codigo")),6," ",STR_PAD_LEFT)."'");
+  $result = db_query("select w03_nome as nome from depen where w03_codigo = '".str_pad(trim(db_getsession("w03_codigo")),6," ",STR_PAD_LEFT)."'");
 }else{
-  $result = pg_exec("select c.j01_nome as  nome
+  $result = db_query("select c.j01_nome as  nome
                      from cgipa c
     	 	     inner join cadastro cad
 						 on cad.w01_numcgi = c.j01_numero
@@ -82,7 +82,7 @@ if(db_getsession("w03_codigo") != ""){
 if(pg_numrows($result) > 0)
   db_fieldsmemory($result,0);
   
-$result = pg_exec("select ag40_horainiate,ag40_horafimate from atendmed where ag40_codigo = ".db_getsession("COD_atendimento"));
+$result = db_query("select ag40_horainiate,ag40_horafimate from atendmed where ag40_codigo = ".db_getsession("COD_atendimento"));
 if(pg_numrows($result) > 0)
   db_fieldsmemory($result,0);
 $pdf->MultiCell(0,6,'Sr. EMPREGADOR,',0,"J",0,30);
@@ -120,7 +120,7 @@ if($ag40_tipoform == "a") {
   $pdf->MultiCell(0,6,'necessitando '.$ag40_diasatestado.'('.extenso($ag40_diasatestado).') dias de repouso à partir de '.$dataat_dia.'/'.$dataat_mes.'/'.$dataat_ano,0,"J",0,30);
 } else 
   $pdf->MultiCell(0,6,'',0,"J",0,30);
-$result = pg_exec("select aa01_nome,aa01_creme from medicos where aa01_codlog = ".db_getsession("DB_id_usuario"));
+$result = db_query("select aa01_nome,aa01_creme from medicos where aa01_codlog = ".db_getsession("DB_id_usuario"));
 $cremers = @pg_result($result,0,1);
 $nomemed = @pg_result($result,0,0);
 $mes = array(1 => "janeiro",2 => "fevereiro",3 => "março",4 => "abril",5 => "maio",6 => "junho",7 => "julho",8 => "agosto",9 => "setembro",10 => "outubro",11 => "novembro",12 => "dezembro");

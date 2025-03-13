@@ -26,7 +26,7 @@
  */
 
 //MODULO: configuracoes
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_sysfuncoesparam->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -118,7 +118,7 @@ db_input('db42_nome',20,$Idb42_nome,true,'text',$db_opcao,"")
                or pg_class.relkind = 'c')
             order by tipo, 
                   typname ";
-  $result    = pg_query($sql);
+  $result    = db_query($sql);
   $numrows   = pg_numrows($result);
   $elementos = array(" Selecione o tipo do parametro ");
   for($i=0;$i<$numrows;$i++){
@@ -215,10 +215,10 @@ function js_cancelar(){
 }
 function js_pesquisadb42_funcao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_sysfuncoesparam','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?funcao_js=parent.js_mostradb_sysfuncoes1|codfuncao|nomefuncao','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_sysfuncoesparam','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?funcao_js=parent.js_mostradb_sysfuncoes1|codfuncao|nomefuncao','Pesquisa',true,'0');
   }else{
      if(document.form1.db42_funcao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_sysfuncoesparam','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?pesquisa_chave='+document.form1.db42_funcao.value+'&funcao_js=parent.js_mostradb_sysfuncoes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_sysfuncoesparam','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?pesquisa_chave='+document.form1.db42_funcao.value+'&funcao_js=parent.js_mostradb_sysfuncoes','Pesquisa',false);
      }else{
        document.form1.nomefuncao.value = ''; 
      }

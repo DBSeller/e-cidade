@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: contabilidade
@@ -222,31 +222,6 @@ class cl_conplanoorcamentoanalitica {
     $this->erro_status = "1";
     $this->numrows_incluir = pg_affected_rows($result);
     $resaco = $this->sql_record($this->sql_query_file($this->c61_reduz, $this->c61_anousu));
-    if (($resaco != false) || ($this->numrows != 0)) {
-      $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-      $acount = pg_result($resac, 0, 0);
-      $resac = db_query("insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ")");
-      $resac = db_query("insert into db_acountkey values($acount,5247,'$this->c61_reduz','I')");
-      $resac = db_query("insert into db_acountkey values($acount,8060,'$this->c61_anousu','I')");
-      $resac = db_query(
-          "insert into db_acount values($acount,3272,5247,'','" . AddSlashes(pg_result($resaco, 0, 'c61_reduz')) . "',"
-              . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,3272,5246,'','" . AddSlashes(pg_result($resaco, 0, 'c61_codcon'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,3272,8060,'','" . AddSlashes(pg_result($resaco, 0, 'c61_anousu'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,3272,5248,'','" . AddSlashes(pg_result($resaco, 0, 'c61_instit'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,3272,5249,'','" . AddSlashes(pg_result($resaco, 0, 'c61_codigo'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,3272,7372,'','" . AddSlashes(pg_result($resaco, 0, 'c61_contrapartida'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-    }
     return true;
   }
   // funcao para alteracao
@@ -341,45 +316,6 @@ class cl_conplanoorcamentoanalitica {
       $sql .= " and  c61_anousu = $this->c61_anousu";
     }
     $resaco = $this->sql_record($this->sql_query_file($this->c61_reduz, $this->c61_anousu));
-    if ($this->numrows > 0) {
-      for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
-        $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-        $acount = pg_result($resac, 0, 0);
-        $resac = db_query("insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ")");
-        $resac = db_query("insert into db_acountkey values($acount,5247,'$this->c61_reduz','A')");
-        $resac = db_query("insert into db_acountkey values($acount,8060,'$this->c61_anousu','A')");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["c61_reduz"]) || $this->c61_reduz != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,3272,5247,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'c61_reduz')) . "','$this->c61_reduz',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["c61_codcon"]) || $this->c61_codcon != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,3272,5246,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'c61_codcon')) . "','$this->c61_codcon',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["c61_anousu"]) || $this->c61_anousu != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,3272,8060,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'c61_anousu')) . "','$this->c61_anousu',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["c61_instit"]) || $this->c61_instit != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,3272,5248,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'c61_instit')) . "','$this->c61_instit',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["c61_codigo"]) || $this->c61_codigo != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,3272,5249,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'c61_codigo')) . "','$this->c61_codigo',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["c61_contrapartida"]) || $this->c61_contrapartida != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,3272,7372,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'c61_contrapartida')) . "','$this->c61_contrapartida',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      }
-    }
     $result = db_query($sql);
     if ($result == false) {
       $this->erro_banco = str_replace("\n", "", @pg_last_error());
@@ -423,38 +359,6 @@ class cl_conplanoorcamentoanalitica {
       $resaco = $this->sql_record($this->sql_query_file($c61_reduz, $c61_anousu));
     } else {
       $resaco = $this->sql_record($this->sql_query_file(null, null, "*", null, $dbwhere));
-    }
-    if (($resaco != false) || ($this->numrows != 0)) {
-      for ($iresaco = 0; $iresaco < $this->numrows; $iresaco++) {
-        $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-        $acount = pg_result($resac, 0, 0);
-        $resac = db_query("insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ")");
-        $resac = db_query("insert into db_acountkey values($acount,5247,'$c61_reduz','E')");
-        $resac = db_query("insert into db_acountkey values($acount,8060,'$c61_anousu','E')");
-        $resac = db_query(
-            "insert into db_acount values($acount,3272,5247,'','" . AddSlashes(pg_result($resaco, $iresaco, 'c61_reduz'))
-                . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,3272,5246,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'c61_codcon')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,3272,8060,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'c61_anousu')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,3272,5248,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'c61_instit')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,3272,5249,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'c61_codigo')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,3272,7372,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'c61_contrapartida')) . "'," . db_getsession('DB_datausu')
-                . "," . db_getsession('DB_id_usuario') . ")");
-      }
     }
     $sql = " delete from conplanoorcamentoanalitica
                     where ";
@@ -553,15 +457,16 @@ class cl_conplanoorcamentoanalitica {
       $sql .= $campos;
     }
     $sql .= " from conplanoorcamentoanalitica ";
-    $sql .= "      inner join db_config  on  db_config.codigo = conplanoorcamentoanalitica.c61_instit";
-    $sql .= "      inner join orctiporec  on  orctiporec.o15_codigo = conplanoorcamentoanalitica.c61_codigo";
-    $sql .= "      inner join conplanoorcamento  on  conplanoorcamento.c60_codcon = conplanoorcamentoanalitica.c61_codcon and  conplanoorcamento.c60_anousu = conplanoorcamentoanalitica.c61_anousu";
-    $sql .= "      inner join cgm  on  cgm.z01_numcgm = db_config.numcgm";
-    $sql .= "      inner join db_tipoinstit  on  db_tipoinstit.db21_codtipo = db_config.db21_tipoinstit";
-    $sql .= "      inner join db_estruturavalor  on  db_estruturavalor.db121_sequencial = orctiporec.o15_db_estruturavalor";
-    $sql .= "      inner join conclass  on  conclass.c51_codcla = conplanoorcamento.c60_codcla";
-    $sql .= "      inner join consistema  on  consistema.c52_codsis = conplanoorcamento.c60_codsis";
-    $sql .= "      inner join consistemaconta  on  consistemaconta.c65_sequencial = conplanoorcamento.c60_consistemaconta";
+    $sql .= " join db_config  on  db_config.codigo = conplanoorcamentoanalitica.c61_instit";
+    $sql .= " join orctiporec  on  orctiporec.o15_codigo = conplanoorcamentoanalitica.c61_codigo";
+    $sql .= " join complementofonterecurso on complementofonterecurso.o200_sequencial = orctiporec.o15_complemento";
+    $sql .= " join conplanoorcamento  on  conplanoorcamento.c60_codcon = conplanoorcamentoanalitica.c61_codcon and  conplanoorcamento.c60_anousu = conplanoorcamentoanalitica.c61_anousu";
+    $sql .= " join cgm  on  cgm.z01_numcgm = db_config.numcgm";
+    $sql .= " join db_tipoinstit  on  db_tipoinstit.db21_codtipo = db_config.db21_tipoinstit";
+    $sql .= " join db_estruturavalor  on  db_estruturavalor.db121_sequencial = orctiporec.o15_db_estruturavalor";
+    $sql .= " join conclass  on  conclass.c51_codcla = conplanoorcamento.c60_codcla";
+    $sql .= " join consistema  on  consistema.c52_codsis = conplanoorcamento.c60_codsis";
+    $sql .= " join consistemaconta  on  consistemaconta.c65_sequencial = conplanoorcamento.c60_consistemaconta";
     $sql2 = "";
     if ($dbwhere == "") {
       if ($c61_reduz != null) {
@@ -645,21 +550,25 @@ class cl_conplanoorcamentoanalitica {
    */
   function sql_query_analiticaProximoExercicio($iAnoAtual, $iAnoDestino, $iIntinst) {
 
-    $sSQl = "select conplanoorcamentoanalitica.* 																										";
-    $sSQl .= "  from conplanoorcamentoanalitica																												";
-    $sSQl .= "       left join conplanoorcamentoanalitica  proximoexercicio   												";
-    $sSQl .= "                    on proximoexercicio.c61_reduz  = conplanoorcamentoanalitica.c61_reduz         		";
-    $sSQl .= "                   and proximoexercicio.c61_instit = conplanoorcamentoanalitica.c61_instit           ";
-    $sSQl .= "                   and proximoexercicio.c61_anousu = {$iAnoDestino} 										";
-    $sSQl .= " where conplanoorcamentoanalitica.c61_anousu = {$iAnoAtual}                                          ";
-    $sSQl .= "   and conplanoorcamentoanalitica.c61_instit = {$iIntinst}                                           ";
-    $sSQl .= "   and proximoexercicio.c61_anousu is null                                              ";
+    $sSQl = "select conplanoorcamentoanalitica.*
+     from conplanoorcamentoanalitica
+          left join conplanoorcamentoanalitica  proximoexercicio
+                       on proximoexercicio.c61_reduz  = conplanoorcamentoanalitica.c61_reduz
+                      and proximoexercicio.c61_instit = conplanoorcamentoanalitica.c61_instit
+                      and proximoexercicio.c61_anousu = {$iAnoDestino}
+    where conplanoorcamentoanalitica.c61_anousu = {$iAnoAtual}
+      and conplanoorcamentoanalitica.c61_instit = {$iIntinst}
+      and proximoexercicio.c61_anousu is null
+      and exists(
+          select 1 from conplanoorcamento
+        where c60_codcon = conplanoorcamentoanalitica.c61_codcon and c60_anousu = {$iAnoDestino})
+      ";
 
     return $sSQl;
   }
-  
+
   function sql_query_reduzVinculoAnalitica($c61_reduz = null, $c61_anousu = null, $campos = "*", $ordem = null, $dbwhere = "") {
-  
+
     $sql = "select ";
     if ($campos != "*") {
       $campos_sql = split("#", $campos);
@@ -681,7 +590,7 @@ class cl_conplanoorcamentoanalitica {
     $sql .= "      inner join conplanoreduz             on conplano.c60_codcon                             = conplanoreduz.c61_codcon";
     $sql .= "                                          and conplano.c60_anousu                             = conplanoreduz.c61_anousu";
     $sql2 = "";
-    
+
     if ($dbwhere == "") {
       if ($c61_reduz != null) {
         $sql2 .= " where conplanoorcamentoanalitica.c61_reduz = $c61_reduz ";

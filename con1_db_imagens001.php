@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_db_configarquivos_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_db_configarquivos_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -63,7 +63,7 @@ if (isset($oPost->btnSalvar)) {
     	if (!empty($_FILES['uploadfilemarcadagua']["type"])) {
 
 	    	$sMimeType = $_FILES['uploadfilemarcadagua']["type"];
-	      if ($sMimeType != 'image/jpeg' && $sMimeType != 'image/png' && $sMimeType != 'image/gif') {
+	      if ($sMimeType != 'image/jpeg' && $sMimeType != 'image/png') {
 	        throw new Exception("Arquivo inválido!");
 	      }
 
@@ -93,22 +93,22 @@ if (isset($oPost->btnSalvar)) {
 
     $sLogoName = 'logo'.$_FILES['uploadfilelogo']['name'];
     try {
-
     	/**
        * Verifica o tipo de arquivo.
        */
       if (!empty($_FILES['uploadfilelogo']["type"])) {
 
 	      $sMimeType = $_FILES['uploadfilelogo']["type"];
-	      if ($sMimeType != 'image/jpeg' && $sMimeType != 'image/png' && $sMimeType != 'image/gif') {
+	      if ($sMimeType != 'image/jpeg' && $sMimeType != 'image/png') {
 	        throw new Exception("Arquivo inválido!");
 	      }
 
 	      $iOidGravaLogo = db_geraArquivoOid ("uploadfilelogo", null, 1, $conn);
 	      $sTmpFile      = $_FILES['uploadfilelogo']["tmp_name"];
 	      $sDestino      = "imagens/files/".$sLogoName;
+          $sDestinoAgata = "imagens/files/agata" . $sLogoName;
 
-	      if (!move_uploaded_file($sTmpFile, $sDestino)) {
+          if (!copy($sTmpFile, $sDestinoAgata) || !move_uploaded_file($sTmpFile, $sDestino)) {
 	        throw new Exception("Erro ao mover arquivo {$oPost->namefilelogo}!");
 	      }
 
@@ -137,7 +137,7 @@ if (isset($oPost->btnSalvar)) {
       if (!empty($_FILES['uploadfilefigura']["type"])) {
 
         $sMimeType = $_FILES['uploadfilefigura']["type"];
-        if ($sMimeType != 'image/jpeg' && $sMimeType != 'image/png' && $sMimeType != 'image/gif') {
+        if ($sMimeType != 'image/jpeg' && $sMimeType != 'image/png') {
           throw new Exception("Arquivo inválido!");
         }
 
@@ -289,7 +289,7 @@ td {
 <body class="body-default" onload="js_previewMarcaDAgua();">
   <div class="container">
     <?php
-      require_once("forms/db_frmdb_imagens.php");
+      require_once(modification("forms/db_frmdb_imagens.php"));
     ?>
   </div>
 </body>

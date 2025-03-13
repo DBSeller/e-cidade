@@ -26,7 +26,7 @@
  */
 
 //MODULO: configuracoes
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_relatselecionados->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -129,10 +129,10 @@ function js_cancelar(){
 }
 function js_pesquisadb93_codrel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_relatselecionados','db_iframe_db_relat','func_db_relat.php?funcao_js=parent.js_mostradb_relat1|db91_codrel|db91_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_relatselecionados','db_iframe_db_relat','func_db_relat.php?funcao_js=parent.js_mostradb_relat1|db91_codrel|db91_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.db93_codrel.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_relatselecionados','db_iframe_db_relat','func_db_relat.php?pesquisa_chave='+document.form1.db93_codrel.value+'&funcao_js=parent.js_mostradb_relat','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_relatselecionados','db_iframe_db_relat','func_db_relat.php?pesquisa_chave='+document.form1.db93_codrel.value+'&funcao_js=parent.js_mostradb_relat','Pesquisa',false);
      }else{
        document.form1.db91_descr.value = ''; 
      }
@@ -152,10 +152,10 @@ function js_mostradb_relat1(chave1,chave2){
 }
 function js_pesquisadb93_codcam(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_relatselecionados','db_iframe_db_sysarquivo','func_db_sysarquivo.php?funcao_js=parent.js_mostradb_sysarquivo1|codarq|nomearq','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_relatselecionados','db_iframe_db_sysarquivo','func_db_sysarquivo.php?funcao_js=parent.js_mostradb_sysarquivo1|codarq|nomearq','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.db93_codcam.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_relatselecionados','db_iframe_db_sysarquivo','func_db_sysarquivo.php?pesquisa_chave='+document.form1.db93_codcam.value+'&funcao_js=parent.js_mostradb_sysarquivo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_relatselecionados','db_iframe_db_sysarquivo','func_db_sysarquivo.php?pesquisa_chave='+document.form1.db93_codcam.value+'&funcao_js=parent.js_mostradb_sysarquivo','Pesquisa',false);
      }else{
        document.form1.nomearq.value = ''; 
      }

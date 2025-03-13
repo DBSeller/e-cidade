@@ -313,7 +313,7 @@ function js_mostra_cgs(chave1, chave2, sexo, nasc, mae) {
 
 function js_retornoIdade(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
  
   if (oRetorno.iStatus == 1) {
     $('iIdade').value = oRetorno.iAnos+' anos, '+oRetorno.iMeses+' meses e '+oRetorno.iDias+' dias.';

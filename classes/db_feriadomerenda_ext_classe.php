@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: merenda
 //CLASSE DA ENTIDADE feriado
-require_once("db_feriado_classe.php");
+require_once(modification("classes/db_feriado_classe.php"));
 
 class cl_feriadomerenda_ext extends cl_feriado  { 
 function sql_query_merenda ( $ed54_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 

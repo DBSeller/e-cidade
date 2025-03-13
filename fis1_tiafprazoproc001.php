@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tiafprazo_classe.php");
-include("classes/db_tiaf_classe.php");
-include("classes/db_tiafprazoproc_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tiafprazo_classe.php"));
+include(modification("classes/db_tiaf_classe.php"));
+include(modification("classes/db_tiafprazoproc_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_POST_VARS,2);
@@ -148,7 +148,7 @@ if (isset($opcao) && $opcao != ""){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-		include("forms/db_frmtiafprazoproc.php");
+		include(modification("forms/db_frmtiafprazoproc.php"));
 		/* <table width="790" border="1" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
 		  <tr> 
 		    <td width="360" height="18">&nbsp;</td>

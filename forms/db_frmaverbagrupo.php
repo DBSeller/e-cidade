@@ -58,7 +58,7 @@ db_input('j105_descr',40,$Ij105_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_averbagrupo','func_averbagrupo.php?funcao_js=parent.js_preenchepesquisa|j105_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_averbagrupo','func_averbagrupo.php?funcao_js=parent.js_preenchepesquisa|j105_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_averbagrupo.hide();

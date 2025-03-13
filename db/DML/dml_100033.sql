@@ -1,0 +1,1 @@
+update db_layoutcampos set db52_default='00000000' where db52_codigo = 13756;

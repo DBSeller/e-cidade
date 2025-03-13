@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_app.utils.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_app.utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $oRotulo = new rotulocampo();
 $oRotulo->label("o57_codfon");
 $oRotulo->label("o57_fonte");
@@ -170,7 +170,7 @@ $('btnSalvarVinculo').observe('click', function() {
 function js_retornoVinculo(oAjax) {
   
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 
     alert('Vínculo realizado com sucesso');
@@ -260,7 +260,7 @@ function js_retornoGetReceitaVinculados(oAjax) {
    
    js_removeObj('msgBox');
    oGridVinculo.clearAll(true);
-   var oRetorno = eval('('+oAjax.responseText+")");
+   var oRetorno = JSON.parse(oAjax.responseText);
    oRetorno.receitavinculada.each(function(oReceita, iSeq) {
        
        var aRow = new Array();
@@ -297,7 +297,7 @@ function js_removerReceitasVinculados() {
 function js_retornoCancelaVinculo(oAjax) {
   
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
   
     alert('Vínculo das receceitas selecionadas foram removidas com sucesso!');

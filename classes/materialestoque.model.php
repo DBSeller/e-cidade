@@ -1,41 +1,44 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("model/contabilidade/planoconta/SistemaConta.model.php");
-require_once("model/contabilidade/planoconta/SubSistemaConta.model.php");
-require_once("model/contabilidade/planoconta/ClassificacaoConta.model.php");
-require_once("model/contabilidade/planoconta/ContaPlano.model.php");
-require_once("model/contabilidade/planoconta/ContaPlanoPCASP.model.php");
-require_once("model/contabilidade/planoconta/ContaOrcamento.model.php");
-require_once("std/db_stdClass.php");
+use ECidade\Patrimonial\Material\Helpers\Material;
+
+require_once(modification("model/contabilidade/planoconta/SistemaConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/SubSistemaConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/ClassificacaoConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlano.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlanoPCASP.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaOrcamento.model.php"));
+require_once(modification("std/db_stdClass.php"));
+
 /**
  * Modelo para controle de itens do estoque
- * @author Iuri Guntchnigg $Author: dbrafael.lopes $
- * @version  $Revision: 1.51 $
+ * @author Iuri Guntchnigg $Author: dbroberto $
+ * @version  $Revision: 1.65 $
  */
 class materialEstoque {
 
@@ -91,7 +94,7 @@ class materialEstoque {
    */
   function __construct($iCodMater = null) {
 
-    $this->oDaoMater = db_utils::getDao ( "matmater" );
+    $this->oDaoMater = new cl_matmater();
     if ($iCodMater != null) {
 
       $this->iCodigoMater = $iCodMater;
@@ -102,14 +105,14 @@ class materialEstoque {
     }
   }
   /**
-   * @return unknown
+   * @return integer
    */
   public function getCodDepto() {
     return $this->iCodDepto;
   }
 
   /**
-   * @param unknown_type $iCodDepto
+   * @param integer $iCodDepto
    */
   public function setCodDepto($iCodDepto) {
     $this->iCodDepto = $iCodDepto;
@@ -118,7 +121,7 @@ class materialEstoque {
   /**
    * Seta o criterio de rateio
    *
-   * @param intger $iCriterio
+   * @param integer $iCriterio
    */
   public function setCriterioRateioCusto($iCriterio) {
     $this->iCriterioRateio = $iCriterio;
@@ -203,10 +206,10 @@ class materialEstoque {
     }
     if (! $lGroup) {
 
-      $sCampos  = " distinct m71_codlanc, m71_quant , m71_valor,";
+      $sCampos  = " distinct m71_codlanc, round(m71_quant::numeric, 5) as m71_quant , m71_valor,";
       $sCampos .= " m71_codmatestoque,m60_descr,m70_codmatmater,m61_descr,";
-      $sCampos .= " m77_lote,m77_dtvalidade,m71_quantatend,m77_sequencial,";
-      $sCampos .= " (m71_quant - m71_quantatend) as saldo,m70_quant,m70_valor";
+      $sCampos .= " m77_lote,m77_dtvalidade,round(m71_quantatend::numeric, 5) as m71_quantatend,m77_sequencial,";
+      $sCampos .= " coalesce(round((m71_quant - m71_quantatend)::numeric, 5), 0)::double precision as saldo,m70_quant,m70_valor";
 
     } else {
 
@@ -215,7 +218,11 @@ class materialEstoque {
       $sOrder   = null;
 
     }
-    $sWhere = "m70_codmatmater = " . $this->getcodMater () . " and m71_quantatend < m71_quant ";
+
+    $sWhere      = "m70_codmatmater = " . $this->getcodMater ();
+    $sWhereSaldo = " and round(m71_quantatend::numeric, 5) < round(m71_quant::numeric, 5)";
+
+    $sWhere .= $sWhereSaldo;
 
     if (! empty ( $iCodDepto )) {
       $sWhere .= " and m92_depto = {$iCodDepto}";
@@ -227,68 +234,62 @@ class materialEstoque {
       $sWhere .= " and m77_sequencial = {$iCodLote}";
     }
 
-    $sSqlSaldoItem = $this->oDaoMater->sqlQuerySaldo ( null, $sCampos, $sOrder, $sWhere );
+    $lServico = $oItem->pc01_servico == 't';
+    $sSqlSaldoItem = $this->oDaoMater->sqlQuerySaldo( null, $sCampos, $sOrder, $sWhere, $lServico);
 
     $rsSaldoItem = $this->oDaoMater->sql_record ( $sSqlSaldoItem );
     if ($this->oDaoMater->numrows > 0) {
 
-      /**
-       * Criamos  a colecao de itens
-       */
-
-      for($iInd = 0; $iInd < $this->oDaoMater->numrows; $iInd ++) {
-        $aItens[] = db_utils::fieldsMemory ( $rsSaldoItem, $iInd );
-      }
-      return $aItens;
+          /**
+           * Criamos  a colecao de itens
+           */
+          for($iInd = 0; $iInd < $this->oDaoMater->numrows; $iInd ++) {
+              $aItens[] = db_utils::fieldsMemory($rsSaldoItem, $iInd);
+          }
+        return $aItens;
     } else {
-
-      throw new Exception ( "Nao existe estoque para esse item" );
-      return false;
+        throw new Exception ("Nao existe estoque para esse item");
+        return false;
 
     }
   }
 
-  /**
-   * Realiza o rateio automatico do item nos lotes do item
-   *
-   * @param numeric nsValor
-   * @param integer $iCodDepto
-   * @param integer $iCodEstoque
-   * @return array
-   */
+    /**
+     * Realiza o rateio automatico do item nos lotes do item
+     *
+     * @param numeric nsValor
+     * @param integer $iCodDepto
+     * @param integer $iCodEstoque
+     * @return array
+     * @throws Exception
+     */
+    public function ratearLotes($nValor, $iCodDepto = null, $iCodEstoque = null)
+    {
+        $aItens = $this->getSaldoItens($iCodDepto, $iCodEstoque);
+        $nSaldoItem = $nValor;
 
-  function ratearLotes($nValor, $iCodDepto = null, $iCodEstoque = null) {
+        if (count($aItens) > 0) {
+            $iTotalItens = count($aItens);
+            for ($iInd = 0; $iInd < $iTotalItens; $iInd++) {
+                $aItens[$iInd]->rateio = 0;
 
-    $aItens = $this->getSaldoItens ( $iCodDepto, $iCodEstoque );
+                if (isset ($_SESSION ["mat{$this->iCodigoMater}"][$aItens[$iInd]->m71_codlanc])) {
+                    $aItens [$iInd]->rateio = $_SESSION ["mat{$this->iCodigoMater}"] [$aItens [$iInd]->m71_codlanc];
+                    $nSaldoItem = $nSaldoItem - $_SESSION ["mat{$this->iCodigoMater}"] [$aItens [$iInd]->m71_codlanc];
 
-    $nSaldoItem = $nValor;
+                } elseif ($aItens [$iInd]->saldo >= $nSaldoItem) {
+                    $aItens [$iInd]->rateio = $nSaldoItem;
+                    $nSaldoItem = 0;
+                } elseif ($aItens [$iInd]->saldo > 0) {
+                    $aItens [$iInd]->rateio = $aItens [$iInd]->saldo;
+                    $nSaldoItem = $nSaldoItem - $aItens [$iInd]->saldo;
 
-    if (count ( $aItens ) > 0) {
-
-      $iTotalItens = count ( $aItens );
-      for($iInd = 0; $iInd < $iTotalItens; $iInd ++) {
-
-        if (isset ( $_SESSION ["mat{$this->iCodigoMater}"] [$aItens [$iInd]->m71_codlanc] )) {
-
-          $aItens [$iInd]->rateio = $_SESSION ["mat{$this->iCodigoMater}"] [$aItens [$iInd]->m71_codlanc];
-          $nSaldoItem             = $nSaldoItem - $_SESSION ["mat{$this->iCodigoMater}"] [$aItens [$iInd]->m71_codlanc];
-
-        } else if ($aItens [$iInd]->saldo >= $nSaldoItem) {
-
-          $aItens [$iInd]->rateio = $nSaldoItem;
-          $nSaldoItem             = 0;
-
-        } else if ($aItens [$iInd]->saldo > 0) {
-
-          $aItens [$iInd]->rateio = $aItens [$iInd]->saldo;
-          $nSaldoItem             = $nSaldoItem - $aItens [$iInd]->saldo;
-
+                }
+            }
         }
-      }
 
+        return $aItens;
     }
-    return $aItens;
-  }
   /**
    * grava o rateio dos Lotes na sessao
    *
@@ -305,6 +306,57 @@ class materialEstoque {
       $_SESSION ["mat{$this->iCodigoMater}"] [$iCodLanc->iCodItem] = $iCodLanc->qtde;
     }
     return true;
+  }
+
+  function getSaldoItem($item, $depart) {
+      $sql = "with consulta as (select m70_codigo,
+  m70_coddepto,
+  m70_codmatmater,
+  descrdepto,
+ (quantidade-dl_transferencias)::DOUBLE PRECISION as consulta_material,
+  m70_quant::DOUBLE PRECISION as estoque_material
+ from (
+          SELECT m70_codigo, m70_coddepto, m70_codmatmater,
+                 descrdepto,
+                 (Coalesce(Sum(CASE WHEN matestoquetipo.m81_tipo = 1 THEN matestoqueinimei.m82_quant end),
+                           0) -
+                  Coalesce(Sum(CASE WHEN matestoquetipo.m81_tipo = 2 THEN m82_quant end), 0)) as quantidade,
+                 m70_quant,
+                 coalesce(
+                         (SELECT sum(coalesce(CASE
+                                                  WHEN m81_tipo = 4 THEN m82_quant
+                                                  END, 0)) AS saida
+                          FROM matestoqueinimei
+                                   INNER JOIN matestoqueitem ON m71_codlanc = m82_matestoqueitem
+                                   INNER JOIN matestoque trans ON m71_codmatestoque = trans.m70_codigo
+                                   INNER JOIN matestoqueini ON m80_codigo = m82_matestoqueini
+                                   LEFT JOIN matestoqueinil ON m80_codigo = m86_matestoqueini
+                                   INNER JOIN matestoquetipo ON m80_codtipo = m81_codtipo
+                          WHERE trans.m70_codigo = matestoque.m70_codigo
+                            AND m81_codtipo = 7
+                            AND m86_matestoqueini IS NULL),0) AS dl_transferencias
+          FROM matestoqueini
+                   INNER JOIN matestoquetipo ON m80_codtipo = m81_codtipo
+                   INNER JOIN matestoqueinimei ON m82_matestoqueini = m80_codigo
+                   left JOIN matestoqueinimeipm ON m82_codigo = m89_matestoqueinimei
+                   INNER JOIN matestoqueitem ON m82_matestoqueitem = m71_codlanc
+                   INNER JOIN matestoque ON m71_codmatestoque = m70_codigo
+                   INNER JOIN db_depart ON coddepto = m70_coddepto
+                   INNER JOIN db_departorg on db_departorg.db01_coddepto = db_depart.coddepto and
+                                              db_departorg.db01_anousu = 2022
+                   INNER JOIN orcunidade ON orcunidade.o41_orgao = db_departorg.db01_orgao and
+                                            orcunidade.o41_unidade = db_departorg.db01_unidade and
+                                            orcunidade.o41_anousu = db_departorg.db01_anousu and
+                                            orcunidade.o41_instit = 1
+                   INNER JOIN orcorgao on orcorgao.o40_orgao = orcunidade.o41_orgao and
+                                          orcorgao.o40_anousu = orcunidade.o41_anousu
+                   INNER JOIN material.db_almox ON db_almox.m91_depto = db_depart.coddepto
+          GROUP BY m70_codigo, m70_coddepto, m70_codmatmater, descrdepto
+      ) as x
+ ) select * from consulta where m70_codmatmater = {$item} and m70_coddepto = {$depart};
+";
+      $rs = db_query($sql);
+      return pg_fetch_object($rs);
   }
   /**
    * Cancela as informações do material guardadas em sessão
@@ -338,18 +390,19 @@ class materialEstoque {
    * @param integer  [$iCodMatPedidoItem codigo da tabela matpedidoitem;
    * @return boolean
    */
-  function transferirMaterial($nQuantidade,$iCodDeptoOrigem,$iCodDeptoDestino,$iCodMovimento,$sObservacao = "",
-                               $iCodMatPedidoItem = null) {
+  function transferirMaterial($nQuantidade, $iCodDeptoOrigem, $iCodDeptoDestino, $iCodMovimento, $sObservacao = "",
+                              $iCodMatPedidoItem = null, $materiais = null)
+  {
 
-    /*
-     * Verificamos se os parametros foram passados, e se existe transaçaõ ativa
-     */
-    if (empty($iCodDeptoDestino)) {
-      throw new Exception("Departamento de destino deve ser informado.");
-    }
+      /*
+       * Verificamos se os parametros foram passados, e se existe transaçaõ ativa
+       */
+      if (empty($iCodDeptoDestino)) {
+          throw new Exception("Departamento de destino deve ser informado.");
+      }
 
-    if (empty($iCodDeptoOrigem)) {
-      throw new Exception("Departamento de origem deve ser informado.");
+      if (empty($iCodDeptoOrigem)) {
+          throw new Exception("Departamento de origem deve ser informado.");
     }
 
     if ($iCodDeptoOrigem == $iCodDeptoDestino) {
@@ -360,27 +413,31 @@ class materialEstoque {
       throw new Exception("Quantidade deve ser maior que 0 (zero).");
     }
 
-    if (! db_utils::inTransaction()) {
-      throw new Exception("Não existe transação com o banco de dados ativa.\n Operação cancelada");
-    }
+      if (!db_utils::inTransaction()) {
+          throw new Exception("Não existe transação com o banco de dados ativa.\n Operação cancelada");
+      }
 
-    materialEstoque::bloqueioMovimentacaoItem($this->iCodigoMater, $iCodDeptoOrigem);
-    /*
-     * Buscamos o saldo do item, já fazendo o rateio do mesmo, conforme regra esclhida pelo usuário.
-     */
-    $aItens = $this->ratearLotes($nQuantidade, null, $iCodDeptoOrigem);
+      materialEstoque::bloqueioMovimentacaoItem($this->iCodigoMater, $iCodDeptoOrigem);
+      /*
+       * Buscamos o saldo do item, já fazendo o rateio do mesmo, conforme regra esclhida pelo usuário.
+       */
+      if (is_null($materiais)) {
+          $aItens = $this->ratearLotes($nQuantidade, null, $iCodDeptoOrigem);
+      } else {
+          $aItens = $materiais;
+      }
 
-    if (count($aItens > 0)) {
+      if (count($aItens > 0)) {
 
-      $iTotItens      = count($aItens);
-      $iCodEstoqueIni = $iCodMovimento;
+          $iTotItens = count($aItens);
+          $iCodEstoqueIni = $iCodMovimento;
 
-      //incluimos movimentação inicial do estoque, caso nao iniciamos uma transferencia
-      if ($iCodMovimento == "") {
+          //incluimos movimentação inicial do estoque, caso nao iniciamos uma transferencia
+          if ($iCodMovimento == "") {
 
-        $oMatEstoqueIni               = db_utils::getDao("matestoqueini");
-        $oMatEstoqueIni->m80_coddepto = $iCodDeptoOrigem;
-        $oMatEstoqueIni->m80_codtipo  = 7; //Transferencia de Material
+              $oMatEstoqueIni = db_utils::getDao("matestoqueini");
+              $oMatEstoqueIni->m80_coddepto = $iCodDeptoOrigem;
+              $oMatEstoqueIni->m80_codtipo = 7; //Transferencia de Material
         $oMatEstoqueIni->m80_data     = date("Y-m-d", db_getsession("DB_datausu"));
         $oMatEstoqueIni->m80_login    = db_getsession("DB_id_usuario");
         $oMatEstoqueIni->m80_hora     = db_hora();
@@ -502,128 +559,143 @@ class materialEstoque {
     }
     return $iCodEstoqueIni;
   }
-  /**
-   * Realiza uma saida manual do material do estoque do usuaário
-   *
-   * @param integer $nQuantidade a ser retirada
-   * @param string  $sObservaca observação do movimento
-   * @return unknown
-   */
-  function saidaMaterial($nQuantidade, $sObservacao = null, $lServico = false) {
+
+    /**
+     * @param                              $nQuantidade
+     * @param null $sObservacao
+     * @param bool|false $lServico
+     * @param TipoMovimentacaoEstoque|null $oMovimentacao
+     *
+     * @param bool $processaDoc404
+     * @return bool
+     * @throws BusinessException
+     * @throws DBException
+     * @throws ParameterException
+     */
+  function saidaMaterial($nQuantidade, $sObservacao = null, $lServico = false, TipoMovimentacaoEstoque $oMovimentacao = null, $processaDoc404 = true) {
 
     if (empty($nQuantidade) || $nQuantidade <= 0) {
-
       throw new Exception("Parametro nQuantidade inválido");
-      return false;
     }
 
     if (! db_utils::inTransaction()) {
-
       throw new Exception("Não existe transação com o banco de dados ativa.\n Operação cancelada");
-      return false;
     }
     $aItens = $this->ratearLotes($nQuantidade, null, $this->getCodDepto());
     $nQuantidadeAtendida = $nQuantidade;
-    if (count($aItens > 0)) {
+
+    $iCodigoTipoMovimentacao = $lServico ? 20 : 5;
+    if (!empty($oMovimentacao) && $oMovimentacao) {
+
+      $iCodigoTipoMovimentacao = $oMovimentacao->getCodigo();
+      $sObservacao = "Saída automática de material permanente.";
+    }
+
+    if (count($aItens) > 0) {
 
       foreach ($aItens as $oMaterial) {
 
-        if ($oMaterial->rateio > 0) {
+        if (isset($oMaterial->rateio) && $oMaterial->rateio == 0) {
+          continue;
+        }
 
-          $oMatEstoqueIni               = db_utils::getDao("matestoqueini");
-          $oMatEstoqueIni->m80_coddepto = $this->getCodDepto();
-          $oMatEstoqueIni->m80_codtipo  = $lServico ? 20 : 5; //saida Manual
-          $oMatEstoqueIni->m80_data     = date("Y-m-d", db_getsession("DB_datausu"));
-          $oMatEstoqueIni->m80_login    = db_getsession("DB_id_usuario");
-          $oMatEstoqueIni->m80_hora     = db_hora();
-          $oMatEstoqueIni->m80_obs      = "Saida automatica de servico";
-          $oMatEstoqueIni->incluir(null);
-          $iCodEstoqueIni         = $oMatEstoqueIni->m80_codigo;
-          $this->iCodigoMovimento = $iCodEstoqueIni;
+        if (empty($sObservacao) || trim($sObservacao) == "") {
+          $sObservacao = "Saida automatica de servico";
+        }
 
-          if ($oMatEstoqueIni->erro_status == 0) {
+        $oMatEstoqueIni               = new cl_matestoqueini;
+        $oMatEstoqueIni->m80_coddepto = $this->getCodDepto();
+        $oMatEstoqueIni->m80_codtipo  = $iCodigoTipoMovimentacao;
+        $oMatEstoqueIni->m80_data     = date("Y-m-d", db_getsession("DB_datausu"));
+        $oMatEstoqueIni->m80_login    = db_getsession("DB_id_usuario");
+        $oMatEstoqueIni->m80_hora     = date('H:i:s');
+        $oMatEstoqueIni->m80_obs      = $sObservacao;
+        $oMatEstoqueIni->incluir(null);
+        $iCodEstoqueIni         = $oMatEstoqueIni->m80_codigo;
+        $this->iCodigoMovimento = $iCodEstoqueIni;
 
-            $sErroMsg  = "Erro [1] - Não foi possível iniciar movimentação no estoque.";
-            $sErroMsg .= "\nErro Tecnico:{$oMatEstoqueIni->erro_msg}";
-            throw new Exception ( $sErroMsg );
+        if ($oMatEstoqueIni->erro_status == 0) {
 
-          }
+          $sErroMsg  = "Erro [1] - Não foi possível iniciar movimentação no estoque.";
+          $sErroMsg .= "\nErro Tecnico:{$oMatEstoqueIni->erro_msg}";
+          throw new Exception ( $sErroMsg );
 
-          $oDaoMatestoqueItem                 = db_utils::getDao("matestoqueitem");
-          $nQuantidade                        = $oMaterial->m71_quantatend + $oMaterial->rateio;
-          $oDaoMatestoqueItem->m71_quantatend = "$nQuantidade";
-          $oDaoMatestoqueItem->m71_codlanc    = $oMaterial->m71_codlanc;
+        }
+
+        $oDaoMatestoqueItem = new cl_matestoqueitem;
           if ($lServico) {
-            $oDaoMatestoqueItem->m71_servico  = "true";
+              $oDaoMatestoqueItem->m71_servico  = "true";
+          } else {
+              $nQuantidade = $oMaterial->m71_quantatend + $oMaterial->rateio;
           }
-          $oDaoMatestoqueItem->alterar($oMaterial->m71_codlanc);
+        $oDaoMatestoqueItem->m71_quantatend = "$nQuantidade";
+        $oDaoMatestoqueItem->m71_codlanc    = $oMaterial->m71_codlanc;
+        $oDaoMatestoqueItem->alterar($oMaterial->m71_codlanc);
 
-          if ($oDaoMatestoqueItem->erro_status == 0) {
+        if ($oDaoMatestoqueItem->erro_status == 0) {
 
-            $sMsgErro  = "Erro[3] - Não Foi possível atualizar saldo do estoque do material({$this->iCodigoMater}).\n";
-            $sMsgErro .= "Erro Técnico: \n{$oDaoMatestoqueItem->erro_msg}";
+          $sMsgErro  = "Erro[3] - Não Foi possível atualizar saldo do estoque do material({$this->iCodigoMater}).\n";
+          $sMsgErro .= "Erro Técnico: \n{$oDaoMatestoqueItem->erro_msg}";
+          throw new Exception($sMsgErro);
+        }
+
+        $oDaoMatEstoqueIniMei                     = new cl_matestoqueinimei;
+        $oDaoMatEstoqueIniMei->m82_matestoqueitem = $oMaterial->m71_codlanc;
+        $oDaoMatEstoqueIniMei->m82_matestoqueini  = $iCodEstoqueIni;
+        $oDaoMatEstoqueIniMei->m82_quant          = "$oMaterial->rateio";
+        if ($lServico) {
+            $oDaoMatEstoqueIniMei->m82_quant = $nQuantidade;
+        }
+
+        $oDaoMatEstoqueIniMei->incluir(null);
+
+        if ($oDaoMatEstoqueIniMei->erro_status == 0) {
+
+          $sMsgErro  = "Erro[4] - Não Foi possível atualizar saldo do estoque do material({$this->iCodigoMater}).";
+          $sMsgErro .= str_replace("\\n", "\n","\nErro Técnico: \n{$oDaoMatEstoqueIniMei->erro_msg}");
+          throw new Exception($sMsgErro);
+        }
+        /**
+         * Caso exista no material um centro de custo definido ,
+         * incluimos a na tabele cuscustoapropria
+         */
+
+        if ($this->getCriterioRateio() != "") {
+          $nValorSaida                                 = round ((($oMaterial->m70_valor * $oMaterial->rateio) /
+            $oMaterial->m70_quant), 2 );
+          $oDaoCustoApropria                           = db_utils::getDao("custoapropria");
+          $oDaoCustoApropria->cc12_custocriteriorateio = $this->getCriterioRateio();
+          $oDaoCustoApropria->cc12_matestoqueinimei    = $oDaoMatEstoqueIniMei->m82_codigo;
+          $oDaoCustoApropria->cc12_qtd                 = "$oMaterial->rateio";
+          $oDaoCustoApropria->cc12_valor               = "{$nValorSaida}";
+          $oDaoCustoApropria->incluir(null);
+
+          if ($oDaoCustoApropria->erro_status == 0) {
+
+            $sMsgErro = "Erro[5] - Não Foi possível apropriar custos do material({$this->iCodigoMater}).";
             throw new Exception($sMsgErro);
-            return false;
 
           }
+        }
 
-          $oDaoMatEstoqueIniMei                     = db_utils::getDao("matestoqueinimei");
-          $oDaoMatEstoqueIniMei->m82_matestoqueitem = $oMaterial->m71_codlanc;
-          $oDaoMatEstoqueIniMei->m82_matestoqueini  = $iCodEstoqueIni;
-          $oDaoMatEstoqueIniMei->m82_quant          = "$oMaterial->rateio";
-          $oDaoMatEstoqueIniMei->incluir(null);
+        $oDataImplantacao      = new DBDate(date("Y-m-d", db_getsession('DB_datausu')));
+        $oInstituicao          = new Instituicao(db_getsession('DB_instit'));
+        $lIntegracaoFinanceiro = ParametroIntegracaoPatrimonial::possuiIntegracaoMaterial($oDataImplantacao, $oInstituicao);
 
-          if ($oDaoMatEstoqueIniMei->erro_status == 0) {
-
-            $sMsgErro  = "Erro[4] - Não Foi possível atualizar saldo do estoque do material({$this->iCodigoMater}).";
-            $sMsgErro .= str_replace("\\n", "\n","\nErro Técnico: \n{$oDaoMatEstoqueIniMei->erro_msg}");
-            throw new Exception($sMsgErro);
-            return false;
-
-          }
-          /**
-           * Caso exista no material um centro de custo definido ,
-           * incluimos a na tabele cuscustoapropria
-           */
-
-          if ($this->getCriterioRateio() != "") {
-            $nValorSaida                                 = round ((($oMaterial->m70_valor * $oMaterial->rateio) /
-                                                                     $oMaterial->m70_quant), 2 );
-            $oDaoCustoApropria                           = db_utils::getDao("custoapropria");
-            $oDaoCustoApropria->cc12_custocriteriorateio = $this->getCriterioRateio();
-            $oDaoCustoApropria->cc12_matestoqueinimei    = $oDaoMatEstoqueIniMei->m82_codigo;
-            $oDaoCustoApropria->cc12_qtd                 = "$oMaterial->rateio";
-            $oDaoCustoApropria->cc12_valor               = "{$nValorSaida}";
-            $oDaoCustoApropria->incluir(null);
-
-            if ($oDaoCustoApropria->erro_status == 0) {
-
-              $sMsgErro = "Erro[5] - Não Foi possível apropriar custos do material({$this->iCodigoMater}).";
-              throw new Exception($sErroMsg);
-
+        /**
+         * Realizamos o lancamento Contabil
+         */
+        if ( !$lServico && USE_PCASP && $lIntegracaoFinanceiro && $iCodigoTipoMovimentacao != 24) {
+            if (!UTILIZA_INCORPORACAO_BEM || (UTILIZA_INCORPORACAO_BEM && $processaDoc404)) {
+                $nValorLancamento = round($oMaterial->rateio * $this->getPrecoMedio(), 2);
+                $this->processarLancamento($oDaoMatEstoqueIniMei->m82_codigo, $nValorLancamento, $sObservacao);
             }
-          }
 
-          $oDataImplantacao      = new DBDate(date("Y-m-d", db_getsession('DB_datausu')));
-          $oInstituicao          = new Instituicao(db_getsession('DB_instit'));
-          $lIntegracaoFinanceiro = ParametroIntegracaoPatrimonial::possuiIntegracaoMaterial($oDataImplantacao, $oInstituicao);
-
-          /**
-           * Realizamos o lancamento Contabil
-           */
-          if ( !$lServico && USE_PCASP && $lIntegracaoFinanceiro ) {
-
-            $nValorLancamento = round($oMaterial->rateio * $this->getPrecoMedio(), 2);
-            $this->processarLancamento($oDaoMatEstoqueIniMei->m82_codigo, $nValorLancamento, $sObservacao);
-          }
         }
       }
     }
-
-    $this->cancelarLoteSession ();
-
+    $this->cancelarLoteSession();
     return true;
-
   }
 
   /**
@@ -657,15 +729,15 @@ class materialEstoque {
     }
     $oMatEstoqueIni   = db_utils::getDao("matestoqueini");
     $rsMatEstoqueItem = $oMatEstoqueIni->sql_record(
-                                                    $oMatEstoqueIni->sql_query_mater(null,
-                                                                                     "m71_codlanc,
+      $oMatEstoqueIni->sql_query_mater(null,
+                                       "m71_codlanc,
                                                                                       m71_quant,
                                                                                       m71_quantatend,
                                                                                       m71_valor,
                                                                                       m82_quant,
                                                     		                          matestoqueini.m80_data,
                                                                                       matestoqueini.m80_codigo", "",
-                                                                                      "m82_codigo={$iCodIniMei}
+                                       "m82_codigo={$iCodIniMei}
                                                                                       and  (matestoqueini.m80_codtipo=5
                                                                                       or matestoqueini.m80_codtipo=20)
                                                                                       and (b.m80_codtipo<>6
@@ -807,7 +879,7 @@ class materialEstoque {
                                                                                "*",
                                                                                "",
                                                                                "m98_sequencial={$iMatPedidoItem}"
-                                                                               ));
+    ));
     $iNumRows         = $oMatPedidoItem->numrows;
     $oMaterial        = db_utils::fieldsMemory($rsoMatPedidoItem,0);
     $MatPedidoItem    = $oMaterial->m98_sequencial;
@@ -854,7 +926,7 @@ class materialEstoque {
 
   function anularRequisicao($nQuantidade, $sMotivo = null, $iCodMater = null, $iCodItemReq = null) {
 
-    require_once("classes/requisicaoMaterial.model.php");
+    require_once(modification("classes/requisicaoMaterial.model.php"));
     if (($nQuantidade == null) || ($nQuantidade == "")) {
 
       throw new Exception("Parametro Quantidade não pode ser vazio!");
@@ -886,7 +958,7 @@ class materialEstoque {
                                                                                     "*",
                                                                                     "",
                                                                                     "m41_codigo={$iCodItemReq}"
-                                                                                    ));
+    ));
 
     $iNumRows     = $oDaoMatrequiItem->numrows;
     $oMaterial    = db_utils::fieldsMemory($rsDaoMatrequiItem, 0);
@@ -915,7 +987,7 @@ class materialEstoque {
     $sSqlPrecoMedio .= "   and m85_matmater = {$this->iCodigoMater}                               ";
 
     $sSqlPrecoMedio .= "   and m85_coddepto = ". $this->iCodDepto ;//.db_getsession("DB_coddepto");
-    
+
     $sSqlPrecoMedio .= "  order by to_timestamp(m85_data || ' ' || m85_hora, 'YYYY-MM-DD HH24:MI:SS') desc limit 1";
 
     $rsPrecoMedio = db_query($sSqlPrecoMedio);
@@ -932,10 +1004,10 @@ class materialEstoque {
    * @return number
    */
   public function getPrecoMedioMaterial($sData='', $sHora='') {
-  
-  
+
+
     if ($sData == '') {
-  
+
       $sData = date("Y-m-d", db_getsession("DB_datausu"));
       $sHora = date("H:i:s");
     }
@@ -947,15 +1019,15 @@ class materialEstoque {
     $sSqlPrecoMedio .= "   and m85_matmater = {$this->iCodigoMater}                               ";
     //$sSqlPrecoMedio .= "   and m85_coddepto = ".db_getsession("DB_coddepto");
     $sSqlPrecoMedio .= "  order by to_timestamp(m85_data || ' ' || m85_hora, 'YYYY-MM-DD HH24:MI:SS') desc limit 1";
-  
+
     $rsPrecoMedio = db_query($sSqlPrecoMedio);
     if (pg_num_rows($rsPrecoMedio)  > 0) {
       $nPrecoMedio = db_utils::fieldsMemory($rsPrecoMedio, 0)->m85_precomedio;
     }
     return $nPrecoMedio;
   }
-  
-  
+
+
 
   /**
    * método responsavel pelo ajuste de preços medios
@@ -980,7 +1052,7 @@ class materialEstoque {
     }
 
     if ($nValorPrecoMedio == null) {
-       throw new Exception("Novo Preço Médio nao informado");
+      throw new Exception("Novo Preço Médio nao informado");
     }
     if ($sMotivo == null) {
       throw new Exception("Motivo da Alteração nao informado");
@@ -1061,6 +1133,21 @@ class materialEstoque {
     if (empty($this->oMaterialGrupo) && !empty($this->iCodigoMater)) {
       if (!empty($this->oDados->m68_materialestoquegrupo)) {
         $this->oMaterialGrupo = new MaterialGrupo($this->oDados->m68_materialestoquegrupo);
+      } else {
+          $daoMaterialEstoqueGrupo = new cl_matmatermaterialestoquegrupo();
+          $sqlMaterialEstoqueGrupo = $daoMaterialEstoqueGrupo->sql_query_file(
+              null,
+              'm68_materialestoquegrupo',
+              null,
+              "m68_matmater = {$this->iCodigoMater}"
+          );
+
+          $rs = db_query($sqlMaterialEstoqueGrupo);
+          if (!$rs) {
+              throw new Exception("Erro ao buscar Grupo do Material.");
+          }
+          $oMaterialEstoqueGrupo = db_utils::fieldsMemory($rs, 0);
+          $this->oMaterialGrupo = new MaterialGrupo($oMaterialEstoqueGrupo->m68_materialestoquegrupo);
       }
     }
     return $this->oMaterialGrupo;
@@ -1083,7 +1170,7 @@ class materialEstoque {
                                                                        c61_reduz ",
                                                                       "pc07_codele limit 1",
                                                                       $sWhere
-                                                                     );
+      );
       $rsConta = $oDaoMatmater->sql_record($sSqlConta);
       if ($oDaoMatmater->numrows > 0) {
 
@@ -1104,7 +1191,7 @@ class materialEstoque {
    */
   protected function executarLancamentosContabeis ($iCodigoTipoDocumento,
                                                    LancamentoAuxiliarMovimentacaoEstoque $oLancamentoAuxiliar,
-                                                  $dtLancamento) {
+                                                   $dtLancamento) {
 
     $oDocumentoContabil       = SingletonRegraDocumentoContabil::getDocumento($iCodigoTipoDocumento);
     $iCodigoDocumentoExecutar = $oDocumentoContabil->getCodigoDocumento();
@@ -1161,9 +1248,9 @@ class materialEstoque {
     $sCamposSaldo = " sum(m84_quantidade) as m84_quantidade";
     $oDaoMatEstoqueTransferencia = db_utils::getDao("matestoquetransferencia");
     $sSqlBuscaSaldo              = $oDaoMatEstoqueTransferencia->sql_query_transferencia(null,
-                                                                                          $sCamposSaldo,
-                                                                                          null,
-                                                                                          $sWhereSaldo);
+                                                                                         $sCamposSaldo,
+                                                                                         null,
+                                                                                         $sWhereSaldo);
     $rsBuscaSaldoTransferencia = $oDaoMatEstoqueTransferencia->sql_record($sSqlBuscaSaldo);
     $iQuantidade = 0;
     if ($oDaoMatEstoqueTransferencia->numrows > 0) {
@@ -1210,13 +1297,13 @@ class materialEstoque {
       throw new Exception('Erro ao selecionar itens para bloqueio');
     }
   }
-  
+
   /**
    * metodo para retornar o minimo que um material deve ter em estoque em um departamento (almox)
    * @return integer
    */
   public function getEstoqueMinimo(){
-    
+
     $iEstoqueMinimo     = 0;
     $oDaoMatmaterEstoque = new cl_matmaterestoque();
     $sWhereMinimo        = "    coddepto = {$this->iCodDepto}        ";
@@ -1226,7 +1313,7 @@ class materialEstoque {
     if ($oDaoMatmaterEstoque->numrows > 0) {
       $iEstoqueMinimo = db_utils::fieldsMemory($rsMinimo, 0)->m64_estoqueminimo;
     }
-    
+
     return $iEstoqueMinimo;
   }
   /**
@@ -1234,7 +1321,7 @@ class materialEstoque {
    * @return integer
    */
   public function getEstoqueMaximo(){
-    
+
     $iEstoqueMaximo     = 0;
     $oDaoMatmaterEstoque = new cl_matmaterestoque();
     $sWhereMaximo        = "    coddepto = {$this->iCodDepto}        ";
@@ -1244,16 +1331,16 @@ class materialEstoque {
     if ($oDaoMatmaterEstoque->numrows > 0) {
       $iEstoqueMaximo = db_utils::fieldsMemory($rsMaximo, 0)->m64_estoquemaximo;
     }
-    
+
     return $iEstoqueMaximo;
   }
-  
+
   /**
    * metodo para retornar o ponto de pedido que um material deve ter em estoque em um departamento (almox)
    * @return integer
    */
   public function getPontoPedido(){
-  
+
     $iPontoPedido        = 0;
     $oDaoMatmaterEstoque = new cl_matmaterestoque();
     $sWherePedido        = "    coddepto = {$this->iCodDepto}        ";
@@ -1264,6 +1351,6 @@ class materialEstoque {
       $iPontoPedido = db_utils::fieldsMemory($rsPedido, 0)->m64_pontopedido;
     }
     return $iPontoPedido;
-  }  
+  }
 }
 ?>

@@ -1,7 +1,7 @@
 <?PHP
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("classes/db_procandam_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("classes/db_procandam_classe.php"));
 $aux02   = new cl_procandam;
 $aux     = new cl_procandam;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -131,7 +131,9 @@ switch ($tipo) {
 	  	                                  inner join db_usuarios on db_usuarios.id_usuario = procandam.p61_id_usuario
 	  	                            where p61_codandam = (select max(p61_codandam)
 	  	                                                    from procandam
-	  	                                                   where procandam.p61_codproc=p58_codproc) ) as nome                                                          
+	  	                                                   where procandam.p61_codproc=p58_codproc) ) as nome,
+                               p58_numero,
+                               p58_ano                                                       
                           from procandam
                                inner join protprocesso on p58_codandam = p61_codandam
                                left  join arqproc on p58_codproc = p68_codproc
@@ -241,15 +243,15 @@ if ($tipo =="1") { // processos iniciados no departamento
         $pdf->setfont('arial','','7');
         $depto = $p58_coddepto;
         $pdf->setx(10); 
-        $pdf->cell(20,4,'N CONTROLE' ,'0',0,'R',1);
-        $pdf->cell(20,4,'PROCESSO' ,'0',0,'R',1);
+        $pdf->cell(20,4,'N CONTROLE' ,'0',0,'L',1);
+        $pdf->cell(30,4,'PROCESSO' ,'0',0,'R',1);
         $pdf->cell(20,4,'DATA'   ,'0',0,'C',1);
         $pdf->cell(10,4,'CGM'    ,'0',0,'R',1);
         $pdf->cell(40,4,'NOME'   ,'0',0,'L',1);
         $pdf->cell(20,4,'COD.AND','0',0,'R',1);
         $pdf->cell(20,4,'DATA'   ,'0',0,'C',1);
         $pdf->cell(50,4,'DEPART.ATUAL','0',0,'L',1);
-        $pdf->cell(90,4,'USUÁRIO ATUAL','0',1,'L',1);
+        $pdf->cell(80,4,'USUÁRIO ATUAL','0',1,'L',1);
         // cabeçalho dos processos
       }
       
@@ -262,15 +264,15 @@ if ($tipo =="1") { // processos iniciados no departamento
       }
       
       $pdf->setx(10); 
-      $pdf->cell(20,4,$p58_codproc,'0',0,'R',0);
-      $pdf->cell(20,4,$sNumeroProcesso,'0',0,'R',0);
+      $pdf->cell(20,4,$p58_codproc,'0',0,'L',0);
+      $pdf->cell(30,4,$sNumeroProcesso,'0',0,'R',0);
       $pdf->cell(20,4,$p58_dtproc,'0',0,'C',0);
       $pdf->cell(10,4,$p58_numcgm,'0',0,'R',0);
       $pdf->cell(40,4,substr($z01_nome,0,30),'0',0,'L',0);
       $pdf->cell(20,4,$andamento,'0',0,'R',0);
       $pdf->cell(20,4,$p61_dtandam,'0',0,'C',0);
       $pdf->cell(50,4,substr($descrdepto,0,30),'0',0,'L',0);
-      $pdf->cell(90,4,$nome,'0',1,'L',0);
+      $pdf->cell(80,4,$nome,'0',1,'L',0);
 
       $quant++;
       $quantgeral++;
@@ -311,7 +313,7 @@ if ($tipo =="1") { // processos iniciados no departamento
         $depto = $p58_coddepto;   // atribui departamento
         $pdf->setx(10); 
         $pdf->cell(20,4,'N CONTROLE' ,'B',0,'R',1);
-        $pdf->cell(20,4,'PROCESSO' ,'B',0,'R',1);
+        $pdf->cell(50,4,'PROCESSO' ,'B',0,'C',1);
         $pdf->cell(20,4,'DATA'   ,'B',0,'C',1);
         $pdf->cell(10,4,'CGM'    ,'B',0,'R',1);
         $pdf->cell(60,4,'NOME'   ,'B',0,'L',1);
@@ -327,9 +329,11 @@ if ($tipo =="1") { // processos iniciados no departamento
         $sNumeroProcesso = "";
       }
       
+
+
       $pdf->setx(10); 
       $pdf->cell(20,4,$p58_codproc,'0',0,'R',0);
-      $pdf->cell(20,4,$sNumeroProcesso,'0',0,'C',0);
+      $pdf->cell(50,4,$sNumeroProcesso,'0',0,'C',0);
       $sql="select p58_dtproc, p58_numero, p58_ano, p58_numcgm, z01_nome, descrdepto
               from protprocesso 
                    inner join cgm on z01_numcgm = p58_numcgm

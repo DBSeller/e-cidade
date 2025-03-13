@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,15 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas = new cl_criaabas;
+$cl_lab_parametros = new cl_lab_parametros;
 if($db_opcao==1){
  $arquivo = "lab1_lab_laboratorio001.php";
 }elseif($db_opcao==22){
@@ -41,6 +42,9 @@ if($db_opcao==1){
 }elseif($db_opcao==33){
  $arquivo = "lab1_lab_laboratorio003.php";
 }
+//Valida parametro libera grupo
+$rResultado = $cl_lab_parametros->sql_record($cl_lab_parametros->sql_query()); 
+db_fieldsmemory($rResultado,0);
 ?>
 <html>
 <head>
@@ -68,7 +72,11 @@ if($db_opcao==1){
                                    "a5"=>"Exames",
                                    "a6"=>converteCodificacao("Horários"),
                                    "a7"=>converteCodificacao("Ausências"),
-                                   "a8"=>converteCodificacao("Paralisação"));
+                                   "a8"=>converteCodificacao("Paralisação"),
+                                   "a9"=>"Grupos");
+    if($la49_habilitargrupo === "f"){
+      unset($clcriaabas->identifica['a9']);
+    }
    $clcriaabas->src = array("a1"=>"$arquivo",
                             "a2"=>"",
                             "a3"=>"",
@@ -76,9 +84,19 @@ if($db_opcao==1){
                             "a5"=>"",
                             "a6"=>"",
                             "a7"=>"",
-                            "a8"=>"");
-   $clcriaabas->sizecampo  = array("a1"=>15,"a2"=>15,"a3"=>15,"a4"=>"15","a5"=>15,"a6"=>15,"a7"=>15,"a8"=>15);
-   $clcriaabas->disabled   =  array("a1"=>"false","a2"=>"true","a3"=>"true","a4"=>"true","a5"=>"true","a6"=>"true","a7"=>"true","a8"=>"true");
+                            "a8"=>"",
+                            "a9"=>"");
+    if($la49_habilitargrupo === "f"){
+      unset($clcriaabas->src['a9']);
+    }
+   $clcriaabas->sizecampo  = array("a1"=>15,"a2"=>15,"a3"=>15,"a4"=>"15","a5"=>15,"a6"=>15,"a7"=>15,"a8"=>15, "a9"=>15);
+  if($la49_habilitargrupo === "f"){
+    unset($clcriaabas->sizecampo['a9']);
+  }
+   $clcriaabas->disabled   =  array("a1"=>"false","a2"=>"true","a3"=>"true","a4"=>"true","a5"=>"true","a6"=>"true","a7"=>"true","a8"=>"true", "a9"=>"true");
+  if($la49_habilitargrupo === "f"){
+    unset($clcriaabas->disabled['a9']);
+  }
    $clcriaabas->scrolling  = "no";
    $clcriaabas->iframe_height= "600";
    $clcriaabas->iframe_width= "100%";

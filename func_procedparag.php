@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_procedparag_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_procedparag_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clprocedparag = new cl_procedparag;
@@ -81,22 +81,26 @@ $clprocedparag->rotulo->label("v80_docum");
       </td>
   </tr>
   <tr> 
-    <td align="center" valign="top"> 
-      <?
+    <td align="center" valign="top">
+        <?php
+
+        $iInstituicao = db_getsession('DB_instit');
+
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_procedparag.php")==true){
-             include("funcoes/db_func_procedparag.php");
+             include(modification("funcoes/db_func_procedparag.php"));
            }else{
            $campos = "procedparag.*";
            }
         }
         if(isset($chave_v80_proced) && (trim($chave_v80_proced)!="") ){
-	         $sql = $clprocedparag->sql_query($chave_v80_proced,$campos,"v80_proced");
+            $sql = $clprocedparag->sql_query($chave_v80_proced, $campos, "v80_proced", "db03_instit = {$iInstituicao}");
         }else if(isset($chave_v80_docum) && (trim($chave_v80_docum)!="") ){
-	         $sql = $clprocedparag->sql_query("",$campos,"v80_docum"," v80_docum like '$chave_v80_docum%' ");
+            $sql = $clprocedparag->sql_query("", $campos, "v80_docum",
+                " v80_docum like '$chave_v80_docum%' AND db03_instit = {$iInstituicao} ");
         }else{
-           $sql = $clprocedparag->sql_query("",$campos,"v80_proced","");
+            $sql = $clprocedparag->sql_query("", $campos, "v80_proced", "db03_instit = {$iInstituicao}");
         }
         $repassa = array();
         if(isset($chave_v80_docum)){
@@ -132,4 +136,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_v80_docum",true,1,"chave_v80_docum",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

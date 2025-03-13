@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_diversos_classe.php");
-include("classes/db_cgm_classe.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_diversos_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("libs/db_sql.php"));
 db_postmemory($HTTP_SERVER_VARS);
 $db_botao=1;
 $db_opcao=1;
@@ -55,14 +55,14 @@ if ($result02){
 }
 
 /* total pago */
-$result03= pg_query("select sum(k00_valor) from arrepaga where k00_numpre = $dv05_numpre");
+$result03= db_query("select sum(k00_valor) from arrepaga where k00_numpre = $dv05_numpre");
 if(pg_numrows($result03)>0){
   db_fieldsmemory($result03,0);
 }else{
   $sum="0,00"; 	
 }
 /* total devido */
-$result04= pg_query("select sum(k00_valor) as total from arrecad where k00_numpre = $dv05_numpre");
+$result04= db_query("select sum(k00_valor) as total from arrecad where k00_numpre = $dv05_numpre");
 if(pg_numrows($result04)>0){
   db_fieldsmemory($result04,0);
 }else{

@@ -1,0 +1,22 @@
+[
+    {
+        "value": 1,
+        "label": "CNPJ"
+    },
+    {
+        "value": 2,
+        "label": "CPF"
+    },
+    {
+        "value": 3,
+        "label": "CAEPF (Cadastro de Atividade Econômica de Pessoa Física)"
+    },
+    {
+        "value": 4,
+        "label": "CNO (Cadastro Nacional de Obra)"
+    },
+    {
+        "value": 5,
+        "label": "CGC"
+    }
+]

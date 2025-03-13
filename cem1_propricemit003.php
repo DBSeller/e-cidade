@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_lotecemit_classe.php");
-require_once("classes/db_propricemit_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_lotecemit_classe.php"));
+require_once(modification("classes/db_propricemit_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -59,7 +59,7 @@ if(isset($excluir)){
 
    $db_opcao = 3;
    if(file_exists("funcoes/db_func_propricemit.php")==true){
-      include("funcoes/db_func_propricemit.php");
+      include(modification("funcoes/db_func_propricemit.php"));
    }else{
       $campos = "propricemit.*";
    }
@@ -77,18 +77,11 @@ if(isset($excluir)){
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body class="body-default" >
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
-    <center>
-    <br><br>
-     <?
-     include("forms/db_frmpropricemit.php");
+  <div class="container">
+     <?php
+     include(modification("forms/db_frmpropricemit.php"));
      ?>
-    </center>
-     </td>
-  </tr>
-</table>
+  </div>
 </body>
 </html>
 <?

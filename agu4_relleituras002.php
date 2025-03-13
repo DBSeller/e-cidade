@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_utils.php");
-include_once("libs/db_stdlib.php");
-include("agu3_conscadastro_002_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_utils.php"));
+include_once(modification("libs/db_stdlib.php"));
+include(modification("agu3_conscadastro_002_classe.php"));
 
 $oGet      = db_utils::postMemory($_GET);
 
@@ -49,7 +49,7 @@ $oAguaBase = new ConsultaAguaBase($oGet->matric);
 
 $sSql      = $oAguaBase->GetAguaLeituraSQL();
 
-$rSql      = pg_query($sSql);
+$rSql      = db_query($sSql);
 
 if(pg_num_rows($rSql) == 0) {
   

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,45 +25,106 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-$oPost = db_utils::postMemory($HTTP_POST_VARS);
+//use ECidade\Tributario\Cadastro\Iptu\CalculoRetroativo\Repository\CalculoRetroativoIptuRepository;
 
-$objJSON           = new Services_JSON();
+$oJson                  = new services_json();
+$oParametro             = $oJson->decode(str_replace("\\","",$_POST["json"]));
+$oRetorno               = new stdClass();
+$oRetorno->erro         = false;
+$oRetorno->mensagem     = '';
 
+$clpredio = new cl_predio;
 
-if(isset($oPost->j107_sequencial) && trim($oPost->j107_sequencial)!=""){
+try {
+
+	switch ($oParametro->executa) {
+		case "buscaCondominio";
+             if(isset($oParametro->j107_sequencial) && trim($oParametro->j107_sequencial) != "") {
+ 
+                 $sCampos = "j111_sequencial, j111_nome ";
+                 $sWhere = "j111_condominio = {$oParametro->j107_sequencial}";
+                 $sQueryPredios = $clpredio->sql_query(null, $sCampos, null, $sWhere);
+                 $resQueryPredios = $clpredio->sql_record($sQueryPredios);
+                 if ($clpredio->numrows > 0) {
+ 
+                    $iTotalPredios = $clpredio->numrows;
+                    $aPredios = array();
+ 
+                    for  ($i = 0; $i < $iTotalPredios; $i++)	{
+             
+                         $oRow = db_utils::fieldsMemory($resQueryPredios, $i, false, false, true);
+                         $aPredios[] = $oRow;
+ 
+                    }
+ 				   $oRetorno->predios = $aPredios;
+             	} else {
+                    $oRetorno->predios = "Vazio";
+             	}
+             } else {
+                 $oRetorno->predios = "Vazio";
+             }
+ 			break;
+
+        case "getRegistroProprietarioLote":
+             $iIdbql = $oParametro->iIdbql;
+             $oDaoProprietario = new cl_iptubase;
+             $sWhereProprietario = "    j01_idbql = $iIdbql
+             					  and  EXISTS ( select 1 from iptubase where j01_idbql = $iIdbql and j01_baixa is null )";
+             $SsqlProprietario = $oDaoProprietario->proprietario_query (null, "*", null, $sWhereProprietario);
+ 
+             $sProprietario = "Vários Prorietários";
+             $rsProprietario = $oDaoProprietario->sql_record($SsqlProprietario);
+             if ($oDaoProprietario->numrows == 1) {
+ 
+             	$oDadosProprietario = db_utils::fieldsMemory($rsProprietario, 0);
+             	$sProprietario = $oDadosProprietario->proprietario;
+             }
+             if ($oDaoProprietario->numrows <= 0) {
+             	$sProprietario = "";
+             }
+             $oDadosRetorno = new stdClass();
+             $oDadosRetorno->sProprietario = urlencode($sProprietario);
+             $oDadosRetorno->sCampo = $oParametro->sCampo;
+             $oRetorno->oDados = $oDadosRetorno;
+             break;
 	
-	$sQueryPredios  = "select j111_sequencial,j111_nome from condominio ";
-	$sQueryPredios .= "						inner join predio on j107_sequencial = j111_condominio ";
-	$sQueryPredios .= " 		where j107_sequencial = $oPost->j107_sequencial";
-	
-	$resQueryPredios = pg_query($sQueryPredios);
-	if (pg_num_rows($resQueryPredios) > 0) {
-		
-		$iTotalPredios	= pg_num_rows($resQueryPredios);
-		$aPredios 			= array();
-		
-		for	($i = 0; $i < $iTotalPredios; $i++)	{
-			
-			$oRow 			= db_utils::fieldsMemory($resQueryPredios, $i, false, false, true);
-			$aPredios[] = $oRow;
-					
-		}
-		echo $objJSON->encode($aPredios);	
-	} else {
-		echo $objJSON->encode("Vazio");
-	}
+        case "buscarAnosAnteriores":
 
-} else {
-		echo $objJSON->encode("Vazio");
-	}
+			 /* Só liberar esse trecho de código após nivelarmos os fontes com São Borja */
+			 /*
+             $calculoRetroativoIptuRepository = CalculoRetroativoIptuRepository::getInstance();
+             $calculoRetroativoIptuRepository->setAnousu(db_getsession("DB_anousu"))
+                                             ->setMatricula($oParametro->matricula);
+             $liberaCalculoRetroativo = $calculoRetroativoIptuRepository->getLiberaCalculoRetroativo();
+             
+             if ($liberaCalculoRetroativo) {
+                $anosAnterioresMatricula = $calculoRetroativoIptuRepository->getAnosAnterioresMatricula();       
+                $oRetorno->anos = $anosAnterioresMatricula;
+             } else {
+                $oRetorno->erro = true;
+                $oRetorno->mensagem = "Cálculo retroativo não liberado.";
+             }
+			 */
+             break;
 
+        default:
+             throw new Exception('Nenhuma ação encontrada.');
+             break;
+    }
+} catch (Exception $eErro) {
 
-?>
+	db_fim_transacao(true);
+    $oRetorno->erro = true;
+    $oRetorno->mensagem = urlencode($eErro->getMessage());
+}
+
+echo $oJson->encode($oRetorno);

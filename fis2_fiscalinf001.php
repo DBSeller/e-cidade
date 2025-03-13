@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_fiscal_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_fiscal_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 //$aux = new cl_arquivo_auxiliar;
 $cldbfiscal = new cl_fiscal;
@@ -133,11 +133,11 @@ function js_mostracodfiscal(chave,erro){
 }
 function js_codfiscal(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscalalt.php?funcao_js=parent.js_mostracodfiscal1|y30_codnoti|z01_nome','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscalalt.php?funcao_js=parent.js_mostracodfiscal1|y30_codnoti|z01_nome','Pesquisa',true);
     }else{
       y30_codnoti = document.form1.y30_codnoti.value;
       if(y30_codnoti!=""){
-        js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscalalt.php?pesquisa_chave='+y30_codnoti+'&funcao_js=parent.js_mostracodfiscal','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscalalt.php?pesquisa_chave='+y30_codnoti+'&funcao_js=parent.js_mostracodfiscal','Pesquisa',false);
       }else{ 	
 	document.form1.y30_nome.value='';
       } 	

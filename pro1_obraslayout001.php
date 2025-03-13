@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_obraslayout_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_obrasresp_classe.php");
-include("classes/db_obrastiporesp_classe.php");
-include("classes/db_obraspropri_classe.php");
-include("classes/db_obraslote_classe.php");
-include("classes/db_obraslotei_classe.php");
-include("classes/db_obrasender_classe.php");
-include("classes/db_obrasalvara_classe.php");
-include("classes/db_obrashabite_classe.php");
-include("classes/db_obrasconstr_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_obras_classe.php");
-include("classes/db_db_cepmunic_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_obraslayout_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_obrasresp_classe.php"));
+include(modification("classes/db_obrastiporesp_classe.php"));
+include(modification("classes/db_obraspropri_classe.php"));
+include(modification("classes/db_obraslote_classe.php"));
+include(modification("classes/db_obraslotei_classe.php"));
+include(modification("classes/db_obrasender_classe.php"));
+include(modification("classes/db_obrasalvara_classe.php"));
+include(modification("classes/db_obrashabite_classe.php"));
+include(modification("classes/db_obrasconstr_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_obras_classe.php"));
+include(modification("classes/db_db_cepmunic_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clobraslayout = new cl_obraslayout;
 $clobras = new cl_obras;
@@ -220,7 +220,7 @@ if(isset($imprimir)){
 	if(isset($imprimir)){
           echo "<br><strong><a style='color:black'  href='http://192.168.1.15/~dbpaulo/dbportal2/$tmpfile'> Arquivo gerado em:  ".$tmpfile."<br>Clique aqui para salvar</a></strong><br><br>";
 	}
-	include("forms/db_frmobraslayout.php");
+	include(modification("forms/db_frmobraslayout.php"));
 	?>
     </center>
 	</td>

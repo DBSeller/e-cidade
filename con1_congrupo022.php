@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_congrupo_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_congrupo_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -53,9 +53,9 @@ if(isset($alterar)){
      $db_botao = true;
 
      echo "<script> 
-               top.corpo.document.formaba.conta.style.visibility='visible';
-               top.corpo.iframe_conta.disable='false';
-               top.corpo.iframe_conta.location.href = 'con1_conplanogrupoconta004.php?c21_anousu=$anousu&c21_congrupo=$c20_sequencial';
+               (window.CurrentWindow || parent.CurrentWindow).corpo.document.formaba.conta.style.visibility='visible';
+               (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_conta.disable='false';
+               (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_conta.location.href = 'con1_conplanogrupoconta004.php?c21_anousu=$anousu&c21_congrupo=$c20_sequencial';
   	       </script>";
    }
 }
@@ -74,7 +74,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcongrupo.php");
+	include(modification("forms/db_frmcongrupo.php"));
 	?>
     </center>
 	</td>

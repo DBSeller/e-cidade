@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_relrub_classe.php");
-include("classes/db_relrubmov_classe.php");
-include("classes/db_selecao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_relrub_classe.php"));
+include(modification("classes/db_relrubmov_classe.php"));
+include(modification("classes/db_selecao_classe.php"));
 $clrelrub = new cl_relrub;
 $clrelrubmov = new cl_relrubmov;
 $clselecao = new cl_selecao;
@@ -70,7 +70,7 @@ if(isset($alterar)){
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
-	    <?php include("forms/db_frmrelrub.php"); ?>
+	    <?php include(modification("forms/db_frmrelrub.php")); ?>
     </center>
 	</td>
   </tr>
@@ -95,8 +95,8 @@ if(isset($chavepesquisa)){
  echo "  function js_db_libera(){                                                                                        \n ";
  echo "     parent.document.formaba.relrubmov.disabled    = false;                                                       \n ";
  echo "     parent.document.formaba.relrubcampos.disabled = false;                                                       \n ";
- echo "     top.corpo.iframe_relrubmov.location.href      = 'pes1_relrubmov001.php?rh46_codigo="    . @$rh45_codigo . "' \n ";
- echo "     top.corpo.iframe_relrubcampos.location.href   = 'pes1_relrubcampos001.php?rh45_codigo=" . @$rh45_codigo . "&db_opcao=" . $db_opcao . "'  \n ";
+ echo "     (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_relrubmov.location.href      = 'pes1_relrubmov001.php?rh46_codigo="    . @$rh45_codigo . "'; \n ";
+ echo "     (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_relrubcampos.location.href   = 'pes1_relrubcampos001.php?rh45_codigo=" . @$rh45_codigo . "&db_opcao=" . $db_opcao . "';  \n ";
 
  if( isset($liberaaba) ) {
    echo "  parent.mo_camada('relrubmov');";

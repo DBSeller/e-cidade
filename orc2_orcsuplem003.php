@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_utils.php");
-include("libs/db_app.utils.php");
-include("classes/db_orcsuplem_classe.php");
-include("libs/db_liborcamento.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_app.utils.php"));
+include(modification("classes/db_orcsuplem_classe.php"));
+include(modification("libs/db_liborcamento.php"));
 db_app::import("orcamento.suplementacao.*");
 $auxiliar = new cl_orcsuplem;
 $anousu = db_getsession("DB_anousu");
@@ -123,7 +123,7 @@ for ($tiporel = 0; $tiporel <= 1; $tiporel++) {
   $head5 = "PERIODO : $perini[2]/$perini[1]/$perini[0]  à  $perfim[2]/$perfim[1]$perfim[0]";
 
   $xinstit = split("-",$db_selinstit);
-  $resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+  $resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
   $descr_inst = '';
   $xvirg = '';
   $consolidado = false;
@@ -210,7 +210,7 @@ for ($tiporel = 0; $tiporel <= 1; $tiporel++) {
                              where o49_data = '$data_proc' 
                                and orcsuplem.o46_codlei = $o39_codproj";  
     $rsSuplementacoes     = db_query($sSqlSuplementacoes);
-    $aSuplementacao       = db_utils::getColectionByRecord($rsSuplementacoes);
+    $aSuplementacao       = db_utils::getCollectionByRecord($rsSuplementacoes);
     $valorutilizado       = 0;
     foreach ($aSuplementacao as $oSuplem) {
         
@@ -232,7 +232,7 @@ for ($tiporel = 0; $tiporel <= 1; $tiporel++) {
     where  o49_data = '$data_proc' and 
     o47_valor > 0   
     ";  
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     if (pg_numrows($result) > 0 ){
       db_fieldsmemory($result,0,true);
     } 

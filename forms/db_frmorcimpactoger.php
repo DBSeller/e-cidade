@@ -92,7 +92,7 @@ db_textarea('o62_obs',5,70,$Io62_obs,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_orcimpactoger','db_iframe_orcimpactoger','func_orcimpactoger.php?funcao_js=parent.js_preenchepesquisa|o62_codimpger','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcimpactoger','db_iframe_orcimpactoger','func_orcimpactoger.php?funcao_js=parent.js_preenchepesquisa|o62_codimpger','Pesquisa',true,'0','1','775','390');
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcimpactoger.hide();

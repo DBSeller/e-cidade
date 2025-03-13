@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
-include("classes/db_iptuconstr_classe.php");
-include("classes/db_iptuconstrdemo_classe.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
+include(modification("classes/db_iptuconstr_classe.php"));
+include(modification("classes/db_iptuconstrdemo_classe.php"));
 db_postmemory($HTTP_SERVER_VARS);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 
@@ -104,7 +104,7 @@ $sql = "
 			 ";
 
 //die($sql);
-$rsResult = pg_query($sql); 
+$rsResult = db_query($sql); 
 $numrows  = pg_num_rows($rsResult);
 if ($numrows == 0){
     db_redireciona('db_erros.php?fechar=true&db_erro=Nao existem demoli??es para o filtro selecionado.');

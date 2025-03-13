@@ -58,9 +58,9 @@ db_input('nome',45,$Inome,true,'text',3,'')
 function js_pesquisaid_usuario(mostra){
 	var instit = document.form1.instit.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios_instit.php?instit='+instit+'&funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios_instit.php?instit='+instit+'&funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios_instit.php?instit='+instit+'&pesquisa_chave='+document.form1.id_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios_instit.php?instit='+instit+'&pesquisa_chave='+document.form1.id_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
   }
 }
 function js_mostradb_usuarios(chave,erro){
@@ -76,7 +76,7 @@ function js_mostradb_usuarios1(chave1,chave2){
   db_iframe_db_usuarios.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadfiscais','func_cadfiscais_instit.php?funcao_js=parent.js_preenchepesquisa|id_usuario','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadfiscais','func_cadfiscais_instit.php?funcao_js=parent.js_preenchepesquisa|id_usuario','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadfiscais.hide();

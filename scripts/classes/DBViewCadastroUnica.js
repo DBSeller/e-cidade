@@ -1,6 +1,7 @@
 var DBViewCadastroUnica = function(sInstance) {
 
   var me                  = this;
+  var bHabilitaTaxas      = false;
   var sTipoPesquisa       = null;
   var sChavePesquisa      = null;
   var dtDataUsu           = null;
@@ -10,9 +11,13 @@ var DBViewCadastroUnica = function(sInstance) {
   this.oForm              = new Object();
   var aDadosTipoOrigem    = new Array();
   var aDadosAnoOrigem     = new Array();
-  this.oElemento          = null;
+  var aUnicas             = new Array();
+  var aDescricaoTaxas     = new Array();
+  var aDescricaoDebitos   = new Array();  
   var aExercicios         = new Array();
+  this.oElemento          = null;
   var sRpc                = "arr4_cadastroUnica.RPC.php";
+  var sTipoImpressao      = "";
   /**
    * Objeto Com os labels dos Campos
    */
@@ -20,14 +25,16 @@ var DBViewCadastroUnica = function(sInstance) {
 
     fieldsetOrigem     : "<strong>Origem Secundária:      </strong>",
     fieldsetGridOrigem : "<strong>Débitos:                </strong>",
+    fieldsetTaxaIptu   : "<strong>Débitos:                </strong>",
+    fieldsetGridUnicas : "<strong>Parcelas a lançar:      </strong>",
     fieldsetInformacoes: "<strong>Informações:            </strong>",
     tipoDebito         : "<strong>Tipo de Débito:         </strong>",
     anoOrigem          : "<strong>Ano Origem:             </strong>",
-    dataVencimento     : "<strong>Data de Vencimento:    </strong>",
+    dataVencimento     : "<strong>Data de Vencimento:     </strong>",
     dataLancamento     : "<strong>Data de Lançamento:     </strong>",
     percentualDesconto : "<strong>Percentual de Desconto: </strong>",
     observacoes        : "<strong>Observações:            </strong>",
-  };
+  };  
 
   this.oAcoes             = {
     /**
@@ -68,8 +75,10 @@ var DBViewCadastroUnica = function(sInstance) {
         js_removeObj("msg");
       }
       me.oForm.cboAnoDebitos.setValue(new Number(iAnoUsu));
-
-      me.oAcoes.loadDadosGrid(me.oForm.cboAnoDebitos.getValue());
+      if(me.oForm.cboAnoDebitos.getValue() != null) {
+         me.oAcoes.loadDadosGrid(me.oForm.cboAnoDebitos.getValue());
+      }
+      me.oAcoes.limparUnica();
 
     },
     /**
@@ -84,7 +93,7 @@ var DBViewCadastroUnica = function(sInstance) {
 
       if (sChavePesquisa !== null) {
         me.oAcoes.disableFieldsForm();
-      };
+      }
 
       iCadTipoDebito =  me.oForm.cboTipoDebitos.getValue();
       /**
@@ -92,6 +101,12 @@ var DBViewCadastroUnica = function(sInstance) {
        */
       if (iCadTipoDebito != "0") {
         me.oDatagridDebitos.loadData(iExercioDebito, iCadTipoDebito);
+        if(iCadTipoDebito == 1 && sChavePesquisa === null){
+          me.oAcoes.buscaTaxas();
+        } else {
+          me.oForm.oFieldSetTaxaIptu.style.display = 'none';
+          aDebitos = []
+        }
       } else {
         me.oDatagridDebitos.loadData(0, iCadTipoDebito);
       }
@@ -150,7 +165,8 @@ var DBViewCadastroUnica = function(sInstance) {
       var oRetorno  = new Object();
       oRetorno.iStatus   = 1;
       oRetorno.sMensagem = "OK";
-      var oDadosForm = me.getDados();
+      var oDadosForm = me.getDados();   
+      var iCadTipoDebito = me.oForm.cboTipoDebitos.getValue();   
 
       if (oDadosForm.iCadTipoDebito == null || oDadosForm.iCadTipoDebito == "") {
 
@@ -160,25 +176,152 @@ var DBViewCadastroUnica = function(sInstance) {
 
         oRetorno.iStatus   = 2;
         oRetorno.sMensagem = "Exercicios não Informado";
-      } else if ( (sChavePesquisa !== null) && (oDadosForm.aNumpres.length == 0) ) {
-
+      } else if (oDadosForm.aUnicas.length == 0){
         oRetorno.iStatus   = 2;
-        oRetorno.sMensagem = "Nenhum débito selecionado";
-      } else if (oDadosForm.dtVencimento == null || oDadosForm.dtVencimento == "") {
-
-        oRetorno.iStatus   = 2;
-        oRetorno.sMensagem = "Data de Vencimento não Informada";
-      } else if (oDadosForm.dtLancamento == null || oDadosForm.dtLancamento == "") {
-
-        oRetorno.iStatus   = 2;
-        oRetorno.sMensagem = "Data de Lançamento não Informada";
-      } else if (oDadosForm.nPercentual == null || oDadosForm.nPercentual == "") {
-
-        oRetorno.iStatus   = 2;
-        oRetorno.sMensagem = "Percentual de Desconto não Informado";
-      }
+        oRetorno.sMensagem = "Nenhuma única lançada";
+      } 
+      
       return oRetorno;
-    }
+    },
+
+    /**
+     * Adiviona parcela unica ao grid de parcelas     
+     */
+    adicionaUnica         : function(){
+      var 
+        oDadosForm = me.getDados(),
+        bError = false,
+        arrDebito = [];
+
+      if (oDadosForm.dtVencimento == null || oDadosForm.dtVencimento == "") {
+        bError = true;
+        sMensagem = "Data de Vencimento não Informada";
+      } else if (oDadosForm.dtLancamento == null || oDadosForm.dtLancamento == "") {
+        bError = true;
+        sMensagem = "Data de Lançamento não Informada";
+      } else if (oDadosForm.nPercentual == null || oDadosForm.nPercentual == "") {
+        bError = true;
+        sMensagem = "Percentual de Desconto não Informado";
+      } else if (isNaN(oDadosForm.nPercentual)) {
+        bError = true;
+        sMensagem = "Percentual de Desconto deve conter apenas números.";
+      } else if(sChavePesquisa === null && iCadTipoDebito == 1 && !!bHabilitaTaxas && oDadosForm.aDebitos.length == 0){
+        bError = true;
+        sMensagem = "Nenhum débito selecionado";
+      } else if((sChavePesquisa !== null) && (oDadosForm.aNumpres.length == 0)){
+        bError = true;
+        sMensagem = "Nenhum débito selecionado";
+      }
+
+      if(!bError){
+        var aDebitos = (sChavePesquisa !== null) ? oDadosForm.aNumpres : oDadosForm.aDebitos;
+        var debitoLinha = null;
+        for(var debito of aDebitos){
+          if((sChavePesquisa !== null)){
+            debitoLinha = debito;
+          } else if(iCadTipoDebito == 1 && !!bHabilitaTaxas) {
+            debitoLinha = aDescricaoTaxas[debito];
+          } else {
+            debitoLinha = aDescricaoDebitos[debito];
+          } 
+
+          //se for debito de iptu para uma origem ja lançada continua. Correção bug 13610
+          if(iCadTipoDebito == 1 && !!arrDebito[debitoLinha]){
+            continue;
+          } else {
+            arrDebito[debitoLinha] = true;
+          }
+
+          var aLinha  = [oDadosForm.dtVencimento, oDadosForm.dtLancamento, oDadosForm.nPercentual, debitoLinha, oDadosForm.sObservacoes];
+          me.oGridUnicas.addRow(aLinha);
+          me.oGridUnicas.renderRows();
+
+          var objUnica = {
+            vencimento  : oDadosForm.dtVencimento,
+            lancamento  : oDadosForm.dtLancamento,
+            desconto    : oDadosForm.nPercentual,
+            debito      : debito,
+            // observacoes : encodeURIComponent(tagString(oDadosForm.sObservacoes)) || "",
+            observacoes : oDadosForm.sObservacoes || "",
+          };
+
+          aUnicas.push(JSON.stringify(objUnica));          
+          me.oForm.cboAnoDebitos.setDisable();
+        }
+      } else {
+        alert(sMensagem);
+      }
+    },
+
+    /**
+     * Limpa unicas adicionadas
+    */
+    limparUnica            : function(){
+      me.oDatagridUnicas.clear();
+      aUnicas = [];
+      me.oForm.cboAnoDebitos.setEnable();      
+    },    
+
+    /**
+     * Busca as taxas do IPTU
+    */
+    buscaTaxas             : function(){
+      var sRPC = "cad4_calciptu.RPC.php";
+      oParametros = {
+          "sExecucao" : "buscaTaxasExercicio",
+          "exercicio" : me.oForm.cboAnoDebitos.getValue()
+      }
+      var oExec            = new Object();
+      oExec.method         = 'post';
+      oExec.parameters     = 'json=' + Object.toJSON(oParametros);
+      oExec.asynchronous   = false;
+      oExec.onComplete     = function(oAjax) {
+        var oRetorno = JSON.parse(oAjax.responseText);        
+        if (!!oRetorno.erro) {
+          alert(oRetorno.sMensagem.urlDecode());
+          return false;
+        } else {
+          if (oRetorno.habilitaTaxas == 1) {
+            bHabilitaTaxas = true;    
+            me.oForm.oFieldSetTaxaIptu.style.display = "block";
+            me.oAcoes.adicionaTaxas(oRetorno.taxas);
+          }
+        }
+      }
+      this.oAjax = new Ajax.Request(sRPC, oExec);
+    },
+
+    /**
+     * Monta o html das taxas
+    */
+    adicionaTaxas          : function(elementos) {    
+      me.oForm.oTdTaxaIptu.innerHTML = "";
+      var ul = document.createElement("ul");
+
+      // Adicionando IPTU
+      var x = document.createElement("INPUT");
+      var li = document.createElement("li");
+      x.setAttribute("type", "checkbox");
+      x.setAttribute("tipo", "opcaoTaxa");
+      x.setAttribute("value", "IPTU");
+      li.append(x);
+      li.append("IPTU");
+      ul.append(li);
+      aDescricaoTaxas['IPTU'] = 'IPTU';
+
+      elementos.each(function(el){
+        var x = document.createElement("INPUT");
+        var li = document.createElement("li");
+        x.setAttribute("type", "checkbox");
+        x.setAttribute("tipo", "opcaoTaxa");
+        x.setAttribute("value", el.taxa);
+        li.append(x);
+        li.append(el.descr);
+        ul.append(li);
+        aDescricaoTaxas[el.taxa] = el.descr;
+      });
+      me.oForm.oTdTaxaIptu.append(ul);
+    },
   };
 
   this.getDataSource      = {
@@ -202,7 +345,7 @@ var DBViewCadastroUnica = function(sInstance) {
       oExec.asynchronous   = false;
       oExec.onComplete     = function(oAjax) {
 
-        var oRetorno = eval("("+oAjax.responseText+")");
+        var oRetorno = JSON.parse(oAjax.responseText);
 
         if (oRetorno.status == "2") {
 
@@ -210,7 +353,6 @@ var DBViewCadastroUnica = function(sInstance) {
           return false;
 
         } else {
-
           for (var i = 0; i < oRetorno.aDados.length; i++) {
             aRetorno.push(oRetorno.aDados[i]);
           };
@@ -238,7 +380,7 @@ var DBViewCadastroUnica = function(sInstance) {
       oExec.asynchronous      = false;
       oExec.onComplete        = function(oAjax) {
 
-        var oRetorno = eval("("+oAjax.responseText+")");
+        var oRetorno = JSON.parse(oAjax.responseText);
 
         if (oRetorno.status == "2") {
 
@@ -250,6 +392,7 @@ var DBViewCadastroUnica = function(sInstance) {
           for (var i = 0; i < oRetorno.aDados.length; i++) {
             with (oRetorno.aDados[i]) {
               aRetorno[k03_tipo] = k03_tipo + " - " + k03_descr.urlDecode();
+              aDescricaoDebitos[k03_tipo] = k03_descr.urlDecode();
             };
           };
         };
@@ -266,7 +409,13 @@ var DBViewCadastroUnica = function(sInstance) {
 
       var aRetorno            = new Array();
       var oParam              = new Object();
+      
       oParam.exec             = 'getExercicios';
+
+      if (sTipoImpressao == "geral") {
+        oParam.exec = 'getExerciciosGeral';
+      }
+      
       oParam.sTipoPesquisa    = sTipoPesquisa;
       oParam.sChavePesquisa   = sChavePesquisa;
       oParam.iCadTipoDebito   = iCadTipoDebito;
@@ -277,7 +426,7 @@ var DBViewCadastroUnica = function(sInstance) {
       oExec.asynchronous      = false;
       oExec.onComplete        = function(oAjax) {
 
-        var oRetorno = eval("("+oAjax.responseText+")");
+        var oRetorno = JSON.parse(oAjax.responseText);
 
         if (oRetorno.status == "2") {
 
@@ -309,8 +458,8 @@ var DBViewCadastroUnica = function(sInstance) {
       me.oGridDebitos.nameInstance = sInstanceName + '.oGridDebitos';
       me.oGridDebitos.sName        = '.oGridDebitos';
       me.oGridDebitos.setCheckbox  ( 0 );
-      me.oGridDebitos.setCellAlign (["center", "center", "right"]);
-      me.oGridDebitos.setHeader    (["Exercício", "Numpre", "Valor"]);
+      me.oGridDebitos.setCellAlign (["center", "center", "Center", "right"]);
+      me.oGridDebitos.setHeader    (["Exercício", "Numpre", "Descrição", "Valor"]);
       me.oGridDebitos.show         ( $(sInstanceName + '_ctnGridTipoDebito') );
     },
     /**
@@ -328,7 +477,7 @@ var DBViewCadastroUnica = function(sInstance) {
 
           with(aDadosGrid[i]) {
 
-            var aLinha  = [exercicio, numpre, js_formatar(valor,"f")];
+            var aLinha  = [exercicio, numpre, k02_descr, js_formatar(valor,"f")];
             me.oGridDebitos.addRow(aLinha);
 
             var oDadosCheck          = new Object();
@@ -368,6 +517,70 @@ var DBViewCadastroUnica = function(sInstance) {
     }
   };
 
+  this.oDatagridUnicas       = {
+    /**
+     * Renderiza grid
+     */
+    renderGrid  : function() {
+      me.oGridUnicas              = new DBGrid(sInstanceName + '.oGridUnicas');
+      me.oGridUnicas.nameInstance = sInstanceName + '.oGridUnicas';
+      me.oGridUnicas.sName        = '.oGridUnicas';      
+      me.oGridUnicas.setCellAlign (["center", "center", "center", "center", "center"]);
+      me.oGridUnicas.setHeader    (["Vencimento", "Lançamento", "Desconto", "Origem", "Observações"]);
+      me.oGridUnicas.show         ( $(sInstanceName + '_ctnGridUnicas') );
+    },
+    /**
+     * Carrega dados e renderiza as linhas
+     */
+    loadData    : function(iExercicio, iCadTipoDebito) {
+      if (sChavePesquisa !== null) {
+        js_divCarregando("Carregando débitos...","msg");
+
+        var aDadosGrid  = me.getDataSource.debitosGrid(iExercicio, iCadTipoDebito);
+        me.oDatagridDebitos.clear();
+        var aChecks = new Array();
+
+        for (var i = 0; i < aDadosGrid.length; i++) {
+
+          with(aDadosGrid[i]) {
+
+            var aLinha  = [exercicio, numpre, k02_descr, js_formatar(valor,"f")];
+            me.oGridDebitos.addRow(aLinha);
+
+            var oDadosCheck          = new Object();
+            oDadosCheck.idCheckBox   = me.oGridDebitos.aRows[i].aCells[0].sId;
+            oDadosCheck.sReference   = numpre;
+            aChecks[i]               = oDadosCheck;
+          }
+        }
+
+        me.oGridDebitos.renderRows();
+        /**
+         * Define funções personalizadas na seleção da grid
+         */
+        aChecks.each(function(oTarget, id) {
+
+          var oCheck  = $(oTarget.idCheckBox).getElementsByTagName("input")[0];
+          var sOnclick= oCheck.getAttribute("onClick");
+              oCheck.setAttribute("onClick",sOnclick + ";" + sInstanceName + ".oAcoes.checkFieldsForms(this); ");
+        });
+        /***
+         * define função personalizada ao clicar no link "marcar todas"
+         */
+        var oLink = $(me.oGridDebitos.nameInstance + "SelectAll");
+        var sOnClick = oLink.getAttribute("onClick");
+        oLink.setAttribute("onClick",sOnClick + ";" + sInstanceName + ".oAcoes.checkFieldsForms(this);");
+        js_removeObj("msg");
+      }
+    },
+    /**
+     * Limpa os elementos da grid
+     */
+    clear       : function() {
+      me.oGridUnicas.clearAll(true);
+    }
+  };
+
   /**
    * Cria HTML do Componente
    */
@@ -398,8 +611,19 @@ var DBViewCadastroUnica = function(sInstance) {
       me.oForm.oCellCtnAnoOrigem                  = document.createElement("td");
       me.oForm.oCellCtnAnoOrigem.id               = sInstanceName + "ctnAnoDebitos";
 
+      me.oForm.oFieldSetTaxaIptu                  = document.createElement("fieldset");
+      me.oForm.oLegendTaxaIptu                    = document.createElement("legend");
+      me.oForm.oLegendTaxaIptu.innerHTML          = me.oLabel.fieldsetTaxaIptu;
+      me.oForm.oTableTaxaIptu                     = document.createElement("table");
+      me.oForm.oRowTaxaIptu                       = document.createElement("tr");
+      me.oForm.oTdTaxaIptu                        = document.createElement("td");
+      me.oForm.oTdTaxaIptu.classList              . add('opcaoDebito');
+      me.oForm.oFieldSetTaxaIptu.style.display    = 'none';
 
 
+     /**
+       * Monta o html das taxas
+      */
       me.oElemento                                . appendChild(me.oForm.oFieldSetOrigem);
       me.oForm.oFieldSetOrigem                    . appendChild(me.oForm.oLegendOrigem);
       me.oForm.oFieldSetOrigem                    . appendChild(me.oForm.oTableOrigem);
@@ -410,6 +634,15 @@ var DBViewCadastroUnica = function(sInstance) {
       me.oForm.oRowAnoOrigem                      . appendChild(me.oForm.oCellLabelAnoOrigem);
       me.oForm.oRowAnoOrigem                      . appendChild(me.oForm.oCellCtnAnoOrigem);
 
+      me.oElemento                                . appendChild(me.oForm.oFieldSetTaxaIptu);
+      me.oForm.oFieldSetTaxaIptu                  . appendChild(me.oForm.oLegendTaxaIptu);
+      me.oForm.oFieldSetTaxaIptu                  . appendChild(me.oForm.oTableTaxaIptu);
+      me.oForm.oTableTaxaIptu                     . appendChild(me.oForm.oRowTaxaIptu);
+      me.oForm.oRowTaxaIptu                       . appendChild(me.oForm.oTdTaxaIptu);
+      
+      /**
+       * Monta o html do grud de origem
+      */
       if (sChavePesquisa !== null) {
 
         me.oForm.oFieldSetGridOrigem               = document.createElement("fieldset");
@@ -495,10 +728,39 @@ var DBViewCadastroUnica = function(sInstance) {
             me.oForm.oRowObservacoes      . appendChild(me.oForm.oCellLabelObservacoes);
             me.oForm.oRowObservacoes      . appendChild(me.oForm.oCellCtnObservacoes);
               me.oForm.oCellCtnObservacoes. appendChild(me.oForm.oTextAreaObservacoes);
+
+      /**
+       * Adicionado grid de lançamento de unicas
+       */
+      me.oForm.oFieldSetGridUnicas               = document.createElement("fieldset");
+      me.oForm.oFieldSetGridUnicas.style.width   = document.createElement("fieldset");
+
+      me.oForm.oLegendGridUnicas                 = document.createElement("legend");
+      me.oForm.oLegendGridUnicas.innerHTML       = me.oLabel.fieldsetGridUnicas;
+      me.oForm.oDivGridUnica                     = document.createElement("div");
+      me.oForm.oDivGridUnica.id                  = sInstanceName + '_ctnGridUnicas';
+      me.oForm.oFieldSetInformacoes              . appendChild(me.oForm.oFieldSetGridUnicas);
+      me.oForm.oFieldSetGridUnicas               . appendChild(me.oForm.oLegendGridUnicas);
+      me.oForm.oFieldSetGridUnicas               . appendChild(me.oForm.oDivGridUnica);
+
+      me.oForm.ctnCenterUnica                    = document.createElement("center");
+      me.oForm.oButtonAdicionarUnica             = document.createElement("input");
+      me.oForm.oButtonLimparUnica                = document.createElement("input");
+      me.oForm.oButtonAdicionarUnica.type        = "button";
+      me.oForm.oButtonLimparUnica.type           = "button";
+      me.oForm.oButtonAdicionarUnica.value       = "Adicionar";
+      me.oForm.oButtonLimparUnica.value          = "Limpar";
+            
+      me.oForm.ctnCenterUnica                    . appendChild(me.oForm.oButtonAdicionarUnica); 
+      me.oForm.ctnCenterUnica                    . appendChild(me.oForm.oButtonLimparUnica);
+      me.oForm.oFieldSetInformacoes              . appendChild(me.oForm.ctnCenterUnica);
+
+      me.oForm.oButtonAdicionarUnica.addEventListener('click', me.oAcoes.adicionaUnica);
+      me.oForm.oButtonLimparUnica.addEventListener('click', me.oAcoes.limparUnica);
+      
       /**
        * Adicionando Componentes
        */
-
       me.oForm.inputDataVencimento= new DBTextFieldData('inputDataVencimento', sInstanceName + ".oForm.inputDataVencimento", '',  10);
       me.oForm.inputDataVencimento. show($(sInstanceName + "ctnDataVencimento"));
 
@@ -532,6 +794,7 @@ var DBViewCadastroUnica = function(sInstance) {
       me.oDatagridDebitos.renderGrid();
     }
     me.renderHTMLInfo();
+    me.oDatagridUnicas.renderGrid();
   };
 
   /**
@@ -584,6 +847,15 @@ var DBViewCadastroUnica = function(sInstance) {
        });
        oRetorno.aNumpres  = aDadosGrid;
      }
+
+     oRetorno.aUnicas = aUnicas;
+     oRetorno.aDebitos = [];
+     if(iCadTipoDebito == 1 && !!bHabilitaTaxas){
+      me.oForm.oTdTaxaIptu.querySelectorAll("input[tipo='opcaoTaxa']:checked").forEach(node => oRetorno.aDebitos.push(node.value));
+     } else {
+      oRetorno.aDebitos.push(me.oForm.cboTipoDebitos.getValue());
+     }
+
      oRetorno.dtVencimento = me.oForm.inputDataVencimento.getValue();
      oRetorno.dtLancamento = me.oForm.inputDataLancamento.getValue();
      oRetorno.nPercentual  = me.oForm.inputPercentual    .getValue();
@@ -597,4 +869,11 @@ var DBViewCadastroUnica = function(sInstance) {
      iAnoUsu         = aDataSessao[0];
      sDataFormatada  = aDataSessao[2] + "/" +aDataSessao[1]+ "/" + aDataSessao[0];
    };
+
+   /**
+   * Define o fonte que está fazendo a requisição;
+   */
+  this.setTipoImpressao  = function(sChaveTipoImpressao) {
+    sTipoImpressao = sChaveTipoImpressao;
+  };
 };

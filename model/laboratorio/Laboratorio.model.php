@@ -4,106 +4,270 @@
  * Class Laboratorio
  * @packge laboratorio
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
-class Laboratorio {
+class Laboratorio
+{
+    private $iCodigo;
 
-  private $iCodigo;
+    private $iTipo;
 
-  private $sLaboratorio;
+    private $sLaboratorio;
 
-  public function __construct( $iCodigo = null ) {
+    private $iAlvara;
 
-    if ( !empty( $iCodigo ) ) {
+    private $iCnes;
 
-      $oDaoLaboratorio = new cl_lab_laboratorio();
-      $sSqlLaboratorio = $oDaoLaboratorio->sql_query_file( $iCodigo );
-      $rsLaboratorio   = db_query( $sSqlLaboratorio );
+    private $sEndereco;
 
-      if ( $rsLaboratorio && pg_num_rows( $rsLaboratorio ) == 0 ) {
-        return false;
-      }
-      $oDadosLaboratorio  = db_utils::fieldsMemory( $rsLaboratorio, 0 );
-      $this->iCodigo      = $oDadosLaboratorio->la02_i_codigo;
-      $this->sLaboratorio = $oDadosLaboratorio->la02_c_descr;
-    }
-    return true;
-  }
+    private $iTelefone;
 
-  /**
-   * Valida se o departamento informado esta vinculádo a um laboratório
-   *
-   * @param DBDepartamento $oDepartamento
-   * @return bool
-   */
-  static public function departamentoIsLaboratorio(DBDepartamento $oDepartamento) {
+    private $sNumero;
 
-    $sWhere        = " la03_i_departamento = {$oDepartamento->getCodigo()} ";
-    $oDaoLabDepart = new cl_lab_labdepart();
-    $sSqlDepart    = $oDaoLabDepart->sql_query_file(null, "1", null, $sWhere);
-    $rsDepart      = db_query( $sSqlDepart ) ;
+    private $iTurnoAtendimento;
 
-    if ($rsDepart && pg_num_rows( $rsDepart ) == 0 ) {
-      return false;
-    }
-    return true;
-  }
+    private $isInterfaceado;
 
-  /**
-   * Validamos se o Usuário informado, esta vinculado ao laboratório
-   * @param DBDepartamento $oDepartamento
-   * @param UsuarioSistema $oUsuario
-   * @return bool
-   */
-  static public function usuarioIsTecnicoLaboratorio(DBDepartamento $oDepartamento, UsuarioSistema $oUsuario) {
+    public function __construct($iCodigo = null)
+    {
+        if (!empty($iCodigo)) {
+            $oDaoLaboratorio = new cl_lab_laboratorio();
+            $sSqlLaboratorio = $oDaoLaboratorio->sql_query_file($iCodigo);
+            $rsLaboratorio = db_query($sSqlLaboratorio);
 
-    $sWhere      = " id_usuario = {$oUsuario->getIdUsuario()} and la03_i_departamento = {$oDepartamento->getCodigo()} ";
-    $oDaoLabResp = new cl_lab_labresp();
-    $sSqlLabResp = $oDaoLabResp->sql_query_responsavel(null, "1", null, $sWhere);
-    $rsLabResp   = db_query($sSqlLabResp);
-
-    if ($rsLabResp && pg_num_rows( $rsLabResp ) == 0 ) {
-      return false;
-    }
-    return true;
-  }
-
-  static function getLaboratorioByDepartamento(DBDepartamento $oDepartamento) {
-
-    $sWhere        = " la03_i_departamento = {$oDepartamento->getCodigo()} ";
-    $oDaoLabDepart = new cl_lab_labdepart();
-    $sSqlDepart    = $oDaoLabDepart->sql_query_file(null, "la03_i_laboratorio", null, $sWhere);
-    $rsDepart      = db_query( $sSqlDepart ) ;
-
-    if ($rsDepart && pg_num_rows( $rsDepart ) == 0 ) {
-      return false;
+            if ($rsLaboratorio && pg_num_rows($rsLaboratorio) == 0) {
+                return false;
+            }
+            $oDadosLaboratorio = db_utils::fieldsMemory($rsLaboratorio, 0);
+            $this->iCodigo = $oDadosLaboratorio->la02_i_codigo;
+            $this->iTipo = $oDadosLaboratorio->la02_i_tipo;
+            $this->sLaboratorio = $oDadosLaboratorio->la02_c_descr;
+            $this->iAlvara = $oDadosLaboratorio->la02_i_alvara;
+            $this->iCnes = $oDadosLaboratorio->la02_i_cnes;
+            $this->sEndereco = $oDadosLaboratorio->la02_c_endereco;
+            $this->iTelefone = $oDadosLaboratorio->la02_i_telefone;
+            $this->sNumero = $oDadosLaboratorio->la02_c_numero;
+            $this->iTurnoAtendimento = $oDadosLaboratorio->la02_i_turnoatend;
+            $this->isInterfaceado = $oDadosLaboratorio->la02_interfaceado === 't';
+        }
+        return true;
     }
 
-    return new Laboratorio(db_utils::fieldsMemory($rsDepart, 0)->la03_i_laboratorio);
+    /**
+     * Valida se o departamento informado esta vinculádo a um laboratório
+     *
+     * @param DBDepartamento $oDepartamento
+     * @return bool
+     */
+    public static function departamentoIsLaboratorio(DBDepartamento $oDepartamento)
+    {
+        $sWhere = " la03_i_departamento = {$oDepartamento->getCodigo()} ";
+        $oDaoLabDepart = new cl_lab_labdepart();
+        $sSqlDepart = $oDaoLabDepart->sql_query_file(null, "1", null, $sWhere);
+        $rsDepart = db_query($sSqlDepart);
 
-  }
+        if ($rsDepart && pg_num_rows($rsDepart) == 0) {
+            return false;
+        }
+        return true;
+    }
 
-  /**
-   * retorna o código do laboratório
-   * @return integer
-   */
-  public function getCodigo() {
-    return $this->iCodigo;
-  }
+    /**
+     * Validamos se o Usuário informado, esta vinculado ao laboratório
+     * @param DBDepartamento $oDepartamento
+     * @param UsuarioSistema $oUsuario
+     * @return bool
+     */
+    public static function usuarioIsTecnicoLaboratorio(DBDepartamento $oDepartamento, UsuarioSistema $oUsuario)
+    {
+        $sWhere = " id_usuario = {$oUsuario->getIdUsuario()} and la03_i_departamento = {$oDepartamento->getCodigo()} ";
+        $oDaoLabResp = new cl_lab_labresp();
+        $sSqlLabResp = $oDaoLabResp->sql_query_responsavel(null, "1", null, $sWhere);
+        $rsLabResp = db_query($sSqlLabResp);
 
-  /**
-   * define o nome do Laboratório
-   * @param string $sLaboratorio
-   */
-  public function setDescricao($sLaboratorio) {
-    $this->sLaboratorio = $sLaboratorio;
-  }
+        if ($rsLabResp && pg_num_rows($rsLabResp) == 0) {
+            return false;
+        }
+        return true;
+    }
 
-  /**
-   * Retorna o nome do laboratório
-   * @return string
-   */
-  public function getDescricao() {
-    return $this->sLaboratorio;
-  }
+    public static function getLaboratorioByDepartamento(DBDepartamento $oDepartamento)
+    {
+        $sWhere = " la03_i_departamento = {$oDepartamento->getCodigo()} ";
+        $oDaoLabDepart = new cl_lab_labdepart();
+        $sSqlDepart = $oDaoLabDepart->sql_query_file(null, "la03_i_laboratorio", null, $sWhere);
+        $rsDepart = db_query($sSqlDepart);
+
+        if ($rsDepart && pg_num_rows($rsDepart) == 0) {
+            return false;
+        }
+
+        return new Laboratorio(db_utils::fieldsMemory($rsDepart, 0)->la03_i_laboratorio);
+    }
+
+    /**
+     * retorna o código do laboratório
+     * @return integer
+     */
+    public function getCodigo()
+    {
+        return $this->iCodigo;
+    }
+
+    public function setTipo($iTipo)
+    {
+        $this->iTipo = $iTipo;
+        return $this;
+    }
+
+    public function getTipo()
+    {
+        return $this->iTipo;
+    }
+
+    /**
+     * define o nome do Laboratório
+     * @param string $sLaboratorio
+     * @return Laboratorio
+     */
+    public function setDescricao($sLaboratorio)
+    {
+        $this->sLaboratorio = $sLaboratorio;
+        return $this;
+    }
+
+    /**
+     * Retorna o nome do laboratório
+     * @return string
+     */
+    public function getDescricao()
+    {
+        return $this->sLaboratorio;
+    }
+
+    /**
+     * @param integer $iAlvara
+     * @return Laboratorio
+     */
+    public function setAlvara($iAlvara)
+    {
+        $this->iAlvara = $iAlvara;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getAlvara()
+    {
+        return $this->iAlvara;
+    }
+
+    /**
+     * @param integer $iCnes
+     * @return Laboratorio
+     */
+    public function setCnes($iCnes)
+    {
+        $this->iCnes = $iCnes;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getCnes()
+    {
+        return $this->iCnes;
+    }
+
+    /**
+     * @param string $sEndereco
+     * @return Laboratorio
+     */
+    public function setEndereco($sEndereco)
+    {
+        $this->sEndereco = $sEndereco;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndereco()
+    {
+        return $this->sEndereco;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getTelefone()
+    {
+        return $this->iTelefone;
+    }
+
+    /**
+     * @param integer $iTelefone
+     * @return Laboratorio
+     */
+    public function setTelefone($iTelefone)
+    {
+        $this->iTelefone = $iTelefone;
+        return $this;
+    }
+
+    /**
+     * @param string $sNumero
+     * @return Laboratorio
+     */
+    public function setNumero($sNumero)
+    {
+        $this->sNumero = $sNumero;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumero()
+    {
+        return $this->sNumero;
+    }
+
+    /**
+     * @param integer $iTurnoAtendimento
+     * @return Laboratorio
+     */
+    public function setTurnoAtendimento($iTurnoAtendimento)
+    {
+        $this->iTurnoAtendimento = $iTurnoAtendimento;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getTurnoAtendimento()
+    {
+        return $this->iTurnoAtendimento;
+    }
+
+    /**
+     * @param bool $isInterfaceado
+     * @return Laboratorio
+     */
+    public function setIsInterfaceado($isInterfaceado)
+    {
+        $this->isInterfaceado = $isInterfaceado;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInterfaceado()
+    {
+        return $this->isInterfaceado;
+    }
 }

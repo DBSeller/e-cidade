@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_gerfcom_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_gerfcom_classe.php"));
+
 $clgerfcom = new cl_gerfcom;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
 $clrotulo->label('DBtxt27');
 $clrotulo->label('DBtxt28');
-db_postmemory($HTTP_POST_VARS);
+
+db_postmemory($_POST);
+
 ?>
 <html>
 <head>
@@ -47,125 +50,161 @@ db_postmemory($HTTP_POST_VARS);
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr>
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<form name="form1">
-<center>
-<table>
-  <?
-  if(!isset($tipo)){
-    $tipo = "l";
-  }
-  if(!isset($filtro)){
-    $filtro = "i";
-  }
-  if(!isset($anofolha) || (isset($anofolha) && trim($anofolha) == "")){
-    $anofolha = db_anofolha();
-  }
-  if(!isset($mesfolha) || (isset($mesfolha) && trim($mesfolha) == "")){
-    $mesfolha = db_mesfolha();
-  }
-  include("dbforms/db_classesgenericas.php");
-  $geraform = new cl_formulario_rel_pes;
-
-  $geraform->usaregi = true;                      // PERMITIR SELEÇÃO DE MATRÍCULAS
-  $geraform->usalota = true;                      // PERMITIR SELEÇÃO DE LOTAÇÕES
-  $geraform->usaorga = true;                      // PERMITIR SELEÇÃO DE ÓRGÃO
-  $geraform->usaloca = true;                      // PERMITIR SELEÇÃO DE LOCAL DE TRABALHO
-
-  $geraform->re1nome = "regisi";                  // NOME DO CAMPO DA MATRÍCULA INICIAL
-  $geraform->re2nome = "regisf";                  // NOME DO CAMPO DA MATRÍCULA FINAL
-  $geraform->re3nome = "selreg";                  // NOME DO CAMPO DE SELEÇÃO DE MATRÍCULAS
-
-  $geraform->lo1nome = "lotaci";                  // NOME DO CAMPO DA LOTAÇÃO INICIAL
-  $geraform->lo2nome = "lotacf";                  // NOME DO CAMPO DA LOTAÇÃO FINAL
-  $geraform->lo3nome = "sellot";                  // NOME DO CAMPO DE SELEÇÃO DE LOTAÇÕES
-
-  $geraform->or1nome = "orgaoi";                  // NOME DO CAMPO DO ÓRGÃO INICIAL
-  $geraform->or2nome = "orgaof";                  // NOME DO CAMPO DO ÓRGÃO FINAL
-  $geraform->or3nome = "selorg";                  // NOME DO CAMPO DE SELEÇÃO DE ÓRGÃOS 
-
-  $geraform->tr1nome = "locali";                  // NOME DO CAMPO DO LOCAL INICIAL
-  $geraform->tr2nome = "localf";                  // NOME DO CAMPO DO LOCAL FINAL
-  $geraform->tr3nome = "selloc";                  // NOME DO CAMPO DE SELEÇÃO DE LOCAIS
-
-  $geraform->trenome = "tipo";                    // NOME DO CAMPO TIPO DE RESUMO
-  $geraform->tfinome = "filtro";                  // NOME DO CAMPO TIPO DE FILTRO
-
-  $geraform->resumopadrao = "l";                  // NOME DO DAS LOTAÇÕES SELECIONADAS
-  $geraform->filtropadrao = "i";                  // NOME DO DAS LOTAÇÕES SELECIONADAS
-
-  $geraform->strngtipores = "glomt";              // OPÇÕES PARA MOSTRAR NO TIPO DE RESUMO g - geral,
-                                                  //                                       l - lotação,
-                                                  //                                       o - órgão,
-                                                  //                                       m - matrícula,
-                                                  //                                       t - local de trabalho
-
-  $geraform->tipofol = true;                      // MOSTRAR DO CAMPO PARA TIPO DE FOLHA
-  $geraform->arr_tipofol = array(
-                                 "r14"=>"Salário",
-                                 "r48"=>"Complementar",
-                                 "r20"=>"Rescisão",
-                                 "r35"=>"13o. Salário",
-                                 "r22"=>"Adiantamento"
-                                );
-  $geraform->complementar = "r48";                // VALUE DA COMPLEMENTAR PARA BUSCAR SEMEST 
-
-  $geraform->campo_auxilio_regi = "faixa_regis";  // NOME DO DAS MATRÍCULAS SELECIONADAS
-  $geraform->campo_auxilio_lota = "faixa_lotac";  // NOME DO DAS LOTAÇÕES SELECIONADAS
-  $geraform->campo_auxilio_orga = "faixa_orgao";  // NOME DO DOS ÓRGÃOS SELECIONADOS
-  $geraform->campo_auxilio_loca = "faixa_local";  // NOME DO DOS LOCAIS SELECIONADOS
-
-  $geraform->selecao = true;                      // CAMPO PARA ESCOLHA DA SELEÇÃO
-  $geraform->selregime = true;                    // CAMPO PARA ESCOLHA DO REGIME
-
-  $geraform->onchpad = true;                      // MUDAR AS OPÇÕES AO SELECIONAR OS TIPOS DE FILTRO OU RESUMO
-  $geraform->gera_form($anofolha,$mesfolha);
-  ?>
-  <tr>
-    <td align="right" nowrap title="Tipo de impressão">
-      <b>Tipo de impressão:</b>
-    </td>
-    <td nowrap>
-      <?
-      $arr_AS = array('a' => 'Analítica','s'=>'Sintética');
-      db_select("ansin",$arr_AS,true,1,"");
+<body class="body-default">
+  <div class="container">
+    <form name="form1">
+     <fieldset>
+     <legend> Relatório Folha Anailítica / Sintética </legend>
+     <table class="form-container">
+      <?php
+      if(!isset($tipo)){
+        $tipo = "l";
+      }
+      if(!isset($filtro)){
+        $filtro = "i";
+      }
+      if(!isset($anofolha) || (isset($anofolha) && trim($anofolha) == "")){
+        $anofolha = db_anofolha();
+      }
+      if(!isset($mesfolha) || (isset($mesfolha) && trim($mesfolha) == "")){
+        $mesfolha = db_mesfolha();
+      }
+      include(modification("dbforms/db_classesgenericas.php"));
+      $geraform = new cl_formulario_rel_pes;
+    
+      $geraform->usaregi = true;                      // PERMITIR SELEÇÃO DE MATRÍCULAS
+      $geraform->usalota = true;                      // PERMITIR SELEÇÃO DE LOTAÇÕES
+      $geraform->usaorga = true;                      // PERMITIR SELEÇÃO DE ÓRGÃO
+      $geraform->usaloca = true;                      // PERMITIR SELEÇÃO DE LOCAL DE TRABALHO
+    
+      $geraform->re1nome = "regisi";                  // NOME DO CAMPO DA MATRÍCULA INICIAL
+      $geraform->re2nome = "regisf";                  // NOME DO CAMPO DA MATRÍCULA FINAL
+      $geraform->re3nome = "selreg";                  // NOME DO CAMPO DE SELEÇÃO DE MATRÍCULAS
+    
+      $geraform->lo1nome = "lotaci";                  // NOME DO CAMPO DA LOTAÇÃO INICIAL
+      $geraform->lo2nome = "lotacf";                  // NOME DO CAMPO DA LOTAÇÃO FINAL
+      $geraform->lo3nome = "sellot";                  // NOME DO CAMPO DE SELEÇÃO DE LOTAÇÕES
+    
+      $geraform->or1nome = "orgaoi";                  // NOME DO CAMPO DO ÓRGÃO INICIAL
+      $geraform->or2nome = "orgaof";                  // NOME DO CAMPO DO ÓRGÃO FINAL
+      $geraform->or3nome = "selorg";                  // NOME DO CAMPO DE SELEÇÃO DE ÓRGÃOS 
+    
+      $geraform->tr1nome = "locali";                  // NOME DO CAMPO DO LOCAL INICIAL
+      $geraform->tr2nome = "localf";                  // NOME DO CAMPO DO LOCAL FINAL
+      $geraform->tr3nome = "selloc";                  // NOME DO CAMPO DE SELEÇÃO DE LOCAIS
+    
+      $geraform->trenome = "tipo";                    // NOME DO CAMPO TIPO DE RESUMO
+      $geraform->tfinome = "filtro";                  // NOME DO CAMPO TIPO DE FILTRO
+    
+      $geraform->resumopadrao = "l";                  // NOME DO DAS LOTAÇÕES SELECIONADAS
+      $geraform->filtropadrao = "i";                  // NOME DO DAS LOTAÇÕES SELECIONADAS
+    
+      $geraform->strngtipores = "glomt";              // OPÇÕES PARA MOSTRAR NO TIPO DE RESUMO g - geral,
+                                                      //                                       l - lotação,
+                                                      //                                       o - órgão,
+                                                      //                                       m - matrícula,
+                                                      //                                       t - local de trabalho
+    
+      $geraform->tipofol = true;                      // MOSTRAR DO CAMPO PARA TIPO DE FOLHA
+      if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+    
+        $geraform->arr_tipofol = array(
+          'r14' => 'Salário',
+          'r48' => 'Complementar',
+          'sup' => 'Suplementar',
+          'r20' => 'Rescisão',
+          'r35' => '13o. Salário',
+          'r22' => 'Adiantamento'
+        );
+        $geraform->suplementar  = "sup";
+      } else {
+    
+        $geraform->arr_tipofol = array(
+          'r14' => 'Salário',
+          'r48' => 'Complementar',
+          'r20' => 'Rescisão',
+          'r35' => '13o. Salário',
+          'r22' => 'Adiantamento'
+        );
+      }
+    
+      $geraform->complementar       = "r48";                // VALUE DA COMPLEMENTAR PARA BUSCAR SEMEST
+      $geraform->campo_auxilio_regi = "faixa_regis";  // NOME DO DAS MATRÍCULAS SELECIONADAS
+      $geraform->campo_auxilio_lota = "faixa_lotac";  // NOME DO DAS LOTAÇÕES SELECIONADAS
+      $geraform->campo_auxilio_orga = "faixa_orgao";  // NOME DO DOS ÓRGÃOS SELECIONADOS
+      $geraform->campo_auxilio_loca = "faixa_local";  // NOME DO DOS LOCAIS SELECIONADOS
+    
+      $geraform->selecao = true;                      // CAMPO PARA ESCOLHA DA SELEÇÃO
+      $geraform->selregime = true;                    // CAMPO PARA ESCOLHA DO REGIME
+    
+      $geraform->onchpad = true;                      // MUDAR AS OPÇÕES AO SELECIONAR OS TIPOS DE FILTRO OU RESUMO
+      $geraform->gera_form($anofolha,$mesfolha);
       ?>
-    </td>
-  </tr>
-  <tr>
-    <td align="right" nowrap title="Tipo de impressão">
-      <b>Imprimir Afastados:</b>
-    </td>
-    <td nowrap>
-      <?
-      $arr_AS = array('s' => 'Sim','n'=>'Não');
-      db_select("afastado",$arr_AS,true,1,"");
-      ?>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" align = "center"> 
-      <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >
-    </td>
-  </tr>
-</table>
-</center>
-</form>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+      <tr>
+        <td title="Tipo de impressão">
+          <b>Tipo de impressão:</b>
+        </td>
+        <td>
+          <?php
+          $arr_AS = array('a' => 'Analítica','s'=>'Sintética');
+          db_select("ansin",$arr_AS,true,1,"");
+          ?>
+        </td>
+      </tr>
+      <tr>
+        <td title="Tipo de impressão">
+          <b>Imprimir Afastados:</b>
+        </td>
+        <td>
+          <?php
+          $arr_AS = array('s' => 'Sim','n'=>'Não');
+          db_select("afastado",$arr_AS,true,1,"");
+          ?>
+        </td>
+      </tr>
+      <tr>
+       <td align="left" nowrap title="Tabela de Previdência" >
+       <strong>Tabela de Previdência :</strong>
+       </td>
+       <td>
+       <?php
+         $sql = "select distinct  
+                        case r33_codtab 
+                          when 2 then 0 
+                          when 1 then 5
+                          else (cast(r33_codtab as integer) - 2)
+                        end as r33_codtab,
+                        case r33_codtab
+                             when 2 then 'Todos'
+                             when 1 then 'Sem Prev.'
+                             else r33_nome
+                        end as r33_nome
+                   from inssirf 
+                  where r33_anousu = ".db_anofolha()." 
+                    and r33_mesusu = ".db_mesfolha()."
+                    and r33_instit = ".db_getsession('DB_instit');
+         $res = pg_query($sql);
+         db_selectrecord('previdencia', $res, true, 4);
+       ?>
+       </td>
+      </tr>  
+     </table>
+     </fieldset>
+     <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >     
+    </form>
+  </div>
+<?php
+db_menu();
 ?>
 </body>
 </html>
 <script>
-function js_emite(){
+$('previdencia').style="width: 82px;"
+$('previdenciadescr').style="width: 324px;"
+$('previdencia').value  = 0;
+$('previdencia').change = js_ProcCod_previdencia('previdencia','previdenciadescr');
+
+function js_emite() {
   qry = "?folha="+document.form1.tipofol.value;
   qry+= "&tipo="+document.form1.tipo.value;
   qry+= "&ano="+document.form1.anofolha.value;
@@ -174,8 +213,14 @@ function js_emite(){
   qry+= "&afastado="+document.form1.afastado.value;
   qry+= "&sel="+document.form1.selecao.value;
   qry+= "&reg="+document.form1.regime.value;
+  qry+= "&previdencia="+document.form1.previdencia.value;
+
   if(document.form1.complementar){
     qry+= "&semest="+document.form1.complementar.value;
+  }
+
+  if(document.form1.suplementar){
+    qry+= "&semest="+document.form1.suplementar.value;
   }
 
   if(document.form1.selreg){

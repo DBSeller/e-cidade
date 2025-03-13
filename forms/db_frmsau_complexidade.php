@@ -58,7 +58,7 @@ db_input('sd69_c_nome',40,$Isd69_c_nome,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_complexidade','func_sau_complexidade.php?funcao_js=parent.js_preenchepesquisa|sd69_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_complexidade','func_sau_complexidade.php?funcao_js=parent.js_preenchepesquisa|sd69_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_complexidade.hide();

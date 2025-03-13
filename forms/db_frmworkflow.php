@@ -119,8 +119,8 @@ function js_validarcampos() {
 
 function js_pesquisa() {
 
-  var sUrl = 'func_workflow.php?funcao_js=parent.js_preenchepesquisa|db112_sequencial';
-  js_OpenJanelaIframe('top.corpo.iframe_workflow', 'db_iframe_workflow', sUrl, 'Pesquisa', true, '0');
+  var sUrl = 'func_workflowmodulo.php?funcao_js=parent.js_preenchepesquisa|db112_sequencial&chave_db173_modulo=72';
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_workflow', 'db_iframe_workflow', sUrl, 'Pesquisa', true, '0');
 }
 
 function js_preenchepesquisa(chave) {

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-	require("libs/db_stdlib.php");
-	require("libs/db_conecta.php");
-	include("libs/db_sessoes.php");
-	include("libs/db_usuariosonline.php");
+	require(modification("libs/db_stdlib.php"));
+	require(modification("libs/db_conecta.php"));
+	include(modification("libs/db_sessoes.php"));
+	include(modification("libs/db_usuariosonline.php"));
 
 $dir = "classes/";
 
@@ -84,7 +84,7 @@ if (is_dir($dir)) {
 
 												// para pegaro codigo da tabela
 												$sqltab = "select codarq from db_sysarquivo where nomearq = '$tabela'";
-												$resulttab = pg_query($sqltab);
+												$resulttab = db_query($sqltab);
 												$codigo = pg_result($resulttab,0,"codarq");
 												
 												
@@ -96,7 +96,7 @@ if (is_dir($dir)) {
 												$sql = "select * from db_sysclasses where codarq = $codigo and nomclasse = '$metodo[0]'";
 												
 												// ver tabela db_sysclasses
-												$result = pg_query($sql);	
+												$result = db_query($sql);	
 												$linhasres = pg_num_rows($result);
 												if($linhasres>0){
 													$exibe = montaMetodoEx($lines,$line_num);
@@ -104,7 +104,7 @@ if (is_dir($dir)) {
 													echo "tem no banco <br>";
 													/*
 													$sqldel = "delete from db_sysclasses where codarq = $codigo and nomclasse = '$metodo[0]'";
-													$resultdel = @pg_exec($sqldel); 
+													$resultdel = @db_query($sqldel); 
 													*/
 												}else{
 													echo "<b>não tem no banco </b><br>";
@@ -116,7 +116,7 @@ if (is_dir($dir)) {
 																							'atualização de metodos',
 																							'$exibe')";
 											       // die("xx ".$sqlinsert." xxxxxxxxxxx");
-													$resultinsert = @pg_exec($sqlinsert); 
+													$resultinsert = @db_query($sqlinsert); 
 													if($resultinsert==false){
 														db_msgbox("Inclusão não efetuada.codigo = $codigo");
 													}else{

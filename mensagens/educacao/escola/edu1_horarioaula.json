@@ -7,4 +7,6 @@
   ,"selecione_um_turno"        : "Selecione o turno."
   ,"hora_inicio_nao_informada" : "Hora inicial do período: [periodo] não foi informada."
   ,"hora_final_nao_informada"  : "Hora final do período: [periodo] não foi informada."
+  ,"hora_inicio_conflita_periodo" : "Hora informada esta conflitando com hora final do período: [sPeriodo]."
+  ,"hora_final_conflita_periodo" : "Hora informada esta conflitando com hora inicial do período: [sPeriodo]."
 }

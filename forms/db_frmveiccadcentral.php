@@ -66,10 +66,10 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',3,'')
 <script>
 function js_pesquisave36_coddepto(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_veiccadcentral','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veiccadcentral','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true,'0');
   }else{
      if(document.form1.ve36_coddepto.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_veiccadcentral','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.ve36_coddepto.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veiccadcentral','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.ve36_coddepto.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
      }else{
        document.form1.descrdepto.value = ''; 
      }
@@ -88,7 +88,7 @@ function js_mostradb_depart1(chave1,chave2){
   db_iframe_db_depart.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_veiccadcentral','db_iframe_veiccadcentral','func_veiccadcentral.php?funcao_js=parent.js_preenchepesquisa|ve36_sequencial','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veiccadcentral','db_iframe_veiccadcentral','func_veiccadcentral.php?funcao_js=parent.js_preenchepesquisa|ve36_sequencial','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiccadcentral.hide();

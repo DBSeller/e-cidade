@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_procvar_classe.php");
-include("classes/db_proctipovar_classe.php");
-include("classes/db_cgm_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_arretipo_classe.php");
-include("classes/db_tabrec_classe.php");
-include("classes/db_histcalc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_procvar_classe.php"));
+include(modification("classes/db_proctipovar_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_arretipo_classe.php"));
+include(modification("classes/db_tabrec_classe.php"));
+include(modification("classes/db_histcalc_classe.php"));
 $clarretipo = new cl_arretipo;
 $cltabrec = new cl_tabrec;
 $clhistcalc = new cl_histcalc;
@@ -63,13 +63,13 @@ if(isset($processar)){
     if ($j01_matric != "") {
       
       $sql = "select j01_numcgm as z01_numcgm from iptubase where j01_matric = $j01_matric";
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       db_fieldsmemory($result,0);
       
     } elseif ($q02_inscr != "") {
 
       $sql = "select q02_numcgm as z01_numcgm from issbase where q02_inscr = $q02_inscr";
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       db_fieldsmemory($result,0);
       
     }
@@ -77,17 +77,17 @@ if(isset($processar)){
   }
 
   $sql = "select nextval('numpref_k03_numpre_seq') as numpre";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 
   $dtvenc = $dtvenc_ano . "-" . $dtvenc_mes . "-" . $dtvenc_dia;
 
   $sql = "select '$dtvenc'::date - '$parcini months'::interval as dtvenc";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 
 //  $sql = "select '$dtvenc'::date - '1 months'::interval as dtvenc";
-//  $result = pg_exec($sql);
+//  $result = db_query($sql);
 //  db_fieldsmemory($result,0);
 
   for($i=$parcini;$i<($parcelas + 1);$i++){
@@ -97,7 +97,7 @@ if(isset($processar)){
     if ($$parcmarcada == 't') {
 
       $sql = "select '$dtvenc'::date + '$i months'::interval as k00_dtvenc";
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       db_fieldsmemory($result,0);
 
       $sql = "insert into arrecad (k00_numcgm,
@@ -124,14 +124,14 @@ if(isset($processar)){
 			  0,
 			  $k00_tipo,
 			  0)";
-      $result = pg_exec($sql);
+      $result = db_query($sql);
 
     }
       
   }
 
   $sql = "select nextval('termo_v07_parcel_seq') as parcel";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 
   $sql = "insert into termo (v07_parcel,
@@ -159,17 +159,17 @@ if(isset($processar)){
 			      db_getsession("DB_id_usuario") . ",
 			      $z01_numcgm,
 			      '$v07_hist')";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
 
   if ($j01_matric != "") {
     
     $sql = "insert into arrematric values ($numpre, $j01_matric)";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     
   } elseif ($q02_inscr != "") {
 
     $sql = "insert into arreinscr values ($numpre, $q02_inscr)";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     
   }
 

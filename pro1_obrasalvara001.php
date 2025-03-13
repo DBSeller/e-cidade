@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_obrasalvara_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_obrasalvara_classe.php"));
 
 $clObrasAlvara = new cl_obrasalvara;
 $clRotulo 		 = new rotulocampo;
@@ -259,7 +259,7 @@ function js_retornoOperacao(oAjax) {
 
 	js_removeObj('msgbox');
 	
-	var oRetorno = eval("("+oAjax.responseText+")");
+	var oRetorno = JSON.parse(oAjax.responseText);
 
 	alert(oRetorno.sMessage.urlDecode().replace(/\\n/g, '\n') );
 
@@ -321,7 +321,7 @@ function js_retornaConstrucoes(oAjax) {
 
 	js_removeObj('msgbox');
 	
-	var oRetorno        = eval("("+oAjax.responseText+")");
+	var oRetorno        = JSON.parse(oAjax.responseText);
 
 	if (oRetorno.iStatus == 1) {
 
@@ -463,7 +463,7 @@ function js_carregaDetalhesObra(oAjax) {
 
 	js_removeObj('msgbox');
 	
-	var oRetorno        = eval("("+oAjax.responseText+")");
+	var oRetorno        = JSON.parse(oAjax.responseText);
 
 	if (oRetorno.iStatus == 1) {
 
@@ -572,10 +572,10 @@ function js_mostraProcessoHidden(iCodProcesso, sNome, lErro) {
 
 function js_pesquisaObra(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_obras','func_obras.php?funcao_js=parent.js_mostraObra|ob01_codobra|ob01_nomeobra&liberacao=true','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obras','func_obras.php?funcao_js=parent.js_mostraObra|ob01_codobra|ob01_nomeobra&liberacao=true','Pesquisa',true);
   }else{
      if(document.form1.ob04_codobra.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_obras','func_obras.php?pesquisa_chave='+document.form1.ob04_codobra.value+'&funcao_js=parent.js_mostraObraHidden','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obras','func_obras.php?pesquisa_chave='+document.form1.ob04_codobra.value+'&funcao_js=parent.js_mostraObraHidden','Pesquisa',false);
      }else{
        document.form1.ob01_nomeobra.value = ''; 
      }
@@ -599,7 +599,7 @@ function js_mostraObra(chave1,chave2){
   js_detalhesObra();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_obras','func_obrasalvara.php?funcao_js=parent.js_mostraObra|ob04_codobra|ob01_nomeobra','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obras','func_obrasalvara.php?funcao_js=parent.js_mostraObra|ob04_codobra|ob01_nomeobra','Pesquisa',true);
 }
 
 </script>

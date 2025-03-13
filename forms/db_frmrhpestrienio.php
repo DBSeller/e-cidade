@@ -58,7 +58,7 @@ db_inputdata('rh09_data',@$rh09_data_dia,@$rh09_data_mes,@$rh09_data_ano,true,'t
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpestrienio','func_rhpestrienio.php?funcao_js=parent.js_preenchepesquisa|rh09_regist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpestrienio','func_rhpestrienio.php?funcao_js=parent.js_preenchepesquisa|rh09_regist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpestrienio.hide();

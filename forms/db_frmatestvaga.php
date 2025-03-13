@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -287,7 +287,7 @@ function js_pesquisaed34_i_serie( mostra ) {
     }
     
     js_OpenJanelaIframe(
-                         'top.corpo',
+                         'CurrentWindow.corpo',
                          'db_iframe_serieatest',
                          'func_serieatest.php?curso1='+document.form1.codigocurso.value
                                            +'&curso2='+document.form1.codcursodest.value
@@ -313,7 +313,7 @@ function js_pesquisaed102_i_base( mostra ) {
     
     alert( _M( sCaminhoMensagens + 'informe_aluno' ) );
     js_OpenJanelaIframe(
-                         'top.corpo',
+                         'CurrentWindow.corpo',
                          'db_iframe_aluno',
                          'func_alunoatest.php?funcao_js=parent.js_mostraaluno1|ed47_i_codigo|ed47_v_nome|dl_codigoescola'
                                                                             +'|dl_escola|dl_codigocurso|dl_curso'
@@ -326,7 +326,7 @@ function js_pesquisaed102_i_base( mostra ) {
     if ( mostra == true ) {
 
       js_OpenJanelaIframe(
-                           'top.corpo',
+                           'CurrentWindow.corpo',
                            'db_iframe_base',
                            'func_baseatest.php?serie='+document.form1.codigoserie.value
                                             +'&curso='+document.form1.codigocurso.value
@@ -339,7 +339,7 @@ function js_pesquisaed102_i_base( mostra ) {
       if ( document.form1.ed102_i_base.value != '' ) {
 
         js_OpenJanelaIframe(
-                             'top.corpo',
+                             'CurrentWindow.corpo',
                              'db_iframe_base',
                              'func_baseatest.php?serie='+document.form1.codigoserie.value
                                               +'&curso='+document.form1.codigocurso.value
@@ -389,7 +389,7 @@ function js_pesquisaed102_i_calendario( mostra ) {
     
     alert( _M( sCaminhoMensagens + 'informe_aluno_calendario' ) );
     js_OpenJanelaIframe(
-                         'top.corpo',
+                         'CurrentWindow.corpo',
                          'db_iframe_aluno',
                          'func_alunoatest.php?funcao_js=parent.js_mostraaluno1|ed47_i_codigo|ed47_v_nome|dl_codigoescola'
                                                                             +'|dl_escola|dl_codigocurso|dl_curso'
@@ -402,7 +402,7 @@ function js_pesquisaed102_i_calendario( mostra ) {
     if ( mostra == true ) {
 
       js_OpenJanelaIframe(
-                           'top.corpo',
+                           'CurrentWindow.corpo',
                            'db_iframe_calendario',
                            'func_calendarioatest.php?anocal='+document.form1.ed102_i_aluno.value
                                                   +'&funcao_js=parent.js_mostracalendario1|ed52_i_codigo|ed52_c_descr'
@@ -452,7 +452,7 @@ function js_pesquisaed102_i_turno( mostra ) {
     
     alert( _M( sCaminhoMensagens + 'informe_aluno_turno' ) );
     js_OpenJanelaIframe(
-                         'top.corpo',
+                         'CurrentWindow.corpo',
                          'db_iframe_aluno',
                          'func_alunoatest.php?funcao_js=parent.js_mostraaluno1|ed47_i_codigo|ed47_v_nome|dl_codigoescola'
                                                                             +'|dl_escola|dl_codigocurso|dl_curso'
@@ -464,7 +464,7 @@ function js_pesquisaed102_i_turno( mostra ) {
     
     alert( _M( sCaminhoMensagens + 'informe_base_curricular_turno' ) );
     js_OpenJanelaIframe(
-                         'top.corpo',
+                         'CurrentWindow.corpo',
                          'db_iframe_base',
                          'func_baseatest.php?serie='+document.form1.codigoserie.value
                                           +'&curso='+document.form1.codigocurso.value
@@ -477,7 +477,7 @@ function js_pesquisaed102_i_turno( mostra ) {
     if ( mostra == true ) {
       
       js_OpenJanelaIframe(
-                           'top.corpo',
+                           'CurrentWindow.corpo',
                            'db_iframe_turno',
                            'func_turnoturma.php?curso='+document.form1.codcursodest.value
                                              +'&funcao_js=parent.js_mostraturno1|ed15_i_codigo|ed15_c_nome',
@@ -489,7 +489,7 @@ function js_pesquisaed102_i_turno( mostra ) {
       if ( document.form1.ed102_i_turno.value != '' ) {
         
         js_OpenJanelaIframe(
-                             'top.corpo',
+                             'CurrentWindow.corpo',
                              'db_iframe_turno',
                              'func_turnoturma.php?curso='+document.form1.codigocurso.value
                                                +'&pesquisa_chave='+document.form1.ed102_i_turno.value
@@ -527,7 +527,7 @@ function js_pesquisaed102_i_aluno( mostra ) {
   if ( mostra == true ) {
 
     js_OpenJanelaIframe(
-                         'top.corpo',
+                         'CurrentWindow.corpo',
                          'db_iframe_aluno',
                          'func_alunoatest.php?funcao_js=parent.js_mostraaluno1|ed47_i_codigo|ed47_v_nome|dl_codigoescola'
                                                                             +'|dl_escola|dl_codigocurso|dl_curso'
@@ -571,7 +571,7 @@ function js_mostraaluno1( chave1, chave2, chave3, chave4, chave5, chave6, chave7
 function js_pesquisa() {
 
   js_OpenJanelaIframe(
-                       'top.corpo',
+                       'CurrentWindow.corpo',
                        'db_iframe_atestvaga',
                        'func_atestvaga.php?funcao_js=parent.js_preenchepesquisa|ed102_i_codigo',
                        'Pesquisa',
@@ -669,7 +669,7 @@ function verificaExistenciaProgressao( iAluno ) {
 function retornoVerificaExistenciaProgressao( oResponse ) {
 
   js_removeObj( "msgBox" );
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   /**
    * Caso existam progressoes, percorre cada uma para apresentação da mensagem na tela

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -422,5 +422,17 @@ class cl_setorfiscal {
      }
      return $sql;
   }
+
+    public function getSetorFiscalByMatricula($matricula)
+    {
+        $sql = "SELECT *
+                    FROM iptubase
+                INNER JOIN lote ON j34_idbql = j01_idbql
+                INNER JOIN lotesetorfiscal ON j91_idbql = j34_idbql
+                INNER JOIN setorfiscal ON j90_codigo = j91_codigo
+                WHERE j01_matric = {$matricula};";
+
+        return $sql;
+    }
 }
 ?>

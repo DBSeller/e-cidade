@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_utils.php");
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_conrelinfo_classe.php");
-include("classes/db_conrelvalor_classe.php");
-//include_once("classes/db_db_config_classe.php");
+include(modification("libs/db_utils.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_conrelinfo_classe.php"));
+include(modification("classes/db_conrelvalor_classe.php"));
+//include_once(modification("classes/db_db_config_classe.php"));
 
 $clconrelinfo = new cl_conrelinfo;
 $classinatura = new cl_assinatura;
@@ -63,7 +63,7 @@ $temadmind  = false;
 $flag_abrev = false;
 
 $xinstit    = split("-",$db_selinstit);
-$resultinst = pg_exec("select munic,db21_tipoinstit from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select munic,db21_tipoinstit from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
   db_fieldsmemory($resultinst,$xins);
@@ -142,7 +142,7 @@ if ($v_receita_rcl=="s") {
 //
 //  $executar .= ".php";
 
-  include($executar);
+  include(modification($executar));
 }
 
 if ($v_despesa_pessoal=="s") {
@@ -154,7 +154,7 @@ if ($v_despesa_pessoal=="s") {
 //
 //  $executar .= ".php";
 
-  include($executar);
+  include(modification($executar));
 }
 
 if ($v_divida=="s"){
@@ -167,7 +167,7 @@ if ($v_divida=="s"){
 
 //	$executar .= ".php";
 
-  include($executar);
+  include(modification($executar));
 }
 
 if ($v_garantias=="s"){
@@ -179,7 +179,7 @@ if ($v_garantias=="s"){
 //
 //  $executar .= ".php";
 
-  include($executar);
+  include(modification($executar));
 }
 
 if ($v_operacoes=="s"){
@@ -191,7 +191,7 @@ if ($v_operacoes=="s"){
 //
 //  $executar .= ".php";
 
-  include($executar);
+  include(modification($executar));
 }
 
 if ($v_restos == "s"){
@@ -199,7 +199,7 @@ if ($v_restos == "s"){
   $executar .= ".php";
   
   $lGeraPDF = false;
-  include($executar);
+  include(modification($executar));
   $total_inscricao_rp_nao_processados = $nTotalEmpNaoLiq;
   $suficiencia_antes_incricao_rp_nao_processados = $nTotSufAntInscr;
   

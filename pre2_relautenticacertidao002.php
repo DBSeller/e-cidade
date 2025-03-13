@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_utils.php"));
 
 $oGet         = db_utils::postMemory($_GET,0);
 $id_usuario   = db_getsession('DB_id_usuario');
@@ -68,7 +68,7 @@ if (isset($id_usuario)) {
   $sqlCertidaoAutentica .= "    where {$sWhere}                                                                               "; 
   $sqlCertidaoAutentica .= " order by {$sOrder}                                                                               ";
 
-  $rsCertidaoAutentica  = pg_query($sqlCertidaoAutentica);
+  $rsCertidaoAutentica  = db_query($sqlCertidaoAutentica);
   $iCertidaoAutentica   = pg_num_rows($rsCertidaoAutentica);
   
   if ($iCertidaoAutentica == 0) {

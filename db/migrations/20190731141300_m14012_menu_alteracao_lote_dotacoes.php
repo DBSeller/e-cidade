@@ -1,0 +1,31 @@
+<?php
+
+use Classes\PostgresMigration;
+
+class M14012MenuAlteracaoLoteDotacoes extends PostgresMigration
+{
+
+    public function up()
+    {
+        $this->execute(<<<SQL_UP
+
+insert into db_itensmenu( id_item ,descricao ,help ,funcao ,itemativo ,manutencao ,desctec ,libcliente ) values ( 228154 ,'Alteração de Esfera Orçamentária em Lote' ,'Altera as dotações orçamentárias' ,'orc4_alteracaolotedotacao001.php' ,'1' ,'1' ,'Altera as dotações orçamentárias' ,'true' );
+delete from db_menu where id_item_filho = 228154 AND modulo = 116;
+insert into db_menu( id_item ,id_item_filho ,menusequencia ,modulo ) values ( 3215 ,228154 ,5 ,116 );
+
+SQL_UP
+);
+    }
+
+    public function down()
+    {
+        $this->execute(<<<SQL_DOWN
+
+delete from db_menu where id_item_filho = 228154 AND modulo = 116;
+delete from db_itensmenu where id_item = 228154;
+
+SQL_DOWN
+);
+
+    }
+}

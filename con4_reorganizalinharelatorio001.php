@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,210 +25,199 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_orcparamseq_classe.php");
-include("dbforms/db_funcoes.php");
-$oDaoOrcparamseq = new cl_orcparamseq;
-$oGET= db_utils::postMemory($_GET);
+use ECidade\Configuracao\RelatorioLegal\Modelo\Relatorio;
+use ECidade\Configuracao\RelatorioLegal\Registry\RelatorioRegistry;
+use ECidade\Configuracao\RelatorioLegal\Repositorio\LinhaRepositorio;
+
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_utils.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_usuariosonline.php');
+require_once modification('classes/db_db_config_classe.php');
+require_once modification('classes/db_orcparamseq_classe.php');
+require_once modification('dbforms/db_funcoes.php');
+
+$parametros = JSON::requestParameters();
+$relatorio = null;
+$oDaoOrcparamseq = new cl_orcparamseq();
+$oGET = db_utils::postMemory($_GET);
 $db_opcao = 1;
-if (isset($oGET->chavepesquisa)) {
 
-  $chavepesquisa = $oGET->chavepesquisa;
-  $db_opcao      = 22;
+if (isset($parametros->chavepesquisa)) {
+    $relatorio = RelatorioRegistry::get($parametros->chavepesquisa);
+    $chavepesquisa = $parametros->chavepesquisa;
+    $db_opcao = 22;
 }
-$oPost = db_utils::postMemory($_POST);
 
-if (isset($oPost->campos)) {
-
-  db_inicio_transacao();
-  for ($i = 0; $i < count($oPost->campos); $i++) {
-
-    $oDaoOrcparamseq->o69_codparamrel = $chavepesquisa;
-    $oDaoOrcparamseq->o69_codseq      = $oPost->campos[$i];
-    $oDaoOrcparamseq->o69_ordem       = $i+1;
-    $oDaoOrcparamseq->alterar($chavepesquisa, $oPost->campos[$i]);
-
-  }
-  db_fim_transacao();
-}
 ?>
-<html>
+<!doctype html>
+<html lang="pt-BR">
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>DBSeller Informática Ltda</title>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+    <script src="scripts/scripts.js"></script>
+    <script src="scripts/classes/http/http.js"></script>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#CCCCCC">
-  <tr>
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-      <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-  <center>
-  <form action="" method="post" name="form1" onSubmit="return js_selecionar()">
-  <table><tr><td>
-  <fieldset><Legend><b>Ordernar as linhas do Relatório</b></legend>
+<body>
+<div class="container">
+    <form method="post" name="form1" id="formLinhas" onsubmit="return false;" style="width: 600px">
+        <input type="hidden" name="relatorio" id="relatorio"
+               value="<?php echo isset($chavepesquisa) ? $chavepesquisa : ''; ?>">
+        <?php if ($relatorio instanceof Relatorio) {
+    ?>
+            <fieldset>
+                <legend>Relatório</legend>
+                <table style="width: 100%">
+                    <tbody>
+                    <tr>
+                        <td style="width: 15%">
+                            <input class="form-control" id="relatorio" name="relatorio" disabled
+                                   value="<?php echo $relatorio->getSequencial(); ?>" style="width: 100%">
+                        </td>
+                        <td style="width: 85%">
+                            <input class="form-control" id="descricao" name="descricao" disabled
+                                   value="<?php echo $relatorio->getDescricao(); ?>" style="width: 100%">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+        <?php
+} ?>
+        <fieldset>
+            <legend>Ordenar as Linhas</legend>
+            <table style="width: 100%">
+                <tr>
+                    <td style="width: 90%">
+                        <select name="linhas[]" id="linhas" size="15" multiple style="width: 100%">
+                            <?php
+                            if (isset($chavepesquisa)) {
+                                $linhaRepositorio = new LinhaRepositorio();
+                                $linhas = $linhaRepositorio->scopeRelatorio($relatorio)
+                                    ->addOrder('o69_ordem')
+                                    ->setUseLeftJoin(false)
+                                    ->get();
 
-      <table border="0">
-        <tr>
-         <td align="right" colspan="" width="80%">
-         <select name="campos[]" id="campos" size="15" style="width:250px;" multiple>
-              <?
-              if (isset($chavepesquisa)) {
-
-                $sSql     = $oDaoOrcparamseq->sql_query_file($chavepesquisa, null,"*", "o69_ordem" );
-                $rsLinhas = $oDaoOrcparamseq->sql_record($sSql);
-                $iNumRows = $oDaoOrcparamseq->numrows;
-                if ($iNumRows != 0) {
-
-                  for ($i = 0;$i < $iNumRows;$i++) {
-
-                    $oLinha    = db_utils::fieldsmemory($rsLinhas, $i);
-                    $sStyle    = "margin-left:".($oLinha->o69_nivellinha*10)."px;";
-                    if ($oLinha->o69_totalizador == 't') {
-                      $sStyle .= "font-weight:bold;";
-                    }
-                    echo "<option style='{$sStyle}' value='{$oLinha->o69_codseq}'>{$oLinha->o69_labelrel}</option>\n";
-                  }
-                }
-              }
-              ?>
-             </select>
-            </td>
-            <td align="left" valign="middle" width="20%">
-             <img style="cursor:hand" onClick="js_sobe();return false;" src="skins/img.php?file=Controles/seta_up.png" />
-              <br/><br/>
-             <img style="cursor:hand" onClick="js_desce()" src="skins/img.php?file=Controles/seta_down.png" />
-              <br/><br/>
-
-
-     </td>
-         </tr>
-      </table>
-
-      </fieldset>
-      </td>
-      </tr>
-      </table>
-      <input name="db_opcao" type="submit" id="db_opcao" value="Incluir" >
-      <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
-    </center>
+                                foreach ($linhas as $linha) {
+                                    $nivel = $linha->getNivelLinha() * 10;
+                                    $sStyle = "margin-left: {$nivel}px;";
+                                    if ($linha->isTotalizadora()) {
+                                        $sStyle .= "font-weight: bold;";
+                                    } ?>
+                                    <option style="<?php echo $sStyle; ?>" value="<?php echo $linha->getLinha(); ?>">
+                                        <?php echo $linha->getDescricao() ?: '-'; ?>
+                                    </option>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </td>
+                    <td style="width: 10%">
+                        <img style="cursor: pointer" onclick="js_sobe(); return false;"
+                             src="skins/img.php?file=Controles/seta_up.png"/>
+                        <br/><br/>
+                        <img style="cursor: pointer" onclick="js_desce()"
+                             src="skins/img.php?file=Controles/seta_down.png"/>
+                        <br/><br/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <input name="db_opcao" type="button" id="db_opcao" value="Salvar">
+        <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();">
     </form>
-  </td>
-  </tr>
-</table>
-</body>
-</html>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+</div>
+<?php
+db_menu();
 ?>
 <script>
-function js_sobe() {
-  var F = document.getElementById("campos");
-  if (F.selectedIndex != -1 && F.selectedIndex > 0) {
+    const rpc = 'con1_relatorio_legal.RPC.php';
+    const formLinhas = document.getElementById('formLinhas');
+    const btnReordenar = document.getElementById('db_opcao');
 
-    var SI        = F.selectedIndex - 1;
-    var auxText   = F.options[SI].text;
-    var auxValue  = F.options[SI].value;
-    var sStyle    = F.options[SI + 1].style;
-    var sStyleOther = F.options[SI].style;
-    F.options[SI]                  = new Option(F.options[SI + 1].text,F.options[SI + 1].value);
-    F.options[SI].style.fontWeight = sStyle.fontWeight;
-    F.options[SI].style.marginLeft = sStyle.marginLeft;
-    F.options[SI + 1]              = new Option(auxText,auxValue);
-    F.options[SI+1].style.fontWeight = sStyleOther.fontWeight;
-    F.options[SI+1].style.marginLeft = sStyleOther.marginLeft;
-    F.options[SI].selected         = true;
+    const selecionar = () => {
+        var F = document.getElementById('linhas').options;
+        for (var i = 0; i < F.length; i++) {
+            F[i].selected = true;
+        }
+        return true;
+    };
 
-  }
-}
-function js_desce() {
+    btnReordenar.addEventListener('click', () => {
+        selecionar();
+        const data = new FormData(formLinhas);
+        data.append('acao', 'reordenarLinhas');
 
-  var F = document.getElementById("campos");
-  if (F.selectedIndex != -1 && F.selectedIndex < (F.length - 1)) {
+        HttpClient.post(rpc, {body: data}).then(response => alert(response.mensagem));
+    });
 
-    var SI = F.selectedIndex + 1;
-    var auxText = F.options[SI].text;
-    var auxValue = F.options[SI].value;
-    var sStyle    = F.options[SI - 1].style;
-    var sStyleOther = F.options[SI].style;
-    F.options[SI] = new Option(F.options[SI - 1].text,F.options[SI - 1].value);
-    F.options[SI].style.fontWeight = sStyle.fontWeight;
-    F.options[SI].style.marginLeft = sStyle.marginLeft;
-    F.options[SI - 1] = new Option(auxText,auxValue);
-    F.options[SI-1].style.fontWeight = sStyleOther.fontWeight;
-    F.options[SI-1].style.marginLeft = sStyleOther.marginLeft;
-    F.options[SI].selected = true;
+    function js_sobe() {
+        var F = document.getElementById('linhas');
 
-  }
-}
-function js_excluir() {
-  var F = document.getElementById("campos");
-  var SI = F.selectedIndex;
-  if(F.selectedIndex != -1 && F.length > 0) {
-    F.options[SI] = null;
-    if(SI <= (F.length - 1))
-      F.options[SI].selected = true;
-  }
-}
-function js_insSelect() {
-  var texto=document.form1.db61_descr.value;
-  var valor=document.form1.db61_codparag.value;
-  if(texto != "" && valor != ""){
-    var F = document.getElementById("campos");
-    var testa = false;
+        if (F.selectedIndex != -1 && F.selectedIndex > 0) {
+            var SI = F.selectedIndex - 1;
+            var auxText = F.options[SI].text;
+            var auxValue = F.options[SI].value;
+            var sStyle = F.options[SI + 1].style;
+            var sStyleOther = F.options[SI].style;
 
-    for(var x = 0; x < F.length; x++){
-
-      if(F.options[x].value == valor || F.options[x].text == texto){
-        testa = true;
-  break;
-      }
+            F.options[SI] = new Option(F.options[SI + 1].text, F.options[SI + 1].value);
+            F.options[SI].style.fontWeight = sStyle.fontWeight;
+            F.options[SI].style.marginLeft = sStyle.marginLeft;
+            F.options[SI + 1] = new Option(auxText, auxValue);
+            F.options[SI + 1].style.fontWeight = sStyleOther.fontWeight;
+            F.options[SI + 1].style.marginLeft = sStyleOther.marginLeft;
+            F.options[SI].selected = true;
+        }
     }
-    if(testa == false){
-      F.options[F.length] = new Option(texto,valor);
+
+    function js_desce() {
+        var F = document.getElementById('linhas');
+
+        if (F.selectedIndex != -1 && F.selectedIndex < (F.length - 1)) {
+            var SI = F.selectedIndex + 1;
+            var auxText = F.options[SI].text;
+            var auxValue = F.options[SI].value;
+            var sStyle = F.options[SI - 1].style;
+            var sStyleOther = F.options[SI].style;
+
+            F.options[SI] = new Option(F.options[SI - 1].text, F.options[SI - 1].value);
+            F.options[SI].style.fontWeight = sStyle.fontWeight;
+            F.options[SI].style.marginLeft = sStyle.marginLeft;
+            F.options[SI - 1] = new Option(auxText, auxValue);
+            F.options[SI - 1].style.fontWeight = sStyleOther.fontWeight;
+            F.options[SI - 1].style.marginLeft = sStyleOther.marginLeft;
+            F.options[SI].selected = true;
+        }
     }
- }
-   texto=document.form1.db61_descr.value="";
-   valor=document.form1.db61_codparag.value="";
- document.form1.lanca.onclick = '';
-}
-function js_selecionar() {
-  var F = document.getElementById("campos").options;
-  for(var i = 0;i < F.length;i++) {
-    F[i].selected = true;
-  }
-  return true;
-}
-function js_veri(){
-  if(document.form1.db60_descr.value==""){
-    alert("Preencha a descrição!");
-    return false;
-  }
-return true;
-}
-function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcparamrel','func_orcparamrel.php?funcao_js=parent.js_preenchepesquisa|o42_codparrel','Pesquisa',true,'0','1');
-}
-function js_preenchepesquisa(chave){
-  db_iframe_orcparamrel.hide();
-  <?
-    echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
-  ?>
-}
-<?
-if ($db_opcao != 22) {
- echo "document.form1.pesquisar.click()";
-}
-?>
+
+    function js_pesquisa() {
+        js_OpenJanelaIframe(
+            'CurrentWindow.corpo',
+            'db_iframe_orcparamrel',
+            'func_orcparamrel.php?funcao_js=parent.js_preenchepesquisa|o42_codparrel',
+            'Pesquisa',
+            true,
+            '0',
+            '1'
+        );
+    }
+
+    function js_preenchepesquisa(chave) {
+        db_iframe_orcparamrel.hide();
+        location.href = `<?php echo basename($_SERVER['PHP_SELF']); ?>?chavepesquisa=${chave}`;
+    }
+
+    <?php
+    if ($db_opcao != 22) {
+        ?>
+    document.form1.pesquisar.click();
+    <?php
+    } ?>
 </script>
+</body>
+</html>

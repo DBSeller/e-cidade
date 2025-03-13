@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-	require("libs/db_stdlib.php");
-	require("libs/db_conecta.php");
-	include("libs/db_sessoes.php");
-	include("libs/db_usuariosonline.php");
+	require(modification("libs/db_stdlib.php"));
+	require(modification("libs/db_conecta.php"));
+	include(modification("libs/db_sessoes.php"));
+	include(modification("libs/db_usuariosonline.php"));
 	parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 	parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 	db_postmemory($HTTP_POST_VARS);
 
 if(isset($incluir)) {
 
-	pg_exec("insert into db_sysclasses values($codarq,
+	db_query("insert into db_sysclasses values($codarq,
 		'$nomclasse',
 		'$descrclasse',
 		'$codigoclass')") or die("Erro(17) inserindo em db_sysclasses");
@@ -44,7 +44,7 @@ if(isset($incluir)) {
 
 } else if(isset($alterar)) {
 
-	pg_exec("update db_sysclasses set descrclasse = '$descrclasse',
+	db_query("update db_sysclasses set descrclasse = '$descrclasse',
 		codigoclass = '$codigoclass'
 		where codarq = $codarq and nomclasse = '$nomclasse'") or die("Erro(32) alterando db_sysclasses");
 	db_msgbox("classe alterada com sucesso.");
@@ -52,7 +52,7 @@ if(isset($incluir)) {
 
 } else if(isset($excluir)) {
 
-	pg_exec("delete from db_sysclasses where codarq = $codarq and nomclasse = '$nomclasse'") or die("Erro(36) excluindo db_sysclasses");
+	db_query("delete from db_sysclasses where codarq = $codarq and nomclasse = '$nomclasse'") or die("Erro(36) excluindo db_sysclasses");
 	db_msgbox("classe excluída com sucesso.");
 	db_redireciona();
 }
@@ -142,7 +142,7 @@ if(isset($procurar)) {
 		FROM db_sysclasses c
 		inner join db_sysarquivo s on s.codarq = c.codarq
 		where c.nomclasse like '$retorno%' ".(isset($codarq)&&$codarq!=''?"and c.codarq=$codarq":"");
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	if (pg_numrows($result) != 0){
 		db_fieldsmemory($result,0);
 		$desabilitaBotaoIncluir = true;
@@ -152,7 +152,7 @@ if(isset($procurar)) {
 			from db_sysarquivo
 			where codarq = $retorno
 		";
-		$result = pg_exec($sql);
+		$result = db_query($sql);
 		if (pg_numrows($result) != 0){
 			db_fieldsmemory($result,0);
 		}

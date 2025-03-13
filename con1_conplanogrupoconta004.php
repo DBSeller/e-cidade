@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_libcontabilidade.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conplano_classe.php");
-include("classes/db_conplanoorcamento_classe.php");
-include("classes/db_conplanoorcamentogrupo_classe.php");
-include("classes/db_conplanogrupo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_conplano_classe.php"));
+include(modification("classes/db_conplanoorcamento_classe.php"));
+include(modification("classes/db_conplanoorcamentogrupo_classe.php"));
+include(modification("classes/db_conplanogrupo_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -179,7 +179,7 @@ if (isset($excluir)){
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
     <center>
     <?
-      include("forms/db_frmconplanogrupoconta.php");
+      include(modification("forms/db_frmconplanogrupoconta.php"));
     ?>
     </center>
 	</td>
@@ -198,10 +198,10 @@ if ($sqlerro == true) {
 		db_msgbox($erro_msg);
 /*      
    	echo "<script> 
-             top.corpo.iframe_conta.location.href = 'con1_conplano011.php';
-             top.corpo.document.formaba.grupos.style.visibility='visible';
-	          top.corpo.iframe_grupos.disable='false';
-             top.corpo.iframe_grupos.location.href = 'con1_congrupo004.php?c21_anousu=$anousu&c21_codcon=$c60_codcon';
+             (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_conta.location.href = 'con1_conplano011.php';
+             (window.CurrentWindow || parent.CurrentWindow).corpo.document.formaba.grupos.style.visibility='visible';
+	          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_grupos.disable='false';
+             (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_grupos.location.href = 'con1_congrupo004.php?c21_anousu=$anousu&c21_codcon=$c60_codcon';
              parent.mo_camada('grupos');
 	        </script>";
 */            

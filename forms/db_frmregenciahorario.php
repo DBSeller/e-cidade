@@ -1,28 +1,28 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
@@ -38,41 +38,61 @@ $db_botao1 = false;
 <form name="form1" method="post" action="" id="frmGradeHorario">
   <table border="0">
     <tr>
-      <td nowrap title="<?=@$Ted58_i_codigo?>">
-        <?=@$Led58_i_codigo?>
-      </td>
-      <td>
-        <?php
-        db_input( 'ed58_i_codigo', 15, "", true, 'text', 3 );
-        ?>
-      </td>
-    </tr>
-    <tr>
       <td nowrap title="<?=@$Ted58_i_regencia?>">
-        <?php
-        db_ancora( @$Led58_i_regencia, "js_pesquisaed58_i_regencia(true);", $db_opcao );
-        ?>
+        <label for="ed58_i_regencia">
+          <?php
+            db_ancora( @$Led58_i_regencia, "js_pesquisaed58_i_regencia(true);", $db_opcao );
+          ?>
+        </label>
       </td>
-      <td>
+      <td colspan="3">
        <?php
-       db_input( 'ed58_i_regencia', 15, "", true, 'text', 3);
-       db_input( 'ed232_c_descr',   30, "", true, 'text', 3);
-       db_input( 'ed232_c_abrev',   10, "", true, 'text', 3);
+         db_input( 'ed58_i_regencia', 15, "", true, 'text', 3);
+         db_input( 'ed232_c_descr',   30, "", true, 'text', 3);
+         db_input( 'ed232_c_abrev',   10, "", true, 'text', 3);
+         db_input( 'ed58_i_codigo',   15, "", true, 'hidden', 3 );
        ?>
       </td>
     </tr>
+      <tr id="ctnPossuiRegente">
+          <td>
+              <label for="possuiRegente"><b>Possui Regente:</b></label>
+          </td>
+          <td colspan="3">
+              <select id="possuiRegente" onchange="semRegentes()">
+                  <option value="1" selected = "selected">SIM</option>
+                  <option value="2">NÃO</option>
+              </select>
+          </td>
+      </tr>
     <tr>
       <td nowrap title="<?=@$Ted58_i_rechumano?>">
+        <label for="identificacao">
+          <?php
+            db_ancora( @$Led58_i_rechumano, "js_pesquisaed58_i_rechumano(true);", $db_opcao );
+          ?>
+        </label>
+      </td>
+      <td colspan="3">
         <?php
-        db_ancora( @$Led58_i_rechumano, "js_pesquisaed58_i_rechumano(true);", $db_opcao );
+          db_input( 'ed58_i_rechumano', 15, "", true, 'hidden', 3 );
+          db_input( 'identificacao',    15, "", true, 'text',   3 );
+          db_input( 'z01_nome',         40, "", true, 'text',   3 );
         ?>
       </td>
+    </tr>
+    <tr>
+      <td nowrap title="<?=@$Ted58_datainicio?>">
+        <label for="datainicio" class="bold">
+          Vigência do Período:
+        </label>
+      </td>
+      <td style="max-width: 70px;">
+        <input id="ed58_datainicio" name="ed58_datainicio" type="text" />
+      </td>
+      <td><label for="ed58_datafim" class="bold">Até: </label></td>
       <td>
-       <?php
-       db_input( 'ed58_i_rechumano', 15, "", true, 'hidden', 3 );
-       db_input( 'identificacao',    15, "", true, 'text',   3 );
-       db_input( 'z01_nome',         40, "", true, 'text',   3 );
-       ?>
+        <input id="ed58_datafim" name="ed58_datafim" type="text" />
       </td>
     </tr>
   </table>
@@ -98,7 +118,6 @@ $db_botao1 = false;
           $sWherePeriodoEscola = " ed17_i_escola = {$escola} AND ed17_i_turno in ({$cod_turnos})";
           $sql                 = $clperiodoescola->sql_query( "", "*", $sOrderPeriodoEscola, $sWherePeriodoEscola );
           $result1             = $clperiodoescola->sql_record($sql) or die (pg_errormessage());
-
           $contp   = 0;
           $contd   = 0;
           $contqd  = 0;
@@ -169,14 +188,20 @@ $db_botao1 = false;
             $contqd++;
 
             db_fieldsmemory( $result, $x );
-
-            $sCampos  = " case when ed20_i_tiposervidor = 1 then cgmrh.z01_nome else cgmcgm.z01_nome end as z01_nome";
-            $sCampos .= ", ed58_i_codigo, ed58_i_periodo, ed58_i_diasemana, ed232_c_abrev";
+            $sCampos  = " case when rechumano.ed20_i_tiposervidor = 1 then cgmrh.z01_nome else cgmcgm.z01_nome end as z01_nome ";
+            $sCampos .= ", ed58_i_codigo, ed58_i_periodo, ed58_i_diasemana, ed232_c_abrev ";
             $sCampos .= ", ed58_i_regencia, ed232_c_descr, ed58_i_rechumano ";
+            $sCamposUnion  = " 'DISCIPLINA SEM PROFESSOR' as z01_nome ";
+            $sCamposUnion .= ", ed175_codigo, ed175_periodo, ed175_diasemana, ed232_c_abrev ";
+            $sCamposUnion .= ", ed175_regencia, ed232_c_descr, ed175_rechumano ";
             $sWhere   = " ed58_i_diasemana = {$ed32_i_codigo} AND ed58_i_periodo = {$ed17_i_codigo} ";
-            $sWhere  .= " AND ed59_i_turma = {$ed59_i_turma} AND ed59_i_serie = {$ed59_i_serie}";
-            $sWhere  .= " and ed17_i_escola = {$escola} and ed58_ativo is true";
-            $sSql     = $clregenciahorario->sql_query( '', $sCampos, '', $sWhere );
+            $sWhere  .= " AND ed59_i_turma = {$ed59_i_turma} AND ed59_i_serie = {$ed59_i_serie} ";
+            $sWhere  .= " and ed17_i_escola = {$escola} and ed58_ativo is true ";
+            $union   = "  ed175_diasemana = {$ed32_i_codigo} AND ed175_periodo = {$ed17_i_codigo} ";
+            $union   .= " AND ed59_i_turma = {$ed59_i_turma} AND ed59_i_serie = {$ed59_i_serie} ";
+            $union   .= " AND ed17_i_escola = {$escola} AND ed175_ativo IS TRUE; ";
+            $sSql     = $clregenciahorario->sql_query_union_discsemreg( '', $sCampos, $sCamposUnion, '', $sWhere, $union);
+
             $result2  = $clregenciahorario->sql_record( $sSql );
 
             if( $clregenciahorario->numrows > 0 ) {
@@ -189,6 +214,9 @@ $db_botao1 = false;
               $temcodrh     = $ed58_i_rechumano;
               $disci        = $ed232_c_descr;
               $regente      = $z01_nome;
+              if (empty($regente)) {
+                  $regente = "DISCIPLINA SEM REGENTE";
+              }
             } else {
 
               $marcar       = "";
@@ -207,7 +235,8 @@ $db_botao1 = false;
                     <table class="texto" bgcolor="#cccccc" id="<?=$quadro?>" cellspacing="0" cellpading="0"
                         style="border: 2px outset #f3f3f3; border-bottom-color:#999999; border-right-color:#999999;">
                       <tr>
-                        <td align="center" onclick="IncluirHorario(<?=$ed17_i_codigo?>,<?=$ed32_i_codigo?>,'<?=$quadro?>',
+
+                       <td align="center" onclick="IncluirHorario(<?=$ed17_i_codigo?>,<?=$ed32_i_codigo?>,'<?=$quadro?>',
                        '<?=@$ed58_i_rechumano?>')" width="50" height="15" onmouseover="InSet('<?=$quadro?>')"
                         onmouseout="OutSet('<?=$quadro?>')">
                           <input type="text"
@@ -345,8 +374,8 @@ $db_botao1 = false;
     </tr>
   </table>
   <br>
-  <label class="bold">Informe o regente conselheiro desta turma:</label>
-  <select name="conselheiro" style="width:300px">
+  <label class="bold" for="regente-conselheiro">Informe o regente conselheiro desta turma:</label>
+  <select name="conselheiro" id='regente-conselheiro' style="width:300px">
     <option value=''></option>
     <?php
     $sCampos     = "DISTINCT ed20_i_codigo,";
@@ -386,12 +415,9 @@ $db_botao1 = false;
   ?>
   <input name="cons_selected" value="<?=@$reg_conselheiro?>" size="20" type="hidden">
   <br><br>
-  <input name="incluir" type="submit" value="Salvar">
-  <input name="restaurar" type="button" value="Restaurar" onclick="return js_restaurar();">
-  <input name="limpar"
-         type="submit"
-         value="Limpar Tudo"
-         onclick="return confirm('Esta ação apagará todos os horários já marcados. Confirmar?')">
+  <input name="incluir" type="submit" value="Salvar" onclick="return validaDados();">
+  <input name="limpar" type="button" value="Limpar Tudo"
+         onclick="limparGrade()">
   <input id="contp" name="contp" value="<?=$contp?>" size="5" type="hidden">
   <input id="contd" name="contd" value="<?=$cldiasemana->numrows?>" size="5" type="hidden">
   <input name="ed59_i_turma" value="<?=@$ed59_i_turma?>" size="20" type="hidden">
@@ -400,30 +426,34 @@ $db_botao1 = false;
   <input name="ed11_c_descr" value="<?=@$ed11_c_descr?>" size="20" type="hidden">
   <input name="ed57_i_turno" value="<?=@$ed57_i_turno?>" size="20" type="hidden">
   <fieldset>
-    Primeiro selecione a disciplina e o regente e depois clique nos quadros para marcar os horários.<br>
-    Clique em "Salvar" para confirmar o cadastro dos horários e em "Restaurar" para retornar os últimos horários salvos.<br>
-    Para desmarcar um horário, clique sobre o quadro referente e confirme a exclusão.
-    Para desmarcar todos, clique em "Limpar Tudo".<br>
+    Primeiro selecione a disciplina e o regente, depois, caso seja necessário, altere a vigência do período e então clique nos quadros para marcar os horários.<br>
+    Clique em "Salvar" para confirmar o cadastro dos horários.<br>
+    Para desmarcar um horário, clique sobre o quadro referente, selecione o tipo de remoção e confirme a exclusão. <br>
+    Para desmarcar todos, clique em "Limpar Tudo", selecione o tipo de remoção e confirme a exclusão.<br>
+
   </fieldset>
 </form>
 <iframe name="Verifica" src="" frameborder="5" width="90%" height="200" style="display:none;"></iframe>
 <script>
+
+var sUrlMsg = 'educacao.escola.db_frmregenciahorario.';
+
 function js_pesquisaed58_i_regencia(mostra) {
-	
+
   if (mostra == true) {
-	  
+
     js_OpenJanelaIframe(
                          '',
                          'db_iframe_regencia',
                          'func_regencia.php?turma=<?=@$ed59_i_turma?>&serieregencia=<?=@$ed59_i_serie?>',
-		                     'Pesquisa de Disciplinas da Turma',
+                         'Pesquisa de Disciplinas da Turma',
                          true
                        );
   }
 }
 
 function js_mostraregencia1( chave1, chave2, chave3 ) {
-	
+
   document.form1.ed58_i_regencia.value                = chave1;
   document.form1.ed232_c_descr.value                  = chave2;
   document.form1.ed232_c_abrev.value                  = chave3;
@@ -440,23 +470,23 @@ function js_mostraregencia1( chave1, chave2, chave3 ) {
 }
 
 function js_pesquisaed58_i_rechumano( mostra ) {
-	
+
   if( document.form1.ed58_i_regencia.value == "" ) {
-	  
+
     alert( "Informe a Disciplina!" );
     document.form1.ed58_i_rechumano.value                = '';
     document.form1.ed58_i_regencia.style.backgroundColor = '#99A9AE';
     document.form1.ed58_i_regencia.focus();
   } else {
 
-    if (mostra == true) {
-        
+    if (mostra == true && document.getElementById('possuiRegente').value != 2) {
+
       js_OpenJanelaIframe(
                            '',
                            'db_iframe_rechumano',
                            'func_rechumanoreg.php?regencia='+document.form1.ed58_i_regencia.value
-    	                                         +'&funcao_js=parent.js_mostrarechumano1|ed20_i_codigo|z01_nome|dl_identificacao',
-    	                     'Pesquisa de Recursos Humanos',
+                                               +'&funcao_js=parent.js_mostrarechumano1|ed20_i_codigo|z01_nome|dl_identificacao',
+                           'Pesquisa de Recursos Humanos',
                            true
                          );
     }
@@ -464,10 +494,10 @@ function js_pesquisaed58_i_rechumano( mostra ) {
 }
 
 function js_mostrarechumano1( chave1, chave2, chave3 ) {
-	
+
   document.form1.ed58_i_rechumano.value               = chave1;
   document.form1.z01_nome.value                       = chave2;
-  document.form1.identificacao.value                  = chave3; 
+  document.form1.identificacao.value                  = chave3;
   document.getElementById("nome_selec").innerHTML     = chave2;
   document.getElementById("legenda").style.visibility = "visible";
 
@@ -479,7 +509,7 @@ function js_mostrarechumano1( chave1, chave2, chave3 ) {
 }
 
 function InSet( id ) {
-	
+
   T = document.getElementById( id );
   D = document.getElementById( "dados" + id );
 
@@ -488,7 +518,7 @@ function InSet( id ) {
 }
 
 function OutSet( id ) {
-	
+
   T = document.getElementById( id );
   D = document.getElementById( "dados" + id );
 
@@ -498,82 +528,49 @@ function OutSet( id ) {
   T.style.fontSize          = "11px;";
   D.style.visibility        = "hidden";
 }
+var oViewRemocao;
 
 function IncluirHorario( periodo, diasemana, id, codrechumano ) {
-	
+
   if( document.getElementById("text" + id).value != "" ) {
-	  	 
-    if( confirm( "Deseja excluir este horário?" ) ) {
-        
-      qdr_atual = document.getElementById( "codrh" + id ).innerHTML;
-      document.getElementById("text"+id).value      = "";
-      document.getElementById("valor"+id).value     = "";
-      document.getElementById("disc"+id).innerHTML  = "";
-      document.getElementById("rh"+id).innerHTML    = "<font color='#FF0000'>HORÀRIO LIVRE</font>";
-      document.getElementById("codrh"+id).innerHTML = "";
-      aindatem = false;
-      
-      for (z = 0; z < <?=$clperiodoescola->numrows?>; z++) {
-          
-        for (x = 0; x < <?=$cldiasemana->numrows?>; x++) {
-            
-          qdr = "codrhQ"+z+x;
-          if (document.getElementById(qdr).innerHTML == qdr_atual) {
-            aindatem = true;
-          }
-        }
+
+    if (document.getElementById("marcado"+id).value != "") {
+
+      if (oViewRemocao != null) {
+        return;
       }
-      
-      if (aindatem == false) {
-          
-        tam = document.form1.conselheiro.length;
-        for (i = 0; i < tam; i++) {
-            
-          if (document.form1.conselheiro.options[i].value == qdr_atual) {
-              
-            document.form1.conselheiro.options[i] = null;
-            break;
-          }
-        }
-        
-        ordenarLista(document.form1.conselheiro);
-        document.form1.conselheiro.value = document.form1.cons_selected.value;
-      }
-      
-      if (document.getElementById("marcado"+id).value != "") {
-          
-        if (document.form1.ed58_i_rechumano.value != "") {
-          codrechumano = document.form1.ed58_i_rechumano.value;
-        } else {
-          codrechumano = 0;
-        }
-        
-        Verifica.location.href = "edu1_regenciahorario002.php?excluir="+document.getElementById("marcado"+id).value
-                                                           +"&disponibilidade&codcalendario=<?=$codcalendario?>"
-                                                           +"&ed57_i_turno=<?=$cod_turnos?>"
-                                                           +"&rechumano="+codrechumano
-                                                           +"&maisturmas=<?=$maisturmas?>";
-        document.getElementById("marcado"+id).value = "";
-      } else {
-          
-        if (document.form1.ed58_i_rechumano.value != "") {
-          codrechumano = document.form1.ed58_i_rechumano.value;
-        } else {
-          codrechumano = 0;
-        }
-        
-        Verifica.location.href = "edu1_regenciahorario002.php?disponibilidade&codcalendario=<?=$codcalendario?>"
-                                                           +"&ed57_i_turno=<?=$cod_turnos?>"
-                                                           +"&rechumano="+codrechumano
-                                                           +"&maisturmas=<?=$maisturmas?>";
-      }
-    }
-  } else {
-	  
-    if (document.form1.ed58_i_regencia.value == "" || document.form1.ed58_i_rechumano.value == "") {
-      alert( "Informe a Disciplina e o Regente." );
+      oViewRemocao = new DBViewRemocaoPeriodoGradeHorario(oGet.ed59_i_turma, oGet.ed59_i_serie, $F(("marcado"+id)), codrechumano);
+      oViewRemocao.setCallback(function () {
+        atualizaGradeHorario(id);
+        oViewRemocao = null;
+      });
+      oViewRemocao.setCallBackFechar(function () {
+        oViewRemocao = null;
+      });
+
+      oViewRemocao.show();
     } else {
-        
+
+      if (document.form1.ed58_i_rechumano.value != "" && document.getElementById('possuiRegente').value != 2) {
+        codrechumano = document.form1.ed58_i_rechumano.value;
+      } else {
+        codrechumano = 0;
+      }
+
+      atualizaGradeHorario(id);
+      Verifica.location.href = "edu1_regenciahorario002.php?disponibilidade&codcalendario=<?=$codcalendario?>"
+                                                         +"&ed57_i_turno=<?=$cod_turnos?>"
+                                                         +"&rechumano="+codrechumano
+                                                         +"&maisturmas=<?=$maisturmas?>";
+    }
+
+  } else {
+
+    if (document.form1.ed58_i_regencia.value == "") {
+      alert( "Informe a Disciplina." );
+    } else if (document.form1.ed58_i_rechumano.value == "" && document.getElementById('possuiRegente').value != 2) {
+        alert ("Para adicionar uma disciplina sem um regente, 'SIM' selecionado na opção 'Possui Regente'.")
+    } else {
       Verifica.location.href = "edu1_regenciahorario002.php?codcalendario=<?=$codcalendario?>"
                                +"&ed57_i_turno=<?=$cod_turnos?>"
                                +"&quadro="+id
@@ -586,29 +583,88 @@ function IncluirHorario( periodo, diasemana, id, codrechumano ) {
   }
 }
 
+function semRegentes() {
+   var identificacao =  document.getElementById('identificacao');
+   var nomeRegente = document.getElementById('z01_nome');
+   var sem_regente = document.getElementById('possuiRegente');
+
+   if (sem_regente.value == 2) {
+       nomeRegente.value = '';
+       identificacao.value = '';
+       nomeRegente.style.backgroundColor = '#4444';
+       identificacao.style.backgroundColor = '#4444';
+       js_mostrarechumano1('', 'DISCIPLINA SEM REGENTE', '');
+
+   } else {
+       nomeRegente.style.backgroundColor = '#DEB887';
+       identificacao.style.backgroundColor = '#DEB887';
+       js_mostrarechumano1('', '', '');
+       document.getElementById("legenda").style.visibility = "hidden";
+   }
+}
+
+function atualizaGradeHorario(id) {
+
+  qdr_atual = document.getElementById( "codrh" + id ).innerHTML.trim();
+  document.getElementById("marcado"+id).value   = "";
+  document.getElementById("text"+id).value      = "";
+  document.getElementById("valor"+id).value     = "";
+  document.getElementById("disc"+id).innerHTML  = "";
+  document.getElementById("rh"+id).innerHTML    = "<font color='#FF0000'>HORÁRIO LIVRE</font>";
+  document.getElementById("codrh"+id).innerHTML = "";
+  aindatem = false;
+
+  for (z = 0; z < <?=$clperiodoescola->numrows?>; z++) {
+
+    for (x = 0; x < <?=$cldiasemana->numrows?>; x++) {
+
+      qdr = "codrhQ"+z+x;
+      if (document.getElementById(qdr).innerHTML.trim() == qdr_atual) {
+        aindatem = true;
+      }
+    }
+  }
+
+  if (aindatem == false) {
+    tam = document.form1.conselheiro.length;
+    for (i = 0; i < tam; i++) {
+
+      if (document.form1.conselheiro.options[i].value == qdr_atual) {
+
+        document.form1.conselheiro.options[i] = null;
+        break;
+      }
+    }
+
+    ordenarLista(document.form1.conselheiro);
+    document.form1.conselheiro.value = document.form1.cons_selected.value;
+  }
+}
+
+
 function ordenarLista( select ) {
-	
+
   arrTextos       = new Array(); // text de cada option
   arrValues       = new Array(); // value de cada option
   arrGuardaTextos = new Array(); // text de cada option de novo
   arrTextos[0]    = arrValues[0] = arrGuardaTextos[0] = "";
   var total       = select.length;
-  
+
   for (i = 1; i < total; i++) {
-	  
+
     arrTextos[i]       = select.options[i].text;
     arrValues[i]       = select.options[i].value;
     arrGuardaTextos[i] = select.options[i].text;
   }
-  
+
   arrTextos.sort();
   for (i = 1; i < total; i++) {
-	  
+
     select.options[i].text = arrTextos[i];
     for (j = 1; j < total; j++) {
-        
+
       if (arrTextos[i] == arrGuardaTextos[j]) {
-          
+
         select.options[i].value = arrValues[j];
         j = select.length;
       }
@@ -616,15 +672,104 @@ function ordenarLista( select ) {
   }
 }
 
-function js_restaurar() {
-	
-  if( confirm( 'Esta ação retornará os últimos horários salvos. Confirmar restauração?' ) ) {
-	  
-    location.href = "edu1_regenciahorario001.php?ed59_i_turma=<?=$ed59_i_turma?>"
-                                              +"&ed57_c_descr=<?=$ed57_c_descr?>"
-                                              +"&ed57_i_turno=<?=$ed57_i_turno?>"
-                                              +"&ed59_i_serie=<?=$ed59_i_serie?>"
-                                              +"&ed11_c_descr=<?=$ed11_c_descr?>";
+function validaDados() {
+
+  var oDataInicioCalendario = Date.convertFromUTC(oDatasCalendario.dataInicio, 'd/m/Y');
+  var oDataFimCalendario    = Date.convertFromUTC(oDatasCalendario.dataFim, 'd/m/Y');
+
+  if (oDataInicio.getValue() == null) {
+    alert( _M(sUrlMsg + 'data_inicio_vazia', oDatasCalendario) );
+    return false;
   }
+
+  if (oDataFim.getValue() == null) {
+    alert( _M(sUrlMsg + 'data_fim_vazia', oDatasCalendario) );
+    return false;
+  }
+
+  if (    oDataInicio.getValue().getTime() < oDataInicioCalendario.getTime()
+      ||  oDataInicio.getValue().getTime() > oDataFimCalendario.getTime()) {
+
+    alert( _M(sUrlMsg + 'data_inicio_invalida', oDatasCalendario) );
+    return false;
+  }
+
+  if (   oDataFim.getValue().getTime() > oDataFimCalendario.getTime()
+      || oDataFim.getValue().getTime() < oDataInicioCalendario.getTime()) {
+
+    alert(_M(sUrlMsg + 'data_fim_invalida', oDatasCalendario));
+    return false;
+  }
+
+  if (oDataFim.getValue().getTime() < oDataInicio.getValue().getTime()) {
+
+    alert(_M(sUrlMsg + 'data_fim_menor_que_inicio', oDatasCalendario));
+    return false;
+  }
+
+  return true;
 }
+
+
+/**
+ * Objeto datas de inicio e fim da regencia do professor.
+ * @type {DBInputDate}
+ */
+var oDataInicio = new DBInputDate($('ed58_datainicio'));
+var oDataFim    = new DBInputDate($('ed58_datafim'));
+
+/**
+ * Datas de inicio e fim do calendário em string
+ * @type {Object}
+ */
+var oDatasCalendario = {};
+
+$('ed58_i_regencia').addClassName('field-size2');
+$('ed232_c_abrev').addClassName('field-size2');
+$('identificacao').addClassName('field-size2');
+
+
+new AjaxRequest('edu4_calendario.RPC.php', {exec: 'dadosCalendarioTurma', iTurma : oGet.ed59_i_turma}, function (oRetorno, lErro) {
+
+  if (lErro) {
+
+    alert(oRetorno.message);
+    return;
+  }
+
+  oDatasCalendario = {
+    'dataInicio' : oRetorno.dataInicio,
+    'dataFim'    : oRetorno.dataFim
+  }
+  oDataInicio.value = oDatasCalendario.dataInicio;
+  oDataFim.value    = oDatasCalendario.dataFim;
+
+}).setMessage( _M(sUrlMsg + 'buscando_dados_calendario') ).execute();
+
+document.getElementById('z01_nome').style.width = "320px";
+
+function limparGrade() {
+
+  if (oViewRemocao != null) {
+    return;
+  }
+
+  oViewRemocao = new DBViewRemocaoPeriodoGradeHorario(oGet.ed59_i_turma, oGet.ed59_i_serie );
+  oViewRemocao.setCallback(function () {
+
+    var url  = 'edu1_regenciahorario001.php?ed59_i_turma=' + oGet.ed59_i_turma;
+        url += '&ed57_c_descr=' + oGet.ed57_c_descr;
+        url += '&ed57_i_turno=' + oGet.ed57_i_turno;
+        url += '&ed59_i_serie=' + oGet.ed59_i_serie;
+        url += '&ed11_c_descr=' + oGet.ed11_c_descr;
+
+    location.href = url;
+  });
+  oViewRemocao.setCallBackFechar(function () {
+    oViewRemocao = null;
+  });
+
+  oViewRemocao.show();
+}
+
 </script>

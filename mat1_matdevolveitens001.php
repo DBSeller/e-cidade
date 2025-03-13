@@ -1,40 +1,40 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matrequiitem_classe.php");
-include("classes/db_atendrequi_classe.php");
-include("classes/db_atendrequiitem_classe.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_matestoquedevitem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matrequiitem_classe.php"));
+include(modification("classes/db_atendrequi_classe.php"));
+include(modification("classes/db_atendrequiitem_classe.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoquedevitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -67,7 +67,7 @@ $clrotulo->label("m60_descr");
 </script>
 
 <style>
-<?//$cor="#999999"?>
+
 .bordas{
          border: 2px solid #cccccc;
          border-top-color: #999999;
@@ -75,17 +75,9 @@ $clrotulo->label("m60_descr");
          border-left-color: #999999;
          border-bottom-color: #999999;
          background-color: #999999;
-        /* border: 2px solid #cccccc;
-         border-top-color: <?=$cor?>;
-         border-right-color: <?=$cor?>;
-         border-bottom-color: <?=$cor?>;
-         background-color: #999999;*/
 }
-<?//$cor="999999"?>
+
 .bordas_corp{
-/*         border: 1px solid #cccccc;
-         border-right-color: <?=$cor?>;
-         border-bottom-color: <?=$cor?>;*/
          border: 1px solid #cccccc;
          border-top-color: #999999;
          border-right-color: #999999;
@@ -95,15 +87,15 @@ $clrotulo->label("m60_descr");
        }
 </style>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"> 
+<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table  border="0" cellspacing="0" cellpadding="0" width='100%'>
-  <tr> 
-    <td  align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td  align="left" valign="top" bgcolor="#CCCCCC">
     <form name='form1'>
     <center>
- <table border='0' cellspacing="0" style="border: 2px inset white;background-color: white">   
+ <table border='0' cellspacing="0" style="border: 2px inset white;background-color: white">
  <?
- 
+
  if (isset($m42_codigo) && $m42_codigo!= "") {
 
   $result=$clatendrequiitem->sql_record($clatendrequiitem->sql_query_inimei(null,"*","","m43_codatendrequi=$m42_codigo"));
@@ -118,23 +110,23 @@ $clrotulo->label("m60_descr");
 	      <td class='table_header' align='center'><b><small>Quant. Devolvida</small></b></td>
 	      <td class='table_header' align='center'><b><small>Saldo disponível</small></b></td>
 	      <td class='table_header' align='center'><b><small>Quantidade</small></b></td>";
-              
+
 	 echo " </tr>";
 	      }else echo"<b>Nenhum registro encontrado...</b>";
          for($i=0; $i<$numrows; $i++){
 	    db_fieldsmemory($result,$i);
-	    echo "<tr>	    
+	    echo "<tr>
    	            <td	 class='linhagrid' align='center'><small>$m41_codmatmater </small></td>
    	            <td	 class='linhagrid' align='center'><small>$m60_descr </small></td>
 		    <td	 class='linhagrid' nowrap align='left' title='$m41_obs'><small>".substr($m41_obs,0,20)." - {$m82_codigo}&nbsp;</small></td>";
 	      $quant_devolvida=0;
-	      
-        $sSql = "select m46_quantdev 
+
+        $sSql = "select m46_quantdev
                    from matestoquedevitem
-                        inner join matestoquedevitemmei on m47_codmatestoquedevitem = m46_codigo 
+                        inner join matestoquedevitemmei on m47_codmatestoquedevitem = m46_codigo
                   where m46_codatendrequiitem = {$m43_codigo}
                     and m47_codmatestoqueitem = {$m82_matestoqueitem}";
-                  
+
 //        echo $sSql."<br>";
 	      $result_devol=$clmatestoquedevitem->sql_record($sSql);
 	      $numrows3=$clmatestoquedevitem->numrows;
@@ -163,7 +155,7 @@ $clrotulo->label("m60_descr");
 	      if ($m43_quantatend==0||$quant_sol==0){
 	        $op=3;
 	      }
-	      
+
 	      echo "<td class='linhagrid' align='center'><small> $m82_quant       </small></td>";
 	      echo "<td class='linhagrid' align='center'><small> $quant_devolvida </small></td>";
         echo "<td class='linhagrid' align='center'><small> $quant_sol       </small></td>";
@@ -174,11 +166,11 @@ $clrotulo->label("m60_descr");
 	      echo"  </tr>";
 	    }
 	}
-    
-   
-?>     
+
+
+?>
  </table>
-    </form> 
+    </form>
     </center>
     </td>
   </tr>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_app.utils.php");
-require("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_app.utils.php"));
+require(modification("libs/db_utils.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -261,7 +261,7 @@ if (isset($db21_usasisagua) && $db21_usasisagua != '') {
       }
 
       function js_retornoAnulaDeclaracao(oAjax) {
-    	  var oRetorno = eval('('+oAjax.responseText+')');
+    	  var oRetorno = JSON.parse(oAjax.responseText);
     	  if (oRetorno.status == '0') {
           alert(oRetorno.message);
         } 
@@ -296,7 +296,7 @@ if (isset($db21_usasisagua) && $db21_usasisagua != '') {
 
       function js_retorna_declaracoes(oAjax) {
     	  js_removeObj('msgbox');
-    	  var oRetorno = eval("("+oAjax.responseText+")");
+    	  var oRetorno = JSON.parse(oAjax.responseText);
 
     	  if (oRetorno.status == 1) {
     		  oDataGrid.clearAll(true);
@@ -345,7 +345,7 @@ if (isset($db21_usasisagua) && $db21_usasisagua != '') {
 
       function js_retorna_detalhes(oAjax) {
         js_removeObj('msgbox');
-        var oRetorno = eval("("+oAjax.responseText+")");
+        var oRetorno = JSON.parse(oAjax.responseText);
 	
         if (oRetorno.status == 1) {
           with (oRetorno) {
@@ -493,20 +493,20 @@ if (isset($db21_usasisagua) && $db21_usasisagua != '') {
       function js_mostramatricula(mostra, nome_func){
     	  if (mostra == true) {
     		  if (nome_func != "func_iptubase.php") {
-    			  js_OpenJanelaIframe('top.corpo',
+    			  js_OpenJanelaIframe('CurrentWindow.corpo',
     	    			                'db_iframe_matric',
     	    			                nome_func + '?funcao_js=parent.js_preenchematricula|0|1',
     	    			                'Pesquisa',
     	    			                true);
     			} else {
-    				js_OpenJanelaIframe('top.corpo',
+    				js_OpenJanelaIframe('CurrentWindow.corpo',
     	    				              'db_iframe_matric',
     	    				              nome_func + '?funcao_js=parent.js_preenchematricula3|0|1|2',
     	    				              'Pesquisa',
     	    				              true);  
     			}
     		}else {
-    			js_OpenJanelaIframe('top.corpo',
+    			js_OpenJanelaIframe('CurrentWindow.corpo',
     	    			              'db_iframe_matric',
     	    			              nome_func + '?pesquisa_chave=' + document.form1.j01_matric.value +
     	    			                '&funcao_js=parent.js_preenchematricula2',
@@ -553,13 +553,13 @@ if (isset($db21_usasisagua) && $db21_usasisagua != '') {
       */
       function js_mostracgm(mostra) {
     	  if (mostra == true) {
-    		  js_OpenJanelaIframe('top.corpo',
+    		  js_OpenJanelaIframe('CurrentWindow.corpo',
     	    		                'db_iframe_nomes',
     	    		                'func_nome.php?funcao_js=parent.js_preenchecgm|0|1',
     	    		                'Pesquisa',
     	    		                true);
     		} else {
-    			js_OpenJanelaIframe('top.corpo',
+    			js_OpenJanelaIframe('CurrentWindow.corpo',
     	    			              'db_iframe_nomes', 
     	    			              'func_nome.php?pesquisa_chave=' + document.form1.z01_numcgm.value +
     	    			                '&funcao_js=parent.js_preenchecgm1',
@@ -595,12 +595,12 @@ if (isset($db21_usasisagua) && $db21_usasisagua != '') {
       */
       function js_mostrainscr(mostra) {
     	  if (mostra == true) {
-    		  js_OpenJanelaIframe('top.corpo','db_iframe',
+    		  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe',
     	    		                'func_issbase.php?funcao_js=parent.js_preencheinscr|q02_inscr|z01_nome|q02_dtbaix',
     	    		                'Pesquisa',
     	    		                true);
     		} else {
-    			js_OpenJanelaIframe('top.corpo',
+    			js_OpenJanelaIframe('CurrentWindow.corpo',
     	    			              'db_iframe',
     	    			              'func_issbase.php?pesquisa_chave=' + document.form1.q02_inscr.value + 
     	    			                '&funcao_js=parent.js_preencheinscr',

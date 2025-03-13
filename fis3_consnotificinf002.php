@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_fiscal_classe.php");
-include("classes/db_fiscalocal_classe.php");
-include("classes/db_fiscexec_classe.php");
-include("classes/db_fiscalbaixa_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_fiscal_classe.php"));
+include(modification("classes/db_fiscalocal_classe.php"));
+include(modification("classes/db_fiscexec_classe.php"));
+include(modification("classes/db_fiscalbaixa_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clfiscal = new cl_fiscal;
 $clfiscalocal = new cl_fiscalocal;

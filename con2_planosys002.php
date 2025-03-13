@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("libs/db_libcontabilidade.php");
-include("classes/db_conplano_classe.php");
-include("classes/db_conplanoreduz_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_conplanosis_classe.php");
-include("classes/db_orctiporec_classe.php");
-include("classes/db_conplanoconta_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("classes/db_conplano_classe.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_conplanosis_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_conplanoconta_classe.php"));
 
 $clconplanoconta = new cl_conplanoconta;
 $clconplanosis = new cl_conplanosis;
@@ -82,7 +82,7 @@ $head3 = "PLANO DE CONTAS ";
 $head4 = "";
 $head5 = "EXERCICIO: ".db_getsession("DB_anousu");
 
-pg_exec("begin");
+db_query("begin");
 
 
 $pdf = new PDF(); 
@@ -112,10 +112,6 @@ if($origem=="R"){
 		 c60_descr,
 		 c62_codrec,
 		 o15_descr",'c60_estrut'," c62_anousu = ".db_getsession("DB_anousu")." and c61_instit in ($instit)"));
-
-    if ($conplanosis->numrows == 0){
-      db_redireciona('db_erros.php?fechar=true&db_erro=Não existem itens cadastrados.');
-    }
 
 
     $alt = 4;
@@ -400,6 +396,6 @@ if($origem=="R"){
 
 //////////////////////////////////////
 
-pg_exec("commit");
+db_query("commit");
 
 ?>

@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2013  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: diversos
@@ -41,7 +41,7 @@ if ( $db_opcao == 1 ) {
   $db_action = "div1_procdiver005.php";
 } elseif ( $db_opcao == 3 || $db_opcao == 33 ){
   $db_action = "div1_procdiver006.php";
-} 
+}
 
 $sSqlArretipo  = "select k00_tipo, ";
 $sSqlArretipo .= "       k00_descr ";
@@ -53,14 +53,14 @@ $rsTipos       = db_query($sSqlArretipo);
 $iNumrowsTipo  = pg_num_rows($rsTipos);
 $aTipos        = array();
 
-$aTiposDebitos = db_utils::getCollectionByRecord($rsTipos); 
+$aTiposDebitos = db_utils::getCollectionByRecord($rsTipos);
 
 foreach ( $aTiposDebitos as $oTipoDebito ) {
   $aTipos[$oTipoDebito->k00_tipo] = $oTipoDebito->k00_tipo." - ".$oTipoDebito->k00_descr;
 }
 
 if ( count($aTipos) == 0 ) {
-  
+
   db_msgbox(_M("tributario.diversos.db_frmprocdiver.sem_tipo_de_debito"));
   $db_opcao = 3;
   $db_botao = false;
@@ -84,7 +84,7 @@ if ( count($aTipos) == 0 ) {
         <td nowrap title="<?=@$Tdv09_procdiver?>">
           <?=@$Ldv09_procdiver?>
         </td>
-        <td> 
+        <td>
           <?
             db_input('dv09_procdiver',6,$Idv09_procdiver,true,'text',3,"")
           ?>
@@ -94,7 +94,7 @@ if ( count($aTipos) == 0 ) {
         <td nowrap title="<?=@$Tdv09_descra?>">
            <?=@$Ldv09_descra?>
         </td>
-        <td> 
+        <td>
           <?
             db_input('dv09_descra',40,$Idv09_descra,true,'text',$db_opcao,"")
           ?>
@@ -104,7 +104,7 @@ if ( count($aTipos) == 0 ) {
         <td nowrap title="<?=@$Tdv09_descr?>">
           <?=@$Ldv09_descr?>
         </td>
-        <td> 
+        <td>
           <?
             db_input('dv09_descr',40,$Idv09_descr,true,'text',$db_opcao,"")
           ?>
@@ -116,7 +116,7 @@ if ( count($aTipos) == 0 ) {
              db_ancora(@$Ldv09_receit,"js_pesquisadv09_receit(true);",$db_opcao);
            ?>
         </td>
-        <td> 
+        <td>
           <?
             db_input('dv09_receit',6 , $Idv09_receit, true, 'text', $db_opcao, " onchange='js_pesquisadv09_receit(false);'");
             db_input('k02_descr'  ,32, $Ik02_descr  , true, 'text', 3        , '')
@@ -129,7 +129,7 @@ if ( count($aTipos) == 0 ) {
            db_ancora(@$Ldv09_hist,"js_pesquisadv09_hist(true);",$db_opcao);
            ?>
         </td>
-        <td> 
+        <td>
           <?
             db_input('dv09_hist',6 , $Idv09_hist, true, 'text', $db_opcao, " onchange='js_pesquisadv09_hist(false);'");
             db_input('k01_descr',32, $Ik01_descr, true, 'text', 3        , '')
@@ -142,7 +142,7 @@ if ( count($aTipos) == 0 ) {
             db_ancora(@$Ldv09_proced,"js_pesquisadv09_proced(true);",$db_opcao);
           ?>
         </td>
-        <td> 
+        <td>
           <?
             db_input('dv09_proced', 6 , $Idv09_proced, true, 'text', $db_opcao, " onchange='js_pesquisadv09_proced(false);'");
             db_input('v03_descr'  , 32, $Iv03_descr  , true, 'text', 3        , '')
@@ -173,6 +173,17 @@ if ( count($aTipos) == 0 ) {
           ?>
         </td>
       </tr>
+      <tr>
+        <td nowrap title="<?=@$Tdv09_cobranca?>">
+          <?=@$Ldv09_cobranca?>
+        </td>
+        <td>
+            <?
+            $x = array("f"=>"NAO","t"=>"SIM");
+            db_select('dv09_cobranca',$x,true,$db_opcao,"");
+            ?>
+        </td>
+      </tr>
     </table>
   </fieldset>
   <input name="<?= ( $db_opcao == 1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
@@ -182,139 +193,139 @@ if ( count($aTipos) == 0 ) {
 <script>
 
 function js_pesquisadv09_receit(mostra){
-  
+
   if ( mostra == true ) {
-    js_OpenJanelaIframe('top.corpo.iframe_procdiver','db_iframe_tabrec','func_tabrec_todas.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procdiver','db_iframe_tabrec','func_tabrec_todas.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true,'0');
   } else {
-    
-     if ( document.form1.dv09_receit.value != '' ) { 
-        js_OpenJanelaIframe('top.corpo.iframe_procdiver','db_iframe_tabrec','func_tabrec_todas.php?pesquisa_chave='+document.form1.dv09_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false,'0','1','775','390');
+
+     if ( document.form1.dv09_receit.value != '' ) {
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procdiver','db_iframe_tabrec','func_tabrec_todas.php?pesquisa_chave='+document.form1.dv09_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false,'0','1','775','390');
      }else{
-       document.form1.k02_descr.value = ''; 
+       document.form1.k02_descr.value = '';
      }
   }
 }
 
 function js_mostratabrec(chave,erro){
-  
+
   document.form1.k02_descr.value = chave;
-   
+
   if( erro == true ){
-     
-    document.form1.dv09_receit.focus(); 
-    document.form1.dv09_receit.value = ''; 
+
+    document.form1.dv09_receit.focus();
+    document.form1.dv09_receit.value = '';
   }
 }
 
 function js_mostratabrec1(chave1,chave2) {
-  
+
   document.form1.dv09_receit.value = chave1;
   document.form1.k02_descr.value = chave2;
   db_iframe_tabrec.hide();
 }
 
 function js_pesquisadv09_hist( mostra ) {
-  
+
   if( mostra == true ){
-    js_OpenJanelaIframe('top.corpo.iframe_procdiver','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procdiver','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true,'0');
   }else{
-    
-     if ( document.form1.dv09_hist.value != '' ) { 
-        js_OpenJanelaIframe('top.corpo.iframe_procdiver','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.dv09_hist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false,'0','1','775','390');
+
+     if ( document.form1.dv09_hist.value != '' ) {
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procdiver','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.dv09_hist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false,'0','1','775','390');
      }else{
-       document.form1.k01_descr.value = ''; 
+       document.form1.k01_descr.value = '';
      }
   }
 }
 
 function js_mostrahistcalc(chave,erro) {
-  
-  document.form1.k01_descr.value = chave; 
+
+  document.form1.k01_descr.value = chave;
 
   if( erro == true ) {
-     
-    document.form1.dv09_hist.focus(); 
-    document.form1.dv09_hist.value = ''; 
+
+    document.form1.dv09_hist.focus();
+    document.form1.dv09_hist.value = '';
   }
 }
 
 function js_mostrahistcalc1( chave1, chave2 ) {
-  
+
   document.form1.dv09_hist.value = chave1;
   document.form1.k01_descr.value = chave2;
   db_iframe_histcalc.hide();
 }
 
 function js_pesquisadv09_proced( mostra ) {
-  
+
   if( mostra == true ) {
-    js_OpenJanelaIframe('top.corpo.iframe_procdiver','db_iframe_proced','func_proced.php?funcao_js=parent.js_mostraproced1|v03_codigo|v03_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procdiver','db_iframe_proced','func_proced.php?funcao_js=parent.js_mostraproced1|v03_codigo|v03_descr','Pesquisa',true,'0');
   }else{
-    
-     if ( document.form1.dv09_proced.value != '' ) { 
-        js_OpenJanelaIframe('top.corpo.iframe_procdiver','db_iframe_proced','func_proced.php?pesquisa_chave='+document.form1.dv09_proced.value+'&funcao_js=parent.js_mostraproced','Pesquisa',false,'0','1','775','390');
+
+     if ( document.form1.dv09_proced.value != '' ) {
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procdiver','db_iframe_proced','func_proced.php?pesquisa_chave='+document.form1.dv09_proced.value+'&funcao_js=parent.js_mostraproced','Pesquisa',false,'0','1','775','390');
      }else{
-       document.form1.v03_descr.value = ''; 
+       document.form1.v03_descr.value = '';
      }
   }
 }
 
 function js_mostraproced( chave, erro ) {
-  
+
   document.form1.v03_descr.value = chave;
-   
-  if( erro == true ) { 
-    
-    document.form1.dv09_proced.focus(); 
-    document.form1.dv09_proced.value = ''; 
+
+  if( erro == true ) {
+
+    document.form1.dv09_proced.focus();
+    document.form1.dv09_proced.value = '';
   }
 }
 
 function js_mostraproced1( chave1, chave2 ) {
-  
+
   document.form1.dv09_proced.value = chave1;
   document.form1.v03_descr.value = chave2;
   db_iframe_proced.hide();
 }
 
 function js_pesquisadv09_tipo( mostra ) {
-  
+
   if( mostra == true ){
-    js_OpenJanelaIframe('top.corpo.iframe_procdiver','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procdiver','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true,'0');
   }else{
-    
-     if ( document.form1.dv09_tipo.value != '' ) { 
-       js_OpenJanelaIframe('top.corpo.iframe_procdiver','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.dv09_tipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false,'0','1','775','390');
+
+     if ( document.form1.dv09_tipo.value != '' ) {
+       js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procdiver','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.dv09_tipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false,'0','1','775','390');
      }else{
-       document.form1.k00_descr.value = ''; 
+       document.form1.k00_descr.value = '';
      }
   }
 }
 
 function js_mostraarretipo( chave, erro ) {
-  
+
   document.form1.k00_descr.value = chave;
-   
+
   if( erro == true ) {
-     
-    document.form1.dv09_tipo.focus(); 
-    document.form1.dv09_tipo.value = ''; 
+
+    document.form1.dv09_tipo.focus();
+    document.form1.dv09_tipo.value = '';
   }
 }
 
 function js_mostraarretipo1( chave1, chave2 ) {
-  
+
   document.form1.dv09_tipo.value = chave1;
   document.form1.k00_descr.value = chave2;
   db_iframe_arretipo.hide();
 }
 
 function js_pesquisa() {
-  js_OpenJanelaIframe('top.corpo.iframe_procdiver','db_iframe_procdiver','func_procdiver.php?chave_mostratodas=true&funcao_js=parent.js_preenchepesquisa|dv09_procdiver','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procdiver','db_iframe_procdiver','func_procdiver.php?chave_mostratodas=true&funcao_js=parent.js_preenchepesquisa|dv09_procdiver','Pesquisa',true,'0');
 }
 
 function js_preenchepesquisa( chave ) {
-  
+
   db_iframe_procdiver.hide();
   <?
   if( $db_opcao != 1 ) {

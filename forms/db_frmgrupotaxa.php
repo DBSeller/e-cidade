@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -79,10 +79,10 @@ db_input('ar37_descricao',54,$Iar37_descricao,true,'text',$db_opcao,"")
 <script>
 function js_pesquisaar37_grupotaxatipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_grupotaxatipo','func_grupotaxatipo.php?funcao_js=parent.js_mostragrupotaxatipo1|ar38_sequencial|ar38_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_grupotaxatipo','func_grupotaxatipo.php?funcao_js=parent.js_mostragrupotaxatipo1|ar38_sequencial|ar38_descricao','Pesquisa',true);
   }else{
      if(document.form1.ar37_grupotaxatipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_grupotaxatipo','func_grupotaxatipo.php?pesquisa_chave='+document.form1.ar37_grupotaxatipo.value+'&funcao_js=parent.js_mostragrupotaxatipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_grupotaxatipo','func_grupotaxatipo.php?pesquisa_chave='+document.form1.ar37_grupotaxatipo.value+'&funcao_js=parent.js_mostragrupotaxatipo','Pesquisa',false);
      }else{
        document.form1.ar38_descricao.value = ''; 
      }
@@ -101,7 +101,7 @@ function js_mostragrupotaxatipo1(chave1,chave2){
   db_iframe_grupotaxatipo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_grupotaxa','func_grupotaxa.php?funcao_js=parent.js_preenchepesquisa|ar37_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_grupotaxa','func_grupotaxa.php?funcao_js=parent.js_preenchepesquisa|ar37_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_grupotaxa.hide();

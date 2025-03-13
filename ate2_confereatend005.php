@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_SERVER_VARS);
@@ -81,7 +81,7 @@ print_r($nsel4);
 
 		// motivo
 		$sqlmot ="select  at54_sequencial,at54_descr from tarefacadmotivo where at54_tipo = 1 order by at54_descr";
-		$resultmot= pg_query($sqlmot);
+		$resultmot= db_query($sqlmot);
 		db_multiploselect("at54_sequencial", "at54_descr", "nsel1", "ssel1", $resultmot, array(), 4, 250);
 		?></td>
 	</tr>
@@ -96,7 +96,7 @@ print_r($nsel4);
 		<?
 		//cliente
 		$sqlcliente = "select at01_codcli,at01_nomecli from clientes";
-		$resultcliente=pg_query($sqlcliente);
+		$resultcliente=db_query($sqlcliente);
 		db_multiploselect("at01_codcli", "at01_nomecli", "nsel2", "ssel2", $resultcliente, array(), 4, 250);
 		?>
 		</td>
@@ -114,7 +114,7 @@ print_r($nsel4);
 		$sqltecnico = "	select distinct id_usuario,nome 
 						from tecnico 
 						inner join db_usuarios on id_usuario = at03_id_usuario";
-		$resulttecnico=pg_query($sqltecnico);
+		$resulttecnico=db_query($sqltecnico);
 		db_multiploselect("id_usuario", "nome", "nsel3", "ssel3", $resulttecnico, array(), 4, 250);
 		?>
 		</td>
@@ -130,7 +130,7 @@ print_r($nsel4);
 		<?
 		//Módulo
 		$sqlmodulo = "select codmod,nomemod from db_sysmodulo where ativo = 't' order by nomemod";
-		$resultmodulo=pg_query($sqlmodulo);
+		$resultmodulo=db_query($sqlmodulo);
 //		db_criatabela($resultmodulo);
 
 		db_multiploselect("codmod", "nomemod", "nsel4", "ssel4", $resultmodulo, array(), 4, 250,'','',true,'js_pegaValores(document.form1.ssel4);');

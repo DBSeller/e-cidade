@@ -1,37 +1,37 @@
-<?
+<?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -69,7 +69,7 @@ $rsEduParametros   = db_query( $sSqlEduParametros );
 if ( $rsEduParametros && pg_num_rows( $rsEduParametros ) > 0 ) {
 
   $sMostraEtapaAnterior = db_utils::fieldsMemory( $rsEduParametros, 0 )->ed233_reclassificaetapaanterior;
-  
+
   if ( $sMostraEtapaAnterior == 'f' ) {
     $sFiltroReclassificacao = 'none;';
   }
@@ -84,41 +84,39 @@ if ( $rsEduParametros && pg_num_rows( $rsEduParametros ) > 0 ) {
   <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
   <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
   <script language="JavaScript" type="text/javascript" src="scripts/webseller.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
   <link href="estilos.css" rel="stylesheet" type="text/css">
   <style type="text/css">
-  
+
   	.bloqueado {
   		background-color:#DEB887;
   	}
   </style>
  </head>
- <body bgcolor="#CCCCCC" >
+ <body class="body-default" >
 
    <?MsgAviso(db_getsession("DB_coddepto"),"escola");?>
-  <table width="100%" align="center" border="0" cellpadding="0" cellspacing="0" bgcolor="#CCCCCC">
-   <tr>
-    <td valign="top">
-     <br>
+
+<div class="container">
+
      <form name="form1" method="post">
-      <fieldset style="width:95%"><legend><b>Relatório Certificado de Conclusão</b></legend>
-       <table border="0" >
+      <fieldset><legend><b>Relatório Certificado de Conclusão</b></legend>
+       <table border="0">
         <tr colspan='3' >
-         <tr>
            <td>
              <table id='filtros'  ><!--Inicio tabela selects escola filtro-->
                  <?
                   if ($iModulo == 7159) {
-             
-                    echo '<td align="left" colspan= "3">';
-                    echo ' <b>Selecione a escola:</b>';
+
+                    echo '<td align="left" colspan= "3" class="field-size3">';
+                    echo ' <label for"escola"> <b>Escola:</b> </label>';
                     echo '</td>';
                     echo '<td>';
-             
+
                     $sSqlEscola     = $oDaoEscola->sql_query_file("", "ed18_i_codigo, ed18_c_nome", "", "");
                     $rsResultEscola = $oDaoEscola->sql_record($sSqlEscola);
                     $iLinhas        = $oDaoEscola->numrows;
-                    echo '<select name="escola" id="escola" onChange="js_alunoshist(this.value,document.form1.tipoaluno.value, true);"
-                              style="height:18px;font-size:10px;width:290px">';
+                    echo '<select name="escola" id="escola" onChange="js_alunoshist(this.value,document.form1.tipoaluno.value, true);">';
                     echo ' <option value="">Selecione a Escola</option>';
                     for ($iCont = 0; $iCont < $iLinhas; $iCont++) {
                       $oDadosEscola = db_utils::fieldsmemory($rsResultEscola, $iCont);
@@ -127,35 +125,61 @@ if ( $rsEduParametros && pg_num_rows( $rsEduParametros ) > 0 ) {
                     echo ' </select>';
                     echo '</td>';
                   } else {
-             
+
                     $iEscola = db_getsession("DB_coddepto");
                     echo "<input type= 'hidden' id ='escola' value = '$iEscola' >";
-             
+
                   }
                   ?>
                </tr>
                <tr>
-                 <td colspan= '3'>
-                 <b>Filtro:</b>
+                  <td colspan= '3' class="field-size3">
+                    <label for="tipoaluno"><b>Filtro:</b></label>
+                  </td>
+                  <td >
+                   <select name="tipoaluno" id="tipoaluno"  onchange="js_alunoshist(document.form1.escola.value, this.value);">
+                     <option value="1" <?= $iTipoAluno == "1" ? "selected" : "" ?>>Alunos vinculados nesta escola</option>
+                     <option value="2" <?= $iTipoAluno == "2" ? "selected" : "" ?>>Alunos sem vínculos com escolas</option>
+                   </select>
+                  </td>
+               </tr>
+               <tr>
+                 <td  colspan='3' class="field-size3">
+                   <label for="cboAno"> <b>Ano de Conclusão:</b> </label>
                  </td>
                  <td>
-                  <select name="tipoaluno" id="tipoaluno" style="height:18px;font-size:10px;width:290px;"
-                          onchange="js_alunoshist(document.form1.escola.value, this.value);">
-                    <option value="1" <?= $iTipoAluno == "1" ? "selected" : "" ?>>Alunos vinculados nesta escola</option>
-                    <option value="2" <?= $iTipoAluno == "2" ? "selected" : "" ?>>Alunos sem vínculos com escolas</option>
-                  </select>
+                   <select id="cboAno">
+                     <option value="">TODOS</option>
+                   </select>
                  </td>
                </tr>
              </table><!--fim tabela select escola filtro-->
            </td>
-         </tr>
+       </tr>
+       <tr>
+          <td>
+          <table>
+              <tr>
+                <td class="field-size3" id="colunaCurso">
+                  <label for="cboCurso"> <b>Curso:</b> </label>
+                </td>
+                <td>
+                  <select id="cboCurso">
+                    <option value="">TODOS</option>
+                  </select>
+                </td>
+              </tr>
+          </table>
+          </td>
        </tr>
        <tr id='listaAlunos' >
-         <td style="width:450px;">
-          <b>Alunos com curso concluído:</b><br>
-          <select name="alunoshist" id="alunoshist" size="20" onclick="js_desabinc()"
-                  multiple style="font-size:9px;width:450px;">
-          </select>
+         <td>
+         <fieldset style="width:450px;"">
+            <legend>Alunos com curso concluído</legend>
+            <select name="alunoshist" id="alunoshist" size="20" onclick="js_desabinc()"
+                    multiple style="font-size:9px;width:450px; height: 250px; max-height: 250px;">
+            </select>
+          </fieldset>
          </td>
          <td align="center">
          <br>
@@ -200,50 +224,53 @@ if ( $rsEduParametros && pg_num_rows( $rsEduParametros ) > 0 ) {
            </table>
          </td>
          <td>
-          <b>Alunos para impressão :</b><br>
-          <select name="alunos[]" id="alunos" size="20" onclick="js_desabexc()"
-                  multiple style="font-size:9px;width:350px;">
-          </select>
+          <fieldset style="width:450px; ">
+            <legend>Alunos para impressão</legend>
+            <select name="alunos[]" id="alunos" size="20" onclick="js_desabexc()"
+                    multiple style="font-size:9px;width:450px; height: 250px; max-height: 250px;">
+            </select>
+          </fieldset>
          </td>
        </tr>
-       
-        <tr id='alunoHistorico' style="display: <?=isset( $sOcultaAluno ) ? $sOcultaAluno : ""?>" >
-         <td><label style="width:98px; display: block; float: left;"><b>Aluno:</b></label>
-           <input class='bloqueado' type="text" id='aluno' name='aluno' value="<?php echo $iCodigoAluno;?>" size='10' 
-                  readonly="readonly" />
-           <input class='bloqueado' type="text" id='nome' name='nome' value="<?php echo $sNomeAluno;?>" size='50' 
-                  readonly="readonly" />
-         </td>
-       </tr>
-       
     </tr>
     <tr>
     <td colspan = '3'>
     <table> <!-- tabela  dos selects-->
+    <tr id='alunoHistorico' style="display: <?=isset( $sOcultaAluno ) ? $sOcultaAluno : ""?>" >
+      <td>
+        <label for="aluno"><b>Aluno:</b></label>
+      </td>
+      <td colspan="2">
+        <input class='bloqueado' type="text" id='aluno' name='aluno' value="<?php echo $iCodigoAluno;?>" size='10'
+              readonly="readonly" />
+        <input class='bloqueado' type="text" id='nome' name='nome' value="<?php echo $sNomeAluno;?>" size='50'
+              readonly="readonly" />
+      </td>
+    </tr>
     <tr>
      <td nowrap colspan= '2'>
-      <b>Tipo do Modelo:</b>
+        <label for="tipocertificado" ><b>Tipo do Modelo:</b></label>
       </td>
       <td>
-      <select name="tipocertificado" id= "tipocertificado" style="font-size:9px;width:290px;" Onchange = "js_Orientacao();">
+      <select name="tipocertificado" id= "tipocertificado" Onchange = "js_Orientacao();">
       </select>
      </td>
     </tr>
     <tr id = 'tdOrientacao'>
      <td colspan='2'>
-      <b>Orientação:</b>
+        <label for="orientacao"><b>Orientação:</b></label>
       </td>
       <td>
-      <select name="orientacao" id="orientacao" style="font-size:9px;width:290px;" onchange='js_validaTipoRegistro()'>
+      <select name="orientacao" id="orientacao" onchange='js_validaTipoRegistro()'>
       </select>
      </td>
     </tr>
     <tr id = 'tdCabecalho'>
      <td colspan='2'>
-      <b>Disposição do Cabeçalho:</b>
+        <label for="disposicao"><b>Disposição do Cabeçalho:</b></label>
       </td>
       <td>
-      <select name="disposicao" id="disposicao" style="font-size:9px;width:290px;" >
+      <select name="disposicao" id="disposicao" >
        <option value='0'>Selecione</option>
        <option value='1'>Disposição 1</option>
        <option value='2'>Disposição 2</option>
@@ -252,82 +279,82 @@ if ( $rsEduParametros && pg_num_rows( $rsEduParametros ) > 0 ) {
     </tr>
     <tr>
      <td colspan = '2'>
-      <b>Registros:</b>
+        <label for="tiporegistro" ><b>Registros:</b></label>
       </td>
       <td>
-      <select name="tiporegistro" id= "tiporegistro" style="font-size:9px;width:290px;">
+      <select name="tiporegistro" id= "tiporegistro">
        <option value='A'>Etapas APROVADAS</option>
        <option value='AR'>Etapas APROVADAS e REPROVADAS</option>
       </select>
      </td>
     </tr>
-    
+
     <tr style="display: <?php echo $sFiltroReclassificacao; ?>">
-      <td colspan= '2'><label class="bold">Exibir Reclassificação:</label></td>
+      <td colspan= '2'><label class="bold" for="exibir_reclassificacao">Exibir Reclassificação:</label></td>
       <td>
-        <select name="exibir_reclassificacao" id= "exibir_reclassificacao" style="font-size:9px;width:290px;">
+        <select name="exibir_reclassificacao" id="exibir_reclassificacao" >
           <option value='f'>NÃO</option>
           <option value='t'>SIM</option>
         </select>
       </td>
     </tr>
-    
+
     <tr>
      <td nowrap colspan = '2'>
-      <b>Diretor:</b>
+        <label for="diretor"><b>Diretor:</b></label>
       </td>
       <td>
-      <select name="diretor" id="diretor" style="font-size:9px;width:290px;">
+      <select name="diretor" id="diretor" >
       </select>
      </td>
     </tr>
     <tr>
      <td colspan = '2'>
-      <b>Secretário:</b>
+        <label for="secretario"><b>Secretário:</b></label>
       </td>
       <td>
-      <select name="secretario" id="secretario" style="font-size:9px;width:290px;">
+      <select name="secretario" id="secretario">
       </select>
      </td>
     </tr>
     </table><!--fim tabela selects -->
     </td>
     </tr>
-    <tr>
-     <td colspan='3'>
-      <input name="pesquisar" type="button" id="pesquisar" value="Processar" onclick="js_pesquisa();" disabled>
-     </td>
-    </tr>
-        <tr>
-         <td align="center" valign="top"  colspan="3">
-          <br>
-          <fieldset style="align:center">
-            Para selecionar mais de um aluno mantenha pressionada a tecla CTRL e clique sobre o nome dos alunos.
-
-           <div id= 'div'>
-            <h4 align= 'left'>Disposições do Cabeçalho</h4>
-             1 - Neste modelo o sistema posicionará as informações lado a lado na seguinte ordem :
-                 Brasão da República Federativa do Brasil, texto inserido no campo cabeçalho
-                 e o nome da escola, mantenedora, endereço e atos legais.<br>
-             2 - Neste modelo o sistema posicionará as informações centralizadas uma abaixo da outra:
-                 Brasão da República Federativa do Brasil e texto inserido no campo cabeçalho no topo do
-                 cabeçalho centralizado, abaixo deste o título do documento e abaixo deste o nome da escola, mantenedora,
-                 atos legais e endereço.
-
-           </div>
-          </fieldset>
-         </td>
-        </tr>
-       </table>
-      </fieldset>
-     </td>
-    </tr>
    </table>
-  </form>
+  </fieldset>
+    <input name="pesquisar" type="button" id="pesquisar" value="Processar" onclick="js_pesquisa();" disabled>
+</form>
+</div>
+
+<div class="container" style="margin: 0px auto 0;">
+<table>
+  <tr>
+   <td align="center" >
+    <br>
+    <fieldset style="align:center">
+      Para selecionar mais de um aluno mantenha pressionada a tecla CTRL e clique sobre o nome dos alunos.
+
+     <div id= 'div'>
+      <h4 align= 'left'>Disposições do Cabeçalho</h4>
+       1 - Neste modelo o sistema posicionará as informações lado a lado na seguinte ordem :
+           Brasão da República Federativa do Brasil, texto inserido no campo cabeçalho
+           e o nome da escola, mantenedora, endereço e atos legais.<br>
+       2 - Neste modelo o sistema posicionará as informações centralizadas uma abaixo da outra:
+           Brasão da República Federativa do Brasil e texto inserido no campo cabeçalho no topo do
+           cabeçalho centralizado, abaixo deste o título do documento e abaixo deste o nome da escola, mantenedora,
+           atos legais e endereço.
+
+     </div>
+    </fieldset>
+   </td>
+  </tr>
+</table>
+</div>
+
   <div id='mostraMenu'></div>
     <?
     if ( empty($oGet->ed47_i_codigo) ) {
-     
+
       db_menu(db_getsession("DB_id_usuario"),
               db_getsession("DB_modulo"),
               db_getsession("DB_anousu"),
@@ -346,39 +373,92 @@ if ($iModulo != 7159) {
 
 var oGet = js_urlToObject();
 
+$('escola').addClassName('field-size9');
+$('tipoaluno').addClassName('field-size9');
+$('cboCurso').addClassName('field-size9');
+$('cboAno').addClassName('field-size9');
+$('tipocertificado').addClassName('field-size9');
+$('orientacao').addClassName('field-size9');
+$('disposicao').addClassName('field-size9');
+$('tiporegistro').addClassName('field-size9');
+$('exibir_reclassificacao').addClassName('field-size9');
+$('diretor').addClassName('field-size9');
+$('secretario').addClassName('field-size9');
+$('aluno').addClassName('field-size2');
+$('nome').addClassName('field-size7');
+
+function buscarCursos( iAluno ) {
+
+  var oParametros = { 'exec':'buscarCursos' };
+
+  if ( !empty(iAluno) ) {
+      oParametros.exec   = 'buscarCursosPorAluno';
+      oParametros.cursosConcluidos = true;
+      oParametros.iAluno = iAluno;
+  }
+
+  new AjaxRequest( 'edu4_cursoequivalencia.RPC.php', oParametros, function ( oRetorno, lErro ) {
+
+    if ( lErro ) {
+
+      alert(oRetorno.sMessage);
+      return false;
+    }
+
+    var oCboCursos = $('cboCurso');
+    for ( var oCurso of oRetorno.aCursos) {
+      oCboCursos.add(new Option(oCurso.sCurso, oCurso.iCurso));
+    }
+  }).setMessage( "Aguarde, buscando cursos..." ).execute();
+}
+
 if (!oGet.ed47_i_codigo) {
-  
+
   $('filtros').style.display       = 'table';
   $('listaAlunos').style.display   = 'table-row';
   $('mostraMenu').style.display    = 'block';
   $('alunoHistorico').style.display = 'none';
 }
 
+$('cboCurso').observe('change', function() {
+  js_alunoshist($F('escola'), $F('tipoaluno'));
+});
+
 function js_alunoshist(escola, tipoaluno) {
+
+  if ( empty(escola) ) {
+
+    alert('Selecione a escola.');
+    return false;
+  }
+
+  if ( $('cboAno').readAttribute('escola-calendario') != escola ) {
+    buscaAnoCalendarioEscola();
+  }
+
+  js_limpa();
 
   var oParam           = new Object();
       oParam.exec      = "PesquisaAlunoCert";
       oParam.escola    = escola;
       oParam.tipoaluno = tipoaluno;
+      oParam.iCurso    = $F('cboCurso');
+      oParam.iAno      = $F('cboAno');
 
   var url              = 'edu4_escola.RPC.php';
 
-  if ( !js_urlToObject().ed47_i_codigo ) {
     js_webajax(oParam,'js_retornoPesquisaAlunoCert',url);
-  } else {
 
-    js_TipoRelatorio();
-    js_Orientacao();
-  }
-  js_limpa();
+    if ( js_urlToObject().ed47_i_codigo ) {
+        js_TipoRelatorio();
+        js_Orientacao();
+    }
 
 }
 
-
 function js_retornoPesquisaAlunoCert(oRetorno) {
 
-
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
   if (oRetorno.iStatus  != 1) {
@@ -410,7 +490,7 @@ function js_retornoPesquisaAlunoCert(oRetorno) {
 
   if (oRetorno.iEscola != "") {
 
-    js_Diretor(oRetorno.escola);
+    js_Diretor(oRetorno.iEscola);
     js_Sec(oRetorno.iEscola);
 
   } else {
@@ -419,6 +499,7 @@ function js_retornoPesquisaAlunoCert(oRetorno) {
     js_Sec($('escola').value);
 
   }
+
 
 }
 
@@ -437,7 +518,7 @@ function js_Diretor(escola) {
 function js_retornoPesquisaDiretor(oRetorno) {
 
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
   if (oRetorno.iStatus  != 1) {
@@ -487,7 +568,7 @@ function js_Sec(escola) {
 
 function js_retornoPesquisaSec(oRetorno) {
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
   if (oRetorno.iStatus  != 1) {
@@ -540,7 +621,7 @@ function js_TipoRelatorio() {
 
 function js_retornoPesquisaTipoCertificado(oRetorno) {
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
 	sHtml        = '';
 
 	if (oRetorno.iStatus  != 1) {
@@ -588,7 +669,7 @@ function js_Orientacao() {
 
 function js_retornoPesquisaOrientacao(oRetorno) {
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
   sHtml        = '';
 
 	if (oRetorno.iStatus  != 1) {
@@ -607,7 +688,7 @@ function js_retornoPesquisaOrientacao(oRetorno) {
 	  $('div').style.display          = '';
 
 	  var lTemOrientacaoRetrato = false; //Para identificar se o cliente possui modelo retrato cadastrado
-	  
+
 	  for (var i = 0;i < oRetorno.aResultOrientacao.length; i++) {
 
 	    with (oRetorno.aResultOrientacao[i]) {
@@ -615,7 +696,7 @@ function js_retornoPesquisaOrientacao(oRetorno) {
 	      if (oRetorno.aResultOrientacao[i].ed217_orientacao == 2) {
           lTemOrientacaoRetrato = true;
         }
-    	  
+
 	      sOrientacao  = oRetorno.aResultOrientacao[i].ed217_orientacao;
 	      sNome        = oRetorno.aResultOrientacao[i].nome;
 
@@ -633,9 +714,7 @@ function js_retornoPesquisaOrientacao(oRetorno) {
 
 }
 
-
-
-function js_pesquisa(curso) {
+function js_pesquisa() {
 
   alunos = "";
   codigo = "";
@@ -644,27 +723,29 @@ function js_pesquisa(curso) {
 
     alunos += sep+$('alunos').options[i].value;
     sep     = ",";
-
   }
-   
+
   if ( !!js_urlToObject().ed47_i_codigo ) {
     alunos = $F('aluno');
   }
 
+  if ( empty(alunos) ) {
 
+    alert("Ao menos um aluno deve ser informado.");
+    return false;
+  }
 
   if ($('tipocertificado').value == "") {
 
     alert("Informe o Tipo do Modelo!");
     return false;
-
   }
-
 
   var sParametros  = 'sAlunos='+alunos+'&iEscola='+$('escola').value+'&iTipoRelatorio='+$('tipocertificado').value;
       sParametros += '&iTipoRegistro='+$('tiporegistro').value+'&sDiretor='+$('diretor').value;
       sParametros += '&sSecretario='+$('secretario').value+'&sDisposicao='+$('disposicao').value;
       sParametros += '&sExibirReclassificacao='+$('exibir_reclassificacao').value;
+      sParametros += '&iCurso='+$('cboCurso').value;
 
   if ($('orientacao').value == 2) {
 
@@ -676,9 +757,10 @@ function js_pesquisa(curso) {
 
     jan = window.open('edu2_certificadoconclusaoretrato002.php?' + sParametros, '',
         'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-    
+
   } else {
 
+    sParametros += '&lExibirSomenteCursosConcluidos=true';
     jan = window.open('edu2_historico002.php?' + sParametros, '',
                       'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
 
@@ -803,12 +885,13 @@ function js_excluirtodos() {
 function js_limpa() {
 
   var Alunos = document.getElementById("alunos");
+  var oGet   = js_urlToObject();
 
   for (var i = 0; i < Alunos.length; i++) {
     Alunos.length = 0;
   }
 
-  if (Alunos.length == 0) {
+  if (Alunos.length == 0 && !oGet.ed47_i_codigo) {
 
     $('pesquisar').disabled            = true;
     $('excluirum').disabled            = true;
@@ -818,10 +901,10 @@ function js_limpa() {
     $('tiporegistro').selectedIndex    = 0;
     $('diretor').selectedIndex         = 0;
     $('secretario').selectedIndex      = 0;
-
   }
 
   $('alunoshist').focus();
+  $('alunoshist').length = 0;
 
 }
 
@@ -895,15 +978,50 @@ function js_validaTipoRegistro() {
 }
 js_validaTipoRegistro();
 
+function buscaAnoCalendarioEscola( ) {
 
+  if ( empty($F('escola')) ) {
+    return false;
+  }
 
+  var oParametros = {
+    'exec'   : 'PesquisaAnosCalendario',
+    'escola' : $F('escola')
+  };
+
+  new AjaxRequest( 'edu4_escola.RPC.php', oParametros, function ( oRetorno, lErro ) {
+
+    if ( oRetorno.iStatus == 0 ) {
+      return false;
+    }
+
+    var oCboAno    = $('cboAno');
+    oCboAno.length = 0;
+    oCboAno.add(new Option("TODOS", ""));
+
+    for ( var oAno of oRetorno.aResult) {
+      oCboAno.add(new Option(oAno.ed52_i_ano, oAno.ed52_i_ano));
+    }
+
+    oCboAno.setAttribute('escola-calendario', $F('escola'));
+
+  }).setMessage( "Aguarde, buscando cursos..." ).execute();
+}
+
+$('cboAno').observe('change', function() {
+  js_alunoshist($F('escola'), $F('tipoaluno'));
+});
 
 if (oGet.ed47_i_codigo && oGet.ed47_i_codigo != '') {
 
-  $('filtros').style.display       = 'none';
-  $('listaAlunos').style.display   = 'none';
-  $('mostraMenu').style.display    = 'none';
+  $('filtros').style.display        = 'none';
+  $('listaAlunos').style.display    = 'none';
+  $('mostraMenu').style.display     = 'none';
   $('alunoHistorico').style.display = 'table-row';
-  $('pesquisar').disabled  = false;
+  $('pesquisar').disabled           = false;
+  $('colunaCurso').style.width      = "130px";
+  buscarCursos(oGet.ed47_i_codigo);
+} else {
+  buscarCursos();
 }
 </script>

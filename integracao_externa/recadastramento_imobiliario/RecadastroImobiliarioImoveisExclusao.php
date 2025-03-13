@@ -1,4 +1,30 @@
 <?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
 /**
  * Classe para processamento Baixa de Imoveis no Recadastro Imobiliario
  * 
@@ -6,7 +32,7 @@
  * @package  Recadastro Imobiliario
  * @author   Alberto Ferri Neto <alberto@dbseller.com.br> 
  * @revision $Author dbalberto $
- * @version  $Revision: 1.12 $
+ * @version  $Revision: 1.15 $
  */
 require_once(PATH_IMPORTACAO . "RecadastroImobiliarioImoveis.interface.php");
 
@@ -90,7 +116,7 @@ class RecadastroImobiliarioImoveisExclusao implements RecadastroImobiliarioImove
 
 
 
-      if ( !pg_query(Conexao::getInstancia()->getConexao(), $sInsertIptubaixa) ) {
+      if ( !db_query(Conexao::getInstancia()->getConexao(), $sInsertIptubaixa) ) {
 
         $this->log( "Erro ao Processar Exclusao dos Registros da Baixa da Matrícula", DBLog::LOG_ERRO );
         $this->log( "Descricao do Erro: ".pg_last_error(), DBLog::LOG_ERRO );
@@ -98,7 +124,7 @@ class RecadastroImobiliarioImoveisExclusao implements RecadastroImobiliarioImove
 
       }
 
-      if ( !pg_query(Conexao::getInstancia()->getConexao(), $sUpdateIptubase) ) {
+      if ( !db_query(Conexao::getInstancia()->getConexao(), $sUpdateIptubase) ) {
 
         $this->log( "Erro ao Processar Alteração da Data de Baixa da Matrícula", DBLog::LOG_ERRO );
         $this->log( "Descricao do Erro: ".pg_last_error(), DBLog::LOG_ERRO );
@@ -128,7 +154,7 @@ class RecadastroImobiliarioImoveisExclusao implements RecadastroImobiliarioImove
     $sSqlPosicaoFiscal13 .= "                     and carconstr.j48_idcons = j39_idcons          ";
     $sSqlPosicaoFiscal13 .= " where iptuconstr.j39_obs ~ '{$this->getCodigoAnteriorConstrucao()}'";
     $sSqlPosicaoFiscal13 .= "   and carconstr.j48_caract = 713                                   ";
-    $rsPosicaoFiscal13    = pg_query(Conexao::getInstancia()->getConexao(), $sSqlPosicaoFiscal13);
+    $rsPosicaoFiscal13    = db_query(Conexao::getInstancia()->getConexao(), $sSqlPosicaoFiscal13);
 
     if ( !$rsPosicaoFiscal13 || pg_num_rows($rsPosicaoFiscal13) == 0 ) {
     
@@ -155,7 +181,7 @@ class RecadastroImobiliarioImoveisExclusao implements RecadastroImobiliarioImove
     $sUpdate             .= " where j39_matric = '{$iMatriculaConstrucao}'";
     $sUpdate             .= "   and j39_idcons = '{$iCodigoConstrucao}'   ";
 
-    if ( !pg_query($sUpdate) ) {
+    if ( !db_query($sUpdate) ) {
 
       $sMensagem = "Demolindo construção {$iCodigoConstrucao} da matrícula {$iMatriculaConstrucao} com tipo 'POSIÇÃO FISCAL 13'";
       $this->log( $sMensagem, DBLog::LOG_NOTICE );
@@ -176,7 +202,7 @@ class RecadastroImobiliarioImoveisExclusao implements RecadastroImobiliarioImove
     $sUpdateRecadastroImobiliarioImoveis .= "       ie28_observacoes = '{$this->sMensagemLog}'   ";
     $sUpdateRecadastroImobiliarioImoveis .= " where ie28_sequencial  =  {$this->iCodigoRegistro} ";
 
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sUpdateRecadastroImobiliarioImoveis)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sUpdateRecadastroImobiliarioImoveis)) {
 
       $sMensagem = "Erro ao salvar log das operações do setor/quadra/lote: {$this->sSQL}.";
 
@@ -199,7 +225,7 @@ class RecadastroImobiliarioImoveisExclusao implements RecadastroImobiliarioImove
 
       $sSqlIptubaixa = "select * from iptubaixa where j02_matric = {$this->iMatricula}";
 
-      $rsIptubaixa   = pg_query(Conexao::getInstancia()->getConexao(), $sSqlIptubaixa);
+      $rsIptubaixa   = db_query(Conexao::getInstancia()->getConexao(), $sSqlIptubaixa);
 
       if (pg_num_rows($rsIptubaixa) == 0) {
         return true;
@@ -240,7 +266,7 @@ class RecadastroImobiliarioImoveisExclusao implements RecadastroImobiliarioImove
     $sInsertHistocorrencia .= "         'Imóvel baixado pelo recadastramento. Nome do arquivo: {$this->sNomeArquivo}.',";
     $sInsertHistocorrencia .= "         'Imóvel baixado pelo recadastramento. Nome do arquivo: {$this->sNomeArquivo}.')";
 
-    if (pg_query (Conexao::getInstancia()->getConexao(), $sInsertHistocorrencia)) {
+    if (db_query (Conexao::getInstancia()->getConexao(), $sInsertHistocorrencia)) {
 
       $sInsertHistocorrenciaMatric  = "insert into histocorrenciamatric                            ";
       $sInsertHistocorrenciaMatric .= "       (ar25_sequencial   ,                                 ";
@@ -250,7 +276,7 @@ class RecadastroImobiliarioImoveisExclusao implements RecadastroImobiliarioImove
       $sInsertHistocorrenciaMatric .= "        {$this->iMatricula},                                ";
       $sInsertHistocorrenciaMatric .= "        currval('histocorrencia_ar23_sequencial_seq'))      ";
 
-      if (pg_query(Conexao::getInstancia()->getConexao(), $sInsertHistocorrenciaMatric)) {
+      if (db_query(Conexao::getInstancia()->getConexao(), $sInsertHistocorrenciaMatric)) {
 
         $this->log( "Incluindo histórico de ocorrência para a matrícula {$this->iMatricula}.", DBLog::LOG_INFO );
 

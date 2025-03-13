@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -37,22 +37,22 @@ if(isset($erropdf)){
   $HTTP_POST_VARS["CHECK1"] = $CHECK1;
   $HTTP_POST_VARS["ver_inscr"] = $ver_inscr;
   $tipo = $tipo;
-  include("libs/db_conecta.php");
-  include("libs/db_stdlib.php");
+  include(modification("libs/db_conecta.php"));
+  include(modification("libs/db_stdlib.php"));
 
 }
 
-require("libs/db_barras.php");
-include("fpdf151/impcarne.php");
-include("fpdf151/scpdf.php");
+require(modification("libs/db_barras.php"));
+include(modification("fpdf151/impcarne.php"));
+include(modification("fpdf151/scpdf.php"));
 db_postmemory($HTTP_POST_VARS);
 //db_postmemory($HTTP_SERVER_VARS,2);
 if(!isset($emite_recibo_protocolo)){
-  pg_exec("BEGIN");
-  $result = pg_exec("select nextval('numpref_k03_numpre_seq') as k03_numpre");
+  db_query("BEGIN");
+  $result = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
   db_fieldsmemory($result,0);
   //pega os numpres da ca3_gerfinanc002.php, separa e insere em db_reciboweb
-  $result = pg_exec("select k00_codbco,
+  $result = db_query("select k00_codbco,
                             k00_codage,
 			    k00_descr,
 			    k00_hist1,
@@ -67,7 +67,7 @@ if(!isset($emite_recibo_protocolo)){
 		      where k00_tipo = $tipo");
   db_fieldsmemory($result,0);
   $k00_descr = $k00_descr." - ".db_getsession("DB_anousu");
-  $result = pg_exec("select fc_numbco($k00_codbco,'$k00_codage')");
+  $result = db_query("select fc_numbco($k00_codbco,'$k00_codage')");
   db_fieldsmemory($result,0);
   $vt = $HTTP_POST_VARS;
   if(!isset($numpre_unica) || $numpre_unica ==""){
@@ -83,11 +83,11 @@ if(!isset($emite_recibo_protocolo)){
     for($i = 1;$i < sizeof($numpres);$i++) {
       $valores = split("P",$numpres[$i]);  
       $sql = "insert into db_reciboweb values(".$valores[0].",".$valores[1].",$k03_numpre,$k00_codbco,'$k00_codage','$fc_numbco')";
-      pg_exec($sql) or die("Erro(26) inserindo em db_reciboweb: ".pg_errormessage()); 
+      db_query($sql) or die("Erro(26) inserindo em db_reciboweb: ".pg_errormessage()); 
     }
   }else{
       $sql = "insert into db_reciboweb values(".$numpre_unica.",0,$k03_numpre,$k00_codbco,'$k00_codage','$fc_numbco')";
-      pg_exec($sql) or die("Erro(26) inserindo em db_reciboweb: ".pg_errormessage()); 
+      db_query($sql) or die("Erro(26) inserindo em db_reciboweb: ".pg_errormessage()); 
   }
   //roda funcao fc_recibo pra gerar o recibo
   if(isset($dtpaga)){
@@ -95,9 +95,9 @@ if(!isset($emite_recibo_protocolo)){
   }else{
     $sql = "select fc_recibo($k03_numpre,'".date("Y-m-d",db_getsession("DB_datausu"))."','".db_vencimento()."',".db_getsession("DB_anousu").")";
   }
-  $Recibo = pg_exec($sql);
+  $Recibo = db_query($sql);
 
-  pg_exec("COMMIT");
+  db_query("COMMIT");
 }
 if(!isset($emite_recibo_protocolo)){
   $sql = "select r.k00_numcgm,r.k00_receit,t.k02_descr,t.k02_drecei,to_char(r.k00_dtoper,'DD-MM-YYYY') as k00_dtoper,to_char(r.k00_dtvenc,'DD-MM-YYYY') as k00_dtvenc,sum(r.k00_valor) as valor
@@ -114,7 +114,7 @@ if(!isset($emite_recibo_protocolo)){
 		   where r.k00_numpre = ".$k03_numpre."
                    group by r.k00_dtoper,r.k00_dtvenc,r.k00_receit,t.k02_descr,t.k02_drecei,r.k00_numcgm";
 }
-$DadosPagamento = pg_exec($sql);
+$DadosPagamento = db_query($sql);
 //faz um somatorio do valor
 if (pg_numrows($DadosPagamento) == 1) {
   $datavencimento = pg_result($DadosPagamento,0,"k00_dtvenc");
@@ -131,7 +131,7 @@ for($i = 0;$i < pg_numrows($DadosPagamento);$i++) {
   $total_recibo += pg_result($DadosPagamento,$i,"valor");
 }
 //seleciona da tabela db_config, o numero do banco e a taxa bancaria e concatena em variavel
-$DadosInstit = pg_exec("select nomeinst,ender,munic,email,telef,uf,logo,to_char(tx_banc,'9.99') as tx_banc,numbanco from db_config where codigo = ".db_getsession("DB_instit"));
+$DadosInstit = db_query("select nomeinst,ender,munic,email,telef,uf,logo,to_char(tx_banc,'9.99') as tx_banc,numbanco from db_config where codigo = ".db_getsession("DB_instit"));
 //cria codigo de barras e linha digitável
 $NumBanco = pg_result($DadosInstit,0,"numbanco");
 $taxabancaria = pg_result($DadosInstit,0,"tx_banc");
@@ -149,14 +149,14 @@ $valor_parm = $total_recibo;
 $tipo_chave = ""; 
 if(!empty($HTTP_POST_VARS["ver_matric"])) {
   $numero = $HTTP_POST_VARS["ver_matric"];
-  $Identificacao = pg_exec("select z01_nome,z01_ender,z01_munic,z01_uf,z01_cep,nomepri,j39_compl,j39_numero,j13_descr,j34_setor||'.'||j34_quadra||'.'||j34_lote as sql
+  $Identificacao = db_query("select z01_nome,z01_ender,z01_munic,z01_uf,z01_cep,nomepri,j39_compl,j39_numero,j13_descr,j34_setor||'.'||j34_quadra||'.'||j34_lote as sql
                             from proprietario
 			    where j01_matric = ".$HTTP_POST_VARS["ver_matric"]." limit 1");
   db_fieldsmemory($Identificacao,0);
   $tipo_chave = "Matrícula";
 } else if(!empty($HTTP_POST_VARS["ver_inscr"])) {
   $numero = $HTTP_POST_VARS["ver_inscr"];
-  $Identificacao = pg_exec("select z01_nome,
+  $Identificacao = db_query("select z01_nome,
                                    z01_ender,
 			           z01_munic,
 				   z01_uf,
@@ -172,14 +172,14 @@ if(!empty($HTTP_POST_VARS["ver_matric"])) {
   $tipo_chave = "Inscrição";
 }else if(!empty($HTTP_POST_VARS["ver_numcgm"])) {
   $numero = $HTTP_POST_VARS["ver_numcgm"];
-  $Identificacao = pg_exec("select z01_nome,z01_ender,z01_munic,z01_uf,z01_cep,''::bpchar as nomepri,''::bpchar as j39_compl,''::bpchar as j39_numero,z01_bairro as j13_descr, '' as sql 
+  $Identificacao = db_query("select z01_nome,z01_ender,z01_munic,z01_uf,z01_cep,''::bpchar as nomepri,''::bpchar as j39_compl,''::bpchar as j39_numero,z01_bairro as j13_descr, '' as sql 
                             from cgm
 			    where z01_numcgm = ".$HTTP_POST_VARS["ver_numcgm"]);
   db_fieldsmemory($Identificacao,0);
   $tipo_chave = "Numcgm";
 } else {
   if(isset($emite_recibo_protocolo)){
-    $Identificacao = pg_exec("
+    $Identificacao = db_query("
             select cgm.z01_nome,cgm.z01_ender,cgm.z01_munic,cgm.z01_uf,cgm.z01_cep,' ' as nomepri,' ' as j39_compl, ' ' as j39_numero, ' ' as j13_descr, '' as sql
             from recibo r
                  inner join cgm c on c.z01_numcgm = r.k00_numcgm
@@ -189,7 +189,7 @@ if(!empty($HTTP_POST_VARS["ver_matric"])) {
   }
 }
 //select pras observacoes
-$Observacoes = pg_exec($conn,"select mens,alinhamento from db_confmensagem where cod in('obsboleto1','obsboleto2','obsboleto3','obsboleto4')");
+$Observacoes = db_query($conn,"select mens,alinhamento from db_confmensagem where cod in('obsboleto1','obsboleto2','obsboleto3','obsboleto4')");
 $db_vlrbar = db_formatar(str_replace('.','',str_pad(number_format($total_recibo,2,"","."),11,"0",STR_PAD_LEFT)),'s','0',11,'e');
 /*$db_vlrbar = "0".str_replace('.','',str_pad(number_format($total_recibo,2,"","."),11,"0",STR_PAD_LEFT));
 if($total_recibo>999)
@@ -204,12 +204,12 @@ if($total_recibo>999999)
 $db_numpre = db_numpre($k03_numpre).'000';
 $db_dtvenc = substr($datavencimento,6,4).substr($datavencimento,3,2).substr($datavencimento,0,2);
 
-////$resultcod = pg_exec("select fc_febraban('816'||'$db_vlrbar'||'".$db_numbanco."'||$db_dtvenc||'000000'||'$db_numpre')");
+////$resultcod = db_query("select fc_febraban('816'||'$db_vlrbar'||'".$db_numbanco."'||$db_dtvenc||'000000'||'$db_numpre')");
 db_fieldsmemory($resultcod,0);
 $codigo_barra = split(",",$fc_febraban);
 $codigobarras = $codigo_barra[0];
 $linhadigitavel = $codigo_barra[1];
-$result = pg_exec("select k15_local,k15_aceite,k15_carte,k15_espec,k15_ageced
+$result = db_query("select k15_local,k15_aceite,k15_carte,k15_espec,k15_ageced
 				   from cadban
                    where k15_codbco = $k00_codbco and
 				   k15_codage = '$k00_codage'");
@@ -245,12 +245,12 @@ $sql = "select arrecad.k00_numpre,arrecad.k00_numpar,arrecad.k00_receit
               and arrecad.k00_numpre = recibopaga.k00_numpre
               and arrecad.k00_numpar = recibopaga.k00_numpar
         group by arrecad.k00_numpre,arrecad.k00_numpar,arrecad.k00_receit  ";
-$result = pg_exec($sql);
+$result = db_query($sql);
 $numrows = pg_numrows($result);
   for($i = 0;$i < $numrows;$i++) {
     db_fieldsmemory($result,$i);
     $sql = "select fc_calcula('$k00_numpre','$k00_numpar','$k00_receit','".date("Y-m-d",db_getsession("DB_datausu"))."','".db_vencimento()."',".db_getsession("DB_anousu").")";
-    $result_calculo = pg_exec($sql);
+    $result_calculo = db_query($sql);
 	$fc_calcula = preg_split("/\s+/",pg_result($result_calculo,0,0));
 	$Desco = preg_split("/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/",$fc_calcula[5]);
     $sql = "select distinct k00_numpre as identificador,
@@ -261,14 +261,14 @@ $numrows = pg_numrows($result);
 		left outer join histcalc
 	             on histcalc.k01_codigo = arrecad.k00_hist
             where k00_numpre = $k00_numpre and k00_numpar = $k00_numpar and k00_receit = $k00_receit";
-    $result_receita = pg_exec($sql);
+    $result_receita = db_query($sql);
   }
 }
 
 
 if(isset($tipo)){
 
-  $resulttipo = pg_exec("select k03_tipo from arretipo where k00_tipo = $tipo");
+  $resulttipo = db_query("select k03_tipo from arretipo where k00_tipo = $tipo");
   db_fieldsmemory($resulttipo,0);
 
   if($k03_tipo==5 ){
@@ -279,7 +279,7 @@ if(isset($tipo)){
 	        where k99_numpre_n = $k03_numpre 
 			group by v01_exerc,v01_numpar
 			order by v01_exerc,v01_numpar";
-    $result = pg_query($sqlhist);
+    $result = db_query($sqlhist);
 	if(pg_numrows($result)!=false){
 	  $exercv = "0000";
   	  for($xy=0;$xy<pg_numrows($result);$xy++){
@@ -298,7 +298,7 @@ if(isset($tipo)){
 	        where k99_numpre_n = $k03_numpre 
 			group by q05_ano,q05_numpar
 			order by q05_ano,q05_numpar";
-    $result = pg_exec($sqlhist);
+    $result = db_query($sqlhist);
 	if(pg_numrows($result)!=false){
 	  $exercv = "0000";
   	  for($xy=0;$xy<pg_numrows($result);$xy++){
@@ -317,7 +317,7 @@ if(isset($tipo)){
 			     left outer join termo on v07_numpre = k99_numpre
 	        where k99_numpre_n = $k03_numpre 
 			order by v07_parcel,k99_numpar";
-    $result = pg_query($sqlhist);
+    $result = db_query($sqlhist);
     if(pg_numrows($result)!=false){
  //         $histparcela = "Parcelamento: ".pg_result($result,0,0)." Parc:";
   	for($xy=0;$xy<pg_numrows($result);$xy++){
@@ -333,7 +333,7 @@ if(isset($tipo)){
     $sqlhist = "select k99_numpar
 	        from db_reciboweb
 	        where k99_numpre_n = $k03_numpre order by k99_numpar";
-    $result = pg_query($sqlhist);
+    $result = db_query($sqlhist);
     for($xy=0;$xy<pg_numrows($result);$xy++){
        $histparcela .= pg_result($result,$xy,0)." ";	   
     }	

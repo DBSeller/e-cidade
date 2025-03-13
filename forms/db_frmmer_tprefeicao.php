@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -165,7 +165,7 @@ function js_pesquisame03_i_turno(mostra) {
 
   if (mostra==true) {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_turno',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_turno',
     	                'func_turno.php?funcao_js=parent.js_mostraturno1|ed15_i_codigo|ed15_c_nome','Pesquisa',true
 		               );
 
@@ -173,7 +173,7 @@ function js_pesquisame03_i_turno(mostra) {
 
     if (document.form1.me03_i_turno.value != '') {
 
-      js_OpenJanelaIframe('top.corpo','db_iframe_turno',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_turno',
     	                  'func_turno.php?pesquisa_chave='+document.form1.me03_i_turno.value+
     	                  '&funcao_js=parent.js_mostraturno',
     	                  'Pesquisa',false
@@ -206,7 +206,7 @@ function js_mostraturno1(chave1,chave2) {
 
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_tprefeicao',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_tprefeicao',
 		              'func_mer_tprefeicao.php?funcao_js=parent.js_preenchepesquisa|me03_i_codigo','Pesquisa',true
 		             );
 
@@ -354,7 +354,7 @@ function js_verifica_hora(valor,campo) {
     }
     mn_ini = val_ini.substr(3,2);
     if (valor!="") {
-      eval("document.form1."+campo+".value='"+hora+":"+minu+"';");
+      document.form1[campo].value= hora+":"+minu;
     }
     var val_fin = document.form1.me03_c_fim.value;
     var pos_fin = val_fin.indexOf(":");
@@ -386,8 +386,8 @@ function js_verifica_hora(valor,campo) {
   }
   if (valor!="") {
 
-    eval("document.form1."+campo+".focus();");
-    eval("document.form1."+campo+".value='"+hora+":"+minu+"';");
+    document.form1[campo].focus();
+    document.form1[campo].value=hora+":"+minu;
 
   }
 }

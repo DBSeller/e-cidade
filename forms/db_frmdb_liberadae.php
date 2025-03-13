@@ -26,8 +26,8 @@
  */
 
 //MODULO: prefeitura
-include("classes/db_issbase_classe.php");
-include("classes/db_cgm_classe.php");
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
 $clissbase = new cl_issbase;
 $clissbase->rotulo->label("q02_inscr");
 $clcgm = new cl_cgm;

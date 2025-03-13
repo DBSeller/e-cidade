@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpesrescisao_classe.php");
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_rhpesrescisao_classe.php"));
+
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
+
 $clrhpessoal = new cl_rhpessoal;
 $clrhpesrescisao = new cl_rhpesrescisao;
 $clgersubsql = new cl_gera_sql_folha;
 $clrotulo = new rotulocampo;
+
 $clrhpessoal->rotulo->label("rh01_regist");
 $clrhpessoal->rotulo->label("rh01_numcgm");
 $clrotulo->label("z01_nome");
+
 if(isset($valor_testa_rescisao)){
   $chave_rh01_regist = $valor_testa_rescisao;
   $retorno = db_alerta_dados_func($testarescisao,$valor_testa_rescisao,db_anofolha(), db_mesfolha());
@@ -56,7 +60,7 @@ if(isset($valor_testa_rescisao)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<?
+<?php
 if(!isset($pesquisa_chave)){
   ?>
   <script>
@@ -78,7 +82,7 @@ if(!isset($pesquisa_chave)){
       document.form2.submit();
     }
   </script>
-  <?
+  <?php
 }
 ?>
 </head>
@@ -93,7 +97,7 @@ if(!isset($pesquisa_chave)){
               <?=$Lrh01_regist?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
+              <?php
 		       db_input("rh01_regist",10,$Irh01_regist,true,"text",4,"","chave_rh01_regist");
 		       ?>
             </td>
@@ -103,7 +107,7 @@ if(!isset($pesquisa_chave)){
               <?=$Lrh01_numcgm?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
+              <?php
 		       db_input("rh01_numcgm",10,$Irh01_numcgm,true,"text",4,"","chave_rh01_numcgm");
 		       ?>
             </td>
@@ -113,7 +117,7 @@ if(!isset($pesquisa_chave)){
             <?=$Lz01_nome?>
             </td>
             <td width="96%" align="left" nowrap colspan='3'> 
-            <?
+            <?php
             db_input("z01_nome",80,$Iz01_nome,true,"text",4,"","chave_z01_nome");
 	        ?>
             </td>
@@ -131,7 +135,7 @@ if(!isset($pesquisa_chave)){
   </tr>
   <tr> 
     <td align="center" valign="top"> 
-      <?
+      <?php
       $anofolha = db_anofolha();
       $mesfolha = db_mesfolha();
       $anoanterior = $anofolha;
@@ -143,6 +147,12 @@ if(!isset($pesquisa_chave)){
       }
       $sqlres_anter = $clrhpesrescisao->sql_query_ngeraferias(null,"rh05_recis","","rh02_anousu = $anoanterior and rh02_mesusu = $mesanterior and rh02_regist = rh01_regist");
       $dbwhere = " and rh02_anousu = ".$anofolha." and rh02_mesusu = ".$mesfolha." and rh02_instit = ".db_getsession("DB_instit")." " ;
+        
+      if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+          $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+          $dbwhere .= " and rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+      }
+
       if(!isset($pesquisa_chave)){
         $campos1 = "rhpessoal.rh01_regist,
                     rhpessoal.rh01_numcgm,
@@ -164,8 +174,9 @@ if(!isset($pesquisa_chave)){
                     rh14_matipe,
                     rh14_dtvinc,
                     rh02_anousu as anousu,
-                    rh02_mesusu as mesusu
-                   ";
+                    rh02_mesusu as mesusu, 
+                    regexp_replace(rh05_observacao, E'[\n\r]+', '<quebra_linha>', 'g' ) as rh05_observacao,
+                    rh05_datapagamento";
         $sqlres_anter = $clrhpesrescisao->sql_query_ngeraferias(null,"rh05_recis","","rh02_anousu = $anoanterior and rh02_mesusu = $mesanterior and rh02_regist = x.rh01_regist");
         $campos2 = "distinct on (x.rh01_regist) x.rh01_regist,
                     ($sqlres_anter) as db_rescindido,
@@ -180,14 +191,15 @@ if(!isset($pesquisa_chave)){
                     r30_per2f as db_r30_per2f,
                     r30_per1i as db_r30_per1i,
                     rh05_recis as db_rh05_recis,
-		    x.rh01_admiss as db_rh01_admiss,
-		    r30_proc1 as db_r30_proc1,
-		    r30_proc2 as db_r30_proc2,
-		    x.rh02_seqpes as db_rh02_seqpes,
-		    x.rh02_codreg as db_rh02_codreg,
+                    x.rh01_admiss as db_rh01_admiss,
+                    r30_proc1 as db_r30_proc1,
+                    r30_proc2 as db_r30_proc2,
+                    x.rh02_seqpes as db_rh02_seqpes,
+                    x.rh02_codreg as db_rh02_codreg,
                     rh14_matipe as db_rh14_matipe,
-		    rh14_dtvinc as db_rh14_dtvinc
-                   ";
+                    rh14_dtvinc as db_rh14_dtvinc, 
+                    regexp_replace(rh05_observacao, E'[\n\r]+', '<quebra_linha>', 'g' ) as rh05_observacao,
+                    rh05_datapagamento";
         $clgersubsql->subsqlano = "anousu";
         $clgersubsql->subsqlmes = "mesusu";
         $clgersubsql->subsqlreg = "rh01_regist";
@@ -206,8 +218,7 @@ if(!isset($pesquisa_chave)){
 	}
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
-//        die($clrhpessoal->sql_query_ferias(null,"*,($sqlres_anter) as rescindido","r30_perai desc"," rh01_regist = $pesquisa_chave $dbwhere"));
-          $result = $clrhpessoal->sql_record($clrhpessoal->sql_query_ferias(null,"*,($sqlres_anter) as rescindido","r30_perai desc"," rh01_regist = $pesquisa_chave $dbwhere"));
+          $result = $clrhpessoal->sql_record($clrhpessoal->sql_query_ferias(null,"*,($sqlres_anter) as rescindido, regexp_replace(rh05_observacao, E'[\n\r]+', '<quebra_linha>', 'g' ) as rh05_observacao","r30_perai desc"," rh01_regist = $pesquisa_chave $dbwhere"));
           if($clrhpessoal->numrows!=0){
             db_fieldsmemory($result,0);
 	    if(isset($testarescisao)){
@@ -216,7 +227,7 @@ if(!isset($pesquisa_chave)){
                 db_msgbox($retorno);
               }
 	    }
-            echo "<script>".$funcao_js."('$z01_nome','$rh01_admiss','$rh02_seqpes','$r30_proc1','$r30_proc2','$r30_per1f','$r30_per2f','$rh02_codreg','$rh14_matipe','$rh14_dtvinc','$rh05_recis','$rescindido',false);</script>";
+            echo "<script>".$funcao_js."('$z01_nome','$rh01_admiss','$rh02_seqpes','$r30_proc1','$r30_proc2','$r30_per1f','$r30_per2f','$rh02_codreg','$rh14_matipe','$rh14_dtvinc','$rh05_recis','$rescindido', '$rh05_datapagamento','$rh05_observacao',false);</script>";
           }else{
 	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado','','','','','','','','','','','',true);</script>";
           }
@@ -230,11 +241,17 @@ if(!isset($pesquisa_chave)){
 </table>
 </body>
 </html>
-<?
+<?php
 if(!isset($pesquisa_chave)){
   ?>
   <script>
   </script>
-  <?
+  <?php
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

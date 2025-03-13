@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -186,10 +186,10 @@ function js_valorPadrao(iTipoLancamento, lAlterar){
 
 function js_pesquisah69_rhgrupotipoavaliacao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhgrupotipoavaliacao','func_rhgrupotipoavaliacao.php?funcao_js=parent.js_mostrarhgrupotipoavaliacao1|h68_sequencial|h68_descricao|h68_tipolancamento','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhgrupotipoavaliacao','func_rhgrupotipoavaliacao.php?funcao_js=parent.js_mostrarhgrupotipoavaliacao1|h68_sequencial|h68_descricao|h68_tipolancamento','Pesquisa',true);
   }else{
      if(document.form1.h69_rhgrupotipoavaliacao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhgrupotipoavaliacao','func_rhgrupotipoavaliacao.php?pesquisa_chave='+document.form1.h69_rhgrupotipoavaliacao.value+'&funcao_js=parent.js_mostrarhgrupotipoavaliacao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhgrupotipoavaliacao','func_rhgrupotipoavaliacao.php?pesquisa_chave='+document.form1.h69_rhgrupotipoavaliacao.value+'&funcao_js=parent.js_mostrarhgrupotipoavaliacao','Pesquisa',false);
      }else{
        document.form1.h68_descricao.value = ''; 
      }
@@ -217,7 +217,7 @@ function js_mostrarhgrupotipoavaliacao1(chave1,chave2, chave3){
   
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhtipoavaliacao','func_rhtipoavaliacao.php?funcao_js=parent.js_preenchepesquisa|h69_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhtipoavaliacao','func_rhtipoavaliacao.php?funcao_js=parent.js_preenchepesquisa|h69_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhtipoavaliacao.hide();

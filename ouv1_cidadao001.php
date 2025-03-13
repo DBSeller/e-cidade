@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_utils.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cidadao_classe.php");
-include("classes/db_cidadaoemail_classe.php");
-include("classes/db_cidadaotelefone_classe.php");
-include("dbforms/db_funcoes.php");
-include ("libs/db_app.utils.php");
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cidadao_classe.php"));
+include(modification("classes/db_cidadaoemail_classe.php"));
+include(modification("classes/db_cidadaotelefone_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_app.utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 //$clcidadao 					= new cl_cidadao;
@@ -84,7 +84,7 @@ if (isset($oGet->lTelaSocial) && $oGet->lTelaSocial) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
     	<?
-    	  require_once ("forms/db_frmcidadao.php");
+    	  require_once(modification("forms/db_frmcidadao.php"));
     	?>
     </center>
 	</td>

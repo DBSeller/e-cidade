@@ -1,37 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -43,7 +43,7 @@ $oRetorno->message = "";
 $aParametros         = db_stdClass::getParametro("orcparametro", array(db_getsession("DB_anousu")));
 $oParametroOrcamento = $aParametros[0];
 if ($oParam->exec == "getElementosFromAcao") {
-	
+
 	/**
 	 * @todo - remover
 	 * Ativa PCASP quando arquivo de configuração com ano do PCASP existir
@@ -51,7 +51,7 @@ if ($oParam->exec == "getElementosFromAcao") {
 	if ( !USE_PCASP && file_exists("config/pcasp.txt") ) {
 		$_SESSION["DB_use_pcasp"] = "t";
 	}
-	
+
   $oRetorno->leivalida = false;
   $oDaoLei             = db_utils::getDao("ppaversao");
   $sSqlPPALei          = $oDaoLei->sql_query($oParam->o08_ppaversao);
@@ -66,7 +66,7 @@ if ($oParam->exec == "getElementosFromAcao") {
       $oRetorno->leivalida = true;
     }
   }
-  $oDaoPPaDotacao = db_utils::getDao("ppaestimativadespesa");
+  $oDaoPPaDotacao = new cl_ppaestimativadespesa();
   $sCampos        = "distinct o08_orgao,
                      orcorgao.o40_descr,
                      o08_unidade,
@@ -131,6 +131,7 @@ if ($oParam->exec == "getElementosFromAcao") {
   $sCampos .= "o08_concarpeculiar,";
   $sCampos .= "o08_recurso,";
   $sCampos .= "o15_descr,";
+  $sCampos .= "gestao,";
   $sCampos .= "o08_localizadorgastos,";
   $sCampos .= "o11_descricao,";
   $sCampos .= "o05_valor,";
@@ -154,9 +155,9 @@ if ($oParam->exec == "getElementosFromAcao") {
   if ( !USE_PCASP && file_exists("config/pcasp.txt") ) {
   	$_SESSION["DB_use_pcasp"] = "f";
   }
-  
-  
-  $oRetorno->itens = db_utils::getColectionByRecord($rsDotacaoItens,false, false, true);
+
+
+  $oRetorno->itens = db_utils::getCollectionByRecord($rsDotacaoItens,false, false, true);
 
 } else if ($oParam->exec == "getInformacaoEstivativa") {
 
@@ -167,6 +168,8 @@ if ($oParam->exec == "getElementosFromAcao") {
   $sCampos          .= "o56_descr,";
   $sCampos          .= "o08_recurso,";
   $sCampos          .= "o15_descr,";
+  $sCampos          .= "o15_recurso,";
+  $sCampos          .= "o200_descricao,";
   $sCampos          .= "o08_localizadorgastos,";
   $sCampos          .= "o08_concarpeculiar,";
   $sCampos          .= "o11_descricao,";
@@ -356,7 +359,7 @@ if ($oParam->exec == "getElementosFromAcao") {
                                                              $sWhere
                                                            );
   $rsDotacaoItens  = $oDaoPPaDotacao->sql_record($sSqlDotacaoItens);
-  $oRetorno->itens = db_utils::getColectionByRecord($rsDotacaoItens);
+  $oRetorno->itens = db_utils::getCollectionByRecord($rsDotacaoItens);
 
   /**
    * percorremos as dotações, e verificamos se com a modificação feita pelo usuário já existe uma
@@ -394,7 +397,7 @@ if ($oParam->exec == "getElementosFromAcao") {
 } else if ($oParam->exec == "incluirAcao") {
 
 
-  require("model/ppadespesa.model.php");
+  require(modification("model/ppadespesa.model.php"));
   $oPPADespesa = new ppaDespesa($oParam->o08_ppaversao);
   try {
 

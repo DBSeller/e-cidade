@@ -162,10 +162,10 @@ db_textarea('ed07_t_pendentes',3,40,$Ied07_t_pendentes,true,'text',$db_opcao,"")
 <script>
 function js_pesquisaed07_i_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.ed07_i_codigo.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.ed07_i_codigo.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.ed07_i_codigo.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = '';
      }
@@ -185,10 +185,10 @@ function js_mostracgm1(chave1,chave2){
 }
 function js_pesquisaed07_i_responsavel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm3|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm3|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.ed07_i_responsavel.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.ed07_i_responsavel.value+'&funcao_js=parent.js_mostracgm2','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.ed07_i_responsavel.value+'&funcao_js=parent.js_mostracgm2','Pesquisa',false);
      }else{
        document.form1.z01_nome2.value = '';
      }
@@ -207,7 +207,7 @@ function js_mostracgm3(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_alunos','func_alunos.php?funcao_js=parent.js_preenchepesquisa|ed07_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_alunos','func_alunos.php?funcao_js=parent.js_preenchepesquisa|ed07_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_alunos.hide();

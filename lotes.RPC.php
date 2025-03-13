@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("std/db_stdClass.php");
-require("libs/db_conecta.php");
-require("libs/db_sessoes.php");
-//include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_sessoes.php"));
+//include(modification("dbforms/db_funcoes.php"));
 
-require ("libs/JSON.php");
+require(modification("libs/JSON.php"));
 
 //var_dump($_POST);
 

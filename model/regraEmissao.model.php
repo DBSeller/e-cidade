@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -47,7 +47,7 @@ class regraEmissao {
   private $lOpenUnico            = false;
   public  $oPdfUnico             = null;
 
-  function __construct($iArretipo=null,$iTipoMod,$iInstit,$dDatahj,$sIp=null, $lNovoPdf = true, $oPdfUnico = null, $iParcelaInicial = null, $iParcelaFinal = null) {
+  public function __construct($iArretipo=null,$iTipoMod,$iInstit,$dDatahj,$sIp=null, $lNovoPdf = true, $oPdfUnico = null, $iParcelaInicial = null, $iParcelaFinal = null) {
 
     $this->lNovoPdf  = $lNovoPdf;
     $this->oPdfUnico = $oPdfUnico;
@@ -229,11 +229,11 @@ class regraEmissao {
   function setObjPdf($iAltura="",$iLargura="",$sOrientacao="",$iCadModCarne){
 
     if ( !class_exists('db_impcarne') ) {
-  	  require_once("fpdf151/impcarne.php");
+  	  require_once(modification("fpdf151/impcarne.php"));
     }
 
     if ( !class_exists('scpdf') ) {
-      require_once("fpdf151/scpdf.php");
+      require_once(modification("fpdf151/scpdf.php"));
     }
 
   	if ($this->lNovoPdf) {
@@ -246,7 +246,7 @@ class regraEmissao {
   	     $this->oSpdf = new scpdf();
   	  }
   	  $this->oSpdf->Open();
-  	  $this->oObjPdf = new db_impcarne(&$this->oSpdf,$iCadModCarne);
+  	  $this->oObjPdf = new db_impcarne($this->oSpdf,$iCadModCarne);
 
     } else {
 
@@ -255,7 +255,7 @@ class regraEmissao {
         $this->oPdfUnico->open();
         $this->lOpenUnico = true;
       }
-      $this->oObjPdf = new db_impcarne(&$this->oPdfUnico, $iCadModCarne);
+      $this->oObjPdf = new db_impcarne($this->oPdfUnico, $iCadModCarne);
     }
 
   }
@@ -264,6 +264,9 @@ class regraEmissao {
 	 $this->oObjLayout = "";
   }
 
+ /**
+  * @return db_impcarne
+  */
   function getObjPdf(){
 	  return $this->oObjPdf;
   }
@@ -315,6 +318,17 @@ class regraEmissao {
 
   function getCadTipoConvenio(){
   	return $this->iCadTipoConvenio;
+  }
+
+  public static function getConveioCustaBoleto()
+  {
+ 
+    $sSql = "select ar49_conveniocustaboleto from conveniocustaboleto";
+    $rsConveio = db_query($sSql);
+    if (!$rsConveio || pg_numrows($rsConveio) <= 0) {
+    throw new Exception("Erro ao Buscar Parametro da Custa do Boleto");
+    }
+    return db_utils::fieldsMemory($rsConveio, 0)->ar49_conveniocustaboleto;
   }
 
 }

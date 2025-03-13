@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -47,7 +47,7 @@ class cl_lab_tipodocumento {
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  la33_i_codigo = int4 = Código 
-                 la33_c_descr = char(100) = Descrição 
+                 la33_c_descr = char(50) = Descrição 
                  ";
    //funcao construtor da classe 
    function cl_lab_tipodocumento() { 

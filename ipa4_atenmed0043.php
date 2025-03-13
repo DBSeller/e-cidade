@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_conecta.php");
-require("libs/db_stdlib.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_stdlib.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
 if(isset($HTTP_POST_VARS["atualizar"])) {
   db_postmemory($HTTP_POST_VARS);
   $dataat = $dataat_ano."-".$dataat_mes."-".$dataat_dia;
@@ -39,8 +39,8 @@ if(isset($HTTP_POST_VARS["atualizar"])) {
   else
     $dataat = "'$dataat'";
   @$ag40_altcid = $ag40_altcid==""?$ag40_altcid='f':'t';
-  pg_exec("begin");
-  pg_exec("update atendmed set  ag40_recint = '".@$ag40_recint."',
+  db_query("begin");
+  db_query("update atendmed set  ag40_recint = '".@$ag40_recint."',
                                  ag40_recext = '".@$ag40_recext."',
                                  ag40_altcid = '".@$ag40_altcid."',
 			         ag40_tipocons = '".@$ag40_tipocons."',
@@ -51,15 +51,15 @@ if(isset($HTTP_POST_VARS["atualizar"])) {
 				 ag40_diasatestado = '".@$ag40_diasatestado."',
 				 ag40_dataatestado  = ".@$dataat."
 				where ag40_codigo = $codigo") or die("Erro(62) atualizando atendmed");
-  pg_exec("delete from atendmedcid where ag40_codigo = $codigo") or die("Erro(30) excluindo tabela atendmedcid");
+  db_query("delete from atendmedcid where ag40_codigo = $codigo") or die("Erro(30) excluindo tabela atendmedcid");
   for($i = 0;$i < sizeof(@$ag40_cid);$i++) {
-    $result = pg_exec("insert into atendmedcid values($codigo,'".$ag40_cid[$i]."')");
+    $result = db_query("insert into atendmedcid values($codigo,'".$ag40_cid[$i]."')");
 	if(pg_cmdtuples($result) == 0) {
-	  pg_exec("rollback");
+	  db_query("rollback");
 	  db_erro("Erro(32) incluindo em atendmedcid");	  
 	}
   }
-  pg_exec("end");
+  db_query("end");
 }
 
 ?>
@@ -263,7 +263,7 @@ function js_imprimirreceita() {
   <tr>
     <td height="334" valign="top" bgcolor="#FFFF64">	
 	<?
-	$result = pg_exec("select * from atendmed where ag40_codigo = ".db_getsession("COD_atendimento"));
+	$result = db_query("select * from atendmed where ag40_codigo = ".db_getsession("COD_atendimento"));
 	if(pg_numrows($result) > 0)
 	  db_fieldsmemory($result,0);
 	?>
@@ -344,7 +344,7 @@ function js_imprimirreceita() {
                             <tr>
                               <td><select style="width:50ex;" name="ag40_cid[]" multiple size="3">
                                   <?
-					$result = pg_exec("select c.codcid,c.descr 
+					$result = db_query("select c.codcid,c.descr 
 					                   from cid10 c
 									   inner join atendmedcid a
 									   on a.ag40_codcid = c.codcid

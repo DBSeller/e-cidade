@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-include_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_stdlibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 db_postmemory($HTTP_POST_VARS);
 $oDaoLabRequi     = db_utils::getdao('lab_requisicao');
 $oDaoLabRequiitem = db_utils::getdao('lab_requiitem');
@@ -49,7 +49,7 @@ $dHoje            = date("Y-m-d",db_getsession("DB_datausu"));
  */
 function laboratorioLogado(){
   
-  require_once('libs/db_utils.php');
+  require_once(modification('libs/db_utils.php'));
   $iUsuario = db_getsession('DB_id_usuario');
   $iDepto = db_getsession('DB_coddepto');
   $oLab_labusuario = db_utils::getdao('lab_labusuario');
@@ -68,7 +68,7 @@ function laboratorioLogado(){
           return 0;
       }
   }
-  $oLab = db_utils::getColectionByRecord($rResult);
+  $oLab = db_utils::getCollectionByRecord($rResult);
   return $oLab[0]->la02_i_codigo;
   
 }
@@ -81,7 +81,7 @@ $iLaboratorioLogado = laboratorioLogado();
  */
 function responsavelTecnico($iLaboratorioLogado){
   
-  require_once('libs/db_utils.php');
+  require_once(modification('libs/db_utils.php'));
   $iUsuario = db_getsession('DB_id_usuario');
   $oLab_labresp = db_utils::getdao('lab_labresp');
   $sql = $oLab_labresp->sql_query_responsavel(null, 'la06_i_cbo', "", 
@@ -90,7 +90,7 @@ function responsavelTecnico($iLaboratorioLogado){
   if ($oLab_labresp->numrows == 0) {
       return 0;
   }
-  $oLabResp = db_utils::getColectionByRecord($rResult);
+  $oLabResp = db_utils::getCollectionByRecord($rResult);
   return $oLabResp[0]->la06_i_cbo;
   
 }
@@ -202,7 +202,7 @@ db_app::load("webseller.js");
   <tr> 
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
     <center>
-      <?include("forms/db_frmlab_import.php");?>
+      <?include(modification("forms/db_frmlab_import.php"));?>
     </center>
     </td>
   </tr>

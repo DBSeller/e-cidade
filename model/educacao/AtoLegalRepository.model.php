@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
  * Repositoy para os Atos Legais
  * @package   Educacao
  * @author    Trucolo - trucolo@dbseller.com.br
- * @version   $Revision: 1.7 $
+ * @version   $Revision: 1.8 $
  */
 
 class AtoLegalRepository {
@@ -48,7 +48,7 @@ class AtoLegalRepository {
    * Retorna a instância do Repositório
    * @return AtoLegalRepository
    */
-  protected function getInstance() {
+  public static function getInstance() {
 
     if(self::$oInstance == null) {
       self::$oInstance = new AtoLegalRepository();

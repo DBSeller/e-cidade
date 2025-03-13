@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -755,5 +755,35 @@ class cl_gerfadi {
      }
      return $sql;
   }
+
+  public function migraGerfAdi($iInstituicao) {
+    
+    $sSql  = "create table w_migracao_adiantamento as select distinct r21_anousu,                                                    ";
+    $sSql .= "                                                    r21_mesusu,                                                        ";
+    $sSql .= "                                                    r21_instit                                                         ";
+    $sSql .= "                                      from pontofa                                                                     ";
+    $sSql .= "                                      inner join gerfadi on r21_anousu = r22_anousu                                    ";
+    $sSql .= "                                                        and r21_mesusu = r22_mesusu                                    ";
+    $sSql .= "                                                        and r21_instit = {$iInstituicao};                              ";
+    $sSql .= "                                                                                                                       ";
+                                                                                                                                     
+    $sSql .= "insert into rhfolhapagamento                                                                                           ";
+    $sSql .= "select nextval('rhfolhapagamento_rh141_sequencial_seq'),                                                               ";
+    $sSql .= "       0,                                                                                                              ";
+    $sSql .= "       r21_anousu,                                                                                                     ";
+    $sSql .= "       r21_mesusu,                                                                                                     ";
+    $sSql .= "       r21_anousu,                                                                                                     ";
+    $sSql .= "       r21_mesusu,                                                                                                     ";
+    $sSql .= "       r21_instit,                                                                                                     ";
+    $sSql .= "       4,                                                                                                              ";
+    $sSql .= "       false,                                                                                                          ";
+    $sSql .= "       'Folha Adiantamento número: 0 da competência: ' || r21_anousu || '/' || r21_mesusu || ' gerada automaticamente.'";
+    $sSql .= "  from w_migracao_adiantamento                                                                                         ";
+    $sSql .= "order by r21_anousu asc,                                                                                               ";
+    $sSql .= "         r21_mesusu asc;                                                                                               ";
+
+    return $sSql;         
+
+  }
+
 }
-?>

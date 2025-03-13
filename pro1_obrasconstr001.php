@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
-require_once("classes/db_caracter_classe.php");
-require_once("classes/db_obras_classe.php");
-require_once("classes/db_obrasalvara_classe.php");
-require_once("classes/db_obrasconstr_classe.php");
-require_once("classes/db_obrasender_classe.php");
-require_once("classes/db_obrasiptubase_classe.php");
-require_once("classes/db_parprojetos_classe.php");
+require_once(modification("classes/db_caracter_classe.php"));
+require_once(modification("classes/db_obras_classe.php"));
+require_once(modification("classes/db_obrasalvara_classe.php"));
+require_once(modification("classes/db_obrasconstr_classe.php"));
+require_once(modification("classes/db_obrasender_classe.php"));
+require_once(modification("classes/db_obrasiptubase_classe.php"));
+require_once(modification("classes/db_parprojetos_classe.php"));
 
 $oPost             = db_utils::postMemory($HTTP_POST_VARS);
 $oGet              = db_utils::postMemory($HTTP_GET_VARS);
@@ -110,7 +110,7 @@ if ($iDBOpcao == 1) {
         <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
         <center>
 		    	<?
-		        include("forms/db_frmobrasconstr.php");
+		        include(modification("forms/db_frmobrasconstr.php"));
 		    	?>
         </center>
     	</td>

@@ -1,37 +1,72 @@
 <?php
 
-class DBReleaseNote {
+abstract class DBReleaseNote {
 
-  const DIRETORIO_RELEASE_NOTE = 'release_notes';
+  const SORT_ASC = 0;
+  const SORT_DESC = 1;
 
-  private $sVersao = '';
+  const TIPO_SISTEMA = 'sistema';
+  const TIPO_PLUGIN = 'plugin';
+  const TIPO_MODIFICACAO = 'modificacao';
+  const TIPO_PREVIA = 'previa';
 
-  private $iUsuario;
+  protected $iUsuario;
+  protected $sNomeArquivo;
+  protected $sNomeArquivoAtual;
+  protected $sVersao;
+  protected $lSomenteNaoLidos = false;
 
-  private $sNomeArquivo;
+  private $dirBase;
 
-  private $iCodVersao;
-
-  private $iCodRelease;
-
-  public function __construct($idUsuario, $sNomeArquivo = '', $sVersao = null) {
+  public function __construct($idUsuario, $sNomeArquivo = null, $sNomeArquivoAtual = null, $sVersao = null) {
 
     $this->iUsuario  = $idUsuario;
     $this->sNomeArquivo = $sNomeArquivo;
-
-    if ( empty($sVersao) ) {
-
-      $sVersao = $this->getPrimeiraVersaoNaoLida();
-    }
-
-    if ( !empty($sVersao) ) {
-
-      $aVersao = explode(".", $sVersao);
-      $this->iCodVersao = $aVersao[1];
-      $this->iCodRelease = $aVersao[2];
-    }
-
+    $this->sNomeArquivoAtual = $sNomeArquivoAtual ?: $sNomeArquivo;
+    $this->sVersao = $sVersao;   
   }
+
+  /**
+   * Método resposável por marcar um release note como lido para controle de mostrar ou não ao usuario
+   * @return void
+   */
+  abstract public function marcarComoLido($aArquivosLidos);
+
+  /**
+   * Método responsável por retornar a versão em que o release note se aplica
+   * de forma formatada
+   * @return {string}
+   */
+  abstract public function getVersaoFormatada();
+
+  /**
+   * Método responsável por filtar a versão passado por parâmetro,
+   * (funciona como um reduce para o método getVersoesPorNomeArquivo)
+   * @param  {string} $sVersao
+   * @return {boolean}
+   */
+  abstract public function filtrarVersao($sVersao);
+
+  /**
+   * Método responsável por retornar os dados de release notes lidos
+   * @param  {Integer} $iSorting ordenacao
+   * @return Object[]           Coleção de dados de release notes lidos
+   *
+   * @example Formato de retorno
+   *           array(
+   *             stdClass(
+   *               "sVersao" => "xxx",
+   *               "iIdUsuario" => "99999999",
+   *               "iIdMenu" => "xxxxxxxxxx"
+   *             ),
+   *             stdClass(
+   *               "sVersao" => "yyy",
+   *               "iIdUsuario" => "8888888888",
+   *               "sNomeArquivo" => "yyyyyyy"
+   *             )
+   *           )
+   */
+  abstract public function getMudancasLidas($iSorting = self::SORT_ASC);
 
   /**
    * Verifica se o changelog informado já foi lido pelo usuário.
@@ -39,78 +74,186 @@ class DBReleaseNote {
    */
   public function check() {
 
-    if ( empty($this->iCodVersao) ||  empty($this->iCodRelease) ) {
+    $sVersao = $this->getVersaoFormatada();
+
+    if ( empty($sVersao) ) {
       return false;
     }
 
-    $rsMudancaLidas = $this->getMudancasLidas();
+    $aMudancasLidas = $this->getMudancasLidas();
 
-    $iTotalLidos = pg_num_rows($rsMudancaLidas);
-
+    $iTotalLidos = count($aMudancasLidas);
     $aReleaseNoteNomeArquivo = $this->getVersoesPorNomeArquivo();
-    return $iTotalLidos != count($aReleaseNoteNomeArquivo);
+
+    return $iTotalLidos < count($aReleaseNoteNomeArquivo);
   }
 
-  private function getVersoesPorNomeArquivo($iSorting = 0) {
+  /**
+   * Método responsável por retornar o caminho completo do arquivo md que será convertido
+   * @param  string $sNomeArquivo - nome do arquivo para buscar caminho do arquivo
+   * @return {string}
+   */
+  public function getCaminhoArquivo($sNomeArquivo = null, $sVersao = null) {
 
-    $aVersoes = scandir(self::DIRETORIO_RELEASE_NOTE, $iSorting);
+    $sVersao = $sVersao ?: $this->getVersaoFormatada();
+    $sNomeArquivo = $sNomeArquivo ?: $this->sNomeArquivoAtual;
+
+    $sCaminhoArquivo = $this->getDirBase() . "/{$sVersao}/$sNomeArquivo.md";
+
+    if (file_exists($sCaminhoArquivo)) {
+      return $sCaminhoArquivo;
+    }
+
+    $sCaminhoArquivo = $this->getDirBase() . "/{$sVersao}/$sNomeArquivo" . "_01.md";
+
+    if (file_exists($sCaminhoArquivo)) {
+      
+      if ($this->sNomeArquivo == $this->sNomeArquivoAtual)
+        $this->sNomeArquivoAtual = $sNomeArquivo . "_01";
+
+      return $sCaminhoArquivo;
+    }
+
+    return false;
+  } 
+
+  protected function getVersoesPorNomeArquivo($iSorting = self::SORT_ASC) {
+
+    if (!is_dir($this->getDirBase())) {
+      return array();
+    }
+
+    $aVersoes = scandir($this->getDirBase(), $iSorting);
 
     $aRetornoReleaseNotes = array();
 
     foreach ($aVersoes as $sVersao) {
 
-      if ($sVersao == "." || $sVersao == "..") {
+      if ( is_dir($sVersao) ) {
         continue;
       }
 
-      $sNomeArquivo = self::DIRETORIO_RELEASE_NOTE . "/" . $sVersao . "/" . $this->sNomeArquivo . ".md";
+      if ( !$this->filtrarVersao($sVersao) ) {
+        continue;
+      }
 
-      if (file_exists($sNomeArquivo)) {
+      $sCaminhoArquivo = $this->getCaminhoArquivo($this->sNomeArquivo, $sVersao);
+
+      if (false !== $sCaminhoArquivo) {
         $aRetornoReleaseNotes[] = $sVersao;
       }
 
     }
-
+    
     return $aRetornoReleaseNotes;
   }
 
-  public function getVersaoFormatada() {
-    return 'v2.' . $this->iCodVersao . '.' . $this->iCodRelease;
+  /**
+   * @param boolean $lSomenteNaoLidos
+   */
+  public function setSomenteNaoLidos($lSomenteNaoLidos) {
+    $this->lSomenteNaoLidos = (bool) $lSomenteNaoLidos;
   }
 
+  /**
+   * Retorna a versão do proximo release do mesmo menu da instancia
+   * @param  boolean $lSomenteNaoLidos
+   * @return string
+   */
+  public function getProximaVersao() {
+    return $this->getVersaoOrdenada(static::SORT_ASC, $this->lSomenteNaoLidos);
+  }
+
+  public function getVersaoAnterior() {
+    return $this->getVersaoOrdenada(static::SORT_DESC, $this->lSomenteNaoLidos);
+  }
+
+  public function getArquivoAtual() {
+    return $this->sNomeArquivoAtual;
+  }
+
+  public function getArquivoAnterior() {
+    return $this->getArquivoOrdenado(self::SORT_DESC);
+  }
+
+  public function getProximoArquivo() {
+    return $this->getArquivoOrdenado(self::SORT_ASC);
+  }
+
+  public function getArquivoOrdenado($iSorting) {
+
+    $sVersao = $this->getVersaoFormatada();
+
+    $aArquivos = scandir($this->getDirBase() . "/" . $sVersao, $iSorting);
+
+    $iInicio = -1;
+    $lArquivoAtual = false;
+
+    foreach ($aArquivos as $iIndex => $sArquivo) {
+      
+      $lProximoArquivo = strpos($sArquivo, $this->sNomeArquivo) === 0;
+
+      if ( $lProximoArquivo && $lArquivoAtual) {
+        $iInicio = $iIndex;
+        break;
+      }
+
+      if ( $sArquivo == ($this->sNomeArquivoAtual . ".md") ) {
+        $lArquivoAtual = true;
+      }
+
+    }
+
+    if ( isset($aArquivos[$iInicio]) ) {
+      return trim($aArquivos[$iInicio], '.md');
+    }
+
+    return "";
+  }
+
+  /**
+   * Método responsável por converter o arquivo md e retornar o conteudo html
+   * @return {string}
+   */
   public function getContent() {
 
-    $sCaminhoArquivo = self::DIRETORIO_RELEASE_NOTE . "/{$this->getVersaoFormatada()}/$this->sNomeArquivo.md";
+    $sCaminhoArquivo = $this->getCaminhoArquivo();
 
-    if (!file_exists($sCaminhoArquivo)) {
+    if ( false === $sCaminhoArquivo ) {
       return "";
     }
 
     $sConteudoArquivoMD = file_get_contents($sCaminhoArquivo);
 
-    require_once("ext/php/Michelf/MarkdownExtra.inc.php");
+    ini_set('pcre.backtrack_limit', '1000000');
+
+    require_once(modification("ext/php/Michelf/MarkdownExtra.inc.php"));
 
     $sContent = \Michelf\MarkdownExtra::defaultTransform($sConteudoArquivoMD);
 
     return $sContent;
+  }    
+
+  public function setDirBase($dirBase) {
+    $this->dirBase = $dirBase;
   }
 
-  public function getProximaVersao($lSomenteNaoLidos = false) {
-    return $this->getVersaoOrdenada(0, $lSomenteNaoLidos);
+  public function getDirBase() {
+    return $this->dirBase;
   }
 
-  public function getVersaoAnterior($lSomenteNaoLidos = false) {
-    return $this->getVersaoOrdenada(1, $lSomenteNaoLidos);
-  }
-
+  /**
+   * Responsavel por retornar a primeira ocorrencia na lista de versao, de acordo com a ordenacao
+   * @return string
+   */
   public function getVersaoOrdenada($iSorting, $lSomenteNaoLido = true) {
-
+    
     $aVersoes = $this->getVersoesPorNomeArquivo($iSorting);
-
-    $rsMudancaLidas = $this->getMudancasLidas($iSorting);
-
+    $aVersoesLidas = $this->getMudancasLidas($iSorting);
+    
     $iInicio = 0;
 
+    // Procura o indice da primeira ocorrencia dos release notes da versão requerida
     foreach ($aVersoes as $iIndexVersoes => $sVersao) {
 
       if ( $sVersao == $this->getVersaoFormatada() ) {
@@ -119,58 +262,30 @@ class DBReleaseNote {
       }
     }
 
+
+    // Caso seja somente nao lidos, retorna a proxima ocorrencia se existir
     if (!$lSomenteNaoLido) {
       return isset($aVersoes[$iInicio+1]) ? $aVersoes[$iInicio+1] : "";
     }
 
     $sVersao = "";
-    $aVersoesLidas = array();
 
-    if (pg_num_rows($rsMudancaLidas) > 0) {
-      $aVersoesLidas = db_utils::getCollectionByRecord($rsMudancaLidas);
-    }
-
+    // procura a proxima versao que precisa ser mostrada de acordo com os lidos
     for ($iIndexVersoes = ($iInicio+1); $iIndexVersoes < count($aVersoes); $iIndexVersoes++) {
 
       $sVersao = $aVersoes[$iIndexVersoes];
-
       foreach ($aVersoesLidas as $oDadoVersaoLida) {
 
-        $sVersaoLida = "v2.{$oDadoVersaoLida->db30_codversao}.{$oDadoVersaoLida->db30_codrelease}";
-
-        if ( $sVersao == $sVersaoLida ) {
-          $sVersao = "";
+        if ( $sVersao == $oDadoVersaoLida->sVersao ) {
+          $sVersao = "";    
           continue 2;
         }
       }
 
       break;
-
     }
 
     return $sVersao;
-  }
-
-  public function getVersao() {
-    return "2.{$this->iCodVersao}.{$this->iCodRelease}";
-  }
-
-  public function getMudancasLidas($iSorting = 0) {
-
-    $sSql  = "select *                                                         ";
-    $sSql .= "  from db_releasenotes                                           ";
-    $sSql .= " inner join db_versao on db30_codver = db147_db_versao           ";
-    $sSql .= " where db147_nomearquivo   = '{$this->sNomeArquivo}'                ";
-    $sSql .= "  and db147_id_usuario = {$this->iUsuario}                       ";
-    $sSql .= " order by db147_db_versao " . ($iSorting == 1 ? "desc" : "asc");
-
-    $rsCheckReleaseNote = db_query($sSql);
-
-    if  (!$rsCheckReleaseNote) {
-      throw new DBException("Erro ao buscar as mudanças lidas do usuário.");
-    }
-
-    return $rsCheckReleaseNote;
   }
 
   public function getPrimeiraVersaoNaoLida() {
@@ -181,19 +296,31 @@ class DBReleaseNote {
       return false;
     }
 
-    $rsMudancaLidas = $this->getMudancasLidas();
+    $aArquivosLidas = $this->getMudancasLidas();
 
-    if (pg_num_rows($rsMudancaLidas) == 0 ) {
+    if (empty($aArquivosLidas)) {
       return $aVersoes[0];
     }
 
-    $aMudancas = db_utils::getCollectionByRecord($rsMudancaLidas);
+    $aVersoesLidas = array();
 
+    foreach ($aArquivosLidas as $aVersao) {
+
+      if (!in_array($aVersao->sVersao, $aVersoesLidas)) {
+        $aVersoesLidas[] = $aVersao->sVersao;
+      }
+
+    }
+
+    /**
+     * Procura um release note que nao foi lido ainda.
+     */
     foreach ($aVersoes as $iIndex => $sVersao) {
 
-      if (isset ($aMudancas[$iIndex]) ) {
+      if (isset ($aVersoesLidas[$iIndex]) ) {
 
-        $sVersaoMudanca = "v2.{$aMudancas[$iIndex]->db30_codversao}.{$aMudancas[$iIndex]->db30_codrelease}";
+        $sVersaoMudanca = $aVersoesLidas[$iIndex];
+
         if ( $sVersao != $sVersaoMudanca ) {
           return $sVersao;
         }
@@ -204,117 +331,97 @@ class DBReleaseNote {
 
     }
 
-    require('libs/db_acessa.php');
-    return "v2.{$db_fonte_codversao}.{$db_fonte_codrelease}";
+    return end($aVersoes);
+  }
+  
+  /**
+   * @param stdClass $oParam
+   * @return stdClass
+   */
+  public function buildData() {
+
+    $oRetorno = new stdClass();
+
+    $oRetorno->sArquivoAnterior = $this->getArquivoAnterior();
+    $oRetorno->sArquivoAtual = $this->getArquivoAtual();
+    $oRetorno->sProximoArquivo = $this->getProximoArquivo();
+
+    $oRetorno->sProximaVersao = $this->getProximaVersao();
+    $oRetorno->sVersaoAtual = $this->getVersaoFormatada();
+    $oRetorno->sVersaoTela = $oRetorno->sVersaoAtual;
+    $oRetorno->sVersaoAnterior = $this->getVersaoAnterior();
+
+    $oUsuario = new UsuarioSistema($this->iUsuario);
+    $oRetorno->sNomeUsuario = urlencode($oUsuario->getNome());
+
+    $oRetorno->sContent = $this->getContent();
+
+    return $oRetorno;
   }
 
-  public function marcarComoLido($aArquivosLidos) {
 
-    if (empty($aArquivosLidos)) {
-      return;
+  public static function createInstance($sTipo, $idUsuario, $sNomeArquivo = null, $sNomeArquivoAtual = null, $sVersao = null) {
+
+    switch($sTipo) {
+
+      case self::TIPO_SISTEMA :
+        return new DBReleaseNoteSistema($idUsuario, $sNomeArquivo, $sNomeArquivoAtual, $sVersao);
+      break;
+
+      case self::TIPO_PLUGIN :
+        return new DBReleaseNotePlugin($idUsuario, $sNomeArquivo, $sNomeArquivoAtual, $sVersao);
+      break;
+
+      case self::TIPO_MODIFICACAO :
+        return new DBReleaseNoteModificacao($idUsuario, $sNomeArquivo, $sNomeArquivoAtual, $sVersao);
+      break;
+
+      case self::TIPO_PREVIA :
+        return new DBReleaseNotePrevia($idUsuario, $sNomeArquivo, $sNomeArquivoAtual, $sVersao);
+      break;
     }
 
-    $sSqlDelete = "delete from db_releasenotes where db147_id_usuario = {$this->iUsuario} ";
-
-    $sSqlInsert = "insert into db_releasenotes (db147_sequencial, db147_nomearquivo, db147_db_versao, db147_id_usuario) values ";
-
-    $aArquivosInserir = array();
-    $aVersoesDelete = array();
-    $aSqlInsert = array();
-    foreach ($aArquivosLidos as $oArquivoLido) {
-
-      $aVersao = explode(".", $oArquivoLido->sVersao);
-      $iCodVersao = $aVersao[1];
-      $iCodRelease = $aVersao[2];
-
-      $sSqlBuscaVersoes  = "select db30_codver from db_versao                                   \n";
-      $sSqlBuscaVersoes .= " where db30_codversao  = " . $iCodVersao  . "\n";
-      $sSqlBuscaVersoes .= "   and db30_codrelease = " . $iCodRelease . "\n";
-
-      $rsBuscaVersoes = db_query($sSqlBuscaVersoes);
-
-      if (!$rsBuscaVersoes || pg_num_rows($rsBuscaVersoes) == 0) {
-        throw new DBException("Erro ao buscar as versões do sistema.");
-      }
-
-      $oVersao = db_utils::fieldsMemory($rsBuscaVersoes, 0);
-
-      $aSqlInsert[] =  "(nextval('db_releasenotes_db147_sequencial_seq'), '{$oArquivoLido->sNomeArquivo}', {$oVersao->db30_codver}, {$this->iUsuario})";
-
-      $aArquivosInserir[] = "'$oArquivoLido->sNomeArquivo'";
-      $aVersoesDelete[]   = $oVersao->db30_codver;
-    }
-
-    if (empty($aSqlInsert)) {
-      throw new DBException("Não foi possível marcar as mudanças como lido.");
-    }
-
-    $aVersoesDelete = array_unique($aVersoesDelete);
-
-    if ( !empty($aArquivosInserir) && !empty($aVersoesDelete) ) {
-      $sSqlDelete .= " and db147_nomearquivo in (" . implode(",", $aArquivosInserir) . ") \n";
-      $sSqlDelete .= " and db147_db_versao   in (" . implode(",", $aVersoesDelete)   . ");\n";
-    } else {
-      $sSqlDelete = "";
-    }
-
-
-    $sSqlInsert .= implode(",", $aSqlInsert);
-
-    $rsInsert = db_query($sSqlDelete . $sSqlInsert);
-
-    if (!$rsInsert) {
-      throw new DBException("Não foi possível marcar as mudanças como lido.");
-    }
-
+    throw new BusinessException('Não foi possivel criar instancia de DBReleaseNote');
   }
 
-  public function getArquivoAnterior() {
+  /**
+   * @param stdClass $oParam
+   * @return stdClass
+   */
+  public static function buildFromParams(stdClass $oParam) {
 
-    $aNomeArquivo = explode("_", $this->sNomeArquivo);
+    $aPadrao = array(
+      'sTipo' => null, 'idUsuario' => null, 'sNomeArquivo' => null, 
+      'sArquivoAtual' => null, 'sVersao' => null, 'lSomenteNaoLidos' => false,
+    );
+    $oParam = (object) array_merge($aPadrao, (array) $oParam);
 
-    $sNomeArquivo = current($aNomeArquivo);
+    $oDBReleaseNote = DBReleaseNote::createInstance(
+      $oParam->sTipo, $oParam->idUsuario, $oParam->sNomeArquivo, $oParam->sArquivoAtual, $oParam->sVersao
+    );
 
-    $iIndexArquivo = 1;
-
-    if ( count($aNomeArquivo) > 1 ) {
-      $iIndexArquivo = intval( end($aNomeArquivo) );
-      array_pop($aNomeArquivo);
-      $sNomeArquivo = implode("_", $aNomeArquivo);
+    if (isset($oParam->lSomenteNaoLidos)) {
+      $oDBReleaseNote->setSomenteNaoLidos($oParam->lSomenteNaoLidos);
     }
 
-    if ($iIndexArquivo == 1) {
-      return "";
-    }
-
-    $iIndexArquivo--;
-
-    return $sNomeArquivo . "_" . str_pad($iIndexArquivo, 2, STR_PAD_LEFT, "0");
+    return $oDBReleaseNote;
   }
 
-  public function getProximoArquivo() {
+  /**
+   * @param integer $idMenu
+   * @return string
+   */
+  public static function buscarTipo($idMenu) {
 
-    $aNomeArquivo = explode("_", $this->sNomeArquivo);
-
-    $sNomeArquivo = current($aNomeArquivo);
-
-    $iIndexArquivo = 1;
-
-    if ( count($aNomeArquivo) > 1 ) {
-
-      $iIndexArquivo = intval( end($aNomeArquivo) );
-      array_pop($aNomeArquivo);
-      $sNomeArquivo = implode("_", $aNomeArquivo);
+    if (PluginService::getPluginAtual($idMenu) !== null) {
+      return DBReleaseNote::TIPO_PLUGIN;
     }
 
-    $iIndexArquivo++;
+    if (count(DBReleaseNoteModificacao::getPluginsMenu($idMenu)) > 0) {
+      return DBReleaseNote::TIPO_MODIFICACAO;
+    }    
 
-    $sNotaGeral = $sNomeArquivo . "_" . str_pad($iIndexArquivo, 2, STR_PAD_LEFT, "0");
-
-    if ( file_exists(DBReleaseNote::DIRETORIO_RELEASE_NOTE . "/" . $this->getVersaoFormatada() . "/" . $sNotaGeral . ".md") ) {
-      return $sNotaGeral;
-    }
-
-    return "";
+    return static::TIPO_SISTEMA;
   }
+
 }

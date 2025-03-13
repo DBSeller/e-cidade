@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-require("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+require(modification("libs/db_app.utils.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("x40_codcorte");
@@ -115,10 +115,10 @@ function js_processar() {
 
 function js_pesquisax40_codcorte(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_aguacorte','func_aguacorte.php?funcao_js=parent.js_mostraaguacorte1|x40_codcorte|x40_dtinc','Pesquisa',true,20);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguacorte','func_aguacorte.php?funcao_js=parent.js_mostraaguacorte1|x40_codcorte|x40_dtinc','Pesquisa',true,20);
   }else{
     if(document.form1.x40_codcorte.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_aguacorte','func_aguacorte.php?pesquisa_chave='+document.form1.x40_codcorte.value+'&funcao_js=parent.js_mostraaguacorte','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguacorte','func_aguacorte.php?pesquisa_chave='+document.form1.x40_codcorte.value+'&funcao_js=parent.js_mostraaguacorte','Pesquisa',false);
     }else{
       document.form1.x40_dtinc.value = ''; 
     }

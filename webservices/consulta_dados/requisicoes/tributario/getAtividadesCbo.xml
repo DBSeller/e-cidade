@@ -1,0 +1,21 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="q03_ativ"                         label="codigo" />
+        <campo campo="rh70_estrutural||'-'||q03_ativ||'-'||q03_descr " label="descricao" />
+        <campo campo="rh70_sequencial"                  label="codigo_rhcbo" />
+        <campo campo="rh70_estrutural"                  label="estrutural_cbo" />
+        <campo campo="q03_descr"                        label="descricao_atividade" />
+    </campos>
+    <from tabela="atividcbo"/>
+    <juncoes>
+        <join tipo="inner"  tabela="ativid" condicao="q03_ativ        = q75_ativid" />
+        <join tipo="inner"  tabela="rhcbo"  condicao="rh70_sequencial = q75_rhcbo"  />
+    </juncoes>
+    <filtros>
+        <filtro label="estrutural_cbo" condicao="rh70_estrutural ilike '%$estrutural_cnae%'" obrigatorio="false"/>
+        <filtro label="limite"          condicao="(q03_limite is null or q03_limite &gt;= to_char(now(), 'YYYY-MM-DD')::date)" autoexecuta="true"/>
+    </filtros>
+    <agrupamento campos="" />
+    <ordenacao   campos="1"/>
+</consulta>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -514,5 +514,62 @@ class cl_cronogramaperspectivadespesa {
      }
      return $sql;
   }
+
+  /**
+   * Retorna todas as Metas de uma despesa
+   *
+   * @param $sCampos
+   * @param $sWhere
+   * @param $sOrder
+   * @param $sGroup
+   * @return string
+   */
+  public function sql_query_metas_despesa($sCampos = '*', $sWhere = null, $sOrder = null, $sGroup = null) {
+
+    $sSqlMetas  = "select {$sCampos} ";
+    $sSqlMetas .= " from cronogramaperspectivadespesa";
+    $sSqlMetas .= "      left join cronogramametadespesa on o131_cronogramaperspectivadespesa = o130_sequencial";
+    if (!empty($sWhere)) {
+      $sSqlMetas .= " where {$sWhere}";
+    }
+
+    if (!empty($sOrder)) {
+      $sSqlMetas .= " order by {$sOrder}";
+    }
+
+    if (!empty($sGroup)) {
+      $sSqlMetas .= " group by {$sGroup}";
+    }
+    return $sSqlMetas;
+  }
+
+  /**
+   * Retorna todas as dotacoes que estao fora do cronograma informado
+   *
+   * @param $sCampos
+   * @param $sWhere
+   * @param $sOrder
+   * @param $sGroup
+   * @return string
+   */
+  public function sql_query_dotacoes_fora_cronograma($sCampos = '*', $iCodigoCronograma, $sWhere = null, $sOrder = null, $sGroup = null) {
+
+    $sSqlMetas  = "select {$sCampos} ";
+    $sSqlMetas .= " from orcdotacao ";
+    $sSqlMetas .= "      left join cronogramaperspectivadespesa on o130_coddot = o58_coddot";
+    $sSqlMetas .= "                                            and o130_anousu = o58_anousu";
+    $sSqlMetas .= "                                            and o130_cronogramaperspectiva = {$iCodigoCronograma}";
+    if (!empty($sWhere)) {
+      $sSqlMetas .= " where {$sWhere}";
+    }
+
+    if (!empty($sOrder)) {
+      $sSqlMetas .= " order by {$sOrder}";
+    }
+
+    if (!empty($sGroup)) {
+      $sSqlMetas .= " group by {$sGroup}";
+    }
+    return $sSqlMetas;
+  }
 }
-?>

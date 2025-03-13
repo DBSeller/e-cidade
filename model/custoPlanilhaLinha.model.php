@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -238,14 +238,14 @@ class custoPlanilhaLinha {
       $lIncluir = false;
       
     } else {
-      
+
       $oDaoPlanilhaLinha->incluir(null);
       $this->iCodigo = $oDaoPlanilhaLinha->cc17_sequencial;
       
     }
     
     if ($oDaoPlanilhaLinha->erro_status == 0) {
-      throw new Exception("Nao foi possivel salvar custo para a conta {$this->getContaCusto()}.\n".$oDaoPlanilhaLinha->erro_msg);
+      throw new Exception("Nao foi possivel salvar custo para a conta {$this->getContaCusto()}.\n".$oDaoPlanilhaLinha->erro_msg."\n".$oDaoPlanilhaLinha->erro_sql);
     }
     /**
      * Incluimos o elemento para o custo 

@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010788' name='caixa.operacoesteftipodebito' description="Salva quais operações que o débito pode ser pago por TEF." prefix="k197" label="Operações TEF por Tipo de Débito" type="0">
+  <fields>
+    <field codigo="1013178" 
+           campo_api='' 
+           name="k197_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela operacoesteftipodebito." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='caixa.operacoesteftipodebito_k197_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013179" 
+           campo_api='' 
+           name="k197_configuracoesteftipodebito" 
+           conteudo="int8" 
+           description="Vinculo com a tabela configuracoesteftipodebito" 
+           inivalue="0" 
+           label="Configurações TEF por Tipo de Débito" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Configurações TEF por Tipo de Débito" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013180" 
+           campo_api='' 
+           name="k197_operacoestef" 
+           conteudo="int8" 
+           description="Vinculo com a tabela operacoestef" 
+           inivalue="0" 
+           label="Operações TEF" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Operações TEF" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k197_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="operacoestef" inner='t'>
+      <fieldfk name="k197_operacoestef" reference="k195_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="configuracoesteftipodebito" inner='t'>
+      <fieldfk name="k197_configuracoesteftipodebito" reference="k196_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

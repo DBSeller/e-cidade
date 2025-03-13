@@ -39,7 +39,7 @@
       </tr>
         <td width="40%" height="25" nowrap>
 		  <?
-		    include("dbforms/db_funcoes.php");
+		    include(modification("dbforms/db_funcoes.php"));
 		    db_label_blur('numcgm','Numcgm/Nome','nome','descrnome');
 		  ?>
 		</td>

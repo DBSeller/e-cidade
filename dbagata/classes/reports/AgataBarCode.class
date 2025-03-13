@@ -34,7 +34,7 @@ define("BC_ROTATE_270", 3);
 
 class AgataBarCode
 {
-	function barCode(
+	static function barCode(
 		$p_barcodeType, // Type of barcode to be generated
 		$p_origText, // Text to be generated as barcode
 		$p_xDim, // smallest ellement width
@@ -195,7 +195,7 @@ class AgataBarCode
 		imagedestroy($im); // free image resource
 
 	}
-	function getBarcodeText($i, $txt){
+	static function getBarcodeText($i, $txt){
 		switch ($i) {
 			case BC_TYPE_CODE39:
 			/*
@@ -250,7 +250,7 @@ class AgataBarCode
 		}
 	}
 
-	function checkCheckDigit($type, $ck){
+	static function checkCheckDigit($type, $ck){
 		switch ($type) {
 			case BC_TYPE_CODE93:
 			case BC_TYPE_ROYMAIL4:
@@ -268,7 +268,7 @@ class AgataBarCode
 		}
 	}
 
-	function checkCharGap($i, $ig){
+	static function checkCharGap($i, $ig){
 		switch ($i) {
 			case BC_TYPE_CODE39:
 			case BC_TYPE_ROYMAIL4:
@@ -286,7 +286,7 @@ class AgataBarCode
 		}
 	}
 
-	function checkWideToNarrow($i, $wtn){
+	static function checkWideToNarrow($i, $wtn){
 		switch ($i) {
 			case BC_TYPE_CODE39:
 			case BC_TYPE_STD25:
@@ -304,7 +304,7 @@ class AgataBarCode
 		}
 	}
 
-	function getCharCount($i, $txt){
+	static function getCharCount($i, $txt){
 		switch ($i) {
 			case BC_TYPE_CODE39:
 			case BC_TYPE_CODE93:
@@ -322,7 +322,7 @@ class AgataBarCode
 		}
 	}
 
-	function getBarcodeLength($i, $txt, $xd, $wtn, $qz, $ig){
+	static function getBarcodeLength($i, $txt, $xd, $wtn, $qz, $ig){
 		switch ($i) {
 			case BC_TYPE_CODE39:
 				return strlen($txt) * ( 6 * $xd + 3 * $xd * $wtn) // message width
@@ -361,7 +361,7 @@ class AgataBarCode
 		}
 	}
 
-	function barcodeImgFunction($i){
+	static function barcodeImgFunction($i){
 		switch ($i) {
 			case BC_IMG_TYPE_PNG: return "imagepng"; break;
 			case BC_IMG_TYPE_JPG: return "imagejpeg"; break;
@@ -371,7 +371,7 @@ class AgataBarCode
 		}
 	}
 
-	function barcodeFileExt($i){
+	static function barcodeFileExt($i){
 		switch ($i) {
 			case BC_IMG_TYPE_PNG: return "png"; break;
 			case BC_IMG_TYPE_JPG: return "jpg"; break;
@@ -392,7 +392,7 @@ class AgataBarCode
 		}
 	}
 
-	function code39spec($i) {
+	static function code39spec($i) {
 	/*
 		Code 39 specification for symbols (index represented by ascii codes)
 		n -> narrow bar
@@ -448,7 +448,7 @@ class AgataBarCode
 
 	}
 
-	function code93spec($i) {
+	static function code93spec($i) {
 	/*
 		Code 93 specification for symbols (index represented by ascii codes)
 		1 -> bar (black bar)
@@ -509,7 +509,7 @@ class AgataBarCode
 
 	}
 
-	function code393char2value($i) {
+	static function code393char2value($i) {
 	/*
 		Code 93 specification for symbols (index represented by ascii codes)
 		Used for check digit calculation.
@@ -568,7 +568,7 @@ class AgataBarCode
 
 	}
 
-	function code393value2char($i) {
+	static function code393value2char($i) {
 	/*
 		Code 93 specification for symbols (index represented by ascii codes)
 		Used for check digit calculation.
@@ -789,7 +789,7 @@ class AgataBarCode
 	}
 
 
-	function getSpec($type, $txt, $i) {
+	static function getSpec($type, $txt, $i) {
 		switch ($type) {
 			case BC_TYPE_CODE39:
 				return AgataBarCode::code39spec(ord($txt[$i]));
@@ -814,7 +814,7 @@ class AgataBarCode
 
 	}
 
-	function getCheckDigit($type, $txt) {
+	static function getCheckDigit($type, $txt) {
 		$stLen = strlen($txt);
 		switch ($type) {
 			case BC_TYPE_CODE39: // modulo 43

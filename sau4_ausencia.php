@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 
-include("classes/db_agendamentos_ext_classe.php");
-include("classes/db_ausencias_ext_classe.php");
+include(modification("classes/db_agendamentos_ext_classe.php"));
+include(modification("classes/db_ausencias_ext_classe.php"));
 
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
-include("classes/db_sau_motivo_ausencia_classe.php");
+include(modification("classes/db_sau_motivo_ausencia_classe.php"));
 $clmotivo_ausencia = new cl_sau_motivo_ausencia;
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -132,7 +132,7 @@ if(isset($opcao)){
     <center>
         <br><br>
         <?
-        include("forms/db_frmausencia.php");
+        include(modification("forms/db_frmausencia.php"));
         ?>
     </center>
         </td>

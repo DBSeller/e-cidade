@@ -26,7 +26,7 @@
  */
 
 //MODULO: atendimento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_projetosusu->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -110,10 +110,10 @@ db_input('nome',40,$Inome,true,'text',3,'')
 <script>
 function js_pesquisaat65_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_projetosusu','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_projetosusu','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true,'0');
   }else{
      if(document.form1.at65_usuario.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_projetosusu','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.at65_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_projetosusu','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.at65_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
      }else{
        document.form1.nome.value = ''; 
      }

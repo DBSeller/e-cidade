@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_veiccadcentral_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_veiccadcentral_classe.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
@@ -50,7 +50,8 @@ db_postmemory($HTTP_POST_VARS);
 
 
 <?
-$res_veicentral = $clveiccadcentral->sql_record($clveiccadcentral->sql_query_central_depart(null,"ve36_sequencial,descrdepto","descrdepto",null));
+$sWhereInstituicao = 'instit = ' . db_getsession("DB_instit");
+$res_veicentral = $clveiccadcentral->sql_record($clveiccadcentral->sql_query_central_depart(null,"ve36_sequencial,descrdepto","descrdepto",$sWhereInstituicao));
 ?>
 
 <script>

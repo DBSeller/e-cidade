@@ -1,76 +1,79 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: issqn
 //CLASSE DA ENTIDADE issbaseparalisacao
-class cl_issbaseparalisacao { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $q140_sequencial = 0; 
-   var $q140_issbase = 0; 
-   var $q140_issmotivoparalisacao = 0; 
-   var $q140_datainicio_dia = null; 
-   var $q140_datainicio_mes = null; 
-   var $q140_datainicio_ano = null; 
-   var $q140_datainicio = null; 
-   var $q140_datafim_dia = null; 
-   var $q140_datafim_mes = null; 
-   var $q140_datafim_ano = null; 
-   var $q140_datafim = null; 
-   var $q140_observacao = null; 
-   // cria propriedade com as variaveis do arquivo 
+
+class cl_issbaseparalisacao {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $q140_sequencial = 0;
+   var $q140_issbase = 0;
+   var $q140_issmotivoparalisacao = 0;
+   var $q140_datainicio_dia = null;
+   var $q140_datainicio_mes = null;
+   var $q140_datainicio_ano = null;
+   var $q140_datainicio = null;
+   var $q140_datafim_dia = null;
+   var $q140_datafim_mes = null;
+   var $q140_datafim_ano = null;
+   var $q140_datafim = null;
+   var $q140_observacao = null;
+   public $q140_usuario = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  q140_sequencial = int4 = Sequencial 
                  q140_issbase = int4 = Código issbase 
                  q140_issmotivoparalisacao = int4 = Motivo paralisação 
                  q140_datainicio = date = Data de inicio 
                  q140_datafim = date = Data final 
-                 q140_observacao = text = Observação 
+                 q140_observacao = text = Observação
+                 q140_usuario = int4 = Usuário 
                  ";
-   //funcao construtor da classe 
-   function cl_issbaseparalisacao() { 
+   //funcao construtor da classe
+   function cl_issbaseparalisacao() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("issbaseparalisacao"); 
+     $this->rotulo = new rotulo("issbaseparalisacao");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -101,14 +104,15 @@ class cl_issbaseparalisacao {
          }
        }
        $this->q140_observacao = ($this->q140_observacao == ""?@$GLOBALS["HTTP_POST_VARS"]["q140_observacao"]:$this->q140_observacao);
+       $this->q140_usuario = ($this->q140_usuario == ""?@$GLOBALS["HTTP_POST_VARS"]["q140_usuario"]:$this->q140_usuario);
      }else{
        $this->q140_sequencial = ($this->q140_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["q140_sequencial"]:$this->q140_sequencial);
      }
    }
    // funcao para inclusao
-   function incluir ($q140_sequencial){ 
+   function incluir ($q140_sequencial){
       $this->atualizacampos();
-     if($this->q140_issbase == null ){ 
+     if($this->q140_issbase == null ){
        $this->erro_sql = " Campo Código issbase nao Informado.";
        $this->erro_campo = "q140_issbase";
        $this->erro_banco = "";
@@ -117,7 +121,7 @@ class cl_issbaseparalisacao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->q140_issmotivoparalisacao == null ){ 
+     if($this->q140_issmotivoparalisacao == null ){
        $this->erro_sql = " Campo Motivo paralisação nao Informado.";
        $this->erro_campo = "q140_issmotivoparalisacao";
        $this->erro_banco = "";
@@ -126,7 +130,7 @@ class cl_issbaseparalisacao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->q140_datainicio == null ){ 
+     if($this->q140_datainicio == null ){
        $this->erro_sql = " Campo Data de inicio nao Informado.";
        $this->erro_campo = "q140_datainicio_dia";
        $this->erro_banco = "";
@@ -135,10 +139,10 @@ class cl_issbaseparalisacao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->q140_datafim == null ){ 
+     if($this->q140_datafim == null ){
        $this->q140_datafim = "null";
      }
-     if($this->q140_observacao == null ){ 
+     if($this->q140_observacao == null ){
        $this->erro_sql = " Campo Observação nao Informado.";
        $this->erro_campo = "q140_observacao";
        $this->erro_banco = "";
@@ -147,17 +151,26 @@ class cl_issbaseparalisacao {
        $this->erro_status = "0";
        return false;
      }
+     if($this->q140_usuario == null ){ 
+      $this->erro_sql = " Campo Usuário não informado.";
+      $this->erro_campo = "q140_usuario";
+      $this->erro_banco = "";
+      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+      $this->erro_status = "0";
+      return false;
+     }
      if($q140_sequencial == "" || $q140_sequencial == null ){
-       $result = db_query("select nextval('issbaseparalisacao_q140_sequencial_seq')"); 
+       $result = db_query("select nextval('issbaseparalisacao_q140_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: issbaseparalisacao_q140_sequencial_seq do campo: q140_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: issbaseparalisacao_q140_sequencial_seq do campo: q140_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->q140_sequencial = pg_result($result,0,0); 
+       $this->q140_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from issbaseparalisacao_q140_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $q140_sequencial)){
@@ -168,10 +181,10 @@ class cl_issbaseparalisacao {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->q140_sequencial = $q140_sequencial; 
+         $this->q140_sequencial = $q140_sequencial;
        }
      }
-     if(($this->q140_sequencial == null) || ($this->q140_sequencial == "") ){ 
+     if(($this->q140_sequencial == null) || ($this->q140_sequencial == "") ){
        $this->erro_sql = " Campo q140_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -185,7 +198,8 @@ class cl_issbaseparalisacao {
                                       ,q140_issmotivoparalisacao 
                                       ,q140_datainicio 
                                       ,q140_datafim 
-                                      ,q140_observacao 
+                                      ,q140_observacao
+                                      ,q140_usuario 
                        )
                 values (
                                 $this->q140_sequencial 
@@ -193,10 +207,11 @@ class cl_issbaseparalisacao {
                                ,$this->q140_issmotivoparalisacao 
                                ,".($this->q140_datainicio == "null" || $this->q140_datainicio == ""?"null":"'".$this->q140_datainicio."'")." 
                                ,".($this->q140_datafim == "null" || $this->q140_datafim == ""?"null":"'".$this->q140_datafim."'")." 
-                               ,'$this->q140_observacao' 
+                               ,'$this->q140_observacao'
+                               ,$this->q140_usuario 
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Paralisação ($this->q140_sequencial) nao Incluído. Inclusao Abortada.";
@@ -236,19 +251,20 @@ class cl_issbaseparalisacao {
          $resac = db_query("insert into db_acount values($acount,3621,20175,'','".AddSlashes(pg_result($resaco,0,'q140_datainicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3621,20176,'','".AddSlashes(pg_result($resaco,0,'q140_datafim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3621,20177,'','".AddSlashes(pg_result($resaco,0,'q140_observacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3621,1014448,'','".AddSlashes(pg_result($resaco,0,'q140_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($q140_sequencial=null) { 
+   function alterar ($q140_sequencial=null) {
       $this->atualizacampos();
      $sql = " update issbaseparalisacao set ";
      $virgula = "";
-     if(trim($this->q140_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_sequencial"])){ 
+     if(trim($this->q140_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_sequencial"])){
        $sql  .= $virgula." q140_sequencial = $this->q140_sequencial ";
        $virgula = ",";
-       if(trim($this->q140_sequencial) == null ){ 
+       if(trim($this->q140_sequencial) == null ){
          $this->erro_sql = " Campo Sequencial nao Informado.";
          $this->erro_campo = "q140_sequencial";
          $this->erro_banco = "";
@@ -258,10 +274,10 @@ class cl_issbaseparalisacao {
          return false;
        }
      }
-     if(trim($this->q140_issbase)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_issbase"])){ 
+     if(trim($this->q140_issbase)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_issbase"])){
        $sql  .= $virgula." q140_issbase = $this->q140_issbase ";
        $virgula = ",";
-       if(trim($this->q140_issbase) == null ){ 
+       if(trim($this->q140_issbase) == null ){
          $this->erro_sql = " Campo Código issbase nao Informado.";
          $this->erro_campo = "q140_issbase";
          $this->erro_banco = "";
@@ -271,10 +287,10 @@ class cl_issbaseparalisacao {
          return false;
        }
      }
-     if(trim($this->q140_issmotivoparalisacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_issmotivoparalisacao"])){ 
+     if(trim($this->q140_issmotivoparalisacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_issmotivoparalisacao"])){
        $sql  .= $virgula." q140_issmotivoparalisacao = $this->q140_issmotivoparalisacao ";
        $virgula = ",";
-       if(trim($this->q140_issmotivoparalisacao) == null ){ 
+       if(trim($this->q140_issmotivoparalisacao) == null ){
          $this->erro_sql = " Campo Motivo paralisação nao Informado.";
          $this->erro_campo = "q140_issmotivoparalisacao";
          $this->erro_banco = "";
@@ -284,10 +300,10 @@ class cl_issbaseparalisacao {
          return false;
        }
      }
-     if(trim($this->q140_datainicio)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_datainicio_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["q140_datainicio_dia"] !="") ){ 
+     if(trim($this->q140_datainicio)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_datainicio_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["q140_datainicio_dia"] !="") ){
        $sql  .= $virgula." q140_datainicio = '$this->q140_datainicio' ";
        $virgula = ",";
-       if(trim($this->q140_datainicio) == null ){ 
+       if(trim($this->q140_datainicio) == null ){
          $this->erro_sql = " Campo Data de inicio nao Informado.";
          $this->erro_campo = "q140_datainicio_dia";
          $this->erro_banco = "";
@@ -296,11 +312,11 @@ class cl_issbaseparalisacao {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["q140_datainicio_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["q140_datainicio_dia"])){
          $sql  .= $virgula." q140_datainicio = null ";
          $virgula = ",";
-         if(trim($this->q140_datainicio) == null ){ 
+         if(trim($this->q140_datainicio) == null ){
            $this->erro_sql = " Campo Data de inicio nao Informado.";
            $this->erro_campo = "q140_datainicio_dia";
            $this->erro_banco = "";
@@ -311,19 +327,19 @@ class cl_issbaseparalisacao {
          }
        }
      }
-     if(trim($this->q140_datafim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_datafim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["q140_datafim_dia"] !="") ){ 
+     if(trim($this->q140_datafim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_datafim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["q140_datafim_dia"] !="") ){
        $sql  .= $virgula." q140_datafim = '$this->q140_datafim' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["q140_datafim_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["q140_datafim_dia"])){
          $sql  .= $virgula." q140_datafim = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->q140_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_observacao"])){ 
+     if(trim($this->q140_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_observacao"])){
        $sql  .= $virgula." q140_observacao = '$this->q140_observacao' ";
        $virgula = ",";
-       if(trim($this->q140_observacao) == null ){ 
+       if(trim($this->q140_observacao) == null ){
          $this->erro_sql = " Campo Observação nao Informado.";
          $this->erro_campo = "q140_observacao";
          $this->erro_banco = "";
@@ -332,6 +348,19 @@ class cl_issbaseparalisacao {
          $this->erro_status = "0";
          return false;
        }
+     }
+     if(trim($this->q140_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["q140_usuario"])){ 
+      $sql  .= $virgula." q140_usuario = $this->q140_usuario ";
+      $virgula = ",";
+      if(trim($this->q140_usuario) == null ){ 
+        $this->erro_sql = " Campo Usuário não informado.";
+        $this->erro_campo = "q140_usuario";
+        $this->erro_banco = "";
+        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+        $this->erro_status = "0";
+        return false;
+      }
      }
      $sql .= " where ";
      if($q140_sequencial!=null){
@@ -362,11 +391,13 @@ class cl_issbaseparalisacao {
              $resac = db_query("insert into db_acount values($acount,3621,20176,'".AddSlashes(pg_result($resaco,$conresaco,'q140_datafim'))."','$this->q140_datafim',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            if(isset($GLOBALS["HTTP_POST_VARS"]["q140_observacao"]) || $this->q140_observacao != "")
              $resac = db_query("insert into db_acount values($acount,3621,20177,'".AddSlashes(pg_result($resaco,$conresaco,'q140_observacao'))."','$this->q140_observacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["q140_usuario"]) || $this->q140_usuario != "")
+             $resac = db_query("insert into db_acount values($acount,3621,1014448,'".AddSlashes(pg_result($resaco,$conresaco,'q140_usuario'))."','$this->q140_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Paralisação nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->q140_sequencial;
@@ -394,11 +425,11 @@ class cl_issbaseparalisacao {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($q140_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($q140_sequencial=null,$dbwhere=null) {
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
@@ -407,7 +438,7 @@ class cl_issbaseparalisacao {
        if ($dbwhere==null || $dbwhere=="") {
 
          $resaco = $this->sql_record($this->sql_query_file($q140_sequencial));
-       } else { 
+       } else {
          $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
        }
        if (($resaco != false) || ($this->numrows!=0)) {
@@ -424,6 +455,7 @@ class cl_issbaseparalisacao {
            $resac  = db_query("insert into db_acount values($acount,3621,20175,'','".AddSlashes(pg_result($resaco,$iresaco,'q140_datainicio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3621,20176,'','".AddSlashes(pg_result($resaco,$iresaco,'q140_datafim'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3621,20177,'','".AddSlashes(pg_result($resaco,$iresaco,'q140_observacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3621,1014448,'','".AddSlashes(pg_result($resaco,$iresaco,'q140_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
@@ -441,7 +473,7 @@ class cl_issbaseparalisacao {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Paralisação nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$q140_sequencial;
@@ -469,11 +501,11 @@ class cl_issbaseparalisacao {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -495,11 +527,11 @@ class cl_issbaseparalisacao {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $q140_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $q140_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -510,20 +542,21 @@ class cl_issbaseparalisacao {
      }
      $sql .= " from issbaseparalisacao ";
      $sql .= "      inner join issbase  on  issbase.q02_inscr = issbaseparalisacao.q140_issbase";
+     $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = issbaseparalisacao.q140_usuario";
      $sql .= "      inner join issmotivoparalisacao  on  issmotivoparalisacao.q141_sequencial = issbaseparalisacao.q140_issmotivoparalisacao";
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = issbase.q02_numcgm";
      $sql2 = "";
      if($dbwhere==""){
        if($q140_sequencial!=null ){
-         $sql2 .= " where issbaseparalisacao.q140_sequencial = $q140_sequencial "; 
-       } 
+         $sql2 .= " where issbaseparalisacao.q140_sequencial = $q140_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -532,11 +565,11 @@ class cl_issbaseparalisacao {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $q140_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $q140_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -549,15 +582,15 @@ class cl_issbaseparalisacao {
      $sql2 = "";
      if($dbwhere==""){
        if($q140_sequencial!=null ){
-         $sql2 .= " where issbaseparalisacao.q140_sequencial = $q140_sequencial "; 
-       } 
+         $sql2 .= " where issbaseparalisacao.q140_sequencial = $q140_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

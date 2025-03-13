@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_layouttxt.php");
-include("classes/db_folha_classe.php");
-include("classes/db_rharqbanco_classe.php");
-include("classes/db_orctiporec_classe.php");
-include("classes/db_pensao_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_layouttxt.php"));
+include(modification("classes/db_folha_classe.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_pensao_classe.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($HTTP_POST_VARS);
@@ -148,11 +148,16 @@ if($sqlerro == false){
 
   if($sqlerro == false){
     if($tiparq == 0){
+    
+    $rh34_wherefolha .= 'and r38_liq > 0';
+
     $sql = $clfolha->sql_query_gerarqbag(null,"folha.*,cgm.*,
                                             length(trim(z01_cgccpf)) as tam",
                                            "",
                                            " $rh34_wherefolha order by r38_regist");
 //     echo "<br><br> $sql ";exit;
+//     
+
 
     $result  =  $clfolha->sql_record($sql);
     $numrows =  $clfolha->numrows;
@@ -188,7 +193,6 @@ if($sqlerro == false){
                                               "$rh34_wherepensa and $campovalor > 0");
 
     $result  = $clpensao->sql_record($sql);
-//		db_criatabela($result);exit;
     $numrows = $clpensao->numrows;
   }
 // die($sql);

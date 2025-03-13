@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
@@ -122,7 +122,7 @@ if(isset($entrar)){
    
 //sempre que ja existir agenda entra nesta opcao  
   if(isset($e80_codage)){  
-	include("forms/db_frmempage.php");
+	include(modification("forms/db_frmempage.php"));
 
 //pela primeira vez que entrar neste arquivo, entra nesta opcao para digitar a data da agenda 
   }else if(empty($entrar) && empty($e80_codage)){?>

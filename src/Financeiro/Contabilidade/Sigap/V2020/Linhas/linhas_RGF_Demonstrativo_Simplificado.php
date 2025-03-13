@@ -1,0 +1,141 @@
+<?php
+return [
+    0 => [
+        'conta_lrf' => '0207000000000000',
+        'descricao' => 'DEMONSTRATIVO SIMPLIFICADO DO RELATÓRIO DE GESTÃO FISCAL',
+        'nivel' => 2,
+        'linha_ecidade' => null,
+        ],
+    1 => [
+        'conta_lrf' => '0207010000000000',
+        'descricao' => 'RECEITA CORRENTE LÍQUIDA',
+        'nivel' => 3,
+        'linha_ecidade' => null,
+        ],
+    2 => [
+        'conta_lrf' => '0207010100000000',
+        'descricao' => 'Receita Corrente Líquida',
+        'nivel' => 4,
+        'linha_ecidade' => 1,
+        ],
+    3 => [
+        'conta_lrf' => '0207010200000000',
+        'descricao' => 'Receita Corrente Líquida Ajustada para Cálculo dos Limites de Endividamento',
+        'nivel' => 4,
+        'linha_ecidade' => 2,
+        ],
+    4 => [
+        'conta_lrf' => '0207010300000000',
+        'descricao' => 'Receita Corrente Líquida Ajustada para Cálculo dos Limites da Despesa com Pessoal',
+        'nivel' => 4,
+        'linha_ecidade' => 3,
+        ],
+    5 => [
+        'conta_lrf' => '0207020000000000',
+        'descricao' => 'DESPESA COM PESSOAL',
+        'nivel' => 3,
+        'linha_ecidade' => null,
+        ],
+    6 => [
+        'conta_lrf' => '0207020100000000',
+        'descricao' => 'Despesa Total com Pessoal - DTP',
+        'nivel' => 4,
+        'linha_ecidade' => 4,
+        ],
+    7 => [
+        'conta_lrf' => '0207020200000000',
+        'descricao' => 'Limite Máximo (incisos I, II e III, art. 20 da LRF) - <%>',
+        'nivel' => 4,
+        'linha_ecidade' => 5,
+        ],
+    8 => [
+        'conta_lrf' => '0207020300000000',
+        'descricao' => 'Limite Prudencial (parágrafo único, art. 22 da LRF) - <%>',
+        'nivel' => 4,
+        'linha_ecidade' => 6,
+        ],
+    9 => [
+        'conta_lrf' => '0207020400000000',
+        'descricao' => 'Limite de Alerta (inciso II do §1º do art. 59 da LRF) - <%>',
+        'nivel' => 4,
+        'linha_ecidade' => 7,
+        ],
+    10 => [
+        'conta_lrf' => '0207030000000000',
+        'descricao' => 'DÍVIDA CONSOLIDADA',
+        'nivel' => 3,
+        'linha_ecidade' => null,
+        ],
+    11 => [
+        'conta_lrf' => '0207030100000000',
+        'descricao' => 'Dívida Consolidada Líquida',
+        'nivel' => 4,
+        'linha_ecidade' => 8,
+        ],
+    12 => [
+        'conta_lrf' => '0207030200000000',
+        'descricao' => 'Limite Definido por Resolução do Senado Federal',
+        'nivel' => 4,
+        'linha_ecidade' => 9,
+        ],
+    13 => [
+        'conta_lrf' => '0207040000000000',
+        'descricao' => 'GARANTIAS DE VALORES',
+        'nivel' => 3,
+        'linha_ecidade' => null,
+        ],
+    14 => [
+        'conta_lrf' => '0207040100000000',
+        'descricao' => 'Total das Garantias Concedidas',
+        'nivel' => 4,
+        'linha_ecidade' => 10,
+        ],
+    15 => [
+        'conta_lrf' => '0207040200000000',
+        'descricao' => 'Limite Definido por Resolução do Senado Federal',
+        'nivel' => 4,
+        'linha_ecidade' => 11,
+        ],
+    16 => [
+        'conta_lrf' => '0207050000000000',
+        'descricao' => 'OPERAÇÕES DE CRÉDITO',
+        'nivel' => 3,
+        'linha_ecidade' => null,
+        ],
+    17 => [
+        'conta_lrf' => '0207050100000000',
+        'descricao' => 'Operações de Crédito Internas e Externas',
+        'nivel' => 4,
+        'linha_ecidade' => 12,
+        ],
+    18 => [
+        'conta_lrf' => '0207050200000000',
+        'descricao' => 'Limite Definido pelo Senado Federal para Operações de Crédito Externas e Internas',
+        'nivel' => 4,
+        'linha_ecidade' => 13,
+        ],
+    19 => [
+        'conta_lrf' => '0207050300000000',
+        'descricao' => 'Operações de Crédito por Antecipação da Receita',
+        'nivel' => 4,
+        'linha_ecidade' => 14,
+        ],
+    20 => [
+        'conta_lrf' => '0207050400000000',
+        'descricao' => 'Limite Definido pelo Senado Federal para Operações de Crédito por Antecipação da Receita',
+        'nivel' => 4,
+        'linha_ecidade' => 15,
+        ],
+    21 => [
+        'conta_lrf' => '0207060000000000',
+        'descricao' => 'RESTOS A PAGAR',
+        'nivel' => 3,
+        'linha_ecidade' => null,
+        ],
+    22 => [
+        'conta_lrf' => '0207060100000000',
+        'descricao' => 'Valor Total',
+        'nivel' => 4,
+        'linha_ecidade' => 16,
+        ]
+];

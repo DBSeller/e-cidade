@@ -481,8 +481,11 @@ class cl_rhhistoricocalculo {
 
      $sql  = "select {$campos}";
      $sql .= "  from rhhistoricocalculo ";
-     $sql .= "      inner join rhfolhapagamento  on  rhfolhapagamento.rh141_sequencial = rhhistoricocalculo.rh143_folhapagamento";
-     $sql .= "      inner join rhtipofolha  on  rhtipofolha.rh142_sequencial = rhfolhapagamento.rh141_tipofolha";
+     $sql .= "      inner join rhfolhapagamento  on  rhfolhapagamento.rh141_sequencial = rhhistoricocalculo.rh143_folhapagamento \n";
+     $sql .= "      inner join rhtipofolha       on  rhtipofolha.rh142_sequencial      = rhfolhapagamento.rh141_tipofolha        \n";
+     $sql .= "      inner join rhrubricas        on  rhrubricas.rh27_rubric            = rhhistoricocalculo.rh143_rubrica        \n";
+     $sql .= "                                  and  rhrubricas.rh27_instit            = rhfolhapagamento.rh141_instit           \n";
+
      $sql2 = "";
      if (empty($dbwhere)) {
        if (!empty($rh143_sequencial)) {
@@ -650,6 +653,147 @@ class cl_rhhistoricocalculo {
       $sSql .= ", label_tipo_folha, tipo_folha";  
     }
 
+    return $sSql;
+  }
+
+  /**
+   * Metodo para retornar todos os eventos financeitos da folha Salário e Suplementar, 
+   * quando existir mais de um evento o mesmo é somado.
+   * @param  DBCompetencia $oCompetencia
+   * @param  DBCompetencia $oCompetencia
+   * @param  DBCompetencia $oCompetencia
+   * @return String
+   */
+  public function sql_query_eventosfinanceiros_fechados( DBCompetencia $oCompetencia, $sTipoCalculo = CalculoFolha::CALCULO_SALARIO, Servidor $oServidor = null, Rubrica $oRubrica = null ) {
+
+    /**
+     * Validações do tipo de Cálculo
+     */
+    switch ( $sTipoCalculo ) {
+
+      case CalculoFolha::CALCULO_COMPLEMENTAR: 
+
+        $sTiposFolha = FolhaPagamento::TIPO_FOLHA_COMPLEMENTAR;
+        break;
+      case CalculoFolha::CALCULO_SALARIO: 
+      default:
+
+        $sTiposFolha = FolhaPagamento::TIPO_FOLHA_SALARIO . ", " .
+                       FolhaPagamento::TIPO_FOLHA_SUPLEMENTAR;
+      break;
+    }
+
+    /**
+     * Matricula Informada
+     */
+    $iMatricula = null;
+
+    if ( !empty($oServidor) ) {
+      $iMatricula = $oServidor->getMatricula();
+    }
+
+    /**
+     * Rubrica informada
+     */
+    $sRubrica   = null;
+
+    if (!empty($oRubrica) ) {
+      $sRubrica = $oRubrica->getCodigo();
+    }
+
+    $iInstituicao   =  InstituicaoRepository::getInstituicaoSessao()->getCodigo();
+
+    $sSql  = "select rh143_regist,                                                            ".PHP_EOL;
+    $sSql .= "       rh143_rubrica,                                                           ".PHP_EOL;
+    $sSql .= "       sum(rh143_quantidade) as rh143_quantidade,                               ".PHP_EOL;
+    $sSql .= "       sum(rh143_valor) as rh143_valor,                                         ".PHP_EOL;
+    $sSql .= "       rh143_tipoevento                                                         ".PHP_EOL;
+    $sSql .= "  from rhfolhapagamento                                                         ".PHP_EOL;
+    $sSql .= "       inner join rhhistoricocalculo on rh143_folhapagamento = rh141_sequencial ".PHP_EOL;
+    $sSql .= "where rh141_anousu = {$oCompetencia->getAno()}                                  ".PHP_EOL;
+    $sSql .= "  and rh141_mesusu = {$oCompetencia->getMes()}                                  ".PHP_EOL;
+    $sSql .= "  and rh141_instit = {$iInstituicao}                                            ".PHP_EOL;
+    $sSql .= "  and rh141_aberto = false                                                      ".PHP_EOL;
+    $sSql .= "  and rh141_tipofolha in ({$sTiposFolha})                                       ".PHP_EOL;
+
+    if (!empty($iMatricula) ) {
+      $sSql .= "  and rh143_regist = {$iMatricula}                                            ".PHP_EOL;
+    }
+
+    if (!empty($sRubrica) ) {
+      $sSql .= "  and rh143_rubrica = '{$sRubrica}'                                           ".PHP_EOL;
+    }
+
+    $sSql .= "group by rh143_regist, rh143_rubrica, rh143_tipoevento order by rh143_tipoevento".PHP_EOL;
+
+    return $sSql;
+  }
+  /**
+   * 
+   * 
+   * @param  Array          $aMatricula      
+   * @param  FolhaPagamento $oFolhaPagamento
+   * @return String
+   */
+  public function sql_query_dados_consolidados($aMatricula = null, FolhaPagamento $oFolhaPagamento) {
+
+    $iAno           =  $oFolhaPagamento->getCompetencia()->getAno();
+    $iMes           =  $oFolhaPagamento->getCompetencia()->getMes();
+    $iInstituicao   =  $oFolhaPagamento->getInstituicao()->getCodigo();
+    $aFolhasSalario =  array(FolhaPagamento::TIPO_FOLHA_SALARIO, FolhaPagamento::TIPO_FOLHA_SUPLEMENTAR);
+
+    if ( in_array($oFolhaPagamento->getTipoFolha(), $aFolhasSalario) ) {    
+      $iTipoFolha = '1, 6';
+    } elseif ($oFolhaPagamento->getTipoFolha() == FolhaPagamento::TIPO_FOLHA_COMPLEMENTAR ) {
+      $iTipoFolha = '3';
+    }
+
+    if ( !empty($aMatricula) && count($aMatricula) > 0 ) {
+      $sWhereMatriculas = implode(",", $aMatricula);
+    }
+     
+    $sSql  = " select anousu,                                                                         \n";
+    $sSql .= "       mesusu,                                                                          \n";
+    $sSql .= "       regist,                                                                          \n";
+    $sSql .= "       rubric,                                                                          \n";
+    $sSql .= "       sum(valor)  as valor,                                                            \n";
+    $sSql .= "       pd,                                                                              \n";
+    $sSql .= "       max(quant)  as quant,                                                            \n";
+    $sSql .= "       rh02_lota::text as lotac,                                                        \n";
+    $sSql .= "       semest,                                                                          \n";
+    $sSql .= "       instit                                                                           \n";
+    $sSql .= "  from (SELECT rh141_anousu     AS anousu,                                              \n";
+    $sSql .= "               rh141_mesusu     AS mesusu,                                              \n";
+    $sSql .= "               rh143_regist     AS regist,                                              \n";
+    $sSql .= "               rh143_rubrica    AS rubric,                                              \n";
+    $sSql .= "               rh143_valor      AS valor,                                               \n";
+    $sSql .= "               rh143_tipoevento AS pd,                                                  \n";
+    $sSql .= "               rh143_quantidade AS quant,                                               \n";
+    $sSql .= "               1                AS semest,                                              \n";
+    $sSql .= "               rh141_instit     AS instit                                               \n";
+    $sSql .= "          FROM rhfolhapagamento                                                         \n";
+    $sSql .= "               INNER JOIN rhhistoricocalculo ON rh141_sequencial = rh143_folhapagamento \n";
+    $sSql .= "         WHERE rh141_tipofolha in ( {$iTipoFolha} )                                     \n";
+    $sSql .= "           AND rh141_anousu    = {$iAno}                                                \n";
+    $sSql .= "           AND rh141_mesusu    = {$iMes}                                                \n";
+    $sSql .= "           AND rh141_instit    = {$iInstituicao}                                        \n";
+    $sSql .= "       ) AS gerfsal                                                                     \n";
+    $sSql .= "       inner join rhpessoalmov  on rh02_anousu = anousu                                 \n";
+    $sSql .= "                               and rh02_mesusu = mesusu                                 \n";
+    $sSql .= "                               and rh02_instit = instit                                 \n";
+    $sSql .= "                               and rh02_regist = regist                                 \n";
+    if ( !is_null($aMatricula) ) {
+      $sSql .= " where regist in ({$sWhereMatriculas})                                                \n";
+    }
+    $sSql .= " group by anousu,                                                                       \n";
+    $sSql .= "          mesusu,                                                                       \n";
+    $sSql .= "          regist,                                                                       \n";
+    $sSql .= "          rubric,                                                                       \n";
+    $sSql .= "          pd,                                                                           \n";
+    $sSql .= "          lotac,                                                                        \n";
+    $sSql .= "          semest,                                                                       \n";
+    $sSql .= "          instit                                                                        \n";
+    $sSql .= " order by rubric;                                                                       \n";
     return $sSql;
   }
 }

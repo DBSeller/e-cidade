@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_sau_cgserrado_classe.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_sau_cgserrado_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str ( $HTTP_SERVER_VARS ["QUERY_STRING"] );
 db_postmemory ( $HTTP_POST_VARS );
@@ -41,7 +41,7 @@ $db_botao = false;
 if ((isset ( $HTTP_POST_VARS ["db_opcao"] ) && $HTTP_POST_VARS ["db_opcao"]) == "Alterar") {
 	
 	$sql1 = "select z01_v_nome from cgs_und where z01_i_cgsund = $s128_i_numcgs ";
-	$result1 = pg_query ( $sql1 );
+	$result1 = db_query ( $sql1 );
 	$linhas1 = pg_num_rows ( $result1 );
 	if ($linhas1 > 0) {
 		db_fieldsmemory ( $result1, 0 );
@@ -86,7 +86,7 @@ if ((isset ( $HTTP_POST_VARS ["db_opcao"] ) && $HTTP_POST_VARS ["db_opcao"]) == 
 		<td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 		<center>
 	<?
-	include ("forms/db_frmcgserrado.php");
+	include(modification("forms/db_frmcgserrado.php"));
 	?>
     </center>
 		</td>

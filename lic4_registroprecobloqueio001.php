@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,16 +28,16 @@
 /**
  * 
  * @author I
- * @revision $Author: dbandrio.costa $
- * @version $Revision: 1.4 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.8 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -123,7 +123,7 @@ var sUrlRPC = "lic4_licitacao.RPC.php";
   function js_retornoGetRegistroPreco(oAjax) {
   
     js_removeObj('msgBox'); 
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     ogridSolicita.clearAll(true);
     if (oRetorno.status == 1) {
     
@@ -244,7 +244,7 @@ var sUrlRPC = "lic4_licitacao.RPC.php";
     
     js_removeObj('msgBox');
     oGridItens.clearAll(true);
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     var aItens   = oRetorno.itens;
     for(var i = 0; i < aItens.length; i++) {
     
@@ -312,7 +312,7 @@ var sUrlRPC = "lic4_licitacao.RPC.php";
   function js_retornoBloqueioItens(oAjax) {
   
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 1) {
       
       $('justificativa').value = '';
@@ -332,7 +332,7 @@ var sUrlRPC = "lic4_licitacao.RPC.php";
   
       $oDaTipoMov   = db_utils::getDao("tipomovimentacaoregistropreco");
       $rsMovimentos = $oDaTipoMov->sql_record($oDaTipoMov->sql_query(null,"*","l33_sequencial"));
-      $aItens       = db_utils::getColectionByRecord($rsMovimentos);
+      $aItens       = db_utils::getCollectionByRecord($rsMovimentos);
       foreach ($aItens as $oMovimento) {
         echo "sCombo += \"<option value='{$oMovimento->l33_sequencial}'>{$oMovimento->l33_descricao}</option>\"\n"; 
       }

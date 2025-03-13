@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,15 +26,15 @@
  */
 
 set_time_limit(0);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("dbforms/db_funcoes.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_propri_classe.php");
-include("classes/db_promitente_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_propri_classe.php"));
+include(modification("classes/db_promitente_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
@@ -42,7 +42,7 @@ $db_opcao = 1;
 
 if(!isset($_self)){
  $sql = "select db21_regracgmiptu, db21_regracgmiss from db_config where codigo = ".db_getsession("DB_instit");
- $res = pg_query($sql);
+ $res = db_query($sql);
  db_fieldsmemory($res, 0);
 }
 
@@ -65,7 +65,8 @@ if ( $opcao == 'matricula' ){
   $sql = $clsqlpromi->sql_query($matricula);
   $propripromi = 'PROMITENTES';
 }
-$result = pg_exec($sql) or die($sql);
+//die($sql);
+$result = db_query($sql) or die($sql);
 
 ?>
 <html>
@@ -77,15 +78,15 @@ $result = pg_exec($sql) or die($sql);
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
 function js_mostracgm(cgm){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cgm','prot3_conscgm002.php?fechar=func_nome&numcgm='+cgm,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','prot3_consultacgmnovo002.php?fechar=func_nome&numcgm='+cgm,'Pesquisa',true);
 }
 function js_mostrabic_matricula(matricula){
-  js_OpenJanelaIframe('top.corpo','db_iframe_matric','cad3_conscadastro_002.php?cod_matricula='+matricula,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matric','cad3_conscadastronovo_002.php?cod_matricula='+matricula,'Pesquisa',true);
 }
 // esta funcao é utilizada quando clicar na inscricao após pesquisar
 // a mesma
 function js_mostrabic_inscricao(inscricao){
-  js_OpenJanelaIframe('top.corpo','db_iframe_inscr','iss3_consinscr003.php?numeroDaInscricao='+inscricao,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inscr','iss3_consinscr003.php?numeroDaInscricao='+inscricao,'Pesquisa',true);
 }
 
 
@@ -144,16 +145,25 @@ MM_reloadPage(true);
 <?
   if ( $opcao == 'matricula' ){
    //busca informações do loteloc se o campo j18_utilizaloc da tabela cfiptu estiver habilita
-    include("classes/db_loteloc_classe.php");
-    include("classes/db_cfiptu_classe.php");
+    include(modification("classes/db_loteloc_classe.php"));
+    include(modification("classes/db_cfiptu_classe.php"));
     $clloteloc = new cl_loteloc;
     $clcfiptu  = new cl_cfiptu;
-    $utilizaloc = $clcfiptu->sql_record($clcfiptu->sql_query("","j18_utilizaloc","","j18_anousu = ".db_getsession("DB_anousu")));
+
+    $j18_permitectmcgf = 't';
+    $bloqueiaLinkCTM = false;
+    $oCfIptu = $clcfiptu->sql_record($clcfiptu->sql_query("","j18_utilizaloc, j18_permitectmcgf","","j18_anousu = ".db_getsession("DB_anousu")));
     if($clcfiptu->numrows > 0) {
-      db_fieldsmemory($utilizaloc,0);
+      db_fieldsmemory($oCfIptu,0);
     } else { 
       $j18_utilizaloc = 'f';
+      $j18_permitectmcgf = 't';
     }
+
+    if ($j18_permitectmcgf == 'f') {
+      $bloqueiaLinkCTM = true;
+    }
+
 ?>
      <th class="borda" style="font-size:12px" nowrap>Matrícula</th>
      <th class="borda" style="font-size:12px" nowrap>Tipo imovel</th>
@@ -182,6 +192,7 @@ MM_reloadPage(true);
      <th class="borda" style="font-size:12px" nowrap>Nome Fantasia</th>
      <th class="borda" style="font-size:12px" nowrap>Data Início</th>
      <th class="borda" style="font-size:12px" nowrap>Data Baixa</th>
+     <th class="borda" style="font-size:12px" nowrap> Situação da Empresa</th>
      <th class="borda" style="font-size:12px" nowrap></th>
    </tr>
 <?
@@ -205,8 +216,20 @@ $cor="#EFE029";
         else if($cor=="#E4F471")
 	   $cor="#EFE029";
         if ( $opcao == 'matricula' ) {
+
+	   if(!empty($j01_baixa)){
+	     $cor = "#ff0000";
+	   }
 ?>
-           <tr title="Clique aqui para verificar os dados" style="cursor: hand" onclick='js_mostrabic_matricula(<?=$j01_matric?>);return false;'>
+<? 
+  if (!$bloqueiaLinkCTM) {
+    $strLinkMatric = "'js_mostrabic_matricula($j01_matric);return false;'";
+  } else {
+    $strLinkMatric = "'return false;'";
+  } 
+
+?>        
+           <tr title="Clique aqui para verificar os dados" style="cursor: hand" onclick=<?=$strLinkMatric?>>
            <td align="center" style="font-size:12px" nowrap bgcolor="<?=$cor?>"><?=$j01_matric?>&nbsp;</td>
            <td align="center" style="font-size:12px" nowrap bgcolor="<?=$cor?>"><?=$j01_tipoimp?>&nbsp;</td>
            <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$proprietario?></td>
@@ -231,6 +254,9 @@ $cor="#EFE029";
              <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=@$j06_lote?></td>
            <?}?>
            <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>"><a href=''>&nbsp;mais detalhes</a></td>
+
+	   <?php $cor == '#ff0000'?$cor="#EFE029":""; ?>
+ 
            </tr>
 <?
         }elseif ( $opcao == 'inscricao' ) { 
@@ -241,6 +267,27 @@ $cor="#EFE029";
            <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$z01_nomefanta?></td>
            <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$q02_dtinic?></td>
            <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$q02_dtbaix.'   '?></td>
+           <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">
+           <?
+           if ($q02_dtbaix == null) {
+              $sqlparalisada = "select 
+                                  q140_issbase 
+                                from 
+                                  issbaseparalisacao
+                                where q140_issbase = $q02_inscr
+                                and (q140_datafim > current_date OR q140_datafim is null)";
+              $resultparalisada = db_query($sqlparalisada) or die($sqlparalisada);
+
+              //Inclusão situação da empresa
+              if (pg_numrows($resultparalisada) > 0) {
+                echo "Paralisada"; 
+              } else {
+                echo "Ativa"; 
+              }
+           } else {
+              echo "Baixada";
+           } 
+           ?></td>
            <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>"><a href=''>&nbsp;mais detalhes</a></td>
            </tr>
 	   
@@ -291,7 +338,7 @@ $sql_regracgm = "
 	";
 //die($sql_regracgm);
 
-$result_regracgm = pg_query($sql_regracgm);
+$result_regracgm = db_query($sql_regracgm);
 db_selectrecord("regracgm", $result_regracgm, true, @$db_opcao, " ", "", "", "", "js_self()");
 
 ?>

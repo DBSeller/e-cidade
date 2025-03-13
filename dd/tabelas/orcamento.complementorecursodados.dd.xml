@@ -1,0 +1,91 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010562' name='complementorecursodados' description="complementorecursodados" prefix="o201" label="complementorecursodados" type="0">
+  <fields>
+    <field codigo="1011278"
+           campo_api=''
+           name="o201_sequencial"
+           conteudo="int4"
+           description="Sequencial"
+           inivalue="0"
+           label="Sequencial"
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sequencial"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='complementorecursodados_o201_sequencial_seq' />
+
+    </field>
+    <field codigo="1011279"
+           campo_api=''
+           name="o201_origem"
+           conteudo="int4"
+           description="Origem"
+           inivalue="0"
+           label="Origem"
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Origem"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1011280"
+           campo_api=''
+           name="o201_codigo"
+           conteudo="int4"
+           description="Código da Origem"
+           inivalue="0"
+           label="Código da Origem"
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código da Origem"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1011281"
+           campo_api=''
+           name="o201_complementofonterecurso"
+           conteudo="int4"
+           description="Complemento da Fonte de Recurso"
+           inivalue="0"
+           label="Complemento da Fonte de Recurso"
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Complemento da Fonte de Recurso"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="o201_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="complementofonterecurso" inner='t'>
+      <fieldfk name="o201_complementofonterecurso" reference="o200_sequencial" />
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
 
 //db_postmemory($HTTP_POST_VARS,2);exit;
 db_postmemory($HTTP_POST_VARS);
 
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -136,6 +136,6 @@ $pdf->cell(20,$alt,db_formatar($total,'f'),0,1,"R",0);
 
 $pdf->Output();
 
-pg_exec("commit");
+db_query("commit");
 
 ?>

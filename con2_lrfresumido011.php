@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt21');
@@ -99,6 +99,8 @@ function js_emite(){
       $executar = "con2_lrfresumido002_2008.php";
     } else if ($anousu == 2009) {
       $executar = "con2_lrfresumido002_2009.php";
+    } else if($anousu == 2010) {
+       $executar = "con2_lrfresumido002_2010.php";
     }
     ?>
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 
 $clrotulo = new rotulocampo;
@@ -51,6 +51,14 @@ $clrotulo->label('z01_nome');
 
 <script>
 function js_emite(){
+
+    iData  = document.form1.data_ano.value+document.form1.data_mes.value+document.form1.data_dia.value;
+    iData1 = document.form1.data1_ano.value+document.form1.data1_mes.value+document.form1.data1_dia.value;
+    
+    if (iData > iData1 && iData != '' && iData1 != '') {
+      alert('Data inicial menor que data Final. Verifique');
+      return false;
+    }  
   
     jan = window.open('cai2_emppago002.php?filtraemp='+document.form1.filtraemp.value+'&quebra='+document.form1.quebra.value+'&ordem='+document.form1.ordem.value+'&cod='+document.form1.k13_conta.value+'&data='+document.form1.data_ano.value+'-'+document.form1.data_mes.value+'-'+document.form1.data_dia.value+'&data1='+document.form1.data1_ano.value+'-'+document.form1.data1_mes.value+'-'+document.form1.data1_dia.value+'&z01_numcgm='+document.form1.z01_numcgm.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
     jan.moveTo(0,0);
@@ -191,10 +199,10 @@ function js_mostratabdesc1(chave1,chave2){
 <?/*--------------------------------------------------*/?>
 function js_pesquisak13_conta(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
   }else{
      if(document.form1.k13_conta.value != ''){ 
-       js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k13_conta.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k13_conta.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
      }else{
        document.form1.k13_conta.value = ''; 
      }
@@ -215,10 +223,10 @@ function js_mostrasaltes1(chave1,chave2){
 
 function js_pesquisaz01_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_nome','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nome','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.z01_numcgm.value != ''){ 
-       js_OpenJanelaIframe('top.corpo','db_iframe_nome','func_nome.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nome','func_nome.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.kz01_numcgm.value = ''; 
      }

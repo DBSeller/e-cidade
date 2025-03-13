@@ -100,7 +100,7 @@ function js_pesquisame11_i_cardapiodia(mostra) {
 
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapiodia',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapiodia',
                         'func_mer_cardapiodia.php?funcao_js=parent.js_mostramer_cardapiodia1|me12_i_codigo|me12_i_codigo',
                         'Pesquisa',true
                        );
@@ -109,7 +109,7 @@ function js_pesquisame11_i_cardapiodia(mostra) {
 
      if (document.form1.me11_i_cardapiodia.value != '') { 
 
-        js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapiodia',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapiodia',
                              'func_mer_cardapiodia.php?pesquisa_chave='+document.form1.me11_i_cardapiodia.value+
                              '&funcao_js=parent.js_mostramer_cardapiodia',
                              'Pesquisa',false
@@ -144,7 +144,7 @@ function js_pesquisame11_i_matricula(mostra) {
 
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_matricula',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matricula',
                         'func_matricula.php?funcao_js=parent.js_mostramatricula1|ed60_i_codigo|ed60_i_codigo',
                         'Pesquisa',true
                        );
@@ -153,7 +153,7 @@ function js_pesquisame11_i_matricula(mostra) {
 
      if (document.form1.me11_i_matricula.value != '') { 
 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matricula',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matricula',
                              'func_matricula.php?pesquisa_chave='+document.form1.me11_i_matricula.value+
                              '&funcao_js=parent.js_mostramatricula',
                              'Pesquisa',false
@@ -188,14 +188,14 @@ function js_pesquisame11_i_usuario(mostra) {
 
   if (mostra == true) {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios',
                         'func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
 
   } else {
 
      if (document.form1.me11_i_usuario.value != '') { 
 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios',
                              'func_db_usuarios.php?pesquisa_chave='+document.form1.me11_i_usuario.value+
                              '&funcao_js=parent.js_mostradb_usuarios',
                              'Pesquisa',false
@@ -228,7 +228,7 @@ function js_mostradb_usuarios1(chave1,chave2) {
 
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapioaluno',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapioaluno',
                        'func_mer_cardapioaluno.php?funcao_js=parent.js_preenchepesquisa|me11_i_codigo','Pesquisa',true);
 
 }

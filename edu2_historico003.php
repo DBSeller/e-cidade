@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("fpdf151/scpdf.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_libdocumento.php");
-require_once ("libs/db_libparagrafo.php");
-require_once ('model/educacao/ArredondamentoNota.model.php');
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("libs/db_libparagrafo.php"));
+require_once(modification('model/educacao/ArredondamentoNota.model.php'));
 
 $resultedu          = eduparametros(db_getsession("DB_coddepto"));
 $oDaoEduParametros  = new cl_edu_parametros();

@@ -1,0 +1,16 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="db44_sequencial"   label="codigo" />
+        <campo campo="db44_descricao"    label="descricao"   />
+    </campos>
+    <from tabela="issatividconfdocumento"/>
+    <juncoes>
+        <join tipo="inner"  tabela="caddocumento" condicao="db44_sequencial = q119_caddocumento" />
+    </juncoes>
+    <filtros>
+        <filtro label="codigo_atividade" condicao="q119_ativid = $codigo_atividade" obrigatorio="false"/>
+    </filtros>
+    <agrupamento campos=""        />
+    <ordenacao   campos="db44_sequencial"/>
+</consulta>

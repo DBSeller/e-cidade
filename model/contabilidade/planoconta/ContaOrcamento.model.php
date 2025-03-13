@@ -1,33 +1,33 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once "model/contabilidade/planoconta/ContaPlano.model.php";
-require_once ("model/orcamento/ReceitaContabilRepository.model.php");
-require_once ("model/configuracao/InstituicaoRepository.model.php");
+require_once modification("model/contabilidade/planoconta/ContaPlano.model.php");
+require_once(modification("model/orcamento/ReceitaContabilRepository.model.php"));
+require_once(modification("model/configuracao/InstituicaoRepository.model.php"));
 /**
  *
  * Classe responsável pelo Plano de conta orçamentário (Receita / Despesa)
@@ -43,6 +43,7 @@ class ContaOrcamento extends ContaPlano {
   private $oDaoConplanoconplanoorcamento = null;
   private $aGrupoConta                   = array();
 
+  private $identificadorResultadoPrimario  = 0;
   /**
    *
    * Classe construtora, Se setado os parâmetros busca os dados
@@ -57,6 +58,9 @@ class ContaOrcamento extends ContaPlano {
       if ((!empty($iCodigoConta) && !empty($iAnoUsu)) || (!empty($iAnoUsu) && !empty($iReduz))) {
       parent::__construct($iCodigoConta, $iAnoUsu, $iReduz, $iInstituicao);
     }
+    if (!empty($this->oDadosAnteriores)) {
+        $this->identificadorResultadoPrimario = $this->oDadosAnteriores->c60_identificadoresultadoprimario;
+    }
     $this->oDaoConplanoconplanoorcamento = db_utils::getDao("conplanoconplanoorcamento");
   }
   /**
@@ -69,14 +73,14 @@ class ContaOrcamento extends ContaPlano {
 
   /**
    * Retorna objeto PlanoContaPCASP
-   * @return PlanoContaPCASP
+   * @return ContaPlanoPCASP
    */
   public function getPlanoContaPCASP() {
 
-
-    if ($this->oPlanoContaPCASP == null) {
+    if ($this->oPlanoContaPCASP == null && $this->getCodigoConta() !== null) {
 
       $iCodigoInstituicao = $this->getInstituicao();
+
       $sWhere  = " c72_conplanoorcamento = {$this->getCodigoConta()} and c72_anousu = {$this->getAno()}";
       $sWhere .= " and (case                                                                         ";
       $sWhere .= "        when conplanoreduz.c61_instit is not null                                  ";
@@ -120,6 +124,24 @@ class ContaOrcamento extends ContaPlano {
 
     return $this->oPlanoContaPCASP;
   }
+
+    /**
+     * @return int
+     */
+    public function getIdentificadorResultadoPrimario()
+    {
+        return $this->identificadorResultadoPrimario;
+    }
+
+    /**
+     * @param int $identificadorResultadoPrimario
+     */
+    public function setIdentificadorResultadoPrimario($identificadorResultadoPrimario)
+    {
+        $this->identificadorResultadoPrimario = $identificadorResultadoPrimario;
+    }
+
+
 
   /**
    *
@@ -175,12 +197,9 @@ class ContaOrcamento extends ContaPlano {
    */
   private function persistirContaOrcamentaria() {
 
-    if ($this->getPlanoContaPCASP() == null || !($this->getPlanoContaPCASP() instanceof ContaPlanoPCASP)) {
-      throw new Exception('Conta de vínculo do PCASP deve ser informada.');
-    }
     $iCodigoConta          = null;
     $iUltimoAno            = $this->getUltimoAnoPlano();
-    $oDaoPlanoOrcamentario = db_utils::getDao("conplanoorcamento");
+    $oDaoPlanoOrcamentario = new cl_conplanoorcamento();
 
     $oDaoPlanoOrcamentario->c60_estrut                   = $this->getEstrutural();
     $oDaoPlanoOrcamentario->c60_descr                    = $this->getDescricao();
@@ -191,6 +210,7 @@ class ContaOrcamento extends ContaPlano {
     $oDaoPlanoOrcamentario->c60_identificadorfinanceiro  = $this->getIdentificadorFinanceiro();
     $oDaoPlanoOrcamentario->c60_naturezasaldo            = $this->getNaturezaSaldo();
     $oDaoPlanoOrcamentario->c60_funcao                   = $this->getFuncao();
+    $oDaoPlanoOrcamentario->c60_identificadoresultadoprimario = $this->getIdentificadorResultadoPrimario();
     /**
      * Se o código da conta estiver setado, entra em modo de alteração
      * Se não inclui até o ano máximo do plano
@@ -209,15 +229,15 @@ class ContaOrcamento extends ContaPlano {
         $oDaoPlanoOrcamentario->incluir($iCodigoConta, $iAnoInclusao);
         $iCodigoConta = $oDaoPlanoOrcamentario->c60_codcon;
       }
+
       if ($oDaoPlanoOrcamentario->erro_status == "0") {
         throw new Exception($oDaoPlanoOrcamentario->erro_msg);
       }
+
       /*
        * Caso tenha contaPCASP faz o vinculo
        */
-
       if ( $this->getPlanoContaPCASP() != null ) {
-
 
         $sWhereContaVinculo = "c72_conplanoorcamento = {$iCodigoConta} and c72_anousu = {$iAnoInclusao}";
         $this->oDaoConplanoconplanoorcamento->excluir(null, $sWhereContaVinculo);
@@ -225,15 +245,33 @@ class ContaOrcamento extends ContaPlano {
           throw new Exception("Erro ao excluir dados da vinculação de contas");
         }
 
-        $this->oDaoConplanoconplanoorcamento->c72_conplano          = $this->getPlanoContaPCASP()->getCodigoConta();
-        $this->oDaoConplanoconplanoorcamento->c72_conplanoorcamento = $iCodigoConta;
-        $this->oDaoConplanoconplanoorcamento->c72_anousu            = $iAnoInclusao;
+        $iConPlano = $this->getPlanoContaPCASP()->getCodigoConta();
 
-        $this->oDaoConplanoconplanoorcamento->incluir(null);
+        if ($iConPlano === null && $this->getContasReduzidas() !== false) {
+          throw new Exception("A conta possui reduzido(s) vinculado(s). Não é possível alterar a conta sem informar o Vínculo com PCASP.");
+        }
 
-        if ( $this->oDaoConplanoconplanoorcamento->erro_status == "0" ) {
+        if ($iConPlano !== null) {
 
-          throw new Exception($this->oDaoConplanoconplanoorcamento->erro_msg);
+          /**
+           * verifica se a conta existe no ano antes de alterar
+           */
+          $oVinculo = new cl_conplanoorcamento;
+          $sqlVinculo = $oVinculo->sql_query_file ($iCodigoConta, $iAnoInclusao,"1", null, null);
+          $oVinculo->sql_record($sqlVinculo);
+          if ($oVinculo->numrows <= 0 ) {
+            continue;
+          }
+
+          $this->oDaoConplanoconplanoorcamento->c72_conplano          = $iConPlano;
+          $this->oDaoConplanoconplanoorcamento->c72_conplanoorcamento = $iCodigoConta;
+          $this->oDaoConplanoconplanoorcamento->c72_anousu            = $iAnoInclusao;
+          $this->oDaoConplanoconplanoorcamento->incluir(null);
+
+          if ($this->oDaoConplanoconplanoorcamento->erro_status == "0") {
+
+            throw new Exception($this->oDaoConplanoconplanoorcamento->erro_msg);
+          }
         }
       }
     } // end for
@@ -348,7 +386,7 @@ class ContaOrcamento extends ContaPlano {
    * Busca eventos contabeis pelo elemento da tabela contranslrelemento do reduzido criado
    *
    * @access public
-   * @return bool | array
+   * @return EventoContabil[]
    */
   public function getEventosContabeisPeloElemento() {
 
@@ -393,7 +431,11 @@ class ContaOrcamento extends ContaPlano {
       throw new Exception("Código da conta esta nulo.");
     }
 
-    $oDaoOrcamentoAnalitica = db_utils::getDao("conplanoorcamentoanalitica");
+    if ($this->getPlanoContaPCASP() == null || !($this->getPlanoContaPCASP() instanceof ContaPlanoPCASP)) {
+      throw new Exception('Conta de vínculo do PCASP deve ser informada.');
+    }
+
+    $oDaoOrcamentoAnalitica = new cl_conplanoorcamentoanalitica();
 
     if ($this->hasReduzidoAnoInstituicao() && $this->getReduzido() == "") {
       throw new Exception("Existe uma conta reduzida para o ano e instituição informados.");
@@ -441,11 +483,24 @@ class ContaOrcamento extends ContaPlano {
         }
       }
 
+
+      /**
+       * verifica se a conta existe para os anos
+       */
+      $oVerifica = new cl_conplanoorcamento;
+      $sql = $oVerifica->sql_query($this->getCodigoConta(), $iAno);
+      $oVerifica->sql_record($sql);
+      if ($oVerifica->numrows <= 0) {
+        continue;
+      }
+
+
       /**
        * Verifica se o reduzido está vazio e a variável $lAlteraReduz é falsa para definir se deve alterar o
        * registro ou incluir
        */
       if ($this->getReduzido() == "" || !$lAlteraReduz) {
+
 
         $oDaoOrcamentoAnalitica->incluir($oDaoOrcamentoAnalitica->c61_reduz, $iAno);
         $this->setReduzido($oDaoOrcamentoAnalitica->c61_reduz);
@@ -455,6 +510,7 @@ class ContaOrcamento extends ContaPlano {
         $oDaoOrcamentoAnalitica->alterar($oDaoOrcamentoAnalitica->c61_reduz, $iAno);
       }
 
+
       $lAlteraReduz = false;
 
       if ($oDaoOrcamentoAnalitica->erro_status == 0) {
@@ -462,7 +518,7 @@ class ContaOrcamento extends ContaPlano {
         $sMsgErro = $oDaoOrcamentoAnalitica->erro_msg;
         throw new Exception($sMsgErro);
       }
-      
+
       $this->getSistemaConta()->integrarDados($this);
     }
 
@@ -511,7 +567,20 @@ class ContaOrcamento extends ContaPlano {
 
     if ($this->isReceita()) {
 
-      $oDaoFontes     = db_utils::getDao('orcfontes');
+
+      $oDaoEstimativaReceita = new cl_ppaestimativareceita();
+      $oDaoEstimativaReceita->excluir(null, "o06_codrec = {$this->getCodigo()} and o06_anousu >= {$this->getAno()}");
+      if ($oDaoEstimativaReceita->erro_status == "0") {
+        throw new Exception("Não foi possível excluir a estimativa de receita do PPA para a conta selecionada.");
+      }
+
+      $oDaoDesdobramento = new cl_orcfontesdes();
+      $oDaoDesdobramento->excluir(null, null, "o60_codfon = {$this->getCodigoConta()} and o60_anousu >= {$this->getAno()}");
+      if ($oDaoDesdobramento->erro_status == "0") {
+        throw new Exception("Não foi possível excluir o desdobramento da receita.");
+      }
+
+      $oDaoFontes     = new cl_orcfontes();
       $sWhereReceita  = "     o57_codfon = {$this->getCodigoConta()} ";
       $sWhereReceita .= " and o57_anousu >= {$this->getAno()}        ";
       $oDaoFontes->excluir(null, null, $sWhereReceita);
@@ -525,12 +594,23 @@ class ContaOrcamento extends ContaPlano {
     }
 
 
-    $aGruposContas = $this->getGruposContas();
-    if ($aGruposContas) {
-      foreach ($aGruposContas as $oGrupo) {
-        $this->removeContaGrupo($oGrupo->c20_sequencial);
-      }
+    $sWhereExcluir      = "     c21_codcon = {$this->getCodigo()} ";
+    $sWhereExcluir     .= " and c21_anousu >= {$this->getAno()}   ";
+    $oDaoGrupoOrcamento = new cl_conplanoorcamentogrupo();
+    $oDaoGrupoOrcamento->excluir(null, $sWhereExcluir);
+    if ($oDaoGrupoOrcamento->erro_status == "0") {
+      throw new Exception("Não foi possível excluir o vínculo do grupo do plano de contas com a conta orçamentária.");
     }
+
+    $sWhereExcluir      = "     o04_conplano = {$this->getCodigo()} ";
+    $sWhereExcluir     .= " and o04_anousu >= {$this->getAno()}   ";
+    $oDaoCenarioEconomico = new cl_orccenarioeconomicoconplanoorcamento();
+    $oDaoCenarioEconomico->excluir(null, $sWhereExcluir);
+    if ($oDaoCenarioEconomico->erro_status == "0") {
+      throw new Exception("Não foi possível desvincular a conta com o cenário econômico.");
+    }
+
+
     $aContasReduzidas = $this->getContasReduzidas();
 
     if ($aContasReduzidas) {
@@ -745,17 +825,17 @@ class ContaOrcamento extends ContaPlano {
   * @param ContaPlano $oContaPlano
   * @throws Exception
   */
-  private function hasEmpenhoAutorizado($iCodigoConta, $iAno) {
+  public function hasEmpenhoAutorizado($iCodigoConta, $iAno) {
 
-    $oDaoEmpAutItem = db_utils::getDao("empautitem");
-    $sSqlVerificaAutorizacoes = $oDaoEmpAutItem->sql_query(null,null,
+    $oEmpAutItem = new cl_empautitem;
+    $sSqlVerificaAutorizacoes = $oEmpAutItem->sql_query(null,null,
                                                                    "*",
                                                                    "e55_codele",
                                                                    "e55_codele = {$iCodigoConta}
                                                                     and e54_anousu = {$iAno}"
     );
-    $rsEmpAutItem = $oDaoEmpAutItem->sql_record($sSqlVerificaAutorizacoes);
-    if ($oDaoEmpAutItem->numrows > 0) {
+    $rsEmpAutItem = $oEmpAutItem->sql_record($sSqlVerificaAutorizacoes);
+    if ($oEmpAutItem->numrows > 0) {
       return true;
     }
     return false;
@@ -919,17 +999,16 @@ class ContaOrcamento extends ContaPlano {
   }
 
   /**
-  *
-  * Retorna todas as contas reduzidas/analiticas
-  * @param integer $iPlanoConta
-  */
+   * Retorna os reduzidos cadastrados para conta
+   * @return bool|stdClass[]
+   */
   public function getContasReduzidas() {
 
     if (!empty($this->iCodigoConta)) {
 
-      $oDaoReduzido       = db_utils::getDao("conplanoorcamentoanalitica");
+      $oDaoReduzido       = new cl_conplanoorcamentoanalitica();
       $sWhereReduzido     = "     conplanoorcamentoanalitica.c61_codcon = {$this->getCodigoConta()}";
-      $sWhereReduzido    .= " and conplanoorcamentoanalitica.c61_anousu = ".db_getsession("DB_anousu");
+      $sWhereReduzido    .= " and conplanoorcamentoanalitica.c61_anousu = " . db_getsession("DB_anousu");
       $sSqlBuscaReduzidos = $oDaoReduzido->sql_query(null, null, "*", null, $sWhereReduzido);
       $rsBuscaReduzidos   = $oDaoReduzido->sql_record($sSqlBuscaReduzidos);
 
@@ -988,5 +1067,12 @@ class ContaOrcamento extends ContaPlano {
       return ReceitaContabilRepository::getReceitaByCodigo($iCodigoReceita, $this->getAno());
     }
     return false;
+  }
+
+  /**
+   * @return int
+   */
+  public function getCodigo() {
+    return $this->getCodigoConta();
   }
 }

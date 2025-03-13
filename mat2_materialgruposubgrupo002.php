@@ -1,37 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/materialestoque.model.php");
-require_once("classes/db_matestoque_classe.php");
-require_once "libs/db_app.utils.php";
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/materialestoque.model.php"));
+require_once(modification("classes/db_matestoque_classe.php"));
+require_once modification("libs/db_app.utils.php");
 ini_set('display_errors', 0);
 
 db_app::import("configuracao.DBEstrutura");
@@ -77,8 +77,18 @@ if ( isset($oParametros->grupos) && trim($oParametros->grupos) != "" )  {
 }
 
 $WhereAlmoxarifados = " ";
+$sDescricaoAlmoxarifado = "Todos";
 if (!empty($sAlmoxarifados)) {
   $WhereAlmoxarifados .= "             and db_almox.m91_codigo in ({$sAlmoxarifados})                                           ";
+  $sSqlAlmoxarifados = "select array_to_string(array_agg(descrdepto), ', ') as descricao
+                          from db_almox
+                         inner join db_depart
+                            on m91_depto = coddepto
+                         where m91_codigo in ({$sAlmoxarifados})";
+
+  $rsAlmoxarifados         = db_query($sSqlAlmoxarifados);
+  $oDescricaoAlmoxarifado  = db_utils::fieldsMemory($rsAlmoxarifados, 0);
+  $sDescricaoAlmoxarifado = strlen($oDescricaoAlmoxarifado->descricao) > 110?substr($oDescricaoAlmoxarifado->descricao, 0, 110)."...":$oDescricaoAlmoxarifado->descricao;
 }
 
 $sSqlMovimentacao  = " select  coalesce(sum(case when m81_tipo = 1 then m82_quant ";
@@ -96,8 +106,8 @@ $sSqlMovimentacao .= "                 where {$sWhere} and instit = " . db_getse
 $sSqlMovimentacao .= "                   and b.m60_codmater = matmater.m60_codmater {$WhereAlmoxarifados} ";
 $sSqlMovimentacao .= "                   and df.coddepto = db_depart.coddepto";
 
-$sSqlValorFinanceiro  = " select  coalesce(sum(case when m81_tipo = 1 then m89_valorfinanceiro ";
-$sSqlValorFinanceiro .= "             when m81_tipo = 2 then m89_valorfinanceiro*-1  end), 0) as valorfinanceiro";
+$sSqlValorFinanceiro  = " select  coalesce(sum(case when m81_tipo = 1 then (m89_valorunitario*m82_quant) ";
+$sSqlValorFinanceiro .= "             when m81_tipo = 2 then (m89_valorunitario*m82_quant)*-1  end), 0) as valorfinanceiro";
 $sSqlValorFinanceiro .= "                  from matestoqueini   ";
 $sSqlValorFinanceiro .= "                       inner join matestoquetipo      on m80_codtipo          = m81_codtipo ";
 $sSqlValorFinanceiro .= "                       inner join matestoqueinimei    on m82_matestoqueini    = m80_codigo ";
@@ -126,15 +136,20 @@ $sSqlMateriais .= "       inner join materialestoquegrupo         on m68_materia
 $sSqlMateriais .= "       inner join db_estruturavalor            on m65_db_estruturavalor    = db121_sequencial ";
 $sSqlMateriais .= "       inner join matparam                     on db121_db_estrutura       = m90_db_estrutura ";
 
-$sSqlMateriais .= "       inner join matestoque                   on m70_codmatmater          = m60_codmater     ";  
+$sSqlMateriais .= "       inner join matestoque                   on m70_codmatmater          = m60_codmater     ";
 $sSqlMateriais .= "       inner join db_depart                    on m70_coddepto             = coddepto ";
 $sSqlMateriais .= "                                              and instit                   = ".db_getsession("DB_instit");
 $sSqlMateriais .= "       left  join db_almox                     on db_almox.m91_depto       = db_depart.coddepto ";
 
-$sSqlMateriais .= " where $sWhereMater {$WhereAlmoxarifados}";
+$sSqlMateriais .= " where $sWhereMater {$WhereAlmoxarifados} and m60_ativo is true ";
 $sSqlMateriais .= " order by db121_estrutural, $sOrderByMaterial";
 
+
 $rsMateriais   = db_query($sSqlMateriais);
+if (!$rsMateriais) {
+  db_redireciona('db_erros.php?fechar=true&db_erro=Ocorreu um erro ao buscar os materiais.');
+  exit;
+}
 $iNumRowsItens = pg_num_rows($rsMateriais);
 $aGrupos       = array();
 $iMaximaCodigo = 0;
@@ -150,9 +165,9 @@ for ($i = 0; $i < $iNumRowsItens; $i++) {
     $oItem->valorfinanceiro = 0;
   }
 
-  $oItem->valor = $oItem->valorfinanceiro;
+  $oItem->valor = round($oItem->valorfinanceiro, 2);
 
-  criaNopai($oGrupo, &$aGrupos, $oItem);
+  criaNopai($oGrupo, $aGrupos, $oItem);
 
   if (strlen($oItem->material) > $iMaximaCodigo) {
      $iMaximaCodigo = strlen($oItem->material);
@@ -172,25 +187,26 @@ for ($i = 0; $i < $iNumRowsItens; $i++) {
 
 }
 
-function criaNopai($oGrupo, &$aGrupos, $oItem) {
-
-  global $aGlobal;
+/**
+ * @param $oGrupo
+ * @param array $aGrupos
+ * @param $oItem
+ */
+function criaNopai($oGrupo, array &$aGrupos, $oItem)
+{
   if ($oGrupo->getEstruturaPai() != "") {
-
     if (!isset($aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()])) {
-
       $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()] = new stdClass();
       $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->quantidade = $oItem->quantidade;
-      $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->valor      = $oItem->valor;
-      $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->nivel      = $oGrupo->getEstruturaPai()->getNivel();
-      $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->descricao  = $oGrupo->getEstruturaPai()->getDescricao();
-
+        $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->valor = $oItem->valor;
+        $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->nivel = $oGrupo->getEstruturaPai()->getNivel();
+        $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->descricao = $oGrupo->getEstruturaPai()->getDescricao();
     } else {
-
       $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->quantidade += $oItem->quantidade;
-      $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->valor      += $oItem->valor;
+        $aGrupos[$oGrupo->getEstruturaPai()->getEstrutural()]->valor += $oItem->valor;
     }
-    criaNopai($oGrupo->getEstruturaPai(), &$aGrupos, $oItem);
+
+      criaNopai($oGrupo->getEstruturaPai(), $aGrupos, $oItem);
   }
 }
 
@@ -204,6 +220,7 @@ $head3 = "Relatório de Material por Grupo/SubGrupo";
 $head4 = "Posição até: ".$oParametros->datafin;
 $head5 = $sOrdemMaterial;
 $head6 = $sTipoEmissao;
+$head7 = "Almoxarifados: {$sDescricaoAlmoxarifado}";
 
 $pdf = new PDF("P");
 $pdf->Open();
@@ -301,9 +318,8 @@ foreach ($aGrupos as $sEstruturalGrupo => $oGrupo) {
 }
 
 $pdf->setfont('arial', 'b', 6);
-$pdf->Cell(140, $iAlt, "Total Geral"                 , "T", 0, "R");
-$pdf->Cell(20 , $iAlt, $nQuantidadeTotal             , "T", 0, "R", 0);
-$pdf->Cell(30 , $iAlt, db_formatar($nValorTotal, "f"), "T", 1, "R");
-
+$pdf->Cell(140, $iAlt, "Total Geral"                      , "T", 0, "R");
+$pdf->Cell(20 , $iAlt, db_formatar($nQuantidadeTotal, "f"), "T", 0, "R", 0);
+$pdf->Cell(30 , $iAlt, db_formatar($nValorTotal, "f")     , "T", 1, "R");
 $pdf->Output();
 ?>

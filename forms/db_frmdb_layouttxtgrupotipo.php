@@ -58,7 +58,7 @@ db_input('db57_descr',40,$Idb57_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_layouttxtgrupotipo','func_db_layouttxtgrupotipo.php?funcao_js=parent.js_preenchepesquisa|db57_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_layouttxtgrupotipo','func_db_layouttxtgrupotipo.php?funcao_js=parent.js_preenchepesquisa|db57_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_layouttxtgrupotipo.hide();

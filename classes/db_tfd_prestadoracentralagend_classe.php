@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -500,6 +500,47 @@ class cl_tfd_prestadoracentralagend {
        if($tf10_i_codigo!=null ){
          $sql2 .= " where tfd_prestadoracentralagend.tf10_i_codigo = $tf10_i_codigo "; 
        } 
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+
+  function sql_query_passagem_destino( $tf10_i_codigo=null,$campos="*",$ordem=null,$dbwhere="") {
+
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from tfd_prestadoracentralagend ";
+     $sql .= "      inner join tfd_centralagendamento on tfd_centralagendamento.tf09_i_codigo = tfd_prestadoracentralagend.tf10_i_centralagend";
+     $sql .= "      inner join tfd_prestadora         on tfd_prestadora.tf25_i_codigo         = tfd_prestadoracentralagend.tf10_i_prestadora";
+     $sql .= "      inner join cgm                    on cgm.z01_numcgm                       = tfd_centralagendamento.tf09_i_numcgm";
+     $sql .= "      inner join cgm  as a              on a.z01_numcgm                         = tfd_prestadora.tf25_i_cgm";
+     $sql .= "      inner join tfd_destino            on tfd_destino.tf03_i_codigo            = tfd_prestadora.tf25_i_destino";
+     $sql .= "      left  join passagemdestino        on passagemdestino.tf37_destino         = tfd_destino.tf03_i_codigo";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($tf10_i_codigo!=null ){
+         $sql2 .= " where tfd_prestadoracentralagend.tf10_i_codigo = $tf10_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

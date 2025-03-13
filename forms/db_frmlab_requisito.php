@@ -58,7 +58,7 @@ db_input('la12_c_descr',50,$Ila12_c_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lab_requisito','func_lab_requisito.php?funcao_js=parent.js_preenchepesquisa|la12_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_requisito','func_lab_requisito.php?funcao_js=parent.js_preenchepesquisa|la12_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_lab_requisito.hide();

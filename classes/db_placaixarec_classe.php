@@ -1,85 +1,85 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: caixa
 //CLASSE DA ENTIDADE placaixarec
-class cl_placaixarec { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $k81_seqpla = 0; 
-   var $k81_codpla = 0; 
-   var $k81_conta = 0; 
-   var $k81_receita = 0; 
-   var $k81_valor = 0; 
-   var $k81_obs = null; 
-   var $k81_codigo = 0; 
-   var $k81_datareceb_dia = null; 
-   var $k81_datareceb_mes = null; 
-   var $k81_datareceb_ano = null; 
-   var $k81_datareceb = null; 
-   var $k81_operbanco = null; 
-   var $k81_origem = 0; 
-   var $k81_numcgm = 0; 
-   var $k81_concarpeculiar = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_placaixarec {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $k81_seqpla = 0;
+   var $k81_codpla = 0;
+   var $k81_conta = 0;
+   var $k81_receita = 0;
+   var $k81_valor = 0;
+   var $k81_obs = null;
+   var $k81_codigo = 0;
+   var $k81_datareceb_dia = null;
+   var $k81_datareceb_mes = null;
+   var $k81_datareceb_ano = null;
+   var $k81_datareceb = null;
+   var $k81_operbanco = null;
+   var $k81_origem = 0;
+   var $k81_numcgm = 0;
+   var $k81_concarpeculiar = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 k81_seqpla = int4 = Lançamento 
-                 k81_codpla = int4 = PLanilha 
-                 k81_conta = int4 = Código Conta 
-                 k81_receita = int4 = codigo da receita 
-                 k81_valor = float8 = Valor 
-                 k81_obs = text = Observação 
-                 k81_codigo = int4 = Recurso 
-                 k81_datareceb = date = Data Recebimento 
-                 k81_operbanco = varchar(20) = Operação banco 
-                 k81_origem = int4 = Origem 
-                 k81_numcgm = int4 = CGM do Contribuinte 
-                 k81_concarpeculiar = varchar(100) = C. Peculiar/C. Aplicação 
+                 k81_seqpla = int4 = Lançamento
+                 k81_codpla = int4 = PLanilha
+                 k81_conta = int4 = Código Conta
+                 k81_receita = int4 = codigo da receita
+                 k81_valor = float8 = Valor
+                 k81_obs = text = Observação
+                 k81_codigo = int4 = Recurso
+                 k81_datareceb = date = Data Recebimento
+                 k81_operbanco = varchar(20) = Operação banco
+                 k81_origem = int4 = Origem
+                 k81_numcgm = int4 = CGM do Contribuinte
+                 k81_concarpeculiar = varchar(100) = C. Peculiar/C. Aplicação
                  ";
-   //funcao construtor da classe 
-   function cl_placaixarec() { 
+   //funcao construtor da classe
+   function cl_placaixarec() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("placaixarec"); 
+     $this->rotulo = new rotulo("placaixarec");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -114,9 +114,9 @@ class cl_placaixarec {
      }
    }
    // funcao para inclusao
-   function incluir ($k81_seqpla){ 
+   function incluir ($k81_seqpla){
       $this->atualizacampos();
-     if($this->k81_codpla == null ){ 
+     if($this->k81_codpla == null ){
        $this->erro_sql = " Campo PLanilha nao Informado.";
        $this->erro_campo = "k81_codpla";
        $this->erro_banco = "";
@@ -125,7 +125,7 @@ class cl_placaixarec {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k81_conta == null ){ 
+     if($this->k81_conta == null ){
        $this->erro_sql = " Campo Código Conta nao Informado.";
        $this->erro_campo = "k81_conta";
        $this->erro_banco = "";
@@ -134,7 +134,7 @@ class cl_placaixarec {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k81_receita == null ){ 
+     if($this->k81_receita == null ){
        $this->erro_sql = " Campo codigo da receita nao Informado.";
        $this->erro_campo = "k81_receita";
        $this->erro_banco = "";
@@ -143,7 +143,7 @@ class cl_placaixarec {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k81_valor == null ){ 
+     if($this->k81_valor == null ){
        $this->erro_sql = " Campo Valor nao Informado.";
        $this->erro_campo = "k81_valor";
        $this->erro_banco = "";
@@ -152,7 +152,7 @@ class cl_placaixarec {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k81_codigo == null ){ 
+     if($this->k81_codigo == null ){
        $this->erro_sql = " Campo Recurso nao Informado.";
        $this->erro_campo = "k81_codigo";
        $this->erro_banco = "";
@@ -161,7 +161,7 @@ class cl_placaixarec {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k81_datareceb == null ){ 
+     if($this->k81_datareceb == null ){
        $this->erro_sql = " Campo Data Recebimento nao Informado.";
        $this->erro_campo = "k81_datareceb_dia";
        $this->erro_banco = "";
@@ -170,7 +170,7 @@ class cl_placaixarec {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k81_origem == null ){ 
+     if($this->k81_origem == null ){
        $this->erro_sql = " Campo Origem nao Informado.";
        $this->erro_campo = "k81_origem";
        $this->erro_banco = "";
@@ -179,7 +179,7 @@ class cl_placaixarec {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k81_numcgm == null ){ 
+     if($this->k81_numcgm == null ){
        $this->erro_sql = " Campo CGM do Contribuinte nao Informado.";
        $this->erro_campo = "k81_numcgm";
        $this->erro_banco = "";
@@ -188,7 +188,7 @@ class cl_placaixarec {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k81_concarpeculiar == null ){ 
+     if($this->k81_concarpeculiar == null ){
        $this->erro_sql = " Campo C. Peculiar/C. Aplicação nao Informado.";
        $this->erro_campo = "k81_concarpeculiar";
        $this->erro_banco = "";
@@ -198,16 +198,16 @@ class cl_placaixarec {
        return false;
      }
      if($k81_seqpla == "" || $k81_seqpla == null ){
-       $result = db_query("select nextval('placaixarec_k81_seqpla_seq')"); 
+       $result = db_query("select nextval('placaixarec_k81_seqpla_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: placaixarec_k81_seqpla_seq do campo: k81_seqpla"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: placaixarec_k81_seqpla_seq do campo: k81_seqpla";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->k81_seqpla = pg_result($result,0,0); 
+       $this->k81_seqpla = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from placaixarec_k81_seqpla_seq");
        if(($result != false) && (pg_result($result,0,0) < $k81_seqpla)){
@@ -218,10 +218,10 @@ class cl_placaixarec {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->k81_seqpla = $k81_seqpla; 
+         $this->k81_seqpla = $k81_seqpla;
        }
      }
-     if(($this->k81_seqpla == null) || ($this->k81_seqpla == "") ){ 
+     if(($this->k81_seqpla == null) || ($this->k81_seqpla == "") ){
        $this->erro_sql = " Campo k81_seqpla nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -230,35 +230,35 @@ class cl_placaixarec {
        return false;
      }
      $sql = "insert into placaixarec(
-                                       k81_seqpla 
-                                      ,k81_codpla 
-                                      ,k81_conta 
-                                      ,k81_receita 
-                                      ,k81_valor 
-                                      ,k81_obs 
-                                      ,k81_codigo 
-                                      ,k81_datareceb 
-                                      ,k81_operbanco 
-                                      ,k81_origem 
-                                      ,k81_numcgm 
-                                      ,k81_concarpeculiar 
+                                       k81_seqpla
+                                      ,k81_codpla
+                                      ,k81_conta
+                                      ,k81_receita
+                                      ,k81_valor
+                                      ,k81_obs
+                                      ,k81_codigo
+                                      ,k81_datareceb
+                                      ,k81_operbanco
+                                      ,k81_origem
+                                      ,k81_numcgm
+                                      ,k81_concarpeculiar
                        )
                 values (
-                                $this->k81_seqpla 
-                               ,$this->k81_codpla 
-                               ,$this->k81_conta 
-                               ,$this->k81_receita 
-                               ,$this->k81_valor 
-                               ,'$this->k81_obs' 
-                               ,$this->k81_codigo 
-                               ,".($this->k81_datareceb == "null" || $this->k81_datareceb == ""?"null":"'".$this->k81_datareceb."'")." 
-                               ,'$this->k81_operbanco' 
-                               ,$this->k81_origem 
-                               ,$this->k81_numcgm 
-                               ,'$this->k81_concarpeculiar' 
+                                $this->k81_seqpla
+                               ,$this->k81_codpla
+                               ,$this->k81_conta
+                               ,$this->k81_receita
+                               ,$this->k81_valor
+                               ,'$this->k81_obs'
+                               ,$this->k81_codigo
+                               ,".($this->k81_datareceb == "null" || $this->k81_datareceb == ""?"null":"'".$this->k81_datareceb."'")."
+                               ,'$this->k81_operbanco'
+                               ,$this->k81_origem
+                               ,$this->k81_numcgm
+                               ,'$this->k81_concarpeculiar'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Receitas das planilhas de caixa ($this->k81_seqpla) nao Incluído. Inclusao Abortada.";
@@ -301,16 +301,16 @@ class cl_placaixarec {
        $resac = db_query("insert into db_acount values($acount,1024,18134,'','".AddSlashes(pg_result($resaco,0,'k81_concarpeculiar'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($k81_seqpla=null) { 
+   function alterar ($k81_seqpla=null) {
       $this->atualizacampos();
      $sql = " update placaixarec set ";
      $virgula = "";
-     if(trim($this->k81_seqpla)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_seqpla"])){ 
+     if(trim($this->k81_seqpla)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_seqpla"])){
        $sql  .= $virgula." k81_seqpla = $this->k81_seqpla ";
        $virgula = ",";
-       if(trim($this->k81_seqpla) == null ){ 
+       if(trim($this->k81_seqpla) == null ){
          $this->erro_sql = " Campo Lançamento nao Informado.";
          $this->erro_campo = "k81_seqpla";
          $this->erro_banco = "";
@@ -320,10 +320,10 @@ class cl_placaixarec {
          return false;
        }
      }
-     if(trim($this->k81_codpla)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_codpla"])){ 
+     if(trim($this->k81_codpla)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_codpla"])){
        $sql  .= $virgula." k81_codpla = $this->k81_codpla ";
        $virgula = ",";
-       if(trim($this->k81_codpla) == null ){ 
+       if(trim($this->k81_codpla) == null ){
          $this->erro_sql = " Campo PLanilha nao Informado.";
          $this->erro_campo = "k81_codpla";
          $this->erro_banco = "";
@@ -333,10 +333,10 @@ class cl_placaixarec {
          return false;
        }
      }
-     if(trim($this->k81_conta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_conta"])){ 
+     if(trim($this->k81_conta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_conta"])){
        $sql  .= $virgula." k81_conta = $this->k81_conta ";
        $virgula = ",";
-       if(trim($this->k81_conta) == null ){ 
+       if(trim($this->k81_conta) == null ){
          $this->erro_sql = " Campo Código Conta nao Informado.";
          $this->erro_campo = "k81_conta";
          $this->erro_banco = "";
@@ -346,10 +346,10 @@ class cl_placaixarec {
          return false;
        }
      }
-     if(trim($this->k81_receita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_receita"])){ 
+     if(trim($this->k81_receita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_receita"])){
        $sql  .= $virgula." k81_receita = $this->k81_receita ";
        $virgula = ",";
-       if(trim($this->k81_receita) == null ){ 
+       if(trim($this->k81_receita) == null ){
          $this->erro_sql = " Campo codigo da receita nao Informado.";
          $this->erro_campo = "k81_receita";
          $this->erro_banco = "";
@@ -359,10 +359,10 @@ class cl_placaixarec {
          return false;
        }
      }
-     if(trim($this->k81_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_valor"])){ 
+     if(trim($this->k81_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_valor"])){
        $sql  .= $virgula." k81_valor = $this->k81_valor ";
        $virgula = ",";
-       if(trim($this->k81_valor) == null ){ 
+       if(trim($this->k81_valor) == null ){
          $this->erro_sql = " Campo Valor nao Informado.";
          $this->erro_campo = "k81_valor";
          $this->erro_banco = "";
@@ -372,14 +372,14 @@ class cl_placaixarec {
          return false;
        }
      }
-     if(trim($this->k81_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_obs"])){ 
+     if(trim($this->k81_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_obs"])){
        $sql  .= $virgula." k81_obs = '$this->k81_obs' ";
        $virgula = ",";
      }
-     if(trim($this->k81_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_codigo"])){ 
+     if(trim($this->k81_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_codigo"])){
        $sql  .= $virgula." k81_codigo = $this->k81_codigo ";
        $virgula = ",";
-       if(trim($this->k81_codigo) == null ){ 
+       if(trim($this->k81_codigo) == null ){
          $this->erro_sql = " Campo Recurso nao Informado.";
          $this->erro_campo = "k81_codigo";
          $this->erro_banco = "";
@@ -389,10 +389,10 @@ class cl_placaixarec {
          return false;
        }
      }
-     if(trim($this->k81_datareceb)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_datareceb_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["k81_datareceb_dia"] !="") ){ 
+     if(trim($this->k81_datareceb)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_datareceb_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["k81_datareceb_dia"] !="") ){
        $sql  .= $virgula." k81_datareceb = '$this->k81_datareceb' ";
        $virgula = ",";
-       if(trim($this->k81_datareceb) == null ){ 
+       if(trim($this->k81_datareceb) == null ){
          $this->erro_sql = " Campo Data Recebimento nao Informado.";
          $this->erro_campo = "k81_datareceb_dia";
          $this->erro_banco = "";
@@ -401,11 +401,11 @@ class cl_placaixarec {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["k81_datareceb_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["k81_datareceb_dia"])){
          $sql  .= $virgula." k81_datareceb = null ";
          $virgula = ",";
-         if(trim($this->k81_datareceb) == null ){ 
+         if(trim($this->k81_datareceb) == null ){
            $this->erro_sql = " Campo Data Recebimento nao Informado.";
            $this->erro_campo = "k81_datareceb_dia";
            $this->erro_banco = "";
@@ -416,14 +416,14 @@ class cl_placaixarec {
          }
        }
      }
-     if(trim($this->k81_operbanco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_operbanco"])){ 
+     if(trim($this->k81_operbanco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_operbanco"])){
        $sql  .= $virgula." k81_operbanco = '$this->k81_operbanco' ";
        $virgula = ",";
      }
-     if(trim($this->k81_origem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_origem"])){ 
+     if(trim($this->k81_origem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_origem"])){
        $sql  .= $virgula." k81_origem = $this->k81_origem ";
        $virgula = ",";
-       if(trim($this->k81_origem) == null ){ 
+       if(trim($this->k81_origem) == null ){
          $this->erro_sql = " Campo Origem nao Informado.";
          $this->erro_campo = "k81_origem";
          $this->erro_banco = "";
@@ -433,10 +433,10 @@ class cl_placaixarec {
          return false;
        }
      }
-     if(trim($this->k81_numcgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_numcgm"])){ 
+     if(trim($this->k81_numcgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_numcgm"])){
        $sql  .= $virgula." k81_numcgm = $this->k81_numcgm ";
        $virgula = ",";
-       if(trim($this->k81_numcgm) == null ){ 
+       if(trim($this->k81_numcgm) == null ){
          $this->erro_sql = " Campo CGM do Contribuinte nao Informado.";
          $this->erro_campo = "k81_numcgm";
          $this->erro_banco = "";
@@ -446,10 +446,10 @@ class cl_placaixarec {
          return false;
        }
      }
-     if(trim($this->k81_concarpeculiar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_concarpeculiar"])){ 
+     if(trim($this->k81_concarpeculiar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k81_concarpeculiar"])){
        $sql  .= $virgula." k81_concarpeculiar = '$this->k81_concarpeculiar' ";
        $virgula = ",";
-       if(trim($this->k81_concarpeculiar) == null ){ 
+       if(trim($this->k81_concarpeculiar) == null ){
          $this->erro_sql = " Campo C. Peculiar/C. Aplicação nao Informado.";
          $this->erro_campo = "k81_concarpeculiar";
          $this->erro_banco = "";
@@ -497,7 +497,7 @@ class cl_placaixarec {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Receitas das planilhas de caixa nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->k81_seqpla;
@@ -525,14 +525,14 @@ class cl_placaixarec {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($k81_seqpla=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($k81_seqpla=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($k81_seqpla));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -569,7 +569,7 @@ class cl_placaixarec {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Receitas das planilhas de caixa nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$k81_seqpla;
@@ -597,11 +597,11 @@ class cl_placaixarec {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -623,8 +623,8 @@ class cl_placaixarec {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $k81_seqpla=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $k81_seqpla=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -649,8 +649,8 @@ class cl_placaixarec {
      $sql2 = "";
      if($dbwhere==""){
        if($k81_seqpla!=null ){
-         $sql2 .= " where placaixarec.k81_seqpla = $k81_seqpla "; 
-       } 
+         $sql2 .= " where placaixarec.k81_seqpla = $k81_seqpla ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -666,8 +666,8 @@ class cl_placaixarec {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $k81_seqpla=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $k81_seqpla=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -683,8 +683,8 @@ class cl_placaixarec {
      $sql2 = "";
      if($dbwhere==""){
        if($k81_seqpla!=null ){
-         $sql2 .= " where placaixarec.k81_seqpla = $k81_seqpla "; 
-       } 
+         $sql2 .= " where placaixarec.k81_seqpla = $k81_seqpla ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -700,7 +700,7 @@ class cl_placaixarec {
      }
      return $sql;
   }
-   function sql_query_matric_inscr ( $k81_seqpla=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_matric_inscr ( $k81_seqpla=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -730,8 +730,8 @@ class cl_placaixarec {
      $sql2 = "";
      if($dbwhere==""){
        if($k81_seqpla!=null ){
-         $sql2 .= " where placaixarec.k81_seqpla = $k81_seqpla "; 
-       } 
+         $sql2 .= " where placaixarec.k81_seqpla = $k81_seqpla ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -747,8 +747,8 @@ class cl_placaixarec {
      }
      return $sql;
   }
-  
-  function sql_query_origem( $k81_seqpla=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+  function sql_query_origem( $k81_seqpla=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -766,8 +766,8 @@ class cl_placaixarec {
      $sql2 = "";
      if($dbwhere==""){
        if($k81_seqpla!=null ){
-         $sql2 .= " where placaixarec.k81_seqpla = $k81_seqpla "; 
-       } 
+         $sql2 .= " where placaixarec.k81_seqpla = $k81_seqpla ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -783,5 +783,63 @@ class cl_placaixarec {
      }
      return $sql;
   }
+
+  /**
+   * @param string $sCampos
+   * @param null   $sOrder
+   * @param null   $sWhere
+   *
+   * @return string
+   */
+  public function sql_query_planilha_autenticada($sCampos = "*", $sOrder = null, $sWhere = null) {
+
+    $sSql  = " select {$sCampos} ";
+    $sSql .= "   from placaixarec ";
+    $sSql .= "        inner join corplacaixa on corplacaixa.k82_seqpla = placaixarec.k81_seqpla";
+    $sSql .= "        inner join conlancamcorrente on conlancamcorrente.c86_id     = corplacaixa.k82_id ";
+    $sSql .= "                                    and conlancamcorrente.c86_data   = corplacaixa.k82_data ";
+    $sSql .= "                                    and conlancamcorrente.c86_autent = corplacaixa.k82_autent ";
+    $sSql .= "        inner join conlancam on conlancam.c70_codlan = conlancamcorrente.c86_conlancam";
+
+    if (!empty($sWhere)) {
+      $sSql .= " where {$sWhere} ";
+    }
+
+    if (!empty($sOrder)) {
+      $sSql .= " order by {$sOrder} ";
+    }
+
+    return $sSql;
+  }
+
+  /**
+   * @param string $sCampos
+   * @param null   $sOrder
+   * @param null   $sWhere
+   *
+   * @return string
+   */
+  public function sql_query_planilha_autenticadaOrigem($sCampos = "*", $sOrder = null, $sWhere = null) {
+
+    $sSql  = " select {$sCampos} ";
+    $sSql .= "   from placaixarec ";
+    $sSql .= "        inner join corplacaixa on corplacaixa.k82_seqpla = placaixarec.k81_seqpla";
+    $sSql .= "        inner join conlancamcorrente on conlancamcorrente.c86_id     = corplacaixa.k82_id ";
+    $sSql .= "                                    and conlancamcorrente.c86_data   = corplacaixa.k82_data ";
+    $sSql .= "                                    and conlancamcorrente.c86_autent = corplacaixa.k82_autent ";
+    $sSql .= "        inner join conlancam on conlancam.c70_codlan = conlancamcorrente.c86_conlancam";
+    $sSql .= "        inner join origemcomplementorecurso on k81_seqpla = o206_numero";
+    $sSql .= "                                           and o206_origem = 200";
+
+    if (!empty($sWhere)) {
+      $sSql .= " where {$sWhere} ";
+    }
+
+    if (!empty($sOrder)) {
+      $sSql .= " order by {$sOrder} ";
+    }
+
+    return $sSql;
+  }
+
 }
-?>

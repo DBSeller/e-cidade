@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libcaixa_ze.php");
-include("libs/db_libgertxtfolha.php");
-include("classes/db_folha_classe.php");
-include("classes/db_rharqbanco_classe.php");
-include("classes/db_orctiporec_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libcaixa_ze.php"));
+include(modification("libs/db_libgertxtfolha.php"));
+include(modification("classes/db_folha_classe.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($HTTP_POST_VARS);
 
-$cllayouts_bb  = new cl_layouts_bb;
-$cllayout_BBBS = new cl_layout_BBBS;
+$cllayouts_bb  = new LayoutBB;
+$cllayout_BBBS = new LayoutBBBSFolha;
 $clfolha       = new cl_folha;
 $clrharqbanco  = new cl_rharqbanco;
 $clorctiporec  = new cl_orctiporec;
@@ -124,7 +124,7 @@ if($clrharqbanco->numrows>0){
 
   }else{
 
-    include("dbforms/db_layouttxt.php");
+    include(modification("dbforms/db_layouttxt.php"));
     $layoutimprime = ($rh34_codban=="001"?2:3);
     $db90_codban = $rh34_codban;
     $conveniobanco = trim($rh34_convenio); 
@@ -186,7 +186,7 @@ if($clrharqbanco->numrows>0){
       $posicao = "E";
     }
     $db_layouttxt = new db_layouttxt($layoutimprime,"tmp/".$nomearquivo, $posicao);
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt,1);
+    db_setaPropriedadesLayoutTxt($db_layouttxt,1);
   }
 
 }else{
@@ -197,6 +197,10 @@ if($clrharqbanco->numrows>0){
 if(!isset($rh34_where) || (isset($rh34_where) && trim($rh34_where) == "")){
   $rh34_where = "";
 }
+if (!empty($rh34_where)) {
+  $rh34_where .= ' and '; 
+}
+$rh34_where .= " r38_liq > 0 ";
 if($sqlerro == false){
   $sql = $clfolha->sql_query_gerarqbag(null,"folha.*,cgm.*,length(trim(r38_agenc)) as qtddigitosagencia,
                                              r70_descr,
@@ -466,7 +470,7 @@ if($sqlerro == false){
       $formalancamento = "03";
     }
     ///// HEADER DO LOTE
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 2);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 2);
     ///// FINAL DO HEADER DO LOTE
 
     $sequencialnolote = 0;
@@ -520,7 +524,7 @@ if($sqlerro == false){
       $dataprocessamento = $datadedeposito;
 
       ///// REGISTRO A
-      db_setaPropriedadesLayoutTxt(&$db_layouttxt, 3, $posicao);
+      db_setaPropriedadesLayoutTxt($db_layouttxt, 3, $posicao);
       ///// FINAL DO REGISTRO A
 
       if($tam == 11){
@@ -574,7 +578,7 @@ if($sqlerro == false){
     $quantidadetotallote = $sequencialnolote + 2;
     $valortotallote = $valortotal;
     ///// TRAILLER DE LOTE
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 4);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 4);
     ///// FINAL DO TRAILLER DE LOTE
 
 
@@ -594,7 +598,7 @@ if($sqlerro == false){
 
 
     ///// TRAILLER DE ARQUIVO
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 5);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 5);
     ///// FINAL DO TRAILLER DE ARQUIVO
     //////////////////////////////////
 

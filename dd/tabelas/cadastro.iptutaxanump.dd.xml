@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010404' name='cadastro.iptutaxanump' description="Tabela de taxas do iptu" prefix="j151" label="Taxas de IPTU" type="0">
+  <fields>
+    <field codigo="1010289" 
+           campo_api='' 
+           name="j151_codigo" 
+           conteudo="int4" 
+           description="Código sequencial da iptutaxanump" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='cadastro.iptutaxanump_j151_codigo_seq' />
+     
+    </field> 
+    <field codigo="1010286" 
+           campo_api='' 
+           name="j151_matric" 
+           conteudo="int4" 
+           description="Matrícula do imóvel da taxa de iptu" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010287" 
+           campo_api='' 
+           name="j151_numpre" 
+           conteudo="int8" 
+           description="Numpre da taxa de iptu" 
+           inivalue="0" 
+           label="Numpre" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Numpre" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010288" 
+           campo_api='' 
+           name="j151_iptucadtaxaexe" 
+           conteudo="int4" 
+           description="Código do Cadastro de Taxa no Exercício" 
+           inivalue="0" 
+           label="Código do Cadastro de Taxa no Exercício" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Cadastro de Taxa no Exercício" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="j151_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="iptubase" inner='t'>
+      <fieldfk name="j151_matric" reference="j01_matric" /> 
+    </foreignkey>
+    <foreignkey reference="iptucadtaxaexe" inner='t'>
+      <fieldfk name="j151_iptucadtaxaexe" reference="j08_iptucadtaxaexe" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

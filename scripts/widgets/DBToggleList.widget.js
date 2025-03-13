@@ -15,14 +15,26 @@ const DBTOGGLELIST_BOTTOM = 'B';
  * @author jeferson.belmiro@dbseller.com.br
  * @constructor
  * @requires DBGrid
+ *
  * @param {Array} aHeaders - Headers das grids
+ *   [{sWidth : '100px',
+ *     sLabel : 'Número',
+ *     sId    : 'numero',
+ *     sAlign : 'left'}];
+ * @param
+ * @param {string} sIdGrid - usado para compor um nome único da grid
  */
-var DBToggleList = function( aHeaders ) {
+var DBToggleList = function( aHeaders, oLabels, sIdGrid ) {
 
-  this.iIdInstanceGrid  = DBToggleList.iQuantidadeGrids++;//ESTATICO
+  if (sIdGrid == null) {
+    this.iIdInstanceGrid  = DBToggleList.iQuantidadeGrids++;//ESTATICO
+  } else {
+    this.iIdInstanceGrid  = sIdGrid;
+  }
+
   this.aHeaders         = aHeaders;
   this.oInformacoesGrid = {};
-  this.oInformacoesGrid.oLabels        = {};
+  this.oInformacoesGrid.oLabels        = oLabels || {};
   this.aRowsSelect      = [];
   this.aRowsSelected    = [];
   this.lEnabled         = true;
@@ -80,7 +92,7 @@ var DBToggleList = function( aHeaders ) {
     }
   };
 
-}
+};
 /**
  * Grids Instanciadas
  */
@@ -90,7 +102,7 @@ DBToggleList.iQuantidadeGrids = 0;
 /**
  * Inicializa componente, define os headers das grid pelos parametros informados no construtor
  *
- * @return void
+ * @return {void}
  */
 DBToggleList.prototype.init = function() {
 
@@ -244,15 +256,15 @@ DBToggleList.prototype.createElements = function() {
   this.oElementos.oListas.appendChild(this.oElementos.oListaParaSelecionar);
 
   /**
-   * Coloca div com botoes de ordenacao na div com todos os elementos
-   */
-  this.oElementos.oListas.appendChild(this.oElementos.oBotoesOrdenacao);
-  this.oElementos.oListas.appendChild(this.oElementos.oListaSelecionados);
-
-  /**
    * Coloca div com botoes de acao na div com todos os elementos
    */
   this.oElementos.oListas.appendChild(this.oElementos.oBotoesAcao);
+  /**
+   * Coloca div com botoes de ordenacao na div com todos os elementos
+   */
+  this.oElementos.oListas.appendChild(this.oElementos.oListaSelecionados);
+  this.oElementos.oListas.appendChild(this.oElementos.oBotoesOrdenacao);
+
 
   return this.oElementos.oListas;
 }
@@ -345,6 +357,7 @@ DBToggleList.prototype.createTables = function() {
 
   this.oGridSelect   = oGridSelect;
   this.oGridSelected = oGridSelected;
+
 }
 
 /**
@@ -691,10 +704,10 @@ DBToggleList.prototype.moveRows = function(sDirecao) {
       })
 
       me.aHeaders.each(function(oElemento, i) {
-        
+
         aOrigem[oElemento.sId] = aConteudo[i];
       })
-      
+
       aOrigem = mergeObject(aRowsOrigem[iLinhaSelecao], aOrigem);
       aEnviados.push(aOrigem);
 
@@ -852,14 +865,12 @@ DBToggleList.prototype.enable = function() {
 /**
  * Define os callbacks de comportamento para as linha da GRID
  * @example
-    {selecao: {
-      onclick: function() {
-
-      },
-      ondbclick :function() {
-
-      }
-    }}
+ *  {selecao: {
+ *    onclick: function() {
+ *    },
+ *    ondbclick :function() {
+ *    }
+ *  }}
  */
 DBToggleList.prototype.setCallback = function(oCallbacks) {
 
@@ -870,8 +881,7 @@ DBToggleList.prototype.setCallback = function(oCallbacks) {
     }
 
   }
-
-}
+};
 
 /**
  * Seta os labels das grids
@@ -879,7 +889,7 @@ DBToggleList.prototype.setCallback = function(oCallbacks) {
  */
 DBToggleList.prototype.setLabels = function(oLabels) {
   this.oInformacoesGrid.oLabels = oLabels;
-}
+};
 
 
 DBToggleList.prototype.getElement = function(iSequencial) {
@@ -900,4 +910,4 @@ DBToggleList.prototype.getElement = function(iSequencial) {
     }
   }
 
-}
+};

@@ -58,7 +58,7 @@ db_input('h41_descr',20,$Ih41_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_portariatipoato','func_portariatipoato.php?funcao_js=parent.js_preenchepesquisa|h41_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_portariatipoato','func_portariatipoato.php?funcao_js=parent.js_preenchepesquisa|h41_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_portariatipoato.hide();

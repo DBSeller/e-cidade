@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_cidadao_classe.php");
-require_once("classes/db_cidadaofamilia_classe.php");
-require_once("classes/db_cidadaocadastrounico_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cidadao_classe.php"));
+require_once(modification("classes/db_cidadaofamilia_classe.php"));
+require_once(modification("classes/db_cidadaocadastrounico_classe.php"));
 
 $db_opcao      = 1;
 $oRotuloCampos = new rotulocampo();
@@ -109,7 +109,7 @@ function js_pesquisaCidadaoFamilia(lMostra) {
 
   if (lMostra == true) {
 
-  	js_OpenJanelaIframe('top.corpo', 
+  	js_OpenJanelaIframe('CurrentWindow.corpo', 
   	  	                'db_iframe_cidadaofamilia', 
   	  	                'func_cidadaofamilia.php?'+
   	  	                'funcao_js=parent.js_mostracidadaofamilia1|as04_sequencial|ov02_nome|as15_codigofamiliarcadastrounico', 
@@ -120,7 +120,7 @@ function js_pesquisaCidadaoFamilia(lMostra) {
 
   	if ($F('as15_codigofamiliarcadastrounico') != '') {
 
-    	js_OpenJanelaIframe('top.corpo', 
+    	js_OpenJanelaIframe('CurrentWindow.corpo', 
                           'db_iframe_cidadaofamilia', 
                           'func_cidadaofamilia.php?pesquisa_chave='+$F('as15_codigofamiliarcadastrounico')+
                                                  '&funcao_js=parent.js_mostracidadaofamilia'+
@@ -183,7 +183,7 @@ function js_incluirAtualizacao() {
 function js_salvarAtualizacao(oResponse) {
 
 	js_removeObj("msgBox");
-	var oRetorno = eval("("+oResponse.responseText+")");
+	var oRetorno = JSON.parse(oResponse.responseText);
 	if (oRetorno.status == 1) {
 		alert ('Dados salvos com sucesso');
 		js_limparDados();

@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_placaixa_classe.php");
-include("classes/db_placaixarec_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_placaixa_classe.php"));
+include(modification("classes/db_placaixarec_classe.php"));
 $clplacaixa = new cl_placaixa;
 $clplacaixarec = new cl_placaixarec;
 db_postmemory($HTTP_POST_VARS);
@@ -76,7 +76,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmplacaixa.php");
+	include(modification("forms/db_frmplacaixa.php"));
 	?>
     </center>
 	</td>
@@ -109,7 +109,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.placaixarec.disabled=false;
-         top.corpo.iframe_placaixarec.location.href='cai1_placaixarec001.php?db_opcaoal=33&k81_codpla=".@$k80_codpla."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_placaixarec.location.href='cai1_placaixarec001.php?db_opcaoal=33&k81_codpla=".@$k80_codpla."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('placaixarec');";

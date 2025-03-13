@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -106,7 +106,7 @@ class ItinerarioVinculoAlunoRepository {
   /**
    * Busca todos os vínculos de Itinerário e Aluno através de seu ponto de parada
    * @param  ItinerarioPontoParada $oItinerarioPontoParada
-   * @return array $aVinculoAlunoPontoParada
+   * @return ItinerarioVinculoAluno[]
    */
   public static function getItinerarioVinculoAlunoPorPontoParada(ItinerarioPontoParada $oItinerarioPontoParada ) {
 

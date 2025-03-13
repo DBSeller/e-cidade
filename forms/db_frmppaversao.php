@@ -134,10 +134,10 @@ db_select('o119_versaofinal',$x,true,$db_opcao,"");
 <script>
 function js_pesquisao119_idusuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
      if(document.form1.o119_idusuario.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.o119_idusuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.o119_idusuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
      }else{
        document.form1.nome.value = ''; 
      }
@@ -157,10 +157,10 @@ function js_mostradb_usuarios1(chave1,chave2){
 }
 function js_pesquisao119_ppalei(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_ppalei','func_ppalei.php?funcao_js=parent.js_mostrappalei1|o01_sequencial|o01_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ppalei','func_ppalei.php?funcao_js=parent.js_mostrappalei1|o01_sequencial|o01_descricao','Pesquisa',true);
   }else{
      if(document.form1.o119_ppalei.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_ppalei','func_ppalei.php?pesquisa_chave='+document.form1.o119_ppalei.value+'&funcao_js=parent.js_mostrappalei','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ppalei','func_ppalei.php?pesquisa_chave='+document.form1.o119_ppalei.value+'&funcao_js=parent.js_mostrappalei','Pesquisa',false);
      }else{
        document.form1.o01_descricao.value = ''; 
      }
@@ -179,7 +179,7 @@ function js_mostrappalei1(chave1,chave2){
   db_iframe_ppalei.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_ppaversao','func_ppaversao.php?funcao_js=parent.js_preenchepesquisa|o119_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ppaversao','func_ppaversao.php?funcao_js=parent.js_preenchepesquisa|o119_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_ppaversao.hide();

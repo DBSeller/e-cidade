@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_procrecomendacao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_procrecomendacao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clprocrecomendacao = new cl_procrecomendacao;
 $db_opcao = 1;
@@ -81,7 +81,7 @@ if(isset($excluir)){
    <br>
    <center>
    <fieldset style="width:90%"><legend><b>Recomendações do  Procedimento de Avaliação <?=$ed40_c_descr?></b></legend>
-    <?include("forms/db_frmprocrecomendacao.php");?>
+    <?include(modification("forms/db_frmprocrecomendacao.php"));?>
    </fieldset>
    </center>
   </td>

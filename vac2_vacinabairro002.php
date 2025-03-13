@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_lab_requiitem_classe.php");
-require_once("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_lab_requiitem_classe.php"));
+require_once(modification("libs/db_utils.php"));
 $oDaoVacAplicalote = db_utils::getdao('vac_aplicalote');
 $dIni              = substr($dDataini,6,4)."-".substr($dDataini,3,2)."-".substr($dDataini,0,2);
 $dFim              = substr($dDatafim,6,4)."-".substr($dDatafim,3,2)."-".substr($dDatafim,0,2);

@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010941' name='issqn.issqualificacaoresponsavel' description="Tabela que guarda qual a qualificação do responsável pela empresa." prefix="q181" label="Qualificação do Responsável" type="0">
+  <fields>
+    <field codigo="1014197" 
+           campo_api='' 
+           name="q181_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela issqualificacaoresponsavel." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='issqn.issqualificacaoresponsavel_q181_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1014198" 
+           campo_api='' 
+           name="q181_inscricao" 
+           conteudo="int8" 
+           description="Inscrição" 
+           inivalue="0" 
+           label="Inscrição" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Inscrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1014199" 
+           campo_api='' 
+           name="q181_qualificacaoresponsavel" 
+           conteudo="int8" 
+           description="Código da qualificação" 
+           inivalue="0" 
+           label="Código da qualificação" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da qualificação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q181_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="issbase" inner='t'>
+      <fieldfk name="q181_inscricao" reference="q02_inscr" /> 
+    </foreignkey>
+    <foreignkey reference="qualificacaoresponsavel" inner='t'>
+      <fieldfk name="q181_qualificacaoresponsavel" reference="q180_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

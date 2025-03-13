@@ -112,7 +112,7 @@ function js_pesquisaProcessoArquivado() {
   var sCampos = '|p67_codproc|p58_requer|ov01_tipoprocesso|p51_descr|p67_dtarq|p58_obs';
   var sParam  = 'funcao_js=parent.js_mostraProcessoArquivado1'+sCampos;
   var sUrl    = 'func_ouvidoriaprocessoarquivado.php?'+sParam;
-  js_OpenJanelaIframe('top.corpo','db_iframe_processoarquivado',sUrl,'Pesquisa',true); 
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processoarquivado',sUrl,'Pesquisa',true); 
 }
   
 function js_mostraProcessoArquivado1(iCodProc,sDescricao,iTipoProc,sTipoProcDescr,dtArq,sObservacao) {
@@ -167,7 +167,7 @@ function js_retornoProcessarDados(oAjax) {
 
   js_removeObj("msgBoxProcessar");
  
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   if (oRetorno.status == 2) {
   

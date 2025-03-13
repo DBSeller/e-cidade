@@ -96,10 +96,10 @@ db_input('nome',40,$Inome,true,'text',3,'')
 <script>
 function js_pesquisax08_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true);
   }else{
      if(document.form1.x08_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x08_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x08_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false);
      }else{
        document.form1.x01_numcgm.value = ''; 
      }
@@ -119,10 +119,10 @@ function js_mostraaguabase1(chave1,chave2){
 }
 function js_pesquisax08_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
      if(document.form1.x08_usuario.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.x08_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.x08_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
      }else{
        document.form1.nome.value = ''; 
      }
@@ -141,7 +141,7 @@ function js_mostradb_usuarios1(chave1,chave2){
   db_iframe_db_usuarios.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguabasebaixa','func_aguabasebaixa.php?funcao_js=parent.js_preenchepesquisa|x08_matric','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguabasebaixa','func_aguabasebaixa.php?funcao_js=parent.js_preenchepesquisa|x08_matric','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguabasebaixa.hide();

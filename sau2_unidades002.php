@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_prontuarios_classe.php");
-include("classes/db_unidades_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_prontuarios_classe.php"));
+include(modification("classes/db_unidades_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 set_time_limit(0);
 $clunidades = new cl_unidades;
@@ -113,7 +113,7 @@ $sql_rel = "select db_depart.coddepto, descrdepto,
  order by unidades.sd02_i_codigo, z01_nome
 ";
 //die( ">>>>>".$sql_rel );
-$query = @pg_query($sql_rel);
+$query = @db_query($sql_rel);
 $linhas = @pg_num_rows($query);
 
 if($linhas == 0){
@@ -124,7 +124,7 @@ if($linhas == 0){
        </table>";
  exit;
 }
-$query_und = @pg_query($sql_und);
+$query_und = @db_query($sql_und);
 $linhas_und = @pg_num_rows($query_und);
 
 

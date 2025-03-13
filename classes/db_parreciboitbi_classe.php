@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,34 +29,34 @@
 //CLASSE DA ENTIDADE parreciboitbi
 class cl_parreciboitbi { 
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
+   public $rotulo     = null; 
+   public $query_sql  = null; 
+   public $numrows    = 0; 
+   public $numrows_incluir = 0; 
+   public $numrows_alterar = 0; 
+   public $numrows_excluir = 0; 
+   public $erro_status= null; 
+   public $erro_sql   = null; 
+   public $erro_banco = null;  
+   public $erro_msg   = null;  
+   public $erro_campo = null;  
+   public $pagina_retorno = null; 
    // cria variaveis do arquivo 
-   var $it17_numcgm = 0; 
-   var $it17_codigo = 0; 
+   public $it17_numcgm = 0; 
+   public $it17_codigo = 0; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+   public $campos = "
                  it17_numcgm = int4 = Numcgm 
                  it17_codigo = int4 = codigo da receita 
                  ";
    //funcao construtor da classe 
-   function cl_parreciboitbi() { 
+   public function cl_parreciboitbi() { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("parreciboitbi"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
    //funcao erro 
-   function erro($mostra,$retorna) { 
+   public function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -65,7 +65,7 @@ class cl_parreciboitbi {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->it17_numcgm = ($this->it17_numcgm == ""?@$GLOBALS["HTTP_POST_VARS"]["it17_numcgm"]:$this->it17_numcgm);
        $this->it17_codigo = ($this->it17_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["it17_codigo"]:$this->it17_codigo);
@@ -73,7 +73,7 @@ class cl_parreciboitbi {
      }
    }
    // funcao para inclusao
-   function incluir (){ 
+   public function incluir (){ 
       $this->atualizacampos();
      if($this->it17_numcgm == null ){ 
        $this->erro_sql = " Campo Numcgm nao Informado.";
@@ -127,7 +127,7 @@ class cl_parreciboitbi {
      return true;
    } 
    // funcao para alteracao
-   function alterar ( $oid=null ) { 
+   public function alterar ( $oid=null ) { 
       $this->atualizacampos();
      $sql = " update parreciboitbi set ";
      $virgula = "";
@@ -187,7 +187,7 @@ class cl_parreciboitbi {
      } 
    } 
    // funcao para exclusao 
-   function excluir ( $oid=null ,$dbwhere=null) { 
+   public function excluir ( $oid=null ,$dbwhere=null) { 
      $sql = " delete from parreciboitbi
                     where ";
      $sql2 = "";
@@ -226,7 +226,7 @@ class cl_parreciboitbi {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -248,10 +248,10 @@ class cl_parreciboitbi {
       }
      return $result;
    }
-   function sql_query ( $oid = null,$campos="parreciboitbi.oid,*",$ordem=null,$dbwhere=""){ 
+   public function sql_query ( $oid = null,$campos="parreciboitbi.oid,*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -275,7 +275,7 @@ class cl_parreciboitbi {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -284,10 +284,10 @@ class cl_parreciboitbi {
      }
      return $sql;
   }
-   function sql_query_file ( $oid = null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_file ( $oid = null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -305,7 +305,7 @@ class cl_parreciboitbi {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("x40_codcorte");
@@ -69,14 +69,14 @@ if(isset($oGet->corte) && $oGet->corte != '') {
                      group by X40_codcorte, k02_descr 
                      order by $sOrderBy"; 
   
-  $rSqlAguaCorte = pg_query($sSqlAguaCorte);
+  $rSqlAguaCorte = db_query($sSqlAguaCorte);
   
   
 	$head2 = "Lista de Corte Nro: $oGet->corte";
   
   if(pg_num_rows($rSqlAguaCorte) == 0) {
     
-    db_redireciona('db_erros?fechar=true&db_erro=Nenhum resultado encontrado.');
+    db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum resultado encontrado.');
     
   }
   

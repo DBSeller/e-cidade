@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,19 +27,19 @@
 
 if (!isset($arqinclude)){
   
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_utils.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_liborcamento.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_orcparamrelopcre_classe.php");
-  include_once("classes/db_conrelinfo_classe.php");
-  include_once("classes/db_conrelvalor_classe.php");
-  include_once("classes/db_orcparamrelopcre_classe.php");
-  include_once("classes/db_orcparamelemento_classe.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_utils.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_orcparamrelopcre_classe.php"));
+  include_once(modification("classes/db_conrelinfo_classe.php"));
+  include_once(modification("classes/db_conrelvalor_classe.php"));
+  include_once(modification("classes/db_orcparamrelopcre_classe.php"));
+  include_once(modification("classes/db_orcparamelemento_classe.php"));
   
   $classinatura = new cl_assinatura;
   $orcparamrel  = new cl_orcparamrel;
@@ -53,10 +53,10 @@ if (!isset($arqinclude)){
   
 }
 
-include_once("libs/db_utils.php");
+include_once(modification("libs/db_utils.php"));
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,munic,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,munic,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -151,7 +151,7 @@ for ($i = 1; $i <=16;$i++) {
 }
 $where            = "  c61_instit in (".str_replace('-',', ',$db_selinstit).")   "; 
 $rsDadosRelatorio = db_planocontassaldo_matriz($anousu,$dt_ini_plano,$dt_fim,false,$where);
-@pg_exec("drop table work_pl");
+@db_query("drop table work_pl");
 $iNumRows = pg_num_rows($rsDadosRelatorio);
 for ($iParam = 1; $iParam <= 16; $iParam++) {
   
@@ -331,7 +331,7 @@ $aOperacaoCredito["externa"]     = array();//linhas operacoes externas
 $aOperacaoCredito["antecipacao"] = array();//linhas operacoes antecipadas;
 $sTodasInstit = null;
 
-$rsInstit =  pg_query("select codigo from db_config");
+$rsInstit =  db_query("select codigo from db_config");
 for ($xinstit=0; $xinstit < pg_num_rows($rsInstit); $xinstit++) {
   db_fieldsmemory($rsInstit, $xinstit);
   $sTodasInstit .= $codigo . ($xinstit==pg_num_rows($rsInstit)-1?"":",");

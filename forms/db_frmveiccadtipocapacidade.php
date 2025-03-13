@@ -58,7 +58,7 @@ db_input('ve24_descr',40,$Ive24_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veiccadtipocapacidade','func_veiccadtipocapacidade.php?funcao_js=parent.js_preenchepesquisa|ve24_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadtipocapacidade','func_veiccadtipocapacidade.php?funcao_js=parent.js_preenchepesquisa|ve24_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiccadtipocapacidade.hide();

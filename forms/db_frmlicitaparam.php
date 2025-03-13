@@ -1,7 +1,8 @@
-<?
+<?php
+
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2014  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,103 +26,130 @@
  *                                licenca/licenca_pt.txt 
  */
 
+/**
+ * MODULO: licitacao
+ */
+$oDaoLicitaparam->rotulo->label();
 
-//MODULO: licitação
-$cllicitaparam->rotulo->label();
+if ($db_opcao == 1) {
+  $sNameBotaoProcessar = "incluir";
+} else if ($db_opcao == 2 || $db_opcao == 22) {
+  $sNameBotaoProcessar = "alterar";
+} else {
+  $sNameBotaoProcessar = "excluir";
+}
 ?>
-<form name="form1" method="post" action="">
-<center>
-<table>
- <tr>
- <td>
- <fieldset><legend><b>Parâmetros<b></legend> 
-<table border="0">
-  <tr>
-  <tr>
-    <td nowrap title="<?=@$Tl12_escolherprocesso?>">
-       <?=@$Ll12_escolherprocesso?>
-    </td>
-    <td> 
-			<?
-			$x = array("f"=>"NAO","t"=>"SIM");
-			db_select('l12_escolherprocesso',$x,true,$db_opcao,"");
-			?>
-    </td>
-  </tr>
-  
-  <tr>
-    <td nowrap title="<?=@$Tl12_escolheprotocolo?>">
-       <?=@$Ll12_escolheprotocolo?>
-    </td>
-    <td> 
-			<?
-			$x = array("f"=>"NAO","t"=>"SIM");
-			db_select('l12_escolheprotocolo',$x,true,$db_opcao,"");
-			?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tl12_tipoliberacaoweb?>">
-       <?=@$Ll12_tipoliberacaoweb?>
-    </td>
-    <td> 
-      <?
-      $x = getValoresPadroesCampo("l12_tipoliberacaoweb");
-      //$x = array("f"=>"NAO","t"=>"SIM");
-      db_select('l12_tipoliberacaoweb', $x, true, $db_opcao, "onChange=js_liberacaoWebDias();");
+
+<html>
+  <head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+  </head>
+  <body class="body-default">
+    <div class="container">
+      <form name="form1" method="post" action="">
+        <fieldset>
+          <legend><?php echo ucfirst($sNameBotaoProcessar); ?> Parametros do modulo da licitacao</legend>
+          <table>
+            
+            <tr>
+              <td nowrap title="<?php echo $Tl12_escolherprocesso; ?>" >
+                <label class="bold" for="l12_escolherprocesso" id="lbl_l12_escolherprocesso"><?php echo $Sl12_escolherprocesso; ?>:</label>
+              </td>
+              <td>
+                <?php
+                  $x = array("f" => "NAO", "t" => "SIM");
+                  db_select('l12_escolherprocesso', $x, true, $db_opcao, "");
+                ?>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap title="<?php echo $Tl12_escolheprotocolo; ?>" >
+                <label class="bold" for="l12_escolheprotocolo" id="lbl_l12_escolheprotocolo"><?php echo $Sl12_escolheprotocolo; ?>:</label>
+              </td>
+              <td>
+                <?php
+                  $x = array("f" => "NAO", "t" => "SIM");
+                  db_select('l12_escolheprotocolo', $x, true, $db_opcao, "");
+                ?>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap title="<?php echo $Tl12_tipoliberacaoweb; ?>" >
+                <label class="bold" for="l12_tipoliberacaoweb" id="lbl_l12_tipoliberacaoweb"><?php echo $Sl12_tipoliberacaoweb; ?>:</label>
+              </td>
+              <td>
+                <?php
+                  $x = array('1' => 'Data de Abertura', '2' => 'Até Julgamento');
+                  db_select('l12_tipoliberacaoweb', $x, true, $db_opcao, "onChange=js_liberacaoWebDias();");
+                ?>
+              </td>
+            </tr>
+            <? $sDisplay = $l12_tipoliberacaoweb <> 1 ? '' : 'none'; ?>
+            <tr id="trLiberacaoWebDias" style="display: <?=$sDisplay; ?>;">
+              <td nowrap title="<?php echo $Tl12_qtdediasliberacaoweb; ?>" >
+                <label class="bold" for="l12_qtdediasliberacaoweb" id="lbl_l12_qtdediasliberacaoweb"><?php echo $Sl12_qtdediasliberacaoweb; ?>:</label>
+              </td>
+              <td>
+                <?php
+                  db_input('l12_qtdediasliberacaoweb', 5, 0, true, 'text', $db_opcao);
+//                  db_select('l12_qtdediasliberacaoweb', $x, true, $db_opcao, "");
+                ?>
+              </td>
+            </tr>
+            <tr>
+              <td nowrap title="<?php echo $Tl12_limitetamanhoarquivo; ?>" >
+                <label class="bold" for="l12_limitetamanhoarquivo" id="lbl_l12_limitetamanhoarquivo"><?php echo $Sl12_limitetamanhoarquivo; ?>:</label>
+              </td>
+              <td>
+                <?php
+                  db_input('l12_limitetamanhoarquivo', 10, $Il12_limitetamanhoarquivo, true, 'text', $db_opcao,"");
+                ?>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+        <input name="<?php echo $sNameBotaoProcessar; ?>" type="submit" id="db_opcao" value="<?php echo ucfirst($sNameBotaoProcessar); ?>" <?php echo (!$db_botao ? "disabled" : ""); ?> >
+        
+      </form>
+    </div>
+    <?php db_menu( db_getsession("DB_id_usuario"), 
+                   db_getsession("DB_modulo"), 
+                   db_getsession("DB_anousu"), 
+                   db_getsession("DB_instit") ); ?>
+  </body>
+  <script>
+
+    function js_pesquisa() {
+      js_OpenJanelaIframe( 'CurrentWindow.corpo', 
+                           'db_iframe_licitaparam', 
+                           'func_licitaparam.php?funcao_js=parent.js_preenchepesquisa|l12_instit', 
+                           'Pesquisa', true);
+    }
+
+    function js_preenchepesquisa(sChave) {
+
+      db_iframe_licitaparam.hide();
+      <?php
+        if ($db_opcao != 1) {
+          echo "location.href = '" . basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]) . "?chavepesquisa=' + sChave;";
+        }
       ?>
-    </td>
-  </tr>
-  
-  <? $sDisplay = $l12_tipoliberacaoweb <> 1 ? '' : 'none'; ?>
-  <tr id="trLiberacaoWebDias" style="display: <?=$sDisplay; ?>;">
-    <td nowrap title="<?=@$Tl12_qtdediasliberacaoweb?>">
-      <?=@$Ll12_qtdediasliberacaoweb?>
-    </td>
-    <td> 
-      <?
-      db_input('l12_qtdediasliberacaoweb', 5, 0, true, 'text', $db_opcao);
-      ?>
-    </td>
-  </tr>  
-  </table>
-  </fieldset>
-  <td>
-  </tr>
-</table>
-  </center>
-  
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" 
-       type="submit" id="db_opcao" 
-       value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" 
-       <?=($db_botao==false?"disabled":"")?> >
-       
-<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+    }
 
-</form>
-<script type="text/javascript">
-function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo',
-                      'db_iframe_licitaparam',
-                      'func_licitaparam.php?funcao_js=parent.js_preenchepesquisa|l12_instit',
-                      'Pesquisa',true);
-}
-function js_preenchepesquisa(chave){
-  db_iframe_licitaparam.hide();
-  <?
-  if($db_opcao!=1){
-    echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
-  }
-  ?>
-}
-
-function js_liberacaoWebDias() {
+    function js_liberacaoWebDias() {
   
-  if ($F('l12_tipoliberacaoweb') == 2) {
-    $('trLiberacaoWebDias').style.display = '';    
-  } else {
-    $('trLiberacaoWebDias').style.display = 'none';
-  }
-}
+      if ($F('l12_tipoliberacaoweb') == 2) {
+        $('trLiberacaoWebDias').style.display = '';    
+      } else {
+        $('trLiberacaoWebDias').style.display = 'none';
+        $('l12_qtdediasliberacaoweb').value   = 0;
+      }
+    }
 
-</script>
+    <?php echo (isset($sPosScripts) ? $sPosScripts : ""); ?>
+  </script>
+</html>

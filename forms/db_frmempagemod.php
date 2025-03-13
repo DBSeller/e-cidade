@@ -78,7 +78,7 @@ db_input('e84_sequencia',8,$Ie84_sequencia,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empagemod','func_empagemod.php?funcao_js=parent.js_preenchepesquisa|e84_codmod','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empagemod','func_empagemod.php?funcao_js=parent.js_preenchepesquisa|e84_codmod','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_empagemod.hide();

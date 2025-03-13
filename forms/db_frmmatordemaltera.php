@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -34,8 +34,8 @@ $clmatordemanu->rotulo->label();
 $coddepto = db_getsession("DB_coddepto");
 $instit   = db_getsession("DB_instit");
 
-include_once("classes/db_db_almox_classe.php");
-include_once("classes/db_db_almoxdepto_classe.php");
+include_once(modification("classes/db_db_almox_classe.php"));
+include_once(modification("classes/db_db_almoxdepto_classe.php"));
 $cldb_almox = new cl_db_almox;
 $cldb_almoxdepto = new cl_db_almoxdepto;
 if(isset($m51_codordem) && $m51_codordem!=''){
@@ -56,17 +56,32 @@ if(isset($m51_codordem) && $m51_codordem!=''){
 			   left join matordemitem on m52_codordem = m51_codordem
               where m51_codordem = $m51_codordem ";
 
-     $result = pg_exec($sql); 
+     $result = db_query($sql); 
      if (pg_numrows($result)==0){
      
      }
      db_fieldsmemory($result,0);
-	 
  }
+ $aux = db_query("
+ 	SELECT
+		pc01_servico 
+	FROM
+		empempitem 
+	INNER JOIN pcmater
+		ON pc01_codmater = e62_item
+	WHERE 
+		e62_numemp = {$m52_numemp}
+	LIMIT 1
+ ");
+ 
 
-  ?>
+ $rs = pg_fetch_assoc($aux);
+
+ $labelDepartamento = $rs['pc01_servico'] == 't' ? 'Departamento' : 'Depósito';
+
+?>
 <style>
-<?$cor="#999999"?>
+<?php $cor="#999999"?>
 .bordas02{
          border: 2px solid #cccccc;
          border-top-color: <?=$cor?>;
@@ -146,6 +161,7 @@ if(isset($m51_codordem) && $m51_codordem!=''){
 							                                     "m73_codmatordemitem  in
 							                                      (select m52_codlanc from matordemitem where m52_codordem=$m51_codordem)
 							                                      and m73_cancelado is false;"));
+							
 							if ($clmatestoqueitemoc->numrows!=0){
 						?>
 							
@@ -177,15 +193,20 @@ if(isset($m51_codordem) && $m51_codordem!=''){
                           db_fieldsmemory($result_matparam,0);
                           if($m90_tipocontrol=='F'){
                         
-                            echo "<td nowrap align='right' title='Almox'><b>Almoxarifado :</b></td>";
-
+							?>
+                            <td nowrap align="right" title="<?=$labelDepartamento?>"><?db_ancora($labelDepartamento,"js_coddepto(true);",1);?></td>
+                            <td><?db_input('coddepto',6,$Icoddepto,true,'text',1," onchange='js_coddepto(false);'");
+                          db_input('descrdepto',35,$Idescrdepto,true,'text',3,'');?>
+                            </td>
+                            <tr> 
+							<?
                         		if ($m90_almoxordemcompra == "2") {
                         			if (!isset($e60_numemp)) {
                         			  $e60_numemp = $m52_numemp;	
                         			}
                         			$sSqlOrigemEmpenho = "select * from fc_origem_empenho(".$e60_numemp.")";
 									//die($sSqlOrigemEmpenho);
-									$rsOrigemEmpenho   = pg_query($sSqlOrigemEmpenho);
+									$rsOrigemEmpenho   = db_query($sSqlOrigemEmpenho);
                         			
                         			for ($i = 0; $i < pg_num_rows($rsOrigemEmpenho); $i++) {
                         			  $oOrigemEmpenho = db_utils::fieldsMemory($rsOrigemEmpenho,$i);
@@ -211,14 +232,10 @@ if(isset($m51_codordem) && $m51_codordem!=''){
                               db_msgbox("Sem Almoxarifados cadastrados!!");
                               echo "<script>location.href='emp1_ordemcompraaltera001.php';</script>";
                             }
-                            
-                        		echo "<td>";
-                        			db_selectrecord("coddepto",$rsAlmox,true,1);
-                            echo "</td>";
-                        
+                                                    
                           }else{
                             ?>
-                              <td nowrap align="right" title="<?=@$descrdepto?>"><?db_ancora(@$Lcoddepto,"js_coddepto(true);",1);?></td>
+                              <td nowrap align="right" title="<?=$labelDepartamento?>"><?db_ancora($labelDepartamento,"js_coddepto(true);",1);?></td>
                               <td><?db_input('coddepto',6,$Icoddepto,true,'text',1," onchange='js_coddepto(false);'");
                             db_input('descrdepto',35,$Idescrdepto,true,'text',3,'');?>
                               </td>
@@ -226,7 +243,7 @@ if(isset($m51_codordem) && $m51_codordem!=''){
                           }
                         }else{
                           ?>
-                            <td nowrap align="right" title="<?=@$descrdepto?>"><?db_ancora(@$Lcoddepto,"js_coddepto(true);",1);?></td>
+                            <td nowrap align="right" title="<?=$labelDepartamento?>"><?db_ancora($labelDepartamento,"js_coddepto(true);",1);?></td>
                             <td><?db_input('coddepto',6,$Icoddepto,true,'text',1," onchange='js_coddepto(false);'");
                           db_input('descrdepto',35,$Idescrdepto,true,'text',3,'');?>
                             </td>
@@ -304,11 +321,11 @@ function js_buscavalores(){
 }
 function js_coddepto(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostracoddepto1|coddepto|descrdepto','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostracoddepto1|coddepto|descrdepto','Pesquisa',true);
   }else{
     coddepto = document.form1.coddepto.value;
   if(coddepto!=""){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+coddepto+'&funcao_js=parent.js_mostracoddepto','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+coddepto+'&funcao_js=parent.js_mostracoddepto','Pesquisa',false);
   }else{ 	
     document.form1.descrdepto.value='';
   } 	

@@ -15,7 +15,7 @@ function js_showVencedores(iSolicitacao, iOrcamento) {
   
 function  js_retornoVencedoresRegistro(oAjax) {
     
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   windowVencedoresRegistro = new windowAux('windowVencedoresRegistro','Vencedores', document.body.getWidth() - 100, 500);
   windowVencedoresRegistro.allowCloseWithEsc(false);
     

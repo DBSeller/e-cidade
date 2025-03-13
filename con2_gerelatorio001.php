@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 $erro = false;
 if(@$consul==true){
-  $resu=pg_exec("select * from db_gerador where codger = $codigo");
+  $resu=db_query("select * from db_gerador where codger = $codigo");
   $sql=pg_result($resu,0,"sqlger");
 }
 if(isset($HTTP_POST_VARS["excluir"])){
   $codigo =  $HTTP_POST_VARS["codigo"];
-  pg_exec("delete from db_gerador where codger='$codigo'");
-  pg_exec("delete from db_gerpref where codger='$codigo'");
+  db_query("delete from db_gerador where codger='$codigo'");
+  db_query("delete from db_gerpref where codger='$codigo'");
  $anome=$nome;
  $codigo="";
  $nome="";
@@ -50,7 +50,7 @@ if(isset($HTTP_POST_VARS["excluir"])){
  echo "</script>";    
 }
 if(@$HTTP_POST_VARS["seta2"]==true){    
-  $fsql = @pg_exec(str_replace('\\','',$sql));
+  $fsql = @db_query(str_replace('\\','',$sql));
   if($fsql==false){
      $erro=true;             
      $seta2=""; 
@@ -73,11 +73,11 @@ if(@$HTTP_POST_VARS["seta"]==true){
   $sql =  $HTTP_POST_VARS["sql"];
   $titulo = $HTTP_POST_VARS["titulo"];
   $finalidade = $HTTP_POST_VARS["finalidade"];
-  $fsql = @pg_exec(str_replace('\\','',$sql." limit 1"));
+  $fsql = @db_query(str_replace('\\','',$sql." limit 1"));
   if($codigo!=""){
-    $conf=pg_exec("select * from db_gerador where codger !=$codigo");
+    $conf=db_query("select * from db_gerador where codger !=$codigo");
   }else{
-     $conf=pg_exec("select * from db_gerador ");
+     $conf=db_query("select * from db_gerador ");
   }
   $num=pg_numrows($conf);
   for($i=0;$i < $num; $i++ ){

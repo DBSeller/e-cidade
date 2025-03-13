@@ -1,53 +1,53 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_atendrequi_classe.php");
-require_once("classes/db_atendrequiitem_classe.php");
-require_once("classes/db_atendrequiitemmei_classe.php");
-require_once("classes/db_matrequi_classe.php");
-require_once("classes/db_matrequiitem_classe.php");
-require_once("classes/db_matestoque_classe.php");
-require_once("classes/db_matestoqueini_classe.php");
-require_once("classes/db_matestoqueinimei_classe.php");
-require_once("classes/db_matestoqueinimeimdi_classe.php");
-require_once("classes/db_matestoqueitem_classe.php");
-require_once("classes/db_matestoquedev_classe.php");
-require_once("classes/db_matestoquedevitem_classe.php");
-require_once("classes/db_matestoquedevitemmei_classe.php");
-require_once("classes/requisicaoMaterial.model.php");
-require_once("classes/materialestoque.model.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_atendrequi_classe.php"));
+require_once(modification("classes/db_atendrequiitem_classe.php"));
+require_once(modification("classes/db_atendrequiitemmei_classe.php"));
+require_once(modification("classes/db_matrequi_classe.php"));
+require_once(modification("classes/db_matrequiitem_classe.php"));
+require_once(modification("classes/db_matestoque_classe.php"));
+require_once(modification("classes/db_matestoqueini_classe.php"));
+require_once(modification("classes/db_matestoqueinimei_classe.php"));
+require_once(modification("classes/db_matestoqueinimeimdi_classe.php"));
+require_once(modification("classes/db_matestoqueitem_classe.php"));
+require_once(modification("classes/db_matestoquedev_classe.php"));
+require_once(modification("classes/db_matestoquedevitem_classe.php"));
+require_once(modification("classes/db_matestoquedevitemmei_classe.php"));
+require_once(modification("classes/requisicaoMaterial.model.php"));
+require_once(modification("classes/materialestoque.model.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once "libs/db_app.utils.php";
+require_once modification("libs/db_app.utils.php");
 db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 db_app::import("Acordo");
 db_app::import("AcordoComissao");
@@ -60,6 +60,7 @@ db_app::import("contabilidade.planoconta.*");
 db_app::import("contabilidade.contacorrente.*");
 
 db_postmemory($HTTP_POST_VARS);
+$daoDeposito = new cl_db_almox();
 $clatendrequi = new cl_atendrequi;
 $clatendrequiitem = new cl_atendrequiitem;
 $clatendrequiitemmei = new cl_atendrequiitemmei;
@@ -73,7 +74,8 @@ $clmatestoqueitem = new cl_matestoqueitem;
 $clmatestoquedev = new cl_matestoquedev;
 $clmatestoquedevitem = new cl_matestoquedevitem;
 $clmatestoquedevitemmei = new cl_matestoquedevitemmei;
-$clmatrequi->rotulo->label();
+$oDaoMatestoqueInimeiPm = new cl_matestoqueinimeipm();
+  $clmatrequi->rotulo->label();
 $db_opcao = 1;
 $db_botao = true;
 $pesq=false;
@@ -159,12 +161,12 @@ if (isset($incluir)) {
   }
   if ($sqlerro == false) {
 
-    $dados=split("quant_","$valores");
+    $dados=explode("quant_","$valores");
     for ($y=1; $y<count($dados); $y++) {
 
       if ($sqlerro==false) {
 
-        $info=split("_",$dados[$y]);
+        $info=explode("_",$dados[$y]);
         $atendrequiitem     = $info[0];
         $codmatmater        = $info[1];
         $matrequiitem       = $info[2];
@@ -196,7 +198,7 @@ if (isset($incluir)) {
         $rsCustoApropriado = $oDaoCustoAproria->sql_record($sSqlCustoAproriado);
         if ($oDaoCustoAproria->numrows > 0) {
 
-          $aCustosApropriados = db_utils::getColectionByRecord($rsCustoApropriado);
+          $aCustosApropriados = db_utils::getCollectionByRecord($rsCustoApropriado);
           foreach ($aCustosApropriados as $oCustoApropriado) {
 
             $nNovaQuantidade = $oCustoApropriado->cc12_qtd - $quant_devolvida;
@@ -288,7 +290,20 @@ if (isset($incluir)) {
 
 //                db_msgbox("Matestoqueitem ".$quant_altera." => ".$quant_devolvida." ==> ".$m44_quant);
 
-                $valor_uni = $m71_valor/$m71_quant;
+                $sqlInimei = "select m89_valorunitario
+                    from matestoqueinimei
+                             join matestoqueitem on matestoqueitem.m71_codlanc = matestoqueinimei.m82_matestoqueitem
+                             join matestoqueinimeipm ON matestoqueinimeipm.m89_matestoqueinimei = matestoqueinimei.m82_codigo
+                    where matestoqueinimei.m82_codigo = {$iCodigoIniMei}";
+                $rsInimei = db_query($sqlInimei);
+
+                if (!$rsInimei) {
+                    $sqlerro = true;
+                    $erro_msg = "Erro ao buscar valor unitário do atendimento.";
+                }
+
+                db_fieldsmemory($rsInimei, 0);
+                $valor_uni = $m89_valorunitario;
                 $valordev  = $valor_uni*$devolver;
 
                 $clmatestoqueitem->m71_codlanc = $m71_codlanc;
@@ -324,10 +339,11 @@ if (isset($incluir)) {
                 $clmatestoqueinimei->m82_matestoqueitem = $m71_codlanc;
                 $clmatestoqueinimei->m82_matestoqueini  = $m82_matestoqueini;
                 $clmatestoqueinimei->m82_quant          = $devolver;
+                $clmatestoqueinimei->m82_matestoqueinimeiorigem = $iCodigoIniMei;
                 $clmatestoqueinimei->incluir(@$m82_codigo);
-                if ($clmatestoqueinimei->erro_status==0) {
-                  $erro_msg = $clmatestoqueinimei->erro_msg;
-                  $sqlerro=true;
+                  if ($clmatestoqueinimei->erro_status==0) {
+                      $erro_msg = $clmatestoqueinimei->erro_msg;
+                      $sqlerro=true;
                   break;
                 }
                 $codigo_inimei=$clmatestoqueinimei->m82_codigo;
@@ -346,6 +362,7 @@ if (isset($incluir)) {
 //              db_msgbox($devolver);
 
               if ($sqlerro==false) {
+
                 $v=$valordev+$m70_valor;
                 $q=$devolver+$m70_quant;
 
@@ -366,25 +383,30 @@ if (isset($incluir)) {
               $lIntegracaoContabilidade = ParametroIntegracaoPatrimonial::possuiIntegracaoMaterial($oDataImplantacao, $oInstituicao);
 
               if (USE_PCASP && $lIntegracaoContabilidade) {
-                
                 if (!$sqlerro) {
-            
                   try {
-            
+
                     $oMaterial        = new MaterialEstoque($oItem->iCodigoMaterial);
-                    $nValorLancamento = round($oMaterial->getPrecoMedio() * $devolver , 2);
-                    
+                    $nValorLancamento = round($valor_uni * $devolver , 2);
+//                    $sWhereValor      = "m89_matestoqueinimei = {$codigo_inimei}";
+//                    $sSqlValorItem    = $oDaoMatestoqueInimeiPm->sql_query_file(null,
+//                                                                                "m89_valorfinanceiro",
+//                                                                                null,
+//                                                                                $sWhereValor
+//                                                                              );
+//
+//                    $rsValorPrecoMovimento = $oDaoMatestoqueInimeiPm->sql_record($sSqlValorItem);
+//                    if ($rsValorPrecoMovimento) {
+//                      $nValorLancamento = db_utils::fieldsMemory($rsValorPrecoMovimento, 0)->m89_valorfinanceiro;
+//                    }
                     $oRequisicao = new RequisicaoMaterial($m40_codigo);
                     $oRequisicao->estornarLancamento($oMaterial, $codigo_inimei, $nValorLancamento);
 
-
                   } catch (BusinessException $eException) {
-            
                     $erro_msg = str_replace("\n", "\\n", $eException->getMessage());
                     $sqlerro  = true;
                   }
                   catch (Exception $eException) {
-            
                     $erro_msg = str_replace("\n", "\\n", $eException->getMessage());
                     $sqlerro  = true;
                   }
@@ -404,15 +426,18 @@ if (isset($incluir)) {
     /**
      * escrituramos a saida dos materiais
      */
-    
 
     //$sqlerro = true;
     db_fim_transacao($sqlerro);
 } else {
   if (isset($chavepesquisa)) {
-    $result_atendrequi=$clatendrequi->sql_record($clatendrequi->sql_query($chavepesquisa));
+      $sql = $clatendrequi->sql_query($chavepesquisa);
+      $result_atendrequi=$clatendrequi->sql_record($sql);
     if ($clatendrequi->numrows!=0) {
-      db_fieldsmemory($result_atendrequi,0);
+        db_fieldsmemory($result_atendrequi,0);
+        $sqlDeposito = $daoDeposito->sql_query(null, '*', null, " m91_depto = {$m42_depto} ");
+        $rsDeposito = $daoDeposito->sql_record($sqlDeposito);
+        db_fieldsmemory($rsDeposito,0);
     }
   } else {
     $pesq=true;
@@ -438,7 +463,7 @@ if (isset($incluir)) {
 </table>
     <center>
 	<?
-	include("forms/db_frmmatdevolve.php");
+	include(modification("forms/db_frmmatdevolve.php"));
 	?>
     </center>
 <?

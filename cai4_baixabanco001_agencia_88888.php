@@ -79,6 +79,11 @@ if (pg_numrows($verresult) > 0) {
 
     $numpar                 = trim($numpar);
 
+    /**
+     * Habilita variavel de sessao para permitir numpre's de outras instituições
+     */
+    permiteNumpreOutraInstituicao( true );
+
     $clDisBanco->codret     = $codret;
     $clDisBanco->k15_codbco = $k15_codbco;
     $clDisBanco->k15_codage = $k15_codage;
@@ -111,6 +116,11 @@ if (pg_numrows($verresult) > 0) {
 
     $idRet = $clDisBanco->idret;
 
+    /**
+     * Desabilita variavel de sessao para permitir numpre's de outras instituições
+     */
+    permiteNumpreOutraInstituicao( false );
+
     echo "<script>js_termometro(".$i.");</script>";
     flush();
     echo "<br/>xtotal: $xtotal - xxtotal: $xxtotal - vlrpago: $vlrpago - vlrpagonew: $vlrpagonew<br/>";
@@ -136,5 +146,3 @@ if (pg_numrows($verresult) > 0) {
     echo "<br/>passou arrecant... xxtotal: $xxtotal - convenio: $convenio - numpre_migra: $numpre_migra - numpar: $numpar - matric: $matric<br/>";
   }
 }
-
-?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_layouttxt.php");
-include("classes/db_folha_classe.php");
-include("classes/db_rharqbanco_classe.php");
-include("classes/db_orctiporec_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_layouttxt.php"));
+include(modification("classes/db_folha_classe.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($HTTP_POST_VARS);
@@ -54,18 +54,25 @@ $sqlerro = false;
 db_sel_instit(db_getsession("DB_instit"));
 
 $result_arqbanco=$clrharqbanco->sql_record($clrharqbanco->sql_query($rh34_codarq));    
+
+if(!$result_arqbanco || pg_num_rows($result_arqbanco) == 0){
+  $sqlerro = true;
+  $erro_msg = "Arquivo não encontrado";
+}
+
 if($clrharqbanco->numrows>0){
   db_fieldsmemory($result_arqbanco,0);
 
-  if(isset($datagera) && $datagera!=""){
-    $datag = split('-',$datagera);
-    $datag_dia=$datag[2];
-    $datag_mes=$datag[1];
-    $datag_ano=$datag[0];
+  if (isset($datagera) && $datagera!="") {
+
+    $datag     = explode('-',$datagera);
+    $datag_dia = $datag[2];
+    $datag_mes = $datag[1];
+    $datag_ano = $datag[0];
   }
 
   if(isset($datadeposit) && $datadeposit!=""){
-    $datad = split('-',$datadeposit);
+    $datad     = explode('-',$datadeposit);
     $datad_dia = $datad[2];
     $datad_mes = $datad[1];
     $datad_ano = $datad[0];
@@ -86,11 +93,14 @@ if($clrharqbanco->numrows>0){
   $sequencialbb120 = 1;
   $dvagenciaheader = '';
   $dvagenciacontaheader = '';
-  if($rh34_codban == "104"){
-    if(trim($rh34_dvconta)!=""){
+  if ($rh34_codban == "104") {
+
+    if (trim($rh34_dvconta)!="") {
+
       $dvcontaheader  = $rh34_dvconta[0];
       $digitos        = strlen($rh34_dvconta);
-      if($digitos>1){
+      if($digitos > 1) {
+
         $dvagenciacontaheader = $rh34_dvconta[1];
       }
     }
@@ -108,24 +118,22 @@ if($clrharqbanco->numrows>0){
     $dvagenciacontalote = $dvagenciacontaheader;
 
   }
-  $db90_codban = $rh34_codban;
+  $db90_codban   = $rh34_codban;
   $agenciaheader = $rh34_agencia;
   $agencialote   = $rh34_agencia;
-  $contaheader = $rh34_conta;
-  $contalote   = $rh34_conta;
-  $datageracao = $datagera; 
+  $contaheader   = $rh34_conta;
+  $contalote     = $rh34_conta;
+  $datageracao   = $datagera;
   $sequencialarq = $rh34_sequencial;
-  $descrarquivo = "FOLHA PAGAMENTO"; // Campo somente do layout 3
+  $descrarquivo  = "FOLHA PAGAMENTO"; // Campo somente do layout 3
 
-}else{
-  $sqlerro = true;
-  $erro_msg = "Arquivo não encontrado";
 }
 
 if($sqlerro == false){
   db_inicio_transacao();
 
   $rh34_convenio = substr($rh34_convenio,0,6)."060001        ";
+  $rh34_where    = ' r38_liq >  0 ';
 
   if(isset($rh41_codigo) && trim($rh41_codigo) != ""){
     if(trim($rh34_where) != ""){
@@ -169,7 +177,13 @@ if($sqlerro == false){
 //    echo "<br><br> $sql ";exit;
 
     $result  =  $clfolha->sql_record($sql);
-    $numrows =  $clfolha->numrows;
+
+    if(!$result || pg_num_rows($result) == 0){
+      $sqlerro = true;
+      $erro_msg = "Sem dados para gerar arquivo";
+    }
+
+    $numrows = pg_num_rows($result);
   
 
     if($numrows > 0){
@@ -206,10 +220,10 @@ if($sqlerro == false){
       $head4 = "GERAÇÃO  :  ".db_formatar($datagera,"d").' AS '.$ahoradegeracao.' HS';
       $head5 = "PAGAMENTO:  ".db_formatar($datadeposit,"d");
       $head6 = 'BANCO : '.$rh34_codban.' - '.$db90_descr;
-      $head7 = 'AG./CONTA: '.$agenc.'-'.$digia.' / '.$conta.'-'.$digic;
+      $head7 = 'AG./CONTA: '.$agenc.'-'.$digia.' / '.$contalote.'-'.$dvcontaheader;
 
       for($i=0;$i<$numrows;$i++){
-	db_fieldsmemory($result,$i);
+	      db_fieldsmemory($result,$i);
 
         $rh34_codban    = $banco;
         $rh34_agencia   = $agenc;
@@ -228,7 +242,7 @@ if($sqlerro == false){
 
         if($entrar == true){
           $db_layouttxt = new db_layouttxt($layoutimprime,$nomearquivotxt);
-          db_setaPropriedadesLayoutTxt(&$db_layouttxt,1);
+          db_setaPropriedadesLayoutTxt($db_layouttxt,1);
 	      }
         $sequencialreg       = $i + 1;
 
@@ -246,32 +260,39 @@ if($sqlerro == false){
           $pdf->cell(15,$alt,$RLr38_agenc,1,0,"C",1);
           $pdf->cell(20,$alt,$RLr38_conta,1,1,"C",1);
           $entrar = false;
-	  $mrecurso = true;
+          $mrecurso = true;
           $pdf->ln(1);
         }
 
         if($recurso_ant != $rh25_recurso || $mrecurso == true){
-	  if($recurso_ant != 0 && $recurso_ant != $rh25_recurso){
+	        if($recurso_ant != 0 && $recurso_ant != $rh25_recurso){
             $pdf->setfont('arial','',7);
             $pdf->cell(100,$alt,"Total deste recurso","T",0,"R",0);
             $pdf->cell(20,$alt,$quant_recurso,"T",0,"R",0);
             $pdf->cell(20,$alt,db_formatar($valor_recurso,'f'),"T",0,"R",0);
             $pdf->cell(40,$alt,"","T",1,"C",0);
             $pdf->ln(2);
-	    $valor_recurso = 0;
+	          $valor_recurso = 0;
             $quant_recurso = 0;
-	  }
-	  $recurso_ant = $rh25_recurso;
+	        }
+	        $recurso_ant = $rh25_recurso;
           $result_descricao_recurso = $clorctiporec->sql_record($clorctiporec->sql_query_file($rh25_recurso,"o15_descr as descricao_recurso"));
-          if($clorctiporec->numrows > 0){
+          
+          if(!$result_descricao_recurso) {
+            $sqlerro  = true;
+            $erro_msg = 'Não foi possível obter a descricao do recurso.';
+          }
+
+          if(pg_num_rows($result_descricao_recurso) > 0) {
             db_fieldsmemory($result_descricao_recurso,0);
           }
+          
           $pdf->setfont('arial','b',8);
           $pdf->cell(15,$alt,$rh25_recurso,1,0,"C",1);
           $pdf->cell(175,$alt,$descricao_recurso." - ".$descricao." (".$codconta.") ",1,1,"L",1);
           $pdf->ln(1);
-	  $mrecurso = false;
-	}
+      	  $mrecurso = false;
+      	}
         $recurso_ant = $rh25_recurso;
 
         $pdf->setfont('arial','',7);
@@ -303,7 +324,7 @@ if($sqlerro == false){
         if($layoutimprime != 18){
           $sequencialreg = "      ";
         }
-        db_setaPropriedadesLayoutTxt(&$db_layouttxt,3);
+        db_setaPropriedadesLayoutTxt($db_layouttxt,3);
       }
 
       $sequencialbb120 ++;
@@ -325,13 +346,10 @@ if($sqlerro == false){
       $quanttrailler  = $quantidadefuncionarios + 2;
       $sequencialreg += 1;
 
-      db_setaPropriedadesLayoutTxt(&$db_layouttxt,5);
+      db_setaPropriedadesLayoutTxt($db_layouttxt,5);
 
       //////////////////////////////////
       $pdf->Output($nomearquivopdf,false,true);
-    }else{
-      $sqlerro  = true;
-      $erro_msg = "Sem dados para gerar arquivo";
     }
   }
 

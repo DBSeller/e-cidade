@@ -16,7 +16,7 @@ DBViewCaracteristicaPeculiar = function(sEstrutural, sInstance, oNode) {
                                 parameters: 'json='+Object.toJSON(oParam), 
                                 onComplete: function(oAjax) {
                                   
-                                  var oRetorno = eval("("+oAjax.responseText+")");
+                                  var oRetorno = JSON.parse(oAjax.responseText);
                                   me.codigo = oRetorno.iEstruturaCP;
                                 }
                                }) ;
@@ -192,7 +192,7 @@ DBViewCaracteristicaPeculiar = function(sEstrutural, sInstance, oNode) {
   me.onSaveComplete = function(oRetorno) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oRetorno.responseText+")");
+    var oRetorno = JSON.parse(oRetorno.responseText);
     alert(oRetorno.message.urlDecode());
     me.limpaFormulario();
   }
@@ -205,14 +205,16 @@ DBViewCaracteristicaPeculiar = function(sEstrutural, sInstance, oNode) {
     var oParam         = new Object();
         oParam.exec    = 'getDadosCaracteristica';
         oParam.iCodigo = iCodigo;
-        
+
+    js_divCarregando('Aguarde, buscando informações...', 'msgBox');
     var oAjax = new Ajax.Request(me.sRPC,
                                   {
                                     method: 'post',
                                     parameters: 'json='+Object.toJSON(oParam),
                                     onComplete: function (oAjax) {
 
-                                      var oRetorno = eval("("+oAjax.responseText+")");                                
+                                      js_removeObj('msgBox');
+                                      var oRetorno = JSON.parse(oAjax.responseText);                                
 																	    me.dbViewEstrutural.txtEstrutural.setValue(oRetorno.c58_sequencial);
 																	    me.dbViewEstrutural.txtDescricao.setValue(oRetorno.c58_descr.urlDecode());
 																	    me.dbViewEstrutural.cboTipoEstrutural.setValue(oRetorno.db121_tipoconta);
@@ -241,7 +243,7 @@ DBViewCaracteristicaPeculiar = function(sEstrutural, sInstance, oNode) {
                                     onComplete: function (oAjax) {
 
                                       js_removeObj('msgBox');
-                                      var oRetorno = eval("("+oAjax.responseText+")");                                
+                                      var oRetorno = JSON.parse(oAjax.responseText);                                
                                       me.dbViewEstrutural.txtEstrutural.setValue(0);
                                       me.dbViewEstrutural.txtDescricao.setValue('');
                                       me.dbViewEstrutural.cboTipoEstrutural.setValue(1);

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 
-include("fpdf151/pdfwebseller2.php");
-//include("fpdf151/fpdf.php");
-include("libs/db_sql.php");
-include("classes/db_prontuariomedico_classe.php");
-include("classes/db_prontcid_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("classes/db_prontuarios_classe.php");
-include("classes/db_prontproced_ext_classe.php");
+include(modification("fpdf151/pdfwebseller2.php"));
+//include(modification("fpdf151/fpdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_prontuariomedico_classe.php"));
+include(modification("classes/db_prontcid_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
+include(modification("classes/db_prontuarios_classe.php"));
+include(modification("classes/db_prontproced_ext_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -48,7 +48,7 @@ $clcgs_und = new cl_cgs_und;
 
 $result = $clcgs_und->sql_record( $clcgs_und->sql_query( $cgs ) );
 db_fieldsmemory($result,0);
-$query = @pg_query($clprontuariomedico->sql_query("","*, a.z01_nome as profissional","sd32_d_atendimento desc","sd32_i_numcgs = $cgs" ));
+$query = @db_query($clprontuariomedico->sql_query("","*, a.z01_nome as profissional","sd32_d_atendimento desc","sd32_i_numcgs = $cgs" ));
 $linhas = @pg_num_rows($query);
 //die($clprontuariomedico->sql_query("","*","sd32_d_atendimento desc ","sd32_i_numcgs = $cgs" ));
 
@@ -59,7 +59,7 @@ $sSql = $clprontproced->sql_query_prontuario("", "sd24_v_motivo, sd24_v_pressao,
                                              " sau_procedimento.sd63_c_procedimento,sau_procedimento.sd63_c_nome, ".
                                              " sd29_t_tratamento,m.z01_nome as profissional","sd24_d_cadastro desc ",
                                              "sd24_i_numcgs = $cgs" );
-$query1 = pg_query($sSql);
+$query1 = db_query($sSql);
 $linhas1 = pg_num_rows($query1);
 //die($clprontuarios->sql_query("","*","sd24_d_cadastro desc ","sd24_i_numcgs = $cgs" ));
 
@@ -136,7 +136,7 @@ for($p=0; $p<$linhas1; $p++){
       db_fieldsmemory($query1,$p);
 
       $sd70_c_nome_ = trim("    Principal : ".$sd70_c_cid." - ".$sd70_c_nome); 
-      $query3 = pg_query($clprontcid->sql_query("","sd70_c_cid,sd70_c_nome,sd55_b_principal","","sd55_b_principal = 'f' and prontcid.sd55_i_prontuario = $sd29_i_prontuario"));
+      $query3 = db_query($clprontcid->sql_query("","sd70_c_cid,sd70_c_nome,sd55_b_principal","","sd55_b_principal = 'f' and prontcid.sd55_i_prontuario = $sd29_i_prontuario"));
       $linhas3 = pg_num_rows($query3);
       $qtde_cid = pg_num_rows($query3);
       for($p1=0; $p1<$qtde_cid; $p1++){

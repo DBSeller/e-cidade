@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_iptuconstr_classe.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_iptucalh_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_iptuconstr_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_iptucalh_classe.php"));
+
 $cliptuconstr = new cl_iptuconstr;
 $cliptuconstr1 = new cl_iptuconstr;
 $cliptubase = new cl_iptubase;
 $cliptucalh = new cl_iptucalh;
+
 db_postmemory($HTTP_POST_VARS);
-//db_postmemory($HTTP_POST_VARS,2);exit;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 ///////////////////////////////////////////////////////////////////////
@@ -66,10 +67,9 @@ if(isset($relatorio1)){
        	$codigo .= ",".substr($chaves[$i],0,(strpos($chaves[$i],"-")));
       }
     }
-//  $comcar = " and j35_caract in ($codigo) and j21_anousu = ".DB_getsession("DB_anousu")." ";
-  $comcar = " and j35_caract in ($codigo)  ";
-  $listadas = $codigo;
-  $and = " and ";
+    $comcar = " and j35_caract in ($codigo)  ";
+    $listadas = $codigo;
+    $and = " and ";
   }
 }
 $semcar = "";
@@ -214,19 +214,17 @@ if(isset($setor) && $setor != ""){
   }
   if ($totalvars > '1' && $totalvars != '0'){
      $colunax = "VALORES";
-//     $pdf->Cell(20,$tam,$colunax,1,0,"C",1);
   }else if($totalvars == '1'){
      $res=$cliptucalh->sql_record($cliptucalh->sql_query_file($cod,"*",""," j17_codhis = $cod "));
      db_fieldsmemory($res,0);
      $colunax = $j17_descr;
-  //   $pdf->Cell(20,$tam,$colunax,1,0,"C",1);
   }
   $codcase[strlen($codcase)-1] = "";
   $colunas[strlen($colunas)-2] = "";
   if (isset($codcase) && $codcase != ""){
     $codcase = trim($codcase);
     $valores = ", sum(case when j21_codhis in ($codcase) then j21_valor else 0 end) as valores";
-    $groupby = " group by j37_face,j15_numero,j39_numero,proprietario_nome.proprietario,j34_idbql, j34_setor, j34_quadra, j34_lote, j34_area, j34_totcon, j34_zona, j14_nome, j36_testad, j13_descr, iptubase.j01_matric, j21_anousu";
+    $groupby = " group by j15_numero,j39_numero,j34_idbql, j34_setor, j34_quadra, j34_lote, j34_area, j34_totcon, j34_zona, j14_nome, j36_testad, j13_descr, iptubase.j01_matric, j21_anousu";
   }
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -238,13 +236,12 @@ if($comlotes == 'todos'){
 }else if($comlotes == 'sem'){
    $andBaixadas = " and j01_baixa is null";	
 }
-$sql  = "select proprietario_nome.proprietario, ";
-$sql .= "       j34_idbql, ";
+$sql  = "select j34_idbql, ";
 $sql .= "       case ";
 $sql .= "           when j39_numero is not null then j39_numero ";
 $sql .= "           else j15_numero ";
 $sql .= "       end as j39_numero,";
-$sql .= "			  j34_setor, j37_face,";
+$sql .= "			  j34_setor, ";
 $sql .= "			  j34_quadra, ";
 $sql .= "			  j34_lote, ";
 $sql .= "			  j34_area, ";
@@ -259,7 +256,6 @@ $sql .= "       inner join carlote           on j35_idbql               = j34_id
 $sql .= "       inner join iptubase          on iptubase.j01_idbql      = j34_idbql $andBaixadas ";
 $sql .= "       left  join iptuconstr        on iptubase.j01_matric     = j39_matric ";
 $sql .= "                                   and j39_idprinc is true";
-$sql .= "       inner join proprietario_nome on proprietario_nome.j01_matric = iptubase.j01_matric ";
 $sql .= "       left  join iptucalv          on j21_matric              = iptubase.j01_matric ";
 $sql .= "                                   and j21_anousu              = ".db_getsession("DB_anousu");
 $sql .= "       left  join iptucalh          on j17_codhis              = j21_codhis ";
@@ -272,9 +268,7 @@ $sql .= "       inner join testada           on j36_idbql               = j49_id
 $sql .= "                                   and j49_face                = j36_face ";
 //================================================================================================	
 $testruas = "";
-if($ruas == ""){
-//  $sql .= " inner join testpri on j36_idbql = j49_idbql ";
-}else{
+if($ruas != ""){
   $and = " and ";
   if($temruas == "t"){
     $testruas = "and j14_codigo in ($ruas)"; 
@@ -285,18 +279,14 @@ if($ruas == ""){
 
 $sql .= " inner join ruas on j49_codigo = j14_codigo ";
 
-$sql .= " inner join face on j37_setor   = j34_setor  "; 
-$sql .= "                and j37_quadra  = j34_quadra ";
-$sql .= "                and j37_codigo  = j49_codigo  ";
- 
-
-
-
-
 $where = " where 1=1 $comcar $semcar $testruas $setor $arealote $testada $areacons $groupby";
 $sql .= $where;
 if(isset($j32_grupo) && $j32_grupo != ""){
-  $sql = "select c.*,caracter.j31_descr from ($sql) as c left join carlote on carlote.j35_idbql = c.j34_idbql left join caracter on caracter.j31_codigo = carlote.j35_caract where caracter.j31_grupo = $j32_grupo";
+  $sql = "select c.*,caracter.j31_descr 
+          from ($sql) as c 
+               left join carlote on carlote.j35_idbql = c.j34_idbql 
+               left join caracter on caracter.j31_codigo = carlote.j35_caract 
+               where caracter.j31_grupo = $j32_grupo";
 }
 $pontuacao = "";
 if(isset($pontini) && $pontini != ""){
@@ -311,11 +301,26 @@ if(isset($pontini) && $pontini != ""){
   $pontuacao = " where j31_pontos <= $pontfim";
   $pontuacao1 = " PONTUAÇÃO MENOR OU IGUAL À $pontfim";
 }
-$sql = "select distinct * from (select * from (select * from ($sql) as tudo inner join (select j35_idbql, sum(j31_pontos) as j31_pontos from carlote inner join lote on j34_idbql = j35_idbql inner join caracter on j35_caract = j31_codigo group by j35_idbql) as pontos on tudo.j34_idbql = pontos.j35_idbql $pontuacao) as ordem $ordem $order) as distincao $ordem $order";
+$sCampoProprietario = "";
+$InnerProprietario = "";
+if($resumido == 'f'){
+  $sCampoProprietario = ", proprietario_nome.proprietario";
+  $InnerProprietario = " inner join proprietario_nome on proprietario_nome.j01_matric = tudo.j01_matric ";
+}
+$sql = "select distinct * 
+        from (select * 
+              from (select * $sCampoProprietario
+                    from ($sql) as tudo $InnerProprietario
+                                inner join (select j35_idbql, sum(j31_pontos) as j31_pontos
+                                            from carlote 
+                                                 inner join lote on j34_idbql = j35_idbql
+                                                 inner join caracter on j35_caract = j31_codigo
+                                            group by j35_idbql
+                                           ) as pontos on tudo.j34_idbql = pontos.j35_idbql $pontuacao
+                   ) as ordem $ordem $order
+             ) as distincao $ordem $order";
  
-//echo $sql; die();
-
-$result = pg_exec($sql) or die($sql);
+$result = db_query($sql) or die($sql);
 $numrows = pg_numrows($result);
 $matric = "";
 $idcons = "";
@@ -327,7 +332,6 @@ $tam = '04';
 if($resumido == 'f'){
   $pdf->SetFont('Arial','',7);
   $pdf->SetFillColor(235);
-//  $pdf->Cell(25,$tam,"CÓDIGO DO LOTE",1,0,"C",1);
   $pdf->Cell(15,$tam,"MATRÍC",1,0,"C",1);
 	$pdf->Cell(50,$tam,"NOME",1,0,"C",1);
   $pdf->Cell(10,$tam,"SETOR",1,0,"C",1);
@@ -335,9 +339,8 @@ if($resumido == 'f'){
   $pdf->Cell(10,$tam,"LOTE",1,0,"C",1);
   $pdf->Cell(15,$tam,"ÁREA",1,0,"C",1);
   $pdf->Cell(20,$tam,"TOT CONSTR",1,0,"C",1);
-  $pdf->Cell(10,$tam,"ZONA F.",1,0,"C",1);
-  $pdf->Cell(10,$tam,"FACE",1,0,"C",1);
-  $pdf->Cell(50,$tam,"RUA",1,0,"C",1);
+  $pdf->Cell(15,$tam,"ZONA FIS.",1,0,"C",1);
+  $pdf->Cell(55,$tam,"RUA",1,0,"C",1);
   $pdf->Cell(15,$tam,"NUMERO",1,0,"C",1);
   $pdf->Cell(30,$tam,"BAIRRO",1,0,"C",1);
 	
@@ -362,7 +365,6 @@ if($resumido == 'f'){
       $matricula = "";
       $nome = "";
     }
-  //  $pdf->Cell(25,$tam,$j34_idbql,1,0,"C",0);
     $pdf->Cell(15,$tam,$j01_matric,1,0,"C",0);
     $pdf->Cell(50,$tam,(strlen($proprietario)>30?substr($proprietario,0,30)."...":$proprietario),1,0,"C",0);
     
@@ -382,9 +384,8 @@ if($resumido == 'f'){
     if(@$j39_area < $areame){
       $areame = @$j39_area;
     }
-    $pdf->Cell(10,$tam,@$j34_zona,1,0,"C",0);
-    $pdf->Cell(10,$tam,@$j37_face,1,0,"R",0);
-    $pdf->Cell(50,$tam,@$j14_nome,1,0,"L",0);
+    $pdf->Cell(15,$tam,@$j34_zona,1,0,"C",0);
+    $pdf->Cell(55,$tam,@$j14_nome,1,0,"L",0);
     $pdf->Cell(15,$tam,@$j39_numero,1,0,"L",0);
     $pdf->Cell(30,$tam,@$j13_descr,1,0,"C",1);
     ////////////////////////////////////////
@@ -409,9 +410,8 @@ if($resumido == 'f'){
       $pdf->Cell(10,$tam,"LOTE",1,0,"C",1);
       $pdf->Cell(15,$tam,"ÁREA",1,0,"C",1);
 			$pdf->Cell(20,$tam,"TOT CONSTR",1,0,"C",1);
-      $pdf->Cell(10,$tam,"ZONA F.",1,0,"C",1);
-      $pdf->Cell(10,$tam,"FACE",1,0,"C",1);
-      $pdf->Cell(50,$tam,"RUA",1,0,"C",1);
+      $pdf->Cell(15,$tam,"ZONA FIS.",1,0,"C",1);
+      $pdf->Cell(55,$tam,"RUA",1,0,"C",1);
       $pdf->Cell(15,$tam,"NUMERO",1,0,"C",1);
       $pdf->Cell(30,$tam,"BAIRRO",1,0,"C",1);
       ////////////////////////////////////////
@@ -460,7 +460,7 @@ $pdf->SetFont('Arial','',7);
 if(isset($ruas) && !empty($ruas) && $temruas == "t"){
   $vir = "";
   $rua = "";
-  $result1 = pg_exec("select j14_nome from ruas where j14_codigo in ($ruas)");
+  $result1 = db_query("select j14_nome from ruas where j14_codigo in ($ruas)");
       for($x=0;$x<pg_numrows($result1);$x++){
 	db_fieldsmemory($result1,$x);
 	$cod .= $vir.$j14_nome;
@@ -471,7 +471,7 @@ if(isset($ruas) && !empty($ruas) && $temruas == "t"){
 if(isset($ruas) && $ruas != "" && $temruas == "f"){
   $vir = "";
   $rua = "";
-  $result1 = pg_exec("select j14_nome from ruas where j14_codigo in ($ruas)");
+  $result1 = db_query("select j14_nome from ruas where j14_codigo in ($ruas)");
       for($x=0;$x<pg_numrows($result1);$x++){
 	db_fieldsmemory($result1,$x);
 	$cod .= $vir.$j14_nome;
@@ -485,7 +485,7 @@ if(isset($ruas) && $ruas == ""){
 $vir = "";
 $cod = "";
 if($listadas != ""){
-  $result1 = pg_exec("select distinct j31_descr,j31_codigo from carlote inner join caracter on j35_caract=j31_codigo where j31_codigo in ($listadas)");
+  $result1 = db_query("select distinct j31_descr,j31_codigo from carlote inner join caracter on j35_caract=j31_codigo where j31_codigo in ($listadas)");
   if(pg_numrows($result1) > 0){
     for($x=0;$x<pg_numrows($result1);$x++){
       db_fieldsmemory($result1,$x);
@@ -500,7 +500,7 @@ if($listadas != ""){
 $vir = "";
 $cod = "";
 if(isset($chaves_caract) && $chaves_caract != ""){
-  $result1 = pg_exec("select distinct j31_descr,j31_codigo from carlote inner join caracter on j35_caract=j31_codigo  where j31_codigo in ($chaves_caract)");
+  $result1 = db_query("select distinct j31_descr,j31_codigo from carlote inner join caracter on j35_caract=j31_codigo  where j31_codigo in ($chaves_caract)");
   for($x=0;$x<pg_numrows($result1);$x++){
   	db_fieldsmemory($result1,$x);
 	  $cod .= $vir.$j31_codigo." - ".$j31_descr;
@@ -547,7 +547,7 @@ if(isset($ordem) && $ordem != ""){
 if(isset($order) && $order != ""){
   $pdf->MultiCell(280,05,"MODO -".$modo1,0,"L");
 }
-$result1 = pg_exec("select j34_setor,count(j34_quadra) as quadra,count(j34_lote) as lotes,sum(j34_area) as area,sum(j34_totcon) as areac,sum(j36_testad) as testada from ($sql) as f group by j34_setor");
+$result1 = db_query("select j34_setor,count(j34_quadra) as quadra,count(j34_lote) as lotes,sum(j34_area) as area,sum(j34_totcon) as areac,sum(j36_testad) as testada from ($sql) as f group by j34_setor");
 $pdf->MultiCell(180,05,"TOTAIS POR SETOR",1,"C");
 $pdf->SetFillColor(235);
 $pdf->Cell(30,$tam,"SETOR(ES)",1,0,"C",1);
@@ -567,7 +567,7 @@ for($x=0;$x<pg_numrows($result1);$x++){
   $pdf->Cell(30,$tam,"".db_formatar($testada,'f'),1,1,"C",1);
 }
 $pdf->ln(5);
-$result1 = pg_exec("select j34_setor,j34_quadra,count(j34_lote) as lotes,sum(j34_area) as area,sum(j34_totcon) as areac,sum(j36_testad) as testada from ($sql) as f group by j34_setor, j34_quadra");
+$result1 = db_query("select j34_setor,j34_quadra,count(j34_lote) as lotes,sum(j34_area) as area,sum(j34_totcon) as areac,sum(j36_testad) as testada from ($sql) as f group by j34_setor, j34_quadra");
 $pdf->MultiCell(180,05,"TOTAIS POR SETOR/QUADRA",1,"C");
 $pdf->SetFillColor(235);
 $pdf->Cell(30,$tam,"SETOR(ES)",1,0,"C",1);
@@ -586,6 +586,5 @@ for($x=0;$x<pg_numrows($result1);$x++){
   $pdf->Cell(30,$tam,"".db_formatar($areac,'f'),1,0,"C",1);
   $pdf->Cell(30,$tam,"".db_formatar($testada,'f'),1,1,"C",1);
 }
-//include("fpdf151/geraarquivo.php");
 $pdf->output();
 ?>

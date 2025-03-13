@@ -1,8 +1,12 @@
 <?xml version='1.0' ?>
 <processamento>
+
+  <transacao>true</transacao>
+
   <parametros>
     <parametro nome="codigorequisicao" obrigatorio="true" tipo="integer" />
   </parametros>
+
   <configuracoes>
     <classe nome="RequisicaoAidofWebService" parametros="$codigorequisicao" caminho="model/fiscal/webservice/RequisicaoAidofWebService.model.php">
       <metodos>
@@ -10,4 +14,5 @@
       </metodos>
     </classe>
   </configuracoes>
+
 </processamento>

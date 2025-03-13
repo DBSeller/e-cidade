@@ -26,7 +26,7 @@
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clescoladifacesso->rotulo->label();
 $db_botao1 = false;
@@ -106,10 +106,10 @@ if(isset($opcao) && $opcao=="alterar"){
 <script>
 function js_pesquisaed126_i_escola(mostra){
  if(mostra==true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_escola','func_escola.php?funcao_js=parent.js_mostraescola1|ed18_i_codigo|ed18_c_nome','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escola','func_escola.php?funcao_js=parent.js_mostraescola1|ed18_i_codigo|ed18_c_nome','Pesquisa',true);
  }else{
   if(document.form1.ed126_i_escola.value != ''){
-   js_OpenJanelaIframe('top.corpo','db_iframe_escola','func_escola.php?pesquisa_chave='+document.form1.ed126_i_escola.value+'&funcao_js=parent.js_mostraescola','Pesquisa',false);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escola','func_escola.php?pesquisa_chave='+document.form1.ed126_i_escola.value+'&funcao_js=parent.js_mostraescola','Pesquisa',false);
   }else{
    document.form1.ed18_c_nome.value = '';
   }
@@ -129,10 +129,10 @@ function js_mostraescola1(chave1,chave2){
 }
 function js_pesquisaed126_i_tipoacesso(mostra){
  if(mostra==true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipoacesso','func_tipoacesso.php?funcao_js=parent.js_mostratipoacesso1|ed125_i_codigo|ed125_c_descr','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoacesso','func_tipoacesso.php?funcao_js=parent.js_mostratipoacesso1|ed125_i_codigo|ed125_c_descr','Pesquisa',true);
  }else{
   if(document.form1.ed126_i_tipoacesso.value != ''){
-   js_OpenJanelaIframe('top.corpo','db_iframe_tipoacesso','func_tipoacesso.php?pesquisa_chave='+document.form1.ed126_i_tipoacesso.value+'&funcao_js=parent.js_mostratipoacesso','Pesquisa',false);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoacesso','func_tipoacesso.php?pesquisa_chave='+document.form1.ed126_i_tipoacesso.value+'&funcao_js=parent.js_mostratipoacesso','Pesquisa',false);
   }else{
    document.form1.ed125_c_descr.value = '';
   }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -618,5 +618,38 @@ class cl_rhempenhofolhaconfirma {
      }
      return $sql;
   }
+  
+  /**
+   * Retorna uma query para verificar se a folha slip esta liberada.
+   * 
+   * @access public
+   * @param String $sCampo
+   * @param String $sWhere
+   * @param String $sOrder
+   * @return String
+   */
+  public function sql_slip_liberada($sCampo = '*', $sWhere = '', $sOrder = '') {
+    
+    $sSql  = "SELECT {$sCampo}                                  "; 
+    $sSql .= "  FROM rhempenhofolhaconfirma                     ";
+    $sSql .= "    INNER JOIN rhslipfolha                        ";
+    $sSql .= "      ON rh83_mesusu       = rh79_mesusu      AND ";   
+    $sSql .= "         rh83_anousu       = rh79_anousu      AND ";
+    $sSql .= "         rh83_siglaarq     = rh79_siglaarq    AND ";
+    $sSql .= "         rh83_complementar = rh79_seqcompl    AND ";
+    $sSql .= "         rh83_tipoempenho  = rh79_tipoempenho AND ";
+    $sSql .= "         rh83_tabprev      = rh79_tabprev         ";
+    
+    if (!empty($sWhere)) {
+      $sSql .= "  WHERE {$sWhere}                        ";
+    }
+    
+    if (!empty($sOrder)) {
+      $sSql .= "  ORDER BY {$sOrder}                     ";
+    }
+    
+    return $sSql;
+  }
+  
 }
 ?>

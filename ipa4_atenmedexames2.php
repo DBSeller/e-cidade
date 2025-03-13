@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -81,7 +81,7 @@ function js_procurar(texto) {
 	  $sql = "select codexa,descr from exames where upper(descr) like upper('$descricao%') and codmed = ".db_getsession("DB_id_usuario")." order by upper(descr)";
 	else
   	  $sql = "select codexa,descr from exames where codmed = ".db_getsession("DB_id_usuario")." order by upper(descr)";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	$numrows = pg_numrows($result);
 	for($i = 0;$i < $numrows;$i++) {
 	  db_fieldsmemory($result,$i);

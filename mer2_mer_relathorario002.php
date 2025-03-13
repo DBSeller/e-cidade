@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("classes/db_diasemana_classe.php");
-include ("classes/db_calendario_classe.php");
-include ("classes/db_mer_tipocardapio_classe.php");
-include ("classes/db_mer_nutricionista_classe.php");
-include ("classes/db_mer_cardapionutri_classe.php");
-include ("classes/db_mer_cardapiotipo_classe.php");
-include ("classes/db_mer_cardapiodia_classe.php");
-include ("classes/db_feriado_classe.php");
-require_once('libs/db_utils.php');
-include ("fpdf151/pdf.php");
+include(modification("classes/db_diasemana_classe.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("classes/db_mer_tipocardapio_classe.php"));
+include(modification("classes/db_mer_nutricionista_classe.php"));
+include(modification("classes/db_mer_cardapionutri_classe.php"));
+include(modification("classes/db_mer_cardapiotipo_classe.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("classes/db_feriado_classe.php"));
+require_once(modification('libs/db_utils.php'));
+include(modification("fpdf151/pdf.php"));
 
 $cldiasemana         = new cl_diasemana;
 $clcalendario        = new cl_calendario;
@@ -69,7 +69,7 @@ if ($codescola != "") {
 $sql        = " select * from mer_cardapio "; 
 $sql       .= "       inner join mer_cardapiodia on me12_i_cardapio=me01_i_codigo";
 $sql       .= "       inner join mer_tipocardapio on me27_i_codigo = me01_i_tipocardapio";
-$result     = pg_query($sql);
+$result     = db_query($sql);
 $linhas     = pg_num_rows($result);
 if ($linhas == 0 || $lErro) {
 	
@@ -212,7 +212,7 @@ $pdf     = new PDF();
 $pdf->Open();
 $pdf->AliasNbPages ();
 $sqlcardapioescola        = " select me32_i_codigo as cardapioescolacod,ed18_c_nome from mer_cardapioescola inner join escola  on  escola.ed18_i_codigo = mer_cardapioescola.me32_i_escola where me32_i_tipocardapio = $cardapio $condicao3 ";
-$resultcardapioescola     = pg_query($sqlcardapioescola);
+$resultcardapioescola     = db_query($sqlcardapioescola);
 $linhascardapioescola     = pg_num_rows($resultcardapioescola);
 for($rrr=0; $rrr < $linhascardapioescola; $rrr++){
 
@@ -364,7 +364,7 @@ for($rrr=0; $rrr < $linhascardapioescola; $rrr++){
   $sqlt   .= "      where me29_d_inicio <= '$inicio' AND me29_d_fim >= '$fim' ";
   $sqlt   .= "            AND me29_d_inicio<=me12_d_data AND me29_d_fim>=me12_d_data ";
   $sqlt   .= "      order by me29_i_refeicao";
-  $resultt = pg_query($sqlt) or die("Erro - dados da refeição");
+  $resultt = db_query($sqlt) or die("Erro - dados da refeição");
   $pdf->setfont('arial','',6);
   $datas="";
   $sep=" ";

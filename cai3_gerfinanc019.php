@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("classes/db_notificacao_classe.php");
-include("classes/db_notisitu_classe.php");
-include("classes/db_noticonf_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("classes/db_notificacao_classe.php"));
+include(modification("classes/db_notisitu_classe.php"));
+include(modification("classes/db_noticonf_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clnotificacao = new cl_notificacao;
 $clnoticonf    = new cl_noticonf;
 $clnotisitu    = new cl_notisitu;
@@ -93,7 +93,7 @@ if(isset($incluir)){
     <td align="left" valign="top" bgcolor="#CCCCCC">
     <input name="proximobanco" value="" type="hidden">
     <?
-	include("forms/db_notifi019.php");
+	include(modification("forms/db_notifi019.php"));
 	?>
     </td>
   </tr>

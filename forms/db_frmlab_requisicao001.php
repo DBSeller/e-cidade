@@ -1,7 +1,8 @@
-<?
+<?php
+
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -146,10 +147,11 @@ $clrotulo->label("la24_i_laboratorio");
                                           }
                                           $rResult=$cllab_setorexame->sql_record($cllab_setorexame->sql_query(""," la09_i_codigo as chave,la08_c_descr as descricao",""," la24_i_laboratorio=$chave "));
                                           $aExames=array();
-                                          for($x=0;$x<$cllab_setorexame->numrows;$x++){
+                                          for ($x = 0; $x < $cllab_setorexame->numrows; $x++) {
                                              db_fieldsmemory($rResult,$x);
                                              $aExames[$chave] = $descricao;
                                           }
+                                          
                                           db_input('la09_i_codigo',56,@$aExames,true,'hidden',3,'');                                       
                                        }
                                     ?>
@@ -161,7 +163,6 @@ $clrotulo->label("la24_i_laboratorio");
                                     <?db_input('la08_i_dias',20,@$Icontato,true,'hidden',$db_opcao,'')?>
                                     <?db_input('requisitos',20,@$Icontato,true,'hidden',$db_opcao,'')?>
                                     <?db_input('la22_t_medicamento',20,"",true,'hidden',$db_opcao,'')?>
-                                    <?db_input('la08_t_diagnostico',20,"",true,'hidden',$db_opcao,'')?>
                                     <?db_input('la08_t_observacao',20,"",true,'hidden',$db_opcao,'')?>
                                     <?db_input('sStr',20,"",true,'hidden',$db_opcao,'')?>
                                     <?db_input('sUrgente',20,"",true,'hidden',$db_opcao,'')?>                                   
@@ -391,11 +392,7 @@ js_init();
          sNome='MEDICAMENTO';
          sTexto=F.la22_t_medicamento.value;
          sCampo='la22_t_medicamento';
-      }else if(iQual==2){
-         sNome='DIAGNOSTICO';
-         sTexto=F.la08_t_diagnostico.value;
-         sCampo='la08_t_diagnostico';
-      }else{
+      } else {
          sNome='OBSERVACAO';
          sTexto=F.la08_t_observacao.value;
          sCampo='la08_t_observacao';

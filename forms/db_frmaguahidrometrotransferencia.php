@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_app.utils.php");
-require_once("classes/db_aguahidromatric_classe.php");
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_aguahidromatric_classe.php"));
 
 db_app::load('scripts.js, prototype.js, strings.js');
 db_app::load('estilos.css');
@@ -185,7 +185,7 @@ fieldset table tr td:first-child {
         
     if (mostra == true) {
         
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_aguabase',
                           'func_aguabasealt.php?funcao_js=parent.js_mostra_dados_matricula_origem1|x01_matric|z01_nome|x04_matric',
                           'Pesquisa',true);
@@ -194,7 +194,7 @@ fieldset table tr td:first-child {
       
       if (document.form1.x04_matric_origem.value != '') {
 
-    	  js_OpenJanelaIframe('top.corpo',
+    	  js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_aguabase',
                             'func_aguabasealt.php?pesquisa_chave=' + document.form1.x04_matric_origem.value + 
                             '&funcao_js=parent.js_mostra_dados_matricula_origem',                  
@@ -271,7 +271,7 @@ fieldset table tr td:first-child {
 
     var oGet = js_urlToObject();
     
-    var oRetorno  = eval("("+oAjax.responseText+")");
+    var oRetorno  = JSON.parse(oAjax.responseText);
 
     if (oRetorno.status == 1) {
 
@@ -313,7 +313,7 @@ fieldset table tr td:first-child {
       
     if (mostra == true) {
         
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_aguabase',
                           'func_aguabasealt.php?funcao_js=parent.js_mostra_dados_matricula_destino1|x01_matric|z01_nome|x04_matric',
                           'Pesquisa',true);
@@ -322,7 +322,7 @@ fieldset table tr td:first-child {
       
       if (document.form1.x04_matric_destino.value != '') {
 
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_aguabase',
                             'func_aguabasealt.php?pesquisa_chave=' + document.form1.x04_matric_destino.value + 
                             '&funcao_js=parent.js_mostra_dados_matricula_destino',                  
@@ -397,7 +397,7 @@ fieldset table tr td:first-child {
 
     var oGet = js_urlToObject();
     
-    var oRetorno  = eval("("+oAjax.responseText+")");
+    var oRetorno  = JSON.parse(oAjax.responseText);
 
     if (oRetorno.status == 1) {
 

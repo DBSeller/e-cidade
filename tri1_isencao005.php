@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_isencao_classe.php");
-include("classes/db_isencaolanc_classe.php");
-include("classes/db_isencaoproc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_isencao_classe.php"));
+include(modification("classes/db_isencaolanc_classe.php"));
+include(modification("classes/db_isencaoproc_classe.php"));
 $clisencao = new cl_isencao;
 $clisencaoproc = new cl_isencaoproc;
   /*
@@ -97,7 +97,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmisencao.php");
+	include(modification("forms/db_frmisencao.php"));
 	?>
     </center>
 	</td>
@@ -122,7 +122,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.isencaolanc.disabled=false;
-         top.corpo.iframe_isencaolanc.location.href='tri1_isencaolanc001.php?v18_isencao=".@$v10_sequencial."&origem=".$origem."&valorigem=$valorigem'; ";
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_isencaolanc.location.href='tri1_isencaolanc001.php?v18_isencao=".@$v10_sequencial."&origem=".$origem."&valorigem=$valorigem'; ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('isencaolanc');";
          }

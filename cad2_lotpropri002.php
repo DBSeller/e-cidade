@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('j01_matric');
@@ -75,10 +75,12 @@ unset($_SESSION["quadra"]);
 unset($_SESSION["rua"]);
 
 
+$promitente = "";
 if (isset($filtro)&&$filtro=="1"){
   $campo = " z01_numcgm "; 
 }else if (isset($filtro)&&$filtro=="2"){
   $campo = " z01_cgmpri ";
+  $promitente = " inner join promitente on promitente.j41_numcgm = proprietario.j41_numcgm ";
 }
 
 if ($lista != "") {
@@ -136,7 +138,7 @@ $head3 = @$info3;
 $head4 = @$info1;
 $head5 = @$info2;
 
-$sql = "select * from (
+$sql = "select distinct * from (
       select proprietario.j01_matric,
              j34_setor,
              j34_quadra,
@@ -154,6 +156,7 @@ $sql = "select * from (
              j01_baixa,
              z01_numcgm		
      from proprietario      
+" . $promitente . "
      left join iptuconstr on j39_matric = proprietario.j01_matric
      $where  
      group by

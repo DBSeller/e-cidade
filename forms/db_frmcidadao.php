@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("classes/db_tiporetorno_classe.php");
-require_once("classes/db_telefonetipo_classe.php");
+require_once(modification("classes/db_tiporetorno_classe.php"));
+require_once(modification("classes/db_telefonetipo_classe.php"));
 
 $cltelefonetipo 		= new cl_telefonetipo();
 $cltiporetorno 			= new cl_tiporetorno();
@@ -646,7 +646,7 @@ function js_retornoIncluirDados(oAjax){
 
 	js_removeObj("msgBox");
 
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
 
   var sExpReg  = new RegExp('\\\\n','g');
 
@@ -733,10 +733,10 @@ function js_frmListaTelefones(){
 
 function js_pesquisaov02_situacaocidadao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_situacaocidadao','func_situacaocidadao.php?funcao_js=parent.js_mostrasituacaocidadao1|ov16_sequencial|ov16_sequencial','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_situacaocidadao','func_situacaocidadao.php?funcao_js=parent.js_mostrasituacaocidadao1|ov16_sequencial|ov16_sequencial','Pesquisa',true);
   }else{
      if(document.form1.ov02_situacaocidadao.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_situacaocidadao','func_situacaocidadao.php?pesquisa_chave='+document.form1.ov02_situacaocidadao.value+'&funcao_js=parent.js_mostrasituacaocidadao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_situacaocidadao','func_situacaocidadao.php?pesquisa_chave='+document.form1.ov02_situacaocidadao.value+'&funcao_js=parent.js_mostrasituacaocidadao','Pesquisa',false);
      }else{
        document.form1.ov16_sequencial.value = '';
      }
@@ -768,7 +768,7 @@ function js_pesquisa(){
   }
 
   js_OpenJanelaIframe(
-                       'top.corpo',
+                       'CurrentWindow.corpo',
                        'db_iframe_cidadao',
                        sNomeLookup+'?'+sParametros,
                        'Pesquisa',
@@ -1123,7 +1123,7 @@ function js_retornoPesquisaCidadao(oAjax){
 
 	js_removeObj("msgBox");
 
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
 
   var sExpReg  = new RegExp('\\\\n','g');
 
@@ -1426,7 +1426,7 @@ function js_RenderGridTelefone(aTelefone,acao,indice,acaoBotao){
 
 	  js_removeObj("msgBox");
 
-	  var aRetorno = eval("("+oAjax.responseText+")");
+	  var aRetorno = JSON.parse(oAjax.responseText);
 	  var sExpReg  = new RegExp('\\\\n','g');
 
 	  if ( aRetorno.status == 1) {
@@ -1465,7 +1465,7 @@ function js_retornoTipoFamiliar(oAjax) {
 
   oCboTipoFamiliar.clearItens();
 	js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if(oRetorno.status == 2 ) {
 
@@ -1523,7 +1523,7 @@ function js_carregaDados(iCidadao) {
 function js_retornoCarregaDados(oJson) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (oRetorno.status == 2) {
     alert(oRetorno.mesage.urlDecode());
@@ -1556,7 +1556,7 @@ function js_carregaDadosFamilia(iCidadao) {
 function js_retornoCarregaDadosFamilia(oJson) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (oRetorno.status == 2) {
     alert(oRetorno.mesage.urlDecode());

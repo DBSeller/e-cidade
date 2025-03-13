@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,17 +28,17 @@
 
 if (! isset($arqinclude)) {
   
-  include ("fpdf151/pdf.php");
-  include ("fpdf151/assinatura.php");
-  include ("libs/db_sql.php");
-  include ("libs/db_libcontabilidade.php");
-  include ("libs/db_liborcamento.php");
-  include ("classes/db_orcparamrel_classe.php");
-  include ("classes/db_conrelinfo_classe.php");
-  include ("classes/db_db_config_classe.php");
-  include ("dbforms/db_funcoes.php");
-  include_once("classes/db_orcparamelemento_classe.php");
-  require_once("libs/db_utils.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("classes/db_db_config_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include_once(modification("classes/db_orcparamelemento_classe.php"));
+  require_once(modification("libs/db_utils.php"));
   $classinatura = new cl_assinatura();
   $orcparamrel = new cl_orcparamrel();
   $clconrelinfo = new cl_conrelinfo();
@@ -186,7 +186,7 @@ $xinstit      = split("-", $db_selinstit);
 $valor_outras_obrigacoes_ex_anterior           = $clconrelinfo->getValorVariavel(475, $sSelInstit,'1Q');
 $valor_obrigacoes_nao_integ_dcprev_ex_anterior = $clconrelinfo->getValorVariavel(476, $sSelInstit,'1Q');
 
-$resultinst = pg_exec("select codigo,munic,db21_tipoinstit from db_config where codigo in (" . str_replace('-', ', ', $db_selinstit) . ") ");
+$resultinst = db_query("select codigo,munic,db21_tipoinstit from db_config where codigo in (" . str_replace('-', ', ', $db_selinstit) . ") ");
 $numrowsinstit = pg_num_rows($resultinst);
 
 $instit_rpps = "";
@@ -354,20 +354,20 @@ for($linha = 1; $linha <= 20; $linha ++) {
 if ($instituicao != '') {
   $sele_work = "c61_instit in ({$instituicao})";
   $result_01 = db_planocontassaldo_matriz($anousu, $dtini_01, $dtfin_01, false, $sele_work, "", "true", "false", "", $aOrcParametro);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
   
   //$sele_work = ' c61_instit in (' . $instituicao . ')';
   $result_02 = db_planocontassaldo_matriz($anousu, $dtini_02, $dtfin_02, false, $sele_work, "", "true", "false", "", $aOrcParametro);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
 }
 if (trim($instit_rpps) != "") {
   $sele_work = ' c61_instit in (' . $instit_rpps . ')';
   $result_01_rpps = db_planocontassaldo_matriz($anousu, $dtini_01, $dtfin_01, false, $sele_work, "", "true", "false", "", $aOrcParametro_rpps);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
   
   $sele_work = ' c61_instit in (' . $instit_rpps . ')';
   $result_02_rpps = db_planocontassaldo_matriz($anousu, $dtini_02, $dtfin_02, false, $sele_work, "", "true", "false", "", $aOrcParametro_rpps);
-  @pg_exec("drop table work_pl");
+  @db_query("drop table work_pl");
 }
 
 //db_criatabela($result_02_rpps); exit;
@@ -713,7 +713,7 @@ if ($usa_datas == false) {
   
   
   $sTodasInstit = null;
-  $rsInstit =  pg_query("select codigo from db_config");
+  $rsInstit =  db_query("select codigo from db_config");
   for ($xinstit=0; $xinstit < pg_num_rows($rsInstit); $xinstit++) {
   
     db_fieldsmemory($rsInstit, $xinstit);

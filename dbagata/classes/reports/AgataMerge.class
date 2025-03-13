@@ -17,7 +17,7 @@ class AgataMerge
         $this->CurrentQuery = $params[3];
         $this->Query        = $this->CurrentQuery->Query;
         $this->XmlArray     = $params[4];
-        $this->posAction    = $params[5];
+        $this->posAction    = (isset($params[5]) ? $params[5] :  null);
         $this->Parameters   = $params[6];
         $this->Adjustments  = Report::ExtractAdjustments($this->XmlArray['Report']['DataSet']);
         $this->SubAdjustments=Report::ExtractAdjustments($this->XmlArray['Report']['Merge']['Details']['Detail1']['DataSet']);

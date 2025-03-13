@@ -78,12 +78,12 @@ if(isset($k90_conta)){
   $sql = "select coalesce(k90_cpsldaplic,0) as saldo_anterior_cp 
           from bancoaplic 
 	  where k90_conta=$k90_conta and k90_codreceita=$k02_codreceita order by k90_data desc limit 1";
-  $rs  = pg_query($sql);
+  $rs  = db_query($sql);
   $sldantcp = @pg_result($rs,0,'saldo_anterior_cp');
   $sql               = "select coalesce(k90_pfsldaplicf,0) as saldo_anterior_pf 
                       from bancoaplic 
 		      where k90_conta=$k90_conta and k90_codreceita=$k02_codreceita order by k90_data desc limit 1";
-  $rs                = pg_query($sql);
+  $rs                = db_query($sql);
   $k90_pfsldaplicant = @pg_result($rs,0,'saldo_anterior_pf');
 }
 ?>
@@ -252,10 +252,10 @@ function js_calcula(){
 }
 function js_pesquisak90_conta(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
   }else{
      if(document.form1.k90_conta.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k90_conta.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k90_conta.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
      }else{
        document.form1.k13_descr.value = ''; 
      }
@@ -276,7 +276,7 @@ function js_mostrasaltes1(chave1,chave2){
   //location.href='cai1_bancoaplic001.php?k90_conta='+chave1+'&k13_descr='+chave2;
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bancoaplic','func_bancoaplic.php?funcao_js=parent.js_preenchepesquisa|k90_id','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bancoaplic','func_bancoaplic.php?funcao_js=parent.js_preenchepesquisa|k90_id','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bancoaplic.hide();

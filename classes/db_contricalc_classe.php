@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -371,7 +371,7 @@ class cl_contricalc {
     if($numpar>0){
       $sql .= " and k00_numpar = $numpar";
     }
-    $result=@pg_query($sql);
+    $result=@db_query($sql);
 
     if($result!=false && pg_numrows($result)>0){
       $k00_numpre = pg_result($result,0,"k00_numpre");
@@ -387,7 +387,7 @@ class cl_contricalc {
       $k00_tipo = pg_result($result,0,"k00_tipo");
       $k00_tipojm = pg_result($result,0,"k00_tipojm");
       for($a=0; $a<pg_numrows($result); $a++){
-        $result = @pg_query("insert into arreold(
+        $result = @db_query("insert into arreold(
                                        k00_numpre
                                       ,k00_numpar
                                       ,k00_numcgm
@@ -425,7 +425,7 @@ class cl_contricalc {
        if($numpar>0){
 	 $sql .= " and k00_numpar = $numpar";
        }
-       $result=@pg_query($sql);
+       $result=@db_query($sql);
        if($result==false){
 	  $this->erro_status="0";
 	  $this->erro_msg="Erro ao excluir em Arrecad";
@@ -460,7 +460,7 @@ class cl_contricalc {
      }
      
 //    echo " SELECT FC_CALCULOCONTR('$d09_contri','$d09_matric','$parcelas','$privenc_ano-$privenc_mes-$privenc_dia','$provenc') AS CALCULO <br><br>";
-     $result = pg_query(" SELECT FC_CALCULOCONTR('$d09_contri','$d09_matric','$parcelas','$privenc_ano-$privenc_mes-$privenc_dia','$provenc') AS CALCULO");
+     $result = db_query(" SELECT FC_CALCULOCONTR('$d09_contri','$d09_matric','$parcelas','$privenc_ano-$privenc_mes-$privenc_dia','$provenc') AS CALCULO");
 
      if($result==false){
        $this->erro_banco = str_replace("\n","",pg_last_error());
@@ -487,12 +487,12 @@ class cl_contricalc {
 
 /*     $resaco = $this->sql_record($this->sql_query_file($this->d09_contri,$this->d09_matric));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac  = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac  = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac  = pg_query("insert into db_acountkey values($acount,719,'$this->d09_contri','I')");
-       $resac  = pg_query("insert into db_acountkey values($acount,720,'$this->d09_matric','I')");
-       $resac  = pg_query("insert into db_acount values($acount,134,719,'','".pg_result($resaco,0,'d09_contri')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac  = pg_query("insert into db_acount values($acount,134,720,'','".pg_result($resaco,0,'d09_matric')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac  = db_query("insert into db_acountkey values($acount,719,'$this->d09_contri','I')");
+       $resac  = db_query("insert into db_acountkey values($acount,720,'$this->d09_matric','I')");
+       $resac  = db_query("insert into db_acount values($acount,134,719,'','".pg_result($resaco,0,'d09_contri')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac  = db_query("insert into db_acount values($acount,134,720,'','".pg_result($resaco,0,'d09_matric')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
 		 }*/
    $this->erro_msg = "Processamento concluido com sucesso !";
    $this->erro_status = "1";

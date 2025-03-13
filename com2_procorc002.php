@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,20 +25,46 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_libdocumento.php");
-require_once("classes/db_pcproc_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_pcprocitem_classe.php");
-require_once("classes/db_pcdotac_classe.php");
-require_once("classes/db_pcorcam_classe.php");
-require_once("classes/db_pcorcamitem_classe.php");
-require_once("classes/db_pcorcamitemproc_classe.php");
-require_once("classes/db_pcorcamforne_classe.php");
-require_once("classes/db_cgm_classe.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("classes/db_pcproc_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_pcprocitem_classe.php"));
+require_once(modification("classes/db_pcdotac_classe.php"));
+require_once(modification("classes/db_pcorcam_classe.php"));
+require_once(modification("classes/db_pcorcamitem_classe.php"));
+require_once(modification("classes/db_pcorcamitemproc_classe.php"));
+require_once(modification("classes/db_pcorcamforne_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+// Added this function in file com2_solorc002.php
+function getValoresOrcamentoItens($iOrcamento, $iOrcamItem, $iCgm) {
+
+  $oDaoPcorcamForne = db_utils::getDao("pcorcamforne");
+
+  $aWhere[] = "pc21_codorc = {$iOrcamento}";
+  $aWhere[] = "pc23_orcamitem = {$iOrcamItem}";
+  $aWhere[] = "pc21_numcgm = {$iCgm}";
+  $sWhere = implode(" and ", $aWhere);
+
+  $sSql = $oDaoPcorcamForne->sql_query_fornec( null, "*", null, $sWhere);
+  $rsValores = $oDaoPcorcamForne->sql_record($sSql);
+  $oDados = new stdClass();
+  if ($oDaoPcorcamForne->numrows > 0) {
+
+    $oValores = db_utils::fieldsMemory($rsValores, 0);
+
+    $oDados->pc23_obs = $oValores->pc23_obs;
+    $oDados->pc23_validmin = $oValores->pc23_validmin;
+    $oDados->pc23_vlrun = $oValores->pc23_vlrun;
+    $oDados->pc23_valor = $oValores->pc23_valor;
+
+  }
+  return $oDados;
+}
+
 
 $clpcproc          = new cl_pcproc;
 $clpcprocitem      = new cl_pcprocitem;
@@ -69,13 +95,41 @@ if(isset($forne) && $forne != "branco"){
   $imprimirbranco = "branco";
 }
 $branco=false;
-$result_pcorcamforne = $clpcorcamforne->sql_record($clpcorcamforne->sql_query_fornec(null,"distinct pc20_codorc,pc20_dtate,
-     pc20_hrate,pc20_obs,pc20_prazoentrega, pc20_validadeorcamento, pc20_cotacaoprevia, z01_nome,z01_numcgm,z01_cgccpf,z01_ender,z01_compl,z01_munic,z01_uf,z01_cep,z01_telef,z01_fax,z01_contato","","pc21_codorc=$pc20_codorc $fornecedores"));
+
+
+$sCampos = "distinct pc20_codorc,
+                     pc20_dtate,
+                     pc20_hrate,
+                     pc20_obs,
+                     pc20_prazoentrega,
+                     pc20_validadeorcamento,
+                     pc20_cotacaoprevia,
+                     z01_nome,
+                     z01_numcgm,
+                     z01_cgccpf,
+                     z01_ender,
+                     z01_compl,
+                     z01_munic,
+                     z01_uf,
+                     z01_cep,
+                     z01_telef,
+                     z01_fax,
+                     z01_contato";
+
+$sSqlPcOrcamForne =  $clpcorcamforne->sql_query_fornec(null,$sCampos,"","pc21_codorc=$pc20_codorc $fornecedores");
+$result_pcorcamforne = $clpcorcamforne->sql_record($sSqlPcOrcamForne);
 $numrows_pcorcamforne = $clpcorcamforne->numrows;
 if($numrows_pcorcamforne==0){
 	if (isset($gera_branco)&&$gera_branco==true){
-    $result_pcorcam = $clpcorcam->sql_record($clpcorcam->sql_query_file(null,"distinct pc20_dtate, pc20_hrate,
-                      pc20_obs, pc20_prazoentrega, pc20_validadeorcamento, pc20_cotacaoprevia","","pc20_codorc=$pc20_codorc"));
+
+    $sCampos = "distinct pc20_dtate,
+                         pc20_hrate,
+                         pc20_obs,
+                         pc20_prazoentrega,
+                         pc20_validadeorcamento,
+                         pc20_cotacaoprevia";
+    $sSqlpcorcam = $clpcorcam->sql_query_file(null,$sCampos,"","pc20_codorc=$pc20_codorc");
+    $result_pcorcam = $clpcorcam->sql_record($sSqlpcorcam);
     if ($clpcorcam->numrows > 0){
       db_fieldsmemory($result_pcorcam,0);
     }
@@ -86,13 +140,37 @@ if($numrows_pcorcamforne==0){
   		db_redireciona("db_erros.php?fechar=true&db_erro=Nenhum registro encontrado ou orçamento sem fornecedores!");
 	}
 }
-$result_itens = $clpcorcamitemproc->sql_record($clpcorcamitemproc->sql_query_solicitem(null,null,"distinct pc11_codigo,pc11_quant,pc01_descrmater,pc11_resum,pc11_pgto,pc11_prazo,pc81_codprocitem,pc10_numero,pc81_codproc as pc80_codproc,m61_usaquant,m61_descr,pc17_codigo,pc17_quant,pc01_servico,pc01_validademinima","pc81_codprocitem","pc22_codorc=$pc20_codorc"));
+
+$sCamposItens = "distinct pc22_codorc,
+                          pc22_orcamitem,
+                          pc11_codigo,
+                          pc11_quant,
+                          pc01_descrmater,
+                          pc11_resum,
+                          pc11_pgto,
+                          pc11_prazo,
+                          pc81_codprocitem,
+                          pc10_numero,
+                          pc81_codproc as pc80_codproc,
+                          m61_usaquant,
+                          m61_descr,
+                          pc17_codigo,
+                          pc17_quant,
+                          pc01_servico,
+                          pc01_validademinima";
+
+$sSqlItens = $clpcorcamitemproc->sql_query_solicitem(null,null,
+                                                     $sCamposItens,"pc81_codprocitem","pc22_codorc=$pc20_codorc");
+
+$result_itens = $clpcorcamitemproc->sql_record($sSqlItens );
+
 $numrows_itens= $clpcorcamitemproc->numrows;
 if($numrows_itens==0){
   db_redireciona("db_erros.php?fechar=true&db_erro=Nenhum item encontrado neste orçamento!");
 }
 
-$result_departs = $clpcorcam->sql_record($clpcorcam->sql_query_soldepto($pc20_codorc,"distinct pc10_numero as numdepart,coddepto,descrdepto"));
+$result_departs = $clpcorcam->sql_record($clpcorcam->sql_query_soldepto($pc20_codorc,
+                                                              "distinct pc10_numero as numdepart,coddepto,descrdepto"));
 $numrows_departs = $clpcorcam->numrows;
 
 $pdf = new scpdf();
@@ -127,15 +205,21 @@ for($i=0;$i<$numrows_pcorcamforne;$i++){
 	}
   db_fieldsmemory($result_itens,0);
 
-  $result_pcproc = $clpcproc->sql_record($clpcproc->sql_query($pc80_codproc,"distinct pc80_codproc,descrdepto,coddepto,pc80_data,pc80_resumo,fonedepto,emaildepto,faxdepto,ramaldepto"));
+  $sCampos = "distinct pc80_codproc,
+                       descrdepto,
+                       coddepto,
+                       pc80_data,
+                       pc80_resumo,
+                       fonedepto,
+                       emaildepto,
+                       faxdepto,
+                       ramaldepto";
+  $sSqlpcproc = $clpcproc->sql_query($pc80_codproc, $sCampos);
+  $result_pcproc = $clpcproc->sql_record($sSqlpcproc);
   if($clpcproc->numrows > 0){
     db_fieldsmemory($result_pcproc,0);
   }
 
-/*
-  die($clpcprocitemunid->sql_query(null,"pc17_codigo,m61_descr","","ere pc17_codigo in (".$clpcorcamitemsol->sql_query_pcmater(null,null,"pc11_codigo","","pc22_codorc=$pc20_codorc").") "));
-  $result_pcprocitemunid = $clpcprocitemunid->sql_record($clpcprocitemunid->sql_query(null,"pc17_codigo,m61_descr","","pc17_codigo in (".$clpcorcamitemsol->sql_query_pcmater(null,null,"pc11_codigo","","pc22_codorc=$pc20_codorc").") "));
-*/
 
   $pdf1->labdados    = "PROCESSO DE COMPRAS N";
   $pdf1->labtitulo   = "Proc. compras";
@@ -152,6 +236,7 @@ for($i=0;$i<$numrows_pcorcamforne;$i++){
   $pdf1->orchrlim    = @$pc20_hrate;
   $pdf1->orcobs      = @$pc20_obs;
   $pdf1->logo			   = $logo;
+
 
   $pdf1->orcprazo    = $pc20_prazoentrega." dias";
   if (empty($pc20_prazoentrega) || $pc20_prazoentrega == 0) {
@@ -198,6 +283,7 @@ for($i=0;$i<$numrows_pcorcamforne;$i++){
 	  $z01_telef = "";
   }
 
+  $pdf1->imprimirbranco = $imprimirbranco;
   $pdf1->nome       = @$z01_nome;
   $pdf1->numcgm     = @$z01_numcgm;
   $pdf1->cnpj       = @$z01_cgccpf;

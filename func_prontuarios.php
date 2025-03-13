@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_prontuarios_classe.php");
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory( $_POST );
+parse_str( $_SERVER["QUERY_STRING"] );
 
 $clprontuarios = new cl_prontuarios;
 $clprontuarios->rotulo->label();
@@ -51,16 +51,16 @@ $clrotulo->label("z01_v_nome");
 <table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
   <tr> 
     <td height="63" align="center" valign="top">
+      <form name="form2" method="post" action="" >
         <table width="35%" border="0" align="center" cellspacing="0">
-          <form name="form2" method="post" action="" >
-          <tr> 
+          <tr>
             <td width="4%" align="right" nowrap title="<?=$Tsd24_i_codigo?>">
               <?=$Lsd24_i_codigo?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
-                 db_input("sd24_i_codigo",11,$Isd24_i_codigo,true,"text",4,"","chave_sd24_i_codigo");
-                 ?>
+              <?php
+              db_input( "sd24_i_codigo", 11, $Isd24_i_codigo, true, "text", 4, "", "chave_sd24_i_codigo" );
+              ?>
             </td>
           </tr>
           <tr> 
@@ -68,11 +68,11 @@ $clrotulo->label("z01_v_nome");
               <?=$Lsd24_i_ano.'|'.$Lsd24_i_mes.'|'.$Lsd24_i_seq?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
-                 db_input("sd24_i_ano",4,$Isd24_i_ano,true,"text",4,"","chave_sd24_i_ano");
-                 db_input("sd24_i_mes",2,$Isd24_i_mes,true,"text",4,"","chave_sd24_i_mes");
-                 db_input("sd24_i_seq",5,$Isd24_i_seq,true,"text",4,"","chave_sd24_i_seq");
-                 ?>
+              <?php
+              db_input( "sd24_i_ano", 4, $Isd24_i_ano, true, "text", 4, "", "chave_sd24_i_ano" );
+              db_input( "sd24_i_mes", 2, $Isd24_i_mes, true, "text", 4, "", "chave_sd24_i_mes" );
+              db_input( "sd24_i_seq", 5, $Isd24_i_seq, true, "text", 4, "", "chave_sd24_i_seq" );
+              ?>
             </td>
           </tr>
 
@@ -81,9 +81,9 @@ $clrotulo->label("z01_v_nome");
               <?=$Lz01_v_nome?>
             </td>
             <td width="96%" align="left" nowrap>
-              <?
-                 db_input("z01_v_nome",40,$Iz01_v_nome,true,"text",4,"","chave_z01_v_nome");
-                 ?>
+              <?php
+              db_input( "z01_v_nome", 40, $Iz01_v_nome, true, "text", 4, "", "chave_z01_v_nome" );
+              ?>
             </td>
           </tr>
 
@@ -105,20 +105,20 @@ $clrotulo->label("z01_v_nome");
 
         if(isset($campos)==false) {
 
-           if(file_exists("funcoes/db_func_prontuarios.php")==true) {
-             include("funcoes/db_func_prontuarios.php");
-           } else {
-             $campos = "prontuarios.*";
-           }
+          if(file_exists("funcoes/db_func_prontuarios.php")==true) {
+            include(modification("funcoes/db_func_prontuarios.php"));
+          } else {
+            $campos = "prontuarios.*";
+          }
         }
 
-        $sWhere = '';
-        $sSep = '';
+        $sWhere = "sd24_c_digitada = 'N'";
+        $sSep   = ' and ';
+
         if(isset($lFiltraTfd)) {
 
-          $sSep = ' and ';
+          $sSep   = ' and ';
           $sWhere = ' sd24_i_codigo not in (select tf29_i_prontuario from tfd_prontpedidotfd) ';
-
         }
 
         if(isset($chave_sd24_i_codigo) && (trim($chave_sd24_i_codigo)!="")) {
@@ -144,7 +144,6 @@ $clrotulo->label("z01_v_nome");
                                                                           sd24_i_mes = $chave_sd24_i_mes and
                                                                           sd24_i_seq = $chave_sd24_i_seq $sSep$sWhere");
           }
-
         } else if(isset($chave_z01_v_nome) && (trim($chave_z01_v_nome)!="") ){
           
           if(isset($chave_profissional) && trim($chave_profissional) != '' && isset($chave_unidade) && !empty($chave_unidade)) {
@@ -153,48 +152,45 @@ $clrotulo->label("z01_v_nome");
           } else {
             $sql = $clprontuarios->sql_query("",$campos,"cgs_und.z01_v_nome, sd24_i_codigo","cgs_und.z01_v_nome like '$chave_z01_v_nome%' $sSep$sWhere");
           }
-          
         } else {
 
           if(isset($chave_profissional) && !empty($chave_profissional) && !isset($chave_sd24_i_ano) &&
             !isset($chave_sd24_i_mes) && !isset($chave_sd24_i_seq) && isset($chave_unidade) && !empty($chave_unidade)) {
             $sql = $clprontuarios->sql_query_faas_profissional(null,$chave_profissional,$chave_unidade,$campos,"sd24_i_codigo");
           }
-           //$sql = $clprontuarios->sql_query("",$campos,"sd24_i_codigo","");
         }
 
-        //echo "<br>$sql<br>";
         $repassa = array();
         if(isset($chave_sd24_i_codigo)) {
-          $repassa = array("chave_sd24_i_codigo"=>$chave_sd24_i_codigo,"chave_sd24_i_codigo"=>$chave_sd24_i_codigo);
+          $repassa = array( "chave_sd24_i_codigo" => $chave_sd24_i_codigo, "chave_sd24_i_codigo" => $chave_sd24_i_codigo );
         }
 
         if(isset($nao_mostra)) {
           
-          $sSep = '';
+          $sSep    = '';
           $aFuncao = explode('|', $funcao_js);
+          $rs      = $clprontuarios->sql_record($sql);
 
-          $rs = $clprontuarios->sql_record($sql);
            if($clprontuarios->numrows == 0) {
 	           die('<script>'.$aFuncao[0]."('','Chave(".$chave_sd24_i_codigo.") não Encontrado');</script>");
            } else {
             
              db_fieldsmemory($rs, 0);
              $sFuncao = $aFuncao[0].'(';
-             for($iCont = 1; $iCont < count($aFuncao); $iCont++) {
-               $sFuncao .= $sSep.'"'.eval('return @$'.$aFuncao[$iCont].';').'"';
-               $sSep = ', ';
 
+             for($iCont = 1; $iCont < count($aFuncao); $iCont++) {
+
+               $sFuncao .= $sSep.'"'.eval('return @$'.$aFuncao[$iCont].';').'"';
+               $sSep     = ', ';
              }
-             $sFuncao = substr($sFuncao, 0, strlen($sFuncao));
+
+             $sFuncao  = substr($sFuncao, 0, strlen($sFuncao));
              $sFuncao .= ');';
              die('<script>'.$sFuncao.'</script>');
-
           }
         }
 
         db_lovrot(@$sql,15,"()","",$funcao_js,"","NoMe",$repassa);
-
       } else {
 
         if($pesquisa_chave!=null && $pesquisa_chave!="") {
@@ -210,15 +206,12 @@ $clrotulo->label("z01_v_nome");
 
             db_fieldsmemory($result,0);
             echo "<script>".$funcao_js."('$z01_v_nome',false);</script>";
-
           } else {
-              echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
+            echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
           }
-          
         } else {
-            echo "<script>".$funcao_js."('',false);</script>";
+          echo "<script>".$funcao_js."('',false);</script>";
         }
-
       }
       ?>
      </td>
@@ -226,14 +219,12 @@ $clrotulo->label("z01_v_nome");
 </table>
 </body>
 </html>
-<?
-if(!isset($pesquisa_chave)){
-  ?>
-  <script>
-  </script>
-  <?
-}
-?>
 <script>
 js_tabulacaoforms("form2","chave_sd24_i_codigo",true,1,"chave_sd24_i_codigo",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

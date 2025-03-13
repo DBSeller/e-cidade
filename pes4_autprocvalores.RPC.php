@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_rhautonomolanc_classe.php");
+require_once(modification("classes/db_rhautonomolanc_classe.php"));
 $clRHAutonomoLanc = new cl_rhautonomolanc(); 
 
-require_once("classes/db_rhsefiprhautonomolanc_classe.php");
+require_once(modification("classes/db_rhsefiprhautonomolanc_classe.php"));
 $clRHSefipRHAutonomoLanc = new cl_rhsefiprhautonomolanc(); 
 
-require_once("classes/db_rhsefip_classe.php");
+require_once(modification("classes/db_rhsefip_classe.php"));
 $clRHSefip = new cl_rhsefip();
 
-require_once("classes/db_rhsefipcancela_classe.php");
+require_once(modification("classes/db_rhsefipcancela_classe.php"));
 $clRHSefipCancela = new cl_rhsefipcancela();
 
 
@@ -178,7 +178,7 @@ try {
     $sSqlConsultaAutonomos .= "          configurado  																																																	 ";
  		
     $rsListaAutonomos       = db_query($sSqlConsultaAutonomos);
-    $aListaAutonomos        = db_utils::getColectionByRecord($rsListaAutonomos,false,false,true);
+    $aListaAutonomos        = db_utils::getCollectionByRecord($rsListaAutonomos,false,false,true);
 
 	  $oRetorno->aListaAutonomos = $aListaAutonomos;
 	  $oRetorno->lAlteraCgm      = $lAlteraCgm;  		

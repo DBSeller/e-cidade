@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,7 +24,7 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-
+ 
 //MODULO: escola
 //CLASSE DA ENTIDADE progressaoparcialalunomatricula
 class cl_progressaoparcialalunomatricula { 
@@ -446,6 +446,43 @@ class cl_progressaoparcialalunomatricula {
        $sql .= $campos;
      }
      $sql .= " from progressaoparcialalunomatricula ";
+     $sql2 = "";
+     if($dbwhere==""){
+       if($ed150_sequencial!=null ){
+         $sql2 .= " where progressaoparcialalunomatricula.ed150_sequencial = $ed150_sequencial "; 
+       } 
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
+
+   function sql_query_turma_regencia ( $ed150_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+     $sql = "select ";
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from progressaoparcialalunomatricula ";
+     $sql .= " inner join progressaoparcialalunoturmaregencia on progressaoparcialalunoturmaregencia.ed115_progressaoparcialalunomatricula = progressaoparcialalunomatricula.ed150_sequencial";
+     $sql .= " inner join regencia on regencia.ed59_i_codigo = progressaoparcialalunoturmaregencia.ed115_regencia";
+     
      $sql2 = "";
      if($dbwhere==""){
        if($ed150_sequencial!=null ){

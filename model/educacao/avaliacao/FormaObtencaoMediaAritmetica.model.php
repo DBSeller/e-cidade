@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,24 +31,24 @@
  * @package educacao
  * @subpackage avaliacao
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.14 $
  */
-require_once("model/educacao/avaliacao/FormaObtencao.model.php");
-require_once("model/educacao/avaliacao/iFormaObtencao.interface.php");
+require_once(modification("model/educacao/avaliacao/FormaObtencao.model.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
 class FormaObtencaoMediaAritmetica extends FormaObtencao implements IFormaObtencao {
-
 
   /**
    * Define as notas que ira ser usaddo no calculo
    * Deverá ser instancias de AvaliacaoAproveitamento
-   * @see IFormaObtencao::processarResultado()
    * @param array $aAproveitamentos
+   * @param integer $iAno
+   * @return ValorAproveitamentoNota
    */
-  public function processarResultado($aAproveitamentos) {
+  public function processarResultado($aAproveitamentos, $iAno) {
 
     $mAproveitamento = "";
     $iTotalPeriodos  = 0;
-    $aNotasPeriodos  = $this->getElementosParaCalculo($aAproveitamentos);
+    $aNotasPeriodos  = $this->getElementosParaCalculo( $aAproveitamentos, $iAno );
     $aElementos      = $this->getResultadoAvaliacao()->getElementosComposicaoResultado();
 
     /**
@@ -60,6 +60,7 @@ class FormaObtencaoMediaAritmetica extends FormaObtencao implements IFormaObtenc
       if ($oNotaDoAproveitamento->isAmparado()) {
         continue;
       }
+
       $oElemento              = $aElementos[$oNotaDoAproveitamento->getOrdemSequencia()];
       $nAproveitamentoPeriodo = $oNotaDoAproveitamento->getValorAproveitamento()->getAproveitamento();
 
@@ -78,15 +79,20 @@ class FormaObtencaoMediaAritmetica extends FormaObtencao implements IFormaObtenc
     }
     
     if ($iTotalPeriodos > 0) {
-      $mAproveitamento = $mAproveitamento / $iTotalPeriodos;
+      $mAproveitamento = ArredondamentoNota::arredondar( $mAproveitamento / $iTotalPeriodos, $iAno );
     }
+
+    /**
+     * Devolvemos as notas Originais
+     */
+    $this->acertaNotasSubstituidasParaCalculo($aNotasPeriodos);
     return new ValorAproveitamentoNota($mAproveitamento);
   }
 
   /**
    * Calcula a nota projetada
-   * @param AvaliacaoAproveitamento[] $aAvaliacaoAproveitamento
-   * @return string
+   * @param array $aElementosAvaliacoes
+   * @return AvaliacaoAproveitamento[] $aAvaliacaoAproveitamento
    */
   public function calcularNotaProjetada(array $aElementosAvaliacoes) {
 

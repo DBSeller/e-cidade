@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("std/db_stdClass.php");
-require("libs/db_utils.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcsuplem_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcsuplemtipo_classe.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_orcprojeto_classe.php");
-include("classes/db_orcreservasup_classe.php");
-include("classes/db_orcreserva_classe.php");
-include("classes/db_orcsuplemrec_classe.php");
-include("classes/db_orcsuplemval_classe.php");
-include("classes/db_orcsuplementacaoparametro_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcsuplem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcsuplemtipo_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_orcprojeto_classe.php"));
+include(modification("classes/db_orcreservasup_classe.php"));
+include(modification("classes/db_orcreserva_classe.php"));
+include(modification("classes/db_orcsuplemrec_classe.php"));
+include(modification("classes/db_orcsuplemval_classe.php"));
+include(modification("classes/db_orcsuplementacaoparametro_classe.php"));
 db_app::import("orcamento.suplementacao.*");
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -162,10 +162,10 @@ if (isset($chavepesquisa) && $chavepesquisa !="") {
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
 function js_incluir(projeto,tiposup){
-  js_OpenJanelaIframe('top.corpo','db_iframe_suplementacao','orc1_orcsuplem008.php?projeto='+projeto+'&tiposup='+tiposup,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_suplementacao','orc1_orcsuplem008.php?projeto='+projeto+'&tiposup='+tiposup,'Pesquisa',true);
 }  
 function js_alterar(projeto,codsup){
-  js_OpenJanelaIframe('top.corpo','db_iframe_suplementacao','orc1_orcsuplem008.php?projeto='+projeto+'&codsup='+codsup,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_suplementacao','orc1_orcsuplem008.php?projeto='+projeto+'&codsup='+codsup,'Pesquisa',true);
   db_iframe_suplementacao.liberarJanBTFechar(false) ;
 } 
 function js_excluir(projeto,codsup){ 
@@ -183,7 +183,7 @@ function js_fechar(){
 }  
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcprojeto','func_orcprojeto001.php?funcao_js=parent.js_preenchepesquisa|o39_codproj','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcprojeto','func_orcprojeto001.php?funcao_js=parent.js_preenchepesquisa|o39_codproj','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave){
@@ -303,16 +303,31 @@ function js_preenchepesquisa(chave){
   </tr>
   <?
    // se projeto processado, botoes alterar e excluir são bloqueados
-   // se o51_codproj = processado 
+   // se o51_codproj = processado
+   //$sWhere =
    if (!isset($o39_codproj)){ 
      $o39_codproj='null';
    };
-   $res = $clorcsuplem->sql_record($clorcsuplem->sql_query(null,"*","o46_codsup","orcprojeto.o39_codproj= $o39_codproj" ));
+
+    $sCampos = "*";
+    $sWhere = "orcprojeto.o39_codproj= $o39_codproj";
+   /** [Extensao FiltroDespesa] - Modificacao 1*/
+
+   $sSqlSuplementacoes = $clorcsuplem->sql_query(null, "{$sCampos}","o46_codsup", $sWhere);
+   $oDaoOrcSuplemVal = new cl_orcsuplemval();
+   $res = $clorcsuplem->sql_record($sSqlSuplementacoes);
    if ($clorcsuplem->numrows > 0){
-      $op = '';
-      for ($x=0;$x < $clorcsuplem->numrows;$x++){
-         db_fieldsmemory($res,$x,true);
-	 $op = '';
+
+     $op = '';
+     for ($x=0;$x < $clorcsuplem->numrows;$x++){
+
+	     $op = '';
+
+       db_fieldsmemory($res,$x,true);
+
+       /** [Extensao FiltroDespesa] - Modificacao 2*/
+
+
 	 ?>
          <tr style="background-color:white;height:15px"> 
 	  <td><?=$o46_codsup ?></td>
@@ -322,7 +337,7 @@ function js_preenchepesquisa(chave){
           <td><?=$o49_data ?></td>
           <td><?=$nome ?></td>
           <?
-	    if ($o49_data!='') {
+	    if ($o49_data !='') {
 	       $op='disabled';
 	    }  
 	  ?>
@@ -345,7 +360,7 @@ function js_preenchepesquisa(chave){
 
 
  <?
-  // include("forms/db_frmorcsuplem.php");
+  // include(modification("forms/db_frmorcsuplem.php"));
   ?>
 </td>
 </tr>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -182,7 +182,7 @@ select
 ) as x
 ";
 //echo $sql1_fps;exit;
-$result1_fps = pg_exec($sql1_fps);
+$result1_fps = db_query($sql1_fps);
 //db_criatabela($result1_fps);
 db_fieldsmemory($result1_fps,0);
 
@@ -199,7 +199,7 @@ group by rh27_descr, rh27_rubric
 order by rh27_rubric
 ";
 
-$result2_fps = pg_exec($sql2_fps);
+$result2_fps = db_query($sql2_fps);
 //db_criatabela($result2_fps);exit;
 if(pg_numrows($result2_fps) > 0){
   db_fieldsmemory($result2_fps,0);
@@ -397,7 +397,7 @@ select
 ) as x
 ";
 
-$result1_outras = pg_exec($sql1_outras);
+$result1_outras = db_query($sql1_outras);
 //db_criatabela($result1_outras);
 db_fieldsmemory($result1_outras,0);
 
@@ -483,7 +483,7 @@ select
 ) as x
 ";
 
-$result2_outras = pg_exec($sql2_outras);
+$result2_outras = db_query($sql2_outras);
 //db_criatabela($result2_outras);exit;
 db_fieldsmemory($result2_outras,0);
 
@@ -569,7 +569,7 @@ select
 ) as x
 ";
 
-$result3_outras = pg_exec($sql3_outras);
+$result3_outras = db_query($sql3_outras);
 //db_criatabela($result3_outras);
 db_fieldsmemory($result3_outras,0);
 
@@ -590,7 +590,7 @@ order by rh27_rubric
 "; 
 
 //echo $sql;exit;
-$result4_outras = pg_exec($sql4_outras);
+$result4_outras = db_query($sql4_outras);
 //db_criatabela($result4_outras);exit;
 $xxnum = pg_numrows($result4_outras);
 if($result4_outras == false){
@@ -867,7 +867,7 @@ select
        rh56_localtrab <> 9 
 ) as x
 ";
-$result1_edu_pma = pg_exec($sql1_edu_pma);
+$result1_edu_pma = db_query($sql1_edu_pma);
 //db_criatabela($result1_edu_pma);
 db_fieldsmemory($result1_edu_pma,0);
 
@@ -883,7 +883,7 @@ group by rh27_descr, rh27_rubric
 order by rh27_rubric
 
 ";
-$result2_edu_pma = pg_exec($sql2_edu_pma);
+$result2_edu_pma = db_query($sql2_edu_pma);
 //db_criatabela($result2_edu_pma);exit;
 db_fieldsmemory($result2_edu_pma,0);
 
@@ -1073,7 +1073,7 @@ select
  where rh56_localtrab = 4 
 ) as x
 ";
-$result1_saude = pg_exec($sql1_saude);
+$result1_saude = db_query($sql1_saude);
 //db_criatabela($result1_saude);
 db_fieldsmemory($result1_saude,0);
 
@@ -1161,7 +1161,7 @@ select
        o40_orgao      = 9     
 ) as x
 ";
-$result2_saude = pg_exec($sql2_saude);
+$result2_saude = db_query($sql2_saude);
 //db_criatabela($result2_saude);
 db_fieldsmemory($result2_saude,0);
 
@@ -1179,7 +1179,7 @@ select rh27_descr, rh27_rubric, round(sum(r14_valor),2) as valor
 group by rh27_descr, rh27_rubric
 order by rh27_rubric
 ";            
-$result3_saude = pg_exec($sql3_saude);
+$result3_saude = db_query($sql3_saude);
 //db_criatabela($result3_saude);exit;
 
 $pdf->addpage();
@@ -1416,7 +1416,7 @@ group by rh01_clas1
 order by rh01_clas1
 ) as x
 ";
-$result1_fundeb = pg_exec($sql1_fundeb);
+$result1_fundeb = db_query($sql1_fundeb);
 //db_criatabela($result1_fundeb);
 
 
@@ -1433,7 +1433,7 @@ group by rh27_descr, rh27_rubric
 order by rh27_rubric
 ";
 
-$result2_fundeb = pg_exec($sql2_fundeb);
+$result2_fundeb = db_query($sql2_fundeb);
 //db_criatabela($result2_fundeb);
 
 
@@ -1653,7 +1653,7 @@ order by rh55_descr
 ) as x
 
 ";
-$result1_conv = pg_exec($sql1_conv);
+$result1_conv = db_query($sql1_conv);
 //db_criatabela($result1_conv);exit;
 
 $pdf->addpage();

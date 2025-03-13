@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
-include("classes/db_orcimpactoval_classe.php");
-include("classes/db_orcimpactovalele_classe.php");
-include("classes/db_orcimpactotiporec_classe.php");
-include("classes/db_orcimpacto_classe.php");
-include("classes/db_orcelemento_classe.php");
+include(modification("classes/db_orcimpactoval_classe.php"));
+include(modification("classes/db_orcimpactovalele_classe.php"));
+include(modification("classes/db_orcimpactotiporec_classe.php"));
+include(modification("classes/db_orcimpacto_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -403,7 +403,7 @@ if(isset($incluir)){
 if(isset($opcao) && $opcao=="alterar"){
     echo "      
         <script> 
-           top.corpo.iframe_orcimpactovalmes.location.href='orc1_orcimpactovalmes001.php?o91_proces=$o91_proces&o92_codimp=".$o91_codimp."';
+           (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactovalmes.location.href='orc1_orcimpactovalmes001.php?o91_proces=$o91_proces&o92_codimp=".$o91_codimp."';
            parent.document.formaba.orcimpactovalmes.disabled=false;";
     if(isset($tavaincluindo)){
       echo " \nparent.mo_camada('orcimpactovalmes');\n";
@@ -433,7 +433,7 @@ if(isset($opcao) && $opcao=="alterar"){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcimpactoval.php");
+	include(modification("forms/db_frmorcimpactoval.php"));
 	?>
     </center>
 	</td>

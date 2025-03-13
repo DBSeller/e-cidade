@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -110,7 +110,7 @@ function js_confirma(){
 </script>
 <?
 if($db_opcao == 2 || $db_opcao == 3){
-  include("prot1_cadastrocgm.php");
+  include(modification("prot1_cadastrocgm.php"));
   exit;
 }
 
@@ -161,7 +161,7 @@ if( (isset($cnpj) && trim($cnpj)!="") || (isset($cpf) && trim($cpf)!="") ){
 	 exit;
     }
   }
-include("prot1_cadastrocgm.php");
+include(modification("prot1_cadastrocgm.php"));
 exit;
 }
 
@@ -233,7 +233,7 @@ onLoad = document.form1.cpf.focus();
 if(isset($mostradadoscgm)){
 echo "
       <script>
-        js_OpenJanelaIframe('top.corpo','db_janela_Cgm','prot3_conscgm002.php?fechar=top.corpo.db_janela_Cgm&numcgm=$z01_numcgm&executalocation=prot1_cadcgm001.php','Consulta CGM - $z01_numcgm',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_janela_Cgm','prot3_conscgm002.php?fechar=parent.CurrentWindow.corpo.db_janela_Cgm&numcgm=$z01_numcgm&executalocation=prot1_cadcgm001.php','Consulta CGM - $z01_numcgm',true);
         db_janela_Cgm.liberarJanBTFechar(false);
         db_janela_Cgm.liberarJanBTMinimizar(false);
       </script>

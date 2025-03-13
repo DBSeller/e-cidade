@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/Taxa.model.php");
+require_once(modification("model/Taxa.model.php"));
 db_app::import('exceptions.*');
 
 /**
@@ -35,8 +35,8 @@ db_app::import('exceptions.*');
  * @author   Rafael Serpa Nery                 - rafael.nery@dbseller.com.br
  * @author   Jeferson Rodrigo Prudente Belmiro - jeferson.belmiro@dbseller.com.br
  * @package  Jurídico
- * @revision $Author: dbalberto $
- * @version  $Revision: 1.12 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version  $Revision: 1.15 $
  *
  */
 class ProcessoForo {

@@ -1,1437 +1,1586 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ('libs/db_stdlib.php');
-require_once ('libs/db_utils.php');
-require_once ('libs/db_app.utils.php');
-require_once ('libs/db_conecta.php');
-require_once ('libs/db_sessoes.php');
-require_once ('libs/JSON.php');
-require_once ('dbforms/db_funcoes.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_app.utils.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/JSON.php'));
+require_once(modification('dbforms/db_funcoes.php'));
 
 db_app::import("exceptions.*");
 
 $iModulo = db_getsession("DB_modulo");
-function formataData($dData, $iTipo = 1) {
+function formataData($dData, $iTipo = 1)
+{
 
-  if (empty($dData)) {
-    return '';
-  }
+    if (empty($dData)) {
+        return '';
+    }
 
-  if ($iTipo == 1) {
+    if ($iTipo == 1) {
 
-    $dData = explode('/', $dData);
-    $dData = $dData[2].'-'.$dData[1].'-'.$dData[0];
+        $dData = explode('/', $dData);
+        $dData = $dData[2] . '-' . $dData[1] . '-' . $dData[0];
+
+        return $dData;
+
+    }
+
+    $dData = explode('-', $dData);
+    $dData = @$dData[2] . '/' . @$dData[1] . '/' . @$dData[0];
 
     return $dData;
 
-  }
-
- $dData = explode('-', $dData);
- $dData = @$dData[2].'/'.@$dData[1].'/'.@$dData[0];
-
- return $dData;
-
 }
 
-$oJson              = new services_json();
-$oParam             = $oJson->decode(str_replace("\\", "", $_POST["json"]));
-$oRetorno           = new stdClass();
-$oRetorno->iStatus  = 1;
+$oJson = new services_json();
+$oParam = $oJson->decode(str_replace("\\", "", $_POST["json"]));
+$oRetorno = new stdClass();
+$oRetorno->iStatus = 1;
 $oRetorno->sMessage = '';
-$iModuloEscola      = 1100747;
-$iEscola            = db_getsession("DB_coddepto");
+$oRetorno->erro = false;
+$iModuloEscola = 1100747;
+$iEscola = db_getsession("DB_coddepto");
 
 if ($oParam->exec == 'getDadosUltimaMatriculaAluno') {
 
-  $oDaoMatricula  = db_utils::getdao('matricula');
+    $oDaoMatricula = db_utils::getdao('matricula');
 
-  if (isset($oParam->iAluno)) {
+    if (isset($oParam->iAluno)) {
 
-    $sCampos   = " ed60_i_codigo,ed11_c_descr,ed57_c_descr,ed57_i_base,ed57_i_calendario,ed60_c_situacao, ";
-    $sCampos  .= " ed60_c_concluida,ed60_d_datamatricula,ed60_d_datamodif,ed52_c_descr,ed52_d_inicio,ed52_d_fim, ";
-    $sCampos  .= " ed57_i_codigo ";
+        $sCampos = " ed60_i_codigo,ed11_c_descr,ed57_c_descr,ed57_i_base,ed57_i_calendario,ed60_c_situacao, ";
+        $sCampos .= " ed60_c_concluida,ed60_d_datamatricula,ed60_d_datamodif,ed52_c_descr,ed52_d_inicio,ed52_d_fim, ";
+        $sCampos .= " ed57_i_codigo ";
 
-    $sWhere    = " ed60_i_aluno = ".$oParam->iAluno." and ed221_c_origem = 'S' ";
+        $sWhere = " ed60_i_aluno = " . $oParam->iAluno . " and ed221_c_origem = 'S' ";
 
-    if (isset($oParam->iEscola)) {
+        if (isset($oParam->iEscola)) {
 
-      $sWhere .= " and ed57_i_escola = ".$oParam->iEscola;
+            $sWhere .= " and ed57_i_escola = " . $oParam->iEscola;
+
+        }
+
+        $sSqlQuery = $oDaoMatricula->sql_query_transferenciarede("",
+            $sCampos,
+            "ed60_i_codigo desc limit 1",
+            $sWhere
+        );
+        $rsResultMatricula = $oDaoMatricula->sql_record($sSqlQuery);
+
+        if ($oDaoMatricula->numrows > 0) {
+
+            $oDadosMatricula = db_utils::fieldsmemory($rsResultMatricula, 0);
+
+            $oRetorno->ed60_i_codigo = $oDadosMatricula->ed60_i_codigo;
+            $oRetorno->ed11_c_descr = urlencode($oDadosMatricula->ed11_c_descr);
+            $oRetorno->ed57_i_codigo = $oDadosMatricula->ed57_i_codigo;
+            $oRetorno->ed57_c_descr = urlencode($oDadosMatricula->ed57_c_descr);
+            $oRetorno->ed57_i_base = $oDadosMatricula->ed57_i_base;
+            $oRetorno->ed57_i_calendario = $oDadosMatricula->ed57_i_calendario;
+            $oRetorno->ed60_c_situacao = urlencode($oDadosMatricula->ed60_c_situacao);
+            $oRetorno->ed60_c_concluida = urlencode($oDadosMatricula->ed60_c_concluida);
+            $oRetorno->ed60_d_datamatricula = formataData($oDadosMatricula->ed60_d_datamatricula, 0);
+            $oRetorno->ed60_d_datamodif = formataData($oDadosMatricula->ed60_d_datamodif, 0);
+            $oRetorno->ed52_c_descr = urlencode($oDadosMatricula->ed52_c_descr);
+            $oRetorno->ed52_d_inicio = formataData($oDadosMatricula->ed52_d_inicio, 0);
+            $oRetorno->ed52_d_fim = formataData($oDadosMatricula->ed52_d_fim, 0);
+
+        } else { //Se não encontrou nenhuma matricula para o aluno
+
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar nenhuma matrícula para o aluno: " .
+                $oParam->iAluno . "!");
+
+        }
+
+    } else { //Se não exitir o parametro iAluno
+
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos dados da matricula do aluno!");
 
     }
-
-    $sSqlQuery = $oDaoMatricula->sql_query_transferenciarede("",
-                                                             $sCampos,
-                                                             "ed60_i_codigo desc limit 1",
-                                                             $sWhere
-                                                            );
-    $rsResultMatricula = $oDaoMatricula->sql_record($sSqlQuery);
-
-    if ($oDaoMatricula->numrows > 0) {
-
-      $oDadosMatricula                = db_utils::fieldsmemory($rsResultMatricula, 0);
-
-      $oRetorno->ed60_i_codigo        = $oDadosMatricula->ed60_i_codigo;
-      $oRetorno->ed11_c_descr         = urlencode($oDadosMatricula->ed11_c_descr);
-      $oRetorno->ed57_i_codigo        = $oDadosMatricula->ed57_i_codigo;
-      $oRetorno->ed57_c_descr         = urlencode($oDadosMatricula->ed57_c_descr);
-      $oRetorno->ed57_i_base          = $oDadosMatricula->ed57_i_base;
-      $oRetorno->ed57_i_calendario    = $oDadosMatricula->ed57_i_calendario;
-      $oRetorno->ed60_c_situacao      = urlencode($oDadosMatricula->ed60_c_situacao);
-      $oRetorno->ed60_c_concluida     = urlencode($oDadosMatricula->ed60_c_concluida);
-      $oRetorno->ed60_d_datamatricula = formataData($oDadosMatricula->ed60_d_datamatricula, 0);
-      $oRetorno->ed60_d_datamodif     = formataData($oDadosMatricula->ed60_d_datamodif, 0);
-      $oRetorno->ed52_c_descr         = urlencode($oDadosMatricula->ed52_c_descr);
-      $oRetorno->ed52_d_inicio        = formataData($oDadosMatricula->ed52_d_inicio, 0);
-      $oRetorno->ed52_d_fim           = formataData($oDadosMatricula->ed52_d_fim, 0);
-
-    } else { //Se não encontrou nenhuma matricula para o aluno
-
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar nenhuma matrícula para o aluno: ".
-                                      $oParam->iAluno."!");
-
-    }
-
-  } else { //Se não exitir o parametro iAluno
-
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos dados da matricula do aluno!");
-
-  }
 
 } elseif ($oParam->exec == 'getEscolaForaTransferencia') {
 
-  if (isset($oParam->iEscola)) {
+    if (isset($oParam->iEscola)) {
 
-    $oDaoEscolaProc = db_utils::getdao('escolaproc');
-    $sSqlEscolaProc = $oDaoEscolaProc->sql_query("", "*", "", " ed82_i_codigo = ".$oParam->iEscola);
-    $rsResult       = $oDaoEscolaProc->sql_record($sSqlEscolaProc);
+        $oDaoEscolaProc = db_utils::getdao('escolaproc');
+        $sSqlEscolaProc = $oDaoEscolaProc->sql_query("", "*", "", " ed82_i_codigo = " . $oParam->iEscola);
+        $rsResult = $oDaoEscolaProc->sql_record($sSqlEscolaProc);
 
-    if ($oDaoEscolaProc->numrows > 0) {
+        if ($oDaoEscolaProc->numrows > 0) {
 
-      $oRetorno->lAchou = true;
+            $oRetorno->lAchou = true;
 
-    } else {
+        } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar a escola de destino.");
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar a escola de destino.");
+
+        }
+
+    } else { //Se não existir o parametro iEscola
+
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca da escola de destino da transferência!");
 
     }
-
-  } else { //Se não existir o parametro iEscola
-
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca da escola de destino da transferência!");
-
-  }
 
 } elseif ($oParam->exec == 'getCartorioMatricula') {
 
-  if (isset($oParam->iCartorio)) {
+    if (isset($oParam->iCartorio)) {
 
-    $oDaoCensoCartorio = db_utils::getdao('censocartorio');
+        $oDaoCensoCartorio = db_utils::getdao('censocartorio');
 
-    $sWhere            = " ed291_i_serventia = ".$oParam->iCartorio;
+        $sWhere = " ed291_i_serventia = " . $oParam->iCartorio;
 
-    $sSql              = $oDaoCensoCartorio->sql_query("", "*", "", $sWhere);
-    $rsResultCartorio  = $oDaoCensoCartorio->sql_record($sSql);
+        $sSql = $oDaoCensoCartorio->sql_query("", "*", "", $sWhere);
+        $rsResultCartorio = $oDaoCensoCartorio->sql_record($sSql);
 
-    if ($oDaoCensoCartorio->numrows > 0) {
+        if ($oDaoCensoCartorio->numrows > 0) {
 
-      $oDadosCartorio = db_utils::fieldsmemory($rsResultCartorio, 0);
+            $oDadosCartorio = db_utils::fieldsmemory($rsResultCartorio, 0);
 
-      $oRetorno->ed291_i_codigo     = $oDadosCartorio->ed291_i_codigo;
-      $oRetorno->ed291_c_nome       = urlencode($oDadosCartorio->ed291_c_nome);
-      $oRetorno->ed291_i_serventia  = $oDadosCartorio->ed291_i_serventia;
-      $oRetorno->ed291_i_censomunic = $oDadosCartorio->ed291_i_censomunic;
 
-      $oDaoCensoMunic               = db_utils::getdao('censomunic');
-      $sSqlCensoMunic               = $oDaoCensoMunic->sql_query("",
-                                                                 "*",
-                                                                 "",
-                                                                 "ed261_i_codigo = ".$oRetorno->ed291_i_censomunic
-                                                                );
-      $rsResultCensoMunic           = $oDaoCensoMunic->sql_record($sSqlCensoMunic);
+            $oRetorno->ed291_i_codigo = $oDadosCartorio->ed291_i_codigo;
+            $oRetorno->ed291_c_nome = urlencode($oDadosCartorio->ed291_c_nome);
+            $oRetorno->ed291_i_serventia = $oDadosCartorio->ed291_i_serventia;
+            $oRetorno->ed291_i_censomunic = $oDadosCartorio->ed291_i_censomunic;
 
-      if ($oDaoCensoMunic->numrows > 0) {
+            $oDaoCensoMunic = db_utils::getdao('censomunic');
+            $sSqlCensoMunic = $oDaoCensoMunic->sql_query("",
+                "*",
+                "",
+                "ed261_i_codigo = " . $oRetorno->ed291_i_censomunic
+            );
+            $rsResultCensoMunic = $oDaoCensoMunic->sql_record($sSqlCensoMunic);
 
-        $oDadosMunicipio          = db_utils::fieldsmemory($rsResultCensoMunic, 0);
+            if ($oDaoCensoMunic->numrows > 0) {
 
-        $oRetorno->ed261_i_codigo = $oDadosMunicipio->ed261_i_codigo;
-        $oRetorno->ed261_c_nome   = urlencode($oDadosMunicipio->ed261_c_nome);
+                $oDadosMunicipio = db_utils::fieldsmemory($rsResultCensoMunic, 0);
 
-        $oDaoCensoUf              = db_utils::getdao('censouf');
-        $sSqlCensoUf              = $oDaoCensoUf->sql_query("",
-                                                            "*",
-                                                            "",
-                                                            " ed260_i_codigo = ".$oDadosMunicipio->ed261_i_censouf
-                                                           );
-        $rsResultCensoUf          = $oDaoCensoUf->sql_record($sSqlCensoUf);
+                $oRetorno->ed261_i_codigo = $oDadosMunicipio->ed261_i_codigo;
+                $oRetorno->ed261_c_nome = urlencode($oDadosMunicipio->ed261_c_nome);
 
-        if ($oDaoCensoUf->numrows > 0) {
+                $oDaoCensoUf = db_utils::getdao('censouf');
+                $sSqlCensoUf = $oDaoCensoUf->sql_query("",
+                    "*",
+                    "",
+                    " ed260_i_codigo = " . $oDadosMunicipio->ed261_i_censouf
+                );
+                $rsResultCensoUf = $oDaoCensoUf->sql_record($sSqlCensoUf);
 
-          $oDadosUf = db_utils::fieldsmemory($rsResultCensoUf, 0);
+                if ($oDaoCensoUf->numrows > 0) {
 
-          $oRetorno->ed260_i_codigo = $oDadosUf->ed260_i_codigo;
-          $oRetorno->ed260_c_sigla  = urlencode($oDadosUf->ed260_c_sigla);
-          $oRetorno->ed260_c_nome   = urlencode($oDadosUf->ed260_c_nome);
+                    $oDadosUf = db_utils::fieldsmemory($rsResultCensoUf, 0);
 
-        } else { //Se não encontrar o UF do cartorio
-          $oRetorno->iStatus  = 0;
-          $oRetorno->sMessage = urlencode("Não foi possível localizar a UF do cartório!");
+                    $oRetorno->ed260_i_codigo = $oDadosUf->ed260_i_codigo;
+                    $oRetorno->ed260_c_sigla = urlencode($oDadosUf->ed260_c_sigla);
+                    $oRetorno->ed260_c_nome = urlencode($oDadosUf->ed260_c_nome);
+
+                } else { //Se não encontrar o UF do cartorio
+                    $oRetorno->iStatus = 0;
+                    $oRetorno->sMessage = urlencode("Não foi possível localizar a UF do cartório!");
+                }
+
+            } else { //Se não encontrou o municipio do cartorio
+                $oRetorno->iStatus = 0;
+                $oRetorno->sMessage = urlencode("Não foi possível localizar o município do cartório!");
+            }
+
+        } else { //Se não encontrou nenhum cartório com esta serventia
+            $oRetorno->iStatus = 3;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar nenhum cartório com o código: " .
+                $oParam->iCartorio);
         }
 
-      } else { //Se não encontrou o municipio do cartorio
-        $oRetorno->iStatus  = 0;
-        $oRetorno->sMessage = urlencode("Não foi possível localizar o município do cartório!");
-      }
-
-    } else { //Se não encontrou nenhum cartório com esta serventia
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar nenhum cartório com o código: ".
-                                      $oParam->iCartorio);
+    } else { //Se não existir o parametro iCartorio
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos dados do cartório!");
     }
 
-  } else { //Se não existir o parametro iCartorio
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos dados do cartório!");
-  }
 
 } elseif ($oParam->exec == "getUFs") {
 
-  $oDaoCensoUf = db_utils::getdao('censouf');
+    $oDaoCensoUf = db_utils::getdao('censouf');
 
-  $sSqlUf               = $oDaoCensoUf->sql_query_file("", "ed260_i_codigo,ed260_c_nome", "ed260_c_nome");
-  $rsResultUf           = $oDaoCensoUf->sql_record($sSqlUf);
+    $sSqlUf = $oDaoCensoUf->sql_query_file("", "ed260_i_codigo,ed260_c_nome", "ed260_c_nome");
+    $rsResultUf = $oDaoCensoUf->sql_record($sSqlUf);
 
-  $oRetorno->aResultado = db_utils::getCollectionByRecord($rsResultUf, false, false, true);
+    $oRetorno->aResultado = db_utils::getCollectionByRecord($rsResultUf, false, false, true);
 
 } elseif ($oParam->exec == "getMatriculaAluno") {
 
-  if (isset($oParam->iAluno)) {
+    if (isset($oParam->iAluno)) {
 
-    $oDaoAluno = db_utils::getdao('aluno');
+        $oDaoAluno = db_utils::getdao('aluno');
 
-    $sSql      = $oDaoAluno->sql_query("", "ed47_certidaomatricula", "", " ed47_i_codigo = ".$oParam->iAluno);
-    $rsResult  = $oDaoAluno->sql_record($sSql);
+        $sSql = $oDaoAluno->sql_query("", "ed47_certidaomatricula", "", " ed47_i_codigo = " . $oParam->iAluno);
+        $rsResult = $oDaoAluno->sql_record($sSql);
 
-    if ($oDaoAluno->numrows > 0) {
+        if ($oDaoAluno->numrows > 0) {
 
-      $oDadosAluno                      = db_utils::fieldsmemory($rsResult, 0);
-      $oRetorno->ed47_certidaomatricula = $oDadosAluno->ed47_certidaomatricula;
+            $oDadosAluno = db_utils::fieldsmemory($rsResult, 0);
+            $oRetorno->ed47_certidaomatricula = $oDadosAluno->ed47_certidaomatricula;
 
-    } else { //Se não encontrar o aluno
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar este aluno!");
+        } else { //Se não encontrar o aluno
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar este aluno!");
+        }
+
+    } else { //Se não existir o parametro iAluno
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca da matrícula do aluno!");
     }
-
-  } else { //Se não existir o parametro iAluno
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca da matrícula do aluno!");
-  }
 
 } elseif ($oParam->exec == "getDependenciaTurmaAc") {
 
-  if (isset($oParam->iDependencia)) {
+    if (isset($oParam->iDependencia)) {
 
-    $oDaoTurmaAc = db_utils::getdao('sala');
+        $oDaoTurmaAc = db_utils::getdao('sala');
 
-    $sCampos     = " ed16_i_codigo, ed16_c_descr, ed16_i_capacidade ";
-    $sWhere      = " ed16_i_codigo = ".$oParam->iDependencia;
-    $sSqlTurmaAc = $oDaoTurmaAc->sql_query("", $sCampos, "", $sWhere);
-    $rsTurmaAc   = $oDaoTurmaAc->sql_record($sSqlTurmaAc);
+        $sCampos = " ed16_i_codigo, ed16_c_descr, ed16_i_capacidade ";
+        $sWhere = " ed16_i_codigo = " . $oParam->iDependencia;
+        $sSqlTurmaAc = $oDaoTurmaAc->sql_query("", $sCampos, "", $sWhere);
+        $rsTurmaAc = $oDaoTurmaAc->sql_record($sSqlTurmaAc);
 
-    if ($oDaoTurmaAc->numrows > 0) {
+        if ($oDaoTurmaAc->numrows > 0) {
 
-      $oDadosTurmaAc               = db_utils::fieldsmemory($rsTurmaAc, 0);
+            $oDadosTurmaAc = db_utils::fieldsmemory($rsTurmaAc, 0);
 
-      $oRetorno->ed16_i_codigo     = $oDadosTurmaAc->ed16_i_codigo;
-      $oRetorno->ed16_i_capacidade = $oDadosTurmaAc->ed16_i_capacidade;
-      $oRetorno->ed16_c_descr      = urlencode($oDadosTurmaAc->ed16_c_descr);
+            $oRetorno->ed16_i_codigo = $oDadosTurmaAc->ed16_i_codigo;
+            $oRetorno->ed16_i_capacidade = $oDadosTurmaAc->ed16_i_capacidade;
+            $oRetorno->ed16_c_descr = urlencode($oDadosTurmaAc->ed16_c_descr);
 
-    } else { //Turma não encontrada
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar a dependência de código: ".
-                                       $oParam->iDependencia);
+        } else { //Turma não encontrada
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar a dependência de código: " .
+                $oParam->iDependencia);
+        }
+
+    } else { //Se não existir o parametro iDependencia
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca da dependência!");
     }
-
-  } else { //Se não existir o parametro iDependencia
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca da dependência!");
-  }
 
 } elseif ($oParam->exec == "getAnexosAtoLegal") {
 
-  if (isset($oParam->iAtoLegal)) {
+    if (isset($oParam->iAtoLegal)) {
 
-    $oDaoAnexoAtoLegal    = db_utils::getdao('edu_anexoatolegal');
+        $oDaoAnexoAtoLegal = db_utils::getdao('edu_anexoatolegal');
 
-    $sWhere               = " ed292_atolegal = ".$oParam->iAtoLegal;
-    $sOrder               = " ed292_ordem ";
-    $sSqlAnexoAtoLegal    = $oDaoAnexoAtoLegal->sql_query("", "*", $sOrder, $sWhere);
-    $rsAnexoAtoLegal      = $oDaoAnexoAtoLegal->sql_record($sSqlAnexoAtoLegal);
+        $sWhere = " ed292_atolegal = " . $oParam->iAtoLegal;
+        $sOrder = " ed292_ordem ";
+        $sSqlAnexoAtoLegal = $oDaoAnexoAtoLegal->sql_query("", "*", $sOrder, $sWhere);
+        $rsAnexoAtoLegal = $oDaoAnexoAtoLegal->sql_record($sSqlAnexoAtoLegal);
 
-    $oRetorno->aResultado = db_utils::getCollectionByRecord($rsAnexoAtoLegal, false, false, true);
+        $oRetorno->aResultado = db_utils::getCollectionByRecord($rsAnexoAtoLegal, false, false, true);
 
-  } else { //Se não existir o parametro iAtoLegal
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos anexos!");
-  }
-
-}  elseif ($oParam->exec == "getDownloadAnexoAtoLegal") {
-
-  if (isset($oParam->iAnexo)) {
-
-    $oDaoAnexoAtoLegal = db_utils::getdao('edu_anexoatolegal');
-    $sCampos           = " ed292_sequencial,ed292_nomearquivo,ed292_arquivo ";
-    $sWhere            = " ed292_sequencial = ".$oParam->iAnexo;
-    $sSqlAnexo         = $oDaoAnexoAtoLegal->sql_query("", $sCampos, "", $sWhere);
-    $rsAnexo           = $oDaoAnexoAtoLegal->sql_record($sSqlAnexo);
-
-    if ($oDaoAnexoAtoLegal->numrows > 0) {
-
-      $oResultado   = db_utils::fieldsmemory($rsAnexo, 0);
-      $sNomeArquivo = "tmp/".$oResultado->ed292_nomearquivo;
-
-      $lExportAnexo = false;
-
-      db_query("begin");
-      $lExportAnexo = pg_lo_export($oResultado->ed292_arquivo, $sNomeArquivo, $conn);
-      db_query("commit");
-
-      if ($lExportAnexo) {
-
-        if (file_exists($sNomeArquivo)) {
-          $oRetorno->sArquivo = urlencode($sNomeArquivo);
-        } else {
-          $oRetorno->iStatus  = 0;
-          $oRetorno->sMessage = urlencode("Erro ao exportar o anexo da base de dados!");
-        }
-
-      } else {
-        $oRetorno->iStatus  = 0;
-        $oRetorno->sMessage = urlencode("Erro ao exportar o anexo da base de dados!");
-      }
-
-    } else {
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar o arquivo solicitado!");
+    } else { //Se não existir o parametro iAtoLegal
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos anexos!");
     }
 
-  } else {
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca do arquivo no sistema!");
-  }
+} elseif ($oParam->exec == "getDownloadAnexoAtoLegal") {
+
+    if (isset($oParam->iAnexo)) {
+
+        $oDaoAnexoAtoLegal = db_utils::getdao('edu_anexoatolegal');
+        $sCampos = " ed292_sequencial,ed292_nomearquivo,ed292_arquivo ";
+        $sWhere = " ed292_sequencial = " . $oParam->iAnexo;
+        $sSqlAnexo = $oDaoAnexoAtoLegal->sql_query("", $sCampos, "", $sWhere);
+        $rsAnexo = $oDaoAnexoAtoLegal->sql_record($sSqlAnexo);
+
+        if ($oDaoAnexoAtoLegal->numrows > 0) {
+
+            $oResultado = db_utils::fieldsmemory($rsAnexo, 0);
+            $sNomeArquivo = "tmp/" . $oResultado->ed292_nomearquivo;
+
+            $lExportAnexo = false;
+
+            db_query("begin");
+            $lExportAnexo = pg_lo_export($oResultado->ed292_arquivo, $sNomeArquivo, $conn);
+            db_query("commit");
+
+            if ($lExportAnexo) {
+
+                if (file_exists($sNomeArquivo)) {
+                    $oRetorno->sArquivo = urlencode($sNomeArquivo);
+                } else {
+                    $oRetorno->iStatus = 0;
+                    $oRetorno->sMessage = urlencode("Erro ao exportar o anexo da base de dados!");
+                }
+
+            } else {
+                $oRetorno->iStatus = 0;
+                $oRetorno->sMessage = urlencode("Erro ao exportar o anexo da base de dados!");
+            }
+
+        } else {
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar o arquivo solicitado!");
+        }
+
+    } else {
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca do arquivo no sistema!");
+    }
 
 } elseif ($oParam->exec == "getDadosCursosTreeViewAtoLegal") {
 
-  if (isset($oParam->iAtoLegal) && isset($oParam->iEscola)) {
+    if (isset($oParam->iAtoLegal) && isset($oParam->iEscola)) {
 
-  	$iRegistros   = 0;
-  	$aCursos      = array();
-  	$aBases       = array();
-  	$aEtapas      = array();
-    $oDaoAtoLegal = db_utils::getdao('atolegal');
+        $iRegistros = 0;
+        $aCursos = array();
+        $aBases = array();
+        $aEtapas = array();
+        $oDaoAtoLegal = db_utils::getdao('atolegal');
 
-    $sSql  = "SELECT ed29_i_codigo,ed29_c_descr FROM cursoedu ";
-    $sSql .= "         INNER JOIN cursoescola ON cursoescola.ed71_i_curso = cursoedu.ed29_i_codigo ";
-    $sSql .= "         INNER JOIN cursoato ON cursoato.ed215_i_cursoescola = cursoescola.ed71_i_codigo ";
-    $sSql .= "         INNER JOIN atolegal ON atolegal.ed05_i_codigo = cursoato.ed215_i_atolegal ";
-    $sSql .= "   WHERE cursoato.ed215_i_atolegal = ".$oParam->iAtoLegal;
-    $sSql .= "      AND cursoescola.ed71_i_escola = ".$oParam->iEscola;
-    $rsSql = $oDaoAtoLegal->sql_record($sSql);
-    $iLinhasCurso = $oDaoAtoLegal->numrows;
+        $sSql = "SELECT ed29_i_codigo,ed29_c_descr FROM cursoedu ";
+        $sSql .= "         INNER JOIN cursoescola ON cursoescola.ed71_i_curso = cursoedu.ed29_i_codigo ";
+        $sSql .= "         INNER JOIN cursoato ON cursoato.ed215_i_cursoescola = cursoescola.ed71_i_codigo ";
+        $sSql .= "         INNER JOIN atolegal ON atolegal.ed05_i_codigo = cursoato.ed215_i_atolegal ";
+        $sSql .= "   WHERE cursoato.ed215_i_atolegal = " . $oParam->iAtoLegal;
+        $sSql .= "      AND cursoescola.ed71_i_escola = " . $oParam->iEscola;
+        $rsSql = $oDaoAtoLegal->sql_record($sSql);
+        $iLinhasCurso = $oDaoAtoLegal->numrows;
 
-    if ($oDaoAtoLegal->numrows > 0) {
+        if ($oDaoAtoLegal->numrows > 0) {
 
-      /* Percorro todos os cursos vinculados a este ato legal. */
-      for ($iCont1 = 0; $iCont1 < $iLinhasCurso; $iCont1++) {
+            /* Percorro todos os cursos vinculados a este ato legal. */
+            for ($iCont1 = 0; $iCont1 < $iLinhasCurso; $iCont1++) {
 
-      	$oDaoAtoLegalBase = db_utils::getdao('atolegal');
-      	$oDadosCurso      = db_utils::fieldsmemory($rsSql, $iCont1);
+                $oDaoAtoLegalBase = db_utils::getdao('atolegal');
+                $oDadosCurso = db_utils::fieldsmemory($rsSql, $iCont1);
 
-      	if (!isset($aCursos[$oDadosCurso->ed29_i_codigo])) {
+                if (!isset($aCursos[$oDadosCurso->ed29_i_codigo])) {
 
-      	  $aTemp                                = array();
-      	  $aTemp['descricao']                   = urlencode($oDadosCurso->ed29_c_descr);
-      	  $aTemp['codigo']                      = 'C_'.$oDadosCurso->ed29_i_codigo;
-      	  $aCursos[$oDadosCurso->ed29_i_codigo] = $aTemp;
+                    $aTemp = array();
+                    $aTemp['descricao'] = urlencode($oDadosCurso->ed29_c_descr);
+                    $aTemp['codigo'] = 'C_' . $oDadosCurso->ed29_i_codigo;
+                    $aCursos[$oDadosCurso->ed29_i_codigo] = $aTemp;
 
-      	}
+                }
 
-      	$sSqlBase  = "SELECT ed31_i_codigo,ed31_c_descr FROM base ";
-      	$sSqlBase .= "         INNER JOIN escolabase ON escolabase.ed77_i_base = base.ed31_i_codigo ";
-      	$sSqlBase .= "         INNER JOIN baseato on baseato.ed278_i_escolabase = escolabase.ed77_i_codigo ";
-      	$sSqlBase .= "   WHERE baseato.ed278_i_atolegal = ".$oParam->iAtoLegal;
-      	$sSqlBase .= "         AND base.ed31_i_curso = ".$oDadosCurso->ed29_i_codigo;
-      	$sSqlBase .= "         AND escolabase.ed77_i_escola = ".$oParam->iEscola;
-      	$rsBase    = $oDaoAtoLegalBase->sql_record($sSqlBase);
+                $sSqlBase = "SELECT ed31_i_codigo,ed31_c_descr FROM base ";
+                $sSqlBase .= "         INNER JOIN escolabase ON escolabase.ed77_i_base = base.ed31_i_codigo ";
+                $sSqlBase .= "         INNER JOIN baseato on baseato.ed278_i_escolabase = escolabase.ed77_i_codigo ";
+                $sSqlBase .= "   WHERE baseato.ed278_i_atolegal = " . $oParam->iAtoLegal;
+                $sSqlBase .= "         AND base.ed31_i_curso = " . $oDadosCurso->ed29_i_codigo;
+                $sSqlBase .= "         AND escolabase.ed77_i_escola = " . $oParam->iEscola;
+                $rsBase = $oDaoAtoLegalBase->sql_record($sSqlBase);
 
-      	/* Percorro todas as bases vinculadas a este ato legal */
-      	if ($oDaoAtoLegalBase->numrows > 0) {
+                /* Percorro todas as bases vinculadas a este ato legal */
+                if ($oDaoAtoLegalBase->numrows > 0) {
 
-      	  for ($iCont2 = 0; $iCont2 < $oDaoAtoLegalBase->numrows; $iCont2++) {
+                    for ($iCont2 = 0; $iCont2 < $oDaoAtoLegalBase->numrows; $iCont2++) {
 
-      	  	$oDaoAtoLegalEtapas = db_utils::getdao('atolegal');
-      	  	$oDadosBase         = db_utils::fieldsmemory($rsBase, $iCont2);
+                        $oDaoAtoLegalEtapas = db_utils::getdao('atolegal');
+                        $oDadosBase = db_utils::fieldsmemory($rsBase, $iCont2);
 
-      	  	if (!isset($aBases['B_'.$oDadosBase->ed31_i_codigo])) {
+                        if (!isset($aBases['B_' . $oDadosBase->ed31_i_codigo])) {
 
-      	  	  $aTemp                                   = array();
-      	  	  $aTemp['descricao']                      = urlencode($oDadosBase->ed31_c_descr);
-      	  	  $aTemp['codigo']                         = 'B_'.$oDadosBase->ed31_i_codigo;
-      	  	  $aTemp['node_pai']                       = 'C_'.$oDadosCurso->ed29_i_codigo;
-      	  	  $aBases['B_'.$oDadosBase->ed31_i_codigo] = $aTemp;
+                            $aTemp = array();
+                            $aTemp['descricao'] = urlencode($oDadosBase->ed31_c_descr);
+                            $aTemp['codigo'] = 'B_' . $oDadosBase->ed31_i_codigo;
+                            $aTemp['node_pai'] = 'C_' . $oDadosCurso->ed29_i_codigo;
+                            $aBases['B_' . $oDadosBase->ed31_i_codigo] = $aTemp;
 
-      	  	}
+                        }
 
-      	  	/* Busca a Etapa Inicial e Final */
-      	  	$sSqlInFim   = "SELECT inicio.ed11_i_sequencia AS first, fim.ed11_i_sequencia AS last ";
-      	  	$sSqlInFim  .= "   FROM baseserie ";
-      	  	$sSqlInFim  .= "      INNER JOIN serie AS inicio ON inicio.ed11_i_codigo = baseserie.ed87_i_serieinicial ";
-      	  	$sSqlInFim  .= "      INNER JOIN serie AS fim ON fim.ed11_i_codigo = baseserie.ed87_i_seriefinal ";
-      	  	$sSqlInFim  .= "   WHERE ed87_i_codigo = ".$oDadosBase->ed31_i_codigo;
-      	  	$rsInFim     = $oDaoAtoLegalEtapas->sql_record($sSqlInFim);
-      	  	$oDadosTemp  = db_utils::fieldsmemory($rsInFim, 0);
-      	  	$iInicio     = $oDadosTemp->first;
-      	  	$iFinal      = $oDadosTemp->last;
+                        /* Busca a Etapa Inicial e Final */
+                        $sSqlInFim = "SELECT inicio.ed11_i_sequencia AS first, fim.ed11_i_sequencia AS last ";
+                        $sSqlInFim .= "   FROM baseserie ";
+                        $sSqlInFim .= "      INNER JOIN serie AS inicio ON inicio.ed11_i_codigo = baseserie.ed87_i_serieinicial ";
+                        $sSqlInFim .= "      INNER JOIN serie AS fim ON fim.ed11_i_codigo = baseserie.ed87_i_seriefinal ";
+                        $sSqlInFim .= "   WHERE ed87_i_codigo = " . $oDadosBase->ed31_i_codigo;
+                        $rsInFim = $oDaoAtoLegalEtapas->sql_record($sSqlInFim);
+                        $oDadosTemp = db_utils::fieldsmemory($rsInFim, 0);
+                        $iInicio = $oDadosTemp->first;
+                        $iFinal = $oDadosTemp->last;
 
-      	  	$sSqlEtapas  = "SELECT ed11_i_codigo, ed11_c_descr, ed31_i_codigo FROM serie ";
-      	  	$sSqlEtapas .= "        INNER JOIN ensino ON ensino.ed10_i_codigo = serie.ed11_i_ensino ";
-      	  	$sSqlEtapas .= "        INNER JOIN cursoedu ON cursoedu.ed29_i_ensino = ensino.ed10_i_codigo ";
-      	  	$sSqlEtapas .= "        INNER JOIN base ON base.ed31_i_curso = cursoedu.ed29_i_codigo ";
-      	  	$sSqlEtapas .= "  WHERE ed31_i_codigo = ".$oDadosBase->ed31_i_codigo;
-      	  	$sSqlEtapas .= "      AND ed11_i_sequencia >= $iInicio ";
-      	  	$sSqlEtapas .= "      AND ed11_i_sequencia <= $iFinal ";
-      	  	$sSqlEtapas .= "  ORDER BY ed11_c_descr ASC ";
-      	  	$rsEtapas    = $oDaoAtoLegalEtapas->sql_record($sSqlEtapas);
-      	  	$iLinhas3    = $oDaoAtoLegalEtapas->numrows;
+                        $sSqlEtapas = "SELECT ed11_i_codigo, ed11_c_descr, ed31_i_codigo FROM serie ";
+                        $sSqlEtapas .= "        INNER JOIN ensino ON ensino.ed10_i_codigo = serie.ed11_i_ensino ";
+                        $sSqlEtapas .= "        INNER JOIN cursoedu ON cursoedu.ed29_i_ensino = ensino.ed10_i_codigo ";
+                        $sSqlEtapas .= "        INNER JOIN base ON base.ed31_i_curso = cursoedu.ed29_i_codigo ";
+                        $sSqlEtapas .= "  WHERE ed31_i_codigo = " . $oDadosBase->ed31_i_codigo;
+                        $sSqlEtapas .= "      AND ed11_i_sequencia >= $iInicio ";
+                        $sSqlEtapas .= "      AND ed11_i_sequencia <= $iFinal ";
+                        $sSqlEtapas .= "  ORDER BY ed11_c_descr ASC ";
+                        $rsEtapas = $oDaoAtoLegalEtapas->sql_record($sSqlEtapas);
+                        $iLinhas3 = $oDaoAtoLegalEtapas->numrows;
 
-      	  	if ($iLinhas3 > 0) {
+                        if ($iLinhas3 > 0) {
 
-      	  	  for ($iCont3 = 0; $iCont3 < $iLinhas3; $iCont3++) {
+                            for ($iCont3 = 0; $iCont3 < $iLinhas3; $iCont3++) {
 
-      	  	  	$oDadosEtapa = db_utils::fieldsmemory($rsEtapas, $iCont3);
+                                $oDadosEtapa = db_utils::fieldsmemory($rsEtapas, $iCont3);
 
-      	  	  	if (!isset($aEtapas['E_'.$oDadosEtapa->ed11_i_codigo])) {
+                                if (!isset($aEtapas['E_' . $oDadosEtapa->ed11_i_codigo])) {
 
-      	  	  	  $aTemp              = array();
-      	  	  	  $aTemp['descricao'] = urlencode($oDadosEtapa->ed11_c_descr);
-      	  	  	  $aTemp['codigo']    = 'E_'.$oDadosEtapa->ed11_i_codigo;
-      	  	  	  $aTemp['node_pai']  = 'B_'.$oDadosBase->ed31_i_codigo;
-      	  	  	  $aEtapas['E_'.$oDadosEtapa->ed11_i_codigo] = $aTemp;
+                                    $aTemp = array();
+                                    $aTemp['descricao'] = urlencode($oDadosEtapa->ed11_c_descr);
+                                    $aTemp['codigo'] = 'E_' . $oDadosEtapa->ed11_i_codigo;
+                                    $aTemp['node_pai'] = 'B_' . $oDadosBase->ed31_i_codigo;
+                                    $aEtapas['E_' . $oDadosEtapa->ed11_i_codigo] = $aTemp;
 
-      	  	  	}
+                                }
 
-      	  	  } //End FOR etapas
+                            } //End FOR etapas
 
-      	  	} //End IF etapas
+                        } //End IF etapas
 
-      	  } //End FOR bases
+                    } //End FOR bases
 
-      	} //End IF bases
+                } //End IF bases
 
-      } //End FOR cursos
+            } //End FOR cursos
 
-      sort($aCursos);
-      sort($aBases);
-      sort($aEtapas);
+            sort($aCursos);
+            sort($aBases);
+            sort($aEtapas);
 
-      $oRetorno->iRegistros   = 1;
-  	  $oRetorno->aCursos      = $aCursos;
-  	  $oRetorno->aBases       = $aBases;
-  	  $oRetorno->aEtapas      = $aEtapas;
+            $oRetorno->iRegistros = 1;
+            $oRetorno->aCursos = $aCursos;
+            $oRetorno->aBases = $aBases;
+            $oRetorno->aEtapas = $aEtapas;
 
-    } else { //Não encontrou resultados
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi localizado nenhum curso para este ato legal.");
+        } else { //Não encontrou resultados
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi localizado nenhum curso para este ato legal.");
+        }
+
+    } else { //Não encontrou o parametro iAtoLegal
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos dados!");
     }
-
-  } else { //Não encontrou o parametro iAtoLegal
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos dados!");
-  }
 
 } elseif ($oParam->exec == "getRecHumanoAtoLegal") {
 
-  if (isset($oParam->iAtoLegal)) {
+    if (isset($oParam->iAtoLegal)) {
 
-    $oDaoRecHumano = db_utils::getdao('rechumano');
+        $oDaoRecHumano = db_utils::getdao('rechumano');
 
-    $sCamposRH     = " * ";
-    $sWhereRH      = " ed05_i_codigo = ".$oParam->iAtoLegal;
-    $sSqlRHAto     = $oDaoRecHumano->sql_query_atolegal("", $sCamposRH, "", $sWhereRH);
-    $rsRHAto       = $oDaoRecHumano->sql_record($sSqlRHAto);
+        $sCamposRH = " * ";
+        $sWhereRH = " ed05_i_codigo = " . $oParam->iAtoLegal;
+        $sSqlRHAto = $oDaoRecHumano->sql_query_atolegal("", $sCamposRH, "", $sWhereRH);
+        $rsRHAto = $oDaoRecHumano->sql_record($sSqlRHAto);
 
-    if ($oDaoRecHumano->numrows > 0) {
+        if ($oDaoRecHumano->numrows > 0) {
 
-      $aAtividades = array();
-      $aRH         = array();
+            $aAtividades = array();
+            $aRH = array();
 
-      for ($iCont = 0; $iCont < $oDaoRecHumano->numrows; $iCont++) {
+            for ($iCont = 0; $iCont < $oDaoRecHumano->numrows; $iCont++) {
 
-        $oResultado = db_utils::fieldsmemory($rsRHAto, $iCont);
+                $oResultado = db_utils::fieldsmemory($rsRHAto, $iCont);
 
-        if (!isset($aAtividades[$oResultado->ed01_i_codigo])) {
-          $aAtividades[$oResultado->ed01_i_codigo] = array(
-                                                            "codigo"    => $oResultado->ed01_i_codigo,
-                                                            "descricao" => urlencode($oResultado->ed01_c_descr)
-                                                          );
+                if (!isset($aAtividades[$oResultado->ed01_i_codigo])) {
+                    $aAtividades[$oResultado->ed01_i_codigo] = array(
+                        "codigo" => $oResultado->ed01_i_codigo,
+                        "descricao" => urlencode($oResultado->ed01_c_descr)
+                    );
+                }
+
+                if (!isset($aRH[$oResultado->z01_numcgm])) {
+                    $aRH[$oResultado->z01_numcgm] = array(
+                        "codigo" => $oResultado->z01_numcgm,
+                        "descricao" => $oResultado->z01_nome,
+                        "node_pai" => $oResultado->ed01_i_codigo
+                    );
+                }
+
+            }
+
+            sort($aAtividades);
+            sort($aRH);
+
+            $oRetorno->iAtividades = count($aAtividades);
+            $oRetorno->aAtividades = $aAtividades;
+            $oRetorno->iRH = count($aRH);
+            $oRetorno->aRH = $aRH;
+
+        } else {
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar Recursos Humanos ligados a este ato legal!");
         }
-
-        if (!isset($aRH[$oResultado->z01_numcgm])) {
-          $aRH[$oResultado->z01_numcgm] = array(
-                                                 "codigo"    => $oResultado->z01_numcgm,
-                                                 "descricao" => $oResultado->z01_nome,
-                                                 "node_pai"  => $oResultado->ed01_i_codigo
-                                               );
-        }
-
-      }
-
-      sort($aAtividades);
-      sort($aRH);
-
-      $oRetorno->iAtividades = count($aAtividades);
-      $oRetorno->aAtividades = $aAtividades;
-      $oRetorno->iRH         = count($aRH);
-      $oRetorno->aRH         = $aRH;
 
     } else {
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar Recursos Humanos ligados a este ato legal!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos recursos humanos!");
     }
-
-  } else {
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos recursos humanos!");
-  }
 
 } elseif ($oParam->exec == 'PesquisaCalendario') {
 
-  if (isset($oParam->escola)) {
-    $iEscola = $oParam->escola;
-  }
+    if (isset($oParam->escola)) {
+        $iEscola = $oParam->escola;
+    }
 
-  $oDaoCalendario     = db_utils::getdao('calendario');
-  $sSqlCalendario     = $oDaoCalendario->sql_query_calendariorelatorio("",
-                                                                       "ed52_i_codigo,ed52_c_descr,ed52_i_ano",
-                                                                       "ed52_i_ano desc",
-                                                                       "ed38_i_escola = {$iEscola}
+    $oDaoCalendario = db_utils::getdao('calendario');
+    $sSqlCalendario = $oDaoCalendario->sql_query_calendariorelatorio("",
+        "ed52_i_codigo,ed52_c_descr,ed52_i_ano",
+        "ed52_i_ano desc",
+        "ed38_i_escola = {$iEscola}
                                                                         AND ed52_c_passivo = 'N'"
-                                                                      );
-  $rsResultCalendario = $oDaoCalendario->sql_record($sSqlCalendario);
+    );
+    $rsResultCalendario = $oDaoCalendario->sql_record($sSqlCalendario);
 
-  if ($oDaoCalendario->numrows > 0) {
+    if ($oDaoCalendario->numrows > 0) {
 
-    $oRetorno->iEscola  = $iEscola;
-    $oRetorno->aResult  = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);
+        $oRetorno->iEscola = $iEscola;
+        $oRetorno->aResult = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);
 
-  } else {
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário escolhido!");
-  }
+    } else {
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário escolhido!");
+    }
 } elseif ($oParam->exec == 'PesquisaAnosCalendario') {
 
-  if (isset($oParam->escola)) {
-    $iEscola = $oParam->escola;
-  }
+    if (isset($oParam->escola)) {
+        $iEscola = $oParam->escola;
+    }
 
-  $sWhere  = ($iEscola > 0) ?  "ed38_i_escola = {$iEscola} AND ed52_c_passivo = 'N'" : "ed52_c_passivo = 'N'";
+    $sWhere = ($iEscola > 0) ? "ed38_i_escola = {$iEscola} AND ed52_c_passivo = 'N'" : "ed52_c_passivo = 'N'";
 
-  $oDaoCalendario     = db_utils::getdao('calendario');
-  $sSqlCalendario     = $oDaoCalendario->sql_query_calendariorelatorio("",
-                                                                       "distinct ed52_i_ano",
-                                                                       "ed52_i_ano desc",
-                                                                       $sWhere
-                                                                      );
-  $rsResultCalendario = $oDaoCalendario->sql_record($sSqlCalendario);
+    $oDaoCalendario = db_utils::getdao('calendario');
+    $sSqlCalendario = $oDaoCalendario->sql_query_calendariorelatorio("",
+        "distinct ed52_i_ano",
+        "ed52_i_ano desc",
+        $sWhere
+    );
+    $rsResultCalendario = $oDaoCalendario->sql_record($sSqlCalendario);
 
-  if ($oDaoCalendario->numrows > 0) {
+    if ($oDaoCalendario->numrows > 0) {
+        $oRetorno->iEscola = $iEscola;
+        $oRetorno->aResult = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);
 
-    $oRetorno->iEscola  = $iEscola;
-    $oRetorno->aResult  = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);
+    } else {
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário escolhido!");
+    }
+} elseif ($oParam->exec === 'PesquisaCalendarioEspecialQuadroDeVagas') {
+    if (isset($oParam->escola)) {
+        $iEscola = $oParam->escola;
+    }
 
-  } else {
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário escolhido!");
-  }
+    $oDaoCalendario = new cl_calendario();
+
+    if ($iEscola === "0") {
+        $sSqlCalendario = $oDaoCalendario->sql_query_calendariorelatorio(
+            "",
+            "ed52_c_descr",
+            "ed52_c_descr desc",
+            " ed52_c_passivo = 'N' AND ed52_i_ano=(SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP)) Group by ed52_c_descr"
+        );
+    } else {
+        $sSqlCalendario = $oDaoCalendario->sql_query_calendariorelatorio(
+            "",
+            "ed52_i_codigo,ed52_c_descr,ed52_i_ano",
+            "ed52_i_ano desc",
+            "ed38_i_escola = {$iEscola}
+                AND ed52_c_passivo = 'N' AND ed52_i_ano=(SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP))"
+        );
+    }
+
+    $rsResultCalendario = $oDaoCalendario->sql_record($sSqlCalendario);
+
+    if ($oDaoCalendario->numrows > 0) {
+        $oRetorno->iEscola = $iEscola;
+        $oRetorno->aResult = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);
+    } else {
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário escolhido!");
+    }
 } elseif ($oParam->exec == 'PesquisaCalendarioEncerrado') {
 
-  if (isset($oParam->escola)) {
-    $iEscola = $oParam->escola;
-  }
+    if (isset($oParam->escola)) {
+        $iEscola = $oParam->escola;
+    }
 
-  $oDaoCalendario     = db_utils::getdao('serie');
-  $sWhereCalendario   = "ed38_i_escola = {$iEscola} AND ed52_c_passivo = 'N'";
-  $sWhereCalendario  .= " and EXISTS( select 1 from regencia where ed59_c_encerrada = 'S' and ed59_i_turma = ed57_i_codigo) ";
-  $sSqlCalendario     = $oDaoCalendario->sql_query_relatorio("",
-                                                             "DISTINCT ed52_i_codigo,ed52_c_descr,ed52_i_ano",
-                                                             "ed52_i_ano desc",
-                                                             $sWhereCalendario
-                                                            );
-  $rsResultCalendario = $oDaoCalendario->sql_record($sSqlCalendario);
+    $oDaoCalendario = db_utils::getdao('serie');
+    $sWhereCalendario = "ed38_i_escola = {$iEscola} AND ed52_c_passivo = 'N'";
+    $sWhereCalendario .= " and EXISTS( select 1 from regencia where ed59_c_encerrada = 'S' and ed59_i_turma = ed57_i_codigo) ";
+    $sSqlCalendario = $oDaoCalendario->sql_query_relatorio("",
+        "DISTINCT ed52_i_codigo,ed52_c_descr,ed52_i_ano",
+        "ed52_i_ano desc",
+        $sWhereCalendario
+    );
+    $rsResultCalendario = $oDaoCalendario->sql_record($sSqlCalendario);
 
-  if ($oDaoCalendario->numrows > 0) {
+    if ($oDaoCalendario->numrows > 0) {
 
-    $oRetorno->iEscola  = $iEscola;
-    $oRetorno->aResult  = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);
+        $oRetorno->iEscola = $iEscola;
+        $oRetorno->aResult = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);
 
-  } else {
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário escolhido!");
-  }
+    } else {
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário escolhido!");
+    }
 
 } elseif ($oParam->exec == 'PesquisaEtapa') {
 
-  if (isset($oParam->escola) && isset($oParam->calendario)) {
+    if (isset($oParam->escola) && isset($oParam->calendario)) {
 
-  	$oDaoTurma          = db_utils::getdao('turma');
-    $sSqlEtapa          = $oDaoTurma->sql_query_relatorio("",
-                                                          "DISTINCT ed11_i_codigo,ed11_c_descr,ed11_i_ensino,ed11_i_sequencia",
-                                                          "ed11_i_ensino,ed11_i_sequencia",
-                                                          "ed57_i_calendario = ".$oParam->calendario.
-                                                          " AND ed57_i_escola = ".$oParam->escola
-                                                         );
-    $rsResultEtapa      = $oDaoTurma->sql_record($sSqlEtapa);
+        $oDaoTurma = db_utils::getdao('turma');
+        $sSqlEtapa = $oDaoTurma->sql_query_relatorio("",
+            "DISTINCT ed11_i_codigo,ed11_c_descr,ed11_i_ensino,ed11_i_sequencia",
+            "ed11_i_ensino,ed11_i_sequencia",
+            "ed57_i_calendario = " . $oParam->calendario .
+            " AND ed57_i_escola = " . $oParam->escola
+        );
+        $rsResultEtapa = $oDaoTurma->sql_record($sSqlEtapa);
 
-    if ($oDaoTurma->numrows > 0) {
+        if ($oDaoTurma->numrows > 0) {
 
-      $oRetorno->aResult1 = db_utils::getCollectionByRecord($rsResultEtapa, false, false, true);
+            $oRetorno->aResult1 = db_utils::getCollectionByRecord($rsResultEtapa, false, false, true);
+
+        } else {
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar as etapas solicitadas!");
+        }
 
     } else {
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar as etapas solicitadas!");
+
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca da etapa!");
+
     }
-
-  } else {
-
-	  $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca da etapa!");
-
-  }
 
 } elseif ($oParam->exec == 'PesquisaTurma') {
 
-  if (isset($oParam->escola) && isset($oParam->calendario)) {
+    if (isset($oParam->escola) && isset($oParam->calendario)) {
 
-  	$oDaoTurma          = db_utils::getdao('turma');
-    $sSqlTurma          = $oDaoTurma->sql_query_relatorio("",
-                                                          "DISTINCT ed220_i_codigo,ed57_c_descr,ed11_c_descr",
-                                                          "ed57_c_descr,ed11_c_descr",
-                                                          "ed57_i_calendario = ".$oParam->calendario.
-                                                          " AND ed57_i_escola = ".$oParam->escola.
-                                                           " AND ed221_c_origem = 'S'"
-                                                         );
-    $rsResultTurma      = $oDaoTurma->sql_record($sSqlTurma);
+        $oDaoTurma = db_utils::getdao('turma');
+        $sSqlTurma = $oDaoTurma->sql_query_relatorio("",
+            "DISTINCT ed220_i_codigo,ed57_c_descr,ed11_c_descr",
+            "ed57_c_descr,ed11_c_descr",
+            "ed57_i_calendario = " . $oParam->calendario .
+            " AND ed57_i_escola = " . $oParam->escola .
+            " AND ed221_c_origem = 'S'"
+        );
+        $rsResultTurma = $oDaoTurma->sql_record($sSqlTurma);
 
-    if ($oDaoTurma->numrows > 0) {
+        if ($oDaoTurma->numrows > 0) {
 
-      $oRetorno->aResult1 = db_utils::getCollectionByRecord($rsResultTurma, false, false, true);
+            $oRetorno->aResult1 = db_utils::getCollectionByRecord($rsResultTurma, false, false, true);
+
+        } else {
+
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar as turmas solicitadas!");
+
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar as turmas solicitadas!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca das turmas!");
 
     }
-
-  } else {
-
-	  $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca das turmas!");
-
-  }
 
 } elseif ($oParam->exec == 'getDiretor') {
 
-  if (isset($oParam->escola)) {
+    if (isset($oParam->escola)) {
 
-  	$oDaoEscolaDiretor  = db_utils::getdao('escoladiretor');
-  	$sCampos            = " 'DIRETOR' as funcao, ";
-  	$sCampos           .= "          case when ed20_i_tiposervidor = 1 then ";
-  	$sCampos           .= "                  cgmrh.z01_nome ";
-  	$sCampos           .= "               else cgmcgm.z01_nome ";
-  	$sCampos           .= "            end as nome,";
-  	$sCampos           .= " ed83_c_descr||' n°: '||ed05_c_numero::varchar as descricao,'D' as tipo";
-  	$sWhere             = " ed254_i_escola = ".$oParam->escola." AND ed254_c_tipo = 'A' ";
-  	$sWhere            .= " AND ed01_i_funcaoadmin = 2 ";
-    $sSqlDiretor        = $oDaoEscolaDiretor->sql_query_resultadofinal("",$sCampos,"",$sWhere);
-    $rsDiretor          = $oDaoEscolaDiretor->sql_record($sSqlDiretor);
+        $oDaoEscolaDiretor = db_utils::getdao('escoladiretor');
+        $sCampos = " distinct ed20_i_codigo, ";
+        $sCampos .= " 'DIRETOR' as funcao, ";
+        $sCampos .= "          case when ed20_i_tiposervidor = 1 then ";
+        $sCampos .= "                  cgmrh.z01_nome ";
+        $sCampos .= "               else cgmcgm.z01_nome ";
+        $sCampos .= "            end as nome,";
+        $sCampos .= " ed83_c_descr||' n°: '||ed05_c_numero::varchar as descricao,'D' as tipo";
+        $sWhere = " ed254_i_escola = " . $oParam->escola . " AND ed254_c_tipo = 'A' ";
+        $sWhere .= " AND ed01_i_funcaoadmin = 2 ";
+        $sSqlDiretor = $oDaoEscolaDiretor->sql_query_resultadofinal("", $sCampos, "", $sWhere);
+        $rsDiretor = $oDaoEscolaDiretor->sql_record($sSqlDiretor);
 
-    if ($oDaoEscolaDiretor->numrows > 0) {
+        if ($oDaoEscolaDiretor->numrows > 0) {
+            $oRetorno->aResultDiretor = db_utils::getCollectionByRecord($rsDiretor, false, false, true);
+        } else {
 
-      $oRetorno->aResultDiretor = db_utils::getCollectionByRecord($rsDiretor, false, false, true);
-
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar os diretores solicitados!");
+        }
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar os diretores solicitados!");
-
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos diretores!");
     }
-
-  } else {
-
-	$oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos diretores!");
-
-  }
 
 } elseif ($oParam->exec == 'getSecretario') {
 
-  if (isset($oParam->escola)) {
+    if (isset($oParam->escola)) {
+        
+        $oDaoRechumanoAtiv = db_utils::getdao('rechumanoativ');
+        $sCamposSec = " DISTINCT ed01_c_descr as funcao, ";
+        $sCamposSec .= " ed20_i_codigo, ed22_datafim, ";
+        $sCamposSec .= "          case when ed20_i_tiposervidor = 1 then ";
+        $sCamposSec .= "                  cgmrh.z01_nome ";
+        $sCamposSec .= "               else cgmcgm.z01_nome ";
+        $sCamposSec .= "            end as nome,";
+        $sCamposSec .= " ed83_c_descr||' n°: '||ed05_c_numero::varchar as descricao,'O' as tipo";
+        $sWhereSec = " ed75_i_escola = $oParam->escola AND ed01_i_funcaoadmin = 3 AND (ed22_datafim is null OR ed22_datafim >= '".date('Y-m-d')."') ";
+        $sSqlSec = $oDaoRechumanoAtiv->sql_query_resultadofinal("", $sCamposSec, "", $sWhereSec); 
+        $rsSec = db_query($sSqlSec);
 
-  	$oDaoRechumanoAtiv  = db_utils::getdao('rechumanoativ');
-  	$sCamposSec         = " DISTINCT ed01_c_descr as funcao, ";
-  	$sCamposSec        .= "          case when ed20_i_tiposervidor = 1 then ";
-  	$sCamposSec        .= "                  cgmrh.z01_nome ";
-  	$sCamposSec        .= "               else cgmcgm.z01_nome ";
-  	$sCamposSec        .= "            end as nome,";
-  	$sCamposSec        .= " ed83_c_descr||' n°: '||ed05_c_numero::varchar as descricao,'O' as tipo";
-  	$sWhereSec          = " ed75_i_escola = ".$oParam->escola." AND ed01_i_funcaoadmin = 3 ";
-    $sSqlSec            = $oDaoRechumanoAtiv->sql_query_resultadofinal("",$sCamposSec,"",$sWhereSec);
-    $rsSec              = $oDaoRechumanoAtiv->sql_record($sSqlSec);
-
-    if ($oDaoRechumanoAtiv->numrows > 0) {
-
-      $oRetorno->aResultSec = db_utils::getCollectionByRecord($rsSec, false, false, true);
+        if (pg_num_rows($rsSec) > 0) {
+            $oRetorno->aResultSec = db_utils::getCollectionByRecord($rsSec, false, false, true);
+        } else {
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Nenhum secretário localizado!");
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar os secretários solicitados!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos secretarios!");
 
     }
-
-  } else {
-
-	$oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos secretarios!");
-
-  }
 
 } elseif ($oParam->exec == 'PesquisaTurmaAta') {
 
-  if (isset($oParam->escola) && isset($oParam->calendario)) {
+    if (isset($oParam->escola) && isset($oParam->calendario)) {
 
-  	$oDaoTurma          = db_utils::getdao('turma');
-  	$sCamposAta         = " DISTINCT ed220_i_codigo,ed57_c_descr,ed11_c_descr";
-  	$sWhereAta          = " ed57_i_calendario = ".$oParam->calendario." AND ed57_i_escola = ".$oParam->escola;
-  	$sWhereAta         .= " AND ed221_c_origem = 'S' AND ed59_c_encerrada = 'S'";
-    $sSqlAta            = $oDaoTurma->sql_query_atafinal("",$sCamposAta,"ed57_c_descr,ed11_c_descr",$sWhereAta);
-    $rsResultAta        = $oDaoTurma->sql_record($sSqlAta);
+        $oDaoTurma = db_utils::getdao('turma');
+        $sCamposAta = " DISTINCT ed220_i_codigo,ed57_c_descr,ed11_c_descr";
+        $sWhereAta = " ed57_i_calendario = " . $oParam->calendario . " AND ed57_i_escola = " . $oParam->escola;
+        $sWhereAta .= " AND ed221_c_origem = 'S' AND ed59_c_encerrada = 'S'";
+        $sSqlAta = $oDaoTurma->sql_query_atafinal("", $sCamposAta, "ed57_c_descr,ed11_c_descr", $sWhereAta);
+        $rsResultAta = $oDaoTurma->sql_record($sSqlAta);
 
-    if ($oDaoTurma->numrows > 0) {
+        if ($oDaoTurma->numrows > 0) {
 
-      $oRetorno->aResultAta = db_utils::getCollectionByRecord($rsResultAta, false, false, true);
+            $oRetorno->aResultAta = db_utils::getCollectionByRecord($rsResultAta, false, false, true);
+
+        } else {
+
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Calendário sem turmas encerradas!");
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Calendário sem turmas encerradas!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca da turma!");
+
     }
-
-  } else {
-
-	$oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca da turma!");
-
-  }
 
 } elseif ($oParam->exec == 'PesquisaEnsino') {
 
-  if (isset($oParam->escola) && isset($oParam->calendario)) {
+    if (isset($oParam->escola) && isset($oParam->calendario)) {
 
-  	$oDaoTurma      = db_utils::getdao('turma');
-  	$sCamposEnsino  = " distinct ed10_i_codigo, ed10_c_descr";
-  	$sWhereEnsino   = " ed57_i_calendario = ".$oParam->calendario." AND ed57_i_escola = ".$oParam->escola;
-    $sSqlEnsino     = $oDaoTurma->sql_query_ensino("",$sCamposEnsino,"ed10_i_codigo",$sWhereEnsino);
-    $rsResultEnsino = $oDaoTurma->sql_record($sSqlEnsino);
+        $oDaoTurma = db_utils::getdao('turma');
+        $sCamposEnsino = " distinct ed10_i_codigo, ed10_c_descr";
+        $sWhereEnsino = " ed57_i_calendario = " . $oParam->calendario . " AND ed57_i_escola = " . $oParam->escola;
+        $sSqlEnsino = $oDaoTurma->sql_query_ensino("", $sCamposEnsino, "ed10_i_codigo", $sWhereEnsino);
+        $rsResultEnsino = $oDaoTurma->sql_record($sSqlEnsino);
 
-    if ($oDaoTurma->numrows > 0) {
+        if ($oDaoTurma->numrows > 0) {
 
-      $oRetorno->aResultEnsino = db_utils::getCollectionByRecord($rsResultEnsino, false, false, true);
+            $oRetorno->aResultEnsino = db_utils::getCollectionByRecord($rsResultEnsino, false, false, true);
+
+        } else {
+
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar as modalidades de ensinos solicitados!");
+
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar as modalidades de ensinos solicitados!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca das modalidades de ensino!");
 
     }
-
-  } else {
-
-	$oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca das modalidades de ensino!");
-
-  }
 
 } elseif ($oParam->exec == 'PesquisaTipoEnsino') {
 
-  if (isset($oParam->escola)) {
+    if (isset($oParam->escola)) {
 
-  	$oDaoTipoEnsino      = db_utils::getdao('tipoensino');
-    $sSqlTipoEnsino     = $oDaoTipoEnsino->sql_query_file("","ed36_i_codigo,ed36_c_descr,ed36_c_abrev","ed36_i_codigo","");
-    $rsResultTipoEnsino = $oDaoTipoEnsino->sql_record($sSqlTipoEnsino);
+        $oDaoTipoEnsino = db_utils::getdao('tipoensino');
+        $sSqlTipoEnsino = $oDaoTipoEnsino->sql_query_file("", "ed36_i_codigo,ed36_c_descr,ed36_c_abrev", "ed36_i_codigo", "");
+        $rsResultTipoEnsino = $oDaoTipoEnsino->sql_record($sSqlTipoEnsino);
 
-    if ($oDaoTipoEnsino->numrows > 0) {
+        if ($oDaoTipoEnsino->numrows > 0) {
 
-      $oRetorno->aResultTipoEnsino = db_utils::getCollectionByRecord($rsResultTipoEnsino, false, false, true);
+            $oRetorno->aResultTipoEnsino = db_utils::getCollectionByRecord($rsResultTipoEnsino, false, false, true);
+
+        } else {
+
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar os ensinos solicitados!");
+
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar os ensinos solicitados!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos ensinos!");
 
     }
-
-  } else {
-
-	$oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos ensinos!");
-
-  }
 
 } elseif ($oParam->exec == 'PesquisaNivelEnsino') {
 
-  if (isset($oParam->tipoensino)) {
+    if (isset($oParam->tipoensino)) {
 
-  	$oDaoEnsino      = db_utils::getdao('ensino');
-    $sSqlNivelEnsino     = $oDaoEnsino->sql_query("","distinct ed10_i_codigo,ed10_c_descr","","ed10_i_tipoensino =".$oParam->tipoensino);
-    $rsResultNivelEnsino = $oDaoEnsino->sql_record($sSqlNivelEnsino);
+        $oDaoEnsino = db_utils::getdao('ensino');
+        $sSqlNivelEnsino = $oDaoEnsino->sql_query("", "distinct ed10_i_codigo,ed10_c_descr", "", "ed10_i_tipoensino =" . $oParam->tipoensino);
+        $rsResultNivelEnsino = $oDaoEnsino->sql_record($sSqlNivelEnsino);
 
-    if ($oDaoEnsino->numrows > 0) {
+        if ($oDaoEnsino->numrows > 0) {
 
-      $oRetorno->aResultNivelEnsino = db_utils::getCollectionByRecord($rsResultNivelEnsino, false, false, true);
+            $oRetorno->aResultNivelEnsino = db_utils::getCollectionByRecord($rsResultNivelEnsino, false, false, true);
+
+        } else {
+
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar os níveis de ensino solicitados!");
+
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar os níveis de ensino solicitados!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos níveis de ensino!");
 
     }
-
-  } else {
-
-	$oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos níveis de ensino!");
-
-  }
 
 } elseif ($oParam->exec == 'PesquisaAlunoHist') {
 
-  if (isset($oParam->escola) && isset($oParam->tipoaluno)) {
+    try {
 
-  	if ($oParam->tipoaluno == "1") {
-      $sCondicao = "ed62_i_escola = ".$oParam->escola." OR ed56_i_escola = ".$oParam->escola ;
-    } else if ($oParam->tipoaluno == "2") {
-      $sCondicao = " ed56_i_escola is null";
+        if (empty($oParam->escola)) {
+            throw new ParameterException("Escola não informada.");
+        }
+
+        if (empty($oParam->tipoaluno)) {
+            throw new ParameterException("Tipo de aluno não informado.");
+        }
+
+        $sWhereCurso = '';
+        if (!empty($oParam->curso)) {
+            $sWhereCurso = " AND ed61_i_curso = {$oParam->curso} ";
+        }
+        if ($oParam->tipoaluno == "3") {
+
+            $oDaoTransfEscolaRede = new cl_transfescolarede;
+            $sCampos = "distinct ed47_i_codigo,to_ascii(ed47_v_nome) as ed47_v_nome,ed60_i_codigo,escola.ed18_i_codigo as escola";
+            $sWhere = "ed60_c_situacao='TRANSFERIDO REDE' and  ed103_i_escolaorigem = " . $oParam->escola;
+
+            if (!empty($oParam->curso)) {
+                $sWhere .= "
+            and exists(select 1
+                         from base
+                        where ed31_i_codigo = ed57_i_base
+                          and ed31_i_curso = {$oParam->curso})
+          ";
+            }
+
+            if (!empty($oParam->iAno)) {
+                $sWhere .= " AND ed52_i_ano = {$oParam->iAno} ";
+            }
+
+            $sSql = $oDaoTransfEscolaRede->sql_query_historico("", $sCampos, "to_ascii(ed47_v_nome)", $sWhere);
+            $rs = db_query($sSql);
+        }
+
+        if ($oParam->tipoaluno == "1" || $oParam->tipoaluno == "2") {
+
+            $sCondicao = " ( ed62_i_escola = {$oParam->escola} OR ed56_i_escola = {$oParam->escola} )";
+
+            if ($oParam->tipoaluno == "2") {
+                $sCondicao = " ed56_i_escola is null ";
+            }
+
+            if (!empty($oParam->iAno)) {
+                $sCondicao .= "  AND ";
+                $sCondicao .= "    (SELECT ed62_i_anoref AS ano ";
+                $sCondicao .= "     FROM historico ";
+                $sCondicao .= "     LEFT JOIN historicomps ON historicomps.ed62_i_historico = historico.ed61_i_codigo ";
+                $sCondicao .= "     LEFT JOIN historicompsfora ON historicompsfora.ed99_i_historico = ed61_i_codigo ";
+                $sCondicao .= "     WHERE ed61_i_aluno = ed47_i_codigo ";
+                $sCondicao .= "       AND ed62_i_anoref IS NOT NULL ";
+                $sCondicao .= "     UNION SELECT ed99_i_anoref AS ano ";
+                $sCondicao .= "     FROM historico ";
+                $sCondicao .= "     LEFT JOIN historicomps ON historicomps.ed62_i_historico = historico.ed61_i_codigo ";
+                $sCondicao .= "     LEFT JOIN historicompsfora ON historicompsfora.ed99_i_historico = ed61_i_codigo ";
+                $sCondicao .= "     WHERE ed61_i_aluno = ed47_i_codigo ";
+                $sCondicao .= "       AND ed99_i_anoref IS NOT NULL ";
+                $sCondicao .= "     ORDER BY 1 DESC LIMIT 1) = {$oParam->iAno} ";
+            }
+
+            $oDaoHistorico = new cl_historico;
+            $sCamposHist = " DISTINCT ed47_i_codigo,to_ascii(ed47_v_nome) as ed47_v_nome, ed56_i_escola as escola ";
+            $sSql = $oDaoHistorico->sql_query_aluno(
+                "",
+                $sCamposHist,
+                "to_ascii(ed47_v_nome)",
+                $sCondicao . $sWhereCurso
+            );
+
+            $rs = db_query($sSql);
+        }
+
+        if (!$rs) {
+            throw new DBException("Erro ao buscar os alunos.");
+        }
+
+        $iLinhas = pg_num_rows($rs);
+        if ($iLinhas == 0) {
+            throw new BusinessException("Não foi possível localizar os alunos  solicitados!");
+        }
+
+        $oRetorno->aResultHistorico = db_utils::getCollectionByRecord($rs, false, false, true);
+        $oRetorno->iEscola = db_utils::fieldsmemory($rs, 0)->escola;
+
+    } catch (Exception $oErro) {
+
+        $oRetorno->iStatus = 2;
+        $oRetorno->sMessage = urlencode($oErro->getMessage());
     }
-
-  	if ($oParam->tipoaluno == "3") {
-
-      $oDaoTransfEscolaRede      = db_utils::getdao('transfescolarede');
-      $sCampos = "distinct ed47_i_codigo,to_ascii(ed47_v_nome) as ed47_v_nome,ed60_i_codigo,escola.ed18_i_codigo as escola";
-      $sWhere  = "ed60_c_situacao='TRANSFERIDO REDE' and  ed103_i_escolaorigem = ".$oParam->escola;
-      $sSql    =  $oDaoTransfEscolaRede->sql_query_historico("",$sCampos,"to_ascii(ed47_v_nome)", $sWhere);
-      $rs      =  $oDaoTransfEscolaRede->sql_record($sSql);
-      $iLinhas =  $oDaoTransfEscolaRede->numrows;
-
-    }
-
-    if ($oParam->tipoaluno == "1" || $oParam->tipoaluno == "2") {
-
-      $oDaoHistorico = db_utils::getdao('historico');
-      $sCamposHist   = " DISTINCT ed47_i_codigo,to_ascii(ed47_v_nome) as ed47_v_nome, ed56_i_escola as escola ";
-      $sSql          =  $oDaoHistorico->sql_query_aluno("",$sCamposHist,
-                                                      "to_ascii(ed47_v_nome)", $sCondicao
-                                                     );
-      $rs            =  $oDaoHistorico->sql_record($sSql);
-      $iLinhas       =  $oDaoHistorico->numrows;
-
-    }
-
-    if ($iLinhas > 0) {
-
-      if (!isset($oParam->lLimpa)) {
-        $oParam->lLimpa = true;
-      }
-
-      $oRetorno->lLimpa           = $oParam->lLimpa;
-      $oRetorno->aResultHistorico = db_utils::getCollectionByRecord($rs, false, false, true);
-      $oRetorno->iEscola          = db_utils::fieldsmemory($rs,0)->escola;
-
-    } else {
-
-      $oRetorno->lLimpa   = $oParam->lLimpa;
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar os alunos  solicitados!");
-
-    }
-
-  } else {
-
-	$oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos alunos!");
-
-  }
 
 } elseif ($oParam->exec == 'PesquisaAlunoCert') {
 
-  if (isset($oParam->escola) && isset($oParam->tipoaluno)) {
+    try {
 
-  	if ($oParam->tipoaluno == "1") {
+        if (empty($oParam->escola)) {
+            throw new ParameterException("Escola não informada.");
+        }
 
-      $oDaoAlunoCurso    = db_utils::getdao('alunocurso');
-      $sCondicao         = " ed56_i_escola = $oParam->escola AND ed56_c_situacao = 'CONCLUÍDO'";
-      $sCamposAlunoCurso = " DISTINCT ed47_i_codigo,to_ascii(ed47_v_nome) as ed47_v_nome, ed56_i_escola as escola ";
-      $sSqlCert          = $oDaoAlunoCurso->sql_query_relatorio("",$sCamposAlunoCurso,"to_ascii(ed47_v_nome)",$sCondicao);
-      $rsCert            = $oDaoAlunoCurso->sql_record($sSqlCert);
-      $iLinhas           = $oDaoAlunoCurso->numrows;
+        if (empty($oParam->tipoaluno)) {
+            throw new ParameterException("Tipo de Aluno não informado.");
+        }
 
-    } else {
+        $sWhereCurso = '';
+        if (!empty($oParam->iCurso)) {
+            $sWhereCurso = " AND ed29_i_codigo = {$oParam->iCurso} ";
+        }
 
-      $oDaoHistorico    = db_utils::getdao('historico');
-      $sCondicao        = " ed61_i_anoconc > 0 and ed61_i_escola = $oParam->escola";
-      $sCamposHistorico = " DISTINCT ed47_i_codigo,to_ascii(ed47_v_nome) as ed47_v_nome, ed61_i_escola as escola ";
-      $sWhereHistorico  = $sCondicao." AND not exists(select * from alunocurso where ed56_i_aluno = ed47_i_codigo)";
-      $sSqlCert         = $oDaoHistorico->sql_query_relatorio("",$sCamposHistorico,"to_ascii(ed47_v_nome)",$sCondicao);
-      $rsCert           = $oDaoHistorico->sql_record($sSqlCert);
-      $iLinhas          = $oDaoHistorico->numrows;
+        $sWhereAno = " AND ed61_i_anoconc > 0 ";
+        if (!empty($oParam->iAno)) {
+            $sWhereAno = " AND ed61_i_anoconc = {$oParam->iAno} ";
+        }
 
+        $oDaoHistorico = new cl_historico;
+        $sSqlAlunos = "sql_query_relatorio";
+        $sCondicao = " ed61_i_escola = $oParam->escola {$sWhereAno} {$sWhereCurso}";
+        $sCamposHistorico = " DISTINCT ed47_i_codigo,to_ascii(ed47_v_nome) as ed47_v_nome, ed61_i_escola as escola ";
+
+        if ($oParam->tipoaluno == "1") {
+
+            $sSqlAlunos = "sql_query_alunos_vinculados_escola";
+            $sCondicao .= " AND ed56_c_situacao = 'CONCLUÍDO' ";
+        }
+
+        $sSqlCert = $oDaoHistorico->$sSqlAlunos("", $sCamposHistorico, "to_ascii(ed47_v_nome)", $sCondicao);
+        $rsCert = db_query($sSqlCert);
+
+        if (!$rsCert) {
+            throw new DBException("Erro ao buscar os alunos.");
+        }
+
+        if (pg_num_rows($rsCert) == 0) {
+            throw new BusinessException("Não foi possível localizar os alunos solicitados!");
+        }
+
+        $oRetorno->aResultCert = db_utils::getCollectionByRecord($rsCert, false, false, true);
+        $oRetorno->iEscola = db_utils::fieldsmemory($rsCert, 0)->escola;
+
+    } catch (Exception $oErro) {
+
+        $oRetorno->iStatus = 2;
+        $oRetorno->sMessage = urlencode($oErro->getMessage());
     }
-
-    /*Variaveis que pegam o resultado dos sqls acima if($oParam->tipoaluno == 1 e do else)*/
-    $rsResultSelect = $rsCert;
-    $iLinhasSelect  = $iLinhas;
-
-    if ($iLinhasSelect > 0) {
-
-      $oRetorno->aResultCert = db_utils::getCollectionByRecord($rsResultSelect, false, false, true);
-      $oRetorno->iEscola     = db_utils::fieldsmemory($rsResultSelect,0)->escola;
-
-    } else {
-
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar os alunos solicitados!");
-
-    }
-
-  } else {
-
-	$oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos alunos!");
-
-  }
 
 } elseif ($oParam->exec == "getAreasConhecimento") {
 
-  $oDaoAreasConhecimento = db_utils::getdao('areaconhecimento');
+    $oDaoAreasConhecimento = db_utils::getdao('areaconhecimento');
 
-  $sCampos               = " ed293_sequencial, ed293_descr, ";
-  $sCampos              .= " case when ed293_ativo = '1' then 'SIM' ";
-  $sCampos              .= "      when ed293_ativo = '2' then 'NÃO' ";
-  $sCampos              .= "   end as ed293_ativo ";
-  $sOrderBy              = " ed293_sequencial ASC ";
-  $sWhere                = "";
-  $sSqlAreasConhecimento = $oDaoAreasConhecimento->sql_query("", $sCampos, $sOrderBy, $sWhere);
-  $rsAreasConhecimento   = $oDaoAreasConhecimento->sql_record($sSqlAreasConhecimento);
+    $sCampos = " ed293_sequencial, ed293_descr, ";
+    $sCampos .= " case when ed293_ativo = '1' then 'SIM' ";
+    $sCampos .= "      when ed293_ativo = '2' then 'NÃO' ";
+    $sCampos .= "   end as ed293_ativo ";
+    $sOrderBy = " ed293_sequencial ASC ";
+    $sWhere = "";
+    $sSqlAreasConhecimento = $oDaoAreasConhecimento->sql_query("", $sCampos, $sOrderBy, $sWhere);
+    $rsAreasConhecimento = $oDaoAreasConhecimento->sql_record($sSqlAreasConhecimento);
 
-  if ($oDaoAreasConhecimento->erro_status == 0) {
+    if ($oDaoAreasConhecimento->erro_status == 0) {
 
-    $oRetorno->aResultado = db_utils::getCollectionByRecord($rsAreasConhecimento, false, false, true);
-    $oRetorno->iResultado = $oDaoAreasConhecimento->numrows;
+        $oRetorno->aResultado = db_utils::getCollectionByRecord($rsAreasConhecimento, false, false, true);
+        $oRetorno->iResultado = $oDaoAreasConhecimento->numrows;
 
-  } else {
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro na busca por Áreas de Conhecimento!");
-  }
+    } else {
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro na busca por Áreas de Conhecimento!");
+    }
 
 } elseif ($oParam->exec == "getDisciplinas") {
 
-  if (isset($oParam->iCodigo)) {
+    if (isset($oParam->iCodigo)) {
 
-    $oDaoCadDisciplinas = db_utils::getdao('censocaddisciplina');
+        $oDaoCadDisciplinas = db_utils::getdao('censocaddisciplina');
 
-    $sWhereDisciplinas  = " ed294_caddisciplina = ".$oParam->iCodigo;
-    $sSqlDisciplinas    = $oDaoCadDisciplinas->sql_query("", "*", "", $sWhereDisciplinas);
-    $rsDisciplinas      = $oDaoCadDisciplinas->sql_record($sSqlDisciplinas);
+        $sWhereDisciplinas = " ed294_caddisciplina = " . $oParam->iCodigo;
+        $sSqlDisciplinas = $oDaoCadDisciplinas->sql_query("", "*", "", $sWhereDisciplinas);
+        $rsDisciplinas = $oDaoCadDisciplinas->sql_record($sSqlDisciplinas);
 
-    if ($oDaoCadDisciplinas->numrows > 0) {
+        if ($oDaoCadDisciplinas->numrows > 0) {
 
-      $oRetorno->iTotalRegistros = $oDaoCadDisciplinas->numrows;
-      $oRetorno->aResultado      = db_utils::getCollectionByRecord($rsDisciplinas, false, false, true);
+            $oRetorno->iTotalRegistros = $oDaoCadDisciplinas->numrows;
+            $oRetorno->aResultado = db_utils::getCollectionByRecord($rsDisciplinas, false, false, true);
+
+        } else {
+            $oRetorno->iTotalRegistros = 0;
+            $oRetorno->sMensagem = urlencode("Nenhuma disciplina encontrada!");
+        }
 
     } else {
-      $oRetorno->iTotalRegistros = 0;
-      $oRetorno->sMensagem       = urlencode("Nenhuma disciplina encontrada!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao buscar as disciplinas!");
     }
-
-  } else {
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao buscar as disciplinas!");
-  }
 
 } elseif ($oParam->exec == "getEtapas") {
 
-  if (isset($oParam->iCurso) && isset($oParam->iEscola)) {
+    if (isset($oParam->iCurso) && isset($oParam->iEscola)) {
 
-    $oDaoSerie    = db_utils::getdao('serie');
+        $oDaoSerie = db_utils::getdao('serie');
 
-    $sCamposSerie = " distinct ed11_i_codigo,ed11_c_descr,ed11_c_abrev,ed11_i_ensino,ed29_c_descr,ed10_i_codigo,ed11_i_sequencia";
+        $sCamposSerie = " distinct ed11_i_codigo,ed11_c_descr,ed11_c_abrev,ed11_i_ensino,ed29_c_descr,ed10_i_codigo,ed11_i_sequencia";
 
-    $sWhereSerie = ' 1=1';
-    $sWhere      = '';
-    $sInner      = '';
+        $sWhereSerie = ' 1=1';
+        $sWhere = '';
+        $sInner = '';
 
-    if ($oParam->iCurso != 0) {
-      $sWhereSerie  .= " and ed11_i_ensino IN (".$oParam->iCurso.") ";
-    }
+        if ($oParam->iCurso != 0) {
+            $sWhereSerie .= " and ed11_i_ensino IN (" . $oParam->iCurso . ") ";
+        }
 
-    if (isset($oParam->lTurmasEncerradas) && $oParam->lTurmasEncerradas) {
+        if (isset($oParam->lTurmasEncerradas) && $oParam->lTurmasEncerradas) {
 
-      $sInner      .= " INNER JOIN serieregimemat      on ed223_i_serie          = ed11_i_codigo";
-      $sInner      .= " INNER JOIN turmaserieregimemat on ed220_i_serieregimemat = ed223_i_codigo";
-      $sInner      .= " INNER JOIN turma as turma1     on ed57_i_codigo          = ed220_i_turma";
-      $sInner      .= " INNER JOIN regencia            on ed59_i_turma           = ed57_i_codigo";
+            $sInner .= " INNER JOIN serieregimemat      on ed223_i_serie          = ed11_i_codigo";
+            $sInner .= " INNER JOIN turmaserieregimemat on ed220_i_serieregimemat = ed223_i_codigo";
+            $sInner .= " INNER JOIN turma as turma1     on ed57_i_codigo          = ed220_i_turma";
+            $sInner .= " INNER JOIN regencia            on ed59_i_turma           = ed57_i_codigo";
 
-      $sWhereSerie .= " and exists (select 1 from regencia as regencia1";
-      $sWhereSerie .= "                     where regencia1.ed59_i_turma = turma1.ed57_i_codigo";
-      $sWhereSerie .= "                       and regencia1.ed59_c_encerrada = 'S')";
-    }
+            $sWhereSerie .= " and exists (select 1 from regencia as regencia1";
+            $sWhereSerie .= "                     where regencia1.ed59_i_turma = turma1.ed57_i_codigo";
+            $sWhereSerie .= "                       and regencia1.ed59_c_encerrada = 'S')";
+        }
 
-    if (isset($oParam->iEtapas)) {
-      $sWhereSerie .= " AND ed11_i_codigo NOT IN (".$oParam->iEtapas.") ";
-    }
+        if (isset($oParam->iEtapas)) {
+            $sWhereSerie .= " AND ed11_i_codigo NOT IN (" . $oParam->iEtapas . ") ";
+        }
 
-    if ($iModulo == 110770747 || $oParam->iEscola != 0) {
+        if ($iModulo == 110770747 || $oParam->iEscola != 0) {
 
-      $sInner .= " INNER JOIN cursoescola ON cursoescola.ed71_i_curso = cursoedu.ed29_i_codigo ";
-      $sWhere  = " AND ed71_i_escola = ".$oParam->iEscola;
+            $sInner .= " INNER JOIN cursoescola ON cursoescola.ed71_i_curso = cursoedu.ed29_i_codigo ";
+            $sWhere = " AND ed71_i_escola = " . $oParam->iEscola;
 
-    }
+        }
 
-    $sSqlSerie    = " SELECT ".$sCamposSerie;
-    $sSqlSerie   .= "    FROM serie ";
-    $sSqlSerie   .= "         INNER JOIN ensino      ON ensino.ed10_i_codigo = ed11_i_ensino ";
-    $sSqlSerie   .= "         INNER JOIN cursoedu    ON cursoedu.ed29_i_ensino = ensino.ed10_i_codigo ".$sInner;
-    $sSqlSerie   .= "    WHERE ".$sWhereSerie.''.$sWhere;
-    $sSqlSerie   .= " ORDER BY ed10_i_codigo,ed11_i_sequencia ";
-    $rsSerie      = $oDaoSerie->sql_record($sSqlSerie);
+        $sSqlSerie = " SELECT " . $sCamposSerie;
+        $sSqlSerie .= "    FROM serie ";
+        $sSqlSerie .= "         INNER JOIN ensino      ON ensino.ed10_i_codigo = ed11_i_ensino ";
+        $sSqlSerie .= "         INNER JOIN cursoedu    ON cursoedu.ed29_i_ensino = ensino.ed10_i_codigo " . $sInner;
+        $sSqlSerie .= "    WHERE " . $sWhereSerie . '' . $sWhere;
+        $sSqlSerie .= " ORDER BY ed10_i_codigo,ed11_i_sequencia ";
+        $rsSerie = $oDaoSerie->sql_record($sSqlSerie);
 
-    if ($oDaoSerie->numrows > 0) {
+        if ($oDaoSerie->numrows > 0) {
 
-      $oRetorno->iTotalRegistros = $oDaoSerie->numrows;
-      $oRetorno->aResultado      = db_utils::getCollectionByRecord($rsSerie, false, false, true);
+            $oRetorno->iTotalRegistros = $oDaoSerie->numrows;
+            $oRetorno->aResultado = db_utils::getCollectionByRecord($rsSerie, false, false, true);
+
+        } else {
+            $oRetorno->iTotalRegistros = 0;
+            $oRetorno->sMessage = urlencode("Nenhuma etapa encontrada para este curso!");
+        }
 
     } else {
-      $oRetorno->iTotalRegistros = 0;
-      $oRetorno->sMessage        = urlencode("Nenhuma etapa encontrada para este curso!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao buscar as etapas!");
     }
-
-  } else {
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao buscar as etapas!");
-  }
 } elseif ($oParam->exec == "getOrientacao") {
 
-  if (isset($oParam->escola)) {
+    if (isset($oParam->escola)) {
 
-    $oDaoEduRelatModel  = db_utils::getdao('edu_relatmodel');
-    $sCampos            = "ed217_orientacao,ed217_i_codigo, case when ed217_orientacao = 2 then 'Retrato' end as nome";
-    $sWhereOrientacao   = "ed217_i_codigo = ". $oParam->iRelatorio." AND ed217_orientacao = 2";
-    $sSqlSec            = $oDaoEduRelatModel->sql_query("",$sCampos,"",$sWhereOrientacao);
-    $rsSec              = $oDaoEduRelatModel->sql_record($sSqlSec);
+        $oDaoEduRelatModel = db_utils::getdao('edu_relatmodel');
+        $sCampos = "ed217_orientacao,ed217_i_codigo, case when ed217_orientacao = 2 then 'Retrato' end as nome";
+        $sWhereOrientacao = "ed217_i_codigo = " . $oParam->iRelatorio . " AND ed217_orientacao = 2";
+        $sSqlSec = $oDaoEduRelatModel->sql_query("", $sCampos, "", $sWhereOrientacao);
+        $rsSec = $oDaoEduRelatModel->sql_record($sSqlSec);
 
-    if ($oDaoEduRelatModel->numrows > 0) {
+        if ($oDaoEduRelatModel->numrows > 0) {
 
-      $oRetorno->aResultOrientacao = db_utils::getCollectionByRecord($rsSec, false, false, true);
+            $oRetorno->aResultOrientacao = db_utils::getCollectionByRecord($rsSec, false, false, true);
+
+        } else {
+
+            $oRetorno->iStatus = 0;
+            //$oRetorno->sMessage = urlencode("Orientação do modelo  paisagem!");
+
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      //$oRetorno->sMessage = urlencode("Orientação do modelo  paisagem!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos relatorios!");
 
     }
-
-  } else {
-
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos relatorios!");
-
-  }
 
 } elseif ($oParam->exec == "getAssinatura") {
 
     if (isset($oParam->escola)) {
 
-      $oDaoEscolaDiretor  = db_utils::getdao('escoladiretor');
-      $sCamposDiretor     = " 'DIRETOR' as funcao, ";
-      $sCamposDiretor    .= "         case when ed20_i_tiposervidor = 1 then ";
-      $sCamposDiretor    .= "                 cgmrh.z01_nome ";
-      $sCamposDiretor    .= "              else cgmcgm.z01_nome ";
-      $sCamposDiretor    .= "         end as nome, ";
-      $sCamposDiretor    .= " ed83_c_descr||' n°: '||ed05_c_numero::varchar as descricao,'D' as tipo ";
-      $sWhereDiretor      = " ed254_i_escola = ".$oParam->escola." AND ed254_c_tipo = 'A' AND ed01_i_funcaoadmin = 2 ";
-      $sSqlDiretor        = $oDaoEscolaDiretor->sql_query_resultadofinal("", $sCamposDiretor, "", $sWhereDiretor);
+        $oDaoEscolaDiretor = db_utils::getdao('escoladiretor');
+        $sCamposDiretor = " 'DIRETOR' as funcao, ";
+        $sCamposDiretor .= "         case when ed20_i_tiposervidor = 1 then ";
+        $sCamposDiretor .= "                 cgmrh.z01_nome ";
+        $sCamposDiretor .= "              else cgmcgm.z01_nome ";
+        $sCamposDiretor .= "         end as nome, ";
+        $sCamposDiretor .= " ed83_c_descr||' n°: '||ed05_c_numero::varchar as descricao,'D' as tipo ";
+        $sWhereDiretor = " ed254_i_escola = " . $oParam->escola . " AND ed254_c_tipo = 'A' AND ed01_i_funcaoadmin = 2 ";
+        $sSqlDiretor = $oDaoEscolaDiretor->sql_query_resultadofinal("", $sCamposDiretor, "", $sWhereDiretor);
 
-      $oDaoRechumanoAtiv  = db_utils::getdao('rechumanoativ');
-      $sCamposSec         = " DISTINCT ed01_c_descr as funcao, ";
-      $sCamposSec        .= "         case when ed20_i_tiposervidor = 1 then ";
-      $sCamposSec        .= "                 cgmrh.z01_nome ";
-      $sCamposSec        .= "              else cgmcgm.z01_nome ";
-      $sCamposSec        .= "         end as nome,";
-      $sCamposSec        .= " ed83_c_descr||' n°: '||ed05_c_numero::varchar as descricao,'O' as tipo ";
-      $sWhereSec          = " ed75_i_escola = ".$oParam->escola." AND ed01_i_funcaoadmin = 3 ";
-      $sSqlSec            = $oDaoRechumanoAtiv->sql_query_resultadofinal("", $sCamposSec, "", $sWhereSec);
+        $oDaoRechumanoAtiv = db_utils::getdao('rechumanoativ');
+        $sCamposSec = " DISTINCT ed01_c_descr as funcao, ";
+        $sCamposSec .= "         case when ed20_i_tiposervidor = 1 then ";
+        $sCamposSec .= "                 cgmrh.z01_nome ";
+        $sCamposSec .= "              else cgmcgm.z01_nome ";
+        $sCamposSec .= "         end as nome,";
+        $sCamposSec .= " ed83_c_descr||' n°: '||ed05_c_numero::varchar as descricao,'O' as tipo ";
+        $sWhereSec = " ed75_i_escola = " . $oParam->escola . " AND ed01_i_funcaoadmin = 3 ";
+        $sSqlSec = $oDaoRechumanoAtiv->sql_query_resultadofinal("", $sCamposSec, "", $sWhereSec);
 
-      $sSqlUnion          = $sSqlDiretor;
-      $sSqlUnion         .= " UNION ";
-      $sSqlUnion         .= $sSqlSec;
+        $sSqlUnion = $sSqlDiretor;
+        $sSqlUnion .= " UNION ";
+        $sSqlUnion .= $sSqlSec;
 
-      $rsAssinatura       = $oDaoEscolaDiretor->sql_record($sSqlUnion);
-      $iLinhas            = $oDaoEscolaDiretor->numrows;
+        $rsAssinatura = $oDaoEscolaDiretor->sql_record($sSqlUnion);
+        $iLinhas = $oDaoEscolaDiretor->numrows;
 
 
-      if ($iLinhas > 0) {
+        if ($iLinhas > 0) {
 
-        $oRetorno->aResultAssinatura = db_utils::getCollectionByRecord($rsAssinatura, false, false, true);
+            $oRetorno->aResultAssinatura = db_utils::getCollectionByRecord($rsAssinatura, false, false, true);
 
-      } else {
+        } else {
 
-        $oRetorno->iStatus  = 0;
-        $oRetorno->sMessage = urlencode("Não foi possível localizar Diretores/Secretários Para a Escola Solicitada!");
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar Diretores/Secretários Para a Escola Solicitada!");
 
-      }
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos Diretores/Secretários!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos Diretores/Secretários!");
 
     }
 
 
-  } elseif ($oParam->exec == "getTipoHistorico") {
+} elseif ($oParam->exec == "getTipoHistorico") {
 
     if (isset($oParam->escola)) {
 
-      $oDaoEduRelatModel = db_utils::getdao('edu_relatmodel');
-      $sCampos           = "ed217_i_codigo, ed217_c_nome";
-      $sSqlRelatModel    = $oDaoEduRelatModel->sql_query("", $sCampos ,"ed217_c_nome", "ed217_i_relatorio = 1");
-      $rsRelatModel      = $oDaoEduRelatModel->sql_record($sSqlRelatModel);
+        $oDaoEduRelatModel = db_utils::getdao('edu_relatmodel');
+        $sCampos = "ed217_i_codigo, ed217_c_nome";
+        $sSqlRelatModel = $oDaoEduRelatModel->sql_query("", $sCampos, "ed217_c_nome", "ed217_i_relatorio = 1");
+        $rsRelatModel = $oDaoEduRelatModel->sql_record($sSqlRelatModel);
 
-      if ($oDaoEduRelatModel->numrows > 0) {
+        if ($oDaoEduRelatModel->numrows > 0) {
 
-        $oRetorno->aResultTipoHistorico = db_utils::getCollectionByRecord($rsRelatModel, false, false, true);
+            $oRetorno->aResultTipoHistorico = db_utils::getCollectionByRecord($rsRelatModel, false, false, true);
 
-      } else {
+        } else {
 
-        $oRetorno->iStatus  = 0;
-        $oRetorno->sMessage = urlencode("Nenhum modelo cadastrado!");
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Nenhum modelo cadastrado!");
 
-      }
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos modelos cadastrados!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos modelos cadastrados!");
 
 
     }
 
-  } elseif ($oParam->exec == "getTipoCertificado") {
+} elseif ($oParam->exec == "getTipoCertificado") {
 
     if (isset($oParam->escola)) {
 
-      $oDaoRelatModel = db_utils::getdao('edu_relatmodel');
-      $sCampos        = "ed217_i_codigo,ed217_c_nome";
-      $sSqlModelo     = $oDaoRelatModel->sql_query("",$sCampos,"ed217_c_nome","ed217_i_relatorio = 2");
-      $rsModelo       = $oDaoRelatModel->sql_record($sSqlModelo);
+        $oDaoRelatModel = db_utils::getdao('edu_relatmodel');
+        $sCampos = "ed217_i_codigo,ed217_c_nome";
+        $sSqlModelo = $oDaoRelatModel->sql_query("", $sCampos, "ed217_c_nome", "ed217_i_relatorio = 2");
+        $rsModelo = $oDaoRelatModel->sql_record($sSqlModelo);
 
-      if ($oDaoRelatModel->numrows > 0) {
+        if ($oDaoRelatModel->numrows > 0) {
 
-        $oRetorno->aResultTipoCertificado = db_utils::getCollectionByRecord($rsModelo, false, false, true);
+            $oRetorno->aResultTipoCertificado = db_utils::getCollectionByRecord($rsModelo, false, false, true);
 
-      } else {
+        } else {
 
-        $oRetorno->iStatus  = 0;
-        $oRetorno->sMessage = urlencode("Nenhum modelo cadastrado!");
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Nenhum modelo cadastrado!");
 
-      }
-
-    } else {
-
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos modelos cadastrados!");
-
-
-    }
-  } elseif ($oParam->exec == "getEscola") {
-
-     $sFiltraModulo        = false;
-     if (isset($oParam->filtraModulo)) {
-       $sFiltraModulo        = $oParam->filtraModulo;
-     }
-     $sWhere = '';
-     if ($sFiltraModulo && db_getsession("DB_modulo") == $iModuloEscola) {
-       $sWhere = " ed18_i_codigo = ".db_getsession("DB_coddepto");
-     }
-     $oDaoEscola           = db_utils::getdao('escola');
-     $sCamposEscola        = "ed18_i_codigo as codigo_escola,ed18_c_nome as nome_escola";
-     $sSqlEscola           = $oDaoEscola->sql_query_file("", $sCamposEscola, "ed18_c_nome", $sWhere);
-     $rsResultEscola       = $oDaoEscola->sql_record($sSqlEscola);
-
-     $oRetorno->itens = db_utils::getCollectionByRecord($rsResultEscola, false, false, true);
-
-  } elseif ($oParam->exec == 'PesquisaCurso') {
-
-	  if (isset($oParam->iCodigoEscola)) {
-
-      $oDaoEnsino          = db_utils::getdao('ensino');
-      $sCampos             = "distinct ed10_i_codigo as codigo_curso,ed29_c_descr as nome_curso";
-      $sWhere              = ($oParam->iCodigoEscola > 0) ? "ed71_i_escola = {$oParam->iCodigoEscola}" : '';
-      $sSqlCursoEscola     = $oDaoEnsino->sql_query_curso("",$sCampos,'ed29_c_descr',$sWhere);
-	    $rsResultCursoEscola = $oDaoEnsino->sql_record($sSqlCursoEscola);
-
-      if ($oDaoEnsino->numrows > 0) {
-
-        $oRetorno->aResultCursoEscola  = db_utils::getCollectionByRecord($rsResultCursoEscola, false, false, true);
-
-      } else {
-
-        $oRetorno->iStatus  = 0;
-        $oRetorno->sMessage = urlencode("Não foi possível localizar o Curso escolhido!");
-
-      }
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos cursos!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos modelos cadastrados!");
+
+
+    }
+} elseif ($oParam->exec == "getEscola") {
+
+    $sFiltraModulo = false;
+    if (isset($oParam->filtraModulo)) {
+        $sFiltraModulo = $oParam->filtraModulo;
+    }
+    $sWhere = '';
+    if ($sFiltraModulo && db_getsession("DB_modulo") == $iModuloEscola) {
+        $sWhere = " ed18_i_codigo = " . db_getsession("DB_coddepto");
+    }
+    $oDaoEscola = db_utils::getdao('escola');
+    $sCamposEscola = "ed18_i_codigo as codigo_escola,ed18_c_nome as nome_escola";
+    $sSqlEscola = $oDaoEscola->sql_query_file("", $sCamposEscola, "ed18_c_nome", $sWhere);
+    $rsResultEscola = $oDaoEscola->sql_record($sSqlEscola);
+
+    $oRetorno->itens = db_utils::getCollectionByRecord($rsResultEscola, false, false, true);
+
+} elseif ($oParam->exec == 'PesquisaCurso') {
+
+    if (isset($oParam->iCodigoEscola)) {
+
+        $oDaoEnsino = db_utils::getdao('ensino');
+        $sCampos = "distinct ed10_i_codigo as codigo_curso,ed29_c_descr as nome_curso";
+        $sWhere = ($oParam->iCodigoEscola > 0) ? "ed71_i_escola = {$oParam->iCodigoEscola}" : '';
+        $sSqlCursoEscola = $oDaoEnsino->sql_query_curso("", $sCampos, 'ed29_c_descr', $sWhere);
+        $rsResultCursoEscola = $oDaoEnsino->sql_record($sSqlCursoEscola);
+
+        if ($oDaoEnsino->numrows > 0) {
+
+            $oRetorno->aResultCursoEscola = db_utils::getCollectionByRecord($rsResultCursoEscola, false, false, true);
+
+        } else {
+
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar o Curso escolhido!");
+
+        }
+
+    } else {
+
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca dos cursos!");
 
     }
 
-  }else if ($oParam->exec == 'getTurmas') {
+} else if ($oParam->exec == 'getTurmas') {
 
-    $oDaoTurma   = db_utils::getdao('serie');
+    $oDaoTurma = db_utils::getdao('serie');
     $sWhereTurma = "ed221_c_origem = 'S'";
     if (isset($oParam->iCurso) && trim($oParam->iCurso) != "") {
-      $sWhereTurma .= " and ed11_i_ensino= {$oParam->iCurso}";
+        $sWhereTurma .= " and ed11_i_ensino= {$oParam->iCurso}";
     }
     if (isset($oParam->iCalendario) && trim($oParam->iCalendario) != "") {
-      $sWhereTurma .= " and ed52_i_codigo= {$oParam->iCalendario}";
+        $sWhereTurma .= " and ed52_i_codigo= {$oParam->iCalendario}";
     }
-		if (isset($oParam->iEscola) && trim($oParam->iEscola) != "") {
-     $sWhereTurma  .= " and ed57_i_escola= {$oParam->iEscola}";
-		}
-		if (isset($oParam->lEncerrada) && trim($oParam->lEncerrada) == "true") {
+    if (isset($oParam->iEscola) && trim($oParam->iEscola) != "") {
+        $sWhereTurma .= " and ed57_i_escola= {$oParam->iEscola}";
+    }
+    if (isset($oParam->lEncerrada) && trim($oParam->lEncerrada) == "true") {
 
-		  $sWhereTurma  .= " and EXISTS( select 1 from regencia where ed59_c_encerrada = 'S' and ed59_i_turma = ed57_i_codigo) ";
-		}
-    $sCampos =  "distinct ed57_i_codigo as codigo_turma, ed57_c_descr as nome_turma";
-    $sOrder  =  "ed57_c_descr";
+        $sWhereTurma .= " and EXISTS( select 1 from regencia where ed59_c_encerrada = 'S' and ed59_i_turma = ed57_i_codigo) ";
+    }
+    $sCampos = "distinct ed57_i_codigo as codigo_turma, ed57_c_descr as nome_turma";
+    $sOrder = "ed57_c_descr";
     if (isset($oParam->lListarTurmasComEtapa) && $oParam->lListarTurmasComEtapa == 'true') {
 
-      $sCampos .= ", ed11_i_codigo as codigo_etapa, ed11_c_descr as nome_etapa";
-      $sOrder  .= ", ed11_c_descr";
+        $sCampos .= ", ed11_i_codigo as codigo_etapa, ed11_c_descr as nome_etapa";
+        $sOrder .= ", ed11_c_descr";
     }
     $sSqlTurma = $oDaoTurma->sql_query_relatorio("",
-                                                 $sCampos,
-                                                 $sOrder,
-                                                 $sWhereTurma
-                                                );
-    $rsResultTurma     = $oDaoTurma->sql_record($sSqlTurma);
-    $oRetorno->aTurmas = db_utils::getCollectionByRecord($rsResultTurma,false,false,true);
+        $sCampos,
+        $sOrder,
+        $sWhereTurma
+    );
+    $rsResultTurma = $oDaoTurma->sql_record($sSqlTurma);
+    $oRetorno->aTurmas = db_utils::getCollectionByRecord($rsResultTurma, false, false, true);
 
-  } else if ($oParam->exec == 'getDisciplinasTurma') {
+} else if ($oParam->exec == 'getDisciplinasTurma') {
 
     $sWhere = "";
     if (isset($oParam->iTurma) && $oParam->iTurma != "") {
-      $sWhere .= "ed59_i_turma = {$oParam->iTurma}";
+        $sWhere .= "ed59_i_turma = {$oParam->iTurma}";
     }
 
     $oDaoRegencia = db_utils::getdao('regencia');
     $sSqlRegencia = $oDaoRegencia->sql_query("",
-                                                 "distinct
+        "distinct
                                                   ed232_i_codigo as codigo_disciplina,
                                                   ed232_c_descr  as nome_disciplina",
-                                                 "ed232_c_descr",
-                                                 $sWhere );
+        "ed232_c_descr",
+        $sWhere);
 
-    $rsDisciplinasTurma     = $oDaoRegencia->sql_record($sSqlRegencia);
+    $rsDisciplinasTurma = $oDaoRegencia->sql_record($sSqlRegencia);
     $oRetorno->aDisciplinas = db_utils::getCollectionByRecord($rsDisciplinasTurma, false, false, true);
-  } else if ($oParam->exec == 'getPeriodosAvaliacaoEscola') {
+} else if ($oParam->exec == 'getPeriodosAvaliacaoEscola') {
 
     $sWhere = '';
     if (isset($oParam->iCalendario) && $oParam->iCalendario != "") {
-      $sWhere = "ed53_i_calendario = {$oParam->iCalendario}";
+        $sWhere = "ed53_i_calendario = {$oParam->iCalendario}";
     }
 
     $oDaoPeriodoCalendario = db_utils::getDao("periodocalendario");
-    $sCampos               = " ed09_i_codigo as codigo_periodo, ed09_c_descr as descricao_periodo";
-    $sSqlPeriodos          = $oDaoPeriodoCalendario->sql_query(null, $sCampos, "ed09_i_sequencia", $sWhere);
-    $rsPeriodos            = $oDaoPeriodoCalendario->sql_record($sSqlPeriodos);
-    $oRetorno->aPeriodos   = db_utils::getCollectionByRecord($rsPeriodos, false, false, true);
+    $sCampos = " ed09_i_codigo as codigo_periodo, ed09_c_descr as descricao_periodo";
+    $sSqlPeriodos = $oDaoPeriodoCalendario->sql_query(null, $sCampos, "ed09_i_sequencia", $sWhere);
+    $rsPeriodos = $oDaoPeriodoCalendario->sql_record($sSqlPeriodos);
+    $oRetorno->aPeriodos = db_utils::getCollectionByRecord($rsPeriodos, false, false, true);
 
-  } else if ($oParam->exec == 'PesquisaCalendarioAnoAgrupado') {
+} else if ($oParam->exec == 'PesquisaCalendarioAnoAgrupado') {
 
-    $oDaoCalendario     = db_utils::getdao('calendario');
-    $sWhere             = " ed52_c_passivo = 'N' ";
+    $oDaoCalendario = db_utils::getdao('calendario');
+    $sWhere = " ed52_c_passivo = 'N' ";
     if (!empty($oParam->escola)) {
-      $sWhere .= " and ed38_i_escola = {$oParam->escola}";
+        $sWhere .= " and ed38_i_escola = {$oParam->escola}";
     }
     $sSqlCalendario = $oDaoCalendario->sql_query_calendariorelatorio("",
-                                                                     "distinct ed52_i_ano",
-                                                                     "ed52_i_ano desc",
-                                                                      $sWhere
-                                                                    );
+        "distinct ed52_i_ano",
+        "ed52_i_ano desc",
+        $sWhere
+    );
     $rsResultCalendario = $oDaoCalendario->sql_record($sSqlCalendario);
 
     if ($oDaoCalendario->numrows > 0) {
 
-      $oRetorno->iEscola  = $oParam->escola;
-      $oRetorno->aResult  = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);
+        $oRetorno->iEscola = $oParam->escola;
+        $oRetorno->aResult = db_utils::getCollectionByRecord($rsResultCalendario, false, false, true);
 
     } else {
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário escolhido!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário escolhido!");
     }
-  } elseif ($oParam->exec == 'PesquisaEtapaAno') {
+} elseif ($oParam->exec == 'PesquisaEtapaAno') {
 
     $sWhere = "";
 
     if (isset($oParam->escola) && isset($oParam->calendario)) {
 
-      $oDaoTurma          = db_utils::getdao('turma');
-      $sSqlEtapa          = $oDaoTurma->sql_query_relatorio("",
-                                                            "DISTINCT ed11_i_codigo,
+        $oDaoTurma = db_utils::getdao('turma');
+        $sSqlEtapa = $oDaoTurma->sql_query_relatorio("",
+            "DISTINCT ed11_i_codigo,
                                                              ed11_c_descr,
                                                              ed11_i_ensino,ed11_i_sequencia",
-                                                            "ed11_i_ensino,ed11_i_sequencia",
-                                                            "ed52_i_ano = ".$oParam->calendario.
-                                                            " AND ed57_i_escola = ".$oParam->escola
-                                                           );
-      $rsResultEtapa      = $oDaoTurma->sql_record($sSqlEtapa);
+            "ed11_i_ensino,ed11_i_sequencia",
+            "ed52_i_ano = " . $oParam->calendario .
+            " AND ed57_i_escola = " . $oParam->escola
+        );
+        $rsResultEtapa = $oDaoTurma->sql_record($sSqlEtapa);
 
-      if ($oDaoTurma->numrows > 0) {
+        if ($oDaoTurma->numrows > 0) {
 
-        $oRetorno->aResult1 = db_utils::getCollectionByRecord($rsResultEtapa, false, false, true);
+            $oRetorno->aResult1 = db_utils::getCollectionByRecord($rsResultEtapa, false, false, true);
 
-      } else {
-        $oRetorno->iStatus  = 0;
-        $oRetorno->sMessage = urlencode("Não foi possível localizar as etapas solicitadas!");
-      }
+        } else {
+            $oRetorno->iStatus = 0;
+            $oRetorno->sMessage = urlencode("Não foi possível localizar as etapas solicitadas!");
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode("Erro ao realizar a busca da etapa!");
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Erro ao realizar a busca da etapa!");
 
     }
 
-  } elseif ($oParam->exec == 'getPeriodosAvaliacaoPorTurma') {
+} elseif ($oParam->exec == 'getPeriodosAvaliacaoPorTurma') {
 
     $oRetorno->aPeriodos = array();
-    if(isset($oParam->iTurma)) {
+    if (isset($oParam->iTurma)) {
+        $oDaoPeriodoTurma = new cl_turma();
+        $sWherePeriodoTurma = "ed57_i_codigo = {$oParam->iTurma}";
+        $sSqlPeriodoTurma = $oDaoPeriodoTurma->sql_query_periodoavaliacao(
+            null,
+            "DISTINCT ed09_i_codigo as codigo_periodo, ed09_c_descr as descricao_periodo",
+            "ed09_i_codigo",
+            $sWherePeriodoTurma
+        );
 
-      $oDaoPeriodoTurma   = db_utils::getDao("turma");
-      $sWherePeriodoTurma = "ed57_i_codigo = {$oParam->iTurma}";
-      $sSqlPeriodoTurma   = $oDaoPeriodoTurma->sql_query_periodoavaliacao(null,
-                                                                          "ed09_i_codigo as codigo_periodo,
-                                                                           ed09_c_descr as descricao_periodo",
-                                                                          "ed09_i_codigo",
-                                                                          $sWherePeriodoTurma
-                                                                         );
-      $rsPeriodoTurma     = $oDaoPeriodoTurma->sql_record($sSqlPeriodoTurma);
-      if($oDaoPeriodoTurma->numrows > 0) {
-        $oRetorno->aPeriodos = db_utils::getCollectionByRecord($rsPeriodoTurma, false, false, true);
-      }
+        $rsPeriodoTurma = $oDaoPeriodoTurma->sql_record($sSqlPeriodoTurma);
+        if ($oDaoPeriodoTurma->numrows > 0) {
+            $oRetorno->aPeriodos = db_utils::getCollectionByRecord($rsPeriodoTurma, false, false, true);
+        }
     }
-  } else if ($oParam->exec == 'verificaSituacaoDocumentacao') {
+} else if ($oParam->exec == 'verificaSituacaoDocumentacao') {
 
     $oRetorno->iSituacaoDocumentacao = 0;
     $oRetorno->lBloqueiaDocumentacao = true;
 
-    $oDaoAluno    = db_utils::getDao("aluno");
-    $sWhereAluno  = "ed47_i_codigo = {$oParam->iAluno}";
+    $oDaoAluno = db_utils::getDao("aluno");
+    $sWhereAluno = "ed47_i_codigo = {$oParam->iAluno}";
     $sCamposAluno = "ed47_situacaodocumentacao, ed47_v_ident, ed47_c_certidaonum, ed47_v_cnh, ed47_v_cpf, ed47_c_passaporte";
-    $sSqlAluno    = $oDaoAluno->sql_query_file(null, $sCamposAluno, null, $sWhereAluno);
-    $rsAluno      = $oDaoAluno->sql_record($sSqlAluno);
+    $sSqlAluno = $oDaoAluno->sql_query_file(null, $sCamposAluno, null, $sWhereAluno);
+    $rsAluno = $oDaoAluno->sql_record($sSqlAluno);
 
     if ($oDaoAluno->numrows > 0) {
 
-      $oDadosAluno = db_utils::fieldsMemory($rsAluno, 0);
-      $oRetorno->iSituacaoDocumentacao = $oDadosAluno->ed47_situacaodocumentacao;
+        $oDadosAluno = db_utils::fieldsMemory($rsAluno, 0);
+        $oRetorno->iSituacaoDocumentacao = $oDadosAluno->ed47_situacaodocumentacao;
 
-      if (empty($oDadosAluno->ed47_v_ident) &&
-          empty($oDadosAluno->ed47_c_certidaonum) &&
-          empty($oDadosAluno->ed47_v_cnh) &&
-          empty($oDadosAluno->ed47_v_cpf) &&
-          empty($oDadosAluno->ed47_c_passaporte)) {
-        $oRetorno->lBloqueiaDocumentacao = false;
-      }
+        if (empty($oDadosAluno->ed47_v_ident) &&
+            empty($oDadosAluno->ed47_c_certidaonum) &&
+            empty($oDadosAluno->ed47_v_cnh) &&
+            empty($oDadosAluno->ed47_v_cpf) &&
+            empty($oDadosAluno->ed47_c_passaporte)) {
+            $oRetorno->lBloqueiaDocumentacao = false;
+        }
 
     } else {
 
-      $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode($oDaoAluno->erro_msg);
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode($oDaoAluno->erro_msg);
     }
-  } else if ($oParam->exec == 'salvaSituacaoDocumentacao') {
+} else if ($oParam->exec == 'salvaSituacaoDocumentacao') {
 
     try {
 
-      db_inicio_transacao();
+        db_inicio_transacao();
 
-      $oDaoAluno   = db_utils::getDao("aluno");
-      $sWhereAluno = "ed47_i_codigo = {$oParam->iAluno}";
-      $sSqlAluno   = $oDaoAluno->sql_query_file(null, "*", null, $sWhereAluno);
-      $rsAluno     = $oDaoAluno->sql_record($sSqlAluno);
+        $oDaoAluno = db_utils::getDao("aluno");
+        $sWhereAluno = "ed47_i_codigo = {$oParam->iAluno}";
+        $sSqlAluno = $oDaoAluno->sql_query_file(null, "*", null, $sWhereAluno);
+        $rsAluno = $oDaoAluno->sql_record($sSqlAluno);
 
-      if ($oDaoAluno->numrows > 0) {
+        if ($oDaoAluno->numrows > 0) {
 
-        $oDaoAlteracaoAluno                            = db_utils::getDao("aluno");
-        $oDaoAlteracaoAluno->ed47_situacaodocumentacao = $oParam->iSituacaoDocumentacao;
-        $oDaoAlteracaoAluno->ed47_i_codigo             = $oParam->iAluno;
-        $oDaoAlteracaoAluno->alterar($oParam->iAluno);
+            $oDaoAlteracaoAluno = db_utils::getDao("aluno");
+            $oDaoAlteracaoAluno->ed47_situacaodocumentacao = $oParam->iSituacaoDocumentacao;
+            $oDaoAlteracaoAluno->ed47_i_codigo = $oParam->iAluno;
+            $oDaoAlteracaoAluno->alterar($oParam->iAluno);
 
-        if ($oDaoAluno->erro_status == "0") {
-          throw new DBException($oDaoAluno->erro_msg);
+            if ($oDaoAluno->erro_status == "0") {
+                throw new DBException($oDaoAluno->erro_msg);
+            }
         }
-      }
 
-      db_fim_transacao();
+        db_fim_transacao();
     } catch (DBException $oErro) {
 
-      db_fim_transacao(true);
-      $oRetorno->iStatus  = 2;
-      $oRetorno->sMessage = urlencode($oErro->getMessage());
+        db_fim_transacao(true);
+        $oRetorno->iStatus = 2;
+        $oRetorno->sMessage = urlencode($oErro->getMessage());
     }
-  }
+} else if ($oParam->exec == 'getBairrosQuadroVagas') {
+    $bBairro = "SELECT DISTINCT ed18_i_bairro,
+                                j13_descr
+                           FROM escola
+                     INNER JOIN bairro ON ed18_i_bairro = j13_codi
+                     INNER JOIN turma ON ed57_i_escola = ed18_i_codigo
+		     INNER JOIN calendario ON  ed57_i_calendario = ed52_i_codigo
+                          WHERE ed52_i_ano = ".db_getsession("DB_anousu")."
+			    AND j13_codi <> 0
+                    ORDER BY 2";
+    $rsBairro = db_query($bBairro);
+    $nBairro = pg_num_rows($rsBairro);
+
+    if ($nBairro > 0) {
+        $oRetorno->aResult = db_utils::getCollectionByRecord($rsBairro, false, false, true);
+    } else {
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Não foi possível localizar o Bairro!");
+    }
+} else if ($oParam->exec == 'getCalendariosBairrosQuadroVagas') {
+
+    $cod_bairro = "";
+    for($abc = 0, $abcMax = count($oParam->bairros); $abc < $abcMax; $abc++){
+        if($abc > 0){
+            $cod_bairro .= ",";
+        }
+        $cod_bairro .= $oParam->bairros[$abc];
+    }
+        $bCalendario = "SELECT DISTINCT ed52_c_descr
+                                   FROM calendario
+                             INNER JOIN turma ON ed57_i_calendario = ed52_i_codigo
+                             INNER JOIN escola ON ed57_i_escola = ed18_i_codigo
+                                  WHERE ed52_i_ano > 2018
+                                    AND ed18_i_bairro IN ($cod_bairro)
+                               ORDER BY ed52_c_descr";
+        $rsCalendario = db_query($bCalendario);
+        $nCalendario = pg_num_rows($rsCalendario);
+    if ($nCalendario > 0) {
+        $oRetorno->aResult = db_utils::getCollectionByRecord($rsCalendario, false, false, true);
+    } else {
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Não foi possível localizar o Calendário!");
+    }
+} else if ($oParam->exec == 'getEtapasBairrosQuadroVagas') {
+
+    $cod_bairro = "";
+    $cod_calendario = "";
+    for($abc = 0, $abcMax = count($oParam->bairros); $abc < $abcMax; $abc++){
+        if($abc > 0){
+            $cod_bairro .= ",";
+        }
+        $cod_bairro .= $oParam->bairros[$abc];
+    }
+
+    $calendarios = explode(",",$oParam->calendarios);
+    for($def = 0, $defMax = count($calendarios); $def < $defMax; $def++){
+        if($def > 0){
+            $cod_calendario .= "','";
+        }
+        $cod_calendario .= $calendarios[$def];
+    }
+    $bEtapa = "SELECT DISTINCT ed11_i_codigo,
+                          ed11_c_descr
+                     FROM serie
+               INNER JOIN serieregimemat ON ed223_i_serie = ed11_i_codigo
+               INNER JOIN turmaserieregimemat ON ed220_i_serieregimemat = ed223_i_codigo
+               INNER JOIN turma ON ed220_i_turma = ed57_i_codigo
+               INNER JOIN escola ON ed18_i_codigo = ed57_i_escola
+                    WHERE ed57_i_calendario IN (SELECT ed52_i_codigo FROM calendario WHERE ed52_c_descr IN ('$cod_calendario') AND ed52_i_ano > 2018)
+                      AND ed18_i_bairro IN ($cod_bairro)
+                 ORDER BY 2";
+        $rsEtapa = db_query($bEtapa);
+        $nEtapa = pg_num_rows($rsEtapa);
+    if ($nEtapa > 0) {
+        $oRetorno->aResult = db_utils::getCollectionByRecord($rsEtapa, false, false, true);
+    } else {
+        $oRetorno->iStatus = 0;
+        $oRetorno->sMessage = urlencode("Não foi possível localizar a Etapa!");
+    }
+}
 echo $oJson->encode($oRetorno);
 ?>

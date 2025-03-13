@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -202,16 +202,20 @@ class cl_recibopagaboleto {
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->k138_sequencial));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,18783,'$this->k138_sequencial','I')");
-       $resac = db_query("insert into db_acount values($acount,3331,18783,'','".AddSlashes(pg_result($resaco,0,'k138_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,3331,18784,'','".AddSlashes(pg_result($resaco,0,'k138_numnov'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,3331,18785,'','".AddSlashes(pg_result($resaco,0,'k138_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,3331,18786,'','".AddSlashes(pg_result($resaco,0,'k138_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,3331,18787,'','".AddSlashes(pg_result($resaco,0,'k138_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount) && ($lSessaoDesativarAccount === false))) {
+         if (($resaco != false) || ($this->numrows != 0)) {
+             $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+             $acount = pg_result($resac, 0, 0);
+             $resac = db_query("insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ")");
+             $resac = db_query("insert into db_acountkey values($acount,18783,'$this->k138_sequencial','I')");
+             $resac = db_query("insert into db_acount values($acount,3331,18783,'','" . AddSlashes(pg_result($resaco, 0, 'k138_sequencial')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+             $resac = db_query("insert into db_acount values($acount,3331,18784,'','" . AddSlashes(pg_result($resaco, 0, 'k138_numnov')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+             $resac = db_query("insert into db_acount values($acount,3331,18785,'','" . AddSlashes(pg_result($resaco, 0, 'k138_data')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+             $resac = db_query("insert into db_acount values($acount,3331,18786,'','" . AddSlashes(pg_result($resaco, 0, 'k138_hora')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+             $resac = db_query("insert into db_acount values($acount,3331,18787,'','" . AddSlashes(pg_result($resaco, 0, 'k138_usuario')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+         }
      }
      return true;
    } 
@@ -304,23 +308,31 @@ class cl_recibopagaboleto {
        $sql .= " k138_sequencial = $this->k138_sequencial";
      }
      $resaco = $this->sql_record($this->sql_query_file($this->k138_sequencial));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,18783,'$this->k138_sequencial','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["k138_sequencial"]) || $this->k138_sequencial != "")
-           $resac = db_query("insert into db_acount values($acount,3331,18783,'".AddSlashes(pg_result($resaco,$conresaco,'k138_sequencial'))."','$this->k138_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["k138_numnov"]) || $this->k138_numnov != "")
-           $resac = db_query("insert into db_acount values($acount,3331,18784,'".AddSlashes(pg_result($resaco,$conresaco,'k138_numnov'))."','$this->k138_numnov',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["k138_data"]) || $this->k138_data != "")
-           $resac = db_query("insert into db_acount values($acount,3331,18785,'".AddSlashes(pg_result($resaco,$conresaco,'k138_data'))."','$this->k138_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["k138_hora"]) || $this->k138_hora != "")
-           $resac = db_query("insert into db_acount values($acount,3331,18786,'".AddSlashes(pg_result($resaco,$conresaco,'k138_hora'))."','$this->k138_hora',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["k138_usuario"]) || $this->k138_usuario != "")
-           $resac = db_query("insert into db_acount values($acount,3331,18787,'".AddSlashes(pg_result($resaco,$conresaco,'k138_usuario'))."','$this->k138_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount) && ($lSessaoDesativarAccount === false))) {
+         if ($this->numrows > 0) {
+             for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
+                 $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+                 $acount = pg_result($resac, 0, 0);
+                 $resac = db_query("insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ")");
+                 $resac = db_query("insert into db_acountkey values($acount,18783,'$this->k138_sequencial','A')");
+                 if (isset($GLOBALS["HTTP_POST_VARS"]["k138_sequencial"]) || $this->k138_sequencial != "") {
+                     $resac = db_query("insert into db_acount values($acount,3331,18783,'" . AddSlashes(pg_result($resaco, $conresaco, 'k138_sequencial')) . "','$this->k138_sequencial'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+                 }
+                 if (isset($GLOBALS["HTTP_POST_VARS"]["k138_numnov"]) || $this->k138_numnov != "") {
+                     $resac = db_query("insert into db_acount values($acount,3331,18784,'" . AddSlashes(pg_result($resaco, $conresaco, 'k138_numnov')) . "','$this->k138_numnov'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+                 }
+                 if (isset($GLOBALS["HTTP_POST_VARS"]["k138_data"]) || $this->k138_data != "") {
+                     $resac = db_query("insert into db_acount values($acount,3331,18785,'" . AddSlashes(pg_result($resaco, $conresaco, 'k138_data')) . "','$this->k138_data'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+                 }
+                 if (isset($GLOBALS["HTTP_POST_VARS"]["k138_hora"]) || $this->k138_hora != "") {
+                     $resac = db_query("insert into db_acount values($acount,3331,18786,'" . AddSlashes(pg_result($resaco, $conresaco, 'k138_hora')) . "','$this->k138_hora'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+                 }
+                 if (isset($GLOBALS["HTTP_POST_VARS"]["k138_usuario"]) || $this->k138_usuario != "") {
+                     $resac = db_query("insert into db_acount values($acount,3331,18787,'" . AddSlashes(pg_result($resaco, $conresaco, 'k138_usuario')) . "','$this->k138_usuario'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+                 }
+             }
+         }
      }
      $result = db_query($sql);
      if($result==false){ 
@@ -361,18 +373,22 @@ class cl_recibopagaboleto {
      }else{ 
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,18783,'$k138_sequencial','E')");
-         $resac = db_query("insert into db_acount values($acount,3331,18783,'','".AddSlashes(pg_result($resaco,$iresaco,'k138_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,3331,18784,'','".AddSlashes(pg_result($resaco,$iresaco,'k138_numnov'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,3331,18785,'','".AddSlashes(pg_result($resaco,$iresaco,'k138_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,3331,18786,'','".AddSlashes(pg_result($resaco,$iresaco,'k138_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,3331,18787,'','".AddSlashes(pg_result($resaco,$iresaco,'k138_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       }
+
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount) && ($lSessaoDesativarAccount === false))) {
+         if (($resaco != false) || ($this->numrows != 0)) {
+             for ($iresaco = 0; $iresaco < $this->numrows; $iresaco++) {
+                 $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+                 $acount = pg_result($resac, 0, 0);
+                 $resac = db_query("insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ")");
+                 $resac = db_query("insert into db_acountkey values($acount,18783,'$k138_sequencial','E')");
+                 $resac = db_query("insert into db_acount values($acount,3331,18783,'','" . AddSlashes(pg_result($resaco, $iresaco, 'k138_sequencial')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+                 $resac = db_query("insert into db_acount values($acount,3331,18784,'','" . AddSlashes(pg_result($resaco, $iresaco, 'k138_numnov')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+                 $resac = db_query("insert into db_acount values($acount,3331,18785,'','" . AddSlashes(pg_result($resaco, $iresaco, 'k138_data')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+                 $resac = db_query("insert into db_acount values($acount,3331,18786,'','" . AddSlashes(pg_result($resaco, $iresaco, 'k138_hora')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+                 $resac = db_query("insert into db_acount values($acount,3331,18787,'','" . AddSlashes(pg_result($resaco, $iresaco, 'k138_usuario')) . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
+             }
+         }
      }
      $sql = " delete from recibopagaboleto
                     where ";
@@ -554,14 +570,15 @@ class cl_recibopagaboleto {
      return $sSqlBoleto;
    }
 
-   /**
-    * Busca informacoes do debito 
-    * 
-    * @param integer $iNumpreDebito 
-    * @access public
-    * @return string
-    */
-   public function sql_queryDadosDebito($iNumpreDebito) {
+  /**
+   * Busca informacoes do debito
+   *
+   * @param int $iNumpreDebito
+   * @param int $iNumparDebito
+   *
+   * @return string
+   */
+   public function sql_queryDadosDebito($iNumpreDebito, $iNumparDebito) {
 
      $sSqlDebito  = " select distinct                                     \n";
      $sSqlDebito .= " arrecad.k00_numpre              as numpre_debito,   \n";
@@ -580,9 +597,9 @@ class cl_recibopagaboleto {
      $sSqlDebito .= "   limit 1  )                    as cgm              \n";
      $sSqlDebito .= "  from arrecad                                       \n";
      $sSqlDebito .= " where k00_numpre = {$iNumpreDebito}                 \n";
+     $sSqlDebito .= "   and k00_numpar = {$iNumparDebito}                 \n";
 
      return $sSqlDebito;
    }
-
 }
 ?>

@@ -1,0 +1,151 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010853' name='recursoshumanos.monitoramentosaudeexame' description="Exames complementares porventura realizados pelo trabalhador, além de outros solicitados pelo médico e os referentes ao ASO." prefix="h27" label="Exames complementares ASO" type="0">
+  <fields>
+    <field codigo="1013622" 
+           campo_api='' 
+           name="h27_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial único" 
+           inivalue="0" 
+           label="Código sequencial único" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código sequencial único" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.monitoramentosaudeexame_h27_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013623" 
+           campo_api='' 
+           name="h27_monitoriamentosaude" 
+           conteudo="int4" 
+           description="Código que referencia a tabela monitoriamentosaude" 
+           inivalue="0" 
+           label="Código de monitoriamento de saúde" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código de monitoriamento de saúde" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013624" 
+           campo_api='' 
+           name="h27_data" 
+           conteudo="date" 
+           description="Data do exame realizado." 
+           inivalue="null" 
+           label="Data do exame" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data do exame" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013625" 
+           campo_api='' 
+           name="h27_resultado" 
+           conteudo="int4" 
+           description="Indicação dos resultados" 
+           inivalue="0" 
+           label="Indicação dos resultados" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Indicação dos resultados" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013626" 
+           campo_api='' 
+           name="h27_procedimento" 
+           conteudo="varchar(4)" 
+           description="Código do procedimento diagnóstico." 
+           inivalue="" 
+           label="Código do procedimento." 
+           size="4" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Código do procedimento." 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013627" 
+           campo_api='' 
+           name="h27_observacao" 
+           conteudo="varchar(255)" 
+           description="Observação sobre o procedimento diagnóstico realizado." 
+           inivalue="" 
+           label="Observação" 
+           size="255" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Observação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013628" 
+           campo_api='' 
+           name="h27_ordem" 
+           conteudo="int4" 
+           description="Ordem do exame." 
+           inivalue="0" 
+           label="Ordem do exame" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ordem do exame" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="h27_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="monitoramentosaude" inner='t'>
+      <fieldfk name="h27_monitoriamentosaude" reference="h26_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="monitoramentosaudeprocedimento" inner='t'>
+      <fieldfk name="h27_procedimento" reference="h28_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

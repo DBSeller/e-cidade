@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -378,6 +378,10 @@ class cl_db_usuacgm {
    */
   function sql_matricula_usuario($iUsuario){
 
+    $iAnousu = DBPessoal::getAnoFolha();
+    $iMesusu = DBPessoal::getMesFolha();
+    $iInstit = db_getsession("DB_instit");
+
     $sSql  = "select distinct rh01_regist                                                        ";
     $sSql .= "  from db_usuacgm                                                                  ";
     $sSql .= "       inner join db_usuarios   on db_usuarios.id_usuario  = db_usuacgm.id_usuario ";
@@ -386,6 +390,8 @@ class cl_db_usuacgm {
     $sSql .= "       inner join rhpessoalmov  on rh02_regist = rh01_regist                       ";
     $sSql .= "       left  join rhpesrescisao on rh05_seqpes = rh02_seqpes                       ";
     $sSql .= "       where rh05_recis is null and db_usuarios.id_usuario = $iUsuario             ";
+    $sSql .= "         and rh02_instit = {$iInstit} and rh02_anousu = {$iAnousu}                 ";
+    $sSql .= "         and rh02_mesusu = {$iMesusu}                                              ";
     return $sSql;
   }
 }

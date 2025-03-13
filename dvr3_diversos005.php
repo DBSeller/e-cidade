@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,32 +25,35 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
-require_once("classes/db_diversos_classe.php");
-require_once("classes/db_procdiver_classe.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_arreinscr_classe.php");
-require_once("classes/db_arrematric_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_inflan_classe.php");
+require_once(modification("classes/db_diversos_classe.php"));
+require_once(modification("classes/db_procdiver_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_arreinscr_classe.php"));
+require_once(modification("classes/db_arrematric_classe.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_inflan_classe.php"));
 
-require_once("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $cldiversos = new cl_diversos;
 $clinflan = new cl_inflan;
-$clprocdiver= new cl_procdiver;
-$clcgm= new cl_cgm;
+$clprocdiver = new cl_procdiver;
+$clcgm = new cl_cgm;
 $cliptubase= new cl_iptubase;
-$clissbase= new cl_issbase;
-$clarrematric= new cl_arrematric;
-$clarreinscr= new cl_arreinscr;
+$clissbase = new cl_issbase;
+$clarrematric = new cl_arrematric;
+$clarreinscr = new cl_arreinscr;
+$cldiversoslotelog = new cl_diversoslotelog;
+$cldiversoslotelogreg = new cl_diversoslotelogreg;
+
 $db_opcao = 1;
 $db_botao = true;
 if(isset($z_numcgm) && $z_numcgm!=""){
@@ -71,8 +74,8 @@ if(isset($z_numcgm) && $z_numcgm!=""){
     $tipo="matric"; 
     $valor=$j01_matric;
   }else{
-     db_redireciona("dvr3_diversos004.php?dado=matric");      
-     exit;
+    db_redireciona("dvr3_diversos004.php?dado=matric");      
+    exit;
   }
 }else if(isset($q02_inscr) && $q02_inscr!=""){
   $result06=$clissbase->sql_record($clissbase->sql_query($q02_inscr,"q02_numcgm,z01_nome"));
@@ -88,9 +91,9 @@ if(isset($z_numcgm) && $z_numcgm!=""){
 }
 if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir"){
   db_inicio_transacao();
+
   $sqlerro=false;
-  $result06=db_query("select nextval('numpref_k03_numpre_seq')");
-  db_fieldsmemory($result06,0);
+
   if($dv05_numtot=="1"){
     $HTTP_POST_VARS["dv05_diaprox"]=$dv05_privenc_dia;
     $HTTP_POST_VARS["dv05_provenc"]=$dv05_privenc_ano.$dv05_privenc_mes.$dv05_privenc_dia;
@@ -100,54 +103,185 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
     $cldiversos->dv05_provenc_ano=$dv05_privenc_ano;
     $cldiversos->dv05_diaprox=$dv05_privenc_dia;
   }
-  $cldiversos->dv05_numpre=$nextval; 
-  $cldiversos->dv05_instit = db_getsession('DB_instit');
-  $cldiversos->incluir($dv05_coddiver);
-  if($cldiversos->erro_status=='0'){
-     $sqlerro=true;
-  }
-  if($tipo=="matric"){
-    $clarrematric->k00_numpre=$nextval;  
-    $clarrematric->k00_matric=$valor;  
-    $clarrematric->k00_perc=100;  
-    $clarrematric->incluir($nextval,$valor);  
-    if($clarrematric->erro_status=='0'){
+
+  // Se for inclusão em lote
+  if (!empty($_POST['dadosValidos'])) {
+    $arrayDadosValidos = explode(",", $_POST['dadosValidos']);
+    $arrayDadosInvalidos = explode(",", $_POST['dadosInvalidos']);
+    $tipo = $_POST['selectImportarPlanilha'];
+
+    // Insere na tabela diversoslotelog
+    $cldiversoslotelog->dv06_usuario = db_getsession('DB_id_usuario');
+    $cldiversoslotelog->dv06_datainclusao = date('Y-m-d');
+    $cldiversoslotelog->dv06_horainclusao = date('H:i:s');
+    $cldiversoslotelog->dv06_arquivocsv = $importarplanilha;
+    $cldiversoslotelog->incluir();
+    if ($cldiversoslotelog->erro_status == "0") {
+      throw new \Exception($cldiversoslotelog->erro_msg);
+    }
+
+    foreach ($arrayDadosValidos as $chave => $valor) {
+
+      if ($tipo == 'cgm') {
+        $result04=$clcgm->sql_record($clcgm->sql_query_file($valor,"z01_numcgm,z01_nome"));
+        if($clcgm->numrows>0){
+          db_fieldsmemory($result04,0);
+          $cldiversos->dv05_numcgm=$z01_numcgm;
+        }  
+      } elseif ($tipo == 'matric') {
+        $result05=$cliptubase->sql_record($cliptubase->sql_query($valor,"j01_numcgm,z01_nome"));
+        if($cliptubase->numrows>0){
+          db_fieldsmemory($result05,0);
+          $cldiversos->dv05_numcgm=$j01_numcgm;
+        }
+      } elseif ($tipo == 'inscr') {
+        $result06=$clissbase->sql_record($clissbase->sql_query($valor,"q02_numcgm,z01_nome"));
+        if($clissbase->numrows>0){
+          db_fieldsmemory($result06,0);
+          $cldiversos->dv05_numcgm=$q02_numcgm;
+        }
+      }
+
+      // Insere valor atual na diversos
+      $result06=db_query("select nextval('numpref_k03_numpre_seq')");
+      db_fieldsmemory($result06,0);
+
+      $cldiversos->dv05_numpre=$nextval; 
+      $cldiversos->dv05_instit = db_getsession('DB_instit');
+      $cldiversos->incluir($dv05_coddiver);
+
+      $cldiversoslotelogreg->dv07_sequencial = null;
+      $cldiversoslotelogreg->dv07_diversoslotelog = $cldiversoslotelog->dv06_sequencial;
+      $cldiversoslotelogreg->dv07_tipodado = $tipo;
+
+      // Caso existam dados invalidos, insere na tabela diversoslotelogreg
+      if (!empty($arrayDadosInvalidos)) {
+        foreach ($arrayDadosInvalidos as $value) {
+          $cldiversoslotelogreg->dv07_dadovalido = null;
+          $cldiversoslotelogreg->dv07_coddiver = null;
+          $cldiversoslotelogreg->dv07_dadoinvalido = $value;
+          $cldiversoslotelogreg->incluir();
+
+          $cldiversoslotelogreg->dv07_sequencial = null;
+
+        }
+        $arrayDadosInvalidos = null;
+      }
+
+      // Continua a inserir os dados validos na tabela diversoslotelogreg
+      $cldiversoslotelogreg->dv07_coddiver = $cldiversos->dv05_coddiver;
+      $cldiversoslotelogreg->dv07_dadovalido = $valor;
+      $cldiversoslotelogreg->dv07_dadoinvalido = null;
+      $cldiversoslotelogreg->incluir();
+
+      if ($cldiversoslotelogreg->erro_status == "0") {
+        throw new \Exception($cldiversoslotelogreg->erro_msg);
+      }
+
+      if($cldiversos->erro_status=='0'){
+        $sqlerro=true;
+      }
+      if($tipo=="matric"){
+        $clarrematric->k00_numpre=$nextval;  
+        $clarrematric->k00_matric=$valor;  
+        $clarrematric->k00_perc=100;  
+        $clarrematric->incluir($nextval,$valor);
+        if($clarrematric->erro_status=='0'){
+          $sqlerro=true;
+        }
+      }
+      if($tipo=="inscr"){
+        $clarreinscr->k00_numpre=$nextval;  
+        $clarreinscr->k00_inscr=$valor;  
+        $clarreinscr->k00_perc=100;  
+        $clarreinscr->incluir($nextval,$valor);  
+        if($clarreinscr->erro_status=='0'){
+          $sqlerro=true;
+        }
+      }
+
+      $sqlArretipo = " select dv09_tipo as arretipo from procdiver where dv09_procdiver = $dv05_procdiver and dv09_instit = ".db_getsession('DB_instit') ;
+      $rsArretipo  = db_query($sqlArretipo);
+
+      if (pg_num_rows($rsArretipo) > 0 ){
+        db_fieldsmemory($rsArretipo,0);		
+      }else{
+        db_msgbox(_M("tributario.diversos.db_frmdiversosalt.configure_tipo_debitos_destino"));
+        db_redireciona('dvr3_diversos005.php');
+        exit;
+      }
+
+      // $result09 = db_query("select fc_geraarrecad($arretipo,$nextval,true) as retorno");
+
+      $result09 = db_query("select fc_geraarrecad(7,$nextval,true,2) as retorno");
+      if (pg_num_rows($result09) > 0 ) {
+        db_fieldsmemory($result09,0);
+        $iRetorno = substr(trim($retorno),0,1);
+        if ($iRetorno != '9') {
+          $cldiversos->erro_msg = $retorno;
+          $sqlerro=true;
+        }    
+      }else{
+        $cldiversos->erro_msg = _M("tributario.diversos.db_frmdiversosalt.erro_geracao_diverso");
+        $sqlerro=true;
+      }
+    }
+  // Caso não seja inclusão em lote
+  } else {
+    $result06=db_query("select nextval('numpref_k03_numpre_seq')");
+    db_fieldsmemory($result06,0);
+
+    $cldiversos->dv05_numpre=$nextval; 
+    $cldiversos->dv05_instit = db_getsession('DB_instit');
+
+    $cldiversos->incluir($dv05_coddiver);
+
+    if($cldiversos->erro_status=='0'){
       $sqlerro=true;
     }
-  }
-  if($tipo=="inscr"){
-    $clarreinscr->k00_numpre=$nextval;  
-    $clarreinscr->k00_inscr=$valor;  
-    $clarreinscr->k00_perc=100;  
-    $clarreinscr->incluir($nextval,$valor);  
-    if($clarreinscr->erro_status=='0'){
+    if($tipo=="matric"){
+      $clarrematric->k00_numpre=$nextval;  
+      $clarrematric->k00_matric=$valor;  
+      $clarrematric->k00_perc=100;  
+      $clarrematric->incluir($nextval,$valor);  
+      if($clarrematric->erro_status=='0'){
+        $sqlerro=true;
+      }
+    }
+    if($tipo=="inscr"){
+      $clarreinscr->k00_numpre=$nextval;  
+      $clarreinscr->k00_inscr=$valor;  
+      $clarreinscr->k00_perc=100;  
+      $clarreinscr->incluir($nextval,$valor);  
+      if($clarreinscr->erro_status=='0'){
+        $sqlerro=true;
+      }
+    }
+
+    $sqlArretipo = " select dv09_tipo as arretipo from procdiver where dv09_procdiver = $dv05_procdiver and dv09_instit = ".db_getsession('DB_instit') ;
+    $rsArretipo  = db_query($sqlArretipo);
+    if (pg_num_rows($rsArretipo) > 0 ){
+      db_fieldsmemory($rsArretipo,0);		
+    }else{
+      db_msgbox(_M("tributario.diversos.db_frmdiversosalt.configure_tipo_debitos_destino"));
+      db_redireciona('dvr3_diversos005.php');
+      exit;
+    }
+
+    // $result09 = db_query("select fc_geraarrecad($arretipo,$nextval,true) as retorno");
+
+    $result09 = db_query("select fc_geraarrecad(7,$nextval,true,2) as retorno");
+    if (pg_num_rows($result09) > 0 ) {
+      db_fieldsmemory($result09,0);
+      $iRetorno = substr(trim($retorno),0,1);
+      if ($iRetorno != '9') {
+        $cldiversos->erro_msg = $retorno;
+        $sqlerro=true;
+      }    
+    }else{
+      $cldiversos->erro_msg = _M("tributario.diversos.db_frmdiversosalt.erro_geracao_diverso");
       $sqlerro=true;
     }
-  }
-  
-	$sqlArretipo = " select dv09_tipo as arretipo from procdiver where dv09_procdiver = $dv05_procdiver and dv09_instit = ".db_getsession('DB_instit') ;
-	$rsArretipo  = db_query($sqlArretipo);
-	if (pg_num_rows($rsArretipo) > 0 ){
-		db_fieldsmemory($rsArretipo,0);		
-	}else{
-		db_msgbox(_M("tributario.diversos.db_frmdiversosalt.configure_tipo_debitos_destino"));
-		db_redireciona('dvr3_diversos005.php');
-		exit;
-	}
-
-  // $result09 = db_query("select fc_geraarrecad($arretipo,$nextval,true) as retorno");
-
-  $result09 = db_query("select fc_geraarrecad(7,$nextval,true,2) as retorno");
-  if (pg_num_rows($result09) > 0 ) {
-    db_fieldsmemory($result09,0);
-    $iRetorno = substr(trim($retorno),0,1);
-    if ($iRetorno != '9') {
-      $cldiversos->erro_msg = $retorno;
-      $sqlerro=true;
-    }    
-  }else{
-    $cldiversos->erro_msg = _M("tributario.diversos.db_frmdiversosalt.erro_geracao_diverso");
-    $sqlerro=true;
   }
 
   db_fim_transacao($sqlerro);
@@ -167,7 +301,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
 <body bgcolor=#CCCCCC>
 
 	<?
-	include("forms/db_frmdiversosalt.php");
+	include(modification("forms/db_frmdiversosalt.php"));
 	?>
 
 <?

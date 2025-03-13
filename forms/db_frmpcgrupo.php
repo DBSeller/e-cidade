@@ -69,7 +69,7 @@ db_select('pc03_ativo',$xx,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pcgrupo','func_pcgrupoalt.php?funcao_js=parent.js_preenchepesquisa|pc03_codgrupo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcgrupo','func_pcgrupoalt.php?funcao_js=parent.js_preenchepesquisa|pc03_codgrupo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_pcgrupo.hide();

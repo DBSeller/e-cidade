@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -45,11 +45,13 @@ class RegraAnulacaoSlip {
    **/
   public function getRegraLancamento($iCodigoDocumento, $iCodigoLancamento, ILancamentoAuxiliar $oLancamentoAuxiliar) {
 
-    $oDaoTransacao = db_utils::getDao('contranslr');
+    $oDaoTransacao = new cl_contranslr;
     $sWhere        = "     c45_coddoc      = {$iCodigoDocumento}";
     $sWhere       .= " and c45_anousu      = ".db_getsession("DB_anousu");
     $sWhere       .= " and c46_seqtranslan = {$iCodigoLancamento}";
+    $sWhere       .= " and c47_instit = ".db_getsession("DB_instit");
     $sSqlTransacao = $oDaoTransacao->sql_query(null, "*", null, $sWhere);
+
     $rsTransacao   = $oDaoTransacao->sql_record($sSqlTransacao);
 
     $aDocumentosEstorno = array(121, 131, 141, 152, 153, 162, 163);

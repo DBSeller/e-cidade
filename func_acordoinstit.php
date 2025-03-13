@@ -1,38 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_acordo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_acordo_classe.php"));
 
 $iTipoFiltro = 0;
 $lAtivo      = '';
@@ -45,7 +45,7 @@ $clacordo->rotulo->label("ac16_numeroacordo");
 $clacordo->rotulo->label("ac16_acordogrupo");
 
 $oGet = db_utils::postMemory($_GET);
-
+$iInstituicaoSessao = db_getsession('DB_instit');
 ?>
 <html>
 <head>
@@ -111,6 +111,7 @@ db_app::load("estilos.css, grid.style.css");
 
 
       $aWhereAdicional = array();
+      $aWhereAdicional[] = "ac16_instit = {$iInstituicaoSessao}";
       if (!empty($oGet->iCodigoCategoria)) {
         $aWhereAdicional[] = "ac16_acordocategoria = {$oGet->iCodigoCategoria}";
       }
@@ -120,7 +121,7 @@ db_app::load("estilos.css, grid.style.css");
         if (isset($campos) == false) {
 
           if (file_exists("funcoes/db_func_acordo.php") == true) {
-             include("funcoes/db_func_acordo.php");
+             include(modification("funcoes/db_func_acordo.php"));
            } else {
              $campos = "acordo.*";
            }
@@ -138,7 +139,7 @@ db_app::load("estilos.css, grid.style.css");
         if (!empty($ac16_numeroacordo)) {
 
           $aNumeroAcordo = explode('/', $ac16_numeroacordo);
-          $iNumero = $aNumeroAcordo[0]; 
+          $iNumero = $aNumeroAcordo[0];
           $iAno = !empty($aNumeroAcordo[1]) ? $aNumeroAcordo[1] : db_getsession("DB_anousu");
 
           $aWhereAdicional[] = "ac16_numeroacordo = $iNumero";
@@ -234,8 +235,8 @@ function js_formatarNumeroAno(elemento) {
         return false;
       }
     }
-    
-    return js_mask(event, "0-9|/"); 
+
+    return js_mask(event, "0-9|/");
   };
 }
 
@@ -290,4 +291,11 @@ function js_pesquisaac16_acordogrupo(mostra) {
 
 	  db_iframe_pesquisagrupo.hide();
 	}
+</script>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

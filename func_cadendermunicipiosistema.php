@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory( $_POST );
 parse_str( $_SERVER["QUERY_STRING"] );
@@ -145,7 +145,7 @@ $oDaoRotulo->label( 'db125_codigosistema' );
 
             $sWhere = implode( " and ", $aWhere );
             $sSql   = $clcadendermunicipiosistema->sql_query( "", $sCampos, "db125_sequencial", $sWhere );
-            db_lovrot( $sSql, 15, "()", "", $funcao_js, "", "NoMe", $repassa );
+            db_lovrot( $sSql, 15, "()", "", $funcao_js, "", "NoMe", $repassa, false);
           } else {
 
             if( $pesquisa_chave != null && $pesquisa_chave != "" ) {
@@ -174,18 +174,37 @@ $oDaoRotulo->label( 'db125_codigosistema' );
 </body>
 </html>
 <script>
-js_tabulacaoforms( "form2", "chave_db125_sequencial", true, 1, "chave_db125_sequencial", true );
+  window.onload = function(){
+      const btnPesquisar = document.getElementById("pesquisar2");
 
-$('chave_db125_sequencial').className    = 'field-size2';
-$('chave_db71_sigla').className          = 'field-size2';
-$('chave_db125_codigosistema').className = 'field-size2';
-$('chave_db72_descricao').className      = 'field-size7';
+      document.body.addEventListener('keydown', function(event){
+        if(event.which == 13){
+          btnPesquisar.click();
+        }
+        
+      });
 
-$('limpar').onclick = function() {
+  };
 
-  $('chave_db125_sequencial').value    = '';
-  $('chave_db71_sigla').value          = '';
-  $('chave_db125_codigosistema').value = '';
-  $('chave_db72_descricao').value      = '';
-}
+  js_tabulacaoforms( "form2", "chave_db125_sequencial", true, 1, "chave_db125_sequencial", true );
+
+  $('chave_db125_sequencial').className    = 'field-size2';
+  $('chave_db71_sigla').className          = 'field-size2';
+  $('chave_db125_codigosistema').className = 'field-size2';
+  $('chave_db72_descricao').className      = 'field-size7';
+
+  $('limpar').onclick = function() {
+
+    $('chave_db125_sequencial').value    = '';
+    $('chave_db71_sigla').value          = '';
+    $('chave_db125_codigosistema').value = '';
+    $('chave_db72_descricao').value      = '';
+    document.form2.pesquisar2.click();
+  }
+  </script>
+  <script type="text/javascript">
+  (function() {
+    var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+    input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+  })();
 </script>

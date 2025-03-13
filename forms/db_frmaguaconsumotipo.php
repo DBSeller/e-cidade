@@ -92,10 +92,10 @@ db_input('k01_descr',20,$Ik01_descr,true,'text',3,'')
 <script>
 function js_pesquisax25_receit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostratabrec1|k02_codigo|k02_descr','Pesquisa',true);
   }else{
      if(document.form1.x25_receit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.x25_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabrec','func_tabrec.php?pesquisa_chave='+document.form1.x25_receit.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
      }else{
        document.form1.k02_descr.value = ''; 
      }
@@ -115,10 +115,10 @@ function js_mostratabrec1(chave1,chave2){
 }
 function js_pesquisax25_codhist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true);
   }else{
      if(document.form1.x25_codhist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.x25_codhist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.x25_codhist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false);
      }else{
        document.form1.k01_descr.value = ''; 
      }
@@ -137,7 +137,7 @@ function js_mostrahistcalc1(chave1,chave2){
   db_iframe_histcalc.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?funcao_js=parent.js_preenchepesquisa|x25_codconsumotipo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?funcao_js=parent.js_preenchepesquisa|x25_codconsumotipo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguaconsumotipo.hide();

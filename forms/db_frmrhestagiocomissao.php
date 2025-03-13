@@ -95,7 +95,7 @@ db_input('h59_descr',40,$Ih59_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_rhestagiocomissao','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?funcao_js=parent.js_preenchepesquisa|h59_sequencial','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhestagiocomissao','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?funcao_js=parent.js_preenchepesquisa|h59_sequencial','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhestagiocomissao.hide();

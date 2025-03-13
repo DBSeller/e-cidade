@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: Ambulatorial
 //CLASSE DA ENTIDADE agendamentos
-require_once ("db_agendamentos_classe.php");
+require_once(modification("classes/db_agendamentos_classe.php"));
 class cl_agendamentos_ext extends cl_agendamentos  {
 	//
 	var $lancar_transf_individual = null;

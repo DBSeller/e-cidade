@@ -1,181 +1,250 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_calendario_classe.php");
-include("classes/db_periodocalendario_classe.php");
-include("classes/db_periodoavaliacao_classe.php");
-include("classes/db_regencia_classe.php");
-include("dbforms/db_funcoes.php");
-db_postmemory($HTTP_POST_VARS);
-$clcalendario = new cl_calendario;
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory( $_POST );
+
+$clcalendario        = new cl_calendario;
 $clperiodocalendario = new cl_periodocalendario;
-$clperiodoavaliacao = new cl_periodoavaliacao;
-$clregencia = new cl_regencia;
-$db_opcao = 1;
+$clperiodoavaliacao  = new cl_periodoavaliacao;
+$clregencia          = new cl_regencia;
+
+$db_opcao  = 1;
 $db_opcao1 = 1;
-$db_botao = true;
+$db_botao  = true;
 $erro_data = false;
-if(isset($incluir)){
- $data_inicio_dig = $ed53_d_inicio_ano."-".$ed53_d_inicio_mes."-".$ed53_d_inicio_dia;
- $data_fim_dig = $ed53_d_fim_ano."-".$ed53_d_fim_mes."-".$ed53_d_fim_dia;
- $sql2 = $clperiodoavaliacao->sql_query("","ed09_i_sequencia,ed09_c_somach",""," ed09_i_codigo = $ed53_i_periodoavaliacao");
- $result2 = $clperiodoavaliacao->sql_record($sql2);
- db_fieldsmemory($result2,0);
- if($ed09_c_somach=="N"){
-  $sql = $clcalendario->sql_query("","ed52_d_inicio,ed52_d_resultfinal as ed52_d_fim",""," ed52_i_codigo = $ed53_i_calendario");
-  $result = $clcalendario->sql_record($sql);
-  db_fieldsmemory($result,0);
- }else{
-  $sql = $clcalendario->sql_query("","ed52_d_inicio,ed52_d_fim",""," ed52_i_codigo = $ed53_i_calendario");
-  $result = $clcalendario->sql_record($sql);
-  db_fieldsmemory($result,0);
- }
- if($data_inicio_dig<$ed52_d_inicio){
-  ?><script>alert("Data inicial de <?=$ed09_c_descr?> é anterior a data inicial das aulas do calendário <?=$ed52_c_descr?>!");</script><?
-  $erro_data = true;
-  $campo_erro = "inicio";
- }elseif($data_fim_dig>$ed52_d_fim){
-  ?><script>alert("Data final de <?=$ed09_c_descr?> é posterior a data final das aulas do calendário <?=$ed52_c_descr?>!");</script><?
-  $erro_data = true;
-  $campo_erro = "fim";
- }elseif($data_inicio_dig>$ed52_d_fim){
-  ?><script>alert("Data inicial de <?=$ed09_c_descr?> é posterior a data final das aulas do calendário <?=$ed52_c_descr?>!");</script><?
-  $erro_data = true;
-  $campo_erro = "inicio";
- }elseif($data_fim_dig<$ed52_d_inicio){
-  ?><script>alert("Data final de <?=$ed09_c_descr?> é anterior a data inicial das aulas do calendário <?=$ed52_c_descr?>!");</script><?
-  $erro_data = true;
-  $campo_erro = "fim";
- }elseif($data_inicio_dig>$data_fim_dig){
-  ?><script>alert("Data final de <?=$ed09_c_descr?> é anterior a data inicial!");</script><?
-  $erro_data = true;
-  $campo_erro = "fim";
- }else{
-  $sql1 = $clperiodocalendario->sql_query("","ed53_d_inicio as inicio,ed53_d_fim as fim,ed09_c_descr as existente",""," ed53_i_calendario = $ed53_i_calendario and ed09_i_sequencia < $ed09_i_sequencia");
-  $result1 = $clperiodocalendario->sql_record($sql1);
-  if($clperiodocalendario->numrows>0){
-   db_fieldsmemory($result1,0);
-   if($data_inicio_dig<=@$fim){
-    ?><script>alert("Data inicial de <?=$ed09_c_descr?> é anterior ou igual a data final do <?=$existente?>!");</script><?
-    $erro_data = true;
+
+if( isset( $incluir ) ) {
+
+  $data_inicio_dig = $ed53_d_inicio_ano."-".$ed53_d_inicio_mes."-".$ed53_d_inicio_dia;
+  $data_fim_dig    = $ed53_d_fim_ano."-".$ed53_d_fim_mes."-".$ed53_d_fim_dia;
+
+  $sCampos = "ed09_i_sequencia, ed09_c_somach";
+  $sWhere  = " ed09_i_codigo = {$ed53_i_periodoavaliacao}";
+  $sql2    = $clperiodoavaliacao->sql_query( "", $sCampos, "", $sWhere );
+  $result2 = $clperiodoavaliacao->sql_record( $sql2 );
+  db_fieldsmemory( $result2, 0 );
+
+  if( $ed09_c_somach == "N" ) {
+
+    $sCamposCalendario = "ed52_d_inicio, ed52_d_resultfinal as ed52_d_fim";
+    $sql               = $clcalendario->sql_query( "", $sCamposCalendario, "", " ed52_i_codigo = {$ed53_i_calendario}" );
+    $result            = $clcalendario->sql_record($sql);
+    db_fieldsmemory( $result, 0 );
+  } else {
+
+    $sql    = $clcalendario->sql_query( "", "ed52_d_inicio, ed52_d_fim", "", " ed52_i_codigo = {$ed53_i_calendario}" );
+    $result = $clcalendario->sql_record($sql);
+    db_fieldsmemory( $result, 0 );
+  }
+
+  if( $data_inicio_dig < $ed52_d_inicio ) {
+
+    db_msgbox("Data inicial de {$ed09_c_descr} é anterior a data inicial das aulas do calendário {$ed52_c_descr}!");
+    $erro_data  = true;
     $campo_erro = "inicio";
-   }
-  }
-  $sql3 = $clperiodocalendario->sql_query("","ed53_d_inicio as inicio,ed53_d_fim as fim,ed09_c_descr as existente",""," ed53_i_calendario = $ed53_i_calendario and ed09_i_sequencia > $ed09_i_sequencia");
-  $result3 = $clperiodocalendario->sql_record($sql3);
-  if($clperiodocalendario->numrows>0){
-   db_fieldsmemory($result3,0);
-   if($data_fim_dig>=@$inicio){
-    ?><script>alert("Data final de <?=$ed09_c_descr?> é posterior ou igual a data inicial do <?=$existente?>!");</script><?
-    $erro_data = true;
+  } else if( $data_fim_dig > $ed52_d_fim ) {
+
+    db_msgbox("Data final de {$ed09_c_descr} é posterior a data final das aulas do calendário {$ed52_c_descr}!");
+    $erro_data  = true;
     $campo_erro = "fim";
-   }
-  }
-  if(@$erro_data==false){
-   db_inicio_transacao();
-   $clperiodoescola->ed53_d_inicio = $data_inicio_dig;
-   $clperiodoescola->ed53_d_fim = $data_fim_dig;
-   $clperiodocalendario->incluir($ed53_i_codigo);
-   db_fim_transacao();
-  }
- }
-}
-if(isset($alterar)){
- $data_inicio_dig = $ed53_d_inicio_ano."-".$ed53_d_inicio_mes."-".$ed53_d_inicio_dia;
- $data_fim_dig = $ed53_d_fim_ano."-".$ed53_d_fim_mes."-".$ed53_d_fim_dia;
- $sql2 = $clperiodoavaliacao->sql_query("","ed09_i_sequencia,ed09_c_somach",""," ed09_i_codigo = $ed53_i_periodoavaliacao");
- $result2 = $clperiodoavaliacao->sql_record($sql2);
- db_fieldsmemory($result2,0);
- if($ed09_c_somach=="N"){
-  $sql = $clcalendario->sql_query("","ed52_d_inicio,ed52_d_resultfinal as ed52_d_fim",""," ed52_i_codigo = $ed53_i_calendario");
-  $result = $clcalendario->sql_record($sql);
-  db_fieldsmemory($result,0);
- }else{
-  $sql = $clcalendario->sql_query("","ed52_d_inicio,ed52_d_fim",""," ed52_i_codigo = $ed53_i_calendario");
-  $result = $clcalendario->sql_record($sql);
-  db_fieldsmemory($result,0);
- }
- if($data_inicio_dig<$ed52_d_inicio){
-  ?><script>alert("Data inicial de <?=$ed09_c_descr?> é anterior a data inicial das aulas do calendário <?=$ed52_c_descr?>!");</script><?
-  $erro_data = true;
-  $campo_erro = "inicio";
- }elseif($data_fim_dig>$ed52_d_fim){
-  ?><script>alert("Data final de <?=$ed09_c_descr?> é posterior a data final das aulas do calendário <?=$ed52_c_descr?>!");</script><?
-  $erro_data = true;
-  $campo_erro = "fim";
- }elseif($data_inicio_dig>$ed52_d_fim){
-  ?><script>alert("Data inicial de <?=$ed09_c_descr?> é posterior a data final das aulas do calendário <?=$ed52_c_descr?>!");</script><?
-  $erro_data = true;
-  $campo_erro = "inicio";
- }elseif($data_fim_dig<$ed52_d_inicio){
-  ?><script>alert("Data final de <?=$ed09_c_descr?> é anterior a data inicial das aulas do calendário <?=$ed52_c_descr?>!");</script><?
-  $erro_data = true;
-  $campo_erro = "fim";
- }elseif($data_inicio_dig>$data_fim_dig){
-  ?><script>alert("Data final de <?=$ed09_c_descr?> é menor a data inicial!");</script><?
-  $erro_data = true;
-  $campo_erro = "fim";
- }else{
-  $sql1 = $clperiodocalendario->sql_query("","ed53_d_inicio as inicio,ed53_d_fim as fim,ed09_c_descr as existente",""," ed53_i_calendario = $ed53_i_calendario and ed09_i_sequencia < $ed09_i_sequencia");
-  $result1 = $clperiodocalendario->sql_record($sql1);
-  if($clperiodocalendario->numrows>0){
-   db_fieldsmemory($result1,0);
-   if($data_inicio_dig<=@$fim){
-    ?><script>alert("Data inicial de <?=$ed09_c_descr?> é anterior ou igual a data final do <?=$existente?>!");</script><?
-    $erro_data = true;
+  } else if( $data_inicio_dig > $ed52_d_fim ) {
+
+    db_msgbox("Data inicial de {$ed09_c_descr} é posterior a data final das aulas do calendário {$ed52_c_descr}!");
+    $erro_data  = true;
     $campo_erro = "inicio";
-   }
-  }
-  $sql3 = $clperiodocalendario->sql_query("","ed53_d_inicio as inicio,ed53_d_fim as fim,ed09_c_descr as existente",""," ed53_i_calendario = $ed53_i_calendario and ed09_i_sequencia > $ed09_i_sequencia");
-  $result3 = $clperiodocalendario->sql_record($sql3);
-  if($clperiodocalendario->numrows>0){
-   db_fieldsmemory($result3,0);
-   if($data_fim_dig>=@$inicio){
-    ?><script>alert("Data final de <?=$ed09_c_descr?> é posterior ou igual a data inicial do <?=$existente?>!");</script><?
-    $erro_data = true;
+  } else if( $data_fim_dig < $ed52_d_inicio ) {
+
+    db_msgbox("Data final de {$ed09_c_descr} é anterior a data inicial das aulas do calendário {$ed52_c_descr}!");
+    $erro_data  = true;
     $campo_erro = "fim";
-   }
+  } else if( $data_inicio_dig > $data_fim_dig ) {
+
+    db_msgbox("Data final de {$ed09_c_descr} é anterior a data inicial!");
+    $erro_data  = true;
+    $campo_erro = "fim";
+  } else {
+
+    $sCamposPeriodo1 = "ed53_d_inicio as inicio, ed53_d_fim as fim, ed09_c_descr as existente";
+    $sWherePeriodo1  = " ed53_i_calendario = {$ed53_i_calendario} and ed09_i_sequencia < {$ed09_i_sequencia}";
+    $sql1            = $clperiodocalendario->sql_query( "", $sCamposPeriodo1, "", $sWherePeriodo1 );
+    $result1         = $clperiodocalendario->sql_record($sql1);
+
+    if( $clperiodocalendario->numrows > 0 ) {
+
+      db_fieldsmemory( $result1, 0 );
+
+      if( $data_inicio_dig <= @$fim ) {
+
+        db_msgbox("Data inicial de {$ed09_c_descr} é anterior ou igual a data final do {$existente}!");
+        $erro_data  = true;
+        $campo_erro = "inicio";
+      }
+    }
+
+    $sCamposPeriodo3 = "ed53_d_inicio as inicio,ed53_d_fim as fim,ed09_c_descr as existente";
+    $WherePeriodo3   = " ed53_i_calendario = {$ed53_i_calendario} and ed09_i_sequencia > {$ed09_i_sequencia}";
+    $sql3            = $clperiodocalendario->sql_query( "", $sCamposPeriodo3, "", $WherePeriodo3 );
+    $result3         = $clperiodocalendario->sql_record($sql3);
+
+    if( $clperiodocalendario->numrows > 0 ) {
+
+      db_fieldsmemory( $result3, 0 );
+
+      if( $data_fim_dig >= @$inicio ) {
+
+        db_msgbox("Data final de {$ed09_c_descr} é posterior ou igual a data inicial do {$existente}!");
+        $erro_data  = true;
+        $campo_erro = "fim";
+      }
+    }
+
+    if( @$erro_data == false ) {
+
+      db_inicio_transacao();
+
+      $clperiodoescola->ed53_d_inicio = $data_inicio_dig;
+      $clperiodoescola->ed53_d_fim    = $data_fim_dig;
+      $clperiodocalendario->incluir($ed53_i_codigo);
+
+      db_fim_transacao();
+    }
   }
-  if(@$erro_data==false){
-   db_inicio_transacao();
-   $db_opcao = 2;
-   $clperiodoescola->ed53_d_inicio = $data_inicio_dig;
-   $clperiodoescola->ed53_d_fim = $data_fim_dig;
-   $clperiodocalendario->alterar($ed53_i_codigo);
-   db_fim_transacao();
-  }
- }
 }
-if(isset($excluir)){
+
+if( isset( $alterar ) ) {
+
+  $data_inicio_dig = $ed53_d_inicio_ano."-".$ed53_d_inicio_mes."-".$ed53_d_inicio_dia;
+  $data_fim_dig    = $ed53_d_fim_ano."-".$ed53_d_fim_mes."-".$ed53_d_fim_dia;
+
+  $sCamposPeriodo2 = "ed09_i_sequencia, ed09_c_somach";
+  $sWherePeriodo2  = " ed09_i_codigo = $ed53_i_periodoavaliacao";
+  $sql2            = $clperiodoavaliacao->sql_query( "", $sCamposPeriodo2, "", $sWherePeriodo2 );
+  $result2         = $clperiodoavaliacao->sql_record($sql2);
+
+  db_fieldsmemory( $result2, 0 );
+
+  if( $ed09_c_somach == "N" ) {
+
+    $sCamposCalendario = "ed52_d_inicio, ed52_d_resultfinal as ed52_d_fim";
+    $sql               = $clcalendario->sql_query( "", $sCamposCalendario, "", " ed52_i_codigo = {$ed53_i_calendario}" );
+    $result            = $clcalendario->sql_record($sql);
+
+    db_fieldsmemory( $result, 0 );
+  } else {
+
+    $sql    = $clcalendario->sql_query( "", "ed52_d_inicio, ed52_d_fim", "", " ed52_i_codigo = {$ed53_i_calendario}" );
+    $result = $clcalendario->sql_record($sql);
+    db_fieldsmemory( $result, 0 );
+  }
+
+  if( $data_inicio_dig < $ed52_d_inicio ) {
+
+    db_msgbox("Data inicial de {$ed09_c_descr} é anterior a data inicial das aulas do calendário {$ed52_c_descr}!");
+    $erro_data  = true;
+    $campo_erro = "inicio";
+  } else if( $data_fim_dig > $ed52_d_fim ) {
+
+    db_msgbox("Data final de {$ed09_c_descr} é posterior a data final das aulas do calendário {$ed52_c_descr}!");
+    $erro_data  = true;
+    $campo_erro = "fim";
+  } else if( $data_inicio_dig > $ed52_d_fim ) {
+
+    db_msgbox("Data inicial de {$ed09_c_descr} é posterior a data final das aulas do calendário {$ed52_c_descr}!");
+    $erro_data  = true;
+    $campo_erro = "inicio";
+  } else if( $data_fim_dig < $ed52_d_inicio ) {
+
+    db_msgbox("Data final de {$ed09_c_descr} é anterior a data inicial das aulas do calendário {$ed52_c_descr}!");
+    $erro_data  = true;
+    $campo_erro = "fim";
+  } else if( $data_inicio_dig > $data_fim_dig ) {
+
+    db_msgbox("Data final de {$ed09_c_descr} é menor a data inicial!");
+    $erro_data  = true;
+    $campo_erro = "fim";
+  } else {
+
+    $sCamposPeriodo1 = "ed53_d_inicio as inicio,ed53_d_fim as fim,ed09_c_descr as existente";
+    $sWherePeriodo1  = " ed53_i_calendario = {$ed53_i_calendario} and ed09_i_sequencia < {$ed09_i_sequencia}";
+    $sql1            = $clperiodocalendario->sql_query( "", $sCamposPeriodo1, "", $sWherePeriodo1 );
+    $result1         = $clperiodocalendario->sql_record( $sql1 );
+
+    if( $clperiodocalendario->numrows > 0 ) {
+
+      db_fieldsmemory( $result1, 0 );
+
+      if( $data_inicio_dig <= @$fim ) {
+
+        db_msgbox("Data inicial de {$ed09_c_descr} é anterior ou igual a data final do {$existente}!");
+        $erro_data  = true;
+        $campo_erro = "inicio";
+      }
+    }
+
+    $sCampoPeriodo3 = "ed53_d_inicio as inicio, ed53_d_fim as fim, ed09_c_descr as existente";
+    $sWherePeriodo3 = " ed53_i_calendario = {$ed53_i_calendario} and ed09_i_sequencia > {$ed09_i_sequencia}";
+    $sql3           = $clperiodocalendario->sql_query( "", $sCampoPeriodo3, "", $sWherePeriodo3 );
+    $result3        = $clperiodocalendario->sql_record( $sql3 );
+
+    if( $clperiodocalendario->numrows > 0 ) {
+
+      db_fieldsmemory( $result3, 0 );
+
+      if( $data_fim_dig >= @$inicio ) {
+
+        db_msgbox("Data final de {$ed09_c_descr} é posterior ou igual a data inicial do {$existente}!");
+        $erro_data  = true;
+        $campo_erro = "fim";
+      }
+    }
+
+    if( @$erro_data == false ) {
+
+      db_inicio_transacao();
+
+      $db_opcao = 2;
+      $clperiodocalendario->ed53_d_inicio = $data_inicio_dig;
+      $clperiodocalendario->ed53_d_fim    = $data_fim_dig;
+      $clperiodocalendario->alterar($ed53_i_codigo);
+
+      db_fim_transacao();
+    }
+  }
+}
+
+if( isset( $excluir ) ) {
+
   db_inicio_transacao();
   $db_opcao = 3;
   $clperiodocalendario->excluir($ed53_i_codigo);
@@ -198,7 +267,7 @@ if(isset($excluir)){
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Períodos de Avaliação do Calendário <?=$ed52_c_descr?></b></legend>
-    <?include("forms/db_frmperiodocalendario.php");?>
+    <?include(modification("forms/db_frmperiodocalendario.php"));?>
    </fieldset>
    </center>
   </td>
@@ -206,103 +275,137 @@ if(isset($excluir)){
 </table>
 </body>
 </html>
-<?
-if(@$erro_data==true){
- echo "<script> document.form1.ed53_d_".@$campo_erro."_dia.style.backgroundColor='#99A9AE';</script>";
- echo "<script> document.form1.ed53_d_".@$campo_erro."_mes.style.backgroundColor='#99A9AE';</script>";
- echo "<script> document.form1.ed53_d_".@$campo_erro."_ano.style.backgroundColor='#99A9AE';</script>";
- echo "<script> document.form1.ed53_d_".@$campo_erro."_dia.focus();</script>";
+<?php
+if( @$erro_data == true ) {
+
+  echo "<script> document.form1.ed53_d_".@$campo_erro."_dia.style.backgroundColor='#99A9AE';</script>";
+  echo "<script> document.form1.ed53_d_".@$campo_erro."_mes.style.backgroundColor='#99A9AE';</script>";
+  echo "<script> document.form1.ed53_d_".@$campo_erro."_ano.style.backgroundColor='#99A9AE';</script>";
+  echo "<script> document.form1.ed53_d_".@$campo_erro."_dia.focus();</script>";
 }
-if(isset($incluir)){
- if(@$erro_data==false){
-  if($clperiodocalendario->erro_status=="0"){
-   $clperiodocalendario->erro(true,false);
-   $db_botao=true;
-   echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-   if($clperiodocalendario->erro_campo!=""){
-    echo "<script> document.form1.".$clperiodocalendario->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-    echo "<script> document.form1.".$clperiodocalendario->erro_campo.".focus();</script>";
-   };
-  }else{
-   $sql1 = $clperiodocalendario->sql_query("","sum(ed53_i_diasletivos) as dias,sum(ed53_i_semletivas) as semanas",""," ed53_i_calendario = $ed53_i_calendario AND ed09_c_somach = 'S'");
-   $result1 = $clperiodocalendario->sql_record($sql1);
-   if($clperiodocalendario->numrows>0){
-    db_fieldsmemory($result1,0);
-    $sql2 = "UPDATE calendario SET
-              ed52_i_diasletivos = $dias,
-              ed52_i_semletivas = $semanas
-             WHERE ed52_i_codigo = $ed53_i_calendario
-            ";
-    $query2 = pg_query($sql2);
-    ?>
-    <script>
-     top.corpo.iframe_a1.location.href='edu1_calendario002.php?chavepesquisa=<?=$ed53_i_calendario?>';
-    </script>
-    <?
-    $clperiodocalendario->erro(true,true);
-   }
-  };
- }
-};
-if(isset($alterar)){
- if(@$erro_data==false){
-  if($clperiodocalendario->erro_status=="0"){
-    $clperiodocalendario->erro(true,false);
-    $db_botao=true;
-    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if($clperiodocalendario->erro_campo!=""){
-      echo "<script> document.form1.".$clperiodocalendario->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$clperiodocalendario->erro_campo.".focus();</script>";
-    };
-  }else{
-   $sql1 = $clperiodocalendario->sql_query("","sum(ed53_i_diasletivos) as dias,sum(ed53_i_semletivas) as semanas",""," ed53_i_calendario = $ed53_i_calendario AND ed09_c_somach = 'S'");
-   $result1 = $clperiodocalendario->sql_record($sql1);
-   if($clperiodocalendario->numrows>0){
-    db_fieldsmemory($result1,0);
-    $sql2 = "UPDATE calendario SET
-              ed52_i_diasletivos = $dias,
-              ed52_i_semletivas = $semanas
-             WHERE ed52_i_codigo = $ed53_i_calendario
-            ";
-    $query2 = pg_query($sql2);
-    ?>
-    <script>
-     top.corpo.iframe_a1.location.href='edu1_calendario002.php?chavepesquisa=<?=$ed53_i_calendario?>';
-    </script>
-    <?
-    $clperiodocalendario->erro(true,true);
-   }
-  };
- }
-};
-if(isset($excluir)){
-  if($clperiodocalendario->erro_status=="0"){
-    $clperiodocalendario->erro(true,false);
-  }else{
-   $sql1 = $clperiodocalendario->sql_query("","sum(ed53_i_diasletivos) as dias,sum(ed53_i_semletivas) as semanas",""," ed53_i_calendario = $ed53_i_calendario AND ed09_c_somach = 'S'");
-   $result1 = $clperiodocalendario->sql_record($sql1);
-   if($clperiodocalendario->numrows>0){
-    db_fieldsmemory($result1,0);
-    if($dias==""){
-     $dias = 0;
-     $semanas = 0;
+
+if( isset( $incluir ) ) {
+
+  if( @$erro_data == false ) {
+
+    if( $clperiodocalendario->erro_status == "0" ) {
+
+      $clperiodocalendario->erro( true, false );
+      $db_botao = true;
+
+      echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+
+      if( $clperiodocalendario->erro_campo != "" ) {
+
+        echo "<script> document.form1.".$clperiodocalendario->erro_campo.".style.backgroundColor='#99A9AE';</script>";
+        echo "<script> document.form1.".$clperiodocalendario->erro_campo.".focus();</script>";
+      }
+    } else {
+
+      $sCamposPeriodo1 = "sum(ed53_i_diasletivos) as dias, sum(ed53_i_semletivas) as semanas";
+      $sWherePeriodo1  = " ed53_i_calendario = {$ed53_i_calendario} AND ed09_c_somach = 'S'";
+      $sql1            = $clperiodocalendario->sql_query( "", $sCamposPeriodo1, "", $sWherePeriodo1 );
+      $result1         = $clperiodocalendario->sql_record( $sql1 );
+
+      if( $clperiodocalendario->numrows > 0 ) {
+
+        db_fieldsmemory( $result1, 0 );
+
+        $sql2   = "UPDATE calendario ";
+        $sql2  .= "   SET ed52_i_diasletivos = {$dias}, ";
+        $sql2  .= "       ed52_i_semletivas = {$semanas} ";
+        $sql2  .= " WHERE ed52_i_codigo = {$ed53_i_calendario}";
+        $query2 = db_query($sql2);
+        ?>
+        <script>
+          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href='edu1_calendario002.php?chavepesquisa=<?=$ed53_i_calendario?>';
+        </script>
+        <?php
+        $clperiodocalendario->erro( true, true );
+      }
     }
-    $sql2 = "UPDATE calendario SET
-              ed52_i_diasletivos = $dias,
-              ed52_i_semletivas = $semanas
-             WHERE ed52_i_codigo = $ed53_i_calendario
-            ";
-    $query2 = pg_query($sql2);
-    ?>
-    <script>
-     top.corpo.iframe_a1.location.href='edu1_calendario002.php?chavepesquisa=<?=$ed53_i_calendario?>';
-    </script>
-    <?
-    $clperiodocalendario->erro(true,true);
-   }
-  };
-};
-if(isset($cancelar)){
- echo "<script>location.href='".$clperiodocalendario->pagina_retorno."'</script>";
+  }
 }
-?>
+
+if( isset( $alterar ) ) {
+
+  if( @$erro_data == false ) {
+
+    if( $clperiodocalendario->erro_status == "0" ) {
+
+      $clperiodocalendario->erro( true, false );
+      $db_botao = true;
+
+      echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+
+      if( $clperiodocalendario->erro_campo != "" ) {
+
+        echo "<script> document.form1.".$clperiodocalendario->erro_campo.".style.backgroundColor='#99A9AE';</script>";
+        echo "<script> document.form1.".$clperiodocalendario->erro_campo.".focus();</script>";
+      }
+    } else {
+
+      $sCamposPeriodo1 = "sum(ed53_i_diasletivos) as dias,sum(ed53_i_semletivas) as semanas";
+      $sWherePeriodo1  = " ed53_i_calendario = {$ed53_i_calendario} AND ed09_c_somach = 'S'";
+      $sql1            = $clperiodocalendario->sql_query( "", $sCamposPeriodo1, "", $sWherePeriodo1 );
+      $result1         = $clperiodocalendario->sql_record($sql1);
+
+      if( $clperiodocalendario->numrows > 0 ) {
+
+        db_fieldsmemory( $result1, 0 );
+
+        $sql2   = "UPDATE calendario ";
+        $sql2  .= "   SET ed52_i_diasletivos = {$dias}, ";
+        $sql2  .= "       ed52_i_semletivas = {$semanas} ";
+        $sql2  .= " WHERE ed52_i_codigo = {$ed53_i_calendario}";
+        $query2 = db_query($sql2);
+        ?>
+        <script>
+          (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href='edu1_calendario002.php?chavepesquisa=<?=$ed53_i_calendario?>';
+        </script>
+        <?php
+        $clperiodocalendario->erro( true, true );
+      }
+    }
+  }
+}
+
+if( isset( $excluir ) ) {
+
+  if( $clperiodocalendario->erro_status == "0" ) {
+    $clperiodocalendario->erro( true, false );
+  } else {
+
+    $sCamposPeriodo1 = "sum(ed53_i_diasletivos) as dias, sum(ed53_i_semletivas) as semanas";
+    $sWherePeriodo1  = " ed53_i_calendario = {$ed53_i_calendario} AND ed09_c_somach = 'S'";
+    $sql1            = $clperiodocalendario->sql_query( "", $sCamposPeriodo1, "", $sWherePeriodo1 );
+    $result1         = $clperiodocalendario->sql_record($sql1);
+
+    if( $clperiodocalendario->numrows > 0 ) {
+
+      db_fieldsmemory( $result1, 0 );
+
+      if( $dias == "" ) {
+
+        $dias    = 0;
+        $semanas = 0;
+      }
+
+      $sql2   = "UPDATE calendario ";
+      $sql2  .= "   SET ed52_i_diasletivos = {$dias}, ";
+      $sql2  .= "       ed52_i_semletivas = {$semanas} ";
+      $sql2  .= " WHERE ed52_i_codigo = {$ed53_i_calendario}";
+      $query2 = db_query($sql2);
+      ?>
+      <script>
+        (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href='edu1_calendario002.php?chavepesquisa=<?=$ed53_i_calendario?>';
+      </script>
+      <?php
+      $clperiodocalendario->erro( true, true );
+    }
+  }
+}
+
+if( isset( $cancelar ) ) {
+  echo "<script>location.href='".$clperiodocalendario->pagina_retorno."'</script>";
+}

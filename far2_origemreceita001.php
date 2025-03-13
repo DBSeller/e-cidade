@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -175,14 +175,14 @@ function js_excluir_item_origem() {
 function js_pesquisaorigem(mostra) {
 
   if(mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_far_origemreceita','func_far_origemreceita.php?'+
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_origemreceita','func_far_origemreceita.php?'+
                         'funcao_js=parent.js_mostraorigem1|fa40_i_codigo|fa40_c_descr',
                         'Pesquisa',true);
   } else {
 
     if(document.form1.fa40_i_codigo.value != '') { 
 
-      js_OpenJanelaIframe('top.corpo','db_iframe_far_origemreceita','func_far_origemreceita.php?pesquisa_chave='+
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_origemreceita','func_far_origemreceita.php?pesquisa_chave='+
                           document.form1.fa40_i_codigo.value+'&funcao_js=parent.js_mostraorigem',
                           'Pesquisa',false);
 

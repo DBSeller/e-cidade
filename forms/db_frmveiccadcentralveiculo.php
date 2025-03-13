@@ -112,10 +112,10 @@ db_input('ve22_descr',40,$Ive01_codigo,true,'text',3,'');
 
 function js_pesquisave01_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_veiccadcentralveiculo','db_iframe_veiculos','func_veiculos.php?funcao_js=parent.js_preenchepesquisa01|ve01_codigo|ve01_placa|ve22_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veiccadcentralveiculo','db_iframe_veiculos','func_veiculos.php?funcao_js=parent.js_preenchepesquisa01|ve01_codigo|ve01_placa|ve22_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.ve01_codigo.value != ''){
-        js_OpenJanelaIframe('top.corpo.iframe_veiccadcentralveiculo','db_iframe_veiculos','func_veiculos.php?pesquisa_chave='+document.form1.ve01_codigo.value+'&funcao_js=parent.js_mostraveiccentral','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veiccadcentralveiculo','db_iframe_veiculos','func_veiculos.php?pesquisa_chave='+document.form1.ve01_codigo.value+'&funcao_js=parent.js_mostraveiccentral','Pesquisa',false);
      }else{
        document.form1.ve01_placa.value = ''; 
        document.form1.ve22_descr.value = ''; 

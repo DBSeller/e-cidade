@@ -80,7 +80,7 @@ $clrotulo->label("descrdepto");
 <script>
 function js_pesquisam91_depto(mostra){
   if(mostra==true){
-   //top.corpo.iframe_db_almox
+   //(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_almox
     js_OpenJanelaIframe('','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true,4);
   }else{
      if(document.form1.m91_depto.value != ''){ 

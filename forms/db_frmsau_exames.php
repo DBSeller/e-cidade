@@ -24,7 +24,6 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-?
 //MODULO: Ambulatorial
 $clsau_exames->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -76,11 +75,11 @@ db_input('s108_c_exame',40,$Is108_c_exame,true,'text',$db_opcao,"")
 <script type="text/javascript">
 function js_pesquisa_s108_i_grupoexame(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_a1','db_iframe_sau_grupoexames','func_sau_grupoexames.php?funcao_js=parent.js_mostragrupoexame1|s130_i_codigo|s130_c_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_a1','db_iframe_sau_grupoexames','func_sau_grupoexames.php?funcao_js=parent.js_mostragrupoexame1|s130_i_codigo|s130_c_descricao','Pesquisa',true);
   }else{
      if(document.form1.s108_i_grupoexame.value != ''){ 
-        //js_OpenJanelaIframe('top.corpo','db_iframe_cgs_und','func_cgs_und.php?pesquisa_chave='+document.form2.z01_i_cgsund.value+'&funcao_js=parent.IFdb_iframe_agendamento.js_mostracgs','Pesquisa',false);
-        js_OpenJanelaIframe('top.corpo.iframe_a1','db_iframe_sau_grupoexames','func_sau_grupoexames.php?pesquisa_chave='+document.form1.s108_i_grupoexame.value+'&funcao_js=parent.js_mostragrupoexame','Pesquisa',false);
+        //js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgs_und','func_cgs_und.php?pesquisa_chave='+document.form2.z01_i_cgsund.value+'&funcao_js=parent.IFdb_iframe_agendamento.js_mostracgs','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_a1','db_iframe_sau_grupoexames','func_sau_grupoexames.php?pesquisa_chave='+document.form1.s108_i_grupoexame.value+'&funcao_js=parent.js_mostragrupoexame','Pesquisa',false);
      }else{
        document.form1.s130_i_codigo.value = '';
      }

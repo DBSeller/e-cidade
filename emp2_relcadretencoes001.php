@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require("classes/empenho.php");
-require("classes/db_retencaotiporecgrupo_classe.php");
-require("classes/db_retencaotipocalc_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require(modification("classes/empenho.php"));
+require(modification("classes/db_retencaotiporecgrupo_classe.php"));
+require(modification("classes/db_retencaotipocalc_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $oGet = db_utils::postMemory($_GET);
 
 $oClempenho              = new empenho();

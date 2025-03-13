@@ -1,6 +1,21 @@
-require_once( 'scripts/widgets/DBLookUp.widget.js' );
-require_once( 'scripts/widgets/dbautocomplete.widget.js' );
-require_once( 'scripts/classes/saude/validaCNS.js');
+require_once('scripts/widgets/DBLookUp.widget.js');
+require_once('scripts/widgets/dbautocomplete.widget.js');
+require_once('scripts/classes/saude/validaCNS.js');
+require_once('scripts/widgets/windowAux.widget.js');
+require_once('scripts/widgets/dbmessageBoard.widget.js');
+require_once('scripts/classes/saude/ambulatorial/DBViewMotivosAlta.classe.js');
+require_once('scripts/classes/saude/ambulatorial/DBViewEncaminhamento.classe.js');
+require_once('scripts/classes/saude/ambulatorial/DBViewOpcoesSalvar.classe.js');
+require_once('scripts/classes/saude/ambulatorial/DBViewAdministracaoMedicamento.classe.js');
+require_once('scripts/datagrid.widget.js');
+require_once('scripts/widgets/DBInputHora.widget.js');
+require_once('scripts/widgets/DBAncora.widget.js');
+require_once('scripts/widgets/datagrid/plugins/DBHint.plugin.js');
+require_once('scripts/widgets/Input/DBInput.widget.js');
+require_once('scripts/widgets/Input/DBInputDate.widget.js');
+require_once('scripts/widgets/DBToogle.widget.js');
+require_once('scripts/classes/saude/ValidaCgs.js');
+require_once('scripts/classes/saude/ambulatorial/ViewProblemasPaciente.js');
 
 /**
  * Constante das mensagens
@@ -19,9 +34,10 @@ DBViewTriagem = function( iTelaOrigem ) {
   /**
    * RPC's utilizados
    */
-  this.sRpcTriagem      = 'sau4_triagem.RPC.php';
-  this.sRpcAgravo       = 'sau4_triagemagravo.RPC.php';
-  this.sRpcAmbulatorial = 'sau4_ambulatorial.RPC.php';
+  this.sRpcTriagem          = 'sau4_triagem.RPC.php';
+  this.sRpcAgravo           = 'sau4_triagemagravo.RPC.php';
+  this.sRpcAmbulatorial     = 'sau4_ambulatorial.RPC.php';
+  this.sRpcFichaAtendimento = 'sau4_fichaatendimento.RPC.php';
 
   /**
    * Código da triagem, caso seja uma alteração
@@ -129,6 +145,22 @@ DBViewTriagem = function( iTelaOrigem ) {
    * Chamada para o método que contém os eventos da tela
    */
   this.eventosElementos( oSelf );
+
+  /**
+   * Controla se o deve salvar um novo vinculo a triagem
+   * @type {Boolean}
+   */
+  this.lIncluirVinculoTriagemProntuario = true;
+
+  /**
+   * Código do médico logado
+   * @type {integer}
+   */
+  this.iMedico = null;
+
+  this.lBloqueiaFormulario = false;
+
+
 };
 
 /**
@@ -146,11 +178,15 @@ DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA          = 4;
 /**
  * Constantes para cada tipo de botão
  */
-DBViewTriagem.prototype.BOTAO_FATORES_RISCO = 1;
-DBViewTriagem.prototype.BOTAO_LIMPAR        = 2;
-DBViewTriagem.prototype.BOTAO_CONSULTAR     = 3;
-DBViewTriagem.prototype.BOTAO_SALVAR        = 4;
-DBViewTriagem.prototype.BOTAO_FECHAR        = 5;
+DBViewTriagem.prototype.BOTAO_FATORES_RISCO            = 1;
+DBViewTriagem.prototype.BOTAO_LIMPAR                   = 2;
+DBViewTriagem.prototype.BOTAO_CONSULTAR                = 3;
+DBViewTriagem.prototype.BOTAO_SALVAR                   = 4;
+DBViewTriagem.prototype.BOTAO_FECHAR                   = 5;
+DBViewTriagem.prototype.BOTAO_FINALIZAR_ATENDIMENTO    = 6;
+DBViewTriagem.prototype.BOTAO_ENCAMINHAR               = 7;
+DBViewTriagem.prototype.BOTAO_ADMINISTRAR_MEDICAMENTOS = 8;
+DBViewTriagem.prototype.BOTAO_PROBLEMAS_PACIENTE       = 9;
 
 /**
  * Monta o HTML
@@ -166,10 +202,29 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
                                DBViewTriagem.prototype.BOTAO_FATORES_RISCO,
                                DBViewTriagem.prototype.BOTAO_LIMPAR
                              ];
-  var aBotoesTriagemFaa      = [ DBViewTriagem.prototype.BOTAO_SALVAR ];
-  var aBotoesTriagem         = [ DBViewTriagem.prototype.BOTAO_CONSULTAR, DBViewTriagem.prototype.BOTAO_SALVAR ];
+  var aBotoesTriagemFaa      = [
+                                 DBViewTriagem.prototype.BOTAO_SALVAR,
+                                 DBViewTriagem.prototype.BOTAO_FINALIZAR_ATENDIMENTO,
+                                 DBViewTriagem.prototype.BOTAO_ADMINISTRAR_MEDICAMENTOS
+                               ];
+  var aBotoesTriagem         = [
+                                 DBViewTriagem.prototype.BOTAO_CONSULTAR,
+                                 DBViewTriagem.prototype.BOTAO_SALVAR,
+                                 DBViewTriagem.prototype.BOTAO_ENCAMINHAR,
+                                 DBViewTriagem.prototype.BOTAO_FINALIZAR_ATENDIMENTO,
+                                 DBViewTriagem.prototype.BOTAO_ADMINISTRAR_MEDICAMENTOS,
+                                 DBViewTriagem.prototype.BOTAO_PROBLEMAS_PACIENTE
+                               ];
   var aBotoesTriagemConsulta = [ DBViewTriagem.prototype.BOTAO_FECHAR ];
   var aBotoesCriar           = [];
+
+  /**
+   * Div que agrupa o formulario
+   * @type {div}
+   */
+  oSelf.oDivFormulario           = document.createElement('div');
+  oSelf.oDivFormulario.className = 'subcontainer';
+  oSelf.oDivFormulario.style.textAlign = 'left';
 
   /**
    * Elemento do formulário HTML
@@ -184,6 +239,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    */
   oSelf.oFieldsetTriagem          = document.createElement( 'fieldset' );
   oSelf.oLegendaTriagem           = document.createElement( 'legend' );
+  oSelf.oLegendaTriagem.innerHTML = 'Triagem';
 
   /**
    * Valida a Legenda que deve ser exibida conforme a tela que será exibida
@@ -194,42 +250,51 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
 
       oSelf.oLegendaTriagem.innerHTML = 'Triagem Avulsa';
       aBotoesCriar                    = aBotoesTriagemAvulsa;
-
       break;
 
     case DBViewTriagem.prototype.TELA_TRIAGEM_FICHA_ATENDIMENTO:
 
-      oSelf.oLegendaTriagem.innerHTML = 'Triagem';
-      aBotoesCriar                    = aBotoesTriagemFaa;
-
+      aBotoesCriar = aBotoesTriagemFaa;
       break;
 
     case DBViewTriagem.prototype.TELA_TRIAGEM:
 
-      oSelf.oLegendaTriagem.innerHTML = 'Triagem';
-      aBotoesCriar                    = aBotoesTriagem;
-
+      aBotoesCriar = aBotoesTriagem;
       break;
 
     case DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA:
-      
-      oSelf.oLegendaTriagem.innerHTML = 'Triagem';
-      aBotoesCriar                    = aBotoesTriagemConsulta;
 
+      aBotoesCriar = aBotoesTriagemConsulta;
       break;
   }
+
+  /**
+   * Alert do retorno da validação da microarea do paciente;
+   */
+  oSelf.divAlert = document.createElement('div');
+  oSelf.divAlert.addClassName('alert-danger');
+  oSelf.divAlert.hidden = 'hidden';
+  oSelf.divAlert.innerHTML = 'Paciente sem cadastro em uma Microárea.';
+
+  /**
+   * Div para a window dos problemas do paciente
+   */
+  oSelf.divProblemas = document.createElement('div');
 
   /**
    * Elemento da tabela principal
    * @type {table}
    */
   oSelf.oTabelaPrincipal = document.createElement( 'table' );
+  oSelf.oTabelaPrincipal.classList.add('form-container');
 
   /**
    * Realiza os vínculos dos elementos
    */
+  oSelf.oDivFormulario.appendChild( oSelf.oFormulario );
   oSelf.oFormulario.appendChild( oSelf.oFieldsetTriagem );
   oSelf.oFieldsetTriagem.appendChild( oSelf.oLegendaTriagem );
+  oSelf.oFieldsetTriagem.appendChild(oSelf.divAlert);
   oSelf.oFieldsetTriagem.appendChild( oSelf.oTabelaPrincipal );
 
 
@@ -250,6 +315,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    */
   oSelf.oLabelCartaoSUS           = document.createElement( 'label' );
   oSelf.oLabelCartaoSUS.addClassName( 'bold' );
+  oSelf.oLabelCartaoSUS.setAttribute('for', 'oInputCartaoSUS');
   oSelf.oLabelCartaoSUS.innerHTML = 'Cartão SUS: ';
 
   /**
@@ -284,6 +350,14 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
   oSelf.oColunaCGSLabel     = document.createElement( 'td' );
   oSelf.oColunaCGSCodigo    = document.createElement( 'td' );
   oSelf.oColunaCGSDescricao = document.createElement( 'td' );
+
+  /**
+   * Label da ancora do CGS
+   * @type {label}
+   */
+  oSelf.oLabelCGS = document.createElement( 'label' );
+  oSelf.oLabelCGS.addClassName( 'bold' );
+  oSelf.oLabelCGS.setAttribute('for', 'oInputCGSCodigo');
 
   /**
    * Ancora para buscar CGS
@@ -325,451 +399,11 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
   oSelf.oLinhaCGS.appendChild( oSelf.oColunaCGSCodigo );
   oSelf.oLinhaCGS.appendChild( oSelf.oColunaCGSDescricao );
 
-  oSelf.oColunaCGSLabel.appendChild( oSelf.oAncoraCGS );
+  oSelf.oLabelCGS.appendChild(oSelf.oAncoraCGS);
+
+  oSelf.oColunaCGSLabel.appendChild( oSelf.oLabelCGS );
   oSelf.oColunaCGSCodigo.appendChild( oSelf.oInputCGSCodigo );
   oSelf.oColunaCGSDescricao.appendChild( oSelf.oInputCGSDescricao );
-
-
-  /* **************************************************
-   * ELEMENTOS DO FIELDSET E DADOS DA PRESSÃO ARTERIAL
-   * **************************************************/
-  /**
-   * Linha e coluna do fieldset da pressão arterial
-   * @type {HTMLElement}
-   */
-  oSelf.oLinhaTabelaPressaoArterial  = document.createElement( 'tr' );
-  oSelf.oColunaTabelaPressaoArterial = document.createElement( 'td' );
-  oSelf.oColunaTabelaPressaoArterial.setAttribute( 'colSpan', '3' );
-
-  /**
-   * Fieldset da pressão arterial
-   * @type {fieldset}
-   */
-  oSelf.oFieldsetPressaoArterial = document.createElement( 'fieldset' );
-  oSelf.oFieldsetPressaoArterial.addClassName( 'separator' );
-
-  /**
-   * Legenda do fieldset da pressão arterial
-   * @type {legend}
-   */
-  oSelf.oLegendaPressaoArterial = document.createElement( 'legend' );
-  oSelf.oLegendaPressaoArterial.addClassName( 'bold' );
-  oSelf.oLegendaPressaoArterial.innerHTML = 'Pressão Arterial';
-
-  /**
-   * Tabela com os dados da pressão arterial
-   * @type {table}
-   */
-  oSelf.oTabelaPressaoArterial = document.createElement( 'table' );
-
-  /**
-   * Vínculos da tabela principal com o fieldset da pressão arterial
-   */
-  oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaTabelaPressaoArterial );
-
-  oSelf.oLinhaTabelaPressaoArterial.appendChild( oSelf.oColunaTabelaPressaoArterial );
-  oSelf.oColunaTabelaPressaoArterial.appendChild( oSelf.oFieldsetPressaoArterial );
-
-  oSelf.oFieldsetPressaoArterial.appendChild( oSelf.oLegendaPressaoArterial );
-  oSelf.oFieldsetPressaoArterial.appendChild( oSelf.oTabelaPressaoArterial );
-
-  /**
-   * Linha e colunas referentes aos dados da pressão arterial
-   */
-  oSelf.oLinhaPressaoArterial      = document.createElement( 'tr' );
-  oSelf.oColunaSistolicaLabel      = document.createElement( 'td' );
-  oSelf.oColunaSistolicaDescricao  = document.createElement( 'td' );
-  oSelf.oColunaDiastolicaLabel     = document.createElement( 'td' );
-  oSelf.oColunaDiastolicaDescricao = document.createElement( 'td' );
-
-  /**
-   * Label da Sistólica
-   * @type {label}
-   */
-  oSelf.oLabelSistolica           = document.createElement( 'label' );
-  oSelf.oLabelSistolica.addClassName( 'bold' );
-  oSelf.oLabelSistolica.innerHTML = 'Sistólica: ';
-
-  /**
-   * Input com informação da Sistólica
-   * @type {input}
-   */
-  oSelf.oInputSistolica = document.createElement( 'input' );
-  oSelf.oInputSistolica.addClassName( 'field-size1' );
-  oSelf.oInputSistolica.setAttribute( 'id', 'oInputSistolica' );
-  oSelf.oInputSistolica.setAttribute( 'type', 'text' );
-  oSelf.oInputSistolica.setAttribute( 'maxLength', '3' );
-
-  /**
-   * Label da Diastólica
-   * @type {label}
-   */
-  oSelf.oLabelDiastolica = document.createElement( 'label' );
-  oSelf.oLabelDiastolica.addClassName( 'bold' );
-  oSelf.oLabelDiastolica.innerHTML = 'Diastólica: ';
-
-  /**
-   * Input com informação da Diastólica
-   * @type {input}
-   */
-  oSelf.oInputDiastolica = document.createElement( 'input' );
-  oSelf.oInputDiastolica.addClassName( 'field-size1' );
-  oSelf.oInputDiastolica.setAttribute( 'id', 'oInputDiastolica' );
-  oSelf.oInputDiastolica.setAttribute( 'type', 'text' );
-  oSelf.oInputDiastolica.setAttribute( 'maxLength', '3' );
-
-  /**
-   * Vínculos dos campos da pressão arterial
-   */
-  oSelf.oTabelaPressaoArterial.appendChild( oSelf.oLinhaPressaoArterial );
-
-  oSelf.oLinhaPressaoArterial.appendChild( oSelf.oColunaSistolicaLabel );
-  oSelf.oLinhaPressaoArterial.appendChild( oSelf.oColunaSistolicaDescricao );
-  oSelf.oLinhaPressaoArterial.appendChild( oSelf.oColunaDiastolicaLabel );
-  oSelf.oLinhaPressaoArterial.appendChild( oSelf.oColunaDiastolicaDescricao );
-
-  oSelf.oColunaSistolicaLabel.appendChild( oSelf.oLabelSistolica );
-  oSelf.oColunaSistolicaDescricao.appendChild( oSelf.oInputSistolica );
-  oSelf.oColunaDiastolicaLabel.appendChild( oSelf.oLabelDiastolica );
-  oSelf.oColunaDiastolicaDescricao.appendChild( oSelf.oInputDiastolica );
-
-
-  /* ************************************************
-   * ELEMENTOS REFERENTES AS INFORMAÇÕES DAS MEDIDAS
-   * ************************************************/
-  /**
-   * Linha e coluna do fieldset das medidas
-   * @type {HTMLElement}
-   */
-  oSelf.oLinhaTabelaMedidas  = document.createElement( 'tr' );
-  oSelf.oColunaTabelaMedidas = document.createElement( 'td' );
-  oSelf.oColunaTabelaMedidas.setAttribute( 'colSpan', '3' );
-
-  /**
-   * Fieldset das medidas
-   * @type {fieldset}
-   */
-  oSelf.oFieldsetMedidas = document.createElement( 'fieldset' );
-  oSelf.oFieldsetMedidas.addClassName( 'separator' );
-
-  /**
-   * Legenda do fieldset das medidas
-   * @type {legend}
-   */
-  oSelf.oLegendaMedidas           = document.createElement( 'legend' );
-  oSelf.oLegendaMedidas.addClassName( 'bold' );
-  oSelf.oLegendaMedidas.innerHTML = 'Medidas';
-
-  /**
-   * Tabela com os dados das medidas
-   * @type {table}
-   */
-  oSelf.oTabelaMedidas = document.createElement( 'table' );
-
-  /**
-   * Vínculos da tabela principal com o fieldset das medidas
-   */
-  oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaTabelaMedidas );
-  oSelf.oLinhaTabelaMedidas.appendChild( oSelf.oColunaTabelaMedidas );
-  oSelf.oColunaTabelaMedidas.appendChild( oSelf.oFieldsetMedidas );
-
-  oSelf.oFieldsetMedidas.appendChild( oSelf.oLegendaMedidas );
-  oSelf.oFieldsetMedidas.appendChild( oSelf.oTabelaMedidas );
-
-  /**
-   * Elementos da primeira linha das medidas
-   */
-  oSelf.oLinhaMedidas1              = document.createElement( 'tr' );
-  oSelf.oColunaCinturaLabel         = document.createElement( 'td' );
-  oSelf.oColunaCinturaDescricao     = document.createElement( 'td' );
-  oSelf.oColunaTemperaturaLabel     = document.createElement( 'td' );
-  oSelf.oColunaTemperaturaDescricao = document.createElement( 'td' );
-  oSelf.oColunaPesoLabel            = document.createElement( 'td' );
-  oSelf.oColunaPesoDescricao        = document.createElement( 'td' );
-  oSelf.oColunaAlturaLabel          = document.createElement( 'td' );
-  oSelf.oColunaAlturaDescricao      = document.createElement( 'td' );
-
-  /**
-   * Label da Cintura
-   * @type {label}
-   */
-  oSelf.oLabelCintura           = document.createElement( 'label' );
-  oSelf.oLabelCintura.addClassName( 'bold' );
-  oSelf.oLabelCintura.innerHTML = 'Cintura: ';
-
-  /**
-   * Input com informação da cintura
-   * @type {input}
-   */
-  oSelf.oInputCintura = document.createElement( 'input' );
-  oSelf.oInputCintura.addClassName( 'field-size1' );
-  oSelf.oInputCintura.setAttribute( 'id', 'oInputCintura' );
-  oSelf.oInputCintura.setAttribute( 'type', 'text' );
-  oSelf.oInputCintura.setAttribute( 'maxLength', '3' );
-
-  /**
-   * Label da Temperatura
-   * @type {label}
-   */
-  oSelf.oLabelTemperatura           = document.createElement( 'label' );
-  oSelf.oLabelTemperatura.addClassName( 'bold' );
-  oSelf.oLabelTemperatura.innerHTML = 'Temperatura: ';
-
-  /**
-   * Input com informação da temperatura
-   * @type {input}
-   */
-  oSelf.oInputTemperatura           = document.createElement( 'input' );
-  oSelf.oInputTemperatura.addClassName( 'field-size1' );
-  oSelf.oInputTemperatura.setAttribute( 'id', 'oInputTemperatura' );
-  oSelf.oInputTemperatura.setAttribute( 'type', 'text' );
-  oSelf.oInputTemperatura.setAttribute( 'maxLength', '6' );
-
-  /**
-   * Label da Peso
-   * @type {label}
-   */
-  oSelf.oLabelPeso           = document.createElement( 'label' );
-  oSelf.oLabelPeso.addClassName( 'bold' );
-  oSelf.oLabelPeso.innerHTML = 'Peso: ';
-
-  /**
-   * Input com informação do peso
-   * @type {input}
-   */
-  oSelf.oInputPeso = document.createElement( 'input' );
-  oSelf.oInputPeso.addClassName( 'field-size1' );
-  oSelf.oInputPeso.setAttribute( 'id', 'oInputPeso' );
-  oSelf.oInputPeso.setAttribute( 'type', 'text' );
-  oSelf.oInputPeso.setAttribute( 'maxLength', '7');
-
-  /**
-   * Label da Altura
-   * @type {label}
-   */
-  oSelf.oLabelAltura           = document.createElement( 'label' );
-  oSelf.oLabelAltura.addClassName( 'bold' );
-  oSelf.oLabelAltura.innerHTML = 'Altura: ';
-
-  /**
-   * Input com informação da altura
-   * @type {input}
-   */
-  oSelf.oInputAltura = document.createElement( 'input' );
-  oSelf.oInputAltura.addClassName( 'field-size1' );
-  oSelf.oInputAltura.setAttribute( 'id', 'oInputAltura' );
-  oSelf.oInputAltura.setAttribute( 'type', 'text' );
-  oSelf.oInputAltura.setAttribute( 'maxLength', '3' );
-
-  /**
-   * Vínculos dos campos da primeira linha das medidas
-   */
-  oSelf.oTabelaMedidas.appendChild( oSelf.oLinhaMedidas1 );
-
-  oSelf.oLinhaMedidas1.appendChild( oSelf.oColunaCinturaLabel );
-  oSelf.oLinhaMedidas1.appendChild( oSelf.oColunaCinturaDescricao );
-  oSelf.oLinhaMedidas1.appendChild( oSelf.oColunaTemperaturaLabel );
-  oSelf.oLinhaMedidas1.appendChild( oSelf.oColunaTemperaturaDescricao );
-  oSelf.oLinhaMedidas1.appendChild( oSelf.oColunaPesoLabel );
-  oSelf.oLinhaMedidas1.appendChild( oSelf.oColunaPesoDescricao );
-  oSelf.oLinhaMedidas1.appendChild( oSelf.oColunaAlturaLabel );
-  oSelf.oLinhaMedidas1.appendChild( oSelf.oColunaAlturaDescricao );
-
-  oSelf.oColunaCinturaLabel.appendChild( oSelf.oLabelCintura );
-  oSelf.oColunaCinturaDescricao.appendChild( oSelf.oInputCintura );
-  oSelf.oColunaTemperaturaLabel.appendChild( oSelf.oLabelTemperatura );
-  oSelf.oColunaTemperaturaDescricao.appendChild( oSelf.oInputTemperatura );
-  oSelf.oColunaPesoLabel.appendChild( oSelf.oLabelPeso );
-  oSelf.oColunaPesoDescricao.appendChild( oSelf.oInputPeso );
-  oSelf.oColunaAlturaLabel.appendChild( oSelf.oLabelAltura );
-  oSelf.oColunaAlturaDescricao.appendChild( oSelf.oInputAltura );
-
-  /**
-   * Elementos da segunda linha das medidas
-   */
-  oSelf.oLinhaMedidas2      = document.createElement( 'tr' );
-  oSelf.oColunaIMCLabel     = document.createElement( 'td' );
-  oSelf.oColunaIMCValor     = document.createElement( 'td' );
-  oSelf.oColunaIMCDescricao = document.createElement( 'td' );
-  oSelf.oColunaIMCDescricao.setAttribute( 'colSpan', '6' );
-
-  /**
-   * Label do IMC
-   * @type {label}
-   */
-  oSelf.oLabelIMC           = document.createElement( 'label' );
-  oSelf.oLabelIMC.addClassName( 'bold' );
-  oSelf.oLabelIMC.innerHTML = 'IMC: ';
-
-  /**
-   * Input com informação da IMC
-   * @type {input}
-   */
-  oSelf.oInputIMCValor = document.createElement( 'input' );
-  oSelf.oInputIMCValor.addClassName( 'field-size1' );
-  oSelf.oInputIMCValor.setAttribute( 'id', 'oInputIMCValor' );
-  oSelf.oInputIMCValor.setAttribute( 'type', 'text' );
-  oSelf.oInputIMCValor.setAttribute( 'readOnly', 'readOnly' );
-  oSelf.oInputIMCValor.setStyle( { 'backgroundColor' : '#DEB887' } );
-
-  /**
-   * Input com informação da descrição do IMC
-   * @type {input}
-   */
-  oSelf.oInputIMCDescricao = document.createElement( 'input' );
-  oSelf.oInputIMCDescricao.addClassName( 'field-size7' );
-  oSelf.oInputIMCDescricao.setAttribute( 'id', 'oInputIMCDescricao' );
-  oSelf.oInputIMCDescricao.setAttribute( 'type', 'text' );
-  oSelf.oInputIMCDescricao.setAttribute( 'readOnly', 'readOnly' );
-  oSelf.oInputIMCDescricao.setStyle( { 'backgroundColor' : '#DEB887' } );
-
-  /**
-   * Vínculos dos campos da segunda linha das medidas
-   */
-  oSelf.oTabelaMedidas.appendChild( oSelf.oLinhaMedidas2 );
-  oSelf.oLinhaMedidas2.appendChild( oSelf.oColunaIMCLabel );
-  oSelf.oLinhaMedidas2.appendChild( oSelf.oColunaIMCValor );
-  oSelf.oLinhaMedidas2.appendChild( oSelf.oColunaIMCDescricao );
-
-  oSelf.oColunaIMCLabel.appendChild( oSelf.oLabelIMC );
-  oSelf.oColunaIMCValor.appendChild( oSelf.oInputIMCValor );
-  oSelf.oColunaIMCDescricao.appendChild( oSelf.oInputIMCDescricao );
-
-
-  /* ***************************************************
-   * ELEMENTOS E VÍNCULOS REFERENTE A LINHA DA GLICEMIA
-   * ***************************************************/
-  /**
-   * Linha e colunas da Glicemia
-   */
-  oSelf.oLinhaTabelaGlicemia  = document.createElement( 'tr' );
-  oSelf.oColunaTabelaGlicemia = document.createElement( 'td' );
-  oSelf.oColunaTabelaGlicemia.setAttribute( 'colSpan', '3' );
-
-  /**
-   * Fieldset da glicemia
-   * @type {fieldset}
-   */
-  oSelf.oFieldsetGlicemia = document.createElement( 'fieldset' );
-  oSelf.oFieldsetGlicemia.addClassName( 'separator' );
-
-  /**
-   * Legenda do fieldset da glicemia
-   * @type {legend}
-   */
-  oSelf.oLegendaGlicemia           = document.createElement( 'legend' );
-  oSelf.oLegendaGlicemia.addClassName( 'bold' );
-  oSelf.oLegendaGlicemia.innerHTML = 'Glicemia';
-
-  /**
-   * Tabela com os dados da glicemia
-   * @type {table}
-   */
-  oSelf.oTabelaGlicemia = document.createElement( 'table' );
-
-  /**
-   * Vínculos da tabela principal com o fieldset da glicemia
-   */
-  oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaTabelaGlicemia );
-  oSelf.oLinhaTabelaGlicemia.appendChild( oSelf.oColunaTabelaGlicemia );
-  oSelf.oColunaTabelaGlicemia.appendChild( oSelf.oFieldsetGlicemia );
-
-  oSelf.oFieldsetGlicemia.appendChild( oSelf.oLegendaGlicemia );
-  oSelf.oFieldsetGlicemia.appendChild( oSelf.oTabelaGlicemia );
-
-  /**
-   * Linha e colunas referentes aos dados da glicemia
-   */
-  oSelf.oLinhaGlicemia            = document.createElement( 'tr' );
-  oSelf.oColunaExameGlicemiaLabel = document.createElement( 'td' );
-  oSelf.oColunaExameGlicemiaValor = document.createElement( 'td' );
-
-  /**
-   * Label do Exame de Glicemia
-   * @type {label}
-   */
-  oSelf.oLabelExameGlicemia           = document.createElement( 'label' );
-  oSelf.oLabelExameGlicemia.addClassName( 'bold' );
-  oSelf.oLabelExameGlicemia.innerHTML = 'Exame Glicemia (MG/D): ';
-
-  /**
-   * Input com informação do exame de glicemia
-   * @type {input}
-   */
-  oSelf.oInputExameGlicemiaValor = document.createElement( 'input' );
-  oSelf.oInputExameGlicemiaValor.addClassName( 'field-size1' );
-  oSelf.oInputExameGlicemiaValor.setAttribute( 'id', 'oInputExameGlicemiaValor' );
-  oSelf.oInputExameGlicemiaValor.setAttribute( 'type', 'text' );
-  oSelf.oInputExameGlicemiaValor.setAttribute( 'maxLength', '3' );
-
-  /**
-   * Vínculos dos elementos da glicemia
-   */
-  oSelf.oTabelaGlicemia.appendChild( oSelf.oLinhaGlicemia );
-  oSelf.oLinhaGlicemia.appendChild( oSelf.oColunaExameGlicemiaLabel );
-  oSelf.oLinhaGlicemia.appendChild( oSelf.oColunaExameGlicemiaValor );
-
-  oSelf.oColunaExameGlicemiaLabel.appendChild( oSelf.oLabelExameGlicemia );
-  oSelf.oColunaExameGlicemiaValor.appendChild( oSelf.oInputExameGlicemiaValor );
-
-  oSelf.oLinhaTipoExameGlicemia   = document.createElement( 'tr' );
-  oSelf.oColunaTipoExameGlicemia1 = document.createElement( 'td' );
-  oSelf.oColunaTipoExameGlicemia2 = document.createElement( 'td' );
-
-  /**
-   * Radio button para a opção Em Jejum
-   * @type {input}
-   */
-  oSelf.oInputRadioJejum           = document.createElement( 'input' );
-  oSelf.oInputRadioJejum.addClassName( 'bold' );
-  oSelf.oInputRadioJejum.setAttribute( 'name', 'statusAlimentacao' );
-  oSelf.oInputRadioJejum.setAttribute( 'value', '1' );
-  oSelf.oInputRadioJejum.setAttribute( 'type', 'radio' );
-  oSelf.oInputRadioJejum.setAttribute( 'disabled', 'disabled' );
-  oSelf.oInputRadioJejum.setAttribute( 'id', 'oInputRadioJejum' );
-
-  /**
-   * Label Em Jejum
-   * @type {label}
-   */
-  oSelf.oLabelRadioJejum           = document.createElement( 'label' );
-  oSelf.oLabelRadioJejum.addClassName( 'bold' );
-  oSelf.oLabelRadioJejum.innerHTML = 'Em Jejum';
-  oSelf.oLabelRadioJejum.setAttribute( 'for', 'oInputRadioJejum' );
-
-  /**
-   * Radio button para a opção Pós Prandial
-   * @type {input}
-   */
-  oSelf.oInputRadioPrandial = document.createElement( 'input' );
-  oSelf.oInputRadioPrandial.addClassName( 'bold' );
-  oSelf.oInputRadioPrandial.setAttribute( 'name', 'statusAlimentacao' );
-  oSelf.oInputRadioPrandial.setAttribute( 'value', '2' );
-  oSelf.oInputRadioPrandial.setAttribute( 'type', 'radio' );
-  oSelf.oInputRadioPrandial.setAttribute( 'disabled', 'disabled' );
-  oSelf.oInputRadioPrandial.setAttribute( 'id', 'oInputRadioPrandial' );
-
-  /**
-   * Label Pós Prandial
-   * @type {label}
-   */
-  oSelf.oLabelRadioPrandial           = document.createElement( 'label' );
-  oSelf.oLabelRadioPrandial.addClassName( 'bold' );
-  oSelf.oLabelRadioPrandial.innerHTML = 'Pós Prandial';
-  oSelf.oLabelRadioPrandial.setAttribute( 'for', 'oInputRadioPrandial' );
-
-  /**
-   * Vincula os elementos referentes as opções de exame de glicemia
-   */
-  oSelf.oTabelaGlicemia.appendChild( oSelf.oLinhaTipoExameGlicemia );
-
-  oSelf.oLinhaTipoExameGlicemia.appendChild( oSelf.oColunaTipoExameGlicemia1 );
-  oSelf.oLinhaTipoExameGlicemia.appendChild( oSelf.oColunaTipoExameGlicemia2 );
-
-  oSelf.oColunaTipoExameGlicemia1.appendChild( oSelf.oInputRadioJejum );
-  oSelf.oColunaTipoExameGlicemia1.appendChild( oSelf.oLabelRadioJejum );
-  oSelf.oColunaTipoExameGlicemia2.appendChild( oSelf.oInputRadioPrandial );
-  oSelf.oColunaTipoExameGlicemia2.appendChild( oSelf.oLabelRadioPrandial );
 
 
   /* *******************************************************
@@ -789,7 +423,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    */
   oSelf.oAncoraProfissional           = document.createElement( 'a' );
   oSelf.oAncoraProfissional.addClassName( 'bold' );
-  oSelf.oAncoraProfissional.setAttribute( 'href', '#' );
+  // oSelf.oAncoraProfissional.setAttribute('for', 'oInputProfissionalCodigo');
   oSelf.oAncoraProfissional.innerHTML = 'Profissional: ';
 
   /**
@@ -801,6 +435,8 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
   oSelf.oInputProfissionalCodigo.setAttribute( 'id', 'oInputProfissionalCodigo' );
   oSelf.oInputProfissionalCodigo.setAttribute( 'type', 'text' );
   oSelf.oInputProfissionalCodigo.setAttribute( 'lang', 'sd03_i_codigo' );
+  oSelf.oInputProfissionalCodigo.setAttribute( 'readOnly', 'readOnly' );
+  oSelf.oInputProfissionalCodigo.setStyle( { 'backgroundColor' : '#DEB887' } );
 
   /**
    * Input com informação da descrição do profissional
@@ -834,43 +470,31 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
   /**
    * Linha e colunas referente a especialidade
    */
-  oSelf.oLinhaEspecialidade           = document.createElement( 'tr' );
-  oSelf.oLinhaEspecialidade.setStyle( { 'display' : 'none' } );
-  oSelf.oColunaEspecialidadeLabel     = document.createElement( 'td' );
-  oSelf.oColunaEspecialidadeCodigo    = document.createElement( 'td' );
-  oSelf.oColunaEspecialidadeDescricao = document.createElement( 'td' );
+  oSelf.oLinhaEspecialidade                   = document.createElement( 'tr' );
+  oSelf.oColunaEspecialidadeLabel             = document.createElement( 'td' );
+  oSelf.oColunaEspecialidadeDescricao         = document.createElement( 'td' );
+  oSelf.oColunaEspecialidadeCodigo            = document.createElement( 'td' );
+  oSelf.oColunaEspecialidadeDescricao.colSpan = '2';
 
   /**
    * Ancora referente a especialidade do profissional
    * @type {a}
    */
-  oSelf.oAncoraEspecialidade           = document.createElement( 'a' );
-  oSelf.oAncoraEspecialidade.addClassName( 'bold' );
-  oSelf.oAncoraEspecialidade.setAttribute( 'id', 'oAncoraEspecialidade' );
-  oSelf.oAncoraEspecialidade.setAttribute( 'href', '#' );
-  oSelf.oAncoraEspecialidade.innerHTML = 'Especialidade: ';
+  oSelf.oLabelEspecialidade           = document.createElement( 'label' );
+  oSelf.oLabelEspecialidade.addClassName( 'bold' );
+  oSelf.oLabelEspecialidade.setAttribute( 'for', 'oCboEspecialidade' );
+  oSelf.oLabelEspecialidade.innerHTML = 'Especialidade: ';
 
   /**
    * Elemento para o código da especidalidade
    * @type {input}
    */
-  oSelf.oInputEspecialidadeCodigo = document.createElement( 'input' );
-  oSelf.oInputEspecialidadeCodigo.setAttribute( 'id', 'oInputEspecialidadeCodigo' );
-  oSelf.oInputEspecialidadeCodigo.setAttribute( 'type', 'text' );
-  oSelf.oInputEspecialidadeCodigo.setAttribute( 'lang', 'db_sd27_i_rhcbo' );
-  oSelf.oInputEspecialidadeCodigo.addClassName( "field-size2" );
-
-  /**
-   * Elemento para a descrição da especialidade
-   * @type {input}
-   */
-  oSelf.oInputEspecialidadeDescricao = document.createElement( 'input' );
-  oSelf.oInputEspecialidadeDescricao.setAttribute( 'id', 'oInputEspecialidadeDescricao' );
-  oSelf.oInputEspecialidadeDescricao.setAttribute( 'type', 'text' );
-  oSelf.oInputEspecialidadeDescricao.setAttribute( 'readOnly', 'readOnly' );
-  oSelf.oInputEspecialidadeDescricao.setAttribute( 'lang', 'rh70_descr' );
-  oSelf.oInputEspecialidadeDescricao.setStyle( { 'backgroundColor' : '#DEB887' } );
-  oSelf.oInputEspecialidadeDescricao.addClassName( "field-size8" );
+  oSelf.oCboEspecialidade = document.createElement( 'select' );
+  oSelf.oCboEspecialidade.setAttribute("id", 'oCboEspecialidade');
+  oSelf.oCboEspecialidade.style.width = '95%';
+  oSelf.oCboEspecialidade.onchange = function() {
+    oSelf.liberaAbaProcedimentos();
+  };
 
   /**
    * Vínculos dos elementos da especialidade
@@ -878,12 +502,10 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
   oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaEspecialidade );
 
   oSelf.oLinhaEspecialidade.appendChild( oSelf.oColunaEspecialidadeLabel );
-  oSelf.oLinhaEspecialidade.appendChild( oSelf.oColunaEspecialidadeCodigo );
   oSelf.oLinhaEspecialidade.appendChild( oSelf.oColunaEspecialidadeDescricao );
 
-  oSelf.oColunaEspecialidadeLabel.appendChild( oSelf.oAncoraEspecialidade );
-  oSelf.oColunaEspecialidadeCodigo.appendChild( oSelf.oInputEspecialidadeCodigo );
-  oSelf.oColunaEspecialidadeDescricao.appendChild( oSelf.oInputEspecialidadeDescricao );
+  oSelf.oColunaEspecialidadeLabel.appendChild( oSelf.oLabelEspecialidade );
+  oSelf.oColunaEspecialidadeDescricao.appendChild( oSelf.oCboEspecialidade );
 
 
   /* **************************************************
@@ -903,6 +525,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    */
   oSelf.oLabelUnidade           = document.createElement( 'label' );
   oSelf.oLabelUnidade.addClassName( 'bold' );
+  oSelf.oLabelUnidade.setAttribute('for', 'oInputUnidadeCodigo');
   oSelf.oLabelUnidade.innerHTML = 'Unidade: ';
 
   /**
@@ -950,6 +573,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
   oSelf.oColunaCBOSLabel  = document.createElement( 'td' );
   oSelf.oColunaCBOSSelect = document.createElement( 'td' );
   oSelf.oColunaCBOSSelect.setAttribute( 'colSpan', '2' );
+  oSelf.oLinhaCBOS.style.display = "none";
 
   /**
    * Label do CBOS
@@ -957,6 +581,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    */
   oSelf.oLabelCBOS           = document.createElement( 'label' );
   oSelf.oLabelCBOS.addClassName( 'bold' );
+  oSelf.oLabelCBOS.setAttribute('for', 'oSelectCBOS');
   oSelf.oLabelCBOS.innerHTML = 'CBOS: ';
 
   /**
@@ -997,6 +622,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    */
   oSelf.oLabelDataConsulta           = document.createElement( 'label' );
   oSelf.oLabelDataConsulta.addClassName( 'bold' );
+  oSelf.oLabelDataConsulta.setAttribute('for', 'oInputDataConsultaValor');
   oSelf.oLabelDataConsulta.innerHTML = 'Data da Consulta: ';
 
   /**
@@ -1065,6 +691,860 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
   oSelf.oColunaDataConsultaCampos.appendChild( oSelf.oInputDataConsultaAno );
 
 
+  /* *********************************
+   * ELEMENTOS E VÍNCULOS DO SUBJETIVO
+   * ********************************/
+
+  /**
+   * Tabela com os dados da Subjetivo
+   */
+  oSelf.oTabelaSubjetivo = document.createElement( 'table' );
+  oSelf.oTabelaSubjetivo.setAttribute( 'style', 'width:100%' );
+  oSelf.oTabelaSubjetivo.classList.add('form-container');
+
+  /**
+   * Linha contendo o Fieldset da Subjetivo
+   */
+  oSelf.oLinhaFieldsetSubjetivo = document.createElement( 'tr' );
+  oSelf.oLinhaFieldsetSubjetivo.setStyle( { 'display' : 'none' } );
+
+  if (    oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM
+    || oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA ) {
+    oSelf.oLinhaFieldsetSubjetivo.setStyle( { 'display' : '' } );
+  }
+
+  /**
+   * Coluna contendo o Fieldset da Subjetivo
+   */
+  oSelf.oColunaFieldsetSubjetivo              = document.createElement( 'td' );
+  oSelf.oColunaFieldsetSubjetivo.setAttribute( 'colspan', '5' );
+
+  /**
+   * Fieldset da Subjetivo
+   */
+  oSelf.oFieldsetSubjetivo = document.createElement( 'fieldset' );
+  oSelf.oFieldsetSubjetivo.addClassName( 'separator' );
+
+  /**
+   * Legend do Fieldset da Subjetivo
+   */
+  oSelf.oLegendaSubjetivo = document.createElement( 'legend' );
+
+  /**
+   * Label da Subjetivo
+   */
+  oSelf.oLabelSubjetivo = document.createElement( 'label' );
+  oSelf.oLabelSubjetivo.addClassName( 'bold' );
+  oSelf.oLabelSubjetivo.setAttribute('for', 'oTextSubjetivo');
+  oSelf.oLabelSubjetivo.innerHTML = 'Subjetivo';
+
+  /**
+   * Combobox contendo as prioridades de atendimento
+   */
+  oSelf.oTextSubjetivo = document.createElement( 'textarea' );
+  oSelf.oTextSubjetivo.setAttribute( 'id', 'oTextSubjetivo' );
+  oSelf.oTextSubjetivo.setAttribute( 'rows', '3' );
+  oSelf.oTextSubjetivo.addClassName( 'field-size-max' );
+
+  oSelf.oLinhaSubjetivo  = document.createElement( 'tr' );
+  oSelf.oColunaSubjetivo = document.createElement( 'td' );
+  oSelf.oColunaSubjetivo.setAttribute( 'colspan', '3' );
+
+  /**
+   * Vínculos da Tabela Principal com a Tabela de Subjetivo
+   */
+  oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaFieldsetSubjetivo );
+
+  oSelf.oLinhaFieldsetSubjetivo.appendChild( oSelf.oColunaFieldsetSubjetivo );
+  oSelf.oColunaFieldsetSubjetivo.appendChild( oSelf.oFieldsetSubjetivo );
+
+  oSelf.oLegendaSubjetivo.appendChild(oSelf.oLabelSubjetivo);
+
+  oSelf.oFieldsetSubjetivo.appendChild( oSelf.oLegendaSubjetivo );
+  oSelf.oFieldsetSubjetivo.appendChild( oSelf.oTabelaSubjetivo );
+
+  oSelf.oTabelaSubjetivo.appendChild( oSelf.oLinhaSubjetivo );
+  oSelf.oLinhaSubjetivo.appendChild( oSelf.oColunaSubjetivo );
+  oSelf.oColunaSubjetivo.appendChild( oSelf.oTextSubjetivo );
+
+
+  /* ************************************************
+   * ELEMENTOS REFERENTES AS INFORMAÇÕES DAS Antropometria
+   * ************************************************/
+  /**
+   * Linha e coluna do fieldset das Antropometria
+   * @type {HTMLElement}
+   */
+  oSelf.oLinhaTabelaAntropometria  = document.createElement( 'tr' );
+  oSelf.oColunaTabelaAntropometria = document.createElement( 'td' );
+  oSelf.oColunaTabelaAntropometria.setAttribute( 'colSpan', '3' );
+
+  /**
+   * Fieldset das Antropometria
+   * @type {fieldset}
+   */
+  oSelf.oFieldsetAntropometria = document.createElement( 'fieldset' );
+  oSelf.oFieldsetAntropometria.addClassName( 'separator' );
+
+  /**
+   * Legenda do fieldset das Antropometria
+   * @type {legend}
+   */
+  oSelf.oLegendaAntropometria           = document.createElement( 'legend' );
+  oSelf.oLegendaAntropometria.addClassName( 'bold' );
+  oSelf.oLegendaAntropometria.innerHTML = 'Antropometria';
+
+  /**
+   * Tabela com os dados das Antropometria
+   * @type {table}
+   */
+  oSelf.oTabelaAntropometria = document.createElement( 'table' );
+  oSelf.oTabelaAntropometria.classList.add('form-container');
+
+  /**
+   * Vínculos da tabela principal com o fieldset das Antropometria
+   */
+  oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaTabelaAntropometria );
+  oSelf.oLinhaTabelaAntropometria.appendChild( oSelf.oColunaTabelaAntropometria );
+  oSelf.oColunaTabelaAntropometria.appendChild( oSelf.oFieldsetAntropometria );
+
+  oSelf.oFieldsetAntropometria.appendChild( oSelf.oLegendaAntropometria );
+  oSelf.oFieldsetAntropometria.appendChild( oSelf.oTabelaAntropometria );
+
+  /**
+   * Elementos da primeira linha das Antropometria
+   */
+  oSelf.oLinhaAntropometria               = document.createElement( 'tr' );
+  oSelf.oColunaCinturaLabel               = document.createElement( 'td' );
+  oSelf.oColunaCinturaDescricao           = document.createElement( 'td' );
+  oSelf.oColunaPesoLabel                  = document.createElement( 'td' );
+  oSelf.oColunaPesoDescricao              = document.createElement( 'td' );
+  oSelf.oColunaAlturaLabel                = document.createElement( 'td' );
+  oSelf.oColunaAlturaDescricao            = document.createElement( 'td' );
+  oSelf.oColunaPerimetroCefalicoLabel     = document.createElement( 'td' );
+  oSelf.oColunaPerimetroCefalicoDescricao = document.createElement( 'td' );
+
+  /**
+   * Estilos da primeira linha da Antropometria
+   */
+  oSelf.oColunaCinturaLabel.style.cssText = 'width: 60px;'
+  oSelf.oColunaPesoLabel.style.cssText = 'width: 38px;'
+  oSelf.oColunaAlturaLabel.style.cssText = 'width: 45px;'
+  oSelf.oColunaPerimetroCefalicoLabel.style.cssText = 'width: 115px;'
+
+  /**
+   * Label da Cintura
+   * @type {label}
+   */
+  oSelf.oLabelCintura           = document.createElement( 'label' );
+  oSelf.oLabelCintura.addClassName( 'bold' );
+  oSelf.oLabelCintura.setAttribute('for', 'oInputCintura');
+  oSelf.oLabelCintura.innerHTML = 'Cintura: ';
+
+  /**
+   * Input com informação da cintura
+   * @type {input}
+   */
+  oSelf.oInputCintura = document.createElement( 'input' );
+  oSelf.oInputCintura.addClassName( 'field-size1' );
+  oSelf.oInputCintura.setAttribute( 'id', 'oInputCintura' );
+  oSelf.oInputCintura.setAttribute( 'type', 'text' );
+  oSelf.oInputCintura.setAttribute( 'maxLength', '5' );
+
+  /**
+   * Span da unidade de medida da cintura
+   * @type {label}
+   */
+   oSelf.oSpanCinturaUnidade = document.createElement('span');
+   oSelf.oSpanCinturaUnidade.innerHTML = '&nbsp;cm';
+
+  /**
+   * Label da Peso
+   * @type {label}
+   */
+  oSelf.oLabelPeso           = document.createElement( 'label' );
+  oSelf.oLabelPeso.addClassName( 'bold' );
+  oSelf.oLabelPeso.setAttribute('for', 'oInputPeso');
+  oSelf.oLabelPeso.innerHTML = 'Peso: ';
+
+  /**
+   * Input com informação do peso
+   * @type {input}
+   */
+  oSelf.oInputPeso = document.createElement( 'input' );
+  oSelf.oInputPeso.addClassName( 'field-size1' );
+  oSelf.oInputPeso.setAttribute( 'id', 'oInputPeso' );
+  oSelf.oInputPeso.setAttribute( 'type', 'text' );
+  oSelf.oInputPeso.setAttribute( 'maxLength', '7');
+  oSelf.oInputPeso.style.cssText = 'width: 50px;';
+
+  /**
+   * Span da unidade de medida de peso
+   * @type {label}
+   */
+   oSelf.oSpanPesoUnidade = document.createElement('span');
+   oSelf.oSpanPesoUnidade.innerHTML = '&nbsp;kg';
+
+  /**
+   * Label da Altura
+   * @type {label}
+   */
+  oSelf.oLabelAltura           = document.createElement( 'label' );
+  oSelf.oLabelAltura.addClassName( 'bold' );
+  oSelf.oLabelAltura.setAttribute('for', 'oInputAltura');
+  oSelf.oLabelAltura.innerHTML = 'Altura: ';
+
+  /**
+   * Input com informação da altura
+   * @type {input}
+   */
+  oSelf.oInputAltura = document.createElement( 'input' );
+  oSelf.oInputAltura.addClassName( 'field-size1' );
+  oSelf.oInputAltura.setAttribute( 'id', 'oInputAltura' );
+  oSelf.oInputAltura.setAttribute( 'type', 'text' );
+  oSelf.oInputAltura.setAttribute( 'maxLength', '5' );
+
+  /**
+   * Span da unidade de medida de Altura
+   * @type {label}
+   */
+   oSelf.oSpanAlturaUnidade = document.createElement('span');
+   oSelf.oSpanAlturaUnidade.innerHTML = '&nbsp;cm';
+
+  /**
+   * Label do Perímetro Cefálico
+   * @type {label}
+   */
+  oSelf.oLabelPerimetroCefalico           = document.createElement( 'label' );
+  oSelf.oLabelPerimetroCefalico.addClassName( 'bold' );
+  oSelf.oLabelPerimetroCefalico.setAttribute('for', 'oInputPerimetroCefalico');
+  oSelf.oLabelPerimetroCefalico.innerHTML = 'Perímetro Cefálico: ';
+
+  /**
+   * Input com informação do perímetro cefálico
+   * @type {input}
+   */
+  oSelf.oInputPerimetroCefalico = document.createElement( 'input' );
+  oSelf.oInputPerimetroCefalico.addClassName( 'field-size1' );
+  oSelf.oInputPerimetroCefalico.setAttribute( 'id', 'oInputPerimetroCefalico' );
+  oSelf.oInputPerimetroCefalico.setAttribute( 'type', 'text' );
+  oSelf.oInputPerimetroCefalico.setAttribute( 'maxLength', '4' );
+
+  /**
+   * Span da unidade de medida do Perímetro Cefálico
+   * @type {label}
+   */
+   oSelf.oSpanPerimetroCefalicoUnidade = document.createElement('span');
+   oSelf.oSpanPerimetroCefalicoUnidade.innerHTML = '&nbsp;cm';
+
+  /**
+   * Vínculos dos campos da primeira linha das Antropometria
+   */
+  oSelf.oTabelaAntropometria.appendChild( oSelf.oLinhaAntropometria );
+
+  oSelf.oLinhaAntropometria.appendChild( oSelf.oColunaCinturaLabel );
+  oSelf.oLinhaAntropometria.appendChild( oSelf.oColunaCinturaDescricao );
+  oSelf.oLinhaAntropometria.appendChild( oSelf.oColunaPesoLabel );
+  oSelf.oLinhaAntropometria.appendChild( oSelf.oColunaPesoDescricao );
+  oSelf.oLinhaAntropometria.appendChild( oSelf.oColunaAlturaLabel );
+  oSelf.oLinhaAntropometria.appendChild( oSelf.oColunaAlturaDescricao );
+  oSelf.oLinhaAntropometria.appendChild( oSelf.oColunaPerimetroCefalicoLabel );
+  oSelf.oLinhaAntropometria.appendChild( oSelf.oColunaPerimetroCefalicoDescricao );
+
+  oSelf.oColunaCinturaLabel.appendChild( oSelf.oLabelCintura );
+  oSelf.oColunaCinturaDescricao.appendChild( oSelf.oInputCintura );
+  oSelf.oColunaCinturaDescricao.appendChild( oSelf.oSpanCinturaUnidade );
+  oSelf.oColunaPesoLabel.appendChild( oSelf.oLabelPeso );
+  oSelf.oColunaPesoDescricao.appendChild( oSelf.oInputPeso );
+  oSelf.oColunaPesoDescricao.appendChild( oSelf.oSpanPesoUnidade );
+  oSelf.oColunaAlturaLabel.appendChild( oSelf.oLabelAltura );
+  oSelf.oColunaAlturaDescricao.appendChild( oSelf.oInputAltura );
+  oSelf.oColunaAlturaDescricao.appendChild( oSelf.oSpanAlturaUnidade );
+  oSelf.oColunaPerimetroCefalicoLabel.appendChild( oSelf.oLabelPerimetroCefalico );
+  oSelf.oColunaPerimetroCefalicoDescricao.appendChild( oSelf.oInputPerimetroCefalico );
+  oSelf.oColunaPerimetroCefalicoDescricao.appendChild( oSelf.oSpanPerimetroCefalicoUnidade );
+
+  /**
+   * Elementos da segunda linha das Antropometria
+   */
+  oSelf.oLinhaAntropometria2 = document.createElement( 'tr' );
+  oSelf.oColunaIMCLabel      = document.createElement( 'td' );
+  oSelf.oColunaIMCValor      = document.createElement( 'td' );
+  oSelf.oColunaIMCDescricao  = document.createElement( 'td' );
+  oSelf.oColunaIMCDescricao.setAttribute( 'colSpan', '6' );
+
+  /**
+   * Label do IMC
+   * @type {label}
+   */
+  oSelf.oLabelIMC           = document.createElement( 'label' );
+  oSelf.oLabelIMC.addClassName( 'bold' );
+  oSelf.oLabelIMC.setAttribute('for', 'oInputIMCValor');
+  oSelf.oLabelIMC.innerHTML = 'IMC: ';
+
+  /**
+   * Input com informação da IMC
+   * @type {input}
+   */
+  oSelf.oInputIMCValor = document.createElement( 'input' );
+  oSelf.oInputIMCValor.addClassName( 'field-size1' );
+  oSelf.oInputIMCValor.setAttribute( 'id', 'oInputIMCValor' );
+  oSelf.oInputIMCValor.setAttribute( 'type', 'text' );
+  oSelf.oInputIMCValor.setAttribute( 'readOnly', 'readOnly' );
+  oSelf.oInputIMCValor.setStyle( { 'backgroundColor' : '#DEB887' } );
+
+  /**
+   * Input com informação da descrição do IMC
+   * @type {input}
+   */
+  oSelf.oInputIMCDescricao = document.createElement( 'input' );
+  oSelf.oInputIMCDescricao.addClassName( 'field-size8' );
+  oSelf.oInputIMCDescricao.setAttribute( 'id', 'oInputIMCDescricao' );
+  oSelf.oInputIMCDescricao.setAttribute( 'type', 'text' );
+  oSelf.oInputIMCDescricao.setAttribute( 'readOnly', 'readOnly' );
+  oSelf.oInputIMCDescricao.setStyle( { 'backgroundColor' : '#DEB887' } );
+
+  /**
+   * Vínculos dos campos da segunda linha das Antropometria
+   */
+  oSelf.oTabelaAntropometria.appendChild( oSelf.oLinhaAntropometria2 );
+  oSelf.oLinhaAntropometria2.appendChild( oSelf.oColunaIMCLabel );
+  oSelf.oLinhaAntropometria2.appendChild( oSelf.oColunaIMCValor );
+  oSelf.oLinhaAntropometria2.appendChild( oSelf.oColunaIMCDescricao );
+
+  oSelf.oColunaIMCLabel.appendChild( oSelf.oLabelIMC );
+  oSelf.oColunaIMCValor.appendChild( oSelf.oInputIMCValor );
+  oSelf.oColunaIMCDescricao.appendChild( oSelf.oInputIMCDescricao );
+
+  /* **************************************************
+   * ELEMENTOS DO FIELDSET E DADOS DA Sinais Vitais
+   * **************************************************/
+  /**
+   * Linha e coluna do fieldset da Sinais Vitais
+   * @type {HTMLElement}
+   */
+  oSelf.oLinhaTabelaSinaisVitais  = document.createElement( 'tr' );
+  oSelf.oColunaTabelaSinaisVitais = document.createElement( 'td' );
+  oSelf.oColunaTabelaSinaisVitais.setAttribute( 'colSpan', '3' );
+
+  /**
+   * Fieldset da Sinais Vitais
+   * @type {fieldset}
+   */
+  oSelf.oFieldsetSinaisVitais = document.createElement( 'fieldset' );
+  oSelf.oFieldsetSinaisVitais.addClassName( 'separator' );
+
+  /**
+   * Legenda do fieldset da Sinais Vitais
+   * @type {legend}
+   */
+  oSelf.oLegendaSinaisVitais = document.createElement( 'legend' );
+  oSelf.oLegendaSinaisVitais.addClassName( 'bold' );
+  oSelf.oLegendaSinaisVitais.innerHTML = 'Sinais Vitais';
+
+  /**
+   * Tabela com os dados da Sinais Vitais
+   * @type {table}
+   */
+  oSelf.oTabelaSinaisVitais = document.createElement( 'table' );
+  oSelf.oTabelaSinaisVitais.classList.add('form-container');
+
+  /**
+   * Vínculos da tabela principal com o fieldset da Sinais Vitais
+   */
+  oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaTabelaSinaisVitais );
+
+  oSelf.oLinhaTabelaSinaisVitais.appendChild( oSelf.oColunaTabelaSinaisVitais );
+  oSelf.oColunaTabelaSinaisVitais.appendChild( oSelf.oFieldsetSinaisVitais );
+
+  oSelf.oFieldsetSinaisVitais.appendChild( oSelf.oLegendaSinaisVitais );
+  oSelf.oFieldsetSinaisVitais.appendChild( oSelf.oTabelaSinaisVitais );
+
+  /**
+   * Linha e colunas referentes aos dados da Sinais Vitais
+   */
+  oSelf.oLinhaSinaisVitais1 = document.createElement( 'tr' );
+  oSelf.oLinhaSinaisVitais2 = document.createElement( 'tr' );
+
+  oSelf.oColunaSistolicaLabel                  = document.createElement( 'td' );
+  oSelf.oColunaSistolicaDescricao              = document.createElement( 'td' );
+  oSelf.oColunaDiastolicaLabel                 = document.createElement( 'td' );
+  oSelf.oColunaDiastolicaDescricao             = document.createElement( 'td' );
+  oSelf.oColunaFrequenciaRespiratoriaLabel     = document.createElement( 'td' );
+  oSelf.oColunaFrequenciaRespiratoriaDescricao = document.createElement( 'td' );
+  oSelf.oColunaFrequenciaRespiratoriaDescricao.setAttribute('colSpan', '2');
+
+  oSelf.oColunaFrequenciaCardiacaLabel     = document.createElement( 'td' );
+  oSelf.oColunaFrequenciaCardiacaDescricao = document.createElement( 'td' );
+  oSelf.oColunaTemperaturaLabel            = document.createElement( 'td' );
+  oSelf.oColunaTemperaturaDescricao        = document.createElement( 'td' );
+  oSelf.oColunaSaturacaoLabel              = document.createElement( 'td' );
+  oSelf.oColunaSaturacaoDescricao          = document.createElement( 'td' );
+
+   /**
+   * Estilos das linhas e colunas referentes aos dados de Sinais Vitais
+   */
+    oSelf.oColunaDiastolicaDescricao.style.cssText = 'width: 100px;'
+    oSelf.oColunaPesoLabel.style.cssText = 'width: 38px;'
+    oSelf.oColunaAlturaLabel.style.cssText = 'width: 45px;'
+    oSelf.oColunaPerimetroCefalicoLabel.style.cssText = 'width: 115px;'
+
+  /**
+   * Label da Pressão Arterial
+   * @type {label}
+   */
+  oSelf.oLabelSistolica           = document.createElement( 'label' );
+  oSelf.oLabelSistolica.addClassName( 'bold' );
+  oSelf.oLabelSistolica.setAttribute('for', 'oInputSistolica');
+  oSelf.oLabelSistolica.innerHTML = 'Pressão Arterial: ';
+
+  /**
+   * Input com informação da Pressão Arterial
+   * @type {input}
+   */
+  oSelf.oInputSistolica = document.createElement( 'input' );
+  oSelf.oInputSistolica.addClassName( 'field-size1' );
+  oSelf.oInputSistolica.setAttribute( 'id', 'oInputSistolica' );
+  oSelf.oInputSistolica.setAttribute( 'type', 'text' );
+  oSelf.oInputSistolica.setAttribute( 'maxLength', '3' );
+
+  /**
+   * Input com informação da Diastólica
+   * @type {input}
+   */
+  oSelf.oInputDiastolica = document.createElement( 'input' );
+  oSelf.oInputDiastolica.addClassName( 'field-size1' );
+  oSelf.oInputDiastolica.setAttribute( 'id', 'oInputDiastolica' );
+  oSelf.oInputDiastolica.setAttribute( 'type', 'text' );
+  oSelf.oInputDiastolica.setAttribute( 'maxLength', '3' );
+
+  /**
+   * Span da unidade de medida da Pressão Arterial
+   * @type {label}
+   */
+   oSelf.oSpanPressaoUnidade = document.createElement('span');
+   oSelf.oSpanPressaoUnidade.innerHTML = '&nbsp;mmHg';
+
+  /**
+   * Label da Frequência Respiratória
+   * @type {label}
+   */
+  oSelf.oLabelFrequenciaRespiratoria = document.createElement( 'label' );
+  oSelf.oLabelFrequenciaRespiratoria.addClassName( 'bold' );
+  oSelf.oLabelFrequenciaRespiratoria.setAttribute('for', 'oInputFrequenciaRespiratoria');
+  oSelf.oLabelFrequenciaRespiratoria.innerHTML = 'Frequência Respiratória: ';
+
+  /**
+   * Input com informação da Frequência Respiratória
+   * @type {input}
+   */
+  oSelf.oInputFrequenciaRespiratoria = document.createElement( 'input' );
+  oSelf.oInputFrequenciaRespiratoria.addClassName( 'field-size1' );
+  oSelf.oInputFrequenciaRespiratoria.setAttribute( 'id', 'oInputFrequenciaRespiratoria' );
+  oSelf.oInputFrequenciaRespiratoria.setAttribute( 'type', 'text' );
+  oSelf.oInputFrequenciaRespiratoria.setAttribute( 'maxLength', '3' );
+
+  /**
+   * Span da unidade de medida da Frequência Respiratória
+   * @type {label}
+   */
+   oSelf.oSpanFrequenciaRespiratoriaUnidade = document.createElement('span');
+   oSelf.oSpanFrequenciaRespiratoriaUnidade.innerHTML = '&nbsp;mpm';
+
+  /**
+   * Label da Frequência Cardiáca
+   * @type {label}
+   */
+  oSelf.oLabelFrequenciaCardiaca = document.createElement( 'label' );
+  oSelf.oLabelFrequenciaCardiaca.addClassName( 'bold' );
+  oSelf.oLabelFrequenciaCardiaca.setAttribute('for', 'oInputFrequenciaCardiaca');
+  oSelf.oLabelFrequenciaCardiaca.innerHTML = 'Frequência Cardíaca: ';
+
+  /**
+   * Input com informação da Frequência Cardíaca
+   * @type {input}
+   */
+  oSelf.oInputFrequenciaCardiaca = document.createElement( 'input' );
+  oSelf.oInputFrequenciaCardiaca.addClassName( 'field-size1' );
+  oSelf.oInputFrequenciaCardiaca.setAttribute( 'id', 'oInputFrequenciaCardiaca' );
+  oSelf.oInputFrequenciaCardiaca.setAttribute( 'type', 'text' );
+  oSelf.oInputFrequenciaCardiaca.setAttribute( 'maxLength', '3' );
+
+  /**
+   * Span da unidade de medida de Frequência Cardiáca
+   * @type {label}
+   */
+   oSelf.oSpanFrequenciaCardiacaUnidade = document.createElement('span');
+   oSelf.oSpanFrequenciaCardiacaUnidade.innerHTML = '&nbsp;bmp';
+
+  /**
+   * Label da Temperatura
+   * @type {label}
+   */
+  oSelf.oLabelTemperatura           = document.createElement( 'label' );
+  oSelf.oLabelTemperatura.addClassName( 'bold' );
+  oSelf.oLabelTemperatura.setAttribute('for', 'oInputTemperatura');
+  oSelf.oLabelTemperatura.innerHTML = 'Temperatura: ';
+
+  /**
+   * Input com informação da temperatura
+   * @type {input}
+   */
+  oSelf.oInputTemperatura           = document.createElement( 'input' );
+  oSelf.oInputTemperatura.addClassName( 'field-size1' );
+  oSelf.oInputTemperatura.setAttribute( 'id', 'oInputTemperatura' );
+  oSelf.oInputTemperatura.setAttribute( 'type', 'text' );
+  oSelf.oInputTemperatura.setAttribute( 'maxLength', '6' );
+
+  /**
+   * Span da unidade de medida da Temperatura
+   * @type {label}
+   */
+   oSelf.oSpanTemperaturaUnidade = document.createElement('span');
+   oSelf.oSpanTemperaturaUnidade.innerHTML = '&nbsp;°C';
+
+  /**
+   * Label da Saturação
+   * @type {label}
+   */
+  oSelf.oLabelSaturacao           = document.createElement( 'label' );
+  oSelf.oLabelSaturacao.addClassName( 'bold' );
+  oSelf.oLabelSaturacao.setAttribute('for', 'oInputSaturacao');
+  oSelf.oLabelSaturacao.innerHTML = 'Saturação de O2: ';
+
+  /**
+   * Input com informação da saturação
+   * @type {input}
+   */
+  oSelf.oInputSaturacao           = document.createElement( 'input' );
+  oSelf.oInputSaturacao.addClassName( 'field-size1' );
+  oSelf.oInputSaturacao.setAttribute( 'id', 'oInputSaturacao' );
+  oSelf.oInputSaturacao.setAttribute( 'type', 'text' );
+  oSelf.oInputSaturacao.setAttribute( 'maxLength', '6' );
+
+  /**
+   * Span da unidade de medida da Saturação
+   * @type {label}
+   */
+   oSelf.oSpanSaturacaoUnidade = document.createElement('span');
+   oSelf.oSpanSaturacaoUnidade.innerHTML = '&nbsp;%';
+
+  /**
+   * Vínculos dos campos da Sinais Vitais
+   */
+  oSelf.oTabelaSinaisVitais.appendChild( oSelf.oLinhaSinaisVitais1 );
+  oSelf.oTabelaSinaisVitais.appendChild( oSelf.oLinhaSinaisVitais2 );
+
+  oSelf.oLinhaSinaisVitais1.appendChild( oSelf.oColunaSistolicaLabel );
+  oSelf.oLinhaSinaisVitais1.appendChild( oSelf.oColunaSistolicaDescricao );
+  oSelf.oLinhaSinaisVitais1.appendChild( oSelf.oColunaDiastolicaDescricao );
+  oSelf.oLinhaSinaisVitais1.appendChild( oSelf.oColunaTemperaturaLabel );
+  oSelf.oLinhaSinaisVitais1.appendChild( oSelf.oColunaTemperaturaDescricao );
+  oSelf.oLinhaSinaisVitais1.appendChild( oSelf.oColunaSaturacaoLabel );
+  oSelf.oLinhaSinaisVitais1.appendChild( oSelf.oColunaSaturacaoDescricao );
+
+  oSelf.oLinhaSinaisVitais2.appendChild( oSelf.oColunaFrequenciaRespiratoriaLabel );
+  oSelf.oLinhaSinaisVitais2.appendChild( oSelf.oColunaFrequenciaRespiratoriaDescricao );
+  oSelf.oLinhaSinaisVitais2.appendChild( oSelf.oColunaFrequenciaCardiacaLabel );
+  oSelf.oLinhaSinaisVitais2.appendChild( oSelf.oColunaFrequenciaCardiacaDescricao );
+
+  oSelf.oColunaSistolicaLabel.appendChild( oSelf.oLabelSistolica );
+  oSelf.oColunaSistolicaDescricao.appendChild( oSelf.oInputSistolica );
+  oSelf.oColunaDiastolicaDescricao.appendChild( oSelf.oInputDiastolica );
+  oSelf.oColunaDiastolicaDescricao.appendChild( oSelf.oSpanPressaoUnidade );
+  oSelf.oColunaTemperaturaLabel.appendChild( oSelf.oLabelTemperatura );
+  oSelf.oColunaTemperaturaDescricao.appendChild( oSelf.oInputTemperatura );
+  oSelf.oColunaTemperaturaDescricao.appendChild( oSelf.oSpanTemperaturaUnidade );
+  oSelf.oColunaSaturacaoLabel.appendChild( oSelf.oLabelSaturacao );
+  oSelf.oColunaSaturacaoDescricao.appendChild( oSelf.oInputSaturacao );
+  oSelf.oColunaSaturacaoDescricao.appendChild( oSelf.oSpanSaturacaoUnidade );
+
+  oSelf.oColunaFrequenciaRespiratoriaLabel.appendChild( oSelf.oLabelFrequenciaRespiratoria );
+  oSelf.oColunaFrequenciaRespiratoriaDescricao.appendChild( oSelf.oInputFrequenciaRespiratoria );
+  oSelf.oColunaFrequenciaRespiratoriaDescricao.appendChild( oSelf.oSpanFrequenciaRespiratoriaUnidade );
+  oSelf.oColunaFrequenciaCardiacaLabel.appendChild( oSelf.oLabelFrequenciaCardiaca );
+  oSelf.oColunaFrequenciaCardiacaDescricao.appendChild( oSelf.oInputFrequenciaCardiaca );
+  oSelf.oColunaFrequenciaCardiacaDescricao.appendChild( oSelf.oSpanFrequenciaCardiacaUnidade );
+
+
+  /* ***************************************************
+   * ELEMENTOS E VÍNCULOS REFERENTE A LINHA DA GLICEMIA
+   * ***************************************************/
+  /**
+   * Linha e colunas da Glicemia
+   */
+  oSelf.oLinhaTabelaGlicemia  = document.createElement( 'tr' );
+  oSelf.oColunaTabelaGlicemia = document.createElement( 'td' );
+  oSelf.oColunaTabelaGlicemia.setAttribute( 'colSpan', '3' );
+
+  /**
+   * Fieldset da glicemia
+   * @type {fieldset}
+   */
+  oSelf.oFieldsetGlicemia = document.createElement( 'fieldset' );
+  oSelf.oFieldsetGlicemia.addClassName( 'separator' );
+
+  /**
+   * Legenda do fieldset da glicemia
+   * @type {legend}
+   */
+  oSelf.oLegendaGlicemia           = document.createElement( 'legend' );
+  oSelf.oLegendaGlicemia.addClassName( 'bold' );
+  oSelf.oLegendaGlicemia.innerHTML = 'Glicemia';
+
+  /**
+   * Tabela com os dados da glicemia
+   * @type {table}
+   */
+  oSelf.oTabelaGlicemia = document.createElement( 'table' );
+  oSelf.oTabelaGlicemia.classList.add('form-container');
+
+  /**
+   * Vínculos da tabela principal com o fieldset da glicemia
+   */
+  oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaTabelaGlicemia );
+  oSelf.oLinhaTabelaGlicemia.appendChild( oSelf.oColunaTabelaGlicemia );
+  oSelf.oColunaTabelaGlicemia.appendChild( oSelf.oFieldsetGlicemia );
+
+  oSelf.oFieldsetGlicemia.appendChild( oSelf.oLegendaGlicemia );
+  oSelf.oFieldsetGlicemia.appendChild( oSelf.oTabelaGlicemia );
+
+  /**
+   * Linha e colunas referentes aos dados da glicemia
+   */
+  oSelf.oLinhaGlicemia              = document.createElement( 'tr' );
+  oSelf.oColunaGlicemiaCapilarLabel = document.createElement( 'td' );
+  oSelf.oColunaGlicemiaCapilarValor = document.createElement( 'td' );
+  oSelf.oColunaMomentoColetaLabel   = document.createElement( 'td' );
+  oSelf.oColunaMomentoColetaValor   = document.createElement( 'td' );
+
+  /**
+   * Estilos das linha e colunas referentes aos dados da glicemia
+   */
+   oSelf.oColunaGlicemiaCapilarLabel.style.cssText = 'width: 107px;'
+   oSelf.oColunaMomentoColetaLabel.style.cssText = 'width: 124px;'
+
+  /**
+   * Label de Glicemia Capilar
+   * @type {label}
+   */
+  oSelf.oLabelGlicemiaCapilar           = document.createElement( 'label' );
+  oSelf.oLabelGlicemiaCapilar.addClassName( 'bold' );
+  oSelf.oLabelGlicemiaCapilar.setAttribute('for', 'oInputGlicemiaCapilar');
+  oSelf.oLabelGlicemiaCapilar.innerHTML = 'Glicemia Capilar: ';
+
+  /**
+   * Input com informação do exame de glicemia
+   * @type {input}
+   */
+  oSelf.oInputGlicemiaCapilar = document.createElement( 'input' );
+  oSelf.oInputGlicemiaCapilar.addClassName( 'field-size1' );
+  oSelf.oInputGlicemiaCapilar.setAttribute( 'id', 'oInputGlicemiaCapilar' );
+  oSelf.oInputGlicemiaCapilar.setAttribute( 'type', 'text' );
+  oSelf.oInputGlicemiaCapilar.setAttribute( 'maxLength', '3' );
+
+  /**
+   * Span da unidade de medida de Glicemia Capilar
+   * @type {label}
+   */
+   oSelf.oSpanGlicemiaCapilarUnidade = document.createElement('span');
+   oSelf.oSpanGlicemiaCapilarUnidade.innerHTML = '&nbsp;mg/dL';
+
+  /**
+   * Label de Momento da Coleta
+   * @type {label}
+   */
+  oSelf.oLabelMomentoColeta           = document.createElement( 'label' );
+  oSelf.oLabelMomentoColeta.addClassName( 'bold' );
+  oSelf.oLabelMomentoColeta.setAttribute('for', 'oCboMomentoColeta');
+  oSelf.oLabelMomentoColeta.innerHTML = 'Momento da Coleta: ';
+
+  /**
+   * Elemento para o combo do momento da coleta
+   * @type {input}
+   */
+  oSelf.oCboMomentoColeta = document.createElement( 'select' );
+  oSelf.oCboMomentoColeta.setAttribute("id", 'oCboMomentoColeta');
+  oSelf.oCboMomentoColeta.style.width = '100%';
+  oSelf.oCboMomentoColeta.add(new Option('JEJUM', '1'));
+  oSelf.oCboMomentoColeta.add(new Option('PÓS-PRANDIAL', '2'));
+  oSelf.oCboMomentoColeta.add(new Option('PRÉ-PRANDIAL', '3'));
+  oSelf.oCboMomentoColeta.add(new Option('NÃO ESPECIFICADO', '0'));
+
+  /**
+   * Vínculos dos elementos da glicemia
+   */
+  oSelf.oTabelaGlicemia.appendChild( oSelf.oLinhaGlicemia );
+  oSelf.oLinhaGlicemia.appendChild( oSelf.oColunaGlicemiaCapilarLabel );
+  oSelf.oLinhaGlicemia.appendChild( oSelf.oColunaGlicemiaCapilarValor );
+  oSelf.oLinhaGlicemia.appendChild( oSelf.oColunaMomentoColetaLabel );
+  oSelf.oLinhaGlicemia.appendChild( oSelf.oColunaMomentoColetaValor );
+
+  oSelf.oColunaGlicemiaCapilarLabel.appendChild( oSelf.oLabelGlicemiaCapilar );
+  oSelf.oColunaGlicemiaCapilarValor.appendChild( oSelf.oInputGlicemiaCapilar );
+  oSelf.oColunaGlicemiaCapilarValor.appendChild( oSelf.oSpanGlicemiaCapilarUnidade );
+  oSelf.oColunaMomentoColetaLabel.appendChild( oSelf.oLabelMomentoColeta );
+  oSelf.oColunaMomentoColetaValor.appendChild( oSelf.oCboMomentoColeta );
+
+  /**
+   * Tabela com os dados da Prioridade
+   */
+  oSelf.oTabelaPrioridade = document.createElement( 'table' );
+  oSelf.oTabelaPrioridade.classList.add('form-container');
+
+  /**
+   * Linha contendo o Fieldset da prioridade
+   */
+  oSelf.oLinhaFieldsetPrioridade = document.createElement( 'tr' );
+  oSelf.oLinhaFieldsetPrioridade.setStyle( { 'display' : 'none' } );
+
+  if ( oSelf.iTelaOrigem != DBViewTriagem.prototype.TELA_TRIAGEM_AVULSA ) {
+    oSelf.oLinhaFieldsetPrioridade.setStyle( { 'display' : '' } );
+  }
+
+  /**
+   * Coluna contendo o Fieldset da prioridade
+   */
+  oSelf.oColunaFieldsetPrioridade              = document.createElement( 'td' );
+  oSelf.oColunaFieldsetPrioridade.setAttribute( 'colspan', '5' );
+
+  /**
+   * Fieldset da Prioridade
+   */
+  oSelf.oFieldsetPrioridade = document.createElement( 'fieldset' );
+  oSelf.oFieldsetPrioridade.addClassName( 'separator' );
+
+  if ( this.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA ) {
+    oSelf.oFieldsetPrioridade.style.display = 'none';
+  }
+
+  /**
+   * Legend do Fieldset da Prioridade
+   */
+  oSelf.oLegendaPrioridade = document.createElement( 'legend' );
+  oSelf.oLegendaPrioridade.addClassName( 'bold' );
+  oSelf.oLegendaPrioridade.innerHTML = 'Prioridade de Atendimento';
+
+  /**
+   * Label da Prioridade
+   */
+  oSelf.oLabelPrioridade = document.createElement( 'label' );
+  oSelf.oLabelPrioridade.addClassName( 'bold' );
+  oSelf.oLabelPrioridade.setAttribute('for', 'oCboPrioridade');
+  oSelf.oLabelPrioridade.innerHTML = 'Prioridade:';
+
+  /**
+   * Combobox contendo as prioridades de atendimento
+   */
+  oSelf.oCboPrioridade             = document.createElement( 'select' );
+  oSelf.oCboPrioridade.setAttribute( 'id', 'oCboPrioridade' );
+  oSelf.oCboPrioridade.addClassName( 'field-size-max' );
+
+  /**
+   * Busca as Prioridades cadastradas
+   */
+  oSelf.criaComboPrioridade();
+
+  /**
+   * Linha e colunas do label e combobox das Prioridades
+   */
+  oSelf.oLinhaPrioridade          = document.createElement( 'tr' );
+  oSelf.oColunaLabelPrioridade    = document.createElement( 'td' );
+  oSelf.oColunaComboPrioridade    = document.createElement( 'td' );
+  oSelf.oColunaComboPrioridade.setAttribute( 'colspan', '2' );
+
+
+  /**
+   * Vínculos da Tabela Principal com a Tabela de Prioridade
+   */
+  oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaFieldsetPrioridade );
+  oSelf.oLinhaFieldsetPrioridade.appendChild( oSelf.oColunaFieldsetPrioridade );
+  oSelf.oColunaFieldsetPrioridade.appendChild( oSelf.oFieldsetPrioridade );
+  oSelf.oFieldsetPrioridade.appendChild( oSelf.oLegendaPrioridade );
+
+  oSelf.oFieldsetPrioridade.appendChild( oSelf.oTabelaPrioridade );
+  oSelf.oTabelaPrioridade.appendChild( oSelf.oLinhaPrioridade );
+  oSelf.oLinhaPrioridade.appendChild( oSelf.oColunaLabelPrioridade );
+  oSelf.oColunaLabelPrioridade.appendChild( oSelf.oLabelPrioridade );
+  oSelf.oLinhaPrioridade.appendChild( oSelf.oColunaComboPrioridade );
+  oSelf.oColunaComboPrioridade.appendChild( oSelf.oCboPrioridade );
+
+  /* *******************************
+   * ELEMENTOS E VÍNCULOS DA Objetivo
+   * *******************************/
+
+  /**
+   * Tabela com os dados da Objetivo
+   */
+  oSelf.oTabelaObjetivo = document.createElement( 'table' );
+  oSelf.oTabelaObjetivo.setAttribute( 'style', 'width:100%' );
+  oSelf.oTabelaObjetivo.classList.add('form-container');
+
+  /**
+   * Linha contendo o Fieldset da Objetivo
+   */
+  oSelf.oLinhaFieldsetObjetivo = document.createElement( 'tr' );
+  oSelf.oLinhaFieldsetObjetivo.setStyle( { 'display' : 'none' } );
+
+  if (    oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM
+       || oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA ) {
+    oSelf.oLinhaFieldsetObjetivo.setStyle( { 'display' : '' } );
+  }
+
+  /**
+   * Coluna contendo o Fieldset da Objetivo
+   */
+  oSelf.oColunaFieldsetObjetivo              = document.createElement( 'td' );
+  oSelf.oColunaFieldsetObjetivo.setAttribute( 'colspan', '5' );
+
+  /**
+   * Fieldset da Objetivo
+   */
+  oSelf.oFieldsetObjetivo = document.createElement( 'fieldset' );
+  oSelf.oFieldsetObjetivo.addClassName( 'separator' );
+
+  /**
+   * Legend do Fieldset da Objetivo
+   */
+  oSelf.oLegendaObjetivo = document.createElement( 'legend' );
+
+  /**
+   * Label da objetivo
+   */
+  oSelf.oLabelObjetivo = document.createElement( 'label' );
+  oSelf.oLabelObjetivo.addClassName( 'bold' );
+  oSelf.oLabelObjetivo.setAttribute('for', 'oTextObjetivo');
+  oSelf.oLabelObjetivo.innerHTML = 'Objetivo';
+
+  /**
+   * Combobox contendo as prioridades de atendimento
+   */
+  oSelf.oTextObjetivo = document.createElement( 'textarea' );
+  oSelf.oTextObjetivo.setAttribute( 'id', 'oTextObjetivo' );
+  oSelf.oTextObjetivo.setAttribute( 'rows', '3' );
+  oSelf.oTextObjetivo.addClassName( 'field-size-max' );
+
+  oSelf.oLinhaObjetivo  = document.createElement( 'tr' );
+  oSelf.oColunaObjetivo = document.createElement( 'td' );
+  oSelf.oColunaObjetivo.setAttribute( 'colspan', '3' );
+
+  /**
+   * Vínculos da Tabela Principal com a Tabela de Objetivo
+   */
+  oSelf.oTabelaPrincipal.appendChild( oSelf.oLinhaFieldsetObjetivo );
+
+  oSelf.oLinhaFieldsetObjetivo.appendChild( oSelf.oColunaFieldsetObjetivo );
+  oSelf.oColunaFieldsetObjetivo.appendChild( oSelf.oFieldsetObjetivo );
+
+  oSelf.oLegendaObjetivo.appendChild(oSelf.oLabelObjetivo);
+
+  oSelf.oFieldsetObjetivo.appendChild( oSelf.oLegendaObjetivo );
+  oSelf.oFieldsetObjetivo.appendChild( oSelf.oTabelaObjetivo );
+
+  oSelf.oTabelaObjetivo.appendChild( oSelf.oLinhaObjetivo );
+  oSelf.oLinhaObjetivo.appendChild( oSelf.oColunaObjetivo );
+  oSelf.oColunaObjetivo.appendChild( oSelf.oTextObjetivo );
+
   /* *******************************
    * ELEMENTOS E VÍNCULOS DO AGRAVO
    * *******************************/
@@ -1080,6 +1560,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    * @type {fieldset}
    */
   oSelf.oFieldsetAgravo = document.createElement( 'fieldset' );
+  oSelf.oFieldsetAgravo.setAttribute('id', 'fieldAgravo');
   oSelf.oFieldsetAgravo.addClassName( 'separator' );
 
   /**
@@ -1098,11 +1579,16 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
   oSelf.oColunaTabelaAgravo.appendChild( oSelf.oFieldsetAgravo );
   oSelf.oFieldsetAgravo.appendChild( oSelf.oLegendaAgravo );
 
+  document.addEventListener("DOMContentLoaded", function() {
+    new DBToogle('fieldAgravo', false);
+  });
+
   /**
    * Tabela com as linhas das informações do agravo
    * @type {table}
    */
   oSelf.oTabelaAgravo = document.createElement( 'table' );
+  oSelf.oTabelaAgravo.classList.add('form-container');
 
   /**
    * Linha e colunas referentes as informações do agravo
@@ -1117,6 +1603,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    */
   oSelf.oLabelAgravo           = document.createElement( 'label' );
   oSelf.oLabelAgravo.addClassName( 'bold' );
+  oSelf.oLabelAgravo.setAttribute('for', 'oInputAgravoDescricao');
   oSelf.oLabelAgravo.innerHTML = 'Agravo: ';
 
   /**
@@ -1155,6 +1642,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    */
   oSelf.oLabelDataPrimeiroSintoma           = document.createElement( 'label' );
   oSelf.oLabelDataPrimeiroSintoma.addClassName( 'bold' );
+  oSelf.oLabelDataPrimeiroSintoma.setAttribute('for', 'oInputDataPrimeiroSintomaValor');
   oSelf.oLabelDataPrimeiroSintoma.innerHTML = 'Data do Primeiro Sintoma: ';
 
   /**
@@ -1238,6 +1726,7 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
    */
   oSelf.oLabelGestante           = document.createElement( 'label' );
   oSelf.oLabelGestante.addClassName( 'bold' );
+  oSelf.oLabelGestante.setAttribute('for', 'oSelectGestante');
   oSelf.oLabelGestante.innerHTML = 'Gestante:';
 
   /**
@@ -1270,9 +1759,9 @@ DBViewTriagem.prototype.montaEstruturaHTML = function( oSelf ) {
  * @param  {boolean} lBloqueiaCartaoSus
  */
 DBViewTriagem.prototype.bloqueiaCartaoSus = function( lBloqueiaCartaoSus ) {
-  
+
   if( lBloqueiaCartaoSus ) {
-    
+
     this.oInputCartaoSUS.setAttribute( 'readOnly', 'readOnly');
     this.oInputCartaoSUS.setStyle( {'backgroundColor' : '#DEB887' } );
   }
@@ -1286,6 +1775,10 @@ DBViewTriagem.prototype.montaElementosButton = function( aBotoes ) {
 
   var oSelf = this;
 
+  oSelf.divButtons = document.createElement('div');
+  oSelf.divButtons.style.width = '570px';
+  oSelf.divButtons.className = 'subcontainer';
+
   for( var iContador = 0; iContador < aBotoes.length; iContador++ ) {
 
     var sElemento = '';
@@ -1297,7 +1790,7 @@ DBViewTriagem.prototype.montaElementosButton = function( aBotoes ) {
       case DBViewTriagem.prototype.BOTAO_FATORES_RISCO:
 
         sElemento = 'oInputFatoresRisco';
-        sValor    = 'Fatores de Risco';
+        sValor    = '<i class="fas fa-biohazard"></i> Fatores de Risco';
         fClick    = function(){ oSelf.fatoresRisco(); };
 
         break;
@@ -1305,7 +1798,7 @@ DBViewTriagem.prototype.montaElementosButton = function( aBotoes ) {
       case DBViewTriagem.prototype.BOTAO_LIMPAR:
 
         sElemento = 'oInputLimpar';
-        sValor    = 'Limpar';
+        sValor    = '<i class="fas fa-eraser"></i> Limpar';
         fClick    = function(){ oSelf.limpaCampos(); };
 
         break;
@@ -1313,7 +1806,7 @@ DBViewTriagem.prototype.montaElementosButton = function( aBotoes ) {
       case DBViewTriagem.prototype.BOTAO_CONSULTAR:
 
         sElemento = 'oInputConsultar';
-        sValor    = 'Consultar';
+        sValor    = '<i class="fas fa-search"></i> Atendimentos';
         fClick    = function(){ oSelf.consultarFaa(); };
 
         break;
@@ -1321,27 +1814,55 @@ DBViewTriagem.prototype.montaElementosButton = function( aBotoes ) {
       case DBViewTriagem.prototype.BOTAO_SALVAR:
 
         sElemento = 'oInputSalvar';
-        sValor    = 'Salvar';
-        fClick    = function(){ oSelf.salvarTriagem(); };
+        sValor    = '<i class="fas fa-save"></i> Salvar';
+        fClick    = function(){ oSelf.validaTriagem(); };
 
         break;
 
       case DBViewTriagem.prototype.BOTAO_FECHAR:
 
         sElemento = 'oInputFechar';
-        sValor    = 'Fechar';
+        sValor    = '<i class="fas fa-window-close"></i> Fechar';
         fClick    = function(){ oSelf.fecharJanela(); };
 
         break;
+
+      case DBViewTriagem.prototype.BOTAO_FINALIZAR_ATENDIMENTO:
+
+        sElemento = 'oInputFinalizarAtendimento';
+        sValor    = '<i class="fas fa-check-double"></i> Finalizar Atendimento';
+        fClick    = function(){ oSelf.finalizarAtendimento(); };
+
+        break;
+
+      case DBViewTriagem.prototype.BOTAO_ENCAMINHAR:
+
+        sElemento = 'oInputEncaminhar';
+        sValor    = '<i class="fas fa-forward"></i> Encaminhar';
+        fClick    = function(){ oSelf.encaminharProntuario(); };
+        break;
+
+      case DBViewTriagem.prototype.BOTAO_ADMINISTRAR_MEDICAMENTOS:
+
+        sElemento = 'oInputAdministrarMedicamentos';
+        sValor    = '<i class="fas fa-capsules"></i> Administrar Medicamentos';
+        fClick    = function(){ oSelf.administrarMedicamentos(); };
+        break;
+
+      case DBViewTriagem.prototype.BOTAO_PROBLEMAS_PACIENTE:
+
+        sElemento = 'oInputProblemas';
+        sValor    = '<i class="fas fa-stethoscope"></i> Problemas / Condições de Saúde';
+        fClick    = function(){ oSelf.openWindowProblemas(); };
+        break;
     }
 
-    oSelf.sElemento = document.createElement( 'input' );
+    oSelf.sElemento = document.createElement( 'button' );
     oSelf.sElemento.setAttribute( 'id', sElemento );
-    oSelf.sElemento.setAttribute( 'type', 'button' );
-    oSelf.sElemento.setAttribute( 'value', sValor );
-
-    oSelf.oFormulario.appendChild( oSelf.sElemento );
+    oSelf.sElemento.innerHTML = sValor;
+    oSelf.sElemento.addClassName( 'botaoTriagem' );
     oSelf.sElemento.onclick = fClick;
+    oSelf.divButtons.appendChild(oSelf.sElemento);
   }
 };
 
@@ -1356,12 +1877,12 @@ DBViewTriagem.prototype.exibirBotaoEmitirFAA = function( lExibirBotaoEmitirFAA, 
 
     var oSelf = this;
 
-    this.oInputEmitirFAA = document.createElement( 'input' );
+    this.oInputEmitirFAA = document.createElement( 'button' );
     this.oInputEmitirFAA.setAttribute( 'id', 'oInputEmitirFAA' );
-    this.oInputEmitirFAA.setAttribute( 'type', 'button' );
-    this.oInputEmitirFAA.setAttribute( 'value', 'Emitir FAA' );
+    this.oInputEmitirFAA.innerHTML = '<i class="fas fa-print"></i> Emitir FAA';
+    this.oInputEmitirFAA.addClassName( 'botaoTriagem' );
 
-    this.oFormulario.appendChild( this.oInputEmitirFAA );
+    this.divButtons.appendChild( this.oInputEmitirFAA );
 
     this.oSelectModelosFAA = document.createElement( 'select' );
     this.oSelectModelosFAA.setAttribute( 'id', 'oSelectModelosFAA' );
@@ -1374,7 +1895,7 @@ DBViewTriagem.prototype.exibirBotaoEmitirFAA = function( lExibirBotaoEmitirFAA, 
     this.oSelectModelosFAA.add( new Option( 'Modelo TXT - Alegrete', '6' ) );
     this.oSelectModelosFAA.add( new Option( 'Modelo TXT - Bagé',     '7' ) );
 
-    this.oFormulario.appendChild( this.oSelectModelosFAA );
+    this.divButtons.appendChild( this.oSelectModelosFAA );
     this.oSelectModelosFAA.value = iModelo;
 
     this.oInputEmitirFAA.onclick = function() {
@@ -1387,20 +1908,6 @@ DBViewTriagem.prototype.exibirBotaoEmitirFAA = function( lExibirBotaoEmitirFAA, 
  * Contem os eventos existentes na tela
  */
 DBViewTriagem.prototype.eventosElementos = function( oSelf ) {
-
-  /**
-   * Controla o change do exame de glicemia, chamando a função para desabilitar ou não os radio button's
-   */
-  oSelf.oInputExameGlicemiaValor.onchange = function() {
-    oSelf.tratamentoCamposRadio();
-  };
-
-  /**
-   * Controla o blur do exame de glicemia, chamando a função para desabilitar ou não os radio button's
-   */
-  oSelf.oInputExameGlicemiaValor.onblur = function() {
-    oSelf.tratamentoCamposRadio();
-  };
 
   /**
    * No change do campo do peso, verifica se deve calcular o IMC
@@ -1438,38 +1945,79 @@ DBViewTriagem.prototype.eventosElementos = function( oSelf ) {
   };
 
   /**
-   * Valida se o valor digitado para sistólica é válido
+   * Valida se o valor digitado para Pressão Arterial é válido
    */
   oSelf.oInputSistolica.onkeyup = function() {
-    js_ValidaCampos( oSelf.oInputSistolica, 1, "Sistólica", false, false, "event" );
+    js_ValidaCampos( oSelf.oInputSistolica, 1, "Pressão Arterial", false, false, "event" );
   };
 
   /**
    * Valida se o valor digitado para diastólica é válido
    */
   oSelf.oInputDiastolica.onkeyup = function() {
-    js_ValidaCampos( oSelf.oInputDiastolica, 1, "Diastólica", false, false, "event" );
+    js_ValidaCampos( oSelf.oInputDiastolica, 1, "Pressão Arterial", false, false, "event" );
   };
+
+  const validaInput = (input, tamanho) => {
+    js_ValidaCampos( input, 4, "Altura", false, false, "event" );
+
+    let valor = input.value;
+    if (valor.length == tamanho && !valor.includes('.')) {
+      valor = valor.split('');
+      valor.splice(tamanho - 1, 0, '.');
+      string = valor.join('');
+
+      input.value = string;
+    }
+  }
 
   /**
    * Valida se o valor digitado para cintura é válido
    */
   oSelf.oInputCintura.onkeyup = function() {
-    js_ValidaCampos( oSelf.oInputCintura, 1, "Cintura", false, false, "event" );
+    validaInput(oSelf.oInputCintura, 4);
   };
 
   /**
    * Valida se o valor digitado para altura é válido
    */
   oSelf.oInputAltura.onkeyup = function() {
-    js_ValidaCampos( oSelf.oInputAltura, 1, "Altura", false, false, "event" );
+    validaInput(oSelf.oInputAltura, 4);
   };
 
   /**
-   * Valida se o valor digitado para exame glicemia é válido
+   * Valida se o valor digitado para perímetro cefálico é válido
    */
-  oSelf.oInputExameGlicemiaValor.onkeyup = function() {
-    js_ValidaCampos( oSelf.oInputExameGlicemiaValor, 1, "Exame Glicemia", false, false, "event" );
+  oSelf.oInputPerimetroCefalico.onkeyup = function() {
+    validaInput(oSelf.oInputPerimetroCefalico, 3);
+  };
+
+  /**
+   * Valida se o valor digitado para frequência respiratória é válido
+   */
+  oSelf.oInputFrequenciaRespiratoria.onkeyup = function() {
+    js_ValidaCampos( oSelf.oInputFrequenciaRespiratoria, 1, "Frequência Respiratória", false, false, "event" );
+  };
+
+  /**
+   * Valida se o valor digitado para frequência cardíaca é válido
+   */
+  oSelf.oInputFrequenciaCardiaca.onkeyup = function() {
+    js_ValidaCampos( oSelf.oInputFrequenciaCardiaca, 1, "Frequência Cardíaca", false, false, "event" );
+  };
+
+  /**
+   * Valida se o valor digitado para saturação é válido
+   */
+  oSelf.oInputSaturacao.onkeyup = function() {
+    js_ValidaCampos( oSelf.oInputSaturacao, 1, "Saturação de O2", false, false, "event" );
+  };
+
+  /**
+   * Valida se o valor digitado para glicemia capilar é válido
+   */
+  oSelf.oInputGlicemiaCapilar.onkeyup = function() {
+    js_ValidaCampos( oSelf.oInputGlicemiaCapilar, 1, "Glicemia Capilar", false, false, "event" );
   };
 };
 
@@ -1504,9 +2052,14 @@ DBViewTriagem.prototype.instanciaLookUps = function() {
     /**
      * Instancia a lookup de pesquisa para o CGS, configurando o callback da mesma
      */
-    var fCallBackCGS   = function() { oSelf.buscaTriagemValida( false ); };
+    var fCallBackCGS   = function() {
+      console.clear();
+      oSelf.buscaTriagemValida( false );
+      oSelf.oInputCGSCodigo.dispatchEvent(new Event('change'));
+    };
     var oParametrosCGS = { 'sArquivo' : 'func_cgs_und.php' };
     var oLookUpCGS     = new DBLookUp( oSelf.oAncoraCGS, oSelf.oInputCGSCodigo, oSelf.oInputCGSDescricao, oParametrosCGS );
+        oLookUpCGS.setObjetoLookUp('db_iframe_cgs_und');
         oLookUpCGS.setCallBack( 'onClick', fCallBackCGS );
         oLookUpCGS.setCallBack( 'onChange', fCallBackCGS );
   } else {
@@ -1518,62 +2071,37 @@ DBViewTriagem.prototype.instanciaLookUps = function() {
    * profissional
    * Caso contrário, bloqueio os campos da ancora e preenchimento do código
    */
-  if( !oSelf.lProfissionalSaude && oSelf.iTelaOrigem != DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA ) {
+  oSelf.oInputProfissionalCodigo.removeClassName( 'field-size2' );
+  oSelf.oInputProfissionalDescricao.removeClassName( 'field-size8' );
 
-    oSelf.oInputProfissionalCodigo.removeClassName( 'field-size2' );
-    oSelf.oInputProfissionalDescricao.removeClassName( 'field-size8' );
+  /**
+   * Instancia a lookup de pesquisa do profissional
+   */
+  var fCallbackProfissional   = function() { oSelf.buscaDadosProfissional( $F('oInputProfissionalCodigo') ); };
+  var sQueryString            = '&prof_ativo=1&chave_sd06_i_unidade=' + $F('oInputUnidadeCodigo');
+      sQueryString           += '&campo_sd04_i_codigo=true';
+  var oParametrosProfissional = { 'sArquivo' : 'func_medicos.php', 'sQueryString' : sQueryString };
+  var oLookUpProfissional     = new DBLookUp(
+    oSelf.oAncoraProfissional,
+    oSelf.oInputProfissionalCodigo,
+    oSelf.oInputProfissionalDescricao,
+    oParametrosProfissional
+  );
 
-    /**
-     * Instancia a lookup de pesquisa do profissional
-     */
-    var fCallbackProfissional   = function() { oSelf.buscaDadosProfissional( $F('oInputProfissionalCodigo') ); };
-    var sQueryString            = '&prof_ativo=1&chave_sd06_i_unidade=' + $F('oInputUnidadeCodigo');
-        sQueryString           += '&campo_sd04_i_codigo=true';
-    var oParametrosProfissional = { 'sArquivo' : 'func_medicos.php', 'sQueryString' : sQueryString };
-    var oLookUpProfissional     = new DBLookUp(
-                                                oSelf.oAncoraProfissional,
-                                                oSelf.oInputProfissionalCodigo,
-                                                oSelf.oInputProfissionalDescricao,
-                                                oParametrosProfissional
-                                              );
-    oLookUpProfissional.setCallBack( 'onClick', fCallbackProfissional );
-    oLookUpProfissional.setCallBack( 'onChange', fCallbackProfissional );
+  oLookUpProfissional.setCallBack( 'onClick', fCallbackProfissional );
+  oLookUpProfissional.setCallBack( 'onChange', fCallbackProfissional );
 
-    oSelf.oAncoraProfissional.setAttribute( 'id', 'oAncoraProfissional' );
-  } else {
-    oSelf.desabilitaProfissional();
-  }
-
-  if( oSelf.iTelaOrigem != DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA ) {
-
-    oSelf.oInputEspecialidadeCodigo.removeClassName("field-size2");
-    oSelf.oInputEspecialidadeDescricao.removeClassName("field-size8");
-
-    /**
-     * Instancia a lookup de pesquisa da especialidade
-     */
-    var sQueryStringEspecialidade  = '&chave_sd04_i_unidade=' + $F('oInputUnidadeCodigo');
-    sQueryStringEspecialidade += '&chave_sd04_i_medico='  + $F('oInputProfissionalCodigo');
-    sQueryStringEspecialidade += '&lPesquisaCodigoRhCBO';
-
-    var oParametrosEspecialidade   = { 'sArquivo' : 'func_especmedico.php', 'sQueryString' : sQueryStringEspecialidade };
-    var oLookUpEspecialidade       = new DBLookUp(
-      oSelf.oAncoraEspecialidade,
-      oSelf.oInputEspecialidadeCodigo,
-      oSelf.oInputEspecialidadeDescricao,
-      oParametrosEspecialidade
-    );
-
-    oSelf.oAncoraEspecialidade.setAttribute( 'id', 'oAncoraEspecialidade' );
-  }
+  oSelf.oAncoraProfissional.setAttribute( 'id', 'oAncoraProfissional' );
 
   if( oSelf.lProfissionalSaude && oSelf.lTemProntuario ) {
-
     oSelf.oLinhaEspecialidade.setStyle( { 'display' : '' } );
-    $('oAncoraEspecialidade').click();
   }
 
   oSelf.lInstanciouLookUp = true;
+
+  if(oSelf.lBloqueiaFormulario === true) {
+    oLookUpProfissional.desabilitar();
+  }
 };
 
 /**
@@ -1593,35 +2121,6 @@ DBViewTriagem.prototype.instanciaAutoComplete = function() {
     oSelf.iCid                       = cod;
     $('oInputAgravoDescricao').value = label;
   });
-};
-
-/**
- * Método responsável por habilitar ou desabilitar os inputs radio
- * Somente habilita quando um valor de glicemia for informado
- */
-DBViewTriagem.prototype.tratamentoCamposRadio = function() {
-
-  $('oInputRadioJejum').checked     = false;
-  $('oInputRadioJejum').disabled    = true;
-  $('oInputRadioPrandial').checked  = false;
-  $('oInputRadioPrandial').disabled = true;
-
-  if( !empty( $F('oInputExameGlicemiaValor') ) ) {
-
-    $('oInputRadioJejum').disabled    = false;
-    $('oInputRadioPrandial').disabled = false;
-  }
-};
-
-/**
- * Desabilita a âncora do profissional e o campo do código do mesmo, quando o usuário logado é um profissional da
- * saúde da unidade
- */
-DBViewTriagem.prototype.desabilitaProfissional = function() {
-
-  this.oAncoraProfissional.removeAttribute( 'href' );
-  this.oInputProfissionalCodigo.setAttribute( 'readOnly', 'readOnly' );
-  this.oInputProfissionalCodigo.setStyle( { 'backgroundColor' : '#DEB887' } );
 };
 
 /**
@@ -1682,10 +2181,11 @@ DBViewTriagem.prototype.buscaCns = function( oSelf ) {
   oParametros.exec = "getCgsCns";
   oParametros.iCns = $F('oInputCartaoSUS');
 
-  var oDadosRequisicao            = {};
-  oDadosRequisicao.method     = 'post';
-  oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
-  oDadosRequisicao.onComplete = function( oResponse ) {
+  var oDadosRequisicao          = {};
+  oDadosRequisicao.method       = 'post';
+  oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+  oDadosRequisicao.asynchronous = false;
+  oDadosRequisicao.onComplete   = function( oResponse ) {
     oSelf.retornoBuscaCns( oResponse, oSelf );
   };
 
@@ -1710,6 +2210,7 @@ DBViewTriagem.prototype.retornoBuscaCns = function( oResponse, oSelf ) {
 
   oSelf.oInputCGSCodigo.value    = oRetorno.z01_i_cgsund;
   oSelf.oInputCGSDescricao.value = oRetorno.z01_v_nome.urlDecode();
+  oSelf.oInputCGSCodigo.dispatchEvent(new Event('change'));
   oSelf.buscaTriagemValida( true );
   oSelf.buscaAgravo();
 };
@@ -1723,12 +2224,13 @@ DBViewTriagem.prototype.buscaCBOS = function() {
   var oParametros      = {};
       oParametros.exec = 'buscaCBOS';
 
-  var oDadosRequisicao            = {};
-      oDadosRequisicao.method     = 'post';
-      oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
-      oDadosRequisicao.onComplete = function( oResponse ) {
-                                                            oSelf.retornoBuscaCBOS( oResponse, oSelf );
-                                                          };
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
+        oSelf.retornoBuscaCBOS( oResponse, oSelf );
+      };
 
   js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + 'buscando_cbos' ), "msgBox" );
   new Ajax.Request( this.sRpcTriagem, oDadosRequisicao );
@@ -1749,6 +2251,9 @@ DBViewTriagem.prototype.retornoBuscaCBOS = function( oResponse, oSelf ) {
   if( oRetorno.status != 1 ) {
     alert( oRetorno.message.urlDecode() );
   }
+
+  //Armazena o código do médico logado
+  this.iMedico = oRetorno.iMedico;
 
   if( oRetorno.aCbos.length > 0 ) {
 
@@ -1773,12 +2278,13 @@ DBViewTriagem.prototype.buscaDadosIniciais = function() {
   var oParametros      = {};
       oParametros.exec = 'dadosDepartamento';
 
-  var oDadosRequisicao            = {};
-      oDadosRequisicao.method     = 'post';
-      oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
-      oDadosRequisicao.onComplete = function( oResponse ) {
-                                                            oSelf.retornoBuscaDadosIniciais( oResponse, oSelf );
-                                                          };
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
+        oSelf.retornoBuscaDadosIniciais( oResponse, oSelf );
+      };
 
   js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + 'buscando_dados_iniciais' ), "msgBoxDadosIniciais" );
   new Ajax.Request( this.sRpcTriagem, oDadosRequisicao );
@@ -1811,13 +2317,10 @@ DBViewTriagem.prototype.retornoBuscaDadosIniciais = function( oResponse, oSelf )
 
   oSelf.dtAtual = oRetorno.dtAtual;
 
-  if( oSelf.iTelaOrigem != DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA ) {
+  oSelf.lProfissionalSaude = oRetorno.lProfissionalSaude;
 
-    oSelf.lProfissionalSaude = oRetorno.lProfissionalSaude;
-
-    if ( oSelf.lProfissionalSaude ) {
-      oSelf.buscaDadosProfissional( oRetorno.iMedico );
-    }
+  if ( oSelf.lProfissionalSaude ) {
+    oSelf.buscaDadosProfissional( oRetorno.iMedico );
   }
 
   if( !oSelf.lInstanciouLookUp ) {
@@ -1865,6 +2368,7 @@ DBViewTriagem.prototype.retornoBuscaDadosProfissional = function( oResponse, oSe
     return;
   }
 
+  $('oCboEspecialidade').options.length = 0;
   if( empty( oRetorno.iUnidadeMedicos ) ) {
 
     var iCgs       = $F('oInputCGSCodigo');
@@ -1878,12 +2382,19 @@ DBViewTriagem.prototype.retornoBuscaDadosProfissional = function( oResponse, oSe
     $('oInputCGSCodigo').value    = iCgs;
     $('oInputCGSDescricao').value = sCgs;
     $('oInputCartaoSUS').value    = sCartaoSus;
-
+    $('oInputCGSCodigo').dispatchEvent(new Event('change'));
     return;
   }
 
+  oRetorno.aEspecialidades.each(function(oEspecialidade) {
+
+    var oOption = new Option(oEspecialidade.descricao.urlDecode(), oEspecialidade.codigo);
+    oOption.setAttribute("codigo_cbo", oEspecialidade.codigo_especialidade);
+    $('oCboEspecialidade').add(oOption);
+  });
+
   oSelf.iUnidadeMedicos = oRetorno.iUnidadeMedicos;
-  
+
   if ( oRetorno.iCbos != '' ) {
     oSelf.oSelectCBOS.value = oRetorno.iCbos;
   }
@@ -1903,8 +2414,7 @@ DBViewTriagem.prototype.buscaTriagemValida = function( lEnviarCartaoSus ) {
       oParametros.exec       = 'buscaTriagemValida';
       oParametros.iCgsUnd    = $F('oInputCGSCodigo');
 
-  if (    oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA 
-       && oSelf.lTemProntuario 
+  if (    oSelf.lTemProntuario
        && oSelf.iProntuario != null ) {
     oParametros.iProntuario = oSelf.iProntuario;
   }
@@ -1913,12 +2423,17 @@ DBViewTriagem.prototype.buscaTriagemValida = function( lEnviarCartaoSus ) {
     oParametros.iCartaoSus = $F('oInputCartaoSUS');
   }
 
-  var oDadosRequisicao            = {};
-      oDadosRequisicao.method     = 'post';
-      oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
-      oDadosRequisicao.onComplete = function( oResponse ) {
-                                                            oSelf.retornoBuscaTriagemValida( oResponse, oSelf );
-                                                          };
+  if ( oSelf.iTelaOrigem == oSelf.TELA_TRIAGEM_CONSULTA ) {
+    oParametros.iTriagem = oSelf.iTriagem;
+  }
+
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
+        oSelf.retornoBuscaTriagemValida( oResponse, oSelf );
+      };
 
   js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + 'buscando_consulta_cgs' ), "msgBox" );
   new Ajax.Request( this.sRpcTriagem, oDadosRequisicao );
@@ -1930,7 +2445,6 @@ DBViewTriagem.prototype.buscaTriagemValida = function( lEnviarCartaoSus ) {
  * @param oSelf
  */
 DBViewTriagem.prototype.retornoBuscaTriagemValida = function( oResponse, oSelf ) {
-
   js_removeObj( "msgBox" );
   var oRetorno = JSON.parse( oResponse.responseText );
 
@@ -1943,19 +2457,20 @@ DBViewTriagem.prototype.retornoBuscaTriagemValida = function( oResponse, oSelf )
   oSelf.oSelectGestante.setAttribute( 'value', 'f' );
   oSelf.oSelectGestante.setAttribute( 'disabled', 'disabled' );
 
-  var iCgs       = $F('oInputCGSCodigo');
-  var sCgs       = $F('oInputCGSDescricao');
+  var iCgs = $F('oInputCGSCodigo');
+  var sCgs = $F('oInputCGSDescricao');
 
   oSelf.limpaCampos();
 
   $('oInputCGSCodigo').value    = iCgs;
   $('oInputCGSDescricao').value = sCgs;
   $('oInputCartaoSUS').value    = oRetorno.sCartaoSus;
-
+  $('oInputCGSCodigo').dispatchEvent(new Event('change'));
   oSelf.sSexo = oRetorno.sSexo;
   oSelf.oSelectGestante.setAttribute( 'disabled', 'disabled' );
 
   if( oSelf.sSexo == 'F' ) {
+
     oSelf.oSelectGestante.removeAttribute( 'disabled' );
   }
 
@@ -1971,6 +2486,7 @@ DBViewTriagem.prototype.retornoBuscaTriagemValida = function( oResponse, oSelf )
 
       if( oRetorno.lTemTriagem && oRetorno.lSomenteTriagem ) {
         oSelf.preencheTriagemValida( oRetorno, oSelf );
+        oSelf.buscaPrioridadeAtendimento(oRetorno.iClassificacaoRisco);
       }
 
       break;
@@ -1979,12 +2495,10 @@ DBViewTriagem.prototype.retornoBuscaTriagemValida = function( oResponse, oSelf )
      * Preenche os dados quando a origem for uma agenda e não existir somente triagem.
      * Quando o acesso for do menu Triagem, libera a aba dos procedimentos
      */
-    case DBViewTriagem.prototype.TELA_TRIAGEM:    
+    case DBViewTriagem.prototype.TELA_TRIAGEM:
     case DBViewTriagem.prototype.TELA_TRIAGEM_FICHA_ATENDIMENTO:
 
-      if( oSelf.lOrigemAgenda == 'false' ) {
-        return;
-      }
+      oSelf.buscaPrioridadeAtendimento(oRetorno.iClassificacaoRisco);
 
       if(    ( oRetorno.lTemTriagem && !oRetorno.lSomenteTriagem )
           || ( oRetorno.lTemTriagem && oSelf.lOrigemAgenda == 'true' )
@@ -2012,6 +2526,7 @@ DBViewTriagem.prototype.retornoBuscaTriagemValida = function( oResponse, oSelf )
         return;
       }
 
+      oSelf.buscaPrioridadeAtendimento(oRetorno.iClassificacaoRisco);
       oSelf.preencheTriagemValida( oRetorno, oSelf );
       oSelf.buscaEspecialidade();
 
@@ -2030,40 +2545,37 @@ DBViewTriagem.prototype.preencheTriagemValida = function( oRetorno, oSelf ) {
 
   if ( oSelf.iTelaOrigem != DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA ) {
 
-    oSelf.buscaDadosProfissional( oRetorno.iMedico );
+    oSelf.buscaDadosProfissional( this.iMedico );
 
     if( empty( oSelf.iUnidadeMedicos ) && oSelf.lOrigemAgenda == 'false' ) {
       return;
     }
   }
-
-  $('oInputSistolica').value          = oRetorno.iPressaoSistolica;
-  $('oInputDiastolica').value         = oRetorno.iPressaoDiastolica;
-  $('oInputCintura').value            = oRetorno.iCintura;
-  $('oInputTemperatura').value        = oRetorno.nTemperatura;
-  $('oInputPeso').value               = oRetorno.nPeso;
-  $('oInputAltura').value             = oRetorno.iAltura;
-  $('oInputExameGlicemiaValor').value = oRetorno.iGlicemia;
-  $('oInputDataConsultaValor').value  = js_formatar( oRetorno.dtDataConsulta.urlDecode(), 'd' );
+  $('oInputSistolica').value              = oRetorno.iPressaoSistolica;
+  $('oInputDiastolica').value             = oRetorno.iPressaoDiastolica;
+  $('oInputPeso').value                   = oRetorno.nPeso;
+  $('oInputAltura').value                 = oRetorno.iAltura;
+  $('oInputCintura').value                = oRetorno.iCintura;
+  $('oInputTemperatura').value            = oRetorno.nTemperatura;
+  $('oInputFrequenciaCardiaca').value     = oRetorno.iFrequenciaCardiaca;
+  $('oInputFrequenciaRespiratoria').value = oRetorno.iFrequenciaRespiratoria;
+  $('oInputSaturacao').value              = oRetorno.iSaturacao;
+  $('oInputPerimetroCefalico').value      = oRetorno.iPerimetroCefalico;
+  $('oInputGlicemiaCapilar').value        = oRetorno.iGlicemia;
+  $('oCboMomentoColeta').value            = oRetorno.iMomentoColeta || oRetorno.iAlimentacaoExameGlicose;
+  $('oInputDataConsultaValor').value      = js_formatar(oRetorno.dtDataConsulta.urlDecode(), 'd');
 
   oSelf.iTriagem         = oRetorno.iCodigo;
   oSelf.iCboProfissional = oRetorno.iCboProfissional;
 
-  $('oInputProfissionalCodigo').value    = oRetorno.iMedico;
-  $('oInputProfissionalDescricao').value = oRetorno.sMedico.urlDecode();
+  if ( oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM_CONSULTA) {
 
-  if( !empty( oRetorno.iGlicemia ) ) {
-
-    $('oInputRadioJejum').disabled    = false;
-    $('oInputRadioPrandial').disabled = false;
-    $('oInputRadioJejum').checked     = true;
-
-    if( oRetorno.iAlimentacaoExameGlicose == 2 ) {
-
-      $('oInputRadioJejum').checked    = false;
-      $('oInputRadioPrandial').checked = true;
-    }
+    $('oInputProfissionalCodigo').value    = oRetorno.iMedico;
+    $('oInputProfissionalDescricao').value = oRetorno.sMedico.urlDecode();
   }
+
+  $('oTextObjetivo').value  = oRetorno.sObjetivo.urlDecode();
+  $('oTextSubjetivo').value = oRetorno.sSubjetivo.urlDecode();
 
   oSelf.calculaImc();
   oSelf.buscaAgravo();
@@ -2079,15 +2591,16 @@ DBViewTriagem.prototype.buscaAgravo = function() {
       oParametros.exec           = "buscarAgravo";
       oParametros.iTriagemAvulsa = oSelf.iTriagem;
 
-  var oDdadosRequisicao            = {};
-      oDdadosRequisicao.method     = 'post';
-      oDdadosRequisicao.parameters = 'json='+Object.toJSON( oParametros );
-      oDdadosRequisicao.onComplete = function( oResponse ) {
-                                                             oSelf.retornoBuscaAgravo( oResponse, oSelf );
-                                                           };
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json='+Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
+        oSelf.retornoBuscaAgravo( oResponse, oSelf );
+      };
 
   js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + "buscando_agravo" ) , "msgBox");
-  new Ajax.Request( oSelf.sRpcAgravo, oDdadosRequisicao);
+  new Ajax.Request( oSelf.sRpcAgravo, oDadosRequisicao);
 };
 
 /**
@@ -2121,18 +2634,19 @@ DBViewTriagem.prototype.retornoBuscaAgravo = function( oResponse, oSelf ) {
  * Método para buscar a descrição do CGS através do código informado
  */
 DBViewTriagem.prototype.buscaCGS = function() {
-  
+
   var oSelf            = this;
   var oParametros      = {};
       oParametros.exec = 'buscaCgs';
       oParametros.iCgs = this.iCgs;
 
-  var oDadosRequisicao            = {};
-      oDadosRequisicao.method     = 'post';
-      oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
-      oDadosRequisicao.onComplete = function( oResponse ) {
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
         oSelf.retornoBuscaCGS( oResponse, oSelf );
-      }
+      };
 
   js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + 'buscando_cgs' ), 'msgBox' );
   new Ajax.Request( this.sRpcTriagem, oDadosRequisicao );
@@ -2141,10 +2655,10 @@ DBViewTriagem.prototype.buscaCGS = function() {
 /**
  * Adiciona o valor do código e do nome do CGS em seus campos na tela, e chama o método para buscar a Triagem.
  * @param oResponse
- * @param oSelf    
+ * @param oSelf
  */
 DBViewTriagem.prototype.retornoBuscaCGS = function( oResponse, oSelf ) {
-  
+
   js_removeObj( 'msgBox' );
   var oRetorno = JSON.parse( oResponse.responseText );
 
@@ -2152,6 +2666,8 @@ DBViewTriagem.prototype.retornoBuscaCGS = function( oResponse, oSelf ) {
 
     $('oInputCGSCodigo').value    = oRetorno.iCgs;
     $('oInputCGSDescricao').value = oRetorno.sCgs.urlDecode();
+    $('oInputCGSCodigo').dispatchEvent(new Event('change'));
+
     oSelf.buscaTriagemValida();
   }
 };
@@ -2166,22 +2682,23 @@ DBViewTriagem.prototype.buscaProcedimentosTriagem = function() {
   var oParametros      = {};
       oParametros.exec = 'buscaProcedimentosTriagem';
 
-  var oDadosRequisicao            = {};
-      oDadosRequisicao.method     = 'post';
-      oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
-      oDadosRequisicao.onComplete = function( oResponse ) {
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
         oSelf.retornoBuscaProcedimentosTriagem( oResponse, oSelf );
-      }
+      };
 
   js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + 'buscando_procedimentos_triagem' ), 'msgBoxB' );
   new Ajax.Request( this.sRpcTriagem, oDadosRequisicao );
 };
 
 /**
- * Verifica se existe algum Procedimento cadastrado como parâmetro para a Triagem, os adiciona no array 
+ * Verifica se existe algum Procedimento cadastrado como parâmetro para a Triagem, os adiciona no array
  * aProcedimentosTriagem e chama o método para salvar este vínculo
  * @param oResponse
- * @param oSelf    
+ * @param oSelf
  */
 DBViewTriagem.prototype.retornoBuscaProcedimentosTriagem = function( oResponse, oSelf ) {
 
@@ -2196,57 +2713,164 @@ DBViewTriagem.prototype.retornoBuscaProcedimentosTriagem = function( oResponse, 
 };
 
 /**
- * Salva a triagem, caso todos os campos tenham sido validados
+ * Retorna as Prioridades de Atendimento cadastradas no banco
+ * @param  {integer} iClassificacaoRisco
  */
-DBViewTriagem.prototype.salvarTriagem = function() {
+DBViewTriagem.prototype.buscaPrioridadeAtendimento = function ( iClassificacaoRisco ) {
+
+  var oSelf = this;
+
+  var oParametros      = {};
+      oParametros.exec = "buscaPrioridadesAtendimento";
+
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
+        oSelf.retornoBuscaPrioridadeAtendimento( oResponse, oSelf, iClassificacaoRisco );
+      };
+
+  js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + 'buscando_prioridades' ), 'msgBoxC' );
+  new Ajax.Request( this.sRpcTriagem, oDadosRequisicao );
+};
+
+/**
+ * Monta as opções do combobox de prioridades de acordo com o retornado
+ * @param  {Object} oResponse
+ * @param  {Object} oSelf
+ * @param  {integer} iClassificacaoRisco
+ */
+DBViewTriagem.prototype.retornoBuscaPrioridadeAtendimento = function( oResponse, oSelf, iClassificacaoRisco ) {
+
+  js_removeObj( 'msgBoxC' );
+  var oRetorno = JSON.parse( oResponse.responseText );
+
+  if( oRetorno.status == 2 ) {
+
+    alert( oRetorno.message.urlDecode() );
+    return false;
+  }
+
+  oSelf.criaComboPrioridade();
+
+  oRetorno.aClassificacoesRisco.each(function( oClassificacaoRisco ) {
+
+    var oOpcaoClassificacaoRisco             = document.createElement( 'option' );
+        oOpcaoClassificacaoRisco.style.color = oClassificacaoRisco.sCor;
+        oOpcaoClassificacaoRisco.innerHTML   = oClassificacaoRisco.sDescricao.urlDecode();
+        oOpcaoClassificacaoRisco.value       = oClassificacaoRisco.iCodigo;
+        oOpcaoClassificacaoRisco.setAttribute( 'id', oClassificacaoRisco.iCodigo );
+        oOpcaoClassificacaoRisco.setAttribute( 'cor', oClassificacaoRisco.sCor );
+
+
+    oSelf.oCboPrioridade.add( oOpcaoClassificacaoRisco );
+
+    if ( iClassificacaoRisco == oClassificacaoRisco.iCodigo ) {
+
+      oOpcaoClassificacaoRisco.selected = true;
+      oSelf.oCboPrioridade.style.color  = oClassificacaoRisco.sCor;
+    }
+
+  });
+
+  oSelf.oCboPrioridade.onchange = function() {
+
+    var oOption      = this.options[this.selectedIndex];
+    this.style.color = oOption.getAttribute("cor");
+  }
+};
+
+DBViewTriagem.prototype.validaTriagem = function() {
+
+  var oSelf = this;
 
   if( !this.validaDadosTriagem() ) {
     return;
   }
 
+  if (  oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM && !empty(this.iTriagem) ) {
+    var oOpcoesSalvar = new DBViewOpcoesSalvar();
+    oOpcoesSalvar.show();
+
+    var fCallbackOpcoes = function() {
+
+      switch ( oOpcoesSalvar.iOpcao ) {
+
+        case 1:
+          oSelf.iTriagem                         = null;
+          oSelf.lIncluirVinculoTriagemProntuario = true;
+          oSelf.salvarTriagem();
+          break;
+
+          case 2:
+          oSelf.lIncluirVinculoTriagemProntuario = false;
+          oSelf.salvarTriagem();
+          break;
+
+          default:
+          return;
+          break;
+      }
+    };
+
+    oOpcoesSalvar.setCallbackOpcoes( fCallbackOpcoes );
+    return;
+  }
+
+  if ( !empty(this.iTriagem) ) {
+    oSelf.lIncluirVinculoTriagemProntuario = false;
+  }
+
+  oSelf.salvarTriagem();
+}
+
+/**
+ * Salva a triagem, caso todos os campos tenham sido validados
+ */
+DBViewTriagem.prototype.salvarTriagem = function() {
+
   var oSelf                                = this;
   var oParametros                          = {};
       oParametros.exec                     = 'salvarTriagem';
-      oParametros.iTriagem                 = this.iTriagem;
-      oParametros.iCgsUnd                  = $F('oInputCGSCodigo');
-      oParametros.iPressaoSistolica        = $F('oInputSistolica');
-      oParametros.iPressaoDiastolica       = $F('oInputDiastolica');
-      oParametros.iCintura                 = $F('oInputCintura');
-      oParametros.nPeso                    = $F('oInputPeso');
-      oParametros.iAltura                  = $F('oInputAltura');
-      oParametros.iGlicemia                = $F('oInputExameGlicemiaValor');
-      oParametros.dtDataConsulta           = $F('oInputDataConsultaValor');
-      oParametros.nTemperatura             = $F('oInputTemperatura');
-      oParametros.iAlimentacaoExameGlicose = 0;
-      oParametros.iProfissional            = $F('oInputProfissionalCodigo');
-      oParametros.iUnidadeMedicos          = this.iUnidadeMedicos;
-      oParametros.iCbos                    = $F('oSelectCBOS');
 
-  if( !empty( $F('oInputExameGlicemiaValor') ) ) {
+  oParametros.iProntuario     = this.iProntuario;
+  oParametros.iTriagem        = this.iTriagem;
+  oParametros.iCgsUnd         = $F('oInputCGSCodigo');
+  oParametros.iProfissional   = $F('oInputProfissionalCodigo');
+  oParametros.iUnidadeMedicos = this.iUnidadeMedicos;
+  oParametros.iCbos           = $F('oSelectCBOS');
+  oParametros.dtDataConsulta  = $F('oInputDataConsultaValor');
 
-    var aElementos = document.getElementsByName('statusAlimentacao');
+  oParametros.iCintura           = $F('oInputCintura');
+  oParametros.nPeso              = $F('oInputPeso');
+  oParametros.iAltura            = $F('oInputAltura');
+  oParametros.iPerimetroCefalico = $F('oInputPerimetroCefalico');
 
-    if( !aElementos[0].checked && !aElementos[1].checked ) {
+  oParametros.iPressaoSistolica       = $F('oInputSistolica');
+  oParametros.iPressaoDiastolica      = $F('oInputDiastolica');
+  oParametros.nTemperatura            = $F('oInputTemperatura');
+  oParametros.iFrequenciaRespiratoria = $F('oInputFrequenciaRespiratoria');
+  oParametros.iFrequenciaCardiaca     = $F('oInputFrequenciaCardiaca');
+  oParametros.iSaturacao              = $F('oInputSaturacao');
 
-      alert( _M( MENSAGENS_DBVIEWTRIAGEM + "selecione_alimentacao" ) );
-      return;
-    }
+  oParametros.iGlicemia      = $F('oInputGlicemiaCapilar');
+  oParametros.iMomentoColeta = $F('oCboMomentoColeta');
 
-    oParametros.iAlimentacaoExameGlicose = aElementos[0].value;
-    if( aElementos[1].checked ) {
-      oParametros.iAlimentacaoExameGlicose = aElementos[1].value;
-    }
-  }
+  oParametros.iPrioridade    = $F('oCboPrioridade');
+  oParametros.sTextObjetivo  = encodeURIComponent(tagString($F('oTextObjetivo')));
+  oParametros.sTextSubjetivo = encodeURIComponent(tagString($F('oTextSubjetivo')));
 
-  var oDdadosRequisicao            = {};
-      oDdadosRequisicao.method     = 'post';
-      oDdadosRequisicao.parameters = 'json='+Object.toJSON( oParametros );
-      oDdadosRequisicao.onComplete = function( oResponse ) {
-                                                             oSelf.retornoSalvarTriagem( oResponse, oSelf );
-                                                           };
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json='+Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
+        oSelf.retornoSalvarTriagem( oResponse, oSelf );
+      };
 
   js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + "salvando_triagem" ), "msgBox");
-  new Ajax.Request( oSelf.sRpcTriagem, oDdadosRequisicao);
+  new Ajax.Request( oSelf.sRpcTriagem, oDadosRequisicao);
 };
 
 /**
@@ -2272,7 +2896,7 @@ DBViewTriagem.prototype.retornoSalvarTriagem = function( oResponse, oSelf ) {
   } else {
 
     alert( oRetorno.message.urlDecode() );
-    
+
     if ( !oSelf.lTemProntuario ) {
       oSelf.limpaCampos();
     }
@@ -2285,7 +2909,10 @@ DBViewTriagem.prototype.retornoSalvarTriagem = function( oResponse, oSelf ) {
    */
   if ( oSelf.lProfissionalSaude && !empty(oSelf.iProntuario) ) {
 
-    oSelf.salvarTriagemProntuario();
+    if( oSelf.lIncluirVinculoTriagemProntuario ) {
+      oSelf.salvarTriagemProntuario();
+    }
+
     oSelf.buscaProcedimentosTriagem();
   }
 
@@ -2306,12 +2933,13 @@ DBViewTriagem.prototype.salvarAgravo = function() {
       oParametros.dtSintoma      = $F('oInputDataPrimeiroSintomaValor');
       oParametros.lGestante      = $F('oSelectGestante');
 
-  var oDadosRequisicao            = {};
-      oDadosRequisicao.method     = 'post';
-      oDadosRequisicao.parameters = 'json='+Object.toJSON( oParametros );
-      oDadosRequisicao.onComplete = function( oResponse ) {
-                                                            oSelf.retornoSalvarAgravo( oResponse, oSelf );
-                                                          };
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json='+Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
+        oSelf.retornoSalvarAgravo( oResponse, oSelf );
+      };
 
   js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + "salvando_agravo" ) , "msgBox");
   new Ajax.Request( oSelf.sRpcAgravo, oDadosRequisicao );
@@ -2349,16 +2977,17 @@ DBViewTriagem.prototype.salvarEspecialidadeProcedimentos = function () {
 
   var oParametros                       = {};
       oParametros.exec                  = 'salvarEspecialidadeProcedimentos';
-      oParametros.iEspecialidade        = $F('oInputEspecialidadeCodigo');
+      oParametros.iEspecialidade        = $F('oCboEspecialidade');
       oParametros.aProcedimentosTriagem = this.aProcedimentosTriagem;
       oParametros.iProntuario           = this.iProntuario;
 
-  var oDadosRequisicao            = {};
-      oDadosRequisicao.method     = 'post';
-      oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
-      oDadosRequisicao.onComplete = function( oResponse ) {
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
         oSelf.retornoSalvarEspecialidadeProcedimentos( oResponse, oSelf );
-      }
+      };
 
   new Ajax.Request( this.sRpcTriagem, oDadosRequisicao );
 };
@@ -2379,12 +3008,13 @@ DBViewTriagem.prototype.salvarTriagemProntuario = function() {
       oParametros.iTriagem    = this.iTriagem;
       oParametros.iProntuario = this.iProntuario;
 
-  var oDadosRequisicao            = {};
-      oDadosRequisicao.method     = 'post';
-      oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
-      oDadosRequisicao.onComplete = function( oResponse ) {
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
         oSelf.retornoSalvarTriagemProntuario( oResponse, oSelf );
-      }
+      };
 
   new Ajax.Request( this.sRpcTriagem, oDadosRequisicao );
 };
@@ -2399,37 +3029,8 @@ DBViewTriagem.prototype.retornoSalvarTriagemProntuario = function( oResponse, oS
 DBViewTriagem.prototype.validaDadosTriagem = function() {
 
   if( empty( $F('oInputCGSCodigo') ) ) {
-
     alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'selecione_cgs' ) );
     $('oInputCGSCodigo').focus();
-    return false;
-  }
-
-  if( empty( $F('oInputSistolica') ) ) {
-
-    alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'indique_pressao_sistolica' ) );
-    $('oInputSistolica').focus();
-    return false;
-  }
-
-  if( empty( $F('oInputDiastolica') ) ) {
-
-    alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'indique_pressao_diastolica' ) );
-    $('oInputDiastolica').focus();
-    return false;
-  }
-
-  if( empty( $F('oInputCintura') ) ) {
-
-    alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'indique_medida_cintura' ) );
-    $('oInputCintura').focus();
-    return false;
-  }
-
-  if( empty( $F('oInputPeso') ) ) {
-
-    alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'indique_peso' ) );
-    $('oInputPeso').focus();
     return false;
   }
 
@@ -2447,13 +3048,6 @@ DBViewTriagem.prototype.validaDadosTriagem = function() {
 
     alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'peso_menor' ) );
     $('oInputPeso').focus();
-    return false;
-  }
-
-  if( empty( $F('oInputAltura') ) ) {
-
-    alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'indique_altura' ) );
-    $('oInputAltura').focus();
     return false;
   }
 
@@ -2478,10 +3072,10 @@ DBViewTriagem.prototype.validaDadosTriagem = function() {
     return false;
   }
 
-  if( this.lTemProntuario && this.lProfissionalSaude && empty( $F('oInputEspecialidadeCodigo') ) ) {
+  if( this.lTemProntuario && this.lProfissionalSaude && empty( $F('oCboEspecialidade') ) ) {
 
     alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'preencha_disponibilidade' ) );
-    $('oInputEspecialidadeCodigo').focus();
+    $('oCboEspecialidade').focus();
     return false;
   }
 
@@ -2499,25 +3093,29 @@ DBViewTriagem.prototype.limpaCampos = function() {
   this.iCid             = null;
   this.sSexo            = 'M';
 
-  $('oInputCartaoSUS').value          = '';
-  $('oInputCGSCodigo').value          = '';
-  $('oInputCGSDescricao').value       = '';
-  $('oInputSistolica').value          = '';
-  $('oInputDiastolica').value         = '';
-  $('oInputCintura').value            = '';
-  $('oInputTemperatura').value        = '';
-  $('oInputPeso').value               = '';
-  $('oInputAltura').value             = '';
-  $('oInputIMCValor').value           = '';
-  $('oInputIMCDescricao').value       = '';
-  $('oInputExameGlicemiaValor').value = '';
+  $('oInputCartaoSUS').value         = '';
+  $('oInputCGSCodigo').value         = '';
+  $('oInputCGSDescricao').value      = '';
+  $('oInputDataConsultaValor').value = this.dtAtual;
 
-  $('oInputRadioJejum').checked     = false;
-  $('oInputRadioJejum').disabled    = true;
-  $('oInputRadioPrandial').checked  = false;
-  $('oInputRadioPrandial').disabled = true;
+  $('oInputSistolica').value              = '';
+  $('oInputDiastolica').value             = '';
+  $('oInputTemperatura').value            = '';
+  $('oInputFrequenciaRespiratoria').value = '';
+  $('oInputFrequenciaCardiaca').value     = '';
 
-  $('oInputDataConsultaValor').value        = this.dtAtual;
+  $('oInputCintura').value           = '';
+  $('oInputPeso').value              = '';
+  $('oInputAltura').value            = '';
+  $('oInputPerimetroCefalico').value = '';
+
+  $('oInputIMCValor').value        = '';
+  $('oInputIMCDescricao').value    = '';
+  $('oInputGlicemiaCapilar').value = '';
+  $('oCboMomentoColeta').value     = '1';
+
+  $('oTextObjetivo').value = '';
+
   $('oInputAgravoDescricao').value          = '';
   $('oInputDataPrimeiroSintomaValor').value = this.dtAtual;
   $('oSelectGestante').value                = 'f';
@@ -2528,8 +3126,7 @@ DBViewTriagem.prototype.limpaCampos = function() {
 
     $('oInputProfissionalCodigo').value     = '';
     $('oInputProfissionalDescricao').value  = '';
-    $('oInputEspecialidadeCodigo').value    = '';
-    $('oInputEspecialidadeDescricao').value = '';
+    $('oCboEspecialidade').value            = '';
     this.iUnidadeMedicos                    = null;
     this.buscaCBOS();
   }
@@ -2546,10 +3143,11 @@ DBViewTriagem.prototype.emitirFAA = function() {
       oParametros.sChaveProntuarios = this.iProntuario;
       oParametros.iModelo           = $F('oSelectModelosFAA');
 
-  var oDadosRequisicao            = {};
-      oDadosRequisicao.method     = 'post';
-      oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
-      oDadosRequisicao.onComplete = function( oResponse ) {
+  var oDadosRequisicao              = {};
+      oDadosRequisicao.method       = 'post';
+      oDadosRequisicao.parameters   = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete   = function( oResponse ) {
                                                             oSelf.retornoEmitirFAA( oResponse, oSelf );
                                                           };
 
@@ -2560,7 +3158,7 @@ DBViewTriagem.prototype.emitirFAA = function() {
 /**
  * Emite a FAA de acordo com o tipo retornado e o modelo selecionado
  * @param oResponse
- * @param oSelf    
+ * @param oSelf
  */
 DBViewTriagem.prototype.retornoEmitirFAA = function( oResponse, oSelf ) {
 
@@ -2586,7 +3184,7 @@ DBViewTriagem.prototype.retornoEmitirFAA = function( oResponse, oSelf ) {
                                 'sau2_emitirfaa005.php',
                                 'sau2_emitirfaa006.php'
                               );
-      
+
 
       var strWindowFeatures = "menubar=yes,location=no,resizable=yes,scrollbars=yes,status=yes";
       var sChave            = '?chave_sd29_i_prontuario=' + oRetorno.sChaveProntuarios;
@@ -2604,12 +3202,12 @@ DBViewTriagem.prototype.retornoEmitirFAA = function( oResponse, oSelf ) {
       var iWidth  = screen.availWidth  - 35;
       var sChave  = 'sSessionNome=' + oRetorno.sSessionNome;
 
-      js_OpenJanelaIframe ( '', 'db_iframe_visualizador', 'sau2_fichaatend002.php?' + sChave, 
+      js_OpenJanelaIframe ( '', 'db_iframe_visualizador', 'sau2_fichaatend002.php?' + sChave,
                             'Visualisador', true, iTop, iLeft, iWidth, iHeight
                           );
 
       break;
-  };
+  }
 };
 
 /**
@@ -2619,10 +3217,10 @@ DBViewTriagem.prototype.consultarFaa = function() {
 
   oInstancia = this;
 
-  js_OpenJanelaIframe( 
-                      '', 
-                      'db_iframe_triagem', 
-                      'func_triagem.php?funcao_js=' + 'parent.oInstancia.retornoConsultaFaa|sd24_i_codigo|sd24_i_numcgs',
+  js_OpenJanelaIframe(
+                      '',
+                      'db_iframe_triagem',
+                      'func_triagem.php?lFiltrarMovimentados=true&funcao_js=' + 'parent.oInstancia.retornoConsultaFaa|sd24_i_codigo|sd24_i_numcgs',
                       'Pesquisa',
                       true
                    );
@@ -2630,8 +3228,8 @@ DBViewTriagem.prototype.consultarFaa = function() {
 
 /**
  * Verifica os dados retornados da pesquisa e busca o CGS, a Triagem e o Agravo
- * @param  {integer} iFaa
- * @param  {integer} iCgs
+ * @param  {int} iFaa
+ * @param  {int} iCgs
  */
 DBViewTriagem.prototype.retornoConsultaFaa = function ( iFaa, iCgs ) {
 
@@ -2639,8 +3237,10 @@ DBViewTriagem.prototype.retornoConsultaFaa = function ( iFaa, iCgs ) {
   oSelf.iCgs        = iCgs;
   oSelf.iProntuario = iFaa;
 
+
   db_iframe_triagem.hide();
   oSelf.buscaCGS();
+  oSelf.buscaUltimaObservacaoDaMovimentacao();
   delete oInstancia;
 };
 
@@ -2677,18 +3277,139 @@ DBViewTriagem.prototype.retornoBuscaEspecialidade = function ( oResponse, oSelf 
   var oRetorno = JSON.parse( oResponse.responseText );
 
   if ( oRetorno.iEspecialidade != null ) {
-
-    $('oInputEspecialidadeCodigo').value    = oRetorno.iEspecialidade;
-    $('oInputEspecialidadeDescricao').value = oRetorno.sEspecialidade.urlDecode();
-    oSelf.oLinhaEspecialidade.setStyle( { 'display' : '' } );
-    $('oAncoraEspecialidade').removeAttribute( 'href' );
-    $('oAncoraEspecialidade').removeAttribute( 'onclick' );
+    $('oCboEspecialidade').value = oRetorno.iEspecialidade;
   }
 };
 
 /**
+ * Realiza a chamada do componente DBViewMotivosAlta para finalizar o atendimento selecionado
+ * Ao instanciar a View, desabilita os botões do HTML para que não seja executada nenhuma ação até o fechamento da View
+ */
+DBViewTriagem.prototype.finalizarAtendimento = function() {
+
+  if( empty( this.iProntuario ) ) {
+
+    alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'selecione_prontuario_finalizar' ) );
+    return false;
+  }
+
+  var oSelf = this;
+
+  var fCallbackSalvar = function() {
+
+    oSelf.limpaCampos();
+
+    if ( oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM) {
+
+      oSelf.consultarFaa();
+      return;
+    }
+
+
+    parent.document.formaba.a2.disabled = true;
+    parent.document.formaba.a3.disabled = true;
+    parent.document.formaba.a4.disabled = true;
+    parent.iframe_a1.location.href = "sau4_fichaatendabas001.php";
+    parent.mo_camada('a1');
+  };
+
+  var oMotivoAlta = new DBViewMotivosAlta();
+      oMotivoAlta.setProntuario( this.iProntuario );
+      oMotivoAlta.setCallbackSalvar( fCallbackSalvar );
+      oMotivoAlta.show();
+};
+
+/**
+ * Realiza a movimentação do prontuário entre os setores existentes( RECEPÇÃO, TRIAGEM, CONSULTA MÉDICA E EXTERNO)
+ */
+DBViewTriagem.prototype.encaminharProntuario = function() {
+
+  if( empty( this.iProntuario ) ) {
+
+    alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'selecione_prontuario_encaminhar' ) );
+    return false;
+  }
+
+  var oSelf = this;
+
+  var fCallbackSalvar = function() {
+
+    oSelf.limpaCampos();
+    parent.document.formaba.a2.disabled = true;
+    location.href                       = "sau4_sau_triagemavulsanovo001.php";
+  }
+
+  var oEncaminhar = new DBViewEncaminhamento( DBViewEncaminhamento.TRIAGEM, this.iProntuario);
+      oEncaminhar.setCallbackSalvar( fCallbackSalvar );
+      oEncaminhar.show();
+};
+
+DBViewTriagem.prototype.administrarMedicamentos = function() {
+
+  var oSelf = this;
+
+  if( empty( oSelf.iProntuario ) ) {
+
+    alert( _M( MENSAGENS_DBVIEWTRIAGEM + 'selecione_prontuario_administrar_medicamentos' ) );
+    return false;
+  }
+
+  $('oInputSalvar').disabled                  = 'disabled';
+  $('oInputFinalizarAtendimento').disabled    = 'disabled';
+  $('oInputAdministrarMedicamentos').disabled = 'disabled';
+  $('oInputEmitirFAA').disabled               = 'disabled';
+
+  if ( oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM ) {
+
+    $('oInputConsultar').disabled               = 'disabled';
+    $('oInputEncaminhar').disabled              = 'disabled';
+  }
+
+  var oAdministracaoMedicamento = new DBViewAdministracaoMedicamento( oSelf.iProntuario );
+      oAdministracaoMedicamento.setCallbackFechar( function(){
+
+        $('oInputSalvar').removeAttribute('disabled');
+        $('oInputFinalizarAtendimento').removeAttribute('disabled');
+        $('oInputAdministrarMedicamentos').removeAttribute('disabled');
+        $('oInputEmitirFAA').removeAttribute('disabled');
+
+        if ( oSelf.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM ) {
+          $('oInputConsultar').removeAttribute('disabled');
+          $('oInputEncaminhar').removeAttribute('disabled');
+        }
+      } );
+
+      oAdministracaoMedicamento.show();
+};
+
+DBViewTriagem.prototype.openWindowProblemas = function() {
+  if (this.iProntuario === '' || this.iProntuario == null) {
+    alert('Selecione um prontuário (botão Atendimentos) para ver os problemas do paciente.');
+    return;
+  }
+
+  this.windowProblemas.open(this.oInputCGSCodigo.value, this.oInputCGSDescricao.value);
+}
+
+/**
+ * Cria o combo da prioridade básico, somente com a opção Selecione
+ */
+DBViewTriagem.prototype.criaComboPrioridade = function() {
+
+  this.oCboPrioridade.length      = 0;
+  this.oCboPrioridade.style.color = '';
+
+  this.oOpcaoPrioridade             = document.createElement('option');
+  this.oOpcaoPrioridade.innerHTML   = 'Selecione'
+  this.oOpcaoPrioridade.style.color = '#000000';
+  this.oOpcaoPrioridade.value       = '';
+  this.oOpcaoPrioridade.setAttribute('cor', '#000000');
+  this.oCboPrioridade.add( this.oOpcaoPrioridade );
+};
+
+/**
  * Define o valor de prontuário
- * @param {integer} iProntuario
+ * @param {int} iProntuario
  */
 DBViewTriagem.prototype.setProntuario = function( iProntuario ) {
   this.iProntuario = iProntuario;
@@ -2704,7 +3425,7 @@ DBViewTriagem.prototype.temProntuario = function( lTemProntuario ) {
 
 /**
  * Define o código do CGS
- * @param {integer} iCgs
+ * @param {int} iCgs
  */
 DBViewTriagem.prototype.setCgs = function( iCgs ) {
   this.iCgs = iCgs;
@@ -2712,7 +3433,7 @@ DBViewTriagem.prototype.setCgs = function( iCgs ) {
 
 /**
  * Define o código do agendamento para saber qual triagem deve ser listada
- * @param {integer} iAgendamento
+ * @param {int} iAgendamento
  */
 DBViewTriagem.prototype.setAgendamento = function( iAgendamento ) {
   this.iAgendamento = iAgendamento;
@@ -2738,9 +3459,67 @@ DBViewTriagem.prototype.liberaAbaProcedimentos = function () {
 
     if ( this.iProntuario != null && this.iTriagem != null ) {
 
+      var iEspecialidade = $F('oCboEspecialidade');
+      var iProfissional  = $F('oInputProfissionalCodigo');
+      var sProfissional  = $F('oInputProfissionalDescricao');
+      var iCodigoCbo     = $('oCboEspecialidade').options[$('oCboEspecialidade').selectedIndex].getAttribute("codigo_cbo");
       parent.document.formaba.a2.disabled = false;
-      parent.iframe_a2.location.href      = 'sau4_triagemproc001.php?chavepesquisaprontuario=' + this.iProntuario;
+      var sUrl ='sau4_triagemproc001.php?chavepesquisaprontuario=' + this.iProntuario +"&iEspecialidade="+iEspecialidade;
+      sUrl    +='&iProfissional='+ iProfissional+'&sProfissional='+sProfissional +'&iCbo='+iCodigoCbo;
+      parent.iframe_a2.location.href  = sUrl;
     }
+  }
+
+  if ( this.iTelaOrigem == DBViewTriagem.prototype.TELA_TRIAGEM_FICHA_ATENDIMENTO ) {
+
+    if ( this.iProntuario != null && this.iTriagem != null ) {
+
+      var iCgs = $F('oInputCGSCodigo');
+      var sUrl = 'sau4_fichaatendabas003.php?chavepesquisaprontuario=' + this.iProntuario +"&cgs="+iCgs+"&lOrigemFicha=true";
+      parent.iframe_a3.location.href = sUrl;
+    }
+  }
+
+};
+
+/**
+ * Busca a última observação lançada na movimentação e caso seja do setor, mostra ela em um alert
+ */
+DBViewTriagem.prototype.buscaUltimaObservacaoDaMovimentacao = function() {
+
+  var oSelf = this;
+
+  var oParametros             = {};
+      oParametros.sExecucao   = "buscaUltimaObservacaoDaMovimentacao";
+      oParametros.iProntuario = this.iProntuario;
+      oParametros.iTelaOrigem = DBViewEncaminhamento.TRIAGEM;
+
+  var oDadosRequisicao            = {};
+      oDadosRequisicao.method     = 'post';
+      oDadosRequisicao.parameters = 'json=' + Object.toJSON( oParametros );
+      oDadosRequisicao.asynchronous = false;
+      oDadosRequisicao.onComplete = function( oResponse ) {
+        oSelf.retornoBuscaUltimaObservacaoDaMovimentacao( oResponse, oSelf );
+      };
+
+  js_divCarregando( _M( MENSAGENS_DBVIEWTRIAGEM + 'verificando_observacao'), "msgBoxObservacao" );
+  new Ajax.Request( this.sRpcFichaAtendimento, oDadosRequisicao );
+};
+
+DBViewTriagem.prototype.retornoBuscaUltimaObservacaoDaMovimentacao = function ( oResponse, oSelf ) {
+
+  js_removeObj('msgBoxObservacao');
+
+  var oRetorno = JSON.parse( oResponse.responseText );
+
+  if ( oRetorno.iStatus == 2 ) {
+
+    alert( oRetorno.sMensagem.urlDecode() );
+    return;
+  }
+
+  if (  oRetorno.sObservacao.urlDecode() != '' ) {
+    alert( oRetorno.sObservacao.urlDecode() );
   }
 };
 
@@ -2749,6 +3528,8 @@ DBViewTriagem.prototype.liberaAbaProcedimentos = function () {
  * @param {boolean} lBloqueiaFormulario
  */
 DBViewTriagem.prototype.bloqueiaFormulario = function( lBloqueiaFormulario ) {
+
+  this.lBloqueiaFormulario = lBloqueiaFormulario;
   setFormReadOnly( this.oFormulario, lBloqueiaFormulario );
 };
 
@@ -2757,8 +3538,19 @@ DBViewTriagem.prototype.bloqueiaFormulario = function( lBloqueiaFormulario ) {
  * @param oElemento
  */
 DBViewTriagem.prototype.show = function( oElemento ) {
+  oElemento.appendChild(this.oDivFormulario);
+  oElemento.appendChild(this.divButtons);
+  oElemento.parentNode.appendChild(this.divProblemas);
+  this.windowProblemas = new ViewProblemasPaciente(this.divProblemas);
 
-  oElemento.appendChild( this.oFormulario );
+  const inputCgs = {
+    id: this.oInputCGSCodigo,
+    nome: this.oInputCGSDescricao
+  };
+  const validaCgs = new ValidaCgs(inputCgs);
+
   this.buscaCBOS();
   this.buscaDadosIniciais();
+
+  validaCgs.cadastroMicroarea(inputCgs, this.divAlert);
 };

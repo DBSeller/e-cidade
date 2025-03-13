@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -47,6 +47,7 @@ class cl_caddisciplina {
    var $ed232_c_descr = null; 
    var $ed232_c_abrev = null; 
    var $ed232_c_descrcompleta = null; 
+   var $ed232_corhtml = null;
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  ed232_i_codigo = int8 = Código 
@@ -54,6 +55,7 @@ class cl_caddisciplina {
                  ed232_c_descr = char(30) = Descrição 
                  ed232_c_abrev = char(10) = Abreviatura 
                  ed232_c_descrcompleta = varchar(150) = Descrição Completa 
+                 ed232_corhtml = varchar(7) = Codigo Hex da Cor
                  ";
    //funcao construtor da classe 
    function cl_caddisciplina() { 
@@ -78,6 +80,7 @@ class cl_caddisciplina {
        $this->ed232_c_descr = ($this->ed232_c_descr == ""?@$GLOBALS["HTTP_POST_VARS"]["ed232_c_descr"]:$this->ed232_c_descr);
        $this->ed232_c_abrev = ($this->ed232_c_abrev == ""?@$GLOBALS["HTTP_POST_VARS"]["ed232_c_abrev"]:$this->ed232_c_abrev);
        $this->ed232_c_descrcompleta = ($this->ed232_c_descrcompleta == ""?@$GLOBALS["HTTP_POST_VARS"]["ed232_c_descrcompleta"]:$this->ed232_c_descrcompleta);
+       $this->ed232_corhtml = ($this->ed232_corhtml == ""?@$GLOBALS["HTTP_POST_VARS"]["ed232_corhtml"]:$this->ed232_corhtml);
      }else{
        $this->ed232_i_codigo = ($this->ed232_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed232_i_codigo"]:$this->ed232_i_codigo);
      }
@@ -109,6 +112,15 @@ class cl_caddisciplina {
      if($this->ed232_c_descrcompleta == null ){ 
        $this->erro_sql = " Campo Descrição Completa nao Informado.";
        $this->erro_campo = "ed232_c_descrcompleta";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->ed232_corhtml == null ){
+       $this->erro_sql = " Campo Cor Html nao Informado.";
+       $this->erro_campo = "ed232_corhtml";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -153,13 +165,15 @@ class cl_caddisciplina {
                                       ,ed232_c_descr 
                                       ,ed232_c_abrev 
                                       ,ed232_c_descrcompleta 
+                                      ,ed232_corhtml
                        )
                 values (
                                 $this->ed232_i_codigo 
                                ,$this->ed232_areaconhecimento 
                                ,'$this->ed232_c_descr' 
                                ,'$this->ed232_c_abrev' 
-                               ,'$this->ed232_c_descrcompleta' 
+                               ,'$this->ed232_c_descrcompleta'
+                               ,'$this->ed232_corhtml'
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -196,6 +210,7 @@ class cl_caddisciplina {
        $resac = db_query("insert into db_acount values($acount,2017,11710,'','".AddSlashes(pg_result($resaco,0,'ed232_c_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,2017,11711,'','".AddSlashes(pg_result($resaco,0,'ed232_c_abrev'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,2017,19242,'','".AddSlashes(pg_result($resaco,0,'ed232_c_descrcompleta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2017,1014611,'','".AddSlashes(pg_result($resaco,0,'ed232_corhtml'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -263,6 +278,19 @@ class cl_caddisciplina {
          return false;
        }
      }
+     if(trim($this->ed232_corhtml)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed232_corhtml"])){
+       $sql  .= $virgula." ed232_corhtml = '$this->ed232_corhtml' ";
+       $virgula = ",";
+       if(trim($this->ed232_c_descrcompleta) == null ){
+         $this->erro_sql = " Campo Cor Html nao Informado.";
+         $this->erro_campo = "ed232_corhtml";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      $sql .= " where ";
      if($ed232_i_codigo!=null){
        $sql .= " ed232_i_codigo = $this->ed232_i_codigo";
@@ -284,6 +312,8 @@ class cl_caddisciplina {
            $resac = db_query("insert into db_acount values($acount,2017,11711,'".AddSlashes(pg_result($resaco,$conresaco,'ed232_c_abrev'))."','$this->ed232_c_abrev',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["ed232_c_descrcompleta"]) || $this->ed232_c_descrcompleta != "")
            $resac = db_query("insert into db_acount values($acount,2017,19242,'".AddSlashes(pg_result($resaco,$conresaco,'ed232_c_descrcompleta'))."','$this->ed232_c_descrcompleta',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["ed232_corhtml"]) || $this->ed232_corhtml != "")
+           $resac = db_query("insert into db_acount values($acount,2017,1014611,'".AddSlashes(pg_result($resaco,$conresaco,'ed232_corhtml'))."','$this->ed232_corhtml',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
@@ -336,6 +366,7 @@ class cl_caddisciplina {
          $resac = db_query("insert into db_acount values($acount,2017,11710,'','".AddSlashes(pg_result($resaco,$iresaco,'ed232_c_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,2017,11711,'','".AddSlashes(pg_result($resaco,$iresaco,'ed232_c_abrev'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,2017,19242,'','".AddSlashes(pg_result($resaco,$iresaco,'ed232_c_descrcompleta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2017,1014611,'','".AddSlashes(pg_result($resaco,$iresaco,'ed232_corhtml'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from caddisciplina
@@ -532,7 +563,7 @@ class cl_caddisciplina {
   /**
    * Busca os vínculos das disciplinas com o código do censo
    */
-  function sql_query_censo ( $ed232_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+  function sql_query_censo ( $ed232_i_codigo=null,$campos="*",$ordem=null,$dbwhere="",$groupBy=null ){
     
     $sql = "select ";
     if ($campos != "*" ) {
@@ -561,6 +592,12 @@ class cl_caddisciplina {
       $sql2 = " where $dbwhere";
     }
     $sql .= $sql2;
+
+    if (!empty($groupBy)) {
+      $sql .= " group by  {$groupBy} ";
+    }
+
+
     if ($ordem != null) {
       
       $sql        .= " order by ";

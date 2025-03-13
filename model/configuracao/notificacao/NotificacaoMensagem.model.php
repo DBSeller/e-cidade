@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
  * Classe DataTransfer envio de notificacoes
  * @author Iuri Guntchnigg <iuri@dbseller.com.br>
  *          Robson Inacio   <robson@dbseller.com.br> 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.4 $ 
  */
 
 class NotificacaoMensagem {

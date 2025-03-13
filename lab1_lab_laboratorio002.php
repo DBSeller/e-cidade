@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_lab_labresp_classe.php");
-include("classes/db_lab_turnohora_classe.php");
-include("classes/db_lab_laboratorio_classe.php");
-include("classes/db_lab_labdepart_classe.php");
-include("classes/db_lab_labcgm_classe.php");
-include("classes/db_lab_labusuario_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lab_labresp_classe.php"));
+include(modification("classes/db_lab_turnohora_classe.php"));
+include(modification("classes/db_lab_laboratorio_classe.php"));
+include(modification("classes/db_lab_labdepart_classe.php"));
+include(modification("classes/db_lab_labcgm_classe.php"));
+include(modification("classes/db_lab_labusuario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cllab_laboratorio = new cl_lab_laboratorio;
@@ -161,13 +161,19 @@ if(isset($alterar)){
          parent.document.formaba.a6.disabled = false;
          parent.document.formaba.a7.disabled = false; 
          parent.document.formaba.a8.disabled = false;
-         top.corpo.iframe_a2.location.href='lab1_lab_labresp001.php?la06_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
-         top.corpo.iframe_a3.location.href='lab1_lab_labusuario001.php?la05_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
-         top.corpo.iframe_a4.location.href='lab1_lab_labsetor001.php?la24_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
-         top.corpo.iframe_a5.location.href='lab1_lab_setorexame001.php?la24_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
-         top.corpo.iframe_a6.location.href='lab1_lab_horario001.php?la02_i_codigo=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
-         top.corpo.iframe_a7.location.href='lab1_lab_ausencia001.php?la02_i_codigo=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
-         top.corpo.iframe_a8.location.href='lab1_lab_paralizacao001.php?la37_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
+         if(parent.document.formaba.a9){
+           parent.document.formaba.a9.disabled = false;
+         }
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='lab1_lab_labresp001.php?la06_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href='lab1_lab_labusuario001.php?la05_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href='lab1_lab_labsetor001.php?la24_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a5.location.href='lab1_lab_setorexame001.php?la24_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a6.location.href='lab1_lab_horario001.php?la02_i_codigo=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a7.location.href='lab1_lab_ausencia001.php?la02_i_codigo=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a8.location.href='lab1_lab_paralizacao001.php?la37_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
+         if((window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a9){
+           (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a9.location.href='lab1_lab_grupo001.php?la06_i_laboratorio=<?=$chavepesquisa?>&la02_c_descr=<?=$la02_c_descr?>';
+         }
            
      </script>
    <?
@@ -199,7 +205,7 @@ if(isset($alterar)){
     <br><br>
     <fieldset><legend><b> Laboratório </b></legend>
 	<?
-	include("forms/db_frmlab_laboratorio.php");
+	include(modification("forms/db_frmlab_laboratorio.php"));
 	?>
     </fieldset>
     </center>

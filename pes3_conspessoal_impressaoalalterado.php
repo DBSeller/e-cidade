@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_cadferia_classe.php");
-include("classes/db_pessoal_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhfuncao_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_depend_classe.php");
-include("classes/db_afasta_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_cadferia_classe.php"));
+include(modification("classes/db_pessoal_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhfuncao_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_depend_classe.php"));
+include(modification("classes/db_afasta_classe.php"));
 
 $clpessoal = new cl_pessoal;
 $clrhpessoal = new cl_rhpessoal;
@@ -106,7 +106,7 @@ $sql = $clrhpessoal->sql_query_pesquisa(
                                          $ano,
                                          $mes
                                        );
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if ($xxnum == 0 || $xxnum==false){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);
@@ -336,7 +336,7 @@ $sql = "
 			and pessoal.r01_regist = $regist ;
 	 ";																			    
 
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 
   $pdf->ln();
@@ -484,7 +484,7 @@ $pdf->cell(1,$alt,"  ",0,0,"C",0);
 #############################################################################################################
 
 $sql = "select * from cadferia where r30_regist=$regist and r30_anousu = $ano and r30_mesusu = $mes order by r30_perai";
-$result = pg_query($sql);
+$result = db_query($sql);
 
   $pdf->ln();
   $pdf->ln();
@@ -574,7 +574,7 @@ $pdf->ln();
 	where r03_regist=$regist 
 	  and r03_anousu = $ano 
 	  and r03_mesusu = $mes";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
 
     $pdf->setfont($fonte01,$b01,$tam01);
 $pdf->cell(75,$alt,$RLr03_nome,1,0,"C",1);

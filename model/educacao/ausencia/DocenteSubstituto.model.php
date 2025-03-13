@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -325,7 +325,7 @@ final class DocenteSubstituto {
 		    $sMsg = "Data Inicial da substituição não pode ser maior que a data final do período de ausência.";
 		    throw new BusinessException($sMsg);
 		  }
-		  if ($this->getPeriodoInicial() != null) {
+		  if ($this->getPeriodoFinal() != null) {
 		  
   		  if ($this->getPeriodoFinal()->getTimeStamp() > $oDocenteAusente->getDataFinal()->getTimeStamp()) {
   		    

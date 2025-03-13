@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-//include("classes/db_conarquivospad_classe.php");
+//include(modification("classes/db_conarquivospad_classe.php"));
 
 class orgao {
   var $arq = null;
@@ -79,7 +79,7 @@ class orgao {
 	 if (!empty($exercicios))
 	   $sql .= "  and not o58_anousu in ($exercicios) ";
 
-    $res=pg_exec($sql);
+    $res=db_query($sql);
     $rows = pg_numrows($res);
     for ($x=0;$x < $rows;$x++){
        $anousu = formatar(pg_result($res,$x,"o40_anousu"),4,'n');

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,19 +26,19 @@
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_libcontabilidade.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_orcorgao_classe.php");
-include ("classes/db_orcpparec_classe.php");
-include ("classes/db_conplanoreduz_classe.php");
-include ("classes/db_orcreceita_classe.php");
-include ("classes/db_orcppa_classe.php");
-include ("classes/db_orcdotacao_classe.php");
-include("classes/db_orcparametro_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcpparec_classe.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
+include(modification("classes/db_orcreceita_classe.php"));
+include(modification("classes/db_orcppa_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcparametro_classe.php"));
 
 
 db_postmemory($HTTP_POST_VARS);
@@ -123,7 +123,7 @@ if (isset ($exportar) && $exportar == "Exportar") {
 			} //endfor
 
 			if ($erro == false) {
-			  	$rr = pg_query("
+			  	$rr = db_query("
 					update
 					orcreceita
 					set o70_valor = o70_valor*-1
@@ -242,7 +242,7 @@ db_input('o21_codleippa', 8, $Io21_codleippa, true, 'text', 1, " onchange='js_pe
 	 */
 	echo "<select name=anoexe_exporta>";
 	$sql = "select * from orcppalei";
-	$res = pg_exec($sql);
+	$res = db_query($sql);
 	if (pg_numrows($res) > 0) {
 		db_fieldsmemory($res, 0);
 		for ($x = $o21_anoini; $x <= $o21_anofim; $x ++) {
@@ -305,7 +305,7 @@ db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsessio
 </body>
 <script>
 function js_pesquisao21_codleippa(){
-   js_OpenJanelaIframe('top.corpo','db_iframe_orcppalei','func_orcppalei.php?funcao_js=parent.js_mostraorcppalei1|o21_codleippa|o21_descr','Pesquisa',true);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcppalei','func_orcppalei.php?funcao_js=parent.js_mostraorcppalei1|o21_codleippa|o21_descr','Pesquisa',true);
 }
 
 function js_mostraorcppalei1(chave1,chave2){
@@ -315,10 +315,10 @@ function js_mostraorcppalei1(chave1,chave2){
 }
 
 function js_fontes(){
-   js_OpenJanelaIframe('top.corpo','db_iframe_orcpparec','func_orcpparec.php?funcao_js=','Pesquisa',true);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcpparec','func_orcpparec.php?funcao_js=','Pesquisa',true);
 }
 function js_elementos(){
-   js_OpenJanelaIframe('top.corpo','db_iframe_orcppa','func_orcppa.php?funcao_js=','Pesquisa',true);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcppa','func_orcppa.php?funcao_js=','Pesquisa',true);
 }
 function js_fontes_nao_exportados(){
 	ano = document.form1.anoexe_exporta.value;

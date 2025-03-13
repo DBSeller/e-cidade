@@ -49,7 +49,8 @@ $borda = 0;
 						</td>
 						<td colspan=2 nowrap title="">
               <?
-                $sqlConta    = " select distinct db83_sequencial,db83_descricao  ";
+                $sqlConta    = " select * from ( ";
+                $sqlConta   .= " select db83_sequencial,c61_reduz||' - '||db83_descricao as db83_descricao ,c61_reduz";
                 $sqlConta   .= "   from contabancaria ";
                 $sqlConta   .= "        inner join conplanocontabancaria on conplanocontabancaria.c56_contabancaria = contabancaria.db83_sequencial ";
                 $sqlConta   .= "                                        and conplanocontabancaria.c56_anousu = ".db_getsession('DB_anousu');
@@ -62,7 +63,7 @@ $borda = 0;
                 
                 $sqlConta   .= " union ";
                 
-                $sqlConta   .= " select distinct db83_sequencial,db83_descricao  ";
+                $sqlConta   .= " select db83_sequencial,c61_reduz||' - '||db83_descricao as db83_descricao  ,c61_reduz ";
                 $sqlConta   .= "   from contabancaria ";
                 $sqlConta   .= "        inner join conplanocontabancaria on conplanocontabancaria.c56_contabancaria = contabancaria.db83_sequencial ";
                 $sqlConta   .= "                                        and conplanocontabancaria.c56_anousu = ".db_getsession('DB_anousu');
@@ -75,26 +76,40 @@ $borda = 0;
                 
                 $sqlConta   .= " union ";
                 
-                $sqlConta   .= " select distinct db83_sequencial,db83_descricao  ";
+                $sqlConta   .= " select  db83_sequencial,c61_reduz||' - '||db83_descricao as db83_descricao   ,c61_reduz";
                 $sqlConta   .= "   from contabancaria ";
                 $sqlConta   .= "        inner join conplanocontabancaria on conplanocontabancaria.c56_contabancaria = contabancaria.db83_sequencial ";
                 $sqlConta   .= "                                        and conplanocontabancaria.c56_anousu        = ".db_getsession('DB_anousu');
                 $sqlConta   .= "        inner join conplanoreduz on c61_codcon = c56_codcon  ";
                 $sqlConta   .= "                                and c61_anousu = ".db_getsession('DB_anousu');
                 $sqlConta   .= "                                and c61_instit = ".db_getsession('DB_instit');
-                $sqlConta   .= "        inner join extratolinha on k86_contabancaria = c61_reduz ";
+                $sqlConta   .= "        inner join extratolinha on k86_contabancaria = db83_sequencial ";
                 $sqlConta   .= "        left  join concilia on db83_sequencial = k68_contabancaria ";
                 $sqlConta   .= "  where k68_contabancaria is null ";								
+                $sqlConta   .= " ) as x order by c61_reduz  ";								
+
+
+                $sqlConta   = " select db83_sequencial,c61_reduz||' - '||db83_descricao as db83_descricao ,c61_reduz";
+                $sqlConta   .= "   from contabancaria ";
+                $sqlConta   .= "        inner join conplanocontabancaria on conplanocontabancaria.c56_contabancaria = contabancaria.db83_sequencial ";
+                $sqlConta   .= "                                        and conplanocontabancaria.c56_anousu = ".db_getsession('DB_anousu');
+                $sqlConta   .= "        inner join conplanoreduz on c61_codcon = c56_codcon  ";
+                $sqlConta   .= "                                and c61_anousu = ".db_getsession('DB_anousu');
+		$sqlConta   .= "                                and c61_instit = ".db_getsession('DB_instit');
+		$sqlConta   .= "        inner join conplanoexe on c61_reduz = c62_reduz and c61_anousu = c62_anousu ";
+		$sqlConta   .= " where contabancaria.db83_sequencial not in ( select k68_contabancaria from concilia ) ";
+                $sqlConta   .= " order by c61_reduz  ";
 
                 $rsContas    = $clsaltes->sql_record($sqlConta);
                 $numrows     = $clsaltes->numrows;
                 
-                $arrayContas = array( 0 => " Selecione a conta para implantacao ");
-                for($i=0;$i<$numrows;$i++){
-                   db_fieldsmemory($rsContas,$i);
-                   $arrayContas[$db83_sequencial] = $db83_sequencial." - ".$db83_descricao;
-                 }
-                 db_select('conta',$arrayContas,'',1,"style='width:400px' onchange='js_enabled();js_ajaxRequest(this);'");
+                //$arrayContas = array( 0 => " Selecione a conta para implantacao ");
+                //for($i=0;$i<$numrows;$i++){
+                 //  db_fieldsmemory($rsContas,$i);
+                 //  $arrayContas[$db83_sequencial."-".$c61_reduz] = $db83_descricao;
+                // }
+                 //db_select('conta',$arrayContas,'',1,"style='width:400px' onchange='js_enabled();js_ajaxRequest(this);'");
+                 db_selectrecord('conta',$rsContas,'',1,'','','','0', ' js_enabled(); js_ajaxRequest(); ');
               ?>
 						</td>
 					</tr>
@@ -104,7 +119,7 @@ $borda = 0;
 						</td>
 						<td colspan=2 nowrap title="">
               <?
-                $arrayDatas = array(0 => " Selecione a data para conciliacao ");
+                $arrayDatas = array( '0' => " Selecione a data para conciliacao ");
                 db_select('data',$arrayDatas,'',1,"style='width:400px' onchange='js_enabled()'; ","","");
               ?>
 						</td>
@@ -118,17 +133,18 @@ $borda = 0;
 <table border=0 width='90%' >
   <tr>
 	  <td align='center'>
-      <input name="continuar" type="Button" id="continuar" value="Implantar" disabled onClick='js_abreConciliacao();' >
+      <input name="continuar" type="Button" id="continuar" value="Implantar"  onClick='js_abreConciliacao();' >
 	  </td>
 	</tr>
 </table>
 </form>
 <script>
 
-function js_ajaxRequest(obj){
-  //var url       = 'cai4_carregadatasimplantacao.php';
-  var url       = 'cai4_carregadatascorrente.php';
-  var parametro = 'conta='+obj.value+'&lImplantaConcilia=true';
+
+function js_ajaxRequest(){
+	//var url       = 'cai4_carregadatasimplantacao.php';a
+  var url       = 'cai4_carregadatascorrente_manual.php';
+  var parametro = 'conta='+document.form1.conta.value+'&lImplantaConcilia=true';
   var objAjax   = new Ajax.Request (url,{method:'post',parameters:parametro, onComplete:carregaDadosSelect});
 	document.form1.data.disabled = true;
 }
@@ -139,7 +155,7 @@ function js_enabled(){
   if (data != '0' && conta != '0') {
     $('continuar').disabled = false;
   }else{
-    $('continuar').disabled = true;
+    $('continuar').disabled = false;
   }
 }
 
@@ -168,15 +184,23 @@ function js_addSelectFromStr(str,obj){
 }
 
 function js_abreConciliacao(){
-	var data          = document.form1.data.value;
+
+  var data          = document.form1.data.value;
   var conta         = document.form1.conta.value;
   var url           = 'cai4_implantaconciliacao.php';
   var parametro     = 'data='+data+'&conta='+conta;
+
+
+  if( data != '0' ){
   var dataFormatada = data.substr(8,2)+'/'+data.substr(5,2)+'/'+data.substr(0,4);
+
   var confirmacao   = confirm('Deseja realmente implantar conciliacao para : \n Conta ; '+conta+'\n Data : '+dataFormatada );
+  }else{
+     var confirmacao   = confirm('Deseja realmente implantar conciliacao para em dezembro ano anterior na Conta Bancária: '+conta+'?');
+  }
   if (confirmacao){
 //    var objAjax   = new Ajax.Request (url,{method:'post',parameters:parametro, onComplete:js_continuar});
-    js_OpenJanelaIframe('top.corpo','db_iframe_implantacao',url+'?'+parametro,'Implantando conciliacao',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_implantacao',url+'?'+parametro,'Implantando conciliacao',true);
     
 	  document.form1.data.disabled = true;
   	document.form1.conta.disabled = true;
@@ -190,7 +214,7 @@ function js_continuar(resposta){
   var retorno = resposta.responseText.split('|||');
   if (retorno[0] == '1') {
     alert(retorno[1]);
-	  document.location.href = 'cai4_concbanc001.php?conta='+conta+'&data='+data+'&concilia='+retorno[2];
+	  document.location.href = 'cai4_concbanc001_manual.php?conta='+conta+'&data='+data+'&concilia='+retorno[2];
   }else{
     alert(retorno[1]);
   }

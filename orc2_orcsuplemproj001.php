@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
-require("classes/db_orcsuplem_classe.php");  // declaração da classe orcreserva
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
+require(modification("classes/db_orcsuplem_classe.php"));  // declaração da classe orcreserva
 
 $clorcsuplem = new cl_orcsuplem ; // instancia classe orcsuplem
 $clorcsuplem->rotulo->label();
@@ -167,10 +167,10 @@ function emite_lista(){
 <script>
 function js_pesquisao39_codlei(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orclei','func_orclei.php?funcao_js=parent.js_mostraorclei1|o45_codlei|o45_numlei','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orclei','func_orclei.php?funcao_js=parent.js_mostraorclei1|o45_codlei|o45_numlei','Pesquisa',true);
   }else{
      if(document.form1.o39_codlei.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_orclei','func_orclei.php?pesquisa_chave='+document.form1.o39_codlei.value+'&funcao_js=parent.js_mostraorclei','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orclei','func_orclei.php?pesquisa_chave='+document.form1.o39_codlei.value+'&funcao_js=parent.js_mostraorclei','Pesquisa',false);
      }else{
        document.form1.o45_numlei.value = ''; 
      }

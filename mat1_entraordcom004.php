@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,26 +26,26 @@
  */
 
 //echo ($HTTP_SERVER_VARS['QUERY_STRING']);exit;
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empnotaord_classe.php");
-include("classes/db_empnota_classe.php");
-include("classes/db_empnotaele_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_matordem_classe.php");
-include("classes/db_matordemitem_classe.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_matestoqueitem_classe.php");
-include("classes/db_matestoqueitemnota_classe.php");
-include("classes/db_matestoqueitemoc_classe.php");
-include("classes/db_matestoqueini_classe.php");
-include("classes/db_matestoqueinimei_classe.php");
-include("classes/db_matestoqueitemunid_classe.php");
-include("classes/db_matestoqueinil_classe.php");
-include("classes/db_matestoqueinill_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empnotaord_classe.php"));
+include(modification("classes/db_empnota_classe.php"));
+include(modification("classes/db_empnotaele_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_matestoqueitemnota_classe.php"));
+include(modification("classes/db_matestoqueitemoc_classe.php"));
+include(modification("classes/db_matestoqueini_classe.php"));
+include(modification("classes/db_matestoqueinimei_classe.php"));
+include(modification("classes/db_matestoqueitemunid_classe.php"));
+include(modification("classes/db_matestoqueinil_classe.php"));
+include(modification("classes/db_matestoqueinill_classe.php"));
 $clusuarios = new cl_db_usuarios;
 $clempnotaord = new cl_empnotaord;
 $clempnota = new cl_empnota;
@@ -332,7 +332,7 @@ if (isset($anula)){
 <tr> 
 <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 <center>
-<?include("forms/db_frmentraordcomanu.php");?>
+<?include(modification("forms/db_frmentraordcomanu.php"));?>
 </center>
 </td>
 </tr>
@@ -349,7 +349,7 @@ if (isset($anula)){
     echo "<script> document.form1.".$clempnota->erro_campo.".style.backgroundColor='#99A9AE';</script>";
     echo "<script> document.form1.".$clempnota->erro_campo.".focus();</script>";
   }else{ 
-    echo"<script>top.corpo.location.href='mat1_entraordcom003.php';</script>";
+    echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='mat1_entraordcom003.php';</script>";
   }
 }
 ?>

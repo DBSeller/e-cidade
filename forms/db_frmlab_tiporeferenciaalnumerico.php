@@ -108,7 +108,7 @@ db_input('la30_i_absurdomax',10,$Ila30_i_absurdomax,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lab_tiporeferenciaalnumerico','func_lab_tiporeferenciaalnumerico.php?funcao_js=parent.js_preenchepesquisa|la30_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_tiporeferenciaalnumerico','func_lab_tiporeferenciaalnumerico.php?funcao_js=parent.js_preenchepesquisa|la30_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_lab_tiporeferenciaalnumerico.hide();

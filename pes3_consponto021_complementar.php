@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -63,6 +63,7 @@ $aResultado  = db_utils::getCollectionByRecord($rsResultado);
  * O valor guardado é um array com todos os objetos
  * trazidos do banco de dados.
  */
+$aComplementar = array();
 foreach ($aResultado as $oResultado) {
   $aComplementar[$oResultado->codigo][] = $oResultado;
 }
@@ -279,6 +280,7 @@ foreach ($aResultado as $oResultado) {
         fieldset = parent.document.getElementById('calculoFolha');
 
       fieldset.style.height = html.scrollHeight + 7 + 'px';
+      parent.iframeLoaded();
     }
   </script>
 </body>

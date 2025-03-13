@@ -1,30 +1,29 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-
 //MODULO: farmacia
 //CLASSE DA ENTIDADE far_matersaude
 class cl_far_matersaude {
@@ -41,7 +40,6 @@ class cl_far_matersaude {
    var $erro_msg   = null;
    var $erro_campo = null;
    var $pagina_retorno = null;
-
    // cria variaveis do arquivo
    var $fa01_i_codigo = 0;
    var $fa01_t_obs = null;
@@ -57,6 +55,8 @@ class cl_far_matersaude {
    var $fa01_i_formafarmaceuticamed = 0;
    var $fa01_i_concentracaomed = 0;
    var $fa01_i_medhiperdia = 0;
+   var $fa01_codigobarras = null;
+   var $fa01_medicamentos = null;
    // cria propriedade com as variaveis do arquivo
    var $campos = "
                  fa01_i_codigo = int4 = Código
@@ -73,6 +73,8 @@ class cl_far_matersaude {
                  fa01_i_formafarmaceuticamed = int4 = Forma Farmacêutica
                  fa01_i_concentracaomed = int4 = Concentração
                  fa01_i_medhiperdia = int4 = Hiperdia
+                 fa01_codigobarras = varchar(20) = Codigo de barras
+                 fa01_medicamentos = int4 = medicamentos
                  ";
    //funcao construtor da classe
    function cl_far_matersaude() {
@@ -106,15 +108,17 @@ class cl_far_matersaude {
        $this->fa01_i_formafarmaceuticamed = ($this->fa01_i_formafarmaceuticamed == ""?@$GLOBALS["HTTP_POST_VARS"]["fa01_i_formafarmaceuticamed"]:$this->fa01_i_formafarmaceuticamed);
        $this->fa01_i_concentracaomed = ($this->fa01_i_concentracaomed == ""?@$GLOBALS["HTTP_POST_VARS"]["fa01_i_concentracaomed"]:$this->fa01_i_concentracaomed);
        $this->fa01_i_medhiperdia = ($this->fa01_i_medhiperdia == ""?@$GLOBALS["HTTP_POST_VARS"]["fa01_i_medhiperdia"]:$this->fa01_i_medhiperdia);
+       $this->fa01_codigobarras = ($this->fa01_codigobarras == ""?@$GLOBALS["HTTP_POST_VARS"]["fa01_codigobarras"]:$this->fa01_codigobarras);
+       $this->fa01_medicamentos = ($this->fa01_medicamentos == ""?@$GLOBALS["HTTP_POST_VARS"]["fa01_medicamentos"]:$this->fa01_medicamentos);
      }else{
        $this->fa01_i_codigo = ($this->fa01_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["fa01_i_codigo"]:$this->fa01_i_codigo);
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir ($fa01_i_codigo){
       $this->atualizacampos();
      if($this->fa01_i_codmater == null ){
-       $this->erro_sql = " Campo Medicamento nao Informado.";
+       $this->erro_sql = " Campo Medicamento não informado.";
        $this->erro_campo = "fa01_i_codmater";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -123,7 +127,7 @@ class cl_far_matersaude {
        return false;
      }
      if($this->fa01_i_class == null ){
-       $this->erro_sql = " Campo Classificação nao Informado.";
+       $this->erro_sql = " Campo Classificação não informado.";
        $this->erro_campo = "fa01_i_class";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -131,7 +135,7 @@ class cl_far_matersaude {
        $this->erro_status = "0";
        return false;
      }
-    if($this->fa01_i_medanvisa == null ){
+     if($this->fa01_i_medanvisa == null ){
        $this->fa01_i_medanvisa = "null";
      }
      if($this->fa01_i_prescricaomed == null ){
@@ -155,9 +159,8 @@ class cl_far_matersaude {
      if($this->fa01_i_concentracaomed == null ){
        $this->fa01_i_concentracaomed = "null";
      }
-
      if($this->fa01_i_medhiperdia == null ){
-       $this->erro_sql = " Campo Hiperdia nao Informado.";
+       $this->erro_sql = " Campo Hiperdia não informado.";
        $this->erro_campo = "fa01_i_medhiperdia";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -165,7 +168,9 @@ class cl_far_matersaude {
        $this->erro_status = "0";
        return false;
      }
-
+     if($this->fa01_medicamentos == null ){
+       $this->fa01_medicamentos = "null";
+     }
      if($fa01_i_codigo == "" || $fa01_i_codigo == null ){
        $result = db_query("select nextval('farmatersaude_fa01_i_codigo_seq')");
        if($result==false){
@@ -191,7 +196,7 @@ class cl_far_matersaude {
        //}
      }
      if(($this->fa01_i_codigo == null) || ($this->fa01_i_codigo == "") ){
-       $this->erro_sql = " Campo fa01_i_codigo nao declarado.";
+       $this->erro_sql = " Campo fa01_i_codigo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -213,6 +218,8 @@ class cl_far_matersaude {
                                       ,fa01_i_formafarmaceuticamed
                                       ,fa01_i_concentracaomed
                                       ,fa01_i_medhiperdia
+                                      ,fa01_codigobarras
+                                      ,fa01_medicamentos
                        )
                 values (
                                 $this->fa01_i_codigo
@@ -229,17 +236,19 @@ class cl_far_matersaude {
                                ,$this->fa01_i_formafarmaceuticamed
                                ,$this->fa01_i_concentracaomed
                                ,$this->fa01_i_medhiperdia
+                               ,'$this->fa01_codigobarras'
+                               ,$this->fa01_medicamentos
                       )";
      $result = db_query($sql);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "far_matersaude ($this->fa01_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "far_matersaude ($this->fa01_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "far_matersaude já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "far_matersaude ($this->fa01_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "far_matersaude ($this->fa01_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -248,37 +257,45 @@ class cl_far_matersaude {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
-     $this->erro_sql .= "Valores : ".$this->fa01_i_codigo;
+     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
+         $this->erro_sql .= "Valores : ".$this->fa01_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
-     $resaco = $this->sql_record($this->sql_query_file($this->fa01_i_codigo));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,12117,'$this->fa01_i_codigo','I')");
-       $resac = db_query("insert into db_acount values($acount,2104,12117,'','".AddSlashes(pg_result($resaco,0,'fa01_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,12118,'','".AddSlashes(pg_result($resaco,0,'fa01_t_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,12120,'','".AddSlashes(pg_result($resaco,0,'fa01_i_codmater'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,12119,'','".AddSlashes(pg_result($resaco,0,'fa01_i_class'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,14017,'','".AddSlashes(pg_result($resaco,0,'fa01_c_nomegenerico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,14019,'','".AddSlashes(pg_result($resaco,0,'fa01_i_medanvisa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,14459,'','".AddSlashes(pg_result($resaco,0,'fa01_i_prescricaomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,14458,'','".AddSlashes(pg_result($resaco,0,'fa01_i_classemed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,14457,'','".AddSlashes(pg_result($resaco,0,'fa01_i_listacontroladomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,14456,'','".AddSlashes(pg_result($resaco,0,'fa01_i_medrefemed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,14455,'','".AddSlashes(pg_result($resaco,0,'fa01_i_laboratoriomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,14454,'','".AddSlashes(pg_result($resaco,0,'fa01_i_formafarmaceuticamed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,14453,'','".AddSlashes(pg_result($resaco,0,'fa01_i_concentracaomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,2104,17275,'','".AddSlashes(pg_result($resaco,0,'fa01_i_medhiperdia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->fa01_i_codigo  ));
+       if(($resaco!=false)||($this->numrows!=0)){
+
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+         $acount = pg_result($resac,0,0);
+         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+         $resac = db_query("insert into db_acountkey values($acount,12117,'$this->fa01_i_codigo','I')");
+         $resac = db_query("insert into db_acount values($acount,2104,12117,'','".AddSlashes(pg_result($resaco,0,'fa01_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,12118,'','".AddSlashes(pg_result($resaco,0,'fa01_t_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,12120,'','".AddSlashes(pg_result($resaco,0,'fa01_i_codmater'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,12119,'','".AddSlashes(pg_result($resaco,0,'fa01_i_class'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,14017,'','".AddSlashes(pg_result($resaco,0,'fa01_c_nomegenerico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,14019,'','".AddSlashes(pg_result($resaco,0,'fa01_i_medanvisa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,14459,'','".AddSlashes(pg_result($resaco,0,'fa01_i_prescricaomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,14458,'','".AddSlashes(pg_result($resaco,0,'fa01_i_classemed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,14457,'','".AddSlashes(pg_result($resaco,0,'fa01_i_listacontroladomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,14456,'','".AddSlashes(pg_result($resaco,0,'fa01_i_medrefemed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,14455,'','".AddSlashes(pg_result($resaco,0,'fa01_i_laboratoriomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,14454,'','".AddSlashes(pg_result($resaco,0,'fa01_i_formafarmaceuticamed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,14453,'','".AddSlashes(pg_result($resaco,0,'fa01_i_concentracaomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,17275,'','".AddSlashes(pg_result($resaco,0,'fa01_i_medhiperdia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,21203,'','".AddSlashes(pg_result($resaco,0,'fa01_codigobarras'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2104,21300,'','".AddSlashes(pg_result($resaco,0,'fa01_medicamentos'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       }
      }
      return true;
    }
    // funcao para alteracao
-   function alterar ($fa01_i_codigo=null) {
+   public function alterar ($fa01_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update far_matersaude set ";
      $virgula = "";
@@ -286,7 +303,7 @@ class cl_far_matersaude {
        $sql  .= $virgula." fa01_i_codigo = $this->fa01_i_codigo ";
        $virgula = ",";
        if(trim($this->fa01_i_codigo) == null ){
-         $this->erro_sql = " Campo Código nao Informado.";
+         $this->erro_sql = " Campo Código não informado.";
          $this->erro_campo = "fa01_i_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -303,7 +320,7 @@ class cl_far_matersaude {
        $sql  .= $virgula." fa01_i_codmater = $this->fa01_i_codmater ";
        $virgula = ",";
        if(trim($this->fa01_i_codmater) == null ){
-         $this->erro_sql = " Campo Medicamento nao Informado.";
+         $this->erro_sql = " Campo Medicamento não informado.";
          $this->erro_campo = "fa01_i_codmater";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -316,7 +333,7 @@ class cl_far_matersaude {
        $sql  .= $virgula." fa01_i_class = $this->fa01_i_class ";
        $virgula = ",";
        if(trim($this->fa01_i_class) == null ){
-         $this->erro_sql = " Campo Classificação nao Informado.";
+         $this->erro_sql = " Campo Classificação não informado.";
          $this->erro_campo = "fa01_i_class";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -329,7 +346,7 @@ class cl_far_matersaude {
        $sql  .= $virgula." fa01_c_nomegenerico = '$this->fa01_c_nomegenerico' ";
        $virgula = ",";
      }
-   if(trim($this->fa01_i_medanvisa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_medanvisa"])){
+     if(trim($this->fa01_i_medanvisa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_medanvisa"])){
         if(trim($this->fa01_i_medanvisa)=="" && isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_medanvisa"])){
            $this->fa01_i_medanvisa = "null" ;
         }
@@ -389,7 +406,7 @@ class cl_far_matersaude {
        $sql  .= $virgula." fa01_i_medhiperdia = $this->fa01_i_medhiperdia ";
        $virgula = ",";
        if(trim($this->fa01_i_medhiperdia) == null ){
-         $this->erro_sql = " Campo Hiperdia nao Informado.";
+         $this->erro_sql = " Campo Hiperdia não informado.";
          $this->erro_campo = "fa01_i_medhiperdia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -398,69 +415,90 @@ class cl_far_matersaude {
          return false;
        }
      }
+     if(trim($this->fa01_codigobarras)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa01_codigobarras"])){
+       $sql  .= $virgula." fa01_codigobarras = '$this->fa01_codigobarras' ";
+       $virgula = ",";
+     }
+     if(trim($this->fa01_medicamentos)!="" || isset($GLOBALS["HTTP_POST_VARS"]["fa01_medicamentos"])){
+        if(trim($this->fa01_medicamentos)=="" && isset($GLOBALS["HTTP_POST_VARS"]["fa01_medicamentos"])){
+           $this->fa01_medicamentos = "null" ;
+        }
+       $sql  .= $virgula." fa01_medicamentos = $this->fa01_medicamentos ";
+       $virgula = ",";
+     }
      $sql .= " where ";
      if($fa01_i_codigo!=null){
        $sql .= " fa01_i_codigo = $this->fa01_i_codigo";
      }
-     $resaco = $this->sql_record($this->sql_query_file($this->fa01_i_codigo));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,12117,'$this->fa01_i_codigo','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_codigo"]) || $this->fa01_i_codigo != "")
-           $resac = db_query("insert into db_acount values($acount,2104,12117,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_codigo'))."','$this->fa01_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_t_obs"]) || $this->fa01_t_obs != "")
-           $resac = db_query("insert into db_acount values($acount,2104,12118,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_t_obs'))."','$this->fa01_t_obs',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_codmater"]) || $this->fa01_i_codmater != "")
-           $resac = db_query("insert into db_acount values($acount,2104,12120,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_codmater'))."','$this->fa01_i_codmater',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_class"]) || $this->fa01_i_class != "")
-           $resac = db_query("insert into db_acount values($acount,2104,12119,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_class'))."','$this->fa01_i_class',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_c_nomegenerico"]) || $this->fa01_c_nomegenerico != "")
-           $resac = db_query("insert into db_acount values($acount,2104,14017,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_c_nomegenerico'))."','$this->fa01_c_nomegenerico',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_medanvisa"]) || $this->fa01_i_medanvisa != "")
-           $resac = db_query("insert into db_acount values($acount,2104,14019,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_medanvisa'))."','$this->fa01_i_medanvisa',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_prescricaomed"]) || $this->fa01_i_prescricaomed != "")
-           $resac = db_query("insert into db_acount values($acount,2104,14459,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_prescricaomed'))."','$this->fa01_i_prescricaomed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_classemed"]) || $this->fa01_i_classemed != "")
-           $resac = db_query("insert into db_acount values($acount,2104,14458,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_classemed'))."','$this->fa01_i_classemed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_listacontroladomed"]) || $this->fa01_i_listacontroladomed != "")
-           $resac = db_query("insert into db_acount values($acount,2104,14457,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_listacontroladomed'))."','$this->fa01_i_listacontroladomed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_medrefemed"]) || $this->fa01_i_medrefemed != "")
-           $resac = db_query("insert into db_acount values($acount,2104,14456,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_medrefemed'))."','$this->fa01_i_medrefemed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_laboratoriomed"]) || $this->fa01_i_laboratoriomed != "")
-           $resac = db_query("insert into db_acount values($acount,2104,14455,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_laboratoriomed'))."','$this->fa01_i_laboratoriomed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_formafarmaceuticamed"]) || $this->fa01_i_formafarmaceuticamed != "")
-           $resac = db_query("insert into db_acount values($acount,2104,14454,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_formafarmaceuticamed'))."','$this->fa01_i_formafarmaceuticamed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_concentracaomed"]) || $this->fa01_i_concentracaomed != "")
-           $resac = db_query("insert into db_acount values($acount,2104,14453,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_concentracaomed'))."','$this->fa01_i_concentracaomed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_medhiperdia"]) || $this->fa01_i_medhiperdia != "")
-           $resac = db_query("insert into db_acount values($acount,2104,17275,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_medhiperdia'))."','$this->fa01_i_medhiperdia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
 
+       $resaco = $this->sql_record($this->sql_query_file($this->fa01_i_codigo));
+       if ($this->numrows > 0) {
+
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
+
+           $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac = db_query("insert into db_acountkey values($acount,12117,'$this->fa01_i_codigo','A')");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_codigo"]) || $this->fa01_i_codigo != "")
+             $resac = db_query("insert into db_acount values($acount,2104,12117,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_codigo'))."','$this->fa01_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_t_obs"]) || $this->fa01_t_obs != "")
+             $resac = db_query("insert into db_acount values($acount,2104,12118,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_t_obs'))."','$this->fa01_t_obs',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_codmater"]) || $this->fa01_i_codmater != "")
+             $resac = db_query("insert into db_acount values($acount,2104,12120,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_codmater'))."','$this->fa01_i_codmater',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_class"]) || $this->fa01_i_class != "")
+             $resac = db_query("insert into db_acount values($acount,2104,12119,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_class'))."','$this->fa01_i_class',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_c_nomegenerico"]) || $this->fa01_c_nomegenerico != "")
+             $resac = db_query("insert into db_acount values($acount,2104,14017,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_c_nomegenerico'))."','$this->fa01_c_nomegenerico',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_medanvisa"]) || $this->fa01_i_medanvisa != "")
+             $resac = db_query("insert into db_acount values($acount,2104,14019,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_medanvisa'))."','$this->fa01_i_medanvisa',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_prescricaomed"]) || $this->fa01_i_prescricaomed != "")
+             $resac = db_query("insert into db_acount values($acount,2104,14459,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_prescricaomed'))."','$this->fa01_i_prescricaomed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_classemed"]) || $this->fa01_i_classemed != "")
+             $resac = db_query("insert into db_acount values($acount,2104,14458,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_classemed'))."','$this->fa01_i_classemed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_listacontroladomed"]) || $this->fa01_i_listacontroladomed != "")
+             $resac = db_query("insert into db_acount values($acount,2104,14457,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_listacontroladomed'))."','$this->fa01_i_listacontroladomed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_medrefemed"]) || $this->fa01_i_medrefemed != "")
+             $resac = db_query("insert into db_acount values($acount,2104,14456,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_medrefemed'))."','$this->fa01_i_medrefemed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_laboratoriomed"]) || $this->fa01_i_laboratoriomed != "")
+             $resac = db_query("insert into db_acount values($acount,2104,14455,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_laboratoriomed'))."','$this->fa01_i_laboratoriomed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_formafarmaceuticamed"]) || $this->fa01_i_formafarmaceuticamed != "")
+             $resac = db_query("insert into db_acount values($acount,2104,14454,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_formafarmaceuticamed'))."','$this->fa01_i_formafarmaceuticamed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_concentracaomed"]) || $this->fa01_i_concentracaomed != "")
+             $resac = db_query("insert into db_acount values($acount,2104,14453,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_concentracaomed'))."','$this->fa01_i_concentracaomed',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_i_medhiperdia"]) || $this->fa01_i_medhiperdia != "")
+             $resac = db_query("insert into db_acount values($acount,2104,17275,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_i_medhiperdia'))."','$this->fa01_i_medhiperdia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_codigobarras"]) || $this->fa01_codigobarras != "")
+             $resac = db_query("insert into db_acount values($acount,2104,21203,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_codigobarras'))."','$this->fa01_codigobarras',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["fa01_medicamentos"]) || $this->fa01_medicamentos != "")
+             $resac = db_query("insert into db_acount values($acount,2104,21300,'".AddSlashes(pg_result($resaco,$conresaco,'fa01_medicamentos'))."','$this->fa01_medicamentos',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "far_matersaude nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "far_matersaude não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->fa01_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "far_matersaude nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "far_matersaude não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->fa01_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Alteração efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->fa01_i_codigo;
@@ -473,68 +511,79 @@ class cl_far_matersaude {
      }
    }
    // funcao para exclusao
-   function excluir ($fa01_i_codigo=null,$dbwhere=null) {
-     if($dbwhere==null || $dbwhere==""){
-       $resaco = $this->sql_record($this->sql_query_file($fa01_i_codigo));
-     }else{
-       $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
-     }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,12117,'$fa01_i_codigo','E')");
-         $resac = db_query("insert into db_acount values($acount,2104,12117,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,12118,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_t_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,12120,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_codmater'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,12119,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_class'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,14017,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_c_nomegenerico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,14019,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_medanvisa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,14459,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_prescricaomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,14458,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_classemed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,14457,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_listacontroladomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,14456,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_medrefemed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,14455,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_laboratoriomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,14454,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_formafarmaceuticamed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,14453,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_concentracaomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,2104,17275,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_medhiperdia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+   public function excluir ($fa01_i_codigo=null,$dbwhere=null) {
+
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       if (empty($dbwhere)) {
+
+         $resaco = $this->sql_record($this->sql_query_file($fa01_i_codigo));
+       } else {
+         $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
+       }
+       if (($resaco != false) || ($this->numrows!=0)) {
+
+         for ($iresaco = 0; $iresaco < $this->numrows; $iresaco++) {
+
+           $resac  = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac  = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac  = db_query("insert into db_acountkey values($acount,12117,'$fa01_i_codigo','E')");
+           $resac  = db_query("insert into db_acount values($acount,2104,12117,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,12118,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_t_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,12120,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_codmater'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,12119,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_class'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,14017,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_c_nomegenerico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,14019,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_medanvisa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,14459,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_prescricaomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,14458,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_classemed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,14457,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_listacontroladomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,14456,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_medrefemed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,14455,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_laboratoriomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,14454,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_formafarmaceuticamed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,14453,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_concentracaomed'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,17275,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_i_medhiperdia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,21203,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_codigobarras'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,2104,21300,'','".AddSlashes(pg_result($resaco,$iresaco,'fa01_medicamentos'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $sql = " delete from far_matersaude
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($fa01_i_codigo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($fa01_i_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " fa01_i_codigo = $fa01_i_codigo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){
+     if ($result == false) {
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "far_matersaude nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "far_matersaude não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$fa01_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "far_matersaude nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "far_matersaude não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$fa01_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$fa01_i_codigo;
@@ -547,9 +596,9 @@ class cl_far_matersaude {
      }
    }
    // funcao do recordset
-   function sql_record($sql) {
+   public function sql_record($sql) {
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -558,8 +607,8 @@ class cl_far_matersaude {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:far_matersaude";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -569,20 +618,11 @@ class cl_far_matersaude {
       }
      return $result;
    }
- // funcao do sql
-   function sql_query ( $fa01_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from far_matersaude ";
+   // funcao do sql
+   public function sql_query ($fa01_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos}";
+     $sql .= "  from far_matersaude ";
      $sql .= "      inner join matmater  on  matmater.m60_codmater = far_matersaude.fa01_i_codmater";
      $sql .= "      left join far_class  on  far_class.fa05_i_codigo = far_matersaude.fa01_i_class";
      $sql .= "      left  join far_medanvisa  on  far_medanvisa.fa14_i_codigo = far_matersaude.fa01_i_medanvisa";
@@ -609,100 +649,38 @@ class cl_far_matersaude {
      $sql .= "      left join far_classeterapeutica  as b on   b.fa18_i_codigo = far_classeterapeuticamed.fa36_i_classeterapeutica";
      $sql .= "      left join far_medanvisa  as w on   w.fa14_i_codigo = far_concentracaomed.fa37_i_medanvisa";
      $sql .= "      left join far_concentracao  as q on   q.fa30_i_codigo = far_concentracaomed.fa37_i_concentracao";
+     $sql .= "      left join medicamentos           on medicamentos.fa58_codigo = far_matersaude.fa01_medicamentos ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($fa01_i_codigo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($fa01_i_codigo)) {
          $sql2 .= " where far_matersaude.fa01_i_codigo = $fa01_i_codigo ";
        }
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-// funcao do sql
-   function sql_query_tipo ( $fa01_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select distinct ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from far_matersaude ";
-     $sql .= "      inner join matmater  on  matmater.m60_codmater = far_matersaude.fa01_i_codmater";
-     $sql .= "      left join far_class  on  far_class.fa05_i_codigo = far_matersaude.fa01_i_class";
-     $sql .= "      inner join matunid  on  matunid.m61_codmatunid = matmater.m60_codmatunid";
-     $sql .= "      inner join far_listacontroladomed  on  far_listacontroladomed.fa35_i_codigo = far_matersaude.fa01_i_listacontroladomed";
-	 $sql .= "      inner join far_listacontrolado  on  far_listacontrolado.fa15_i_codigo = far_listacontroladomed.fa35_i_listacontrolado";
-     $sql .= "      inner join far_listaprescricao  on  far_listaprescricao.fa21_i_listacontrolado = far_listacontrolado.fa15_i_codigo";
-     $sql .= "      inner join far_prescricaomed  on  far_prescricaomed.fa31_i_prescricao = far_listaprescricao.fa21_i_prescricaomedica";
-     $sql .= "      inner join far_prescricaomedica  on  far_prescricaomedica.fa20_i_codigo = far_prescricaomed.fa31_i_prescricao";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($fa01_i_codigo!=null ){
-         $sql2 .= " where far_matersaude.fa01_i_codigo = $fa01_i_codigo ";
-       }
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
    // funcao do sql
-   function sql_query_file ( $fa01_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from far_matersaude ";
-     $sql .= "      inner join matmater  on  matmater.m60_codmater = far_matersaude.fa01_i_codmater";
+   public function sql_query_file ($fa01_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from far_matersaude ";
+     $sql .= " inner join matmater  on  matmater.m60_codmater = far_matersaude.fa01_i_codmater";
      $sql2 = "";
-     if($dbwhere==""){
-       if($fa01_i_codigo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($fa01_i_codigo)){
          $sql2 .= " where far_matersaude.fa01_i_codigo = $fa01_i_codigo ";
        }
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
@@ -793,60 +771,61 @@ class cl_far_matersaude {
    *@autor Matheus Marinho, webseller.matheus.marinho@gmail.com
    *@data 20/03/2012
    */
-function sql_query_medicamento ( $fa01_i_codigo=null, $sCampos="*", $sOrdem=null, $dbwhere="") {
+  function sql_query_medicamento ( $fa01_i_codigo=null, $sCampos="*", $sOrdem=null, $dbwhere="") {
 
      $sSql = "select distinct ";
 
-     if ($sCampos != "*" ) {
+    if ($sCampos != "*" ) {
 
-       $sCampos_sql = split("#",$sCampos);
-       $sVirgula = "";
+      $sCampos_sql = split("#",$sCampos);
+      $sVirgula    = "";
 
-       for ($i = 0; $i < sizeof($sCampos_sql); $i++) {
+      for( $i = 0; $i < sizeof($sCampos_sql); $i++ ) {
 
-         $sSql .= $sVirgula.$sCampos_sql[$i];
-         $sVirgula = ",";
-       }
-     }else{
-       $sSql .= $sCampos;
-     }
-     $sSql .= " from far_matersaude ";
-     $sSql .= "      inner join matmater  on  matmater.m60_codmater = far_matersaude.fa01_i_codmater";
-     $sSql.= "       inner join matmaterestoque on matmaterestoque.m64_matmater = matmater.m60_codmater";
-     $sSql .= "      left join far_class  on  far_class.fa05_i_codigo = far_matersaude.fa01_i_class";
-     $sSql .= "      inner join matunid  on  matunid.m61_codmatunid = matmater.m60_codmatunid";
-     $sSql .= "      inner join far_listacontroladomed  on  far_listacontroladomed.fa35_i_codigo = far_matersaude.fa01_i_listacontroladomed";
-     $sSql .= "      inner join far_listacontrolado  on  far_listacontrolado.fa15_i_codigo = far_listacontroladomed.fa35_i_listacontrolado";
-     $sSql .= "      inner join far_listaprescricao  on  far_listaprescricao.fa21_i_listacontrolado = far_listacontrolado.fa15_i_codigo";
-     $sSql .= "      inner join far_prescricaomed  on  far_prescricaomed.fa31_i_prescricao = far_listaprescricao.fa21_i_prescricaomedica";
-     $sSql .= "      inner join far_prescricaomedica  on  far_prescricaomedica.fa20_i_codigo = far_prescricaomed.fa31_i_prescricao";
-     $sSql2 = "";
+        $sSql     .= $sVirgula.$sCampos_sql[$i];
+        $sVirgula  = ",";
+      }
+    } else {
+      $sSql .= $sCampos;
+    }
 
-     if ( $dbwhere=="") {
+    $sSql .= " from far_matersaude ";
+    $sSql .= "      left join  matmater               on matmater.m60_codmater                      = far_matersaude.fa01_i_codmater";
+    $sSql .= "      left join  matmaterestoque        on matmaterestoque.m64_matmater               = matmater.m60_codmater";
+    $sSql .= "      left join  far_class              on far_class.fa05_i_codigo                    = far_matersaude.fa01_i_class";
+    $sSql .= "      left join  matunid                on matunid.m61_codmatunid                     = matmater.m60_codmatunid";
+    $sSql .= "      inner join far_listacontroladomed on far_listacontroladomed.fa35_i_codigo       = far_matersaude.fa01_i_listacontroladomed";
+    $sSql .= "      inner join far_listacontrolado    on far_listacontrolado.fa15_i_codigo          = far_listacontroladomed.fa35_i_listacontrolado";
+    $sSql .= "      left join  far_listaprescricao    on far_listaprescricao.fa21_i_listacontrolado = far_listacontrolado.fa15_i_codigo";
+    $sSql .= "      left join  far_prescricaomed      on far_prescricaomed.fa31_i_prescricao        = far_listaprescricao.fa21_i_prescricaomedica";
+    $sSql .= "      left join  far_prescricaomedica   on far_prescricaomedica.fa20_i_codigo         = far_prescricaomed.fa31_i_prescricao";
+    $sSql2 = "";
 
-       if ($fa01_i_codigo != null ) {
-         $sSql2 .= " where far_matersaude.fa01_i_codigo = $fa01_i_codigo ";
-       }
+    if ( $dbwhere == "" ) {
 
-     }else if ($dbwhere != "") {
-       $sSql2 = " where $dbwhere";
-     }
+      if ($fa01_i_codigo != null ) {
+        $sSql2 .= " where far_matersaude.fa01_i_codigo = $fa01_i_codigo ";
+      }
+    } else if( $dbwhere != "" ) {
+      $sSql2 = " where $dbwhere";
+    }
 
-     $sSql .= $sSql2;
+    $sSql .= $sSql2;
 
-     if ($sOrdem != null ) {
+    if( $sOrdem != null ) {
 
-       $sSql .= " order by ";
-       $sCampos_sql = split("#",$sOrdem);
-       $sVirgula = "";
+      $sSql        .= " order by ";
+      $sCampos_sql  = split( "#", $sOrdem );
+      $sVirgula     = "";
 
-       for ($i = 0; $i < sizeof($sCampos_sql); $i++){
+      for( $i = 0; $i < sizeof($sCampos_sql); $i++ ) {
 
-         $sSql .= $sVirgula.$sCampos_sql[$i];
-         $sVirgula = ",";
-       }
-     }
-     return $sSql;
+        $sSql     .= $sVirgula.$sCampos_sql[$i];
+        $sVirgula  = ",";
+      }
+    }
+
+    return $sSql;
   }
    /* Sql utilizado na rotina Relatorio->Medicamento->Estoque
    * @autor Adriano Quilião de Oliveira, adriano.oliveira@dbseller.com.br
@@ -1006,6 +985,7 @@ function sql_query_medicamento ( $fa01_i_codigo=null, $sCampos="*", $sOrdem=null
      $sSql .= " left  join far_retirada           on far_retirada.fa04_i_codigo                = far_retiradarequi.fa07_i_retirada ";
      $sSql .= " left  join medicos                on medicos.sd03_i_codigo                     = far_retirada.fa04_i_profissional ";
      $sSql .= " left  join cgm                    on cgm.z01_numcgm                            = medicos.sd03_i_cgm";
+     $sSql .= " left  join sau_medicosforarede    on sau_medicosforarede.s154_i_codigo         = medicos.sd03_i_codigo";
      $sSql .= " left  join sau_receitamedica      on s158_i_codigo                             = fa04_i_receita ";
      $sSql .= " left  join cgs_und                on cgs_und.z01_i_cgsund                      = far_retirada.fa04_i_cgsund  ";
      /* --USUARIO QUE FEZ A RETIRADA-- */
@@ -1050,7 +1030,8 @@ function sql_query_medicamento ( $fa01_i_codigo=null, $sCampos="*", $sOrdem=null
   }
 
   /**
-   *
+   * @deprecated
+   * @see \App\Domain\Saude\Farmacia\Services\MedicamentoContinuadoService::getInfoControlado()
    * @param $lDinamico se deve verificar o saldo continuado dinâmico ou fixo
    * @param $iCgs
    * @param $iCodigoMaterial
@@ -1072,6 +1053,302 @@ function sql_query_medicamento ( $fa01_i_codigo=null, $sCampos="*", $sOrdem=null
   }
 
 
+  public function entradaMedicamentoFarmaciaBasica($sWhere = null) {
 
+    $sSql  = ' select m82_codigo,                                ';
+    $sSql .= '        fa58_catmat              as nuproduto,     ';
+    $sSql .= '        \'B\'                    as tpproduto,     ';
+    $sSql .= '        m80_data                 as dtrecebimento, ';
+    $sSql .= '        m82_quant                as qtadquirida,   ';
+    $sSql .= '        m77_dtvalidade           as dtvalidade,    ';
+    $sSql .= '        m77_lote                 as nulote,        ';
+    $sSql .= '        round(m89_precomedio, 4) as vlitem         ';
+    $sSql .= '   from matestoqueini ';
+    $sSql .= '        inner join matestoqueinimei    on matestoqueinimei.m82_matestoqueini      = matestoqueini.m80_codigo ';
+    $sSql .= '        inner join matestoqueitem      on matestoqueitem.m71_codlanc              = matestoqueinimei.m82_matestoqueitem ';
+    $sSql .= '        inner join matestoque          on matestoque.m70_codigo                   = matestoqueitem.m71_codmatestoque ';
+    $sSql .= '        inner join matmater            on matmater.m60_codmater                   = matestoque.m70_codmatmater ';
+    $sSql .= '        inner join far_matersaude      on far_matersaude.fa01_i_codmater          = matmater.m60_codmater ';
+    $sSql .= '        inner join medicamentos        on medicamentos.fa58_codigo                = far_matersaude.fa01_medicamentos ';
+    $sSql .= '        inner join matestoquetipo      on matestoquetipo.m81_codtipo              = matestoqueini.m80_codtipo ';
+    $sSql .= '         left join matestoqueitemlote  on matestoqueitemlote.m77_matestoqueitem   = matestoqueitem.m71_codlanc ';
+    $sSql .= '        inner join matestoqueinimeipm  on matestoqueinimeipm.m89_matestoqueinimei = matestoqueinimei.m82_codigo ';
+
+    if ( !empty($sWhere) ) {
+      $sSql .= " where {$sWhere} ";
+    }
+
+    $sSql .= " order by m80_data ";
+
+    return $sSql;
+  }
+
+  public function saidaMedicamentoFarmaciaBasica($sWhere = null) {
+
+    $sSql  = ' select m82_codigo,                             ';
+    $sSql .= '        fa58_catmat              as nuproduto,  ';
+    $sSql .= '        \'B\'                    as tpproduto,  ';
+    $sSql .= '        m80_data                 as dtsaida,    ';
+    $sSql .= '        m82_quant                as qtsaida,    ';
+    $sSql .= '        m77_dtvalidade           as dtvalidade, ';
+    $sSql .= '        m77_lote                 as nulote,     ';
+    $sSql .= '        round(m89_precomedio, 4) as vlitem      ';
+    $sSql .= '   from matestoqueini ';
+    $sSql .= '        inner join matestoqueinimei    on matestoqueinimei.m82_matestoqueini          = matestoqueini.m80_codigo ';
+    $sSql .= '        inner join matestoqueitem      on matestoqueitem.m71_codlanc                  = matestoqueinimei.m82_matestoqueitem ';
+    $sSql .= '        inner join matestoque          on matestoque.m70_codigo                       = matestoqueitem.m71_codmatestoque ';
+    $sSql .= '        inner join matmater            on matmater.m60_codmater                       = matestoque.m70_codmatmater ';
+    $sSql .= '        inner join far_matersaude      on far_matersaude.fa01_i_codmater              = matmater.m60_codmater ';
+    $sSql .= '        inner join medicamentos        on medicamentos.fa58_codigo                    = far_matersaude.fa01_medicamentos ';
+    $sSql .= '        inner join matestoquetipo      on matestoquetipo.m81_codtipo                  = matestoqueini.m80_codtipo ';
+    $sSql .= '         left join matestoqueitemlote  on matestoqueitemlote.m77_matestoqueitem       = matestoqueitem.m71_codlanc ';
+    $sSql .= '        inner join matestoqueinimeipm  on matestoqueinimeipm.m89_matestoqueinimei     = matestoqueinimei.m82_codigo ';
+    $sSql .= '         left join matestoqueinimeiari on matestoqueinimeiari.m49_codmatestoqueinimei = matestoqueinimei.m82_codigo';
+    $sSql .= '         left join atendrequiitem      on atendrequiitem.m43_codigo                   = matestoqueinimeiari.m49_codatendrequiitem ';
+    $sSql .= '         left join matrequiitem        on matrequiitem.m41_codigo                     = atendrequiitem.m43_codmatrequiitem';
+    $sSql .= '         left join matrequi            on matrequi.m40_codigo                         = matrequiitem.m41_codmatrequi';
+    $sSql .= '         left join far_retiradarequi   on far_retiradarequi.fa07_i_matrequi           = matrequi.m40_codigo';
+    $sSql .= '         left join far_retirada        on far_retirada.fa04_i_codigo                  = far_retiradarequi.fa07_i_retirada';
+
+    if ( !empty($sWhere) ) {
+      $sSql .= " where {$sWhere} ";
+    }
+
+    $sSql .= " order by m80_data ";
+
+    return $sSql;
+  }
+
+  public function dispensacaoMedicamentoFarmaciaBasica($sWhere = null) {
+
+    $sSql  = ' select                                                      ';
+    $sSql .= '        fa06_i_codigo,                                       ';
+    $sSql .= '        m70_coddepto,                                        ';
+    $sSql .= '        fa58_catmat              as nuproduto,               ';
+    $sSql .= '        \'B\'                    as tpproduto,               ';
+    $sSql .= '        m80_data                 as dtdispensacao,           ';
+    $sSql .= '        m82_quant                as qtmedicamentodispensada, ';
+    $sSql .= '        m77_dtvalidade           as dtvalidade,              ';
+    $sSql .= '        m77_lote                 as nulote,                  ';
+    $sSql .= '        round(m89_precomedio, 4) as vlitem,                  ';
+    $sSql .= '        (select case                       ';
+    $sSql .= '                  when s115_c_tipo = \'D\' ';
+    $sSql .= '                    then s115_c_cartaosus  ';
+    $sSql .= '                  else s115_c_cartaosus    ';
+    $sSql .= '                end ';
+    $sSql .= '           from cgs_cartaosus where s115_i_cgs = fa04_i_cgsund limit 1) as nucnspaciente ';
+    $sSql .= '   from matestoqueini ';
+    $sSql .= '  inner join matestoqueinimei    on matestoqueinimei.m82_matestoqueini          = matestoqueini.m80_codigo ';
+    $sSql .= '  inner join matestoqueitem      on matestoqueitem.m71_codlanc                  = matestoqueinimei.m82_matestoqueitem ';
+    $sSql .= '  inner join matestoque          on matestoque.m70_codigo                       = matestoqueitem.m71_codmatestoque ';
+    $sSql .= '  inner join matmater            on matmater.m60_codmater                       = matestoque.m70_codmatmater ';
+    $sSql .= '  inner join far_matersaude      on far_matersaude.fa01_i_codmater              = matmater.m60_codmater ';
+    $sSql .= '  inner join medicamentos        on medicamentos.fa58_codigo                    = far_matersaude.fa01_medicamentos ';
+    $sSql .= '  inner join matestoquetipo      on matestoquetipo.m81_codtipo                  = matestoqueini.m80_codtipo ';
+    $sSql .= '   left join matestoqueitemlote  on matestoqueitemlote.m77_matestoqueitem       = matestoqueitem.m71_codlanc ';
+    $sSql .= '  inner join matestoqueinimeipm  on matestoqueinimeipm.m89_matestoqueinimei     = matestoqueinimei.m82_codigo ';
+    $sSql .= '  inner join matestoqueinimeiari on matestoqueinimeiari.m49_codmatestoqueinimei = matestoqueinimei.m82_codigo';
+    $sSql .= '  inner join atendrequiitem      on atendrequiitem.m43_codigo                   = matestoqueinimeiari.m49_codatendrequiitem ';
+    $sSql .= '  inner join matrequiitem        on matrequiitem.m41_codigo                     = atendrequiitem.m43_codmatrequiitem';
+    $sSql .= '  inner join matrequi            on matrequi.m40_codigo                         = matrequiitem.m41_codmatrequi';
+    $sSql .= '  inner join far_retiradarequi   on far_retiradarequi.fa07_i_matrequi           = matrequi.m40_codigo';
+    $sSql .= '  inner join far_retirada        on far_retirada.fa04_i_codigo                  = far_retiradarequi.fa07_i_retirada';
+    $sSql .= '  inner join far_retiradaitens   on far_retiradaitens.fa06_i_retirada           = far_retirada.fa04_i_codigo ';
+    $sSql .= '                                and far_retiradaitens.fa06_i_matersaude         = far_matersaude.fa01_i_codigo ';
+
+    if ( !empty($sWhere) ) {
+      $sSql .= " where {$sWhere} ";
+    }
+
+    $sSql .= " order by m80_data ";
+
+    return $sSql;
+  }
+
+  function sql_query_dados($fa01_i_codigo=null, $sCampos="*", $sOrdem=null, $dbwhere="") {
+
+    $sSql = "select ";
+    if ($sCampos != "*") {
+
+      $sCampos_sql = split("#",$sCampos);
+      $sVirgula    = "";
+      for ($i = 0; $i < sizeof($sCampos_sql); $i++) {
+
+        $sSql     .= $sVirgula.$sCampos_sql[$i];
+        $sVirgula  = ",";
+
+      }
+
+    } else {
+      $sSql .= $sCampos;
+    }
+    $sSql .= " from far_matersaude ";
+    $sSql .= "      inner join matmater    on matmater.m60_codmater  = far_matersaude.fa01_i_codmater ";
+    $sSql .= "      inner join matunid     on matunid.m61_codmatunid = matmater.m60_codmatunid ";
+    $sSql .= "      left  join matmaterconteudomaterial  on  matmaterconteudomaterial.m08_matmater =  matmater.m60_codmater";
+    $sSql2 = "";
+    if ($dbwhere == "") {
+
+      if ($fa01_i_codigo != null ) {
+        $sSql2 .= " where far_matersaude.fa01_i_codigo = $fa01_i_codigo ";
+      }
+
+    } else if ($dbwhere != "") {
+      $sSql2 = " where $dbwhere ";
+    }
+    $sSql .= $sSql2;
+    if ($sOrdem != null) {
+
+      $sSql        .= " order by ";
+      $sCampos_sql  = split("#",$sOrdem);
+      $sVirgula     = "";
+      for ($i = 0; $i < sizeof($sCampos_sql); $i++){
+
+        $sSql    .= $sVirgula.$sCampos_sql[$i];
+        $sVirgula = ",";
+
+      }
+
+    }
+    return $sSql;
+
+  }
+
+  public function sql_query_medicamentos($fa01_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") {
+
+    $sSql  = "select {$campos}";
+    $sSql .= "  from far_matersaude ";
+    $sSql .= "       inner join matmater                     on matmater.m60_codmater                 = far_matersaude.fa01_i_codmater ";
+    $sSql .= "       inner join matunid  as unidadematerial  on unidadematerial.m61_codmatunid        = matmater.m60_codmatunid ";
+    $sSql .= "       left  join matmaterconteudomaterial     on matmaterconteudomaterial.m08_matmater = matmater.m60_codmater";
+    $sSql .= "       left  join matunid  as conteudomaterial on conteudomaterial.m61_codmatunid       = matmaterconteudomaterial.m08_unidade ";
+    $sSql2 = "";
+
+    if (empty($dbwhere)) {
+
+      if (!empty($fa01_i_codigo)) {
+        $sSql2 .= " where far_matersaude.fa01_i_codigo) = $fa01_i_codigo ";
+      }
+    } else if (!empty($dbwhere)) {
+      $sSql2 = " where $dbwhere";
+    }
+
+    $sSql .= $sSql2;
+    if (!empty($ordem)) {
+      $sSql .= " order by {$ordem}";
+    }
+
+    return $sSql;
+  }
+
+  function sql_query_tipo ( $fa01_i_codigo=null,$campos="*",$ordem=null,$dbwhere="") {
+
+    $sql = "select distinct ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from far_matersaude ";
+    $sql .= "      inner join matmater               on matmater.m60_codmater                      = far_matersaude.fa01_i_codmater";
+    $sql .= "      left  join far_class              on far_class.fa05_i_codigo                    = far_matersaude.fa01_i_class";
+    $sql .= "      inner join matunid                on matunid.m61_codmatunid                     = matmater.m60_codmatunid";
+    $sql .= "      inner join far_listacontroladomed on far_listacontroladomed.fa35_i_codigo       = far_matersaude.fa01_i_listacontroladomed";
+	  $sql .= "      inner join far_listacontrolado    on far_listacontrolado.fa15_i_codigo          = far_listacontroladomed.fa35_i_listacontrolado";
+    $sql .= "      inner join far_listaprescricao    on far_listaprescricao.fa21_i_listacontrolado = far_listacontrolado.fa15_i_codigo";
+    $sql .= "      inner join far_prescricaomed      on far_prescricaomed.fa31_i_prescricao        = far_listaprescricao.fa21_i_prescricaomedica";
+    $sql .= "      inner join far_prescricaomedica   on far_prescricaomedica.fa20_i_codigo         = far_prescricaomed.fa31_i_prescricao";
+    $sql2 = "";
+
+    if($dbwhere==""){
+      if($fa01_i_codigo!=null ){
+        $sql2 .= " where far_matersaude.fa01_i_codigo = $fa01_i_codigo ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+  }
+
+  function sql_query_saldo($fa01_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+    $where = [];
+    if ($fa01_i_codigo != null) {
+      $where[] = "fa01_i_codigo = {$fa01_i_codigo}";
+    }
+    if ($dbwhere != "") {
+      $where[] = $dbwhere;
+    }
+
+    $where = implode(' AND ', $where);
+
+    $somaEmTransferencia = "SELECT  SUM(coalesce(m82_quant,0)) AS saida
+        FROM matestoqueinimei
+        INNER JOIN matestoqueitem ON m71_codlanc = m82_matestoqueitem
+        INNER JOIN matestoque trans ON m71_codmatestoque = trans.m70_codigo
+        INNER JOIN matestoqueini ON m80_codigo = m82_matestoqueini
+        LEFT JOIN matestoqueinil ON m80_codigo = m86_matestoqueini
+        INNER JOIN matestoquetipo ON m80_codtipo = m81_codtipo
+        WHERE trans.m70_codigo = codigo_estoque
+            AND m81_codtipo = 7
+            AND m86_matestoqueini IS NULL
+        GROUP BY m70_codmatmater, m70_coddepto";
+
+    $somaEntrada = "SUM(CASE WHEN matestoquetipo.m81_tipo = 1 THEN matestoqueinimei.m82_quant end)";
+    $somaSaida = "SUM(CASE WHEN matestoquetipo.m81_tipo = 2 THEN m82_quant end)";
+
+    $withSaldo = "with quantidade_estoque as (
+      SELECT (Coalesce({$somaEntrada},0) - Coalesce({$somaSaida},0)) AS quantidade_estoque
+              ,m60_codmater AS codigo_medicamento
+              ,m60_descr AS medicamento
+              ,m70_coddepto AS codigo_departamento
+              ,m70_codigo as codigo_estoque
+          FROM matestoqueini
+          INNER JOIN matestoquetipo ON m80_codtipo = m81_codtipo
+          INNER JOIN matestoqueinimei ON m82_matestoqueini = m80_codigo
+          LEFT JOIN matestoqueinimeipm ON m82_codigo = m89_matestoqueinimei
+          INNER JOIN matestoqueitem ON m82_matestoqueitem = m71_codlanc
+          INNER JOIN matestoque ON m71_codmatestoque = m70_codigo
+          INNER JOIN matmater on m60_codmater = m70_codmatmater
+          INNER JOIN far_matersaude ON fa01_i_codmater = m60_codmater
+          WHERE {$where}
+          GROUP BY m60_codmater, m60_descr, m70_coddepto, m70_codigo
+      ), saldo as (
+        SELECT
+                codigo_departamento,
+                codigo_medicamento,
+                medicamento,
+                SUM(quantidade_estoque - coalesce(({$somaEmTransferencia}), 0)) AS quantidade
+        FROM quantidade_estoque
+        GROUP BY codigo_medicamento, medicamento, codigo_departamento)";
+
+    $whereSubQuery = "where codigo_medicamento = fa01_i_codmater and codigo_departamento = coddepto";
+    $saldo = "Coalesce((select cast(quantidade as int) from saldo {$whereSubQuery}), 0)";
+
+    if ($ordem != null) {
+      $ordem = "order by {$ordem}";
+    }
+
+    $join = " inner join matmater on m60_codmater = fa01_i_codmater ";
+    $join .= " inner join matestoque on m70_codmatmater = m60_codmater ";
+    $join .= " inner join db_depart on coddepto = m70_coddepto ";
+    $join .= " inner join db_almox on m91_depto = coddepto ";
+    $sql = "{$withSaldo} select {$campos}, {$saldo} as saldo from far_matersaude {$join} where {$where} {$ordem}";
+
+    return $sql;
+  }
 }
-?>

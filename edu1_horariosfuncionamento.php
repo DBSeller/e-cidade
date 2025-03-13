@@ -1,3 +1,30 @@
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+?>
 <div class="container">
   <form>
     <fieldset style= "width:450px">
@@ -6,7 +33,7 @@
       <table class="form-container">
         <tr>
           <td class="bold">
-            Turno:
+            <label for="iTurno">Turno:</label>
           </td>
           <td>
             <select id='iTurno'>
@@ -19,11 +46,11 @@
         </tr>
         <tr>
           <td class="bold">
-            Hora:
+            <label for="sHoraInicio">Hora:</label>
           </td>
           <td class="bold">
             <input type='text' id='sHoraInicio' name='sHoraInicio' maxlength='5' />
-            às
+            <label for="sHorarioFim">às</label>
             <input type='text' id='sHorarioFim' name='sHorarioFim' maxlength='5' />
           </td>
         </tr>
@@ -96,7 +123,7 @@ function retornoBuscaHorariosEscola( oResponse ) {
 
   js_removeObj('msgBoxA');
 
-  var oRetorno = eval("("+oResponse.responseText+")");
+  var oRetorno = JSON.parse(oResponse.responseText);
   var iLinha   = 0;
   var aOptions = $$('select#iTurno option');
 
@@ -186,7 +213,7 @@ function retornoSalvarHorarioEscola( oResponse ) {
 
   js_removeObj('msgBoxB');
 
-  var oRetorno = eval( "("+ oResponse.responseText +")" );
+  var oRetorno = JSON.parse(oResponse.responseText);
   alert(oRetorno.sMensagem.urlDecode());
 
   limpaFormularioHorarioEscola();
@@ -270,7 +297,7 @@ function retornoExcluirHorarioEscola( oResponse ) {
 
   js_removeObj( "msgBoxC" );
 
-  var oRetorno = eval( '('+ oResponse.responseText +')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
   alert(oRetorno.sMensagem.urlDecode());
   limpaFormularioHorarioEscola();
   buscaHorariosEscola();

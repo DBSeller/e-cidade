@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
-require_once("classes/db_itbi_classe.php");
-require_once("classes/db_itbiavalia_classe.php");
-require_once("classes/db_itbinumpre_classe.php");
-require_once("classes/db_itbinome_classe.php");
-require_once("classes/db_itbiavaliaformapagamentovalor_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("classes/db_itbi_classe.php"));
+require_once(modification("classes/db_itbiavalia_classe.php"));
+require_once(modification("classes/db_itbinumpre_classe.php"));
+require_once(modification("classes/db_itbinome_classe.php"));
+require_once(modification("classes/db_itbiavaliaformapagamentovalor_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+use ECidade\Tributario\ITBI\Repository\ItbitaxasavaliaRepository;
+use ECidade\Tributario\ITBI\Model\Itbitaxasavalia;
 
 $oGet   = db_utils::postMemory($_GET);
 $oPost  = db_utils::postMemory($_POST);
@@ -86,6 +89,15 @@ if (isset($oPost->cancelarliberacao)) {
 	        
 	  $sMsgErro = $itbiavalia->erro_msg;
   } 
+
+    if (!$lSqlErro) {
+        $itbitaxasavaliaRepository = ItbitaxasavaliaRepository::getInstance();
+        $itbitaxasavalia = new Itbitaxasavalia();
+    
+        $itbitaxasavalia->setGuia($it01_guia);  
+        pg_query("UPDATE itbi.itbi set it01_notificado = false where it01_guia = $it01_guia ");  
+        $itbitaxasavaliaRepository->delete($itbitaxasavalia);
+    } 
   
   db_fim_transacao($lSqlErro);
   
@@ -155,13 +167,13 @@ if (isset($oPost->cancelarliberacao)) {
 function js_pesquisait01_guia(mostra){
   if ( mostra == true ) {
     var sUrl = 'func_itbiliberado.php?funcao_js=parent.js_mostraitbi1|it01_guia|it03_nome';
-    js_OpenJanelaIframe('top.corpo','db_iframe_itbiliberada',sUrl,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbiliberada',sUrl,'Pesquisa',true);
   } else {
   
     if ( document.form1.it01_guia.value != '' ) { 
       var iGuia = document.form1.it01_guia.value;
       var sUrl  = 'func_itbiliberado.php?pesquisa_chave='+iGuia+'&funcao_js=parent.js_mostraitbi';
-      js_OpenJanelaIframe('top.corpo','db_iframe_itbiliberada',sUrl,'Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbiliberada',sUrl,'Pesquisa',false);
     } else {
        document.form1.it01_guia.value = ''; 
        document.form1.it03_nome.value = ''; 

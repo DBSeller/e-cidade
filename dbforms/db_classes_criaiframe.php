@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
 $clrotulo = new rotulocampo;
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 $sql=base64_decode($sql);
@@ -103,7 +103,7 @@ function js_retorna(qtipo,<? $virgula = "";
     <td align="center" valign="top">
       <table border='1' width="100%" bgcolor="#cccccc">
 <?
-       $result=pg_query($sql);
+       $result=db_query($sql);
         $numrows=pg_numrows($result);
        $numcols=pg_numfields($result);
        if($db_opcao=="Incluir"){

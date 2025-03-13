@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $oRotulo = new rotulocampo();
 $oRotulo->label("o56_codele");
 $oRotulo->label("o56_elemento");
@@ -185,7 +185,7 @@ function js_salvarVinculo() {
 function js_retornoSalvarVinculo(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 
     alert('Vínculo realizado com sucesso.');
@@ -274,7 +274,7 @@ function js_retornoGetVinculosDespesasTCE(oAjax) {
 
   js_removeObj('msgBox');
   oGridVinculoDespesaTCE.clearAll(true);
-  var oRetorno = eval('('+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   oRetorno.despesavinculada.each(function(oDespesa, iSeq) {
 
     var aRow    = new Array();
@@ -323,7 +323,7 @@ function js_removerDespesasVinculadas() {
 function js_retornoRemoverDespesasVinculadas(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
   
     alert('Vínculo das despesas selecionadas removido com sucesso!');

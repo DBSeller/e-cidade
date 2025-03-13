@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-require("libs/db_sql.php");
-require("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+require(modification("libs/db_sql.php"));
+require(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -154,13 +154,13 @@ if (!empty($numcgm)) {
 	  //echo "[ 3 ] " . $iNumcgm ."<br>";
   
 }
-$oDadosDebitos = db_utils::getColectionByRecord($rsDebitos);
+$oDadosDebitos = db_utils::getCollectionByRecord($rsDebitos);
 
 $rsDadosCgm    = $oDaoCgm->sql_record($oDaoCgm->sql_query($iNumcgm));
 
 //echo $oDaoCgm->sql_query($iNumcgm) . "<br>"; 
 
-$oDadosCgm     = db_utils::getColectionByRecord($rsDadosCgm);
+$oDadosCgm     = db_utils::getCollectionByRecord($rsDadosCgm);
 $oDadosCgm[0]->complemento = $sOrigemConsulta;
 
 //echo "<pre>";
@@ -343,7 +343,7 @@ foreach ($oDadosDebitos as $aDados) {
     $sSqlProcessoForo .= " inner join processoforo         on processoforo.v70_sequencial     = processoforoinicial.v71_processoforo ";
     $rsProcessoForo = db_query($sSqlProcessoForo);
     if (pg_num_rows($rsProcessoForo) > 0) {
-      $oDadosProcessoForo = db_utils::getColectionByRecord($rsProcessoForo);
+      $oDadosProcessoForo = db_utils::getCollectionByRecord($rsProcessoForo);
       
       $aDadosProcessado->processo_foro = $oDadosProcessoForo;
       if ($aDadosProcessado->complemento_numpre == "") { 
@@ -721,7 +721,7 @@ $sSqlSuspensao .= " 	 order by arresusp.k00_tipo,									                      
 $sSqlSuspensao .= " 			      arresusp.k00_numpre,									                            ";
 $sSqlSuspensao .= " 			      arresusp.k00_numpar,									                            ";
 $sSqlSuspensao .= " 			      arresusp.k00_receit 									                            ";
-$rsSuspensao      = pg_query($sSqlSuspensao);
+$rsSuspensao      = db_query($sSqlSuspensao);
 $iLinhasSuspensao = pg_num_rows($rsSuspensao);
 $aSuspensao		 = array();
 

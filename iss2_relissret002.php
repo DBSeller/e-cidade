@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-    include("fpdf151/pdf.php");
-    include("dbforms/db_funcoes.php");
-    include("dbforms/db_classesgenericas.php");
+    include(modification("fpdf151/pdf.php"));
+    include(modification("dbforms/db_funcoes.php"));
+    include(modification("dbforms/db_classesgenericas.php"));
 
 if( isset($HTTP_GET_VARS["ano"]) && isset( $HTTP_GET_VARS["mes"])){
      
@@ -159,7 +159,7 @@ if( isset($HTTP_GET_VARS["ano"]) && isset( $HTTP_GET_VARS["mes"])){
      }
      $str_sql .=  "{$sOrder} ";
     //die($str_sql);
-    $result = pg_exec($str_sql) or die("FALHA: <br>$str_sql" );
+    $result = db_query($str_sql) or die("FALHA: <br>$str_sql" );
     if(pg_num_rows($result)==0){
       
       $sVirgula   = "";

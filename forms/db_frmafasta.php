@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,8 @@
 $clafasta->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label('z01_nome');
-?>
+
+use ECidade\RecursosHumanos\Pessoal\Repository\AfastamentoSituacaoRepository; ?>
 <style>
 
   #r45_situac{
@@ -93,15 +94,14 @@ $clrotulo->label('z01_nome');
     </td>
     <td colspan="3" nowrap>
       <?
-      $db_situac = Array(
-                         "2" => "2 - Afastado sem remuneração",
-                         "3" => "3 - Afastado acidente de trabalho +15 dias",
-                         "4" => "4 - Afastado serviço militar",
-                         "5" => "5 - Afastado licença gestante",
-                         "6" => "6 - Afastado doença +15 dias",
-                         "7" => "7 - Licença sem vencimento, cessão sem ônus"
-                        );
-      db_select('r45_situac', $db_situac, true, ($db_opcao==1?1:3));
+      $dao = new cl_situacaoafastamento();
+      $repository = new AfastamentoSituacaoRepository($dao);
+      $situacoes = array();
+
+      foreach ($repository->all() as $situacao) {
+          $situacoes[$situacao->getSequencial()] = "{$situacao->getSequencial()} - {$situacao->getDescricao()}";
+      }
+      db_select('r45_situac', $situacoes, true, ($db_opcao==1?1:3));
       ?>
     </td>
   </tr>
@@ -162,7 +162,13 @@ $clrotulo->label('z01_nome');
     </td>
     <td nowrap>
       <?
-      db_input('dias',3,0,true,'text',$db_opcao,"onchange='js_somardias(1);'");
+        if($db_opcao != 1 && isset($r45_codigo)) {
+          
+          $oAfastamento = AfastamentoRepository::getInstanciaPorCodigo($r45_codigo);
+          $dias = $oAfastamento->getPeriodoAfastamento();
+        }
+
+        db_input('dias',3,0,true,'text',$db_opcao,"onchange='js_somardias(1);'");
       ?>
     </td>
   </tr>
@@ -227,7 +233,7 @@ function js_afastamentosAnteriores(iMatricula){
 function js_retornoAfastamentosAnteriores(oAjax){
 
     //js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.status == 1) {
        $("anteriores").disabled = false;    
@@ -250,7 +256,7 @@ function js_PesquisaAfastamento(solicitacao) {
     return false;
   }
   
-  js_OpenJanelaIframe('top.corpo','func_pesquisa','pes3_conspessoal002_detalhes.php?solicitacao='+solicitacao+'&parametro='+iMatricula+'&ano='+iAno+'&mes='+iMes+'','CONSULTA DE FUNCIONÁRIOS',true,'20');
+  js_OpenJanelaIframe('CurrentWindow.corpo','func_pesquisa','pes3_conspessoal002_detalhes.php?solicitacao='+solicitacao+'&parametro='+iMatricula+'&ano='+iAno+'&mes='+iMes+'','CONSULTA DE FUNCIONÁRIOS',true,'20');
 }
 
 
@@ -259,7 +265,7 @@ function js_seleciona_campo_diar(){
   clearInterval(time);
 }
 function js_abrelista(){
-  js_OpenJanelaIframe("top.corpo","db_iframe_listaretorno","func_retornoafasta.php?pesquisa_chave="+document.form1.r45_codafa.value,"Pesquisa",false,"20");
+  js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_listaretorno","func_retornoafasta.php?pesquisa_chave="+document.form1.r45_codafa.value,"Pesquisa",false,"20");
 }
 function js_listarretorno(str_retorno){
   x = document.form1.r45_codret;
@@ -283,22 +289,44 @@ function js_testacampos(){
   }
   ?>
 
+  var dadosEntradaValidos = true;
+
   if(document.form1.r45_regist.value == ""){
+
+    dadosEntradaValidos = false;
     alert("Informe a matrícula do funcionário.");
     document.form1.r45_regist.focus();
+
   }else if(document.form1.r45_dtafas_ano.value == "" || document.form1.r45_dtafas_mes.value == "" || document.form1.r45_dtafas_dia.value == ""){
+
+    dadosEntradaValidos = false;
     alert("Informe a data de afastamento.");
     document.form1.r45_dtafas_dia.select();
     document.form1.r45_dtafas_dia.focus();
-  }else{
-    data_teste = new Date(<?=db_anofolha()?>,(<?=db_mesfolha()?> - 1),<?=db_dias_mes(db_anofolha(),db_mesfolha())?>);
-    data_afast = new Date(document.form1.r45_dtafas_ano.value,(document.form1.r45_dtafas_mes.value - 1),document.form1.r45_dtafas_dia.value);
 
-    if(data_afast > data_teste && mensagem == true){
-      alert("Data de afastamento deve ser inferior \nao último dia do mês corrente da folha.");
-      document.form1.r45_dtafas_dia.select();
-      document.form1.r45_dtafas_dia.focus();
-    }else{
+  }else if( document.form1.r45_situac.value == 8) {//Se afastamento maior que 30 dias validar o período
+
+    var sDataRetorno     = new Date(document.form1.r45_dtreto_ano.value, (document.form1.r45_dtreto_mes.value-1), document.form1.r45_dtreto_dia.value);
+    var sDataAfastamento = new Date(document.form1.r45_dtafas_ano.value, (document.form1.r45_dtafas_mes.value-1), document.form1.r45_dtafas_dia.value);
+
+    if(document.form1.dias.value != "" && document.form1.dias.value < 31 || ((sDataRetorno.getTime()-sDataAfastamento.getTime())/1000/3600/24+1) < 31) { //Validando o período deve ser maior que 30 dias
+
+      dadosEntradaValidos  = false;
+      alert("Informe um período maior que 30 dias de afastamento.");
+      document.form1.dias.select();
+      document.form1.dias.focus();
+    }
+  }
+
+  data_teste = new Date(<?=db_anofolha()?>,(<?=db_mesfolha()?> - 1),<?=db_dias_mes(db_anofolha(),db_mesfolha())?>);
+  data_afast = new Date(document.form1.r45_dtafas_ano.value,(document.form1.r45_dtafas_mes.value - 1),document.form1.r45_dtafas_dia.value);
+
+  if(data_afast > data_teste && mensagem == true && dadosEntradaValidos){
+    alert("Data de afastamento deve ser inferior \nao último dia do mês corrente da folha.");
+    document.form1.r45_dtafas_dia.select();
+    document.form1.r45_dtafas_dia.focus();
+  }else{
+    if(dadosEntradaValidos) {
       return true;
     }
   }
@@ -384,10 +412,10 @@ function js_somardias(opcao){
 }
 function js_pesquisar45_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe("top.corpo","db_iframe_rhpessoal","func_rhpessoalrescis.php?testarescisao=raf&funcao_js=parent.js_mostraregist1|rh01_regist|z01_nome|r30_perai|r30_per1i|rh05_recis","Pesquisa",true,"20");
+    js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_rhpessoal","func_rhpessoalrescis.php?testarescisao=raf&funcao_js=parent.js_mostraregist1|rh01_regist|z01_nome|r30_perai|r30_per1i|rh05_recis","Pesquisa",true,"20");
   }else{
      if(document.form1.r45_regist.value != ""){ 
-       js_OpenJanelaIframe("top.corpo","db_iframe_rhpessoal","func_rhpessoalrescis.php?testarescisao=raf&pesquisa_chave="+document.form1.r45_regist.value+"&funcao_js=parent.js_mostraregist","Pesquisa",false,"20");
+       js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_rhpessoal","func_rhpessoalrescis.php?testarescisao=raf&pesquisa_chave="+document.form1.r45_regist.value+"&funcao_js=parent.js_mostraregist","Pesquisa",false,"20");
      }else{
        document.form1.z01_nome.value = ""; 
      }
@@ -429,7 +457,7 @@ function js_pesquisa(){
   	echo "qry = 'retorno=true&';";
   }
   ?>
-  js_OpenJanelaIframe('top.corpo','db_iframe_afasta','func_afasta.php?testarescisao=raf&'+qry+'funcao_js=parent.js_preenchepesquisa|r45_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_afasta','func_afasta.php?testarescisao=raf&'+qry+'funcao_js=parent.js_preenchepesquisa|r45_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_afasta.hide();

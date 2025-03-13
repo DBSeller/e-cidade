@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,32 +25,34 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptucadtaxa_classe.php");
-include("classes/db_iptucadtaxaexe_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_iptucadtaxa_classe.php"));
+require_once(modification("classes/db_iptucadtaxaexe_classe.php"));
+
 $cliptucadtaxa = new cl_iptucadtaxa;
-  /*
-$cliptucadtaxaexe = new cl_iptucadtaxaexe;
-  */
-db_postmemory($HTTP_POST_VARS);
-   $db_opcao = 1;
+db_postmemory($_POST);
+$db_opcao = 1;
 $db_botao = true;
-if(isset($incluir)){
-  $sqlerro=false;
+
+if (isset($incluir)) {
+  $sqlerro = false;
+  
   db_inicio_transacao();
   $cliptucadtaxa->incluir($j07_iptucadtaxa);
-  if($cliptucadtaxa->erro_status==0){
-    $sqlerro=true;
-  } 
+  
+  if ($cliptucadtaxa->erro_status == 0) {
+    $sqlerro = true;
+  }
+  
   $erro_msg = $cliptucadtaxa->erro_msg; 
   db_fim_transacao($sqlerro);
-   $j07_iptucadtaxa= $cliptucadtaxa->j07_iptucadtaxa;
-   $db_opcao = 1;
-   $db_botao = true;
+  $j07_iptucadtaxa = $cliptucadtaxa->j07_iptucadtaxa;
+  $db_opcao = 1;
+  $db_botao = true;
 }
 ?>
 <html>
@@ -61,29 +63,25 @@ if(isset($incluir)){
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmiptucadtaxa.php");
+<body class="body-default" onLoad="a=1" >
+	<?php
+    include(modification("forms/db_frmiptucadtaxa.php"));
 	?>
-    </center>
-	</td>
-  </tr>
-</table>
 </body>
 </html>
-<?
-if(isset($incluir)){
-  if($sqlerro==true){
+<?php
+if (isset($incluir)) {
+  
+  if ($sqlerro == true) {
+    
     db_msgbox($erro_msg);
-    if($cliptucadtaxa->erro_campo!=""){
+    
+    if ($cliptucadtaxa->erro_campo != "") {
       echo "<script> document.form1.".$cliptucadtaxa->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$cliptucadtaxa->erro_campo.".focus();</script>";
-    };
-  }else{
+    } 
+
+  } else {
    db_msgbox($erro_msg);
    db_redireciona("cad1_iptucadtaxa005.php?liberaaba=true&chavepesquisa=$j07_iptucadtaxa");
   }

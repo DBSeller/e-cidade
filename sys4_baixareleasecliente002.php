@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 ?>
 <html>
 <head>
@@ -59,7 +59,7 @@ $psql="$DB_CMD_PSQL";
 
 
 $sql    = "select db30_codversao,db30_codrelease from db_versao order by db30_codver desc limit 1";
-$result = pg_exec($sql);
+$result = db_query($sql);
 $numrows= pg_numrows($result);
 
 $db30_codversao = pg_result($result,0,0);
@@ -91,7 +91,7 @@ if ($aborta<>1){
 db_atutermometro(4,100,'termometro'); 
 db_atutermometro(6,100,'termometro');
      $sql    = "select db21_codcli from db_config where prefeitura=true";
-     $result = pg_exec($sql);
+     $result = db_query($sql);
      $numrows= pg_numrows($result);
      if ($numrows==0){
           #db_msgbox("Verificar registro na tabela db_config.");
@@ -102,7 +102,7 @@ db_atutermometro(6,100,'termometro');
            db_atutermometro(10,100,'termometro');
            $db21_codcli = pg_result($result,0,0);
            $sql    = "update db_config set db21_ativo=3 where prefeitura=true and db21_codcli=$db21_codcli";
-           $result = pg_exec($sql);
+           $result = db_query($sql);
 
             #constantes
             $diretorio=getcwd()."/release";
@@ -147,7 +147,7 @@ if ($aborta<>3){
    if ($erro<>''){
       #db_msgbox(" Erro ao compactar o arquivo dbportal2_antes_dbportal-2.".$db30_codversao.".".$db30_codrelease.".tar.bz2.Atualização abortada!");
        $sql    = "update db_config set db21_ativo=1 where prefeitura=true and db21_codcli=$db21_codcli";
-       $result = pg_exec($sql);
+       $result = db_query($sql);
        $executa=`cd ..;rm -f $backup`;
        $aborta=4;
        #exit;
@@ -170,7 +170,7 @@ if ($aborta<>4){
    if ($erro<>''){
        #db_msgbox("Erro ao descompactar o menus.Atualização abortada!");
        $sql    = "update db_config set db21_ativo=1 where prefeitura=true and db21_codcli=$db21_codcli";
-       $result = pg_exec($sql);
+       $result = db_query($sql);
        $aborta=5;
     # exit;
    }
@@ -182,7 +182,7 @@ if ($aborta<>5){
   if ($menus==''){
       #db_msgbox("Não foi encontrado o arquivo menus8.sql.Atualização abortada!");
       $sql    = "update db_config set db21_ativo=1 where prefeitura=true and db21_codcli=db21_codcli";
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       $aborta=6;
      #exit;
    }
@@ -200,7 +200,7 @@ if ($aborta<>6){
    if ($versaoant==''){
     #dbmsgbox("Não foi encontrado o arquivo db_versaoant.Atualização abortada!");
     $sql    = "update db_config set db21_ativo=1 where prefeitura=true and db21_codcli=$db21_codcli";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     $aborta=7;
     # exit;
     }
@@ -212,7 +212,7 @@ if ($aborta<>7){
   if (trim($erro)==''){
  #  db_msgbox("Não existe registro no arquivo dbversaoant.sql.");
     $sql    = "update db_config set db21_ativo=1 where prefeitura=true and db21_codcli=$db21_codcli";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     $aborta=8;
  #  exit;
     }
@@ -236,7 +236,7 @@ db_atutermometro(70,100,'termometro');
  if ($sql==''){
      #  db_msgbox(" Não foi encontrado o arquivo $db21_codcli.sql. Atualização abortada! ");
        $sql    = "update db_config set db21_ativo=1 where prefeitura=true and db21_codcli=$db21_codcli";
-       $result = pg_exec($sql);
+       $result = db_query($sql);
        $aborta=9;
      #  exit;
       }
@@ -289,7 +289,7 @@ $erro=file_get_contents("$log");
   if ($erro<>''){
    #db_msgbox(" Problema na atualização do banco de dados,verificar o log $log. Atualização abortada!");
     $sql    = "update db_config set db21_ativo=1 where prefeitura=true and db21_codcli=$db21_codcli";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     $aborta=10;
    #  exit;
   }
@@ -345,7 +345,7 @@ $arquivo=fopen("libs/db_acessa.php","w");
 fputs($arquivo,$db_acessa);
  fclose($arquivo);
  $sql    = "update db_config set db21_ativo=1 where prefeitura=true and db21_codcli=$db21_codcli";
- $result = pg_exec($sql);
+ $result = db_query($sql);
  $atu_completa=true;
 db_atutermometro(99,100,'termometro');
 }

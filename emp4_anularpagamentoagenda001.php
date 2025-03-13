@@ -1,37 +1,37 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_utils.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-require ("libs/db_app.utils.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+require(modification("libs/db_app.utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -59,13 +59,13 @@ db_app::load("estilos.css");
        <span style='float:left'><b>Histórico</b></span>
        <img src='imagens/jan_fechar_on.gif' border='0' onclick="$('digitarHistorico').style.visibility='hidden';">
      </div>
-     <div style='padding:3px ;border: 1px inset white'         
+     <div style='padding:3px ;border: 1px inset white'
        <textarea id='historicoAnulacao' rows="10" cols="30">
        </textarea>
        <center>
          <input value='Confirma' type='button' id='atualizarHistorico' onclick='js_atualizaHistorico'>
-       </center>          
-    </div> 
+       </center>
+    </div>
   </div>
     <div id='gridNotas' style='z-index:0'>
     </div>
@@ -83,7 +83,7 @@ db_app::load("estilos.css");
 </html>
 <script>
 function js_init() {
- 
+
   gridNotas              = new DBGrid("gridNotas");
   gridNotas.nameInstance = "gridNotas";
   gridNotas.selectSingle = function (oCheckbox,sRow,oRow) {
@@ -91,13 +91,13 @@ function js_init() {
      oCheckbox.checked = false;
    }
     if (oCheckbox.checked) {
-      
+
       oRow.isSelected    = true;
       $(sRow).className  = 'marcado';
       oRow.isSelected    = true;
-      
+
     } else {
-  
+
       $(sRow).className = oRow.getClassName();
       oRow.isSelected   = false;
     }
@@ -110,22 +110,22 @@ function js_init() {
                                 "Valor Nota",
                                 "Retenção",
                                 "Valor",
-                                "Histórico" 
+                                "Histórico"
                                 )
                      );
-  gridNotas.aHeaders[1].lDisplayed = false;                     
+  gridNotas.aHeaders[1].lDisplayed = false;
   gridNotas.show(document.getElementById('gridNotas'));
   js_getNotas();
 }
 sUrlRPC = "emp4_anularpagamentoRPC.php";
 function js_getNotas() {
-  
-   var sJson = '{"exec":"getNotas"}'; 
+
+   var sJson = '{"exec":"getNotas"}';
    var oAjax   = new Ajax.Request(
-                         sUrlRPC, 
+                         sUrlRPC,
                          {
-                          method    : 'post', 
-                          parameters: 'json='+sJson, 
+                          method    : 'post',
+                          parameters: 'json='+sJson,
                           onComplete: js_retornoGetNotas
                           }
                         );
@@ -133,16 +133,16 @@ function js_getNotas() {
 
 function js_retornoGetNotas(oAjax) {
 
-  var oResponse = eval("("+oAjax.responseText+")");
+  var oResponse = JSON.parse(oAjax.responseText);
   gridNotas.clearAll(true);
   var iRowAtiva = 0;
-  
+
   if (oResponse.status == 1) {
 
     for (var iNotas = 0; iNotas < oResponse.aNotasLiquidacao.length; iNotas++) {
-     
+
       with (oResponse.aNotasLiquidacao[iNotas]) {
-       
+
          var nValor =  k12_valor;
          var lDisabled = false;
          var sDisabled = "";
@@ -159,7 +159,7 @@ function js_retornoGetNotas(oAjax) {
          aLinha[7] += js_formatar(valorretencao,"f")+"</a>";
          aLinha[8]  = "<input type = 'text' id='valorrow"+e81_codmov+"' size='9' style='height:100%;text-align:right;border:1px inset'";
          aLinha[8] += " class='valores' onchange='js_calculaValor(this,"+nValor+")'";
-         aLinha[8] += "                 onkeypress='return js_teclas(event)'"; 
+         aLinha[8] += "                 onkeypress='return js_teclas(event)'";
          aLinha[8] += "       value = '"+nValor+"' id='valor"+e50_codord+"' "+sDisabled+">";
          aLinha[9]  = "<div style='overflow:hidden;width:50px'>";
          aLinha[9] += "<span><a href='#' onclick='js_showHistorico("+e81_codmov+")'><img src='imagens/edittext.png' border='0' ></a></span>";
@@ -170,12 +170,12 @@ function js_retornoGetNotas(oAjax) {
          gridNotas.aRows[iRowAtiva].aCells[5].sEvents += "onmouseOut='js_setAjuda(null,false)'";
          gridNotas.aRows[iRowAtiva].sValue  = e81_valor;
          iRowAtiva++;
-          
+
       }
     }
     gridNotas.renderRows();
   }
-  
+
 }
 
 function js_createComboContasPag(iCodMov, aContas, iContaConfig, lDisabled) {
@@ -191,16 +191,16 @@ function js_createComboContasPag(iCodMov, aContas, iContaConfig, lDisabled) {
   sCombo     += " onchange='js_getSaldos(this)' "+sDisabled+">";
   sCombo     += "<option value=''>Selecione</option>";
   if (aContas != null) {
-    
+
     for (var i = 0; i < aContas.length; i++) {
-       
+
       var sSelected = "";
       if (iContaConfig == aContas[i].e83_codtipo) {
         sSelected = " selected ";
-      } 
+      }
       var sDescrConta =  aContas[i].e83_conta+" - "+aContas[i].e83_descr.urlDecode()+" - "+aContas[i].c61_codigo;
       sCombo += "<option "+sSelected+" value = "+aContas[i].e83_codtipo+">"+sDescrConta+"</option>";
-      
+
     }
   }
   sCombo  += "</select>";
@@ -209,8 +209,8 @@ function js_createComboContasPag(iCodMov, aContas, iContaConfig, lDisabled) {
 function js_setAjuda(sTexto,lShow) {
 
   if (lShow) {
-  
-    el =  $('gridNotas'); 
+
+    el =  $('gridNotas');
     var x = 0;
     var y = el.offsetHeight;
     while (el.offsetParent && el.tagName.toUpperCase() != 'BODY') {
@@ -226,15 +226,15 @@ function js_setAjuda(sTexto,lShow) {
    $('ajudaItem').style.display = '';
    $('ajudaItem').style.top     = y+10;
    $('ajudaItem').style.left    = x;
-   
+
   } else {
    $('ajudaItem').style.display = 'none';
   }
-  
-  
+
+
 }
 function js_calculaValor(oTextObj, nMaxVal) {
-  
+
   if (new Number(oTextObj.value) > new Number(nMaxVal).toFixed(2)) {
      oTextObj.value  = nMaxVal;
   }
@@ -242,18 +242,18 @@ function js_calculaValor(oTextObj, nMaxVal) {
 
 function js_showHistorico(iCodMov) {
 
-  var el =  $('gridNotas'); 
+  var el =  $('gridNotas');
   var x  = el.scrollWidth/2;
   var y  = el.offsetTop;
-  
-  
+
+
   $('digitarHistorico').style.top     = (y)+"px";
   $('digitarHistorico').style.left    = (x)+"px";
   $('digitarHistorico').style.visibility = 'visible';
   $('historicoAnulacao').value = $('historico'+iCodMov).innerHTML;
   $('historicoAnulacao').focus();
   $('atualizarHistorico').onclick = function() {
-    
+
     $('digitarHistorico').style.visibility ='hidden';
     $('historico'+iCodMov).innerHTML    = $('historicoAnulacao').value;
     $('historicoAnulacao').value         = '';
@@ -261,38 +261,33 @@ function js_showHistorico(iCodMov) {
 }
 
 function js_objectToJson(oObject) {
-  
-   var sJson = oObject.toSource();
-   sJson     = sJson.replace("(","");
-   sJson     = sJson.replace(")","");
-   return sJson;
-   
+  return JSON.stringify(oObject);
 }
 
 function js_anularEmpenhos() {
 
   var aMovimentos =  gridNotas.getSelection("object");
-  
+
   if (aMovimentos.length == 0) {
-    
+
     alert('Nenhum Movimento Selecionado');
     return false;
-    
+
   }
   var oRequisicao         = new Object();
   oRequisicao.exec        = "anularMovimentosPagos";
   oRequisicao.aMovimentos = new Array();
   for (var i = 0; i < aMovimentos.length; i++) {
-  
-    var oMovimento          = new Object(); 
+
+    var oMovimento          = new Object();
     oMovimento.iCodMov      = aMovimentos[i].aCells[0].getValue();
     oMovimento.sHistorico   = encodeURIComponent($('historico'+oMovimento.iCodMov).innerHTML);
     oMovimento.iNotaLiq     = aMovimentos[i].aCells[3].getValue();
     oMovimento.nValorAnular = aMovimentos[i].aCells[9].getValue();
     oMovimento.iConta       = aMovimentos[i].aCells[4].getValue();
-    
+
     oRequisicao.aMovimentos.push(oMovimento);
   }
-  alert(js_objectToJson(oRequisicao)); 
+  alert(js_objectToJson(oRequisicao));
 }
 </script>

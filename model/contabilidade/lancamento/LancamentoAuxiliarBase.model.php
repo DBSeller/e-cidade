@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -32,7 +32,7 @@
  * @author Jeferson Belmiro <jeferson.belmiro@dbseller.com.br>
  * @revision Andrio Costa <andrio.costa@dbseller.com.br>
  * @package contabilidade
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.13 $
  */
 abstract class LancamentoAuxiliarBase {
 
@@ -44,7 +44,7 @@ abstract class LancamentoAuxiliarBase {
 
 	/**
 	 * Data de lancamento
-	 * @var date
+	 * @var string
 	 */
 	protected $dtLancamento;
 
@@ -89,6 +89,11 @@ abstract class LancamentoAuxiliarBase {
    */
   protected $oContaCorrenteDetalhe;
 
+    /**
+     * @var bool
+     */
+  protected $inversaoContas = false;
+
 	/**
 	 * Define o código do lancamento
 	 * @param $integer $iCodigoLancamento
@@ -99,7 +104,7 @@ abstract class LancamentoAuxiliarBase {
 
 	/**
 	 * Define data de lancamento
-	 * @param date $dtLancamento
+	 * @param string $dtLancamento
 	 */
 	protected  function setDataLancamento($dtLancamento) {
 		$this->dtLancamento = $dtLancamento;
@@ -215,7 +220,7 @@ abstract class LancamentoAuxiliarBase {
 	 */
 	protected function salvarVinculoElemento() {
 
-		$oDaoConLanCamEle = db_utils::getDao('conlancamele');
+		$oDaoConLanCamEle = new cl_conlancamele();
 		$oDaoConLanCamEle->c67_codlan = $this->iCodigoLancamento;
 		$oDaoConLanCamEle->c67_codele = $this->iCodigoElemento;
 		$oDaoConLanCamEle->incluir($this->iCodigoLancamento);
@@ -235,7 +240,7 @@ abstract class LancamentoAuxiliarBase {
 	 */
 	protected function salvarVinculoComplemento() {
 
-		$oDaoConLanCamCompl = db_utils::getDao('conlancamcompl');
+		$oDaoConLanCamCompl = new cl_conlancamcompl();
 		$oDaoConLanCamCompl->c72_codlan  = $this->iCodigoLancamento;
 		$oDaoConLanCamCompl->c72_complem = $this->getObservacaoHistorico();
 		$oDaoConLanCamCompl->incluir($this->iCodigoLancamento);
@@ -255,7 +260,10 @@ abstract class LancamentoAuxiliarBase {
 	 */
 	protected function salvarVinculoCgm() {
 
-		$oDaoConLanCamCGM = db_utils::getDao('conlancamcgm');
+	    if (empty($this->iFavorecido)) {
+	        return false;
+      }
+		$oDaoConLanCamCGM = new cl_conlancamcgm();
 		$oDaoConLanCamCGM->c76_codlan = $this->iCodigoLancamento;
 		$oDaoConLanCamCGM->c76_numcgm = $this->iFavorecido;
 		$oDaoConLanCamCGM->c76_data   = $this->dtLancamento;;
@@ -276,7 +284,7 @@ abstract class LancamentoAuxiliarBase {
 	 */
 	protected function salvarVinculoEmpenho() {
 
-		$oDaoConLanCamEmp = db_utils::getDao('conlancamemp');
+		$oDaoConLanCamEmp = new cl_conlancamemp();
 		$oDaoConLanCamEmp->c75_codlan = $this->iCodigoLancamento ;
 		$oDaoConLanCamEmp->c75_numemp = $this->iNumeroEmpenho;
 		$oDaoConLanCamEmp->c75_data   = $this->dtLancamento;;
@@ -297,9 +305,9 @@ abstract class LancamentoAuxiliarBase {
 	protected function salvarVinculoDotacao() {
 
 	  $oEmpenhoFinanceiro = new EmpenhoFinanceiro($this->getNumeroEmpenho());
-	  if ($oEmpenhoFinanceiro->getAnoUso() == db_getsession('DB_anousu')) {
+	  if ($oEmpenhoFinanceiro->getAno() == db_getsession('DB_anousu')) {
 
-  		$oDaoConLanCamDot = db_utils::getDao('conlancamdot');
+  		$oDaoConLanCamDot = new cl_conlancamdot();
   		$oDaoConLanCamDot->c73_codlan = $this->iCodigoLancamento ;
   		$oDaoConLanCamDot->c73_data   = $this->dtLancamento;;
   		$oDaoConLanCamDot->c73_anousu = db_getsession('DB_anousu');
@@ -326,7 +334,7 @@ abstract class LancamentoAuxiliarBase {
 	 */
 	protected function salvarVinculoNotaDeLiquidacao() {
 
-	  $oDaoConLancamNota = db_utils::getDao('conlancamnota');
+	  $oDaoConLancamNota = new cl_conlancamnota();
 	  $oDaoConLancamNota->c66_codlan  = $this->iCodigoLancamento;
 	  $oDaoConLancamNota->c66_codnota = $this->getCodigoNotaLiquidacao();
 	  $oDaoConLancamNota->incluir($this->iCodigoLancamento, $this->getCodigoNotaLiquidacao());
@@ -337,15 +345,6 @@ abstract class LancamentoAuxiliarBase {
 	    throw new BusinessException($sErroMsg);
 	  }
 	  return true;
-	}
-
-	/**
-	 * metodo que ira retornar um lancamento auxiliar
-	 * em cada lancamento auxiliar receberá como parametro o codlan
-	 * @return object lancamentoauxiliar
-	 */
-	public static function getInstance(){
-		return null;
 	}
 
   /**
@@ -361,4 +360,30 @@ abstract class LancamentoAuxiliarBase {
   public function getContaCorrenteDetalhe() {
     return $this->oContaCorrenteDetalhe;
   }
+
+    /**
+     * Retorna a data do lancamento
+     * @return string
+     */
+  public function getDataLancamento() {
+      return $this->dtLancamento;
+  }
+
+    /**
+     * @return bool
+     */
+    public function isInversaoContas()
+    {
+        return $this->inversaoContas;
+    }
+
+    /**
+     * @param bool $inversaoContas
+     */
+    public function setInversaoContas($inversaoContas)
+    {
+        $this->inversaoContas = $inversaoContas;
+    }
+
+
 }

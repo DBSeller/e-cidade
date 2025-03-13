@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -118,12 +118,12 @@ $clrotulo->label("t71_descr");
 <script>
 function js_pesquisat06_codcla(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_estrutura',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_estrutura',
                         'func_db_estrutura.php?funcao_js=parent.js_mostradb_estrutura1|db77_codestrut|db77_descr',
                         'Pesquisa',true);
   }else{
      if(document.form1.t06_codcla.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_estrutura',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_estrutura',
                             'func_db_estrutura.php?pesquisa_chave='+document.form1.t06_codcla.value+'&funcao_js=parent.js_mostradb_estrutura',
                             'Pesquisa',false);
      }else{
@@ -146,7 +146,7 @@ function js_mostradb_estrutura1(chave1,chave2){
 
 function js_pesquisat06_bensmodeloetiqueta(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bensmodeloetiqueta', 
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensmodeloetiqueta', 
                         'func_bensmodeloetiqueta.php?funcao_js=parent.js_bensmodeloetiqueta1'+
                         '|t71_sequencial|t71_descr',
                         'Pesquisa',
@@ -154,7 +154,7 @@ function js_pesquisat06_bensmodeloetiqueta(mostra){
                         );
   }else{
      if(document.form1.t06_bensmodeloetiqueta.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bensmodeloetiqueta',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensmodeloetiqueta',
                             'func_bensmodeloetiqueta.php?pesquisa_chave='+document.form1.t06_bensmodeloetiqueta.value+
                             '&funcao_js=parent.js_bensmodeloetiqueta',
                             'Pesquisa',false);
@@ -177,7 +177,7 @@ function js_bensmodeloetiqueta1(chave1,chave2){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cfpatri','func_cfpatri.php?funcao_js=parent.js_preenchepesquisa|t06_codcla','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cfpatri','func_cfpatri.php?funcao_js=parent.js_preenchepesquisa|t06_codcla','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cfpatri.hide();

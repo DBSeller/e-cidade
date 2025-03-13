@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ('model/configuracao/notificacao/ISMSService.interface.php');
+require_once(modification('model/configuracao/notificacao/ISMSService.interface.php'));
 /**
  * Classe que implementa envio de mensagens sms da convect
  * 
  * @author Iuri Guntchnigg <iuri@dbseller.com.br>
  *         Robson Inacio   <robson@dbseller.com.br> 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.5 $ 
  */
 class SMSServiceConvect implements ISMSService {
   

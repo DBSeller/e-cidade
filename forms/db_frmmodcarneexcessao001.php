@@ -26,7 +26,7 @@
  */
 
 //MODULO: caixa
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clmodcarneexcessao->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -123,10 +123,10 @@ function js_cancelar(){
 }
 function js_pesquisak36_modcarnepadraotipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_modcarneexcessao','db_iframe_modcarnepadraotipo','func_modcarnepadraotipo.php?funcao_js=parent.js_mostramodcarnepadraotipo1|k49_sequencial|k49_cadmodcarne','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_modcarneexcessao','db_iframe_modcarnepadraotipo','func_modcarnepadraotipo.php?funcao_js=parent.js_mostramodcarnepadraotipo1|k49_sequencial|k49_cadmodcarne','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.k36_modcarnepadraotipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_modcarneexcessao','db_iframe_modcarnepadraotipo','func_modcarnepadraotipo.php?pesquisa_chave='+document.form1.k36_modcarnepadraotipo.value+'&funcao_js=parent.js_mostramodcarnepadraotipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_modcarneexcessao','db_iframe_modcarnepadraotipo','func_modcarnepadraotipo.php?pesquisa_chave='+document.form1.k36_modcarnepadraotipo.value+'&funcao_js=parent.js_mostramodcarnepadraotipo','Pesquisa',false);
      }else{
        document.form1.k49_cadmodcarne.value = ''; 
      }

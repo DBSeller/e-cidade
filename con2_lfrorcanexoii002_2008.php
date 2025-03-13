@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
@@ -39,7 +39,7 @@ $anousu  = db_getsession("DB_anousu");
 $instit  = db_getsession("DB_instit");
 $xinstit = split("-",$db_selinstit);
 
-$resultinst = pg_exec("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select munic from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 
 db_fieldsmemory($resultinst,0);
 $descr_inst = "MUNICÍPIO DE ".$munic;
@@ -52,7 +52,7 @@ $classinatura = new cl_assinatura;
 		             from orcunidade 
 			                inner join orcorgao on o41_orgao = o40_orgao and o40_anousu = $anousu
 		             where o41_anousu = $anousu and o41_instit  in (".str_replace('-', ',', $db_selinstit).")";
-  $res_orgaos  = @pg_query($sql_orgaos);
+  $res_orgaos  = @db_query($sql_orgaos);
   $numrows     = @pg_numrows($res_orgaos);
   $orgaos      = "";
   $separador   = "";
@@ -65,8 +65,8 @@ $classinatura = new cl_assinatura;
     }
   }
 
-  pg_exec("begin");
-  pg_exec("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
+  db_query("begin");
+  db_query("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
     
   $xcampos = split("-",$orgaos);
   
@@ -94,10 +94,10 @@ $classinatura = new cl_assinatura;
        $where .= ",0,0";
      if($nivela == 7)
        $where .= ",0";
-     pg_exec("insert into t values($where)");
+     db_query("insert into t values($where)");
   }
 
-pg_exec("commit");
+db_query("commit");
 
 $dados = data_periodo($anousu,$bimestre);
 
@@ -165,8 +165,8 @@ $sql_grup = " select
 	    o58_funcao
        ";
       
-$result_grup = pg_exec($sql_grup);
-$result = pg_exec($sql);
+$result_grup = db_query($sql_grup);
+$result = db_query($sql);
 //db_criatabela($result_grup);
 //db_criatabela($result);exit;
 
@@ -217,8 +217,8 @@ $sql_grup = " select
 	    o58_funcao
        ";
       
-$result_grup_intra = pg_exec($sql_grup);
-$result_intra = pg_exec($sql);
+$result_grup_intra = db_query($sql_grup);
+$result_intra = db_query($sql);
 
 
 

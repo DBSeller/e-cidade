@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_orcsuplemretif_classe.php");
-include ("dbforms/db_funcoes.php");
-include("classes/db_orcsuplem_classe.php");
-include("classes/db_orcprojlan_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcsuplemretif_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcsuplem_classe.php"));
+include(modification("classes/db_orcprojlan_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -41,7 +41,7 @@ $clorcsuplemretif = new cl_orcsuplemretif;
 $clorcsuplem  = new cl_orcsuplem;
 $clorcprojlan = new cl_orcprojlan;
 
-include ("dbforms/db_suplementacao.php");
+include(modification("dbforms/db_suplementacao.php"));
 
 $db_opcao = 1;
 $db_botao = true;
@@ -176,7 +176,7 @@ if (isset ($processar) && ($processar == "Processar")) {
 	<?
 
 
-include ("forms/db_frmorcsuplemretif.php");
+include(modification("forms/db_frmorcsuplemretif.php"));
 ?>
     
 	</td>

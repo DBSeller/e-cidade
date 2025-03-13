@@ -52,10 +52,10 @@ $clrotulo->label("z01_nome");
 function js_termo(){
   var termo=document.form1.v07_parcel.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_termo','func_termo.php?funcao_js=parent.js_mostratermo|v07_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_termo','func_termo.php?funcao_js=parent.js_mostratermo|v07_codigo','Pesquisa',true);
   }else{
     if(rua!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe_termo','func_termo.php?pesquisa_chave='+termo+'&funcao_js=parent.js_mostratermo1','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_termo','func_termo.php?pesquisa_chave='+termo+'&funcao_js=parent.js_mostratermo1','Pesquisa',false);
     }else{
       document.form1.v07_parcel.value="";
       document.form1.submit();
@@ -64,10 +64,10 @@ function js_termo(){
 }
 function js_pesquisav07_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.v07_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.v07_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.v07_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -86,7 +86,7 @@ function js_mostracgm1(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_termo','func_termo.php?funcao_js=parent.js_preenchepesquisa|v07_parcel','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_termo','func_termo.php?funcao_js=parent.js_preenchepesquisa|v07_parcel','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_termo.hide();

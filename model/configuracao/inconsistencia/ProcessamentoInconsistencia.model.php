@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 db_app::import('configuracao.inconsistencia.InconsistenciaDados');
@@ -36,7 +36,7 @@ db_app::import('configuracao.DBLog');
  * @require InconsistenciaDados
  *
  * @author Jeferson Belmiro <jeferson.belmiro@dbseller.com.br>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.16 $
  */
 class ProcessamentoInconsistencia {
 
@@ -44,9 +44,9 @@ class ProcessamentoInconsistencia {
    * Array com as inconsistencias para processar
    */
   public $aInconsistencias;
-  
+
   /**
-   * Array com todas as tabelas que possuem exceções para processamento das dependências  
+   * Array com todas as tabelas que possuem exceções para processamento das dependências
    * @var array
    */
   private $aExcecoesDependencias = array();
@@ -60,6 +60,12 @@ class ProcessamentoInconsistencia {
   private $oDBLog;
 
   /**
+   * Nome do arquivo de log
+   * @var string
+   */
+  protected $sArquivoLog = "";
+
+  /**
    * Construtor da classe
    *
    * @access public
@@ -70,8 +76,8 @@ class ProcessamentoInconsistencia {
     /**
      * cria arquivo de log em txt
      */
-    $sArquivoLog  = 'tmp/erros_processar_registros_inconsistentes_' . date('d-m-Y');
-    $this->oDBLog = new DBLog('TXT', $sArquivoLog );
+    $this->sArquivoLog = 'tmp/erros_processar_registros_inconsistentes_' . date('d-m-Y');
+    $this->oDBLog      = new DBLog('TXT', $this->sArquivoLog );
   }
 
   /**
@@ -164,42 +170,42 @@ class ProcessamentoInconsistencia {
       foreach ( $aDadosInconsistentes as $oDependencia ) {
 
         @db_query("SAVEPOINT {$sSavePoint}_{$oDependencia->tabela};");
-        
+
         $oProcessaDuplo = new ProcessaDuploPadrao($oDependencia->tabela, $oDependencia->campo);
-        
+
         /**
          * Validamos se a tabela inconsistente, possui alguma Excessao
          * e Se a excessao foi a tabela ($oDependencia->tabela) atual do laço.
-         */        
+         */
         $mNomeClasseExcecao = $this->getExcecoes($oInconsistencia->tabela_inconsistente, $oDependencia->tabela);
         if ($mNomeClasseExcecao) {
-          
+
           $oProcessaDuplo = new $mNomeClasseExcecao;
-        } 
-        
+        }
+
         $lProcessou = $oProcessaDuplo->processar($iRegistroCorreto, $oDependencia->chave);
-        
+
         if (!$lProcessou) {
-        
+
           $this->log($oDependencia->tabela, $oProcessaDuplo->getMensagemErro());
           @db_query("ROLLBACK TO SAVEPOINT {$sSavePoint}_{$oDependencia->tabela};");
           $lErro        = true;
           $lErroInterno = true;
           continue;
         }
-        
+
         /**
          * Dependencias ja corrigidas para depois deletadas
          */
         $aRegistrosProcessados[$oDependencia->chave] = $oDependencia;
       }
-      
+
       if ( $lErroInterno ) {
 
         @db_query( "ROLLBACK TO SAVEPOINT {$sSavePoint}_geral" );
         continue;//return false; // Processou ?
       }
-      
+
       /**
        * Deleta os registros inconsistentes apos ter alterado suas dependencias
        */
@@ -209,7 +215,7 @@ class ProcessamentoInconsistencia {
          * Deleta os registros incorretos
          */
         if ($oRegistroProcessado->excluir == 't') {
-          
+
           $sSqlRegistrosIncorretos  = "delete from {$oInconsistencia->tabela_inconsistente}                   ";
           $sSqlRegistrosIncorretos .= " where {$oInconsistencia->campo_inconsitencia} = $oRegistroProcessado->chave  ";
           $rsRegistrosIncorretos    = @db_query($sSqlRegistrosIncorretos);
@@ -297,20 +303,20 @@ class ProcessamentoInconsistencia {
    * Percorre um XML onde esta mapeado as excessões encontradas ao processar registros duplos.
    * Monta um array com a seguinte estrutura:
    * $aExcecoesDependencias[<tabela>] = stdClass: nomeTabelaFilha, classeASerExecutada
-   * 
+   *
    * @throws FileException
    */
   private function processaArquivoExcecoesDuplo() {
-    
+
     $sArquivo = "config/processamentoduplos/mapa_dependencias.xml";
     if (!file_exists($sArquivo)) {
       throw new FileException("Arquivo: mapa_dependencias.xml não encontrado.");
     }
-    
+
     if (!is_readable($sArquivo)) {
       throw new FileException("Arquivo: mapa_dependencias.xml não tem permissão de leitura.");
     }
-    
+
     $oArquivo = new DOMDocument();
     /**
      * Carregamos o arquivo xml
@@ -321,44 +327,53 @@ class ProcessamentoInconsistencia {
      */
     $aTabelas = $oArquivo->getElementsByTagName('tabela');
     foreach ($aTabelas as $iTabela => $oNodeTabela) {
-      
+
       /**
        * Bucamos todos nodes "dependencia" filho do node "tabela"
        */
       $aDependencias = $oNodeTabela->getElementsByTagName('dependencia');
-      
+
       foreach ($aDependencias as $iDependencia => $oNodeDependencia) {
-        
+
         $oDependencia         = new stdClass();
         $oDependencia->tabela = $oNodeDependencia->getAttribute('nome');
         $oDependencia->classe = $oNodeDependencia->getAttribute('classe');
-        
+
         $this->aExcecoesDependencias[$oNodeTabela->getAttribute('nome')][] = $oDependencia;
       }
     }
   }
-  
+
   /**
    * Retorna um array com as Tabelas que possuem excessões ao serem processadas como duplos
    * @return mixed | boolean | string
    */
   private function getExcecoes($sTabela, $sTabelaDepencia) {
-    
+
     if(count($this->aExcecoesDependencias) == 0) {
       $this->processaArquivoExcecoesDuplo();
-    }  
-    
+    }
+
     if (array_key_exists($sTabela, $this->aExcecoesDependencias)) {
-    
+
       foreach ($this->aExcecoesDependencias[$sTabela] as $oTabelaExcecao) {
-    
+
         if($oTabelaExcecao->tabela == $sTabelaDepencia) {
-    
+
           return $oTabelaExcecao->classe;
         }
       }
     }
-    
+
     return false;
   }
+
+  /**
+   * Retorna nome do arquivo de log
+   * @return string
+   */
+  public function getNomeArquivoLog() {
+    return $this->sArquivoLog;
+  }
+
 }

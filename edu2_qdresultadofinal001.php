@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,13 +24,13 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_menu(
          db_getsession("DB_id_usuario"),
@@ -95,6 +95,19 @@ db_menu(
             </td>
           </tr>
           <tr>
+              <td>
+                  <label class="bold">Forma de Avaliação:</label>
+              </td>
+              <td>
+                  <select id="formaAvaliacao">
+                      <option value="">Selecione</option>
+                      <option value="1">Por Área de Conhecimento</option>
+                      <option value="2">Por Disciplina</option>
+                  </select>
+              </td>
+          </tr>
+
+            <tr>
             <td>
               <label class="bold">Brasão:</label>
             </td>
@@ -147,6 +160,7 @@ db_menu(
  * Seta as classes para estilização dos campos
  */
 $('tipoModelo').className       = 'field-size-max';
+$('formaAvaliacao').className   = 'field-size-max';
 $('brasao').className           = 'field-size-max';
 $('diretor').className          = 'field-size-max';
 $('secretario').className       = 'field-size-max';
@@ -389,39 +403,44 @@ function retornoBuscaDiretoresSecretarios( oResponse ) {
 function validaImpressao() {
 
   if( oEscola.getSelecionados().codigo_escola == '' ) {
+      alert( _M( MENSAGENS_QUADRO_RESULTADO_FINAL + 'selecione_escola' ) );
+      return false;
 
-    alert( _M( MENSAGENS_QUADRO_RESULTADO_FINAL + 'selecione_escola' ) );
-    return false;
   }
 
   if( oCalendario.getSelecionados().iCalendario == '' ) {
+      alert( _M( MENSAGENS_QUADRO_RESULTADO_FINAL + 'selecione_calendario' ) );
+      return false;
 
-    alert( _M( MENSAGENS_QUADRO_RESULTADO_FINAL + 'selecione_calendario' ) );
-    return false;
   }
 
   if( oToggleTurma.getSelected().length == 0 ) {
+      alert( _M( MENSAGENS_QUADRO_RESULTADO_FINAL + 'selecione_turma' ) );
+      return false;
 
-    alert( _M( MENSAGENS_QUADRO_RESULTADO_FINAL + 'selecione_turma' ) );
-    return false;
   }
 
   if( empty( $F('tipoModelo') ) ) {
+      alert( _M( MENSAGENS_QUADRO_RESULTADO_FINAL + 'selecione_tipo_modelo' ) );
+      return false;
 
-    alert( _M( MENSAGENS_QUADRO_RESULTADO_FINAL + 'selecione_tipo_modelo' ) );
-    return false;
   }
 
-  return true;
+    if( empty( $F('formaAvaliacao') ) ) {
+        alert('Selecione uma Forma de Avaliação');
+        return false;
+    }
+    return true;
+
 }
 
 /**
  * Gera o relatório, caso o mesmo tenha sido validado corretamente
  */
 function geraRelatorio() {
+    if( !validaImpressao() ) {
+      return;
 
-  if( !validaImpressao() ) {
-    return;
   }
 
   var aTurmasImpressao = [];
@@ -431,24 +450,23 @@ function geraRelatorio() {
     oToggleTurma.getSelected().each(function( oTurmaSelecionada ) {
 
       if( oTurma.ed57_i_codigo == oTurmaSelecionada.iTurma && oTurma.codigo_etapa == oTurmaSelecionada.iEtapa ) {
+          var oDadosTurma = {};
+          oDadosTurma.iTurma = oTurma.ed57_i_codigo;
 
-        var oDadosTurma = {};
-            oDadosTurma.iTurma = oTurma.ed57_i_codigo;
             oDadosTurma.iEtapa = oTurma.codigo_etapa;
-
-        aTurmasImpressao.push( oDadosTurma );
+          aTurmasImpressao.push( oDadosTurma );
       }
     });
   });
-
-  var sDiretor    = !empty( $F('diretor') )    ? Object.toJSON( $('diretor').options[$('diretor').selectedIndex].innerHTML )       : "";
-  var sSecretario = !empty( $F('secretario') ) ? Object.toJSON( $('secretario').options[$('secretario').selectedIndex].innerHTML ) : "";
+    var sDiretor    = !empty( $F('diretor') )    ? Object.toJSON( $('diretor').options[$('diretor').selectedIndex].innerHTML )       : "";
+    var sSecretario = !empty( $F('secretario') ) ? Object.toJSON( $('secretario').options[$('secretario').selectedIndex].innerHTML ) : "";
 
   var sUrl         = 'edu2_quadroresultadofinalnovo002.php';
   var sParametros  = '?iEscola='           + oEscola.getSelecionados().codigo_escola;
       sParametros += '&iCalendario='       + oCalendario.getSelecionados().iCalendario;
       sParametros += '&aTurmas='           + Object.toJSON(aTurmasImpressao);
       sParametros += '&iModelo='           + $F('tipoModelo');
+      sParametros += '&iAvaliacao='        + $F('formaAvaliacao');
       sParametros += '&sBrasao='           + $F('brasao');
       sParametros += '&sDiretor='          + sDiretor;
       sParametros += '&sSecretario='       + sSecretario;

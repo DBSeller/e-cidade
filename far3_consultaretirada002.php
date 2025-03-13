@@ -27,12 +27,12 @@
 
 ///bgcolor="#E6E6E6" primeira tabela
 ///coloquei o case e troquei a variavel fa06_f_quant por fa09_f_ quant e ( titulofa06_i_retirada por fa04_i_codigo)///
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_far_retirada_classe.php");
-include("classes/db_far_retiradaitens_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_far_retirada_classe.php"));
+include(modification("classes/db_far_retiradaitens_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 
 $clrotulo = new rotulocampo;

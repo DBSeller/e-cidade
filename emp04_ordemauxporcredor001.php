@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-//require("libs/db_liborcamento.php");
-include("classes/db_cgm_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+//require(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_cgm_classe.php"));
 
-require_once ("classes/db_empageordem_classe.php");
-require("libs/db_app.utils.php");
+require_once(modification("classes/db_empageordem_classe.php"));
+require(modification("libs/db_app.utils.php"));
 
 $clempageordem = new cl_empageordem();
 $clempageordem->rotulo->label();
@@ -152,12 +152,12 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 //-------------------------------------------------
 function js_pesquisa_cgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','func_nome',
+    js_OpenJanelaIframe('CurrentWindow.corpo','func_nome',
                         'func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome',
                         'Pesquisa',true);
   }else{
      if(document.form1.z01_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','func_nome',
+        js_OpenJanelaIframe('CurrentWindow.corpo','func_nome',
                             'func_cgm.php?pesquisa_chave='+$F('z01_numcgm')+'&funcao_js=parent.js_mostracgm',
                             'Pesquisa',false);
      }else{
@@ -181,12 +181,12 @@ function js_mostracgm1(chave1,chave2){
 
 function js_pesquisaOrdemPagamento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empageordem',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empageordem',
                         'func_empageordem.php?funcao_js=parent.js_mostraOrdemPagamento1|e42_sequencial&credor=true',
                         'Pesquisa',true);
   }else{
      if($F('e42_sequencial') != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_empageordem',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empageordem',
           'func_empageordem.php?pesquisa_chave='+$F('e42_sequencial')+'&funcao_js=parent.js_mostraOrdemPagamento&credor=true',
                             'Pesquisa',false);
      }else{
@@ -234,7 +234,7 @@ function js_retornoConsultaOpAuxPorCredor(oAjax) {
   
   js_removeObj("msgBox");
   
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno == '2') {
     
     alert(oRetorno.message.urlDecode());
@@ -274,7 +274,7 @@ function js_novaOPAuxiliar() {
                             onComplete: function(oResponse) {
                             
                               js_removeObj("msgBox");
-                              oRetorno = eval ("("+oResponse.responseText+")");
+                              oRetorno = JSON.parse(oResponse.responseText);
                               if (oRetorno.status == 1) {
                               
                                  $('e42_sequencial').value = oRetorno.iCodigoOPaxiliar;
@@ -296,7 +296,7 @@ function js_carregaOPauxiliar() {
     var iLArguraViewPort  = document.body.scrollWidth-12;
     var sQuery = 'e42_sequencial='+$F('e42_sequencial');
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_op',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_op',
                         'emp4_ordemauxporcredor002.php?'+sQuery,
                         'Manutenção OP Auxiliar',
                         true,

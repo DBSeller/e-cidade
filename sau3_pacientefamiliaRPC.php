@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_stdlibwebseller.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_familiamicroarea_classe.php");
-include("classes/db_cgs_und_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_stdlibwebseller.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_familiamicroarea_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
 
 $clfamiliamicroarea  = new cl_familiamicroarea;
 $clcgs_und  = new cl_cgs_und;
@@ -52,7 +52,7 @@ if($objParam->exec == 'consulta_microfamilia'){
        $campos = new stdclass();
        db_fieldsmemory($result,0);
        $campos->sd33_i_codigo=$sd33_i_codigo;
-       $campos->sd33_v_descricao=$sd33_v_descricao;
+       $campos->sd33_v_descricao=utf8_encode($sd33_v_descricao);
        $campos->sd34_i_codigo=$sd34_i_codigo;
        $campos->sd34_v_descricao=$sd34_v_descricao;
        $campos->z01_i_familiamicroarea=$z01_i_familiamicroarea;

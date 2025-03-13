@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -103,7 +103,7 @@ class cl_tarefaprojeto {
                                 $this->at41_tarefa 
                                ,$this->at41_projeto 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -129,12 +129,12 @@ class cl_tarefaprojeto {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->at41_tarefa,$this->at41_projeto));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,8099,'$this->at41_tarefa','I')");
-       $resac = pg_query("insert into db_acountkey values($acount,8100,'$this->at41_projeto','I')");
-       $resac = pg_query("insert into db_acount values($acount,1366,8099,'','".AddSlashes(pg_result($resaco,0,'at41_tarefa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1366,8100,'','".AddSlashes(pg_result($resaco,0,'at41_projeto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,8099,'$this->at41_tarefa','I')");
+       $resac = db_query("insert into db_acountkey values($acount,8100,'$this->at41_projeto','I')");
+       $resac = db_query("insert into db_acount values($acount,1366,8099,'','".AddSlashes(pg_result($resaco,0,'at41_tarefa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1366,8100,'','".AddSlashes(pg_result($resaco,0,'at41_projeto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -179,17 +179,17 @@ class cl_tarefaprojeto {
      $resaco = $this->sql_record($this->sql_query_file($this->at41_tarefa,$this->at41_projeto));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,8099,'$this->at41_tarefa','A')");
-         $resac = pg_query("insert into db_acountkey values($acount,8100,'$this->at41_projeto','A')");
+         $resac = db_query("insert into db_acountkey values($acount,8099,'$this->at41_tarefa','A')");
+         $resac = db_query("insert into db_acountkey values($acount,8100,'$this->at41_projeto','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at41_tarefa"]))
-           $resac = pg_query("insert into db_acount values($acount,1366,8099,'".AddSlashes(pg_result($resaco,$conresaco,'at41_tarefa'))."','$this->at41_tarefa',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1366,8099,'".AddSlashes(pg_result($resaco,$conresaco,'at41_tarefa'))."','$this->at41_tarefa',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at41_projeto"]))
-           $resac = pg_query("insert into db_acount values($acount,1366,8100,'".AddSlashes(pg_result($resaco,$conresaco,'at41_projeto'))."','$this->at41_projeto',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1366,8100,'".AddSlashes(pg_result($resaco,$conresaco,'at41_projeto'))."','$this->at41_projeto',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "projeto da tarefa nao Alterado. Alteracao Abortada.\\n";
@@ -230,12 +230,12 @@ class cl_tarefaprojeto {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,8099,'$at41_tarefa','E')");
-         $resac = pg_query("insert into db_acountkey values($acount,8100,'$at41_projeto','E')");
-         $resac = pg_query("insert into db_acount values($acount,1366,8099,'','".AddSlashes(pg_result($resaco,$iresaco,'at41_tarefa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1366,8100,'','".AddSlashes(pg_result($resaco,$iresaco,'at41_projeto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,8099,'$at41_tarefa','E')");
+         $resac = db_query("insert into db_acountkey values($acount,8100,'$at41_projeto','E')");
+         $resac = db_query("insert into db_acount values($acount,1366,8099,'','".AddSlashes(pg_result($resaco,$iresaco,'at41_tarefa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1366,8100,'','".AddSlashes(pg_result($resaco,$iresaco,'at41_projeto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from tarefaprojeto
@@ -257,7 +257,7 @@ class cl_tarefaprojeto {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "projeto da tarefa nao Excluído. Exclusão Abortada.\\n";
@@ -291,7 +291,7 @@ class cl_tarefaprojeto {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-include("fpdf151/pdf.php");
-include("libs/db_liborcamento.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
 db_app::import("contabilidade.relatorios.AnexoQuadroDotacaoGoverno");
 db_app::import("relatorioContabil");
 $oGet         = db_utils::postMemory($_GET);
@@ -44,7 +44,7 @@ $aFases         = array(1 => "Orçamento",
                         2 => "Empenhado", 
                         3 => "Liquidado", 
                         4 => "Pago");
-$rsInstituicoes = pg_exec("select codigo, nomeinst, nomeinstabrev 
+$rsInstituicoes = db_query("select codigo, nomeinst, nomeinstabrev 
                              from db_config 
                             where codigo in ({$sInstit}) ");
 $sDescricaoInstitucoes = '';

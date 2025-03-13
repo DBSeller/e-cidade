@@ -1,0 +1,208 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010339' name='contabilidade.conplanoatributosaldo' description="Saldo do conta corrente por mês e ano" prefix="c125" label="conplanoatributosaldo" type="0">
+  <fields>
+    <field codigo="1009650"
+           campo_api=''
+           name="c125_sequencial"
+           conteudo="int4"
+           description="Código sequencial da tabela."
+           inivalue="0"
+           label="Código"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='contabilidade.conplanoatributosaldo_c125_sequencial_seq' />
+
+    </field>
+    <field codigo="1010092"
+           campo_api=''
+           name="c125_anousu"
+           conteudo="int4"
+           description="Ano"
+           inivalue="0"
+           label="Ano"
+           size="4"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Ano"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010093"
+           campo_api=''
+           name="c125_mesusu"
+           conteudo="int4"
+           description="Mês"
+           inivalue="0"
+           label="Mês"
+           size="2"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Mês"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010094"
+           campo_api=''
+           name="c125_hashcontaatributos"
+           conteudo="varchar(200)"
+           description="Hash de Atributos"
+           inivalue=""
+           label="Hash de Atributos"
+           size="200"
+           null="f"
+           uppercase="t"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel="Hash de Atributos"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010095"
+           campo_api=''
+           name="c125_valor"
+           conteudo="float4"
+           description="Valor Monetário"
+           inivalue="0"
+           label="Valor Monetário"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor Monetário"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010096"
+           campo_api=''
+           name="c125_natureza"
+           conteudo="varchar(1)"
+           description="Natureza que pode ser D (débito) ou C (crédito)"
+           inivalue=""
+           label="Natureza do Saldo"
+           size="1"
+           null="f"
+           uppercase="t"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel="Natureza do Saldo"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010097"
+           campo_api=''
+           name="c125_tipo"
+           conteudo="int4"
+           description="Define se o saldo é valor calculado ou implantado."
+           inivalue="0"
+           label="Tipo de Registro"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Tipo de Registro"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010090"
+           campo_api=''
+           name="c125_conplanosistema"
+           conteudo="int4"
+           description="Sistema do Saldo ."
+           inivalue="0"
+           label="Sistema do Saldo"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sistema do Saldo"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010101"
+           campo_api=''
+           name="c125_instit"
+           conteudo="int4"
+           description="Instituição"
+           inivalue="null"
+           label="Instituição"
+           size="10"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Instituição"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010429"
+           campo_api=''
+           name="c125_tiposaldo"
+           conteudo="int4"
+           description="TIpo do Saldo"
+           inivalue="3"
+           label="TIpo do Saldo"
+           size="10"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="TIpo do Saldo"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="c125_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="c125_instit" reference="codigo" />
+    </foreignkey>
+    <foreignkey reference="conplanosistema" inner='t'>
+      <fieldfk name="c125_conplanosistema" reference="c122_sequencial" />
+    </foreignkey>
+  </foreignkeys>
+</table>

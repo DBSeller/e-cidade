@@ -1,7 +1,8 @@
 <?php
-/*
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +26,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
 
 $oRetorno = new stdClass();
-$oRetorno->iStatus   = "1";
-$oRetorno->sMensagem = "";
+$oRetorno->iStatus   = '1';
+$oRetorno->sMensagem = '';
 
 try {
   
@@ -76,7 +77,7 @@ try {
         break;
     case 'BuscaAnoMesFolha':
       
-        require_once 'model/pessoal/std/DBPessoal.model.php';
+        require_once modification("model/pessoal/std/DBPessoal.model.php");
         
         $oRetorno->iAno = DBPessoal::getAnoFolha();
         $oRetorno->iMes = str_pad(DBPessoal::getMesFolha(), 2, "0", STR_PAD_LEFT);
@@ -125,10 +126,53 @@ try {
 
         break;
 
+    case 'BuscaTiposReajuste':
+
+      $oDaoReajusteParidade = db_utils::getDao('rhreajusteparidade');
+      $sSql                 = $oDaoReajusteParidade->sql_query_file(null, '*', 'rh148_sequencial');
+      $rsReajusteParidade   = db_query($sSql);
+
+      if (!$rsReajusteParidade) {
+        throw new DBException('Erro ao buscar os dados da tabela rhreajusteparidade.');
+      }
+
+      $aTipoReajuste     = array('0' => '');
+      $aReajusteParidade = db_utils::getCollectionByRecord($rsReajusteParidade, false, false, true);
+
+      foreach ($aReajusteParidade as $oReajusteParidade) {
+        $aTipoReajuste[$oReajusteParidade->rh148_sequencial] = $oReajusteParidade->rh148_descricao;
+      }
+
+      $oRetorno->aTiposReajuste = $aTipoReajuste;
+
+      break;
+    
+    /**
+     * Verifica se a folha de pagamento esta aberta ou fechada.
+     * 
+     * @param Integer $iTipoFolha
+     * @param Integer $iAnoUsu
+     * @param Integer $iMesUsu
+     * @param Integer $lStatus
+     * @return Boolean $lFolhaAberta
+     */  
+    case 'VerificarFolhaPagamento':
+      
+      $iTipoFolha   = $oParam->iTipoFolha;
+      $iAnoFolha    = $oParam->iAnoUsu;
+      $iMesFolha    = $oParam->iMesUsu;
+      $lStatus      = $oParam->lStatus; 
+      
+      $oDBCompetencia         = new DBCompetencia($iAnoFolha, $iMesFolha); 
+      $lFolhaAberta           = FolhaPagamento::hasFolhaTipo($iTipoFolha, $oDBCompetencia, $lStatus);
+      $oRetorno->lFolhaAberta = $lFolhaAberta;
+      
+      break;
   }
 } catch ( Exception $eErro ) {
   
-  $oRetorno->iStatus   = "2";
+  $oRetorno->iStatus   = '2';
   $oRetorno->sMensagem = $eErro->getMessage();
 }
+
 echo $oJson->encode($oRetorno);

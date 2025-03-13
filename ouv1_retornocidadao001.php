@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include ("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_app.utils.php"));
 
-require_once("classes/db_tiporetorno_classe.php");
+require_once(modification("classes/db_tiporetorno_classe.php"));
 $clTipoRetorno = new cl_tiporetorno();
 
 
@@ -197,7 +197,7 @@ $clTipoRetorno = new cl_tiporetorno();
   function js_retornoDadosProcessos(oAjax){
   
     js_removeObj("msgBox");
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     
     oDBGridListaProcessos.clearAll(true);
     
@@ -237,11 +237,11 @@ $clTipoRetorno = new cl_tiporetorno();
   
   
   function js_consultaProcesso(iCodProcesso){
-    js_OpenJanelaIframe('top.corpo','db_iframe_detalhes','ouv1_retornocidadao002.php?iCodProcesso='+iCodProcesso,'Detalhes do Processo',true);    
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_detalhes','ouv1_retornocidadao002.php?iCodProcesso='+iCodProcesso,'Detalhes do Processo',true);    
   }
   
   function js_pesquisaProcessoIni(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_processoIni','func_protprocesso.php?grupo=2&funcao_js=parent.js_mostraProcessoIni|p58_codproc','Processos',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processoIni','func_protprocesso.php?grupo=2&funcao_js=parent.js_mostraProcessoIni|p58_codproc','Processos',true);
   }
 
   function js_mostraProcessoIni(iCodProc){
@@ -250,7 +250,7 @@ $clTipoRetorno = new cl_tiporetorno();
   }
   
   function js_pesquisaProcessoFin(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_processoFin','func_protprocesso.php?grupo=2&funcao_js=parent.js_mostraProcessoFin|p58_codproc','Processos',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processoFin','func_protprocesso.php?grupo=2&funcao_js=parent.js_mostraProcessoFin|p58_codproc','Processos',true);
   }
 
   function js_mostraProcessoFin(iCodProc){
@@ -261,10 +261,10 @@ $clTipoRetorno = new cl_tiporetorno();
   function js_pesquisaTipoProcesso( lMostra ){
     
     if( lMostra ){
-      js_OpenJanelaIframe('top.corpo','db_iframe_tipoproc','func_tipoproc.php?grupo=2&funcao_js=parent.js_mostraTipoProcesso1|p51_codigo|p51_descr','Tipo de Processo',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoproc','func_tipoproc.php?grupo=2&funcao_js=parent.js_mostraTipoProcesso1|p51_codigo|p51_descr','Tipo de Processo',true);
     }else{
        if( $F('proctipo') != '' ){ 
-         js_OpenJanelaIframe('top.corpo','db_iframe_tipoproc','func_tipoproc.php?grupo=2&pesquisa_chave='+$F('proctipo')+'&funcao_js=parent.js_mostraTipoProcesso','Tipo de Processo',false);
+         js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoproc','func_tipoproc.php?grupo=2&pesquisa_chave='+$F('proctipo')+'&funcao_js=parent.js_mostraTipoProcesso','Tipo de Processo',false);
        }else{
          document.form1.descrtipo.value = ''; 
        }

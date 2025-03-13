@@ -214,7 +214,7 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
     } else {
       me.view.style.display=  '';
     }
-  }
+  };
 
 
   /**
@@ -222,11 +222,11 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
    */
   this.onPeriodoClick = function(iPeriodo, iItem, nQuantidade) {
    return true;
-  }
+  };
 
   this.onBeforePeriodoClick = function(iPeriodo, iItem, nQuantidade) {
    return true;
-  }
+  };
 
   this.getDadosQuadro = function() {
 
@@ -238,14 +238,14 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
                                    parameters: 'json='+Object.toJSON(oParam),
                                    onComplete:me.montaQuadro
                                   });
-  }
+  };
 
   this.montaQuadro = function (oAjax) {
 
      var iSizeTable = $('table').getWidth();
      iSize = ((document.body.getWidth()-50)-iSizeTable);
      $('tableRol').style.width = new String(iSize)+"px";
-     oRetorno = eval("("+oAjax.responseText+")");
+     oRetorno = JSON.parse(oAjax.responseText);
      /**
       * Montamos o Cabecalho dos Meses:
       */
@@ -646,6 +646,16 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
 
                    }
 
+                   /**
+                    * Item com apenas um período previsto e saldo zero devemos pintar as células de verde (sColorExecutado)
+                    */
+                   if (oItem.previsoes.length == 1 &&
+                       oPrevisao.valorunitario == oPrevisao.valorexecutado &&
+                       oPrevisao.quantidade == oPrevisao.quantidadeprevista
+                   ) {
+                     sCorDefinida = me.sColorExecutado;
+                   }
+
                    oCellQuantidadePrevista.style.backgroundColor 	= sCorDefinida;
                    oCellValorPrevisto.style.backgroundColor      	= sCorDefinida;
                    oCellVlrExecutado.style.backgroundColor        = sCorDefinida;
@@ -724,6 +734,7 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
          oDBHint.setText(sTextEvent);
          oDBHint.setShowEvents(aEventsIn);
          oDBHint.setHideEvents(aEventsOut);
+         oDBHint.setScrollElement(me.wndAcordoPrevisao.getContentContainer());
          oDBHint.make(oCellDescricao);
       });
    }
@@ -758,7 +769,7 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
                                    parameters: 'json='+Object.toJSON(oParam),
                                    onComplete: function (oAjax) {
 
-                                     var oRetorno = eval("("+oAjax.responseText+")");
+                                     var oRetorno = JSON.parse(oAjax.responseText);
                                      if (oRetorno.status == 2) {
 
                                       me.oTxtSender.value = nValorObjeto;
@@ -799,7 +810,7 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
                                    onComplete: function (oAjax) {
 
                                      js_removeObj('msgBox');
-                                     var oRetorno = eval("("+oAjax.responseText+")");
+                                     var oRetorno = JSON.parse(oAjax.responseText);
                                      if (oRetorno.status == 2) {
 
                                       alert(oRetorno.message.urlDecode());
@@ -888,7 +899,7 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
 	 * Forçamos o download do arquivo csv gerado através do método imprimirExecucao
 	 */
   this.baixaRelatorio = function(oAjax) {
-    oRetorno = eval("("+oAjax.responseText+")");
+    oRetorno = JSON.parse(oAjax.responseText);
     window.open("db_download.php?arquivo="+oRetorno.patharquivo);
   }
 
@@ -944,7 +955,7 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
     /**
      * Transformamos o retorno JSON em Array
      */
-    oRetorno = eval("("+oAjax.responseText+")");
+    oRetorno = JSON.parse(oAjax.responseText);
 
     if (typeof(wndAlteracaoPeriodo) != 'undefined') {
       wndAlteracaoPeriodo.destroy();
@@ -1091,7 +1102,7 @@ DBViewAcordoPrevisao = function (iPosicao, sInstance, sTitulo, lReadOnly, lMostr
     /**
      * Transformamos o retorno JSON em Array
      */
-    oRetorno = eval("("+oAjax.responseText+")");
+    oRetorno = JSON.parse(oAjax.responseText);
     alert(oRetorno.message.urlDecode());
 
     /*

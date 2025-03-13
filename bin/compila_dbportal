@@ -1,0 +1,86 @@
+#! /bin/bash
+while true
+do
+  clear
+  echo 
+  echo -e "Compila utrilizando o Turk"
+  echo -e "CTR-C Encerra"
+  echo
+  echo -e "Localizacao : \c"
+  read local
+  echo -e "Destino     : \c"
+  read destino
+  echo -e "Arquivo     : \c"
+  read arquivo
+  #
+  if [ $local = $destino ]
+  then
+     echo ERRO : Os diretorios nao podem ser os mesmos
+     read x
+  else
+  
+    existe=0;
+    if test ! -d $local 
+    then
+      echo -e "ERRO : Nao existe o diretorio de Localizacao."
+      read x
+      existe=1
+    fi
+    if [ $existe = 0 ]
+    then
+
+       if [ "$arquivo" = "" ]
+       then
+      
+	 clear
+	 echo Processando compilacao do diretorio ...
+	 dir=`pwd`
+	 cd /usr/local/turk
+
+	 php -q encoder.php $local -rcf -sphp -sinc -o $destino
+
+	 cd $dir
+	 
+	 arq=`date +%Y_%m_%d`
+	 echo -e "Diretorio compilado. "
+	 echo -e "Executando tar $arq.tar"
+	 tar cvfj $arq.tar $destino
+	 echo -e "Processo concluido. Tecle Enter"
+	 read x
+	 exit
+	 
+       else
+
+        if test ! -d $destino
+        then
+           echo -e "ERRO : Nao existe o diretorio de destino."
+           read x
+           existe=1
+        else
+ 
+	   clear
+	   echo Processando compilacao do arquivo ...
+	   dir=`pwd`
+	   cd /usr/local/turk
+
+	   php -q encoder.php $local/$arquivo -o $destino/$arquivo
+
+	   cd $dir
+	 
+	   arq=`date +%Y_%m_%d`
+	   echo -e "Diretorio compilado. "
+	   echo -e "Executando tar $arq.tar"
+	   tar cvfj $arq.tar $destino
+	   echo -e "Processo concluido. Tecle Enter"
+	   read x
+	   exit
+	   
+         fi
+   
+       fi
+	 
+     fi
+  fi
+  #
+done
+

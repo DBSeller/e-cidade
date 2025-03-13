@@ -107,10 +107,10 @@ db_select('ed28_l_encerrado',$x,true,$db_opcao,"");
 <script>
 function js_pesquisaed28_i_escola(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_escolas','func_escolas.php?funcao_js=parent.js_mostraescolas1|ed02_i_codigo|ed02_i_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escolas','func_escolas.php?funcao_js=parent.js_mostraescolas1|ed02_i_codigo|ed02_i_codigo','Pesquisa',true);
   }else{
      if(document.form1.ed28_i_escola.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_escolas','func_escolas.php?pesquisa_chave='+document.form1.ed28_i_escola.value+'&funcao_js=parent.js_mostraescolas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escolas','func_escolas.php?pesquisa_chave='+document.form1.ed28_i_escola.value+'&funcao_js=parent.js_mostraescolas','Pesquisa',false);
      }else{
        document.form1.ed02_i_codigo.value = ''; 
      }
@@ -129,7 +129,7 @@ function js_mostraescolas1(chave1,chave2){
   db_iframe_escolas.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_anoletivo','func_anoletivo.php?funcao_js=parent.js_preenchepesquisa|ed28_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_anoletivo','func_anoletivo.php?funcao_js=parent.js_preenchepesquisa|ed28_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_anoletivo.hide();

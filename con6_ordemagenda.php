@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 
 function carrega_destinatario(){
  $texto = "";
- $res = pg_exec("select id_usuario,nome from db_usuarios order by nome ");    
+ $res = db_query("select id_usuario,nome from db_usuarios order by nome ");    
  for ($x=0;$x < pg_numrows($res);$x++){
         db_fieldsmemory($res,$x);
 	global $id_usuario,$nome,$cod_destinatario;
@@ -80,7 +80,7 @@ function checa_eventos($dia,$mes,$ano){
 		   and o.usureceb =  $cod_destinatario
               order by nome_modulo		   
              ";
-    $res = @pg_exec($sql);    
+    $res = @db_query($sql);    
     for ($x=0;$x < @pg_numrows($res);$x++){
         db_fieldsmemory($res,$x);
 	global $nome_modulo,$codordem,$status;
@@ -260,6 +260,6 @@ $clcalendario->cria(date("d",db_getsession("DB_datausu")),date("$mes_solicitado"
 ?>
 <script>
 function js_agendamento(){  
-     js_OpenJanelaIframe('top.corpo','db_iframe_agenda','func_dbagenda.php','Agendamento',true); 
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_agenda','func_dbagenda.php','Agendamento',true); 
 }
 </script>

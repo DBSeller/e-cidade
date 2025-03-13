@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_mer_consumocardapio_classe.php");
-require_once("classes/db_mer_consumoescola_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("classes/db_mer_consumocardapio_classe.php"));
+require_once(modification("classes/db_mer_consumoescola_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_consumocardapio = new cl_mer_consumocardapio;
@@ -95,7 +95,7 @@ td.linhagrid
   <table border="0" cellspacing="0" cellpadding="0" align="center">
     <tr>
      <td>
-      <?include("forms/db_frmmer_consumocardapio.php");?>     
+      <?include(modification("forms/db_frmmer_consumocardapio.php"));?>     
      </td>
    </tr>   
   </table>

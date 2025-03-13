@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -76,6 +76,25 @@ if (pg_numrows($rsDiversos) == 0) {
   
 }
 
+$daoDiversos = new cl_diversos();
+$where = "dv05_numpre = $numpre";
+
+if ($numpar > 0) {
+    $where .= " and q05_numpar = $numpar";
+}
+
+$sqlIssvar = $daoDiversos->sql_query_issvar(null, "distinct q05_mes, q05_ano", "q05_ano, q05_mes", $where);
+$rsIssvar = db_query($sqlIssvar);
+
+if (empty($rsIssvar)) {
+    db_redireciona('db_erros.php?db_erro=Erro ao buscar a competência do auto de infração de origem deste bébito.');
+    exit;
+}
+
+$competencias = db_utils::makeCollectionFromRecord($rsIssvar, function($value) {
+    return $value->q05_mes . "/" .$value->q05_ano;
+});
+
 ?>
 
 <fieldset>
@@ -133,6 +152,16 @@ if (pg_numrows($rsDiversos) == 0) {
           	echo $k00_inscr;
           }
         ?>
+      </td>
+    </tr>
+      <tr>
+          <td>Compet&ecirc;ncia:</td>
+          <td>
+              <?
+              if (!empty($competencias)) {
+                  echo implode(", ", $competencias);
+              }
+              ?>
       </td>
     </tr>
   </table>

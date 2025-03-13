@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas     = new cl_criaabas;
 $db_opcao = 1;
 ?>
@@ -52,34 +52,26 @@ $db_opcao = 1;
   </tr>
 </table>
 <table valign="top" marginwidth="0" width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="100%" align="left" valign="top" bgcolor="#CCCCCC"> 
-     <?
-	 $clcriaabas->identifica = array (
-                                           "rhrubricas"    => "Rubricas",
-                                           "rhbases"       => "Bases"
-                                           /*
-                                           ,
-                                           "rhrubelemento" => "Elemento"
-                                           */
-                                         ); 
-	 $clcriaabas->src        = array("rhrubricas"    => "pes1_rhrubricas005.php");
-	 $clcriaabas->disabled   = array(
-                                         "rhbases"       => "true"
-                                         /*
-                                         ,
-                                         "rhrubelemento" => "true"
-                                         */
-                                         ); 
-	 $clcriaabas->cria_abas(); 
-       ?> 
+  <tr>
+      <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
+          <?php
+          $clcriaabas->identifica = array(
+              "rhrubricas" => "Rubricas",
+              "rhbases" => "Bases",
+              "esocialrubricas" => "Dados eSocial"
+          );
+          $clcriaabas->src = array("rhrubricas" => "pes1_rhrubricas005.php");
+          $clcriaabas->disabled = array("rhbases" => "true", "esocialrubricas" => "true");
+          $clcriaabas->cria_abas();
+          ?>
        </td>
     </tr>
   </table>
   <form name="form1">
   </form>
-      <? 
-	db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-      ?>
+<?php
+db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"),
+    db_getsession("DB_instit"));
+?>
   </body>
   </html>

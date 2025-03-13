@@ -1,6 +1,6 @@
 /*
     Masked Input plugin for prototype ported from jQuery 
-    Bjarte K. VebjÃ¸rnsen <bjartekv at gmail dot com>
+    Bjarte K. Vebjørnsen <bjartekv at gmail dot com>
         
     Note that the onchange event isn't fired for masked inputs. It won't fire unless event.simulate.js is available.
 
@@ -53,7 +53,13 @@
 
     MaskedInput = Class.create({
         initialize: function(selector, mask, settings) {  
-            this.elements = $$(selector);
+
+            if (typeof selector == 'object') {
+              this.elements = [selector];
+            } else {
+              this.elements = $$(selector);
+            }
+
             this.mask(mask, settings);	 
         },
         unmask: function() { 

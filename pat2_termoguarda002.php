@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("fpdf151/pdf1.php");
-include("classes/db_db_docparag_classe.php");
-include("classes/db_bensguarda_classe.php");
-include("classes/db_bensguardaitem_classe.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf1.php"));
+include(modification("classes/db_db_docparag_classe.php"));
+include(modification("classes/db_bensguarda_classe.php"));
+include(modification("classes/db_bensguardaitem_classe.php"));
 $cldb_docparag = new cl_db_docparag;
 $clbensguarda = new cl_bensguarda;
 $clbensguardaitem = new cl_bensguardaitem;

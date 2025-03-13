@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010250' name='cadastro.iptupercentualexercicio' description="Percentual do Exercício" prefix="j145" label="Percentual do Exercício" type="0">
+  <fields>
+    <field codigo="1009590" 
+           campo_api='' 
+           name="j145_sequencial" 
+           conteudo="int4" 
+           description="Código Sequencial" 
+           inivalue="0" 
+           label="Código Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='cadastro.iptupercentualexercicio_j145_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009589" 
+           campo_api='' 
+           name="j145_anousu" 
+           conteudo="int4" 
+           description="Exercício" 
+           inivalue="0" 
+           label="Exercício" 
+           size="4" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Exercício" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009591" 
+           campo_api='' 
+           name="j145_valor" 
+           conteudo="float4" 
+           description="Valor" 
+           inivalue="0" 
+           label="Valor" 
+           size="15" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="j145_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

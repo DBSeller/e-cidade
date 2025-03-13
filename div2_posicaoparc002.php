@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once ("libs/db_sql.php");
-  require_once ("fpdf151/pdf.php");
-  require_once ("classes/db_arrecad_classe.php");
-  require_once ("classes/db_termo_classe.php");
+  require_once(modification("libs/db_sql.php"));
+  require_once(modification("fpdf151/pdf.php"));
+  require_once(modification("classes/db_arrecad_classe.php"));
+  require_once(modification("classes/db_termo_classe.php"));
   
   $clarrecad = new cl_arrecad;
   $cltermo = new cl_termo;
@@ -131,21 +131,21 @@
     $head6 = "NUMERO DA PARCELA EM ATRASO: não especificado";
   }
   
-  if ($vencimentoini != "" && $vencimentofim != "") {
+  if (!empty($vencimentoini) && !empty($vencimentofim)) {
     
     $where .= "and arrecad.k00_dtvenc BETWEEN '{$vencimentoini}' and '{$vencimentofim}'";
     $head7  = "VENCIMENTO: " . date("d/m/Y", strtotime($vencimentoini)) . " ATÉ ". date("d/m/Y", strtotime($vencimentofim));
-  } else if ($vencimentoini != "") {
+  } else if (!empty($vencimentoini)) {
     
     $where .= "and arrecad.k00_dtvenc >= '{$vencimentoini}'";
     $head7  = "VENCIMENTO: INICIAL " . date("d/m/Y", strtotime($vencimentoini));
-  } else if ($vencimentofim != "") {
+  } else if (!empty($vencimentofim)) {
     
     $where .= "and arrecad.k00_dtvenc <= '{$vencimentofim}' ";
     $head7  = "VENCIMENTO: FINAL " . date("d/m/Y", strtotime($vencimentofim));
   }
   
-  if ($head7 == "" && ($numini != "" or $numfim != "")) {
+  if (empty($head7) && ($numini != "" or $numfim != "")) {
     $where .= "and arrecad.k00_dtvenc < '" . date("Y-m-d", db_getsession("DB_datausu")) . "'";
   }
   
@@ -226,7 +226,9 @@
   $sql .= "        ) as y                                                                                           \n";
   $sql .= "  order by {$ordenacao}                                                                                  \n";
   
-  
+
+//echo $sql; die();
+
   $head2 = 'RELATÓRIO DA POSIÇÃO DOS PARCELAMENTOS';
   $head3 = @$info;
   $head4 = "ORDEM: ";
@@ -446,10 +448,24 @@
           
         }
         
+        $origem = "";
+        if ($k00_matric != "") {
+          $origem = "M-" . $k00_matric;
+        }
+        if ($k00_inscr != "") {
+          if ( $origem != "" ) {
+            $origem .= " - ";
+          }
+          $origem .= "I-" . $k00_inscr;
+        }
+        if ( $origem == "" ) {
+          $origem = "CGM: " . $cgm_contrib;
+        }
+
         $aDados[$chave] = array($v07_parcel_ant, $v07_dtlanc_ant, $cgm_contrib , $contrib      , $v07_numcgm_ant,
                                 $z01_nome_ant  , $z01_telef_ant , $k00_tipo_ant, $k00_descr_ant, $k00_dtvenc_one,
                                 $k00_numtot_ant, $par_pag       , $par_aber    , $par_venc     , $v07_valor_ant ,
-                                $val_pag       , $val_aber      , $val_venc    , $processoforo);
+                                $val_pag       , $val_aber      , $val_venc    , $processoforo , $origem);
       }
       
       $totalparcvenc += $par_venc;
@@ -519,12 +535,13 @@
         
         $pdf->SetFont('Arial', 'B', 7);
         
-        $pdf->Cell(25, 5, strtoupper($RLv07_parcel), 1, 0, "C", 1);
-        $pdf->Cell(22, 5, "DATA LANC."             , 1, 0, "C", 1);
+        $pdf->Cell(18, 5, "PARCEL"                 , 1, 0, "C", 1);
+        $pdf->Cell(18, 5, "DATA LANC"              , 1, 0, "C", 1);
         $pdf->Cell(70, 5, "CONTRIBUINTE"           , 1, 0, "C", 1);
-        $pdf->Cell(70, 5, 'RESPONSAVEL'            , 1, 0, "C", 1);
-        $pdf->Cell(26, 5, 'FONE RESP.'             , 1, 0, "C", 1);
-        $pdf->Cell(60, 5, strtoupper($RLk00_descr) , 1, 1, "C", 1);
+        $pdf->Cell(65, 5, 'RESPONSAVEL'            , 1, 0, "C", 1);
+        $pdf->Cell(22, 5, 'FONE RESP'              , 1, 0, "C", 1);
+        $pdf->Cell(30, 5, 'ORIGEM'                , 1, 0, "C", 1);
+        $pdf->Cell(50, 5, strtoupper($RLk00_descr) , 1, 1, "C", 1);
         $pdf->Cell(50, 5, 'PROCESSO FORO'          , 1, 0, "C", 1);
         $pdf->Cell(23, 5, 'DT 1º PARC VENC'        , 1, 0, "C", 1);
         $pdf->Cell(20, 5, 'TOTAL PARC.'            , 1, 0, "C", 1);
@@ -560,12 +577,13 @@
       
       $pdf->SetFont('Arial', '', 7);
       
-      $pdf->Cell(25, 5, $aDados2[0]                       , $b, 0, "C", $pre);
-      $pdf->Cell(22, 5, db_formatar($aDados2[1], 'd')     , $b, 0, "C", $pre);
+      $pdf->Cell(18, 5, $aDados2[0]                       , $b, 0, "C", $pre);
+      $pdf->Cell(18, 5, db_formatar($aDados2[1], 'd')     , $b, 0, "C", $pre);
       $pdf->Cell(70, 5, $aDados2[2] . "-" . @$aDados2[3]  , $b, 0, "L", $pre);
-      $pdf->Cell(70, 5, $aDados2[4] . "-" . @$aDados2[5]  , $b, 0, "L", $pre);
-      $pdf->Cell(26, 5, $aDados2[6]                       , $b, 0, "C", $pre);
-      $pdf->Cell(60, 5, @$aDados2[7] . '-' . @ $aDados2[8], $b, 1, "L", $pre);
+      $pdf->Cell(65, 5, $aDados2[4] . "-" . @$aDados2[5]  , $b, 0, "L", $pre);
+      $pdf->Cell(22, 5, $aDados2[6]                       , $b, 0, "L", $pre);
+      $pdf->Cell(30, 5, $aDados2[19]                      , $b, 0, "L", $pre);
+      $pdf->Cell(50, 5, @$aDados2[7] . '-' . @ $aDados2[8], $b, 1, "L", $pre);
       $pdf->Cell(50, 5, substr($aDados2[18], 1, 40)       , $b, 0, "L", $pre);
       $pdf->Cell(23, 5, db_formatar($aDados2[9], 'd')     ,  0, 0, "C", $pre);
       $pdf->Cell(20, 5, @$aDados2[10]                     , $b, 0, "C", $pre);
@@ -575,8 +593,7 @@
       $pdf->Cell(30, 5, db_formatar(@$aDados2[14], 'f')   , $b, 0, "R", $pre);
       $pdf->Cell(30, 5, db_formatar(@$aDados2[15], 'f')   , $b, 0, "R", $pre);
       $pdf->Cell(30, 5, db_formatar(@$aDados2[16], 'f')   , $b, 0, "R", $pre);
-      $pdf->Cell(30, 5, db_formatar(@$aDados2[17], 'f')   , $b, 1, "R", $pre);
-     
+      $pdf->Cell(30, 5, db_formatar(@$aDados2[17], 'f')   , $b, 1, "R", $pre);     
     }
   }
   
@@ -623,14 +640,29 @@
     $pdf->Cell(60, 7, 'TOTAL DAS PARCELAS EM ABERTO : ', 1, 0, "R", 0);
     $pdf->Cell(30, 7, $totalparcaber+$totalparcvenc    , 1, 1, "R", 0);
     
+
+
     $pdf->Cell(60, 7, '', 0, 0, "R", 0);
     $pdf->Cell(30, 7, '', 0, 0, "R", 0);
     $pdf->Cell(60, 7, '', 0, 0, "R", 0);
     $pdf->Cell(30, 7, '', 0, 0, "R", 0);
-    
-    $pdf->Cell(60, 7, 'TOTAL EM ABERTO: '                      , 1, 0, "R", 0);
+    $pdf->Cell(60, 7, 'VALOR TOTAL DE PARCELAS VENCIDAS: ', 1, 0, "R", 0);
+    $pdf->Cell(30, 7, db_formatar($totalvenc, 'f'), 1, 1, "R", 0);
+
+    $pdf->Cell(60, 7, '', 0, 0, "R", 0);
+    $pdf->Cell(30, 7, '', 0, 0, "R", 0);
+    $pdf->Cell(60, 7, '', 0, 0, "R", 0);
+    $pdf->Cell(30, 7, '', 0, 0, "R", 0);
+    $pdf->Cell(60, 7, 'VALOR TOTAL DE PARCELAS EM ABERTO: ', 1, 0, "R", 0);
+    $pdf->Cell(30, 7, db_formatar($totalaber, 'f'), 1, 1, "R", 0);
+
+    $pdf->Cell(60, 7, '', 0, 0, "R", 0);
+    $pdf->Cell(30, 7, '', 0, 0, "R", 0);
+    $pdf->Cell(60, 7, '', 0, 0, "R", 0);
+    $pdf->Cell(30, 7, '', 0, 0, "R", 0);
+    $pdf->Cell(60, 7, 'VALOR TOTAL EM ABERTO: ', 1, 0, "R", 0);
     $pdf->Cell(30, 7, db_formatar($totalaber + $totalvenc, 'f'), 1, 1, "R", 0);
-    
+        
     $pdf->Ln(5);
   }
   

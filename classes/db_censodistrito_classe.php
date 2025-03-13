@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,38 +29,39 @@
 //CLASSE DA ENTIDADE censodistrito
 class cl_censodistrito { 
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
+   public $rotulo     = null; 
+   public $query_sql  = null; 
+   public $numrows    = 0; 
+   public $numrows_incluir = 0; 
+   public $numrows_alterar = 0; 
+   public $numrows_excluir = 0; 
+   public $erro_status= null; 
+   public $erro_sql   = null; 
+   public $erro_banco = null;  
+   public $erro_msg   = null;  
+   public $erro_campo = null;  
+   public $pagina_retorno = null; 
    // cria variaveis do arquivo 
-   var $ed262_i_codigo = 0; 
-   var $ed262_i_censomunic = 0; 
-   var $ed262_i_coddistrito = 0; 
-   var $ed262_c_nome = null; 
-   // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+   public $ed262_i_codigo = 0; 
+   public $ed262_i_censomunic = 0; 
+   public $ed262_i_coddistrito = 0; 
+   public $ed262_c_nome = null; 
+   // cria propriedade com as publiciaveis do arquivo 
+   public $campos = "
                  ed262_i_codigo = int8 = Código 
                  ed262_i_censomunic = int4 = Município 
                  ed262_i_coddistrito = int4 = Código Censo 
                  ed262_c_nome = char(50) = Nome 
                  ";
    //funcao construtor da classe 
-   function cl_censodistrito() { 
+   public function __construct()
+   { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("censodistrito"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
    //funcao erro 
-   function erro($mostra,$retorna) { 
+   public function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -69,7 +70,7 @@ class cl_censodistrito {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->ed262_i_codigo = ($this->ed262_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed262_i_codigo"]:$this->ed262_i_codigo);
        $this->ed262_i_censomunic = ($this->ed262_i_censomunic == ""?@$GLOBALS["HTTP_POST_VARS"]["ed262_i_censomunic"]:$this->ed262_i_censomunic);
@@ -80,7 +81,7 @@ class cl_censodistrito {
      }
    }
    // funcao para inclusao
-   function incluir ($ed262_i_codigo){ 
+   public function incluir ($ed262_i_codigo){ 
       $this->atualizacampos();
      if($this->ed262_i_censomunic == null ){ 
        $this->erro_sql = " Campo Município nao Informado.";
@@ -191,7 +192,7 @@ class cl_censodistrito {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($ed262_i_codigo=null) { 
+   public function alterar ($ed262_i_codigo=null) { 
       $this->atualizacampos();
      $sql = " update censodistrito set ";
      $virgula = "";
@@ -301,7 +302,7 @@ class cl_censodistrito {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($ed262_i_codigo=null,$dbwhere=null) { 
+   public function excluir ($ed262_i_codigo=null,$dbwhere=null) { 
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ed262_i_codigo));
      }else{ 
@@ -365,7 +366,7 @@ class cl_censodistrito {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -388,10 +389,10 @@ class cl_censodistrito {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $ed262_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query ( $ed262_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -414,7 +415,7 @@ class cl_censodistrito {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -424,10 +425,10 @@ class cl_censodistrito {
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $ed262_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_file ( $ed262_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -448,7 +449,7 @@ class cl_censodistrito {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

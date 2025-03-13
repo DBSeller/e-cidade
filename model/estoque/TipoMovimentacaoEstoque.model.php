@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -32,94 +32,105 @@
  * @package estoque
  * @author Jeferson Belmiro <jeferson.belmiro@dbseller.com.br>
  */
-class TipoMovimentacaoEstoque {
+class TipoMovimentacaoEstoque
+{
+    const IMPLANTACAO = 1;
+    const IMPLANTACAO_CANCELADA = 2;
+    const ENTRADA_MANUAL = 3;
+    const ENTRADA_MANUAL_CANCELADA = 4;
 
-  const ENTRADA          = 1;
-  const SAIDA            = 2;
-  const EM_TRANSFERENCIA = 4;
-
-  /**
-   * Código do tipo de movimentação
-   *
-   * @var mixed
-   * @access private
-   */
-  private $iCodigo;
-
-  /**
-   * Descricao do tipo de movimentacao
-   *
-   * @var mixed
-   * @access private
-   */
-  private $sDescricao;
-
-  /**
-   * Classificao do tipo
-   * entrada, saida ou em transferencia
-   *
-   * @var integer
-   * @access private
-   */
-  private $iClassificacao;
-
-  /**
-   * Constrói o objeto com os dados
-   * @param integer $iCodigo
-   * @throws Exception
-   */
-  public function __construct($iCodigo = null) {
+    const CODIGO_ENTRADA_ORDEM_COMPRA = 12;
+    const IMPLANTACAO_ALTERADA = 14;
+    const ENTRADA_MANUAL_ALTERADA = 15;
+    const CODIGO_ANULACAO_ENTRADA_ORDEM_COMPRA = 19;
+    const AJUSTE_ESTOQUE_SAIDA = 998;
+    const AJUSTE_ESTOQUE_ENTRADA = 999;
 
     /**
-     * Código do tipo de movimentação não informado
+     * Código do tipo de movimentação
+     *
+     * @var mixed
+     * @access private
      */
-    if (empty($iCodigo)) {
-      return false;
+    private $iCodigo;
+
+    /**
+     * Descricao do tipo de movimentacao
+     *
+     * @var mixed
+     * @access private
+     */
+    private $sDescricao;
+
+    /**
+     * Classificao do tipo
+     * entrada, saida ou em transferencia
+     *
+     * @var integer
+     * @access private
+     */
+    private $iClassificacao;
+
+    /**
+     * Constrói o objeto com os dados
+     * @param integer $iCodigo
+     * @throws Exception
+     */
+    public function __construct($iCodigo = null)
+    {
+        /**
+         * Código do tipo de movimentação não informado
+         */
+        if (empty($iCodigo)) {
+            return false;
+        }
+
+        $oDaoMatestoquetipo = new cl_matestoquetipo();
+        $sSqlTipoMovimentacao = $oDaoMatestoquetipo->sql_query_file($iCodigo);
+        $rsTipoMovimentacao = $oDaoMatestoquetipo->sql_record($sSqlTipoMovimentacao);
+
+        if ($oDaoMatestoquetipo->erro_status == '0') {
+            throw new Exception($oDaoMatestoquetipo->erro_msg);
+        }
+
+        $oDadosTipoMovimentacao = db_utils::fieldsMemory($rsTipoMovimentacao, 0);
+
+        $this->iCodigo = (int)$iCodigo;
+        $this->sDescricao = $oDadosTipoMovimentacao->m81_descr;
+        $this->iClassificacao = (int)$oDadosTipoMovimentacao->m81_tipo;
     }
 
-    $oDaoMatestoquetipo   = db_utils::getDao('matestoquetipo');
-    $sSqlTipoMovimentacao = $oDaoMatestoquetipo->sql_query_file($iCodigo);
-    $rsTipoMovimentacao   = $oDaoMatestoquetipo->sql_record($sSqlTipoMovimentacao);
-
-    if ($oDaoMatestoquetipo->erro_status == '0') {
-      throw new Exception($oDaoMatestoquetipo->erro_msg);
+    /**
+     * Retorna o codigo do tipo de movimentação *
+     * @access public
+     * @return integer
+     */
+    public function getCodigo()
+    {
+        return $this->iCodigo;
     }
 
-    $oDadosTipoMovimentacao = db_utils::fieldsMemory($rsTipoMovimentacao, 0);
+    /**
+     * Retorna a descricao do tipo de movimentação
+     *
+     * @access public
+     * @return string
+     */
+    public function getDescricao()
+    {
+        return $this->sDescricao;
+    }
 
-    $this->iCodigo        = (int) $iCodigo;
-    $this->sDescricao     = $oDadosTipoMovimentacao->m81_descr;
-    $this->iClassificacao = (int) $oDadosTipoMovimentacao->m81_tipo;
-  }
-
-  /**
-   * Retorna o codigo do tipo de movimentação *
-   * @access public
-   * @return integer
-   */
-  public function getCodigo() {
-    return $this->iCodigo;
-  }
-
-  /**
-   * Retorna a descricao do tipo de movimentação
-   *
-   * @access public
-   * @return string
-   */
-  public function getDescricao() {
-    return $this->sDescricao;
-  }
-
-  /**
-   * Retorna a classificação do tipo de movimentação
-   * entrada, saida ou em tranferencia
-   *
-   * @access public
-   * @return integer
-   */
-  public function getClassificacao() {
-    return $this->iClassificacao;
-  }
+    /**
+     * Retorna a classificação do tipo de movimentação
+     * entrada, saida ou em tranferencia
+     *
+     * @access public
+     * @return integer
+     */
+    public function getClassificacao()
+    {
+        return $this->iClassificacao;
+    }
 
 }

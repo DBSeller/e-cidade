@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-include("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_situacao_classe.php");
-include("classes/db_inicialmov_classe.php");
-include("classes/db_inicial_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+include(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_situacao_classe.php"));
+include(modification("classes/db_inicialmov_classe.php"));
+include(modification("classes/db_inicial_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_utils.php"));
 
 db_postmemory($_POST);
 db_postmemory($_GET);
@@ -208,7 +208,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 
 function js_pesquisa() {
-	js_OpenJanelaIframe('top.corpo','db_iframe_inicial','func_inicialsit.php?funcao_js=parent.js_preenchepesquisa|v50_inicial','Pesquisa',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inicial','func_inicialsit.php?funcao_js=parent.js_preenchepesquisa|v50_inicial','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave) {

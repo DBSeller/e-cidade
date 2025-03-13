@@ -13,5 +13,6 @@
   "data_modificacao_menor_data_saida"     : "Data de Modificação menor que a Data da Saída!",
   "nao_ha_vagas_disponiveis"              : "Não há vagas disponíveis nesta turma!",
   "confirmar_exclusao"                    : "A classificação da turma terá sua sequência reiniciada caso a numeração já tenha sido gerada, de forma a acomodar as demais matrículas no espaço vago deixado por esta exclusão. Confirmar exclusão?",
-  "selecione_aluno"                       : "Selecione um aluno."
+  "selecione_aluno"                       : "Selecione um aluno.",
+  "selecione_turno"                       : "Selecione ao menos um Turno."
 }

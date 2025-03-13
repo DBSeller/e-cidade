@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_atendimento_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_atendareatec_classe.php");
-include("classes/db_atendtipoausencia_classe.php");
-include("classes/db_atendtecnicoocupado_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_atendimento_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_atendareatec_classe.php"));
+include(modification("classes/db_atendtipoausencia_classe.php"));
+include(modification("classes/db_atendtecnicoocupado_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clatendimento = new cl_atendimento;
@@ -137,7 +137,7 @@ function js_enviar() {
               <input name="Consulta_atendtecnico" type="submit" id="consulta_atendtecnico" value="Ténicos Ocupados" onclick='js_consulta_atend()'>
 <script>
 function js_consulta_atend(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_atendtecnico','func_atendtecnicoocupado.php','Pesquisa Técnicos Ocupados',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atendtecnico','func_atendtecnicoocupado.php','Pesquisa Técnicos Ocupados',true);
 }
 </script>              
              </td>
@@ -196,7 +196,7 @@ function js_consulta_atend(){
 		//db_lovrot($sql,15,"()","",$funcao_js); 
 		//db_lovrot($sql,30,"()","",$funcao_js,null,"NoMe",$repassa,false);
         db_lovrot($sql,20,"()","",$funcao_js, "", "NoMe", array (), false);
-        // db_criatabela(pg_exec($sql));
+        // db_criatabela(db_query($sql));
           
       }else{ 
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
@@ -235,3 +235,9 @@ document.form1.chave_at02_codatend.select();
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

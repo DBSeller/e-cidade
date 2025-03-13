@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $gform = new cl_formulario_rel_pes;
 ?>
 
@@ -46,11 +46,11 @@ function js_emite(){
   js_gerar_consrel();
   qry  = "?" + document.form1.valores_campos_rel.value;
   qry += "&banco="+ document.form1.banco.value;
-  js_OpenJanelaIframe('top.corpo','db_iframe_calcatua','pes2_calcatua002.php'+qry,'Gerando Arquivo',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_calcatua','pes2_calcatua002.php'+qry,'Gerando Arquivo',true);
 }
 function js_detectaarquivo(arquivo,arquivo1,arquivo2){
   //js_controlarodape(false);
-  top.corpo.db_iframe_calcatua.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_calcatua.hide();
   listagem  = arquivo+"#Download calc_ativos.txt|";
   listagem += arquivo1+"#Download calc_inativos.txt|";
   listagem += arquivo2+"#Download calc_pens.txt";
@@ -58,7 +58,7 @@ function js_detectaarquivo(arquivo,arquivo1,arquivo2){
 }
 function js_erro(msg){
   //js_controlarodape(false);
-  top.corpo.db_iframe_calcatua.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_calcatua.hide();
   alert(msg);
 }
 function js_fechaiframe(){

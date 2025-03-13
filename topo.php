@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
-require_once('model/configuracao/SkinService.service.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification('model/configuracao/SkinService.service.php'));
 
 $hora = time();
 
@@ -78,7 +78,7 @@ if (db_getsession('DB_login') === "dbseller" && db_getsession("DB_id_usuario") =
   <?php 
     $oSkin = new SkinService();
 
-    include( $oSkin->getPathFile("topo.php") );
+    include(modification( $oSkin->getPathFile("topo.php")) );
   ?>
   <script>
 
@@ -95,8 +95,8 @@ if (db_getsession('DB_login') === "dbseller" && db_getsession("DB_id_usuario") =
 
   function js_montarJanelaMensagens() {
 
-    var iWidthParent  = top.corpo.document.body.clientWidth;
-    var iHeightParent = top.corpo.document.body.clientHeight;
+    var iWidthParent  = (window.CurrentWindow || parent.CurrentWindow).corpo.document.body.clientWidth;
+    var iHeightParent = (window.CurrentWindow || parent.CurrentWindow).corpo.document.body.clientHeight;
 
     var iWidthJanela  = 900;
     var iHeightJanela = 900;
@@ -113,14 +113,14 @@ if (db_getsession('DB_login') === "dbseller" && db_getsession("DB_id_usuario") =
     var iMarginTop  = 25;
     iHeightJanela  -= iMarginTop;
 
-    var sNomeIframePai       = 'top.corpo';
+    var sNomeIframePai       = '(window.CurrentWindow || parent.CurrentWindow).corpo';
     var sNomeIframeMensagens = 'db_iframe_mensagens_sistema';
     var sNomeArquivo         = 'con4_mensagens002.php';
     var sTituloJanela        = 'Mensagens';
 
     js_OpenJanelaIframe(sNomeIframePai, sNomeIframeMensagens, sNomeArquivo, sTituloJanela, true, 
                         iMarginTop, iMarginLeft, iWidthJanela, iHeightJanela);
-    top.corpo.document.getElementById('Jandb_iframe_mensagens_sistema').style.zIndex = '999999';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.document.getElementById('Jandb_iframe_mensagens_sistema').style.zIndex = '999999';
     return false;
   }
 

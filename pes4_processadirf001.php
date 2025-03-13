@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_libpessoal.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $clrotulo = new rotulocampo;
 
@@ -77,12 +77,12 @@ function js_emite(){
   if(document.form1.pref_fun){
     qry += '&pref_fun=' + document.form1.pref_fun.value;
   }
-  js_OpenJanelaIframe('top.corpo','db_iframe_geradirf','pes4_geradirf002.php?'+qry,'Gerando Arquivo',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_geradirf','pes4_geradirf002.php?'+qry,'Gerando Arquivo',true);
 }
 
 function js_erro(msg){
   //js_controlarodape(false);
-  top.corpo.db_iframe_geradirf.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_geradirf.hide();
   alert(msg);
 }
 function js_fechaiframe(){
@@ -90,16 +90,16 @@ function js_fechaiframe(){
 }
 function js_controlarodape(mostra){
   if(mostra == true){
-    document.form1.rodape.value = parent.bstatus.document.getElementById('st').innerHTML;
-    parent.bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
+    document.form1.rodape.value = (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
   }else{
-    parent.bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
   }
 }
 
 function js_detectaarquivo(arquivo,pdf){
 //  js_controlarodape(false);
-  top.corpo.db_iframe_geradirf.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_geradirf.hide();
   listagem = arquivo+"#Download Arquivo TXT |";
   listagem+= pdf+"#Download Relatório";
   js_montarlista(listagem,"form1");
@@ -186,6 +186,7 @@ function js_detectaarquivo(arquivo,pdf){
               <input  name="gera" id="gera" type="button" value="Gerar" onclick="js_processarDirf();" >
               <input  name="btnCnpjUnidade" id="btnCnpjUnidade" type="button" value="Inconsistências CNPJ" 
                       onclick="js_verificaPendencias()">
+              <?php if(db_getsession("DB_id_usuario") == 1 ): ?> <input  name="geraDebug" id="geraDebug" type="button" value="Gerar com Debug" onclick="js_processarDirf(true);" > <?php endif; ?>
             </td>
           </tr>
          </table> 
@@ -390,7 +391,7 @@ function js_pesquisaConta(lMostra) {
     sFuncao += 'js_pesquisaContaInput&pesquisa_chave=' + $F('c61_reduz');
   }
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_conplanoreduz', sFuncao, 'Pesquisa', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_conplanoreduz', sFuncao, 'Pesquisa', lMostra);
 }
 
 /**
@@ -446,7 +447,8 @@ function js_bloquearBotao(sId, lBloquear) {
   $(sId).removeAttribute('disabled');
 }
 
-function js_processarDirf() {
+function js_processarDirf(debug) {
+
 
   if ($F('ano_base') == "") {
  
@@ -454,37 +456,84 @@ function js_processarDirf() {
     return false;
   }
 
+
   $('frmProcessaDirf').disable();
 
-  var oParam = new Object();
+  js_divCarregando('Aguarde, verificando configurações...', 'msgBox');
 
-  oParam.iAno             = $F('ano_base');
-  oParam.sCnpj            = $F('cnpj');
-  oParam.lProcessaEmpenho = $F('dadosfinanceiros') == 's' ? true : false;
-  oParam.aDesdobramentos  = Desdobramentos.getDesdobramentos();
-  oParam.exec             = 'processarDirf';  
-
-  js_divCarregando('Aguarde, processando Dados para a Dirf', 'msgBox');
+  var oParam = {
+     exec: 'validarBasesRRA'
+  }
 
   oAjax = new Ajax.Request(
     'pes4_processardirf.RPC.php',
     {
-      method:'post',
-      parameters:'json='+Object.toJSON(oParam),
-      onComplete: js_retornoProcessaDirf
+      method: 'post',
+      parameters: 'json=' + Object.toJSON(oParam),
+      onComplete: function (oAjax) {
+
+        js_removeObj('msgBox');
+        var oRetorno = JSON.parse(oAjax.responseText);
+        if (oRetorno.avisarfaltabases) {
+
+          if (!confirm(oRetorno.message.urlDecode())) {
+            $('frmProcessaDirf').enable();
+            return;
+          }
+        }
+
+        var oParam = new Object();
+
+        if (debug) {
+          oParam.lDebug = true;
+        }
+
+        oParam.iAno = $F('ano_base');
+        oParam.sCnpj = $F('cnpj');
+        oParam.lProcessaEmpenho = $F('dadosfinanceiros') == 's' ? true : false;
+        oParam.aDesdobramentos = Desdobramentos.getDesdobramentos();
+        oParam.exec = 'processarDirf';
+
+        js_divCarregando('Aguarde, processando Dados para a Dirf', 'msgBox');
+
+        oAjax = new Ajax.Request(
+          'pes4_processardirf.RPC.php',
+          {
+            method: 'post',
+            parameters: 'json=' + Object.toJSON(oParam),
+            onComplete: js_retornoProcessaDirf
+          }
+        );
+      }
     }
-  )
+  );
+
 }
 
 function js_retornoProcessaDirf(oAjax) {
   
   $('frmProcessaDirf').enable();
   js_removeObj('msgBox');
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   if (oRetorno.status == 1) {
   
     alert('Processamento efetuado com sucesso.');
+
+    if(oRetorno.lDebug) {
+
+      var divLinkLog     = document.createElement('div');
+      divLinkLog.style   = ' margin: 20PX auto; width: 120px;';
+
+      var sLinkLog       = document.createElement('a');
+      sLinkLog.href      = 'tmp/LogDirf.txt';
+      sLinkLog.target    = '_blanck';
+      sLinkLog.innerHTML = 'LogDirf.txt';
+
+      divLinkLog.appendChild(sLinkLog);
+
+      document.getElementById('gera').parentNode.appendChild(divLinkLog);
+    }
     
     if ( oRetorno.aArquivosInconsistentes.length > 0) {
         
@@ -527,7 +576,7 @@ function js_retornoUnidadesCnpjInvalido(oAjax) {
   }
   var iWidth   = document.width/1.5;
   var iHeight  = (document.body.clientHeight/1.5); 
-  var oRetorno    = eval("("+oAjax.responseText+")");
+  var oRetorno    = JSON.parse(oAjax.responseText);
   oWindowUnidades = new windowAux('wndUnidades', 'Unidades Com CNPJ Inconsistentes', iWidth, iHeight);
   sContent  = "<div class='infoLancamentoContabil' style='text-align:center;padding:2px;width:99%'>";
   sContent += "  <div style='width:100%'>";

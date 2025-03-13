@@ -1,12 +1,22 @@
 var CONTEXT = this;
 
+/**
+ *  Cria uma modal
+ *
+ *  @constructor
+ *  @return {Object}
+ */
 DBModal = function() {
 
   this.oDBMask = {};
 
+  this.dbMaskOptions = {};
+
   this.mContent = "";
 
   this.sTitle = "";
+
+  this.oDivContainer = null;
 
   /**
    * Div do cabecalho da modal
@@ -31,7 +41,16 @@ DBModal = function() {
     onclick: this.destroy.bind(this),
     disabled: false,
     type: "button"
-  }]
+  }];
+
+  /**
+   * Mapa de eventos implementados pela classe
+   * @type {Object}
+   */
+  this.events = {
+    beforeDestroy: function() {},
+    afterDestroy: function() {}
+  }
 
   DBModal.dependencies();
 
@@ -94,10 +113,10 @@ DBModal.prototype.setButtons = function(aButtons) {
  */
 DBModal.prototype.show = function() {
 
-  this.oDBMask = new DBMask();
+  this.oDBMask = new DBMask(this.dbMaskOptions);
 
-  var oDivContainer = CONTEXT.document.createElement('div');
-  oDivContainer.setAttribute('class', 'db-modal-container');
+  this.oDivContainer = CONTEXT.document.createElement('div');
+  this.oDivContainer.setAttribute('class', 'db-modal-container');
 
 
   this.oDivCabecalho = this.__montaCabecalho();
@@ -114,11 +133,11 @@ DBModal.prototype.show = function() {
 
   this.oDivRodape = this.__montaRodape();
 
-  oDivContainer.appendChild(this.oDivCabecalho)
-  oDivContainer.appendChild(this.oDivConteudo)
-  oDivContainer.appendChild(this.oDivRodape)
+  this.oDivContainer.appendChild(this.oDivCabecalho)
+  this.oDivContainer.appendChild(this.oDivConteudo)
+  this.oDivContainer.appendChild(this.oDivRodape)
 
-  this.oDBMask.getMaskElement().appendChild(oDivContainer);
+  this.oDBMask.getMaskElement().appendChild(this.oDivContainer);
 
 }
 
@@ -180,6 +199,10 @@ DBModal.prototype.__montaRodape = function() {
     oButton.setAttribute('class', oDadoButton.type || "button")
     oButton.innerHTML = oDadoButton.label;
     oButton.onclick = oDadoButton.onclick;
+    if(oDadoButton.styles){
+        console.log(oDadoButton.styles);
+        oButton.setAttribute("style",oDadoButton.styles);
+    }
 
     if ( oDadoButton.disabled ) {
       oButton.setAttribute('disabled', true)
@@ -202,12 +225,9 @@ DBModal.dependencies = function() {
     throw "Não é possível carregar as dependências (scripts.js não carregado)";
   }
 
-  console.log('Carregando estilos do componente.')
   require_once('estilos/widgets/DBModalBase.css');
 
   if ( !CONTEXT["DBMask"] ) {
-
-    console.log("Carregando dependência DBMask");
     require_once("scripts/widgets/DBMask.widget.js");
   }
 
@@ -217,6 +237,10 @@ DBModal.dependencies = function() {
  * Remove o componente
  */
 DBModal.prototype.destroy = function() {
+
+  if ( this.events['beforeDestroy'] ) {
+    this.events['beforeDestroy'].call(this);
+  }
 
   this.oDBMask.destroy();
 
@@ -232,4 +256,12 @@ DBModal.prototype.destroy = function() {
 
   this.oDivRodape    = null;
 
+  if ( this.events['afterDestroy'] ) {
+    this.events['afterDestroy'].call(this);
+  }
+
+}
+
+DBModal.prototype.setDBMaskOptions = function(options) {
+  this.dbMaskOptions = options;
 }

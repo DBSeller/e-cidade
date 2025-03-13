@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: transporteescolar
@@ -571,7 +571,8 @@ class cl_pontoparada {
       $sql .= $campos;
     }
     $sql .= " from pontoparada ";
-    $sql .= "      left join pontoparadadepartamento on tre04_sequencial =  tre05_pontoparada";
+    $sql .= "      left join pontoparadadepartamento on tre05_pontoparada = tre04_sequencial ";
+    $sql .= "      left join pontoparadaescolaproc   on tre13_pontoparada = tre04_sequencial ";
     $sql2 = "";
     if($dbwhere==""){
       if($tre04_sequencial!=null ){
@@ -592,16 +593,16 @@ class cl_pontoparada {
           }
           return $sql;
   }
-  
+
   // funcao do sql
   function sql_query_ponto_parada_linha_transporte ( $tre04_sequencial=null, $campos="*", $ordem=null, $dbwhere=""){
     $sql = "select ";
-    
+
     if ($campos != "*" ) {
-      
+
       $campos_sql = split("#",$campos);
       $virgula = "";
-      
+
       for ($i=0;$i<sizeof($campos_sql);$i++) {
         $sql .= $virgula.$campos_sql[$i];
         $virgula = ",";
@@ -609,34 +610,34 @@ class cl_pontoparada {
     } else {
       $sql .= $campos;
     }
-    
+
     $sql .= " from pontoparada ";
     $sql .= "      inner join linhatransportepontoparada      on tre11_pontoparada = tre04_sequencial";
     $sql .= "      inner join itinerariologradouro            on tre10_sequencial  = tre11_itinerariologradouro";
     $sql .= "      inner join linhatransporteitinerario       on tre09_sequencial  = tre10_linhatransporteitinerario";
     $sql .= "      inner join linhatransporte                 on tre06_sequencial  = tre09_linhatransporte";
     $sql2 = "";
-    
+
     if ($dbwhere=="") {
-      
+
       if ($tre04_sequencial!=null ) {
         $sql2 .= " where pontoparada.tre04_sequencial = $tre04_sequencial ";
       }
-      
+
     } else if($dbwhere != "") {
       $sql2 = " where $dbwhere";
     }
-        
+
     $sql .= $sql2;
-    
+
     if ($ordem != null ) {
-      
+
       $sql        .= " order by ";
       $campos_sql  = split("#",$ordem);
       $virgula     = "";
-      
+
       for ($i = 0; $i < sizeof($campos_sql); $i++) {
-        
+
         $sql     .= $virgula.$campos_sql[$i];
         $virgula  = ",";
       }

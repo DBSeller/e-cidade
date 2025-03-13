@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_vistorias_classe.php");
-include("classes/db_tipovistorias_classe.php");
-include("classes/db_fandamusu_classe.php");
-include("classes/db_fandam_classe.php");
-include("classes/db_vistlocal_classe.php");
-include("classes/db_vistexec_classe.php");
-include("classes/db_vistinscr_classe.php");
-include("classes/db_vistsanitario_classe.php");
-include("classes/db_procfiscalvistorias_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_vistorias_classe.php"));
+include(modification("classes/db_tipovistorias_classe.php"));
+include(modification("classes/db_fandamusu_classe.php"));
+include(modification("classes/db_fandam_classe.php"));
+include(modification("classes/db_vistlocal_classe.php"));
+include(modification("classes/db_vistexec_classe.php"));
+include(modification("classes/db_vistinscr_classe.php"));
+include(modification("classes/db_vistsanitario_classe.php"));
+include(modification("classes/db_procfiscalvistorias_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 if(!isset($abas)){
   echo "<script>location.href='fis1_vistorias005.php?db_opcao=2&inscr=1'</script>";
@@ -112,7 +112,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
 
 // exclui e inclui no procfiscalvistorias
 	 $sqlprocfiscalv = "select y109_sequencial from procfiscalvistorias where y109_codvist = $y70_codvist ";
-	 $resultprocfiscalv = pg_query($sqlprocfiscalv);
+	 $resultprocfiscalv = db_query($sqlprocfiscalv);
 	 $linhasprocfiscalv = pg_num_rows($resultprocfiscalv);
 	 if($linhasprocfiscalv>0){
 	 	 db_fieldsmemory($resultprocfiscalv,0);
@@ -179,7 +179,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
 										 inner join procfiscalcgm on y109_procfiscal = y101_procfiscal 
 										 inner join cgm on y101_numcgm=z01_numcgm 
 										 where y109_codvist = $chavepesquisa ";
-	 $resultprocfiscal = pg_query($sqlprocfiscal);
+	 $resultprocfiscal = db_query($sqlprocfiscal);
 	 $linhasprocfiscal = pg_num_rows($resultprocfiscal);
 	 if($linhasprocfiscal>0){
 	 	db_fieldsmemory($resultprocfiscal,0);
@@ -203,7 +203,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmvistorias.php");
+	include(modification("forms/db_frmvistorias.php"));
 	?>
     </center>
 	</td>

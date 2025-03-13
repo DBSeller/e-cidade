@@ -58,7 +58,7 @@ db_input('it07_descr',40,$Iit07_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_itbisituacao','func_itbisituacao.php?funcao_js=parent.js_preenchepesquisa|it07_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbisituacao','func_itbisituacao.php?funcao_js=parent.js_preenchepesquisa|it07_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_itbisituacao.hide();

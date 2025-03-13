@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_liclicita_classe.php");
-require_once("classes/db_liclicitaata_classe.php");
-require_once("classes/db_atatemplategeral_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_liclicita_classe.php"));
+require_once(modification("classes/db_liclicitaata_classe.php"));
+require_once(modification("classes/db_atatemplategeral_classe.php"));
 
 $oPost              = db_utils::postMemory($_POST);
 
@@ -104,40 +104,40 @@ if (isset($oPost->l20_codigo) && trim($oPost->l20_codigo) != '') {
 	          <b>Geração de Atas</b>
 	        </legend>
 	        <table> 
-					  <tr> 
-					    <td nowrap title="<?=$Tl20_codigo?>">
-						    <b>
+				<tr> 
+					<td nowrap title="<?=$Tl20_codigo?>">
+						<b>
 						    <?
 						      db_ancora('Licitação:',"js_pesquisa_liclicita(true);",1);
 						    ?>
 						    </b> 
-					    </td>
-					    <td nowrap>
-					      <? 
-					        db_input("l20_codigo",10,$Il20_codigo,true,"text",3,"onchange='js_pesquisa_liclicita(false);'");
-			          ?>
-					    </td>
-					  </tr>
-					  <? if ( $lListaModelos ) { ?>
-					   <tr id="modelotemplate">
-					     <td>
-					       <b>Modelos:</b>
-					     </td>
-               <td>
-                 <?
+					</td>
+					<td nowrap>
+					    <? 
+					    	db_input("l20_codigo",10,$Il20_codigo,true,"text",3,"onchange='js_pesquisa_liclicita(false);'");
+			        	?>
+					</td>
+				</tr>
+			<?php if ( $lListaModelos ) { ?>
+				<tr id="modelotemplate">
+				    <td>
+					    <b>Modelos:</b>
+					</td>
+               		<td>
+                 		<?
 			              db_selectrecord('documentotemplateata',$rsModelos,true,1,'');
-                 ?>
-               </td>					     
-					   </tr> 
-					   <tr>
-					     <td title="<?=@$Tl39_posicaoinicial?>">
-					       <?=@$Ll39_posicaoinicial?>
-					     </td>
-					     <td>
-					     <?
-								 $sWhere            = "l39_liclicita = {$l20_codigo} and l39_posicaoinicial is true";
-								 $sSqlLicLicitaAta  = $clliclicitaata->sql_query_file(null, "*", null, $sWhere);
-								 $rsSqlLicLicitaAta = $clliclicitaata->sql_record($sSqlLicLicitaAta);
+                 		?>
+               		</td>					     
+				</tr> 
+				<tr>
+				    <td title="<?=@$Tl39_posicaoinicial?>">
+					    <?=@$Ll39_posicaoinicial?>
+					</td>
+					<td>
+						<?php
+						 $sWhere            = "l39_liclicita = {$l20_codigo} and l39_posicaoinicial is true";
+					 	$sSqlLicLicitaAta  = $clliclicitaata->sql_query_file(null, "*", null, $sWhere);
+					 $rsSqlLicLicitaAta = $clliclicitaata->sql_record($sSqlLicLicitaAta);
 								 if ($clliclicitaata->numrows > 0) {
 								   $lInicialGerada = true;
 								 }
@@ -148,8 +148,29 @@ if (isset($oPost->l20_codigo) && trim($oPost->l20_codigo) != '') {
                ?>
 					     </td>
 					   </tr>
+					   <tr>
+					<td title="Fornecedor">
+						<b>Fornecedor:</b>
+					</td>
+					<td>
+						<?php
+
+						$oLicitacao = new licitacao($l20_codigo);
+						$iCodOrc = $oLicitacao->getCodigoOrcamento();
+						
+						$oOrcamento = new OrcamentoCompra($iCodOrc);
+						$aFornecedoresOrc = $oOrcamento->getFornecedores();
+						 
+						 foreach($aFornecedoresOrc as $aFornecedor){
+							$aListaForn[$aFornecedor->getCodigo()] = $aFornecedor->getNome();
+						 }
+						 
+						 db_select("fornecedor", $aListaForn, true, "text");
+               			?>
+					</td>
+				</tr>
 					  <? } ?>
-	        </table>
+			</table>
 	        <span id="mensagemposicao">*Posição inicial terá como modelo a opção escolhida na confirmação do julgamento.</span>
 	      </fieldset>
 	    </td>
@@ -194,6 +215,7 @@ if (isset($oPost->l20_codigo) && trim($oPost->l20_codigo) != '') {
   function js_geraAta() {
   
     var sQuery  = '?iLicitacao='+$('l20_codigo').value;
+      sQuery  += '&iFornecedor='+$('fornecedor').value;
     
 		if ($F('l39_posicaoinicial') == 'f') {
       sQuery += '&iCodDocumento='+$('documentotemplateata').value;
@@ -214,12 +236,12 @@ if (isset($oPost->l20_codigo) && trim($oPost->l20_codigo) != '') {
 	  if( mostra ){
 	  
 	    var sUrl = 'func_liclicita.php?funcao_js=parent.js_mostraliclicita1|l20_codigo';
-	    js_OpenJanelaIframe('top.corpo','db_iframe_liclicita', sUrl, 'Pesquisa', true);
+	    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_liclicita', sUrl, 'Pesquisa', true);
 	  } else {
 	    if(document.form1.l20_codigo.value != ''){ 
 	    
 	      var sUrl = 'func_liclicita.php?pesquisa_chave='+document.form1.l20_codigo.value+'&funcao_js=parent.js_mostraliclicita';
-	      js_OpenJanelaIframe('top.corpo', 'db_iframe_liclicita', sUrl, 'Pesquisa', false);
+	      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_liclicita', sUrl, 'Pesquisa', false);
 	    } else {
         document.form1.l20_codigo.value = ''; 
 	    }

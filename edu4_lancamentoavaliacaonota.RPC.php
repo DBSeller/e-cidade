@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,21 +25,19 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/JSON.php");
-require_once ("std/db_stdClass.php");
-require_once ("std/DBDate.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/exceptions/BusinessException.php");
-require_once ("libs/exceptions/DBException.php");
-require_once ("libs/exceptions/FileException.php");
-require_once ("libs/exceptions/ParameterException.php");
+define( 'MENSAGENS_EDU4_LANCAMENTOAVALIACAONOTA_RPC', 'educacao.escola.edu4_lancamentoavaliacaonota_RPC.' );
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
 $iEscola           = db_getsession("DB_coddepto");
 $oJson             = new Services_JSON();
@@ -71,7 +69,7 @@ if ($oDaoEduParametros->numrows > 0) {
  * Verifica se um professor esta logado
  */
 $iCodigoUsuario   = db_getsession("DB_id_usuario");
-$oDocente         = DocenteRepository::getDocenteLogado($iCodigoUsuario);
+$oDocente         = DocenteRepository::getDocenteLogado( $iCodigoUsuario, $iEscola );
 
 if ($oDocente != null) {
   $lProfessorLogado = true;
@@ -92,10 +90,18 @@ try {
       if (isset($oParam->iTurma) && isset($oParam->iEtapa) && !empty($oParam->iTurma) && !empty($oParam->iEtapa)) {
 
         $oRetorno->aPeriodos    = array();
-        $oTurma                 = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
-        $oEtapa                 = EtapaRepository::getEtapaByCodigo($oParam->iEtapa);
+
+        $oTurma = EducacaoSessionManager::carregarTurma($oParam->iTurma);
+        $oEtapa = EducacaoSessionManager::carregarEtapa($oParam->iEtapa);
+
         $oProcedimentoAvaliacao = $oTurma->getProcedimentoDeAvaliacaoDaEtapa($oEtapa);
-        $_SESSION["oTurma"]     = $oTurma;
+
+        if ( isset($oParam->iRegencia) ) {
+
+          $oRegencia              = RegenciaRepository::getRegenciaByCodigo($oParam->iRegencia);
+          $oProcedimentoAvaliacao = $oRegencia->getProcedimentoAvaliacao();
+        }
+
         $lControlaFrequencia = false;
         if (isset($oParam->lControlaFrequencia)) {
           $lControlaFrequencia = true;
@@ -122,7 +128,9 @@ try {
               $oPeriodosAvaliacao->iMenorValor = $oAvaliacao->getFormaDeAvaliacao()->getMenorValor();
               $oPeriodosAvaliacao->iMaiorValor = $oAvaliacao->getFormaDeAvaliacao()->getMaiorValor();
               $oPeriodosAvaliacao->nVariacao   = $oAvaliacao->getFormaDeAvaliacao()->getVariacao();
+
               break;
+
             case 'NIVEL':
 
               $oPeriodosAvaliacao->aConceitos = array();
@@ -178,6 +186,9 @@ try {
         $oRetorno->aPeriodos = $aPeriodosAvaliacaoRetorno;
       }
 
+      EducacaoSessionManager::registrarTurma($oTurma);
+      EducacaoSessionManager::registrarEtapa($oEtapa);
+
       break;
 
     /**
@@ -190,12 +201,6 @@ try {
      */
     case 'getAlunosAvaliacaoRegencia' :
 
-      if (isset($_SESSION["oTurma"]) && $_SESSION["oTurma"] instanceof Turma) {
-        $oTurma = $_SESSION["oTurma"];
-      } else {
-        $oTurma = TurmaRepository::getTurmaByCodigo($oParam->iTurma);
-      }
-
       if (!isset($oParam->iTurma) || !isset($oParam->iEtapa)) {
         throw new BusinessException('Turma ou regencia não informada.');
       }
@@ -203,6 +208,9 @@ try {
       if(!isset($oParam->iRegencia)) {
         throw new BusinessException('Nenhuma disciplina informada.');
       }
+
+      $oTurma = EducacaoSessionManager::carregarTurma($oParam->iTurma);
+      $oEtapa = EducacaoSessionManager::carregarEtapa($oParam->iEtapa);
 
       $oRetorno->aAlunos   = array();
 
@@ -212,12 +220,26 @@ try {
 
       $sSqlParametro       = $oDaoParametro->sql_query_file(null, $sCamposParametro, null, $sWhereParametro);
       $rsParametro         = $oDaoParametro->sql_record($sSqlParametro);
-      $oDadosParametro     = db_utils::fieldsMemory($rsParametro, 0);
 
-      $oRetorno->iTabIndex             = $oDadosParametro->ed233_deslocamentocursor;
-      $oRetorno->lGeraResultadoParcial = $oDadosParametro->ed233_c_notabranca == 'S' ? true : false;
+      if( !is_resource( $rsParametro ) ) {
 
-      $oEtapa      = EtapaRepository::getEtapaByCodigo($oParam->iEtapa);
+        $oErro        = new stdClass();
+        $oErro->sErro = pg_last_error();
+
+        throw new DBException( _M( MENSAGENS_EDU4_LANCAMENTOAVALIACAONOTA_RPC . 'erro_buscar_parametros', $oErro ) );
+      }
+
+      $oRetorno->iTabIndex             = '';
+      $oRetorno->lGeraResultadoParcial = false;
+
+      if( pg_num_rows( $rsParametro ) > 0 ) {
+
+        $oDadosParametro = db_utils::fieldsMemory($rsParametro, 0);
+
+        $oRetorno->iTabIndex             = $oDadosParametro->ed233_deslocamentocursor;
+        $oRetorno->lGeraResultadoParcial = $oDadosParametro->ed233_c_notabranca == 'S' ? true : false;
+      }
+
       $aMatriculas = $oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa);
       $iAno        = $oTurma->getCalendario()->getAnoExecucao();
 
@@ -233,9 +255,27 @@ try {
         }
       }
 
-      foreach ($aMatriculas as $oMatricula) {
+      /**
+       * Verifica se turma utiliza proporcionalidade
+       */
+      $lTurmaUtilizaProporciolalidade = false;
+      $oProcedimentoAvaliacao         = $oTurma->getProcedimentoDeAvaliacaoDaEtapa($oEtapa);
 
-        db_inicio_transacao();
+      $aOrdemElementosCompoeResultadoComProporcionalidade = array();
+      foreach ($oProcedimentoAvaliacao->getResultados() as $oResultadoAvaliacao) {
+
+        if ( $oResultadoAvaliacao->getFormaDeObtencao() == 'SO' &&
+             $oResultadoAvaliacao->utilizaProporcionalidade() ) {
+
+          $lTurmaUtilizaProporciolalidade                     = true;
+          $aOrdemElementosCompoeResultadoComProporcionalidade = buscaOrdemElementos($oResultadoAvaliacao);
+        }
+      }
+
+      $aDiarioConselho = array();
+
+      db_inicio_transacao();
+      foreach ($aMatriculas as $oMatricula) {
 
         $oDadosAluno = new stdClass();
         $oDiario     = $oMatricula->getDiarioDeClasse();
@@ -253,7 +293,6 @@ try {
         $oDadosAluno->dtMatricula        = $oMatricula->getDataMatricula()->convertTo(DBDate::DATA_PTBR);
         $oDadosAluno->lAvaliadoParecer   = $oMatricula->isAvaliadoPorParecer();
         $oDadosAluno->dtSaida            = "";
-
         if ($oMatricula->getDataEncerramento() != "") {
           $oDadosAluno->dtSaida = $oMatricula->getDataEncerramento()->convertTo(DBDate::DATA_PTBR);
         }
@@ -276,22 +315,6 @@ try {
         $oDadosAluno->lProgressaoParcialAnterior = false;
         $oDadosAluno->aDisciplinasProgressao     = array();
 
-        if( count( $oMatricula->getAluno()->getProgressaoParcial() ) > 0 ) {
-
-          $oDadosAluno->lProgressaoParcialNaEtapa = true;
-
-          foreach( $oMatricula->getAluno()->getProgressaoParcial() as $oProgressaoParcialAluno ) {
-
-            if(    $oProgressaoParcialAluno->getEtapa()->getOrdem() < $oRegencia->getEtapa()->getOrdem()
-                && !$oProgressaoParcialAluno->isConcluida()
-              ) {
-
-              $oDadosAluno->lProgressaoParcialAnterior = true;
-              $oDadosAluno->aDisciplinasProgressao[]   = urlencode( $oProgressaoParcialAluno->getDisciplina()->getNomeDisciplina() );
-            }
-          }
-        }
-
         $oDadoRegencia                        = new stdClass();
         $oDadoRegencia->iCodigoRegencia       = $oRegencia->getCodigo();
         $oDadoRegencia->sDescricao            = urlencode($oRegencia->getDisciplina()->getNomeDisciplina());
@@ -299,11 +322,52 @@ try {
         $oDadoRegencia->aAproveitamentos      = array();
         $oDadoRegencia->lObrigatoria          = $oRegencia->isObrigatoria();
         $oDadoRegencia->lCaracterReprobatorio = $oRegencia->possuiCaracterReprobatorio();
+        $oDadoRegencia->lProgressaoParcial    = false;
 
-        $oDadosAproveitamento             = $oMatricula->getDiarioDeClasse()->getDisciplinasPorRegencia($oRegencia);
+        if( count( $oMatricula->getAluno()->getProgressaoParcial() ) > 0 ) {
+
+          foreach( $oMatricula->getAluno()->getProgressaoParcial() as $oProgressaoParcialAluno ) {
+
+            if(    $oProgressaoParcialAluno->getEtapa()->getOrdem() < $oRegencia->getEtapa()->getOrdem()
+                && $oProgressaoParcialAluno->isAtiva()
+              ) {
+
+              $oDadosAluno->lProgressaoParcialAnterior = true;
+              $sDisciplinaProgressao = $oProgressaoParcialAluno->getDisciplina()->getNomeDisciplina();
+              $sEtapaProgressao      = $oProgressaoParcialAluno->getEtapa()->getNome();
+
+              $oDadosAluno->aDisciplinasProgressao[]   = urlencode("{$sDisciplinaProgressao} ({$sEtapaProgressao})" );
+            }
+
+            if(    $oProgressaoParcialAluno->getEtapa()->getOrdem() == $oRegencia->getEtapa()->getOrdem()
+                && $oProgressaoParcialAluno->getAno() == $oRegencia->getTurma()->getCalendario()->getAnoExecucao()
+                && $oProgressaoParcialAluno->getDisciplina()->getCodigoDisciplina() == $oRegencia->getDisciplina()->getCodigoDisciplina()
+              ) {
+              $oDadoRegencia->lProgressaoParcial = true;
+            }
+          }
+        }
+
+        // $oDadosAproveitamento é o DiarioAvaliacaoDisciplina
+        $oDadosAproveitamento                 = $oMatricula->getDiarioDeClasse()->getDisciplinasPorRegencia($oRegencia);
+        $aOrdemPeriodoAplicaProporcionalidade = $oDadosAproveitamento->getOrdemPeriodosAplicaProporcionalidade();
+
+        /**
+         * Verifica se foi configurado um resultado como
+         */
+        foreach ($aOrdemPeriodoAplicaProporcionalidade as $iOrdemPeriodo) {
+
+          $oElemento = $oDadosAproveitamento->getPeriodoAvaliacaoPorOrdemSequencial($iOrdemPeriodo);
+          if ($oElemento instanceof ResultadoAvaliacao) {
+            $aOrdemPeriodoAplicaProporcionalidade = buscaOrdemElementos($oElemento, $aOrdemPeriodoAplicaProporcionalidade );
+          }
+        }
 
         $aAvaliacoesDependentesReprovadas = array();
-        $lTemRecuperacao = false;
+        $lTemRecuperacao                  = false;
+        $aElementosEmRecuperacao          = array();
+        $aElementosDeRecuperacao          = array();
+
         foreach ($oDadosAproveitamento->getAvaliacoes() as $oAvaliacao) {
 
           $sFormaAvaliacao = $oAvaliacao->getElementoAvaliacao()->getFormaDeAvaliacao()->getTipo();
@@ -314,8 +378,19 @@ try {
           if ($oMatricula->isAvaliadoPorParecer()) {
             $sFormaAvaliacao = 'PARECER';
           }
+          
+          $nNota = $oAvaliacao->getValorAproveitamento()->getAproveitamento();
+        
+          if ( $oAvaliacao->getElementoAvaliacao()->isResultado() && $sFormaAvaliacao == 'NOTA' ) {
+            $nNota = $oAvaliacao->getValorAproveitamento()->getAproveitamentoReal();
+          }
+         
+          if ( $oAvaliacao->getElementoAvaliacao()->isResultado() && $sFormaAvaliacao == 'PARECER' ) {
+              if ( !empty($oAvaliacao->getParecer()) ) {
+                    $nNota = $oAvaliacao->getParecer();
+              }
+          }
 
-          $nNota           = $oAvaliacao->getValorAproveitamento()->getAproveitamento();
           $sTipoAvaliacao  = 'A';
           $iOrdem          = '';
           $lFaltasAbonadas = false;
@@ -374,23 +449,63 @@ try {
             $oDadosAluno->lTemParecer = true;
           }
 
-          if ($oAvaliacao->getElementoAvaliacao()->isResultado() || $sFormaAvaliacao == 'NOTA') {
+          if ($oAvaliacao->getElementoAvaliacao()->isResultado() && $sFormaAvaliacao == 'NOTA') {
             $nNota = ArredondamentoNota::formatar($nNota, $iAno);
           }
-
-          $sFormaObtencao = '';
+            $lAmparado      = $oAvaliacao->isAmparado();
+            $sFormaObtencao = '';
+           
           if ($oElementoAvaliacao instanceof ResultadoAvaliacao) {
-            $sFormaObtencao = $oElementoAvaliacao->getFormaDeObtencao();
-          }
 
+            $sFormaObtencao = $oElementoAvaliacao->getFormaDeObtencao();
+
+            if( $oDadosAproveitamento->proporcionalidadeComAmparoTotal() ) {
+              $lAmparado = true;
+            }
+          }
+         
           $oDadosAvaliacao                 = new stdClass();
           $oDadosAvaliacao->iPeriodo       = $oAvaliacao->getElementoAvaliacao()->getOrdemSequencia();
           $oDadosAvaliacao->iCodigoPeriodo = null;
+          /**
+           * Proporcionalidade, validações para bloqueio dos campos
+           * - quando turma possui proporcionalidade e aluno tem proporcionalidade configurada
+           * - valida bloqueio dos períodos que não fazem parte do calculo do resultado final
+           */
+          $oDadosAvaliacao->lAlunoComProporcionalidade = false;
+          $oDadosAvaliacao->lBloqueiaPeriodo           = false; // inicializa como false para não quebrar outros procedimentos
 
-          if( $oAvaliacao->getElementoAvaliacao() instanceof AvaliacaoPeriodica ) {
-            $oDadosAvaliacao->iCodigoPeriodo = $oAvaliacao->getElementoAvaliacao()->getPeriodoAvaliacao()->getCodigo();
+          if ( $lTurmaUtilizaProporciolalidade && count($aOrdemPeriodoAplicaProporcionalidade) > 0 ) {
+
+            $oDadosAvaliacao->lAlunoComProporcionalidade = true;
+            /**
+             * Só bloqueia o período se o período de avaliação, faz parte do calculo de soma
+             */
+            if ( !in_array($oDadosAvaliacao->iPeriodo, $aOrdemPeriodoAplicaProporcionalidade) &&
+                 in_array($oDadosAvaliacao->iPeriodo, $aOrdemElementosCompoeResultadoComProporcionalidade) ) {
+              $oDadosAvaliacao->lBloqueiaPeriodo = true; // caso não esteja configurado para aplicar proporcionalidade deve bloquear
+            }
           }
 
+          /**
+           * Identifica que exite uma avaliação alternativa configurada para o período e que este não pode receber avaliação
+           */
+          $oDadosAvaliacao->lPeriodoComAvaliacaoAlternativaSemAvaliacao = false;
+
+          $oDadosAvaliacao->lPeriodoControlaFrequencia = false;
+          if( $oAvaliacao->getElementoAvaliacao() instanceof AvaliacaoPeriodica ) {
+
+            $oDadosAvaliacao->iCodigoPeriodo = $oAvaliacao->getElementoAvaliacao()->getPeriodoAvaliacao()->getCodigo();
+            $oDadosAvaliacao->lPeriodoControlaFrequencia = $oAvaliacao->getElementoAvaliacao()->getPeriodoAvaliacao()->hasControlaFrequencia();
+          }
+         
+            /**
+             * Em caso de Forma de Obtenção igual a Aprovação por Periodo não exibe a nota final
+             */
+            if ($sFormaObtencao == 'AP') {
+              $nNota = '';
+            }
+         
           $oDadosAvaliacao->nNota                 = urlencode("{$nNota}");
           $oDadosAvaliacao->sTipoAvaliacao        = $sTipoAvaliacao;
           $oDadosAvaliacao->iOrdem                = $iOrdem; // Ordem do conceito
@@ -409,18 +524,16 @@ try {
           $oDadosAvaliacao->sFormaObtencao        = $sFormaObtencao;
           $oDadosAvaliacao->lRecuperacao          = $oAvaliacao->emRecuperacao();
           $oDadosAvaliacao->lAvaliacaoExterna     = $oAvaliacao->isAvaliacaoExterna();
-          $oDadosAvaliacao->lAmparado             = $oAvaliacao->isAmparado();
+          $oDadosAvaliacao->lAmparado             = $lAmparado;
           $oDadosAvaliacao->lConvertido           = $oAvaliacao->isConvertido();
-          $oDadosAvaliacao->sFormaAvaliacao       = urlencode($oAvaliacao->getElementoAvaliacao()
-                                                                         ->getFormaDeAvaliacao()
-                                                                         ->getDescricao()
-                                                             );
+          $oDadosAvaliacao->sFormaAvaliacao       = urlencode($sFormaAvaliacao);
           $oDadosAvaliacao->iFormaAvaliacao       = $oAvaliacao->getElementoAvaliacao()
                                                                ->getFormaDeAvaliacao()
                                                                ->getCodigo();
           $oDadosAvaliacao->sTipoFormaAvaliacao   = urlencode($sFormaAvaliacao);
           $oDadosAvaliacao->nMenorValor           = "";
           $oDadosAvaliacao->nMaiorValor           = "";
+          $oDadosAvaliacao->nVariacao             = "";
           $oDadosAvaliacao->mAproveitamentoMinino = $oAvaliacao->getElementoAvaliacao()
                                                                ->getFormaDeAvaliacao()
                                                                ->getAproveitamentoMinino();
@@ -434,6 +547,26 @@ try {
 
             $oDadosAvaliacao->nMenorValor = $oAvaliacao->getElementoAvaliacao()->getFormaDeAvaliacao()->getMenorValor();
             $oDadosAvaliacao->nMaiorValor = $oAvaliacao->getElementoAvaliacao()->getFormaDeAvaliacao()->getMaiorValor();
+            $oDadosAvaliacao->nVariacao   = $oAvaliacao->getElementoAvaliacao()->getFormaDeAvaliacao()->getVariacao();
+
+            if ( $oDadosAproveitamento->hasAvaliacaoAlternativa() ) {
+
+              $oAvaliacaoAlternativa = $oDadosAproveitamento->getAvaliacaoAlternativa();
+
+              $oRegra = $oAvaliacaoAlternativa->getConfiguracaoPorOrdem($oAvaliacao->getElementoAvaliacao()->getOrdemSequencia());
+              if ( !is_null($oRegra) ) {
+
+                $oDadosAvaliacao->nMenorValor           = $oRegra->iMenorValor;
+                $oDadosAvaliacao->nMaiorValor           = $oRegra->iMaiorValor;
+                $oDadosAvaliacao->nVariacao             = $oRegra->nVariacao;
+                $oDadosAvaliacao->mAproveitamentoMinino = $oRegra->iMinimoAprovacao;
+                if ( empty( $oRegra->sFormaAvaliacao ) ) {
+
+                  $oDadosAvaliacao->lBloqueiaPeriodo                            = true;
+                  $oDadosAvaliacao->lPeriodoComAvaliacaoAlternativaSemAvaliacao = true;
+                }
+              }
+            }
           }
 
           if ($oAvaliacao->getEscola() != "") {
@@ -530,12 +663,22 @@ try {
             $oDadosAvaliacao->iAulasPerido    = $iAulasPeriodo;
             $oDadosAvaliacao->lNotaBloqueada  = trim($oDadosAvaliacao->nNota) != '' && $lBloqueiaAlteracaoAvaliacao && $lProfessorLogado;
           }
+     
           if ($oAvaliacao->getElementoAvaliacao()->isResultado() &&
-              $oAvaliacao->getElementoAvaliacao()->geraResultadoFinal()) {
-            if ($oRetorno->lGeraResultadoParcial && $sFormaAvaliacao == 'NOTA') {
+              $oAvaliacao->getElementoAvaliacao()->geraResultadoFinal() ) {
+
+            /**
+             * Adicionado validação para só calcular nota parcial se resultado não possui avaliação lançada/calculada
+             */
+            if (    $oRetorno->lGeraResultadoParcial && $sFormaAvaliacao == 'NOTA'
+                 && $oAvaliacao->getValorAproveitamento()->getAproveitamento() === '') {
+                 // dd('aqui');
               $oDadosAvaliacao->nNota = (string)$oDadosAproveitamento->getNotaParcial($oAvaliacao->getElementoAvaliacao());
             }
           }
+            if ($lAmparado) {
+                $oDadosAvaliacao->nNota = 'AMP';
+            }
 
           $oResultadoFinalRegencia = $oDadosAproveitamento->getResultadoFinal();
 
@@ -553,29 +696,59 @@ try {
             }
 
             $mAproveitamentoFinal = ArredondamentoNota::formatar($oResultadoFinalRegencia->getValorAprovacao(), $iAno);
-
+            if (!is_null($oResultadoFinalRegencia->getResultadoAvaliacao())
+              && $oResultadoFinalRegencia->getResultadoAvaliacao()->getFormaDeObtencao() == 'AP') {
+              $mAproveitamentoFinal = '-';
+            }
             $oDadoRegencia->oResultadoFinal->nValor                = $mAproveitamentoFinal;
             $oDadoRegencia->oResultadoFinal->sResultadoFinal       = urlencode($oResultadoFinalRegencia->getResultadoFinal());
             $oDadoRegencia->oResultadoFinal->lPossuiResultadoFinal = true;
 
-            $oAprovadoConselho = $oResultadoFinalRegencia->getFormaAprovacaoConselho();
+            $iDiario = $oResultadoFinalRegencia->getCodigoDiario();
+            if( !in_array( $iDiario, $aDiarioConselho ) ) {
+
+              $aDiarioConselho[]                       = $iDiario;
+              $_SESSION['diario_conselho'][ $iDiario ] = $oResultadoFinalRegencia->getFormaAprovacaoConselho();
+            }
+
+            $oAprovadoConselho = $_SESSION['diario_conselho'][ $iDiario ];
 
             if ($oAprovadoConselho != null) {
 
-              // Aluno aprovado pelo conselho sempre estará aprovado na regência
-              $oDadoRegencia->oResultadoFinal->sResultadoFinal       = 'A';
               $oDadoRegencia->oResultadoFinal->iAprovadoPeloConselho = $oAprovadoConselho->getFormaAprovacao();
               $oDadoRegencia->oResultadoFinal->iAlterarNotaFinal     = $oAprovadoConselho->getAlterarNotaFinal();
               $oDadoRegencia->oResultadoFinal->sAvaliacaoConselho    = $oAprovadoConselho->getAvaliacaoConselho();
+
+              /**
+               * Reclassificação por baixa frequência não aprova o aluno, pois o mesmo pode estar com o aproveitamento
+               * abaixo da média, e a reclassificação aprova apenas no quesito frequência
+               */
+              if( $oAprovadoConselho->getFormaAprovacao() != AprovacaoConselho::RECLASSIFICACAO_BAIXA_FREQUENCIA ) {
+                $oDadoRegencia->oResultadoFinal->sResultadoFinal = 'A';
+              }
             }
           }
 
-          if ($oDadosAproveitamento->getAmparo() != null && $oDadosAproveitamento->getAmparo()->isTotal()) {
+          if(    ( $oDadosAproveitamento->getAmparo() != null && $oDadosAproveitamento->getAmparo()->isTotal() )
+              || ( $oDadosAproveitamento->proporcionalidadeComAmparoTotal() ) ) {
             $oDadoRegencia->oResultadoFinal->nValor = 'AMP';
           }
-          
+
+          /**
+           * Pega os elementos de recuperação
+           */
+          if(    !$oAvaliacao->getElementoAvaliacao() instanceof ResultadoAvaliacao
+              && $oAvaliacao->getElementoAvaliacao()->getElementoAvaliacaoVinculado() != null
+              && $oAvaliacao->getElementoAvaliacao()->quantidadeMaximaDisciplinasParaRecuperacao()
+            ) {
+            $aElementosDeRecuperacao[] = $oAvaliacao;
+          }
+
+          /**
+           * Pega os elementos que geraram uma recuperação
+           */
           if ( $oDadosAvaliacao->lRecuperacao ) {
-            $lTemRecuperacao = true;
+            $aElementosEmRecuperacao[ $oDadosAvaliacao->iPeriodo ] = $oDadosAvaliacao;
           }
 
           /**
@@ -584,6 +757,26 @@ try {
            */
           $oDadosAvaliacao->iTotalDisciplinasReprovadas = count($oDiario->getDisciplinasReprovadasNoPeriodo($oElementoAvaliacao, false));
           $oDadoRegencia->aAproveitamentos[] = $oDadosAvaliacao;
+
+        }
+
+        /**
+         * Percorre os elementos de recuperação, para validar se o mesmo não encontra-se amparado e se o elemento
+         * vinculado a ele, é o mesmo elemento que gerou uma recuperação
+         */
+        foreach( $aElementosDeRecuperacao as $oAvaliacaoAproveitamento ) {
+
+          if( $oAvaliacaoAproveitamento->isAmparado() ) {
+            continue;
+          }
+
+          $oElementoVinculado = $oAvaliacaoAproveitamento->getElementoAvaliacao()->getElementoAvaliacaoVinculado();
+
+          if( !array_key_exists( $oElementoVinculado->getOrdemSequencia(), $aElementosEmRecuperacao ) ) {
+            continue;
+          }
+
+          $lTemRecuperacao = true;
         }
 
         if ($lTemRecuperacao) {
@@ -592,15 +785,16 @@ try {
 
         $oDadosAluno->oDisciplina = $oDadoRegencia;
         $oRetorno->aAlunos[]      = $oDadosAluno;
-
-        db_fim_transacao(false);
       }
 
-      $_SESSION["oTurma"] = $oTurma;
-      $_SESSION["oEtapa"] = $oEtapa;
+      foreach ($aDiarioConselho as $iDiario) {
+        unset( $_SESSION['diario_conselho'][ $iDiario ] );
+      }
+
+      EducacaoSessionManager::registrarTurma($oTurma);
+      EducacaoSessionManager::registrarEtapa($oEtapa);
 
       db_fim_transacao(false);
-
       break;
 
     case 'buscaTermosAvaliacao' :
@@ -611,22 +805,29 @@ try {
       $aTermos           = DBEducacaoTermo::getTermoEncerramentoDoEnsino($iCodigoEnsino, $iAnoCalendario);
       $oRetorno->aTermos = array();
 
-      $iContadorTermos = 1;
+      $iContadorTermos        = 1;
+      $oStdTermo              = new stdClass();
+      $oStdTermo->sReferencia = '';
+      $oStdTermo->sDescricao  = '';
+      $oStdTermo->sSigla      = '';
       if (count($aTermos) > 0) {
 
-        $oRetorno->aTermos[0]->sReferencia = '';
-        $oRetorno->aTermos[0]->sDescricao  = '';
+        $oRetorno->aTermos[0] = clone($oStdTermo);
         foreach ($aTermos as $oTermo) {
 
-          $oRetorno->aTermos[$iContadorTermos]->sReferencia = urlencode($oTermo->sReferencia);
-          $oRetorno->aTermos[$iContadorTermos]->sDescricao  = urlencode($oTermo->sDescricao);
-          $oRetorno->aTermos[$iContadorTermos]->sSigla      = urlencode($oTermo->sAbreviatura);
+          $oAuxTermo              = clone($oStdTermo);
+          $oAuxTermo->sReferencia = urlencode($oTermo->sReferencia);
+          $oAuxTermo->sDescricao  = urlencode($oTermo->sDescricao);
+          $oAuxTermo->sSigla      = urlencode($oTermo->sAbreviatura);
+
+          $oRetorno->aTermos[$iContadorTermos] = $oAuxTermo;
           $iContadorTermos++;
         }
       } else {
 
-        $oRetorno->aTermos[0]->sReferencia = '';
-        $oRetorno->aTermos[0]->sDescricao  = '';
+        $oRetorno->aTermos[0] = clone($oStdTermo);
+        $oRetorno->aTermos[1] = clone($oStdTermo);
+        $oRetorno->aTermos[2] = clone($oStdTermo);
         $oRetorno->aTermos[1]->sReferencia = urlencode('A');
         $oRetorno->aTermos[1]->sDescricao  = urlencode('Aprovado');
         $oRetorno->aTermos[1]->sSigla      = urlencode('Apr');
@@ -638,8 +839,8 @@ try {
 
     case 'calcularResultado':
 
-      $oTurma = $_SESSION["oTurma"];
-      $oEtapa = $_SESSION["oEtapa"];
+      $oTurma = EducacaoSessionManager::carregarTurma();
+      $oEtapa = EducacaoSessionManager::carregarEtapa();
       foreach ($oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa) as $oMatricula) {
 
         if ($oMatricula->getCodigo() == $oParam->iMatricula) {
@@ -647,16 +848,17 @@ try {
           LancamentoAvaliacaoAluno::calcularResultado($oMatricula,
                                                      $oParam->oAvaliacao,
                                                      $oRetorno);
+          break;
         }
       }
-      $_SESSION["oTurma"] = $oTurma;
 
+      EducacaoSessionManager::registrarTurma($oTurma);
       break;
 
     case 'setFalta':
 
-      $oTurma = $_SESSION["oTurma"];
-      $oEtapa = $_SESSION["oEtapa"];
+      $oTurma = EducacaoSessionManager::carregarTurma();
+      $oEtapa = EducacaoSessionManager::carregarEtapa();
       foreach ($oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa) as $oMatricula) {
 
         if ($oMatricula->getCodigo() == $oParam->iMatricula) {
@@ -665,9 +867,10 @@ try {
                                              RegenciaRepository::getRegenciaByCodigo($oParam->iRegencia),
                                              $oParam->iPeriodo,
                                              $oParam->iFalta);
+          break;
         }
       }
-      $_SESSION["oTurma"] = $oTurma;
+      EducacaoSessionManager::registrarTurma($oTurma);
 
       break;
 
@@ -687,13 +890,11 @@ try {
 
     case 'salvarParecer':
 
-      $_SESSION["DB_desativar_account"] = true;
       $sParecer                         = db_stdClass::normalizeStringJsonEscapeString($oParam->sParecer);
       $sParecerPadronizado              = db_stdClass::normalizeStringJsonEscapeString($oParam->sParecerPadronizado);
 
-      $oTurma = $_SESSION["oTurma"];
-      $oEtapa = $_SESSION["oEtapa"];
-
+      $oTurma = EducacaoSessionManager::carregarTurma();
+      $oEtapa = EducacaoSessionManager::carregarEtapa();
       foreach ($oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa) as $oMatricula) {
 
         if ($oMatricula->getCodigo() == $oParam->iMatricula) {
@@ -710,18 +911,20 @@ try {
                                                      $sParecerPadronizado
                                                    );
           }
+          break;
         }
       }
-
-      $_SESSION["oTurma"] = $oTurma;
-      unset($_SESSION["DB_desativar_account"]);
+     
+      EducacaoSessionManager::registrarTurma($oTurma);
       break;
 
      case 'salvarResultadoParecer':
+    
+      $_SESSION["DB_desativar_account"] = true;
 
-       $_SESSION["DB_desativar_account"] = true;
-       $oTurma = $_SESSION["oTurma"];
-       $oEtapa = $_SESSION["oEtapa"];
+      $oTurma = EducacaoSessionManager::carregarTurma();
+      $oEtapa = EducacaoSessionManager::carregarEtapa();
+
 
        foreach ($oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa) as $oMatricula) {
 
@@ -734,21 +937,22 @@ try {
                                                             $oParam->lAproveitamentoMinimo,
                                                             $oParam->lRecuperacao
                                                           );
+           break;
          }
        }
-       $_SESSION["oTurma"] = $oTurma;
+
+       EducacaoSessionManager::registrarTurma($oTurma);
        unset($_SESSION["DB_desativar_account"]);
        break;
 
      case 'getParecer':
 
       db_inicio_transacao();
-
       $oRetorno->sParecerPadronizado = '';
       $oRetorno->sParecer            = '';
 
-      $oTurma = $_SESSION["oTurma"];
-      $oEtapa = $_SESSION["oEtapa"];
+      $oTurma = EducacaoSessionManager::carregarTurma();
+      $oEtapa = EducacaoSessionManager::carregarEtapa();
 
       foreach ($oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa) as $oMatricula) {
 
@@ -759,18 +963,19 @@ try {
                                                            $oParam->iOrdem);
           $oRetorno->sParecerPadronizado = urlencode($oParecer->sParecerPadronizado);
           $oRetorno->sParecer            = urlencode(str_replace('\n',"\n", $oParecer->sParecer));
+          break;
         }
       }
-      $_SESSION["oTurma"] = $oTurma;
 
+      EducacaoSessionManager::registrarTurma($oTurma);
       db_fim_transacao();
 
       break;
 
     case 'getParecerDisciplina':
 
-      $oTurma = $_SESSION["oTurma"];
-      $oEtapa = $_SESSION["oEtapa"];
+      $oTurma = EducacaoSessionManager::carregarTurma();
+      $oEtapa = EducacaoSessionManager::carregarEtapa();
 
       foreach ($oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa) as $oMatricula) {
 
@@ -781,55 +986,70 @@ try {
                                                                           $oParam->iPeriodoAvaliacao);
           $oRetorno->dados     = $oRetornoDados->aDados;
           $oRetorno->aLegendas = $oRetornoDados->aLegendas;
+          break;
         }
       }
-      $_SESSION["oTurma"] = $oTurma;
 
+      EducacaoSessionManager::registrarTurma($oTurma);
       break;
 
-   case 'salvaAvaliacaoAluno':
+    case 'salvaAvaliacaoAluno':
 
-     $oTurma = $_SESSION["oTurma"];
-     $oEtapa = $_SESSION["oEtapa"];
-     $_SESSION["DB_desativar_account"] = true;
-     db_inicio_transacao();
-     foreach ($oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa) as $oMatricula) {
+      $oTurma = EducacaoSessionManager::carregarTurma();
+      $oEtapa = EducacaoSessionManager::carregarEtapa();
+      db_inicio_transacao();
+      foreach ($oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa) as $oMatricula) {
 
-       if( $oMatricula->getSituacao() != 'MATRICULADO' ) {
-         continue;
-       }
+        if( $oMatricula->getSituacao() != 'MATRICULADO' ) {
+          continue;
+        }
 
-       LancamentoAvaliacaoAluno::salvaAvaliacaoAluno($oMatricula);
-     }
-     db_fim_transacao(false);
-     $_SESSION["oTurma"] = $oTurma;
-     unset($_SESSION["DB_desativar_account"]);
-     $oRetorno->status   = 1;
-     $oRetorno->message  = urlencode("Dados de avaliação salvos com sucesso.");
-     break;
+        LancamentoAvaliacaoAluno::salvaAvaliacaoAluno($oMatricula);
+      }
+      db_fim_transacao(false);
 
-   case 'destroySession' :
+      EducacaoSessionManager::registrarTurma($oTurma);
+      unset($_SESSION["DB_desativar_account"]);
+      $oRetorno->status   = 1;
+      $oRetorno->message  = urlencode("Dados de avaliação salvos com sucesso.");
+      break;
 
-     unset($_SESSION["oTurma"]);
-     unset($_SESSION["oEtapa"]);
-     break;
+    case 'destroySession' :
+
+      EducacaoSessionManager::limpar();
+      break;
   }
-} catch (ParameterException $oErro) {
-
-  db_fim_transacao(true);
-  $oRetorno->status  = 2;
-  $oRetorno->message = urlencode($oErro->getMessage());
-} catch (BusinessException $oErro) {
-
-  db_fim_transacao(true);
-  $oRetorno->status  = 2;
-  $oRetorno->message = urlencode($oErro->getMessage());
-} catch (DBException $oErro) {
-
-  db_fim_transacao(true);
-  $oRetorno->status  = 2;
-  $oRetorno->message = urlencode($oErro->getMessage());
+} catch (Exception $exception) {
+    db_fim_transacao(true);
+    $oRetorno->status  = 2;
+    $oRetorno->message = urlencode($exception->getMessage());
 }
 
 unset($_SESSION["DB_desativar_account"]);
 echo $oJson->encode($oRetorno);
+
+
+
+/**
+ * Retorna a ordem dos períodos que compõem o Resultado
+ * @param  ResultadoAvaliacao|AvaliacaoPeriodica $oElementoAvaliacao
+ * @param  array  $a
+ * @return integer[]
+ */
+function buscaOrdemElementos($oElementoAvaliacao, $a = array() ) {
+
+  if ($oElementoAvaliacao instanceof ResultadoAvaliacao ) {
+
+    foreach ($oElementoAvaliacao->getElementosComposicaoResultado() as $oElementoComposicao) {
+
+      if ($oElementoComposicao->getElementoAvaliacao() instanceof ResultadoAvaliacao ) {
+       $a = buscaOrdemElementos($oElementoComposicao->getElementoAvaliacao(), $a );
+      }
+      $a[] = $oElementoComposicao->getElementoAvaliacao()->getOrdemSequencia();
+    }
+    return $a;
+  }
+
+  $a[] = $oElementoAvaliacao->getOrdemSequencia();
+  return $a;
+}

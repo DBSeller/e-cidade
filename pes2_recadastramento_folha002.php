@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf1.php");
-include("libs/db_sql.php");
-include("classes/db_cadferia_classe.php");
-include("classes/db_pessoal_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_depend_classe.php");
-include("classes/db_afasta_classe.php");
+include(modification("fpdf151/pdf1.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_cadferia_classe.php"));
+include(modification("classes/db_pessoal_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_depend_classe.php"));
+include(modification("classes/db_afasta_classe.php"));
 
 //$ano    = 2009;
 //$mes    = 1;
@@ -91,7 +91,7 @@ $sql = "
 	              when 'P' then 'Pensionista'
 		 end as descr_vinculo,
 	   rh37_cbo as cbo,
-	         case rh30_vinculo
+	         case rh02_vincrais
 	              when 10 then 'CLT'
 	              when 30 then 'Servidor Público'
 	              when 35 then 'Servidor Público Não Efetivo'
@@ -143,7 +143,7 @@ $db_where
 $orderby
        ";
 // die($sql);exit;
-$result = pg_exec($sql);
+$result = db_query($sql);
 $xxnum = pg_numrows($result);
 if($xxnum == 0 || $xxnum==false){
   db_redireciona('db_erros.php?fechar=true&db_erro=Não existem Códigos cadastrados no período de '.$mes.' / '.$ano);

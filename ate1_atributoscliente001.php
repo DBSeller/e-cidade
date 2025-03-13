@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
-require_once("libs/db_utils.php");
-require_once("classes/db_clienteatributovalor_classe.php");
-require_once("classes/db_clienteatributo_classe.php");
-require_once("classes/db_clientes_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_clienteatributovalor_classe.php"));
+require_once(modification("classes/db_clienteatributo_classe.php"));
+require_once(modification("classes/db_clientes_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $oGet  = db_utils::postMemory($_GET);
 $oPost = db_utils::postMemory($_POST);
@@ -243,10 +243,10 @@ function js_cancelar(){
 
 function js_pesquisaAtributo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_atributos','db_iframe_atributos','func_clienteatributo.php?funcao_js=parent.js_mostraAtributo1|at93_sequencial|at93_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_atributos','db_iframe_atributos','func_clienteatributo.php?funcao_js=parent.js_mostraAtributo1|at93_sequencial|at93_descricao','Pesquisa',true);
   }else{
      if(document.form1.at94_clienteatributo.value != ''){ 
-       js_OpenJanelaIframe('top.corpo.iframe_atributos','db_iframe_atributos','func_clienteatributo.php?pesquisa_chave='+document.form1.at94_clienteatributo.value+'&funcao_js=parent.js_mostraAtributo','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo.iframe_atributos','db_iframe_atributos','func_clienteatributo.php?pesquisa_chave='+document.form1.at94_clienteatributo.value+'&funcao_js=parent.js_mostraAtributo','Pesquisa',false);
      } else{
        document.form1.at93_descricao.value = ''; 
      }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 $oRotulo = new rotulocampo();
 $oRotulo->label("z01_nome");
@@ -137,9 +137,9 @@ function js_mostranomes(mostra){
   $('situacao').value = '0'; 
   
   if(mostra == true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_nomes','func_nome.php?filtro=1&funcao_js=parent.js_preenche|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nomes','func_nome.php?filtro=1&funcao_js=parent.js_preenche|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_nomes','func_nome.php?filtro=1&pesquisa_chave='+$F('z01_numcgm')+'&funcao_js=parent.js_preenche1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nomes','func_nome.php?filtro=1&pesquisa_chave='+$F('z01_numcgm')+'&funcao_js=parent.js_preenche1','Pesquisa',false);
   }
 }
 function js_preenche(chave,chave1){
@@ -199,7 +199,7 @@ function js_situacaosalvo(oAjax) {
     js_removeObj('msgBox');
     
 
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if (oRetorno.status == 1) {
     
@@ -249,7 +249,7 @@ function js_retornoConsulta(oAjax){
 
   js_removeObj('msgBox');
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 2) {
   

@@ -1,42 +1,42 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_lote_classe.php"); // face
-include("classes/db_carface_classe.php"); // face
-include("classes/db_carlote_classe.php"); // lote
-include("classes/db_carconstr_classe.php"); // nao escrituradas
-include("classes/db_constrcar_classe.php"); // escrituradas
-include("classes/db_caracter_classe.php"); // escrituradas
-include("classes/db_carpadrao_classe.php"); // escrituradas
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_lote_classe.php")); // face
+include(modification("classes/db_carface_classe.php")); // face
+include(modification("classes/db_carlote_classe.php")); // lote
+include(modification("classes/db_carconstr_classe.php")); // nao escrituradas
+include(modification("classes/db_constrcar_classe.php")); // escrituradas
+include(modification("classes/db_caracter_classe.php")); // escrituradas
+include(modification("classes/db_carpadrao_classe.php")); // escrituradas
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 //$tipogrupo = 'F';
 //$codigo = 1;
@@ -81,16 +81,15 @@ if (isset($enviar)) {
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-<tr> 
- <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
+<body class="body-default">
+ <div class="container">
  <?
   if ($clcaracter->numrows != 0) {
     ?>
     <form name="form1" method="post" action="">
-    <table width="22%" border="1" cellspacing="0">
+    <fieldset>
+    <legend>Caracteristicas</legend>
+    <table width="22%"  cellspacing="0">
     <?
     $clcarface = new cl_carface;
     $clcarlote = new cl_carlote;
@@ -105,7 +104,7 @@ if (isset($enviar)) {
         if (isset($caracteristica) && ($caracteristica != "") ) {
           //echo "<br>X{$j31_codigo}X - $caracteristica<br>";
           if (strpos("XXX".$caracteristica, "X".$j31_codigo."X") != 0) {
-            $cheque = ' selected ';   
+            $cheque = ' selected ';
           }
         } else {
           if ($db_opcao != 1 ) {
@@ -114,24 +113,24 @@ if (isset($enviar)) {
               $resultcar = $clcarface->sql_record($clcarface->sql_query($codigo, $j31_codigo));
               if ($clcarface->numrows != 0) {
                 $cheque = ' selected ';
-              } 
+              }
             } else {
               if ($tipogrupo == 'L') {
                 $resultcar = $clcarlote->sql_record($clcarlote->sql_query($codigo, $j31_codigo));
                 if ($clcarlote->numrows != 0) {
                   $cheque = ' selected ';
-                } 
+                }
               }
             }
-          }  
-        }  
-             
+          }
+        }
+
       } else {
         if ($db_opcao != 1) {
           if (isset($HTTP_POST_VARS['G'.$j31_grupo]) && ($j31_codigo == $HTTP_POST_VARS['G'.$j31_grupo])) {
-            $cheque = ' selected ';   
+            $cheque = ' selected ';
           }
-        } 
+        }
       }
 
       if ($grupo != $j31_grupo) {
@@ -141,18 +140,18 @@ if (isset($enviar)) {
             </td></tr><tr>
           <?
         }
-        $grupo = $j31_grupo;     
+        $grupo = $j31_grupo;
         if ($coluna == 0) {
           $coluna = 1;
           ?>
             </tr>
-            <tr> 
+            <tr>
           <?
         } else {
           $coluna = 0;
         }
         ?>
-        <td nowrap align="Left"><?=str_pad($j32_grupo."-".$j32_descr,20)?></td>
+        <td nowrap align="Left"><label for="<?='G'.$j31_codigo?>"><?=str_pad($j32_grupo."-".$j32_descr,20)?></label></td>
         <td nowrap align="left">
         <select id="<?='G'.$j31_codigo?>"  name="<?='G'.$j31_grupo?>">
         <?
@@ -160,12 +159,12 @@ if (isset($enviar)) {
         // Verifica Caracteristica padrao se nao foi selecionada uma previamente
         if (is_null($cheque)) {
           $re = $clcarpadrao->sql_record($clcarpadrao->sql_query_file("","j33_codcaracter","","j33_codgrupo=$j31_grupo"));
-          if ( $clcarpadrao->numrows > 0 ) { 
+          if ( $clcarpadrao->numrows > 0 ) {
             db_fieldsmemory($re, 0);
             //echo "<td>j31_grupo=$j31_grupo  j33_codcaracter=$j33_codcaracter  j31_codigo=$j31_codigo</td>";
             if ($j33_codcaracter == $j31_codigo) {
-              if ($db_opcao == 1) { 
-                $cheque = ' selected ';   
+              if ($db_opcao == 1) {
+                $cheque = ' selected ';
               }
             }
           }
@@ -175,29 +174,24 @@ if (isset($enviar)) {
 
       if ($xgrupo != $j31_grupo) {
         $xgrupo = $j31_grupo;
-        ?>    
+        ?>
         <option value="0" >Nenhuma...</option>
-        <?   
+        <?
       }
-        
+
       ?>
       <option value="<?=$j31_codigo?>" <?=$cheque?>><?=str_pad($j31_codigo."-".trim($j31_descr),20)?> </option>
       <?
     }
     ?>
-      <tr> 
-         <td colspan="4" align="center">
-         <input type="submit" name="enviar" value="Enviar" >
-         <input type="button" name="Fechar" value="Fechar" onClick="parent.<?=$db_iframe?>.hide();" >
-         </td>
-      </tr>
     </table>
+    </fieldset>
+    <input type="submit" name="enviar" value="Enviar" >
+    <input type="button" name="Fechar" value="Fechar" onClick="parent.<?=$db_iframe?>.hide();" >
     </form>
     <?
   }
 ?>
-</td>
-    </tr>
-  </table>
+  </div>
 </body>
 </html>

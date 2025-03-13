@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_liborcamento.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_pcmater_classe.php");
-include("classes/db_cgm_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_pcmater_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
 
 $clempempenho = new cl_empempenho;
 $clorcdotacao = new cl_orcdotacao;
@@ -65,7 +65,7 @@ function js_abre(){
   codemp = document.form1.e60_codemp.value ;    
   if (codemp!=""){
     jan = window.open('emp2_emppresta002.php?&e60_codemp='+codemp,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-    //js_OpenJanelaIframe('top.corpo','db_iframe_emppresta','func_emppresta.php?chave_e45_numemp='+document.form1.e60_numemp.value+'&funcao_js=parent.js_pesqemp|e45_numemp','Pesquisa',true);
+    //js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emppresta','func_emppresta.php?chave_e45_numemp='+document.form1.e60_numemp.value+'&funcao_js=parent.js_pesqemp|e45_numemp','Pesquisa',true);
   }else if (document.form1.e60_numemp.value!=""){
      jan = window.open('emp2_emppresta002.php?&e60_numemp='+document.form1.e60_numemp.value,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
      jan.moveTo(0,0);
@@ -154,19 +154,19 @@ function js_limpa(){
 //--------------------------------
 function js_pesquisae60_codemp(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_emppresta','func_emppresta.php?funcao_js=parent.js_mostraempenho1|e60_numemp','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emppresta','func_emppresta.php?funcao_js=parent.js_mostraempenho1|e60_numemp','Pesquisa',true);
   }else{
-   // js_OpenJanelaIframe('top.corpo','db_iframe_empempenho02','func_empempenho.php?pesquisa_chave='+document.form1.e60_numemp.value+'&funcao_js=parent.js_mostraempempenho','Pesquisa',false);
+   // js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho02','func_empempenho.php?pesquisa_chave='+document.form1.e60_numemp.value+'&funcao_js=parent.js_mostraempempenho','Pesquisa',false);
   }
 }
 
 //--------------------------------
 function js_pesquisa_empenho(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_emppresta','func_emppresta.php?funcao_js=parent.js_mostraempenho1|e60_numemp','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emppresta','func_emppresta.php?funcao_js=parent.js_mostraempenho1|e60_numemp','Pesquisa',true);
   }else{
      if(document.form1.e60_numemp.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_emppresta','func_empempenho.php?pesquisa_chave='+document.form1.e60_numemp.value+'&funcao_js=parent.js_mostraempenho','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emppresta','func_empempenho.php?pesquisa_chave='+document.form1.e60_numemp.value+'&funcao_js=parent.js_mostraempenho','Pesquisa',false);
      }else{
        document.form1.z01_nome1.value = ''; 
      }

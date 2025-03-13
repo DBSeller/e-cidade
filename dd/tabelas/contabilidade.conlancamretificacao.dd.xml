@@ -1,0 +1,93 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010544' name='conlancamretificacao' description="tabela que armazena os lançamento envolvidos em uma retificacao" prefix="c135" label="conlancamretificacao" type="0">
+  <fields>
+    <field codigo="1011162"
+           campo_api=''
+           name="c135_sequencial"
+           conteudo="int4"
+           description="código"
+           inivalue="0"
+           label="código"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="código"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='conlancamretificacao_c135_sequencial_seq' />
+
+    </field>
+    <field codigo="1011163"
+           campo_api=''
+           name="c135_codlaninclusao"
+           conteudo="int4"
+           description="código de lançamento original"
+           inivalue="0"
+           label="código de lançamento inclusao"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="código de lançamento inclusao"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1011164"
+           campo_api=''
+           name="c135_codlanestorno"
+           conteudo="int4"
+           description="código de lançamento de estorno"
+           inivalue="0"
+           label="código de lançamento de estorno"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="código de lançamento de estorno"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1011165"
+           campo_api=''
+           name="c135_codlannovo"
+           conteudo="int4"
+           description="código de lançamento novo"
+           inivalue="0"
+           label="código de lançamento novo"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="código de lançamento novo"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="c135_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="conlancam" inner='t'>
+      <fieldfk name="c135_codlaninclusao" reference="c70_codlan" />
+      <fieldfk name="c135_codlanestorno" reference="c70_codlan" />
+      <fieldfk name="c135_codlannovo" reference="c70_codlan" />
+    </foreignkey>
+  </foreignkeys>
+</table>

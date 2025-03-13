@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -46,8 +46,8 @@ class cl_lab_sinonima {
    var $la10_c_descr = null; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
-                 la10_i_codigo = int4 = Código 
-                 la10_c_descr = char(100) = Descrição 
+                 la10_i_codigo = int4 = Sinonímia 
+                 la10_c_descr = char(50) = Descrição 
                  ";
    //funcao construtor da classe 
    function cl_lab_sinonima() { 
@@ -169,7 +169,7 @@ class cl_lab_sinonima {
        $sql  .= $virgula." la10_i_codigo = $this->la10_i_codigo ";
        $virgula = ",";
        if(trim($this->la10_i_codigo) == null ){ 
-         $this->erro_sql = " Campo Código nao Informado.";
+         $this->erro_sql = " Campo Sinonímia nao Informado.";
          $this->erro_campo = "la10_i_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";

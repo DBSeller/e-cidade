@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_lote_classe.php");
-include("classes/db_face_classe.php");
-include("classes/db_testada_classe.php");
-include("classes/db_lotesetorfiscal_classe.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("classes/db_face_classe.php"));
+include(modification("classes/db_testada_classe.php"));
+include(modification("classes/db_lotesetorfiscal_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 $cliframe_seleciona = new cl_iframe_seleciona;
 $cllote = new cl_lote;
@@ -257,7 +257,7 @@ function js_dados(){
                   union all
                   select j90_codigo,j90_descr from setorfiscal
 						";			 
-		   $result1=pg_exec($sql1);	 
+		   $result1=db_query($sql1);	 
 		   
 		
 		   db_selectrecord("unico_setor",$result1,true,"text");
@@ -269,7 +269,7 @@ function js_dados(){
                   union all
                   select j50_zona,j50_descr from zonas
 						";			 
-		   $result2=pg_exec($sql2);	 
+		   $result2=db_query($sql2);	 
 		   
 		
 		   db_selectrecord("unico_zona",$result2,true,"text");
@@ -310,7 +310,7 @@ function js_dados(){
 				";
 		   $setores=array();
 		   $sep="";
-		   $result_exist=pg_exec("select  distinct j90_codigo as cod,j90_descr as descr from testada
+		   $result_exist=db_query("select  distinct j90_codigo as cod,j90_descr as descr from testada
 											inner join lotesetorfiscal on j91_idbql = j36_idbql
 											inner join setorfiscal on j90_codigo = j91_codigo
 		    				      where j36_face = $j36_face");
@@ -325,7 +325,7 @@ function js_dados(){
                   union all
                   select j90_codigo,j90_descr from setorfiscal
 						";			 
-		   $result1=pg_exec($sql1);	 
+		   $result1=db_query($sql1);	 
 		   
 		   echo "<td class='bordas_corp' align='center'><small>";
 		   db_selectrecord("setfisc_$j36_face",$result1,true,"text");
@@ -334,7 +334,7 @@ function js_dados(){
                   union all
                   select j50_zona,j50_descr from zonas
 						";			 
-		   $result2=pg_exec($sql2);	 
+		   $result2=db_query($sql2);	 
 		   
 		   echo "<td class='bordas_corp' align='center'><small>";
 		   db_selectrecord("zonas_$j36_face",$result2,true,"text");

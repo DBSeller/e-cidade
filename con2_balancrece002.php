@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_liborcamento.php");
-include("libs/db_libcontabilidade.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
 
-include("fpdf151/assinatura.php");
+include(modification("fpdf151/assinatura.php"));
 $classinatura = new cl_assinatura;
 
 // pesquisa a conta mae da receita
@@ -48,7 +48,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg      = '';
 $flag_abrev = false;
@@ -78,7 +78,7 @@ if($recurso==0){
   $head3 = "BALANCETE DA RECEITA ";
 }else{
   $head2 = "BALANCETE DA RECEITA ";
-  $resrec = pg_exec("select o15_descr from orctiporec where o15_codigo = $recurso");
+  $resrec = db_query("select o15_descr from orctiporec where o15_codigo = $recurso");
   $head3 = "Recurso: ".$recurso."-".substr(pg_result($resrec,0,0),0,30);
   $db_filtro .= " and o70_codigo = $recurso";
 }
@@ -118,7 +118,7 @@ if ($impressao=='paisagem'){
 } 	
 
 //$sql = "select * from work order by elemento";
-//$result = pg_exec($sql);
+//$result = db_query($sql);
 $anousu  = db_getsession("DB_anousu");
 $dataini = $perini;
 $datafin = $perfin;
@@ -269,6 +269,6 @@ $pdf->multicell($largura,4,$ass_cont,0,"C",0,0);
 
 $pdf->Output();
 
-pg_exec("commit");
+db_query("commit");
 
 ?>

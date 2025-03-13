@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_cgm_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_cgm_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $pdf = new PDF(); 
@@ -102,7 +102,7 @@ $sql1 = "select distinct x.e60_anousu,
 					orcelemento.o56_codele
 		 		";
 
-$result1 = pg_exec($sql1) or die($sql1);
+$result1 = db_query($sql1) or die($sql1);
 $numrows = pg_numrows($result1);
 
  if ( $cgm != "" && $numrows > 0) {
@@ -158,7 +158,7 @@ for ( $i=0; $i<$numrows; $i++ ) {
 
     $anospgto = $k12_anopgto;
 	
-	$result2  = pg_exec($sql2);
+	$result2  = db_query($sql2);
 	$numrows2 = pg_numrows($result2);
 
 	if ( $numrows2 > 0) {
@@ -338,7 +338,7 @@ if ($numcgm_salvos != "") {
   */
 					 
  if($cgm != $numcgm_salvos || $numcgm_salvos == "" ){
-  $result3  = pg_exec($sql3);
+  $result3  = db_query($sql3);
   $numrows3 = pg_numrows($result3);
  } else{
   $numrows3 = 0;	

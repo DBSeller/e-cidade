@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_escola_classe.php");
-include("classes/db_diarioresultado_classe.php");
-include("classes/db_diarioavaliacao_classe.php");
-include("classes/db_procresultado_classe.php");
-include("classes/db_procavaliacao_classe.php");
-include("classes/db_regenciaperiodo_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_escola_classe.php"));
+include(modification("classes/db_diarioresultado_classe.php"));
+include(modification("classes/db_diarioavaliacao_classe.php"));
+include(modification("classes/db_procresultado_classe.php"));
+include(modification("classes/db_procavaliacao_classe.php"));
+include(modification("classes/db_regenciaperiodo_classe.php"));
 $cldiarioresultado = new cl_diarioresultado;
 $cldiarioavaliacao = new cl_diarioavaliacao;
 $clprocresultado = new cl_procresultado;
@@ -133,7 +133,7 @@ for($x=0;$x<$clmatricula->numrows;$x++){
            AND $where = $periodo[1]
            ORDER BY ed92_i_sequencial
          ";
-  $result3 = pg_query($sql3);
+  $result3 = db_query($sql3);
   $linhas3 = pg_num_rows($result3);
   if($linhas3>0){
    if($tp_per=="A"){

@@ -26,7 +26,7 @@
  */
 
 
-$result = pg_exec("select o.codordem, 
+$result = db_query("select o.codordem, 
                           to_char(o.dataordem,'DD/MM/YYYY') as dataordem, 
 			  o.descricao, 
 			  o.id_usuario, 
@@ -54,7 +54,7 @@ $sql02 = "
 		   inner join db_modulos on db_modulos.id_item = db_ordemmod.id_item
 		where db_ordemmod.codordem= $cod_ord_and;
 	   ";
-$result02 = pg_query($sql02);
+$result02 = db_query($sql02);
 $numrows02 = pg_numrows($result02);
 echo "     <br>
 		<table width=80% border=1 align=\"center\" cellpadding=0 cellspacing=0>
@@ -106,15 +106,15 @@ echo " </td>
 
 ////////////////////
 // formulario de entrada de dados
-  $resultPesquisaNome = pg_exec("select nome from db_usuarios where id_usuario = $DB_id_usuario");
+  $resultPesquisaNome = db_query("select nome from db_usuarios where id_usuario = $DB_id_usuario");
   $nomeUsuario = pg_result($resultPesquisaNome,0,0); 
 
-  $departamentos = pg_exec("select * from db_depart");
+  $departamentos = db_query("select * from db_depart");
   $numeroDepartamentos = pg_numrows($departamentos);
 
     echo "\n\n<script>\n";
     for ($i=0;$i<$numeroDepartamentos;$i++) {
-	  $usu =  pg_exec("select us.id_usuario, us.nome 
+	  $usu =  db_query("select us.id_usuario, us.nome 
 	                   from db_usuarios us
         	           inner join db_depusu du 
 		        	   on du.id_usuario = us.id_usuario
@@ -190,7 +190,7 @@ echo " </td>
 				  <select name="depto" id="depto" onChange="vai(eval(this.options[this.selectedIndex].value))">
 				  <? 
 				    $descratual = pg_result($result,0,"descrdepto");
-					$listaDepartamentos = pg_exec("select * from db_depart where descrdepto not like '$descratual'");
+					$listaDepartamentos = db_query("select * from db_depart where descrdepto not like '$descratual'");
 					$numdep = pg_numrows($listaDepartamentos);
  				    echo "<option selected value=\"".strtolower(str_replace(" ","_",pg_result($result,0,"descrdepto")))."\">".pg_result($result,0,"descrdepto")."</option>";
 					for ($i=0;$i<$numdep;$i++) {
@@ -208,7 +208,7 @@ echo " </td>
 					$coddepartamento = pg_result($result,0,"coddepto");
 					$nome = pg_result($result,0,"nomeusureceb");
 					if ($nome=="") {$nome=$nomeUsuario;}
-					$listanomes = pg_exec("select u.id_usuario , d.nome
+					$listanomes = db_query("select u.id_usuario , d.nome
 				                     from db_depusu u 
 									 inner join db_usuarios d
 									 on d.id_usuario = u.id_usuario
@@ -286,7 +286,7 @@ echo " </td>
        ";
 
 // aqui trazer todos os andamentos da ordem em questao
-$selecionaAndamento = pg_exec(
+$selecionaAndamento = db_query(
                        "select o.id_usuario, 
                                o.codandam, 
                                o.codordem, 

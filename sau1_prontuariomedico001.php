@@ -1,42 +1,42 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_prontuariomedico_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("classes/db_familiamicroarea_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_prontuariomedico_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
+include(modification("classes/db_familiamicroarea_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_jsplibwebseller.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -79,7 +79,7 @@ if(isset($opcao)){
   $db_botao1 = true;
  }else{
   $db_opcao = 1;
-  $sd32_c_horaatend = date("H",db_getsession("DB_datausu")).":".date("m",db_getsession("DB_datausu"));
+  $sd32_c_horaatend = date('H:i');
   if( isset( $chavepesquisaprontuario ) ){
      $sd32_i_numcgs = $chavepesquisaprontuario;
      //$clprontuariomedico->sql_record( $clprontuariomedico->sql_query("","*","sd32_d_atendimento desc ","sd32_i_numcgs = $chavepesquisaprontuario" ) );
@@ -121,7 +121,7 @@ if(isset($chavepesquisa)){
    $result = $clprontuariomedico->sql_record($clprontuariomedico->sql_query($chavepesquisa));
    db_fieldsmemory($result,0);
    $db_botao = true;
-}
+  }
 
 ///verifica familia micro area
 if( (int)@$z01_i_familiamicroarea <> 0 ){
@@ -136,6 +136,7 @@ if( (int)@$z01_i_familiamicroarea <> 0 ){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -149,13 +150,13 @@ if( (int)@$z01_i_familiamicroarea <> 0 ){
 </table>
 <fieldset>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
+  <tr>
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
      <?
-		$result = pg_query( "select descrdepto 
+		$result = db_query( "select descrdepto
 		                                 from db_depart
-		                                inner join unidades on unidades.sd02_i_codigo = db_depart.coddepto  
+		                                inner join unidades on unidades.sd02_i_codigo = db_depart.coddepto
 		                                where coddepto = ".db_getsession("DB_coddepto") );
 		if( pg_num_rows( $result ) == 0 ){
 			echo "<table width='100%'>
@@ -163,9 +164,9 @@ if( (int)@$z01_i_familiamicroarea <> 0 ){
 			         <td align='center'><font  face='arial'><b><p>Departamento ".db_getsession("DB_coddepto")." não cadastrado como UPS. <p> Selecione um departamento válido.</b></font></td>
 			        </tr>
 			       </table>";
-				
+
 		}else{
-			include("forms/db_frmprontuariomedico.php");
+			include(modification("forms/db_frmprontuariomedico.php"));
 		}
      ?>
     </center>
@@ -222,8 +223,8 @@ if(isset($incluir) || isset($alterar) ){
       echo "<script> document.form1.".$clcgs_und->erro_campo.".focus();</script>";
     }
   }
-  
-  
+
+
   if($clprontuariomedico->erro_status=="0"){
     $clprontuariomedico->erro(true,false);
     $db_botao=true;

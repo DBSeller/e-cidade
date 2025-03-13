@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,8 +24,7 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-
-include("libs/db_liborcamento.php");
+include(modification("libs/db_liborcamento.php"));
 
 $tipo_mesini = 1;
 $tipo_mesfim = 1;
@@ -45,146 +44,149 @@ $tipo_mesfim = 1;
 // 5 = elemento 
 // 6 = recurso 
 $tipo_agrupa = 3;
-$tipo_nivel = 6;
+$tipo_nivel  = 6;
 
-$qorgao = 0;
+$qorgao   = 0;
 $qunidade = 0;
 
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/assinatura.php"));
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-
-include("fpdf151/assinatura.php");
-$classinatura = new cl_assinatura;
-
-//db_postmemory($HTTP_SERVER_VARS,2);exit;
+$classinatura = new cl_assinatura();
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
 if ($orgaos == "") {
-  db_redireciona('db_erros.php?fechar=true&db_erro=Selecione orgao/unidade!');   
+  db_redireciona('db_erros.php?fechar=true&db_erro=Selecione orgao/unidade!');
 }
 
 $xtipo = 0;
 if($origem == "O"){
   $xtipo = "ORÇAMENTO";
-}else{
+} else {
+
   $xtipo = "BALANÇO";
-  if($opcao == 3)
-    $head6 = "PERÍODO : ".db_formatar($perini,'d')." A ".db_formatar($perfin,'d') ;
-  else
-    $head6 = "PERÍODO : ".strtoupper(db_mes(substr($perini,5,2)))." A ".strtoupper(db_mes(substr($perfin,5,2)));
+  if ($opcao == 3) {
+    $head6 = "PERÍODO : " . db_formatar($perini, 'd') . " A " . db_formatar($perfin, 'd');
+  } else {
+    $head6 = "PERÍODO : " . strtoupper(db_mes(substr($perini, 5, 2))) . " A " . strtoupper(db_mes(substr($perfin, 5, 2)));
+  }
 }
 $head1 = "DEMONSTRATIVO DA DESPESA";
-$head3 = "EXERCÍCIO: ".db_getsession("DB_anousu");
+$head3 = "EXERCÍCIO: " . db_getsession("DB_anousu");
 
-$xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$xinstit = split("-", $db_selinstit);
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (" . str_replace('-', ', ', $db_selinstit) . ") ");
 $descr_inst = '';
-$xvirg = '';
+$xvirg      = '';
 $flag_abrev = false;
-for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
-  db_fieldsmemory($resultinst,$xins);
-  if (strlen(trim($nomeinstabrev)) > 0){
-       $descr_inst .= $xvirg.$nomeinstabrev; 
-       $flag_abrev  = true;
-  } else {
-       $descr_inst .= $xvirg.$nomeinst; 
-  }
 
+for ($xins = 0; $xins < pg_numrows($resultinst); $xins++) {
+
+  db_fieldsmemory($resultinst, $xins);
+  if (strlen(trim($nomeinstabrev)) > 0) {
+
+    $descr_inst .= $xvirg . $nomeinstabrev;
+    $flag_abrev  = true;
+  } else {
+    $descr_inst .= $xvirg.$nomeinst;
+  }
   $xvirg = ', ';
 }
 
-if ($flag_abrev == false){
-     if (strlen($descr_inst) > 42){
-          $descr_inst = substr($descr_inst,0,100);
-     }
+if ($flag_abrev == false) {
+
+  if (strlen($descr_inst) > 42) {
+    $descr_inst = substr($descr_inst, 0, 100);
+  }
 }
 
-$head5 = "INSTITUIÇÕES : ".$descr_inst;
+$head5     = "INSTITUIÇÕES : " . $descr_inst;
+$nivela    = substr($vernivel, 0, 1);
+$sele_work = ' w.o58_instit in (' . str_replace('-', ', ', $db_selinstit) . ') ';
+if ($nivela >= 1) {
+  $sele_work .= " and exists (select 1 from t where t.o58_orgao = w.o58_orgao)";
+}
+if ($nivela >= 2) {
+  $sele_work .= "  and exists (select 1 from t where t.o58_unidade = w.o58_unidade) ";
+}
+if ($recurso != 0) {
 
+  $resrec     = db_query("select o15_descr from orctiporec where o15_codigo = {$recurso} ");
+  $head2      = "Recurso: " . $recurso . "-" . substr(pg_result($resrec, 0, 0), 0, 30);
+  $sele_work .= " and o58_codigo = {$recurso} ";
+}
 
+db_query("begin");
+db_query("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
 
-  $nivela = substr($vernivel,0,1);
-  $sele_work = ' w.o58_instit in ('.str_replace('-',', ',$db_selinstit).') ';
-  if($nivela >= 1){
-    $sele_work .= " and exists (select 1 from t where t.o58_orgao = w.o58_orgao)";
+$xcampos = split("-", $orgaos);
+
+for ($i = 0; $i < sizeof($xcampos); $i++) {
+
+  $where    = '';
+  $virgula  = '';
+  $xxcampos = split("_", $xcampos[$i]);
+  for ($ii = 0; $ii < sizeof($xxcampos); $ii++) {
+
+    if ($ii > 0) {
+
+      $where  .= $virgula . $xxcampos[$ii];
+      $virgula = ', ';
+    }
   }
-  if($nivela >= 2){
-    $sele_work .= "  and exists (select 1 from t where t.o58_unidade = w.o58_unidade) ";
+
+  if ($nivela == 1) {
+    $where .= ",0,0,0,0,0,0,0";
   }
-  if($recurso!=0){
-    $resrec = pg_exec("select o15_descr from orctiporec where o15_codigo = $recurso");
-    $head2 = "Recurso: ".$recurso."-".substr(pg_result($resrec,0,0),0,30);
-    $sele_work .= " and o58_codigo = $recurso";
-  }   
-  pg_exec("begin");
-  pg_exec("create temp table t(o58_orgao int8,o58_unidade int8,o58_funcao int8,o58_subfuncao int8,o58_programa int8,o58_projativ int8,o58_elemento int8,o58_codigo int8)");
-    
-  $xcampos = split("-",$orgaos);
-  
-  for($i=0;$i < sizeof($xcampos);$i++){
-     $where = '';
-     $virgula = ''; 
-     $xxcampos = split("_",$xcampos[$i]);
-     for($ii=0;$ii<sizeof($xxcampos);$ii++){
-        if($ii > 0){
-          $where .= $virgula.$xxcampos[$ii];
-	  $virgula = ', ';
-	}
-     }
-     if($nivela == 1)
-       $where .= ",0,0,0,0,0,0,0";
-     if($nivela == 2)
-       $where .= ",0,0,0,0,0,0";
-     pg_exec("insert into t values($where)");
+
+  if ($nivela == 2) {
+    $where .= ",0,0,0,0,0,0";
   }
-$anousu = db_getsession("DB_anousu");
+  db_query("insert into t values({$where})");
+}
+$anousu  = db_getsession("DB_anousu");
 $dataini = $perini;
 $datafin = $perfin;
-//echo $sele_work;
-//db_criatabela(pg_exec("select * from t"));exit;
-if ($totaliza == "A")
-  $result = db_dotacaosaldo(8,1,4,true,$sele_work,$anousu,$dataini,$datafin);
-else
-  $result = db_dotacaosaldo(2,2,4,true,$sele_work,$anousu,$dataini,$datafin);
 
+if ( ! empty($recursos_selecionados)) {
+    $sele_work .= " and orctiporec.o15_codigo in ($recursos_selecionados) ";
+}
 
+if ($totaliza == "A") {
+  $result = db_dotacaosaldo(8, 1, 4, true, $sele_work, $anousu, $dataini, $datafin);
+} else {
+  $result = db_dotacaosaldo(2, 2, 4, true, $sele_work, $anousu, $dataini, $datafin);
+}
 $fp = fopen("tmp/baldesp.csv","w");
 fputs($fp,"Orgão;;Unidade;;Função;;Subfunção;;Programa;;ProjAtiv;;Elemento;;Recurso;;DotIni;Suplem;Especial;Reduzido;Empenhado;Anulado;Liquidado;Pago;Empenhado_Acumulado;Anulado_acumulado;Liquidado_acumulado;Pago_acumulado\n");
-while($ln = pg_fetch_array($result)){
-   fputs($fp,$ln["o58_orgao"].";".$ln["o40_descr"].";".
-             $ln["o58_unidade"].";".$ln["o41_descr"].";".
-	     $ln["o58_funcao"].";".$ln["o52_descr"].";".
-	     $ln["o58_subfuncao"].";".$ln["o53_descr"].";".
-	     $ln["o58_programa"].";".$ln["o54_descr"].";".
-	     $ln["o58_projativ"].";".$ln["o55_descr"].";".
-	     $ln["o58_elemento"].";".$ln["o56_descr"].";".
-	     $ln["o58_codigo"].";".$ln["o15_descr"].";"
-	     );
-   fputs($fp,db_formatar($ln["dot_ini"],'f').";".
-             db_formatar($ln["suplementado_acumulado"],'f').";".
-	     db_formatar($ln["especial_acumulado"],'f').";".
-             db_formatar($ln["reduzido_acumulado"],'f').";".
-             db_formatar($ln["empenhado"],'f').";".
-             db_formatar($ln["anulado"],'f').";".
-             db_formatar($ln["liquidado"],'f').";".
-             db_formatar($ln["pago"],'f').";".
-             db_formatar($ln["empenhado_acumulado"],'f').";".
-             db_formatar($ln["anulado_acumulado"],'f').";".
-             db_formatar($ln["liquidado_acumulado"],'f').";".
-	     db_formatar($ln["pago_acumulado"],'f').";\n ");
-}	
+
+while ($ln = pg_fetch_array($result)) {
+
+  fputs($fp,$ln["o58_orgao"].";".$ln["o40_descr"].";".
+            $ln["o58_unidade"].";".$ln["o41_descr"].";".
+            $ln["o58_funcao"].";".$ln["o52_descr"].";".
+            $ln["o58_subfuncao"].";".$ln["o53_descr"].";".
+            $ln["o58_programa"].";".$ln["o54_descr"].";".
+            $ln["o58_projativ"].";".$ln["o55_descr"].";".
+            $ln["o58_elemento"].";".$ln["o56_descr"].";".
+            $ln["o58_codigo"].";".$ln["o15_descr"].";"
+  );
+
+  fputs($fp,db_formatar($ln["dot_ini"],'f').";".
+            db_formatar($ln["suplemen_acumulado"],'f').";".
+            db_formatar($ln["especial_acumulado"],'f').";".
+            db_formatar($ln["reduzido_acumulado"],'f').";".
+            db_formatar($ln["empenhado"],'f').";".
+            db_formatar($ln["anulado"],'f').";".
+            db_formatar($ln["liquidado"],'f').";".
+            db_formatar($ln["pago"],'f').";".
+            db_formatar($ln["empenhado_acumulado"],'f').";".
+            db_formatar($ln["anulado_acumulado"],'f').";".
+            db_formatar($ln["liquidado_acumulado"],'f').";".
+            db_formatar($ln["pago_acumulado"],'f').";\n ");
+}
 
 echo "<html><body bgcolor='#cccccc'><center><a href='tmp/baldesp.csv'>Clique com botão direito para Salvar o arquivo <b>baldesp.csv</b></a></body></html>";
 fclose($fp);
-
-
-
-
-
-
-
-
-
-?>

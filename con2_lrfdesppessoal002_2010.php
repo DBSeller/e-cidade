@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,20 +28,20 @@
 
 if (!isset($arqinclude)){
   
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_utils.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_liborcamento.php");
-  include("classes/db_empresto_classe.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("classes/db_conrelinfo_classe.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_db_config_classe.php");
-  include("classes/db_orcparamelemento_classe.php");  
-  require_once("model/linhaRelatorioContabil.model.php");
-  require_once("model/relatorioContabil.model.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_utils.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("classes/db_empresto_classe.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_db_config_classe.php"));
+  include(modification("classes/db_orcparamelemento_classe.php"));  
+  require_once(modification("model/linhaRelatorioContabil.model.php"));
+  require_once(modification("model/relatorioContabil.model.php"));
   
   $classinatura       = new cl_assinatura;
   $clempresto         = new cl_empresto;
@@ -89,7 +89,7 @@ $dt_fin_ant = $anousu_ant."-12-31";
 ////////////////////////////////////////////////////////////////////
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select munic,nomeinst,nomeinstabrev,db21_tipoinstit from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select munic,nomeinst,nomeinstabrev,db21_tipoinstit from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 

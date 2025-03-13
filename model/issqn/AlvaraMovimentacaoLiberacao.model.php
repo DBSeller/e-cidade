@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/issqn/AlvaraMovimentacao.model.php");
+require_once(modification("model/issqn/AlvaraMovimentacao.model.php"));
 
 /**
  * @deprecated
@@ -51,7 +51,7 @@ class AlvaraMovimentacaoLiberacao extends AlvaraMovimentacao {
   
   public function atualizaTipoAlvara($iTipoAlvara){
   	
-  	require_once("classes/db_issalvara_classe.php");
+  	require_once(modification("classes/db_issalvara_classe.php"));
   	$oIssAlvara = new cl_issalvara;
   	$oIssAlvara->q123_sequencial    = $this->getCodigoAlvara();
   	$oIssAlvara->q123_isstipoalvara = $iTipoAlvara;

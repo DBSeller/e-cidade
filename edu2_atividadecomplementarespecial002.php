@@ -1,41 +1,41 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("fpdf151/pdfwebseller.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("std/DBDate.php");
-require_once ("classes/db_edu_parametros_classe.php");
-require_once ("model/educacao/avaliacao/iFormaObtencao.interface.php");
-require_once ("model/educacao/avaliacao/iElementoAvaliacao.interface.php");
+require_once(modification("fpdf151/pdfwebseller.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("classes/db_edu_parametros_classe.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
+require_once(modification("model/educacao/avaliacao/iElementoAvaliacao.interface.php"));
 
 $oGet = db_utils::postMemory($_GET);
 db_app::import("CgmFactory");
@@ -76,20 +76,17 @@ for ($i = 0; $i < $iRegistros; $i++) {
 }
 
 
-$oDaoTurmaHorario = db_utils::getDao("turmaachorario");
-$sSqlBuscaDocente = $oDaoTurmaHorario->sql_query_file(null, "ed270_i_rechumano", null, "ed270_i_turmaac = {$oGet->iTurma}");
+$oDaoTurmaHorario = new cl_turmaachorarioprofissional();
+$sSqlBuscaDocente = $oDaoTurmaHorario->sql_query_file(null, "ed346_rechumano", null, "ed346_turmaac = {$oGet->iTurma}");
 $rsBuscaDocente   = $oDaoTurmaHorario->sql_record($sSqlBuscaDocente);
-
-
 
 /**
  * Informacoes globais do cabecalho do relatorio
  */
 $oDocente         = null;
-
 if ($oDaoTurmaHorario->numrows > 0) {
 
-  $iRecursoHumano = db_utils::fieldsMemory($rsBuscaDocente, 0)->ed270_i_rechumano;
+  $iRecursoHumano = db_utils::fieldsMemory($rsBuscaDocente, 0)->ed346_rechumano;
   $oDocente       = DocenteRepository:: getDocenteByCodigoRecursosHumano($iRecursoHumano);
 }
 

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("std/db_stdClass.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/db_liborcamento.php");
-require_once("libs/db_libpostgres.php");
-include("libs/JSON.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_layouttxt.php");
-include("model/manad.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("std/db_stdClass.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_libpostgres.php"));
+include(modification("libs/JSON.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_layouttxt.php"));
+include(modification("model/manad.model.php"));
 
 $oGet           = db_utils::postMemory($_GET);
 $oJson          = new services_json();
 $oFormDados     = $oJson->decode(str_replace("\\","",$oGet->sStrJson));
+
 $oArquivosManad = new manad();
 
 $sArqName       = "tmp/{$oFormDados->sNomeArquivo}sva.txt";
@@ -117,7 +119,8 @@ $aLinhasArquivo[258]['sql']   = $sSqlK001;
 $aLinhasArquivo[258]['ident'] = "K001";
 $aLinhasArquivo[258]['tipolinha'] = 3;
 
-$sSqlK050 = $oArquivosManad->getSqlK050(db_getsession('DB_instit'),$sDataIniParametro,$sDataFimParametro );
+
+$sSqlK050 = $oArquivosManad->getSqlK050(db_getsession('DB_instit'),$sDataIniParametro,$sDataFimParametro, $oFormDados->aTabelas);
 $aLinhasArquivo[248]['sql']   = $sSqlK050;
 $aLinhasArquivo[248]['ident'] = "K050";
 $aLinhasArquivo[248]['tipolinha'] = 3;
@@ -132,12 +135,12 @@ $aLinhasArquivo[250]['sql']   = $sSqlK150;
 $aLinhasArquivo[250]['ident'] = "K150";
 $aLinhasArquivo[250]['tipolinha'] = 3;
 
-$sSqlK250 = $oArquivosManad->getSqlK250(db_getsession('DB_instit'),$sDataIniParametro,$sDataFimParametro);
+$sSqlK250 = $oArquivosManad->getSqlK250(db_getsession('DB_instit'),$sDataIniParametro,$sDataFimParametro, $oFormDados->aTabelas);
 $aLinhasArquivo[251]['sql']   = $sSqlK250;
 $aLinhasArquivo[251]['ident'] = "K250";
 $aLinhasArquivo[251]['tipolinha'] = 3;
 			
-$sSqlK300 = $oArquivosManad->getSqlK300(db_getsession('DB_instit'),$sDataIniParametro,$sDataFimParametro);
+$sSqlK300 = $oArquivosManad->getSqlK300(db_getsession('DB_instit'),$sDataIniParametro,$sDataFimParametro, $oFormDados->aTabelas);
 $aLinhasArquivo[252]['sql']   = $sSqlK300;
 $aLinhasArquivo[252]['ident'] = "K300";
 $aLinhasArquivo[252]['tipolinha'] = 3;
@@ -159,15 +162,9 @@ foreach ($aLinhasArquivo as $chave => $aValor) {
 		flush();
 	}
 	
-	for($i = 0;$i < $iTMP; $i++){
-	  
+	for($i = 0;$i < $iTMP; $i++){		
 	  db_atutermometro($i,$iTMP,'termometro',1,"Processando Tabela : {$sIdent}");
 	  $oLinha = db_utils::fieldsMemory($rsTMP,$i);
-	  
-	  if ( $chave = 251 && isset( $oLinha->cod_ocorr ) && empty( $oLinha->cod_ocorr ) ) {
-	    $oLinha->cod_ocorr = html_entity_decode( "&nbsp;&nbsp;" );
-	  }
-	  
 	  $oLayoutTxt->setByLineOfDBUtils($oLinha,$iTipoLinha,$sIdent);
 	  if (strtoupper(substr($sIdent,0,1)) == 'K') {
   	  $iContadorGeral++;

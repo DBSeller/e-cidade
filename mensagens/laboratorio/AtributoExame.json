@@ -1,3 +1,4 @@
 {
-  "atributo_nao_cadastrado":"Atributo não cadastrado no sistema"
+  "atributo_nao_cadastrado" : "Atributo não cadastrado no sistema."
+  ,"sigla_nao_encontrada" : "Sigla '[sigla]', cadastrada na fórmula do atributo '[atributo]', não está vinculada a nenhum atributo do exame '[exame]'."
 }

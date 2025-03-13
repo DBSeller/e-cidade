@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 // Para garantir que nao houve erros em outros itens
 
-require_once ('classes/db_protprocessonumeracao_classe.php');
+require_once(modification('classes/db_protprocessonumeracao_classe.php'));
 $cl_protprocessonumeracao = new cl_protprocessonumeracao();
 
 if($sqlerro==false) {

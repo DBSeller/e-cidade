@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_cfpess_classe.php");
-require_once("classes/db_vtffunc_classe.php");
-require_once("classes/db_vtfdias_classe.php");
-require_once("classes/db_rhpessoal_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once ("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_cfpess_classe.php"));
+require_once(modification("classes/db_vtffunc_classe.php"));
+require_once(modification("classes/db_vtfdias_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcfpess = new cl_cfpess;
 $clvtffunc = new cl_vtffunc;
@@ -54,7 +54,8 @@ if($clcfpess->numrows > 0){
 if(isset($incluir)){
   db_inicio_transacao();
   $sqlerro = false;
-  $clvtffunc->r17_quant = "0";
+  // $clvtffunc->r17_quant = "0";
+  $clvtffunc->r17_quant = $r17_quant;
   $clvtffunc->incluir($r17_anousu,$r17_mesusu,$r17_regist,$r17_codigo,$r17_difere);
   $erro_msg = $clvtffunc->erro_msg; 
   if($clvtffunc->erro_status==0){
@@ -97,7 +98,7 @@ if(isset($incluir)){
   $clvtffunc->r17_regist = $r17_regist;
   $clvtffunc->r17_codigo = $r17_codigo;
   $clvtffunc->r17_difere = $r17_difere;
-  $clvtffunc->r17_quant = "0";
+  $clvtffunc->r17_quant = $r17_quant;
   $clvtffunc->alterar($r17_anousu,$r17_mesusu,$r17_regist,$r17_codigo,$r17_difere);
   $erro_msg = $clvtffunc->erro_msg; 
   if($clvtffunc->erro_status==0){
@@ -225,7 +226,7 @@ db_app::load('estilos.css, grid.style.css, DBViewManutencaoLocalTrabalho.classe.
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
       <?
-      include("forms/db_frmvtffunc.php");
+      include(modification("forms/db_frmvtffunc.php"));
       ?>
     </center>
     </td>

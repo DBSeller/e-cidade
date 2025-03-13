@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -118,7 +118,7 @@ class bvmovant {
     c61_reduz integer,
     c61_codcon integer,
     c61_codigo integer,
-    c60_descr varchar(50),
+    c60_descr varchar,
     c60_finali text,
     c61_instit integer,
     saldo_anterior float8,
@@ -193,9 +193,9 @@ class bvmovant {
       //  for($i = 0;$i < 20;$i++)
       db_fieldsmemory($result,$i);
       if($sinal_anterior == "C")
-      $saldo_anterior *= -1;
+        $saldo_anterior *= -1;
       if($sinal_final == "C")
-      $saldo_final *= -1;
+        $saldo_final *= -1;
       $tot_anterior         = $saldo_anterior;
 
       $tot_debito_1bin  = $debito_1bin;
@@ -223,27 +223,27 @@ class bvmovant {
         $work_planomae[$seq]= $estrut_mae;
         $work_planoestrut[$seq]= $estrut;
         $work_plano[$seq] =  array(0=>"$c61_reduz",
-        1=>"$c61_codcon",
-        2=>"$c61_codigo",
-        3=>"$c60_descr",
-        4=>"$c60_finali",
-        5=>"$c61_instit",
-        6=>"$saldo_anterior",
-        7=>"$debito_1bin",
-        8=>"$credito_1bin",
-        9=>"$debito_2bin",
-        10=>"$credito_2bin",
-        11=>"$debito_3bin",
-        12=>"$credito_3bin",
-        13=>"$debito_4bin",
-        14=>"$credito_4bin",
-        15=>"$debito_5bin",
-        16=>"$credito_5bin",
-        17=>"$debito_6bin",
-        18=>"$credito_6bin",
-        19=>"$saldo_final",
-        20=>"$sinal_anterior",
-        21=>"$sinal_final");
+                                   1=>"$c61_codcon",
+                                   2=>"$c61_codigo",
+                                   3=>"$c60_descr",
+                                   4=>"$c60_finali",
+                                   5=>"$c61_instit",
+                                   6=>"$saldo_anterior",
+                                   7=>"$debito_1bin",
+                                   8=>"$credito_1bin",
+                                   9=>"$debito_2bin",
+                                   10=>"$credito_2bin",
+                                   11=>"$debito_3bin",
+                                   12=>"$credito_3bin",
+                                   13=>"$debito_4bin",
+                                   14=>"$credito_4bin",
+                                   15=>"$debito_5bin",
+                                   16=>"$credito_5bin",
+                                   17=>"$debito_6bin",
+                                   18=>"$credito_6bin",
+                                   19=>"$saldo_final",
+                                   20=>"$sinal_anterior",
+                                   21=>"$sinal_final");
         $seq = $seq+1;
       }else{
         $work_plano[$key][6] += $tot_anterior;
@@ -279,27 +279,27 @@ class bvmovant {
           $work_planomae[$seq]= $estrutural;
           $work_planoestrut[$seq]= '';
           $work_plano[$seq] =(array(0=> 0,
-          1=> 0,
-          2=>$c60_codcon,
-          3=>$c60_descr,
-          4=>$c60_finali,
-          5=> 0 ,
-          6=>$saldo_anterior,
-          7=>$debito_1bin,
-          8=>$credito_1bin,
-          9=>$debito_2bin,
-          10=>$credito_2bin,
-          11=>$debito_3bin,
-          12=>$credito_3bin,
-          13=>$debito_4bin,
-          14=>$credito_4bin,
-          15=>$debito_5bin,
-          16=>$credito_5bin,
-          17=>$debito_6bin,
-          18=>$credito_6bin,
-          19=>$saldo_final,
-          20=>$sinal_anterior,
-          21=>$sinal_final));
+                                    1=> 0,
+                                    2=>$c60_codcon,
+                                    3=>$c60_descr,
+                                    4=>$c60_finali,
+                                    5=> 0 ,
+                                    6=>$saldo_anterior,
+                                    7=>$debito_1bin,
+                                    8=>$credito_1bin,
+                                    9=>$debito_2bin,
+                                    10=>$credito_2bin,
+                                    11=>$debito_3bin,
+                                    12=>$credito_3bin,
+                                    13=>$debito_4bin,
+                                    14=>$credito_4bin,
+                                    15=>$debito_5bin,
+                                    16=>$credito_5bin,
+                                    17=>$debito_6bin,
+                                    18=>$credito_6bin,
+                                    19=>$saldo_final,
+                                    20=>$sinal_anterior,
+                                    21=>$sinal_final));
 
 
 
@@ -450,16 +450,14 @@ class bvmovant {
     $data_fim = $anousu.'-12-31';
     $nomeArq = 'BVMOVANT.TXT';
 
-   /*
-    * verifica se ja existe arquivo no banco
-    */
-   $oDaoArquivosPad  = db_utils::getDao("conarquivospad");
-   $rsDaoArquivosPad = $oDaoArquivosPad->sql_record($oDaoArquivosPad->sql_query(null,
-                                                                                    "c54_codarq, c54_anousu, c54_nomearq, c54_arquivo",
-                                                                                    "",
-                                                                                    "c54_anousu      =  {$anousu}
-                                                                                     and c54_nomearq = '{$nomeArq}'"
-                                                                                    ));
+    /*
+     * verifica se ja existe arquivo no banco
+     */
+    $oDaoArquivosPad  = new cl_conarquivospad();
+    $camposArquivosPad = "c54_codarq, c54_anousu, c54_nomearq, c54_arquivo";
+    $whereArquivosPad = "c54_anousu = {$anousu} AND c54_nomearq = '{$nomeArq}' AND c54_codtrib = {$tribinst}";
+    $sqlArquivosPad = $oDaoArquivosPad->sql_query(null, $camposArquivosPad, '', $whereArquivosPad);
+    $rsDaoArquivosPad = $oDaoArquivosPad->sql_record($sqlArquivosPad);
 
     if ($oDaoArquivosPad->numrows > 0 ){
 
@@ -469,130 +467,130 @@ class bvmovant {
       fputs($this->arq, str_replace("\n\r", "", $sArquivo));
       fputs($this->arq,"\r\n");
 
-      $contador = count(explode("\n\r",$sArquivo));
+      $contador = count(explode("\n",$sArquivo));
 
     } else {
 
 
-		    $result = $this->db_planocontassaldo_matriz_mes($anousu,$data_ini,$data_fim,false,$where,'',false,'true');
+      $result = $this->db_planocontassaldo_matriz_mes($anousu,$data_ini,$data_fim,false,$where,'',true,'true');
 
-		    $contador=0;
+      $contador=0;
 
-		    $array_teste = array();
-		    for($x = 0; $x < pg_numrows($result);$x++){
-		      global $instituicoes,$c61_instit,$c61_reduz,$nivel,$estrutural,$saldo_anterior,$saldo_anterior_debito,$saldo_anterior_credito,$saldo_final,$c60_descr;
-		      db_fieldsmemory($result,$x);
+      $array_teste = array();
+      for($x = 0; $x < pg_numrows($result);$x++){
+        global $instituicoes,$c61_instit,$c61_reduz,$nivel,$estrutural,$saldo_anterior,$saldo_anterior_debito,$saldo_anterior_credito,$saldo_final,$c60_descr;
+        db_fieldsmemory($result,$x);
 
-		if ($x == 3496) {
-		//db_fieldsmemory($result,$x,true,true);exit;
-		}
+        if ($x == 3496) {
+          //db_fieldsmemory($result,$x,true,true);exit;
+        }
 
-		      $line  = formatar($estrutural,20,'n');
-		      if($c61_instit == 0 || empty($c61_instit))
-		      $line .= "0000";
-		      else
-		      $line .= $instituicoes[$c61_instit];    // aqui é o codtrib, da tabela db_config
+        $line  = formatar($estrutural,20,'n');
+        if($c61_instit == 0 || empty($c61_instit))
+          $line .= "0000";
+        else
+          $line .= $instituicoes[$c61_instit];    // aqui é o codtrib, da tabela db_config
 
-		      if ($debito_1bin >=0 ) {
-		        if ($debito_1bin == 7600000) {
-		          $line .= formatar(7600000,13,'v');
-		        } else {
-		          $line .= formatar($debito_1bin,13,'v');
-		        }
-		      } else {
-		        $line .= "-" .formatar(abs($debito_1bin),12,'v');
-		      }
+        if ($debito_1bin >=0 ) {
+          if ($debito_1bin == 7600000) {
+            $line .= formatar(7600000,13,'v');
+          } else {
+            $line .= formatar($debito_1bin,13,'v');
+          }
+        } else {
+          $line .= "-" .formatar(abs($debito_1bin),12,'v');
+        }
 
-		      if ($credito_1bin >= 0) {
-		        if ($credito_1bin == 96100000) {
-		          $line .= formatar(96100000,13,'v');
-		        } else {
-		          if ($credito_1bin == 7600000) {
-		            $line .= formatar(7600000,13,'v');
-		          } else {
-		            $line .= formatar($credito_1bin,13,'v');
-		          }
-		        }
-		      } else	   {
-		        $line .= "-".formatar(abs($credito_1bin),12,'v');
-		      }
-
-
-		      if ($debito_2bin >= 0)
-		      $line .= formatar($debito_2bin,13,'v');
-		      else
-		      $line .= "-".formatar(abs($debito_2bin),12,'v');
+        if ($credito_1bin >= 0) {
+          if ($credito_1bin == 96100000) {
+            $line .= formatar(96100000,13,'v');
+          } else {
+            if ($credito_1bin == 7600000) {
+              $line .= formatar(7600000,13,'v');
+            } else {
+              $line .= formatar($credito_1bin,13,'v');
+            }
+          }
+        } else	   {
+          $line .= "-".formatar(abs($credito_1bin),12,'v');
+        }
 
 
-		      if ($credito_2bin>=0)
-		      $line .= formatar($credito_2bin,13,'v');
-		      else
-		      $line .= "-".formatar(abs($credito_2bin),12,'v');
-
-		      if ($debito_3bin >= 0)
-		      $line .= formatar($debito_3bin,13,'v');
-		      else
-		      $line .= "-".formatar(abs($debito_3bin),12,'v');
+        if ($debito_2bin >= 0)
+          $line .= formatar($debito_2bin,13,'v');
+        else
+          $line .= "-".formatar(abs($debito_2bin),12,'v');
 
 
-		      if ($credito_3bin>=0)
-		      $line .= formatar($credito_3bin,13,'v');
-		      else
-		      $line .= "-".formatar(abs($credito_3bin),12,'v');
+        if ($credito_2bin>=0)
+          $line .= formatar($credito_2bin,13,'v');
+        else
+          $line .= "-".formatar(abs($credito_2bin),12,'v');
 
-		      if ($debito_4bin>=0)
-		      $line .= formatar($debito_4bin,13,'v');
-		      else
-		      $line .= "-".formatar(abs($debito_4bin),12,'v');
+        if ($debito_3bin >= 0)
+          $line .= formatar($debito_3bin,13,'v');
+        else
+          $line .= "-".formatar(abs($debito_3bin),12,'v');
 
-		      if ($credito_4bin>=0)
-		      $line .= formatar($credito_4bin,13,'v');
-		      else
-		      $line .= "-".formatar(abs($credito_4bin),12,'v');
 
-		      if ($debito_5bin>=0)
-		      $line .= formatar($debito_5bin,13,'v');
-		      else
-		      $line .= "-".formatar(abs($debito_5bin),12,'v');
+        if ($credito_3bin>=0)
+          $line .= formatar($credito_3bin,13,'v');
+        else
+          $line .= "-".formatar(abs($credito_3bin),12,'v');
 
-		      if ($credito_5bin>=0)
-		      $line .= formatar($credito_5bin,13,'v');
-		      else
-		      $line .= "-".formatar(abs($credito_5bin),12,'v');
+        if ($debito_4bin>=0)
+          $line .= formatar($debito_4bin,13,'v');
+        else
+          $line .= "-".formatar(abs($debito_4bin),12,'v');
 
-		      if ($debito_6bin>=0) {
-		        if ($debito_6bin == 96100000) {
-		          $line .= formatar(96100000,13,'v');
-		        } else {
-		          if ($debito_6bin == 7600000) {
-		            $line .= formatar(7600000,13,'v');
-		          } else {
-		             $line .= formatar($debito_6bin,13,'v');
-		          }
-		        }
-		      } else {
-		        $line .= "-".formatar(abs($debito_6bin),12,'v');
-		      }
+        if ($credito_4bin>=0)
+          $line .= formatar($credito_4bin,13,'v');
+        else
+          $line .= "-".formatar(abs($credito_4bin),12,'v');
 
-		      if ($credito_6bin>=0) {
-		        if ($credito_6bin == 7600000) {
-		          $line .= formatar(7600000,13,'v');
-		        } else {
-		          $line .= formatar($credito_6bin,13,'v');
-		        }
-		      } else {
-		        $line .= "-".formatar(abs($credito_6bin),12,'v');
-		      }
+        if ($debito_5bin>=0)
+          $line .= formatar($debito_5bin,13,'v');
+        else
+          $line .= "-".formatar(abs($debito_5bin),12,'v');
 
-		      $contador ++;
+        if ($credito_5bin>=0)
+          $line .= formatar($credito_5bin,13,'v');
+        else
+          $line .= "-".formatar(abs($credito_5bin),12,'v');
 
-		      fputs($this->arq,$line);
-		      fputs($this->arq,"\r\n");
+        if ($debito_6bin>=0) {
+          if ($debito_6bin == 96100000) {
+            $line .= formatar(96100000,13,'v');
+          } else {
+            if ($debito_6bin == 7600000) {
+              $line .= formatar(7600000,13,'v');
+            } else {
+              $line .= formatar($debito_6bin,13,'v');
+            }
+          }
+        } else {
+          $line .= "-".formatar(abs($debito_6bin),12,'v');
+        }
 
-		    }
+        if ($credito_6bin>=0) {
+          if ($credito_6bin == 7600000) {
+            $line .= formatar(7600000,13,'v');
+          } else {
+            $line .= formatar($credito_6bin,13,'v');
+          }
+        } else {
+          $line .= "-".formatar(abs($credito_6bin),12,'v');
+        }
 
-   }
-		//  trailer
+        $contador ++;
+
+        fputs($this->arq,$line);
+        fputs($this->arq,"\r\n");
+
+      }
+
+    }
+    //  trailer
     $contador = espaco(10-(strlen($contador)),'0').$contador;
     $line = "FINALIZADOR".$contador;
     fputs($this->arq,$line);
@@ -605,9 +603,5 @@ class bvmovant {
     @db_query("drop table work_pl");
 
     return $teste;
-
   }
-
 }
-
-?>

@@ -1,90 +1,90 @@
-<?
+<?php
 /*
-*     E-cidade Software Publico para Gestao Municipal                
-*  Copyright (C) 2014  DBSeller Servicos de Informatica             
-*                            www.dbseller.com.br                     
-*                         e-cidade@dbseller.com.br                   
-*                                                                    
-*  Este programa e software livre; voce pode redistribui-lo e/ou     
-*  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
-*  publicada pela Free Software Foundation; tanto a versao 2 da      
-*  Licenca como (a seu criterio) qualquer versao mais nova.          
-*                                                                    
-*  Este programa e distribuido na expectativa de ser util, mas SEM   
-*  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
-*  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
-*  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
-*  detalhes.                                                         
-*                                                                    
-*  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
-*  junto com este programa; se nao, escreva para a Free Software     
-*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
-*  02111-1307, USA.                                                  
-*  
-*  Copia da licenca no diretorio licenca/licenca_en.txt 
-*                                licenca/licenca_pt.txt 
+*     E-cidade Software Publico para Gestao Municipal
+*  Copyright (C) 2009  DBSeller Servicos de Informatica
+*                            www.dbseller.com.br
+*                         e-cidade@dbseller.com.br
+*
+*  Este programa e software livre; voce pode redistribui-lo e/ou
+*  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+*  publicada pela Free Software Foundation; tanto a versao 2 da
+*  Licenca como (a seu criterio) qualquer versao mais nova.
+*
+*  Este programa e distribuido na expectativa de ser util, mas SEM
+*  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+*  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+*  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+*  detalhes.
+*
+*  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+*  junto com este programa; se nao, escreva para a Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+*  02111-1307, USA.
+*
+*  Copia da licenca no diretorio licenca/licenca_en.txt
+*                                licenca/licenca_pt.txt
 */
 
 //MODULO: itbi
 //CLASSE DA ENTIDADE itbinome
-class cl_itbinome { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $it03_seq = 0; 
-   var $it03_guia = 0; 
-   var $it03_tipo = null; 
-   var $it03_princ = 'f'; 
-   var $it03_nome = null; 
-   var $it03_sexo = null; 
-   var $it03_cpfcnpj = null; 
-   var $it03_endereco = null; 
-   var $it03_numero = 0; 
-   var $it03_compl = null; 
-   var $it03_cxpostal = null; 
-   var $it03_bairro = null; 
-   var $it03_munic = null; 
-   var $it03_uf = null; 
-   var $it03_cep = null; 
-   var $it03_mail = null; 
-   // cria propriedade com as variaveis do arquivo 
-   var $campos = "
-                 it03_seq = int8 = Sequencia 
-                 it03_guia = int8 = Número da guia de ITBI 
-                 it03_tipo = char(1) = Tipo 
-                 it03_princ = bool = Principal 
-                 it03_nome = varchar(40) = Nome 
-                 it03_sexo = char(1) = Sexo 
-                 it03_cpfcnpj = varchar(14) = CNPJ/CPF 
-                 it03_endereco = varchar(100) = Endereco 
-                 it03_numero = int8 = Número 
-                 it03_compl = varchar(100) = Complemento 
-                 it03_cxpostal = varchar(20) = Caixa postal 
-                 it03_bairro = varchar(40) = Bairro 
-                 it03_munic = varchar(40) = Município 
-                 it03_uf = varchar(2) = UF 
-                 it03_cep = varchar(8) = CEP 
-                 it03_mail = varchar(50) = e-mail 
+class cl_itbinome {
+   // cria variaveis de erro
+   public $rotulo     = null;
+   public $query_sql  = null;
+   public $numrows    = 0;
+   public $numrows_incluir = 0;
+   public $numrows_alterar = 0;
+   public $numrows_excluir = 0;
+   public $erro_status= null;
+   public $erro_sql   = null;
+   public $erro_banco = null;
+   public $erro_msg   = null;
+   public $erro_campo = null;
+   public $pagina_retorno = null;
+   // cria variaveis do arquivo
+   public $it03_seq = 0;
+   public $it03_guia = 0;
+   public $it03_tipo = null;
+   public $it03_princ = 'f';
+   public $it03_nome = null;
+   public $it03_sexo = null;
+   public $it03_cpfcnpj = null;
+   public $it03_endereco = null;
+   public $it03_numero = 0;
+   public $it03_compl = null;
+   public $it03_cxpostal = null;
+   public $it03_bairro = null;
+   public $it03_munic = null;
+   public $it03_uf = null;
+   public $it03_cep = null;
+   public $it03_mail = null;
+   // cria propriedade com as variaveis do arquivo
+   public $campos = "
+                 it03_seq = int8 = Sequencia
+                 it03_guia = int8 = Número da guia de ITBI
+                 it03_tipo = char(1) = Tipo
+                 it03_princ = bool = Principal
+                 it03_nome = varchar(40) = Nome
+                 it03_sexo = char(1) = Sexo
+                 it03_cpfcnpj = varchar(14) = CNPJ/CPF
+                 it03_endereco = varchar(100) = Endereco
+                 it03_numero = int8 = Número
+                 it03_compl = varchar(100) = Complemento
+                 it03_cxpostal = varchar(20) = Caixa postal
+                 it03_bairro = varchar(40) = Bairro
+                 it03_munic = varchar(40) = Município
+                 it03_uf = varchar(2) = UF
+                 it03_cep = varchar(8) = CEP
+                 it03_mail = varchar(50) = e-mail
                  ";
-   //funcao construtor da classe 
-   function cl_itbinome() { 
+   //funcao construtor da classe
+   public function cl_itbinome() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("itbinome"); 
+     $this->rotulo = new rotulo("itbinome");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   public function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -93,12 +93,12 @@ class cl_itbinome {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->it03_seq = ($this->it03_seq == ""?@$GLOBALS["HTTP_POST_VARS"]["it03_seq"]:$this->it03_seq);
        $this->it03_guia = ($this->it03_guia == ""?@$GLOBALS["HTTP_POST_VARS"]["it03_guia"]:$this->it03_guia);
        $this->it03_tipo = ($this->it03_tipo == ""?@$GLOBALS["HTTP_POST_VARS"]["it03_tipo"]:$this->it03_tipo);
-       $this->it03_princ = ($this->it03_princ == "f"?@$GLOBALS["HTTP_POST_VARS"]["it03_princ"]:$this->it03_princ);
+       $this->it03_princ = ($this->it03_princ == "f"?(!empty(@$GLOBALS["HTTP_POST_VARS"]["it03_princ"]) ? @$GLOBALS["HTTP_POST_VARS"]["it03_princ"] : $this->it03_princ):$this->it03_princ);
        $this->it03_nome = ($this->it03_nome == ""?@$GLOBALS["HTTP_POST_VARS"]["it03_nome"]:$this->it03_nome);
        $this->it03_sexo = ($this->it03_sexo == ""?@$GLOBALS["HTTP_POST_VARS"]["it03_sexo"]:$this->it03_sexo);
        $this->it03_cpfcnpj = ($this->it03_cpfcnpj == ""?@$GLOBALS["HTTP_POST_VARS"]["it03_cpfcnpj"]:$this->it03_cpfcnpj);
@@ -116,9 +116,9 @@ class cl_itbinome {
      }
    }
    // funcao para inclusao
-   function incluir ($it03_seq){ 
+   public function incluir ($it03_seq){
       $this->atualizacampos();
-     if($this->it03_guia == null ){ 
+     if($this->it03_guia == null ){
        $this->erro_sql = " Campo Número da guia de ITBI não informado.";
        $this->erro_campo = "it03_guia";
        $this->erro_banco = "";
@@ -127,7 +127,7 @@ class cl_itbinome {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it03_tipo == null ){ 
+     if($this->it03_tipo == null ){
        $this->erro_sql = " Campo Tipo não informado.";
        $this->erro_campo = "it03_tipo";
        $this->erro_banco = "";
@@ -136,7 +136,7 @@ class cl_itbinome {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it03_princ == null ){ 
+     if($this->it03_princ == null ){
        $this->erro_sql = " Campo Principal não informado.";
        $this->erro_campo = "it03_princ";
        $this->erro_banco = "";
@@ -145,7 +145,7 @@ class cl_itbinome {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it03_nome == null ){ 
+     if($this->it03_nome == null ){
        $this->erro_sql = " Campo Nome não informado.";
        $this->erro_campo = "it03_nome";
        $this->erro_banco = "";
@@ -154,7 +154,7 @@ class cl_itbinome {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it03_sexo == null ){ 
+     if($this->it03_sexo == null ){
        $this->erro_sql = " Campo Sexo não informado.";
        $this->erro_campo = "it03_sexo";
        $this->erro_banco = "";
@@ -163,23 +163,23 @@ class cl_itbinome {
        $this->erro_status = "0";
        return false;
      }
-     if($this->it03_numero == null ){ 
+     if($this->it03_numero == null ){
        $this->it03_numero = "0";
      }
-     if($this->it03_cxpostal == null ){ 
+     if($this->it03_cxpostal == null ){
        $this->it03_cxpostal = "0";
      }
      if($it03_seq == "" || $it03_seq == null ){
-       $result = db_query("select nextval('itbinome_it03_seq_seq')"); 
+       $result = db_query("select nextval('itbinome_it03_seq_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: itbinome_it03_seq_seq do campo: it03_seq"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: itbinome_it03_seq_seq do campo: it03_seq";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->it03_seq = pg_result($result,0,0); 
+       $this->it03_seq = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from itbinome_it03_seq_seq");
        if(($result != false) && (pg_result($result,0,0) < $it03_seq)){
@@ -190,10 +190,10 @@ class cl_itbinome {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->it03_seq = $it03_seq; 
+         $this->it03_seq = $it03_seq;
        }
      }
-     if(($this->it03_seq == null) || ($this->it03_seq == "") ){ 
+     if(($this->it03_seq == null) || ($this->it03_seq == "") ){
        $this->erro_sql = " Campo it03_seq nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -202,43 +202,43 @@ class cl_itbinome {
        return false;
      }
      $sql = "insert into itbinome(
-                                       it03_seq 
-                                      ,it03_guia 
-                                      ,it03_tipo 
-                                      ,it03_princ 
-                                      ,it03_nome 
-                                      ,it03_sexo 
-                                      ,it03_cpfcnpj 
-                                      ,it03_endereco 
-                                      ,it03_numero 
-                                      ,it03_compl 
-                                      ,it03_cxpostal 
-                                      ,it03_bairro 
-                                      ,it03_munic 
-                                      ,it03_uf 
-                                      ,it03_cep 
-                                      ,it03_mail 
+                                       it03_seq
+                                      ,it03_guia
+                                      ,it03_tipo
+                                      ,it03_princ
+                                      ,it03_nome
+                                      ,it03_sexo
+                                      ,it03_cpfcnpj
+                                      ,it03_endereco
+                                      ,it03_numero
+                                      ,it03_compl
+                                      ,it03_cxpostal
+                                      ,it03_bairro
+                                      ,it03_munic
+                                      ,it03_uf
+                                      ,it03_cep
+                                      ,it03_mail
                        )
                 values (
-                                $this->it03_seq 
-                               ,$this->it03_guia 
-                               ,'$this->it03_tipo' 
-                               ,'$this->it03_princ' 
-                               ,'$this->it03_nome' 
-                               ,'$this->it03_sexo' 
-                               ,'$this->it03_cpfcnpj' 
-                               ,'$this->it03_endereco' 
-                               ,$this->it03_numero 
-                               ,'$this->it03_compl' 
-                               ,'$this->it03_cxpostal' 
-                               ,'$this->it03_bairro' 
-                               ,'$this->it03_munic' 
-                               ,'$this->it03_uf' 
-                               ,'$this->it03_cep' 
-                               ,'$this->it03_mail' 
+                                $this->it03_seq
+                               ,$this->it03_guia
+                               ,'$this->it03_tipo'
+                               ,'$this->it03_princ'
+                               ,'$this->it03_nome'
+                               ,'$this->it03_sexo'
+                               ,'$this->it03_cpfcnpj'
+                               ,'$this->it03_endereco'
+                               ,$this->it03_numero
+                               ,'$this->it03_compl'
+                               ,'$this->it03_cxpostal'
+                               ,'$this->it03_bairro'
+                               ,'$this->it03_munic'
+                               ,'$this->it03_uf'
+                               ,'$this->it03_cep'
+                               ,'$this->it03_mail'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Nome(s) da guia ($this->it03_seq) nao Incluído. Inclusao Abortada.";
@@ -291,16 +291,16 @@ class cl_itbinome {
        }
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($it03_seq=null) { 
+   public function alterar ($it03_seq=null) {
       $this->atualizacampos();
      $sql = " update itbinome set ";
      $virgula = "";
-     if(trim($this->it03_seq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_seq"])){ 
+     if(trim($this->it03_seq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_seq"])){
        $sql  .= $virgula." it03_seq = $this->it03_seq ";
        $virgula = ",";
-       if(trim($this->it03_seq) == null ){ 
+       if(trim($this->it03_seq) == null ){
          $this->erro_sql = " Campo Sequencia não informado.";
          $this->erro_campo = "it03_seq";
          $this->erro_banco = "";
@@ -310,10 +310,10 @@ class cl_itbinome {
          return false;
        }
      }
-     if(trim($this->it03_guia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_guia"])){ 
+     if(trim($this->it03_guia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_guia"])){
        $sql  .= $virgula." it03_guia = $this->it03_guia ";
        $virgula = ",";
-       if(trim($this->it03_guia) == null ){ 
+       if(trim($this->it03_guia) == null ){
          $this->erro_sql = " Campo Número da guia de ITBI não informado.";
          $this->erro_campo = "it03_guia";
          $this->erro_banco = "";
@@ -323,10 +323,10 @@ class cl_itbinome {
          return false;
        }
      }
-     if(trim($this->it03_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_tipo"])){ 
+     if(trim($this->it03_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_tipo"])){
        $sql  .= $virgula." it03_tipo = '$this->it03_tipo' ";
        $virgula = ",";
-       if(trim($this->it03_tipo) == null ){ 
+       if(trim($this->it03_tipo) == null ){
          $this->erro_sql = " Campo Tipo não informado.";
          $this->erro_campo = "it03_tipo";
          $this->erro_banco = "";
@@ -336,10 +336,10 @@ class cl_itbinome {
          return false;
        }
      }
-     if(trim($this->it03_princ)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_princ"])){ 
+     if(trim($this->it03_princ)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_princ"])){
        $sql  .= $virgula." it03_princ = '$this->it03_princ' ";
        $virgula = ",";
-       if(trim($this->it03_princ) == null ){ 
+       if(trim($this->it03_princ) == null ){
          $this->erro_sql = " Campo Principal não informado.";
          $this->erro_campo = "it03_princ";
          $this->erro_banco = "";
@@ -349,10 +349,10 @@ class cl_itbinome {
          return false;
        }
      }
-     if(trim($this->it03_nome)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_nome"])){ 
+     if(trim($this->it03_nome)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_nome"])){
        $sql  .= $virgula." it03_nome = '$this->it03_nome' ";
        $virgula = ",";
-       if(trim($this->it03_nome) == null ){ 
+       if(trim($this->it03_nome) == null ){
          $this->erro_sql = " Campo Nome não informado.";
          $this->erro_campo = "it03_nome";
          $this->erro_banco = "";
@@ -362,10 +362,10 @@ class cl_itbinome {
          return false;
        }
      }
-     if(trim($this->it03_sexo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_sexo"])){ 
+     if(trim($this->it03_sexo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_sexo"])){
        $sql  .= $virgula." it03_sexo = '$this->it03_sexo' ";
        $virgula = ",";
-       if(trim($this->it03_sexo) == null ){ 
+       if(trim($this->it03_sexo) == null ){
          $this->erro_sql = " Campo Sexo não informado.";
          $this->erro_campo = "it03_sexo";
          $this->erro_banco = "";
@@ -375,46 +375,46 @@ class cl_itbinome {
          return false;
        }
      }
-     if(trim($this->it03_cpfcnpj)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_cpfcnpj"])){ 
+     if(trim($this->it03_cpfcnpj)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_cpfcnpj"])){
        $sql  .= $virgula." it03_cpfcnpj = '$this->it03_cpfcnpj' ";
        $virgula = ",";
      }
-     if(trim($this->it03_endereco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_endereco"])){ 
+     if(trim($this->it03_endereco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_endereco"])){
        $sql  .= $virgula." it03_endereco = '$this->it03_endereco' ";
        $virgula = ",";
      }
-     if(trim($this->it03_numero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_numero"])){ 
-        if(trim($this->it03_numero)=="" && isset($GLOBALS["HTTP_POST_VARS"]["it03_numero"])){ 
-           $this->it03_numero = "0" ; 
-        } 
+     if(trim($this->it03_numero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_numero"])){
+        if(trim($this->it03_numero)=="" && isset($GLOBALS["HTTP_POST_VARS"]["it03_numero"])){
+           $this->it03_numero = "0" ;
+        }
        $sql  .= $virgula." it03_numero = $this->it03_numero ";
        $virgula = ",";
      }
-     if(trim($this->it03_compl)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_compl"])){ 
+     if(trim($this->it03_compl)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_compl"])){
        $sql  .= $virgula." it03_compl = '$this->it03_compl' ";
        $virgula = ",";
      }
-     if(trim($this->it03_cxpostal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_cxpostal"])){ 
+     if(trim($this->it03_cxpostal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_cxpostal"])){
        $sql  .= $virgula." it03_cxpostal = '$this->it03_cxpostal' ";
        $virgula = ",";
      }
-     if(trim($this->it03_bairro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_bairro"])){ 
+     if(trim($this->it03_bairro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_bairro"])){
        $sql  .= $virgula." it03_bairro = '$this->it03_bairro' ";
        $virgula = ",";
      }
-     if(trim($this->it03_munic)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_munic"])){ 
+     if(trim($this->it03_munic)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_munic"])){
        $sql  .= $virgula." it03_munic = '$this->it03_munic' ";
        $virgula = ",";
      }
-     if(trim($this->it03_uf)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_uf"])){ 
+     if(trim($this->it03_uf)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_uf"])){
        $sql  .= $virgula." it03_uf = '$this->it03_uf' ";
        $virgula = ",";
      }
-     if(trim($this->it03_cep)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_cep"])){ 
+     if(trim($this->it03_cep)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_cep"])){
        $sql  .= $virgula." it03_cep = '$this->it03_cep' ";
        $virgula = ",";
      }
-     if(trim($this->it03_mail)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_mail"])){ 
+     if(trim($this->it03_mail)!="" || isset($GLOBALS["HTTP_POST_VARS"]["it03_mail"])){
        $sql  .= $virgula." it03_mail = '$this->it03_mail' ";
        $virgula = ",";
      }
@@ -471,7 +471,7 @@ class cl_itbinome {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Nome(s) da guia nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->it03_seq;
@@ -499,11 +499,11 @@ class cl_itbinome {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($it03_seq=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   public function excluir ($it03_seq=null,$dbwhere=null) {
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
@@ -512,7 +512,7 @@ class cl_itbinome {
        if ($dbwhere==null || $dbwhere=="") {
 
          $resaco = $this->sql_record($this->sql_query_file($it03_seq));
-       } else { 
+       } else {
          $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
        }
        if (($resaco != false) || ($this->numrows!=0)) {
@@ -556,7 +556,7 @@ class cl_itbinome {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Nome(s) da guia nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$it03_seq;
@@ -584,11 +584,11 @@ class cl_itbinome {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   public function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -610,11 +610,11 @@ class cl_itbinome {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $it03_seq=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function sql_query ( $it03_seq=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -628,18 +628,19 @@ class cl_itbinome {
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = itbi.it01_id_usuario";
      $sql .= "      inner join db_depart  on  db_depart.coddepto = itbi.it01_coddepto";
      $sql .= "      inner join itbitransacao  on  itbitransacao.it04_codigo = itbi.it01_tipotransacao";
+     $sql .= "      left join itbinomecgm  on  itbinomecgm.it21_itbinome = itbinome.it03_seq";
      $sql2 = "";
      if($dbwhere==""){
        if($it03_seq!=null ){
-         $sql2 .= " where itbinome.it03_seq = $it03_seq "; 
-       } 
+         $sql2 .= " where itbinome.it03_seq = $it03_seq ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -648,11 +649,11 @@ class cl_itbinome {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $it03_seq=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function sql_query_file ( $it03_seq=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -665,15 +666,15 @@ class cl_itbinome {
      $sql2 = "";
      if($dbwhere==""){
        if($it03_seq!=null ){
-         $sql2 .= " where itbinome.it03_seq = $it03_seq "; 
-       } 
+         $sql2 .= " where itbinome.it03_seq = $it03_seq ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -682,10 +683,10 @@ class cl_itbinome {
      }
      return $sql;
   }
-   function sql_queryguia($it03_seq=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_queryguia($it03_seq=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -707,19 +708,19 @@ class cl_itbinome {
 		 $sql .= "      left  join bairro					 on  lote.j34_bairro					 = bairro.j13_codi";
      $sql .= "      inner join itbitransacao   on  itbitransacao.it04_codigo = itbi.it01_tipotransacao";
      $sql .= "      left  join itbiavalia      on  itbiavalia.it14_guia      = itbi.it01_guia";
-//   $sql .= "      left  join itbisituacao    on  itbisituacao.it07_guia    = itbi.it01_guia";
+   $sql .= "      left  join itbisituacao    on  itbisituacao.it07_codigo    = itburbano.it05_itbisituacao";
      $sql2 = "";
      if($dbwhere==""){
        if($it03_seq!=null ){
-         $sql2 .= " where itbinome.it03_seq = $it03_seq "; 
-       } 
+         $sql2 .= " where itbinome.it03_seq = $it03_seq ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

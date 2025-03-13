@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_issalvara_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_issalvara_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clissalvara = new cl_issalvara;
 $clissalvara->rotulo->label("q123_sequencial");
 $clissalvara->rotulo->label("q123_sequencial");
+$clrotulo = new rotulocampo;
+$clrotulo->label("DBtxt30");
+$clrotulo->label("DBtxt31");
 ?>
 <html>
 <head>
@@ -70,6 +73,27 @@ $clissalvara->rotulo->label("q123_sequencial");
 		       ?>
             </td>
           </tr>
+
+          <tr>
+						<td align="right">
+            <label for="cpf"><?=$DBtxt30?>:</label>
+						</td>
+						<td>
+							<?
+								db_input('z01_cgccpf',20,$Iz01_cgccpf,true,'text',1,"onkeyup='js_ValidaCampos(this,1,\"CPF\",\"\",\"\",event);'",'cpf');
+							?>
+						</td>
+					</tr>
+          <tr>
+						<td align="right">
+            <label for="cnpj"><?=$DBtxt31?>:</label>
+						</td>
+						<td>
+							<?
+								db_input('z01_cgccpf',20,$Iz01_cgccpf,true,'text',1,"onkeyup='js_ValidaCampos(this,1,\"CNPJ\",\"\",\"\",event);'",'cnpj');
+							?>
+						</td>
+					</tr>
         
           <tr> 
             <td colspan="2" align="center"> 
@@ -93,7 +117,7 @@ $clissalvara->rotulo->label("q123_sequencial");
       if(!isset($pesquisa_chave) && !isset($_GET['lLibera']) ){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_issalvara.php")==true){
-             include("funcoes/db_func_issalvara.php");
+             include(modification("funcoes/db_func_issalvara.php"));
            }else{
            $campos = "issalvara.*";
            }
@@ -103,9 +127,7 @@ $clissalvara->rotulo->label("q123_sequencial");
 	         $sql = $clissalvara->sql_query($chave_q123_sequencial,$campos,"q123_sequencial");
 	         
         } else if (isset($chave_z01_nome) && (trim($chave_z01_nome)!="") ){
-        	
 	         $sql = $clissalvara->sql_query("",$campos,"q123_sequencial,z01_nome"," z01_nome ilike '$chave_z01_nome%' ");
-	         //echo $sql; die();
         }else{
            $sql = $clissalvara->sql_query("",$campos,"q123_sequencial","");
         }
@@ -136,7 +158,7 @@ $clissalvara->rotulo->label("q123_sequencial");
        $iDepart = db_getsession("DB_coddepto");
       if(!isset($pesquisa_chave) ){
       	
-        $campos = " q123_inscr,z01_nome,z01_numcgm,q123_sequencial";
+        $campos = " q123_inscr,z01_nome,z01_cgccpf,z01_numcgm,q123_sequencial";
 
         if(isset($chave_q123_sequencial) && (trim($chave_q123_sequencial)!="") ){
         	
@@ -145,7 +167,15 @@ $clissalvara->rotulo->label("q123_sequencial");
         } else if(isset($chave_z01_nome) && (trim($chave_z01_nome)!="") ){
         	
 	         $sql = $clissalvara->sql_queryAlvara("",$campos,"q123_sequencial"," z01_nome ilike '$chave_z01_nome%' ",null);
-	         
+
+        } else if(isset($cpf) && (trim($cpf)!="") ){
+        
+          $sql = $clissalvara->sql_queryAlvara("",$campos,"z01_cgccpf"," z01_cgccpf = '$cpf' ",null);
+          
+        } else if(isset($cnpj) && (trim($cnpj)!="") ){
+        	
+          $sql = $clissalvara->sql_queryAlvara("",$campos,"z01_cgccpf"," z01_cgccpf = '$cnpj' ",null);
+
         }else{
         	
            $sql = $clissalvara->sql_queryAlvara("",$campos,"q123_sequencial","",null);
@@ -196,4 +226,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_q123_sequencial",true,1,"chave_q123_sequencial",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

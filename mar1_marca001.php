@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_marca_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_marca_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clmarca = new cl_marca;
 $db_opcao = 1;
 $db_botao = true;
@@ -69,7 +69,7 @@ if(isset($incluir)){
        <td height="300" align="left" valign="top" bgcolor="#CCCCCC">
         <center>
         <?
-        include("forms/db_frmmarca.php");
+        include(modification("forms/db_frmmarca.php"));
         ?>
         </center>
        </td>
@@ -90,7 +90,7 @@ if(isset($incluir)){
  }else{
   $clmarca->erro(true,false);
   $sql = "select max(ma01_i_codigo) as ma05_i_marca from marca";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
   ?>
   <script>

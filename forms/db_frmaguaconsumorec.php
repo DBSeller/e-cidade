@@ -26,7 +26,7 @@
  */
 
 //MODULO: agua
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $claguaconsumorec->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -129,10 +129,10 @@ function js_cancelar(){
 }
 function js_pesquisax20_codconsumotipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguaconsumorec','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?funcao_js=parent.js_mostraaguaconsumotipo1|x25_codconsumotipo|x25_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaconsumorec','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?funcao_js=parent.js_mostraaguaconsumotipo1|x25_codconsumotipo|x25_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.x20_codconsumotipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguaconsumorec','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?pesquisa_chave='+document.form1.x20_codconsumotipo.value+'&funcao_js=parent.js_mostraaguaconsumotipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaconsumorec','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?pesquisa_chave='+document.form1.x20_codconsumotipo.value+'&funcao_js=parent.js_mostraaguaconsumotipo','Pesquisa',false);
      }else{
        document.form1.x25_descr.value = ''; 
      }
@@ -152,10 +152,10 @@ function js_mostraaguaconsumotipo1(chave1,chave2){
 }
 function js_pesquisax20_codconsumo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguaconsumorec','db_iframe_aguaconsumo','func_aguaconsumo.php?funcao_js=parent.js_mostraaguaconsumo1|x19_codconsumo|x19_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaconsumorec','db_iframe_aguaconsumo','func_aguaconsumo.php?funcao_js=parent.js_mostraaguaconsumo1|x19_codconsumo|x19_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.x20_codconsumo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguaconsumorec','db_iframe_aguaconsumo','func_aguaconsumo.php?pesquisa_chave='+document.form1.x20_codconsumo.value+'&funcao_js=parent.js_mostraaguaconsumo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaconsumorec','db_iframe_aguaconsumo','func_aguaconsumo.php?pesquisa_chave='+document.form1.x20_codconsumo.value+'&funcao_js=parent.js_mostraaguaconsumo','Pesquisa',false);
      }else{
        document.form1.x19_descr.value = ''; 
      }

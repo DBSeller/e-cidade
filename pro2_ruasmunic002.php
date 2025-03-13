@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_ruas_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_ruas_classe.php"));
 $clruas   = new cl_ruas;
 $clrotulo = new rotulocampo;
 $clrotulo->label('j14_codigo');
@@ -65,7 +65,7 @@ $sql = "SELECT  distinct j14_codigo,
 				ORDER BY $order_by";
 
 //die($sql);
-$result = pg_query($sql);
+$result = db_query($sql);
 $numrows = pg_numrows($result);
 
 //db_criatabela($result);exit;

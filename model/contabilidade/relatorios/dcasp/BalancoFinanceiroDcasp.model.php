@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -31,17 +31,43 @@
  *
  * @package contabilidade
  * @subpackage relatorios
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.13 $
  * @author Bruno De Boni bruno.boni@dbseller.com.br
  * @author Iuri Guntchnigg iuri@dbseller.com.br
  *
  */
 final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
 
+  private $rsBalanceteReceita             = null;
+  private $rsBalanceteReceitaAnoAnterior  = null;
+  private $rsBalanceteDespesa             = null;
+  private $rsBalanceteDespesaAnterior     = null;
+  private $rsBalanceteVerificacao         = null;
+  private $rsBalanceteVerificacaoAnterior = null;
+  private $aLinhasRelatorio = array();
+
+  private $aLinhasComRecurso = array(4, 5, 6, 15, 16, 17);
+
   /**
-   * Retorna os Dados para emissão do Relatório
+   * @type int
    */
-  public function getDados() {
+  const CODIGO_RELATORIO = 129;
+
+  /**
+   * Contém os Recursos que não foram configurados
+   * @var array
+   */
+  private $aRecursosNaoConfigurados = array();
+
+  /**
+   * Retorna os recursos vinculados que não foram vinculados nas configurações
+   * @return Recurso[]
+   */
+  public function getRecursosNaoConfigurados() {
+    return $this->aRecursosNaoConfigurados;
+  }
+
+  private function calculaValoresRelatorio() {
 
     $sWhereReceita = " o70_instit in ({$this->getInstituicoes()}) ";
     $sWhereDespesa = " o58_instit in ({$this->getInstituicoes()}) ";
@@ -49,75 +75,81 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
 
     $oDataInicialAnterior = clone $this->getDataInicial();
     $oDataInicialAnterior->modificarIntervalo('-1 year');
-    $oDataFinalAnterior = clone$this->getDataFinal();
+
+    $oDataFinalAnterior   = clone $this->getDataFinal();
     $oDataFinalAnterior->modificarIntervalo('-1 year');
 
     $this->oDataInicialAnterior = $oDataInicialAnterior;
-    $this->oDataFinalAnterior = $oDataFinalAnterior;
-
-    $aLinhasUtilizamBalanceteReceita       = array(2, 4, 5,6, 7);
-    $aLinhasUtilizamBalanceteDespesa       = array(13, 14, 15, 16, 17);
-    $aLinhasUtilizamBalanceteVerificacao   = array(11, 20);
-    $aLinhasUtilizamLancamentoPorDocumento = array(8, 9, 18, 19);
+    $this->oDataFinalAnterior   = $oDataFinalAnterior;
 
     /**
      * Carregar a Receita do exericio atual
      */
-
-    $rsBalanceteReceita = db_receitasaldo(11, 1, 3, true,
-                                          $sWhereReceita,
-                                          $this->iAnoUsu,
-                                          $this->getDataInicial()->getDate(),
-                                          $this->getDataFinal()->getDate());
+    $this->rsBalanceteReceita = db_receitasaldo( 11, 1, 3, true,
+                                                 $sWhereReceita,
+                                                 $this->iAnoUsu,
+                                                 $this->getDataInicial()->getDate(),
+                                                 $this->getDataFinal()->getDate() );
 
     db_query("drop table work_receita");
-
 
     /**
      * Receita do ano Anterior
      */
-    $rsBalanceteReceitaAnoAnterior = db_receitasaldo(11, 1, 3, true,
-                                                     $sWhereReceita,
-                                                     $this->iAnoUsu -1 ,
-                                                     $oDataInicialAnterior->getDate(),
-                                                     $oDataFinalAnterior->getDate()
-                                                    );
+    $this->rsBalanceteReceitaAnoAnterior = db_receitasaldo( 11, 1, 3, true,
+                                                            $sWhereReceita,
+                                                            $this->iAnoUsu -1 ,
+                                                            $oDataInicialAnterior->getDate(),
+                                                            $oDataFinalAnterior->getDate() );
 
     db_query("drop table work_receita");
 
-    $rsBalanceteDespesa = db_dotacaosaldo(8,2,2, true, $sWhereDespesa,
-                                          $this->iAnoUsu,
-                                          $this->getDataInicial()->getDate(),
-                                          $this->getDataFinal()->getDate());
+    $this->rsBalanceteDespesa = db_dotacaosaldo( 8,2,2, true, $sWhereDespesa,
+                                                 $this->iAnoUsu,
+                                                 $this->getDataInicial()->getDate(),
+                                                 $this->getDataFinal()->getDate() );
 
-    $rsBalanceteDespesaAnterior = db_dotacaosaldo(8,2,2, true, $sWhereDespesa,
-                                                  $this->iAnoUsu -1,
-                                                  $oDataInicialAnterior->getDate(),
-                                                  $oDataFinalAnterior->getDate());
+    $this->rsBalanceteDespesaAnterior = db_dotacaosaldo( 8,2,2, true, $sWhereDespesa,
+                                                         $this->iAnoUsu -1,
+                                                         $oDataInicialAnterior->getDate(),
+                                                         $oDataFinalAnterior->getDate() );
 
-    $rsBalanceteVerificacao =  db_planocontassaldo_matriz($this->iAnoUsu,
-                                                          $this->getDataInicial()->getDate(),
-                                                          $this->getDataFinal()->getDate(),
-                                                          false,
-                                                          $sWherePlano,
-                                                          '',
-                                                          'true',
-                                                          'false');
+    $this->rsBalanceteVerificacao =  db_planocontassaldo_matriz( $this->iAnoUsu,
+                                                                 $this->getDataInicial()->getDate(),
+                                                                 $this->getDataFinal()->getDate(),
+                                                                 false,
+                                                                 $sWherePlano,
+                                                                 '',
+                                                                 'true',
+                                                                 'false' );
 
     db_query("drop table work_pl");
 
-    $rsBalanceteVerificacaoAnterior =  db_planocontassaldo_matriz($this->iAnoUsu - 1,
-                                                          $oDataInicialAnterior->getDate(),
-                                                          $oDataFinalAnterior->getDate(),
-                                                          false,
-                                                          $sWherePlano,
-                                                          '',
-                                                          'true',
-                                                          'false');
+    $this->rsBalanceteVerificacaoAnterior =  db_planocontassaldo_matriz( $this->iAnoUsu - 1,
+                                                                         $oDataInicialAnterior->getDate(),
+                                                                         $oDataFinalAnterior->getDate(),
+                                                                         false,
+                                                                         $sWherePlano,
+                                                                         '',
+                                                                         'true',
+                                                                         'false' );
 
-    $aLinhas = $this->getLinhasRelatorio();
+    $this->aLinhasRelatorio = $this->getLinhasRelatorio();
+  }
 
-    foreach ($aLinhas as $iLinha =>  $oLinha) {
+  /**
+   * Retorna os Dados para emissão do Relatório
+   */
+  public function getDados() {
+
+    $this->calculaValoresRelatorio();
+
+    $aLinhasUtilizamBalanceteReceita       = array(2, 4, 5, 6, 7);
+    $aLinhasUtilizamBalanceteDespesa       = array(13, 14, 15, 16, 17);
+    $aLinhasUtilizamBalanceteVerificacao   = array(11, 20);
+    $aLinhasUtilizamLancamentoPorDocumento = array(8, 9, 18, 19);
+
+    foreach ($this->aLinhasRelatorio as $iLinha => $oLinha) {
 
       if ($oLinha->totalizar) {
         continue;
@@ -139,7 +171,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexatual';
         $oColuna->formula = '#saldo_arrecadado_acumulado';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteReceita,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteReceita,
                                                    $oLinha,
                                                    array($oColuna),
                                                     RelatoriosLegaisBase::TIPO_CALCULO_RECEITA);
@@ -147,7 +179,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexanter';
         $oColuna->formula = '#saldo_arrecadado_acumulado';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteReceitaAnoAnterior,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteReceitaAnoAnterior,
                                                    $oLinha,
                                                    array($oColuna),
                                                    RelatoriosLegaisBase::TIPO_CALCULO_RECEITA);
@@ -163,7 +195,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexatual';
         $oColuna->formula = '#empenhado_acumulado - #anulado_acumulado';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteDespesa,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteDespesa,
                                                    $oLinha,
                                                    array($oColuna),
                                                    RelatoriosLegaisBase::TIPO_CALCULO_DESPESA);
@@ -171,7 +203,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexanter';
         $oColuna->formula = '#empenhado_acumulado - #anulado_acumulado';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteDespesaAnterior,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteDespesaAnterior,
                                                    $oLinha,
                                                    array($oColuna),
                                                    RelatoriosLegaisBase::TIPO_CALCULO_DESPESA);
@@ -182,7 +214,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexanter';
         $oColuna->formula = '#saldo_final';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteVerificacaoAnterior,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteVerificacaoAnterior,
                                                    $oLinha,
                                                    array($oColuna),
                                                    RelatoriosLegaisBase::TIPO_CALCULO_VERIFICACAO);
@@ -190,7 +222,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexatual';
         $oColuna->formula = '#saldo_final';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteVerificacao,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteVerificacao,
                                                    $oLinha,
                                                    array($oColuna),
                                                    RelatoriosLegaisBase::TIPO_CALCULO_VERIFICACAO);
@@ -202,7 +234,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexanter';
         $oColuna->formula = '#saldo_anterior';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteVerificacaoAnterior,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteVerificacaoAnterior,
                                                    $oLinha,
                                                    array($oColuna),
                                                    RelatoriosLegaisBase::TIPO_CALCULO_VERIFICACAO);
@@ -210,7 +242,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexatual';
         $oColuna->formula = '#saldo_anterior';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteVerificacao,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteVerificacao,
                                                    $oLinha,
                                                    array($oColuna),
                                                    RelatoriosLegaisBase::TIPO_CALCULO_VERIFICACAO);
@@ -224,7 +256,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexatual';
         $oColuna->formula = '(#empenhado - #anulado - #liquidado) + #atual_a_pagar_liquidado';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteDespesa,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteDespesa,
                                                    $oLinha,
                                                    array($oColuna),
                                                    RelatoriosLegaisBase::TIPO_CALCULO_DESPESA);
@@ -232,7 +264,7 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexanter';
         $oColuna->formula = '(#empenhado - #anulado - #liquidado) + #atual_a_pagar_liquidado';
-        RelatoriosLegaisBase::calcularValorDaLinha($rsBalanceteDespesaAnterior,
+        RelatoriosLegaisBase::calcularValorDaLinha($this->rsBalanceteDespesaAnterior,
                                                    $oLinha,
                                                    array($oColuna),
                                                    RelatoriosLegaisBase::TIPO_CALCULO_DESPESA);
@@ -258,10 +290,10 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         /**
          * Saldo Anterior até o periodo
          */
-        $rsRestosPagar    = $this->getResultSetRestosAPagar($oDataInicialAnterior, $oDataFinalAnterior);
+        $rsRestosPagar    = $this->getResultSetRestosAPagar($this->oDataInicialAnterior, $this->oDataFinalAnterior);
         $oColuna          = new stdClass();
         $oColuna->nome    = 'vlrexanter';
-        $oColuna->formula = "(#e91_vlremp - #e91_vlranu - #e91_vlrliq) + (#e91_vlrliq - #e91_vlrpag)";
+        $oColuna->formula = "#vlrpag + #vlrpagnproc";
         RelatoriosLegaisBase::calcularValorDaLinha(
           $rsRestosPagar,
           $oLinha,
@@ -331,8 +363,8 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
       unset($oLinha->oLinhaRelatorio);
     }
 
-    $this->processaTotalizadores($aLinhas);
-    return $aLinhas;
+    $this->processaTotalizadores($this->aLinhasRelatorio);
+    return $this->aLinhasRelatorio;
   }
 
   /**
@@ -481,8 +513,15 @@ final class BalancoFinanceiroDcasp extends RelatoriosLegaisBase {
         $oStdValores->nValorAnterior += $nValorAnterior;
       }
     }
-
     return $oStdValores;
+  }
+
+  /**
+   * Retorna as linhas que devem possuir recurso configurado
+   * @return array
+   */
+  public function getLinhasObrigaRecurso() {
+    return $this->aLinhasComRecurso;
   }
 }
 

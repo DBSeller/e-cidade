@@ -1,94 +1,94 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: cadastro
 //CLASSE DA ENTIDADE iptuconstr
-class cl_iptuconstr { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $j39_matric = 0; 
-   var $j39_idcons = 0; 
-   var $j39_ano = 0; 
-   var $j39_area = 0; 
-   var $j39_areap = 0; 
-   var $j39_dtlan_dia = null; 
-   var $j39_dtlan_mes = null; 
-   var $j39_dtlan_ano = null; 
-   var $j39_dtlan = null; 
-   var $j39_codigo = 0; 
-   var $j39_numero = 0; 
-   var $j39_compl = null; 
-   var $j39_dtdemo_dia = null; 
-   var $j39_dtdemo_mes = null; 
-   var $j39_dtdemo_ano = null; 
-   var $j39_dtdemo = null; 
-   var $j39_codprotdemo = null; 
-   var $j39_idaument = 0; 
-   var $j39_idprinc = 'f'; 
-   var $j39_pavim = 0; 
-   var $j39_obs = null; 
-   // cria propriedade com as variaveis do arquivo 
-   var $campos = "
-                 j39_matric = int4 = Matrícula 
-                 j39_idcons = int4 = Cód. Construção 
-                 j39_ano = int4 = Ano da Construção 
-                 j39_area = float8 = Área da Construção M2 
-                 j39_areap = float8 = Área Privada da construção M2 
-                 j39_dtlan = date = Data de Inclusão 
-                 j39_codigo = int4 = Logradouro 
-                 j39_numero = int4 = Número 
-                 j39_compl = varchar(20) = Complemento 
-                 j39_dtdemo = date = Data Demolição 
-                 j39_codprotdemo = varchar(40) = Processo de Protocolo 
-                 j39_idaument = int4 = Origem da Construção 
-                 j39_idprinc = bool = Construção Principal 
-                 j39_pavim = int4 = Pavimento 
-                 j39_obs = text = Observações 
+class cl_iptuconstr {
+   // cria variaveis de erro
+   public $rotulo     = null;
+   public $query_sql  = null;
+   public $numrows    = 0;
+   public $numrows_incluir = 0;
+   public $numrows_alterar = 0;
+   public $numrows_excluir = 0;
+   public $erro_status= null;
+   public $erro_sql   = null;
+   public $erro_banco = null;
+   public $erro_msg   = null;
+   public $erro_campo = null;
+   public $pagina_retorno = null;
+   // cria variaveis do arquivo
+   public $j39_matric = 0;
+   public $j39_idcons = 0;
+   public $j39_ano = 0;
+   public $j39_area = 0;
+   public $j39_areap = 0;
+   public $j39_dtlan_dia = null;
+   public $j39_dtlan_mes = null;
+   public $j39_dtlan_ano = null;
+   public $j39_dtlan = null;
+   public $j39_codigo = 0;
+   public $j39_numero = 0;
+   public $j39_compl = null;
+   public $j39_dtdemo_dia = null;
+   public $j39_dtdemo_mes = null;
+   public $j39_dtdemo_ano = null;
+   public $j39_dtdemo = null;
+   public $j39_codprotdemo = null;
+   public $j39_idaument = 0;
+   public $j39_idprinc = 'f';
+   public $j39_pavim = 0;
+   public $j39_obs = null;
+   // cria propriedade com as variaveis do arquivo
+   public $campos = "
+                 j39_matric = int4 = Matrícula
+                 j39_idcons = int4 = Cód. Construção
+                 j39_ano = int4 = Ano da Construção
+                 j39_area = float8 = Área da Construção M2
+                 j39_areap = float8 = Área Privada da construção M2
+                 j39_dtlan = date = Data de Inclusão
+                 j39_codigo = int4 = Logradouro
+                 j39_numero = int4 = Número
+                 j39_compl = varchar(20) = Complemento
+                 j39_dtdemo = date = Data Demolição
+                 j39_codprotdemo = varchar(40) = Processo de Protocolo
+                 j39_idaument = int4 = Origem da Construção
+                 j39_idprinc = bool = Construção Principal
+                 j39_pavim = int4 = Pavimento
+                 j39_obs = text = Observações
                  ";
-   //funcao construtor da classe 
-   function cl_iptuconstr() { 
+   //funcao construtor da classe
+   public function cl_iptuconstr() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("iptuconstr"); 
+     $this->rotulo = new rotulo("iptuconstr");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   public function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -97,7 +97,7 @@ class cl_iptuconstr {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->j39_matric = ($this->j39_matric == ""?@$GLOBALS["HTTP_POST_VARS"]["j39_matric"]:$this->j39_matric);
        $this->j39_idcons = ($this->j39_idcons == ""?@$GLOBALS["HTTP_POST_VARS"]["j39_idcons"]:$this->j39_idcons);
@@ -134,12 +134,12 @@ class cl_iptuconstr {
      }
    }
    // funcao para inclusao
-   function incluir ($j39_matric,$j39_idcons){ 
+   public function incluir ($j39_matric,$j39_idcons){
       $this->atualizacampos();
-     if($this->j39_ano == null ){ 
+     if($this->j39_ano == null ){
        $this->j39_ano = "0";
      }
-     if($this->j39_area == null ){ 
+     if($this->j39_area == null ){
        $this->erro_sql = " Campo Área da Construção M2 nao Informado.";
        $this->erro_campo = "j39_area";
        $this->erro_banco = "";
@@ -148,10 +148,10 @@ class cl_iptuconstr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->j39_areap == null ){ 
+     if($this->j39_areap == null ){
        $this->j39_areap = "0";
      }
-     if($this->j39_dtlan == null ){ 
+     if($this->j39_dtlan == null ){
        $this->erro_sql = " Campo Data de Inclusão nao Informado.";
        $this->erro_campo = "j39_dtlan_dia";
        $this->erro_banco = "";
@@ -160,7 +160,7 @@ class cl_iptuconstr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->j39_codigo == null ){ 
+     if($this->j39_codigo == null ){
        $this->erro_sql = " Campo Logradouro nao Informado.";
        $this->erro_campo = "j39_codigo";
        $this->erro_banco = "";
@@ -169,7 +169,7 @@ class cl_iptuconstr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->j39_numero == null ){ 
+     if($this->j39_numero == null ){
        $this->erro_sql = " Campo Número nao Informado.";
        $this->erro_campo = "j39_numero";
        $this->erro_banco = "";
@@ -178,13 +178,13 @@ class cl_iptuconstr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->j39_dtdemo == null ){ 
+     if($this->j39_dtdemo == null ){
        $this->j39_dtdemo = "null";
      }
-     if($this->j39_idaument == null ){ 
+     if($this->j39_idaument == null ){
        $this->j39_idaument = "0";
      }
-     if($this->j39_idprinc == null ){ 
+     if($this->j39_idprinc == null ){
        $this->erro_sql = " Campo Construção Principal nao Informado.";
        $this->erro_campo = "j39_idprinc";
        $this->erro_banco = "";
@@ -193,7 +193,7 @@ class cl_iptuconstr {
        $this->erro_status = "0";
        return false;
      }
-     if($this->j39_pavim == null ){ 
+     if($this->j39_pavim == null ){
        $this->erro_sql = " Campo Pavimento nao Informado.";
        $this->erro_campo = "j39_pavim";
        $this->erro_banco = "";
@@ -202,9 +202,9 @@ class cl_iptuconstr {
        $this->erro_status = "0";
        return false;
      }
-       $this->j39_matric = $j39_matric; 
-       $this->j39_idcons = $j39_idcons; 
-     if(($this->j39_matric == null) || ($this->j39_matric == "") ){ 
+       $this->j39_matric = $j39_matric;
+       $this->j39_idcons = $j39_idcons;
+     if(($this->j39_matric == null) || ($this->j39_matric == "") ){
        $this->erro_sql = " Campo j39_matric nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -212,7 +212,7 @@ class cl_iptuconstr {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->j39_idcons == null) || ($this->j39_idcons == "") ){ 
+     if(($this->j39_idcons == null) || ($this->j39_idcons == "") ){
        $this->erro_sql = " Campo j39_idcons nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -221,41 +221,41 @@ class cl_iptuconstr {
        return false;
      }
      $sql = "insert into iptuconstr(
-                                       j39_matric 
-                                      ,j39_idcons 
-                                      ,j39_ano 
-                                      ,j39_area 
-                                      ,j39_areap 
-                                      ,j39_dtlan 
-                                      ,j39_codigo 
-                                      ,j39_numero 
-                                      ,j39_compl 
-                                      ,j39_dtdemo 
-                                      ,j39_codprotdemo 
-                                      ,j39_idaument 
-                                      ,j39_idprinc 
-                                      ,j39_pavim 
-                                      ,j39_obs 
+                                       j39_matric
+                                      ,j39_idcons
+                                      ,j39_ano
+                                      ,j39_area
+                                      ,j39_areap
+                                      ,j39_dtlan
+                                      ,j39_codigo
+                                      ,j39_numero
+                                      ,j39_compl
+                                      ,j39_dtdemo
+                                      ,j39_codprotdemo
+                                      ,j39_idaument
+                                      ,j39_idprinc
+                                      ,j39_pavim
+                                      ,j39_obs
                        )
                 values (
-                                $this->j39_matric 
-                               ,$this->j39_idcons 
-                               ,$this->j39_ano 
-                               ,$this->j39_area 
-                               ,$this->j39_areap 
-                               ,".($this->j39_dtlan == "null" || $this->j39_dtlan == ""?"null":"'".$this->j39_dtlan."'")." 
-                               ,$this->j39_codigo 
-                               ,$this->j39_numero 
-                               ,'$this->j39_compl' 
-                               ,".($this->j39_dtdemo == "null" || $this->j39_dtdemo == ""?"null":"'".$this->j39_dtdemo."'")." 
-                               ,'$this->j39_codprotdemo' 
-                               ,$this->j39_idaument 
-                               ,'$this->j39_idprinc' 
-                               ,$this->j39_pavim 
-                               ,'$this->j39_obs' 
+                                $this->j39_matric
+                               ,$this->j39_idcons
+                               ,$this->j39_ano
+                               ,$this->j39_area
+                               ,$this->j39_areap
+                               ,".($this->j39_dtlan == "null" || $this->j39_dtlan == ""?"null":"'".$this->j39_dtlan."'")."
+                               ,$this->j39_codigo
+                               ,$this->j39_numero
+                               ,'$this->j39_compl'
+                               ,".($this->j39_dtdemo == "null" || $this->j39_dtdemo == ""?"null":"'".$this->j39_dtdemo."'")."
+                               ,'$this->j39_codprotdemo'
+                               ,$this->j39_idaument
+                               ,'$this->j39_idprinc'
+                               ,$this->j39_pavim
+                               ,'$this->j39_obs'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = " ($this->j39_matric."-".$this->j39_idcons) nao Incluído. Inclusao Abortada.";
@@ -302,16 +302,16 @@ class cl_iptuconstr {
        $resac = db_query("insert into db_acount values($acount,30,18543,'','".AddSlashes(pg_result($resaco,0,'j39_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($j39_matric=null,$j39_idcons=null) { 
+   public function alterar ($j39_matric=null,$j39_idcons=null) {
       $this->atualizacampos();
      $sql = " update iptuconstr set ";
      $virgula = "";
-     if(trim($this->j39_matric)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_matric"])){ 
+     if(trim($this->j39_matric)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_matric"])){
        $sql  .= $virgula." j39_matric = $this->j39_matric ";
        $virgula = ",";
-       if(trim($this->j39_matric) == null ){ 
+       if(trim($this->j39_matric) == null ){
          $this->erro_sql = " Campo Matrícula nao Informado.";
          $this->erro_campo = "j39_matric";
          $this->erro_banco = "";
@@ -321,10 +321,10 @@ class cl_iptuconstr {
          return false;
        }
      }
-     if(trim($this->j39_idcons)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_idcons"])){ 
+     if(trim($this->j39_idcons)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_idcons"])){
        $sql  .= $virgula." j39_idcons = $this->j39_idcons ";
        $virgula = ",";
-       if(trim($this->j39_idcons) == null ){ 
+       if(trim($this->j39_idcons) == null ){
          $this->erro_sql = " Campo Cód. Construção nao Informado.";
          $this->erro_campo = "j39_idcons";
          $this->erro_banco = "";
@@ -334,17 +334,17 @@ class cl_iptuconstr {
          return false;
        }
      }
-     if(trim($this->j39_ano)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_ano"])){ 
-        if(trim($this->j39_ano)=="" && isset($GLOBALS["HTTP_POST_VARS"]["j39_ano"])){ 
-           $this->j39_ano = "0" ; 
-        } 
+     if(trim($this->j39_ano)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_ano"])){
+        if(trim($this->j39_ano)=="" && isset($GLOBALS["HTTP_POST_VARS"]["j39_ano"])){
+           $this->j39_ano = "0" ;
+        }
        $sql  .= $virgula." j39_ano = $this->j39_ano ";
        $virgula = ",";
      }
-     if(trim($this->j39_area)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_area"])){ 
+     if(trim($this->j39_area)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_area"])){
        $sql  .= $virgula." j39_area = $this->j39_area ";
        $virgula = ",";
-       if(trim($this->j39_area) == null ){ 
+       if(trim($this->j39_area) == null ){
          $this->erro_sql = " Campo Área da Construção M2 nao Informado.";
          $this->erro_campo = "j39_area";
          $this->erro_banco = "";
@@ -354,17 +354,17 @@ class cl_iptuconstr {
          return false;
        }
      }
-     if(trim($this->j39_areap)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_areap"])){ 
-        if(trim($this->j39_areap)=="" && isset($GLOBALS["HTTP_POST_VARS"]["j39_areap"])){ 
-           $this->j39_areap = "0" ; 
-        } 
+     if(trim($this->j39_areap)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_areap"])){
+        if(trim($this->j39_areap)=="" && isset($GLOBALS["HTTP_POST_VARS"]["j39_areap"])){
+           $this->j39_areap = "0" ;
+        }
        $sql  .= $virgula." j39_areap = $this->j39_areap ";
        $virgula = ",";
      }
-     if(trim($this->j39_dtlan)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_dtlan_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["j39_dtlan_dia"] !="") ){ 
+     if(trim($this->j39_dtlan)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_dtlan_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["j39_dtlan_dia"] !="") ){
        $sql  .= $virgula." j39_dtlan = '$this->j39_dtlan' ";
        $virgula = ",";
-       if(trim($this->j39_dtlan) == null ){ 
+       if(trim($this->j39_dtlan) == null ){
          $this->erro_sql = " Campo Data de Inclusão nao Informado.";
          $this->erro_campo = "j39_dtlan_dia";
          $this->erro_banco = "";
@@ -373,11 +373,11 @@ class cl_iptuconstr {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["j39_dtlan_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["j39_dtlan_dia"])){
          $sql  .= $virgula." j39_dtlan = null ";
          $virgula = ",";
-         if(trim($this->j39_dtlan) == null ){ 
+         if(trim($this->j39_dtlan) == null ){
            $this->erro_sql = " Campo Data de Inclusão nao Informado.";
            $this->erro_campo = "j39_dtlan_dia";
            $this->erro_banco = "";
@@ -388,10 +388,10 @@ class cl_iptuconstr {
          }
        }
      }
-     if(trim($this->j39_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_codigo"])){ 
+     if(trim($this->j39_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_codigo"])){
        $sql  .= $virgula." j39_codigo = $this->j39_codigo ";
        $virgula = ",";
-       if(trim($this->j39_codigo) == null ){ 
+       if(trim($this->j39_codigo) == null ){
          $this->erro_sql = " Campo Logradouro nao Informado.";
          $this->erro_campo = "j39_codigo";
          $this->erro_banco = "";
@@ -401,10 +401,10 @@ class cl_iptuconstr {
          return false;
        }
      }
-     if(trim($this->j39_numero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_numero"])){ 
+     if(trim($this->j39_numero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_numero"])){
        $sql  .= $virgula." j39_numero = $this->j39_numero ";
        $virgula = ",";
-       if(trim($this->j39_numero) == null ){ 
+       if(trim($this->j39_numero) == null ){
          $this->erro_sql = " Campo Número nao Informado.";
          $this->erro_campo = "j39_numero";
          $this->erro_banco = "";
@@ -414,34 +414,34 @@ class cl_iptuconstr {
          return false;
        }
      }
-     if(trim($this->j39_compl)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_compl"])){ 
+     if(trim($this->j39_compl)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_compl"])){
        $sql  .= $virgula." j39_compl = '$this->j39_compl' ";
        $virgula = ",";
      }
-     if(trim($this->j39_dtdemo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_dtdemo_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["j39_dtdemo_dia"] !="") ){ 
+     if(trim($this->j39_dtdemo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_dtdemo_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["j39_dtdemo_dia"] !="") ){
        $sql  .= $virgula." j39_dtdemo = '$this->j39_dtdemo' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["j39_dtdemo_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["j39_dtdemo_dia"])){
          $sql  .= $virgula." j39_dtdemo = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->j39_codprotdemo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_codprotdemo"])){ 
+     if(trim($this->j39_codprotdemo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_codprotdemo"])){
        $sql  .= $virgula." j39_codprotdemo = '$this->j39_codprotdemo' ";
        $virgula = ",";
      }
-     if(trim($this->j39_idaument)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_idaument"])){ 
-        if(trim($this->j39_idaument)=="" && isset($GLOBALS["HTTP_POST_VARS"]["j39_idaument"])){ 
-           $this->j39_idaument = "0" ; 
-        } 
+     if(trim($this->j39_idaument)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_idaument"])){
+        if(trim($this->j39_idaument)=="" && isset($GLOBALS["HTTP_POST_VARS"]["j39_idaument"])){
+           $this->j39_idaument = "0" ;
+        }
        $sql  .= $virgula." j39_idaument = $this->j39_idaument ";
        $virgula = ",";
      }
-     if(trim($this->j39_idprinc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_idprinc"])){ 
+     if(trim($this->j39_idprinc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_idprinc"])){
        $sql  .= $virgula." j39_idprinc = '$this->j39_idprinc' ";
        $virgula = ",";
-       if(trim($this->j39_idprinc) == null ){ 
+       if(trim($this->j39_idprinc) == null ){
          $this->erro_sql = " Campo Construção Principal nao Informado.";
          $this->erro_campo = "j39_idprinc";
          $this->erro_banco = "";
@@ -451,10 +451,10 @@ class cl_iptuconstr {
          return false;
        }
      }
-     if(trim($this->j39_pavim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_pavim"])){ 
+     if(trim($this->j39_pavim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_pavim"])){
        $sql  .= $virgula." j39_pavim = $this->j39_pavim ";
        $virgula = ",";
-       if(trim($this->j39_pavim) == null ){ 
+       if(trim($this->j39_pavim) == null ){
          $this->erro_sql = " Campo Pavimento nao Informado.";
          $this->erro_campo = "j39_pavim";
          $this->erro_banco = "";
@@ -464,7 +464,7 @@ class cl_iptuconstr {
          return false;
        }
      }
-     if(trim($this->j39_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_obs"])){ 
+     if(trim($this->j39_obs)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j39_obs"])){
        $sql  .= $virgula." j39_obs = '$this->j39_obs' ";
        $virgula = ",";
      }
@@ -516,7 +516,7 @@ class cl_iptuconstr {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->j39_matric."-".$this->j39_idcons;
@@ -544,14 +544,14 @@ class cl_iptuconstr {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($j39_matric=null,$j39_idcons=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   public function excluir ($j39_matric=null,$j39_idcons=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($j39_matric,$j39_idcons));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -598,7 +598,7 @@ class cl_iptuconstr {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = " nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$j39_matric."-".$j39_idcons;
@@ -626,11 +626,11 @@ class cl_iptuconstr {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   public function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -652,11 +652,11 @@ class cl_iptuconstr {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $j39_matric=null,$j39_idcons=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function sql_query ( $j39_matric=null,$j39_idcons=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -670,27 +670,27 @@ class cl_iptuconstr {
      $sql .= "      inner join iptubase  on  iptubase.j01_matric = iptuconstr.j39_matric";
      $sql .= "      inner join lote  on  lote.j34_idbql = iptubase.j01_idbql";
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = iptubase.j01_numcgm";
-     $sql .= "      left join ruastipo on j88_codigo = j14_tipo";     
+     $sql .= "      left join ruastipo on j88_codigo = j14_tipo";
      $sql2 = "";
      if($dbwhere==""){
        if($j39_matric!=null ){
-         $sql2 .= " where iptuconstr.j39_matric = $j39_matric "; 
-       } 
+         $sql2 .= " where iptuconstr.j39_matric = $j39_matric ";
+       }
        if($j39_idcons!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " iptuconstr.j39_idcons = $j39_idcons "; 
-       } 
+         }
+         $sql2 .= " iptuconstr.j39_idcons = $j39_idcons ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -699,11 +699,11 @@ class cl_iptuconstr {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $j39_matric=null,$j39_idcons=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   public function sql_query_file ( $j39_matric=null,$j39_idcons=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -716,23 +716,23 @@ class cl_iptuconstr {
      $sql2 = "";
      if($dbwhere==""){
        if($j39_matric!=null ){
-         $sql2 .= " where iptuconstr.j39_matric = $j39_matric "; 
-       } 
+         $sql2 .= " where iptuconstr.j39_matric = $j39_matric ";
+       }
        if($j39_idcons!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " iptuconstr.j39_idcons = $j39_idcons "; 
-       } 
+         }
+         $sql2 .= " iptuconstr.j39_idcons = $j39_idcons ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -741,8 +741,8 @@ class cl_iptuconstr {
      }
      return $sql;
   }
-   function excluirGeral ($matric=null,$idcons=null,$cascade=true) { 
-    
+  public function excluirGeral ($matric=null,$idcons=null,$cascade=true) {
+
 		$clcarconstr        = new cl_carconstr;
 		$clconstrcar        = new cl_constrcar;
 		$cliptucale         = new cl_iptucale;
@@ -853,10 +853,10 @@ class cl_iptuconstr {
 		}
     return true;
   }
-   function sql_query_proprietario_nome ( $j39_matric=null,$j39_idcons=null,$campos="*",$ordem=null,$dbwhere=""){
+  public function sql_query_proprietario_nome ( $j39_matric=null,$j39_idcons=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -889,7 +889,7 @@ class cl_iptuconstr {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -897,6 +897,16 @@ class cl_iptuconstr {
        }
      }
      return $sql;
+  }
+
+  public function sql_query_update_area($iMatric, $iIdCons, $iArea){
+
+    $sSql  = " update iptuconstr ";
+    $sSql .= "    set j39_area = {$iArea} ";
+    $sSql .= "  where j39_matric = {$iMatric} ";
+    $sSql .= "    and j39_idcons = {$iIdCons} ";
+
+    return $sSql;
   }
 }
 ?>

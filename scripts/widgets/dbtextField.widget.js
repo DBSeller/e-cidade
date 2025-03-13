@@ -1,31 +1,43 @@
 /**
  * Define campo do tipo input
  *
- * @class dbTextInput
  * @constructor
  * @author Iuri Guntchnigg iuri@dbseller.com.br
- * @version  $Revision: 1.20 $
+ * @id  $Id: dbtextField.widget.js,v 1.23 2015/12/22 17:47:43 dbrafael.nery Exp $
  *
- * @param {String} sName         - id do Objeto 
+ * @param {String} sName         - id do Objeto
  * @param {String} sNameInstance - nome da instancia do objeto, usado para referencia interna  //Obsoleto.
- * @param {String} sValue        - valor Default do Objeto  
- * @param {String} sSize         - tamanho  
+ * @param {String} sValue        - valor Default do Objeto
+ * @param {String} sSize         - tamanho
  */
-DBTextField = function (sName, sNameInstance, sValue, sSize) {
+DBTextField = function (mName, sNameInstance, sValue, sSize) {
+
   require_once("scripts/strings.js");
+
+
+  if ( mName instanceof HTMLInputElement ) {
+
+    this.oHTMLElement = mName;
+    sName             = mName.name || mName.id || null;
+  } else {
+    sName = mName;
+  }
 
   this.sIndexInstance = "DBTextField" + new Number(DBTextField.addInstance( this ));
   this.sNameInstance  = "DBTextField.oInstances['"+this.sIndexInstance+"']";
   sNameInstance       = this.sNameInstance;
 
   if ( sSize == undefined ) {
-    sSize = 25;    
+    sSize = 25;
   }
   if ( sValue == undefined ) {
-    sValue = '';    
+    sValue = '';
   }
 
-  this.oHTMLElement              = document.createElement("input");
+  if ( !this.oHTMLElement ) {
+    this.oHTMLElement              = document.createElement("input");
+  }
+
   this.oHTMLElementDivExpansible = document.createElement('div');
   this.oHTMLElementTextArea      = document.createElement('textarea');
   this.hasTextArea               = false;
@@ -35,29 +47,30 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
   this.sNameInstance             = sNameInstance;
   this.lReadOnly                 = false;
   this.sStringConteudo           = "";
-  this.iMaxLength                = "";  
-  this.sStringTextarea           = ""; 
-  this.onBlur                    = "";   
-  this.onChange                  = "DBTextField.getInstance('"+this.sIndexInstance+"').setValue(this.value);";   
-  this.onFocus                   = "";   
-  this.onKeyPress                = "";   
-  this.onKeyUp                   = "";   
+  this.iMaxLength                = "";
+  this.sStringTextarea           = "";
+  this.onBlur                    = "";
+  this.onChange                  = "DBTextField.getInstance('"+this.sIndexInstance+"').setValue(this.value);";
+  this.onFocus                   = "";
+  this.onKeyPress                = "";
+  this.onKeyUp                   = "";
   this.onKeyDown                 = "";
   this.onInput                   = "";
   this.sStyle                    = "";
   this.lExpansible               = false;
-  var me                         = this;   
+  var me                         = this;
 
   /**
-   * Renderiza o input 
-   */  
-  this.makeInput = function() {
+   * Renderiza o input
+   */
+  this.makeInput  = function() {
 
-    me.oHTMLElement.type  = "text"; 
-    me.oHTMLElement.name  = me.sName;       
-    me.oHTMLElement.id    = me.sName;      
-    me.oHTMLElement.setAttribute("value"       , me.sValue);
-    me.oHTMLElement.setAttribute("size"        , me.sSize);
+    me.oHTMLElement.type  = "text";
+    me.oHTMLElement.name  = me.sName;
+    me.oHTMLElement.id    = me.sName;
+
+    me.oHTMLElement.size  = me.sSize;
+    me.oHTMLElement.setAttribute("value", me.sValue)
     me.oHTMLElement.setAttribute("autocomplete", "off");
     me.oHTMLElement.setAttribute("maxlength"   , me.iMaxLength);
     me.oHTMLElement.setAttribute("onBlur"      , me.onBlur);
@@ -69,15 +82,15 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
     me.oHTMLElement.setAttribute("onInput"     , me.onInput);
     me.oHTMLElement.setAttribute("style"       , me.sStyle);
 
-    me.oHTMLElement.observe("change", function() { 
+    me.oHTMLElement.observe("change", function() {
       me.setValue(me.oHTMLElement.value);
     });
-    me.oHTMLElement.observe("focus",  function() { 
+    me.oHTMLElement.observe("focus",  function() {
 
       if ( me.lExpansible ) {
-        me.displayTextArea(); 
+        me.displayTextArea();
       }
-    });         
+    });
 
     if ( me.lReadOnly ) {
       me.setReadOnly(me.lReadOnly);
@@ -85,8 +98,8 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
   }
 
   /**
-   * Renderiza o input 
-   */  
+   * Renderiza o input
+   */
   this.makeTextArea = function() {
 
     this.oHTMLElementDivExpansible.id    = "cntTextArea" + this.sName;
@@ -104,7 +117,7 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
       height         : "100%",
       resize         : "none"
     });
-    
+
     this.oHTMLElementTextArea.onblur = function() {
       me.hidetextArea();
     };
@@ -113,42 +126,51 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
   }
 
   /**
-   * renderiza o widget no no especificado 
+   * renderiza o widget no no especificado
    * @return void
    */
   this.show = function ( oNo, lAdicionaConteudo ) {
 
-    this.makeInput(); 
-    this.makeTextArea(); 
-
-    if ( !lAdicionaConteudo ) {
-      oNo.innerHTML  =  "";
-    } 
-    oNo.appendChild(this.oHTMLElement);
-    oNo.appendChild(this.oHTMLElementDivExpansible);
+    this.makeInput();
+    this.makeTextArea();
 
     if (this.lReadOnly) {
       this.setReadOnly(this.lReadOnly);
     }
+
     this.oHTMLElementDivExpansible.setStyle({
       width          : this.oHTMLElement.clientWidth - 3  + "px",
       height         : "100px"
     });
-      
+
+    /**
+     * @TODO Trocar por validação interna da classe
+     */
+    if ( arguments.length == 0 ) {
+      return;
+    }
+
+    if ( !lAdicionaConteudo ) {
+      oNo.innerHTML  =  "";
+    }
+    oNo.appendChild(this.oHTMLElement);
+    oNo.appendChild(this.oHTMLElementDivExpansible);
+
+
   }
-  
+
   /**
-   * Retorna o objeto em formato html 
+   * Retorna o objeto em formato html
    * @return string
    *
    */
   this.toInnerHtml = function() {
-    
+
     this.makeInput();
     this.makeTextArea();
 
-    return this.oHTMLElement.outerHTML + 
-           this.oHTMLElementDivExpansible.outerHTML;  
+    return this.oHTMLElement.outerHTML +
+           this.oHTMLElementDivExpansible.outerHTML;
   }
 
   /**
@@ -158,23 +180,23 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
    * @param {Integer} iWidth      - Largura do texto
    */
   this.setExpansible = function (lExpansible, iHeight, iWidth) {
-    
+
     this.oHTMLElementDivExpansible.style.width  = iWidth  + "px";
     this.oHTMLElementDivExpansible.style.height = iHeight + "px";
     this.lExpansible                       = lExpansible;
-  } 
+  }
 
   /**
    * Mostra a textarea
    * @private
    */
   this.displayTextArea = function () {
-    
+
     if ( me.lReadOnly || !me.lExpansible ) {
       return;
     }
 
-    me.positionDiv(); 
+    me.positionDiv();
     me.oHTMLElementDivExpansible.style.display = '';
     me.oHTMLElementTextArea.focus();
     return;
@@ -190,13 +212,13 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
     me.oHTMLElementDivExpansible.style.display = 'none';
     return;
   }
-  
-  
+
+
   /**
    * Define um Evento do Input
    *
    * @param sEvent    {String}   - Evento a Ser adicionado
-   * @param fFunction {Function} - Callback do Evento 
+   * @param fFunction {Function} - Callback do Evento
    */
   this.setEvent = function ( sEvent, fFunction ) {
 
@@ -210,7 +232,7 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
    * @param {String} sEvent nome do evento
    * @param {String} com a funcao a ser executada
    *
-   * @example dbTextField.addEvent('onclick', 'alert("ola")'); 
+   * @example dbTextField.addEvent('onclick', 'alert("ola")');
    */
   this.addEvent = function(sEvent, sFunction) {
     eval("this."+sEvent+" += sFunction");
@@ -218,7 +240,7 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
 
 
   /**
-   * Retorna o Valor do Input 
+   * Retorna o Valor do Input
    */
   this.getValue = function () {
 
@@ -227,13 +249,13 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
     if (me.lExpansible) {
       sValor = this.oHTMLElement.value;
     }
-    return sValor;  
+    return sValor;
   }
 
   /**
    * Define o Valor do Elemento
    *
-   * @param {string} sValor 
+   * @param {string} sValor
    */
   this.setValue = function (sValor) {
 
@@ -256,7 +278,7 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
     //Walk up the DOM and add up all of the offset positions.
     while (el.offsetParent && el.tagName.toUpperCase() != 'BODY') {
 
-      if (el.className != "windowAux12") { 
+      if (el.className != "windowAux12") {
 
         x += el.offsetLeft;
         y += new Number(el.offsetTop);
@@ -308,7 +330,7 @@ DBTextField = function (sName, sNameInstance, sValue, sSize) {
     me.lReadOnly             = lReadOnly;
 
     if ( lReadOnly === true ) {
-      me.oHTMLElement.addClassName("readonly"); 
+      me.oHTMLElement.addClassName("readonly");
     } else {
       me.oHTMLElement.removeClassName("readonly");
     }
@@ -342,7 +364,7 @@ DBTextField.oInstances  = DBTextField.oInstances || {};
 
 DBTextField.iCounter    = DBTextField.iCounter   || 0;
 
-DBTextField.addInstance = function( oDBTextField ) { 
+DBTextField.addInstance = function( oDBTextField ) {
 
   if ( !( oDBTextField instanceof DBTextField ) ) {
     throw('Objeto Inválido');
@@ -352,6 +374,6 @@ DBTextField.addInstance = function( oDBTextField ) {
   return iNumeroInstancia;
 }
 
-DBTextField.getInstance = function( sName ) { 
+DBTextField.getInstance = function( sName ) {
   return DBTextField.oInstances[sName];
 };

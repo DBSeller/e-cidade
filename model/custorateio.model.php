@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,10 +26,10 @@
  */
 
 
-require_once("model/custoRegraRateio.model.php");
+require_once(modification("model/custoRegraRateio.model.php"));
 /**
   * cria criterios para reateio de valores nos planos de custos
-  * @version $Author: dbiuri $  -  $Revision: 1.4 $ 
+  * @version $Author: dbjeferson.belmiro $  -  $Revision: 1.8 $ 
   * @package Custos
   */
 class custorateio {
@@ -276,7 +276,7 @@ class custorateio {
     $aRegrasCadastradas    = array();
     if ($oDaoCriterioRegra->numrows > 0) {
 
-      $aCriteriosAtualizar   = db_utils::getColectionByRecord($rsCriteriosAtualizar);
+      $aCriteriosAtualizar   = db_utils::getCollectionByRecord($rsCriteriosAtualizar);
       foreach ($aCriteriosAtualizar as $oRegraCadastrada) {
         
         $oRegraCriterio = new custoRegraRateio($this->getCodigoRegraRateio(), $oRegraCadastrada->cc07_sequencial);

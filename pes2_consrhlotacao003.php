@@ -25,14 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_lotacao_classe.php");
-include("classes/db_rhlota_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_lotacao_classe.php"));
+include(modification("classes/db_rhlota_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
 
-$cllotacao = new cl_lotacao;
 $clrhlota  = new cl_rhlota;
 
 if(!isset($ano)){
@@ -50,7 +49,7 @@ $sql_lotacao = $clrhlota->sql_query_orgao(null,"
    o40_descr
   ",
   "r70_codigo",
-  "r70_codigo = '$lotacao' and o40_anousu = $ano ");
+  "r70_codigo = '$lotacao' and o40_anousu = $ano and r70_instit = ".db_getsession('DB_instit'));
 //die($sql_lotacao);
 $result_lotacao = $clrhlota->sql_record($sql_lotacao);
 if($clrhlota->numrows == 0){
@@ -59,29 +58,31 @@ if($clrhlota->numrows == 0){
 
 db_fieldsmemory($result_lotacao,0);
 
-$sql_funcionarios = $cllotacao->sql_query_cgm(null,null,null,"
-   r01_regist,
-   z01_nome,
-   case when r01_tpvinc='A' 
-        then 'ATIVO' 
-        else case when r01_tpvinc='I' 
-                  then 'INATIVO' 
-                  else 'PENSIONISTA' 
-        end 
-   end as vinculo,
-   rh37_funcao,
-   rh37_descr",
-  "z01_nome",
-  "    r01_anousu  = $ano
-   and r01_mesusu  = $mes
-   and r13_codigo  = '$lotacao'
-   and r01_recis is null");
+$sql_funcionarios = $clrhlota->sql_query_cgm(null,"rh01_regist as r01_regist,
+                                                       z01_nome,
+                                                       case when rh30_vinculo='A' 
+                                                            then 'ATIVO' 
+                                                            else case when rh30_vinculo='I' 
+                                                                      then 'INATIVO' 
+                                                                      else 'PENSIONISTA' 
+                                                                 end 
+                                                       end as vinculo,
+                                                       rh37_funcao,
+                                                       rh37_descr",
+                                                      "z01_nome",
+                                                      "    rh02_anousu  = $ano
+                                                       and rh02_mesusu  = $mes
+                                                       and rh02_instit  = ".db_getsession("DB_instit")."
+                                                       and r70_instit  = ".db_getsession("DB_instit")."
+                                                       and r70_codigo  = '$lotacao'
+                                                       and rh05_seqpes is null
+                                                      ");
 
-//die($sql_funcionarios);
+// die($sql_funcionarios);
 
-$result_funcionarios = $cllotacao->sql_record($sql_funcionarios);
+$result_funcionarios = $clrhlota->sql_record($sql_funcionarios);
 
-if($cllotacao->numrows == 0){
+if($clrhlota->numrows == 0){
   db_redireciona("db_erros.php?fechar=true&db_erro=Nenhuma lotação não encontrada");
 }
 

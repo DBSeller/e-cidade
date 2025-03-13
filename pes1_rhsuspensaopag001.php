@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_rhsuspensaopag_classe.php");
-require_once("classes/db_rhpessoal_classe.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_rhsuspensaopag_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+db_postmemory($_GET);
 $oGet  = db_utils::postMemory($_GET);
 
 
@@ -64,7 +64,7 @@ $sSqlSuspensoesAtivas = $clrhsuspensaopag->sql_query("","     rh101_sequencial,
                                       ",
                                   "","rh101_regist = {$oGet->iMatricula} and rh101_dtdesativacao IS NULL");
 $rsSuspensoesAtivass       = $clrhsuspensaopag->sql_record($sSqlSuspensoesAtivas);
-$oSuspensoesAtivas         = db_utils::getColectionByRecord($rsSuspensoesAtivass);
+$oSuspensoesAtivas         = db_utils::getCollectionByRecord($rsSuspensoesAtivass);
 $iTotalSuspensoesAtivas    = count($oSuspensoesAtivas);
 
 
@@ -283,7 +283,7 @@ function getDadosSuspensoes(){
                                 parameters: 'json='+Object.toJSON(oParam), 
                                 onComplete: function(oAjax) {
                                   js_removeObj('msgBox');
-                                  var oRetorno = eval("("+oAjax.responseText+")");
+                                  var oRetorno = JSON.parse(oAjax.responseText);
                                   if (oRetorno.status== "2") {
                                     alert(oRetorno.message.urlDecode());
                                   } else {

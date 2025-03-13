@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_far_prescricaomedica_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_far_prescricaomedica_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clfar_prescricaomedica = new cl_far_prescricaomedica;
 $db_opcao = 1;
@@ -55,7 +55,7 @@ if(isset($incluir)){
   <tr> 
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
     <fieldset style="width:100%"><legend><b>Inclusão de Prescrição Médica</b></legend>
-	<? include("forms/db_frmfar_prescricaomedica.php");?>
+	<? include(modification("forms/db_frmfar_prescricaomedica.php"));?>
 	</fieldset>
 	</td>
   </tr>
@@ -78,7 +78,7 @@ if(isset($incluir)){
     }
   }else{
 	$clfar_prescricaomedica->erro(true,false);
-    $result = @pg_query("select last_value from far_prescricaomedica_fa20_codigo_seq");
+    $result = @db_query("select last_value from far_prescricaomedica_fa20_codigo_seq");
     $ultimo = pg_result($result,0,0);
     db_redireciona("far1_far_prescricaomedica002.php?chavepesquisa=$ultimo");
   }

@@ -28,5 +28,7 @@
 $campos = "conlancam.c70_codlan,
            conlancam.c70_data,
 	   conlancam.c70_valor,
+	   c71_coddoc,
+	   c53_descr,
 	   conlancam.c70_anousu as db_c70_anousu";
 ?>

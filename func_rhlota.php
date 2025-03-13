@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_rhlota_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhlota_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -44,7 +44,6 @@ $clrhlota->rotulo->label("r70_descr");
 if (isset($chave_r70_codigo) && !DBNumber::isInteger($chave_r70_codigo)) {
   $chave_r70_codigo = '';
 }
-
 $chave_r70_estrut = isset($chave_r70_estrut) ? stripslashes($chave_r70_estrut) : '';
 
 ?>
@@ -136,13 +135,12 @@ $chave_r70_estrut = isset($chave_r70_estrut) ? stripslashes($chave_r70_estrut) :
           $dbwhere = " and r70_instit = $instit ";
         }
         $chave_r70_estrut = addslashes($chave_r70_estrut);
-
         if (!isset($pesquisa_chave)) {
 
           if (!isset($campos)) {
 
             if (file_exists("funcoes/db_func_rhlota.php")) {
-              include("funcoes/db_func_rhlota.php");
+              include(modification("funcoes/db_func_rhlota.php"));
             } else {
               $campos = "rhlota.*";
             }
@@ -154,13 +152,12 @@ $chave_r70_estrut = isset($chave_r70_estrut) ? stripslashes($chave_r70_estrut) :
           } elseif(isset($chave_r70_descr) && !empty($chave_r70_descr) ){
   	         $sql = $clrhlota->sql_query(null,$campos,"r70_descr"," r70_descr like '$chave_r70_descr%' $dbwhere $where_ativo ");
 
-          } elseif (isset($chave_r70_estrut) && !empty($chave_r70_descr)){
+          } elseif (isset($chave_r70_estrut) && !empty($chave_r70_estrut)){
   	         $sql = $clrhlota->sql_query(null,$campos,"r70_estrut"," r70_estrut like '$chave_r70_estrut%' $dbwhere $where_ativo ");
 
           } else {
              $sql = $clrhlota->sql_query(null,$campos,"r70_codigo"," 1=1 $dbwhere $where_ativo ");
           }
-
           db_lovrot($sql, 15, "()", "", $funcao_js, "", "NoMe");
         } else {
 
@@ -197,4 +194,10 @@ $chave_r70_estrut = isset($chave_r70_estrut) ? stripslashes($chave_r70_estrut) :
 <?php } ?>
 <script>
   js_tabulacaoforms("form2", "chave_r70_estrut", true, 1, "chave_r70_estrut", true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

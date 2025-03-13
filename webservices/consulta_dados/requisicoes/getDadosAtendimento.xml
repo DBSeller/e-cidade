@@ -1,0 +1,14 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+    <campos>
+        <campo campo="ov33_ouvidoriaatendimento"   label="codigo_atendimento" />
+        <campo campo="ov33_informacoesprocesso"   label="informacoes_processo" />
+    </campos>
+    <from tabela="ouvidoria.ouvidoriaatendimentoprocessoeletronico"/>
+    <juncoes></juncoes>
+    <filtros>
+        <filtro label="numeroAtendimento" condicao="ouvidoriaatendimentoprocessoeletronico.ov33_ouvidoriaatendimento = '$numeroAtendimento'" obrigatorio="true"/>
+    </filtros>
+    <agrupamento campos="" />
+    <ordenacao   campos="ov33_sequencial"/>
+</consulta>

@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf3.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_libdocumento.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_socios_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_propri_classe.php");
-require_once("classes/db_promitente_classe.php");
-require_once("classes/db_pardiv_classe.php");
-require_once("classes/db_parjuridico_classe.php");
-require_once("classes/db_cfiptu_classe.php");
+require_once(modification("fpdf151/pdf3.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_socios_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_propri_classe.php"));
+require_once(modification("classes/db_promitente_classe.php"));
+require_once(modification("classes/db_pardiv_classe.php"));
+require_once(modification("classes/db_parjuridico_classe.php"));
+require_once(modification("classes/db_cfiptu_classe.php"));
 
 $clissbase		 = new cl_issbase;
 $clcgm				 = new cl_cgm;
@@ -66,6 +66,7 @@ $tamanho	    = isset($tamanho)?$tamanho:10;
 $pula			    = 2;
 
 $sExpFalecido = "";
+$sNaoPossui   = "NÃO POSSUI";
 
 if (isset ($inicial) && $inicial != "") {
   $dbwhere .= " and v50_inicial = $inicial";
@@ -227,16 +228,30 @@ for ($xyx = 0; $xyx < $iLinhasIniciais; $xyx++) {
   for ($iInd = 0; $iInd < $iNumRows; $iInd++) {
 
   	$iExercicio = db_utils::fieldsMemory($rsOrigemInicial,$iInd)->v01_exerc;
+
+    if ( in_array($iExercicio, $aListaExercicio) ) {
+      continue;
+    }
+
   	if (trim($iExercicio) != "") {
   	 $aListaExercicio[] = db_utils::fieldsMemory($rsOrigemInicial,$iInd)->v01_exerc;
   	}
   }
-  $oOrigemInicial   = db_utils::fieldsMemory($rsOrigemInicial,0);
+
+  asort($aListaExercicio);
+
+  $aOrigemInicial   = db_utils::getCollectionByRecord($rsOrigemInicial);
   db_fieldsmemory($rsOrigemInicial,0);
 
-  if ( trim($oOrigemInicial->certdiv) != "" ) {
+  $sNomeMatricula = "";
+  $aListaProcedencia = array();
 
-  	$sSqlDadosDivida = " select coalesce(k00_matric,0) as matric1,
+  foreach ($aOrigemInicial as $oOrigemInicial) {
+      if (trim($oOrigemInicial->certdiv) != "") {
+
+          $sNomeMatricula = "matric1";
+
+          $sSqlDadosDivida = " select coalesce(k00_matric,0) as matric1,
 										            coalesce(k00_inscr,0)  as inscr1,
 										            coalesce(k00_contr,0)  as contr1,
   	                            divida.v01_exerc,
@@ -247,82 +262,93 @@ for ($xyx = 0; $xyx < $iLinhasIniciais; $xyx++) {
 									              left  join arrematric on arrematric.k00_numpre = divida.v01_numpre
 									              left  join arreinscr  on arreinscr.k00_numpre  = divida.v01_numpre
 									              left  join arrecontr  on arrecontr.k00_numpre  = divida.v01_numpre
-							            where certdiv.v14_certid = {$oOrigemInicial->certdiv} ";
-    $rsDadosInicial = db_query($sSqlDadosDivida);
+							            where certdiv.v14_certid = {$oOrigemInicial->certdiv}";
 
-    if ( pg_num_rows($rsDadosInicial) > 0 ) {
+          $rsDadosInicial = db_query($sSqlDadosDivida);
 
-    	db_fieldsmemory($rsDadosInicial,0);
+          if (pg_num_rows($rsDadosInicial) > 0) {
 
-      $matric2 = 0;
-      $inscr2  = 0;
-      $contr2  = 0;
-      $lDivida = true;
+              db_fieldsmemory($rsDadosInicial, 0);
 
-    } else {
-    	continue;
-    }
+              $matric2 = 0;
+              $inscr2 = 0;
+              $contr2 = 0;
+              $lDivida = true;
+
+          } else {
+              continue;
+          }
 
 
-  } else if ( trim($oOrigemInicial->certter) != "" ) {
+      } else {
+          if (trim($oOrigemInicial->certter) != "") {
 
-    $sSqlDadosTermo = " select coalesce(k00_matric,0) as matric2,
-                               coalesce(k00_inscr,0)  as inscr2,
-                               coalesce(k00_contr,0)  as contr2,
-                               proced.v03_dcomp,
-                               divida.v01_exerc
-                          from certter
-									             inner join termo      on termo.v07_parcel      = certter.v14_parcel
-									             inner join termodiv   on termodiv.parcel       = termo.v07_parcel
-									             inner join divida     on divida.v01_coddiv     = termodiv.coddiv
-									             inner join proced     on proced.v03_codigo     = divida.v01_proced
-									             left  join arrematric on arrematric.k00_numpre = divida.v01_numpre
-									             left  join arreinscr  on arreinscr.k00_numpre  = divida.v01_numpre
-									             left  join arrecontr  on arrecontr.k00_numpre  = divida.v01_numpre
-                         where certter.v14_certid = {$oOrigemInicial->certter} ";
+              $sNomeMatricula = "matric2";
 
-    $rsDadosInicial = db_query($sSqlDadosTermo);
+              $sSqlDadosGerais = "select coalesce(k00_matric,0) as matric2,
+                                           coalesce(k00_inscr,0)  as inscr2,
+                                           coalesce(k00_contr,0)  as contr2,
+                                           proced.v03_dcomp,
+                                           divida.v01_exerc
+                                    from certter
+                                    inner join termo      on termo.v07_parcel      = certter.v14_parcel
+                                    inner join termodiv   on termodiv.parcel       = termo.v07_parcel
+                                    inner join divida     on divida.v01_coddiv     = termodiv.coddiv
+                                    inner join proced     on proced.v03_codigo     = divida.v01_proced
+                                    left  join arrematric on arrematric.k00_numpre = divida.v01_numpre
+                                    left  join arreinscr  on arreinscr.k00_numpre  = divida.v01_numpre
+                                    left  join arrecontr  on arrecontr.k00_numpre  = divida.v01_numpre
+                                    where certter.v14_certid = {$oOrigemInicial->certter}
+                                    UNION
+                                    select coalesce(k00_matric,0) as matric2,
+                                           coalesce(k00_inscr,0)  as inscr2,
+                                           coalesce(k00_contr,0)  as contr2,
+                                           proced.v03_dcomp,
+                                           divida.v01_exerc
+                                    from fc_parc_origem_completo( ( 
+                                        select v07_numpre
+                                        from termo
+                                        where v07_parcel = {$oOrigemInicial->parcel} ) ) as x
+                                    inner join termoreparc on termoreparc.v08_parcel = x.riparcel
+                                    inner join termodiv    on termodiv.parcel        = termoreparc.v08_parcelorigem
+                                    inner join divida      on divida.v01_coddiv      = termodiv.coddiv
+                                    inner join proced      on proced.v03_codigo      = divida.v01_proced
+                                    left  join arrematric  on arrematric.k00_numpre  = divida.v01_numpre
+                                    left  join arreinscr   on arreinscr.k00_numpre   = divida.v01_numpre
+                                    left  join arrecontr   on arrecontr.k00_numpre   = divida.v01_numpre
+                                    order by v01_exerc asc";
 
-    if ( pg_num_rows($rsDadosInicial) > 0 ) {
+              $rsDadosInicial = db_query($sSqlDadosGerais);
 
-      db_fieldsmemory($rsDadosInicial,0);
+              if (pg_num_rows($rsDadosInicial) > 0) {
+                  db_fieldsmemory($rsDadosInicial, 0);
+              } else {
+                  continue;
+              }
 
-    } else {
+              $matric1 = 0;
+              $inscr1 = 0;
+              $contr1 = 0;
+              $lParcelamento = true;
 
-    	$sSqlReparc = " select coalesce(k00_matric,0) as matric2,
-						  		           coalesce(k00_inscr,0)  as inscr2,
-									           coalesce(k00_contr,0)  as contr2,
-									           proced.v03_dcomp,
-									           divida.v01_exerc
-    	                  from fc_origemparcelamento( ( select v07_numpre
-    	                                                  from termo
-    	                                                 where v07_parcel = {$oOrigemInicial->parcel} ) ) as x
-    	                       inner join termoreparc on termoreparc.v08_parcel = x.riparcel
-       										   inner join termodiv    on termodiv.parcel        = termoreparc.v08_parcelorigem
-                             inner join divida      on divida.v01_coddiv      = termodiv.coddiv
-                             inner join proced      on proced.v03_codigo      = divida.v01_proced
-                             left  join arrematric  on arrematric.k00_numpre  = divida.v01_numpre
-                             left  join arreinscr   on arreinscr.k00_numpre   = divida.v01_numpre
-                             left  join arrecontr   on arrecontr.k00_numpre   = divida.v01_numpre
-    	                 order by riseq desc limit 1 ";
+          } else {
+              continue;
+          }
+      }
 
-    	$rsDadosInicial = db_query($sSqlReparc);
+      $iLinhaDadosInicial = pg_num_rows($rsDadosInicial);
 
-    	if ( pg_num_rows($rsDadosInicial) > 0 ) {
-    		db_fieldsmemory($rsDadosInicial,0);
-    	} else {
-    		continue;
-    	}
+      for ($iInd=0; $iInd < $iLinhaDadosInicial; $iInd++ ) {
 
-    }
+          $oDadosInicial = db_utils::fieldsMemory($rsDadosInicial,$iInd);
 
-    $matric1       = 0;
-    $inscr1        = 0;
-    $contr1        = 0;
-   	$lParcelamento = true;
-
-  } else {
-  	continue;
+          if (!in_array($oDadosInicial->v01_exerc, $aListaExercicio)) {
+              $aListaExercicio[]   = $oDadosInicial->v01_exerc;
+          }
+          if (!in_array($oDadosInicial->v03_dcomp, $aListaProcedencia)) {
+              $aListaProcedencia[] = $oDadosInicial->v03_dcomp;
+          }
+      }
   }
 
   $sqlPagoCancelado  = " select a.k00_numpre as inicial_paga,                              ";
@@ -355,26 +381,8 @@ for ($xyx = 0; $xyx < $iLinhasIniciais; $xyx++) {
 
   $xinicial = $v50_inicial;
 
-  $iLinhaDadosInicial = pg_num_rows($rsDadosInicial);
-
-
-  $aListaProcedencia = array();
-
-  for ($iInd=0; $iInd < $iLinhaDadosInicial; $iInd++ ) {
-
-  	$oDadosInicial = db_utils::fieldsMemory($rsDadosInicial,$iInd);
-
-  	if (!in_array($oDadosInicial->v01_exerc, $aListaExercicio)) {
-  	  $aListaExercicio[]   = $oDadosInicial->v01_exerc;
-  	}
-  	if (!in_array($oDadosInicial->v03_dcomp, $aListaProcedencia)) {
-  	  $aListaProcedencia[] = $oDadosInicial->v03_dcomp;
-  	}
-  }
-
-  $oLibDocumento->Exercicio    = "Exercício(s) de ".implode(",",$aListaExercicio);
-  $oLibDocumento->Procedencias = "Procedência(s) ".ucfirst(strtolower(implode(",",$aListaProcedencia)));
-
+  $oLibDocumento->Exercicio    = "Exercício(s) de ".implode(", ",$aListaExercicio);
+  $oLibDocumento->Procedencias = "Procedência(s) ".ucfirst(strtolower(implode(", ",$aListaProcedencia)));
 
   $sSqlCert = " select distinct v51_certidao
                   from inicialcert
@@ -503,9 +511,14 @@ for ($xyx = 0; $xyx < $iLinhasIniciais; $xyx++) {
     exit;
   }
 
-  $xmatric	 = $matric1 + $matric2;
-  $xcontr		 = $contr1  + $contr2;
-  $xinscr		 = $inscr1  + $inscr2;
+  /**
+   * @todo rever essa logica
+   * rotina nao esta pronta para buscar o envolvido quando existe matricula e inscricao na mesma divida, retorna apenas
+   * um dos registros vinculados
+   */
+  $xmatric   = $matric1 + $matric2;
+  $xcontr    = $contr1  + $contr2;
+  $xinscr    = $inscr1  + $inscr2;
   $q02_inscr = $xinscr;
   $xender    = '';
   $ximovel   = '';
@@ -541,58 +554,75 @@ for ($xyx = 0; $xyx < $iLinhasIniciais; $xyx++) {
 
       $ximovel .= ".";
       $cgmpri = pg_result($result, 0, "z01_numcgm");
-
     }
 
-    $sSqlEnvolvidos = "select  * from fc_busca_envolvidos({$lPrincipal},{$oParJuridico->v19_envolinicialiptu},'M',{$xmatric})";
-    $rsEnvolvidos   = db_query($sSqlEnvolvidos) or die($sSqlEnvolvidos);
-    $iLinhasEnvol   = pg_num_rows($rsEnvolvidos);
+    $aDadosInicial  = db_utils::getCollectionByRecord($rsDadosInicial);
+    $aCgmEnvolvidos = array();
 
+    foreach ($aDadosInicial as $iIndice => $oDadosInicial) {
 
-    if ($oParJuridico->v19_envolinicialiptu == 2 && $iLinhasEnvol == 0 ) {
+      if($oDadosInicial->$sNomeMatricula == '0'){
+        continue;
+      }
+      $sSqlEnvolvidos = "select  * from fc_busca_envolvidos({$lPrincipal},{$oParJuridico->v19_envolinicialiptu},'M',{$oDadosInicial->$sNomeMatricula})";
+      $rsEnvolvidos   = db_query($sSqlEnvolvidos) or die($sSqlEnvolvidos);
+      $iLinhasEnvol   = pg_num_rows($rsEnvolvidos);
 
-      $sSqlEnvolvidos  = " select j01_numcgm as rinumcgm ";
-      $sSqlEnvolvidos .= "   from iptubase               ";
-      $sSqlEnvolvidos .= "  where j01_matric = {$xmatric} ";
+      if ($oParJuridico->v19_envolinicialiptu == 2 && $iLinhasEnvol == 0 ) {
 
-      $rsEnvolvidos = db_query($sSqlEnvolvidos) or die($sSqlEnvolvidos);
-      $iLinhasEnvol = pg_num_rows($rsEnvolvidos);
+        $sSqlEnvolvidos  = " select j01_numcgm as rinumcgm  ";
+        $sSqlEnvolvidos .= "   from iptubase                ";
+        $sSqlEnvolvidos .= "  where j01_matric = {$xmatric} ";
 
-    }
+        $rsEnvolvidos = db_query($sSqlEnvolvidos) or die($sSqlEnvolvidos);
+        $iLinhasEnvol = pg_num_rows($rsEnvolvidos);
+      }
 
-    for ($i=0; $i < $iLinhasEnvol; $i++) {
+      for ($i=0; $i < $iLinhasEnvol; $i++) {
 
-      $oEnvolvidos  = db_utils::fieldsMemory($rsEnvolvidos,$i);
-      $rsDadosEnvol = $clcgm->sql_record($clcgm->sql_query_file($oEnvolvidos->rinumcgm));
+        $oEnvolvidos  = db_utils::fieldsMemory($rsEnvolvidos, $i);
 
-      if ($clcgm->numrows > 0) {
+        if ( in_array($oEnvolvidos->rinumcgm, $aCgmEnvolvidos) ) {
+          continue;
+        }
+        $aCgmEnvolvidos[] = $oEnvolvidos->rinumcgm;
 
-        $oDadosEnvol = db_utils::fieldsMemory($rsDadosEnvol,0);
+        $rsDadosEnvol = $clcgm->sql_record($clcgm->sql_query_file($oEnvolvidos->rinumcgm));
 
-        if ( isset($oDadosEnvol->z01_dtfalecimento) ) {
-          if ( empty($oDadosEnvol->z01_dtfalecimento) ) {
-            $sExpFalecido = "";
+        if ($clcgm->numrows > 0) {
+
+          $oDadosEnvol = db_utils::fieldsMemory($rsDadosEnvol,0);
+
+          if ( isset($oDadosEnvol->z01_dtfalecimento) ) {
+            if ( empty($oDadosEnvol->z01_dtfalecimento) ) {
+              $sExpFalecido = "";
+            }
           }
-        }
 
-        if (strlen($oDadosEnvol->z01_cgccpf) > 11) {
-          $sCgcCpf = "CNPJ: ".db_formatar($oDadosEnvol->z01_cgccpf, 'cnpj').",";
-        } else {
-          $sCgcCpf = "CPF: ".db_formatar($oDadosEnvol->z01_cgccpf, 'cpf').",";
-        }
-
-        $sNacionalidade = '';
-        if ( strlen ( trim($oDadosEnvol->z01_cgccpf) ) == 11 ){
-
-          if( $oDadosEnvol->z01_nacion == 1 ){
-            $sNacionalidade = ", BRASILEIRA";
-          }else{
-            $sNacionalidade = ", ESTRANGEIRA";
+          if (strlen($oDadosEnvol->z01_cgccpf) > 11) {
+            $sCgcCpf = "CNPJ: ".db_formatar($oDadosEnvol->z01_cgccpf, 'cnpj').",";
+          } else {
+            $sCgcCpf = "CPF: ".db_formatar($oDadosEnvol->z01_cgccpf, 'cpf').",";
           }
-        }
 
-        $xender	.=  $sExpFalecido . trim($oDadosEnvol->z01_nome) . $sNacionalidade . ($oDadosEnvol->z01_cgccpf!=''?", {$sCgcCpf}":"");
-        $xender	.= " ENDEREÇO: ".$oDadosEnvol->z01_ender.', N°'.$oDadosEnvol->z01_numero.''.($oDadosEnvol->z01_bairro!=""?", BAIRRO: {$oDadosEnvol->z01_bairro}":"").', '.$oDadosEnvol->z01_munic.'-'.$oDadosEnvol->z01_uf.''.($oDadosEnvol->z01_cep !=""?", CEP: {$oDadosEnvol->z01_cep}":"").''.($oDadosEnvol->z01_cxpostal!=""?", CAIXA POSTAL: {$oDadosEnvol->z01_cxpostal}":"").".";
+          $sNacionalidade = '';
+          if ( strlen ( trim($oDadosEnvol->z01_cgccpf) ) == 11 ){
+
+            if( $oDadosEnvol->z01_nacion == 1 ){
+              $sNacionalidade = ", BRASILEIRA(O)";
+            } else if ($oDadosEnvol->z01_nacion == 2) {
+              $sNacionalidade = ", ESTRANGEIRA(O)";
+            }else{
+              $sNacionalidade = " ";
+            }
+          }
+
+          $xender	.=  $sExpFalecido . trim($oDadosEnvol->z01_nome) . $sNacionalidade . ($oDadosEnvol->z01_cgccpf!=''?", {$sCgcCpf}":"");
+          $xender	.= " ENDEREÇO: ".$oDadosEnvol->z01_ender.', N°'.$oDadosEnvol->z01_numero.''.($oDadosEnvol->z01_bairro!=""?", BAIRRO: {$oDadosEnvol->z01_bairro}":"").', '.$oDadosEnvol->z01_munic.'-'.$oDadosEnvol->z01_uf.''.($oDadosEnvol->z01_cep !=""?", CEP: {$oDadosEnvol->z01_cep}":"").''.($oDadosEnvol->z01_cxpostal!=""?", CAIXA POSTAL: {$oDadosEnvol->z01_cxpostal}":"").",";
+          $xender	.= " TELEFONE: ".($oDadosEnvol->z01_telef!=''?$oDadosEnvol->z01_telef:$sNaoPossui) . ", CELULAR: ".($oDadosEnvol->z01_telcel!=''?$oDadosEnvol->z01_telcel:$sNaoPossui) . ",";
+          $xender	.= " EMAIL:    ".($oDadosEnvol->z01_email!=''?$oDadosEnvol->z01_email:$sNaoPossui) .". \n";
+          
+        }
       }
     }
 
@@ -631,14 +661,17 @@ for ($xyx = 0; $xyx < $iLinhasIniciais; $xyx++) {
         }
 
         if ($oEnvolvidos->ritipoenvol == "4") {
-          $xender  = $sExpFalecido.trim($oDadosEnvol->z01_nome).",  " .$sCgcCpf.' sito o endereço: '.$oDadosEnvol->z01_ender.', N° '.$oDadosEnvol->z01_numero.''.($oDadosEnvol->z01_bairro != "" ? ", BAIRRO:{$oDadosEnvol->z01_bairro}" : "").', '.$oDadosEnvol->z01_munic.'-'.$oDadosEnvol->z01_uf.''.($oDadosEnvol->z01_cep != "" ? ", CEP:{$oDadosEnvol->z01_cep}" : "").''.($oDadosEnvol->z01_cxpostal != "" ? ", CAIXA POSTAL:{$oDadosEnvol->z01_cxpostal}" : "");
+          $xender  = $sExpFalecido.trim($oDadosEnvol->z01_nome).",  " .$sCgcCpf.' sito o endereço: '.$oDadosEnvol->z01_ender.', N° '.$oDadosEnvol->z01_numero.''.($oDadosEnvol->z01_bairro != "" ? ", BAIRRO:{$oDadosEnvol->z01_bairro}" : "").', '.$oDadosEnvol->z01_munic.'-'.$oDadosEnvol->z01_uf.''.($oDadosEnvol->z01_cep != "" ? ", CEP:{$oDadosEnvol->z01_cep}" : "").''.($oDadosEnvol->z01_cxpostal != "" ? ", CAIXA POSTAL:{$oDadosEnvol->z01_cxpostal}" : ""). ", ";
         } else {
 
           $xender .= $sTextoSocios;
           $xender .= "\n-  ".$sExpFalecido.trim($oDadosEnvol->z01_nome).", " .$sCgcCpf."\n";
-          $xender .= "ENDEREÇO: ".$oDadosEnvol->z01_ender.', N°: '.$oDadosEnvol->z01_numero.''.($oDadosEnvol->z01_bairro != "" ? ", BAIRRO: {$oDadosEnvol->z01_bairro}" : "").', '.$oDadosEnvol->z01_munic.'-'.$oDadosEnvol->z01_uf.''.($oDadosEnvol->z01_cep != "" ? ", CEP:{$oDadosEnvol->z01_cep}" : "").''.($oDadosEnvol->z01_cxpostal != "" ? ", CAIXA POSTAL:{$oDadosEnvol->z01_cxpostal}" : "");
+          $xender .= "ENDEREÇO: ".$oDadosEnvol->z01_ender.', N°: '.$oDadosEnvol->z01_numero.''.($oDadosEnvol->z01_bairro != "" ? ", BAIRRO: {$oDadosEnvol->z01_bairro}" : "").', '.$oDadosEnvol->z01_munic.'-'.$oDadosEnvol->z01_uf.''.($oDadosEnvol->z01_cep != "" ? ", CEP:{$oDadosEnvol->z01_cep}" : "").''.($oDadosEnvol->z01_cxpostal != "" ? ", CAIXA POSTAL:{$oDadosEnvol->z01_cxpostal}" : "") . ", ";
           $sTextoSocios = "";
         }
+        $xender	.= "TELEFONE: ".($oDadosEnvol->z01_telef!=''?$oDadosEnvol->z01_telef:$sNaoPossui) . ", CELULAR: ".($oDadosEnvol->z01_telcel!=''?$oDadosEnvol->z01_telcel:$sNaoPossui) . ", ";
+        $xender	.= "EMAIL:    ".($oDadosEnvol->z01_email!=''?$oDadosEnvol->z01_email:$sNaoPossui) .". \n";
+
       }
     }
 
@@ -683,8 +716,18 @@ for ($xyx = 0; $xyx < $iLinhasIniciais; $xyx++) {
         $sCgcCpf = "CPF: ".db_formatar($z01_cgccpf, 'cpf').",";
       }
 
-      $xender .= " CGM: " . $z01_numcgm . " - " . $sExpFalecido . trim($z01_nome) . (strlen(trim($z01_cgccpf)) == 11 ? ($z01_nacion == 1 ? ", BRASILEIRA" : ", ESTRANGEIRA") : "") . ($z01_cgccpf != '' ? ", {$sCgcCpf}" : "");
-      $xender .= " ENDEREÇO: " . $z01_ender . ($z01_numero > 0 ? ', N°' . $z01_numero : '') . '' . ($z01_bairro != "" ? ", BAIRRO: $z01_bairro" : "") . ', ' . $z01_munic . '-' . $z01_uf . '' . ($z01_cep != "" ? ", CEP: $z01_cep" : "") . '' . ($z01_cxpostal != "" ? ", CAIXA POSTAL: $z01_cxpostal" : "");
+      if( $z01_nacion == 1 ){
+        $sNacionalidade = ", BRASILEIRA(O)";
+      } else if ($z01_nacion == 2) {
+        $sNacionalidade = ", ESTRANGEIRA(O)";
+      }else{
+        $sNacionalidade = " ";
+      }
+
+      $xender .= " CGM: " . $z01_numcgm . " - " . $sExpFalecido . trim($z01_nome) . (strlen(trim($z01_cgccpf)) == 11 ? $sNacionalidade : "") . ($z01_cgccpf != '' ? ", {$sCgcCpf}" : "");
+      $xender .= " ENDEREÇO: " . $z01_ender . ($z01_numero > 0 ? ', N°' . $z01_numero : '') . '' . ($z01_bairro != "" ? ", BAIRRO: $z01_bairro" : "") . ', ' . $z01_munic . '-' . $z01_uf . '' . ($z01_cep != "" ? ", CEP: $z01_cep" : "") . '' . ($z01_cxpostal != "" ? ", CAIXA POSTAL: $z01_cxpostal" : "") . ",";
+      $xender	.= " TELEFONE: ".($oDadosEnvol->z01_telef!=''?$oDadosEnvol->z01_telef:$sNaoPossui) . ", CELULAR: ".($oDadosEnvol->z01_telcel!=''?$oDadosEnvol->z01_telcel:$sNaoPossui) . ",";
+      $xender	.= " EMAIL:    ".($oDadosEnvol->z01_email!=''?$oDadosEnvol->z01_email:$sNaoPossui) .". \n";
     }
 
     $inscricao_matricula_cgm = "CGM: $z01_numcgm";
@@ -781,42 +824,21 @@ for ($xyx = 0; $xyx < $iLinhasIniciais; $xyx++) {
       continue;
     }
 
-    $oParag->writeText( &$pdf );
+    $oParag->writeText( $pdf );
 
   }
-
-/*
-  $pdf->Ln($pula);
-  $pdf->MultiCell(0, 5, 'Valor da Causa R$ ' . $Valor . ' (' . $Valorext . ').', 0, "J", 0, 70);
-  $pdf->SetLeftMargin(80);
-  $pdf->Ln($pula);
-
-  if ($v04_peticaoinicial == 2) {
-    $pdf->MultiCell(0, 5, 'Nesses Termos,', 0, "J", 0, 0);
-    $pdf->MultiCell(0, 5, 'Pede Deferimento.', 0, "J", 0, 0);
-  } else {
-    $pdf->MultiCell(0, 5, 'Nesses Termos, Pede Deferimento.', 0, "J", 0, 0);
-  }
-  $pdf->Ln($pula);
-
-  if ($v04_peticaoinicial == 2) {
-    $pdf->Cell(0,   8, $munic.', '.date('d')." de ".db_mes(date('m'))." de ".date('Y').'.', 0, 1, "J", 10);
-  } else {
-    $pdf->Cell(120, 8, $munic.', '.date('d')." de ".db_mes(date('m'))." de ".date('Y').'.', 0, 1, "R", 0);
-  }
-*/
 
   foreach ($aParagrafos as $oParag) {
 
     if($oParag->oParag->db02_descr == "ass_adv1"){
       $pdf->SetX(30);
-      $oParag->writeText( &$pdf );
+      $oParag->writeText( $pdf );
     }
 
     if($oParag->oParag->db02_descr == "ass_adv2"){
       $pdf->SetY(($pdf->getY()-10));
       $pdf->SetX(130);
-      $oParag->writeText( &$pdf );
+      $oParag->writeText( $pdf );
     }
 
     if($oParag->oParag->db02_descr == "ASSINATURAS_CODIGOPHP"){
@@ -832,7 +854,7 @@ for ($xyx = 0; $xyx < $iLinhasIniciais; $xyx++) {
 
 if ($lTemInicial){
   if (!defined('DB_BIBLIOT')){
-    $pdf->Output();
+    $pdf->Output('', true);
   }
 }else{
 

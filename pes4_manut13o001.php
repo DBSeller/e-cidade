@@ -1,7 +1,8 @@
-<?
-/*
+<?php
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +26,31 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
 db_postmemory($HTTP_POST_VARS);
+
 $anofolha = db_anofolha();
 $mesfolha = db_mesfolha();
 db_sel_cfpess($anofolha, $mesfolha);
+
+$db_opcao = 1;
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+  
+  try {
+    FolhaPagamento13o::verificaLiberacaoDBPref();
+  } catch (BusinessException $e) {
+
+    $db_opcao = 3;
+    db_msgbox($e->getMessage());
+  }
+}
+
 ?>
 <html>
 <head>
@@ -45,7 +61,7 @@ db_sel_cfpess($anofolha, $mesfolha);
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<center>
+<center><br />
 <table width="60%" border="0" cellspacing="4" cellpadding="0">
   <tr><td colspan="2">&nbsp;</td></tr>
   <form name="form1" method="post" action="">
@@ -54,16 +70,18 @@ db_sel_cfpess($anofolha, $mesfolha);
       <b>Opção:</b>
     </td>
     <td>
-      <?
+      <?php
+
       if(!isset($opcao)){
-	$opcao = 0;
+	      $opcao = 0;
       }
+
       $arr_opcoes = Array(0=>"Selecionar opção", 1=>"Adiantamento 13o", 2=>"Saldo 13o", 3=>"Complemento 13o");
-      db_select("opcao", $arr_opcoes, true, 1, "onchange='js_opcao_selecionada();'");
+      db_select("opcao", $arr_opcoes, true, $db_opcao, "onchange='js_opcao_selecionada();'");
       ?>
     </td>
   </tr>
-  <?
+  <?php
   $erro_msg = "";
   $sql_erro = false;
   if(isset($opcao) && $opcao != 0){
@@ -85,18 +103,18 @@ db_sel_cfpess($anofolha, $mesfolha);
   <tr>
     <td align="right"><b>Pagar complemento de adiantamento:</b></td>
     <td>
-      <?
+      <?php
       $arr_adianta = Array('t'=>'Sim', 'f'=>'Não');
       db_select("pagaradiantamentonovamente", $arr_adianta, true, 1);
       ?>
     </td>
   </tr>
-  <?
+  <?php
         $opcao_fracao = 1;
-	$fracao_certa = 50;
+	      $fracao_certa = 50;
       }else{
-      $pagaradiantamentonovamente = 't';
-      db_input('pagaradiantamentonovamente',6,4,true,'hidden','');
+        $pagaradiantamentonovamente = 't';
+        db_input('pagaradiantamentonovamente',6,4,true,'hidden','');
       }
   ?>
   <tr>
@@ -104,15 +122,15 @@ db_sel_cfpess($anofolha, $mesfolha);
       <b>Fração para pagamento:</b>
     </td>
     <td>
-      <?
-      db_input('fracao_certa',6,4,true,'text',$opcao_fracao,'');
-      $mesana = 11;
-      db_input('mesana',6,4,true,'hidden',3,'');
+      <?php
+        db_input('fracao_certa',6,4,true,'text',$opcao_fracao,'');
+        $mesana = 11;
+        db_input('mesana',6,4,true,'hidden',3,'');
       ?>
       &nbsp;<b>%</b>
     </td>
   </tr>
-  <?
+  <?php
       if($opcao == 2 && $mesfolha == 12){
   ?>
   <tr>
@@ -136,7 +154,7 @@ db_sel_cfpess($anofolha, $mesfolha);
       </table>
     </td>
   </tr>
-  <?
+  <?php
       }
 
     }
@@ -148,7 +166,7 @@ db_sel_cfpess($anofolha, $mesfolha);
       $opcao_filtro = "s";
     }
 
-    include("dbforms/db_classesgenericas.php");
+    require_once(modification("dbforms/db_classesgenericas.php"));
     $geraform = new cl_formulario_rel_pes;
     
     $geraform->manomes = false;                     // PARA NÃO MOSTRAR ANO E MES DE COMPETÊNCIA DA FOLHA
@@ -179,23 +197,23 @@ db_sel_cfpess($anofolha, $mesfolha);
     $geraform->tipresumo    = "Seleção";            // LABEL DA SELEÇÃO
     $geraform->gera_form(null,null);
     ?>
-  <?if($opcao == 3 && $mesfolha != $r11_mes13){?>
+  <?php if($opcao == 3 && $mesfolha != $r11_mes13){?>
   <tr>
     <td colspan="2" align="center"><font color="red">AVISO: Saldo de 13o não está calculado.</font></td>
   </tr>
-  <?}?>
+  <?php } ?>
   <tr>
     <td colspan='2' align='center'>
       <input type="submit" name="processar" value="Processar" onclick="return js_enviar_dados();">
     </td>
   </tr>
-  <?
+  <?php
   }
   ?>
   </form>
 </table>
 </center>
-<? 
+<?php
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
@@ -246,12 +264,11 @@ function js_enviar_dados(){
 
   document.form1.action = 'pes4_manut13o002.php';
   return true;
-
 }
 js_trocacordeselect();
 </script>
 </html>
-<?
+<?php
 if($sql_erro == true){
   db_msgbox($erro_msg);
   echo "<script>location.href = 'pes4_manut13o001.php'</script>";

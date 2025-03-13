@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 db_postmemory($HTTP_SERVER_VARS);
 
 $sql = "
@@ -46,7 +46,7 @@ if($conta != 0) {
                inner join conplanoreduz on c61_reduz = c62_reduz and c61_instit = '. db_getsession('DB_instit') . ' and c61_anousu=c62_anousu
 
   where k13_conta = '.$conta;
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
   $descr_conta = "CONTA : ".$conta.' - '.$k13_descr;
 }
@@ -78,7 +78,7 @@ $pdf->Cell($CoL5,5,"ESTORNO",1,1,"C",0);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 /*
-$result = pg_exec("
+$result = db_query("
 select k02_estorc,upper(o02_descr) as o02_descr,k12_receit,arrec, estorno 
 from orcam 
   left outer join 
@@ -106,7 +106,7 @@ where arrec <> 0 or estorno <> 0
 ");
 */
 
-$result = pg_exec("
+$result = db_query("
 select k02_estorc,upper(o02_descr) as o02_descr,k12_receit,arrec, estorno 
 from orcam 
   left outer join 
@@ -222,7 +222,7 @@ $Totalreceitaorcamentaria = $Total1+$Total2;
 //////  RECEITA EXTRA-ORÇAMENTÁRIA
 
 
-$result = pg_exec("
+$result = db_query("
 select k02_estpla, c01_descr ,k12_conta,k12_receit,sum(k12_arrec) as arrec, sum(k12_estorno) as estorno
 from plano
 	inner join 
@@ -347,7 +347,7 @@ $pdf->Cell(190,15,"BOLETIM DE CAIXA",1,1,"C",0);
 
 
 //Total receita orcamentario e extra-orcamentaria
-$result = pg_exec("select k12_conta,k02_tipo,sum(cornump.k12_valor) 
+$result = db_query("select k12_conta,k02_tipo,sum(cornump.k12_valor) 
                    from corrente
                    inner join cornump 
 				   on corrente.k12_id      = cornump.k12_id     
@@ -373,7 +373,7 @@ pg_freeresult($result);
 
 
 ///Deposito na Conta(Retiradas de banco em relacao a conta)
-$result = pg_exec("select corrente.k12_conta,sum(corrente.k12_valor)
+$result = db_query("select corrente.k12_conta,sum(corrente.k12_valor)
                    from corrente
                    inner join corlanc 
 				   on corrente.k12_id     = corlanc.k12_id     
@@ -392,7 +392,7 @@ pg_freeresult($result);
 
 
 /////Saldo Anterior
-$result = pg_exec("select fc_saltessaldo(1,'$datai','$dataf',null)");
+$result = db_query("select fc_saltessaldo(1,'$datai','$dataf',null)");
 if(pg_numrows($result) > 0) {
   $aux = pg_result($result,0,0);
   $aux = preg_split("/\s+/",$aux);
@@ -405,7 +405,7 @@ pg_freeresult($result);
 
 
 //////Despesa Orcamentaria
-$result = pg_exec("select corrente.k12_conta,sum(corrente.k12_valor)
+$result = db_query("select corrente.k12_conta,sum(corrente.k12_valor)
                    from corrente
                    inner join coremp 
 				   on corrente.k12_id     = coremp.k12_id     
@@ -421,7 +421,7 @@ if(pg_numrows($result) > 0) {
 }
 pg_freeresult($result);
 //////////////Despesa Extra-Orcamentaria
-$result = pg_exec("select corrente.k12_conta,sum(corrente.k12_valor)
+$result = db_query("select corrente.k12_conta,sum(corrente.k12_valor)
                    from corrente
                    inner join coremp on corrente.k12_id     = coremp.k12_id     
 				   and corrente.k12_data   = coremp.k12_data   
@@ -436,7 +436,7 @@ if(pg_numrows($result) > 0) {
 }
 pg_freeresult($result);
 /////Retirada da Conta(Depositos no banco em relacao a conta)
-$result = pg_exec("select corlanc.k12_conta,sum(corrente.k12_valor)
+$result = db_query("select corlanc.k12_conta,sum(corrente.k12_valor)
                    from corrente
                    inner join corlanc on corrente.k12_id     = corlanc.k12_id     
 				   and corrente.k12_data   = corlanc.k12_data   

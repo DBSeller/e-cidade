@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -47,7 +47,7 @@ class cl_carpadrao {
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  j33_codgrupo = int4 = Grupo 
-                 j33_codcaracter = int4 = Caracteristica principal 
+                 j33_codcaracter = int4 = Característica Principal 
                  ";
    //funcao construtor da classe 
    function cl_carpadrao() { 
@@ -73,11 +73,11 @@ class cl_carpadrao {
        $this->j33_codgrupo = ($this->j33_codgrupo == ""?@$GLOBALS["HTTP_POST_VARS"]["j33_codgrupo"]:$this->j33_codgrupo);
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir ($j33_codgrupo){ 
       $this->atualizacampos();
      if($this->j33_codcaracter == null ){ 
-       $this->erro_sql = " Campo Caracteristica principal nao Informado.";
+       $this->erro_sql = " Campo Característica Principal não informado.";
        $this->erro_campo = "j33_codcaracter";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -87,7 +87,7 @@ class cl_carpadrao {
      }
        $this->j33_codgrupo = $j33_codgrupo; 
      if(($this->j33_codgrupo == null) || ($this->j33_codgrupo == "") ){ 
-       $this->erro_sql = " Campo j33_codgrupo nao declarado.";
+       $this->erro_sql = " Campo j33_codgrupo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -106,12 +106,12 @@ class cl_carpadrao {
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Características Padrões ($this->j33_codgrupo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Características Padrões ($this->j33_codgrupo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Características Padrões já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Características Padrões ($this->j33_codgrupo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Características Padrões ($this->j33_codgrupo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -120,7 +120,7 @@ class cl_carpadrao {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->j33_codgrupo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -138,7 +138,7 @@ class cl_carpadrao {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($j33_codgrupo=null) { 
+   public function alterar ($j33_codgrupo=null) { 
       $this->atualizacampos();
      $sql = " update carpadrao set ";
      $virgula = "";
@@ -149,7 +149,7 @@ class cl_carpadrao {
        $sql  .= $virgula." j33_codgrupo = $this->j33_codgrupo ";
        $virgula = ",";
        if(trim($this->j33_codgrupo) == null ){ 
-         $this->erro_sql = " Campo Grupo nao Informado.";
+         $this->erro_sql = " Campo Grupo não informado.";
          $this->erro_campo = "j33_codgrupo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -165,7 +165,7 @@ class cl_carpadrao {
        $sql  .= $virgula." j33_codcaracter = $this->j33_codcaracter ";
        $virgula = ",";
        if(trim($this->j33_codcaracter) == null ){ 
-         $this->erro_sql = " Campo Caracteristica principal nao Informado.";
+         $this->erro_sql = " Campo Característica Principal não informado.";
          $this->erro_campo = "j33_codcaracter";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -194,26 +194,26 @@ class cl_carpadrao {
      $result = db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Características Padrões nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Características Padrões não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->j33_codgrupo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Características Padrões nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Características Padrões não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->j33_codgrupo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->j33_codgrupo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -250,32 +250,32 @@ class cl_carpadrao {
           }
           $sql2 .= " j33_codgrupo = $j33_codgrupo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Características Padrões nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Características Padrões não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$j33_codgrupo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Características Padrões nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Características Padrões não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$j33_codgrupo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$j33_codgrupo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -286,7 +286,7 @@ class cl_carpadrao {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -297,8 +297,8 @@ class cl_carpadrao {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:carpadrao";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";

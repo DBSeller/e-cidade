@@ -1,32 +1,32 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clprocescola->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -57,35 +57,36 @@ $ed86_i_escola = db_getsession("DB_coddepto");
 if($clescola->numrows>0){
  db_fieldsmemory($result,0);
 }
+
 ?>
 <form name="form1" method="post" action="">
 <center>
 <table border="0">
  <tr>
-  <td nowrap title="<?=@$Ted86_i_codigo?>">
-   <?=@$Led86_i_codigo?>
+  <td nowrap title="<?=$Ted86_i_codigo?>">
+   <?=$Led86_i_codigo?>
   </td>
   <td>
    <?db_input('ed86_i_codigo',10,$Ied86_i_codigo,true,'text',3,"")?>
   </td>
  </tr>
  <tr>
-  <td nowrap title="<?=@$Ted86_i_escola?>">
-   <?db_ancora(@$Led86_i_escola,"",3);?>
+  <td nowrap title="<?=$Ted86_i_escola?>">
+   <?db_ancora($Led86_i_escola,"",3);?>
   </td>
   <td>
    <?db_input('ed86_i_escola',10,$Ied86_i_escola,true,'text',3,"")?>
-   <?db_input('ed18_c_nome',40,@$Ied18_c_nome,true,'text',3,'')
+   <?db_input('ed18_c_nome',40,$Ied18_c_nome,true,'text',3,'')
    ?>
   </td>
  </tr>
  <tr>
-  <td nowrap title="<?=@$Ted86_i_procedimento?>">
-   <?db_ancora(@$Led86_i_procedimento,"",3);?>
+  <td nowrap title="<?=$Ted86_i_procedimento?>">
+   <?db_ancora($Led86_i_procedimento,"",3);?>
   </td>
   <td>
    <?db_input('ed86_i_procedimento',10,$Ied86_i_procedimento,true,'text',3,"","",$cor)?>
-   <?db_input('ed40_c_descr',40,@$Ied40_c_descr,true,'text',3,"","",$cor)?>
+   <?db_input('ed40_c_descr',40, $Ied40_c_descr,true,'text',3,"","",$cor)?>
   </td>
  </tr>
 </table>
@@ -95,28 +96,28 @@ if($clescola->numrows>0){
  <tr>
   <td valign="top">
   <?
-   $chavepri= array("ed86_i_codigo"=>@$ed86_i_codigo,
-                    "ed86_i_escola"=>@$ed86_i_escola,
-                    "ed18_c_nome"=>@$ed18_c_nome,
-                    "ed86_i_procedimento"=>@$ed86_i_procedimento,
-                    "ed40_c_descr"=>@$ed40_c_descr
+   $chavepri= array("ed86_i_codigo"       => (isset($ed86_i_codigo))       ? $ed86_i_codigo       : null,
+                    "ed86_i_escola"       => (isset($ed86_i_escola))       ? $ed86_i_escola       : null,
+                    "ed18_c_nome"         => (isset($ed18_c_nome))         ? $ed18_c_nome         : '',
+                    "ed86_i_procedimento" => (isset($ed86_i_procedimento)) ? $ed86_i_procedimento : null,
+                    "ed40_c_descr"        => (isset($ed40_c_descr))        ? $ed40_c_descr        : ''
                     );
-   $cliframe_alterar_excluir->chavepri=$chavepri;
-   @$cliframe_alterar_excluir->sql = $clprocescola->sql_query("","*","ed18_c_nome"," ed86_i_procedimento = $ed86_i_procedimento");
-   @$cliframe_alterar_excluir->sql_disabled = $clprocescola->sql_query("","*","ed18_c_nome"," ed86_i_escola != $ed86_i_escola");
-   $cliframe_alterar_excluir->campos  ="ed18_c_nome";
-   $cliframe_alterar_excluir->labels  ="ed71_i_escola";
-   $cliframe_alterar_excluir->legenda="Registros";
-   $cliframe_alterar_excluir->msg_vazio ="Não foi encontrado nenhum registro.";
-   $cliframe_alterar_excluir->textocabec ="#DEB887";
-   $cliframe_alterar_excluir->textocorpo ="#444444";
-   $cliframe_alterar_excluir->fundocabec ="#444444";
-   $cliframe_alterar_excluir->fundocorpo ="#eaeaea";
-   $cliframe_alterar_excluir->iframe_height ="150";
-   $cliframe_alterar_excluir->iframe_width ="100%";
+   $cliframe_alterar_excluir->chavepri      = $chavepri;
+   $cliframe_alterar_excluir->sql           = $clprocescola->sql_query("","*","ed18_c_nome"," ed86_i_procedimento = $ed86_i_procedimento");
+   $cliframe_alterar_excluir->sql_disabled  = $clprocescola->sql_query("","*","ed18_c_nome"," ed86_i_escola != $ed86_i_escola");
+   $cliframe_alterar_excluir->campos        = "ed18_c_nome";
+   $cliframe_alterar_excluir->labels        = "ed71_i_escola";
+   $cliframe_alterar_excluir->legenda       = "Registros";
+   $cliframe_alterar_excluir->msg_vazio     = "Não foi encontrado nenhum registro.";
+   $cliframe_alterar_excluir->textocabec    = "#DEB887";
+   $cliframe_alterar_excluir->textocorpo    = "#444444";
+   $cliframe_alterar_excluir->fundocabec    = "#444444";
+   $cliframe_alterar_excluir->fundocorpo    = "#eaeaea";
+   $cliframe_alterar_excluir->iframe_height = "150";
+   $cliframe_alterar_excluir->iframe_width  = "100%";
    $cliframe_alterar_excluir->tamfontecabec = 9;
    $cliframe_alterar_excluir->tamfontecorpo = 9;
-   $cliframe_alterar_excluir->formulario = false;
+   $cliframe_alterar_excluir->formulario    = false;
    $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);
   ?>
   </td>
@@ -125,6 +126,14 @@ if($clescola->numrows>0){
 </form>
 </center>
 <script>
+
+var oGet = js_urlToObject();
+
+if (oGet.possuiTurmasEncerradas && oGet.possuiTurmasEncerradas == 'S') {
+  $('db_opcao').setAttribute('disabled','disabled');
+}
+
+
 function Mensagem(){
  if(confirm("Ao excluir este registro, este procedimento de avaliação não mais aparecerá para sua escola! Confirmar Exclusão?")){
   return true;

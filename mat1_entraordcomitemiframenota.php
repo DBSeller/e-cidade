@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_utils.php");
-include ("classes/db_matordem_classe.php");
-include ("classes/db_matordemitem_classe.php");
-include ("classes/db_matordemitement_classe.php");
-include ("classes/db_matestoqueitemoc_classe.php");
-include ("classes/db_matestoqueitem_classe.php");
-include ("classes/db_transmater_classe.php");
-include ("classes/db_matunid_classe.php");
-include ("classes/db_solicitem_classe.php");
-include ("classes/db_empparametro_classe.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_matordemitement_classe.php"));
+include(modification("classes/db_matestoqueitemoc_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_transmater_classe.php"));
+include(modification("classes/db_matunid_classe.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_empparametro_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clmatestoqueitem   = new cl_matestoqueitem;
 $clmatestoqueitemoc = new cl_matestoqueitemoc;
@@ -599,7 +599,7 @@ function js_recalcula(chave1,chave2){
 }
 //-----------------------------------------------------------
 function js_consemp(numemp){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empempenho001','func_empempenho001.php?e60_numemp='+numemp,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho001','func_empempenho001.php?e60_numemp='+numemp,'Pesquisa',true);
 }
 //-----------------------------------------------------------
 function js_verifica(max,quan,nome,valoruni,contador){
@@ -657,19 +657,19 @@ function js_lanca(codele,valor,valoruni,numemp,matordemitem,i,codpcmater){
   cont=cont-1;
   codunid=codunid.substring('0',cont);
   
-  js_OpenJanelaIframe('top.corpo','db_iframe_lanca','mat1_lancaitens.php?incluir=incluir&codmatordemitem='+matordemitem+'&quantidade='+quant+'&codmatmater='+codmatmater+'&codpcmater='+codpcmater+'&valor_unitario='+valorunitario+'&codunid='+codunid+'&quant_multi='+quant_multi,'Pesquisa',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lanca','mat1_lancaitens.php?incluir=incluir&codmatordemitem='+matordemitem+'&quantidade='+quant+'&codmatmater='+codmatmater+'&codpcmater='+codpcmater+'&valor_unitario='+valorunitario+'&codunid='+codunid+'&quant_multi='+quant_multi,'Pesquisa',false);
   
   // Versao antiga
-  //  js_OpenJanelaIframe('top.corpo','db_iframe_lanca','../mat1_lancaitens.php?codmatordemitem='+matordemitem+'&quantidade='+quant+'&codmatmater='+codmatmater+'&codpcmater='+codpcmater+'&valor_unitario='+valoruni,'Pesquisa',true);
+  //  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lanca','../mat1_lancaitens.php?codmatordemitem='+matordemitem+'&quantidade='+quant+'&codmatmater='+codmatmater+'&codpcmater='+codpcmater+'&valor_unitario='+valoruni,'Pesquisa',true);
   //
 }
 //-----------------------------------------------------------
 function js_novomatmater(cod,numemp,sequen){
-  js_OpenJanelaIframe('top.corpo','iframe_material','mat1_matmater011.php?m63_codpcmater='+cod+'&numemp='+numemp+'&sequen='+sequen,'Incluir Item de Entrada Novo',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','iframe_material','mat1_matmater011.php?m63_codpcmater='+cod+'&numemp='+numemp+'&sequen='+sequen,'Incluir Item de Entrada Novo',true);
 }
 //-----------------------------------------------------------
 function js_excluilanc(codent){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lanca','mat1_lancaitens.php?codent='+codent+'&excluir=excluir','Pesquisa',false,'0','0','0','0');
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lanca','mat1_lancaitens.php?codent='+codent+'&excluir=excluir','Pesquisa',false,'0','0','0','0');
 }
 //-----------------------------------------------------------
 function js_unid(value,pos){
@@ -687,7 +687,7 @@ function js_unid(value,pos){
 }
 //-----------------------------------------------------------
 function js_escolhemater(codpcmater){
-  js_OpenJanelaIframe('top.corpo','db_iframe_matmater','func_matmaterentoc.php?codpcmater='+codpcmater+'&funcao_js=js_mostramatmater|m60_codmater','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matmater','func_matmaterentoc.php?codpcmater='+codpcmater+'&funcao_js=js_mostramatmater|m60_codmater','Pesquisa',true);
 }
 function js_retor(){
   parent.db_iframe_matmater.hide();

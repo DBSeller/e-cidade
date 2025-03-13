@@ -26,10 +26,10 @@
  */
 
 //MODULO: atendimento
-include("classes/db_tarefasituacao_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_tarefacadsituacao_classe.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_tarefacadsituacao_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $cltarefasituacao         = new cl_tarefasituacao;
 $cltarefacadsituacao      = new cl_tarefacadsituacao;
 $cltarefa                 = new cl_tarefa;

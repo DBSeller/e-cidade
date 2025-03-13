@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Classe modelo para ligação entre sa turmas e o censo
  * @package   Educacao
  * @author    Andre Mello - andre.mello@dbseller.com.br
- * @version   
+ * @version
  */
 class TurmaCenso {
 
@@ -50,6 +50,12 @@ class TurmaCenso {
    * @var string
    */
   private $sNomeTurma;
+
+  /**
+   * Ano dos calendarios das turmas
+   * @var [type]
+   */
+  private $iAnoCalendarioTurmas;
 
   /**
    * Coleção de objetos TurmaCensoTurma contendo as turmas e qual é a principal
@@ -134,7 +140,7 @@ class TurmaCenso {
 
       if ( $iLinhasTurmaCensoTurma > 0 ) {
 
-        for ( $iContador=0; $iContador < $iLinhasTurmaCensoTurma; $iContador++ ) { 
+        for ( $iContador=0; $iContador < $iLinhasTurmaCensoTurma; $iContador++ ) {
 
           $oDadosTurmaCensoTurma = db_utils::fieldsMemory( $rsTurmaCensoTurma, $iContador );
           $oTurmaCensoTurma      = new TurmaCensoTurma();
@@ -155,7 +161,7 @@ class TurmaCenso {
    * @param  TurmaCensoTurma $oTurmaCensoTurma
    */
   public function adicionarTurmaCensoTurma( TurmaCensoTurma $oTurmaCensoTurma ) {
-    
+
     if( !array_key_exists( $oTurmaCensoTurma->getTurma()->getCodigo(), $this->aTurmaCensoTurma ) ) {
       $this->aTurmaCensoTurma[ $oTurmaCensoTurma->getTurma()->getCodigo() ] = $oTurmaCensoTurma;
     }
@@ -190,7 +196,7 @@ class TurmaCenso {
       }
     }
   }
-  
+
   /**
    * Salva a TurmaCenso e cria o vínculo com a TurmaCensoTurma
    */
@@ -198,20 +204,19 @@ class TurmaCenso {
 
     $oDaoTurmaCenso                   = new cl_turmacenso();
     $oDaoTurmaCenso->ed342_nome       = $this->sNomeTurma;
-    $oDaoTurmaCenso->ed342_censoetapa = $this->iEtapaCenso;
+//    $oDaoTurmaCenso->ed342_censoetapa = $this->iEtapaCenso;
+    $oDaoTurmaCenso->ed342_sequencial = $this->iCodigo;
 
     if ( empty( $this->iCodigo ) ) {
-
       $oDaoTurmaCenso->incluir(null);
-      $this->iCodigo = $oDaoTurmaCenso->ed342_sequencial;
     } else {
-
-      $oDaoTurmaCenso->ed342_sequencial = $this->iCodigo;
       $oDaoTurmaCenso->alterar( $this->iCodigo );
     }
 
+    $this->iCodigo = $oDaoTurmaCenso->ed342_sequencial;
     $this->removerTurmas();
     $this->vincularTurmaCensoTurma();
+    $this->vincularEtapaCenso();
 
     if ( $oDaoTurmaCenso->erro_status == "0" ) {
       throw new DBException("Erro ao salvar dados da turma com o censo. \n{$oDaoTurmaCenso->erro_msg}");
@@ -227,7 +232,7 @@ class TurmaCenso {
 
       $oDaoTurmaCensoTurma = new cl_turmacensoturma();
       $oDaoTurmaCensoTurma->excluir( "", "ed343_turmacenso = {$this->iCodigo}");
-  
+
       if ($oDaoTurmaCensoTurma->erro_status == "0" ) {
           throw new DBException("Erro ao remover vínculo com as turmas. \n{$oDaoTurmaCensoTurma->erro_msg}");
       }
@@ -242,6 +247,7 @@ class TurmaCenso {
     if ( $this->iCodigo != null ) {
 
       $this->removerTurmas();
+      $this->removerVinculoEtapaCenso();
 
       $oDaoTurmaCenso = new cl_turmacenso();
       $oDaoTurmaCenso->excluir( $this->iCodigo );
@@ -250,5 +256,49 @@ class TurmaCenso {
         throw new DBException("Erro ao remover o censo da turma. \n{$oDaoTurmaCenso->erro_msg}");
       }
     }
+  }
+
+  /**
+   * Define o ano do calendario das turmas
+   * @param integer $iAno
+   */
+  public function setAnoCalendarioTurma( $iAno ) {
+
+    $this->iAnoCalendarioTurmas = $iAno;
+  }
+
+
+  private function removerVinculoEtapaCenso() {
+
+    $oDao   = new cl_censoetapaturmacenso();
+    $sWhere =  "ed134_turmacenso = {$this->iCodigo} ";
+
+    $oDao->excluir(null, $sWhere);
+    if ( $oDao->erro_status == "0" ) {
+      throw new DBException("Erro ao remover vinculo com etapa do censo. \n{$oDao->erro_msg}");
+    }
+
+  }
+
+  /**
+   * Vincula a etapa do censo com a turmacenso
+   * @return void
+   */
+  private function vincularEtapaCenso() {
+
+    $this->removerVinculoEtapaCenso();
+
+    $oDao = new cl_censoetapaturmacenso();
+
+    $oDao->ed134_codigo     = null;
+    $oDao->ed134_turmacenso = $this->iCodigo;
+    $oDao->ed134_censoetapa = $this->iEtapaCenso;
+    $oDao->ed134_ano        = $this->iAnoCalendarioTurmas;
+
+    $oDao->incluir(null);
+    if ( $oDao->erro_status == "0" ) {
+      throw new DBException("Erro ao incluir vinculo com etapa do censo. \n{$oDao->erro_msg}");
+    }
+
   }
 }

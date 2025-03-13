@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_pareceraval_classe.php");
-include("classes/db_diarioavaliacao_classe.php");
-include("classes/db_diario_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_periodoavaliacao_classe.php");
-include("classes/db_parecer_classe.php");
-include("classes/db_parecerturma_classe.php");
-include("classes/db_parecerlegenda_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_pareceraval_classe.php"));
+include(modification("classes/db_diarioavaliacao_classe.php"));
+include(modification("classes/db_diario_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_periodoavaliacao_classe.php"));
+include(modification("classes/db_parecer_classe.php"));
+include(modification("classes/db_parecerturma_classe.php"));
+include(modification("classes/db_parecerlegenda_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $resultedu          = eduparametros(db_getsession("DB_coddepto"));
 $clpareceraval      = new cl_pareceraval;
@@ -67,7 +67,7 @@ if (isset($alterar2)) {
   $sql_reg   .= "  FROM diarioavaliacao ";
   $sql_reg   .= "   inner join diario on ed95_i_codigo = ed72_i_diario ";
   $sql_reg   .= "  WHERE ed72_i_codigo = $ed93_i_diarioavaliacao ";
-  $result_reg = pg_query($sql_reg);
+  $result_reg = db_query($sql_reg);
   db_fieldsmemory($result_reg,0);
   
   $cldiarioavaliacao->ed72_i_valornota     = $nota;
@@ -88,7 +88,7 @@ if (isset($alterar2)) {
   $sql_r   .= "   OR diarioavaliacao.ed72_i_valornota is not null ";
   $sql_r   .= "   OR diarioavaliacao.ed72_c_valorconceito != '' ";
   $sql_r   .= "   OR diarioavaliacao.ed72_t_parecer != '') ";
-  $result_r = pg_query($sql_r);
+  $result_r = db_query($sql_r);
   $linhas   = pg_num_rows($result_r);
   db_fieldsmemory($result_r,0);
   
@@ -201,7 +201,7 @@ if (isset($alterar2)) {
       $sql_r   .= "     OR diarioavaliacao.ed72_i_valornota is not null ";
       $sql_r   .= "     OR diarioavaliacao.ed72_c_valorconceito != '' ";
       $sql_r   .= "     OR diarioavaliacao.ed72_t_parecer != '') ";
-      $result_r = pg_query($sql_r);
+      $result_r = db_query($sql_r);
       $linhas   = pg_num_rows($result_r);
       db_fieldsmemory($result_r,0);
       
@@ -287,7 +287,7 @@ if (isset($alterar2)) {
     <tr>
      <td colspan="2">
       <center>
-       <?include("forms/db_frmpareceraval002.php");?>
+       <?include(modification("forms/db_frmpareceraval002.php"));?>
       </center>
      </td>
     </tr>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -98,10 +98,10 @@
 <script>
 function js_pesquisadb89_db_bancos(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_bancos','func_db_bancos.php?funcao_js=parent.js_mostradb_bancos1|db90_codban|db90_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_bancos','func_db_bancos.php?funcao_js=parent.js_mostradb_bancos1|db90_codban|db90_descr','Pesquisa',true);
   }else{
      if(document.form1.db89_db_bancos.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_bancos','func_db_bancos.php?pesquisa_chave='+document.form1.db89_db_bancos.value+'&funcao_js=parent.js_mostradb_bancos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_bancos','func_db_bancos.php?pesquisa_chave='+document.form1.db89_db_bancos.value+'&funcao_js=parent.js_mostradb_bancos','Pesquisa',false);
      }else{
        document.form1.db90_descr.value = ''; 
      }
@@ -120,7 +120,7 @@ function js_mostradb_bancos1(chave1,chave2){
   db_iframe_db_bancos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bancoagencia','func_bancoagencia.php?funcao_js=parent.js_preenchepesquisa|db89_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bancoagencia','func_bancoagencia.php?funcao_js=parent.js_preenchepesquisa|db89_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bancoagencia.hide();
@@ -159,7 +159,7 @@ function buscarEndereco() {
       onComplete:function(oResponse) {
 
          js_removeObj('msgBox');
-         var oRetorno = eval('('+oResponse.responseText+')');
+         var oRetorno = JSON.parse(oResponse.responseText);
          if (oRetorno.endereco) {
 
            var sEndereco = oRetorno.endereco[0].srua.urlDecode();

@@ -1,4 +1,5 @@
-<?
+<?php
+
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,24 +26,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_jsplibwebseller.php");
-require_once("classes/db_undmedhorario_ext_classe.php");
-require_once("classes/db_agendamentos_ext_classe.php");
-require_once("classes/db_agendaconsultaanula_classe.php");
-require_once("classes/db_agendaconsultadesanula_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
+require_once(modification("classes/db_undmedhorario_ext_classe.php"));
+require_once(modification("classes/db_agendamentos_ext_classe.php"));
+require_once(modification("classes/db_agendaconsultaanula_classe.php"));
+require_once(modification("classes/db_agendaconsultadesanula_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+/*Require plugin SMSAgendamento - SMSAgendamentoConsulta - NÃO APAGAR*/
 
 db_postmemory($HTTP_POST_VARS);
 
 $sd02_i_codigo   = db_getsession("DB_coddepto");
-
 
 $oDaoagendamentos  = new cl_agendamentos_ext;
 $oDaoagendaconsultaanula  = new cl_agendaconsultaanula;
@@ -64,7 +65,7 @@ if(isset($confirmar)) {
 	$oDadosTotalAgendado = db_utils::fieldsMemory($rsTotalAgendado, 0);
 
 	if($oDadosTotalAgendado->fc_totalagendado == '') {
-		db_msgbox("Profissional nÃ£o possui agenda para a data $sd23_d_consulta");
+		db_msgbox("Profissional não possui agenda para a data $sd23_d_consulta");
 	} else {
 
     if($oDadosTotalAgendado->fc_totalagendado != '') {
@@ -122,6 +123,8 @@ if(isset($confirmar)) {
               break;
 
             }
+            
+            /*Inclusão código Plugin SMS Agendamento de Consulta - NÃO APAGAR*/
 
           }
 
@@ -163,14 +166,14 @@ $db_opcao = 1;
     <td height="100%" align="center" valign="top" bgcolor="#CCCCCC">
     <br><br>
     <center>
-        <?
-        require_once("forms/db_frmagendamentodesanula.php");
-        ?>
+      <?php
+        require_once(modification("forms/db_frmagendamentodesanula.php"));
+      ?>
     </center>
     </td>
   </tr>
 </table>
-<?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
+    <?php db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit")); ?>
 </body>
 </html>
 <script>

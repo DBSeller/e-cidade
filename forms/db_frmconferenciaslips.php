@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -129,7 +129,7 @@ $clrotulo->label('DBtxt25');
    js_removeObj("msgBox");
    js_bloqueiaTela(false);
    
-   var aRetorno = eval("("+oAjax.responseText+")");
+   var aRetorno = JSON.parse(oAjax.responseText);
    var sExpReg  = new RegExp('\\\\n','g');
     
   

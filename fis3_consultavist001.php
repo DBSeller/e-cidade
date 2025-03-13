@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_sanitario_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_sanitario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clsanitario = new cl_sanitario;
@@ -317,14 +317,14 @@ function js_consultasani(){
   if(vazio == 1){
     alert('Preencha um dos campos para o relatório!');
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_consultavist','fis3_consultavist002.php?y70_codvist='+document.form1.y76_codvist.value+'&cgm='+document.form1.z01_numcgm.value+'&matricula='+document.form1.j01_matric.value+'&inscricao='+document.form1.q02_inscr.value+'&sanitario='+document.form1.y80_codsani.value+'&dataini='+document.form1._ano.value+'-'+document.form1._mes.value+'-'+document.form1._dia.value+'&datafim='+document.form1.a_ano.value+'-'+document.form1.a_mes.value+'-'+document.form1.a_dia.value+'&rua='+document.form1.y10_codigo.value+'&bairro='+document.form1.y10_codi.value+'&tipovist='+document.form1.y70_tipovist.value+'&numbloco='+document.form1.y70_numbloco.value+'&ruae='+document.form1.y11_codigo.value+'&bairroe='+document.form1.y11_codi.value,'Consulta',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consultavist','fis3_consultavist002.php?y70_codvist='+document.form1.y76_codvist.value+'&cgm='+document.form1.z01_numcgm.value+'&matricula='+document.form1.j01_matric.value+'&inscricao='+document.form1.q02_inscr.value+'&sanitario='+document.form1.y80_codsani.value+'&dataini='+document.form1._ano.value+'-'+document.form1._mes.value+'-'+document.form1._dia.value+'&datafim='+document.form1.a_ano.value+'-'+document.form1.a_mes.value+'-'+document.form1.a_dia.value+'&rua='+document.form1.y10_codigo.value+'&bairro='+document.form1.y10_codi.value+'&tipovist='+document.form1.y70_tipovist.value+'&numbloco='+document.form1.y70_numbloco.value+'&ruae='+document.form1.y11_codigo.value+'&bairroe='+document.form1.y11_codi.value,'Consulta',true);
   }
 }
 function js_pesquisay80_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.y80_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.y80_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
   }
 }
 function js_mostracgm(erro,chave){

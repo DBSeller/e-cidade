@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -79,7 +79,7 @@ function js_rel(opcao){
     <td width='40%' align='right'><b>Entre:</b></td> 
     <td>
 <?
-  $result =  pg_query("select distinct j18_anousu from cfiptu order by j18_anousu desc");
+  $result =  db_query("select distinct j18_anousu from cfiptu order by j18_anousu desc");
   $numrows = pg_numrows($result);
   $arr = array();
   for($i=0; $i<$numrows; $i++){

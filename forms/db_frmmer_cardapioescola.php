@@ -183,7 +183,7 @@ function js_retornoPesquisaEscola(oAjax) {
   $('listaDptos').innerHTML         = "";
   $('dptosSelecionados').innerHTML  = "";
   
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   
   $('listaDptos').innerHTML  = js_carregaGridDeptos(aRetorno.aItensDptos);
 
@@ -235,7 +235,7 @@ function js_retornoAtualizaEscola(oAjax) {
   js_removeObj('msgBoxAtualizaEscola');
 
   var iCodCardapio = $F('me32_i_tipocardapio'); 
-  var aRetorno     = eval("("+oAjax.responseText+")");
+  var aRetorno     = JSON.parse(oAjax.responseText);
  /* if (aRetorno.erroexclusao !="" && aRetorno.erroexclusao ==0){
 	  sMsg = "Usuário: \nExclusão não efetuada, existe etapas vinculadas nesta escola e neste cardápio \nAdministrador: \n";
 	  alert(sMsg);
@@ -252,7 +252,7 @@ function js_retornoAtualizaEscola(oAjax) {
     alert(sMsg);
     js_pesquisaEscola(iCodCardapio);
     parent.document.formaba.a3.disabled    = false;
-    top.corpo.iframe_a3.location.href      = 'mer1_mer_tpcardapioturma001.php?me32_i_tipocardapio=<?=$me32_i_tipocardapio?>&me27_c_nome=<?=$me27_c_nome?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href      = 'mer1_mer_tpcardapioturma001.php?me32_i_tipocardapio=<?=$me32_i_tipocardapio?>&me27_c_nome=<?=$me27_c_nome?>';
     parent.mo_camada('a3');
   }  
 }

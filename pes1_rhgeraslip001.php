@@ -1,7 +1,8 @@
-<?
-/*
+<?php
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +26,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+/**
+ * Representa as configurações da tela da consulta de Slip.
+ * 
+ * @author $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.6 $
+ */
+
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 ?>
 <html>
@@ -45,6 +53,9 @@ db_app::load("datagrid.widget.js");
 db_app::load("strings.js");
 db_app::load("grid.style.css");
 db_app::load("estilos.css");
+db_app::load("dbcomboBox.widget.js");
+db_app::load("DBViewFormularioFolha/CompetenciaFolha.js");
+db_app::load("DBViewFormularioFolha/ValidarFolhaPagamento.js");
 ?>
 </head>
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
@@ -57,7 +68,7 @@ db_app::load("estilos.css");
  </td>  
 </table>  
  <?
-  include("forms/db_frmrhslipfolha.php");
+  include(modification("forms/db_frmrhslipfolha.php"));
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>

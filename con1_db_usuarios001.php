@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas     = new cl_criaabas;
 $db_opcao = 1;
 ?>
@@ -55,10 +55,10 @@ $db_opcao = 1;
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
      <?
-	 $clcriaabas->identifica = array("db_usuarios"=>"Usuários","db_depusu"=>"Departamentos","permmenu"=>"Liberar Perfis","permemp"=>"Permissões de Empenho"); 
+	 $clcriaabas->identifica = array("db_usuarios"=>"Usuários","db_depusu"=>"Departamentos","permmenu"=>"Liberar Perfis","permemp"=>"Permissões de Empenho", "lotacoes"=>"Lotações"); 
 	 $clcriaabas->src = array("db_usuarios"=>"con1_db_usuarios004.php");
 	 $clcriaabas->sizecampo  = array("db_depusu"=>"12","permemp"=>"25","permmenu"=>"25");	 
-	 $clcriaabas->disabled   =  array("db_depusu"=>"true","permemp"=>"true","permmenu"=>"true"); 
+	 $clcriaabas->disabled   =  array("db_depusu"=>"true","permemp"=>"true","permmenu"=>"true","lotacoes"=>"true"); 
 	 $clcriaabas->cria_abas(); 
        ?> 
        </td>

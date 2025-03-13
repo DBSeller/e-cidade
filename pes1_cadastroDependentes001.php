@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,209 +25,214 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_usuariosonline.php');
+require_once modification('libs/db_app.utils.php');
+require_once modification('libs/db_utils.php');
+require_once modification('dbforms/db_funcoes.php');
 
-require_once("dbforms/db_funcoes.php");
-
-//Objeto com os itens do array $_GET
-$oGet  = db_utils::postMemory($_GET);
-
-//Objeto com os itens do array $_POST
+$oGet = db_utils::postMemory($_GET);
 $oPost = db_utils::postMemory($_POST);
 
-$oRotulos  = rotulocampo::label('rh01_regist');
-$oRotulos  = rotulocampo::label('z01_nome');
+$oRotulos = new rotulocampo;
+$oRotulos->label('rh01_regist');
+$oRotulos->label('z01_nome');
 ?>
-<html>
-  <head>
-    <title>DBSeller Inform&aacute;tica Ltda</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <meta http-equiv="Expires" CONTENT="0">
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>DBSeller Informática Ltda - Página Inicial</title>
     <?php
-      /**
-       * Base para funcionamento
-       */
-      db_app::load("estilos.css");
-      db_app::load("scripts.js");
-      db_app::load("strings.js");
-      db_app::load("prototype.js"); 
-      /**
-       * widgets
-       */
-      db_app::load("windowAux.widget.js");
-      db_app::load("messageboard.widget.js");
-      db_app::load("datagrid.widget.js");
-      
+    db_app::load("estilos.css");
+    db_app::load("scripts.js");
+    db_app::load("strings.js");
+    db_app::load("prototype.js");
+    db_app::load("windowAux.widget.js");
+    db_app::load("messageboard.widget.js");
+    db_app::load("datagrid.widget.js");
     ?>
-  </head>
-  <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#cccccc">
-    <BR>
-    <BR>
-    <BR>
-    <BR>
-    <center>
-      <div style="width:600; margin-left:50%; position: absolute; left: -300px; " id="base">
-          <table align="center" border="0" cellspacing="5" cellpadding="5">
-            <tr>
-              <td nowrap title="<?=@$Trh01_regist?>">
-                <?
-                  db_ancora($Lrh01_regist,"js_pesquisaMatricula(true);",1);
-                ?>
-              </td>
-              <td nowrap>
-                <?
-                  db_input('rh01_regist',6 ,$Irh01_regist,true,'text',1,"onchange='js_pesquisaMatricula(false);'");
-                  db_input('z01_nome'   ,40,$Iz01_nome   ,true,'text',3,'');
-                ?>
-              </td>
-            </tr>
-            <tr>
-              <td align="center" colspan="2">
-                <input type="submit" value="Pesquisar" name="pesquisar" onclick="js_processaConsulta();">
-              </td>
-            </tr>
-          </table>
-      </div>
-    </center>
-    <?php
-    db_menu(db_getsession("DB_id_usuario"),
-            db_getsession("DB_modulo"),
-            db_getsession("DB_anousu"),
-            db_getsession("DB_instit")
-           );
-    
-    ?>
-  </body>
-</html>
+    <style>
+        #table-matricula {
+            margin: auto;
+            padding-top: 2.5%
+        }
+
+        #table-matricula td {
+            padding-top: 2.5%
+        }
+    </style>
+</head>
+<body>
+<table id="table-matricula">
+    <tbody>
+    <tr>
+        <td title="<?= @$Trh01_regist ?>">
+            <?php
+            db_ancora($Lrh01_regist, "js_pesquisaMatricula(true);", 1);
+            ?>
+        </td>
+        <td>
+            <?php
+            db_input('rh01_regist', 6, $Irh01_regist, true, 'text', 1, "onchange='js_pesquisaMatricula(false);'");
+            db_input('z01_nome', 40, $Iz01_nome, true, 'text', 3, '');
+            ?>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="text-center">
+            <input type="submit" value="Pesquisar" name="pesquisar" onclick="js_processaConsulta();">
+        </td>
+    </tr>
+    </tbody>
+</table>
+<?php
+db_menu();
+?>
 <script>
-var iTamanhoTela = screen.availWidth;
-var iCentro = ((iTamanhoTela / 2) - 400);
+    const inputMatricula = document.getElementById('rh01_regist');
+    const inputNome = document.getElementById('z01_nome');
 
-/**
- * Escopo geral do script
- */
- var me = this;
-/**
- * Mostra tela de manutenção de documentos
- */
-function js_abreJanelaManutencao(){
-  
-  var sUrl = "pes1_cadastroDependentes002.php";
-  
-  me.windowDocumentos                    = new windowAux('windowDocumentos','Manutencão de Dependentes', 850, 600);                      
-  me.windowDocumentos.setContent         ("<div id='messageDocumentos'></div><div id='conteudoDocumentos'></div>");
-  me.windowDocumentos.setShutDownFunction(function() {  
-    if($('windowDocumentos')){
-      js_fechaJanelaManutencao();
+    /**
+     * Escopo geral do script
+     */
+    var me = this;
+
+    /**
+     * Mostra tela de manutenção de documentos
+     */
+    function js_abreJanelaManutencao() {
+        me.windowDocumentos = new windowAux(
+            'windowDocumentos',
+            'Manutencão de Dependentes',
+            screen.availWidth * 0.75,
+            screen.availHeight * 0.75
+        );
+        me.windowDocumentos.setContent('<div id=\'messageDocumentos\'></div><div id=\'conteudoDocumentos\'></div>');
+        me.windowDocumentos.setShutDownFunction(function() {
+            if ($('windowDocumentos')) {
+                js_fechaJanelaManutencao();
+            }
+        });
+
+        me.windowDocumentos.show(0, 0, false, 0, 0);
+
+        var sMessage = '<B>Matrícula:</B> ' + inputMatricula.value + '<br>';
+        sMessage += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Servidor:</B>  ' + inputNome.value;
+
+        me.oMessageBoard = new messageBoard(
+            'msgboard1',
+            'Manutenção de Dependentes',
+            sMessage,
+            $('messageDocumentos')
+        );
+        me.oMessageBoard.show();
+        $('msgboard1').style.width = '';
+
+        const urlSearchParams = new URLSearchParams;
+        urlSearchParams.set('rh31_regist', inputMatricula.value);
+        urlSearchParams.set('z01_nome', inputNome.value);
+        urlSearchParams.set('vmenu', 'true');
+
+        const oIframeConteudo = document.createElement('iframe');
+        oIframeConteudo.src = `pes1_rhdepend001.php?${urlSearchParams.toString()}`;
+        oIframeConteudo.id = 'db_iframe_manutencaoDocumentos';
+        oIframeConteudo.name = 'db_iframe_manutencaoDocumentos';
+        oIframeConteudo.width = `100%`;
+        oIframeConteudo.height = `${me.windowDocumentos.getHeight() - $('msgboard1').clientHeight - 35}px`;
+        oIframeConteudo.style.border = '0';
+        $('conteudoDocumentos').appendChild(oIframeConteudo);
+
+        return false;
     }
-  });
-      
-  me.windowDocumentos.show(25, iCentro); 
-  
-  var sTitle        = "Manutenção de Dependentes";
-  var sMessage      = "<B>Matrícula:</B> "+$F('rh01_regist')+"<br>";
-      sMessage     += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Servidor:</B>  "+$F('z01_nome');
-      
-  me.oMessageBoard = new messageBoard('msgboard1',sTitle,sMessage,$('messageDocumentos'));
-  me.oMessageBoard . show();
-  $('msgboard1').style.width = '';
-  var oIframeConteudo = document.createElement("iframe");
-      oIframeConteudo.src         = sUrl + "?iMatricula=" + $F('rh01_regist');
-      oIframeConteudo.frameBorder = 0;
-      oIframeConteudo.id          = 'db_iframe_manutencaoDocumentos';
-      oIframeConteudo.name        = 'db_iframe_manutencaoDocumentos';
-      oIframeConteudo.scrolling   = 'auto';
-      oIframeConteudo.width       = me.windowDocumentos.getWidth() - 50  + 'px';
-      
-  var Altura = me.windowDocumentos.getHeight() - $('msgboard1').clientHeight - 35;
-  
-  oIframeConteudo.height      = Altura+'px';
-  
-  $('conteudoDocumentos').appendChild(oIframeConteudo);
-  return false;
-}
-/**
- * Processa formulário com os dados digitados
- */
-function js_processaConsulta() {
-  
-  if ( $('rh01_regist').value == '' ) {
-    alert('Informe a matrícula do funcionário.');
-    return false;
-  } else {
-    
-    if($('windowDocumentos')){
-      js_fechaJanelaManutencao();
+
+    /**
+     * Processa formulário com os dados digitados
+     */
+    function js_processaConsulta() {
+        if (inputMatricula.value === '') {
+            alert('Informe a matrícula do funcionário.');
+            return false;
+        }
+        else {
+            if ($('windowDocumentos')) {
+                js_fechaJanelaManutencao();
+            }
+
+            return js_abreJanelaManutencao();
+        }
     }
-    return js_abreJanelaManutencao();
-  }
-}
 
-/**
- * Pesquisa dados da matricula conforme variável de visualização
- */
-function js_pesquisaMatricula(lShowWindow){
-  
-  if($('windowDocumentos')){
-    js_fechaJanelaManutencao();
-  }
-  if ( lShowWindow ) {
-    
-    js_OpenJanelaIframe('',
-                        'db_iframe_rhpessoal',
-                        'func_rhpessoal.php?funcao_js=parent.js_retornaDadosAncora|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>',
-                        'Pesquisa',
-                        true);
-  } else {
-    
-    if ($('rh01_regist').value != '') { 
-      js_OpenJanelaIframe('', 
-                          'db_iframe_rhpessoal', 
-                          'func_rhpessoal.php?pesquisa_chave='+$('rh01_regist').value+'&funcao_js=parent.js_retornaDadosDigitacao&instit=<?=(db_getsession("DB_instit"))?>',
-                          'Pesquisa',
-                          false);
-    } else {
-      $('z01_nome').value = '';
+    /**
+     * Pesquisa dados da matricula conforme variável de visualização
+     */
+    function js_pesquisaMatricula(lShowWindow) {
+        if ($('windowDocumentos')) {
+            js_fechaJanelaManutencao();
+        }
+
+        if (lShowWindow) {
+            js_OpenJanelaIframe(
+                '',
+                'db_iframe_rhpessoal',
+                'func_rhpessoal.php?funcao_js=parent.js_retornaDadosAncora|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>',
+                'Pesquisa',
+                true
+            );
+        }
+        else {
+            if (inputMatricula.value === '') {
+                inputNome.value = '';
+            }
+            else {
+                js_OpenJanelaIframe(
+                    '',
+                    'db_iframe_rhpessoal',
+                    'func_rhpessoal.php?pesquisa_chave=' + inputMatricula.value +
+                    '&funcao_js=parent.js_retornaDadosDigitacao&instit=<?=(db_getsession("DB_instit"))?>',
+                    'Pesquisa',
+                    false
+                );
+            }
+        }
     }
-  }
-}
 
-/**
- * Retorna os dados buscados apartir do evento change do campo matricula
- */
-function js_retornaDadosDigitacao(sChave,lErro) {
+    /**
+     * Retorna os dados buscados apartir do evento change do campo matricula
+     */
+    function js_retornaDadosDigitacao(sChave, lErro) {
+        if ($('windowDocumentos')) {
+            js_fechaJanelaManutencao();
+        }
 
-   if($('windowDocumentos')){
-     js_fechaJanelaManutencao();
-   }
-  $('z01_nome').value    = sChave; 
-  
-  if ( lErro == true ) { 
-    
-    $('rh01_regist').focus(); 
-    $('rh01_regist').value = ''; 
-  }
-}
-/**
- * Retorna os dados buscados da OpenJanelaIframe
- */
-function js_retornaDadosAncora(sBusca1, sBusca2) {
-  
-  if($('windowDocumentos')){
-    js_fechaJanelaManutencao();
-  }
-  
-  $('rh01_regist').value = sBusca1;
-  $('z01_nome')   .value = sBusca2;
-  db_iframe_rhpessoal.hide();
-}
+        inputNome.value = sChave;
 
-function js_fechaJanelaManutencao(){
-  me.windowDocumentos.destroy();
-}
+        if (lErro == true) {
+            $('rh01_regist').focus();
+            inputMatricula.value = '';
+        }
+    }
+
+    /**
+     * Retorna os dados buscados da OpenJanelaIframe
+     */
+    function js_retornaDadosAncora(sBusca1, sBusca2) {
+        if ($('windowDocumentos')) {
+            js_fechaJanelaManutencao();
+        }
+
+        inputMatricula.value = sBusca1;
+        inputNome.value = sBusca2;
+
+        db_iframe_rhpessoal.hide();
+    }
+
+    function js_fechaJanelaManutencao() {
+        me.windowDocumentos.destroy();
+    }
 </script>
+</body>
+</html>

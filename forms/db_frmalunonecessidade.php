@@ -1,33 +1,33 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
 $clalunonecessidade->rotulo->label();
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 if(isset($opcao) && $opcao=="alterar"){
  $db_opcao = 2;
@@ -133,10 +133,10 @@ if($ed214_i_aluno!=""){
     </tr>
     <tr>
      <td colspan="2">
-      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" 
-             type="submit" 
-             id="db_opcao" 
-             value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" 
+      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>"
+             type="submit"
+             id="db_opcao"
+             value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"
              <?=($db_botao==false?"disabled":"")?> >
       <input name="cancelar" type="submit" value="Cancelar" <?=(@$db_botao1==false?"disabled":"")?> >
       <input id="btnRecursosParaAvaliacao" name="btnRecursosParaAvaliacao" type="button" value="Recursos Para Avaliação" disabled >
@@ -247,7 +247,7 @@ function js_temNecessidade() {
 function js_retornoTemNecessidade(oResponse) {
 
   $('btnRecursosParaAvaliacao').disabled = true;
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.lTemNecessidade) {
 
@@ -260,15 +260,15 @@ function js_retornoTemNecessidade(oResponse) {
  */
 var oWindowRecursosEspeciais = null;
 function js_carregaWindowRecursos() {
-  
+
   var iTamanhoJanela = document.body.getWidth()/2.2;
   var iAlturaJanela  = document.body.getHeight()/1.1;
-   oWindowRecursosEspeciais = new windowAux('wndRecursosEspeciais', 
-                                            'Recursos Especiais do Aluno', 
-                                            iTamanhoJanela, 
+   oWindowRecursosEspeciais = new windowAux('wndRecursosEspeciais',
+                                            'Recursos Especiais do Aluno',
+                                            iTamanhoJanela,
                                             iAlturaJanela);
 
-  var sConteudo  = "<div id='ctnRecursos' style='width: 99%'>";
+  var sConteudo  = "<div id='ctnRecursos' style='width: 600px'>";
       sConteudo += "  <form id='frmSalvarRecursos' name='frmSalvarRecursos' method='post'";
       sConteudo += "  </form>";
       sConteudo += "</div>";
@@ -280,14 +280,14 @@ function js_carregaWindowRecursos() {
   oWindowRecursosEspeciais.setShutDownFunction(function() {
     oWindowRecursosEspeciais.destroy();
   });
-  
+
   var sMensagem     = 'Selecione um recurso abaixo, caso necessário.';
   var oMessageBoard = new DBMessageBoard('messageRecursosEspeciais',
                                          'Recursos Especiais do Aluno',
                                          sMensagem,
                                          oWindowRecursosEspeciais.getContentContainer()
                                         );
-  
+
   oMessageBoard.show();
   oWindowRecursosEspeciais.show();
 
@@ -298,7 +298,7 @@ function js_carregaWindowRecursos() {
   oGridRecursos.setCellAlign(new Array("center", "left"));
   oGridRecursos.setCellWidth(new Array("10%", "90%"));
   oGridRecursos.setHeader(new Array("Código", "Recurso Necessário"));
-  
+
   oGridRecursos.show($('ctnRecursos'));
   js_pesquisaRecursos();
 }
@@ -325,10 +325,13 @@ function js_pesquisaRecursos() {
 /**
  * Retorno da pesquisa de recursos para avaliacao do inep
  */
+
+var aNecessidadesEspeciaisAluno = [];
 function js_retornoPesquisaRecursos(oResponse) {
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
+  aNecessidadesEspeciaisAluno = oRetorno.aNecessidades;
   oGridRecursos.clearAll(true);
   oRetorno.aRecursosAvaliacaoInep.each(function(oLinha, iSeq) {
 
@@ -338,7 +341,7 @@ function js_retornoPesquisaRecursos(oResponse) {
     if (oLinha.lTemRecurso) {
       lCheck = true;
     }
-    
+
     oGridRecursos.addRow(aLinha, false, false, lCheck);
   });
   oGridRecursos.renderRows();
@@ -352,10 +355,32 @@ function js_salvarRecursos() {
   var aSelecionados = oGridRecursos.getSelection("object");
   var aRecursos     = new Array();
   var lSalvar       = true;
-  
+
   aSelecionados.each(function(oRecurso, iSeq) {
     aRecursos.push(oRecurso.aCells[0].getValue());
   });
+
+  /**
+   * Sempre que aluno possuir as deficiencias, 101 - Cegueira ou 105 - Sudorcegueira, e marcar o recuso 102,
+   * ele deve marcar mais de um recurso. (Para censo 2015)
+   */
+  var lValidou = true;
+  if ( aRecursos.in_array(102) && aRecursos.length == 1) {
+
+    aNecessidadesEspeciaisAluno.each(function( oNecessidadeAluno ) {
+
+      if ( [101,105].in_array(oNecessidadeAluno.iCodigo) ) {
+
+        alert('Ao ser informado AUXILIO TRANSCRICAO, deve ser selecionado mais de um Recurso Especial.');
+        lValidou = false;
+        return $break;
+      }
+    });
+  }
+
+  if ( !lValidou ) {
+    return;
+  }
 
   if (aRecursos.length == 0) {
     if (!confirm('Aluno não necessita de recursos especiais?')) {
@@ -380,12 +405,12 @@ function js_salvarRecursos() {
   }
 
   if (lSalvar) {
-    
+
     var oParametro                   = new Object();
     oParametro.exec                  = 'salvarRecursosAvaliacao';
     oParametro.iAluno                = $F('ed214_i_aluno');
     oParametro.aRecursosSelecionados = aRecursos;
-  
+
     var oAjax = new Ajax.Request(
                                  sRpc,
                                  {
@@ -402,10 +427,10 @@ function js_salvarRecursos() {
  */
 function js_retornoSalvarRecursos(oResponse) {
 
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.status == 1) {
-    
+
     alert("Dados salvos com sucesso!");
     oWindowRecursosEspeciais.destroy();
     js_carregaWindowRecursos();
@@ -420,23 +445,23 @@ function js_retornoSalvarRecursos(oResponse) {
 function js_pesquisaed214_i_necessidade(mostra) {
 
   if (mostra == true) {
- 
+
     js_OpenJanelaIframe('', 'db_iframe_necessidade','func_necessidade.php?funcao_js='+
                         'parent.js_mostranecessidade1|ed48_i_codigo|ed48_c_descr',
                         'Pesquisa', true
                        );
- 
+
   } else {
- 
+
     if (document.form1.ed214_i_necessidade.value != '') {
-      
+
       js_OpenJanelaIframe('', 'db_iframe_necessidade',
                           'func_necessidade.php?pesquisa_chave='+
                           document.form1.ed214_i_necessidade.value+
                           '&funcao_js=parent.js_mostranecessidade',
                           'Pesquisa', false
                          );
-    
+
     } else {
       document.form1.ed48_c_descr.value  = '';
     }

@@ -28,9 +28,10 @@
 //MODULO: pessoal
 $clipe->rotulo->label();
 ?>
-<form name="form1" method="post" action="">
-<center>
-<table border="0">
+<form name="form1" method="post" action="" class="container">
+<fieldset>
+<legend>Processamento dos dados IPERGS</legend>
+<table border="0" class="form-container">
   <tr>
     <td nowrap title="Ano / Mês de competência" align="right" width="49%">
       <b>Ano / Mês:</b>
@@ -40,10 +41,10 @@ $clipe->rotulo->label();
       $r36_anousu = db_anofolha('DB_anousu');
       db_input('r36_anousu',4,$Ir36_anousu,true,'text',1)
       ?>
-      &nbsp;&nbsp;<b>/</b>&nbsp;&nbsp;
+      <b>/</b>
       <?
       $r36_mesusu = db_mesfolha('DB_mesusu');
-      db_input('r36_mesusu',4,$Ir36_mesusu,true,'text',1)
+      db_input('r36_mesusu',2,$Ir36_mesusu,true,'text',1)
       ?>
     </td>
   </tr>
@@ -71,7 +72,7 @@ $clipe->rotulo->label();
   }
   ?>
 </table>
-</center>
+</fieldset>
 <input name="processar" type="submit" id="db_opcao" value="Processar" onclick="return js_confirma();">
 </form>
 <script>

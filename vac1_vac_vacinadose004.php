@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_vac_vacinadose_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_vac_vacinadose_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 db_postmemory($HTTP_POST_VARS);
 $clvac_vacinadose = new cl_vac_vacinadose;
@@ -63,12 +63,12 @@ if (isset($opcao)) {
     parent.document.formaba.a2.disabled = false;
     parent.document.formaba.a3.disabled = false;
     parent.document.formaba.a4.disabled = false;
-    top.corpo.iframe_a3.iframe_a2.location.href   = 'vac1_vac_vacinadose005.php?'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.iframe_a2.location.href   = 'vac1_vac_vacinadose005.php?'+
                                           'chavepesquisa=<?=$vc07_i_codigo?>';
-    top.corpo.iframe_a3.iframe_a3.location.href   = 'vac1_vac_vacinadoserestricao004.php?'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.iframe_a3.location.href   = 'vac1_vac_vacinadoserestricao004.php?'+
                                           'vc08_i_vacinadose=<?=$vc07_i_codigo?>&vc07_c_nome=<?=$vc07_c_nome?>'+
                                           '&vc06_i_codigo=<?=$vc07_i_vacina?>&vc06_c_descr=<?=$vc06_c_descr?>';
-    top.corpo.iframe_a3.iframe_a4.location.href   = 'vac1_vac_dependencia004.php?'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.iframe_a4.location.href   = 'vac1_vac_dependencia004.php?'+
                                           'vc09_i_dependente=<?=$vc07_i_codigo?>&dependente=<?=$vc07_c_nome?>';
 
     </script>
@@ -148,7 +148,7 @@ if (isset($incluir)) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmvac_vacinadose.php");
+	include(modification("forms/db_frmvac_vacinadose.php"));
 	?>
     </center>
 	</td>

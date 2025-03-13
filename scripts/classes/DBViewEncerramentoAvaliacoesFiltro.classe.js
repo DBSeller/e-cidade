@@ -157,7 +157,7 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
   js_retornaPesquisaDiario = function(oResponse) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval('('+oResponse.responseText+')');
+    var oRetorno = JSON.parse(oResponse.responseText);
 
     if(oRetorno.status == 2) {
 
@@ -319,7 +319,7 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
                                     parameters: 'json='+Object.toJSON(oParametro),
                                     onComplete: function (oResponse) {
 
-                                                  var oRetorno = eval('('+oResponse.responseText+')');
+                                                  var oRetorno = JSON.parse(oResponse.responseText);
                                                   if (oRetorno.status == 1) {
                                                     $('processar').disabled = oRetorno.lTurmaEncerrada;
                                                   }
@@ -355,7 +355,7 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
   js_montaGridAlunos = function(oResponse) {
 
     js_removeObj("msgBox");
-    var oRetorno              = eval('('+oResponse.responseText+')');
+    var oRetorno              = JSON.parse(oResponse.responseText);
     var iTamanhoRetorno       = oRetorno.aDadosAlunos.length;
     var aAlunosInconsistentes = new Array();
 
@@ -398,9 +398,12 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
         aLinha[5]  = oAluno.sResultadoFinal.urlDecode();
         aLinha[6]  = oAluno.iProgressao;
       } else {
-
-        aLinha[3]  = oAluno.sResultadoFinal.urlDecode();
-        aLinha[4]  = sStatus;
+          var sResultadoFinal = '';
+          if (oAluno.sResultadoFinal != null) {
+              sResultadoFinal = oAluno.sResultadoFinal.urlDecode();
+          }
+          aLinha[3]  = sResultadoFinal;
+          aLinha[4]  = sStatus;
       }
 
       var lDesabilitaAluno = false;
@@ -427,14 +430,22 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
           lMarca = true;
         }
 
-        lDesabilitaAluno = lMarca ? false : true;
+        if( oAluno.lTemMatriculaPosterior === true ) {
+
+          lDesabilitaAluno = true;
+          lMarca           = false;
+        }
+
+        if( me.iEncerra == 2 ) {
+          lDesabilitaAluno = lMarca ? false : true;
+        }
+
         me.oDataGridAlunos.addRow(aLinha, false, lDesabilitaAluno, lMarca);
       }
 
-      if (lDesabilitaAluno == true) {
+      if (lDesabilitaAluno === true) {
         me.oDataGridAlunos.aRows[iSeq].setClassName('disabled');
       }
-
     });
     me.oDataGridAlunos.renderRows();
 
@@ -444,17 +455,19 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
      */
     oRetorno.aDadosAlunos.each(function(oAluno, iSeq) {
 
+      /*PLUGIN DIARIO PROGRESSAO - Definido lEvadido na linha do aluno - NÃO APAGAR*/
+
+      if (!me.lProgressaoParcial) {
+
+        var iCelulaAluno = me.lEncerramentoGeral == true ? 2 : 3;
+        $(me.oDataGridAlunos.aRows[iSeq].aCells[iCelulaAluno].sId).observe('dblclick', function() {
+          me.setCallBackLancamentoAvaliacoes(oAluno.iMatricula);
+        });
+      }
+
       if( js_search_in_array( aAlunosInconsistentes, oAluno.iCodigoAluno ) ) {
 
         var sMensagem = "";
-
-        if (!me.lProgressaoParcial) {
-
-          var iCelulaAluno = me.lEncerramentoGeral == true ? 2 : 3;
-          $(me.oDataGridAlunos.aRows[iSeq].aCells[iCelulaAluno].sId).observe('click', function() {
-            me.setCallBackLancamentoAvaliacoes(oAluno.iMatricula);
-          });
-        }
 
         var iCelulaHint = 4;
         if ( !me.lEncerramentoGeral ) {
@@ -463,9 +476,12 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
 
         if( !oAluno.lSemPendencia ) {
 
-          oAluno.aPendencias.each(function (sPendencia) {
-            sMensagem += "* "+sPendencia.urlDecode()+"<br>";
-          });
+          if ( oAluno.aPendencias ) {
+
+            oAluno.aPendencias.each(function (sPendencia) {
+              sMensagem += "* "+sPendencia.urlDecode()+"<br>";
+            });
+          }
 
           oParametros = {iWidth:'500', oPosition : {sVertical : 'B', sHorizontal : 'R'}};
           me.oDataGridAlunos.setHint(iSeq, iCelulaHint, sMensagem,  oParametros);
@@ -620,6 +636,9 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
 
       var oAluno         = new Object();
       oAluno.iProgressao = oAlunoLinha.aCells[7].getValue();
+
+      /*PLUGIN DIARIO PROGRESSAO - DEFINIDO lEvadido - NÃO APAGAR*/
+
       aAlunos.push(oAluno);
     });
 
@@ -691,7 +710,11 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
       return false;
     }
 
-    if (confirm('Confirmar o encerramento das Progressões selecionadas?')) {
+    var sMensagem       = 'Confirmar o encerramento das Progressões selecionadas?';
+
+    /*PLUGIN DIARIO PROGRESSAO - Mensagem evadido - NÃO APAGAR*/
+
+    if (confirm(sMensagem)) {
 
       var oParametro     = new Object();
       oParametro.exec    = 'encerrarProgressaoParcial';
@@ -796,7 +819,7 @@ DBViewEncerramentoAvaliacoesFiltro = function (sInstancia, iEncerra) {
   this.retornoProcessamento = function(oResponse) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval('('+oResponse.responseText+')');
+    var oRetorno = JSON.parse(oResponse.responseText);
 
     if (oRetorno.status == 1) {
 

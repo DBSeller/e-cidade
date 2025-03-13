@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_favorecido_classe.php");
-require_once("classes/db_favorecidotaxa_classe.php");
-require_once("classes/db_favorecidotaxa_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_favorecido_classe.php"));
+require_once(modification("classes/db_favorecidotaxa_classe.php"));
+require_once(modification("classes/db_favorecidotaxa_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet                = db_utils::postmemory($_GET);
 $oPost               = db_utils::postmemory($_POST);
@@ -135,7 +135,7 @@ function js_excluir(ar36_sequencial){
                                     function(oAjax) {
         
                                       js_removeObj('msgBox');
-                                      var oRetorno = eval("("+oAjax.responseText+")");
+                                      var oRetorno = JSON.parse(oAjax.responseText);
                                       if(oRetorno.status != 2){
                                     	  getTaxas();
                                       }
@@ -162,7 +162,7 @@ function js_enviaDados(){
                                   function(oAjax) {
       
                                     js_removeObj('msgBox');
-                                    var oRetorno = eval("("+oAjax.responseText+")");
+                                    var oRetorno = JSON.parse(oAjax.responseText);
                                     alert(oRetorno.message.urlDecode());
                                     getTaxas();
                                   }
@@ -178,7 +178,7 @@ function js_pesquisav87_taxa(mostra) {
   }else{
 	  
      if(document.form1.v87_taxa.value != '') { 
-        js_OpenJanelaIframe('top.corpo','db_iframe_taxa','func_taxa.php?pesquisa_chave='+document.form1.v87_taxa.value+'&funcao_js=parent.js_mostrataxa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_taxa','func_taxa.php?pesquisa_chave='+document.form1.v87_taxa.value+'&funcao_js=parent.js_mostrataxa','Pesquisa',false);
      }else{
        document.form1.ar36_descricao.value = ''; 
      }
@@ -202,7 +202,7 @@ function js_mostrataxa1(chave1,chave2) {
 }
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_favorecidotaxa','func_favorecidotaxa.php?funcao_js=parent.js_preenchepesquisa|v87_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_favorecidotaxa','func_favorecidotaxa.php?funcao_js=parent.js_preenchepesquisa|v87_sequencial','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave) {

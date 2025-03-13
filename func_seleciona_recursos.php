@@ -26,18 +26,18 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
-include("classes/db_orcparamseq_classe.php");
-include("classes/db_orcparamelemento_classe.php");
-include("classes/db_orcparamrecurso_classe.php");
-include("classes/db_orcparamsubfunc_classe.php");
-include("classes/db_orcparamfunc_classe.php");
+include(modification("classes/db_orcparamseq_classe.php"));
+include(modification("classes/db_orcparamelemento_classe.php"));
+include(modification("classes/db_orcparamrecurso_classe.php"));
+include(modification("classes/db_orcparamsubfunc_classe.php"));
+include(modification("classes/db_orcparamfunc_classe.php"));
 
 
 db_postmemory($HTTP_POST_VARS);
@@ -134,7 +134,7 @@ if (isset($processar) && $processar=='processar'){
 	      where o69_codparamrel = $o69_codparamrel
 	             and o69_codseq = $o69_codseq 
               ";
-	$r = pg_exec($s);
+	$r = db_query($s);
 	if (pg_numrows($r)>0){
             db_fieldsmemory($r,0);
 	    echo  "<b>Parametro: $o69_descr </b>";	
@@ -268,3 +268,9 @@ function js_processar(){
 
 </script>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

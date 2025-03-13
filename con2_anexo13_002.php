@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_empresto_classe.php");
-include("classes/db_orcparamseq_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
+include(modification("classes/db_orcparamseq_classe.php"));
 
-// include ("dbforms/db_relrestos.php");
+// include(modification("dbforms/db_relrestos.php"));
 
 $orcparamrel   = new cl_orcparamrel;
 $classinatura  = new cl_assinatura;
@@ -70,7 +70,7 @@ $somador_receita = 0;
 $somador_despesa = 0;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -135,7 +135,7 @@ $db_filtro = ' e60_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
     $sele_work1 = '';
     // caso queira algum recurso colocar aqui
     $sqlperiodo = $clempresto->sql_rp(db_getsession("DB_anousu"), $db_filtro, $dataini, $datafin, $sele_work1);
-    $result_despesa_rp=pg_exec($sqlperiodo);
+    $result_despesa_rp=db_query($sqlperiodo);
 
 
     //-- receita orcamentaria
@@ -342,7 +342,7 @@ $db_filtro = ' e60_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
       $iTotInstit = count($aInstit);
       for ($iInd = 0; $iInd < $iTotInstit; $iInd++) {
 
-        @pg_query("drop table work_pl");
+        @db_query("drop table work_pl");
         $rsOutros = db_planocontassaldo_matriz(db_getsession("DB_anousu"),$dataini,$datafin,false,"c61_instit={$aInstit[$iInd]}",'','true','false','',$aOrcParametro);
         for ($i = 0; $i < pg_numrows($rsOutros); $i++) {
 
@@ -1108,7 +1108,7 @@ $db_filtro = ' e60_instit in (' . str_replace('-',', ',$db_selinstit) . ')';
     $pdf->setfont('arial','',8);    
     assinaturas(&$pdf,&$classinatura,'BG');
 
-    //include("fpdf151/geraarquivo.php");
+    //include(modification("fpdf151/geraarquivo.php"));
 
     function anexo13_retorna_saldo($saldo, $sinal, $grupo) {
       if ($grupo == "A" and $sinal == "C") {

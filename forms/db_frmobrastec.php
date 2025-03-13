@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -56,7 +56,7 @@ $clrotulo->label("z01_nome");
 				</td>
 				<td> 
 					<?
-						db_input('ob15_crea',20,$Iob15_crea,true,'text',$db_opcao,"")
+						db_input('ob15_crea',20,$Iob15_crea,true,'text',$db_opcao,"style='background-color:#fff'")
 					?>
 				</td>
 			</tr>
@@ -71,6 +71,28 @@ $clrotulo->label("z01_nome");
 					?>
 				</td>
 			</tr>
+			<tr>
+				<td nowrap title="<?=@$Tob15_profissao?>">
+					<?=@$Lob15_profissao?>
+				</td>
+				<td> 
+					<?
+						$aProfissao = array("1"=>"Arquiteto","2"=>"Engenheiro");
+						db_select('ob15_profissao',$aProfissao,true,$db_opcao,"");
+					?>
+				</td>
+			</tr>
+                       <tr>
+              <td nowrap title="<?php echo $Tob15_datalimite; ?>" >
+                <label class="bold" for="ob15_datalimite" id="lbl_ob15_datalimite"><?php echo $Sob15_datalimite; ?>:</label>
+              </td>
+              <td>
+                <?php db_inputdata( 'ob15_datalimite', 
+                                    @$ob15_datalimite_dia,
+                                    @$ob15_datalimite_mes,
+                                    @$ob15_datalimite_ano, true, 'text', $db_opcao, ""); ?>
+              </td>
+            </tr>
 		</table>
 	</fieldset>
   <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
@@ -79,10 +101,10 @@ $clrotulo->label("z01_nome");
 <script>
 function js_pesquisaob15_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.ob15_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.ob15_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.ob15_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -101,7 +123,7 @@ function js_mostracgm1(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_obrastec','func_obrastec.php?funcao_js=parent.js_preenchepesquisa|ob15_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obrastec','func_obrastec.php?funcao_js=parent.js_preenchepesquisa|ob15_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_obrastec.hide();

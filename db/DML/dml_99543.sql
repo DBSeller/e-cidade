@@ -1,0 +1,2 @@
+update orcparamseqorcparamseqcoluna set o116_formula = '(#e60_anousu < #e91_anousu -1  ? (#e91_vlremp - #e91_vlranu - #e91_vlrliq) : 0) + (#e60_anousu ==  #e91_anousu - 1 ? (#e91_vlremp - #e91_vlranu - #e91_vlrliq) : 0) - #vlrpagnproc - #vlranuliqnaoproc'
+ where o116_codparamrel = 153 and o116_codseq = 55 and o116_ordem = 6;

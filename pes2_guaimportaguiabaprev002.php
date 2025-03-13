@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_POST_VARS,2);
 
@@ -71,14 +71,14 @@ db_fim_transacao();
 
 function ImportaArquivo($AArquivo){
 
-//  include("db_anodata.php");
+//  include(modification("db_anodata.php"));
 
   //// cria um tabela com o numcgm numerico
-  $res_convcgm = pg_query("select * from pg_class where relname = 'w_convcgm' and relkind = 'r'");
+  $res_convcgm = db_query("select * from pg_class where relname = 'w_convcgm' and relkind = 'r'");
   if(pg_numrows($res_convcgm ) > 0 ){
-    pg_query("drop table w_convcgm");
+    db_query("drop table w_convcgm");
   } 
-  pg_query("create table w_convcgm as 
+  db_query("create table w_convcgm as 
                    select z01_numcgm,
                           to_number(case when trim(z01_cgccpf) = '' 
                                          then '0' 
@@ -87,14 +87,14 @@ function ImportaArquivo($AArquivo){
                           z01_nome 
            from cgm");
 
-  pg_query("create index w_convcgm_in on w_convcgm(cgccpf,z01_nome)");
+  db_query("create index w_convcgm_in on w_convcgm(cgccpf,z01_nome)");
 
 
-  $res_ipegp = pg_query("select * from pg_class where relname = 'w_ipegp' and relkind = 'r'");
+  $res_ipegp = db_query("select * from pg_class where relname = 'w_ipegp' and relkind = 'r'");
   if(pg_numrows($res_ipegp ) > 0 ){
-    pg_query("drop table w_ipegp");
+    db_query("drop table w_ipegp");
   } 
-  pg_query("create table w_ipegp(
+  db_query("create table w_ipegp(
                                  numcgm int,
                                  orgao int,
                                  regist int,
@@ -145,7 +145,7 @@ function ImportaArquivo($AArquivo){
     $salario    = trim(substr($arquivo[$ii],151,11));  
 
 
-    $ver_cgm = pg_query("select * from w_convcgm where cgccpf = ".trim($cpf)." and trim(z01_nome) = '".trim($nome)."'");
+    $ver_cgm = db_query("select * from w_convcgm where cgccpf = ".trim($cpf)." and trim(z01_nome) = '".trim($nome)."'");
     if($ver_cgm == false){
         
        db_msgbox('Erro ao consultar cgm');
@@ -155,7 +155,7 @@ function ImportaArquivo($AArquivo){
     if(pg_numrows($ver_cgm) > 0){
       $numcgm = pg_result($ver_cgm,0,"z01_numcgm");
     }else{
-      $res_valcgm = pg_exec("select nextval('cgm_z01_numcgm_seq') as sequencia");
+      $res_valcgm = db_query("select nextval('cgm_z01_numcgm_seq') as sequencia");
       $numcgm = pg_result($res_valcgm,0,"sequencia");
        
     
@@ -268,7 +268,7 @@ function ImportaArquivo($AArquivo){
                  null,
                  null
                )";
-      $res_cgm = pg_query($sql_cgm);
+      $res_cgm = db_query($sql_cgm);
       if($res_cgm == false){
        db_msgbox('Erro ao inserir dados');
        echo "<script>parent.db_iframe_bbconverte.hide();parent.location.href='pes2_guaimportaguiabaprev001.php';</script>";
@@ -276,13 +276,13 @@ function ImportaArquivo($AArquivo){
       $total_cgm += 1;		       
     }
     $sql_rhipenumcgm = ("select * from rhipenumcgm where rh63_numcgm = $numcgm");
-    $res_rhipenumcgm = pg_query($sql_rhipenumcgm);
+    $res_rhipenumcgm = db_query($sql_rhipenumcgm);
     if($res_rhipenumcgm == false){
        return "erro ao pesquisar rhipenumcgm   : $sql_rhipenumcgm";
     }elseif(pg_numrows($res_rhipenumcgm) > 0){
-       pg_query("update rhipe set rh14_valor = ".$salario."::float8/100 where rh14_sequencia = ".pg_result($res_rhipenumcgm,0,"rh63_sequencia"));
+       db_query("update rhipe set rh14_valor = ".$salario."::float8/100 where rh14_sequencia = ".pg_result($res_rhipenumcgm,0,"rh63_sequencia"));
     }else{
-      $res_seq_ipe = pg_query("select nextval('rhipe_rh14_sequencia_seq') as seqipe ");
+      $res_seq_ipe = db_query("select nextval('rhipe_rh14_sequencia_seq') as seqipe ");
       $seq_ipe = pg_result($res_seq_ipe,0,"seqipe");
       $sql_rhipe = "insert into rhipe (
                                        rh14_sequencia,
@@ -303,11 +303,11 @@ function ImportaArquivo($AArquivo){
                                        ".$salario."::float8/100,
                ".db_getsession('DB_instit')."
                )";
-     $res_rhipe = pg_query($sql_rhipe);
+     $res_rhipe = db_query($sql_rhipe);
      if($res_rhipe == false){
        return "erro ao incluir no rhipe  : $sql_rhipe";
      }else{
-       pg_query("insert into rhipenumcgm values($seq_ipe,$numcgm)");
+       db_query("insert into rhipenumcgm values($seq_ipe,$numcgm)");
      }
                
 
@@ -348,7 +348,7 @@ function ImportaArquivo($AArquivo){
                                        '$cpf'     ,
                                        ".$salario."::float8/100   
                                        )";
-    $res = pg_query($sql_ipe);
+    $res = db_query($sql_ipe);
     if($res == false){
       return "erro   ".$sql_ipe;
     }

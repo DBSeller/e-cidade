@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_syscampo_classe.php");
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_usuariosonline.php');
+require_once modification('dbforms/db_funcoes.php');
+require_once modification('classes/db_db_syscampo_classe.php');
+
+parse_str($HTTP_SERVER_VARS['QUERY_STRING'], $queryString);
+
+foreach ($queryString as $key => $value) {
+    ${$key} = $value;
+}
+
 db_postmemory($HTTP_POST_VARS);
 $cldb_syscampo = new cl_db_syscampo;
 $cldb_syscampo->rotulocl->label("codcam");
@@ -86,7 +92,7 @@ $cldb_syscampo->rotulocl->label("nomecam");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_db_syscampo.php")==true){
-             include("funcoes/db_func_db_syscampo.php");
+             include(modification("funcoes/db_func_db_syscampo.php"));
            }else{
            $campos = "db_syscampo.*";
            }
@@ -126,3 +132,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

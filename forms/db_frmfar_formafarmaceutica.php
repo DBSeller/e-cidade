@@ -59,7 +59,7 @@ db_input('fa29_c_forma',50,$Ifa29_c_forma,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_formafarmaceutica','func_far_formafarmaceutica.php?funcao_js=parent.js_preenchepesquisa|fa29_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_formafarmaceutica','func_far_formafarmaceutica.php?funcao_js=parent.js_preenchepesquisa|fa29_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_formafarmaceutica.hide();

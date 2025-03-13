@@ -94,7 +94,7 @@ if($db_opcao==1||$db_opcao==11){
     <td nowrap title="<?=@$Tk92_instit?>"><?=@$Lk92_instit?></td>
     <td><? 
          // seleciona as instituições, exceto a instituição atual
-         $res = pg_query("select codigo,nomeinst from db_config where codigo <> ".db_getsession("DB_instit"));
+         $res = db_query("select codigo,nomeinst from db_config where codigo <> ".db_getsession("DB_instit"));
 	 $db_matriz = array();
 	 if (pg_numrows($res)>0){
             for ($x=0;$x<pg_numrows($res);$x++){
@@ -137,10 +137,10 @@ function js_limpa_instit(){
 }  
 function js_pesquisak91_debito(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?funcao_js=parent.js_mostrasaltes1|c62_reduz|c60_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?funcao_js=parent.js_mostrasaltes1|c62_reduz|c60_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.k91_debito.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?pesquisa_chave='+document.form1.k91_debito.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?pesquisa_chave='+document.form1.k91_debito.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
      }else{
        document.form1.debito_descr.value = ''; 
      }
@@ -160,10 +160,10 @@ function js_mostrasaltes1(chave1,chave2){
 }
 function js_pesquisak91_credito(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?funcao_js=parent.js_mostratabrec1|c62_reduz|c60_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?funcao_js=parent.js_mostratabrec1|c62_reduz|c60_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.k91_credito.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?pesquisa_chave='+document.form1.k91_credito.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?pesquisa_chave='+document.form1.k91_credito.value+'&funcao_js=parent.js_mostratabrec','Pesquisa',false);
      }else{
        document.form1.credito_descr.value = ''; 
      }
@@ -182,7 +182,7 @@ function js_mostratabrec1(chave1,chave2){
   db_iframe_conplanoexe.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_transf','db_iframe_caitransf','func_caitransf.php?funcao_js=parent.js_preenchepesquisa|k91_transf','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_transf','db_iframe_caitransf','func_caitransf.php?funcao_js=parent.js_preenchepesquisa|k91_transf','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_caitransf.hide();
@@ -197,10 +197,10 @@ function js_preenchepesquisa(chave){
 function js_pesquisak92_debito(mostra){
   db_instit = document.form1.k92_instit.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?db_instit='+db_instit+'&funcao_js=parent.js_dest_mostrasaltes1|c62_reduz|c60_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?db_instit='+db_instit+'&funcao_js=parent.js_dest_mostrasaltes1|c62_reduz|c60_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.k92_debito.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?db_instit='+db_instit+'&pesquisa_chave='+document.form1.k92_debito.value+'&funcao_js=parent.js_dest_mostrasaltes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?db_instit='+db_instit+'&pesquisa_chave='+document.form1.k92_debito.value+'&funcao_js=parent.js_dest_mostrasaltes','Pesquisa',false);
      }else{
        document.form1.dest_debito_descr.value = ''; 
      }
@@ -221,10 +221,10 @@ function js_dest_mostrasaltes1(chave1,chave2){
 function js_pesquisak92_credito(mostra){
   db_instit = document.form1.k92_instit.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?db_instit='+db_instit+'&funcao_js=parent.js_dest_mostratabrec1|c62_reduz|c60_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?db_instit='+db_instit+'&funcao_js=parent.js_dest_mostratabrec1|c62_reduz|c60_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.k92_credito.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?db_instit='+db_instit+'&pesquisa_chave='+document.form1.k92_credito.value+'&funcao_js=parent.js_dest_mostratabrec','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_transf','db_iframe_conplanoexe','func_conplanoexe.php?db_instit='+db_instit+'&pesquisa_chave='+document.form1.k92_credito.value+'&funcao_js=parent.js_dest_mostratabrec','Pesquisa',false);
      }else{
         document.form1.dest_credito_descr.value = ''; 
      }

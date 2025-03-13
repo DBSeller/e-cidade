@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,28 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_bens_classe.php");
-require_once("classes/db_clabens_classe.php");
-require_once("classes/db_bensmater_classe.php");
-require_once("classes/db_bensimoveis_classe.php");
-require_once("classes/db_bensbaix_classe.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_cfpatri_classe.php");
-require_once("classes/db_bensplaca_classe.php");
-require_once("classes/db_benslote_classe.php");
-require_once("classes/db_benstransfcodigo_classe.php");
-require_once("classes/db_departdiv_classe.php");
-require_once("classes/db_bensdiv_classe.php");
-require_once("classes/db_db_departorg_classe.php");
-require_once("classes/db_cfpatriplaca_classe.php");
-require_once("classes/db_histbem_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_bens_classe.php"));
+require_once(modification("classes/db_clabens_classe.php"));
+require_once(modification("classes/db_bensmater_classe.php"));
+require_once(modification("classes/db_bensimoveis_classe.php"));
+require_once(modification("classes/db_bensbaix_classe.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_cfpatri_classe.php"));
+require_once(modification("classes/db_bensplaca_classe.php"));
+require_once(modification("classes/db_benslote_classe.php"));
+require_once(modification("classes/db_benstransfcodigo_classe.php"));
+require_once(modification("classes/db_departdiv_classe.php"));
+require_once(modification("classes/db_bensdiv_classe.php"));
+require_once(modification("classes/db_db_departorg_classe.php"));
+require_once(modification("classes/db_cfpatriplaca_classe.php"));
+require_once(modification("classes/db_histbem_classe.php"));
 
 $cldepartorg    = new cl_db_departorg;
 $cldb_estrut    = new cl_db_estrut;
@@ -79,6 +79,8 @@ $db_opcao       = 2;
   db_app::load("scripts.js, prototype.js, strings.js, DBToogle.widget.js, dbmessageBoard.widget.js");
   db_app::load("estilos.css");
 ?>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/Input/DBInput.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/Input/DBInputFoto.widget.js"></script>
 <style type="text/css">
   .bold {
     font-weight: bold;
@@ -115,6 +117,18 @@ div#fieldsetInclusaoBensGlobal  table tr td + td + td + td {
     background-color: #DEB887;
   }
   
+  .ctnFoto {
+
+    vertical-align: top;
+    display   : inline-block;
+    text-align: center;
+  }
+
+  .ctnFoto img {
+
+    width:  70;
+    height: 85;
+  }
 </style>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="js_carregaDadosForm(<?=$db_opcao?>);" >
@@ -124,7 +138,7 @@ div#fieldsetInclusaoBensGlobal  table tr td + td + td + td {
       <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
         <center>
           <?
-            include("forms/db_frm_bensglobalnovo.php");
+            include(modification("forms/db_frm_bensglobalnovo.php"));
           ?>
         </center>
       </td>

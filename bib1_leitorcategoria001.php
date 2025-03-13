@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_leitorcategoria_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_leitorcategoria_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clleitorcategoria = new cl_leitorcategoria;
 $db_opcao = 1;
 $db_botao = true;
 $depto = db_getsession("DB_coddepto");
 $sql = "SELECT bi17_codigo,bi17_nome FROM biblioteca WHERE bi17_coddepto = $depto";
-$result = pg_query($sql);;
+$result = db_query($sql);;
 $linhas = pg_num_rows($result);
 if($linhas!=0){
  db_fieldsmemory($result,0);
@@ -86,7 +86,7 @@ if(isset($excluir)){
    <br>
    <center>
    <fieldset style="width:90%"><legend><b>Cadastro de Categoria de Leitor</b></legend>
-    <?include("forms/db_frmleitorcategoria.php");?>
+    <?include(modification("forms/db_frmleitorcategoria.php"));?>
    </fieldset>
    </center>
   </td>

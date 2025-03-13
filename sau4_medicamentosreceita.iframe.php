@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -61,7 +61,7 @@ db_postmemory($HTTP_POST_VARS);
         ?>
         <form name="form1" method="post" action=''>
         <center>
-        <table border="0" width="80%">
+        <table border="0" width="95%">
           <tr>
             <td nowrap>
               <fieldset style='width: 96%;'> <legend><b>Receita:</b></legend>
@@ -145,7 +145,7 @@ db_postmemory($HTTP_POST_VARS);
           var oDBGrid            = new DBGrid('oDBGridRemedios');
           oDBGrid.nameInstance   = 'oDBGridRemedios';
           oDBGrid.hasTotalizador = false;
-          oDBGrid.setCellWidth(new Array('10%', '40%', '10%', '20%', '20%'));
+          oDBGrid.setCellWidth(new Array('5%', '8%', '72%', '7%', '8%'));
           oDBGrid.setHeight(60);
           oDBGrid.allowSelectColumns(false);
         
@@ -189,7 +189,7 @@ db_postmemory($HTTP_POST_VARS);
        
         function js_retornoGetRemediosReceita(oRetorno) {
   
-          var oRetorno = eval("("+oRetorno.responseText+")");
+          var oRetorno = JSON.parse(oRetorno.responseText);
           var oInfo    = new Object();
           var aPaint   = new Array();
         
@@ -305,7 +305,7 @@ db_postmemory($HTTP_POST_VARS);
        
         function js_retornoGetInfoMedicamento(oRetorno) {
 
-          var oRetorno = eval('('+oRetorno.responseText+')');
+          var oRetorno = JSON.parse(oRetorno.responseText);
           var oRet     = new Object();
 
           if (oRetorno.status == 1) {

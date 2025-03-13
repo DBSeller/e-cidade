@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_cadhelp_classe.php");
-include("classes/db_db_itenshelp_classe.php");
-include("classes/db_db_tipohelp_classe.php");
-include("classes/db_db_modulos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_cadhelp_classe.php"));
+include(modification("classes/db_db_itenshelp_classe.php"));
+include(modification("classes/db_db_tipohelp_classe.php"));
+include(modification("classes/db_db_modulos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 ?>
@@ -119,25 +119,18 @@ function js_contageral(numero,idobj){
 <td valign="top">
 <?
   $seleciona_help = true;
-//  if(isset($cadhelp)){
+  if(isset($cadhelp)){
     $qhelp = 0;
+    $nome_modulo = $modulo;
+    echo "Módulo:";
     $cldb_modulos = new cl_db_modulos;
-    $result_modulo = $cldb_modulos->sql_record($cldb_modulos->sql_query($modulo,'nome_modulo,nome_manual'));
+    $result_modulo = $cldb_modulos->sql_record($cldb_modulos->sql_query('','*','nome_modulo'));
     if($result_modulo!=false && $cldb_modulos->numrows>0){
-      db_fieldsmemory($result_modulo,0);
-      echo "Manual: ";
-      if( is_file("manuais/".strtolower($nome_manual)."/Manual_".ucfirst($nome_manual).".odt")){
-          echo "<a href='#' onclick='window.open(\"manuais/".strtolower($nome_manual)."/Manual_".ucfirst($nome_manual).".odt\")'>ODT</a>&nbsp&nbsp";
-            if( is_file("manuais/".strtolower($nome_manual)."/Manual_".ucfirst($nome_manual).".pdf")){
-                  echo "<a href='#' onclick='window.open(\"manuais/".strtolower($nome_manual)."/Manual_".ucfirst($nome_manual).".pdf\")'>PDF</a>";
-                    }
-      }else{
-          echo "Manual não disponível.";
-      } 
+      db_selectrecord('nome_modulo',$result_modulo,true,2,'','','','',"location.href='con1_help003.php?cadhelp=0&item='+document.form1.nome_modulo.value+'&modulo='+document.form1.nome_modulo.value",1);
     }
     echo "<hr>";
     $seleciona_help = false;
-//  }
+  }
   if($item != 0 || $modulo != 0){
     
   // verifica se tem item, senao pesquisa por modulo
@@ -177,7 +170,7 @@ function js_contageral(numero,idobj){
       global $qitem, $seleciona_help;
 			// lista os procedimentos existentes
       /*
-      $help = pg_exec("select distinct
+      $help = db_query("select distinct
                               p.codproced,
 															p.descrproced
                        from db_syscadproceditem pi 
@@ -194,7 +187,7 @@ function js_contageral(numero,idobj){
       */
 //  lista helps e aqui
       
-      $sub = pg_exec("
+      $sub = db_query("
       select m.id_item_filho,i.descricao,i.help,i.funcao,m.id_item,m.modulo 
 		  from db_menu m 
 			     inner join db_itensmenu i on i.id_item = m.id_item_filho 
@@ -230,7 +223,7 @@ function js_contageral(numero,idobj){
 		  and i.itemativo = $ambiente							  
       and i.libcliente = true
 		  and m.id_item = ".$modulo." order by menusequencia";
-    $result = pg_exec($SQL);			
+    $result = db_query($SQL);			
     for($i = 0;$i < pg_numrows($result);$i++) {
       $valor = pg_result($result,$i,"id_item_filho");
       echo "<tr><td valign=\"top\" nowrap>

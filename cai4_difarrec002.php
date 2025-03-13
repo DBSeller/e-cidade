@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_libcaixa.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_libcaixa.php"));
 $clautenticar= new cl_autenticar;
 
-include("classes/db_cfautent_classe.php");
+include(modification("classes/db_cfautent_classe.php"));
 $clcfautent = new cl_cfautent;
    
    //{============================== 
@@ -72,7 +72,7 @@ if(isset($HTTP_POST_VARS["numpre"]) && empty($reautenticar)){
 	                           ". db_getsession("DB_instit").",
 	                          '".$historico."',
 														" . db_getsession("DB_id_usuario") . ") as fc_autentica";
-    $result = pg_exec($sql) or die($sql);
+    $result = db_query($sql) or die($sql);
     db_fieldsmemory($result,0);
     if(substr($fc_autentica,0,1) != '1'){
      ?>

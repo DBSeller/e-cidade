@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,12 +28,12 @@
 /**
  * 
  * @author Iuri Guntchnigg
- * @revision $Author: dbalberto $
- * @version $Revision: 1.7 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.10 $
  */
-include ("fpdf151/pdf.php");
-require("libs/db_utils.php");
-require("libs/JSON.php");
+include(modification("fpdf151/pdf.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/JSON.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_GET["json"]));

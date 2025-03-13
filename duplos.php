@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_utils.php");
-require("model/configuracao/TraceLog.model.php");
-require("libs/db_stdlib.php");
-require("libs/db_conn.php");
+require(modification("libs/db_utils.php"));
+require(modification("model/configuracao/TraceLog.model.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conn.php"));
 
 
-if ( $argv[2] == "SERVIDOR_MANUAL") {
-
+if ( !empty($argv[2]) && $argv[2] == "SERVIDOR_MANUAL") {
+ 
    $DB_SERVIDOR = "";
    $DB_BASE     = "";
    $DB_PORTA    = "";
@@ -53,13 +53,17 @@ function db_logduplos($sLog="") {
 
   return $aDataHora;
 }
-$isTeste = (strtoupper($argv[1])=="TESTE");
+
+$isTeste = !empty($argv[1]) && (strtoupper($argv[1])=="TESTE");
 
 if($isTeste) {
   db_logduplos("");
   db_logduplos(">>>>>> MODO DE TESTE. Não executará COMMIT ao final do processamento! <<<<<<");
   db_logduplos("");
 }
+
+// time utilizado para monitoria pelo zabbix
+db_logduplos(time());
 
 $aDataHoraInicial = db_logduplos("Iniciando Execucao do Duplos.php - 3 segundos... se quiser cancelar CTRL+C");
 db_logduplos("Configuracoes: BASE: $DB_BASE  SERVIDOR: $DB_SERVIDOR  PORTA: $DB_PORTA  USUARIO: $DB_USUARIO");
@@ -90,10 +94,27 @@ $resultdivide = db_query($conn, $sqldivide);
 
 $mostra=0;
 
+/**
+ * Tabelas com alterações específicas
+ * Chave = codarq
+ */
+$aTabelasRegrasEspecificas = array(
+  2918 => "cgmendereco",
+  2938 => "cgmtipoempresa",
+    3924 => "avaliacaogruporespostarhpessoal",
+    1010267 => "avaliacaogruporespostaavisoprevio",
+    1010284 => "avaliacaogruporespostaafastamentoesocial",
+    1010311 => "avaliacaogruporespostatsveinicial",
+    1010407 => "avaliacaogruporespostaesocials1299",
+    1010418 => "avaliacaogruporespostatotpgcontingencia",
+
+);
+
 $sql_correto = "select * from cgmcorreto where z10_proc is false order by z10_data, z10_hora, z10_codigo";
 $result_correto = db_query($sql_correto) or die(db_logduplos("sql 1: " . pg_ErrorMessage()));
 
 for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_correto++) {
+
   db_fieldsmemory($result_correto,$record_correto);
   db_logduplos("\n\n\n\n\n\n");
   db_logduplos(" processando cgm correto: " . $z10_numcgm . " - codigo: $z10_codigo - $record_correto/" . pg_numrows($result_correto) . "...");
@@ -101,8 +122,20 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
   // Grava usuario que agendou o duplos na sessao
   $sqlsessao = "select fc_putsession('DB_id_usuario', '$z10_login');";
   $resultsessao = db_query($conn, $sqlsessao);
-
+  
   $result = db_query("begin;");
+  /*
+    Grava na sessão o primeiro departamento do usuario que agendou o duplos 
+    Se faz necessario devido a melhoria do Processo Eletronico
+   */ 
+  $sqlsessaodeaprtamento = "select coddepto 
+                              from db_depusu 
+                             where id_usuario = {$z10_login}";
+
+  $resultdepartamento    = db_query($conn, $sqlsessaodeaprtamento);
+  db_fieldsmemory($resultdepartamento, 0);
+  $sqlsessao    = "select fc_putsession('DB_coddepto', '{$coddepto}');";
+  $resultsessao = db_query($conn, $sqlsessao);
 
   //Disabilita trigger que insere registro na promitente
   //db_query("alter table aguabase disable trigger tr_agua_atualizaiptubase");
@@ -137,8 +170,8 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
       $sql1 .= "       inner join db_sysarquivo on db_sysarquivo.codarq = db_sysarqcamp.codarq ";
       $sql1 .= "       inner join db_syscampo   on db_syscampo.codcam   = db_sysarqcamp.codcam ";
       $sql1 .= " where db_syscampodep.codcampai = 216 ";
-      $sql1 .= "   and db_sysarqcamp.codarq not in (736,737,511,1383,1015,1010143,2947,1382, 2362) ";
-      $sql1 .= "   and db_sysarqcamp.codcam not in (5153,5159,216,7872,8213,8195,17180,16650,8205, 20656, 17041)";
+      $sql1 .= "   and db_sysarqcamp.codarq not in (736, 737, 511, 1383, 1015, 1010143, 2947, 1382, 2362, 1780, 3012, 3901, 3921, 1010588) ";
+      $sql1 .= "   and db_sysarqcamp.codcam not in (5153,5159,216,7872,8213,8195,17180,16650,8205, 20656, 17041, 17042, 1011584)";
       $sql1 .= "   and exists(select column_name ";
       $sql1 .= "                from information_schema.columns ";
       $sql1 .= "               where table_name  = trim(db_sysarquivo.nomearq) ";
@@ -152,8 +185,8 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
       $sql1 .= "	     inner join db_sysarqcamp on db_syscampo.codcam = db_sysarqcamp.codcam ";
       $sql1 .= "       inner join db_sysarquivo on db_sysarquivo.codarq = db_sysarqcamp.codarq ";
       $sql1 .= " where nomecam like '%cgm%' ";
-      $sql1 .= "   and db_sysarqcamp.codarq not in (736,737,511,1383,1015,1010143,2947,1382, 2362) ";
-      $sql1 .= "   and db_sysarqcamp.codcam not in (5153,5159,216,7872,8213,8195,17180,16650,8205, 20656,17041 )";
+      $sql1 .= "   and db_sysarqcamp.codarq not in (736, 737, 511, 1383, 1015, 1010143, 2947, 1382, 2362, 3012, 3901, 3921, 1010588) ";
+      $sql1 .= "   and db_sysarqcamp.codcam not in (5153,5159,216,7872,8213,8195,17180,16650,8205,20656,17041,17042,22175,1011584)";
       $sql1 .= "   and exists(select column_name ";
       $sql1 .= "                from information_schema.columns ";
       $sql1 .= "               where table_name  = trim(db_sysarquivo.nomearq) ";
@@ -189,7 +222,7 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
 
         $v_log .= "processando tabela $nomearq";
         db_logduplos("processando tabela $nomearq - codigo: $codarq");
-
+        
         // ver se tabela existe no banco...
         $sql2  = "select relname ";
         $sql2 .= "	from pg_class ";
@@ -306,6 +339,7 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
                 switch ($nomearq) {
                 case "inicial":
                   break;
+                
 
                 case "escrito":
                   $sqlcadescrito="select * from cadescrito where q86_numcgm = $v_cgmerrado";
@@ -319,6 +353,7 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
                     $resultaltesc = db_query($sqlaltesc) or die(db_logduplos("sql 12: " . pg_ErrorMessage()));
                     db_logduplos("$sqlaltesc ");
                   }
+                  break;
 
                   //se for advog
                 case "advog":
@@ -388,8 +423,12 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
                     // alterar escrito para cgmcorreto
                     $sqlaltesc = "update escrito set q10_numcgm =$v_cgmcerto  where q10_numcgm = $v_cgmerrado";
                     $resultaltesc = db_query($sqlaltesc) or die(db_logduplos("sql 18: " . pg_ErrorMessage()));
-                    db_logduplos("$sqlaltesc ");
-
+                    db_logduplos("$sqlaltesc");
+                    
+                    // alterar cadescritoresp para cgmcorreto
+                    $sqlaltescresp = "update cadescritoresp set q84_cadescrito = $v_cgmcerto where q84_cadescrito = $v_cgmerrado";
+                    $resultaltescresp = db_query($sqlaltescresp) or die(db_logduplos("sql 18: " . pg_ErrorMessage()));
+                    db_logduplos("$sqlaltescresp");
                   }
 
                   // deletar cadescrito com cgmerrado
@@ -543,7 +582,7 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
                   break;
 
                 case "pensao" :
-
+                  
                   $sSqlPensaoErrado = "select * from pensao where r52_numcgm = $v_cgmerrado ";
                   $rsPensaoErrado   = db_query($sSqlPensaoErrado);
 
@@ -611,20 +650,20 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
                             '$r52_codbco',
                             '$r52_codage',
                             '$r52_conta',
-                            $r52_vlrpen,
+                            ".(empty($r52_vlrpen) ? "0" : $r52_vlrpen ).",
                             " . ($r52_dtincl == "null" || $r52_dtincl == "" ? "null" : "'" . $r52_dtincl . "'") . ",
                             '$r52_pag13',
                             '$r52_pagfer',
                             '$r52_pagcom',
-                            $r52_valor,
-                            $r52_valcom,
-                            $r52_val13,
+                            ".(empty($r52_valor)  ? "0" : $r52_valor ).",
+                            ".(empty($r52_valcom) ? "0" : $r52_valcom ).",
+                            ".(empty($r52_val13)  ? "0" : $r52_val13 ).", 
                             " . ($r52_limite == "null" || $r52_limite == "" ? "null" : "'" . $r52_limite . "'") . ",
                             '$r52_dvagencia',
                             '$r52_dvconta',
-                            $r52_valfer,
+                             ".(empty($r52_valfer) ? "0" : $r52_valfer ).",
                             '$r52_pagres',
-                            $r52_valres,
+                            ".(empty($r52_valres)  ? "0" : $r52_valres ).",
                             '$r52_adiantamento13',
                             $r52_percadiantamento13
                           )";
@@ -645,12 +684,12 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
                     db_logduplos("      5 - Altera pensaoretencao do CGM errado para o CGM correto: $sSqlUpdatePensaoRetencao");
                     $v_log .= $sSqlPensaoInserir . "\n";
 
+
                     /*
                      * Excluo as pensões do cgm errado
                      */
                     $sSqlExclusaoPensao = "delete from pensao where r52_numcgm = $v_cgmerrado";
                     $rsExcluirPensao    = db_query($sSqlExclusaoPensao) or die(db_logduplos("sql 615: " . pg_ErrorMessage()));
-
                     db_logduplos("      5 - Excluir a pensao do CGM errado: $sSqlExclusaoPensao");
                     $v_log .= $sSqlExclusaoPensao . "\n";
                   }
@@ -667,6 +706,68 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
                     $rsExcluirCgmDoc   = db_query($sSqlExcluirCgmDoc) or die(db_logduplos("sql 619: " . pg_ErrorMessage()));
                   }
                   break;
+
+                case 'agualeiturista':
+
+                  db_logduplos("      5 - Consulta CGM errado na tabela agualeitura: {$v_cgmerrado}");
+
+                  $sSqlAguaLeitura = "select x21_numcgm from agualeitura where x21_numcgm = {$v_cgmerrado} limit 1";
+                  $rsAguaLeitura   = db_query($sSqlAguaLeitura) or die(db_logduplos("SQL pesquisa agualeitura: " . pg_ErrorMessage()));
+
+                  if($rsAguaLeitura && pg_num_rows($rsAguaLeitura) > 0) {
+
+                    db_logduplos("      6 - Atualiza os registros de CGM {$v_cgmerrado} na tabela agualeitura");
+
+                    db_query("alter table agualeitura disable trigger all");
+
+                    $sSqlTabelaBkp  = "create TEMPORARY TABLE agualeitura_bkp as ";
+                    $sSqlTabelaBkp .= "          select x21_codleitura, ";
+                    $sSqlTabelaBkp .= "                 x21_codhidrometro, ";
+                    $sSqlTabelaBkp .= "                 x21_exerc, ";
+                    $sSqlTabelaBkp .= "                 x21_mes, ";
+                    $sSqlTabelaBkp .= "                 x21_situacao, ";
+                    $sSqlTabelaBkp .= "                 {$v_cgmcerto}, ";
+                    $sSqlTabelaBkp .= "                 x21_dtleitura, ";
+                    $sSqlTabelaBkp .= "                 x21_usuario, ";
+                    $sSqlTabelaBkp .= "                 x21_dtinc, ";
+                    $sSqlTabelaBkp .= "                 x21_leitura, ";
+                    $sSqlTabelaBkp .= "                 x21_consumo, ";
+                    $sSqlTabelaBkp .= "                 x21_excesso, ";
+                    $sSqlTabelaBkp .= "                 x21_virou, ";
+                    $sSqlTabelaBkp .= "                 x21_tipo, ";
+                    $sSqlTabelaBkp .= "                 x21_status, ";
+                    $sSqlTabelaBkp .= "                 x21_saldo ";
+                    $sSqlTabelaBkp .= "            from agualeitura ";
+                    $sSqlTabelaBkp .= "           where x21_numcgm = {$v_cgmerrado}; ";
+                    $rsTabelaBkp    = db_query($sSqlTabelaBkp) or die(db_logduplos("Criação da tabela temporária: " . pg_ErrorMessage()));
+
+                    if($rsTabelaBkp) {
+
+                      $sSqlDeletaAguaLeitura = "delete from agualeitura where x21_numcgm = {$v_cgmerrado}";
+                      $rsDeletaAguaLeitura   = db_query($sSqlDeletaAguaLeitura) or die(db_logduplos("Delete registros agualeitura CGM errado: " . pg_ErrorMessage()));
+
+                      if($rsDeletaAguaLeitura) {
+
+                        $sSqlInsereAguaLeitura  = "insert into agualeitura ";
+                        $sSqlInsereAguaLeitura .= "      select * ";
+                        $sSqlInsereAguaLeitura .= "        from agualeitura_bkp ";
+                        $rsInsereAguaLeitura    = db_query($sSqlInsereAguaLeitura) or die(db_logduplos("Inserção dos registros agualeitura CGM correto: " . pg_ErrorMessage()));
+
+                        if($rsInsereAguaLeitura) {
+
+                          $sSqlAtualizaAguaLeiturista  = "update agualeiturista ";
+                          $sSqlAtualizaAguaLeiturista .= "   set x16_numcgm = {$v_cgmcerto} ";
+                          $sSqlAtualizaAguaLeiturista .= " where x16_numcgm = {$v_cgmerrado}";
+                          $rsAtualizaAguaLeiturista    = db_query($sSqlAtualizaAguaLeiturista) or die(db_logduplos("Atualização dos registros agualeiturista CGM correto: " . pg_ErrorMessage()));
+                        }
+                      }
+                    }
+
+                    db_query("alter table agualeitura enable trigger all");
+                  }
+
+                  break;
+
                   // se não for advog e nem cadescrito
                 default:
 
@@ -705,11 +806,14 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
 
             db_logduplos("   11 - nao achou pk em " . $nomearq );
             $sql9 = "select $nomecam from $nomearq where $nomecam = $v_cgmerrado";
-            //	    echo "   12 - " . $sql9 . "\n";
             $result9 = db_query($sql9) or die(db_logduplos("sql 25: $sql9 \n" . pg_ErrorMessage()));
             $v_log .= "comando executado: $sql9 - " . (pg_numrows($result9) > 0?"encontrou " . pg_numrows($result9) . " registros":"nao encontrou nenhum registro");
 
             if (pg_numrows($result9) > 0) {
+
+              $desabilitarTrigger = false;
+              $tabelasDesabilitarTrigger = array('arreold');
+
               switch ($nomearq) {
 
               case "legista":
@@ -811,6 +915,19 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
                 }
                 break;
 
+              /**
+               * Remove o registro do cgm errado, evitando dados duplicados
+               */
+              case 'cgmendereco':
+     
+               $sSqlEndereco = "delete 
+                                     from cgmendereco 
+                                    where z07_numcgm = {$v_cgmerrado}";
+               $rsEndereco   = db_query($sSqlEndereco) or die(db_logduplos("SQL Exclusão vinculo com endereço: " . pg_ErrorMessage()));
+               db_logduplos("Vinculo endereço: Excluído o registro da tabela cgmendereco do CGM ERRADO ({$v_cgmerrado})");
+     
+              break;  
+
               case "arrecad":
                 db_logduplos("      7 - Processando dados da tabela arrecad");
                 $sSqlDadosArrecadInstituicao  = "select distinct ";
@@ -834,15 +951,204 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
 
                 $sSqlSessao = "select fc_putsession('DB_instit', cast((select codigo from db_config where prefeitura is true limit 1) as text)); \n";
                 db_query($sSqlSessao);
-
                 break;
+
+              case 'pensao':
+                  
+                  /**
+                   * Consulta das pensões do cgm errado.
+                   */
+                  db_logduplos("Pensao: Buscando as pensoes do CGM ERRADO({$v_cgmerrado})");
+                  
+                  $sSqlPensaoErrado        = "select * from pensao where r52_numcgm = {$v_cgmerrado} ";
+                  $rsPensaoErrado          = db_query($sSqlPensaoErrado);
+                  $iQuantidadePensaoErrado = pg_num_rows($rsPensaoErrado);
+              
+                  $v_log .= $sSqlPensaoErrado . "\n";
+                  
+                  db_logduplos("Pensao: Quantidades de pensoes do cgm errado: {$iQuantidadePensaoErrado}");
+                  
+                  /**
+                   * Insere registros de pensão para o cgm correto, caso ele não exista.
+                   */
+                  if ($iQuantidadePensaoErrado > 0) {
+    
+                    for ($iIndPensao = 0; $iIndPensao < $iQuantidadePensaoErrado; $iIndPensao++) {
+
+                      db_fieldsmemory($rsPensaoErrado, $iIndPensao);
+                      
+                      /**
+                       * Consulta as pensões do cgm certo.
+                       */
+                      db_logduplos("Pensao: Buscando as pensoes do CGM CORRETO({$v_cgmcerto})");
+                      
+                      $sSqlPensaoCorreto       = "select *                         ";
+                      $sSqlPensaoCorreto      .= " from pensao                     ";
+                      $sSqlPensaoCorreto      .= "where r52_anousu = {$r52_anousu} ";
+                      $sSqlPensaoCorreto      .= "  and r52_mesusu = {$r52_mesusu} ";
+                      $sSqlPensaoCorreto      .= "  and r52_regist = {$r52_regist} ";
+                      $sSqlPensaoCorreto      .= "  and r52_numcgm = {$v_cgmcerto} ";
+                      $rsPensaoCorreto         = db_query($sSqlPensaoCorreto);
+                      $iQuantidadePensaoCerto  = pg_num_rows($rsPensaoCorreto);
+                      
+                      $v_log .= $sSqlPensaoCorreto . "\n";
+
+                      db_logduplos("Pensao: Quantidades de pensoes do cgm certo: {$iQuantidadePensaoCerto}");
+                      
+                      /**
+                       * Insere a pensão para o cgm correto com os mesmos dados da pensao do cgm errado, caso ele não exista.
+                       */
+                      if ($iQuantidadePensaoCerto == 0) {
+
+                        $sSqlPensaoInserir = "insert into pensao
+                          (
+                            r52_anousu,
+                            r52_mesusu,
+                            r52_regist,
+                            r52_formul,
+                            r52_perc,
+                            r52_numcgm,
+                            r52_codbco,
+                            r52_codage,
+                            r52_conta,
+                            r52_vlrpen,
+                            r52_dtincl,
+                            r52_pag13,
+                            r52_pagfer,
+                            r52_pagcom,
+                            r52_valor,
+                            r52_valcom,
+                            r52_val13,
+                            r52_limite,
+                            r52_dvagencia,
+                            r52_dvconta,
+                            r52_valfer,
+                            r52_pagres,
+                            r52_valres,
+                            r52_adiantamento13,
+                            r52_percadiantamento13
+                          )
+                          values
+                          (
+                            $r52_anousu,
+                            $r52_mesusu,
+                            $r52_regist,
+                            '$r52_formul',
+                            $r52_perc,
+                            $v_cgmcerto,
+                            '$r52_codbco',
+                            '$r52_codage',
+                            '$r52_conta',
+                            ".(empty($r52_vlrpen) ? "0" : $r52_vlrpen ).",
+                            " . ($r52_dtincl == "null" || $r52_dtincl == "" ? "null" : "'" . $r52_dtincl . "'") . ",
+                            '$r52_pag13',
+                            '$r52_pagfer',
+                            '$r52_pagcom',
+                            ".(empty($r52_valor)  ? "0" : $r52_valor ).",
+                            ".(empty($r52_valcom) ? "0" : $r52_valcom ).",
+                            ".(empty($r52_val13)  ? "0" : $r52_val13 ).",
+                            " . ($r52_limite == "null" || $r52_limite == "" ? "null" : "'" . $r52_limite . "'") . ",
+                            '$r52_dvagencia',
+                            '$r52_dvconta',
+                             ".(empty($r52_valfer) ? "0" : $r52_valfer ).",
+                            '$r52_pagres',
+                            ".(empty($r52_valres)  ? "0" : $r52_valres ).",
+                            '$r52_adiantamento13',
+                            $r52_percadiantamento13)";
+                        $rsSqlPensaoInserir = db_query($sSqlPensaoInserir) or die(db_logduplos("Erro: " . pg_ErrorMessage()));
+                        db_logduplos("Pensao: Inserindo a pensao nova para o CGM CORRETO({$v_cgmcerto}) na competencia({$r52_anousu}/{$r52_mesusu})");
+                        $v_log .= $sSqlPensaoInserir . "\n";
+                      }
+                    }
+
+                    /*
+                     * Substitui os dados da pensao retenção do cgm errado para o cgm correto.
+                     */
+                    $sSqlUpdatePensaoRetencao = "update pensaoretencao set rh77_numcgm = {$v_cgmcerto} where rh77_numcgm = {$v_cgmerrado}";
+                    $rsUpdatePensaoRetencao   = db_query($sSqlUpdatePensaoRetencao) or die(db_logduplos("Erro: " . pg_ErrorMessage()));
+                    
+                    db_logduplos("Pensao: Alterando a pensao retencao do CGM ERRADO para o CGM CORRETO");
+                    $v_log .= $sSqlPensaoInserir . "\n";
+
+                    db_query("select fc_putsession('DB_disable_trigger', 'true');");
+                    
+                    /**
+                     * Armazena os dados da pensão bancária do cgm errado, logo faz a exclusão dos dados no banco de dados. 
+                     */
+                    $rsBuscaPensaoContaBancaria = db_query("select * from pensaocontabancaria where rh139_numcgm = {$v_cgmerrado}");
+                    $aPensaoContaBancaria       = db_utils::getCollectionByRecord($rsBuscaPensaoContaBancaria);
+                    $rsDeleteContaBancaria      = db_query("delete from pensaocontabancaria where rh139_numcgm = {$v_cgmerrado}");
+                    
+                    /**
+                     * Caso exista pensão bancária do cgm errado, é salvo a nova pensão bancária com o cgm correto. 
+                     */
+                    foreach ($aPensaoContaBancaria as $oStdPensaoContaBancaria) {
+              
+                      $sSqlPensaoBancaria          = "select 1 as registros                                                       ";
+                      $sSqlPensaoBancaria         .= "  from pensaocontabancaria                                                  ";
+                      $sSqlPensaoBancaria         .= "where rh139_numcgm        = {$v_cgmcerto}                                   ";
+                      $sSqlPensaoBancaria         .= "  and rh139_anousu        = {$oStdPensaoContaBancaria->rh139_anousu}        ";
+                      $sSqlPensaoBancaria         .= "  and rh139_mesusu        = {$oStdPensaoContaBancaria->rh139_mesusu}        ";
+                      $sSqlPensaoBancaria         .= "  and rh139_regist        = {$oStdPensaoContaBancaria->rh139_regist}        ";
+                      $sSqlPensaoBancaria         .= "  and rh139_contabancaria = {$oStdPensaoContaBancaria->rh139_contabancaria} ";
+                      $rsPensaoBancaria            = db_query($sSqlPensaoBancaria);
+                      $iQuantidadesPensaoBancaria  = pg_num_rows($rsPensaoBancaria);
+                      
+                      if ($iQuantidadesPensaoBancaria == 0) {
+                        
+                        $sSqlInserirPensaoBancaria  = "insert into pensaocontabancaria values                ";
+                        $sSqlInserirPensaoBancaria .= "  ( {$oStdPensaoContaBancaria->rh139_sequencial}      ";
+                        $sSqlInserirPensaoBancaria .= "   ,{$oStdPensaoContaBancaria->rh139_regist}          ";
+                        $sSqlInserirPensaoBancaria .= "   ,{$v_cgmcerto}                                     ";
+                        $sSqlInserirPensaoBancaria .= "   ,{$oStdPensaoContaBancaria->rh139_anousu}          ";
+                        $sSqlInserirPensaoBancaria .= "   ,{$oStdPensaoContaBancaria->rh139_mesusu}          ";
+                        $sSqlInserirPensaoBancaria .= "   ,{$oStdPensaoContaBancaria->rh139_contabancaria}); ";
+                        $rsInserirPensaoBancaria    = db_query($sSqlInserirPensaoBancaria);
+
+                        if (!$rsInserirPensaoBancaria) {
+                          db_logduplos("Erro: Erro ao incluir na tabela [pensaocontabancaria] o CGM CERTO = {$v_cgmcerto} | CGM_ERRADO = {$v_cgmerrado}. -> ".pg_last_error());
+                          die();
+                        }
+                        
+                        db_logduplos("Pensao: Alterando a pensao bancaria do CGM ERRADO para o CGM CORRETO");
+                      }
+                    }
+
+                    db_query("select fc_putsession('DB_disable_trigger', 'false');");
+
+                    /*
+                     * Excluí as pensões do cgm errado.
+                     */
+                    $sSqlExclusaoPensao = "delete from pensao where r52_numcgm = {$v_cgmerrado}";
+                    $rsExcluirPensao    = db_query($sSqlExclusaoPensao) or die(db_logduplos("sql 615: " . pg_ErrorMessage()));
+                    db_logduplos("Pensao: Excluído a pensao do CGM ERRADO ({$v_cgmerrado})");
+                    $v_log .= $sSqlExclusaoPensao . "\n";
+                  }
+                  
+                  break;
 
               default:
 
                 $sql9 = "update $nomearq set $nomecam = $v_cgmcerto where $nomecam = " . $v_cgmerrado;
                 db_logduplos("     12 - " . $sql9 );
 
+                $desabilitarTrigger = in_array($nomearq, $tabelasDesabilitarTrigger);
+
+                /**
+                 * Regra aplicada inicialmente para arreold, pois ao atualizar o CMG, os débitos não devem ser corrigidos
+                 */
+                if($desabilitarTrigger) {
+                    db_logduplos("     12.1 - Desabilitando trigger {$nomearq}" );
+                    db_query("alter table {$nomearq} disable trigger all;");
+                }
+
                 $result9 = db_query($sql9) or die(db_logduplos("\nsql: $sql9\n" . pg_ErrorMessage()));
+
+                if($desabilitarTrigger) {
+                    db_logduplos("     12.2 - Habilitando trigger {$nomearq}" );
+                    db_query("alter table {$nomearq} enable trigger all;");
+                }
+
                 if (pg_affected_rows($result9) == 0) {
                   db_logduplos("erro ao dar update na tabela $nomearq...");
                   db_logduplos("comando: $sql9");
@@ -866,11 +1172,150 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
 
     }
 
+    /**
+     * Bloco com tabelas que não se encaixam nas regras executadas
+     */
+    foreach($aTabelasRegrasEspecificas as $sChave => $sTabela) {
+
+      switch($sTabela) {
+        
+        /**
+         * Remove o registro do cgm errado, evitando dados duplicados
+         */
+        case 'cgmtipoempresa':
+
+          $sSqlTipoEmpresa = "delete from cgmtipoempresa where z03_numcgm = {$v_cgmerrado}";
+          $rsTipoEmpresa   = db_query($sSqlTipoEmpresa) or die(db_logduplos("SQL Exclusão Tipo Empresa: " . pg_ErrorMessage()));
+          db_logduplos("Tipo Empresa: Excluído o registro da tabela cgmtipoempresa do CGM ERRADO ({$v_cgmerrado})");
+
+          break;
+          case 'avaliacaogruporespostarhpessoal':
+              $sql = "update avaliacaogruporespostarhpessoal set eso02_empregador = {$v_cgmcerto} where eso02_empregador = {$v_cgmerrado};";
+              db_logduplos("Tabela: avaliacaogruporespostarhpessoal: Alterando CGM ERRADO ({$v_cgmerrado}) para o CGM CERTO ($v_cgmcerto)\n {$sql}");
+              db_query($sql) or die(db_logduplos("SQL Alteracao avaliacaogruporespostarhpessoal: " . pg_ErrorMessage()));
+              break;
+          case "avaliacaogruporespostaavisoprevio":
+              $sql = "update avaliacaogruporespostaavisoprevio set eso07_empregador = {$v_cgmcerto} where eso07_empregador = {$v_cgmerrado};";
+              db_logduplos("Tabela: avaliacaogruporespostaavisoprevio: Alterando CGM ERRADO ({$v_cgmerrado}) para o CGM CERTO ($v_cgmcerto)\n {$sql}");
+              db_query($sql) or die(db_logduplos("SQL Alteracao avaliacaogruporespostaavisoprevio: " . pg_ErrorMessage()));
+              break;
+          case "avaliacaogruporespostaafastamentoesocial":
+              $sql = "update avaliacaogruporespostaafastamentoesocial set eso13_empregador = {$v_cgmcerto} where eso13_empregador = {$v_cgmerrado};";
+              db_logduplos("Tabela: avaliacaogruporespostaafastamentoesocial: Alterando CGM ERRADO ({$v_cgmerrado}) para o CGM CERTO ($v_cgmcerto)\n {$sql}");
+              db_query($sql) or die(db_logduplos("SQL Alteracao avaliacaogruporespostaafastamentoesocial: " . pg_ErrorMessage()));
+              break;
+          case "avaliacaogruporespostatsveinicial":
+              $sql = "update avaliacaogruporespostatsveinicial set eso16_empregador = {$v_cgmcerto} where eso16_empregador = {$v_cgmerrado};";
+              db_logduplos("Tabela: avaliacaogruporespostatsveinicial: Alterando CGM ERRADO ({$v_cgmerrado}) para o CGM CERTO ($v_cgmcerto)\n {$sql}");
+              db_query($sql) or die(db_logduplos("SQL Alteracao avaliacaogruporespostatsveinicial: " . pg_ErrorMessage()));
+              break;
+          case "avaliacaogruporespostaesocials1299":
+              $sql = "update avaliacaogruporespostaesocials1299 set eso33_empregador = {$v_cgmcerto} where eso33_empregador = {$v_cgmerrado};";
+              db_logduplos("Tabela: avaliacaogruporespostaesocials1299: Alterando CGM ERRADO ({$v_cgmerrado}) para o CGM CERTO ($v_cgmcerto)\n {$sql}");
+              db_query($sql) or die(db_logduplos("SQL Alteracao avaliacaogruporespostaesocials1299: " . pg_ErrorMessage()));
+              break;
+          case "avaliacaogruporespostatotpgcontingencia":
+              $sql = "update avaliacaogruporespostatotpgcontingencia set eso34_empregador = {$v_cgmcerto} where eso34_empregador = {$v_cgmerrado};";
+              db_logduplos("Tabela: avaliacaogruporespostatotpgcontingencia: Alterando CGM ERRADO ({$v_cgmerrado}) para o CGM CERTO ($v_cgmcerto)\n {$sql}");
+              db_query($sql) or die(db_logduplos("SQL Alteracao avaliacaogruporespostatotpgcontingencia: " . pg_ErrorMessage()));
+              break;
+      }
+
+      unset($aTabelasRegrasEspecificas[$sChave]);
+    }
+
     $sql18 = "update issbase set q02_inscr = q02_inscr where q02_numcgm = $v_cgmcerto";
     $result18 = db_query($sql18) or die(db_logduplos("\nsql: $sql18\n" . pg_ErrorMessage()));
 
     $sql18 = "update iptubase set j01_matric = j01_matric where j01_numcgm = $v_cgmcerto";
     $result18 = db_query($sql18) or die(db_logduplos("\nsql: $sql18\n" . pg_ErrorMessage()));
+
+    /**
+     * (05/03/2020) Validação necessária para execução do duplos em São Borja, devido ao cálculo retroativo de IPTU,
+     * ainda não aplicado a todos os clientes
+     */
+    $sqlValidaTabela = "select * from pg_catalog.pg_class where relname = 'calculoretroativoiptuschema'";
+    $rsValidaTabela = db_query($sqlValidaTabela);
+
+    if (pg_num_rows($rsValidaTabela) > 0) {
+        $sqlAnosCalculo = "select j153_anousu from calculoretroativoiptuschema";
+        $rsAnosCalculo = db_query($sqlAnosCalculo) or die(db_logduplos("\nErro ao buscar o cálculo de retroatividade\n" . pg_errormessage()));
+        $totalRegistros = pg_num_rows($rsAnosCalculo);
+
+        /**
+         * Atualiza as tabelas referentes aos schemas de cadastros dos anos anteriores
+         * Ex.: cadastro_2019.iptubase
+         */
+        for ($contadorCalculo = 0; $contadorCalculo < $totalRegistros; $contadorCalculo++) {
+            $anoCalculo = db_utils::fieldsMemory($rsAnosCalculo, $contadorCalculo)->j153_anousu;
+            $schemaCadatroAno = "cadastro_{$anoCalculo}";
+
+            $updateIptuBaseAno = "update {$schemaCadatroAno}.iptubase set j01_numcgm = {$v_cgmcerto} where j01_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar iptubase do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateIptuBaseAno = db_query($updateIptuBaseAno) or die(db_logduplos($mensagemErro));
+
+            $updateAverba = "update {$schemaCadatroAno}.averba set j55_numcgm = {$v_cgmcerto} where j55_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar averba do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateAverba = db_query($updateAverba) or die(db_logduplos($mensagemErro));
+
+            $updateAverbaCgm = "update {$schemaCadatroAno}.averbacgm set j76_numcgm = {$v_cgmcerto} where j76_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar averbacgm do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateAverbaCgm = db_query($updateAverbaCgm) or die(db_logduplos($mensagemErro));
+
+            $updateAverbaCgmOld = "update {$schemaCadatroAno}.averbacgmold set j79_numcgm = {$v_cgmcerto} where j79_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar averbacgmold do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateAverbaCgmOld = db_query($updateAverbaCgmOld) or die(db_logduplos($mensagemErro));
+
+            $updateAverbaFormalPartilhaCgm = "update {$schemaCadatroAno}.averbaformalpartilhacgm set j102_numcgm = {$v_cgmcerto} where j102_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar averbaformalpartilhacgm do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateAverbaFormalPartilhaCgm = db_query($updateAverbaFormalPartilhaCgm) or die(db_logduplos($mensagemErro));
+
+            $updateCadimobil  = "update {$schemaCadatroAno}.cadimobil set j63_numcgm = {$v_cgmcerto} where j63_numcgm = {$v_cgmerrado} and ";
+            $updateCadimobil .= "not exists (select 1 from {$schemaCadatroAno}.cadimobil where j63_numcgm = $v_cgmcerto)";
+            $mensagemErro = "\nErro ao atualizar cadimobil do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateCadimobil = db_query($updateCadimobil) or die(db_logduplos($mensagemErro));
+
+            $deleteCadimobil  = "delete from {$schemaCadatroAno}.cadimobil where j63_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao apagar cadimobil do numcgm errado no ano {$anoCalculo}\n" . pg_errormessage();
+            $rsDeleteCadimobil = db_query($deleteCadimobil) or die(db_logduplos($mensagemErro));
+
+            $updateCondominioCgm = "update {$schemaCadatroAno}.condominiocgm set j106_numcgm = {$v_cgmcerto} where j106_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar condominiocgm do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateCondominioCgm = db_query($updateCondominioCgm) or die(db_logduplos($mensagemErro));
+
+            $updateImobil = "update {$schemaCadatroAno}.imobil set j44_numcgm = {$v_cgmcerto} where j44_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar imobil do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateImobil = db_query($updateImobil) or die(db_logduplos($mensagemErro));
+
+            $updateIptuNaoGeraCarneCgm = "update {$schemaCadatroAno}.iptunaogeracarnecgm set j68_numcgm = {$v_cgmcerto} where j68_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar iptunaogeracarnecgm do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateIptuNaoGeraCarneCgm = db_query($updateIptuNaoGeraCarneCgm) or die(db_logduplos($mensagemErro));
+
+            $updateLoteamCgm = "update {$schemaCadatroAno}.loteamcgm set j120_cgm = {$v_cgmcerto} where j120_cgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar loteamcgm do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateLoteamCgm = db_query($updateLoteamCgm) or die(db_logduplos($mensagemErro));
+
+            $updateMassaFalida = "update {$schemaCadatroAno}.massafalida set j58_numcgm = {$v_cgmcerto} where j58_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar massafalida do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdateMassaFalida = db_query($updateMassaFalida) or die(db_logduplos($mensagemErro));
+
+            $updatePromitente = "update {$schemaCadatroAno}.promitente set j41_numcgm = {$v_cgmcerto} where j41_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar promitente do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdatePromitente = db_query($updatePromitente) or die(db_logduplos($mensagemErro));
+
+            $updatePropri = "update {$schemaCadatroAno}.propri set j42_numcgm = {$v_cgmcerto} where j42_numcgm = {$v_cgmerrado}";
+            $mensagemErro = "\nErro ao atualizar propri do ano {$anoCalculo}\n" . pg_errormessage();
+            $rsUpdatePropri = db_query($updatePropri) or die(db_logduplos($mensagemErro));
+
+        }
+    }
+
+    /**
+     * Atualização da tabela iptubase
+     */
+    $updateIptuBase = "update iptubase set j01_numcgm = {$v_cgmcerto} where j01_numcgm = {$v_cgmerrado}";
+    $mensagemErro = "\nErro ao atualizar a tabela iptubase\n" . pg_errormessage();
+    $rsUpdateIptuBase = db_query($updateIptuBase) or die(db_logduplos($mensagemErro));
 
     $sSqlDadosArrecadInstituicao  = "select distinct ";
     $sSqlDadosArrecadInstituicao .= "       arreinstit.k00_numpre, ";
@@ -882,7 +1327,7 @@ for ($record_correto=0; $record_correto < pg_numrows($result_correto); $record_c
     for ($iInd = 0; $iInd < pg_num_rows($rsDadosArrecadInstituicao); $iInd ++) {
       $oDadosArrecadInstituicao = db_utils::fieldsMemory($rsDadosArrecadInstituicao, $iInd);
 
-      db_query("select fc_putsession('DB_instit', {$oDadosArrecadInstituicao->k00_instit})");
+      db_query("select fc_putsession('DB_instit', '{$oDadosArrecadInstituicao->k00_instit}')");
 
       $sql18 = "update arrecad
         set k00_numcgm = $v_cgmcerto
@@ -1090,4 +1535,3 @@ default:
     }
   }
 }
-?>

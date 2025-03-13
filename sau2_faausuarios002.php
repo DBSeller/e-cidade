@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $data1 = str_replace("X","-",$data1);
 $data2 = str_replace("X","-",$data2);
@@ -95,9 +95,9 @@ if( !empty($unidade) ){
             ";
 
 }
-$query_pront = pg_query($sql_pront);
+$query_pront = db_query($sql_pront);
 $linhas_pront = pg_num_rows($query_pront);
-$query_agenda = pg_query($sql_agenda);
+$query_agenda = db_query($sql_agenda);
 $linhas_agenda = pg_num_rows($query_agenda);
 
 if($linhas_pront == 0 and $linhas_agenda == 0){

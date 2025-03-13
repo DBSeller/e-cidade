@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,18 +25,25 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_lab_resultado_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once('libs/db_utils.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_lab_resultado_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification('libs/db_utils.php'));
+
+use ECidade\Saude\Laboratorio\Repository\Parametros;
 
 db_postmemory( $_POST );
 
 $cllab_resultado = new cl_lab_resultado;
+$parametros = new Parametros();
+$parametroAtributoExame = new AtributoExame();
+
+$parametroModel = $parametros->buscar();
+
 $db_opcao        = 1;
 $db_botao        = true;
 
@@ -94,36 +101,43 @@ db_app::load("grid.style.css");
 db_app::load("estilos.css");
 db_app::load("/widgets/dbautocomplete.widget.js");
 db_app::load("webseller.js");
-db_app::load("windowAux.widget.js");
-?>
-<script language="JavaScript" type="text/javascript" src="scripts/classes/laboratorio/LancamentoExameLaboratorio.classe.js"></script>
 
+$parametroIntegracao = $parametroModel->getIntegracao();
+$valorPreenchimentoObrigatorio = $parametroAtributoExame->preenchimentoObrigatorio();
+
+?>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/windowAux.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/dbmessageBoard.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBLookUp.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBTreeView.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/classes/laboratorio/LancarMedicamentoExame.classe.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/classes/laboratorio/LancamentoExameLaboratorio.classe.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/datagrid/plugins/DBHint.plugin.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/EmissaoRelatorio.js"></script>
+<script language="JavaScript" type="text/javascript"
+            src="scripts/classes/saude/laboratorio/ViewNumeroControleInterno.classe.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body class="body-default">
   <?php
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
   ?>
-  <div class="container">
-    <?php if( $iLaboratorioLogado == 0 ) { ?>
-    <table>
-      <tr>
-        <td>
-          <br><br>
-          <font color='#FF0000' face='arial'>
-            <b>Usuário ou departamento não consta como laboratório!<br>
-            </b>
-          </font>
-        </td>
-      </tr>
-    </table>
-    <?php
+  <?php if( $iLaboratorioLogado == 0 ) { ?>
+    <div class="container">
+
+      <br><br>
+      <font color='#FF0000' face='arial'>
+        <b>Usuário ou departamento não consta como laboratório!</b>
+      </font>
+      <br>
+    </div>
+  <?php
 
     exit;
     }
-    require_once("forms/db_frmlab_resultado.php");
+    require_once(modification("forms/db_frmlab_resultado.php"));
     ?>
-  </div>
 
 </body>
 </html>

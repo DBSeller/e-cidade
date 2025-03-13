@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
- 
-require_once("model/issqn/NotaPlanilhaRetencao.model.php");
-require_once("std/DBDate.php");
+
+require_once(modification("model/issqn/NotaPlanilhaRetencao.model.php"));
+require_once(modification("std/DBDate.php"));
 
 /**
- * Classe responsavel por realizar os Lançamentos do prestador, 
+ * Classe responsavel por realizar os Lançamentos do prestador,
  * recebidos pelo WebService
  * @package webservices
  * @author Rafael Nery <rafael.nery@dbseller.com.br>
@@ -42,184 +42,176 @@ class NotaPlanilhaRetencaoWebService extends NotaPlanilhaRetencao{
    * @var string
    */
   private $sCpfPrestador;
-  
+
   /**
    * CNPJ do prestador
    * @var string
    */
   private $sCnpjPrestador;
-  
+
   /**
    * Número de inscrição do Prestador
    * @var integer
    */
   private $iInscricaoPrestador;
-  
+
   /**
    * Número da Nota Fiscal
    * @var integer
    */
   private $iNumeroNf;
-  
+
   /**
    * Data da nota fiscal
    * @var date
    */
   private $oDataNf;
-    
+
   /**
    * Descrição do serviço prestado
    * @var string
    */
   private $sServicoPrestado;
-  
+
   /**
    * Valor do Serviço prestado
    * @var float
    */
   private $nValorServicoPrestado;
-  
+
   /**
-   * Valor da dedução 
+   * Valor da dedução
    * @var float
    */
   private $nValorDeducao;
-  
+
   /**
    * Valor para base de cálculo
    * @var float
    */
   private $nValorBaseCalculo;
-  
+
   /**
    * Valor da Aliquota
    * @var integer
    */
   private $fAliquota;
-  
+
   /**
    * Valor do Imposto Recebido
    * @var float
    */
   private $nValorImpostoRetido;
-  
+
   /**
    * Mes Competencia
    * @var string
    */
   private $uMesCompetencia;
-  
+
   /**
    * ano Competencia
    * @var string
    */
   private $uAnoCompetencia;
-  
+
   /**
    * Data do pagamento
    * @var date
    */
   private $oDataPagamento;
-  
+
   /**
-   * Codigo da Nota (sequencial Planit) 
+   * Codigo da Nota (sequencial Planit)
    * @var integer
    */
   private $iCodigoNotaPlanilha;
-  
+
   /**
    * Codigo da Planilha
    * @var integer
    */
   private $iCodPlanilha;
-  
+
   /**
    * Nome do Prestador
    * @var string
    */
   private $sNome;
-  
+
   /**
    * Contrutor responsavel por iniciar a transação
    */
   public function __construct($iCodigoNotaPlanilha = null) {
     parent::__construct($iCodigoNotaPlanilha);
   }
-  
+
   public function getNotaPlanilha ($iCodigoNotaPlanilha) {
-    
+
     $this->iCodigoNotaPlanilha = $iCodigoNotaPlanilha;
     parent::__construct($iCodigoNotaPlanilha);
   }
-  
+
   /**
    * Processa os dados da nota e realiza os seus lancamentos na Planilha
    * @throws BusinessException
    */
   public function lancaValorPlanilha() {
-    
+
     try {
 
-      db_inicio_transacao();
-  
+      if (!db_utils::inTransaction()) {
+        throw new Exception("Sem transação ativa");
+      }
+
       db_app::import('CgmFactory');
       db_app::import('issqn.Empresa');
-      
+
       /**
-       * Verifica se foi fornecido Inscrição Municipal, CNPJ, CPF ou Inscrição Municipal 
-       * para retornar o numero do CGM. 
+       * Verifica se foi fornecido Inscrição Municipal, CNPJ, CPF ou Inscrição Municipal
+       * para retornar o numero do CGM.
        */
       if ($this->isRetido() == true) {
-        
+
           if ($this->iInscricaoPrestador) {
-          
+
             $oEmpresa = new Empresa($this->iInscricaoPrestador);
             $oCGM     = $oEmpresa->getCgmEmpresa();
-           
+
             if ( $oCGM instanceof CgmFisico ) {
               $sCpfCnpj = $oCGM->getCpf();
             } else {
               $sCpfCnpj = $oCGM->getCnpj();
             }
-          
+
           } else if ($this->sCnpjPrestador) {
-            
-            $oCGM = CgmFactory::getInstanceByCnpjCpf($this->sCnpjPrestador);
-            
-            if (!is_object($oCGM)) {
-              throw new Exception("Documento não encontrado no cadastro geral do municipio.(CNPJ: $this->sCnpjPrestador)");
-            }
-          
-            if ($oCGM->isFisico()) {
-              $sCpfCnpj = $oCGM->getCpf();
-            } else {
-              $sCpfCnpj = $oCGM->getCnpj();
-            }
-            
+
+            $sCpfCnpj = $this->sCnpjPrestador;
+
           } else if ($this->sCpfPrestador) {
-          
+
             $oCGM = CgmFactory::getInstanceByCnpjCpf($this->sCpfPrestador);
-          
+
             if (!is_object($oCGM)) {
               throw new Exception("Documento não encontrado no cadastro geral do municipio.(CPF: $this->sCpfPrestador)");
             }
-          
+
             $sCpfCnpj = $oCGM->getCpf();
           }
-        
-        
+
+
       } else {
-        
+
         if ($this->getTipoLancamento() == parent::SERVICO_PRESTADO) {
           $sCpfCnpj = (strlen($this->sCnpjPrestador) >= 11) ?  $this->sCnpjPrestador : 0;
         } else {
-          
+
           if (strlen($this->sCnpjPrestador) < 14) {
             throw new Exception('CPF ou CNPJ nao encontrado');
           }
         }
       }
-      
+
       /**
        * Seta os dados necessários para salvar a Nota
        */
@@ -240,60 +232,44 @@ class NotaPlanilhaRetencaoWebService extends NotaPlanilhaRetencao{
       $this->setValorBase       ( $this->nValorBaseCalculo );
       $this->setValorImposto    ( $this->nValorImpostoRetido );
       $this->setDescricaoServico( utf8_decode($this->sServicoPrestado) );
-      
+
       /**
        * Salva os dados da nota
        */
       $this->salvar($this->iCodigoNotaPlanilha);
-      
-      if ( db_utils::inTransaction() ) {
-        db_fim_transacao(false);
-      }
-      
+
       return $this->getCodigoNotaPlanilha();
     } catch ( Exception $oErro ) {
-      
-      if ( db_utils::inTransaction() ) {
-        db_fim_transacao(true);
-      }
+
       throw new Exception($oErro->getMessage());
     }
   }
-  
+
   /**
    * Anula os valores lançados na planilha de retenção
    * @throws BusinessException
    */
-  public function anularValorPlanilha() { 
-    
-    if ($this->iCodigoNotaPlanilha == NULL) {
-      throw new Exception('Codigo da Nota não informado!');
-    }
-    
+  public function anularValorPlanilha() {
+
     try {
-      
-      db_inicio_transacao();
-      
+
+      if (!db_utils::inTransaction()) {
+        throw new Exception("Sem transação ativa");
+      }
+
+      if ($this->iCodigoNotaPlanilha == NULL) {
+        throw new Exception("Codigo da Nota não informado!");
+      }
+
       $this->setSituacao(1);
       $this->setStatus (NotaPlanilhaRetencao::STATUS_INATIVO_EXCLUSAO);
       $this->salvar($this->iCodigoNotaPlanilha);
-      
-      if ( db_utils::inTransaction() ) {
-        
-        db_fim_transacao(false);
-      }
+
     } catch (Exception $oErro) {
-      
-      if ( db_utils::inTransaction() ) {
-        
-        db_fim_transacao(true);
-      }
-      
       throw new Exception($oErro->getMessage());
     }
   }
-  
-  
+
   /**
    * seta o Cpf do Prestador
    * @param string $sCpfPrestador
@@ -301,7 +277,7 @@ class NotaPlanilhaRetencaoWebService extends NotaPlanilhaRetencao{
   public function setCpfPrestador($sCpfPrestador) {
     $this->sCpfPrestador = $sCpfPrestador;
   }
-  
+
   /**
    * seta o Cnpj do Prestador
    * @param string $sCnpjPrestador
@@ -309,7 +285,7 @@ class NotaPlanilhaRetencaoWebService extends NotaPlanilhaRetencao{
   public function setCnpjPrestador($sCnpjPrestador) {
     $this->sCnpjPrestador= $sCnpjPrestador;
   }
-  
+
   /**
    * seta a Inscrição do Prestador
    * @param integer $iInscricaoPrestador
@@ -317,7 +293,7 @@ class NotaPlanilhaRetencaoWebService extends NotaPlanilhaRetencao{
   public function setInscricaoPrestador($iInscricaoPrestador) {
     $this->iInscricaoPrestador = $iInscricaoPrestador;
   }
-  
+
   /**
    * seta o número da Nota Fiscal
    * @param integer $iNumeroNf
@@ -325,7 +301,7 @@ class NotaPlanilhaRetencaoWebService extends NotaPlanilhaRetencao{
   public function setNumeroNf($iNumeroNf) {
     $this->iNumeroNf = $iNumeroNf;
   }
-  
+
   /**
    * Seta a data da Nota Fiscal
    * @param date $dDataNf
@@ -401,7 +377,7 @@ class NotaPlanilhaRetencaoWebService extends NotaPlanilhaRetencao{
   public function setDataPagamento($dDataPagamento) {
     $this->oDataPagamento = new DBDate($dDataPagamento);
   }
-  
+
   /**
    * Seta o Codigo da planilha
    * @param integer $iCodPlanilha
@@ -409,12 +385,12 @@ class NotaPlanilhaRetencaoWebService extends NotaPlanilhaRetencao{
   public function setCodigoNotaPlanilha($iCodigoNotaPlanilha) {
     $this->iCodigoNotaPlanilha = $iCodigoNotaPlanilha;
   }
-  
+
   public function setNomePlanilha($nome) {
   	$this->sNome = $nome;
   }
 
-  
+
   /**
    * Seta o Código da planilha
    * @param integer $iCodigoPlanilha
@@ -422,7 +398,7 @@ class NotaPlanilhaRetencaoWebService extends NotaPlanilhaRetencao{
   public function setCodPlanilha($iCodPlanilha) {
     $this->iCodPlanilha = $iCodPlanilha;
   }
-  
+
   /**
    * Valida se pelo menos um dos dados(CPF, CNPJ, Inscrição) foi preenchido
    * @throws BusinessException

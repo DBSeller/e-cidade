@@ -29,36 +29,26 @@
 $clsetorregimovel->rotulo->label();
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tj69_sequencial?>">
-       <?=@$Lj69_sequencial?>
-    </td>
-    <td> 
-<?
-db_input('j69_sequencial',10,$Ij69_sequencial,true,'text',3,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj69_descr?>">
-       <?=@$Lj69_descr?>
-    </td>
-    <td> 
-<?
-db_input('j69_descr',40,$Ij69_descr,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  </table>
-  </center>
+  <fieldset>
+    <legend class="bold">Cadastro de Registro de Imóveis</legend>
+    <table border="0">
+      <tr>
+        <td nowrap title="<?=@$Tj69_sequencial?>"><?=@$Lj69_sequencial?></td>
+        <td><? db_input('j69_sequencial',10,$Ij69_sequencial,true,'text',3,"") ?></td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj69_descr?>"> <?=@$Lj69_descr?> </td>
+        <td> <? db_input('j69_descr',40,$Ij69_descr,true,'text',$db_opcao,"") ?> </td>
+      </tr>
+    </table>
+  </fieldset>
 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
+
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_setorregimovel','func_setorregimovel.php?funcao_js=parent.js_preenchepesquisa|j69_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_setorregimovel','func_setorregimovel.php?funcao_js=parent.js_preenchepesquisa|j69_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_setorregimovel.hide();

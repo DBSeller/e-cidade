@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("fpdf151/scpdf.php");
-include("fpdf151/impcarne.php");
-include("libs/db_sql.php");
-include("classes/db_solicitem_classe.php");
-include("classes/db_pcdotac_classe.php");
-include("classes/db_pcparam_classe.php");
-include("classes/db_pcsugforn_classe.php");
-include("classes/db_empparametro_classe.php");
-include("classes/db_solicitaregistropreco_classe.php");
-include("classes/db_db_departorg_classe.php");
+require(modification("fpdf151/scpdf.php"));
+include(modification("fpdf151/impcarne.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_pcdotac_classe.php"));
+include(modification("classes/db_pcparam_classe.php"));
+include(modification("classes/db_pcsugforn_classe.php"));
+include(modification("classes/db_empparametro_classe.php"));
+include(modification("classes/db_solicitaregistropreco_classe.php"));
+include(modification("classes/db_db_departorg_classe.php"));
 
 $clsolicitem 						 = new cl_solicitem;
 $classinatura 					 = new cl_assinatura;

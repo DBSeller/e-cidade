@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,11 +28,11 @@
 /**
  * Classe para envio de notificacoes por email
  * @author Iuri Guntchnigg <iuri@dbseller.com.br>
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.9 $ 
  * @package configuracao 
  */
-require_once ('model/configuracao/notificacao/INotificacao.interface.php');
-require_once ('model/configuracao/notificacao/Notificacao.model.php');
+require_once(modification('model/configuracao/notificacao/INotificacao.interface.php'));
+require_once(modification('model/configuracao/notificacao/Notificacao.model.php'));
 
 final class NotificacaoEmail extends Notificacao implements INotificacao {
   
@@ -52,7 +52,7 @@ final class NotificacaoEmail extends Notificacao implements INotificacao {
 
     $oMensagem      = $this->oNotificacaoMensagem;
     
-    include ('libs/config.mail.php');
+    include(modification('libs/config.mail.php'));
     
     
     if ($sHost  != "" && $sPort != "") {

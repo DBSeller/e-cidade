@@ -98,7 +98,7 @@ DBViewReordenacaoItinerario.prototype.salvarReordenacao = function() {
       oDadosRequisicao.onComplete = function(oResponse) {
         
                                        js_removeObj("msgBox");
-                                       var oRetorno = eval("("+oResponse.responseText+")");
+                                       var oRetorno = JSON.parse(oResponse.responseText);
                                        
                                        alert(oRetorno.sMensagem.urlDecode());
                                        if (oRetorno.iStatus == 1) {
@@ -138,7 +138,7 @@ DBViewReordenacaoItinerario.prototype.buscaLogradourosItinerarios = function() {
 DBViewReordenacaoItinerario.prototype.retornoBuscaLogradourosItinerarios = function(oResponse, oSelf) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   oSelf.oGridItinerariosLogradouros.clearAll(true);
   

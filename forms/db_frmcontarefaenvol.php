@@ -26,8 +26,8 @@
  */
 
 //MODULO: atendimento
-include("classes/db_db_usuarios_classe.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_usuarios            = new cl_db_usuarios;
 $cltarefaenvol->rotulo->label();
@@ -165,6 +165,6 @@ function js_cancelar(){
 }
 function js_voltar() {
   parent.mo_camada('tarefa')
-  top.corpo.iframe_tarefa.document.form1.bt_voltar.click();	
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefa.document.form1.bt_voltar.click();	
 }
 </script>

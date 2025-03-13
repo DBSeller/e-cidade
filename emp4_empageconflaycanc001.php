@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_empageconf_classe.php");
-include("classes/db_empageconfgera_classe.php");
-include("classes/db_empagegera_classe.php");
-include("classes/db_empageconfcanc_classe.php");
+include(modification("classes/db_empageconf_classe.php"));
+include(modification("classes/db_empageconfgera_classe.php"));
+include(modification("classes/db_empagegera_classe.php"));
+include(modification("classes/db_empageconfcanc_classe.php"));
 
 $clempageconf = new cl_empageconf;
 $clempagegera = new cl_empagegera;
 $clempageconfgera = new cl_empageconfgera;
 $clempageconfcanc = new cl_empageconfcanc;
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));

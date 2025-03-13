@@ -69,7 +69,7 @@ db_select('k01_tipo',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_preenchepesquisa|k01_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_preenchepesquisa|k01_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_histcalc.hide();

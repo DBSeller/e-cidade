@@ -4,25 +4,25 @@ require_once("scripts/classes/educacao/DBViewFormularioEducacao.classe.js");
  * Monta um select com uma lista de etapas
  * @dependency Utiliza DBViewFormularioEducacao.classe.js
  * @autor Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @package Educacao
- * @subpackage Escola 
- * @example 
+ * @subpackage Escola
+ * @example
  *         var oEtapa = new DBViewFormularioEducacao.ListaEtapa();
- *        
+ *
  *         var fFuncaoLoad = function() {
  *           alert('Chamei após carregar');
  *         };
- *        
+ *
  *         var fFuncaoChange = function () {
- *           alert(oEtapa.getSelecionados().toSource());
+ *           alert(JSON.stringify(oEtapa.getSelecionados()));
  *         };
- *         
+ *
  *         oEtapa.setCallBackLoad(fFuncaoLoad);       // Opcional
- *         oEtapa.setCallbackOnChange(fFuncaoChange); // Opcional 
- *         oEtapa.habilitarOpcaoTodas(true);          // Opcional 
+ *         oEtapa.setCallbackOnChange(fFuncaoChange); // Opcional
+ *         oEtapa.habilitarOpcaoTodas(true);          // Opcional
  *         oEtapa.show($('listaEtapas'));
- * 
+ *
  * @returns {void}
  */
 DBViewFormularioEducacao.ListaEtapa = function() {
@@ -32,7 +32,7 @@ DBViewFormularioEducacao.ListaEtapa = function() {
    * @var string
    */
   this.sUrlRPC = "edu4_etapas.RPC.php";
-  
+
   /**
    * Função callback ao carregar os dados
    * @var function
@@ -40,15 +40,15 @@ DBViewFormularioEducacao.ListaEtapa = function() {
   this.fCallBackLoad = function () {
     return true;
   };
-  
+
   /**
-   * Função callback ao selecionar um option do select 
+   * Função callback ao selecionar um option do select
    * @var function
    */
   this.fCallbackOnChange = function () {
     return true;
   };
-  
+
   /**
    * Se true, adiciona no combobox o option 'Todas'
    * @var boolean
@@ -69,15 +69,23 @@ DBViewFormularioEducacao.ListaEtapa = function() {
    */
   this.iCalendario = 0;
 
+    /**
+     * Código do Ensino que devemos buscar as etapas
+     * OBS.: Se 0, busca de todos os Ensino
+     * @var integer
+     */
+
+  this.iEnsino = 0;
+
+
   /**
    * Elemento select das etapas
    * @var HTMLElement
    */
   this.oCboEtapas = document.createElement("select");
   this.oCboEtapas.style.width = "100%";
+  this.oCboEtapas.add( new Option( 'Selecione uma Etapa', '' ) );
 };
-
-
 
 /**
  * Define uma função para ser executada após o carregamento dos dados
@@ -85,9 +93,8 @@ DBViewFormularioEducacao.ListaEtapa = function() {
  * @return {void}
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.setCallBackLoad = function (fFunction) {
-  
   this.fCallBackLoad = fFunction;
-}; 
+};
 
 /**
  * Define uma função para ser executada ao mudar a seleção no combobox
@@ -95,7 +102,7 @@ DBViewFormularioEducacao.ListaEtapa.prototype.setCallBackLoad = function (fFunct
  * @return {void}
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.setCallbackOnChange = function (fFunction) {
-  
+
   this.fCallbackOnChange = fFunction;
   this.oCboEtapas.stopObserving('change');
   this.oCboEtapas.observe('change', function() {
@@ -108,7 +115,6 @@ DBViewFormularioEducacao.ListaEtapa.prototype.setCallbackOnChange = function (fF
  * @param boolean lHabilta
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.habilitarOpcaoTodas = function (lHabilta) {
-  
   this.lHabilitaOpcaoTodas = lHabilta;
 };
 
@@ -117,7 +123,7 @@ DBViewFormularioEducacao.ListaEtapa.prototype.habilitarOpcaoTodas = function (lH
  * @returns Object
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.getSelecionados = function () {
-  
+
   var oRetorno          = {};
   oRetorno.codigo_etapa = this.oCboEtapas.value;
   oRetorno.etapa        = this.oCboEtapas.options[this.oCboEtapas.selectedIndex].innerHTML;
@@ -125,39 +131,41 @@ DBViewFormularioEducacao.ListaEtapa.prototype.getSelecionados = function () {
 };
 
 /**
- * Define uma escola para ser buscada as etapas 
+ * Define uma escola para ser buscada as etapas
  * @param  {integer} iEscola Código da escola
- * @return {void}         
+ * @return {void}
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.setEscola = function (iEscola) {
-
   this.iEscola = iEscola;
 };
 
 /**
- * Define o calendário que sera buscado as etapas 
+ * Define o calendário que sera buscado as etapas
  * @param  {integer} iCalendario código do calendário
  * @return {void}
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.setCalendario = function (iCalendario) {
-
   this.iCalendario = iCalendario;
 };
 
+DBViewFormularioEducacao.ListaEtapa.prototype.setEnsino = function (iEnsino) {
+    this.iEnsino = iEnsino;
+}
 
 /**
  * Realiza a pesquisa das etapas cadastrada no sistema para os filtros informados
  * @returns {void}
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.pesquisaEtapas = function () {
-  
+
   var oSelf = this;
-  
+
   var oParametro         = new Object();
   oParametro.exec        = 'pesquisaEtapas';
   oParametro.iEscola     = this.iEscola;
   oParametro.iCalendario = this.iCalendario;
-  
+  oParametro.iEnsino    = this.iEnsino;
+
   js_divCarregando("Aguarde, pesquisando etapas.", "msgBox");
 
   var oObjeto        = {};
@@ -166,7 +174,7 @@ DBViewFormularioEducacao.ListaEtapa.prototype.pesquisaEtapas = function () {
   oObjeto.onComplete = function(oAjax) {
                        oSelf.retornoEtapas(oAjax);
                      };
-  
+
   new Ajax.Request(oSelf.sUrlRPC, oObjeto);
 };
 
@@ -176,39 +184,36 @@ DBViewFormularioEducacao.ListaEtapa.prototype.pesquisaEtapas = function () {
  * @returns {void}
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.retornoEtapas = function (oAjax) {
-  
+
   var oSelf = this;
   js_removeObj('msgBox');
-  var oRetorno = eval ('(' +oAjax.responseText+ ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status != 1) {
-    
+
     alert(_M('educacao.escola.ListaEtapa.nenhuma_etapa_encontrada'));
     return false;
   }
-  
+
   oSelf.limpar();
 
   var iContadorEtapa = oRetorno.dados.length;
-  
-  oSelf.oCboEtapas.add(new Option('Selecione uma Etapa', ''));
- 
+
   if (oSelf.lHabilitaOpcaoTodas && iContadorEtapa > 1) {
     oSelf.oCboEtapas.add(new Option('Todas', '0'));
   }
-  
+
   oRetorno.dados.each( function (oDado) {
 
     var sLabel = oDado.etapa.urlDecode() + " - " + oDado.ensino.urlDecode();
-    oSelf.oCboEtapas.add(new Option(sLabel, oDado.codigo_etapa));    
-  }); 
-  
+    oSelf.oCboEtapas.add(new Option(sLabel, oDado.codigo_etapa));
+  });
+
   if (iContadorEtapa == 1) {
     oSelf.oCboEtapas.value = oRetorno.dados[0].codigo_etapa;
   }
-  
+
   oSelf.fCallBackLoad();
-  
 };
 
 /**
@@ -217,14 +222,15 @@ DBViewFormularioEducacao.ListaEtapa.prototype.retornoEtapas = function (oAjax) {
  * @returns {void}
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.show = function(oElement) {
-  
   oElement.appendChild(this.oCboEtapas);
-}; 
+};
 
 /**
  * Remove os options do comboBox das Etapas
  * @return {void}
  */
 DBViewFormularioEducacao.ListaEtapa.prototype.limpar = function() {
+
   this.oCboEtapas.options.length = 0;
+  this.oCboEtapas.add( new Option( 'Selecione uma Etapa', '' ) );
 };

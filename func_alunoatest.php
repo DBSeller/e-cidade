@@ -1,37 +1,37 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -84,9 +84,9 @@ $escola = db_getsession("DB_coddepto");
                   <?php
                     $sSqlEscola = $clescola->sql_query( "", "ed18_i_codigo, ed18_c_nome", "ed18_c_nome", " ed18_i_codigo != {$escola}" );
                     $result_esc = $clescola->sql_record( $sSqlEscola );
-                    
+
                     if ( $clescola->numrows == 0 ) {
-                  
+
                       $x = array( '' => 'NENHUM REGISTRO' );
                       db_select( 'chave_ed56_i_escola', $x, true, 1 );
                     } else {
@@ -109,7 +109,7 @@ $escola = db_getsession("DB_coddepto");
         <td align="center" valign="top">
         <?php
           if ( !isset( $pesquisa_chave ) ) {
-            
+
             $sql  = "SELECT *                                                                                               ";
             $sql .= "  FROM (                                                                                               ";
             $sql .= "         SELECT distinct on (aluno.ed47_i_codigo) aluno.ed47_i_codigo,                                 ";
@@ -156,7 +156,7 @@ $escola = db_getsession("DB_coddepto");
             $sql .= "                 left join alunopossib on alunopossib.ed79_i_alunocurso = alunocurso.ed56_i_codigo     ";
             $sql .= "                 left join serie       on serie.ed11_i_codigo           = alunopossib.ed79_i_serie     ";
             $sql .= "                 left join matricula   on matricula.ed60_i_aluno        = aluno.ed47_i_codigo          ";
-            
+
             $sWhere  = " WHERE ed56_c_situacao != 'TRANSFERIDO REDE' ";
             $sWhere .= "   AND ed56_c_situacao != 'TRANSFERIDO FORA' ";
             $sWhere .= "   AND ed56_c_situacao != 'CANDIDATO'        ";
@@ -166,36 +166,39 @@ $escola = db_getsession("DB_coddepto");
             $sWhere .= "   AND ed60_c_concluida = 'N'                ";
             $sWhere .= "   AND ed60_c_ativa     = 'S'                ";
             $sWhere .= "   AND ed52_c_passivo   = 'N'                ";
-             
+            $sWhere .= "   AND ed56_i_escola != {$escola}            ";
+
             $repassa       = array();
             $lCarregaDados = false;
-             
+
             if ( isset( $chave_ed47_i_codigo ) ) {
-              
+
               $repassa = array(
                                 "chave_ed47_i_codigo" => $chave_ed47_i_codigo,
                                 "chave_ed47_v_nome"   => $chave_ed47_v_nome,
                                 "chave_ed56_i_escola" => $chave_ed56_i_escola
                               );
             }
-            
+
             if ( isset( $chave_ed47_i_codigo ) && ( trim( $chave_ed47_i_codigo ) != "" ) ) {
-            
+
               $lCarregaDados  = true;
               $sWhere        .= " AND ed47_i_codigo = {$chave_ed47_i_codigo}";
-            } else if ( isset( $chave_ed47_v_nome ) && ( trim( $chave_ed47_v_nome ) != "" ) ) {
-            
+            }
+            if ( isset( $chave_ed47_v_nome ) && ( trim( $chave_ed47_v_nome ) != "" ) ) {
+
               $lCarregaDados  = true;
               $sWhere        .= " AND ed47_v_nome like '{$chave_ed47_v_nome}%'";
-            } else if ( isset( $chave_ed56_i_escola ) && ( trim( $chave_ed56_i_escola ) != "" ) ) {
-            
+            }
+            if ( isset( $chave_ed56_i_escola ) && ( trim( $chave_ed56_i_escola ) != "" ) ) {
+
               $lCarregaDados  = true;
               $sWhere        .= " AND ed56_i_escola = {$chave_ed56_i_escola}";
             }
-            
+
             $sWhere .= ") as x ORDER BY ed47_v_nome";
             $sql    .= $sWhere;
-            
+
             if ( $lCarregaDados ) {
               db_lovrot( @$sql, 12, "()", "", $funcao_js, "", "NoMe", $repassa );
             }
@@ -204,7 +207,7 @@ $escola = db_getsession("DB_coddepto");
             if ( $pesquisa_chave != null && $pesquisa_chave != "" ) {
 
               $result = $claluno->sql_record( $claluno->sql_query_pesq( "", "*", "", $where." AND ed47_i_codigo = {$pesquisa_chave}" ) );
-              
+
               if ( $claluno->numrows != 0 ) {
 
                 db_fieldsmemory( $result, 0 );
@@ -226,4 +229,10 @@ $escola = db_getsession("DB_coddepto");
 js_tabulacaoforms( "form2", "chave_ed47_v_nome", true, 1, "chave_ed47_v_nome", true );
 $('chave_ed47_i_codigo').className = 'field-size2';
 $('chave_ed47_v_nome').className   = 'field-size-max';
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

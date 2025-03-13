@@ -109,7 +109,7 @@ function js_pesquisame16_i_escola(mostra) {
 	
   if (mostra==true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_escola',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escola',
     	                'func_escola.php?funcao_js=parent.js_mostraescola1|ed18_i_codigo|ed18_i_codigo','Pesquisa',true
     	               );
     
@@ -117,7 +117,7 @@ function js_pesquisame16_i_escola(mostra) {
 	  
      if (document.form1.me16_i_escola.value != '') {
           
-        js_OpenJanelaIframe('top.corpo','db_iframe_escola',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escola',
                             'func_escola.php?pesquisa_chave='+document.form1.me16_i_escola.value+
                             '&funcao_js=parent.js_mostraescola','Pesquisa',false
                            );
@@ -151,7 +151,7 @@ function js_pesquisame16_i_dbusuario(mostra) {
 	
   if (mostra==true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios',
     	                'func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true
     	               );
     
@@ -159,7 +159,7 @@ function js_pesquisame16_i_dbusuario(mostra) {
 	  
      if(document.form1.me16_i_dbusuario.value != ''){
           
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios',
                             'func_db_usuarios.php?pesquisa_chave='+document.form1.me16_i_dbusuario.value+
                              '&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false
                            );
@@ -191,7 +191,7 @@ function js_mostradb_usuarios1(chave1,chave2) {
 
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_requi',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_requi',
 		              'func_mer_requi.php?funcao_js=parent.js_preenchepesquisa|me16_i_codigo','Pesquisa',true
 		             );
   

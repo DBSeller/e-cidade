@@ -1,29 +1,33 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
+
+use \ECidade\RecursosHumanos\RH\PontoEletronico\Manutencao\Repository\EspelhoPontoCache;
+use \ECidade\RecursosHumanos\RH\PontoEletronico\Calculo\Model\DiaTrabalho;
+use \ECidade\RecursosHumanos\RH\PontoEletronico\Manutencao\EspelhoPonto;
 
 /**
  * Model dos assentamentos de Servidor
@@ -31,378 +35,1128 @@
  * @package pessoal
  * @author Alberto <alberto@dbseller.com.br>
  */
-class Assentamento {
+class Assentamento
+{
 
-	/**
-	 * Código assentamento
-	 * @var integer
-	 */
-	private $iCodigo;
+    const NATUREZA_PADRAO               = 1;
+    const NATUREZA_SUBSTITUICAO         = 2;
+    const NATUREZA_RRA                  = 3;
+    const NATUREZA_PONTO_ELETRONICO     = 4;
+    const NATUREZA_JUSTIFICATIVA        = 5;
+    const NATUREZA_DIA_EXTRA            = 6;
+    const NATUREZA_AUTORIZA_HORA_EXTRA  = 7;
+    const NATUREZA_HE_MANUAL            = 8;
+    const NATUREZA_ABONO_FALTA          = 9;
+    const NATUREZA_CONTROLE_MEDICO = 10;
 
-	/**
-	 * Matrícula servidor
-	 * @var integer
-	 */
-	private $iMatricula;
+    /**
+     * Código assentamento
+     * @var integer
+     */
+    private $iCodigo;
 
-	/**
-	 * Código do tipo de assentamento
-	 * @var integer
-	 */
-	private $iTipoAssentamento;
+    /**
+     * Matrícula servidor
+     * @var integer
+     */
+    private $iMatricula;
 
-	/**
-	 * Instância do objeto DBDate com a data da concessão do afastamento ou assentamento
-	 * @var DBDate
-	 */
-	private $oDataConcessao;
+    /**
+     * Código do tipo de assentamento
+     * @var integer
+     */
+    private $iTipoAssentamento;
 
-	/**
-	 * Histórico do assentamento
-	 * @var string
-	 */
-	private $sHistorico;
+    /**
+     * @var TipoAssentamento
+     */
+    private $oTipoAssentamento = null;
 
-	/**
-	 * Código da portaria emitida
-	 * @var string
-	 */
-	private $sCodigoPortaria;
+    /**
+     * Instância do objeto DBDate com a data da concessão do afastamento ou assentamento
+     * @var DBDate
+     */
+    private $oDataConcessao;
 
-	/**
-	 * Descrição do ato oficial
-	 * @var string
-	 */
-	private $sDescricaoAto;
+    /**
+     * Histórico do assentamento
+     * @var string
+     */
+    private $sHistorico;
 
-	/**
-	 * Quantidade de dias concedidos
-	 * @var integer
-	 */
-	private $iDias;
+    /**
+     * Código da portaria emitida
+     * @var string
+     */
+    private $sCodigoPortaria;
 
-	/**
-	 * Percentual concedido
-	 * @var number
-	 */
-	private $nPercentual;
+    /**
+     * Descrição do ato oficial
+     * @var string
+     */
+    private $sDescricaoAto;
 
-	/**
-	 * Instância do objeto DBDate com a data do termino do afastamento/assentamento
-	 * @var DBDate
-	 */
-	private $oDataTermino;
+    /**
+     * Quantidade de dias concedidos
+     * @var integer
+     */
+    private $iDias;
 
-	/**
-	 * Segundo Histórico do assentamento
-	 * @var string
-	 */
-	private $sSegundoHistorico;
+    /**
+     * Percentual concedido
+     * @var number
+     */
+    private $nPercentual;
 
-	/**
-	 * Login do usuário que registrou o asssentamento/afastamento
-	 * @var string
-	 */
-	private $sLoginUsuario;
+    /**
+     * Instância do objeto DBDate com a data do termino do afastamento/assentamento
+     * @var DBDate
+     */
+    private $oDataTermino;
 
-	/**
-	 * Instância do objeto DBDate com a data de lançamento do afastamento ou assentamento
-	 * @var DBDate
-	 */
-	private $oDataLancamento;
+    /**
+     * Segundo Histórico do assentamento
+     * @var string
+     */
+    private $sSegundoHistorico;
 
-	/**
-	 * Se registro foi convertido
-	 * @var boolean
-	 */
-	private $lConvertido;
+    /**
+     * Login do usuário que registrou o asssentamento/afastamento
+     * @var string
+     */
+    private $sLoginUsuario;
 
-	/**
-	 * Ano da portaria do registro
-	 * @var integer
-	 */
-	private $iAnoPortaria;
+    /**
+     * Instância do objeto DBDate com a data de lançamento do afastamento ou assentamento
+     * @var DBDate
+     */
+    private $oDataLancamento;
 
-	public function __construct($iCodigo) {
+    /**
+     * Se registro foi convertido
+     * @var boolean
+     */
+    private $lConvertido;
 
-		if ( empty($iCodigo) ) {
-			return;
-		}
+    /**
+     * Ano da portaria do registro
+     * @var integer
+     */
+    private $iAnoPortaria;
 
-		$oDaoAssentamento = db_utils::getDao('assenta');
-		$sSqlAssentamento = $oDaoAssentamento->sql_query_file($iCodigo);
-		$rsAssentamento   = $oDaoAssentamento->sql_record($sSqlAssentamento);
+    /**
+     * Obejeto contendo o valor e a quantidade para ser lancado na rubrica para pagamento
+     * @var stdClass
+     */
+    private $oValorQuantidade;
 
-		if ($oDaoAssentamento->numrows == 0) {
-			throw new BusinessException('Nenhum assentamento encontrado.');
-		}
+    private $lControleDiasNoMes = false;
 
-		$oAssentamento = db_utils::fieldsMemory($rsAssentamento, 0);
+    /**
+     * Guarda mensagem de erro na execução de métodos
+     * @var String
+     */
+    private $sErro = null;
 
-		$this->setCodigo          ($oAssentamento->h16_codigo);
-		$this->setMatricula       ($oAssentamento->h16_regist);
-		$this->setTipoAssentamento($oAssentamento->h16_assent);
-		$this->setHistorico       ($oAssentamento->h16_histor);
-		$this->setCodigoPortaria  ($oAssentamento->h16_nrport);
-		$this->setDescricaoAto    ($oAssentamento->h16_atofic);
-		$this->setDias            ($oAssentamento->h16_quant);
-		$this->setPercentual      ($oAssentamento->h16_perc);
-		$this->setSegundoHistorico($oAssentamento->h16_hist2);
-		$this->setLoginUsuario    ($oAssentamento->h16_login);
-		$this->setDataLancamento  ($oAssentamento->h16_dtlanc);
-		$this->setConvertido      ($oAssentamento->h16_conver);
-		$this->setAnoPortaria     ($oAssentamento->h16_anoato);
+    /**
+     * Atributo com o objeto de servidor
+     * @var Servidor
+     */
+    private $oServidor = null;
 
-		if( !empty($oAssentamento->h16_dtconc) ){
-			$oDataConcessao = new DBDate($oAssentamento->h16_dtconc);
-		  $this->setDataConcessao ($oDataConcessao);
-		}
+    protected $aValoresAtributosDinamicos = array();
 
-		if( !empty($oAssentamento->h16_dtterm) ){
-			$oDataTermino = new DBDate($oAssentamento->h16_dtterm);
-		  $this->setDataTermino   ($oDataTermino);
-		}
+    /**
+     * Atributo que guarda a quantidade de horas do assentamento
+     * @var String
+     */
+    private $sHora = null;
 
-	}
+    /**
+     * Atributo que guarda a quantidade de horas noturnas do assentamento
+     * @var String
+     */
+  private $horaNoturna;
 
-	/**
-	 * Retorna o código do assentamento
-	 * @return number
-	 */
-	public function getCodigo() {
-		return $this->iCodigo;
-	}
 
-	/**
-	 * Define o código do assentamento
-	 * @param integer $iCodigo
-	 */
-	public function setCodigo($iCodigo) {
-		$this->iCodigo = $iCodigo;
-	}
+    /**
+     * Atributo que guarda a quantidade de horas diurnas do assentamento
+     * @var String
+     */
+  private $horaDiurna;
 
-	/**
-	 * Retorna a matrícula do servidor do assentamento
-	 * @return integer
-	 */
-	public function getMatricula() {
-		return $this->iMatricula;
-	}
+  /**
+     * Construtor da classe
+     *
+     * @param Integer $iCodigo
+     * @throws \BusinessException
+     */
+    public function __construct($iCodigo = null)
+    {
 
-	/**
-	 * Define a matrícula do servidor do assentamento
-	 * @param unknown $iMatricula
-	 */
-	public function setMatricula($iMatricula) {
-		$this->iMatricula = $iMatricula;
-	}
+        if ( empty($iCodigo) ) {
+            return;
+        }
 
-	/**
-	 * Define o tipo de assentamento
-	 * @return integer
-	 */
-	public function getTipoAssentamento() {
-		return $this->iTipoAssentamento;
-	}
+        $oDaoAssentamento   = db_utils::getDao('assenta');
+        $sQueryControleDias = " exists (select true from tipoassecontrolediasmes where h16_assent = rh170_tipoasse) as controle_dias";
 
-	/**
-	 * Define o tipo de assentamneto
-	 * @param integer $iTipoAssentamento
-	 */
-	public function setTipoAssentamento($iTipoAssentamento) {
-		$this->iTipoAssentamento = $iTipoAssentamento;
-	}
+        $sSqlAssentamento = $oDaoAssentamento->sql_query_file($iCodigo, "*, {$sQueryControleDias}");
+        $rsAssentamento   = $oDaoAssentamento->sql_record($sSqlAssentamento);
 
-	/**
-	 * Retorna a data de concessão do afastamento
-	 * @return DBDate
-	 */
-	public function getDataConcessao() {
-		return $this->oDataConcessao;
-	}
+        if (!$rsAssentamento || pg_num_rows($rsAssentamento) == 0) {
+            throw new BusinessException('Nenhum assentamento encontrado.');
+        }
 
-	/**
-	 * Define a data de concessão do afastamento
-	 * @param DBDate $oDataConcessao
-	 */
-	public function setDataConcessao(DBDate $oDataConcessao) {
-		$this->oDataConcessao = $oDataConcessao;
-	}
+        $oAssentamento = db_utils::fieldsMemory($rsAssentamento, 0);
 
-	/**
-	 * Define o histórico do afastamento
-	 * @return string
-	 */
-	public function getHistorico() {
-		return $this->sHistorico;
-	}
+        $this->setCodigo          ($oAssentamento->h16_codigo);
+        $this->setMatricula       ($oAssentamento->h16_regist);
+        $this->setTipoAssentamento($oAssentamento->h16_assent);
+        $this->setHistorico       ($oAssentamento->h16_histor);
+        $this->setCodigoPortaria  ($oAssentamento->h16_nrport);
+        $this->setDescricaoAto    ($oAssentamento->h16_atofic);
+        $this->setDias            ($oAssentamento->h16_quant);
+        $this->setPercentual      ($oAssentamento->h16_perc);
+        $this->setSegundoHistorico($oAssentamento->h16_hist2);
+        $this->setLoginUsuario    ($oAssentamento->h16_login);
+        $this->setDataLancamento  ($oAssentamento->h16_dtlanc);
+        $this->setConvertido      ($oAssentamento->h16_conver);
+        $this->setAnoPortaria     ($oAssentamento->h16_anoato);
+        $this->setHora            ($oAssentamento->h16_hora);
 
-	/**
-	 * Define o histório do afastamento
-	 * @param unknown $sHistorico
-	 */
-	public function setHistorico($sHistorico) {
-		$this->sHistorico = $sHistorico;
-	}
+        $this->lControleDiasNoMes = $oAssentamento->controle_dias == 't';
 
-	/**
-	 * Retorna o código da portaria
-	 * @return string
-	 */
-	public function getCodigoPortaria() {
-		return $this->sCodigoPortaria;
-	}
+        if( !empty($oAssentamento->h16_dtconc) ){
+            $oDataConcessao = new DBDate($oAssentamento->h16_dtconc);
+            $this->setDataConcessao ($oDataConcessao);
+        }
 
-	/**
-	 * Define o código da portaria
-	 * @param unknown $sCodigoPortaria
-	 */
-	public function setCodigoPortaria($sCodigoPortaria) {
-		$this->sCodigoPortaria = $sCodigoPortaria;
-	}
+        if( !empty($oAssentamento->h16_dtterm) ){
+            $oDataTermino = new DBDate($oAssentamento->h16_dtterm);
+            $this->setDataTermino   ($oDataTermino);
+        }
 
-	/**
-	 * Retorna a descrição do ato
-	 * @return string
-	 */
-	public function getDescricaoAto() {
-		return $this->sDescricaoAto;
-	}
+    }
 
-	/**
-	 * Define a descrição do ato
-	 * @param string $sDescricaoAto
-	 */
-	public function setDescricaoAto($sDescricaoAto) {
-		$this->sDescricaoAto = $sDescricaoAto;
-	}
+    /**
+     * Retorna o código do assentamento
+     * @return number
+     */
+    public function getCodigo()
+    {
+        return $this->iCodigo;
+    }
 
-	/**
-	 * Retorna o número de dias do afastametno
-	 * @return number
-	 */
-	public function getDias() {
-		return $this->iDias;
-	}
+    /**
+     * Define o código do assentamento
+     * @param integer $iCodigo
+     */
+    public function setCodigo($iCodigo)
+    {
+        $this->iCodigo = $iCodigo;
+    }
 
-	/**
-	 * Define o número de dias do afastamento
-	 * @param integer $iDias
-	 */
-	public function setDias($iDias) {
-		$this->iDias = $iDias;
-	}
+    /**
+     * Retorna a matrícula do servidor do assentamento
+     * @return integer
+     */
+    public function getMatricula()
+    {
+        return $this->iMatricula;
+    }
 
-	/**
-	 * Retorna o percentual do afastamento
-	 * @return number
-	 */
-	public function getPercentual() {
-		return $this->nPercentual;
-	}
+    /**
+     * Define a matrícula do servidor do assentamento
+     * @param integer $iMatricula
+     */
+    public function setMatricula($iMatricula)
+    {
+        $this->iMatricula = $iMatricula;
+    }
 
-	/**
-	 * Define o percentual do afastamento
-	 * @param number $nPercentual
-	 */
-	public function setPercentual($nPercentual) {
-		$this->nPercentual = $nPercentual;
-	}
+    /**
+     * Define o tipo de assentamento
+     * @return integer
+     */
+    public function getTipoAssentamento()
+    {
+        return $this->iTipoAssentamento;
+    }
 
-	/**
-	 * Retorna uma instância do objeto DBDate com a data do afastamento
-	 * @return DBDate
-	 */
-	public function getDataTermino() {
-		return $this->oDataTermino;
-	}
+    /**
+     * Define o tipo de assentamneto
+     * @param integer $iTipoAssentamento
+     */
+    public function setTipoAssentamento($iTipoAssentamento)
+    {
+        $this->iTipoAssentamento = $iTipoAssentamento;
+        $this->oTipoAssentamento = TipoAssentamentoRepository::getInstanciaPorCodigo($iTipoAssentamento);
+    }
 
-	/**
-	 * Define uma instância do objeto DBDate com a  data de termino do afastamento/assentamento
-	 * @paramDBDate $oDataTermino
-	 */
-	public function setDataTermino(DBDate $oDataTermino) {
-		$this->oDataTermino = $oDataTermino;
-	}
+    /**
+     * @param \TipoAssentamento
+     */
+    public function setInstanciaTipoAssentamento($oTipoAssentamento)
+    {
+        $this->oTipoAssentamento = $oTipoAssentamento;
+        return $this;
+    }
 
-	/**
-	 * Retorna o segundo histórico do afastamento
-	 * @return string
-	 */
-	public function getSegundoHistorico() {
-		return $this->sSegundoHistorico;
-	}
+    /**
+     * @return \TipoAssentamento
+     */
+    public function getInstanciaTipoAssentamento()
+    {
 
-	/**
-	 * Define o segundo histórico do afastamento
-	 * @param string $sSegundoHistorico
-	 */
-	public function setSegundoHistorico($sSegundoHistorico) {
-		$this->sSegundoHistorico = $sSegundoHistorico;
-	}
+        if (empty($this->oTipoAssentamento)) {
+            $this->oTipoAssentamento = TipoAssentamentoRepository::getInstanciaPorCodigo($this->iTipoAssentamento);
+        }
+        return $this->oTipoAssentamento;
+    }
 
-	/**
-	 * Retorna o login do usuário
-	 * @return string
-	 */
-	public function getLoginUsuario() {
-		return $this->sLoginUsuario;
-	}
+    /**
+     * Retorna a data de concessão do afastamento
+     * @return DBDate
+     */
+    public function getDataConcessao()
+    {
+        return $this->oDataConcessao;
+    }
 
-	/**
-	 * Define o login do usuário
-	 * @param string $sLoginUsuario
-	 */
-	public function setLoginUsuario($sLoginUsuario) {
-		$this->sLoginUsuario = $sLoginUsuario;
-	}
+    /**
+     * Define a data de concessão do afastamento
+     * @param DBDate $oDataConcessao
+     */
+    public function setDataConcessao(DBDate $oDataConcessao)
+    {
+        $this->oDataConcessao = $oDataConcessao;
+    }
 
-	/**
-	 * Retorna uma instância do objeto DBDate com a data de lançamento do afastamento / assentamento
-	 * @return DBDate
-	 */
-	public function getDataLancamento() {
-		return $this->oDataLancamento;
-	}
+    /**
+     * Define o histórico do afastamento
+     * @return string
+     */
+    public function getHistorico()
+    {
+        return $this->sHistorico;
+    }
 
-	/**
-	 * Define uma instância do objeto DBDate com a data de lançamento do afastamento / assentamento
-	 * @param unknown $oDataLancamento
-	 */
-	public function setDataLancamento($oDataLancamento) {
-		$this->oDataLancamento = $oDataLancamento;
-	}
+    /**
+     * Define o histório do afastamento
+     * @param string $sHistorico
+     */
+    public function setHistorico($sHistorico)
+    {
+        $this->sHistorico = $sHistorico;
+    }
 
-	/**
-	 * Retorna se o afastamento foi convertido
-	 * @return boolean
-	 */
-	public function isConvertido() {
-		return $this->lConvertido;
-	}
+    /**
+     * Retorna o código da portaria
+     * @return string
+     */
+    public function getCodigoPortaria()
+    {
+        return $this->sCodigoPortaria;
+    }
 
-	/**
-	 * Define se o registro foi convertido
-	 * @param boolean $lConvertido
-	 */
-	public function setConvertido($lConvertido) {
-		$this->lConvertido = $lConvertido;
-	}
+    /**
+     * Define o código da portaria
+     * @param integer $sCodigoPortaria
+     */
+    public function setCodigoPortaria($sCodigoPortaria)
+    {
+        $this->sCodigoPortaria = $sCodigoPortaria;
+    }
 
-	/**
-	 * Retorna o ano da portaria
-	 * @return number
-	 */
-	public function getAnoPortaria() {
-		return $this->iAnoPortaria;
-	}
+    /**
+     * Retorna a descrição do ato
+     * @return string
+     */
+    public function getDescricaoAto()
+    {
+        return $this->sDescricaoAto;
+    }
 
-	/**
-	 * Define o ano da portaria
-	 * @param integer $iAnoPortaria
-	 */
-	public function setAnoPortaria($iAnoPortaria) {
-		$this->iAnoPortaria = $iAnoPortaria;
-	}
+    /**
+     * Define a descrição do ato
+     * @param string $sDescricaoAto
+     */
+    public function setDescricaoAto($sDescricaoAto)
+    {
+        $this->sDescricaoAto = $sDescricaoAto;
+    }
 
+    /**
+     * Retorna o número de dias do afastametno
+     * @return number
+     */
+    public function getDias()
+    {
+        return $this->iDias;
+    }
+
+    /**
+     * Define o número de dias do afastamento
+     * @param integer $iDias
+     */
+    public function setDias($iDias)
+    {
+        $this->iDias = $iDias;
+    }
+
+    /**
+     * Retorna o percentual do afastamento
+     * @return number
+     */
+    public function getPercentual()
+    {
+        return $this->nPercentual;
+    }
+
+    /**
+     * Define o percentual do afastamento
+     * @param number $nPercentual
+     */
+    public function setPercentual($nPercentual)
+    {
+        $this->nPercentual = $nPercentual;
+    }
+
+    /**
+     * Retorna uma instância do objeto DBDate com a data do afastamento
+     * @return DBDate
+     */
+    public function getDataTermino()
+    {
+        return $this->oDataTermino;
+    }
+
+    /**
+     * Define uma instância do objeto DBDate com a  data de termino do afastamento/assentamento
+     * @paramDBDate $oDataTermino
+     */
+    public function setDataTermino($oDataTermino)
+    {
+        $this->oDataTermino = $oDataTermino;
+    }
+
+    /**
+     * Retorna o segundo histórico do afastamento
+     * @return string
+     */
+    public function getSegundoHistorico()
+    {
+        return $this->sSegundoHistorico;
+    }
+
+    /**
+     * Define o segundo histórico do afastamento
+     * @param string $sSegundoHistorico
+     */
+    public function setSegundoHistorico($sSegundoHistorico)
+    {
+        $this->sSegundoHistorico = $sSegundoHistorico;
+    }
+
+    /**
+     * Retorna o login do usuário
+     * @return string
+     */
+    public function getLoginUsuario()
+    {
+        return $this->sLoginUsuario;
+    }
+
+    /**
+     * Define o login do usuário
+     * @param string $sLoginUsuario
+     */
+    public function setLoginUsuario($sLoginUsuario)
+    {
+        $this->sLoginUsuario = $sLoginUsuario;
+    }
+
+    /**
+     * Retorna uma instância do objeto DBDate com a data de lançamento do afastamento / assentamento
+     * @return DBDate
+     */
+    public function getDataLancamento()
+    {
+        return $this->oDataLancamento;
+    }
+
+    /**
+     * Define uma instância do objeto DBDate com a data de lançamento do afastamento / assentamento
+     * @param string|DBDate $oDataLancamento
+     */
+    public function setDataLancamento($oDataLancamento)
+    {
+        $this->oDataLancamento = $oDataLancamento;
+    }
+
+    /**
+     * Retorna se o afastamento foi convertido
+     * @return boolean
+     */
+    public function isConvertido()
+    {
+        return $this->lConvertido;
+    }
+
+    /**
+     * Define se o registro foi convertido
+     * @param boolean $lConvertido
+     */
+    public function setConvertido($lConvertido)
+    {
+        $this->lConvertido = $lConvertido;
+    }
+
+    /**
+     * Retorna o ano da portaria
+     * @return number
+     */
+    public function getAnoPortaria()
+    {
+        return $this->iAnoPortaria;
+    }
+
+    /**
+     * Define o ano da portaria
+     * @param integer $iAnoPortaria
+     */
+    public function setAnoPortaria($iAnoPortaria)
+    {
+        $this->iAnoPortaria = $iAnoPortaria;
+    }
+
+    /**
+     * Retorna a mensagem de erro
+     * @return String
+     */
+    public function getErro()
+    {
+        return $this->sErro;
+    }
+
+    /**
+     * Define o Servidor do assentamento
+     * @param Servidor
+     */
+    public function setServidor($oServidor)
+    {
+        $this->oServidor = $oServidor;
+        return $this;
+    }
+
+    /**
+     * Retorna o Servidor do assentamento
+     * @return Servidor
+     */
+    public function getServidor()
+    {
+
+        if(empty($this->oServidor)) {
+            $this->oServidor = ServidorRepository::getInstanciaByCodigo($this->iMatricula);
+        }
+
+        return $this->oServidor;
+    }
+
+
+    /**
+     * Define a quantidade de horas do assentamento
+     * @param String
+     */
+    public function setHora($sHora)
+    {
+        $this->sHora = $sHora;
+    }
+
+    /**
+     * Retorna a quantidade de horas do assentamento
+     * @return String
+     */
+    public function getHora()
+    {
+        return $this->sHora;
+    }
+
+    /**
+     * Persist na base um assentamento
+     * @return mixed true | String mensagem de erro
+     */
+    public function persist()
+    {
+
+        $classenta       = new cl_assenta();
+
+        $classenta->h16_regist  = $this->getMatricula();
+        $classenta->h16_assent  = $this->getTipoAssentamento();
+        $classenta->h16_dtconc  = ($this->getDataConcessao() instanceof DBDate ? $this->getDataConcessao()->getDate() : $this->getDataConcessao());
+        $classenta->h16_histor  = $this->getHistorico();
+        $classenta->h16_nrport  = $this->getCodigoPortaria();
+        $classenta->h16_atofic  = $this->getDescricaoAto();
+        $classenta->h16_quant   = $this->getDias();
+        $classenta->h16_perc    = ($this->getPercentual()) ? $this->getPercentual() : '0';
+        $classenta->h16_dtterm  = ($this->getDataTermino() instanceof DBDate ? $this->getDataTermino()->getDate() : $this->getDataTermino());
+        $classenta->h16_hist2   = $this->getSegundoHistorico();
+        $classenta->h16_login   = ($this->getLoginUsuario()) ? $this->getLoginUsuario() : '1';
+        $classenta->h16_dtlanc  = ($this->getDataLancamento() instanceof DBDate ? $this->getDataLancamento()->getDate() : $this->getDataLancamento());
+        $classenta->h16_conver  = ((bool)(int)$this->isConvertido()) == false ? 'false' : 'true';
+        $classenta->h16_anoato  = $this->getAnoPortaria();
+        $classenta->h16_hora    = $this->getHora();
+
+        if(empty($this->iCodigo)) {
+
+            $classenta->incluir(null);
+
+            if ($classenta->erro_status == "0") {
+                return $classenta->erro_msg;
+            }
+
+            $this->setCodigo($classenta->h16_codigo);
+        } else {
+
+            $classenta->h16_codigo = $this->getCodigo();
+            $classenta->alterar($this->getCodigo());
+
+            if ($classenta->erro_status == "0") {
+                return $classenta->erro_msg;
+            }
+        }
+
+        $this->invalidarCachePontoEletronico();
+        return $this;
+    }
+
+    /**
+     * Verifica se instacia e de assentamento funcional
+     *
+     * @return boolean
+     */
+    private function isAssetamentoFuncional()
+    {
+        return ($this instanceof AssentamentoFuncional ? true : false);
+    }
+
+    public function toArray()
+    {
+        $servidor             = ServidorRepository::getInstanciaByCodigo(
+            $this->getMatricula(),
+            DBPessoal::getAnoFolha(),
+            DBPessoal::getMesFolha()
+        );
+
+        return array(
+            'codigo' => $this->getCodigo(),
+            'tipo' => $this->getTipoAssentamento(),
+            'natureza' => 'padrao',
+            'cgm_servidor' => $servidor->getCgm()->getCodigo(),
+            'nome_servidor' => utf8_encode($servidor->getCgm()->getNome()),
+            'matricula' => $this->getMatricula(),
+            'dataConcessao' => ($this->getDataConcessao() instanceof DBDate ? $this->getDataConcessao()->getDate(DBDate::DATA_PTBR) : $this->getDataConcessao()),
+            'historico' => $this->getHistorico(),
+            'codigoPortaria' => $this->getCodigoPortaria(),
+            'descricaoAto' => $this->getDescricaoAto(),
+            'dias' => $this->getDias(),
+            'percentual' => $this->getPercentual(),
+            'dataTermino' => ($this->getDataTermino() instanceof DBDate ? $this->getDataTermino()->getDate(DBDate::DATA_PTBR) : $this->getDataTermino()),
+            'segundoHistorico' => $this->getSegundoHistorico(),
+            'loginUsuario' => $this->getLoginUsuario(),
+            'dataLancamento' => ($this->getDataLancamento() instanceof DBDate ? $this->getDataLancamento()->getDate(DBDate::DATA_PTBR) : $this->getDataLancamento()),
+            'convertido' => (int)$this->isConvertido(),
+            'anoPortaria' => $this->getAnoPortaria(),
+            'hora' => $this->getHora(),
+        );
+    }
+
+    /**
+     * Transforma o objeto em um formato JSON
+     * @return string
+     */
+    public function toJSON()
+    {
+        return json_encode((object) $this->toArray());
+    }
+
+    /**
+     * Seta o valor/quantidae para a formula executada
+     *
+     * @param  String $sFormula
+     *
+     * @return  void
+     */
+    private function setValorQuantidadePorFormula($sFormula = null)
+    {
+
+        $oTipoAssentamento = TipoAssentamentoRepository::getInstanciaPorCodigo($this->getTipoAssentamento());
+        $oDbformula        = new DBFormulaAssentamento($this);
+
+        if(empty($sFormula)) {
+            $sFormula        = $oTipoAssentamento->getVariavelTipoAssentamentoFinanceiro();
+        }
+
+        $oStdValorQtde               = new stdClass();
+        $oStdValorQtde->valor        = 0;
+        $oStdValorQtde->quantidade   = 0;
+        $this->oValorQuantidade      = $oStdValorQtde;
+
+        try {
+
+            if($sFormula === false) {
+                throw new BusinessException("Não foi possível recuperar a fórmula.");
+            }
+
+            $sSqlValorQuantidade = $oDbformula->parse("SELECT [". $sFormula ."]");
+            $rsValorQuantidade   = db_query($sSqlValorQuantidade);
+
+            if(!$rsValorQuantidade) {
+                throw new DBException("Ocorreu um erro ao recuperar o valor/quantidade da formula.\n".pg_last_error());
+            }
+
+            if(pg_num_rows($rsValorQuantidade) > 0) {
+                $sFieldName       = pg_field_name($rsValorQuantidade, 0);
+                $nValorQuantidade = pg_result($rsValorQuantidade, 0, $sFieldName);
+            }
+
+            if($oTipoAssentamento->getTipoLancamentoTipoAssentamentoFinanceiro() != 1 && $oTipoAssentamento->getTipoLancamentoTipoAssentamentoFinanceiro() != 2) {
+                throw new BusinessException("Não foi possível obter o tipo de lancamento da rubrica configurada para o assentamento.");
+            }
+
+            if($oTipoAssentamento->getTipoLancamentoTipoAssentamentoFinanceiro() == 1) {
+                $oStdValorQtde->valor      = $nValorQuantidade;
+            }
+
+            if($oTipoAssentamento->getTipoLancamentoTipoAssentamentoFinanceiro() == 2) {
+                $oStdValorQtde->quantidade = $nValorQuantidade;
+            }
+
+            $this->oValorQuantidade      = $oStdValorQtde;
+
+        } catch (Exception $oErro) {
+            $this->sErro = $oErro->getMessage();
+        }
+    }
+
+    /**
+     * Retorna o valor para formula executada a ser lançado no ponto do servidor
+     *
+     * @return Number
+     */
+    public function getValorPorFormula() {
+
+        if(empty($this->oValorQuantidade)) {
+            $this->setValorQuantidadePorFormula();
+        }
+
+        return $this->oValorQuantidade->valor;
+    }
+
+    /**
+     * Retorna a quantidade para formula executada a ser lançada no ponto do servidor
+     *
+     * @return Number
+     */
+    public function getQuantidadePorFormula()
+    {
+
+        if(empty($this->oValorQuantidade)) {
+            $this->setValorQuantidadePorFormula();
+        }
+
+        return $this->oValorQuantidade->quantidade;
+    }
+
+    /**
+     * Retorna uma intância de LoteRegistroPonto caso o Assentamento esteja vinculado a um Lote.
+     *
+     * @return LoteRegistroPonto Lote no qual o Assentamento esta vinculado
+     */
+    public function getLote()
+    {
+
+        $oDaoAssentaloteregistroponto = new cl_assentaloteregistroponto();
+        $sSqlAssentaloteregistroponto = $oDaoAssentaloteregistroponto->sql_query_file(null, "rh160_loteregistroponto", null, "rh160_assentamento = {$this->getCodigo()}");
+        $rsAssentaloteregistroponto   = db_query($sSqlAssentaloteregistroponto);
+
+        if (!$rsAssentaloteregistroponto) {
+            throw new DBException("Erro ao verificar se o assentamento possui lote");
+        }
+
+        if (pg_num_rows($rsAssentaloteregistroponto) > 0) {
+
+            $iLoteRegistroPonto = db_utils::fieldsMemory($rsAssentaloteregistroponto, 0)->rh160_loteregistroponto;
+            return LoteRegistrosPontoRepository::getInstanceByCodigo($iLoteRegistroPonto);
+        }
+
+        return false;
+    }
+
+    /**
+     * Retorna os atributos dinâmicos do assentamento
+     * @return array
+     * @throws \DBException
+     */
+    public function getAtributosDinamicos()
+    {
+
+        $aAtributosDinamicos = array();
+
+        $sSqlBuscaAtributos  = 'select db109_sequencial, 
+  	        	                     db109_descricao, 
+  	        	                     db110_valor
+ 	                            from db_cadattdinamico                                 
+ 	                      inner join db_cadattdinamicoatributos         on db109_db_cadattdinamico          = db118_sequencial        
+ 	                      inner join db_cadattdinamicoatributosvalor    on db110_db_cadattdinamicoatributos = db109_sequencial
+ 	                      inner join db_cadattdinamicovalorgrupo        on db120_sequencial                 = db110_cadattdinamicovalorgrupo 
+ 	                      inner join assentadb_cadattdinamicovalorgrupo on h80_db_cadattdinamicovalorgrupo  = db120_sequencial
+ 	                           where h80_assenta = '. $this->getCodigo();
+
+        $sIndice = "AtributosDinamicosAssentamento:{$this->getCodigo()}";
+
+        if ( DBRegistry::get($sIndice) ) {
+            return DBRegistry::get($sIndice);
+        }
+
+        $rsBuscaAtributos = db_query($sSqlBuscaAtributos);
+
+        if(!$rsBuscaAtributos) {
+            throw new DBException("Ocorreu um erro ao buscar os atributos dinâmicos para o assentamento.");
+        }
+
+        if(pg_num_rows($rsBuscaAtributos) > 0) {
+
+            for ($iIndAtributos = 0; $iIndAtributos < pg_num_rows($rsBuscaAtributos); $iIndAtributos++) {
+
+                $oAtributoDinamico   = new stdClass;
+                $oAtributoDinamico->nomeAtributo  = db_utils::fieldsMemory($rsBuscaAtributos, $iIndAtributos)->db109_descricao;
+                $oAtributoDinamico->valorAtributo = db_utils::fieldsMemory($rsBuscaAtributos, $iIndAtributos)->db110_valor;
+
+                $iCodigoAtributo = db_utils::fieldsMemory($rsBuscaAtributos, $iIndAtributos)->db109_sequencial;
+                $aAtributosDinamicos[$iCodigoAtributo] = $oAtributoDinamico;
+            }
+        }
+
+        DBRegistry::add($sIndice, $aAtributosDinamicos);
+        $this->aValoresAtributosDinamicos = $aAtributosDinamicos;
+        return $aAtributosDinamicos;
+    }
+
+    /**
+     * Retorna caso o assentamento deve ser caculado pelo dia dos meses.
+     * @return bool
+     */
+    public function possuiCalculoPorDiaDoMes()
+    {
+        return $this->lControleDiasNoMes;
+    }
+
+    /**
+     * Define o valor do atributo dinamico pelo seu nome
+     * @param $sNomeAtributo
+     * @param $sValor
+     * @throws \BusinessException
+     */
+    public function setValorAtributo($sNomeAtributo, $sValor)
+    {
+
+        $oAtributo = $this->oTipoAssentamento->getAtributoDinamicoPorNome($sNomeAtributo);
+        if (empty($oAtributo)) {
+            throw new BusinessException("Atributo {$sNomeAtributo} não encontrato para o tipo de assentamento {$this->oTipoAssentamento->getCodigo()}");
+        }
+        $this->aValoresAtributosDinamicos[$oAtributo->codigoAtributo] = $sValor;
+    }
+
+    public function salvarAtributos()
+    {
+
+        $oDaoAssentaAttr = new cl_assentadb_cadattdinamicovalorgrupo();
+        $oDaoAssentaAttr->excluir(null, null, "h80_assenta = {$this->getCodigo()}");
+        $aAtributos = $this->oTipoAssentamento->getAtributosDinamicos();
+
+        if (empty($aAtributos)) {
+            return;
+        }
+        $oDaoGrupoValores = new cl_db_cadattdinamicovalorgrupo();
+        $oDaoGrupoValores->incluir(null);
+        if ($oDaoGrupoValores->erro_status == 0) {
+            throw new BusinessException("Erro ao gerar grupo de valores para o atributo Dinâmico.");
+        }
+        if (empty($this->aValoresAtributosDinamicos)) {
+            return;
+        }
+        $iCodigoGrupo =  $oDaoGrupoValores->db120_sequencial;
+        $oDaoAssentaAttr->h80_assenta                     = $this->getCodigo();
+        $oDaoAssentaAttr->h80_db_cadattdinamicovalorgrupo = $iCodigoGrupo;
+        $oDaoAssentaAttr->incluir($this->getCodigo(), $iCodigoGrupo);
+        if ($oDaoAssentaAttr->erro_status == 0) {
+            throw new BusinessException("Erro ao gerar grupo de valores para o atributo Dinâmico.");
+        }
+        $oDaoAtributoValor = new cl_db_cadattdinamicoatributosvalor();
+        foreach ($this->aValoresAtributosDinamicos as $iCodigoAtributo => $valor) {
+
+            $oDaoAtributoValor->db110_cadattdinamicovalorgrupo   = $iCodigoGrupo;
+            $oDaoAtributoValor->db110_db_cadattdinamicoatributos = $iCodigoAtributo;
+            $oDaoAtributoValor->db110_valor                      = $valor;
+
+            $oDaoAtributoValor->incluir(null);
+            if ($oDaoAtributoValor->erro_status == 0) {
+                throw new Exception($oDaoAtributoValor->erro_msg);
+            }
+        }
+    }
+
+    /**
+     * Retorna um array com todas as horas extras lançadas manualmente para o assentamento
+     * @return array
+     * @throws DBException
+     */
+    public function getHorasManuais()
+    {
+
+        /* inicializa um array com todas horas permitidas */
+        $horasPermitidas = \ECidade\RecursosHumanos\RH\PontoEletronico\Evento\Model\Evento::$horasExtrasPermitidas;
+        $horasRetorno = array();
+        foreach ($horasPermitidas as $codigoHora) {
+            $horasRetorno[$codigoHora] = '00:00';
+        }
+
+        /* caso a natureza não seja do tipo manual */
+        if ((int)$this->getInstanciaTipoAssentamento()->getNatureza() !== Assentamento::NATUREZA_HE_MANUAL) {
+            return $horasRetorno;
+        }
+
+        $daoHoras = new cl_assentamentohoraextra();
+        $resBuscaHorasExtras = db_query($daoHoras->sql_query_file(null, "*", 'h17_sequencial', "h17_assenta = {$this->iCodigo}"));
+        if (!$resBuscaHorasExtras) {
+            throw new DBException("Ocorreu um erro ao consultar as horas extras manuais.");
+        }
+
+        /* caso não exista horas lançadas para o assentamento de natureza HE Manual */
+        $totalRegistrosLancados = pg_num_rows($resBuscaHorasExtras);
+        if ($totalRegistrosLancados === 0) {
+            return $horasRetorno;
+        }
+
+        for ($rowHoras = 0; $rowHoras < $totalRegistrosLancados; $rowHoras++) {
+
+            $stdHorasLancadas = db_utils::fieldsMemory($resBuscaHorasExtras, $rowHoras);
+            $horasRetorno[$stdHorasLancadas->h17_tipo] = $stdHorasLancadas->h17_hora;
+        }
+        return $horasRetorno;
+    }
+
+    /**
+     * Retorna um array com todas as horas extras lançadas manualmente para o assentamento
+     * @return array
+     * @throws DBException
+     */
+    public function getHorasAbonoHoras()
+    {
+
+        $horasRetorno       = array('horaInicio'=>null, 'horaFim'=>null);
+        $daoAbonoFalta      = new cl_assentamentoabonofalta();
+        $rsBuscaHorasExtras = db_query($daoAbonoFalta->sql_query_file(null, "*", null, "rh213_codigo = {$this->iCodigo}"));
+
+        if (!$rsBuscaHorasExtras) {
+            throw new DBException("Ocorreu um erro ao consultar as horas abonadas.");
+        }
+
+        /* caso não exista horas lançadas para o assentamento de natureza HE Manual */
+        $totalRegistrosLancados = pg_num_rows($rsBuscaHorasExtras);
+        if ($totalRegistrosLancados > 0) {
+
+            return db_utils::makeFromRecord($rsBuscaHorasExtras, function($retorno) {
+                return (object)array(
+                  'horaInicio' => $retorno->rh213_horainicio,
+                  'horaFim'    => $retorno->rh213_horafim
+                );
+            }, 0);
+        }
+
+        return (object)$horasRetorno;
+    }
+    /**
+     * Retorna os dados da retificação de um assentamento
+     *
+     * @return bool|stdClass
+     * @throws DBException
+     */
+    public function getRetificacao()
+    {
+        if (empty($this->iCodigo)) {
+            return false;
+        }
+
+        $daoRetifiacao  = new cl_retificacaoafastamento();
+        $sqlRetificacao = $daoRetifiacao->sql_query_file(null, '*', null, "rh220_assenta = {$this->iCodigo}");
+        $resRetificacao = db_query($sqlRetificacao);
+        if (!$resRetificacao) {
+            throw new DBException("Não foi possível consultar os dados de retificação de afastamento.");
+        }
+
+        if (pg_num_rows($resRetificacao) === 0) {
+            return false;
+        }
+
+        $stdConsulta = db_utils::fieldsMemory($resRetificacao, 0);
+        return (object) array(
+          'sequencial' => $stdConsulta->rh220_sequencial,
+          'origem'     => $stdConsulta->rh220_origemretificacao,
+          'tipo'       => $stdConsulta->rh220_tipoprocesso,
+          'numero'     => $stdConsulta->rh220_numeroprocesso
+        );
+    }
+
+    /**
+     * @param $iTipoAssentamento
+     * @param $iSelecao
+     * @return \stdClass
+     */
+
+    public function buscaAgendaAssetamento($iTipoAssentamento, $iSelecao)
+    {
+
+        $oDaoAgendaAssentamento = new \cl_agendaassentamento();
+
+        $fields = array(
+          'formulainicio.db148_nome as db148_nome_inicio',
+          'formulafim.db148_nome as db148_nome_fim',
+          'formulafaltasperiodo.db148_nome as db148_nome_faltasperiodo',
+          'h82_tipoassentamento, h82_selecao'
+
+        );
+
+
+        $sSqlAgendaAssentamento = $oDaoAgendaAssentamento
+          ->sql_query(
+            null,
+            implode(',', $fields),
+            null,
+            "h82_tipoassentamento = " . $iTipoAssentamento . " and h82_selecao = " . $iSelecao
+
+          );
+
+        $rsAgendaAssentamento = db_query($sSqlAgendaAssentamento);
+        $stdAgendaAssentamento = \db_utils::fieldsMemory($rsAgendaAssentamento, 0);
+
+        return $stdAgendaAssentamento;
+    }
+
+    /**
+     * Invalida o cache do espelho ponto no periodo do assentamento do servidor.
+     *
+     * @throws DBException
+     * @throws ParameterException
+     */
+    public function invalidarCachePontoEletronico()
+    {
+
+        $tipoAssentamento = $this->getInstanciaTipoAssentamento();
+        if (
+            in_array(
+                $tipoAssentamento->getNatureza(),
+                array(
+                    static::NATUREZA_JUSTIFICATIVA,
+                    static::NATUREZA_ABONO_FALTA,
+                    static::NATUREZA_AUTORIZA_HORA_EXTRA,
+                )
+            )
+            ||
+            strtoupper($tipoAssentamento->getTipo()) == 'A'
+        ) {
+            $dataInicial = $this->getDataConcessao() instanceof DBDate ? $this->getDataConcessao() : new \DBDate($this->getDataConcessao());
+            $dataFinal = $this->getDataTermino();
+            $dataFinal = empty($dataFinal) ? clone $dataInicial : (($dataFinal instanceof DBDate) ? $dataFinal : new \DBDate($dataFinal));
+
+            EspelhoPontoCache::init()->invalidarCacheNoPeriodo($this->getMatricula(), $dataInicial, $dataFinal);
+        }
+    }
+
+    /**
+     * @return String
+     */
+    public function getHoraNoturna()
+    {
+        return $this->horaNoturna;
+    }
+
+    /**
+     * @param String $horaNoturna
+     */
+    public function setHoraNoturna($horaNoturna)
+    {
+        $this->horaNoturna = $horaNoturna;
+    }
+
+    /**
+     * @return String
+     */
+    public function getHoraDiurna()
+    {
+        return $this->horaDiurna;
+    }
+
+    /**
+     * @param String $horaDiurna
+     */
+    public function setHoraDiurna($horaDiurna)
+    {
+        $this->horaDiurna = $horaDiurna;
+    }
+
+    /**
+     * Calcula as horas totais de um dia de trabalho para um Assentamento do tipo Afastamento, desmembrando essas horas em horas diurnas e noturnas.
+     * @param DiaTrabalho $diaTrabalho
+     * @return null|String
+     */
+    public function calcularHorasDiurnasNoturnasNoDia(DiaTrabalho $diaTrabalho)
+    {
+        if (strtoupper($this->getInstanciaTipoAssentamento()->getTipo()) == 'A') {
+            $baseHora = new \ECidade\RecursosHumanos\RH\PontoEletronico\Calculo\Horas\AdicionalNoturno($diaTrabalho);
+            $jornada = $diaTrabalho->getJornada();
+
+            $horasJornada = $jornada->getHoras();
+            $quantidadeHorasJornada = count($horasJornada);
+
+            $horasTotais = array();
+            for ($i = 0; $i < $quantidadeHorasJornada; $i = $i + 2) {
+                $indiceEntrada = $i;
+                $indiceSaida = $i+1;
+
+                if (!empty($horasJornada[$indiceEntrada]) && !empty($horasJornada[$indiceSaida])) {
+                    $entrada = clone $horasJornada[$indiceEntrada]->oHora;
+                    $saida = clone $horasJornada[$indiceSaida]->oHora;
+
+                    $horasTotais[] = $baseHora->percorreMinutoAMinuto($entrada, $saida, true);
+                }
+            }
+
+            return $this->totalizarHorasDiurnasENoturnas($horasTotais);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param \stdClass[] $horasTotais
+     * @return String
+     */
+    protected function totalizarHorasDiurnasENoturnas($horasTotais = array())
+    {
+        $horastotaisDiurnas = '00:00';
+        $horastotaisNoturnas = '00:00';
+        foreach ($horasTotais as $hora) {
+            $horastotaisDiurnas = EspelhoPonto::somarTotalizador(array($horastotaisDiurnas, $hora->horasDiurnas->format('H:i')));
+            $horastotaisNoturnas = EspelhoPonto::somarTotalizador(array($horastotaisNoturnas, $hora->horasNoturnas->format('H:i')));
+        }
+
+        $this->setHoraDiurna($horastotaisDiurnas);
+        $this->setHoraNoturna($horastotaisNoturnas);
+        $this->setHora(EspelhoPonto::somarTotalizador(array($horastotaisDiurnas, $horastotaisNoturnas)));
+
+        return $this->getHora();
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,66 +29,119 @@ class Database {
 
   /**
    * Resource da conexão com o banco
+   *
    * @var resource
    */
   private $oConnection;
 
   /**
    * Base de dados
+   *
    * @var string
    */
   private $sBase = "";
 
   /**
    * Servidor do banco de dados
+   *
    * @var string
    */
   private $sServidor = "";
 
   /**
    * Porta da base de dados
+   *
    * @var string
    */
   private $sPorta = "";
 
   /**
    * Usuário do banco
+   *
    * @var string
    */
-  private $sUsuario  = "";
+  private $sUsuario = "";
 
   /**
    * Senha da base de dados
+   *
    * @var string
    */
-  private $sSenha    = "";
+  private $sSenha = "";
 
+  /**
+   * @var \Database
+   */
+  private static $oInstance;
+
+  /**
+   * Retorna uma conexão utilizando as variáveis da sessão
+   *
+   * @return \Database
+   */
+  public static function getInstance() {
+
+    if (!self::$oInstance) {
+
+      $oDatabase = new Database();
+      $oDatabase->setServidor(db_getsession('DB_servidor'));
+      $oDatabase->setPorta(db_getsession('DB_porta'));
+      $oDatabase->setBase(db_getsession('DB_base'));
+      $oDatabase->setUsuario(db_getsession('DB_user'));
+      $oDatabase->setSenha(db_getsession('DB_senha'));
+      $oDatabase->connect();
+
+      self::$oInstance = $oDatabase;
+    }
+
+    return self::$oInstance;
+  }
+
+  /**
+   * @param string $sBase
+   */
   public function setBase($sBase) {
     $this->sBase = $sBase;
   }
 
+  /**
+   * @param string $sServidor
+   */
   public function setServidor($sServidor) {
     $this->sServidor = $sServidor;
   }
 
+  /**
+   * @param string $sPorta
+   */
   public function setPorta($sPorta) {
     $this->sPorta = $sPorta;
   }
 
+  /**
+   * @param string $sUsuario
+   */
   public function setUsuario($sUsuario) {
     $this->sUsuario = $sUsuario;
   }
 
+  /**
+   * @param string $sSenha
+   */
   public function setSenha($sSenha) {
     $this->sSenha = $sSenha;
   }
 
+  /**
+   * @return string
+   */
   public function getBase() {
     return $this->sBase;
   }
 
   /**
    * Retorna o resource de conexão com o banco
+   *
    * @return resource
    */
   public function getResource() {
@@ -97,6 +150,7 @@ class Database {
 
   /**
    * Conecta na base de dados
+   *
    * @throws Exception
    * @return resource
    */
@@ -112,7 +166,8 @@ class Database {
 
   /**
    * Desconecta da base de dados
-   * @return boolean
+   *
+   * @return boolean|null
    */
   public function disconnect() {
 
@@ -123,8 +178,9 @@ class Database {
 
   /**
    * Executa uma query na base de dados
-   * @throws Exception
+   *
    * @param  string $sQuery Query a ser executada
+   * @throws Exception
    * @return recordset
    */
   public function execute($sQuery) {
@@ -160,11 +216,12 @@ class Database {
 
   /**
    * Retorna um objeto do registro buscado
+   *
    * @param  recordset $resource
    * @param  integer $index
    * @return stdclass
    */
-  public static function fetchRow( $resource, $index ) {
+  public static function fetchRow($resource, $index) {
 
     $oObject = pg_fetch_object($resource, $index);
 
@@ -176,5 +233,25 @@ class Database {
     return $oObject;
   }
 
+  /**
+   * Retorna o número de linhas no recordset
+   *
+   * @param  resource $rsResultSet
+   * @return integer
+   */
+  public function count($rsResultSet) {
+    return pg_num_rows($rsResultSet);
+  }
+
+  /**
+   * Retorna uma linha do recordset como um objeto
+   *
+   * @param  resource $rsResource
+   * @param  integer  $iIndice
+   * @return stdClass
+   */
+  public function fetchObject($rsResource, $iIndice) {
+    return pg_fetch_object($rsResource, $iIndice);
+  }
+
 }
-?>

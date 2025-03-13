@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 ?>
 
@@ -42,18 +42,23 @@ db_postmemory($HTTP_POST_VARS);
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 
 <script>
+
 function js_emite(){
 	query="";
 	if (document.form1.tipocda.value=="d"){
-			query+='&exercini='+document.form1.exercini.value;
-			query+='&exercfim='+document.form1.exercfim.value;
+		query+='&exercini='+document.form1.exercini.value;
+		query+='&exercfim='+document.form1.exercfim.value;
 	}
-  query+='&data='+document.form1.data1_ano.value+'-'+document.form1.data1_mes.value+'-'+document.form1.data1_dia.value;
-  query+='&data1='+document.form1.data2_ano.value+'-'+document.form1.data2_mes.value+'-'+document.form1.data2_dia.value; 
-	query+='&tipocda='+document.form1.tipocda.value;
-  jan = window.open('div2_cdaanul002.php?'+query,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-  jan.moveTo(0,0);
+
+    query+='&data='+document.form1.data1_ano.value+'-'+document.form1.data1_mes.value+'-'+document.form1.data1_dia.value;
+    query+='&data1='+document.form1.data2_ano.value+'-'+document.form1.data2_mes.value+'-'+document.form1.data2_dia.value;
+    query+='&tipocda='+document.form1.tipocda.value;
+    query+='&sOrdenacao='+document.form1.sOrdenacao.value;
+
+    jan = window.open('div2_cdaanul002.php?'+query,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+    jan.moveTo(0,0);
 }
+
 function js_valano(){
 	ini = new Number(document.form1.exercini.value);
 	fim = new Number(document.form1.exercfim.value);
@@ -110,7 +115,23 @@ function js_valano(){
           ?>
        	</td>
       </tr>
-	  <?}?>       
+	  <?}?>
+        <tr>
+           <td><strong>Ordenar por:</strong></td>
+           <td>
+               <?php
+
+               $aOrdenacao = array(
+                                   ''           => "Sem Ordenação",
+                                   'v15_data'   => "Data de Anulação",
+                                   'v15_certid' => "CDA",
+                                   'v14_coddiv' => "Código da Dívida",
+                                   'nome'       => "Nome"
+                                   );
+                 db_select('sOrdenacao', $aOrdenacao, true, 4 );
+               ?>
+           </td>
+       </tr>
     </table>
   </fieldset>
   <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >

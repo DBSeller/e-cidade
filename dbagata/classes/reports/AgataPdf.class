@@ -85,12 +85,12 @@ class AgataPdf extends AgataReport
         $this->LeftMargin  = $this->XmlArray['Report']['PageSetup']['LeftMargin']  ? $this->XmlArray['Report']['PageSetup']['LeftMargin']     : 5;
         $this->TopMargin   = $this->XmlArray['Report']['PageSetup']['TopMargin']   ? $this->XmlArray['Report']['PageSetup']['TopMargin']      : 5;
         $this->RightMargin = $this->XmlArray['Report']['PageSetup']['RightMargin'] ? $this->XmlArray['Report']['PageSetup']['RightMargin']    : 5;
-        $this->FooterMargin= $this->XmlArray['Report']['PageSetup']['BottomMargin']? $this->XmlArray['Report']['PageSetup']['BottomMargin']   : 10;
+        $this->FooterMargin= isset($this->XmlArray['Report']['PageSetup']['BottomMargin'])? $this->XmlArray['Report']['PageSetup']['BottomMargin']   : 10;
         $this->PageFormat  = $this->XmlArray['Report']['PageSetup']['Format']      ? $this->XmlArray['Report']['PageSetup']['Format']         : 'A4';
-        $this->FooterHeight= $this->XmlArray['Report']['PageSetup']['FooterHeight']? $this->XmlArray['Report']['PageSetup']['FooterHeight']   : NULL;
+        $this->FooterHeight= isset($this->XmlArray['Report']['PageSetup']['FooterHeight'])? $this->XmlArray['Report']['PageSetup']['FooterHeight']   : NULL;
         
         $FileName = $this->FileName;
-        $this->PDF = &new MyPdf($this->Orientation, 'pt', $this->PageFormat, array(&$this, 'printHeader'));
+        $this->PDF = new MyPdf($this->Orientation, 'pt', $this->PageFormat, array($this, 'printHeader'));
         
         $this->PDF->SetMargins($this->LeftMargin, $this->TopMargin, $this->RightMargin);
         $this->PDF->SetCreator('Agata Report');
@@ -110,6 +110,7 @@ class AgataPdf extends AgataReport
         $this->PDF->footerbgcolor= $footerbgcolor;
         $this->PDF->leftMargin   = $this->LeftMargin;
         $this->PDF->FileName= $FileName;
+        if(isset($this->ReportName))
         $this->PDF->ReportName= $this->ReportName;
         $this->PDF->columnfont = $columnfont;
         $this->PDF->columncolor = $columncolor;

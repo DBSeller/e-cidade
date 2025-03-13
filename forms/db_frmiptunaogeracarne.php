@@ -26,7 +26,7 @@
  */
 
 //MODULO: cadastro
-include("classes/db_db_usuarios_classe.php");
+include(modification("classes/db_db_usuarios_classe.php"));
 $cldb_usuarios = new cl_db_usuarios;
 $cliptunaogeracarne->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -95,10 +95,10 @@ db_input('nome',40,$Inome,true,'text',3,'')
 <script>
 function js_pesquisaj66_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarne','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarne','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.j66_usuario.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarne','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.j66_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarne','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.j66_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.nome.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostradb_usuarios1(chave1,chave2){
   db_iframe_db_usuarios.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarne','db_iframe_iptunaogeracarne','func_iptunaogeracarne.php?funcao_js=parent.js_preenchepesquisa|j66_sequencial','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarne','db_iframe_iptunaogeracarne','func_iptunaogeracarne.php?funcao_js=parent.js_preenchepesquisa|j66_sequencial','Pesquisa',true,'0','1','775','390');
 }
 function js_preenchepesquisa(chave){
   db_iframe_iptunaogeracarne.hide();

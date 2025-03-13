@@ -72,9 +72,9 @@ db_input('y30_data',10,$Iy30_data,true,'text',3,'')
 <script>
 function js_pesquisay51_codauto(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_auto','func_auto.php?funcao_js=parent.js_mostraauto1|y50_codauto|y50_codauto','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_auto','func_auto.php?funcao_js=parent.js_mostraauto1|y50_codauto|y50_codauto','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_auto','func_auto.php?pesquisa_chave='+document.form1.y51_codauto.value+'&funcao_js=parent.js_mostraauto','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_auto','func_auto.php?pesquisa_chave='+document.form1.y51_codauto.value+'&funcao_js=parent.js_mostraauto','Pesquisa',false);
   }
 }
 function js_mostraauto(chave,erro){
@@ -91,9 +91,9 @@ function js_mostraauto1(chave1,chave2){
 }
 function js_pesquisay51_codnoti(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.y51_codnoti.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.y51_codnoti.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
   }
 }
 function js_mostrafiscal(chave,erro){
@@ -109,7 +109,7 @@ function js_mostrafiscal1(chave1,chave2){
   db_iframe_fiscal.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_autofiscal','func_autofiscal.php?funcao_js=parent.js_preenchepesquisa|y51_codauto','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autofiscal','func_autofiscal.php?funcao_js=parent.js_preenchepesquisa|y51_codauto','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_autofiscal.hide();

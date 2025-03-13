@@ -112,10 +112,10 @@ db_input('k95_descr',40,$Ik95_descr,true,'text',3,'')
 <script>
 function js_pesquisak68_saltes(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_mostrasaltes1|k13_conta|k13_descr','Pesquisa',true);
   }else{
      if(document.form1.k68_saltes.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k68_saltes.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?pesquisa_chave='+document.form1.k68_saltes.value+'&funcao_js=parent.js_mostrasaltes','Pesquisa',false);
      }else{
        document.form1.k13_descr.value = ''; 
      }
@@ -135,10 +135,10 @@ function js_mostrasaltes1(chave1,chave2){
 }
 function js_pesquisak68_conciliastatus(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_conciliastatus','func_conciliastatus.php?funcao_js=parent.js_mostraconciliastatus1|k95_sequencial|k95_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conciliastatus','func_conciliastatus.php?funcao_js=parent.js_mostraconciliastatus1|k95_sequencial|k95_descr','Pesquisa',true);
   }else{
      if(document.form1.k68_conciliastatus.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_conciliastatus','func_conciliastatus.php?pesquisa_chave='+document.form1.k68_conciliastatus.value+'&funcao_js=parent.js_mostraconciliastatus','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conciliastatus','func_conciliastatus.php?pesquisa_chave='+document.form1.k68_conciliastatus.value+'&funcao_js=parent.js_mostraconciliastatus','Pesquisa',false);
      }else{
        document.form1.k95_descr.value = ''; 
      }
@@ -157,7 +157,7 @@ function js_mostraconciliastatus1(chave1,chave2){
   db_iframe_conciliastatus.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_concilia','func_concilia.php?funcao_js=parent.js_preenchepesquisa|k68_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_concilia','func_concilia.php?funcao_js=parent.js_preenchepesquisa|k68_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_concilia.hide();

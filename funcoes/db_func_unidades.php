@@ -26,6 +26,7 @@
  */
 
 $campos = "unidades.sd02_i_codigo,
-           db_depart.descrdepto
+           db_depart.descrdepto,
+           unidades.sd02_v_cnes
           ";
 ?>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_coremp_classe.php");
-require_once("classes/db_pagordemnota_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_coremp_classe.php"));
+require_once(modification("classes/db_pagordemnota_classe.php"));
 
 $iAnoUsoSessao      = db_getsession("DB_anousu");
 $iInstituicaoSessao = db_getsession("DB_instit");
@@ -120,9 +120,9 @@ if ($oGet->iListaEmpenho == 0) {
 }
 
 if (!empty($oGet->iTipoBaixa) && $oGet->iTipoBaixa == 2) {
-  $aWhere[] = "k106_sequencial <> 2";
+  $aWhere[] = "k106_sequencial not in (2, 5)";
 } elseif (!empty($oGet->iTipoBaixa) && $oGet->iTipoBaixa == 3) {
-  $aWhere[] = "k106_sequencial = 2";
+  $aWhere[] = "k106_sequencial in (2, 5)";
 }
 
 $sImplodeWhere     = implode(" and ", $aWhere);                                                                    

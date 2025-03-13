@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,15 +30,15 @@
  * @todo refatorar toda a rotina de inclusão e alteração de um atendimento da ouvidoria
  * 
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_app.utils.php"));
  
 
 db_app::import("protocolo.ProcessoProtocoloNumeracao");
@@ -49,79 +49,79 @@ $lErro    = false;
 $sMsgErro = '';
 
 
-require_once("std/db_stdClass.php");
+require_once(modification("std/db_stdClass.php"));
 $oStdClass = new db_stdClass();
 
-require_once("classes/db_cidadao_classe.php");
+require_once(modification("classes/db_cidadao_classe.php"));
 $clCidadao = new cl_cidadao();
 
-require_once("classes/db_cidadaoemail_classe.php");
+require_once(modification("classes/db_cidadaoemail_classe.php"));
 $clCidadaoEmail = new cl_cidadaoemail();
 
-require_once("classes/db_cidadaotelefone_classe.php");
+require_once(modification("classes/db_cidadaotelefone_classe.php"));
 $clCidadaoTelefone = new cl_cidadaotelefone();
 
-require_once("classes/db_cidadaotiporetorno_classe.php");
+require_once(modification("classes/db_cidadaotiporetorno_classe.php"));
 $clCidadaoTipoRetorno = new cl_cidadaotiporetorno();
 
-require_once("classes/db_tipoproc_classe.php");
+require_once(modification("classes/db_tipoproc_classe.php"));
 $clTipoProc = new cl_tipoproc();
 
-require_once("classes/db_procdoctipo_classe.php");
+require_once(modification("classes/db_procdoctipo_classe.php"));
 $clDocTipoProc = new cl_procdoctipo();
 
-require_once("classes/db_cgm_classe.php");
+require_once(modification("classes/db_cgm_classe.php"));
 $clCgm = new cl_cgm();
 
-require_once("classes/db_tipoprocformareclamacao_classe.php");
+require_once(modification("classes/db_tipoprocformareclamacao_classe.php"));
 $clTipoProcFormaReclamacao = new cl_tipoprocformareclamacao();
 
-require_once("classes/db_formareclamacao_classe.php");
+require_once(modification("classes/db_formareclamacao_classe.php"));
 $clFormaReclamacao = new cl_formareclamacao();
 
-require_once("classes/db_tiporetorno_classe.php");
+require_once(modification("classes/db_tiporetorno_classe.php"));
 $clTipoRetorno = new cl_tiporetorno();
 
-require_once("classes/db_ouvidoriaatendimento_classe.php");
+require_once(modification("classes/db_ouvidoriaatendimento_classe.php"));
 $clOuvidoriaAtendimento = new cl_ouvidoriaatendimento();
 
-require_once("classes/db_ouvidoriaatendimentolocal_classe.php");
+require_once(modification("classes/db_ouvidoriaatendimentolocal_classe.php"));
 $clOuvidoriaAtendimentoLocal = new cl_ouvidoriaatendimentolocal();
 
-require_once("classes/db_andpadrao_classe.php");
+require_once(modification("classes/db_andpadrao_classe.php"));
 $clAndPadrao = new cl_andpadrao();
 
-require_once("classes/db_ouvidoriaatendimentotiporetorno_classe.php");
+require_once(modification("classes/db_ouvidoriaatendimentotiporetorno_classe.php"));
 $clOuvidoriaAtendimentoTipoRetorno = new cl_ouvidoriaatendimentotiporetorno();
 
-require_once("classes/db_ouvidoriaatendimentocgm_classe.php");
+require_once(modification("classes/db_ouvidoriaatendimentocgm_classe.php"));
 $clOuvidoriaAtendimentoCgm = new cl_ouvidoriaatendimentocgm();
 
-require_once("classes/db_ouvidoriaatendimentocidadao_classe.php");
+require_once(modification("classes/db_ouvidoriaatendimentocidadao_classe.php"));
 $clOuvidoriaAtendimentoCidadao = new cl_ouvidoriaatendimentocidadao();
 
-require_once("classes/db_ouvidoriaatendimentodoc_classe.php");
+require_once(modification("classes/db_ouvidoriaatendimentodoc_classe.php"));
 $clOuvidoriaAtendimentoDoc = new cl_ouvidoriaatendimentodoc();
 
-require_once("classes/db_ouvidoriaatendimentoretornoemail_classe.php");
+require_once(modification("classes/db_ouvidoriaatendimentoretornoemail_classe.php"));
 $clOuvidoriaAtendimentoRetornoEmail = new cl_ouvidoriaatendimentoretornoemail();
 
-require_once("classes/db_ouvidoriaatendimentoretornoender_classe.php");
+require_once(modification("classes/db_ouvidoriaatendimentoretornoender_classe.php"));
 $clOuvidoriaAtendimentoRetornoEnder = new cl_ouvidoriaatendimentoretornoender();
 
-require_once("classes/db_ouvidoriaatendimentoretornotelefone_classe.php");
+require_once(modification("classes/db_ouvidoriaatendimentoretornotelefone_classe.php"));
 $clOuvidoriaAtendimentoRetornoTelefone = new cl_ouvidoriaatendimentoretornotelefone();
 
-require_once("classes/db_protprocesso_classe.php");
+require_once(modification("classes/db_protprocesso_classe.php"));
 $clProtProcesso = new cl_protprocesso();
 
-require_once("classes/db_db_config_classe.php");
+require_once(modification("classes/db_db_config_classe.php"));
 $clDBConfig = new cl_db_config();
 
-require_once("classes/db_processoouvidoria_classe.php");
+require_once(modification("classes/db_processoouvidoria_classe.php"));
 $clProcessoOuvidoria = new cl_processoouvidoria();
 
-require_once("model/processoOuvidoria.model.php");
+require_once(modification("model/processoOuvidoria.model.php"));
 $oProcessoOuvidoria = new processoOuvidoria();
 
 
@@ -147,7 +147,7 @@ if ( $oPost->sMethod == 'consultaDadosTipoProcesso') {
 	$rsConsultaDocumentos = $clDocTipoProc->sql_record($clDocTipoProc->sql_query($oPost->iCodTipoProc,null,$sCamposDocumentos));
 	
   if ( $clDocTipoProc->numrows > 0 ) {
-    $aListaDocumentos = db_utils::getColectionByRecord($rsConsultaDocumentos,false,false,true);  	
+    $aListaDocumentos = db_utils::getCollectionByRecord($rsConsultaDocumentos,false,false,true);  	
 	}
 	
   // Consulta as formas de reclamação cadastradas para o tipo de processo
@@ -159,7 +159,7 @@ if ( $oPost->sMethod == 'consultaDadosTipoProcesso') {
   $rsFormaReclamacao       = $clTipoProcFormaReclamacao->sql_record($sSqlFormaReclamacao);
   
   if ( $clTipoProcFormaReclamacao->numrows > 0  ) {
-    $aListaFormaReclamacao = db_utils::getColectionByRecord($rsFormaReclamacao,false,false,true);    
+    $aListaFormaReclamacao = db_utils::getCollectionByRecord($rsFormaReclamacao,false,false,true);    
   }	
 	
   
@@ -369,7 +369,7 @@ if ( $oPost->sMethod == 'consultaDadosTipoProcesso') {
       
       if ( $iNroCidadaoTipoRet > 0 ) {
       	
-      	$aListaTipoRetorno = db_utils::getColectionByRecord($rsCidadaoTipoRetorno);
+      	$aListaTipoRetorno = db_utils::getCollectionByRecord($rsCidadaoTipoRetorno);
       	
       	for ( $iInd=0; $iInd < $iNroCidadaoTipoRet; $iInd++ ) {
       		
@@ -456,14 +456,14 @@ if ( $oPost->sMethod == 'consultaDadosTipoProcesso') {
   $rsFormaReclamacao = $clFormaReclamacao->sql_record($clFormaReclamacao->sql_query_file());
   
   if ( $clFormaReclamacao->numrows > 0 ) {
-  	$aListaFormaReclamacao = db_utils::getColectionByRecord($rsFormaReclamacao,false,false,true);
+  	$aListaFormaReclamacao = db_utils::getCollectionByRecord($rsFormaReclamacao,false,false,true);
   }
   
   
   $rsTipoRetorno = $clTipoRetorno->sql_record($clTipoRetorno->sql_query_file());
   
   if ( $clTipoRetorno->numrows > 0 ) {
-  	$aListaTipoRetorno = db_utils::getColectionByRecord($rsTipoRetorno,false,false,true);
+  	$aListaTipoRetorno = db_utils::getCollectionByRecord($rsTipoRetorno,false,false,true);
   }
   
   
@@ -993,27 +993,27 @@ if ( $oPost->sMethod == 'consultaDadosTipoProcesso') {
     }
     
     if ( $clOuvidoriaAtendimentoDoc->numrows > 0 ) {
-    	$aListaDoc = db_utils::getColectionByRecord($rsDadosDoc,0,false,false,true);
+    	$aListaDoc = db_utils::getCollectionByRecord($rsDadosDoc,0,false,false,true);
     }
 
   	$rsDadosTipoRetorno = $clOuvidoriaAtendimentoTipoRetorno->sql_record($clOuvidoriaAtendimentoTipoRetorno->sql_query_file(null,"*",null,"ov17_ouvidoriaatendimento = {$oPost->iCodAtendimento} "));   
     if ( $clOuvidoriaAtendimentoTipoRetorno->numrows > 0 ) {
-      $aListaTipoRetorno = db_utils::getColectionByRecord($rsDadosTipoRetorno,0,false,false,true);
+      $aListaTipoRetorno = db_utils::getCollectionByRecord($rsDadosTipoRetorno,0,false,false,true);
     }    
     
 		$rsRetornoEnder = $clOuvidoriaAtendimentoRetornoEnder->sql_record($clOuvidoriaAtendimentoRetornoEnder->sql_query_file(null,"*",null,"ov12_ouvidoriaantendimento = {$oPost->iCodAtendimento}"));
     if ( $clOuvidoriaAtendimentoRetornoEnder->numrows > 0 ) {
-    	$aListaEnder = db_utils::getColectionByRecord($rsRetornoEnder,0,false,false,true);    
+    	$aListaEnder = db_utils::getCollectionByRecord($rsRetornoEnder,0,false,false,true);    
     }
 
 	  $rsRetornoEmail = $clOuvidoriaAtendimentoRetornoEmail->sql_record($clOuvidoriaAtendimentoRetornoEmail->sql_query_file(null,"*",null,"ov13_ouvidoriaantendimento = {$oPost->iCodAtendimento}"));
     if ( $clOuvidoriaAtendimentoRetornoEmail->numrows > 0 ) {
-      $aListaEmail = db_utils::getColectionByRecord($rsRetornoEmail,0,false,false,true);    
+      $aListaEmail = db_utils::getCollectionByRecord($rsRetornoEmail,0,false,false,true);    
     }
 
 	  $rsRetornoTelefone = $clOuvidoriaAtendimentoRetornoTelefone->sql_record($clOuvidoriaAtendimentoRetornoTelefone->sql_query_file(null,"*",null,"ov14_ouvidoriaatendimento = {$oPost->iCodAtendimento}"));
     if ( $clOuvidoriaAtendimentoRetornoTelefone->numrows > 0 ) {
-      $aListaTelefone = db_utils::getColectionByRecord($rsRetornoTelefone,0,false,false,true);    
+      $aListaTelefone = db_utils::getCollectionByRecord($rsRetornoTelefone,0,false,false,true);    
     }    
     
 	} else {

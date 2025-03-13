@@ -1,0 +1,126 @@
+[
+    {
+        "value": "100000001",
+        "label": "Limpeza, conservação ou zeladoria"
+    },
+    {
+        "value": "100000002",
+        "label": "Vigilância ou segurança"
+    },
+    {
+        "value": "100000003",
+        "label": "Construção civil"
+    },
+    {
+        "value": "100000004",
+        "label": "Serviços de natureza rural"
+    },
+    {
+        "value": "100000005",
+        "label": "Digitação"
+    },
+    {
+        "value": "100000006",
+        "label": "Preparação de dados para processamento"
+    },
+    {
+        "value": "100000007",
+        "label": "Acabamento"
+    },
+    {
+        "value": "100000008",
+        "label": "Embalagem"
+    },
+    {
+        "value": "100000009",
+        "label": "Acondicionamento"
+    },
+    {
+        "value": "100000010",
+        "label": "Cobrança"
+    },
+    {
+        "value": "100000011",
+        "label": "Coleta ou reciclagem de lixo ou de resíduos"
+    },
+    {
+        "value": "100000012",
+        "label": "Copa"
+    },
+    {
+        "value": "100000013",
+        "label": "Hotelaria"
+    },
+    {
+        "value": "100000014",
+        "label": "Corte ou ligação de serviços públicos"
+    },
+    {
+        "value": "100000015",
+        "label": "Distribuição"
+    },
+    {
+        "value": "100000016",
+        "label": "Treinamento e ensino"
+    },
+    {
+        "value": "100000017",
+        "label": "Entrega de contas e de documentos"
+    },
+    {
+        "value": "100000018",
+        "label": "Ligação de medidores"
+    },
+    {
+        "value": "100000019",
+        "label": "Leitura de medidores"
+    },
+    {
+        "value": "100000020",
+        "label": "Manutenção de instalações, de máquinas ou de equipamentos"
+    },
+    {
+        "value": "100000021",
+        "label": "Montagem"
+    },
+    {
+        "value": "100000022",
+        "label": "Operação de máquinas, de equipamentos e de veículos"
+    },
+    {
+        "value": "100000023",
+        "label": "Operação de pedágio ou de terminal de transporte"
+    },
+    {
+        "value": "100000024",
+        "label": "Operação de transporte de passageiros"
+    },
+    {
+        "value": "100000025",
+        "label": "Portaria, recepção ou ascensorista"
+    },
+    {
+        "value": "100000026",
+        "label": "Recepção, triagem ou movimentação de materiais"
+    },
+    {
+        "value": "100000027",
+        "label": "Promoção de vendas ou de eventos"
+    },
+    {
+        "value": "100000028",
+        "label": "Secretaria e expediente"
+    },
+    {
+        "value": "100000029",
+        "label": "Saúde"
+    },
+    {
+        "value": "100000030",
+        "label": "Telefonia ou telemarketing"
+    },
+    {
+        "value": "100000031",
+        "label": "Trabalho temporário na forma da Lei nº 6.019, de janeiro de 1974"
+    }
+]

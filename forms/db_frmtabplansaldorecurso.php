@@ -158,7 +158,7 @@ $clrotulo->label("k02_anousu");
     <tr>
       <td valign="top"  align="center">  
         <?
-        include("dbforms/db_classesgenericas.php");
+        include(modification("dbforms/db_classesgenericas.php"));
         $cliframe_alterar_excluir = new cl_iframe_alterar_excluir; 
         $dbwhere = " k111_tabplan = ".$k111_tabplan;
         if (isset($k111_sequencial) && trim($k111_sequencial) != ""){

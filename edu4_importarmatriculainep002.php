@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
+include(modification("fpdf151/pdfwebseller.php"));
 $pdf = new PDF();
 $pdf->Open();
 $pdf->AliasNbPages();

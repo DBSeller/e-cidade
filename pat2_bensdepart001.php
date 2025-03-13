@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_cfpatri_classe.php");
-include("classes/db_bens_classe.php");
-include("classes/db_clabens_classe.php");
-include("classes/db_departdiv_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_cfpatri_classe.php"));
+include(modification("classes/db_bens_classe.php"));
+include(modification("classes/db_clabens_classe.php"));
+include(modification("classes/db_departdiv_classe.php"));
 
 $cldb_depart 		= new cl_db_depart;
 $clcfpatri 			= new cl_cfpatri;
@@ -591,7 +591,7 @@ function js_buscaDepartamentoSelecionado() {
 
 function js_pesquisat64_class(mostra){  
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_clabens','func_clabens.php?funcao_js=parent.js_mostraclabens1|t64_class|t64_descr&analitica=true','Pesquisa',true);  
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_clabens','func_clabens.php?funcao_js=parent.js_mostraclabens1|t64_class|t64_descr&analitica=true','Pesquisa',true);  
   }else{
      testa = new String(document.form1.t64_class.value);     
      if(testa != '' && testa != 0){
@@ -599,7 +599,7 @@ function js_pesquisat64_class(mostra){
        for(i = 0;i < document.form1.t64_class.value.length;i++){
          testa = testa.replace('.','');       
        }
-       js_OpenJanelaIframe('top.corpo','db_iframe_clabens','func_clabens.php?pesquisa_chave='+testa+'&funcao_js=parent.js_mostraclabens&analitica=true','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_clabens','func_clabens.php?pesquisa_chave='+testa+'&funcao_js=parent.js_mostraclabens&analitica=true','Pesquisa',false);
      }else{
        document.form1.t64_descr.value = '';
      }
@@ -623,10 +623,10 @@ function js_mostraclabens1(chave1,chave2){
 function js_pesquisa_depart(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradepart1|coddepto|descrdepto','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradepart1|coddepto|descrdepto','Pesquisa',true);
   }else{
      if(document.form1.coddepto.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.coddepto.value+'&funcao_js=parent.js_mostradepart','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.coddepto.value+'&funcao_js=parent.js_mostradepart','Pesquisa',false);
      }else{
        document.form1.descrdepto.value = '';
        document.form1.submit();

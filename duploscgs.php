@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conn.php");
+require(modification("model/configuracao/TraceLog.model.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conn.php"));
 
 // Funcao para dar Echo dos Logs - retorna o TimeStamp
 function db_logduplos($sLog = "") {
@@ -45,6 +46,9 @@ if ($isTeste) {
 	db_logduplos ( ">>>>>> MODO DE TESTE. Não executará COMMIT ao final do processamento! <<<<<<" );
 	db_logduplos ( "" );
 }
+
+// time utilizado para monitoria pelo zabbix
+db_logduplos(time());
 
 $aDataHoraInicial = db_logduplos ( "Iniciando Execucao do Duplos.php - 3 segundos... se quiser cancelar CTRL+C" );
 db_logduplos ( "Configuracoes: BASE: $DB_BASE  SERVIDOR: $DB_SERVIDOR  PORTA: $DB_PORTA  USUARIO: $DB_USUARIO" );
@@ -319,8 +323,20 @@ for($record_correto = 0; $record_correto < pg_numrows ( $result_correto ); $reco
 						$v_log .= "comando executado: $sql9 - " . (pg_numrows ( $result9 ) > 0 ? "encontrou " . pg_numrows ( $result9 ) . " registros" : "nao encontrou nenhum registro");
 						
 						if (pg_numrows ( $result9 ) > 0) {
-							
-							$sql9 = "update $nomearq set $nomecam = $v_cgscerto where $nomecam = " . $v_sau_cgserrado;
+							/**
+							 * Foi criado um indice unico na tabela cgs_und_ext por isso foi colocado a logica abaixo
+							 */
+							if ($nomearq == 'cgs_und_ext') {
+								$sql9 = "select $nomecam from $nomearq where $nomecam = $v_cgscerto";
+								$result9 = db_query ( $sql9 ) or die ( db_logduplos ( "sql: $sql9 \n" . pg_ErrorMessage () ) );
+								if (pg_numrows($result9) > 0) {
+									$sql9 = "delete from $nomearq where $nomecam = $v_sau_cgserrado";
+								} else {
+									$sql9 = "update $nomearq set $nomecam = $v_cgscerto where $nomecam = $v_sau_cgserrado";
+								}
+							} else {
+								$sql9 = "update $nomearq set $nomecam = $v_cgscerto where $nomecam = " . $v_sau_cgserrado;
+							}
 							db_logduplos ( "     12 - " . $sql9 );
 							
 							$result9 = db_query ( $sql9 ) or die ( db_logduplos ( "\nsql: $sql9\n" . pg_ErrorMessage () ) );
@@ -373,6 +389,49 @@ for($record_correto = 0; $record_correto < pg_numrows ( $result_correto ); $reco
 		db_logduplos ( "**** incluiu $v_sau_cgserrado na cgsalt ****" );
 		//die("$sqlcgsalt");
 		//*********************************
+
+		$sqlProblemaPacienteCorreto = "
+		SELECT s170_id AS id_sai,
+			(SELECT s170_id
+			FROM problemaspaciente AS x
+			WHERE (x.s170_data_inicio = a.s170_data_inicio
+				OR (x.s170_data_inicio IS NULL
+				AND a.s170_data_inicio IS NULL))
+				AND (x.s170_data_fim = a.s170_data_fim
+				OR (x.s170_data_fim IS NULL
+				AND a.s170_data_fim IS NULL))
+				AND x.s170_problema = a.s170_problema
+				AND x.s170_paciente = {$v_cgscerto}) AS id_fica
+		FROM problemaspaciente AS a
+		WHERE EXISTS
+			( SELECT 1
+			FROM problemaspaciente AS b
+			WHERE (b.s170_data_inicio = a.s170_data_inicio
+				OR (b.s170_data_inicio IS NULL
+				AND a.s170_data_inicio IS NULL))
+				AND (b.s170_data_fim = a.s170_data_fim
+				OR (b.s170_data_fim IS NULL
+				AND a.s170_data_fim IS NULL))
+				AND b.s170_problema = a.s170_problema
+				AND b.s170_paciente = {$v_cgscerto})
+				AND a.s170_paciente = {$v_sau_cgserrado}";
+
+		$resultProblemaPacienteCorreto = db_query ( $sqlProblemaPacienteCorreto ) or die ( db_logduplos ( "sql: $sqlProblemaPacienteCorreto \n" . pg_ErrorMessage () ) );
+		$problemas = \db_utils::getCollectionByRecord($resultProblemaPacienteCorreto);
+		foreach ($problemas as $problema) {
+			$sqlCorrigiProntuarioProblema = "update prontuario_problemaspaciente set s171_problemapaciente = {$problema->id_fica} where s171_problemapaciente = {$problema->id_sai}";
+			db_logduplos ( "     12 - " . $sqlCorrigiProntuarioProblema );
+			db_query ( $sqlCorrigiProntuarioProblema ) or die ( db_logduplos ( "sql: $sqlCorrigiProntuarioProblema\n" . pg_ErrorMessage () ) );	
+
+			$sqlDeleteProblemaErrado = "delete from problemaspaciente where s170_id = {$problema->id_sai}";
+			db_logduplos ( "     12 - " . $sqlDeleteProblemaErrado );
+			db_query ( $sqlDeleteProblemaErrado ) or die ( db_logduplos ( "sql: $sqlDeleteProblemaErrado\n" . pg_ErrorMessage () ) );	
+		}
+
+		$sqlAtualizaProblemaPaciente = "update problemaspaciente set s170_paciente = $v_cgscerto where s170_paciente = $v_sau_cgserrado";
+		db_logduplos ( "     12 - " . $sqlAtualizaProblemaPaciente );
+		db_query ( $sqlAtualizaProblemaPaciente ) or die ( db_logduplos ( "sql: $sqlAtualizaProblemaPaciente\n" . pg_ErrorMessage () ) );
+
 		$sql6 = "delete from cgs_und where z01_i_cgsund = $v_sau_cgserrado";
 		$v_log .= $sql6;
 		$result = db_query ( $sql6 ) or die ( db_logduplos ( "sql: aquiiiiiiiiiiii $sql6\n" . pg_ErrorMessage () ) );
@@ -388,6 +447,14 @@ for($record_correto = 0; $record_correto < pg_numrows ( $result_correto ); $reco
 	}
 	$sql8 = "update sau_cgscorreto set s127_b_proc = true where s127_i_codigo = $s127_i_codigo";
 	$result = db_query ( $sql8 ) or die ( db_logduplos ( "sql: " . pg_ErrorMessage () ) );
+
+	$sSqlExistePsfInd = "SELECT 1 FROM   information_schema.tables WHERE  table_schema = 'plugins' AND table_name = 'psf_individual'";
+	$rsExistePsfInd = db_query ( $sSqlExistePsfInd ) or die ( db_logduplos ( "sql: " . pg_ErrorMessage () ) );
+	if(pg_numrows($rsExistePsfInd) > 0){
+	  $sql9 = "update plugins.psf_individual set psf5_codcgs = $v_cgscerto where psf5_codcgs = $v_sau_cgserrado";
+	  $result = db_query ( $sql9 ) or die ( db_logduplos ( "sql: " . pg_ErrorMessage () ) );
+	  db_logduplos ( "**** Alterado cgs errado $v_sau_cgserrado para cgs certo $v_cgscerto na tabela plugins.psf_individual ****" );
+	}
 	
 	if (! $isTeste) {
 		$result = db_query ( "commit;" );

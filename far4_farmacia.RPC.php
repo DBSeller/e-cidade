@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,100 +25,69 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_stdlibwebseller.php');
-require_once('libs/db_utils.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/JSON.php');
-require_once('dbforms/db_funcoes.php');
-require_once("std/db_stdClass.php");
-function formataData($dData, $iTipo = 1) {
-
-  if (empty($dData)) {
-    return '';
-  }
-
-  if ($iTipo == 1) {
-
-    $dData = explode('/',$dData);
-    $dData = $dData[2].'-'.$dData[1].'-'.$dData[0];
-    return $dData;
-  
-  }
- 
- $dData = explode('-',$dData);
- $dData = @$dData[2].'/'.@$dData[1].'/'.@$dData[0];
-
- return $dData;
-
-}
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_stdlibwebseller.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/JSON.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification("std/db_stdClass.php"));
 
 $oJson              = new services_json();
 $oParam             = $oJson->decode(str_replace("\\","",$_POST["json"]));
 $oRetorno           = new stdClass();
 $oRetorno->iStatus  = 1;
+$oRetorno->erro     = false;
 $oRetorno->sMessage = '';
 
-if ($oParam->exec == 'getRetiradasCgs') {
+try {
+  switch ($oParam->exec) {
+    case 'getRetiradasCgs':
+      $oParametroFarmacia                 = db_stdClass::getParametro("far_parametros", array());
+      $lImpressaotermica                  = $oParametroFarmacia[0]->fa02_utilizaimpressoratermica;
+      $oRetorno->lUtilizaImpressaoTermica = $lImpressaotermica == 't'?true:false;  
+      $oDaoFarRetirada                    = new cl_far_retirada();
+      $sCampos                            = 'far_retirada.*, descrdepto, fa07_i_matrequi';
+      $sWhere                             = 'fa04_i_cgsund = '.$oParam->iCgs;
+      $sSql                               = $oDaoFarRetirada->sql_query_retiradas(null, $sCampos, 'fa04_i_codigo desc', $sWhere);
+      $rs                                 = $oDaoFarRetirada->sql_record($sSql);
+    
+      if ($oDaoFarRetirada->numrows == 0) {
+        throw new \Exception('Nenhuma retirada encontrada para este CGS.');
+      }
 
-  $oParametroFarmacia                 = db_stdClass::getParametro("far_parametros", array());
-  $lImpressaotermica                  = $oParametroFarmacia[0]->fa02_utilizaimpressoratermica;
-  $oRetorno->lUtilizaImpressaoTermica = $lImpressaotermica == 't'?true:false;  
-  $oDaoFarRetirada                    = db_utils::getdao('far_retirada');
-  $sCampos                            = 'far_retirada.*, descrdepto, fa07_i_matrequi';
-  $sWhere                             = 'fa04_i_cgsund = '.$oParam->iCgs;
-  $sSql                               = $oDaoFarRetirada->sql_query_retiradas(null, $sCampos, 'fa04_i_codigo desc', $sWhere);
-  $rs                                 = $oDaoFarRetirada->sql_record($sSql);
+      $oRetorno->aRetiradas = db_utils::getCollectionByRecord($rs, false, false, true);
 
-  if ($oDaoFarRetirada->numrows > 0) {
-    $oRetorno->aRetiradas = db_utils::getColectionByRecord($rs, false, false, true);
-  } else {
+      break;
+    case 'getSaldoTotalMedicamento':
 
-    $oRetorno->iStatus  = 0;
-    $oRetorno->sMessage = 'Nenhuma retirada encontrada para este CGS.';
+      $oDaoFarMaterSaude = new cl_far_matersaude();
+      $sSql              = $oDaoFarMaterSaude->sql_query_saldo($oParam->iMedicamento, 'descrdepto', 'm91_codigo');
+      $rs                = $oDaoFarMaterSaude->sql_record($sSql);
+      if ($oDaoFarMaterSaude->numrows == 0) {
+        throw new \Exception('Medicamento informado não encontrado.');
+      }
+      $estoquesDepartamentos = db_utils::getCollectionByRecord($rs);
 
-  }
-
-} elseif ($oParam->exec == 'getSaldoTotalMedicamento') {
-
-  if (!isset($oParam->iCodMater)) { // Foi passado apenas o código do medicamento (fa01_i_matmater)
-
-    $oDaoFarMaterSaude = db_utils::getdao('far_matersaude');
-    $sSql              = $oDaoFarMaterSaude->sql_query_file($oParam->iMedicamento, 'fa01_i_codmater');
-    $rs                = $oDaoFarMaterSaude->sql_record($sSql);
-    if ($oDaoFarMaterSaude->numrows > 0) {
-      $oParam->iCodMater = db_utils::fieldsmemory($rs, 0)->fa01_i_codmater;
-    } else {
-
-      $oRetorno->iStatus   = 0;
-      $oRetorno->sMessage  = 'Medicamento informado não encontrado.';
       $oRetorno->m70_quant = 0;
+      foreach ($estoquesDepartamentos as $estoqueDepartamento) {
+        $oRetorno->m70_quant += $estoqueDepartamento->saldo;
+      }
+      
+      if ($oRetorno->m70_quant == 0 || empty($oRetorno->m70_quant)) {
+        throw new \Exception('Nenhum registro de estoque encontrado para este Medicamento.');
+      }
+      $oRetorno->estoques = utf8_encode_all($estoquesDepartamentos);
 
-    }
-
+      break;
+    default: 
+      break;
   }
-
-  $oDaoMatEstoque = db_utils::getdao('matestoque');
-  $sCampos        = ' sum(m70_quant) as m70_quant ';
-  $sWhere         = 'm70_codmatmater = '.$oParam->iCodMater;
-  $sSql           = $oDaoMatEstoque->sql_query_file(null, $sCampos, '', $sWhere);
-  $rs             = $oDaoMatEstoque->sql_record($sSql);
-  if ($oDaoMatEstoque->numrows > 0) {
-
-    $oRetorno->m70_quant = db_utils::fieldsmemory($rs, 0)->m70_quant;
-    if (empty($oRetorno->m70_quant)) {
-      $oRetorno->m70_quant = 0;
-    }
-
-  } else {
-
-    $oRetorno->iStatus   = 0;
-    $oRetorno->sMessage  = 'Nenhum registro de estoque encontrado para este medicamento.';
-    $oRetorno->m70_quant = 0;
-
-  }
-
+} catch (\Exception $e) {
+  $oRetorno->iStatus   = 0;
+  $oRetorno->erro      = true;
+  $oRetorno->sMessage  = $e->getMessage();
 }
 
 echo $oJson->encode($oRetorno);

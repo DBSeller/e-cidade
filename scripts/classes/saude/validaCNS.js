@@ -68,7 +68,7 @@ String.prototype.validaCNSDefinitivo =  function () {
   } else {
     return true;
   }
-}
+};
 
 /**
  * Valida se o CNS informado é valido e provisório
@@ -92,10 +92,6 @@ String.prototype.validaCNSProvisorio = function() {
   }
 
   if (pis == "") {
-    return false
-  }
-
-  if ( (iCns.substring(0,1) != "7") && (iCns.substring(0,1) != "8") && (iCns.substring(0,1) != "9") ) {
     return false
   }
 
@@ -123,7 +119,7 @@ String.prototype.validaCNSProvisorio = function() {
     return false;
   }
 
-}
+};
 
 /**
  * Valida se o CNS informado é valido

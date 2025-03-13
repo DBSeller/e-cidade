@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_pontofx_classe.php");
-include("classes/db_pontofs_classe.php");
-include("classes/db_pontofe_classe.php");
-include("classes/db_pontofa_classe.php");
-include("classes/db_pontofr_classe.php");
-include("classes/db_pontof13_classe.php");
-include("classes/db_pontocom_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_pontofx_classe.php"));
+include(modification("classes/db_pontofs_classe.php"));
+include(modification("classes/db_pontofe_classe.php"));
+include(modification("classes/db_pontofa_classe.php"));
+include(modification("classes/db_pontofr_classe.php"));
+include(modification("classes/db_pontof13_classe.php"));
+include(modification("classes/db_pontocom_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 //db_postmemory($HTTP_GET_VARS,2);

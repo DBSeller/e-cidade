@@ -1,52 +1,52 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_itbiconstr_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_itbiconstrespecie_classe.php");
-require_once("classes/db_itbiconstrtipo_classe.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_caracter_classe.php");
-require_once("classes/db_itbiparespecie_classe.php");
-require_once("classes/db_itbipartipo_classe.php");
-require_once("classes/db_paritbi_classe.php");
-require_once("classes/db_itbi_classe.php");
-require_once("classes/db_itbiconstrpadraoconstrutivo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_itbiconstr_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_itbiconstrespecie_classe.php"));
+require_once(modification("classes/db_itbiconstrtipo_classe.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_caracter_classe.php"));
+require_once(modification("classes/db_itbiparespecie_classe.php"));
+require_once(modification("classes/db_itbipartipo_classe.php"));
+require_once(modification("classes/db_paritbi_classe.php"));
+require_once(modification("classes/db_itbi_classe.php"));
+require_once(modification("classes/db_itbiconstrpadraoconstrutivo_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
 $oGet  = db_utils::postMemory($_GET);
-$oPost = db_utils::postMemory($_POST); 
+$oPost = db_utils::postMemory($_POST);
 
 $clitbiconstr 			           = new cl_itbiconstr;
 $clitbiconstrespecie 	         = new cl_itbiconstrespecie;
@@ -66,27 +66,30 @@ $db_botao = true;
 $lSqlErro = false;
 $sErroMsg = "";
 
+$rParans = $clparitbi->sql_record($clparitbi->sql_query(db_getsession('DB_anousu'), 'it24_padraoconstrutivobrigatorio, it24_carregaconstrucoesbenfeitoriasitbi'));
+$oParans = \db_utils::fieldsMemory($rParans, 0);
+
 if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir"){
-  
+
   db_inicio_transacao();
-  
+
   $clitbiconstr->incluir($it08_codigo);
-  
+
   if ( $clitbiconstr->erro_status == 0 ) {
   	$lSqlErro = true;
-  }  
-  
+  }
+
   if ( !$lSqlErro ) {
-  	
+
     $clitbiconstrespecie->it09_caract = $it09_codigo;
     $clitbiconstrespecie->it09_codigo = $clitbiconstr->it08_codigo;
     $clitbiconstrespecie->incluir($clitbiconstr->it08_codigo);
-  
+
     if ( $clitbiconstrespecie->erro_status == 0 ) {
   	  $lSqlErro = true;
       $sErroMsg = _M($sMensagens . '.especie_nao_informada');
-    }  
-  
+    }
+
     $clitbiconstrtipo->it10_caract = $it10_codigo;
     $clitbiconstrtipo->it10_codigo = $clitbiconstr->it08_codigo;
     $clitbiconstrtipo->incluir($clitbiconstr->it08_codigo);
@@ -96,17 +99,19 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
       $sErroMsg = _M($sMensagens . '.tipo_nao_informado');
     }
 
-    $clitbiconstrpadraoconstrutivo->it34_codigo = $clitbiconstr->it08_codigo;
-    $clitbiconstrpadraoconstrutivo->it34_caract = $it34_codigo;
-    $clitbiconstrpadraoconstrutivo->incluir($clitbiconstr->it08_codigo, $it34_codigo);
+    if (($oParans->it24_padraoconstrutivobrigatorio == "f" AND !empty($it34_codigo)) OR $oParans->it24_padraoconstrutivobrigatorio == "t") {
+        $clitbiconstrpadraoconstrutivo->it34_codigo = $clitbiconstr->it08_codigo;
+        $clitbiconstrpadraoconstrutivo->it34_caract = $it34_codigo;
+        $clitbiconstrpadraoconstrutivo->incluir($clitbiconstr->it08_codigo, $it34_codigo);
 
-    if ( $clitbiconstrpadraoconstrutivo->erro_status == 0 ) {
-      $lSqlErro = true;
-      $sErroMsg = _M($sMensagens . '.padrao_construtivo_nao_informado');
+        if ( $clitbiconstrpadraoconstrutivo->erro_status == 0 ) {
+          $lSqlErro = true;
+          $sErroMsg = _M($sMensagens . '.padrao_construtivo_nao_informado');
+        }
     }
-    
+
     if ( !$lSqlErro ) {
-    	
+
 	   if (!isset($it08_guia) or trim($it08_guia)=='') {
 	     $it08_guia = 'NULL';
        }
@@ -114,25 +119,25 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
        $rsConsultaArea = $clitbiconstr->sql_record($clitbiconstr->sql_query(null,"it08_areatrans",null,$sWhere));
        $iLinhasArea	   = $clitbiconstr->numrows;
 	     $nTotalArea     = 0;
-        
+
        for ( $iInd=0; $iInd < $iLinhasArea; $iInd++  ) {
-       	
+
        	 $oDadosArea  = db_utils::fieldsMemory($rsConsultaArea,$iInd);
        	 $nTotalArea += $oDadosArea->it08_areatrans;
-       	
+
        }
-       
+
        $clitbi->it01_guia		       = $it08_guia;
        $clitbi->it01_areaedificada = "$nTotalArea";
-       $clitbi->alterar($it08_guia);	
-       
+       $clitbi->alterar($it08_guia);
+
        if ( $clitbi->erro_status == 0 ) {
        	  $lSqlErro = true;
        }
-       
+
     }
-    
-    
+
+
   }
   db_fim_transacao($lSqlErro);
 }
@@ -147,11 +152,11 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <table align="center" style="padding-top:25px;" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td> 
+  <tr>
+    <td>
     <center>
 	<?
-	include("forms/db_frmitbiconstr.php");
+	include(modification("forms/db_frmitbiconstr.php"));
 	?>
     </center>
 	</td>
@@ -182,7 +187,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
     $clitbiconstr->erro(true, false);
 
     echo "<script>
-            parent.iframe_constr.location.href = 'itb1_itbiconstr001.php?it08_guia=".$it08_guia."&tipo=$tipo'; 
+            parent.iframe_constr.location.href = 'itb1_itbiconstr001.php?it08_guia=".$it08_guia."&tipo=$tipo';
           </script>";
 
   }

@@ -211,7 +211,7 @@ function getDadosReceitaPPA(iReceita) {
 function js_retornoGetDadosReceita(oAjax) {
   
   js_removeObj('msgBox');
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
     
     $('o85_codrec').value   = '';

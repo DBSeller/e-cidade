@@ -133,10 +133,10 @@ db_input('nomeavaliador',40,$Iz01_nome,true,'text',3,'')
 <script>
 function js_pesquisah56_rhestagiocomissao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?funcao_js=parent.js_mostrarhestagiocomissao1|h59_sequencial|h59_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?funcao_js=parent.js_mostrarhestagiocomissao1|h59_sequencial|h59_descr','Pesquisa',true);
   }else{
      if(document.form1.h56_rhestagiocomissao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?pesquisa_chave='+document.form1.h56_rhestagiocomissao.value+'&funcao_js=parent.js_mostrarhestagiocomissao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhestagiocomissao','func_rhestagiocomissao.php?pesquisa_chave='+document.form1.h56_rhestagiocomissao.value+'&funcao_js=parent.js_mostrarhestagiocomissao','Pesquisa',false);
      }else{
        document.form1.h59_descr.value = ''; 
      }
@@ -156,10 +156,10 @@ function js_mostrarhestagiocomissao1(chave1,chave2){
 }
 function js_pesquisah57_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostrarhpessoal1|rh01_regist|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.h57_regist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.h57_regist.value+'&funcao_js=parent.js_mostrarhpessoal','Pesquisa',false,0);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.h57_regist.value+'&funcao_js=parent.js_mostrarhpessoal','Pesquisa',false,0);
      }else{
        document.form1.rh01_nome.value = ''; 
      }
@@ -180,10 +180,10 @@ function js_mostrarhpessoal1(chave1,chave2){
 
 function js_pesquisaavaliador(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostraravaliador1|rh01_regist|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostraravaliador1|rh01_regist|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.h56_avaliador.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.h56_avaliador.value+'&funcao_js=parent.js_mostraravaliador','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.h56_avaliador.value+'&funcao_js=parent.js_mostraravaliador','Pesquisa',false);
      }else{
        document.form1.nomeavaliador.value = ''; 
      }
@@ -212,7 +212,7 @@ function js_preenchepesquisa(chave){
   js_getQuesitosExame(chave);
 }
 function js_pesquisaDatas(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhestagioagenda','func_rhestagioagendadata.php?funcao_js=parent.js_preenchepesquisa|h64_sequencial','Agendamento de Avaliações',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhestagioagenda','func_rhestagioagendadata.php?funcao_js=parent.js_preenchepesquisa|h64_sequencial','Agendamento de Avaliações',true);
 }
 /*
 *** Funçoes ajax
@@ -237,7 +237,7 @@ function js_getDadosExame(iCodExame,iCodQuesito){
 
 function js_saida(oAjax){
 
-    obj                              = eval("("+oAjax.responseText+")");
+    obj                              = JSON.parse(oAjax.responseText);
     $('z01_nome').value              = js_urldecode(obj.z01_nome);
     $('h57_regist').value            = obj.h57_regist;
     $('h56_data').value              = obj.h64_data;
@@ -341,7 +341,7 @@ function js_getQuesitosExame(iCodExame){
 }
 function js_quesitos(oAjax){
     $('quesitos').options.length = 1;
-    obj  = eval("("+oAjax.responseText+")");
+    obj  = JSON.parse(oAjax.responseText);
     iCodExame = $('iCodExame').value;
     for (i = 0; i < obj.quesitos.length;i++){
     
@@ -396,7 +396,7 @@ function js_salvarRespostas(iQuestao,sResposta,iTipo){
 }
 function js_retorno(oAjax){
 
-    obj  = eval("("+oAjax.responseText+")");
+    obj  = JSON.parse(oAjax.responseText);
     $('gravar').disabled    = false;
     $('pesquisar').disabled = false;
     alert(js_urldecode(obj.mensagem));

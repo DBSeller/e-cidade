@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_layouttxt.php");
-include("libs/db_libpessoal.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_layouttxt.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("libs/db_sql.php"));
 db_postmemory($HTTP_POST_VARS);
 ?>
 <html>
@@ -67,7 +67,7 @@ db_postmemory($HTTP_POST_VARS);
   $ncodfim = "cod_fim";
   $nlista  = "lista";
 
-  include("dbforms/db_classesgenericas.php");
+  include(modification("dbforms/db_classesgenericas.php"));
   $geraform = new cl_formulario_rel_pes;
 
   db_input('rodape',40,0,true,'hidden',3,'');
@@ -308,7 +308,7 @@ if(isset($emite2)){
                                           $txt_where
                                          );
 	echo $sqlDentro;
-  $res = pg_query($sqlDentro);
+  $res = db_query($sqlDentro);
   $num = pg_numrows($res);
   if($num == 0){
     $erro_msg = "Não existe cálculo no período de $mesfolha / $anofolha";
@@ -379,7 +379,7 @@ if(isset($emite2)){
       $somabaseprevidencia = 0;
       $somabaseliquida = 0;
       $fgtsmes = 0;
-      $res_env = pg_exec($sql);
+      $res_env = db_query($sql);
       if(pg_num_rows($res_env) > 0){
 	$contadorContra ++;
 	$contapaginas ++;
@@ -448,13 +448,13 @@ if(isset($emite2)){
               $totalproventos = $antestotalproventos;
               $totaldescontos = $antestotaldescontos;
               $totalprovdesc  = $antestotalprovdesc;
-              db_setaPropriedadesLayoutTxt(&$db_layouttxt,RODAPEARQUIVO);
+              db_setaPropriedadesLayoutTxt($db_layouttxt,RODAPEARQUIVO);
               $contapaginas ++;
             }
             $periodo = "01/$mesfolha/$anofolha a ".db_dias_mes($anofolha,$mesfolha)."/$mesfolha/$anofolha";
             $matricula = $rh01_regist."-".db_CalculaDV($rh01_regist);
             $contabancaria = $rh44_conta;
-            db_setaPropriedadesLayoutTxt(&$db_layouttxt,CABECALHOARQUIVO);
+            db_setaPropriedadesLayoutTxt($db_layouttxt,CABECALHOARQUIVO);
           }
 
           if($provdesc != "B"){
@@ -466,7 +466,7 @@ if(isset($emite2)){
               $valorprov = trim(db_formatar($valorrubrica,"f"));
               $valordesc = "";
             }
-            db_setaPropriedadesLayoutTxt(&$db_layouttxt,REGISTROSARQUIVO);
+            db_setaPropriedadesLayoutTxt($db_layouttxt,REGISTROSARQUIVO);
           }
         }
 
@@ -478,7 +478,7 @@ if(isset($emite2)){
         $multiplic -= $linhas;
         $db_layouttxt->quebraLinha($multiplic);
        
-        db_setaPropriedadesLayoutTxt(&$db_layouttxt,RODAPEARQUIVO);
+        db_setaPropriedadesLayoutTxt($db_layouttxt,RODAPEARQUIVO);
       }
 
     }

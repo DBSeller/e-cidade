@@ -1,0 +1,126 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010628' name='protocolo.historico_tipo_processo'
+       description="Registra as alterações no tipo do processo manual,eletrônico e ouvidoria" prefix="p112"
+       label="Histórico do tipo de processo " type="0">
+    <fields>
+        <field codigo="1011879"
+               campo_api=''
+               name="p112_sequencial"
+               conteudo="int8"
+               description="Sequencial"
+               inivalue="0"
+               label="Sequencial"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Sequencial"
+               reference=""
+               ispk="t"
+               hassequence="t">
+
+            <sequence name='protocolo.historico_tipo_processo_p112_sequencial'/>
+
+        </field>
+        <field codigo="1011875"
+               campo_api=''
+               name="p112_usuario"
+               conteudo="int8"
+               description="Identificação do usuário"
+               inivalue="0"
+               label="Usuário"
+               size="20"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Usuário"
+               reference=""
+               ispk="f"
+               hassequence="f">
+
+        </field>
+        <field codigo="1011876"
+               campo_api=''
+               name="p112_instituicao"
+               conteudo="int8"
+               description="Instituição referente ao usuário que efetuou mudança no tipo do processo."
+               inivalue=""
+               label="Instituicao"
+               size="20"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Instituicao"
+               reference=""
+               ispk="f"
+               hassequence="f">
+
+        </field>
+        <field codigo="1011877"
+               campo_api=''
+               name="p112_departamento"
+               conteudo="int8"
+               description="Departamento referente ao usuário que solicitou mudança no tipo de processo."
+               inivalue=""
+               label="Departamento"
+               size="20"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Departamento"
+               reference=""
+               ispk="f"
+               hassequence="f">
+
+        </field>
+        <field codigo="1011880"
+               campo_api=''
+               name="p112_tipoprocesso"
+               conteudo="int4"
+               description="Tipo de process"
+               inivalue=""
+               label="Tipo de process"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Tipo de process"
+               reference=""
+               ispk="f"
+               hassequence="f">
+        </field>
+        <field codigo="1011878"
+               campo_api=''
+               name="p112_data_registro"
+               conteudo="int8"
+               description="Data em qual foi efetuado a mudança no tipo de processo"
+               inivalue=""
+               label="Data de Registro"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="0"
+               tipoobj="text"
+               labelrel="Data de Registro"
+               reference=""
+               ispk="f"
+               hassequence="f">
+        </field>
+    </fields>
+    <primarykey>
+        <fieldpk name="p112_sequencial"></fieldpk>
+    </primarykey>
+    <foreignkeys>
+    </foreignkeys>
+</table>

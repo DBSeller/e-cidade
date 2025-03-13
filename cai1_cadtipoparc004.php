@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cadtipoparc_classe.php");
-include("classes/db_cadtipoparcdeb_classe.php");
-include("classes/db_tipoparc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cadtipoparc_classe.php"));
+include(modification("classes/db_cadtipoparcdeb_classe.php"));
+include(modification("classes/db_tipoparc_classe.php"));
 $clcadtipoparc = new cl_cadtipoparc;
   /*
 $clcadtipoparcdeb = new cl_cadtipoparcdeb;
@@ -45,7 +45,7 @@ $db_botao = true;
 if(isset($incluir)){
   $sqlerro=false;
   $sqlordem    = "select coalesce( max(k40_ordem),0)+1 as ordem from cadtipoparc";
-  $resultordem = pg_query($sqlordem);
+  $resultordem = db_query($sqlordem);
   db_fieldsmemory($resultordem,0);
   
   db_inicio_transacao();
@@ -77,7 +77,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcadtipoparc.php");
+	include(modification("forms/db_frmcadtipoparc.php"));
 	?>
     </center>
 	</td>

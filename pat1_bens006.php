@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_bens_classe.php");
-include("classes/db_bensimoveis_classe.php");
-include("classes/db_bensmater_classe.php");
-include("classes/db_departdiv_classe.php");
-include ("classes/db_histbemdiv_classe.php");
-include ("classes/db_bensdiv_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_bens_classe.php"));
+include(modification("classes/db_bensimoveis_classe.php"));
+include(modification("classes/db_bensmater_classe.php"));
+include(modification("classes/db_departdiv_classe.php"));
+include(modification("classes/db_histbemdiv_classe.php"));
+include(modification("classes/db_bensdiv_classe.php"));
 $cldepartdiv = new cl_departdiv;
 $clbens = new cl_bens;
 $clbensimoveis = new cl_bensimoveis;
@@ -101,7 +101,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmbens.php");
+	include(modification("forms/db_frmbens.php"));
 	?>
     </center>
 	</td>
@@ -134,9 +134,9 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.bensimoveis.disabled=false;
-         top.corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?db_opcaoal=33&t54_codbem=".@$t52_bem."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensimoveis.location.href='pat1_bensimoveis001.php?db_opcaoal=33&t54_codbem=".@$t52_bem."';
          parent.document.formaba.bensmater.disabled=false;
-         top.corpo.iframe_bensmater.location.href='pat1_bensmater001.php?db_opcaoal=33&t53_codbem=".@$t52_bem."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensmater.location.href='pat1_bensmater001.php?db_opcaoal=33&t53_codbem=".@$t52_bem."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('bensimoveis');";

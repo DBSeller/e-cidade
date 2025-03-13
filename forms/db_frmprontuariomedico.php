@@ -46,7 +46,7 @@ $clrotulo->label("sd35_i_familia");
     $sql1 = "SELECT sd34_i_codigo,sd34_v_descricao
              FROM microarea
              ORDER BY sd34_v_descricao";
-    $sql_result = pg_query($sql1);
+    $sql_result = db_query($sql1);
     $num = pg_num_rows($sql_result);
     $conta = "";
     while ($row=pg_fetch_array($sql_result)){
@@ -59,7 +59,7 @@ $clrotulo->label("sd35_i_familia");
                  WHERE sd35_i_microarea = '$cod_micro'
                  ORDER BY sd33_v_descricao
                 ";
-     $sub_result = pg_query($sub_sql);
+     $sub_result = db_query($sub_sql);
      $num_sub = pg_num_rows($sub_result);
      if ($num_sub>=1){
       echo "new Array(\"\", ''),\n";
@@ -124,7 +124,9 @@ $clrotulo->label("sd35_i_familia");
     }
    }
    </script>
-
+<div id="status-microarea" class="alert-danger" style="text-align: center;" role="alert" hidden>
+  Paciente sem cadastro em uma microárea!
+</div>
 <form name="form1" method="post" action="">
 <center>
 <table border="0">
@@ -175,13 +177,13 @@ db_input('sd32_i_numcgs',10,$Isd32_i_numcgs,true,'text',3," onchange='js_pesquis
      <?=@$Lsd35_i_microarea?>
     </td>
     <td>
-      <select name="z01_v_micro" onChange="fillSelectFromArray(this.form.z01_i_familiamicroarea, ((this.selectedIndex == -1) ? null : team[this.selectedIndex-1]));" style="font-size:9px;width:200px;height:18px;">
+      <select id="z01_v_micro" name="z01_v_micro" onChange="fillSelectFromArray(this.form.z01_i_familiamicroarea, ((this.selectedIndex == -1) ? null : team[this.selectedIndex-1]));" style="font-size:9px;width:200px;height:18px;" disabled="" class="readonly">
        <option></option>
        <?
        $sql1 = "SELECT sd34_i_codigo,sd34_v_descricao
                FROM microarea
                ORDER BY sd34_v_descricao";
-       $sql_result = pg_query($sql1);
+       $sql_result = db_query($sql1);
        while($row=pg_fetch_array($sql_result)){
         $cod_micro=$row["sd34_i_codigo"];
         $desc_micro=$row["sd34_v_descricao"];
@@ -199,7 +201,7 @@ db_input('sd32_i_numcgs',10,$Isd32_i_numcgs,true,'text',3," onchange='js_pesquis
      <?=@$Lsd35_i_familia?>
     </td>
     <td>
-      <select name="z01_i_familiamicroarea" style="font-size:9px;width:200px;height:18px;" onchange="if(this.value=='')document.form1.z01_v_micro.value='';">
+      <select id="z01_i_familiamicroarea" name="z01_i_familiamicroarea" style="font-size:9px;width:200px;height:18px;" onchange="if(this.value=='')document.form1.z01_v_micro.value='';" disabled="" class="readonly">
        <option value=""></option>
       </select>
       <?if(isset($z01_i_familiamicroarea)&&$z01_i_familiamicroarea!=""){?>
@@ -270,7 +272,43 @@ db_input('sd32_c_horaatend',5,$Isd32_c_horaatend,true,'text',$db_opcao,"OnKeyUp=
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" <?=($db_botao1==true?"disabled":"")?> onclick="js_pesquisa();//js_pesquisasd32_i_numcgs(true);" >
 <input name="relatorio" type="button" id="relatorio" value="Prontuário Médico" <?=($db_botao1==true?"disabled":"")?> onclick="js_relatorio();" >
 </form>
+<script rel="script" type="text/javascript" src="scripts/classes/saude/ValidaCgs.js"></script>
 <script>
+const divAlert = document.getElementById('status-microarea');
+const inputCgs = {
+  id: document.getElementById('sd32_i_numcgs'),
+  nome: document.getElementById('z01_v_nome')
+};
+const validaCgs = new ValidaCgs(inputCgs);
+
+window.onload = function(){
+  const z01_v_micro = document.form1.z01_v_micro;
+  const z01_i_familiamicroarea = document.form1.z01_i_familiamicroarea;
+  const sd32_i_numcgs = document.form1.sd32_i_numcgs;
+
+  validaCgs.cadastroMicroarea(inputCgs, divAlert);
+
+  if(sd32_i_numcgs.value != ""){
+    new AjaxRequest(
+    'sau4_cgs.RPC.php',
+    {
+      'sExecucao': 'buscarCgsUndPorCodigoCgsUnd',
+      'cgsund': document.form1.sd32_i_numcgs.value
+    },
+    function(retorno, erro) {
+      if (erro) {
+        alert(retorno.sMessage.urlDecode());
+        return false;
+      }
+      z01_v_micro.value = retorno.cgs_und.sd35_i_microarea;
+
+      fillSelectFromArray(z01_i_familiamicroarea, ((this.selectedIndex == -1) ? null : team[this.selectedIndex-1]));
+      fillSelectFromArray(document.form1.z01_i_familiamicroarea, team[document.form1.z01_v_micro.selectedIndex-1]);
+
+      z01_i_familiamicroarea.value = retorno.cgs_und.z01_i_familiamicroarea;
+    }).execute();
+  }
+}
 
 function textCounter(field,cntfield,maxlimit) {
      if (field.value.length > maxlimit){
@@ -342,25 +380,23 @@ function js_mostraunidades1(chave1,chave2){
 }
 
 function js_novo_cgs(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgs_und','sau1_cgs_und000.php?id=1&db_menu=false','CGS',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgs_und','sau1_cgs_und000.php?id=1&db_menu=false','CGS',true);
 }
-
-
-
 
 function js_pesquisasd32_i_numcgs(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgs_und','func_cgs_und.php?funcao_js=parent.js_mostracgs1|z01_i_cgsund|z01_v_nome|z01_i_familiamicroarea|sd33_v_descricao|sd34_v_descricao&retornacgs=p.p.document.form1.sd32_i_numcgs.value&retornanome=p.p.document.form1.z01_v_nome.value','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgs_und','func_cgs_und.php?funcao_js=parent.js_mostracgs1|z01_i_cgsund|z01_v_nome|z01_i_familiamicroarea|sd33_v_descricao|sd34_v_descricao&retornacgs=p.p.document.form1.sd32_i_numcgs.value&retornanome=p.p.document.form1.z01_v_nome.value','Pesquisa',true);
     //js_OpenJanelaIframe('','db_iframe_cgs_und','func_cgs_und.php?funcao_js=parent.js_preenchecgs|z01_i_cgsund','Pesquisa',true);
   }else{
      if(document.form1.sd32_i_numcgs.value != ''){ 
-        //js_OpenJanelaIframe('top.corpo','db_iframe_cgs_und','func_cgs_und.php?pesquisa_chave='+document.form1.sd32_i_numcgs.value+'&funcao_js=parent.js_mostracgs','Pesquisa',true);
+        //js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgs_und','func_cgs_und.php?pesquisa_chave='+document.form1.sd32_i_numcgs.value+'&funcao_js=parent.js_mostracgs','Pesquisa',true);
         js_OpenJanelaIframe('','db_iframe_cgs_und','func_cgs_und.php?pesquisa_chave='+document.form1.z01_i_cgsund.value+'&funcao_js=parent.js_preenchecgs|z01_i_cgsund','Pesquisa',false);
      }else{
        document.form1.z01_v_nome.value = '';
      }
   }
 }
+
 function js_mostracgs(chave,erro){
   document.form1.z01_v_nome.value = chave;
   if(erro==true){ 
@@ -370,29 +406,43 @@ function js_mostracgs(chave,erro){
      location.href='sau1_prontuariomedico001.php?chavepesquisaprontuario='+document.form1.sd32_i_numcgs.value+'&z01_v_nome='+document.form1.z01_v_nome.value;
   }
 }
-function js_mostracgs1(chave1,chave2,chave3,chave4,chave5){
 
+function js_mostracgs1(chave1,chave2,chave3,chave4,chave5){
   document.form1.sd32_i_numcgs.value = chave1;
   document.form1.z01_v_nome.value = chave2;
   //document.form1.z01_i_familiamicroarea.value = chave3;
   //document.form1.sd33_v_descricao.value = chave4;
   //document.form1.sd34_v_descricao.value = chave5;
   db_iframe_cgs_und.hide();
-  location.href='sau1_prontuariomedico001.php?chavepesquisaprontuario='+document.form1.sd32_i_numcgs.value+
+  //Efetua a busca do codigo da familia micro area, pois n\E3o foi selecionado o codigo na func pelo fato de n\E3o fazer sentido o codigo para o usuario.
+  new AjaxRequest(
+    'sau4_cgs.RPC.php',
+    {
+      'sExecucao': 'buscarCgsUndPorCodigoCgsUnd',
+      'cgsund': document.form1.sd32_i_numcgs.value
+    },
+    function(retorno, erro) {
+      if (erro) {
+        alert(retorno.sMessage.urlDecode());
+        return false;
+      }
+      location.href='sau1_prontuariomedico001.php?chavepesquisaprontuario='+document.form1.sd32_i_numcgs.value+
                 '&z01_v_nome='+document.form1.z01_v_nome.value+
-                '&z01_i_familiamicroarea='+chave3+
+                '&z01_i_familiamicroarea='+retorno.cgs_und.z01_i_familiamicroarea+
                 '&sd33_v_descricao='+chave4+
                 '&sd34_v_descricao='+chave5;
+    }
+  ).execute();
 }
 
 function js_pesquisasd32_i_medico(mostra){
   if(mostra==true){
-    //js_OpenJanelaIframe('top.corpo','db_iframe_unidademedicos','func_unidademedicos.php?funcao_js=parent.js_mostramedicos1|sd03_i_codigo|z01_nome','Pesquisa',true);
-    js_OpenJanelaIframe('top.corpo','db_iframe_medicos','func_medicos.php?funcao_js=parent.js_mostramedicos1|sd03_i_codigo|z01_nome','Pesquisa',true);
+    //js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidademedicos','func_unidademedicos.php?funcao_js=parent.js_mostramedicos1|sd03_i_codigo|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_medicos','func_medicos.php?funcao_js=parent.js_mostramedicos1|sd03_i_codigo|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.sd32_i_medico.value != ''){ 
-        //js_OpenJanelaIframe('top.corpo','db_iframe_unidademedicos','func_unidademedicos.php?pesquisa_chave='+document.form1.sd32_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
-        js_OpenJanelaIframe('top.corpo','db_iframe_medicos','func_medicos.php?pesquisa_chave='+document.form1.sd32_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
+        //js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidademedicos','func_unidademedicos.php?pesquisa_chave='+document.form1.sd32_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_medicos','func_medicos.php?pesquisa_chave='+document.form1.sd32_i_medico.value+'&funcao_js=parent.js_mostramedicos','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = '';
      }
@@ -411,7 +461,7 @@ function js_mostramedicos1(chave1,chave2){
   db_iframe_medicos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_prontuariomedico','func_prontuariomedico.php?funcao_js=parent.js_preenchepesquisa|z01_i_cgsund|z01_v_nome|z01_i_familiamicroarea','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_prontuariomedico','func_prontuariomedico.php?funcao_js=parent.js_preenchepesquisa|z01_i_cgsund|z01_v_nome|z01_i_familiamicroarea','Pesquisa',true);
 }
 function js_relatorio(){
   if( document.form1.sd32_i_numcgs.value != '' ){

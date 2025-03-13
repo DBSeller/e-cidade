@@ -26,15 +26,15 @@
  */
 
 //MODULO: atendimento
-include("classes/db_tarefasolic_classe.php");
-include("classes/db_tarefacadmotivo_classe.php");
-include("classes/db_db_proced_classe.php");
-include("classes/db_tarefacadsituacao_classe.php");
-include("classes/db_db_modulos_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_tarefaparam_classe.php");
-include("classes/db_db_syscadproced_classe.php");
-include("classes/db_db_projetosativcli_classe.php");
+include(modification("classes/db_tarefasolic_classe.php"));
+include(modification("classes/db_tarefacadmotivo_classe.php"));
+include(modification("classes/db_db_proced_classe.php"));
+include(modification("classes/db_tarefacadsituacao_classe.php"));
+include(modification("classes/db_db_modulos_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_tarefaparam_classe.php"));
+include(modification("classes/db_db_syscadproced_classe.php"));
+include(modification("classes/db_db_projetosativcli_classe.php"));
 
 $cltarefa->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -173,7 +173,7 @@ db_selectrecord('at54_sequencial',($cl_tarefacadmotivo->sql_record($cl_tarefacad
   				//echo "modulo49 = ".@$at49_modulo." -- modulo22 = ".@$at22_modulo ;
 				$sqlmod = "select codmod,nomemod from db_sysmodulo where ativo = 't' order by nomemod";
 				//$sqlmod = "select id_item, nome_modulo from db_modulos order by nome_modulo";
-		        $result_modulo = pg_exec($sqlmod);
+		        $result_modulo = db_query($sqlmod);
 		        if (@$at49_modulo!=""){
 		        	$codmod = $at49_modulo;
 		        }
@@ -191,7 +191,7 @@ if (@$codmod != 0) {
 	if (@$at40_sequencial != ""){
 		$sqlproced = "select * from tarefasyscadproced where at37_tarefa = $at40_sequencial";
 		
-		$resultproced = pg_query($sqlproced);
+		$resultproced = db_query($sqlproced);
 		$linhasproced= pg_num_rows($resultproced);
 		if ($linhasproced>0){
 			db_fieldsmemory($resultproced, 0);
@@ -489,7 +489,7 @@ if(isset($menu)){
 	}
 
 function db_grid($sql) {
-	$result    = @pg_exec($sql);
+	$result    = @db_query($sql);
 	$NumRows   = @pg_numrows($result);
 	$NumFields = @pg_numfields($result);
 	
@@ -643,17 +643,17 @@ function js_agenda(){
                  document.form1.at40_diaini_mes.value + "-" + 
                  document.form1.at40_diaini_dia.value;
 
-  js_OpenJanelaIframe('top.corpo.iframe_tarefa','db_iframe_agenda','func_agendamentotarefas.php?at40_responsavel='+document.form1.at40_responsavel.value+'&data_ini='+data_ini,'Agenda de Tarefas',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefa','db_iframe_agenda','func_agendamentotarefas.php?at40_responsavel='+document.form1.at40_responsavel.value+'&data_ini='+data_ini,'Agenda de Tarefas',true,'0');
 }
 function js_postegar() {
-  js_OpenJanelaIframe('top.corpo.iframe_tarefa','db_iframe_tarefaenvol','func_tarefahorario.php?at40_sequencial='+document.form1.at40_sequencial.value+'&pesquisa_chave='+document.form1.at40_responsavel.value+'&funcao_js=parent.js_mostratarefahorario','Pesquisa',false,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefa','db_iframe_tarefaenvol','func_tarefahorario.php?at40_sequencial='+document.form1.at40_sequencial.value+'&pesquisa_chave='+document.form1.at40_responsavel.value+'&funcao_js=parent.js_mostratarefahorario','Pesquisa',false,'0');
 }
 function js_pesquisaat41_proced(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_tarefa','db_iframe_db_proced','func_db_proced.php?funcao_js=parent.js_mostradb_proced1|at30_codigo','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefa','db_iframe_db_proced','func_db_proced.php?funcao_js=parent.js_mostradb_proced1|at30_codigo','Pesquisa',true,'0');
   }else{
      if(document.form1.at41_proced.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_tarefa','db_iframe_db_proced','func_db_proced.php?pesquisa_chave='+document.form1.at41_proced.value+'&funcao_js=parent.js_mostradb_proced','Pesquisa',false,'0');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_tarefa','db_iframe_db_proced','func_db_proced.php?pesquisa_chave='+document.form1.at41_proced.value+'&funcao_js=parent.js_mostradb_proced','Pesquisa',false,'0');
      }
   }
 }

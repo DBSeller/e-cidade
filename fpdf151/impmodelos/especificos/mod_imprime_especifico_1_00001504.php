@@ -9,7 +9,7 @@
   $sSqlVerifParcel .= "  WHERE arrecad.k00_numpre = ".substr($this->descr9, 0, 8)."              ";
   $sSqlVerifParcel .= "    AND arrecad.k00_numpar = ".(int)substr($this->descr9, 8, 11)."        ";
   
-  $resultVerifParcel = pg_query($sSqlVerifParcel);
+  $resultVerifParcel = db_query($sSqlVerifParcel);
   
   if (pg_num_rows($resultVerifParcel) > 0 ) {
     

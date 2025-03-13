@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_termo_classe.php");
-include("classes/db_arrecant_classe.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_arreold_classe.php");
-include("classes/db_termodiv_classe.php");
-include("classes/db_divida_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_termo_classe.php"));
+include(modification("classes/db_arrecant_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arreold_classe.php"));
+include(modification("classes/db_termodiv_classe.php"));
+include(modification("classes/db_divida_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 
 $cltermo = new cl_termo;
@@ -58,14 +58,14 @@ $erro = false;
 
 if(isset($anularparcelamento)){
  
-  pg_exec("begin");
+  db_query("begin");
   $sql = "select fc_excluiparcelamento($v07_parcel,".db_getsession("DB_id_usuario").") as retorno";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if (substr(pg_result($result,0),0,1) == "1") {
-    pg_exec("commit");
+    db_query("commit");
     db_msgbox("Parcelamento anulado!");
   } else {
-    pg_exec("rollback");
+    db_query("rollback");
     db_msgbox("Erro durante a exclusao do parcelamento! " . pg_result($result,0));
   }
 

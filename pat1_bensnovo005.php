@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,17 +26,17 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_bensmedida_classe.php");
-require_once("classes/db_bensmodelo_classe.php");
-require_once("classes/db_bensmarca_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_bensmedida_classe.php"));
+require_once(modification("classes/db_bensmodelo_classe.php"));
+require_once(modification("classes/db_bensmarca_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -54,8 +54,13 @@ $db_botao = true;
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
+  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/widgets/Input/DBInput.widget.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/widgets/Input/DBInputFoto.widget.js"></script>
 <?
-  db_app::load("scripts.js, prototype.js, strings.js, DBToogle.widget.js, dbmessageBoard.widget.js");
+  db_app::load("strings.js, DBToogle.widget.js, dbmessageBoard.widget.js, AjaxRequest.js");
   db_app::load("estilos.css");
 ?>
 <style type="text/css">
@@ -94,19 +99,26 @@ $db_botao = true;
   .ancora {
     font-weight: bold;
   }
+
+  .ctnFoto {
+
+    vertical-align: top;
+    display   : inline-block;
+  }
+
+  .ctnFoto img {
+
+    width:   95;
+    height: 120;
+  }
   
   
 </style>
 </head>
-<body bgcolor="#CCCCCC" onload="js_carregaDadosForm(<?=$db_opcao?>);" >
-<div style="margin-top: 25px;" ></div>
-<center>
-  <div align="center" style="width: 720px; display: block;">
-    <?
-      include ("forms/db_frm_bensnovo.php");
-    ?>
-  </div>
-</center>
+<body class="body-default" onload="js_carregaDadosForm(<?=$db_opcao?>);" >
+  <?
+    include(modification("forms/db_frm_bensnovo.php"));
+  ?>
 </body>
 </html>
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-include ("fpdf151/assinatura.php");
-include ("libs/db_sql.php");
-include ("libs/db_liborcamento.php");
-include ("dbforms/db_funcoes.php");
-include ("dbforms/db_relatorio_recurso.php");
-// include ("dbforms/db_relrestos.php");
-include ("classes/db_orctiporec_classe.php");
-include ("classes/db_empresto_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_relatorio_recurso.php"));
+// include(modification("dbforms/db_relrestos.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
 
 $classinatura = new cl_assinatura;
 $clorctiporec = new cl_orctiporec;
@@ -49,7 +49,7 @@ parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $anousu = db_getsession("DB_anousu");
 
 $xinstit = split("-", $db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for ($xins = 0; $xins < pg_numrows($resultinst); $xins ++) {
@@ -65,9 +65,9 @@ $where_recurso = "";
 if ($recurso > 0) {
 	$where_recurso = " and c61_codigo = $recurso ";
 }
-$result_contas_inicial = pg_exec(sql_saldo_bancario($anousu, $anousu."-01-01", $db_selinstit, $where_recurso));
+$result_contas_inicial = db_query(sql_saldo_bancario($anousu, $anousu."-01-01", $db_selinstit, $where_recurso));
 
-$result_contas = pg_exec(sql_saldo_bancario($anousu, $data_limite, $db_selinstit, $where_recurso));
+$result_contas = db_query(sql_saldo_bancario($anousu, $data_limite, $db_selinstit, $where_recurso));
 
 //  db_criatabela($result_contas_inicial);
 $nrows_inicial = pg_numrows($result_contas_inicial);
@@ -112,7 +112,7 @@ $sql_restos = " select sum(coalesce(round(e91_vlremp,2),0)) - sum(coalesce(round
                 from ($sql_restos) as x
               ";
 			
-$result_restos  = pg_exec($sql_restos);
+$result_restos  = db_query($sql_restos);
 if (pg_numrows($result_restos) > 0 ){
   db_fieldsmemory($result_restos,0);
    //  echo "<br> rp incial em 31/12 ".$saldo_inicial_rp;
@@ -144,7 +144,7 @@ $sql_baldesp = "select (sum(empenhado_acumulado)-sum(anulado_acumulado)) as empe
                                      sum(especial_acumulado) as especial
                            from ($sql_baldesp) as x
                           ";
-$result_baldesp = pg_exec($sql_baldesp);
+$result_baldesp = db_query($sql_baldesp);
 if (pg_numrows($result_baldesp) > 0 ){
   db_fieldsmemory($result_baldesp,0);
 

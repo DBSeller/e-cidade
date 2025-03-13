@@ -58,7 +58,7 @@ db_input('rh21_descr',40,$Irh21_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhinstrucao','func_rhinstrucao.php?funcao_js=parent.js_preenchepesquisa|rh21_instru','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhinstrucao','func_rhinstrucao.php?funcao_js=parent.js_preenchepesquisa|rh21_instru','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhinstrucao.hide();

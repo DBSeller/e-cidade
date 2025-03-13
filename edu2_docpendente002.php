@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,9 +24,12 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+use ECidade\Pdf\Pdf;
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_docaluno_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+include(modification("classes/db_docaluno_classe.php"));
 $cldocaluno = new cl_docaluno;
 $escola = db_getsession("DB_coddepto");
 $sql = "SELECT DISTINCT
@@ -46,9 +49,10 @@ $sql = "SELECT DISTINCT
         AND ed57_i_escola = $escola
         AND ed49_i_escola = $escola
         AND ed221_c_origem = 'S'
+        AND ed60_c_situacao = 'MATRICULADO'
         ORDER BY ed47_v_nome
        ";
-$result = pg_query($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 //exit;
 $linhas = pg_num_rows($result);
@@ -66,11 +70,16 @@ if($linhas==0){?>
  <?
  exit;
 }
-$pdf = new PDF();
-$pdf->Open();
-$pdf->AliasNbPages();
+$pdf = new Pdf();
+$pdf->init(false);
+$pdf->exibeHeader(true, \Fpdf\Pdf::HEADER_ESCOLA);
+$pdf->setExibeBrasao(true);
+
 $head1 = "RELATÓRIO DE DOCUMENTOS PENDENTES";
 $head2 = "Calendário: ".pg_result($result,0,'ed52_c_descr');
+$pdf->addTitulo('');
+$pdf->addTitulo($head1, 1);
+$pdf->addTitulo($head2, 2);
 $pdf->ln(5);
 $troca = 1;
 $cor1 = "0";
@@ -78,7 +87,7 @@ $cor2 = "1";
 $cor = "";
 for($c=0;$c<$linhas;$c++){
  db_fieldsmemory($result,$c);
- if($pdf->gety() > $pdf->h - 30 || $troca != 0 ){
+ if($pdf->gety() > $pdf->getPageHeight() - 30 || $troca != 0 ){
   $pdf->addpage('P');
   $pdf->setfillcolor(215);
   $pdf->setfont('arial','b',8);

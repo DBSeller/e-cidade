@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_rhpessoal_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
 
@@ -93,9 +93,9 @@ if (trim($opcao) != '') {
 									and ".$sigla."instit = ".db_getsession("DB_instit")." 
 	  ";
 //	  die($sql);
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 }
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 $numrows = pg_numrows($result); 
 if($numrows == 0){
@@ -103,7 +103,7 @@ if($numrows == 0){
 }
 
 
-$result_registro = $clrhpessoal->sql_record($clrhpessoal->sql_query_cgm($matricula,"rh01_regist,z01_numcgm,z01_nome"));	  	
+$result_registro = $clrhpessoal->sql_record($clrhpessoal->sql_query_cgm($matricula,"rh01_regist,z01_numcgm,z01_nome"));
 if($clrhpessoal->numrows == 0){
   db_redireciona("db_erros.php?fechar=true&db_erro=Funcionário não encontrado");
 }
@@ -127,7 +127,7 @@ $alt = 4;
 for($cont=0;$cont<$numrows;$cont++){
   db_fieldsmemory($result,$cont);
   if($p==1){
-    $p=0;   
+    $p=0;
   }else{
     $p=1;
   }
@@ -155,11 +155,11 @@ for($cont=0;$cont<$numrows;$cont++){
   $valort+=$valor;
   $quantt+=$quant;
 }
-//$pdf->cell(278,1,"","T",1,"L",0);    
+//$pdf->cell(278,1,"","T",1,"L",0);
 $pdf->setfont('arial','b',7);
 $pdf->cell(100,$alt,"TOTAIS","T",0,"C",0);
-$pdf->cell( 20,$alt,$totalt ,"T",0,"R",0);
-$pdf->cell( 20,$alt,$quantt ,"T",0,"R",0);
-$pdf->cell( 20,$alt,$valort ,"T",1,"R",0);
+$pdf->cell( 20,$alt,$totalt,"T",0,"R",0);
+$pdf->cell( 20,$alt,db_formatar($quantt, "f"),"T",0,"R",0);
+$pdf->cell( 20,$alt,db_formatar($valort, "f"),"T",1,"R",0);
 $pdf->Output();
 ?>

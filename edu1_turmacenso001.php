@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 
 $oRotulo = new rotulocampo();
@@ -153,6 +153,7 @@ var fChangeCalendario = function() {
 
   var oCalendarioSelecionado = oCalendario.getSelecionados();
   js_buscaDependencias();
+  js_buscaEtapasCenso();
 };
 
 /**
@@ -205,7 +206,7 @@ function js_limpaDependencia() {
 function js_retornoBuscaDependencia(oAjax) {
 
   js_removeObj("msgBoxA");
-  var oRetorno = eval('(' + oAjax.responseText + ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if ( parseInt(oRetorno.status) == 2 ) {
     alert(oRetorno.message.urlDecode());
@@ -243,7 +244,7 @@ function js_buscaTurmas() {
 function js_retornoBuscaTurmas( oAjax ) {
 
   js_removeObj("msgBoxB");
-  var oRetorno = eval('(' + oAjax.responseText + ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if ( parseInt(oRetorno.status) == 2 ) {
     alert(oRetorno.message.urlDecode());
@@ -287,15 +288,18 @@ function js_buscaEtapasCenso() {
 
   var oParametros  = {};
   oParametros.exec = 'censoMultiEtapa';
+  oParametros.iAnoCalendario = oCalendario.getSelecionados().iAno;
 
-  var oRequest          = {};
-  oRequest.method       = 'post';
-  oRequest.parameters   = 'json='+Object.toJSON( oParametros );
+
+  var oRequest            = {};
+  oRequest.method         = 'post';
+  oRequest.parameters     = 'json='+Object.toJSON( oParametros );
+
   oRequest.asynchronous = false;
   oRequest.onComplete   = function(oAjax) {
 
     js_removeObj('msgBoxC');
-    var oRetorno = eval( '(' + oAjax.responseText + ')');
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if ( oRetorno.aCensoEtapa.length == 0 ) {
       alert( _M(MSG_TURMACENSO+'censo_etapa_inconsistente') );
@@ -320,7 +324,6 @@ function js_buscaEtapasCenso() {
 
   $('novo').setAttribute("disabled", "disabled");
   oCalendario.getCalendarios();
-  js_buscaEtapasCenso();
 
   switch ( parseInt(oGet.db_opcao) ) {
 
@@ -367,7 +370,7 @@ function js_retornoPesquisa( iTurmaCenso ) {
   oRequest.onComplete   = function ( oAjax ) {
 
     js_removeObj("msgBoxC");
-    var oRetorno = eval('(' + oAjax.responseText + ')');
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if ( parseInt(oRetorno.status) == 2 ) {
       alert(oRetorno.message.urlDecode());
@@ -464,13 +467,14 @@ function js_salvarTurmaCenso() {
   }
   var aTurmasSelecionadas = oToogleTurmas.getSelected();
 
-  var oParametros         = {};
-  oParametros.exec        = 'salvar';
-  oParametros.iTurmaCenso = $F('codigoTurmaCenso');
-  oParametros.sTurmaCenso = $F('nomeTurmaCenso');
-  oParametros.iCensoEtapa = $F('censoEtapa');
-  oParametros.iSala       = $F('dependencia');
-  oParametros.aTurmas     = [];
+  var oParametros            = {};
+  oParametros.exec           = 'salvar';
+  oParametros.iTurmaCenso    = $F('codigoTurmaCenso');
+  oParametros.sTurmaCenso    = $F('nomeTurmaCenso');
+  oParametros.iCensoEtapa    = $F('censoEtapa');
+  oParametros.iSala          = $F('dependencia');
+  oParametros.iAnoCalendario = oCalendario.getSelecionados().iAno;
+  oParametros.aTurmas        = [];
 
   aTurmasSelecionadas.each( function (oTurma) {
     oParametros.aTurmas.push(oTurma.iTurma);
@@ -483,7 +487,7 @@ function js_salvarTurmaCenso() {
   oRequest.onComplete   = function ( oAjax ) {
 
     js_removeObj('msgBoxD');
-    var oRetorno = eval( '(' + oAjax.responseText + ')' );
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     alert(oRetorno.message.urlDecode());
     location.href = 'edu1_turmacenso001.php?db_opcao='+oGet.db_opcao;
@@ -506,7 +510,7 @@ function js_removerTurmaCenso() {
   oRequest.onComplete   = function ( oAjax ) {
 
     js_removeObj('msgBoxD');
-    var oRetorno = eval( '(' + oAjax.responseText + ')' );
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     alert(oRetorno.message.urlDecode());
     location.href = 'edu1_turmacenso001.php?db_opcao=3';

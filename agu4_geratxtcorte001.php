@@ -26,14 +26,14 @@
  */
 
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_app.utils.php");
-require_once ("classes/db_aguacorte_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_aguacorte_classe.php"));
 
 $claguacorte = new cl_aguacorte();
 
@@ -53,10 +53,10 @@ $oPost = db_utils::postMemory($_POST);
   <script type="text/javascript">
 		function js_pesquisax40_codcorte(mostra){
 		  if(mostra==true){
-		    js_OpenJanelaIframe('top.corpo','db_iframe_aguacorte','func_aguacorte.php?funcao_js=parent.js_mostraaguacorte1|x40_codcorte|x40_dtinc','Pesquisa',true,20);
+		    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguacorte','func_aguacorte.php?funcao_js=parent.js_mostraaguacorte1|x40_codcorte|x40_dtinc','Pesquisa',true,20);
 		  }else{
 		     if(document.form1.x40_codcorte.value != ''){ 
-		        js_OpenJanelaIframe('top.corpo','db_iframe_aguacorte','func_aguacorte.php?pesquisa_chave='+document.form1.x40_codcorte.value+'&funcao_js=parent.js_mostraaguacorte','Pesquisa',false);
+		        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguacorte','func_aguacorte.php?pesquisa_chave='+document.form1.x40_codcorte.value+'&funcao_js=parent.js_mostraaguacorte','Pesquisa',false);
 		     }else{
 		       document.form1.x40_dtinc.value = ''; 
 		     }

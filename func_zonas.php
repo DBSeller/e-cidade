@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_zonas_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clzonas = new cl_zonas;
@@ -39,54 +39,34 @@ $clzonas->rotulo->label("j50_descr");
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+  <link href='estilos.css' rel='stylesheet' type='text/css'>
+  <script language='JavaScript' type='text/javascript' src='scripts/scripts.js'></script>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
-    <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tj50_zona?>">
-              <?=$Lj50_zona?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("j50_zona",10,$Ij50_zona,true,"text",4,"","chave_j50_zona");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tj50_descr?>">
-              <?=$Lj50_descr?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("j50_descr",40,$Ij50_descr,true,"text",4,"","chave_j50_descr");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframezonas.hide();">
-             </td>
-          </tr>
-        </form>
-        </table>
-      </td>
-  </tr>
-  <tr> 
-    <td align="center" valign="top"> 
+<body>
+  <form name="form2" method="post" action="" class="container">
+    <fieldset>
+      <legend>Dados para Pesquisa</legend>
+      <table width="35%" border="0" align="center" cellspacing="3" class="form-container">
+        <tr>
+          <td><label><?=$Lj50_zona?></label></td>
+          <td><? db_input("j50_zona",10,$Ij50_zona,true,"text",4,"","chave_j50_zona"); ?></td>
+        </tr>
+        <tr>
+          <td><label><?=$Lj50_descr?></label></td>
+          <td><? db_input("j50_descr",10,$Ij50_descr,true,"text",4,"","chave_j50_descr");?></td>
+        </tr>
+      </table>
+    </fieldset>
+    <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
+    <input name="limpar" type="reset" id="limpar" value="Limpar" >
+    <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_zonas.hide();">
+  </form>
       <?
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_zonas.php")==true){
-             include("funcoes/db_func_zonas.php");
+             include(modification("funcoes/db_func_zonas.php"));
            }else{
            $campos = "zonas.*";
            }
@@ -98,7 +78,16 @@ $clzonas->rotulo->label("j50_descr");
         }else{
            $sql = $clzonas->sql_query("",$campos,"j50_zona","");
         }
-        db_lovrot($sql,15,"()","",$funcao_js);
+        $repassa = array();
+        if(isset($chave_j50_descr)){
+          $repassa = array("chave_j50_zona"=>$chave_j50_zona,"chave_j50_descr"=>$chave_j50_descr);
+        }
+        echo '<div class="container">';
+        echo '  <fieldset>';
+        echo '    <legend>Resultado da Pesquisa</legend>';
+          db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
+        echo '  </fieldset>';
+        echo '</div>';
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
           $result = $clzonas->sql_record($clzonas->sql_query($pesquisa_chave));
@@ -113,9 +102,6 @@ $clzonas->rotulo->label("j50_descr");
         }
       }
       ?>
-     </td>
-   </tr>
-</table>
 </body>
 </html>
 <?
@@ -126,3 +112,13 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script>
+js_tabulacaoforms("form2","chave_j50_descr",true,1,"chave_j50_descr",true);
+</script>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

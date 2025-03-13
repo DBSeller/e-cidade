@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_itinerario_classe.php");
-include("classes/db_itinerarioescolaproc_classe.php");
-include("classes/db_itinerarioescola_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_itinerario_classe.php"));
+include(modification("classes/db_itinerarioescolaproc_classe.php"));
+include(modification("classes/db_itinerarioescola_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clitinerario = new cl_itinerario;
 $clitinerarioescolaproc = new cl_itinerarioescolaproc;
@@ -70,7 +70,7 @@ if(isset($incluir)){
     <br>
     <fieldset style="width:95%"><legend><b>Inclusão de itinerário</b></legend>
     <center>
-     <?include("forms/db_frmitinerario.php");?>
+     <?include(modification("forms/db_frmitinerario.php"));?>
     </center>
     </fieldset>
    </td>

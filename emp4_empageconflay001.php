@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("libs/db_libcaixa_ze.php");
-$cllayouts_bb = new cl_layouts_bb;
-$cllayouts_bs = new cl_layouts_bs;
+include(modification("libs/db_libcaixa_ze.php"));
+$cllayouts_bb = new LayoutBB;
+$cllayouts_bs = new LayoutBS;
 
-include("classes/db_empagetipo_classe.php");
-include("classes/db_empage_classe.php");
-include("classes/db_empagemov_classe.php");
-include("classes/db_empagegera_classe.php");
-include("classes/db_empageconf_classe.php");
-include("classes/db_empageconfgera_classe.php");
-include("classes/db_conplanoconta_classe.php");
-include("classes/db_empagepag_classe.php");
-include("classes/db_empagemod_classe.php");
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("classes/db_empage_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("classes/db_empagegera_classe.php"));
+include(modification("classes/db_empageconf_classe.php"));
+include(modification("classes/db_empageconfgera_classe.php"));
+include(modification("classes/db_conplanoconta_classe.php"));
+include(modification("classes/db_empagepag_classe.php"));
+include(modification("classes/db_empagemod_classe.php"));
 
 $clempage = new cl_empage;
 $clconplanoconta = new cl_conplanoconta;
@@ -74,7 +74,7 @@ if(isset($atualizar) || isset($adicionar)){
   $sqlerro = false;
 
   $sqlinst = "select * from db_config where codigo = ".db_getsession("DB_instit"); 
-  $resultinst = pg_query($sqlinst);
+  $resultinst = db_query($sqlinst);
   
   db_fieldsmemory($resultinst,0);
  
@@ -84,7 +84,7 @@ if(isset($atualizar) || isset($adicionar)){
   //rotina que traz a sequencia do cheque... executada apenas na primeira vez
    $result = $clempagetipo->sql_record($clempagetipo->sql_query($codtipo,'e83_sequencia as sequencia,e83_conta,e83_codmod'));
    if($clempagetipo->numrows>0){
-       	db_fieldsmemory($result,0);
+        db_fieldsmemory($result,0);
     }
   //-----------------------------------
   
@@ -111,34 +111,34 @@ if(isset($atualizar) || isset($adicionar)){
        $mov = $arr[$i];  
        
        if($sqlerro==false){
-	 $clempageconf->e86_codmov = $mov;
-//	 $clempageconf->e86_data   = date("Y-m-d",db_getsession("DB_datausu"));
-	 $clempageconf->e86_data   = $deposito_ano . "-" . $deposito_mes . "-" . $deposito_dia;
-	 $clempageconf->e86_cheque = $sequencia;
-	 $clempageconf->e86_correto= 'true';
-	 //$clempageconf->xxxxe86xxxx_codgera = $gera;
-	 $clempageconf->incluir($mov);
-	 $erro_msg = $clempageconf->erro_msg;
-	 if($clempageconf->erro_status==0){
-	       $sqlerro = true;
-	 }     
+   $clempageconf->e86_codmov = $mov;
+//   $clempageconf->e86_data   = date("Y-m-d",db_getsession("DB_datausu"));
+   $clempageconf->e86_data   = $deposito_ano . "-" . $deposito_mes . "-" . $deposito_dia;
+   $clempageconf->e86_cheque = $sequencia;
+   $clempageconf->e86_correto= 'true';
+   //$clempageconf->xxxxe86xxxx_codgera = $gera;
+   $clempageconf->incluir($mov);
+   $erro_msg = $clempageconf->erro_msg;
+   if($clempageconf->erro_status==0){
+         $sqlerro = true;
+   }     
        }  
    
-	 //-------------
-	 //manutenção empageconfgera
-	 //soh quando for banco do brasil
-	    if($sqlerro==false && empty($adicionar)) {
-		 $clempageconfgera->e90_codmov   = $mov;
-		 $clempageconfgera->e90_codgera = $gera;
+   //-------------
+   //manutenção empageconfgera
+   //soh quando for banco do brasil
+      if($sqlerro==false && empty($adicionar)) {
+     $clempageconfgera->e90_codmov   = $mov;
+     $clempageconfgera->e90_codgera = $gera;
          $clempageconfgera->e90_correto = "true";
                  
-		 $clempageconfgera->incluir($mov,$gera);
-		 $erro_msg = $clempageconfgera->erro_msg;
-		 if($clempageconfgera->erro_status==0){
-		       $sqlerro = true;
-		 }     
-	    }
-	//------- 
+     $clempageconfgera->incluir($mov,$gera);
+     $erro_msg = $clempageconfgera->erro_msg;
+     if($clempageconfgera->erro_status==0){
+           $sqlerro = true;
+     }     
+      }
+  //------- 
     }
    ///------------
    //-------------
@@ -146,16 +146,16 @@ if(isset($atualizar) || isset($adicionar)){
       if($sqlerro==false && empty($adicionar)) {
 
           $sql11    = $clempagemod->sql_query_file($e83_codmod,"e84_sequencia");
-	  $result11 = $clempagemod->sql_record($sql11);
+    $result11 = $clempagemod->sql_record($sql11);
           db_fieldsmemory($result11,0);       
-	
-	   $clempagemod->e84_codmod   = $e83_codmod;
-	   $clempagemod->e84_sequencia = $e84_sequencia+1;
-	   $clempagemod->alterar($e83_codmod);
-	   $erro_msg = $clempagemod->erro_msg;
-	   if($clempagemod->erro_status==0){
-		 $sqlerro = true;
-	   }     
+  
+     $clempagemod->e84_codmod   = $e83_codmod;
+     $clempagemod->e84_sequencia = $e84_sequencia+1;
+     $clempagemod->alterar($e83_codmod);
+     $erro_msg = $clempagemod->erro_msg;
+     if($clempagemod->erro_status==0){
+     $sqlerro = true;
+     }     
       }
   //------- 
 
@@ -167,60 +167,60 @@ if(isset($atualizar) || isset($adicionar)){
 //   db_msgbox('adicionar 2');
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////
-     /*       	começa layouts				*/
+     /*         começa layouts        */
 
 $sql = "
 select  distinct
         e90_codgera,
-	e90_codmov,
-	c63_banco,
-	c63_agencia,
-	c63_conta,
-	translate(to_char(round(e81_valor,2),'99999999999.99'),'.','') as valor,
-	coalesce(pc63_banco,'000') as pc63_banco,
-	upper(pc63_agencia) as pc63_agencia,
-	upper(pc63_conta) as pc63_conta,
-	length(trim(pc63_cnpjcpf)) as tam,
-	convenio,
-	numcgm,
-	substr(z01_nome,1,40) as z01_nome,
+  e90_codmov,
+  c63_banco,
+  c63_agencia,
+  c63_conta,
+  translate(to_char(round(e81_valor,2),'99999999999.99'),'.','') as valor,
+  coalesce(pc63_banco,'000') as pc63_banco,
+  upper(pc63_agencia) as pc63_agencia,
+  upper(pc63_conta) as pc63_conta,
+  length(trim(pc63_cnpjcpf)) as tam,
+  convenio,
+  numcgm,
+  substr(z01_nome,1,40) as z01_nome,
         pc63_cnpjcpf as z01_cgccpf,
-	cancelado
+  cancelado
         
 from 
-	(select e90_codgera,
-       		e90_codmov,
-       		c63_banco,
-       		upper(c63_agencia) as c63_agencia,
-		lpad(e83_convenio,6,0) as convenio,
-       		upper(c63_conta) as c63_conta,
-       		e81_valor,
-       		case when e60_numcgm is null then k17_numcgm else e60_numcgm end as numcgm,
-       		e88_codmov as cancelado
+  (select e90_codgera,
+          e90_codmov,
+          c63_banco,
+          upper(c63_agencia) as c63_agencia,
+    lpad(e83_convenio,6,0) as convenio,
+          upper(c63_conta) as c63_conta,
+          e81_valor,
+          case when e60_numcgm is null then k17_numcgm else e60_numcgm end as numcgm,
+          e88_codmov as cancelado
        
-	from empageconfgera 
-     		inner join empagemov on e90_codmov = e81_codmov 
+  from empageconfgera 
+        inner join empagemov on e90_codmov = e81_codmov 
         inner join empage  on  empage.e80_codage = empagemov.e81_codage
-     		left join empempenho on e60_numemp = e81_numemp
-     		inner join empagepag on e81_codmov = e85_codmov 
-     		inner join empagetipo on e85_codtipo = e83_codtipo 
-     		left join empageslip on e81_codmov = e89_codmov 
-     		inner join conplanoreduz on e83_conta = c61_reduz and c61_anousu = ".db_getsession("DB_anousu")." and c61_instit = " . db_getsession("DB_instit") . "
-     		inner join conplanoconta on c63_codcon = c61_codcon and c63_anousu=c61_anousu 
-     		left join slip on slip.k17_codigo = e89_codigo
-     		left join slipnum on slipnum.k17_codigo = slip.k17_codigo
-     		left join empageconfcanc on e88_codmov = e90_codmov
-				where e80_instit = " . db_getsession("DB_instit") . "
+        left join empempenho on e60_numemp = e81_numemp
+        inner join empagepag on e81_codmov = e85_codmov 
+        inner join empagetipo on e85_codtipo = e83_codtipo 
+        left join empageslip on e81_codmov = e89_codmov 
+        inner join conplanoreduz on e83_conta = c61_reduz and c61_anousu = ".db_getsession("DB_anousu")." and c61_instit = " . db_getsession("DB_instit") . "
+        inner join conplanoconta on c63_codcon = c61_codcon and c63_anousu=c61_anousu and c63_reduz = c61_reduz 
+        left join slip on slip.k17_codigo = e89_codigo
+        left join slipnum on slipnum.k17_codigo = slip.k17_codigo
+        left join empageconfcanc on e88_codmov = e90_codmov
+        where e80_instit = " . db_getsession("DB_instit") . "
         ) as x
-	left join cgm on z01_numcgm = numcgm
-	inner join pcfornecon on z01_numcgm = pc63_numcgm
-	left join pcforneconpad on pc63_contabanco = pc64_contabanco
+  left join cgm on z01_numcgm = numcgm
+  inner join pcfornecon on z01_numcgm = pc63_numcgm
+  left join pcforneconpad on pc63_contabanco = pc64_contabanco
 where e90_codgera = $gera 
-order by c63_conta,e90_codmov		
+order by c63_conta,e90_codmov   
      ";
-$result  =  pg_query($sql);
+$result  =  db_query($sql);
 $numrows =  pg_numrows($result);
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     //////LAYOUTS////////////////////////////////////////////////////////////////////////////////////////////////////////
     //// LAYOUT BANCO DO BRASIL
        $registro = 2;
@@ -238,114 +238,114 @@ $numrows =  pg_numrows($result);
        $cllayouts_bb->nomearq = "tmp/$nomearquivo";
        
        if(!is_writable("tmp/")){
-	 $sqlerro= true;
-	 $erro_msg = 'Sem permissão de gravar o arquivo. Contate suporte.';
+   $sqlerro= true;
+   $erro_msg = 'Sem permissão de gravar o arquivo. Contate suporte.';
        }  
       if($e83_codmod == 2 && $sqlerro == false){   
-	 //db_msgbox("//// LAYOUT BANCO DO BRASIL");
-	 
-	 
-	       //--------------------------------------------------------------------------------------------------
-	      ///// COMEÇO DO HEADER 
-	      $agencia_pre = db_formatar(str_replace('-','',$c63_agencia),'s','0',5,'e',0);
-	      $conta_pre   = db_formatar(str_replace('.','',str_replace('-','',$c63_conta)),'s','0',10,'e',0);
-	      
-	      $cllayouts_bb->cabec01 = '0' ; 					// fixo
-	      $cllayouts_bb->cabec02 = '1' ; 					// fixo
-	      $cllayouts_bb->cabec03 = '       ' ; 				// branco
-	      $cllayouts_bb->cabec04 = '03' ; 					// fixo
-	      $cllayouts_bb->cabec05 = ' ' ; 					// branco
-	      $cllayouts_bb->cabec06 = '00000' ;  				// fixo
-	      $cllayouts_bb->cabec07 = '         ';   				// brancos
-	      $cllayouts_bb->cabec08 = substr($agencia_pre,0,4); 		// numero da agencia
-	      $cllayouts_bb->cabec09 = strtoupper(substr($agencia_pre,4,1)); 	// digito da agencia
-	      $cllayouts_bb->cabec10 = substr($conta_pre,0,9);  		// conta
-	      $cllayouts_bb->cabec11 = strtoupper(substr($conta_pre,9,1));  	// digito da conta
-	      $cllayouts_bb->cabec12 = '     ' ; 				// brancos
-	      $cllayouts_bb->cabec13 = substr(strtoupper($nomeinst),0,30) ; 	// nome da empresa
-	      $cllayouts_bb->cabec14 = '001'; 					// codigo do banco
-	      $cllayouts_bb->cabec15 = $convenio ; 				// numero do converio
-	      $cllayouts_bb->cabec16 = '   ' ; 					// brancos
-	      $cllayouts_bb->cabec17 = db_formatar($e90_codgera,'s',' ',10,'e',0);	// campo livre
-	      $cllayouts_bb->cabec18 = '00' ;					// tipo de retorno magnetico
-	      $cllayouts_bb->cabec19 = '000' ;					// para uso do banco
-	      $cllayouts_bb->cabec20 = str_repeat(' ',46) ;			// brancos
-	      $cllayouts_bb->cabec21 = str_repeat(' ',17) ;			// exclusivo do sistema
-	      $cllayouts_bb->cabec22 = 'NOVO';					// "novo" para possibilitar o arquivo de retorno
-	      $cllayouts_bb->cabec23 = str_repeat(' ',15) ;			// brancos
-	      $cllayouts_bb->cabec24 = str_repeat(' ',9) ;			// brancos
-	      $cllayouts_bb->cabec25 = '000001' ;				// sequencial - 000001
-	      $cllayouts_bb->gera_cabecalho();
-	     
-	      //// FIM DO HEADER
+   //db_msgbox("//// LAYOUT BANCO DO BRASIL");
+   
+   
+         //--------------------------------------------------------------------------------------------------
+        ///// COMEÇO DO HEADER 
+        $agencia_pre = db_formatar(str_replace('-','',$c63_agencia),'s','0',5,'e',0);
+        $conta_pre   = db_formatar(str_replace('.','',str_replace('-','',$c63_conta)),'s','0',10,'e',0);
+        
+        $cllayouts_bb->cabec01 = '0' ;          // fixo
+        $cllayouts_bb->cabec02 = '1' ;          // fixo
+        $cllayouts_bb->cabec03 = '       ' ;        // branco
+        $cllayouts_bb->cabec04 = '03' ;           // fixo
+        $cllayouts_bb->cabec05 = ' ' ;          // branco
+        $cllayouts_bb->cabec06 = '00000' ;          // fixo
+        $cllayouts_bb->cabec07 = '         ';           // brancos
+        $cllayouts_bb->cabec08 = substr($agencia_pre,0,4);    // numero da agencia
+        $cllayouts_bb->cabec09 = strtoupper(substr($agencia_pre,4,1));  // digito da agencia
+        $cllayouts_bb->cabec10 = substr($conta_pre,0,9);      // conta
+        $cllayouts_bb->cabec11 = strtoupper(substr($conta_pre,9,1));    // digito da conta
+        $cllayouts_bb->cabec12 = '     ' ;        // brancos
+        $cllayouts_bb->cabec13 = substr(strtoupper($nomeinst),0,30) ;   // nome da empresa
+        $cllayouts_bb->cabec14 = '001';           // codigo do banco
+        $cllayouts_bb->cabec15 = $convenio ;        // numero do converio
+        $cllayouts_bb->cabec16 = '   ' ;          // brancos
+        $cllayouts_bb->cabec17 = db_formatar($e90_codgera,'s',' ',10,'e',0);  // campo livre
+        $cllayouts_bb->cabec18 = '00' ;         // tipo de retorno magnetico
+        $cllayouts_bb->cabec19 = '000' ;          // para uso do banco
+        $cllayouts_bb->cabec20 = str_repeat(' ',46) ;     // brancos
+        $cllayouts_bb->cabec21 = str_repeat(' ',17) ;     // exclusivo do sistema
+        $cllayouts_bb->cabec22 = 'NOVO';          // "novo" para possibilitar o arquivo de retorno
+        $cllayouts_bb->cabec23 = str_repeat(' ',15) ;     // brancos
+        $cllayouts_bb->cabec24 = str_repeat(' ',9) ;      // brancos
+        $cllayouts_bb->cabec25 = '000001' ;       // sequencial - 000001
+        $cllayouts_bb->gera_cabecalho();
+       
+        //// FIM DO HEADER
 
-	      for($i=0; $i<$numrows; $i++ ){
-		 db_fieldsmemory($result,$i); 
-	       //gera detalhe    
-		  if($tam == 14){
-		    $conf = 4;
-		    $cgccpf = substr($z01_cgccpf,0,12);
-		    $dig_cgccpf = substr($z01_cgccpf,12,2);
-		  }elseif($tam == 11){
-		    if($z01_cgccpf == '00000000000'){
-		      $conf = 1;
-		      $cgccpf = '000000000000';
-		      $dig_cgccpf = '00';
-		    }else{
-		      $conf = 2;
-		      $cgccpf = str_pad(substr($z01_cgccpf,0,9),12,"0",STR_PAD_LEFT);
-		      $dig_cgccpf = substr($z01_cgccpf,9,2);
-		    }
-		  }else{
-		    $conf = 1;
-		    $cgccpf = '000000000000';
-		    $dig_cgccpf = '00';
-		  }
+        for($i=0; $i<$numrows; $i++ ){
+     db_fieldsmemory($result,$i); 
+         //gera detalhe    
+      if($tam == 14){
+        $conf = 4;
+        $cgccpf = substr($z01_cgccpf,0,12);
+        $dig_cgccpf = substr($z01_cgccpf,12,2);
+      }elseif($tam == 11){
+        if($z01_cgccpf == '00000000000'){
+          $conf = 1;
+          $cgccpf = '000000000000';
+          $dig_cgccpf = '00';
+        }else{
+          $conf = 2;
+          $cgccpf = str_pad(substr($z01_cgccpf,0,9),12,"0",STR_PAD_LEFT);
+          $dig_cgccpf = substr($z01_cgccpf,9,2);
+        }
+      }else{
+        $conf = 1;
+        $cgccpf = '000000000000';
+        $dig_cgccpf = '00';
+      }
 
-		  $agencia_fav = db_formatar(str_replace('-','',$pc63_agencia),'s','0',5,'e',0);
-		  $conta_fav   = db_formatar(str_replace('-','',$pc63_conta),'s','0',13,'e',0);
-		  
-		  $cllayouts_bb->corp01 = '1' ;						// fixo 
-		  $cllayouts_bb->corp02 = ' ' ;						// brancos 
-		  $cllayouts_bb->corp03 = $conf ;					// indicador de conferencia
-		  $cllayouts_bb->corp04 = $cgccpf ;					// cgc, cnpf ou zeros
-		  $cllayouts_bb->corp05 = $dig_cgccpf ;					// digitos do cpf ou cnpf
-		  $cllayouts_bb->corp06 = '0000' ;					// sequencial 
-		  $cllayouts_bb->corp07 = '0' ;						// sequencial 
-		  $cllayouts_bb->corp08 = '000000000' ;					// sequencial 
-		  $cllayouts_bb->corp09 = '0' ;						// sequencial 
-		  $cllayouts_bb->corp10 = db_formatar($e90_codmov,'s',' ',10,'d',0) ;	// livre
-		  $cllayouts_bb->corp11 = str_repeat(' ',8) ;				// sequencial 
-		  $cllayouts_bb->corp12 = str_repeat(' ',6) ;				// campo livre
-		  $cllayouts_bb->corp13 = '000' ;					// camara de compensação
-		  $cllayouts_bb->corp14 = ($pc63_banco = 001?'   ':$pc63_banco) ;	// codigo do banco
-		  $cllayouts_bb->corp15 = substr($agencia_fav,0,4) ;			// agencia do favorecido 
-		  $cllayouts_bb->corp16 = ($pc63_banco = 001?substr($agencia_fav,4,1):db_CalculaDV(substr($agencia_fav,0,4))) ;  // digito da agencia 
-		  $cllayouts_bb->corp17 = substr($conta_fav,0,12) ;	// conta do favorecido 
-		  $cllayouts_bb->corp18 = ($pc63_banco = 001?substr($conta_fav,12,1):db_CalculaDV(substr($conta_fav,0,4))) ;   // digito da conta
-		  $cllayouts_bb->corp19 = '  ' ;					// brancos 
-		  $cllayouts_bb->corp20 = db_formatar($z01_nome,'s',' ',40,'d',0) ;	// nome do favorecido 
-		  $cllayouts_bb->corp21 =  $deposito_dia.$deposito_mes.substr($deposito_ano,2,2) ;	 				// data do depósito(DDMMAA) 
-		  $cllayouts_bb->corp22 = db_formatar(str_replace('.','',$valor),'s','0',13,'e',0) ;	// valor 
-		  $cllayouts_bb->corp23 = ($pc63_banco = 001?'002':'017') ;		// codigo do serviço 
-		  $cllayouts_bb->corp24 = str_repeat(' ',40) ;				// livre 
-		  $cllayouts_bb->corp25 = str_repeat(' ',10) ;				// livre 
-		  $cllayouts_bb->corp26 = str_pad($registro,6,"0",STR_PAD_LEFT);	// sequencial
-		  $cllayouts_bb->gera_corpo();
-		  $registro += 1;
-		//final detalhe
-	      }	
-	     
-	      //trailler.;...  RODAPÉ
-	      $cllayouts_bb->rodap01 = '9';  			// fixo
-	      $cllayouts_bb->rodap02 = str_repeat(' ',193) ;	// brancos
-	      $cllayouts_bb->rodap03 = str_pad($registro,6,"0",STR_PAD_LEFT);        // numero de registros
-	      $cllayouts_bb->gera_trailer();
+      $agencia_fav = db_formatar(str_replace('-','',$pc63_agencia),'s','0',5,'e',0);
+      $conta_fav   = db_formatar(str_replace('-','',$pc63_conta),'s','0',13,'e',0);
+      
+      $cllayouts_bb->corp01 = '1' ;           // fixo 
+      $cllayouts_bb->corp02 = ' ' ;           // brancos 
+      $cllayouts_bb->corp03 = $conf ;         // indicador de conferencia
+      $cllayouts_bb->corp04 = $cgccpf ;         // cgc, cnpf ou zeros
+      $cllayouts_bb->corp05 = $dig_cgccpf ;         // digitos do cpf ou cnpf
+      $cllayouts_bb->corp06 = '0000' ;          // sequencial 
+      $cllayouts_bb->corp07 = '0' ;           // sequencial 
+      $cllayouts_bb->corp08 = '000000000' ;         // sequencial 
+      $cllayouts_bb->corp09 = '0' ;           // sequencial 
+      $cllayouts_bb->corp10 = db_formatar($e90_codmov,'s',' ',10,'d',0) ; // livre
+      $cllayouts_bb->corp11 = str_repeat(' ',8) ;       // sequencial 
+      $cllayouts_bb->corp12 = str_repeat(' ',6) ;       // campo livre
+      $cllayouts_bb->corp13 = '000' ;         // camara de compensação
+      $cllayouts_bb->corp14 = ($pc63_banco = 001?'   ':$pc63_banco) ; // codigo do banco
+      $cllayouts_bb->corp15 = substr($agencia_fav,0,4) ;      // agencia do favorecido 
+      $cllayouts_bb->corp16 = ($pc63_banco = 001?substr($agencia_fav,4,1):db_CalculaDV(substr($agencia_fav,0,4))) ;  // digito da agencia 
+      $cllayouts_bb->corp17 = substr($conta_fav,0,12) ; // conta do favorecido 
+      $cllayouts_bb->corp18 = ($pc63_banco = 001?substr($conta_fav,12,1):db_CalculaDV(substr($conta_fav,0,4))) ;   // digito da conta
+      $cllayouts_bb->corp19 = '  ' ;          // brancos 
+      $cllayouts_bb->corp20 = db_formatar($z01_nome,'s',' ',40,'d',0) ; // nome do favorecido 
+      $cllayouts_bb->corp21 =  $deposito_dia.$deposito_mes.substr($deposito_ano,2,2) ;          // data do depósito(DDMMAA) 
+      $cllayouts_bb->corp22 = db_formatar(str_replace('.','',$valor),'s','0',13,'e',0) ;  // valor 
+      $cllayouts_bb->corp23 = ($pc63_banco = 001?'002':'017') ;   // codigo do serviço 
+      $cllayouts_bb->corp24 = str_repeat(' ',40) ;        // livre 
+      $cllayouts_bb->corp25 = str_repeat(' ',10) ;        // livre 
+      $cllayouts_bb->corp26 = str_pad($registro,6,"0",STR_PAD_LEFT);  // sequencial
+      $cllayouts_bb->gera_corpo();
+      $registro += 1;
+    //final detalhe
+        } 
+       
+        //trailler.;...  RODAPÉ
+        $cllayouts_bb->rodap01 = '9';       // fixo
+        $cllayouts_bb->rodap02 = str_repeat(' ',193) ;  // brancos
+        $cllayouts_bb->rodap03 = str_pad($registro,6,"0",STR_PAD_LEFT);        // numero de registros
+        $cllayouts_bb->gera_trailer();
 
-	       $cllayouts_bb->gera();
+         $cllayouts_bb->gera();
       }else if($sqlerro==false){
-	$sqlerro  = true;
-	$erro_msg = "O tipo selecionado, não possui layout cadastrado.";
+  $sqlerro  = true;
+  $erro_msg = "O tipo selecionado, não possui layout cadastrado.";
       }
   
 
@@ -403,7 +403,7 @@ if(isset($data)){
    
 //sempre que ja existir agenda entra nesta opcao  
  if(isset($e80_codage) && empty($pesquisar)){  
-	include("forms/db_frmempageconflay.php");
+  include(modification("forms/db_frmempageconflay.php"));
 
 //pela primeira vez que entrar neste arquivo, entra nesta opcao para digitar a data da agenda 
   }else{
@@ -411,87 +411,87 @@ if(isset($data)){
     <center>
       <table>
         <tr>
-	  <td>
+    <td>
        <fieldset><legend><b>Manutenção de agenda</b></legend> 
         <form name="form1" method="post" action="">
-	      <br>
+        <br>
          <table >
-	   <tr>
-	      <td nowrap title="<?=@$Te80_data?>" align='right'>
-	      <?=$Le80_data?>
-	      </td>	
-	      <td>	
-	       <?
-		 db_inputdata('e80_data',@$e80_data_dia,@$e80_data_mes,@$e80_data_ano,true,'text',1);
-	       ?>
-	      	<input name="pesquisar" type="submit"    value="Pesquisar">
-	      </td>
-	   </tr>
+     <tr>
+        <td nowrap title="<?=@$Te80_data?>" align='right'>
+        <?=$Le80_data?>
+        </td> 
+        <td>  
+         <?
+     db_inputdata('e80_data',@$e80_data_dia,@$e80_data_mes,@$e80_data_ano,true,'text',1);
+         ?>
+          <input name="pesquisar" type="submit"    value="Pesquisar">
+        </td>
+     </tr>
            <tr>
-	     <td class='bordas' align='right'>
+       <td class='bordas' align='right'>
                  <? db_ancora("Agendas","js_empage();",1);  ?>
-		 :
-	     </td>
+     :
+       </td>
 <?
           if($numrows01!=0){
-	     for($i=0; $i<$numrows01; $i++){
-	       db_fieldsmemory($result01,$i);
-	       $arr[$e80_codage] = $e80_codage;
-	     }
-	  }  
+       for($i=0; $i<$numrows01; $i++){
+         db_fieldsmemory($result01,$i);
+         $arr[$e80_codage] = $e80_codage;
+       }
+    }  
 ?>
              <td class='bordas'><small>
 <?
           //variavel setada apenas quando o usuario pesquisar na func 
           if(isset($pri_codage)){
-	    $e80_codage = $pri_codage;
-	  } 
+      $e80_codage = $pri_codage;
+    } 
 
           if($numrows01==0){
-	    echo "Nenhuma encontrado";  
-	  }else{  
-	       db_select("e80_codage",$arr,true,1);
-	  }
-?>	   
-	       
-	     </small>
-	     <?=$Le84_codmod?>  
-<?	     
+      echo "Nenhuma encontrado";  
+    }else{  
+         db_select("e80_codage",$arr,true,1);
+    }
+?>     
+         
+       </small>
+       <?=$Le84_codmod?>  
+<?       
      
           $sql01    = $clempagemod->sql_query_mod(null,"distinct e84_codmod,e84_descr","","e84_codmod <> 1");
-	  $result01 = $clempagemod->sql_record($sql01);
-    	  $numrows01 = $clempagemod->numrows;
-	  
-	  $arr ='';
+    $result01 = $clempagemod->sql_record($sql01);
+        $numrows01 = $clempagemod->numrows;
+    
+    $arr ='';
           if($numrows01!=0){
-	     for($i=0; $i<$numrows01; $i++){
-	       db_fieldsmemory($result01,$i);
-	       $arr[$e84_codmod] = $e84_descr;
-	     }
-	  }  
+       for($i=0; $i<$numrows01; $i++){
+         db_fieldsmemory($result01,$i);
+         $arr[$e84_codmod] = $e84_descr;
+       }
+    }  
           if($numrows01==0){
-	    echo "Nenhuma modelo para esta agenda";  
-	  }else{  
-	       db_select("e84_codmod",$arr,true,1);
-	  }
-?>	   
-	      </td>
+      echo "Nenhuma modelo para esta agenda";  
+    }else{  
+         db_select("e84_codmod",$arr,true,1);
+    }
+?>     
+        </td>
             </tr>
             <tr>
               <td colspan="2" align="center">
-	      <br>
-	      	<input name="alterar" type="submit" value="Entrar selecionada" <?=($numrows01==0?"disabled":"")?> >
-	      </td>	
+        <br>
+          <input name="alterar" type="submit" value="Entrar selecionada" <?=($numrows01==0?"disabled":"")?> >
+        </td> 
             </tr>
 
-	 </table>
-       </form>	 
+   </table>
+       </form>   
        </fieldset>
        </td>
      </tr>  
    </table>  
     </center>
-<?   	
+<?    
    }  
 ?>
     </td>
@@ -505,7 +505,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 
 function js_empage(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
 }
 function js_mostra(codage,data){
   arr = data.split('-');
@@ -539,10 +539,10 @@ if(isset($atualizar) || isset($adicionar)){
    
       echo "
         <script>
-	 function js_emitir(){
+   function js_emitir(){
            location.href = 'tmp/$nomearquivo';
-	 }   
-	 js_emitir();
+   }   
+   js_emitir();
         </script>
       ";
       

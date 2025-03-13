@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once 'model/contabilidade/arquivos/tce/AC/ArquivoBase.model.php';
-require_once 'model/contabilidade/arquivos/tce/AC/ArquivoConfiguracaoTCEAC.model.php';
+require_once modification("model/contabilidade/arquivos/tce/AC/ArquivoBase.model.php");
+require_once modification("model/contabilidade/arquivos/tce/AC/ArquivoConfiguracaoTCEAC.model.php");
 
 class ArquivoLancamento extends ArquivoBase {
 
@@ -119,13 +119,13 @@ class ArquivoLancamento extends ArquivoBase {
       }
 
       $oStdLancamento = new stdClass();
-      $oStdLancamento->numero = $oStdDadosLancamento->c70_codlan;
-      $oStdLancamento->data = $oData->getDate(DBDate::DATA_PTBR);
-      $oStdLancamento->tipo = $oStdDadosLancamento->estorno ? 'ESTORNO' : 'ORDINARIO';
+      $oStdLancamento->numero    = $oStdDadosLancamento->c70_codlan;
+      $oStdLancamento->data      = $oData->getDate(DBDate::DATA_PTBR);
+      $oStdLancamento->tipo      = $oStdDadosLancamento->estorno ? 'ESTORNO' : 'ORDINARIO';
       $oStdLancamento->historico = $oStdDadosLancamento->c72_complem;
-      $oStdLancamento->unidade = $iUnidade;
-      $oStdLancamento->orgao = $iOrgao;
-      $oStdLancamento->clp = $iClp;
+      $oStdLancamento->unidade   = '000001';
+      $oStdLancamento->orgao     = '000304';
+      $oStdLancamento->clp       = $iClp;
 
       $aLancamentos[] = $oStdLancamento;
     }
@@ -154,9 +154,9 @@ class ArquivoLancamento extends ArquivoBase {
         mb_detect_encoding($oStdLancamento->historico, "UTF-8, ISO-8859-1, ISO-8859-15", true)
       );
 
-      $oHistorico = $oDocumento->createElement('historico');
-      $oHistoricoCDATA = $oDocumento->createCDATASection($sHistorico);
-      $oHistorico->appendChild($oHistoricoCDATA);
+      $oHistorico = $oDocumento->createElement('historico', $sHistorico);
+//      $oHistoricoCDATA = $oDocumento->createCDATASection($sHistorico);
+//      $oHistorico->appendChild($oHistorico);
 
       $oLancamento = $oDocumento->createElement('lancamento');
       $oLancamento->appendChild($oDocumento->createElement('numero', $oStdLancamento->numero));

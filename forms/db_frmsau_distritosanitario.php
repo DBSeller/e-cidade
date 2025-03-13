@@ -75,7 +75,7 @@ $oDaoSauDistritoSanitario->rotulo->label();
 <script>
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_sau_distritosanitario', 
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_sau_distritosanitario', 
                       'func_sau_distritosanitario.php?funcao_js=parent.js_preenchepesquisa|s153_i_codigo', 
                       'Pesquisa', true
                      );

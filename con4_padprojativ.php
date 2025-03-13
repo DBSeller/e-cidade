@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -66,21 +66,37 @@ class projativ {
 
     //////
 
+      $anoSessao = db_getsession('DB_anousu');
+      $anoAnterior = db_getsession('DB_anousu') - 1;
 
       $sql = "select x.*,'2' as identificador
               from
               (select distinct
-                o55_anousu as anousu,
-	        o55_projativ as codigo,
-  	        o55_descr as nome
-              from orcprojativ
-	           inner join orcdotacao on o58_projativ = o55_projativ
-		                        and o58_anousu   = o55_anousu
-	       and o55_anousu <= " . db_getsession("DB_anousu").") as x";
+                      o55_anousu as anousu,
+                      o55_projativ as codigo,
+                      o55_descr as nome
+                 from orcprojativ
+	                  inner join orcdotacao on o58_projativ = o55_projativ
+		                                   and o58_anousu   = o55_anousu
+                                           and o55_anousu   in ({$anoSessao}, {$anoAnterior}) 
+               union
+               select distinct
+                      e60_anousu as anousu,
+                      o55_projativ as codigo,
+                      o55_descr as nome
+                 from orcprojativ
+                      inner join orcdotacao on o58_projativ = o55_projativ
+                                           and o58_anousu   = o55_anousu
+                      inner join empempenho on e60_coddot   = o58_coddot
+                                           and e60_anousu   = o58_anousu
+                      inner join empresto   on e91_numemp   = e60_numemp
+                where e91_anousu = {$anoSessao}
+	       ) as x ";
+
   	   if (!empty($exercicios))
 	     $sql .= " where not anousu in ($exercicios) ";
 
-       $res=pg_exec($sql);
+  	   $res  = db_query($sql);
        $rows = pg_numrows($res);
        for ($x=0;$x < $rows;$x++){
            $anousu = formatar(pg_result($res,$x,"anousu"),4,'n');

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,64 +25,76 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_rhsindicato_classe.php");
-require_once("dbforms/db_funcoes.php");
+use ECidade\RecursosHumanos\Pessoal\Repository\SindicatoRepository;
 
-db_postmemory($HTTP_POST_VARS);
+require_once modification('libs/db_stdlib.php');
+require_once modification('libs/db_conecta.php');
+require_once modification('libs/db_sessoes.php');
+require_once modification('libs/db_usuariosonline.php');
+require_once modification('classes/db_rhsindicato_classe.php');
+require_once modification('dbforms/db_funcoes.php');
+
+$parametros = JSON::requestParameters();
+
+foreach (get_object_vars($parametros) as $key => $value) {
+    $GLOBALS[$key] = $value;
+    ${$key} = $value;
+}
 
 $clrhsindicato = new cl_rhsindicato;
 $db_opcao = 1;
 $db_botao = true;
+$erro = false;
+$mensagem = '';
 
-if (isset($incluir)) {
-	
-  db_inicio_transacao();
-  $clrhsindicato->incluir($rh116_sequencial);
-  db_fim_transacao();
+db_inicio_transacao();
+
+try {
+    if (isset($parametros->incluir)) {
+        $sindicato = SindicatoRepository::find($parametros->rh116_sequencial);
+        $sindicato->setSequencial($parametros->rh116_sequencial);
+        $sindicato->setMesDataBase($parametros->mes_data_base);
+        $sindicato->setCodigo($parametros->rh116_codigo);
+        $sindicato->setRazaoSocial($parametros->rh116_descricao);
+        $sindicato->setCnpj(str_replace(array('.', '/', '-'), '', $parametros->rh116_cnpj));
+
+        SindicatoRepository::save($sindicato);
+
+        $mensagem = 'Sindicato salvo com sucesso!';
+
+        $db_opcao = 1;
+        $db_botao = true;
+    }
+} catch (Exception $exception) {
+    $erro = true;
+    $mensagem = $exception->getMessage();
 }
+
+if ($mensagem) {
+    db_msgbox($mensagem);
+}
+
+db_fim_transacao($erro);
+
 ?>
-<html>
+<!doctype html>
+<html lang="pt-BR">
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>DBSeller Informática Ltda</title>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="scripts/scripts.js"></script>
+    <script type="text/javascript" src="scripts/prototype.js"></script>
+    <script type="text/javascript" src="scripts/widgets/Input/DBInput.widget.js"></script>
+    <script type="text/javascript" src="scripts/widgets/Input/DBInputCNPJ.js"></script>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-
-<br /><br />
-
-<center>
-	<?php include("forms/db_frmrhsindicato.php"); ?>
-</center>
-
-<?php db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>
+<body>
+<div class="container">
+    <?php
+    require_once modification('forms/db_frmrhsindicato.php');
+    db_menu();
+    ?>
+</div>
 </body>
 </html>
-<script>
-js_tabulacaoforms("form1","rh116_codigo",true,1,"rh116_codigo",true);
-</script>
-<?php
-if(isset($incluir)){
-
-  if($clrhsindicato->erro_status=="0"){
-
-    $clrhsindicato->erro(true,false);
-    $db_botao=true;
-    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-
-    if($clrhsindicato->erro_campo!=""){
-
-      echo "<script> document.form1.".$clrhsindicato->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$clrhsindicato->erro_campo.".focus();</script>";
-    }
-  }else{
-    $clrhsindicato->erro(true,true);
-  }
-}
-?>

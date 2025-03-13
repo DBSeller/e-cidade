@@ -138,7 +138,7 @@ $clrotulo->label('e53_valor');
 </form>
 <script>
 function js_adiciona_linha(){
-  js_OpenJanelaIframe('top.corpo.iframe_empautret','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostrareceita|k02_codigo|k02_drecei','Pesquisa',true,0);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_empautret','db_iframe_tabrec','func_tabrec.php?funcao_js=parent.js_mostrareceita|k02_codigo|k02_drecei','Pesquisa',true,0);
 }
 function js_mostrareceita(chave1, chave2){
   var       tab = document.getElementById("tabreceitas");

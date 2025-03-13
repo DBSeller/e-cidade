@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libcaixa_ze.php");
-include("libs/db_libgertxtfolha.php");
-include("classes/db_folha_classe.php");
-include("classes/db_pensao_classe.php");
-include("classes/db_rharqbanco_classe.php");
-include("classes/db_orctiporec_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libcaixa_ze.php"));
+include(modification("libs/db_libgertxtfolha.php"));
+include(modification("classes/db_folha_classe.php"));
+include(modification("classes/db_pensao_classe.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($HTTP_POST_VARS);
 
-$cllayouts_bb  = new cl_layouts_bb;
-$cllayout_BBBS = new cl_layout_BBBS;
+$cllayouts_bb  = new LayoutBB;
+$cllayout_BBBS = new LayoutBBBSFolha;
 $clfolha       = new cl_folha;
 $clpensao      = new cl_pensao;
 $clrharqbanco  = new cl_rharqbanco;
@@ -129,11 +129,11 @@ if($clrharqbanco->numrows>0){
     $versaodoarquiv = "030";
 
     if($vinculo != "A"){
-	       $dacontadobanco = "0404344203";
+         $dacontadobanco = "0404344203";
     }   
   }else{
 
-    include("dbforms/db_layouttxt.php");
+    include(modification("dbforms/db_layouttxt.php"));
     $posicao = "A";
     $agenciaheader = $rh34_agencia;
     if($rh34_codban == "001"){
@@ -176,17 +176,17 @@ if($clrharqbanco->numrows>0){
     }
     if($vinculo != "A"){
        if($rh34_codban == "001"){
-	       $contaheader = "8162";
-	       $dvcontaheader = "0";
+         $contaheader = "8162";
+         $dvcontaheader = "0";
        }else if($rh34_codban == "041"){
-	       $contaheader = "040434420";
-	       $dvcontaheader = "3";
+         $contaheader = "040434420";
+         $dvcontaheader = "3";
        }else if($db90_codban == "104" && $layout != 4){
-	       $contaheader = "006000042";
-	       $dvcontaheader = "63";
+         $contaheader = "006000042";
+         $dvcontaheader = "63";
        }else if($layout == 4){
-	       $contaheader = "006000042";
-	       $dvcontaheader = "63";
+         $contaheader = "006000042";
+         $dvcontaheader = "63";
 
        }
     }
@@ -263,7 +263,7 @@ if($clrharqbanco->numrows>0){
       //////
     }
 
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt,1);
+    db_setaPropriedadesLayoutTxt($db_layouttxt,1);
 
   }
 
@@ -296,7 +296,7 @@ if( trim($tipoconta) == "O"){
     $rh34_wherefolha .= " trim(r38_conta) <> '00' and ";
 }
 
-$rh34_wherefolha.= " r38_banco = '$rh34_codban' ";
+$rh34_wherefolha.= " r38_banco = '$rh34_codban' and r38_liq > 0 ";
 
 if($sqlerro == false){
   $campos = "  
@@ -367,9 +367,9 @@ if($sqlerro == false){
   $sql = $clpensao->sql_query_gerarqbag(null,null,null,null,"$campovalor as r38_liq, length(trim(r52_codage)||trim(r52_dvagencia)) as qtddigitosagencia,
                                              r52_numcgm as r38_regist,
                                              r52_codbco as r38_banco,
-	                                           trim(r52_conta)||trim(coalesce(r52_dvconta,'')) as r38_conta,
-	                                           trim(r52_codage)||trim(coalesce(r52_dvagencia,'')) as r38_agenc,
-	                                           cgm.*,func.z01_nome as nomefuncionario,
+                                             trim(r52_conta)||trim(coalesce(r52_dvconta,'')) as r38_conta,
+                                             trim(r52_codage)||trim(coalesce(r52_dvagencia,'')) as r38_agenc,
+                                             cgm.*,func.z01_nome as nomefuncionario,
                                              r70_descr,
                                              length(trim(cgm.z01_cgccpf)) as tam,
                                              $campovalor as valorori",
@@ -449,12 +449,12 @@ if($sqlerro == false){
           $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
           $pdf->cell(65,$alt,$RLz01_nome,1,0,"C",1);
           $pdf->cell(65,$alt,$RLr70_descr,1,0,"C",1);
-	}else{
+  }else{
           $pdf->cell(65,$alt,"Pensionista",1,0,"C",1);
           $pdf->cell(65,$alt,"Funcionário",1,0,"C",1);
           $pdf->cell(20,$alt,$RLz01_numcgm,1,0,"C",1);
           $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
-	}
+  }
         $pdf->cell(20,$alt,$RLr38_liq,1,0,"C",1);
         $pdf->cell(15,$alt,"Cod.Pgto.",1,0,"C",1);
         $pdf->cell(15,$alt,$RLr38_banco,1,0,"C",1);
@@ -483,17 +483,17 @@ if($sqlerro == false){
 
         $bancoanterior = $r38_banco;
 
-	if($acodigodobanco == '041'){
-	  $tiposerv = "30";
-	  if(($tipoconta) == "O"){
-	    $tipopaga = "10";
-	  }else{
-	    $tipopaga = "01";
-	  }
-	}else{
-	  $tiposerv = "12";
-	  $tipopaga = "03";
-	}
+  if($acodigodobanco == '041'){
+    $tiposerv = "30";
+    if(($tipoconta) == "O"){
+      $tipopaga = "10";
+    }else{
+      $tipopaga = "01";
+    }
+  }else{
+    $tiposerv = "12";
+    $tipopaga = "03";
+  }
 
         if($seq_header != 0){
           $cllayout_BBBS->BBBStraillerL_001_003 = $acodigodobanco; 
@@ -501,37 +501,37 @@ if($sqlerro == false){
           $cllayout_BBBS->BBBStraillerL_018_023 = $seq_detalhe; 
           $cllayout_BBBS->BBBStraillerL_024_041 = $valor_header;
           $cllayout_BBBS->geraTRAILLERLote();
-	  $valor_header = 0;
-	  $registro ++;
-	}
+    $valor_header = 0;
+    $registro ++;
+  }
 
         $seq_header ++;
-	$seq_detalhe = 0;
-	$registro ++;
+  $seq_detalhe = 0;
+  $registro ++;
 
-	$cllayout_BBBS->BSheaderL_001_003 = $acodigodobanco;
-	$cllayout_BBBS->BSheaderL_004_007 = $seq_header;
-	$cllayout_BBBS->BSheaderL_010_011 = $tiposerv;
-	$cllayout_BBBS->BSheaderL_012_013 = $tipopaga;
-	$cllayout_BBBS->BSheaderL_019_032 = $inscricaoprefa;
-	$cllayout_BBBS->BSheaderL_033_037 = $aconveniobanco;
-	$cllayout_BBBS->BSheaderL_053_057 = $agenciadobanco;
-	$cllayout_BBBS->BSheaderL_062_071 = $dacontadobanco;
-	$cllayout_BBBS->BSheaderL_073_102 = $nomeprefeitura;
-	$cllayout_BBBS->BSheaderL_143_172 = $ender;
-	$cllayout_BBBS->BSheaderL_193_212 = $munic;
-	$cllayout_BBBS->BSheaderL_213_220 = $cep;
-	$cllayout_BBBS->BSheaderL_221_222 = $uf;
-	$cllayout_BBBS->geraHEADERLoteBS();
+  $cllayout_BBBS->BSheaderL_001_003 = $acodigodobanco;
+  $cllayout_BBBS->BSheaderL_004_007 = $seq_header;
+  $cllayout_BBBS->BSheaderL_010_011 = $tiposerv;
+  $cllayout_BBBS->BSheaderL_012_013 = $tipopaga;
+  $cllayout_BBBS->BSheaderL_019_032 = $inscricaoprefa;
+  $cllayout_BBBS->BSheaderL_033_037 = $aconveniobanco;
+  $cllayout_BBBS->BSheaderL_053_057 = $agenciadobanco;
+  $cllayout_BBBS->BSheaderL_062_071 = $dacontadobanco;
+  $cllayout_BBBS->BSheaderL_073_102 = $nomeprefeitura;
+  $cllayout_BBBS->BSheaderL_143_172 = $ender;
+  $cllayout_BBBS->BSheaderL_193_212 = $munic;
+  $cllayout_BBBS->BSheaderL_213_220 = $cep;
+  $cllayout_BBBS->BSheaderL_221_222 = $uf;
+  $cllayout_BBBS->geraHEADERLoteBS();
       }
 
       $compensacao = "   ";
       if($acodigodobanco == $r38_banco || $r38_liq<5000){
         $compensacao = "010";
       }else{
-	if($r38_liq>=5000){
-	  $compensacao = "018";
-	}
+  if($r38_liq>=5000){
+    $compensacao = "018";
+  }
       }
 
       $agenciapagarT = str_replace('.','',str_replace('-','',$r38_agenc));
@@ -543,7 +543,7 @@ if($sqlerro == false){
 
       $contasapagarT+= 0;
 //      if($contasapagarT == 0){
-//	continue;
+//  continue;
 //      }
       $contasapagarT = db_formatar($contasapagarT,'s','0',10,'e',0);
 
@@ -670,7 +670,7 @@ if($sqlerro == false){
     $formalancamento = ""; // Fará imprimir '00'
 
     ///// HEADER DO LOTE
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 2);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 2);
     ///// FINAL DO HEADER DO LOTE
 
     $sequencialnolote = 0;
@@ -749,7 +749,7 @@ if($sqlerro == false){
 //      $sequencialreg = "      ";
 
       ///// REGISTRO A
-      db_setaPropriedadesLayoutTxt(&$db_layouttxt, 3, $posicao);
+      db_setaPropriedadesLayoutTxt($db_layouttxt, 3, $posicao);
       ///// FINAL DO REGISTRO A
 
       if($tam == 11){
@@ -766,19 +766,19 @@ if($sqlerro == false){
       ///// FINAL DO REGISTRO B
 
       if($i == 0 || $pdf->gety() > $pdf->h - 30){
-	$pdf->addpage("L");
+  $pdf->addpage("L");
         $pdf->cell(15,$alt,$RLrh01_regist,1,0,"C",1);
         if($tiparq < 5){
           $pdf->cell(15,$alt,$RLz01_numcgm,1,0,"C",1);
           $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
           $pdf->cell(65,$alt,$RLz01_nome,1,0,"C",1);
           $pdf->cell(65,$alt,$RLr70_descr,1,0,"C",1);
-	}else{
+  }else{
           $pdf->cell(65,$alt,"Funcionário",1,0,"C",1);
           $pdf->cell(65,$alt,"Pensionista",1,0,"C",1);
           $pdf->cell(15,$alt,$RLz01_numcgm,1,0,"C",1);
           $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
-	}
+  }
         $pdf->cell(17,$alt,$RLr38_liq,1,0,"C",1);
         $pdf->cell(13,$alt,$RLr38_agenc,1,0,"C",1);
         $pdf->cell(20,$alt,$RLr38_conta,1,1,"C",1);
@@ -816,7 +816,7 @@ if($sqlerro == false){
     $quantidadetotallote = $sequencialnolote + 2;
     $valortotallote = $valortotal;
     ///// TRAILLER DE LOTE
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 4);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 4);
     ///// FINAL DO TRAILLER DE LOTE
 
 
@@ -843,7 +843,7 @@ if($sqlerro == false){
 //      $valortrailler = str_repeat(" ",17);
 //      $fixa999 = str_repeat(" ",6);
 //    }
-    db_setaPropriedadesLayoutTxt(&$db_layouttxt, 5);
+    db_setaPropriedadesLayoutTxt($db_layouttxt, 5);
     ///// FINAL DO TRAILLER DE ARQUIVO
     //////////////////////////////////
 

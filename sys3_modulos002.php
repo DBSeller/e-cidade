@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
@@ -81,7 +81,7 @@ if (isset($xmodulo)) {
 $xmod	order by modulo,arquivo,d.seqarq
 ";
 
-$result=pg_exec($sql);
+$result=db_query($sql);
 if ( pg_numrows($result) == 0 ) {
   db_redireciona('db_erros.php?fechar=true&db_erro= Problema na estrutura, não retornou nenhum registro na seleção.');
 }
@@ -139,7 +139,7 @@ for($i = 0;$i < pg_numrows($result);$i++){
 			inner join db_syscampo  c on c.codcam = b.codcam
 		where codarq = $xxarq
                 order by nomeind,sequen";
-        $resindice = pg_exec($sqlind);
+        $resindice = db_query($sqlind);
         $pdf->SetFont('Arial','B',8);
         if ( pg_numrows($resindice) != 0 ) {
            $prinome = '';

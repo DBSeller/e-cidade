@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 //MODULO: saude
 //CLASSE DA ENTIDADE sau_proccbo
-require_once("db_sau_proccbo_classe.php");
+require_once(modification("classes/db_sau_proccbo_classe.php"));
 class cl_sau_proccbo_ext extends cl_sau_proccbo  { 
    function sql_query_ext ( $sd96_i_codigo=null,$campos="*",$ordem=null,$dbwhere="", $intUnidade, $lFiltraServico = true){
      $sql = "select ";

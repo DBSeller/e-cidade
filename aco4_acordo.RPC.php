@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/JSON.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("std/DBDate.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_acordoparalisacao_classe.php"));
 $oJson    = new Services_JSON();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
 $oRetorno = new stdClass();
@@ -49,7 +49,19 @@ $oRetorno->message = '';
 try {
 
   switch ($oParam->exec) {
-    
+
+    case 'getTiposParalisacao':
+  
+        $tiposEvento = [];
+        $tiposParalisacao = array_map(function($data) {
+            $data->descricao = urlencode($data->descricao);
+            return $data;
+        }, TipoEventoAcordo::getTiposByCodigo($oParam->codes));
+        
+        $oRetorno->tiposParalisacao = $tiposParalisacao;
+      
+        break;
+
     case "getPeriodosReativados" : 
       
       $aPeriodosReativados = array();
@@ -72,7 +84,9 @@ try {
             $sCampos .= "         inner join acordoitemprevisao         on ac37_sequencial          = ac38_acordoitemprevisao";
             $sCampos .= "   where ac37_acordoperiodo = ac36_sequencial) as execucao ";
             
-            $sWhere  = "     ac36_sequencial = {$oPeriodoReativado->iCodigoPeriodo} ";            
+            $sWhere  = "     ac36_sequencial = {$oPeriodoReativado->iCodigoPeriodo} ";
+            $sWhere  .= "  and  ac36_datainicial >= '{$oParam->dtInicial}' ";            
+            
             $sSqlReativados = $oDaoReativados->sql_queryReativados(null, $sCampos, null, $sWhere);
             $rsReativados   = $oDaoReativados->sql_record($sSqlReativados);
             if ($oDaoReativados->numrows > 0) {
@@ -106,6 +120,7 @@ try {
       $oDados->dtInicial   = '';
       $oDados->dtTermino   = '';
       $oDados->sObservacao = '';
+      $oDados->sEvento = '';
 
       if ($oParalisacao->getDataInicio() instanceof DBDate) {
         $oDados->dtInicial = $oParalisacao->getDataInicio()->getDate("d/m/Y");
@@ -115,6 +130,10 @@ try {
       }
 
       $oDados->sObservacao = urlEncode($oParalisacao->getUltimaMovimentacao()->getObservacao());
+      $sEvento = new AcordoEvento($oParalisacao->getEvento());
+      $oDados->sTipoEvento = $sEvento->getTipoEvento();
+      $oDados->sAnoProcesso = $sEvento->getProcesso()  .'/'. $sEvento->getAnoProcesso();
+
       $oRetorno->oDados = $oDados; 
       
     break; 
@@ -139,15 +158,23 @@ try {
     case "salvarParalisacao" :
       
       db_inicio_transacao();
-      
       $sObservacao  = addslashes(db_stdClass::normalizeStringJson($oParam->sObservacao));
       $oData        = new DBDate($oParam->dtInicial);
       $oAcordo      = AcordoRepository::getByCodigo($oParam->iAcordo);
-      $oAcordo->paralisar($oData, $sObservacao);
-      
+      $oUltimaParalisacao = $oAcordo->getUltimaParalisacao();
+      $ano = isset($oParam->ano) ? $oParam->ano : null;
+      $processo = isset($oParam->processo) ? $oParam->processo : null;
+      $evento = new AcordoEvento();
+      $evento->setAcordo($oAcordo);
+      $evento->setData($oData);
+      $evento->setTipoEvento($oParam->tipoParalisacao);
+      $evento->setAnoProcesso($ano);
+      $evento->setProcesso($processo);
+      $evento->setDescricaoVeiculo($sObservacao);
+      $evento->salvar();
+      $oRetorno->message = urlencode("Acordo paralisado com sucesso. Um evento foi criado automaticamente para esta ação.");
       db_fim_transacao(false);
       
-      $oRetorno->message = urlencode("Acordo paralisado com sucesso.");
       
     break;  
 
@@ -158,9 +185,28 @@ try {
       $oAcordo            = AcordoRepository::getByCodigo($oParam->iAcordo);
       $sObservacao        = addslashes(db_stdClass::normalizeStringJson($oParam->sObservacao));
       $oUltimaParalisacao = $oAcordo->getUltimaParalisacao();
+
       $oUltimaParalisacao->setObservacao($sObservacao);
-      $oUltimaParalisacao->remover();
-      $oRetorno->message = urlencode("Paralisação removida com sucesso.");
+      $evento = new AcordoEvento($oUltimaParalisacao->getEvento());
+      if ($evento->getCodigo() == null) {
+          $sql1 = "select ac55_sequencial from acordoevento where ac55_acordo = {$oAcordo->getCodigo()} and ac55_tipoevento in(9, 10, 11) order by ac55_sequencial asc limit 1";
+          pg_query("delete from acordodocumentoevento where ac57_acordoevento = ({$sql1})");
+          pg_query("delete from acordoevento where ac55_sequencial = ({$sql1})");
+          $sql = "select ac48_acordomovimentacao from acordoparalisacaoacordomovimentacao where ac48_acordoparalisacao = {$oUltimaParalisacao->getCodigo()}";
+          $cAcordoMoviumentacao = pg_fetch_assoc(pg_query($sql));
+          pg_query("delete from acordoparalisacaoacordomovimentacao where ac48_acordoparalisacao = {$oUltimaParalisacao->getCodigo()}");
+          $paralisacao = new cl_acordoparalisacao();
+          $movimentacao = new cl_acordomovimentacao();
+          $movimentacao->excluir($cAcordoMoviumentacao['ac48_acordomovimentacao']);
+          $paralisacao->excluir($oUltimaParalisacao->getCodigo());
+          $oAcordo->setSituacao(4);
+          $oAcordo->save();
+          $oRetorno->message = urlencode("A paralisação e o evento foram excluídos com sucesso!");
+          db_fim_transacao( false );
+          break;
+      }
+      $evento->remover();
+      $oRetorno->message = urlencode("A paralisação e o evento foram excluídos com sucesso!");
       
       db_fim_transacao( false );
       
@@ -176,11 +222,11 @@ try {
     case "reativarAcordo" :
 
       db_inicio_transacao();
-
+      
       $sObservacao = db_stdClass::normalizeStringJsonEscapeString($oParam->sObservacao);
       $oAcordo = AcordoRepository::getByCodigo($oParam->iAcordo);
-      $oAcordo->reativar($oParam->aPeriodos, new DBDate($oParam->dtRetorno), $sObservacao);
-      $oRetorno->message = urlEncode("Acordo reativado com sucesso.");
+      $oAcordo->reativar(new DBDate($oParam->dtRetorno), $sObservacao);
+      $oRetorno->message = urlEncode("Acordo reativado com sucesso. Um evento foi criado automaticamente para esta ação.");
 
       db_fim_transacao(false);
 
@@ -199,13 +245,11 @@ try {
       
       $iAcordo     = $oParam->iAcordo;
       $sObservacao = db_stdClass::normalizeStringJsonEscapeString($oParam->sObservacao);
-      $aPeriodos   = $oParam->aPeriodos;
       $oAcordo     = AcordoRepository::getByCodigo($iAcordo);
-      $oAcordo->cancelarReativacao($aPeriodos, $sObservacao);
-      
+      $oAcordo->cancelarReativacao($sObservacao);      
       db_fim_transacao(false);
       
-      $oRetorno->message = urlEncode("Reativação de acordo cancelada com sucesso.");
+      $oRetorno->message = urlEncode("A reativação e o evento foram excluídos com Sucesso!");
 
 
     break; 

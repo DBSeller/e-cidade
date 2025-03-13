@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_assenta_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
 
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
+
 $classenta = new cl_assenta;
 
 $dbwhere  = "";
@@ -56,7 +56,34 @@ if ( isset( $dataIni ) && trim( $dataIni ) != "") {
   }
 }
 
-$sCampos = "h12_assent, h12_descr, h16_dtconc, h16_dtterm, h16_quant, h16_nrport, h16_atofic, h16_histor, h16_hist2";
+$dbwhere.= " and h16_codigo in (select distinct rh193_assentamento_funcional from assentamentofuncional)";
+
+$campoSituacao = "
+  (select 
+      case 
+          when rh236_situacao = 'C' then 'Criada'
+          when rh236_situacao = 'O' then 'Conferido'
+          when rh236_situacao = 'D' then 'Devolvido para abertura'
+          when rh236_situacao = 'A' then 'Aguarda assinatura'
+          when rh236_situacao = 'F' then 'Devolvido para conferência'
+          when rh236_situacao = 'S' then 'Assinado'
+          when rh236_situacao = 'I' then 'Impresso'
+          else '---'
+       end as rh236_situacao 
+     from (select 
+              (    select coalesce(rh236_situacao, 'C')
+                     from assenta as a
+               inner join portariaassenta on h33_assenta = h16_codigo
+                left join portariaassentasituacao on rh236_portariaassenta = h33_sequencial
+                    where a.h16_codigo = assenta.h16_codigo
+                 order by rh236_momento desc
+                    limit 1
+              ) as rh236_situacao 
+          ) as x
+  ) as rh236_situacao
+";
+
+$sCampos = "h12_assent, h12_descr, h16_dtconc, h16_dtterm, h16_quant, h16_nrport, h16_atofic, {$campoSituacao}, h16_histor, h16_hist2";
 $sql     = $classenta->sql_query_tipo(null, $sCampos, "h16_dtconc desc ", $dbwhere);
 
 $head2 = "ASSENTAMENTOS CADASTRADOS";
@@ -95,6 +122,7 @@ for($x = 0; $x < $xxnum;$x++){
       $pdf->cell(15,$alt,'FIM',1,0,"C",1);
       $pdf->cell(15,$alt,'NR.ATO',1,0,"C",1);
       $pdf->cell(20,$alt,'TIPO ATO',1,0,"C",1);
+      $pdf->cell(20,$alt,'SITUAÇÃO',1,0,"C",1);
       $pdf->cell(0,$alt,'HISTÓRICO',1,1,"C",1);
       $troca = 0;
       $pre = 1;
@@ -111,7 +139,21 @@ for($x = 0; $x < $xxnum;$x++){
    $pdf->cell(15,$alt,db_formatar( $h16_dtterm, "d"),0,0,"C",$pre);
    $pdf->cell(15,$alt,$h16_nrport,0,0,"C",$pre);
    $pdf->cell(20,$alt,$h16_atofic,0,0,"L",$pre);
+
+   $yLinha = $pdf->gety();
+   $pdf->multicell(20,$alt,$rh236_situacao,0,"C",$pre);
+   $yLinhaMulticel_1 = $pdf->getY();  
+   
+   $pdf->SetXY($pdf->lMargin + 160, $yLinha);
    $pdf->multicell(0,$alt,$h16_histor.' '.$h16_hist2,0,"L",$pre);
+   $yLinhaMulticel_2 = $pdf->getY();
+
+   if($yLinhaMulticel_1 > $yLinhaMulticel_2) {
+     $pdf->SetY($yLinhaMulticel_1);
+   } else {
+     $pdf->SetY($yLinhaMulticel_2);
+   }
+
    $total += 1;
 //   $pdf->SetXY($pdf->lMargin,$pdf->gety() + $alt);
 }

@@ -1,165 +1,224 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-
+/**
+ * Class RetiradaVeiculo
+ */
 class RetiradaVeiculo {
 
-  protected $iCodigoRetirada;
-
-  protected $nMedidaRetirada;
-  
-  protected $dtRetirada;
-  
-  protected $tHoraRetirada;
-  
-  protected $sDestino;
-  
-  protected $iDepartamento;
-  
-  protected $iUsuario;
-  
-  protected $dtDataInclusao;
-  
-  protected $tHoraInclusao;
-  
-  protected $iMotorista;
-  
-  public function __construct($iRetirada) {
-    
-    if (!empty($iRetirada)) {
-
-      
-    }
-  }
   /**
-   * @return data da Inclusão da Retirada
+   * @type integer
+   */
+  protected $iCodigo;
+
+  /**
+   * @type float
+   */
+  protected $nMedidaRetirada;
+
+  /**
+   * @type DBDate
+   */
+  protected $dtRetirada;
+
+  /**
+   * @type string
+   */
+  protected $tHoraRetirada;
+
+  /**
+   * @type string
+   */
+  protected $sDestino;
+
+  /**
+   * @type integer
+   */
+  protected $iCodigoDepartamento;
+
+  /**
+   * @type integer
+   */
+  protected $iCodigoUsuario;
+
+  /**
+   * @type DBDate
+   */
+  protected $dtDataInclusao;
+
+  /**
+   * @type string
+   */
+  protected $tHoraInclusao;
+
+  /**
+   * @type integer
+   */
+  protected $iCodigoMotorista;
+
+  /**
+   * @type VeiculoMotorista
+   */
+  protected $oMotorista;
+
+  public function __construct() {
+
+  }
+
+  public static function getInstanciaPorCodigo($iCodigo) {
+
+    if (empty($iCodigo)) {
+      throw new ParameterException("Código da retirada não informado.");
+    }
+
+    $oDaoVeicRetirada  = new cl_veicretirada();
+    $sSqlBuscaRetirada = $oDaoVeicRetirada->sql_query_file($iCodigo);
+    $rsBuscaRetirada   = $oDaoVeicRetirada->sql_record($sSqlBuscaRetirada);
+    if (!empty($oDaoVeicRetirada->erro_banco)) {
+      throw new DBException("Não foi possível buscar a retirada com código {$iCodigo}.");
+    }
+
+    $oStdRetirada = db_utils::fieldsMemory($rsBuscaRetirada, 0);
+    $oRetirada = new RetiradaVeiculo();
+    $oRetirada->setCodigo($iCodigo);
+    $oRetirada->setCodigoMotorista($oStdRetirada->ve60_veicmotoristas);
+    unset($oStdRetirada);
+    return $oRetirada;
+  }
+
+  /**
+   * @return DBDate
    */
   public function getDataInclusao() {
-
     return $this->dtDataInclusao;
   }
-  
-  
+
   /**
-   * @return string com a data que foi realizada a Retirada
+   * @return DBDate
    */
   public function getDataRetirada() {
     return $this->dtRetirada;
   }
-  
+
   /**
-   * define a data que foi realizada a Retirada
-   * @param string $dtRetirada
+   * @param DBDate $dtRetirada
    */
-  public function setDtRetirada($dtRetirada) {
+  public function setDataRetirada(DBDate $dtRetirada) {
     $this->dtRetirada = $dtRetirada;
   }
-  
+
   /**
-   * @return Retorna o codigo da Retirada
+   * @return integer
    */
-  public function getCodigoRetirada() {
-    return $this->iCodigoRetirada;
+  public function getCodigo() {
+    return $this->iCodigo;
   }
-  
+
+  /**
+   * @param $iCodigo
+   */
+  public function setCodigo($iCodigo) {
+    $this->iCodigo = $iCodigo;
+  }
+
   /**
    * Departamento da Retirada
-   * @return unknown
+   * @return integer
    */
-  public function getDepartamento() {
-
-    return $this->iDepartamento;
+  public function getCodigoDepartamento() {
+    return $this->iCodigoDepartamento;
   }
-  
+
   /**
-   * Retorna o Codigo do motorista da Retirada
-   * @return Codigo do Motorista
+   * @param $iCodigo
+   */
+  public function setCodigoMotorista($iCodigo) {
+    $this->iCodigoMotorista = $iCodigo;
+  }
+
+  /**
+   * @param VeiculoMotorista $oMotorista
+   */
+  public function setMotorista(VeiculoMotorista $oMotorista) {
+    $this->oMotorista = $oMotorista;
+  }
+
+  /**
+   * @return VeiculoMotorista
+   * @throws DBException
+   * @throws ParameterException
    */
   public function getMotorista() {
 
-    return $this->iMotorista;
+    if (empty($this->oMotorista) && !empty($this->iCodigoMotorista)) {
+      $this->setMotorista(VeiculoMotorista::getInstanciaPorCodigo($this->iCodigoMotorista));
+    }
+    return $this->oMotorista;
   }
-  
-  /**
-   * @param unknown_type $iMotorista
-   */
-  public function setMotorista($iMotorista) {
 
-    $this->iMotorista = $iMotorista;
-  }
-  
   /**
-   * Retorna com qual quilometragem/horas de uso o veiculo estava na Hora da retirada
-   * @return Medida da retirada
+   * @return float
    */
   public function getMedidaRetirada() {
     return $this->nMedidaRetirada;
   }
-  
+
   /**
-   * @param unknown_type $nMedidaRetirada
+   * @param float $nMedidaRetirada
    */
   public function setMedidaRetirada($nMedidaRetirada) {
-
     $this->nMedidaRetirada = $nMedidaRetirada;
   }
-  
+
   /**
-   * @return unknown
+   * @return string
    */
   public function getDestino() {
-
     return $this->sDestino;
   }
-  
+
   /**
-   * @param unknown_type $sDestino
+   * @param string $sDestino
    */
   public function setDestino($sDestino) {
-
     $this->sDestino = $sDestino;
   }
-  
+
   /**
-   * @return unknown
+   * @return string
    */
   public function getHoraRetirada() {
-
     return $this->tHoraRetirada;
   }
-  
+
   /**
-   * @param unknown_type $tHoraRetirada
+   * @param string $tHoraRetirada
    */
   public function setHoraRetirada($tHoraRetirada) {
-
     $this->tHoraRetirada = $tHoraRetirada;
   }
-
 }
-
-?>

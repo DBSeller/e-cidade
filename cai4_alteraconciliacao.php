@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_saltes_classe.php");
-include("classes/db_corrente_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_saltes_classe.php"));
+include(modification("classes/db_corrente_classe.php"));
 
 $clsaltes   = new cl_saltes;
 $clcorrente = new cl_corrente;
@@ -78,7 +78,7 @@ $db_botao = true;
 <script>
 //alert('fahdhalf hlkasdhfkl hasdelk');
 
-js_OpenJanelaIframe('top.corpo','db_iframe_concilia','func_concilia.php?funcao_js=parent.js_continuar|k68_sequencial|k68_contabancaria|k68_data|implantacao','Pesquisa',true);
+js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_concilia','func_concilia.php?funcao_js=parent.js_continuar|k68_sequencial|k68_contabancaria|k68_data|implantacao','Pesquisa',true);
 function js_continuar(codigo,conta,data,implantacao){
   if (implantacao == 'S') {
   //  alert('AVISO:\n\nConciliação da conta selecionada não pode ser alterado.\nMovimento de implantação de conciliação.'); 

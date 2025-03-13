@@ -1,44 +1,44 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_itbi_classe.php");
-require_once("classes/db_itbirural_classe.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_itbi_classe.php"));
+require_once(modification("classes/db_itbirural_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
 $clitbi      = new cl_itbi;
-$clitbirural = new cl_itbirural; 
+$clitbirural = new cl_itbirural;
 $clrotulo    = new rotulocampo;
 
 $clitbi->rotulo->label();
@@ -78,32 +78,32 @@ function js_emite(){
   var sLiberadas  = $('liberadas').value;
   var guiaIni     = $('it01_guia_ini').value;
   var guiaFim     = $('it01_guia_fim').value;
-  var sLogradouro = $('it18_nomelograd').value;   
-  var sSetor      = $('j34_setor').value; 
-  var sQuadra     = $('j34_quadra').value; 
-  var sLote       = $('j34_lote').value; 
-  
-  aObjModo = document.getElementsByName('modoOrdem');  
+  var sLogradouro = $('it18_nomelograd').value;
+  var sSetor      = $('j34_setor').value;
+  var sQuadra     = $('j34_quadra').value;
+  var sLote       = $('j34_lote').value;
+
+  aObjModo = document.getElementsByName('modoOrdem');
   for ( var iInd=0; iInd < aObjModo.length; iInd++ ) {
      if ( aObjModo[iInd].checked ) {
        var sModo = aObjModo[iInd].value;
      }
   }
 
-  aObjModoImp = document.getElementsByName('modoImp');  
+  aObjModoImp = document.getElementsByName('modoImp');
   for ( var iInd=0; iInd < aObjModoImp.length; iInd++ ) {
      if ( aObjModoImp[iInd].checked ) {
        var sModoImp = aObjModoImp[iInd].value;
      }
   }
-  
+
   if (dtFim != "" && dtFim != "") {
 	  if (dtIni > dtFim) {
 	    alert("Data Inválida. Verifique!");
 	    return false;
 	  }
   }
-  
+
   var sQuery  = '?ordem='+sOrdem;
   	  sQuery +=	'&modo='+sModo;
   	  sQuery += '&modoimp='+sModoImp;
@@ -118,7 +118,7 @@ function js_emite(){
       sQuery += '&sSetor='+sSetor;
       sQuery += '&sQuadra='+sQuadra;
       sQuery += '&sLote='+sLote;
-  	  
+
   var sUrl    = 'itb2_relresumoitbi002.php'+sQuery;
 
   var sParam  = 'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ';
@@ -126,7 +126,7 @@ function js_emite(){
       jan.moveTo(0,0);
 }
 
-</script>  
+</script>
 <link href='estilos.css' rel='stylesheet' type='text/css'>
 </head>
 <body bgcolor=#CCCCCC leftmargin='0' topmargin='0' marginwidth='0' marginheight='0' onLoad='a=1' bgcolor='#cccccc'>
@@ -137,7 +137,7 @@ function js_emite(){
     </tr>
     <tr>
       <td>&nbsp;</td>
-    </tr>    
+    </tr>
     <tr>
       <td>
         <table align='center' cellpadding='0' cellspacing='0'>
@@ -152,12 +152,12 @@ function js_emite(){
 			              <td align='right'>
 					            <?
 					              db_ancora('<b>Guia :</b>','js_pesquisait01_guia(true);',1);
-					            ?>			              
+					            ?>
 			              </td>
 			              <td width='20'>
 					            <?
 					              db_input('it01_guia_ini',15,$Iit01_guia,true,'text',1," onchange='js_pesquisait01_guia(false);'");
-					            ?>			              
+					            ?>
 			              </td>
 			              <td align='center'>
 			                <b> a </b>
@@ -165,7 +165,7 @@ function js_emite(){
 			              <td>
 					            <?
 					              db_input('it01_guia_fim',15,$Iit01_guia,true,'text',1,'');
-					            ?> 			              
+					            ?>
 			              </td>
 			            </tr>
                   <tr>
@@ -175,7 +175,7 @@ function js_emite(){
                     <td width='20'>
 						          <?
 						            db_inputdata('dtIni', '', '', '', true, 'text', 1, '');
-						          ?>                    
+						          ?>
                     </td>
                     <td align='center'>
                       <b> a </b>
@@ -183,18 +183,18 @@ function js_emite(){
                     <td>
 						          <?
 						            db_inputdata('dtFim', '', '', '', true, 'text', 1, '');
-						          ?>                    
+						          ?>
                     </td>
                   </tr>
                   <tr>
                     <td align='right'>
-					            <b>Logradouro :</b>            
+					            <b>Logradouro :</b>
                     </td>
                     <td colspan='3'>
 					            <?
 					              db_input('logradouroid',40,'',true,'hidden',3);
 					              db_input('it18_nomelograd',40,$Iit18_nomelograd,true,'text',1);
-					            ?>                 
+					            ?>
                     </td>
                   </tr>
                   <tr>
@@ -204,15 +204,14 @@ function js_emite(){
                     <td colspan='3'>
                       <?
                         $aOrdem = array( 'g'=>'Guia',
-                                         'v'=>'Valor',
-                                         'n'=>'Nome' );
-                        db_select('ordem',$aOrdem,true,2," style='width:275px;'"); 
-                      ?>          
+                                         'v'=>'Valor' );
+                        db_select('ordem',$aOrdem,true,2," style='width:275px;'");
+                      ?>
                     </td>
-                  </tr>	
+                  </tr>
                   <tr>
                     <td></td>
-                  </tr>    
+                  </tr>
                   <tr>
                     <td align='right'>
                       <b>Modo :</b>
@@ -226,8 +225,8 @@ function js_emite(){
 		                    </td>
 		                    <td width='50%'>
 		                      <input type='radio' name='modoImp' value='anal' checked>Análitico</input><br>
-		                      <input type='radio' name='modoImp' value='sint'>Sintético</input>       
-		                    </td>                        
+		                      <input type='radio' name='modoImp' value='sint'>Sintético</input>
+		                    </td>
                         </tr>
                       </table>
                     </td>
@@ -241,11 +240,11 @@ function js_emite(){
 					              $aTipo = array( 't'=>'Todos',
 					                              'u'=>'Urbano',
 					                              'r'=>'Rural' );
-					                
-					              db_select('tipo',$aTipo,true,2," style='width:275px;'"); 
-					             ?>                    
+
+					              db_select('tipo',$aTipo,true,2," style='width:275px;'");
+					             ?>
                     </td>
-                  </tr> 
+                  </tr>
                   <tr>
                     <td align='right'>
                       <b>Situaçao:</b>
@@ -256,8 +255,8 @@ function js_emite(){
 				                                    '2'=>'Aberto',
 				                                    '3'=>'Pago',
 				                                    '4'=>'Cancelado');
-				                db_select('situacao',$aSituacao,true,2," style='width:275px;'"); 
-				              ?>                    
+				                db_select('situacao',$aSituacao,true,2," style='width:275px;'");
+				              ?>
                     </td>
                   </tr>
                   <tr>
@@ -269,15 +268,15 @@ function js_emite(){
                         $aLiberadas = array( 't'=>'Todos',
                                              's'=>'Sim',
                                              'n'=>'Não');
-                        db_select('liberadas',$aLiberadas,true,2," style='width:275px;'"); 
-                      ?>                
+                        db_select('liberadas',$aLiberadas,true,2," style='width:275px;'");
+                      ?>
                     </td>
-                  </tr> 
+                  </tr>
                   <tr>
 								    <td align='right' nowrap title="<?=@$Tj34_setor?>">
 								       <?=$Lj34_setor?>
 								    </td>
-								    <td colspan='3'> 
+								    <td colspan='3'>
 								    <?
 								     db_input('j34_setor',10,$Ij34_setor,true,'text',1);
 								     ?>
@@ -285,13 +284,13 @@ function js_emite(){
 								     <?
 								       db_input('j34_quadra',10,$Ij34_quadra,true,'text',1);
 								     ?>
-								     
+
 								     <?=$Lj34_lote?>
 								     <?
 								       db_input('j34_lote',10,$Ij34_lote,true,'text',1);
 								     ?>
 								    </td>
-								  </tr> 
+								  </tr>
 			          </table>
 			        </fieldset>
             </td>
@@ -301,7 +300,7 @@ function js_emite(){
               <table align='center'>
 			          <tr>
 			            <td>&nbsp;</td>
-			          </tr>              
+			          </tr>
                 <tr>
                   <td>
                     <input  name='emitir' id='emitir' type='button' value='Processar' onclick='js_validar();'>
@@ -309,10 +308,10 @@ function js_emite(){
                 </tr>
               </table>
             </td>
-          </tr>          
+          </tr>
         </table>
    	  </td>
-    </tr>	
+    </tr>
   </table>
 </form>
 <?
@@ -321,7 +320,7 @@ function js_emite(){
 </body>
 </html>
 <script>
-  
+
   $('it18_nomelograd').style.width = '275px';
 
   oAutoComplete = new dbAutoComplete($('it18_nomelograd'),'itb2_pesquisalogradouro.RPC.php');
@@ -336,27 +335,27 @@ function js_pesquisait01_guia(mostra){
 
   var sUrl1  = 'func_itbi.php?funcao_js=parent.js_mostrarit01_guia|it01_guia';
   var sUrl2  = 'func_itbi.php?pesquisa_chave='+$F('it01_guia_ini')+'&funcao_js=parent.js_mostrarit01_guia1';
-  
+
   if ( mostra == true ) {
     js_OpenJanelaIframe('','db_iframe_itbi',sUrl1,'Pesquisa',true);
   } else {
-  
-     if ( $F('it01_guia_ini') != ''){ 
+
+     if ( $F('it01_guia_ini') != ''){
        js_OpenJanelaIframe('','db_iframe_itbi',sUrl2,'Pesquisa',false);
      } else {
-       $('it01_guia_ini').value = ''; 
+       $('it01_guia_ini').value = '';
      }
   }
 }
 
 function js_mostrarit01_guia1(chave,erro){
-   
-  if ( erro == true ) { 
-  
+
+  if ( erro == true ) {
+
     alert(chave);
     $('it01_guia_ini').value = '';
-    $('it01_guia_ini').focus(); 
-    
+    $('it01_guia_ini').focus();
+
   } else {
     $('it01_guia_ini').value = chave;
   }
@@ -366,6 +365,6 @@ function js_mostrarit01_guia(chave){
 
   $('it01_guia_ini').value = chave;
   db_iframe_itbi.hide();
-  
+
 }
 </script>

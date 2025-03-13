@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_benstransf_classe.php");
-include("classes/db_benstransfdes_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_db_depusu_classe.php");
-include("classes/db_departdiv_classe.php");
-include("classes/db_benstransfcodigo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_benstransf_classe.php"));
+include(modification("classes/db_benstransfdes_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_db_depusu_classe.php"));
+include(modification("classes/db_departdiv_classe.php"));
+include(modification("classes/db_benstransfcodigo_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -132,7 +132,7 @@ if(isset($oPost->incluir)){
 </head>
 <body bgcolor=#CCCCCC>
 	   <?
-	     include("forms/db_frmbenstransflote.php");
+	     include(modification("forms/db_frmbenstransflote.php"));
 	   ?>
 </body>
 </html>

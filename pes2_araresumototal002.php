@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_rhlocaltrab_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_rhlocaltrab_classe.php"));
 $clrhlocaltrab = new cl_rhlocaltrab;
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -198,7 +198,7 @@ $sql = "select
         order by lota , ".$folha."_rubric ";
 
 //echo "Local --> $local  Tip_fol --> $tip_fol   ".$sql;exit;
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 $xxnum = pg_numrows($result);
 //echo 'ENTROU 111';exit;
@@ -289,7 +289,7 @@ for($x = 0;$x < pg_numrows($result);$x++){
  
 // echo "<BR><BR> 1.0 $sqllota";exit;
 
-      $resultlota = pg_exec($sqllota);
+      $resultlota = db_query($sqllota);
       db_fieldsmemory($resultlota,0);
       $pdf->cell(20,$alt,$count,0,1,"R",0);
       $pdf->cell(60,$alt,'',0,0,"C",0);
@@ -347,7 +347,7 @@ for($x = 0;$x < pg_numrows($result);$x++){
 		          // ver esta caso depois
 			  //and ".$folha."_rubric in ('R990','R992') 
 //echo "<BR><BR> 2.0 $sqlprev";exit;
-      $resultprev = pg_exec($sqlprev);
+      $resultprev = db_query($sqlprev);
 //      db_criatabela($resultprev);
       db_fieldsmemory($resultprev,0);
       $pdf->ln(3);
@@ -464,7 +464,7 @@ if ($tipo == "l" || $tipo == "o" || $tipo == "s" || $tipo == "t"){
 // echo "<BR><BR> 3.0 $sqllota";
 // echo "<BR><BR> 3.1 $tipo";
 // exit;
-   $resultlota = pg_exec($sqllota);
+   $resultlota = db_query($sqllota);
    db_fieldsmemory($resultlota,0);
    $pdf->cell(20,$alt,$count,0,1,"R",0);
    $pdf->cell(60,$alt,'',0,0,"C",0);
@@ -521,7 +521,7 @@ if ($tipo == "l" || $tipo == "o" || $tipo == "s" || $tipo == "t"){
 // echo "<BR><BR>$sqlprev";
 		          // ver esta caso depois
 			  //and ".$folha."_rubric in ('R990','R992') 
-   $resultprev = pg_exec($sqlprev);
+   $resultprev = db_query($sqlprev);
    db_fieldsmemory($resultprev,0);
    $pdf->ln(3);
    $pdf->cell(45,$alt,'BASE PREV.1   :'.db_formatar($prev1,'f'),0,0,"L",0);

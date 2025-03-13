@@ -54,7 +54,7 @@ $clpais->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
- js_OpenJanelaIframe('top.corpo','db_iframe_pais','func_pais.php?funcao_js=parent.js_preenchepesquisa|ed228_i_codigo','Pesquisa',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pais','func_pais.php?funcao_js=parent.js_preenchepesquisa|ed228_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
  db_iframe_pais.hide();

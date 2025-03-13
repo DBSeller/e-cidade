@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 
-require_once ('model/PadArquivoSigap.model.php');
+require_once(modification('model/PadArquivoSigap.model.php'));
 /**
  * Prove dados para a geração do arquivo do balancete de verificacao mensal, dos ano anterior
  * do municipio para o SIGAP
  * @package Pad
  * @author  Iuri Guncthnigg
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.7 $
  */
 final class PadArquivoSigapBalanceteMovimentacaoAnterior extends PadArquivoSigap {
   
@@ -258,8 +258,8 @@ final class PadArquivoSigapBalanceteMovimentacaoAnterior extends PadArquivoSigap
     $sSqlTabelaTemporaria .= "sinal_anterior varchar(1), ";
     $sSqlTabelaTemporaria .= "sinal_final varchar(1)) ";
     
-    db_query($sSqlTabelaTemporaria);
-    //   pg_exec("create temporary table work_plano as $sql");
+    $rsDados = db_query($sSqlTabelaTemporaria);
+    //   db_query("create temporary table work_plano as $sql");
     db_query("create index work_pl_estrut on work_pl(estrut)");
     db_query("create index work_pl_estrutmae on work_pl(estrut_mae)");
     
@@ -364,7 +364,7 @@ final class PadArquivoSigapBalanceteMovimentacaoAnterior extends PadArquivoSigap
         $key = array_search("$estrutural",$work_planomae);
         if ($key === false ) {  // não achou  
           // busca no banco e inclui
-          $res = pg_query("select c60_descr,c60_finali,c60_codcon from conplano where c60_anousu={$iAnoUsu}
+          $res = db_query("select c60_descr,c60_finali,c60_codcon from conplano where c60_anousu={$iAnoUsu}
                           and c60_estrut = '$estrutural'");
           if($res == false || pg_num_rows($res) == 0) {
             throw new Exception("Está faltando cadastrar esse estrutural na contabilidade.\nNível : $nivel  Estrutural : $estrutural");
@@ -450,7 +450,7 @@ final class PadArquivoSigapBalanceteMovimentacaoAnterior extends PadArquivoSigap
       '$sinal_final')
       
       ";
-      pg_exec($sql);     
+      db_query($sql);     
     } 
     
     $sSqlRetorno  = "select case when c61_reduz = 0 then"; 
@@ -484,7 +484,7 @@ final class PadArquivoSigapBalanceteMovimentacaoAnterior extends PadArquivoSigap
     
     if($lRetornaSql == false) {
 
-      $result_final = pg_exec($sSqlRetorno);
+      $result_final = db_query($sSqlRetorno);
       return $result_final;
     }else{
       return $sql;

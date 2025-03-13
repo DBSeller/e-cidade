@@ -26,7 +26,7 @@
  */
 
 //MODULO: Custos
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcustocriteriorateiobens->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -146,10 +146,10 @@ function js_cancelar(){
 }
 function js_pesquisacc06_custocriteriorateio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_custocriteriorateiobens','db_iframe_custocriteriorateio','func_custocriteriorateio.php?funcao_js=parent.js_mostracustocriteriorateio1|cc08_sequencial|cc08_instit','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriorateiobens','db_iframe_custocriteriorateio','func_custocriteriorateio.php?funcao_js=parent.js_mostracustocriteriorateio1|cc08_sequencial|cc08_instit','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.cc06_custocriteriorateio.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_custocriteriorateiobens','db_iframe_custocriteriorateio','func_custocriteriorateio.php?pesquisa_chave='+document.form1.cc06_custocriteriorateio.value+'&funcao_js=parent.js_mostracustocriteriorateio','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriorateiobens','db_iframe_custocriteriorateio','func_custocriteriorateio.php?pesquisa_chave='+document.form1.cc06_custocriteriorateio.value+'&funcao_js=parent.js_mostracustocriteriorateio','Pesquisa',false);
      }else{
        document.form1.cc08_instit.value = ''; 
      }

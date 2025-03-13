@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
 $head3 = "RELATORIO  DA RECEITA ";
 $dt = split("-",$data);
@@ -72,7 +72,7 @@ where c74_data ='$data' and c60_codsis in (5,6)
 order by c70_codlan 
 	        ";
 
-$result = pg_exec(analiseQueryPlanoOrcamento($sql));
+$result = db_query(analiseQueryPlanoOrcamento($sql));
 if (pg_numrows($result) == 0 ){
   db_redireciona("db_erros.php?fechar=true&db_erro=Nenhum registro encontrado");
 } 

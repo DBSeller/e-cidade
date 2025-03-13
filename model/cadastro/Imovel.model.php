@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 
-require_once('model/CgmFactory.model.php');
-require_once('model/cadastro/Construcao.model.php');
+require_once(modification('model/CgmFactory.model.php'));
+require_once(modification('model/cadastro/Construcao.model.php'));
 
 /**
  * Classe para manipuação de imóveis
@@ -35,8 +35,8 @@ require_once('model/cadastro/Construcao.model.php');
  * @author   Rafael Serpa Nery  rafael.nery@dbseller.com.br
  * @author   Alberto Ferri Neto alberto@dbseller.com.br
  * @package  Cadastro
- * @revision $Author: dbanderson $
- * @version  $Revision: 1.8 $
+ * @revision $Author: dbandrio.costa $
+ * @version  $Revision: 1.12 $
  */
 class Imovel {
 	
@@ -326,7 +326,7 @@ class Imovel {
 	/**
 	 *
 	 * Retorna todas as construções vinculadas a obra
-	 * @return array com instancia da classe Construcao
+	 * @return Construcao[]
 	 */
 	public function getConstrucoes($lSomenteAtivas = false) {
 
@@ -423,7 +423,7 @@ class Imovel {
 	
 	/**
 	 * Retorna um objeto com resultados do calculo
-	 * @return object
+	 * @return CalculoIPTU
 	 */
 	public function getCalculo() {
 	  

@@ -141,10 +141,10 @@ $clrotulo->label("y90_codtiaf");
 <script>
 function js_pesquisay97_codprazo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tiafprazo','func_tiafprazo.php?funcao_js=parent.js_mostratiafprazo1|y96_codigo|y96_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiafprazo','func_tiafprazo.php?funcao_js=parent.js_mostratiafprazo1|y96_codigo|y96_codigo','Pesquisa',true);
   }else{
      if(document.form1.y97_codprazo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tiafprazo','func_tiafprazo.php?pesquisa_chave='+document.form1.y97_codprazo.value+'&funcao_js=parent.js_mostratiafprazo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiafprazo','func_tiafprazo.php?pesquisa_chave='+document.form1.y97_codprazo.value+'&funcao_js=parent.js_mostratiafprazo','Pesquisa',false);
      }else{
        document.form1.y96_codigo.value = ''; 
      }
@@ -164,10 +164,10 @@ function js_mostratiafprazo1(chave1,chave2){
 }
 function js_pesquisay97_codproc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?funcao_js=parent.js_mostraprotprocesso1|p58_codproc|p58_codproc','Pesquisa',true);
   }else{
      if(document.form1.y97_codproc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.y97_codproc.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_protprocesso','func_protprocesso.php?pesquisa_chave='+document.form1.y97_codproc.value+'&funcao_js=parent.js_mostraprotprocesso','Pesquisa',false);
      }else{
        document.form1.p58_codproc.value = ''; 
      }
@@ -186,7 +186,7 @@ function js_mostraprotprocesso1(chave1,chave2){
   db_iframe_protprocesso.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tiafprazoproc','func_tiafprazoproc.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiafprazoproc','func_tiafprazoproc.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tiafprazoproc.hide();

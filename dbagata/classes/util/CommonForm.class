@@ -49,7 +49,7 @@ class CommonForm
             $Tooltip     = $CheckVar[5];
             $Mask        = $CheckVar[6];
 
-            $box = &new GtkHBox(false, 3);
+            $box = new GtkHBox(false, 3);
             if (($i < ($count/2)) or ($count <= 2) or ($this->SimpleColumn))
             {
                 $this->vbox->pack_start($box, false, false);
@@ -61,7 +61,7 @@ class CommonForm
             
             if (is_array($Kind))
             {
-                $this->InputEntries[$Config][$i] = &new GtkValuedCombo();
+                $this->InputEntries[$Config][$i] = new GtkValuedCombo();
                 $box->pack_start(new Box($this->InputEntries[$Config][$i], $Description), false, false, 10);
                 $this->InputEntries[$Config][$i]->set_popdown_items($Kind);
                 //$entry =$this->InputEntries[$Config][$i]->entry;
@@ -96,7 +96,7 @@ class CommonForm
             }
             else if ($Kind=='spin')
             {
-                $this->InputEntries[$Config][$i] = &new GtkSpinButton(new GtkAdjustment((double)$Content, 0, 999, 1, 10, 10));
+                $this->InputEntries[$Config][$i] = new GtkSpinButton(new GtkAdjustment((double)$Content, 0, 999, 1, 10, 10));
                 $this->InputEntries[$Config][$i]->set_position(0);
                 $this->InputEntries[$Config][$i]->set_usize(88, 22);
                 $box->pack_start(new Box($this->InputEntries[$Config][$i], $Description), false, false, 10);
@@ -108,14 +108,14 @@ class CommonForm
             }
             else if ($Kind=='line')
             {
-                $this->InputEntries[$Config][$i] = &new GtkHSeparator;
+                $this->InputEntries[$Config][$i] = new GtkHSeparator;
                 $this->InputEntries[$Config][$i]->set_usize(88, 2);
                 $box->pack_start(new Box($this->InputEntries[$Config][$i], $Description), false, false, 2);
                 $this->InputEntries[$Config][$i]->show();
             }
             else if ($Kind=='colors')
             {                
-                $this->InputEntries[$Config][$i] = &new ColorButton($Description);
+                $this->InputEntries[$Config][$i] = new ColorButton($Description);
                 $this->InputEntries[$Config][$i]->set_usize(126, 22);
                 $this->InputEntries[$Config][$i]->set_text($Content);
 
@@ -124,7 +124,7 @@ class CommonForm
             }
             else if ($Kind=='gtkfont')
             {
-                $this->InputEntries[$Config][$i] = &new GtkFontBox($Description, $Content);
+                $this->InputEntries[$Config][$i] = new GtkFontBox($Description, $Content);
                 $this->InputEntries[$Config][$i]->set_usize(126, 22);
                 $this->InputEntries[$Config][$i]->set_editable($Editable);
                 $this->InputEntries[$Config][$i]->set_text($Content);
@@ -138,7 +138,7 @@ class CommonForm
             }
             else if (($Kind=='fonts') or ($Kind=='fonts2'))
             {
-                $this->InputEntries[$Config][$i] = &new FontBox($Description, $Kind=='fonts2');
+                $this->InputEntries[$Config][$i] = new FontBox($Description, $Kind=='fonts2');
                 $this->InputEntries[$Config][$i]->set_usize(126, 22);
                 $this->InputEntries[$Config][$i]->set_editable($Editable);
                 $this->InputEntries[$Config][$i]->set_text($Content);
@@ -152,7 +152,7 @@ class CommonForm
             }
             else if (($Kind=='files') or ($Kind=='files2'))
             {
-                $this->InputEntries[$Config][$i] = &new FileBox($Description, $Kind=='files2');
+                $this->InputEntries[$Config][$i] = new FileBox($Description, $Kind=='files2');
                 $this->InputEntries[$Config][$i]->set_usize(126, 22);
                 $this->InputEntries[$Config][$i]->set_editable($Editable);
                 $this->InputEntries[$Config][$i]->set_text($Content);
@@ -167,14 +167,14 @@ class CommonForm
             else if ($Kind=='CheckButton')
             {
                 
-                $this->InputEntries[$Config][$i] = &new GtkCheckButton(_a('Yes'));
+                $this->InputEntries[$Config][$i] = new GtkCheckButton(_a('Yes'));
                 $this->InputEntries[$Config][$i]->set_active($Content);
                 $box->pack_start(new Box($this->InputEntries[$Config][$i], $Description), false, false, 10);
                 $this->InputEntries[$Config][$i]->show();
             }
             else if ($Kind=='TextArea')
             {
-                $this->InputEntries[$Config][$i] = &new GtkText();
+                $this->InputEntries[$Config][$i] = new GtkText();
                 $this->InputEntries[$Config][$i]->set_editable($Editable);
                 $scroll = new GtkScrolledWindow;
                 $scroll->set_usize(200,100);
@@ -205,19 +205,19 @@ class CommonForm
                 {
                     if (strstr($Mask, 'dd') and strstr($Mask, 'mm') and strstr($Mask, 'yyyy')) // é data
                     {
-                        $this->InputEntries[$Config][$i] = &new GtkPopDate($Mask);
+                        $this->InputEntries[$Config][$i] = new GtkPopDate($Mask);
                         $this->InputEntries[$Config][$i]->set_text($Content);
                         $box->pack_start(new Box($this->InputEntries[$Config][$i]->widget, $Description), false, false, 10);
                     }
                     else
                     {
-                        $this->InputEntries[$Config][$i] = &new GtkEntryMask($Mask);
+                        $this->InputEntries[$Config][$i] = new GtkEntryMask($Mask);
                         $box->pack_start(new EntryBox($this->InputEntries[$Config][$i], 100, $Description, $Content), false, false, 10);
                     }
                 }
                 else
                 {
-                    $this->InputEntries[$Config][$i] = &new GtkEntry();
+                    $this->InputEntries[$Config][$i] = new GtkEntry();
                     $box->pack_start(new EntryBox($this->InputEntries[$Config][$i], 100, $Description, $Content), false, false, 10);
                 }
                 

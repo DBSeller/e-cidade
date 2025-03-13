@@ -1,67 +1,67 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-//MODULO: saude
-
-//CLASSE DA ENTIDADE prontproced
-class cl_prontproced { 
+class cl_prontproced
+{
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $sd29_i_codigo = 0; 
-   var $sd29_i_prontuario = 0; 
-   var $sd29_i_procedimento = 0; 
-   var $sd29_d_data_dia = null; 
-   var $sd29_d_data_mes = null; 
-   var $sd29_d_data_ano = null; 
-   var $sd29_d_data = null; 
-   var $sd29_c_hora = null; 
-   var $sd29_t_tratamento = null; 
-   var $sd29_i_usuario = 0; 
-   var $sd29_d_cadastro_dia = null; 
-   var $sd29_d_cadastro_mes = null; 
-   var $sd29_d_cadastro_ano = null; 
-   var $sd29_d_cadastro = null; 
-   var $sd29_c_cadastro = null; 
-   var $sd29_i_profissional = 0; 
-   var $sd29_t_diagnostico = null; 
+    public $rotulo = null; 
+    public $query_sql = null; 
+    public $numrows = 0; 
+    public $numrows_incluir = 0; 
+    public $numrows_alterar = 0; 
+    public $numrows_excluir = 0; 
+    public $erro_status = null; 
+    public $erro_sql = null; 
+    public $erro_banco = null;  
+    public $erro_msg = null;  
+    public $erro_campo = null;  
+    public $pagina_retorno = null; 
+    /* Variáveis do Arquivo */
+    public $sd29_i_codigo = 0; 
+    public $sd29_i_prontuario = 0; 
+    public $sd29_i_procedimento = 0; 
+    public $sd29_d_data_dia = null; 
+    public $sd29_d_data_mes = null; 
+    public $sd29_d_data_ano = null; 
+    public $sd29_d_data = null; 
+    public $sd29_c_hora = null; 
+    public $sd29_t_tratamento = null; 
+    public $sd29_i_usuario = 0; 
+    public $sd29_d_cadastro_dia = null; 
+    public $sd29_d_cadastro_mes = null; 
+    public $sd29_d_cadastro_ano = null; 
+    public $sd29_d_cadastro = null; 
+    public $sd29_c_cadastro = null; 
+    public $sd29_i_profissional = 0; 
+    public $sd29_t_diagnostico = null; 
+    public $sd29_sigilosa = 'f'; 
+    public $sd29_t_achado = null; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+    public $campos = "
                  sd29_i_codigo = int4 = Código 
                  sd29_i_prontuario = int4 = Prontuario 
                  sd29_i_procedimento = int8 = Procedimento 
@@ -73,15 +73,18 @@ class cl_prontproced {
                  sd29_c_cadastro = varchar(20) = Hora Cadastro 
                  sd29_i_profissional = int4 = Profissional / CBO 
                  sd29_t_diagnostico = text = Diagnóstico 
+                 sd29_sigilosa = bool = Sigiloso 
+                 sd29_t_achado = text = outros achados
                  ";
-   //funcao construtor da classe 
-   function cl_prontproced() { 
+   //funcao construtor da classe
+   function cl_prontproced() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("prontproced"); 
+        $this->rotulo = new rotulo("prontproced"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+    }
+
+    public function erro($mostra, $retorna)
+    {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -89,8 +92,9 @@ class cl_prontproced {
         }
      }
    }
-   // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+
+    public function atualizacampos($exclusao = false)
+    {
      if($exclusao==false){
        $this->sd29_i_codigo = ($this->sd29_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["sd29_i_codigo"]:$this->sd29_i_codigo);
        $this->sd29_i_prontuario = ($this->sd29_i_prontuario == ""?@$GLOBALS["HTTP_POST_VARS"]["sd29_i_prontuario"]:$this->sd29_i_prontuario);
@@ -117,15 +121,18 @@ class cl_prontproced {
        $this->sd29_c_cadastro = ($this->sd29_c_cadastro == ""?@$GLOBALS["HTTP_POST_VARS"]["sd29_c_cadastro"]:$this->sd29_c_cadastro);
        $this->sd29_i_profissional = ($this->sd29_i_profissional == ""?@$GLOBALS["HTTP_POST_VARS"]["sd29_i_profissional"]:$this->sd29_i_profissional);
        $this->sd29_t_diagnostico = ($this->sd29_t_diagnostico == ""?@$GLOBALS["HTTP_POST_VARS"]["sd29_t_diagnostico"]:$this->sd29_t_diagnostico);
+       $this->sd29_sigilosa = ($this->sd29_sigilosa == "f"?@$GLOBALS["HTTP_POST_VARS"]["sd29_sigilosa"]:$this->sd29_sigilosa);
+       $this->sd29_t_achado = ($this->sd29_t_achado == ""?@$GLOBALS["HTTP_POST_VARS"]["sd29_t_achado"]:$this->sd29_t_achado);
      }else{
        $this->sd29_i_codigo = ($this->sd29_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["sd29_i_codigo"]:$this->sd29_i_codigo);
      }
    }
-   // funcao para inclusao
-   function incluir ($sd29_i_codigo){ 
+
+    public function incluir($sd29_i_codigo)
+    {
       $this->atualizacampos();
      if($this->sd29_i_prontuario == null ){ 
-       $this->erro_sql = " Campo Prontuario nao Informado.";
+       $this->erro_sql = " Campo Prontuario não informado.";
        $this->erro_campo = "sd29_i_prontuario";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -133,20 +140,11 @@ class cl_prontproced {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd29_i_procedimento == null ){
-     	/** 
-       $this->erro_sql = " Campo Procedimento nao Informado.";
-       $this->erro_campo = "sd29_i_procedimento";
-       $this->erro_banco = "";
-       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
-       $this->erro_status = "0";
-       return false;
-		*/
-     	$this->sd29_i_procedimento = "null";
+     if($this->sd29_i_procedimento == null ){ 
+       $this->sd29_i_procedimento = "null";
      }
      if($this->sd29_d_data == null ){ 
-       $this->erro_sql = " Campo Data nao Informado.";
+       $this->erro_sql = " Campo Data não informado.";
        $this->erro_campo = "sd29_d_data_dia";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -155,7 +153,7 @@ class cl_prontproced {
        return false;
      }
      if($this->sd29_c_hora == null ){ 
-       $this->erro_sql = " Campo Hora nao Informado.";
+       $this->erro_sql = " Campo Hora não informado.";
        $this->erro_campo = "sd29_c_hora";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -164,7 +162,7 @@ class cl_prontproced {
        return false;
      }
      if($this->sd29_i_usuario == null ){ 
-       $this->erro_sql = " Campo Cod. Usuário nao Informado.";
+       $this->erro_sql = " Campo Cod. Usuário não informado.";
        $this->erro_campo = "sd29_i_usuario";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -179,8 +177,17 @@ class cl_prontproced {
        $this->sd29_c_cadastro = "'||current_time||'";
      }
      if($this->sd29_i_profissional == null ){ 
-       $this->erro_sql = " Campo Profissional / CBO nao Informado.";
+       $this->erro_sql = " Campo Profissional / CBO não informado.";
        $this->erro_campo = "sd29_i_profissional";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->sd29_sigilosa == null ){ 
+       $this->erro_sql = " Campo Sigiloso não informado.";
+       $this->erro_campo = "sd29_sigilosa";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -212,13 +219,14 @@ class cl_prontproced {
        }
      }
      if(($this->sd29_i_codigo == null) || ($this->sd29_i_codigo == "") ){ 
-       $this->erro_sql = " Campo sd29_i_codigo nao declarado.";
+       $this->erro_sql = " Campo sd29_i_codigo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
      }
+     
      $sql = "insert into prontproced(
                                        sd29_i_codigo 
                                       ,sd29_i_prontuario 
@@ -231,6 +239,8 @@ class cl_prontproced {
                                       ,sd29_c_cadastro 
                                       ,sd29_i_profissional 
                                       ,sd29_t_diagnostico 
+                                      ,sd29_sigilosa 
+                                      ,sd29_t_achado
                        )
                 values (
                                 $this->sd29_i_codigo 
@@ -244,17 +254,23 @@ class cl_prontproced {
                                ,'$this->sd29_c_cadastro' 
                                ,$this->sd29_i_profissional 
                                ,'$this->sd29_t_diagnostico' 
+                               ,'$this->sd29_sigilosa' 
+                               ,'$this->sd29_t_achado'
                       )";
+
+     ob_start();
      $result = db_query($sql); 
+     ob_end_clean();
+
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Procedimentos do Prontuario ($this->sd29_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Procedimentos do Prontuario ($this->sd29_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Procedimentos do Prontuario já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Procedimentos do Prontuario ($this->sd29_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Procedimentos do Prontuario ($this->sd29_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -263,42 +279,51 @@ class cl_prontproced {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->sd29_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
-     $resaco = $this->sql_record($this->sql_query_file($this->sd29_i_codigo));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,1006283,'$this->sd29_i_codigo','I')");
-       $resac = db_query("insert into db_acount values($acount,1006042,1006283,'','".AddSlashes(pg_result($resaco,0,'sd29_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,1006282,'','".AddSlashes(pg_result($resaco,0,'sd29_i_prontuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,100178,'','".AddSlashes(pg_result($resaco,0,'sd29_i_procedimento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,1008741,'','".AddSlashes(pg_result($resaco,0,'sd29_d_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,1008742,'','".AddSlashes(pg_result($resaco,0,'sd29_c_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,100188,'','".AddSlashes(pg_result($resaco,0,'sd29_t_tratamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,100183,'','".AddSlashes(pg_result($resaco,0,'sd29_i_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,1008912,'','".AddSlashes(pg_result($resaco,0,'sd29_d_cadastro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,1008913,'','".AddSlashes(pg_result($resaco,0,'sd29_c_cadastro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,100177,'','".AddSlashes(pg_result($resaco,0,'sd29_i_profissional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1006042,11883,'','".AddSlashes(pg_result($resaco,0,'sd29_t_diagnostico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->sd29_i_codigo  ));
+       if(($resaco!=false)||($this->numrows!=0)){
+
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+         $acount = pg_result($resac,0,0);
+         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+         $resac = db_query("insert into db_acountkey values($acount,1006283,'$this->sd29_i_codigo','I')");
+         $resac = db_query("insert into db_acount values($acount,1006042,1006283,'','".AddSlashes(pg_result($resaco,0,'sd29_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,1006282,'','".AddSlashes(pg_result($resaco,0,'sd29_i_prontuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,100178,'','".AddSlashes(pg_result($resaco,0,'sd29_i_procedimento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,1008741,'','".AddSlashes(pg_result($resaco,0,'sd29_d_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,1008742,'','".AddSlashes(pg_result($resaco,0,'sd29_c_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,100188,'','".AddSlashes(pg_result($resaco,0,'sd29_t_tratamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,100183,'','".AddSlashes(pg_result($resaco,0,'sd29_i_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,1008912,'','".AddSlashes(pg_result($resaco,0,'sd29_d_cadastro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,1008913,'','".AddSlashes(pg_result($resaco,0,'sd29_c_cadastro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,100177,'','".AddSlashes(pg_result($resaco,0,'sd29_i_profissional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,11883,'','".AddSlashes(pg_result($resaco,0,'sd29_t_diagnostico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,20969,'','".AddSlashes(pg_result($resaco,0,'sd29_sigilosa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1006042,1011169,'','".AddSlashes(pg_result($resaco,0,'sd29_t_achado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       }
      }
      return true;
    } 
-   // funcao para alteracao
-   function alterar ($sd29_i_codigo=null) { 
-      $this->atualizacampos();
+
+    public function alterar($sd29_i_codigo=null)
+    {
+     $this->atualizacampos();
      $sql = " update prontproced set ";
      $virgula = "";
      if(trim($this->sd29_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_codigo"])){ 
        $sql  .= $virgula." sd29_i_codigo = $this->sd29_i_codigo ";
        $virgula = ",";
        if(trim($this->sd29_i_codigo) == null ){ 
-         $this->erro_sql = " Campo Código nao Informado.";
+         $this->erro_sql = " Campo Código não informado.";
          $this->erro_campo = "sd29_i_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -311,7 +336,7 @@ class cl_prontproced {
        $sql  .= $virgula." sd29_i_prontuario = $this->sd29_i_prontuario ";
        $virgula = ",";
        if(trim($this->sd29_i_prontuario) == null ){ 
-         $this->erro_sql = " Campo Prontuario nao Informado.";
+         $this->erro_sql = " Campo Prontuario não informado.";
          $this->erro_campo = "sd29_i_prontuario";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -320,10 +345,10 @@ class cl_prontproced {
          return false;
        }
      }
-     if(trim($this->sd29_i_procedimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_procedimento"])){ 
+     if(trim($this->sd29_i_procedimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_procedimento"])){  
        $sql  .= $virgula." sd29_i_procedimento = $this->sd29_i_procedimento ";
        $virgula = ",";
-       if(trim($this->sd29_i_procedimento) == null ){ 
+       if(trim($this->sd29_i_procedimento) == null ){
          $this->erro_sql = " Campo Procedimento nao Informado.";
          $this->erro_campo = "sd29_i_procedimento";
          $this->erro_banco = "";
@@ -337,7 +362,7 @@ class cl_prontproced {
        $sql  .= $virgula." sd29_d_data = '$this->sd29_d_data' ";
        $virgula = ",";
        if(trim($this->sd29_d_data) == null ){ 
-         $this->erro_sql = " Campo Data nao Informado.";
+         $this->erro_sql = " Campo Data não informado.";
          $this->erro_campo = "sd29_d_data_dia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -350,7 +375,7 @@ class cl_prontproced {
          $sql  .= $virgula." sd29_d_data = null ";
          $virgula = ",";
          if(trim($this->sd29_d_data) == null ){ 
-           $this->erro_sql = " Campo Data nao Informado.";
+           $this->erro_sql = " Campo Data não informado.";
            $this->erro_campo = "sd29_d_data_dia";
            $this->erro_banco = "";
            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -364,7 +389,7 @@ class cl_prontproced {
        $sql  .= $virgula." sd29_c_hora = '$this->sd29_c_hora' ";
        $virgula = ",";
        if(trim($this->sd29_c_hora) == null ){ 
-         $this->erro_sql = " Campo Hora nao Informado.";
+         $this->erro_sql = " Campo Hora não informado.";
          $this->erro_campo = "sd29_c_hora";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -381,7 +406,7 @@ class cl_prontproced {
        $sql  .= $virgula." sd29_i_usuario = $this->sd29_i_usuario ";
        $virgula = ",";
        if(trim($this->sd29_i_usuario) == null ){ 
-         $this->erro_sql = " Campo Cod. Usuário nao Informado.";
+         $this->erro_sql = " Campo Cod. Usuário não informado.";
          $this->erro_campo = "sd29_i_usuario";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -407,7 +432,7 @@ class cl_prontproced {
        $sql  .= $virgula." sd29_i_profissional = $this->sd29_i_profissional ";
        $virgula = ",";
        if(trim($this->sd29_i_profissional) == null ){ 
-         $this->erro_sql = " Campo Profissional / CBO nao Informado.";
+         $this->erro_sql = " Campo Profissional / CBO não informado.";
          $this->erro_campo = "sd29_i_profissional";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -420,64 +445,90 @@ class cl_prontproced {
        $sql  .= $virgula." sd29_t_diagnostico = '$this->sd29_t_diagnostico' ";
        $virgula = ",";
      }
+     if(trim($this->sd29_sigilosa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd29_sigilosa"])){ 
+       $sql  .= $virgula." sd29_sigilosa = '$this->sd29_sigilosa' ";
+       $virgula = ",";
+       if(trim($this->sd29_sigilosa) == null ){ 
+         $this->erro_sql = " Campo Sigiloso não informado.";
+         $this->erro_campo = "sd29_sigilosa";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(trim($this->sd29_t_achado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd29_t_achado"])){ 
+       $sql  .= $virgula." sd29_t_achado = '$this->sd29_t_achado' ";
+       $virgula = ",";
+     }
      $sql .= " where ";
      if($sd29_i_codigo!=null){
        $sql .= " sd29_i_codigo = $this->sd29_i_codigo";
      }
-     $resaco = $this->sql_record($this->sql_query_file($this->sd29_i_codigo));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,1006283,'$this->sd29_i_codigo','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_codigo"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,1006283,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_codigo'))."','$this->sd29_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_prontuario"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,1006282,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_prontuario'))."','$this->sd29_i_prontuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_procedimento"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,100178,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_procedimento'))."','$this->sd29_i_procedimento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_d_data"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,1008741,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_d_data'))."','$this->sd29_d_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_c_hora"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,1008742,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_c_hora'))."','$this->sd29_c_hora',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_t_tratamento"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,100188,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_t_tratamento'))."','$this->sd29_t_tratamento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_usuario"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,100183,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_usuario'))."','$this->sd29_i_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_d_cadastro"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,1008912,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_d_cadastro'))."','$this->sd29_d_cadastro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_c_cadastro"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,1008913,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_c_cadastro'))."','$this->sd29_c_cadastro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_profissional"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,100177,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_profissional'))."','$this->sd29_i_profissional',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["sd29_t_diagnostico"]))
-           $resac = db_query("insert into db_acount values($acount,1006042,11883,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_t_diagnostico'))."','$this->sd29_t_diagnostico',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->sd29_i_codigo));
+       if ($this->numrows > 0) {
+
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
+
+           $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac = db_query("insert into db_acountkey values($acount,1006283,'$this->sd29_i_codigo','A')");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_codigo"]) || $this->sd29_i_codigo != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,1006283,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_codigo'))."','$this->sd29_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_prontuario"]) || $this->sd29_i_prontuario != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,1006282,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_prontuario'))."','$this->sd29_i_prontuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_procedimento"]) || $this->sd29_i_procedimento != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,100178,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_procedimento'))."','$this->sd29_i_procedimento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_d_data"]) || $this->sd29_d_data != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,1008741,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_d_data'))."','$this->sd29_d_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_c_hora"]) || $this->sd29_c_hora != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,1008742,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_c_hora'))."','$this->sd29_c_hora',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_t_tratamento"]) || $this->sd29_t_tratamento != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,100188,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_t_tratamento'))."','$this->sd29_t_tratamento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_usuario"]) || $this->sd29_i_usuario != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,100183,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_usuario'))."','$this->sd29_i_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_d_cadastro"]) || $this->sd29_d_cadastro != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,1008912,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_d_cadastro'))."','$this->sd29_d_cadastro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_c_cadastro"]) || $this->sd29_c_cadastro != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,1008913,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_c_cadastro'))."','$this->sd29_c_cadastro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_i_profissional"]) || $this->sd29_i_profissional != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,100177,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_i_profissional'))."','$this->sd29_i_profissional',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_t_diagnostico"]) || $this->sd29_t_diagnostico != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,11883,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_t_diagnostico'))."','$this->sd29_t_diagnostico',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["sd29_sigilosa"]) || $this->sd29_sigilosa != "")
+             $resac = db_query("insert into db_acount values($acount,1006042,20969,'".AddSlashes(pg_result($resaco,$conresaco,'sd29_sigilosa'))."','$this->sd29_sigilosa',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Procedimentos do Prontuario nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Procedimentos do Prontuario não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->sd29_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Procedimentos do Prontuario nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Procedimentos do Prontuario não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->sd29_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->sd29_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -487,68 +538,79 @@ class cl_prontproced {
        } 
      } 
    } 
-   // funcao para exclusao 
-   function excluir ($sd29_i_codigo=null,$dbwhere=null) { 
-     if($dbwhere==null || $dbwhere==""){
-       $resaco = $this->sql_record($this->sql_query_file($sd29_i_codigo));
-     }else{ 
-       $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
-     }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,1006283,'$sd29_i_codigo','E')");
-         $resac = db_query("insert into db_acount values($acount,1006042,1006283,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,1006282,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_prontuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,100178,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_procedimento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,1008741,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_d_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,1008742,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_c_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,100188,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_t_tratamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,100183,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,1008912,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_d_cadastro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,1008913,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_c_cadastro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,100177,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_profissional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1006042,11883,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_t_diagnostico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+
+    public function excluir($sd29_i_codigo=null, $dbwhere = null)
+    {
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       if (empty($dbwhere)) {
+
+         $resaco = $this->sql_record($this->sql_query_file($sd29_i_codigo));
+       } else { 
+         $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
+       }
+       if (($resaco != false) || ($this->numrows!=0)) {
+
+         for ($iresaco = 0; $iresaco < $this->numrows; $iresaco++) {
+
+           $resac  = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac  = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac  = db_query("insert into db_acountkey values($acount,1006283,'$sd29_i_codigo','E')");
+           $resac  = db_query("insert into db_acount values($acount,1006042,1006283,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,1006282,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_prontuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,100178,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_procedimento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,1008741,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_d_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,1008742,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_c_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,100188,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_t_tratamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,100183,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,1008912,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_d_cadastro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,1008913,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_c_cadastro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,100177,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_i_profissional'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,11883,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_t_diagnostico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,20969,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_sigilosa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1006042,1011169,'','".AddSlashes(pg_result($resaco,$iresaco,'sd29_t_achado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $sql = " delete from prontproced
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($sd29_i_codigo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($sd29_i_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " sd29_i_codigo = $sd29_i_codigo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Procedimentos do Prontuario nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Procedimentos do Prontuario não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$sd29_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Procedimentos do Prontuario nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Procedimentos do Prontuario não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$sd29_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$sd29_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -558,10 +620,11 @@ class cl_prontproced {
        } 
      } 
    } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+
+    public function sql_record($sql)
+    {
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -570,8 +633,8 @@ class cl_prontproced {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:prontproced";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -581,23 +644,13 @@ class cl_prontproced {
       }
      return $result;
    }
-   function sql_query ( $sd29_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from prontproced ";
+   // funcao do sql
+    public function sql_query($sd29_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from prontproced ";
      $sql .= "      inner join prontuarios  on  prontuarios.sd24_i_codigo = prontproced.sd29_i_prontuario";
-     //$sql .= "      inner join unidademedicos  on  unidademedicos.sd04_i_codigo = prontproced.sd29_i_profissional";
-     //$sql .= "      inner join unidades  on  unidades.sd02_i_codigo = unidademedicos.sd04_i_unidade";
-     //$sql .= "      inner join rhcbo  on  rhcbo.rh70_sequencial = unidademedicos.sd04_i_cbo";
+
      $sql .= "      left join especmedico  on  especmedico.sd27_i_codigo = prontproced.sd29_i_profissional";
      $sql .= "      left join unidademedicos  on  unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed";
      $sql .= "      left join rhcbo  on  rhcbo.rh70_sequencial = especmedico.sd27_i_rhcbo";
@@ -606,9 +659,9 @@ class cl_prontproced {
      $sql .= "      inner join cgm m on  m.z01_numcgm = medicos.sd03_i_cgm";
 
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = prontproced.sd29_i_usuario";
-     $sql .= "      inner join sau_procedimento  on  sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento";
+     $sql .= "      inner  join sau_procedimento  on  sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento";
      $sql .= "      inner join sau_financiamento  on  sau_financiamento.sd65_i_codigo = sau_procedimento.sd63_i_financiamento";
-     $sql .= "      left join sau_rubrica  on  sau_rubrica.sd64_i_codigo = sau_procedimento.sd63_i_rubrica";
+     $sql .= "      left  join sau_rubrica  on  sau_rubrica.sd64_i_codigo = sau_procedimento.sd63_i_rubrica";
      $sql .= "      left join sau_complexidade  on  sau_complexidade.sd69_i_codigo = sau_procedimento.sd63_i_complexidade";
      $sql .= "      left join sau_orgaoemissor  on  sau_orgaoemissor.sd51_i_codigo = unidademedicos.sd04_i_orgaoemissor";
      $sql .= "      left join sau_modvinculo  on  sau_modvinculo.sd52_i_vinculacao = unidademedicos.sd04_i_vinculo";
@@ -617,201 +670,238 @@ class cl_prontproced {
      $sql .= "      inner join cgs  on  cgs.z01_i_numcgs = prontuarios.sd24_i_numcgs";
      $sql .= "      left join cgs_und on cgs_und.z01_i_cgsund = cgs.z01_i_numcgs";
      $sql2 = "";
-     if($dbwhere==""){
-       if($sd29_i_codigo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($sd29_i_codigo)) {
          $sql2 .= " where prontproced.sd29_i_codigo = $sd29_i_codigo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-   function sql_query_file ( $sd29_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from prontproced ";
+   // funcao do sql
+    public function sql_query_file($sd29_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from prontproced ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($sd29_i_codigo!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($sd29_i_codigo)){
          $sql2 .= " where prontproced.sd29_i_codigo = $sd29_i_codigo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
 
    /* Função SQL para a emissão do relatório do CBO. Esta query foi criada somente com as ligações necessárias,
       de forma a otimizar o desempenho da busca, já que mexe em tabelas com muitos registros */
-   function sql_query_relatorio_cbo ( $sd29_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= ' from prontproced ';
-     $sql .= '   inner join especmedico on especmedico.sd27_i_codigo = prontproced.sd29_i_profissional';
-     $sql .= '   inner join unidademedicos on unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed';
-     $sql .= '   inner join medicos on medicos.sd03_i_codigo = unidademedicos.sd04_i_medico';
-     $sql .= '   inner join cgm on cgm.z01_numcgm = medicos.sd03_i_cgm';
-     $sql .= '   inner join sau_procedimento on sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento';
-     $sql .= '   inner join sau_financiamento on sau_financiamento.sd65_i_codigo = sau_procedimento.sd63_i_financiamento';
-     $sql .= '   inner join rhcbo on rhcbo.rh70_sequencial = especmedico.sd27_i_rhcbo';
-     $sql2 = '';
+  function sql_query_relatorio_cbo ( $sd29_i_codigo=null,$campos="*",$ordem=null,$dbwhere="")
+  { 
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= ' from prontproced ';
+    $sql .= '   inner join especmedico on especmedico.sd27_i_codigo = prontproced.sd29_i_profissional';
+    $sql .= '   inner join unidademedicos on unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed';
+    $sql .= '   inner join medicos on medicos.sd03_i_codigo = unidademedicos.sd04_i_medico';
+    $sql .= '   inner join cgm on cgm.z01_numcgm = medicos.sd03_i_cgm';
+    $sql .= '   inner join sau_procedimento on sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento';
+    $sql .= '   inner join sau_financiamento on sau_financiamento.sd65_i_codigo = sau_procedimento.sd63_i_financiamento';
+    $sql .= '   inner join rhcbo on rhcbo.rh70_sequencial = especmedico.sd27_i_rhcbo';
+    $sql2 = '';
 
-     if($dbwhere==""){
-       if($sd29_i_codigo!=null ){
-         $sql2 .= " where prontproced.sd29_i_codigo = $sd29_i_codigo "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
+    if($dbwhere==""){
+      if($sd29_i_codigo!=null ){
+        $sql2 .= " where prontproced.sd29_i_codigo = $sd29_i_codigo "; 
+      } 
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
   }
 
-/* Função SQL para a emissão do relatório dos procedimentos. Esta query foi criada somente com as ligações necessárias,
-      de forma a otimizar o desempenho da busca, já que mexe em tabelas com muitos registros */
-   function sql_query_procedimentos ( $sd29_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= ' from prontproced ';
-     $sql .= '   inner join prontuarios on prontuarios.sd24_i_codigo = prontproced.sd29_i_prontuario';
-     $sql .= '   inner join cgs_und on cgs_und.z01_i_cgsund = prontuarios.sd24_i_numcgs';
-     $sql .= '   inner join especmedico on especmedico.sd27_i_codigo = prontproced.sd29_i_profissional';
-     $sql .= '   inner join unidademedicos on unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed';
-     $sql .= '   inner join medicos on medicos.sd03_i_codigo = unidademedicos.sd04_i_medico';
-     $sql .= '   inner join cgm on cgm.z01_numcgm = medicos.sd03_i_cgm';
-     $sql .= '   inner join db_depart on db_depart.coddepto = unidademedicos.sd04_i_unidade';
-     $sql .= '   inner join sau_procedimento on sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento';
-     $sql .= '   inner join sau_financiamento on sau_financiamento.sd65_i_codigo = sau_procedimento.sd63_i_financiamento';
-     $sql2 = '';
+  /* Função SQL para a emissão do relatório dos procedimentos. Esta query foi criada somente com as ligações necessárias,
+    de forma a otimizar o desempenho da busca, já que mexe em tabelas com muitos registros */
+  function sql_query_procedimentos ( $sd29_i_codigo=null,$campos="*",$ordem=null,$dbwhere="")
+  {
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= ' from prontproced ';
+    $sql .= '   inner join prontuarios on prontuarios.sd24_i_codigo = prontproced.sd29_i_prontuario';
+    $sql .= '   inner join cgs_und on cgs_und.z01_i_cgsund = prontuarios.sd24_i_numcgs';
+    $sql .= '   inner join especmedico on especmedico.sd27_i_codigo = prontproced.sd29_i_profissional';
+    $sql .= '   inner join unidademedicos on unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed';
+    $sql .= '   inner join medicos on medicos.sd03_i_codigo = unidademedicos.sd04_i_medico';
+    $sql .= '   inner join cgm on cgm.z01_numcgm = medicos.sd03_i_cgm';
+    $sql .= '   inner join db_depart on db_depart.coddepto = unidademedicos.sd04_i_unidade';
+    $sql .= '   inner join sau_procedimento on sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento';
+    $sql .= '   inner join sau_financiamento on sau_financiamento.sd65_i_codigo = sau_procedimento.sd63_i_financiamento';
+    $sql2 = '';
 
-     if($dbwhere==""){
-       if($sd29_i_codigo!=null ){
-         $sql2 .= " where prontproced.sd29_i_codigo = $sd29_i_codigo "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
+    if($dbwhere==""){
+      if($sd29_i_codigo!=null ){
+        $sql2 .= " where prontproced.sd29_i_codigo = $sd29_i_codigo "; 
+      } 
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
   }
 
-   /* Função SQL utilizada na consulta geral da saúde */
-   function sql_query_consulta_geral ($sd29_i_codigo=null, $campos="*", $ordem=null, $dbwhere="") { 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= ' from prontproced ';
-     $sql .= '   inner join sau_procedimento on sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento';
-     $sql .= '   inner join prontuarios on prontuarios.sd24_i_codigo = prontproced.sd29_i_prontuario';
-     $sql .= '   inner join cgs_und on cgs_und.z01_i_cgsund = prontuarios.sd24_i_numcgs';
-     $sql .= '   inner join especmedico on especmedico.sd27_i_codigo = prontproced.sd29_i_profissional';
-     $sql .= '   inner join unidademedicos on unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed';
-     $sql .= '   inner join medicos on medicos.sd03_i_codigo = unidademedicos.sd04_i_medico';
-     $sql .= '   inner join cgm on cgm.z01_numcgm = medicos.sd03_i_cgm';
-     $sql .= '   inner join db_depart on db_depart.coddepto = unidademedicos.sd04_i_unidade';
-     $sql .= '   inner join rhcbo on rhcbo.rh70_sequencial = especmedico.sd27_i_rhcbo';
-     $sql .= '   inner join db_usuarios on db_usuarios.id_usuario = prontproced.sd29_i_usuario';
-     $sql .= '   left  join prontagendamento on prontagendamento.s102_i_prontuario = prontuarios.sd24_i_codigo';
-     $sql .= '   left  join prontprocedcid on prontprocedcid.s135_i_prontproced = prontproced.sd29_i_codigo';
-     $sql .= '   left  join sau_cid on sau_cid.sd70_i_codigo = prontprocedcid.s135_i_cid';
-     $sql2 = '';
+  /* Função SQL utilizada na consulta geral da saúde */
+  function sql_query_consulta_geral ( $sd29_i_codigo=null,$campos="*",$ordem=null,$dbwhere="")
+  {
+    //Plugin ESF - Operation 1 - Ajuste no metodo
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= ' from prontproced ';
+    $sql .= '   inner join sau_procedimento on sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento';
+    $sql .= '   inner join prontuarios on prontuarios.sd24_i_codigo = prontproced.sd29_i_prontuario';
+    $sql .= '   inner join cgs_und on cgs_und.z01_i_cgsund = prontuarios.sd24_i_numcgs';
+    $sql .= '   inner join especmedico on especmedico.sd27_i_codigo = prontproced.sd29_i_profissional';
+    $sql .= '   inner join unidademedicos on unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed';
+    $sql .= '   inner join medicos on medicos.sd03_i_codigo = unidademedicos.sd04_i_medico';
+    $sql .= '   inner join cgm on cgm.z01_numcgm = medicos.sd03_i_cgm';
+    $sql .= '   inner join db_depart on db_depart.coddepto = unidademedicos.sd04_i_unidade';
+    $sql .= '   inner join rhcbo on rhcbo.rh70_sequencial = especmedico.sd27_i_rhcbo';
+    $sql .= '   inner join db_usuarios on db_usuarios.id_usuario = prontproced.sd29_i_usuario';
+    $sql .= '   left  join prontagendamento on prontagendamento.s102_i_prontuario = prontuarios.sd24_i_codigo';
+    $sql .= '   left  join prontprocedcid on prontprocedcid.s135_i_prontproced = prontproced.sd29_i_codigo';
+    $sql .= '   left  join sau_cid on sau_cid.sd70_i_codigo = prontprocedcid.s135_i_cid';
+    $sql2 = '';
 
-     if($dbwhere==""){
-       if($sd29_i_codigo!=null ){
-         $sql2 .= " where prontproced.sd29_i_codigo = $sd29_i_codigo "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
+    if($dbwhere==""){
+      if($sd29_i_codigo!=null ){
+        $sql2 .= " where prontproced.sd29_i_codigo = $sd29_i_codigo "; 
+      } 
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
   }
-  
-  
-  
-  function sql_query_producao($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
+
+  function sql_query_producao($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') 
+  { 
+      $sSql = 'select ';
+      if ($sCampos != '*') {
+
+        $sCamposSql = split('#', $sCampos);
+        $sVirgula   = '';
+        for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
+
+          $sSql .= $sVirgula.$sCamposSql[$iCont];
+          $virgula = ",";
+
+        }
+
+      } else {
+        $sSql .= $sCampos;
+      }
+      $sSql .= " from prontproced "; 
+      $sSql .= "   inner join sau_procedimento on sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento ";
+      $sSql .= "   left join especmedico    on  especmedico.sd27_i_codigo = prontproced.sd29_i_profissional ";
+      $sSql .= "   left join unidademedicos on  unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed "; 
+      $sSql .= "   left join unidades       on  unidades.sd02_i_codigo = unidademedicos.sd04_i_unidade ";
+      $sSql .= "   left join db_depart      on  db_depart.coddepto = unidades.sd02_i_codigo ";
+      $sSql2 = '';
+      
+      if ($sDbWhere == '') {
+
+        if ($iCodigo != null ){
+          $sSql2 .= " where prontproced.sd29_i_codigo = $iCodigo "; 
+        }
+
+      } elseif ($sDbWhere != '') {
+        $sSql2 = " where $sDbWhere";
+      }
+      $sSql .= $sSql2;
+
+      if ($sOrdem != null) {
+
+        $sSql      .= ' order by ';
+        $sCamposSql = split('#', $sOrdem);
+        $sVirgula   = '';
+        for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
+
+          $sSql    .= $sVirgula.$sCamposSql[$iCont];
+          $sVirgula = ',';
+
+        }
+
+      }
+
+      return $sSql;
+
+  }
+
+
+  function sql_query_faa($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
 
     $sSql = 'select ';
     if ($sCampos != '*') {
@@ -828,74 +918,20 @@ class cl_prontproced {
     } else {
       $sSql .= $sCampos;
     }
-    $sSql .= " from prontproced "; 
+    $sSql .= " from prontproced ";
     $sSql .= "   inner join sau_procedimento on sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento ";
     $sSql .= "   left join especmedico    on  especmedico.sd27_i_codigo = prontproced.sd29_i_profissional ";
-    $sSql .= "   left join unidademedicos on  unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed "; 
-    $sSql .= "   left join unidades       on  unidades.sd02_i_codigo = unidademedicos.sd04_i_unidade ";
-    $sSql .= "   left join db_depart      on  db_depart.coddepto = unidades.sd02_i_codigo ";
-    $sSql2 = '';
-    
-    if ($sDbWhere == '') {
-
-      if ($iCodigo != null ){
-        $sSql2 .= " where prontproced.sd29_i_codigo = $iCodigo "; 
-      }
-
-    } elseif ($sDbWhere != '') {
-      $sSql2 = " where $sDbWhere";
-    }
-    $sSql .= $sSql2;
-
-    if ($sOrdem != null) {
-
-      $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
-      $sVirgula   = '';
-      for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
-
-        $sSql    .= $sVirgula.$sCamposSql[$iCont];
-        $sVirgula = ',';
-
-      }
-
-    }
-
-    return $sSql;
-
-  }
-
-  function sql_query_faa($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
-
-    $sSql = 'select ';
-    if ($sCampos != '*') {
-
-      $sCamposSql = split('#', $sCampos);
-      $sVirgula   = '';
-      for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
-
-        $sSql .= $sVirgula.$sCamposSql[$iCont];
-        $virgula = ",";
-
-      }
-
-    } else {
-      $sSql .= $sCampos;
-    }
-    $sSql .= " from prontproced "; 
-    $sSql .= "   inner join sau_procedimento on sau_procedimento.sd63_i_codigo = prontproced.sd29_i_procedimento ";
-    $sSql .= "   left join especmedico    on  especmedico.sd27_i_codigo = prontproced.sd29_i_profissional ";
-    $sSql .= "   left join unidademedicos on  unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed "; 
+    $sSql .= "   left join unidademedicos on  unidademedicos.sd04_i_codigo = especmedico.sd27_i_undmed ";
     $sSql .= "   left join unidades       on  unidades.sd02_i_codigo = unidademedicos.sd04_i_unidade ";
     $sSql .= "   left join db_depart      on  db_depart.coddepto = unidades.sd02_i_codigo ";
     $sSql .= "   left join prontprocedcid on prontprocedcid.s135_i_prontproced = prontproced.sd29_i_codigo ";
     $sSql .= "   left join sau_cid        on sau_cid.sd70_i_codigo = prontprocedcid.s135_i_cid ";
     $sSql2 = '';
-    
+
     if ($sDbWhere == '') {
 
       if ($iCodigo != null ){
-        $sSql2 .= " where prontproced.sd29_i_codigo = $iCodigo "; 
+        $sSql2 .= " where prontproced.sd29_i_codigo = $iCodigo ";
       }
 
     } elseif ($sDbWhere != '') {
@@ -966,5 +1002,7 @@ class cl_prontproced {
 
     return $sSql;
   }
+  
+  //Plugin ESF - Operation 0 - Metodo utilizado na impressao do prontuario eletronico
+  
 }
-?>

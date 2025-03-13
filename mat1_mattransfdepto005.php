@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_matestoqueitem_classe.php");
-include("classes/db_matestoqueini_classe.php");
-include("classes/db_matestoqueinimei_classe.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_db_almox_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_matestoqueini_classe.php"));
+include(modification("classes/db_matestoqueinimei_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmatestoque       = new cl_matestoque;
 $clmatestoqueitem   = new cl_matestoqueitem;
@@ -72,7 +72,7 @@ if(isset($chavepesquisa)){
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmmattransfdepto.php");
+	include(modification("forms/db_frmmattransfdepto.php"));
 	?>
     </center>
 	</td>
@@ -85,7 +85,7 @@ if(isset($chavepesquisa)){
   if($clmatestoqueinimei->numrows>0){
    echo "
    <script>
-     top.corpo.iframe_itens.location.href = 'mat1_mattransfitens001.php?departamentodestino=$departamentodestino&departamentoorigem=$departamentoorigem&valores=$valores';
+     (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_itens.location.href = 'mat1_mattransfitens001.php?departamentodestino=$departamentodestino&departamentoorigem=$departamentoorigem&valores=$valores';
      parent.document.formaba.itens.disabled=false;
      parent.mo_camada('itens');
    </script>

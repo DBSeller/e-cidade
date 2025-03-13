@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -164,10 +164,10 @@ function ver_depto_destino(){
 
 function js_pesquisat94_depart(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_benstransf','db_iframe_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto&chave_t93_depart='+document.form1.t93_depart.value+'&db_param=<?=($db_param)?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_benstransf','db_iframe_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto&chave_t93_depart='+document.form1.t93_depart.value+'&db_param=<?=($db_param)?>','Pesquisa',true);
   }else{
      if(document.form1.t94_depart.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_benstransf','db_iframe_depart','func_db_depart.php?pesquisa_chave='+document.form1.t94_depart.value+'&funcao_js=parent.js_mostradb_depart&chave_t93_depart='+document.form1.t93_depart.value+'&db_param=<?=($db_param)?>','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_benstransf','db_iframe_depart','func_db_depart.php?pesquisa_chave='+document.form1.t94_depart.value+'&funcao_js=parent.js_mostradb_depart&chave_t93_depart='+document.form1.t93_depart.value+'&db_param=<?=($db_param)?>','Pesquisa',false);
      }else{
        document.form1.t94_depart.value = ''; 
      }
@@ -186,7 +186,7 @@ function js_mostradb_depart1(chave1,chave2){
   db_iframe_depart.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_benstransf','db_iframe_benstransf','func_benstransf001.php?funcao_js=parent.js_preenchepesquisa|t93_codtran&t93=true&db_param=<?=($db_param)?>','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_benstransf','db_iframe_benstransf','func_benstransf001.php?funcao_js=parent.js_preenchepesquisa|t93_codtran&t93=true&db_param=<?=($db_param)?>','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_benstransf.hide();

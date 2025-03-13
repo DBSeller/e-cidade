@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -151,6 +151,7 @@ function imp_gradeefetividade($cparam,$matric,$datacert,$matriz_tot_assent=null,
    $retorno = db_query("create index work3_in on ".$arquivo." (w_regist,w_ano,w_mes,w_assent)") ;
    $csql    = "select *,tipoasse.h12_assent,tipoasse.h12_efetiv,tipoasse.h12_reltot from assenta
      inner join tipoasse on h12_codigo = h16_assent 
+     inner join assentamentofuncional on rh193_assentamento_funcional = h16_codigo
      where  h16_regist = " .db_sqlformat(db_str($pessoal[0]["r01_regist"],6));
    $tot_assent_mat = count($matriz_tot_assent);
    if( $cparam == 3 && $tot_assent_mat > 0 && $matriz_tot_assent[0] <> '' ){
@@ -170,14 +171,18 @@ function imp_gradeefetividade($cparam,$matric,$datacert,$matriz_tot_assent=null,
    }
 
    global $assenta,$Iassenta;
+   //echo $csql;
+  //db_criatabela(db_query($csql));
+  //exit;
    if( db_selectmax("assenta",$csql." order by h16_dtconc, h16_assent ")){
 
      $Iassenta = 0;
-     if( $cparam == 2 ){
+     if ($cparam == 2 ){
        // Quando chamado pela opção : Relatórios / Emissão da Certidao do Tempo de Serviço
 
-       for($Iassenta=0;$Iassenta<count($assenta);$Iassenta++){
-         if($assenta[$Iassenta]["h16_regist"] == $pessoal[0]["r01_regist"]){
+       for($Iassenta=0;$Iassenta<count($assenta);$Iassenta++) {
+
+         if ($assenta[$Iassenta]["h16_regist"] == $pessoal[0]["r01_regist"]) {
            break;
          }   
          if( strtolower($assenta[$Iassenta]["h12_efetiv"]) == "n" && $assenta[$Iassenta]["h12_reltot"] <= 1){
@@ -235,7 +240,7 @@ function imp_gradeefetividade($cparam,$matric,$datacert,$matriz_tot_assent=null,
  */
      $primeiro = true;
      $Iassenta =0 ;
-
+     $lTemInicioDeEfetividade = false;
      while ($Iassenta < count($assenta)){
        if( $cparam != 3){
          // Quando chamado pela opção : Relatórios / Emissão da Certidao do Tempo de Serviço
@@ -246,11 +251,14 @@ function imp_gradeefetividade($cparam,$matric,$datacert,$matriz_tot_assent=null,
          }
        }
        $registra_assenta = "E";
-       if( !$inicio){
+
+       if (!$inicio) {
+
          if( strtolower($assenta[$Iassenta]["h12_efetiv"]) != "i" && strtolower($assenta[$Iassenta]["h12_efetiv"]) != "n" && strtolower($assenta[$Iassenta]["h12_efetiv"]) != "d"){
+
            $registro_local = $Iassenta;
-           $mes_local = db_month($assenta[$Iassenta]["h16_dtconc"]);
-           $ano_local = db_year($assenta[$Iassenta]["h16_dtconc"]);
+           $mes_local  = db_month($assenta[$Iassenta]["h16_dtconc"]);
+           $ano_local  = db_year($assenta[$Iassenta]["h16_dtconc"]);
            $tem_inicio = false;
            while($Iassenta < count($assenta) && $mes_local == db_month($assenta[$Iassenta]["h16_dtconc"]) 
              && $ano_local == db_year($assenta[$Iassenta]["h16_dtconc"])){
@@ -260,25 +268,22 @@ function imp_gradeefetividade($cparam,$matric,$datacert,$matriz_tot_assent=null,
              $Iassenta++;
            }
            $Iassenta = $registro_local;
-           if($tot_assent_mat == 0 ){
-             if( !$tem_inicio){
-               if( !$listou_assentamentos){
-                 $erro_msg= "Sem assentamento de inicio.";
-                 $erro = true;
-               }
-               break;
-             }
-           }
          }
-         if( strtolower($assenta[$Iassenta]["h12_efetiv"]) == "i"){
-           $inicio = true;
-           $registra_assenta = "I";
+
+         if( strtolower($assenta[$Iassenta]["h12_efetiv"]) == "i") {
+
+           $lTemInicioDeEfetividade = true;
+           $inicio                  = true;
+           $registra_assenta        = "I";
          }
-       }else{
-         if($tot_assent_mat == 0 ){
-           if( strtolower($assenta[$Iassenta]["h12_efetiv"]) == "i" ){
+       } else {
+
+         if ($tot_assent_mat == 0 ) {
+
+           if (strtolower($assenta[$Iassenta]["h12_efetiv"]) == "i" ) {
+
              $erro_msg = "Assentamento de inicio ja cadastrado : ".$assenta[$Iassenta]["h16_assent"]." verifique.";
-             $erro = true;
+             $erro     = true;
              break;
            }
          }
@@ -305,10 +310,16 @@ function imp_gradeefetividade($cparam,$matric,$datacert,$matriz_tot_assent=null,
        continue;
 
      }
+     if (!$lTemInicioDeEfetividade) {
+
+       $erro_msg = "Sem assentamento de inicio.";
+       $erro     = true;
+     }
      // ------------ Começa a Impressão da Grade de Efetividade ou a Certidão de Tempo de Serviço
 
      global $work3;
      if( $erro == false){
+
        if(db_selectmax("work3","select * from " .$arquivo. " order by w_regist,w_ano,w_mes,w_assent")){
          if( $cparam == 0){
            $ano_inic_cert = db_substr(db_dtoc($certinic),7,4);
@@ -754,7 +765,8 @@ function imp_gradeefetividade($cparam,$matric,$datacert,$matriz_tot_assent=null,
      } 
    }
    if($erro){
-     db_msgbox($erro_msg); 
+     db_redireciona('db_erros.php?fechar=true&db_erro='.$erro_msg);
+     exit;
    }
    return $pdf;
 }

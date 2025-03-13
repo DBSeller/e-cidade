@@ -1,0 +1,15 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="db70_sequencial"   label="codigo"   />
+    <campo campo="db70_descricao"    label="descricao"   />
+    <campo campo="db70_sigla"        label="sigla"   />
+  </campos>
+  <from tabela="cadenderpais" />
+  <juncoes>
+  </juncoes>
+  <filtros>
+  </filtros>
+  <agrupamento campos="" />
+  <ordenacao   campos="codigo" />
+</consulta>

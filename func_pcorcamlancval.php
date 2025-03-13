@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,18 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_pcorcam_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_pcorcam_classe.php"));
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
+
+$numero = empty($_GET['numero']) ? null :$_GET['numero'];
+
 $clpcorcam = new cl_pcorcam;
 $clrotulo = new rotulocampo;
 $clrotulo->label("pc20_codorc");
@@ -62,19 +66,21 @@ if (!isset($pesquisar)) {
   }
 }
 
-  $pc20_dtatei = "{$pc20_dtatei_ano}-{$pc20_dtatei_mes}-{$pc20_dtatei_dia}";
-  $pc20_dtatef = "{$pc20_dtatef_ano}-{$pc20_dtatef_mes}-{$pc20_dtatef_dia}";
+$pc20_dtatei = "{$pc20_dtatei_ano}-{$pc20_dtatei_mes}-{$pc20_dtatei_dia}";
+$pc20_dtatef = "{$pc20_dtatef_ano}-{$pc20_dtatef_mes}-{$pc20_dtatef_dia}";
 
-if (isset($datafinal)){
-  $pc20_dtatef=$datafinal;
-  $datafinal=mktime(0,0,0,substr($pc20_dtatef,5,2),substr($pc20_dtatef,8,2),substr($pc20_dtatef,0,4));
+if (isset($datafinal)) {
+  $pc20_dtatef = $datafinal;
+  
+  $datafinal = mktime(0,0,0,substr($pc20_dtatef,5,2),substr($pc20_dtatef,8,2),substr($pc20_dtatef,0,4));
+  
   $iDia = date("d", $datafinal);
   $iMes = date("m", $datafinal);
   $iAno = date("Y", $datafinal);
+  
   $pc20_dtatef_dia = $iDia;
   $pc20_dtatef_mes = $iMes;
   $pc20_dtatef_ano = $iAno;
-
 }
 
 
@@ -158,7 +164,7 @@ if (isset($datafinal)){
       <?
       if(isset($campos)==false){
         if(file_exists("funcoes/db_func_pcorcam.php")==true){
-          include("funcoes/db_func_pcorcam.php");
+          include(modification("funcoes/db_func_pcorcam.php"));
         }else{
           $campos = "pcorcam.*";
         }
@@ -196,17 +202,20 @@ if (isset($datafinal)){
       }
 
       if ( !isset($chave_pc20_codorc) && !isset($chave_pc10_numero) && !isset($chave_pc80_codproc) || ( trim($chave_pc20_codorc)=="" && trim($chave_pc10_numero)=="" && trim($chave_pc80_codproc)=="")){
-        $where_sol  = " and pc20_dtate between '{$pc20_dtatei}' and '{$pc20_dtatef}'                      ";
+
+        if (str_replace('-', '', $pc20_dtatei) != '' && str_replace('-', '', $pc20_dtatef) != '') {
+          $where_sol  = " and pc20_dtate between '{$pc20_dtatei}' and '{$pc20_dtatef}'                      ";
+        }
       }
 
       if (!empty($lProcessos) && $lProcessos) {
         $where_sol .= " and pc80_codproc is not null ";
       }
-      
+
       if (!empty($lProcessoLote) && $lProcessoLote) {
         $where_sol .= " and pc80_tipoprocesso = 2 ";
       }
-      
+
       if (!empty($lProcessoItem) && $lProcessoItem) {
         $where_sol .= " and pc80_tipoprocesso = 1 ";
       }
@@ -232,23 +241,44 @@ if (isset($datafinal)){
           $where_sol.= " and pcprocitem.pc81_codproc=$numero ";
         }
       }
+
+      if (!empty($bloqueiaRegistroPreco)) {
+        $where_sol .= " and (d.pc10_solicitacaotipo not in (3, 4, 5) or d.pc10_numero is null)";
+      }
+
       if(!isset($pesquisa_chave)){
         if(isset($chave_pc20_codorc) && (trim($chave_pc20_codorc)!="") ){
           $sql = $clpcorcam->sql_query_solproc(null,$campos,"pc20_codorc desc","pc20_codorc=$chave_pc20_codorc ".$where_sol);
         }else if(isset($chave_pc10_numero) && (trim($chave_pc10_numero)!="") ){
-          $sql = $clpcorcam->sql_query_solproc(null,$campos,"pc20_codorc desc"," c.pc10_numero=$chave_pc10_numero ".$where_sol);
+          $camposOrcamento = array();
+          $filtros = array();
+
+          $camposOrcamento[] = 'DISTINCT pc10_numero';
+          $camposOrcamento[] = 'pcorcam.pc20_codorc';
+          $camposOrcamento[] = 'pcorcam.pc20_dtate';
+          $camposOrcamento[] = 'pcorcam.pc20_hrate';
+          $camposOrcamento[] = 'pc10_resumo';
+
+          $sql = $clpcorcam->buscaOrcamentosSolicitacao($chave_pc10_numero, $camposOrcamento);
         }else if(isset($chave_pc80_codproc) && (trim($chave_pc80_codproc)!="") ){
           $sql = $clpcorcam->sql_query_solproc(null,$campos,"pcproc.pc80_codproc"," pcproc.pc80_codproc=$chave_pc80_codproc ".$where_sol);
         }else if(isset($chave_l20_codigo) && (trim($chave_l20_codigo)!="") ){
           $sql = $clpcorcam->sql_query_solproc(null,$campos,"l20_codigo"," l20_codigo=$chave_l20_codigo ".$where_sol);
         }else if(isset($exc)){
-          $sql = $clpcorcam->sql_query_proc(null,$campos,"pc20_codorc desc "," 1=1 ".$where_sol);
+          $sql = $clpcorcam->sql_query_solproc(null,$campos,"pc20_codorc desc "," 1=1 ".$where_sol);
         }else{
           $sql = $clpcorcam->sql_query_solproc(null,$campos,"pc20_codorc desc",' 1=1 '.$where_sol);
         }
-        //        die($sql);
-        //        echo($sql);
-        db_lovrot($sql,15,"()","",$funcao_js, "", "NoMe", array(), false);
+
+        $rs = db_query($sql);
+        
+        if (pg_num_rows($rs) == 1 && $_GET['flagReemissaoOrcamentoSC'] == '1') {
+          $codigoOrcamento = pg_fetch_result($rs, 0, 'pc20_codorc');
+
+          echo "<script>parent.js_mostrapcorcamsol('{$codigoOrcamento}')</script>";
+        }
+        
+        db_lovrot($sql, 15, "()", "", $funcao_js, "", "NoMe", array(), false);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
           $result = $clpcorcam->sql_record($clpcorcam->sql_query_solproc(null,$campos,"","pc20_codorc=$pesquisa_chave ".$where_sol));
@@ -276,3 +306,11 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+  document.querySelector('input#limpar').addEventListener('click', ()=>document.forms[0].reset());
+})();
+</script>

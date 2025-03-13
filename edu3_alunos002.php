@@ -1,40 +1,43 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+use ECidade\Educacao\Escola\Service\GradeAproveitamentoAreaPorAreaService;
+use App\Domain\Configuracao\Helpers\StorageHelper;
 
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory($_POST);
 
 $resultedu           = eduparametros(db_getsession("DB_coddepto"));
 $permitenotaembranco = VerParametroNota(db_getsession("DB_coddepto"));
@@ -85,19 +88,99 @@ if (isset($chavepesquisa)) {
   $result  = $claluno->sql_record($claluno->sql_query("",$campos,""," ed47_i_codigo = $chavepesquisa"));
   db_fieldsmemory($result,0);
 }
+
+$cpf = false;
+$certidao = false;
+$semDocumentos = true;
+
+if (isset($chavepesquisa) && !empty($chavepesquisa)) {
+
+    $oDaoAluno = new cl_aluno();
+    $sqlCertidao = $oDaoAluno->sql_query_file(null,"ed47_i_certidado_estorage  as idCertidao",null, "ed47_i_codigo = $chavepesquisa");
+    $rsCertidao = db_query($sqlCertidao);
+
+    if (!$rsCertidao) {
+        db_msgbox('Não foi possível buscar a formação.');
+        return;
+    }
+
+    if (pg_num_rows($rsCertidao) > 0) {
+        $idCertidao = db_utils::fieldsMemory($rsCertidao, 0)->idcertidao;
+        $fileCertidao = !empty($idCertidao) ? StorageHelper::downloadArquivo($idCertidao): "" ;
+        $fileCertidao =  basename($fileCertidao);
+    }
+
+    $sqlCpf = $oDaoAluno->sql_query_file(null,"ed47_i_cpf_estorage  as idCpf",null, "ed47_i_codigo = $chavepesquisa");
+    $rsCpf = db_query($sqlCpf);
+
+    if (!$rsCpf) {
+        db_msgbox('Não foi possível buscar a formação.');
+        return;
+    }
+
+    if (pg_num_rows($rsCpf) > 0) {
+        $idCpf = db_utils::fieldsMemory($rsCpf, 0)->idcpf;
+        $fileCpf = !empty($idCpf) ? StorageHelper::downloadArquivo($idCpf): "" ;
+        $fileCpf =  basename($fileCpf);
+    }
+
+    if(!empty($idCpf) && isset($idCpf)) {
+      $semDocumentos = false;
+      $cpf = true;
+      $cpfHTML = "<iframe name='frame_imagemCPF' id='frame_imagemCPF' src='edu4_alunodocumentocpf.php' width='56' height='40' frameborder='1' scrolling='no'></iframe>";
+    }
+    if(!empty($idCertidao) && isset($idCertidao)){
+      $semDocumentos = false;
+      $certidao = true;
+      $certidaoHTML = "<iframe name='frame_imagemCertidao' id='frame_imagemCertidao' src='edu4_alunodocumentocertidao.php' width='56' height='40' frameborder='1' scrolling='no'></iframe>";
+    }
+
+}
+
 ?>
 <html>
 <head>
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-<?
+<?php
   db_app::load("scripts.js, prototype.js, strings.js, datagrid.widget.js");
   db_app::load("estilos.css, grid.style.css");
 ?>
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <style>
+    #gradeAproveitamento {
+        width: 100%;
+    }
+    #gradeAproveitamento,
+    #gradeAproveitamento tr.disciplina td,
+    #gradeAproveitamento tr.areaconhecimento td,
+    #gradeAproveitamento tr th {
+        padding: 3px;
+        border: 1px solid #666;
+        text-align: center;
+    }
+
+    tr.header th {
+        font-size: 12px;
+        background-color:#9C9C9C;
+        font-weight: bold;
+    }
+    tr.areaconhecimento td {
+        background-color: #DBDBDB;
+    }
+    tr.areaconhecimento td:first-child {
+        text-align: left !important;
+        font-weight: bold;
+    }
+    tr.disciplina td:first-child {
+        text-align: left !important;
+    }
+    #gradeAproveitamento .bold {
+        font-weight: bold;
+    }
+
 .titulo{
  font-size: 11px;
  color: #DEB887;
@@ -137,7 +220,7 @@ if (isset($chavepesquisa)) {
  <tr>
   <td valign="top" bgcolor="#CCCCCC">
    <table border="0" bgcolor="#f3f3f3" width="100%" cellspacing="0" cellpading="0" height="800" >
-    <?if ($evento == 1) {?>
+    <?php if ($evento == 1) {?>
 
          <tr>
            <td valign="top" >
@@ -146,7 +229,7 @@ if (isset($chavepesquisa)) {
                  <tr>
                    <td>
                     <b>Certidão (matrícula): </b>
-                    <?
+                    <?php
                       if ($ed47_certidaomatricula == "" || $ed47_certidaomatricula == null) {
 
                         echo $ed47_certidaomatricula = "Não Informado ";
@@ -182,7 +265,7 @@ if (isset($chavepesquisa)) {
                  <tr>
                    <td>
                      <?=$Led47_c_certidaocart?>
-                     <?
+                     <?php
 
                       if ( isset( $ed47_i_censocartorio ) && !empty( $ed47_i_censocartorio ) ) {
 
@@ -264,10 +347,42 @@ if (isset($chavepesquisa)) {
                    </td>
                  </tr>
                </table>
-             </fieldset>
+               <br>
+              <fieldset style="border: 2px solid #b2b2b2;box-shadow: 1px 1px, inset 1px 1px;">
+                <legend style="background: #f3f3f3;">Documentos Anexados:</legend>
+                <table>
+                  <tr>
+                  <?php  if($cpf) { ?>
+                      <td>
+                        <fieldset>
+                          <legend><b>CPF:</b></legend>
+                              <?php echo $cpfHTML; ?>
+                        </fieldset>
+                      </td>
+                      <script>
+                        frame_imagemCPF.location.href="edu4_alunodocumentocpf.php?imagem_gerada=<?php echo $fileCpf?>";
+                      </script>
+                    <?php } if($certidao) { ?>
+                      <td>
+                        <fieldset>
+                          <legend><b>Certidão:</b></legend>
+                              <?php echo $certidaoHTML; ?>
+                        </fieldset>
+                      </td>
+                      <script>
+                        frame_imagemCertidao.location.href="edu4_alunodocumentocertidao.php?imagem_gerada=<?php echo $fileCertidao?>";
+                      </script>
+                    <?php } if($semDocumentos) { ?>
+                      <td>
+                        Nenhum Documento anexado
+                      </td>
+                    <?php } ?>
+                  </tr>
+                </table>
+              </fieldset>
            </td>
          </tr>
-    <?}
+    <?php }
 
       if ($evento == 2) {?>
 
@@ -282,12 +397,12 @@ if (isset($chavepesquisa)) {
               </tr>
               <tr>
                <td>
-                 <?=$Led47_v_pai?> <?=$ed47_v_pai==""?"Não Informado":$ed47_v_pai?>
+                 <?=$Led47_v_mae?> <?=$ed47_v_mae==""?"Não Informado":$ed47_v_mae?>
                </td>
               </tr>
               <tr>
                <td>
-                 <?=$Led47_v_mae?> <?=$ed47_v_mae==""?"Não Informado":$ed47_v_mae?>
+                 <?=$Led47_v_pai?> <?=$ed47_v_pai==""?"Não Informado":$ed47_v_pai?>
                </td>
               </tr>
               <tr>
@@ -334,12 +449,12 @@ if (isset($chavepesquisa)) {
                <td>
                  <?=$Led47_c_atenddifer?>
                  <?=$ed47_c_atenddifer=="1"?"Em Hospital":($ed47_c_atenddifer=="2"?"Em Domicílio":"Não Recebe")?>
-                 <?
+                 <?php
 
                     $sWhere    = " ed47_i_codigo = $chavepesquisa AND ed268_i_tipoatend = 5";
-        
+
                     /**
-                     * Removido vinculo com a matricula pois a tabela turmaacmatricula não é vinculado com 
+                     * Removido vinculo com a matricula pois a tabela turmaacmatricula não é vinculado com
                      * matricula e sim com aluno.
                      */
                     //$sWhere   .= " AND ed60_c_situacao = 'MATRICULADO' AND ed60_c_concluida='N'";
@@ -348,10 +463,10 @@ if (isset($chavepesquisa)) {
                                                                                 "ed268_c_descr, ed52_c_descr",
                                                                                 "",
                                                                                 $sWhere);
-                  $result221 = $clturmaacmatricula->sql_record($sSqlAtendimentoDiferenciado);                  
+                  $result221 = $clturmaacmatricula->sql_record($sSqlAtendimentoDiferenciado);
 
                   if ($clturmaacmatricula->numrows > 0) {
-                    
+
                     db_fieldsmemory($result221,0);
                     echo "<tr>                                                          ";
                     echo " <td><b>Atendimento Educacional Especializado:</b> Recebe</td>";
@@ -378,7 +493,7 @@ if (isset($chavepesquisa)) {
             </fieldset>
            </td>
           </tr>
-    <?}
+    <?php }
 
       if ($evento == 3) {
 
@@ -421,7 +536,7 @@ if (isset($chavepesquisa)) {
          <td valign="top" >
           <fieldset style="background:#f3f3f3;border:2px solid #000000"><legend class="cabec"><b>Matrículas</b></legend>
            <table border="1" width="100%" bgcolor="#f3f3f3" cellspacing="0" cellpading="4">
-           <?
+           <?php
            if ($clmatricula->numrows > 0) {
 
              db_fieldsmemory($result1,0);
@@ -459,7 +574,7 @@ if (isset($chavepesquisa)) {
              <td>
               <?=$Led60_d_datamatricula?> <?=db_formatar($ed60_d_datamatricula,'d')?>
               &nbsp;&nbsp;
-              <?
+              <?php
               if (trim($ed60_c_situacao) == "AVANÇADO" || trim($ed60_c_situacao) == "CLASSIFICADO") {
                 $sitt = 'Aprovado através de progressão';
               } else {
@@ -475,7 +590,7 @@ if (isset($chavepesquisa)) {
               <b>Situação:</b> <?=$sitt?>
              </td>
             </tr>
-           <?if (trim(Situacao($ed60_c_situacao,$ed60_i_codigo)) != "MATRICULADO"
+           <?php if (trim(Situacao($ed60_c_situacao,$ed60_i_codigo)) != "MATRICULADO"
                && trim(Situacao($ed60_c_situacao,$ed60_i_codigo)) != "REMATRICULADO") {?>
 
                <tr>
@@ -485,7 +600,7 @@ if (isset($chavepesquisa)) {
                 </td>
                </tr>
 
-           <?}?>
+           <?php }?>
 
             <tr>
              <td>
@@ -507,8 +622,162 @@ if (isset($chavepesquisa)) {
             </tr>
             <tr>
              <td>
-              <?GradeAproveitamentoHTML($ed60_i_codigo, "S", $ed52_i_ano)?>
-              <?php 
+
+
+              <?php
+
+                /**
+                 * @todo realizar melhoria para as classes ArredondamentoNota e ArredondamentoFrequencia para que as
+                 * mesmas "enxerge" a escola do aluno
+                 */
+                $iEscolaSessao    = db_getsession('DB_coddepto');
+                $oMatricula       = MatriculaRepository::getMatriculaByCodigo($ed60_i_codigo);
+                $iEscolaMatricula = $oMatricula->getTurma()->getEscola()->getCodigo();
+
+                $_SESSION["DB_coddepto"] = $iEscolaMatricula;
+
+              db_inicio_transacao();
+              $diarioClasse = $oMatricula->getDiarioDeClasse();
+              db_fim_transacao();
+
+              if (is_null($diarioClasse->getAreaProcedimento())) {
+                GradeAproveitamentoHTML($ed60_i_codigo, "S", $ed52_i_ano);
+              } else {
+                  $gradeService = new GradeAproveitamentoAreaPorAreaService($diarioClasse);
+                  $mapper = $gradeService->getGradeAproveitamento();
+
+                  $procedimento = $gradeService->getProcedimento();
+              }
+
+                $_SESSION["DB_coddepto"] = $iEscolaSessao;
+
+              if (!is_null($diarioClasse->getAreaProcedimento())) {
+              ?>
+              <div id="containerGradeAproveitamento">
+                  <table id="gradeAproveitamento" cellspacing="0" cellpadding="0" border="1">
+                      <tr class="header">
+                          <th width="26%"></th>
+                          <?php
+                          $avaliacoes = $procedimento->getAvaliacoes();
+
+                          foreach ($avaliacoes as $avaliacao) {
+                          $descricaoAbreviada = $avaliacao->getPeriodoAvaliacao()->getDescricaoAbreviada();
+                            echo '<th colspan="3">'.$descricaoAbreviada.'</th>';
+                          }
+                          $resultadoAbreviado = $procedimento->getResultado()->getTipoResultado()->getDescricaoAbreviada();
+                          ?>
+                          <th width="5%"><?php echo $resultadoAbreviado; ?></th>
+                          <th colspan="4" width="14%">Frequência</th>
+                          <th colspan="2" width="15%">Resultado Final</th>
+                      </tr>
+                      <tr class="header">
+                          <th>Disciplina</th>
+                          <?php
+                          $avaliacoes = $procedimento->getAvaliacoes();
+                          foreach ($avaliacoes as $avaliacao) {
+                              echo '<th colspan="2">AVAL.</th>';
+                              echo '<th>FT</th>';
+                          }
+                          ?>
+                          <th>AVAL.</th>
+                          <th><?php echo $gradeService->getControleFrequencia(); ?></th>
+                          <th>TF</th>
+                          <th>FA</th>
+                          <th>Freq.</th>
+                          <th>Aprov</th>
+                          <th>RF</th>
+                      </tr>
+                      <?php
+
+                      function montaHtmlArea($areaMapper, $alunoEncerrado)
+                      {
+                          $area = $areaMapper->getAreaConhecimento();
+                          $descricaoArea = $area->getDescricao();
+
+                          echo '<tr class="areaconhecimento">';
+                          echo "<td>{$descricaoArea}</td>";
+                          $avaliacoes = $areaMapper->getAvaliacoes();
+
+                          foreach ($avaliacoes as $avaliacaoArea) {
+                              $avaliacao = $avaliacaoArea->getAvaliacao();
+                              if ($avaliacaoArea->isAmparado()) {
+                                  $avaliacao = 'AMP';
+                              }
+                              $negrito = "";
+                              if (!$avaliacaoArea->isAtingiuMinimo() || $avaliacaoArea->isAmparado()) {
+                                  $negrito = ' class="bold"';
+                              }
+                              echo '<td colspan="2"'.$negrito.'>'.$avaliacao.'</td>';
+                              echo '<td></td>';
+                          }
+
+                          $avaliacao = $areaMapper->getResultado()->getAvaliacao();
+                          if ($areaMapper->getResultado()->isAmparado()) {
+                              $avaliacao = 'AMP';
+                          }
+                          $negrito = "";
+                          if ($areaMapper->getResultado()->isAmparado() || !$areaMapper->getResultado()->isAtingiuMinimo()) {
+                              $negrito = ' class="bold"';
+                          }
+                          echo '<td'.$negrito.'>'.$avaliacao.'</td>';
+
+                          echo '<td></td>';
+                          echo '<td></td>';
+                          echo '<td></td>';
+                          echo '<td></td>';
+
+                          if ($alunoEncerrado) {
+                              $termoResultadoFinal = $areaMapper->getResultado()->getTermoResultadoFinal();
+                              echo '<td>'.$avaliacao.'</td>';
+                              echo '<td>'.$termoResultadoFinal.'</td>';
+                          } else {
+                              echo '<td></td>';
+                              echo '<td></td>';
+                          }
+                          echo '</tr>';
+                      }
+
+                      function montaHtmlDisciplinasArea($areaMapper) {
+                          foreach ($areaMapper->getDiarioAvaliacaoDisciplinas() as $diarioAvaliacaoDisciplina) {
+                              $regencia = $diarioAvaliacaoDisciplina->getRegencia();
+
+                              $descricaoDisciplina = $regencia->getDisciplina()->getNomeDisciplina();
+                              echo '<tr class="disciplina">';
+                              echo "<td>{$descricaoDisciplina}</td>";
+
+                              foreach ($areaMapper->getAvaliacoes() as $avaliacao) {
+                                  foreach ($avaliacao->getDisciplinas() as $disciplinaMapper) {
+                                      if ($regencia->getCodigo() === $disciplinaMapper->getRegencia()->getCodigo()) {
+                                            echo '<td colspan="2"></td>';
+                                            echo '<td>'.$disciplinaMapper->getFaltas().'</td>';
+                                      }
+                                  }
+                              }
+
+                              echo '<td></td>';
+                              echo '<td>'.$regencia->getTotalDeAulas().'</td>';
+                              echo '<td>'.$diarioAvaliacaoDisciplina->getTotalFaltas().'</td>';
+                              $totalFaltasAbonadas = $diarioAvaliacaoDisciplina->getTotalFaltasAbonadas();
+                              echo '<td>'.$totalFaltasAbonadas.'</td>';
+                              $percentualFrequencia = $diarioAvaliacaoDisciplina->calcularPercentualFrequencia();
+                              echo '<td>'."{$percentualFrequencia}%".'</td>';
+                              echo '<td></td>';
+                              echo '<td></td>';
+                          }
+                      }
+
+                      $areasMapper = $mapper->getAreas();
+
+                      foreach ($areasMapper as $areaMapper) {
+                          $alunoEncerrado = $diarioClasse->getDiarioAlunoService()->getDiarioAluno()->isEncerrado();
+                          montaHtmlArea($areaMapper, $alunoEncerrado);
+                          montaHtmlDisciplinasArea($areaMapper);
+                      }
+                      ?>
+                  </table>
+              </div>
+              <?php
+              }
               $sCamposAprovCons  = " distinct ed11_c_descr as serie_conselho, ed52_i_ano, ed253_aprovconselhotipo";
               $sCamposAprovCons .= ", ed253_t_obs, ed12_i_codigo, ed11_i_codigo";
               $sWhereAprovCons   = " ed95_i_aluno = {$ed60_i_aluno} and serie.ed11_i_codigo = {$ed11_i_codigo}";
@@ -516,9 +785,9 @@ if (isset($chavepesquisa)) {
               $sSqlAprovCons     = $oDaoAprovConselho->sql_query("", $sCamposAprovCons, "ed11_c_descr, ed52_i_ano", $sWhereAprovCons);
               $rsAprovConselho   = $oDaoAprovConselho->sql_record($sSqlAprovCons);
               $iLinhasAprovCons  = $oDaoAprovConselho->numrows;
-              
+
               $aAprovadoConselhoRegimento = array();
-              
+
               if ($iLinhasAprovCons > 0) {
 
                 $lGrava = true;
@@ -543,7 +812,7 @@ if (isset($chavepesquisa)) {
                       $sTipoAprovConselho = "reclassificado por baixa frequência";
                       break;
                     case 3:
-                      
+
                       $sTipoAprovConselho = "aprovado pelo regimento escolar";
                       break;
                   }
@@ -590,7 +859,7 @@ if (isset($chavepesquisa)) {
            </tr>
            <tr>
             <td>
-             <?
+             <?php
              $sCampos = "calendario.ed52_i_ano,escola.ed18_c_nome,ed60_i_codigo, ed60_matricula";
              $sWhere  = " ed60_i_codigo not in($ed60_i_codigo) AND ed60_i_aluno = $chavepesquisa";
              $result2 = $clmatricula->sql_record($clmatricula->sql_query("",
@@ -608,7 +877,7 @@ if (isset($chavepesquisa)) {
                  <a href="edu3_alunos002.php?chavepesquisa=<?=$chavepesquisa?>&evento=3&ed60_i_codigo=<?=$ed60_i_codigo?>">Matricula nº <?=$ed60_matricula?></a>
                  ->&nbsp;&nbsp;<b>Ano:</b> <?=$ed52_i_ano?>&nbsp;&nbsp;<b>Escola:</b> <?=$ed18_c_nome?>
                  <br>
-             <?
+             <?php
                }
 
              } else {
@@ -617,7 +886,7 @@ if (isset($chavepesquisa)) {
             ?>
             </td>
            </tr>
-           <?
+           <?php
            } else {
             ?>
              <tr>
@@ -625,239 +894,277 @@ if (isset($chavepesquisa)) {
                Nenhum registro.
               </td>
              </tr>
-            <?
+            <?php
            }
         ?></table>
          </fieldset>
         </td>
        </tr>
-    <?}
+    <?php
+    }
 
-      if($evento==4){
-        $sql3 = "SELECT ed29_c_descr,ed62_i_codigo,ed11_c_descr,ed11_i_codigo,ed62_i_anoref,ed62_i_periodoref,ed18_c_nome,ed11_i_sequencia,ed11_i_ensino,'REDE' as tipo
-             FROM historicomps
-              inner join serie on ed11_i_codigo = ed62_i_serie
-              inner join historico on ed61_i_codigo = ed62_i_historico
-              inner join cursoedu on ed29_i_codigo = ed61_i_curso
-              inner join escola on ed18_i_codigo = ed62_i_escola
-             WHERE ed61_i_aluno = $chavepesquisa
-             UNION
-             SELECT ed29_c_descr,ed99_i_codigo,ed11_c_descr,ed11_i_codigo,ed99_i_anoref,ed99_i_periodoref,ed82_c_nome,ed11_i_sequencia,ed11_i_ensino,'FORA' as tipo
-             FROM historicompsfora
-              inner join serie on ed11_i_codigo = ed99_i_serie
-              inner join historico on ed61_i_codigo = ed99_i_historico
-              inner join cursoedu on ed29_i_codigo = ed61_i_curso
-              inner join escolaproc on ed82_i_codigo = ed99_i_escolaproc
-             WHERE ed61_i_aluno = $chavepesquisa
-             ORDER BY ed62_i_anoref DESC,ed11_i_sequencia desc
-             ";
-    $result3 = db_query($sql3);
-    $linhas3 = pg_num_rows($result3);
-    ?>
-    <tr>
-     <td valign="top" >
-      <fieldset style="background:#f3f3f3;border:2px solid #000000"><legend class="cabec"><b>Histórico</b></legend>
-      <table border="1" width="100%" bgcolor="#f3f3f3" cellspacing="0" cellpading="0">
-       <?
-       if($linhas3>0){
-        $primeiro = "";
-        for($t=0;$t<$linhas3;$t++){
-         db_fieldsmemory($result3,$t);
-         if($primeiro!=$ed29_c_descr){
-          ?>
-          <tr>
-           <td class="cabec1">
-            <?=$ed29_c_descr?>
-           </td>
-          </tr>
-          <?
-          $primeiro = $ed29_c_descr;
-         }
-         if( ($t==0 && !isset($chaveserie)) || (@$chaveserie==$ed62_i_codigo)){
-          $class = "titulo";
-         }else{
-          $class = "aluno";
-         }
-         ?>
-         <tr>
-          <td class="<?=$class?>">
-           <?
-           if( ($t==0 && !isset($chaveserie)) || (@$chaveserie==$ed62_i_codigo)){
-            ?>
-            Etapa: <?=$ed11_c_descr?>
-            &nbsp;&nbsp;Ano: <?=$ed62_i_anoref?>&nbsp;&nbsp;Escola: <?=$ed18_c_nome?>
-            <?
-           }else{
-            ?>
-            <a class="<?=$class?>" href="edu3_alunos002.php?chavepesquisa=<?=$chavepesquisa?>&chaveserie=<?=$ed62_i_codigo?>&evento=4">
-             Etapa: <?=$ed11_c_descr?>
-            </a>
-            &nbsp;&nbsp;Ano: <?=$ed62_i_anoref?>&nbsp;&nbsp;Escola: <?=$ed18_c_nome?>
-            <?
-           }
-           ?>
-          </td>
-         </tr>
-         <tr>
-          <td>
-          <?
-          if( ($t==0 && !isset($chaveserie)) || (@$chaveserie==$ed62_i_codigo)){
-           if($tipo=="REDE"){
-            $campos = "ed65_i_codigo,
-                       ed232_c_descr,
-                       ed65_c_situacao,
-                       case when ed65_c_situacao!='CONCLUÍDO' then '&nbsp;' else ed65_t_resultobtido end as ed65_t_resultobtido,
-                       ed65_c_resultadofinal,
-                       ed65_i_qtdch,
-                       ed65_c_tiporesultado,
-                       ed65_i_historicomps,
-                       ed29_c_descr
-                       ";
-            $sSql = $clhistmpsdisc->sql_query("","$campos","ed65_i_ordenacao"," ed65_i_historicomps = $ed62_i_codigo");
-            $result = $clhistmpsdisc->sql_record($sSql);
-            ?>
-            <?if($result){?>
-            <table width="100%" border="1" cellspacing="0" cellpadding="0">
-             <tr class='titulo' align="center">
-              <td>Disciplina</td>
-              <td>Situação</td>
-              <td>Aprov.</td>
-              <td>RF</td>
-              <td>CH</td>
-              <td>TR</td>
-             </tr>
-             <?
-             if($clhistmpsdisc->numrows>0){
-              $cor1 = "#f3f3f3";
-              $cor2 = "#DBDBDB";
-              $cor = "";
-              for($x=0;$x<$clhistmpsdisc->numrows;$x++){
-               db_fieldsmemory($result,$x);
-               if($cor==$cor1){
-                $cor = $cor2;
-               }else{
-                 $cor = $cor1;
-               }
-               if(trim($ed65_c_situacao)=="AMPARADO"){
-                $ed65_t_resultobtido = "&nbsp;";
-               }elseif($ed65_c_tiporesultado=='N'){
-               /*if($resultedu=='S'){
-                 $ed65_t_resultobtido = ArredondamentoNota::arredondar($ed65_t_resultobtido, $ed62_i_anoref);
-               }else{
-                 $ed65_t_resultobtido = ArredondamentoNota::arredondar($ed65_t_resultobtido, $ed62_i_anoref);
-               }*/
+      if( $evento == 4 ) {
 
-               }
-               ?>
-               <tr height="18" bgcolor="<?=$cor?>">
-                <td class='aluno'><?=$ed232_c_descr?></td>
-                <td class='aluno' align="center"><?=$ed65_c_situacao?></td>
-                <td class='aluno' align="<?=$ed65_c_tiporesultado=='N'?'right':'center'?>"><?=$ed65_t_resultobtido?></td>
-                <td class='aluno' align="center"><?=$ed65_c_resultadofinal=="R"?"REPROVADO":"APROVADO"?></td>
-                <td class='aluno' align="right"><?=$ed65_i_qtdch==""?0:$ed65_i_qtdch?></td>
-                <td class='aluno' align="center"><?=trim($ed65_c_tiporesultado)?></td>
-               </tr>
-               <?
+        $sCamposHistoricoMps  = "ed29_c_descr, ed62_i_codigo, ed11_c_descr, ed11_i_codigo, ed62_i_anoref";
+        $sCamposHistoricoMps .= ", ed62_i_periodoref, ed18_c_nome, ed11_i_sequencia, ed11_i_ensino, 'REDE' as tipo";
+
+        $sCamposHistoricoMpsFora  = "ed29_c_descr, ed99_i_codigo, ed11_c_descr, ed11_i_codigo, ed99_i_anoref";
+        $sCamposHistoricoMpsFora .= ", ed99_i_periodoref, ed82_c_nome, ed11_i_sequencia, ed11_i_ensino, 'FORA' as tipo";
+
+        $sql3  = "SELECT {$sCamposHistoricoMps} ";
+        $sql3 .= "  FROM historicomps ";
+        $sql3 .= "       inner join serie     on ed11_i_codigo = ed62_i_serie ";
+        $sql3 .= "       inner join historico on ed61_i_codigo = ed62_i_historico ";
+        $sql3 .= "       inner join cursoedu  on ed29_i_codigo = ed61_i_curso ";
+        $sql3 .= "       inner join escola    on ed18_i_codigo = ed62_i_escola ";
+        $sql3 .= " WHERE ed61_i_aluno = {$chavepesquisa} ";
+        $sql3 .= " UNION ";
+        $sql3 .= "SELECT {$sCamposHistoricoMpsFora} ";
+        $sql3 .= "  FROM historicompsfora ";
+        $sql3 .= "       inner join serie      on ed11_i_codigo = ed99_i_serie ";
+        $sql3 .= "       inner join historico  on ed61_i_codigo = ed99_i_historico ";
+        $sql3 .= "       inner join cursoedu   on ed29_i_codigo = ed61_i_curso ";
+        $sql3 .= "       inner join escolaproc on ed82_i_codigo = ed99_i_escolaproc ";
+        $sql3 .= " WHERE ed61_i_aluno = {$chavepesquisa} ";
+        $sql3 .= " ORDER BY ed62_i_anoref DESC, ed11_i_sequencia desc";
+
+        $result3 = db_query($sql3);
+        $linhas3 = pg_num_rows($result3);
+        ?>
+        <tr>
+          <td valign="top" >
+            <fieldset style="background:#f3f3f3;border:2px solid #000000">
+              <legend class="cabec">
+                <label class="bold">Histórico</label>
+              </legend>
+              <table border="1" width="100%" bgcolor="#f3f3f3" cellspacing="0">
+                <?php
+                if( $linhas3 > 0 ) {
+
+                  $primeiro = "";
+
+                  for( $t = 0; $t < $linhas3; $t++ ) {
+
+                    db_fieldsmemory( $result3, $t );
+
+                    if( $primeiro != $ed29_c_descr ) {
+
+                      ?>
+                      <tr>
+                        <td class="cabec1">
+                          <?=$ed29_c_descr?>
+                        </td>
+                      </tr>
+                      <?php
+                      $primeiro = $ed29_c_descr;
+                    }
+
+                    if( ( $t == 0 && !isset( $chaveserie ) ) || ( @$chaveserie == $ed62_i_codigo ) ) {
+                      $class = "titulo";
+                    } else {
+                      $class = "aluno";
+                    }
+                    ?>
+                    <tr>
+                      <td class="<?=$class?>">
+                        <?php
+                        if( ( $t == 0 && !isset( $chaveserie ) ) || ( @$chaveserie == $ed62_i_codigo ) ) {
+
+                          ?>
+                          Etapa: <?=$ed11_c_descr?>
+                          &nbsp;&nbsp;Ano: <?=$ed62_i_anoref?>&nbsp;&nbsp;Escola: <?=$ed18_c_nome?>
+                          <?php
+                        } else {
+
+                          ?>
+                          <a class="<?=$class?>" href="edu3_alunos002.php?chavepesquisa=<?=$chavepesquisa?>&chaveserie=<?=$ed62_i_codigo?>&evento=4">
+                            Etapa: <?=$ed11_c_descr?>
+                          </a>
+                          &nbsp;&nbsp;Ano: <?=$ed62_i_anoref?>&nbsp;&nbsp;Escola: <?=$ed18_c_nome?>
+                          <?php
+                        }
+                        ?>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <?php
+                        if( ( $t == 0 && !isset( $chaveserie ) ) || ( @$chaveserie == $ed62_i_codigo ) ) {
+
+                          if( $tipo == "REDE" ) {
+
+                            $campos = "ed65_i_codigo,
+                                       ed232_c_descr,
+                                       ed65_c_situacao,
+                                       case when ed65_c_situacao!='CONCLUÍDO' then '&nbsp;' else ed65_t_resultobtido end as ed65_t_resultobtido,
+                                       ed65_c_resultadofinal,
+                                       ed65_i_qtdch,
+                                       ed65_c_tiporesultado,
+                                       ed65_i_historicomps,
+                                       ed29_c_descr";
+                            $sWhere = "ed65_i_historicomps = {$ed62_i_codigo}";
+                            $sSql   = $clhistmpsdisc->sql_query( "", $campos, "ed65_i_ordenacao", $sWhere );
+                            $result = $clhistmpsdisc->sql_record( $sSql );
+
+                            if( $result ) {
+                            ?>
+                              <table width="100%" border="1" cellspacing="0" cellpadding="0">
+                                <tr class='titulo' align="center">
+                                  <td>Disciplina</td>
+                                  <td>Situação</td>
+                                  <td>Aprov.</td>
+                                  <td>RF</td>
+                                  <td>CH</td>
+                                  <td>TR</td>
+                                </tr>
+                                <?php
+                                if( $clhistmpsdisc->numrows > 0 ) {
+
+                                  $cor1 = "#f3f3f3";
+                                  $cor2 = "#DBDBDB";
+                                  $cor  = "";
+
+                                  for( $x =0 ; $x < $clhistmpsdisc->numrows; $x++ ) {
+
+                                    db_fieldsmemory( $result, $x );
+
+                                    if( $cor == $cor1 ) {
+                                      $cor = $cor2;
+                                    } else {
+                                      $cor = $cor1;
+                                    }
+
+                                    if( trim( $ed65_c_situacao ) == "AMPARADO" ) {
+                                      $ed65_t_resultobtido = "&nbsp;";
+                                    }
+                                    ?>
+                                    <tr height="18" bgcolor="<?=$cor?>">
+                                      <td class='aluno'><?=$ed232_c_descr?></td>
+                                      <td class='aluno' align="center"><?=$ed65_c_situacao?></td>
+                                      <td class='aluno' align="<?=$ed65_c_tiporesultado == 'N' ? 'right' : 'center'?>"><?=$ed65_t_resultobtido?></td>
+                                      <td class='aluno' align="center"><?=$ed65_c_resultadofinal == "R" ? "REPROVADO" : "APROVADO"?></td>
+                                      <td class='aluno' align="right"><?=$ed65_i_qtdch == "" ? 0 : DBNumber::truncate( $ed65_i_qtdch )?></td>
+                                      <td class='aluno' align="center"><?=trim($ed65_c_tiporesultado)?></td>
+                                    </tr>
+                                    <?php
+                                  }
+                                } else {
+
+                                  ?>
+                                  <tr height="18" bgcolor="#f3f3f3">
+                                    <td colspan="6" class="aluno" align="center">
+                                      <label>Nenhuma disciplina cadastrada para esta etapa.</label>
+                                    </td>
+                                  </tr>
+                                  <?php
+                                }
+                                ?>
+                              </table>
+                              <?php
+                            }
+                          } else {
+
+                            $campos = "ed100_i_codigo,
+                                       ed232_c_descr,
+                                       ed100_c_situacao,
+                                       case
+                                         when ed100_c_situacao != 'CONCLUÍDO' OR ed100_t_resultobtido = ''
+                                           then '&nbsp;'
+                                           else ed100_t_resultobtido
+                                       end as ed100_t_resultobtido,
+                                       ed100_c_resultadofinal,
+                                       ed100_i_qtdch,
+                                       ed100_c_tiporesultado,
+                                       ed100_i_historicompsfora,
+                                       ed29_c_descr";
+                            $sWhere = "ed100_i_historicompsfora = {$ed62_i_codigo}";
+                            $sSql   = $clhistmpsdiscfora->sql_query( "", $campos, "ed100_i_ordenacao", $sWhere );
+                            $result = $clhistmpsdiscfora->sql_record( $sSql );
+
+                            if( $result ) {
+                              ?>
+                              <table width="100%" border="1" cellspacing="0" cellpadding="0">
+                                <tr class='titulo'>
+                                  <td>Disciplina</td>
+                                  <td>Situação</td>
+                                  <td>Aprov.</td>
+                                  <td>RF</td>
+                                  <td>CH</td>
+                                  <td>TR</td>
+                                </tr>
+                                <?php
+                                if( $clhistmpsdiscfora->numrows > 0 ) {
+
+                                  $cor1 = "#f3f3f3";
+                                  $cor2 = "#DBDBDB";
+                                  $cor  = "";
+
+                                  for( $x = 0; $x < $clhistmpsdiscfora->numrows; $x++ ) {
+
+                                    db_fieldsmemory( $result, $x );
+
+                                    if( $cor == $cor1 ) {
+                                      $cor = $cor2;
+                                    } else {
+                                      $cor = $cor1;
+                                    }
+
+                                    if( trim( $ed100_c_situacao ) == "AMPARADO" ) {
+                                      $ed100_t_resultobtido = "&nbsp;";
+                                    }
+                                    ?>
+                                    <tr height="18" bgcolor="<?=$cor?>">
+                                      <td class='aluno'><?=$ed232_c_descr?></td>
+                                      <td class='aluno'><?=$ed100_c_situacao?></td>
+                                      <td class='aluno' align="<?=$ed100_c_tiporesultado == 'N' ? 'right' : 'center'?>"><?=$ed100_t_resultobtido?></td>
+                                      <td class='aluno'><?=$ed100_c_resultadofinal == "R" ? "REPROVADO" : "APROVADO"?></td>
+                                      <td class='aluno' align="right"><?=$ed100_i_qtdch == "" ? 0 : $ed100_i_qtdch?></td>
+                                      <td class='aluno' align="right"><?=trim( $ed100_c_tiporesultado )?></td>
+                                    </tr>
+                                    <?php
+                                  }
+                                } else {
+
+                                  ?>
+                                  <tr height="18" bgcolor="#f3f3f3">
+                                    <td colspan="6" class="aluno" align="center">
+                                      <label>Nenhuma disciplina cadastrada para esta etapa.</label>
+                                    </td>
+                                  </tr>
+                                  <?php
+                                }
+                                ?>
+                              </table>
+                              <?php
+                            }
+                          }
+                        }
+                        ?>
+                      </td>
+                    </tr>
+                  <?php
+                  }
+                } else {
+                ?>
+                <tr>
+                  <td>
+                    <label>Nenhum registro.</label>
+                  </td>
+                </tr>
+                <?php
               }
-             }else{
               ?>
-              <tr height="18" bgcolor="#f3f3f3">
-               <td colspan="6" class="aluno" align="center">Nenhuma disciplina cadastrada para esta etapa.</td>
-              </tr>
-              <?
-             }
-             ?>
-            </table>
-            <?
-            }
-           }else{
-            $campos = "ed100_i_codigo,
-                       ed232_c_descr,
-                       ed100_c_situacao,
-                       case when ed100_c_situacao!='CONCLUÍDO' OR ed100_t_resultobtido = '' then '&nbsp;' else ed100_t_resultobtido end as ed100_t_resultobtido,
-                       ed100_c_resultadofinal,
-                       ed100_i_qtdch,
-                       ed100_c_tiporesultado,
-                       ed100_i_historicompsfora,
-                       ed29_c_descr
-                      ";
-            $result = $clhistmpsdiscfora->sql_record($clhistmpsdiscfora->sql_query("","$campos","ed100_i_ordenacao"," ed100_i_historicompsfora = $ed62_i_codigo"));
-            ?>
-            <?if($result){?>
-            <table width="100%" border="1" cellspacing="0" cellpadding="0">
-             <tr class='titulo'>
-              <td>Disciplina</td>
-              <td>Situação</td>
-              <td>Aprov.</td>
-              <td>RF</td>
-              <td>CH</td>
-              <td>TR</td>
-             </tr>
-             <?
-             if($clhistmpsdiscfora->numrows>0){
-              $cor1 = "#f3f3f3";
-              $cor2 = "#DBDBDB";
-              $cor = "";
-              for($x=0;$x<$clhistmpsdiscfora->numrows;$x++){
-               db_fieldsmemory($result,$x);
-               if($cor==$cor1){
-                $cor = $cor2;
-               }else{
-                 $cor = $cor1;
-               }
-               if(trim($ed100_c_situacao)=="AMPARADO"){
-                $ed100_t_resultobtido = "&nbsp;";
-               }elseif($ed100_c_tiporesultado=='N'){
-                //$ed100_t_resultobtido = ArredondamentoNota::arredondar($ed100_t_resultobtido, $ed62_i_anoref);
-               }
-               ?>
-               <tr height="18" bgcolor="<?=$cor?>">
-                <td class='aluno'><?=$ed232_c_descr?></td>
-                <td class='aluno'><?=$ed100_c_situacao?></td>
-                <td class='aluno' align="<?=$ed100_c_tiporesultado=='N'?'right':'center'?>"><?=$ed100_t_resultobtido?></td>
-                <td class='aluno'><?=$ed100_c_resultadofinal=="R"?"REPROVADO":"APROVADO"?></td>
-                <td class='aluno' align="right"><?=$ed100_i_qtdch==""?0:$ed100_i_qtdch?></td>
-                <td class='aluno' align="right"><?=trim($ed100_c_tiporesultado)?></td>
-               </tr>
-               <?
-              }
-             }else{
-              ?>
-              <tr height="18" bgcolor="#f3f3f3">
-               <td colspan="6" class="aluno" align="center">Nenhuma disciplina cadastrada para esta etapa.</td>
-              </tr>
-              <?
-             }
-             ?>
-            </table>
-            <?
-            }
-           }
+              </table>
+            </fieldset>
+          <?php
           }
-          ?>
-         </td>
-        </tr>
-        <?
-       }
-      }else{
-       ?>
-       <tr>
-        <td>
-         Nenhum registro.
-        </td>
-       </tr>
-       <?
-      }
-      ?>
-     </table>
-    </fieldset>
-   <?}
+
       if ($evento == 5) { ?>
         <tr>
          <td valign="top" >
           <fieldset style="background:#f3f3f3;border:2px solid #000000"><legend class="cabec"><b>Necessidades Especiais</b></legend>
            <table border="1" width="100%" bgcolor="#f3f3f3" cellspacing="0" cellpading="0">
-           <?
+           <?php
             $result = $clalunonecessidade->sql_record($clalunonecessidade->sql_query("",
                                                                                      "*",
                                                                                      "ed48_c_descr",
@@ -881,7 +1188,7 @@ if (isset($chavepesquisa)) {
                 </table>
                </td>
               </tr>
-              <?
+              <?php
               for ($f = 0; $f < $clalunonecessidade->numrows; $f++) {
 
                 db_fieldsmemory($result,$f);
@@ -900,7 +1207,7 @@ if (isset($chavepesquisa)) {
                   </table>
                  </td>
                 </tr>
-                <?
+                <?php
               }
             } else {
 
@@ -910,14 +1217,14 @@ if (isset($chavepesquisa)) {
                 Nenhum registro.
                </td>
               </tr>
-            <?
+            <?php
             }
             ?>
            </table>
           </fieldset>
          </td>
         </tr>
-    <?}
+    <?php }
       if ($evento == 6) {
 
         if (!isset($ordem)) {
@@ -933,7 +1240,7 @@ if (isset($chavepesquisa)) {
                    <?=$ordem=="ASC"?"selected":""?>>Crescente</option><option value="DESC"
                    <?=$ordem=="DESC"?"selected":""?>>Decrescente</option></select></b></legend>
             <table border="1" width="100%" bgcolor="#f3f3f3" cellspacing="0" cellpading="0">
-             <?
+             <?php
               $array_mov = array();
               $sCamposResult  = " ed229_i_codigo,ed229_d_dataevento,ed18_i_codigo,ed18_c_nome,ed60_i_codigo,";
               $sCamposResult .= " ed52_i_ano,ed11_c_descr,ed229_c_procedimento, ed60_matricula,";
@@ -972,7 +1279,6 @@ if (isset($chavepesquisa)) {
                                                                                         $sWhereResult1
                                                                                        )
                                                             );
-
               if ($clmatriculamov->numrows > 0) {
 
                 db_fieldsmemory($result1,0);
@@ -1026,7 +1332,7 @@ if (isset($chavepesquisa)) {
                  <td>Procedimento</td>
                 </tr>
 
-              <?
+              <?php
                 for ($f = 0; $f < count($array_mov); $f++) {
 
                   $array_mov1 = explode("|",$array_mov[$f]);
@@ -1035,7 +1341,7 @@ if (isset($chavepesquisa)) {
                   if ($f > 0) {
                   ?>
 	                 <tr><td height="1" bgcolor="black" colspan="7"></td></tr>
-                  <?
+                  <?php
                   }
                   ?>
                   <tr bgcolor="#dbdbdb">
@@ -1062,7 +1368,7 @@ if (isset($chavepesquisa)) {
                        </table>
                       </td>
                      </tr>
-                    <?
+                    <?php
                 }
               } else {
               ?>
@@ -1071,11 +1377,11 @@ if (isset($chavepesquisa)) {
                   Nenhum registro.
                  </td>
                 </tr>
-              <?
+              <?php
               }
               ?>
             </table>
-            <?
+            <?php
             $result_log = $cllogmatricula->sql_record($cllogmatricula->sql_query("",
                                                                                  "*",
                                                                                  "ed248_d_data,ed248_c_hora",
@@ -1096,13 +1402,13 @@ if (isset($chavepesquisa)) {
                 <td colspan="2" height="1" bgcolor="#999999">
                 </td>
                </tr>
-            <?for ($q = 0; $q < $cllogmatricula->numrows; $q++) {
+            <?php for ($q = 0; $q < $cllogmatricula->numrows; $q++) {
 
                 db_fieldsmemory($result_log,$q);
             ?>
                 <tr>
                  <td colspan="2">
-                 <?
+                 <?php
                   if ($ed248_c_tipo == "E") {
                     $descrlog = "Matrícula Excluída";
                   } else if ($ed248_c_tipo == "R") {
@@ -1125,17 +1431,17 @@ if (isset($chavepesquisa)) {
                    <?=trim($ed248_t_obs)!=""?"Observações: $ed248_t_obs":""?>
                   </td>
                  </tr>
-              <?
+              <?php
               }
               ?>
              </table>
-            <?
+            <?php
             }
             ?>
         </fieldset>
        </td>
       </tr>
-    <?
+    <?php
       }
       if ($evento == 7) {
     ?>
@@ -1148,7 +1454,7 @@ if (isset($chavepesquisa)) {
           </fieldset>
         </td>
       </tr>
-    <?
+    <?php
       }
     ?>
    </table>
@@ -1203,7 +1509,7 @@ function js_pesquisaFaltas() {
  */
 function js_retornaPesquisaFaltas(oResponse) {
 
-	var oRetorno = eval('('+oResponse.responseText+')');
+	var oRetorno = JSON.parse(oResponse.responseText);
 
 	if (oRetorno.status == 1) {
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_arrevenc_classe.php");
-include("classes/db_arrevenclog_classe.php");
-include("classes/db_arreinstit_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_arrevenc_classe.php"));
+include(modification("classes/db_arrevenclog_classe.php"));
+include(modification("classes/db_arreinstit_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clarrevenc     = new cl_arrevenc;
@@ -59,7 +59,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
 										   and k00_numpar = {$k00_numpar}
 											 and (k00_dtini,k00_dtfim) overlaps ( DATE '{$dataini}' - '1 day'::interval, DATE '{$datafim}' + '1 day'::interval)"; 
 		
-		$rsPeriodo = pg_query($sqlPeriodo);
+		$rsPeriodo = db_query($sqlPeriodo);
 		$linhasPeriodo = pg_num_rows($rsPeriodo);
 		 if($linhasPeriodo > 0){
 		 	// não pode incluir
@@ -80,7 +80,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
 	  	
 			if($k00_numpar == 0 ){
 				$sqlPar = "select distinct k00_numpar as parc from arrecad where k00_numpre = {$k00_numpre}";
-				$rsPar  = pg_query($sqlPar);
+				$rsPar  = db_query($sqlPar);
 				$linhaPar = pg_num_rows($rsPar);
 				if($linhaPar>0){
 					for($i=0;$i<$linhaPar;$i++){
@@ -134,7 +134,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
     <center>
 	<?
 	
-	include("forms/db_frmarrevenc.php");
+	include(modification("forms/db_frmarrevenc.php"));
 
 	?>
     </center>

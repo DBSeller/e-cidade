@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require("libs/db_conecta.php");
+  require(modification("libs/db_conecta.php"));
 ?>
 <html>
 <head>
@@ -46,7 +46,7 @@
 //Verifica se a origem desta janela foi solicitada para lista de andamentos ou para a impressao de uma descricao de um andamento
 if (isset($ordem)) {
   // Esta rotina seleciona os andamentos que pertencem a ordem recebida como parametro por esta janla na variavel $ordem
-  $andamentosSelecionados = pg_exec("select o.id_usuario, o.codandam, 
+  $andamentosSelecionados = db_query("select o.id_usuario, o.codandam, 
                                      o.codordem, to_char(o.dtini,'DD/MM/YYYY') as datainicial, 
 									 to_char(o.dtfim,'DD/MM/YYYY') as datafinal,
 									 u.nome
@@ -96,7 +96,7 @@ if (isset($ordem)) {
 } else if (isset($descrCodAndam)){
   //Seleciona o andamento passado como parametro e imprime sua descricao na janela.
   // Chama a funcao java scripto responsavel por imprimir a tela.
-  $selecionaAndamento = pg_exec("select o.id_usuario, o.codandam, o.codordem, o.descricao,
+  $selecionaAndamento = db_query("select o.id_usuario, o.codandam, o.codordem, o.descricao,
 								 to_char(o.dtini,'DD/MM/YYYY') as datainicial, 
 								 to_char(o.dtfim,'DD/MM/YYYY') as datafinal, u.nome
                                  from db_ordemandam o

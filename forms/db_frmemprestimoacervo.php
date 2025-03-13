@@ -80,10 +80,10 @@ db_input('bi06_titulo',50,$Ibi06_titulo,true,'text',3,'')
 <script>
 function js_pesquisabi19_emprestimo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_emprestimo','func_emprestimo.php?funcao_js=parent.js_mostraemprestimo1|bi18_codigo|bi18_retirada','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emprestimo','func_emprestimo.php?funcao_js=parent.js_mostraemprestimo1|bi18_codigo|bi18_retirada','Pesquisa',true);
   }else{
      if(document.form1.bi19_emprestimo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_emprestimo','func_emprestimo.php?pesquisa_chave='+document.form1.bi19_emprestimo.value+'&funcao_js=parent.js_mostraemprestimo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emprestimo','func_emprestimo.php?pesquisa_chave='+document.form1.bi19_emprestimo.value+'&funcao_js=parent.js_mostraemprestimo','Pesquisa',false);
      }else{
        document.form1.bi18_retirada.value = ''; 
      }
@@ -103,10 +103,10 @@ function js_mostraemprestimo1(chave1,chave2){
 }
 function js_pesquisabi19_acervo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_acervo','func_acervo.php?funcao_js=parent.js_mostraacervo1|bi19_acervo|bi06_titulo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_acervo','func_acervo.php?funcao_js=parent.js_mostraacervo1|bi19_acervo|bi06_titulo','Pesquisa',true);
   }else{
      if(document.form1.bi19_acervo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_acervo','func_acervo.php?pesquisa_chave='+document.form1.bi19_acervo.value+'&funcao_js=parent.js_mostraacervo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_acervo','func_acervo.php?pesquisa_chave='+document.form1.bi19_acervo.value+'&funcao_js=parent.js_mostraacervo','Pesquisa',false);
      }else{
        document.form1.bi06_titulo.value = '';
      }
@@ -125,7 +125,7 @@ function js_mostraacervo1(chave1,chave2){
   db_iframe_acervo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_emprestimoacervo','func_emprestimoacervo.php?funcao_js=parent.js_preenchepesquisa|bi19_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emprestimoacervo','func_emprestimoacervo.php?funcao_js=parent.js_preenchepesquisa|bi19_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_emprestimoacervo.hide();

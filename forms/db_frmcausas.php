@@ -68,7 +68,7 @@ db_input('tr02_descr',35,$Itr02_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_causas','func_causas.php?funcao_js=parent.js_preenchepesquisa|tr02_id','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_causas','func_causas.php?funcao_js=parent.js_preenchepesquisa|tr02_id','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_causas.hide();

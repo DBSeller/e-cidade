@@ -128,10 +128,10 @@ db_select('sd25_b_ativo',$x,true,$db_opcao,"");
 <script>
 function js_pesquisasd25_i_unidade(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_unidades','func_unidades.php?funcao_js=parent.js_mostraunidades1|sd02_i_codigo|sd02_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidades','func_unidades.php?funcao_js=parent.js_mostraunidades1|sd02_i_codigo|sd02_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd25_i_unidade.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_unidades','func_unidades.php?pesquisa_chave='+document.form1.sd25_i_unidade.value+'&funcao_js=parent.js_mostraunidades','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidades','func_unidades.php?pesquisa_chave='+document.form1.sd25_i_unidade.value+'&funcao_js=parent.js_mostraunidades','Pesquisa',false);
      }else{
        document.form1.sd02_c_nome.value = ''; 
      }
@@ -151,10 +151,10 @@ function js_mostraunidades1(chave1,chave2){
 }
 function js_pesquisasd25_i_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
      if(document.form1.sd25_i_usuario.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.sd25_i_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.sd25_i_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
      }else{
        document.form1.nome.value = ''; 
      }
@@ -173,7 +173,7 @@ function js_mostradb_usuarios1(chave1,chave2){
   db_iframe_db_usuarios.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_usuariosunidade','func_unidades.php?funcao_js=parent.js_preenchepesquisa|sd02_i_codigo|sd02_c_nome','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_usuariosunidade','func_unidades.php?funcao_js=parent.js_preenchepesquisa|sd02_i_codigo|sd02_c_nome','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_usuariosunidade.hide();

@@ -1,0 +1,108 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010326' name='recursoshumanos.servidorrelatorioarquivogenerico' description="servidorrelatorioarquivogenerico" prefix="rh217" label="Servidor Relatório Arquivo" type="0">
+  <fields>
+    <field codigo="1009997" 
+           campo_api='' 
+           name="rh217_regist" 
+           conteudo="int4" 
+           description="Código da Matrícula do servidor" 
+           inivalue="0" 
+           label="Matricula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matricula" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009998" 
+           campo_api='' 
+           name="rh217_anousu" 
+           conteudo="int4" 
+           description="Exercicio" 
+           inivalue="0" 
+           label="Exercicio" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Exercicio" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009999" 
+           campo_api='' 
+           name="rh217_mesusu" 
+           conteudo="int4" 
+           description="Mês do exercicio" 
+           inivalue="0" 
+           label="Mês" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Mês" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010000" 
+           campo_api='' 
+           name="rh217_arquivorelatorio" 
+           conteudo="text" 
+           description="Arquivo ou Relatório das informações do servidor." 
+           inivalue="" 
+           label="ArquivoRelatório" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="ArquivoRelatório" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010001" 
+           campo_api='' 
+           name="rh217_informacao" 
+           conteudo="text" 
+           description="Informação do servidor." 
+           inivalue="" 
+           label="Informação" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Informação" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh217_regist"></fieldpk> 
+    <fieldpk name="rh217_anousu"></fieldpk> 
+    <fieldpk name="rh217_mesusu"></fieldpk> 
+    <fieldpk name="rh217_arquivorelatorio"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

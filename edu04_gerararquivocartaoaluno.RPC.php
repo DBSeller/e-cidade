@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("std/DBLargeObject.php");
-require("libs/db_app.utils.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("std/DBLargeObject.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_app::import("educacao.CarteiraIdentificacao");
 db_app::import("educacao.LoteCartaoIdentificacao");
 db_app::import("educacao.Aluno");
 db_app::import("educacao.CarteiraIdentificacaoSituacao");
 
-include("libs/JSON.php");
+include(modification("libs/JSON.php"));
 
 $oJson       = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));

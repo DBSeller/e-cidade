@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_procandam_classe.php");
-include("classes/db_proctransfer_classe.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_proctransand_classe.php");
-include("dbforms/db_funcoes.php");
-include ("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_procandam_classe.php"));
+include(modification("classes/db_proctransfer_classe.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_proctransand_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_app.utils.php"));
 $db_opcao = 1;
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_GET_VARS);
@@ -62,7 +62,7 @@ $rotulo->label("z01_nome");
 </head>
 <script>
 function js_mostra_andam(processo){ 
-   js_OpenJanelaIframe('top.corpo','db_iframe','pro3_conspro002.php?codproc='+processo,'Pesquisa',true);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','pro3_conspro002.php?codproc='+processo,'Pesquisa',true);
 }
 
 function js_frmListaAndamentos(){
@@ -106,7 +106,7 @@ function js_retornoPesquisaProcesso(oAjax){
 		
 	js_removeObj("msgBox");
   
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   
   var sExpReg  = new RegExp('\\\\n','g');
   
@@ -302,7 +302,7 @@ function js_retornoValidaDatas(oAjax){
 	
 	js_removeObj("msgBox");
   //alert(oAjax.responseText);return false;	
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   
   var sExpReg  = new RegExp('\\\\n','g');
   
@@ -363,7 +363,7 @@ function js_atualiza(){
 function js_retornoAtualiza(oAjax){
 	js_removeObj("msgBox");
   //alert(oAjax.responseText);return false;	
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   
   var sExpReg  = new RegExp('\\\\n','g');
   

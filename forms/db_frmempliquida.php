@@ -26,7 +26,7 @@
  */
 
 
-include ("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 //MODULO: empenho
 $clrotulo = new rotulocampo;
@@ -645,7 +645,7 @@ if (isset ($e60_numemp)) {
 ?>
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_empempenho.hide();

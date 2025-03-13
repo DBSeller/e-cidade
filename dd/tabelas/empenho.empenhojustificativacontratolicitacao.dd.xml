@@ -1,0 +1,130 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010261' name='empenho.empenhojustificativacontratolicitacao' description="Guarda as justificativas do não vínculo do empenho com contratos e licitações." prefix="e08" label="Justificativas" type="0">
+  <fields>
+    <field codigo="1009639"
+           campo_api=''
+           name="e08_sequencial"
+           conteudo="int4"
+           description="Código sequencial da tabela"
+           inivalue="0"
+           label="Código"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+      <sequence name='empenho.empenhojustificativacontratolicitacao_e08_sequencial_seq' />
+
+    </field>
+    <field codigo="1009640"
+           campo_api=''
+           name="e08_empempenho"
+           conteudo="int4"
+           description="Vínculo com Empenho"
+           inivalue="0"
+           label="Código do Empenho"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Código do Empenho"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1009642"
+           campo_api=''
+           name="e08_tipojustificativacontrato"
+           conteudo="int4"
+           description="Tipo de Justificativa do Contrato"
+           inivalue="0"
+           label="Justificativa do Contrato"
+           size="10"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Justificativa do Contrato"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1009644"
+           campo_api=''
+           name="e08_descricaojustificativacontrato"
+           conteudo="text"
+           description="Descrição da Justificativa Contrato"
+           inivalue=""
+           label="Descrição da Justificativa Contrato"
+           size="1"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel="Descrição da Justificativa Contrato"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1009641"
+           campo_api=''
+           name="e08_tipojustificativalicitacao"
+           conteudo="int4"
+           description="Tipo Justificativa Licitação"
+           inivalue="0"
+           label="Justificativa Licitação"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Justificativa Licitação"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1009643"
+           campo_api=''
+           name="e08_descricaojustificativalicitacao"
+           conteudo="text"
+           description="Descrição da Justificativa Licitação"
+           inivalue=""
+           label="Descrição da Justificativa Licitação"
+           size="1"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel="Descrição da Justificativa Licitação"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="e08_sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="empempenho" inner='t'>
+      <fieldfk name="e08_empempenho" reference="e60_numemp" />
+    </foreignkey>
+  </foreignkeys>
+</table>
+

@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include_once ("fpdf151/pdf.php");
+include_once(modification("fpdf151/pdf.php"));
 
-include_once ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_jsplibwebseller.php");
-include ("libs/db_utils.php");
-require ("libs/db_app.utils.php");
+include_once(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_jsplibwebseller.php"));
+include(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
 
-include ("dbforms/db_funcoes.php");
-include ("classes/db_sau_fechamento_classe.php");
-include ("classes/db_sau_atualiza_classe.php");
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_sau_fechamento_classe.php"));
+include(modification("classes/db_sau_atualiza_classe.php"));
 
 db_postmemory ( $HTTP_POST_VARS );
 
@@ -182,7 +182,7 @@ db_app::load ( "estilos.css" );
 		strParam += '?funcao_js=parent.js_mostrasau_atualiza1|s100_i_codigo|login|s100_d_data|s100_c_hora|s100_i_mescomp|s100_i_anocomp';
 		strParam += '&campos=sau_atualiza.*, login';
         if(mostra==true){
-           js_OpenJanelaIframe('top.corpo','db_iframe_sau_atualiza',strParam,'Pesquisa',true);
+           js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_atualiza',strParam,'Pesquisa',true);
         }
     }
     function js_mostrasau_atualiza1(s100_i_codigo,login,s100_d_data,s100_c_hora,s100_i_mescomp,s100_i_anocomp){
@@ -215,7 +215,7 @@ db_app::load ( "estilos.css" );
 	 * Retorno Lanca
 	 */
 	function js_retornoRemover( objAjax ){
-		var objRetorno = eval("("+objAjax.responseText+")");
+		var objRetorno = JSON.parse(objAjax.responseText);
 	
 		if (objRetorno.status == 1) {		  
 		}

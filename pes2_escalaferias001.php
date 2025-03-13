@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -80,19 +80,17 @@ db_postmemory($HTTP_POST_VARS);
        <table>
           <tr>
             <td align="left" nowrap title="Digite o Ano / Mes de competência" >
-               <strong>Períodos Vencidos até: </strong>
+               <label for="periodovencido"><strong>Períodos Vencidos até:</strong></label>
             </td>
             <td>
-              <?
-                db_inputdata('periodovencido',null, null, null, true, 'text', 1);
-              ?>
+              <?php db_inputdata('periodovencido',null, null, null, true, 'text', 1); ?>
             </td>
           </tr>
           <tr>
             <td>
-              <?php
-                db_ancora("Seleção", "js_pesquisaSelecao(true)", 1);
-              ?>
+              <label for="r44_selec">
+              <?php db_ancora("Seleção", "js_pesquisaSelecao(true)", 1); ?>
+              </label>
             </td>
             <td> 
               <?php
@@ -103,7 +101,9 @@ db_postmemory($HTTP_POST_VARS);
           </tr>
           <tr>
             <td>
-              <strong>Regime: </strong>
+              <label for="regime">
+                <strong>Regime: </strong>
+              </label>
             </td>
             <td align="left">
               <?php
@@ -119,7 +119,9 @@ db_postmemory($HTTP_POST_VARS);
           </tr>
           <tr>
             <td>
-              <strong>Tipo de Relatório: </strong>
+              <label for="tiporelatorio">
+                <strong>Tipo de Relatório: </strong>
+              </label>
             </td>
             <td align="left">
               <?
@@ -136,7 +138,9 @@ db_postmemory($HTTP_POST_VARS);
           </tr>
           <tr style="display: none;" id="filtros">
             <td>
-              <strong>Tipo de Filtro: </strong>
+              <label for="tipofiltro">
+                <strong>Tipo de Filtro: </strong>
+              </label>
             </td>
             <td align="left">
               <?
@@ -151,8 +155,10 @@ db_postmemory($HTTP_POST_VARS);
           
           <tr id="intervalo" style="display: none;">
             <td>
-              <strong>De<strong>
-           </td>
+              <label for="intervaloinicial">
+                <strong>De<strong>
+              </strong>
+            </td>
             <td align="left" nowrap="">
               <input type="text" id="intervaloinicial" value="" />
               <strong>&nbsp;&nbsp;&nbsp;a&nbsp;&nbsp;&nbsp;</strong>
@@ -171,7 +177,9 @@ db_postmemory($HTTP_POST_VARS);
 
           <tr>
             <td>
-              <strong>Tipo de Ordem: </strong>
+              <label for="tipoordem">
+                <strong>Tipo de Ordem: </strong>
+              </label>
             </td>
             <td align="left">
               <?
@@ -183,7 +191,9 @@ db_postmemory($HTTP_POST_VARS);
           </tr>
           <tr>
             <td>
-              <strong>Imprime Afastados: </strong>
+              <label for="imprimeafastados">
+                <strong>Imprime Afastados: </strong>
+              </label>
             </td>
             <td align="left">
               <?
@@ -448,10 +458,10 @@ function js_filtros() {
 function js_pesquisaSelecao(mostra) {
   
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_geraform_mostraselecao1|r44_selec|r44_descr&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_geraform_mostraselecao1|r44_selec|r44_descr&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
   }else{
     if (document.form1.r44_selec.value != "") {
-      js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_geraform_mostraselecao&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_geraform_mostraselecao&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
     }else{
       document.form1.r44_des.value = ""; 
     }

@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='3217' name='protocolo.protparamglobal' description="Armazena as configurações globais da rotina de processo." prefix="p06" label="Parâmetros globais de Processos" type="1">
+  <fields>
+    <field codigo="18212" 
+           campo_api='' 
+           name="p06_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.protparamglobal_p06_sequencial_seq' />
+     
+    </field> 
+    <field codigo="18213" 
+           campo_api='' 
+           name="p06_tipo" 
+           conteudo="int4" 
+           description="Tipo de controle. 1 = controle pelo campo sequencial 2 = controle pelo sequencial do ano" 
+           inivalue="0" 
+           label="TIpo de Controle" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="TIpo de Controle" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011785" 
+           campo_api='' 
+           name="p06_instituicao" 
+           conteudo="int4" 
+           description="Código da Instituição ao qual a configuração está atrelada." 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="p06_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="p06_instituicao" reference="codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

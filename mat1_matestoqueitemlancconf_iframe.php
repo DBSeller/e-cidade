@@ -38,7 +38,7 @@ $sql = "
               inner join db_depart on coddepto=m70_coddepto
         order by m60_codmater
        ";
-$res = pg_query($sql);
+$res = db_query($sql);
 $rows = pg_num_rows($res);
 ?>
 <center>

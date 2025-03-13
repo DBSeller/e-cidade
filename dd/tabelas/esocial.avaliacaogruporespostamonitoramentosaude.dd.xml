@@ -1,0 +1,132 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010847' name='esocial.avaliacaogruporespostamonitoramentosaude' description="Monitoramento saúde trabalhador" prefix="eso37" label="Monitoramento saúde trabalhador" type="0">
+  <fields>
+    <field codigo="1013595" 
+           campo_api='' 
+           name="eso37_sequencial" 
+           conteudo="int4" 
+           description="Sequência única da tabela" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.avaliacaogruporespostamonitoramentosaude_eso37_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013596" 
+           campo_api='' 
+           name="eso37_empregador" 
+           conteudo="int4" 
+           description="Código de instituição" 
+           inivalue="0" 
+           label="Código de instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código de instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013597" 
+           campo_api='' 
+           name="eso37_cpf" 
+           conteudo="varchar(11)" 
+           description="CPF do trabalhador" 
+           inivalue="" 
+           label="CPF" 
+           size="11" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CPF" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013598" 
+           campo_api='' 
+           name="eso37_avaliacaogruporesposta" 
+           conteudo="int4" 
+           description="Sequencial resposta referenciando na resposta do S2220" 
+           inivalue="0" 
+           label="Sequencial referenciado" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial referenciado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013599" 
+           campo_api='' 
+           name="eso37_matricula" 
+           conteudo="int4" 
+           description="Matrícula do servidor" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013605" 
+           campo_api='' 
+           name="eso37_dataatestado" 
+           conteudo="date" 
+           description="Data de Atestado de Saúde Ocupacional - ASO." 
+           inivalue="null" 
+           label="Data ASO" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data ASO" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso37_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="eso37_empregador" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="eso37_matricula" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

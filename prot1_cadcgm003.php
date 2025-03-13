@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_cgmalt_classe.php");
-require_once("classes/db_db_cgmruas_classe.php");
-require_once("classes/db_db_cgmbairro_classe.php");
-require_once("classes/db_db_cgmcgc_classe.php");
-require_once("classes/db_db_cgmcpf_classe.php");
-require_once("classes/db_db_cgmcpf_classe.php");
-require_once("classes/db_cgmendereco_classe.php");
-require_once("classes/db_db_cepmunic_classe.php");
-require_once("classes/db_cgmdocumento_classe.php");
-require_once("classes/db_ruascep_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_cgmalt_classe.php"));
+require_once(modification("classes/db_db_cgmruas_classe.php"));
+require_once(modification("classes/db_db_cgmbairro_classe.php"));
+require_once(modification("classes/db_db_cgmcgc_classe.php"));
+require_once(modification("classes/db_db_cgmcpf_classe.php"));
+require_once(modification("classes/db_db_cgmcpf_classe.php"));
+require_once(modification("classes/db_cgmendereco_classe.php"));
+require_once(modification("classes/db_db_cepmunic_classe.php"));
+require_once(modification("classes/db_cgmdocumento_classe.php"));
+require_once(modification("classes/db_ruascep_classe.php"));
 
 
 db_postmemory($HTTP_POST_VARS);
@@ -244,7 +244,7 @@ if (isset ($HTTP_POST_VARS ["db_opcao"]) && $HTTP_POST_VARS ["db_opcao"] == "Exc
 	<tr>
 		<td height="430" align="center" valign="top" bgcolor="#CCCCCC">
 			<?
-			  include ("forms/db_frmcgm.php");
+			  include(modification("forms/db_frmcgm.php"));
 			?>
 	</td>
 	</tr>

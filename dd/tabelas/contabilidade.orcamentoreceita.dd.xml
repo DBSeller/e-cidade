@@ -1,0 +1,373 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010247' name='orcamentoreceita' description="orcamentoreceita" prefix="c98" label="orcamentoreceita" type="0">
+  <fields>
+    <field codigo="1009558" 
+           campo_api='' 
+           name="c98_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='orcamentoreceita_c98_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009560" 
+           campo_api='' 
+           name="c98_anousu" 
+           conteudo="int4" 
+           description="Ano da Conta" 
+           inivalue="0" 
+           label="Ano da Conta" 
+           size="4" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano da Conta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009561" 
+           campo_api='' 
+           name="c98_estrutural" 
+           conteudo="varchar(15)" 
+           description="Estrutural" 
+           inivalue="" 
+           label="Estrutural" 
+           size="15" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Estrutural" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009562" 
+           campo_api='' 
+           name="c98_descricao" 
+           conteudo="varchar(50)" 
+           description="Descrição" 
+           inivalue="" 
+           label="Descrição" 
+           size="50" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009563" 
+           campo_api='' 
+           name="c98_finalidade" 
+           conteudo="text" 
+           description="Finalidade" 
+           inivalue="" 
+           label="Finalidade" 
+           size="1" 
+           null="t"
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Finalidade" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009564" 
+           campo_api='' 
+           name="c98_codsis" 
+           conteudo="int4" 
+           description="Código do Sistema" 
+           inivalue="0" 
+           label="Código do Sistema" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Sistema" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009565" 
+           campo_api='' 
+           name="c98_codcla" 
+           conteudo="int4" 
+           description="Classificação" 
+           inivalue="0" 
+           label="Classificação" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Classificação" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009566" 
+           campo_api='' 
+           name="c98_consistemaconta" 
+           conteudo="int4" 
+           description="Código de Conta do Sistema" 
+           inivalue="0" 
+           label="Código de Conta do Sistema" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código de Conta do Sistema" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009567" 
+           campo_api='' 
+           name="c98_identificadorfinanceiro" 
+           conteudo="char(1)" 
+           description="Identificador Financeiro" 
+           inivalue="" 
+           label="Identificador Financeiro" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Identificador Financeiro" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009559" 
+           campo_api='' 
+           name="c98_codcon" 
+           conteudo="int4" 
+           description="Código da Conta no Orçamento" 
+           inivalue="0" 
+           label="Código da Conta no Orçamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Conta no Orçamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009569" 
+           campo_api='' 
+           name="c98_funcao" 
+           conteudo="text" 
+           description="Função" 
+           inivalue="" 
+           label="Função" 
+           size="1" 
+           null="t"
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Função" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009570" 
+           campo_api='' 
+           name="c98_codrec" 
+           conteudo="int4" 
+           description="Código da Receita" 
+           inivalue="0" 
+           label="Código da Receita" 
+           size="10" 
+           null="t"
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Receita" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009571" 
+           campo_api='' 
+           name="c98_recurso" 
+           conteudo="int4" 
+           description="Recurso" 
+           inivalue="0" 
+           label="Recurso" 
+           size="10" 
+           null="t"
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Recurso" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009572" 
+           campo_api='' 
+           name="c98_valor" 
+           conteudo="float4" 
+           description="Valor" 
+           inivalue="0" 
+           label="Valor" 
+           size="10" 
+           null="t"
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009573" 
+           campo_api='' 
+           name="c98_receitalancada" 
+           conteudo="bool" 
+           description="Receita Lançada" 
+           inivalue="f" 
+           label="Receita Lançada" 
+           size="1" 
+           null="t"
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Receita Lançada" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009574" 
+           campo_api='' 
+           name="c98_instit" 
+           conteudo="int4" 
+           description="Instituição" 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="t"
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009575" 
+           campo_api='' 
+           name="c98_concarpeculiar" 
+           conteudo="varchar(3)" 
+           description="CP / CA" 
+           inivalue="" 
+           label="CP / CA" 
+           size="3" 
+           null="t"
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CP / CA" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009576" 
+           campo_api='' 
+           name="c98_datacriacao" 
+           conteudo="date" 
+           description="Data de Criação" 
+           inivalue="null" 
+           label="Data de Criação" 
+           size="10" 
+           null="t"
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data de Criação" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009568" 
+           campo_api='' 
+           name="c98_naturezasaldo" 
+           conteudo="int4" 
+           description="Natureza Saldo" 
+           inivalue="0" 
+           label="Natureza Saldo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Natureza Saldo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c98_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

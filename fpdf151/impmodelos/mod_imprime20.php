@@ -64,7 +64,7 @@ $this->objpdf->Text($coluna + 30,$linha+49,$this->cnpjcpf);
 $this->objpdf->SetFont('Arial','B',$fonte);
 if ($this->processo > 0) {
   $this->objpdf->Text($coluna + 80,$linha+49,'PROCESSO:'); // inscricao
-} 
+}
 $this->objpdf->SetFont('Arial','',$fonte);
 if ($this->processo > 0) {
   $this->objpdf->Text($coluna + 115,$linha+49,$this->processo); // processo
@@ -135,7 +135,7 @@ $this->objpdf->Cell(135,5,"ATIVIDADE PRINCIPAL : ",0,0,"L",0);
 
 if ($this->impdatas == 't'){
   $this->objpdf->Cell(24,5,"INÍCIO",0,0,"C",0);
- 
+
   if($this->permanente == 'f'){
     $this->objpdf->Cell(24,5,"FINAL",0,1,"C",0);
   }else{
@@ -155,8 +155,16 @@ if ($this->impcodativ == 't'){
   $this->objpdf->setx(15);
   $this->objpdf->Cell(15,5,"",0,0,"C",0);
 }
-$this->objpdf->Cell(120,5,$this->descrativ,0,0,"L",0);
+
+$nTamanhoTotalMultiCell = ($this->objpdf->nbLines(120, $this->descrativ) * 4);
+$nTotalLinhas = $this->objpdf->nbLines(120, $this->descrativ);
+$altrect += ($nTotalLinhas*4);
+$posicaoY = $this->objpdf->gety();
+$this->objpdf->Multicell(120, 5, mb_strtoupper($this->descrativ));
+$posicaoYAtual = $this->objpdf->getY();
 if ($this->impdatas == 't'){
+
+  $this->objpdf->setXY(150, $posicaoY);
   $this->objpdf->Cell(24,5,db_formatar($this->dtiniativ,'d'),0,0,"C",0);
   if ($this->permanente == 'f'){
     $this->objpdf->Cell(24,5,db_formatar($this->dtfimativ,'d'),0,1,"C",0);
@@ -180,7 +188,9 @@ if ($this->impobsativ == 't'){
     $this->objpdf->Cell(177,5,"",0,1,"L",0);
   }
 }
+
 $this->objpdf->roundedrect($coluna-2,$linharect-2,187,$altrect,2,'1234');
+$this->objpdf->setY($posicaoYAtual+4);
 $linha += 16;
 $yyy = $this->objpdf->gety();
 $obs='';
@@ -205,7 +215,7 @@ if (isset($this->outrasativs)!=""){
   $y=$linha+1;
   $final ="";
   $this->objpdf->SetFont('Arial','B',12);
-  reset($this->outrasativs); 
+  reset($this->outrasativs);
   $this->objpdf->setx(15);
   $this->objpdf->Cell(135,5,"ATIVIDADE" . ($num_outras > 1?"S":"") . " SECUNDÁRIA" . ($num_outras > 1?"S":"") . ":",0,0,"L",0);
   if ($this->impdatas == 't'){
@@ -241,16 +251,27 @@ if (isset($this->outrasativs)!=""){
     }else{
       $this->objpdf->Cell(15,$altlin,"",0,0,"L",0);
     }
-    //echo "1 - ".$this->outrasativs[$i]["descr"];
+
     $descr = $this->outrasativs[$i]["descr"];
-    //db_msgbox($descr);
-    $this->objpdf->Cell(120,$altlin,$descr,0,0,"L",0);
-    if ($this->impdatas == 't'){ 
+
+    $nTamanhoTotalMultiCell = ($this->objpdf->nbLines(120, $descr) * 4);
+    $nTotalLinhas = $this->objpdf->nbLines(120, $descr);
+    $altrect += ($nTotalLinhas*4);
+    $posicaoY = $this->objpdf->gety();
+    $this->objpdf->Multicell(120, 5, mb_strtoupper($descr));
+    $posicaoYAtual = $this->objpdf->getY();
+
+//    $this->objpdf->Cell(120,$altlin,$descr,0,0,"L",0);
+
+
+    if ($this->impdatas == 't'){
+
+      $this->objpdf->setXY(150, $posicaoY);
       $datain  = $this->outrasativs[$i]["datain"];
       $this->objpdf->Cell(24,$altlin,db_formatar($datain,'d'),0,0,"C",0);
+
       if($this->outrasativs[$i]["perman"]=='f'){
-      //if ($this->permanente == 'f'){
-     
+
         $datafi  = $this->outrasativs[$i]["datafi"];
         $this->objpdf->Cell(24,$altlin,db_formatar($datafi,'d'),0,1,"L",0);
       }else{
@@ -260,6 +281,7 @@ if (isset($this->outrasativs)!=""){
       $this->objpdf->Cell(24,$altlin,"",0,0,"L",0);
       $this->objpdf->Cell(24,$altlin,"",0,1,"L",0);
     }
+    $this->objpdf->setY($posicaoYAtual);
     if ($this->impobsativ == 't'){
       $linha += 8;
       if(isset($this->obsativ) && $this->obsativ != ""){
@@ -293,13 +315,13 @@ if (isset($this->outrasativs)!=""){
     if  ($yyyatual >= 200){
     }
   }
-  
+
   $linha_n = $this->objpdf->gety();
   $this->objpdf->Ln(1);
   $this->objpdf->roundedrect($coluna-2,$y-2,187,$linha_n-$y+3,2,'1234'); // descricao da atividade secundaria
 }else{
-  $linha = $linha+13;   
-}   
+  $linha = $linha+13;
+}
 //=======================================================================================================================
 $x=64;
 $this->objpdf->Ln(2);
@@ -322,27 +344,27 @@ if(isset($this->lancobs) && $this->impobslanc == 't'){
   $this->objpdf->SetFont('Arial','',11);
   $this->objpdf->setx(5);
   $this->objpdf->Cell(12,3,"",0,0,"L",0);
-  
-  
+
+
   $aObs    = split("\n",$obs);
   $iTotaln = count($aObs);
   $sObs = "";
 
   $this->objpdf->SetWidths(array(30, 150));
-  $this->objpdf->SetAligns(array('L', 'L')); 
-    
+  $this->objpdf->SetAligns(array('L', 'L'));
+
   if ($iTotaln < 6) {
     $this->objpdf->Row(array("Observação :", reduz_obs($obs)), 6, false, 7, 2, true);
   } else {
-    
+
     for ($iObs = 0; $iObs < 5; $iObs ++) {
       $sObs = $sObs.$aObs[$iObs]."\n";
     }
-    $this->objpdf->Row(array("Observação :", reduz_obs($sObs)), 6, false, 7, 2, true);   
-  }  
+    $this->objpdf->Row(array("Observação :", reduz_obs($sObs)), 6, false, 7, 2, true);
+  }
 
-  
-  
+
+
   $this->objpdf->Cell(165,1,"",0,1,"L",0);
   $yyyant = $this->objpdf->gety() + 2;
   $linha += $yyyatual-$yyyant-1;
@@ -365,14 +387,14 @@ $this->objpdf->multicell(0,10,'FIXAR EM LUGAR VISÍVEL',1,"C");
  * function para verificar a quantidade de caracters na OBS, pois se passar, criará 2 paginas no alvara.
  */
 function reduz_obs($sObs){
-  
+
   if (strlen($sObs) > 385) {
     $sOBS = substr($sObs,0,385)."...";
   } else {
     $sOBS = $sObs;
   }
   return $sOBS;
-  
+
 }
 
 ?>

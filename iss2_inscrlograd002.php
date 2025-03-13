@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include('libs/db_utils.php');
+include(modification("fpdf151/pdf.php"));
+include(modification('libs/db_utils.php'));
 
 //parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($_POST);

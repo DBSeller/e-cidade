@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
   <head>
@@ -188,7 +188,7 @@ function js_pesquisaLinhas(lMostra) {
       oGridVinculosPontoParada.clearAll(true);
     }
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_linhatransporte', sUrl, 'Pesquisa Linhas de Transporte', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_linhatransporte', sUrl, 'Pesquisa Linhas de Transporte', lMostra);
 
 }
 
@@ -254,7 +254,7 @@ function js_buscaLogradouros() {
 function js_retornoBuscaLogradouros(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   js_limpaLogradouros();
 
@@ -303,7 +303,7 @@ function js_buscaParadas() {
 function js_retornoBuscaParadas(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   js_limpaPontosParada();
 
@@ -342,7 +342,7 @@ function js_buscaParadasItinerario() {
 function js_retornoBuscaParadasItinerario(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if (oRetorno.aPontosParada.length > 0) {
 
@@ -395,7 +395,7 @@ function js_vincularPontoParada() {
 function js_retornoVincularPontoParada(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.sMensagem.urlDecode());
   if (oRetorno.iStatus == 1) {
@@ -430,7 +430,7 @@ function js_removerPontoParada(iPontoParada) {
 function js_retornoRemoverPontoParada(oResponse) {
 
    js_removeObj("msgBox");
-   var oRetorno = eval('('+oResponse.responseText+')');
+   var oRetorno = JSON.parse(oResponse.responseText);
 
    alert(oRetorno.sMensagem.urlDecode());
 

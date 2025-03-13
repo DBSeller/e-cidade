@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 db_postmemory($HTTP_SERVER_VARS);
 
 $head1 = "RELATÓRIO DAS MOVIMENTAÇÕES ";
 $head2 = "DIA: ".db_formatar($data,'d');
 if ($caixa > 0 ){
    $sql = "select * from cfautent where k11_id = $caixa and k11_instit = " . db_getsession("DB_instit");
-   $result = pg_exec($sql);
+   $result = db_query($sql);
 //   db_criatabela($result);exit;
    db_fieldsmemory($result,0);
    $xcaixa  = ' and c.k12_id = '.$caixa ;
@@ -55,7 +55,7 @@ if ($caixa > 0 ){
 	  group by k13_conta,k13_descr
          ";
 //echo $sql;exit;
-$result1 = pg_exec($sql);
+$result1 = db_query($sql);
 
 echo $sql = "
  select correntemov.k12_idautent, 
@@ -136,9 +136,9 @@ from
 	  
 	 ";
 //echo $sql1;exit;										      
-    $result1 = pg_exec($sql);
-    $result2 = pg_exec($sql1);
-    $result = pg_exec($sql2);
+    $result1 = db_query($sql);
+    $result2 = db_query($sql1);
+    $result = db_query($sql2);
 //db_criatabela($result);
 $num = pg_numrows($result);
 $linha = 60;

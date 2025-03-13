@@ -1,190 +1,215 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once('fpdf151/pdf.php');
-require_once('libs/db_stdlibwebseller.php');
-require_once('libs/db_utils.php');
+require_once(modification('fpdf151/pdf.php'));
+require_once(modification('libs/db_stdlibwebseller.php'));
+require_once(modification('libs/db_utils.php'));
 
-function novoCabecalho($oPdf) {
-
-  $lCor = true;
-  $iTam = 4;
-  $oPdf->setfillcolor(235);
-  $oPdf->setfont('arial', 'B', 7);
-
-  $oPdf->cell(7,  $iTam, 'Seq.',       1, 0, 'C', $lCor);
-  $oPdf->cell(33, $iTam, 'Tipo Ficha', 1, 0, 'C', $lCor);
-  $oPdf->cell(15, $iTam, 'Agenda',     1, 0, 'C', $lCor);
-  $oPdf->cell(8,  $iTam, 'Hora',       1, 0, 'C', $lCor);
-  $oPdf->cell(15, $iTam, 'CGS',        1, 0, 'C', $lCor);
-  $oPdf->cell(70, $iTam, 'Nome',       1, 0, 'C', $lCor);
-  $oPdf->cell(20, $iTam, 'Telefone',   1, 0, 'C', $lCor);
-  $oPdf->cell(20, $iTam, 'Celular',    1, 0, 'C', $lCor);
-  $oPdf->cell(15, $iTam, 'Presença',   1, 0, 'C', $lCor);
-  $oPdf->cell(76, $iTam, 'Observação', 1, 1, 'C', $lCor);
-}
-
-function novaLinha($oPdf, $iSeq, $sTipoFicha, $iAgenda, $sHoraIni, $iCgs, $sNome, $sTel, $sCel, $sPresenca, $sObs) {
-
-  $lCor = false;
-  $iTam = 4;
-  $oPdf->setfont('arial', '', 7);
-
-  $oPdf->cell( 7,  $iTam, $iSeq,                1, 0, 'C', $lCor );
-  $oPdf->cell( 33, $iTam, $sTipoFicha,          1, 0, 'C', $lCor );
-  $oPdf->cell( 15, $iTam, $iAgenda,             1, 0, 'C', $lCor );
-  $oPdf->cell( 8,  $iTam, $sHoraIni,            1, 0, 'C', $lCor );
-  $oPdf->cell( 15, $iTam, $iCgs,                1, 0, 'C', $lCor );
-  $oPdf->cell( 70, $iTam, $sNome,               1, 0, 'L', $lCor );
-  $oPdf->cell( 20, $iTam, $sTel,                1, 0, 'L', $lCor );
-  $oPdf->cell( 20, $iTam, $sCel,                1, 0, 'L', $lCor );
-  $oPdf->cell( 15, $iTam, $sPresenca,           1, 0, 'C', $lCor );
-  $oPdf->cell( 76, $iTam, substr($sObs, 0, 50), 1, 1, 'L', $lCor );
-}
-
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+parse_str( $_SERVER['QUERY_STRING'] );
 set_time_limit(0);
+
+$iAno = substr($sd23_d_consulta, 6, 4);
+$iMes = substr($sd23_d_consulta, 3, 2);
+$iDia = substr($sd23_d_consulta, 0, 2);
+
+$sDataConsulta = "{$iAno}-{$iMes}-{$iDia}";
 
 $oDaoUndMedHorario = new cl_undmedhorario();
 
 $sCampos  = ' undmedhorario.*, sau_tipoficha.*, coddepto, descrdepto, sd03_i_codigo, z01_nome,';
 $sCampos .= ' rh70_estrutural, rh70_descr';
-$sWhere   = '     especmedico.sd27_i_codigo = '.$sd27_i_codigo.' and sd30_i_diasemana = '.$chave_diasemana;
+$sWhere   = "     especmedico.sd27_i_codigo = '{$sd27_i_codigo}' and sd30_i_diasemana = {$chave_diasemana}";
+$sWhere  .= " and exists( select 1 ";
+$sWhere  .= "               from agendamentos ";
+$sWhere  .= "              where sd23_i_undmedhor = sd30_i_codigo ";
+$sWhere  .= "                and sd23_d_consulta = '{$sDataConsulta}' )";
 $sOrderBy = 'sd30_c_horaini';
 $sSql     = $oDaoUndMedHorario->sql_query_grade_relatorio(null, $sCampos, $sOrderBy, $sWhere);
 $rs       = $oDaoUndMedHorario->sql_record($sSql);
 
 if ($oDaoUndMedHorario->numrows == 0) {
-
-  echo "<table width='100%'>
-          <tr>
-            <td align='center'>".$sSql."
-              <font color='#FF0000' face='arial'><b>Nenhum Registro para o Relatório<br>
-              <input type='button' value='Fechar' onclick='window.close()'></b></font>
-            </td>
-          </tr>
-        </table>";
-  exit;
+  db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum registro encontrado.');
 }
 
-$aGradesHorario = db_utils::getColectionByRecord( $rs );
-$aAgendamentos  = new cl_agendamentos_ext();
+$aGradesHorario   = db_utils::getCollectionByRecord( $rs );
+$oDaoAgendamentos = new cl_agendamentos_ext();
 
-$iAno           = substr($sd23_d_consulta, 6, 4);
-$iMes           = substr($sd23_d_consulta, 3, 2);
-$iDia           = substr($sd23_d_consulta, 0, 2);
-               
-$sWhere         = "    sd23_d_consulta = '$iAno-$iMes-$iDia' ";
-$sWhere        .= 'and not exists (select * ';
-$sWhere        .= '                  from agendaconsultaanula ';
-$sWhere        .= '                 where s114_i_agendaconsulta = sd23_i_codigo) ';
-$sWhere        .= "and sd27_i_codigo = $sd27_i_codigo ";
+$sWhere          = "    sd23_d_consulta = '{$sDataConsulta}' ";
+$sWhere         .= 'and not exists (select * ';
+$sWhere         .= '                  from agendaconsultaanula ';
+$sWhere         .= '                 where s114_i_agendaconsulta = sd23_i_codigo) ';
+$sWhere         .= "and sd27_i_codigo = {$sd27_i_codigo} ";
+$sOrderBy        = 'sd30_i_codigo, sd30_c_horaini, sd23_i_ficha';
+$sSqlAgendamento = $oDaoAgendamentos->sql_query_ext('', '*', $sOrderBy, $sWhere);
+$rsAgendamento   = $oDaoAgendamentos->sql_record($sSqlAgendamento);
 
-$sOrderBy       = 'sd30_c_horaini, sd23_i_ficha';
-                
-$sSql           = $aAgendamentos->sql_query_ext('', '*', $sOrderBy, $sWhere);
+$aAgendas = array();
+$iLinhas  = pg_num_rows($rsAgendamento);
+for ($i = 0; $i < $iLinhas; $i++ ) {
 
-$rs             = $aAgendamentos->sql_record($sSql);
-$aAgendamentos  = db_utils::getColectionByRecord($rs);
+  $oDados = db_utils::fieldsMemory($rsAgendamento, $i);
 
-$oPdf           = new PDF();
+  if ( !array_key_exists($oDados->sd30_i_codigo, $aAgendas) )  {
+
+    $oAgenda              = new stdClass();
+    $oAgenda->iAgenda     = $oDados->sd30_i_codigo;
+    $oAgenda->sDescricao  = $oDados->sd101_c_descr;
+    $oAgenda->sHorarioIni = $oDados->sd30_c_horaini;
+    $oAgenda->sHorarioFim = $oDados->sd30_c_horafim;
+    $oAgenda->iFichas     = $oDados->sd30_i_fichas;
+    $oAgenda->iReservas   = $oDados->sd30_i_reservas;
+    $oAgenda->iTurno      = $oDados->sd30_i_turno;
+    $oAgenda->aPacientes  = array();
+
+    $aAgendas[$oDados->sd30_i_codigo] = $oAgenda;
+  }
+
+  $aAgendas[$oDados->sd30_i_codigo]->aPacientes[] = $oDados;
+}
+
+$oPdf = new PDF('L');
 $oPdf->Open();
 $oPdf->AliasNbPages();
+$oPdf->SetWidths( array( 7, 10, 15, 101, 20, 20, 15, 91) );
+$oPdf->SetAligns( array( "C", "C", "C", "C", "C", "C", "C", "C"));
+
+$iAlturaRow = $oPdf->h - 32;
+$iAltura        = 4;
+$bBorda         = true;
+$iEspaco        = 4; // = altura da linha
+$bPreenchimento = false;
+$bNaoUsarEspaco = true; //variavel espaco obs: se não usar da problema!!!
+$bUsarQuebra    = true;
+$iCampoTestar   = null;
+$iLaguraFixa    = 0;
+
 $head1 = 'RELATÓRIO DE AGENDAMENTOS';
 $head3 = 'Unidade: '.$aGradesHorario[0]->coddepto.' - '.$aGradesHorario[0]->descrdepto;
 $head4 = 'Profissional: '.$aGradesHorario[0]->sd03_i_codigo.' - '.$aGradesHorario[0]->z01_nome;
 $head5 = 'Especialidade: '.$aGradesHorario[0]->rh70_estrutural.' - '.$aGradesHorario[0]->rh70_descr;
 $head6 = 'Data: '.$sd23_d_consulta.' - '.$diasemana;
 
-$iSeq       = 1;
-$oPdf->addpage('L');
-novoCabecalho($oPdf);
+$lPrimeiraPagina = true;
 
-for ($iCont = 0; $iCont < $oDaoUndMedHorario->numrows; $iCont++) {
-  
-  $sHoraIni    = $aGradesHorario[$iCont]->sd30_c_horaini;
-  $sHoraImp    = $sHoraIni;
-  $sHoraFim    = $aGradesHorario[$iCont]->sd30_c_horafim;
-  $iMinTrab    = diferencaEmMinutos($sHoraIni, $sHoraFim);
-  $iNumFichas  = $aGradesHorario[$iCont]->sd30_i_fichas + $aGradesHorario[$iCont]->sd30_i_reservas;
 
-  $iIntervalo  = 0;
-  $iIncremento = 0;
-  
-  if ($aGradesHorario[$iCont]->sd30_c_tipograde == 'I') {
-    
-    $iIntervalo  = $iMinTrab;
-    
-    if ( $iNumFichas > 0 ) {
-      $iIntervalo  = number_format(($iMinTrab / $iNumFichas), 2, '.', '');
+foreach ($aAgendas as $oAgenda ) {
+
+  imprimeCabecalho($oPdf, $oAgenda, $lPrimeiraPagina);
+  $lPrimeiraPagina = false;
+
+  $lPinta = true;
+  foreach ($oAgenda->aPacientes as $oPaciente) {
+
+    if ( $oPdf->GetY() > ($oPdf->h - 20) ) {
+      imprimeCabecalho($oPdf, $oAgenda, true);
     }
-    $iIncremento = 1;
-  }
 
-  $iIdFicha = 1;
-  while ($iIdFicha <= $iNumFichas) {
-   
-    $iIdAgendamento = verificaAgendamentoHorarioByArray($aGradesHorario[$iCont]->sd30_i_codigo,
-                                                        $aGradesHorario[$iCont]->sd30_c_tipograde,
-                                                        $iIdFicha,
-                                                        $aAgendamentos
-                                                       );
+    $sPresenca = 'NÃO';
+    if ($oPaciente->sd23_i_presenca == 1) {
+      $sPresenca = 'SIM';
+    }
 
-    if ($iIdAgendamento != -1) {
 
-      if ($aAgendamentos[$iIdAgendamento]->sd23_i_presenca == 1) {
-        $sPresenca = 'SIM';
-      } else {
-        $sPresenca = 'NÃO';
+    $sNomePaciente = $oPaciente->z01_v_nome;
+
+    $aDados   = array();
+    $aDados[] = $oPaciente->sd23_i_ficha;
+    $aDados[] = $oPaciente->sd23_c_hora;
+    $aDados[] = $oPaciente->sd23_i_numcgs;
+    $aDados[] = $sNomePaciente;
+    $aDados[] = $oPaciente->z01_v_telef;
+    $aDados[] = $oPaciente->z01_v_telcel;
+    $aDados[] = $sPresenca;
+    $aDados[] = substr($oPaciente->sd23_t_obs, 0, 80);
+
+    $iLines = 0;
+
+    for ($iCont = 0; $iCont < count($aDados); $iCont++) {
+
+      if ($iLines < $oPdf->NbLines($oPdf->widths[$iCont], $aDados[$iCont])) {
+        $iLines = $oPdf->NbLines($oPdf->widths[$iCont], $aDados[$iCont]);
       }
-      
-      novaLinha($oPdf, $iSeq, $aAgendamentos[$iIdAgendamento]->sd101_c_descr, 
-                $aAgendamentos[$iIdAgendamento]->sd23_i_codigo, substr($sHoraImp, 0, 5), 
-                $aAgendamentos[$iIdAgendamento]->z01_i_cgsund, $aAgendamentos[$iIdAgendamento]->z01_v_nome, 
-                $aAgendamentos[$iIdAgendamento]->z01_v_telef, $aAgendamentos[$iIdAgendamento]->z01_v_telcel, 
-                $sPresenca, $aAgendamentos[$iIdAgendamento]->sd23_t_obs
-               );
-      unset($aAgendamentos[$iIdAgendamento]);
-    
-      $iSeq++;
     }
+    $iHeight = $iLines * $iEspaco;
 
-    $sHoraImp = somaMinutosHoraAgendamento($sHoraIni, $iIntervalo + $iIncremento);
-    $sHoraIni = somaMinutosHoraAgendamento($sHoraIni, $iIntervalo);
+    $oPdf->Row_multicell(
+                        $aDados,
+                        $iAltura,
+                        $bBorda,
+                        $iHeight,
+                        $bPreenchimento,
+                        $bNaoUsarEspaco,
+                        $bUsarQuebra,
+                        $iCampoTestar,
+                        $iAlturaRow,
+                        $iLaguraFixa
+                        );
 
-    if ($oPdf->gety() > $oPdf->h - 30) {
-    
-      $oPdf->addpage('L');
-      novoCabecalho($oPdf);
-    }
+    // $lPinta = !$lPinta;
+    // $oPdf->SetFont('arial', '', 7);
 
-    $iIdFicha++;
+    // $oPdf->cell( 7,  4, $oPaciente->sd23_i_ficha,              1, 0, 'C', $lPinta );
+    // $oPdf->cell( 10,  4, $oPaciente->sd23_c_hora,               1, 0, 'C', $lPinta );
+    // $oPdf->cell( 15, 4, $oPaciente->sd23_i_numcgs,             1, 0, 'C', $lPinta );
+
+    // $sNomePaciente = $oPaciente->z01_v_nome;
+
+    // $oPdf->cell( 101, 4, $sNomePaciente,                1, 0, 'L', $lPinta );
+    // $oPdf->cell( 20, 4, $oPaciente->z01_v_telef,               1, 0, 'L', $lPinta );
+    // $oPdf->cell( 20, 4, $oPaciente->z01_v_telcel,              1, 0, 'L', $lPinta );
+    // $oPdf->cell( 15, 4, $sPresenca,                            1, 0, 'C', $lPinta );
+    // $oPdf->cell( 91, 4, substr($oPaciente->sd23_t_obs, 0, 80), 1, 1, 'L', $lPinta );
   }
+
+  // $oPdf->ln();
 }
 
+
 $oPdf->Output();
-?>
+
+function imprimeCabecalho($oPdf, $oDadosAgenda, $lAdicionaPagina = false) {
+
+  if ( $lAdicionaPagina ) {
+    $oPdf->AddPage();
+  }
+  $oPdf->setfillcolor(200);
+  $oPdf->SetFont('arial', 'B', 9);
+  $oPdf->cell(279, 5, "{$oDadosAgenda->iAgenda} - {$oDadosAgenda->sDescricao}", 1, 1, 'L', 1);
+  $oPdf->SetFont('arial', 'B', 7);
+
+  $oPdf->setfillcolor(220);
+  $oPdf->cell(7,  4, 'Seq.',       1, 0, 'C', 1);
+  $oPdf->cell(10,  4, 'Hora',       1, 0, 'C', 1);
+  $oPdf->cell(15, 4, 'CGS',        1, 0, 'C', 1);
+  $oPdf->cell(101, 4, 'Nome',       1, 0, 'C', 1);
+  $oPdf->cell(20, 4, 'Telefone',   1, 0, 'C', 1);
+  $oPdf->cell(20, 4, 'Celular',    1, 0, 'C', 1);
+  $oPdf->cell(15, 4, 'Presença',   1, 0, 'C', 1);
+  $oPdf->cell(91, 4, 'Observação', 1, 1, 'C', 1);
+
+  $oPdf->setfillcolor(240);
+}

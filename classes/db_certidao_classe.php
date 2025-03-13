@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,42 +25,47 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//MODULO: protocolo
-//CLASSE DA ENTIDADE certidao
-class cl_certidao { 
+class cl_certidao
+{
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $p50_sequencial = 0; 
-   var $p50_idusuario = 0; 
-   var $p50_tipo = null; 
-   var $p50_data_dia = null; 
-   var $p50_data_mes = null; 
-   var $p50_data_ano = null; 
-   var $p50_data = null; 
-   var $p50_hora = null; 
-   var $p50_ip = null; 
-   var $p50_hist = null; 
-   var $p50_web = 'f'; 
-   var $p50_codproc = 0; 
-   var $p50_exerc = 0; 
-   var $p50_codimpresso = null; 
-   var $p50_instit = 0; 
-   var $p50_arquivo = 0; 
-   var $p50_diasvalidade = 0; 
+    public $rotulo = null; 
+    public $query_sql = null; 
+    public $numrows = 0; 
+    public $numrows_incluir = 0; 
+    public $numrows_alterar = 0; 
+    public $numrows_excluir = 0; 
+    public $erro_status = null; 
+    public $erro_sql = null; 
+    public $erro_banco = null;  
+    public $erro_msg = null;  
+    public $erro_campo = null;  
+    public $pagina_retorno = null; 
+    /* Variáveis do Arquivo */
+    public $p50_sequencial = 0; 
+    public $p50_idusuario = 0; 
+    public $p50_tipo = null; 
+    public $p50_data_dia = null; 
+    public $p50_data_mes = null; 
+    public $p50_data_ano = null; 
+    public $p50_data = null; 
+    public $p50_hora = null; 
+    public $p50_ip = null; 
+    public $p50_hist = null; 
+    public $p50_web = 'f'; 
+    public $p50_codproc = 0; 
+    public $p50_exerc = 0; 
+    public $p50_codimpresso = null; 
+    public $p50_instit = 0; 
+    public $p50_arquivo = 0; 
+    public $p50_diasvalidade = 0; 
+    public $p50_nomeservico = null; 
+    public $p50_resultadowebservice = null; 
+    public $p50_datahoraconsulta_dia = null; 
+    public $p50_datahoraconsulta_mes = null; 
+    public $p50_datahoraconsulta_ano = null; 
+    public $p50_datahoraconsulta = null; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+    public $campos = "
                  p50_sequencial = int8 = Codigo 
                  p50_idusuario = int4 = Cod. Usuário 
                  p50_tipo = char(1) = Tipo da Certidão 
@@ -75,24 +80,29 @@ class cl_certidao {
                  p50_instit = int4 = Cod. Instituição 
                  p50_arquivo = oid = Imagem 
                  p50_diasvalidade = int4 = Dias de validade da certidão 
+                 p50_nomeservico = varchar(50) = Nome Serviço 
+                 p50_resultadowebservice = varchar(20) = Retorno do Webservice 
+                 p50_datahoraconsulta = date = Data Hora Consulta 
                  ";
-   //funcao construtor da classe 
-   function cl_certidao() { 
-     //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("certidao"); 
-     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+
+    public function __construct()
+    {
+        $this->rotulo = new rotulo("certidao"); 
+        $this->pagina_retorno = basename($_SERVER['PHP_SELF']);
+    }
+
+    public function erro($mostra, $retorna)
+    {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
-        echo "<script>alert(\"".$this->erro_msg."\");</script>";
+        echo "<script>alert(\"".$this->erro_msg."\")</script>";
         if($retorna==true){
            echo "<script>location.href='".$this->pagina_retorno."'</script>";
         }
      }
    }
-   // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+
+    public function atualizacampos($exclusao = false)
+    {
      if($exclusao==false){
        $this->p50_sequencial = ($this->p50_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_sequencial"]:$this->p50_sequencial);
        $this->p50_idusuario = ($this->p50_idusuario == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_idusuario"]:$this->p50_idusuario);
@@ -115,12 +125,23 @@ class cl_certidao {
        $this->p50_instit = ($this->p50_instit == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_instit"]:$this->p50_instit);
        $this->p50_arquivo = ($this->p50_arquivo == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_arquivo"]:$this->p50_arquivo);
        $this->p50_diasvalidade = ($this->p50_diasvalidade == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_diasvalidade"]:$this->p50_diasvalidade);
+       $this->p50_nomeservico = ($this->p50_nomeservico == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_nomeservico"]:$this->p50_nomeservico);
+       $this->p50_resultadowebservice = ($this->p50_resultadowebservice == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_resultadowebservice"]:$this->p50_resultadowebservice);
+       if($this->p50_datahoraconsulta == ""){
+         $this->p50_datahoraconsulta_dia = ($this->p50_datahoraconsulta_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_datahoraconsulta_dia"]:$this->p50_datahoraconsulta_dia);
+         $this->p50_datahoraconsulta_mes = ($this->p50_datahoraconsulta_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_datahoraconsulta_mes"]:$this->p50_datahoraconsulta_mes);
+         $this->p50_datahoraconsulta_ano = ($this->p50_datahoraconsulta_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_datahoraconsulta_ano"]:$this->p50_datahoraconsulta_ano);
+         if($this->p50_datahoraconsulta_dia != ""){
+            $this->p50_datahoraconsulta = $this->p50_datahoraconsulta_ano."-".$this->p50_datahoraconsulta_mes."-".$this->p50_datahoraconsulta_dia;
+         }
+       }
      }else{
        $this->p50_sequencial = ($this->p50_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["p50_sequencial"]:$this->p50_sequencial);
      }
    }
-   // funcao para inclusao
-   function incluir ($p50_sequencial){ 
+
+    public function incluir($p50_sequencial)
+    {
       $this->atualizacampos();
      if($this->p50_idusuario == null ){ 
        $this->erro_sql = " Campo Cod. Usuário não informado.";
@@ -200,6 +221,18 @@ class cl_certidao {
        $this->erro_status = "0";
        return false;
      }
+     if($this->p50_diasvalidade == null ){ 
+       $this->erro_sql = " Campo Dias de validade da certidão não informado.";
+       $this->erro_campo = "p50_diasvalidade";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->p50_datahoraconsulta == null ){ 
+       $this->p50_datahoraconsulta = "null";
+     }
      if($p50_sequencial == "" || $p50_sequencial == null ){
        $result = db_query("select nextval('certidao_p50_sequencial_seq')"); 
        if($result==false){
@@ -225,7 +258,7 @@ class cl_certidao {
        }
      }
      if(($this->p50_sequencial == null) || ($this->p50_sequencial == "") ){ 
-       $this->erro_sql = " Campo p50_sequencial nao declarado.";
+       $this->erro_sql = " Campo p50_sequencial não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -247,6 +280,9 @@ class cl_certidao {
                                       ,p50_instit 
                                       ,p50_arquivo 
                                       ,p50_diasvalidade 
+                                      ,p50_nomeservico 
+                                      ,p50_resultadowebservice 
+                                      ,p50_datahoraconsulta 
                        )
                 values (
                                 $this->p50_sequencial 
@@ -263,17 +299,20 @@ class cl_certidao {
                                ,$this->p50_instit 
                                ,$this->p50_arquivo 
                                ,$this->p50_diasvalidade 
+                               ,'$this->p50_nomeservico' 
+                               ,'$this->p50_resultadowebservice' 
+                               ,".($this->p50_datahoraconsulta == "null" || $this->p50_datahoraconsulta == ""?"null":"'".$this->p50_datahoraconsulta."'")." 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Certidoes geradas ($this->p50_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Certidoes geradas ($this->p50_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Certidoes geradas já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Certidoes geradas ($this->p50_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Certidoes geradas ($this->p50_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -282,7 +321,7 @@ class cl_certidao {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->p50_sequencial;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -313,12 +352,16 @@ class cl_certidao {
          $resac = db_query("insert into db_acount values($acount,1475,10676,'','".AddSlashes(pg_result($resaco,0,'p50_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1475,20231,'','".AddSlashes(pg_result($resaco,0,'p50_arquivo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1475,20243,'','".AddSlashes(pg_result($resaco,0,'p50_diasvalidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1475,1014382,'','".AddSlashes(pg_result($resaco,0,'p50_nomeservico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1475,1014383,'','".AddSlashes(pg_result($resaco,0,'p50_resultadowebservice'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1475,1014384,'','".AddSlashes(pg_result($resaco,0,'p50_datahoraconsulta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
    } 
-   // funcao para alteracao
-   function alterar ($p50_sequencial=null) { 
+
+    public function alterar($p50_sequencial=null)
+    {
       $this->atualizacampos();
      $sql = " update certidao set ";
      $virgula = "";
@@ -478,6 +521,32 @@ class cl_certidao {
      if(trim($this->p50_diasvalidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p50_diasvalidade"])){ 
        $sql  .= $virgula." p50_diasvalidade = $this->p50_diasvalidade ";
        $virgula = ",";
+       if(trim($this->p50_diasvalidade) == null ){ 
+         $this->erro_sql = " Campo Dias de validade da certidão não informado.";
+         $this->erro_campo = "p50_diasvalidade";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(trim($this->p50_nomeservico)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p50_nomeservico"])){ 
+       $sql  .= $virgula." p50_nomeservico = '$this->p50_nomeservico' ";
+       $virgula = ",";
+     }
+     if(trim($this->p50_resultadowebservice)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p50_resultadowebservice"])){ 
+       $sql  .= $virgula." p50_resultadowebservice = '$this->p50_resultadowebservice' ";
+       $virgula = ",";
+     }
+     if(trim($this->p50_datahoraconsulta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p50_datahoraconsulta_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["p50_datahoraconsulta_dia"] !="") ){ 
+       $sql  .= $virgula." p50_datahoraconsulta = '$this->p50_datahoraconsulta' ";
+       $virgula = ",";
+     }     else{ 
+       if(isset($GLOBALS["HTTP_POST_VARS"]["p50_datahoraconsulta_dia"])){ 
+         $sql  .= $virgula." p50_datahoraconsulta = null ";
+         $virgula = ",";
+       }
      }
      $sql .= " where ";
      if($p50_sequencial!=null){
@@ -488,68 +557,74 @@ class cl_certidao {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->p50_sequencial));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,8653,'$this->p50_sequencial','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_sequencial"]) || $this->p50_sequencial != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_sequencial"]) || $this->p50_sequencial != "")
              $resac = db_query("insert into db_acount values($acount,1475,8653,'".AddSlashes(pg_result($resaco,$conresaco,'p50_sequencial'))."','$this->p50_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_idusuario"]) || $this->p50_idusuario != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_idusuario"]) || $this->p50_idusuario != "")
              $resac = db_query("insert into db_acount values($acount,1475,8657,'".AddSlashes(pg_result($resaco,$conresaco,'p50_idusuario'))."','$this->p50_idusuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_tipo"]) || $this->p50_tipo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_tipo"]) || $this->p50_tipo != "")
              $resac = db_query("insert into db_acount values($acount,1475,8659,'".AddSlashes(pg_result($resaco,$conresaco,'p50_tipo'))."','$this->p50_tipo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_data"]) || $this->p50_data != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_data"]) || $this->p50_data != "")
              $resac = db_query("insert into db_acount values($acount,1475,8654,'".AddSlashes(pg_result($resaco,$conresaco,'p50_data'))."','$this->p50_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_hora"]) || $this->p50_hora != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_hora"]) || $this->p50_hora != "")
              $resac = db_query("insert into db_acount values($acount,1475,8656,'".AddSlashes(pg_result($resaco,$conresaco,'p50_hora'))."','$this->p50_hora',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_ip"]) || $this->p50_ip != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_ip"]) || $this->p50_ip != "")
              $resac = db_query("insert into db_acount values($acount,1475,8658,'".AddSlashes(pg_result($resaco,$conresaco,'p50_ip'))."','$this->p50_ip',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_hist"]) || $this->p50_hist != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_hist"]) || $this->p50_hist != "")
              $resac = db_query("insert into db_acount values($acount,1475,8661,'".AddSlashes(pg_result($resaco,$conresaco,'p50_hist'))."','$this->p50_hist',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_web"]) || $this->p50_web != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_web"]) || $this->p50_web != "")
              $resac = db_query("insert into db_acount values($acount,1475,8660,'".AddSlashes(pg_result($resaco,$conresaco,'p50_web'))."','$this->p50_web',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_codproc"]) || $this->p50_codproc != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_codproc"]) || $this->p50_codproc != "")
              $resac = db_query("insert into db_acount values($acount,1475,9416,'".AddSlashes(pg_result($resaco,$conresaco,'p50_codproc'))."','$this->p50_codproc',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_exerc"]) || $this->p50_exerc != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_exerc"]) || $this->p50_exerc != "")
              $resac = db_query("insert into db_acount values($acount,1475,9417,'".AddSlashes(pg_result($resaco,$conresaco,'p50_exerc'))."','$this->p50_exerc',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_codimpresso"]) || $this->p50_codimpresso != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_codimpresso"]) || $this->p50_codimpresso != "")
              $resac = db_query("insert into db_acount values($acount,1475,9418,'".AddSlashes(pg_result($resaco,$conresaco,'p50_codimpresso'))."','$this->p50_codimpresso',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_instit"]) || $this->p50_instit != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_instit"]) || $this->p50_instit != "")
              $resac = db_query("insert into db_acount values($acount,1475,10676,'".AddSlashes(pg_result($resaco,$conresaco,'p50_instit'))."','$this->p50_instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_arquivo"]) || $this->p50_arquivo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_arquivo"]) || $this->p50_arquivo != "")
              $resac = db_query("insert into db_acount values($acount,1475,20231,'".AddSlashes(pg_result($resaco,$conresaco,'p50_arquivo'))."','$this->p50_arquivo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["p50_diasvalidade"]) || $this->p50_diasvalidade != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_diasvalidade"]) || $this->p50_diasvalidade != "")
              $resac = db_query("insert into db_acount values($acount,1475,20243,'".AddSlashes(pg_result($resaco,$conresaco,'p50_diasvalidade'))."','$this->p50_diasvalidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_nomeservico"]) || $this->p50_nomeservico != "")
+             $resac = db_query("insert into db_acount values($acount,1475,1014382,'".AddSlashes(pg_result($resaco,$conresaco,'p50_nomeservico'))."','$this->p50_nomeservico',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_resultadowebservice"]) || $this->p50_resultadowebservice != "")
+             $resac = db_query("insert into db_acount values($acount,1475,1014383,'".AddSlashes(pg_result($resaco,$conresaco,'p50_resultadowebservice'))."','$this->p50_resultadowebservice',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["p50_datahoraconsulta"]) || $this->p50_datahoraconsulta != "")
+             $resac = db_query("insert into db_acount values($acount,1475,1014384,'".AddSlashes(pg_result($resaco,$conresaco,'p50_datahoraconsulta'))."','$this->p50_datahoraconsulta',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Certidoes geradas nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Certidoes geradas não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->p50_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Certidoes geradas nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Certidoes geradas não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->p50_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->p50_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -559,14 +634,14 @@ class cl_certidao {
        } 
      } 
    } 
-   // funcao para exclusao 
-   function excluir ($p50_sequencial=null,$dbwhere=null) { 
 
+    public function excluir($p50_sequencial=null, $dbwhere = null)
+    {
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($p50_sequencial));
        } else { 
@@ -594,45 +669,48 @@ class cl_certidao {
            $resac  = db_query("insert into db_acount values($acount,1475,10676,'','".AddSlashes(pg_result($resaco,$iresaco,'p50_instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1475,20231,'','".AddSlashes(pg_result($resaco,$iresaco,'p50_arquivo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1475,20243,'','".AddSlashes(pg_result($resaco,$iresaco,'p50_diasvalidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1475,1014382,'','".AddSlashes(pg_result($resaco,$iresaco,'p50_nomeservico'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1475,1014383,'','".AddSlashes(pg_result($resaco,$iresaco,'p50_resultadowebservice'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1475,1014384,'','".AddSlashes(pg_result($resaco,$iresaco,'p50_datahoraconsulta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from certidao
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($p50_sequencial != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($p50_sequencial)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " p50_sequencial = $p50_sequencial ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Certidoes geradas nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Certidoes geradas não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$p50_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Certidoes geradas nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Certidoes geradas não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$p50_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$p50_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -642,10 +720,11 @@ class cl_certidao {
        } 
      } 
    } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+
+    public function sql_record($sql)
+    {
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -654,8 +733,8 @@ class cl_certidao {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:certidao";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -665,120 +744,50 @@ class cl_certidao {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $p50_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from certidao ";
+
+    public function sql_query($p50_sequencial = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from certidao ";
      $sql .= "      inner join db_config  on  db_config.codigo = certidao.p50_instit";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = certidao.p50_idusuario";
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = db_config.numcgm";
+     $sql .= "      left  join db_depart  on  db_depart.coddepto = db_config.db21_departamento";
      $sql .= "      inner join db_tipoinstit  on  db_tipoinstit.db21_codtipo = db_config.db21_tipoinstit";
      $sql2 = "";
-     if($dbwhere==""){
-       if($p50_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($p50_sequencial)) {
          $sql2 .= " where certidao.p50_sequencial = $p50_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $p50_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from certidao ";
+
+    public function sql_query_file($p50_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from certidao ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($p50_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($p50_sequencial)){
          $sql2 .= " where certidao.p50_sequencial = $p50_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-  
-   function sql_query_certidao ( $p50_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select "; 
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{ 
-       $sql .= $campos;
-     }
-     $sql .= " from certidao ";
-     $sql .= "      inner join db_config  on  db_config.codigo = certidao.p50_instit";
-     $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = certidao.p50_idusuario";
-     $sql .= "      left join certidaocgm on p50_sequencial = p49_sequencial";
-     $sql .= "      left join certidaoinscr on p50_sequencial = p48_sequencial";
-     $sql .= "      left join certidaomatric on p50_sequencial = p47_sequencial ";
-     $sql .= "      left join iptuant on p47_matric = j40_matric ";
-     $sql .= "      left join cgm  on  cgm.z01_numcgm = certidaocgm.p49_numcgm";
-     $sql2 = "";
-     if($dbwhere==""){ 
-       if($p50_sequencial!=null ){
-         $sql2 .= " where certidao.p50_sequencial = $p50_sequencial ";
-       }  
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-  
+
    /**
    * Método que retorna as certidões e seus prazos vigentes
    * @param string $sOrigem
@@ -843,5 +852,44 @@ class cl_certidao {
   	
   	return $sSql;
   }
+   function sql_query_certidao ( $p50_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
+     $sql = "select "; 
+     if($campos != "*" ){
+       $campos_sql = split("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }else{ 
+       $sql .= $campos;
+     }
+     $sql .= " from certidao ";
+     $sql .= "      inner join db_config  on  db_config.codigo = certidao.p50_instit";
+     $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = certidao.p50_idusuario";
+     $sql .= "      left join certidaocgm on p50_sequencial = p49_sequencial";
+     $sql .= "      left join certidaoinscr on p50_sequencial = p48_sequencial";
+     $sql .= "      left join certidaomatric on p50_sequencial = p47_sequencial ";
+     $sql .= "      left join iptuant on p47_matric = j40_matric ";
+     $sql .= "      left join cgm  on  cgm.z01_numcgm = certidaocgm.p49_numcgm";
+     $sql2 = "";
+     if($dbwhere==""){ 
+       if($p50_sequencial!=null ){
+         $sql2 .= " where certidao.p50_sequencial = $p50_sequencial ";
+       }  
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = split("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+     }
+     return $sql;
+  }
 }
-?>

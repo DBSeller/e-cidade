@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("classes/materialestoque.model.php");
+require_once(modification("classes/materialestoque.model.php"));
 
 /**
  * Classe para lancamentos de empenhos em liquidacao
@@ -45,7 +45,6 @@ class LancamentoEmpenhoEmLiquidacao {
   public static function executarLancamentoContabil(EventoContabil $oEventoContabil, $oStdDadosLancamento) {
 
     $iCodigoDocumentoExecutar = $oEventoContabil->getCodigoDocumento();
-
     if (count($oEventoContabil->getEventoContabilLancamento()) == 0) {
 
       $sMensagemErro  = "Nenhum lancamento encontrado para o documento ";
@@ -61,13 +60,18 @@ class LancamentoEmpenhoEmLiquidacao {
     $oContaCorrenteDetalhe->setRecurso($oEmpenho->getDotacao()->getDadosRecurso());
     $oContaCorrenteDetalhe->setDotacao($oEmpenho->getDotacao());
 
+    $oLancamentoAuxiliarEmLiquidacao->setEmpenhoFinanceiro($oEmpenho);
+
     /**
      * Material permanente
      */
-    if (in_array($iCodigoDocumentoExecutar, array(208, 209))) {
+    if (in_array($iCodigoDocumentoExecutar, array(208, 209, 214, 215))) {
 
       $oLancamentoAuxiliarEmLiquidacao = new LancamentoAuxiliarEmLiquidacaoMaterialPermanente();
-      $oLancamentoAuxiliarEmLiquidacao->setClassificacao($oStdDadosLancamento->oClassificacao);
+      if ( !UTILIZA_INCORPORACAO_BEM ) {
+          $oLancamentoAuxiliarEmLiquidacao->setClassificacao($oStdDadosLancamento->oClassificacao);
+      }
+
     }
 
     if (in_array($iCodigoDocumentoExecutar, array(210, 211, 212, 213))) {
@@ -88,15 +92,17 @@ class LancamentoEmpenhoEmLiquidacao {
     $oLancamentoAuxiliarEmLiquidacao->setCodigoDotacao($oStdDadosLancamento->iCodigoDotacao);
     $oLancamentoAuxiliarEmLiquidacao->setCodigoNotaLiquidacao($oStdDadosLancamento->iCodigoNotaLiquidacao);
     $oLancamentoAuxiliarEmLiquidacao->setValorTotal($oStdDadosLancamento->nValorTotal);
+
     return $oEventoContabil->executaLancamento($oLancamentoAuxiliarEmLiquidacao);
   }
 
+
   /**
-   * Processa lancamento contabil
-   *
-   * @param stdClass $oStdDadosLancamento
-   * @param boolean $lEstorno
-   * @return boolean
+   * @param $oStdDadosLancamento
+   * @param bool $lEstorno
+   * @return null
+   * @throws BusinessException
+   * @throws DBException|Exception
    */
   public static function processar($oStdDadosLancamento, $lEstorno = false) {
 
@@ -107,8 +113,29 @@ class LancamentoEmpenhoEmLiquidacao {
     }
 
     $oEventoContabil = self::buscarEventoContabilPeloDesdobramento($iTipoDocumento, $oStdDadosLancamento->iCodigoElemento);
+
     $oEmpenhoFinanceiro = EmpenhoFinanceiroRepository::getEmpenhoFinanceiroPorNumero($oStdDadosLancamento->iNumeroEmpenho);
     $iAnoUsu = db_getsession("DB_anousu");
+    /**
+     * Empenho é um RP de material permanente
+     * - troca documentos para 214 ou 215 (estorno)
+     */
+    if ($oEmpenhoFinanceiro->isRestoAPagar($iAnoUsu) && $oEmpenhoFinanceiro->verificaGrupoDoDesdobramento(GrupoContaOrcamento::MATERIAL_PERMANENTE)) {
+
+      $oEventoContabilRP = new EventoContabil(214, $iAnoUsu);
+
+      if ($oEventoContabil->estorno()) {
+
+        $oEventoContabil = $oEventoContabilRP->getEventoInverso();
+        if (!$oEventoContabil) {
+          throw new BusinessException("Documento 215 não encontrado para o ano {$iAnoUsu}.");
+        }
+      } else {
+        $oEventoContabil = $oEventoContabilRP;
+      }
+
+      return self::executarLancamentoContabil($oEventoContabil, $oStdDadosLancamento);
+    }
 
     /**
      * Empenho é um RP
@@ -116,18 +143,42 @@ class LancamentoEmpenhoEmLiquidacao {
      *
      * A propriedade 'oGrupo' é setada somente na inclusão de bens
      */
-    if ($oEmpenhoFinanceiro->isRestoAPagar($iAnoUsu) && empty($oStdDadosLancamento->oGrupo) ) {
+      if ($oEmpenhoFinanceiro->isRestoAPagar($iAnoUsu) && empty($oStdDadosLancamento->oGrupo)) {
+          $ordemCompra = new OrdemDeCompra($oStdDadosLancamento->iCodigoOrdemCompra);
 
-      $oEventoContabilRP = new EventoContabil(212, $iAnoUsu);
+          $documentoContabil = 212;
+          foreach ($ordemCompra->getItens() as $item) {
+              if ($item->getItemEmpenho()->getItemMaterialCompras()->getMaterialAlmoxarifado()->isServico()) {
+                  $documentoContabil = 216;
+                  break;
+              }
+          }
+          $oEventoContabilRP = new EventoContabil($documentoContabil, $iAnoUsu);
 
-      /**
-       * default 212, quando for estorno troca para 213
-       */
-      if ($oEventoContabil->estorno()) {
-        $oEventoContabil = $oEventoContabilRP->getEventoInverso();
-      } else {
-        $oEventoContabil = $oEventoContabilRP;
+          /**
+           * default 212, quando for estorno troca para 213
+           */
+          if ($oEventoContabil->estorno()){
+              $oEventoContabil = $oEventoContabilRP->getEventoInverso();
+              if (!$oEventoContabil && $oEventoContabilRP->possuiDocumentoEstorno()) {
+                  throw new Exception("Configure a transação para o documento 213 para o ano {$iAnoUsu}.");
+              }
+          } else {
+              $oEventoContabil = $oEventoContabilRP;
+          }
       }
+
+    if (UTILIZA_INCORPORACAO_BEM) {
+
+        $tipoEntradaNota = ordemCompra::getProcessoEntradaNotaPorNota($oStdDadosLancamento->iCodigoNotaLiquidacao);
+        $documento = ordemCompra::getDocumentoPorProcessoEntrada($tipoEntradaNota, $oEmpenhoFinanceiro->isRestoAPagar($iAnoUsu));
+        if ((int)$oEventoContabil->getCodigoDocumento() !== $documento) {
+            $oEventoContabil = EventoContabilRepository::getEventoContabilByCodigo($documento, $iAnoUsu);
+
+            if ($lEstorno) {
+                $oEventoContabil = $oEventoContabil->getEventoInverso();
+            }
+        }
     }
 
     return self::executarLancamentoContabil($oEventoContabil, $oStdDadosLancamento);
@@ -135,10 +186,10 @@ class LancamentoEmpenhoEmLiquidacao {
 
   /**
    * Busca evento contabil pelo desdobramento
-   *
-   * @param integer $iTipoDocumento
-   * @param integer $iCodigoElemento
+   * @param $iTipoDocumento
+   * @param $iCodigoElemento
    * @return EventoContabil
+   * @throws Exception
    */
   public static function buscarEventoContabilPeloDesdobramento($iTipoDocumento, $iCodigoElemento) {
 

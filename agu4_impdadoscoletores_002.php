@@ -2,7 +2,7 @@
 
 /**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,15 +26,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once ("agu4_impdadoscoletores_classe.php");
+require_once(modification("agu4_impdadoscoletores_classe.php"));
 
 $oPost      = db_utils::postMemory($_POST);
+$oFiles     = db_utils::postMemory($_FILES);
 $iDBUsuario = db_getsession('DB_id_usuario');
 $dData      = date("d/m/Y");
 $sHora      = date("H:i");
@@ -62,12 +63,20 @@ db_inicio_transacao();
     </table>
     <form name="form1">
       <?php
-      
+
+        if (empty($oFiles->arquivo_importacao)) {
+
+          db_msgbox("Não foi possível processar o arquivo de importação.");
+          exit;
+        }
+
+        $arquivo_importacao = $oFiles->arquivo_importacao['tmp_name'];
+
         db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"),
                 db_getsession("DB_anousu")    , db_getsession("DB_instit"));
 
         $clImportaDadosColetor = new cl_importaDadosColetor();
-        
+
         $arrayArquivos = $clImportaDadosColetor->lerZIP($arquivo_importacao);
         
         $arquivoTXT    = $clImportaDadosColetor->getArquivoTxt($arrayArquivos);

@@ -72,10 +72,10 @@ db_input('e69_codnota',6,$Ie69_codnota,true,'text',3,'')
 <script>
 function js_pesquisac66_codlan(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_conlancam','func_conlancam.php?funcao_js=parent.js_mostraconlancam1|c70_codlan|c70_anousu','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conlancam','func_conlancam.php?funcao_js=parent.js_mostraconlancam1|c70_codlan|c70_anousu','Pesquisa',true);
   }else{
      if(document.form1.c66_codlan.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_conlancam','func_conlancam.php?pesquisa_chave='+document.form1.c66_codlan.value+'&funcao_js=parent.js_mostraconlancam','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conlancam','func_conlancam.php?pesquisa_chave='+document.form1.c66_codlan.value+'&funcao_js=parent.js_mostraconlancam','Pesquisa',false);
      }else{
        document.form1.c70_anousu.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostraconlancam1(chave1,chave2){
 }
 function js_pesquisac66_codnota(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empnota','func_empnota.php?funcao_js=parent.js_mostraempnota1|e69_codnota|e69_codnota','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empnota','func_empnota.php?funcao_js=parent.js_mostraempnota1|e69_codnota|e69_codnota','Pesquisa',true);
   }else{
      if(document.form1.c66_codnota.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_empnota','func_empnota.php?pesquisa_chave='+document.form1.c66_codnota.value+'&funcao_js=parent.js_mostraempnota','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empnota','func_empnota.php?pesquisa_chave='+document.form1.c66_codnota.value+'&funcao_js=parent.js_mostraempnota','Pesquisa',false);
      }else{
        document.form1.e69_codnota.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostraempnota1(chave1,chave2){
   db_iframe_empnota.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conlancamnota','func_conlancamnota.php?funcao_js=parent.js_preenchepesquisa|c66_codlan|c66_codnota','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conlancamnota','func_conlancamnota.php?funcao_js=parent.js_preenchepesquisa|c66_codlan|c66_codnota','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_conlancamnota.hide();

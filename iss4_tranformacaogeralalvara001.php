@@ -1,38 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
 
 $aTiposAlvara           = array();
 $aAlvarasIndeterminados = array();
@@ -45,7 +45,7 @@ if ( $oIssTipoAlvara->numrows > 0 ) {
 
   $aTiposAlvara[0] = 'SELECIONE...';
   foreach ( db_utils::getCollectionByRecord($rsTipoAlvara) as $oTipoAlvara ) {
-    
+
     /**
      * Verifica se o alvara pe do tipo indeterminado
      */
@@ -53,7 +53,7 @@ if ( $oIssTipoAlvara->numrows > 0 ) {
       $aAlvarasIndeterminados[] = $oTipoAlvara->q98_sequencial;
     }
 
-    $aTiposAlvara[ $oTipoAlvara->q98_sequencial ] = $oTipoAlvara->q98_descricao; 
+    $aTiposAlvara[ $oTipoAlvara->q98_sequencial ] = $oTipoAlvara->q98_descricao;
   }
 }
 
@@ -66,22 +66,17 @@ $sAlvarasIndeterminados = $oJSON->encode($aAlvarasIndeterminados);
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <?php
-  db_app::load("scripts.js");
-  db_app::load("prototype.js");
-  db_app::load("arrays.js");
-  db_app::load("strings.js");
-  db_app::load("estilos.css");
+  db_app::load("scripts.js, prototype.js, arrays.js, strings.js, estilos.css");
 ?>
 <style>
 select {
   min-width:124px;
 }
 </style>
-<link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor="#cccccc">
-  <center>
-    <fieldset style="margin-top:30px;width:300px;">
+<body class="body-default">
+  <div class="container">
+    <fieldset style="width:300px;">
       <legend>Filtros:</legend>
       <table width="100%">
         <tr>
@@ -110,15 +105,17 @@ select {
             <?php db_inputdata('dataValidadeFinal', null, null, null, true, 'text', 1); ?>
           </td>
         </tr>
-      </table>    
+      </table>
     </fieldset>
-    <br />
     <input type="button" value="Filtrar" onclick="js_processar();" />
-  </center>
+  </div>
 <?php db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit")); ?>
 </body>
 </html>
-
+<?php
+  /** Extensao : Inicio [BloqueioManutencaoInscricaoSistemaExterno] */
+  /** Extensao : Fim [BloqueioManutencaoInscricaoSistemaExterno] */
+?>
 <script type="text/javascript">
 
 /**
@@ -137,7 +134,7 @@ var lAlvaraInterderminado = false;
 /**
  * Verifica se o Tipo do alvará tem o tipo de validade indeterminada,
  * e esconde a data final no filtro
- * 
+ *
  * @access public
  * @return void.
  */
@@ -196,14 +193,13 @@ function js_processar() {
     return false;
   }
 
-  iTipoAlvara          = $('tipoAlvara').value; 
+  iTipoAlvara          = $('tipoAlvara').value;
   sDataValidadeInicial = js_formatar( $('dataValidadeInicial').value, 'd' );
   sDataValidadeFinal   = js_formatar( $('dataValidadeFinal').value, 'd' );
   sNomeTipoAlvara      = $('tipoAlvara').options[$('tipoAlvara').selectedIndex].text;
 
-
   /**
-   * Verifica se a data de validade final é menor que a data validade inicial, 
+   * Verifica se a data de validade final é menor que a data validade inicial,
    * se for exibe mensagem de erro
    */
   if ( js_diferenca_datas(sDataValidadeInicial, sDataValidadeFinal, 3) && js_diferenca_datas(sDataValidadeInicial, sDataValidadeFinal, 3) != 'i' && !lAlvaraInterderminado) {
@@ -213,7 +209,7 @@ function js_processar() {
   }
 
   /**
-   * Valida se existe alvaras para os filtros encontrados, 
+   * Valida se existe alvaras para os filtros encontrados,
    * caso o resultado seja 0 exibe mensagem de erro.
    */
   var sUrl                   = 'iss4_tranformacaogeralalvara.RPC.php';
@@ -232,16 +228,16 @@ function js_processar() {
 }
 
 /**
- * Função responsavel por verificar se existe pelo menos um alvará para os filtros seleciondos, 
+ * Função responsavel por verificar se existe pelo menos um alvará para os filtros seleciondos,
  * se existir envia os dados para a proxima tela.
- * 
+ *
  * @access public
  * @return void
  */
 function js_retornoAlvaras( oAjax ){
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
-  var sMensagem = oRetorno.sMensagem.urlDecode(); 
+  var oRetorno  = JSON.parse(oAjax.responseText);
+  var sMensagem = oRetorno.sMensagem.urlDecode();
 
   /**
    * Verifica se existe pelo menos 1 alvaá para o filtro selecionado.
@@ -251,7 +247,7 @@ function js_retornoAlvaras( oAjax ){
     alert(sMensagem);
     return false;
   }
- 
+
   var sQueryString  = '?iTipoAlvara=' + iTipoAlvara + '&sDataValidadeInicial=' + sDataValidadeInicial;
       sQueryString += '&sDataValidadeFinal=' + sDataValidadeFinal + '&sNomeTipoAlvara=' + sNomeTipoAlvara;
 

@@ -68,7 +68,7 @@ db_textarea('ve08_obs',10,80,$Ive08_obs,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veiccaditensobrig','func_veiccaditensobrig.php?funcao_js=parent.js_preenchepesquisa|ve08_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccaditensobrig','func_veiccaditensobrig.php?funcao_js=parent.js_preenchepesquisa|ve08_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiccaditensobrig.hide();

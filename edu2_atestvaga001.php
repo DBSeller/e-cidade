@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $escola = db_getsession("DB_coddepto");
 ?>
 <html>
@@ -67,7 +67,7 @@ $escola = db_getsession("DB_coddepto");
                              where ed103_i_atestvaga = ed102_i_codigo
                             )
               ORDER BY anoatest DESC";
-      $result = pg_query($sql);
+      $result = db_query($sql);
       $linhas = pg_num_rows($result);
       ?>
       <select name="ano"  style="font-size:9px;width:200px;height:18px;">
@@ -103,7 +103,7 @@ $escola = db_getsession("DB_coddepto");
                          )
            ORDER BY ed47_v_nome
           ";
-   $result = pg_query($sql);
+   $result = db_query($sql);
    $linhas = pg_num_rows($result);
    ?>
    <b>Alunos:</b><br>

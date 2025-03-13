@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,89 +26,109 @@
  */
 
 set_time_limit(0);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_propri_classe.php");
-include("classes/db_promitente_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libpessoal.php");
+
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_sql.php");
+require_once modification("libs/db_libpessoal.php");
+
+require_once modification("classes/db_iptubase_classe.php");
+require_once modification("classes/db_issbase_classe.php");
+require_once modification("classes/db_propri_classe.php");
+require_once modification("classes/db_promitente_classe.php");
+
+require_once modification("dbforms/db_funcoes.php");
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($_POST);
 
 $xtipo = "'x'";
 
-if ( $opcao == 'salario' ) {
-  $sigla          = 'r14_';
-  $arquivo        = 'gerfsal';
-  $sTituloCalculo = 'Salário';
-} elseif ( $opcao == 'ferias' ) {
+switch ($opcao) {
+  case 'salario':
+    if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+      require_once modification("pes3_gerfinanc018_salario.php");
+      exit;
+    }
 
-  $sigla          = 'r31_';
-  $arquivo        = 'gerffer';
-  $xtipo          = ' r31_tpp ';
-  $sTituloCalculo = 'Férias';
-} elseif ( $opcao == 'rescisao' ) {
+    $sigla          = 'r14_';
+    $arquivo        = 'gerfsal';
+    $sTituloCalculo = 'Salário';
+    break;
 
-  $sigla          = 'r20_';
-  $arquivo        = 'gerfres';
-  $xtipo          = ' r20_tpp ';
-  $sTituloCalculo = 'Rescisão';
-} elseif ($opcao == 'adiantamento') {
+  case 'complementar':
+    if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+      require_once(modification("pes3_gerfinanc018_auxiliar.php"));
+      exit;
+    }
 
-  $sigla          = 'r22_';
-  $arquivo        = 'gerfadi';
-  $sTituloCalculo = 'Adiantamento';
-} elseif ($opcao == '13salario') {
+    $sigla          = 'r48_';
+    $arquivo        = 'gerfcom';
+    $sTituloCalculo = 'Complementar';
+    break;
 
-  $sigla          = 'r35_';
-  $arquivo        = 'gerfs13';
-  $sTituloCalculo = '13º Salário';
-} elseif ($opcao == 'complementar') {
- 
- if (isset($DB_COMPLEMENTAR)) {  
-  require_once("pes3_gerfinanc018_complementar.php");
-  exit;
-}
+  case 'ferias':
+    $sigla          = 'r31_';
+    $arquivo        = 'gerffer';
+    $xtipo          = ' r31_tpp ';
+    $sTituloCalculo = 'Férias';
+    break;
 
-  $sigla          = 'r48_';
-  $arquivo        = 'gerfcom';
-  $sTituloCalculo = 'Complementar';
-} elseif ($opcao == 'fixo') {
+  case 'rescisao':
+    $sigla          = 'r20_';
+    $arquivo        = 'gerfres';
+    $xtipo          = ' r20_tpp ';
+    $sTituloCalculo = 'Rescisão';
+    break;
 
-  $sigla          = 'r53_';
-  $arquivo        = 'gerffx';
-  $sTituloCalculo = 'Calculo Fixo';
-} elseif ($opcao == 'previden') {
+  case 'adiantamento':
+    $sigla          = 'r22_';
+    $arquivo        = 'gerfadi';
+    $sTituloCalculo = 'Adiantamento';
+    break;
 
-  $sigla          = 'r60_';
-  $arquivo        = 'previden';
-  $sTituloCalculo = 'Previdência';
-} elseif ($opcao == 'irf') {
+  case '13salario':
+    $sigla          = 'r35_';
+    $arquivo        = 'gerfs13';
+    $sTituloCalculo = '13º Salário';
+    break;
 
-  $sigla          = 'r61_';
-  $arquivo        = 'ajusteir';
-  $sTituloCalculo = 'IRF';
-} elseif ($opcao == 'gerfprovfer') {
+  case 'fixo':
+    $sigla          = 'r53_';
+    $arquivo        = 'gerffx';
+    $sTituloCalculo = 'Calculo Fixo';
+    break;
 
-  $sigla          = 'r93_';
-  $arquivo        = 'gerfprovfer';
-  $sTituloCalculo = 'Proventos de Férias';
-} elseif ($opcao == 'gerfprovs13') {
+  case 'previden':
+    $sigla          = 'r60_';
+    $arquivo        = 'previden';
+    $sTituloCalculo = 'Previdência';
+    break;
 
-  $sigla          = 'r94_';
-  $arquivo        = 'gerfprovs13';
-  $sTituloCalculo = 'Proventos de 13º salário';
-}else {
+  case 'irf':
+    $sigla          = 'r61_';
+    $arquivo        = 'ajusteir';
+    $sTituloCalculo = 'IRF';
+    break;
 
-  echo "SEM CALCULO NO MÊS";
-  
-  $sTituloCalculo = 'Sem Calculo';
-  $opcao = "";
+  case 'gerfprovfer':
+    $sigla          = 'r93_';
+    $arquivo        = 'gerfprovfer';
+    $sTituloCalculo = 'Proventos de Férias';
+    break;
+
+  case 'gerfprovs13':
+    $sigla          = 'r94_';
+    $arquivo        = 'gerfprovs13';
+    $sTituloCalculo = 'Proventos de 13º salário';
+    break;
+
+  default:
+    echo "SEM CALCULO NO MÊS";
+    $sTituloCalculo = 'Sem Calculo';
+    $opcao = "";
+    break;
 }
 
 if ($opcao != '') {
@@ -356,7 +376,7 @@ if ($opcao != 'previden' && $opcao != 'irf'){
         }
       }
       
-      $condicao = " "; 
+      $condicao = "1"; 
       $pos      = db_at($rubrica,@$rub_cond);
       
       if ($pos > 0) {
@@ -605,7 +625,7 @@ function js_relatorio(){
 }
 
 function js_Pesquisarubrica(rubrica) {
- var janela = js_OpenJanelaIframe('top.corpo','db_iframe_pesquisarubrica','pes1_rhrubricas006.php?tela_pesquisa=true&chavepesquisa='+rubrica,'Pesquisa',true,'20');
+ var janela = js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesquisarubrica','pes1_rhrubricas006.php?tela_pesquisa=true&chavepesquisa='+rubrica,'Pesquisa',true,'20');
  janela.moldura.style.zIndex = 9999;
 }
 
@@ -628,6 +648,7 @@ function js_Pesquisarubrica(rubrica) {
                              html.clientHeight, html.scrollHeight, html.offsetHeight );
   
       parent.document.getElementById('calculoFolha').style.height = height + 'px';
+      parent.iframeLoaded();
    }
 
   //js_removeObj('processamento_calculo_ponto');

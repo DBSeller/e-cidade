@@ -1,49 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_libdocumento.php");
-require_once ("libs/db_libparagrafo.php");
-require_once ("libs/JSON.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("std/DBDate.php");
-require_once ("model/educacao/avaliacao/iFormaObtencao.interface.php");
-require_once ("model/educacao/avaliacao/iElementoAvaliacao.interface.php");
-require_once ("model/CgmFactory.model.php");
-require_once ("classes/db_edu_parametros_classe.php");
-require_once ("fpdf151/scpdf.php");
-
-db_app::import("educacao.ArredondamentoNota");
-db_app::import("educacao.DBEducacaoTermo");
-db_app::import("educacao.*");
-db_app::import("educacao.avaliacao.*");
-db_app::import("educacao.progressaoparcial.*");
-db_app::import("exceptions.*");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("libs/db_libparagrafo.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("fpdf151/scpdf.php"));
 
 $oJson   = new services_json();
 $oGet    = db_utils::postMemory($_GET);
@@ -164,6 +153,7 @@ foreach ($aTurmas as $oDadosTurma) {
 
         db_inicio_transacao();
         $oGradeAproveitamento = new GradeAproveitamentoAluno($oMatricula);
+
         db_fim_transacao();
 
         $oPdf->Cell(5,  $oControle->iAlturaLinha, $iNumeroRealAluno, 1, 0, "C");
@@ -173,25 +163,26 @@ foreach ($aTurmas as $oDadosTurma) {
 
           foreach ($aPeriodo as $oElementoAvaliacao) {
 
+
             $oAproveitamento = $oGradeAproveitamento->getAproveitamentoParaRegenciaPorPeriodo($oRegencia,
                                                                                               $oElementoAvaliacao
                                                                                              );
 
+            $lNotaExterna    = $oAproveitamento->lTemNotaExterna;
             $nAproveitamento = $oAproveitamento->nAproveitamento;
-
             $nAproveitamento = ArredondamentoNota::formatar($nAproveitamento, $iAnoCalendario);
 
             /**
              * Verificamos se a forma de avaliacao eh por parecer. Caso seja, o campo das notas para cada periodo,
              * apresentará 'PD'
              */
-            if ($oElementoAvaliacao->getFormaDeAvaliacao()->getTipo() == 'PARECER') {
+            if ( $oRegencia->getProcedimentoAvaliacao()->getFormaAvaliacao()->getTipo() == 'PARECER') {
 
               $nAproveitamento            = 'PD';
               $oControle->sFormaAvaliacao = 'PARECER';
               $iTemObservacao++;
             }
-            
+
             /**
              * Altera o resultado quando aluno é avaliado por parecer
              */
@@ -214,10 +205,13 @@ foreach ($aTurmas as $oDadosTurma) {
              * Se o aluno nao atingiu o aproveitamento minimo para o periodo, e ele nao esta amparado ou a forma de
              * avaliacao eh por parecer, mostra a nota em negrito
              */
-            if ($oAproveitamento->nAproveitamento < $oAproveitamento->nMinimoAprovacao
-                && !$oAproveitamento->lAmparado
+            if ( !$oAproveitamento->lAtingiuMinimo && !$oAproveitamento->lAmparado
                 && $oElementoAvaliacao->getFormaDeAvaliacao()->getTipo() != 'PARECER') {
               $oPdf->setfont('arial', 'b', 7);
+            }
+
+            if ($lNotaExterna && $nAproveitamento != '') {
+              $nAproveitamento = "*{$nAproveitamento}";
             }
 
             $oPdf->Cell($iLarguraQuadroAvaliacao * 2, $oControle->iAlturaLinha, $nAproveitamento, 1, 0, "C");
@@ -248,9 +242,7 @@ foreach ($aTurmas as $oDadosTurma) {
           }
 
           $oPdf->Cell(15, $oControle->iAlturaLinha, $sLabelAprovado, 1, 1, "C");
-
         } else {
-
           $oPdf->Cell(163, $oControle->iAlturaLinha, $oMatricula->getSituacao(), 1, 1, "C");
         }
 
@@ -261,7 +253,6 @@ foreach ($aTurmas as $oDadosTurma) {
         if ($iAlunosImpressos >= $oControle->iNumeroAlunosPorPagina) {
 
         	if ($oControle->lExibeAssinatura) {
-
         		imprimeAssinaturas($oPdf, $oControle);
         	}
 
@@ -273,6 +264,7 @@ foreach ($aTurmas as $oDadosTurma) {
             $oPdf->Ln();
             continue;
           }
+
           $iAlunosImpressos = 0;
           imprimeCabecalho($oPdf, $oControle, $oTurma, $aPeriodo, $oRegencia);
         }
@@ -300,7 +292,6 @@ foreach ($aTurmas as $oDadosTurma) {
           }
           $oPdf->Cell(15, $oControle->iAlturaLinha, '', 1, 1, "C");
         }
-
       }
     }
 
@@ -318,8 +309,8 @@ foreach ($aTurmas as $oDadosTurma) {
       $oControle->iPosicaoY = $oPdf->GetY();
       mostraObservacoes($oPdf, $oControle);
     }
-    if ($oControle->lExibeAssinatura) {
 
+    if ($oControle->lExibeAssinatura) {
     	imprimeAssinaturas($oPdf, $oControle);
     }
   }
@@ -329,14 +320,14 @@ $oPdf->Output();
 
 /**
  *
- * @param FPDF     $oPdf
+ * @param SCPF     $oPdf
  * @param stdClass $oControle
  * @param Turma    $oTurma
  * @param array    $aPeriodo
  * @param Regencia $oRegencia
  * @param integer  $iNumeroDaPagina
  */
-function imprimeCabecalho($oPdf, $oControle, $oTurma, $aPeriodo, $oRegencia) {
+function imprimeCabecalho( scpdf $oPdf, $oControle, $oTurma, $aPeriodo, $oRegencia ) {
 
   $sNomeDisciplinaAbreviado = trim($oRegencia->getDisciplina()->getAbreviatura());
   $sNomeDisciplina          = trim($oRegencia->getDisciplina()->getNomeDisciplina());
@@ -359,9 +350,11 @@ function imprimeCabecalho($oPdf, $oControle, $oTurma, $aPeriodo, $oRegencia) {
     if ($oPeriodo instanceof AvaliacaoPeriodica) {
       $sDescricaoPeriodo = $oPeriodo->getPeriodoAvaliacao()->getDescricao();
     }
+
     if ($oPeriodo instanceof ResultadoAvaliacao) {
       $sDescricaoPeriodo = $oPeriodo->getTipoResultado()->getDescricao();
     }
+
     $oPdf->Cell($iLarguraColuna, $oControle->iAlturaLinha, $sDescricaoPeriodo, 1, 0, "C", 1);
   }
   $oPdf->Cell(15, $oControle->iAlturaLinha, " ", "LTR", 1, "C");
@@ -375,7 +368,6 @@ function imprimeCabecalho($oPdf, $oControle, $oTurma, $aPeriodo, $oRegencia) {
    * Quadro de Identificacao do Livro de Notas
    */
   $iYInicioQuadroNotas = $oPdf->GetY();
-  $iXInicioQuadroNotas = $oPdf->GetX();
 
   /**
    * Valida se a escola possui Código Referência e o adiciona na frente do nome
@@ -415,7 +407,6 @@ function imprimeCabecalho($oPdf, $oControle, $oTurma, $aPeriodo, $oRegencia) {
   $oPdf->Rect(8, 8, 117, $oPdf->GetY() - 8);
 
   $iYFimQuadroNotas = $oPdf->GetY();
-  $iXFimQuadroNotas = $oPdf->GetX();
 
   /**
    * Imprimiremos o Nome da Disciplina e Falta
@@ -430,16 +421,17 @@ function imprimeCabecalho($oPdf, $oControle, $oTurma, $aPeriodo, $oRegencia) {
     $oPdf->Cell($iLarguraQuadroAvaliacao * 2, $iAlturaQuadroDisciplina, $sNomeDisciplinaAbreviado, 1, 0, "C");
     $oPdf->VCell($iLarguraQuadroAvaliacao, $iAlturaQuadroDisciplina, "Faltas", 1, 0, "C");
   }
+
   $oPdf->VCell(15, $iAlturaQuadroDisciplina, "RESULTADO FINAL", "LBR", 1, "C");
 }
 
 /**
  * Retorna uma estrutura organizada com os Periodos que serão impresso em uma pagina
- * @param integer $iNumeroDePaginas
- * @param integer $iNumeroElementosAvaliacao
- * @param stdClas $oControle
- * @param array   $aElementosAvaliacao
- * @return array <PeriodoAvaliacao, ResultadoAvaliacao>
+ * @param integer  $iNumeroDePaginas
+ * @param integer  $iNumeroElementosAvaliacao
+ * @param stdClass $oControle
+ * @param array    $aElementosAvaliacao
+ * @return array   <PeriodoAvaliacao, ResultadoAvaliacao>
  */
 function organizaPeriodosPorPagina($iNumeroDePaginas, $iNumeroElementosAvaliacao, $oControle, $aElementosAvaliacao) {
 
@@ -454,19 +446,24 @@ function organizaPeriodosPorPagina($iNumeroDePaginas, $iNumeroElementosAvaliacao
         break;
       }
 
-      $iNumeroElementosMovidos++;
-      $aElementosAvaliacaoPorPagina[$iPagina][$iColuna] = $aElementosAvaliacao[$iNumeroElementosMovidos];
+      if ($aElementosAvaliacao[$iNumeroElementosMovidos+1] instanceof ResultadoAvaliacao &&
+          $aElementosAvaliacao[$iNumeroElementosMovidos+1]->getFormaDeObtencao() == 'AP') {
+          continue;
+      }
+        $iNumeroElementosMovidos++;
+        $aElementosAvaliacaoPorPagina[$iPagina][$iColuna] = $aElementosAvaliacao[$iNumeroElementosMovidos];
     }
   }
+
   return $aElementosAvaliacaoPorPagina;
 }
 
 /**
  * Método que imprime as observacoes em casos de aprovado com progressao parcial ou parecer descritivo
- * @param SCPF $oPdf
- * @param object $oDadosRelatorio
+ * @param scpdf $oPdf
+ * @param stdClass $oDadosRelatorio
  */
-function mostraObservacoes($oPdf, $oControle) {
+function mostraObservacoes( scpdf $oPdf, $oControle ) {
 
   $sObservacoes = '';
 
@@ -491,10 +488,10 @@ function mostraObservacoes($oPdf, $oControle) {
 
 /**
  * Imprime assinaturas de acordo com o parâmettro $oControle->lExibeAssinatura
- * @param FPDF $oPdf
+ * @param scpdf $oPdf
  * @param stdClass $oControle
  */
-function imprimeAssinaturas ($oPdf, $oControle) {
+function imprimeAssinaturas( scpdf $oPdf, $oControle ) {
 
 	$oPdf->Ln();
 	$oPdf->Ln();

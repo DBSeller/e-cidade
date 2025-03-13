@@ -1,0 +1,111 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="q178_sequencial"                                                               label="sequencial_isscnaeanexos" />
+        <campo campo="q178_cnae"                                                                     label="referencia_cnae" />
+        <campo campo="q178_issgscadanexos"                                                           label="referencia_issgscadanexos" />
+        <campo campo="q178_data_fim"                                                                 label="data_fim_anexo" />
+        <campo campo="q157_sequencial"                                                               label="sequencial_issgscadanexos" />
+        <campo campo="q157_codigo"                                                                   label="codigo_issgscadanexos" />
+        <campo campo="q157_descricao"                                                                label="descricao_issgscadanexos" />
+        <campo campo="q161_descricao"                                                                label="faixa" />
+        <campo campo="q164_aliquotatotal"                                                            label="aliquota_total"   />
+        <campo campo="q164_valordeducao"                                                             label="descricao" />
+        <campo campo="
+        case when (select q161_valorfinal from issgsanexoscadfaixas where q161_sequencial = 5) &lt; ($faturamento)
+        then
+            q71_aliquota
+        else
+            ((($faturamento * q164_aliquotatotal / 100 ) - q164_valordeducao ) / $faturamento * 100 )
+        end"                                                                                         label="calculo_aliquota_efetiva" />
+
+        <campo campo="( select to_jsonb(array_agg(x)) from (
+		select q160_descricao as descricao, q165_aliquotaimposto as valor
+		from issgsanexosfaixasimpostosvalores inner join issgscadimpostos on q160_sequencial = q165_issgscadimpostos where q165_issgsanexosfaixasimpostoslimites = q164_sequencial ) as x)"                                                                label="aliq_original" />
+
+        <campo campo="
+        case when q166_limite_inicial = 0 and q166_limite_final = 100
+        then
+
+            ( select to_jsonb(array_agg(x)) from (
+                select q160_descricao as descricao, (((($faturamento * q164_aliquotatotal / 100) - q164_valordeducao) / $faturamento * 100) * (q165_aliquotaimposto) / 100) as valor
+                from issgsanexosfaixasimpostosvalores
+                inner join issgscadimpostos on q160_sequencial = q165_issgscadimpostos
+                    where q165_issgsanexosfaixasimpostoslimites = q166_sequencial
+            ) as x )
+
+        else
+
+            ( select to_jsonb(array_agg(x)) from (select q160_descricao as descricao,
+            case when q160_sequencial = 6
+                then
+                    case when
+                    (((($faturamento * q164_aliquotatotal / 100) - q164_valordeducao) / $faturamento) * 100) &gt; 14.92537 and q157_sequencial = 1
+                    then
+                        5
+                    else
+                        case when
+                        (((($faturamento * q164_aliquotatotal / 100) - q164_valordeducao) / $faturamento) * 100) &gt; 12.5 and q157_sequencial = 2
+                        then
+                            5
+                        else
+                            ((($faturamento * q164_aliquotatotal / 100) - q164_valordeducao) / $faturamento * (q165_aliquotaimposto / 100)) * 100
+                        end
+                    end
+                else (((($faturamento * q164_aliquotatotal / 100) - q164_valordeducao) / $faturamento * 100) - 5) * (q165_aliquotaimposto) / 100
+            end as valor
+                from issgsanexosfaixasimpostosvalores
+                inner join issgscadimpostos on q160_sequencial = q165_issgscadimpostos
+                    where q165_issgsanexosfaixasimpostoslimites = q166_sequencial
+            ) as x )
+
+        end"                                                                                        label="aliq_calculada" />
+
+        <campo campo="
+        case when q166_limite_inicial = 0 and q166_limite_final = 100
+        then
+
+            ( select sum( ( ( ( $faturamento * q164_aliquotatotal / 100 ) - q164_valordeducao ) / $faturamento * 100 ) * ( q165_aliquotaimposto ) / 100 )
+            from issgsanexosfaixasimpostosvalores
+            inner join issgscadimpostos on q160_sequencial = q165_issgscadimpostos
+                where q165_issgsanexosfaixasimpostoslimites = q166_sequencial
+            )
+
+        else
+
+            ( select sum( case when q160_sequencial = 6 then 5 else ( ( ( ( $faturamento * q164_aliquotatotal / 100 ) - q164_valordeducao ) / $faturamento * 100 ) - 5 ) * ( q165_aliquotaimposto ) / 100 end )
+            from issgsanexosfaixasimpostosvalores
+            inner join issgscadimpostos on q160_sequencial = q165_issgscadimpostos
+                where q165_issgsanexosfaixasimpostoslimites = q166_sequencial
+            )
+        end"                                                                                         label="soma_aliq_calculada" />
+
+        <campo campo ="
+        case when (select q161_valorfinal from issgsanexoscadfaixas where q161_sequencial = 5) &lt; ($faturamento)
+        then
+            true
+        else
+            false
+        end"                                                                                         label="gera_recibo" />
+
+    </campos>
+    <from tabela="cnae" />
+    <juncoes>
+        <join tipo="inner" tabela="cnaeanalitica"                          condicao="q72_cnae = q71_sequencial" />
+        <join tipo="inner" tabela="isscnaeanexos"                          condicao="q178_cnae = q71_sequencial" />
+        <join tipo="inner" tabela="issgscadanexos"                         condicao="q157_sequencial = q178_issgscadanexos" />
+        <join tipo="inner" tabela="issgsanexosfaixas"                      condicao="q163_issgscadanexos = q157_sequencial" />
+        <join tipo="inner" tabela="issgsanexosfaixasimpostosfaixas"        condicao="q164_issgsanexosfaixas = q163_sequencial" />
+        <join tipo="inner" tabela="issgsanexosfaixasimpostosfaixaslimites" condicao="q166_issgsanexosfaixasimpostosfaixas = q164_sequencial" />
+        <join tipo="inner" tabela="issgsanexoscadfaixas"                   condicao="q164_issgsanexoscadfaixas = q161_sequencial" />
+    </juncoes>
+    <filtros>
+        <filtro label="estruturalCnae" condicao="q71_estrutural ilike '%$estruturalCnae' " obrigatorio="true" />
+        <filtro label="faturamento"    condicao="($faturamento between q161_valorinicial and q161_valorfinal)" obrigatorio="true" />
+        <filtro label="faturamento"    condicao="((($faturamento * q164_aliquotatotal / 100 ) - q164_valordeducao) / $faturamento * 100) between q166_limite_inicial and q166_limite_final" obrigatorio="true" />
+        <filtro label="competencia"    condicao="(select a.q178_sequencial from isscnaeanexos a where a.q178_cnae = q71_sequencial and '$competencia' &lt;= (case when a.q178_data_fim is null then '2999-12-31'::date else a.q178_data_fim end) order by 1 desc limit 1) = isscnaeanexos.q178_sequencial" obrigatorio="true" />
+        <filtro label="competencia"    condicao="issgsanexosfaixas.q163_sequencial = (select a.q163_sequencial  from issgsanexosfaixas a where a.q163_issgscadanexos = issgscadanexos.q157_sequencial order by a.q163_competencia_inicial limit 1)"                                       obrigatorio="true" />
+    </filtros>
+    <agrupamento campos="" />
+    <ordenacao   campos="" />
+</consulta>

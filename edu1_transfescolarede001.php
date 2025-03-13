@@ -1,48 +1,48 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_transfescolarede_classe.php");
-require_once("classes/db_matricula_classe.php");
-require_once("classes/db_matriculamov_classe.php");
-require_once("classes/db_escoladiretor_classe.php");
-require_once("classes/db_obstransferencia_classe.php");
-require_once("classes/db_alunocurso_classe.php");
-require_once("classes/db_diario_classe.php");
-require_once("classes/db_regencia_classe.php");
-require_once("classes/db_turma_classe.php");
-require_once("classes/db_atestvaga_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_jsplibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_transfescolarede_classe.php"));
+require_once(modification("classes/db_matricula_classe.php"));
+require_once(modification("classes/db_matriculamov_classe.php"));
+require_once(modification("classes/db_escoladiretor_classe.php"));
+require_once(modification("classes/db_obstransferencia_classe.php"));
+require_once(modification("classes/db_alunocurso_classe.php"));
+require_once(modification("classes/db_diario_classe.php"));
+require_once(modification("classes/db_regencia_classe.php"));
+require_once(modification("classes/db_turma_classe.php"));
+require_once(modification("classes/db_atestvaga_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -64,11 +64,10 @@ $db_botao             = true;
 $ed103_i_escolaorigem = db_getsession("DB_coddepto");
 $ed18_c_nome          = db_getsession("DB_nomedepto");
 $iEscola              = db_getsession("DB_coddepto");
+$oPost                = db_utils::postMemory($_POST);
 
 if (isset($incluir)) {
-
   try {
-
     db_inicio_transacao();
 
     $oDaoTransfEscolaRede->ed103_c_situacao  = "A";
@@ -91,20 +90,17 @@ if (isset($incluir)) {
     }
 
     if ($concluida == "N") {
-
       $sWhere           = " ed59_i_turma = ".$oDados->ed60_i_turma;
       $sSqlRegencia     = $oDaoRegencia->sql_query("", "ed59_i_codigo as regturma", "", $sWhere);
       $rsResultRegencia = $oDaoRegencia->sql_record($sSqlRegencia);
 
       for ($iCont = 0; $iCont < $oDaoRegencia->numrows; $iCont++) {
-
         $sWhereDiario   = " ed95_i_aluno = $ed47_i_codigo";
         $sWhereDiario  .= " AND ed95_i_regencia = ".db_utils::fieldsmemory($rsResultRegencia,$iCont)->regturma;
         $sSqlDiario     = $oDaoDiario->sql_query("", "ed95_i_codigo", "", $sWhereDiario);
         $rsResultDiario = $oDaoDiario->sql_record($sSqlDiario);
 
         if ($oDaoDiario->numrows > 0) {
-
           $oDaoDiario->ed95_c_encerrado = 'S';
           $oDaoDiario->ed95_i_codigo    = db_utils::fieldsmemory($rsResultDiario,0)->ed95_i_codigo;
           $oDaoDiario->alterar($oDaoDiario->ed95_i_codigo);
@@ -112,9 +108,7 @@ if (isset($incluir)) {
           if ($oDaoDiario->erro_status == '0') {
             throw new Exception("Erro na alteração na tabela Diario. Erro da classe: ".$oDaoDiario->erro_msg);
           }//fecha o erro_status
-
         }
-
       }//fecha o for
 
       $dDataModif                         = substr($ed103_d_data,6,4)."-".substr($ed103_d_data,3,2)."-".
@@ -130,6 +124,9 @@ if (isset($incluir)) {
       if ($oDaoMatricula->erro_status == '0') {
         throw new Exception("Erro na alteração na tabela Matricula. Erro da classe: ".$oDaoMatricula->erro_msg);
       }//fecha o erro_status
+
+        $matriculaAluno = MatriculaRepository::getMatriculaByCodigo($matricula);
+        $matriculaAluno->getDiarioDeClasse()->getDiarioAlunoService()->encerrar();
 
       $sDescr                                 = "ALUNO DA TURMA ".trim($turma)." TRANSFERIDO PARA ESCOLA ";
       $sDescr                                .= trim($nomeescola).",CONFORME ATESTADO DE VAGA N°";
@@ -150,21 +147,18 @@ if (isset($incluir)) {
       }//fecha o erro_status
 
       LimpaResultadofinal($matricula);
-      
     }//fecha o if $concluida == "N"
 
     $sSqlAlunoCurso     = $oDaoAlunoCurso->sql_query("", "ed56_i_codigo", "", "ed56_i_aluno = $ed47_i_codigo");
     $rsResultAlunoCurso = $oDaoAlunoCurso->sql_record($sSqlAlunoCurso);
 
     if ($oDaoAlunoCurso->numrows > 0) {
-
       $oDaoAlunoCurso->ed56_i_escola      = $codigoescola;
       $oDaoAlunoCurso->ed56_c_situacao    = 'TRANSFERIDO REDE';
       $oDaoAlunoCurso->ed56_c_situacaoant = $oDados->sitatual;
       $oDaoAlunoCurso->ed56_i_aluno       = $ed47_i_codigo;
       $oDaoAlunoCurso->ed56_i_codigo      = db_utils::fieldsmemory($rsResultAlunoCurso,0)->ed56_i_codigo;
       $oDaoAlunoCurso->alterar($oDaoAlunoCurso->ed56_i_codigo);
-
     }
 
     $sWhere            = " ed102_i_aluno = $ed47_i_codigo AND not exists ";
@@ -173,18 +167,14 @@ if (isset($incluir)) {
     $rsResultAtestVaga = $oDaoAtestVaga->sql_record($sSqlAtestVaga);
 
     if ($oDaoAtestVaga->numrows > 0) {
-
       for ($iCont = 0; $iCont < $oDaoAtestVaga->numrows; $iCont++) {
-
         $oDados = db_utils::fieldsmemory($rsResultAtestVaga, $iCont);
         $oDaoAtestVaga->excluir(null,"ed102_i_codigo = ".$oDados->ed102_i_codigo);
 
         if ($oDaoAtestVaga->erro_status == '0') {
           throw new Exception("Erro na alteração na tabela AtestVaga. Erro da classe: ".$oDaoAtestVaga->erro_msg);
         }//fecha o erro_status
-
       }//fecha o for
-
     }//fecha o if $oDaoAtestVaga->numrows > 0
 
     if ($oDaoTransfEscolaRede->erro_status=="0") {
@@ -197,7 +187,6 @@ if (isset($incluir)) {
     $rsResultObsTransferencia = $oDaoObsTransferencia->sql_record($sSqlObsTransferencia);
 
     if ($oDaoObsTransferencia->numrows > 0) {
-
       $oDadosObs                                  = db_utils::fieldsmemory($rsResultObsTransferencia, 0);
       $oDaoObsTransferencia->ed283_i_escola       = $iEscola;
       $oDaoObsTransferencia->ed283_t_mensagem     = $obs;
@@ -206,48 +195,35 @@ if (isset($incluir)) {
       $oDaoObsTransferencia->alterar($oDaoObsTransferencia->ed283_i_codigo);
 
       if ($oDaoObsTransferencia->erro_status == '0') {
-
         throw new Exception("Erro na alteração na tabela ObsTransferencia. Erro da classe: ".
                             $oDaoObsTransferencia->erro_msg
                            );
 
       }//fecha o erro_status
-
     } else {
-
       if ($obs != "") {
-
         $oDaoObsTransferencia->ed283_i_escola       = $iEscola;
         $oDaoObsTransferencia->ed283_c_bolsafamilia = $ed283_c_bolsafamilia;
         $oDaoObsTransferencia->ed283_t_mensagem     = $obs;
         $oDaoObsTransferencia->incluir(null);
 
         if ($oDaoObsTransferencia->erro_status == '0') {
-
           throw new Exception("Erro na alteração na tabela ObsTransferencia. Erro da classe: ".
                               $oDaoObsTransferencia->erro_msg
                              );
-
         }//fecha o erro_status
-
       }//fecha o if obs!=""
-
     }//fecha o else
-
 
     db_fim_transacao();
     //db_msgbox('Transferência efetuada com sucesso!');
     //db_redireciona('edu1_transfescolarede001.php');
     //exit;
-
   } catch (Exception $oE) {
-
     db_fim_transacao(true);
     db_msgbox(str_replace("'", "\'", $oE->getMessage()));
     db_redireciona('edu1_transfescolarede001.php');
-
   }
-
 }//fecha o incluir
 ?>
 <html>
@@ -255,10 +231,11 @@ if (isset($incluir)) {
   <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta http-equiv="Expires" CONTENT="0">
-  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-  <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
-  <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-  <script language="JavaScript" type="text/javascript" src="scripts/webseller.js"></script>
+  <script type="text/javascript" src="scripts/scripts.js"></script>
+  <script type="text/javascript" src="scripts/strings.js"></script>
+  <script type="text/javascript" src="scripts/prototype.js"></script>
+  <script type="text/javascript" src="scripts/webseller.js"></script>
+  <script type="text/javascript" src="scripts/EmissaoRelatorio.js"></script>
   <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -277,7 +254,7 @@ if (isset($incluir)) {
         <br>
         <center>
         <fieldset style="width:95%"><legend><b>Transferência entre escolas da rede municipal</b></legend>
-          <? include("forms/db_frmtransfescolarede.php"); ?>
+          <? include(modification("forms/db_frmtransfescolarede.php")); ?>
         </fieldset>
         </center>
       </td>
@@ -317,11 +294,19 @@ if (isset($incluir)) {
     $alunos = $oDaoTransfEscolaRede->ed103_i_codigo;
     ?>
     <script>
-     jan = window.open('edu2_guiatransf002.php?alunos=<?=$alunos?>&tipo=TR&diretor=<?=$diretor?>'+
-                     '&bolsafamilia=<?=$ed283_c_bolsafamilia?>&obs=<?=$obs?>','',
-                     'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 '
-                    );
-     jan.moveTo(0,0);
+
+      var oParametros = {
+        'alunos'       : <?=$alunos?>,
+        'tipo'         : 'TR',
+        'diretor'      : '<?=$oPost->diretor?>',
+        'bolsafamilia' : <?=$ed283_c_bolsafamilia?>,
+        'obs'          : '<?=$obs?>',
+        'formato'      : document.getElementById('formato').value,
+        'notificar'    : 'sim'
+      };
+
+      var oGuiaTransferencia = new EmissaoRelatorio('edu2_guiatransf002.php', oParametros);
+          oGuiaTransferencia.open();
     </script>
     <?
     db_redireciona("edu1_transfescolarede001.php");

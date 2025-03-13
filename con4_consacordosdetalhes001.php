@@ -1,40 +1,40 @@
 <?php
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (c) 2014  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("std/db_stdClass.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("dbforms/verticalTab.widget.php");
-require_once ("model/Acordo.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/verticalTab.widget.php"));
+require_once(modification("model/Acordo.model.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -48,7 +48,6 @@ $oGet = db_utils::postMemory($_GET);
   db_app::load("estilos.css, grid.style.css,tab.style.css");
 ?>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="js_grvDetalhes();">
 <center>
@@ -103,7 +102,7 @@ function js_retornoCompletaPesquisa(oAjax) {
   aDadosHintGrid = new Array();
   js_removeObj('msgBox');
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 1) {
 
@@ -179,7 +178,6 @@ function js_retornoCompletaPesquisa(oAjax) {
                   aRow[6] = oDado.vlrUnit;
                   aRow[7] = oDado.vlrTotal;
                   oGrvDetalhes.addRow(aRow);
-                  oGrvDetalhes.aRows[iInd].sEvents += "onDblclick='js_showInfoItem("+iInd+")'";
 
                   var sTextEvent  = "<b>Unidade: </b>"+oDado.unidademed+"</br>";
                       sTextEvent += "<b>Elemento: </b>"+oDado.elemento+"</br>";
@@ -197,7 +195,7 @@ function js_retornoCompletaPesquisa(oAjax) {
 
                break;
 
-               case 'empenhamentos':
+                case 'empenhamentos':
                   var aRow = new Array();
 
                   aRow[0] = '<a href="#" onclick="parent.js_detalhesAutorizacao('+oDado.codigoAutorizacao+');">'
@@ -206,8 +204,12 @@ function js_retornoCompletaPesquisa(oAjax) {
                             +oDado.empenho+'</a>';
                   aRow[2] = js_formatar(oDado.dataEmissao,'d');
                   aRow[3] = js_formatar(oDado.dataAnulacao,'d');
-                  aRow[4] = oDado.valor;
+                  let valorEmpenho  = new Intl.NumberFormat(
+                      'pt-BR',
+                      { style: 'currency', currency: 'BRL' }
+                  ).format(oDado.e54_valor);
 
+                  aRow[4] = valorEmpenho;
 
                   oGrvDetalhes.addRow(aRow);
                break;
@@ -223,7 +225,6 @@ function js_retornoCompletaPesquisa(oAjax) {
                   aRow[5] = oDado.emergencial == false ? 'Não' : 'Sim';
 
                   oGrvDetalhes.addRow(aRow);
-                  oGrvDetalhes.aRows[iInd].sEvents += 'ondblclick = "parent.js_openPrevisao('+oDado.codigo+');"';
 
                break;
 
@@ -285,6 +286,7 @@ function js_retornoCompletaPesquisa(oAjax) {
             oDBHint.setShowEvents(aEventsIn);
             oDBHint.setHideEvents(aEventsOut);
             oDBHint.setPosition('B', 'L');
+            oDBHint.setUseMouse(true);
             oDBHint.make($(oHint.idLinha));
           });
         }
@@ -311,9 +313,9 @@ function js_grvDetalhes() {
 
       oGrvDetalhes = new DBGrid('detalhes');
       oGrvDetalhes.nameInstance = 'oGrvDetalhes';
-      oGrvDetalhes.setCellWidth(new Array('5%', '5%', '20%', '30%', '10%', '10%', '10%', '10%'));
-      oGrvDetalhes.setCellAlign(new Array('left', 'right', 'left' , 'left', 'right', 'right', 'right', 'right'));
-      oGrvDetalhes.setHeader(new Array('Ordem','Código','Adit.','Descrição','Quantidade','Unidade','Valor Unitário','Valor Total'));
+      oGrvDetalhes.setCellWidth(['5%', '5%', '20%', '30%', '10%', '10%', '10%', '10%']);
+      oGrvDetalhes.setCellAlign(['left', 'right', 'left' , 'left', 'right', 'right', 'right', 'right']);
+      oGrvDetalhes.setHeader(['Ordem','Código','Adit.','Descrição','Quantidade','Unidade','Valor Unitário','Valor Total']);
       oGrvDetalhes.setHeight(230);
       oGrvDetalhes.hasTotalizador = true;
       oGrvDetalhes.show($('grvDetalhes'));
@@ -383,7 +385,7 @@ function js_grvDetalhes() {
 
       oGrvDetalhes = new DBGrid('detalhes');
       oGrvDetalhes.nameInstance = 'oGrvDetalhes';
-      oGrvDetalhes.setCellWidth(new Array('10%', '15%','10%', '35%', '15%', '15%'));
+      oGrvDetalhes.setCellWidth(new Array('5%', '25%','10%', '30%', '15%', '15%'));
       oGrvDetalhes.setCellAlign(new Array('center', 'center', 'center', 'left', 'center', 'center'));
       oGrvDetalhes.setHeader(new Array('Código', 'Vigência', 'Número', 'Situação', 'Data', 'Emergencial'));
       oGrvDetalhes.setHeight(230);
@@ -472,7 +474,7 @@ function js_documentoDownload(iCodigoDocumento) {
 function js_downloadDocumento(oAjax) {
 
   js_removeObj("msgbox");
-  var oRetorno = eval('('+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 2) {
      alert("Não foi possivel carregar o documento:\n "+ oRetorno.message);
   }

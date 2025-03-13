@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-//include ("fpdf151/fpdf.php");
-include ("libs/db_utils.php");
-include ("libs/db_sql.php");
-require_once("classes/db_ppadotacao_classe.php");
-require_once("classes/db_ppaestimativa_classe.php");
-require_once("model/ppaVersao.model.php");
+include(modification("fpdf151/pdf.php"));
+//include(modification("fpdf151/fpdf.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_sql.php"));
+require_once(modification("classes/db_ppadotacao_classe.php"));
+require_once(modification("classes/db_ppaestimativa_classe.php"));
+require_once(modification("model/ppaVersao.model.php"));
 
 $oGet = db_utils::postMemory($_GET);
 $iModelo = $oGet->iModelo;
@@ -241,7 +241,7 @@ if ( $oGet->selforma == "s" ) {
     if ($controle && $iPrograma != $oEstimativa->iPrograma) {
      $pdf->addpage("L");
     }
-		validaNovaPagina(&$pdf, 40); 
+		validaNovaPagina($pdf, 40); 
 	  $pdf->setfont('arial','B', 8);
 	  $pdf->cell(18,$alt, "Programa:",0,0,"L");
 	  $pdf->cell(10,$alt,str_pad($oEstimativa->iPrograma, 4, '0', STR_PAD_LEFT) , 0, 0, "R"); 
@@ -272,7 +272,10 @@ if ( $oGet->selforma == "s" ) {
 	      $pdf->Cell(26,$alt,"Unidade Medida"  					,"TRL" ,0,"C",1);
 	      $pdf->Cell(26,$alt,"Ano"    					,"TRBL" ,0,"C",1);
 	      $pdf->Cell(40,$alt,"Metas"    					,"TRL" ,0,"C",1);
-	      $pdf->Cell(40,$alt,"Valor R$"    					,"TL" ,1,"C",1);
+        if ($imprimevalores == 1) {
+  	      $pdf->Cell(40,$alt,"Valor R$"    					,"TL" ,0,"C",1);
+        }
+        $pdf->ln();
 	      $iPosYAntes  = $pdf->GetY();
 	    	
 	      $pdf->setfont('arial','', 8);
@@ -312,7 +315,10 @@ if ( $oGet->selforma == "s" ) {
 	  	    $pdf->SetX(176);
 	  	    $pdf->Cell(26,$alt,$iExercicio  			     			,"BR" ,0,"C",0);
 	  	    $pdf->Cell(40,$alt,$aDadosExerc['nQuantFisica']	,"TBR",0,"R",0);
-	  	    $pdf->Cell(40,$alt,db_formatar($aDadosExerc['nValor'],$tipo)	,"TBL",1,"R",0);
+          if ($imprimevalores == 1) {
+	  	      $pdf->Cell(40,$alt,db_formatar($aDadosExerc['nValor'],$tipo)	,"TBL",0,"R",0);
+          }
+          $pdf->ln();
 	  	    $iLinhasExerc++;
 	  
 	      }
@@ -327,13 +333,16 @@ if ( $oGet->selforma == "s" ) {
 	  	    $pdf->Cell(26,$alt,"",$sBorda ,0);
 	  	    $pdf->Cell(26,$alt,"",$sBorda ,0);
 	  	    $pdf->Cell(26,$alt,"",$sBorda ,0);
-	        $pdf->Cell(26,$alt,"",$sBorda ,1);
+	        $pdf->Cell(26,$alt,"",$sBorda ,0);
+          $pdf->ln();
 	      }	
 	  	  $pdf->setfont('arial','B', 8);	
 	  	  $pdf->Cell(192,$alt,"Total da ação para os exercícios" ,"TBR",0,"R",0);
 	  	  $pdf->setfont('arial','' , 8);
 	  	  $pdf->Cell(40 ,$alt, $nTotalMetas ,"TBR",0,"R",0);
-	  	  $pdf->Cell(40 ,$alt,db_formatar($nTotalGeral,"f")	   ,"TBL",1,"R",0);  	
+        if ($imprimevalores == 1) {
+	  	    $pdf->Cell(40 ,$alt,db_formatar($nTotalGeral,"f")	   ,"TBL",1,"R",0);
+        }
 	      $pdf->setfont('arial','B', 8);
 	      $pdf->ln();
 	  	}
@@ -342,29 +351,34 @@ if ( $oGet->selforma == "s" ) {
     /**
      * Escrevemos o Totalizador do Programa
      */
-    validaNovaPagina($pdf, 40);
-    $pdf->Cell(193,$alt,""          ,"TBR",0,"C",0);
-    $pdf->Cell(40 ,$alt,"Ano"       ,"TBR",0,"C",0);
-    $pdf->Cell(40 ,$alt,"Valor"       ,"TBR",1,"C",0);
+
+    if ($imprimevalores == 1) {
+      validaNovaPagina($pdf, 40);
+      $pdf->Cell(193,$alt,""          ,"TBR",0,"C",0);
+      $pdf->Cell(40 ,$alt,"Ano"       ,"TBR",0,"C",0);
+      $pdf->Cell(40 ,$alt,"Valor"       ,"TBR",1,"C",0);
+      
+      $iY = $pdf->getY();
+      $pdf->Cell(193,$alt*4," TOTAL PROGRAMA","TBR",1,"C",0);
+      $pdf->setY($iY);
     
-    $iY = $pdf->getY();
-    $pdf->Cell(193,$alt*4," TOTAL PROGRAMA","TBR",1,"C",0);
-    $pdf->setY($iY);
-  
-    foreach ( $aTotalAcoes[$oEstimativa->iPrograma] as $iExercicio => $aDados ) {
-        
-      $nTotalValor     = $aDados;
-      $nTotalGeral     += $nTotalValor;
-      $pdf->SetX(203);
-      $pdf->Cell(40,$alt,$iExercicio                           ,"BR" ,0,"C",0);
-      $pdf->Cell(40,$alt,db_formatar($nTotalValor,"f")        ,"TB" ,1,"R",0);
-        
+      foreach ( $aTotalAcoes[$oEstimativa->iPrograma] as $iExercicio => $aDados ) {
+          
+        $nTotalValor     = $aDados;
+        $nTotalGeral     += $nTotalValor;
+        $pdf->SetX(203);
+        $pdf->Cell(40,$alt,$iExercicio                           ,"BR" ,0,"C",0);
+        $pdf->Cell(40,$alt,db_formatar($nTotalValor,"f")        ,"TB" ,1,"R",0);
+          
+      }
+      $pdf->Cell(193,$alt,"Total dos Exercícios","TBR",0,"C",0);
+      $pdf->Cell(40,$alt,""                               ,"BR" ,0,"C",0);
+      $pdf->Cell(40,$alt,db_formatar($nTotalGeral,"f")  ,"TB" ,1,"R",0);
+      $pdf->ln();
     }
-    $pdf->Cell(193,$alt,"Total dos Exercícios","TBR",0,"C",0);
-    $pdf->Cell(40,$alt,""                               ,"BR" ,0,"C",0);
-    $pdf->Cell(40,$alt,db_formatar($nTotalGeral,"f")  ,"TB" ,1,"R",0);
-    $pdf->ln();
+
     $iPrograma = $oEstimativa->iPrograma;
+
 	}
 
 /*
@@ -453,7 +467,7 @@ if ( $oGet->selforma == "s" ) {
   		$sSqlOrgaos         = $oDaoProgramaOrgao->sql_query(null,"o40_orgao, o40_descr", "o40_orgao",$sWhere);
   		$rsOrgaos           = $oDaoProgramaOrgao->sql_record($sSqlOrgaos);
 			//$pdf->ln();
-			$aOrgaos            = db_utils::getColectionByRecord($rsOrgaos);
+			$aOrgaos            = db_utils::getCollectionByRecord($rsOrgaos);
 			
 			/**
        * Consultamos os orgaos que estao vinculados a esse programa possui 
@@ -467,7 +481,7 @@ if ( $oGet->selforma == "s" ) {
       $rsUnidades           = $oDaoProgramaUnidade->sql_record($sSqlUnidades);
       //$pdf->ln();
       
-      $aUnidades            = db_utils::getColectionByRecord($rsUnidades);
+      $aUnidades            = db_utils::getCollectionByRecord($rsUnidades);
 			$pdf->setfont('arial','B', 8);
   		$pdf->cell(60,$alt, "Tipo de Programa:",0,0,"L");
   		$pdf->setfont('arial','', 8);
@@ -843,42 +857,49 @@ if ( $oGet->selforma == "s" ) {
 	}
 	
 }
+
 /**
  * Totalizador Geral
  */
 $pdf->ln();
-validaNovaPagina($pdf, 35);
-$pdf->Cell(193,$alt,""          ,"TBR",0,"C",0);
-$pdf->Cell(40 ,$alt,"Ano"       ,"TBR",0,"C",0);
-$pdf->Cell(40 ,$alt,"Valor"       ,"TBR",1,"C",0);
-  
-$iY = $pdf->getY();
-$pdf->Cell(193,$alt*4," TOTAL GERAL","TBR",1,"C",0);
-$pdf->setY($iY);
-$nTotalGeral = 0;  
-foreach ( $aTotalAcoes as $oProjativ) {
-        
-  foreach ( $oProjativ as $iExercicio => $aDados ) {
-        
-    $nTotalValor     = $aDados;
-    $nTotalGeral     += $nTotalValor;
-    if (isset($aTotalFinal[$iExercicio])) {
-      $aTotalFinal[$iExercicio] += $nTotalValor; 
-    } else {
-      $aTotalFinal[$iExercicio]  = $nTotalValor;
+
+if ($imprimevalores == 1) {
+
+  validaNovaPagina($pdf, 35);
+  $pdf->Cell(193,$alt,""          ,"TBR",0,"C",0);
+  $pdf->Cell(40 ,$alt,"Ano"       ,"TBR",0,"C",0);
+  $pdf->Cell(40 ,$alt,"Valor"       ,"TBR",1,"C",0);
+    
+  $iY = $pdf->getY();
+  $pdf->Cell(193,$alt*4," TOTAL GERAL","TBR",1,"C",0);
+  $pdf->setY($iY);
+  $nTotalGeral = 0;  
+  foreach ( $aTotalAcoes as $oProjativ) {
+          
+    foreach ( $oProjativ as $iExercicio => $aDados ) {
+          
+      $nTotalValor     = $aDados;
+      $nTotalGeral     += $nTotalValor;
+      if (isset($aTotalFinal[$iExercicio])) {
+        $aTotalFinal[$iExercicio] += $nTotalValor; 
+      } else {
+        $aTotalFinal[$iExercicio]  = $nTotalValor;
+      }
     }
   }
+  foreach ( $aTotalFinal as $iExercicio => $nTotalValor) {
+    
+    $pdf->SetX(203);
+    $pdf->Cell(40,$alt,$iExercicio                           ,"BR" ,0,"C",0);
+    $pdf->Cell(40,$alt,db_formatar($nTotalValor,"f")        ,"TB" ,1,"R",0);
+    
+  }
+  $pdf->Cell(193,$alt,"Total dos Exercícios","TBR",0,"C",0);
+  $pdf->Cell(40,$alt,""                               ,"BR" ,0,"C",0);
+  $pdf->Cell(40,$alt,db_formatar($nTotalGeral,"f")  ,"TB" ,1,"R",0);
+
 }
-foreach ( $aTotalFinal as $iExercicio => $nTotalValor) {
-  
-  $pdf->SetX(203);
-  $pdf->Cell(40,$alt,$iExercicio                           ,"BR" ,0,"C",0);
-  $pdf->Cell(40,$alt,db_formatar($nTotalValor,"f")        ,"TB" ,1,"R",0);
-  
-}
-$pdf->Cell(193,$alt,"Total dos Exercícios","TBR",0,"C",0);
-$pdf->Cell(40,$alt,""                               ,"BR" ,0,"C",0);
-$pdf->Cell(40,$alt,db_formatar($nTotalGeral,"f")  ,"TB" ,1,"R",0);
+
 $pdf->Output();
 
 

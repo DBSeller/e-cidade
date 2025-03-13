@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_aguabase_classe.php");
-include("classes/db_aguabasecar_classe.php");
-include("classes/db_caracter_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_aguabase_classe.php"));
+include(modification("classes/db_aguabasecar_classe.php"));
+include(modification("classes/db_caracter_classe.php"));
 
 $claguabase = new cl_aguabase;
 $claguabasecar = new cl_aguabasecar;
@@ -67,7 +67,7 @@ db_postmemory($HTTP_POST_VARS);
     <br><br>
     <center>
 	<?
-	include("forms/db_frmaguabase_alteracao_serie.php");
+	include(modification("forms/db_frmaguabase_alteracao_serie.php"));
 	?>
     </center>
     </td>
@@ -117,7 +117,7 @@ if(isset($processa)) {
 		and     aguabase.x01_numero between $x99_numero_inicial and $x99_numero_final
 		and     caracter.j31_grupo  in (82, 83)";
 
-	$result = pg_query($sql);
+	$result = db_query($sql);
 	$rows = pg_num_rows($result);
 
 	if($rows == 0) {

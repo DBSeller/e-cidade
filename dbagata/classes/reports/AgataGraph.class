@@ -262,8 +262,8 @@ class AgataGraph
         
         if ($this->posAction)
         {
-            $obj = &$this->posAction[0];
-            $att = &$this->posAction[1];
+            $obj = $this->posAction[0];
+            $att = $this->posAction[1];
             
             $obj->{$att}();
         }
@@ -429,8 +429,8 @@ class AgataGraph
         
         if ($this->posAction)
         {
-            $obj = &$this->posAction[0];
-            $att = &$this->posAction[1];
+            $obj = $this->posAction[0];
+            $att = $this->posAction[1];
             
             $obj->{$att}();
         }

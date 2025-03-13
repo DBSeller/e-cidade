@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,8 +30,8 @@
  *
  * @author   Rafael Serpa Nery rafael.nery@dbseller.com.br
  * @package  Recursos Humanos
- * @revision $Author: dbrafael.nery $
- * @version  $Revision: 1.4 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version  $Revision: 1.7 $
  */
 
 class Promocao {
@@ -92,7 +92,7 @@ class Promocao {
    */
   public  function __construct($iCodigoPromocao = null) {
 
-    require_once('classes/db_rhpromocao_classe.php');
+    require_once(modification('classes/db_rhpromocao_classe.php'));
     $this->setParametrosRecursosHumanos();
 
     if ( !is_null($iCodigoPromocao) ) {
@@ -310,7 +310,7 @@ class Promocao {
     if ( empty($this->iCodigoPromocao ) ) {
       throw new Exception("Código da Promoção não Está Definido");
     }
-    require_once('model/recursosHumanos/AvaliacaoRecursosHumanos.model.php');
+    require_once(modification('model/recursosHumanos/AvaliacaoRecursosHumanos.model.php'));
 
   	$iAvaliacao = count($this->getAvaliacoes());
   	
@@ -353,7 +353,7 @@ class Promocao {
     if ( empty($this->iCodigoPromocao ) ) {
       throw new Exception("Código da Promoção não Está Definido");
     }
-    require_once ("classes/db_rhpromocaocurso_classe.php");
+    require_once(modification("classes/db_rhpromocaocurso_classe.php"));
     
     $oDaoPromocaoCurso = new cl_rhpromocaocurso();
     $oDaoPromocaoCurso->h74_rhpromocao = $this->getCodigoPromocao();
@@ -373,8 +373,8 @@ class Promocao {
       throw new Exception("Código da Promoção não Está Definido");
     }
     
-    require_once ("classes/db_rhavaliacao_classe.php");
-    require_once ("model/recursosHumanos/AvaliacaoRecursosHumanos.model.php");
+    require_once(modification("classes/db_rhavaliacao_classe.php"));
+    require_once(modification("model/recursosHumanos/AvaliacaoRecursosHumanos.model.php"));
     
     $oDaoRHAvaliacao = new cl_rhavaliacao();
     $sSqlAvaliacoes  = $oDaoRHAvaliacao->sql_query_file(null, "h73_sequencial", null," h73_rhpromocao = {$this->getCodigoPromocao()}");
@@ -409,7 +409,7 @@ class Promocao {
   	if ( empty($this->iCodigoPromocao ) ) {
   		throw new Exception("Código da Promoção não Está Definido");
   	}
-  	require_once('model/recursosHumanos/AvaliacaoRecursosHumanos.model.php');
+  	require_once(modification('model/recursosHumanos/AvaliacaoRecursosHumanos.model.php'));
 
   	$oAvaliacao         = new AvaliacaoRecursosHumanos( $this->getCodigoPromocao(), $iAvaliacoesCancelar );
   	$oAvaliacaoExclusao = $oAvaliacao->remover();
@@ -422,7 +422,7 @@ class Promocao {
   public function removerPromocaoCurso($aRhPromocaoCurso){
   	
 	  	$sListaExclusao = implode(", ", $aRhPromocaoCurso);
-	  	require_once("classes/db_rhpromocaocurso_classe.php");
+	  	require_once(modification("classes/db_rhpromocaocurso_classe.php"));
 	  	$oDaoRhpromocaocurso = new cl_rhpromocaocurso();
 	  	$oDaoRhpromocaocurso->excluir(null, "h74_sequencial in  ({$sListaExclusao})");
 	  	if ($oDaoRhpromocaocurso->erro_status == 0) {
@@ -440,7 +440,7 @@ class Promocao {
    */
   public function setParametrosRecursosHumanos(){
   	
-  	require_once("classes/db_rhparam_classe.php");
+  	require_once(modification("classes/db_rhparam_classe.php"));
   	$oDaoRhParam = new cl_rhparam();
   	$sSqlParametros = $oDaoRhParam->sql_query_file(null, "h36_intersticio, h36_pontuacaominpromocao", null, null);
   	$rsParametros   = $oDaoRhParam->sql_record($sSqlParametros);
@@ -459,7 +459,7 @@ class Promocao {
    */
   public function fechamentoPromocao($iTotalPontos, $aAssentamentos){
 
-    require_once("model/recursosHumanos/PromocaoFechamento.model.php");
+    require_once(modification("model/recursosHumanos/PromocaoFechamento.model.php"));
     
     if ( !db_utils::inTransaction() ) {
       throw new Exception("Fechamento Promoção: \nNão Existe Transação Ativa.");

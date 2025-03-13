@@ -1,6 +1,6 @@
 <?
 define('FPDF_FONTPATH','fpdf151/font/');
-require('fpdf151/fpdf.php');
+require(modification('fpdf151/fpdf.php'));
 
 class scpdf extends fpdf {
 

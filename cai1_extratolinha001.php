@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("classes/db_extratolinha_classe.php");
-include("classes/db_extrato_classe.php");
-include("classes/db_extratosaldo_classe.php");
-include("classes/db_concilia_classe.php");
-include("classes/db_conciliapendextrato_classe.php");
-include("classes/db_conciliaextrato_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_extratolinha_classe.php"));
+include(modification("classes/db_extrato_classe.php"));
+include(modification("classes/db_extratosaldo_classe.php"));
+include(modification("classes/db_concilia_classe.php"));
+include(modification("classes/db_conciliapendextrato_classe.php"));
+include(modification("classes/db_conciliaextrato_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clextratolinha    = new cl_extratolinha;
@@ -363,7 +363,7 @@ if (isset($incluir)) {
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
 	<?
-	include("forms/db_frmextratolinha.php");
+	include(modification("forms/db_frmextratolinha.php"));
 	?>
 	</td>
   </tr>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,11 +26,11 @@
  */
 
   //MODULO: agua
-  require_once("dbforms/db_classesgenericas.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("dbforms/db_classesgenericas.php");
-  require_once("libs/db_utils.php");
-  require_once ("libs/db_app.utils.php");
+  require_once(modification("dbforms/db_classesgenericas.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("dbforms/db_classesgenericas.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_app.utils.php"));
   
   db_app::load('scripts.js, prototype.js, strings.js, datagrid.widget.js');
   db_app::load('estilos.css, grid.style.css');
@@ -140,13 +140,13 @@
     
     if (mostra == true) {
       
-      js_OpenJanelaIframe('top.corpo.iframe_aguacondominiomat', 'db_iframe_aguabase', 
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacondominiomat', 'db_iframe_aguabase', 
         'func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|z01_nome', 'Pesquisa', true);
     } else {
       
       if (document.form1.x40_matric.value != '') {
         
-        js_OpenJanelaIframe('top.corpo.iframe_aguacondominiomat', 'db_iframe_aguabase', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacondominiomat', 'db_iframe_aguabase', 
           'func_aguabase.php?pesquisa_chave='+document.form1.x40_matric.value+'&funcao_js=parent.js_mostraaguabase', 'Pesquisa', false);
       } else {
         
@@ -180,14 +180,14 @@
     
     if (mostra == true) {
       
-      js_OpenJanelaIframe('top.corpo.iframe_aguacondominiomat', 'db_iframe_aguacondominio', 
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacondominiomat', 'db_iframe_aguacondominio', 
         'func_aguacondominio.php?funcao_js=parent.js_mostraaguacondominio1|x31_codcondominio|x31_matric',
         'Pesquisa', true);
     } else {
       
       if (document.form1.x40_codcondominio.value != '') {
         
-        js_OpenJanelaIframe('top.corpo.iframe_aguacondominiomat','db_iframe_aguacondominio',
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacondominiomat','db_iframe_aguacondominio',
           'func_aguacondominio.php?pesquisa_chave='+document.form1.x40_codcondominio.value+'&funcao_js=parent.js_mostraaguacondominio',
           'Pesquisa', false);
       } else {
@@ -274,7 +274,7 @@
     
     js_removeObj('msgbox');
     
-    var oRetorno  = eval("(" + oAjax.responseText + ")");
+    var oRetorno  = JSON.parse(oAjax.responseText);
     
     oGrid.clearAll(true);
     
@@ -331,7 +331,7 @@
   function js_retorno(oAjax) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 1) {
     
       js_init_table();

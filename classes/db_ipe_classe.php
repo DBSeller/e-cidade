@@ -1,90 +1,90 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: pessoal
 //CLASSE DA ENTIDADE ipe
-class cl_ipe { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $r36_instit = 0; 
-   var $r36_anousu = 0; 
-   var $r36_mesusu = 0; 
-   var $r36_sequencia = 0; 
-   var $r36_numcgm = 0; 
-   var $r36_regist = 0; 
-   var $r36_dtvinc_dia = null; 
-   var $r36_dtvinc_mes = null; 
-   var $r36_dtvinc_ano = null; 
-   var $r36_dtvinc = null; 
-   var $r36_matric = 0; 
-   var $r36_estado = null; 
-   var $r36_dtalt_dia = null; 
-   var $r36_dtalt_mes = null; 
-   var $r36_dtalt_ano = null; 
-   var $r36_dtalt = null; 
-   var $r36_contr1 = 0; 
-   var $r36_valorc = 0; 
-   var $r36_contrato = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_ipe {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $r36_instit = 0;
+   var $r36_anousu = 0;
+   var $r36_mesusu = 0;
+   var $r36_sequencia = 0;
+   var $r36_numcgm = 0;
+   var $r36_regist = 0;
+   var $r36_dtvinc_dia = null;
+   var $r36_dtvinc_mes = null;
+   var $r36_dtvinc_ano = null;
+   var $r36_dtvinc = null;
+   var $r36_matric = 0;
+   var $r36_estado = null;
+   var $r36_dtalt_dia = null;
+   var $r36_dtalt_mes = null;
+   var $r36_dtalt_ano = null;
+   var $r36_dtalt = null;
+   var $r36_contr1 = 0;
+   var $r36_valorc = 0;
+   var $r36_contrato = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 r36_instit = int4 = Cod. Instituição 
-                 r36_anousu = int4 = Ano 
-                 r36_mesusu = int4 = Mes do Exercicio 
-                 r36_sequencia = int4 = Sequencial 
-                 r36_numcgm = int4 = Numero CGM 
-                 r36_regist = int4 = Codigo do Funcionario 
-                 r36_dtvinc = date = Data do Vinculo com IPE 
-                 r36_matric = int8 = Matricula do IPE 
-                 r36_estado = varchar(2) = Estado 
-                 r36_dtalt = date = Data da alteracao da Situacao 
-                 r36_contr1 = float8 = Valor 
-                 r36_valorc = float8 = Valor contribuicao funcionario 
-                 r36_contrato = int8 = Contrato 
+                 r36_instit = int4 = Cod. Instituição
+                 r36_anousu = int4 = Ano
+                 r36_mesusu = int4 = Mes do Exercicio
+                 r36_sequencia = int4 = Sequencial
+                 r36_numcgm = int4 = Numero CGM
+                 r36_regist = int4 = Codigo do Funcionario
+                 r36_dtvinc = date = Data do Vinculo com IPE
+                 r36_matric = int8 = Matricula do IPE
+                 r36_estado = varchar(2) = Estado
+                 r36_dtalt = date = Data da alteracao da Situacao
+                 r36_contr1 = float8 = Valor
+                 r36_valorc = float8 = Valor contribuicao funcionario
+                 r36_contrato = int8 = Contrato
                  ";
-   //funcao construtor da classe 
-   function cl_ipe() { 
+   //funcao construtor da classe
+   function cl_ipe() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("ipe"); 
+     $this->rotulo = new rotulo("ipe");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -130,9 +130,9 @@ class cl_ipe {
      }
    }
    // funcao para inclusao
-   function incluir ($r36_anousu,$r36_mesusu,$r36_sequencia,$r36_instit){ 
+   function incluir ($r36_anousu,$r36_mesusu,$r36_sequencia,$r36_instit){
       $this->atualizacampos();
-     if($this->r36_numcgm == null ){ 
+     if($this->r36_numcgm == null ){
        $this->erro_sql = " Campo Numero CGM nao Informado.";
        $this->erro_campo = "r36_numcgm";
        $this->erro_banco = "";
@@ -141,10 +141,10 @@ class cl_ipe {
        $this->erro_status = "0";
        return false;
      }
-     if($this->r36_regist == null ){ 
+     if($this->r36_regist == null ){
        $this->r36_regist = "0";
      }
-     if($this->r36_dtvinc == null ){ 
+     if($this->r36_dtvinc == null ){
        $this->erro_sql = " Campo Data do Vinculo com IPE nao Informado.";
        $this->erro_campo = "r36_dtvinc_dia";
        $this->erro_banco = "";
@@ -153,10 +153,10 @@ class cl_ipe {
        $this->erro_status = "0";
        return false;
      }
-     if($this->r36_matric == null ){ 
+     if($this->r36_matric == null ){
        $this->r36_matric = "0";
      }
-     if($this->r36_estado == null ){ 
+     if($this->r36_estado == null ){
        $this->erro_sql = " Campo Estado nao Informado.";
        $this->erro_campo = "r36_estado";
        $this->erro_banco = "";
@@ -165,23 +165,23 @@ class cl_ipe {
        $this->erro_status = "0";
        return false;
      }
-     if($this->r36_dtalt == null ){ 
+     if($this->r36_dtalt == null ){
        $this->r36_dtalt = "null";
      }
-     if($this->r36_contr1 == null ){ 
+     if($this->r36_contr1 == null ){
        $this->r36_contr1 = "0";
      }
-     if($this->r36_valorc == null ){ 
+     if($this->r36_valorc == null ){
        $this->r36_valorc = "0";
      }
-     if($this->r36_contrato == null ){ 
+     if($this->r36_contrato == null ){
        $this->r36_contrato = "0";
      }
-       $this->r36_anousu = $r36_anousu; 
-       $this->r36_mesusu = $r36_mesusu; 
-       $this->r36_sequencia = $r36_sequencia; 
-       $this->r36_instit = $r36_instit; 
-     if(($this->r36_anousu == null) || ($this->r36_anousu == "") ){ 
+       $this->r36_anousu = $r36_anousu;
+       $this->r36_mesusu = $r36_mesusu;
+       $this->r36_sequencia = $r36_sequencia;
+       $this->r36_instit = $r36_instit;
+     if(($this->r36_anousu == null) || ($this->r36_anousu == "") ){
        $this->erro_sql = " Campo r36_anousu nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -189,7 +189,7 @@ class cl_ipe {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->r36_mesusu == null) || ($this->r36_mesusu == "") ){ 
+     if(($this->r36_mesusu == null) || ($this->r36_mesusu == "") ){
        $this->erro_sql = " Campo r36_mesusu nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -197,7 +197,7 @@ class cl_ipe {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->r36_sequencia == null) || ($this->r36_sequencia == "") ){ 
+     if(($this->r36_sequencia == null) || ($this->r36_sequencia == "") ){
        $this->erro_sql = " Campo r36_sequencia nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -205,7 +205,7 @@ class cl_ipe {
        $this->erro_status = "0";
        return false;
      }
-     if(($this->r36_instit == null) || ($this->r36_instit == "") ){ 
+     if(($this->r36_instit == null) || ($this->r36_instit == "") ){
        $this->erro_sql = " Campo r36_instit nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -214,37 +214,37 @@ class cl_ipe {
        return false;
      }
      $sql = "insert into ipe(
-                                       r36_instit 
-                                      ,r36_anousu 
-                                      ,r36_mesusu 
-                                      ,r36_sequencia 
-                                      ,r36_numcgm 
-                                      ,r36_regist 
-                                      ,r36_dtvinc 
-                                      ,r36_matric 
-                                      ,r36_estado 
-                                      ,r36_dtalt 
-                                      ,r36_contr1 
-                                      ,r36_valorc 
-                                      ,r36_contrato 
+                                       r36_instit
+                                      ,r36_anousu
+                                      ,r36_mesusu
+                                      ,r36_sequencia
+                                      ,r36_numcgm
+                                      ,r36_regist
+                                      ,r36_dtvinc
+                                      ,r36_matric
+                                      ,r36_estado
+                                      ,r36_dtalt
+                                      ,r36_contr1
+                                      ,r36_valorc
+                                      ,r36_contrato
                        )
                 values (
-                                $this->r36_instit 
-                               ,$this->r36_anousu 
-                               ,$this->r36_mesusu 
-                               ,$this->r36_sequencia 
-                               ,$this->r36_numcgm 
-                               ,$this->r36_regist 
-                               ,".($this->r36_dtvinc == "null" || $this->r36_dtvinc == ""?"null":"'".$this->r36_dtvinc."'")." 
-                               ,$this->r36_matric 
-                               ,'$this->r36_estado' 
-                               ,".($this->r36_dtalt == "null" || $this->r36_dtalt == ""?"null":"'".$this->r36_dtalt."'")." 
-                               ,$this->r36_contr1 
-                               ,$this->r36_valorc 
-                               ,$this->r36_contrato 
+                                $this->r36_instit
+                               ,$this->r36_anousu
+                               ,$this->r36_mesusu
+                               ,$this->r36_sequencia
+                               ,$this->r36_numcgm
+                               ,$this->r36_regist
+                               ,".($this->r36_dtvinc == "null" || $this->r36_dtvinc == ""?"null":"'".$this->r36_dtvinc."'")."
+                               ,$this->r36_matric
+                               ,'$this->r36_estado'
+                               ,".($this->r36_dtalt == "null" || $this->r36_dtalt == ""?"null":"'".$this->r36_dtalt."'")."
+                               ,$this->r36_contr1
+                               ,$this->r36_valorc
+                               ,$this->r36_contrato
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Dados para I.P.E. ($this->r36_anousu."-".$this->r36_mesusu."-".$this->r36_sequencia."-".$this->r36_instit) nao Incluído. Inclusao Abortada.";
@@ -291,16 +291,16 @@ class cl_ipe {
        $resac = db_query("insert into db_acount values($acount,562,8870,'','".AddSlashes(pg_result($resaco,0,'r36_contrato'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($r36_anousu=null,$r36_mesusu=null,$r36_sequencia=null,$r36_instit=null) { 
+   function alterar ($r36_anousu=null,$r36_mesusu=null,$r36_sequencia=null,$r36_instit=null) {
       $this->atualizacampos();
      $sql = " update ipe set ";
      $virgula = "";
-     if(trim($this->r36_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_instit"])){ 
+     if(trim($this->r36_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_instit"])){
        $sql  .= $virgula." r36_instit = $this->r36_instit ";
        $virgula = ",";
-       if(trim($this->r36_instit) == null ){ 
+       if(trim($this->r36_instit) == null ){
          $this->erro_sql = " Campo Cod. Instituição nao Informado.";
          $this->erro_campo = "r36_instit";
          $this->erro_banco = "";
@@ -310,10 +310,10 @@ class cl_ipe {
          return false;
        }
      }
-     if(trim($this->r36_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_anousu"])){ 
+     if(trim($this->r36_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_anousu"])){
        $sql  .= $virgula." r36_anousu = $this->r36_anousu ";
        $virgula = ",";
-       if(trim($this->r36_anousu) == null ){ 
+       if(trim($this->r36_anousu) == null ){
          $this->erro_sql = " Campo Ano nao Informado.";
          $this->erro_campo = "r36_anousu";
          $this->erro_banco = "";
@@ -323,10 +323,10 @@ class cl_ipe {
          return false;
        }
      }
-     if(trim($this->r36_mesusu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_mesusu"])){ 
+     if(trim($this->r36_mesusu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_mesusu"])){
        $sql  .= $virgula." r36_mesusu = $this->r36_mesusu ";
        $virgula = ",";
-       if(trim($this->r36_mesusu) == null ){ 
+       if(trim($this->r36_mesusu) == null ){
          $this->erro_sql = " Campo Mes do Exercicio nao Informado.";
          $this->erro_campo = "r36_mesusu";
          $this->erro_banco = "";
@@ -336,10 +336,10 @@ class cl_ipe {
          return false;
        }
      }
-     if(trim($this->r36_sequencia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_sequencia"])){ 
+     if(trim($this->r36_sequencia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_sequencia"])){
        $sql  .= $virgula." r36_sequencia = $this->r36_sequencia ";
        $virgula = ",";
-       if(trim($this->r36_sequencia) == null ){ 
+       if(trim($this->r36_sequencia) == null ){
          $this->erro_sql = " Campo Sequencial nao Informado.";
          $this->erro_campo = "r36_sequencia";
          $this->erro_banco = "";
@@ -349,10 +349,10 @@ class cl_ipe {
          return false;
        }
      }
-     if(trim($this->r36_numcgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_numcgm"])){ 
+     if(trim($this->r36_numcgm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_numcgm"])){
        $sql  .= $virgula." r36_numcgm = $this->r36_numcgm ";
        $virgula = ",";
-       if(trim($this->r36_numcgm) == null ){ 
+       if(trim($this->r36_numcgm) == null ){
          $this->erro_sql = " Campo Numero CGM nao Informado.";
          $this->erro_campo = "r36_numcgm";
          $this->erro_banco = "";
@@ -362,17 +362,17 @@ class cl_ipe {
          return false;
        }
      }
-     if(trim($this->r36_regist)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_regist"])){ 
-        if(trim($this->r36_regist)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_regist"])){ 
-           $this->r36_regist = "0" ; 
-        } 
+     if(trim($this->r36_regist)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_regist"])){
+        if(trim($this->r36_regist)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_regist"])){
+           $this->r36_regist = "0" ;
+        }
        $sql  .= $virgula." r36_regist = $this->r36_regist ";
        $virgula = ",";
      }
-     if(trim($this->r36_dtvinc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_dtvinc_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["r36_dtvinc_dia"] !="") ){ 
+     if(trim($this->r36_dtvinc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_dtvinc_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["r36_dtvinc_dia"] !="") ){
        $sql  .= $virgula." r36_dtvinc = '$this->r36_dtvinc' ";
        $virgula = ",";
-       if(trim($this->r36_dtvinc) == null ){ 
+       if(trim($this->r36_dtvinc) == null ){
          $this->erro_sql = " Campo Data do Vinculo com IPE nao Informado.";
          $this->erro_campo = "r36_dtvinc_dia";
          $this->erro_banco = "";
@@ -381,11 +381,11 @@ class cl_ipe {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["r36_dtvinc_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["r36_dtvinc_dia"])){
          $sql  .= $virgula." r36_dtvinc = null ";
          $virgula = ",";
-         if(trim($this->r36_dtvinc) == null ){ 
+         if(trim($this->r36_dtvinc) == null ){
            $this->erro_sql = " Campo Data do Vinculo com IPE nao Informado.";
            $this->erro_campo = "r36_dtvinc_dia";
            $this->erro_banco = "";
@@ -396,17 +396,17 @@ class cl_ipe {
          }
        }
      }
-     if(trim($this->r36_matric)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_matric"])){ 
-        if(trim($this->r36_matric)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_matric"])){ 
-           $this->r36_matric = "0" ; 
-        } 
+     if(trim($this->r36_matric)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_matric"])){
+        if(trim($this->r36_matric)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_matric"])){
+           $this->r36_matric = "0" ;
+        }
        $sql  .= $virgula." r36_matric = $this->r36_matric ";
        $virgula = ",";
      }
-     if(trim($this->r36_estado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_estado"])){ 
+     if(trim($this->r36_estado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_estado"])){
        $sql  .= $virgula." r36_estado = '$this->r36_estado' ";
        $virgula = ",";
-       if(trim($this->r36_estado) == null ){ 
+       if(trim($this->r36_estado) == null ){
          $this->erro_sql = " Campo Estado nao Informado.";
          $this->erro_campo = "r36_estado";
          $this->erro_banco = "";
@@ -416,33 +416,33 @@ class cl_ipe {
          return false;
        }
      }
-     if(trim($this->r36_dtalt)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_dtalt_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["r36_dtalt_dia"] !="") ){ 
+     if(trim($this->r36_dtalt)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_dtalt_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["r36_dtalt_dia"] !="") ){
        $sql  .= $virgula." r36_dtalt = '$this->r36_dtalt' ";
        $virgula = ",";
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["r36_dtalt_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["r36_dtalt_dia"])){
          $sql  .= $virgula." r36_dtalt = null ";
          $virgula = ",";
        }
      }
-     if(trim($this->r36_contr1)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_contr1"])){ 
-        if(trim($this->r36_contr1)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_contr1"])){ 
-           $this->r36_contr1 = "0" ; 
-        } 
+     if(trim($this->r36_contr1)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_contr1"])){
+        if(trim($this->r36_contr1)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_contr1"])){
+           $this->r36_contr1 = "0" ;
+        }
        $sql  .= $virgula." r36_contr1 = $this->r36_contr1 ";
        $virgula = ",";
      }
-     if(trim($this->r36_valorc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_valorc"])){ 
-        if(trim($this->r36_valorc)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_valorc"])){ 
-           $this->r36_valorc = "0" ; 
-        } 
+     if(trim($this->r36_valorc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_valorc"])){
+        if(trim($this->r36_valorc)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_valorc"])){
+           $this->r36_valorc = "0" ;
+        }
        $sql  .= $virgula." r36_valorc = $this->r36_valorc ";
        $virgula = ",";
      }
-     if(trim($this->r36_contrato)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_contrato"])){ 
-        if(trim($this->r36_contrato)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_contrato"])){ 
-           $this->r36_contrato = "0" ; 
-        } 
+     if(trim($this->r36_contrato)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r36_contrato"])){
+        if(trim($this->r36_contrato)=="" && isset($GLOBALS["HTTP_POST_VARS"]["r36_contrato"])){
+           $this->r36_contrato = "0" ;
+        }
        $sql  .= $virgula." r36_contrato = $this->r36_contrato ";
        $virgula = ",";
      }
@@ -498,7 +498,7 @@ class cl_ipe {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Dados para I.P.E. nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->r36_anousu."-".$this->r36_mesusu."-".$this->r36_sequencia."-".$this->r36_instit;
@@ -526,14 +526,14 @@ class cl_ipe {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($r36_anousu=null,$r36_mesusu=null,$r36_sequencia=null,$r36_instit=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($r36_anousu=null,$r36_mesusu=null,$r36_sequencia=null,$r36_instit=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($r36_anousu,$r36_mesusu,$r36_sequencia,$r36_instit));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,null,null,null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -592,7 +592,7 @@ class cl_ipe {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Dados para I.P.E. nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$r36_anousu."-".$r36_mesusu."-".$r36_sequencia."-".$r36_instit;
@@ -620,11 +620,11 @@ class cl_ipe {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -646,7 +646,7 @@ class cl_ipe {
       }
      return $result;
    }
-   function sql_query ( $r36_anousu=null,$r36_mesusu=null,$r36_sequencia=null,$r36_instit=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $r36_anousu=null,$r36_mesusu=null,$r36_sequencia=null,$r36_instit=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -665,32 +665,32 @@ class cl_ipe {
      $sql2 = "";
      if($dbwhere==""){
        if($r36_anousu!=null ){
-         $sql2 .= " where ipe.r36_anousu = $r36_anousu "; 
-       } 
+         $sql2 .= " where ipe.r36_anousu = $r36_anousu ";
+       }
        if($r36_mesusu!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " ipe.r36_mesusu = $r36_mesusu "; 
-       } 
+         }
+         $sql2 .= " ipe.r36_mesusu = $r36_mesusu ";
+       }
        if($r36_sequencia!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " ipe.r36_sequencia = $r36_sequencia "; 
-       } 
+         }
+         $sql2 .= " ipe.r36_sequencia = $r36_sequencia ";
+       }
        if($r36_instit!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " ipe.r36_instit = $r36_instit "; 
-       } 
+         }
+         $sql2 .= " ipe.r36_instit = $r36_instit ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -727,7 +727,6 @@ class cl_ipe {
      $sql .= "      left  join rhpessoalmov on rhpessoalmov.rh02_regist   = rhiperegist.rh62_regist          \n";
      $sql .= "                             and rhpessoalmov.rh02_anousu   = ipe.r36_anousu                   \n";
      $sql .= "                             and rhpessoalmov.rh02_mesusu   = ipe.r36_mesusu                   \n";
-     $sql .= "                             and rhpessoalmov.rh02_instit   = ".db_getsession("DB_instit")."   \n";
      $sql .= "      left  join rhlota       on rhpessoalmov.rh02_lota     = rhlota.r70_codigo                \n";
 		 $sql .= "                             and rhpessoalmov.rh02_instit   = rhlota.r70_instit                \n";
      $sql2 = "";
@@ -766,79 +765,79 @@ class cl_ipe {
      }
      return $sql;
   }
-  
+
   function sql_query_relatorio_ipergs($iAno, $iMes, $iInstituicao, $sTipo, $lUnificado, $sListaLotacoes) {
-  
+
     /*
-     * Valor default das variaveis sCampo e sCampoValorOrcado 
+     * Valor default das variaveis sCampo e sCampoValorOrcado
      */
     $sCampo            = " r36_matric, \n";
     $sCampoValorOrcado = " r36_valorc  \n";
-    
+
     /*
-     * Valor default da variavel sWhere 
-     */  
-    $sWhere  = " r36_anousu = {$iAno}    \n "; 
+     * Valor default da variavel sWhere
+     */
+    $sWhere  = " r36_anousu = {$iAno}    \n ";
     $sWhere .= " and r36_mesusu = {$iMes}\n ";
-    
+
     /*
      * Valor default da variavel sOrder
      */
     $sOrder = "order by z01_nome \n";
-    
+
     /*
      * Caso o relatório não seja unificado filtramos por instituicao
      */
     if ($lUnificado == 'false') {
       $sWhere .= " and r36_instit in({$iInstituicao}) \n";
     }
-    
+
     /*
-     * Verificamos o tipo de emissão que será utilziado 
+     * Verificamos o tipo de emissão que será utilziado
      * m: Manutenção
      * i: Inclusão
      * t: todos
      * c: cadastro
-     * 
-     * Estão somente implementados os tipos m, i e t 
+     *
+     * Estão somente implementados os tipos m, i e t
      * **o tipo c possui o mesmo comportamento de t.
      */
     switch ($sTipo) {
 
      case "m":
-       
+
       $sCampo = " distinct on (r36_matric) r36_matric, \n";
-    
+
       /*
        * sWhereAux - where auxiliar para buscar o valor para a variável sCampoValorOrcado
-       */ 
-      $sWhereAux  = " ipe.r36_anousu = {$iAno}               \n"; 
+       */
+      $sWhereAux  = " ipe.r36_anousu = {$iAno}               \n";
       $sWhereAux .= " and ipe.r36_mesusu = {$iMes}           \n";
       $sWhereAux .= " and ipe.r36_matric = dados.r36_matric  \n";
 
       if ($lUnificado == 'f' || $lUnificado == 'false') {
 
-        $sWhereAux  = " ipe.r36_anousu = {$iAno}                \n"; 
-        $sWhereAux .= " and ipe.r36_mesusu = {$iMes}            \n"; 
-        $sWhereAux .= " and ipe.r36_instit in ({$iInstituicao}) \n"; 
+        $sWhereAux  = " ipe.r36_anousu = {$iAno}                \n";
+        $sWhereAux .= " and ipe.r36_mesusu = {$iMes}            \n";
+        $sWhereAux .= " and ipe.r36_instit in ({$iInstituicao}) \n";
         $sWhereAux .= " and ipe.r36_matric = dados.r36_matric   \n";
       }
-      
+
       $sCampoValorOrcado = $this->sql_query_file(null,null,null,null,"sum(ipe.r36_valorc) as r36_valorc","",$sWhereAux);
       $sWhere .= " and r36_matric > 0 \n";
-      
+
      break;
-    
+
      case "i":
        $sWhere .= " and r36_matric = 0 \n";
-       
+
      break;
-     
+
     }
-    
+
     /*
      * Caso tenha sido informada uma lista de lotações
-     * retornamo o valor default das variaveis sCampo e sCampoValorOrcado deconsiderando o case do pelo parametro sTipo  
+     * retornamo o valor default das variaveis sCampo e sCampoValorOrcado deconsiderando o case do pelo parametro sTipo
      */
     if($sListaLotacoes != ""){
       $sCampo            = " r36_matric, \n";
@@ -846,7 +845,7 @@ class cl_ipe {
       $sWhere           .= " and r70_estrut::integer in ({$sListaLotacoes}) \n";
       $sOrder            = " order by r70_estrut,z01_nome \n";
     }
-    
+
     $sCampos  = $sCampo;
     $sCampos .= " z01_nome,                  \n";
     $sCampos .= " case                       \n";
@@ -869,9 +868,9 @@ class cl_ipe {
     $sCampos .= " r36_estado,                \n";
     $sCampos .= " r36_valorc,                \n";
     $sCampos .= " r70_estrut                 \n";
-    
+
     $sSqlDados = $this->sql_query_arquivo(null, null, null, $sCampos, "r36_matric,z01_nome desc", $sWhere);
-    
+
     $sSql  = " select r36_matric,                          \n";
     $sSql .= "        z01_nome,                            \n";
     $sSql .= "        z01_sexo,                            \n";
@@ -883,13 +882,13 @@ class cl_ipe {
     $sSql .= "        r70_estrut,                          \n";
     $sSql .= "        ({$sCampoValorOrcado}) as r36_valorc \n";
     $sSql .= "   from ({$sSqlDados}) as dados              \n";
-    $sSql .= "   {$sOrder}                                 \n";  
-    
+    $sSql .= "   {$sOrder}                                 \n";
+
     return $sSql;
-  
-  }  
-  
-   function sql_query_file ( $r36_anousu=null,$r36_mesusu=null,$r36_sequencia=null,$r36_instit=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+  }
+
+   function sql_query_file ( $r36_anousu=null,$r36_mesusu=null,$r36_sequencia=null,$r36_instit=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -905,32 +904,32 @@ class cl_ipe {
      $sql2 = "";
      if($dbwhere==""){
        if($r36_anousu!=null ){
-         $sql2 .= " where ipe.r36_anousu = $r36_anousu "; 
-       } 
+         $sql2 .= " where ipe.r36_anousu = $r36_anousu ";
+       }
        if($r36_mesusu!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " ipe.r36_mesusu = $r36_mesusu "; 
-       } 
+         }
+         $sql2 .= " ipe.r36_mesusu = $r36_mesusu ";
+       }
        if($r36_sequencia!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " ipe.r36_sequencia = $r36_sequencia "; 
-       } 
+         }
+         $sql2 .= " ipe.r36_sequencia = $r36_sequencia ";
+       }
        if($r36_instit!=null ){
          if($sql2!=""){
             $sql2 .= " and ";
          }else{
             $sql2 .= " where ";
-         } 
-         $sql2 .= " ipe.r36_instit = $r36_instit "; 
-       } 
+         }
+         $sql2 .= " ipe.r36_instit = $r36_instit ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

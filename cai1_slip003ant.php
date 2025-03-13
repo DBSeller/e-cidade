@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -37,7 +37,7 @@ $head7 = "Texto numero 7";
 $head8 = "Texto numero 8";
 $head9 = "Texto numero 9";
 $head10 = "Texto numero 10";
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 // trecho para relatorio
 $pdf = new PDF();
 $pdf->Open();
@@ -52,7 +52,7 @@ $pdf->AddPage();
 		       left outer join plano p2 on slip.k17_credito = p2.c01_reduz and p2.c01_anousu = ".db_getsession('DB_anousu')."
 		       left outer join hist on slip.k17_hist = hist.c03_codigo and c03_anousu = ".db_getsession('DB_anousu')."
           where slip.k17_codigo = $numslip and k17_instit = " . db_getsession('DB_instit');
-$dados = pg_exec($sql);
+$dados = db_query($sql);
 if(pg_numrows($dados)==0){
    echo "<script>
          alert('Documento de Slip não Cadastrado.');

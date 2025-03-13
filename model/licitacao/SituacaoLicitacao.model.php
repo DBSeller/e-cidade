@@ -1,38 +1,21 @@
 <?php
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 /**
  * Class SituacaoLicitacao
  * Controla as situações da licitação
  * @author Matheus Felini <matheus.felini@dbseller.com.br>
  * @package licitacao
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.8 $
  */
 class SituacaoLicitacao {
+
+  const SITUACAO_EM_ANDAMENTO = 0;
+  const SITUACAO_JULGADA      = 1;
+  const SITUACAO_REVOGADA     = 2;
+  const SITUACAO_DESERTA      = 3;
+  const SITUACAO_FRACASSADA   = 4;
+  const SITUACAO_ANULADA      = 5;
+  const SITUACAO_ADJUDICADA   = 6;
+  const SITUACAO_HOMOLOGADA   = 7;
 
   /**
    * Código Sequencial da Situação
@@ -101,5 +84,31 @@ class SituacaoLicitacao {
    */
   public function getSDescricao() {
     return $this->sDescricao;
+  }
+
+  /**
+   * Verifica se a situação corresponde à uma licitação julgada, considerando situações após julgamento.
+   * @return bool
+   * @throws ParameterException
+   */
+  public function isJulgada() {
+    return self::isSituacaoJulgada($this->getCodigo());
+  }
+
+  /**
+   * Verifica se a Situação pertence a uma licitação julgada, considerando situações após julgamento.
+   * @param $iSituacao
+   *
+   * @return bool
+   * @throws ParameterException
+   */
+  public static function isSituacaoJulgada($iSituacao) {
+
+    if (!Check::isInt($iSituacao)) {
+      throw new ParameterException("Código da Situação Informado é inválido.");
+    }
+
+    $aSituacoesJulgadas = array(self::SITUACAO_JULGADA, self::SITUACAO_ADJUDICADA, self::SITUACAO_HOMOLOGADA);
+    return in_array($iSituacao, $aSituacoesJulgadas);
   }
 }

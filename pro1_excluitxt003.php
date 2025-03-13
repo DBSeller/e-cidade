@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet  = db_utils::postMemory($_GET);
 $oPost = db_utils::postMemory($_POST);
@@ -92,14 +92,14 @@ $oRotulo->label('ob16_codobrasenvio');
     
     if ( lMostra ) {
       
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe',
                           'func_obrasenvio.php?funcao_js=parent.js_preencheDadosLookUp|ob16_codobrasenvio|ob16_nomearq',
                           'Pesquisa Arquivos TXT do INSS',
                           true);
     } else {
       
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe',
                           'func_obrasenvio.php?pesquisa_chave=' + $F('ob16_codobrasenvio') + '&funcao_js=parent.js_preencheDadosDigitacao',
                           'Pesquisa Arquivos TXT do INSS',
@@ -188,7 +188,7 @@ $oRotulo->label('ob16_codobrasenvio');
   function js_retornoRequisicao(oRetornoAjax) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+ oRetornoAjax.responseText+")"); 
+    var oRetorno = JSON.parse(oRetornoAjax.responseText); 
  
     alert(oRetorno.sMessage.urlDecode());
     

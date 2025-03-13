@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_avaliacaogrupopergunta_classe.php");
-require_once("classes/db_avaliacaopergunta_classe.php");
-require_once("classes/db_avaliacaoresposta_classe.php");
-require_once("classes/db_avaliacaoperguntaopcao_classe.php");
-require_once("classes/db_avaliacao_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_avaliacaogrupopergunta_classe.php"));
+require_once(modification("classes/db_avaliacaopergunta_classe.php"));
+require_once(modification("classes/db_avaliacaoresposta_classe.php"));
+require_once(modification("classes/db_avaliacaoperguntaopcao_classe.php"));
+require_once(modification("classes/db_avaliacao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -55,31 +55,69 @@ if (isset($oPost->incluir)) {
   if ($sqlerro == false) {
   	
     db_inicio_transacao();
-    $clavaliacaogrupopergunta->db102_avaliacao     = $oPost->db102_avaliacao;
-    $clavaliacaogrupopergunta->db102_descricao     = $oPost->db102_descricao;
-    $clavaliacaogrupopergunta->db102_identificador = $oPost->db102_identificador;
-    $clavaliacaogrupopergunta->incluir(null);
-    $erro_msg = $clavaliacaogrupopergunta->erro_msg;
-    if ($clavaliacaogrupopergunta->erro_status == 0) {
-      $sqlerro = true;
+
+    $sWhereVerificaExistenciaGrupoPerguntaPorIdentificador = " db102_identificador = '{$oPost->db102_identificador}'";
+    $sSqlVerificaExistenciaGrupoPerguntaPorIdentificador   = $clavaliacaogrupopergunta->sql_query(null, '*', null, $sWhereVerificaExistenciaGrupoPerguntaPorIdentificador);
+    $rsVerificaExistenciaGrupoPerguntaPorIdentificador     = db_query($sSqlVerificaExistenciaGrupoPerguntaPorIdentificador);
+
+    if(!$rsVerificaExistenciaGrupoPerguntaPorIdentificador) {
+      $erro_msg = "Ocorreu um erro ao consultar o grupo pelo identificador.";
+      $sqlerro  = true;
+    }
+    
+    if(!$sqlerro && pg_num_rows($rsVerificaExistenciaGrupoPerguntaPorIdentificador) > 0) {
+      $erro_msg = "Já existe um grupo com o identificador informado.";
+      $sqlerro  = true;
+    }
+
+    if(!$sqlerro) {
+
+      $clavaliacaogrupopergunta->db102_avaliacao     = $oPost->db102_avaliacao;
+      $clavaliacaogrupopergunta->db102_descricao     = $oPost->db102_descricao;
+      $clavaliacaogrupopergunta->db102_identificador = $oPost->db102_identificador;
+      $clavaliacaogrupopergunta->incluir(null);
+      $erro_msg = $clavaliacaogrupopergunta->erro_msg;
+      if ($clavaliacaogrupopergunta->erro_status == 0) {
+        $sqlerro = true;
+      }
     }
 
     db_fim_transacao($sqlerro);
   }
 } else if (isset($oPost->alterar)) {
-	
+  
   if ($sqlerro == false) {
-  	
-    db_inicio_transacao();
     
-    $clavaliacaogrupopergunta->db102_sequencial    = $oPost->db102_sequencial;
-    $clavaliacaogrupopergunta->db102_avaliacao     = $oPost->db102_avaliacao;
-    $clavaliacaogrupopergunta->db102_descricao     = $oPost->db102_descricao;
-    $clavaliacaogrupopergunta->db102_identificador = $oPost->db102_identificador;
-    $clavaliacaogrupopergunta->alterar($clavaliacaogrupopergunta->db102_sequencial);
-    $erro_msg = $clavaliacaogrupopergunta->erro_msg;
-    if ($clavaliacaogrupopergunta->erro_status == 0) {
-      $sqlerro = true;
+    db_inicio_transacao();
+
+    $sWhereVerificaExistenciaGrupoPerguntaPorIdentificador  = " db102_identificador = '{$oPost->db102_identificador}'";
+    $sSqlVerificaExistenciaGrupoPerguntaPorIdentificador    = $clavaliacaogrupopergunta->sql_query(null, '*', null, $sWhereVerificaExistenciaGrupoPerguntaPorIdentificador);
+    $rsVerificaExistenciaGrupoPerguntaPorIdentificador      = db_query($sSqlVerificaExistenciaGrupoPerguntaPorIdentificador);
+
+    if(!$rsVerificaExistenciaGrupoPerguntaPorIdentificador) {
+      $erro_msg = "Ocorreu um erro ao consultar o grupo pelo identificador.";
+      $sqlerro  = true;
+    }
+    
+    if(!$sqlerro && pg_num_rows($rsVerificaExistenciaGrupoPerguntaPorIdentificador) > 0) {
+
+      if($oPost->db102_sequencial != db_utils::fieldsMemory($rsVerificaExistenciaGrupoPerguntaPorIdentificador, 0)->db102_sequencial) {
+        $erro_msg = "Já existe um grupo com o identificador informado.";
+        $sqlerro  = true;
+      }
+    }
+    
+    if(!$sqlerro) {
+
+      $clavaliacaogrupopergunta->db102_sequencial    = $oPost->db102_sequencial;
+      $clavaliacaogrupopergunta->db102_avaliacao     = $oPost->db102_avaliacao;
+      $clavaliacaogrupopergunta->db102_descricao     = $oPost->db102_descricao;
+      $clavaliacaogrupopergunta->db102_identificador = $oPost->db102_identificador;
+      $clavaliacaogrupopergunta->alterar($clavaliacaogrupopergunta->db102_sequencial);
+      $erro_msg = $clavaliacaogrupopergunta->erro_msg;
+      if ($clavaliacaogrupopergunta->erro_status == 0) {
+        $sqlerro = true;
+      }
     }
     
     db_fim_transacao($sqlerro);
@@ -199,7 +237,7 @@ fieldset table td:first-child {
     <td valign="top" bgcolor="#CCCCCC"> 
     <center>
       <?
-        include("forms/db_frmavaliacaogrupopergunta.php");
+        include(modification("forms/db_frmavaliacaogrupopergunta.php"));
       ?>
     </center>
   </td>

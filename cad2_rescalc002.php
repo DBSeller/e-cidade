@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_iptucalclog_classe.php");
-include("classes/db_iptucalclogmat_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_iptucalclog_classe.php"));
+include(modification("classes/db_iptucalclogmat_classe.php"));
 $cliptucalclog = new cl_iptucalclog;
 $cliptucalclogmat = new cl_iptucalclogmat;
 $cliptucalclogmat->rotulo->label();

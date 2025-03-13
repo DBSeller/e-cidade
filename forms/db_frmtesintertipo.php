@@ -29,36 +29,39 @@
 $cltesintertipo->rotulo->label();
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tj92_sequencial?>">
-       <?=@$Lj92_sequencial?>
-    </td>
-    <td> 
-<?
-db_input('j92_sequencial',10,$Ij92_sequencial,true,'text',3,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj92_descr?>">
-       <?=@$Lj92_descr?>
-    </td>
-    <td> 
-<?
-db_input('j92_descr',40,$Ij92_descr,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  </table>
+  <center>
+    <fieldset style="width: 500px;">
+        <legend class="bold">Inclusão de Tipo de Testada Interna</legend>
+    <table border="0">
+      <tr>
+        <td nowrap title="<?=@$Tj92_sequencial?>">
+           <?=@$Lj92_sequencial?>
+        </td>
+        <td> 
+          <?
+          db_input('j92_sequencial',10,$Ij92_sequencial,true,'text',3,"")
+          ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj92_descr?>">
+           <?=@$Lj92_descr?>
+        </td>
+        <td> 
+          <?
+          db_input('j92_descr',40,$Ij92_descr,true,'text',$db_opcao,"")
+          ?>
+        </td>
+      </tr>
+      </table>
+    </fieldset>
   </center>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+  <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
+  <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tesintertipo','func_tesintertipo.php?funcao_js=parent.js_preenchepesquisa|j92_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tesintertipo','func_tesintertipo.php?funcao_js=parent.js_preenchepesquisa|j92_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tesintertipo.hide();

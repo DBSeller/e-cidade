@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_mer_desper_und_classe.php");
-include("classes/db_mer_desperdicio_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_mer_desper_und_classe.php"));
+include(modification("classes/db_mer_desperdicio_classe.php"));
 $clmer_desper_und  = new cl_mer_desper_und;
 $clmer_desperdicio = new cl_mer_desperdicio;
 $escola            = db_getsession("DB_coddepto");

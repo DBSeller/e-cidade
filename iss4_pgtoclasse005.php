@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 set_time_limit(0);
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS);
 if ($atividades != ""){
@@ -292,7 +292,7 @@ if ($tipo == 'c'){
    ";
 }
 //echo $sql;exit;
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 if ($num == 0 ){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existe pagamentos efetuados no período de '.db_formatar($datai,'d').' até '.db_formatar($dataf,'d'));

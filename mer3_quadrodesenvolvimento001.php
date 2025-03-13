@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_periodocalendario_classe.php");
-include("classes/db_turma_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_periodocalendario_classe.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $escola = db_getsession("DB_coddepto");
 $clmatricula = new cl_matricula;
 $clturma = new cl_turma;
@@ -59,7 +59,7 @@ $clperiodocalendario = new cl_periodocalendario;
   $sql       .= "       WHERE ed38_i_escola = $escola ";
   $sql       .= "       AND ed52_c_passivo = 'N' ";
   $sql       .= "       ORDER BY ed52_i_ano DESC ";
-  $sql_result = pg_query($sql);
+  $sql_result = db_query($sql);
   $num        = pg_num_rows($sql_result);
   $conta      = "";
   while ($row = pg_fetch_array($sql_result)) {
@@ -79,7 +79,7 @@ $clperiodocalendario = new cl_periodocalendario;
     $sub_sql   .= "         AND ed57_i_escola = $escola ";
     $sub_sql   .= "         AND ed221_c_origem = 'S' ";
     $sub_sql   .= "         ORDER BY ed57_c_descr,ed11_c_descr ";
-    $sub_result = pg_query($sub_sql);
+    $sub_result = db_query($sub_sql);
     $num_sub    = pg_num_rows($sub_result);
     if ($num_sub >= 1) {
         
@@ -227,7 +227,7 @@ function fillSelectFromArray2(selectCtrl, itemArray, goodPrompt, badPrompt, defa
        $sql       .= "       WHERE ed38_i_escola = $escola ";
        $sql       .= "      AND ed52_c_passivo = 'N' ";
        $sql       .= "       ORDER BY ed52_i_ano DESC ";
-       $sql_result = pg_query($sql);
+       $sql_result = db_query($sql);
        while($row = pg_fetch_array($sql_result)) {
          $cod_curso  = $row["ed52_i_codigo"];
          $desc_curso = $row["ed52_c_descr"];
@@ -324,7 +324,7 @@ function fillSelectFromArray2(selectCtrl, itemArray, goodPrompt, badPrompt, defa
    $sql   .= "       AND ed221_i_serie = ed223_i_serie ";
    $sql   .= "       AND ed60_c_situacao = 'MATRICULADO' ";
    $sql   .= "       ORDER BY ed60_i_numaluno,ed47_i_codigo,ed47_v_nome,ed60_i_codigo ";
-   $result = pg_query($sql);
+   $result = db_query($sql);
    $linhas = pg_num_rows($result);
    ?>
    <b>Selecione o Aluno:</b><br>
@@ -420,7 +420,7 @@ $sql2 = "SELECT $campos
          $condicao2
          ORDER BY ed47_v_nome,ed60_c_ativa
         ";
-$result2 = pg_query($sql2);
+$result2 = db_query($sql2);
 $linhas2 = pg_num_rows($result2);
 if($linhas2==0){
  ?>
@@ -436,7 +436,7 @@ if($linhas2==0){
    echo "<td>Peso</td>";
    echo "<td>Altura</td>";
    echo "<td>Massa</td>";
-   echo "<td>Bolsa Família</td>";
+   echo "<td>Auxílio Brasil</td>";
    echo "<td>Data</td>";
    echo "</tr>";
  
@@ -645,7 +645,7 @@ function js_competencia(valor){
 }
 function js_retornoPesquisaPeriodo(oAjax) {
  js_removeObj("msgBox");
- var oRetorno = eval("("+oAjax.responseText+")");
+ var oRetorno = JSON.parse(oAjax.responseText);
  sHtml  = '<b>Período:<br></b>';
  sHtml += '<select name="tipoperiodo" style="font-size:9px;height:18px;">'; 
  for (var i = 0;i < oRetorno.length; i++) {

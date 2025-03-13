@@ -1,0 +1,50 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010437' name='arrecadacao.arquivoautoatendimentoregistrosinscricao' description="Inscrição Municipal do débito enviado no arquivo de autoatendimento." prefix="k187" label="arquivoautoatendimentoregistrosinscricao" type="0">
+  <fields>
+    <field codigo="1010402" 
+           campo_api='' 
+           name="k187_autoatendimentoregistros" 
+           conteudo="int8" 
+           description="Campo que armazena os registros." 
+           inivalue="0" 
+           label="Campo registros" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo registros" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010403" 
+           campo_api='' 
+           name="k187_inscricao" 
+           conteudo="int8" 
+           description="Campo que armazena as inscriç&#7869;os" 
+           inivalue="0" 
+           label="Campo instrição" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo instrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="arquivoautoatendimentoregistros" inner='t'>
+      <fieldfk name="k187_autoatendimentoregistros" reference="k183_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

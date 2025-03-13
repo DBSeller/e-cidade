@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010242' name='recursoshumanos.jornadaservidor' description="Tabela para vincular uma jornada ao servidor, serve para alterar a jornada de um ou alguns dias para um servidor sem a necessidade de alterar a escala." prefix="rh212" label="Altera a Jornada do Servidor em um dia" type="0">
+  <fields>
+    <field codigo="1009535" 
+           campo_api='' 
+           name="rh212_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.jornadaservidor_rh212_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009536" 
+           campo_api='' 
+           name="rh212_data" 
+           conteudo="date" 
+           description="Data de início de quando a jornada deve ser alterada para o servidor" 
+           inivalue="null" 
+           label="Data Início" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Início" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009538" 
+           campo_api='' 
+           name="rh212_matricula" 
+           conteudo="int4" 
+           description="Matrícula do servidor que terá sua jornada alterada" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009539" 
+           campo_api='' 
+           name="rh212_jornada" 
+           conteudo="int4" 
+           description="Jornada a qual o servidor está em uma data específica" 
+           inivalue="0" 
+           label="Jornada" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Jornada" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh212_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="rh212_matricula" reference="rh01_regist" /> 
+    </foreignkey>
+    <foreignkey reference="jornada" inner='t'>
+      <fieldfk name="rh212_jornada" reference="rh188_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

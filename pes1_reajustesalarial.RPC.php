@@ -1,12 +1,15 @@
 <?php
-  require_once ("libs/db_stdlib.php");
-  require_once ("libs/db_utils.php");
-  require_once ("libs/db_app.utils.php");
-  require_once ("libs/db_conecta.php");
-  require_once ("libs/db_sessoes.php");
-  require_once ("dbforms/db_funcoes.php");
-  require_once ("libs/JSON.php");  
-  
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("libs/JSON.php"));  
+
+  use ECidade\RecursosHumanos\ESocial\Repository\ServidorAlteracao;
+  use ECidade\RecursosHumanos\ESocial\Model\Formulario\Tipo;
+
   $oJson                  = new services_json();
   $oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
   $oRetorno               = new stdClass();
@@ -106,7 +109,6 @@
           $rsRhPessoal   = db_query($sSqlRhPessoal);
 
           if (!$rsRhPessoal){
-            die($sSqlRhPessoal);
             throw new DBException("Ocorreu um erro ao retornar os dados do servidor.");
           }
 
@@ -126,6 +128,34 @@
             $oDadosServidor = db_utils::fieldsMemory($rsRhPessoal, $iServidor);
             $oServicor = ServidorRepository::getInstanciaByCodigo($oDadosServidor->rh01_regist, $oParam->iAno, $oParam->iMes);
             $oReajusteSalarial->adicionaServidor($oServicor);
+            /**
+            * Inclui dados do reajuste salarial padrão para o eSocial.
+            */
+            $daoSalarioEsocial = new \cl_rhreajustesalarialesocial;
+            $camposReajuste = ['eso39_sequencial',
+                                'eso39_matricula',
+                                'eso39_dataefeito',
+                                'eso39_tipo',
+                                'eso39_descricao'
+            ];
+            $sqlVerificaReajuste = $daoSalarioEsocial->sql_query_file(null, 
+              implode(', ', $camposReajuste), 
+              null,
+              "eso39_matricula = {$oDadosServidor->rh01_regist} and eso39_dataefeito = '{$oParam->dataEfeito}' and eso39_tipo = '{$oParam->tipoInstrumento}' ");
+            $rsVerificaReajuste = $daoSalarioEsocial->sql_record($sqlVerificaReajuste);
+
+            if ($daoSalarioEsocial->numrows == 0) {
+
+              $daoSalarioEsocial->eso39_matricula = $oDadosServidor->rh01_regist;
+              $daoSalarioEsocial->eso39_dataefeito = $oParam->dataEfeito;
+              $daoSalarioEsocial->eso39_tipo = $oParam->tipoInstrumento;
+              $daoSalarioEsocial->eso39_descricao = $oParam->descricao;
+              $daoSalarioEsocial->incluir(null);
+
+              $servidorAlteracao = ServidorAlteracao::findMatriculaByLayout($oDadosServidor->rh01_regist, Tipo::S2206);
+              $servidorAlteracao->setDataS2206(new DBDate($oParam->dataEfeito));
+              $servidorAlteracao->save();
+            }
           }
 
 

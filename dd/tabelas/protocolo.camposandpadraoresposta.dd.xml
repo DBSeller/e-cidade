@@ -1,0 +1,113 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010607' name='protocolo.camposandpadraoresposta' description="Tabela que guarda as resposta dos campos dinâmicos do andamento, populada ao conceder despacho ao processo" prefix="p111" label="camposandpadraoresposta" type="0">
+  <fields>
+    <field codigo="1011725" 
+           campo_api='' 
+           name="p111_sequencial" 
+           conteudo="int8" 
+           description="Código sequencial da tabela" 
+           inivalue="0" 
+           label="Código" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.camposandpadraoresposta_p111_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011726" 
+           campo_api='' 
+           name="p111_camposandpadrao" 
+           conteudo="int8" 
+           description="Vínculo do campo com o andamento padrão" 
+           inivalue="0" 
+           label="Campo andamento" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo andamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011727" 
+           campo_api='' 
+           name="p111_codandam" 
+           conteudo="int8" 
+           description="Andamento atual do processo, ao qual a resposta pertence" 
+           inivalue="0" 
+           label="Andamento" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Andamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011728" 
+           campo_api='' 
+           name="p111_codcam" 
+           conteudo="int8" 
+           description="Código do campo" 
+           inivalue="0" 
+           label="Campo" 
+           size="19" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011729" 
+           campo_api='' 
+           name="p111_resposta" 
+           conteudo="text" 
+           description="Resposta do campo dinâmico" 
+           inivalue="" 
+           label="Resposta" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Resposta" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="p111_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="procandam" inner='t'>
+      <fieldfk name="p111_codandam" reference="p61_codandam" /> 
+    </foreignkey>
+    <foreignkey reference="camposandpadrao" inner='t'>
+      <fieldfk name="p111_camposandpadrao" reference="p110_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

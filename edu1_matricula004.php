@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,26 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_matriculamov_classe.php");
-include("classes/db_alunonecessidade_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_matriculamov_classe.php"));
+include(modification("classes/db_alunonecessidade_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmatricula        = new cl_matricula;
 $clmatriculamov     = new cl_matriculamov;
 $clalunonecessidade = new cl_alunonecessidade;
 $clmatricula->rotulo->label();
 $db_opcao = 1;
+define("MENSAGEM_MATRICULA004", "educacao.escola.edu1_matricula004." );
 
 if (isset($alterar)) {
-	
+
   db_inicio_transacao();
   $sCampos  = " ed60_t_obs as confereobs, ed60_d_datamatricula as conferedata,ed60_c_parecer as confereparec,";
   $sCampos .= " ed60_i_turma,turma.ed57_c_descr,calendario.ed52_c_descr,ed60_d_datamodif as datamodif,";
@@ -56,6 +57,104 @@ if (isset($alterar)) {
                                                              )
                                      );
   db_fieldsmemory($result1,0);
+
+  /**
+   * Verifica se o aluno está utilizando proporcionalidade
+   */
+  $lUtilizaProporcionalidade = false;
+  $oMatricula                = new Matricula( $matricula );
+
+  db_inicio_transacao();
+  $oDiario = $oMatricula->getDiarioDeClasse();
+  db_fim_transacao();
+
+  $aDiarioAvaliacaoDisciplina = $oDiario->getDisciplinas();
+  
+  if ( !empty( $aDiarioAvaliacaoDisciplina ) ) {
+    foreach ($aDiarioAvaliacaoDisciplina as $oDiarioAvaliacaoDisciplina ) {
+      
+      if ( count($oDiarioAvaliacaoDisciplina->getOrdemPeriodosAplicaProporcionalidade()) > 0 ) {
+
+        $lUtilizaProporcionalidade = true;
+        break;
+      }
+    }
+  }
+
+  /**
+   * Busca a data inicial do primeiro periodo de avaliação
+   */
+  $aPeriodosCalendario          = $oMatricula->getTurma()->getCalendario()->getPeriodos();
+  $oDataInicio                  = $aPeriodosCalendario[0]->getDataInicio();
+  $oDataTermino                 = $aPeriodosCalendario[(count($aPeriodosCalendario)-1)]->getDataTermino();
+  $lMatriculadoAntesDataInicial = true;
+  $oDataAlterada                = new DBDate($ed60_d_datamatricula);
+
+  /**
+   * Valida se a data alterada esta dentro do periodo do calendario
+   */
+  if ( $oDataAlterada->getTimeStamp() < $oDataInicio->getTimeStamp() || 
+        $oDataAlterada->getTimeStamp() > $oDataTermino->getTimeStamp() ) {
+
+        $oErro = new stdClass();
+        $oErro->dtInicio = $oDataInicio->convertTo(DBDATE::DATA_PTBR);
+        $oErro->dtFim    = $oDataTermino->convertTo(DBDATE::DATA_PTBR);
+        db_msgbox( _M( MENSAGEM_MATRICULA004 . "data_matricula_fora_calendario", $oErro ) );
+        echo "<script> ";
+        echo "  parent.db_iframe_observacoes.hide(); ";
+        echo "</script>";
+        return;
+  }
+
+  /**
+   * Utiliza a validação da data inicial com a data alterada para alunos com proporcionalidade
+   */
+  if ( DBDate::calculaIntervaloEntreDatas( $oDataAlterada, $oDataInicio, 'd' ) > 0 ) {
+    $lMatriculadoAntesDataInicial = false;
+  }
+  
+  /**
+   * Valida se o aluno utiliza proporcionalidade e se a data de matricula alterada está posterior a data de início do 
+   * primeiro período de avaliação, caso contrario não deixa alterar.
+   */
+  if ( $lUtilizaProporcionalidade && $lMatriculadoAntesDataInicial ) {
+
+    $oErro = new stdClass();
+    $oErro->sErro = $oDataInicio->convertTo(DBDATE::DATA_PTBR);
+    db_msgbox( _M( MENSAGEM_MATRICULA004 . "data_matricula_proporcionalidade", $oErro ) );
+    echo "<script> ";
+    echo "  parent.db_iframe_observacoes.hide(); ";
+    echo "</script>";
+    return;
+  }
+
+  $oAluno         = $oMatricula->getAluno();
+  $aMatriculas    = MatriculaRepository::getTodasMatriculasAluno($oAluno, false, null);
+  
+  if ( !empty($aMatriculas ) && isset($aMatriculas[1] ) ) {
+
+    if ( in_array($aMatriculas[1]->getSituacao(), array('TRANSFERIDO REDE','TRANSFERIDO FORA') ) ) {
+      
+      $oDataSaidaMatriculaAnterior = $aMatriculas[1]->getDataEncerramento();
+      $lAplicaValidacao            = true;
+
+      if (    $aMatriculas[1]->getSituacao() ==  "TRANSFERIDO FORA"
+           && $oDataAlterada->getAno() != $oDataSaidaMatriculaAnterior->getAno() ) {
+        $lAplicaValidacao = false;
+      }
+
+      if (    $lAplicaValidacao
+           && DBDate::calculaIntervaloEntreDatas( $oDataAlterada, $oDataSaidaMatriculaAnterior, 'd' ) < 0 ) {
+
+        db_msgbox( _M( MENSAGEM_MATRICULA004 . "data_matricula_inferior") );
+        echo "<script> ";
+        echo "  parent.db_iframe_observacoes.hide(); ";
+        echo "</script>";
+        return;
+      }
+    }
+  }
+  
   $clmatricula->ed60_d_datamodifant = $datamodifant;
   $clmatricula->ed60_d_datasaida    = ($datasaida==""?"null":$datasaida);   
   $clmatricula->ed60_d_datamodif    = date("Y-m-d",db_getsession("DB_datausu"));
@@ -154,6 +253,7 @@ $result_ne = $clalunonecessidade->sql_record($clalunonecessidade->sql_query("",
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <style>
 .titulo{
@@ -419,11 +519,14 @@ $result_ne = $clalunonecessidade->sql_record($clalunonecessidade->sql_query("",
 </body>
 </html>
 <script>
+
+const MENSAGEM_MATRICULA004 = "educacao.escola.edu1_matricula004.";
+
 function js_alerta(data,inicio,fim) {
-	
+  
   if (document.form1.ed60_d_datamatricula.value == "") {
 	  
-    alert("Informe a data para matricular o aluno!");
+    alert( _M( MENSAGEM_MATRICULA004 + "informe_data_matricula" ) );
     document.form1.ed60_d_datamatricula.focus();
     document.form1.ed60_d_datamatricula.style.backgroundColor='#99A9AE';
     return false;
@@ -431,7 +534,7 @@ function js_alerta(data,inicio,fim) {
   } else {
 	  
     datamat  = document.form1.ed60_d_datamatricula_ano.value+"-"+document.form1.ed60_d_datamatricula_mes.value;
-    datamar += "-"+document.form1.ed60_d_datamatricula_dia.value;
+    datamat += "-"+document.form1.ed60_d_datamatricula_dia.value;
     dataini  = inicio;
     datafim  = fim;
     check    = js_validata(datamat,dataini,datafim);
@@ -440,12 +543,10 @@ function js_alerta(data,inicio,fim) {
         
       data_ini = dataini.substr(8,2)+"/"+dataini.substr(5,2)+"/"+dataini.substr(0,4);
       data_fim = datafim.substr(8,2)+"/"+datafim.substr(5,2)+"/"+datafim.substr(0,4);
-      alert("Data da matrícula fora do periodo do calendario ( "+data_ini+" a "+data_fim+" ).");
+      alert( _M( MENSAGEM_MATRICULA004 + "data_matricula_fora_calendario", {'dtInicio':data_ini,'dtFim':data_fim} ) )
       document.form1.ed60_d_datamatricula.focus();
       document.form1.ed60_d_datamatricula.style.backgroundColor='#99A9AE';
-      return false;
-
-      
+      return false;      
     }
     
     datamatanterior    = document.form1.datamatanterior.value.substr(0,4);
@@ -461,7 +562,7 @@ function js_alerta(data,inicio,fim) {
       if (parseInt(datamatanterior) > parseInt(datamat)) {
           
         data_mat = datamatanterior.substr(6,2)+"/"+datamatanterior.substr(4,2)+"/"+datamatanterior.substr(0,4);
-        alert("Data da Matrícula menor que a\ndata da matrícula anterior do aluno ( "+data_mat+" )!");
+        alert( _M( MENSAGEM_MATRICULA004 + "data_matricula_menor", {'dtMatricula':data_mat}) )
         document.form1.ed60_d_datamatricula.focus();
         document.form1.ed60_d_datamatricula.style.backgroundColor='#99A9AE';
         return false;
@@ -473,7 +574,7 @@ function js_alerta(data,inicio,fim) {
         
       if (parseInt(datasaidaanterior) > parseInt(datamat)) {
         data_sai = datasaidaanterior.substr(6,2)+"/"+datasaidaanterior.substr(4,2)+"/"+datasaidaanterior.substr(0,4);
-        alert("Data da Matrícula menor que a\ndata de saída da matrícula anterior do aluno ( "+data_sai+" )!");
+        alert( _M( MENSAGEM_MATRICULA004 + "data_matricula_menor", {'dtMatricula':data_sai}) )
         document.form1.ed60_d_datamatricula.focus();
         document.form1.ed60_d_datamatricula.style.backgroundColor='#99A9AE';
         return false;
@@ -484,7 +585,7 @@ function js_alerta(data,inicio,fim) {
 }
 
 <?if ($ed60_c_concluida == "S") {?>
-    alert("Matrícula já foi encerrada. Alterações não permitidas!");
+    alert( _M( MENSAGEM_MATRICULA004 + "matricula_encerrada" ) )
 <?}?>
 
 function js_historico(matricula) {
@@ -493,4 +594,16 @@ function js_historico(matricula) {
 		              true,0,0,screen.availWidth-50,screen.availHeight);
   
 }
+
+function js_validata(datamat,dataini,datafim) {
+  var oDtAlteracao = new Date(datamat);
+  var oDtInicio    = new Date(dataini);
+  var oDtFim       = new Date(datafim);
+
+  if ( oDtAlteracao.getTime() < oDtInicio.getTime() || oDtAlteracao.getTime() > oDtFim.getTime() ) {
+    return false;
+  }
+  return true;
+}
+
 </script>

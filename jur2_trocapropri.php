@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_inicial_classe.php");
-include("classes/db_processoforoinicial_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_inicial_classe.php"));
+include(modification("classes/db_processoforoinicial_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -77,7 +77,7 @@ if(isset($pesquisar)){
   left outer join arrematric			on arrematric.k00_numpre=v01_numpre
   where v50_instit = ".db_getsession('DB_instit')." and v50_inicial = $inicial ";
   
-  $result = pg_query($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
   if($k00_matric!=""){
     $modo="matricula";

@@ -1,0 +1,48 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010856' name='recursoshumanos.monitoramentosaudeprocedimento' description="Tipos de Procedimentos" prefix="h28" label="Procedimentos" type="0">
+  <fields>
+    <field codigo="1013652" 
+           campo_api='' 
+           name="h28_codigo" 
+           conteudo="varchar(4)" 
+           description="Código do Procedimento realizado." 
+           inivalue="" 
+           label="Código do Procedimento" 
+           size="4" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Código do Procedimento" 
+           reference="" 
+           ispk="t" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013653" 
+           campo_api='' 
+           name="h28_descricao" 
+           conteudo="varchar(255)" 
+           description="Descrição do Procedimento" 
+           inivalue="" 
+           label="Procedimento" 
+           size="255" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Procedimento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="h28_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

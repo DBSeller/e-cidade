@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhteutri_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhteutri_classe.php"));
 $clrhteutri = new cl_rhteutri;
 $clrotulo = new rotulocampo;
 $clrotulo->label("rh68_descr");
@@ -147,15 +147,14 @@ db_postmemory($HTTP_POST_VARS);
 	          <td align='right' title=''><strong>Grupo:&nbsp;</strong></td>
             <td>
 	            <select name='grupo'>
-	            ";
+                 <option value = 'todos'>Todos</option> ";
 	            for($i=0; $i<$clrhteutri->numrows; $i++){
 		            db_fieldsmemory($res, $i);
-		            echo "<option value = '$rh67_grupo'>$rh67_grupo";
-	            }
-	              echo "
+		            echo "<option value = '$rh67_grupo'>$rh67_grupo</option>";
+	            }              
+	            echo "
 	          </td>
-	         </tr>
-	        ";
+	         </tr> ";
            }
           ?>
         </td>
@@ -222,7 +221,6 @@ function js_ajaxRequest(obj){
 function carregaDadosSelect(resposta){
 
   js_removeObj('processando');
-
 	document.form1.rh67_rhtipovale.disabled = false;
 	js_limpaSelect(document.form1.grupo);  
 	js_addSelectFromStr(resposta.responseText,document.form1.grupo);
@@ -233,14 +231,20 @@ function js_limpaSelect(obj){
   obj.length  = 0;	
 }
 
+// @todo - ver este filtro 
 function js_addSelectFromStr(str,obj){
   var linhas  = str.split("|");
-  for(i=0;i<linhas.length;i++){
-		if(linhas[i] != ''){
-		  colunas = linhas[i].split("-");
-      obj.options[i] = new Option();
-      obj.options[i].value = colunas[0];
-      obj.options[i].text  = colunas[1];
+  obj.options[0] = new Option();
+  obj.options[0].value = "todos";
+  obj.options[0].text  = "Todos";
+  for(i=0;i<linhas.length+1;i++){
+
+    if(linhas[i] != ''){
+
+		  colunas              = linhas[i].split("-");
+      obj.options[i+1]       = new Option();
+      obj.options[i+1].value = colunas[0];
+      obj.options[i+1].text  = colunas[1];
 		}
   }	
 }
@@ -250,10 +254,10 @@ function js_addSelectFromStr(str,obj){
 
 function js_pesquisarh67_rhtipovale(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhtipovale','func_rhtipovale.php?funcao_js=parent.js_mostrarhtipovale1|rh68_sequencial|rh68_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhtipovale','func_rhtipovale.php?funcao_js=parent.js_mostrarhtipovale1|rh68_sequencial|rh68_descr','Pesquisa',true);
   }else{
      if(document.form1.rh67_rhtipovale.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhtipovale','func_rhtipovale.php?pesquisa_chave='+document.form1.rh67_rhtipovale.value+'&funcao_js=parent.js_mostrarhtipovale','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhtipovale','func_rhtipovale.php?pesquisa_chave='+document.form1.rh67_rhtipovale.value+'&funcao_js=parent.js_mostrarhtipovale','Pesquisa',false);
      }else{
        document.form1.rh68_descr.value = ''; 
      }
@@ -280,10 +284,10 @@ function js_mostrarhtipovale1(chave1,chave2){
 
 function js_pesquisapesdiver(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pesdiver','func_pesdiver.php?funcao_js=parent.js_mostrapesdiver1|r07_codigo|r07_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesdiver','func_pesdiver.php?funcao_js=parent.js_mostrapesdiver1|r07_codigo|r07_descr','Pesquisa',true);
   }else{
      if(document.form1.r07_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pesdiver','func_pesdiver.php?pesquisa_chave='+document.form1.r07_codigo.value+'&funcao_js=parent.js_mostrapesdiver','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesdiver','func_pesdiver.php?pesquisa_chave='+document.form1.r07_codigo.value+'&funcao_js=parent.js_mostrapesdiver','Pesquisa',false);
      }else{
        document.form1.r07_descr.value = ''; 
      }

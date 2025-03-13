@@ -1,80 +1,80 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: arrecadacao
 //CLASSE DA ENTIDADE recibounicageracao
-class cl_recibounicageracao { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ar40_sequencial = 0; 
-   var $ar40_db_usuarios = 0; 
-   var $ar40_dtoperacao_dia = null; 
-   var $ar40_dtoperacao_mes = null; 
-   var $ar40_dtoperacao_ano = null; 
-   var $ar40_dtoperacao = null; 
-   var $ar40_dtvencimento_dia = null; 
-   var $ar40_dtvencimento_mes = null; 
-   var $ar40_dtvencimento_ano = null; 
-   var $ar40_dtvencimento = null; 
-   var $ar40_percentualdesconto = 0; 
-   var $ar40_tipogeracao = null; 
-   var $ar40_ativo = 'f'; 
-   var $ar40_observacao = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_recibounicageracao {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ar40_sequencial = 0;
+   var $ar40_db_usuarios = 0;
+   var $ar40_dtoperacao_dia = null;
+   var $ar40_dtoperacao_mes = null;
+   var $ar40_dtoperacao_ano = null;
+   var $ar40_dtoperacao = null;
+   var $ar40_dtvencimento_dia = null;
+   var $ar40_dtvencimento_mes = null;
+   var $ar40_dtvencimento_ano = null;
+   var $ar40_dtvencimento = null;
+   var $ar40_percentualdesconto = 0;
+   var $ar40_tipogeracao = null;
+   var $ar40_ativo = 'f';
+   var $ar40_observacao = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 ar40_sequencial = int4 = Sequencial 
-                 ar40_db_usuarios = int4 = Usuario 
-                 ar40_dtoperacao = date = Data de Operação 
-                 ar40_dtvencimento = date = Data vencimento 
-                 ar40_percentualdesconto = numeric(10) = Percentual de Desconto 
-                 ar40_tipogeracao = char(1) = Tipo de Geracao da parcela Unica 
-                 ar40_ativo = bool = SItuacao da Geracao 
-                 ar40_observacao = text = Observação 
+                 ar40_sequencial = int4 = Sequencial
+                 ar40_db_usuarios = int4 = Usuario
+                 ar40_dtoperacao = date = Data de Operação
+                 ar40_dtvencimento = date = Data vencimento
+                 ar40_percentualdesconto = numeric(10) = Percentual de Desconto
+                 ar40_tipogeracao = char(1) = Tipo de Geracao da parcela Unica
+                 ar40_ativo = bool = SItuacao da Geracao
+                 ar40_observacao = text = Observação
                  ";
-   //funcao construtor da classe 
-   function cl_recibounicageracao() { 
+   //funcao construtor da classe
+   function cl_recibounicageracao() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("recibounicageracao"); 
+     $this->rotulo = new rotulo("recibounicageracao");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -83,7 +83,7 @@ class cl_recibounicageracao {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   function atualizacampos($exclusao = false) {
      if($exclusao==false){
        $this->ar40_sequencial = ($this->ar40_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["ar40_sequencial"]:$this->ar40_sequencial);
        $this->ar40_db_usuarios = ($this->ar40_db_usuarios == ""?@$GLOBALS["HTTP_POST_VARS"]["ar40_db_usuarios"]:$this->ar40_db_usuarios);
@@ -112,9 +112,9 @@ class cl_recibounicageracao {
      }
    }
    // funcao para inclusao
-   function incluir ($ar40_sequencial){ 
+   function incluir ($ar40_sequencial){
       $this->atualizacampos();
-     if($this->ar40_db_usuarios == null ){ 
+     if($this->ar40_db_usuarios == null ){
        $this->erro_sql = " Campo Usuario nao Informado.";
        $this->erro_campo = "ar40_db_usuarios";
        $this->erro_banco = "";
@@ -123,7 +123,7 @@ class cl_recibounicageracao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ar40_dtoperacao == null ){ 
+     if($this->ar40_dtoperacao == null ){
        $this->erro_sql = " Campo Data de Operação nao Informado.";
        $this->erro_campo = "ar40_dtoperacao_dia";
        $this->erro_banco = "";
@@ -132,7 +132,7 @@ class cl_recibounicageracao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ar40_dtvencimento == null ){ 
+     if($this->ar40_dtvencimento == null ){
        $this->erro_sql = " Campo Data vencimento nao Informado.";
        $this->erro_campo = "ar40_dtvencimento_dia";
        $this->erro_banco = "";
@@ -141,7 +141,7 @@ class cl_recibounicageracao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ar40_percentualdesconto == null ){ 
+     if($this->ar40_percentualdesconto == null ){
        $this->erro_sql = " Campo Percentual de Desconto nao Informado.";
        $this->erro_campo = "ar40_percentualdesconto";
        $this->erro_banco = "";
@@ -150,7 +150,7 @@ class cl_recibounicageracao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ar40_tipogeracao == null ){ 
+     if($this->ar40_tipogeracao == null ){
        $this->erro_sql = " Campo Tipo de Geracao da parcela Unica nao Informado.";
        $this->erro_campo = "ar40_tipogeracao";
        $this->erro_banco = "";
@@ -159,7 +159,7 @@ class cl_recibounicageracao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ar40_ativo == null ){ 
+     if($this->ar40_ativo == null ){
        $this->erro_sql = " Campo SItuacao da Geracao nao Informado.";
        $this->erro_campo = "ar40_ativo";
        $this->erro_banco = "";
@@ -169,16 +169,16 @@ class cl_recibounicageracao {
        return false;
      }
      if($ar40_sequencial == "" || $ar40_sequencial == null ){
-       $result = db_query("select nextval('recibounicageracao_ar40_sequencial_seq')"); 
+       $result = db_query("select nextval('recibounicageracao_ar40_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: recibounicageracao_ar40_sequencial_seq do campo: ar40_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: recibounicageracao_ar40_sequencial_seq do campo: ar40_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->ar40_sequencial = pg_result($result,0,0); 
+       $this->ar40_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from recibounicageracao_ar40_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $ar40_sequencial)){
@@ -189,10 +189,10 @@ class cl_recibounicageracao {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->ar40_sequencial = $ar40_sequencial; 
+         $this->ar40_sequencial = $ar40_sequencial;
        }
      }
-     if(($this->ar40_sequencial == null) || ($this->ar40_sequencial == "") ){ 
+     if(($this->ar40_sequencial == null) || ($this->ar40_sequencial == "") ){
        $this->erro_sql = " Campo ar40_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -201,27 +201,27 @@ class cl_recibounicageracao {
        return false;
      }
      $sql = "insert into recibounicageracao(
-                                       ar40_sequencial 
-                                      ,ar40_db_usuarios 
-                                      ,ar40_dtoperacao 
-                                      ,ar40_dtvencimento 
-                                      ,ar40_percentualdesconto 
-                                      ,ar40_tipogeracao 
-                                      ,ar40_ativo 
-                                      ,ar40_observacao 
+                                       ar40_sequencial
+                                      ,ar40_db_usuarios
+                                      ,ar40_dtoperacao
+                                      ,ar40_dtvencimento
+                                      ,ar40_percentualdesconto
+                                      ,ar40_tipogeracao
+                                      ,ar40_ativo
+                                      ,ar40_observacao
                        )
                 values (
-                                $this->ar40_sequencial 
-                               ,$this->ar40_db_usuarios 
-                               ,".($this->ar40_dtoperacao == "null" || $this->ar40_dtoperacao == ""?"null":"'".$this->ar40_dtoperacao."'")." 
-                               ,".($this->ar40_dtvencimento == "null" || $this->ar40_dtvencimento == ""?"null":"'".$this->ar40_dtvencimento."'")." 
-                               ,$this->ar40_percentualdesconto 
-                               ,'$this->ar40_tipogeracao' 
-                               ,'$this->ar40_ativo' 
-                               ,'$this->ar40_observacao' 
+                                $this->ar40_sequencial
+                               ,$this->ar40_db_usuarios
+                               ,".($this->ar40_dtoperacao == "null" || $this->ar40_dtoperacao == ""?"null":"'".$this->ar40_dtoperacao."'")."
+                               ,".($this->ar40_dtvencimento == "null" || $this->ar40_dtvencimento == ""?"null":"'".$this->ar40_dtvencimento."'")."
+                               ,$this->ar40_percentualdesconto
+                               ,'$this->ar40_tipogeracao'
+                               ,'$this->ar40_ativo'
+                               ,'$this->ar40_observacao'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "recibounicageração ($this->ar40_sequencial) nao Incluído. Inclusao Abortada.";
@@ -260,16 +260,16 @@ class cl_recibounicageracao {
        $resac = db_query("insert into db_acount values($acount,3266,18477,'','".AddSlashes(pg_result($resaco,0,'ar40_observacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($ar40_sequencial=null) { 
+   function alterar ($ar40_sequencial=null) {
       $this->atualizacampos();
      $sql = " update recibounicageracao set ";
      $virgula = "";
-     if(trim($this->ar40_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_sequencial"])){ 
+     if(trim($this->ar40_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_sequencial"])){
        $sql  .= $virgula." ar40_sequencial = $this->ar40_sequencial ";
        $virgula = ",";
-       if(trim($this->ar40_sequencial) == null ){ 
+       if(trim($this->ar40_sequencial) == null ){
          $this->erro_sql = " Campo Sequencial nao Informado.";
          $this->erro_campo = "ar40_sequencial";
          $this->erro_banco = "";
@@ -279,10 +279,10 @@ class cl_recibounicageracao {
          return false;
        }
      }
-     if(trim($this->ar40_db_usuarios)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_db_usuarios"])){ 
+     if(trim($this->ar40_db_usuarios)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_db_usuarios"])){
        $sql  .= $virgula." ar40_db_usuarios = $this->ar40_db_usuarios ";
        $virgula = ",";
-       if(trim($this->ar40_db_usuarios) == null ){ 
+       if(trim($this->ar40_db_usuarios) == null ){
          $this->erro_sql = " Campo Usuario nao Informado.";
          $this->erro_campo = "ar40_db_usuarios";
          $this->erro_banco = "";
@@ -292,10 +292,10 @@ class cl_recibounicageracao {
          return false;
        }
      }
-     if(trim($this->ar40_dtoperacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_dtoperacao_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ar40_dtoperacao_dia"] !="") ){ 
+     if(trim($this->ar40_dtoperacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_dtoperacao_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ar40_dtoperacao_dia"] !="") ){
        $sql  .= $virgula." ar40_dtoperacao = '$this->ar40_dtoperacao' ";
        $virgula = ",";
-       if(trim($this->ar40_dtoperacao) == null ){ 
+       if(trim($this->ar40_dtoperacao) == null ){
          $this->erro_sql = " Campo Data de Operação nao Informado.";
          $this->erro_campo = "ar40_dtoperacao_dia";
          $this->erro_banco = "";
@@ -304,11 +304,11 @@ class cl_recibounicageracao {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["ar40_dtoperacao_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["ar40_dtoperacao_dia"])){
          $sql  .= $virgula." ar40_dtoperacao = null ";
          $virgula = ",";
-         if(trim($this->ar40_dtoperacao) == null ){ 
+         if(trim($this->ar40_dtoperacao) == null ){
            $this->erro_sql = " Campo Data de Operação nao Informado.";
            $this->erro_campo = "ar40_dtoperacao_dia";
            $this->erro_banco = "";
@@ -319,10 +319,10 @@ class cl_recibounicageracao {
          }
        }
      }
-     if(trim($this->ar40_dtvencimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_dtvencimento_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ar40_dtvencimento_dia"] !="") ){ 
+     if(trim($this->ar40_dtvencimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_dtvencimento_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ar40_dtvencimento_dia"] !="") ){
        $sql  .= $virgula." ar40_dtvencimento = '$this->ar40_dtvencimento' ";
        $virgula = ",";
-       if(trim($this->ar40_dtvencimento) == null ){ 
+       if(trim($this->ar40_dtvencimento) == null ){
          $this->erro_sql = " Campo Data vencimento nao Informado.";
          $this->erro_campo = "ar40_dtvencimento_dia";
          $this->erro_banco = "";
@@ -331,11 +331,11 @@ class cl_recibounicageracao {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["ar40_dtvencimento_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["ar40_dtvencimento_dia"])){
          $sql  .= $virgula." ar40_dtvencimento = null ";
          $virgula = ",";
-         if(trim($this->ar40_dtvencimento) == null ){ 
+         if(trim($this->ar40_dtvencimento) == null ){
            $this->erro_sql = " Campo Data vencimento nao Informado.";
            $this->erro_campo = "ar40_dtvencimento_dia";
            $this->erro_banco = "";
@@ -346,10 +346,10 @@ class cl_recibounicageracao {
          }
        }
      }
-     if(trim($this->ar40_percentualdesconto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_percentualdesconto"])){ 
+     if(trim($this->ar40_percentualdesconto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_percentualdesconto"])){
        $sql  .= $virgula." ar40_percentualdesconto = $this->ar40_percentualdesconto ";
        $virgula = ",";
-       if(trim($this->ar40_percentualdesconto) == null ){ 
+       if(trim($this->ar40_percentualdesconto) == null ){
          $this->erro_sql = " Campo Percentual de Desconto nao Informado.";
          $this->erro_campo = "ar40_percentualdesconto";
          $this->erro_banco = "";
@@ -359,10 +359,10 @@ class cl_recibounicageracao {
          return false;
        }
      }
-     if(trim($this->ar40_tipogeracao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_tipogeracao"])){ 
+     if(trim($this->ar40_tipogeracao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_tipogeracao"])){
        $sql  .= $virgula." ar40_tipogeracao = '$this->ar40_tipogeracao' ";
        $virgula = ",";
-       if(trim($this->ar40_tipogeracao) == null ){ 
+       if(trim($this->ar40_tipogeracao) == null ){
          $this->erro_sql = " Campo Tipo de Geracao da parcela Unica nao Informado.";
          $this->erro_campo = "ar40_tipogeracao";
          $this->erro_banco = "";
@@ -372,10 +372,10 @@ class cl_recibounicageracao {
          return false;
        }
      }
-     if(trim($this->ar40_ativo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_ativo"])){ 
+     if(trim($this->ar40_ativo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_ativo"])){
        $sql  .= $virgula." ar40_ativo = '$this->ar40_ativo' ";
        $virgula = ",";
-       if(trim($this->ar40_ativo) == null ){ 
+       if(trim($this->ar40_ativo) == null ){
          $this->erro_sql = " Campo SItuacao da Geracao nao Informado.";
          $this->erro_campo = "ar40_ativo";
          $this->erro_banco = "";
@@ -385,7 +385,7 @@ class cl_recibounicageracao {
          return false;
        }
      }
-     if(trim($this->ar40_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_observacao"])){ 
+     if(trim($this->ar40_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ar40_observacao"])){
        $sql  .= $virgula." ar40_observacao = '$this->ar40_observacao' ";
        $virgula = ",";
      }
@@ -419,7 +419,7 @@ class cl_recibounicageracao {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "recibounicageração nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ar40_sequencial;
@@ -447,14 +447,14 @@ class cl_recibounicageracao {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($ar40_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($ar40_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ar40_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -487,7 +487,7 @@ class cl_recibounicageracao {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "recibounicageração nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ar40_sequencial;
@@ -515,11 +515,11 @@ class cl_recibounicageracao {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -541,8 +541,8 @@ class cl_recibounicageracao {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $ar40_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $ar40_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -559,8 +559,8 @@ class cl_recibounicageracao {
      $sql2 = "";
      if($dbwhere==""){
        if($ar40_sequencial!=null ){
-         $sql2 .= " where recibounicageracao.ar40_sequencial = $ar40_sequencial "; 
-       } 
+         $sql2 .= " where recibounicageracao.ar40_sequencial = $ar40_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -576,8 +576,8 @@ class cl_recibounicageracao {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $ar40_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $ar40_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -593,8 +593,8 @@ class cl_recibounicageracao {
      $sql2 = "";
      if($dbwhere==""){
        if($ar40_sequencial!=null ){
-         $sql2 .= " where recibounicageracao.ar40_sequencial = $ar40_sequencial "; 
-       } 
+         $sql2 .= " where recibounicageracao.ar40_sequencial = $ar40_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -610,16 +610,16 @@ class cl_recibounicageracao {
      }
      return $sql;
   }
-  
+
   /**
-   * Busca tipos de débito conforme a origem da pesquisa 
-   * Enter description here ...
+   * Busca tipos de débito conforme a origem da pesquisa
+   *
    * @param unknown_type $sTipoPesquisa
    * @param unknown_type $sChavePesquisa
    * @return string
    */
-   function sql_query_pesquisa($sTipoPesquisa, $sChavePesquisa,$lNumpres = false, $iCadTipoDebito = null){
-     
+   function sql_query_pesquisa($sTipoPesquisa, $sChavePesquisa,$lNumpres = false, $iCadTipoDebito = null, $bTaxaIptu= false){
+
      switch($sTipoPesquisa){
        case 'C':
          $sTabela = "arrenumcgm";
@@ -634,20 +634,31 @@ class cl_recibounicageracao {
          $sCampo  = $sTabela.".k00_inscr";
        break;
      }
-     
+
      $sSqlPesquisa = " select distinct                                                                  \n";
      if (!$lNumpres && $iCadTipoDebito == null) {
-       
+
        $sSqlPesquisa.= "        cadtipo.k03_tipo,                                                       \n";
        $sSqlPesquisa.= "        cadtipo.k03_descr                                                       \n";
      } else {
        $sSqlPesquisa.= "        arrecad.k00_numpre                                                      \n";
      }
+
      $sSqlPesquisa.= "   from {$sTabela}                                                                \n";
      $sSqlPesquisa.= "        inner join arrecad  on arrecad.k00_numpre = {$sTabela}.k00_numpre         \n";
      $sSqlPesquisa.= "        inner join arretipo on arrecad.k00_tipo   = arretipo.k00_tipo             \n";
      $sSqlPesquisa.= "        inner join cadtipo  on cadtipo.k03_tipo   = arretipo.k03_tipo             \n";
      $sSqlPesquisa.= "                           and cadtipo.k03_tipo   in (1, 2, 4, 7, 9, 11, 19, 21)  \n";
+
+     if ($sTabela == "arrematric" && !$bTaxaIptu) {
+       $sSqlPesquisa.= " inner join iptunump  on iptunump.j20_numpre = arrematric.k00_numpre ";
+       $sSqlPesquisa.= "                     and iptunump.j20_matric = arrematric.k00_matric ";
+
+     } else if ($sTabela == "arrematric" && $bTaxaIptu){
+       $sSqlPesquisa.= " left join iptutaxanump ON iptutaxanump.j151_numpre = arrematric.k00_numpre";
+       $sSqlPesquisa.= "                        AND iptutaxanump.j151_matric = arrematric.k00_matric";
+     }
+
      if(!empty($sChavePesquisa) && (!$lNumpres && $iCadTipoDebito == null)){
        $sSqlPesquisa.= "    where {$sCampo} = {$sChavePesquisa}                                         \n";
      }
@@ -657,28 +668,79 @@ class cl_recibounicageracao {
      return $sSqlPesquisa;
    }
 
-   function sql_query_debitosExercicios($sTipoPesquisa, $sChavePesquisa, $iCadTipoDebito, $lExercicios = true, $iExercicioPesquisa = 0) {
-   	
+   /**
+   * Busca tipos de débito conforme a origem da pesquisa
+   *
+   * @param unknown_type $sTipoPesquisa
+   * @param unknown_type $sChavePesquisa
+   * @return string
+   */
+   function sql_query_pesquisa_taxa($sTipoPesquisa, $iReceita){
+
+     switch($sTipoPesquisa){
+       case 'C':
+         $sTabela = "arrenumcgm";
+         $sCampo  = $sTabela.".k00_numcgm";
+       break;
+       case 'M':
+         $sTabela = "arrematric";
+         $sCampo  = $sTabela.".k00_matric";
+       break;
+       case 'I':
+         $sTabela = "arreinscr";
+         $sCampo  = $sTabela.".k00_inscr";
+       break;
+     }
+
+     $sSqlPesquisa = " select distinct                                                                  \n";
+     $sSqlPesquisa.= "        arrecad.k00_numpre                                                        \n";
+     $sSqlPesquisa.= "   from {$sTabela}                                                                \n";
+     $sSqlPesquisa.= "        inner join arrecad  on arrecad.k00_numpre = {$sTabela}.k00_numpre         \n";
+     $sSqlPesquisa.= "        inner join arretipo on arrecad.k00_tipo   = arretipo.k00_tipo             \n";
+     $sSqlPesquisa.= "        inner join cadtipo  on cadtipo.k03_tipo   = arretipo.k03_tipo             \n";
+     $sSqlPesquisa.= "                           and cadtipo.k03_tipo   in (1, 2, 4, 7, 9, 11, 19, 21)  \n";
+     $sSqlPesquisa.= "    where arrecad.k00_receit = {$iReceita}                                        \n";
+
+     return $sSqlPesquisa;
+   }
+
+   function sql_query_debitosExercicios($sTipoPesquisa, $sChavePesquisa, $iCadTipoDebito, $lExercicios = true, $iExercicioPesquisa = 0, $bTaxaIptu = false) {
+
      $sSql = "select * from ( \n";
+
    	switch ((int)$iCadTipoDebito) {
 
    	  case 1:  // IPTU
-   	     
-   	    $sSql.= " select distinct                                                       \n";
-   	    if(!$lExercicios){
-   	      $sSql.= "        arrecad.k00_numpre     as numpre,                            \n";
-   	      $sSql.= "        sum(arrecad.k00_valor) as valor,                             \n";
-   	    }
- 	      $sSql.= "        j20_anousu as exercicio                                        \n";
-   	    $sSql.= "   from iptunump                                                       \n";
-   	    $sSql.= "        inner join arrecad  on arrecad.k00_numpre   = j20_numpre       \n";
+
+        if(!$bTaxaIptu){
+     	    $sSql.= "select distinct                                                        \n";
+     	    if(!$lExercicios){
+     	      $sSql.= "        arrecad.k00_numpre     as numpre,                            \n";
+     	      $sSql.= "        sum(arrecad.k00_valor) as valor,                             \n";
+            $sSql.= "        tabrec.k02_descr,                                            \n";
+     	    }
+   	      $sSql.= "        j20_anousu as exercicio                                        \n";
+     	    $sSql.= "   from iptunump                                                       \n";
+     	    $sSql.= "        inner join arrecad  on arrecad.k00_numpre   = j20_numpre       \n";
+        } else {
+          $sSql.= "SELECT DISTINCT                                                             \n";
+          if(!$lExercicios){
+            $sSql.= "               arrecad.k00_numpre     AS numpre,                          \n";
+            $sSql.= "               Sum(arrecad.k00_valor) AS valor,                           \n";
+            $sSql.= "               tabrec.k02_descr,                                          \n";
+          }
+          $sSql.= "               Extract(year FROM arrecad.k00_dtvenc)::integer AS exercicio  \n";
+          $sSql.= "FROM            arrecad                                                     \n";
+        }
+
    	    break;
    	  case 2:  // ISSQN FIXO
-   	     
+
    	    $sSql.= " select distinct                                                       \n";
    	    if(!$lExercicios){
    	      $sSql.= "        arrecad.k00_numpre     as numpre,                            \n";
    	      $sSql.= "        sum(arrecad.k00_valor) as valor,                             \n";
+          $sSql.= "        tabrec.k02_descr,                                            \n";
    	    }
    	    $sSql.= "        q01_anousu as exercicio                                        \n";
    	    $sSql.= "   from isscalc                                                        \n";
@@ -688,11 +750,12 @@ class cl_recibounicageracao {
 
    	    break;
    	  case 4:  // CONTRIBUICAO DE MELHORIA
-   	     
+
    	    $sSql.= " select distinct                                                       \n";
    	    if(!$lExercicios){
    	      $sSql.= "        arrecad.k00_numpre     as numpre,                            \n";
    	      $sSql.= "        sum(arrecad.k00_valor) as valor,                             \n";
+          $sSql.= "        tabrec.k02_descr,                                            \n";
    	    }
    	    $sSql.= "        extract(year from d07_data) as exercicio                       \n";
    	    $sSql.= "   from contricalc                                                     \n";
@@ -700,21 +763,25 @@ class cl_recibounicageracao {
    	    $sSql.= "        inner join arrecad on arrecad.k00_numpre = d09_numpre          \n";
    	    break;
    	  case 7:  //DIVERSOS
-   	     
+
    	    $sSql.= " select distinct                                                       \n";
    	    if(!$lExercicios){
    	      $sSql.= "        arrecad.k00_numpre     as numpre,                            \n";
    	      $sSql.= "        sum(arrecad.k00_valor) as valor,                             \n";
+          $sSql.= "        tabrec.k02_descr,                                            \n";
    	    }
    	    $sSql.= "        extract(year from dv05_dtinsc) as exercicio                    \n";
    	    $sSql.= "   from diversos                                                       \n";
    	    $sSql.= "        inner join arrecad on dv05_numpre = arrecad.k00_numpre         \n";
+   	    $sSql.= "        left join diverimportaold on dv13_diversos = dv05_coddiver     \n";
+
    	    break;
    	  case 9:  //ALVARA
    	    $sSql.= " select distinct                                                       \n";
    	    if(!$lExercicios){
    	      $sSql.= "        arrecad.k00_numpre     as numpre,                            \n";
    	      $sSql.= "        sum(arrecad.k00_valor) as valor,                             \n";
+          $sSql.= "        tabrec.k02_descr,                                            \n";
    	    }
    	    $sSql.= "        q01_anousu as exercicio                                        \n";
    	    $sSql.= "   from isscalc                                                        \n";
@@ -723,11 +790,12 @@ class cl_recibounicageracao {
    	    $sSql.= "                           and q85_codigo in(1,2)                      \n";
    	    break;
    	  case 11: //AUTO DE INFRACAO
-   	     
+
    	    $sSql.= " select distinct                                                       \n";
    	    if(!$lExercicios){
    	      $sSql.= "        arrecad.k00_numpre     as numpre,                            \n";
    	      $sSql.= "        sum(arrecad.k00_valor) as valor,                             \n";
+          $sSql.= "        tabrec.k02_descr,                                            \n";
    	    }
    	    $sSql.= "        extract(year from y50_data) as exercicio                       \n";
    	    $sSql.= "   from auto                                                           \n";
@@ -735,11 +803,12 @@ class cl_recibounicageracao {
    	    $sSql.= "        inner join arrecad    on arrecad.k00_numpre  = y17_numpre      \n";
    	    break;
    	  case 19: //VISTORIAS
-   	     
+
    	    $sSql.= " select distinct                                                       \n";
    	    if(!$lExercicios){
    	      $sSql.= "        arrecad.k00_numpre     as numpre,                            \n";
    	      $sSql.= "        sum(arrecad.k00_valor) as valor,                             \n";
+          $sSql.= "        tabrec.k02_descr,                                            \n";
    	    }
    	    $sSql.= "        extract(year from y70_data) as exercicio                       \n";
    	    $sSql.= "   from vistorias                                                      \n";
@@ -747,11 +816,12 @@ class cl_recibounicageracao {
    	    $sSql.= "        inner join arrecad        on arrecad.k00_numpre  = y69_numpre  \n";
    	    break;
    	  case 21: //CEMITERIO
-   	     
+
    	    $sSql.= " select distinct                                                       \n";
    	    if(!$lExercicios){
    	      $sSql.= "        arrecad.k00_numpre     as numpre,                            \n";
    	      $sSql.= "        sum(arrecad.k00_valor) as valor,                             \n";
+          $sSql.= "        tabrec.k02_descr,                                            \n";
    	    }
    	    $sSql.= "        extract(year from cm10_d_data) as exercicio                    \n";
    	    $sSql.= "   from itenserv                                                       \n";
@@ -761,7 +831,7 @@ class cl_recibounicageracao {
    	    return false;
    	  break;
    	}
-   	
+
    	if (!empty($sChavePesquisa)) {
 
    	  switch($sTipoPesquisa){
@@ -784,16 +854,68 @@ class cl_recibounicageracao {
    	  $sSql.= " inner join {$sTabela} on {$sTabela}.k00_numpre = arrecad.k00_numpre   \n";
    	  $sSql.= "                      and {$sCampo}             = {$sChavePesquisa}    \n";
    	}
+
+    $sSql.= "INNER JOIN      tabrec                                                   \n";
+    $sSql.= "ON              k02_codigo = arrecad.k00_receit                          \n";
+
+    //Se taxa separada e tipo de débito IPTU
+    if($bTaxaIptu && $iCadTipoDebito == 1){
+      $sSql.= "WHERE                                                      \n";
+      $sSql.= "EXISTS    (SELECT 1  FROM  iptunump                        \n";
+      $sSql.= "                     WHERE j20_numpre = arrecad.k00_numpre)\n";
+      $sSql.= "OR EXISTS (SELECT 1  FROM  iptucadtaxaexe                  \n";
+      $sSql.= "                     where j08_tabrec = k02_codigo)        \n";
+    } elseif ($iCadTipoDebito == 7) {
+
+      $sSql .= "        where dv13_sequencial is null                            \n";
+             
+    }
+
+    
    	if(!$lExercicios){
    	  $sSql.= " group by exercicio,numpre \n";
-   	}
-   	$sSql.= " order by exercicio ";
-   	$sSql.= ") as sql_debitos \n";
-   	
+      $sSql.= ", tabrec.k02_descr       \n";
+    }
+
+   	$sSql.= " order by exercicio \n";
+   	$sSql.= ") as sql_debitos    \n";
+
    	if($iExercicioPesquisa != 0 && !$lExercicios){
    	  $sSql.= "where exercicio = {$iExercicioPesquisa} \n";
    	}
+
    	return $sSql;
    }
+
+   /**
+    * Query que busca os dados da geracao da unica, quantidade de recibos em aberto e com registro de pagamento
+    * @param  integer $iCodigo Codigo da geracao
+    * @return string
+    */
+  function sql_query_unica_geral($iCodigo){
+
+    $sSql  = "select ar40_dtoperacao,                                                   ";
+    $sSql .= "       ar40_dtvencimento,                                                 ";
+    $sSql .= "       ar40_percentualdesconto,                                           ";
+    $sSql .= "       nome,                                                              ";
+    $sSql .= "       login,                                                             ";
+    $sSql .= "       (select count(k00_sequencial)                                      ";
+    $sSql .= "          from recibounica                                                ";
+    $sSql .= "         where k00_recibounicageracao = ar40_sequencial                   ";
+    $sSql .= "       ) as quantidade_recibos,                                           ";
+    $sSql .= "       (select coalesce(count(k00_sequencial), 0)                         ";
+    $sSql .= "          from recibounica                                                ";
+    $sSql .= "         where k00_recibounicageracao = ar40_sequencial                   ";
+    $sSql .= "           and exists(select 1                                            ";
+    $sSql .= "                        from arrepaga                                     ";
+    $sSql .= "                       where arrepaga.k00_numpre = recibounica.k00_numpre ";
+    $sSql .= "                         and arrepaga.k00_hist   = 990)                   ";
+    $sSql .= "       ) as quantidade_recibos_pagos                                      ";
+    $sSql .= "  from recibounicageracao                                                 ";
+    $sSql .= "       inner join db_usuarios on id_usuario = ar40_db_usuarios            ";
+    $sSql .= " where ar40_sequencial = {$iCodigo}                                       ";
+
+    return $sSql;
+  }
+
 }
-?>

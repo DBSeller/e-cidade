@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_pcmater_classe.php");
-include("classes/db_pcmaterele_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_pcmater_classe.php"));
+include(modification("classes/db_pcmaterele_classe.php"));
 
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -126,7 +126,7 @@ $clpcmater->rotulo->label("pc01_descrmater");
       if(!isset($pesquisa_chave)){
         if(empty($campos)){
            if(file_exists("funcoes/db_func_pcmater.php")==true){
-             include("funcoes/db_func_pcmater.php");
+             include(modification("funcoes/db_func_pcmater.php"));
            }else{
            $campos = "pcmater.*";
            }
@@ -197,4 +197,10 @@ if(isset($zero)){
   echo "parent.db_iframe_pcmater.hide();";
 }
 ?>
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

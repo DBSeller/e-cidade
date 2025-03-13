@@ -1,0 +1,102 @@
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+
+namespace ECidade\Educacao\Escola\Censo\Identificacao;
+
+use ECidade\Educacao\Escola\Censo\Censo;
+use ECidade\Educacao\Escola\Censo\Identificacao\Service\ExportacaoService;
+use Escola;
+use Exception;
+
+/**
+ * Class DadosExportacao
+ * @package ECidade\Educacao\Escola\Censo\Identificacao
+ */
+class DadosExportacao
+{
+    /**
+     * @var Censo
+     */
+    private $censo;
+
+    /**
+     * @var Escola[]
+     */
+    private $escolas;
+
+    /**
+     * @var ExportacaoService
+     */
+    private $service;
+
+    /**
+     * @return ExportacaoService
+     */
+    public function getService()
+    {
+        return $this->service;
+    }
+
+    /**
+     * @param Censo $censo
+     * @return DadosExportacao
+     */
+    public function setCenso($censo)
+    {
+        $this->censo = $censo;
+        return $this;
+    }
+
+    /**
+     * @param Escola[] $escolas
+     * @return DadosExportacao
+     */
+    public function setEscolas($escolas)
+    {
+        $this->escolas = $escolas;
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function processar()
+    {
+        $this->buscarDados();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function buscarDados()
+    {
+        $this->service = new ExportacaoService();
+        $this->service->setCenso($this->censo);
+        $this->service->setEscolas($this->escolas);
+        $this->service->buscarDados();
+    }
+}

@@ -1,496 +1,456 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: biblioteca
 $cldevolucaoacervo->rotulo->label();
-$clrotulo = new rotulocampo;
-$clrotulo->label("bi18_carteira");
-$clrotulo->label("bi23_codigo");
+$oRotulo = new rotulocampo;
+$oRotulo->label("bi18_carteira");
+$oRotulo->label("bi23_codigo");
+$oRotulo->label("bi23_codbarras");
+$oRotulo->label("ov02_nome");
 $opcao = 1;
 ?>
-<form name="form1" method="post" action="">
-<center><br>
-<table width="80%" border="0">
- <tr>
-  <td>
-   <fieldset width="50%"><legend><b>Escolha uma das opções:</b></legend>
-    <table border="0">
-     <tr>
-      <td nowrap title="<?=@$Tbi18_carteira?>">
-       <?db_ancora(@$Lbi18_carteira, "js_pesquisabi18_carteira(true);", $opcao);?>
-      </td>
-      <td>
-       <?db_input('bi18_carteira', 10, $Ibi18_carteira, true, 'text', $opcao, " onchange='js_pesquisabi18_carteira(false);'")?>
-       <?db_input('ov02_nome', 50, @$ov02_nome, true, 'text', 3, "")?>
-      </td>
-     </tr>
-     <tr>
-      <td nowrap title="<?=@$Tbi23_codigo?>">
-       <?db_ancora(@$Lbi23_codigo, "js_pesquisabi23_codigo(true);", $opcao);?>
-      </td>
-      <td>
-       <?db_input('codigo', 10, @$Icodigo, true, 'text', $opcao, " onchange='js_pesquisabi23_codigo(false);'")?>
-       <?db_input('titulo', 50, @$titulo, true, 'text', 3, "")?>
-       <input name="proximo" type="submit" id="proximo" value="Próximo" style="visibility:hidden;position:absolute;">
-      </td>
-     </tr>
-     <?if ($bi26_leitorbarra == "S") {?>
-     <tr>
-      <td colspan="2">
-       <b>Pesquisar por Código de Barras:</b>
-       <input type="text" name="bi23_codbarras" value="<?=@$bi23_codbarras?>" size="20" onChange="js_codbarras();">
-       <input type="button" name="lancarbarras" value="Pesquisar" size="" onClick="js_codbarras();">
-       <iframe src="" name="iframe_verificadata" id="iframe_verificadata" width="0" height="0" frameborder="0"></iframe>
-      </td>
-     </tr>
-     <?}?>
-    </table>
-   </fieldset>
-  </td>
- </tr>
-</table>
-<br>
-<?if (!empty($bi18_carteira)) {
-	
-    $sSqlDevolucaoAcervo = "select * 
-                              from emprestimoacervo
-                                   inner join emprestimo      on bi18_codigo = bi19_emprestimo
-                                   inner join carteira        on bi16_codigo = bi18_carteira
-                                   inner join leitorcategoria on bi07_codigo = bi16_leitorcategoria
-                                   inner join biblioteca      on bi17_codigo = bi07_biblioteca
-                                   inner join leitor          on bi10_codigo = bi16_leitor
-                                   inner join exemplar        on bi23_codigo = bi19_exemplar
-                                   inner join acervo          on bi06_seq    = bi23_acervo
-                             where bi18_carteira = $bi18_carteira
-                               and bi07_biblioteca = $bi17_codigo
-                               and not exists(select *
-                                                from devolucaoacervo
-                                               where devolucaoacervo.bi21_codigo = emprestimoacervo.bi19_codigo
-                                             )";
-    $result = $cldevolucaoacervo->sql_record($sSqlDevolucaoAcervo);
-    
-    if ($cldevolucaoacervo->numrows == 0) {
- 	
-      ?>
-      <br>
-      <center>
-       <fieldset width="100%"><legend><b>Empréstimos deste leitor:</b></legend>
-        <br>Nenhum empréstimo para o Leitor selecionado (<?=@$ov02_nome?>).<br><br>
-       </fieldset>
-      </center>
-      <?
-   
-    } else {
- 	
-      ?>
-      <table border="0" width="90%" align="center">
-       <tr>
-        <td colspan="2">
-         <fieldset width="100%"><legend><b>Empréstimos deste leitor:</b></legend>
-          Leitor: <?=@$ov02_nome?>
-          <table border="1" width="100%">
-           <tr>
-            <td bgcolor="#D0D0D0" width="30"><input type="button" value="M" name="marca" title="Marcar/Desmarcar" 
-                onclick="marcar('<?=$cldevolucaoacervo->numrows?>',this)"></td>
-            <td><b>Código do Exemplar</b></td>
-            <td><b>Cód. Barras</b></td>
-            <td><b>Título</b></td>
-            <td><b>Emprestado</b></td>
-            <td><b>Devolver até</b></td>
-           </tr>
-           <?
-           for ($x = 0; $x < $cldevolucaoacervo->numrows; $x++) {
-        	
-             db_fieldsmemory($result,$x);
-             ?>
-             <tr>
-              <td align='center' width='30'><input type='checkbox' value='<?=$bi19_codigo?>' 
-                  name='emprestimo' id='emprestimo'>
-              </td>
-              <td><?=$bi23_codigo?><input type="hidden" name="bi23_codigo" id="bi23_codigo" value="<?=$bi23_codigo?>"></td>
-              <td><?=$bi23_codbarras?></td>
-              <td><?=$bi06_titulo?><input type="hidden" name="bi06_seq" id="bi06_seq" value="<?=$bi06_seq?>"></td>
-              <input type="hidden" name="bi06_titulo" id="bi06_titulo" value="<?=$bi06_titulo?>"></td>
-              <td><?=db_formatar($bi18_retirada,'d')?></td>
-              <td><?=db_formatar($bi18_devolucao,'d')?></td>
-              <input type="hidden" name="bi19_codigo" id="bi19_codigo" value="<?=$bi19_codigo?>">
-              <input type="hidden" name="datadevol" id="datadevol" value="<?=str_replace('-','',$bi18_devolucao)?>">
-              <input type="hidden" name="codbarras" id="codbarras" value="<?=$bi23_codbarras?>">
-             </tr>
-            <?
-          
-           }
-        
-          ?>
-         </table>
-        </fieldset>
-       </td>
-      </tr>
-     </table>
-     <input name="confirma" type="button" id="confirma" value="Confirmar Devolução" <?=@$bi19_codigo==""?"disabled":""?> 
-            onclick="js_confirma(<?=$cldevolucaoacervo->numrows?>)">
-     <input name="renovar"  type="button" value="Renovar Empréstimo" <?=@$bi19_codigo==""?"disabled":""?> 
-            onclick="js_renova(<?=$cldevolucaoacervo->numrows?>)">
-     <input name="cancelar" type="button" id="cancelar" value="Cancelar" <?=@$bi19_codigo==""?"disabled":""?> 
-            onclick="location='bib1_devolucao001.php'">
-         
-  <?}
 
-    $codigo = "";
- 
-?>
-<?}?>
-
-<?if (!empty($codigo)) {
-	
-    $sSqlDevolucaoAcervo = "select * 
-                              from emprestimoacervo
-                                   inner join emprestimo      on bi18_codigo = bi19_emprestimo
-                                   inner join carteira        on bi16_codigo = bi18_carteira
-                                   inner join leitorcategoria on bi07_codigo = bi16_leitorcategoria
-                                   inner join biblioteca      on bi17_codigo = bi07_biblioteca
-                                   inner join leitor          on bi10_codigo = bi16_leitor
-                                   inner join exemplar        on bi23_codigo = bi19_exemplar
-                                   inner join acervo          on bi06_seq    = bi23_acervo
-                             where bi19_exemplar = $codigo
-                               and bi07_biblioteca = $bi17_codigo
-                               and not exists(select *
-                                                from devolucaoacervo
-                                               where devolucaoacervo.bi21_codigo = emprestimoacervo.bi19_codigo
-                                             )";
-    $result = $cldevolucaoacervo->sql_record($sSqlDevolucaoAcervo);
-    if ($cldevolucaoacervo->numrows == 0) {
-    	
-      ?>
-      <br>
-      <center>
-       <fieldset width="100%"><legend><b>Empréstimos deste exemplar:</b></legend>
-        <br>Nenhum empréstimo para o exemplar selecionado (<?=@$titulo?>).<br><br>
-       </fieldset>
-      </center>
-      <?
-      
-    } else {
-    	
-      $sCampos    = "ov02_nome as nome"; 
-      $sSqlLeitor = $clleitor->sql_query_leitorcidadao("", $sCampos, ""," bi10_codigo = ".pg_result($result,0,'bi10_codigo'));
-      $result1    = $clleitor->sql_record($sSqlLeitor);
-      db_fieldsmemory($result1,0);
-      ?>
-      <table border="0" width="90%" align="center">
-       <tr>
-        <td colspan="2">
-         <fieldset width="100%"><legend><b>Empréstimos deste exemplar:</b></legend>
-          Exemplar: <?=@$titulo?>
-          <table border="1" width="100%">
-           <tr>
-            <td bgcolor="#D0D0D0" width="30"><input type="button" value="M" name="marca" title="Marcar/Desmarcar" 
-                onclick="marcar('<?=$cldevolucaoacervo->numrows?>',this)"></td>
-            <td><b>Código do Exemplar</b></td>
-            <td><b>Cód. Barras</b></td>
-            <td><b>Leitor</b></td>
-            <td><b>Emprestado</b></td>
-            <td><b>Devolver até</b></td>
-           </tr>
-           
-           <?
-           for ($x = 0; $x < $cldevolucaoacervo->numrows; $x++) {
-           	
-             db_fieldsmemory($result,$x);
-             ?>
-             <tr>
-              <td align='center' width='30'><input type='checkbox' value='<?=$bi19_codigo?>' 
-                  name='emprestimo' id='emprestimo'></td>
-              <td><?=$bi23_codigo?><input type="hidden" name="bi23_codigo" id="bi23_codigo" 
-                                          value="<?=$bi23_codigo?>"></td>
-              <td><?=$bi23_codbarras?></td>
-              <td><?=$nome?><input type="hidden" name="bi06_seq" id="bi06_seq" value="<?=$bi06_seq?>">
-              <input type="hidden" name="bi06_titulo" id="titulo" value="<?=$titulo?>">
-              </td>
-              <td><?=db_formatar($bi18_retirada,'d')?></td>
-              <td><?=db_formatar($bi18_devolucao,'d')?></td>
-              <input type="hidden" name="bi19_codigo" id="bi19_codigo" value="<?=$bi19_codigo?>">
-              <input type="hidden" name="datadevol" id="datadevol" value="<?=str_replace('-','',$bi18_devolucao)?>">
-              <input type="hidden" name="codbarras" id="codbarras" value="<?=$bi23_codbarras?>">
-             </tr>
-             <?
-           }
-           ?>
-          </table>
-         </fieldset>
-        </td>
-       </tr>
+<form class="container" name="form2" method="post" action="">
+  <fieldset>
+    <legend>Devolução de Acervos</legend>
+    <fieldset class="separator">
+      <legend>Escolha uma das opções:</legend>
+      <table class="form-container">
+        <tbody>
+          <tr>
+            <td>
+              <label for="bi18_carteira"> <?php db_ancora($Lbi18_carteira, "pesquisaCarteira(true);", $opcao);?> </label>
+            </td>
+            <td>
+              <?php
+                db_input('bi18_carteira', 10, $Ibi18_carteira, true, 'text', $opcao, "onchange='pesquisaCarteira(false);'");
+                db_input('ov02_nome',     50, $Iov02_nome, true, 'text', 3, "");
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="codigo"><?php db_ancora('Exemplar:', "pesquisaExemplar(true);", $opcao);?></label>
+            </td>
+            <td>
+              <input type='text', class="field-size2" name='codigo' id='codigo' />
+              <input type='text', class="field-size8 readonly" name='titulo' id='titulo' disabled="disabled" />
+              <input type="submit" name="proximo" id="proximo" value="Próximo" style="visibility:hidden;position:absolute;" />
+            </td>
+          </tr>
+          <tr id='cntPesquisaExemplarBarras' style="display:none;">
+            <td colspan="2">
+              <b>Pesquisar por Código de Barras:</b>
+              <input type="text"   name="bi23_codbarras" value="" size="20" onChange="js_codbarras();" id='bi23_codbarras'>
+              <input type="button" name="lancarbarras" value="Pesquisar" size="" onClick="js_codbarras();">
+              <iframe src="" name="iframe_verificadata" id="iframe_verificadata" width="0" height="0" frameborder="0"></iframe>
+            </td>
+          </tr>
+        </tbody>
       </table>
-      <input name="confirma" type="button" id="confirma" value="Confirmar Devolução" <?=@$bi19_codigo==""?"disabled":""?> 
-             onclick="js_confirma(<?=$cldevolucaoacervo->numrows?>)">
-      <input name="renovar"  type="button" value="Renovar Empréstimo" <?=@$bi19_codigo==""?"disabled":""?> 
-             onclick="js_renova(<?=$cldevolucaoacervo->numrows?>)">
-      <input name="cancelar" type="button" id="cancelar" value="Cancelar" <?=@$bi19_codigo==""?"disabled":""?>  
-             onclick="location='bib1_devolucao001.php'">
-  <?}?>
-<?}?>
-</center>
-<br>
+    </fieldset>
+
+  </fieldset>
 </form>
-<script>
-function js_pesquisabi18_carteira(mostra) {
-	
-  if (mostra == true) {
-	  
-    js_OpenJanelaIframe('top.corpo',
-                        'db_iframe_leitor',
-                        'func_leitorproc.php?lNaoValidaCarteira=true&funcao_js=parent.js_mostraleitor1|bi16_codigo|ov02_nome',
-                        'Pesquisa',
-                        true);
-    
-  } else {
-	  
-    if (document.form1.bi18_carteira.value != '') {
-        
-      js_OpenJanelaIframe('top.corpo',
-                          'db_iframe_leitor',
-    	                    'func_leitorproc.php?lNaoValidaCarteira=false&pesquisa_chave='+document.form1.bi18_carteira.value
-    	                                      +'&funcao_js=parent.js_mostraleitor',
-    	                    'Pesquisa',
-    	                    false);
-      
-    } else {
-      document.form1.ov02_nome.value = '';
+<div class="subcontainer" style="width:1000px;">
+  <fieldset>
+    <legend>Exemplar(es) Emprestado(s)</legend>
+    <div id='ctnGridExemplares'> </div>
+  </fieldset>
+  <label for='chkComprovanteDevolucao'> Emitir Comprovante </label>
+  <input type='checkbox' name='chkComprovanteDevolucao' id='chkComprovanteDevolucao'/>
+  <input name="confirma" type="button" id="btnConfirmar" value="Confirmar Devolução" onclick="devolver();">
+  <input name="renovar"  type="button" id="btnRenovar"   value="Renovar Empréstimo" onclick="renovar();">
+  <input name="cancelar" type="button" id="btnCancelar"  value="Cancelar" onclick="location='bib1_devolucao001.php'">
+</div>
+
+<div id='qualquer'></div>
+<script type="text/javascript">
+
+
+$('bi18_carteira').addClassName('field-size2');
+$('ov02_nome').addClassName('field-size8');
+
+$('codigo').addEventListener('input', function (event) {
+  js_ValidaCampos(this,1,'Código do Exemplar','f','f',event);
+});
+
+$('codigo').addEventListener('change', function (event) {
+  pesquisaExemplar(false);
+});
+
+var oConfiguracao    = {};
+var aListaExemplares = [];
+
+var oGrid      = new DBGrid('ctnGridExemplares');
+var aHeaders   = [ 'Cód. Barras', 'Título', 'Leitor', 'Emprestado', 'Devolver', 'emprestimo', 'emprestimoacervo' ];
+var aCellWidth = [ '15%', '30%', '30%', '12%', '13%' ];
+var aCellAlign = [ 'center', 'left', 'left', 'center', 'center' ];
+
+oGrid.nameInstance = 'oGrid';
+oGrid.setCheckbox(6);
+oGrid.setCellWidth(aCellWidth);
+oGrid.setCellAlign(aCellAlign);
+oGrid.setHeader(aHeaders);
+oGrid.aHeaders[6].lDisplayed = false;
+oGrid.aHeaders[7].lDisplayed = false;
+oGrid.setHeight(130);
+oGrid.show($('ctnGridExemplares'));
+
+(function() {
+
+  situacaoBotoes(false);
+
+  var oAjax = new AjaxRequest('bib4_biblioteca.RPC.php', {exec: 'buscaPametros'},
+    function (oRetorno, lErro) {
+
+      if (lErro) {
+
+        alert(oRetorno.sMessage);
+        return;
+      }
+      oConfiguracao = oRetorno.oConfiguracao;
+      if ( oRetorno.oConfiguracao.lLeitorBarras ) {
+        $('cntPesquisaExemplarBarras').style.display = 'table-row';
+      }
     }
+  );
+  oAjax.setMessage('Buscando parâmetros biblioteca...');
+  oAjax.execute();
+})();
+
+
+/**
+ * Pesquisa os empréstimos por leitor
+ */
+function pesquisaCarteira(lMostra) {
+
+  var sUrl = 'func_leitorproc.php?lNaoValidaCarteira=true';
+  if (lMostra) {
+
+    sUrl += '&funcao_js=parent.js_mostraleitor1|bi16_codigo|ov02_nome';
+    js_OpenJanelaIframe('', 'db_iframe_leitor', sUrl, 'Pesquisa Leitor', true);
+  } else if ( $F('bi18_carteira') != '' ) {
+
+      sUrl += '&funcao_js=parent.js_mostraleitor';
+      sUrl += '&pesquisa_chave=' + $F('bi18_carteira');
+      js_OpenJanelaIframe('', 'db_iframe_leitor', sUrl, 'Pesquisa Leitor', false);
+  } else {
+    limparFormPesquisa(true);
   }
 }
 
-function js_mostraleitor(chave,erro) {
-	
-  document.form1.ov02_nome.value = chave;
-  document.form1.codigo.value    = '';
-  document.form1.titulo.value    = '';
-  if (document.form1.bi23_codbarras) {
-    document.form1.bi23_codbarras.value = '';
+function limparFormPesquisa( lLeitor, lExemplar ) {
+
+  if ( lLeitor ) {
+
+    $('bi18_carteira').value = '';
+    $('ov02_nome').value   = '';
   }
-  document.form1.proximo.click();
-  if (erro == true) {
-	  
-    document.form1.bi18_carteira.focus();
-    document.form1.bi18_carteira.value = '';
-    
+
+  if ( lExemplar ) {
+
+    $('codigo').value         = '';
+    $('titulo').value         = '';
+    $('bi23_codbarras').value = '';
+  }
+}
+
+function limparTudo() {
+
+  limparFormPesquisa(true, true);
+  oGrid.clearAll(true);
+  aListaExemplares = [];
+}
+
+function js_mostraleitor(chave, erro) {
+
+  $('ov02_nome').value = chave;
+  limparFormPesquisa(false, true);
+
+  if (erro) {
+
+    $('bi18_carteira').focus();
+    $('bi18_carteira').value = '';
+  } else {
+    buscarEmprestimos();
   }
 }
 
 function js_mostraleitor1 (chave1, chave2) {
-	
-  document.form1.bi18_carteira.value = chave1;
-  document.form1.ov02_nome.value     = chave2;
-  document.form1.codigo.value        = '';
-  document.form1.titulo.value        = '';
-  
-  if (document.form1.bi23_codbarras) {
-    document.form1.bi23_codbarras.value = '';
-  }
+
+  $('bi18_carteira').value = chave1;
+  $('ov02_nome').value     = chave2;
+
+  limparFormPesquisa(false, true);
   db_iframe_leitor.hide();
-  document.form1.proximo.click();
+  buscarEmprestimos();
 }
 
-function js_pesquisabi23_codigo(mostra) {
-	
-  if (mostra == true) {
-	  
-    js_OpenJanelaIframe('top.corpo',
-                        'db_iframe_exemplar',
-                        'func_exemplardevol.php?funcao_js=parent.js_mostraexemplar1|bi23_codigo|bi06_titulo',
-                        'Pesquisa',
-                        true);
-    
+/**
+ * Pesquisa os empréstimos por exemplar
+ */
+function pesquisaExemplar( lMostra ) {
+
+  var sUrl = 'func_exemplardevol.php';
+  if ( lMostra ) {
+
+    sUrl += '?funcao_js=parent.js_mostraexemplar1|bi23_codigo|bi06_titulo';
+    js_OpenJanelaIframe('', 'db_iframe_exemplar', sUrl, 'Pesquisa Exemplar', true);
+
+  } else if ($F('codigo') != '') {
+
+    sUrl += '?funcao_js=parent.js_mostraexemplar';
+    sUrl += '&pesquisa_chave='+$F('codigo');
+    js_OpenJanelaIframe('', 'db_iframe_exemplar', sUrl, 'Pesquisa Exemplar', false);
   } else {
-	  
-    if (document.form1.codigo.value != '') {
-        
-      js_OpenJanelaIframe('top.corpo',
-                          'db_iframe_exemplar',
-    	                    'func_exemplardevol.php?pesquisa_chave='+document.form1.codigo.value
-    	                                         +'&funcao_js=parent.js_mostraexemplar',
-    	                    'Pesquisa',
-    	                    false);
-      
-    } else {        
-      document.form1.titulo.value = '';
-    }
+    limparFormPesquisa(false, true);
   }
 }
 
 function js_mostraexemplar(chave1,erro) {
-	
-  document.form1.titulo.value        = chave1;
-  document.form1.bi18_carteira.value = '';
-  document.form1.ov02_nome.value     = '';
-  
-  if (document.form1.bi23_codbarras) {
-    document.form1.bi23_codbarras.value = '';
-  }
-  document.form1.proximo.click();
-  if (erro == true) {
-	  
-    document.form1.codigo.value = '';
-    document.form1.codigo.focus();
-    return false;
-    
+
+  $('bi23_codbarras').value = '';
+  limparFormPesquisa(true, false);
+  $('titulo').value = chave1;
+
+  if ( erro ) {
+
+    $('codigo').value = '';
+    $('codigo').focus();
+  }else {
+    buscarEmprestimos();
   }
 }
 
 function js_mostraexemplar1(chave1,chave2) {
-	
-  document.form1.codigo.value        = chave1;
-  document.form1.titulo.value        = chave2;
-  document.form1.bi18_carteira.value = '';
-  document.form1.ov02_nome.value     = '';
-  if (document.form1.bi23_codbarras) {
-    document.form1.bi23_codbarras.value = '';
-  }
+
+  $('bi23_codbarras').value = '';
+  limparFormPesquisa(true, false);
+
+  $('codigo').value = chave1;
+  $('titulo').value = chave2;
   db_iframe_exemplar.hide();
-  document.form1.proximo.click();
-  
+  buscarEmprestimos()
 }
 
-function marcar(tudo,documento) {
-	
-  if (tudo == 1) {
-	  
-    if (documento.value == "D") {
-      document.form1.emprestimo.checked = false;
-    }
-    if (documento.value == "M") {
-      document.form1.emprestimo.checked = true;
-    }
-    
-  } else {
-	  
-    for (i = 0; i < tudo; i++) {
-        
-      if (documento.value == "D") {
-        document.form1.emprestimo[i].checked = false;
-      }
-      if (documento.value == "M") {
-        document.form1.emprestimo[i].checked = true;
-      }
-    }
-  }
-  
-  if (document.form1.marca.value == "D") {
-    document.form1.marca.value = "M";
-  } else {
-    document.form1.marca.value = "D";
+
+function situacaoBotoes(lLiberar) {
+
+  $('btnConfirmar').setAttribute('disabled', 'disabled');
+  $('btnRenovar').setAttribute('disabled', 'disabled');
+  $('btnCancelar').setAttribute('disabled', 'disabled');
+
+  if (lLiberar) {
+
+    $('btnConfirmar').removeAttribute('disabled', 'disabled');
+    $('btnRenovar').removeAttribute('disabled', 'disabled');
+    $('btnCancelar').removeAttribute('disabled', 'disabled');
   }
 }
+function buscarEmprestimos() {
 
-function js_confirma(tudo) {
-	
-  var armazena = '';
-  if (tudo == 1 && document.form1.emprestimo.checked == true) {
-	  
-    armazena  = document.form1.bi19_codigo.value+";"+document.form1.bi23_codigo.value+";"+document.form1.emprestimo.value;
-    armazena += ";"+document.form1.bi06_seq.value+"|";
-    
-  }
-  
-  if (tudo > 1) {
-	  
-    for (i = 0; i < tudo; i++) {
-        
-      if (document.form1.emprestimo[i].checked == true) {
-          
-        armazena += document.form1.bi19_codigo[i].value+";"+document.form1.bi23_codigo[i].value;
-        armazena += ";"+document.form1.emprestimo[i].value+";"+document.form1.bi06_seq[i].value+"|";
-        
+  var oParametros = {exec: 'buscarEmprestimoParaDevolucao'};
+  oParametros.iCodigoCarteira = $F('bi18_carteira');
+  oParametros.iCodigoExemplar = $F('codigo');
+  oParametros.iBiblioteca     = oConfiguracao.iBiblioteca;
+
+  aListaExemplares = [];
+  oGrid.clearAll(true);
+  var oAjax = new AjaxRequest('bib4_emprestimo.RPC.php', oParametros,
+    function (oRetorno, lErro) {
+
+      if (lErro) {
+
+        alert(oRetorno.sMessage);
+        situacaoBotoes(false);
+        return;
       }
+      montarGradeEmprestimo(oRetorno.aEmprestimos);
     }
-  }
-  
-  if (armazena != "") {
-    location.href="bib1_devolucao001.php?devolvolucao="+armazena;
-  } else {
-    alert("Marque algum exemplar para devolução!");
-  }
+  );
+
+  oAjax.setMessage('Buscando parâmetros biblioteca...');
+  oAjax.execute();
 }
 
-function js_renova(iTotalLinhas) {
+function montarGradeEmprestimo(aEmprestimos) {
 
-  var oCkBox               = document.getElementsByName('emprestimo');
-  var oDataDevolucao       = document.getElementsByName('datadevol');
-  var oTitulo              = document.getElementsByName('bi06_titulo');
-  var oCodEmprestimoAcervo = document.getElementsByName('bi19_codigo');
-  var oCodExemplar         = document.getElementsByName('bi23_codigo');
-  var oCodAcervo           = document.getElementsByName('bi06_seq');
-  var iDataAtual           = parseInt(<?="'".date('Ymd')."'"?>, 10);
-  var sGet                 = 'renovaemprestimo=';
-  var sSep                 = '';
-  var sSep2                = '';
-  var sAlert               = '';
-  var iDataDevolucao;
+  aListaExemplares = aEmprestimos;
+  situacaoBotoes(true);
+  aEmprestimos.each( function(oEmprestimo) {
 
-  for (var iCont = 0; iCont < oCkBox.length; iCont++) {
+    var aLinha = [];
+    aLinha.push(oEmprestimo.codigo_barras);
+    aLinha.push(oEmprestimo.titulo);
+    aLinha.push(oEmprestimo.leitor);
+    aLinha.push( js_formatar( oEmprestimo.data_retirada, 'd') );
+    aLinha.push( js_formatar( oEmprestimo.data_devolucao, 'd') );
+    aLinha.push(oEmprestimo.emprestimo);
+    aLinha.push(oEmprestimo.emprestimoacervo);
 
-    if (oCkBox[iCont].checked) {
-     
-      iDataDevolucao = parseInt(oDataDevolucao[iCont].value, 10);
-      if (iDataDevolucao > iDataAtual) {
+    oGrid.addRow(aLinha);
+  });
 
-        sAlert += sSep2+'"'+oTitulo[iCont].value.trim()+'"';
-        sSep2   = ', ';
+  oGrid.renderRows();
+  oGrid.setHighlight();
 
-      }
-      sGet += sSep+oCodEmprestimoAcervo[iCont].value+';'+oCodExemplar[iCont].value+';'+oCkBox[iCont].value;
-      sGet += ';'+oCodAcervo[iCont].value;
-      sSep  = '|'
+  oParametros = {iWidth:'200', oPosition : {sVertical : 'T', sHorizontal : 'R'}};
+  aEmprestimos.each( function(oEmprestimo, i) {
 
+    oGrid.aRows[i].aCells[2].addClassName('elipse');
+    oGrid.aRows[i].aCells[3].addClassName('elipse');
+
+    var sStyle = 'form-sucess';
+    if ( oEmprestimo.lVencido ) {
+      sStyle   = 'form-error';
     }
 
+    oGrid.aRows[i].aCells[5].addClassName(sStyle);
+    oGrid.setHint(i, 2, oEmprestimo.titulo,  oParametros);
+    oGrid.setHint(i, 3, oEmprestimo.leitor,  oParametros);
+  });
+}
+
+function buscarExemplaresSelecionados() {
+
+  var aSelecionados = [];
+
+  oGrid.getSelection('object').each(function (oLinhaSelecionada) {
+
+    aSelecionados.push( {'iEmprestimoAcervo' : oLinhaSelecionada.aCells[0].getValue(),
+                         'iEmprestimo'       : oLinhaSelecionada.aCells[6].getValue(),
+                         'iNumeroLinha'      : oLinhaSelecionada.getRowNumber()});
+  });
+
+  if ( aSelecionados.length == 0) {
+
+    alert('Nenhum Exemplar selecionado.');
+    return;
   }
+  return aSelecionados;
+}
 
-  if (sSep == '') { // Se houver pelo menos um registro marcado, sSep valerá "|"
-	  
-    alert('Marque algum exemplar para renovação!');
-    return false;
+function devolver() {
 
-  }
+  aSelecionados = buscarExemplaresSelecionados();
 
-  if (!confirm('O(s) exemplar(es) '+sAlert+' possui(em) data de devolução maior que a data atual. '+
-      'Confirma a renovação para este(s) exemplar(es)?')) {
+  if (aSelecionados.length == 0) {
     return false;
   }
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_renovacao', 'bib1_renovacao001.php?'+sGet,
-		    	            'Renovação de Empréstimo', true
-                     );
+  var oAjax = new AjaxRequest('bib4_emprestimo.RPC.php', {'exec': 'devolver', 'aEmprestimos' : aSelecionados },
+    function (oRetorno, lErro) {
 
+      alert(oRetorno.sMessage);
+      if (lErro) {
+        return;
+      }
+
+      if ($('chkComprovanteDevolucao').checked) {
+        imprimirComprovanteDevolucao(aSelecionados);
+      }
+
+      if ( aSelecionados.length == oGrid.getNumRows() ) {
+
+        limparTudo();
+        return;
+      }
+
+      var aLinhasRemover = [];
+      aSelecionados.each( function( oSelecionado ) {
+        aLinhasRemover.push(oSelecionado.iNumeroLinha);
+      });
+
+      oGrid.removeRow(aLinhasRemover);
+      oGrid.renderizar();
+    }
+  );
+
+  oAjax.setMessage('Realizando devolução, aguarde...');
+  oAjax.execute();
 }
+
+function imprimirComprovanteDevolucao(aSelecionados) {
+
+  var aDevolvidos = [];
+  for ( var oSelecionado of aSelecionados ) {
+    aDevolvidos.push(oSelecionado.iEmprestimo);
+  }
+
+  var sUrl  = 'bib2_emprestimo002.php';
+      sUrl += '?emp=' + aDevolvidos.implode(',');
+      sUrl += '&tipo=1';
+  window.open(sUrl,'','scrollbars=1,location=0 ');
+}
+
+function renovar() {
+
+  var aItensRenovar = [];
+  var aListaNoPrazo = [];
+  $$('input[type="checkbox"]:checked').each(function(oElement) {
+
+    aListaExemplares.each( function(oDados) {
+
+      if (oDados.emprestimoacervo == oElement.value) {
+
+        aItensRenovar.push(oDados);
+        if ( !oDados.lVencido ) {
+          aListaNoPrazo.push(oDados.titulo);
+        }
+      }
+    });
+  });
+
+  if (aItensRenovar.length == 0){
+
+    alert('Nenhum exemplar selecionado para renovar.');
+    return;
+  }
+
+  if ( aListaNoPrazo.length > 0) {
+
+    sLista    = aListaNoPrazo.implode(', ');
+    var sMsg  = 'O(s) exemplar(es) "' + sLista + '"  possui(em) data de devolução maior que a data atual.\n';
+        sMsg += 'Confirma a renovação para este(s) exemplar(es)?';
+    if ( !confirm(sMsg) ) {
+      return;
+    }
+  }
+
+  var oRenovacao = new DBViewRenovacao (oConfiguracao, aItensRenovar);
+  oRenovacao.show();
+}
+
 function js_codbarras() {
-	
-  if (document.form1.bi23_codbarras.value != "") {
-    iframe_verificadata.location = "bib1_devolucao002.php?bi23_codbarras="+document.form1.bi23_codbarras.value;
-  }  
+
+  if ($F('bi23_codbarras') != "") {
+    iframe_verificadata.location = "bib1_devolucao002.php?bi23_codbarras="+$F('bi23_codbarras');
+  }
 }
 </script>

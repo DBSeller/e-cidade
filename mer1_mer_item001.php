@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_item_classe.php");
-include("classes/db_mer_itemunisaida_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_libdicionario.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_item_classe.php"));
+include(modification("classes/db_mer_itemunisaida_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_libdicionario.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmer_item         = new cl_mer_item;
 $clmer_itemunisaida = new cl_mer_itemunisaida;
@@ -66,7 +66,7 @@ if (isset($incluir)) {
   <tr> 
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
     <fieldset style="width:95%"><legend><b>Inclusão Item</b></legend>
-	<? include("forms/db_frmmer_item.php");?>
+	<? include(modification("forms/db_frmmer_item.php"));?>
 	</fieldset>
 	</td>
   </tr>
@@ -94,7 +94,7 @@ if (isset($incluir)) {
   } else {
   	
     $clmer_item->erro(true,false);
-    $result = @pg_query("select last_value from mer_item_me10_codigo_seq");
+    $result = @db_query("select last_value from mer_item_me10_codigo_seq");
     $ultimo = pg_result($result,0,0);
     ?>
     <script>

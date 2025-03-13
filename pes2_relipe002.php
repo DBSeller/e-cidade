@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_libpessoal.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_ipe_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_ipe_classe.php"));
 $clipe    = new cl_ipe;
 
 $oGet = db_utils::postmemory($HTTP_GET_VARS);

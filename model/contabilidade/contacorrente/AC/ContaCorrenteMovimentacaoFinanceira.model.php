@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,8 +24,8 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-require_once ("interfaces/IContaCorrente.interface.php");
-require_once ("model/contabilidade/contacorrente/ContaCorrenteBase.model.php");
+require_once(modification("interfaces/IContaCorrente.interface.php"));
+require_once(modification("model/contabilidade/contacorrente/ContaCorrenteBase.model.php"));
 
 /**
  * Model responsável pelas Movimentações Financeiras
@@ -45,16 +45,33 @@ class ContaCorrenteMovimentacaoFinanceira extends ContacorrenteBase implements I
    * Seta os atributos necessários para o funcionamento da classe
    * Chamando o construtor da classe abstrada
    *
-   * @param integer $iCodigoLancamento               - Código do Lançamento (conlancamval)
-   * @param integer $iCodigoReduzido                 - Código reduzido da conta no plano de contas PCASP
+   * @param integer             $iCodigoLancamento   - Código do Lançamento (conlancamval)
+   * @param integer             $iCodigoReduzido     - Código reduzido da conta no plano de contas PCASP
    * @param ILancamentoAuxiliar $oLancamentoAuxiliar - Objeto de Lançamento Auxiliar
+   * @throws BusinessException
+   * @throws ParameterException
    */
   public function __construct($iCodigoLancamento, $iCodigoReduzido, ILancamentoAuxiliar $oLancamentoAuxiliar) {
 
     parent::__construct($iCodigoLancamento, $iCodigoReduzido, $oLancamentoAuxiliar);
     $this->oContaCorrente = ContaCorrenteRepository::getContaCorrenteByCodigo(self::CONTA_CORRENTE);
+
+    if (empty($this->oContaCorrenteDetalhe)) {
+
+      $sMensagem  = "Os dados necessários para a execução da conta corrente - {$this->oContaCorrente->getDescricao()} ";
+      $sMensagem .= "(conta {$this->getContaPlano()->getEstrutural()} - {$this->getContaPlano()->getDescricao()}) não foram informados.\n";
+      throw new ParameterException($sMensagem, '1010');
+    }
+
     if ($this->oContaCorrenteDetalhe->getContaBancaria() == '') {
-      $this->oContaCorrenteDetalhe->setContaBancaria($this->getContaPlano()->getContaBancaria());
+      /**
+       * Verificamos se a conta bancaria existe na conta do plano de contas
+       */
+      $oContaBancaria = $this->getContaPlano()->getContaBancaria();
+
+      if (!empty($oContaBancaria)) {
+        $this->oContaCorrenteDetalhe->setContaBancaria($oContaBancaria);
+      }
     }
     $this->validarInformacoes();
   }

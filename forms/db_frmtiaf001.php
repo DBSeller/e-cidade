@@ -115,7 +115,7 @@ function js_limpacampos(){
 	document.form1.y90_codtiaf.value   = "";
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_preenchepesquisa|y90_codtiaf','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_preenchepesquisa|y90_codtiaf','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave){

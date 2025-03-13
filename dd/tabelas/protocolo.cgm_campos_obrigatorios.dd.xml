@@ -1,0 +1,105 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010803' name='protocolo.cgm_campos_obrigatorios' description="Tabela que identifica quais campos do CGM são obrigatórios." prefix="p73" label="Campos Obrigatórios CGM" type="0">
+  <fields>
+    <field codigo="1013268" 
+           campo_api='' 
+           name="p73_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013269" 
+           campo_api='' 
+           name="p73_label" 
+           conteudo="varchar(60)" 
+           description="Label do campo." 
+           inivalue="" 
+           label="Label" 
+           size="60" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Label" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013270" 
+           campo_api='' 
+           name="p73_obrigatorio" 
+           conteudo="bool" 
+           description="Coluna indica se o campo é obrigatório." 
+           inivalue="f" 
+           label="Obrigatório" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Obrigatório" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013271" 
+           campo_api='' 
+           name="p73_html_id" 
+           conteudo="varchar(60)" 
+           description="ID do input HTML para fazer a validação dos campos obrigatórios." 
+           inivalue="" 
+           label="ID HTML" 
+           size="60" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="ID HTML" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013272" 
+           campo_api='' 
+           name="p73_tipo_pessoa" 
+           conteudo="varchar(60)" 
+           description="Indica se é pessoa física ou jurídica." 
+           inivalue="" 
+           label="Tipo de Pessoa" 
+           size="60" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Tipo de Pessoa" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="p73_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

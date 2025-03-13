@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("id_usuario");
@@ -147,10 +147,10 @@ function js_pesquisaUsuario(mostra) {
   var sUrl2   = 'func_db_usuarios.php?pesquisa_chave='+usuario+'&funcao_js=parent.js_mostrausu';
   
   if (mostra==true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuario',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuario',sUrl1,'Pesquisa',true);
   } else {
     if (usuario != "") {
-      js_OpenJanelaIframe('top.corpo','db_iframe_db_usuario',sUrl2,'Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuario',sUrl2,'Pesquisa',false);
     } else {
       obj.nome.value = '';
     }

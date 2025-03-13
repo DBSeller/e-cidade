@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -45,7 +45,7 @@ function js_ruacorreta(){
 //    document.form1.z01_ender.value = '';
     document.form1.z01_ender.select();
     document.form1.z01_ender.focus();
-    js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_ruas','func_ruas.php?nomerua='+ document.form1.z01_ender.value+'&rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome|j29_cep','Pesquisa',true);
+    js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_ruas','func_ruas.php?nomerua='+ document.form1.z01_ender.value+'&rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome|j29_cep','Pesquisa',true);
     return false;
   }else{
     if(nome == "" || nome == 'undefined'){
@@ -126,7 +126,7 @@ function js_func_nome(){
   $clrotulo->label("DBtxt29");
   $clrotulo->label("DBtxt32");
   $clrotulo->label("DBtxt33");
-  db_fieldsmemory(pg_exec("select * from db_config where codigo = " . db_getsession("DB_instit")),0);
+  db_fieldsmemory(db_query("select * from db_config where codigo = " . db_getsession("DB_instit")),0);
   if($db_opcao == 2 && (isset($z01_numcgm) || isset($numcgm_cgccpf))){
     if(isset($numcgm_cgccpf))
       $z01_numcgm = $numcgm_cgccpf;
@@ -197,14 +197,14 @@ if(isset($pessoa)){
 	$cpf = str_replace("-","",$cpf); 
 	if(empty($z01_cgccpfi))
 	  $z01_cgccpf = $cpf;
-	include("prot1_pfisica.php");
+	include(modification("prot1_pfisica.php"));
       }elseif(isset($cnpj) && $cnpj != ""){
 	$cnpj = str_replace(".","",$cnpj);
 	$cnpj = str_replace("/","",$cnpj);
 	$cnpj = str_replace("-","",$cnpj); 
 	if(empty($z01_cgccpf))
 	  $z01_cgccpf = $cnpj;
-	include("prot1_pjuridica.php");
+	include(modification("prot1_pjuridica.php"));
       }
     }elseif($db_opcao == 2){
       if(!isset($chavepesquisa) && !isset($numcgm_cgccpf)){
@@ -266,13 +266,13 @@ if(isset($pessoa)){
 	      $municipio = "t";
 	    elseif(!isset($municipio))
 	      $municipio = "f";
-	    include("prot1_pfisica.php");
+	    include(modification("prot1_pfisica.php"));
 	  }elseif($pessoa == "juridica"){
 	    if(strtoupper($z01_munic) == strtoupper($munic) && !isset($municipio))
 	      $municipio = "t";
 	    elseif(!isset($municipio))
 	      $municipio = "f";
-	    include("prot1_pjuridica.php");
+	    include(modification("prot1_pjuridica.php"));
 	  }
 	}elseif($z01_cgccpf != ""){
 	  if(strlen($z01_cgccpf) == 14){
@@ -282,7 +282,7 @@ if(isset($pessoa)){
 	      $municipio = "t";
 	    elseif(!isset($municipio))
 	      $municipio = "f";
-	    include("prot1_pjuridica.php");
+	    include(modification("prot1_pjuridica.php"));
 	  }elseif(strlen($z01_cgccpf) == 11){
 	    $result = $clcgm->sql_record($clcgm->sql_query($z01_numcgm,"*"));
 	    db_fieldsmemory($result,0);
@@ -290,7 +290,7 @@ if(isset($pessoa)){
 	      $municipio = "t";
 	    elseif(!isset($municipio))
 	      $municipio = "f";
-	    include("prot1_pfisica.php");
+	    include(modification("prot1_pfisica.php"));
 	  }else{
 	    ?>
 	      <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -735,12 +735,12 @@ if(isset($pessoa)){
 if(!isset($testanome)){
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 }
-//include("db_divbalao.php");
+//include(modification("db_divbalao.php"));
 ?>
 </form>
 <script>
 function js_ruas(){
-  js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_ruas','func_ruas.php?rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome|j29_cep','Pesquisa',true);
+  js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_ruas','func_ruas.php?rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome|j29_cep','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   if(document.form1.j14_codigo.value == "")
@@ -753,7 +753,7 @@ function js_preenchepesquisa(chave,chave1,chave2){
 function js_bairro(){
   //if(document.form1.z01_cep.value != "")
     //document.getElementById('teste').style.visibility = 'visible';
-  js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_bairro','func_bairro.php?rural=1&funcao_js=parent.js_preenchebairro|j13_codi|j13_descr','Pesquisa',true);
+  js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_bairro','func_bairro.php?rural=1&funcao_js=parent.js_preenchebairro|j13_codi|j13_descr','Pesquisa',true);
 }
 function js_preenchebairro(chave,chave1){
 //  setInterval("document.getElementById('teste').style.visibility = 'hidden'",2000);
@@ -779,9 +779,9 @@ function js_cepcon(abre){
   //if(document.form1.z01_cep.value != "")
     //document.getElementById('teste').style.visibility = 'visible';
   if(abre == true){
-    js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_cep','func_cep.php?funcao_js=parent.js_preenchecepcon|cep|endereco|municipio|estado|bairro','Pesquisa',true);
+    js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_cep','func_cep.php?funcao_js=parent.js_preenchecepcon|cep|endereco|municipio|estado|bairro','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('<?=(!isset($testanome)?"top.corpo":"")?>','db_iframe_cep','func_cep.php?pesquisa_chave='+document.form1.z01_cepcon.value+'&funcao_js=parent.js_preenchecepcon1|cep|endereco|municipio|estado|bairro','Pesquisa',false);
+    js_OpenJanelaIframe('<?=(!isset($testanome)?"(window.CurrentWindow || parent.CurrentWindow).corpo":"")?>','db_iframe_cep','func_cep.php?pesquisa_chave='+document.form1.z01_cepcon.value+'&funcao_js=parent.js_preenchecepcon1|cep|endereco|municipio|estado|bairro','Pesquisa',false);
   }
 }
 function js_preenchecepcon(chave,chave1,chave2,chave3,chave4){

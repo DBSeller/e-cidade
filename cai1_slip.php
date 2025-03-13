@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $db_erro = "";
 db_postmemory($HTTP_POST_VARS);
+$instit = db_getsession("DB_instit");
 if(isset($confirma)){
-  pg_exec("begin");
+  db_query("begin");
   $sql = "update numpref set k03_numsli = k03_numsli + 1 
-          where k03_anousu = ".db_getsession('DB_anousu');
-  pg_exec($sql);
+          where k03_instit = $instit and k03_anousu = ".db_getsession('DB_anousu');
+  db_query($sql);
   $db_erro = pg_ErrorMessage($conn);  
   if($db_erro==""){
-    $result = pg_exec("select k03_numsli from numpref 
-                       where k03_anousu = ".db_getsession('DB_anousu'));
+    $result = db_query("select k03_numsli from numpref 
+                       where k03_instit = $instit and k03_anousu = ".db_getsession('DB_anousu'));
     db_fieldsmemory($result,0);
 	if($hist=="") $hist = 0;
       $sql = "insert into slip (k17_codigo,
@@ -61,10 +62,10 @@ if(isset($confirma)){
 								  '".$texto."',
      								  ".db_getsession("DB_instit") .
 								  ")";
-    pg_exec($sql); 
+    db_query($sql); 
     $db_erro = pg_ErrorMessage($conn);  
     if($db_erro=="") {
-	   pg_exec('commit');
+	   db_query('commit');
 	   $db_erro = "Código Incluído : ".$k03_numsli;
     }
 	$k17_texto = $texto;
@@ -73,7 +74,7 @@ if(isset($confirma)){
   $k17_texto = 'Transferência entre Contas'; 
 }
 
-$result_conta1 = pg_exec("select 0 as c01_reduz,'Nenhuma...' as c01_descr,'' as c01_estrut
+$result_conta1 = db_query("select 0 as c01_reduz,'Nenhuma...' as c01_descr,'' as c01_estrut
                           union
                           select c01_reduz,c01_descr,c01_estrut 
  	                      from plano 
@@ -119,7 +120,7 @@ function js_gravar(){
   <tr> 
     <td valign="top" bgcolor="#CCCCCC">
 	  <?
-	  include("forms/db_frmslip.php");
+	  include(modification("forms/db_frmslip.php"));
 	  ?>
 	</td>
   </tr>

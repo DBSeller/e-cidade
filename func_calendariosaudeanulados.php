@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_undmedhorario_ext_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_undmedhorario_ext_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']); // ta com o globals desativado no php -- Crestani
 
@@ -166,7 +166,7 @@ class calendario{
 				             ";
 					
           
-          $result_undmedhorario = pg_query( $str_query ) or die( "ERRO: <p> $str_query ");
+          $result_undmedhorario = db_query( $str_query ) or die( "ERRO: <p> $str_query ");
 					if( pg_num_rows($result_undmedhorario) > 0 ){
 						$obj_undmedhorario  = db_utils::fieldsMemory($result_undmedhorario,0);
 					}
@@ -347,7 +347,7 @@ if( ( isset($sd27_i_rhcbo) && (int)@$sd27_i_rhcbo != 0 ) ||( isset($sd27_i_codig
 	               order by sd30_i_diasemana   
 	              ";
 
-	$result     = pg_query($str_query) or die("ERRO: nos hor&aacute;rios do profissional.");
+	$result     = db_query($str_query) or die("ERRO: nos hor&aacute;rios do profissional.");
 	if( pg_num_rows($result) > 0 ){
 		$obj_result = db_utils::fieldsMemory($result,0);
 		$fechar     = isset($fechar)?true:0;
@@ -449,4 +449,10 @@ function janela_zera(){
   ?>
 }
 
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

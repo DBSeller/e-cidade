@@ -1,53 +1,55 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhrubricas_classe.php");
-include("classes/db_rhrubelemento_classe.php");
-include("classes/db_rhrubretencao_classe.php");
-include("classes/db_basesr_classe.php");
-include("classes/db_rhtipomedia_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhrubricas_classe.php"));
+include(modification("classes/db_rhrubelemento_classe.php"));
+include(modification("classes/db_rhrubretencao_classe.php"));
+include(modification("classes/db_basesr_classe.php"));
+include(modification("classes/db_rhtipomedia_classe.php"));
+include(modification("classes/db_rhrubricasadiantamento_classe.php"));
 
-$clrhrubricas    = new cl_rhrubricas();
-$clrhrubelemento = new cl_rhrubelemento();
-$clrhrubretencao = new cl_rhrubretencao();
-$clbasesr        = new cl_basesr();
-$clrhtipomedia   = new cl_rhtipomedia();
+$clrhrubricas             = new cl_rhrubricas();
+$clrhrubelemento          = new cl_rhrubelemento();
+$clrhrubretencao          = new cl_rhrubretencao();
+$clbasesr                 = new cl_basesr();
+$clrhtipomedia            = new cl_rhtipomedia();
+$clrhrubricasadiantamento = new cl_rhrubricasadiantamento();
 
 db_postmemory($HTTP_POST_VARS);
 
 $db_opcao = 1;
 $db_botao = true;
 if(isset($incluir) || isset($novasrubricas)){
-	
+
   db_inicio_transacao();
   $calc1 = "";
   $calc2 = "";
@@ -58,8 +60,12 @@ if(isset($incluir) || isset($novasrubricas)){
   $clrhrubricas->rh27_form2            = str_replace("\\","",$rh27_form2);
   $clrhrubricas->rh27_form3            = str_replace("\\","",$rh27_form3);
   $clrhrubricas->rh27_formq            = str_replace("\\","",$rh27_formq);
-  $clrhrubricas->rh27_cond2            = str_replace("\\","",$rh27_cond2);
-  $clrhrubricas->rh27_cond3            = str_replace("\\","",$rh27_cond3);
+  // $clrhrubricas->rh27_cond2         = str_replace("\\","",$rh27_cond2);
+  // $clrhrubricas->rh27_cond3         = str_replace("\\","",$rh27_cond3);
+  $clrhrubricas->rh27_cond2            = stripslashes($rh27_cond2);
+  $clrhrubricas->rh27_cond3            = stripslashes($rh27_cond3);
+  $clrhrubricas->rh27_cond2            = addslashes($rh27_cond2);
+  $clrhrubricas->rh27_cond3            = addslashes($rh27_cond3);
   $clrhrubricas->rh27_obs              = str_replace("\\","",$rh27_obs);
   $clrhrubricas->rh27_valorpadrao      = str_replace("\\","",$rh27_valorpadrao);
   $clrhrubricas->rh27_quantidadepadrao = str_replace("\\","",$rh27_quantidadepadrao);
@@ -108,19 +114,39 @@ if(isset($incluir) || isset($novasrubricas)){
       }
 
       if($rubricainclui != 0){
+
+        if ( !empty($rh27_rhfundamentacaolegal) ) {
+          $oDaoFundamentacaoLegal = new cl_rhfundamentacaolegal();
+          $sSqlFundamentacaoLegal = $oDaoFundamentacaoLegal->sql_query_file($rh27_rhfundamentacaolegal);
+          $rsFundamentacao        = db_query($sSqlFundamentacaoLegal);
+
+          if ( !$rsFundamentacao ) {
+            $sqlerro = true;
+            $erro_msg = 'Não foi possível consultar a fundamentação legal informada.';
+          }
+
+          if ( pg_num_rows($rsFundamentacao) == 0 ) {
+            $sqlerro = false;
+            $clrhrubricas->rh27_rhfundamentacaolegal = null;
+            $GLOBALS["HTTP_POST_VARS"]["rh27_rhfundamentacaolegal"] = null;
+          }
+        }
+
         if($sqlerro == false){
-          $clrhrubricas->rh27_tipo  = "2";
-          $clrhrubricas->rh27_calc1 = "0";
-          $clrhrubricas->rh27_calc2 = "0";
-          $clrhrubricas->rh27_calc3 = "false";
-          $clrhrubricas->rh27_descr = $descricinclui;
-          $clrhrubricas->rh27_instit = db_getsession("DB_instit");
+          $clrhrubricas->rh27_tipo              = "2";
+          $clrhrubricas->rh27_calc1             = "0";
+          $clrhrubricas->rh27_calc2             = "0";
+          $clrhrubricas->rh27_calc3             = "false";
+          $clrhrubricas->rh27_descr             = $descricinclui;
+          $clrhrubricas->rh27_instit            = db_getsession("DB_instit");
+          $clrhrubricas->rh27_periodolancamento = $rh27_periodolancamento == 't' ? 'true' : 'false';
           $clrhrubricas->incluir($rubricainclui,db_getsession("DB_instit"));
           $erro_msg = $clrhrubricas->erro_msg;
           if($clrhrubricas->erro_status==0){
             $sqlerro = true;
             break;
           }
+          // <!-- ContratosPADRS: tipo de rubrica inserir -->
         }
       }
     }
@@ -134,35 +160,53 @@ if(isset($incluir) || isset($novasrubricas)){
     }
 
     if (!empty($rh27_rubric)) {
-    
+
 	    $sSqlRhRubricas = $clrhrubricas->sql_query_file($rh27_rubric, db_getsession("DB_instit"));
 	    $rsRhRubricas   = db_query($sSqlRhRubricas);
-	    
+
 	    if (pg_num_rows($rsRhRubricas) > 0) {
 	    	$sqlerro  = true;
 	    	$erro_msg = "Código Rubrica já cadastrado para a instituição.";
 	    }
     }
-    
+
+    if ( !empty($rh27_rhfundamentacaolegal) ) {
+      $oDaoFundamentacaoLegal = new cl_rhfundamentacaolegal();
+      $sSqlFundamentacaoLegal = $oDaoFundamentacaoLegal->sql_query_file($rh27_rhfundamentacaolegal);
+      $rsFundamentacao        = db_query($sSqlFundamentacaoLegal);
+
+      if ( !$rsFundamentacao ) {
+        $sqlerro = true;
+        $erro_msg = 'Não foi possível consultar a fundamentação legal informada.';
+      }
+
+      if ( pg_num_rows($rsFundamentacao) == 0 ) {
+        $sqlerro = false;
+        $clrhrubricas->rh27_rhfundamentacaolegal = null;
+        $GLOBALS["HTTP_POST_VARS"]["rh27_rhfundamentacaolegal"] = null;
+      }
+    }
+
     if (!$sqlerro) {
-    
+
 	    $clrhrubricas->rh27_tipo  = $rh27_tipo;
 	    $clrhrubricas->rh27_calc1 = $rh27_calc1;
 	    $clrhrubricas->rh27_calc2 = $rh27_calc2;
 	    $clrhrubricas->rh27_calc3 = $inccalc3;
 	    $clrhrubricas->rh27_descr = $rh27_descr;
 	    $clrhrubricas->rh27_instit = db_getsession("DB_instit");
-	    
+
 	    $clrhrubricas->incluir($rh27_rubric,db_getsession("DB_instit"));
 	    $erro_msg = $clrhrubricas->erro_msg;
 	    $rh27_rubric = $clrhrubricas->rh27_rubric;
 	    if($clrhrubricas->erro_status==0){
 	      $sqlerro = true;
 	    }
-	    
+
+        // <!-- ContratosPADRS: tipo de rubrica inserir -->
+
     }
 
-    
     if ( !$sqlerro && isset($tipo) && trim($tipo) != '' ) {
     	if ( $tipo == 'e') {
 		    if( isset($rh23_codele) && trim($rh23_codele) != ""){
@@ -182,10 +226,10 @@ if(isset($incluir) || isset($novasrubricas)){
 		      if($clrhrubretencao->erro_status == 0 ){
 		        $sqlerro=true;
 		      }
-		    }    
+		    }
     	}
     }
-    
+
     if(isset($codigo_importa)){
       $anousu = db_anofolha();
       $mesusu = db_mesfolha();
@@ -210,11 +254,11 @@ if(isset($incluir) || isset($novasrubricas)){
   $db_opcao = 1;
   $db_botao = true;
 }else if(isset($importar)){
-  $result = $clrhrubricas->sql_record($clrhrubricas->sql_query($importar,db_getsession("DB_instit"),"rhrubricas.*, db_config.*, rhtipomedia.rh29_descr, b.rh29_descr as rh29_descr2")); 
+  $result = $clrhrubricas->sql_record($clrhrubricas->sql_query($importar,db_getsession("DB_instit"),"rhrubricas.*, db_config.*, rhtipomedia.rh29_descr, b.rh29_descr as rh29_descr2"));
   db_fieldsmemory($result,0);
 
   $result = $clrhrubelemento->sql_record($clrhrubelemento->sql_query($importar,db_getsession("DB_instit")));
-  if($clrhrubelemento->numrows > 0){ 
+  if($clrhrubelemento->numrows > 0){
     db_fieldsmemory($result, 0);
   }
   $rh27_rubric = "";
@@ -229,13 +273,16 @@ if(isset($incluir) || isset($novasrubricas)){
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/classes/DBViewFormularioFolha/ValidarCodigoRubrica.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/numbers.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/dates.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/widgets/DBToogle.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBLookUp.widget.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <link href="estilos/DBFormularios.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<?
-	  include("forms/db_frmrhrubricas.php");
+	  include(modification("forms/db_frmrhrubricas.php"));
 	?>
 </body>
 </html>

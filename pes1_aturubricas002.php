@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_usuariosonline.php';
-require_once 'dbforms/db_funcoes.php';
-require_once 'classes/db_selecao_classe.php';
-require_once 'classes/db_pontofx_classe.php';
-require_once 'classes/db_pontofs_classe.php';
-require_once 'classes/db_pontofa_classe.php';
-require_once 'classes/db_pontofe_classe.php';
-require_once 'classes/db_pontofr_classe.php';
-require_once 'classes/db_pontof13_classe.php';
-require_once 'classes/db_pontocom_classe.php';
-require_once 'classes/db_rhrubricas_classe.php';
-require_once 'classes/db_rhpessoal_classe.php';
-require_once 'libs/db_utils.php';
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("classes/db_selecao_classe.php");
+require_once modification("classes/db_pontofx_classe.php");
+require_once modification("classes/db_pontofs_classe.php");
+require_once modification("classes/db_pontofa_classe.php");
+require_once modification("classes/db_pontofe_classe.php");
+require_once modification("classes/db_pontofr_classe.php");
+require_once modification("classes/db_pontof13_classe.php");
+require_once modification("classes/db_pontocom_classe.php");
+require_once modification("classes/db_rhrubricas_classe.php");
+require_once modification("classes/db_rhpessoal_classe.php");
+require_once modification("libs/db_utils.php");
 
 $clselecao    = new cl_selecao;
 $clpontofx    = new cl_pontofx;
@@ -1228,7 +1228,7 @@ try {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
       <center>
 		  <?
-		  include("forms/db_frmaturubricas.php");
+		  include(modification("forms/db_frmaturubricas.php"));
 		  ?>
       </center>
 	  </td>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_slip_classe.php");
-require_once("classes/db_slipnum_classe.php");
-require_once("classes/db_sliprecurso_classe.php");
-require_once("classes/db_empageslip_classe.php");
-require_once("classes/db_empparametro_classe.php");
-require_once('model/agendaPagamento.model.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_slip_classe.php"));
+require_once(modification("classes/db_slipnum_classe.php"));
+require_once(modification("classes/db_sliprecurso_classe.php"));
+require_once(modification("classes/db_empageslip_classe.php"));
+require_once(modification("classes/db_empparametro_classe.php"));
+require_once(modification(Modification::getFile('model/agendaPagamento.model.php')));
 
 /**
  * Chamada de função criada para bloquear o acesso ao usuário no menu
@@ -386,7 +386,7 @@ td {
   </tr>
 </table>
     <?
-  	  include("forms/db_frmslip.php");
+  	  include(modification("forms/db_frmslip.php"));
     ?>
 
 <?
@@ -396,7 +396,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 </html>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_slip','func_slip.php?valida==1&funcao_js=parent.js_preenchepesquisa|k17_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_slip','func_slip.php?valida==1&funcao_js=parent.js_preenchepesquisa|k17_codigo','Pesquisa',true);
 }
 
 function js_preenchepesquisa(chave){

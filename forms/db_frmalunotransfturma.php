@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -33,6 +33,10 @@ $clrotulo->label("ed60_matricula");
 $clrotulo->label("ed57_i_codigo");
 $clrotulo->label("ed57_i_codigo");
 $clrotulo->label("ed60_d_datamatricula");
+$clrotulo->label("ed47_v_nome");
+$clrotulo->label("ed10_c_descr");
+
+
 ?>
 <form name="form1" method="post" action="">
   <div class="container">
@@ -40,38 +44,38 @@ $clrotulo->label("ed60_d_datamatricula");
       <legend>Trocar Aluno de Turma</legend>
       <table class="form-container">
         <tr>
-          <td nowrap title="<?=@$Ted69_i_codigo?>">
-            <?=@$Led69_i_codigo?>
+          <td nowrap title="<?=$Ted69_i_codigo?>">
+            <?=$Led69_i_codigo?>
           </td>
           <td>
-            <?db_input( 'ed69_i_codigo', 15, $Ied69_i_codigo, true, 'text', 3 )?>
+            <?php db_input( 'ed69_i_codigo', 15, $Ied69_i_codigo, true, 'text', 3 )?>
           </td>
         </tr>
         <tr>
-          <td nowrap title="<?=@$Ted69_i_matricula?>">
-            <?db_ancora( @$Led69_i_matricula, "js_pesquisaed69_i_matricula(true);", $db_opcao );?>
+          <td nowrap title="<?=$Ted69_i_matricula?>">
+            <?db_ancora( $Led69_i_matricula, "js_pesquisaed69_i_matricula(true);", $db_opcao );?>
           </td>
           <td>
             <?php
               db_input( 'ed60_matricula',   15, $Ied60_matricula,   true, 'text',   $db_opcao, " onchange='js_pesquisaed69_i_matricula(false);'" );
               db_input( 'ed69_i_matricula', 15, $Ied69_i_matricula, true, 'hidden', 3 );
-              db_input( 'ed47_v_nome',      50, @$ed47_v_nome,      true, 'text',   3 );
+              db_input( 'ed47_v_nome',      50, $Ied47_v_nome,      true, 'text',   3 );
             ?>
           </td>
         </tr>
         <tr>
           <td>
-            <?=@$Led60_d_datamatricula?>
+            <?=$Led60_d_datamatricula?>
           </td>
           <td>
-            <?db_input( 'datamatricula', 10, @$datamatricula, true, 'text', 3 );?>
+            <?db_input( 'datamatricula', 10, '', true, 'text', 3 );?>
           </td>
         </tr>
         <tr>
           <td colspan="2">
             <fieldset class="separator">
               <legend>
-                <?db_ancora( @$Led69_i_turmaorigem, "", 3 );?>
+                <?php db_ancora( $Led69_i_turmaorigem, "", 3 );?>
               </legend>
               <table>
                 <tr>
@@ -81,8 +85,8 @@ $clrotulo->label("ed60_d_datamatricula");
                   <td>
                     <?php
                       db_input( 'ed69_i_turmaorigem', 15, $Ied69_i_turmaorigem, true, 'text',   3 );
-                      db_input( 'ed57_c_origem',      20, @$Ied57_c_origem,     true, 'text',   3 );
-                      db_input( 'etapaorigem',        20, @$Ietapaorigem,       true, 'hidden', 3 );
+                      db_input( 'ed57_c_origem',      20, '', true, 'text',   3 );
+                      db_input( 'etapaorigem',        20, '', true, 'hidden', 3 );
                     ?>
                   </td>
                 </tr>
@@ -91,9 +95,9 @@ $clrotulo->label("ed60_d_datamatricula");
                     <b>Etapa:</b>
                   </td>
                   <td>
-                    <?db_input( 'ed11_c_origem', 30, @$Ied11_c_origem, true, 'text', 3 );?>
+                    <?php db_input( 'ed11_c_origem', 30, '', true, 'text', 3 );?>
                     <b>Calendário:</b>
-                    <?db_input( 'ed52_c_origem', 20, @$Ied52_c_origem, true, 'text', 3 );?>
+                    <?php db_input( 'ed52_c_origem', 20, '', true, 'text', 3 );?>
                   </td>
                 </tr>
                 <tr>
@@ -101,7 +105,7 @@ $clrotulo->label("ed60_d_datamatricula");
                     <b>Ensino:</b>
                   </td>
                   <td>
-                    <?db_input( 'ed10_c_origem', 40, @$Ied10_c_origem, true, 'text', 3 );?>
+                    <?php db_input( 'ed10_c_origem', 40, $Ied10_c_descr, true, 'text', 3 );?>
                   </td>
                 </tr>
               </table>
@@ -112,7 +116,7 @@ $clrotulo->label("ed60_d_datamatricula");
           <td colspan="2">
             <fieldset class="separator">
               <legend>
-                <?db_ancora( @$Led69_i_turmadestino, "js_pesquisaed69_i_turmadestino(true);", $db_opcao );?>
+                <?php db_ancora( $Led69_i_turmadestino, "js_pesquisaed69_i_turmadestino(true);", $db_opcao );?>
               </legend>
               <table>
                 <tr id="linhaTurmaDestino">
@@ -122,8 +126,8 @@ $clrotulo->label("ed60_d_datamatricula");
                   <td>
                     <?php
                       db_input( 'ed69_i_turmadestino', 15, $Ied69_i_turmadestino, true, 'text',   3, " onchange='js_pesquisaed69_i_turmadestino(false);'" );
-                      db_input( 'ed57_c_destino',      20, @$Ied57_c_destino,     true, 'text',   3 );
-                      db_input( 'etapadestino',        20, @$Ietapadestino,       true, 'hidden', 3 );
+                      db_input( 'ed57_c_destino',      20, '', true, 'text',   3 );
+                      db_input( 'etapadestino',        20, '', true, 'hidden', 3 );
                     ?>
                   </td>
                 </tr>
@@ -132,9 +136,9 @@ $clrotulo->label("ed60_d_datamatricula");
                     <b>Etapa:</b>
                   </td>
                   <td>
-                    <?db_input( 'ed11_c_destino', 30, @$Ied11_c_destino, true, 'text', 3 );?>
+                    <?php db_input( 'ed11_c_destino', 30, '', true, 'text', 3 );?>
                     <b>Calendário:</b>
-                    <?db_input( 'ed52_c_destino', 20, @$Ied52_c_destino, true, 'text', 3 );?>
+                    <?php db_input( 'ed52_c_destino', 20, '', true, 'text', 3 );?>
                   </td>
                 </tr>
                 <tr>
@@ -142,7 +146,7 @@ $clrotulo->label("ed60_d_datamatricula");
                     <b>Ensino:</b>
                   </td>
                   <td>
-                    <?db_input( 'ed10_c_destino', 40, @$Ied10_c_destino, true, 'text', 3 );?>
+                    <?php db_input( 'ed10_c_destino', 40, '', true, 'text', 3 );?>
                   </td>
                 </tr>
               </table>
@@ -158,13 +162,14 @@ $clrotulo->label("ed60_d_datamatricula");
 </form>
 <script>
 var oTurmaTurno                    = null;
+var sRPCTurmas                     = "edu4_turmas.RPC.php";
 const CAMINHO_MENSAGENS_TROCATURMA = 'educacao.escola.db_frmalunotransfturma.';
 
 function js_pesquisaed69_i_matricula(mostra) {
 
   document.getElementById("iframe_trocaturma").style.display = "none;";
   if ( mostra == true ) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_matricula',
                         'func_matriculatransf.php?funcao_js=parent.js_mostramatricula1|ed60_i_codigo'
                                                                                     +'|ed47_v_nome'
@@ -183,7 +188,7 @@ function js_pesquisaed69_i_matricula(mostra) {
     if (document.form1.ed60_matricula.value != '') {
 
      js_OpenJanelaIframe(
-                          'top.corpo',
+                          'CurrentWindow.corpo',
                           'db_iframe_matricula',
                           'func_matriculatransf.php?pesquisa_chave='+document.form1.ed60_matricula.value
                                                  +'&funcao_js=parent.js_mostramatricula',
@@ -281,10 +286,11 @@ function js_pesquisaed69_i_turmadestino(mostra) {
 
     if ( mostra == true ) {
       js_OpenJanelaIframe(
-                           'top.corpo',
+                           'CurrentWindow.corpo',
                            'db_iframe_turma',
                            'func_turmatransf.php?turma='+document.form1.ed69_i_turmaorigem.value
                                               +'&turmasprogressao=f'
+                                              +'&filtrarPorAnoCalendario=true'
                                               +'&etapaorig='+document.form1.etapaorigem.value
                                               +'&matricula='+document.form1.ed69_i_matricula.value
                                               +'&funcao_js=parent.js_mostraturma1|ed57_i_codigo|ed57_c_descr|nomeetapa'
@@ -311,6 +317,40 @@ function js_mostraturma1( chave1, chave2, chave3, chave4, chave5, chave6 ) {
 
   oTurmaTurno = new DBViewFormularioEducacao.TurmaTurnoReferente( $('linhaTurmaDestino'), $('ed69_i_turmadestino' ).value );
   oTurmaTurno.show();
+  compararRegenciasEntreTurmas();
+
+}
+
+/**
+ * Compara entre duas Turmas se suas Disciplinas possuem o mesmo Procedimento de Avaliação vinculados há Regência
+ */
+function compararRegenciasEntreTurmas() {
+
+  var oParametros              = new Object();
+    oParametros.exec           = "comparaRegenciasEntreTurmas";
+    oParametros.iTurmaAtual    = $F('ed69_i_turmaorigem');
+    oParametros.iTurmaDestino  = $F('ed69_i_turmadestino');
+    oParametros.sEtapasDestino = $F('etapadestino'); // pode ser mais de uma em caso de turma multetapa. Ex (1,2,3)
+    oParametros.iEtapaOrigem   = $F('etapaorigem');
+
+  var oAjaxRequest = new AjaxRequest( sRPCTurmas, oParametros, retornoCompararRegenciasEntreTurmas );
+    oAjaxRequest.setMessage( _M( CAMINHO_MENSAGENS_TROCATURMA + 'comparando_procedimentos_turma' ) );
+    oAjaxRequest.execute();
+}
+
+function retornoCompararRegenciasEntreTurmas( oRetorno, lErro ) {
+
+  if ( oRetorno.lPossuiMesmoProcedimentos == false ) {
+
+
+    if ($('iframe_trocaturma')) {
+
+      $('iframe_trocaturma').style.display = 'none';
+      $('iframe_trocaturma').contentWindow.document.body.innerHTML = '';
+    }
+    alert( _M( CAMINHO_MENSAGENS_TROCATURMA + 'procedimentos_diferentes_entre_turmas' ) );
+    return;
+  }
 
   dadosImportacao();
 }

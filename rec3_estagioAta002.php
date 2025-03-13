@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/impcarne.php");
-include("fpdf151/scpdf.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-require("libs/db_libdocumento.php");
-include("dbforms/db_funcoes.php");
-include("classes/estagioAvaliacoes.classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhestagioagenda_classe.php");
-include("classes/db_rhestagioagendadata_classe.php");
+include(modification("fpdf151/impcarne.php"));
+include(modification("fpdf151/scpdf.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_libdocumento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/estagioAvaliacoes.classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhestagioagenda_classe.php"));
+include(modification("classes/db_rhestagioagendadata_classe.php"));
 
 $rhPessoal            = new cl_rhpessoal();
 $clEstagioAgenda      = new cl_rhestagioagenda();
 $clEstagioAgendaData  = new cl_rhestagioagendadata();
 $get                  = db_utils::postMemory($_GET);
 $sqlpref              = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref           = pg_exec($sqlpref);
+$resultpref           = db_query($sqlpref);
 $oInst                = db_utils::fieldsmemory($resultpref,0);
 $get                  = db_utils::postmemory($_GET);
 $rAgenda              = $clEstagioAgenda->sql_record($clEstagioAgenda->sql_query_resultado($get->iCodExame));
@@ -64,7 +64,7 @@ $SQLQuesitos .= "       left  join rhestagioagenda            on h64_estagioagen
 $SQLQuesitos .= " where h57_sequencial = {$get->iCodExame}                                                     ";
 $SQLQuesitos .= " group by  h51_descr,h51_sequencial                                                             ";
 $SQLQuesitos .= " order by h51_sequencial                                                                        ";
-$rQuesitos    = pg_query($SQLQuesitos);
+$rQuesitos    = db_query($SQLQuesitos);
 for ($j = 0; $j < pg_num_rows($rQuesitos); $j++){
 
   $oQuesitos = db_utils::fieldsMemory($rQuesitos, $j);

@@ -69,7 +69,7 @@ $borda = 0;
     }
    // var url       = 'cai4_geraextrato.php';
     var parametro = 'arqname='+arquivo; 
-    js_OpenJanelaIframe('top.corpo','db_iframe_carga','cai4_geraextrato.php?'+parametro,'Processando ... ',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_carga','cai4_geraextrato.php?'+parametro,'Processando ... ',true);
   }
 
   function js_ajaxRetorno(resposta){

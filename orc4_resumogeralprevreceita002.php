@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once("fpdf151/pdf.php");
-  require_once("libs/db_utils.php");
-  require_once("std/db_stdClass.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once("libs/db_liborcamento.php");
-  require_once("model/ppa.model.php");
-  require_once("model/ppaVersao.model.php");
+  require_once(modification("fpdf151/pdf.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("std/db_stdClass.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("libs/db_liborcamento.php"));
+  require_once(modification("model/ppa.model.php"));
+  require_once(modification("model/ppaVersao.model.php"));
   
   $oGet = db_utils::postMemory($_GET);
   $oPPA = new ppa($oGet->ppalei,1, $oGet->ppaversao);

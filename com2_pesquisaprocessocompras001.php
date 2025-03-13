@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once("classes/db_solicita_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_solicita_classe.php"));
 $clsolicita = new cl_solicita;
 $oRotulo = new rotulocampo;
 $oRotulo->label("pc80_codproc");
@@ -135,13 +135,13 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 function js_solicitade(mostra) {
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_solicita',
                         'func_solicitamanutencaoreserva.php?funcao_js=parent.js_mostrasolicitade1|'+
                         'pc10_numero&param_depart=<?=db_getsession("DB_coddepto")?>','Pesquisa',true);
   }else{
      if(document.form1.pc10_numerode.value != ''){
-        js_OpenJanelaIframe('top.corpo', 
+        js_OpenJanelaIframe('CurrentWindow.corpo', 
                             'db_iframe_solicita',
                             'func_solicitamanutencaoreserva.php?pesquisa_chave='+document.form1.pc10_numerode.value+
                             '&funcao_js=parent.js_mostrasolicitade&param_depart=<?=db_getsession("DB_coddepto")?>',
@@ -168,7 +168,7 @@ function js_mostrasolicitade1(chave1,x){
 function js_solicitaate(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo', 
+    js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_solicitaate',
                         'func_solicita.php?funcao_js=parent.js_mostrasolicitaate1|'+
                         'pc10_numero&param_depart=<?=db_getsession("DB_coddepto")?>',
@@ -177,7 +177,7 @@ function js_solicitaate(mostra){
   
      if (document.form1.pc10_numeroate.value != '') {
      
-        js_OpenJanelaIframe('top.corpo', 
+        js_OpenJanelaIframe('CurrentWindow.corpo', 
                             'db_iframe_solicitaate',
                             'func_solicita.php?pesquisa_chave='+
                             document.form1.pc10_numeroate.value+
@@ -216,7 +216,7 @@ function js_pesquisaProcessoCompras(mostra, lInicial) {
   }
   
   if (mostra) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_processo',
                         'func_pcproc.php?funcao_js=parent.'+sFuncaoRetorno+'|'+
                         'pc80_codproc','Pesquisa Processo de Compras',true);
@@ -224,7 +224,7 @@ function js_pesquisaProcessoCompras(mostra, lInicial) {
      
      var sValorCampo = $F(sCampo); 
      if (sValorCampo != '') {
-        js_OpenJanelaIframe('top.corpo', 
+        js_OpenJanelaIframe('CurrentWindow.corpo', 
                             'db_iframe_processo',
                             'func_pcproc.php?pesquisa_chave='+sValorCampo+
                             '&funcao_js=parent.'+sFuncaoRetornoOnChange,
@@ -272,7 +272,7 @@ function js_pesquisarProcessos() {
    sUrl     += '&iSolicitacaoFinal='+$F('pc10_numeroate');
    sUrl     += '&dtInicial='+$F('datainicial'); 
    sUrl     += '&dtFinal='+$F('datafinal');
-   js_OpenJanelaIframe('top.corpo', 
+   js_OpenJanelaIframe('CurrentWindow.corpo', 
                         'db_iframe_processos_filtrados',
                         sUrl,
                         'Processos de Compras encontrados',

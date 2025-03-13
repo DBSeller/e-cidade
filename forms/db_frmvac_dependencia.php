@@ -173,7 +173,7 @@ function js_mostravac_vacinadose1(chave1,chave2) {
 
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_vac_dependencia',
                       'func_vac_dependencia.php?funcao_js=parent.js_preenchepesquisa|vc09_i_codigo',
                       'Pesquisa',

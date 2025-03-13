@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -174,7 +174,7 @@ class DeclaracaoQuitacaoExporta extends DeclaracaoQuitacao {
     
     db_atutermometro(0, 100, 'termometro2', 1, "Carregando informações para inicio do processo");
     
-    $rTxtOrigem = pg_query($sSqlTxtOrigem);
+    $rTxtOrigem = db_query($sSqlTxtOrigem);
     
     $sArquivo      = "tmp/declaracao_quitacao_anual_" . date('YmdHis') . db_getsession("DB_id_usuario") . ".txt";
     
@@ -210,7 +210,7 @@ class DeclaracaoQuitacaoExporta extends DeclaracaoQuitacao {
         
         $sSqlTxtDebitos = $oDaoDeclQuitacao->sql_query_txt_debitos($oTxtOrigem->declaracao);
         
-        $rTxtDebitos    = pg_query($sSqlTxtDebitos);
+        $rTxtDebitos    = db_query($sSqlTxtDebitos);
 
         if(pg_num_rows($rTxtDebitos) > 0) {
           

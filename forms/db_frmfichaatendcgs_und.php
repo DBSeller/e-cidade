@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -52,6 +52,9 @@ $clrotulo->label("sd27_i_codigo");
 $clrotulo->label("rh70_sequencial");
 $clrotulo->label("rh70_estrutural");
 $clrotulo->label("rh70_descr");
+
+//Setor ambulatorial
+$oDaoSetorAmbulatorial  = new cl_setorambulatorial();
 ?>
 <SCRIPT LANGUAGE="JavaScript">
   team = []
@@ -103,7 +106,7 @@ $clrotulo->label("rh70_descr");
     }
     $aArrayPai[] = $aArrayFilho ;
   }
-  $sArrayJson = json_encode($aArrayPai);
+  $sArrayJson = JSON::create()->stringify($aArrayPai);
   ?>
   team = <?=$sArrayJson?>;
 
@@ -159,7 +162,7 @@ $clrotulo->label("rh70_descr");
 </script>
 
 <div class="container">
-  <form name="form1" method="post" action="" class="form-container">
+  <form id="frmPaciente" name="form1" method="post" action="" class="form-container">
     <fieldset>
       <legend><b>Paciente</b></legend>
       <table>
@@ -384,7 +387,7 @@ $clrotulo->label("rh70_descr");
             ?>
           </td>
         </tr>
-        
+
         <tr style="display: none;">
           <td><?=@$Lz01_codigoibge?></td>
           <td>
@@ -456,6 +459,20 @@ $clrotulo->label("rh70_descr");
             ?>
           </td>
         </tr>
+        <tr>
+          <td class="bold">
+             Setor:
+          </td>
+          <td colspan="3">
+            <?php
+              $sCampos  = "sd91_codigo,sd91_descricao";
+              $sWhere   = "sd91_local = 1 and sd91_unidades = " . db_getsession('DB_coddepto');
+              $sSql     = $oDaoSetorAmbulatorial->sql_query_file( null, $sCampos, null, $sWhere );
+              $rsSelect = db_query( $sSql );
+              db_selectrecord("sd24_setorambulatorial",$rsSelect,true,1,"","","","","",1);
+            ?>
+          </td>
+        </tr>
       </table>
     </fieldset>
     <?php
@@ -507,16 +524,24 @@ $clrotulo->label("rh70_descr");
         </tr>
       </table>
     </fieldset>
+    <input type="hidden" name="<?=( $db_opcao == 1 ? "incluir" : ( $db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir" ) )?>">
     <input name="<?=( $db_opcao == 1 ? "incluir" : ( $db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir" ) )?>"
-           type="submit"
+           onclick="prosseguir()"
+           type="button"
            id="db_opcao"
            value="Prosseguir"
            <?=( $db_botao == false ? "disabled" : "" )?> >
-    <input name="pesquisar" type="button" id="pesquisar" value="Consulta FAA" onclick="js_pesquisaprontuarios();" >
+    <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisaprontuarios();" >
+    <input id="btnFinalizar" type="button" value="Finalizar Atendimento">
     <input name="limpar" type="button" id="limpar" value="Nova FAA" onclick="js_limpa()">
   </form>
 </div>
 <script>
+
+var lObrigarCNS = <?=$lObrigarCNS ? 1 : 0;?>
+
+const MENSAGEM_FRMFICHAATENDCGS_UND = "saude.ambulatorial.db_frmfichaatendcgs_und.";
+
 function js_pesquisasd03_i_codigo( mostra ) {
 
   if( mostra == true ) {
@@ -667,11 +692,11 @@ function js_mostraagendamento1( faa, agenda, cgs ) {
   parent.document.formaba.a2.disabled = true;
 
   if( faa != "" ) {
-  	location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisaprontuario='+faa+'&triagem='+'<?=@$triagem?>';
+    location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisaprontuario='+faa+'&triagem='+'<?=@$triagem?>';
   } else if( agenda != "" ) {
-  	location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisaagenda='+agenda+'&triagem='+'<?=@$triagem?>';
+    location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisaagenda='+agenda+'&triagem='+'<?=@$triagem?>';
   } else {
-  	location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisacgs='+cgs+'&triagem='+'<?=@$triagem?>';
+    location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisacgs='+cgs+'&triagem='+'<?=@$triagem?>';
   }
 }
 
@@ -808,7 +833,7 @@ function js_pesquisaz01_i_cgsund( mostra ) {
 
     if( document.form1.z01_i_cgsund.value != '' ) {
 
-    	js_OpenJanelaIframe(
+      js_OpenJanelaIframe(
                            '',
                            'db_iframe_cgs_und',
                            'func_cgs_und.php?funcao_js=parent.js_preenchecgs|z01_i_cgsund'
@@ -851,7 +876,7 @@ if( isset( $triagem ) && $triagem == "false" ) {
     js_OpenJanelaIframe(
                          '',
                          'db_iframe_prontuarios002',
-                         'func_prontuarios002.php?funcao_js=parent.js_preenchepesquisa|sd24_i_codigo',
+                         'func_prontuarios_novo.php?funcao_js=parent.js_preenchepesquisa|sd24_i_codigo&lFiltraMovimentados=false',
                          'Pesquisa',
                          true
                        );
@@ -864,7 +889,7 @@ if( isset( $triagem ) && $triagem == "false" ) {
     js_OpenJanelaIframe(
                          '',
                          'db_iframe_prontuarios',
-                         'func_prontuarios.php?funcao_js=parent.js_preenchepesquisa|sd24_i_codigo',
+                         'func_prontuarios_novo.php?funcao_js=parent.js_preenchepesquisa|sd24_i_codigo&lFiltraMovimentados=false',
                          'Pesquisa',
                          true
                        );
@@ -950,15 +975,15 @@ function js_preenchecepcon( chave, chave1, chave2, chave3, chave4 ) {
 function js_anular() {
 
   if( document.form1.sd24_i_codigo.value == "" ) {
-	  alert( "FAA não informada!" );
+    alert( "FAA não informada!" );
   } else {
 
-	  iTop  = ( screen.availHeight-600 ) / 2;
-	  iLeft = ( screen.availWidth-600 ) / 2;
+    iTop  = ( screen.availHeight-600 ) / 2;
+    iLeft = ( screen.availWidth-600 ) / 2;
 
-	  if( document.form1.anular.value == "Anular FAA" ) {
+    if( document.form1.anular.value == "Anular FAA" ) {
 
-	    js_OpenJanelaIframe(
+      js_OpenJanelaIframe(
                            '',
                            'db_iframe_prontanulado',
                            'sau1_prontanulado001.php?chavepesquisaprontuario='+document.form1.sd24_i_codigo.value,
@@ -969,9 +994,9 @@ function js_anular() {
                            600,
                            210
                          );
-	  } else {
+    } else {
 
-	  	js_OpenJanelaIframe(
+      js_OpenJanelaIframe(
                            '',
                            'db_iframe_prontanulado',
                            'sau1_prontanulado003.php?chavepesquisa='+document.form1.sd24_i_codigo.value,
@@ -982,13 +1007,13 @@ function js_anular() {
                            600,
                            210
                          );
-	  }
+    }
   }
 }
 
 function js_municipio() {
 
-	if( document.form1.z01_i_cgsund.value != "" ) {
+  if( document.form1.z01_i_cgsund.value != "" ) {
      location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisacgs='+document.form1.z01_i_cgsund.value
                                                                           +'&chavepesquisaprontuario='+document.form1.sd24_i_codigo.value
                                                                           +'&chavepesquiamunicipio='+document.form1.z01_c_municipio.value;
@@ -1006,28 +1031,29 @@ if( $('sd23_i_codigo') ) {
   $('sd23_i_codigo').className          = 'field-size-max';
 }
 
-$('sd24_i_codigo').className          = 'field-size2';
-$('sd24_i_unidade').className         = 'field-size2';
-$('z01_i_cgsund').className           = 'field-size2';
-$('z01_v_micro').className            = 'field-size-max';
-$('z01_i_familiamicroarea').className = 'field-size-max';
-$('z01_v_cgccpf').className           = 'field-size-max';
-$('z01_c_municipio').className        = 'field-size-max';
-$('z01_v_cep').className              = 'field-size2';
-$('z01_v_ender').className            = 'field-size-max';
-$('z01_i_numero').className           = 'field-size2';
-$('z01_v_compl').className            = 'field-size-max';
-$('z01_v_bairro').className           = 'field-size-max';
-$('z01_v_munic').className            = 'field-size-max';
-$('z01_codigoibge').className         = 'field-size2';
-$('z01_v_uf').className               = 'field-size2';
-$('z01_v_telef').className            = 'field-size2';
-$('s115_c_cartaosus').className       = 'field-size4';
-$('s115_c_tipo').className            = 'field-size1';
-$('z01_d_nasc').className             = 'field-size2';
-$('z01_v_sexo').className             = 'field-size-max';
-$('z01_d_cadast').className           = 'field-size2';
-$('nome').className                   = 'field-size-max';
+$('sd24_i_codigo').className            = 'field-size2';
+$('sd24_i_unidade').className           = 'field-size2';
+$('z01_i_cgsund').className             = 'field-size2';
+$('z01_v_micro').className              = 'field-size-max';
+$('z01_i_familiamicroarea').className   = 'field-size-max';
+$('z01_v_cgccpf').className             = 'field-size-max';
+$('z01_c_municipio').className          = 'field-size-max';
+$('z01_v_cep').className                = 'field-size2';
+$('z01_v_ender').className              = 'field-size-max';
+$('z01_i_numero').className             = 'field-size2';
+$('z01_v_compl').className              = 'field-size-max';
+$('z01_v_bairro').className             = 'field-size-max';
+$('z01_v_munic').className              = 'field-size-max';
+$('z01_codigoibge').className           = 'field-size2';
+$('z01_v_uf').className                 = 'field-size2';
+$('z01_v_telef').className              = 'field-size2';
+$('s115_c_cartaosus').className         = 'field-size4';
+$('s115_c_tipo').className              = 'field-size1';
+$('z01_d_nasc').className               = 'field-size2';
+$('z01_v_sexo').className               = 'field-size-max';
+$('z01_d_cadast').className             = 'field-size2';
+$('nome').className                     = 'field-size-max';
+$('sd24_setorambulatorial').className   = 'field-size-max';
 
 $('sd03_i_codigo').className   = 'field-size2';
 $('z01_nome').className        = 'field-size-max';
@@ -1055,5 +1081,51 @@ $('s115_c_cartaosus').onchange = function() {
   }
 
   return true;
+};
+
+/**
+ * Mostra a janela contendo os motivos de alta para finalizar o prontuário.
+ */
+$('btnFinalizar').onclick = function() {
+
+  if ( empty($F('sd24_i_codigo')) ) {
+
+    alert( _M( MENSAGEM_FRMFICHAATENDCGS_UND + 'informe_prontuario' ) );
+    return;
+  }
+
+  var fRedireciona = function() {
+
+    parent.document.formaba.a2.disabled = true;
+    parent.document.formaba.a3.disabled = true;
+    parent.document.formaba.a4.disabled = true;
+    location.href='sau4_fichaatendabas001.php?';
+  };
+
+  var oViewMotivosAlta = new DBViewMotivosAlta();
+      oViewMotivosAlta.setProntuario( $F('sd24_i_codigo') );
+      oViewMotivosAlta.setCallbackSalvar(fRedireciona);
+      oViewMotivosAlta.show();
+};
+
+/**
+ * Valida se o CGS foi informado antes de prosseguir
+ */
+function prosseguir() {
+
+  if ( empty($F('z01_i_cgsund')) ) {
+
+    alert( _M( MENSAGEM_FRMFICHAATENDCGS_UND + 'informe_cgs' ) );
+    return;
+  }
+
+  if (lObrigarCNS && empty($F('s115_c_cartaosus')) ) {
+
+    alert( _M( MENSAGEM_FRMFICHAATENDCGS_UND + 'informe_cns' ) );
+    return;
+  }
+
+  $('frmPaciente').submit();
 }
+
 </script>

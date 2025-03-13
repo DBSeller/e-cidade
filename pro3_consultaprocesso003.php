@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,28 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
 
 $oDaoProcesso = db_utils::getDao("protprocesso");
-$sWhere       = "     p58_instit = ".db_getsession("DB_instit");
-$sWhere      .= " and tipoproc.p51_tipoprocgrupo = 1 ";
+
+
+$sWhere       = " 1 = 1";//    p58_instit = ".db_getsession("DB_instit");
+
+if ( isset($oGet->p58_codproc) && $oGet->p58_codproc != "") {
+
+  $sWhere .= " and p58_codproc = {$oGet->p58_codproc} ";
+}
+
+//$sWhere      .= " and tipoproc.p51_tipoprocgrupo = 1 ";
 
 if (isset($oGet->cgm) && !empty($oGet->cgm)) {
   $sWhere .= " and p58_numcgm = {$oGet->cgm}";
@@ -61,7 +69,10 @@ $sCamposProcesso         .= "p58_numero||'/'||p58_ano as p58_numero,";
 $sCamposProcesso         .= "z01_nome,";
 $sCamposProcesso         .= "p58_dtproc,";
 $sCamposProcesso         .= "p51_descr,";
-$sCamposProcesso         .= "p58_obs";
+$sCamposProcesso         .= "p58_obs, "; 
+//$sCamposProcesso         .= "db_config.nomeinst";
+// alteramos para pegar a instituicao do departamento da protprocesso, para trazer a instit que o criou
+$sCamposProcesso         .= "a.nomeinst";
 $sSqlBuscaCodigoProcesso  = $oDaoProcesso->sql_query(null, $sCamposProcesso, " 1 desc", $sWhere);
 ?>
 <html>

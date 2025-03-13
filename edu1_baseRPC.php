@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_regimematdiv_classe.php");
-include("classes/db_baseregimematdiv_classe.php");
-include("classes/db_serieregimemat_classe.php");
-include("classes/db_basemps_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_regimematdiv_classe.php"));
+include(modification("classes/db_baseregimematdiv_classe.php"));
+include(modification("classes/db_serieregimemat_classe.php"));
+include(modification("classes/db_basemps_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clregimematdiv = new cl_regimematdiv;
 $clbaseregimematdiv = new cl_baseregimematdiv;
 $clserieregimemat = new cl_serieregimemat;
@@ -46,7 +46,7 @@ $oPost = db_utils::postMemory($_POST);
 if($oPost->sAction == 'PesquisaDivisao') {
 	
   $result = $clregimematdiv->sql_record($clregimematdiv->sql_query("","ed219_i_codigo,ed219_c_nome","ed219_i_ordenacao"," ed219_i_regimemat = {$oPost->regime}"));
-  $aResult = db_utils::getColectionByRecord($result, false, false, true);
+  $aResult = db_utils::getCollectionByRecord($result, false, false, true);
   $oJson = new services_json();
   echo $oJson->encode($aResult);
   
@@ -55,7 +55,7 @@ if($oPost->sAction == 'PesquisaDivisao') {
 if($oPost->sAction == 'PesquisaDivisaoCadastrada') {
 	
   $result = $clbaseregimematdiv->sql_record($clbaseregimematdiv->sql_query("","ed219_i_codigo,ed219_c_nome","ed219_i_ordenacao","  ed224_i_base = {$oPost->base}"));
-  $aResult = db_utils::getColectionByRecord($result, false, false, true);
+  $aResult = db_utils::getCollectionByRecord($result, false, false, true);
   $oJson = new services_json();
   echo $oJson->encode($aResult);
   

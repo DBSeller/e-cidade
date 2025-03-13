@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,72 +25,81 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("RelatoriosLegaisBase.model.php");
+require_once(modification("model/contabilidade/relatorios/RelatoriosLegaisBase.model.php"));
 
 /**
  * A Classe retorna uma lista de receitas e a legislação da mesma
  *
  */
 class AnexoReceitaLegislacao extends RelatoriosLegaisBase {
-  
-  /**
-   * Método Construtor
-   */
-  public function __construct($iAnoUsu, $iCodigoRelatorio, $iCodigoPeriodo) {
-    parent::__construct($iAnoUsu, $iCodigoRelatorio, $iCodigoPeriodo);
-  }
-  
-  /**
-   * Busca os dados necessários do relatório
-   *
-   * @return Array
-   */
-  public function getDados() {
-    
-    $sDataInicial     = "{$this->iAnoUsu}-01-01";
-    $sDataFinal       = "{$this->iAnoUsu}-12-31";
-    $sWhereReceita    = " o70_instit in ( {$this->getInstituicoes()} ) ";
-    $sSqlReceita      = db_receitasaldo(11, 1, 3, true, 
-                                        $sWhereReceita, 
-                                        $this->iAnoUsu, 
-                                        $sDataInicial, 
-                                        $sDataFinal, true);
-   
-   /**
-    * Adiciona a Query a busca pela Legislação 
-    */
-   $sSQlReceitaLegislacao  = "Select receita.*, o57_finali                                                  ";
-   $sSQlReceitaLegislacao .= "  from ({$sSqlReceita}) as receita                                            ";                                         
-   $sSQlReceitaLegislacao .= "       inner join orcfontes  on orcfontes.o57_fonte  = receita.o57_fonte      ";
-   $sSQlReceitaLegislacao .= "                            and orcfontes.o57_anousu = {$this->iAnoUsu}       ";
-   
-   $rsReceita = db_query($sSQlReceitaLegislacao); 
-   $aReceita  = db_utils::getColectionByRecord($rsReceita);
 
-   $aReceitaRetorno = array();
-   
-   /**
-    * Popula o Array de retorno com as variáveis necessárias
-    */
-   foreach ($aReceita as $ind => $oReceitaLinha) {
-    
-     $oReceitaRetorno = new stdClass();
-     
-     $oReceitaRetorno->estrutural    = $oReceitaLinha->o57_fonte;
-     $oReceitaRetorno->descricao     = $oReceitaLinha->o57_descr;
-     $oReceitaRetorno->valorEstimado = $oReceitaLinha->saldo_inicial;
-     $oReceitaRetorno->valorEstimado = $oReceitaLinha->saldo_inicial;
-     $oReceitaRetorno->legislacao    = $oReceitaLinha->o57_finali;
-     $oReceitaRetorno->codigoReceita = $oReceitaLinha->o70_codrec;
-     
+    /**
+     * Método Construtor
+     */
+    public function __construct($iAnoUsu, $iCodigoRelatorio, $iCodigoPeriodo) {
+        parent::__construct($iAnoUsu, $iCodigoRelatorio, $iCodigoPeriodo);
+    }
 
-     $aReceitaRetorno[] =$oReceitaRetorno;
-     
-   }
-   unset ($aReceita);
-   return $aReceitaRetorno;
-  }
+    /**
+     * Busca os dados necessários do relatório
+     *
+     * @return stdClass[]
+     */
+    public function getDados() {
+
+        $sDataInicial     = "{$this->iAnoUsu}-01-01";
+        $sDataFinal       = "{$this->iAnoUsu}-12-31";
+        $sWhereReceita    = " o70_instit in ( {$this->getInstituicoes()} ) ";
+
+
+        if (EMENTARIO_RECEITA) {
+
+            $sSqlReceita = ReceitaSaldo(11, 1, 3, true,
+                $sWhereReceita,
+                $this->iAnoUsu,
+                $sDataInicial,
+                $sDataFinal, true);
+        } else {
+
+            $sSqlReceita      = db_receitasaldo(11, 1, 3, true,
+                $sWhereReceita,
+                $this->iAnoUsu,
+                $sDataInicial,
+                $sDataFinal, true);
+        }
+
+        /**
+         * Adiciona a Query a busca pela Legislação
+         */
+        $sSQlReceitaLegislacao  = "Select receita.*, o57_finali                                                  ";
+        $sSQlReceitaLegislacao .= "  from ({$sSqlReceita}) as receita                                            ";
+        $sSQlReceitaLegislacao .= "       inner join orcfontes  on orcfontes.o57_fonte  = receita.o57_fonte      ";
+        $sSQlReceitaLegislacao .= "                            and orcfontes.o57_anousu = {$this->iAnoUsu}       ";
+
+        $rsReceita = db_query($sSQlReceitaLegislacao. ' order by o57_fonte ');
+        $aReceita  = db_utils::getCollectionByRecord($rsReceita);
+
+        $aReceitaRetorno = array();
+
+        /**
+         * Popula o Array de retorno com as variáveis necessárias
+         */
+        foreach ($aReceita as $ind => $oReceitaLinha) {
+
+            $oReceitaRetorno = new stdClass();
+
+            $oReceitaRetorno->estrutural    = $oReceitaLinha->o57_fonte;
+            $oReceitaRetorno->descricao     = $oReceitaLinha->o57_descr;
+            $oReceitaRetorno->valorEstimado = $oReceitaLinha->saldo_inicial;
+            $oReceitaRetorno->valorEstimado = $oReceitaLinha->saldo_inicial;
+            $oReceitaRetorno->legislacao    = $oReceitaLinha->o57_finali;
+            $oReceitaRetorno->codigoReceita = $oReceitaLinha->o70_codrec;
+
+
+            $aReceitaRetorno[] =$oReceitaRetorno;
+
+        }
+        unset ($aReceita);
+        return $aReceitaRetorno;
+    }
 }
-
-
-?>

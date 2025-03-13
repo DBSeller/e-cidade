@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("interfaces/IRegraLancamentoContabil.interface.php");
+require_once(modification("interfaces/IRegraLancamentoContabil.interface.php"));
 
 /**
  * Model responsável por buscar as transações configuradas para os lançamentos de incorporacao de bens
  * @author Bruno Silva <bruno.silva@dbseller.com.br>
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.5 $
  */
 class RegraLancamentoAjusteBaixaBem implements IRegraLancamentoContabil {
 

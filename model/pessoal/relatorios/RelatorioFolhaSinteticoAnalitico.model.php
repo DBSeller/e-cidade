@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("RelatorioFolhaPagamento.model.php");
+require_once(modification("model/pessoal/relatorios/RelatorioFolhaPagamento.model.php"));
 
 /**
  * @fileoverview Classe para relatório da folha analitico/sintetico
@@ -34,8 +34,8 @@ require_once("RelatorioFolhaPagamento.model.php");
  *          Rafael Nery  rafael.nery@dbseller.com.br
  *
  * @package Pessoal
- * @revision $Author: dbmauricio $
- * @version $Revision: 1.6 $
+ * @revision $Author: dbfabio.egidio $
+ * @version $Revision: 1.11 $
  */
 class RelatorioFolhaSinteticoAnalitico extends RelatorioFolhaPagamento  {
   
@@ -55,8 +55,11 @@ class RelatorioFolhaSinteticoAnalitico extends RelatorioFolhaPagamento  {
   public function getDadosBase(){
     
     $oDadosRetorno    = new stdClass();
-    $sWhere           = " rh05_seqpes IS NULL ";
-    $oDaoAfasta       = db_utils::getDao('afasta', true);
+    $oDadosRetorno->aDadosServidor   = array();
+    $oDadosRetorno->aDadosRubricas   = array();
+    $oDadosRetorno->aRubricas        = array();
+    $sWhere           = "";
+    $oDaoAfasta       = new cl_afasta();
 
     /**
      * Where utilizado para trazer os afastamentos que estão de acordo com a competência
@@ -80,6 +83,10 @@ class RelatorioFolhaSinteticoAnalitico extends RelatorioFolhaPagamento  {
                                        
     }
 
+    if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+        $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+        $sWhere .= (!empty($sWhere)?"and":"")." rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+    }
     
     $aSQLBase = $this->retornaSQLBaseRelatorio($sWhere);
 
@@ -114,23 +121,55 @@ class RelatorioFolhaSinteticoAnalitico extends RelatorioFolhaPagamento  {
           $oDadosServidor->matricula_servidor                  = $oDados->matricula_servidor;
           $oDadosServidor->nome_servidor                       = $oDados->nome_servidor     ;
           $oDadosServidor->codigo_cargo                        = $oDados->codigo_cargo      ;
+          $oDadosServidor->cpf                                 = $oDados->z01_cgccpf        ;
+          $oDadosServidor->pis                                 = $oDados->pis               ;
+          $oDadosServidor->data_admissao                       = $oDados->data_admissao     ;
           $oDadosServidor->descr_cargo                         = $oDados->descr_cargo       ;
           $oDadosServidor->codigo_lotacao                      = $oDados->codigo_lotacao    ;
           $oDadosServidor->estrutural_lotacao                  = $oDados->estrutural_lotacao;
           $oDadosServidor->descr_lotacao                       = $oDados->descr_lotacao     ;
           $oDadosServidor->codigo_funcao                       = $oDados->codigo_funcao     ;
           $oDadosServidor->descr_funcao                        = $oDados->descr_funcao      ;
+          $oDadosServidor->nascimento                          = $oDados->nascimento        ;
+          $oDadosServidor->aposentadoria                       = $oDados->aposentadoria     ;
+          $oDadosServidor->tipo_aposentadoria                  = $oDados->rh88_descricao    ;
+          $oDadosServidor->instrucao                           = $oDados->instrucao         ;
+          $oDadosServidor->codigo_padrao                       = $oDados->rh03_padrao       ;
+          $oDadosServidor->descr_padrao                        = $oDados->padrao_descr      ;
+          $oDadosServidor->banco                               = $oDados->banco             ;
+          $oDadosServidor->agencia                             = $oDados->agencia           ;
+          $oDadosServidor->conta                               = $oDados->conta             ;
+          $oDadosServidor->horas_mensais                       = $oDados->rh02_hrsmen       ;
+          $oDadosServidor->horas_semanais                      = $oDados->rh02_hrssem       ;
+          $oDadosServidor->tipo_contrato                       = $oDados->h13_descr         ;
+          $oDadosServidor->reajuste_paridade                   = $oDados->rh01_reajusteparidade;
+        
           $oDadosServidor->aAfastamentos                       = $aAfastamentos;
                                                               
-          $oDadosRubricas = new stdClass();                   
-          $oDadosRubricas->rubrica                             = $oDados->rubrica           ;
-          $oDadosRubricas->valor_rubrica                       = $oDados->valor_rubrica     ;
-          $oDadosRubricas->quant_rubrica                       = $oDados->quant_rubrica     ;
-          $oDadosRubricas->provento_desconto                   = $oDados->provento_desconto ;
-          $oDadosRubricas->descr_rubrica                       = $oDados->descr_rubrica     ;
+         if (!isset($oDadosRetorno->aDadosRubricas[$sTabelaPonto][$oDados->matricula_servidor][$oDados->rubrica])) {
           
-          $oDadosRetorno->aDadosServidor[$oDados->matricula_servidor]                                  = $oDadosServidor ;
-          $oDadosRetorno->aDadosRubricas[$sTabelaPonto][$oDados->matricula_servidor][$oDados->rubrica] = $oDadosRubricas ;
+              $oDadosRubricas = new stdClass();
+              $oDadosRubricas->rubrica                             = $oDados->rubrica           ;
+              $oDadosRubricas->valor_rubrica                       = $oDados->valor_rubrica     ;
+              $oDadosRubricas->quant_rubrica                       = $oDados->quant_rubrica     ;
+              $oDadosRubricas->provento_desconto                   = $oDados->provento_desconto ;
+              $oDadosRubricas->descr_rubrica                       = $oDados->descr_rubrica     ;
+              $oDadosRetorno->aDadosRubricas[$sTabelaPonto][$oDados->matricula_servidor][$oDados->rubrica] = $oDadosRubricas ;
+              
+          } else {
+              
+              $nProventoDesconto = 1;
+              if ($oDados->provento_desconto == "2") {
+                  $nProventoDesconto = -1;
+              }
+              
+              $oDadosRetorno->aDadosRubricas[$sTabelaPonto][$oDados->matricula_servidor][$oDados->rubrica]->valor_rubrica += $oDados->valor_rubrica*$nProventoDesconto;
+              $oDadosRetorno->aDadosRubricas[$sTabelaPonto][$oDados->matricula_servidor][$oDados->rubrica]->quant_rubrica += $oDados->quant_rubrica*$nProventoDesconto;
+              
+          }
+          
+          $oDadosRetorno->aDadosServidor[$oDados->matricula_servidor] = $oDadosServidor ;
+        
           
           $oRubricas = new stdClass();
           $oRubricas->rubrica                                  = $oDados->rubrica;
@@ -139,11 +178,6 @@ class RelatorioFolhaSinteticoAnalitico extends RelatorioFolhaPagamento  {
           $oDadosRetorno->aRubricas     [$oDados->rubrica]     = $oRubricas;
           asort($oDadosRetorno->aRubricas);
         }
-      } else {
-        
-        $oDadosRetorno->aDadosServidor   = array();
-        $oDadosRetorno->aDadosRubricas   = array();
-        $oDadosRetorno->aRubricas        = array();
       }
     }
     return $oDadosRetorno;
@@ -154,7 +188,7 @@ class RelatorioFolhaSinteticoAnalitico extends RelatorioFolhaPagamento  {
    * metodo set para definirmos se filtramos ou nao pelos
    * servidores afastados
    *
-   * @param bollean $lAfastados
+   * @param boolean $lAfastados
    * @return $this
    */
   public function setAfastados($lAfastados){

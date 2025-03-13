@@ -88,7 +88,7 @@ db_input('o21_numero',10,$Io21_numero,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcppalei','func_orcppalei.php?funcao_js=parent.js_preenchepesquisa|o21_codleippa','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcppalei','func_orcppalei.php?funcao_js=parent.js_preenchepesquisa|o21_codleippa','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcppalei.hide();

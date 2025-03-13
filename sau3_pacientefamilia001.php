@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgs_und_classe.php");
-require("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgs_und_classe.php"));
+require(modification("libs/db_app.utils.php"));
 
 $cl_cgs_und = new cl_cgs_und;
 $clrotulo = new rotulocampo;
@@ -178,7 +178,7 @@ db_app::load("webseller.js");
       }else{
          F=document.form1;
          F.sd33_i_codigo.value=objretorno.campo.sd33_i_codigo;
-         F.sd33_v_descricao.value=objretorno.campo.sd33_v_descricao;
+         F.sd33_v_descricao.value=objretorno.campo.sd33_v_descricao.urlDecode();
          F.sd34_i_codigo.value=objretorno.campo.sd34_i_codigo;
          F.sd34_v_descricao.value=objretorno.campo.sd34_v_descricao;
          F.z01_i_familiamicroarea.value=objretorno.campo.z01_i_familiamicroarea;

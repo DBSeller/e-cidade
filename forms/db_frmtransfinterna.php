@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -258,10 +258,10 @@ function js_pesquisaed60_i_aluno(mostra){
   document.form1.ed60_i_turma.focus();
  }else{
   if(mostra==true){
-   js_OpenJanelaIframe('top.corpo','db_iframe_aluno','func_matricula.php?excluir=<?=@$excluir?>&turma='+document.form1.ed60_i_turma.value+'&funcao_js=parent.js_mostraaluno1|ed60_matricula|ed60_i_aluno|z01_nome|dl_situação','Pesquisa de Alunos',true);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aluno','func_matricula.php?excluir=<?=@$excluir?>&turma='+document.form1.ed60_i_turma.value+'&funcao_js=parent.js_mostraaluno1|ed60_matricula|ed60_i_aluno|z01_nome|dl_situação','Pesquisa de Alunos',true);
   }else{
    if(document.form1.ed60_i_aluno.value != ''){
-    js_OpenJanelaIframe('top.corpo','db_iframe_aluno','func_matricula.php?excluir=<?=@$excluir?>&turma='+document.form1.ed60_i_turma.value+'&pesquisa_chave='+document.form1.ed60_i_aluno.value+'&funcao_js=parent.js_mostraaluno','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aluno','func_matricula.php?excluir=<?=@$excluir?>&turma='+document.form1.ed60_i_turma.value+'&pesquisa_chave='+document.form1.ed60_i_aluno.value+'&funcao_js=parent.js_mostraaluno','Pesquisa',false);
    }else{
     document.form1.z01_nome.value = '';
    }
@@ -298,10 +298,10 @@ function js_pesquisaed60_i_alunoexc(mostra){
   document.form1.ed60_i_turma.focus();
  }else{
   if(mostra==true){
-   js_OpenJanelaIframe('top.corpo','db_iframe_aluno','func_matricula.php?excluir=<?=@$excluir?>&turma='+document.form1.ed60_i_turma.value+'&funcao_js=parent.js_mostraalunoexc1|ed60_matricula|ed60_i_aluno|z01_nome|dl_situação','Pesquisa de Alunos',true);
+   js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aluno','func_matricula.php?excluir=<?=@$excluir?>&turma='+document.form1.ed60_i_turma.value+'&funcao_js=parent.js_mostraalunoexc1|ed60_matricula|ed60_i_aluno|z01_nome|dl_situação','Pesquisa de Alunos',true);
   }else{
    if(document.form1.ed60_i_aluno.value != ''){
-    js_OpenJanelaIframe('top.corpo','db_iframe_aluno','func_matricula.php?excluir=<?=@$excluir?>&turma='+document.form1.ed60_i_turma.value+'&pesquisa_chave='+document.form1.ed60_i_aluno.value+'&funcao_js=parent.js_mostraalunoexc','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aluno','func_matricula.php?excluir=<?=@$excluir?>&turma='+document.form1.ed60_i_turma.value+'&pesquisa_chave='+document.form1.ed60_i_aluno.value+'&funcao_js=parent.js_mostraalunoexc','Pesquisa',false);
    }else{
     document.form1.z01_nome.value = '';
    }
@@ -327,7 +327,7 @@ function js_mostraalunoexc1(chave1,chave2,chave3,chave4){
  db_iframe_aluno.hide();
 }
 function js_pesquisaed60_i_turma(){
- js_OpenJanelaIframe('top.corpo','db_iframe_turma','func_turma.php?funcao_js=parent.js_preenchepesquisaturma|ed57_i_codigo','Pesquisa de Turmas',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_turma','func_turma.php?funcao_js=parent.js_preenchepesquisaturma|ed57_i_codigo','Pesquisa de Turmas',true);
 }
 function js_preenchepesquisaturma(chave){
  db_iframe_turma.hide();

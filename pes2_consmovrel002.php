@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_movrel_classe.php");
-require_once("classes/db_convenio_classe.php");
-require_once("classes/db_relac_classe.php");
-require_once("classes/db_rhpessoal_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_movrel_classe.php"));
+require_once(modification("classes/db_convenio_classe.php"));
+require_once(modification("classes/db_relac_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
 $clmovrel = new cl_movrel;
 $clconvenio = new cl_convenio;
 $clrelac = new cl_relac;
@@ -47,7 +47,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $head2 = "RELATÓRIO DE DADOS IMPORTADOS";
 $head4 = "PERÍODO : ".$mes." / ".$ano;
 
-$dbwhere = "";
+$dbwhere = "and r54_instit = ".db_getsession('DB_instit');
 $mais = 5;
 if(isset($r54_codrel) && $r54_codrel != ""){
   $dbwhere .= " and r54_codrel = '".$r54_codrel."' ";
@@ -93,7 +93,7 @@ if(isset($r54_codeve) && $r54_codeve != ""){
 if(isset($nao_lancados)){
   $HEAD9 = "head".$mais;
   $$HEAD9 = "Não lançados na folha";
-  $dbwhere .= " and r54_instit = ".db_getsession('DB_instit')." and r54_lancad = 'f' ";
+  $dbwhere .= " and r54_lancad = 'f' ";
 }
 
 $sCamposMovRelDados = "r54_codrel,r54_codeve,r54_regist,z01_nome,r54_quant1,r54_quant2,r54_quant3,r54_lancad,rh05_recis";

@@ -1,108 +1,105 @@
-/** 
- * @fileoverview Esse arquivo define uma classe para gerar um visualizador para impressão de
+/**
+ * Esse arquivo define uma classe para gerar um visualizador para impressão de
  * arquivos texto, sendo permitido definir o número de linhas e colunas para poder visualizar
  * como a impressão irá ficar. Vários arquivos texto podem ser visualizados ao mesmo tempo.
  * Quando um arquivo termina, o outro começa na próxima página.
  *
  * @author Tony Farney Bruck Mendes Ribeiro tony.farney@dbseller.com.br
- * @version  $Revision: 1.5 $
+ * @version  $Revision: 1.6 $
  *
  */
 
 /**
- * @class Classe que gera um visualizador para impressão de arquivos texto, sendo permitido definir o 
- * número de linhas e colunas para poder visualizar como a impressão irá ficar.
- * @constructor
+ * Classe que gera um visualizador para impressão de arquivos texto, sendo permitido definir o número de linhas e colunas para poder visualizar como a impressão irá ficar.
  * Obs: Este objeto tem que possuir escopo global no javascript.
- * @param string sIdElementoPai ID do elemento pai (elemento onde será appended o visualizador)
- * @param string sAltura Altura do visualizador. Pode ser em %, px 
- * ou qualquer outra unidade aceita pelo estilo css "height".
- * @param string sLargura Largura do visualizador. Pode ser em %, px 
- * ou qualquer outra unidade aceita pelo estilo css "width".
- * @param string sNomeJanelaVisualizacao Nome e ID da div de visualização.
+ * @constructor
+ * @param {String} sIdElementoPai ID do elemento pai (elemento onde será appended o visualizador)
+ * @param {String} sAltura Altura do visualizador. Pode ser em %, px ou qualquer outra unidade aceita pelo estilo css "height".
+ * @param {String} sLargura Largura do visualizador. Pode ser em %, px  ou qualquer outra unidade aceita pelo estilo css "width".
+ * @param {String} sNomeJanelaVisualizacao Nome e ID da div de visualização.
  */
 function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJanelaVisualizacao, sUrlRpc) {
 
   /**
   * Número de linhas que cada página suporta.
-  * @type int;
+  * @type {Integer};
   * @private
-  */ 
+  */
   this.iLinhasPagina = 66;
 
   /**
   * Número de colunas que cada linha suporta.
-  * @type int;
+  * @type {Integer};
   * @private
-  */ 
+  */
   this.iColunasPagina = 80;
 
   /**
    * Altura do visualizador (definida pelo estilo css "height").
-   * @type string;
+   * @type {String};
    */
   this.sAltura = sAltura == undefined ? "100%" : sAltura;
 
   /**
    * Largura do visualizador (definida pelo estilo css "width").
-   * @type string
+   * @type {String}
    */
   this.sLargura = sLargura == undefined ? "100%" : sLargura;
 
   /**
   * Número de arquivos adicionados para visualização.
-  * @type int;
+  * @type {Integer};
   * @private
-  */ 
+  */
   this.iNumArquivos = 0;
-  
+
   /**
   * ID do elemento pai da div de visualização.
   * @type string;
   * @private
-  */ 
+  */
   this.sIdElementoPai = sIdElementoPai == undefined ? 'visualizador' : sIdElementoPai;
 
   /**
   * Nome da janela de visualização (div) que contém todas as páginas.
   * @type string;
   * @private
-  */ 
+  */
   this.sNomeJanelaVisualizacao = sNomeJanelaVisualizacao == undefined ? 'jan_'+this.sIdElementoPai : sNomeJanelaVisualizacao;
 
   /**
   * Variável com 5050 espaços em branco utilizada para fazer o padding no final de cada linha.
   * @type string;
   * @private
-  */ 
-  
+  */
+
   this.sPad = new Array(5050).join(" ");
   /**
-   * Variavel armazena a lista de ID das impressoras disponiveis 
+   * Variavel armazena a lista de ID das impressoras disponiveis
    * @type array;
    * @private
-   */ 
+   */
   this.aImpressoraCod = new Array();
-   
+
   /**
    * Variavel armazena a lista de impressoras disponiveis.
    * @type array;
    * @private
-   */ 
+   */
   this.aImpressoraDescr = new Array();
-   
+
   /**
    * Variavel armazena a lista de impressoras disponiveis.
    * @type array;
    * @private
-   */ 
+   */
   this.iIpPadrao = 0;
-    
+
   var me = this;
   this.sUrlRpc = 'sau4_ambulatorial.RPC.php';
   if (sUrlRpc != null) {
     this.sUrlRpc = sUrlRpc;
-  }  
+  }
   /**
    * Método que cria a div de visualização e anexa ela ao elemento pai.
    */
@@ -141,8 +138,8 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
 
   /**
    * Método que seta as impressoras selesionaveis.
-   * @param {int} iLinhas Número de linhas de cada página.(Intervalo válido: 1 - 2000)
-   * @param {int} iColunas Número de colunas de cada linha da página. (Intervalo válido: 1 - 5000)
+   * @param {Integer} iLinhas Número de linhas de cada página.(Intervalo válido: 1 - 2000)
+   * @param {Integer} iColunas Número de colunas de cada linha da página. (Intervalo válido: 1 - 5000)
    */
   this.setImpressoras = function (aId, aDescr) {
 
@@ -150,16 +147,16 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
     this.aImpressoraDescr = aDescr;
 
   }
-  
+
   /**
    * Método que seta as dimensões da página para visualização.
-   * @param {int} iLinhas Número de linhas de cada página.(Intervalo válido: 1 - 2000)
-   * @param {int} iColunas Número de colunas de cada linha da página. (Intervalo válido: 1 - 5000)
+   * @param {Integer} iLinhas Número de linhas de cada página.(Intervalo válido: 1 - 2000)
+   * @param {Integer} iColunas Número de colunas de cada linha da página. (Intervalo válido: 1 - 5000)
    */
   this.setDimensoes = function (iLinhas, iColunas) {
 
     if (this.validaDimensoesPagina(iLinhas, iColunas)) {
-      
+
       if (iLinhas != undefined) {
         this.iLinhasPagina  = parseInt(iLinhas, 10);
       }
@@ -173,7 +170,7 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
 
   /**
    * Método que cria e exibe uma página.
-   * @param {string} sTexto Texto a ser exibido na página.
+   * @param {String} sTexto Texto a ser exibido na página.
    */
   this.criaPagina = function (sTexto) {
 
@@ -181,16 +178,16 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
     oPre.setAttribute('name', 'prePagina');
     oPre.setAttribute('class', 'prePagina');
     oPre.innerHTML = sTexto;
-  
+
     var oDiv = document.createElement('div');
     oDiv.setAttribute('name', 'divPagina');
     oDiv.className = 'pagina';
-    
+
     oDiv.appendChild(oPre);
-    
+
     var oBr = document.createElement('br');
     oBr.setAttribute('name', 'brPagina');
-    
+
     var oJanelaVisualizacao = document.getElementById(this.sNomeJanelaVisualizacao);
     oJanelaVisualizacao.appendChild(oDiv);
     oJanelaVisualizacao.appendChild(oBr);
@@ -203,81 +200,81 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
   this.deletaPaginas = function () {
 
     var oJanelaVisualizacao = document.getElementById(this.sNomeJanelaVisualizacao);
-    
+
     var aDivPaginas         = document.getElementsByName('divPagina');
     var aBrs                = document.getElementsByName('brPagina');
-    
+
     /* Apago as paginas */
     while (aDivPaginas.length > 0) {
       oJanelaVisualizacao.removeChild(aDivPaginas[0]);
     }
     /* Apago os br */
     while (aBrs.length > 0) {
-      oJanelaVisualizacao.removeChild(aBrs[0]);  
+      oJanelaVisualizacao.removeChild(aBrs[0]);
     }
 
   }
-  
+
   /**
    * Método que valida as dimensões da páginas. Limites: 1 - 2000 linhas e 1 - 5000 colunas.
-   * @param iLinhas Número de linhas. Se não informado, ou informado como undefined, pega o valor da classe. 
-   * @param iColunas Número de colunas. Se não informado, ou informado como undefined, pega o valor da classe. 
+   * @param iLinhas Número de linhas. Se não informado, ou informado como undefined, pega o valor da classe.
+   * @param iColunas Número de colunas. Se não informado, ou informado como undefined, pega o valor da classe.
    * @return true em caso de dimensões válidas, false em caso contrário.
    */
   this.validaDimensoesPagina = function (iLinhas, iColunas) {
-    
+
     var iLinhas  = iLinhas == undefined ? this.iLinhasPagina : iLinhas;
     var iColunas = iColunas == undefined ? this.iColunasPagina : iColunas;
 
     if (iLinhas == undefined) {
-    
+
       alert('Informe o número de linhas.');
       return false;
-      
+
     }
-  
+
     if (iColunas == undefined) {
-    
+
       alert('Informe o número de colunas.');
       return false;
-      
+
     }
-    
+
     iLinhas  = parseInt(iLinhas, 10);
     iColunas = parseInt(iColunas, 10);
-    
+
     if (iLinhas < 1) {
-    
+
       alert('O número de linhas não pode ser menor que 1.');
       return false;
-      
+
     }
-    
+
     if (iColunas < 1) {
-    
+
       alert('O número de colunas não pode ser menor que 1.');
       return false;
-      
+
     }
-    
+
     if (iLinhas > 2000) {
-    
+
       alert('O número de linhas não pode ser maior que 2000.');
       return false;
-      
+
     }
-    
+
     if (iColunas > 5000) {
-    
+
       alert('O número de colunas não pode ser maior que 5000.');
       return false;
-      
+
     }
 
     return true;
-  
+
   }
-  
+
   /*
    * Método que exibe todas as páginas de todos os arquivos.
    */
@@ -302,73 +299,73 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
       /* Laco que trata o tamanho das linhas do arquivo (número de colunas) */
       aLinhas = aArquivos[iCont].split("\n");
       for (var iCont2 = 0; iCont2 < aLinhas.length; iCont2++) {
-  
+
         if (aLinhas[iCont2].length <= this.iColunasPagina) { // Linha não extrapola o limite de colunas
-        
+
           aLinhas[iCont2] += this.sPad.substr(0, this.iColunasPagina - aLinhas[iCont2].length);
-          
+
         } else { // Linha ultrapassa o limite de colunas
-          
+
           var aTmp = new Array(); // Array de linhas de overflow
           var iIni = 0;
           /* Coloco em cada posicao de aTmp, o conteudo que vai ficar em cada linha, repeitando o limite */
           for (; iIni < aLinhas[iCont2].length; iIni += this.iColunasPagina) {
-            
+
             aTmp[aTmp.length] = aLinhas[iCont2].substr(iIni, this.iColunasPagina);
-  
+
           }
-          
+
           /* Preencho a última linha com os espacos em branco */
           aTmp[aTmp.length - 1] += this.sPad.substr(0, iIni - aLinhas[iCont2].length);
-          
+
           /* Substituo a linha pelo seu trecho inicial de iColunas caracteres */
           aLinhas.splice(iCont2, 1, aTmp[0]);
           /* Adiciono as demais linhas geradas (overflow) para obedecer o limite de colunas */
           for (var iCont3 = 1; iCont3 < aTmp.length; iCont3++) {
-          
+
             iCont2++; // Movo para a proxima posicao (linha de overflow)
             aLinhas.splice(iCont2, 0, aTmp[iCont3]);
-            
+
           }
-          
+
         } // Fim do else (linha ultrapassa o limite de colunas)
-      
+
       }
-      
+
       /* Exibo as páginas, respeitando o número máximo de linhas em cada página */
       var sTmp       = ""; // Texto de cada página
       var iLinhasTmp = 0; // Número da linha na página
       /* Obtenho o texto que irá ficar em cada página */
       for (iCont2 = 0; iCont2 < aLinhas.length; iCont2++) {
-        
+
         sTmp += aLinhas[iCont2]+"\n";
         iLinhasTmp++;
         if (iLinhasTmp == this.iLinhasPagina) { // Atingiu o limite de linhas
-        
+
           /* Crio / exibo uma página */
           this.criaPagina(sTmp);
           /* Zero as variáveis */
           sTmp       = "";
           iLinhasTmp = 0;
-          
+
         }
-        
+
       } // endfor
-      
+
       if (iLinhasTmp != 0) { // Preencho a última página com linhas em branco (\n)
-        
+
         /* Laço que insere as linhas em branco para exibir a pagina em seu numero de linhas definido */
         for (var iCont2 = iLinhasTmp; iCont2 < this.iLinhasPagina; iCont2++) {
-      
+
           sTmp += "\n";
-      
+
         }
         this.criaPagina(sTmp);
-        
+
       } // fim do if que trata do número de linhas da última página
-      
+
     } // fim do for que renderiza todos os arquivos
-  
+
   } // fim da funcao renderizaPaginas
 
   this.gerarVisualizador = function(){
@@ -386,7 +383,7 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
     oInpLinhas.setAttribute('value', this.iLinhasPagina);
     oInpLinhas.onchange = function () {
 
-      oVisualizador.renderizarArquivos(oVisualizador.setDimensoes(this.value, 
+      oVisualizador.renderizarArquivos(oVisualizador.setDimensoes(this.value,
                                                                   document.getElementById('iColunas').value
                                                                  )
                                       );
@@ -401,7 +398,7 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
     oInpColunas.setAttribute('value', this.iColunasPagina);
     oInpColunas.onchange = function () {
 
-    oVisualizador.renderizarArquivos(oVisualizador.setDimensoes(document.getElementById('iLinhas').value, 
+    oVisualizador.renderizarArquivos(oVisualizador.setDimensoes(document.getElementById('iLinhas').value,
                                                                  this.value
                                                                )
                                     );
@@ -415,7 +412,7 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
     oElementoPai.appendChild(oInpColunas);
 
     /* Botões */
-    
+
     if(this.aImpressoraCod.length > 0){
 
       var oImpres = document.createElement('select');
@@ -423,7 +420,7 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
       oImpres.setAttribute('id', 'impressora');
 
     }
-    
+
     /* Imprimir */
     var oImp = document.createElement('input');
     oImp.setAttribute('type', 'button');
@@ -474,7 +471,7 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
     oCenter.appendChild(document.createElement('br'));
 
     if(this.aImpressoraCod.length > 0){
-    
+
       var oTxtImpres = document.createElement('span');
       oTxtImpres.innerHTML = "Impressora:";
       oCenter.appendChild(oTxtImpres);
@@ -482,9 +479,9 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
       oS = document.createElement('span');
       oS.innerHTML = sEspacos;
       oCenter.appendChild(oS);
-    
+
     }
-    
+
     oCenter.appendChild(oImp);
 
     oS = document.createElement('span');
@@ -518,13 +515,13 @@ function DBVisualizadorImpressaoTexto(sIdElementoPai, sAltura, sLargura, sNomeJa
 }
 function retornoImprimeArquivoTXT(oAjax) {
 
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   message_ajax(oRetorno.sMessage.urlDecode());
 
 }
 function retornoSalvarArquivoTXT(oAjax) {
 
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.istatus == 2) {
     message_ajax(oRetorno.sMessage.urlDecode());
   } else {

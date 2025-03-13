@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("fpdf151/scpdf.php");
-include("fpdf151/impcarne.php");
-include("libs/db_sql.php");
-include("classes/db_matpedido_classe.php");
-include("classes/db_matpedidoitem_classe.php");
-include("classes/db_db_depusu_classe.php");
+require(modification("fpdf151/scpdf.php"));
+include(modification("fpdf151/impcarne.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_matpedido_classe.php"));
+include(modification("classes/db_matpedidoitem_classe.php"));
+include(modification("classes/db_db_depusu_classe.php"));
 $cldb_depusu = new cl_db_depusu;
 $clmatpedido     = new cl_matpedido;
 $clmatpedidoitem = new cl_matpedidoitem;
@@ -39,7 +39,7 @@ $m97_sequencial     = null;
 $sqlpref        = "select * from db_config where codigo = ".db_getsession("DB_instit");
 $tObserva       = "18";
 
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 db_fieldsmemory($resultpref,0);
 
 db_postmemory($_GET);
@@ -151,17 +151,16 @@ for($contador=0;$contador<$numrows_matpedido;$contador++){
 	$sCampos = "m60_codmater,
                 m60_descr,
                (select m64_localizacao
-               from matmaterestoque
-               where m64_matmater = m60_codmater and 
-							       m64_almox    = m97_db_almox) as localizacao,    
-                     b.m61_abrev as m61_descr,
-                     m98_quant,
-                     m103_quantanulada as totalAnulado,
-                     fc_infolotesrequisicao(m98_sequencial::integer) || ' '
-                     || coalesce(m98_obs,' ') as m98_obs
-                     ";
+                 from matmaterestoque
+                where m64_matmater = m60_codmater and
+							        m64_almox    = m97_db_almox
+							 ) as localizacao,
+               b.m61_abrev as m61_descr,
+               m98_quant,
+               m103_quantanulada as totalAnulado,
+              fc_infolotesrequisicao(m98_sequencial::integer) || ' '
+              || coalesce(m98_obs,' ') as m98_obs";
 	$sMatpedido    = $clmatpedido->sql_query_matpedidoanul($m97_sequencial,$sCampos,"m60_descr");
-	//die($sMatpedido);
   $result_itens = $clmatpedido->sql_record($sMatpedido);
   $pdf1->Rdepart = $deptoorigem;
   $pdf1->Rdata   = $m97_data;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_conlancamdoc_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
 $clconlancamdoc = new cl_conlancamdoc;
 $clrotulo = new rotulocampo;
 $clrotulo->label("e60_codemp");
@@ -130,7 +130,7 @@ else
 	order by o58_orgao,o58_unidade,o56_elemento,o58_projativ,o58_codigo,$xdata ";
 	
 //echo $sql;exit;
-$result = pg_query($sql);
+$result = db_query($sql);
 //db_criatabela($result);exit;
 
 if(pg_numrows($result) == 0){

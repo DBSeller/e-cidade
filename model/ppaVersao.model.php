@@ -1,99 +1,162 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
- *model para controle de controle versoes do CVS 
+ *model para controle de controle versoes do CVS
  * @author Iuri guntchnigg
- * @revision $Author: dbtales.baz $
- * @version $Revision: 1.20 $
+ * @revision $Author: dbmauricio $
+ * @version $Revision: 1.27 $
  */
 class ppaVersao {
 
-
+  /**
+   * @type integer
+   */
   private   $codigoversao      = null;
+
+  /**
+   * @type string
+   */
   protected $datainicio        = null;
+
+  /**
+   * @type string
+   */
   protected $datatermino       = null;
+
+  /**
+   * @type int
+   */
   protected $codigolei         = null;
+
+  /**
+   * @type int
+   */
   protected $numerolei         = null;
+
+  /**
+   * @type int
+   */
   protected $idusuario         = null;
+
+  /**
+   * @type int
+   */
   protected $versao            = null;
+
+  /**
+   * @type string
+   */
   private   $nomeusuario       = null;
+
+  /**
+   * @type bool
+   */
   protected $finalizada        = false;
+
+  /**
+   * @type bool
+   */
   protected $homologada        = false;
+
+  /**
+   * @type bool
+   */
   protected $receitaprocessada = false;
+
+  /**
+   * @type bool
+   */
   protected $despesaprocessada = false;
+
+  /**
+   * @type int
+   */
   protected $anoinicio         = null;
+
+  /**
+   * @type int
+   */
   protected $anofim            = null;
+
+  /**
+   * @type bool
+   */
   protected $lAtivo            = true;
 
-  function __construct($iCodigoVersao = null) {
+  /**
+   * @param null $iCodigoVersao
+   */
+  public function __construct($iCodigoVersao = null) {
 
-    if ($iCodigoVersao != null) {
+    $this->codigoversao = $iCodigoVersao;
+    if (empty($this->codigoversao)) {
+      return;
+    }
 
-      $oDaoPPaversao = db_utils::getDao("ppaversao");
-      $sSqlversao    = $oDaoPPaversao->sql_query($iCodigoVersao);
-      $rsVersao      = $oDaoPPaversao->sql_record($sSqlversao);
+    $oDaoPPaversao = db_utils::getDao("ppaversao");
+    $sSqlversao    = $oDaoPPaversao->sql_query($iCodigoVersao);
+    $rsVersao      = $oDaoPPaversao->sql_record($sSqlversao);
 
-      if ($oDaoPPaversao->numrows == 1) {
+    if ($oDaoPPaversao->numrows == 1) {
 
-        $oVersaoPPA         = db_utils::fieldsMemory($rsVersao, 0);
-        $this->codigoversao = $iCodigoVersao; 
-        $this->setCodigolei($oVersaoPPA->o119_ppalei); 
-        $this->setDatainicio($oVersaoPPA->o119_datainicio); 
-        $this->setDatatermino($oVersaoPPA->o119_datatermino);
-        $this->setVersao($oVersaoPPA->o119_versao);
-        $this->setFinalizada($oVersaoPPA->o119_finalizada);
-        $this->setHomologada($oVersaoPPA->o119_versaofinal);
-        $this->setIdusuario($oVersaoPPA->o119_idusuario);
-        $this->setNumerolei($oVersaoPPA->o01_numerolei);
-        $this->setAnoinicio($oVersaoPPA->o01_anoinicio);
-        $this->setAnofim($oVersaoPPA->o01_anofinal);
+      $oVersaoPPA         = db_utils::fieldsMemory($rsVersao, 0);
+      $this->codigoversao = $iCodigoVersao;
+      $this->setCodigolei($oVersaoPPA->o119_ppalei);
+      $this->setDatainicio($oVersaoPPA->o119_datainicio);
+      $this->setDatatermino($oVersaoPPA->o119_datatermino);
+      $this->setVersao($oVersaoPPA->o119_versao);
+      $this->setFinalizada($oVersaoPPA->o119_finalizada);
+      $this->setHomologada($oVersaoPPA->o119_versaofinal);
+      $this->setIdusuario($oVersaoPPA->o119_idusuario);
+      $this->setNumerolei($oVersaoPPA->o01_numerolei);
+      $this->setAnoinicio($oVersaoPPA->o01_anoinicio);
+      $this->setAnofim($oVersaoPPA->o01_anofinal);
 
-        $this->lAtivo = true;
-        if ( $oVersaoPPA->o119_ativo == 'f') {
-          $this->lAtivo = false;
-        }
+      $this->lAtivo = true;
+      if ( $oVersaoPPA->o119_ativo == 'f') {
+        $this->lAtivo = false;
+      }
 
-        $clppaestimativareceita = db_utils::getDao("ppaestimativareceita");
-        $sSqlEstimativas = $clppaestimativareceita->sql_query(null,"*",
-          "o05_ppaversao limit 1",
-          "o05_ppaversao = {$iCodigoVersao}");
-        $rsEstmativas    = $clppaestimativareceita->sql_record($sSqlEstimativas);
-        if ($clppaestimativareceita->numrows > 0) {
-          $this->receitaprocessada = true;
-        }
-        $clppaestimativadespesa = db_utils::getDao("ppaestimativadespesa");
-        $sSqlEstimativas = $clppaestimativadespesa->sql_query(null,"*",
-          "o05_ppaversao limit 1",
-          "o05_ppaversao = {$iCodigoVersao}");
-        $rsEstmativas    = $clppaestimativadespesa->sql_record($sSqlEstimativas);
-        if ($clppaestimativadespesa->numrows > 0) {
-          $this->despesaprocessada = true;
-        }
+      $clppaestimativareceita = db_utils::getDao("ppaestimativareceita");
+      $sSqlEstimativas = $clppaestimativareceita->sql_query(null,"*",
+                                                            "o05_ppaversao limit 1",
+                                                            "o05_ppaversao = {$iCodigoVersao}");
+      $rsEstmativas    = $clppaestimativareceita->sql_record($sSqlEstimativas);
+      if ($clppaestimativareceita->numrows > 0) {
+        $this->receitaprocessada = true;
+      }
+      $clppaestimativadespesa = db_utils::getDao("ppaestimativadespesa");
+      $sSqlEstimativas = $clppaestimativadespesa->sql_query(null,"*",
+                                                            "o05_ppaversao limit 1",
+                                                            "o05_ppaversao = {$iCodigoVersao}");
+      $rsEstmativas    = $clppaestimativadespesa->sql_record($sSqlEstimativas);
+      if ($clppaestimativadespesa->numrows > 0) {
+        $this->despesaprocessada = true;
       }
     }
   }
@@ -102,36 +165,32 @@ class ppaVersao {
    * @return integer
    */
   public function getCodigoversao() {
-
     return $this->codigoversao;
   }
 
   /**
-   * @return unknown
+   * @return int
    */
   public function getCodigolei() {
-
     return $this->codigolei;
   }
 
   /**
-   * @param unknown_type $codigolei
+   * @param $codigolei
    */
   public function setCodigolei($codigolei) {
-
     $this->codigolei = $codigolei;
   }
 
   /**
-   * @return unknown
+   * @return string
    */
   public function getDatainicio() {
-
     return $this->datainicio;
   }
 
   /**
-   * @param unknown_type $datainicio
+   * @param $datainicio
    */
   public function setDatainicio($datainicio) {
 
@@ -139,7 +198,7 @@ class ppaVersao {
   }
 
   /**
-   * @return unknown
+   * @return string
    */
   public function getDatatermino() {
 
@@ -147,37 +206,28 @@ class ppaVersao {
   }
 
   /**
-   * @param unknown_type $datatermino
+   * @param $datatermino
    */
   public function setDatatermino($datatermino) {
-
     $this->datatermino = $datatermino;
   }
 
   /**
-   * @return unknown
+   * @return bool
    */
   public function isFinalizada() {
-
     return $this->finalizada;
   }
 
   /**
-   * @param unknown_type $finalizada
+   * @param $finalizada
    */
   public function setFinalizada($finalizada) {
-
-    if ($finalizada == "t") {
-      $finalizada = true;
-    } else if ($finalizada == "f") {
-      $finalizada = false;
-    }
-
-    $this->finalizada = $finalizada;
+    $this->finalizada = $finalizada == "t";
   }
 
   /**
-   * @return unknown
+   * @return bool
    */
   public function isHomologada() {
 
@@ -185,20 +235,14 @@ class ppaVersao {
   }
 
   /**
-   * @param unknown_type $homologada
+   * @param $homologada
    */
   public function setHomologada($homologada) {
-
-    if ($homologada == "t") {
-      $homologada = true;
-    } else if ($homologada == "f") {
-      $homologada = false;
-    }
-    $this->homologada = $homologada;
+    $this->homologada = $homologada == "t";
   }
 
   /**
-   * @return unknown
+   * @return int
    */
   public function getIdusuario() {
 
@@ -206,92 +250,81 @@ class ppaVersao {
   }
 
   /**
-   * @param unknown_type $idusuario
+   * @param $idusuario
    */
   public function setIdusuario($idusuario) {
-
     $this->idusuario = $idusuario;
   }
 
   /**
-   * @return unknown
+   * @return int
    */
   public function getNumerolei() {
-
     return $this->numerolei;
   }
 
   /**
-   * @param unknown_type $numerolei
+   * @param $numerolei
    */
   public function setNumerolei($numerolei) {
-
     $this->numerolei = $numerolei;
   }
 
   /**
-   * @return unknown
+   * @return int
    */
   public function getVersao() {
-
     return $this->versao;
   }
 
   /**
-   * @param unknown_type $versao
+   * @param $versao
    */
   public function setVersao($versao) {
-
     $this->versao = $versao;
   }
+
   /**
-   * @return unknown
+   * @return int
    */
   public function getAnofim() {
-
     return $this->anofim;
   }
 
   /**
-   * @return unknown
+   * @return int
    */
   public function getAnoinicio() {
-
     return $this->anoinicio;
   }
 
   /**
-   * @param unknown_type $anofim
+   * @param $anofim
    */
   public function setAnofim($anofim) {
-
     $this->anofim = $anofim;
   }
 
   /**
-   * @param unknown_type $anoinicio
+   * @param $anoinicio
    */
   public function setAnoinicio($anoinicio) {
-
     $this->anoinicio = $anoinicio;
   }
 
   /**
-   * @return unknown
+   * @return bool
    */
   public function hasDespesaProcessada() {
-
     return $this->despesaprocessada;
   }
 
   /**
-   * @return unknown
+   * @return bool
    */
   public function hasReceitaProcessada() {
-
     return $this->receitaprocessada;
   }
-
 
   /**
    * Retorna se a Versão está ativa
@@ -300,13 +333,13 @@ class ppaVersao {
     return $this->lAtivo;
   }
 
-
-
   /**
-   * cria uma nova versao do ppa, baseada nas informacoes do ppa anteriors
    *
-   * @param boolean $lHomologar se a versao deve ser homologada
-   * @return boolean
+   * cria uma nova versao do ppa, baseada nas informacoes do ppa anteriors
+   * @param $lHomologar
+   *
+   * @return bool
+   * @throws Exception
    */
   public function novaVersao($lHomologar) {
 
@@ -323,7 +356,7 @@ class ppaVersao {
     $oDaoPPaVersao->o119_versao      = db_utils::fieldsMemory($rsProximaVersao, 0)->versao;
     $oDaoPPaVersao->o119_idusuario   = db_getsession("DB_id_usuario");
     $oDaoPPaVersao->o119_ppalei      = $this->getCodigolei();
-    
+
     $sAtivo = 'true';
     if (!$this->lAtivo) {
       $sAtivo = 'false';
@@ -338,15 +371,12 @@ class ppaVersao {
      */
     $oDaoPPAEstimativa        = db_utils::getDao("ppaestimativa");
     $oDaoPPAEstimativareceita = db_utils::getDao("ppaestimativareceita");
-    $sSqlEstimativasreceita   = $oDaoPPAEstimativareceita->sql_query(null, 
-      "ppaestimativareceita.*,
-      ppaestimativa.*",
-      null,
-      "o05_ppaversao={$this->codigoversao}
-      and o05_ppaversao={$this->codigoversao}"
-    );
+    $sSqlEstimativasreceita   = $oDaoPPAEstimativareceita->sql_query(null,
+                                                                     "ppaestimativareceita.*,ppaestimativa.*",
+                                                                     null,
+                                                                     "o05_ppaversao={$this->codigoversao} and o05_ppaversao={$this->codigoversao}");
     $rsEstimativasreceita     = $oDaoPPAEstimativareceita->sql_record($sSqlEstimativasreceita);
-    $aItensEstimativasreceita = db_utils::getColectionByRecord($rsEstimativasreceita);
+    $aItensEstimativasreceita = db_utils::getCollectionByRecord($rsEstimativasreceita);
 
     foreach ($aItensEstimativasreceita as $oEstimativa) {
 
@@ -380,15 +410,15 @@ class ppaVersao {
      * Pesquisamos todas as estimativas de despesa
      */
     $oDaoPPAEstimativaDespesa = db_utils::getDao("ppaestimativadespesa");
-    $sSqlEstimativasDespesa   = $oDaoPPAEstimativaDespesa->sql_query_conplano(null, 
-      "ppaestimativadespesa.*,
+    $sSqlEstimativasDespesa   = $oDaoPPAEstimativaDespesa->sql_query_conplano(null,
+                                                                              "ppaestimativadespesa.*,
       ppaestimativa.*,
       ppadotacao.*,
       ppadotacaoorcdotacao.*",
-      null,
-      "o05_ppaversao={$this->codigoversao}");
+                                                                              null,
+                                                                              "o05_ppaversao={$this->codigoversao}");
     $rsEstimativasDespesa     = $oDaoPPAEstimativaDespesa->sql_record($sSqlEstimativasDespesa);
-    $aItensEstimativasDespesa = db_utils::getColectionByRecord($rsEstimativasDespesa);
+    $aItensEstimativasDespesa = db_utils::getCollectionByRecord($rsEstimativasDespesa);
     $oPPADotacao = db_utils::getDao("ppadotacao");
     foreach ($aItensEstimativasDespesa as $oEstimativa) {
 
@@ -457,26 +487,28 @@ class ppaVersao {
 
   /**
    * Retorna a versao atual com dos dados da versao passada por parametro
+   * @param $iVersaoBase
    *
-   * @param integer $iVersaoBase Código da versão
+   * @return bool
+   * @throws Exception
    */
-  function retornaVersao($iVersaoBase) {
+  public function retornaVersao($iVersaoBase) {
 
     /**
      * excluimos  as estimativas da versao atual
-     */ 
+     */
     $oDaoPPAEstimativa        = db_utils::getDao("ppaestimativa");
     $oDaoPPAEstimativareceita = db_utils::getDao("ppaestimativareceita");
     $oDaoPPAEstimativaDespesa = db_utils::getDao("ppaestimativadespesa");
-    $sSqlEstimativasDespesa   = $oDaoPPAEstimativaDespesa->sql_query_conplano(null, 
-      "ppaestimativadespesa.*,
+    $sSqlEstimativasDespesa   = $oDaoPPAEstimativaDespesa->sql_query_conplano(null,
+                                                                              "ppaestimativadespesa.*,
       ppaestimativa.*.
       ppadotacao.*,
       ppadotacaoorcdotacao.*",
-      null,
-      "o05_ppaversao={$this->codigoversao}");
+                                                                              null,
+                                                                              "o05_ppaversao={$this->codigoversao}");
     $rsEstimativasDespesa     = $oDaoPPAEstimativaDespesa->sql_record($sSqlEstimativasDespesa);
-    $aItensEstimativasDespesa = db_utils::getColectionByRecord($rsEstimativasDespesa);
+    $aItensEstimativasDespesa = db_utils::getCollectionByRecord($rsEstimativasDespesa);
     foreach ($aItensEstimativasDespesa as $oEstimativaDespesa) {
 
       $oDaoPPAEstimativaDespesa->excluir($oEstimativaDespesa->o07_sequencial);
@@ -486,15 +518,15 @@ class ppaVersao {
 
     unset($aItensEstimativasDespesa);
     /**
-     * Excluimos as estimativas de receita 
+     * Excluimos as estimativas de receita
      */
-    $sSqlEstimativasreceita   = $oDaoPPAEstimativareceita->sql_query(null, 
-      "ppaestimativareceita.*,
+    $sSqlEstimativasreceita   = $oDaoPPAEstimativareceita->sql_query(null,
+                                                                     "ppaestimativareceita.*,
       ppaestimativa.*",
-      null,
-      "o05_ppaversao={$this->codigoversao}");
+                                                                     null,
+                                                                     "o05_ppaversao={$this->codigoversao}");
     $rsEstimativasreceita     = $oDaoPPAEstimativareceita->sql_record($sSqlEstimativasreceita);
-    $aItensEstimativasreceita = db_utils::getColectionByRecord($rsEstimativasreceita);
+    $aItensEstimativasreceita = db_utils::getCollectionByRecord($rsEstimativasreceita);
 
     foreach ($aItensEstimativasreceita as $oEstimativa) {
 
@@ -508,13 +540,13 @@ class ppaVersao {
      * Incluimos as estimativas novamente;
      */
 
-    $sSqlEstimativasreceita   = $oDaoPPAEstimativareceita->sql_query(null, 
-      "ppaestimativareceita.*,
+    $sSqlEstimativasreceita   = $oDaoPPAEstimativareceita->sql_query(null,
+                                                                     "ppaestimativareceita.*,
       ppaestimativa.*",
-      null,
-      "o05_ppaversao={$iVersaoBase}");
+                                                                     null,
+                                                                     "o05_ppaversao={$iVersaoBase}");
     $rsEstimativasreceita     = $oDaoPPAEstimativareceita->sql_record($sSqlEstimativasreceita);
-    $aItensEstimativasreceita = db_utils::getColectionByRecord($rsEstimativasreceita);
+    $aItensEstimativasreceita = db_utils::getCollectionByRecord($rsEstimativasreceita);
 
     foreach ($aItensEstimativasreceita as $oEstimativa) {
 
@@ -547,13 +579,13 @@ class ppaVersao {
      * Pesquisamos todas as estimativas de despesa
      */
     $oDaoPPAEstimativaDespesa = db_utils::getDao("ppaestimativadespesa");
-    $sSqlEstimativasDespesa   = $oDaoPPAEstimativaDespesa->sql_query(null, 
-      "ppaestimativadespesa.*,
+    $sSqlEstimativasDespesa   = $oDaoPPAEstimativaDespesa->sql_query(null,
+                                                                     "ppaestimativadespesa.*,
       ppaestimativa.*",
-      null,
-      "o05_ppaversao={$iVersaoBase}");
+                                                                     null,
+                                                                     "o05_ppaversao={$iVersaoBase}");
     $rsEstimativasDespesa     = $oDaoPPAEstimativaDespesa->sql_record($sSqlEstimativasDespesa);
-    $aItensEstimativasDespesa = db_utils::getColectionByRecord($rsEstimativasDespesa);
+    $aItensEstimativasDespesa = db_utils::getCollectionByRecord($rsEstimativasDespesa);
 
     foreach ($aItensEstimativasDespesa as $oEstimativa) {
 
@@ -583,7 +615,7 @@ class ppaVersao {
     return true;
   }
 
-  function save() {
+  public function save() {
 
     $oDaoPPaVersao = db_utils::getDao("ppaversao");
     $oDaoPPaVersao->o119_datainicio  = $this->getDatainicio();
@@ -623,26 +655,26 @@ class ppaVersao {
 
   /**
    * Retorna o ultimo ano integrado com o orcamento
-   * @return  integer; 
-   */ 
-  function getUltimoAnoIntegrado() {
+   * @return  integer;
+   */
+  public function getUltimoAnoIntegrado() {
 
     $oDaoPPAIntegracao    = db_utils::getDao("ppaintegracao");
     $sSqlUltimaIntegracao = $oDaoPPAIntegracao->sql_query_file(null,
-      "max(o123_Ano) as ultimoano",
-      null,
-      "exists (select 1 
+                                                               "max(o123_Ano) as ultimoano",
+                                                               null,
+                                                               "exists (select 1
       from ppaintegracaodespesa
       where o121_ppaintegracao = o123_sequencial)
       and o123_instit = ".db_getsession("DB_instit")."
-      and o123_tipointegracao = 1 
+      and o123_tipointegracao = 1
       and o123_situacao = 1"
     );
 
     $rsUltimaIntegracao = $oDaoPPAIntegracao->sql_record($sSqlUltimaIntegracao);
     $iUltimoAno         = db_utils::fieldsMemory($rsUltimaIntegracao, 0)->ultimoano;
     if ($iUltimoAno == "") {
-      $iUltimoAno = null; 
+      $iUltimoAno = null;
     }
     return $iUltimoAno;
   }
@@ -651,20 +683,20 @@ class ppaVersao {
    * Gera a integracao do ppa com o orcamento
    *
    */
-  function gerarIntegracao() {
+  public function gerarIntegracao() {
 
     $iAno  = $this->getUltimoAnoIntegrado();
     if ($iAno == null) {
       $iAno = $this->getAnoinicio();
     } else {
-      $iAno = $iAno+1;   
+      $iAno = $iAno+1;
     }
-    
+
     $iAnoExercicio = db_getsession("DB_anousu");
-            
+
     if(($iAno - $iAnoExercicio) > 1 ){
-    	$sErroMsg = "Perspectiva já processada o exercício seguinte.";
-    	throw new Exception($sErroMsg, 10);
+      $sErroMsg = "Perspectiva já processada o exercício seguinte.";
+      throw new Exception($sErroMsg, 10);
     }
     $oDaoPPAReceita = db_utils::getDao("ppaestimativareceita");
     $oDaoOrcReceita = db_utils::getDao("orcreceita");
@@ -685,22 +717,22 @@ class ppaVersao {
 
     }
     $sSqlPPaReceita = $oDaoPPAReceita->sql_query_analitica(null,
-      "ppaestimativareceita.*,
-      o05_valor, 
+                                                           "ppaestimativareceita.*,
+      o05_valor,
       c61_codigo",
-      null,
-      "c61_instit           = ".db_getsession("DB_instit")."
+                                                           null,
+                                                           "c61_instit           = ".db_getsession("DB_instit")."
       and o06_ppaversao     = ".$this->getCodigoversao()."
       and o05_ppaversao     = ".$this->getCodigoversao()."
-      and o06_anousu        = {$iAno}"        
+      and o06_anousu        = {$iAno}"
     );
-    $rsReceita      = db_query(analiseQueryPlanoOrcamento($sSqlPPaReceita));                                                           
-    $aReceitas      = db_utils::getColectionByRecord($rsReceita);
+    $rsReceita      = db_query(analiseQueryPlanoOrcamento($sSqlPPaReceita));
+    $aReceitas      = db_utils::getCollectionByRecord($rsReceita);
     foreach ($aReceitas as $oReceita) {
 
       /**
        * Verificamos se ja existe receita na tabela orcreceita para o ano corrente;
-       * caso sim, usamos o mesmp codrec para a receita do ppa 
+       * caso sim, usamos o mesmp codrec para a receita do ppa
        */
 
       /**
@@ -714,10 +746,10 @@ class ppaVersao {
       $sWhere      .= " and o70_codfon = {$oReceita->o06_codrec}";
       $sWhere      .= " and o70_concarpeculiar = '{$oReceita->o06_concarpeculiar}'";
       $sSqlReceita  = $oDaoOrcReceita->sql_query_file(null,
-        null,
-        "*",
-        null,
-        $sWhere
+                                                      null,
+                                                      "*",
+                                                      null,
+                                                      $sWhere
       );
       $rsReceita    = $oDaoOrcReceita->sql_record($sSqlReceita);
       if ($oDaoOrcReceita->numrows == 1) {
@@ -728,8 +760,24 @@ class ppaVersao {
       } else {
         $oDaoOrcReceita->o70_codrec = null;
       }
+
       /**
-       * Incluimos a receita 
+       * Verificamos se a receita já existe no ano da integracao:
+       */
+      $sWhereJaLancada       = "     o70_anousu = {$iAno} ";
+      $sWhereJaLancada      .= " and o70_instit = ".db_getsession("DB_instit");
+      $sWhereJaLancada      .= " and o70_codfon = {$oReceita->o06_codrec}";
+      $sWhereJaLancada      .= " and o70_concarpeculiar = '{$oReceita->o06_concarpeculiar}'";
+      $sSqlReceitaJaLancada  = $oDaoOrcReceita->sql_query_file(null, null, "*", null, $sWhereJaLancada);
+
+      $rsReceitaLancada     = $oDaoOrcReceita->sql_record($sSqlReceitaJaLancada);
+      if ($oDaoOrcReceita->numrows > 0) {
+
+        $sErroMsg  = "Erro ao Incluir nova Receita.\nReceita já lançada no exercício {$iAno}";
+        throw new Exception($sErroMsg, 12);
+      }
+      /**
+       * Incluimos a receita
        */
       $oDaoOrcReceita->o70_anousu         = $iAno;
       $oDaoOrcReceita->o70_codigo         = $oReceita->c61_codigo;
@@ -742,14 +790,13 @@ class ppaVersao {
       if ($oDaoOrcReceita->erro_status == '0') {
 
         $sErroMsg  = "Erro ao Incluir nova Receita.\n";
-        $sErroMsg .= $oDaoOrcReceita->erro_banco; 
-        $sErroMsg .= "Solicite Suporte\nErro Número 11";
+        $sErroMsg .= $oDaoOrcReceita->erro_banco;
         throw new Exception($sErroMsg, 11);
 
       }
       /**
        * Incluimos a ligacao da receita gerada com a estimativa do ppa
-       */ 
+       */
       $oDaoPPAIntegracaoReceita = db_utils::getDao("ppaintegracaoreceita");
       $oDaoPPAIntegracaoReceita->o122_anousu = $iAno;
       $oDaoPPAIntegracaoReceita->o122_codrec = $oDaoOrcReceita->o70_codrec;
@@ -759,7 +806,7 @@ class ppaVersao {
       if ($oDaoPPAIntegracaoReceita->erro_status == 0) {
 
         $sErroMsg  = "Erro ao Incluir integração da Receita com o ppa.\n";
-        $sErroMsg .= $oDaoPPAIntegracaoReceita->erro_msg; 
+        $sErroMsg .= $oDaoPPAIntegracaoReceita->erro_msg;
         $sErroMsg .= "Solicite Suporte\nErro Número 12";
         throw new Exception($sErroMsg, 12);
 
@@ -767,28 +814,28 @@ class ppaVersao {
     }
 
     /**
-     * incluimos as Dotacoes 
+     * incluimos as Dotacoes
      */
     $oDaoPPADespesa = new cl_ppaestimativadespesa;
     $sSqlDotacoes   = $oDaoPPADespesa->sql_query(null,
-      "ppadotacao.*,
+                                                 "ppadotacao.*,
       o05_valor,
       o07_sequencial",
-      null,
-      "o08_ppaversao = {$this->codigoversao} 
+                                                 null,
+                                                 "o08_ppaversao = {$this->codigoversao}
       and o08_instit = ".db_getsession("DB_instit")."
       and o05_anoreferencia = {$iAno}"
     );
     $rsDotacao      = $oDaoPPADespesa->sql_record($sSqlDotacoes);
     $rsDotacoes     = $oDaoPPADespesa->sql_record($sSqlDotacoes);
-    $aDespesas      = db_utils::getColectionByRecord($rsDotacoes);
+    $aDespesas      = db_utils::getCollectionByRecord($rsDotacoes);
     $oDaoOrcDotacao = db_utils::getDao("orcdotacao");
 
     foreach ($aDespesas as $oDespesa) {
 
       /**
        * Verificamos se ja existe despesa na tabela orcdotacao para o ano corrente;
-       * caso sim, usamos o mesmo coddot para a receita do ppa 
+       * caso sim, usamos o mesmo coddot para a receita do ppa
        */
       /**
        * Ignora despesas com valor igual a zero
@@ -811,10 +858,10 @@ class ppaVersao {
       $sWhere      .= " and o58_concarpeculiar    = '{$oDespesa->o08_concarpeculiar}'";
       $sWhere      .= " and o58_localizadorgastos = {$oDespesa->o08_localizadorgastos}";
       $sSqlDotacao  = $oDaoOrcDotacao->sql_query_file(null,
-        null,
-        "*",
-        null,
-        $sWhere
+                                                      null,
+                                                      "*",
+                                                      null,
+                                                      $sWhere
       );
       $rsDotacoes    = $oDaoOrcDotacao->sql_record($sSqlDotacao);
       if ($oDaoOrcDotacao->numrows == 1) {
@@ -871,7 +918,7 @@ class ppaVersao {
         if (strpos(strtolower(pg_last_error()),"orcdotacao_oufspae_in") != 0 ) {
           $iNumeroErro = 199;
         }
-        $sErroMsg .= $oDaoOrcDotacao->erro_msg."\n"; 
+        $sErroMsg .= $oDaoOrcDotacao->erro_msg."\n";
         $sErroMsg .= "Solicite Suporte\nErro Número {$iNumeroErro}";
         throw new Exception($sErroMsg, $iNumeroErro);
 
@@ -888,42 +935,43 @@ class ppaVersao {
       if ($oDaoPPAIntegracaoDespesa->erro_status == 0) {
 
         $sErroMsg  = "Erro ao Incluir integração da Despesa com o ppa.\n";
-        $sErroMsg .= $oDaoPPAIntegracaoDespesa->erro_msg; 
+        $sErroMsg .= $oDaoPPAIntegracaoDespesa->erro_msg;
         $sErroMsg .= "Solicite Suporte\nErro Número 14";
         throw new Exception($sErroMsg, 14);
 
       }
     }
     return true;
-  } 
+  }
 
-  function cancelarIntegracao() {
+  public function cancelarIntegracao() {
 
     $sSqlAnoCancelar  =  "SELECT o123_ano, o123_sequencial ";
     $sSqlAnoCancelar .=  "  from ppaintegracao ";
     $sSqlAnoCancelar .=  " where o123_ano        = ".(db_getsession("DB_anousu")+1);
-    $sSqlAnoCancelar .=  "   and o123_ppaversao  = {$this->codigoversao}"; 
+    $sSqlAnoCancelar .=  "   and o123_ppaversao  = {$this->codigoversao}";
     $sSqlAnoCancelar .=  "   and o123_situacao       = 1 ";
     $sSqlAnoCancelar .=  "   and o123_tipointegracao = 1 ";
     $sSqlAnoCancelar .=  "   and o123_instit     = ".db_getsession("DB_instit");
-    $sSqlAnoCancelar .=  "   and exists(select 1 ";
-    $sSqlAnoCancelar .=  "                from ppaintegracaodespesa ";
-    $sSqlAnoCancelar .=  "               where o121_ppaintegracao = o123_sequencial)";
-    $rsAnoCancelar   = DB_query($sSqlAnoCancelar);
-    $iAnoCancelar    = ""; 
-    if (pg_num_rows($rsAnoCancelar) == 1) {
+    //    $sSqlAnoCancelar .=  "   and exists(select 1 ";
+    //    $sSqlAnoCancelar .=  "                from ppaintegracaodespesa ";
+    //    $sSqlAnoCancelar .=  "               where o121_ppaintegracao = o123_sequencial)";
+    $rsAnoCancelar   = db_query($sSqlAnoCancelar);
+    $iAnoCancelar    = "";
 
-      $iAnoCancelar = db_utils::fieldsMemory($rsAnoCancelar, 0)->o123_ano;
-      $iIntegracao  = db_utils::fieldsMemory($rsAnoCancelar, 0)->o123_sequencial;
-    } else {
-      throw  new Exception("Não existe integrações a cancelar para esse ano");
+    if (pg_num_rows($rsAnoCancelar) == 0) {
+      throw new Exception("Não existe integrações a cancelar para esse ano.");
     }
+
+
+    $iAnoCancelar = db_utils::fieldsMemory($rsAnoCancelar, 0)->o123_ano;
+    $iIntegracao  = db_utils::fieldsMemory($rsAnoCancelar, 0)->o123_sequencial;
 
     /**
      * Iniciamos com o cancelamento das Dotacoes
      */
     $sSqlDotacoes  = "SELECT o58_coddot, ";
-    $sSqlDotacoes .= "       o58_anousu,"; 
+    $sSqlDotacoes .= "       o58_anousu,";
     $sSqlDotacoes .= "       o121_sequencial ,";
     $sSqlDotacoes .= "       exists(select 1 ";
     $sSqlDotacoes .= "             from orcreserva ";
@@ -939,14 +987,14 @@ class ppaVersao {
     $sSqlDotacoes .= " where o121_ppaintegracao = {$iIntegracao}";
 
     $rsDotacoes               = db_query($sSqlDotacoes);
-    $aDotacoes                = db_utils::getColectionByRecord($rsDotacoes); 
+    $aDotacoes                = db_utils::getCollectionByRecord($rsDotacoes);
     $oDaoOrcDotacao           = db_utils::getDao("orcdotacao");
     $oDaoPPAIntegracaoDespesa = db_utils::getDao("ppaintegracaodespesa");
     foreach ($aDotacoes as $oDotacao) {
 
       if ($oDotacao->temreserva == "t") {
 
-        $sMsg  = "Dotação {$oDotacao->o58_coddot}/{$oDotacao->o58_anousu} possui reservas de saldo.\n";    
+        $sMsg  = "Dotação {$oDotacao->o58_coddot}/{$oDotacao->o58_anousu} possui reservas de saldo.\n";
         $sMsg .= "Não podera ser cancelado a integração.";
         throw new Exception($sMsg);
 
@@ -954,7 +1002,7 @@ class ppaVersao {
 
       if ($oDotacao->temlancam == "t") {
 
-        $sMsg  = "Dotação {$oDotacao->o58_coddot}/{$oDotacao->o58_anousu} possui lançamentos contábeis.\n";    
+        $sMsg  = "Dotação {$oDotacao->o58_coddot}/{$oDotacao->o58_anousu} possui lançamentos contábeis.\n";
         $sMsg .= "Não podera ser cancelado a integração.";
         throw new Exception($sMsg);
 
@@ -967,11 +1015,11 @@ class ppaVersao {
     foreach ($aDotacoes as $oDotacao) {
 
 
-      $oDaoPPAIntegracaoDespesa->excluir($oDotacao->o121_sequencial); 
+      $oDaoPPAIntegracaoDespesa->excluir($oDotacao->o121_sequencial);
       if ($oDaoPPAIntegracaoDespesa->erro_status == 0) {
 
         $sErroMsg  = "Erro ao cancelar integração da Despesa com o ppa.\n";
-        $sErroMsg .= $oDaoPPAIntegracaoDespesa->erro_msg; 
+        $sErroMsg .= $oDaoPPAIntegracaoDespesa->erro_msg;
         $sErroMsg .= "Solicite Suporte\nErro Número 3";
         throw new Exception($sErroMsg, 3);
 
@@ -983,7 +1031,7 @@ class ppaVersao {
       if ($oDaoOrcDotacao->erro_status == 0) {
 
         $sErroMsg  = "Erro ao cancelar Dotação.\n";
-        $sErroMsg .= $oDaoOrcDotacao->erro_msg; 
+        $sErroMsg .= $oDaoOrcDotacao->erro_msg;
         $sErroMsg .= "Solicite Suporte\nErro Número 2";
         throw new Exception($sErroMsg, 2);
 
@@ -993,7 +1041,7 @@ class ppaVersao {
      * Iniciamos com o cancelamento das receitas
      */
     $sSqlReceitas  = "SELECT o70_codrec, ";
-    $sSqlReceitas .= "       o70_anousu,"; 
+    $sSqlReceitas .= "       o70_anousu,";
     $sSqlReceitas .= "       o122_sequencial ,";
     $sSqlReceitas .= "       exists(select 1 ";
     $sSqlReceitas .= "             from orcsuplemrec ";
@@ -1008,7 +1056,7 @@ class ppaVersao {
     $sSqlReceitas .= "                            and o122_anousu = o70_anousu  ";
     $sSqlReceitas .= " where o122_ppaintegracao = {$iIntegracao}";
     $rsReceitas               = db_query($sSqlReceitas);
-    $aReceitas                = db_utils::getColectionByRecord($rsReceitas); 
+    $aReceitas                = db_utils::getCollectionByRecord($rsReceitas);
     $oDaoOrcReceita           = db_utils::getDao("orcreceita");
     $oDaoPPAIntegracaoReceita = db_utils::getDao("ppaintegracaoreceita");
 
@@ -1016,7 +1064,7 @@ class ppaVersao {
 
       if ($oReceita->temsuplem == "t") {
 
-        $sMsg  = "Receita {$oReceita->o70_codrec}/{$oReceita->o70_anousu} possui suplementações\n";    
+        $sMsg  = "Receita {$oReceita->o70_codrec}/{$oReceita->o70_anousu} possui suplementações\n";
         $sMsg .= "Não podera ser cancelado a integração.";
         throw new Exception($sMsg);
 
@@ -1024,7 +1072,7 @@ class ppaVersao {
 
       if ($oReceita->temlancam == "t") {
 
-        $sMsg  = "Receita {$oReceita->o70_codrec}/{$oReceita->o70_anousu} possui lançamentos contábeis.\n";    
+        $sMsg  = "Receita {$oReceita->o70_codrec}/{$oReceita->o70_anousu} possui lançamentos contábeis.\n";
         $sMsg .= "Não podera ser cancelado a integração.";
         throw new Exception($sMsg);
 
@@ -1036,11 +1084,11 @@ class ppaVersao {
      */
     foreach ($aReceitas as $oReceita) {
 
-      $oDaoPPAIntegracaoReceita->excluir($oReceita->o122_sequencial); 
+      $oDaoPPAIntegracaoReceita->excluir($oReceita->o122_sequencial);
       if ($oDaoPPAIntegracaoReceita->erro_status == 0) {
 
         $sErroMsg  = "Erro ao cancelar integração da Receita com o ppa.\n";
-        $sErroMsg .= $oDaoPPAIntegracaoReceita->erro_msg; 
+        $sErroMsg .= $oDaoPPAIntegracaoReceita->erro_msg;
         $sErroMsg .= "Solicite Suporte\nErro Número 3";
         throw new Exception($sErroMsg, 3);
 
@@ -1053,7 +1101,7 @@ class ppaVersao {
       if ($oDaoOrcReceita->erro_status == 0) {
 
         $sErroMsg  = "Erro ao cancelar Receita\n";
-        $sErroMsg .= $oDaoOrcReceita->erro_msg; 
+        $sErroMsg .= $oDaoOrcReceita->erro_msg;
         $sErroMsg .= "Solicite Suporte\nErro Número 2";
         throw new Exception($sErroMsg, 2);
 
@@ -1067,7 +1115,7 @@ class ppaVersao {
     if ($oDaoppaIntegracao->erro_status == 0) {
 
       $sErroMsg  = "Erro ao cancelar integração com o ppa.\n";
-      $sErroMsg .= $oDaoppaIntegracao->erro_msg; 
+      $sErroMsg .= $oDaoppaIntegracao->erro_msg;
       $sErroMsg .= "Solicite Suporte\nErro Número 3";
       throw new Exception($sErroMsg, 3);
     }
@@ -1088,30 +1136,22 @@ class ppaVersao {
     $sSqlVerificaAnos .= "   and o123_situacao  = 1 ";
     $sSqlVerificaAnos .= "   and o123_tipointegracao  = 1 ";
     $sSqlVerificaAnos .= "   and o123_instit    =  ".db_getsession("DB_instit");
-    $sSqlVerificaAnos .= "   and exists(select 1 ";
-    $sSqlVerificaAnos .= "                from ppaintegracaodespesa ";
-    $sSqlVerificaAnos .= "               where o121_ppaintegracao = o123_sequencial)";
+    //    $sSqlVerificaAnos .= "   and exists(select 1 ";
+    //    $sSqlVerificaAnos .= "                from ppaintegracaodespesa ";
+    //    $sSqlVerificaAnos .= "               where o121_ppaintegracao = o123_sequencial)";
     $rsAnosIntegrados = db_query($sSqlVerificaAnos);
     $iTotalAnos       = pg_num_rows($rsAnosIntegrados);
     $aAnosIntegrados = array();
     for ($i = 0; $i < $iTotalAnos; $i++) {
-      $aAnosIntegrados = db_utils::fieldsMemory($rsAnosIntegrados, $i)->o123_ano;  
+      $aAnosIntegrados = db_utils::fieldsMemory($rsAnosIntegrados, $i)->o123_ano;
     }
     return $aAnosIntegrados;
   }
 
-  function __destruct() {
 
-  }    
-
-
-  function alterarStatusAtivacaoPerspectiva($lAtivo) {
+  public function alterarStatusAtivacaoPerspectiva($lAtivo) {
 
     $this->lAtivo = $lAtivo;
     $this->save();
   }
-
-
 }
-
-?>

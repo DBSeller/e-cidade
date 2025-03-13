@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,60 +25,70 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_empage_classe.php");
-require_once("classes/db_empagetipo_classe.php");
-require_once("classes/db_empagemov_classe.php");
-require_once("classes/db_empagemovconta_classe.php");
-require_once("classes/db_empord_classe.php");
-require_once("classes/db_empagepag_classe.php");
-require_once("classes/db_empageslip_classe.php");
-require_once("classes/db_empagemovforma_classe.php");
-require_once("classes/db_empagegera_classe.php");
-require_once("classes/db_empageconf_classe.php");
-require_once("classes/db_empageconfgera_classe.php");
-require_once("classes/db_conplanoconta_classe.php");
-require_once("classes/db_empagemod_classe.php");
-require_once("classes/db_pagordem_classe.php");
-require_once("classes/db_pagordemconta_classe.php");
-require_once("classes/db_pcfornecon_classe.php");
-require_once("classes/db_empageforma_classe.php");
-require_once("model/agendaPagamento.model.php");
-require_once("classes/db_empageordem_classe.php");
-require_once("classes/db_empagenotasordem_classe.php");
-require_once("classes/db_empparametro_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_empage_classe.php"));
+require_once(modification("classes/db_empagetipo_classe.php"));
+require_once(modification("classes/db_empagemov_classe.php"));
+require_once(modification("classes/db_empagemovconta_classe.php"));
+require_once(modification("classes/db_empord_classe.php"));
+require_once(modification("classes/db_empagepag_classe.php"));
+require_once(modification("classes/db_empageslip_classe.php"));
+require_once(modification("classes/db_empagemovforma_classe.php"));
+require_once(modification("classes/db_empagegera_classe.php"));
+require_once(modification("classes/db_empageconf_classe.php"));
+require_once(modification("classes/db_empageconfgera_classe.php"));
+require_once(modification("classes/db_conplanoconta_classe.php"));
+require_once(modification("classes/db_empagemod_classe.php"));
+require_once(modification("classes/db_pagordem_classe.php"));
+require_once(modification("classes/db_pagordemconta_classe.php"));
+require_once(modification("classes/db_pcfornecon_classe.php"));
+require_once(modification("classes/db_empageforma_classe.php"));
+require_once(modification('model/agendaPagamento.model.php'));
+require_once(modification("classes/db_empageordem_classe.php"));
+require_once(modification("classes/db_empagenotasordem_classe.php"));
+require_once(modification("classes/db_empparametro_classe.php"));
 
-$empagetipo = new cl_empagetipo;
-$clpagordem   = new cl_pagordem;
-$clpagordemconta   = new cl_pagordemconta;
-$clempord     = new cl_empord;
-$clempagemov  = new cl_empagemov;
-$clempagemovconta  = new cl_empagemovconta;
-$clempagepag  = new cl_empagepag;
-$clpcfornecon  = new cl_pcfornecon;
-$clempageforma = new cl_empageforma;
-$clempagemovforma = new cl_empagemovforma;
-$clempage = new cl_empage;
-$clempagetipo = new cl_empagetipo;
-$clempageslip = new cl_empageslip;
-$clempagemovforma = new cl_empagemovforma;
-$clempagegera = new cl_empagegera;
-$clempageconf = new cl_empageconf;
-$clempageconfgera = new cl_empageconfgera;
-$clempagemod      = new cl_empagemod;
-$oDaoNotasOrdem   = new cl_empagenotasordem;
-$oDaoOrdemAgenda  = new cl_empageordem;
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+$empagetipo       = new cl_empagetipo();
+$clpagordem       = new cl_pagordem();
+$clpagordemconta  = new cl_pagordemconta();
+$clempord         = new cl_empord();
+$clempagemov      = new cl_empagemov();
+$clempagemovconta = new cl_empagemovconta();
+$clempagepag      = new cl_empagepag();
+$clpcfornecon     = new cl_pcfornecon();
+$clempageforma    = new cl_empageforma();
+$clempagemovforma = new cl_empagemovforma();
+$clempage         = new cl_empage();
+$clempagetipo     = new cl_empagetipo();
+$clempageslip     = new cl_empageslip();
+$clempagemovforma = new cl_empagemovforma();
+$clempagegera     = new cl_empagegera();
+$clempageconf     = new cl_empageconf();
+$clempageconfgera = new cl_empageconfgera();
+$clempagemod      = new cl_empagemod();
+$oDaoNotasOrdem   = new cl_empagenotasordem();
+$oDaoOrdemAgenda  = new cl_empageordem();
+
+db_postmemory($_POST);
 
 $db_opcao = 1;
 $db_botao = false;
+
+//Checa parametro e mostra alerta de confirmacao de data
+$clconparametro  = new cl_conparametro();
+$rsconparametro  = $clconparametro->sql_record($clconparametro->sql_query_file(null, "c90_confirmadata"));
+$conparametro    = db_utils::fieldsMemory($rsconparametro, 0);
+if($conparametro->c90_confirmadata == 't'){
+    $data = date('d/m/y', db_getsession('DB_datausu'));
+    echo "<db-alertaconfirmadatafinanceiro data=" . $data . "></db-alertaconfirmadatafinanceiro>";
+}
 
 if(isset($e80_data_ano)){
   $data = "$e80_data_ano-$e80_data_mes-$e80_data_dia";
@@ -277,145 +287,6 @@ if(isset($atualizar)){
       }
     }
   }
-	/*
-
-  $arr_valores = split("XX",$ords);
-  $movimentoss = "";
-  $virgulamovi = "";
-  for($i=0;$i<sizeof($arr_valores);$i++){
-    $arr_dados = split("-",$arr_valores[$i]);
-    $agenda = $arr_dados[0];
-    $amovim = $arr_dados[1];
-    $numemp = $arr_dados[2];
-    $avalor = $arr_dados[3];
-    $agtipo = $arr_dados[4];
-    $aforma = $arr_dados[5];
-    $aconta = $arr_dados[6];
-
- //   db_msgbox($amovim." - ".$agenda." - ".$numemp." - ".$avalor);
-
-    $result_movimentos = $clempagemov->sql_record($clempagemov->sql_query_ord(null,"distinct e81_codmov,e82_codord as aordem",""," e81_codage=$agenda and e81_codmov=$amovim "));
-    // echo "<BR><BR>".($clempagemov->sql_query_ord(null,"distinct e81_codmov,e82_codord as aordem",""," e81_codage=$agenda and e81_codmov=$amovim "));
-    $numrows_movimentos = $clempagemov->numrows;
-    if($numrows_movimentos>0){
-      db_fieldsmemory($result_movimentos,0);
-      if($sqlerro==false){
-        $clempagemov->e81_codmov = $e81_codmov;
-        $clempagemov->e81_valor  = $avalor;
-        $clempagemov->alterar($e81_codmov);
-        $erro_msg = $clempagemov->erro_msg;
-        if($clempagemov->erro_status==0){
-          $sqlerro=true;
-        }
-      }
-
-      if($sqlerro==false){
-        $clempagepag->excluir($e81_codmov);
-        $erro_msg = $clempagepag->erro_msg;
-        if($clempagepag->erro_status==0){
-          $sqlerro=true;
-        }
-      }
-
-      if($agtipo!=0){
-        if($sqlerro==false){
-          $clempagepag->incluir($e81_codmov,$agtipo);
-          $erro_msg = $clempagepag->erro_msg;
-          if($clempagepag->erro_status==0){
-            $sqlerro=true;
-          }
-        }
-      }
-
-      if($sqlerro==false){
-        $clempagemovforma->excluir($e81_codmov);
-        $erro_msg = $clempagemovforma->erro_msg;
-        if($clempagemovforma->erro_status==0){
-          $sqlerro=true;
-        }
-      }
-
-      if($aforma!=0){
-        if($sqlerro==false){
-          $clempagemovforma->e97_codmov   = $e81_codmov;
-          $clempagemovforma->e97_codforma = $aforma;
-          $clempagemovforma->incluir($e81_codmov);
-          $erro_msg = $clempagemovforma->erro_msg;
-          if($clempagemovforma->erro_status==0){
-            $sqlerro=true;
-          }
-        }
-      }
-
-      if($sqlerro==false){
-        $clempagemovconta->excluir($e81_codmov);
-        $erro_msg = $clempagemovconta->erro_msg;
-        if($clempagemovconta->erro_status==0){
-          $sqlerro=true;
-        }
-      }
-
-      if($aconta!=0 && $aconta!="n"){
-        if($sqlerro==false){
-          $clempagemovconta->e98_contabanco = $aconta;
-          $clempagemovconta->incluir($e81_codmov);
-          $erro_msg = $clempagemovconta->erro_msg;
-          if($clempagemovconta->erro_status==0){
-            $sqlerro=true;
-          }
-        }
-      }
-
-      if($aforma == 3 && $agtipo !=0 && $aconta != 0 && $aconta!="n"){
-      	$result_confirmacao = $clempageconf->sql_record($clempageconf->sql_query_file(null,"e86_codigo",""," e86_codmov=$amovim "));
-      	if($clempageconf->numrows > 0){
-      	  for($ima=0;$ima<$clempageconf->numrows;$ima++){
-      	  	db_fieldsmemory($result_confirmacao,$ima);
-            if($sqlerro==false){
-              $clempageconf->e86_correto = 'false';
-              $clempageconf->e86_codigo = $e86_codigo;
-              $clempageconf->alterar($e81_codmov);
-              $erro_msg = $clempageconf->erro_msg;
-              if($clempageconf->erro_status==0){
-                $sqlerro=true;
-              }
-            }
-      	  }
-      	}
-      }
-
-      if($aforma == 3 && $agtipo !=0 && $aconta != 0 && $aconta!="n"){
-        $result = $clempagetipo->sql_record($clempagetipo->sql_query_file($agtipo,'e83_sequencia as tipsequencia'));
-        if($clempagetipo->numrows>0){
-          db_fieldsmemory($result,0);
-	      if($sqlerro==false){
-            $clempageconf->e86_codmov = $e81_codmov;
-            $clempageconf->e86_data   = date("Y-m-d",db_getsession("DB_datausu"));
-            $clempageconf->e86_cheque = $tipsequencia;
-            $clempageconf->e86_correto= "true";
-            $clempageconf->incluir(null);
-            $erro_msg = $clempageconf->erro_msg;
-            if($clempageconf->erro_status==0){
-              $sqlerro = true;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  if(isset($geraragenda) && 1==2){
-    if($sqlerro==false){
-      $result_facilita  = $clempagemod->sql_record($clempagemod->sql_query_modforma(null,"distinct e81_codmov as codmovimento,e83_sequencia as tipsequencia,e83_conta,e83_codmod,e83_codtipo,c63_banco ","c63_banco","e84_codmod <> 1 and e97_codforma=3 and e86_codmov is null "));
-      $numrows_facilita = $clempagemod->numrows;
-      $passargera = true;
-      $antigobanco = "";
-      for($i=0;$i<$numrows_facilita;$i++){
-        db_fieldsmemory($result_facilita,$i);
-      }
-    }
-  }
-  */
  // $sqlerro = true;
   db_fim_transacao($sqlerro);
 }
@@ -436,6 +307,10 @@ if(isset($data)){
 ?>
 <html>
 <head>
+<link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.core.css"
+      rel="stylesheet"/>
+<link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.bootstrap.css"
+      rel="stylesheet"/>
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
@@ -446,6 +321,17 @@ db_app::load("datagrid.widget.js");
 db_app::load("strings.js");
 db_app::load("grid.style.css");
 db_app::load("estilos.css");
+db_app::load("AjaxRequest.js");
+db_app::load("classes/empenho/ViewLiquidacoesPendentes.js");
+db_app::load("classes/financeiro/DBViewComplementoPagamento.js");
+db_app::load("widgets/DBLookUp.widget.js");
+db_app::load("widgets/dbmessageBoard.widget.js");
+db_app::load("widgets/dbtextFieldData.widget.js");
+db_app::load("widgets/dbtextField.widget.js");
+db_app::load("classes/DBViewManutencaoEmpenho.classe.js");
+db_app::load("widgets/DBViewConfiguracaoEnvioTransmissao.js");
+
+
 ?>
 <style>
 <?$cor="#999999"?>
@@ -495,9 +381,9 @@ db_app::load("estilos.css");
     $rsParam  = $oDaoEmpParametro->sql_record($oDaoEmpParametro->sql_query_file(db_getsession("DB_anousu")));
     $oParam   = db_utils::fieldsMemory($rsParam, 0);
     if ($oParam->e30_agendaautomatico == "t") {
-      include("forms/db_frmmanutencaoagenda.php");
+      include(modification(Modification::getFile("forms/db_frmmanutencaoagenda.php")));
     } else {
-      include("forms/db_frmempageforma.php");
+      include(modification("forms/db_frmempageforma.php"));
     }
     ?>
     </td>
@@ -507,6 +393,15 @@ db_app::load("estilos.css");
 <?
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
+<script type="text/javascript" src='extension/package/Desktop/assets/vendors/alertify/alertify.js'></script>
+<script type="text/javascript" src="scripts/components/AlertaConfirmaDataFinanceiro.js"></script>
+<script>
+    let c90_confirmadata = '<?php echo $conparametro->c90_confirmadata ?>'
+    if (c90_confirmadata == 't') {
+        const msg = "Antes de realizar a operação confirme a data em que deseja incluir o movimento";
+        alertify.alert(msg)
+    }
+</script>
 </html>
 <?
 if(isset($atualizar) && $sqlerro==true){

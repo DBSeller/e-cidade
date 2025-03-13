@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_liborcamento.php");
-include("libs/db_libcontabilidade.php");
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_conrelinfo_classe.php");
-include("classes/db_empresto_classe.php");
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_conrelinfo_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
 
 $orcparamrel = new cl_orcparamrel;
 $clconrelinfo = new cl_conrelinfo;
@@ -506,6 +506,6 @@ if ($total_gastos > 0 && $soma_receitas > 0) {
 
 $pdf->cell(40,$alt+2,db_formatar(@($aplicacao),'f'),'0',1,"R",1);
 
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 $pdf->Output();
 ?>

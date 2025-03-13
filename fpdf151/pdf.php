@@ -2,23 +2,25 @@
 set_time_limit(0);
 if(!defined('DB_BIBLIOT')){
 
-  session_cache_limiter('none');
 	if ( !isset($_SESSION) ) {
+        session_cache_limiter('none');
 		session_start();
 	}
 
-  require_once "libs/db_stdlib.php";
-  require_once "libs/db_conecta.php";
-  include_once "libs/db_sessoes.php";
-  include_once "libs/db_usuariosonline.php";
- 
+  if ( !function_exists("db_menu") ) {
+
+    require_once modification("libs/db_stdlib.php");
+    require_once modification("libs/db_conecta.php");
+    include_once modification("libs/db_sessoes.php");
+    include_once modification("libs/db_usuariosonline.php");
+  }
   db_postmemory($_POST);
   db_postmemory($_SERVER);
 
   if (!defined('FPDF_FONTPATH')){
-    define('FPDF_FONTPATH','font/');
+    define('FPDF_FONTPATH','fpdf151/font/');
   }
-  require_once "fpdf.php";
+  require_once modification("fpdf151/fpdf.php");
 
 }
 
@@ -99,13 +101,17 @@ class PDF extends FPDF {
     global $nomeinst;
     $nomeinst = pg_result($dados,0,"nomeinst");
 
-    if(strlen($nome) > 42)
-      $TamFonteNome = 8;
-    else
-      $TamFonteNome = 9;
+    if(strlen($nome) > 65) {
+        $TamFonteNome = 5.9;
+    }elseif (strlen($nome) > 42){
+        $TamFonteNome = 8;
+    }
+    else {
+        $TamFonteNome = 9;
+    }
 
     $this->SetFont('Arial','BI',$TamFonteNome);
-    $this->Text(33,9,$nome);
+    $this->Text(33,10,$nome);
     $this->SetFont('Arial','I',8);
     $sComplento = substr(trim(pg_result($dados,0,"db21_compl") ),0,20 );
     if ($sComplento != '' || $sComplento != null ) {
@@ -123,7 +129,7 @@ class PDF extends FPDF {
     $this->setleftmargin($Espaco);
     $this->sety(6);
     $this->setfillcolor(235);
-    $this->roundedrect($Espaco - 3,5,75,28,2,'DF','123');
+    $this->roundedrect($Espaco - 3,6,75,27,2,'DF','123');
     $this->line(10,33,$comprim,33);
     $this->setfillcolor(255);
     $this->multicell(0,3,@$GLOBALS["head1"],0,"J",0);
@@ -183,7 +189,8 @@ class PDF extends FPDF {
 
 	    //Position at 1.5 cm from bottom
 	    $this->SetFont('Arial','',5);
-	    $this->text(10,$this->h-8,'Base: '.@$GLOBALS["DB_NBASE"]);
+	    $sBase = isset($GLOBALS["DB_NBASE"]) ? $GLOBALS["DB_NBASE"] : $GLOBALS["DB_DATABASE"];
+	    $this->text(10,$this->h-8,'Base: '.@$sBase);
 	    $this->SetFont('Arial','I',6);
 	    $this->SetY(-10);
 	    $nome = @$GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"];

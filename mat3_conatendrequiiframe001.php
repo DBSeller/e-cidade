@@ -1,36 +1,36 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_atendrequiitem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_atendrequiitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clatendrequiitem=new cl_atendrequiitem;
@@ -47,7 +47,6 @@ $clrotulo->label("");
 <script>
 </script>
 <style>
-<?//$cor="#999999"?>
 .bordas{
     border: 2px solid #cccccc;
     border-top-color: #999999;
@@ -66,13 +65,13 @@ $clrotulo->label("");
 }
 </style>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"> 
+<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table  border="0" cellspacing="0" cellpadding="0" width='100%'>
-<tr> 
-<td  align="center" valign="top" > 
+<tr>
+<td  align="center" valign="top" >
 <form name='form1'>
-<table border='0'>  
-<?
+<table border='0'>
+<?php
 if (isset($codigo)&&$codigo!="") {
   $result=$clatendrequiitem->sql_record($clatendrequiitem->sql_query_devol(null,"*",null,"m43_codatendrequi=$codigo"));
   $numrows = $clatendrequiitem->numrows;
@@ -90,8 +89,8 @@ if (isset($codigo)&&$codigo!="") {
       $m46_quantdev=0;
     }
      echo "
-           <tr>	    
-	     <td class='bordas_corp' align='center'><small>$m41_codmatmater </small></td>		    
+           <tr>
+	     <td class='bordas_corp' align='center'><small>$m41_codmatmater </small></td>
 	     <td class='bordas_corp' align='center'><small>$m60_descr</small></td>
 	     <td class='bordas_corp' align='center'><small>$m43_quantatend</small></td>
 	     <td class='bordas_corp' align='center'><small>$m46_quantdev&nbsp;</small></td>
@@ -99,9 +98,9 @@ if (isset($codigo)&&$codigo!="") {
 	   ";
   }
 }
-?>     
+?>
 </table>
-</form> 
+</form>
 </td>
 </tr>
 </table>

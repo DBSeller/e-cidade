@@ -26,9 +26,9 @@
  */
 
 //MODULO: fiscal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
-include("classes/db_fiscaltipo_classe.php");
+include(modification("classes/db_fiscaltipo_classe.php"));
 $clfiscaltipo = new cl_fiscaltipo;
 $clfiscarquivos->rotulo->label();
 $clrotulo = new rotulocampo;

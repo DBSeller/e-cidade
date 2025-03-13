@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: orcamento
@@ -338,56 +338,6 @@ class cl_ppadotacao {
     $this->erro_status = "1";
     $this->numrows_incluir = pg_affected_rows($result);
     $resaco = $this->sql_record($this->sql_query_file($this->o08_sequencial));
-    if (($resaco != false) || ($this->numrows != 0)) {
-      $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-      $acount = pg_result($resac, 0, 0);
-      $resac = db_query("insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ")");
-      $resac = db_query("insert into db_acountkey values($acount,13702,'$this->o08_sequencial','I')");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13702,'','" . AddSlashes(pg_result($resaco, 0, 'o08_sequencial'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13704,'','" . AddSlashes(pg_result($resaco, 0, 'o08_ano')) . "',"
-              . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13705,'','" . AddSlashes(pg_result($resaco, 0, 'o08_orgao'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13706,'','" . AddSlashes(pg_result($resaco, 0, 'o08_unidade'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13707,'','" . AddSlashes(pg_result($resaco, 0, 'o08_funcao'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13708,'','" . AddSlashes(pg_result($resaco, 0, 'o08_subfuncao'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13709,'','" . AddSlashes(pg_result($resaco, 0, 'o08_programa'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13710,'','" . AddSlashes(pg_result($resaco, 0, 'o08_projativ'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13711,'','" . AddSlashes(pg_result($resaco, 0, 'o08_elemento'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13712,'','" . AddSlashes(pg_result($resaco, 0, 'o08_recurso'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13713,'','" . AddSlashes(pg_result($resaco, 0, 'o08_instit'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,13718,'','"
-              . AddSlashes(pg_result($resaco, 0, 'o08_localizadorgastos')) . "'," . db_getsession('DB_datausu') . ","
-              . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,14317,'','" . AddSlashes(pg_result($resaco, 0, 'o08_ppaversao'))
-              . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      $resac = db_query(
-          "insert into db_acount values($acount,2396,18158,'','"
-              . AddSlashes(pg_result($resaco, 0, 'o08_concarpeculiar')) . "'," . db_getsession('DB_datausu') . ","
-              . db_getsession('DB_id_usuario') . ")");
-    }
     return true;
   }
   // funcao para alteracao
@@ -589,84 +539,6 @@ class cl_ppadotacao {
       $sql .= " o08_sequencial = $this->o08_sequencial";
     }
     $resaco = $this->sql_record($this->sql_query_file($this->o08_sequencial));
-    if ($this->numrows > 0) {
-      for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
-        $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-        $acount = pg_result($resac, 0, 0);
-        $resac = db_query("insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ")");
-        $resac = db_query("insert into db_acountkey values($acount,13702,'$this->o08_sequencial','A')");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_sequencial"]) || $this->o08_sequencial != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13702,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_sequencial')) . "','$this->o08_sequencial',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_ano"]) || $this->o08_ano != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13704,'" . AddSlashes(pg_result($resaco, $conresaco, 'o08_ano'))
-                  . "','$this->o08_ano'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_orgao"]) || $this->o08_orgao != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13705,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_orgao')) . "','$this->o08_orgao',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_unidade"]) || $this->o08_unidade != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13706,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_unidade')) . "','$this->o08_unidade',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_funcao"]) || $this->o08_funcao != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13707,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_funcao')) . "','$this->o08_funcao',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_subfuncao"]) || $this->o08_subfuncao != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13708,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_subfuncao')) . "','$this->o08_subfuncao',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_programa"]) || $this->o08_programa != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13709,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_programa')) . "','$this->o08_programa',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_projativ"]) || $this->o08_projativ != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13710,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_projativ')) . "','$this->o08_projativ',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_elemento"]) || $this->o08_elemento != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13711,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_elemento')) . "','$this->o08_elemento',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_recurso"]) || $this->o08_recurso != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13712,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_recurso')) . "','$this->o08_recurso',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_instit"]) || $this->o08_instit != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13713,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_instit')) . "','$this->o08_instit',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_localizadorgastos"]) || $this->o08_localizadorgastos != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,13718,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_localizadorgastos'))
-                  . "','$this->o08_localizadorgastos'," . db_getsession('DB_datausu') . ","
-                  . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_ppaversao"]) || $this->o08_ppaversao != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,14317,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_ppaversao')) . "','$this->o08_ppaversao',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        if (isset($GLOBALS["HTTP_POST_VARS"]["o08_concarpeculiar"]) || $this->o08_concarpeculiar != "")
-          $resac = db_query(
-              "insert into db_acount values($acount,2396,18158,'"
-                  . AddSlashes(pg_result($resaco, $conresaco, 'o08_concarpeculiar')) . "','$this->o08_concarpeculiar',"
-                  . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-      }
-    }
     $result = db_query($sql);
     if ($result == false) {
       $this->erro_banco = str_replace("\n", "", @pg_last_error());
@@ -708,69 +580,6 @@ class cl_ppadotacao {
       $resaco = $this->sql_record($this->sql_query_file($o08_sequencial));
     } else {
       $resaco = $this->sql_record($this->sql_query_file(null, "*", null, $dbwhere));
-    }
-    if (($resaco != false) || ($this->numrows != 0)) {
-      for ($iresaco = 0; $iresaco < $this->numrows; $iresaco++) {
-        $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-        $acount = pg_result($resac, 0, 0);
-        $resac = db_query("insert into db_acountacesso values($acount," . db_getsession("DB_acessado") . ")");
-        $resac = db_query("insert into db_acountkey values($acount,13702,'$o08_sequencial','E')");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13702,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_sequencial')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13704,'','" . AddSlashes(pg_result($resaco, $iresaco, 'o08_ano'))
-                . "'," . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13705,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_orgao')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13706,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_unidade')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13707,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_funcao')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13708,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_subfuncao')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13709,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_programa')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13710,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_projativ')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13711,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_elemento')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13712,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_recurso')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13713,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_instit')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,13718,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_localizadorgastos')) . "',"
-                . db_getsession('DB_datausu') . "," . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,14317,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_ppaversao')) . "'," . db_getsession('DB_datausu') . ","
-                . db_getsession('DB_id_usuario') . ")");
-        $resac = db_query(
-            "insert into db_acount values($acount,2396,18158,'','"
-                . AddSlashes(pg_result($resaco, $iresaco, 'o08_concarpeculiar')) . "'," . db_getsession('DB_datausu')
-                . "," . db_getsession('DB_id_usuario') . ")");
-      }
     }
     $sql = " delete from ppadotacao
                     where ";

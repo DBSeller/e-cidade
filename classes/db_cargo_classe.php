@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -488,5 +488,49 @@ class cl_cargo {
      }
      return $sql;
   }
+
+  public function avaliacaoPreenchida($codigoFormulario, $instituicao, $cargo)
+  {
+      $sql  = "";
+      $sql .= "
+               select
+                  preenchimento,
+                  t.pk[1] as instituicao,
+                  t.pk[2] as cargo
+                from (
+                  select
+                    distinct db107_sequencial as preenchimento,
+                             (select array_accum(db106_resposta) from
+                             (select db106_resposta
+                              from avaliacaoresposta as ar
+                                join avaliacaogrupoperguntaresposta as preenchimento on preenchimento.db108_avaliacaoresposta = ar.db106_sequencial
+                                join avaliacaoperguntaopcao as apo on apo.db104_sequencial = ar.db106_avaliacaoperguntaopcao
+                                join avaliacaopergunta as ap on ap.db103_sequencial = apo.db104_avaliacaopergunta
+                              where ap.db103_perguntaidentificadora is true
+                                    and preenchimento.db108_avaliacaogruporesposta = db107_sequencial
+                                    GROUP BY db106_resposta,db103_identificadorcampo
+                                    ORDER BY db103_identificadorcampo desc
+                             ) as respostas_ordenadas) as pk
+                  from avaliacaogruporesposta
+                    join avaliacaogrupoperguntaresposta on db108_avaliacaogruporesposta = db107_sequencial
+                    join avaliacaoresposta on db106_sequencial = db108_avaliacaoresposta
+                    join avaliacaoperguntaopcao on db104_sequencial = db106_avaliacaoperguntaopcao
+                    join avaliacaopergunta on db103_sequencial = db104_avaliacaopergunta
+                    join avaliacaogrupopergunta on db103_avaliacaogrupopergunta = db102_sequencial
+                    join avaliacao on db102_avaliacao = db101_sequencial
+                  where
+                    db101_sequencial = {$codigoFormulario}
+                  order  by db107_sequencial
+                ) as t
+                where t.pk[1] = '{$instituicao}'";
+
+      if (!empty($cargo)) {
+          $sql .= "  and t.pk[2] = '{$cargo}' ";
+      }
+
+      return $sql;
+  }
+
+
 }
 ?>

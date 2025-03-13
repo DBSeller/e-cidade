@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,7 +30,8 @@ $cldb_depart->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("o40_orgao");
 $clrotulo->label("o41_unidade");
-
+$clrotulo->label("id_usuarioresp");
+$clrotulo->label("nome");
 ?>
 <script>
   function js_troca(){
@@ -54,83 +55,103 @@ $clrotulo->label("o41_unidade");
 	  
 	  
 ?>
+<script>
+  function js_usu(mostra){
+    if(mostra==true){
+      js_OpenJanelaIframe('','db_iframe_db_usuario','func_db_usuarios.php?funcao_js=parent.js_mostrausu1|id_usuario|nome','Pesquisa',true , 0);
+    }else{
+      usu= document.form1.id_usuarioresp.value;
+      if(usu!=""){
+        js_OpenJanelaIframe('','db_iframe_db_usuario','func_db_usuarios.php?pesquisa_chave='+usu+'&funcao_js=parent.js_mostrausu','Pesquisa',false, 0);
+      }else{  
+  document.form1.nome.value='';
+      }   
+    }
+  }
+  function js_mostrausu1(iUsuario,sNome){
+//    alert('132121');
+    $('id_usuarioresp').value = iUsuario;
+    $('nome').value           = sNome;
+    db_iframe_db_usuario.hide();
+  }
+  function js_mostrausu(chave,erro){
+    document.getElementById('nome').value = chave; 
+    if(erro==true){ 
+      document.getElementById('id_usuarioresp').focus(); 
+      document.getElementById('id_usuarioresp').value = ''; 
+    }
+  }
+</script>
 <form name="form1" method="post" action="<?=$pg?>">
-  <center>
-    <table border="0">
-      <tr>
-        <td nowrap title="<?=@$Tcoddepto?>">
-          <?=@$Lcoddepto?>
-        </td>
-        <td colspan="3">
-          <?
-db_input('coddepto',5,$Icoddepto,true,'text',3)
-?>
-        </td>
-      </tr>
-      <tr>
-        <td nowrap title="<?=@$Tdescrdepto?>">
-          <?=@$Ldescrdepto?>
-        </td>
-        <td colspan="3">
-          <?
-db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
-?>
-        </td>
-      </tr>
-      <tr>
-        <td nowrap title="<?=@$Tnomeresponsavel?>">
-          <?=@$Lnomeresponsavel?>
-        </td>
-        <td colspan="3">
-          <?
-            db_input('nomeresponsavel',40,$Inomeresponsavel,true,'text',$db_opcao,"")
-          ?>
-        </td>
-      </tr>
-      <tr>
-        <td nowrap title="<?=@$Temailresponsavel?>">
-          <?=@$Lemailresponsavel?>
-        </td>
-        <td colspan="3">
-          <?
-           db_input('emailresponsavel',50,$Iemailresponsavel,true,'text',$db_opcao,"")
-          ?>
-        </td>
-      </tr>
-      <tr>
-        <td nowrap title="<?=@$Tinstit?>">
-          <?=@$Linstit?>
-        </td>
-        <td colspan="3">
-          <?
-          if ( ($db_opcao==1||$db_opcao==11)||trim(@$instit)=="" ){
-            $instit = db_getsession("DB_instit");
-          }
-          /*
-           * verificamos a instituição em que o usuário está logado
-           * caso seje a prefeitura prefeitura = true, trazemos todos as instituicoes.
-           * senao, trazemos somente a instituição emque o usuário está logado.;
-           */
-          $sSQlInstit  = "select codigo             ";
-          $sSQlInstit .= "  from db_config          ";
-          $sSQlInstit .= " where prefeitura is true;";
-          $rsInstit    = $cldb_config->sql_record($sSQlInstit);
-          db_fieldsmemory($rsInstit,0);
-          if ($codigo == db_getsession("DB_instit")){
-             $iInstit = null;
-          }else{
-             $iInstit = db_getsession("DB_instit"); 
-          } 
-          $result = $cldb_config->sql_record($cldb_config->sql_query_file($iInstit,"codigo,nomeinst","codigo"));
-          db_selectrecord("instit",$result,true,$db_opcao,'','','','',"js_getOrgaos(this.value);");
-          ?>
-        </td>
-      </tr>
-      <tr>
-        <td nowrap title="<?=@$To40_orgao?>">
+<center>
+<table border="0">
+	<tr>
+		<td nowrap title="<?=@$Tcoddepto?>">
+      <?=@$Lcoddepto?>
+    </td>
+    <td colspan="3">
+    <?
+      db_input('coddepto',5,$Icoddepto,true,'text',3)
+    ?>
+    </td>
+</tr>
+<tr>
+	<td nowrap title="<?=@$Tdescrdepto?>">
+    <?=@$Ldescrdepto?>
+  </td>
+  <td colspan="3">
+  <?
+    db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
+  ?>
+  </td>
+</tr>
+<tr>
+	<td nowrap title="<?=@$Tid_usuarioresp?>">
+  <?
+    db_ancora(@$Lnome,"js_usu(true);",$db_opcao);
+  ?>
+  </td>
+  <td> 
+	<?
+	  db_input('id_usuarioresp',7,$Iid_usuarioresp, true, 'text', $db_opcao, " onchange='js_usu(false);'" );
+	  db_input ('nome', 40, $Inome, true, 'text', 3, '' );
+  ?>
+	<td>
+</tr>
+	<tr>
+		<td nowrap title="<?=@$Tinstit?>">
+      <?=@$Linstit?>
+    </td>
+		<td colspan="3">
+      <?
+      if ( ($db_opcao==1||$db_opcao==11)||trim(@$instit)=="" ){
+        $instit = db_getsession("DB_instit");
+      }
+      /**
+       * verificamos a instituição em que o usuário está logado
+       * caso seje a prefeitura prefeitura = true, trazemos todos as instituicoes.
+       * senao, trazemos somente a instituição emque o usuário está logado.;
+       */
+      $sSQlInstit  = "select codigo             ";
+      $sSQlInstit .= "  from db_config          ";
+      $sSQlInstit .= " where prefeitura is true;";
+      $rsInstit    = $cldb_config->sql_record($sSQlInstit);
+      db_fieldsmemory($rsInstit,0);
+      if ($codigo == db_getsession("DB_instit")){
+         $iInstit = null;
+      }else{
+         $iInstit = db_getsession("DB_instit"); 
+      } 
+      $result = $cldb_config->sql_record($cldb_config->sql_query_file($iInstit,"codigo,nomeinst","codigo"));
+      db_selectrecord("instit",$result,true,$db_opcao,'','','','',"js_getOrgaos(this.value);");
+      ?>
+    </td>
+	</tr>
+	<tr>
+		<td nowrap title="<?=@$To40_orgao?>">
           <?=@$Lo40_orgao?>
         </td>
-        <td colspan="3">
+		<td colspan="3">
           <?
           $sWhere  = " o40_anousu     = ".db_getSession("DB_anousu");
           $sWhere .= " and o41_instit = {$instit}";
@@ -144,12 +165,12 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
           }
           ?>
         </td>
-      </tr>
-      <tr>
-        <td nowrap title="<?=@$To41_unidade?>">
+	</tr>
+	<tr>
+		<td nowrap title="<?=@$To41_unidade?>">
           <?=@$Lo41_unidade?>
         </td>
-        <td colspan="3">
+		<td colspan="3">
         <?
           if (empty($o40_orgao)){
          	  @db_fieldsmemory($result,0);
@@ -164,7 +185,7 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
           }  
         ?>
         </td>
-      </tr>
+	</tr>
       <?
       if ($db_opcao != 1){
         
@@ -178,63 +199,68 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
         echo " </tr>";
       }
       ?>
+       <tr>
+        <td>
+          <label class="bold" id="lbl_organograma" for="btn_organograma">Organograma:</label>
+        </td>
+        <td>
+            <input type="button" value="Configurar" id="btn_organograma" disabled>
+        </td>
+      </tr>
       <tr>
-        <td colspan='4'>
-          <fieldset>
-            <Legend align="left">
-              <b>Contato</b>
-            </Legend>
-            <center>
-              <table>
-                <tr>
-                  <td nowrap title="<?=@$Temaildepto?>">
+		<td colspan='4'>
+		<fieldset><Legend align="left"> <b>Contato</b> </Legend>
+		<center>
+		<table>
+			<tr>
+				<td nowrap title="<?=@$Temaildepto?>">
                     <?=@$Lemaildepto?>
                   </td>
-                  <td colspan="5">
+				<td colspan="5">
                     <?
                      db_input('emaildepto',50,$Iemaildepto,true,'text',$db_opcao,"")
                     ?>
                   </td>
-                </tr>
-                <tr>
-                  <td nowrap title="<?=@$Tfonedepto?>">
+			</tr>
+			<tr>
+				<td nowrap title="<?=@$Tfonedepto?>">
                     <?=@$Lfonedepto?>
                   </td>
-                  <td>
+				<td>
                     <?
                     db_input('fonedepto',12,$Ifonedepto,true,'text',$db_opcao,"")
                     ?>
                   </td>
-                  <td nowrap title="<?=@$Tramaldepto?>" align="right">
+				<td nowrap title="<?=@$Tramaldepto?>" align="right">
                     <?=@$Lramaldepto?>
                   </td>
-                  <td align="right">
+				<td align="right">
                     <?
                      db_input('ramaldepto',5,$Iramaldepto,true,'text',$db_opcao,"")
                     ?>
                   </td>
-                  <td nowrap title="<?=@$Tfaxdepto?>">
+				<td nowrap title="<?=@$Tfaxdepto?>">
                     <?=@$Lfaxdepto?>
                   </td>
-                  <td colspan="3">
+				<td colspan="3">
                     <?
                      db_input('faxdepto',12,$Ifaxdepto,true,'text',$db_opcao,"")
                     ?>
                   </td>
-                </tr>
-              </table>
-            </center>
-          </fieldset>
-        </td>
-      </tr>
-    </table>
-  </center>
+			</tr>
+		</table>
+		</center>
+		</fieldset>
+		</td>
+	</tr>
+</table>
+</center>
 <input name="db_opcao" type="submit" id="db_opcao"value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?>>
 	
-  <?
+	<?
    if ($db_opcao==2||$db_opcao==22){
   ?>
-  <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick='js_pesquisaalt();'><input name="novo" type="button" id="novo" value="Novo" onclick='js_novo_reg();'>
+	<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick='js_pesquisaalt();'><input name="novo" type="button" id="novo" value="Novo" onclick='js_novo_reg();'>
   <?
   }else{
   ?>
@@ -249,7 +275,7 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
          parent.iframe_g1.location.href='con1_db_depart001.php';
     }
     function js_pesquisa(){
-      js_OpenJanelaIframe('top.corpo.iframe_g1','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_preenchepesquisa|coddepto','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_g1','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_preenchepesquisa|coddepto','Pesquisa',true);
     }
     function js_preenchepesquisa(chave){
       <?
@@ -267,7 +293,7 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
       ?>
     }
     function js_pesquisaalt(){
-      js_OpenJanelaIframe('top.corpo.iframe_g1','db_iframe_db_depart','func_db_departalt.php?funcao_js=parent.js_preenchepesquisa|coddepto','Pesquisa',true,1,0);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_g1','db_iframe_db_depart','func_db_departalt.php?funcao_js=parent.js_preenchepesquisa|coddepto','Pesquisa',true,1,0);
     }
     /*
      * Funcao para pegar os orgaos de determinada instituicao;
@@ -302,7 +328,7 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
     
     function js_retornoOrgaos(oAjax){
       
-      oOrgaos = eval("("+oAjax.responseText+")");
+      oOrgaos = JSON.parse(oAjax.responseText);
       $('o40_orgao').options.length        = 0;
       $('o40_orgaodescr').options.length   = 0;
       $('o41_unidade').options.length      = 0;
@@ -325,7 +351,7 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
     
     function js_retornoUnidades(oAjax){
       
-      oUnidades = eval("("+oAjax.responseText+")");
+      oUnidades = JSON.parse(oAjax.responseText);
       $('o41_unidade').options.length      = 0;
       $('o41_unidadedescr').options.length = 0;
       $('o41_unidadedescr').disabled = false;
@@ -354,8 +380,21 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',$db_opcao,"")
     $('o40_orgaodescr').style.width   = '430px';
     $('o41_unidade').style.width      = '60px';
     $('o41_unidadedescr').style.width = '430px';
+
     
-    
+  const selectInstituicao = document.getElementById('instit');
+  const inputDepartamento = document.getElementById('coddepto');
+
+  document.observe('dom:loaded', function () {
+    if (inputDepartamento.value != '') {
+      $('btn_organograma').disabled = false;
+      const configurarOrganograma = new ConfigurarOrganograma(selectInstituicao.value, inputDepartamento.value);
+      $('btn_organograma').observe('click', function(){
+        configurarOrganograma.show();
+      });
+    }
+  });
+
 </script>
 <?php
   if ($db_opcao == 1){

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $clrotulo = new rotulocampo();
 $clrotulo->label('q02_inscr');
@@ -87,9 +87,9 @@ $clrotulo->label('z01_nome');
 
 function js_pesquisaInscricao(lMostra) {
   if (lMostra==true) {
-    js_OpenJanelaIframe('top.corpo', 'db_iframe', 'func_issbase.php?funcao_js=parent.js_mostraInscricao|q02_inscr|z01_nome', 'Pesquisa', true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe', 'func_issbase.php?funcao_js=parent.js_mostraInscricao|q02_inscr|z01_nome', 'Pesquisa', true);
   }else{
-    js_OpenJanelaIframe('top.corpo', 'db_iframe', 'func_issbase.php?pesquisa_chave='+document.form1.q02_inscr.value+'&funcao_js=parent.js_mostraInscricaoHide', 'Pesquisa', false);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe', 'func_issbase.php?pesquisa_chave='+document.form1.q02_inscr.value+'&funcao_js=parent.js_mostraInscricaoHide', 'Pesquisa', false);
   }
 }
 
@@ -165,7 +165,7 @@ function js_retornoProcessamento(oAjax) {
 	
 	js_removeObj('msgbox');
 
-	var oRetorno  = eval("("+oAjax.responseText+")");
+	var oRetorno  = JSON.parse(oAjax.responseText);
 
 	oGridDebitos.clearAll(true);
 
@@ -233,7 +233,7 @@ function js_retornaDebitos(oAjax) {
 	
 	js_removeObj('msgbox');
 
-	var oRetorno  = eval("("+oAjax.responseText+")");
+	var oRetorno  = JSON.parse(oAjax.responseText);
 
 	oGridDebitos.clearAll(true);
 

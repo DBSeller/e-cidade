@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -895,4 +895,152 @@ class cl_gerfsal {
      }
      return $sql;
   }
+
+  /**
+   * Retorna dados que estao na rhhistoricocalculo e insere 
+   * novamente na gerfsal na competência informada.
+   * @param  Integer $iAno
+   * @param  Integer $iMes
+   * @return boolean
+   */
+  public function retornarDadosGerfsal($iAno, $iMes){
+
+    $sSql  = " insert into gerfsal( ";
+    $sSql .= "     r14_anousu,";
+    $sSql .= "     r14_mesusu,";
+    $sSql .= "     r14_regist,";
+    $sSql .= "     r14_rubric,";
+    $sSql .= "     r14_valor, ";
+    $sSql .= "     r14_pd,    ";
+    $sSql .= "     r14_quant, ";
+    $sSql .= "     r14_lotac, ";
+    $sSql .= "     r14_semest,";
+    $sSql .= "     r14_instit";
+    $sSql .= " )";
+    $sSql .= " ";
+    $sSql .= " select rh141_anousu,";
+    $sSql .= "        rh141_mesusu,";
+    $sSql .= "        rh143_regist,";
+    $sSql .= "        rh143_rubrica,";
+    $sSql .= "        rh143_valor,";
+    $sSql .= "        rh143_tipoevento,";
+    $sSql .= "        rh143_quantidade,";
+    $sSql .= "        rh02_lota,";
+    $sSql .= "        1,";
+    $sSql .= "        rh141_instit";
+    $sSql .= "        from (";
+    $sSql .= "          select rh141_anousu, ";
+    $sSql .= "                 rh141_mesusu, ";
+    $sSql .= "                 rh143_regist, ";
+    $sSql .= "                 rh143_rubrica, ";
+    $sSql .= "                 sum(rh143_valor) as rh143_valor, ";
+    $sSql .= "                 rh143_tipoevento, ";
+    $sSql .= "                 max(rh143_quantidade) as rh143_quantidade, ";
+    $sSql .= "                 rh141_instit";
+    $sSql .= "            from rhfolhapagamento";
+    $sSql .= "                 inner join rhhistoricocalculo on rh141_sequencial = rh143_folhapagamento";
+    $sSql .= "           where rh141_anousu     = {$iAno}";
+    $sSql .= "             and rh141_mesusu     = {$iMes}";
+    $sSql .= "             and rh141_tipofolha in (1, 6)";
+    $sSql .= "           group by rh141_anousu, rh141_mesusu, rh143_regist, rh143_rubrica, rh143_tipoevento, rh141_instit";
+    $sSql .= "             ) as base";
+    $sSql .= "             inner join rhpessoalmov on rh02_anousu      = base.rh141_anousu";
+    $sSql .= "                                    and rh02_mesusu      = rh141_mesusu";
+    $sSql .= "                                    and rh02_regist      = rh143_regist";
+    $sSql .= "                                    and rh02_instit      = rh141_instit;";
+
+    return $sSql;
+  }
+
+  public function migraGerfSal($iInstituicao) {
+
+    $sSql  = "    create table w_migracao_rhfolhapagamento_salario as                                                                                           ";                                         
+    $sSql .= "select distinct r14_anousu,                                                                                                                       ";           
+    $sSql .= "                r14_mesusu,                                                                                                                       ";           
+    $sSql .= "                r14_instit                                                                                                                        ";          
+    $sSql .= "  from gerfsal                                                                                                                                    ";
+    $sSql .= " inner join pontofs  on r14_regist  = r10_regist                                                                                                  ";                                
+    $sSql .= "                    and r14_anousu  = r10_anousu                                                                                                  ";
+    $sSql .= "                    and r14_mesusu  = r10_mesusu                                                                                                  ";
+    $sSql .= "                    and r10_instit  = {$iInstituicao}                                                                                             ";
+    $sSql .= "order by r14_anousu asc,                                                                                                                          ";
+    $sSql .= "         r14_mesusu asc;                                                                                                                          ";
+    
+    $sSql .= "insert into rhfolhapagamento                                                                                                                      ";
+    $sSql .= "select nextval('rhfolhapagamento_rh141_sequencial_seq'),                                                                                          ";
+    $sSql .= "       0,                                                                                                                                         ";
+    $sSql .= "       r14_anousu,                                                                                                                                ";
+    $sSql .= "       r14_mesusu,                                                                                                                                ";
+    $sSql .= "       r14_anousu,                                                                                                                                ";
+    $sSql .= "       r14_mesusu,                                                                                                                                ";
+    $sSql .= "       r14_instit,                                                                                                                                ";
+    $sSql .= "       1,                                                                                                                                         ";
+    $sSql .= "       false,                                                                                                                                     ";       
+    $sSql .= "       'Folha Salário da competência: ' || r14_anousu || '/' || r14_mesusu || ' gerada automaticamente.'                                          ";
+    $sSql .= "  from w_migracao_rhfolhapagamento_salario                                                                                                        ";
+    $sSql .= "order by r14_anousu asc,                                                                                                                          ";
+    $sSql .= "         r14_mesusu asc;                                                                                                                          ";
+    
+    $sSql .= "create table w_ultimafolhadecadacompetencia_salario as                                                                                            ";
+    $sSql .= "select 0 as ultimafolha,                                                                                                                          ";
+    $sSql .= "       rh141_anousu,                                                                                                                              ";
+    $sSql .= "       rh141_mesusu,                                                                                                                              ";
+    $sSql .= "       rh141_instit                                                                                                                               ";
+    $sSql .= "  from rhfolhapagamento                                                                                                                           ";
+    $sSql .= "where rh141_tipofolha = 1                                                                                                                         ";
+    $sSql .= "  and rh141_instit    = {$iInstituicao}                                                                                                           ";
+    $sSql .= "group by rh141_anousu,rh141_mesusu, rh141_instit;                                                                                                 ";
+
+    $sSql .= "insert into rhhistoricoponto                                                                                                                      ";
+    $sSql .= "  (rh144_sequencial,rh144_regist,rh144_folhapagamento,rh144_rubrica,rh144_quantidade,rh144_valor)                                                 ";
+    $sSql .= "select nextval('rhhistoricoponto_rh144_sequencial_seq'), * from (                                                                                 ";
+    $sSql .= "select distinct                                                                                                                                   ";
+    $sSql .= "       r10_regist,                                                                                                                                ";
+    $sSql .= "       rhfolhapagamento.rh141_sequencial,                                                                                                         ";
+    $sSql .= "       r10_rubric,                                                                                                                                ";
+    $sSql .= "       r10_quant,                                                                                                                                 ";
+    $sSql .= "       r10_valor                                                                                                                                  ";
+    $sSql .= "  from pontofs                                                                                                                                    ";
+    $sSql .= " inner join w_ultimafolhadecadacompetencia_salario  on w_ultimafolhadecadacompetencia_salario.rh141_anousu  = r10_anousu                          ";
+    $sSql .= "                                                   and w_ultimafolhadecadacompetencia_salario.rh141_mesusu  = r10_mesusu                          ";
+    $sSql .= "                                                   and w_ultimafolhadecadacompetencia_salario.rh141_instit  = r10_instit                          ";
+    $sSql .= " inner join rhfolhapagamento                        on w_ultimafolhadecadacompetencia_salario.rh141_mesusu  = rhfolhapagamento.rh141_mesusu       ";
+    $sSql .= "                                                   and w_ultimafolhadecadacompetencia_salario.rh141_anousu  = rhfolhapagamento.rh141_anousu       ";
+    $sSql .= "                                                   and w_ultimafolhadecadacompetencia_salario.rh141_instit  = rhfolhapagamento.rh141_instit       ";
+    $sSql .= "                                                   and w_ultimafolhadecadacompetencia_salario.ultimafolha   = 0                                   ";
+    $sSql .= "                                                   and rhfolhapagamento.rh141_tipofolha                     = 1                                   ";
+    $sSql .= "                                                                                                                                                  ";
+    $sSql .= "order by rh141_sequencial) as x;                                                                                                                  ";
+
+    $sSql .= "insert into rhhistoricocalculo                                                                                                                    ";
+    $sSql .= "select nextval('rhhistoricocalculo_rh143_sequencial_seq'),                                                                                        ";
+    $sSql .= "       r14_regist,                                                                                                                                ";
+    $sSql .= "       rhfolhapagamento.rh141_sequencial,                                                                                                         ";
+    $sSql .= "       r14_rubric,                                                                                                                                ";
+    $sSql .= "       r14_quant,                                                                                                                                 ";
+    $sSql .= "       r14_valor,                                                                                                                                 ";
+    $sSql .= "       r14_pd                                                                                                                                     ";
+    $sSql .= "  from gerfsal                                                                                                                                    ";
+    $sSql .= " inner join rhfolhapagamento                 on  r14_anousu      = rh141_anousu                                                                   ";
+    $sSql .= "                                            and  r14_mesusu      = rh141_mesusu                                                                   ";
+    $sSql .= "                                            and  r14_instit      = rh141_instit                                                                   ";
+    $sSql .= "                                            and  rh141_tipofolha = 1                                                                              ";
+    $sSql .= "order by rh141_sequencial;                                                                                                                        ";
+
+    $sSql .= "insert into rhfolhapagamento                                                                                                                      ";
+    $sSql .= "select nextval('rhfolhapagamento_rh141_sequencial_seq'),                                                                                          ";
+    $sSql .= "       0,                                                                                                                                         ";
+    $sSql .= "       ".db_anofolha().",                                                                                                                         ";
+    $sSql .= "       ".db_mesfolha().",                                                                                                                         ";
+    $sSql .= "       ".db_anofolha().",                                                                                                                         ";
+    $sSql .= "       ".db_mesfolha().",                                                                                                                         ";
+    $sSql .= "       {$iInstituicao},                                                                                                                           ";
+    $sSql .= "       1,                                                                                                                                         ";
+    $sSql .= "       false,                                                                                                                                     ";       
+    $sSql .= "       'Folha Salário da competência: ' || ".db_anofolha()." || '/' || ".db_mesfolha()." || ' gerada automaticamente.';                           ";
+
+    return $sSql;
+    
+  }
+
 }

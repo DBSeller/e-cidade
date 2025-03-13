@@ -1,50 +1,53 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrechumanoescola->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("ed18_i_codigo");
 $clrotulo->label("ed20_i_codigo");
+$clrotulo->label("ed20_i_tiposervidor");
+
+
 
 $db_botao1 = false;
 $cor       = "#FFFFFF";
 
 if ( isset( $opcao ) && $opcao == "alterar" ) {
-	
+
   $db_opcao  = 2;
   $sSql      = $clrechumanoescola->sql_query( "", "rechumanoescola.*", "", "ed75_i_codigo = {$ed75_i_codigo}");
   $result2   = $clrechumanoescola->sql_record($sSql);
   $db_botao1 = true;
   db_fieldsmemory($result2, 0);
 } else if( isset( $opcao ) && $opcao == "excluir" || isset( $db_opcao ) && $db_opcao == 3 ) {
-	
+
   $db_botao1 = true;
   $db_opcao  = 3;
   $cor       = "#DEB887";
@@ -98,8 +101,9 @@ db_fieldsmemory($result, 0);
     </td>
     <td>
       <?php
-        db_input( 'ed75_i_codigo',    15, @$Ied75_i_codigo,    true, 'hidden', 3 );
-        db_input( 'ed75_i_rechumano', 15, @$Ied75_i_rechumano, true, 'hidden', 3 );
+        db_input( 'ed75_i_codigo',       15, $Ied75_i_codigo,       true, 'hidden', 3 );
+        db_input( 'ed75_i_rechumano',    15, $Ied75_i_rechumano,    true, 'hidden', 3 );
+        db_input( 'ed20_i_tiposervidor', 15, $Ied20_i_tiposervidor, true, 'hidden', 3 );
       ?>
     </td>
   </tr>
@@ -164,10 +168,10 @@ db_fieldsmemory($result, 0);
   </tr>
 </table>
 <input name="<?=( $db_opcao == 1 ? "incluir" : ( $db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir" ) )?>"
-       type="submit" id="db_opcao" 
+       type="submit" id="db_opcao"
        value="<?=( $db_opcao == 1 ? "Incluir" : ( $db_opcao == 2 || $db_opcao == 22 ? "Alterar" : "Excluir" ) )?>"
        <?=( $db_botao == false ? "disabled" : "" )?>
-       <?=( $db_opcao==3 ? "onclick=\"return confirm('Todos os vínculos do recurso humano (Relação de Trabalho, Atividades, Disponibilidade) ligados à escola $ed18_c_nome serão apagados! Confirma?')\"":"onclick='return js_validaData();'")?> >
+       <?=( $db_opcao==3 ? "onclick=\"return confirm('Todos os vínculos do recurso humano (Relação de Trabalho, Função Exercida, Horários da Regência) ligados à escola $ed18_c_nome serão apagados! Confirma?')\"":"onclick='return js_validaData();'")?> >
 <input name="cancelar" type="submit" value="Cancelar" <?=( $db_botao1 == false ? "disabled" : "" )?> >
 <table width="100%">
   <tr>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $numero_instit = pg_numrows($resultinst);
@@ -162,10 +162,13 @@ for($x = 0; $x < pg_numrows($result);$x++){
    if($maislinha == 1){
      $pdf->ln(1);
    }
-   $resconta = pg_query("select conplanoconta.* 
+
+   $resconta = db_query("select conplanoconta.* 
                          from conplanoconta 
 			 where c63_codcon = $c61_codcon
-			 and c63_anousu = ".db_getsession("DB_anousu"));
+			 and c63_anousu = ".db_getsession("DB_anousu")."
+			 and c63_reduz  = {$c61_reduz} " );
+
    if(pg_numrows($resconta) > 0)
      db_fieldsmemory($resconta,0);
    if($c61_reduz != 0){
@@ -189,7 +192,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
    $pdf->cell(20,$alt,($c61_reduz == 0?'':$c61_codigo),0,0,"C",0);
 
    if($c61_reduz != 0){
-     $resconta = pg_query("select c52_descrred
+     $resconta = db_query("select c52_descrred
                          from conplano 
 			      inner join consistema on c52_codsis = c60_codsis
 			 where c60_anousu = ".db_getsession("DB_anousu")." and c60_estrut = '$estrutural'");

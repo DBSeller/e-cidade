@@ -1,37 +1,39 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+
+use ECidade\Financeiro\Contabilidade\Relatorio\RREO\Factory\AnexoVIII as FactoryAnexo;
 
 $clcriaabas = new cl_criaabas;
 
@@ -49,12 +51,23 @@ $sizecp  = array();
 
 $codrel  = 31; // relatorio de MDE FUNDEB
 $anousu  = db_getsession("DB_anousu");
+
 if ($anousu > 2008){
-  $codrel  = 61; 
+  $codrel  = 61;
 }
+
 if ($anousu >= 2010) {
   $codrel = 86;
 }
+
+if ($anousu >= 2015) {
+  $codrel = AnexoVIIIManutencaoDesenvolvimentoEnsino::CODIGO_RELATORIO;
+}
+
+if ($anousu >= 2017) {
+  $codrel = FactoryAnexo::getCodigoRelatorio($anousu);
+}
+
 ?>
 <html>
 <head>
@@ -74,26 +87,26 @@ if ($anousu >= 2010) {
   </tr>
 </table>
 <table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
     <?
     if ($anousu <= 2007){
-      $clcriaabas->identifica = array("relatorio"=>"Relatorio","variaveis"=>"Variáveis","parametro"=>"Parametros");
-      $clcriaabas->title      = array("relatorio"=>"Relatorio","variaveis"=>"Variáveis","parametro"=>"Parametros");
+      $clcriaabas->identifica = array("relatorio"=>"Relatório","variaveis"=>"Variáveis","parametro"=>"Parametros");
+      $clcriaabas->title      = array("relatorio"=>"Relatório","variaveis"=>"Variáveis","parametro"=>"Parametros");
       $clcriaabas->src        = array("relatorio"=>"con2_lrfmdefundeb011.php?codrel=$codrel",
                                       "variaveis"=>"con4_parametrosrelatorioslegais001.php?c83_codrel=$codrel",
   			                              "parametro"=>"con2_conrelparametros.php?c83_codrel=$codrel");
       $clcriaabas->sizecampo= array("relatorio"=>"23","variaveis"=>"23","parametro"=>"23");
       $clcriaabas->scrolling ='yes';
-      
+
     } else {
-      $clcriaabas->identifica = array("relatorio" => "Relatorio",
-                                      "parametro"  =>"Parametros", 
+      $clcriaabas->identifica = array("relatorio" => "Relatório",
+                                      "parametro"  =>"Parâmetros",
                                       "notas"     => "Fonte/Notas Explicativas"
                                       );
-      $clcriaabas->title      = array("relatorio" => "Relatorio",
-                                      "parametro" =>"Parametros", 
+      $clcriaabas->title      = array("relatorio" => "Relatório",
+                                      "parametro" =>"Parâmetros",
                                       "notas"     => "Fonte/Notas Explicativas"
                                       );
       $clcriaabas->src        = array("relatorio" => "con2_lrfmdefundeb011.php?codrel=$codrel",
@@ -106,7 +119,7 @@ if ($anousu >= 2010) {
       $clcriaabas->scrolling ='yes';
     }
 
-    $clcriaabas->cria_abas();    
+    $clcriaabas->cria_abas();
     ?>
     </center>
   </td>

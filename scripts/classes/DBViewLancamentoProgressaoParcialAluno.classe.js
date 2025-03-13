@@ -173,7 +173,7 @@ DBViewLancamentoProgressaoParcialAluno = function(sInstancia, aVinculosAlunoNaTu
    */
   this.retornogetDadosVinculo = function(oAjax) {
     
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.status == 2) {
       alert(oRetorno.message.urlDecode());
@@ -418,7 +418,7 @@ DBViewLancamentoProgressaoParcialAluno = function(sInstancia, aVinculosAlunoNaTu
   this.retornoSalvar = function(oAjax) {
     
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 1) {
       
       oInstancia.lDadosSalvo     = true;

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("agu3_conscadastro_002_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("agu3_conscadastro_002_classe.php"));
 
 // Linha Em Branco
 function LinhaBrancoPDF($Pdf) {
@@ -43,11 +43,11 @@ function MensagemPDF($Pdf, $Mensagem) {
 
 // Titulo Quebras
 function TituloPDF($Pdf, $Titulo) {
-	LinhaBrancoPDF(&$Pdf);
+	LinhaBrancoPDF($Pdf);
 	$Pdf->setX(5);
 	$Pdf->SetFont('Arial','B',9);
 	$Pdf->Cell(200,4, $Titulo,"LRBT",1,"C",1);
-	LinhaBrancoPDF(&$Pdf);
+	LinhaBrancoPDF($Pdf);
 }
 
 db_postmemory($_SESSION);
@@ -78,7 +78,7 @@ $rotulo = new rotulocampo();
 	$pdf->SetFont('Arial','B',9);
 
 	// DADOS CADASTRAIS DO IMÓVEL
-	TituloPDF(&$pdf, "DADOS CADASTRAIS DO IMÓVEL");
+	TituloPDF($pdf, "DADOS CADASTRAIS DO IMÓVEL");
 
 	//  MATRIC  :  PROPRIETARIO
 	$pdf->setX(5);
@@ -177,7 +177,7 @@ $rotulo = new rotulocampo();
 
 
 // CARACTERÍSTICAS DO IMÓVEL
-	TituloPDF(&$pdf, "CARACTERÍSTICAS DO IMOVEL");
+	TituloPDF($pdf, "CARACTERÍSTICAS DO IMOVEL");
 
 	$result = $Consulta->RecordSetAguaBaseCar();
 
@@ -207,11 +207,11 @@ $rotulo = new rotulocampo();
 			}
 		}
 	} else {
-	  	MensagemPDF(&$pdf, "Sem características cadastradas.");
+	  	MensagemPDF($pdf, "Sem características cadastradas.");
 	}
 
 	// ISENÇÕES
-	TituloPDF(&$pdf, "ISENÇÕES");
+	TituloPDF($pdf, "ISENÇÕES");
 	$result = $Consulta->RecordSetAguaIsencaoRec();
 
 	if($result) {
@@ -234,11 +234,11 @@ $rotulo = new rotulocampo();
 			$pdf->Cell(40,4,$x25_descr,"",1,"L",0);
 		}
 	} else {
-	   	MensagemPDF(&$pdf, "Sem Isenções cadastradas.");
+	   	MensagemPDF($pdf, "Sem Isenções cadastradas.");
 	}
 
 	// CONSTRUÇÕES
-	TituloPDF(&$pdf, "CONSTRUÇÕES");
+	TituloPDF($pdf, "CONSTRUÇÕES");
 	$result = $Consulta->RecordSetAguaConstrCar();
 
 	if($result) {
@@ -305,7 +305,7 @@ $rotulo = new rotulocampo();
 				$pdf->SetFont('Arial','B',9);
 				$pdf->Cell(60,4,$x11_qtdpessoas,"",1,"L",0);
 
-				LinhaBrancoPDF(&$pdf);
+				LinhaBrancoPDF($pdf);
 			}
 
 			$pdf->SetFont('Arial','',9);
@@ -321,14 +321,14 @@ $rotulo = new rotulocampo();
 				$lado = 0;
 			}
 		} // Fim For
-		LinhaBrancoPDF(&$pdf);
+		LinhaBrancoPDF($pdf);
 	} else {
-	   	MensagemPDF(&$pdf, "Sem Construções cadastradas (TERRENO).");
+	   	MensagemPDF($pdf, "Sem Construções cadastradas (TERRENO).");
 	}
 
 
 	// ENDERECO ENTREGA
-	TituloPDF(&$pdf, "ENDEREÇO DE ENTREGA");
+	TituloPDF($pdf, "ENDEREÇO DE ENTREGA");
 
 	$result = $Consulta->RecordSetAguaBaseCorresp();
 
@@ -391,12 +391,12 @@ $rotulo = new rotulocampo();
 
 		}
 	} else {
-	   	MensagemPDF(&$pdf, "Sem Endereço de Entrega Cadastrado.");
+	   	MensagemPDF($pdf, "Sem Endereço de Entrega Cadastrado.");
 	}
 
 
 	// HIDROMETROS
-	TituloPDF(&$pdf, "HIDRÔMETROS");
+	TituloPDF($pdf, "HIDRÔMETROS");
 	$result = $Consulta->RecordSetAguaHidroMatric();
 
 	if($result) {
@@ -427,7 +427,7 @@ $rotulo = new rotulocampo();
 			//x28_dttroca,       x28_obs
 
 			if($indy>0) {
-				LinhaBrancoPDF(&$pdf);
+				LinhaBrancoPDF($pdf);
 			}
 
 			// NRO HIDRO  :  QTD DIGITOS  : DT INSTALACAO
@@ -485,11 +485,11 @@ $rotulo = new rotulocampo();
 			}
 		}
 	} else {
-	   	MensagemPDF(&$pdf, "Sem Hidrômetros cadastradas.");
+	   	MensagemPDF($pdf, "Sem Hidrômetros cadastradas.");
 	}
 
 	// LEITURAS
-	TituloPDF(&$pdf, "LEITURAS");
+	TituloPDF($pdf, "LEITURAS");
 	$result = $Consulta->RecordSetAguaLeitura(12);
 
 	if($result) {
@@ -545,13 +545,13 @@ $rotulo = new rotulocampo();
 
 		}
 	} else {
-	   	MensagemPDF(&$pdf, "Sem Leituras cadastradas.");
+	   	MensagemPDF($pdf, "Sem Leituras cadastradas.");
 	}
 
 	if( $geracalculo == "true" ) {
 
 		// CALCULO
-		TituloPDF(&$pdf, "DEMONSTRATIVO DO CÁLCULO");
+		TituloPDF($pdf, "DEMONSTRATIVO DO CÁLCULO");
 		$result = $Consulta->RecordSetAguaCalc();
 
 		if($result) {
@@ -616,7 +616,7 @@ $rotulo = new rotulocampo();
 				$pdf->SetFont('Arial','B',9);
 				$pdf->Cell(70,4,db_formatar($x21_excesso,'f')." m3","",1,"L",0);
 
-				LinhaBrancoPDF(&$pdf);
+				LinhaBrancoPDF($pdf);
 
 				$pdf->SetFont('Arial','B',9);
 				$pdf->SetX(5);
@@ -649,7 +649,7 @@ $rotulo = new rotulocampo();
 
 			}
 		} else {
-		   	MensagemPDF(&$pdf, "Sem Cálculo gerado.");
+		   	MensagemPDF($pdf, "Sem Cálculo gerado.");
 		}
 	}
 

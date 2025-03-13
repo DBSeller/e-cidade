@@ -26,7 +26,7 @@
  */
 
 //MODULO: Laboratório
-include ("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir ( );
 $cllab_horario->rotulo->label ();
 $clrotulo = new rotulocampo ( );
@@ -270,7 +270,7 @@ function js_mostralab_setorexame1(chave1,chave2,chave3){
   db_iframe_lab_setorexame.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lab_horario','func_lab_horario.php?funcao_js=parent.js_preenchepesquisa|la35_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_horario','func_lab_horario.php?funcao_js=parent.js_preenchepesquisa|la35_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_lab_horario.hide();

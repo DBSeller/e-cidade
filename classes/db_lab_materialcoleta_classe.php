@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -43,11 +43,11 @@ class cl_lab_materialcoleta {
    var $pagina_retorno = null; 
    // cria variaveis do arquivo 
    var $la15_i_codigo = 0; 
-   var $la15_c_descr = 0; 
+   var $la15_c_descr = null; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  la15_i_codigo = int4 = Código 
-                 la15_c_descr = int4 = Descrição 
+                 la15_c_descr = char(50) = Descrição 
                  ";
    //funcao construtor da classe 
    function cl_lab_materialcoleta() { 

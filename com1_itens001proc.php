@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_pcorcam_classe.php");
-include("classes/db_pcorcamitem_classe.php");
-include("classes/db_pcorcamitemproc_classe.php");
-include("classes/db_solicitem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_pcorcam_classe.php"));
+include(modification("classes/db_pcorcamitem_classe.php"));
+include(modification("classes/db_pcorcamitemproc_classe.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_GET_VARS);
 $clpcorcam = new cl_pcorcam;
@@ -100,7 +100,7 @@ if(isset($incluir) || isset($alterar)){
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmitensproc.php");
+	include(modification("forms/db_frmitensproc.php"));
 	?>
     </center>
     </td>
@@ -120,7 +120,7 @@ if(isset($alterar) || isset($excluir) || isset($incluir)){
   db_msgbox($erro_msg);
   if($sqlerro==false){
     echo "<script>
-            top.corpo.mo_camada('fornec');
+            (window.CurrentWindow || parent.CurrentWindow).corpo.mo_camada('fornec');
           </script>";
   }
 }

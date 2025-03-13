@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_fiscal_classe.php");
-include("classes/db_fiscalocal_classe.php");
-include("classes/db_fiscexec_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_procfiscalnotificacao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_fiscal_classe.php"));
+include(modification("classes/db_fiscalocal_classe.php"));
+include(modification("classes/db_fiscexec_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_procfiscalnotificacao_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 if(!isset($abas)){
   echo "<script>location.href='fis1_fiscal005.php?db_opcao=2'</script>";
@@ -86,7 +86,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
 	
 // exclui e inclui no procfiscalnotificacao
 	 $sqlprocfiscalv = "select y110_sequencial from procfiscalnotificacao where y110_notificacaofiscal = $y30_codnoti ";
-	 $resultprocfiscalv = pg_query($sqlprocfiscalv);
+	 $resultprocfiscalv = db_query($sqlprocfiscalv);
 	 $linhasprocfiscalv = pg_num_rows($resultprocfiscalv);
 	 if($linhasprocfiscalv>0){
 	 	 db_fieldsmemory($resultprocfiscalv,0);
@@ -154,7 +154,7 @@ $sqlprocfiscal = " select y110_procfiscal as procfiscal,z01_nome as nome
 										 inner join cgm           on y101_numcgm     = z01_numcgm 
   								 where y110_notificacaofiscal = $chavepesquisa
 									";
-	 $resultprocfiscal = pg_query($sqlprocfiscal);
+	 $resultprocfiscal = db_query($sqlprocfiscal);
 	 $linhasprocfiscal = pg_num_rows($resultprocfiscal);
 	 if($linhasprocfiscal>0){
 	 	 db_fieldsmemory($resultprocfiscal,0);
@@ -180,7 +180,7 @@ $sqlprocfiscal = " select y110_procfiscal as procfiscal,z01_nome as nome
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmfiscal.php");
+	include(modification("forms/db_frmfiscal.php"));
 	?>
     </center>
 	</td>

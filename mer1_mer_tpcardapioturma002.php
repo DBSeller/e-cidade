@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_mer_tpcardapioturma_classe.php");
-include("classes/db_mer_cardapioescola_classe.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_mer_tpcardapioturma_classe.php"));
+include(modification("classes/db_mer_cardapioescola_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clmer_tpcardapioturma = new cl_mer_tpcardapioturma;
@@ -49,7 +49,7 @@ if(isset($coddisciplinas)){
            inner join serie on serie.ed11_i_codigo = mer_tpcardapioturma.me28_i_serie
            where me28_i_cardapioescola =$codcardapioescola";
  
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $linhas = pg_numrows($result);
   
   if ($linhas>0) {     
@@ -70,7 +70,7 @@ if(isset($coddisciplinas)){
   } else{?>
     <script>        
     parent.db_iframe_tpcardapioturma.hide();    
-    top.corpo.iframe_a2.location.href      = 'mer1_mer_cardapioescola001.php?me32_i_tipocardapio=<?=$iCodCardapio?>&me27_c_nome=<?=$nome?>&db_opcao=<?=$db_opcao?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'mer1_mer_cardapioescola001.php?me32_i_tipocardapio=<?=$iCodCardapio?>&me27_c_nome=<?=$nome?>&db_opcao=<?=$db_opcao?>';
     </script>
        
  <? }

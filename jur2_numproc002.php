@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 $head8 = "sdfdsfsdf";
 $head9 = "ddddddddddddddddd";
-include("libs/db_gerador.php");
+include(modification("libs/db_gerador.php"));
 iniciar();
 
 linha("----------------------------------------------------------------------1234567890------------------------------------------1234567890");

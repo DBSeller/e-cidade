@@ -329,7 +329,7 @@ if ($this->loteamento == true) {
   left  join tipoparc      on tipoparc.cadtipoparc = cadtipoparc.k40_codigo
                           and tipoparc.maxparc     = 1; 
   ";
-  $resultrecibo = pg_exec($sqlrecibo) or die($sqlrecibo);
+  $resultrecibo = db_query($sqlrecibo) or die($sqlrecibo);
   
   global  $k00_matric, 
 				  $j14_nome, 

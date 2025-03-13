@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_subitem_classe.php");
-include("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_subitem_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmer_subitem = new cl_mer_subitem;
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
@@ -215,7 +215,7 @@ function js_carrega() {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Substituição de alimentos</b></legend>
-    <?include("forms/db_frmmer_subitem.php");?>
+    <?include(modification("forms/db_frmmer_subitem.php"));?>
    </fieldset>
    </center>
   </td>

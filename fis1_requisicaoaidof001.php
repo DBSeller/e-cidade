@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("classes/db_requisicaoaidof_classe.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_requisicaoaidof_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -108,7 +108,7 @@ $db_botao = true;
     
     if (mostra) {
         
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_issbase', 
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_issbase', 
                           'func_issbase.php?funcao_js=parent.js_mostraissbase1|q02_inscr|z01_nome|q02_dtbaix',
                           'Pesquisa', true);
     } else {
@@ -173,7 +173,7 @@ $db_botao = true;
    
     if (mostra == true) {
       
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_cgm', 
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_cgm', 
                           'func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome',
                           'Pesquisa', true);
     } else {       
@@ -215,7 +215,7 @@ $db_botao = true;
    
   function js_pesquisa() {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_requisicaoAidof', 'func_requisicaoaidof.php?iNumCgm=' + document.form1.q86_numcgm.value +
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_requisicaoAidof', 'func_requisicaoaidof.php?iNumCgm=' + document.form1.q86_numcgm.value +
                                                          '&iInscricao=' + document.form1.y08_inscr.value + 
                         '&funcao_js=parent.js_carregarequisicao|y116_id', 'Pesquisa', true);
   }

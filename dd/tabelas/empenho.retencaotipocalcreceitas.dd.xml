@@ -1,0 +1,97 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010331' name='empenho.retencaotipocalcreceitas' description="Configuração das receias por tipo de calculo" prefix="e17" label="Configuração das receias por tipo de calculo" type="0">
+  <fields>
+    <field codigo="1010039" 
+           campo_api='' 
+           name="e17_sequencial" 
+           conteudo="int8" 
+           description="Código Sequencial" 
+           inivalue="" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='empenho.retencaotipocalcreceitas_e17_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010041" 
+           campo_api='' 
+           name="e17_instit" 
+           conteudo="int4" 
+           description="Código da Instituição" 
+           inivalue="0" 
+           label="Código da Instituição" 
+           size="2" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Código da Instituição" 
+           reference="codigo" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010042" 
+           campo_api='' 
+           name="e17_retencaotipocalc" 
+           conteudo="int4" 
+           description="TIpo do calculo" 
+           inivalue="0" 
+           label="TIpo do calculo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="TIpo do calculo" 
+           reference="e32_sequencial" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010040" 
+           campo_api='' 
+           name="e17_receit" 
+           conteudo="int4" 
+           description="Código da Receita" 
+           inivalue="0" 
+           label="Receita" 
+           size="6" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Receita" 
+           reference="k02_codigo" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="e17_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="tabrec" inner='t'>
+      <fieldfk name="e17_receit" reference="k02_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="e17_instit" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="retencaotipocalc" inner='t'>
+      <fieldfk name="e17_retencaotipocalc" reference="e32_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

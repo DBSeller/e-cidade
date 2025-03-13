@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,16 +29,16 @@
   parent.disciplina.location.href = "edu1_historicodisciplina.php?ed65_i_historicomps=<?=@$ed65_i_historicomps?>";
 </script>
 <?
-require_once("libs/db_app.utils.php");
+
+require_once(modification("libs/db_app.utils.php"));
 db_app::import("educacao.*");
 
-if ((isset($ed61_i_escola) && $ed61_i_escola != db_getsession("DB_coddepto"))
-   || (isset($situacao) && $situacao == "CONCLUÍDO")) {
+if (isset($situacao) && $situacao == "CONCLUÍDO") {
   $db_botao = false;
 }
 
-if ( $ed62_c_situacao != "CONCLUÍDO" && $ed62_c_situacao != "RECLASSIFICADO" ) {
 
+if ( $ed62_c_situacao != "CONCLUÍDO" && $ed62_c_situacao != "RECLASSIFICADO" && $ed62_c_situacao != "AVANÇO" ) {
   $db_botao = false;
   db_msgbox("{$ed11_c_descr} ano {$ed62_i_anoref} com situação {$ed62_c_situacao}. Não é possível incluir disciplinas!");
 }
@@ -49,7 +49,13 @@ $clrotulo->label("ed62_i_codigo");
 $clrotulo->label("ed12_i_codigo");
 $clrotulo->label("ed62_i_anoref");
 $clrotulo->label("ed62_i_periodoref");
-$clrotulo->label("ed62_i_periodoref");
+$clrotulo->label("ed11_i_ensino");
+$clrotulo->label("ed11_i_sequencia");
+$clrotulo->label("ed11_c_descr");
+$clrotulo->label("ed62_c_minimo");
+$clrotulo->label("ed62_i_serie");
+$clrotulo->label("ed61_i_codigo");
+$clrotulo->label("ed29_c_descr");
 
 ?>
 <form name="form1">
@@ -64,44 +70,52 @@ $clrotulo->label("ed62_i_periodoref");
         <td>
           <?php
           db_input( 'ed65_i_historicomps',   15, $Ied65_i_historicomps, true, 'text',   3 );
-          db_input( 'ed11_c_descr',          40, @$Ied11_c_descr,       true, 'text',   3 );
-          db_input( 'ed62_i_codigo',         40, @$Ied62_i_codigo,      true, 'hidden', 3 );
-          db_input( 'ed62_c_minimo',         40, @$Ied62_c_minimo,      true, 'hidden', 3 );
-          db_input( 'ed62_c_resultadofinal', 40, @$Ied62_c_minimo,      true, 'hidden', 3 );
-          db_input( 'ed61_i_curso',          40, @$Ied62_c_minimo,      true, 'hidden', 3 );
-          db_input( 'ed62_i_serie',          40, @$Ied62_i_serie,       true, 'hidden', 3 );
+          db_input( 'ed11_c_descr',          40, $Ied11_c_descr,        true, 'text',   3 );
+          db_input( 'ed62_i_codigo',         40, $Ied62_i_codigo,       true, 'hidden', 3 );
+          db_input( 'ed62_c_minimo',         40, $Ied62_c_minimo,       true, 'hidden', 3 );
+          db_input( 'ed62_c_resultadofinal', 40, $Ied62_c_minimo,       true, 'hidden', 3 );
+          db_input( 'ed61_i_curso',          40, $Ied62_c_minimo,       true, 'hidden', 3 );
+          db_input( 'ed62_i_serie',          40, $Ied62_i_serie,        true, 'hidden', 3 );
+          db_input( 'ed11_i_ensino',         40, $Ied11_i_ensino,       true, 'hidden', 3 );
+          db_input( 'ed11_i_sequencia',      40, $Ied11_i_sequencia,    true, 'hidden', 3 );
           ?>
         </td>
       </tr>
       <tr>
-        <td nowrap title="<?=@$Ted65_i_historicomps?>">
+        <td nowrap title="<?=$Ted65_i_historicomps?>">
           <?php
-          db_ancora( @$Led65_i_historicomps, "", 3 );
+          db_ancora( $Led65_i_historicomps, "", 3 );
           ?>
         </td>
         <td>
           <?php
-          db_input( 'ed61_i_codigo', 15, @$Ied61_i_codigo, true, 'text', 3 );
-          db_input( 'ed29_c_descr',  40, @$Ied29_c_descr,  true, 'text', 3 );
+          db_input( 'ed61_i_codigo', 15, $Ied61_i_codigo, true, 'text', 3 );
+          db_input( 'ed29_c_descr',  40, $Ied29_c_descr,  true, 'text', 3 );
           ?>
         </td>
       </tr>
       <tr>
-        <td nowrap title="<?=@$Ted62_i_anoref?>">
-          <?=@$Led62_i_anoref?>
+        <td nowrap title="<?=$Ted62_i_anoref?>">
+          <?=$Led62_i_anoref?>
         </td>
         <td>
           <?php
           db_input( 'ed62_i_anoref', 4, $Ied62_i_anoref, true, 'text', 3 );
-          echo @$Led62_i_periodoref;
+          echo $Led62_i_periodoref;
           db_input( 'ed62_i_periodoref', 4, $Ied62_i_periodoref, true, 'text', 3 );
           ?>
-          <input type="button"
-                 id="btnLancarDisciplina"
-                 name="btnLancarDisciplina"
-                 value="Lançar Disciplina"
-                 <?=($db_botao==false?"disabled":"")?>
-                 onclick="parent.js_lancarDisciplina($F('ed65_i_historicomps'), 1, iEnsino, iHistoricomps, $F('ed61_i_curso'), $F('ed62_i_anoref'));" />
+            <input type="button"
+                   id="btnLancarAreaConhecimento"
+                   name="btnLancarAreaConhecimento"
+                   value="Lançar Area de Conhecimento"
+                <?=($db_botao==false?"disabled":"")?>
+                   onclick="parent.js_lancarAreasConhecimento($F('ed65_i_historicomps'), 1, iEnsino, iHistoricomps, $F('ed61_i_curso'), $F('ed62_i_anoref'));" />
+            <input type="button"
+                   id="btnLancarDisciplina"
+                   name="btnLancarDisciplina"
+                   value="Lançar Disciplina"
+                <?=($db_botao==false?"disabled":"")?>
+                   onclick="parent.js_lancarDisciplina($F('ed65_i_historicomps'), 1, iEnsino, iHistoricomps, $F('ed61_i_curso'), $F('ed62_i_anoref'));" />
         </td>
       </tr>
       <tr>
@@ -123,6 +137,7 @@ $clrotulo->label("ed62_i_periodoref");
           <input type="hidden" name="ed65_t_resultobtido"  />
           <input type="hidden" name="ed65_c_termofinal"  />
           <input type="hidden" name="ed06_c_descr"  />
+              <input type="hidden" name="ed65_tipobase"  />
           <input type="hidden" name="sTipoRede" id="sTipoRede" value="1" />
           <tr class="titulo">
             <td>Tipo da Base</td>
@@ -145,11 +160,19 @@ $clrotulo->label("ed62_i_periodoref");
           for ($iTotalLinhas = 0; $iTotalLinhas < $iLinhasHistMpsDisc; $iTotalLinhas++) {
 
             db_fieldsmemory($rsHistMpsDisc, $iTotalLinhas);
-            $ed65_basecomum == 't' ? $sBaseComum = "BASE COMUM" : $sBaseComum = "DIVERSIFICADA";
+
+            if (!is_null($ed65_tipobase) && !empty($ed65_tipobase)) {
+              $sql = "select ed182_id, ed182_descricao from tipobase where ed182_id = {$ed65_tipobase}";
+              $resource = db_query($sql);
+              $aTipoBase = pg_fetch_assoc($resource);
+          }
+
+            $tipoBase = isset($aTipoBase) ? $aTipoBase['ed182_descricao'] : 'Não se aplica';
           ?>
 
             <tr onmouseover="Mostra('disc<?=$iTotalLinhas?>')" onmouseout="Oculta('disc<?=$iTotalLinhas?>')">
-              <td><?php echo $sBaseComum; ?></td>
+              <td><?php echo $tipoBase; ?></td>
+                <input type="hidden" name="ed65_tipobase" value="<?=$ed65_tipobase?>">
               <td style="font-size:10px;">
                 <input type="checkbox"
                        name="individual"
@@ -177,7 +200,9 @@ $clrotulo->label("ed62_i_periodoref");
               </td>
               <td>
                 <?php
-                $sScript = "".($ed65_i_codigo==""?"disabled":"")."";
+                $sScript = "" . ( $ed65_i_codigo == "" ? "disabled" : "" ) . "";
+
+                $ed65_i_qtdch = isset( $ed65_i_qtdch ) && !empty( $ed65_i_qtdch ) ? DBNumber::truncate( $ed65_i_qtdch ) : '';
                 db_input( 'ed65_i_qtdch', 4, $Ied65_i_qtdch, true, 'text', $db_opcao, $sScript );
                 ?>
               </td>
@@ -296,6 +321,7 @@ $clrotulo->label("ed62_i_periodoref");
             $ed65_i_justificativa  = "";
             $ed65_c_termofinal     = "";
             $ed06_c_descr          = "";
+            $ed65_tipobase         = "";
           }
           ?>
           </table>
@@ -441,12 +467,18 @@ function js_novadisciplina() {
 }
 
 var registrodisc = "";
+
+
+var lConfirmaAlteracaoNota = false;
 function Salvar(linhas, lMensagem) {
 
-  iMinimoAprov    = '<?=str_replace("'",  "\'",  $ed62_c_minimo)?>';
-  sResultadoFinal = '<?=$ed62_c_resultadofinal?>';
+  iMinimoAprov    = $F('ed62_c_minimo').replace(",", "."); //'<?=str_replace("'",  "\'",  $ed62_c_minimo)?>';
+  sResultadoFinal = $F('ed62_c_resultadofinal');
+
   var lReprovado  = false;
   var alguem      = false;
+
+  var lDeveConfirmarAlteracao = false;
 
   for (i = 1; i < document.form1.individual.length; i++) {
 
@@ -504,7 +536,8 @@ function Salvar(linhas, lMensagem) {
                                 ";"+document.form1.ed65_t_resultobtido[i].value+
                                 ";"+document.form1.ed65_c_situacao[i].value+
                                 ";"+document.form1.ed65_c_tiporesultado[i].value+
-                                ";"+document.form1.ed65_c_termofinal[i].value;
+                                ";"+document.form1.ed65_c_termofinal[i].value+
+                                ";"+document.form1.ed65_tipobase[i].value;
     sep           = "|";
 
     if (marcado == 'true') {
@@ -553,6 +586,19 @@ function Salvar(linhas, lMensagem) {
         }
       }
 
+      /**
+       * Valida o minimo informado para disciplina com a sistuação do resultado informado
+       */
+      if (document.form1.ed65_c_resultadofinal[i].value == 'A'
+          && !isNaN(parseFloat(document.form1.ed65_t_resultobtido[i].value))
+          && !isNaN(parseFloat(iMinimoAprov))
+          && parseFloat(document.form1.ed65_t_resultobtido[i].value) < iMinimoAprov
+          && document.form1.ed65_c_situacao[i].value == 'CONCLUÍDO') {
+
+        lDeveConfirmarAlteracao = true;
+
+      }
+
       if (document.form1.ed65_c_resultadofinal[i].value == 'A'
           && !isNaN(parseFloat(document.form1.ed65_t_resultobtido[i].value))
           && !isNaN(parseFloat(iMinimoAprov))
@@ -562,8 +608,8 @@ function Salvar(linhas, lMensagem) {
         document.form1.ed65_t_resultobtido[i].focus();
         document.form1.ed65_t_resultobtido[i].style.backgroundColor = '#99A9AE';
 
-        var oMensagem                       = {};
-            oMensagem.sMinimoAproveitamento = iMinimoAprov;
+        var oMensagem              = {};
+            oMensagem.iMinimoAprov = iMinimoAprov;
         alert( _M( MENSAGENS_FORMULARIO_HISTMPSDISC + 'situacao_aprovado', oMensagem ) );
         document.form1.ed65_t_resultobtido[i].style.backgroundColor = '';
         document.form1.ed65_t_resultobtido[i].select();
@@ -579,8 +625,8 @@ function Salvar(linhas, lMensagem) {
         document.form1.ed65_t_resultobtido[i].focus();
         document.form1.ed65_t_resultobtido[i].style.backgroundColor = '#99A9AE';
 
-        var oMensagem                       = {};
-            oMensagem.sMinimoAproveitamento = iMinimoAprov;
+        var oMensagem              = {};
+            oMensagem.iMinimoAprov = iMinimoAprov;
         alert( _M( MENSAGENS_FORMULARIO_HISTMPSDISC + 'situacao_reprovado', oMensagem ) );
         document.form1.ed65_t_resultobtido[i].style.backgroundColor = '';
         document.form1.ed65_t_resultobtido[i].select();
@@ -590,6 +636,21 @@ function Salvar(linhas, lMensagem) {
       if (document.form1.ed65_c_resultadofinal[i].value == 'R') {
         lReprovado = true;
       }
+    }
+  }
+
+  if ( !lConfirmaAlteracaoNota && lDeveConfirmarAlteracao ) {
+
+    var oMensagem              = {};
+        oMensagem.iMinimoAprov = iMinimoAprov;
+
+    var sMsg = _M( MENSAGENS_FORMULARIO_HISTMPSDISC + 'situacao_aprovado', oMensagem );
+
+    if ( !confirm(sMsg+="\nDeseja continuar?") ) {
+
+      document.form1.ed65_t_resultobtido[i].focus();
+      document.form1.ed65_t_resultobtido[i].style.backgroundColor = '#99A9AE';
+      return false;
     }
   }
 
@@ -657,7 +718,7 @@ js_verificaSituacaoInicial(iTotalLinhas);
 <?php }?>
 
 <?php if (!isset($lFechou)) { ?>
-  if (   <?php echo $iLinhasHistMpsDisc; ?> == 0 
+  if (   <?php echo $iLinhasHistMpsDisc; ?> == 0
       && ( '<?php echo $ed62_c_situacao; ?>' == 'CONCLUÍDO' || '<?php echo $ed62_c_situacao; ?>' == 'RECLASSIFICADO' ) ) {
 
     document.getElementById('btnLancarDisciplina').click();
@@ -665,4 +726,23 @@ js_verificaSituacaoInicial(iTotalLinhas);
   }
 <?php } ?>
 
+  /*
+   * Valida se Escola selecionada tem permissão de manutenção do histórico do aluno.
+   */
+  var iEnsinoSelecionado     = $F('ed11_i_ensino');
+  var iOrdemEtapaSelecionada = $F('ed11_i_sequencia');
+
+  var oHistorico = new HistoricoEscolar( CurrentWindow.corpo.oDadosManutencaoHistorico.iStatusAlteracaoHistorico,
+                                         CurrentWindow.corpo.oDadosManutencaoHistorico.aSenquenciaEtapas[iEnsinoSelecionado],
+                                         iOrdemEtapaSelecionada );
+
+  if ( !oHistorico.permiteManutencao() ) {
+
+    $('btnLancarDisciplina').setAttribute('disabled', 'disabled');
+
+    if ( $('botao') ) {
+      $('botao').setAttribute('disabled', 'disabled');
+    }
+
+  }
 </script>

@@ -1,7 +1,8 @@
-<?
-/*
+<?php
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +26,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+/**
+ * Representa as configurações da tela de geração do empenho da folha.
+ * 
+ * @author $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.6 $
+ */
+
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 ?>
 <html>
@@ -43,6 +51,9 @@ require_once("libs/db_app.utils.php");
   db_app::load("strings.js");
   db_app::load("prototype.js");
   db_app::load("estilos.css, grid.style.css");
+  db_app::load("dbcomboBox.widget.js");
+  db_app::load("DBViewFormularioFolha/CompetenciaFolha.js");
+  db_app::load("DBViewFormularioFolha/ValidarFolhaPagamento.js");
 ?>
 </head>
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
@@ -52,7 +63,7 @@ require_once("libs/db_app.utils.php");
   </tr>
 </table>
 	    <?
-	      include("forms/db_frmrhempenhofolha.php");
+	      include(modification("forms/db_frmrhempenhofolha.php"));
 	    ?>
 <?
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));

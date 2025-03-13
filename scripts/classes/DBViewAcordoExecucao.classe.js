@@ -358,7 +358,7 @@ DBViewAcordoExecucao = function(oItem, iPeriodo, sInstance, oWindowPai, oNode) {
                                         parameters: 'json='+Object.toJSON(oParam), 
                                         onComplete: function (oAjax) {
 
-                                           var oRetorno = eval("("+oAjax.responseText+")");
+                                           var oRetorno = JSON.parse(oAjax.responseText);
                                            if (oRetorno.stautus == 2) {
                                              alert(oRetorno.message.urlDecode());
                                            } else {
@@ -446,7 +446,7 @@ DBViewAcordoExecucao = function(oItem, iPeriodo, sInstance, oWindowPai, oNode) {
                                    parameters: 'json='+Object.toJSON(oParam), 
                                    onComplete: function (oAjax) {
                                      
-                                     var oRetorno = eval("("+oAjax.responseText+")");
+                                     var oRetorno = JSON.parse(oAjax.responseText);
                                      if (oRetorno.status == 2) {
                                      
                                       me.oTxtEmpenho.setValue('');
@@ -558,7 +558,7 @@ DBViewAcordoExecucao = function(oItem, iPeriodo, sInstance, oWindowPai, oNode) {
   this.retornoSalvarMovimentacao = function(oAjax) {
     
     js_removeObj('msgbox');
-    var oRetorno  = eval("("+oAjax.responseText+")");
+    var oRetorno  = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 1) {
       
       me.oPeriodo.saldo     -= me.oTxtQuantidade.getValue();   

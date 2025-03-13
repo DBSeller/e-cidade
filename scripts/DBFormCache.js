@@ -108,7 +108,7 @@ DBFormCache = function (sNameInstance, sUrl) {
 
   this.js_retornoSalvar = function(oResponse) {
 
-    var oRetorno = eval('('+oResponse.responseText+')');
+    var oRetorno = JSON.parse(oResponse.responseText);
   };
 
   /**
@@ -132,7 +132,7 @@ DBFormCache = function (sNameInstance, sUrl) {
 
   this.js_retornoDelete = function(oResponse) {
 
-    var oRetorno = eval('('+oResponse.responseText+')');
+    var oRetorno = JSON.parse(oResponse.responseText);
   };
   /**
    * Carrega os dados do Cache no formulario
@@ -156,7 +156,7 @@ DBFormCache = function (sNameInstance, sUrl) {
 
   this.js_retornoLoad = function (oResponse) {
 
-    var oRetorno = eval('('+oResponse.responseText+')');
+    var oRetorno = JSON.parse(oResponse.responseText);
 
     if( !oRetorno.dados ) {
       return;

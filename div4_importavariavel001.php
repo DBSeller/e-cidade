@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,30 +25,31 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_arretipo_classe.php");
-require_once("classes/db_arreinscr_classe.php");
-require_once("classes/db_arrenumcgm_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_numpref_classe.php");
-require_once("classes/db_cissqn_classe.php");
-require_once("classes/db_divida_classe.php");
-require_once("classes/db_proced_classe.php");
-require_once("classes/db_procedarretipo_classe.php");
-require_once("classes/db_issvardiv_classe.php");
-require_once("classes/db_issvar_classe.php");
-require_once("classes/db_issvarlev_classe.php");
-require_once("classes/db_divold_classe.php");
-require_once("classes/db_parfiscal_classe.php");
-require_once("classes/db_divimporta_classe.php");
-require_once("classes/db_divimportareg_classe.php");
-require_once("classes/db_dividaprotprocesso_classe.php");
+use ECidade\Tributario\Divida\Service\TermoInscricaoService;
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_arretipo_classe.php"));
+require_once(modification("classes/db_arreinscr_classe.php"));
+require_once(modification("classes/db_arrenumcgm_classe.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_numpref_classe.php"));
+require_once(modification("classes/db_cissqn_classe.php"));
+require_once(modification("classes/db_divida_classe.php"));
+require_once(modification("classes/db_proced_classe.php"));
+require_once(modification("classes/db_procedarretipo_classe.php"));
+require_once(modification("classes/db_issvardiv_classe.php"));
+require_once(modification("classes/db_issvar_classe.php"));
+require_once(modification("classes/db_issvarlev_classe.php"));
+require_once(modification("classes/db_divold_classe.php"));
+require_once(modification("classes/db_parfiscal_classe.php"));
+require_once(modification("classes/db_divimporta_classe.php"));
+require_once(modification("classes/db_divimportareg_classe.php"));
+require_once(modification("classes/db_dividaprotprocesso_classe.php"));
 
 $clarrecad			        = new cl_arrecad;
 $clarretipo			        = new cl_arretipo;
@@ -320,6 +321,16 @@ if (isset($lancar)) {
           $sqlerro = true;
           break;
         }
+
+        //Insere na termoinscr e termoinscrrreg
+
+        if ($sqlerro == false) {
+
+          $dataInsc = date("Y-m-d",db_getsession('DB_datausu'));					
+          $usuario = db_getsession('DB_id_usuario');
+          $instit = db_getsession('DB_instit');
+          TermoInscricaoService::salvar($numpre_novo, $cldivida, $v03_receit, $dataInsc, $usuario, $instit);
+        }
       }  
     }
     
@@ -418,7 +429,7 @@ if (isset($lancar)) {
 <body bgcolor=#CCCCCC>
 
 				<?
-					include("forms/db_frmimportavariavel.php");
+					include(modification("forms/db_frmimportavariavel.php"));
 				?>
 
 <?

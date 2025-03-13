@@ -277,7 +277,7 @@ function js_controla_campo(campo){
   }
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_convenio','func_convenio.php?funcao_js=parent.js_preenchepesquisa|r56_codrel','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_convenio','func_convenio.php?funcao_js=parent.js_preenchepesquisa|r56_codrel','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_convenio.hide();

@@ -28,17 +28,17 @@
 /**
  * 
  * @author I
- * @revision $Author: dbluizmarcelo $
- * @version $Revision: 1.2 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.4 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_saltes_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_saltes_classe.php"));
 ?>
 <html>
 <head>
@@ -171,7 +171,7 @@ function js_reprocessaSaldoContas() {
 function js_retornoProcessamento (oAjax) {
   
   js_removeObj("msgbox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
     alert('Reprocessamento efetuado com sucesso!');
   } else {

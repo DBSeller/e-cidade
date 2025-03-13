@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,29 +25,29 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("std/db_stdClass.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matrequiitem_classe.php");
-include("classes/db_atendrequi_classe.php");
-include("classes/db_atendrequiitem_classe.php");
-include("classes/db_atendrequiitemmei_classe.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_matestoqueini_classe.php");
-include("classes/db_matestoqueinimei_classe.php");
-include("classes/db_matestoqueinimeiari_classe.php");
-include("classes/db_matestoqueitem_classe.php");
-include("classes/db_matrequi_classe.php");
-include("classes/db_db_almoxdepto_classe.php");
-include("classes/db_matparam_classe.php");
-include("classes/db_db_departorg_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/requisicaoMaterial.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matrequiitem_classe.php"));
+include(modification("classes/db_atendrequi_classe.php"));
+include(modification("classes/db_atendrequiitem_classe.php"));
+include(modification("classes/db_atendrequiitemmei_classe.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoqueini_classe.php"));
+include(modification("classes/db_matestoqueinimei_classe.php"));
+include(modification("classes/db_matestoqueinimeiari_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_matrequi_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
+include(modification("classes/db_matparam_classe.php"));
+include(modification("classes/db_db_departorg_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/requisicaoMaterial.model.php"));
 
-require_once "libs/db_app.utils.php";
+require_once modification("libs/db_app.utils.php");
 db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 db_app::import("Acordo");
 db_app::import("AcordoComissao");
@@ -109,7 +109,7 @@ if (count($aParametrosCustos) > 0) {
 </table>
     <center>
 	<?
-include ("forms/db_frmpedidorequisicao.php");
+include(modification("forms/db_frmpedidorequisicao.php"));
 ?>
     </center>
 <?

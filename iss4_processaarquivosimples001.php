@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_issarqsimples_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_issarqsimples_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $clissarqsimples  = new cl_issarqsimples();
 $clissarqsimples->rotulo->label();
@@ -189,7 +189,7 @@ function js_validar(){
 function js_inconsistencias(oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     document.form1.validar.disabled = false;
     
@@ -361,7 +361,7 @@ function js_pesquisaq17_sequencial(mostra){
   
   if (mostra == true) {
     
-     js_OpenJanelaIframe('top.corpo',
+     js_OpenJanelaIframe('CurrentWindow.corpo',
                          'db_iframe_issarqsimples',
                          'func_issarqsimples.php?semproc=1&funcao_js=parent.js_mostraissarqsimples1|q17_sequencial|q17_nomearq',
                          'Arquivos de Retorno',
@@ -370,7 +370,7 @@ function js_pesquisaq17_sequencial(mostra){
 }
 function js_pesquisacadban(mostra){
   if (mostra==true){
-     js_OpenJanelaIframe('top.corpo',
+     js_OpenJanelaIframe('CurrentWindow.corpo',
                          'db_iframe_cadban',
                          'func_cadban.php?method=sql_query_tabplan&funcao_js=parent.js_mostracadban|k15_codbco|k15_codage|z01_nome|k15_conta',
                          'Consulta Bancos',
@@ -406,7 +406,7 @@ function js_mostracadban(chave1, chave2, chave3, chave4) {
 
 function js_pesquisa(){
   
-  js_OpenJanelaIframe( 'top.corpo',
+  js_OpenJanelaIframe( 'CurrentWindow.corpo',
                        'db_iframe_issarqsimples',
                        'func_issarqsimples.php?semproc=1&funcao_js=parent.js_mostraissarqsimples1|q17_sequencial|q17_nomearq',
                        'Pesquisa',
@@ -422,7 +422,7 @@ function js_emiteRelatorio(){
 
   function js_processar() {
 
-    top.corpo.windowErroAvisos.divContent.getElementsBySelector('#gerararquivo')[0].disabled = true;
+    (window.CurrentWindow || parent.CurrentWindow).corpo.windowErroAvisos.divContent.getElementsBySelector('#gerararquivo')[0].disabled = true;
 
     js_divCarregando("Processando Arquivo...",'msgBox');
     
@@ -439,9 +439,9 @@ function js_emiteRelatorio(){
                                   
                                   js_removeObj('msgBox');
                                   
-                                  var oRetorno = eval("("+oAjax.responseText+")");
+                                  var oRetorno = JSON.parse(oAjax.responseText);
 
-                                  top.corpo.windowErroAvisos.divContent.getElementsBySelector('#gerararquivo')[0].disabled = false;
+                                  (window.CurrentWindow || parent.CurrentWindow).corpo.windowErroAvisos.divContent.getElementsBySelector('#gerararquivo')[0].disabled = false;
 
                                   if (oRetorno.iStatus == 1) {
                                     

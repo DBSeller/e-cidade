@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -23,6 +23,7 @@
  *
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
+ *
  */
 
 //MODULO: Laboratório
@@ -42,79 +43,67 @@ $clrotulo->label( "z01_v_nome" );
 
 <form name="form1" method="post" action="">
   <div class="container">
-    <fieldset >
+    <fieldset style="width: 800px" >
       <legend>Conferência de Exames</legend>
       <table class="form-container">
         <tr>
-          <td nowrap="nowrap" title="<?=@$Tla22_i_codigo?>" class="field-size3">
+          <td id="viewNumeroControleInterno" colspan="2"></td>
+        </tr>
+        <tr>
+          <td nowrap="nowrap" title="<?=$Tla22_i_codigo?>" class="field-size3">
             <?php db_ancora( '<b>Requisição</b>', "js_pesquisaRequisicao(true);", "" );?>
           </td>
-          <td nowrap="nowrap">
+          <td nowrap="nowrap" id="inputCodigoRequisicao">
             <?php
               db_input('la22_i_codigo', 10, $Ila22_i_codigo, true, 'text',"", " onchange='js_pesquisaRequisicao(false);'" );
               db_input('z01_v_nome', 75, $Iz01_v_nome, true, 'text', 3, '' )
             ?>
           </td>
         </tr>
-        <tr>
-          <td nowrap="nowrap" title="<?=@$Tla47_i_resultado?>" class="field-size3">
-            <?=@$Lla47_i_resultado?>
-          </td>
-          <td>
-            <?php
-              $aX = array('1'=>'SIM', '2'=>'NÃO');
-              db_select('la47_i_resultado', $aX, true, $db_opcao);
-            ?>
-          </td>
-        </tr>
       </table>
-
-      <fieldset>
-        <legend> Considerações </legend>
-        <?php
-          db_textarea('la47_t_observacao', 0, 100, @$Ila47_t_observacao,true,'text',$db_opcao,"")
-        ?>
-      </fieldset>
 
     </fieldset>
   </div>
 
   <div class="subcontainer">
 
-    <fieldset  style="width: 1000px">
+    <fieldset style="width: 1000px">
 
       <legend>Exames Realizados</legend>
       <div id="ctnGridExame" > </div>
 
     </fieldset>
-
-    <input name="btnSalvar" type="button" id="btnSalvar" value="Confirmar Resultado" />
     <input name="novo" type="button" id="novo" value="Novo" onclick="location.href='lab4_confresult001.php';" />
   </div>
 </form>
 <script>
 const MSG_FRMLABCONFERENCIA = 'saude.laboratorio.db_frmlab_conferencia.'
 
-var oLaboratorio = null;
+var oLaboratorio      = null;
+var aExamesRequisicao = [];
 
 var oGridExames          = new DBGrid("dbGridExames");
 oGridExames.nameInstance = "oGridExames";
-oGridExames.setCheckbox(3);
-oGridExames.setCellWidth(["35%", "15%", "50%"]);
+oGridExames.setCellWidth(["20%", "10%", "45%", "8%", "22%"]);
 oGridExames.setCellAlign(["left", "center", "left"]);
-oGridExames.setHeader(["Exame", "Procedimento", "CID", "codigo_exame", "codigo_procedimento"]);
-oGridExames.setHeight(250);
-oGridExames.aHeaders[4].lDisplayed = false;
+oGridExames.setHeader(["Exame", "Procedimento", "CID", "Situação", "Liberado Por", "codigo_exame", "codigo_procedimento"]);
+oGridExames.setHeight(200);
 oGridExames.aHeaders[5].lDisplayed = false;
+oGridExames.aHeaders[6].lDisplayed = false;
 oGridExames.show($("ctnGridExame"));
 
+var viewNumeroControleInterno = new ViewNumeroControleInterno('viewNumeroControleInterno', true);
+viewNumeroControleInterno.setRequisicaoElemento($('la22_i_codigo'));
+viewNumeroControleInterno.show($('viewNumeroControleInterno'));
+
+if (viewNumeroControleInterno.getParametroAtivo()) {
+  $('inputCodigoRequisicao').setAttribute('style', 'padding-left:21px');
+}
 
 ( function () {
 
   if ( !Laboratorio.departamentoIsLaboratorio() && !Laboratorio.usuarioIsTecnicoLaboratorio() ) {
-
     alert( _M(MSG_FRMLABCONFERENCIA+"departamento_usuario_invalido") );
-    $('btnSalvar').setAttribute("disabled", "disabled");
   } else {
     oLaboratorio = Laboratorio.getLaboratorioByDepartamento();
   }
@@ -126,11 +115,13 @@ oGridExames.show($("ctnGridExame"));
  */
 function js_pesquisaRequisicao( lMostra ) {
 
-  var sUrl  = "func_lab_requisicao.php?iLaboratorio=" +oLaboratorio.iLaboratorio;
+  var sUrl  = "func_lab_requisicao.php?iLaboratorio="+oLaboratorio.iLaboratorio+"&permissaoPorResponsavelLab=1";
+  
+  oGridExames.clearAll(true);
 
   if ( lMostra ) {
 
-    sUrl += "&funcao_js=parent.js_mostraRequisicao|la22_i_codigo|z01_v_nome";
+    sUrl += "&funcao_js=parent.js_mostraRequisicao|la22_i_codigo|z01_v_nome|la22_i_departamento";
     js_OpenJanelaIframe('', 'db_iframe_lab_requisicao', sUrl, 'Pesquisa Requisições', true);
   } else if ( !lMostra && $F('la22_i_codigo') != '') {
 
@@ -162,6 +153,21 @@ function js_mostraRequisicao() {
     db_iframe_lab_requisicao.hide();
   }
 
+  if (viewNumeroControleInterno.getParametroAtivo() && $('la22_i_codigo').value != '') {
+    viewNumeroControleInterno.getNumeroControleInternoPorRequisicao($('la22_i_codigo').value);
+  }
+
+  var departamentoRequisitante = arguments[3] || arguments[2];
+  var departamentoSessao = '<?php echo db_getsession('DB_coddepto'); ?>';
+
+  // if (departamentoRequisitante != departamentoSessao) {
+  //   alert(`
+  //     Requisição só pode ser conferida no departamento na qual foi requisitada.\n
+  //     Esta requisição foi requisitada no departamento ${departamentoRequisitante}.
+  //   `);
+  //   return;
+  // }
+
   if ( $F('la22_i_codigo') != '' ) {
     js_buscaExames();
   }
@@ -171,7 +177,6 @@ function js_mostraRequisicao() {
  * Busca os exames da requisição selecionada
  */
 function js_buscaExames() {
-
   var oParametro      = {};
   oParametro.exec     = 'getExamesRequisicao';
   oParametro.iCodigo  = $F('la22_i_codigo');
@@ -188,9 +193,23 @@ function js_buscaExames() {
 }
 
 function js_retornoBuscaExames( oAjax ) {
-
+  
   js_removeObj("msgBoxA");
-  var oRetorno = eval( "(" + oAjax.responseText + ")" );
+  oGridExames.clearAll(true);
+  aExamesRequisicao = [];
+  var oRetorno = JSON.parse(oAjax.responseText);
+
+  if(oRetorno.laboratorios != ""){
+    alert("Há exames solicitados nessa requisição pertencentes a outros laboratórios: \n\n"+oRetorno.laboratorios.urlDecode()+
+    "\n\n Para digitar o resultado desta requisição será necessário atualizar a permissão cadastrando o profissional no respectivo Laboratório.");
+  }
+
+  if(oRetorno.aExames.length == 0){
+    document.getElementById('la22_i_codigo').value = '';
+    document.getElementById('z01_v_nome').value = '';
+    document.getElementById('la22_i_codigo').focus();
+    return;
+  };
 
   if ( parseInt(oRetorno.iStatus) == 2 ) {
 
@@ -203,110 +222,12 @@ function js_retornoBuscaExames( oAjax ) {
     return;
   }
 
-  oGridExames.clearAll(true);
-  oRetorno.aExames.each( function (oExame, iLinha) {
-
-    var oLinkExame = new Element( 'a', {'href':'#', 'onclick': 'js_consultaResultados('+oExame.iExame+')'} ).update( oExame.sExame.urlDecode() );
-    var oCboCID    = new Element( 'select', {'id' : 'cidLinha'+iLinha} );
-    oExame.aCID.each( function( oCID ) {
-
-      var oOpion = new Option( oCID.sCID + ' - ' + oCID.sNome.urlDecode(), oCID.iCodigo );
-      oOpion.style.width = '100%';
-      if ( oCID.lPrincipal ) {
-        oOpion.setAttribute("selected", "selected");
-      }
-      oCboCID.add( oOpion );
-    });
-
-    var aLinha = [];
-    aLinha.push(oLinkExame.outerHTML);
-    aLinha.push(oExame.sProcedimentoEstrutural);
-
-    if ( oExame.aCID.length > 0 ) {
-      aLinha.push(oCboCID.outerHTML);
-    } else {
-      aLinha.push( '' );
-    }
-    aLinha.push(oExame.iExame);
-    aLinha.push(oExame.iProcedimento);
-
-    oGridExames.addRow( aLinha );
-  });
-
-  oGridExames.renderRows();
-
-  /**
-   * Colocamos o hint nos procedimentos na grid
-   */
-  oRetorno.aExames.each( function (oExame, iLinha) {
-
-    if (oExame.sProcedimento != '') {
-
-      var oParametros = {iWidth:'200', oPosition : {sVertical : 'B', sHorizontal : 'R'}};
-      var sHint       = oExame.sProcedimento.urlDecode();
-
-      oGridExames.setHint(iLinha, 2, sHint, oParametros);
-    }
-  });
-
+  aExamesRequisicao = oRetorno.aExames;
+  popularGrid();
 };
 
-/**
- * Salva a conferencia
- */
-function js_salvarConferencia() {
-
-  if ( !js_validaCampos() ) {
-    return false;
-  }
-
-  var oParametro           = {};
-  oParametro.exec          = 'salvarConferencia';
-  oParametro.iCodigo       = $F('la22_i_codigo');
-  oParametro.lConferido    = $F('la47_i_resultado') == 1;
-  oParametro.sConsideracao = encodeURIComponent( tagString( $F('la47_t_observacao') ) );
-  oParametro.aExames       = [];
-
-  var aSelecionadoGrid = oGridExames.getSelection('array');
-
-  aSelecionadoGrid.each( function ($aLinha) {
-
-    var oExame                    = {};
-    oExame.iCodigoRequisicaoExame = $aLinha[0];
-    oExame.iCodigoCID             = $aLinha[3].trim();
-    oExame.iProcedimento          = $aLinha[5].trim();
-    oParametro.aExames.push( oExame );
-  });
-
-  var oRequest          = {};
-  oRequest.method       = 'post';
-  oRequest.parameters   = 'json='+Object.toJSON(oParametro);
-  oRequest.asynchronous = false;
-  oRequest.onComplete   = function( oAjax ) {
-
-    js_removeObj("msgBoxB");
-
-    var oRetorno = eval( "(" + oAjax.responseText + ")" );
-    alert( oRetorno.sMensagem.urlDecode() );
-    if (parseInt(oRetorno.iStatus) == 1) {
-      location.href = 'lab4_confresult001.php';
-    }
-  };
-  js_divCarregando( _M(MSG_FRMLABCONFERENCIA+"aguarde_salvando_conferencia"), "msgBoxB");
-  new Ajax.Request( 'lab4_conferencia.RPC.php' , oRequest );
-}
-
-$('btnSalvar').observe( 'click', function() {
-  js_salvarConferencia();
-});
 
 function js_validaCampos() {
-
-  if ( $F('la22_i_codigo') == 1 && $F('la47_t_observacao') ) {
-
-    alert(_M(MSG_FRMLABCONFERENCIA+"escreva_uma_observacao"));
-    return false
-  }
 
   if ( oGridExames.getSelection('array').length == 0) {
 
@@ -316,12 +237,69 @@ function js_validaCampos() {
   return true;
 }
 
-function js_consultaResultados(iItemExame) {
+var oResultadoExame = null;
 
-  var oResultadoExame = new LancamentoExameLaboratorio('resultadoExame');
+function js_consultaResultados(iItemExame, iIndex) {
+
+  oResultadoExame = new LancamentoExameLaboratorio('oResultadoExame');
+  oResultadoExame.mostraCampoObservacao( true );
+  oResultadoExame.setCIDs( aExamesRequisicao[iIndex].aCID );
+  oResultadoExame.setProcedimento( aExamesRequisicao[iIndex].iProcedimento );
+  oResultadoExame.setCodigoCIDConferido( aExamesRequisicao[iIndex].iCidConferido );
   oResultadoExame.abrirComoJanela(iItemExame);
-  oResultadoExame.setReadOnly( true );
+  oResultadoExame.setCallbackConferir( function( oCID ) {
+    js_buscaExames();
+    oResultadoExame.oBtnFechar.click();
+  });
 
 }
 
+function popularGrid() {
+
+  oGridExames.clearAll(true);
+  aExamesRequisicao.each( function (oExame, iLinha) {
+
+    var sSituacao  = "50 - Lançado";
+    var oLinkExame = new Element( 'a', {'href':'#', 'onclick': 'js_consultaResultados('+oExame.iExame+', '+iLinha+')'} )
+                                .update( oExame.sExame.urlDecode() );
+    var aLinha = [];
+    aLinha.push(oLinkExame.outerHTML);
+    if ( oExame.lConferido ) {
+
+      sSituacao = "60 - Conferido";
+      aLinha[0] = oExame.sExame.urlDecode();
+    }
+
+    aLinha.push(oExame.sProcedimentoEstrutural);
+
+    var sCID = '';
+
+    if ( oExame.sNomeCidConferido != '' ) {
+      sCID = oExame.sEstruturalCidConferido.urlDecode() + ' - ' + oExame.sNomeCidConferido.urlDecode();
+    }
+
+    aLinha.push(sCID);
+    aLinha.push(sSituacao);
+    aLinha.push(oExame.liberadoPor.urlDecode());
+    aLinha.push(oExame.iExame);
+    aLinha.push(oExame.iProcedimento);
+
+    oGridExames.addRow( aLinha);
+  });
+
+  oGridExames.renderRows();
+
+  aExamesRequisicao.each( function (oExame, iLinha) {
+
+    oGridExames.aRows[iLinha].aCells[2].addClassName('elipse');
+
+    if( oExame.sNomeCidConferido != '' ) {
+
+      var sHint = oExame.sEstruturalCidConferido.urlDecode() + ' - ' + oExame.sNomeCidConferido.urlDecode();
+      oGridExames.setHint( iLinha, 2, sHint );
+      oGridExames.setHint( iLinha, 4, oExame.liberadoPor.urlDecode());
+    }
+
+  });
+}
 </script>

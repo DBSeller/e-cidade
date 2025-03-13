@@ -82,10 +82,10 @@ db_input('y30_data',10,$Iy30_data,true,'text',3,'')
 <script>
 function js_pesquisaq37_varfix(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_varfix','func_varfix.php?funcao_js=parent.js_mostravarfix1|q33_codigo|q33_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_varfix','func_varfix.php?funcao_js=parent.js_mostravarfix1|q33_codigo|q33_codigo','Pesquisa',true);
   }else{
      if(document.form1.q37_varfix.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_varfix','func_varfix.php?pesquisa_chave='+document.form1.q37_varfix.value+'&funcao_js=parent.js_mostravarfix','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_varfix','func_varfix.php?pesquisa_chave='+document.form1.q37_varfix.value+'&funcao_js=parent.js_mostravarfix','Pesquisa',false);
      }else{
        document.form1.q33_codigo.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostravarfix1(chave1,chave2){
 }
 function js_pesquisaq37_notifica(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
   }else{
      if(document.form1.q37_notifica.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.q37_notifica.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.q37_notifica.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
      }else{
        document.form1.y30_data.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostrafiscal1(chave1,chave2){
   db_iframe_fiscal.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_varfixnotifica','func_varfixnotifica.php?funcao_js=parent.js_preenchepesquisa|q37_sequence','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_varfixnotifica','func_varfixnotifica.php?funcao_js=parent.js_preenchepesquisa|q37_sequence','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_varfixnotifica.hide();

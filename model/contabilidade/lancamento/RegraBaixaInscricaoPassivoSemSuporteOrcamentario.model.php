@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("interfaces/IRegraLancamentoContabil.interface.php");
+require_once(modification("interfaces/IRegraLancamentoContabil.interface.php"));
 
 /**
  * @author Andrio Costa
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.11 $
  */
 class RegraBaixaInscricaoPassivoSemSuporteOrcamentario implements IRegraLancamentoContabil {
 
@@ -66,11 +66,11 @@ class RegraBaixaInscricaoPassivoSemSuporteOrcamentario implements IRegraLancamen
       }
     }
 
-    $oDaoTransacao = db_utils::getDao('contranslr');
+    $oDaoTransacao = new cl_contranslr;
     $sWhere        = "     c45_coddoc      = {$iCodigoDocumento}";
     $sWhere       .= " and c45_anousu      = ".db_getsession("DB_anousu");
     $sWhere       .= " and c46_seqtranslan = {$iCodigoLancamento}";
-    $sSqlTransacao = $oDaoTransacao->sql_query(null, "*", null, $sWhere);
+    $sSqlTransacao = $oDaoTransacao->sql_queryRegraLancamento(null, "*", null, $sWhere);
 
     $rsTransacao   = $oDaoTransacao->sql_record($sSqlTransacao);
 

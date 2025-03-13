@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
+db_postmemory($_POST);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
 
 $clsau_lote         = db_utils::getdao('sau_lote');
 $clsau_lotepront    = db_utils::getdao('sau_lotepront_ext');
@@ -55,7 +55,6 @@ $db_opcao           = 33;
 /* CONFIGURAÇÕES SAÚDE */
 $resSau_config      = $oDaoSau_config->sql_record($oDaoSau_config->sql_query_ext());
 $objSau_config      = db_utils::fieldsMemory($resSau_config, 0);
-
 
 /*
  * ==================================================================
@@ -193,6 +192,7 @@ function excluirProntuariosLote($aLista) {
     }
 
   }
+
   return $oErro;
 
 }
@@ -263,14 +263,12 @@ if(isset($excluirlote)){
 
     	$oPront   = db_utils::fieldsmemory($rsResult, $iX);
     	$aLista[] = $oPront->cod;
-
   	}
 
   } else {
 
   	$clsau_lotepront->erro_msg  = "Lote[$sd58_i_codigo] sem prontuarios. ";
     $lErro                      = true;
-
   }
 
   if ($lErro == false) {
@@ -279,21 +277,16 @@ if(isset($excluirlote)){
     if ($oErro->lError == true) {
 
       $clsau_lotepront->erro_msg = $oErro->sMsg;
-
     }
-
   }
 
   if ($lErro == false) {
 
     $clsau_lote->excluir($sd58_i_codigo);
     if ($clsau_lote->erro_status == "0") {
-
-      $clsau_lotepront->erro_msg = $clsau_lote->erro_msg;
       $lErro                     = true;
-
     }
-
+    $clsau_lotepront->erro_msg = $clsau_lote->erro_msg;
   }
 
   if ($lErro == true) {
@@ -329,33 +322,35 @@ if(isset($excluirlote)){
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<?
-try{
-	db_app::load("scripts.js");
-	db_app::load("prototype.js");
-	db_app::load("datagrid.widget.js");
-	db_app::load("strings.js");
-	db_app::load("webseller.js");
-	db_app::load("grid.style.css");
-	db_app::load("estilos.css");
-}catch (Exception $eException){
-	die( $eException->getMessage() );
-}
-?>
+  <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Expires" CONTENT="0">
+  <?php
+    try{
+      db_app::load("scripts.js");
+      db_app::load("prototype.js");
+      db_app::load("datagrid.widget.js");
+      db_app::load("strings.js");
+      db_app::load("webseller.js");
+      db_app::load("grid.style.css");
+      db_app::load("estilos.css");
+    }catch (Exception $eException){
+      die( $eException->getMessage() );
+    }
+  ?>
+  <script type="text/javascript" language="JavaScript" src="scripts/AjaxRequest.js"></script>
+
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="js_init()" >
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
         <center>
-	        <?
-	        require_once("forms/db_frmsau_lote.php");
-	        ?>
+          <?
+          require_once(modification("forms/db_frmsau_lote.php"));
+          ?>
         </center>
-	    </td>
+      </td>
     </tr>
   </table>
 </body>

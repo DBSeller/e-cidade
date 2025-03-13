@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_turma_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_turma_classe.php"));
 $pdf = new PDF();
 $pdf->Open();
 $pdf->AliasNbPages();

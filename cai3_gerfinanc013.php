@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_issbase_classe.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_cgm_classe.php");
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
 
 $head1 = "";
 $head2 = "";
@@ -38,9 +38,9 @@ $head7 = "";
 $head8 = "";
 $head9 = "";
 
-include("fpdf151/pdf.php");
-require("libs/db_sql.php");
-require("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+require(modification("libs/db_sql.php"));
+require(modification("libs/db_utils.php"));
 db_postmemory($HTTP_SERVER_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -134,7 +134,7 @@ if (!empty($numcgm)) {
   $result = debitos_inscricao($inscr,0,0,$DB_DATACALC,$DB_anousu,'','k00_tipo,k00_numpre,k00_numpar,k00_receit', $where);
   $outros = "Inscrição: ".$inscr;
   $clissbase = new cl_issbase; 
-  $result_inf = pg_exec("select * from empresa where q02_inscr = $inscr");
+  $result_inf = db_query("select * from empresa where q02_inscr = $inscr");
   if (pg_numrows($result_inf)!=0) {
     db_fieldsmemory($result_inf,0);
     $z01_numcgm = $q02_numcgm;
@@ -161,7 +161,7 @@ $pdf->AliasNbPages();
 $pdf->SetFillColor(235);
 
 //Dados
-$dados = pg_exec("select z01_numcgm,z01_nome,z01_ender,z01_munic,z01_uf,z01_cgccpf,z01_ident,z01_numero,z01_compl
+$dados = db_query("select z01_numcgm,z01_nome,z01_ender,z01_munic,z01_uf,z01_cgccpf,z01_ident,z01_numero,z01_compl
 from cgm where z01_numcgm = $z01_numcgm");
 
 //DEBITOS
@@ -277,7 +277,7 @@ for ($i = 0; $i < $numrows; $i++) {
   }
   $numpre = pg_result($result,$i,"k00_numpre");  
   $sqlparcel = "select * from termo where v07_numpre = $xnumpre ";
-  $resultparcel = pg_exec($sqlparcel);
+  $resultparcel = db_query($sqlparcel);
   $linhasparcel = pg_num_rows($resultparcel);
   if ($linhasparcel>0) {
     $temparcel  = true;
@@ -291,7 +291,7 @@ for ($i = 0; $i < $numrows; $i++) {
   $sql_tipo_debito .= " select arretipo.k00_tipo, k03_tipo from caixa.arrecad ";
   $sql_tipo_debito .= " inner join caixa.arretipo on arrecad.k00_tipo = arretipo.k00_tipo ";
   $sql_tipo_debito .= " where k00_numpre = $xnumpre limit 1";
-  $result_tipo_debito = pg_exec($sql_tipo_debito) or die($sql_tipo_debito);
+  $result_tipo_debito = db_query($sql_tipo_debito) or die($sql_tipo_debito);
   $tipo_debito = pg_result($result_tipo_debito,0,"k00_tipo");
   $k03_tipo    = pg_result($result_tipo_debito,0,"k03_tipo");
 
@@ -303,7 +303,7 @@ for ($i = 0; $i < $numrows; $i++) {
     $sql_processoforo .= " inner join juridico.inicialnumpre on inicial.v50_inicial = inicialnumpre.v59_inicial ";
     $sql_processoforo .= " inner join juridico.inicialcodforo on inicialcodforo.v55_inicial = inicial.v50_inicial ";
     $sql_processoforo .= " where inicialnumpre.v59_numpre = $xnumpre ";
-    $result_processoforo = pg_exec($sql_processoforo) or die($sql_processoforo);
+    $result_processoforo = db_query($sql_processoforo) or die($sql_processoforo);
     if ( pg_numrows($result_processoforo) > 0 ) {
       $cProcessoForo = " - PROCESSO FORO: " . pg_result($result_processoforo,0,0);
     }
@@ -321,7 +321,7 @@ for ($i = 0; $i < $numrows; $i++) {
   } else {
     $sqldivida = "select distinct v01_exerc from divida where v01_numpre = $xnumpre";
   }
-  $resultdivida = pg_exec($sqldivida) or die($sqldivida);
+  $resultdivida = db_query($sqldivida) or die($sqldivida);
 
   $exercicios="";
 
@@ -356,7 +356,7 @@ for ($i = 0; $i < $numrows; $i++) {
     $sql1 = " select k00_descr from arretipo where k00_tipo = $xnumtot and k00_instit = ".db_getsession('DB_instit') ;
     $pdf->setx(5);
     $pdf->SetFont('arial','B',6);
-    $pdf->Cell(2+$TamNumpar+$TamNumtot+13+13+13+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL DO TIPO : ".$xnumtot." - ".pg_result(pg_exec($sql1),0,"k00_descr"),"T",0,"L",1);
+    $pdf->Cell(2+$TamNumpar+$TamNumtot+13+13+13+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL DO TIPO : ".$xnumtot." - ".pg_result(db_query($sql1),0,"k00_descr"),"T",0,"L",1);
     $pdf->Cell($TamVlrhis + 6,5,db_formatar($tothis,'f'),1,0,"R",1);
     $pdf->Cell($TamVlrcor + 6,5,db_formatar($totcor,'f'),1,0,"R",1);
     $pdf->Cell($TamVlrjuros + 6,5,db_formatar($totjuros,'f'),1,0,"R",1);
@@ -422,7 +422,7 @@ for ($i = 0; $i < $numrows; $i++) {
             left join arrematric b on a.k00_numpre = b.k00_numpre
             left join arreinscr  c on a.k00_numpre = c.k00_numpre
                 where a.k00_numpre = ".pg_result($result,$i,"k00_numpre")." limit 1";
-      $result1 = pg_exec($sql1);
+      $result1 = db_query($sql1);
       $matinsc = pg_result($result1,0,"matinsc");
     } else {
       $matinsc = pg_result($result,$i,"k00_origem");
@@ -513,7 +513,7 @@ for ($i = 0; $i < $numrows; $i++) {
 }
 
 $sqlparcel = "select * from termo where v07_numpre = $xnumpre and v07_instit = ".db_getsession('DB_instit') ;
-$resultparcel = pg_exec($sqlparcel);
+$resultparcel = db_query($sqlparcel);
 $linhasparcel = pg_num_rows($resultparcel);
 if ($linhasparcel>0) {
   $temparcel  = true;
@@ -527,7 +527,7 @@ $sql_tipo_debito = "";
 $sql_tipo_debito .= " select arretipo.k00_tipo, k03_tipo from caixa.arrecad ";
 $sql_tipo_debito .= " inner join caixa.arretipo on arrecad.k00_tipo = arretipo.k00_tipo ";
 $sql_tipo_debito .= " where k00_numpre = $xnumpre limit 1";
-$result_tipo_debito = pg_exec($sql_tipo_debito) or die($sql_tipo_debito);
+$result_tipo_debito = db_query($sql_tipo_debito) or die($sql_tipo_debito);
 $tipo_debito = pg_result($result_tipo_debito,0,"k00_tipo");
 $k03_tipo    = pg_result($result_tipo_debito,0,"k03_tipo");
 
@@ -539,7 +539,7 @@ if ( $k03_tipo == 18 ) {
   $sql_processoforo .= " inner join juridico.inicialnumpre on inicial.v50_inicial = inicialnumpre.v59_inicial ";
   $sql_processoforo .= " inner join juridico.inicialcodforo on inicialcodforo.v55_inicial = inicial.v50_inicial ";
   $sql_processoforo .= " where inicialnumpre.v59_numpre = $xnumpre ";
-  $result_processoforo = pg_exec($sql_processoforo) or die($sql_processoforo);
+  $result_processoforo = db_query($sql_processoforo) or die($sql_processoforo);
   if ( pg_numrows($result_processoforo) > 0 ) {
     $cProcessoForo = " - PROCESSO FORO: " . pg_result($result_processoforo,0,0);
   }
@@ -557,7 +557,7 @@ if ( $k03_tipo == 13 ) {
 } else {
   $sqldivida = "select distinct v01_exerc from divida where v01_numpre = $xnumpre";
 }
-$resultdivida = pg_exec($sqldivida) or die($sqldivida);
+$resultdivida = db_query($sqldivida) or die($sqldivida);
 
 $exercicios="";
 for ($exerc=0; $exerc < pg_numrows($resultdivida); $exerc++) {
@@ -582,7 +582,7 @@ if (in_array($xnumtot,$tipos) == true ) {
   $pdf->setx(5);
   $pdf->SetFont('arial','B',6);
   $sql1 = " select k00_descr from arretipo where k00_tipo = $xnumtot and k00_instit = ".db_getsession('DB_instit') ;
-  $pdf->Cell(2+$TamNumpar+$TamNumtot+13+13+13+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL DO TIPO : ".$xnumtot." - ".pg_result(pg_exec($sql1),0,"k00_descr"),"T",0,"L",1);
+  $pdf->Cell(2+$TamNumpar+$TamNumtot+13+13+13+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL DO TIPO : ".$xnumtot." - ".pg_result(db_query($sql1),0,"k00_descr"),"T",0,"L",1);
   $pdf->Cell($TamVlrhis + 6,5,db_formatar($tothis,'f'),1,0,"R",1);
   $pdf->Cell($TamVlrcor + 6,5,db_formatar($totcor,'f'),1,0,"R",1);
   $pdf->Cell($TamVlrjuros + 6,5,db_formatar($totjuros,'f'),1,0,"R",1);
@@ -690,7 +690,7 @@ $sSqlSuspensao .= " 			  arresusp.k00_numpre,									";
 $sSqlSuspensao .= " 			  arresusp.k00_numpar,									";
 $sSqlSuspensao .= " 			  arresusp.k00_receit 									";
 
-$rsSuspensao      = pg_query($sSqlSuspensao);
+$rsSuspensao      = db_query($sSqlSuspensao);
 $iLinhasSuspensao = pg_num_rows($rsSuspensao);
 $aSuspensao		 = array();
 

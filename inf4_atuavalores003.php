@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -56,14 +56,14 @@ parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 </body>
 </html>
 <?
-$result = pg_query("select fc_corre(".$receit.",'".$dtoper."',".$valor.",'".$dtbase."',".db_getsession("DB_anousu").",'".$dtvenc."') as correcao");
+$result = db_query("select fc_corre(".$receit.",'".$dtoper."',".$valor.",'".$dtbase."',".db_getsession("DB_anousu").",'".$dtvenc."') as correcao");
 db_fieldsmemory($result,0);
 
-$result = pg_query("select fc_juros(".$receit.",'".$dtvenc."','".$dtbase."','".$dtoper."','f',".db_getsession("DB_anousu").") as juro");
+$result = db_query("select fc_juros(".$receit.",'".$dtvenc."','".$dtbase."','".$dtoper."','f',".db_getsession("DB_anousu").") as juro");
 db_fieldsmemory($result,0);
 $juro = $correcao * $juro;
 
-$result = pg_query("select fc_multa(".$receit.",'".$dtvenc."','".$dtbase."','".$dtoper."',".db_getsession("DB_anousu").") as multa");
+$result = db_query("select fc_multa(".$receit.",'".$dtvenc."','".$dtbase."','".$dtoper."',".db_getsession("DB_anousu").") as multa");
 db_fieldsmemory($result,0);
 $multa = $correcao * $multa;
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,18 +26,18 @@
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_turma_classe.php");
-include("classes/db_calendario_classe.php");
-include("classes/db_turno_classe.php");
-include("classes/db_cursoedu_classe.php");
-include("classes/db_procedimento_classe.php");
-include("classes/db_sala_classe.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("classes/db_turno_classe.php"));
+include(modification("classes/db_cursoedu_classe.php"));
+include(modification("classes/db_procedimento_classe.php"));
+include(modification("classes/db_sala_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clturma = new cl_turma;
@@ -108,7 +108,7 @@ $escola = db_getsession("DB_coddepto");
                    inner join periodoescola on periodoescola.ed17_i_turno = turno.ed15_i_codigo
                   WHERE periodoescola.ed17_i_escola = $escola
                   GROUP BY ed15_i_codigo,ed15_c_nome";
-      $result_tur = pg_query($sql_tur);
+      $result_tur = db_query($sql_tur);
       $linhas_tur = pg_num_rows($result_tur);
       if($linhas_tur==0){
        $x = array(''=>'NENHUM REGISTRO');
@@ -160,7 +160,7 @@ $escola = db_getsession("DB_coddepto");
    if(!isset($pesquisa_chave)){
     if(isset($campos)==false){
      if(file_exists("funcoes/db_func_turma.php")==true){
-      include("funcoes/db_func_turma.php");
+      include(modification("funcoes/db_func_turma.php"));
      }else{
       $campos = "turma.*";
      }
@@ -218,3 +218,9 @@ $escola = db_getsession("DB_coddepto");
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

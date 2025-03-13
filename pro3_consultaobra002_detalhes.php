@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_obrasconstr_classe.php");
-include("classes/db_obrasender_classe.php");
-include("classes/db_obrashabite_classe.php");
-include("classes/db_obrasalvara_classe.php");
-include("classes/db_obras_classe.php");
-include("classes/db_obrastec_classe.php");
-include("classes/db_obrastecnicos_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_obrasconstr_classe.php"));
+include(modification("classes/db_obrasender_classe.php"));
+include(modification("classes/db_obrashabite_classe.php"));
+include(modification("classes/db_obrasalvara_classe.php"));
+include(modification("classes/db_obras_classe.php"));
+include(modification("classes/db_obrastec_classe.php"));
+include(modification("classes/db_obrastecnicos_classe.php"));
 $clobrasconstr= new cl_obrasconstr;
 $clobrasender= new cl_obrasender;
 $clobrastec= new cl_obrastec;
@@ -103,7 +103,7 @@ if ($solicitacao == "construcoes") {
       <?=@$ob08_ocupacao?>
       -
       <? $sql="select j31_descr as ocupacao  from caracter where j31_codigo=$ob08_ocupacao";
-      $result2= pg_query($sql);
+      $result2= db_query($sql);
       db_fieldsmemory($result2,0);
       ?><?=@$ocupacao?>
       &nbsp;
@@ -113,7 +113,7 @@ if ($solicitacao == "construcoes") {
       <?=@$ob08_tipoconstr?>
       -
       <? $sql="select j31_descr as tipoconstr  from caracter where j31_codigo=$ob08_tipoconstr";
-      $result1= pg_query($sql);
+      $result1= db_query($sql);
       db_fieldsmemory($result1,0);
       ?><?=@$tipoconstr?>
       &nbsp;
@@ -126,7 +126,7 @@ if ($solicitacao == "construcoes") {
       <?=@$ob08_tipolanc?>
       -
       <? $sql="select j31_descr as tipolanc from caracter where j31_codigo=$ob08_tipolanc";
-      $result3= pg_query($sql);
+      $result3= db_query($sql);
       db_fieldsmemory($result3,0);
       ?><?=@$tipolanc?>
       &nbsp; 
@@ -310,7 +310,7 @@ $rsTecnicos = $clobrastecnicos->sql_record($clobrastecnicos->sql_query(null,"z01
 </body>
 <script>
 function js_mostracgm(){
-    func_nome.jan.location.href = 'prot3_conscgm002.php?fechar=func_nome&numcgm=<?=@$ob15_numcgm?>';
+    func_nome.jan.location.href = 'prot3_consultacgmnovo002.php?fechar=func_nome&numcgm=<?=@$ob15_numcgm?>';
     func_nome.mostraMsg();
     func_nome.show();
     func_nome.focus();

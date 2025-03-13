@@ -1,4 +1,5 @@
 <?
+
 $classinatura = new cl_assinatura;
 
 $xlin = 20;
@@ -21,17 +22,17 @@ $this->objpdf->Setfont('Arial', 'B', 16);
 $this->objpdf->text(165, $xlin -8, 'SLIP: ' .  db_formatar(pg_result($this->dados, 0, "k17_codigo"), 's', '0', 6, 'e'));
 
 if (USE_PCASP) {
-  
-  $this->objpdf->Setfont('Arial', '', 9);
-  //$this->objpdf->text(115, $xlin -2, substr("Evento: " . $this->sEvento, 0, 55), 's', '0', 6, 'e');
-  
-  $y   = $this->objpdf->getY();
-  $this->objpdf->setY($y + 5);
-  $this->objpdf->cell(190,  4, substr("Evento: " . $this->sEvento, 0, 55),      "",  1, "R", 0);
-  $this->objpdf->setY($y);
+
+    $this->objpdf->Setfont('Arial', '', 9);
+    //$this->objpdf->text(115, $xlin -2, substr("Evento: " . $this->sEvento, 0, 55), 's', '0', 6, 'e');
+
+    $y   = $this->objpdf->getY();
+    $this->objpdf->setY($y + 5);
+    $this->objpdf->cell(190,  4, substr("Evento: " . $this->sEvento, 0, 55),      "",  1, "R", 0);
+    $this->objpdf->setY($y);
 }
 
-/// retângulo dos dados da transferência
+/// ret?ngulo dos dados da transfer?ncia
 
 $this->objpdf->rect($xcol, $xlin +2, $xcol +198, 60, 10, 'DF', '1234');
 $this->objpdf->Setfont('Arial', 'B', 9);
@@ -41,34 +42,54 @@ $this->objpdf->text($xcol +164, $xlin +7, 'VALOR');
 $this->objpdf->Setfont('Arial', 'B', 11);
 $this->objpdf->text($xcol +168, $xlin +11, 'R$');
 $this->objpdf->text($xcol +172, $xlin +11, db_formatar(pg_result($this->dados, 0, "k17_valor"), 'f'));
-$this->objpdf->Setfont('Arial', 'B', 9);
 
+$this->objpdf->Setfont('Arial', 'B', 9);
 $this->objpdf->text($xcol +2, $xlin + 18, 'CGM');
+$this->objpdf->Setfont('Arial', '', 9);
 $this->objpdf->text($xcol +6, $xlin + 22,  pg_result($this->dados, 0, "z01_numcgm"). ' - '. pg_result($this->dados, 0, "z01_nome"));
+
+$this->objpdf->Setfont('Arial', 'B', 9);
+$this->objpdf->text($xcol +100, $xlin +18, 'INSTITUIÇÃO DE DESTINO');
+$this->objpdf->Setfont('Arial', '', 9);
+$this->objpdf->text($xcol +100, $xlin +22, pg_result($this->dados, 0, "k150_instituicao"));
+
 
 /**
  * Dados bancarios do credor
  */
 if ( !empty($this->oDadosBancarioCredor) ) {
 
-  $this->objpdf->text($xcol + 2, $xlin + 30, 'BANCO');
-
+  $this->objpdf->Setfont('Arial', 'B', 9);
+  $this->objpdf->text($xcol + 2, $xlin + 26, 'BANCO');
+  $this->objpdf->Setfont('Arial', '', 9);
   $sTextoDadosBancariosCredor  = $this->oDadosBancarioCredor->iBanco;
   $sTextoDadosBancariosCredor .= ' - '         . $this->oDadosBancarioCredor->sBanco;
-  $sTextoDadosBancariosCredor .= '  Agência: ' . $this->oDadosBancarioCredor->iAgencia; 
+  $sTextoDadosBancariosCredor .= '  Agência: ' . $this->oDadosBancarioCredor->iAgencia;
   $sTextoDadosBancariosCredor .= ' - '         . $this->oDadosBancarioCredor->iAgenciaDigito;
   $sTextoDadosBancariosCredor .= '  Conta: '   . $this->oDadosBancarioCredor->iConta;
   $sTextoDadosBancariosCredor .= ' - '         . $this->oDadosBancarioCredor->iContaDigito;
 
-  $this->objpdf->text($xcol + 6, $xlin + 34,  $sTextoDadosBancariosCredor);
+  $this->objpdf->text($xcol + 6, $xlin + 30,  $sTextoDadosBancariosCredor);
 }
+$this->objpdf->Setfont('Arial', 'B', 9);
+$this->objpdf->text($xcol + 2, $xlin + 36, 'DÉBITO');
+$this->objpdf->Setfont('Arial', '', 9);
+$this->objpdf->text($xcol + 6, $xlin + 40, pg_result($this->dados, 0, "k17_debito").' - '.pg_result($this->dados, 0, "descr_debito"));
+$this->objpdf->Setfont('Arial', 'B', 9);
+$this->objpdf->text($xcol + 2, $xlin + 46, 'CRÉDITO');
+$this->objpdf->Setfont('Arial', '', 9);
+$this->objpdf->text($xcol + 6, $xlin + 50, pg_result($this->dados, 0, "k17_credito").' - '.pg_result($this->dados, 0, "descr_credito"));
 
-$this->objpdf->text($xcol + 2, $xlin + 43, 'DÉBITO');
-$this->objpdf->text($xcol + 6, $xlin + 47, pg_result($this->dados, 0, "k17_debito").'   -   '.pg_result($this->dados, 0, "descr_debito"));
-$this->objpdf->text($xcol + 2, $xlin + 56, 'CRÉDITO');
-$this->objpdf->text($xcol + 6, $xlin + 60, pg_result($this->dados, 0, "k17_credito").'   -   '.pg_result($this->dados, 0, "descr_credito"));
+if (!empty($this->recurso_slip)) {
 
-/// retângulo do histórico
+    $oRecurso = RecursoRepository::getRecursoPorCodigo($this->recurso_slip->k181_recursocredito);
+    $sDescricaoRecurso = $oRecurso->getDescricao();
+    $this->objpdf->Setfont('Arial', 'B', 9);
+    $this->objpdf->text($xcol + 2, $xlin + 56, 'FONTE DE RECURSO');
+    $this->objpdf->Setfont('Arial', '', 9);
+    $this->objpdf->text($xcol + 6, $xlin + 60, $sDescricaoRecurso);
+}
+/// ret?ngulo do hist?rico
 
 $this->objpdf->rect($xcol, $xlin +80, $xcol +198, 60, 10, 'DF', '1234');
 $this->objpdf->Setfont('Arial', 'B', 9);
@@ -80,17 +101,17 @@ $this->objpdf->setxy($xcol +6, $xlin +103);
 $this->objpdf->multicell(190, 3, pg_result($this->dados, 0, "k17_texto"), 0, "L");
 $this->objpdf->ln(2);
 if(pg_result($this->dados,0,"k17_situacao") == 3){
-  $this->objpdf->Setfont('Arial', 'b', 8);
-  $this->objpdf->multicell(190, 3,"Estornado em ". db_formatar(pg_result($this->dados, 0, "k17_dtestorno"),'d'), 0, "L");
-  $this->objpdf->Setfont('Arial', '', 8);
-  $motivo = substr((pg_result($this->dados, 0, "k17_motivoestorno")),0,900);
-  $this->objpdf->Setfont('Arial', '', 8);
-  $this->objpdf->multicell(190, 3,"Motivo : ".$motivo, 0, "L"); 
+    $this->objpdf->Setfont('Arial', 'b', 8);
+    $this->objpdf->multicell(190, 3,"Estornado em ". db_formatar(pg_result($this->dados, 0, "k17_dtestorno"),'d'), 0, "L");
+    $this->objpdf->Setfont('Arial', '', 8);
+    $motivo = substr((pg_result($this->dados, 0, "k17_motivoestorno")),0,900);
+    $this->objpdf->Setfont('Arial', '', 8);
+    $this->objpdf->multicell(190, 3,"Motivo : ".$motivo, 0, "L");
 }else if(pg_result($this->dados,0,"k17_situacao") == 4){
-  $this->objpdf->Setfont('Arial', 'b', 8);
-  $this->objpdf->multicell(190, 3,"Anulado em ".db_formatar(pg_result($this->dados, $j, "k17_dtanu"), 'd'), 0, "L");
-  $this->objpdf->Setfont('Arial', '', 8);
-  $this->objpdf->multicell(190, 3,"Motivo : ".substr(pg_result($this->dados, $j, "k18_motivo"),0,900), 0, "L");
+    $this->objpdf->Setfont('Arial', 'b', 8);
+    $this->objpdf->multicell(190, 3,"Anulado em ".db_formatar(pg_result($this->dados, $j, "k17_dtanu"), 'd'), 0, "L");
+    $this->objpdf->Setfont('Arial', '', 8);
+    $this->objpdf->multicell(190, 3,"Motivo : ".substr(pg_result($this->dados, $j, "k18_motivo"),0,900), 0, "L");
 }
 
 
@@ -103,17 +124,18 @@ $ass_tesFunc  = str_replace( "_", "", $classinatura->assinatura(1004,"","1"));
 $ass_cont     = str_replace( "_", "", $classinatura->assinatura(1005,"","0"));
 $ass_contFunc = str_replace( "_", "", $classinatura->assinatura(1005,"","1"));
 
-// retorna a assinatura e o modelo de recibo conforme a configuração do cliente
-require_once("libs/db_utils.php");
-require_once("libs/db_libdocumento.php");
+$nomeUsuario = $this->nome_usuario;
+// retorna a assinatura e o modelo de recibo conforme a configura??o do cliente
+require_once  modification("libs/db_utils.php");
+require_once  modification("libs/db_libdocumento.php");
 $oAssinaturas = new libdocumento(1705);
 $aParagrafo = $oAssinaturas->getDocParagrafos();
 
 foreach ($aParagrafo as $oParag) {
-  if ($oParag->oParag->db02_tipo == 3) {
-    $texto = $oParag->oParag->db02_texto;
-    eval($texto);
-  }    
+    if ($oParag->oParag->db02_tipo == 3) {
+        $texto = $oParag->oParag->db02_texto;
+        eval($texto);
+    }
 }
 
 ?>

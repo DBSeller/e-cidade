@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-//include("classes/db_recibocanc_classe.php");
+//include(modification("classes/db_recibocanc_classe.php"));
 //$clrecibocanc   = new cl_recibocanc;
 
-//include("classes/db_recibo_classe.php");
+//include(modification("classes/db_recibo_classe.php"));
 //$clrecibo   = new cl_recibo;
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
@@ -54,7 +54,7 @@ if(isset($excluir)){
   db_inicio_transacao();
 	$sqlerro = false;
   $sql     = "select * from recibo where k00_numpre=$k00_numpre and k00_receit=$k00_receit and k00_numcgm=$k00_numcgm";
-  $result  = pg_query($sql);
+  $result  = db_query($sql);
   $numrows = pg_numrows($result);
   for($i=0; $i<$numrows; $i++){
     db_fieldsmemory($result,$i);
@@ -89,7 +89,7 @@ if(isset($excluir)){
                                ,$k00_tipojm 
                                ,$k00_codsubrec
                       )";
-     $result = @pg_query($sql);		      
+     $result = @db_query($sql);		      
 		 echo pg_last_error();
      if($result==false){
 		      echo $sql;die();
@@ -100,7 +100,7 @@ if(isset($excluir)){
   }
   if($sqlerro==false){
     $sql = "delete from recibo where k00_numpre=$k00_numpre and k00_receit=$k00_receit and k00_numcgm=$k00_numcgm";
-    $result = @pg_query($sql);		      
+    $result = @db_query($sql);		      
     if($result==false){
        $sqlerro=true;
        $erro_msg='Erro ao excluir do recibo..';
@@ -113,7 +113,7 @@ if(isset($excluir)){
 }
 
 if(isset($k00_numpre)){
-  $result =  pg_query("select k00_numpre from arrepaga where k00_numcgm=$k00_numpre and k00_numcgm=$k00_numcgm");
+  $result =  db_query("select k00_numpre from arrepaga where k00_numcgm=$k00_numpre and k00_numcgm=$k00_numcgm");
   if(pg_numrows($result) > 0){
     $erro_msg02 = 'Recibo já foi pago!'; 
     $db_botao=false;
@@ -203,7 +203,7 @@ if(isset($erro_msg02)){
 <script>
 
 function js_pes(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_recibo','func_recibo.php?funcao_js=parent.js_vai|k00_numcgm|k00_receit|k00_valor|k00_numpre','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_recibo','func_recibo.php?funcao_js=parent.js_vai|k00_numcgm|k00_receit|k00_valor|k00_numpre','Pesquisa',true);
 }
 function js_vai(c1,c2,c3,c4){
   obj= document.form1;

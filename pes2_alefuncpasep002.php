@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -85,8 +85,8 @@ where r14_anousu = $ano
 
 group by o15_codigo, o15_descr";
 
-$result_orgao   = pg_exec($sql_orgao);
-$result_recurso = pg_exec($sql_recurso);
+$result_orgao   = db_query($sql_orgao);
+$result_recurso = db_query($sql_recurso);
 
 $num_orgao      = pg_numrows($result_orgao);
 $num_recurso    = pg_numrows($result_recurso);

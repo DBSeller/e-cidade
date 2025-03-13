@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//require("libs/db_stdlib.php");
 
-require("fpdf151/scpdf.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
+require modification("fpdf151/scpdf.php");
+require modification("libs/db_conecta.php");
+include modification("libs/db_sessoes.php");
+include modification("libs/db_usuariosonline.php");
+include modification("libs/db_sql.php");
+include modification("dbforms/db_funcoes.php");
 
-include("classes/db_debcontapedido_classe.php");
-include("classes/db_debcontaarquivo_classe.php");
-include("classes/db_debcontaarquivotipo_classe.php");
-include("classes/db_db_config_classe.php");
+include modification("classes/db_debcontapedido_classe.php");
+include modification("classes/db_debcontaarquivo_classe.php");
+include modification("classes/db_debcontaarquivotipo_classe.php");
+include modification("classes/db_db_config_classe.php");
+//require modification("libs/db_stdlib.php");
 
 $cldebcontapedido = new cl_debcontapedido;
 $cldebcontaarquivo = new cl_debcontaarquivo;
 $cldebcontaarquivotipo = new cl_debcontaarquivotipo;
 $cldb_config = new cl_db_config;
-
+// ini_set('display_errors',1);
+// ini_set('display_startup_erros',1);
+// error_reporting(E_ALL);
 $clrotulo = new rotulocampo;
 $clrotulo->label("d72_data");
 
@@ -170,11 +172,11 @@ if (1==0) {
     inner join debcontapedidomatric on d63_codigo = d68_codigo
     inner join arrematric on k00_matric = d68_matric
     inner join arrecad on arrecad.k00_numpre = arrematric.k00_numpre
-    where 	k00_tipo = $tipodebito and
+    where   k00_tipo = $tipodebito and
     k00_numpar = $numpar and
     d63_status = 2 and
     d63_banco = $banco
-    group by 	d68_codigo,
+    group by  d68_codigo,
     k00_dtvenc,
     d68_matric,
     d63_agencia,
@@ -261,7 +263,7 @@ if (1==0) {
     
     $data =  "$d72_data_ano-$d72_data_mes-$d72_data_dia";
     
-    $sqlparam = "	
+    $sqlparam = " 
       select * 
         from debcontaparam
              inner join db_bancos on to_number(db90_codban, '999') = d62_banco
@@ -277,7 +279,9 @@ if (1==0) {
       $resultnextdebcontaarquivo = pg_exec($nextdebcontaarquivo) or die($nextdebcontaarquivo);
       db_fieldsmemory($resultnextdebcontaarquivo,0);
       
-      $arqgerado = "tmp/debconta_" . str_pad($banco, 3, "0", STR_PAD_LEFT) . "_nsa_" . str_pad($d62_ultimonsa, 10, "0", STR_PAD_LEFT) . "_" . date("Y-m-d_His",db_getsession("DB_datausu")) . ".txt";
+      $ext = ($banco == 237) ? '.DA' : '.REM';
+      //$arqgerado = "tmp/debconta_" . str_pad($banco, 3, "0", STR_PAD_LEFT) . "_nsa_" . str_pad($d62_ultimonsa, 10, "0", STR_PAD_LEFT) . "_" . date("Y-m-d_His",db_getsession("DB_datausu")) . ".txt";
+      $arqgerado = "tmp/" . str_pad($banco, 3, "0", STR_PAD_LEFT) . str_pad($d62_ultimonsa, 5, "0", STR_PAD_LEFT) . $ext;
 
       $fd = fopen($arqgerado,'w+');
       $linhas = "";
@@ -290,7 +294,7 @@ if (1==0) {
       
       $resultupdateparam = pg_exec($updateparam) or die($updateparam);
       
-      $insertarquivo = 	"
+      $insertarquivo =  "
         insert into debcontaarquivo (
           d72_codigo,
           d72_nsa,
@@ -331,11 +335,11 @@ if (1==0) {
       $linhas .= "04";
       $linhas .= "DEBITO AUTOMATICO";
       $linhas .= str_repeat(" ",52);
-	  if($formatoArq=="U"){
-	  	$linhas .= "\n";
-	  }else{
-	  	$linhas .= "\r\n";
-	  }
+    if($formatoArq=="U"){
+      $linhas .= "\n";
+    }else{
+      $linhas .= "\r\n";
+    }
       
       
       $valortotal = 0;
@@ -361,6 +365,8 @@ if (1==0) {
         
         $linhas .= "E";
         
+        $d63_idempresa = str_pad((int)($d63_idempresa), 7, "0", STR_PAD_LEFT);
+        
         $linhas .= str_pad(trim($d63_idempresa), 25, " ", STR_PAD_RIGHT);
         
         $linhas .= str_pad(trim($d63_agencia), 4, "0", STR_PAD_LEFT);
@@ -374,8 +380,39 @@ if (1==0) {
         
         //die("x: $data  #  $data_debito");
         
+ 
+        /* 
+         *   Bloco para atualizar valores da recibo paga // Niteroi
+         */
+
+        $sSqlValor = "select k00_txban from arretipo where k00_tipo = $tipodebito";
+        $rsValor = pg_exec($sSqlValor) or die($sSqlValor);
+        db_fieldsmemory($rsValor, 0);
+
+        
+        $oRegraEmissao = new regraEmissao($tipodebito,2,db_getsession('DB_instit'),date("Y-m-d", db_getsession("DB_datausu")),db_getsession('DB_ip'));
+        
+        $oRecibo = new recibo(2, null, 5);
+        $oRecibo->addNumpre($k00_numpre,$k00_numpar);
+        $oRecibo->setNumBco($oRegraEmissao->getCodConvenioCobranca());
+        // $datavencimento = substr($k00_dtvenc, 6, 4).substr($k00_dtvenc, 3, 2).substr($k00_dtvenc, 0, 2);
+        $oRecibo->setDataVencimentoRecibo($k00_dtvenc);
+        $oRecibo->emiteRecibo();
+        $novo_numpre = $oRecibo->getNumpreRecibo();
+        if(!$oRegraEmissao->isCobranca()){
+          $iNumpre = $novo_numpre;
+          $iNumpar = 0;
+        }
+
+        $k00_valor = busca_Valores_Recibo($novo_numpre);
+
+        /*
+         * Fim Bloco
+         */
+
+
         $linhas .= str_replace("-","",$data_debito);
-        $linhas .= str_pad(trim(db_formatar($k00_valor, 'valsemform', '0', 15)), 15, "0", STR_PAD_LEFT);
+        $linhas .= str_pad(trim(db_formatar($k00_valor + $k00_txban, 'valsemform', '0', 15)), 15, "0", STR_PAD_LEFT);
         $linhas .= "03";
         
         // VERSAO - NUMPRE - NUMPAR - MATRIC - CODIGO_PEDIDO
@@ -384,12 +421,12 @@ if (1==0) {
         $linhas .= str_repeat(" ", 20);
         $linhas .= substr($tipomov,0,1);
         if($formatoArq=="U"){
-	  	  $linhas .= "\n";
-	    }else{
-	  	  $linhas .= "\r\n";
-	    }
-		
-        $valortotal += $k00_valor;
+        $linhas .= "\n";
+      }else{
+        $linhas .= "\r\n";
+      }
+    
+        $valortotal += ($k00_valor + $k00_txban);
         
         $nextarquivoreg = "select nextval('debcontaarquivoreg_d73_sequencial_seq') as debcontaarquivoreg";
         $resultnextarquivoreg = pg_exec($nextarquivoreg) or die($nextarquivoreg);
@@ -415,7 +452,7 @@ if (1==0) {
                    '$data'";
         $resultarquivoregcad = pg_exec($insertarquivoregcad) or die($insertarquivoregcad);
         
-        $insertarquivoregped = 	"
+        $insertarquivoregped =  "
           insert into debcontaarquivoregped
             select nextval('debcontaarquivoregped_d80_sequencial_seq'),
                    $debcontaarquivoreg,
@@ -429,28 +466,25 @@ if (1==0) {
       $linhas .= str_pad(trim(db_formatar($valortotal, 'valsemform', '0', 17)), 17, "0", STR_PAD_LEFT);
       $linhas .= str_repeat(" ", 126);
      
-	  
-	   if($formatoArq=="U"){
-	  	if($linhasBranco>0){
-      	  $LB ="";
-      	  for($l=0;$linhasBranco>$l;$l++){
-      		$LB .= "\n";
-      	  }
-		  $linhas .= $LB;
+    
+     if($formatoArq=="U"){
+      if($linhasBranco>0){
+          $LB ="";
+          for($l=0;$linhasBranco>$l;$l++){
+          $LB .= "\n";
+          }
+      $linhas .= $LB;
         }
-	  }else{
-	  	if($linhasBranco>0){
-      	  $LB ="";
-      	  for($l=0;$linhasBranco>$l;$l++){
-      		$LB .= "\r\n";
-      	  }
-		  $linhas .= $LB;
+    }else{
+      if($linhasBranco>0){
+          $LB ="";
+          for($l=0;$linhasBranco>$l;$l++){
+          $LB .= "\r\n";
+          }
+      $linhas .= $LB;
         }
-	  }
-	  
-      
-	  
-	  
+    }
+    
       fputs($fd,$linhas);
       fclose($fd);
       
@@ -479,7 +513,7 @@ if ($jaexiste == 1) {
   echo "<br><strong><a style='color:black'>FOI ENCONTRADO UM ARQUIVO GERADO PARA ESTA ESPECIFICAÇÃO!</a></strong><br><br>";
 }
 echo "<br><strong><a style='color:black'>$processados registros processados</a></strong><br><br>";
-echo "<br><strong><a style='color:black' href='$arqgerado'> Arquivo gerado em: $arqgerado\nPara salvar, clique com o botão direito e escolha a opção \"Salvar destino como\"</a></strong><br><br>";
+echo "<br><strong><a style='color:black' href='$arqgerado'> Arquivo gerado em: $arqgerado<br>Para salvar, clique com o botão direito e escolha a opção \"Salvar destino como\"</a></strong><br><br>";
  
 
 ?>
@@ -488,3 +522,27 @@ echo "<br><strong><a style='color:black' href='$arqgerado'> Arquivo gerado em: $
 </table>
 </body>
 </html>
+
+<?
+
+function busca_Valores_Recibo ( $iNumNov ) {
+
+  //   $sSqlBuscaNumNov  = " select k138_numnov from recibopagaboleto   ";
+  //   $sSqlBuscaNumNov .= "     inner join recibopaga   on recibopaga.k00_numnov = recibopagaboleto.k138_numnov ";
+  //   $sSqlBuscaNumNov .= " where k00_numpre =  {$iNumPre} and k00_numpar = {$iNumPar} order by k138_data desc ,k138_hora desc limit 1 ";
+
+  //   $rsNumNov = db_query($sSqlBuscaNumNov) or die ($sSqlBuscaNumNov);
+  //   $iNumNov = pg_result($rsNumNov,0,'k138_numnov');
+
+    $sSqlValores = "select sum(k00_valor) as valores from recibopaga where k00_numnov = $iNumNov";
+
+    $rsValores   = db_query($sSqlValores) or die( $sSqlBuscaNumNov);
+    $iRetorno = pg_result($rsValores,0,'valores');
+    return  $iRetorno;
+
+
+
+
+  }
+
+?>

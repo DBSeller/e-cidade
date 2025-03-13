@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("interfaces/IRegraLancamentoContabil.interface.php");
+require_once(modification("interfaces/IRegraLancamentoContabil.interface.php"));
 
 /**
  * Model responsavel por descobrir as contas credito/debito dos Restos a pagar não processados
  * @author Bruno Silva <bruno.silva@dbseller.com.br>
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.6 $
  */
 class RegraLancamentoRestosAPagar implements IRegraLancamentoContabil {
 
@@ -41,22 +41,29 @@ class RegraLancamentoRestosAPagar implements IRegraLancamentoContabil {
    */
   public function getRegraLancamento($iCodigoDocumento, $iCodigoLancamento, ILancamentoAuxiliar $oLancamentoAuxiliar) {
 
-    $oDaoTransacao     = db_utils::getDao('contranslr');
+    $oDaoTransacao   = new cl_contranslr();
     $sWhere            = "     c45_coddoc      = {$iCodigoDocumento}";
     $sWhere           .= " and c45_anousu      = ".db_getsession("DB_anousu");
     $sWhere           .= " and c46_seqtranslan = {$iCodigoLancamento}";
     $sSqlTransacao     = $oDaoTransacao->sql_query(null, "*", null, $sWhere);
-    $rsTransacao       = $oDaoTransacao->sql_record($sSqlTransacao);
-    $iTotalLancamentos = $oDaoTransacao->numrows;
 
-    if ($oDaoTransacao->numrows > 1) {
+    $chaveRegistrada = "inscricao_restos_pagar_{$iCodigoDocumento}_{$iCodigoLancamento}";
+    $chaveRegistry = DBRegistry::get($chaveRegistrada);
+    if (empty($registry)) {
+      DBRegistry::add($chaveRegistrada, $oDaoTransacao->sql_record($sSqlTransacao));
+    }
+
+    $rsTransacao = DBRegistry::get($chaveRegistrada);
+    $iTotalLancamentos = pg_num_rows($rsTransacao);
+
+    if ($iTotalLancamentos > 1) {
       throw new BusinessException("Mais de uma regra cadastrada para o documento {$iCodigoDocumento}.");
     }
 
     /**
      * Nao encontrou regra de lancamento para o documento 
      */
-    if ($oDaoTransacao->numrows == 0) {
+    if ($iTotalLancamentos == 0) {
       return false;
     }
 

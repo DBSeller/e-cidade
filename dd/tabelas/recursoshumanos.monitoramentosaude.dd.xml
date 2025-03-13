@@ -1,0 +1,243 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010852' name='recursoshumanos.monitoramentosaude' description="Monitoramento da Saúde do Trabalhador" prefix="h26" label="Monitoramento da Saúde do Trabalhador" type="0">
+  <fields>
+    <field codigo="1013610" 
+           campo_api='' 
+           name="h26_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial único" 
+           inivalue="0" 
+           label="Código sequencial único" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código sequencial único" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.monitoramentosaude_h26_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013612" 
+           campo_api='' 
+           name="h26_tipoexameocupacional" 
+           conteudo="int4" 
+           description="Tipo do exame médico ocupacional" 
+           inivalue="0" 
+           label="Tipo do exame médico ocupacional" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo do exame médico ocupacional" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013613" 
+           campo_api='' 
+           name="h26_dataatestado" 
+           conteudo="date" 
+           description="Data de emissão do Atestado de Saúde Ocupacional - ASO." 
+           inivalue="null" 
+           label="Data atestado" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data atestado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013614" 
+           campo_api='' 
+           name="h26_resultadoatestado" 
+           conteudo="int4" 
+           description="Resultado do Atestado de Saúde Ocupacional - ASO" 
+           inivalue="0" 
+           label="Resultado" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Resultado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013615" 
+           campo_api='' 
+           name="h26_nomemedico" 
+           conteudo="varchar(70)" 
+           description="Nome do médico emitente do Atestado de Saúde Ocupacional - ASO." 
+           inivalue="" 
+           label="Nome do médico" 
+           size="70" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nome do médico" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013616" 
+           campo_api='' 
+           name="h26_crmmedico" 
+           conteudo="varchar(10)" 
+           description="Número de inscrição do médico emitente do ASO no Conselho Regional de Medicina - CRM." 
+           inivalue="" 
+           label="CRM" 
+           size="10" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CRM" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013611" 
+           campo_api='' 
+           name="h26_assenta" 
+           conteudo="int4" 
+           description="Código de assentamento" 
+           inivalue="0" 
+           label="Código de assentamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código de assentamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013618" 
+           campo_api='' 
+           name="h26_cpfresponsavel" 
+           conteudo="varchar(11)" 
+           description="Preencher com o CPF do médico responsável/coordenador do PCMSO." 
+           inivalue="" 
+           label="CPF do Responsável" 
+           size="11" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CPF do Responsável" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013619" 
+           campo_api='' 
+           name="h26_nomeresponsavel" 
+           conteudo="varchar(70)" 
+           description="Nome do médico responsável/coordenador do Programa de Controle Médico de Saúde Ocupacional (PCMSO)." 
+           inivalue="" 
+           label="Nome do resposnsável" 
+           size="70" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nome do resposnsável" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013620" 
+           campo_api='' 
+           name="h26_crmresponsavel" 
+           conteudo="char(8)" 
+           description="Número de inscrição do médico responsável/coordenador do PCMSO no CRM." 
+           inivalue="" 
+           label="CRM do responsável" 
+           size="8" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CRM do responsável" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013621" 
+           campo_api='' 
+           name="h26_ufcrmresponsavel" 
+           conteudo="char(2)" 
+           description="Sigla da UF de expedição do CRM do médico responsável." 
+           inivalue="" 
+           label="UF do responsável" 
+           size="2" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="UF do responsável" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013617" 
+           campo_api='' 
+           name="h26_ufcrm" 
+           conteudo="char(2)" 
+           description="Sigla da Unidade da Federação (UF) de expedição do CRM." 
+           inivalue="" 
+           label="UF" 
+           size="2" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="UF" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="h26_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="assenta" inner='t'>
+      <fieldfk name="h26_assenta" reference="h16_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

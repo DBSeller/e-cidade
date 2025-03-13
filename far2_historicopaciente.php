@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_far_retiradaitens_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_far_retiradaitens_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $cl_far_retiradaitens = new cl_far_retiradaitens;
@@ -41,7 +41,7 @@ $pdf->AliasNbPages();
 $head2 = "Histórico de Retirada de Medicamentos";
 $head3 = "Paciente: $cgs_get - $nome";
 
-$rsHistoricos = pg_query( $cl_far_retiradaitens->sql_query_historicoretiradas($cgs_get, "fa04_d_data, to_char(fa04_d_data, 'dd/mm/yyyy') as fa04_d_data2, fa06_i_matersaude, m60_descr, fa06_f_quant, m77_lote, fa07_i_matrequi, login", "fa04_d_data desc") );
+$rsHistoricos = db_query( $cl_far_retiradaitens->sql_query_historicoretiradas($cgs_get, "fa04_d_data, to_char(fa04_d_data, 'dd/mm/yyyy') as fa04_d_data2, fa06_i_matersaude, m60_descr, fa06_f_quant, m77_lote, fa07_i_matrequi, login", "fa04_d_data desc") );
 $iLinhas = pg_num_rows($rsHistoricos);
 
 for($iCount = 0; $iCount < $iLinhas; $iCount++){

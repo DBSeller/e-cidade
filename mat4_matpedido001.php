@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matpedido_classe.php");
-include("classes/db_matpedidoitem_classe.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_db_almox_classe.php");
-include("classes/db_db_depusu_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_matestoqueini_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matpedido_classe.php"));
+include(modification("classes/db_matpedidoitem_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("classes/db_db_depusu_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_matestoqueini_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmatpedido = new cl_matpedido;
 $clmatpedidoitem = new cl_matpedidoitem;
@@ -103,7 +103,7 @@ if(isset($incluir)){
    <center>
    <fieldset style="width:50%"><legend><b>Solicitação de Transferência</b></legend>
 	<?
-	include("forms/db_frmmatpedido.php");
+	include(modification("forms/db_frmmatpedido.php"));
 	?>
 	</fieldset>
     </center>

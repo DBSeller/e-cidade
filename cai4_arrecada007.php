@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,31 +25,31 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libcaixa.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libcaixa.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/db_liborcamento.php");
-require_once("model/caixa/AutenticacaoArrecadacao.model.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("model/caixa/AutenticacaoArrecadacao.model.php"));
+require_once(modification("libs/db_app.utils.php"));
 
-require_once 'model/contabilidade/planoconta/ContaPlano.model.php';
-require_once 'model/contabilidade/planoconta/ContaOrcamento.model.php';
-require_once 'model/contabilidade/planoconta/ClassificacaoConta.model.php';
-require_once 'model/contabilidade/planoconta/SistemaConta.model.php';
-require_once 'model/contabilidade/planoconta/SubSistemaConta.model.php';
-require_once 'model/CgmFactory.model.php';
+require_once modification("model/contabilidade/planoconta/ContaPlano.model.php");
+require_once modification("model/contabilidade/planoconta/ContaOrcamento.model.php");
+require_once modification("model/contabilidade/planoconta/ClassificacaoConta.model.php");
+require_once modification("model/contabilidade/planoconta/SistemaConta.model.php");
+require_once modification("model/contabilidade/planoconta/SubSistemaConta.model.php");
+require_once modification("model/CgmFactory.model.php");
 
-require_once("model/caixa/ArrecadacaoReceitaOrcamentaria.model.php");
-require_once("model/caixa/AutenticacaoArrecadacao.model.php");
-require_once("model/caixa/AutenticacaoBaixaBanco.model.php");
-require_once("model/caixa/AutenticacaoPlanilha.model.php");
-require_once("model/caixa/PlanilhaArrecadacao.model.php");
-require_once("model/caixa/ReceitaPlanilha.model.php");
+require_once(modification("model/caixa/ArrecadacaoReceitaOrcamentaria.model.php"));
+require_once(modification("model/caixa/AutenticacaoArrecadacao.model.php"));
+require_once(modification("model/caixa/AutenticacaoBaixaBanco.model.php"));
+require_once(modification("model/caixa/AutenticacaoPlanilha.model.php"));
+require_once(modification("model/caixa/PlanilhaArrecadacao.model.php"));
+require_once(modification("model/caixa/ReceitaPlanilha.model.php"));
 
 db_app::import("exceptions.*");
 db_app::import("configuracao.Instituicao");
@@ -67,7 +67,7 @@ db_app::import("contabilidade.contacorrente.*");
 db_app::import("exceptions.*");
 $clautenticar = new cl_autenticar;
 
-require_once("classes/db_cfautent_classe.php");
+require_once(modification("classes/db_cfautent_classe.php"));
 $clcfautent = new cl_cfautent;
 
 $ip = db_getsession("DB_ip");
@@ -153,26 +153,42 @@ parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
    if($tipautent == 1) {
 
-		  require_once 'model/impressaoAutenticacao.php';
-		  $oImpressao = new impressaoAutenticacao($fc_autentica);
-		  $oModelo = $oImpressao->getModelo();
-		  $oModelo->imprimir();
+     try {
+	  	  require_once modification("model/impressaoAutenticacao.php");
+  		  $oImpressao = new impressaoAutenticacao($fc_autentica);
+  		  $oModelo = $oImpressao->getModelo();
+        $oModelo->imprimir();
+      } catch (Exception $EImpressao) {
+        echo "<script>";
+        echo "  parent.alert('{$EImpressao->getMessage()}'); ";
+        echo "</script>";
+        $lErro = true;
+      }
+
+   }
+
+   if ($lErro == false) {
+
+     echo "<script>";
+     echo "if (parent.document.getElementById('msgBox')) {parent.js_removeObj('msgBox');}";
+     echo "if(parent.confirm('Autenticar Classificação " . $HTTP_POST_VARS["codcla"] . " Novamente?')==false){";
+     echo "  document.location.href = 'cai4_arrecada005.php';";
+     echo "}else{";
+     echo "  var obj = document.createElement('input');";
+     echo "  obj.setAttribute('name','reautentica');";
+     echo "  obj.setAttribute('type','hidden');";
+     echo "  obj.setAttribute('value','" . $fc_autentica . "');";
+     echo "  document.form1.appendChild(obj);";
+     echo "  document.form1.codautent.value = '" . $HTTP_POST_VARS["codcla"] . "';";
+     echo "  document.form1.submit();";
+     echo "}";
+     echo "</script>";
    }
 
    echo "<script>";
-   echo "if (parent.document.getElementById('msgBox')) {parent.js_removeObj('msgBox');}";
-   echo "if(parent.confirm('Autenticar Classificação ".$HTTP_POST_VARS["codcla"]." Novamente?')==false){";
-   echo "  document.location.href = 'cai4_arrecada005.php';";
-   echo "}else{";
-   echo "  var obj = document.createElement('input');";
-   echo "  obj.setAttribute('name','reautentica');";
-   echo "  obj.setAttribute('type','hidden');";
-   echo "  obj.setAttribute('value','".$fc_autentica."');";
-   echo "  document.form1.appendChild(obj);";
-   echo "  document.form1.codautent.value = '".$HTTP_POST_VARS["codcla"]."';";
-   echo "  document.form1.submit();";
-   echo "}";
+   echo "parent.js_removeObj('msgBox');";
    echo "</script>";
-   exit;
+
+exit;
 
 ?>

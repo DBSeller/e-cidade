@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//MODULO: caixa
+//MODULO: Caixa
 //CLASSE DA ENTIDADE calend
 class cl_calend { 
    // cria variaveis de erro 
@@ -175,7 +175,7 @@ class cl_calend {
          $acount = pg_result($resac,0,0);
          $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
          $resac = db_query("insert into db_acountkey values($acount,488,'$this->k13_data','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["k13_data"]))
+         if(isset($GLOBALS["HTTP_POST_VARS"]["k13_data"]) || $this->k13_data != "")
            $resac = db_query("insert into db_acount values($acount,86,488,'".AddSlashes(pg_result($resaco,$conresaco,'k13_data'))."','$this->k13_data',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
@@ -295,6 +295,7 @@ class cl_calend {
       }
      return $result;
    }
+   // funcao do sql 
    function sql_query ( $k13_data=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
@@ -328,6 +329,7 @@ class cl_calend {
      }
      return $sql;
   }
+   // funcao do sql 
    function sql_query_file ( $k13_data=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){

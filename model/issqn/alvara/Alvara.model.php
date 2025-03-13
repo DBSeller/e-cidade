@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("std/DBDate.php");
-require_once("model/issqn/Empresa.model.php");
-require_once("model/configuracao/UsuarioSistema.model.php");
+require_once(modification("std/DBDate.php"));
+require_once(modification("model/issqn/Empresa.model.php"));
+require_once(modification("model/configuracao/UsuarioSistema.model.php"));
 
 /**
  * Alvara
@@ -179,11 +179,11 @@ class Alvara {
   /**
    * Define a situacao do alvará
    *
-   * @param integer $iSituaao
+   * @param integer $iSituacao
    * @access public
    * @return void
    */
-  public function setSituacao($iSituaao) {
+  public function setSituacao($iSituacao) {
     $this->iSituacao = $iSituacao;
   }
 
@@ -307,7 +307,7 @@ class Alvara {
       throw new DBException( "Erro ao Buscar movimentações do Alvará.\nErro Técnico:" . pg_last_error() );
     }
 
-    foreach ( db_utils::getColectionByRecord($rsSqlMovAlvara) as $oDadosAlvara ) {
+    foreach ( db_utils::getCollectionByRecord($rsSqlMovAlvara) as $oDadosAlvara ) {
       $aMovimentacoes[] = MovimentacaoAlvaraFactory::getInstancia($oDadosAlvara->q120_isstipomovalvara, $oDadosAlvara->q120_sequencial);
     } 
 

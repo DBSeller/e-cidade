@@ -1,0 +1,176 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010873' name='recursoshumanos.processamentorecadastramento' description="Salvar informações de processamento do recadastramento" prefix="h260_" label="Processamento do Recadastramento" type="0">
+  <fields>
+    <field codigo="1013806" 
+           campo_api='' 
+           name="h260_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.processamentorecadastramento_h260_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013807" 
+           campo_api='' 
+           name="h260_regist" 
+           conteudo="int4" 
+           description="Matricula do servidor" 
+           inivalue="0" 
+           label="Matricula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matricula" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013808" 
+           campo_api='' 
+           name="h260_codproc" 
+           conteudo="int4" 
+           description="Código do Processo" 
+           inivalue="0" 
+           label="Código do Processo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código do Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013809" 
+           campo_api='' 
+           name="h260_status" 
+           conteudo="bool" 
+           description="Status do Processamento" 
+           inivalue="f" 
+           label="Status" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Status" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013810" 
+           campo_api='' 
+           name="h260_erro" 
+           conteudo="text" 
+           description="Erro do processamento" 
+           inivalue="" 
+           label="Erro" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Erro" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013812" 
+           campo_api='' 
+           name="h260_instit" 
+           conteudo="int4" 
+           description="Instituição do processamento" 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013811" 
+           campo_api='' 
+           name="h260_usuario" 
+           conteudo="int4" 
+           description="Usuário que executou o processamento" 
+           inivalue="0" 
+           label="Usuário" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Usuário" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013813" 
+           campo_api='' 
+           name="h260_data" 
+           conteudo="date" 
+           description="Data do processamento do recadastramento" 
+           inivalue="null" 
+           label="Data Processamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Processamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="h260_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="h260_instit" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="db_usuarios" inner='t'>
+      <fieldfk name="h260_usuario" reference="id_usuario" /> 
+    </foreignkey>
+    <foreignkey reference="protprocesso" inner='t'>
+      <fieldfk name="h260_codproc" reference="p58_codproc" /> 
+    </foreignkey>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="h260_regist" reference="rh01_regist" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

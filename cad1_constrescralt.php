@@ -1,38 +1,38 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_constrescr_classe.php");
-require_once("classes/db_constrcar_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_constrescr_classe.php"));
+require_once(modification("classes/db_constrcar_classe.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -64,28 +64,28 @@ if(isset($alterando)){
 if(isset($j52_idcons)&&$j52_idcons=="nova"){
    $result = $cliptubase->sql_record($cliptubase->sql_query($j52_matric,"z01_nome",""));
    @db_fieldsmemory($result,0);
-   $j52_idcons=""; 
+   $j52_idcons="";
 }else if(isset($incluir)){
    db_inicio_transacao();
    if($j52_idcons==0){
      $result = $clconstrescr->sql_record($clconstrescr->sql_query_file($j52_matric,"",'max(j52_idcons) as j52_idcons'));
      if($clconstrescr->numrows>0){
        db_fieldsmemory($result,0);
-     }else{ 
+     }else{
        $j52_idcons = 0;
      }
      $j52_idcons = $j52_idcons + 1;
-   }      
+   }
    $clconstrescr->incluir($j52_matric,$j52_idcons);
    $matriz= split("X",$caracteristica);
    for($i=0;$i<sizeof($matriz);$i++){
      $j53_caract = $matriz[$i];
      if($j53_caract!=""){
        $clconstrcar->incluir($j52_matric,$j52_idcons,$j53_caract);
-     }  
-   } 
+     }
+   }
   db_fim_transacao();
-  $db_botao=1; 
+  $db_botao=1;
 }else if(isset($alterar)){
   db_inicio_transacao();
 
@@ -108,15 +108,15 @@ if(isset($j52_idcons)&&$j52_idcons=="nova"){
     $j53_caract = $matriz[$i];
     if($j53_caract!=""){
       $clconstrcar->incluir($j52_matric,$j52_idcons,$j53_caract);
-    }  
+    }
   }
   db_fim_transacao();
- $db_botao=2; 
+ $db_botao=2;
 }else if(isset($j52_matric)&&isset($j52_idcons)){
   $result = $clconstrescr->sql_record($clconstrescr->sql_query($j52_matric,$j52_idcons,"*","",""));
   if($clconstrescr->numrows!=0){
     $db_opcaoid=3;
-    $db_botao=2;  
+    $db_botao=2;
     db_fieldsmemory($result,0);
     $result = $clconstrcar->sql_record($clconstrcar->sql_query($j52_matric,$j52_idcons,"","*"));
     $caracteristica = null;
@@ -126,7 +126,7 @@ if(isset($j52_idcons)&&$j52_idcons=="nova"){
       $caracteristica .= $car.$j53_caract ;
       $car="X";
     }
-    $caracteristica .= $car; 
+    $caracteristica .= $car;
   }else{
      $result = $cliptubase->sql_record($cliptubase->sql_query($j52_matric,"z01_nome",""));
      @db_fieldsmemory($result,0);
@@ -168,7 +168,7 @@ input {
     <td align="left" valign="top" bgcolor="#CCCCCC">
       <center>
       <?
-        include("forms/db_frmconstrescralt.php");
+        include(modification("forms/db_frmconstrescralt.php"));
         flush();
       ?>
       </center>
@@ -181,7 +181,7 @@ input {
 <script>
 function js_colocaid2(){
   document.form1.id_setor.value=parent.document.form1.idsetor.value;
-  document.form1.id_quadra.value=parent.document.form1.idquadra.value;  
+  document.form1.id_quadra.value=parent.document.form1.idquadra.value;
 }
 js_colocaid2();
 </script>

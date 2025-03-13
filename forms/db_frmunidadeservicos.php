@@ -154,7 +154,7 @@ function js_mostrasau_servclassificacao1(chave1,chave2){
   db_iframe_sau_servclassificacao.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_unidadeservicos','func_unidadeservicos.php?funcao_js=parent.js_preenchepesquisa|s126_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidadeservicos','func_unidadeservicos.php?funcao_js=parent.js_preenchepesquisa|s126_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_unidadeservicos.hide();

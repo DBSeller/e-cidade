@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,6 +30,7 @@
    * @author Iuri Guntchnigg <iuri@dbseller.com.br>
    * @package
    */
+
   class CensoMunicipioRepository {
     
     /**
@@ -111,5 +112,30 @@
      */
     public static function getTotalCensoMunicipio() {
       return count(CensoMunicipioRepository::getInstance()->aItens);
+    }
+
+    /**
+     * Retorna uma instancia do CensoMunicipio pelo Nome
+     * @param integer $iCodigo Codigo do CensoMunicipio
+     * @return CensoMunicipio
+     */
+
+    public static function getMunicipioPorNome($nomeMunicipio,$codigoEstado){
+    
+      $municipioCenso = new stdClass(); 
+      $nomeMunicipio = strtoupper($nomeMunicipio);
+      $where = "ed261_c_nome  = '$nomeMunicipio'";
+      $where .= " and ed261_i_censouf  = $codigoEstado";
+      $oDaoCensoMunic     = new cl_censomunic();
+      $sSqlDadosMunicipio = $oDaoCensoMunic->sql_query_file(null,'*',null,$where);
+      $rsDadosMunicipio   = db_query($sSqlDadosMunicipio);
+
+      if (pg_numrows($rsDadosMunicipio) > 0) {
+        $oDadosMunicipio        = db_utils::fieldsMemory($rsDadosMunicipio, 0);
+        $municipioCenso->iCodigoMunicipio = $oDadosMunicipio->ed261_i_codigo;
+        $municipioCenso->sNome = $oDadosMunicipio->ed261_c_nome;
+        $municipioCenso->censoUf =  $oDadosMunicipio->ed261_i_censouf;
+      }
+      return $municipioCenso;
     }
   }

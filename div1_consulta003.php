@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-	require("libs/db_stdlib.php");
-	require("libs/db_conecta.php");
-	include("libs/db_sessoes.php");
-	include("libs/db_usuariosonline.php");
-	require("classes/db_divida_classe.php");
-	require("classes/db_certdiv_classe.php");
-	require("classes/db_termodiv_classe.php");
-	require("classes/db_termoini_classe.php");
-	require("classes/db_inicial_classe.php");
-	require("classes/db_certter_classe.php");
-	require("classes/db_termo_classe.php");
-	require("classes/db_certid_classe.php");
-	include("dbforms/db_funcoes.php");
+	require(modification("libs/db_stdlib.php"));
+	require(modification("libs/db_conecta.php"));
+	include(modification("libs/db_sessoes.php"));
+	include(modification("libs/db_usuariosonline.php"));
+	require(modification("classes/db_divida_classe.php"));
+	require(modification("classes/db_certdiv_classe.php"));
+	require(modification("classes/db_termodiv_classe.php"));
+	require(modification("classes/db_termoini_classe.php"));
+	require(modification("classes/db_inicial_classe.php"));
+	require(modification("classes/db_certter_classe.php"));
+	require(modification("classes/db_termo_classe.php"));
+	require(modification("classes/db_certid_classe.php"));
+	include(modification("dbforms/db_funcoes.php"));
 	db_postmemory($HTTP_SERVER_VARS);
 	db_postmemory($HTTP_POST_VARS);
 	$cldivida = new cl_divida;
@@ -66,7 +66,7 @@
 <table width="95%" border="1" cellspacing="0" class='tab_cinza'>
       <?
 	if (isset($codDiv)){
-		$sql    = $cldivida->sql_query($codDiv,"*",null," v01_coddiv = $codDiv and v01_instit = ".db_getsession('DB_instit'));
+		$sql    = $cldivida->sql_query($codDiv,"*, v93_termo",null," v01_coddiv = $codDiv and v01_instit = ".db_getsession('DB_instit'));
 		$result = $cldivida->sql_record($sql);
 		$intNumRows = $cldivida->numrows;
 		if($intNumRows > 0){
@@ -74,7 +74,7 @@
 			db_fieldsmemory($result,0,3);
 			//aqui o codigo da divida foi localizada e pode-se trazer os seus dados
 			$sqlSituacao = $cldivida->sql_querysituacao($v01_coddiv," v01_instit = ".db_getsession('DB_instit'));
-			$resultSituacao = pg_exec($sqlSituacao);
+			$resultSituacao = db_query($sqlSituacao);
 			$fraseSituacao = " ( ".pg_result($resultSituacao,0,0)." )";
 ?>
     <tr>
@@ -83,42 +83,44 @@
     <tr>
       <th align="left" width="15%" title="<?=$Tv01_coddiv?>" nowrap>&nbsp;<?=$Lv01_coddiv?>&nbsp; </th>
       <td align="left" width="35%" nowrap>&nbsp;<?=$v01_coddiv?>&nbsp; </td>
-      <th align="left" width="15%" title="<?=$Tv01_dtinsc?>" nowrap>&nbsp;<?=$Lv01_dtinsc?>&nbsp; </th>
-      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_dtinsc?>&nbsp; </td>
+      <th align="left" width="15%" title="<?='Termo inscr. em dívida'?>" nowrap>&nbsp;<strong><?='Termo inscr. em dívida'?></strong>&nbsp; </th>
+      <td align="left" width="35%" nowrap>&nbsp;<?=$v93_termo?>&nbsp; </td>
     </tr>
     <tr>
       <th align="left" width="15%" title="<?=$Tv01_exerc?>" nowrap>&nbsp;<?=$Lv01_exerc?>&nbsp; </th>
       <td align="left" width="35%" nowrap>&nbsp;<?=$v01_exerc?>&nbsp;	  </td>
-      <th align="left" width="15%" title="<?=$Tv01_numpre?>" nowrap>&nbsp;<?=$Lv01_numpre?>&nbsp; </th>
-      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_numpre?>&nbsp; </td>
+      <th align="left" width="15%" title="<?=$Tv01_dtinsc?>" nowrap>&nbsp;<?=$Lv01_dtinsc?>&nbsp; </th>
+      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_dtinsc?>&nbsp; </td>
     </tr>
     <tr>
       <th align="left" width="15%" title="<?=$Tv01_vlrhis?>" nowrap>&nbsp;<?=$Lv01_vlrhis?>&nbsp;  </th>
       <td align="left" width="35%" nowrap>&nbsp;<?=$v01_vlrhis?>&nbsp;	  </td>
-      <th align="left" width="15%" title="<?=$Tv01_proced?>" nowrap>&nbsp;<?=$Lv01_proced?>&nbsp;	  </th>
-      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_proced?>&nbsp;	  </td>
+      <th align="left" width="15%" title="<?=$Tv01_numpre?>" nowrap>&nbsp;<?=$Lv01_numpre?>&nbsp; </th>
+      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_numpre?>&nbsp; </td>
     </tr>
     <tr>
       <th align="left" width="15%" title="<?=$Tv01_livro?>" nowrap>&nbsp;<?=$Lv01_livro?>&nbsp; </th>
       <td align="left" width="35%" nowrap>&nbsp;<?=$v01_livro?>&nbsp; </td>
-      <th align="left" width="15%" title="<?=$Tv01_folha?>" nowrap>&nbsp;<?=$Lv01_folha?>&nbsp; </th>
-      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_folha?>&nbsp; </td>
+      <th align="left" width="15%" title="<?=$Tv01_proced?>" nowrap>&nbsp;<?=$Lv01_proced?>&nbsp;	  </th>
+      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_proced?>&nbsp;	  </td>
     </tr>
     <tr>
       <th align="left" width="15%" title="<?=$Tv01_dtvenc?>" nowrap>&nbsp;<?=$Lv01_dtvenc?>&nbsp;  </th>
       <td align="left" width="35%" nowrap>&nbsp;<?=$v01_dtvenc?>&nbsp;  </td>
-      <th align="left" width="15%" title="<?=$Tv01_dtoper?>" nowrap>&nbsp;<?=$Lv01_dtoper?>&nbsp;  </th>
-      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_dtoper?>&nbsp;  </td>
+      <th align="left" width="15%" title="<?=$Tv01_folha?>" nowrap>&nbsp;<?=$Lv01_folha?>&nbsp; </th>
+      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_folha?>&nbsp; </td>
     </tr>
     <tr>
       <th align="left" width="15%" title="<?=$Tv01_valor?>" nowrap>&nbsp;<?=$Lv01_valor?>&nbsp;	  </th>
       <td align="left" width="35%" nowrap>&nbsp;<?=$v01_valor?>&nbsp;	  </td>
-      <td align="left" width="15%"nowrap>&nbsp;	  </td>
-      <td align="left" width="35%" nowrap>&nbsp;	  </td>
+      <th align="left" width="15%" title="<?=$Tv01_dtoper?>" nowrap>&nbsp;<?=$Lv01_dtoper?>&nbsp;  </th>
+      <td align="left" width="35%" nowrap>&nbsp;<?=$v01_dtoper?>&nbsp;  </td>
     </tr>
     <tr>
       <th align="left" width="15%" title="<?=$Tv01_obs?>">&nbsp;<?=$Lv01_obs?>&nbsp;	  </th>
       <td align="left" colspan="3" >&nbsp;<?=$v01_obs?>&nbsp;	  </td>
+      <td align="left" width="15%"nowrap>&nbsp;	  </td>
+      <td align="left" width="35%" nowrap>&nbsp;	  </td>
     </tr>
 <?
 		}else{
@@ -167,7 +169,7 @@
     </tr>
     <tr>
       <td align="left" width="15%" colspan="4">&nbsp;
-	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?certidNorm=<?=$v13_certid?>&funcao_js=top.corpo.js_abreJanelaDadosDivida|0"></iframe>
+	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?certidNorm=<?=$v13_certid?>&funcao_js=parent.CurrentWindow.corpo.js_abreJanelaDadosDivida|0"></iframe>
 	  </td>
     </tr>
 <?
@@ -178,7 +180,7 @@
     </tr>
     <tr>
       <td align="left" width="15%" colspan="4">&nbsp;
-	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?certidParc=<?=$v13_certid?>&funcao_js=top.corpo.js_abreJanelaDadosTermo|0"></iframe>
+	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?certidParc=<?=$v13_certid?>&funcao_js=parent.CurrentWindow.corpo.js_abreJanelaDadosTermo|0"></iframe>
 	  </td>
     </tr>
 <?
@@ -269,7 +271,7 @@
     </tr>
     <tr>
       <td align="left" width="15%" colspan="4">&nbsp;
-	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?termoNorm=<?=$v07_parcel?>&funcao_js=top.corpo.js_abreJanelaDadosDivida|0"></iframe>
+	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?termoNorm=<?=$v07_parcel?>&funcao_js=parent.CurrentWindow.corpo.js_abreJanelaDadosDivida|0"></iframe>
 	  </td>
     </tr>
 <?
@@ -280,7 +282,7 @@
     </tr>
     <tr>
       <td align="left" width="15%" colspan="4">&nbsp;
-	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?termoInicial=<?=$v07_parcel?>&funcao_js=top.corpo.js_abreJanelaDadosInicial|0"></iframe>
+	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?termoInicial=<?=$v07_parcel?>&funcao_js=parent.CurrentWindow.corpo.js_abreJanelaDadosInicial|0"></iframe>
 	  </td>
     </tr>
 <?
@@ -329,7 +331,7 @@
     </tr>
     <tr>
       <td align="left" width="15%" colspan="4">&nbsp;
-	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?iniCert=<?=$inicial?>&funcao_js=top.corpo.js_abreJanelaDadosTermo|0"></iframe>
+	  <iframe name="iframe_lov" width="100%" height="100%" align="center" marginwidth="0" marginheight="0" frameborder="0" src="div1_consulta002.php?iniCert=<?=$inicial?>&funcao_js=parent.CurrentWindow.corpo.js_abreJanelaDadosTermo|0"></iframe>
 	  </td>
     </tr>
 <?

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("classes/db_procdiver_classe.php");
-require_once("classes/db_recparprocdiver_classe.php");
+require_once(modification("classes/db_procdiver_classe.php"));
+require_once(modification("classes/db_recparprocdiver_classe.php"));
 
 $clprocdiver       = new cl_procdiver;
 $clrecparprocdiver = new cl_recparprocdiver;
@@ -93,7 +93,7 @@ if ( isset($oPost->excluir) ) {
 <body bgcolor=#CCCCCC>
 
     <?
-    include("forms/db_frmprocdiver.php");
+    include(modification("forms/db_frmprocdiver.php"));
     ?>
 
 </body>
@@ -130,7 +130,7 @@ if ( isset($chavepesquisa) ) {
   echo "  function js_db_libera(){                                                                                                   \n";
   echo "                                                                                                                             \n";
   echo "    parent.document.formaba.recparprocdiver.disabled=false;                                                                  \n";
-  echo "    top.corpo.iframe_recparprocdiver.location.href='div1_recparprocdiver001.php?db_opcaoal=33&procdiver=".@$dv09_procdiver."'\n";
+  echo "    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_recparprocdiver.location.href='div1_recparprocdiver001.php?db_opcaoal=33&procdiver=".@$dv09_procdiver."'\n";
   
   if ( isset($liberaaba) ) {
     echo "  parent.mo_camada('recparprocdiver');                                                                                     \n";

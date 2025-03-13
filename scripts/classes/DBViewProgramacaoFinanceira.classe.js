@@ -236,7 +236,7 @@ DBViewProgramacaoFinanceira = function (iCodigo, sNomeInstance, oNode, iWidth) {
                                                 /*
                                                  * Trata o retorno da function processar()
                                                  */                                                 
-                                                 var oRetorno  = eval("("+oAjax.responseText+")");
+                                                 var oRetorno  = JSON.parse(oAjax.responseText);
                                                  if (oRetorno.status == 0) {
                                                  
                                                    me.iPeriodicidade = oRetorno.iPeriodicidade;
@@ -295,7 +295,7 @@ DBViewProgramacaoFinanceira = function (iCodigo, sNomeInstance, oNode, iWidth) {
                                                 /*
                                                  * Trata o retorno da function incluirParcela()
                                                  */
-                                                 var oRetorno = eval("("+oAjax.responseText+")");
+                                                 var oRetorno = JSON.parse(oAjax.responseText);
                                                  if (oRetorno.status == 1) {
    
                                                    alert(oRetorno.message.urlDecode());
@@ -360,7 +360,7 @@ DBViewProgramacaoFinanceira = function (iCodigo, sNomeInstance, oNode, iWidth) {
                                                 /*
                                                  * Trata o retorno da function alterarParcela()
                                                  */
-                                                 var oRetorno  = eval("("+oAjax.responseText+")");
+                                                 var oRetorno  = JSON.parse(oAjax.responseText);
                                                  if (oRetorno.status == 0) {
                                                  
                                                    me.preencheGridParcelas(oRetorno);
@@ -403,7 +403,7 @@ DBViewProgramacaoFinanceira = function (iCodigo, sNomeInstance, oNode, iWidth) {
                                                 /*
                                                  * Trata o retorno da function excluirParcela()
                                                  */
-                                                 var oRetorno  = eval("("+oAjax.responseText+")");
+                                                 var oRetorno  = JSON.parse(oAjax.responseText);
                                                  if (oRetorno.status == 0) {
                                                  
                                                    me.preencheGridParcelas(oRetorno);
@@ -440,7 +440,7 @@ DBViewProgramacaoFinanceira = function (iCodigo, sNomeInstance, oNode, iWidth) {
                                                 /*
                                                  * Trata o retorno da function salvarProgramacao()
                                                  */
-                                                 var oRetorno  = eval("("+oAjax.responseText+")");
+                                                 var oRetorno  = JSON.parse(oAjax.responseText);
                                                  if (oRetorno.status == 0) {
                                                  
                                                    me.setCodigo(oRetorno.iCodigo);
@@ -473,7 +473,7 @@ DBViewProgramacaoFinanceira = function (iCodigo, sNomeInstance, oNode, iWidth) {
                                              parameters:'json='+Object.toJSON(oParam),
                                              onComplete: function (oAjax) {
                                              
-                                               var oRetorno = eval("("+oAjax.responseText+")");
+                                               var oRetorno = JSON.parse(oAjax.responseText);
                                                me.aParcelas = oRetorno.aParcelas;
                                              } 
                                            });                                       
@@ -502,7 +502,7 @@ DBViewProgramacaoFinanceira = function (iCodigo, sNomeInstance, oNode, iWidth) {
                                              /*
                                               * Trata o retorno da function getdados()
                                               */
-                                              var oRetorno = eval("("+oAjax.responseText+")");
+                                              var oRetorno = JSON.parse(oAjax.responseText);
                                               if (oRetorno.status == 1) {
                                               
 																							  alert(oRetorno.message.urlDecode());

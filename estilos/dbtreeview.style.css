@@ -166,7 +166,7 @@ div.DBTreeView li
 }
 
 div.DBTreeView li.lastnode {
-	
+
 	background-image:none;
   background-repeat: no-repeat;
   padding: 1px 0px 1px 0px;
@@ -185,8 +185,21 @@ div.DBTreeView li.selected {
  background-color: #efefef;
 }
 div.DBTreeView li.lastnode selected {
-  
+
   background-image:none;
   background-repeat: no-repeat;
   padding: 1px 0px 1px 0px;
+}
+
+.delete-icon {
+  width: 16px;
+  height: 16px;
+  display: -moz-inline-box; /* @ FF 1+2 */
+  display: inline-block; /* Required to make a span sizeable */
+  vertical-align: top;
+  background-repeat: no-repeat;
+  background-position: left;
+  /*background-image:url("imagens/tree/join2.gif");*/
+  background-image:url("../imagens/icons.gif");
+  background-position: -16px -112px;
 }

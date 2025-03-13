@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,12 +28,12 @@
 
 if (!isset($arqinclude)){ // se este arquivo no esta incluido por outro
   
-  include("libs/db_liborcamento.php");
-  include("fpdf151/pdf.php");
-  include("libs/db_sql.php");
-  include("fpdf151/assinatura.php");
-  include("classes/db_empresto_classe.php");
-  include("dbforms/db_funcoes.php");
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("fpdf151/pdf.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("classes/db_empresto_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
   
   parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
   db_postmemory($HTTP_POST_VARS);
@@ -46,7 +46,7 @@ if (!isset($arqinclude)){ // se este arquivo no esta incluido por outro
 if (!isset($arqinclude)) { // se este arquivo no esta incluido por outro
   
   $xinstit = split("-",$db_selinstit);
-  $resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+  $resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
   $descr_inst = '';
   $xvirg = '';
   $flag_abrev = false;
@@ -132,7 +132,7 @@ if (!isset($arqinclude)) { // se este arquivo no esta incluido por outro
 
 $sqlperiodo = $clempresto->sql_rp2(db_getsession("DB_anousu"), $instit, $perini, $perfin, $where,$order);
 
-// db_criatabela(pg_exec($sqlperiodo));
+// db_criatabela(db_query($sqlperiodo));
 // exit;
 
 $sql_periodo = "
@@ -168,7 +168,7 @@ group by e60_instit,nomeinst,o58_orgao,o40_descr
 ) as foo 
 order by e60_instit,o58_orgao
 ";
-$result = pg_query($sql_periodo) or die($sql_periodo);
+$result = db_query($sql_periodo) or die($sql_periodo);
 
 $sql_periodo = "
 select * from (
@@ -203,7 +203,7 @@ group by e60_instit,nomeinst,o58_orgao,o40_descr
 ) as foo 
 order by e60_instit,o58_orgao
 ";
-$result_intra = pg_query($sql_periodo) or die($sql_periodo);
+$result_intra = db_query($sql_periodo) or die($sql_periodo);
 
 // db_criatabela($result);
 // exit;

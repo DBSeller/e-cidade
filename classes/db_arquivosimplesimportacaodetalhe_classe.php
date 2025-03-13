@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -75,12 +75,12 @@ class cl_arquivosimplesimportacaodetalhe {
    // funcao para atualizar campos
    function atualizacampos($exclusao=false) {
      if($exclusao==false){
-       $this->q142_sequencial = ($this->q142_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_sequencial"]:$this->q142_sequencial);
+       $this->q142_sequencial               = ($this->q142_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_sequencial"]:$this->q142_sequencial);
        $this->q142_arquivosimplesimportacao = ($this->q142_arquivosimplesimportacao == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_arquivosimplesimportacao"]:$this->q142_arquivosimplesimportacao);
-       $this->q142_cnpj = ($this->q142_cnpj == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_cnpj"]:$this->q142_cnpj);
-       $this->q142_cnae = ($this->q142_cnae == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_cnae"]:$this->q142_cnae);
-       $this->q142_apto = ($this->q142_apto == "f"?@$GLOBALS["HTTP_POST_VARS"]["q142_apto"]:$this->q142_apto);
-       $this->q142_observacao = ($this->q142_observacao == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_observacao"]:$this->q142_observacao);
+       $this->q142_cnpj                     = ($this->q142_cnpj == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_cnpj"]:$this->q142_cnpj);
+       $this->q142_cnae                     = ($this->q142_cnae == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_cnae"]:$this->q142_cnae);
+       $this->q142_apto                     = ($this->q142_apto == ""?"f":$this->q142_apto);
+       $this->q142_observacao               = ($this->q142_observacao == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_observacao"]:$this->q142_observacao);
      }else{
        $this->q142_sequencial = ($this->q142_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["q142_sequencial"]:$this->q142_sequencial);
      }
@@ -458,7 +458,7 @@ class cl_arquivosimplesimportacaodetalhe {
    function sql_query ( $q142_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -480,7 +480,7 @@ class cl_arquivosimplesimportacaodetalhe {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -522,7 +522,7 @@ class cl_arquivosimplesimportacaodetalhe {
    function sql_query_file ( $q142_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -543,7 +543,7 @@ class cl_arquivosimplesimportacaodetalhe {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

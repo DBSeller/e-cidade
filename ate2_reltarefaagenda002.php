@@ -26,8 +26,8 @@
  */
  
 
-require ('fpdf151/pdf.php');
-include ("dbforms/db_funcoes.php");
+require(modification('fpdf151/pdf.php'));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -36,7 +36,7 @@ $head1 = "RELATÓRIO TAREFAS";
 $head2 = "";
 
 $sql = "select * from tarefa_agenda where at13_tarefa = 6";
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 $numlinha = pg_numrows($result);
 

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,7 +24,6 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-
 //MODULO: escola
 //CLASSE DA ENTIDADE tipoausencia
 class cl_tipoausencia { 
@@ -44,10 +43,12 @@ class cl_tipoausencia {
    // cria variaveis do arquivo 
    var $ed320_sequencial = 0; 
    var $ed320_descricao = null; 
+   var $ed320_tipo = 0; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  ed320_sequencial = int4 = Código 
                  ed320_descricao = varchar(100) = Descrição 
+                 ed320_tipo = int4 = Tipo de Licença 
                  ";
    //funcao construtor da classe 
    function cl_tipoausencia() { 
@@ -69,16 +70,26 @@ class cl_tipoausencia {
      if($exclusao==false){
        $this->ed320_sequencial = ($this->ed320_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["ed320_sequencial"]:$this->ed320_sequencial);
        $this->ed320_descricao = ($this->ed320_descricao == ""?@$GLOBALS["HTTP_POST_VARS"]["ed320_descricao"]:$this->ed320_descricao);
+       $this->ed320_tipo = ($this->ed320_tipo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed320_tipo"]:$this->ed320_tipo);
      }else{
        $this->ed320_sequencial = ($this->ed320_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["ed320_sequencial"]:$this->ed320_sequencial);
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir ($ed320_sequencial){ 
       $this->atualizacampos();
      if($this->ed320_descricao == null ){ 
-       $this->erro_sql = " Campo Descrição não Informado.";
+       $this->erro_sql = " Campo Descrição não informado.";
        $this->erro_campo = "ed320_descricao";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     if($this->ed320_tipo == null ){ 
+       $this->erro_sql = " Campo Tipo de Licença não informado.";
+       $this->erro_campo = "ed320_tipo";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -110,7 +121,7 @@ class cl_tipoausencia {
        }
      }
      if(($this->ed320_sequencial == null) || ($this->ed320_sequencial == "") ){ 
-       $this->erro_sql = " Campo ed320_sequencial nao declarado.";
+       $this->erro_sql = " Campo ed320_sequencial não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -120,21 +131,23 @@ class cl_tipoausencia {
      $sql = "insert into tipoausencia(
                                        ed320_sequencial 
                                       ,ed320_descricao 
+                                      ,ed320_tipo 
                        )
                 values (
                                 $this->ed320_sequencial 
                                ,'$this->ed320_descricao' 
+                               ,$this->ed320_tipo 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Tipo de Ausência ($this->ed320_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Tipo de Ausência ($this->ed320_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Tipo de Ausência já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Tipo de Ausência ($this->ed320_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Tipo de Ausência ($this->ed320_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -149,19 +162,26 @@ class cl_tipoausencia {
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
-     $resaco = $this->sql_record($this->sql_query_file($this->ed320_sequencial));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,19749,'$this->ed320_sequencial','I')");
-       $resac = db_query("insert into db_acount values($acount,3540,19749,'','".AddSlashes(pg_result($resaco,0,'ed320_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,3540,19750,'','".AddSlashes(pg_result($resaco,0,'ed320_descricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->ed320_sequencial  ));
+       if(($resaco!=false)||($this->numrows!=0)){
+
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+         $acount = pg_result($resac,0,0);
+         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+         $resac = db_query("insert into db_acountkey values($acount,19749,'$this->ed320_sequencial','I')");
+         $resac = db_query("insert into db_acount values($acount,3540,19749,'','".AddSlashes(pg_result($resaco,0,'ed320_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3540,19750,'','".AddSlashes(pg_result($resaco,0,'ed320_descricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3540,21618,'','".AddSlashes(pg_result($resaco,0,'ed320_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       }
      }
      return true;
    } 
    // funcao para alteracao
-   function alterar ($ed320_sequencial=null) { 
+   public function alterar ($ed320_sequencial=null) { 
       $this->atualizacampos();
      $sql = " update tipoausencia set ";
      $virgula = "";
@@ -169,7 +189,7 @@ class cl_tipoausencia {
        $sql  .= $virgula." ed320_sequencial = $this->ed320_sequencial ";
        $virgula = ",";
        if(trim($this->ed320_sequencial) == null ){ 
-         $this->erro_sql = " Campo Código não Informado.";
+         $this->erro_sql = " Campo Código não informado.";
          $this->erro_campo = "ed320_sequencial";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -182,8 +202,21 @@ class cl_tipoausencia {
        $sql  .= $virgula." ed320_descricao = '$this->ed320_descricao' ";
        $virgula = ",";
        if(trim($this->ed320_descricao) == null ){ 
-         $this->erro_sql = " Campo Descrição não Informado.";
+         $this->erro_sql = " Campo Descrição não informado.";
          $this->erro_campo = "ed320_descricao";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+     if(trim($this->ed320_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed320_tipo"])){ 
+       $sql  .= $virgula." ed320_tipo = $this->ed320_tipo ";
+       $virgula = ",";
+       if(trim($this->ed320_tipo) == null ){ 
+         $this->erro_sql = " Campo Tipo de Licença não informado.";
+         $this->erro_campo = "ed320_tipo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -195,40 +228,49 @@ class cl_tipoausencia {
      if($ed320_sequencial!=null){
        $sql .= " ed320_sequencial = $this->ed320_sequencial";
      }
-     $resaco = $this->sql_record($this->sql_query_file($this->ed320_sequencial));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,19749,'$this->ed320_sequencial','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["ed320_sequencial"]) || $this->ed320_sequencial != "")
-           $resac = db_query("insert into db_acount values($acount,3540,19749,'".AddSlashes(pg_result($resaco,$conresaco,'ed320_sequencial'))."','$this->ed320_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["ed320_descricao"]) || $this->ed320_descricao != "")
-           $resac = db_query("insert into db_acount values($acount,3540,19750,'".AddSlashes(pg_result($resaco,$conresaco,'ed320_descricao'))."','$this->ed320_descricao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->ed320_sequencial));
+       if ($this->numrows > 0) {
+
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
+
+           $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac = db_query("insert into db_acountkey values($acount,19749,'$this->ed320_sequencial','A')");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed320_sequencial"]) || $this->ed320_sequencial != "")
+             $resac = db_query("insert into db_acount values($acount,3540,19749,'".AddSlashes(pg_result($resaco,$conresaco,'ed320_sequencial'))."','$this->ed320_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed320_descricao"]) || $this->ed320_descricao != "")
+             $resac = db_query("insert into db_acount values($acount,3540,19750,'".AddSlashes(pg_result($resaco,$conresaco,'ed320_descricao'))."','$this->ed320_descricao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed320_tipo"]) || $this->ed320_tipo != "")
+             $resac = db_query("insert into db_acount values($acount,3540,21618,'".AddSlashes(pg_result($resaco,$conresaco,'ed320_tipo'))."','$this->ed320_tipo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Tipo de Ausência não Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Tipo de Ausência não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed320_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Tipo de Ausência não foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Tipo de Ausência não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed320_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Alteração efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->ed320_sequencial;
@@ -241,56 +283,66 @@ class cl_tipoausencia {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($ed320_sequencial=null,$dbwhere=null) { 
-     if($dbwhere==null || $dbwhere==""){
-       $resaco = $this->sql_record($this->sql_query_file($ed320_sequencial));
-     }else{ 
-       $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
-     }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,19749,'$ed320_sequencial','E')");
-         $resac = db_query("insert into db_acount values($acount,3540,19749,'','".AddSlashes(pg_result($resaco,$iresaco,'ed320_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,3540,19750,'','".AddSlashes(pg_result($resaco,$iresaco,'ed320_descricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+   public function excluir ($ed320_sequencial=null,$dbwhere=null) { 
+
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       if (empty($dbwhere)) {
+
+         $resaco = $this->sql_record($this->sql_query_file($ed320_sequencial));
+       } else { 
+         $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
+       }
+       if (($resaco != false) || ($this->numrows!=0)) {
+
+         for ($iresaco = 0; $iresaco < $this->numrows; $iresaco++) {
+
+           $resac  = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac  = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac  = db_query("insert into db_acountkey values($acount,19749,'$ed320_sequencial','E')");
+           $resac  = db_query("insert into db_acount values($acount,3540,19749,'','".AddSlashes(pg_result($resaco,$iresaco,'ed320_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3540,19750,'','".AddSlashes(pg_result($resaco,$iresaco,'ed320_descricao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3540,21618,'','".AddSlashes(pg_result($resaco,$iresaco,'ed320_tipo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $sql = " delete from tipoausencia
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($ed320_sequencial != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($ed320_sequencial)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " ed320_sequencial = $ed320_sequencial ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Tipo de Ausência nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Tipo de Ausência não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed320_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Tipo de Ausência nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Tipo de Ausência não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$ed320_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$ed320_sequencial;
@@ -303,9 +355,9 @@ class cl_tipoausencia {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -314,8 +366,8 @@ class cl_tipoausencia {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:tipoausencia";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -326,72 +378,42 @@ class cl_tipoausencia {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $ed320_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from tipoausencia ";
+   public function sql_query ($ed320_sequencial = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from tipoausencia ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($ed320_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($ed320_sequencial)) {
          $sql2 .= " where tipoausencia.ed320_sequencial = $ed320_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $ed320_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from tipoausencia ";
+   public function sql_query_file ($ed320_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from tipoausencia ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($ed320_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($ed320_sequencial)){
          $sql2 .= " where tipoausencia.ed320_sequencial = $ed320_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
+
 }
-?>

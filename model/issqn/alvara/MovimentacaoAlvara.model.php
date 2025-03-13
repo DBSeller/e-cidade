@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once "libs/exceptions/DBException.php";
-require_once "model/issqn/alvara/Alvara.model.php";
-require_once "model/configuracao/UsuarioSistema.model.php";
+require_once modification("libs/exceptions/DBException.php");
+require_once modification("model/issqn/alvara/Alvara.model.php");
+require_once modification("model/configuracao/UsuarioSistema.model.php");
 
 
 /**
@@ -35,7 +35,7 @@ require_once "model/configuracao/UsuarioSistema.model.php";
  * @author    Rafael Serpa Nery - rafael.nery@dbseller.com.br
  * @package   ISSQN
  * @revision  $Author: dbjeferson.belmiro $
- * @version   $Revision: 1.1 $
+ * @version   $Revision: 1.5 $
  */
 abstract class MovimentacaoAlvara {
 
@@ -359,7 +359,7 @@ abstract class MovimentacaoAlvara {
       return array();
     }
 
-    return db_utils::getColectionByRecord($rsSqlMovAlvara);
+    return db_utils::getCollectionByRecord($rsSqlMovAlvara);
   }
 
   /**

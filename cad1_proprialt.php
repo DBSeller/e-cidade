@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_propri_classe.php");
-require_once("classes/db_iptubase_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_propri_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -40,29 +40,67 @@ $db_botao    = 1;
 $db_opcao    = 1;
 $outros      = false; 
 $testasel    = false; 
+$sqlerro = false;
 
 $cliptubase  = new cl_iptubase;
 $clpropri    = new cl_propri;
 $clrotulo    = new rotulocampo;
 $rotulocampo = new rotulocampo;
+$clpercposserural = new cl_percposserural;
 
+$clpercposserural->rotulo->label();
 $cliptubase->rotulo->label();
 $clpropri->rotulo->label();
 $clrotulo->label("j01_numcgm");
 $rotulocampo->label("z01_nome");  
+
+function validaPercentual($percentual, $matricula, $cgm) {
+    
+  if (!empty($matricula) && !empty($cgm)) {
+      $clpercposserural = new cl_percposserural;
+      $where = "j166_matric = {$matricula} AND j166_numcgm <> {$cgm}";
+      $sql = $clpercposserural->sql_query_file(null, "sum(j166_percentual) as soma", null, $where);
+      $rs = db_query($sql);
+
+      if ($rs && pg_num_rows($rs) > 0) {
+          $percentual += db_utils::fieldsMemory($rs, 0)->soma;
+      }
+  }
+  
+  if ($percentual > 100) {
+      return false;
+  }
+
+  return true;
+}
 
 if(isset($alterando)){
   $j42_matric = $j01_matric;
 }
 
 if(isset($atualizar)){
-  db_redireciona("cad1_proprialt.php?j42_matric=$j42_matric" );
+  db_redireciona("cad1_proprialt.php?j42_matric={$j42_matric}&j01_tipoimovel={$j01_tipoimovel}" );
 }
 
 if(isset($incluir)){
 
    db_inicio_transacao();
-   $clpropri->incluir($j42_matric,$j42_numcgm);
+
+  if (!validaPercentual($j166_percentual, $j42_matric, $j42_numcgm)) {
+    $sqlerro = true;
+    $erroMensagem = "Percentual de posse não pode ser maior do que 100%.";
+  }
+  
+   if (!$sqlerro) {
+
+    $clpercposserural->j166_matric = $j42_matric;
+    $clpercposserural->j166_numcgm = $j42_numcgm;
+    $clpercposserural->j166_percentual = !empty($j166_percentual) ? $j166_percentual : '0';
+    $clpercposserural->incluir($j166_sequencial);
+ 
+    $clpropri->incluir($j42_matric,$j42_numcgm);
+   }
+
    db_fim_transacao();
    $j42_numcgm="";
    $z01_nome="";
@@ -70,6 +108,7 @@ if(isset($incluir)){
 }else if(isset($excluir)){
 
    $clpropri->excluir($j42_matric,$j42_numcgm);
+   $clpercposserural->excluir(null, "j166_matric = {$j42_matric} AND j166_numcgm = {$j42_numcgm}");
    $j42_numcgm="";
    $z01_nome="";
 }else if(isset($j42_matric)){  
@@ -85,6 +124,10 @@ if(isset($incluir)){
      }else{
        $outros = false;
      } 
+
+    $sqlPercPosseRural = $clpercposserural->sql_record($clpercposserural->sql_query_file("", "*" ,"", "j166_matric = ".$j42_matric." and j166_numcgm = ".$j42_numcgm));
+    db_fieldsmemory($sqlPercPosseRural, 0);
+
 
    }else{
 
@@ -109,6 +152,7 @@ if(isset($incluir)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <style type="text/css">
 <!--
@@ -133,7 +177,7 @@ input {
         <td align="left" valign="top" bgcolor="#CCCCCC">
           <center>
             <?
-            require_once("forms/db_frmproprialt.php");
+            require_once(modification("forms/db_frmproprialt.php"));
             ?> 
           </center> 
         </td>
@@ -144,15 +188,18 @@ input {
 </html>
 <?
 if(isset($incluir)||isset($excluir)){
-  if($clpropri->erro_status=="0"){
+  if(!$sqlerro && $clpropri->erro_status=="0"){
     $clpropri->erro(true,false);
     if($clpropri->erro_campo!=""){
       echo "<script> document.form1.".$clpropri->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clpropri->erro_campo.".focus();</script>";
     }
-  }else{
+  } else if ($sqlerro) {
+    db_msgbox($erroMensagem);
+  } else {
     $clpropri->erro(true,false);
-    db_redireciona("cad1_proprialt.php?j42_matric=$j42_matric" );
+    $tipoimovel = isset($tipoImovel) ? $tipoImovel : $j01_tipoimovel;
+    db_redireciona("cad1_proprialt.php?j42_matric=$j42_matric&j01_tipoimovel=$tipoimovel" );
   }
 }
 ?>

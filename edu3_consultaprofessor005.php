@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rechumano_classe.php");
-include("classes/db_rechumanoescola_classe.php");
-include("classes/db_telefonerechumano_classe.php");
-include("classes/db_db_uf_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpesdoc_classe.php");
-include("classes/db_rhraca_classe.php");
-include("classes/db_rhinstrucao_classe.php");
-include("classes/db_rhestcivil_classe.php");
-include("classes/db_rhnacionalidade_classe.php");
-include("classes/db_rhfotos_classe.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rechumano_classe.php"));
+include(modification("classes/db_rechumanoescola_classe.php"));
+include(modification("classes/db_telefonerechumano_classe.php"));
+include(modification("classes/db_db_uf_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhpesdoc_classe.php"));
+include(modification("classes/db_rhraca_classe.php"));
+include(modification("classes/db_rhinstrucao_classe.php"));
+include(modification("classes/db_rhestcivil_classe.php"));
+include(modification("classes/db_rhnacionalidade_classe.php"));
+include(modification("classes/db_rhfotos_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clrechumano = new cl_rechumano;

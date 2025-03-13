@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: issqn
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clrotulo = new rotulocampo;
 $clrotulo = new rotulocampo;
@@ -138,7 +138,7 @@ function js_habilitacalculo(){
 <?
     if(isset($y80_codsani) &&$y80_codsani!=""){
         $sql = $clsaniatividade->sql_query($y80_codsani,null,"*","y80_codsani","y83_codsani=$y80_codsani and  y83_dtfim is  null");
-        $res = pg_query($sql);
+        $res = db_query($sql);
         $lin = pg_num_rows($res);
         if ($lin==0){
           echo "<div><b> Nenhuma das atividades cadastradas possui calculo de sanitário. </b></div><br>";
@@ -174,10 +174,10 @@ function js_habilitacalculo(){
 function js_inscr(mostra){
   var inscr=document.form1.q07_inscr.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_inscr','func_issbase.php?funcao_js=parent.js_mostrainscr|q02_inscr|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inscr','func_issbase.php?funcao_js=parent.js_mostrainscr|q02_inscr|z01_nome','Pesquisa',true);
   }else{
     if(inscr!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe_inscr','func_issbase.php?pesquisa_chave='+inscr+'&funcao_js=parent.js_mostrainscr1','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inscr','func_issbase.php?pesquisa_chave='+inscr+'&funcao_js=parent.js_mostrainscr1','Pesquisa',false);
     }else{
       document.form1.z01_nome.value="";
       document.form1.submit();  

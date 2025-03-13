@@ -1,0 +1,15 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="db98_sequencial" label="codigo"  />
+        <campo campo="db98_descricao"  label="descricao"    />
+        <campo campo="db98_estrutural"  label="estrutural"    />
+    </campos>
+    <from tabela="tipoempresa"/>
+    <juncoes>
+    </juncoes>
+    <filtros>
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao   campos="codigo"/>
+</consulta>

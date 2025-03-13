@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -58,12 +58,12 @@ class impressaoEtiquetaGateway {
     switch($sModelo) {
 
     	case 'OS-214':
-    		require  'modelo.4CM.php' ;
+    		require modification("model/modelo.4CM.php") ;
     		$oImpressao = new modelo4CM($oModelo->t71_sequencial);
     		break;
 
   		case 'OS-214-Plus':
-  		  require  'modelo.4CM.Plus.php' ;
+  		  require modification("model/modelo.4CM.Plus.php") ;
   		  $oImpressao = new modelo4CMPlus($oModelo->t71_sequencial);
   		  break;
 

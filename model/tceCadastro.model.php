@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-require_once ('model/tceEstruturaBasica.php');
+require_once(modification('model/tceEstruturaBasica.php'));
 
 class tceCadastro extends tceEstruturaBasica {
   
@@ -69,16 +69,22 @@ class tceCadastro extends tceEstruturaBasica {
 
     db_criatermometro('terTCECADASTRO', 'Arquivo CADASTRO...', 'blue', 1);
     $this->oTxtLayout->setByLineOfDBUtils($this->cabecalhoPadrao($this->iInstit, $this->sDataIni, $this->sDataFim, $this->sCodRemessa), 1);
-    $rsCadastro      = pg_query($this->sqlCadastro($this->iInstit));
+    $rsCadastro      = db_query($this->sqlCadastro($this->iInstit));
     $iNumRows        = pg_num_rows($rsCadastro);
     $iTotalRegistros = 0;
     $iContador       = 0;
     $oResponsaveis   = db_utils::getDao('contcearquivoresp');
+    $iQuant          = 0;
     
     for($i = 0; $i < $iNumRows; $i ++) {
-      
-      db_atutermometro($i, $iNumRows, "terTCECADASTRO");
-      
+
+      $iNew = intval($i*100/$iNumRows);
+      if ($iNew > $iQuant) {
+
+        $iQuant = $iNew;
+        db_atutermometro($i, $iNumRows, "terTCECADASTRO");
+      }
+
       $oCadastro = db_utils::fieldsMemory($rsCadastro, $i);
       
       // titular responsavel

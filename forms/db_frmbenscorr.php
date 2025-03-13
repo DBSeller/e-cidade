@@ -26,7 +26,7 @@
  */
 
 //MODULO: patrim
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clbenscorr->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -146,10 +146,10 @@ function js_cancelar(){
 }
 function js_pesquisat63_codbem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_benscorr','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostrabens1|t52_bem|t52_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_benscorr','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostrabens1|t52_bem|t52_descr','Pesquisa',true);
   }else{
      if(document.form1.t63_codbem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_benscorr','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.t63_codbem.value+'&funcao_js=parent.js_mostrabens','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_benscorr','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.t63_codbem.value+'&funcao_js=parent.js_mostrabens','Pesquisa',false);
      }else{
        document.form1.t52_descr.value = '';
      } 

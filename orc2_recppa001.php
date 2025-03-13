@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_orcppalei_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcppalei_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $cliframe_seleciona = new cl_iframe_seleciona;
@@ -214,10 +214,10 @@ function js_emite(){
 <script>
 function js_pesquisao21_codleippa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcppalei','func_orcppalei.php?funcao_js=parent.js_mostraorcppalei1|o21_codleippa|o21_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcppalei','func_orcppalei.php?funcao_js=parent.js_mostraorcppalei1|o21_codleippa|o21_descr','Pesquisa',true);
   }else{
      if(document.form1.o21_codleippa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_orcppalei','func_orcppalei.php?pesquisa_chave='+document.form1.o21_codleippa.value+'&funcao_js=parent.js_mostraorcppalei','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcppalei','func_orcppalei.php?pesquisa_chave='+document.form1.o21_codleippa.value+'&funcao_js=parent.js_mostraorcppalei','Pesquisa',false);
      }else{
        document.form1.o21_descr.value = ''; 
      }

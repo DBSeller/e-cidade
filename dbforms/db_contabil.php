@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
-include("../libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 if(!isset($arg)) {
   $str = split("\?",$HTTP_SERVER_VARS['QUERY_STRING']);
@@ -83,7 +83,7 @@ else
 	          from hist
 			  where c03_codigo = ".$chave_valor."
 		      order by c03_codigo";
-        $result = pg_exec($sql);
+        $result = db_query($sql);
 	    if(pg_numrows($result)==1){
           $ret = explode("##",pg_result($result,0,0));
           echo "

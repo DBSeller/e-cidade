@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 $oDaoUnidades         = db_utils::getdao('unidades');
 
@@ -196,7 +196,7 @@ function js_pesquisaCompetencia() {
       sUrl += 'tf32_i_codigo|tf32_i_mescompetencia|tf32_i_anocompetencia|tf32_d_datainicio|tf32_d_datafim|';
       sUrl += 'tf32_i_financiamento|sd65_c_nome';
    
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_tfd_fechamento', sUrl, 'Pesquisa Competências Encerradas', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_tfd_fechamento', sUrl, 'Pesquisa Competências Encerradas', true);
   
 }
 
@@ -231,7 +231,7 @@ function buscaDadosIniciais() {
 function js_retornoBuscaDadosIniciais(oAjax) {
 
   js_removeObj('db_msgBoxB');
-  var oRetorno = eval('(' + oAjax.responseText + ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 2) {
     
     alert(oRetorno.message.urlDecode());
@@ -301,7 +301,7 @@ var oDadoRecibo = new Object();
 function js_retornoGerarArquivo(oAjax) {
 
   js_removeObj('db_msgBoxA');
-  var oRetorno = eval('(' + oAjax.responseText + ')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 2) {
     

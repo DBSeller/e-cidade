@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -47,13 +47,13 @@ $iInstit = db_getsession("DB_instit");
 
 if(isset($acertabanco)){
   $sqlbanco = "select * from disbanco where codret = $codret and classi is true and instit = {$iInstit}";
-  $resultbanco = pg_exec($sqlbanco);
+  $resultbanco = db_query($sqlbanco);
   if (pg_numrows($resultbanco) == 0 ){
      echo "<script>alert('Este banco ainda não foi classificado. Verifique!')</script>";
   }else{
-     pg_exec("begin");
-     pg_exec("update  disbanco set classi = 't' where codret = $codret and classi = 'f' and instit = $instit");
-     pg_exec("commit");
+     db_query("begin");
+     db_query("update  disbanco set classi = 't' where codret = $codret and classi = 'f' and instit = $instit");
+     db_query("commit");
      echo '<script>parent.location.href="cai4_baixabanco002.php?db_opcao=2"</script>';
   }
 }
@@ -77,9 +77,7 @@ function js_acerta(){
 }
 
 function js_acertavalores(idret){
-  disbanco.jan.location.href='cai4_baixabanco005.php?idret='+idret+'&opcao='<?$opcao?>;
-  disbanco.show();
-  disbanco.focus();
+  js_OpenJanelaIframe('', 'db_iframe_registros', 'cai4_baixabanco005.php?idret='+idret+'&opcao='<?$opcao?>, 'Dados do Registro', true);
 }
 
 function js_imprime(erro){

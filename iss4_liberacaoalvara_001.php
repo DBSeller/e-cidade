@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("model/issqn/alvara/MovimentacaoAlvaraFactory.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 $oRotulo = new rotulocampo();
 $oRotulo->label("q120_issalvara");
@@ -65,7 +64,6 @@ if (isset($oGet->q123_inscr) && !isset($liberar)) {
     $lLiberado        = "";
   } else {
     $z01_nome = "Liberação Bloqueada";
-
   }
 
   $dbOpcao = 3;
@@ -121,29 +119,21 @@ if (isset($liberar)) {
   }
 
 }
-
 ?>
 <html>
 <head>
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-<?
-  db_app::load("scripts.js");
-  db_app::load("prototype.js");
-  db_app::load("datagrid.widget.js");
-  db_app::load("strings.js");
-  db_app::load("grid.style.css");
-  db_app::load("estilos.css");
-  db_app::load("classes/dbViewAvaliacoes.classe.js");
-  db_app::load("widgets/windowAux.widget.js");
-  db_app::load("dbcomboBox.widget.js");
+<?php
+  db_app::load("scripts.js, prototype.js, datagrid.widget.js, strings.js, grid.style.css, estilos.css");
+  db_app::load("classes/dbViewAvaliacoes.classe.js, widgets/windowAux.widget.js, dbcomboBox.widget.js");
   db_app::load("DBViewAlvaraDocumentos.js");
 ?>
-<style>
+<style type="text/css">
   .field {
-    border     : 0px;
-    border-top : 2px groove white;
+    border: 0px;
+    border-top: 2px groove white;
   }
   fieldset.field table tr td:FIRST-CHILD {
     width: 150px;
@@ -155,143 +145,132 @@ if (isset($liberar)) {
     text-decoration: underline;
   }
 </style>
-<link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body onLoad="a=1;" class="body-default">
-<center>
-<form name="form1" method="post" action="" onsubmit="jsMontaDocumentos(); return verifica();">
-  <fieldset style="margin-top:50px; width: 700px;">
-    <legend><strong>Liberação de Alvará</strong></legend>
-    <table  align="center" width="100%" cellpadding="" border="0">
-
-      <tr>
-        <td><strong>
-				  <?
-				    db_ancora("Inscrição : ", 'js_mostranomes(true);', $dbOpcao)
-				  ?></strong>
-        </td>
-        <td>
-			   <!-- <input type="text" name="q123_inscr" id="q123_inscr" maxlength="8" size="8" onchange="js_mostranomes(false);" />-->
-			   <?
-			     db_input("q123_inscr", 8,true, true, 'text',$dbOpcao,"onchange='js_mostranomes(false);'" );
-			     db_input("z01_nome", 50,"", true, 'text', 3);
-			   ?>
-        </td>
-      </tr>
-
-
-      <tr>
-        <td><strong>Alvará : </strong>
-        </td>
-        <td>
-			   <?
-			     db_input("q120_issalvara", 8,"", true, 'text', 3);
-			   ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <strong>
-          <?
-            db_ancora("Tipo de Alvará : ","js_pesquisaTipoAlvara(true);",1);
-          ?>
-          </strong>
-        </td>
-        <td>
-         <?
-
-           db_input("q123_isstipoalvara", 8,"", true, 'text', 3);
-           db_input("q98_descricao",     50,"", true, 'text', 3);
-         ?>
-        </td>
-      </tr>
-
-      <tr>
-        <td><strong>Data da Movimentação : </strong>
-        </td>
-        <td>
-			   <?
-			    echo date("d/m/Y",db_getsession("DB_datausu"));
-			   ?>
-        </td>
-      </tr>
-
-      <tr>
-        <td title="Validade em Dias"><strong>Validade do Alvará : </strong>
-        </td>
-        <td>
-			   <?
-			    db_input("q120_validadealvara", 8,"", true, 'text', 1);
-			   ?>
-        </td>
-      </tr>
+  <div class="container">
+  <form name="form1" method="post" action="" onsubmit="jsMontaDocumentos(); return verifica();">
+    <fieldset style="width: 700px;">
+      <legend><strong>Liberação de Alvará</strong></legend>
+      <table align="center" width="100%" cellpadding="" border="0">
 
         <tr>
-          <td nowrap><strong>
-             <?
-               db_ancora("Processo : ","js_pesquisap58_codproc(true);",1);
-             ?></strong>
+          <td><strong>
+  				  <?
+  				    db_ancora("Inscrição:", 'js_mostranomes(true);', $dbOpcao)
+  				  ?></strong>
           </td>
           <td>
-            <?
-              db_input('p58_codproc',8,"",true,'text',1," onchange='js_pesquisap58_codproc(false);'");
-              db_input('p58_requer',50,"",true,'text',3,'');
-            ?>
+  			   <?
+  			     db_input("q123_inscr", 8,true, true, 'text',$dbOpcao,"onchange='js_mostranomes(false);'" );
+  			     db_input("z01_nome", 50,"", true, 'text', 3);
+  			   ?>
           </td>
         </tr>
 
-      <tr>
-        <td ><strong>Observação : </strong>
-        </td>
-        <td>
-			   <?
-			    db_textarea("q120_obs",5, 58,  "", true,null, 1)
-			   ?>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
+        <tr>
+          <td><strong>Alvará:</strong>
+          </td>
+          <td>
+  			   <?
+  			     db_input("q120_issalvara", 8,"", true, 'text', 3);
+  			   ?>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>
+            <?
+              db_ancora("Tipo de Alvará:","js_pesquisaTipoAlvara(true);",1);
+            ?>
+            </strong>
+          </td>
+          <td>
+           <?
+             db_input("q123_isstipoalvara", 8,"", true, 'text', 3);
+             db_input("q98_descricao",     50,"", true, 'text', 3);
+           ?>
+          </td>
+        </tr>
 
-          <div id='ctnDocumento' <?=isset($oGet->aba) ? "style=\"display: none\"":"" ?>></div>
+        <tr>
+          <td><strong>Data da Movimentação:</strong>
+          </td>
+          <td>
+  			   <?
+  			    echo date("d/m/Y",db_getsession("DB_datausu"));
+  			   ?>
+          </td>
+        </tr>
 
-        </td>
-      </tr>
+        <tr>
+          <td title="Validade em Dias"><strong>Validade do Alvará:</strong>
+          </td>
+          <td>
+  			   <?
+  			    db_input("q120_validadealvara", 8,"", true, 'text', 1);
+  			   ?>
+          </td>
+        </tr>
 
-    </table>
+          <tr>
+            <td nowrap><strong>
+               <?
+                 db_ancora("Processo:","js_pesquisap58_codproc(true);",1);
+               ?></strong>
+            </td>
+            <td>
+              <?
+                db_input('p58_codproc',8,"",true,'text',1," onchange='js_pesquisap58_codproc(false);'");
+                db_input('p58_requer',50,"",true,'text',3,'');
+              ?>
+            </td>
+          </tr>
 
-    <input type='hidden' id='documentos' name='documentos'>
+        <tr>
+          <td ><strong>Observação:</strong>
+          </td>
+          <td>
+  			   <?
+  			    db_textarea("q120_obs",5, 58,  "", true,null, 1)
+  			   ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div id='ctnDocumento' <?=isset($oGet->aba) ? "style=\"display: none\"":"" ?>></div>
+          </td>
+        </tr>
 
-  </fieldset>
-    <table  align="center" width="100%" cellpadding="5" border="0">
-      <tr>
-         <td colspan="2" align="center">
-           <input type="submit" <? echo $lLiberado ?>  style="margin-left: 10px; margin-top: 10px;" name="liberar"
-                  id='liberar' value="Liberar Alvará"  />
-         </td>
-      </tr>
-</form>
-    </table>
+      </table>
 
-<div id='ficha'>
+      <input type='hidden' id='documentos' name='documentos'>
+
+    </fieldset>
+    <input type="submit" <? echo $lLiberado ?>  name="liberar"  id='liberar' value="Liberar Alvará" />
+  </form>
+
+  <div id='ficha'></div>
+
 </div>
-
-</center>
-<?
+<?php
  if (!isset($oGet->aba)){
    db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
  }
 ?>
 </body>
 </html>
+<?php
+  /** Extensao : Inicio [BloqueioManutencaoInscricaoSistemaExterno] */
+  /** Extensao : Fim [BloqueioManutencaoInscricaoSistemaExterno] */
+?>
 <script type="text/javascript">
+
 // grid documentos
   var oDocumentos = new DBViewAlvaraDocumentos("oDocumentos", "ctnDocumento");
       oDocumentos.show();
 
 function jsMontaDocumentos(){
-
-   $('documentos').value = oDocumentos.getDocumentosSelecionados().toString();
-
+  $('documentos').value = oDocumentos.getDocumentosSelecionados().toString();
 }
 
 // mostra processos
@@ -319,9 +298,9 @@ function js_mostraprotprocesso1(chave1,chave2){
 function js_mostranomes(mostra){
 
   if(mostra == true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_nomes','func_issalvara.php?lMov=1&lLibera=1&filtro=1&funcao_js=parent.js_preenche|0|1|2|3','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nomes','func_issalvara.php?lMov=1&lLibera=1&filtro=1&funcao_js=parent.js_preenche|0|1|2|3','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_nomes','func_issalvara.php?lMov=1&lLibera=1&filtro=1&pesquisa_chave='+$F('q123_inscr')+'&funcao_js=parent.js_preenche1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nomes','func_issalvara.php?lMov=1&lLibera=1&filtro=1&pesquisa_chave='+$F('q123_inscr')+'&funcao_js=parent.js_preenche1','Pesquisa',false);
   }
 }
 
@@ -340,7 +319,6 @@ function js_preenche(chave,chave1,chave2, chave3){
 function js_preenche1(chave,chave1, chave2, chave3){
 
   if (chave1 == false || chave1 == 'false' ){
-
 
      document.getElementById('liberar').disabled = false;
      document.form1.z01_nome.value               = chave2 || '';

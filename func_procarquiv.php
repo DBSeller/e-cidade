@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_procarquiv_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_procarquiv_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clprocarquiv = new cl_procarquiv;
@@ -82,32 +82,44 @@ $clprocarquiv->rotulo->label("p67_historico");
   </tr>
   <tr> 
     <td align="center" valign="top"> 
-      <?
-      if(!isset($pesquisa_chave)){
-        if(isset($campos)==false){
-           $campos = "procarquiv.*, p58_requer";
+      <?php
+
+      $iCodigoDepartamento = db_getsession('DB_coddepto');
+      $sWhere              = " p67_coddepto = {$iCodigoDepartamento} ";
+
+      if (!isset($pesquisa_chave)) {
+
+        if (isset($campos) == false) {
+          $campos = "procarquiv.*, p58_requer";
         }
-        if(isset($chave_p67_codarquiv) && (trim($chave_p67_codarquiv)!="") ){
-	         $sql = $clprocarquiv->sql_query($chave_p67_codarquiv,$campos,"p67_codarquiv");
-        }else if(isset($chave_p67_historico) && (trim($chave_p67_historico)!="") ){
-	         $sql = $clprocarquiv->sql_query("",$campos,"p67_historico"," p67_historico like '$chave_p67_historico%' ");
-        }else{
-           $sql = $clprocarquiv->sql_query("",$campos,"p67_codarquiv","");
+
+        if (isset($chave_p67_codarquiv) && (trim($chave_p67_codarquiv) != "")) {
+
+          $sWhere .= " and p67_codarquiv = {$chave_p67_codarquiv} ";
+          $sql = $clprocarquiv->sql_query(null,$campos, "p67_codarquiv", $sWhere);
+        } else if (isset($chave_p67_historico) && (trim($chave_p67_historico) != "")) {
+
+          $sWhere .= " and p67_historico like '$chave_p67_historico%' ";
+          $sql = $clprocarquiv->sql_query("", $campos, "p67_historico", $sWhere);
+        } else {
+          $sql = $clprocarquiv->sql_query("", $campos, "p67_codarquiv", $sWhere);
         }
-//	  die($sql);
-//        die($funcao_js);
-        db_lovrot($sql,15,"()","",$funcao_js);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clprocarquiv->sql_record($clprocarquiv->sql_query($pesquisa_chave));
-          if($clprocarquiv->numrows!=0){
+        db_lovrot($sql, 15, "()", "", $funcao_js);
+      } else {
+
+        if ($pesquisa_chave != null && $pesquisa_chave != "") {
+
+          $sWhere .= " and p67_codarquiv = {$pesquisa_chave} ";
+          $result = $clprocarquiv->sql_record($clprocarquiv->sql_query(null, "*", null, $sWhere));
+          if ($clprocarquiv->numrows != 0) {
+
             db_fieldsmemory($result,0);
             echo "<script>".$funcao_js."('$p67_historico',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
+          } else {
+            echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
           }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
+        } else {
+          echo "<script>".$funcao_js."('',false);</script>";
         }
       }
       ?>
@@ -117,7 +129,7 @@ $clprocarquiv->rotulo->label("p67_historico");
 </body>
 </html>
 <?
-if(!isset($pesquisa_chave)){
+if(!isset($pesquisa_chave)) {
   ?>
   <script>
 document.form2.chave_p67_codarquiv.focus();
@@ -126,3 +138,9 @@ document.form2.chave_p67_codarquiv.select();
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

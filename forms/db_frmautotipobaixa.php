@@ -72,10 +72,10 @@ db_input('y87_baixaproc',8,$Iy87_baixaproc,true,'text',3,'')
 <script>
 function js_pesquisay86_codautotipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_autotipo','func_autotipo.php?funcao_js=parent.js_mostraautotipo1|y59_codigo|y59_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autotipo','func_autotipo.php?funcao_js=parent.js_mostraautotipo1|y59_codigo|y59_codigo','Pesquisa',true);
   }else{
      if(document.form1.y86_codautotipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_autotipo','func_autotipo.php?pesquisa_chave='+document.form1.y86_codautotipo.value+'&funcao_js=parent.js_mostraautotipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autotipo','func_autotipo.php?pesquisa_chave='+document.form1.y86_codautotipo.value+'&funcao_js=parent.js_mostraautotipo','Pesquisa',false);
      }else{
        document.form1.y59_codigo.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostraautotipo1(chave1,chave2){
 }
 function js_pesquisay86_codbaixaproc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_autotipobaixaproc','func_autotipobaixaproc.php?funcao_js=parent.js_mostraautotipobaixaproc1|y87_baixaproc|y87_baixaproc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autotipobaixaproc','func_autotipobaixaproc.php?funcao_js=parent.js_mostraautotipobaixaproc1|y87_baixaproc|y87_baixaproc','Pesquisa',true);
   }else{
      if(document.form1.y86_codbaixaproc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_autotipobaixaproc','func_autotipobaixaproc.php?pesquisa_chave='+document.form1.y86_codbaixaproc.value+'&funcao_js=parent.js_mostraautotipobaixaproc','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autotipobaixaproc','func_autotipobaixaproc.php?pesquisa_chave='+document.form1.y86_codbaixaproc.value+'&funcao_js=parent.js_mostraautotipobaixaproc','Pesquisa',false);
      }else{
        document.form1.y87_baixaproc.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostraautotipobaixaproc1(chave1,chave2){
   db_iframe_autotipobaixaproc.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_autotipobaixa','func_autotipobaixa.php?funcao_js=parent.js_preenchepesquisa|y86_codautotipo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_autotipobaixa','func_autotipobaixa.php?funcao_js=parent.js_preenchepesquisa|y86_codautotipo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_autotipobaixa.hide();

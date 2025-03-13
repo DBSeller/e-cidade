@@ -1,61 +1,107 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_baseserie_classe.php");
-include("classes/db_cursoedu_classe.php");
-include("classes/db_serie_classe.php");
-include("classes/db_serieequiv_classe.php");
-include("classes/db_base_classe.php");
-include("classes/db_aluno_classe.php");
-include("classes/db_alunocurso_classe.php");
-include("classes/db_historicomps_classe.php");
-include("classes/db_historico_classe.php");
-include("dbforms/db_funcoes.php");
-db_postmemory($HTTP_POST_VARS);
-$clbaseserie = new cl_baseserie;
-$clcursoedu = new cl_curso;
-$clserie = new cl_serie;
-$clserieequiv = new cl_serieequiv;
-$clbase = new cl_base;
-$claluno = new cl_aluno;
-$clalunocurso = new cl_alunocurso;
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_baseserie_classe.php"));
+include(modification("classes/db_cursoedu_classe.php"));
+include(modification("classes/db_serie_classe.php"));
+include(modification("classes/db_serieequiv_classe.php"));
+include(modification("classes/db_base_classe.php"));
+include(modification("classes/db_aluno_classe.php"));
+include(modification("classes/db_alunocurso_classe.php"));
+include(modification("classes/db_historicomps_classe.php"));
+include(modification("classes/db_historico_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+db_postmemory($_POST);
+$clbaseserie    = new cl_baseserie;
+$clcursoedu     = new cl_curso;
+$clserie        = new cl_serie;
+$clserieequiv   = new cl_serieequiv;
+$clbase         = new cl_base;
+$claluno        = new cl_aluno;
+$clalunocurso   = new cl_alunocurso;
 $clhistoricomps = new cl_historicomps;
-$clhistorico = new cl_historico;
-$db_opcao = 1;
-$db_botao = false;
+$clhistorico    = new cl_historico;
+$db_opcao       = 1;
+$db_botao       = false;
+
 $escola = db_getsession("DB_coddepto");
 $result = $clcursoedu->sql_record($clcursoedu->sql_query("","ed29_c_descr as nomecurso",""," ed29_i_codigo = $curso"));
 db_fieldsmemory($result,0);
-if(isset($concluir)){
+?>
+
+<html>
+<head>
+  <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Expires" CONTENT="0">
+  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <link href="estilos.css" rel="stylesheet" type="text/css">
+  <style>
+  .titulo{
+   font-size: 11;
+   color: #DEB887;
+   background-color:#444444;
+   font-weight: bold;
+  }
+  .cabec1{
+   font-size: 11;
+   color: #000000;
+   background-color:#999999;
+   font-weight: bold;
+  }
+  .cabec2{
+   font-size: 11;
+   color: #000000;
+   background-color:#FF9B9B;
+   font-weight: bold;
+  }
+  .cabec3{
+   font-size: 11;
+   color: #000000;
+   background-color:#BBFFBB;
+   font-weight: bold;
+  }
+  .aluno{
+   color: #000000;
+   font-family : Tahoma;
+   font-size: 10;
+  }
+  </style>
+</head>
+
+<?php
+
+if (isset($concluir)) {
+
  db_inicio_transacao();
  $alunoconc = explode("#",$concluidos);
  for($x=0;$x<count($alunoconc);$x++){
@@ -74,21 +120,21 @@ if(isset($concluir)){
                  WHERE ed61_i_aluno = $alunoconc[$x]
                  ORDER BY anoconc desc
                  LIMIT 1";
-  	$result = pg_query($sql);
+  	$result = db_query($sql);
         db_fieldsmemory($result,0);
   }
   $sql = "UPDATE alunocurso SET
            ed56_c_situacao = 'CONCLUÍDO'
           WHERE ed56_i_aluno = $alunoconc[$x]
          ";
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $sql = "UPDATE historico SET
            ed61_i_anoconc = $anoconc,
            ed61_i_periodoconc = $periodoconc
           WHERE ed61_i_aluno = $alunoconc[$x]
           AND ed61_i_curso = $curso
          ";
-  $result = pg_query($sql);
+  $result = db_query($sql);
  }
  db_fim_transacao();
  ?>
@@ -101,45 +147,7 @@ if(isset($concluir)){
 }
 ?>
 
-<html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<style>
-.titulo{
- font-size: 11;
- color: #DEB887;
- background-color:#444444;
- font-weight: bold;
-}
-.cabec1{
- font-size: 11;
- color: #000000;
- background-color:#999999;
- font-weight: bold;
-}
-.cabec2{
- font-size: 11;
- color: #000000;
- background-color:#FF9B9B;
- font-weight: bold;
-}
-.cabec3{
- font-size: 11;
- color: #000000;
- background-color:#BBFFBB;
- font-weight: bold;
-}
-.aluno{
- color: #000000;
- font-family : Tahoma;
- font-size: 10;
-}
-</style>
-</head>
+
 <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <table width="100%" border="1" cellspacing="0" cellpadding="0">
  <tr>
@@ -165,7 +173,7 @@ if(isset($concluir)){
                 AND ed47_i_codigo = $codaluno[$x]
                 ORDER BY ed47_v_nome
                ";
-   $result_hist = pg_query($sql_hist);
+   $result_hist = db_query($sql_hist);
    $linhas_hist = pg_num_rows($result_hist);
    if($linhas_hist==0){
     $erro1 = "OK";
@@ -213,7 +221,7 @@ if(isset($concluir)){
                WHERE ed61_i_aluno = $ed61_i_aluno
                AND (ed99_i_serie = $seriedabase OR ed99_i_serie in ($equivalencias))
               ";
-     $result_s = pg_query($sql_s);
+     $result_s = db_query($sql_s);
      $linhas_s = pg_num_rows($result_s);
      if($linhas_s==0){
       $erro .= "&nbsp;&nbsp; - SÉRIE ".$nomeserie." NÃO CONSTA NO HISTÓRICO<br>";
@@ -237,7 +245,7 @@ if(isset($concluir)){
                  AND (ed99_i_serie = $seriedabase OR ed99_i_serie in ($equivalencias))
                  AND ed99_c_resultadofinal = 'A'
                 ";
-      $results_s1 = pg_query($sql_s1);
+      $results_s1 = db_query($sql_s1);
       $linhas_s1 = pg_num_rows($results_s1);
       if($linhas_s1==0){
        $erro .= "&nbsp;&nbsp; - SÉRIE ".$nomeserie." CONSTA COMO REPROVADO<br>";

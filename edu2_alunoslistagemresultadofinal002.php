@@ -1,42 +1,42 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_sql.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/JSON.php");
-require_once ("std/DBDate.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oParam = db_utils::postMemory($_GET);
 
@@ -160,6 +160,7 @@ $aEscolas = array();
 $sWhere  = " where not exists (select 1 from diariofinal df1                          ";
 $sWhere .= "                           where df1.ed74_c_resultadofinal = ''           ";
 $sWhere .= "                             and df1.ed74_i_diario = diario.ed95_i_codigo)";
+$sWhere .= " and ed60_c_situacao in ('MATRICULADO')";
 
 if ($oFiltros->iAno != 0) {
   $aWhereEscola[] = "ed52_i_ano = {$oFiltros->iAno}";
@@ -211,11 +212,13 @@ $sSqlAlunos .= "       inner join serieregimemat      on serieregimemat.ed223_i_
 $sSqlAlunos .= "       inner join serie               on serie.ed11_i_codigo               = serieregimemat.ed223_i_serie               ";
 $sSqlAlunos .= "       inner join matricula           on matricula.ed60_i_turma            = turma.ed57_i_codigo                        ";
 $sSqlAlunos .= "       inner join aluno               on aluno.ed47_i_codigo               = matricula.ed60_i_aluno                     ";
-$sSqlAlunos .= "       inner join diario              on diario.ed95_i_escola              = escola.ed18_i_codigo                       ";
-$sSqlAlunos .= "                                     and diario.ed95_i_calendario          = calendario.ed52_i_codigo                   ";
-$sSqlAlunos .= "                                     and diario.ed95_i_aluno               = aluno.ed47_i_codigo                        ";
-$sSqlAlunos .= "                                     and diario.ed95_i_serie               = serie.ed11_i_codigo                        ";
-$sSqlAlunos .= "       inner join diariofinal         on diariofinal.ed74_i_diario         = diario.ed95_i_codigo                       ";
+$sSqlAlunos .= "       inner join regencia            on  regencia.ed59_i_turma            = turma.ed57_i_codigo                        ";
+$sSqlAlunos .= "       inner join diario              on  diario.ed95_i_escola             = escola.ed18_i_codigo                       ";
+$sSqlAlunos .= "                                      and diario.ed95_i_calendario         = calendario.ed52_i_codigo                   ";
+$sSqlAlunos .= "                                      and diario.ed95_i_aluno              = aluno.ed47_i_codigo                        ";
+$sSqlAlunos .= "                                      and diario.ed95_i_serie              = serie.ed11_i_codigo                        ";
+$sSqlAlunos .= "                                      and diario.ed95_i_regencia           = regencia.ed59_i_codigo                     ";
+$sSqlAlunos .= "       inner join diariofinal         on  diariofinal.ed74_i_diario        = diario.ed95_i_codigo                       ";
 $sSqlAlunos .= "       {$sWhere} {$sWhereEscola}                                                                                        ";
 $sSqlAlunos .= " order by ed18_i_codigo;                                                                                                ";
 $rsAlunos    = db_query($sSqlAlunos);

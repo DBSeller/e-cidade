@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once ("dbforms/db_funcoes.php");
-require("libs/db_stdlibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_stdlibwebseller.php"));
 
 /**
  * Variaveis para configurar VIEW
@@ -59,8 +59,9 @@ $oGet = db_utils::postMemory($_GET);
 	<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	<meta http-equiv="Expires" CONTENT="0">
-	<?
+	<?php
 	  db_app::load("scripts.js");
+	  db_app::load("arrays.js");
 	  db_app::load("prototype.js");
 	  db_app::load("datagrid.widget.js");
 	  db_app::load("widgets/windowAux.widget.js");

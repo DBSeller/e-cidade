@@ -1,0 +1,122 @@
+[
+    {
+        "value": "01",
+        "label": "Acidente\/Doença do trabalho"
+    },
+    {
+        "value": "03",
+        "label": "Acidente\/Doença não relacionada ao trabalho"
+    },
+    {
+        "value": "05",
+        "label": "Afastamento\/licença prevista em regime próprio (estatuto), sem remuneração"
+    },
+    {
+        "value": "06",
+        "label": "Aposentadoria por invalidez"
+    },
+    {
+        "value": "07",
+        "label": "Acompanhamento - Licença para acompanhamento de membro da família enfermo"
+    },
+    {
+        "value": "08",
+        "label": "\"Afastamento do empregado para participar de atividade do Conselho Curador do FGTS  - art. 65, §6º, Dec. 99.684\/90 (Regulamento do FGTS)\""
+    },
+    {
+        "value": "10",
+        "label": "Afastamento\/licença prevista em regime próprio (estatuto), com remuneração"
+    },
+    {
+        "value": "11",
+        "label": "Cárcere"
+    },
+    {
+        "value": "12",
+        "label": "Cargo Eletivo - Candidato a cargo eletivo - Lei 7.664\/1988. art. 25°, parágrafo único - Celetistas em geral"
+    },
+    {
+        "value": "13",
+        "label": "Cargo Eletivo - Candidato a cargo eletivo - Lei Complementar 64\/1990. art. 1°, inciso II, alínea “l” - Servidor público, estatutário ou não, dos órgãos ou entidades da Administração Direta ou Indireta da  União,  dos  Estados,  do  Distrito  Federal,  dos  Municípios  e  dos  Territórios,  inclusive  das fundações mantidas pelo Poder Público."
+    },
+    {
+        "value": "14",
+        "label": "Cessão \/ Requisição"
+    },
+    {
+        "value": "15",
+        "label": "Gozo de férias ou recesso - Afastamento temporário para o gozo de férias ou recesso"
+    },
+    {
+        "value": "16",
+        "label": "Licença remunerada - Lei, liberalidade da empresa ou Acordo\/Convenção Coletiva de Trabalho"
+    },
+    {
+        "value": "17",
+        "label": "Licença  Maternidade  -  120  dias  e  suas  prorrogações\/antecipações,  inclusive  para  o  cônjuge sobrevivente"
+    },
+    {
+        "value": "18",
+        "label": "Licença Maternidade - 121 dias a 180 dias, Lei 11.770\/2008 (Empresa Cidadã), inclusive para o cônjuge sobrevivente"
+    },
+    {
+        "value": "19",
+        "label": "Licença Maternidade - Afastamento temporário por motivo de aborto não criminoso"
+    },
+    {
+        "value": "20",
+        "label": "Licença Maternidade - Afastamento temporário por motivo de licença-maternidade decorrente de adoção ou guarda judicial de criança, inclusive para o cônjuge sobrevivente"
+    },
+    {
+        "value": "21",
+        "label": "Licença não remunerada ou Sem Vencimento"
+    },
+    {
+        "value": "22",
+        "label": "Mandato   Eleitoral   -   Afastamento   temporário   para   o   exercício   de   mandato   eleitoral,   sem remuneração"
+    },
+    {
+        "value": "23",
+        "label": "Mandato   Eleitoral   -   Afastamento   temporário   para   o   exercício   de   mandato   eleitoral,   com remuneração"
+    },
+    {
+        "value": "24",
+        "label": "Mandato Sindical - Afastamento temporário para exercício de mandato sindical"
+    },
+    {
+        "value": "25",
+        "label": "Mulher vítima de violência - Lei 11.340\/2006 - art. 9º  §2o, II - Lei Maria da Penha"
+    },
+    {
+        "value": "26",
+        "label": "Participação  de  empregado  no  Conselho  Nacional  de  Previdência  Social-CNPS  (art.  3º,  Lei 8.213\/1991)"
+    },
+    {
+        "value": "27",
+        "label": "Qualificação - Afastamento por suspensão do contrato de acordo com o art 476-A da CLT"
+    },
+    {
+        "value": "28",
+        "label": "Representante Sindical - Afastamento pelo tempo que se fizer necessário, quando, na qualidade de representante de entidade sindical estiver participando de reunião oficial de organismo internacional do qual o Brasil seja membro"
+    },
+    {
+        "value": "29",
+        "label": "\"Serviço Militar - Afastamento temporário para prestar serviço militar obrigatório"
+    },
+    {
+        "value": "30",
+        "label": "Suspensão disciplinar - CLT, art. 474"
+    },
+    {
+        "value": "31",
+        "label": "Servidor Público em Disponibilidade"
+    },
+    {
+        "value": "33",
+        "label": "Licença Maternidade - de 180 dias, Lei 13.301\/2016."
+    },
+    {
+        "value": "34",
+        "label": "Inatividade do trabalhador avulso (portuário ou não portuário) por período superior a 90 dias"
+    }
+]

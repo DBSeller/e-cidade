@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "justificativa.ed06_i_codigo,justificativa.ed06_c_descr,justificativa.ed06_c_ativo";
+$campos = "justificativa.ed06_i_codigo,justificativa.ed06_c_descr,justificativa.ed06_c_ativo,justificativa.ed06_abreviatura";
 ?>

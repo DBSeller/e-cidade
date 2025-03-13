@@ -1,93 +1,93 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
 //CLASSE DA ENTIDADE calendario
-class cl_calendario { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ed52_i_codigo = 0; 
-   var $ed52_c_descr = null; 
-   var $ed52_i_duracaocal = 0; 
-   var $ed52_i_ano = 0; 
-   var $ed52_i_periodo = 0; 
-   var $ed52_d_inicio_dia = null; 
-   var $ed52_d_inicio_mes = null; 
-   var $ed52_d_inicio_ano = null; 
-   var $ed52_d_inicio = null; 
-   var $ed52_d_fim_dia = null; 
-   var $ed52_d_fim_mes = null; 
-   var $ed52_d_fim_ano = null; 
-   var $ed52_d_fim = null; 
-   var $ed52_d_resultfinal_dia = null; 
-   var $ed52_d_resultfinal_mes = null; 
-   var $ed52_d_resultfinal_ano = null; 
-   var $ed52_d_resultfinal = null; 
-   var $ed52_c_aulasabado = null; 
-   var $ed52_i_diasletivos = 0; 
-   var $ed52_i_semletivas = 0; 
-   var $ed52_i_calendant = 0; 
-   var $ed52_c_passivo = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_calendario {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ed52_i_codigo = 0;
+   var $ed52_c_descr = null;
+   var $ed52_i_duracaocal = 0;
+   var $ed52_i_ano = 0;
+   var $ed52_i_periodo = 0;
+   var $ed52_d_inicio_dia = null;
+   var $ed52_d_inicio_mes = null;
+   var $ed52_d_inicio_ano = null;
+   var $ed52_d_inicio = null;
+   var $ed52_d_fim_dia = null;
+   var $ed52_d_fim_mes = null;
+   var $ed52_d_fim_ano = null;
+   var $ed52_d_fim = null;
+   var $ed52_d_resultfinal_dia = null;
+   var $ed52_d_resultfinal_mes = null;
+   var $ed52_d_resultfinal_ano = null;
+   var $ed52_d_resultfinal = null;
+   var $ed52_c_aulasabado = null;
+   var $ed52_i_diasletivos = 0;
+   var $ed52_i_semletivas = 0;
+   var $ed52_i_calendant = 0;
+   var $ed52_c_passivo = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 ed52_i_codigo = int8 = Código 
-                 ed52_c_descr = char(20) = Descrição 
-                 ed52_i_duracaocal = int8 = Duração 
-                 ed52_i_ano = int4 = Ano 
-                 ed52_i_periodo = int4 = Período 
-                 ed52_d_inicio = date = Data Inicial 
-                 ed52_d_fim = date = Data Final 
-                 ed52_d_resultfinal = date = Data Resultado Final 
-                 ed52_c_aulasabado = char(1) = Aula aos Sábados 
-                 ed52_i_diasletivos = int4 = Dias Letivos 
-                 ed52_i_semletivas = int4 = Semanas Letivas 
-                 ed52_i_calendant = int4 = Calendário Anterior 
-                 ed52_c_passivo = char(1) = Passivo 
+                 ed52_i_codigo = int8 = Código
+                 ed52_c_descr = char(20) = Descrição
+                 ed52_i_duracaocal = int8 = Duração
+                 ed52_i_ano = int4 = Ano
+                 ed52_i_periodo = int4 = Período
+                 ed52_d_inicio = date = Data Inicial
+                 ed52_d_fim = date = Data Final
+                 ed52_d_resultfinal = date = Data Resultado Final
+                 ed52_c_aulasabado = char(1) = Aula aos Sábados
+                 ed52_i_diasletivos = int4 = Dias Letivos
+                 ed52_i_semletivas = int4 = Semanas Letivas
+                 ed52_i_calendant = int4 = Calendário Anterior
+                 ed52_c_passivo = char(1) = Passivo
                  ";
-   //funcao construtor da classe 
-   function cl_calendario() { 
+   //funcao construtor da classe
+   public function __construct() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("calendario"); 
+     $this->rotulo = new rotulo("calendario");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   public function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -96,7 +96,7 @@ class cl_calendario {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->ed52_i_codigo = ($this->ed52_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed52_i_codigo"]:$this->ed52_i_codigo);
        $this->ed52_c_descr = ($this->ed52_c_descr == ""?@$GLOBALS["HTTP_POST_VARS"]["ed52_c_descr"]:$this->ed52_c_descr);
@@ -137,9 +137,9 @@ class cl_calendario {
      }
    }
    // funcao para inclusao
-   function incluir ($ed52_i_codigo){ 
+   public function incluir ($ed52_i_codigo){
       $this->atualizacampos();
-     if($this->ed52_c_descr == null ){ 
+     if($this->ed52_c_descr == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "ed52_c_descr";
        $this->erro_banco = "";
@@ -148,7 +148,7 @@ class cl_calendario {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed52_i_duracaocal == null ){ 
+     if($this->ed52_i_duracaocal == null ){
        $this->erro_sql = " Campo Duração nao Informado.";
        $this->erro_campo = "ed52_i_duracaocal";
        $this->erro_banco = "";
@@ -157,7 +157,7 @@ class cl_calendario {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed52_i_ano == null ){ 
+     if($this->ed52_i_ano == null ){
        $this->erro_sql = " Campo Ano nao Informado.";
        $this->erro_campo = "ed52_i_ano";
        $this->erro_banco = "";
@@ -166,10 +166,10 @@ class cl_calendario {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed52_i_periodo == null ){ 
+     if($this->ed52_i_periodo == null ){
        $this->ed52_i_periodo = "0";
      }
-     if($this->ed52_d_inicio == null ){ 
+     if($this->ed52_d_inicio == null ){
        $this->erro_sql = " Campo Data Inicial nao Informado.";
        $this->erro_campo = "ed52_d_inicio_dia";
        $this->erro_banco = "";
@@ -178,7 +178,7 @@ class cl_calendario {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed52_d_fim == null ){ 
+     if($this->ed52_d_fim == null ){
        $this->erro_sql = " Campo Data Final nao Informado.";
        $this->erro_campo = "ed52_d_fim_dia";
        $this->erro_banco = "";
@@ -187,7 +187,7 @@ class cl_calendario {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed52_d_resultfinal == null ){ 
+     if($this->ed52_d_resultfinal == null ){
        $this->erro_sql = " Campo Data Resultado Final nao Informado.";
        $this->erro_campo = "ed52_d_resultfinal_dia";
        $this->erro_banco = "";
@@ -196,7 +196,7 @@ class cl_calendario {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed52_c_aulasabado == null ){ 
+     if($this->ed52_c_aulasabado == null ){
        $this->erro_sql = " Campo Aula aos Sábados nao Informado.";
        $this->erro_campo = "ed52_c_aulasabado";
        $this->erro_banco = "";
@@ -205,16 +205,16 @@ class cl_calendario {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed52_i_diasletivos == null ){ 
+     if($this->ed52_i_diasletivos == null ){
        $this->ed52_i_diasletivos = "0";
      }
-     if($this->ed52_i_semletivas == null ){ 
+     if($this->ed52_i_semletivas == null ){
        $this->ed52_i_semletivas = "0";
      }
-     if($this->ed52_i_calendant == null ){ 
+     if($this->ed52_i_calendant == null ){
        $this->ed52_i_calendant = "0";
      }
-     if($this->ed52_c_passivo == null ){ 
+     if($this->ed52_c_passivo == null ){
        $this->erro_sql = " Campo Passivo nao Informado.";
        $this->erro_campo = "ed52_c_passivo";
        $this->erro_banco = "";
@@ -224,16 +224,16 @@ class cl_calendario {
        return false;
      }
      if($ed52_i_codigo == "" || $ed52_i_codigo == null ){
-       $result = db_query("select nextval('calendario_ed52_i_codigo_seq')"); 
+       $result = db_query("select nextval('calendario_ed52_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: calendario_ed52_i_codigo_seq do campo: ed52_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: calendario_ed52_i_codigo_seq do campo: ed52_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->ed52_i_codigo = pg_result($result,0,0); 
+       $this->ed52_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from calendario_ed52_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $ed52_i_codigo)){
@@ -244,10 +244,10 @@ class cl_calendario {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->ed52_i_codigo = $ed52_i_codigo; 
+         $this->ed52_i_codigo = $ed52_i_codigo;
        }
      }
-     if(($this->ed52_i_codigo == null) || ($this->ed52_i_codigo == "") ){ 
+     if(($this->ed52_i_codigo == null) || ($this->ed52_i_codigo == "") ){
        $this->erro_sql = " Campo ed52_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -256,37 +256,37 @@ class cl_calendario {
        return false;
      }
      $sql = "insert into calendario(
-                                       ed52_i_codigo 
-                                      ,ed52_c_descr 
-                                      ,ed52_i_duracaocal 
-                                      ,ed52_i_ano 
-                                      ,ed52_i_periodo 
-                                      ,ed52_d_inicio 
-                                      ,ed52_d_fim 
-                                      ,ed52_d_resultfinal 
-                                      ,ed52_c_aulasabado 
-                                      ,ed52_i_diasletivos 
-                                      ,ed52_i_semletivas 
-                                      ,ed52_i_calendant 
-                                      ,ed52_c_passivo 
+                                       ed52_i_codigo
+                                      ,ed52_c_descr
+                                      ,ed52_i_duracaocal
+                                      ,ed52_i_ano
+                                      ,ed52_i_periodo
+                                      ,ed52_d_inicio
+                                      ,ed52_d_fim
+                                      ,ed52_d_resultfinal
+                                      ,ed52_c_aulasabado
+                                      ,ed52_i_diasletivos
+                                      ,ed52_i_semletivas
+                                      ,ed52_i_calendant
+                                      ,ed52_c_passivo
                        )
                 values (
-                                $this->ed52_i_codigo 
-                               ,'$this->ed52_c_descr' 
-                               ,$this->ed52_i_duracaocal 
-                               ,$this->ed52_i_ano 
-                               ,$this->ed52_i_periodo 
-                               ,".($this->ed52_d_inicio == "null" || $this->ed52_d_inicio == ""?"null":"'".$this->ed52_d_inicio."'")." 
-                               ,".($this->ed52_d_fim == "null" || $this->ed52_d_fim == ""?"null":"'".$this->ed52_d_fim."'")." 
-                               ,".($this->ed52_d_resultfinal == "null" || $this->ed52_d_resultfinal == ""?"null":"'".$this->ed52_d_resultfinal."'")." 
-                               ,'$this->ed52_c_aulasabado' 
-                               ,$this->ed52_i_diasletivos 
-                               ,$this->ed52_i_semletivas 
-                               ,$this->ed52_i_calendant 
-                               ,'$this->ed52_c_passivo' 
+                                $this->ed52_i_codigo
+                               ,'$this->ed52_c_descr'
+                               ,$this->ed52_i_duracaocal
+                               ,$this->ed52_i_ano
+                               ,$this->ed52_i_periodo
+                               ,".($this->ed52_d_inicio == "null" || $this->ed52_d_inicio == ""?"null":"'".$this->ed52_d_inicio."'")."
+                               ,".($this->ed52_d_fim == "null" || $this->ed52_d_fim == ""?"null":"'".$this->ed52_d_fim."'")."
+                               ,".($this->ed52_d_resultfinal == "null" || $this->ed52_d_resultfinal == ""?"null":"'".$this->ed52_d_resultfinal."'")."
+                               ,'$this->ed52_c_aulasabado'
+                               ,$this->ed52_i_diasletivos
+                               ,$this->ed52_i_semletivas
+                               ,$this->ed52_i_calendant
+                               ,'$this->ed52_c_passivo'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Calendário Escolar ($this->ed52_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -330,16 +330,16 @@ class cl_calendario {
        $resac = db_query("insert into db_acount values($acount,1010057,1008339,'','".AddSlashes(pg_result($resaco,0,'ed52_c_passivo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($ed52_i_codigo=null) { 
+   public function alterar ($ed52_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update calendario set ";
      $virgula = "";
-     if(trim($this->ed52_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_codigo"])){ 
+     if(trim($this->ed52_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_codigo"])){
        $sql  .= $virgula." ed52_i_codigo = $this->ed52_i_codigo ";
        $virgula = ",";
-       if(trim($this->ed52_i_codigo) == null ){ 
+       if(trim($this->ed52_i_codigo) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "ed52_i_codigo";
          $this->erro_banco = "";
@@ -349,10 +349,10 @@ class cl_calendario {
          return false;
        }
      }
-     if(trim($this->ed52_c_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_c_descr"])){ 
+     if(trim($this->ed52_c_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_c_descr"])){
        $sql  .= $virgula." ed52_c_descr = '$this->ed52_c_descr' ";
        $virgula = ",";
-       if(trim($this->ed52_c_descr) == null ){ 
+       if(trim($this->ed52_c_descr) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "ed52_c_descr";
          $this->erro_banco = "";
@@ -362,10 +362,10 @@ class cl_calendario {
          return false;
        }
      }
-     if(trim($this->ed52_i_duracaocal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_duracaocal"])){ 
+     if(trim($this->ed52_i_duracaocal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_duracaocal"])){
        $sql  .= $virgula." ed52_i_duracaocal = $this->ed52_i_duracaocal ";
        $virgula = ",";
-       if(trim($this->ed52_i_duracaocal) == null ){ 
+       if(trim($this->ed52_i_duracaocal) == null ){
          $this->erro_sql = " Campo Duração nao Informado.";
          $this->erro_campo = "ed52_i_duracaocal";
          $this->erro_banco = "";
@@ -375,10 +375,10 @@ class cl_calendario {
          return false;
        }
      }
-     if(trim($this->ed52_i_ano)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_ano"])){ 
+     if(trim($this->ed52_i_ano)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_ano"])){
        $sql  .= $virgula." ed52_i_ano = $this->ed52_i_ano ";
        $virgula = ",";
-       if(trim($this->ed52_i_ano) == null ){ 
+       if(trim($this->ed52_i_ano) == null ){
          $this->erro_sql = " Campo Ano nao Informado.";
          $this->erro_campo = "ed52_i_ano";
          $this->erro_banco = "";
@@ -388,17 +388,17 @@ class cl_calendario {
          return false;
        }
      }
-     if(trim($this->ed52_i_periodo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_periodo"])){ 
-        if(trim($this->ed52_i_periodo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_periodo"])){ 
-           $this->ed52_i_periodo = "0" ; 
-        } 
+     if(trim($this->ed52_i_periodo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_periodo"])){
+        if(trim($this->ed52_i_periodo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_periodo"])){
+           $this->ed52_i_periodo = "0" ;
+        }
        $sql  .= $virgula." ed52_i_periodo = $this->ed52_i_periodo ";
        $virgula = ",";
      }
-     if(trim($this->ed52_d_inicio)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_inicio_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ed52_d_inicio_dia"] !="") ){ 
+     if(trim($this->ed52_d_inicio)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_inicio_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ed52_d_inicio_dia"] !="") ){
        $sql  .= $virgula." ed52_d_inicio = '$this->ed52_d_inicio' ";
        $virgula = ",";
-       if(trim($this->ed52_d_inicio) == null ){ 
+       if(trim($this->ed52_d_inicio) == null ){
          $this->erro_sql = " Campo Data Inicial nao Informado.";
          $this->erro_campo = "ed52_d_inicio_dia";
          $this->erro_banco = "";
@@ -407,11 +407,11 @@ class cl_calendario {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_inicio_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_inicio_dia"])){
          $sql  .= $virgula." ed52_d_inicio = null ";
          $virgula = ",";
-         if(trim($this->ed52_d_inicio) == null ){ 
+         if(trim($this->ed52_d_inicio) == null ){
            $this->erro_sql = " Campo Data Inicial nao Informado.";
            $this->erro_campo = "ed52_d_inicio_dia";
            $this->erro_banco = "";
@@ -422,10 +422,10 @@ class cl_calendario {
          }
        }
      }
-     if(trim($this->ed52_d_fim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_fim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ed52_d_fim_dia"] !="") ){ 
+     if(trim($this->ed52_d_fim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_fim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ed52_d_fim_dia"] !="") ){
        $sql  .= $virgula." ed52_d_fim = '$this->ed52_d_fim' ";
        $virgula = ",";
-       if(trim($this->ed52_d_fim) == null ){ 
+       if(trim($this->ed52_d_fim) == null ){
          $this->erro_sql = " Campo Data Final nao Informado.";
          $this->erro_campo = "ed52_d_fim_dia";
          $this->erro_banco = "";
@@ -434,11 +434,11 @@ class cl_calendario {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_fim_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_fim_dia"])){
          $sql  .= $virgula." ed52_d_fim = null ";
          $virgula = ",";
-         if(trim($this->ed52_d_fim) == null ){ 
+         if(trim($this->ed52_d_fim) == null ){
            $this->erro_sql = " Campo Data Final nao Informado.";
            $this->erro_campo = "ed52_d_fim_dia";
            $this->erro_banco = "";
@@ -449,10 +449,10 @@ class cl_calendario {
          }
        }
      }
-     if(trim($this->ed52_d_resultfinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_resultfinal_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ed52_d_resultfinal_dia"] !="") ){ 
+     if(trim($this->ed52_d_resultfinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_resultfinal_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ed52_d_resultfinal_dia"] !="") ){
        $sql  .= $virgula." ed52_d_resultfinal = '$this->ed52_d_resultfinal' ";
        $virgula = ",";
-       if(trim($this->ed52_d_resultfinal) == null ){ 
+       if(trim($this->ed52_d_resultfinal) == null ){
          $this->erro_sql = " Campo Data Resultado Final nao Informado.";
          $this->erro_campo = "ed52_d_resultfinal_dia";
          $this->erro_banco = "";
@@ -461,11 +461,11 @@ class cl_calendario {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_resultfinal_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["ed52_d_resultfinal_dia"])){
          $sql  .= $virgula." ed52_d_resultfinal = null ";
          $virgula = ",";
-         if(trim($this->ed52_d_resultfinal) == null ){ 
+         if(trim($this->ed52_d_resultfinal) == null ){
            $this->erro_sql = " Campo Data Resultado Final nao Informado.";
            $this->erro_campo = "ed52_d_resultfinal_dia";
            $this->erro_banco = "";
@@ -476,10 +476,10 @@ class cl_calendario {
          }
        }
      }
-     if(trim($this->ed52_c_aulasabado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_c_aulasabado"])){ 
+     if(trim($this->ed52_c_aulasabado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_c_aulasabado"])){
        $sql  .= $virgula." ed52_c_aulasabado = '$this->ed52_c_aulasabado' ";
        $virgula = ",";
-       if(trim($this->ed52_c_aulasabado) == null ){ 
+       if(trim($this->ed52_c_aulasabado) == null ){
          $this->erro_sql = " Campo Aula aos Sábados nao Informado.";
          $this->erro_campo = "ed52_c_aulasabado";
          $this->erro_banco = "";
@@ -489,31 +489,31 @@ class cl_calendario {
          return false;
        }
      }
-     if(trim($this->ed52_i_diasletivos)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_diasletivos"])){ 
-        if(trim($this->ed52_i_diasletivos)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_diasletivos"])){ 
-           $this->ed52_i_diasletivos = "0" ; 
-        } 
+     if(trim($this->ed52_i_diasletivos)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_diasletivos"])){
+        if(trim($this->ed52_i_diasletivos)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_diasletivos"])){
+           $this->ed52_i_diasletivos = "0" ;
+        }
        $sql  .= $virgula." ed52_i_diasletivos = $this->ed52_i_diasletivos ";
        $virgula = ",";
      }
-     if(trim($this->ed52_i_semletivas)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_semletivas"])){ 
-        if(trim($this->ed52_i_semletivas)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_semletivas"])){ 
-           $this->ed52_i_semletivas = "0" ; 
-        } 
+     if(trim($this->ed52_i_semletivas)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_semletivas"])){
+        if(trim($this->ed52_i_semletivas)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_semletivas"])){
+           $this->ed52_i_semletivas = "0" ;
+        }
        $sql  .= $virgula." ed52_i_semletivas = $this->ed52_i_semletivas ";
        $virgula = ",";
      }
-     if(trim($this->ed52_i_calendant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_calendant"])){ 
-        if(trim($this->ed52_i_calendant)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_calendant"])){ 
-           $this->ed52_i_calendant = "0" ; 
-        } 
+     if(trim($this->ed52_i_calendant)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_calendant"])){
+        if(trim($this->ed52_i_calendant)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed52_i_calendant"])){
+           $this->ed52_i_calendant = "0" ;
+        }
        $sql  .= $virgula." ed52_i_calendant = $this->ed52_i_calendant ";
        $virgula = ",";
      }
-     if(trim($this->ed52_c_passivo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_c_passivo"])){ 
+     if(trim($this->ed52_c_passivo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed52_c_passivo"])){
        $sql  .= $virgula." ed52_c_passivo = '$this->ed52_c_passivo' ";
        $virgula = ",";
-       if(trim($this->ed52_c_passivo) == null ){ 
+       if(trim($this->ed52_c_passivo) == null ){
          $this->erro_sql = " Campo Passivo nao Informado.";
          $this->erro_campo = "ed52_c_passivo";
          $this->erro_banco = "";
@@ -563,7 +563,7 @@ class cl_calendario {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Calendário Escolar nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed52_i_codigo;
@@ -591,14 +591,14 @@ class cl_calendario {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($ed52_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   public function excluir ($ed52_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ed52_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -636,7 +636,7 @@ class cl_calendario {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Calendário Escolar nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed52_i_codigo;
@@ -664,11 +664,11 @@ class cl_calendario {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   public function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -690,10 +690,10 @@ class cl_calendario {
       }
      return $result;
    }
-   function sql_query ( $ed52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+   public function sql_query ( $ed52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -715,7 +715,7 @@ class cl_calendario {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -724,10 +724,10 @@ class cl_calendario {
      }
      return $sql;
   }
-   function sql_query_calescola ( $ed52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+   public function sql_query_calescola ( $ed52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -750,7 +750,7 @@ class cl_calendario {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -759,10 +759,10 @@ class cl_calendario {
      }
      return $sql;
   }
-   function sql_query_calturma ( $ed52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+   public function sql_query_calturma ( $ed52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select distinct ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -786,7 +786,7 @@ class cl_calendario {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -795,10 +795,10 @@ class cl_calendario {
      }
      return $sql;
   }
-   function sql_query_file ( $ed52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_file ( $ed52_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -811,15 +811,15 @@ class cl_calendario {
      $sql2 = "";
      if($dbwhere==""){
        if($ed52_i_codigo!=null ){
-         $sql2 .= " where calendario.ed52_i_codigo = $ed52_i_codigo "; 
-       } 
+         $sql2 .= " where calendario.ed52_i_codigo = $ed52_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -828,13 +828,13 @@ class cl_calendario {
      }
      return $sql;
   }
-  
-   function sql_query_calendariorelatorio($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
+
+   public function sql_query_calendariorelatorio($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
 
     $sSql = 'select ';
     if ($sCampos != '*') {
 
-      $sCamposSql = split('#', $sCampos);
+      $sCamposSql = explode('#', $sCampos);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
 
@@ -848,7 +848,7 @@ class cl_calendario {
     }
 
     $sSql .= ' from calendario ';
-    $sSql .= '   inner join calendarioescola on ed38_i_calendario = ed52_i_codigo';    
+    $sSql .= '   inner join calendarioescola on ed38_i_calendario = ed52_i_codigo';
     $sSql2 = '';
     if ($sDbWhere == '') {
 
@@ -864,7 +864,7 @@ class cl_calendario {
     if ($sOrdem != null) {
 
       $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
+      $sCamposSql = explode('#', $sOrdem);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
 
@@ -878,106 +878,152 @@ class cl_calendario {
     return $sSql;
 
   }
-  
-  function sql_query_diarioclasse($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
-  
+
+  public function sql_query_diarioclasse($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
+
     $sSql = 'select ';
     if ($sCampos != '*') {
-  
-      $sCamposSql = split('#', $sCampos);
+
+      $sCamposSql = explode('#', $sCampos);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
-  
+
         $sSql .= $sVirgula.$sCamposSql[$iCont];
         $virgula = ",";
-  
+
       }
-  
+
     } else {
       $sSql .= $sCampos;
     }
-  
+
     $sSql .= ' from calendario ';
     $sSql .= '   inner join turma            on ed57_i_calendario = ed52_i_codigo';
     $sSql .= '   inner join matricula        on ed60_i_turma = ed57_i_codigo';
     $sSql .= '   inner join calendarioescola on ed38_i_calendario = ed52_i_codigo';
     $sSql2 = '';
     if ($sDbWhere == '') {
-  
+
       if ($iCodigo != null ){
         $sSql2 .= " where calendario.ed52_i_codigo = $iCodigo ";
       }
-  
+
     } elseif ($sDbWhere != '') {
       $sSql2 = " where $sDbWhere";
     }
     $sSql .= $sSql2;
-  
+
     if ($sOrdem != null) {
-  
+
       $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
+      $sCamposSql = explode('#', $sOrdem);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
-  
+
         $sSql    .= $sVirgula.$sCamposSql[$iCont];
         $sVirgula = ',';
-  
+
       }
-  
+
     }
-  
+
     return $sSql;
   }
-  
-  function sql_query_calendariobase($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
-  
+
+  public function sql_query_calendariobase($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
+
     $sSql = 'select ';
     if ($sCampos != '*') {
-  
-      $sCamposSql = split('#', $sCampos);
+
+      $sCamposSql = explode('#', $sCampos);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
-  
+
         $sSql .= $sVirgula.$sCamposSql[$iCont];
         $virgula = ",";
-  
+
       }
-  
+
     } else {
       $sSql .= $sCampos;
     }
-  
+
     $sSql .= '  from calendario ';
     $sSql .= " inner join duracaocal  on  duracaocal.ed55_i_codigo = calendario.ed52_i_duracaocal";
     $sSql .= '  left join calendarioescola on ed38_i_calendario = ed52_i_codigo';
     $sSql2 = '';
     if ($sDbWhere == '') {
-  
+
       if ($iCodigo != null ){
         $sSql2 .= " where calendario.ed52_i_codigo = $iCodigo ";
       }
-  
+
     } elseif ($sDbWhere != '') {
       $sSql2 = " where $sDbWhere";
     }
     $sSql .= $sSql2;
-  
+
     if ($sOrdem != null) {
-  
+
       $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
+      $sCamposSql = explode('#', $sOrdem);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
-  
+
         $sSql    .= $sVirgula.$sCamposSql[$iCont];
         $sVirgula = ',';
-  
+
       }
-  
+
     }
     return $sSql;
   }
-  
+
+    public function sql_query_turmasespeciais($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
+        $sSql = 'select ';
+        if ($sCampos != '*') {
+            $sCamposSql = explode('#', $sCampos);
+            $virgula = '';
+            for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
+                $sSql .= $virgula.$sCamposSql[$iCont];
+                $virgula = ", " ;
+            }
+        } else {
+            $sSql .= $sCampos;
+        }
+
+       $sSql .= "  from calendario
+                JOIN turmaac ON turmaac.ed268_i_calendario = calendario.ed52_i_codigo
+           WHERE  exists(
+              select 1 from turmaacmatricula join aluno ON aluno.ed47_i_codigo = turmaacmatricula.ed269_aluno
+                where turmaacmatricula.ed269_i_turmaac = turmaac.ed268_i_codigo
+            )
+            and ed52_i_codigo = {$iCodigo}
+               UNION ALL
+               SELECT turma.ed57_i_codigo,
+           turma.ed57_c_descr,
+           1::int as tipo
+               FROM calendario
+               JOIN turma ON turma.ed57_i_calendario = calendario.ed52_i_codigo
+       ";
+
+        if ($sDbWhere == '') {
+            if ($iCodigo != null ){
+                $sSql2 .= " where calendario.ed52_i_codigo = $iCodigo ";
+            }
+        } elseif ($sDbWhere != '') {
+            $sSql2 = " where $sDbWhere";
+        }
+        $sSql .= $sSql2;
+        if ($sOrdem != null) {
+            $sSql      .= ' order by ';
+            $sCamposSql = explode('#', $sOrdem);
+            $sVirgula   = '';
+            for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
+                $sSql    .= $sVirgula.$sCamposSql[$iCont];
+                $sVirgula = ',';
+            }
+        }
+        return $sSql;
+    }
 }
-?>

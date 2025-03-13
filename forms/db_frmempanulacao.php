@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -48,7 +48,7 @@ if (isset ($e60_vlremp)) {
 	}
 	$vlrdis = number_format($vlrdis, 2, ".", "");
 }
-//fim  
+//fim
 
 if (empty ($e60_numemp)) {
 	$db_opcao_inf = 3;
@@ -89,9 +89,9 @@ db_input('dados', 6, 0, true, 'hidden', 3)
 <table border="0" cellspacing='0' cellpadding='0'>
   <tr>
     <td nowrap title="<?=@$Te60_numemp?>">
-       <?=db_ancora($Le60_numemp,"js_JanelaAutomatica('empempenho','".@$e60_numemp."')",$db_opcao_inf)?>        
+       <?=db_ancora($Le60_numemp,"js_JanelaAutomatica('empempenho','".@$e60_numemp."')",$db_opcao_inf)?>
     </td>
-    <td> 
+    <td>
 <?
 
  db_input('e60_numemp', 13, $Ie60_numemp, true, 'text', 3)
@@ -100,9 +100,9 @@ db_input('dados', 6, 0, true, 'hidden', 3)
   </tr>
   <tr>
     <td nowrap title="<?=@$Tz01_nome?>">
-    <?=db_ancora($Lz01_nome,"js_JanelaAutomatica('cgm','".@$e60_numcgm."')",$db_opcao_inf)?>        
+    <?=db_ancora($Lz01_nome,"js_JanelaAutomatica('cgm','".@$e60_numcgm."')",$db_opcao_inf)?>
     </td>
-    <td> 
+    <td>
 <?
 
  db_input('e60_numcgm', 10, $Ie60_numcgm, true, 'text', 3)
@@ -115,13 +115,13 @@ db_input('dados', 6, 0, true, 'hidden', 3)
   </tr>
   <tr>
       <td nowrap title="<?=@$Te60_coddot?>">
-         <?=db_ancora($Le60_coddot,"js_JanelaAutomatica('orcdotacao','".@$e60_coddot."','".db_getsession("DB_anousu")."')",$db_opcao_inf)?>        
+         <?=db_ancora($Le60_coddot,"js_JanelaAutomatica('orcdotacao','".@$e60_coddot."','".db_getsession("DB_anousu")."')",$db_opcao_inf)?>
       </td>
       <td>
           <? db_input('e60_coddot',8,$Ie60_coddot,true,'text',3); ?>
       </td>
   </tr>
-     <? 
+     <?
  /* busca dados da dotação  */
 if ((isset ($e60_coddot))) {
 	$instit = db_getsession("DB_instit");
@@ -142,21 +142,21 @@ if ((isset ($e60_coddot))) {
              <td nowrap title="<?=@$To58_orgao ?>"><?=@$Lo58_orgao ?> </td>
 	     <td nowrap>
 	       <? db_input('o58_orgao',8,"$Io58_orgao",true,'text',3,"");  ?>
-	       <? db_input('o40_descr',40,"",true,'text',3,"");  ?> 
-	     </td>     
+	       <? db_input('o40_descr',40,"",true,'text',3,"");  ?>
+	     </td>
 	  </tr>
           <tr>
              <td nowrap title="<?=@$To58_unidade ?>"><?=@$Lo58_unidade ?> </td>
 	     <td nowrap>
 	       <? db_input('o58_unidade',8,"",true,'text',3,"");  ?>
-	       <? db_input('o41_descr',40,"",true,'text',3,"");  ?> 
+	       <? db_input('o41_descr',40,"",true,'text',3,"");  ?>
 	     </td>
 	  </tr>
           <tr>
              <td nowrap title="<?=@$To58_funcao ?>"><?=@$Lo58_funcao ?> </td>
 	     <td nowrap>
 	       <? db_input('o58_funcao',8,"",true,'text',3,"");  ?>
-	       <? db_input('o52_descr',40,"",true,'text',3,"");  ?> 
+	       <? db_input('o52_descr',40,"",true,'text',3,"");  ?>
 	     </td>
 	  </tr>
            <tr>
@@ -170,21 +170,21 @@ if ((isset ($e60_coddot))) {
              <td nowrap title="<?=@$To58_programa ?>"    ><?=@$Lo58_programa ?> </td>
 	     <td nowrap>
 	       <? db_input('o58_programa',8,"",true,'text',3,"");  ?>
-	       <? db_input('o54_descr',40,"",true,'text',3,"");  ?>      
+	       <? db_input('o54_descr',40,"",true,'text',3,"");  ?>
              </td>
 	  </tr>
            <tr>
              <td nowrap title="<?=@$To58_projativ ?>"><?=@$Lo58_projativ ?> </td>
 	     <td nowrap>
-	       <? db_input('o58_projativ',8,"",true,'text',3,"");  ?> 
-	       <? db_input('o55_descr',40,"",true,'text',3,"");  ?>  
+	       <? db_input('o58_projativ',8,"",true,'text',3,"");  ?>
+	       <? db_input('o55_descr',40,"",true,'text',3,"");  ?>
 	     </td>
            </tr>
            <tr>
              <td nowrap title="<?=@$To56_elemento ?>" ><?=@$Lo56_elemento ?> </td>
-	     <td nowrap> 
-	       <? db_input('o58_elemento',8,"",true,'text',3,"");  ?> 
-	       <? db_input('o56_descr',40,"",true,'text',3,"");  ?>     
+	     <td nowrap>
+	       <? db_input('o58_elemento',8,"",true,'text',3,"");  ?>
+	       <? db_input('o56_descr',40,"",true,'text',3,"");  ?>
 	     </td>
 	  </tr>
           <tr>
@@ -197,18 +197,18 @@ if ((isset ($e60_coddot))) {
  <tr>
     <td>
        <b>Tipo:</b>
-    </td>  
+    </td>
     <td colspan='3' nowrap>
      <?
       $oEmpAnuladoTipo  = new cl_empanuladotipo;
       $rsEmpAnuladoTipo = $oEmpAnuladoTipo->sql_record(
                                                       $oEmpAnuladoTipo->sql_query(null,"*",
-                                                                                  "e38_sequencial")      
+                                                                                  "e38_sequencial")
                                                               );
        $e94_empanuladotipo = 2;
        db_selectrecord("e94_empanuladotipo",$rsEmpAnuladoTipo,true,1);
       ?>
-     </td> 
+     </td>
 </tr>
  <tr>
    <td align='center' colspan='2'>
@@ -216,13 +216,13 @@ if ((isset ($e60_coddot))) {
 <input name="confirmar" type="submit" id="op1" value="Confirmar e imprimir" onclick="return js_verificar('botao','imprimir');"  <?=($db_botao==false?"disabled":"")?>>
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
    </td>
- </tr>  
+ </tr>
 
-    </table>	  
+    </table>
      </td>
      <td valign='bottom'>
-    <table cellspacing='0' cellpadding='0'>	  
-<? 
+    <table cellspacing='0' cellpadding='0'>
+<?
 
 if (isset ($e60_anousu) && $e60_anousu < db_getsession("DB_anousu")) {
 ?>
@@ -235,7 +235,7 @@ if (isset ($e60_anousu) && $e60_anousu < db_getsession("DB_anousu")) {
 
 
 }
-?>	
+?>
 
 	<tr class='bordas'>
 	  <td class='bordas02' colspan='2' align='center' nowrap title="<?=@$Te60_vlremp?>">
@@ -246,7 +246,7 @@ if (isset ($e60_anousu) && $e60_anousu < db_getsession("DB_anousu")) {
 	  <td class='bordas' nowrap title="<?=@$Te60_vlremp?>">
 	     <?=@$Le60_vlremp?>
 	  </td>
-	  <td class='bordas'> 
+	  <td class='bordas'>
       <?
 
 
@@ -258,7 +258,7 @@ db_input('e60_vlremp', 15, $Ie60_vlremp, true, 'text', 3, '')
 	  <td class='bordas' nowrap title="<?=@$Te60_vlranu?>">
 	     <?=@$Le60_vlranu?>
 	  </td>
-	  <td class='bordas'> 
+	  <td class='bordas'>
       <?
 
  db_input('e60_vlranu', 15, $Ie60_vlranu, true, 'text', 3, '')
@@ -269,7 +269,7 @@ db_input('e60_vlremp', 15, $Ie60_vlremp, true, 'text', 3, '')
 	  <td class='bordas' nowrap title="<?=@$Te60_vlrliq?>">
 	     <?=@$Le60_vlrliq?>
 	  </td>
-	  <td class='bordas'> 
+	  <td class='bordas'>
       <?
 
  db_input('e60_vlrliq', 15, $Ie60_vlrliq, true, 'text', 3, '')
@@ -280,25 +280,25 @@ db_input('e60_vlremp', 15, $Ie60_vlremp, true, 'text', 3, '')
 	  <td class='bordas' nowrap title="<?=@$Te60_vlrpag?>">
 	     <?=@$Le60_vlrpag?>
 	  </td>
-	  <td class='bordas'> 
+	  <td class='bordas'>
       <?
 
  db_input('e60_vlrpag', 15, $Ie60_vlrpag, true, 'text', 3, '')
 ?>
 	  </td>
 	</tr>
-	
+
 	<tr class='bordas'>
 	  <td class='bordas02' colspan='2' align='center' nowrap title="<?=@$Te60_vlremp?>">
 	    <b><small>SALDO</small></b>
 	  </td>
 	</tr>
-  
+
   <tr class='bordas'>
     <td class='bordas' nowrap title="Valor que deseja anular">
        <b>Valor disponível:</b>
     </td>
-    <td class='bordas'> 
+    <td class='bordas'>
 <?
 
  db_input('vlrdis', 15, 0, true, 'text', 3);
@@ -309,7 +309,7 @@ db_input('e60_vlremp', 15, $Ie60_vlremp, true, 'text', 3, '')
     <td class='bordas' nowrap title="Valor que deseja anular">
        <b>Valor à anular:</b>
     </td>
-    <td class='bordas'> 
+    <td class='bordas'>
 <?
 
 
@@ -343,7 +343,7 @@ db_textarea('c72_complem', 3, 40, 0, true, 'text', $db_opcao);
   <td valign='top'>
     <br>
   </td>
- </tr> 
+ </tr>
  </table>
   </center>
 </form>
@@ -375,7 +375,7 @@ if (isset ($e60_numemp)) {
 	}
 ?>
      function js_verificar(tipo,acao){
-        erro=false; 
+        erro=false;
 	vlranu= new Number(document.form1.vlranu.value);
 	if(vlranu > '<?=$vlrdis?>'){
 	 erro= true;
@@ -397,7 +397,7 @@ if (isset ($e60_numemp)) {
        var e60_vlranu   = <?=$e60_vlranu?>;
 <?
        $autori          = 0;
-			 $result_itemsol  = $clempautitem->sql_record($clempautitem->sql_query_anuaut(null,null," distinct e54_autori as autori",null,"e54_anulad is null and e61_numemp = $e60_numemp and pc11_codigo is not null"));    			
+			 $result_itemsol  = $clempautitem->sql_record($clempautitem->sql_query_anuaut(null,null," distinct e54_autori as autori",null,"e54_anulad is null and e61_numemp = $e60_numemp and pc11_codigo is not null"));
        $numrows_itemsol = $clempautitem->numrows;
        if ($numrows_itemsol > 0){
             db_fieldsmemory($result_itemsol,0);
@@ -412,7 +412,7 @@ if (isset ($e60_numemp)) {
             op.setAttribute("type","hidden");
             op.setAttribute("name","reservar");
 <?
-						$rsPcparam = $clpcparam->sql_record($clpcparam->sql_query_file(db_getsession('DB_instit'),"pc30_gerareserva")); 
+						$rsPcparam = $clpcparam->sql_record($clpcparam->sql_query_file(db_getsession('DB_instit'),"pc30_gerareserva"));
 						if ($clpcparam->numrows > 0){
 							db_fieldsmemory($rsPcparam,0);
               $lGeraReserva = $pc30_gerareserva;
@@ -422,8 +422,8 @@ if (isset ($e60_numemp)) {
 
 						if( $lGeraReserva == "f"  ){
 ?>
-							op.setAttribute("value","false");						
-<?						
+							op.setAttribute("value","false");
+<?
 						}else{
 ?>
 							if (confirm("Recriar reservas de solicitacao de compras?")){
@@ -434,9 +434,9 @@ if (isset ($e60_numemp)) {
 <?
 						}
 ?>
-            document.form1.appendChild(op);       
+            document.form1.appendChild(op);
        }
-<?       
+<?
 					}
 ?>
        }
@@ -461,16 +461,16 @@ if (isset ($e60_numemp)) {
 	  elementos.js_coloca("<?=$vlrdis?>");
 	  return false;
 	}
-	
+
       }
-<? 
+<?
 
 }
 ?>
 
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho','func_empempenho.php?funcao_js=parent.js_preenchepesquisa|e60_numemp&empenhofolha=f','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_empempenho.hide();

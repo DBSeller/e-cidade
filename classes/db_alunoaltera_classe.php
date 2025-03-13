@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -726,7 +726,8 @@ class cl_alunoaltera {
     //db_msgbox(">>>".$nome_campo[$ww]."<<<");
     $result_pk = db_query("select nextval('alunoaltcampos_ed276_i_codigo_seq')");
     $ed276_i_codigo_seq = pg_result($result_pk,0,0);
-    $sql1 = "insert into alunoaltcampos(ed276_i_codigo
+    $campo_vlr_ant[$ww] =  addslashes($campo_vlr_ant[$ww]);
+    $sql1 =  ("insert into alunoaltcampos(ed276_i_codigo
                                        ,ed276_i_alunoalt
                                        ,ed276_c_campo
                                        ,ed276_c_contant
@@ -736,7 +737,7 @@ class cl_alunoaltera {
                                        ,$ed275_i_codigo_seq
                                        ,'$nome_campo[$ww]'
                                        ,'$campo_vlr_ant[$ww]'
-                                       ,'$campo_vlr_atual[$ww]')";
+                                       ,'$campo_vlr_atual[$ww]')");
     $result1 = db_query($sql1);
    }
   }

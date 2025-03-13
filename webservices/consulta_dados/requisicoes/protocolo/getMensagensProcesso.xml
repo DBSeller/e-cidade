@@ -1,0 +1,23 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="p61_codandam" label="codigo_andamento"/>
+        <campo campo="p78_despacho"   label="mensagem" />
+        <campo campo="p78_sequencial" label="codigo_mensagem" />
+        <campo campo="p78_data"     label="data" />
+        <campo campo="p78_hora"     label="hora" />
+        <campo campo="p01_documento" label="id_estorage" />
+        <campo campo="p01_descricao"     label="descricao" />
+    </campos>
+    <from tabela="procandam"/>
+    <juncoes>
+        <join tipo="inner"  tabela="processosvinculados" condicao=" p92_processofilho = p61_codproc "/>
+        <join tipo="inner"  tabela="procandamint"       condicao=" p78_codandam = p61_codandam "/>
+        <join tipo="left"  tabela="protprocessodocumento" condicao="p01_procandamint = p78_sequencial and p01_estorage is true" />
+    </juncoes>
+    <filtros>
+        <filtro label="numero_processo" condicao=" p92_processopai = $numero_processo " obrigatorio="true"/>
+    </filtros>
+    <agrupamento campos="" />
+    <ordenacao   campos="data desc, hora desc"/>
+</consulta>

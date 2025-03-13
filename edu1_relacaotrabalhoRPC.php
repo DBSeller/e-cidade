@@ -25,28 +25,34 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_disciplina_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_disciplina_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
 $cldisciplina = new cl_disciplina;
 
 $oPost = db_utils::postMemory($_POST);
 
 if($oPost->sAction == 'PesquisaDisciplina') {
  if(file_exists("funcoes/db_func_disciplina.php")==true){
-  include("funcoes/db_func_disciplina.php");
+  include(modification("funcoes/db_func_disciplina.php"));
  }else{
   $campos = "disciplina.*";
  }
  $where = " ed12_i_ensino = ".$oPost->ensino;
+ 
+ if (db_getsession("DB_itemmenu_acessado") != 8123) {
+     $where .= " AND ed12_matrizcurricular is true";
+ }
+ 
  $result = $cldisciplina->sql_record($cldisciplina->sql_query(""," DISTINCT ".$campos,"ed12_i_ensino,ed232_c_descr",$where));
  $aResult = db_utils::getCollectionByRecord($result, false, false, true);
  $oJson = new services_json();
  echo $oJson->encode($aResult);
 }
-?>
+

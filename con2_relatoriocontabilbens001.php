@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_cfpatri_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_cfpatri_classe.php"));
 $clcfpatri = new cl_cfpatri;
 $clrotulo = new rotulocampo;
 $clrotulo->label("t64_class");
@@ -139,7 +139,7 @@ function js_abreLookupClassificacaoInicial(lMostra) {
   if (lMostra == true) {
 
     var sUrlOpen = "func_clabens.php?funcao_js=parent.js_mostraclabensInicial|t64_class|t64_descr&analitica=true";
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_clabens', sUrlOpen, 'Pesquisa Classificação', true);  
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_clabens', sUrlOpen, 'Pesquisa Classificação', true);  
   } else {
 
     testa = new String($('t64_class').value);     
@@ -149,7 +149,7 @@ function js_abreLookupClassificacaoInicial(lMostra) {
        for(i = 0;i < $('t64_class').value.length;i++) {
          testa = testa.replace('.','');       
        }
-       js_OpenJanelaIframe('top.corpo','db_iframe_clabens','func_clabens.php?pesquisa_chave='+testa+'&funcao_js=parent.js_mostraclabensInicial1&analitica=true','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_clabens','func_clabens.php?pesquisa_chave='+testa+'&funcao_js=parent.js_mostraclabensInicial1&analitica=true','Pesquisa',false);
      }else{
        $('t64_descr').value = '';
      }
@@ -179,7 +179,7 @@ function js_abreLookupClassificacaoFinal(lMostra) {
   if (lMostra == true) {
 
     var sUrlOpen = "func_clabens.php?funcao_js=parent.js_mostraclabensFinal|t64_class|t64_descr&analitica=true";
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_clabens', sUrlOpen, 'Pesquisa Classificação', true);  
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_clabens', sUrlOpen, 'Pesquisa Classificação', true);  
   } else {
 
     testa = new String($F('t64_class2'));
@@ -189,7 +189,7 @@ function js_abreLookupClassificacaoFinal(lMostra) {
        for(i = 0;i < $('t64_class2').value.length;i++){
          testa = testa.replace('.','');       
        }
-       js_OpenJanelaIframe('top.corpo','db_iframe_clabens','func_clabens.php?pesquisa_chave='+testa+'&funcao_js=parent.js_mostraclabensFinal1&analitica=true','Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_clabens','func_clabens.php?pesquisa_chave='+testa+'&funcao_js=parent.js_mostraclabensFinal1&analitica=true','Pesquisa',false);
      }else{
        $('t64_descr2').value = '';
      }

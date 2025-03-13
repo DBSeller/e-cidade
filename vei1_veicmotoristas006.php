@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_veicmotoristas_classe.php");
-include("classes/db_veicparam_classe.php");
-include("classes/db_veicmotoristascentral_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_veicmotoristas_classe.php"));
+require_once(modification("classes/db_veicparam_classe.php"));
+require_once(modification("classes/db_veicmotoristascentral_classe.php"));
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+parse_str($_SERVER["QUERY_STRING"]);
+db_postmemory($_POST);
 
 $clveicmotoristas        = new cl_veicmotoristas;
 $clveicparam             = new cl_veicparam;
@@ -43,68 +43,47 @@ $clveicmotoristascentral = new cl_veicmotoristascentral;
 
 $db_botao = false;
 $db_opcao = 33;
-if(isset($excluir)){
+if (isset($excluir)) {
   $sqlerro  = false;
   $erro_msg = "";
 
   db_inicio_transacao();
 
-  $res_veicmotoristascentral = $clveicmotoristascentral->sql_record($clveicmotoristascentral->sql_query(null,"ve41_veicmotoristas",null,"ve41_veicmotoristas = $ve05_codigo"));
-  if ($clveicmotoristascentral->numrows > 0){
+  $res_veicmotoristascentral = $clveicmotoristascentral->sql_record($clveicmotoristascentral->sql_query(null, "ve41_veicmotoristas", null, "ve41_veicmotoristas = $ve05_codigo"));
+  if ($clveicmotoristascentral->numrows > 0) {
     $erro_msg = "Motorista vinculado a Central de Abastecimento. Verifique.";
     $sqlerro  = true;
   }
 
-  if ($sqlerro == false){
+  if ($sqlerro == false) {
     $db_opcao = 3;
     $clveicmotoristas->excluir($ve05_codigo);
   }
 
   db_fim_transacao($sqlerro);
-}else if(isset($chavepesquisa)){
-   $db_opcao = 3;
-   $result = $clveicmotoristas->sql_record($clveicmotoristas->sql_query($chavepesquisa)); 
-   db_fieldsmemory($result,0);
-   $db_botao = true;
+} else if (isset($chavepesquisa)) {
+  $db_opcao = 3;
+  $result = $clveicmotoristas->sql_record($clveicmotoristas->sql_query($chavepesquisa));
+  db_fieldsmemory($result, 0);
+  $db_botao = true;
 }
-?>
-<html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmveicmotoristas.php");
-	?>
-    </center>
-	</td>
-  </tr>
-</table>
-</body>
-</html>
-<?
-if(isset($excluir)){
-  if($clveicmotoristas->erro_status=="0"||$sqlerro==true){
-    if (trim($erro_msg)!=""){
+
+include(modification("forms/db_frmveicmotoristas.php"));
+
+if (isset($excluir)) {
+  if ($clveicmotoristas->erro_status == "0" || $sqlerro == true) {
+    if (trim($erro_msg) != "") {
       db_msgbox($erro_msg);
     }
-    $clveicmotoristas->erro(true,false);
-  }else{
-    $clveicmotoristas->erro(true,true);
+    $clveicmotoristas->erro(true, false);
+  } else {
+    $clveicmotoristas->erro(true, true);
   }
 }
-if($db_opcao==33){
+if ($db_opcao == 33) {
   echo "<script>document.form1.pesquisar.click();</script>";
 }
 ?>
 <script>
-js_tabulacaoforms("form1","excluir",true,1,"excluir",true);
+  js_tabulacaoforms("form1", "excluir", true, 1, "excluir", true);
 </script>

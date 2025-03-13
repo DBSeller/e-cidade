@@ -92,10 +92,10 @@ db_inputdata('ed06_d_data',@$ed06_d_data_dia,@$ed06_d_data_mes,@$ed06_d_data_ano
 <script>
 function js_pesquisaed06_i_matricula(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matriculas','func_matriculas.php?funcao_js=parent.js_mostramatriculas1|ed09_i_codigo|ed09_c_situacao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matriculas','func_matriculas.php?funcao_js=parent.js_mostramatriculas1|ed09_i_codigo|ed09_c_situacao','Pesquisa',true);
   }else{
      if(document.form1.ed06_i_matricula.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matriculas','func_matriculas.php?pesquisa_chave='+document.form1.ed06_i_matricula.value+'&funcao_js=parent.js_mostramatriculas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matriculas','func_matriculas.php?pesquisa_chave='+document.form1.ed06_i_matricula.value+'&funcao_js=parent.js_mostramatriculas','Pesquisa',false);
      }else{
        document.form1.ed09_c_situacao.value = ''; 
      }
@@ -115,10 +115,10 @@ function js_mostramatriculas1(chave1,chave2){
 }
 function js_pesquisaed06_i_conceito(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_conceitos','func_conceitos.php?funcao_js=parent.js_mostraconceitos1|ed30_i_codigo|ed30_c_letra','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conceitos','func_conceitos.php?funcao_js=parent.js_mostraconceitos1|ed30_i_codigo|ed30_c_letra','Pesquisa',true);
   }else{
      if(document.form1.ed06_i_conceito.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_conceitos','func_conceitos.php?pesquisa_chave='+document.form1.ed06_i_conceito.value+'&funcao_js=parent.js_mostraconceitos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conceitos','func_conceitos.php?pesquisa_chave='+document.form1.ed06_i_conceito.value+'&funcao_js=parent.js_mostraconceitos','Pesquisa',false);
      }else{
        document.form1.ed30_c_letra.value = ''; 
      }
@@ -137,7 +137,7 @@ function js_mostraconceitos1(chave1,chave2){
   db_iframe_conceitos.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conceito_aluno','func_conceito_aluno.php?funcao_js=parent.js_preenchepesquisa|ed06_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conceito_aluno','func_conceito_aluno.php?funcao_js=parent.js_preenchepesquisa|ed06_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conceito_aluno.hide();

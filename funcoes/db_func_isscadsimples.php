@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "isscadsimples.q38_sequencial,q02_inscr,z01_nome,isscadsimples.q38_dtinicial,isscadsimples.q38_categoria,q39_dtbaixa";
+$campos = "isscadsimples.q38_sequencial,q02_inscr,z01_nome,z01_cgccpf,isscadsimples.q38_dtinicial,isscadsimples.q38_categoria,q39_dtbaixa";
 ?>

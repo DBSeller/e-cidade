@@ -1,0 +1,20 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="db121_estrutural" label="estrutural"/>
+        <campo campo="db121_descricao" label="descricao"/>
+        <campo campo="q136_deducao" label="deducao"/>
+        <campo campo="q136_retencao" label="retencao"/>
+    </campos>
+    <from tabela="issconfiguracaogruposervico"/>
+    <juncoes>
+        <join tipo="inner" tabela="issgruposervico" condicao="q136_issgruposervico = q126_sequencial"/>
+        <join tipo="inner" tabela="db_estruturavalor" condicao="q126_db_estruturavalor = db121_sequencial"/>
+    </juncoes>
+    <filtros>
+        <filtro label="ano" condicao="q136_exercicio = '$ano'" obrigatorio="true"/>
+        <filtro label="estrutural" condicao="db121_estrutural = '$estrutural'" obrigatorio="false"/>
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao campos="db121_descricao"/>
+</consulta>

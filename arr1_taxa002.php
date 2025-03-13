@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,34 +24,78 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
+use  \ECidade\Tributario\Arrecadacao\Repository\Taxa as TaxaRepository;
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_taxa_classe.php");
-include("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_taxa_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($_POST);
-db_postmemory($_GET);
+$oGet       = db_utils::postMemory($_GET);
+$oPost      = db_utils::postMemory($_POST);
 $cltaxa   = new cl_taxa;
 $db_opcao = 22;
 $db_botao = false;
-if (isset($alterar)) {
+$lErro    = false;
 
-  db_inicio_transacao();
-  $db_opcao = 2;
-  $cltaxa->alterar($ar36_sequencial);
-  db_fim_transacao();
+if (isset($alterar)) {
+    try {
+        db_inicio_transacao();
+
+        $oTaxa = new Taxa();
+        $oTaxa->setGrupoTaxas($ar36_grupotaxa);
+        $oTaxa->setTaxas($ar36_sequencial);
+        $oTaxa->setReceita($ar36_receita);
+        $oTaxa->setDescricao($ar36_descricao);
+        $oTaxa->setPercentual($ar36_perc);
+        $oTaxa->setValor($ar36_valor);
+        $oTaxa->setValorMinimo($ar36_valormin);
+        $oTaxa->setValorMaximo($ar36_valormax);
+        $oTaxa->aplicaJuroMulta($ar36_aplicajurosmulta == 't');
+        $oTaxa->aplicaHonorario($ar36_honorario == 't');
+
+        if (isset($ar36_debitoscomprocesso)) {
+            $oTaxa->setDebitosComProcesso($ar36_debitoscomprocesso);
+        }
+
+        if (isset($ar36_debitossemprocesso)) {
+            $oTaxa->setDebitosSemProcesso($ar36_debitossemprocesso);
+        }
+
+        $oTaxaRepository = TaxaRepository::getInstance();
+
+        $valida = $oTaxaRepository->getValidaReceita($ar36_receita, $ar36_sequencial);
+
+        if (!$valida) {
+            db_msgbox("Já existe taxa cadastrada com essa receita.");
+        } else {
+            $db_opcao = 2;
+            $lTaxaSalavar = $oTaxaRepository->persist($oTaxa);
+
+            if (!$lTaxaSalavar) {
+                throw new Exception("Erro ao cadastrar.");
+            }
+
+            db_msgbox("Taxa/Custa alterada com Sucesso.");
+        }
+
+        db_fim_transacao();
+    } catch (Exception $e) {
+
+        $lErro = true;
+        db_msgbox("Erro ao alterar Taxa / Tarifa:" . $e->getMessage());
+        db_fim_transacao(true);
+    }
 } else if(isset($chavepesquisa)) {
 
-   $db_opcao = 2;
-   $result   = $cltaxa->sql_record($cltaxa->sql_query($chavepesquisa));
-   db_fieldsmemory($result,0);
-   $db_botao = true;
+    $db_opcao = 2;
+    $result   = $cltaxa->sql_record($cltaxa->sql_query($chavepesquisa));
+    db_fieldsmemory($result,0);
+    $db_botao = true;
 }
-
 ?>
 <html>
 <head>
@@ -67,7 +111,7 @@ if (isset($alterar)) {
 <body class='body-default' >
 <div class ='container'>
   <?php
-	  include("forms/db_frmtaxa.php");
+	  include(modification("forms/db_frmtaxa.php"));
 	?>
 </div>
 </body>
@@ -75,19 +119,16 @@ if (isset($alterar)) {
 <?
 if (isset($alterar)) {
 
-  if ($cltaxa->erro_status=="0") {
+  if ($lErro) {
 
     $cltaxa->erro(true,false);
     $db_botao=true;
-    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if ($cltaxa->erro_campo!="") {
+    echo "<script> document.form1.db_opcao.disabled=false;</script>";
 
-      echo "<script> document.form1.".$cltaxa->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$cltaxa->erro_campo.".focus();</script>";
-    }
   }else{
-    $cltaxa->erro(true,false);
-    db_redireciona("arr1_taxa002.php?liberaaba=true&chavepesquisa=".$cltaxa->ar36_sequencial);
+    if($valida){
+        db_redireciona("arr1_taxa002.php?liberaaba=true&chavepesquisa=".$ar36_sequencial);
+    }
   }
 }
 if( ($db_opcao == 22) ){
@@ -116,11 +157,12 @@ if (isset($chavepesquisa)) {
              $('tipo_cobranca').options[1]     = new Option('Percentual de Débito', '2');
           </script>";
   }
+
  echo "
   <script>
       function js_db_libera(){
          parent.document.formaba.favorecido.disabled = false;
-         top.corpo.iframe_favorecido.location.href='arr1_taxaFavorecido001.php?ar36_sequencial=".@$chavepesquisa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_favorecido.location.href='arr1_taxaFavorecido001.php?ar36_sequencial=".@$chavepesquisa."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('favorecido');";

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,20 +28,20 @@
 /**
  * 
  * @author I
- * @revision $Author: dbevandro $
- * @version $Revision: 1.41 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.44 $
  */
-include ("fpdf151/pdf.php");
-include ("libs/db_sql.php");
-include ("libs/db_utils.php");
-include ("classes/db_matparam_classe.php");
-include ("classes/db_db_departorg_classe.php");
-include ("classes/db_db_almox_classe.php");
-include ("classes/db_db_almoxdepto_classe.php");
-include ("classes/db_matestoque_classe.php");
-include ("classes/db_matestoqueitem_classe.php");
-include ("classes/db_matmater_classe.php");
-include ("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_matparam_classe.php"));
+include(modification("classes/db_db_departorg_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_matmater_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oParams = db_utils::postMemory($_GET);
 //echo "<pre>";
@@ -222,7 +222,7 @@ for($i = 0; $i < $oDaoMatMater->numrows; $i ++) {
   /**
    * Consultamos o saldo anterior
    */
-  $rsPrepare = pg_execute("saldoini", array (    
+  $rsPrepare = db_queryute("saldoini", array (    
                         $oMaterial->codigo, 
                         $sDataInicial 
   ));
@@ -239,7 +239,7 @@ for($i = 0; $i < $oDaoMatMater->numrows; $i ++) {
   /**
    * Consultamos a movimentacao no periodo
    */
-  $rsPeparare = pg_execute("saldomov", array (
+  $rsPeparare = db_queryute("saldomov", array (
     
                         $oMaterial->codigo, 
                         $sDataInicial, 

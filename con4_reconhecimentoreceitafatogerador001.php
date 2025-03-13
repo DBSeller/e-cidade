@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -219,7 +219,7 @@ function js_salvarDados() {
 function js_retornoSalvar(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.sMessage.urlDecode());
   form1.reset();
 }
@@ -252,7 +252,7 @@ function js_buscaDadosReceita () {
 function js_preencheDadosReceita(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.iStatus == 2) {
 
@@ -278,10 +278,10 @@ function js_preencheDadosReceita(oAjax) {
 function js_receitas(lMostra){
     
     if (lMostra == true) {
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_orcreceita', 'func_orcreceita.php?lReceitaLancada=true&funcao_js=parent.js_mostraReceita|o70_codrec|o57_descr', 'Pesquisa', true);
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orcreceita', 'func_orcreceita.php?lReceitaLancada=true&funcao_js=parent.js_mostraReceita|o70_codrec|o57_descr', 'Pesquisa', true);
     } else {
      
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_orcreceita', 'func_orcreceita.php?lReceitaLancada=true&pesquisa_chave=' + $F('o70_codrec') + '&funcao_js=parent.js_mostraReceita1', 'Pesquisa', false);
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_orcreceita', 'func_orcreceita.php?lReceitaLancada=true&pesquisa_chave=' + $F('o70_codrec') + '&funcao_js=parent.js_mostraReceita1', 'Pesquisa', false);
     }	 
  }
  function js_mostraReceita(iCodigoReceita, sDescricao){

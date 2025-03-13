@@ -81,7 +81,7 @@ db_input('db70_sigla',2,$Idb70_sigla,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadenderpais','func_cadenderpais.php?funcao_js=parent.js_preenchepesquisa|db70_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadenderpais','func_cadenderpais.php?funcao_js=parent.js_preenchepesquisa|db70_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadenderpais.hide();

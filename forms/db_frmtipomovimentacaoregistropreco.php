@@ -65,7 +65,7 @@ db_input('l33_descricao',50,$Il33_descricao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipomovimentacaoregistropreco','func_tipomovimentacaoregistropreco.php?funcao_js=parent.js_preenchepesquisa|l33_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipomovimentacaoregistropreco','func_tipomovimentacaoregistropreco.php?funcao_js=parent.js_preenchepesquisa|l33_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tipomovimentacaoregistropreco.hide();

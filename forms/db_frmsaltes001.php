@@ -96,7 +96,7 @@
 <script>
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_preenche|k13_conta','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes.php?funcao_js=parent.js_preenche|k13_conta','Pesquisa',true);
 }
 function js_preenche(chave){
    db_iframe_saltes.hide();
@@ -107,7 +107,7 @@ function js_preenche(chave){
    ?>
 }
 function js_contas(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_saltes','func_saltes_contas001.php?funcao_js=parent.js_preenche_conta|c62_reduz|c60_descr','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saltes','func_saltes_contas001.php?funcao_js=parent.js_preenche_conta|c62_reduz|c60_descr','Pesquisa',true);
 }
 function js_preenche_conta(chave1,chave2){
     db_iframe_saltes.hide();

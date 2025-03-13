@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-$clcriaabas     = new cl_criaabas;
-$db_opcao = 1;
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+
+$clcriaabas = new cl_criaabas;
+$db_opcao   = 1;
 ?>
 <html>
 <head>
@@ -54,20 +55,20 @@ $db_opcao = 1;
 <table valign="top" marginwidth="0" width="790" border="0" cellspacing="0" cellpadding="0">
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-     <?
-	 $clcriaabas->identifica = array("iptucadtaxa"=>" Dados da Taxa","iptucadtaxaexe"=>"Configuração da taxa"); 
-	 $clcriaabas->sizecampo  = array("iptucadtaxa"=>"50","iptucadtaxaexe"=>"50"); 
-	 $clcriaabas->src        = array("iptucadtaxa"=>"cad1_iptucadtaxa004.php");
-	 $clcriaabas->disabled   = array("iptucadtaxaexe"=>"true"); 
-	 $clcriaabas->cria_abas(); 
-       ?> 
-       </td>
-    </tr>
-  </table>
-  <form name="form1">
-  </form>
-      <? 
-	db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-      ?>
-  </body>
-  </html>
+      <?php
+        $clcriaabas->identifica = array("iptucadtaxa"=>" Dados da Taxa","iptucadtaxaexe"=>"Configuração da Taxa"); 
+        $clcriaabas->sizecampo  = array("iptucadtaxa"=>"50","iptucadtaxaexe"=>"50"); 
+        $clcriaabas->src        = array("iptucadtaxa"=>"cad1_iptucadtaxa004.php");
+        $clcriaabas->disabled   = array("iptucadtaxaexe"=>"true"); 
+        $clcriaabas->cria_abas(); 
+      ?> 
+    </td>
+  </tr>
+</table>
+<form name="form1">
+</form>
+<?php
+  db_menu();
+?>
+</body>
+</html>

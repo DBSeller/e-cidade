@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
   
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_fiscaltipo_classe.php");
-include("classes/db_fiscalusuario_classe.php");
-include("classes/db_fisctestem_classe.php");
-include("classes/db_autonumpre_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_fiscaltipo_classe.php"));
+include(modification("classes/db_fiscalusuario_classe.php"));
+include(modification("classes/db_fisctestem_classe.php"));
+include(modification("classes/db_autonumpre_classe.php"));
 $clfiscaltipo= new cl_fiscaltipo;
 $clfiscalusuario= new cl_fiscalusuario;
 $clfisctestem= new cl_fisctestem;
@@ -63,7 +63,7 @@ if ($solicitacao == "Proced") {
   $pesquisaLocalizada = true;
 }
 if ($pesquisaLocalizada==true) {
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   if(pg_numrows($result) == 0){
     echo "<br><br><b>Nenhum Registro Cadastrado!!<b>";
   }else{

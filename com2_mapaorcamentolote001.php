@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once "libs/db_stdlib.php";
-require_once "libs/db_conecta.php";
-require_once "libs/db_sessoes.php";
-require_once "libs/db_usuariosonline.php";
-require_once "dbforms/db_funcoes.php";
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("dbforms/db_funcoes.php");
 
 $oRotulo = new rotulocampo;
 $oRotulo->label("pc20_codorc");
 
 ?>
 <html>
-  <head>
+<head>
     <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Expires" CONTENT="0">
@@ -44,129 +44,144 @@ $oRotulo->label("pc20_codorc");
     <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
     <link href="estilos.css" rel="stylesheet" type="text/css">
-  </head>
-  <body class="body-default">
-    <div class="container">
-      <form name="mapaOrcamentoLote" id="mapaOrcamentoLote" method="post" action="">
+</head>
+<body class="body-default">
+<div class="container">
+    <form name="mapaOrcamentoLote" id="mapaOrcamentoLote" method="post" action="">
         <fieldset>
-          <legend>Mapa das Propostas do Orçamento por Lote</legend>
+            <legend>Mapa das Propostas do Orçamento por Lote</legend>
 
-          <fieldset class="separator">
-            <legend>Orçamento do Processo de Compras</legend>
+            <fieldset class="separator">
+                <legend>Orçamento do Processo de Compras</legend>
 
-            <table>
-              <tr>
-                <td>
-                  <label class="bold" for="pc20_codorc" id="lbl_pc20_codorc">
-                    <?php db_ancora('Orçamento:', "js_pesquisaOrcamento(true);", 1); ?>
-                  </label>
-                </td>
-                <td>
-                  <?php db_input("pc20_codorc", 6, $Ipc20_codorc, true, "text", 4, "onchange=\"js_pesquisaOrcamento(false);\""); ?>
-                </td>
-              </tr>
-            </table>
-          </fieldset>
+                <table>
+                    <tr>
+                        <td>
+                            <label class="bold" for="pc20_codorc" id="lbl_pc20_codorc">
+                                <?php db_ancora('Orçamento:', "js_pesquisaOrcamento(true);", 1); ?>
+                            </label>
+                        </td>
+                        <td>
+                            <?php db_input("pc20_codorc", 6, $Ipc20_codorc, true, "text", 4, "onchange=\"js_pesquisaOrcamento(false);\""); ?>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
 
 
-          <fieldset class="separator">
-            <legend>Visualização</legend>
+            <fieldset class="separator">
+                <legend>Visualização</legend>
 
-            <table>
-              <tr>
-                <td>
-                  <label class="bold" for="justificativa">Imprimir justificativa de troca de fornacedores:</label>
-                </td>
-                <td>
-                  <?php
+                <table>
+                    <tr>
+                        <td>
+                            <label class="bold" for="justificativa">Imprimir justificativa de troca de
+                                fornacedores:</label>
+                        </td>
+                        <td>
+                            <?php
 
-                    $aOpcoes = array(
-                        "S" => "Sim",
-                        "N" => "Não"
-                      );
+                            $aOpcoes = array(
+                                "S" => "Sim",
+                                "N" => "Não"
+                            );
 
-                    db_select("justificativa", $aOpcoes, true, 4, "style='width:83px;'");
-                  ?>
-                </td>
-              </tr>
-            </table>
-          </fieldset>
-
+                            db_select("justificativa", $aOpcoes, true, 4, "style='width:83px;'");
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="bold" for="nomeFornecedor">Ocultar nome do fornecedor: </label>
+                        </td>
+                        <td>
+                            <select id="nomeFornecedor" style="width:83px">
+                                <option value="0">Não</option>
+                                <option value="1">Sim</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
         </fieldset>
-        <input  name="processar" id="processar" type="submit" value="Processar" />
-      </form>
-    </div>
-    <?php
-      db_menu( db_getsession("DB_id_usuario"),
-               db_getsession("DB_modulo"),
-               db_getsession("DB_anousu"),
-               db_getsession("DB_instit") );
-    ?>
-  </body>
-  <script type="text/javascript">
+        <input name="processar" id="processar" type="submit" value="Processar"/>
+    </form>
+</div>
+<?php
+db_menu(db_getsession("DB_id_usuario"),
+    db_getsession("DB_modulo"),
+    db_getsession("DB_anousu"),
+    db_getsession("DB_instit"));
+?>
+</body>
+<script type="text/javascript">
 
     const MENSAGENS = "patrimonial.compras.com2_mapaorcamentolote.";
 
     function js_pesquisaOrcamento(lMostra) {
 
-      var sUrl = "func_pcorcamlancval.php?sol=false&lProcessoLote=true&",
-          sChavePesquisa = $F('pc20_codorc');
+        var sUrl = "func_pcorcamlancval.php?sol=false&lProcessoLote=true&",
+            sChavePesquisa = $F('pc20_codorc');
 
-      if (!lMostra && sChavePesquisa != '') {
-        sUrl += "chave_pc20_codorc=" + sChavePesquisa + "&pesquisa_chave=" + sChavePesquisa + "&";
-      }
-
-      sUrl += "funcao_js=parent.js_pesquisaOrcamento.js_orcamentoProcesso";
-
-      if (lMostra) {
-        sUrl += "|pc20_codorc";
-      }
-      if (!lMostra) {
-        $('processar').disabled = true;
-      }
-
-      js_OpenJanelaIframe( 'top.corpo',
-                           'db_iframe_pcorcam',
-                           sUrl,
-                           'Pesquisar Orçamento do Processo de Compras',
-                           lMostra );
-
-      js_pesquisaOrcamento.js_orcamentoProcesso = function(sCodigoOrcamento, lErro) {
-
-        var oCodigoOrcamento = $('pc20_codorc');
-        $('processar').disabled = false;
-        oCodigoOrcamento.value = "";
-
-        if (lErro) {
-
-          alert( _M(MENSAGENS + "orcamento_invalido", { iOrcamento : sChavePesquisa }) );
-          return false;
+        if (!lMostra && sChavePesquisa != '') {
+            sUrl += "chave_pc20_codorc=" + sChavePesquisa + "&pesquisa_chave=" + sChavePesquisa + "&";
         }
 
-        $('pc20_codorc').value = (lMostra) ? sCodigoOrcamento : sChavePesquisa;
-        db_iframe_pcorcam.hide();
-      }
+        sUrl += "funcao_js=parent.js_pesquisaOrcamento.js_orcamentoProcesso";
+
+        if (lMostra) {
+            sUrl += "|pc20_codorc";
+        }
+        if (!lMostra) {
+            $('processar').disabled = true;
+        }
+
+        js_OpenJanelaIframe('CurrentWindow.corpo',
+            'db_iframe_pcorcam',
+            sUrl,
+            'Pesquisar Orçamento do Processo de Compras',
+            lMostra);
+
+        js_pesquisaOrcamento.js_orcamentoProcesso = function (sCodigoOrcamento, lErro) {
+
+            var oCodigoOrcamento = $('pc20_codorc');
+            $('processar').disabled = false;
+            oCodigoOrcamento.value = "";
+
+            if (lErro) {
+
+                alert(_M(MENSAGENS + "orcamento_invalido", {iOrcamento: sChavePesquisa}));
+                return false;
+            }
+
+            $('pc20_codorc').value = (lMostra) ? sCodigoOrcamento : sChavePesquisa;
+            db_iframe_pcorcam.hide();
+        }
     }
 
-    Event.observe('mapaOrcamentoLote', 'submit', function(e) {
-      e.stop();
+    Event.observe('mapaOrcamentoLote', 'submit', function (e) {
+        e.stop();
 
-      var iOrcamento = $F('pc20_codorc'),
-          sJustificativa = $F('justificativa');
+        var iOrcamento = $F('pc20_codorc'),
+            sJustificativa = $F('justificativa');
 
-      if (iOrcamento == '') {
+        if (iOrcamento == '') {
 
-        alert( _M(MENSAGENS + "campo_obrigatorio", { sCampo : "Orçamento"}) );
+            alert(_M(MENSAGENS + "campo_obrigatorio", {sCampo: "Orçamento"}));
+            return false;
+        }
+        url = 'com2_mapaorcamentolote002.php';
+        if($('nomeFornecedor').value == 1) {
+            url = 'com2_mapaorcamentoloteocultafornecedor001.php'
+        }
+
+        oJanela = window.open(url + "?iOrcamento=" + iOrcamento + "&sJustificativa=" + sJustificativa,
+            '',
+            'width=' + (screen.availWidth - 5) + ',height=' + (screen.availHeight - 40) + ',scrollbars=1,location=0 ');
+        oJanela.moveTo(0, 0);
+
         return false;
-      }
-
-      oJanela = window.open( "com2_mapaorcamentolote002.php?iOrcamento=" + iOrcamento + "&sJustificativa=" + sJustificativa,
-                             '',
-                             'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-      oJanela.moveTo(0,0);
-
-      return false;
     })
 
-  </script>
+</script>
 </html>

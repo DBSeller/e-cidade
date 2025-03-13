@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -34,7 +34,7 @@ $sSqlUsuario .= "       t08_senha as senha_do_usuario";
 $sSqlUsuario .= "       from usuariocriterium inner join db_usuarios";
 $sSqlUsuario .= "       on t08_id_usuario = id_usuario";
 
-$rsUsuario    = pg_query($sSqlUsuario);
+$rsUsuario    = db_query($sSqlUsuario);
 $iNumeroLinhas	= pg_num_rows($rsUsuario);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {

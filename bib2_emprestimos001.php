@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_tipoitem_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_tipoitem_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $cltipo   = new cl_tipoitem;
@@ -186,7 +186,7 @@ function js_emite() {
 function js_pesquisabi18_carteira(mostra) {
   
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_leitor',
                         'func_leitorproc.php?funcao_js=parent.js_mostraleitor1|bi16_codigo|ov02_nome',
                         'Pesquisa',
@@ -194,7 +194,7 @@ function js_pesquisabi18_carteira(mostra) {
   } else {
     
     if (document.form1.bi18_carteira.value != '') {
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_leitor',
                           'func_leitorproc.php?pesquisa_chave='+document.form1.bi18_carteira.value
                                             +'&funcao_js=parent.js_mostraleitor',
@@ -226,7 +226,7 @@ function js_mostraleitor1(chave1, chave2) {
 function js_pesquisabi06_seq(mostra) {
   
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_acervo',
                         'func_acervo.php?funcao_js=parent.js_mostraacervo1|bi06_seq|bi06_titulo',
                         'Pesquisa',
@@ -234,7 +234,7 @@ function js_pesquisabi06_seq(mostra) {
   } else {
     
     if (document.form1.bi06_seq.value != '') {
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_acervo',
                           'func_acervo.php?pesquisa_chave3='+document.form1.bi06_seq.value
                                        +'&funcao_js=parent.js_mostraacervo',

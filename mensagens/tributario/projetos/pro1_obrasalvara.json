@@ -10,9 +10,13 @@
   "nao_foi_possivel_excluir_alvara"          : "Não foi possivel excluir alvará. \n\nERRO: [msgErro]",
   "informe_codigo_obra"                      : "Código da obra não informado.",
   "erro_excluir_historico"                   : "Erro ao excluir o histórico do alvará.",
+  "erro_excluir_renovacao_alvara"            : "Erro ao excluir dados da renovação do alvará.",
   "sucesso_exclusao"                         : "Exclusão efetuada com sucesso!",
   "validacao_data_alvara"                    : "Data do Alvará não pode ser menor que a data inicial do Último Período.",
   "validade_inferior"                        : "Data de Validade do Alvará não pode ser menor que a Data do Alvará.",
   "sucesso_alterar"                          : "Alteração efetuada com sucesso!",
-  "sucesso_incluir"                          : "Inclusão efetuada com sucesso!"
+  "sucesso_incluir"                          : "Inclusão efetuada com sucesso!",
+  "sucesso_cancelar"                         : "Cancelamento efetuado com sucesso!",
+  "sucesso_reativar"                         : "Reativação efetuada com sucesso!",
+  "alvara_possui_habite"                     : "Não foi possivel cancelar alvará porque obra possui um habite-se ativo!"
 }

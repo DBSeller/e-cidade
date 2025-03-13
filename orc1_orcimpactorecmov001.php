@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
-include("classes/db_orcimpactorecmov_classe.php");
-include("classes/db_orcimpactomov_classe.php");
-include("classes/db_orcimpactoperiodo_classe.php");
-include("classes/db_orcfontes_classe.php");
+include(modification("classes/db_orcimpactorecmov_classe.php"));
+include(modification("classes/db_orcimpactomov_classe.php"));
+include(modification("classes/db_orcimpactoperiodo_classe.php"));
+include(modification("classes/db_orcfontes_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -239,7 +239,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 <?
-	include("forms/db_frmorcimpactorecmov.php");
+	include(modification("forms/db_frmorcimpactorecmov.php"));
 ?>
     </center>
 	</td>
@@ -254,7 +254,7 @@ if(isset($incluir) || isset($alterar) || isset($excluir)){
       if(isset($incluir)){
 	echo "
 	   parent.document.formaba.orcimpactorecmov02.disabled=false;
-	   top.corpo.iframe_orcimpactorecmov02.location.href='orc1_orcimpactorecmov002.php?o69_codperiodo=".@$o69_codperiodo."';
+	   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactorecmov02.location.href='orc1_orcimpactorecmov002.php?o69_codperiodo=".@$o69_codperiodo."';
 	";	 
       }else{	
 	/*
@@ -277,7 +277,7 @@ if(isset($o69_codperiodo) && empty($opcao) ){
   echo "<script>";
   echo "
        parent.document.formaba.orcimpactorecmov02.disabled=false;
-       top.corpo.iframe_orcimpactorecmov02.location.href='orc1_orcimpactorecmov002.php?o69_codperiodo=".@$o69_codperiodo."';
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactorecmov02.location.href='orc1_orcimpactorecmov002.php?o69_codperiodo=".@$o69_codperiodo."';
        
       ";	 
   echo "</script>";
@@ -287,7 +287,7 @@ if(isset($opcao)){
   echo "<script>";
   echo "
        parent.document.formaba.orcimpactorecmovmes.disabled=false;
-       top.corpo.iframe_orcimpactorecmovmes.location.href='orc1_orcimpactorecmovmes001.php?o69_proces=".@$o69_proces."';
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcimpactorecmovmes.location.href='orc1_orcimpactorecmovmes001.php?o69_proces=".@$o69_proces."';
       ";	 
       if(isset($tavaincluindo)){
         echo "parent.mo_camada('orcimpactorecmovmes');";

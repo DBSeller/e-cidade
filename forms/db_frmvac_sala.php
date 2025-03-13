@@ -166,7 +166,7 @@ function js_mostraunidades1(chave1,chave2) {
 
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_vac_sala',
                       'func_vac_sala.php?funcao_js=parent.js_preenchepesquisa|vc01_i_codigo',
                       'Pesquisa',

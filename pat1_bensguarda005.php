@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_bensguarda_classe.php");
-require_once ("classes/db_bensguardaitem_classe.php");
-require_once ("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_bensguarda_classe.php"));
+require_once(modification("classes/db_bensguardaitem_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
 $clbensguarda = new cl_bensguarda;
 /*
 $clbensguardaitem = new cl_bensguardaitem;
@@ -72,7 +72,7 @@ if (isset($alterar)) {
   <center>
     <div style="margin-top: 35px; width: 500px;">
   	  <?
-      include("forms/db_frmbensguarda.php");
+      include(modification("forms/db_frmbensguarda.php"));
       ?>
     </div>
   </center>
@@ -96,7 +96,7 @@ if (isset($chavepesquisa)) {
   <script>
       function js_db_libera(){
          parent.document.formaba.bensguardaitem.disabled=false;
-         top.corpo.iframe_bensguardaitem.location.href='pat1_bensguardaitem001.php?t22_bensguarda=" . @$t21_codigo . "';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bensguardaitem.location.href='pat1_bensguardaitem001.php?t22_bensguarda=" . @$t21_codigo . "';
      ";
   if (isset($liberaaba)) {
     echo "  parent.mo_camada('bensguardaitem');";

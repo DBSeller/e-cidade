@@ -88,19 +88,14 @@ select distinct contabancaria.*
   from contabancaria
  inner join rhpessoalmovcontabancaria on db83_sequencial = rh138_contabancaria;
 
-
 create temp table down_migracao_rhpessoalmovcontabancaria as
 select * from rhpessoalmovcontabancaria;
 
 delete from rhpessoalmovcontabancaria;
 
 delete from contabancaria
- using down_migracao_rhpessoalmovcontabancaria
- where db83_sequencial = rh138_contabancaria;
-
-delete from bancoagencia
  using down_migracao_contabancaria
- where db89_sequencial = db83_bancoagencia;
+ where contabancaria.db83_sequencial = down_migracao_contabancaria.db83_sequencial;
 
 drop table if exists w_migracao_rhpesbanco_bancoagencia;
 drop table if exists w_migracao_rhpesbanco_contabancaria;
@@ -113,14 +108,6 @@ drop index if exists rhpessoalmovcontabancaria_rhpessoalmov_contabancaria_in;
 drop index if exists rhpessoalmovcontabancaria_contabancaria_in;
 drop index if exists rhpessoalmovcontabancaria_rhpessoalmov_in;
 
-drop sequence if exists pensaocontabancaria_rh139_sequencial_seq;
-drop table if exists pensaocontabancaria;
-drop index if exists pensaocontabancaria_contabancaria_in;
-drop index if exists pensaocontabancaria_numcgm_in;
-drop index if exists pensaocontabancaria_regist_in;
-drop index if exists pensaocontabancaria_regist_contabancaria_in;
-
-
 create temp table down_migracao_pensaocontabancaria as
 select * from pensaocontabancaria;
 
@@ -129,10 +116,6 @@ delete from pensaocontabancaria;
 delete from contabancaria
  using down_migracao_pensaocontabancaria
  where db83_sequencial = rh139_contabancaria;
-
-delete from bancoagencia
- using down_migracao_pensao_contabancaria
- where db89_sequencial = db83_bancoagencia;
 
 drop table if exists w_migracao_pensao_bancoagencia;
 drop table if exists w_migracao_pensao_contabancaria;

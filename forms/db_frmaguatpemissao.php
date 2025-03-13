@@ -58,7 +58,7 @@ db_input('x06_nometpemissao',50,$Ix06_nometpemissao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguatpemissao','func_aguatpemissao.php?funcao_js=parent.js_preenchepesquisa|x06_codtpemissao','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguatpemissao','func_aguatpemissao.php?funcao_js=parent.js_preenchepesquisa|x06_codtpemissao','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguatpemissao.hide();

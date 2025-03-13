@@ -1,200 +1,222 @@
+
 function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 
-  var me                    = this;
-  this.lLiberaValounitario  = false;
+  const TIPO_ADITAMENTO_REEQUILIBRIO = 2;
+  const TIPO_ADITAMENTO_ADITAMENTO   = 4;
+  const TIPO_ADITAMENTO_RENOVACAO    = 5;
+  const TIPO_ADITAMENTO_PRAZO        = 6;
+  const TIPO_ADITAMENTO_SUPRESSAO    = 8;
+
+  var me = this,
+      aItensPosicao = new Array();
+
   this.lLiberaDotacoes      = true;
-  this.lLiberaQuantidade    = true;
   this.lLiberaNovosItens    = true;
   this.sLabelBotao          = '';
+  this.lDatas               = false;
   this.lBloqueiaItem        = false;
-  this.nTotalITensIncluidos = 0;
-  this.oWindowPeriodoItens  = "";
-  this.aPeriodoItensAcordo  = new Array();
-
-
+  this.lLiberaTipoOperacao  = false;
+  this.lLiberaTipoAlteracao = true;
+  this.lSituacaoFiltro      = true;
+  this.alertMessage         = '';
   switch(iTipoAditamento) {
 
-    case 2: //Reequilibrio;
+    case TIPO_ADITAMENTO_REEQUILIBRIO:
 
-      this.lLiberaValounitario = true;
-		  this.lLiberaDotacoes     = false;
+		  this.lLiberaDotacoes     = true;
 		  this.lDatas              = false;
-		  this.lLiberaQuantidade   = false;
 		  this.lLiberaNovosItens   = false;
-		  this.sLabelBotao         = ' Reequilibrio';
-		  this.lBloqueiaItem       = true;
+		  this.sLabelBotao         = "Reequilíbrio";
+		  this.lBloqueiaItem       = false;
+          this.lLiberaTipoOperacao = false;
+          this.alertMessage        = "Reequilíbrio Salvo com sucesso.";
       break;
 
-   case 4:
+   case TIPO_ADITAMENTO_ADITAMENTO:
 
-     this.lLiberaValounitario = true;
-     this.lLiberaDotacoes     = false;
-     this.lLiberaQuantidade   = true;
+     this.lLiberaDotacoes     = true;
      this.lDatas              = false;
      this.lLiberaNovosItens   = true;
-     this.sLabelBotao         = ' Aditamento';
+     this.sLabelBotao         = "Procedimento";
      this.lBloqueiaItem       = false;
+     this.lLiberaTipoOperacao = true;
+     this.alertMessage        = "Procedimento realizado com sucesso.";
      break;
 
-    case 5:
+    case TIPO_ADITAMENTO_RENOVACAO:
 
-     this.lLiberaValounitario = false;
-     this.lLiberaDotacoes     = false;
-     this.lLiberaQuantidade   = false;
+     this.lLiberaDotacoes     = true;
      this.lDatas              = true;
      this.lLiberaNovosItens   = false;
-     this.sLabelBotao         = ' Renovação';
+     this.sLabelBotao         = "Renovação";
      this.lBloqueiaItem       = false;
+     this.lSituacaoFiltro     = false;
+     this.alertMessage        = "Procedimento realizado com sucesso.";
      break;
 
-    case 6:
+    case TIPO_ADITAMENTO_PRAZO:
 
-     this.lLiberaValounitario = false;
      this.lLiberaDotacoes     = false;
-     this.lLiberaQuantidade   = false;
      this.lDatas              = true;
      this.lLiberaNovosItens   = false;
-     this.sLabelBotao         = ' Prazo';
+     this.sLabelBotao         = "Prazo";
      this.lBloqueiaItem       = true;
+     this.alertMessage        = "Procedimento realizado com sucesso.";
      break;
+
+    case TIPO_ADITAMENTO_SUPRESSAO:
+
+      this.lLiberaDotacoes     = false
+      this.lDatas              = false;
+      this.lLiberaNovosItens   = false;
+      this.sLabelBotao         = "Supressão";
+      this.lBloqueiaItem       = false;
+      this.lLiberaTipoOperacao = true;
+      this.alertMessage        = "Procedimento realizado com sucesso.";
+      break;
   }
-  this.iItensNovos     = 0;
+
   this.aPeriodoItensNovos = new Array()
   this.sInstance       = sNomeInstance;
   this.iTipoAditamento = iTipoAditamento;
   this.sUrlRpc = 'con4_contratosaditamentos.RPC.php';
+
 	oNode.style.display='none';
-	this.sContainers  =    " <table style='' border='0' width='90%'>";
-  this.sContainers +=    "   <tr>";
-  this.sContainers +=    "     <td width='100%'> ";
-  this.sContainers +=    "       <fieldset> ";
-  this.sContainers +=    "         <legend><b>Informe o Acordo</b></legend>";
-  this.sContainers +=    "           <table width='100%' border='0'> ";
 
-  this.sContainers +=    "            <tr> ";
-  this.sContainers +=    "               <td style='width:10%;'> ";
-  this.sContainers +=    "                  <a href='#' onclick='"+me.sInstance+".consultaAcordo();return false;'>";
-  this.sContainers +=    "                  <b>Código Acordo:</b></a>";
-  this.sContainers +=    "                </td>";
-  this.sContainers +=    "                <td>";
-  this.sContainers +=    "                   <span id='ctnTxtCodigoAcordo'></span>";
-  this.sContainers +=    "                   <span id='ctnTxtDescricaoAcordo'></span>";
-  this.sContainers +=    "                </td>";
-  this.sContainers +=    "            </tr> ";
+	sContent  =    " <table>";
+  sContent +=    "   <tr>";
+  sContent +=    "     <td> ";
+  sContent +=    "       <fieldset> ";
+  sContent +=    "         <legend>Dados do Acordo</legend>";
+  sContent +=    "         <table width='100%'> ";
 
-  /**
-   * Numero do aditamento
-   */
-  this.sContainers +=    "            <tr> ";
-  this.sContainers +=    "               <td> ";
-  this.sContainers +=    "                  <b>Número aditamento:</b></a>";
-  this.sContainers +=    "                </td>";
-  this.sContainers +=    "                <td>";
-  this.sContainers +=    "                   <span id='ctnTxtNumeroAditamento'></span>";
-  this.sContainers +=    "                </td>";
-  this.sContainers +=    "            </tr> ";
+  sContent +=    "           <tr> ";
+  sContent +=    "             <td nowrap width=\"1%\"> ";
+  sContent +=    "               <label class=\"bold\" for=\"oTxtCodigoAcordo\"> ";
+  sContent +=    "                 <a href='javascript:;' onclick='"+me.sInstance+".consultaAcordo(); return false;'>Acordo:</a>";
+  sContent +=    "               </label> ";
+  sContent +=    "             </td>";
+  sContent +=    "             <td id=\"ctnCodigoAcordo\"></td>";
+  sContent +=    "           </tr> ";
 
-  this.sContainers +=    "              <tr> ";
-  this.sContainers +=    "                <td colspan='2'>";
-  this.sContainers +=    "                  <fieldset><legend><b>Vigência</b></legend> ";
-  this.sContainers +=    "               <table border='0'> ";
-  this.sContainers +=    "                  <tr> ";
-  this.sContainers +=    "                    <td style='width:20%;'>";
-  this.sContainers +=    "                       <b>Inicial:</b> ";
-  this.sContainers +=    "                    </td> ";
-  this.sContainers +=    "                    <td id='ctnVigenciaInicial'> ";
-  this.sContainers +=    "                    </td> ";
-  this.sContainers +=    "                    <td style='width:20%;'> ";
-  this.sContainers +=    "                       &nbsp;&nbsp;<b>Final:</b> ";
-  this.sContainers +=    "                    </td> ";
-  this.sContainers +=    "                    <td id='ctnVigenciaFinal'> ";
-  this.sContainers +=    "                    </td> ";
-  this.sContainers +=    "                  </tr> ";
-  this.sContainers +=    "                </table> ";
-  this.sContainers +=    "                </fieldset> ";
-  this.sContainers +=    "              </td> ";
-  this.sContainers +=    "            </tr> ";
-  this.sContainers +=    "            <tr> ";
-  this.sContainers +=    "              <td colspan='2'> ";
-  this.sContainers +=    "               <fieldset> ";
-  this.sContainers +=    "                 <legend><b>Valores do Contrato</b></legend> ";
-  this.sContainers +=    "                   <table> ";
-  this.sContainers +=    "                     <tr> ";
-  this.sContainers +=    "                       <td> ";
-  this.sContainers +=    "                         <b>Valor Original:</b> ";
-  this.sContainers +=    "                       </td> ";
-  this.sContainers +=    "                       <td style='background-color: white; width: 100;text-align: right;'";
-  this.sContainers +=    "                           id='ctnValorOriginal'> ";
-  this.sContainers +=    "                       </td> ";
-  this.sContainers +=    "                       <td> ";
-  this.sContainers +=    "                         <b>Valor Atual:</b> ";
-  this.sContainers +=    "                       </td> ";
-  this.sContainers +=    "                       <td style='background-color: white; width: 100;text-align: right;'";
-  this.sContainers +=    "                           id='ctnValorAtual'> ";
-  this.sContainers +=    "                       </td> ";
-  this.sContainers +=    "                     </tr> ";
-  this.sContainers +=    "                   </table> ";
-  this.sContainers +=    "                 </fieldset> ";
-  this.sContainers +=    "               </td> ";
-  this.sContainers +=    "             </tr>    ";
-  this.sContainers +=    "          </table> ";
-  this.sContainers +=    "          </fieldset> ";
-  this.sContainers +=    "         </td> ";
-  this.sContainers +=    "       </tr> ";
-  this.sContainers +=    "       <tr> ";
-  this.sContainers +=    "         <td> ";
-  this.sContainers +=    "           <fieldset> ";
-  this.sContainers +=    "             <legend> ";
-  this.sContainers +=    "               <b>  ";
-  this.sContainers +=    "                 Itens ";
-  this.sContainers +=    "               </b>  ";
-  this.sContainers +=    "             </legend> ";
-  this.sContainers +=    "             <div id='ctnGridItens'> ";
-  this.sContainers +=    "           </fieldset> ";
-  this.sContainers +=    "         </td> ";
-  this.sContainers +=    "       </tr> ";
-  this.sContainers +=    "       <tr> ";
-  this.sContainers +=    "         <td colspan='2' style='text-align: center;'> ";
-  this.sContainers +=    "            <input type='button' disabled value='Adicionar Itens' id='btnItens' style='display: none'> ";
-  this.sContainers +=    "            <input type='button' disabled id='btnAditar' value='Salvar"+me.sLabelBotao+"'> ";
-  this.sContainers +=    "            <input type='button' id='btnPesquisarAcordo' value='Pesquisar Acordo' > ";
-  this.sContainers +=    "         </td> ";
-  this.sContainers +=    "       </tr> ";
-  this.sContainers +=    "     </table> ";
+  sContent +=    "           <tr> ";
+  sContent +=    "             <td nowrap> ";
+  sContent +=    "               <label class=\"bold\" for=\"oTxtNumeroAditamento\">Número do Termo:</label>";
+  sContent +=    "             </td>";
+  sContent +=    "             <td id=\"ctnTxtNumeroAditamento\"></td>";
+  sContent +=    "           </tr> ";
 
-  oNode.innerHTML = this.sContainers;
+  sContent +=    "           <tr id='trTipoAlteracao' style='display:none'> ";
+  sContent +=    "             <td nowrap> ";
+  sContent +=    "               <label class=\"bold\" for=\"ctnCboTipoAlteracao\">Tipo de Alteração:</label>";
+  sContent +=    "             </td>";
+  sContent +=    "             <td id=\"ctnCboTipoAlteracao\"></td>";
+  sContent +=    "           </tr> ";
+
+  sContent +=    "           <tr id='trTipoOperacao' style='display:none'> ";
+  sContent +=    "             <td nowrap> ";
+  sContent +=    "               <label class=\"bold\" for=\"ctnCboTipoOperacao\">Tipo de Operação:</label>";
+  sContent +=    "             </td>";
+  sContent +=    "             <td id=\"ctnCboTipoOperacao\"></td>";
+  sContent +=    "           </tr> ";
+
+  sContent +=    "           <tr> ";
+  sContent +=    "             <td colspan='2'>";
+  sContent +=    "               <fieldset class=\"separator\">";
+  sContent +=    "                 <legend>Vigência</legend> ";
+  sContent +=    "                 <table border='0'> ";
+  sContent +=    "                    <tr> ";
+  sContent +=    "                      <td><label class=\"bold\" for=\"oTxtDataInicial\">Inicial:</td> ";
+  sContent +=    "                      <td id=\"ctnVigenciaInicial\"></td> ";
+  sContent +=    "                      <td><label class=\"bold\" for=\"oTxtDataFinal\">Final:<label></td> ";
+  sContent +=    "                      <td id=\"ctnVigenciaFinal\"></td> ";
+  sContent +=    "                    </tr> ";
+  sContent +=    "                  </table> ";
+  sContent +=    "               </fieldset> ";
+  sContent +=    "             </td> ";
+  sContent +=    "           </tr> ";
+
+  sContent +=    "           <tr> ";
+  sContent +=    "             <td colspan='2'> ";
+  sContent +=    "               <fieldset class=\"separator\"> ";
+  sContent +=    "                 <legend>Valores</legend> ";
+  sContent +=    "                 <table> ";
+  sContent +=    "                   <tr> ";
+  sContent +=    "                     <td><label class=\"bold\" for=\"oTxtValorOriginal\">Valor Original:</label></td> ";
+  sContent +=    "                     <td id=\"ctnValorOriginal\"></td> ";
+  sContent +=    "                     <td><label class=\"bold\" for=\"oTxtValorAtual\">Valor Atual:</label></td> ";
+  sContent +=    "                     <td id=\"ctnValorAtual\"></td> ";
+  sContent +=    "                   </tr> ";
+  sContent +=    "                 </table> ";
+  sContent +=    "               </fieldset> ";
+  sContent +=    "             </td> ";
+  sContent +=    "           </tr> ";
+  sContent +=    "           <tr id='trJustificativa'> ";
+  sContent +=    "             <td colspan='2'> ";
+  sContent +=    "               <fieldset class=\"separator\"> ";
+  sContent +=    "                 <legend>Justificativa</legend> ";
+  sContent +=    "                 <textarea class='field-size-max' rel='ignore-css' id='oTxtJustificativa' style='resize: none;' rols='2'></textarea>";
+  sContent +=    "               </fieldset> ";
+  sContent +=    "             </td> ";
+  sContent +=    "           </tr> ";
+  sContent +=    "         </table> ";
+  sContent +=    "       </fieldset> ";
+  sContent +=    "     </td> ";
+  sContent +=    "   </tr> ";
+  sContent +=    "   <tr> ";
+  sContent +=    "     <td> ";
+  sContent +=    "       <fieldset> ";
+  sContent +=    "         <legend>Itens</legend> ";
+  sContent +=    "         <div id='ctnGridItens' style=\"width: 900px\"></div> ";
+  sContent +=    "       </fieldset> ";
+  sContent +=    "     </td> ";
+  sContent +=    "   </tr> ";
+  sContent +=    " </table> ";
+  sContent +=    " <input type='button' disabled value='Adicionar Itens' id='btnItens' style='display: none'>";
+  sContent +=    " <input type='button' disabled id='btnAditar' value='Salvar " + me.sLabelBotao + "'> ";
+  sContent +=    " <input type='button' id='btnPesquisarAcordo' value='Pesquisar Acordo' > ";
+
+  oNode.innerHTML = sContent;
   oNode.style.display='';
+
+  if (this.lLiberaTipoOperacao) {
+    $('trTipoOperacao').style.display='';
+  }
+  if (this.lLiberaTipoAlteracao) {
+      $('trTipoAlteracao').style.display='';
+  }
+  var lOrigemManual = false;
 
    /**
     * Pesquisa acordos
     */
 	this.pesquisaAcordo = function(lMostrar) {
-
+    var situacaoFiltro = this.lSituacaoFiltro === true ? '&iTipoFiltro=4' : '';
 	  if (lMostrar == true) {
 
-	    var sUrl = 'func_acordo.php?funcao_js=parent.js_mostraacordo1|ac16_sequencial|ac16_resumoobjeto&iTipoFiltro=4';
-	    js_OpenJanelaIframe('top.corpo',
+	    var sUrl = 'func_acordo.php?funcao_js=parent.js_mostraacordo1|ac16_sequencial|ac16_resumoobjeto' + situacaoFiltro;
+	    js_OpenJanelaIframe('CurrentWindow.corpo',
 	                        'db_iframe_acordo',
 	                        sUrl,
-	                        'Pesquisar Acordo',
+	                        'Pesquisa de Acordo',
 	                        true);
 	  } else {
 
 	    if (me.oTxtCodigoAcordo.getValue() != '') {
 
 	      var sUrl = 'func_acordo.php?descricao=true&pesquisa_chave='+me.oTxtCodigoAcordo.getValue()+
-	                 '&funcao_js=parent.js_mostraacordo&iTipoFiltro=4';
+	                 '&funcao_js=parent.js_mostraacordo' + situacaoFiltro;
 
-	      js_OpenJanelaIframe('top.corpo',
+	      js_OpenJanelaIframe('CurrentWindow.corpo',
 	                          'db_iframe_acordo',
 	                          sUrl,
-	                          'Pesquisar Acordo',
+	                          'Pesquisa de Acordo',
 	                          false);
 	     } else {
 	       me.oTxtCodigoAcordo.setValue('');
 	     }
 	  }
-	}
+	};
 
 	/**
 	 * Retorno da pesquisa acordos
@@ -212,7 +234,7 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 	    me.oTxtDescricaoAcordo.setValue(chave2);
 	    me.pesquisarDadosAcordo();
 	  }
-	}
+	};
 
 /**
  * Retorno da pesquisa acordos
@@ -223,16 +245,17 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 	  me.oTxtDescricaoAcordo.setValue(chave2);
 	  db_iframe_acordo.hide();
 	  me.pesquisarDadosAcordo();
-	}
+	};
 
   this.consultaAcordo = function() {
 
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_consultaacordo',
                         'con4_consacordos003.php?ac16_sequencial='+me.oTxtCodigoAcordo.getValue(),
-                        'Consulta Dados Acordo',
+                        'Consulta de Acordo',
                         true);
-  }
+  };
+
   this.pesquisao47_coddot = function(mostra) {
 
 	  query='';
@@ -244,7 +267,7 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 	    js_OpenJanelaIframe('',
 	                        'db_iframe_orcdotacao',
 	                        'func_permorcdotacao.php?'+query+'funcao_js=parent.'+me.sInstance+'.mostraorcdotacao1|o58_coddot',
-	                        'Pesquisar Dotações',
+	                        'Pesquisa de Dotações',
 	                        true,0);
 
 	    $('Jandb_iframe_orcdotacao').style.zIndex='100000000';
@@ -253,11 +276,12 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 	                        'db_iframe_orcdotacao',
 	                        'func_permorcdotacao.php?'+query+'pesquisa_chave='+document.form1.o47_coddot.value+
 	                        '&funcao_js=parent.'+me.sInstance+'.mostraorcdotacao',
-	                        'Pesquisar Dotações',
+	                        'Pesquisa de Dotações',
 	                        false
 	                        );
 	  }
-	}
+	};
+
 	this.mostraorcdotacao = function(chave,erro) {
 
 	  if (erro) {
@@ -265,17 +289,17 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 	    document.form1.o47_coddot.value = '';
 	  }
 	  me.getSaldoDotacao(chave);
-	}
+	};
 
- this.mostraorcdotacao1 = function(chave1) {
+  this.mostraorcdotacao1 = function(chave1) {
 
-  oTxtDotacao.setValue(chave1);
-  db_iframe_orcdotacao.hide();
-  $('Jandb_iframe_orcdotacao').style.zIndex='0';
-  $('oTxtQuantidadeDotacao').focus();
-  me.getSaldoDotacao(chave1);
+    oTxtDotacao.setValue(chave1);
+    db_iframe_orcdotacao.hide();
+    $('Jandb_iframe_orcdotacao').style.zIndex='0';
+    $('oTxtValorDotacao').focus();
+    me.getSaldoDotacao(chave1);
+  };
 
-}
   this.pesquisarDadosAcordo = function () {
 
 	  if (me.oTxtCodigoAcordo.getValue() == "") {
@@ -283,238 +307,339 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 	    alert('Informe um acordo!');
 	    return false;
 	  }
-	  js_divCarregando('Aguarde, pesquisando acordos...', 'msgbox');
-	  me.oGridItens.clearAll(true);
-	  var oParam       = new Object();
-	  oParam.exec      = 'getItensAditar';
-	  oParam.renovacao = false;
-	  if (me.iTipoAditamento == 5) {
-	    oParam.renovacao = true;
-	  }
-	  oParam.iAcordo   = me.oTxtCodigoAcordo.getValue();
-	  var oAjax        = new Ajax.Request(me.sUrlRpc,
-	                                     {method:'post',
-	                                      parameters:'json='+Object.toJSON(oParam),
-	                                      onComplete: me.retornoGetDadosAcordo
-	                                    }
-	                                   )
-	}
 
-	this.retornoGetDadosAcordo = function(oAjax) {
+	  var oParam = {
+      exec : 'getItensAditar',
+      renovacao : (me.iTipoAditamento == TIPO_ADITAMENTO_RENOVACAO),
+      iAcordo : me.oTxtCodigoAcordo.getValue()
+    };
 
-	  js_removeObj('msgbox');
-	  var oRetorno = eval("("+oAjax.responseText+")");
-	  if (oRetorno.status == 1) {
+    me.oGridItens.clearAll(true);
+
+    new AjaxRequest(me.sUrlRpc, oParam, function(oRetorno, lErro) {
+
+      if (lErro) {
+        return alert(oRetorno.message.urlDecode());
+      }
 
 	    $('btnAditar').disabled = false;
 	    $('btnItens').disabled = false;
-	    $('ctnValorOriginal').innerHTML = js_formatar(oRetorno.valores.valororiginal, "f");
-	    $('ctnValorAtual').innerHTML    = js_formatar(oRetorno.valores.valoratual, "f");
+
+	    me.oTxtValorOriginal.setValue( js_formatar(oRetorno.valores.valororiginal, "f") );
+	    me.oTxtValorAtual.setValue( js_formatar(oRetorno.valores.valoratual, "f") );
+
 	    var aDataInicial = oRetorno.datainicial.split("/");
 	    var aDataFinal   = oRetorno.datafinal.split("/");
+
 	    me.oTxtDataInicial.setData(aDataInicial[0], aDataInicial[1], aDataInicial[2]);
 	    me.oTxtDataFinal.setData(aDataFinal[0], aDataFinal[1], aDataFinal[2]);
       me.oTxtNumeroAditamento.setValue('');
+      $('oTxtJustificativa').value = '';
+
+      lOrigemManual = oRetorno.origem_manual;
 
 	    aItensPosicao = oRetorno.itens;
-	    me.oGridItens.renderRows();
 	    me.preencheItens(aItensPosicao);
+
 	    aItensPosicao.each(function (oItem, iLinha){
 	       me.salvarInfoDotacoes(iLinha);
 	    });
-	  }
-  }
+
+    }).setMessage("Aguarde, pesquisando acordos.")
+      .execute();
+  };
   /**
    * monta a tela principal do aditamento
    */
   this.main = function() {
 
-	   me.oTxtCodigoAcordo = new DBTextField('oTxtCodigoAcordo', me.sInstance+'.oTxtCodigoAcordo','', 10);
-	   me.oTxtCodigoAcordo.addEvent("onChange",";"+me.sInstance+".pesquisaAcordo(false);");
-	   me.oTxtCodigoAcordo.show($('ctnTxtCodigoAcordo'));
-	   me.oTxtCodigoAcordo.setReadOnly(true);
+	  me.oTxtCodigoAcordo = new DBTextField('oTxtCodigoAcordo', me.sInstance+'.oTxtCodigoAcordo','', 10);
+	  me.oTxtCodigoAcordo.addEvent("onChange",";"+me.sInstance+".pesquisaAcordo(false);");
+	  me.oTxtCodigoAcordo.show($('ctnCodigoAcordo'));
+	  me.oTxtCodigoAcordo.setReadOnly(true);
 
-	   me.oTxtDescricaoAcordo = new DBTextField('oTxtDescricaoAcordo', me.sInstance+'.oTxtDescricaoAcordo','', 50);
-	   me.oTxtDescricaoAcordo.show($('ctnTxtDescricaoAcordo'));
-	   me.oTxtDescricaoAcordo.setReadOnly(true);
+    var oTxtNode = document.createTextNode(" ");
+    $('ctnCodigoAcordo').appendChild(oTxtNode);
 
-     /**
-      * Numero do aditamento
-      */
-	   me.oTxtNumeroAditamento = new DBTextField('oTxtNumeroAditamento', me.sInstance+'.oTxtNumeroAditamento','', 10);
-	   me.oTxtNumeroAditamento.show($('ctnTxtNumeroAditamento'));
+	  me.oTxtDescricaoAcordo = new DBTextField('oTxtDescricaoAcordo', me.sInstance+'.oTxtDescricaoAcordo','', 50);
+	  me.oTxtDescricaoAcordo.show($('ctnCodigoAcordo'), true);
+	  me.oTxtDescricaoAcordo.setReadOnly(true);
 
-	   me.oTxtDataInicial = new DBTextFieldData('oTxtDataInicial', me.sInstance+'.oTxtDataInicial','');
-	   me.oTxtDataInicial.show($('ctnVigenciaInicial'));
-	   if (!me.lDatas) {
-  	   me.oTxtDataInicial.setReadOnly(true);
-	   }
-	   me.oTxtDataFinal = new DBTextFieldData('oTxtDataFinal', me.sInstance+'.oTxtDataFinal','');
-	   me.oTxtDataFinal.show($('ctnVigenciaFinal'));
-	   if (!me.lDatas) {
-       me.oTxtDataFinal.setReadOnly(true);
-     }
+    /**
+     * Numero do aditamento
+     */
+	  me.oTxtNumeroAditamento = new DBTextField('oTxtNumeroAditamento', me.sInstance+'.oTxtNumeroAditamento','', 10);
+    me.oTxtNumeroAditamento.setMaxLength(20);
+	  me.oTxtNumeroAditamento.show($('ctnTxtNumeroAditamento'));
 
-	   me.oGridItens = new DBGrid('oGridItens');
-	   me.oGridItens.nameInstance = me.sInstance+'.oGridItens';
-	   me.oGridItens.setCheckbox(0);
-	   me.oGridItens.setCellAlign(new Array('right', 'left', "center", "center", "center", 'right', 'right'));
-	   me.oGridItens.setCellWidth(new Array('5%', '50%', "8%", "13%", '13%', '13%', '10%', '10%', '10%', "10%"));
-	   me.oGridItens.setHeader(new Array("Cod.", 'Item', "Períodos",
-	                                     'Vlr. Unit.', 'Qtde.', 'Vlr. Total', 'Dotações', 'Ação', "Seq"));
-	   me.oGridItens.aHeaders[9].lDisplayed  = false;
-	   me.oGridItens.setHeight(200);
-	   me.oGridItens.show($('ctnGridItens'));
+    /**
+     * Vigência
+     */
+	  me.oTxtDataInicial = new DBTextFieldData('oTxtDataInicial', me.sInstance+'.oTxtDataInicial','');
+	  me.oTxtDataInicial.show($('ctnVigenciaInicial'));
 
-	   $('btnAditar').observe('click', me.aditar);
-	   $('btnPesquisarAcordo').observe('click', function() { me.pesquisaAcordo(true)});
+    me.oTxtDataFinal = new DBTextFieldData('oTxtDataFinal', me.sInstance+'.oTxtDataFinal','');
+    me.oTxtDataFinal.show($('ctnVigenciaFinal'));
 
-  }
+    if (!me.lDatas) {
 
-/**
- * Controle das dotacoes do item.
- */
+      me.oTxtDataFinal.setReadOnly(true);
+  	  me.oTxtDataInicial.setReadOnly(true);
+    }
 
+
+    me.oCboTipoOperacao = new DBComboBox('oCboTipoOperacao', me.sInstance+'oCboTipoOperacao', null, 300);
+    me.oCboTipoOperacao.addItem('0', 'Selecione');
+    switch (me.iTipoAditamento) {
+
+      case TIPO_ADITAMENTO_SUPRESSAO:
+
+        me.oCboTipoOperacao.addItem('4', 'Redução de Valor por Supressão de Itens');
+        me.oCboTipoOperacao.addItem('5', 'Redução de Valor por Supressão de Quantitativo');
+        break;
+
+      default:
+        me.oCboTipoOperacao.addItem('1', 'Acréscimo de Valor por Aumento de Quantitativo');
+        me.oCboTipoOperacao.addItem('2', 'Acréscimo de valor por inclusão de Itens novos');
+        me.oCboTipoOperacao.addItem('3', 'Reajustamento de Preços');
+      break;
+    }
+    me.oCboTipoOperacao.show($('ctnCboTipoOperacao'));
+
+    me.oCboTipoAlteracao = new DBComboBox('oCboTipoAlteracao', me.sInstance+'oCboTipoAlteracao', null, 300);
+    me.oCboTipoAlteracao.addItem('1', 'Aditamento');
+    me.oCboTipoAlteracao.addItem('2', 'Apostilamento');
+    if (me.iTipoAditamento == TIPO_ADITAMENTO_REEQUILIBRIO) {
+        me.oCboTipoAlteracao.addItem('3', 'Indenização');
+    }
+    me.oCboTipoAlteracao.show($('ctnCboTipoAlteracao'));
+
+    /**
+     * Valores
+     */
+    me.oTxtValorOriginal = new DBTextField('oTxtValorOriginal', me.sInstance+'.oTxtValorOriginal', '', 12);
+    me.oTxtValorOriginal.setClassName("text-right");
+    me.oTxtValorOriginal.show($('ctnValorOriginal'));
+    me.oTxtValorOriginal.setReadOnly(true);
+
+    me.oTxtValorAtual = new DBTextField('oTxtValorAtual', me.sInstance+'.oTxtValorAtual', '', 12);
+    me.oTxtValorAtual.setClassName("text-right");
+    me.oTxtValorAtual.show($('ctnValorAtual'));
+    me.oTxtValorAtual.setReadOnly(true);
+
+    /**
+     * Itens
+     */
+	  me.oGridItens = new DBGrid('oGridItens');
+	  me.oGridItens.nameInstance = me.sInstance+'.oGridItens';
+	  me.oGridItens.setCheckbox(0);
+	  me.oGridItens.setCellAlign(['right', 'left', "right", "right", "right", "center", "center", "center", "right"]);
+	  me.oGridItens.setCellWidth(["5%", '30%', "11%", "11%", "11%", "11%", "5%", "10%", "0%"]);
+	  me.oGridItens.setHeader(["Código", "Item", "Quantidade", "Valor Unitário", "Valor Total", "Dotações", "Seq", "Controla Qtd", "Quantidade Anterior"]);
+	  me.oGridItens.aHeaders[7].lDisplayed  = false;
+	  me.oGridItens.aHeaders[9].lDisplayed  = false;
+
+	  me.oGridItens.setHeight(300);
+	  me.oGridItens.show($('ctnGridItens'));
+
+	  $('btnAditar').observe('click', me.aditar);
+	  $('btnPesquisarAcordo').observe('click', function() {
+      me.pesquisaAcordo(true);
+    });
+  };
+
+  /**
+   * Controle das dotacoes do item.
+   */
   this.ajusteDotacao = function (iLinha, iElemento) {
 
 	  iElementoDotacao = iElemento ;
+
 	  if ($('wndDotacoesItem')) {
 	     return false;
 	  }
+
 	  oDadosItem  =  me.oGridItens.aRows[iLinha];
-	  var iHeight = js_round((window.innerHeight/1.3), 0);
-	  var iWidth  = document.width/2;
-	  windowDotacaoItem = new windowAux('wndDotacoesItem',
-	                                    'Dotações Item '+oDadosItem.aCells[2].getValue(),
-	                                    iWidth,
-	                                    iHeight
-	                                   );
-	  var sContent  = "<div>";
-	  sContent     += "<fieldset><legend><b>Adicionar Dotação</b></legend>";
-	  sContent     += "  <table>";
-	  sContent     += "   <tr>";
-	  sContent     += "     <td>";
-	  sContent     += "     <a href='#' class='dbancora' style='text-decoration: underline;'";
-	  sContent     += "       onclick='"+me.sInstance+".pesquisao47_coddot(true);'><b>Dotação:</b></a>";
-	  sContent     += "     </td>";
-	  sContent     += "     <td id='inputdotacao'></td>";
-	  sContent     += "     <td>";
-	  sContent     += "      <b>Saldo Dotação:</b>";
-	  sContent     += "     </td>";
-	  sContent     += "     <td id='inputsaldodotacao'></td>";
-	  sContent     += "   </tr>";
-	  sContent     += "   <tr>";
-	  sContent     += "     <td>";
-	  sContent     += "      <b>Quantidade:</b>";
-	  sContent     += "     </td>";
-	  sContent     += "     <td id='inputquantidadedotacao'></td>";
-	  sContent     += "     <td>";
-	  sContent     += "      <b>Valor:</b>";
-	  sContent     += "     </td>";
-	  sContent     += "     <td id='inputvalordotacao'></td>";
-	  sContent     += "    </tr>";
-	  sContent     += "    <tr>";
-	  sContent     += "     <td colspan='4' style='text-align:center'>";
-	  sContent     += "       <input type='button' value='Adicionar' id='btnSalvarDotacao'>";
-	  sContent     += "     </td>";
-	  sContent     += "    </tr>";
-	  sContent     += "  </table>";
-	  sContent     += "<fieldset>";
-	  sContent     += "  <div id='cntgridDotacoes'>";
-	  sContent     += "  </div>";
-	  sContent     += "</fieldset>";
-	  sContent     += "<center>";
-	  sContent     += "<input type='button' id='btnSalvarInfoDot' value='Salvar' onclick=''>";
-	  sContent     += "</center>";
+	  windowDotacaoItem = new windowAux('wndDotacoesItem', 'Dotações Item', 430, 380);
+
+	  var sContent = "<div class=\"subcontainer\">";
+	  sContent += "<fieldset><legend>Adicionar Dotação</legend>";
+	  sContent += "  <table>";
+	  sContent += "   <tr>";
+	  sContent += "     <td>";
+	  sContent += "     <a href='#' class='dbancora' style='text-decoration: underline;'";
+	  sContent += "       onclick='"+me.sInstance+".pesquisao47_coddot(true);'><b>Dotação:</b></a>";
+	  sContent += "     </td>";
+	  sContent += "     <td id='inputdotacao'></td>";
+	  sContent += "     <td>";
+	  sContent += "      <b>Saldo Dotação:</b>";
+	  sContent += "     </td>";
+	  sContent += "     <td id='inputsaldodotacao'></td>";
+	  sContent += "   </tr>";
+	  sContent += "   <tr>";
+    sContent += "     <td>";
+    sContent += "      <b>Valor:</b>";
+    sContent += "     </td>";
+    sContent += "     <td id='inputvalordotacao'></td>";
+	  sContent += "     <td colspan='2'></td>";
+	  sContent += "    </tr>";
+    sContent += "  </table>";
+    sContent += "</fieldset>";
+	  sContent += "  <input type='button' value='Adicionar' id='btnSalvarDotacao'>";
+	  sContent += "  <fieldset style=\"margin-top: 5px;\">";
+	  sContent += "    <div id='cntgridDotacoes'></div>";
+	  sContent += "  </fieldset>";
+	  sContent += "</div>";
+
 	  windowDotacaoItem.setContent(sContent);
-	  oMessageBoard = new DBMessageBoard('msgboard1',
-	                                    'Adicionar Dotacoes',
-	                                    'Dotações Item '+oDadosItem.aCells[2].getValue()+" (valor: <b>"+
-	                                    oDadosItem.aCells[6].getValue()+"</b>)",
-	                                    $('windowwndDotacoesItem_content')
-	                                    );
+	  oMessageBoard = new DBMessageBoard( 'msgboard1',
+	                                      'Adicionar Dotacoes',
+	                                      'Dotações Item '+oDadosItem.aCells[2].getValue()+" (valor: <b>"+
+	                                      oDadosItem.aCells[5].getValue()+"</b>)",
+	                                      $('windowwndDotacoesItem_content') );
+
 	  windowDotacaoItem.setShutDownFunction(function() {
 	    windowDotacaoItem.destroy();
 	  });
 
-	  $('btnSalvarInfoDot').observe("click", function() {
+	  $('btnSalvarDotacao').observe("click", function() {
+        me.saveDotacao(iLinha)
+      });
 
-	     var nTotalDotacoes = oGridDotacoes.sum(2, false);
-	     if (nTotalDotacoes != js_strToFloat(oDadosItem.aCells[6].getValue())) {
-
-	      // alert('o Valor Total das Dotações não conferem com o total que está sendo autorizado no item!');
-	      // return false;
-	     }
-	     aItensPosicao[iLinha].dotacoes.each(function (oDotacao, iDot) {
-
-	        var nValue = js_strToFloat(oGridDotacoes.aRows[iDot].aCells[2].getValue());
-	        oDotacao.valorexecutar = nValue;
-	     });
-	     me.oGridItens.aRows[iLinha].select(true);
-	     windowDotacaoItem.destroy();
-	  });
-	  $('btnSalvarDotacao').observe("click", function( ) {me.saveDotacao(iLinha)});
 	  oTxtDotacao = new  DBTextField('oTxtDotacao', 'oTxtDotacao','', 10);
 	  oTxtDotacao.show($('inputdotacao'));
 	  oTxtDotacao.setReadOnly(true);
-
-	  oTxtValorDotacao = new  DBTextField('oTxtValorDotacao', 'oTxtValorDotacao','', 10);
-	  oTxtValorDotacao.show($('inputvalordotacao'));
-	  oTxtValorDotacao.setReadOnly(true);
-
-	  oTxtQuantidadeDotacao = new  DBTextField('oTxtQuantidadeDotacao', 'oTxtQuantidadeDotacao','', 10);
-	  var nValorMaximo   = js_strToFloat(oDadosItem.aCells[5].getValue());
-	  var nValorUnitario = js_strToFloat(oDadosItem.aCells[4].getValue()).valueOf();
-	  var sEvent         = ";validaValorDotacao(this,"+nValorMaximo+","+nValorUnitario+",\"oTxtValorDotacao\");";
-	  oTxtQuantidadeDotacao.addEvent("onChange", sEvent);
-	  oTxtQuantidadeDotacao.show($('inputquantidadedotacao'));
 
 	  oTxtSaldoDotacao = new  DBTextField('oTxtSaldoDotacao', 'oTxtSaldoDotacao','', 10);
 	  oTxtSaldoDotacao.show($('inputsaldodotacao'));
 	  oTxtSaldoDotacao.setReadOnly(true);
 
+    oTxtValorDotacao = new  DBTextField('oTxtValorDotacao', 'oTxtValorDotacao', '0,00', 10);
+    oTxtValorDotacao.setClassName("text-right");
+    oTxtValorDotacao.addEvent("onFocus", "this.value = js_strToFloat(this.value)");
+    oTxtValorDotacao.addEvent("onBlur", "this.value = js_formatar(this.value, 'f', 2)");
+    oTxtValorDotacao.addEvent("onInput", "this.value = this.value.replace(/[^0-9\.]/g, '')");
+    oTxtValorDotacao.show($('inputvalordotacao'));
+
 	  oMessageBoard.show();
 	  oGridDotacoes              = new DBGrid('gridDotacoes');
 	  oGridDotacoes.nameInstance = 'oGridDotacoes';
-	  oGridDotacoes.setCellWidth(new Array('30%',  '40%', '40%'));
-	  oGridDotacoes.setHeader(new Array("Dotação", "Valor Aut.", "valor"));
-	  oGridDotacoes.setHeight(iHeight/3);
-	  oGridDotacoes.setCellAlign(new Array("center", "right", "Center"));
+	  oGridDotacoes.setCellWidth(['20%',  '60%', '20%']);
+	  oGridDotacoes.setHeader(["Dotação", "Valor", "&nbsp;"]);
+    oGridDotacoes.setCellAlign(["center", "right", "Center"]);
+	  oGridDotacoes.setHeight(100);
+    oGridDotacoes.hasTotalizador = true;
+
+    windowDotacaoItem.show();
+
 	  oGridDotacoes.show($('cntgridDotacoes'));
 	  oGridDotacoes.clearAll(true);
 	  me.preencheGridDotacoes(iLinha);
-	  windowDotacaoItem.show();
-
-	}
+	};
 
   this.preencheGridDotacoes = function(iLinha) {
 
 	  oGridDotacoes.clearAll(true);
-	  var nValor          = js_strToFloat(oDadosItem.aCells[5].getValue());
-	  var nValorTotalItem = js_strToFloat(oDadosItem.aCells[5].getValue());
-	  var nValorTotal     = nValor;
+
+    nValorTotal = 0;
 	  aItensPosicao[iLinha].dotacoes.each(function (oDotacao, iDot) {
 
-	     nValorDotacao = js_formatar(oDotacao.valorexecutar, "f");
-	     aLinha    = new Array();
-	     aLinha[0] = "<a href='#' onclick='"+me.sInstance+".mostraSaldo("+oDotacao.dotacao+");return false'>"+oDotacao.dotacao+"</a>";
-	     aLinha[1] = oDotacao.valor;
-	     aLinha[2] = eval("valordot"+iDot+" = new DBTextField('valordot"+iDot+"','valordot"+iDot+"','"+nValorDotacao+"')");
-	     aLinha[2].addStyle("text-align","right");
-	     aLinha[2].addStyle("height","100%");
-	     aLinha[2].addStyle("width","100px");
-	     aLinha[2].addStyle("border","1px solid transparent;");
-	     aLinha[2].addEvent("onBlur","valordot"+iDot+".sValue=this.value;");
-	     aLinha[2].addEvent("onBlur",me.sInstance+".ajustaValorDot(this,"+iDot+");");
-	     aLinha[2].addEvent("onBlur","js_bloqueiaDigitacao(this, true);");
-	     aLinha[2].addEvent("onFocus","js_liberaDigitacao(this, true);");
-	     aLinha[2].addEvent("onKeyPress","return js_mask(event,\"0-9|.|-\")");
-	     aLinha[2].addEvent("onKeyDown","return js_verifica(this,event,true)")
-	     oGridDotacoes.addRow(aLinha);
-	  });
-	  oGridDotacoes.renderRows();
+      var oValorDotacao = new DBTextField("valordot" + iDot , "valordot" + iDot, js_formatar(oDotacao.valor, "f"));
+      oValorDotacao.addStyle("width", "100%");
+      oValorDotacao.setClassName("text-right");
+      oValorDotacao.addEvent("onFocus", "this.value = js_strToFloat(this.value)");
+      oValorDotacao.addEvent("onBlur", "this.value = js_formatar(this.value, 'f', 2)");
+      oValorDotacao.addEvent("onInput", "this.value = this.value.replace(/[^0-9\.]/g, ''); " + me.sInstance + ".atualizarItemDotacao(" + iLinha + ", " + iDot + ", this); ");
 
-	}
+      var oBotaoRemover = document.createElement("input");
+      oBotaoRemover.type = "button";
+      oBotaoRemover.id = "btnexcluidotacao" + iDot;
+      oBotaoRemover.value = "E";
+      oBotaoRemover.setAttribute("onclick", me.sInstance + ".removerDotacao(" + iLinha + ", " + iDot + ")");
+
+      aLinha    = new Array();
+      aLinha[0] = "<a href='javascript:;' onclick='"+me.sInstance+".mostraSaldo("+oDotacao.dotacao+");'>"+oDotacao.dotacao+"</a>";
+      aLinha[1] = oValorDotacao.toInnerHtml();
+      aLinha[2] = oBotaoRemover.outerHTML;
+
+	    oGridDotacoes.addRow(aLinha);
+
+      nValorTotal += oDotacao.valor;
+	  });
+
+    $('TotalForCol1').innerHTML = js_formatar(nValorTotal, 'f');
+
+	  oGridDotacoes.renderRows();
+	};
+
+  /**
+   * Atualiza a informação das dotações do item
+   */
+  this.atualizarItemDotacao = function(iLinha, iDotacao, oValor) {
+
+    aItensPosicao[iLinha].dotacoes[iDotacao].valor = oValor.value.getNumber();
+
+    nValorTotal = 0;
+    aItensPosicao[iLinha].dotacoes.each(function(oDotacao) {
+      nValorTotal += oDotacao.valor;
+    });
+
+    $('TotalForCol1').innerHTML = js_formatar(nValorTotal, 'f');
+  };
+
+  /**
+   * Remove a Dotacao
+   */
+  this.removerDotacao = function(iLinha, iDotacao) {
+
+    if (confirm("Remover dotação do item?")) {
+
+      aItensPosicao[iLinha].dotacoes.splice(iDotacao, 1);
+      me.preencheGridDotacoes(iLinha);
+    }
+  };
+
+  this.saveDotacao = function(iLinha) {
+
+    if (oTxtDotacao.getValue() == "") {
+
+      alert("Campo dotação é de preenchimento obrigatório.");
+      js_pesquisao47_coddot(true);
+      return false;
+    }
+
+    var nValor = oTxtValorDotacao.getValue().getNumber();
+
+    if (nValor == 0 ) {
+
+      alert('Campo Valor é de preenchimento obrigatório.');
+      $('oTxtValorDotacao').focus();
+      return false;
+    }
+
+    var oDotacao = {
+      dotacao       : oTxtDotacao.getValue(),
+      quantidade    : 1,
+      valor         : nValor,
+      valororiginal : nValor
+    };
+
+    var lInserir = true;
+    aItensPosicao[iLinha].dotacoes.forEach(function(oDotacaoItem) {
+
+      if (oDotacaoItem.dotacao == oDotacao.dotacao) {
+        lInserir = false;
+        alert("Dotação já incluida para o item.");
+      }
+    });
+
+    if (!lInserir) {
+      return false;
+    }
+
+    aItensPosicao[iLinha].dotacoes.push(oDotacao);
+    me.preencheGridDotacoes(iLinha);
+  };
 
 	this.getSaldoDotacao = function(iDotacao) {
 
@@ -531,380 +656,374 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 	                              }
 	                            );
 
-	}
-
-  me.mostraSaldo = function (chave){
-
-	  var arq = 'func_saldoorcdotacao.php?o58_coddot='+chave
-	  js_OpenJanelaIframe('top.corpo','db_iframe_saldos',arq,'Saldo da dotação',true);
-	  $('Jandb_iframe_saldos').style.zIndex='1500000';
-	}
+	};
 
   this.retornoGetSaldotacao = function(oAjax) {
 
 	  js_removeObj('msgBox');
-	  var oRetorno = eval("("+oAjax.responseText+")");
+	  var oRetorno = JSON.parse(oAjax.responseText);
 	  oTxtSaldoDotacao.setValue(js_formatar(oRetorno.saldofinal ,"f"));
-	}
-/**
- * realiza a redistribuição do valor do item nas dotação do mesmo
- */
-  me.ajustaValorDot = function(Obj, iDot) {
+	};
 
-	  var nValor         = new Number(Obj.value);
-	  var nTotalDotacoes = oGridDotacoes.sum(2, false);
-	  var nValorAut      = js_strToFloat(oDadosItem.aCells[5].getValue());
-	  if (nValor > nValorAut) {
-	    oGridDotacoes.aRows[iDot].aCells[2].content.setValue(nValorObjeto);
-	  } else if (nTotalDotacoes > nValorAut) {
-	    oGridDotacoes.aRows[iDot].aCells[2].content.setValue(nValorObjeto);
-	  }
-	}
-/**
- * calcula os valores da dotação conforme o valor modificado pelo usuario
- */
+  me.mostraSaldo = function (chave){
+
+    var arq = 'func_saldoorcdotacao.php?o58_coddot='+chave
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saldos',arq,'Saldo da dotação',true);
+    $('Jandb_iframe_saldos').style.zIndex='1500000';
+  };
+
+  /**
+   * calcula os valores da dotação conforme o valor modificado pelo usuario
+   */
   this.salvarInfoDotacoes = function (iLinha) {
 
-	  var oDadosItem      = me.oGridItens.aRows[iLinha];
-	  var nValor          = js_strToFloat(oDadosItem.aCells[5].getValue());
-	  var nValorTotalItem = js_strToFloat(oDadosItem.aCells[5].getValue());
-	  var nValorTotal     = nValor;
-	  aItensPosicao[iLinha].dotacoes.each(function (oDotacao, iDot) {
+    var oItem = aItensPosicao[iLinha];
 
-	    var nPercentual    = (new Number(oDotacao.valor) * 100)/nValorTotalItem;
-	    if (nValorTotalItem == 0) {
-	      nPercentual = 0;
-	    }
-	    var nValorDotacao  = js_round((nValor * nPercentual)/100,2);
+    var nQuantidade = oItem.novaquantidade || oItem.quantidade,
+        nUnitario   = oItem.novounitario || oItem.valorunitario,
+        nValorTotal = (+nQuantidade) * (+nUnitario),
+        nValorTotalItem = nValorTotal,
+        nValorTotalAnterior = 0;
 
-	    nValorTotal        -= nValorDotacao;
+    /**
+     * Soma o valor original total
+     */
+    aItensPosicao[iLinha].dotacoes.each(function(oDotacao) {
+      nValorTotalAnterior += +oDotacao.valororiginal;
+    });
+
+    aItensPosicao[iLinha].dotacoes.each(function (oDotacao, iDot) {
+
+	    var nPercentual = (nValorTotalAnterior == 0) ? 0 : (new Number(oDotacao.valororiginal) * 100)/nValorTotalAnterior;
+      var nValorDotacao  = js_round((nValorTotalItem * nPercentual) / 100, 2);
+
+	    nValorTotal -= nValorDotacao;
 	    if (iDot == aItensPosicao[iLinha].dotacoes.length -1) {
 
-	      if (nValorTotal != nValor) {
+	      if (nValorTotal != nValorTotalItem) {
 	        nValorDotacao += nValorTotal;
 	      }
 	    }
+
 	    if (nValorDotacao < 0 ) {
-	     nValorDotacao = 0;
+	      nValorDotacao = 0;
 	    }
-	    aItensPosicao[iLinha].dotacoes[iDot].valorexecutar = js_round(nValorDotacao,2);
-	    aItensPosicao[iLinha].dotacoes[iDot].valor         = js_round(nValorDotacao,2);
+
+	    aItensPosicao[iLinha].dotacoes[iDot].valor = js_round(nValorDotacao,2);
 	  });
-	}
-
-  /**
-   * Função disparada toda vez que o usuário altera o valor de um item do contrato.
-   */
-	this.calculaValor = function (obj, iLinha) {
-
-	  var aLinha = me.oGridItens.aRows[iLinha];
-
-
-	  if (aLinha.aCells[4].getValue() <= 0) {
-
-	    aLinha.aCells[5].setValue(aItensPosicao[iLinha].valor);
-	    obj.value = aItensPosicao[iLinha].valor
-	    aLinha.aCells[4].content.setValue(aItensPosicao[iLinha].quantidade);
-	  } else {
-
-      var nValorUnitario = aLinha.aCells[4].getValue();
-      var nQuantidade    = aLinha.aCells[5].getValue();
-
-      if (nValorUnitario.indexOf(",") >= 0) {
-        nValorUnitario = js_strToFloat(nValorUnitario);
-      }
-
-      if (nQuantidade.indexOf(",") >= 0) {
-        nQuantidade = js_strToFloat(nQuantidade);
-      }
-	    var nValorTotal =  (nValorUnitario * nQuantidade);
-	    $("oGridItensrow"+iLinha+"cell5").innerHTML = js_formatar(new String(nValorTotal), "f");
-	  }
-	  me.salvarInfoDotacoes(iLinha);
-	}
-
-  this.calculaValorUnitario = function(obj, iLinha) {
-
-
-	  var aLinha = me.oGridItens.aRows[iLinha];
-	  if (aLinha.aCells[4].getValue() <= 0) {
-
-	    aLinha.aCells[5].setValue(aItensPosicao[iLinha].valor);
-	    obj.value = aItensPosicao[iLinha].valorunitario
-	    aLinha.aCells[4].content.setValue(aItensPosicao[iLinha].valounitario);
-	  } else {
-
-	    var nValorTotal = new Number(js_strToFloat(aLinha.aCells[4].getValue()) * js_strToFloat(aLinha.aCells[5].getValue()));
-	    $("oGridItensrow"+iLinha+"cell5").innerHTML = js_formatar(new String(nValorTotal), "f");
-	  }
-	  me.salvarInfoDotacoes(iLinha);
-
-	}
-
-  this.saveDotacao = function(iLinha) {
-
-	  if (oTxtDotacao.getValue() == "") {
-
-	    alert('Informe a dotação!');
-	    js_pesquisao47_coddot(true);
-	    return false;
-
-	  }
-	  if (new Number(oTxtQuantidadeDotacao.getValue()) == 0 ) {
-
-	    alert('Informe uma quantidade para o item!');
-	    $('oTxtQuantidadeDotacao').focus();
-	    return false;
-	  }
-	  var oDotacao           = new Object();
-	  oDotacao.dotacao       = oTxtDotacao.getValue();
-	  oDotacao.quantidade    = oTxtQuantidadeDotacao.getValue();
-	  oDotacao.valor         = js_strToFloat(oTxtValorDotacao.getValue());
-	  oDotacao.valorexecutar = js_strToFloat(oTxtValorDotacao.getValue())
-	  oDotacao.executado     = 0;
-	  oDotacao.reserva       = '';
-	  oDotacao.valorreserva  = '';
-	  oDotacao.ano           = '';
-	  aItensPosicao[iLinha].dotacoes.push(oDotacao);
-	  me.preencheGridDotacoes(iLinha);
-	}
+	};
 
   me.show = function () {
 
     me.main();
     me.pesquisaAcordo(true);
-  }
-
-  /**
-   * Valida os periodos do item
-   * - verifica se existem execucao para as datas do periodo do item
-   *
-   * @param array aPeriodosItem
-   */
-  this.validarPeriodosExecutados = function(aPeriodosItem) {
-
-    js_divCarregando('Aguarde, aditando contrato...', 'msgBox');
-
-    var oParametros = new Object();
-
-    oParametros.exec      = "validarPeriodosExecutados";
-    oParametros.aPeriodos = aPeriodosItem;
-    var lRetorno = true;
-
-    var oAjax  = new Ajax.Request(
-        me.sUrlRpc,
-        {
-          method       :'post',
-          asynchronous : false,
-          parameters   :'json='+Object.toJSON(oParametros),
-          onComplete   : function(oAjax) {
-
-            js_removeObj('msgBox');
-            var oRetorno = eval("("+oAjax.responseText+")");
-            var sMensagem = oRetorno.message.urlDecode();
-
-            /**
-             * Erro no RPC
-             */
-            if (oRetorno.status > 1) {
-
-              alert(sMensagem);
-              lRetorno = false;
-            }
-          }
-        }
-    );
-
-
-    return lRetorno;
-  }
+  };
 
   this.aditar = function() {
 
-    var aItens = me.oGridItens.getSelection("object");
-    if (aItens.length == 0) {
+    var oJustificativa  = $('oTxtJustificativa');
+    var oSelecionados = {};
 
-      alert('Nenhum item Selecionado');
+    me.oGridItens.getRows().forEach(function(oRow) {
+
+      if (oRow.isSelected) {
+        oSelecionados[oRow.aCells[7].getValue()] = oRow;
+      }
+    });
+
+    if (empty(me.oTxtNumeroAditamento.getValue())) {
+      return alert("Campo Número do Termo é de preenchimento obrigatório.");
+    }
+
+    if (Object.keys(oSelecionados).length == 0) {
+      return alert('Nenhum item selecionado para aditar.');
+    }
+
+    if (me.iTipoAditamento == TIPO_ADITAMENTO_SUPRESSAO) {
+      if (empty(me.oCboTipoOperacao.getValue())) {
+        return alert("Campo Tipo de Operação é de preenchimento obrigatório.");
+      }
+    }
+
+    if ([TIPO_ADITAMENTO_REEQUILIBRIO, TIPO_ADITAMENTO_ADITAMENTO].in_array(me.iTipoAditamento)) {
+
+      if (me.iTipoAditamento != TIPO_ADITAMENTO_REEQUILIBRIO && me.oCboTipoOperacao.getValue() == 0) {
+
+        alert('Campo Tipo de Operação é de preenchimento obrigatório.');
+        return false;
+      }
+
+      if (
+          empty(oJustificativa.value.trim()) &&
+          (me.iTipoAditamento == TIPO_ADITAMENTO_REEQUILIBRIO ||
+          me.iTipoAditamento == TIPO_ADITAMENTO_ADITAMENTO)
+      ) {
+        alert('Campo Justificativa é de preenchimento obrigatório.');
+        return false;
+      }
+    }
+
+    if (
+      empty(oJustificativa.value.trim()) &&
+      me.iTipoAditamento == TIPO_ADITAMENTO_ADITAMENTO &&
+      me.oCboTipoOperacao.getValue() == 3
+    ) {
+
+      alert('Campo Justificativa é de preenchimento obrigatório.');
       return false;
     }
-    js_divCarregando('Aguarde, aditando contrato...', 'msgBox');
-    var oParam            = {};
-    oParam.exec           = "processarAditamento";
-    oParam.aItens         = [];
-    oParam.datainicial    = me.oTxtDataInicial.getValue();
-    oParam.datafinal      = me.oTxtDataFinal.getValue();
-    oParam.tipoaditamento = me.iTipoAditamento;
-    oParam.sNumeroAditamento = me.oTxtNumeroAditamento.getValue();
 
-    for (var i = 0; i < aItens.length; i++) {
+    var oParam = {
+      exec : "processarAditamento",
+      iAcordo : me.oTxtCodigoAcordo.getValue(),
+      datainicial : me.oTxtDataInicial.getValue(),
+      datafinal : me.oTxtDataFinal.getValue(),
+      tipoaditamento : me.iTipoAditamento,
+      sNumeroAditamento : me.oTxtNumeroAditamento.getValue(),
+      sJustificativa: oJustificativa.value,
+      iTipoOperacao: me.oCboTipoOperacao.getValue(),
+      iTipoAlteracao: me.oCboTipoAlteracao.getValue(),
+      aItens : []
+    };
 
-	    with (aItens[i]) {
+    var lAditar     = true;
+    aItensPosicao.forEach(function(oItem, iIndice) {
 
-	      var aPeriodoItens    = [];
-	      var oItem            = {};
-	      var oDadosItem       = aItensPosicao[aCells[9].getValue()];
-	      oItem.codigo         = oDadosItem.codigo;
-	      oItem.quantidade     = aCells[4].getValue();
-	      oItem.codigoelemento = oDadosItem.codigoelemento;
-	      oItem.codigoitem     = oDadosItem.codigoitem;
-	      oItem.unidade        = oDadosItem.unidade;
-	      oItem.resumo         = encodeURIComponent(tagString(oDadosItem.resumo));
-	      oItem.valorunitario  = aCells[4].getValue();
-	      oItem.valor          = js_strToFloat(aCells[6].getValue());
-	      oItem.quantidade     = js_strToFloat(aCells[5].getValue());
+      if (!lAditar) {
+        return false;
+      }
 
-	      /*
-	       * Adicionamos em um array de periodos o periodo alterado pelo usuário
-	       */
-	      me.aPeriodoItensAcordo[i].each(function (oLinha, iLinha) {
+      var oItemAdicionar = {};
 
-	        var oPeriodoItem             = {};
-	        oPeriodoItem.dtDataInicial   = js_formatar(oLinha.dtDataInicial, "d");
-	        oPeriodoItem.dtDataFinal     = js_formatar(oLinha.dtDataFinal, "d");
-	        oPeriodoItem.ac41_sequencial = oLinha.ac41_sequencial;
-	        aPeriodoItens.push(oPeriodoItem);
-	      });
-	      oItem.aPeriodos = aPeriodoItens;
-	      /**
-	       * Validamos o total do item com as dotacoes.
-	       * caso o valor seja diferetntes , devemos cancelar a operação e avisar o usuário
-	       */
-	      var nValorDotacao = 0;
-	      oDadosItem.dotacoes.each(function(oDotacao, id) {
+      oItemAdicionar.codigo             = oItem.codigo;
+      oItemAdicionar.codigoitem         = oItem.codigoitem;
+      oItemAdicionar.resumo             = oItem.resumo;
+      oItemAdicionar.codigoelemento     = oItem.codigoelemento || '';
+      oItemAdicionar.unidade            = oItem.unidade || '';
+      oItemAdicionar.quantidade         = oItem.quantidade;
+      oItemAdicionar.valorunitario      = oItem.valorunitario;
+      oItemAdicionar.valor              = oItem.valor;
 
-	          nValorDotacao += oDotacao.valorexecutar;
-	          oDotacao.valor = oDotacao.valorexecutar;
-	       });
-	       oItem.dotacoes = oDadosItem.dotacoes;
-	       oParam.aItens.push(oItem);
-	    }
+      if (oSelecionados[iIndice] != undefined) {
+
+        oItemAdicionar.quantidade    = oSelecionados[iIndice].aCells[3].getValue().getNumber();
+        oItemAdicionar.valorunitario = oSelecionados[iIndice].aCells[4].getValue().getNumber();
+        oItemAdicionar.servicoquantidade  = oSelecionados[iIndice].aCells[8].getValue();
+
+        /**
+         * Caso o aditamento seja de supressão de valores por supressão de itens sempre suprime o valor e quantidade total do item,
+         * independente do que foi especificado pelo usuário
+         */
+        if (iTipoAditamento == TIPO_ADITAMENTO_SUPRESSAO && oParam.iTipoOperacao == 4) {
+
+          oItemAdicionar.quantidade    = oItem.quantidade;
+          oItemAdicionar.valorunitario = oItem.valorunitario;
+        }
+
+        oItemAdicionar.valor = oItemAdicionar.quantidade * oItemAdicionar.valorunitario;
+
+        // if ([TIPO_ADITAMENTO_SUPRESSAO, TIPO_ADITAMENTO_RENOVACAO].in_array(iTipoAditamento) && (+oItemAdicionar.quantidade) > (+oItem.quantidade)) {
+        if ([TIPO_ADITAMENTO_SUPRESSAO].in_array(iTipoAditamento) && (+oItemAdicionar.quantidade) > (+oItem.quantidade)) {
+
+          lAditar = false;
+          return alert("A quantidade informada para o item " + oItem.descricaoitem.urlDecode() + " deve ser menor ou igual a original do item.");
+        }
+        if ([TIPO_ADITAMENTO_SUPRESSAO].in_array(iTipoAditamento) && (+oItemAdicionar.valor) > (+oItem.valor)) {
+
+          lAditar = false;
+          return alert("O valor informado para o item " + oItem.descricaoitem.urlDecode() + " deve ser menor ou igual ao valor original do item.");
+        }
+
+        if ((oItemAdicionar.quantidade == 0 || oItemAdicionar.valorunitario == 0) && ![TIPO_ADITAMENTO_PRAZO].in_array(iTipoAditamento)) {
+
+          lAditar = false;
+          return alert("Os itens marcados para aditamento devem possuir quantidade e valor unitário.");
+        }
+
+        /**
+         * Validamos o total do item com as dotacoes quando não for aditamento de prazo
+         */
+        if (![TIPO_ADITAMENTO_PRAZO, TIPO_ADITAMENTO_SUPRESSAO].in_array(iTipoAditamento)) {
+
+          var nValorDotacao = 0;
+          oItem.dotacoes.forEach(function(oDotacao) {
+
+            if (oDotacao.valor == 0) {
+
+              lAditar = false;
+              return alert("Os Valores das dotações para o item " + oItem.descricaoitem.urlDecode() + " não podem estar zeradas.");
+            }
+
+            nValorDotacao += oDotacao.valor;
+          });
+
+          if ((!lOrigemManual || (lOrigemManual && nValorDotacao != 0)) && lAditar && nValorDotacao.toFixed(2) != oItemAdicionar.valor.toFixed(2)) {
+
+            lAditar = false;
+            return alert("O valor da soma das Dotações do item " + oItem.descricaoitem.urlDecode() + " deve ser igual ao Valor Total do item.");
+          }
+
+          oItemAdicionar.dotacoes = oItem.dotacoes;
+        } else {
+          oItemAdicionar.dotacoes = oItem.dotacoesoriginal;
+        }
+      } else {
+
+        if (oItem.novo) {
+
+          lAditar = false;
+          return alert("Novos itens adicionados devem ser marcados para aditamento.");
+        }
+
+        oItemAdicionar.dotacoes = oItem.dotacoesoriginal;
+      }
+
+      /**
+       * Adiciona os períodos dos itens novos
+       */
+      oItemAdicionar.aPeriodos = new Array();
+
+      if (oItem.aPeriodos != undefined) {
+        oItemAdicionar.aPeriodos = oItem.aPeriodos;
+      }
+
+      /**
+       * Limpa os valores para aditamento de prazo e renovação quando o item não é selecionado
+       */
+      if (iTipoAditamento == TIPO_ADITAMENTO_PRAZO ||
+         ([TIPO_ADITAMENTO_RENOVACAO, TIPO_ADITAMENTO_SUPRESSAO].in_array(iTipoAditamento) && oSelecionados[iIndice] == undefined) ) {
+
+        oItemAdicionar.quantidade    = 0;
+        oItemAdicionar.valorunitario = 0;
+        oItemAdicionar.valor         = 0;
+      }
+
+      oParam.aItens.push(oItemAdicionar);
+    });
+    if (!lAditar) {
+      return false;
     }
-    var oAjax  = new Ajax.Request(me.sUrlRpc,
-                                 {method:'post',
-                                  parameters:'json='+Object.toJSON(oParam),
-                                  onComplete: me.retornoAditar
-                               }
-                              );
-  }
 
-  this.retornoAditar = function(oAjax) {
+    if (me.iTipoAditamento == TIPO_ADITAMENTO_SUPRESSAO && oParam.iTipoOperacao == 4) {
 
-    js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
-    if (oRetorno.status == 1) {
-
-      alert("Aditamento realizado com sucesso!");
-      me.pesquisarDadosAcordo();
-    } else {
-      alert(oRetorno.message.urlDecode().replace(/\\n/g, '\n'));
+      if (!confirm("Para este tipo de operação, será suprimido todo o valor/quantidade dos itens selecionados. Deseja continuar?")) {
+        return false;
+      }
     }
-  }
 
+    new AjaxRequest(me.sUrlRpc, oParam, function(oRetorno, lErro) {
+
+      if (lErro) {
+        return alert(oRetorno.message.urlDecode());
+      }
+
+      alert(me.alertMessage);
+      me.pesquisarDadosAcordo()
+
+    }).setMessage("Aguarde, aditando contrato.")
+      .execute();
+  };
+
+  /**
+   * Abre a window de novo item
+   */
   this.novoItem = function() {
 
-    var iHeight = js_round((window.innerHeight/1.3), 0);
-    var iWidth  = document.width/2;
-    windowNovoItem = new windowAux('wndNovoItem',
-                                   'Adicionar Novo Item ',
-                                   600,
-                                   600
-                                     );
+    $('btnItens').disabled = true;
 
-    var sContent  = "<center><table><tr><td>";
-    sContent     += "<fieldset><legend><b>Adicionar Itens</b></legend>";
-    sContent     += "  <table border='0'>";
-    sContent     += "    <tr>";
-    sContent     += "      <td>";
-    sContent     += "        <a href='#' class='dbancora' style='text-decoration: underline;'";
-    sContent     += "        onclick='"+me.sInstance+".pesquisaMaterial(true);'><b>Item:</b></a>";
-    sContent     += "      </td>";
-    sContent     += "      <td>";
-    sContent     += "        <span id='ctntxtCodigoMaterial'></span>";
-    sContent     += "        <span id='ctntxtDescricaoMaterial'></span>";
-    sContent     += "      </td>";
-    sContent     += "    </tr>";
-    sContent     += "    <tr>";
-    sContent     += "      <td>";
-    sContent     += "        <b>Quantidade:</b>";
-    sContent     += "      </td>";
-    sContent     += "      <td id='ctntxtQuantidade'>";
-    sContent     += "      </td>";
-    sContent     += "    </tr>";
-    sContent     += "    <tr>";
-    sContent     += "      <td>";
-    sContent     += "        <b>Valor Unitário:</b>";
-    sContent     += "      </td>";
-    sContent     += "      <td id='ctntxtVlrUnitario'>";
-    sContent     += "      </td>";
-    sContent     += "    </tr>";
-    sContent     += "    <tr>";
-    sContent     += "      <td>";
-    sContent     += "        <b>Desdobramento:</b>";
-    sContent     += "      </td>";
-    sContent     += "      <td id='ctnCboDesdobramento'>";
-    sContent     += "      </td>";
-    sContent     += "    </tr>";
-    sContent     += "    <tr>";
-    sContent     += "      <td colspan='2'>";
-    sContent     += "        <fieldset style='border:0px;border-top:2px groove white;border-bottom:2px groove white;'>";
-    sContent     += "          <legend>";
-    sContent     += "            <b>Vigência</b>";
-    sContent     += "          </legend>";
-    sContent     += "          <table cellpadding='0' border='0' width='100%' style='white-space: nowrap;'>";
-    sContent     += "            <tr>";
-    sContent     += "              <td style='width:10%;'>";
-    sContent     += "                <b>De:</b>";
-    sContent     += "              </td>";
-    sContent     += "              <td id='ctnDataInicialItem' style=''>";
-    sContent     += "              </td>";
-    sContent     += "              <td style='width:10%;'>";
-    sContent     += "                <b>Até:</b>";
-    sContent     += "              </td>";
-    sContent     += "              <td id='ctnDataFinalItem' align='right' style=''>";
-    sContent     += "              </td>";
-    sContent     += "              <td id='ctnBtnAdicionaPeriodoItem' align='right' style=''>";
-    sContent     += "                <input type='button' name='btnAdicionarPeriodoItem' id='btnAdicionarPeriodoItem' value='Adicionar' onclick='"+me.sInstance+".adicionarPeriodo();' >";
-    sContent     += "              </td>";
-    sContent     += "            </tr>";
-    sContent     += "          </table>";
-    sContent     += "          <div id='ctnGridPeriodoNovoItem'>";
-    sContent     += "          </div>";
-    sContent     += "        </fieldset>";
-    sContent     += "      </td>";
-    sContent     += "    </tr>";
-    sContent     += "    <tr>";
-    sContent     += "      <td>";
-    sContent     += "        <b>Unidade:</b>";
-    sContent     += "      </td>";
-    sContent     += "      <td id='ctnCboUnidade' colspan='3'>";
-    sContent     += "      </td>";
-    sContent     += "    </tr>";
-    sContent     += "    <tr>";
-    sContent     += "      <td nowrap colspan='2' title='Observações'>";
-    sContent     += "        <fieldset><legend><b>Resumo do Item</b></legend>";
-    sContent     += "        <textarea rows='5' style='width:100%' id='oTxtResumo'></textarea>";
-    sContent     += "      </td>";
-    sContent     += "    </tr>";
-    sContent     += "  </table>";
-    sContent     += "</fieldset>";
-    sContent     += "</td>";
-    sContent     += "</tr>";
-    sContent     += "<tr>";
-    sContent     += "  <td style='text-align:center'>";
-    sContent     += "    <input type='button' value='Salvar' id='btnSalvarItem' onclick='"+me.sInstance+".adicionarNovoItem()'>";
-    sContent     += "  </td>";
-    sContent     += "</tr></table></center>";
+    me.aPeriodoItensNovos = new Array();
+
+    windowNovoItem = new windowAux( 'wndNovoItem', 'Adicionar Novo Item ', 600, 600 );
+
+    var sContent  = "<div class=\"subcontainer\">";
+    sContent += "  <fieldset><legend>Adicionar Itens</legend>";
+    sContent += "  <table>";
+    sContent += "    <tr>";
+    sContent += "      <td>";
+    sContent += "        <a href='#' class='dbancora' style='text-decoration: underline;'";
+    sContent += "        onclick='"+me.sInstance+".pesquisaMaterial(true);'><b>Item:</b></a>";
+    sContent += "      </td>";
+    sContent += "      <td>";
+    sContent += "        <span id='ctntxtCodigoMaterial'></span>";
+    sContent += "        <span id='ctntxtDescricaoMaterial'></span>";
+    sContent += "      </td>";
+    sContent += "    </tr>";
+    sContent += "    <tr>";
+    sContent += "      <td>";
+    sContent += "        <b>Quantidade:</b>";
+    sContent += "      </td>";
+    sContent += "      <td id='ctntxtQuantidade'>";
+    sContent += "      </td>";
+    sContent += "    </tr>";
+    sContent += "    <tr>";
+    sContent += "      <td>";
+    sContent += "        <b>Valor Unitário:</b>";
+    sContent += "      </td>";
+    sContent += "      <td id='ctntxtVlrUnitario'>";
+    sContent += "      </td>";
+    sContent += "    </tr>";
+    sContent += "    <tr style='display:none;'>";
+    sContent += "      <td>";
+    sContent += "        <b>Serviço:</b>";
+    sContent += "      </td>";
+    sContent += "      <td id='ctntxtServico'>";
+    sContent += "      </td>";
+    sContent += "    </tr>";
+    sContent += "    <tr>";
+    sContent += "      <td>";
+    sContent += "        <b>Desdobramento:</b>";
+    sContent += "      </td>";
+    sContent += "      <td id='ctnCboDesdobramento'>";
+    sContent += "      </td>";
+    sContent += "    </tr>";
+    sContent += "    <tr>";
+    sContent += "      <td>";
+    sContent += "        <b>Unidade:</b>";
+    sContent += "      </td>";
+    sContent += "      <td id='ctnCboUnidade'></td>";
+    sContent += "    </tr>";
+    sContent += "    <tr>";
+    sContent += "      <td nowrap colspan='2' title='Observações'>";
+    sContent += "        <fieldset><legend>Resumo do Item</legend>";
+    sContent += "        <textarea rows='5' style='width:100%' id='oTxtResumo'></textarea>";
+    sContent += "      </td>";
+    sContent += "    </tr>";
+    sContent += "    <tr>";
+    sContent += "      <td colspan='2'>";
+    sContent += "        <fieldset class=\"separator\">";
+    sContent += "          <legend>Vigência</legend>";
+    sContent += "          <table>";
+    sContent += "            <tr>";
+    sContent += "              <td>";
+    sContent += "                <b>De:</b>";
+    sContent += "              </td>";
+    sContent += "              <td id='ctnDataInicialItem' style=''></td>";
+    sContent += "              <td>";
+    sContent += "                <b>Até:</b>";
+    sContent += "              </td>";
+    sContent += "              <td id='ctnDataFinalItem' align='right' style=''></td>";
+    sContent += "              <td id='ctnBtnAdicionaPeriodoItem' align='right' style=''>";
+    sContent += "                <input type='button' name='btnAdicionarPeriodoItem' id='btnAdicionarPeriodoItem' value='Adicionar' onclick='"+me.sInstance+".adicionarPeriodo();' >";
+    sContent += "              </td>";
+    sContent += "            </tr>";
+    sContent += "          </table>";
+    sContent += "          <div id='ctnGridPeriodoNovoItem'></div>";
+    sContent += "        </fieldset>";
+    sContent += "      </td>";
+    sContent += "    </tr>";
+    sContent += "  </table>";
+    sContent += "  </fieldset>";
+    sContent += "  <input type='button' value='Salvar' id='btnSalvarItem' onclick='"+me.sInstance+".adicionarNovoItem()'>";
+    sContent += "</div>";
+
     windowNovoItem.setContent(sContent);
     windowNovoItem.setShutDownFunction(function() {
+
+      $('btnItens').disabled = false;
       windowNovoItem.destroy();
     });
 
-    oMessageBoardItens = new DBMessageBoard('msgboardItens',
-                                      'Adicionar Novo Item',
-                                      "Informe os dados do novo Item.",
-                                      $('windowwndNovoItem_content')
-                                      );
-
+    oMessageBoardItens = new DBMessageBoard( 'msgboardItens', 'Adicionar Novo Item', "Informe os dados do novo Item.", $('windowwndNovoItem_content') );
     oMessageBoardItens.show();
 
     /**
@@ -912,17 +1031,13 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
      */
     oGridPeriodoItemNovo              = new DBGrid('ctnGridPeriodoNovoItem');
     oGridPeriodoItemNovo.nameInstance = "oGridPeriodoItemNovo";
-    var aHeaders                      = new Array("Data Inicial", "Data Final", "Ação");
-    var aCellWidth                    = new Array("45%", "45%", "10%");
-    var aCellAlign                    = new Array("center", "center", "center");
-    oGridPeriodoItemNovo.setHeader(aHeaders);
-    oGridPeriodoItemNovo.setCellWidth(aCellWidth);
-    oGridPeriodoItemNovo.setCellAlign(aCellAlign);
+
+    oGridPeriodoItemNovo.setHeader(["Data Inicial", "Data Final", "Ação"]);
+    oGridPeriodoItemNovo.setCellWidth(["45%", "45%", "10%"]);
+    oGridPeriodoItemNovo.setCellAlign(["center", "center", "center"]);
     oGridPeriodoItemNovo.setHeight(100);
     oGridPeriodoItemNovo.show($('ctnGridPeriodoNovoItem'));
     oGridPeriodoItemNovo.clearAll(true);
-
-
 
     oTxtMaterial = new DBTextField('oTxtMaterial', 'oTxtMaterial','', 10);
     oTxtMaterial.addEvent("onKeyPress", "return js_mask(event,\"0-9\")");
@@ -940,11 +1055,19 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
     oTxtDescrMaterial.setReadOnly(true);
 
     oTxtQuantidade = new DBTextField('oTxtQuantidade', 'oTxtQuantidade','', 10);
-    oTxtQuantidade.addEvent("onKeyPress", "return js_mask(event,\"0-9|.\")");
+    oTxtQuantidade.addEvent("onFocus", "this.value = js_strToFloat(this.value)");
+    oTxtQuantidade.addEvent("onBlur", "this.value = js_formatar(this.value, 'f', 3)");
+    oTxtQuantidade.addEvent("onInput", "this.value = this.value.replace(/[^0-9\.]/g, '')");
+    oTxtQuantidade.setValue("0,000");
+    oTxtQuantidade.setClassName("text-right");
     oTxtQuantidade.show($('ctntxtQuantidade'));
 
     oTxtVlrUnitario = new DBTextField('oTxtVlrUnitario', 'oTxtVlrUnitario','', 10);
-    oTxtVlrUnitario.addEvent("onKeyPress", "return js_mask(event,\"0-9|.\")");
+    oTxtVlrUnitario.addEvent("onFocus", "this.value = js_strToFloat(this.value)");
+    oTxtVlrUnitario.addEvent("onBlur", "this.value = js_formatar(this.value, 'f', 3)");
+    oTxtVlrUnitario.addEvent("onInput", "this.value = this.value.replace(/[^0-9\.]/g, '')");
+    oTxtVlrUnitario.setValue("0,000");
+    oTxtVlrUnitario.setClassName("text-right");
     oTxtVlrUnitario.show($('ctntxtVlrUnitario'));
 
     oCboDesdobramento = new DBComboBox('oCboDesdobramento', 'oCboDesdobramento', new Array("Selecione"));
@@ -952,12 +1075,32 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 
     oCboUnidade = new DBComboBox('oCboUnidade', 'oCboUnidade', new Array("Selecione"));
     oCboUnidade.show($('ctnCboUnidade'));
-    me.getUnidadesMateriais();
+
+    oTxtServico = new DBTextField('oTxtServico', 'oTxtServico','', 10);
+    oTxtServico.show($('ctntxtServico'));
+
+    /**
+     * Busca as Unidades
+     */
+    new AjaxRequest(me.sUrlRpc, { exec : "getUnidades"}, function(oRetorno, lErro) {
+
+        $('oCboUnidade').options.length = 1;
+        oCboUnidade.aItens = new Array();
+
+        if (!lErro) {
+
+          oRetorno.itens.each(function (oItem, id) {
+             oCboUnidade.addItem(oItem.m61_codmatunid, oItem.m61_descr.urlDecode());
+          });
+        }
+      }).setMessage("Aguarde, pesquisando unidades do material.")
+        .execute();
+
     windowNovoItem.show();
-  }
+  };
 
   /**
-   * Adiciona um periodo ao item do novo do acordo
+   * Adiciona um periodo ao item novo do acordo
    */
   this.adicionarPeriodo = function() {
 
@@ -978,13 +1121,15 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
       return false;
     }
 
-    var oPeriodoNovo             = new Object();
-    oPeriodoNovo.dtDataInicial   = js_formatar(oTxtDataInicialItem.getValue(), "d");
-    oPeriodoNovo.dtDataFinal     = js_formatar(oTxtDataFinalItem.getValue(), "d");
-    oPeriodoNovo.ac41_sequencial = "";
+    var oPeriodoNovo =  {
+        dtDataInicial   : js_formatar(oTxtDataInicialItem.getValue(), "d"),
+        dtDataFinal     : js_formatar(oTxtDataFinalItem.getValue(), "d"),
+        ac41_sequencial : ''
+      };
+
     me.aPeriodoItensNovos.push(oPeriodoNovo);
     me.loadPeriodoItensNovos();
-  }
+  };
 
   /**
    * Exclui o periodo de um item contido na grid: "oGridPeriodoItemNovo"
@@ -993,7 +1138,8 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 
     me.aPeriodoItensNovos.splice(iLinha, 1);
     me.loadPeriodoItensNovos();
-  }
+  };
+
   /**
    * Função que carrega os períodos de um item novo na grid "oGridPeriodoItemNovo"
    */
@@ -1003,13 +1149,13 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
     me.aPeriodoItensNovos.each(function (oPeriodo, iLinha) {
 
       var aLinha = new Array();
-      aLinha[0]  = oPeriodo.dtDataInicial;
-      aLinha[1]  = oPeriodo.dtDataFinal;
+      aLinha[0]  = js_formatar(oPeriodo.dtDataInicial, 'd');
+      aLinha[1]  = js_formatar(oPeriodo.dtDataFinal, 'd');
       aLinha[2]  = "<input type='button' name='btnExcluiPeriodo' id='btnExcluirPeriodo' value='E' onclick='"+me.sInstance+".excluirPeriodoItemNovo("+iLinha+");' />";
       oGridPeriodoItemNovo.addRow(aLinha);
     });
     oGridPeriodoItemNovo.renderRows();
-  }
+  };
 
   this.getElementosMateriais = function(iValorDefault) {
 
@@ -1021,129 +1167,32 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 	  var oParam       = new Object();
 	  oParam.iMaterial = oTxtMaterial.getValue();
 	  oParam.exec      = "getElementosMateriais";
-	  var oAjax   = new Ajax.Request(
-	                             'con4_contratos.RPC.php',
-	                             {
-	                              method    : 'post',
-	                              parameters: 'json='+Object.toJSON(oParam),
-	                              onComplete: me.retornoGetElementosMaterias
-	                              }
-	                            );
-	}
+	  var oAjax   = new Ajax.Request( 'con4_contratos.RPC.php', { method    : 'post',
+          	                                                    parameters: 'json='+Object.toJSON(oParam),
+          	                                                    onComplete: me.retornoGetElementosMaterias });
+	};
 
   this.retornoGetElementosMaterias = function(oAjax) {
 
 	  js_removeObj('msgBox');
 	  $('oCboDesdobramento').options.length = 1;
 	  oCboDesdobramento.aItens = new Array();
-	  var oRetorno = eval("("+oAjax.responseText+")");
+	  var oRetorno = JSON.parse(oAjax.responseText);
 	  if (oRetorno.status == 1) {
 
 	    oRetorno.itens.each(function (oItem, id) {
 
-	       var oParametro   = new Object();
-	       oParametro.nome  = "elemento"
-	       oParametro.valor = oItem.elemento.substr(0,7);
-	       oCboDesdobramento.addItem(oItem.codigoelemento, oItem.descricao.urlDecode(), null,new Array(oParametro));
+	      var oParametro   = new Object();
+	      oParametro.nome  = "elemento"
+	      oParametro.valor = oItem.elemento.substr(0,7);
+	      oCboDesdobramento.addItem(oItem.codigoelemento, oItem.descricao.urlDecode(), null,new Array(oParametro));
 	    });
 	  }
-	}
+	};
 
-	this.getUnidadesMateriais = function() {
-
-    js_divCarregando('Aguarde, pesquisando unidades do material', 'msgBox');
-    var oParam       = new Object();
-    oParam.exec      = "getUnidades";
-    var oAjax   = new Ajax.Request(
-                               me.sUrlRpc,
-                               {
-                                method    : 'post',
-                                parameters: 'json='+Object.toJSON(oParam),
-                                onComplete: me.retornoGetUnidades
-                                }
-                              );
-
-  }
-
-  this.retornoGetUnidades = function(oAjax) {
-
-    js_removeObj('msgBox');
-    $('oCboUnidade').options.length = 1;
-    oCboUnidade.aItens = new Array();
-    var oRetorno = eval("("+oAjax.responseText+")");
-    if (oRetorno.status == 1) {
-
-      oRetorno.itens.each(function (oItem, id) {
-         oCboUnidade.addItem(oItem.m61_codmatunid, oItem.m61_descr.urlDecode());
-      });
-    }
-  }
-
-  if (this.lLiberaNovosItens) {
-
-     $('btnItens').style.display = '';
-     $('btnItens').observe('click', me.novoItem);
-  }
-
-  this.preencheItens = function (aItens) {
-
-    me.oGridItens.clearAll(true);
-    aItens.each(function (oItem, iSeq) {
-
-      var aLinha   = new Array();
-      aLinha[0]    = oItem.codigoitem;
-      aLinha[1]    = oItem.descricaoitem.urlDecode();
-      sDataInicial = oItem.datainicial;
-      if (iTipoAditamento == 2) {
-        sDataInicial = oItem.dataaposultimaexecucao;
-      }
-      aLinha[2] = "<input type='button' name='btnVerPeriodosItem' id='btnVerPeriodosItem' value='Ver' onclick='"+me.sInstance+".windowPeriodoItens("+iSeq+");'  />";
-      var nValorUnitario = js_formatar(oItem.valorunitario, 'f', 3);
-      aLinha[3] = eval("valunit"+iSeq+" = new DBTextField('valunit"+iSeq+"','valunit"+iSeq+"','"+nValorUnitario+"')");
-      aLinha[3].addStyle("text-align","right");
-      aLinha[3].addStyle("height","100%");
-      aLinha[3].addStyle("width","100px");
-      aLinha[3].addStyle("border","1px solid transparent;");
-      aLinha[3].addEvent("onBlur","js_bloqueiaDigitacao(this, true);");
-      aLinha[3].addEvent("onBlur","valunit"+iSeq+".sValue=this.value;");
-      aLinha[3].addEvent("onFocus","js_liberaDigitacao(this, true);");
-      aLinha[3].addEvent("onKeyPress","return js_mask(event,\"0-9|.\")");
-      aLinha[3].addEvent("onKeyDown","return js_verifica(this, event, true)");
-      aLinha[3].addEvent("onBlur", me.sInstance+".calculaValor(this,"+iSeq+", false);");
-
-      if (!me.lLiberaValounitario) {
-        aLinha[3].setReadOnly(true);
-      }
-      aLinha[4] = eval("qtditem"+iSeq+" = new DBTextField('qtditem"+iSeq+"','qtditem"+iSeq+"','"+js_formatar(oItem.oSaldo.quantidade_restante, "f", 3)+"')");
-      aLinha[4].addStyle("text-align","right");
-      aLinha[4].addStyle("height","100%");
-      aLinha[4].addStyle("width","100px");
-      aLinha[4].addStyle("border","1px solid transparent;");
-      aLinha[4].addEvent("onBlur","js_bloqueiaDigitacao(this, false);");
-      aLinha[4].addEvent("onBlur","qtditem"+iSeq+".sValue=this.value;");
-      aLinha[4].addEvent("onFocus","js_liberaDigitacao(this, false);");
-      aLinha[4].addEvent("onBlur",me.sInstance+".calculaValor(this,"+iSeq+", false);");
-      aLinha[4].addEvent("onKeyPress","return js_mask(event,\"0-9|.\")");
-      aLinha[4].addEvent("onKeyDown","return js_verifica(this,event,false)");
-      if (!me.lLiberaQuantidade) {
-        aLinha[4].setReadOnly(true);
-      }
-      aLinha[5]  = js_formatar(oItem.oSaldo.quantidade_restante * oItem.valorunitario, "f");
-      var lDisabled = " ";
-      if (!me.lLiberaDotacoes) {
-        lDisabled = " disabled ";
-      }
-      aLinha[6]  = "<input type='button' id='dotacoes"+iSeq+"' value='Dotações' "+lDisabled;
-      aLinha[6] += " onclick='"+me.sInstance+".ajusteDotacao("+iSeq+","+oItem.elemento+")'>";
-      aLinha[7]  = "";
-      aLinha[8]  = new String(iSeq);
-
-      me.aPeriodoItensAcordo[iSeq] = oItem.aPeriodosExecucao;
-      me.oGridItens.addRow(aLinha, false, me.lBloqueiaItem, true);
-    });
-    me.oGridItens.renderRows();
-  }
-
+  /**
+   * Adiciona o item novo
+   */
   this.adicionarNovoItem = function() {
 
     var iCodigoMaterial = oTxtMaterial.getValue();
@@ -1151,49 +1200,229 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
     var nQuantidade     = oTxtQuantidade.getValue();
     var nValorUnitario  = oTxtVlrUnitario.getValue();
     var iUnidade        = oCboUnidade.getValue();
+    var bServico        = oTxtServico.getValue() == 't' ? true : false;
     var iElemento       = oCboDesdobramento.getValue();
 
     if (iElemento == '0') {
 
-      alert('Informe um elemento!');
+      alert('Campo Desdobramento é de preenchimento obrigatório.');
       return false;
     }
+
     if (iUnidade == '0') {
 
-      alert('Informe a unidade do elemento!');
+      alert('Campo Unidade é de preenchimento obrigatório.');
       return false;
     }
-    var oNovoMaterial               = new Object();
-    oNovoMaterial.codigo            = me.iItensNovos;
-    oNovoMaterial.descricaoitem     = oTxtDescrMaterial.getValue();
-    oNovoMaterial.codigoitem        = oTxtMaterial.getValue();
-    oNovoMaterial.novo              = true;
-    oNovoMaterial.resumo            = sResumo;
-    oNovoMaterial.unidade           = iUnidade;
-    oNovoMaterial.servico           = false;
-    oNovoMaterial.elemento          = $('oCboDesdobramento').options[$('oCboDesdobramento').selectedIndex].getAttribute('elemento');
-    oNovoMaterial.codigoelemento    = iElemento;
-    oNovoMaterial.quantidade        = nQuantidade;
-    oNovoMaterial.aPeriodosExecucao = me.aPeriodoItensNovos;
-    oNovoMaterial.valorunitario     = nValorUnitario;
-    oNovoMaterial.valor             = new Number(nQuantidade)* new Number(nValorUnitario);
-    oNovoMaterial.dotacoes          = new Array();
 
-    me.aPeriodoItensAcordo[me.oGridItens.aRows.length] = me.aPeriodoItensNovos;
+    var oNovoMaterial            = new Object();
+    oNovoMaterial.codigo         = '';
+    oNovoMaterial.codigoitem     = oTxtMaterial.getValue();
+    oNovoMaterial.descricaoitem  = oTxtDescrMaterial.getValue();
+    oNovoMaterial.resumo         = sResumo;
+    oNovoMaterial.unidade        = iUnidade;
+    oNovoMaterial.codigoelemento = iElemento;
+    oNovoMaterial.elemento       = $('oCboDesdobramento').options[$('oCboDesdobramento').selectedIndex].getAttribute('elemento');
+    oNovoMaterial.quantidade     = nQuantidade.getNumber();
+    oNovoMaterial.valorunitario  = nValorUnitario.getNumber();
+    oNovoMaterial.valor          = new Number(oNovoMaterial.quantidade) * new Number(oNovoMaterial.valorunitario);
+    oNovoMaterial.aPeriodos      = me.aPeriodoItensNovos;
+    oNovoMaterial.servico        = bServico;
+    oNovoMaterial.dotacoes       = new Array();
+    oNovoMaterial.novo           = true;
 
     aItensPosicao.push(oNovoMaterial);
     me.preencheItens(aItensPosicao);
-    me.iItensNovos++;
-    windowNovoItem.destroy();
 
-  }
+    $('btnItens').disabled = false;
+    windowNovoItem.destroy();
+  };
+
+  this.listenerControlaQuantidade = codigo => {
+      const select = document.getElementById('oControlaQuantidade'+codigo);
+      const inputQuantidade = document.getElementById('quantidade'+codigo);
+      const inputQuantidadeAnterior = document.getElementById('quantidadeAnterior'+codigo);
+
+      const inputValorUnitario = document.getElementById('valorunitario'+codigo);
+      inputValorUnitario.classList.remove('readonly');
+      inputValorUnitario.readOnly = false;
+
+      inputQuantidade.classList.add('readonly');
+      inputQuantidade.readOnly = true;
+      inputQuantidade.value = inputQuantidadeAnterior.value;
+      this.calculaValorTotal(codigo);
+
+      if (select.value == 'true') {
+          inputQuantidade.classList.remove('readonly');
+          inputQuantidade.readOnly = false;
+          inputValorUnitario.classList.add('readonly');
+          inputValorUnitario.readOnly = true;
+      }
+  };
+
+  this.preencheItens = function (aItens) {
+
+    me.oGridItens.clearAll(true);
+
+    aItens.each(function (oItem, iSeq) {
+
+      var aLinha = new Array();
+
+      aLinha[0] = oItem.codigoitem;
+      aLinha[1] = oItem.descricaoitem.urlDecode();
+
+      if (!oItem.novo) {
+
+        if (iTipoAditamento == TIPO_ADITAMENTO_REEQUILIBRIO) {
+          oItem.valorunitario = 0;
+          oItem.valor = 0;
+        }
+
+        if (iTipoAditamento == TIPO_ADITAMENTO_ADITAMENTO) {
+
+          oItem.quantidade = 0;
+          oItem.valorunitario = 0;
+          oItem.valor = 0;
+        }
+
+        if ([TIPO_ADITAMENTO_RENOVACAO, TIPO_ADITAMENTO_PRAZO, TIPO_ADITAMENTO_SUPRESSAO].in_array(iTipoAditamento)) {
+          oItem.valorunitario = oItem.valor / (oItem.quantidade != 0 ? oItem.quantidade : 1 );
+        }
+      }
+
+      var nQuantidade = oItem.novaquantidade || oItem.quantidade,
+          nUnitario = oItem.novounitario || oItem.valorunitario;
+
+      var lReadOnlyQuantidade = iTipoAditamento == TIPO_ADITAMENTO_PRAZO || (iTipoAditamento == TIPO_ADITAMENTO_SUPRESSAO && oItem.servico);
+
+      oInputQuantidade = new DBTextField('quantidade' + iSeq, 'quantidade' + iSeq, js_formatar(nQuantidade, 'f', nQuantidade.toString().getDecimalsLength()));
+      oInputQuantidade.addStyle("width", "100%");
+      oInputQuantidade.setClassName("text-right");
+      oInputQuantidade.addEvent("onFocus", "this.value = js_strToFloat(this.value)");
+      oInputQuantidade.addEvent("onBlur", "this.value = js_formatar(this.value, 'f', this.value.toString().getDecimalsLength())");
+      oInputQuantidade.addEvent("onInput", "this.value = this.value.replace(/[^0-9\.]/g, '');" +  me.sInstance + ".calculaValorTotal(" + iSeq + ")");
+      if (iTipoAditamento === TIPO_ADITAMENTO_SUPRESSAO && oItem.servicoquantidade === 'f' && oItem.servico) {
+          oInputQuantidade.setReadOnly(true);
+      }
+      if (iTipoAditamento === TIPO_ADITAMENTO_PRAZO) {
+          oInputQuantidade.setReadOnly(true);
+      }
+
+      aLinha[2] = oInputQuantidade.toInnerHtml();
+
+      oInputUnitario = new DBTextField('valorunitario' + iSeq, 'valorunitario' + iSeq, js_formatar(nUnitario, "f", 3));
+      oInputUnitario.addStyle("width", "100%");
+      oInputUnitario.setClassName("text-right");
+      oInputUnitario.addEvent("onFocus", "this.value = js_strToFloat(this.value)");
+      oInputUnitario.addEvent("onBlur", "this.value = js_formatar(this.value, 'f', this.value.toString().getDecimalsLength())");
+      oInputUnitario.addEvent("onInput", "this.value = this.value.replace(/[^0-9\.]/g, ''); " + me.sInstance + ".calculaValorTotal(" + iSeq + ")");
+
+      /**
+       * caso tipo de aditamento for supressao de qtd/valor e controla quantidade for true
+       * habilita o campo quantidade e desabilita valor unitário, caso false aplica-se a regra contrária.
+       */
+      if (iTipoAditamento === TIPO_ADITAMENTO_SUPRESSAO && oItem.servicoquantidade === "t" ) {
+          oInputUnitario.setReadOnly(true);
+      } else if (iTipoAditamento === TIPO_ADITAMENTO_SUPRESSAO && oItem.servicoquantidade === "f") {
+          oInputUnitario.setReadOnly(false)
+      }
+      if (iTipoAditamento === TIPO_ADITAMENTO_PRAZO) {
+          oInputUnitario.setReadOnly(true);
+      }
+
+
+      aLinha[3] = oInputUnitario.toInnerHtml();
+      aLinha[4] = js_formatar(nQuantidade * nUnitario, 'f', 2);
+
+      var oBotaoDotacao = document.createElement("input");
+      oBotaoDotacao.type = "button";
+      oBotaoDotacao.id = "dotacoes" + iSeq;
+      oBotaoDotacao.value = "Dotações";
+      oBotaoDotacao.disabled = !me.lLiberaDotacoes;
+      oBotaoDotacao.setAttribute("onclick", me.sInstance + ".ajusteDotacao(" + iSeq + ", " + oItem.elemento + ")");
+
+      aLinha[5] = oBotaoDotacao.outerHTML;
+      aLinha[6] = new String(iSeq);
+
+      aParametroAtributo  = []
+      oParametro = {
+        'nome' :'selected',
+        'valor':'selected'
+      }
+      aParametroAtributo.push(oParametro)
+      oControlaQuantidade = new DBComboBox('oControlaQuantidade'+iSeq, 'oControlaQuantidade'+iSeq, [], 50);
+      oControlaQuantidade.addItem('true', 'SIM', null);
+      oControlaQuantidade.addItem('false', 'NÃO', null, aParametroAtributo);
+      oControlaQuantidade.lDisabled = true;
+
+      if(oItem.servico && iTipoAditamento !== 6) {
+          oControlaQuantidade.lDisabled = false;
+          oControlaQuantidade = new DBComboBox('oControlaQuantidade'+iSeq, null, [], 50);
+          oControlaQuantidade.addItem('true', 'SIM', null, oItem.servicoquantidade=='t'?aParametroAtributo:[]);
+          oControlaQuantidade.addItem('false', 'NÃO', null,oItem.servicoquantidade!='t'?aParametroAtributo:[]);
+      }
+
+      if (iTipoAditamento === 8) {
+          oControlaQuantidade.addEvent('onChange', `${me.sInstance}.listenerControlaQuantidade(${iSeq});`);
+      }
+
+      aLinha[7] = oControlaQuantidade.toInnerHtml();
+
+      oControlaQuantidadeAnterior = new DBTextField('quantidadeAnterior'+iSeq, 'quantidadeAnterior'+iSeq, js_formatar(nQuantidade, 'f', nQuantidade.toString().getDecimalsLength()));
+      aLinha[8] = oControlaQuantidadeAnterior.toInnerHtml()
+
+      me.oGridItens.addRow(aLinha, false, me.lBloqueiaItem, (me.lBloqueiaItem || iTipoAditamento == TIPO_ADITAMENTO_RENOVACAO || oItem.novo));
+
+      if (oItem.dotacoesoriginal == undefined) {
+
+        oItem.dotacoesoriginal = new Array();
+
+        oItem.dotacoes.forEach(function(oDotacaoOriginal) {
+          oItem.dotacoesoriginal.push({
+            dotacao : oDotacaoOriginal.dotacao,
+            quantidade : oDotacaoOriginal.quantidade,
+            valor : oDotacaoOriginal.valor,
+            valororiginal : oDotacaoOriginal.valororiginal
+          });
+        });
+      }
+
+      me.salvarInfoDotacoes(iSeq);
+    });
+
+    me.oGridItens.renderRows();
+  };
+
+  /**
+   * Calcula o valor da coluna Valor Total
+   */
+  this.calculaValorTotal = function(iLinha) {
+
+    var aLinha = me.oGridItens.aRows[iLinha],
+        nQuantidade = aLinha.aCells[3].getValue().getNumber(),
+        nUnitario = aLinha.aCells[4].getValue().getNumber();
+
+    aItensPosicao[iLinha].novaquantidade = nQuantidade;
+    aItensPosicao[iLinha].novounitario = nUnitario;
+
+    sValorTotal = js_formatar(nQuantidade * nUnitario, 'f', 2);
+
+    if (isNaN(nQuantidade) || isNaN(nUnitario)) {
+      sValorTotal = '';
+    }
+
+    aLinha.aCells[5].setContent( sValorTotal );
+
+    me.salvarInfoDotacoes(iLinha);
+  };
+
   this.pesquisaMaterial = function(mostra) {
 
 	  if (mostra) {
 
-		  js_OpenJanelaIframe('top.corpo',
+		  js_OpenJanelaIframe('CurrentWindow.corpo',
 		                      'db_iframe_pcmater',
-		                      'func_pcmater.php?funcao_js=parent.'+me.sInstance+'.mostraMaterial|pc01_codmater|pc01_descrmater',
+		                      'func_pcmater.php?funcao_js=parent.'+me.sInstance+'.mostraMaterial|pc01_codmater|pc01_descrmater|pc01_servico',
 		                      'Pesquisar Materiais',
 		                      true
 		                      );
@@ -1202,7 +1431,7 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 
 		   if (oTxtMaterial.getValue() != '') {
 
-		      js_OpenJanelaIframe('top.corpo',
+		      js_OpenJanelaIframe('CurrentWindow.corpo',
 		                          'db_iframe_pcmater',
 		                          'func_pcmater.php?pesquisa_chave='+oTxtMaterial.getValue()+
 		                          '&funcao_js=parent.'+me.sInstance+'.mostrapcmater',
@@ -1212,193 +1441,37 @@ function dbViewAditamentoContrato(iTipoAditamento, sNomeInstance, oNode) {
 		     oTxtDescrMaterial.setValue('');
 		   }
 		}
-  }
+  };
 
-  this.mostrapcmater = function(chave, erro) {
+  this.mostrapcmater = function(chave, erro, chave2) {
+
 
 	  oTxtDescrMaterial.setValue(chave);
+    oTxtServico.setValue(chave2);
 		if (erro == true) {
 		  oTxtMaterial.setValue('');
 		} else {
 		  me.getElementosMateriais();
 		}
-  }
+  };
 
-  this.mostraMaterial = function (chave1,chave2) {
+  this.mostraMaterial = function (chave1,chave2, chave3) {
 
-		oTxtMaterial.setValue(chave1);
+    oTxtMaterial.setValue(chave1);
 		oTxtDescrMaterial.setValue(chave2);
+    oTxtServico.setValue(chave3);
 		db_iframe_pcmater.hide();
 		me.getElementosMateriais();
-  }
+  };
 
   /**
-   * Função que mostra os períodos de um item apresentado na grid
+   * Libera para inclusão de itens novos
    */
-  me.windowPeriodoItens = function (iRowGrid) {
+  if (this.lLiberaNovosItens) {
 
-    var sContentPeriodoItens  = "<fieldset>";
-        sContentPeriodoItens += "  <legend><b>Períodos Cadastrados</b></legend>";
-        sContentPeriodoItens += "  <div id='divGridPeriodosCadastrados'></div>";
-        sContentPeriodoItens += "</fieldset>";
-        sContentPeriodoItens += "<p align='center'>";
-        sContentPeriodoItens += "  <input type='button' name='btnSalvarPeriodo' id='btnSalvarPeriodo' value='Salvar' ";
-        sContentPeriodoItens += "         onclick='"+me.sInstance+".salvarJanelaPeriodo("+iRowGrid+");'>";
-        sContentPeriodoItens += "  <input type='button' name='btnCancelarPeriodo' id='btnCancelarPeriodo' ";
-        sContentPeriodoItens += "         value='Cancelar' onclick='"+me.sInstance+".fecharJanelaPeriodo();'></p>";
-
-    if (me.oWindowPeriodoItens == "") {
-
-      me.oWindowPeriodoItens = new windowAux("oWindow_"+me.sInstance, "Períodos Cadastrados", 600, 400);
-      me.oWindowPeriodoItens.setContent(sContentPeriodoItens);
-      me.oWindowPeriodoItens.setShutDownFunction(me.fecharJanelaPeriodo);
-      oMessageBoardItens  = new DBMessageBoard('oMessageBoard_'+me.sInstance,
-                                               'Item: '+me.oGridItens.aRows[iRowGrid].aCells[2].content,
-                                               "Períodos cadastrados para o item.",
-                                               me.oWindowPeriodoItens.getContentContainer());
-    }
-    me.oWindowPeriodoItens.show();
-
-
-    /*
-     * Cria uma grid e preenche com os dados retornados do banco
-     */
-    oGridPeriodoItem              = new DBGrid('divGridPeriodosCadastrados');
-    oGridPeriodoItem.nameInstance = 'oGridPeriodoItem';
-    var aHeaders                  = new Array("Data Inicial", "Data Final", "Sequencial");
-    var aCellAlign                = new Array("center", "center", "center");
-    var aCellWidth                = new Array("50%", "50%", "0%");
-    oGridPeriodoItem.setHeader(aHeaders);
-    oGridPeriodoItem.setCellAlign(aCellAlign);
-    oGridPeriodoItem.setCellWidth(aCellWidth);
-    oGridPeriodoItem.aHeaders[2].lDisplayed = false;
-    oGridPeriodoItem.show($('divGridPeriodosCadastrados'));
-    oGridPeriodoItem.clearAll(true);
-
-    me.aPeriodoItensAcordo[iRowGrid].each(function (oPeriodo, iLinha) {
-
-      /*
-       * Configuramos as variáveis retornadas do banco
-       */
-      var aDataInicial  = oPeriodo.dtDataInicial.split("-");
-      var aDataFinal    = oPeriodo.dtDataFinal.split("-");
-      var dtDataInicial = aDataInicial[2]+"/"+aDataInicial[1]+"/"+aDataInicial[0];
-      var dtDataFinal   = aDataFinal[2]+"/"+aDataFinal[1]+"/"+aDataFinal[0];
-
-      var aLinha   = new Array();
-      aLinha[0]    = eval("oTxtPeriodoInicial_"+iLinha+" = new DBTextFieldData('dtDataInicial_"+iLinha+"', 'oTxtPeriodoInicial_"+iLinha+"', '"+dtDataInicial+"')");
-      aLinha[1]    = eval("oTxtPeriodoFinal_"+iLinha+"   = new DBTextFieldData('dtDataFinal_"+iLinha+"', 'oTxtPeriodoFinal_"+iLinha+"', '"+dtDataFinal+"')");
-      if (!me.lDatas) {
-        aLinha[1]  = dtDataFinal;
-      }
-      aLinha[2] = oPeriodo.ac41_sequencial;
-      oGridPeriodoItem.addRow(aLinha);
-    });
-    oGridPeriodoItem.renderRows();
-  }
-
-  /**
-   * Destrói a janela que mostra os períodos de um item
-   */
-  me.fecharJanelaPeriodo = function() {
-
-    me.oWindowPeriodoItens.destroy();
-    me.oWindowPeriodoItens = "";
-  }
-  /**
-   * Salva os períodos selecionados para o item.
-   */
-  me.salvarJanelaPeriodo = function(iRowGridItens) {
-
-    aDatasAlteradas = new Array();
-    oGridPeriodoItem.aRows.each(function (oLinha, iLinha) {
-
-      var dtDataInicialGrid = oLinha.aCells[0].getValue();
-      var dtDataFinalGrid   = oLinha.aCells[1].getValue();
-      if (js_comparadata(dtDataInicialGrid, dtDataFinalGrid, ">")) {
-
-        alert("Data inicial maior que a data final.");
-        return false;
-      }
-
-      var oDatasItem             = new Object();
-      oDatasItem.dtDataInicial   = js_formatar(dtDataInicialGrid, "d");
-      oDatasItem.dtDataFinal     = js_formatar(dtDataFinalGrid, 'd');
-      oDatasItem.ac41_sequencial = oLinha.aCells[2].getValue();
-      aDatasAlteradas.push(oDatasItem);
-    });
-
-    lValidarPeriodos = this.validarPeriodosExecutados(aDatasAlteradas);
-
-    if ( !lValidarPeriodos ) {
-      return false;
-    }
-
-    me.aPeriodoItensAcordo[iRowGridItens] = aDatasAlteradas;
-    me.oWindowPeriodoItens.destroy();
-    me.oWindowPeriodoItens = "";
+    $('btnItens').style.display = '';
+    $('btnItens').observe('click', me.novoItem);
   }
 }
 
-/**
- * Variavel de controle do campo em foco,
- * @type {boolean}
- */
-var lCampoReadonly = false;
-
-/**
- * bloqueia  o input passado como parametro para a digitacao.
- * É colocado  a mascara do valor e bloqueado para Edição
- */
-function js_bloqueiaDigitacao(object, lFormata) {
-
-  object.readOnly         = lCampoReadonly;
-  object.style.border     ='1px';
-  object.style.fontWeight = "normal";
-  if (lFormata) {
-    object.value = js_formatar(object.value,'f');
-  }
-
-}
-  /**
- * Libera  o input passado como parametro para a digitacao.
- * é Retirado a mascara do valor e liberado para Edição
- * é Colocado a Variavel nValorObjeto no escopo GLOBAL
- */
-function js_liberaDigitacao(object, lFormata) {
-
-  nValorObjeto   = object.value;
-  lCampoReadonly = object.readOnly;
-  object.value   = object.value;
-  if (lFormata) {
-    object.value = js_strToFloat(object.value).valueOf();
-  }
-  object.style.border = '1px solid black';
-  object.style.fontWeight = "bold";
-  object.select();
-
-}
-/**
- * Verifica se  o usuário cancelou a digitação dos valores.
- * Caso foi cancelado, voltamos ao valor do objeto, e
- * bloqueamos a digitação
- */
-function js_verifica(object,event,lFormata) {
-
-  var teclaPressionada = event.which;
-  if (teclaPressionada == 27) {
-      object.value = nValorObjeto;
-     js_bloqueiaDigitacao(object, lFormata);
-  }
-}
-
-validaValorDotacao = function(obj, iQuantMax, nValUnitario, oValorTotal) {
-
-     if (new Number(obj.value) > iQuantMax) {
-       obj.value = iQuantMax;
-     } else if (obj.value == 0) {
-       obj.value = iQuantMax;
-     }
-     var nValorTotal      =  obj.value*nValUnitario;
-     $(oValorTotal).value = js_formatar(nValorTotal, 'f');
-}
+require_once("scripts/arrays.js");

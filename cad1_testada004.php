@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,29 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
+//use ECidade\Tributario\Cadastro\Iptu\CalculoRetroativo\Repository\CalculoRetroativoIptuRepository;
 
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_testada_classe.php");
-include ("classes/db_testpri_classe.php");
-include ("classes/db_face_classe.php");
-include ("classes/db_lote_classe.php");
-include ("classes/db_cfiptu_classe.php");
-include ("classes/db_testadanumero_classe.php");
-include ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_testada_classe.php"));
+require_once(modification("classes/db_testpri_classe.php"));
+require_once(modification("classes/db_face_classe.php"));
+require_once(modification("classes/db_lote_classe.php"));
+require_once(modification("classes/db_cfiptu_classe.php"));
+require_once(modification("classes/db_testadanumero_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+/*
+$calculoRetroativoIptuRepository = CalculoRetroativoIptuRepository::getInstance();
+
+$calculoRetroativoIptuRepository->setAnousu(db_getsession("DB_anousu"))
+                                ->setAnoRetroativoMatricula(db_getsession("DB_anoRetroativoMatricula", false));
+$calculoRetroativoIptuRepository->getAlteraSearchPath();
+*/
+
+$clrotulo = new rotulocampo;
 
 $cltestada = new cl_testada;
 $cltestada->rotulo->label();
@@ -54,15 +65,30 @@ $clcfiptu->rotulo->label();
 $cltestadanumero = new cl_testadanumero;
 $cltestadanumero->rotulo->label();
 
+$clrotulo->label('j64_descricao');
+
 $cllote = new cl_lote;
+
+$oDaoOrientacao = db_utils::getDao("orientacao");
+$sSqlOrientacao = $oDaoOrientacao->sql_query ( null, "*", "j64_sequencial");
+$rsOrientacao = $oDaoOrientacao->sql_record($sSqlOrientacao);
+if ($oDaoOrientacao->numrows > 0) {
+
+	$aOrientacao = array();
+	for ($i = 0; $i < $oDaoOrientacao->numrows; $i++) {
+
+		$oDados = db_utils::fieldsMemory($rsOrientacao, $i);
+		$aOrientacao[$oDados->j64_sequencial] = $oDados->j64_descricao;
+	}
+
+}
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 
 if (isset ($enviar)) {
 
-
-	$result = $clface->sql_record($clface->sql_query('', 'face.*#ruas.*', '', " j37_setor = '".$j34_setor."' and j37_quadra = '".$j34_quadra."'"));
+	$result = $clface->sql_record($clface->sql_query('', 'face.*,ruas.*,ruastipo.*', 'j37_sequencia', " j37_setor = '".$j34_setor."' and j37_quadra = '".$j34_quadra."'"));
 
 	$caracte = "";
 	$car = "";
@@ -71,19 +97,19 @@ if (isset ($enviar)) {
 		$j37_face;
 		$j36_testad = "j36_testad".$i;
 		$j36_testle = "j36_testle".$i;
-		//$j14_codigo;
+        $j36_orientacao = "j36_orientacao".$i;
 		$j15_numero = "j15_numero".$i;
 		$j15_compl = "j15_compl".$i;
 
-		$caracte .= $car.$j37_face."||".$j14_codigo."||".$$j36_testad."||".$$j36_testle."||".$$j15_numero."||".$$j15_compl;
+		$caracte .= $car.$j37_face."||".$j14_codigo."||".$$j36_testad."||".$$j36_testle."||".$$j15_numero."||".$$j15_compl. "||" . $$j36_orientacao;
 		$car = "x";
 
   }
 	echo "<script>parent.document.form1.cartestada.value = '".$caracte."';</script>";
 	echo "<script>parent.document.form1.cartestpri.value = '".$principal."';</script>";
-	echo "<script>parent.db_iframe.hide();</script>"; 
+	echo "<script>parent.db_iframe.hide();</script>";
 }
-$resul = $clface->sql_record($clface->sql_query('', 'face.*#ruas.*', '', " j37_setor = '".$j34_setor."' and j37_quadra = '".$j34_quadra."'"));
+$resul = $clface->sql_record($clface->sql_query('', 'face.*, ruas.*, ruastipo.*', 'j37_sequencia', " j37_setor = '".$j34_setor."' and j37_quadra = '".$j34_quadra."'"));
 $tamanho = $clface->numrows;
 ?>
 <html>
@@ -136,20 +162,10 @@ function js_checa3(){
   } 
   var num=document.form1.total.value; 
   var testa=false;
-/*if(num==1){
-    if(document.form1.principal.checked==true){
-      testa=true;  
-    }
-  }else{*/
     for(i=0;i<=num;i++){
       if(document.form1.principal[i].checked==true && (eval('document.form1.j36_testad'+i+'.value')!=0 && eval('document.form1.j36_testad'+i+'.value')!='')){
         testa=true;  
-/*        if(eval('document.form1.j36_testad'+i+'.value')==0 || eval('document.form1.j36_testad'+i+'.value')==''){
-            testa=false;  
-            break; 
-        }*/
       }
-   // }
   } 
   if(testa==false){
     alert("Informe a Testada e a rua principal!");
@@ -177,7 +193,10 @@ function js_numcompl(id,teste,valor){
 	         }
 	         if(eval('document.form1.j36_testle'+i+'.value') == ''){
 	         	eval('document.form1.j36_testle'+i+'.value = 0');
-	         }	         
+	         }
+			 if(eval('document.form1.j36_orientacao'+i+'.value') == ''){
+	         	eval('document.form1.j36_orientacao'+i+'.value = 0');
+	         }		         
 	    }
     }else{
       if (valor==0){
@@ -196,6 +215,9 @@ function js_numcompl(id,teste,valor){
 	  if(eval('document.form1.j36_testle'+id+'.value') == ''){
 	  	eval('document.form1.j36_testle'+id+'.value = 0');
 	  } 
+	  if(eval('document.form1.j36_orientacao'+id+'.value') == ''){
+	  	eval('document.form1.j36_orientacao'+id+'.value = 0');
+	  } 
     }
 }
 
@@ -207,18 +229,10 @@ function js_numcompl(id,teste,valor){
   <tr> 
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
-	<?
+	<?php
 
-
-if (isset ($digita_testada)) {
-	//  include("forms/db_frmtestada001.php");
-} else {
-	// $result = $cllote->sql_record($cllote->sql_query_file($testa));
-	// if($cllote->numrows==0){
-	//   echo "lote nao existe";
-	//  }else{
-	//  db_fieldsmemory($result,0);
-	$result = $clface->sql_record($clface->sql_query('', 'face.*#ruas.*', '', " j37_setor = '".$j34_setor."' and j37_quadra = '".$j34_quadra."'"));
+if (!isset($digita_testada)) {
+	$result = $clface->sql_record($clface->sql_query('', 'face.*,ruas.*,ruastipo.*', 'j37_sequencia', " j37_setor = '".$j34_setor."' and j37_quadra = '".$j34_quadra."'"));
 	if ($clface->numrows > 0) {
 		echo '<table width="100%" border="0" cellspacing="0">';
 		echo '<tr width="100%">'."\n";
@@ -230,7 +244,9 @@ if (isset ($digita_testada)) {
 			echo "<td><b>$Lj15_compl</b></td>";
 		}
 		//=============================================================		  
-		echo "<td><b>Principal</b></td>";
+		echo "<td><b>$Lj64_descricao</b></td>";
+		echo "<td><b>Principal:</b></td>";
+		echo "<td>$Lj37_sequencia</td>";
 		echo "<td>$Lj37_setor</td>";
 		echo "<td>$Lj37_quadra</td>";
 		echo "<td>$Lj36_codigo</td>";
@@ -253,27 +269,24 @@ if (isset ($digita_testada)) {
 				}
 			}
 			if ($db_opcao != 1) {
-				$resulttestada = $cltestada->sql_record($cltestada->sql_query_file($testa, $j37_face));
+
+				$sSql = $cltestada->sql_query_file($testa, $j37_face);
+				$resulttestada = $cltestada->sql_record($sSql);
+
 				if ($cltestada->numrows > 0) {
 					db_fieldsmemory($resulttestada, 0);
 				} else {
 					$j36_testad = 0;
 					$j36_testle = 0;
+                    $j36_orientacao=0;
 				}
 //========================================================================================================================================
                 if(isset($mostranum) && $mostranum == 't'){
                     $j15_numero = "";
-$j15_compl = "";				
-	//              echo($cltestadanumero->sql_query_file("","*","","j15_idbql = $testa and j15_face = $j37_face"));
-					$resulttestadanumero = $cltestadanumero->sql_record($cltestadanumero->sql_query_file("","*","","j15_idbql = $testa and j15_face = $j37_face"));
-                    //echo $cltestadanumero->sql_query_file("","*","","j15_idbql = $testa and j15_face = $j37_face")."<br>";
+                    $j15_compl = "";
+                    $resulttestadanumero = $cltestadanumero->sql_record($cltestadanumero->sql_query_file("","*","","j15_idbql = $testa and j15_face = $j37_face"));
 					if ($cltestadanumero->numrows > 0) {
-	//					echo "<br><br>entrou ; ".$j15_compl." - ".$j15_compl;
-						db_fieldsmemory($resulttestadanumero, 0);
-						
-					} else {
-	//					$j15_numero = "";
-	//	     			$j15_compl = "";
+						db_fieldsmemory($resulttestadanumero, 0);						
 					}
                 }
 //========================================================================================================================================				
@@ -303,6 +316,9 @@ $j15_compl = "";
 				}
 				if (isset($matrizdados[5]) && $matrizdados[5] != ""){
 					$j15_compl  = $matrizdados[5];
+				}
+				if (isset($matrizdados[6]) && $matrizdados[6] != ""){
+					$j36_orientacao  = $matrizdados[6];
 				}
 				$j49_face = $voltapri;
 
@@ -337,19 +353,24 @@ $j15_compl = "";
 	        if(isset($j15_numero)){ 
 	            echo "<script>document.form1.j15_numero$fq.value = $j15_numero;</script>";
 	        }
-	       /* if(isset($j15_compl)){
-             echo "<script>document.form1.j15_compl$fq.value = $j15_compl;</script>";
-          } */
 			
 			//==========================================================================
           }
+
+		    $x = "j36_orientacao".$fq;
+		    $$x = $j36_orientacao;
+		    echo "<td>";
+		    db_select("j36_orientacao$fq", $aOrientacao, true, 1);
+		    echo "</td>";
+
 			echo "<td>";
 			echo "<input name='principal' id='".$fq."' type='radio' onmousedown=\"js_checa('".$fq."')\" value='$j37_face' ". (isset ($j49_face) ? ($j49_face == $j37_face ? "checked" : "") : "")." >";
 			echo "</td>";
+			echo "<td>$j37_sequencia</td>";
 			echo "<td>$j37_setor</td>";
 			echo "<td>$j37_quadra</td>";
 			echo "<td>$j14_codigo</td>";
-			echo "<td>$j14_nome</td>";
+			echo "<td>".(($j88_sigla)?$j88_sigla.' ':'').$j14_nome."</td>";
 			echo "</tr>\n";
 		}
 		$fq--;
@@ -367,7 +388,6 @@ $j15_compl = "";
 	} else {
 		echo "Face de Quadra não Incluída para este Setor/Quadra";
 	}
-//	 }
 }
 ?>
     </center>

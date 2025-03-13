@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_empautitem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_empautitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clempautitem = new cl_empautitem;
@@ -52,7 +52,7 @@ $db_botao = true;
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmempempitem.php");
+	include(modification("forms/db_frmempempitem.php"));
 	?>
     </center>
 	</td>
@@ -76,7 +76,7 @@ if(isset($incluir)||isset($alterar) || isset($excluir)){
     db_fieldsmemory($result,0);
    echo "
             <script> 
-		top.corpo.iframe_empautidot.js_calc('$e54_valor');\n
+		(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_empautidot.js_calc('$e54_valor');\n
             </script> 
    "; 
 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -64,9 +64,9 @@
 function js_cgm(mostra) {
 
   if ( mostra == true ) { 
-    js_OpenJanelaIframe('top.corpo.iframe_imobil','db_iframe','func_cadimobil.php?funcao_js=parent.js_mostra1|0|1','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_imobil','db_iframe','func_cadimobil.php?funcao_js=parent.js_mostra1|0|1','Pesquisa',true,0);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_imobil','db_iframe','func_cadimobil.php?pesquisa_chave='+document.form1.j44_numcgm.value+'&funcao_js=parent.js_mostra','Pesquisa',false,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_imobil','db_iframe','func_cadimobil.php?pesquisa_chave='+document.form1.j44_numcgm.value+'&funcao_js=parent.js_mostra','Pesquisa',false,0);
   }
 }
 

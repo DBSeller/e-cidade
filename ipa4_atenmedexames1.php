@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,31 +26,31 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 //////////INCLUIR/////////////
 if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select max(codexa) + 1 from exames");
+  $result = db_query("select max(codexa) + 1 from exames");
   $codexa = pg_result($result,0,0);
   $codexa = $codexa==""?"1":$codexa;
-  pg_exec("insert into exames values($codexa,".db_getsession("DB_id_usuario").",'$descr')") or die("Erro(24) inserindo em exames");
+  db_query("insert into exames values($codexa,".db_getsession("DB_id_usuario").",'$descr')") or die("Erro(24) inserindo em exames");
   db_redireciona();
   exit;		   
 ////////////////ALTERAR////////////////  
 } else if(isset($HTTP_POST_VARS["alterar"])) {
   db_postmemory($HTTP_POST_VARS);
-  pg_exec("update exames set descr = '$descr'
+  db_query("update exames set descr = '$descr'
            where codexa = $codigo
 		   and codmed = ".db_getsession("DB_id_usuario")) or die("Erro(22) atualizando exames");
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
   exit;		     
 ////////////////EXCLUIR//////////////
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("delete from exames where codexa = ".$HTTP_POST_VARS["codigo"]) or die("Erro(15) deletando tabela exames");
+  db_query("delete from exames where codexa = ".$HTTP_POST_VARS["codigo"]) or die("Erro(15) deletando tabela exames");
   db_redireciona($HTTP_SERVER_VARS['PHP_SELF']);
   exit;  
 }

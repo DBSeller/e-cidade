@@ -1,0 +1,147 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010289' name='patrimonio.bemincorporado' description="Materia / Serviço incorporado a um bem patrimonial" prefix="t13" label="bemincorporado" type="0">
+  <fields>
+    <field codigo="1009776" 
+           campo_api='' 
+           name="t13_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='patrimonio.bemincorporado_t13_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009777" 
+           campo_api='' 
+           name="t13_bens" 
+           conteudo="int4" 
+           description="Bem" 
+           inivalue="0" 
+           label="Bem" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Bem" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009778" 
+           campo_api='' 
+           name="t13_bempendenteincorporacao" 
+           conteudo="int4" 
+           description="Bem Incorporado" 
+           inivalue="0" 
+           label="bemincorporado" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Bem Incorporado" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+    </field>
+    <field codigo="1009779" 
+           campo_api='' 
+           name="t13_data" 
+           conteudo="date" 
+           description="Data" 
+           inivalue="null" 
+           label="Data" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" >
+    </field> 
+    <field codigo="1009780" 
+           campo_api='' 
+           name="t13_reavaliacao" 
+           conteudo="bool" 
+           description="Se o bem sofreu reavaliação patrimonial" 
+           inivalue="f" 
+           label="Reavaliação" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Reavaliação" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" >
+    </field>
+    <field codigo="1009801"
+           campo_api=''
+           name="t13_quantidade"
+           conteudo="float4"
+           description="Quantidade"
+           inivalue="0"
+           label="Valor"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+    <field codigo="1009806"
+           campo_api=''
+           name="t13_ativo"
+           conteudo="bool"
+           description="Incorporação ativa"
+           inivalue="t"
+           label="Incorporação ativa"
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="5"
+           tipoobj="text"
+           labelrel="Incorporação ativa"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+
+  </fields>
+  <primarykey>
+    <fieldpk name="t13_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="bens" inner='t'>
+      <fieldfk name="t13_bens" reference="t52_bem" /> 
+    </foreignkey>
+    <foreignkey reference="bempendenteincorporacao" inner='t'>
+      <fieldfk name="t13_bempendenteincorporacao" reference="t12_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

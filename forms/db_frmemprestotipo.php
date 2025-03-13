@@ -68,7 +68,7 @@ db_input('e90_estrut',20,$Ie90_estrut,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_emprestotipo','func_emprestotipo.php?funcao_js=parent.js_preenchepesquisa|e90_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emprestotipo','func_emprestotipo.php?funcao_js=parent.js_preenchepesquisa|e90_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_emprestotipo.hide();

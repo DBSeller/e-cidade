@@ -26,21 +26,21 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_pagordem_classe.php");
-include("classes/db_pagordemele_classe.php");
-include("classes/db_pagordemconta_classe.php");
-include("classes/db_empagetipo_classe.php");
-include("classes/db_empord_classe.php");
-include("classes/db_empagemov_classe.php");
-include("classes/db_empagepag_classe.php");
-include("classes/db_pcfornecon_classe.php");
-include("classes/db_empageconfche_classe.php");
+include(modification("classes/db_pagordem_classe.php"));
+include(modification("classes/db_pagordemele_classe.php"));
+include(modification("classes/db_pagordemconta_classe.php"));
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("classes/db_empord_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("classes/db_empagepag_classe.php"));
+include(modification("classes/db_pcfornecon_classe.php"));
+include(modification("classes/db_empageconfche_classe.php"));
 
 $clempagetipo = new cl_empagetipo;
 $clpagordem   = new cl_pagordem;
@@ -123,7 +123,7 @@ if(isset($e83_codtipo)){
   inner join empagetipo on e83_conta = c61_reduz
   where e83_codtipo = $e83_codtipo
   ";
-  $resbanco = pg_query($sqlbanco);
+  $resbanco = db_query($sqlbanco);
   db_fieldsmemory($resbanco,0);
   
   $dbinner = "  inner join pcfornecon on pc63_numcgm = z01_numcgm and pc63_banco = '$c63_banco' ";
@@ -439,7 +439,7 @@ for ($i=0; $i<$numrows09; $i++) {
 						inner join empord on empord.e82_codmov = empagemov.e81_codmov
 						where		e82_codord = $e50_codord and 
 										e80_instit = " . db_getsession("DB_instit");
-	$result03  = pg_exec($sql3) or die($sql3);
+	$result03  = db_query($sql3) or die($sql3);
   $numrows03 = pg_numrows($result03);
 
   $tot_valor = 0;
@@ -452,7 +452,7 @@ for ($i=0; $i<$numrows09; $i++) {
       // se emitir cheque pela opcao Manutencao de Agenda
 			// se marcar como cheque ou transmissao em Manutencao de Pagamentos
       $sql4 = "	select * from empageconf where e86_codmov = $e81_codmov";
-			$result04 = pg_exec($sql4) or die($sql4);
+			$result04 = db_query($sql4) or die($sql4);
 
 			if (pg_numrows($result04) == 0) {
 				$tot_valor += $e81_valor_mov;
@@ -465,7 +465,7 @@ for ($i=0; $i<$numrows09; $i++) {
 									from empageconfche
 									left join corconf on empageconfche.e91_codcheque = corconf.k12_codmov and corconf.k12_ativo is true
 									where e91_codmov = $e81_codmov";
-				$result06 = pg_exec($sql6) or die($sql6);
+				$result06 = db_query($sql6) or die($sql6);
 
 				if (pg_numrows($result06) > 0) {
 
@@ -485,7 +485,7 @@ for ($i=0; $i<$numrows09; $i++) {
 										inner join empagemov on e81_codmov = e97_codmov
 										where e97_codmov = $e81_codmov";
 					//and e97_codforma = 3";
-					$result06 = pg_exec($sql6) or die($sql6);
+					$result06 = db_query($sql6) or die($sql6);
 
 					if (pg_numrows($result06) > 0) {
 						$tot_valor += $e81_valor_mov;
@@ -657,6 +657,6 @@ for ($i=0; $i<$numrows09; $i++) {
 </html>
 <script>
 function js_conta(cgm){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pcfornecon','com1_pcfornecon001.php?novo=true&z01_numcgm='+cgm,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcfornecon','com1_pcfornecon001.php?novo=true&z01_numcgm='+cgm,'Pesquisa',true);
 }
 </script>

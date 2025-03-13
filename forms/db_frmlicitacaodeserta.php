@@ -28,8 +28,8 @@
 /**
  * 
  * @author Iuri Guntchnigg
- * @revision $Author: dbiuri $
- * @version $Revision: 1.3 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.5 $
  */
 $clrotulo = new rotulocampo;
 $clrotulo->label("l20_codigo");
@@ -96,7 +96,7 @@ $clrotulo->label("l11_obs");
 function js_pesquisa_liclicita(mostra){
   if(mostra==true){
   
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_liclicita',
                         'func_liclicita.php?situacao=<?=$iTipo?>&funcao_js=parent.js_atualizaDados|l20_codigo|l20_edital',
                         'Pesquisa Licitações',true);
@@ -104,7 +104,7 @@ function js_pesquisa_liclicita(mostra){
   
      if(document.form1.l20_codigo.value != ''){ 
   
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_liclicita',
                             'func_liclicita.php?situacao=<?=$iTipo?>&pesquisa_chave='+
                              document.form1.l20_codigo.value+'&funcao_js=parent.js_mostraliclicita',

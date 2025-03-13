@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_sepultamentos_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_sepultamentos_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clsepultamentos = new cl_sepultamentos;
 $db_opcao = 22;
@@ -52,21 +52,15 @@ if(isset($chavepesquisa)){
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body class="body-default abas">
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-    <center>
-	<?
-	include("forms/db_frmsepultamentos.php");
-	?>
-    </center>
-	</td>
-  </tr>
-</table>
+<body class="abas">
+  <div class="container">
+  	<?php
+  	 include(modification("forms/db_frmsepultamentos.php"));
+  	?>
+  </div>
 </body>
 </html>
-<?
+<?php
  if($db_opcao == 22){
   echo "<script>document.form1.pesquisar.click();</script>";
  }

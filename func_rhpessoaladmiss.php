@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_sql.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpessoalmov_classe.php");
-include("classes/db_pontocom_classe.php");
-db_postmemory($HTTP_POST_VARS);
-db_postmemory($HTTP_GET_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_rhpessoalmov_classe.php"));
+require_once(modification("classes/db_pontocom_classe.php"));
+
+db_postmemory($_POST);
+db_postmemory($_GET);
+parse_str($_SERVER["QUERY_STRING"]);
+
 $clrhpessoal = new cl_rhpessoal;
 $clrhpessoalmov = new cl_rhpessoalmov;
 $clgersubsql = new cl_gera_sql_folha;
@@ -60,7 +62,7 @@ if(isset($valor_testa_rescisao)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<?
+<?php
 if(!isset($pesquisa_chave)){
   ?>
   <script>
@@ -82,7 +84,7 @@ if(!isset($pesquisa_chave)){
       document.form2.submit();
     }
   </script>
-  <?
+  <?php
 }
 ?>
 </head>
@@ -97,7 +99,7 @@ if(!isset($pesquisa_chave)){
               <?=$Lrh01_regist?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
+              <?php
 		       db_input("rh01_regist",10,$Irh01_regist,true,"text",4,"","chave_rh01_regist");
 		       ?>
             </td>
@@ -107,7 +109,7 @@ if(!isset($pesquisa_chave)){
               <?=$Lrh01_numcgm?>
             </td>
             <td width="96%" align="left" nowrap> 
-              <?
+              <?php
 		       db_input("rh01_numcgm",10,$Irh01_numcgm,true,"text",4,"","chave_rh01_numcgm");
 		       ?>
             </td>
@@ -117,7 +119,7 @@ if(!isset($pesquisa_chave)){
             <?=$Lz01_nome?>
             </td>
             <td width="96%" align="left" nowrap colspan='3'> 
-            <?
+            <?php
             db_input("z01_nome",80,$Iz01_nome,true,"text",4,"","chave_z01_nome");
 	        ?>
             </td>
@@ -140,19 +142,23 @@ if(!isset($pesquisa_chave)){
       $mesfolha = db_mesfolha();
       $dbwhere = " and rh02_anousu = ".$anofolha." and rh02_mesusu = ".$mesfolha;
       
+      if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+          $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+          $dbwhere .= " and rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+      }
+      
       if ( !empty($testarescisao) ) {      	
       	$dbwhere .= " and rh05_recis is null ";
       }
       
-//      if(isset($instit)){
-      	//$dbwhere.= " and rh01_instit = ".$instit;
-//      }
       $dbwhere.= " and rh02_instit = ".db_getsession("DB_instit")." ";
       if(!isset($pesquisa_chave)){
         $campos1 = "rhpessoal.rh01_regist,
                     rhpessoal.rh01_numcgm,
                     rhpessoal.rh01_admiss,
                     cgm.z01_nome,
+                    cgm.z01_cgccpf,
+                    cgm.z01_nasc,
                     rhlota.r70_codigo,
                     rhlota.r70_descr,
                     rhfuncao.rh37_funcao,
@@ -166,6 +172,7 @@ if(!isset($pesquisa_chave)){
                     r30_proc2,
                     rh02_seqpes,
                     rh02_codreg,
+                    rh30_descr, 
                     rh14_matipe,
                     rh14_dtvinc,
                     rh02_anousu as anousu,
@@ -174,6 +181,8 @@ if(!isset($pesquisa_chave)){
         $campos2 = "distinct on (x.rh01_regist) x.rh01_regist,
                     x.rh01_numcgm,
                     z01_nome,
+                    z01_cgccpf,
+                    z01_nasc,
                     rh05_recis ,
                     r70_codigo,
                     r70_descr,
@@ -188,6 +197,8 @@ if(!isset($pesquisa_chave)){
 		    r30_proc2 as db_r30_proc2,
 		    x.rh02_seqpes as db_rh02_seqpes,
 		    x.rh02_codreg as db_rh02_codreg,
+                    x.rh30_descr as db_rh30_descr,
+                    rh30_descr, 
                     rh14_matipe as db_rh14_matipe,
 		    rh14_dtvinc as db_rh14_dtvinc
                    ";
@@ -217,8 +228,7 @@ if(!isset($pesquisa_chave)){
 	    if(isset($testarescisao)){
               $retorno = db_alerta_dados_func($testarescisao,$pesquisa_chave,db_anofolha(), db_mesfolha());
               if($retorno != ""){
-                db_msgbox($retorno);								
-//								$temresci = "s";
+                db_msgbox($retorno);
               }
               $result_PTF3 = $clpontocom->sql_record($clpontocom->sql_query_seleciona(null,null,null,null,"distinct r47_regist as regist,r47_lotac as lotac",""," r47_anousu = ".db_anofolha()." and r47_mesusu = ".db_mesfolha()." and r47_instit = ".db_getsession("DB_instit")." and r47_regist = $pesquisa_chave"));
               if($clpontocom->numrows > 0){
@@ -226,7 +236,7 @@ if(!isset($pesquisa_chave)){
                  db_msgbox($msgRetorno);
               }
 	    }
-            echo "<script>".$funcao_js."('$z01_nome','$rh01_admiss','$rh02_seqpes','$r30_proc1','$r30_proc2','$r30_per1f','$r30_per2f','$rh02_codreg','$rh14_matipe','$rh14_dtvinc',false,'$temresci');</script>";
+            echo "<script>".$funcao_js."('$z01_nome','$rh01_admiss','$rh02_seqpes','$r30_proc1','$r30_proc2','$r30_per1f','$r30_per2f','$rh02_codreg','$rh14_matipe','$rh14_dtvinc','$rh30_descr',false,'$temresci');</script>";
           }else{
 	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado','','','','','','','','','',true);</script>";
           }
@@ -240,3 +250,9 @@ if(!isset($pesquisa_chave)){
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

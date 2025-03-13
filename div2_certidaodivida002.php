@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,20 +26,61 @@
  */
 
 set_time_limit(0);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("classes/db_propri_classe.php"));
+require_once(modification("classes/db_certid_classe.php"));
+require_once(modification("classes/db_cfiptu_classe.php"));
+require_once(modification("fpdf151/pdf3.php"));
+require_once(modification("model/cda.model.php"));
+require_once(modification("libs/db_conecta.php"));
 
-require_once("fpdf151/pdf3.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_libdocumento.php");
-require_once("std/db_stdClass.php");
-require_once("fpdf151/assinatura.php");
-require_once("classes/db_propri_classe.php");
-require_once("classes/db_certid_classe.php");
-require_once("classes/db_cfiptu_classe.php");
-require_once('model/cda.model.php');
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
+if( empty($ordenarpor) ){
+  $ordenarpor = '';
+}
+
+if( empty($endaimp) ){
+  $endaimp = '';
+}
+
+if( empty($totexe) ){
+  $totexe = '';
+}
+
+/**
+ * Rotina  em processo de refatoração
+ */
+try{
+
+  db_inicio_transacao();
+  $oGeradorCda = new GeradorCDA();
+  if( !empty($sNomeArquivo) ){
+
+    $oGeradorCda->gerar($tipo, $certid, $certid1, $reemissao, $ordenarpor, $totexe, $endaimp);
+    return $oGeradorCda->escreverArquivo($sNomeArquivo);
+  }else{
+
+    $oGeradorCda->gerar($tipo, $certid, $certid1, $reemissao, $ordenarpor, $totexe, $endaimp);
+    $oGeradorCda->exibirArquivo();
+  }
+  db_fim_transacao(true);
+} catch (Exception $eErro) {
+  db_fim_transacao(true);
+  db_redireciona("db_erros.php?fechar=true&db_erro={$eErro->getMessage()}");
+}
+
+exit();
+
+/**
+ * @deprecated
+ */
 if ( !isset($certid) || $certid == '' ) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Certidão Não Encontrada.');
   exit;

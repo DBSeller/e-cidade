@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -705,7 +705,7 @@ class cl_sanitario {
                                ,".($this->y80_dtbaixa == "null" || $this->y80_dtbaixa == ""?"null":"'".$this->y80_dtbaixa."'")."
                                                  ,$this->y80_depto 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -731,20 +731,20 @@ class cl_sanitario {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->y80_codsani));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,4866,'$this->y80_codsani','I')");
-       $resac = pg_query("insert into db_acount values($acount,661,4866,'','".AddSlashes(pg_result($resaco,0,'y80_codsani'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,5150,'','".AddSlashes(pg_result($resaco,0,'y80_numbloco'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,4867,'','".AddSlashes(pg_result($resaco,0,'y80_numcgm'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,4868,'','".AddSlashes(pg_result($resaco,0,'y80_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,4869,'','".AddSlashes(pg_result($resaco,0,'y80_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,4870,'','".AddSlashes(pg_result($resaco,0,'y80_area'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,5052,'','".AddSlashes(pg_result($resaco,0,'y80_codrua'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,5055,'','".AddSlashes(pg_result($resaco,0,'y80_codbairro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,5053,'','".AddSlashes(pg_result($resaco,0,'y80_numero'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,5054,'','".AddSlashes(pg_result($resaco,0,'y80_compl'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,661,5056,'','".AddSlashes(pg_result($resaco,0,'y80_dtbaixa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,4866,'$this->y80_codsani','I')");
+       $resac = db_query("insert into db_acount values($acount,661,4866,'','".AddSlashes(pg_result($resaco,0,'y80_codsani'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,5150,'','".AddSlashes(pg_result($resaco,0,'y80_numbloco'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,4867,'','".AddSlashes(pg_result($resaco,0,'y80_numcgm'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,4868,'','".AddSlashes(pg_result($resaco,0,'y80_data'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,4869,'','".AddSlashes(pg_result($resaco,0,'y80_obs'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,4870,'','".AddSlashes(pg_result($resaco,0,'y80_area'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,5052,'','".AddSlashes(pg_result($resaco,0,'y80_codrua'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,5055,'','".AddSlashes(pg_result($resaco,0,'y80_codbairro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,5053,'','".AddSlashes(pg_result($resaco,0,'y80_numero'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,5054,'','".AddSlashes(pg_result($resaco,0,'y80_compl'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,661,5056,'','".AddSlashes(pg_result($resaco,0,'y80_dtbaixa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    }

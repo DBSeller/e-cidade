@@ -1,0 +1,129 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010846' name='esocial.esoacidentetrabalho' description="Comunicação de Acidente de Trabalho" prefix="eso36" label="Comunicação de Acidente de Trabalho" type="0">
+  <fields>
+    <field codigo="1013589" 
+           campo_api='' 
+           name="eso36_sequencial" 
+           conteudo="int4" 
+           description="Código único sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.esoacidentetrabalho_eso36_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013590" 
+           campo_api='' 
+           name="eso36_matricula" 
+           conteudo="int4" 
+           description="Código de matrícula do servidor." 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013591" 
+           campo_api='' 
+           name="eso36_empregador" 
+           conteudo="int4" 
+           description="Código de cgm do empregador" 
+           inivalue="0" 
+           label="Empregador" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Empregador" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013592" 
+           campo_api='' 
+           name="eso36_data" 
+           conteudo="date" 
+           description="Data de ocorrência do acidente" 
+           inivalue="null" 
+           label="Data Acidente" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data Acidente" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013593" 
+           campo_api='' 
+           name="eso36_avaliacaogruporesposta" 
+           conteudo="int4" 
+           description="Sequencial resposta referenciando na resposta do S2210" 
+           inivalue="0" 
+           label="Sequencial resposta" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial resposta" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013594" 
+           campo_api='' 
+           name="eso36_cpf" 
+           conteudo="varchar(11)" 
+           description="CPF" 
+           inivalue="" 
+           label="CPF" 
+           size="11" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="CPF" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso36_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="eso36_empregador" reference="z01_numcgm" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

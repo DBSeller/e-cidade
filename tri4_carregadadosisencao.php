@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -43,7 +43,7 @@ $sqlItem  .= "   from cadtipo ";
 $sqlItem  .= "        inner join cadtipoitem      on k03_tipo = k09_cadtipo ";
 $sqlItem  .= "        inner join cadtipoitemgrupo on k09_cadtipoitemgrupo = k37_sequencial ";
 $sqlItem  .= " where k09_cadtipo = $cadtipo";
-$rsItem    = pg_query($sqlItem);
+$rsItem    = db_query($sqlItem);
 $intItem   = pg_numrows($rsItem);
 //db_criatabela($rsItem);exit;
 //echo "$sqlItem \n";

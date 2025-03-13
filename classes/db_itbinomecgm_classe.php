@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,36 +29,36 @@
 //CLASSE DA ENTIDADE itbinomecgm
 class cl_itbinomecgm { 
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
+   public $rotulo     = null; 
+   public $query_sql  = null; 
+   public $numrows    = 0; 
+   public $numrows_incluir = 0; 
+   public $numrows_alterar = 0; 
+   public $numrows_excluir = 0; 
+   public $erro_status= null; 
+   public $erro_sql   = null; 
+   public $erro_banco = null;  
+   public $erro_msg   = null;  
+   public $erro_campo = null;  
+   public $pagina_retorno = null; 
    // cria variaveis do arquivo 
-   var $it21_sequencial = 0; 
-   var $it21_itbinome = 0; 
-   var $it21_numcgm = 0; 
+   public $it21_sequencial = 0; 
+   public $it21_itbinome = 0; 
+   public $it21_numcgm = 0; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+   public $campos = "
                  it21_sequencial = int4 = Sequencial 
                  it21_itbinome = int8 = Sequencia 
                  it21_numcgm = int4 = Numcgm 
                  ";
    //funcao construtor da classe 
-   function cl_itbinomecgm() { 
+   public function cl_itbinomecgm() { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("itbinomecgm"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
    //funcao erro 
-   function erro($mostra,$retorna) { 
+   public function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -67,7 +67,7 @@ class cl_itbinomecgm {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->it21_sequencial = ($this->it21_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["it21_sequencial"]:$this->it21_sequencial);
        $this->it21_itbinome = ($this->it21_itbinome == ""?@$GLOBALS["HTTP_POST_VARS"]["it21_itbinome"]:$this->it21_itbinome);
@@ -77,7 +77,7 @@ class cl_itbinomecgm {
      }
    }
    // funcao para inclusao
-   function incluir ($it21_sequencial){ 
+   public function incluir ($it21_sequencial){ 
       $this->atualizacampos();
      if($this->it21_itbinome == null ){ 
        $this->erro_sql = " Campo Sequencia nao Informado.";
@@ -176,7 +176,7 @@ class cl_itbinomecgm {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($it21_sequencial=null) { 
+   public function alterar ($it21_sequencial=null) { 
       $this->atualizacampos();
      $sql = " update itbinomecgm set ";
      $virgula = "";
@@ -271,7 +271,7 @@ class cl_itbinomecgm {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($it21_sequencial=null,$dbwhere=null) { 
+   public function excluir ($it21_sequencial=null,$dbwhere=null) { 
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($it21_sequencial));
      }else{ 
@@ -334,7 +334,7 @@ class cl_itbinomecgm {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -356,10 +356,10 @@ class cl_itbinomecgm {
       }
      return $result;
    }
-   function sql_query ( $it21_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query ( $it21_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -383,7 +383,7 @@ class cl_itbinomecgm {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -392,10 +392,10 @@ class cl_itbinomecgm {
      }
      return $sql;
   }
-   function sql_query_file ( $it21_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_file ( $it21_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -416,7 +416,7 @@ class cl_itbinomecgm {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

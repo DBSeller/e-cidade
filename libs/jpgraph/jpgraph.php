@@ -4,7 +4,7 @@
 // Description:	PHP4 Graph Plotting library. Base module.
 // Created: 	2001-01-08
 // Author:	Johan Persson (johanp@aditus.nu)
-// Ver:		$Id: jpgraph.php,v 1.1 2006/03/20 11:56:44 dbrogerio Exp $
+// Ver:		$Id: jpgraph.php,v 1.2 2015/09/05 02:19:46 dbjeferson.belmiro Exp $
 //
 // License:	This code is released under QPL 1.0
 // Copyright (C) 2001,2002,2003 Johan Persson
@@ -397,7 +397,7 @@ DEFINE('TABTITLE_WIDTHFULL',-1);
 // Get hold of gradient class (In Version 2.x)
 // A client of the library has to manually include this
 //
-include "jpgraph_gradient.php";
+include modification("jpgraph_gradient.php");
 
 //
 // First of all set up a default error handler
@@ -657,7 +657,7 @@ class LanguageConv {
 	elseif( $aFF === FF_SIMSUN ) {
 	    // Do Chinese conversion
 	    if( $this->g2312 == null ) {
-		include_once 'jpgraph_gb2312.php' ;
+		include_once modification("jpgraph_gb2312.php") ;
 		$this->g2312 = new GB2312toUTF8();
 	    }
 	    return $this->g2312->gb2utf8($aTxt);
@@ -2093,7 +2093,7 @@ class Graph {
 	    // Should we do any final image transformation
 	    if( $this->iImgTrans ) {
 		if( !class_exists('ImgTrans') ) {
-		    require_once('jpgraph_imgtrans.php');
+		    require_once(modification('jpgraph_imgtrans.php'));
 		    //JpGraphError::Raise('In order to use image transformation you must include the file jpgraph_imgtrans.php in your script.');
 		}
 	       
@@ -8049,7 +8049,7 @@ class Plot {
 	
 } // Class
 
-require_once "jpgraph_plotmark.inc" ;
+require_once modification("jpgraph_plotmark.inc") ;
 
 //==============================================================================
 // The following section contains classes to implement the "band" functionality

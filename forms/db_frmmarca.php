@@ -48,9 +48,9 @@ $clrotulo->label("ma04_c_descr");
     if((isset($chavepesquisa) || isset($alterar)) && isset($ma01_c_nomeimagem)){
      if($ma01_o_imagem!=0){
       $arquivo = "tmp/".$ma01_c_nomeimagem;
-      pg_exec("begin");
+      db_query("begin");
       pg_loexport($ma01_o_imagem,$arquivo);
-      pg_exec("end");
+      db_query("end");
      }else{
       $arquivo = "imagens/semmarca.jpg";
      }

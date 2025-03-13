@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include("fpdf151/pdf.php");
+ include(modification("fpdf151/pdf.php"));
 // $con = pg_connect("host=192.168.0.3 dbname=sapiranga user=postgres");
  $pdf = new pdf("L","mm","A4");
  $head3 = 'Resumo dos acidentes Em Sapiranga';
@@ -44,7 +44,7 @@ from  (select (trim(r1.j14_nome)::varchar||
             else ', '||tr07_local2::varchar(40) end)) as rua 
        FROM acidentes inner join ruas r1 on tr07_local1 = r1.j14_codigo 
             left outer join ruas r2 on tr07_local2 = r2.j14_codigo) as x group by rua order by rua;";
- $rs1 = pg_exec($sql1);
+ $rs1 = db_query($sql1);
  $num_rows = pg_num_rows($rs1) + 2;
 
  for ($i = 1; $i <= 12 ;$i++){
@@ -101,7 +101,7 @@ from  (select (trim(r1.j14_nome)::varchar||
 		    and   extract(year from tr07_data) = $ano) as x 
               where rua = '".$ln1["rua"]."'
               group by rua;";  
-       $rs2 = pg_query($sql2);
+       $rs2 = db_query($sql2);
        $pdf->setfont("Arial","",7);
        if (pg_num_rows($rs2) > 0){
           $pdf->cell(10,5,pg_result($rs2,0,"total"),1,0,"C");     

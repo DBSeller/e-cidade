@@ -24,6 +24,12 @@ DBViewFormularioEducacao.ListaDisciplinas = function () {
    */
   this.lSomenteDisciplinasGlobais = false;
 
+    /**
+     * Array com as disciplinas
+     * @type {Array}
+     */
+  this.regencias = [];
+
   /**
    * Instância de ToggleList para disciplina
    * @type {DBToggleList}
@@ -75,17 +81,18 @@ DBViewFormularioEducacao.ListaDisciplinas.prototype.getDisciplinas = function ( 
 DBViewFormularioEducacao.ListaDisciplinas.prototype.retornoDisciplinas = function( oAjax ) {
 
   js_removeObj("msgBoxA");
-  var oRetorno = eval ( "(" + oAjax.responseText + ")" );
+  var oRetorno = JSON.parse(oAjax.responseText);
   var oSelf    = this;
   oSelf.oToggleRegencia.clearAll();
+  oSelf.regencias = oRetorno.aRegencias;
   oRetorno.aRegencias.each( function ( oRegencia ) {
     oSelf.oToggleRegencia.addSelect( {'iRegencia'        : oRegencia.iRegencia,
                                       'iDisciplina'      : oRegencia.iDisciplina,
                                       'sRegencia'        : oRegencia.sDisciplina.urlDecode(),
                                       'lTemGradeHorario' : oRegencia.lTemGradeHorario });
   });
-  this.oToggleRegencia.renderRows();
 
+  this.oToggleRegencia.renderRows();
   this.fCallBackLoad();
 };
 

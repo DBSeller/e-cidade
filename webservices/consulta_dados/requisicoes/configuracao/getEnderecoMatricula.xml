@@ -1,0 +1,49 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+    <campos>
+        <campo campo=" case when iptuconstr.j39_matric is not null then ruas_cep_construcao.j29_cep  else ruas_cep_lote.j29_cep end " label="cep"/>
+        <campo campo="proprietario" label="proprietario"/>
+        <campo campo="bairro_lote.j13_codi" label="codigo_bairro"/>
+        <campo campo="bairro_lote.j13_descr" label="nome_bairro"/>
+        <campo campo="case when iptuconstr.j39_matric is not null then rua_construcao.j14_codigo else ruas_lote.j14_codigo end" label="codigo_rua"/>
+        <campo campo="case when iptuconstr.j39_matric is not null then rua_construcao.j14_nome     else ruas_lote.j14_nome end" label="nome_rua"/>
+        <campo campo="case when iptuconstr.j39_matric is not null then iptuconstr.j39_compl      else '' end " label="complemento"/>
+        <campo campo="case when iptuconstr.j39_matric is not null then iptuconstr.j39_numero else j12_numero end" label="numero"/>
+        <campo campo="case when iptuconstr.j39_matric is not null then zona_construcao.j50_zona  else  zona_Lote.j50_zona end" label="codigo_zona"/>
+        <campo campo="case when iptuconstr.j39_matric is not null then zona_construcao.j50_descr  else zona_lote.j50_descr end " label="descricao_zona"/>
+    </campos>
+    <from tabela="iptubase"/>
+    <juncoes>
+        <join tipo="left" tabela="iptuconstr"
+              condicao=" iptubase.j01_matric = iptuconstr.j39_matric and iptuconstr.j39_idprinc is true"/>
+        <join tipo="left" tabela="ruas  as rua_construcao "
+              condicao=" rua_construcao.j14_codigo = iptuconstr.j39_codigo "/>
+        <join tipo="left" tabela="proprietario as proprietario_construcao"
+              condicao=" proprietario_construcao.j01_matric = iptubase.j01_matric "/>
+        <join tipo="left" tabela="zonas as zona_construcao"
+              condicao=" proprietario_construcao.j34_zona = zona_construcao.j50_zona "/>
+        <join tipo="left" tabela="ruascep as ruas_cep_construcao"
+              condicao=" ruas_cep_construcao.j29_codigo = rua_construcao.j14_codigo "/>
+        <join tipo="left" tabela="ruasbairro as ruas_bairro_construcao"
+              condicao=" ruas_bairro_construcao.j16_lograd = rua_construcao.j14_codigo "/>
+        <join tipo="left" tabela="bairro as bairro_construcao "
+              condicao=" bairro_construcao.j13_codi   = ruas_bairro_construcao.j16_bairro "/>
+
+        <join tipo="inner" tabela="cadastro.lote" condicao="iptubase.j01_idbql = j34_idbql"/>
+        <join tipo="inner" tabela="cadastro.testpri" condicao="iptubase.j01_idbql = j49_idbql"/>
+        <join tipo="inner" tabela="cadastro.ruas  as ruas_lote" condicao="j49_codigo = ruas_lote.j14_codigo"/>
+        <join tipo="left" tabela="cadastro.lotenumero " condicao="j34_idbql = j12_idbql"/>
+        <join tipo="left" tabela="cadastro.ruascep as ruas_cep_lote"
+              condicao="ruas_cep_lote.j29_codigo = ruas_lote.j14_codigo"/>
+        <join tipo="left" tabela="cadastro.zonas as zona_Lote"
+              condicao="ruas_cep_lote.j29_codigo = ruas_lote.j14_codigo"/>
+        <join tipo="inner" tabela="cadastro.bairro as bairro_lote" condicao="lote.j34_bairro = bairro_lote.j13_codi"/>
+
+
+    </juncoes>
+    <filtros>
+        <filtro label="matricula" condicao=" iptubase.j01_matric  = $matricula " obrigatorio="true"/>
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao campos="codigo_rua"/>
+</consulta>

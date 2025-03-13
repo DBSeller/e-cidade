@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require("classes/empenho.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require(modification("classes/empenho.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label("e60_numemp");
 $clrotulo->label("e60_codemp");
@@ -116,13 +116,13 @@ function js_entra(){
 }
 function js_pesquisae50_codord(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_pagordem',
                         'func_notaliquidacao.php?funcao_js=parent.js_mostrapagordem1|e50_codord|e60_numemp|e69_codnota',
                         'Pesquisa',
                         true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_pagordem','func_notaliquidacao.php?pesquisa_chave='+document.form1.e50_codord.value+'&funcao_js=parent.js_mostrapagordem','Pesquisa', false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pagordem','func_notaliquidacao.php?pesquisa_chave='+document.form1.e50_codord.value+'&funcao_js=parent.js_mostrapagordem','Pesquisa', false);
   }
 }
 function js_mostrapagordem(chave,erro, iCodNota){
@@ -159,7 +159,7 @@ function js_lancarRetencao(){
    var iCodOrd  = $F('e50_codord');
    var iCodNota = $F('e69_codnota');
    var lSession = "true";
-   js_OpenJanelaIframe('top.corpo', 'db_iframe_retencao',
+   js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_retencao',
                        'emp4_lancaretencoes.php?iNumNota='+iCodNota+'&iNumEmp='+iNumEmp+'&iCodOrd='+iCodOrd+"&lSession=false",
                        'Lancar Retenções', true);
      

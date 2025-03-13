@@ -1,0 +1,25 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="p61_codandam" label="codigoandamento" />
+        <campo campo="p78_despacho" label="despacho" />
+        <campo campo="p78_sequencial" label="sequencial" />
+        <campo campo="p78_data" label="data" />
+        <campo campo="p78_hora" label="hora" />
+        <campo campo="p92_processopai" label="processopai" />
+        <campo campo="p100_descricao" label="descricao" />
+
+    </campos>
+    <from tabela="procandam" />
+    <juncoes>
+        <join tipo="inner" tabela="processosvinculados" condicao="processosvinculados.p92_processofilho = procandam.p61_codproc" />
+        <join tipo="inner" tabela="procandamint" condicao="procandamint.p78_codandam = procandam.p61_codandam" />
+        <join tipo="inner" tabela="protocolo.tipodespacho" condicao="tipodespacho.p100_sequencial = procandamint.p78_tipodespacho" />
+    </juncoes>
+    <filtros>
+        <filtro label="idProcessoPai" condicao="p92_processopai = '$idProcessoPai'" obrigatorio="true" />
+    </filtros>
+    <agrupamento />
+    <ordenacao   campos=""/>
+
+</consulta>

@@ -1,0 +1,129 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010208' name='arrecadacao.parametroscobrancaregistrada' description="Parâmetros da cobrança registrada" prefix="ar28" label="Parâmetros da cobrança registrada" type="0">
+  <fields>
+    <field codigo="1009337" 
+           campo_api='' 
+           name="ar28_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial dos parâmetros da cobrança registrada." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='arrecadacao.parametroscobrancaregistrada_ar28_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009338" 
+           campo_api='' 
+           name="ar28_usuario" 
+           conteudo="varchar(30)" 
+           description="Usuário do Webservice da Caixa" 
+           inivalue="" 
+           label="Usuário" 
+           size="30" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Usuário" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011115" 
+           campo_api='' 
+           name="ar28_codban" 
+           conteudo="char(10)" 
+           description="Campo com o código do banco do webservice." 
+           inivalue="" 
+           label="Código do Banco" 
+           size="10" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Código do Banco" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011143" 
+           campo_api='' 
+           name="ar28_clientid" 
+           conteudo="varchar(1000)" 
+           description="Token com o ID do cliente para autenticação com Banco do Brasil." 
+           inivalue="" 
+           label="ClientID" 
+           size="1000" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="ClientID" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011144" 
+           campo_api='' 
+           name="ar28_clientsecret" 
+           conteudo="varchar(1000)" 
+           description="Token para autenticação com o Banco do Brasil." 
+           inivalue="" 
+           label="Client Secret" 
+           size="1000" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Client Secret" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011159" 
+           campo_api='' 
+           name="ar28_chavej" 
+           conteudo="varchar(10)" 
+           description="Código para acessar a transações do cliente." 
+           inivalue="0" 
+           label="Chave J" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Chave J" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="ar28_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_bancos" inner='t'>
+      <fieldfk name="ar28_codban" reference="db90_codban" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

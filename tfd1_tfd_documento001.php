@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tfd_documento_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tfd_documento_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $cltfd_documento = new cl_tfd_documento;
 $db_opcao = 1;
@@ -58,7 +58,7 @@ if(isset($incluir)){
     <center>
       <fieldset style='width: 75%;'> <legend><b>Documento</b></legend>
         <?
-        include("forms/db_frmtfd_documento.php");
+        include(modification("forms/db_frmtfd_documento.php"));
         ?>
 	    </fieldset>
     </center>

@@ -58,7 +58,7 @@ db_input('t24_descricao',40,$It24_descricao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bemtipos','func_bemtipos.php?funcao_js=parent.js_preenchepesquisa|t24_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bemtipos','func_bemtipos.php?funcao_js=parent.js_preenchepesquisa|t24_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bemtipos.hide();

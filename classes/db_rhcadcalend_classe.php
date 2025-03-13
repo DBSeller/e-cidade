@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -424,5 +424,53 @@ class cl_rhcadcalend {
      }
      return $sql;
   }
+
+  function sqlCalendarioLotacao( $rh53_calend = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+    $sql = "select ";
+    if($campos != "*" ) {
+
+      $campos_sql = explode("#",$campos);
+      $virgula    = "";
+
+      for($i = 0; $i < sizeof($campos_sql); $i++) {
+
+        $sql     .= $virgula.$campos_sql[$i];
+        $virgula  = ",";
+      }
+    } else {
+      $sql .= $campos;
+    }
+
+    $sql .= " from rhcadcalend ";
+    $sql .= "      left join calendf      on r62_calend  = rh53_calend";
+    $sql .= "      left join rhlotacalend on rh64_calend = rh53_calend";
+    $sql2 = "";
+
+    if($dbwhere == "") {
+
+      if($rh53_calend != null ) {
+        $sql2 .= " where rhcadcalend.rh53_calend = $rh53_calend ";
+      }
+    } else if($dbwhere != "") {
+      $sql2 = " where $dbwhere";
+    }
+
+    $sql .= $sql2;
+
+    if($ordem != null ) {
+
+      $sql       .= " order by ";
+      $campos_sql = explode("#",$ordem);
+      $virgula    = "";
+
+      for($i = 0; $i < sizeof($campos_sql); $i++) {
+
+        $sql    .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+
+    return $sql;
+  }
 }
-?>

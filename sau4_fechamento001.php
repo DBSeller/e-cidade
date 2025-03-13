@@ -1,40 +1,40 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_utils.php");
-require_once ("dbforms/db_classesgenericas.php");
-require_once ("libs/db_stdlibwebseller.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
 
-db_postmemory ( $HTTP_POST_VARS );
+db_postmemory ( $_POST );
 $oDaoSauFechamento    = db_utils::getdao('sau_fechamento');
 $oDaoSauFechapront    = db_utils::getdao('sau_fechapront');
 $oDaoProntproced      = db_utils::getdao('prontproced');
@@ -75,43 +75,48 @@ if (isset ( $incluir )) {
   }
   $sSql     = $oDaoProntproced->sql_query_procedimentos("", "*", "", $sWhere);
   $rsResult = $oDaoSauFechamento->sql_record($sSql);
-  
+
+  /*PLUGIN ESF - Adicionando mais uma condição no IF do incluir - NÃO ALTERAR O IF ABAIXO*/
   if ($oDaoSauFechamento->numrows > 0) {
 
     db_inicio_transacao ();
 
-    //inclusao fechamento 
+    //inclusao fechamento
     $oDaoSauFechamento->sd97_c_tipo          = "Fechada";
     $oDaoSauFechamento->sd97_d_dataini       = $dIni;
     $oDaoSauFechamento->sd97_d_datafim       = $dFim;
     $oDaoSauFechamento->sd97_i_compmes       = $sd97_i_compmes;
     $oDaoSauFechamento->sd97_i_compano       = $sd97_i_compano;
     $oDaoSauFechamento->sd97_i_financiamento = $sd97_i_financiamento;
-    $oDaoSauFechamento->sd97_i_login         = DB_getsession ("DB_id_usuario");
+    $oDaoSauFechamento->sd97_i_login         = DB_getsession("DB_id_usuario");
     $oDaoSauFechamento->sd97_c_hora          = db_hora();
     $oDaoSauFechamento->incluir ( null );
 
     if ($oDaoSauFechamento->erro_status != "0") {
+      /*PLUGIN ESF - Adicionando mais uma condição validando procedimetno ambulatorio */
 
       $sSql      = "insert into sau_fechapront ";
       $sCampos   = "nextval('sau_fechapront_sd98_codigo_seq'),sd29_i_codigo," . $oDaoSauFechamento->sd97_i_codigo;
       $sSql     .= $oDaoProntproced->sql_query_procedimentos("", $sCampos, "", $sWhere);
-      $rsResult  = pg_query($sSql);
+      $rsResult  = db_query($sSql);
       if (pg_affected_rows($rsResult) == 0 || pg_affected_rows($rsResult) == false) {
 
         $oDaoSauFechamento->erro_msg    = " Nenhum registro encontrado![2] ";
         $oDaoSauFechamento->erro_status = "0";
-
       }
+
+      /*PLUGIN ESF - fecha condição validando procedimetno ambulatorio */
+
+
+      /*PLUGIN ESF - Na inclusão sau_fechapront, incluso procedimento ESF - NÃO ALTERAR O IF ABAIXO*/
 
     }
     db_fim_transacao ();
-      
+
   } else {
 
     $oDaoSauFechamento->erro_status = "0";
     $oDaoSauFechamento->erro_msg    = " Nenhum registro encontrado! ";
-
   }
 
 } else if (isset ( $alterar )) {
@@ -130,17 +135,23 @@ if (isset ( $incluir )) {
   }
   $sSql     = $oDaoProntproced->sql_query_procedimentos("", "*", "", $sWhere);
   $rsResult = $oDaoSauFechamento->sql_record($sSql);
+
+  /*PLUGIN ESF - Adicionando mais uma condição no IF do alterar - NÃO ALTERAR O IF ABAIXO*/
   if ($oDaoSauFechamento->numrows > 0) {
 
     db_inicio_transacao();
     $oDaoSauFechamento->sd97_c_hora = db_hora();
     $oDaoSauFechamento->alterar($sd97_i_codigo);
+
+    /*PLUGIN ESF - Adicionando mais uma condição no IF da exclusao da sau_fechapront - NÃO ALTERAR O IF ABAIXO*/
     if ($oDaoSauFechamento->erro_status != "0") {
 
       $oDaoSauFechapront->excluir("", "sd98_i_fechamento= $sd97_i_codigo");
+
+      /*PLUGIN ESF - Adicionando mais uma condição no IF da nova inclusão da sau_fechapront - NÃO ALTERAR O IF ABAIXO*/
       if ($oDaoSauFechapront->erro_status != "0") {
 
-        $sSql      = " insert into sau_fechapront "; 
+        $sSql      = " insert into sau_fechapront ";
         $sCampos   = "nextval('sau_fechapront_sd98_codigo_seq'),sd29_i_codigo," . $oDaoSauFechamento->sd97_i_codigo;
         $sSql     .= $oDaoProntproced->sql_query_procedimentos("", $sCampos, "", $sWhere);
         $rsResult  = db_query($sSql);
@@ -148,28 +159,26 @@ if (isset ( $incluir )) {
 
           $oDaoSauFechamento->erro_msg   = " Nenhum registro encontrado![2] ";
           $cllab_fechamento->erro_status = "0";
-
         }
       } else {
 
         $oDaoSauFechamento->erro_status = "0";
         $oDaoSauFechamento->erro_msg    = " Erro ao excluir: ".$oDaoSauFechapront->erro_msg;
-
       }
-
     }
+
+    /** PLUGIN ESF - Na alteração sau_fechapront, exclui se houver procedimentos ESF */
     db_fim_transacao ();
 
   } else {
 
     $oDaoSauFechamento->erro_status = "0";
     $oDaoSauFechamento->erro_msg    = " Nenhum registro encontrado! ";
-
   }
 } elseif ($db_opcao == 1 && !isset($sd97_d_dataini)) {
 
   //Pega o ultimo fechamento e incrementa os valores
-  $sSql =  $oDaoSauFechamento->sql_query ("", 
+  $sSql =  $oDaoSauFechamento->sql_query ("",
                                           "sd97_i_compmes,sd97_i_compano,sd97_d_datafim",
                                           "sd97_i_compano desc,sd97_i_compmes desc limit 1");
   $result1 = $oDaoSauFechamento->sql_record ($sSql);
@@ -202,6 +211,10 @@ if (isset ( $incluir )) {
 
 }
 
+
+
+/*PLUGIN ESF - Adicionado Funções para tratar os procedimentos do ESF */
+
 ?>
 <html>
   <head>
@@ -226,7 +239,7 @@ if (isset ( $incluir )) {
         <td height="430" align="left" valign="top" bgcolor="#CCCCCC"><br>
           <br><br>
           <?
-            include ("forms/db_frmsau_fechamento.php");
+            include(modification("forms/db_frmsau_fechamento.php"));
           ?>
         </td>
       </tr>

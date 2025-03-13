@@ -179,7 +179,7 @@ function js_carregar(){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_db_sysfuncoes','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?funcao_js=parent.js_preenchepesquisa|codfuncao','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_sysfuncoes','db_iframe_db_sysfuncoes','func_db_sysfuncoes.php?funcao_js=parent.js_preenchepesquisa|codfuncao','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_sysfuncoes.hide();

@@ -128,7 +128,7 @@ function js_mostraorcparamrel1(chave1,chave2,chave3){
 	
 	
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conrelinfo','func_conrelinfo.php?funcao_js=parent.js_preenchepesquisa|c83_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conrelinfo','func_conrelinfo.php?funcao_js=parent.js_preenchepesquisa|c83_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conrelinfo.hide();

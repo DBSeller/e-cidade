@@ -1,0 +1,113 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010249' name='esocial.avaliacaogruporespostaprocesso' description="Tabela de processos" prefix="eso05" label="avaliacaogruporespostaprocesso" type="0">
+  <fields>
+    <field codigo="1009584" 
+           campo_api='' 
+           name="eso05_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.avaliacaogruporespostaprocesso_eso05_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009585" 
+           campo_api='' 
+           name="eso05_avaliacaogruporesposta" 
+           conteudo="int4" 
+           description="Código do preenchimento" 
+           inivalue="0" 
+           label="Preenchimento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Preenchimento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009586" 
+           campo_api='' 
+           name="eso05_cgm" 
+           conteudo="int4" 
+           description="Cgm do empregador" 
+           inivalue="0" 
+           label="CGM" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="CGM" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009587" 
+           campo_api='' 
+           name="eso05_processo" 
+           conteudo="varchar(100)" 
+           description="Número do processo" 
+           inivalue="" 
+           label="Processo" 
+           size="100" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009588" 
+           campo_api='' 
+           name="eso05_tipoprocesso" 
+           conteudo="int4" 
+           description="Tipo de Processo" 
+           inivalue="0" 
+           label="Tipo de Processo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso05_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="eso05_cgm" reference="z01_numcgm" /> 
+    </foreignkey>
+    <foreignkey reference="avaliacaogruporesposta" inner='t'>
+      <fieldfk name="eso05_avaliacaogruporesposta" reference="db107_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

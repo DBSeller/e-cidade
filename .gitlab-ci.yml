@@ -1,0 +1,283 @@
+stages:
+  - test
+  - staging
+  - cleanup
+  - tagging
+
+image:
+  name: dbseller:php56-ci
+
+variables:
+  GIT_CLEAN_FLAGS: none
+  GIT_SSL_NO_VERIFY: 1
+
+teste_phinx_mr:
+ stage: test
+ script:
+   - echo "RECURSO DESABILITADO, UTILIZAR O ARTISAN PARA MIGRAÇÕES" ; exit 1
+ rules:
+   - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+     when: never
+   - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+     changes:
+       - db/migrations/**/*
+
+gerar_base_artisan_mr_nuvem:
+  stage: test
+  allow_failure: true
+  variables:
+    GIT_STRATEGY: none
+    GIT_DEPTH: 0
+  script:
+    - |
+      ret=$(sshpass -p ${GITLAB_PASSWORD} ssh -o StrictHostKeyChecking=no ${GITLAB_USER}@${GITLAB_HOST} "bash /home/${GITLAB_USER}/build-database artisan $CI_MERGE_REQUEST_TITLE" 2>/dev/null)
+      echo "RETORNO => $ret"
+      if [[ "$ret" != "0" ]]; then
+        echo "FALHOU AO CRIAR A BASE DE TESTE"
+        exit 1
+      fi
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+      changes:
+        - database/migrations/**/*
+
+testar_base_artisan_mr_nuvem:
+  stage: test
+  allow_failure: true
+  needs: ["gerar_base_artisan_mr_nuvem"]
+  script:
+    - git fetch --all -p
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction -o --no-ansi --no-scripts --no-progress --prefer-dist install
+    - cp -rf .env.example .env > /dev/null 2>&1
+    - sed -i 's|^DB_CONNECTION.*|DB_CONNECTION=pgsql|g' .env > /dev/null 2>&1
+    - sed -i "s|^DB_HOST.*|DB_HOST=${GITLAB_CLUSTER_IP}|g" .env > /dev/null 2>&1
+    - sed -i "s|^DB_PORT.*|DB_PORT=${GITLAB_CLUSTER_PORTA}|g" .env > /dev/null 2>&1
+    - sed -i "s|^DB_DATABASE.*|DB_DATABASE=dbportal_schema_v2_3_57_${CI_MERGE_REQUEST_TITLE//[M]/m}|g" .env > /dev/null 2>&1
+    - sed -i "s|^DB_USERNAME.*|DB_USERNAME=${GITLAB_CLUSTER_USUARIO}|g" .env > /dev/null 2>&1
+    - sed -i 's|^DB_PASSWORD.*|DB_PASSWORD=${GITLAB_CLUSTER_SENHA}|g' .env > /dev/null 2>&1
+    - $(which php) artisan cache:clear > /dev/null 2>&1
+    - $(which php) artisan key:generate > /dev/null 2>&1
+    - $(which php) artisan passport:keys > /dev/null 2>&1
+    - $(which php) artisan migrate
+    - sed -i "s|^DB_DATABASE.*|DB_DATABASE=dbportal_demo_v2_3_57_${CI_MERGE_REQUEST_TITLE//[M]/m}|g" .env > /dev/null 2>&1
+    - $(which php) artisan migrate
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+      changes:
+        - database/migrations/**/*
+
+remover_base_artisan_mr_nuvem:
+  stage: cleanup
+  allow_failure: true
+  needs: ["testar_base_artisan_mr_nuvem"]
+  variables:
+    GIT_STRATEGY: none
+    GIT_DEPTH: 0
+  script:
+    - |
+      ret=$(sshpass -p ${GITLAB_PASSWORD} ssh -o StrictHostKeyChecking=no ${GITLAB_USER}@${GITLAB_HOST} "bash /home/${GITLAB_USER}/drop-database artisan $CI_MERGE_REQUEST_TITLE" 2>/dev/null)
+      echo "RETORNO => $ret"
+      if [[ "$ret" != "0" ]]; then
+        echo "FALHOU AO REMOVER A BASE DE TESTE"
+        exit 1
+      fi
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+      changes:
+        - database/migrations/**/*
+
+gerar_base_artisan_mr:
+  stage: test
+  variables:
+    GIT_STRATEGY: none
+    GIT_DEPTH: 0
+  script:
+    - sshpass -p ${BUILD_PASSWORD} ssh -o StrictHostKeyChecking=no ${BUILD_USER}@${BUILD_HOST} "docker exec e-cidade-php bash -c 'cd /var/www/html && bash build-database artisan $CI_MERGE_REQUEST_TITLE'"
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+      changes:
+        - database/migrations/**/*
+
+testar_base_artisan_mr:
+  stage: test
+  needs: ["gerar_base_artisan_mr"]
+  script:
+    - git fetch --all -p
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction -o --no-ansi --no-scripts --no-progress --prefer-dist install
+    - cp -rf .env.example .env > /dev/null 2>&1
+    - sed -i 's|^DB_CONNECTION.*|DB_CONNECTION=pgsql|g' .env > /dev/null 2>&1
+    - sed -i "s|^DB_HOST.*|DB_HOST=${PGS_HOST}|g" .env > /dev/null 2>&1
+    - sed -i "s|^DB_PORT.*|DB_PORT=${PGS_PORT}|g" .env > /dev/null 2>&1
+    - sed -i "s|^DB_DATABASE.*|DB_DATABASE=dbportal_schema_v2_3_57_${CI_MERGE_REQUEST_TITLE//[M]/m}|g" .env > /dev/null 2>&1
+    - sed -i "s|^DB_USERNAME.*|DB_USERNAME=${PGS_USER}|g" .env > /dev/null 2>&1
+    - sed -i 's|^DB_PASSWORD.*|DB_PASSWORD=|g' .env > /dev/null 2>&1
+    - $(which php) artisan cache:clear > /dev/null 2>&1
+    - $(which php) artisan key:generate > /dev/null 2>&1
+    - $(which php) artisan passport:keys > /dev/null 2>&1
+    - $(which php) artisan migrate
+    - sed -i "s|^DB_DATABASE.*|DB_DATABASE=dbportal_demo_v2_3_57_${CI_MERGE_REQUEST_TITLE//[M]/m}|g" .env > /dev/null 2>&1
+    - $(which php) artisan migrate
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+      changes:
+        - database/migrations/**/*
+
+remover_base_artisan_mr:
+  stage: cleanup
+  allow_failure: true
+  needs: ["testar_base_artisan_mr"]
+  variables:
+    GIT_STRATEGY: none
+    GIT_DEPTH: 0
+  script:
+    - sshpass -p ${BUILD_PASSWORD} ssh -o StrictHostKeyChecking=no ${BUILD_USER}@${BUILD_HOST} "docker exec e-cidade-php bash -c 'cd /var/www/html && bash drop-database artisan $CI_MERGE_REQUEST_TITLE'"
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+      changes:
+        - database/migrations/**/*
+
+teste_nivelamento_mr:
+  stage: test
+  script:
+    - git fetch --all -p
+    - COMMITS_BEHIND=$(git rev-list --count "origin/${CI_MERGE_REQUEST_TITLE}..origin/master")
+    - |-
+        if [[ $COMMITS_BEHIND -gt 0 ]]; then
+          echo "BRANCH DESNIVELADA. $COMMITS_BEHIND COMMITS ATRÁS DA MASTER"
+          exit 1
+        fi
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+
+teste_qualidade_mr:
+  stage: test
+  script:
+    - git fetch --all -p
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction -o --no-ansi --no-scripts --no-progress --prefer-dist install
+    - |-
+        for FILE in $(git diff --name-only --diff-filter=d origin/master origin/${CI_MERGE_REQUEST_TITLE} src/ app/); do
+          $(which php) -d memory_limit=-1 $(which composer) sniff-check ${FILE}
+        done
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+
+teste_unitario_mr:
+  stage: test
+  script:
+    - git fetch --all -p
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction -o --no-ansi --no-scripts --no-progress --prefer-dist install
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction -o --no-ansi --no-scripts dump-autoload
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction --no-ansi test
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+
+teste_integracao_mr:
+  stage: test
+  needs: ["teste_nivelamento_mr","teste_qualidade_mr","teste_unitario_mr"]
+  script:
+    - echo "Criando o pacote"
+    - git fetch --all -p
+    - git diff --name-only origin/master
+    - echo "gerar_base_integracao_mr"
+    - echo "criar_api_melhoria_integracao_mr"
+    - echo "criar_ambiente_ecidade_integracao_mr"
+    - echo "teste_integracao_mr"
+  rules:
+    - if: $CI_MERGE_REQUEST_TITLE =~ /.*draft.*/i
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+
+teste_nivelamento:
+  stage: test
+  script:
+    - git fetch --all -p
+    - COMMITS_BEHIND=$(git rev-list --count "origin/${CI_COMMIT_REF_NAME}..origin/master")
+    - |-
+        if [[ $COMMITS_BEHIND -gt 0 ]]; then
+          echo "BRANCH DESNIVELADA. $COMMITS_BEHIND COMMITS ATRÁS DA MASTER"
+          exit 1
+        fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "master" && $CI_COMMIT_BRANCH != "php74" && $CI_COMMIT_TAG == null
+
+teste_qualidade:
+  stage: test
+  script:
+    - git fetch --all -p
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction -o --no-ansi --no-scripts --no-progress --prefer-dist install
+    - |-
+        for FILE in $(git diff --name-only --diff-filter=d origin/master origin/${CI_COMMIT_REF_NAME} src/ app/); do
+          $(which php) -d memory_limit=-1 $(which composer) sniff-check ${FILE}
+        done
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "master" && $CI_COMMIT_BRANCH != "php74" && $CI_COMMIT_TAG == null
+      changes:
+        - src/**/*
+        - app/**/*
+
+teste_unitario:
+  stage: test
+  script:
+    - git fetch --all -p
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction -o --no-ansi --no-scripts --no-progress --prefer-dist install
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction -o --no-ansi --no-scripts dump-autoload
+    - $(which php) -d memory_limit=-1 $(which composer) --no-interaction --no-ansi test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "master" && $CI_COMMIT_BRANCH != "php74" && $CI_COMMIT_TAG == null
+
+gerar_ambiente_teela_web_api:
+  stage: staging
+  variables:
+    GIT_STRATEGY: none
+    GIT_DEPTH: 0
+  script:
+    - sshpass -p ${BUILD_PASSWORD} ssh -o StrictHostKeyChecking=no ${BUILD_USER}@${BUILD_HOST} "docker exec e-cidade-php bash -c 'cd /var/www/html && bash build $CI_COMMIT_REF_NAME $CUSTOM_ENVIRONMENT'"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"
+
+gerar_ambiente_teela:
+  stage: staging
+  variables:
+    GIT_STRATEGY: none
+    GIT_DEPTH: 0
+  script:
+    - sshpass -p ${BUILD_PASSWORD} ssh -o StrictHostKeyChecking=no ${BUILD_USER}@${BUILD_HOST} "docker exec e-cidade-php bash -c 'cd /var/www/html && bash build $CI_COMMIT_REF_NAME $CUSTOM_ENVIRONMENT'"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "master" && $CI_COMMIT_BRANCH != "php74" && $CI_COMMIT_TAG == null
+
+remover_ambiente_teela:
+  stage: cleanup
+  allow_failure: true
+  variables:
+    GIT_STRATEGY: none
+    GIT_DEPTH: 0
+  script:
+    - sshpass -p ${BUILD_PASSWORD} ssh -o StrictHostKeyChecking=no ${BUILD_USER}@${BUILD_HOST} "docker exec e-cidade-php bash -c 'cd /var/www/html && rm -rf $CI_COMMIT_REF_NAME'"
+  rules:
+    - if: $CI_COMMIT_TAG
+
+gerar_tag:
+  stage: tagging
+  script:
+    - echo "TESTANDO ATIVAÇÃO DE JOB PARA TAG APOS MR"
+    - env
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "master"

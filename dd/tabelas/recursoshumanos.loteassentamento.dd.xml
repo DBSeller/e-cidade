@@ -1,0 +1,73 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo="1010450" name="loteassentamento" description="Guarda o vinculo do lote com os assentamentos" prefix="h24"
+       label="loteassentamento" type="0">
+    <fields>
+        <field codigo="1010525"
+               name="h24_sequencial"
+               conteudo="int4"
+               description="Sequencial"
+               inivalue="0"
+               label="Sequencial"
+               size="15"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Sequencial"
+               reference=""
+               ispk="t"
+               hassequence="t">
+
+            <sequence name="loteassentamentovinculo_h24_sequencial_seq"></sequence>
+
+        </field>
+        <field codigo="1010526"
+               name="h24_lotelancamento"
+               conteudo="int4"
+               description="Lote"
+               inivalue="0"
+               label="Lote"
+               size="15"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Lote"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+        <field codigo="1010527"
+               name="h24_assenta"
+               conteudo="int4"
+               description="Assentamento"
+               inivalue="0"
+               label="Assentamento"
+               size="15"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Assentamento"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+    </fields>
+    <primarykey>
+        <fieldpk name="h24_sequencial"></fieldpk>
+    </primarykey>
+    <foreignkeys>
+        <foreignkey reference="assenta">
+            <fieldfk name="h24_assenta" reference="h16_codigo" inner='t'></fieldfk>
+        </foreignkey>
+        <foreignkey reference="lotelancamento">
+            <fieldfk name="h24_lotelancamento" reference="h23_sequencial" inner='t'></fieldfk>
+        </foreignkey>
+    </foreignkeys>
+</table>

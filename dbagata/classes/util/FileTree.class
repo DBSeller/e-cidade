@@ -40,7 +40,7 @@ class FileTree extends GtkCTree
         GtkCTree::set_selection_mode(GTK_SELECTION_SINGLE);
         GtkCTree::set_line_style(GTK_CTREE_LINES_SOLID);
         GtkCTree::column_titles_hide();
-        GtkCTree::connect_object('tree-select-row', array(&$this, 'Abrir'));
+        GtkCTree::connect_object('tree-select-row', array($this, 'Abrir'));
         $this->BotaoOk = new GtkButton;
         $this->SetShowExtension(true);
     }

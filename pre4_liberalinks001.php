@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,34 +25,34 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select max(m_codigo) from db_menupref");
+  $result = db_query("select max(m_codigo) from db_menupref");
   $codigo = pg_result($result,0,0) == ""?"1":((integer)pg_result($result,0,0) + 1);
   $ativo = @$ativo=="1"?"1":"0";
   $publico = @$publico=="f"?"f":"t";
-  pg_exec("BEGIN");
-  $result = pg_exec("INSERT INTO db_menupref VALUES($codigo,
+  db_query("BEGIN");
+  $result = db_query("INSERT INTO db_menupref VALUES($codigo,
                                           '$descricao',
 										  '$arquivo',
 										  '$imgs',
 										  '$ativo',
 										  '$publico')");
   if(pg_cmdtuples($result) > 0) {
-    pg_exec("COMMIT");
+    db_query("COMMIT");
 	db_msgbox("Item Incluido");
   } else {
-    pg_exec("ROLLBACK");
+    db_query("ROLLBACK");
 	echo "Erro incluindo item em db_menupref.<br><a href=\"\" onclick=\"history.back();return false\">Voltar</a>\n";
 	exit;
   }
 } else if(isset($HTTP_POST_VARS["atualizar"])) {
-  pg_exec("BEGIN");
+  db_query("BEGIN");
   if($HTTP_POST_VARS["codigo"] != "") {
       db_postmemory($HTTP_POST_VARS);
 	if(isset($ativo)){
@@ -65,7 +65,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
 	}else{
 	  $publico = "f";
 	}
-    $result = pg_exec("UPDATE db_menupref SET
+    $result = db_query("UPDATE db_menupref SET
 	                     m_descricao = '$descricao',
 						 m_arquivo = '$arquivo',
 						 m_imgs = '$imgs',
@@ -75,18 +75,18 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   }
   $tam_vetor = sizeof($HTTP_POST_VARS);
   reset($HTTP_POST_VARS);
-  pg_exec("UPDATE db_menupref SET m_ativo = '0'");
+  db_query("UPDATE db_menupref SET m_ativo = '0'");
   for($i = 0;$i < $tam_vetor;$i++) {
     if(db_indexOf(key($HTTP_POST_VARS),"cb") > 0) {
 	  $ativo = $HTTP_POST_VARS[key($HTTP_POST_VARS)] != ""?"1":"0";
 	  $cod = $HTTP_POST_VARS[key($HTTP_POST_VARS)];
-	  pg_exec("UPDATE db_menupref SET m_ativo = '$ativo' WHERE m_codigo = $cod");
+	  db_query("UPDATE db_menupref SET m_ativo = '$ativo' WHERE m_codigo = $cod");
 	}
     next($HTTP_POST_VARS);
   }  
-  pg_exec("COMMIT");
+  db_query("COMMIT");
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("DELETE FROM db_menupref WHERE m_codigo = ".$HTTP_POST_VARS["codigo"]);
+  db_query("DELETE FROM db_menupref WHERE m_codigo = ".$HTTP_POST_VARS["codigo"]);
 }
 
 
@@ -195,7 +195,7 @@ function js_incluir() {
     </table>
   <table border="0" cellspacing="0" cellpadding="0">
   <?
-  $result = pg_exec("SELECT m_codigo as codigo,m_descricao as descricao,m_arquivo as arquivo,m_imgs as imgs,m_ativo as ativo,m_publico as publico FROM db_menupref ORDER BY m_codigo");
+  $result = db_query("SELECT m_codigo as codigo,m_descricao as descricao,m_arquivo as arquivo,m_imgs as imgs,m_ativo as ativo,m_publico as publico FROM db_menupref ORDER BY m_codigo");
   $numrows = pg_numrows($result);
   $cor = "#33CCFF";
   for($i = 0;$i < $numrows;$i++) {

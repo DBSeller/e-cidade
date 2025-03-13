@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -229,15 +229,15 @@ class Cidadao {
   /**
    * Cria uma nova instancia do cidadão
    * @param integer $iCodigo codigo do cidadao ov02_sequencial;
+   * @param integer $iOrdem
    */
-  function __construct($iCodigo = null) {
+  public function __construct($iCodigo = null, $iOrdem = null) {
 
     if (!empty($iCodigo)) {
 
-      $oDaoCidadao      = db_utils::getDao("cidadao");
-
+      $oDaoCidadao      = new cl_cidadao();
       $sSqlDadosCidadao = $oDaoCidadao->sql_query_cadastrounico($iCodigo,
-                                                                 null,
+                                                                $iOrdem,
                                                                  "cidadao.*, as02_sequencial",
                                                                  "ov02_seq desc limit 1");
       $rsDadosCidadao   = $oDaoCidadao->sql_record($sSqlDadosCidadao);
@@ -255,7 +255,7 @@ class Cidadao {
         $this->setEndereco($oDadosCidadao->ov02_endereco);
         $this->setIdentidade($oDadosCidadao->ov02_ident);
         $this->setMunicipio($oDadosCidadao->ov02_munic);
-        $this->setNome($oDadosCidadao->ov02_nome);
+        $this->setNome( addslashes($oDadosCidadao->ov02_nome));
         $this->setNumero($oDadosCidadao->ov02_numero);
         $this->setUF($oDadosCidadao->ov02_uf);
         $this->iSequencialCadastroUnico  = $oDadosCidadao->as02_sequencial;
@@ -439,7 +439,7 @@ class Cidadao {
    * @param string $sNome Nome do cidadao
    */
   public function setNome($sNome) {
-    $this->sNome = $sNome;
+    $this->sNome = mb_strtoupper(trim($sNome));
   }
 
   /**
@@ -629,7 +629,7 @@ class Cidadao {
     $oDaoCidadao->ov02_cnpjcpf            = $this->getCpfCnpj();
     $oDaoCidadao->ov02_compl              = $this->getComplemento();
     $oDaoCidadao->ov02_data               = date("Y-m-d", db_getsession("DB_datausu"));
-    $oDaoCidadao->ov02_endereco           = $this->getEndereco();
+    $oDaoCidadao->ov02_endereco           = pg_escape_string($this->getEndereco());
     $oDaoCidadao->ov02_ident              = $sIdentidade;
     $oDaoCidadao->ov02_munic              = $this->getMunicipio();
     $oDaoCidadao->ov02_uf                 = $this->getUF();
@@ -639,6 +639,23 @@ class Cidadao {
     $oDaoCidadao->ov02_seq                = $this->iSequencial;
     $oDaoCidadao->ov02_datanascimento     = $this->dtNascimento;
     $oDaoCidadao->ov02_sexo               = $this->sSexo;
+
+    if (!empty($this->iCodigo) && !empty($this->iSequencial)) {
+
+      $daoCidadao = new cl_cidadao();
+      $buscaCidadao = $daoCidadao->sql_query_file($this->iCodigo, $this->iSequencial);
+      $resBuscaCidadao = db_query($buscaCidadao);
+      if (!$resBuscaCidadao) {
+        throw new Exception("Ocorreu um erro ao buscar os dados do cidadão.");
+      }
+
+      if (pg_num_rows($resBuscaCidadao) === 0) {
+        $oDaoCidadao->incluir($this->iCodigo, $this->iSequencial);
+        if ($oDaoCidadao->erro_status === "0") {
+          throw new Exception("Ocorreu um erro ao salvar os dados do cidadão. {$oDaoCidadao->erro_msg}");
+        }
+      }
+    }
 
     if (empty($this->iCodigo)) {
 
@@ -663,7 +680,7 @@ class Cidadao {
      */
     $sWhereTelefone = " ov07_cidadao = {$this->getCodigo()}";
     $sWhereTelefone.= " and ov07_seq = {$this->getSequencialInterno()}";
-    
+
     $oDaoCidadaoTelefone = new cl_cidadaotelefone();
     $oDaoCidadaoTelefone->excluir(null, $sWhereTelefone);
     if ($oDaoCidadaoTelefone->erro_status == 0) {
@@ -756,10 +773,10 @@ class Cidadao {
     if ($this->getMae() != null) {
       $aFiliacao[] = $this->getMae();
     }
-    
+
     $oDaoCidadaoFiliacao->ov29_cidadao     = $this->getCodigo();
     $oDaoCidadaoFiliacao->ov29_cidadao_seq = $this->getSequencialInterno();
-    
+
     foreach ($aFiliacao as $oFiliacao) {
 
       $oDaoCidadaoFiliacao->ov29_cidadaovinculo     = $oFiliacao->getCidadao()->getCodigo();
@@ -980,7 +997,6 @@ class Cidadao {
    * @return string
    */
   public function getDataNascimento() {
-
     return $this->dtNascimento;
   }
 
@@ -989,7 +1005,6 @@ class Cidadao {
    * @param string $sSexo
    */
   public function setSexo ($sSexo) {
-
     $this->sSexo = $sSexo;
   }
   /**
@@ -997,7 +1012,6 @@ class Cidadao {
    * @return string
    */
   public function getSexo () {
-
     return $this->sSexo ;
   }
 
@@ -1085,7 +1099,7 @@ class Cidadao {
 
     $aEmail = $this->aEmails;
     foreach ($aEmail as $oEmail) {
-      
+
       if ($sEmail == $oEmail->getEmail()) {
         return;
       }
@@ -1113,7 +1127,7 @@ class Cidadao {
         unset($oEmail);
       }
     }
-    
+
     $this->lModificacaoEmail = true;
   }
 
@@ -1204,5 +1218,68 @@ class Cidadao {
       }
     }
   }
+
+  /**
+   * @param $nome
+   * @param $documento
+   *
+   * @return bool|Cidadao
+   */
+  public static function getPorDocumentoENome($nome, $documento) {
+    return self::processarBusca($documento, $nome);
+  }
+
+  /**
+   * @param $documento
+   *
+   * @return bool|Cidadao
+   */
+  public static function getPorDocumento($documento) {
+    return self::processarBusca($documento);
+  }
+
+  /**
+   * @param $nome
+   * @param $documento
+   *
+   * @return bool|Cidadao
+   * @throws DBException
+   * @throws ParameterException
+   */
+  private static function processarBusca($documento, $nome = null) {
+
+    $documento = trim($documento);
+    if (empty($documento)) {
+      throw new ParameterException("Documento não informado.");
+    }
+
+    $where = array(
+      "cidadao.ov02_cnpjcpf = '{$documento}'",
+    );
+
+    if (!empty($nome)) {
+
+      $nome = strtoupper(trim($nome));
+      $where[] = "trim(cidadao.ov02_nome) = '{$nome}'";
+    }
+
+    $where = implode(' and ', $where);
+    $daoCidadao = new cl_cidadao();
+    $buscaCidadao = $daoCidadao->sql_query_file(null, null, 'ov02_sequencial,ov02_seq', 'ov02_seq desc limit 1', $where);
+    $resCidadao   = db_query($buscaCidadao);
+    if (!$resCidadao) {
+      throw new DBException("Ocorreu um erro ao buscar o cidadão com documento: {$documento}.");
+    }
+
+    if (pg_num_rows($resCidadao) === 1) {
+
+      $stdCidadao = db_utils::fieldsMemory($resCidadao, 0);
+      return new Cidadao($stdCidadao->ov02_sequencial, $stdCidadao->ov02_seq);
+    }
+    return false;
+  }
+
+  public function __clone() {
+    $this->iSequencial += 1;
+  }
 }
-?>

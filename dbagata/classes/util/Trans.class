@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -3828,7 +3828,7 @@ class Trans
     *  class member variables - thus we have to use a common
     *  global to hold the default instance ;-)
     */
-    function & GetDefaultInstance()
+    static function GetDefaultInstance()
     {
         global $__default_trans_instance;
         
@@ -3852,9 +3852,9 @@ class Trans
     *
     *    'the _white_ dog'   vs.   'o cachorro _branco_'
     */
-    function Translate($msg,$p1=null,$p2=null,$p3=null)
+    static function Translate($msg,$p1=null,$p2=null,$p3=null)
     {
-        $inst = & Trans::GetDefaultInstance();
+        $inst = Trans::GetDefaultInstance();
         
         //
         // $nls will become our localized message, if one would
@@ -3921,9 +3921,9 @@ class Trans
     /* switches to another language. If the specified language
     /* is not defined, an error message is generated
     /***********************************************************/
-    function SetLanguage($lang, $showMsg = true)
+    static function SetLanguage($lang, $showMsg = true)
     {
-        $inst = & Trans::GetDefaultInstance();
+        $inst = Trans::GetDefaultInstance();
         
         if ( ! $inst->messages[$lang] )
         {

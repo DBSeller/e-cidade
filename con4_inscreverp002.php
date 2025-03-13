@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_conencerramento_classe.php");
-include("classes/db_conencerramentolancam_classe.php");
-include("classes/db_conlancam_classe.php");
-include("classes/db_conlancamval_classe.php");
-include("classes/db_conlancamlr_classe.php");
-include("classes/db_conlancamdoc_classe.php");
-include("classes/db_conlancamemp_classe.php");
-include("classes/db_empelemento_classe.php");
-include("libs/db_libcontabilidade.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_conencerramento_classe.php"));
+include(modification("classes/db_conencerramentolancam_classe.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("classes/db_conlancamlr_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_conlancamemp_classe.php"));
+include(modification("classes/db_empelemento_classe.php"));
+include(modification("libs/db_libcontabilidade.php"));
 
 $clconencerramento  = new cl_conencerramento();
 $post               = db_utils::postmemory($_POST);

@@ -24,6 +24,7 @@ DROP SEQUENCE IF EXISTS autolevanta_y117_sequencial_seq;
 ALTER TABLE fiscalprocrec drop COLUMN y45_percentual;
 
 alter table parfiscal drop column y32_templatealvarasanitariopermanente;
+alter table parfiscal drop column y32_templateautoinfracao;
 
 /**
  * FIM TRIBUTÁRIO

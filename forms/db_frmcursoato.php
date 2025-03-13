@@ -26,7 +26,7 @@
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcursoato->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -140,7 +140,7 @@ function js_mostraatolegal1(chave1,chave2){
 }
 function js_retornaPesquisaSerie(oAjax){
  js_removeObj("msgBox");
- var oRetorno = eval("("+oAjax.responseText+")");
+ var oRetorno = JSON.parse(oAjax.responseText);
  sHtml = '<tr><td colspan="2">';
  sHtml += '<fieldset width="95%"><legend><b> Etapas do curso '+$('ed29_c_descr').value+'</b></legend>';
  sHtml += '<table align="center" width="80%" border="0"><tr><td valign="top" width="50%">';
@@ -218,7 +218,7 @@ function js_PesquisaSerieIncluida(){
 }
 function js_retornaPesquisaSerieIncluida(oAjax){
  js_removeObj("msgBox");
- var oRetorno = eval("("+oAjax.responseText+")");
+ var oRetorno = JSON.parse(oAjax.responseText);
  sHtml = '<tr><td colspan="2">';
  sHtml += '<fieldset width="95%"><legend><b> Etapas do curso '+$('ed29_c_descr').value+'</b></legend>';
  sHtml += '<table align="center" width="80%" border="0"><tr><td valign="top" width="50%">';

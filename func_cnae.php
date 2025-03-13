@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_cnae_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_cnae_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clcnae = new cl_cnae;
@@ -102,7 +102,7 @@ $clcnae->rotulo->label("q71_estrutural");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_cnae.php")==true){
-             include("funcoes/db_func_cnae.php");
+             include(modification("funcoes/db_func_cnae.php"));
            }else{
            $campos = "cnae.*";
            }
@@ -183,7 +183,7 @@ $clcnae->rotulo->label("q71_estrutural");
 									left join cnaeanalitica on q72_cnae = q71_sequencial
 						    	where	
 									 q71_estrutural ilike '%$pesquisa_chave'"; 
-          $result = pg_query($sql);
+          $result = db_query($sql);
           $linhas = pg_num_rows($result);
           if($linhas>0){
             db_fieldsmemory($result,0);
@@ -221,4 +221,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_q71_estrutural",true,1,"chave_q71_estrutural",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
@@ -109,7 +109,7 @@ if (isset($codigo)&&$codigo!="") {
 }
   db_lovrot($sql,15,"()","","");
 /*	
-  $result=pg_exec($sql);
+  $result=db_query($sql);
   $numrows = pg_numrows($result);
   if($numrows>0){
     echo "<tr class='bordas'>

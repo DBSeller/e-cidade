@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -230,11 +230,11 @@ class cl_db_geradorrelatoriotemplate {
          $acount = pg_result($resac,0,0);
          $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
          $resac = db_query("insert into db_acountkey values($acount,12283,'$this->db15_sequencial','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["db15_sequencial"]))
+         if(isset($GLOBALS["HTTP_POST_VARS"]["db15_sequencial"]) || $this->db15_sequencial != '')
            $resac = db_query("insert into db_acount values($acount,2135,12283,'".AddSlashes(pg_result($resaco,$conresaco,'db15_sequencial'))."','$this->db15_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["db15_db_relatorio"]))
+         if(isset($GLOBALS["HTTP_POST_VARS"]["db15_db_relatorio"]) || $this->db15_db_relatorio != '')
            $resac = db_query("insert into db_acount values($acount,2135,12284,'".AddSlashes(pg_result($resaco,$conresaco,'db15_db_relatorio'))."','$this->db15_db_relatorio',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["db15_documento"]))
+         if(isset($GLOBALS["HTTP_POST_VARS"]["db15_documento"]) || $this->db15_documento != '')
            $resac = db_query("insert into db_acount values($acount,2135,12271,'".AddSlashes(pg_result($resaco,$conresaco,'db15_documento'))."','$this->db15_documento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
@@ -359,7 +359,7 @@ class cl_db_geradorrelatoriotemplate {
    function sql_query ( $db15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -383,7 +383,7 @@ class cl_db_geradorrelatoriotemplate {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -395,7 +395,7 @@ class cl_db_geradorrelatoriotemplate {
    function sql_query_file ( $db15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -416,7 +416,7 @@ class cl_db_geradorrelatoriotemplate {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

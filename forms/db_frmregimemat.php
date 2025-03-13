@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -26,6 +26,9 @@
  */
 
 //MODULO: escola
+
+use ECidade\Enum\Educacao\Escola\FormaOrganizacaoTurmaEum;
+
 $clregimemat->rotulo->label();
 ?>
 <form name="form1" method="post" action="">
@@ -36,7 +39,7 @@ $clregimemat->rotulo->label();
    <?=@$Led218_i_codigo?>
   </td>
   <td>
-   <?db_input('ed218_i_codigo',20,$Ied218_i_codigo,true,'text',3,"")?>
+   <?php db_input('ed218_i_codigo',20,$Ied218_i_codigo,true,'text',3,"")?>
   </td>
  </tr>
  <tr>
@@ -44,7 +47,7 @@ $clregimemat->rotulo->label();
    <?=@$Led218_c_nome?>
   </td>
   <td>
-   <?db_input('ed218_c_nome',30,$Ied218_c_nome,true,'text',$db_opcao,"")?>
+   <?php db_input('ed218_c_nome',30,$Ied218_c_nome,true,'text',$db_opcao,"")?>
   </td>
  </tr>
  <tr>
@@ -52,15 +55,26 @@ $clregimemat->rotulo->label();
    <?=@$Led218_c_abrev?>
   </td>
   <td>
-   <?db_input('ed218_c_abrev',10,$Ied218_c_abrev,true,'text',$db_opcao,"")?>
+   <?php db_input('ed218_c_abrev',10,$Ied218_c_abrev,true,'text',$db_opcao,"")?>
   </td>
+ </tr>
+ <tr>
+    <td nowrap title="Forma de Organização da Turma">
+     <b>Forma de Organização da Turma</b>
+    </td>
+    <td>
+    <?php
+      $formas = FormaOrganizacaoTurmaEum::getAll();
+      db_select('ed218_organizacaoturma',$formas,true,$db_opcao,"");
+    ?>
+    </td>
  </tr>
  <tr>
   <td nowrap title="<?=@$Ted218_c_divisao?>">
    <?=@$Led218_c_divisao?>
   </td>
   <td>
-   <?
+   <?php
    $x = array(''=>'','S'=>'SIM','N'=>'NÃO');
    db_select('ed218_c_divisao',$x,true,$db_opcao,"");
    ?>
@@ -82,11 +96,11 @@ $clregimemat->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
- js_OpenJanelaIframe('top.corpo','db_iframe_regimemat','func_regimemat.php?funcao_js=parent.js_preenchepesquisa|ed218_i_codigo','Pesquisa',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_regimemat','func_regimemat.php?funcao_js=parent.js_preenchepesquisa|ed218_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
  db_iframe_regimemat.hide();
- <?
+ <?php
  if($db_opcao!=1){
   echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
  }

@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "empagemov.e81_codmov,empagemov.e81_codage,empagemov.e81_numemp,empagemov.e81_valor,empagemov.e81_cancelado";
+$campos = "empagemov.e81_codmov, e60_numemp , (e60_codemp||'/'||e60_anousu)::varchar as e60_codemp, z01_nome, empagemov.e81_valor";
 ?>

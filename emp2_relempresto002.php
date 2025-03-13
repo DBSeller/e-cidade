@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_liborcamento.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_orctiporec_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_empemphist_classe.php");
-include("classes/db_emphist_classe.php");
-include("classes/db_orcelemento_classe.php");
-include("classes/db_conlancamemp_classe.php");
-include("classes/db_conlancamdoc_classe.php");
-include("classes/db_empempitem_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_empemphist_classe.php"));
+include(modification("classes/db_emphist_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_conlancamemp_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_empempitem_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);

@@ -1,0 +1,1 @@
+insert into iptutabelas values(nextval('iptutabelas_j121_sequencial_seq'), 2716);

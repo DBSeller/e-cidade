@@ -45,7 +45,7 @@ class Layout
     /***********************************************************/
     /* Read the Layout Template
     /***********************************************************/
-    function ReadLayout($Layout)
+    static function ReadLayout($Layout)
     {
         if (!$Layout)
         {
@@ -70,8 +70,10 @@ class Layout
         $Schema['ColumnBgColor']  = $array['layout']['column']['bgcolor'];
         $Schema['HeaderBgColor']  = $array['layout']['header']['bgcolor'];
         $Schema['FooterBgColor']  = $array['layout']['footer']['bgcolor'];
+        if(isset($array['layout']['config']['orientation']))
         $Schema['Orientation']    = $array['layout']['config']['orientation'];
         $Schema['ColorLines']     = $array['layout']['config']['color_lines'];
+        if(isset($array['layout']['config']['left_margin']))
         $Schema['LeftMargin']     = $array['layout']['config']['left_margin'];
         $Schema['Border']         = $array['layout']['config']['border'];
         $Schema['CellSpacing']    = $array['layout']['config']['cell_spacing'];

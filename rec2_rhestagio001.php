@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_gerfcom_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_gerfcom_classe.php"));
 $clgerfcom = new cl_gerfcom;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -122,7 +122,7 @@ db_postmemory($HTTP_POST_VARS);
   if(!isset($mesfolha) || (isset($mesfolha) && trim($mesfolha) == "")){
     $mesfolha = db_mesfolha();
   }
-  include("dbforms/db_classesgenericas.php");
+  include(modification("dbforms/db_classesgenericas.php"));
   $geraform = new cl_formulario_rel_pes;
 
   $geraform->usaregi = true;                      // PERMITIR SELEÇÃO DE MATRÍCULAS

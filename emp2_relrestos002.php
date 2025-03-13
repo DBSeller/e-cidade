@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include ("fpdf151/pdf.php");
-include ("libs/db_liborcamento.php");
-include ("classes/db_empresto_classe.php");
-include ("classes/db_cgm_classe.php");
-// include ("dbforms/db_relrestos.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_empresto_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+// include(modification("dbforms/db_relrestos.php"));
 
 // este relatorio emite os restos a pagar do exercicio conforme o arquivo empresto e com a posicao de lancamentos ate a data
 // informada, podendo ser acumulado por empenho, tipo de rp ou recurso
@@ -69,7 +69,7 @@ $pago_proc = 0;
 $aliquidadonp = 0;
 
 $xinstit = split("-", $db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for ($xins = 0; $xins < pg_numrows($resultinst); $xins ++) {

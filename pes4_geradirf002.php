@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("libs/db_libpessoal.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 db_postmemory($HTTP_GET_VARS);
 
-global $cfpess,$subpes, $db21_codcli;
+global $cfpess,$subpes,$d08_carnes;
 
 $subpes = db_anofolha().'/'.db_mesfolha();
 
@@ -64,7 +64,7 @@ db_criatermometro('calculo_folha','Concluido...','blue',1,'Efetuando Geração da 
 
 global $db_config, $r70_numcgm , $whererhlota;
   if ($r70_numcgm==0){
-    db_selectmax("db_config","select ender,cgc,nomeinst,bairro,cep,munic,uf,telef, email, db21_codcli , cgc from db_config where codigo = ".db_getsession("DB_instit"));
+    db_selectmax("db_config","select ender,cgc,nomeinst,bairro,cep,munic,uf,telef, email,lower(trim(munic)) as d08_carnes , cgc from db_config where codigo = ".db_getsession("DB_instit"));
     $whererhlota = "";
   }else{
     db_selectmax("db_config","select z01_cgccpf  as cgc, z01_nome as nomeinst,z01_ender as ender, z01_bairro as bairro, z01_cep as cep, z01_telef as telef, z01_munic as munic,z01_uf as uf, z01_email as email from cgm where z01_numcgm = $r70_numcgm");
@@ -83,7 +83,6 @@ $d08_uf     = $db_config[0]["uf"];
 $d08_telef  = $db_config[0]["telef"];
 $d08_email  = $db_config[0]["email"];
 
-$db21_codcli = $db_config[0]["db21_codcli"];
 
 //echo "<br> d08_ender--> $d08_ender  d08_cgc --> $d08_cgc  d08_nome --> $d08_nome  d08_bairro --> $d08_bairro  d08_cep --> $d08_cep  d08_munic --> $d08_munic  d08_uf --> $d08_uf  d08_telef --> $d08_telef  d08_email --> $d08_email "; exit;
 
@@ -115,7 +114,7 @@ db_redireciona("pes4_geradirf001.php");
 function gera_dirf($nomearq){
 
    global $subpes, $ano_base, $codret, $obs, $nomeresp, $cpfresp, $foneresp, $subini,$dddresp,$pref_fun, $whererhlota ;
-   global $d08_ender,$d08_cgc,$d08_nome,$d08_bairro,$d08_cep,$d08_munic,$d08_uf,$d08_telef,$d08_email,$db21_codcli,$oriret;  
+   global $d08_ender,$d08_cgc,$d08_nome,$d08_bairro,$d08_cep,$d08_munic,$d08_uf,$d08_telef,$d08_email,$d08_carnes,$oriret;  
    
 
    $tipodirf = "o";
@@ -275,7 +274,7 @@ $sql_work = "insert into ".$arquivo."(w_numcgm,w_nome,w_cpf)
                     left join rhpesrescisao on rhpesrescisao.rh05_seqpes   = rhpessoalmov.rh02_seqpes 
                     inner join cgm on z01_numcgm = rhpessoal.rh01_numcgm ".bb_condicaosubpesproc( "rh02_",$subini ).$condicaoaux ;
 //echo "<BR> $sql_work";exit;
-$result = pg_exec($sql_work);
+$result = db_query($sql_work);
 /*
 for($Ipessoal=0;$Ipessoal<count($pessoal);$Ipessoal++){
       db_atutermometro($Ipessoal,count($pessoal),'calculo_folha',1);
@@ -295,13 +294,13 @@ for($Ipessoal=0;$Ipessoal<count($pessoal);$Ipessoal++){
 
 $indice = " order by w_cpf ";
 db_selectmax("work", " select * from $arquivo $indice");
-//db_criatabela(pg_query(" select * from $arquivo $indice"));
+//db_criatabela(db_query(" select * from $arquivo $indice"));
 //exit;
 ficha_12h();
 //echo "<BR> fim !!!";
 db_selectmax( "work", " select * from $arquivo $indice");
 
-//db_criatabela(pg_query("select * from $arquivo $indice"));
+//db_criatabela(db_query("select * from $arquivo $indice"));
 //exit;
 imprime_dirf_12h($nomearq);
 
@@ -315,7 +314,7 @@ function ficha_12h(){
           $vdep13, $rets13,$prev13,$vdeducao65,
           $pensao13,$vdeducao65_13, $vdeducao65_13, $mtributo,$mtribs13,$arquivo,$work,$arquivo;
    global $gerfsal, $gerfcom, $gerfres, $gerffer, $gerfs13,$ano_base,$subini;
-   global $d08_ender,$d08_cgc,$d08_nome,$d08_bairro,$d08_cep,$d08_munic,$d08_uf,$d08_telef,$d08_email,$db21_codcli,$oriret,
+   global $d08_ender,$d08_cgc,$d08_nome,$d08_bairro,$d08_cep,$d08_munic,$d08_uf,$d08_telef,$d08_email,$d08_carnes,$oriret,
           $w_tribs13, $w_rets13, $w_deps13, $w_pres13, $w_pens13;
    
    $ant = $subpes;
@@ -325,7 +324,7 @@ function ficha_12h(){
    for($ind=1;$ind<=12;$ind++){
       global $diversos;
 //echo "<BR> ind --> $ind";
-      if( $db21_codcli == 55 ){
+      if( trim( $d08_carnes ) == "amparo"){
          // amparo faz os lancamentos de dezembro com janeiro do ano base e;
          // assim por diante ;
          if( $ind == 1){
@@ -387,7 +386,7 @@ function ficha_12h(){
 
     db_selectmax("pess", $sql);
 
-//db_criatabela(pg_query("select r01_admiss,r01_lotac,r01_recis,r01_numcgm,r01_nasc,r01_regist,r01_tbprev,r01_tpvinc from pessoal ".bb_condicaosubpesproc( "r01_",$subini ).$condicaoaux));
+//db_criatabela(db_query("select r01_admiss,r01_lotac,r01_recis,r01_numcgm,r01_nasc,r01_regist,r01_tbprev,r01_tpvinc from pessoal ".bb_condicaosubpesproc( "r01_",$subini ).$condicaoaux));
 
          $tributo = 0;
          $retido  = 0;
@@ -466,7 +465,7 @@ function ficha_12h(){
 
                $depmes = $vlrdep;
 //echo "<BR> entrou 1";
-               if( db_at(strtolower($pess[$Ipes]["r01_tpvinc"]),"ip") > 0 && ( $idade > 65 || ( $idade==65 && db_month($pess[$Ipes]["r01_nasc"]) <= ( $db21_codcli == 55 ?db_val(db_substr($subpes,6,2)):$ind) ) )){
+               if( db_at(strtolower($pess[$Ipes]["r01_tpvinc"]),"ip") > 0 && ( $idade > 65 || ( $idade==65 && db_month($pess[$Ipes]["r01_nasc"]) <= (trim($d08_carnes)=='amparo'?db_val(db_substr($subpes,6,2)):$ind) ) )){
 //echo "<BR> entrou 2";
 /*
                   if( $subpes < $cfpess[0]["r11_altfer"] || db_empty( $cfpess[0]["r11_altfer"] )){
@@ -560,7 +559,7 @@ function ficha_12h(){
            $matriz1[4] = "w_pres13";
            $matriz1[5] = "w_pens13";
 
-           $res_work = pg_query("select w_tribs13,w_rets13,w_deps13,w_pres13,w_pens13 from $arquivo where w_numcgm = ".db_sqlformat( $matriculacgm ));
+           $res_work = db_query("select w_tribs13,w_rets13,w_deps13,w_pres13,w_pens13 from $arquivo where w_numcgm = ".db_sqlformat( $matriculacgm ));
            if(pg_numrows($res_work) > 0){
              db_fieldsmemory($res_work,0);
              $matriz2[1] = $w_tribs13 + $tribs13;
@@ -663,6 +662,9 @@ for($Iarq=0;$Iarq<count($arq);$Iarq++){
 	 
          //*** o arquivo bases e lido a partir do mes de processamento (inicial);
          
+         // busca valores de base bruta fora da folha (menos 13o salario);
+         // exemplos: precatorios, dsd de riogrande. se lancar o precatorio;
+         // como base de ir, esta nao devera estar marcada nesta base. ;
          if( db_at($mrubr,$sel_B911) > 0){
             if( $arq[$Iarq][$sigla."pd"] == 2 ){
                $tributo -= $arq[$Iarq][$sigla."valor"];
@@ -1299,8 +1301,8 @@ function cria_work_12h(){
                                                   w_pendez float8 default 0 ,
                                                   w_pens13 float8 default 0 ,
                                                   w_regist varchar(80) );";   
-    $result_create_table_dirf      = pg_exec($sql_create_table_dirf);
-    $result_create_indexes_temp    = pg_exec("create index work_anousu on dirf(w_cpf); ");
+    $result_create_table_dirf      = db_query($sql_create_table_dirf);
+    $result_create_indexes_temp    = db_query("create index work_anousu on dirf(w_cpf); ");
 }
 
 ?>

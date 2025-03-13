@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -56,7 +56,7 @@ switch ($oParam->exec) {
   
   case "getNotas";
     
-    require_once("model/{$aClasses[$oParam->tipodocumento]->arquivo}.model.php");
+    require_once(modification("model/{$aClasses[$oParam->tipodocumento]->arquivo}.model.php"));
     $oArquivoPit = new arquivoPit50();
     $oArquivoPit->setEncode(true);
     $dtInicial   = implode("-", array_reverse(explode("/", $oParam->datainicial)));  
@@ -89,14 +89,14 @@ switch ($oParam->exec) {
       $sSqlArquivos    .= "   and e14_situacao = {$oParam->situacao}";
     }
     $rsArquivos      = $oDaoEmpArquivos->sql_record($sSqlArquivos);
-    $oRetorno->itens = db_utils::getColectionByRecord($rsArquivos, false, false, true);
+    $oRetorno->itens = db_utils::getCollectionByRecord($rsArquivos, false, false, true);
     break;
     
   case "anularArquivos" :
 
     if (count($oParam->aArquivos) > 0) {
       
-      require_once("model/{$aClasses[$oParam->tipodocumento]->arquivo}.model.php");
+      require_once(modification("model/{$aClasses[$oParam->tipodocumento]->arquivo}.model.php"));
       try {
         
         db_inicio_transacao(); 
@@ -120,7 +120,7 @@ switch ($oParam->exec) {
     
   case "pesquisaNotasArquivo": 
     
-    require_once("model/{$aClasses[$oParam->tipodocumento]->arquivo}.model.php");
+    require_once(modification("model/{$aClasses[$oParam->tipodocumento]->arquivo}.model.php"));
     $oArquivoPit = new arquivoPit50($oParam->iArquivo);
     $oArquivoPit->setEncode(true);
     $aNotas      = $oArquivoPit->getNotasArquivo();
@@ -156,7 +156,7 @@ switch ($oParam->exec) {
     }
     //echo $sSqlArquivos;
     $rsArquivos      = $oDaoEmpArquivos->sql_record($sSqlArquivos);
-    $oRetorno->itens = db_utils::getColectionByRecord($rsArquivos, false, false, true);
+    $oRetorno->itens = db_utils::getCollectionByRecord($rsArquivos, false, false, true);
   	
   	break;
 }

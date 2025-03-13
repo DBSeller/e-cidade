@@ -1,0 +1,54 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010467' name='configuracoes.workflowmodulo' description="Tabela de ligação entre workflow e modulo do sistema" prefix="" label="Workflow Modulo" type="0">
+  <fields>
+    <field codigo="1010698"
+           campo_api=''
+           name="db173_workflow"
+           conteudo="int8"
+           description="Coluna que guarda o id do workflow"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="t"
+           hassequence="t" >
+
+    </field>
+    <field codigo="1010699"
+           campo_api=''
+           name="db173_modulo"
+           conteudo="int8"
+           description="Coluna que o móulo do sistema"
+           inivalue="0"
+           label=""
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel=""
+           reference=""
+           ispk="t"
+           hassequence="t" >
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="db173_workflow"></fieldpk>
+    <fieldpk name="db173_modulo"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="workflow">
+      <fieldfk name="db173_workflow" reference="db112_sequencial" inner='t'></fieldfk>
+    </foreignkey>
+    <foreignkey reference="db_sysmodulo">
+      <fieldfk name="db173_modulo" reference="codmod" inner='t'></fieldfk>
+    </foreignkey>
+  </foreignkeys>
+</table>

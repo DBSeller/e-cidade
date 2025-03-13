@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_condominio_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_condominio_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clcondominio = new cl_condominio;
@@ -83,26 +83,21 @@ $clcondominio->rotulo->label("j107_nome");
   <tr> 
     <td align="center" valign="top"> 
       <?
-      $dbwhere = "";
-      if(isset($tipo) && $tipo == 1){
-      	$dbwhere = " j107_tipo = 1 ";
-      }
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_condominio.php")==true){
-             include("funcoes/db_func_condominio.php");
+             include(modification("funcoes/db_func_condominio.php"));
            }else{
            $campos = "condominio.*";
            }
         }
         if(isset($chave_j107_sequencial) && (trim($chave_j107_sequencial)!="") ){
         	 
-	         $sql = $clcondominio->sql_query($chave_j107_sequencial,$campos,"j107_sequencial",$dbwhere);
+	         $sql = $clcondominio->sql_query($chave_j107_sequencial,$campos,"j107_sequencial");
         }else if(isset($chave_j107_nome) && (trim($chave_j107_nome)!="") ){
-        	 $dbwhere = " and $dbwhere";
-	         $sql = $clcondominio->sql_query("",$campos,"j107_nome"," j107_nome like '$chave_j107_nome%' $dbwhere");
+	         $sql = $clcondominio->sql_query("",$campos,"j107_nome"," j107_nome like '$chave_j107_nome%' ");
         }else{
-           $sql = $clcondominio->sql_query("",$campos,"j107_sequencial",$dbwhere);
+           $sql = $clcondominio->sql_query("",$campos,"j107_sequencial");
         }
         $repassa = array();
         if(isset($chave_j107_nome)){
@@ -111,7 +106,7 @@ $clcondominio->rotulo->label("j107_nome");
         db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
-        	$dbwhere .= " and j107_sequencial = $pesquisa_chave";
+        	$dbwhere = " j107_sequencial = $pesquisa_chave";
         	if(isset($tipo)){
           	$result = $clcondominio->sql_record($clcondominio->sql_query(null,"*","",$dbwhere));
         	}else{
@@ -143,4 +138,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_j107_nome",true,1,"chave_j107_nome",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

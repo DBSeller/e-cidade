@@ -2,7 +2,7 @@
 /**
  *
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
 */
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_utils.php");
-  require_once("libs/db_app.utils.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_usuariosonline.php");
-  require_once("dbforms/db_funcoes.php");
-  require_once ('model/contabilidade/arquivos/tce/AC/ImportacaoArquivoTCEAC.model.php');
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification('model/contabilidade/arquivos/tce/AC/ImportacaoArquivoTCEAC.model.php'));
 
   $oGet = db_utils::postMemory($_GET);
 
@@ -59,7 +59,7 @@
 <?php
   db_app::load("scripts.js, strings.js, prototype.js");
   db_app::load("estilos.css, grid.style.css");
-  db_app::load('widgets/DBDownload.widget.js');
+  db_app::load('widgets/DBDownload.widget.js, AjaxRequest.js');
 ?>
 </head>
 <body style="background-color: #CCCCCC; margin-top:30px">
@@ -112,29 +112,20 @@
       return false;
     }
 
-    var oForm = new FormData(document.vinculaArquivoTCEAC),
-        oParametros = { sExecucao: "importarArquivo" , iTipo : iTipoArquivo};
+    var oParametros = { sExecucao: "importarArquivo" , iTipo : iTipoArquivo};
 
-    oForm.append("json", Object.toJSON(oParametros));
+    new AjaxRequest(
+      'con4_tceAC.RPC.php',
+      oParametros,
+      function(oRetorno, lErro) {
 
-    js_divCarregando("Aguarde, efetuando o upload do arquivo...", "msgBox");
-
-    new Ajax.Request(
-      'con4_tceAC.RPC.php', {
-      method       : 'POST',
-      asynchronous : false,
-      contentType  : '',
-      encoding     : false,
-      postBody     : oForm,
-      onComplete   : function(oAjax) {
-
-        js_removeObj('msgBox');
-        var oRetorno = JSON.parse(oAjax.responseText);
         alert(oRetorno.sMessage.urlDecode());
         possuiArquivoImportado();
         $('arquivo').value = '';
       }
-    });
+    ).addFileInput($('arquivo'))
+     .setMessage('Aguarde, efetuando o upload do arquivo...')
+     .execute();
   });
 
   $('btnExportar').observe('click',
@@ -148,7 +139,7 @@
           parameters: 'json='+Object.toJSON(oParam),
           onComplete: function (oAjax) {
 
-            var oRetorno = eval("("+oAjax.responseText+")");
+            var oRetorno = JSON.parse(oAjax.responseText);
             if (oRetorno.iStatus == 2) {
               alert(oRetorno.sMessage.urlDecode());
               return false;
@@ -176,7 +167,7 @@
         onComplete: function (oAjax) {
 
           var oBotaoExportar = $('btnExportar');
-          var oRetorno = eval("("+oAjax.responseText+")");
+          var oRetorno = JSON.parse(oAjax.responseText);
           lArquivoImportado = oRetorno.possuiArquivoImportado;
           oBotaoExportar.disabled = !oRetorno.possuiArquivoImportado;
         }

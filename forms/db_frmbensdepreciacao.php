@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -138,10 +138,10 @@ db_inputdata('t44_ultimaavaliacao',@$t44_ultimaavaliacao_dia,@$t44_ultimaavaliac
 <script>
 function js_pesquisat44_benstipodepreciacao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_benstipodepreciacao','func_benstipodepreciacao.php?funcao_js=parent.js_mostrabenstipodepreciacao1|t46_sequencial|t46_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstipodepreciacao','func_benstipodepreciacao.php?funcao_js=parent.js_mostrabenstipodepreciacao1|t46_sequencial|t46_descricao','Pesquisa',true);
   }else{
      if(document.form1.t44_benstipodepreciacao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_benstipodepreciacao','func_benstipodepreciacao.php?pesquisa_chave='+document.form1.t44_benstipodepreciacao.value+'&funcao_js=parent.js_mostrabenstipodepreciacao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstipodepreciacao','func_benstipodepreciacao.php?pesquisa_chave='+document.form1.t44_benstipodepreciacao.value+'&funcao_js=parent.js_mostrabenstipodepreciacao','Pesquisa',false);
      }else{
        document.form1.t46_descricao.value = ''; 
      }
@@ -161,10 +161,10 @@ function js_mostrabenstipodepreciacao1(chave1,chave2){
 }
 function js_pesquisat44_benstipoaquisicao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_benstipoaquisicao','func_benstipoaquisicao.php?funcao_js=parent.js_mostrabenstipoaquisicao1|t45_sequencial|t45_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstipoaquisicao','func_benstipoaquisicao.php?funcao_js=parent.js_mostrabenstipoaquisicao1|t45_sequencial|t45_descricao','Pesquisa',true);
   }else{
      if(document.form1.t44_benstipoaquisicao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_benstipoaquisicao','func_benstipoaquisicao.php?pesquisa_chave='+document.form1.t44_benstipoaquisicao.value+'&funcao_js=parent.js_mostrabenstipoaquisicao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstipoaquisicao','func_benstipoaquisicao.php?pesquisa_chave='+document.form1.t44_benstipoaquisicao.value+'&funcao_js=parent.js_mostrabenstipoaquisicao','Pesquisa',false);
      }else{
        document.form1.t45_descricao.value = ''; 
      }
@@ -184,10 +184,10 @@ function js_mostrabenstipoaquisicao1(chave1,chave2){
 }
 function js_pesquisat44_bens(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostrabens1|t52_bem|t52_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bens','func_bens.php?funcao_js=parent.js_mostrabens1|t52_bem|t52_descr','Pesquisa',true);
   }else{
      if(document.form1.t44_bens.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.t44_bens.value+'&funcao_js=parent.js_mostrabens','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bens','func_bens.php?pesquisa_chave='+document.form1.t44_bens.value+'&funcao_js=parent.js_mostrabens','Pesquisa',false);
      }else{
        document.form1.t52_descr.value = ''; 
      }
@@ -206,7 +206,7 @@ function js_mostrabens1(chave1,chave2){
   db_iframe_bens.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bensdepreciacao','func_bensdepreciacao.php?funcao_js=parent.js_preenchepesquisa|t44_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensdepreciacao','func_bensdepreciacao.php?funcao_js=parent.js_preenchepesquisa|t44_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_bensdepreciacao.hide();

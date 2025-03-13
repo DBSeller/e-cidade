@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: escola
@@ -58,10 +58,10 @@ $sql = "SELECT ed44_i_codigo,
         WHERE ed68_i_procresultado = $ed281_i_procresultado
         ORDER BY ed41_i_sequencia
        ";
-$query = pg_query($sql);
+$query = db_query($sql);
 $linhas = pg_num_rows($query);
 $sql11 = "SELECT max(ed281_i_alternativa) FROM procavalalternativa WHERE ed281_i_procresultado = $ed281_i_procresultado";
-$query11 = pg_query($sql11);
+$query11 = db_query($sql11);
 $novaalternativa = pg_result($query11,0)+1;
 ?>
 <form name="form1" method="post" action="">
@@ -72,14 +72,14 @@ $novaalternativa = pg_result($query11,0)+1;
 
     </td>
     <td>
-     
+
     </td>
   </tr>
   <tr>
     <td>
      <fieldset style="width:95%;"><legend><b>Registros:</b></legend>
      <table width="100%" border="1" cellspacing="0" cellpadding="1" bgcolor="#f3f3f3">
-     <?
+     <?php
      $result_prc = $clprocavalalternativa->sql_record($clprocavalalternativa->sql_query("","ed281_i_codigo,ed281_i_alternativa","ed281_i_alternativa"," ed281_i_procresultado = $ed281_i_procresultado"));
      if($clprocavalalternativa->numrows>0){
       for($rr=0;$rr<$clprocavalalternativa->numrows;$rr++){
@@ -92,7 +92,7 @@ $novaalternativa = pg_result($query11,0)+1;
         <td>
          <table width="100%" border="1" cellspacing="0" cellpadding="1" bgcolor="#f3f3f3">
           <tr>
-          <?
+          <?php
           $result_regra = $clprocavalalternativaregra->sql_record($clprocavalalternativaregra->sql_query("","ed282_i_codigo,case when ed282_i_tipoaval = 'A' then ed09_c_descr else ed42_c_descr end as nomeaval,ed37_i_menorvalor,ed37_i_maiorvalor,ed37_c_descr","ed41_i_sequencia"," ed282_i_procavalalternativa = $ed281_i_codigo"));
           for($tt=0;$tt<$clprocavalalternativaregra->numrows;$tt++){
            db_fieldsmemory($result_regra,$tt);
@@ -101,17 +101,17 @@ $novaalternativa = pg_result($query11,0)+1;
             <?=$nomeaval?><br>
             <b><?=$ed37_i_menorvalor!=""?" $ed37_c_descr - <font color=red>$ed37_i_menorvalor à $ed37_i_maiorvalor </font>":"Em Branco"?></b>
            </td>
-           <?
+           <?php
           }
           ?>
           </tr>
          </table>
         </td>
         <td>
-        <input type="button" value="Excluir" name="excluir" onclick="return js_exclusao(<?=$ed281_i_codigo?>)">
+        <input type="button" class="btn_gridExcluir" value="Excluir" name="excluir" onclick="return js_exclusao(<?=$ed281_i_codigo?>)">
         </td>
        </tr>
-       <?
+       <?php
       }
      }else{
       echo "<tr><td>Nenhum registro encontrado.</td></tr>";
@@ -120,7 +120,7 @@ $novaalternativa = pg_result($query11,0)+1;
      </table>
      </fieldset>
     </td>
-  </tr>  
+  </tr>
 </table>
 <input name="novo" type="button" id="novo" value="Nova Alternativa" onclick="js_novo();" <?=$linhas==0?"disabled":""?>>
 <input name="clicado" type="hidden" id="clicado" value="">
@@ -132,6 +132,18 @@ $novaalternativa = pg_result($query11,0)+1;
 </center>
 </form>
 <script>
+
+var oGet = js_urlToObject();
+
+if (oGet.possuiTurmasEncerradas && oGet.possuiTurmasEncerradas == 'S') {
+
+  $('novo').setAttribute('disabled','disabled');
+
+  $$('.btn_gridExcluir').forEach( function( oBotaoExcluir ){
+    oBotaoExcluir.setAttribute('disabled','disabled');
+  });
+}
+
 function js_novo(){
  sHtml  = '<table width="95%">';
  sHtml += '<tr>';
@@ -139,7 +151,8 @@ function js_novo(){
  sHtml += '  Alternativa <b><?=$novaalternativa?></b>';
  sHtml += '  <input type="hidden" size="5 maxlength="5" name="ed281_i_alternativa" id="ed281_i_alternativa" value="<?=$novaalternativa?>">';
  sHtml += ' </td>';
- <?for($ee=0;$ee<$linhas;$ee++){
+ <?php
+  for($ee=0;$ee<$linhas;$ee++){
   db_fieldsmemory($query,$ee)
   ?>
   sHtml += ' <td>';
@@ -151,23 +164,32 @@ function js_novo(){
   sHtml += '  <input type="text" size="10" maxlength="10" name="xdescr[]" id="xdescr" style="background:#DEB887" readonly>';
   sHtml += '  <input type="hidden" size="1 maxlength="1" name="xobrigatorio[]" id="xobrigatorio" value="<?=$ed44_c_obrigatorio?>" style="background:#DEB887" readonly>';
   sHtml += ' </td>';
- <?}?>
+ <?php } ?>
  sHtml += '</tr>';
  sHtml += '<tr>';
  sHtml += ' <td>';
- sHtml += '  <input type="submit" name="incluir" value="Incluir" onclick="return js_valida();">'; 
+ sHtml += '  <input type="submit" name="incluir" value="Incluir" onclick="return js_valida();">';
  sHtml += ' </td>';
  sHtml += '</tr>';
  sHtml += '</table>';
  document.getElementById("div_novo").innerHTML = sHtml;
 }
 function js_formaavaliacao(campo){
- document.form1.clicado.value = campo;	
- js_OpenJanelaIframe('','db_iframe_formaavaliacao','func_formaavaliacao.php?forma=<?=$forma?>&funcao_js=parent.js_mostraformaavaliacao1|ed37_i_codigo|ed37_c_descr','Pesquisa de Formas de Avaliação',true,0,0,900,200);
+
+ document.form1.clicado.value = campo;
+ js_OpenJanelaIframe( '',
+                      'db_iframe_formaavaliacao',
+                      'func_formaavaliacao.php?forma=<?=$forma?>&funcao_js=parent.js_mostraformaavaliacao1|ed37_i_codigo|ed37_c_descr',
+                      'Pesquisa de Formas de Avaliação',
+                      true,
+                      0,
+                      0,
+                      900,
+                      200 );
 }
 function js_mostraformaavaliacao1(chave1,chave2){
- eval('document.form1.xformaavaliacao['+document.form1.clicado.value+'].value = chave1');
- eval('document.form1.xdescr['+document.form1.clicado.value+'].value = chave2');
+ document.form1[xformaavaliacao][document.form1.clicado.value].value = chave1;
+ document.form1[xdescr][document.form1.clicado.value].value = chave2;
  db_iframe_formaavaliacao.hide();
 }
 function js_valida(){
@@ -176,7 +198,7 @@ function js_valida(){
  for(t=0;t<tam;t++){
   if(document.form1.xformaavaliacao[t].value=="" && document.form1.xobrigatorio[t].value=="S"){
    erro = true;
-  } 
+  }
  }
  if(erro==true){
   alert("Informe a forma de avaliação para períodos obrigatórios!");
@@ -186,7 +208,7 @@ function js_valida(){
 }
 function js_exclusao(codexclusao){
  if(confirm('Confirmar Exclusão?')){
-  location.href="edu1_procavalalternativa001.php?procedimento=<?=$procedimento?>&ed281_i_procresultado=<?=$ed281_i_procresultado?>&ed42_c_descr=<?=$ed42_c_descr?>&forma=<?=$forma?>&codexclusao="+codexclusao+"&excluir";
+  location.href="edu1_procavalalternativa001.php?procedimento=<?=$procedimento?>&ed281_i_procresultado=<?=$ed281_i_procresultado?>&ed42_c_descr=<?=$ed42_c_descr?>&forma=<?=$forma?>&codexclusao="+codexclusao+"&excluir&possuiTurmasEncerradas="+oGet.possuiTurmasEncerradas;
  }
 }
 </script>

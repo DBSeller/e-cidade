@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_progavalpedag_classe.php");
-include("classes/db_questaoaval_classe.php");
-include("classes/db_opcaoquestao_classe.php");
-include("classes/db_progconfig_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_progavalpedag_classe.php"));
+include(modification("classes/db_questaoaval_classe.php"));
+include(modification("classes/db_opcaoquestao_classe.php"));
+include(modification("classes/db_progconfig_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clprogavalpedag = new cl_progavalpedag;
@@ -93,7 +93,7 @@ if(isset($alterar)){
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Avaliação Pedagógica</b></legend>
-    <?include("forms/db_frmprogavalpedag2.php");?>
+    <?include(modification("forms/db_frmprogavalpedag2.php"));?>
    </fieldset>
    </center>
   </td>

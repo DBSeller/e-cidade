@@ -28,16 +28,16 @@
 /**
  * 
  * @author Iuri guntchnigg
- * @revision $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.3 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_ppaversao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_ppaversao_classe.php"));
 $clppaversao = new cl_ppaversao;
 $clppaversao->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -166,7 +166,7 @@ function js_mostraversao(iVersao, iLei) {
 
 function js_retornoMostraVersao(oAjax) {
    
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
     
     var a = $$('input[type=text]');
@@ -223,7 +223,7 @@ function js_retornoNewVersaoPPA(oAjax) {
   
   js_removeObj("msgbox");
   js_controleBotoes(false);   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.message.urlDecode());
   if (oRetorno.status == 1) {
     js_pesquisaVersoes();

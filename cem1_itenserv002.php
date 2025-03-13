@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_itenserv_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_arrepaga_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_itenserv_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_arrepaga_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clitenserv = new cl_itenserv;
@@ -45,7 +45,7 @@ if(isset($alterar)){
   db_fim_transacao();
   if($clitenserv->numrows_alterar != 0){
    db_inicio_transacao();
-   $result_arrecad=pg_query("select fc_cemitarrecad(5,$cm01_i_numpre,false,$cm10_i_sepultamento) as retorno") or die("Erro ao incluir em arrecad.");
+   $result_arrecad=db_query("select fc_cemitarrecad(5,$cm01_i_numpre,false,$cm10_i_sepultamento) as retorno") or die("Erro ao incluir em arrecad.");
    db_fieldmemory( $result_arrecad, 0 );
    if( substr( $retorno, 0, 1 ) != '9' ){
      db_msgbox($retorno);
@@ -88,7 +88,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
      <?
-     include("forms/db_frmitenserv.php");
+     include(modification("forms/db_frmitenserv.php"));
      ?>
     </center>
      </td>

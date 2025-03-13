@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_libdicionario.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_far_modelolivro_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_libdicionario.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_far_modelolivro_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clfar_modelolivro = new cl_far_modelolivro;
 $db_opcao = 1;
@@ -56,7 +56,7 @@ if(isset($incluir)){
   <tr> 
     <td align="left" valign="top" bgcolor="#CCCCCC"> 
     <fieldset style="width:100%"><legend><b>Inclusão de Modelo de Livros</b></legend>
-	<? include("forms/db_frmfar_modelolivro.php");?>
+	<? include(modification("forms/db_frmfar_modelolivro.php"));?>
 	</fieldset>
 	</td>
   </tr>
@@ -79,7 +79,7 @@ if(isset($incluir)){
     }
   }else{
 	$clfar_modelolivro->erro(true,false);
-    $result = @pg_query("select last_value from far_modelolivro_fa16_codigo_seq");
+    $result = @db_query("select last_value from far_modelolivro_fa16_codigo_seq");
     $ultimo = pg_result($result,0,0);
     db_redireciona("far1_far_modelolivro002.php?chavepesquisa=$ultimo");
   }

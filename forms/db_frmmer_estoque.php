@@ -110,7 +110,7 @@ function js_pesquisame18_i_codmater(mostra) {
 	
   if (mostra==true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_mer_item',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_item',
     	                'func_mer_item.php?funcao_js=parent.js_mostramer_item1|me10_i_codigo|me10_i_codigo',
     	                'Pesquisa',true
     	               );
@@ -119,7 +119,7 @@ function js_pesquisame18_i_codmater(mostra) {
 	  
     if (document.form1.me18_i_codmater.value != '') { 
         
-        js_OpenJanelaIframe('top.corpo','db_iframe_mer_item',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_item',
                             'func_mer_item.php?pesquisa_chave='+document.form1.me18_i_codmater.value+
                             '&funcao_js=parent.js_mostramer_item','Pesquisa',false
                            );
@@ -152,7 +152,7 @@ function js_mostramer_item1(chave1,chave2) {
 function js_pesquisame18_i_escola(mostra) {
   if (mostra==true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_escola',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escola',
     	                'func_escola.php?funcao_js=parent.js_mostraescola1|ed18_i_codigo|ed18_i_codigo','Pesquisa',true
     	               );
     
@@ -160,7 +160,7 @@ function js_pesquisame18_i_escola(mostra) {
 	  
     if (document.form1.me18_i_escola.value != '') {
          
-      js_OpenJanelaIframe('top.corpo','db_iframe_escola',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_escola',
     	                  'func_escola.php?pesquisa_chave='+document.form1.me18_i_escola.value+
     	                  '&funcao_js=parent.js_mostraescola','Pesquisa',false
     	                 );
@@ -193,7 +193,7 @@ function js_mostraescola1(chave1,chave2) {
 function js_pesquisame18_i_matrequi(mostra){
   if (mostra==true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_matrequi',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matrequi',
     	                'func_matrequi.php?funcao_js=parent.js_mostramatrequi1|m40_codigo|m40_codigo','Pesquisa',true
     	               );
     
@@ -201,7 +201,7 @@ function js_pesquisame18_i_matrequi(mostra){
 	  
     if (document.form1.me18_i_matrequi.value != '') {
          
-      js_OpenJanelaIframe('top.corpo','db_iframe_matrequi',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matrequi',
     	                   'func_matrequi.php?pesquisa_chave='+document.form1.me18_i_matrequi.value+
     	                   '&funcao_js=parent.js_mostramatrequi','Pesquisa',false
     	                 );
@@ -235,7 +235,7 @@ function js_pesquisame18_i_calendario(mostra) {
 	
   if (mostra==true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_calendario',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_calendario',
     	                'func_calendario.php?funcao_js=parent.js_mostracalendario1|ed52_i_codigo|ed52_i_codigo',
     	                'Pesquisa',true
     	               );
@@ -244,7 +244,7 @@ function js_pesquisame18_i_calendario(mostra) {
 	  
     if (document.form1.me18_i_calendario.value != '') {
          
-        js_OpenJanelaIframe('top.corpo','db_iframe_calendario',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_calendario',
                             'func_calendario.php?pesquisa_chave='+document.form1.me18_i_calendario.value+
                             '&funcao_js=parent.js_mostracalendario','Pesquisa',false
                            );
@@ -276,7 +276,7 @@ function js_mostracalendario1(chave1,chave2) {
 
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_estoque',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_estoque',
 		              'func_mer_estoque.php?funcao_js=parent.js_preenchepesquisa|me18_i_codigo','Pesquisa',true
 		             );
   

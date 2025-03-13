@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_db_syscampo_classe.php");
-include("classes/db_db_syscampodep_classe.php");
+include(modification("classes/db_db_syscampo_classe.php"));
+include(modification("classes/db_db_syscampodep_classe.php"));
 $cldb_syscampo = new cl_db_syscampo;
 $cldb_syscampodep = new cl_db_syscampodep;
 
@@ -86,7 +86,7 @@ function js_selecionar(){
     }
   }
   if(marcado==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_camp','con3_db_syscampo003.php?segundo='+secs+'&principal='+pri,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_camp','con3_db_syscampo003.php?segundo='+secs+'&principal='+pri,'Pesquisa',true);
   }else{
     alert('Selecione um campo!');
   }    
@@ -159,10 +159,10 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 function js_pesquisacampo(mostra){
   if(mostra==true){
-        js_OpenJanelaIframe('top.corpo','db_iframe','func_db_syscampo.php?funcao_js=parent.js_mostracampo1|codcam|nomecam','Pesquisa',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_syscampo.php?funcao_js=parent.js_mostracampo1|codcam|nomecam','Pesquisa',true);
   }else{
      if(document.form1.codcam.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe','func_db_syscampo.php?pesquisa_chave='+document.form1.codcam.value+'&funcao_js=parent.js_mostracampo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_db_syscampo.php?pesquisa_chave='+document.form1.codcam.value+'&funcao_js=parent.js_mostracampo','Pesquisa',false);
      }else{
        document.form1.nomecam.value = ''; 
      }

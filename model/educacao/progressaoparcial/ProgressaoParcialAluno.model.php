@@ -1,31 +1,32 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-define("URL_MENSAGE_PROGRESSAOPARCIALALUNO", "educacao.escola.ProgressaoParcialAluno.");
+define("URL_MENSAGEM_PROGRESSAOPARCIALALUNO", "educacao.escola.ProgressaoParcialAluno.");
+
  /**
   * Progressao parcial de uma Aluno
   * @author Iuri Guntchnigg iuri@dbseller.com.br
@@ -51,7 +52,7 @@ final class ProgressaoParcialAluno {
    * Vinculo com a regencia
    * @var ProgressaoParcialVinculoDisciplina
    */
-  private $oProgressaoParcialVinculoDisciplina;
+  private $oProgressaoParcialVinculoDisciplina = null;
 
   /**
    * Disciplina em que o aluno está em progressao parcial
@@ -77,14 +78,12 @@ final class ProgressaoParcialAluno {
   private $oResultadoFinal;
 
   /**
-   *
    * Verifica se a progressao já esta encerrada
    * @var boolean
    */
   private $lConcluida = false;
 
   /**
-   *
    * progressao ativa
    * @var boolean
    */
@@ -124,8 +123,9 @@ final class ProgressaoParcialAluno {
   const CONCLUIDA = 3;
 
   /**
-   * Metodo construtor da classe
-   * @param integer $iCodigoProgressao
+   * Método construtor da classe
+   * @param  integer|null $iCodigoProgressao
+   * @throws DBException
    */
   public function __construct($iCodigoProgressao = null) {
 
@@ -133,8 +133,16 @@ final class ProgressaoParcialAluno {
 
       $oDaoProgressaoParcialAluno = new cl_progressaoparcialaluno();
       $sSqlProgressaoAluno        = $oDaoProgressaoParcialAluno->sql_query_aluno_em_progressao($iCodigoProgressao);
-      $rsProgressoAluno           = $oDaoProgressaoParcialAluno->sql_record($sSqlProgressaoAluno);
-      if ($oDaoProgressaoParcialAluno->numrows == 1) {
+      $rsProgressoAluno           = db_query($sSqlProgressaoAluno);
+
+      if( !$rsProgressoAluno ) {
+
+        $oErro        = new stdClass();
+        $oErro->sErro = pg_last_error();
+        throw new DBException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'erro_buscar_progressao', $oErro ) );
+      }
+
+      if (pg_num_rows( $rsProgressoAluno ) == 1) {
 
         $oDadosProgressao               = db_utils::fieldsMemory($rsProgressoAluno, 0);
 
@@ -230,24 +238,38 @@ final class ProgressaoParcialAluno {
 
   /**
    * Retorna o Vinculo da progressao parcial com uma regencia
+   * @param  integer $iCodigoRegencia
    * @return ProgressaoParcialVinculoDisciplina Dados do Vinculo
+   * @throws DBException
    */
-  public function getVinculoRegencia() {
+  public function getVinculoRegencia($iCodigoRegencia = null) {
 
     if (empty($this->oProgressaoParcialVinculoDisciplina) && !empty($this->iCodigoProgressaoParcial)) {
 
       $oDaoProgressaoParcialVinculo = db_utils::getDao("progressaoparcialalunoturmaregencia");
 
       $sWhere  = "ed150_progressaoparcialaluno = {$this->getCodigoProgressaoParcial()} ";
+
+      if ( !empty($iCodigoRegencia) ) {
+        $sWhere .= " and ed115_regencia = {$iCodigoRegencia} ";
+      }
+
       $sSqlProgressaoParcialVinculo = $oDaoProgressaoParcialVinculo->sql_query_matricula(null,
                                                                                          "ed115_sequencial,
                                                                                           ed150_encerrado",
                                                                                           "ed115_sequencial desc limit 1",
                                                                                           $sWhere
                                                                                          );
+      $rsProgressaoParcialVinculo   = db_query($sSqlProgressaoParcialVinculo);
 
-      $rsProgressaoParcialVinculo   = $oDaoProgressaoParcialVinculo->sql_record($sSqlProgressaoParcialVinculo);
-      if ($oDaoProgressaoParcialVinculo->numrows > 0) {
+      if( !$rsProgressaoParcialVinculo ) {
+
+        $oErro        = new stdClass();
+        $oErro->sErro = pg_last_error();
+        throw new DBException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'erro_buscar_vinculo_regencia', $oErro ) );
+      }
+
+      if (pg_num_rows( $rsProgressaoParcialVinculo ) > 0) {
 
         $iCodigoVinculo = db_utils::fieldsMemory($rsProgressaoParcialVinculo, 0)->ed115_sequencial;
         $this->oProgressaoParcialVinculoDisciplina = new ProgressaoParcialVinculoDisciplina($iCodigoVinculo);
@@ -258,7 +280,9 @@ final class ProgressaoParcialAluno {
 
   /**
    * Retorna o Vinculo da progressao parcial com uma regencia
+   * @param Turma $oTurma
    * @return ProgressaoParcialVinculoDisciplina Dados do Vinculo
+   * @throws DBException
    */
   public function getVinculoRegenciaNaTurma(Turma $oTurma) {
 
@@ -275,13 +299,22 @@ final class ProgressaoParcialAluno {
                                                                               $sWhere
       );
 
-      $rsProgressaoParcialVinculo   = $oDaoProgressaoParcialVinculo->sql_record($sSqlProgressaoParcialVinculo);
-      if ($oDaoProgressaoParcialVinculo->numrows > 0) {
+      $rsProgressaoParcialVinculo   = db_query($sSqlProgressaoParcialVinculo);
+
+      if( !$rsProgressaoParcialVinculo ) {
+
+        $oErro        = new stdClass();
+        $oErro->sErro = pg_last_error();
+        throw new DBException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'erro_buscar_vinculo_regencia_turma', $oErro ) );
+      }
+
+      if (pg_num_rows( $rsProgressaoParcialVinculo ) > 0) {
 
         $iCodigoVinculo = db_utils::fieldsMemory($rsProgressaoParcialVinculo, 0)->ed115_sequencial;
         $this->oProgressaoParcialVinculoDisciplina = new ProgressaoParcialVinculoDisciplina($iCodigoVinculo);
       }
     }
+
     return $this->oProgressaoParcialVinculoDisciplina;
   }
 
@@ -293,7 +326,7 @@ final class ProgressaoParcialAluno {
 
     $oMsgErro = new stdClass();
     if (!db_utils::inTransaction()) {
-      throw new DBException("Sem transaçao ativa com o banco de dados");
+      throw new DBException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'nao_existe_transacao_ativa' ) );
     }
 
     $oDaoAlunoProgressao                         = db_utils::getDao("progressaoparcialaluno");
@@ -343,7 +376,7 @@ final class ProgressaoParcialAluno {
       $rsDiarioOrigem          = db_query($sSqlDiarioOrigem);
 
       if ( !$rsDiarioOrigem ) {
-      	throw new DBException( _M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."erro_ao_verificar_origem") );
+      	throw new DBException( _M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."erro_ao_verificar_origem") );
       }
 
       if ( pg_num_rows($rsDiarioOrigem) == 0 ) {
@@ -354,7 +387,7 @@ final class ProgressaoParcialAluno {
         $oProgressaoDiarioOrigem->incluir(null);
 
         if ($oProgressaoDiarioOrigem->erro_status == 0) {
-          throw new BusinessException( _M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."erro_ao_vincular_origem", $oMsgErro) . $oProgressaoDiarioOrigem->erro_msg);
+          throw new BusinessException( _M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."erro_ao_vincular_origem", $oMsgErro) . $oProgressaoDiarioOrigem->erro_msg);
         }
       }
     }
@@ -371,18 +404,21 @@ final class ProgressaoParcialAluno {
     if ($oResultadoFinal instanceof ProgressaoParcialAlunoResultadoFinal) {
       $oResultadoFinal->salvar();
     }
-
   }
 
   /**
    * Verifica se a progressao já está vinculaddo a alguma regencia
    * @return boolean true se está vinculado false caso nao esteja vinculado
+   * @throws DBException
    */
   public function isVinculadoRegencia() {
 
+    if (    !is_null($this->oProgressaoParcialVinculoDisciplina)
+         && $this->oProgressaoParcialVinculoDisciplina instanceof ProgressaoParcialVinculoDisciplina) {
+      return true;
+    }
 
-
-    if (empty($this->oProgressaoParcialVinculoDisciplina) && !empty($this->iCodigoProgressaoParcial)) {
+    if ( !empty($this->iCodigoProgressaoParcial) ) {
 
       $oDaoProgressaoParcialVinculo = db_utils::getDao("progressaoparcialalunoturmaregencia");
 
@@ -396,9 +432,16 @@ final class ProgressaoParcialAluno {
                                                                                           $sWhere
                                                                                          );
 
-      $rsProgressaoParcialVinculo   = $oDaoProgressaoParcialVinculo->sql_record($sSqlProgressaoParcialVinculo);
+      $rsProgressaoParcialVinculo   = db_query($sSqlProgressaoParcialVinculo);
 
-      if ($oDaoProgressaoParcialVinculo->numrows > 0) {
+      if( !$rsProgressaoParcialVinculo ) {
+
+        $oErro        = new stdClass();
+        $oErro->sErro = pg_last_error();
+        throw new DBException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'erro_validar_vinculo_regencia', $oErro ) );
+      }
+
+      if (pg_num_rows( $rsProgressaoParcialVinculo ) > 0) {
         return true;
       }
     }
@@ -411,8 +454,10 @@ final class ProgressaoParcialAluno {
    * na turma de vinculo.
    * @param Regencia $oRegencia Regência onde sera cursado a dependência
    * @param DBDate $dtVinculo Data de vinculo
-   * @throws ParameterException
    * @return ProgressaoParcialVinculoDisciplina retorna o vinculo criado.
+   * @throws BusinessException
+   * @throws DBException
+   * @throws ParameterException
    */
   public function vincularComRegencia(Regencia $oRegencia, DBDate $dtVinculo) {
 
@@ -437,24 +482,63 @@ final class ProgressaoParcialAluno {
                                                                                            $sWhereProgressaoParcialAlunoMatricula);
     $rsProgressaoParcialAlunoMatricula = db_query( $sSqlProgressaoParcialAlunoMatricula );
 
-    if ( !$rsProgressaoParcialAlunoMatricula || pg_num_rows( $rsProgressaoParcialAlunoMatricula ) ) {
+    if( !$rsProgressaoParcialAlunoMatricula ) {
 
-      $sMensagem  = "Vínculo não permitido. O aluno {$this->getAluno()->getNome()}, ";
-      $sMensagem .= "na disciplina {$this->getDisciplina()->getNomeDisciplina()} ";
-      $sMensagem .= "da Etapa {$this->getEtapa()->getNome()} já possui vínculo com uma turma neste mesmo ano para esta progressão.";
-      throw new BusinessException($sMensagem);
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+      throw new DBException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'erro_validar_vinculo_matricula', $oErro ) );
+    }
+
+    /**
+     * Validação implementada, para os casos em que o aluno já cursou a progressão e reprovou, e vai ser vinculado
+     * a outra turma de calendário diferente, porém dentro do mesmo ano( calendários de EJA semestral, por exemplo )
+     */
+    $oVinculoProgressaoReprovada = $this->getVinculoDisciplinaReprovada();
+    $lPermiteVincular            = true;
+
+    if( !empty( $oVinculoProgressaoReprovada ) ) {
+
+      $oDisciplinaReprovada = $oVinculoProgressaoReprovada->getRegencia()->getDisciplina();
+      $oDisciplinaVincular  = $oRegencia->getDisciplina();
+
+      $oCalendarioReprovada = $oVinculoProgressaoReprovada->getRegencia()->getTurma()->getCalendario();
+      $oCalendarioVincular  = $oRegencia->getTurma()->getCalendario();
+
+      $oIntervaloDatas    = DBDate::getIntervaloEntreDatas( $oCalendarioReprovada->getDataFinal(), $oCalendarioVincular->getDataInicio() );
+      $lIntervaloNegativo = ( bool ) $oIntervaloDatas->invert;
+
+      if(    $oDisciplinaReprovada->getCodigoDisciplinaGeral() == $oDisciplinaVincular->getCodigoDisciplinaGeral()
+          && $lIntervaloNegativo
+        ) {
+        $lPermiteVincular = false;
+      }
+    }
+
+    if(    ( empty( $oVinculoProgressaoReprovada )  && pg_num_rows( $rsProgressaoParcialAlunoMatricula ) > 0 )
+        || ( !empty( $oVinculoProgressaoReprovada ) && !$lPermiteVincular )
+      ) {
+
+      $oMensagem              = new stdClass();
+      $oMensagem->sNomeAluno  = $this->getAluno()->getNome();
+      $oMensagem->sDisciplina = $this->getDisciplina()->getNomeDisciplina();
+      $oMensagem->sEtapa      = $this->getEtapa()->getNome();
+
+      throw new BusinessException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'vinculo_nao_permitido', $oMensagem ) );
     }
 
     if (empty($oRegencia)) {
-      throw new ParameterException("Regência não informada.");
+      throw new ParameterException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'regencia_nao_informada' ) );
     }
+
     if (empty($dtVinculo)) {
-      throw new ParameterException("Data de vínculo não informada.");
+      throw new ParameterException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'data_vinculo_nao_informada' ) );
     }
+
     $this->oProgressaoParcialVinculoDisciplina = new ProgressaoParcialVinculoDisciplina();
     $this->oProgressaoParcialVinculoDisciplina->setDataVinculo($dtVinculo);
     $this->oProgressaoParcialVinculoDisciplina->setRegencia($oRegencia);
     $this->oProgressaoParcialVinculoDisciplina->setAno($oRegencia->getTurma()->getCalendario()->getAnoExecucao());
+
     return $this->oProgressaoParcialVinculoDisciplina;
   }
 
@@ -468,7 +552,7 @@ final class ProgressaoParcialAluno {
 
       $this->getVinculoRegencia()->remover();
       $this->oProgressaoParcialVinculoDisciplina = null;
-    } 
+    }
   }
 
   /**
@@ -495,7 +579,7 @@ final class ProgressaoParcialAluno {
       if ( $oDaoAlunoDiarioFinalOrigem->erro_status == 0 ) {
 
         $oMensagem->sErroBanco = $oDaoAlunoDiarioFinalOrigem->erro_msg;
-        throw new Exception( _M( URL_MENSAGE_PROGRESSAOPARCIALALUNO."erro_excluir_diario_final_origem", $oMensagem ) );
+        throw new Exception( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO."erro_excluir_diario_final_origem", $oMensagem ) );
       }
 
       /**
@@ -506,7 +590,7 @@ final class ProgressaoParcialAluno {
       if ( $oDaoAlunoProgressao->erro_status == 0 ) {
 
         $oMensagem->sErroBanco = $oDaoAlunoProgressao->erro_msg;
-        throw new Exception( _M( URL_MENSAGE_PROGRESSAOPARCIALALUNO."erro_excluir_progressao_parcial", $oMensagem ) );
+        throw new Exception( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO."erro_excluir_progressao_parcial", $oMensagem ) );
       }
     }
   }
@@ -535,7 +619,6 @@ final class ProgressaoParcialAluno {
     }
     return $this->oResultadoFinal;
   }
-
 
   /**
    * Verifica se a progressao do aluno já está encerrada
@@ -575,6 +658,7 @@ final class ProgressaoParcialAluno {
       $this->iTipoConclusao             = 1;
       $this->oSituacaoProgressaoParcial = SituacaoEducacaoRepository::getSituacaoEducacaoByCodigo(self::CONCLUIDA);
     }
+
     $this->getVinculoRegencia()->setEncerrado(true);
     $this->salvar();
   }
@@ -608,6 +692,7 @@ final class ProgressaoParcialAluno {
     $oDaoProgressaoDiario->ed151_diariofinal            = $oResultadoFinal->getCodigoResultadoFinal();
     $oDaoProgressaoDiario->ed151_progressaoparcialaluno = $this->getCodigoProgressaoParcial();
     $oDaoProgressaoDiario->incluir(null);
+
     if ($oDaoProgressaoDiario->erro_status == 0) {
 
       $sErroMensagem  = "Erro ao Encerrar Progressão do do aluno {$this->getAluno()->getNome()}";
@@ -634,14 +719,15 @@ final class ProgressaoParcialAluno {
   /**
    * Retorna o vinculo do aluno na turma
    * @param Turma $oTurma
-   * @return ProgressaoParcialVinculoDisciplina
+   * @param Etapa $oEtapa
+   * @return array
+   * @throws DBException
    */
   public function getVinculosNaTurma(Turma $oTurma, Etapa $oEtapa) {
 
-    $aVinculos = array();
-    
+    $aVinculos  = array();
     $aRegencias = array();
-    
+
     foreach ( $oTurma->getDisciplinasPorEtapa($oEtapa) as $oRegencia ) {
       $aRegencias[] = $oRegencia->getCodigo();
     }
@@ -657,8 +743,18 @@ final class ProgressaoParcialAluno {
                                                                              $sWhere
                                                                             );
 
-    $rsVinculos   = $oDaoProgressaoParcialVinculo->sql_record($sSqlProgressaoParcialVinculo);
-    for ($iVinculos = 0; $iVinculos < $oDaoProgressaoParcialVinculo->numrows; $iVinculos++) {
+    $rsVinculos   = db_query($sSqlProgressaoParcialVinculo);
+
+    if( !$rsVinculos ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+      throw new DBException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'erro_buscar_vinculos_turma', $oErro ) );
+    }
+
+    $iLinhasVinculos = pg_num_rows( $rsVinculos );
+
+    for ($iVinculos = 0; $iVinculos < $iLinhasVinculos; $iVinculos++) {
 
       $iCodigoVinculo = db_utils::fieldsMemory($rsVinculos, $iVinculos)->ed115_sequencial;
       $aVinculos[]    = new ProgressaoParcialVinculoDisciplina($iCodigoVinculo);
@@ -666,10 +762,10 @@ final class ProgressaoParcialAluno {
     return $aVinculos;
   }
 
-
   /**
    * Retorna o vinculo com a progressao Reprovada
-   * @return void|ProgressaoParcialVinculoDisciplina
+   * @return ProgressaoParcialVinculoDisciplina|null
+   * @throws DBException
    */
   protected function getVinculoDisciplinaReprovada() {
 
@@ -685,13 +781,22 @@ final class ProgressaoParcialAluno {
                                                                                           $sWhereProgressao
     );
 
-    $rsProgressao = $oDaoProgressaoParcialAluno->sql_record($sSqlProgressao);
-    if ($oDaoProgressaoParcialAluno->numrows > 0) {
+    $rsProgressao = db_query($sSqlProgressao);
+
+    if( !$rsProgressao ) {
+
+      $oErro        = new stdClass();
+      $oErro->sErro = pg_last_error();
+      throw new DBException( _M( URL_MENSAGEM_PROGRESSAOPARCIALALUNO . 'erro_buscar_vinculos_disciplina_reprovada', $oErro ) );
+    }
+
+    if (pg_num_rows( $rsProgressao ) > 0) {
 
       $iCodigoVinculo = db_utils::fieldsMemory($rsProgressao, 0)->ed115_sequencial;
       return new ProgressaoParcialVinculoDisciplina($iCodigoVinculo);
     }
-    return;
+
+    return null;
   }
   /**
    * Retorna o tipo da conclusao da progressao
@@ -706,7 +811,6 @@ final class ProgressaoParcialAluno {
    * @param integer $iAno
    */
   public function setAno($iAno) {
-
     $this->iAno = $iAno;
   }
 
@@ -715,7 +819,6 @@ final class ProgressaoParcialAluno {
    * @return integer
    */
   public function getAno() {
-
   	return $this->iAno;
   }
 
@@ -724,7 +827,6 @@ final class ProgressaoParcialAluno {
    * @return Escola
    */
   public function getEscola() {
-
     return $this->oEscola;
   }
 
@@ -733,7 +835,6 @@ final class ProgressaoParcialAluno {
    * @param Escola $oEscola
    */
   public function setEscola( Escola $oEscola ) {
-
     $this->oEscola = $oEscola;
   }
 
@@ -764,8 +865,8 @@ final class ProgressaoParcialAluno {
     if (!empty($oMatricula)) {
       return true;
     }
-    return false;
 
+    return false;
   }
 
   /**
@@ -779,40 +880,40 @@ final class ProgressaoParcialAluno {
     if (!empty($oMatricula) && $oMatricula->getTipo() == 'R') {
       return true;
     }
-    return false;
 
+    return false;
   }
 
   /**
    * Altera a situação da progressão parcial de um aluno
-   *
-   * @param string $lAtiva
+   * @param bool $lAtiva
+   * @return bool
    * @throws BusinessException
-   * @return boolean
+   * @throws DBException
    */
   public function alterarSituacao($lAtiva = true) {
 
     if ( !db_utils::inTransaction() ) {
-      throw new BusinessException(_M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."nao_existe_transacao_ativa"));
+      throw new BusinessException(_M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."nao_existe_transacao_ativa"));
     }
 
     if ( $this->isConcluida() ) {
-      throw new BusinessException(_M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."progressao_nao_pode_alterar_situacao"));
+      throw new BusinessException(_M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."progressao_nao_pode_alterar_situacao"));
     }
 
     if ( $lAtiva && $this->isAtiva() ) {
-      throw new BusinessException(_M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."progressao_ja_ativa"));
+      throw new BusinessException(_M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."progressao_ja_ativa"));
     }
 
     if ( !$lAtiva && !$this->isAtiva() ) {
-      throw new BusinessException(_M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."progressao_ja_inativa"));
+      throw new BusinessException(_M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."progressao_ja_inativa"));
     }
 
     /**
      * Só altera a situacão de uma matricula ativa
      */
     if (!$this->temMatriculaAtiva()) {
-      throw new BusinessException(_M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."aluno_sem_matricula_ativa"));
+      throw new BusinessException(_M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."aluno_sem_matricula_ativa"));
     }
 
     /**
@@ -825,7 +926,7 @@ final class ProgressaoParcialAluno {
       $oDadosRematricula->sDescricaoTurma = $oMatricula->getTurma()->getDescricao();
       $oDadosRematricula->sDescricaoEtapa = $oMatricula->getEtapaDeOrigem()->getNome();
 
-      throw new BusinessException(_M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."aluno_rematriculado_nao_altera_situacao", $oDadosRematricula));
+      throw new BusinessException(_M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."aluno_rematriculado_nao_altera_situacao", $oDadosRematricula));
     }
 
     /**
@@ -837,7 +938,7 @@ final class ProgressaoParcialAluno {
 
       $oMensagem          = new stdClass();
       $oMensagem->sEscola = $oMatricula->getTurma()->getEscola()->getNome();
-      throw new BusinessException(_M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."nao_pode_remover_vinculo", $oMensagem));
+      throw new BusinessException(_M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."nao_pode_remover_vinculo", $oMensagem));
     }
 
     /**
@@ -860,7 +961,7 @@ final class ProgressaoParcialAluno {
         if ( $oHistoricoEtapa == null ) {
           continue;
         }
-        
+
         /**
          * Se estivermos alterando a situação da progressão parcial para ATIVO
          *   devemos: alterar o resultado do histório de R (reprovado) para D (aprovado com dependencia)
@@ -893,7 +994,7 @@ final class ProgressaoParcialAluno {
       $oDaoDiarioFinal->ed74_i_codigo = $this->iCodigoDiarioFinal;
       $oDaoDiarioFinal->alterar($this->iCodigoDiarioFinal);
       if ($oDaoDiarioFinal->erro_status == 0) {
-        throw new BusinessException(_M(URL_MENSAGE_PROGRESSAOPARCIALALUNO."erro_alterar_resultado_final"));
+        throw new BusinessException(_M(URL_MENSAGEM_PROGRESSAOPARCIALALUNO."erro_alterar_resultado_final"));
       }
 
     }
@@ -905,5 +1006,60 @@ final class ProgressaoParcialAluno {
 
     $this->salvar();
     return true;
+  }
+
+  /**
+   * Retorna todos os vínculos já realizados para uma progressão
+   * @return ProgressaoParcialVinculoDisciplina[]
+   */
+  public function getVinculosProgressao() {
+
+    $aProgressaoParcialVinculoDisciplina = array();
+
+    $oDaoVinculosProgressao   = new cl_progressaoparcialalunoturmaregencia();
+    $sWhereVinculosProgressao = "ed150_progressaoparcialaluno = {$this->iCodigoProgressaoParcial}";
+    $sSqlVinculosProgressao   = $oDaoVinculosProgressao->sql_query_matricula(
+                                                                              null,
+                                                                              "ed115_sequencial",
+                                                                              "ed150_ano",
+                                                                              $sWhereVinculosProgressao
+                                                                            );
+
+    $rsVinculosProgressao = db_query( $sSqlVinculosProgressao );
+
+    if( $rsVinculosProgressao && pg_num_rows( $rsVinculosProgressao ) > 0 ) {
+
+      for( $iContador = 0; $iContador < pg_num_rows( $rsVinculosProgressao ); $iContador++ ) {
+
+        $iSequencial                           = db_utils::fieldsMemory( $rsVinculosProgressao, $iContador )->ed115_sequencial;
+        $oProgressaoParcialVinculoDisciplina   = new ProgressaoParcialVinculoDisciplina( $iSequencial );
+        $aProgressaoParcialVinculoDisciplina[] = $oProgressaoParcialVinculoDisciplina;
+      }
+    }
+
+    return $aProgressaoParcialVinculoDisciplina;
+  }
+
+  /**
+   * Verifica se a progressão já teve ou tem matrícula (vinculo com uma regência)
+   * @return bool
+   */
+  public function verificaProgressaoTeveMatricula() {
+
+    $sWhere = " ed150_progressaoparcialaluno = {$this->iCodigoProgressaoParcial} ";
+
+    $oDao = new cl_progressaoparcialalunomatricula();
+    $sSql = $oDao->sql_query_file( null, 1, null, $sWhere );
+    $rs   = db_query($sSql);
+
+    if ($rs && pg_num_rows($rs) > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public function getVinculoPorRegencia(Regencia $oRegencia) {
+    return $this->getVinculoRegencia($oRegencia->getCodigo());
   }
 }

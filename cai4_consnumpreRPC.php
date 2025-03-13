@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/JSON.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $objJSON = new Services_JSON();
 $oPost   = db_utils::postMemory($_POST);
@@ -39,7 +39,7 @@ $oPost   = db_utils::postMemory($_POST);
 $oJson   = $objJSON->decode(str_replace("\\","",$oPost->json));
 
 $sSqlParcelas = "select 0 as k00_numpar union select distinct k00_numpar from arrecad where k00_numpre = {$oJson->inumpre} order by k00_numpar";
-$rsParcelas = pg_query($sSqlParcelas);
+$rsParcelas = db_query($sSqlParcelas);
 $iNumRows   = pg_num_rows($rsParcelas);
 $aParcelas  = array();
 

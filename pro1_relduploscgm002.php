@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("fpdf151/pdf.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('j01_matric');
 $where = "";
@@ -41,7 +41,7 @@ $sql .= "			inner join cgm on cgmcorreto.z10_numcgm = cgm.z01_numcgm ";
 $sql .= " $where order by $ordem";
 
 //echo $sql;exit;
-$result = pg_exec($sql);
+$result = db_query($sql);
 $head1 = "CGM's CORRETOS";
 $pdf = new PDF();
 $pdf->Open();
@@ -82,7 +82,7 @@ for ($x=0; $x < pg_numrows($result); $x++) {
   }
   $sql .= " where z11_codigo = $z10_codigo";
   //die($sql);
-  $res = pg_exec($sql);
+  $res = db_query($sql);
   if (pg_numrows($res) > 0) {
     for ($y=0; $y<pg_numrows($res); $y++) {
       db_fieldsmemory($res,$y);

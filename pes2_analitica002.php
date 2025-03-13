@@ -1,33 +1,7 @@
-<?
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -51,16 +25,24 @@
  *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_libpessoal.php");
-include("classes/db_selecao_classe.php");
-include("classes/db_rhcadregime_classe.php");
+use ECidade\Pdf\Pdf;
+
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sql.php");
+require_once modification("libs/db_libpessoal.php");
+require_once modification("classes/db_selecao_classe.php");
+require_once modification("classes/db_rhcadregime_classe.php");
+
+if (DBPessoal::verificaBloqueioCompetenciasAbertas($ano,$mes)) {
+    db_redireciona('db_erros.php?fechar=true&db_erro=Relatório sem acesso. Folha em aberto');
+}
+
 $clgerasql = new cl_gera_sql_folha;
 $clselecao = new cl_selecao;
 $clrhcadregime = new cl_rhcadregime;
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+parse_str($_SERVER['QUERY_STRING']);
 
 $clgerasql->inner_rub = false;
 $clgerasql->usar_ger = true;
@@ -81,6 +63,10 @@ if($ansin == "a"){
 
 $head2 = "FOLHA DE PAGAMENTO (".$mes." / ".$ano.") - ".$impressao;
 $head4 = "ARQUIVO : ";
+$head5 = "";
+$head7 = "";
+$head8 = "";
+
 
 //$whereRESC = " rh05_seqpes is null and (r45_regist is null or  r45_regist is not null and (r45_dtreto is null or r45_dtreto > '".$ano."-".$mes."-01'))";
 $whereRESC = " rh05_seqpes is null ";
@@ -95,38 +81,48 @@ $clgerasql->inicio_rh = true;
  * $clgerasql->inner_ger define se realiza inner join com a tabela.
  * A tabela a qual vai ser realizado o inner depende do tipo de folha emitido ($folha)
  */
-if($folha == 'r14'){
-//  $clgerasql->inicio_rh = true;
+if ($folha == 'r14') {
+  /**
+   * Retornado fonte, pois existem afastamentos sem remuneração e servidores nesta condição não apareciam
+   * no relatório mesmo selecionando afastados, já que não tinham cálculo de salário
+   */
   $clgerasql->inner_ger = false;
   $head4.= 'DE SALÁRIO';
-}else if($folha == 'r20'){
+} else if ($folha == 'r20') {
   $head4.= 'DE RESCISÃO';
   $whereRESC = "";
-  $aWhere   = array();
   $andwhere = "";
-}else if($folha == 'r35') {
-//  $clgerasql->inicio_rh = true;
+} else if ($folha == 'r35') {
   $clgerasql->inner_ger = true;
   $head4     .= 'DE 13o SALÁRIO';
   $whereRESC  = " ";
-  $aWhere   = array();
 
-}else if($folha == 'r22'){
+} else if($folha == 'r22') {
   $head4.= 'DE ADIANTAMENTO';
-}else if($folha == 'r48'){
+} else if($folha == 'r48') {
   $head4.= 'COMPLEMENTAR';
+} else if($folha == 'sup') {
+  $head4.= 'SUPLEMENTAR';
 }
+
+// Altera o $aWhere baseado no tipo da folha para não filtrar rescindidos
+if (in_array($folha, ['r20', 'r35', 'r22', 'r48'])) {
+  $aWhere   = [];
+}
+
 $head5 = "GERAL";
 $orderBY= " z01_nome,rh01_regist,r14_rubric";
-
+$sWhereSup = "";
 if(isset($semest) && $semest > 0 ){
 
   $whereRESC.= $andwhere." r48_semest = ".$semest;
-
-  $aWhere[] = "r48_semest = ".$semest;
+  if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+    $sWhereSup = "AND rh141_codigo = {$semest}";
+  } else {
+    $aWhere[] = "r48_semest = ".$semest;
+  }
   $andwhere = " and ";
 }
-
 
 $lotacao = false;
 
@@ -306,6 +302,22 @@ if (trim($sel) != "") {
   }
 }
 
+if (isset($previdencia) && $previdencia != 0 ) {
+
+  if ($previdencia != 5) {
+
+      $aWhere[] = " rh02_tbprev = ".$previdencia;
+
+      $oINSSIRF = new cl_inssirf();
+      $rsPrevidencia = $oINSSIRF->sql_record($oINSSIRF->sql_query(null, null, r33_nome, null, "r33_anousu = {$ano} and r33_mesusu = {$mes} and r33_codtab = {$previdencia} + 2 "));
+      $head9 = "PREVIDÊNCIA : ".strtoupper(\db_utils::fieldsMemory($rsPrevidencia, 0)->r33_nome);
+
+  } else {
+      $aWhere[] = " rh02_tbprev = 0 " ;
+  }
+  
+}
+
 $camposSQL = "
               rh01_regist,
               rh01_numcgm,
@@ -335,11 +347,14 @@ $camposSQL = "
               $camposFiltrar1
              ";
 
-
+if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+    $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+    $aWhere[] = " rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+}
+        
 $sNovoWhere = implode(" and ", $aWhere);
 
-$sql_dados = $clgerasql->gerador_sql($folha,$ano,$mes,null,null,$camposSQL,"",$sNovoWhere);
-
+$sql_dados = $clgerasql->gerador_sql($folha,$ano,$mes,null,null,$camposSQL,"",$sNovoWhere, db_getsession("DB_instit"), $sWhereSup);
 $sql_dados1 = "select distinct
                       rh01_regist,
                       rh01_numcgm,
@@ -371,6 +386,7 @@ $sql_dados1 = "select distinct
                                         when 4 then 'S.Militar'
                                         when 5 then 'Gestante'
                                         when 6 then 'Doença'
+                                        when 8 then 'Doença'
                                       else 'S/Venc.' end
                                else 'Normal' end as situacao_funcionario
                           from afasta
@@ -399,7 +415,7 @@ if ($afastado == 'n') {
                                           )
                                      ) ";
 }
-$sql_dados1 .= " order by $orderBY";
+$sql_dados1 .= " order by {$orderBY}";
 
 $result_dados = db_query($sql_dados1);
 $numrows_dados = pg_numrows($result_dados);
@@ -850,15 +866,23 @@ $total_quebra_sintetica_descontos   = 0;
 $total_quebra_sintetica_liquido     = 0;
 
 $pdf = new PDF();
-$pdf->Open();
+$pdf->setExibeBrasao(true);
+$pdf->addTitulo($head2,2);
+$pdf->addTitulo($head4,4);
+$pdf->addTitulo($head5,5);
+$pdf->addTitulo($head7,7);
+$pdf->addTitulo($head8,8);
 $pdf->AliasNbPages();
 $pdf->setfillcolor(235);
+$pdf->init(false);
+
+
 $alt   = 4;
 $troca1= 1;
 
 /// Setar altura onde passará para a próxima página
 $pdf->SetAutoPageBreak('on',0);
-$pdf->line(2,148.5,208,148.5);
+
 $troca = 0;
 if($ansin == "a"){
   $troca = 1;
@@ -968,16 +992,16 @@ for($ireg=0; $ireg<$index; $ireg++){
        $altura_total_menos_tamanho_do_texto+= (9 * 5) + 1;
 
        // Soma a altura atual na página
-       $altura_total_menos_tamanho_do_texto+= $pdf->gety();
+       $altura_total_menos_tamanho_do_texto+= $pdf->getY();
 
        // Se o espaço ocupado mais a altura atual for maior que o tamanho da folha menos 20 mm, adicionará uma nova
        // página e voltará o FOR
-       if($altura_total_menos_tamanho_do_texto > $pdf->h - 20){
+       if($altura_total_menos_tamanho_do_texto > $pdf->getH() - 20){
          $pdf->addpage();
          continue;
        }
 
-       if($troca == 1 || $pdf->gety() > $pdf->h - 20 ){
+       if($troca == 1 || $pdf->getY() > $pdf->getH() - 20 ){
          //echo "<BR> 23 passou aqui !!";
          $troca = 0;
          $pdf->addpage();
@@ -1028,7 +1052,7 @@ for($ireg=0; $ireg<$index; $ireg++){
          // Chama função que imprime os dados da rubrica corrente SETANDO BD, se for em BRANCO ou PD2 se estiver setado
          imprimerubricas($OPC, $arr_auxDR["$i2"], $arr_auxDQ["$i2"], $arr_auxDV["$i2"], $arr_auxDD["$i2"]);
 
-         if($pdf->gety() > $pdf->h - 30){
+         if($pdf->getY() > $pdf->getH() - 30){
            $pdf->addpage();
            imprimefuncionario($r11_modanalitica, $arrCamposImprime);
 
@@ -1067,7 +1091,7 @@ for($ireg=0; $ireg<$index; $ireg++){
 
        $totalliquido = $valores_P - $valores_D;
 
-       if($pdf->gety() > $pdf->h - 30 || $imprime_cabecalho_analitico == true){
+       if($pdf->getY() > $pdf->getH() - 30 || $imprime_cabecalho_analitico == true){
         // echo "<BR> 1 passou aqui ! if($quebrarpagina == $codigoquebra){";
          if($tipo != "g" && $tipo != "m"){
             if($quebrarpagina == $codigoquebra && $imprime_cabecalho_analitico == false){
@@ -1176,13 +1200,13 @@ function imprimefuncionario($modelo, $arr_campos){
 
   foreach($arr_campos as $index => $campo){
 
-    global $$campo;
+    global ${$campo};
   }
 
   $pdf->setfont('arial','b',7);
   if($modelo != null && $modelo > 0 && file_exists("fpdf151/impmodelos/mod_imprime_folha$modelo.php")==true){
 
-    include("fpdf151/impmodelos/mod_imprime_folha$modelo.php");
+    include(modification("fpdf151/impmodelos/mod_imprime_folha$modelo.php"));
   }else{
 
     $pdf->cell(12,$alt,$registro. " - " .db_CalculaDV($registro),0,0,"C",0);
@@ -1195,7 +1219,27 @@ function imprimefuncionario($modelo, $arr_campos){
     $pdf->cell(15,$alt,$clas1rec,0,1,"L",0);
 
     $pdf->cell(10,$alt,"Padrão: ",0,0,"L",0);
-    $pdf->cell(30,$alt,$padraorec,0,1,"L",0);
+    $pdf->cell(30,$alt,$padraorec,0,0,"L",0);
+    
+    $pdf->cell(66,$alt,'',0,0,"L",0);
+    
+    $sSqlRescisao = "select rh05_recis 
+                       from rhpesrescisao
+                            inner join rhpessoalmov on rh05_seqpes = rh02_seqpes
+                      where rh02_regist = {$registro}
+                        and rh02_anousu = ".db_anofolha()."
+                        and rh02_mesusu = ".db_mesfolha();
+    $rsRescisao = db_query($sSqlRescisao);
+    if (pg_num_rows($rsRescisao) > 0) {
+        
+      $oDadosRescisao= db_utils::fieldsMemory($rsRescisao,0);
+      
+      $pdf->cell(15,$alt,"Rescisão...: ",0,0,"L",0);
+      $pdf->cell(15,$alt,db_formatar($oDadosRescisao->rh05_recis,'d'),0,0,"L",0);
+      
+    }
+    
+    $pdf->cell(15,$alt,'',0,1,"L",0);
 
     if($cargorec != ""){
       $pdf->cell(12,$alt,"Funcao: ",0,0,"L","0");

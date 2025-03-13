@@ -27,7 +27,7 @@
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
 /////////////////////////////////
 // tipos/elementos
@@ -41,7 +41,7 @@ $sql="  select
         order by e91_codtipo
       ";
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 if (pg_numrows($result) == 0 ){
   db_redireciona("db_erros.php?fechar=true&db_erro=Nenhum registro encontrado");
 } 

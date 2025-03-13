@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,7 +27,7 @@
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
 $pdf = new PDF(); 
 $pdf->Open(); 
@@ -45,7 +45,7 @@ $pdf->addpage();
 
 $cruzamento = db_getsession("cruzamento");
 
-$result = pg_exec($cruzamento." between '2006-01-01' and '2006-12-31'");
+$result = db_query($cruzamento." between '2006-01-01' and '2006-12-31'");
 
 if($result == false || pg_numrows($result)==0){
   db_redireciona("db_erros.php?fechar=true&error='teste'");

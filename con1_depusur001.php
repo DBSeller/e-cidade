@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 if (isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($HTTP_POST_VARS); 
-  pg_exec("begin");
-  pg_exec("delete from db_depusu where id_usuario = $usuarios ") or die("Erro (10). Excluindo db_depusu.");
+  db_query("begin");
+  db_query("delete from db_depusu where id_usuario = $usuarios ") or die("Erro (10). Excluindo db_depusu.");
   if (isset($depto)) {
     $num = sizeof($depto);
     for ($i=0;$i<$num;$i++) {
-	  pg_exec("insert into db_depusu values ($usuarios,".$depto[$i].")") or die ("Erro (14). Inserindo db_depusu.");
+	  db_query("insert into db_depusu values ($usuarios,".$depto[$i].")") or die ("Erro (14). Inserindo db_depusu.");
 	 }
   }
-  pg_exec("end");
+  db_query("end");
   db_redireciona();
   
 }
@@ -65,7 +65,7 @@ if (isset($HTTP_POST_VARS["incluir"])) {
 <table width="790" height="100%" border="0" cellspacing="0" cellpadding="0">
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-	<? include("forms/db_frmdepusur.php"); ?>	
+	<? include(modification("forms/db_frmdepusur.php")); ?>	
 	</td>
   </tr>
 </table>

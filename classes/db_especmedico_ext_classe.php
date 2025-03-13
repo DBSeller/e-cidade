@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,8 +27,8 @@
 
 //MODULO: Ambulatorial
 //CLASSE DA ENTIDADE especmedico
-include("db_agendamentos_ext_classe.php");
-require("db_especmedico_classe.php");
+include(modification("classes/db_agendamentos_ext_classe.php"));
+require(modification("classes/db_especmedico_classe.php"));
 
 
 class cl_especmedico_ext extends cl_especmedico  {
@@ -36,7 +36,7 @@ class cl_especmedico_ext extends cl_especmedico  {
  	function alterar_ext ($sd27_i_codigo=null) {
  		$clagendamentos = new cl_agendamentos_ext;
  		$data = "'".date("Y/m/d", time())."'";
- 		$result_agenda = pg_query($clagendamentos->sql_query_ext(null, "count(*) as total_agendado",null,"sd27_i_codigo = $sd27_i_codigo and sd23_i_situacao = 1 and sd23_d_consulta >= $data"));
+ 		$result_agenda = db_query($clagendamentos->sql_query_ext(null, "count(*) as total_agendado",null,"sd27_i_codigo = $sd27_i_codigo and sd23_i_situacao = 1 and sd23_d_consulta >= $data"));
  		
  		if( pg_result($result_agenda,0,"total_agendado") > 0 ){
  			/*

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,13 +27,13 @@
 
 //MODULO: educação
 //CLASSE DA ENTIDADE diario
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cursoedu_classe.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cursoedu_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clcurso = new cl_curso;
@@ -86,7 +86,7 @@ $clcurso->rotulo->label("ed29_c_descr");
    if(!isset($pesquisa_chave)){
     if(isset($campos)==false){
      if(file_exists("funcoes/db_func_cursoedu.php")==true){
-      include("funcoes/db_func_cursoedu.php");
+      include(modification("funcoes/db_func_cursoedu.php"));
      }else{
       $campos = "cursoedu.*";
      }
@@ -113,7 +113,7 @@ $clcurso->rotulo->label("ed29_c_descr");
    }else{
     if(isset($campos)==false){
      if(file_exists("funcoes/db_func_cursoedu.php")==true){
-      include("funcoes/db_func_cursoedu.php");
+      include(modification("funcoes/db_func_cursoedu.php"));
      }else{
       $campos = "cursoedu.*";
      }
@@ -131,7 +131,7 @@ $clcurso->rotulo->label("ed29_c_descr");
              AND ed29_i_codigo = $pesquisa_chave
              AND ed29_c_historico = 'S'
             ";
-     $result = pg_query($sql);
+     $result = db_query($sql);
      $linhas = pg_num_rows($result);
      if($linhas!=0){
       db_fieldsmemory($result,0);
@@ -149,3 +149,9 @@ $clcurso->rotulo->label("ed29_c_descr");
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

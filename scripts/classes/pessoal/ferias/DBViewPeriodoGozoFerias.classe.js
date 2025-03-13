@@ -103,7 +103,7 @@ DBViewPeriodoGozoFerias.prototype.carregarDadosGrid = function() {
   oDadosRequisicao.parameters          = 'json='+Object.toJSON(oParametros);
   oDadosRequisicao.onComplete          = function(oAjax){
     
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if (oRetorno.iStatus == "2") {
     

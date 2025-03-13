@@ -26,12 +26,12 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas     = new cl_criaabas;
 $db_opcao = 1;
 ?>
@@ -71,8 +71,8 @@ $db_opcao = 1;
   </body>
   </html>
   <script>
-   top.corpo.iframe_a1.location.href = "sau1_medicos001.php?db_opcao=22";
-   top.corpo.iframe_a2.location.href = "sau1_medicos002.php?db_opcao=22";
-   top.corpo.iframe_a3.location.href = "sau1_medicos003.php?db_opcao=22&db_botao=false";
-   top.corpo.iframe_a4.location.href = "sau1_especmedico002.php?tp=1";
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href = "sau1_medicos001.php?db_opcao=22";
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href = "sau1_medicos002.php?db_opcao=22";
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href = "sau1_medicos003.php?db_opcao=22&db_botao=false";
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href = "sau1_especmedico002.php?tp=1";
   </script>

@@ -34,7 +34,7 @@ DBViewContaBancaria = function(iCodigoContaBancaria, sInstance, lReadOnly) {
       parameters : 'json=' + Object.toJSON(oParam),
       onComplete : function(oAjax) {
 
-        var oRetorno = eval("(" + oAjax.responseText + ")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.status == "2") {
           alert(oRetorno.message.urlDecode());
         } else {
@@ -319,7 +319,7 @@ DBViewContaBancaria = function(iCodigoContaBancaria, sInstance, lReadOnly) {
       onComplete : function(oAjax) {
 
         js_removeObj('msgBox')
-        var oRetorno = eval("(" + oAjax.responseText + ")");
+        var oRetorno = JSON.parse(oAjax.responseText);
         if (oRetorno.status == 1) {
 
           me.iSequencialContaBancaria = oRetorno.iSequencialContaBancaria;
@@ -440,7 +440,7 @@ DBViewContaBancaria = function(iCodigoContaBancaria, sInstance, lReadOnly) {
                                  onComplete : function(oAjax) {
                                  
                                    js_removeObj('msgBox')
-                                   var oRetorno = eval("(" + oAjax.responseText + ")");
+                                   var oRetorno = JSON.parse(oAjax.responseText);
                                    me.inputNumeroAgencia.setValue(oRetorno.iCodigoAgencia);
                                    me.inputDvAgencia.setValue(oRetorno.iDigitoAgencia);
                                    me.inputCodigoBanco.setValue(oRetorno.iCodigoBanco);

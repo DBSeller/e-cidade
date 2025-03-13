@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_conplano_classe.php");
-include("fpdf151/pdf.php");
+include(modification("classes/db_conplano_classe.php"));
+include(modification("fpdf151/pdf.php"));
 
 //db_postmemory($HTTP_SERVER_VARS,2);
 
@@ -44,7 +44,7 @@ $clrotulo->label("c61_reduz");
 
 $sql = $clconplano->sql_query("","","*","c60_estrut"," c60_estrut like '$c60_estrut%' and c60_anousu=".db_getsession("DB_anousu"));
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 $num = pg_numrows($result);
 $linha = 60;

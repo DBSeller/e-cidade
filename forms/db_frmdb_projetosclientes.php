@@ -26,7 +26,7 @@
  */
 
 //MODULO: atendimento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_projetosclientes->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -110,10 +110,10 @@ db_input('at01_nomecli',40,$Iat01_nomecli,true,'text',3,'')
 <script>
 function js_pesquisaat64_cliente(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_projetosclientes','db_iframe_clientes','func_clientes.php?funcao_js=parent.js_mostraclientes1|at01_codcli|at01_nomecli','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_projetosclientes','db_iframe_clientes','func_clientes.php?funcao_js=parent.js_mostraclientes1|at01_codcli|at01_nomecli','Pesquisa',true,'0');
   }else{
      if(document.form1.at64_cliente.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_projetosclientes','db_iframe_clientes','func_clientes.php?pesquisa_chave='+document.form1.at64_cliente.value+'&funcao_js=parent.js_mostraclientes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_projetosclientes','db_iframe_clientes','func_clientes.php?pesquisa_chave='+document.form1.at64_cliente.value+'&funcao_js=parent.js_mostraclientes','Pesquisa',false);
      }else{
        document.form1.at01_nomecli.value = ''; 
      }

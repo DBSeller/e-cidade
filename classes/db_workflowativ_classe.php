@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -387,6 +387,7 @@ class cl_workflowativ {
       }
      return $result;
    }
+   
    // funcao do sql 
    function sql_query ( $db114_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
@@ -455,6 +456,46 @@ class cl_workflowativ {
        }
      }
      return $sql;
+  }
+
+  // funcao do sql 
+  function sql_query_atributos ( $db114_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from workflowativ ";
+    $sql .= "      inner join  workflow  on  workflow.db112_sequencial             = workflowativ.db114_workflow";
+    $sql .= "      inner join  workflowativandpadrao on db115_workflowativ         = workflowativ.db114_sequencial";
+    $sql .= "      inner join  andpadrao             on db115_codigo               = p53_codigo";
+    $sql .= "                                       and db115_ordem                = p53_ordem";
+    $sql .= "      left  join  workflowativdb_cadattdinamico on db117_workflowativ = workflowativ.db114_sequencial";
+    $sql2 = "";
+    if($dbwhere==""){
+      if($db114_sequencial!=null ){
+        $sql2 .= " where workflowativ.db114_sequencial = $db114_sequencial ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
   }
 }
 ?>

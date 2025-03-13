@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 /*
 DB_login=dbseller&DB_id_usuario=1&DB_porta=3055&DB_instit=1&DB_modulo=576
 &DB_nome_modulo=ipasem&DB_anousu=2003&DB_datausu=1061485231&codmed=251&nomemed=HERIBERT ADAM&especmed=9
@@ -37,7 +37,7 @@ parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
 if(isset($exclenc)) {
   $ex = split("#",$exclenc);
-  pg_exec("delete from encaminhamento where codate = ".$ex[0]." and codpaciente = '".str_pad($ex[1],6," ",STR_PAD_LEFT)."' and codespec = ".$ex[2]) or die("Erro(14) excluindo encaminhamentos");
+  db_query("delete from encaminhamento where codate = ".$ex[0]." and codpaciente = '".str_pad($ex[1],6," ",STR_PAD_LEFT)."' and codespec = ".$ex[2]) or die("Erro(14) excluindo encaminhamentos");
 }
 
 if(isset($HTTP_POST_VARS["encaminhar"])) {
@@ -53,7 +53,7 @@ if(isset($HTTP_POST_VARS["encaminhar"])) {
   $data = date("Y-m-d",db_getsession("DB_datausu"));	
   $codmed = db_getsession("codmed");
   $motivo = $HTTP_POST_VARS["motivo"];
-  pg_exec("insert into encaminhamento values($codate,'".str_pad(trim($codpaciente),6," ",STR_PAD_LEFT)."',$codespec,'$data','".str_pad(trim($codmed),6," ",STR_PAD_LEFT)."','$depen','$motivo')") or die("Erro(19) inserindo em encaminhamento");
+  db_query("insert into encaminhamento values($codate,'".str_pad(trim($codpaciente),6," ",STR_PAD_LEFT)."',$codespec,'$data','".str_pad(trim($codmed),6," ",STR_PAD_LEFT)."','$depen','$motivo')") or die("Erro(19) inserindo em encaminhamento");
 }
 ?>
 <html>
@@ -161,7 +161,7 @@ input {
             <td> <strong>Especialidade:</strong><br>
               <select style="font-size:9px" name="especial" size="10" id="especial">
                 <?
-			  $result = pg_exec("select w12_codigo,w12_descr from especial order by w12_descr");
+			  $result = db_query("select w12_codigo,w12_descr from especial order by w12_descr");
 			  $numrows = pg_numrows($result);
 			  for($i = 0;$i < $numrows;$i++) {
 			    db_fieldsmemory($result,$i);
@@ -185,7 +185,7 @@ input {
           } else {
             $codpaciente = db_getsession("w01_regist");
           }	
-			$result = pg_exec("select to_char(e.data,'DD-MM-YYYY') as data,esp.w12_descr,m.aa01_nome,(CASE WHEN e.dependente = '1' THEN d.w03_nome ELSE cg.j01_nome END) as paciente,(CASE WHEN e.dependente = '1' THEN 'Sim' ELSE 'Não' END) as dep,e.motivo,codate,codpaciente,codespec
+			$result = db_query("select to_char(e.data,'DD-MM-YYYY') as data,esp.w12_descr,m.aa01_nome,(CASE WHEN e.dependente = '1' THEN d.w03_nome ELSE cg.j01_nome END) as paciente,(CASE WHEN e.dependente = '1' THEN 'Sim' ELSE 'Não' END) as dep,e.motivo,codate,codpaciente,codespec
 			                   from encaminhamento e
 							   inner join medicos m
 							   on m.aa01_codig = e.codmedico

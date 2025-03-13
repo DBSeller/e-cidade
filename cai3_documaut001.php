@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_saltes_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_saltes_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -75,7 +75,7 @@ $clrotulo->label("k12_codord");
 ?>
           <tr><td colspan="2">&nbsp;</td></tr>
           <tr> 
-            <td align="right" nowrap title="<?=$Tk12_data?>"><b>Periodo&nbsp;&nbsp;</b>
+            <td align="right" nowrap title="<?=$Tk12_data?>"><b>Periodo:&nbsp;&nbsp;</b>
             </td>
             <td align="left" nowrap> 
             <?
@@ -111,6 +111,15 @@ $clrotulo->label("k12_codord");
 		  	       $matriz = array("T"=>"TODOS","f"=>"NAO","t"=>"SIM");
 				       db_select("k12_estorn",$matriz,true,4);
 				    ?>
+            </td>
+          </tr>
+          <tr>
+            <td align="right" nowrap title="<?=$Te90_cancelado?>"><b>Imprime Arquivos Cancelados:&nbsp;&nbsp;</b>
+            <td align="left" nowrap>
+            <?
+               $matriz = array("f"=>"NAO","t"=>"SIM");
+               db_select("cancelados",$matriz,true,4);
+            ?>
             </td>
           </tr>
           <tr>
@@ -220,7 +229,9 @@ $clrotulo->label("k12_codord");
 
                         inner join conplanoreduz on conplanoreduz.c61_reduz     = corrente.k12_conta and
                                                     conplanoreduz.c61_anousu    = ".db_getsession("DB_anousu")."
-
+                        inner join conplano      on conplano.c60_codcon    = conplanoreduz.c61_codcon
+                                                and conplano.c60_anousu    = conplanoreduz.c61_anousu
+                                                and conplano.c60_codsis    in (5,6)
                         inner join empempenho    on empempenho.e60_numemp       = coremp.k12_empen
 
                         inner join cgm           on cgm.z01_numcgm              = empempenho.e60_numcgm
@@ -280,10 +291,10 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 function js_pesquisa_cgm(mostra){
    if(mostra==true){
-       js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm_empenho.php?funcao_js=parent.js_mostracgm1|e60_numcgm|z01_nome','Pesquisa',true);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm_empenho.php?funcao_js=parent.js_mostracgm1|e60_numcgm|z01_nome','Pesquisa',true);
    }else{
        if(document.form1.z01_numcgm.value != ''){ 
-           js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm_empenho.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+           js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm_empenho.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
        }else{
            document.form1.z01_nome.value = ''; 
        }
@@ -350,6 +361,7 @@ function js_imprimir(){
    var virgula       = "";
    var query         = "";
    var periodo       = "";
+   var cancelados    = "";
    var total         = documaut.document.form1.elements.length;
 
    if(document.form1.k12_dataini_dia.value != ""){
@@ -357,6 +369,7 @@ function js_imprimir(){
                  " a "+document.form1.k12_datafim_dia.value+"/"+document.form1.k12_datafim_mes.value+"/"+document.form1.k12_datafim_ano.value;
    }
 
+   cancelados = document.form1.cancelados.value;
    for(i=0; i < total; i++){
         if(documaut.document.form1.elements[i].type == "checkbox"){
             if(documaut.document.form1.elements[i].checked == true){
@@ -392,6 +405,7 @@ function js_imprimir(){
 
    query += "&lista_contas="+lista_contas;
    query += "&lista_valores="+lista_valores;
+   query += "&cancelados="+cancelados;
 
    jan = window.open('cai3_documaut002.php?'+query,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
    jan.moveTo(0,0);

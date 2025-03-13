@@ -69,7 +69,7 @@ $clrotulo->label("v61_descricao");
 
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_procjurtipo','func_procjurtipo.php?funcao_js=parent.js_preenchepesquisa|v66_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procjurtipo','func_procjurtipo.php?funcao_js=parent.js_preenchepesquisa|v66_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_procjurtipo.hide();

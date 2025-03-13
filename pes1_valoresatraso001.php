@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_rhpagatra_classe.php");
-include ("classes/db_rhpagocor_classe.php");
-include ("classes/db_rhpessoal_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_rhpagatra_classe.php"));
+include(modification("classes/db_rhpagocor_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clrhpagatra = new cl_rhpagatra;
@@ -55,7 +55,7 @@ $db_botao = false;
   <tr>
     <td width="100%">
       <?
-      include ("forms/db_frmvaloresatraso.php");
+      include(modification("forms/db_frmvaloresatraso.php"));
       ?>
     </td>
   </tr>

@@ -26,7 +26,7 @@
  */
 
 //MODULO: escola
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clturmaacprof->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -38,7 +38,7 @@ if(isset($opcao) && $opcao=="alterar"){
  $db_opcao = 2;
  $db_botao1 = true;
  $sql0 = "SELECT ed222_i_codigo,ed222_i_turmaac FROM turmaacprof WHERE ed222_i_turmaac = $ed222_i_turmaac";
- $result0 = pg_query($sql0);
+ $result0 = db_query($sql0);
  if(pg_num_rows($result0)>0){
   db_fieldsmemory($result0,0);
  }
@@ -46,7 +46,7 @@ if(isset($opcao) && $opcao=="alterar"){
  $db_botao1 = true;
  $db_opcao = 3;
  $sql0 = "SELECT ed222_i_codigo,ed20_i_rechumano FROM turmaacprof WHERE ed222_i_turmaac = $ed222_i_turmaac";
- $result0 = pg_query($sql0);
+ $result0 = db_query($sql0);
  if(pg_num_rows($result0)>0){
   db_fieldsmemory($result0,0);
  }

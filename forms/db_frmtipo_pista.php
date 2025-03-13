@@ -68,7 +68,7 @@ db_input('tr03_descr',35,$Itr03_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipo_pista','func_tipo_pista.php?funcao_js=parent.js_preenchepesquisa|tr03_id','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipo_pista','func_tipo_pista.php?funcao_js=parent.js_preenchepesquisa|tr03_id','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tipo_pista.hide();

@@ -2,6 +2,8 @@
 class MyPdf extends FPDF
 {
 
+    public $TopMargin;
+
     function MyPdf($orientation, $unit, $format, $headerCallback)
     {
         FPDF::FPDF($orientation, $unit, $format);
@@ -33,6 +35,7 @@ class MyPdf extends FPDF
         $aligns['right']  = 'R';
         $this->LineHeight = 14;
         include 'include/report_vars.inc';
+        if(isset($this->ReportName))
         $ReportName = $this->ReportName;
         $page       = $this->PageNo();
         $totalPages = '{nb}';
@@ -50,6 +53,7 @@ class MyPdf extends FPDF
         {
             //$this->SetY(0);
             //$this->SetX(0);
+            $lineN = 0;
             $this->SetTextConfig($this->headerfont, $this->headercolor, $this->headerbgcolor);
             foreach($header as $Line)
             {
@@ -57,7 +61,7 @@ class MyPdf extends FPDF
                 {
                     $lineN ++;
                     $page = $this->page;
-                    $Line = ereg_replace("\"", "\\\"", $Line);
+                    $Line = str_replace("\"", "\\\"", $Line);
                     eval ("\$Line = \"$Line\";");
                 }
                 
@@ -121,7 +125,7 @@ class MyPdf extends FPDF
                 {
                     $lineN ++;
                     $page = $this->page;
-                    $Line = ereg_replace("\"", "\\\"", $Line);
+                    $Line = str_replace("\"", "\\\"", $Line);
                     eval ("\$Line = \"$Line\";");
                 }
                 
@@ -334,6 +338,8 @@ class MyPdf extends FPDF
     /***********************************************************/
     function ParseStringPdf($Line)
   	{
+        $has_1 = false;
+        $has_2 = false;
         $Line = " $Line";
         $pos = strpos($Line, '#');
         $commands = array('#setc', '#tab', '#sety', '#setf', '#image', '#bgimage', '#file',
@@ -383,8 +389,18 @@ class MyPdf extends FPDF
                 if (file_exists($image_name))
                 {
                     $size = getimagesize($image_name);
-                    $this->Image($image_name, $this->GetX(), $this->GetY(), $size[0], $size[1]);
-                    $this->SetY($this->GetY() + $size[1]);
+
+                    $hasLogo = false;
+
+                    if (mb_strpos($image_name, 'logo') !== false && mb_strpos($image_name, 'agata') !== false) {
+                        $hasLogo = true;
+                    }
+
+                    $width = $hasLogo ? 68 : $size[0];
+                    $height = $hasLogo ? 74 : $size[1];
+
+                    $this->Image($image_name, $this->GetX(), $this->GetY(), $width, $height);
+                    $this->SetY($this->GetY() + $height);
                 }
                 $offset = strlen($Line);
             }
@@ -480,7 +496,7 @@ class MyPdf extends FPDF
                 
                 $this->SetX($x0 + $cellWidth);
                 $this->SetY($y0);
-                $this->Sets($x0 + $cellWidth);
+                //$this->Sets($x0 + $cellWidth);
                 #frameBC200lskjfaslfsdf #tab
             }
             else if (substr($Line,$pos,5)=='#elip')

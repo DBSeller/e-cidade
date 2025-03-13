@@ -1,28 +1,28 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: issqn
@@ -35,10 +35,9 @@ $clrotulo->label("q06_nota");
 $clrotulo->label("q06_valor");
 $clrotulo->label("j14_tipo");
 
-$substitui=false;
-//$anoant = "";
+$substitui = false;
 ?>
-<script>
+<script type="text/javascript">
 
 function js_ControlaAnoMes(mes,ano,anoant){
   if(mes == 12 && anoant == ''){
@@ -66,7 +65,7 @@ function js_confirmar(){
 }
 
 function js_excluir(){
-	  
+
   coluna=criatabela.document.getElementById('tab');
   valtot=0;
   for(i=1; i<coluna.rows.length; i++){
@@ -96,8 +95,8 @@ function js_incluir(){
          if(coluna.rows[i].cells[0].innerHTML==nota){
 	         alert("Nota já lançada.");
            return false;
-	       }  
-       }  
+	       }
+       }
     }
   }
   if(isNaN(valor) || valor==""){
@@ -117,15 +116,15 @@ function js_incluir(){
 }
 
 function js_alterar(nota,valor){
-  
+
   if (document.form1.q06_nota.value!="") {
     document.form1.lancar.click();
-  } 
-  
+  }
+
   if(nota=="&nbsp;"){
     nota="";
   }
-    
+
   document.form1.q06_nota.value=nota;
   document.form1.q06_valor.value=valor;
   coluna=criatabela.document.getElementById('tab');
@@ -140,16 +139,19 @@ function js_alterar(nota,valor){
 }
 
 function js_verifica(){
+
   coluna=criatabela.document.getElementById('tab');
   if(coluna.rows.length==1){
    return (confirm("Deseja criar um registro sem valor?"));
   }else{
+
     js_dados();
     return true;
   }
-  
+
 }
 function js_trocaaliq(aliq){
+
   valtot=document.form1.q05_bruto.value;
   document.form1.q05_valor.value=(valtot*aliq.value)/100;
   document.form1.q05_aliq.value=aliq.value;
@@ -166,47 +168,47 @@ function js_trocaaliq(aliq){
 <center>
 <table border="0">
   <tr>
-    <td align="center" colspan="3"> 
-<?    
+    <td align="center" colspan="3">
+<?
 $substitui=false;
 if(isset($z01_numcgm) && $z01_numcgm>0 && empty($q02_inscr)){
    echo "<fieldset><legend align=\"center\"><b><small><b>CONTRIBUINTE DE FORA DO MUNICÍPIO</b></small></b></legend>";
 }else{
-   echo "<fieldset><legend align=\"center\"><b> DADOS DA INSCRIÇÃO</b></legend>";
-}      
-?>      
+   echo "<fieldset><legend>Dados da Inscrição</legend>";
+}
+?>
       <table>
         <tr>
 <?
 if(isset($z01_numcgm) && $z01_numcgm>0 && empty($q02_inscr)){
-?>  
+?>
           <td>
           <?=db_ancora($Lz01_numcgm,"js_JanelaAutomatica('cgm','$z01_numcgm')",2)?>
 	  <?=db_input('z01_numcgm',10,$Iz01_numcgm,true,'text',3)?>
          <?=@$Lz01_nome?><?
-         $result_nome=pg_exec(" select z01_nome from cgm where z01_numcgm = $z01_numcgm ");
+         $result_nome=db_query(" select z01_nome from cgm where z01_numcgm = $z01_numcgm ");
          if (pg_numrows($result_nome)>0){
          	db_fieldsmemory($result_nome,0);
          }
          db_input('z01_nome',50,@$Iz01_nome,true,'text',3)?>
-    
+
 <?
 }else {
-?>  
+?>
     <td>
       <?
       db_ancora($Lq02_inscr,"js_JanelaAutomatica('issbase','".@$q02_inscr."')",2);
       ?>
       <?=db_input('q02_inscr',6,$Iq02_inscr,true,'text',3)?>
       <?=@$Lz01_nome?><?=db_input('z01_nome',50,@$Iz01_nome,true,'text',3)?>
-    </td>  
+    </td>
 <?
 }
-?>  
-      </table>  
+?>
+      </table>
       </fieldset>
     </td>
-  </tr> 
+  </tr>
   <tr>
     <td align="center"  valign="top">
       <fieldset><legend align="center"><b> Dados para o calculo</b></legend>
@@ -219,8 +221,8 @@ if(isset($z01_numcgm) && $z01_numcgm>0 && empty($q02_inscr)){
 <?
 $anos=array();
 $anoatual=date("Y",db_getsession("DB_datausu"));
-for($i=$anoatual; $i>($anoatual-15); $i--){  
-  $anos[$i] = $i; 
+for($i=$anoatual; $i>($anoatual-15); $i--){
+  $anos[$i] = $i;
 }
 
 if(empty($q05_mes)){
@@ -248,12 +250,12 @@ if (!isset($q05_ano)){
 
 ?>
   </td>
-	</tr>  
-	<tr>  
+	</tr>
+	<tr>
  <td>
     <?=@$Lq05_mes?>
- </td>  
-<td>  
+ </td>
+<td>
 <?
 
 $result=array("1"=>"Janeiro","2"=>"Fevereiro","3"=>"Março","4"=>"Abril","5"=>"Maio","6"=>"Junho","7"=>"Julho","8"=>"Agosto","9"=>"Setembro","10"=>"Outubro","11"=>"Novembro","12"=>"Dezembro");
@@ -270,7 +272,8 @@ if (!isset($q05_mes)){
   $q05_mes=$result[$posicao];
 }
 
-if ((isset($q05_ano)&&$q05_ano!="")&&(isset($q05_mes)&&$q05_mes!="")&&($db_opcao==1)){
+if ((isset($q05_ano)&&$q05_ano!=""&&is_numeric($q05_ano))&&(isset($q05_mes)&&$q05_mes!="")&&($db_opcao==1)){
+
   $result_lancamento=$clissvar->sql_record($clissvar->sql_query_arrecad(null,'q05_codigo',null,"q05_ano=$q05_ano and q05_mes=$q05_mes and q05_vlrinf=0 and q05_valor=0 and k00_inscr=".@$q02_inscr.""));
   if ($clissvar->numrows!=0){
     db_fieldsmemory($result_lancamento,0);
@@ -288,19 +291,15 @@ if ((isset($q05_ano)&&$q05_ano!="")&&(isset($q05_mes)&&$q05_mes!="")&&($db_opcao
 <input type="hidden" name="mesant">
 <input type="hidden" name="anoant">
 <script>
-onLoad=document.form1.mesant.value = document.form1.q05_mes.value;
-onLoad=js_ControlaAnoMes(document.form1.q05_mes.value,document.form1.q05_ano.value);
-
-
+  onLoad=document.form1.mesant.value = document.form1.q05_mes.value;
+  onLoad=js_ControlaAnoMes(document.form1.q05_mes.value,document.form1.q05_ano.value);
 </script>
-<?
-?>
           </td>
-	</tr>  
-	<tr>  
+	</tr>
+	<tr>
 	  <td>
             <?=@$Lq05_aliq?>
-	  </td>  
+	  </td>
 	  <td>
 <?
 if(isset($numrows33)){
@@ -311,7 +310,7 @@ if(isset($numrows33)){
   }
   db_select('aliq',$array,true,$db_opcao,"onchange='js_trocaaliq(this)';");
   db_input('q05_aliq',10,$Iq05_aliq,true,'text',1," onKeyUp='this.value = this.value.replace(\",\",\".\")' ","","#E6E4F1");
-?>  
+?>
 <script>
 onLoad=document.form1.q05_aliq.value = document.form1.aliq.value;
 </script>
@@ -322,20 +321,20 @@ onLoad=document.form1.q05_aliq.value = document.form1.aliq.value;
     db_fieldsmemory($result66,0);
 	}
   db_input('q05_aliq',10,$Iq05_aliq,true,'text',1," onKeyUp='this.value = this.value.replace(\",\",\".\")' ","","#E6E4F1");
-}  
+}
 ?>
-           
+
           </td>
         </tr>
       </table>
       </fieldset>
       <fieldset><legend align="center"> <b>Valores</b></legend>
       <table border="0">
-        <tr>  
+        <tr>
           <td>
             <?=@$Lq05_bruto?>
-	  </td>  
-	  <td>  
+	  </td>
+	  <td>
 <?
 if(empty($q05_bruto)){
   $q05_bruto="0";
@@ -343,7 +342,7 @@ if(empty($q05_bruto)){
 db_input('q05_bruto',10,$Iq05_bruto,true,'text',3)
 ?>
           </td>
-        </tr>  
+        </tr>
         <tr>
           <td nowrap title="<?=@$Tz01_incest?>">
             <?=@$Lq05_valor?>
@@ -356,14 +355,14 @@ if(empty($q05_valor)){
 db_input('q05_valor',10,$Iq05_valor,true,'text',3)
 ?>
           </td>
-        </tr> 
-      </table>  	
+        </tr>
+      </table>
       </fieldset>
        <?=@$Lq05_histor?><br>
 <?
 db_textarea('q05_histor',5,30,$Iq05_histor,true,'text',$db_opcao,"")
 ?>
-	
+
     </td>
     <td  height="100%" valign="top" align="center">
       <fieldset><legend align="center"><b>Notas fiscais</b></legend>
@@ -396,16 +395,16 @@ db_textarea('q05_histor',5,30,$Iq05_histor,true,'text',$db_opcao,"")
 	<tr>
 	<td colspan="2">
          <?
-//           echo $sql_codigo; 
+//           echo $sql_codigo;
       	   $cliframe_alterar_excluir_html->colunas       = array("q06_nota"=>$Lq06_nota,"q06_valor"=>$Lq06_valor."(R$)");
            $cliframe_alterar_excluir_html->iframe_width  = "290";
       	   $cliframe_alterar_excluir_html->iframe_nome   = "criatabela";
       	   $cliframe_alterar_excluir_html->iframe_height = "185";
-           if($db_opcao==3){ 
+           if($db_opcao==3){
   	         $cliframe_alterar_excluir_html->db_opcao = "3";
-           } 
+           }
       	   $cliframe_alterar_excluir_html->js_ex02 = "js_excluir();";
-           if(isset($sql_codigo)){ 
+           if(isset($sql_codigo)){
   	         $cliframe_alterar_excluir_html->sql = $sql_codigo;
            }
       	   $cliframe_alterar_excluir_html->iframe_alterar_excluir_html();
@@ -421,7 +420,7 @@ db_textarea('q05_histor',5,30,$Iq05_histor,true,'text',$db_opcao,"")
      <?
        if ($substitui==true){
      ?>
-      <b>Já existe um lançamento na competência informada!!</b>
+      <b>Já existe um lançamento na competência informada.</b><br/>
       <input name="substituir" type="submit" value="substituir">
      <?
        }
@@ -429,19 +428,23 @@ db_textarea('q05_histor',5,30,$Iq05_histor,true,'text',$db_opcao,"")
       <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" <?=($db_opcao==1||$db_opcao==2?"onclick='return js_verifica();'":"")?> id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
       <input name="voltar" type="button" value="Voltar" onclick="js_voltar();" >
     </td>
-  </tr>  
-</table>  
+  </tr>
+</table>
   </center>
 </form>
-<script>
+<script type="text/javascript">
 
 function js_controla(){
-   document.form1.mesant.value = document.form1.q05_mes.value;
-   document.form1.anoant.value = document.form1.q05_ano.value;
-   document.form1.submit();
+
+  document.form1.q05_valor.value = 0;
+  document.form1.q05_bruto.value = 0;
+  document.form1.mesant.value    = document.form1.q05_mes.value;
+  document.form1.anoant.value    = document.form1.q05_ano.value;
+  document.form1.submit();
 }
 
 function js_voltar(){
+
 <?if($db_opcao==2|| $db_opcao==22){?>
   location.href="iss1_issvar002.php";
 <?}else if($db_opcao==1){?>

@@ -110,9 +110,9 @@ $button2 = array('interface/agata.xpm', _a('Reports'), $RptDir);
 $button3 = array('interface/sql.xpm', _a('Queries'), $SqlDir);
 
 $graph_ext = array('html', 'sxw');
-$this->param['SaveSql'] =   array(array(&$this, 'SaveSQL'),    'sql',   $SqlDir,    _a('Save SQL'),    $button3);
-$this->param['SaveRep'] =   array(array(&$this, 'SaveReport'), 'agt',   $RptDir,    _a('Save Report'), $button2);
-$this->param['OpenRep'] =   array(array(&$this, 'OpenReport'), 'agt',   $RptDir,    _a('Open Report'), $button2);
+$this->param['SaveSql'] =   array(array($this, 'SaveSQL'),    'sql',   $SqlDir,    _a('Save SQL'),    $button3);
+$this->param['SaveRep'] =   array(array($this, 'SaveReport'), 'agt',   $RptDir,    _a('Save Report'), $button2);
+$this->param['OpenRep'] =   array(array($this, 'OpenReport'), 'agt',   $RptDir,    _a('Open Report'), $button2);
 
 
 /***********************************************************/
@@ -284,22 +284,22 @@ $this->Buttons['UpSql'] =           $this->glade->get_widget('buttonUpSql');
 $this->tooltips->set_tip($this->Buttons['ReloadReports'], _a('Reload'));
 $this->tooltips->set_tip($this->Buttons['ReloadRepository'], _a('Reload'));
 
-$this->Buttons['RequireTables']->connect_object('clicked', array(&$this, 'RequireTables'));;
-$this->Buttons['Clear']->connect_object('clicked', array(&$this, 'ClearTables'));
-$this->Buttons['ApplyFunction']->connect_object('clicked', array(&$this, 'ApplyFunction'));
-$this->Buttons['ApplyOrder']->connect_object('clicked', array(&$this, 'InsertOnBlock'), 'Order by');
-$this->Buttons['SelectColumn']->connect_object('clicked', array(&$this, 'InsertOnBlock'), 'Select');
-$this->Buttons['InsertParameter']->connect_object('clicked', array(&$this, 'PopParameters'));
-$this->Buttons['ClearExpr']->connect_object('clicked', array(&$this, 'ClearExpr'));
-$this->Buttons['WriteItDown']->connect_object('clicked', array(&$this, 'WriteItDown'));
-$this->Buttons['GraphLines']->connect_object('clicked', array(&$this, 'PreReport'), 'lines');
-$this->Buttons['GraphBars']->connect_object('clicked', array(&$this, 'PreReport'), 'bars');
-$this->Buttons['Join']->connect_object('clicked', array(&$this, 'JoinTables'));
-$this->Buttons['ImportSql']->connect_object('clicked', array(&$this, 'ImportSql'));
-$this->Buttons['ReloadReports']->connect_object('clicked', array(&$this, 'RefreshReports'));
-$this->Buttons['ReloadRepository']->connect_object('clicked', array(&$this, 'RefreshRepository'));
-$this->Buttons['UpSql']->connect_object('clicked', array(&$this, 'UpSql'));
-$this->Buttons['DownSql']->connect_object('clicked', array(&$this, 'DownSql'));
+$this->Buttons['RequireTables']->connect_object('clicked', array($this, 'RequireTables'));;
+$this->Buttons['Clear']->connect_object('clicked', array($this, 'ClearTables'));
+$this->Buttons['ApplyFunction']->connect_object('clicked', array($this, 'ApplyFunction'));
+$this->Buttons['ApplyOrder']->connect_object('clicked', array($this, 'InsertOnBlock'), 'Order by');
+$this->Buttons['SelectColumn']->connect_object('clicked', array($this, 'InsertOnBlock'), 'Select');
+$this->Buttons['InsertParameter']->connect_object('clicked', array($this, 'PopParameters'));
+$this->Buttons['ClearExpr']->connect_object('clicked', array($this, 'ClearExpr'));
+$this->Buttons['WriteItDown']->connect_object('clicked', array($this, 'WriteItDown'));
+$this->Buttons['GraphLines']->connect_object('clicked', array($this, 'PreReport'), 'lines');
+$this->Buttons['GraphBars']->connect_object('clicked', array($this, 'PreReport'), 'bars');
+$this->Buttons['Join']->connect_object('clicked', array($this, 'JoinTables'));
+$this->Buttons['ImportSql']->connect_object('clicked', array($this, 'ImportSql'));
+$this->Buttons['ReloadReports']->connect_object('clicked', array($this, 'RefreshReports'));
+$this->Buttons['ReloadRepository']->connect_object('clicked', array($this, 'RefreshRepository'));
+$this->Buttons['UpSql']->connect_object('clicked', array($this, 'UpSql'));
+$this->Buttons['DownSql']->connect_object('clicked', array($this, 'DownSql'));
 
 $this->tooltips->set_tip($this->Buttons['UpSql'],   _a('Copy')  . ' ' . _a('Query'));
 $this->tooltips->set_tip($this->Buttons['DownSql'], _a('Paste') . ' ' . _a('Query'));
@@ -318,7 +318,7 @@ $this->radios['checkShowNumber'] = $this->glade->get_widget('checkShowNumber');
 $this->radios['checkShowIndent'] = $this->glade->get_widget('checkShowIndent');
 $this->radios['checkShowHeader'] = $this->glade->get_widget('checkShowHeader');
 
-$this->radios['checkShowTotal']->connect_object('toggled', array(&$this, 'ToggleDetail'));
+$this->radios['checkShowTotal']->connect_object('toggled', array($this, 'ToggleDetail'));
 
 $this->radios['AscendantOrder'] = $this->glade->get_widget('radioAscendantOrder');
 $this->radios['DescendantOrder'] = $this->glade->get_widget('radioDescendantOrder');
@@ -330,8 +330,8 @@ $this->radios['radioHTML']    = $this->glade->get_widget('radioHTML');
 
 $this->radios['checkData'] = $this->glade->get_widget('checkData');
 $this->radios['showValues'] = $this->glade->get_widget('showValues');
-$this->radios['radioColumns']->connect_object('pressed', array(&$this, 'ChangePageGraph'), 0);
-$this->radios['radioLines']->connect_object('pressed', array(&$this, 'ChangePageGraph'), 1);
+$this->radios['radioColumns']->connect_object('pressed', array($this, 'ChangePageGraph'), 0);
+$this->radios['radioLines']->connect_object('pressed', array($this, 'ChangePageGraph'), 1);
 
 $this->radios['checkShowGroup']->set_active(false);
 $this->radios['checkShowDetail']->set_active(true);

@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
-//echo "<br>$cgm<br>";
+
 ?>
 <html>
 <head>
@@ -47,44 +47,56 @@ db_postmemory($HTTP_POST_VARS);
   
 <?
 if(isset($emite)){
+
 	$data1 = $data1_ano."-".$data1_mes."-".$data1_dia;
 	$data2 = $data2_ano."-".$data2_mes."-".$data2_dia;
 	echo"
 <script>
-	location.href ='cai3_gerfinanc068.php?data1=$data1&data2=$data2&cgm=$cgm';
+	location.href ='cai3_gerfinanc068.php?data1=$data1&data2=$data2&cgm=$cgm&iCgm=$iCgm';
 </script>
     "; 
 }
 	
 ?>
-  <table  align="center">
-    <form name="form1" method="post" action="">
-      <tr>
-         <td >&nbsp;</td>
-         <td >&nbsp;</td>
-      </tr>
-      <tr>
-         <td >Data inicial : </td>
-         <td align='center' >
-         <? 
-         db_inputdata('data1','','','',true,'text',1,"");   		          
-         ?>
-         </td>
-      </tr>
-      <tr>
-         <td >Data final : </td>
-         <td>
-         <?
-         db_inputdata('data2','','','',true,'text',1,"");
-         ?>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" align = "center"> 
-          <input  name="emite" type="submit" value="Pesquisar">
-        </td>
-      </tr>
-    </form>
-  </table>
+<form name="form1" method="post" action="">
+
+ <center>
+
+  <fieldset style="width: 300px; margin-top: 10px;">
+  <legend>Filtros de Pesquisa</legend>
+
+      <table  align="center">
+          <tr>
+             <td ><strong>CGM:</strong></td>
+             <td ><?php db_input("iCgm", 10, '', true, "text", 1);  ?></td>
+          </tr>
+          <tr>
+              <td ><strong>Data inicial : </strong></td>
+             <td align='center' >
+             <?
+             db_inputdata('data1','','','',true,'text',1,"");
+             ?>
+             </td>
+          </tr>
+          <tr>
+              <td ><strong>Data final : </strong></td>
+             <td>
+             <?
+             db_inputdata('data2','','','',true,'text',1,"");
+             ?>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" align = "center">
+
+            </td>
+          </tr>
+      </table>
+  </fieldset>
+
+   <input style="margin-top: 5px;"  name="emite" type="submit" value="Pesquisar"> </center>
+
+</form>
+
   </body>
 </html>

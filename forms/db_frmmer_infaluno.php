@@ -257,7 +257,7 @@ function js_calendario(calendario) {
 
 function js_retornoPesquisaPeriodo(oAjax) {
     
-	  var oRetorno = eval("("+oAjax.responseText+")");
+	  var oRetorno = JSON.parse(oAjax.responseText);
 	  sHtml = '';
 	  if(oRetorno.length==0) {
 	    sHtml += '<option value="">Nenhum Período de Avaliação foi vinculado ao calendário selecionado!</option>';

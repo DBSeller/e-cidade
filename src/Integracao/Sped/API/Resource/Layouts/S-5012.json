@@ -1,0 +1,15 @@
+{
+  "evtirrf": "Evento consolidado por contribuinte relativo ao Imposto de Renda Retido na Fonte incidente sobre remunerações pagas a seus trabalhadores:",
+  "id": "Identificação única do evento:",
+  "ideevento": "Identificação do evento de retorno:",
+  "perapur": "Período das informações:",
+  "ideempregador": "Informações de identificação do empregador:",
+  "tpinsc": "Tipo de inscrição:",
+  "nrinsc": "Número de inscrição do contribuinte:",
+  "infoirrf": "Informações relativas ao Imposto de Renda Retido na Fonte:",
+  "nrrecarqbase": "Número do recibo:",
+  "indexistinfo": "Indicativo de existência de Imposto de Renda Retido na Fonte, conforme opções a seguir:",
+  "infocrcontrib": "Informações consolidadas do IRRF por código de Receita - CR:",
+  "tpcr": "Código de Receita - CR relativo ao Imposto de Renda Retido na Fonte:",
+  "vrcr": "Valor correspondente ao Código de Receita - CR apurado:"
+}

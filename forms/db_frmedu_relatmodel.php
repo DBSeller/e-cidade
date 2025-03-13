@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -57,7 +57,7 @@ $cledu_relatmodel->rotulo->label();
         </td>
         <td  nowrap='nowrap'>
           <?php
-            $x = array(""=>"",
+            $x = array("0"=>"SELECIONE",
                        "1"=>"HISTÓRICO ESCOLAR",
                        "2"=>"CERTIFICADO DE CONCLUSÃO",
                        "3"=>"ATA DE RESULTADOS FINAIS",
@@ -75,14 +75,14 @@ $cledu_relatmodel->rotulo->label();
         </td>
         <td  nowrap='nowrap' >
           <?php
-            $aModelos = array("" => "", "1" => "Modelo 1", "2" => "Modelo 2");
+            $aModelos = ["" => "SELECIONE", "1" => "Modelo 1", "2" => "Modelo 2"];
             db_select('ed217_i_tipomodelo', $aModelos, true, $db_opcao, "onChange='js_validaTipoModelo()'");
           ?>
         </td>
       </tr>
     </table>
 
-    <div id="div_orientacao" style="visibility:hidden;position:absolute;">
+    <div id="div_orientacao" style="visibility:hidden; position:relative;">
       <table class="form-container">
         <tr>
           <td rel='ignore-css' nowrap='nowrap' class='field-size3' title="<?=@$Ted217_orientacao?>">
@@ -90,7 +90,7 @@ $cledu_relatmodel->rotulo->label();
           </td>
           <td nowrap='nowrap'  >
             <?php
-              $xy = array("0"=>"",
+              $xy = array("0"=>"SELECIONE",
                           "1"=>"PAISAGEM",
                           "2"=>"RETRATO"
                );
@@ -104,7 +104,7 @@ $cledu_relatmodel->rotulo->label();
           </td>
           <td  nowrap='nowrap' >
             <?php
-              $aTipoBrasao = array( 1 => "REPÚBLICA", 2 => "MUNICÍPIO" );
+              $aTipoBrasao = array( 0 => "SELECIONE", 1 => "REPÚBLICA", 2 => "MUNICÍPIO" );
               db_select( 'ed217_brasao', $aTipoBrasao, true, $db_opcao );
             ?>
           </td>
@@ -132,6 +132,83 @@ $cledu_relatmodel->rotulo->label();
             ?>
           </td>
         </tr>
+          <tr id="ctnExibeObsDiario" style="display: none;">
+              <td  rel='ignore-css' nowrap='nowrap' class='field-size3'>
+                  Exibe Observação Diário
+              </td>
+              <td nowrap='nowrap' >
+                  <?php
+                  $xy = array("f"=>"NÃO", "t"=>"SIM");
+                  db_select('ed217_exibe_obs_diario',$xy,true,$db_opcao);
+                  ?>
+              </td>
+          </tr>
+          <tr>
+              <td rel='ignore-css' nowrap='nowrap' class='field-size3' title="<?=@$Ted217_exibirmantenedora?>">
+                  <?=@$Led217_exibirmantenedora?>
+              </td>
+              <td nowrap='nowrap'>
+                  <?php
+                  $xy = array("f"=>"NÃO", "t"=>"SIM");
+                  db_select('ed217_exibirmantenedora',$xy,true,$db_opcao);
+                  ?>
+              </td>
+          </tr>
+          <tr>
+              <td rel='ignore-css' nowrap='nowrap' class='field-size3' title="<?=@$Ted217_exibirdistrito?>">
+                  <?=@$Led217_exibirdistrito?>
+              </td>
+              <td nowrap='nowrap'>
+                  <?php
+                  $xy = array("f"=>"NÃO", "t"=>"SIM");
+                  db_select('ed217_exibirdistrito',$xy,true,$db_opcao);
+                  ?>
+              </td>
+          </tr>
+          <tr>
+              <td rel='ignore-css' nowrap='nowrap' class='field-size3' title="<?=@$Ted217_exibirperiodo?>">
+                  <?=@$Led217_exibirperiodo?>
+              </td>
+              <td nowrap='nowrap'>
+                  <?php
+                  $xy = array("f"=>"NÃO", "t"=>"SIM");
+                  db_select('ed217_exibirperiodo',$xy,true,$db_opcao);
+                  ?>
+              </td>
+          </tr>
+          <tr>
+              <td rel='ignore-css' nowrap='nowrap' class='field-size3' title="<?=@$Ted217_exibir_etapa_obs?>">
+                  <?=@$Led217_exibir_etapa_obs?>
+              </td>
+              <td nowrap='nowrap'>
+                  <?php
+                  $xy = array("f"=>"NÃO", "t"=>"SIM");
+                  db_select('ed217_exibir_etapa_obs',$xy,true,$db_opcao);
+                  ?>
+              </td>
+          </tr>
+          <tr>
+              <td rel='ignore-css' nowrap='nowrap' class='field-size3' title="<?=@$Ted217_exibircertidao?>">
+                  <?=@$Led217_exibircertidao?>
+              </td>
+              <td nowrap='nowrap'>
+                  <?php
+                  $xy = array("f"=>"NÃO", "t"=>"SIM");
+                  db_select('ed217_exibircertidao',$xy,true,$db_opcao);
+                  ?>
+              </td>
+          </tr>
+          <tr>
+              <td rel='ignore-css' nowrap='nowrap' class='field-size3' title="<?=@$Ted217_exibiridentidade?>">
+                  <?=@$Led217_exibiridentidade?>
+              </td>
+              <td nowrap='nowrap'>
+                  <?php
+                  $xy = array("f"=>"NÃO", "t"=>"SIM");
+                  db_select('ed217_exibiridentidade',$xy,true,$db_opcao);
+                  ?>
+              </td>
+          </tr>                    
       </table>
     </div>
 
@@ -147,7 +224,7 @@ $cledu_relatmodel->rotulo->label();
 
     <fieldset class='separator'>
       <legend>Texto do Rodapé</legend>
-      <?php db_textarea('ed217_t_rodape',5,100,$Ied217_t_rodape,true,'text',$db_opcao,"","","",200); ?>
+      <?php db_textarea('ed217_t_rodape',5,100,$Ied217_t_rodape,true,'text',$db_opcao,"","","",500); ?>
     </fieldset>
 
     <fieldset class='separator'>
@@ -155,12 +232,6 @@ $cledu_relatmodel->rotulo->label();
       <legend>Observações Gerais a Todos os Alunos</legend>
       <?php db_textarea('ed217_t_obs', 4, 100, $Ied217_t_obs, true, 'text', $db_opcao, "", "", ""); ?>
       <br>
-      <div id='containerLimitCaracter' align='right'>
-        <span style='float:left;color:red;font-weight:bold' id='ed217_t_obserrobar'></span>
-        <b> Caracteres Digitados : </b>
-        <input type='text' name='ed217_t_obsobsdig' id='ed217_t_obsobsdig' size='3' value='0' style='color: #000;' disabled>
-        <b> - Limite <label for='limiteObservacao' id='limiteObservacao'></b>
-      </div>
     </fieldset>
 
     <div id='div_tamfontes' class="subcontainer" style="visibility:hidden;position:absolute; width:100%;">
@@ -234,7 +305,7 @@ function js_init() {
   js_orientacao();
 }
 function js_pesquisa() {
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
 		              'db_iframe_edu_relatmodel',
 		              'func_edu_relatmodel.php?funcao_js=parent.js_preenchepesquisa|ed217_i_codigo',
 		              'Pesquisa',
@@ -256,7 +327,6 @@ function js_novo() {
 
 function js_remove() {
 
-  js_limitaObservacao(300);
   $('ed217_t_cabecalho').disabled  = false;
   $('divTipoModelo').style.display = 'none';
 
@@ -278,13 +348,11 @@ function js_remove() {
 
   if (document.form1.ed217_i_relatorio.value == 1 || document.form1.ed217_i_relatorio.value == 2) {
 
-    if ($('ed217_i_relatorio').value == 1) {
-      js_limitaObservacao(600);
-    }
   	document.getElementById("div_orientacao").style.visibility = "visible";
   	document.getElementById("div_orientacao").style.position = "relative";
   	$('ctnExibirTurma').style.display        = "table-row";
   	$('ctnExibeCargaHoraria').style.display  = "table-row";
+      $('ctnExibeObsDiario').style.display  = "table-row";
     $('tipoBrasao').style.display            = "table-row";
 
   } else if ($('ed217_i_relatorio').value == 3) {
@@ -306,8 +374,6 @@ function js_remove() {
 
 function js_orientacao() {
 
-  $('containerLimitCaracter').style.display = '';
-
   if ( [1,2].in_array( $F('ed217_orientacao') ) ) {
     $('ed217_orientacao').options[0].setAttribute('disabled', 'disabled');
   }
@@ -318,21 +384,15 @@ function js_orientacao() {
   if ($F('ed217_orientacao') == 1)  {
 
     if ($F('ed217_t_obs').length > 500) {
-
-
       var sMsgConfirm  = _M( MSG_MODELOS_RELATORIO + "confirma_troca_orientacao");
       if (confirm(sMsgConfirm)) {
 
         $('ed217_t_obs').value       = $F('ed217_t_obs').substr(0, 500);
-        $('ed217_t_obsobsdig').value = $F('ed217_t_obs').length;
-        js_limitaObservacao(500);
       } else {
-
         $('ed217_orientacao').value = 2;
         return;
       }
     }
-    $('ed217_t_obsobsdig').value = $F('ed217_t_obs').length;
 
   }
 
@@ -391,18 +451,12 @@ function limitTextArea(text, event) {
 
 function js_validaSubmit() {
 
-  if ( (document.form1.ed217_i_relatorio.value == 1 || document.form1.ed217_i_relatorio.value == 2) && document.form1.ed217_orientacao.value == 0) {
-
-    alert(_M( MSG_MODELOS_RELATORIO + "orientacao_nao_informado"));
-    return false;
-  }
   if ( document.form1.ed217_orientacao.value == 2 && (document.form1.ed217_gradenotas.value == 0 || document.form1.ed217_gradeetapas.value == 0 || document.form1.ed217_observacao.value == 0) ) {
 
     alert(_M( MSG_MODELOS_RELATORIO + "campos_tamanhos_fontes"));
     return false;
   }
 
-  _M( MSG_MODELOS_RELATORIO + "informe_tipo_modelo")
   if ($('ed217_i_relatorio').value == '3' && $('ed217_i_tipomodelo').value == '') {
 
     alert(_M( MSG_MODELOS_RELATORIO + "informe_tipo_modelo"));
@@ -417,33 +471,16 @@ function js_validaSubmit() {
  */
 function js_validaTipoModelo() {
 
-  js_limitaObservacao(300);
   $('ed217_t_cabecalho').disabled = false;
 
   if ($('ed217_i_tipomodelo').value == 1) {
 
     $('ed217_t_cabecalho').value    = '';
     $('ed217_t_cabecalho').disabled = true;
-  } else {
-    js_limitaObservacao(500);
   }
 }
 
-/**
- * Seta o limite de caracteres do campo observacao
- */
-function js_limitaObservacao(iLimite) {
-
-  $('limiteObservacao').innerHTML = iLimite;
-  $('ed217_t_obs').stopObserving('keyup');
-  $('ed217_t_obs').observe('keyup', function(event) {
-    js_maxlenghttextarea($('ed217_t_obs'), event, iLimite);
-  });
-}
-
 function js_removeLimitacaoCaracter (argument) {
-
-  $('containerLimitCaracter').style.display = 'none';
   $('ed217_t_obs').stopObserving('keyup');
   // $('ed217_t_obs').removeAttribute('onkeyup');
   $('ed217_t_obs').removeAttribute('keyup');

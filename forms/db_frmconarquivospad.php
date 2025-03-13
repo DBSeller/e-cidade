@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -98,7 +98,7 @@ db_input('c54_anousu',4,$Ic54_anousu,true,'text',3,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conarquivospad','func_conarquivospad.php?funcao_js=parent.js_preenchepesquisa|c54_codarq','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conarquivospad','func_conarquivospad.php?funcao_js=parent.js_preenchepesquisa|c54_codarq','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conarquivospad.hide();

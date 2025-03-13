@@ -62,7 +62,7 @@ db_input('o22_descrprod',40,$Io22_descrprod,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcproduto','func_orcproduto.php?funcao_js=parent.js_preenchepesquisa|o22_codproduto','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcproduto','func_orcproduto.php?funcao_js=parent.js_preenchepesquisa|o22_codproduto','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcproduto.hide();

@@ -1,109 +1,113 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: caixa
 //CLASSE DA ENTIDADE disbanco
-class cl_disbanco { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $k00_numbco = null; 
-   var $k15_codbco = 0; 
-   var $k15_codage = null; 
-   var $codret = 0; 
-   var $dtarq_dia = null; 
-   var $dtarq_mes = null; 
-   var $dtarq_ano = null; 
-   var $dtarq = null; 
-   var $dtpago_dia = null; 
-   var $dtpago_mes = null; 
-   var $dtpago_ano = null; 
-   var $dtpago = null; 
-   var $vlrpago = 0; 
-   var $vlrjuros = 0; 
-   var $vlrmulta = 0; 
-   var $vlracres = 0; 
-   var $vlrdesco = 0; 
-   var $vlrtot = 0; 
-   var $cedente = null; 
-   var $vlrcalc = 0; 
-   var $idret = 0; 
-   var $classi = 'f'; 
-   var $k00_numpre = 0; 
-   var $k00_numpar = 0; 
-   var $convenio = null; 
-   var $instit = 0; 
-   var $dtcredito_dia = null; 
-   var $dtcredito_mes = null; 
-   var $dtcredito_ano = null; 
-   var $dtcredito = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_disbanco {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $k00_numbco = null;
+   var $k15_codbco = 0;
+   var $k15_codage = null;
+   var $codret = 0;
+   var $dtarq_dia = null;
+   var $dtarq_mes = null;
+   var $dtarq_ano = null;
+   var $dtarq = null;
+   var $dtpago_dia = null;
+   var $dtpago_mes = null;
+   var $dtpago_ano = null;
+   var $dtpago = null;
+   var $vlrpago = 0;
+   var $vlrjuros = 0;
+   var $vlrmulta = 0;
+   var $vlracres = 0;
+   var $vlrdesco = 0;
+   var $vlrtot = 0;
+   var $cedente = null;
+   var $vlrcalc = 0;
+   var $idret = 0;
+   var $classi = 'f';
+   var $k00_numpre = 0;
+   var $k00_numpar = 0;
+   var $convenio = null;
+   var $instit = 0;
+   var $dtcredito_dia = null;
+   var $dtcredito_mes = null;
+   var $dtcredito_ano = null;
+   var $dtcredito = null;
+   var $bancopagamento = null;
+   var $agenciapagamento = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 k00_numbco = varchar(20) = numero do banco 
-                 k15_codbco = int4 = Banco 
-                 k15_codage = char(5) = Agência 
-                 codret = int4 = Código 
-                 dtarq = date = Dt. Arquivo 
-                 dtpago = date = Dt Pagamento 
-                 vlrpago = float8 = Valor pago 
-                 vlrjuros = float8 = Valor juros 
-                 vlrmulta = float8 = Valor Multa 
-                 vlracres = float8 = valor dos acrescimos 
-                 vlrdesco = float8 = Valor desconto 
-                 vlrtot = float8 = Total Pago 
-                 cedente = varchar(10) = Cedente 
-                 vlrcalc = float8 = valor calculado 
-                 idret = int4 = Cód. Ret. 
-                 classi = bool = Class 
-                 k00_numpre = int4 = Numpre 
-                 k00_numpar = int4 = Parcela 
-                 convenio = varchar(100) = Convênio 
-                 instit = int4 = Instituição 
-                 dtcredito = date = Data de Crédito 
+                 k00_numbco = varchar(20) = numero do banco
+                 k15_codbco = int4 = Banco
+                 k15_codage = char(5) = Agência
+                 codret = int4 = Código
+                 dtarq = date = Dt. Arquivo
+                 dtpago = date = Dt Pagamento
+                 vlrpago = float8 = Valor pago
+                 vlrjuros = float8 = Valor juros
+                 vlrmulta = float8 = Valor Multa
+                 vlracres = float8 = valor dos acrescimos
+                 vlrdesco = float8 = Valor desconto
+                 vlrtot = float8 = Total Pago
+                 cedente = varchar(10) = Cedente
+                 vlrcalc = float8 = valor calculado
+                 idret = int4 = Cód. Ret.
+                 classi = bool = Class
+                 k00_numpre = int4 = Numpre
+                 k00_numpar = int4 = Parcela
+                 convenio = varchar(100) = Convênio
+                 instit = int4 = Instituição
+                 dtcredito = date = Data de Crédito
+                 bancopagamento = varchar = Banco Pagamento
+                 agenciapagamento = varchar = Agência Pagamento
                  ";
-   //funcao construtor da classe 
-   function cl_disbanco() { 
+   //funcao construtor da classe
+   function cl_disbanco() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("disbanco"); 
+     $this->rotulo = new rotulo("disbanco");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -156,14 +160,16 @@ class cl_disbanco {
             $this->dtcredito = $this->dtcredito_ano."-".$this->dtcredito_mes."-".$this->dtcredito_dia;
          }
        }
+       $this->bancopagamento = ($this->bancopagamento == ""?@$GLOBALS["HTTP_POST_VARS"]["bancopagamento"]:$this->bancopagamento);
+       $this->agenciapagamento = ($this->agenciapagamento == ""?@$GLOBALS["HTTP_POST_VARS"]["agenciapagamento"]:$this->agenciapagamento);
      }else{
        $this->idret = ($this->idret == ""?@$GLOBALS["HTTP_POST_VARS"]["idret"]:$this->idret);
      }
    }
    // funcao para inclusao
-   function incluir ($idret){ 
+   function incluir ($idret){
       $this->atualizacampos();
-     if($this->k15_codbco == null ){ 
+     if($this->k15_codbco == null ){
        $this->erro_sql = " Campo Banco nao Informado.";
        $this->erro_campo = "k15_codbco";
        $this->erro_banco = "";
@@ -172,7 +178,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k15_codage == null ){ 
+     if($this->k15_codage == null ){
        $this->erro_sql = " Campo Agência nao Informado.";
        $this->erro_campo = "k15_codage";
        $this->erro_banco = "";
@@ -181,7 +187,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->codret == null ){ 
+     if($this->codret == null ){
        $this->erro_sql = " Campo Código nao Informado.";
        $this->erro_campo = "codret";
        $this->erro_banco = "";
@@ -190,7 +196,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->dtarq == null ){ 
+     if($this->dtarq == null ){
        $this->erro_sql = " Campo Dt. Arquivo nao Informado.";
        $this->erro_campo = "dtarq_dia";
        $this->erro_banco = "";
@@ -199,7 +205,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->dtpago == null ){ 
+     if($this->dtpago == null ){
        $this->erro_sql = " Campo Dt Pagamento nao Informado.";
        $this->erro_campo = "dtpago_dia";
        $this->erro_banco = "";
@@ -208,7 +214,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->vlrpago == null ){ 
+     if($this->vlrpago == null ){
        $this->erro_sql = " Campo Valor pago nao Informado.";
        $this->erro_campo = "vlrpago";
        $this->erro_banco = "";
@@ -217,19 +223,19 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->vlrjuros == null ){ 
+     if($this->vlrjuros == null ){
        $this->vlrjuros = "0";
      }
-     if($this->vlrmulta == null ){ 
+     if($this->vlrmulta == null ){
        $this->vlrmulta = "0";
      }
-     if($this->vlracres == null ){ 
+     if($this->vlracres == null ){
        $this->vlracres = "0";
      }
-     if($this->vlrdesco == null ){ 
+     if($this->vlrdesco == null ){
        $this->vlrdesco = "0";
      }
-     if($this->vlrtot == null ){ 
+     if($this->vlrtot == null ){
        $this->erro_sql = " Campo Total Pago nao Informado.";
        $this->erro_campo = "vlrtot";
        $this->erro_banco = "";
@@ -238,7 +244,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->vlrcalc == null ){ 
+     if($this->vlrcalc == null ){
        $this->erro_sql = " Campo valor calculado nao Informado.";
        $this->erro_campo = "vlrcalc";
        $this->erro_banco = "";
@@ -247,7 +253,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->classi == null ){ 
+     if($this->classi == null ){
        $this->erro_sql = " Campo Class nao Informado.";
        $this->erro_campo = "classi";
        $this->erro_banco = "";
@@ -256,7 +262,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k00_numpre == null && $this->k00_numpre != 0){ 
+     if($this->k00_numpre == null && $this->k00_numpre != 0){
        $this->erro_sql = " Campo Numpre nao Informado.";
        $this->erro_campo = "k00_numpre";
        $this->erro_banco = "";
@@ -265,7 +271,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k00_numpar == null && $this->k00_numpre != 0){ 
+     if($this->k00_numpar == null && $this->k00_numpre != 0){
        $this->erro_sql = " Campo Parcela nao Informado.";
        $this->erro_campo = "k00_numpar";
        $this->erro_banco = "";
@@ -274,7 +280,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->instit == null ){ 
+     if($this->instit == null ){
        $this->erro_sql = " Campo Instituição nao Informado.";
        $this->erro_campo = "instit";
        $this->erro_banco = "";
@@ -283,7 +289,7 @@ class cl_disbanco {
        $this->erro_status = "0";
        return false;
      }
-     if($this->dtcredito == null ){ 
+     if($this->dtcredito == null ){
        $this->erro_sql = " Campo Data de Crédito nao Informado.";
        $this->erro_campo = "dtcredito_dia";
        $this->erro_banco = "";
@@ -293,16 +299,16 @@ class cl_disbanco {
        return false;
      }
      if($idret == "" || $idret == null ){
-       $result = db_query("select nextval('disbanco_idret_seq')"); 
+       $result = db_query("select nextval('disbanco_idret_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: disbanco_idret_seq do campo: idret"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: disbanco_idret_seq do campo: idret";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->idret = pg_result($result,0,0); 
+       $this->idret = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from disbanco_idret_seq");
        if(($result != false) && (pg_result($result,0,0) < $idret)){
@@ -313,10 +319,10 @@ class cl_disbanco {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->idret = $idret; 
+         $this->idret = $idret;
        }
      }
-     if(($this->idret == null) || ($this->idret == "") ){ 
+     if(($this->idret == null) || ($this->idret == "") ){
        $this->erro_sql = " Campo idret nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -325,54 +331,58 @@ class cl_disbanco {
        return false;
      }
      $sql = "insert into disbanco(
-                                       k00_numbco 
-                                      ,k15_codbco 
-                                      ,k15_codage 
-                                      ,codret 
-                                      ,dtarq 
-                                      ,dtpago 
-                                      ,vlrpago 
-                                      ,vlrjuros 
-                                      ,vlrmulta 
-                                      ,vlracres 
-                                      ,vlrdesco 
-                                      ,vlrtot 
-                                      ,cedente 
-                                      ,vlrcalc 
-                                      ,idret 
-                                      ,classi 
-                                      ,k00_numpre 
-                                      ,k00_numpar 
-                                      ,convenio 
-                                      ,instit 
-                                      ,dtcredito 
+                                       k00_numbco
+                                      ,k15_codbco
+                                      ,k15_codage
+                                      ,codret
+                                      ,dtarq
+                                      ,dtpago
+                                      ,vlrpago
+                                      ,vlrjuros
+                                      ,vlrmulta
+                                      ,vlracres
+                                      ,vlrdesco
+                                      ,vlrtot
+                                      ,cedente
+                                      ,vlrcalc
+                                      ,idret
+                                      ,classi
+                                      ,k00_numpre
+                                      ,k00_numpar
+                                      ,convenio
+                                      ,instit
+                                      ,dtcredito
+                                      ,bancopagamento
+                                      ,agenciapagamento
                        )
                 values (
-                                '$this->k00_numbco' 
-                               ,$this->k15_codbco 
-                               ,'$this->k15_codage' 
-                               ,$this->codret 
-                               ,".($this->dtarq == "null" || $this->dtarq == ""?"null":"'".$this->dtarq."'")." 
-                               ,".($this->dtpago == "null" || $this->dtpago == ""?"null":"'".$this->dtpago."'")." 
-                               ,$this->vlrpago 
-                               ,$this->vlrjuros 
-                               ,$this->vlrmulta 
-                               ,$this->vlracres 
-                               ,$this->vlrdesco 
-                               ,$this->vlrtot 
-                               ,'$this->cedente' 
-                               ,$this->vlrcalc 
-                               ,$this->idret 
-                               ,'$this->classi' 
-                               ,$this->k00_numpre 
-                               ,$this->k00_numpar 
-                               ,'$this->convenio' 
-                               ,$this->instit 
-                               ,".($this->dtcredito == "null" || $this->dtcredito == ""?"null":"'".$this->dtcredito."'")." 
+                                '$this->k00_numbco'
+                               ,$this->k15_codbco
+                               ,'$this->k15_codage'
+                               ,$this->codret
+                               ,".($this->dtarq == "null" || $this->dtarq == ""?"null":"'".$this->dtarq."'")."
+                               ,".($this->dtpago == "null" || $this->dtpago == ""?"null":"'".$this->dtpago."'")."
+                               ,$this->vlrpago
+                               ,$this->vlrjuros
+                               ,$this->vlrmulta
+                               ,$this->vlracres
+                               ,$this->vlrdesco
+                               ,$this->vlrtot
+                               ,'$this->cedente'
+                               ,$this->vlrcalc
+                               ,$this->idret
+                               ,'$this->classi'
+                               ,$this->k00_numpre
+                               ,$this->k00_numpar
+                               ,'$this->convenio'
+                               ,$this->instit
+                               ,".($this->dtcredito == "null" || $this->dtcredito == ""?"null":"'".$this->dtcredito."'")."
+                               ,'$this->bancopagamento'
+                               ,'$this->agenciapagamento'
                       )";
-     
-     $result = db_query($sql); 
-     if($result==false){ 
+
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Dados do Arquivo ($this->idret) nao Incluído. Inclusao Abortada.";
@@ -422,22 +432,27 @@ class cl_disbanco {
        $resac = db_query("insert into db_acount values($acount,214,2401,'','".AddSlashes(pg_result($resaco,0,'convenio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,214,9996,'','".AddSlashes(pg_result($resaco,0,'instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,214,19219,'','".AddSlashes(pg_result($resaco,0,'dtcredito'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,214,1011865,'','".AddSlashes(pg_result($resaco,0,'bancopagamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,214,1011866,'','".AddSlashes(pg_result($resaco,0,'agenciapagamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($idret=null) { 
+   function alterar ($idret=null) {
       $this->atualizacampos();
      $sql = " update disbanco set ";
      $virgula = "";
-     if(trim($this->k00_numbco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k00_numbco"])){ 
+     if(trim($this->k00_numbco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k00_numbco"])){
        $sql  .= $virgula." k00_numbco = '$this->k00_numbco' ";
        $virgula = ",";
      }
-     if(trim($this->k15_codbco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k15_codbco"])){ 
+     if(trim($this->k15_codbco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k15_codbco"])){
+        if(trim($this->k15_codbco)=="" && isset($GLOBALS["HTTP_POST_VARS"]["k15_codbco"])){
+           $this->k15_codbco = "0" ;
+        }
        $sql  .= $virgula." k15_codbco = $this->k15_codbco ";
        $virgula = ",";
-       if(trim($this->k15_codbco) == null ){ 
+       if(trim($this->k15_codbco) == null ){
          $this->erro_sql = " Campo Banco nao Informado.";
          $this->erro_campo = "k15_codbco";
          $this->erro_banco = "";
@@ -447,10 +462,10 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->k15_codage)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k15_codage"])){ 
+     if(trim($this->k15_codage)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k15_codage"])){
        $sql  .= $virgula." k15_codage = '$this->k15_codage' ";
        $virgula = ",";
-       if(trim($this->k15_codage) == null ){ 
+       if(trim($this->k15_codage) == null ){
          $this->erro_sql = " Campo Agência nao Informado.";
          $this->erro_campo = "k15_codage";
          $this->erro_banco = "";
@@ -460,10 +475,13 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->codret)!="" || isset($GLOBALS["HTTP_POST_VARS"]["codret"])){ 
+     if(trim($this->codret)!="" || isset($GLOBALS["HTTP_POST_VARS"]["codret"])){
+        if(trim($this->codret)=="" && isset($GLOBALS["HTTP_POST_VARS"]["codret"])){
+           $this->codret = "0" ;
+        }
        $sql  .= $virgula." codret = $this->codret ";
        $virgula = ",";
-       if(trim($this->codret) == null ){ 
+       if(trim($this->codret) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "codret";
          $this->erro_banco = "";
@@ -473,10 +491,10 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->dtarq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtarq_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtarq_dia"] !="") ){ 
+     if(trim($this->dtarq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtarq_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtarq_dia"] !="") ){
        $sql  .= $virgula." dtarq = '$this->dtarq' ";
        $virgula = ",";
-       if(trim($this->dtarq) == null ){ 
+       if(trim($this->dtarq) == null ){
          $this->erro_sql = " Campo Dt. Arquivo nao Informado.";
          $this->erro_campo = "dtarq_dia";
          $this->erro_banco = "";
@@ -485,11 +503,11 @@ class cl_disbanco {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["dtarq_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["dtarq_dia"])){
          $sql  .= $virgula." dtarq = null ";
          $virgula = ",";
-         if(trim($this->dtarq) == null ){ 
+         if(trim($this->dtarq) == null ){
            $this->erro_sql = " Campo Dt. Arquivo nao Informado.";
            $this->erro_campo = "dtarq_dia";
            $this->erro_banco = "";
@@ -500,10 +518,10 @@ class cl_disbanco {
          }
        }
      }
-     if(trim($this->dtpago)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtpago_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtpago_dia"] !="") ){ 
+     if(trim($this->dtpago)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtpago_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtpago_dia"] !="") ){
        $sql  .= $virgula." dtpago = '$this->dtpago' ";
        $virgula = ",";
-       if(trim($this->dtpago) == null ){ 
+       if(trim($this->dtpago) == null ){
          $this->erro_sql = " Campo Dt Pagamento nao Informado.";
          $this->erro_campo = "dtpago_dia";
          $this->erro_banco = "";
@@ -512,11 +530,11 @@ class cl_disbanco {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["dtpago_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["dtpago_dia"])){
          $sql  .= $virgula." dtpago = null ";
          $virgula = ",";
-         if(trim($this->dtpago) == null ){ 
+         if(trim($this->dtpago) == null ){
            $this->erro_sql = " Campo Dt Pagamento nao Informado.";
            $this->erro_campo = "dtpago_dia";
            $this->erro_banco = "";
@@ -527,10 +545,13 @@ class cl_disbanco {
          }
        }
      }
-     if(trim($this->vlrpago)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrpago"])){ 
+     if(trim($this->vlrpago)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrpago"])){
+        if(trim($this->vlrpago)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlrpago"])){
+           $this->vlrpago = "0" ;
+        }
        $sql  .= $virgula." vlrpago = $this->vlrpago ";
        $virgula = ",";
-       if(trim($this->vlrpago) == null ){ 
+       if(trim($this->vlrpago) == null ){
          $this->erro_sql = " Campo Valor pago nao Informado.";
          $this->erro_campo = "vlrpago";
          $this->erro_banco = "";
@@ -540,38 +561,41 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->vlrjuros)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrjuros"])){ 
-        if(trim($this->vlrjuros)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlrjuros"])){ 
-           $this->vlrjuros = "0" ; 
-        } 
+     if(trim($this->vlrjuros)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrjuros"])){
+        if(trim($this->vlrjuros)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlrjuros"])){
+           $this->vlrjuros = "0" ;
+        }
        $sql  .= $virgula." vlrjuros = $this->vlrjuros ";
        $virgula = ",";
      }
-     if(trim($this->vlrmulta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrmulta"])){ 
-        if(trim($this->vlrmulta)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlrmulta"])){ 
-           $this->vlrmulta = "0" ; 
-        } 
+     if(trim($this->vlrmulta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrmulta"])){
+        if(trim($this->vlrmulta)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlrmulta"])){
+           $this->vlrmulta = "0" ;
+        }
        $sql  .= $virgula." vlrmulta = $this->vlrmulta ";
        $virgula = ",";
      }
-     if(trim($this->vlracres)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlracres"])){ 
-        if(trim($this->vlracres)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlracres"])){ 
-           $this->vlracres = "0" ; 
-        } 
+     if(trim($this->vlracres)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlracres"])){
+        if(trim($this->vlracres)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlracres"])){
+           $this->vlracres = "0" ;
+        }
        $sql  .= $virgula." vlracres = $this->vlracres ";
        $virgula = ",";
      }
-     if(trim($this->vlrdesco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrdesco"])){ 
-        if(trim($this->vlrdesco)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlrdesco"])){ 
-           $this->vlrdesco = "0" ; 
-        } 
+     if(trim($this->vlrdesco)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrdesco"])){
+        if(trim($this->vlrdesco)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlrdesco"])){
+           $this->vlrdesco = "0" ;
+        }
        $sql  .= $virgula." vlrdesco = $this->vlrdesco ";
        $virgula = ",";
      }
-     if(trim($this->vlrtot)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrtot"])){ 
+     if(trim($this->vlrtot)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrtot"])){
+        if(trim($this->vlrtot)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlrtot"])){
+           $this->vlrtot = "0" ;
+        }
        $sql  .= $virgula." vlrtot = $this->vlrtot ";
        $virgula = ",";
-       if(trim($this->vlrtot) == null ){ 
+       if(trim($this->vlrtot) == null ){
          $this->erro_sql = " Campo Total Pago nao Informado.";
          $this->erro_campo = "vlrtot";
          $this->erro_banco = "";
@@ -581,14 +605,17 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->cedente)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cedente"])){ 
+     if(trim($this->cedente)!="" || isset($GLOBALS["HTTP_POST_VARS"]["cedente"])){
        $sql  .= $virgula." cedente = '$this->cedente' ";
        $virgula = ",";
      }
-     if(trim($this->vlrcalc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrcalc"])){ 
+     if(trim($this->vlrcalc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["vlrcalc"])){
+        if(trim($this->vlrcalc)=="" && isset($GLOBALS["HTTP_POST_VARS"]["vlrcalc"])){
+           $this->vlrcalc = "0" ;
+        }
        $sql  .= $virgula." vlrcalc = $this->vlrcalc ";
        $virgula = ",";
-       if(trim($this->vlrcalc) == null ){ 
+       if(trim($this->vlrcalc) == null ){
          $this->erro_sql = " Campo valor calculado nao Informado.";
          $this->erro_campo = "vlrcalc";
          $this->erro_banco = "";
@@ -598,10 +625,13 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->idret)!="" || isset($GLOBALS["HTTP_POST_VARS"]["idret"])){ 
+     if(trim($this->idret)!="" || isset($GLOBALS["HTTP_POST_VARS"]["idret"])){
+        if(trim($this->idret)=="" && isset($GLOBALS["HTTP_POST_VARS"]["idret"])){
+           $this->idret = "0" ;
+        }
        $sql  .= $virgula." idret = $this->idret ";
        $virgula = ",";
-       if(trim($this->idret) == null ){ 
+       if(trim($this->idret) == null ){
          $this->erro_sql = " Campo Cód. Ret. nao Informado.";
          $this->erro_campo = "idret";
          $this->erro_banco = "";
@@ -611,10 +641,10 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->classi)!="" || isset($GLOBALS["HTTP_POST_VARS"]["classi"])){ 
+     if(trim($this->classi)!="" || isset($GLOBALS["HTTP_POST_VARS"]["classi"])){
        $sql  .= $virgula." classi = '$this->classi' ";
        $virgula = ",";
-       if(trim($this->classi) == null ){ 
+       if(trim($this->classi) == null ){
          $this->erro_sql = " Campo Class nao Informado.";
          $this->erro_campo = "classi";
          $this->erro_banco = "";
@@ -624,10 +654,13 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->k00_numpre)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k00_numpre"])){ 
+     if(trim($this->k00_numpre)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k00_numpre"])){
+        if(trim($this->k00_numpre)=="" && isset($GLOBALS["HTTP_POST_VARS"]["k00_numpre"])){
+           $this->k00_numpre = "0" ;
+        }
        $sql  .= $virgula." k00_numpre = $this->k00_numpre ";
        $virgula = ",";
-       if(trim($this->k00_numpre) == null ){ 
+       if(trim($this->k00_numpre) == null ){
          $this->erro_sql = " Campo Numpre nao Informado.";
          $this->erro_campo = "k00_numpre";
          $this->erro_banco = "";
@@ -637,10 +670,13 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->k00_numpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k00_numpar"])){ 
+     if(trim($this->k00_numpar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k00_numpar"])){
+        if(trim($this->k00_numpar)=="" && isset($GLOBALS["HTTP_POST_VARS"]["k00_numpar"])){
+           $this->k00_numpar = "0" ;
+        }
        $sql  .= $virgula." k00_numpar = $this->k00_numpar ";
        $virgula = ",";
-       if(trim($this->k00_numpar) == null ){ 
+       if(trim($this->k00_numpar) == null ){
          $this->erro_sql = " Campo Parcela nao Informado.";
          $this->erro_campo = "k00_numpar";
          $this->erro_banco = "";
@@ -650,14 +686,17 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->convenio)!="" || isset($GLOBALS["HTTP_POST_VARS"]["convenio"])){ 
+     if(trim($this->convenio)!="" || isset($GLOBALS["HTTP_POST_VARS"]["convenio"])){
        $sql  .= $virgula." convenio = '$this->convenio' ";
        $virgula = ",";
      }
-     if(trim($this->instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["instit"])){ 
+     if(trim($this->instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["instit"])){
+        if(trim($this->instit)=="" && isset($GLOBALS["HTTP_POST_VARS"]["instit"])){
+           $this->instit = "0" ;
+        }
        $sql  .= $virgula." instit = $this->instit ";
        $virgula = ",";
-       if(trim($this->instit) == null ){ 
+       if(trim($this->instit) == null ){
          $this->erro_sql = " Campo Instituição nao Informado.";
          $this->erro_campo = "instit";
          $this->erro_banco = "";
@@ -667,10 +706,10 @@ class cl_disbanco {
          return false;
        }
      }
-     if(trim($this->dtcredito)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtcredito_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtcredito_dia"] !="") ){ 
+     if(trim($this->dtcredito)!="" || isset($GLOBALS["HTTP_POST_VARS"]["dtcredito_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["dtcredito_dia"] !="") ){
        $sql  .= $virgula." dtcredito = '$this->dtcredito' ";
        $virgula = ",";
-       if(trim($this->dtcredito) == null ){ 
+       if(trim($this->dtcredito) == null ){
          $this->erro_sql = " Campo Data de Crédito nao Informado.";
          $this->erro_campo = "dtcredito_dia";
          $this->erro_banco = "";
@@ -679,11 +718,11 @@ class cl_disbanco {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["dtcredito_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["dtcredito_dia"])){
          $sql  .= $virgula." dtcredito = null ";
          $virgula = ",";
-         if(trim($this->dtcredito) == null ){ 
+         if(trim($this->dtcredito) == null ){
            $this->erro_sql = " Campo Data de Crédito nao Informado.";
            $this->erro_campo = "dtcredito_dia";
            $this->erro_banco = "";
@@ -693,6 +732,16 @@ class cl_disbanco {
            return false;
          }
        }
+     }
+
+     if(trim($this->bancopagamento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["bancopagamento"])){
+         $sql  .= $virgula." bancopagamento = '$this->bancopagamento' ";
+         $virgula = ",";
+     }
+
+     if(trim($this->agenciapagamento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["agenciapagamento"])){
+         $sql  .= $virgula." agenciapagamento = '$this->agenciapagamento' ";
+         $virgula = ",";
      }
      $sql .= " where ";
      if($idret!=null){
@@ -747,10 +796,14 @@ class cl_disbanco {
            $resac = db_query("insert into db_acount values($acount,214,9996,'".AddSlashes(pg_result($resaco,$conresaco,'instit'))."','$this->instit',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["dtcredito"]) || $this->dtcredito != "")
            $resac = db_query("insert into db_acount values($acount,214,19219,'".AddSlashes(pg_result($resaco,$conresaco,'dtcredito'))."','$this->dtcredito',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["bancopagamento"]) || $this->bancopagamento != "")
+           $resac = db_query("insert into db_acount values($acount,214,1011865,'".AddSlashes(pg_result($resaco,$conresaco,'bancopagamento'))."','$this->bancopagamento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["agenciapagamento"]) || $this->agenciapagamento != "")
+           $resac = db_query("insert into db_acount values($acount,214,1011866,'".AddSlashes(pg_result($resaco,$conresaco,'agenciapagamento'))."','$this->agenciapagamento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Dados do Arquivo nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->idret;
@@ -778,14 +831,14 @@ class cl_disbanco {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($idret=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($idret=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($idret));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -815,6 +868,8 @@ class cl_disbanco {
          $resac = db_query("insert into db_acount values($acount,214,2401,'','".AddSlashes(pg_result($resaco,$iresaco,'convenio'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,214,9996,'','".AddSlashes(pg_result($resaco,$iresaco,'instit'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,214,19219,'','".AddSlashes(pg_result($resaco,$iresaco,'dtcredito'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,214,1011865,'','".AddSlashes(pg_result($resaco,$iresaco,'bancopagamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,214,1011866,'','".AddSlashes(pg_result($resaco,$iresaco,'agenciapagamento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from disbanco
@@ -831,7 +886,7 @@ class cl_disbanco {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Dados do Arquivo nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$idret;
@@ -859,11 +914,11 @@ class cl_disbanco {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -885,8 +940,8 @@ class cl_disbanco {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $idret=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $idret=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -908,8 +963,8 @@ class cl_disbanco {
      $sql2 = "";
      if($dbwhere==""){
        if($idret!=null ){
-         $sql2 .= " where disbanco.idret = $idret "; 
-       } 
+         $sql2 .= " where disbanco.idret = $idret ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -925,8 +980,8 @@ class cl_disbanco {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $idret=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $idret=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -942,8 +997,8 @@ class cl_disbanco {
      $sql2 = "";
      if($dbwhere==""){
        if($idret!=null ){
-         $sql2 .= " where disbanco.idret = $idret "; 
-       } 
+         $sql2 .= " where disbanco.idret = $idret ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -959,7 +1014,7 @@ class cl_disbanco {
      }
      return $sql;
   }
-   function sql_query_cadastro ( $idret=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_cadastro ( $idret=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -978,8 +1033,8 @@ class cl_disbanco {
      $sql2 = "";
      if($dbwhere==""){
        if($idret!=null ){
-         $sql2 .= " where disbanco.idret = $idret "; 
-       } 
+         $sql2 .= " where disbanco.idret = $idret ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -998,9 +1053,9 @@ class cl_disbanco {
    /**
 	 * Busca os dados da baixa do pagamento
 	 *  se for feito pagamento pelo caixa o campo tipo_pagamento retornara 'caixa'
-	 * 
-   * @param integer $iNumpre 
-   * @param integer $iNumpar 
+	 *
+   * @param integer $iNumpre
+   * @param integer $iNumpar
    * @access public
    * @return string
    */
@@ -1008,6 +1063,9 @@ class cl_disbanco {
 
 		$sSql  = " select pg.k00_numpre       as numpre,                                           ";
 		$sSql .= " 			  pg.k00_numpar        as numpar,                                          ";
+		$sSql .= " 			  d.bancopagamento,                                          ";
+		$sSql .= " 			  d.agenciapagamento,                                          ";
+		$sSql .= " 			  db90_descr,                                          ";
 		$sSql .= " 			  sum(k00_valor)       as valor_total_pago,                                ";
 		$sSql .= " 			  k00_dtpaga           as data_baixa,                                      ";
 		$sSql .= " 			  k12_id               as caixa,                                           ";
@@ -1034,6 +1092,9 @@ class cl_disbanco {
 		$sSql .= "   		  left join disbanco d          on d.idret              = arreidret.idret  ";
 		$sSql .= "   		  left join disbancoprocesso dp on dp.k142_idret        = d.idret          ";
 		$sSql .= "   		  left join disarq arq          on arq.codret           = d.codret         ";
+		$sSql .= "   		  left join db_bancos on db90_codban           = d.bancopagamento::text         ";
+		$sSql .= "   		  left join bancoagencia on db89_db_bancos           = d.bancopagamento::text         ";
+		$sSql .= "   		  and db89_codagencia           = d.agenciapagamento::text         ";
 		$sSql .= "   		  left join cornump  c          on c.k12_numpre         = pg.k00_numpre    ";
 		$sSql .= "   																   and c.k12_numpar         = pg.k00_numpar    ";
     $sSql .= "                                                                                 ";
@@ -1052,13 +1113,17 @@ class cl_disbanco {
 		$sSql .= "   			   arq.k15_codage,                                                       ";
 		$sSql .= "   			   arq.k00_conta,  			                                                 ";
 		$sSql .= "           arq.codret,   				                                                 ";
-		$sSql .= "   			   arq.arqret    				                                                 ";
+		$sSql .= "   			   arq.arqret,    				                                                 ";
+		$sSql .= "   			   d.bancopagamento,   				                                                 ";
+		$sSql .= "   			   d.agenciapagamento,    				                                                 ";
+		$sSql .= "   			   db90_descr,    				                                                 ";
+		$sSql .= "   			   k00_dtpaga    				                                                 ";
 		return $sSql;
 	}
    /**
 	 * Lançamentos efetuados
-	 * 
-	 * @param integer $iNumpre 
+	 *
+	 * @param integer $iNumpre
 	 * @access public
 	 * @return void
 	 */
@@ -1091,13 +1156,56 @@ class cl_disbanco {
 		$sSql .= "						   end                                                                ";
 		$sSql .= "        end as dl_status                                                          ";
 		$sSql .= "	 from issplan                                                                   ";
-		$sSql .= "					inner join issplannumpre          on q32_numpre        = q20_numpre     ";              
+		$sSql .= "					inner join issplannumpre          on q32_numpre        = q20_numpre     ";
 		$sSql .= "					inner join issplannumpreissplanit on q77_issplannumpre = q32_sequencial ";
-		$sSql .= "					inner join issplanit              on q77_issplanit     = q21_sequencial ";               
+		$sSql .= "					inner join issplanit              on q77_issplanit     = q21_sequencial ";
 		$sSql .= "	where q20_numpre = {$iNumpre}                                                   ";
 		$sSql .= " order by q21_sequencial                                                          ";
 
 		return $sSql;
 	}
+
+    /**
+     * Retorna o disbanco com data de pagamento mais recende de um dado parcelamento
+     *
+     * @param $parcelamento
+     * @return string
+     */
+    function sql_query_disbanco_mais_recente_por_parcelamento($parcelamento)
+    {
+        $sql = "
+            select
+                disbanco.*
+            from termo
+                inner join arrepaga on arrepaga.k00_numpre = termo.v07_numpre
+                inner join recibopaga on recibopaga.k00_numpre = arrepaga.k00_numpre
+                inner join disbanco on disbanco.k00_numpre = recibopaga.k00_numnov
+            where
+                recibopaga.k00_conta > 0 and v07_parcel = {$parcelamento}
+            order by
+                disbanco.dtpago desc
+            limit 1;
+        ";
+
+        return $sql;
+    }
+
+    function sql_query_disbanco_por_arrepaga($numpre, $numpar)
+    {
+        $sql = "
+            select distinct
+                disbanco.*
+            from
+                arrepaga
+                inner join recibopaga on recibopaga.k00_numpre = arrepaga.k00_numpre and recibopaga.k00_numpar = arrepaga.k00_numpar
+                inner join disbanco on disbanco.k00_numpre = recibopaga.k00_numnov
+            where
+                arrepaga.k00_numpre = {$numpre} AND
+                arrepaga.k00_numpar = {$numpar} AND
+                recibopaga.k00_conta > 0
+        ";
+
+        return $sql;
+    }
 }
 ?>

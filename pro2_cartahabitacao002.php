@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-include("fpdf151/pdf1.php");
-include("classes/db_obrashabite_classe.php");
-include("classes/db_obraspropri_classe.php");
-include("classes/db_obrasender_classe.php");
-include("classes/db_obraslote_classe.php");
-include("classes/db_obraslotei_classe.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf1.php"));
+include(modification("classes/db_obrashabite_classe.php"));
+include(modification("classes/db_obraspropri_classe.php"));
+include(modification("classes/db_obrasender_classe.php"));
+include(modification("classes/db_obraslote_classe.php"));
+include(modification("classes/db_obraslotei_classe.php"));
 $clobrashabite=new cl_obrashabite;
 $clobraspropri=new cl_obraspropri;
 $clobrasender=new cl_obrasender;
@@ -87,7 +87,7 @@ $pdf->SetFont('Arial','',11);
 
 $instit = db_getsession("DB_instit");
 $sqltexto = "select * from db_textos where id_instit = $instit and ( descrtexto like 'habite%' or descrtexto like 'ass_habite%')";
-$resulttexto = pg_exec($sqltexto);
+$resulttexto = db_query($sqltexto);
 for( $xx = 0;$xx < pg_numrows($resulttexto);$xx ++ ){
   db_fieldsmemory($resulttexto,$xx);
   $text  = $descrtexto;

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,8 +26,8 @@
  */
 
   function geraArquivoBPA($oDados,$rsCabecalho,$rsProducao){
-    require_once ("dbforms/db_layouttxt.php");
-    include("classes/db_db_layoutcampos_classe.php");
+    require_once(modification("dbforms/db_layouttxt.php"));
+    include(modification("classes/db_db_layoutcampos_classe.php"));
 
     $sArquivo       = "/tmp/arquivobpa.txt";
     $cldb_layouttxt = new db_layouttxt(85, $sArquivo, "");

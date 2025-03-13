@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_orctiporec_classe.php");
-include ("classes/db_orctiporecconvenio_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_orctiporecconvenio_classe.php"));
 
-include ("classes/db_orcdotacao_classe.php");
-include ("classes/db_orcreceita_classe.php");
-include ("classes/db_conplanoreduz_classe.php");
-include ("classes/db_conplanoexe_classe.php");
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcreceita_classe.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
+include(modification("classes/db_conplanoexe_classe.php"));
 
-require ("libs/db_libdicionario.php");
+require(modification("libs/db_libdicionario.php"));
 
 $clconplanoexe   = new cl_conplanoexe();
 $clconplanoreduz = new cl_conplanoreduz();
@@ -131,7 +131,7 @@ if (isset($excluir)) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
 	<?
-include ("forms/db_frmorctiporec.php");
+include(modification("forms/db_frmorctiporec.php"));
 ?>
     </center>
     </td>
@@ -165,7 +165,7 @@ if (isset($chavepesquisa)) {
   <script>
       function js_db_libera(){
          parent.document.formaba.orctiporecconvenio.disabled=false;
-         top.corpo.iframe_orctiporecconvenio.location.href='orc1_orctiporecconvenio001.php?db_opcaoal=33&o16_sequencial=" . @$o15_codigo . "';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orctiporecconvenio.location.href='orc1_orctiporecconvenio001.php?db_opcaoal=33&o16_sequencial=" . @$o15_codigo . "';
      ";
   if (isset($liberaaba)) {
     echo "  parent.mo_camada('orctiporecconvenio');";

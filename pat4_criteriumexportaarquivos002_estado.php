@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -32,7 +32,7 @@ $sSqlEstado .= "       $iIdDaEmpresa 	as id_da_empresa, ";
 $sSqlEstado .= "       t70_situac 		as id_do_estado_de_conservacao, ";
 $sSqlEstado .= "       t70_descr 			as nome_do_estado_de_consevacao";
 $sSqlEstado .= " from situabens";
-$rsEstado    		= pg_query($sSqlEstado);
+$rsEstado    		= db_query($sSqlEstado);
 $iNumeroLinhas 	= pg_num_rows($rsEstado);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {

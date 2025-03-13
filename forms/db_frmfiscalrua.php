@@ -92,9 +92,9 @@ db_input('y33_compl',20,$Iy33_compl,true,'text',$db_opcao,"")
 <script>
 function js_pesquisay33_codnoti(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?funcao_js=parent.js_mostrafiscal1|y30_codnoti|y30_data','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.y33_codnoti.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscal','func_fiscal.php?pesquisa_chave='+document.form1.y33_codnoti.value+'&funcao_js=parent.js_mostrafiscal','Pesquisa',false);
   }
 }
 function js_mostrafiscal(chave,erro){
@@ -111,9 +111,9 @@ function js_mostrafiscal1(chave1,chave2){
 }
 function js_pesquisay33_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.y33_codigo.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.y33_codigo.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
   }
 }
 function js_mostraruas(chave,erro){
@@ -129,7 +129,7 @@ function js_mostraruas1(chave1,chave2){
   db_iframe_ruas.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_fiscalrua','func_fiscalrua.php?funcao_js=parent.js_preenchepesquisa|y33_codnoti','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_fiscalrua','func_fiscalrua.php?funcao_js=parent.js_preenchepesquisa|y33_codnoti','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_fiscalrua.hide();

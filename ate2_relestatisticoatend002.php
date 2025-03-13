@@ -26,8 +26,8 @@
  */
  
 
-require ('fpdf151/pdf.php');
-include ("dbforms/db_funcoes.php");
+require(modification('fpdf151/pdf.php'));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);
@@ -78,7 +78,7 @@ $sql = "select
              order by at02_codcli) as y";
 
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 //db_criatabela($result);exit;
 
@@ -173,7 +173,7 @@ $tipo .= " group by  at01_nomecli,
                      at04_descr
            order by  count(at02_codtipo)desc";
 
-$result2 = pg_exec($tipo);
+$result2 = db_query($tipo);
 db_fieldsmemory($result2,0);
 
 //db_criatabela($result);exit;
@@ -194,7 +194,7 @@ if ($datafim != "--"){
 	$tec .= " and at02_datafim <= '$datafim'";
 } 
 	
-$result3 = pg_exec($tec);
+$result3 = db_query($tec);
 $tec = pg_numrows($result3);
 
 

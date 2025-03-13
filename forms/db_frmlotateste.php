@@ -68,7 +68,7 @@ db_input('lotanova',10,$Ilotanova,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lotateste','func_lotateste.php?funcao_js=parent.js_preenchepesquisa|lotaant','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotateste','func_lotateste.php?funcao_js=parent.js_preenchepesquisa|lotaant','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_lotateste.hide();

@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
 
 $sql = "
 		select distinct v07_parcel,v07_numpre,k00_numpre,v07_dtlanc,z01_nome,v07_totpar,v07_valor,v09_data,v09_hora,nome,k00_tipo
@@ -37,7 +37,7 @@ $sql = "
 		inner join arreold     on k00_numpre = v07_numpre
 		where v07_situacao = 2 and v07_numcgm = $cgm and v07_instit =	".db_getsession('DB_instit') ;
 
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas = pg_num_rows($result);
 
 

@@ -1,4 +1,30 @@
 <?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
 /**
  * Classe de SQLs e Outras Utilidades para a Recadastramento
  *
@@ -21,7 +47,7 @@ abstract class RecadastramentoSQLUtils {
   public static function getDadosIPTUBase( $iCodigoMatricula, $sCampos ) {
 
     $sSql  = "select $sCampos from iptubase where j01_matric = $iCodigoMatricula";
-    $rsSql = pg_query(Conexao::getInstancia()->getConexao(), $sSql);
+    $rsSql = db_query(Conexao::getInstancia()->getConexao(), $sSql);
 
     if ( !$rsSql ) {
       throw new Exception("Erro ao Buscar os dados da Matricula");
@@ -72,7 +98,7 @@ abstract class RecadastramentoSQLUtils {
     $sSqlSituacaoFiscal.= "       inner join cargrup  on j32_grupo  = j31_grupo \n";
     $sSqlSituacaoFiscal.= " where j01_matric = $iCodigoMatricula                \n";
 
-    $rsCaracteristicas  = pg_query(Conexao::getInstancia()->getConexao(), $sSqlSituacaoFiscal);
+    $rsCaracteristicas  = db_query(Conexao::getInstancia()->getConexao(), $sSqlSituacaoFiscal);
 
     if ( !$rsCaracteristicas ) {
       throw new Exception('Erro ao Buscar carateristicas do Lote:' . pg_last_error() );
@@ -141,7 +167,7 @@ abstract class RecadastramentoSQLUtils {
     $sSqlSituacaoFiscal             .= " where j48_matric = $iCodigoMatricula                 \n";
     $sSqlSituacaoFiscal             .= "   and j48_idcons = $iIdConstrucao                    \n";
 
-    $rsCaracteristicas               = pg_query(Conexao::getInstancia()->getConexao(), $sSqlSituacaoFiscal);
+    $rsCaracteristicas               = db_query(Conexao::getInstancia()->getConexao(), $sSqlSituacaoFiscal);
 
     if ( !$rsCaracteristicas ) {
       throw new Exception('Erro ao Buscar carateristicas da Construcao: ' . pg_last_error() );
@@ -400,7 +426,7 @@ abstract class RecadastramentoSQLUtils {
     if ( !empty($iCodigoConstrucao) ) {
       $sSql .= "   and iptuconstr.j39_idcons = {$iCodigoConstrucao}                                              \n";
     }
-    $rsSql = pg_query(Conexao::getInstancia()->getConexao(), $sSql);
+    $rsSql = db_query(Conexao::getInstancia()->getConexao(), $sSql);
 
     if ( !$rsSql ) {
       throw new Exception( "Erro ao Buscar os Dados do Imóvel e Construção: " . pg_last_error() );      

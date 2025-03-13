@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -69,7 +69,7 @@ db_input('x06_descr',40,$Ix06_descr,true,'text',$db_opcao,"")
 </fieldset>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_aguarota','db_iframe_aguarota','func_aguarota.php?funcao_js=parent.js_preenchepesquisa|x06_codrota','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguarota','db_iframe_aguarota','func_aguarota.php?funcao_js=parent.js_preenchepesquisa|x06_codrota','Pesquisa',true,'0','1','775','390');
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguarota.hide();

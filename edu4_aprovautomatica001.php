@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_turma_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $escola = db_getsession("DB_coddepto");
 $clturma = new cl_turma;
@@ -39,7 +39,7 @@ $db_opcao = 1;
 $db_botao = true;
 if(isset($salvar)){
  db_inicio_transacao();
- $result = pg_query("UPDATE turmaserieregimemat SET ed220_c_aprovauto = 'N'
+ $result = db_query("UPDATE turmaserieregimemat SET ed220_c_aprovauto = 'N'
                      WHERE ed220_i_codigo in (select ed220_i_codigo
                                               from turmaserieregimemat
                                                inner join turma on ed57_i_codigo = ed220_i_turma
@@ -49,7 +49,7 @@ if(isset($salvar)){
  if(isset($turmasaprov)){
   $tam = count($turmasaprov);
   for($y=0;$y<$tam;$y++){
-   $result = pg_query("UPDATE turmaserieregimemat SET 
+   $result = db_query("UPDATE turmaserieregimemat SET 
                         ed220_c_aprovauto = 'S'
                        WHERE ed220_i_codigo = $turmasaprov[$y]");
   }
@@ -76,7 +76,7 @@ if(isset($salvar)){
          AND ed52_c_passivo = 'N'
          ORDER BY ed52_i_ano DESC
          ";
- $sql_result = pg_query($sql);
+ $sql_result = db_query($sql);
  $num = pg_num_rows($sql_result);
  $conta = "";
  while ($row=pg_fetch_array($sql_result)){
@@ -92,7 +92,7 @@ if(isset($salvar)){
               AND ed57_i_calendario = '$cod_curso'
               ORDER BY ed11_i_ensino,ed11_i_sequencia
              ";
-  $sub_result = pg_query($sub_sql);
+  $sub_result = db_query($sub_sql);
   $num_sub = pg_num_rows($sub_result);
   if ($num_sub>=1){
    echo "new Array(\"\", ''),\n";
@@ -179,7 +179,7 @@ if(isset($salvar)){
                    AND ed52_c_passivo = 'N'
                    ORDER BY ed52_i_ano DESC
                   ";
-           $sql_result = pg_query($sql);
+           $sql_result = db_query($sql);
            while($row=pg_fetch_array($sql_result)){
             $cod_curso=$row["ed52_i_codigo"];
             $desc_curso=$row["ed52_c_descr"];

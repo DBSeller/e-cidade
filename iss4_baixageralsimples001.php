@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_isscadsimplesbaixa_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_isscadsimplesbaixa_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clisscadsimplesbaixa = new cl_isscadsimplesbaixa();
 $clisscadsimplesbaixa->rotulo->label();
@@ -124,7 +124,7 @@ db_inputdata('q39_dtbaixa',@$q39_dtbaixa_dia,@$q39_dtbaixa_mes,@$q39_dtbaixa_ano
     </td>
     <td> 
        <?
-       include("classes/db_issmotivobaixa_classe.php");
+       include(modification("classes/db_issmotivobaixa_classe.php"));
        $clissmotivobaixa = new cl_issmotivobaixa;
        $result = $clissmotivobaixa->sql_record($clissmotivobaixa->sql_query("","*"));
        db_selectrecord("q39_issmotivobaixa",$result,true,$db_opcao);
@@ -170,7 +170,7 @@ db_textarea('q39_obs',3,60,$Iq39_obs,true,'text',$db_opcao,"")
 											  	left outer join isscadsimplesbaixa on q38_sequencial = q39_isscadsimples 
   								where q39_sequencial is null
 									order by q38_inscr";				
-    $rs   = pg_query ($sSql);
+    $rs   = db_query ($sSql);
 		if (pg_num_rows($rs)> 0 ){
 			 for ($i = 0;$i < pg_num_rows($rs);$i++){
 

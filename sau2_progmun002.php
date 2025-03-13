@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_prontuarios_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_prontuarios_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $clprontuarios = new cl_prontuarios;
@@ -56,7 +56,7 @@ $data2 = str_replace("X","-",$data2);
                      sd11_f_orcamento,
                      sd02_c_razao";
 //echo $SQL_rel;
-  $Query_rel = pg_query($SQL_rel);
+  $Query_rel = db_query($SQL_rel);
   $Linhas_rel = pg_num_rows($Query_rel);
 if($Linhas_rel == 0){
  echo "<table width='100%'>

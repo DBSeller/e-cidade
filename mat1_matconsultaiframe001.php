@@ -1,131 +1,204 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matestoque_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_matparam_classe.php");
-include("classes/db_db_departorg_classe.php");
-include("classes/db_db_almox_classe.php");
-include("classes/db_db_almoxdepto_classe.php");
-require_once("classes/materialestoque.model.php");
-require_once "libs/db_app.utils.php";
-db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
-db_app::import("Acordo");
-db_app::import("AcordoComissao");
-db_app::import("CgmFactory");
-db_app::import("financeiro.*");
-db_app::import("contabilidade.*");
-db_app::import("contabilidade.lancamento.*");
-db_app::import("Dotacao");
-db_app::import("contabilidade.planoconta.*");
-db_app::import("contabilidade.contacorrente.*");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once modification("libs/db_app.utils.php");
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
-$clmatparam = new cl_matparam;
-$cldb_departorg = new  cl_db_departorg;
-$cldb_almox = new cl_db_almox;
-$cldb_almoxdepto = new cl_db_almoxdepto;
-$clmatestoque = new cl_matestoque;
-$clrotulo = new rotulocampo;
-$clrotulo->label("");
 ?>
-<html>
+<!doctype html>
+<html lang="pt-BR">
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<style>
-<?//$cor="#999999"?>
-.bordas{
-    border: 2px solid #cccccc;
-    border-top-color: #999999;
-    border-right-color: #999999;
-    border-left-color: #999999;
-    border-bottom-color: #999999;
-    background-color: #999999;
-}
-.bordas_corp{
-    border: 1px solid #cccccc;
-    border-top-color: #999999;
-    border-right-color: #999999;
-    border-left-color: #999999;
-    border-bottom-color: #999999;
-    background-color: #cccccc;
-}
-</style>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <link rel="stylesheet" type="text/css" href="estilos.css"/>
+    <link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.core.css"
+          rel="stylesheet"/>
+    <link type="text/css" href="extension/package/Desktop/assets/vendors/alertify/themes/alertify.bootstrap.css"
+          rel="stylesheet"/>
+    <script rel="script" type="text/javascript" src="scripts/classes/http/http.js"></script>
+    <script rel="script" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table  border="0" cellspacing="0" cellpadding="0" width='100%'>
-<tr>
-<td  align="center" valign="top" bgcolor="#CCCCCC">
+<body>
+<div class="container">
+    <input type="hidden" name="codigo_material" id="codigo_material" value="<?= $codmater ?>">
+    <div>
+        <fieldset id="ctnTable">
+            <legend>Estoque</legend>
+            <div style="width: 1000px">
+                <table id="data-table"
+                       class="table table-sm"
+                       data-height="320"
+                       data-virtual-scroll="true"
+                       data-detail-view="true"
+                       style="width: 100%;">
+                </table>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<script type="text/javascript" src="scripts/session.js"></script>
+<script type="text/javascript" src="scripts/classes/bootstrapTable/detailFormaterTable.js"></script>
 
-<table border='0'>
-<?
-// novo metodo para calculo preço medio
-$oMaterialEstoque = new materialEstoque($codmater);
-$pr_medio = $oMaterialEstoque->getPrecoMedio();
-//echo $pr_medio;
-//$dt_prmedio = date("Y-m-d");
+<script type="text/javascript" src='extension/package/Desktop/assets/vendors/alertify/alertify.js'></script>
+<!-- requires bootstrap table -->
+<script type="text/javascript" src="assets/jquery/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="assets/bootstrap-table/popper.min.js"></script>
+<script type="text/javascript" src="assets/bootstrap-4.5.3/js/bootstrap.js"></script>
+<script type="text/javascript" src="assets/bootstrap-table/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="assets/bootstrap-table/locale/bootstrap-table-pt-BR.min.js"></script>
+<script type="text/javascript" src="assets/bootstrap-table/bootstrap-table-export.min.js"></script>
+<link type="text/css" href="assets/bootstrap-table/css/bootstrap.min.css" rel="stylesheet">
+<link type="text/css" href="assets/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+<script type="text/javascript">
+    $.noConflict();
+    jQuery(document).ready(function ($) {
+        const codigoMaterial = document.getElementById('codigo_material').value;
+        var table = $('#data-table');
 
-if (isset($codmater)&&$codmater!="") {
+        const formatarDescricao = (value, row, index) => {
+            return `${row.codigo_deposito} - ${row.descricao_deposito}`;
+        }
+        const formatarValor = (value, row, index) => {
+            return `R$ ${value}`;
+        }
 
-  $sSqlTotaisTransferencias  = "select sum(coalesce(case when m81_tipo = 4 then m82_quant end, 0)) as saida";
-  $sSqlTotaisTransferencias .= "  from matestoqueinimei ";
-  $sSqlTotaisTransferencias .= "       inner join matestoqueitem on m71_codlanc       = m82_matestoqueitem";
-  $sSqlTotaisTransferencias .= "       inner join matestoque trans  on m71_codmatestoque = trans.m70_codigo ";
-  $sSqlTotaisTransferencias .= "       inner join matestoqueini  on m80_codigo        = m82_matestoqueini ";
-  $sSqlTotaisTransferencias .= "       left  join matestoqueinil on m80_codigo        = m86_matestoqueini ";
-  $sSqlTotaisTransferencias .= "       inner join matestoquetipo on m80_codtipo       = m81_codtipo ";
-  $sSqlTotaisTransferencias .= " where trans.m70_codigo  = matestoque.m70_codigo ";
-  $sSqlTotaisTransferencias .= "   and m81_codtipo = 7";
-  $sSqlTotaisTransferencias .= "   and m86_matestoqueini IS NULL";
-  $sql=$clmatestoque->sql_query_almox(null,"distinct m70_coddepto,descrdepto,m70_quant,
-                                      round((m70_quant*$pr_medio),2)::float as m70_valor,
-                                      coalesce(({$sSqlTotaisTransferencias}),0) as dl_transferencias",
-                                      null,
-                                      "m70_codmatmater=$codmater",
-                                      "",true);
-//  echo "$codmater\n";
-  //die($sql);
-  db_lovrot($sql,15,"()","","");
+        const formatarTransferencias = (value, row, index) => {
+            let totalTransferido = 0;
+            value.map((transferencia) => {
+                totalTransferido += parseInt(transferencia.quantidade_transferida);
+            });
 
-}
-?>
-</table>
+            return totalTransferido;
+        }
 
-</td>
-</tr>
-</table>
+        const colunas = [
+            {
+                title: 'Depósito',
+                field: 'descricao_deposito',
+                align: 'left',
+                valign: 'center',
+                formatter: formatarDescricao
+                // sortable: true
+            }, {
+                title: 'Último Preço Médio',
+                field: 'preco_medio',
+                align: 'left',
+                valign: 'center',
+                // sortable: true,
+                width: 120,
+                formatter: formatarValor
+            }, {
+                title: 'Quantidade em estoque',
+                field: 'quantidade_total',
+                align: 'center',
+                valign: 'center',
+                width: 30,
+                // sortable: true
+            }, {
+                title: 'Valor em estoque',
+                field: 'valor_estoque',
+                align: 'left',
+                valign: 'center',
+                width: 110,
+                // sortable: true,
+                formatter: formatarValor
+            }, {
+                title: 'Transferências',
+                field: 'transferencias',
+                align: 'center',
+                valign: 'center',
+                width: 30,
+                // sortable: true,
+                formatter: formatarTransferencias
+            }, {
+                title: 'Saldo disponível',
+                field: 'quantidade_disponivel',
+                align: 'center',
+                valign: 'center',
+                width: 30,
+                // sortable: true
+            }
+        ];
+
+        const detailFormatter = (index, row) => {
+            let dados = formataDadosAnalitico(row);
+            return detailFormaterTable.createDetail(dados, 'Transferências: ');
+        }
+
+        const formData = new FormData();
+        formData.append('acao', 'buscarEstoques');
+        formData.append('codigo_material', codigoMaterial);
+        HttpClient.post('mat1_material.RPC.php', {body: formData}).then((response) => {
+            const estoques = response.estoques;
+
+            // table.bootstrapTable('destroy');
+            table.bootstrapTable({
+                columns: colunas,
+                data: estoques,
+                detailFormatter: detailFormatter,
+                uniqueId: "codigo_deposito",
+                locale: 'pt-BR',
+                cache: false,
+                // pagination: true,
+                // pageSize: 10,
+                // pageList: [10, 25, 50, 100, 200, 'All'],
+                // showButtonText: true,
+                search: true,
+                class: "table table-sm"
+            });
+        });
+
+        const formataDadosAnalitico = (dadosLinha) => {
+            return dadosLinha.transferencias.map((transferencia) => {
+                return [
+                    {
+                        label: "Código:",
+                        valor: `${transferencia.codigo}`
+                    },
+                    {
+                        label: "Depósito destino:",
+                        valor: `${transferencia.codigo_deposito_destino} - ${transferencia.descricao_deposito_destino}`
+                    },
+                    {
+                        label: "Quantidade:",
+                        valor: `${transferencia.quantidade_transferida}`
+                    },
+                ];
+            });
+        };
+    });
+</script>
 </body>
 </html>

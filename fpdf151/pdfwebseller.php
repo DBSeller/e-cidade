@@ -6,15 +6,15 @@ if(!defined('DB_BIBLIOT')){
   session_cache_limiter('none');
   session_start();
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("libs/db_usuariosonline.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
   db_postmemory($HTTP_POST_VARS);
   db_postmemory($HTTP_SERVER_VARS);
 
-  define('FPDF_FONTPATH','font/');
-  require_once('fpdf.php');
+  define('FPDF_FONTPATH','fpdf151/font/');
+  require_once(modification('fpdf151/fpdf.php'));
 
 }
 
@@ -111,8 +111,17 @@ class PDF extends FPDF {
       $TamFonteNome = 8;
     else
       $TamFonteNome = 9;
+
+    if($this->CurOrientation == 'L') {
+      $positionXImage = 190;
+      $widthHeader = 150;
+    } else {
+      $positionXImage = 105;
+      $widthHeader = 70;
+    }
+
     if(trim(pg_result($dados1,0,"ed18_c_logo"))!=""){
-     $this->Image('imagens/'.trim(pg_result($dados1,0,"ed18_c_logo")), 105, 4, 20);
+     $this->Image('imagens/'.trim(pg_result($dados1,0,"ed18_c_logo")), $positionXImage, 4, 20);
     }
     $ruaescola = trim(pg_result($dados1,0,"j14_nome"));
     $numescola = trim(pg_result($dados1,0,"ed18_i_numero"));
@@ -136,15 +145,28 @@ class PDF extends FPDF {
       $nomeescola = "{$iCodigoReferencia} - {$nomeescola}";
     }
 
+    $this->setXY(33, 7);
     $this->SetFont('Arial','BI',$TamFonteNome);
-    $this->Text(33,9,$nome);
-    $this->Text(33,14,$nomeescola);
-    $this->SetFont('Arial','I',8);
-    $this->Text(33,18,$ruaescola.", ".$numescola." - ".$bairroescola);
-    $this->Text(33,22,$cidadeescola." - ".$estadoescola);
-    $this->Text(33,26,$telefoneescola);
+    $this->cell( 70,   4, $nome, 0,   1, "L", 0 );
+
+    $this->setXY(33, 12);
+    $this->multicell( $widthHeader,   4, $nomeescola, 0,   1, "L", 0 );
+    
+    $this->SetFont('Arial','I',7);
+    $this->setXY(33, 20);
+    $this->cell( $widthHeader,   4, $ruaescola.", ".$numescola." - ".$bairroescola, 0,   1, "L", 0 );
+
+    $this->setXY(33, 24); //VILA BELA DA SANTISSIMA TRINDADE
+    if(strlen($cidadeescola) > 20) {
+      $tamanoEnderecoEscola = 63;
+    } else {
+      $tamanoEnderecoEscola = 40;
+    }
+    $this->cell( $tamanoEnderecoEscola,   4, $cidadeescola." - ".$estadoescola, 0,   0, "L", 0 );
+    $this->cell( 28,   4, "Fone: ".$telefoneescola, 0,   1, "L", 0 );
+    $this->setXY(33, 28);
+    $this->cell( $widthHeader,   4, ($emailescola!=""?$emailescola." - ":"") . $url, 0,   1, "L", 0 );
     $comprim = ($this->w - $this->rMargin - $this->lMargin);
-    $this->Text(33,30,($emailescola!=""?$emailescola." - ":"").$url);
     $Espaco = $this->w - 80 ;
     $this->SetFont('Arial','',7);
     $margemesquerda = $this->lMargin;

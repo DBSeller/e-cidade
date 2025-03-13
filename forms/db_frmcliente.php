@@ -68,7 +68,7 @@ db_textarea('j99_obs',0,0,$Ij99_obs,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cliente','func_cliente.php?funcao_js=parent.js_preenchepesquisa|j99_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cliente','func_cliente.php?funcao_js=parent.js_preenchepesquisa|j99_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cliente.hide();

@@ -1,64 +1,64 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: ouvidoria
 //CLASSE DA ENTIDADE tipoprocdepto
-class cl_tipoprocdepto { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $p41_sequencial = 0; 
-   var $p41_tipoproc = 0; 
-   var $p41_coddepto = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_tipoprocdepto {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $p41_sequencial = 0;
+   var $p41_tipoproc = 0;
+   var $p41_coddepto = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 p41_sequencial = int4 = Sequencial 
-                 p41_tipoproc = int4 = Tipo de Processo 
-                 p41_coddepto = int4 = Código do Departamento 
+                 p41_sequencial = int4 = Sequencial
+                 p41_tipoproc = int4 = Tipo de Processo
+                 p41_coddepto = int4 = Código do Departamento
                  ";
-   //funcao construtor da classe 
-   function cl_tipoprocdepto() { 
+   //funcao construtor da classe
+   function cl_tipoprocdepto() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("tipoprocdepto"); 
+     $this->rotulo = new rotulo("tipoprocdepto");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -77,9 +77,9 @@ class cl_tipoprocdepto {
      }
    }
    // funcao para inclusao
-   function incluir ($p41_sequencial){ 
+   function incluir ($p41_sequencial){
       $this->atualizacampos();
-     if($this->p41_tipoproc == null ){ 
+     if($this->p41_tipoproc == null ){
        $this->erro_sql = " Campo Tipo de Processo nao Informado.";
        $this->erro_campo = "p41_tipoproc";
        $this->erro_banco = "";
@@ -88,7 +88,7 @@ class cl_tipoprocdepto {
        $this->erro_status = "0";
        return false;
      }
-     if($this->p41_coddepto == null ){ 
+     if($this->p41_coddepto == null ){
        $this->erro_sql = " Campo Código do Departamento nao Informado.";
        $this->erro_campo = "p41_coddepto";
        $this->erro_banco = "";
@@ -98,16 +98,16 @@ class cl_tipoprocdepto {
        return false;
      }
      if($p41_sequencial == "" || $p41_sequencial == null ){
-       $result = db_query("select nextval('tipoprocdepto_p41_sequencial_seq')"); 
+       $result = db_query("select nextval('tipoprocdepto_p41_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: tipoprocdepto_p41_sequencial_seq do campo: p41_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: tipoprocdepto_p41_sequencial_seq do campo: p41_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->p41_sequencial = pg_result($result,0,0); 
+       $this->p41_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from tipoprocdepto_p41_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $p41_sequencial)){
@@ -118,10 +118,10 @@ class cl_tipoprocdepto {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->p41_sequencial = $p41_sequencial; 
+         $this->p41_sequencial = $p41_sequencial;
        }
      }
-     if(($this->p41_sequencial == null) || ($this->p41_sequencial == "") ){ 
+     if(($this->p41_sequencial == null) || ($this->p41_sequencial == "") ){
        $this->erro_sql = " Campo p41_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -130,17 +130,17 @@ class cl_tipoprocdepto {
        return false;
      }
      $sql = "insert into tipoprocdepto(
-                                       p41_sequencial 
-                                      ,p41_tipoproc 
-                                      ,p41_coddepto 
+                                       p41_sequencial
+                                      ,p41_tipoproc
+                                      ,p41_coddepto
                        )
                 values (
-                                $this->p41_sequencial 
-                               ,$this->p41_tipoproc 
-                               ,$this->p41_coddepto 
+                                $this->p41_sequencial
+                               ,$this->p41_tipoproc
+                               ,$this->p41_coddepto
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Tipo de Processo por Departamento ($this->p41_sequencial) nao Incluído. Inclusao Abortada.";
@@ -174,16 +174,16 @@ class cl_tipoprocdepto {
        $resac = db_query("insert into db_acount values($acount,2592,14728,'','".AddSlashes(pg_result($resaco,0,'p41_coddepto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($p41_sequencial=null) { 
+   function alterar ($p41_sequencial=null) {
       $this->atualizacampos();
      $sql = " update tipoprocdepto set ";
      $virgula = "";
-     if(trim($this->p41_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p41_sequencial"])){ 
+     if(trim($this->p41_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p41_sequencial"])){
        $sql  .= $virgula." p41_sequencial = $this->p41_sequencial ";
        $virgula = ",";
-       if(trim($this->p41_sequencial) == null ){ 
+       if(trim($this->p41_sequencial) == null ){
          $this->erro_sql = " Campo Sequencial nao Informado.";
          $this->erro_campo = "p41_sequencial";
          $this->erro_banco = "";
@@ -193,10 +193,10 @@ class cl_tipoprocdepto {
          return false;
        }
      }
-     if(trim($this->p41_tipoproc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p41_tipoproc"])){ 
+     if(trim($this->p41_tipoproc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p41_tipoproc"])){
        $sql  .= $virgula." p41_tipoproc = $this->p41_tipoproc ";
        $virgula = ",";
-       if(trim($this->p41_tipoproc) == null ){ 
+       if(trim($this->p41_tipoproc) == null ){
          $this->erro_sql = " Campo Tipo de Processo nao Informado.";
          $this->erro_campo = "p41_tipoproc";
          $this->erro_banco = "";
@@ -206,10 +206,10 @@ class cl_tipoprocdepto {
          return false;
        }
      }
-     if(trim($this->p41_coddepto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p41_coddepto"])){ 
+     if(trim($this->p41_coddepto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p41_coddepto"])){
        $sql  .= $virgula." p41_coddepto = $this->p41_coddepto ";
        $virgula = ",";
-       if(trim($this->p41_coddepto) == null ){ 
+       if(trim($this->p41_coddepto) == null ){
          $this->erro_sql = " Campo Código do Departamento nao Informado.";
          $this->erro_campo = "p41_coddepto";
          $this->erro_banco = "";
@@ -239,7 +239,7 @@ class cl_tipoprocdepto {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Tipo de Processo por Departamento nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->p41_sequencial;
@@ -267,14 +267,14 @@ class cl_tipoprocdepto {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($p41_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($p41_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($p41_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -302,7 +302,7 @@ class cl_tipoprocdepto {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Tipo de Processo por Departamento nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$p41_sequencial;
@@ -330,11 +330,11 @@ class cl_tipoprocdepto {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -356,11 +356,11 @@ class cl_tipoprocdepto {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $p41_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $p41_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -379,15 +379,15 @@ class cl_tipoprocdepto {
      $sql2 = "";
      if($dbwhere==""){
        if($p41_sequencial!=null ){
-         $sql2 .= " where tipoprocdepto.p41_sequencial = $p41_sequencial "; 
-       } 
+         $sql2 .= " where tipoprocdepto.p41_sequencial = $p41_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -396,11 +396,11 @@ class cl_tipoprocdepto {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $p41_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $p41_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -413,15 +413,15 @@ class cl_tipoprocdepto {
      $sql2 = "";
      if($dbwhere==""){
        if($p41_sequencial!=null ){
-         $sql2 .= " where tipoprocdepto.p41_sequencial = $p41_sequencial "; 
-       } 
+         $sql2 .= " where tipoprocdepto.p41_sequencial = $p41_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -430,10 +430,10 @@ class cl_tipoprocdepto {
      }
      return $sql;
   }
-   function sql_query_depto ( $p41_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_depto ( $p41_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -450,15 +450,15 @@ class cl_tipoprocdepto {
      $sql2 = "";
      if($dbwhere==""){
        if($p41_sequencial!=null ){
-         $sql2 .= " where tipoprocdepto.p41_sequencial = $p41_sequencial "; 
-       } 
+         $sql2 .= " where tipoprocdepto.p41_sequencial = $p41_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

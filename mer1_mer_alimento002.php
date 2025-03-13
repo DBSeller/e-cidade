@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_alimento_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_alimento_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_alimento = new cl_mer_alimento;
@@ -53,8 +53,8 @@ if (isset($alterar)) {
   <script>
    parent.document.formaba.a2.disabled = false;
    parent.document.formaba.a3.disabled = false;   
-   top.corpo.iframe_a2.location.href   = 'mer1_mer_infnutricional001.php?me08_i_alimento=<?=$chavepesquisa?>&me35_c_nomealimento=<?=$me35_c_nomealimento?>';
-   top.corpo.iframe_a3.location.href   = 'mer1_mer_alimentomatmater001.php?me36_i_alimento=<?=$chavepesquisa?>&me35_c_nomealimento=<?=$me35_c_nomealimento?>';     
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'mer1_mer_infnutricional001.php?me08_i_alimento=<?=$chavepesquisa?>&me35_c_nomealimento=<?=$me35_c_nomealimento?>';
+   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href   = 'mer1_mer_alimentomatmater001.php?me36_i_alimento=<?=$chavepesquisa?>&me35_c_nomealimento=<?=$me35_c_nomealimento?>';     
   </script>
   <?
 }
@@ -75,7 +75,7 @@ if (isset($alterar)) {
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Alimento</b></legend>
 	<?
-	include("forms/db_frmmer_alimento.php");
+	include(modification("forms/db_frmmer_alimento.php"));
 	?>
    </fieldset>
    </center>

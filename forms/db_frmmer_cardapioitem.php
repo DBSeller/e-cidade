@@ -26,7 +26,7 @@
  */
 
 //MODULO: Merenda
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clmer_cardapioitem->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -286,7 +286,7 @@ function js_mostramer_alimento1(chave1,chave2,chave3) {
 
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_cardapioitem',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_cardapioitem',
                        'func_mer_cardapioitem.php?funcao_js=parent.js_preenchepesquisa|me07_i_codigo','Pesquisa',true);
 
 }

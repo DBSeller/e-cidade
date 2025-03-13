@@ -1,4 +1,30 @@
-<?php 
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+
 class RecadastroImobiliarioImoveisBic {
 
   private $iMatricula;
@@ -6,11 +32,11 @@ class RecadastroImobiliarioImoveisBic {
   private $sNomeArquivo;
 
   public function __construct( $iMatricula, $sNomeArquivo = null ) {
-    
+
     if ( empty($iMatricula) ) {
       throw new Exception('Matrícula não informada para geração da bic.');
     }
-    
+
     $this->iMatricula             = $iMatricula;
     $this->sNomeArquivo           = 'tmp/' . empty($sNomeArquivo) ? $iMatricula . "_recadastramento" : $sNomeArquivo;
   }
@@ -23,7 +49,7 @@ class RecadastroImobiliarioImoveisBic {
     require_once("fpdf151/fpdf.php");
     require_once("fpdf151/pdf.php");
     require_once("std/DBLargeObject.php");
-    
+
     require_once("classes/db_cfiptu_classe.php");
     require_once("classes/db_iptucalc_classe.php");
     require_once("classes/db_iptucale_classe.php");
@@ -471,7 +497,7 @@ class RecadastroImobiliarioImoveisBic {
             $oDadosOutrosProprietarios->iCelular     = $oDadoOutrosProprietarios->z01_telcel;
             $oDadosOutrosProprietarios->iFax         = $oDadoOutrosProprietarios->z01_fax;
             $oDadosOutrosProprietarios->sEmail       = $oDadoOutrosProprietarios->z01_email;
-             
+
             $aDadosOutrosProprietarios[$oDadoOutrosProprietarios->z01_numcgm]['oDadosOutrosProprietarios'] = $oDadosOutrosProprietarios;
           }
         }
@@ -514,7 +540,7 @@ class RecadastroImobiliarioImoveisBic {
             $oDadosPromitentes->iCelular     = $oDadoPromitentes->z01_telcel;
             $oDadosPromitentes->iFax         = $oDadoPromitentes->z01_fax;
             $oDadosPromitentes->sEmail       = $oDadoPromitentes->z01_email;
-             
+
             $aDadosPromitentes[$oDadoPromitentes->z01_numcgm]['oDadosPromitentes'] = $oDadosPromitentes;
           }
         }
@@ -557,7 +583,7 @@ class RecadastroImobiliarioImoveisBic {
             $oDadosOutrosPromitentes->iCelular     = $oDadoOutrosPromitentes->z01_telcel;
             $oDadosOutrosPromitentes->iFax         = $oDadoOutrosPromitentes->z01_fax;
             $oDadosOutrosPromitentes->sEmail       = $oDadoOutrosPromitentes->z01_email;
-             
+
             $aDadosOutrosPromitentes[$oDadoOutrosPromitentes->z01_numcgm]['oDadosOutrosPromitentes'] = $oDadosOutrosPromitentes;
           }
         }
@@ -655,7 +681,7 @@ class RecadastroImobiliarioImoveisBic {
           for ( $xIndEdificacoes = 0; $xIndEdificacoes  < $iNumRowsEdificacoes; $xIndEdificacoes++ ) {
 
             $oDadoEdificacoes = db_utils::fieldsMemory($rsSqlEdificacoes, $xIndEdificacoes);
-             
+
             $oDadosEdificacoes = new stdClass();
             $oDadosEdificacoes->iCodConstrucao = $oDadoEdificacoes->j39_idcons;
             $oDadosEdificacoes->iAno           = $oDadoEdificacoes->j39_ano;
@@ -754,7 +780,7 @@ class RecadastroImobiliarioImoveisBic {
             $oDadosIsencoes->iCodProcesso   = $oDadoIsencoes->j61_codproc;
             $oDadosIsencoes->sTipoIsencao   = $oDadoIsencoes->j45_descr;
             $oDadosIsencoes->dtInicial      = $oDadoIsencoes->j46_dtini;
-            $oDadosIsencoes->dtFinal        = $oDadoIsencoes->j46_dtfim;
+            $oDadosIsencoes->dtFinal        = ( empty($oDadoIsencoes->j46_dtfim) ? "null" : $oDadoAverbacoes->j46_dtfim );
             $oDadosIsencoes->nPercentual    = $oDadoIsencoes->j46_perc;
             $oDadosIsencoes->sObservacao    = $oDadoIsencoes->j46_hist;
             $oDadosIsencoes->aTaxas         = array();
@@ -824,7 +850,7 @@ class RecadastroImobiliarioImoveisBic {
             $aDadosAverbacoes['oDadosAverbacoes'][] = $oDadosAverbacoes;
           }
         }
-         
+
       }
 
       /**
@@ -898,7 +924,7 @@ class RecadastroImobiliarioImoveisBic {
             $oDadosCalculos->nValorVenalConstr       = $oDadoCalculo->valorvenalconstr;
             $oDadosCalculos->nValorVenalTotal        = ( $oDadoCalculo->valorvenalconstr
                 + $oDadoCalculo->j23_vlrter );
-             
+
             $oDadosCalculos->aConstrucoes            = array();
             $oDadosCalculos->aValorlancado           = array();
 
@@ -934,7 +960,7 @@ class RecadastroImobiliarioImoveisBic {
             if ($clcfiptu->numrows > 0) {
               $oDadoCfiptu = db_utils::fieldsMemory($rsSqlCfiptu, 0);
             }
-             
+
             $sSqlValoresLancados  = "  select k02_codigo,                                                                                                                            ";
             $sSqlValoresLancados .= "         k02_descr,                                                                                                                             ";
             $sSqlValoresLancados .= "         ( select j17_descr                                                                                                                     ";
@@ -995,7 +1021,7 @@ class RecadastroImobiliarioImoveisBic {
               for ( $zInd = 0; $zInd  < $iNumRowsValoresLancados; $zInd++ ) {
 
                 $oDadoValorLancado     = db_utils::fieldsMemory($rsSqlValoresLancados, $zInd);
-                 
+
                 $oDadosValoresLancados = new stdClass();
                 $oDadosValoresLancados->iCodRec          = $oDadoValorLancado->k02_codigo;
                 $oDadosValoresLancados->sDescricao       = $oDadoValorLancado->k02_descr;
@@ -1037,7 +1063,7 @@ class RecadastroImobiliarioImoveisBic {
             $aDadosOutrosDados['oDadosOutrosDados'] = $oDadosOutrosDados;
           }
         }
-         
+
       }
     }
 
@@ -1119,7 +1145,7 @@ class RecadastroImobiliarioImoveisBic {
           $pdf->cell(48, $iAlt, trim(db_formatar($oDadoImovel->nFracaoIdeal, 'f'))                    ,0,1,"L",0);
 
           $pdf->cell(193, 1, ''                                                                       ,0,1,"L",0);
-           
+
           $pdf->setfont('arial','B',$iFontBic);
           $pdf->cell(48, $iAlt, 'Zona Fiscal'                                                         ,0,0,"L",0);
           $pdf->cell(48, $iAlt, 'Setor Fiscal'                                                        ,0,0,"L",0);
@@ -1149,7 +1175,7 @@ class RecadastroImobiliarioImoveisBic {
       if ( count($aDadosCaractLote) > 0 ) {
 
         $iAlturaLote = $pdf->GetY() ;
-         
+
         $pdf->setfont('arial','B',$iFontDados);
         $pdf->cell(20, $iAlt, 'Cód.'                                                                  ,0,0,"L",0);
         $pdf->cell(20, $iAlt, 'Descrição'                                                             ,0,0,"L",0);
@@ -1170,11 +1196,11 @@ class RecadastroImobiliarioImoveisBic {
               $pdf->cell(20, $iAlt, $oDadoCaractLote->iCodGrupo                                         ,0,0,"L",0);
               $pdf->cell(20, $iAlt, substr($oDadoCaractLote->sGrupoDescr, 0, 20)                        ,0,0,"L",0);
               $pdf->cell(20, $iAlt, $oDadoCaractLote->iPonto                                            ,0,1,"L",0);
-               
+
             } else if ($iTotalCaracteristicaLote <= 10) {
 
               if ($iTotalCaracteristicaLote == 6) {
-                 
+
                 $pdf->SetY($iAlturaLote);
                 $pdf->SetX(110);
                 $pdf->setfont('arial','B',$iFontDados);
@@ -1311,15 +1337,15 @@ class RecadastroImobiliarioImoveisBic {
             $pdf->setfont('arial','',$iFontDados);
 
             if ($iTotalCaracteristicaFace <= 5) {
-               
+
               $pdf->cell(10, $iAlt, $oDadoCaracterFace->iCodigo                                         ,0,0,"L",0);
               $pdf->cell(30, $iAlt, substr($oDadoCaracterFace->sDescricao, 0, 20)                       ,0,0,"L",0);
               $pdf->cell(20, $iAlt, $oDadoCaracterFace->iCodGrupo                                       ,0,0,"L",0);
               $pdf->cell(20, $iAlt, substr($oDadoCaracterFace->sGrupoDescr, 0, 20)                      ,0,0,"L",0);
               $pdf->cell(20, $iAlt, $oDadoCaracterFace->iPonto                                          ,0,1,"L",0);
-               
+
             } else if ($iTotalCaracteristicaFace <= 10) {
-               
+
               if ($iTotalCaracteristicaFace == 6) {
 
                 $pdf->SetY($iAlturaFace);
@@ -1337,7 +1363,7 @@ class RecadastroImobiliarioImoveisBic {
               $pdf->cell(20, $iAlt, $oDadoCaracterFace->iCodGrupo                                       ,0,0,"L",0);
               $pdf->cell(20, $iAlt, substr($oDadoCaracterFace->sGrupoDescr, 0, 20)                      ,0,0,"L",0);
               $pdf->cell(20, $iAlt, $oDadoCaracterFace->iPonto                                          ,0,1,"L",0);
-               
+
             }
           }
         }
@@ -1772,7 +1798,7 @@ class RecadastroImobiliarioImoveisBic {
           $pdf->cell(193, $iAlt, ''                                                                   ,0,1,"L",0);
         }
       } else if(count($aDadosImobiliaria) == 0 && $lImprimeNulo) {
-         
+
         $this->imprimirCabecalhoFixo($pdf, $iAlt, true, 'Imobiliária');
         $pdf->cell(193, $iAlt, 'Nenhuma imobiliária encontrada.'                                      ,0,1,"L",0);
         $pdf->cell(193, $iAlt, ''                                                                     ,'T',1,"L",0);
@@ -1920,7 +1946,7 @@ class RecadastroImobiliarioImoveisBic {
 
 
           if ( true ) {
-             
+
             $iTotalCaracteristicaEdificacao = 0;
 
             $pdf->cell(193, 1, ''                                                                     ,0,1,"L",0);
@@ -1940,9 +1966,9 @@ class RecadastroImobiliarioImoveisBic {
                 $pdf->cell(173, $iAlt, $oCaractEdificacao->sDescricao                                   ,0,1,"L",0);
 
               } else if ($iTotalCaracteristicaEdificacao <= 10) {
-                 
+
                 if ($iTotalCaracteristicaEdificacao == 6) {
-                   
+
                   $pdf->SetY($iAlturaEdificacao);
                   $pdf->SetX(110);
                   $pdf->setfont('arial','B',$iFontDados);
@@ -1979,7 +2005,7 @@ class RecadastroImobiliarioImoveisBic {
      * Imprime Dados Regime Imoveis
      */
     if ( true ) {
-       
+
       if ( count($aDadosRegistroImovel) > 0 ) {
 
         $this->imprimirCabecalhoFixo($pdf, $iAlt, true, 'Dados Registro de Imóveis');
@@ -2213,7 +2239,7 @@ class RecadastroImobiliarioImoveisBic {
 
             $pdf->setfont('arial','B',$iFontDados);
             $pdf->cell(193, $iAlt, 'Valor Lançado'                                                      ,0,1,"C",0);
-             
+
             $pdf->cell(15, $iAlt, 'Cód. Rec.'                                                           ,0,0,"L",0);
             $pdf->cell(44, $iAlt, 'Descrição Rec.'                                                      ,0,0,"L",0);
             $pdf->cell(15, $iAlt, 'Cód. Hist.'                                                          ,0,0,"L",0);
@@ -2249,7 +2275,7 @@ class RecadastroImobiliarioImoveisBic {
 
                   $pdf->setfont('arial','B',$iFontDados);
                   $pdf->cell(118, $iAlt, 'Total:'                                                         ,0,0,"R",0);
-                   
+
                   $pdf->setfont('arial','',$iFontBic);
                   $pdf->cell(25, $iAlt, trim(db_formatar($nTotalCalculado, 'f'))                          ,0,0,"L",0);
                   $pdf->cell(25, $iAlt, trim(db_formatar($nTotalIsento, 'f'))                             ,0,0,"L",0);
@@ -2257,7 +2283,7 @@ class RecadastroImobiliarioImoveisBic {
                 }
 
               } else {
-                 
+
                 $pdf->setfont('arial','',$iFontBic);
                 $pdf->cell(193, $iAlt, 'Nao possui valores disponiveis'                                 ,0,1,"L",0);
               }
@@ -2268,7 +2294,7 @@ class RecadastroImobiliarioImoveisBic {
 
             $pdf->setfont('arial','B',$iFontDados);
             $pdf->cell(193, $iAlt, 'Cálculo das Edificações'                                            ,0,1,"C",0);
-             
+
             $pdf->cell(32, $iAlt, 'Nº.'                                                                 ,0,0,"L",0);
             $pdf->cell(32, $iAlt, 'Área m²'                                                             ,0,0,"L",0);
             $pdf->cell(32, $iAlt, 'Exercício'                                                           ,0,0,"L",0);
@@ -2320,7 +2346,7 @@ class RecadastroImobiliarioImoveisBic {
         $this->imprimirCabecalhoFixo($pdf, $iAlt, true, 'Outros Dados');
 
         foreach ( $aDadosOutrosDados as $oOutrosDados ) {
-           
+
           $pdf->setfont('arial','B',$iFontDados);
           $pdf->cell(193, $iAlt, 'Observações'                                                        ,0,1,"L",0);
 
@@ -2340,15 +2366,15 @@ class RecadastroImobiliarioImoveisBic {
     }
 
     $pdf->Output($this->sNomeArquivo, false, true);
-    
+
     return $this->salvarArquivo();
   }
-  
+
   public function salvarArquivo() {
-    
+
     $iOidBic     = DBLargeObject::criaOID(true);
     $lSalvou     = DBLargeObject::escrita($this->sNomeArquivo, $iOidBic);
-    
+
     $sInsertBic  = "insert into recadastroimobiliarioimoveisbic                            ";
     $sInsertBic .= "       (ie29_sequencial,                                               ";
     $sInsertBic .= "        ie29_iptubase,                                                 ";
@@ -2356,24 +2382,24 @@ class RecadastroImobiliarioImoveisBic {
     $sInsertBic .= "values (nextval('recadastroimobiliarioimoveisbic_ie29_sequencial_seq'),";
     $sInsertBic .= "        {$this->iMatricula},                                           ";
     $sInsertBic .= "        {$iOidBic})                                                    ";
-    
-    if (!pg_query($sInsertBic) || !$lSalvou) {
-      
+
+    if (!db_query($sInsertBic) || !$lSalvou) {
+
       $sMensagem = "Erro ao salvar arquivo de BIC para a matrícula {$this->iMatricula}.";
-      
+
       RecadastroImobiliarioImoveisArquivo::$oLog->escreverLog($sMensagem, DBLog::LOG_ERROR);
-      
+
       throw new Exception($sMensagem);
-      
+
     }
-    
+
     if ( file_exists($this->sNomeArquivo) ) {
       unlink($this->sNomeArquivo);
     }
-    
+
     return true;
   }
-  
+
   /**
    * Impime cabecalhos fixos do relatorio
    *
@@ -2383,19 +2409,19 @@ class RecadastroImobiliarioImoveisBic {
    * @param String  type $sDescricao
    */
   public function imprimirCabecalhoFixo($pdf, $iAlt, $lImprime, $sDescricao) {
-  
+
     if ( $pdf->gety() > $pdf->h - 10 || $lImprime ) {
-  
+
       if ( !$lImprime ) {
         $pdf->addpage("P");
       }
-  
+
       $pdf->setfont('arial','B',7);
       $pdf->cell(117, $iAlt, ''                                                                   ,'B',0,"C",0);
       $pdf->cell(76, $iAlt, $sDescricao                                                             ,1,1,"R",1);
     }
-  
+
   }
-  
+
 }
 ?>

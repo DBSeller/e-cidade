@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -117,7 +117,7 @@ class cl_tmp_far_retiradaitemlote {
        return false;
      }
      if($fa09_i_codigo == "" || $fa09_i_codigo == null ){
-       $result = @pg_query("select nextval('faretiradaitemlote_fa09_i_codigo_seq')"); 
+       $result = @db_query("select nextval('faretiradaitemlote_fa09_i_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: faretiradaitemlote_fa09_i_codigo_seq do campo: fa09_i_codigo"; 
@@ -128,7 +128,7 @@ class cl_tmp_far_retiradaitemlote {
        }
        $this->fa09_i_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from faretiradaitemlote_fa09_i_codigo_seq");
+       $result = @db_query("select last_value from faretiradaitemlote_fa09_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $fa09_i_codigo)){
          $this->erro_sql = " Campo fa09_i_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -160,7 +160,7 @@ class cl_tmp_far_retiradaitemlote {
                                ,$this->fa09_i_matestoqueitem 
                                ,$this->fa09_f_quant 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -186,13 +186,13 @@ class cl_tmp_far_retiradaitemlote {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->fa09_i_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,12255,'$this->fa09_i_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,2131,12255,'','".AddSlashes(pg_result($resaco,0,'fa09_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2131,12256,'','".AddSlashes(pg_result($resaco,0,'fa09_i_retiradaitens'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2131,12260,'','".AddSlashes(pg_result($resaco,0,'fa09_i_matestoqueitem'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,2131,12257,'','".AddSlashes(pg_result($resaco,0,'fa09_f_quant'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,12255,'$this->fa09_i_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,2131,12255,'','".AddSlashes(pg_result($resaco,0,'fa09_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2131,12256,'','".AddSlashes(pg_result($resaco,0,'fa09_i_retiradaitens'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2131,12260,'','".AddSlashes(pg_result($resaco,0,'fa09_i_matestoqueitem'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,2131,12257,'','".AddSlashes(pg_result($resaco,0,'fa09_f_quant'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -260,20 +260,20 @@ class cl_tmp_far_retiradaitemlote {
      $resaco = $this->sql_record($this->sql_query_file($this->fa09_i_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,12255,'$this->fa09_i_codigo','A')");
+         $resac = db_query("insert into db_acountkey values($acount,12255,'$this->fa09_i_codigo','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa09_i_codigo"]))
-           $resac = pg_query("insert into db_acount values($acount,2131,12255,'".AddSlashes(pg_result($resaco,$conresaco,'fa09_i_codigo'))."','$this->fa09_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2131,12255,'".AddSlashes(pg_result($resaco,$conresaco,'fa09_i_codigo'))."','$this->fa09_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa09_i_retiradaitens"]))
-           $resac = pg_query("insert into db_acount values($acount,2131,12256,'".AddSlashes(pg_result($resaco,$conresaco,'fa09_i_retiradaitens'))."','$this->fa09_i_retiradaitens',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2131,12256,'".AddSlashes(pg_result($resaco,$conresaco,'fa09_i_retiradaitens'))."','$this->fa09_i_retiradaitens',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa09_i_matestoqueitem"]))
-           $resac = pg_query("insert into db_acount values($acount,2131,12260,'".AddSlashes(pg_result($resaco,$conresaco,'fa09_i_matestoqueitem'))."','$this->fa09_i_matestoqueitem',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2131,12260,'".AddSlashes(pg_result($resaco,$conresaco,'fa09_i_matestoqueitem'))."','$this->fa09_i_matestoqueitem',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["fa09_f_quant"]))
-           $resac = pg_query("insert into db_acount values($acount,2131,12257,'".AddSlashes(pg_result($resaco,$conresaco,'fa09_f_quant'))."','$this->fa09_f_quant',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,2131,12257,'".AddSlashes(pg_result($resaco,$conresaco,'fa09_f_quant'))."','$this->fa09_f_quant',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "".$this->tmp_far_retiradaitemlote." nao Alterado. Alteracao Abortada.\\n";
@@ -314,13 +314,13 @@ class cl_tmp_far_retiradaitemlote {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,12255,'$fa09_i_codigo','E')");
-         $resac = pg_query("insert into db_acount values($acount,2131,12255,'','".AddSlashes(pg_result($resaco,$iresaco,'fa09_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2131,12256,'','".AddSlashes(pg_result($resaco,$iresaco,'fa09_i_retiradaitens'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2131,12260,'','".AddSlashes(pg_result($resaco,$iresaco,'fa09_i_matestoqueitem'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,2131,12257,'','".AddSlashes(pg_result($resaco,$iresaco,'fa09_f_quant'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,12255,'$fa09_i_codigo','E')");
+         $resac = db_query("insert into db_acount values($acount,2131,12255,'','".AddSlashes(pg_result($resaco,$iresaco,'fa09_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2131,12256,'','".AddSlashes(pg_result($resaco,$iresaco,'fa09_i_retiradaitens'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2131,12260,'','".AddSlashes(pg_result($resaco,$iresaco,'fa09_i_matestoqueitem'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,2131,12257,'','".AddSlashes(pg_result($resaco,$iresaco,'fa09_f_quant'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from ".$this->tmp_far_retiradaitemlote."
@@ -336,7 +336,7 @@ class cl_tmp_far_retiradaitemlote {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "".$this->tmp_far_retiradaitemlote." nao Excluído. Exclusão Abortada.\\n";
@@ -370,7 +370,7 @@ class cl_tmp_far_retiradaitemlote {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

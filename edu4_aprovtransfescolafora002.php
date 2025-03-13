@@ -1,55 +1,55 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_turma_classe.php");
-include("classes/db_procavaliacao_classe.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_matriculamov_classe.php");
-include("classes/db_diario_classe.php");
-include("classes/db_diarioavaliacao_classe.php");
-include("classes/db_diarioresultado_classe.php");
-include("classes/db_diariofinal_classe.php");
-include("classes/db_pareceraval_classe.php");
-include("classes/db_parecerresult_classe.php");
-include("classes/db_abonofalta_classe.php");
-include("classes/db_amparo_classe.php");
-include("classes/db_alunocurso_classe.php");
-include("classes/db_alunopossib_classe.php");
-include("classes/db_periodocalendario_classe.php");
-include("classes/db_transfaprov_classe.php");
-include("classes/db_serieequiv_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_procavaliacao_classe.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_matriculamov_classe.php"));
+include(modification("classes/db_diario_classe.php"));
+include(modification("classes/db_diarioavaliacao_classe.php"));
+include(modification("classes/db_diarioresultado_classe.php"));
+include(modification("classes/db_diariofinal_classe.php"));
+include(modification("classes/db_pareceraval_classe.php"));
+include(modification("classes/db_parecerresult_classe.php"));
+include(modification("classes/db_abonofalta_classe.php"));
+include(modification("classes/db_amparo_classe.php"));
+include(modification("classes/db_alunocurso_classe.php"));
+include(modification("classes/db_alunopossib_classe.php"));
+include(modification("classes/db_periodocalendario_classe.php"));
+include(modification("classes/db_transfaprov_classe.php"));
+include(modification("classes/db_serieequiv_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $resultedu= eduparametros(db_getsession("DB_coddepto"));
@@ -400,7 +400,7 @@ function js_eliminareg(valor,seq){
  tamC = C.length;
  tamC = tamC==undefined?1:tamC;
  campo = "comboselect"+seq;
- valorant = eval("document.form1."+campo+".value");
+ valorant = document.form1[campo].value;
  if(tamC==1){
   tamRD = RD.length;
   for(r=0;r<tamRD;r++){
@@ -441,7 +441,7 @@ function js_eliminareg(valor,seq){
    }
   }
  }
- eval("document.form1."+campo+".value = valor");
+ document.form1[campo].value = valor;
 }
 
 function js_eliminaper(valor,seq){
@@ -451,7 +451,7 @@ function js_eliminaper(valor,seq){
  tamC = C.length;
  tamC = tamC==undefined?1:tamC;
  campo = "pcomboselect"+seq;
- valorant = eval("document.form1."+campo+".value");
+ valorant = document.form1[campo].value;
  if(tamC==1){
   tamPD = PD.length;
   for(r=0;r<tamPD;r++){
@@ -492,7 +492,7 @@ function js_eliminaper(valor,seq){
    }
   }
  }
- eval("document.form1."+campo+".value = valor");
+ document.form1[campo].value = valor;
 }
 
 function js_processar(){
@@ -628,11 +628,11 @@ if(isset($incluir)){
   $result0 = $clmatricula->sql_record($clmatricula->sql_query_file("","ed60_i_codigo as codmatrjatem",""," ed60_i_turma = $turmadestino AND ed60_i_aluno = $ed60_i_aluno"));
   $iEtapaDestino = -1;
   if ($clmatricula->numrows > 0) {
- 
+
     $iMatriculaDest = db_utils::fieldsmemory($result0, 0)->codmatrjatem;
     /* Obtenho o codigo da etapa na qual o aluno esta matriculado. Ordeno pelo campo ed221_c_origem porque
        quando a turma for multietapa, o registro da matriculaserie que deve ser considerado neste caso
-       eh o que possui o campo ed221_c_origem com 'S'. (como os valores possiveis sao S e N, ordeno 
+       eh o que possui o campo ed221_c_origem com 'S'. (como os valores possiveis sao S e N, ordeno
        decrescente)
     */
     $oDaoMatriculaSerie = db_utils::getdao('matriculaserie');
@@ -641,15 +641,15 @@ if(isset($incluir)){
                                                );
     $rs   = $oDaoMatriculaSerie->sql_record($sSql);
     if ($oDaoMatriculaSerie->numrows <= 0) {
-      
+
       db_msgbox('Matrícula não vinculada a nenhuma série. Importação não pode ser realizada.');
       echo '<script>parent.location.href = "edu4_aprovtransfescolafora001.php";</script>';
       exit;
-      
+
     } else {
       $iEtapaDestino = db_utils::fieldsmemory($rs, 0)->ed221_i_serie;
     }
- 
+
   } else {
 
     db_msgbox('Não encontrada matrícula para o aluno '.$ed60_i_aluno.' na turma '.$turmadestino.'.'.
@@ -662,7 +662,7 @@ if(isset($incluir)){
 
   $result = $clturma->sql_record($clturma->sql_query("","ed57_i_calendario,ed57_i_escola",""," ed57_i_codigo = $turmadestino"));
   db_fieldsmemory($result,0);
- 
+
   $periodos = explode("X",$perequiv);
   $msg_conversao = "";
   $sep_conversao = "";

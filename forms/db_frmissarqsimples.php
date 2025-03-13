@@ -146,7 +146,7 @@ db_input('q17_nomearq',100,$Iq17_nomearq,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_issarqsimples','db_iframe_issarqsimples','func_issarqsimples.php?semproc=1&funcao_js=parent.js_preenchepesquisa|q17_sequencial','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_issarqsimples','db_iframe_issarqsimples','func_issarqsimples.php?semproc=1&funcao_js=parent.js_preenchepesquisa|q17_sequencial','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_issarqsimples.hide();

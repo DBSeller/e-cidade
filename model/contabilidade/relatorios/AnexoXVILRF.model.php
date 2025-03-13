@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("RelatoriosLegaisBase.model.php");
+require_once(modification("model/contabilidade/relatorios/RelatoriosLegaisBase.model.php"));
 
 /**
  * classe para controle dos valores do Anexo XVI do DEM.DOS IMP.E DESP.COM SAÚDE
@@ -107,7 +107,8 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
         $oLinha->desdobrar  = true;
       }
 
-
+      $oLinha->insc_rp_np = 0;
+      $oLinha->emp_atebim = 0;
       foreach ($aColunasRelatorio as $oColuna) {
 
         $oLinha->{$oColuna->o115_nomecoluna} = 0;
@@ -121,7 +122,7 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
       $nPercentualEmpenhado = 0;
       $nPercentualSus       = 0;
 
-      $oLinha->percentual = $nPercentual;
+      $oLinha->percentual          = $nPercentual;
       $oLinha->percentualLiquidado = $nPercentualLiquidado;
       $oLinha->percentualEmpenhado = $nPercentualEmpenhado;
 
@@ -208,8 +209,8 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
           $oLinha->percentual = $nPercentual;
 
 
-        } else if ($iLinha >= 29 && $iLinha <= 69) {
 
+        } else if ($iLinha >= 29 && $iLinha <= 69) {
 
           $iAnoInicial = (int)$this->iAnoUsu -2;
           $iAnoFinal   = $iAnoInicial - 3;
@@ -247,23 +248,19 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
 
                 if ($oVerificacao->exclusao) {
 
-                  $oDespesa->dot_ini     *= -1;
-                  $oDespesa->atual       *= -1;
-                  $oDespesa->empenhado   *= -1;
-                  $oDespesa->liquidado   *= -1;
-
-                  //@todo verificar coluna correta do resultset
-                  $oDespesa->liquidado *= -1;
-                  $oDespesa->liquidado *= -1;
-                  $oDespesa->liquidado *= -1;
-                  $oDespesa->liquidado *= -1;
-                  $oDespesa->liquidado *= -1;
+                  $oDespesa->dot_ini             *= -1;
+                  $oDespesa->atual               *= -1;
+                  $oDespesa->empenhado           *= -1;
+                  $oDespesa->empenhado_acumulado *= -1;
+                  $oDespesa->anulado_acumulado   *= -1;
+                  $oDespesa->liquidado           *= -1;
                 }
 
                 $oLinha->dot_ini    += $oDespesa->dot_ini;
                 $oLinha->dot_atual  += (($oDespesa->dot_ini + $oDespesa->suplementado) - $oDespesa->reduzido) ;
                 $oLinha->emp_atebim += $oDespesa->empenhado_acumulado - $oDespesa->anulado_acumulado;
                 $oLinha->liq_atebim += $oDespesa->liquidado;
+                $oLinha->insc_rp_np += $oDespesa->empenhado_acumulado - $oDespesa->anulado_acumulado - $oDespesa->liquidado;
 
                 //@todo verificar coluna correta do resultset
                 $oLinha->rp_inscrit += $oDespesa->ordinario;
@@ -283,17 +280,37 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
               $nPercentualLiquidado = (($oLinha->liq_atebim / $oLinha->dot_atual ) * 100);
             }
 
-            if(!empty($oLinha->dot_atual) && $oLinha->dot_atual > 0 ){
-              $nPercentualEmpenhado = @round(($oLinha->emp_atebim /  $oLinha->dot_atual) * 100);
+            if (!empty($oLinha->dot_atual) && $oLinha->dot_atual > 0 ){
+              $nPercentualEmpenhado = ($oLinha->emp_atebim /  $oLinha->dot_atual) * 100;
             }
 
             $oLinha->percentualEmpenhado = $nPercentualEmpenhado;
             $oLinha->percentualLiquidado = $nPercentualLiquidado;
+            if (in_array($this->iCodigoPeriodo, array(11, 13))) {
+
+              if (!empty($oLinha->dot_atual)) {
+                 $oLinha->percentualLiquidado = ((($oLinha->liq_atebim + $oLinha->insc_rp_np) / $oLinha->dot_atual));
+              }
+            }
 
           } else if ($iLinha > 37 && $iLinha <= 49 && $oLinha->totalizar != 1) {
 
-            $oLinha->percentualEmpenhado = @round(($oLinha->emp_atebim /$aLinhas[37]->emp_atebim)*100, 2);
-            $oLinha->percentualLiquidado = @round(($oLinha->liq_atebim /$aLinhas[37]->liq_atebim)*100, 2);
+            $oLinha->percentualEmpenhado = 0;
+            $oLinha->percentualLiquidado = 0;
+            if ($aLinhas[37]->emp_atebim > 0) {
+              $oLinha->percentualEmpenhado = ($oLinha->emp_atebim / $aLinhas[37]->emp_atebim) * 100;
+            }
+            if ($aLinhas[37]->liq_atebim > 0) {
+              $oLinha->percentualLiquidado = ($oLinha->liq_atebim / $aLinhas[37]->liq_atebim) * 100;
+            }
+
+            if (in_array($this->iCodigoPeriodo, array(11, 13))) {
+
+              $iTotalIV = $aLinhas[37]->insc_rp_np + $aLinhas[37]->liq_atebim;
+              if (!empty($iTotalIV)) {
+                $oLinha->percentualLiquidado = (($oLinha->liq_atebim + $oLinha->liq_atebim) / $iTotalIV);
+              }
+            }
           }
         }
       }
@@ -391,8 +408,16 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
          $oLinhaAcumular->emp_atebim           += $oLinha->emp_atebim;
          $oLinhaAcumular->liq_atebim           += $oLinha->liq_atebim;
          $oLinhaAcumular->percentual           += $oLinha->percentual;
+         $oLinhaAcumular->insc_rp_np           += $oLinha->insc_rp_np;
          $oLinhaAcumular->percentualEmpenhado   = @round((($oLinhaAcumular->emp_atebim / $oLinhaAcumular->dot_atual) * 100), 2);
          $oLinhaAcumular->percentualLiquidado   = @round((($oLinhaAcumular->liq_atebim / $oLinhaAcumular->dot_atual) * 100), 2);
+         if (in_array($this->iCodigoPeriodo, array(11, 13))) {
+
+           if (!empty($oLinha->dot_atual)) {
+             $oLinhaAcumular->percentualLiquidado = ((($oLinha->liq_atebim + $oLinha->insc_rp_np) / $oLinha->dot_atual)) * 100;
+           }
+         }
+
 
          unset($oLinhaAcumular);
        }
@@ -403,14 +428,20 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
        }
        if (isset($oLinhaAcumular)) {
 
-         $oLinhaAcumular->dot_ini              += $oLinha->dot_ini            ;
-         $oLinhaAcumular->dot_atual            += $oLinha->dot_atual          ;
-         $oLinhaAcumular->emp_atebim           += $oLinha->emp_atebim         ;
-         $oLinhaAcumular->liq_atebim           += $oLinha->liq_atebim         ;
-         $oLinhaAcumular->percentual           += $oLinha->percentual         ;
+         $oLinhaAcumular->dot_ini              += $oLinha->dot_ini;
+         $oLinhaAcumular->dot_atual            += $oLinha->dot_atual;
+         $oLinhaAcumular->emp_atebim           += $oLinha->emp_atebim;
+         $oLinhaAcumular->liq_atebim           += $oLinha->liq_atebim;
+         $oLinhaAcumular->percentual           += $oLinha->percentual;
+         $oLinhaAcumular->insc_rp_np           += $oLinha->insc_rp_np;
          $oLinhaAcumular->percentualEmpenhado   = @round((($oLinhaAcumular->emp_atebim / $oLinhaAcumular->dot_atual) * 100), 2);
          $oLinhaAcumular->percentualLiquidado   = @round((($oLinhaAcumular->liq_atebim / $oLinhaAcumular->dot_atual) * 100), 2);
+         if (in_array($this->iCodigoPeriodo, array(11, 13))) {
 
+           if (!empty($oLinha->dot_atual)) {
+             $oLinhaAcumular->percentualLiquidado = ((($oLinha->liq_atebim + $oLinha->insc_rp_np) / $oLinha->dot_atual)) * 100;
+           }
+         }
          unset($oLinhaAcumular);
        }
 
@@ -430,8 +461,15 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
            $oLinhaAcumular->emp_atebim         += $aLinhas[$iLinhaSomada]->emp_atebim;
            $oLinhaAcumular->liq_atebim         += $aLinhas[$iLinhaSomada]->liq_atebim;
            $oLinhaAcumular->percentual         += $aLinhas[$iLinhaSomada]->percentual;
+           $oLinhaAcumular->insc_rp_np         += $aLinhas[$iLinhaSomada]->insc_rp_np;
            $oLinhaAcumular->percentualEmpenhado = @round((($oLinhaAcumular->emp_atebim / $oLinhaAcumular->dot_atual) * 100), 2);
            $oLinhaAcumular->percentualLiquidado = @round((($oLinhaAcumular->liq_atebim / $oLinhaAcumular->dot_atual) * 100), 2);
+           if (in_array($this->iCodigoPeriodo, array(11, 13))) {
+
+             if (!empty($oLinha->dot_atual)) {
+               $oLinhaAcumular->percentualLiquidado = ((($oLinha->liq_atebim + $oLinha->insc_rp_np) / $oLinha->dot_atual)) * 100;
+             }
+           }
          }
          $aLinhas[37] = $oLinhaAcumular;
          unset($oLinhaAcumular);
@@ -456,8 +494,16 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
            $oLinhaAcumular->emp_atebim         += $aLinhas[$iLinhaSomada]->emp_atebim;
            $oLinhaAcumular->liq_atebim         += $aLinhas[$iLinhaSomada]->liq_atebim;
            $oLinhaAcumular->percentual         += $aLinhas[$iLinhaSomada]->percentual;
-           $oLinhaAcumular->percentualEmpenhado = @round(($oLinhaAcumular->emp_atebim /$aLinhas[37]->emp_atebim)*100, 2);
-           $oLinhaAcumular->percentualLiquidado = @round(($oLinhaAcumular->liq_atebim /$aLinhas[37]->liq_atebim)*100, 2);
+           $oLinhaAcumular->insc_rp_np         += $aLinhas[$iLinhaSomada]->insc_rp_np;
+           $oLinhaAcumular->percentualEmpenhado = @round(($oLinhaAcumular->emp_atebim / $aLinhas[37]->emp_atebim)*100, 2);
+           $oLinhaAcumular->percentualLiquidado = @round(($oLinhaAcumular->liq_atebim / $aLinhas[37]->liq_atebim)*100, 2);
+           if (in_array($this->iCodigoPeriodo, array(11, 13))) {
+
+             $iTotalIV = $aLinhas[37]->insc_rp_np + $aLinhas[37]->liq_atebim;
+             if (!empty($iTotalIV)) {
+               $oLinhaAcumular->percentualLiquidado = (($oLinhaAcumular->insc_rp_np + $oLinhaAcumular->liq_atebim) / $iTotalIV) * 100;
+             }
+           }
          }
          $aLinhas[40] = $oLinhaAcumular;
 
@@ -475,11 +521,23 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
            $oLinhaAcumular->dot_atual           += $aLinhas[$iLinhaSomada]->dot_atual;
            $oLinhaAcumular->emp_atebim          += $aLinhas[$iLinhaSomada]->emp_atebim;
            $oLinhaAcumular->liq_atebim          += $aLinhas[$iLinhaSomada]->liq_atebim;
+           $oLinhaAcumular->insc_rp_np          += $aLinhas[$iLinhaSomada]->insc_rp_np;
+
            $oLinhaAcumular->percentualEmpenhado = @round(($oLinhaAcumular->emp_atebim /$aLinhas[37]->emp_atebim)*100, 2);
            $oLinhaAcumular->percentualLiquidado = @round(($oLinhaAcumular->liq_atebim /$aLinhas[37]->liq_atebim)*100, 2);
          }
-           $aLinhas[48] = $oLinhaAcumular;
-           unset($oLinhaAcumular);
+
+
+         $oLinhaAcumular->total_pagar = $oLinhaAcumular->insc_rp_np + $oLinhaAcumular->liq_atebim;
+         if (in_array($this->iCodigoPeriodo, array(11, 13))) {
+
+           $iTotalIV = $aLinhas[37]->insc_rp_np + $aLinhas[37]->liq_atebim;
+           if (!empty($iTotalIV)) {
+             $oLinhaAcumular->percentualLiquidado = (($oLinhaAcumular->insc_rp_np + $oLinhaAcumular->liq_atebim) / $iTotalIV) * 100;
+           }
+         }
+         $aLinhas[48] = $oLinhaAcumular;
+         unset($oLinhaAcumular);
        }
 
        // totalizador VI - linha 50
@@ -490,8 +548,13 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
          $oLinha->dot_atual           = $aLinhas[37]->dot_atual  -   $aLinhas[48]->dot_atual ;
          $oLinha->emp_atebim          = $aLinhas[37]->emp_atebim -   $aLinhas[48]->emp_atebim;
          $oLinha->liq_atebim          = $aLinhas[37]->liq_atebim -   $aLinhas[48]->liq_atebim;
+         $oLinha->insc_rp_np          = $aLinhas[37]->insc_rp_np -   $aLinhas[48]->insc_rp_np;
          $oLinha->percentualEmpenhado = @round(($oLinha->emp_atebim /$aLinhas[37]->emp_atebim)*100, 2);
          $oLinha->percentualLiquidado = @round(($oLinha->liq_atebim /$aLinhas[37]->liq_atebim)*100, 2);
+         $oLinha->total_pagar         = $oLinha->insc_rp_np + $oLinha->liq_atebim;
+         if (in_array($this->iCodigoPeriodo, array(11, 13))) {
+             $oLinha->percentualLiquidado = "-";
+         }
          $aLinhas[49] = $oLinha;
          unset($oLinha);
        }
@@ -530,23 +593,31 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
 
          $oLinha   = $aLinhas[69];
 
-         for($iLinhaSomada = 62; $iLinhaSomada <= 68;$iLinhaSomada++ ) {
+         for ($iLinhaSomada = 62; $iLinhaSomada <= 68;$iLinhaSomada++ ) {
 
            $oLinha->dot_ini             += $aLinhas[$iLinhaSomada]->dot_ini;
            $oLinha->dot_atual           += $aLinhas[$iLinhaSomada]->dot_atual;
            $oLinha->emp_atebim          += $aLinhas[$iLinhaSomada]->emp_atebim;
            $oLinha->liq_atebim          += $aLinhas[$iLinhaSomada]->liq_atebim;
+           $oLinha->insc_rp_np          += $aLinhas[$iLinhaSomada]->insc_rp_np;
          }
          $aLinhas[69] = $oLinha;
          unset($oLinha);
        }
     }
 
-    for($iLinhaSomada = 62; $iLinhaSomada <= 69;$iLinhaSomada++ ) {
+    for ($iLinhaSomada = 62; $iLinhaSomada <= 69;$iLinhaSomada++ ) {
 
       $oLinha   = $aLinhas[$iLinhaSomada];
       $oLinha->percentualEmpenhado = @round(($oLinha->emp_atebim / $aLinhas[69]->emp_atebim) * 100, 2);//(I/total I) x 100
       $oLinha->percentualLiquidado = @round(($oLinha->liq_atebim / $aLinhas[69]->liq_atebim) * 100, 2);//(m/total m) x 100
+      if (in_array($this->iCodigoPeriodo, array(11, 13))) {
+
+
+        if (!empty($oLinha->dot_atual)) {
+          $oLinha->percentualLiquidado = ((($oLinha->liq_atebim + $oLinha->insc_rp_np) / $oLinha->dot_atual) * 100);
+        }
+      }
     }
 
     // linha 71
@@ -621,7 +692,6 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
       $oLinha->rp_prc_lim   += $aLinhas[$iLinhaSomada]->rp_prc_lim ;
     }
     $aLinhas[53] = $oLinha;
-
     return $aLinhas;
   }
 
@@ -634,10 +704,14 @@ class AnexoXVILRF extends RelatoriosLegaisBase  {
     $aDadosSimplificado = $this->getDados();
 
     $oDadosSimplificado = new stdClass();
-    $oDadosSimplificado->apurado_ate_bim = $aDadosSimplificado[49]->emp_atebim;
-    $oDadosSimplificado->percent_ate_bim = $aDadosSimplificado[70]->dot_in;
+    $oDadosSimplificado->apurado_ate_bim   = $aDadosSimplificado[49]->emp_atebim;
+    $oDadosSimplificado->percent_ate_bim   = $aDadosSimplificado[70]->dot_in;
+    $oDadosSimplificado->inscritos_rp_nroc = $aDadosSimplificado[49]->insc_rp_np;
+    $oDadosSimplificado->liquidadas        = $aDadosSimplificado[49]->liq_atebim;
+    if (in_array($this->iCodigoPeriodo, array(11, 13))) {
+      $oDadosSimplificado->apurado_ate_bim   = $aDadosSimplificado[49]->insc_rp_np + $aDadosSimplificado[49]->liq_atebim;
+    }
 
     return $oDadosSimplificado;
   }
 }
-?>

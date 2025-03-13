@@ -21,25 +21,28 @@
  *                                 licenca/licenca_pt.txt
  */
 
-require_once("std/db_stdClass.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_caddocumento_classe.php");
-require_once("classes/db_ativid_classe.php");
-require_once("classes/db_clasativ_classe.php");
-require_once("classes/db_atividcnae_classe.php");
-require_once("classes/db_atividcbo_classe.php");
-require_once("classes/db_ativtipo_classe.php");
-require_once("classes/db_tabativ_classe.php");
-require_once("classes/db_issatividconfdocumento_classe.php");
-require_once("classes/db_cnaeanalitica_classe.php");
-require_once("classes/db_saniatividade_classe.php");
-require_once("classes/db_issgruposervicoativid_classe.php");
-require_once("libs/JSON.php");
+use \ECidade\Tributario\Issqn\Inscricao\Atividades\Repository\Atividades;
+use \ECidade\Tributario\Issqn\Inscricao\Atividades\Filter\ListagemAtividades;
+
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_caddocumento_classe.php"));
+require_once(modification("classes/db_ativid_classe.php"));
+require_once(modification("classes/db_clasativ_classe.php"));
+require_once(modification("classes/db_atividcnae_classe.php"));
+require_once(modification("classes/db_atividcbo_classe.php"));
+require_once(modification("classes/db_ativtipo_classe.php"));
+require_once(modification("classes/db_tabativ_classe.php"));
+require_once(modification("classes/db_issatividconfdocumento_classe.php"));
+require_once(modification("classes/db_cnaeanalitica_classe.php"));
+require_once(modification("classes/db_saniatividade_classe.php"));
+require_once(modification("classes/db_issgruposervicoativid_classe.php"));
+require_once(modification("libs/JSON.php"));
 
 db_postmemory($_POST);
 
@@ -86,29 +89,35 @@ switch ($oParam->exec) {
         for ($ind = 0; $ind < $clCadDocumento->numrows; $ind++) {
 
           $oDocs = db_utils::fieldsMemory($rsDocs, $ind);
-
+          $oDadosRetorno = new stdClass();
+          $oDadosRetorno->checked = 0;
+          $oDadosRetorno->db44_sequencial = $oDocs->db44_sequencial;
+          $oDadosRetorno->db44_descricao  = urlencode($oDocs->db44_descricao);
           if ($clIssAtividConfDoc->numrows > 0) {
 
             for ($i = 0; $i < $clIssAtividConfDoc->numrows; $i++) {
 
               $oDados = new stdClass();
               $oDados = db_utils::fieldsMemory($rsIssAtividConf, $i);
-
+               
               if ($oDocs->db44_sequencial == $oDados->q119_caddocumento) {
-                $oDocs->checked = 1;
+                $oDadosRetorno->checked = 1;
               }
             }
           }
 
-          $oRetorno->aDocs[] = $oDocs;
+          $oRetorno->aDocs[] = $oDadosRetorno;
         }
       } else {
 
         for ($ind = 0; $ind < $clCadDocumento->numrows; $ind++) {
 
           $oDocs             = db_utils::fieldsMemory($rsDocs, $ind);
-          $oDocs->checked    = 0;
-          $oRetorno->aDocs[] = $oDocs;
+          $oDadosRetorno     = new stdClass();
+          $oDadosRetorno->checked = 0;
+          $oDadosRetorno->db44_sequencial = $oDocs->db44_sequencial;
+          $oDadosRetorno->db44_descricao = urlencode($oDocs->db44_descricao);
+          $oRetorno->aDocs[] = $oDadosRetorno;
           $oRetorno->message = 'Busca de Documentos Completa';
         }
       }
@@ -233,10 +242,14 @@ switch ($oParam->exec) {
         $clIssGrupoServicoAtivid->excluir('', $sWhereIssGrupoServicoAtivid);
 
         if ($oParam->sServico != 0) {
-
-          $clIssGrupoServicoAtivid->q127_issgruposerviso = $oParam->sServico;
-          $clIssGrupoServicoAtivid->q127_ativid          = $oParam->iCodAtividade;
-          $clIssGrupoServicoAtivid->incluir($clIssGrupoServicoAtivid->q127_sequencial);
+          
+          $sServicos = explode(',', $oParam->sServico);
+          foreach($sServicos as $value){
+            
+            $clIssGrupoServicoAtivid->q127_issgruposerviso = $value;
+            $clIssGrupoServicoAtivid->q127_ativid          = $oParam->iCodAtividade;
+            $clIssGrupoServicoAtivid->incluir(null);
+          }
 
           if ($clIssGrupoServicoAtivid->erro_status == '0') {
             throw new Exception($clIssGrupoServicoAtivid->erro_msg);
@@ -260,10 +273,10 @@ switch ($oParam->exec) {
 
       $oRetorno->altera = 1;
 
-      db_fim_transacao(FALSE);
+      db_fim_transacao(false);
     } catch (Exception $oException) {
 
-      db_fim_transacao(TRUE);
+      db_fim_transacao(true);
 
       $oRetorno->message = $oException->getMessage();
       $oRetorno->status  = 2;
@@ -371,6 +384,47 @@ switch ($oParam->exec) {
       $oRetorno->status  = 2;
     }
     break;
+
+    case 'preencheDadosServico':
+      try{
+        $sSql = "SELECT q127_issgruposerviso,db121_descricao,db121_estrutural 
+                        FROM issgruposervicoativid 
+                        INNER JOIN issgruposervico ON q126_sequencial = q127_issgruposerviso 
+                        INNER JOIN db_estruturavalor ON q126_db_estruturavalor = db121_sequencial WHERE q127_ativid = $oParam->codAtivid ORDER BY db121_estrutural";
+        $execute = pg_exec($sSql);
+        $oDados = [];
+        for ($i = 0; $i < pg_numrows($execute); $i++) {
+          $result = db_utils::fieldsMemory($execute,$i); 
+          $result->db121_descricao = utf8_encode($result->db121_descricao);
+          array_push($oDados, $result);
+        }
+        $oRetorno->dados = $oDados;
+        $oRetorno->status = 1;
+      }catch (Exception $oException){
+        $oRetorno->message = $oException->getMessage();
+        $oRetorno->status  = 2;
+      }
+      break;
+    
+    case 'insereDadosServico':
+      try{
+        $sSql = "SELECT DISTINCT q127_issgruposerviso,db121_descricao,db121_estrutural 
+                        FROM issgruposervicoativid 
+                        INNER JOIN issgruposervico ON q126_sequencial = q127_issgruposerviso 
+                        INNER JOIN db_estruturavalor ON q126_db_estruturavalor = db121_sequencial WHERE q127_issgruposerviso = $oParam->sequencial ORDER BY db121_estrutural";
+        $execute = pg_exec($sSql);
+        $oDados = [];
+        for ($i = 0; $i < pg_numrows($execute); $i++) {
+          $result = db_utils::fieldsMemory($execute,$i); 
+          $result->db121_descricao = utf8_encode($result->db121_descricao);
+          array_push($oDados, $result);
+        }
+        $oRetorno->dados = $oDados;
+        $oRetorno->status = 1;
+      }catch(Exception $oException){
+        $oRetorno->message = $oException->getMessage();
+        $oRetorno->status  = 2;
+      }
 }
 
 $oRetorno->message = urlencode($oRetorno->message);

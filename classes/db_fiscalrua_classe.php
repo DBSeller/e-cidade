@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -118,7 +118,7 @@ class cl_fiscalrua {
                                ,$this->y33_numero 
                                ,'$this->y33_compl' 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -142,13 +142,13 @@ class cl_fiscalrua {
      $this->erro_status = "1";
      $resaco = $this->sql_record($this->sql_query_file($this->y33_codnoti));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,4953,'$this->y33_codnoti','I')");
-       $resac = pg_query("insert into db_acount values($acount,686,4953,'','".pg_result($resaco,0,'y33_codnoti')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,686,4954,'','".pg_result($resaco,0,'y33_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,686,5069,'','".pg_result($resaco,0,'y33_numero')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,686,5070,'','".pg_result($resaco,0,'y33_compl')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,4953,'$this->y33_codnoti','I')");
+       $resac = db_query("insert into db_acount values($acount,686,4953,'','".pg_result($resaco,0,'y33_codnoti')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,686,4954,'','".pg_result($resaco,0,'y33_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,686,5069,'','".pg_result($resaco,0,'y33_numero')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,686,5070,'','".pg_result($resaco,0,'y33_compl')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -203,19 +203,19 @@ class cl_fiscalrua {
      $sql .= " where  y33_codnoti = $this->y33_codnoti
 ";
      $resaco = $this->sql_record($this->sql_query_file($this->y33_codnoti));
-     if($this->numrows>0){       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     if($this->numrows>0){       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,4953,'$this->y33_codnoti','A')");
+       $resac = db_query("insert into db_acountkey values($acount,4953,'$this->y33_codnoti','A')");
        if(isset($GLOBALS["HTTP_POST_VARS"]["y33_codnoti"]))
-         $resac = pg_query("insert into db_acount values($acount,686,4953,'".pg_result($resaco,0,'y33_codnoti')."','$this->y33_codnoti',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,686,4953,'".pg_result($resaco,0,'y33_codnoti')."','$this->y33_codnoti',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["y33_codigo"]))
-         $resac = pg_query("insert into db_acount values($acount,686,4954,'".pg_result($resaco,0,'y33_codigo')."','$this->y33_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,686,4954,'".pg_result($resaco,0,'y33_codigo')."','$this->y33_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["y33_numero"]))
-         $resac = pg_query("insert into db_acount values($acount,686,5069,'".pg_result($resaco,0,'y33_numero')."','$this->y33_numero',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,686,5069,'".pg_result($resaco,0,'y33_numero')."','$this->y33_numero',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["y33_compl"]))
-         $resac = pg_query("insert into db_acount values($acount,686,5070,'".pg_result($resaco,0,'y33_compl')."','$this->y33_compl',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,686,5070,'".pg_result($resaco,0,'y33_compl')."','$this->y33_compl',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "fiscalrua nao Alterado. Alteracao Abortada.\\n";
@@ -249,13 +249,13 @@ class cl_fiscalrua {
      $resaco = $this->sql_record($this->sql_query_file($y33_codnoti));
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,4953,'".pg_result($resaco,$iresaco,'y33_codnoti')."','E')");
-         $resac = pg_query("insert into db_acount values($acount,686,4953,'','".pg_result($resaco,$iresaco,'y33_codnoti')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,686,4954,'','".pg_result($resaco,$iresaco,'y33_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,686,5069,'','".pg_result($resaco,$iresaco,'y33_numero')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,686,5070,'','".pg_result($resaco,$iresaco,'y33_compl')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,4953,'".pg_result($resaco,$iresaco,'y33_codnoti')."','E')");
+         $resac = db_query("insert into db_acount values($acount,686,4953,'','".pg_result($resaco,$iresaco,'y33_codnoti')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,686,4954,'','".pg_result($resaco,$iresaco,'y33_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,686,5069,'','".pg_result($resaco,$iresaco,'y33_numero')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,686,5070,'','".pg_result($resaco,$iresaco,'y33_compl')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from fiscalrua
@@ -267,7 +267,7 @@ class cl_fiscalrua {
       }
       $sql2 .= " y33_codnoti = $y33_codnoti ";
 }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "fiscalrua nao Excluído. Exclusão Abortada.\\n";
@@ -298,7 +298,7 @@ class cl_fiscalrua {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

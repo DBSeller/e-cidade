@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -28,44 +28,77 @@
 session_start();
 $_SESSION["DB_itemmenu_acessado"] = "0";
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once('model/configuracao/SkinService.service.php');
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification('model/configuracao/SkinService.service.php'));
 
 session_unregister("DB_instit");
 session_unregister("DB_Area");
+
+$sDataSistema   = date('Y-m-d', db_getsession("DB_datausu", false) ?: time());
+$iUsuarioLogado = db_getsession("DB_id_usuario");
+
+
+/* 
+ * Atualizacao dos dados do usuario
+ */
+$oUsuario = new UsuarioSistema($iUsuarioLogado);
+
+/**
+ * Caso usuário não esteja atualizado ele não tenha cancelado a atualizacao do cadastro
+ * 
+ */
+if ( !$oUsuario->isAtualizado() && ( !isset($_SESSION['DB_atualiza_cadastro']) || $_SESSION['DB_atualiza_cadastro'] === true ) ) {
+  db_redireciona('con4_atualizacadastro001.php');
+  exit;
+}
+
 
 if (session_is_registered("DB_uol_hora")) {
 
   db_query("update db_usuariosonline
                set uol_arquivo = '',
-                   uol_modulo = 'Selecionando Instituição' ,
+                   uol_modulo = 'Selecionando Instituição',
                    uol_inativo = ".time()."
              where uol_id = ".db_getsession("DB_id_usuario")."
                and uol_ip = '".(isset($_SERVER["HTTP_X_FORWARDED_FOR"])?$_SERVER["HTTP_X_FORWARDED_FOR"]:$HTTP_SERVER_VARS['REMOTE_ADDR'])."'
                and uol_hora = ".db_getsession("DB_uol_hora")) or die("Erro(26) atualizando db_usuariosonline");
 
-  if(db_getsession("DB_id_usuario") == "1") {
-    $rsInstituicoes = db_query( "select codigo, nomeinst, figura, db21_tipoinstit from db_config order by prefeitura desc, codigo" );
-  } else {
-    $rsInstituicoes = db_query( "select c.codigo, c.nomeinst, c.figura, db21_tipoinstit
-                                   from db_config c
-                                        inner join db_userinst u on u.id_instit = c.codigo
-                                  where u.id_usuario = ".db_getsession("DB_id_usuario")."
-                                  order by c.prefeitura desc, c.codigo" );
-  }
-
+  
+  $sSqlInstit =  "select c.codigo, 
+  		                  c.nomeinst, 
+  		                  c.figura, db21_tipoinstit
+                   from db_config c
+             inner join db_userinst u on u.id_instit = c.codigo
+                  where c.db21_ativo = 1 
+  		              and (c.db21_datalimite is null or  c.db21_datalimite > '$sDataSistema')
+  		              and u.id_usuario =  $iUsuarioLogado
+               order by c.prefeitura desc, c.codigo" ;
+   
+  
+  if (db_getsession("DB_id_usuario") == "1" || db_getsession('DB_administrador') == "1") {
+  	
+  	$sSqlInstit = "   select codigo, 
+  	                         nomeinst, 
+  	                         figura, 
+  	                         db21_tipoinstit 
+  	                    from db_config
+  	                   where (db21_datalimite is null or db21_datalimite <  '$sDataSistema') 
+  	                order by prefeitura desc, codigo";
+  	
+  }  	
+  	
+  $rsInstituicoes = db_query( $sSqlInstit);
 }
 ?>
-
 <html>
   <?php
 
-    $oDBReleaseNote = new DBReleaseNote(db_getsession('DB_id_usuario'), "nota_geral_01");
+    $oDBReleaseNote = new DBReleaseNoteSistema(db_getsession('DB_id_usuario'), "nota_geral_01");
     $tem_atualizacoes = $oDBReleaseNote->check();
 
     $oSkin = new SkinService();
-    include( $oSkin->getPathFile("instit.php") );
+    include(modification( $oSkin->getPathFile("instit.php")) );
 
     if ($tem_atualizacoes) {
 

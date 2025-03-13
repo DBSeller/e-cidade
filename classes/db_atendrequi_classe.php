@@ -1,71 +1,71 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: material
 //CLASSE DA ENTIDADE atendrequi
-class cl_atendrequi { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $m42_codigo = 0; 
-   var $m42_data_dia = null; 
-   var $m42_data_mes = null; 
-   var $m42_data_ano = null; 
-   var $m42_data = null; 
-   var $m42_hora = null; 
-   var $m42_login = 0; 
-   var $m42_depto = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_atendrequi {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $m42_codigo = 0;
+   var $m42_data_dia = null;
+   var $m42_data_mes = null;
+   var $m42_data_ano = null;
+   var $m42_data = null;
+   var $m42_hora = null;
+   var $m42_login = 0;
+   var $m42_depto = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 m42_codigo = int8 = Código Atendimento 
-                 m42_data = date = Data 
-                 m42_hora = varchar(5) = Hora 
-                 m42_login = int4 = Cod. Usuário 
-                 m42_depto = int4 = Depart. 
+                 m42_codigo = int8 = Código Atendimento
+                 m42_data = date = Data
+                 m42_hora = varchar(5) = Hora
+                 m42_login = int4 = Cod. Usuário
+                 m42_depto = int4 = Depart.
                  ";
-   //funcao construtor da classe 
-   function cl_atendrequi() { 
+   //funcao construtor da classe
+   function cl_atendrequi() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("atendrequi"); 
+     $this->rotulo = new rotulo("atendrequi");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -93,9 +93,9 @@ class cl_atendrequi {
      }
    }
    // funcao para inclusao
-   function incluir ($m42_codigo){ 
+   function incluir ($m42_codigo){
       $this->atualizacampos();
-     if($this->m42_data == null ){ 
+     if($this->m42_data == null ){
        $this->erro_sql = " Campo Data nao Informado.";
        $this->erro_campo = "m42_data_dia";
        $this->erro_banco = "";
@@ -104,7 +104,7 @@ class cl_atendrequi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->m42_hora == null ){ 
+     if($this->m42_hora == null ){
        $this->erro_sql = " Campo Hora nao Informado.";
        $this->erro_campo = "m42_hora";
        $this->erro_banco = "";
@@ -113,7 +113,7 @@ class cl_atendrequi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->m42_login == null ){ 
+     if($this->m42_login == null ){
        $this->erro_sql = " Campo Cod. Usuário nao Informado.";
        $this->erro_campo = "m42_login";
        $this->erro_banco = "";
@@ -122,7 +122,7 @@ class cl_atendrequi {
        $this->erro_status = "0";
        return false;
      }
-     if($this->m42_depto == null ){ 
+     if($this->m42_depto == null ){
        $this->erro_sql = " Campo Depart. nao Informado.";
        $this->erro_campo = "m42_depto";
        $this->erro_banco = "";
@@ -132,16 +132,16 @@ class cl_atendrequi {
        return false;
      }
      if($m42_codigo == "" || $m42_codigo == null ){
-       $result = db_query("select nextval('atendrequi_m42_codigo_seq')"); 
+       $result = db_query("select nextval('atendrequi_m42_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: atendrequi_m42_codigo_seq do campo: m42_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: atendrequi_m42_codigo_seq do campo: m42_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->m42_codigo = pg_result($result,0,0); 
+       $this->m42_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from atendrequi_m42_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $m42_codigo)){
@@ -152,10 +152,10 @@ class cl_atendrequi {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->m42_codigo = $m42_codigo; 
+         $this->m42_codigo = $m42_codigo;
        }
      }
-     if(($this->m42_codigo == null) || ($this->m42_codigo == "") ){ 
+     if(($this->m42_codigo == null) || ($this->m42_codigo == "") ){
        $this->erro_sql = " Campo m42_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -164,21 +164,21 @@ class cl_atendrequi {
        return false;
      }
      $sql = "insert into atendrequi(
-                                       m42_codigo 
-                                      ,m42_data 
-                                      ,m42_hora 
-                                      ,m42_login 
-                                      ,m42_depto 
+                                       m42_codigo
+                                      ,m42_data
+                                      ,m42_hora
+                                      ,m42_login
+                                      ,m42_depto
                        )
                 values (
-                                $this->m42_codigo 
-                               ,".($this->m42_data == "null" || $this->m42_data == ""?"null":"'".$this->m42_data."'")." 
-                               ,'$this->m42_hora' 
-                               ,$this->m42_login 
-                               ,$this->m42_depto 
+                                $this->m42_codigo
+                               ,".($this->m42_data == "null" || $this->m42_data == ""?"null":"'".$this->m42_data."'")."
+                               ,'$this->m42_hora'
+                               ,$this->m42_login
+                               ,$this->m42_depto
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "atendrequi ($this->m42_codigo) nao Incluído. Inclusao Abortada.";
@@ -214,16 +214,16 @@ class cl_atendrequi {
        $resac = db_query("insert into db_acount values($acount,1130,6880,'','".AddSlashes(pg_result($resaco,0,'m42_depto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($m42_codigo=null) { 
+   function alterar ($m42_codigo=null) {
       $this->atualizacampos();
      $sql = " update atendrequi set ";
      $virgula = "";
-     if(trim($this->m42_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_codigo"])){ 
+     if(trim($this->m42_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_codigo"])){
        $sql  .= $virgula." m42_codigo = $this->m42_codigo ";
        $virgula = ",";
-       if(trim($this->m42_codigo) == null ){ 
+       if(trim($this->m42_codigo) == null ){
          $this->erro_sql = " Campo Código Atendimento nao Informado.";
          $this->erro_campo = "m42_codigo";
          $this->erro_banco = "";
@@ -233,10 +233,10 @@ class cl_atendrequi {
          return false;
        }
      }
-     if(trim($this->m42_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["m42_data_dia"] !="") ){ 
+     if(trim($this->m42_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["m42_data_dia"] !="") ){
        $sql  .= $virgula." m42_data = '$this->m42_data' ";
        $virgula = ",";
-       if(trim($this->m42_data) == null ){ 
+       if(trim($this->m42_data) == null ){
          $this->erro_sql = " Campo Data nao Informado.";
          $this->erro_campo = "m42_data_dia";
          $this->erro_banco = "";
@@ -245,11 +245,11 @@ class cl_atendrequi {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["m42_data_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["m42_data_dia"])){
          $sql  .= $virgula." m42_data = null ";
          $virgula = ",";
-         if(trim($this->m42_data) == null ){ 
+         if(trim($this->m42_data) == null ){
            $this->erro_sql = " Campo Data nao Informado.";
            $this->erro_campo = "m42_data_dia";
            $this->erro_banco = "";
@@ -260,10 +260,10 @@ class cl_atendrequi {
          }
        }
      }
-     if(trim($this->m42_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_hora"])){ 
+     if(trim($this->m42_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_hora"])){
        $sql  .= $virgula." m42_hora = '$this->m42_hora' ";
        $virgula = ",";
-       if(trim($this->m42_hora) == null ){ 
+       if(trim($this->m42_hora) == null ){
          $this->erro_sql = " Campo Hora nao Informado.";
          $this->erro_campo = "m42_hora";
          $this->erro_banco = "";
@@ -273,10 +273,10 @@ class cl_atendrequi {
          return false;
        }
      }
-     if(trim($this->m42_login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_login"])){ 
+     if(trim($this->m42_login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_login"])){
        $sql  .= $virgula." m42_login = $this->m42_login ";
        $virgula = ",";
-       if(trim($this->m42_login) == null ){ 
+       if(trim($this->m42_login) == null ){
          $this->erro_sql = " Campo Cod. Usuário nao Informado.";
          $this->erro_campo = "m42_login";
          $this->erro_banco = "";
@@ -286,10 +286,10 @@ class cl_atendrequi {
          return false;
        }
      }
-     if(trim($this->m42_depto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_depto"])){ 
+     if(trim($this->m42_depto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["m42_depto"])){
        $sql  .= $virgula." m42_depto = $this->m42_depto ";
        $virgula = ",";
-       if(trim($this->m42_depto) == null ){ 
+       if(trim($this->m42_depto) == null ){
          $this->erro_sql = " Campo Depart. nao Informado.";
          $this->erro_campo = "m42_depto";
          $this->erro_banco = "";
@@ -323,7 +323,7 @@ class cl_atendrequi {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "atendrequi nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->m42_codigo;
@@ -351,14 +351,14 @@ class cl_atendrequi {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($m42_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($m42_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($m42_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -388,7 +388,7 @@ class cl_atendrequi {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "atendrequi nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$m42_codigo;
@@ -416,11 +416,11 @@ class cl_atendrequi {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -442,7 +442,7 @@ class cl_atendrequi {
       }
      return $result;
    }
-   function sql_query ( $m42_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $m42_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -460,8 +460,8 @@ class cl_atendrequi {
      $sql2 = "";
      if($dbwhere==""){
        if($m42_codigo!=null ){
-         $sql2 .= " where atendrequi.m42_codigo = $m42_codigo "; 
-       } 
+         $sql2 .= " where atendrequi.m42_codigo = $m42_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -477,7 +477,7 @@ class cl_atendrequi {
      }
      return $sql;
   }
-   function sql_query_file ( $m42_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $m42_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -493,8 +493,8 @@ class cl_atendrequi {
      $sql2 = "";
      if($dbwhere==""){
        if($m42_codigo!=null ){
-         $sql2 .= " where atendrequi.m42_codigo = $m42_codigo "; 
-       } 
+         $sql2 .= " where atendrequi.m42_codigo = $m42_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -510,7 +510,7 @@ class cl_atendrequi {
      }
      return $sql;
   }
-   function sql_query_requi ( $m42_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_requi ( $m42_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -524,15 +524,17 @@ class cl_atendrequi {
      }
      $sql .= " from atendrequi ";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = atendrequi.m42_login";
-     $sql .= "      inner join db_depart  on  db_depart.coddepto = atendrequi.m42_depto";
      $sql .= "      inner join atendrequiitem on m43_codatendrequi = m42_codigo";
      $sql .= "      inner join matrequiitem on m43_codmatrequiitem = m41_codigo ";
      $sql .= "      inner join matrequi on m41_codmatrequi = m40_codigo";
+     $sql .= "      inner join db_almox ON db_almox.m91_codigo = matrequi.m40_almox";
+     $sql .= "      inner join db_depart as deposito on deposito.coddepto = db_almox.m91_depto";
+     $sql .= "      inner join db_depart on db_depart.coddepto = m40_depto";
      $sql2 = "";
      if($dbwhere==""){
        if($m42_codigo!=null ){
-         $sql2 .= " where atendrequi.m42_codigo = $m42_codigo "; 
-       } 
+         $sql2 .= " where atendrequi.m42_codigo = $m42_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

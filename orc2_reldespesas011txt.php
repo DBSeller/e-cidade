@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
 ?>
 
 <html>
@@ -98,7 +98,7 @@ function js_emite(){
       <tr>
         <?
         $sql = "select o50_subelem from orcparametro where o50_anousu = ".db_getsession("DB_anousu");
-        $result1 = pg_exec($sql);
+        $result1 = db_query($sql);
         $o50_subelem = pg_result($result1,0,0);
         if($o50_subelem=='f'){
 

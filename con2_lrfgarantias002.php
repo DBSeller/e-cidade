@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,14 +28,14 @@
 
 if (!isset($arqinclude)) {
   
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_liborcamento.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("classes/db_db_config_classe.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_db_config_classe.php"));
   
   $classinatura  = new cl_assinatura;
   $cldb_config   = new cl_db_config;
@@ -46,14 +46,14 @@ if (!isset($arqinclude)) {
   
 }
 
-include_once("classes/db_conrelinfo_classe.php");
-include_once("classes/db_conrelvalor_classe.php");
+include_once(modification("classes/db_conrelinfo_classe.php"));
+include_once(modification("classes/db_conrelvalor_classe.php"));
 
 $clconrelinfo  = new cl_conrelinfo;
 $clconrelvalor = new cl_conrelvalor;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -120,7 +120,7 @@ $where      = " o58_instit in (".str_replace('-',', ',$db_selinstit).") ";
 
 $where      = "  c61_instit in (".str_replace('-',', ',$db_selinstit).") "; 
 $result     = db_planocontassaldo_matriz(db_getsession("DB_anousu"),$dt_ini,$dt_fim,false,$where);
-@pg_exec("drop table work_pl");
+@db_query("drop table work_pl");
 
 //--------- // ------------- // ------------- // ---------------
 // recupera elementos da configuração dos relatorios
@@ -265,7 +265,7 @@ $cl_res->usa_datas = 'sim';
 $cl_res->instit = "".str_replace('-',', ',$db_selinstit)." ";
 $cl_res->sql_record();
 $result_rec_rcl = $cl_res->result;
-@pg_exec("drop table work_plano");
+@db_query("drop table work_plano");
 
 // exercicio atual
 for ($p=1;$p<=18;$p++){   // 18 é a quantidade de parametros ou linhas existentes nos parametros
@@ -315,7 +315,7 @@ $cl_res->usa_datas = 'sim';
 $cl_res->instit = "".str_replace('-',', ',$db_selinstit)." ";
 $cl_res->sql_record();
 $result_rec_ant = $cl_res->result;
-@pg_exec("drop table work_plano");
+@db_query("drop table work_plano");
 
 $param[1]  = $orcparamrel->sql_parametro('5','1',  'f', str_replace('-', ', ', $db_selinstit), $anousu_ant);
 $param[2]  = $orcparamrel->sql_parametro('5','2',  'f', str_replace('-', ', ', $db_selinstit), $anousu_ant);

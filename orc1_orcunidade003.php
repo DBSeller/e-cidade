@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_orcunidade_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcunidade_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clorcunidade = new cl_orcunidade;
@@ -57,14 +57,14 @@ if(isset($excluir)){
   	
   	$sSqlUnidadePpa = "select * from  ppadotacao
   													where o08_unidade = $o41_unidade and o08_orgao = $o41_orgao and o08_ano in $aAnousu";
-  	$rsSqlUnidadePpa = pg_query($sSqlUnidadePpa);
+  	$rsSqlUnidadePpa = db_query($sSqlUnidadePpa);
   	if(pg_num_rows($rsSqlUnidadePpa) > 0){
   		$lerro = true;
   		$mensagem = "Usuário:\\n\\nUnidade encontra-se em estimativas do ppa\\n\\n";
   	}
   	$sSqlUnidadeDotacao = "select * from  orcdotacao
   													where o58_unidade = $o41_unidade and o58_orgao = $o41_orgao and o58_anousu in $aAnousu";
-  	$rsSqlUnidadeDotacao = pg_query($sSqlUnidadeDotacao);
+  	$rsSqlUnidadeDotacao = db_query($sSqlUnidadeDotacao);
   	if(pg_num_rows($rsSqlUnidadeDotacao) > 0){
   		$lerro = true;
   		$mensagem = "Usuário:\\n\\nUnidade encontra-se vinculada a Dotação\\n\\nNão excluído!" ;
@@ -113,7 +113,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcunidade.php");
+	include(modification("forms/db_frmorcunidade.php"));
 	?>
     </center>
 	</td>

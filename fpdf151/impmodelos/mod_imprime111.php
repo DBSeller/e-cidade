@@ -6,7 +6,7 @@
         global $contapagina;
 	$contapagina=1;
         if(!in_array("cl_orcreservasol",get_declared_classes())){
-          include("classes/db_orcreservasol_classe.php"); 
+          include(modification("classes/db_orcreservasol_classe.php")); 
 	}
 	$clorcreservasol = new cl_orcreservasol;
 ////////// MODELO 111  -  SOLICITAÇÃO DE COMPRA

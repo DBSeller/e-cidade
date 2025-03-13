@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010292' name='matordemprocessoentrada' description="Processo de entrada da ordem de compra" prefix="m57" label="matordemprocessoentrada" type="0">
+  <fields>
+    <field codigo="1009802" 
+           campo_api='' 
+           name="m57_sequencial" 
+           conteudo="int4" 
+           description="Código" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='matordemprocessoentrada_m57_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009804" 
+           campo_api='' 
+           name="m57_matordem" 
+           conteudo="int4" 
+           description="Ordem de Compra" 
+           inivalue="0" 
+           label="Ordem de Compra" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ordem de Compra" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009803" 
+           campo_api='' 
+           name="m57_processoentrada" 
+           conteudo="int4" 
+           description="Processo de Entrada da Nota" 
+           inivalue="0" 
+           label="Processo de Entrada da Nota" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo de Entrada da Nota" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="m57_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="matordem" inner='t'>
+      <fieldfk name="m57_matordem" reference="m51_codordem" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

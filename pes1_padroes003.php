@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,28 +25,46 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_padroes_classe.php");
-include("classes/db_rhcadregime_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_padroes_classe.php"));
+include(modification("classes/db_rhcadregime_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clpadroes = new cl_padroes;
 $clrhcadregime = new cl_rhcadregime;
 $db_botao = false;
 $db_opcao = 33;
+
 if(isset($excluir)){
+
   db_inicio_transacao();
   $db_opcao = 3;
   $clpadroes->r02_instit = db_getsession("DB_instit");
   $clpadroes->excluir($r02_anousu,$r02_mesusu,$r02_regime,$r02_codigo,db_getsession("DB_instit"));
   db_fim_transacao();
+
 }else if(isset($chavepesquisa)){
+   
    $db_opcao = 3;
-   $result = $clpadroes->sql_record($clpadroes->sql_query($chavepesquisa,$chavepesquisa1,$chavepesquisa2,$chavepesquisa3,db_getsession("DB_instit"))); 
+   $campos   = "*,";
+   $campos  .= "(select r02_descr from padroes as p where p.r02_codigo = padroes.r02_padraopai_codigo
+                                                      and p.r02_anousu = {$chavepesquisa}
+                                                      and p.r02_mesusu = {$chavepesquisa1}
+                                                      and p.r02_regime = {$chavepesquisa2}
+                                                      and p.r02_instit = ". db_getsession("DB_instit") .") as r02_descr_padraopai, ";
+   $campos  .= "(SELECT r07_descr
+                   FROM pesdiver
+                  WHERE 
+                        r07_anousu = padroes.r02_anousu
+                    AND r07_mesusu = padroes.r02_mesusu
+                    AND r07_instit = padroes.r02_instit
+                    AND r07_codigo = padroes.r02_minimo ) as r07_descr ";
+
+   $result = $clpadroes->sql_record($sqll = $clpadroes->sql_query($chavepesquisa,$chavepesquisa1,$chavepesquisa2,$chavepesquisa3,db_getsession("DB_instit"), $campos)); 
    db_fieldsmemory($result,0);
    $db_botao = true;
 }
@@ -73,7 +91,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
     <?
-    include("forms/db_frmpadroes.php");
+    include(modification("forms/db_frmpadroes.php"));
     ?>
     </center>
     </td>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 // Basico
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-include_once("libs/db_sessoes.php");
-include_once("libs/db_usuariosonline.php");
-include_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $oDaoSauCotasAgendamento = db_utils::getdao('sau_cotasagendamento');
@@ -64,32 +64,10 @@ if(!isset($s163_i_mescomp)){
       }
     </style>
   </head>
-  <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-    <table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-      <tr> 
-        <td width="360" height="18">&nbsp;</td>
-        <td width="263">&nbsp;</td>
-        <td width="25">&nbsp;</td>
-        <td width="140">&nbsp;</td>
-      </tr>
-    </table>
-    <br><br>
-    <center>
-    <table width="900" border="0" cellspacing="0" cellpadding="0">
-      <tr> 
-        <td height="600" align="center" valign="top" bgcolor="#CCCCCC"> 
-          <center>
-            <?include("forms/db_frmsau_cotasagendamento.php");?>
-          </center>
-        </td>
-      </tr>
-    </table>
-    </center>
-    <?
-      db_menu(db_getsession("DB_id_usuario"),
-              db_getsession("DB_modulo"),
-              db_getsession("DB_anousu"),
-              db_getsession("DB_instit"));
+  <body>
+    <?php
+    require modification("forms/db_frmsau_cotasagendamento.php");
+    db_menu();
     ?>
   </body>
 </html>

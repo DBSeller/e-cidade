@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,12 +26,12 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -133,14 +133,9 @@ $oDaoVeicCadCentralDepart->rotulo->label("ve37_veiccadcentral");
 
             }
 
-            if (!isset($pesquisa_chave)) {
-
-              if (isset($sCampos) == false) {
-
-                $sCampos  = "distinct ve01_codigo,ve01_placa,ve20_descr,ve21_descr,ve22_descr,ve23_descr,ve01_chassi, ";
-                $sCampos .= "ve01_certif,ve01_anofab,ve01_anomod, ve01_quantcapacidad ";
-
-              }
+            $sCampos  = "distinct ve01_codigo,ve01_placa,ve20_descr,ve21_descr,ve22_descr,ve23_descr,ve01_chassi, ";
+            $sCampos .= "ve01_certif,ve01_anofab,ve01_anomod, ve01_quantcapacidad ";
+            if ( !isset($pesquisa_chave) ) {
 
               if (isset($chave_ve01_codigo) && (trim($chave_ve01_codigo) != "")) {
 
@@ -176,11 +171,11 @@ $oDaoVeicCadCentralDepart->rotulo->label("ve37_veiccadcentral");
            	      $sWhere = " and ".$sWhere;
                 }
 
-                $sSqlVeiculos = $oDaoVeiculos->sql_query_central($pesquisa_chave,
-                                                               "*",
-                                                               null,
-                                                               "ve01_codigo = $pesquisa_chave $sWhere"
-                                                              );
+                $sSqlVeiculos = $oDaoVeiculos->sql_query_central(null,
+                                                                 $sCampos,
+                                                                 null,
+                                                                 "ve01_codigo = $pesquisa_chave $sWhere"
+                                                                );
                 $result = $oDaoVeiculos->sql_record($sSqlVeiculos);
 
                 if (isset($iParam) && $iParam == 1 && $oDaoVeiculos->numrows != 0) {
@@ -188,6 +183,8 @@ $oDaoVeicCadCentralDepart->rotulo->label("ve37_veiccadcentral");
                   db_fieldsmemory($result, 0);
                   echo "<script>".$funcao_js."('$ve01_placa', '$ve01_quantcapacidad', false);</script>";
 
+                } elseif(isset($iParam) && $iParam == 1 && $oDaoVeiculos->numrows == 0) {
+                  echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado', '', true);</script>";
                 } elseif ($oDaoVeiculos->numrows != 0) {
 
                   db_fieldsmemory($result, 0);
@@ -208,3 +205,10 @@ $oDaoVeicCadCentralDepart->rotulo->label("ve37_veiccadcentral");
     </table>
   </body>
 </html>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

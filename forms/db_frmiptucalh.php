@@ -29,36 +29,33 @@
 $cliptucalh->rotulo->label();
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Tj17_codhis?>">
-       <?=@$Lj17_codhis?>
-    </td>
-    <td> 
-<?
-db_input('j17_codhis',10,$Ij17_codhis,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tj17_descr?>">
-       <?=@$Lj17_descr?>
-    </td>
-    <td> 
-<?
-db_input('j17_descr',40,$Ij17_descr,true,'text',$db_opcao,"")
-?>
-    </td>
-  </tr>
-  </table>
-  </center>
-<input name="db_opcao" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+  <fieldset>
+    <legend>Histórico de Cálculo do IPTU</legend>
+    <table border="0">
+      <tr>
+        <td nowrap title="<?=@$Tj17_codhis?>">
+          <label for="j17_codhis"><?=@$Lj17_codhis?></label>
+        </td>
+        <td> 
+          <? db_input('j17_codhis',10,$Ij17_codhis,true,'text',$db_opcao,"") ?>
+        </td>
+      </tr>
+      <tr>
+        <td nowrap title="<?=@$Tj17_descr?>">
+          <label for="j17_descr"><?=@$Lj17_descr?></label>
+        </td>
+        <td> 
+          <? db_input('j17_descr',40,$Ij17_descr,true,'text',$db_opcao,"") ?>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+  <input name="db_opcao" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
+  <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_iptucalh','func_iptucalh.php?funcao_js=parent.js_preenchepesquisa|j17_codhis','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptucalh','func_iptucalh.php?funcao_js=parent.js_preenchepesquisa|j17_codhis','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_iptucalh.hide();

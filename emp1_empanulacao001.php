@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include ("libs/db_liborcamento.php");
-include ("classes/db_orcdotacao_classe.php");
-include ("classes/db_empempenho_classe.php");
-include ("classes/db_empanulado_classe.php");
-include ("classes/db_empanuladoele_classe.php");
-include ("classes/db_empelemento_classe.php");
-include ("classes/db_empautoriza_classe.php");
-include ("classes/db_pcprocitem_classe.php");
-include ("classes/db_orcreservaaut_classe.php");
-include ("classes/db_orcreserva_classe.php");
-include ("classes/db_orcreservasol_classe.php");
-include ("classes/db_empparametro_classe.php");
-include ("classes/db_empempenhonl_classe.php");   // Comentado para a Tarefa 16697
-include ("classes/db_empanuladotipo_classe.php");
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_empanulado_classe.php"));
+include(modification("classes/db_empanuladoele_classe.php"));
+include(modification("classes/db_empelemento_classe.php"));
+include(modification("classes/db_empautoriza_classe.php"));
+include(modification("classes/db_pcprocitem_classe.php"));
+include(modification("classes/db_orcreservaaut_classe.php"));
+include(modification("classes/db_orcreserva_classe.php"));
+include(modification("classes/db_orcreservasol_classe.php"));
+include(modification("classes/db_empparametro_classe.php"));
+include(modification("classes/db_empempenhonl_classe.php"));   // Comentado para a Tarefa 16697
+include(modification("classes/db_empanuladotipo_classe.php"));
 
 $clempempenho    = new cl_empempenho;
 $clempanulado    = new cl_empanulado;
@@ -56,16 +56,16 @@ $clempparametro  = new cl_empparametro;
 $oDaoEmpenhoNl   = new cl_empempenhonl;   // Comentado para a Tarefa 16697
 
 //lançamentos
-include ("classes/db_conlancam_classe.php");
-include ("classes/db_conlancamele_classe.php");
-include ("classes/db_conlancamcompl_classe.php");
-include ("classes/db_conlancamlr_classe.php");
-include ("classes/db_conlancamcgm_classe.php");
-include ("classes/db_conlancamemp_classe.php");
-include ("classes/db_conlancamval_classe.php");
-include ("classes/db_conlancamdot_classe.php");
-include ("classes/db_conlancamdoc_classe.php");
-include ("classes/db_conplanoreduz_classe.php");
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamele_classe.php"));
+include(modification("classes/db_conlancamcompl_classe.php"));
+include(modification("classes/db_conlancamlr_classe.php"));
+include(modification("classes/db_conlancamcgm_classe.php"));
+include(modification("classes/db_conlancamemp_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("classes/db_conlancamdot_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
 
 $clconlancam      = new cl_conlancam;
 $clconlancamele   = new cl_conlancamele;
@@ -78,19 +78,19 @@ $clconlancamdot   = new cl_conlancamdot;
 $clconlancamdoc   = new cl_conlancamdoc;
 $clconplanoreduz  = new cl_conplanoreduz;
 
-include ("libs/db_libcontabilidade.php");
+include(modification("libs/db_libcontabilidade.php"));
 //retorna os arrays de lancamento...
 $cltranslan = new cl_translan;
-include("classes/db_pcparam_classe.php");
-include("classes/db_empautitem_classe.php");
-include("classes/db_empempaut_classe.php");
-include("classes/db_solicitemprot_classe.php");
-include("classes/db_solandam_classe.php");
-include("classes/db_solandpadraodepto_classe.php");
-include("classes/db_proctransfer_classe.php");
-include("classes/db_proctransferproc_classe.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_solordemtransf_classe.php");
+include(modification("classes/db_pcparam_classe.php"));
+include(modification("classes/db_empautitem_classe.php"));
+include(modification("classes/db_empempaut_classe.php"));
+include(modification("classes/db_solicitemprot_classe.php"));
+include(modification("classes/db_solandam_classe.php"));
+include(modification("classes/db_solandpadraodepto_classe.php"));
+include(modification("classes/db_proctransfer_classe.php"));
+include(modification("classes/db_proctransferproc_classe.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_solordemtransf_classe.php"));
 
 $clpcparam           = new cl_pcparam;
 $clempautitem        = new cl_empautitem;
@@ -102,7 +102,7 @@ $clproctransferproc  = new cl_proctransferproc;
 $clprotprocesso      = new cl_protprocesso;
 $clsolordemtransf    = new cl_solordemtransf;
 
-include("classes/db_matordemitem_classe.php");
+include(modification("classes/db_matordemitem_classe.php"));
 $clmatordemitem = new cl_matordemitem;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -601,7 +601,7 @@ if (isset ($confirmar) || isset ($confirmarn)) {
               $flag_reservar = false;
            }
 
-           $clempautoriza->sql_anulaautorizacao($autori,false,&$erro_msg,&$sqlerro,&$flag_saldo,$vetor_dotacao,$flag_reservar);
+           $clempautoriza->sql_anulaautorizacao($autori,false, $erro_msg, $sqlerro, $flag_saldo,$vetor_dotacao,$flag_reservar);
        }
   }
 
@@ -713,7 +713,7 @@ if (isset ($e60_numemp)) {
 	<?
 
 
-include ("forms/db_frmempanulacao.php");
+include(modification("forms/db_frmempanulacao.php"));
 ?>
     </center>
 	</td>

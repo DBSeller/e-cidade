@@ -79,7 +79,7 @@ db_select('sd22_c_restrsexo',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cids','func_cids.php?funcao_js=parent.js_preenchepesquisa|sd22_c_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cids','func_cids.php?funcao_js=parent.js_preenchepesquisa|sd22_c_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cids.hide();

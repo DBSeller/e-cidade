@@ -1,120 +1,237 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/JSON.php");  
-require_once("model/configuracao/PluginService.service.php");
+use \ECidade\V3\Modification\Manager as ModificationManager;
+use \ECidade\V3\Extension\Encode;
 
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_utils.php");
+require_once modification("libs/db_app.utils.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("dbforms/db_funcoes.php");
+require_once modification("libs/JSON.php");
+require_once modification("model/configuracao/PluginService.service.php");
 
 $oJson                  = new services_json();
-$oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
+$oParam                 = $oJson->decode(str_replace("\\", "", $_POST["json"]));
 $oRetorno               = new stdClass();
-$oRetorno->iStatus      = 1;
+$oRetorno->erro         = false;
 $oRetorno->sMessage     = '';
 
 try {
+    db_inicio_transacao();
 
-  db_inicio_transacao();
-  
-  switch ($oParam->sExecucao) {
+    switch ($oParam->sExecucao) {
+        case "validarPlugin":
+            $oRetorno->lAtualizacao = false;
 
-    case "getPlugins":
+          /**
+           * Faz a importação do arquivo
+           */
+            $oFiles = db_utils::postMemory($_FILES);
 
-      $oPluginService = new PluginService();
-      $oRetorno->aPlugins = $oPluginService->getPlugins();
+            if ($oFiles->file['error']) {
+                throw new Exception("Falha ao importar arquivo.");
+            }
 
-    break;
+            $sDestino       = PluginService::TMP_DIR . $oFiles->file["name"];
+            $oPluginService = new PluginService();
 
-    case "alterarSituacao" :
+          /**
+           * Verifica se existe o diretório temporário dos plugins
+           */
+            $oPluginService->checkTempDir();
 
-      if (empty($oParam->iCodigo)) {
-        throw new Exception("Nenhum plugin informado.");        
-      }
+            move_uploaded_file($oFiles->file["tmp_name"], $sDestino);
 
-      $oPlugin = new Plugin($oParam->iCodigo);
-      $oPluginService = new PluginService();
+            $oRetorno->sArquivo       = $oPluginService->validarPlugin($sDestino);
+            $oRetorno->lAtualizacao   = $oPluginService->verificaAtualizacao(PluginService::TMP_DIR . "{$oRetorno->sArquivo}.tar.gz");
 
-      if ($oPluginService->isAtivo($oPlugin)) {
-        $oPluginService->desativar($oPlugin);
-        $oRetorno->sMessage = "Plugin desativado com sucesso.";
-      } else {
-        $oPluginService->ativar($oPlugin);
-        $oRetorno->sMessage = "Plugin ativado com sucesso.";
-      }
+            break;
 
-    break;
+        case "instalarPlugin":
+            if (empty($oParam->sArquivo)) {
+                throw new Exception("Plugin não informado.");
+            }
 
-    case "desinstalar": 
+            $oPluginService = new PluginService();
+            $oPluginService->instalarPlugin($oParam->sArquivo);
+            
+            break;
 
-      if (empty($oParam->iCodigo)) {
-        throw new Exception("Nenhum plugin informado.");        
-      }
+        case "downloadPlugin":
+            if (empty($oParam->iCodigo)) {
+                throw new Exception("Plugin não existe.");
+            }
 
-      $oPlugin = new Plugin($oParam->iCodigo);
-      $oPluginService = new PluginService();
-      $oPluginService->desinstalar($oPlugin);
+            $oPlugin = new Plugin($oParam->iCodigo);
+            $oPluginService = new PluginService();
+            $oRetorno->sFile = $oPluginService->downloadPlugin($oPlugin);
+            $oRetorno->sNomePlugin = $oPlugin->getNome();
+            $oRetorno->sMessage    = $oPlugin->getNome()." pronto para download.";
+            break;
 
-      $oRetorno->sMessage = "Plugin desinstalado com sucesso.";
+        case "getPlugins":
+            $oPluginService     = new PluginService();
+            $oRetorno->aPlugins = $oPluginService->getPlugins();
+            break;
 
-    break;
+        case "alterarSituacao":
+            if (empty($oParam->iCodigo)) {
+                throw new Exception("Nenhum plugin informado.");
+            }
 
-    case "getConfig":
+            $oPlugin = new Plugin($oParam->iCodigo);
+            $oPluginService = new PluginService();
 
-      $oPlugin = new Plugin($oParam->iCodigo);
-      $oRetorno->aConfiguracoes = PluginService::getPluginConfig($oPlugin);
+            if ($oPluginService->isAtivo($oPlugin)) {
+                $oPluginService->desativar($oPlugin);
+                $oRetorno->sMessage = "Plugin desativado com sucesso.";
+            } else {
+                $oPluginService->ativar($oPlugin);
+                $oRetorno->sMessage = "Plugin ativado com sucesso.";
+            }
 
-    break;
+            break;
 
-    case "saveConfig":
+        case "desinstalar":
+            if (empty($oParam->iCodigo)) {
+                throw new Exception("Nenhum plugin informado.");
+            }
 
-      $oPlugin = new Plugin($oParam->iCodigo);
-      $oRetorno->sMessage = urlencode("Configuração salva com sucesso.");
+            $oPlugin        = new Plugin($oParam->iCodigo);
+            $oPluginService = new PluginService();
 
-      if (!PluginService::setPluginConfig($oPlugin, $oParam->aConfig)) {
-        $oRetorno->sMessage = urlencode("Erro ao salvar configuração.");
-      }
+            $oPluginService->desinstalar($oPlugin);
 
-    break;
-  }
-  
-  db_fim_transacao(false);
+            $oRetorno->sMessage = "Plugin desinstalado com sucesso.";
 
-  
-} catch (Exception $eErro){
+            break;
 
-  db_fim_transacao(true);
-  $oRetorno->iStatus  = 2;
-  $oRetorno->sMessage = urlencode($eErro->getMessage());
+        case "getConfig":
+            $oPlugin = new Plugin($oParam->iCodigo);
+            $oRetorno->aConfiguracoes = PluginService::getPluginConfig($oPlugin);
+
+            break;
+
+      /**
+       * Busca conteudo de log das modificacoes de um plugin
+       */
+        case "getLog":
+            $oPlugin = new Plugin($oParam->iCodigo);
+            $sPath = PluginService::getLogPath($oPlugin->getNome());
+            $oRetorno->sConteudo = read_log($sPath);
+
+            break;
+
+      /**
+       * Busca conteudo de log das modificacoes de um plugin
+       */
+        case "getLogModificacoes":
+            $oPlugin = new Plugin($oParam->iCodigo);
+            $oPluginService = new PluginService();
+            $aArquivosModificacoes = $oPluginService->getModificacoes($oPlugin->getNome());
+
+            $oRetorno->lPossuiModificacoes = !empty($aArquivosModificacoes);
+            $oRetorno->lSituacao = $oPluginService->isAtivo($oPlugin);
+            $oRetorno->aLogModificacoes = array();
+
+            try {
+                $oManager = new ModificationManager();
+
+                foreach ($aArquivosModificacoes as $sArquivoModificacao) {
+                    // plugin nao ativo
+                    if (!file_exists($sArquivoModificacao)) {
+                        continue;
+                    }
+
+                    $oParse = $oManager->parse($sArquivoModificacao);
+                    $sArquivoLog = ECIDADE_MODIFICATION_LOG_PATH . $oParse->getId();
+
+                    $oRetorno->aLogModificacoes[$oParse->getId()] = read_log($sArquivoLog);
+                }
+            } catch (Exception $oErro) {
+                throw new Exception(Encode::toISO($oErro->getMessage()));
+            }
+
+            break;
+
+        case "saveConfig":
+            $oPlugin = new Plugin($oParam->iCodigo);
+            $oRetorno->sMessage = urlencode("Configuração salva com sucesso.");
+
+            if (!PluginService::setPluginConfig($oPlugin, $oParam->aConfig)) {
+                $oRetorno->sMessage = urlencode("Erro ao salvar configuração.");
+            }
+
+            break;
+    }
+
+    db_fim_transacao(false);
+} catch (Exception $eErro) {
+    db_fim_transacao(true);
+    $oRetorno->erro     = true;
+    $oRetorno->sMessage = urlencode($eErro->getMessage());
 }
+
 echo $oJson->encode($oRetorno);
 
-?>
+
+/**
+ * @param string $path
+ * @return string
+ */
+function read_log($path)
+{
+
+    $content = '';
+
+    if (!is_readable($path)) {
+        return $content;
+    }
+
+    foreach (file($path) as $line) {
+        $type = 'info';
+
+        if (strpos($line, 'DEBUG: ') !== false) {
+            $type = 'debug';
+        }
+
+        if (strpos($line, 'WARNING: ') !== false) {
+            $type = 'warning';
+        }
+
+        if (strpos($line, 'ERROR: ') !== false) {
+            $type = 'error';
+        }
+
+        $content .= sprintf("<span class='log-%s'>%s</span>", $type, \DBString::utf8_encode_all($line));
+    }
+
+    return $content;
+}

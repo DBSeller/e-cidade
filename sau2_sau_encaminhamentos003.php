@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('fpdf151/scpdf.php');
-require_once('libs/db_utils.php');
-require_once('model/encaminhamentos.model.php');
-require_once('libs/db_stdlibwebseller.php');
+require_once(modification('fpdf151/scpdf.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('model/encaminhamentos.model.php'));
+require_once(modification('libs/db_stdlibwebseller.php'));
 
 $oDaoSau_encaminhamentos = db_utils::getdao('sau_encaminhamentos');
 $oDaoDb_usuacgm = db_utils::getdao('db_usuacgm');

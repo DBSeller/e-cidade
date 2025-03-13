@@ -70,10 +70,10 @@ db_input('descrdepto',40,$Idescrdepto,true,'text',3,'')
 <script>
 function js_pesquisat94_depart(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_benstransfdes','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_benstransfdes','db_iframe_db_depart','func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.t94_depart.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_benstransfdes','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.t94_depart.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_benstransfdes','db_iframe_db_depart','func_db_depart.php?pesquisa_chave='+document.form1.t94_depart.value+'&funcao_js=parent.js_mostradb_depart','Pesquisa',false);
      }else{
        document.form1.descrdepto.value = ''; 
      }

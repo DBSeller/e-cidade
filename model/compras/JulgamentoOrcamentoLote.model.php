@@ -1,8 +1,8 @@
 <?php
-require_once ("iJulgamentoOrcamento.interface.php");
+require_once(modification("model/compras/iJulgamentoOrcamento.interface.php"));
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -26,8 +26,8 @@ require_once ("iJulgamentoOrcamento.interface.php");
  *
  *
  * Class JulgamentoOrcamentoLote
- * @author $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @author $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.3 $
  */
 
 class JulgamentoOrcamentoLote implements iJulgamentoOrcamento {

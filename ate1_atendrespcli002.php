@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_atendrespcli_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_atendrespcli_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clatendrespcli = new cl_atendrespcli;
@@ -38,7 +38,7 @@ $db_opcao = 22;
 $db_botao = false;
 if(isset($alterar)){
   db_inicio_transacao();
-  $db_opcao = 2;
+  @$db_opcao = 2;
   $clatendrespcli->alterar($at84_seq);
   db_fim_transacao();
 }else if(isset($chavepesquisa)){
@@ -70,14 +70,14 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmatendrespcli.php");
+	include(modification("forms/db_frmatendrespcli.php"));
 	?>
     </center>
 	</td>
   </tr>
 </table>
 <?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+db_menu();
 ?>
 </body>
 </html>

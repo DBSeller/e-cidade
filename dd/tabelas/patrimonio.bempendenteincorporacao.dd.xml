@@ -1,0 +1,109 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010288' name='patrimonio.bempendenteincorporacao' description="bempendenteincorporacao" prefix="t12" label="bempendenteincorporacao" type="0">
+  <fields>
+    <field codigo="1009772" 
+           campo_api='' 
+           name="t12_sequencial" 
+           conteudo="int4" 
+           description="Pk" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='patrimonio.bempendenteincorporacao_t12_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009773" 
+           campo_api='' 
+           name="t12_matestoqueinimei" 
+           conteudo="int4" 
+           description="matestoqueinimei" 
+           inivalue="0" 
+           label="matestoqueinimei" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="matestoqueinimei" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+    </field>
+    <field codigo="1009774" 
+           campo_api='' 
+           name="t12_servico" 
+           conteudo="bool" 
+           description="se é um serviço" 
+           inivalue="f" 
+           label="Serviço" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Serviço" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" >
+    </field> 
+    <field codigo="1009775" 
+           campo_api='' 
+           name="t12_valorunitario" 
+           conteudo="float4" 
+           description="Valor unitário" 
+           inivalue="0" 
+           label="Valor" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" >
+    </field>
+    <field codigo="1009805"
+           campo_api=''
+           name="t12_empenho"
+           conteudo="int4"
+           description="Empenho"
+           inivalue="0"
+           label="Empenho"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Empenho"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="t12_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="matestoqueinimei" inner='t'>
+      <fieldfk name="t12_matestoqueinimei" reference="m82_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="empempenho" inner='t'>
+      <fieldfk name="t12_empenho" reference="e60_numemp" />
+    </foreignkey>
+  </foreignkeys>
+</table>

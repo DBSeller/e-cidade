@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if(isset($retorno)) {
-  $result = pg_exec("select * from histcalc where k01_codigo = $retorno");
+  $result = db_query("select * from histcalc where k01_codigo = $retorno");
   db_fieldsmemory($result,0);
 } 
 if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
-  pg_exec("update histcalc set k01_descr = '$k01_descr',
+  db_query("update histcalc set k01_descr = '$k01_descr',
                                k01_tipo  = '$k01_tipo' 
                   where k01_codigo = $k01_codigo") or die("Erro(13) alterando histcalc.");
   db_redireciona();
@@ -68,7 +68,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 	if(isset($HTTP_POST_VARS["procurar"]) || isset($HTTP_POST_VARS["priNoMe"]) || isset($HTTP_POST_VARS["antNoMe"]) || isset($HTTP_POST_VARS["proxNoMe"]) || isset($HTTP_POST_VARS["ultNoMe"])) {
       db_postmemory($HTTP_POST_VARS);
       if(!empty($k01_codigo)) {
-        $result = pg_exec("select k01_codigo from histcalc where k01_codigo = $k01_codigo");
+        $result = db_query("select k01_codigo from histcalc where k01_codigo = $k01_codigo");
 	    if(pg_numrows($result) > 0) {
  	      db_redireciona("cai1_historico002.php?".base64_encode("retorno=".pg_result($result,0,0)));
 	      exit;
@@ -103,7 +103,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 	  </center>
 	  <?
     } else { 
-	  include("forms/db_frmhistcalc.php");
+	  include(modification("forms/db_frmhistcalc.php"));
 	}
     ?>
 	</td>

@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_aguacortemat_classe.php");
-include("classes/db_aguacortematmov_classe.php");
-include("classes/db_aguacortematnumpre_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_aguacortemat_classe.php"));
+include(modification("classes/db_aguacortematmov_classe.php"));
+include(modification("classes/db_aguacortematnumpre_classe.php"));
 $claguacortemat = new cl_aguacortemat;
   /*
 $claguacortematmov = new cl_aguacortematmov;
@@ -69,7 +69,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmaguacortemat.php");
+	include(modification("forms/db_frmaguacortemat.php"));
 	?>
     </center>
 	</td>

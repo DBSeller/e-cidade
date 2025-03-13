@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 db_postmemory($_POST);
 db_postmemory($_GET);
@@ -41,7 +41,7 @@ if(isset($retorno)) {
                  to_char(dataincl,'YYYY') as dataincl_ano
             from db_sysmodulo
 	         where codmod = $retorno";
-  $result = pg_exec($sql);
+  $result = db_query($sql);
   db_fieldsmemory($result,0);
 }
 
@@ -52,7 +52,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
     db_erro("Data inválida(insert)");
   else
     $data = $dataincl_ano."-".$dataincl_mes."-".$dataincl_dia;
-  pg_exec($conn,"insert into db_sysmodulo values (nextval('db_sysmodulo_codmod_seq'),'$nomemod','$descricao','$data','$ativo')") or die("Erro inserindo em db_sysmodulos");
+  db_query($conn,"insert into db_sysmodulo values (nextval('db_sysmodulo_codmod_seq'),'$nomemod','$descricao','$data','$ativo')") or die("Erro inserindo em db_sysmodulos");
   db_redireciona();
 ////////////////ALTERAR////////////////  
 } else if(isset($HTTP_POST_VARS["alterar"])) {
@@ -61,7 +61,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
     db_erro("Data inválida(update)");
   else
     $data = $dataincl_ano."-".$dataincl_mes."-".$dataincl_dia;  
-  pg_exec("update db_sysmodulo set nomemod   = '$nomemod',
+  db_query("update db_sysmodulo set nomemod   = '$nomemod',
 			                       descricao = '$descricao',
 			                       dataincl  = '$data',
 					       ativo = '$ativo'
@@ -69,7 +69,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   db_redireciona();
 ////////////////EXCLUIR//////////////
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("delete from db_sysmodulo where codmod = ".$HTTP_POST_VARS["codmod"]) or die("Erro deletando tabela db_sysmodulo");
+  db_query("delete from db_sysmodulo where codmod = ".$HTTP_POST_VARS["codmod"]) or die("Erro deletando tabela db_sysmodulo");
  db_redireciona();
 }
 
@@ -183,7 +183,7 @@ $cl_modulo->label();
             <td nowrap title="<?=$Tdataincl?>"><?=$Ldataincl?></td>
             <td title="<?=$Tdataincl?>"> 
               <?
-	            include("dbforms/db_funcoes.php");
+	            include(modification("dbforms/db_funcoes.php"));
 	            $dataincl_dia = date("d");
 	            $dataincl_mes = date("m");
 	            $dataincl_ano = date("Y");

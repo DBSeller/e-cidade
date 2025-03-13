@@ -1,32 +1,32 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once 'libs/JSON.php';
-require_once 'libs/exceptions/ParameterException.php';
+require_once modification("libs/JSON.php");
+require_once modification("libs/exceptions/ParameterException.php");
 
 /**
  * Classe para controle de mensagens do sistema
@@ -34,7 +34,7 @@ require_once 'libs/exceptions/ParameterException.php';
  * @author Iuri Guntchnigg iuri@dbseller.com.br
  * @package configuracao
  * @subpackage mensagem
- * @version $Revision: 1.9 $;
+ * @version $Revision: 1.14 $;
  */
 class DBMensagem {
 
@@ -75,7 +75,7 @@ class DBMensagem {
 
       $sNomeArquivo = "mensagens/{$sArquivo}";
       if (!file_exists($sNomeArquivo)) {
-        throw new FileException("Arquivo de mensagems '{$sNomeArquivo}' não existe no sistema");
+        throw new FileException("Arquivo de mensagens '{$sNomeArquivo}' não existe no sistema");
       }
       DBMensagem::getInstance()->aFile[$sArquivo] = file_get_contents($sNomeArquivo);
     }
@@ -98,19 +98,19 @@ class DBMensagem {
    * @param array/stdClass $mOpcoes array com variaveis para substituição de Variaveis na mensagem
    */
   public static function getMensagem($sMensagem, $aOpcoes = null) {
-		
+
   	if ( !is_null($aOpcoes) && !is_object($aOpcoes)) {
   		throw new ParameterException('Parametro $aOpcoes deve ser um objeto.');
   	}
 
-    $oJson                 = new Services_JSON();
+    $oJson                 = JSON::create();
     $aPartesArquivo        = explode('.', $sMensagem);
     $iTamanhoPartesArquivo = count($aPartesArquivo);
     $sNomeArquivo          = $aPartesArquivo[$iTamanhoPartesArquivo - 2];
     $sNomeMensagem         = $aPartesArquivo[$iTamanhoPartesArquivo - 1];
     $sCaminhoArquivo       = implode("/", array_slice($aPartesArquivo, 0, $iTamanhoPartesArquivo - 1)).".json";
     $sArquivo              = DBMensagem::getInstance()->getFile($sCaminhoArquivo);
-    $oJsonArquivo          = $oJson->decode($sArquivo);
+    $oJsonArquivo          = $oJson->parse($sArquivo, JSON::UTF8_DECODE);
     $sMensagem             = 'Ocorreu um erro inesperado. Contate suporte.';
 
     if (isset($oJsonArquivo->{$sNomeMensagem})) {
@@ -127,7 +127,7 @@ class DBMensagem {
 
   /**
    * Guarda historico em sessao, das mensagens usadas
-   * - caso usuario nao for dbseller, retorna false 
+   * - caso usuario nao for dbseller, retorna false
    *
    * @param string $sArquivo
    * @param string $sNomeMensagem
@@ -152,7 +152,7 @@ class DBMensagem {
     }
 
     $_SESSION['oMensagensMenu']->aArquivos[$sArquivo][] = $sNomeMensagem;
-    $_SESSION['oMensagensMenu']->aArquivos[$sArquivo] = array_unique($_SESSION['oMensagensMenu']->aArquivos[$sArquivo]); 
+    $_SESSION['oMensagensMenu']->aArquivos[$sArquivo] = array_unique($_SESSION['oMensagensMenu']->aArquivos[$sArquivo]);
 
     return true;
   }
@@ -212,7 +212,7 @@ class DBMensagem {
      * acessado e o novo arquivo de mensagem
      */
     if ( !$lEncontrouArquivo ) {
-      
+
       $oStdAdicionar           = new stdClass();
       $oStdAdicionar->fonte    = $sArquivoProcurado;
       $oStdAdicionar->menus    = array($iCodigoMenuProcurado);
@@ -227,13 +227,13 @@ class DBMensagem {
 
       $iIdentacao = 0;
       foreach ($oArquivo->associacoes as $oStdLinhaArquivo) {
-        
+
         $iTamanhoCaracterPropriedade = strlen($oStdLinhaArquivo->fonte);
         if ($iTamanhoCaracterPropriedade > $iIdentacao) {
           $iIdentacao = $iTamanhoCaracterPropriedade + 5;
         }
       }
-  
+
       $aArquivoSalvar = array();
       $aArquivoSalvar[] = "{\"associacoes\" : [";
       foreach ($oArquivo->associacoes as $iIndice => $oStdLinhaArquivo) {
@@ -247,7 +247,7 @@ class DBMensagem {
         $aArquivoSalvar[] = "    {$sVirgula}{  \"fonte\" : {$sFonte} \"menus\" : [{$sMenus}]  }";
       }
       $aArquivoSalvar[] = "]}";
-      
+
       $oArquivo          = implode("\n", $aArquivoSalvar);
       $rsEscreverArquivo = file_put_contents($sCaminhoArquivoAssociacao, $oArquivo, LOCK_EX);
       if ( !$rsEscreverArquivo ) {

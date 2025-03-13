@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -32,7 +32,7 @@
  * @author bruno.silva
  * @author acacio.schneider
  * @package orcamento
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.17 $
  */
 class ProgramaMeta {
 
@@ -71,6 +71,11 @@ class ProgramaMeta {
    * @var ProgramaObjetivo
    */
   protected $oProgramaObjetivo;
+
+  /**
+   * @var ProgramaMetaIndice[]
+   */
+  protected $indices = array();
 
   /**
    * Recupera a propriedade do sequencial do Objetivo, presente na tabela orcmeta
@@ -220,6 +225,7 @@ class ProgramaMeta {
     }
 
     $this->iCodigoSequencial = $oDAOOrcMeta->o145_sequencial;
+    $this->salvarIndices();
 
     /**
      * Salva Cada uma das Iniciativas
@@ -229,6 +235,7 @@ class ProgramaMeta {
       $oIniciativa->setCodigoMeta($this->iCodigoSequencial);
       $oIniciativa->salvar();
     }
+
   }
 
   /**
@@ -242,7 +249,7 @@ class ProgramaMeta {
 
       $oDaoOrcIniciativa    = db_utils::getDao("orciniciativa");
       $sWhereIniciativas    = "o147_orcmeta = {$this->iCodigoSequencial}";
-      $sSqlBuscaIniciativas = $oDaoOrcIniciativa->sql_query_file(null, "*", null, $sWhereIniciativas);
+      $sSqlBuscaIniciativas = $oDaoOrcIniciativa->sql_query_file(null, "*", 'o147_ano', $sWhereIniciativas);
       $rsBuscaIniciativas   = db_query($sSqlBuscaIniciativas);
 
       if (!$rsBuscaIniciativas) {
@@ -269,18 +276,12 @@ class ProgramaMeta {
 
   /**
    * Vincula  Iniciativa a uma Meta
-   * @param  string             $sDescricao
-   * @param  string             $sIniciativa
-   * @throws DBException
+   * @param $oProgramaIniciativa
    */
-  public function adicionaIniciativa($sDescricao, $sIniciativa, $iAno) {
+  public function adicionaIniciativa(ProgramaIniciativa $oProgramaIniciativa) {
 
     $this->getIniciativas();
-    $oIniciativa = new ProgramaIniciativa();
-    $oIniciativa->setDescricao($sDescricao);
-    $oIniciativa->setAno($iAno);
-    $oIniciativa->setIniciativa($sIniciativa);
-    $this->aIniciativas[] = $oIniciativa;
+    $this->aIniciativas[] = $oProgramaIniciativa;
   }
 
   /**
@@ -291,6 +292,10 @@ class ProgramaMeta {
 
     foreach($this->getIniciativas() as $oIniciativa) {
       $oIniciativa->excluir();
+    }
+
+    foreach($this->getIndices() as $oIndice) {
+      $oIndice->excluir();
     }
 
     $oDaoOrcMeta = db_utils::getDao("orcmeta");
@@ -305,9 +310,8 @@ class ProgramaMeta {
   }
 
   /**
-   * Excluir  Vinculo de uma Iniciativa com uma Meta caso a iniciativa esteja vinculada a meta
-   * @param  ProgramaIniciativa $oIniciativa
-   * @throws DBException
+   * @param $iCodigoIniciativa
+   *
    * @throws BusinessException
    */
   public function excluirIniciativa($iCodigoIniciativa) {
@@ -355,6 +359,141 @@ class ProgramaMeta {
     }
     return $this->oProgramaObjetivo;
   }
+
+  /**
+   * @param ProgramaMetaIndice $indice
+   */
+  public function adicionarIndice(ProgramaMetaIndice $indice) {
+    $this->indices[$indice->getAno()] = $indice;
+  }
+
+  /**
+   * Salva os índices para as metas
+   * @return bool
+   * @throws DBException
+   */
+  private function salvarIndices() {
+
+    $daoMetaIndice = new cl_orcmetaindices();
+    $daoMetaIndice->excluir(null, "o154_orcmeta = {$this->iCodigoSequencial}");
+    if ($daoMetaIndice->erro_status === "0") {
+      throw new DBException("Ocorreu um erro ao excluir os índices para a meta {$this->sDescricao}.");
+    }
+
+    foreach ($this->indices as $indiceMeta) {
+
+      $daoMetaIndice = new cl_orcmetaindices();
+      $daoMetaIndice->o154_sequencial    = null;
+      $daoMetaIndice->o154_orcmeta       = $this->iCodigoSequencial;
+      $daoMetaIndice->o154_ano           = $indiceMeta->getAno();
+      $daoMetaIndice->o154_indice        = $indiceMeta->getIndice();
+      $daoMetaIndice->o154_unidademedida = $indiceMeta->getUnidadeMedida();
+      $daoMetaIndice->incluir(null);
+      if ($daoMetaIndice->erro_status === "0") {
+        throw new DBException("Ocorreu um erro ao salvar os índices para a meta {$this->sDescricao}. {$daoMetaIndice->erro_sql}");
+      }
+    }
+    return true;
+  }
+
+  /**
+   * @return ProgramaMetaIndice[]|array
+   * @throws DBException
+   */
+  public function getIndices() {
+
+    if (!empty($this->iCodigoSequencial) && empty($this->indices)) {
+
+      $daoIndice     = new cl_orcmetaindices();
+      $buscaIndices  = $daoIndice->sql_query_file(null, "*", 'o154_ano', "o154_orcmeta = {$this->iCodigoSequencial}");
+      $rsBuscaIndice = db_query($buscaIndices);
+      if (!$rsBuscaIndice) {
+        throw new DBException("Ocorreu um erro ao buscar os índices para a meta {$this->sDescricao}.");
+      }
+
+      $this->indices = db_utils::makeCollectionFromRecord($rsBuscaIndice, function ($dadosIndice) {
+
+        $indiceMeta = new ProgramaMetaIndice();
+        $indiceMeta->setAno($dadosIndice->o154_ano);
+        $indiceMeta->setIndice($dadosIndice->o154_indice);
+        $indiceMeta->setUnidadeMedida($dadosIndice->o154_unidademedida);
+
+        return $indiceMeta;
+      });
+    }
+
+    return $this->indices;
+  }
+
+  /**
+   * @return float|int
+   */
+  public function getIndicesSomados() {
+
+    $totalIndices = 0;
+    foreach ($this->getIndices() as $indice) {
+      $totalIndices += $indice->getIndice();
+    }
+    return $totalIndices;
+  }
+
+  /**
+   * @return int|false
+   */
+  public function getAnoMinimoIndice() {
+
+    $indices = $this->getIndices();
+    if (count($indices) > 0) {
+      return $indices[0]->getAno();
+    }
+    return false;
+  }
+
+  /**
+   * Retorna maior ano do índice
+   * @return int|false
+   */
+  public function getAnoMaximoIndice() {
+
+    $indices = $this->getIndices();
+    if (count($indices) > 0) {
+      return $indices[(count($indices)-1)]->getAno();
+    }
+    return false;
+  }
+
+  /**
+   * Retorna a unidade de medida encontrada para o primeiro indice
+   * @return string|false
+   */
+  public function getUnidadeMedidaIndice() {
+
+    $indices = $this->getIndices();
+    if (count($indices) > 0) {
+      return $indices[0]->getUnidadeMedida();
+    }
+    return false;
+  }
+
+  /**
+   * Retorna os dados do indice para o ano informado no parâmetro
+   *
+   * @param $ano
+   * @return bool|mixed|ProgramaMetaIndice
+   * @throws ParameterException
+   */
+  public function getIndiceNoAno($ano) {
+
+    if (empty($ano)) {
+      throw new ParameterException("Não foi informado um ano para ser retornado o índice.");
+    }
+    foreach ($this->getIndices() as $indice) {
+
+      if ((int)$indice->getAno() === (int)$ano) {
+        return $indice;
+      }
+    }
+    return false;
+  }
 }
 
-?>

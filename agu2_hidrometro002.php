@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,9 +26,9 @@
  */
 
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_aguahidromatric_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_aguahidromatric_classe.php"));
 $claguahidromatric = new cl_aguahidromatric;
 $clrotulo = new rotulocampo;
 $clrotulo->label('x04_matric  ');
@@ -55,7 +55,7 @@ if (($data != "--") && ($data1 != "--")) {
 	$data1 = db_formatar($data1, "d");
 	$info = "Data de Instalação Até $data1.";
 }
-$result = pg_exec("select x04_matric,
+$result = db_query("select x04_matric,
                           x04_nrohidro,
 													x15_diametro,
 													x03_sigla,

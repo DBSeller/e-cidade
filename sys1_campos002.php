@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($_POST);
 db_postmemory($_GET);
@@ -131,7 +131,7 @@ function js_procurar() {
   	document.form1.procuracampo.focus();
   	return false;
   }
-  js_OpenJanelaIframe('top.corpo','db_iframe_pesquisa','sys1_campos003.php?campo=' + document.form1.procuracampo.value);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesquisa','sys1_campos003.php?campo=' + document.form1.procuracampo.value);
 
   //jan = window.open('sys1_campos003.php?campo=' + document.form1.procuracampo.value,'','width=220,height=310,location=0');
   //jan.moveTo(450,150);

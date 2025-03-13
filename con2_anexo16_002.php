@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include ("fpdf151/assinatura.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 
 $classinatura = new cl_assinatura;
@@ -38,7 +38,7 @@ db_postmemory($HTTP_SERVER_VARS);
 
 $anousu  = db_getsession("DB_anousu");
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -66,7 +66,7 @@ $head5  = "INSTITUIÇÕES : ".$descr_inst;
 $head6  = "ANEXO 16";
 
 $sql    = "select * from conreltitulos where c44_anousu = $anousu and c44_instit in(".str_replace('-',', ',$db_selinstit).") ";
-$result = pg_exec($sql);
+$result = db_query($sql);
 //db_criatabela($result);exit;
 
 if(pg_numrows($result) == 0) {

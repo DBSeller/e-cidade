@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cargrup_classe.php");
-include("dbforms/db_funcoes.php");
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_cargrup_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+parse_str($_SERVER["QUERY_STRING"]);
+db_postmemory($_POST);
 $clcargrup = new cl_cargrup;
-$db_opcao = 1;
-$db_botao = true;
-if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir"){
+$db_opcao  = 1;
+$db_botao  = true;
+
+if ((isset($_POST["db_opcao"]) && $_POST["db_opcao"]) == "Incluir") {
+
   db_inicio_transacao();
   $clcargrup->incluir($j32_grupo);
   db_fim_transacao();
@@ -50,41 +53,25 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Incluir
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="document.form1.j32_descr.focus();"  >
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmcargrup.php");
+<body class="body-default" onLoad="document.form1.j32_descr.focus();">
+	<?php
+    include(modification("forms/db_frmcargrup.php"));
+    db_menu();
 	?>
-    </center>
-	</td>
-  </tr>
-</table>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
 </body>
 </html>
-<?
-if($clcargrup->erro_status=="0"){
+<?php
+if ($clcargrup->erro_status == "0") {
+  
   $clcargrup->erro(true,false);
   $db_botao=true;
   echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-  if($clcargrup->erro_campo!=""){
+  
+  if ($clcargrup->erro_campo != "") {
     echo "<script> document.form1.".$clcargrup->erro_campo.".style.backgroundColor='#99A9AE';</script>";
     echo "<script> document.form1.".$clcargrup->erro_campo.".focus();</script>";
-  };
-}else{
+  }
+} else {
   $clcargrup->erro(true,true);
-};
+}
 ?>

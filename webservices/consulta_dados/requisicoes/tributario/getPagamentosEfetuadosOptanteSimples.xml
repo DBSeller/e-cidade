@@ -6,6 +6,8 @@
     <campo  campo="round(q23_vlrprinc + q23_vlrmul + q23_vlrjur, 2)"  label="valor_corrigido"/>
     <campo  campo="q23_vlrprinc"  label="valor_historico"/>
     <campo  campo="arrepaga.k00_valor"  label="valor_pago"/>
+    <campo  campo="arrepaga.k00_numpre"  label="numpre"/>
+    <campo  campo="arrepaga.k00_numpar"  label="numpar"/>
   </campos>
   <from tabela="arreinscr" />
   <juncoes>
@@ -21,7 +23,8 @@
   </juncoes>
   <filtros>
     <filtro label="inscricao_municipal"  condicao=" k00_inscr= '$inscricao_municipal'" obrigatorio="true" />
-    <filtro label="tipo_debito"  condicao=" arrecant.k00_tipo = 3" obrigatorio="false" />
+    <filtro label="tipo_debito"  condicao=" arrecant.k00_tipo = '$tipo_debito'" obrigatorio="true" />
+    <filtro label="ano"  condicao=" issvar.q05_ano = '$ano'" obrigatorio="true" />
   </filtros>
   <agrupamento />
   <ordenacao campos="arrecant.k00_dtoper" />

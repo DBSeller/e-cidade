@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -483,6 +483,101 @@ class cl_certter {
      }
      return $sql;
   }
+
+  function sql_query_parcel ( $v14_certid=null,$v14_parcel=null,$campos="*",$ordem=null,$dbwhere=""){ 
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from certter ";
+    $sql .= " inner join certid on v14_certid = v13_certid ";
+    $sql .= " inner join termodiv on v14_parcel = termodiv.parcel ";
+    $sql .= " inner join divida on termodiv.coddiv = v01_coddiv ";
+    $sql .= " INNER JOIN cgm ON cgm.z01_numcgm = divida.v01_numcgm ";
+    $sql .= " INNER JOIN proced ON proced.v03_codigo = divida.v01_proced ";
+
+    $sql2 = "";
+    if($dbwhere==""){
+      if($v14_certid!=null ){
+        $sql2 .= " where certter.v14_certid = $v14_certid "; 
+      } 
+      if($v14_parcel!=null ){
+        if($sql2!=""){
+           $sql2 .= " and ";
+        }else{
+           $sql2 .= " where ";
+        } 
+        $sql2 .= " certter.v14_parcel = $v14_parcel "; 
+      } 
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+ }
+
+
+ /**
+  * Método utilizado para popular o SQL que verifica as dividas de parcelamento,
+  * no qual a estrutura de classes do PHP necessitava de tais colunas no SQL independente da informação
+  */
+ function sql_query_parcel_arrecad ($v14_certid=null, $v14_parcel=null) { 
+  $sql = "SELECT 0 AS v01_coddiv,
+                 k00_numcgm AS v01_numcgm,
+                 v07_dtlanc AS v01_dtinsc,
+                 extract(year from v07_dtlanc) AS v01_exerc,
+                 k00_numpre AS v01_numpre,
+                 k00_numpar AS v01_numpar,
+                 k00_numtot AS v01_numtot,
+                 k00_valor AS v01_vlrhis,
+                 0 AS v01_livro,
+                 0 AS v01_folha,
+                 k00_dtvenc AS v01_dtvenc,
+                 k00_dtoper AS v01_dtoper,
+                 k00_valor AS v01_valor,
+                 '' AS v01_obs,
+                 k00_numdig AS v01_numdig,
+                 v07_instit AS v01_instit,
+                 k00_dtoper AS v01_dtinclusao,
+                 0 AS v01_processo,
+                 null AS v01_dtprocesso,
+                 '' AS v01_titular,
+                 v14_certid,
+                 v14_parcel,
+                 v14_vlrhis,
+                 v14_vlrcor,
+                 v14_vlrjur,
+                 v14_vlrmul,
+                 0 AS v14_coddiv
+            FROM certter
+           INNER JOIN certid
+              ON certter.v14_certid = certid.v13_certid
+           INNER JOIN termo
+              ON termo.v07_parcel = certter.v14_parcel
+           INNER JOIN arrecad
+              ON arrecad.k00_numpre = termo.v07_numpre
+           WHERE certter.v14_certid = $v14_certid
+             AND certter.v14_parcel = $v14_parcel";
+
+  return $sql;
+}
+
    function sql_query_deb ( $v14_certid=null,$v14_parcel=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){

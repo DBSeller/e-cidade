@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_gerfcom_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_gerfcom_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -367,11 +367,11 @@ function js_pesquisa_r70_estrut_ini(mostra) {
   var sUrl2           = 'func_rhlotaestrut.php?pesquisa_chave='+r70_estrut_ini+'&tipobusca=1'+sFuncao;
   
   if (lMostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhlotaestrut',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlotaestrut',sUrl1,'Pesquisa',true);
   } else {
   
      if (r70_estrut_ini != '') { 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhlotaestrut',sUrl2,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlotaestrut',sUrl2,'Pesquisa',false);
      } else {
        $('r70_estrut_ini').value = ''; 
      }
@@ -403,11 +403,11 @@ function js_pesquisa_r70_estrut_fim(mostra) {
   var sUrl2           = 'func_rhlotaestrut.php?pesquisa_chave='+r70_estrut_fim+'&tipobusca=1'+sFuncao;
   
   if (lMostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhlotaestrut',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlotaestrut',sUrl1,'Pesquisa',true);
   } else {
   
      if (r70_estrut_fim != '') { 
-       js_OpenJanelaIframe('top.corpo','db_iframe_rhlotaestrut',sUrl2,'Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlotaestrut',sUrl2,'Pesquisa',false);
      } else {
        $('r70_estrut_fim').value = ''; 
      }
@@ -439,11 +439,11 @@ function js_pesquisa_rh01_regist_ini(mostra) {
   var sUrl2           = 'func_rhpessoal.php?pesquisa_chave='+rh01_regist_ini+'&tipobusca=1'+sFuncao;
   
   if (lMostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal',sUrl1,'Pesquisa',true);
   } else {
   
      if (rh01_regist_ini != '') { 
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal',sUrl2,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal',sUrl2,'Pesquisa',false);
      } else {
        $('rh01_regist_ini').value = ''; 
      }
@@ -475,11 +475,11 @@ function js_pesquisa_rh01_regist_fim(mostra) {
   var sUrl2           = 'func_rhpessoal.php?pesquisa_chave='+rh01_regist_fim+'&tipobusca=1'+sFuncao;
   
   if (lMostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal',sUrl1,'Pesquisa',true);
   } else {
   
      if (rh01_regist_fim != '') { 
-       js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal',sUrl2,'Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal',sUrl2,'Pesquisa',false);
      } else {
        $('rh01_regist_fim').value = ''; 
      }
@@ -511,11 +511,11 @@ function js_pesquisa_z01_numcgm_ini(mostra) {
   var sUrl2           = 'func_nome.php?pesquisa_chave='+z01_numcgm_ini+'&tipobusca=1'+sFuncao;
   
   if (lMostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_nome',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nome',sUrl1,'Pesquisa',true);
   } else {
   
      if (z01_numcgm_ini != '') { 
-        js_OpenJanelaIframe('top.corpo','db_iframe_nome',sUrl2,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nome',sUrl2,'Pesquisa',false);
      } else {
        $('z01_numcgm_ini').value = ''; 
      }
@@ -547,11 +547,11 @@ function js_pesquisa_z01_numcgm_fim(mostra) {
   var sUrl2           = 'func_nome.php?pesquisa_chave='+z01_numcgm_fim+'&tipobusca=1'+sFuncao;
   
   if (lMostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_nome',sUrl1,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nome',sUrl1,'Pesquisa',true);
   } else {
   
      if (z01_numcgm_fim != '') { 
-       js_OpenJanelaIframe('top.corpo','db_iframe_nome',sUrl2,'Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_nome',sUrl2,'Pesquisa',false);
      } else {
        $('z01_numcgm_fim').value = ''; 
      }

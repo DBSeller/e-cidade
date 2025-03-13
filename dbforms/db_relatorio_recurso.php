@@ -47,7 +47,7 @@ function sql_saldo_bancario($anousu="",$data_limite="",$db_selinstit="1",$where_
                                                                                          $where_recurso
 										    inner join conplano on c61_codcon = c60_codcon and c61_anousu=c60_anousu
 										    inner join orctiporec on o15_codigo = c61_codigo
-								            inner join conplanoconta on c63_codcon = conplano.c60_codcon and c63_anousu=c60_anousu
+								            inner join conplanoconta on c63_codcon = conplano.c60_codcon and c63_anousu=c60_anousu and c63_reduz = c61_reduz
 								            inner join db_bancos on trim(db90_codban) = conplanoconta.c63_banco::varchar(10)  
 							  where c60_codsis in (5,6)                          
 							  order by k13_descr								                      

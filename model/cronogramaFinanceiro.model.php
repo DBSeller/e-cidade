@@ -1,32 +1,41 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-
-
 class cronogramaFinanceiro {
+
+  const TIPO_BASE_CALCULO = 1;
+  const TIPO_RECEITA = 2;
+  const TIPO_DESPESA = 3;
+  const SITUACAO_ABERTO = 1;
+  const SITUACAO_HOMOLOGADO = 2;
+
+  const TIPO_CRONOGRAMA     = 1;
+  const TIPO_ACOMPANHAMENTO = 2;
+
+  const MENSAGENS = 'financeiro.orcamento.cronogramaFinanceiro.';
 
   /**
    * Codigo da Perspectiva
@@ -38,7 +47,7 @@ class cronogramaFinanceiro {
   /**
    * Ano do Cronrograma
    *
-   * @var iAno
+   * @var int
    */
   protected $iAno;
 
@@ -56,11 +65,27 @@ class cronogramaFinanceiro {
    */
   protected $aInstituicoes = array();
 
-  protected $aReceitas = array();
   /**
-   *
+   * @var array
    */
+  protected $aReceitas = array();
 
+  /**
+   * @var int
+   */
+  protected $iPpaVersao;
+
+  /**
+   * Tipo da Perspectiva  1 = Cronograma de Desembolso 2 = Acompanhamento
+   * @var int
+   */
+  protected $iTipoPerspectiva;
+
+
+
+  /**
+   * @param int
+   */
   function __construct($iPerspectiva) {
 
     if ($iPerspectiva != "") {
@@ -72,14 +97,23 @@ class cronogramaFinanceiro {
 
       if ($oDaoCronogramaPerspectiva->numrows > 0) {
 
-        $this->iPerspectiva   = $iPerspectiva;
-        $oDadosCronograma = db_utils::fieldsMemory($rsDadosCronograma,0,false,false);
-        $this->sDescricao = $oDadosCronograma->o124_descricao;
-        $this->iAno       = $oDadosCronograma->o124_ano;
+        $this->iPerspectiva = $iPerspectiva;
+        $oDadosCronograma   = db_utils::fieldsMemory($rsDadosCronograma,0,false,false);
+        $this->sDescricao   = $oDadosCronograma->o124_descricao;
+        $this->iAno         = $oDadosCronograma->o124_ano;
+        $this->iPpaVersao   = $oDadosCronograma->o124_ppaversao;
+        $this->iTipoPerspectiva = $oDadosCronograma->o124_tipo;
         $this->setInstituicoes(array(db_getsession("DB_instit")));
 
       }
     }
+  }
+
+  /**
+   * @return int
+   */
+  public function getPpaVersao() {
+    return $this->iPpaVersao;
   }
 
   /**
@@ -99,7 +133,7 @@ class cronogramaFinanceiro {
   }
 
   /**
-   * @return iAno
+   * @return int
    */
   public function getAno() {
 
@@ -124,8 +158,8 @@ class cronogramaFinanceiro {
 
   /**
    * Retornas as receitas cadastradas no ano;
-   *
    * @return array
+   * @throws Exception
    */
   protected  function getReceitas() {
 
@@ -146,11 +180,14 @@ class cronogramaFinanceiro {
     $sListaCampos .= "o70_codrec" ;
     $sWhere        = "o70_anousu = {$this->getAno()} ";
     $sWhere       .= " and o70_instit in({$sInstituicoes})";
-    //$sWhere       .= " and o57_fonte ilike '9%'";
+
     $sSqlReceita  = $oDaoOrcReceita->sql_query_plano(null, null, $sListaCampos, "o57_fonte,o70_concarpeculiar",$sWhere);
     $rsReceita    = $oDaoOrcReceita->sql_record($sSqlReceita);
     if ($oDaoOrcReceita->numrows == 0) {
-      throw new Exception("Não Existem Receitas cadastradas para o ano {$this->getAno()}");
+
+      $oStdMensagem      = new stdClass();
+      $oStdMensagem->ano = $this->getAno();
+      throw new Exception(_M(self::MENSAGENS . "erro_sem_receitas_ano", $oStdMensagem));
     }
 
     for ($i = 0; $i < $oDaoOrcReceita->numrows; $i++) {
@@ -170,6 +207,7 @@ class cronogramaFinanceiro {
    * Calcula as /bases/Metas de arrecadacao da receita e metas de custo da despesa
    *
    * @param integer $iTipo Tipo do processamento 1 = BASE  2 = METAS 3 -  Despesa
+   * @throws Exception
    */
   public function CalcularBases($iTipo) {
 
@@ -186,12 +224,9 @@ class cronogramaFinanceiro {
       $i = 0;
       foreach ($aReceitas as $oReceita) {
 
-        //if ($i > 0 && $i % 100 == 0 && $iTipo == 1) {
+        db_fim_transacao(false);
+        db_inicio_transacao();
 
-          db_fim_transacao(false);
-          db_inicio_transacao();
-
-        //}
         /**
          * Verificamos se nao existe a receita na perspectiva
          * Caso exista, apenas
@@ -211,20 +246,22 @@ class cronogramaFinanceiro {
           $oDaoCronogramaReceita->o126_cronogramaperspectiva = $oReceita->iPerspectiva;
           $oDaoCronogramaReceita->incluir(null);
           if ($oDaoCronogramaReceita->erro_status == 0) {
-            throw new Exception("Não foi possivel incluir receita na Perspectiva\n{$oDaoCronogramaReceita->erro_msg}");
+
+            $oStdMensagem      = new stdClass();
+            $oStdMensagem->msg = $oDaoCronogramaReceita->erro_msg;
+            throw new Exception(_M(self::MENSAGENS . "erro_inclusao_receita", $oStdMensagem));
           }
           $aReceitas[$sHash]->iSequencial = $oDaoCronogramaReceita->o126_sequencial;
         }
         if ($iTipo == 1) {
 
-
-          require_once("model/cronogramaBaseReceita.model.php");
+          require_once(modification("model/cronogramaBaseReceita.model.php"));
           $aReceitas[$sHash]->aBases      = new cronogramaBaseReceita($aReceitas[$sHash]);
           $aReceitas[$sHash]->aBases->calcularBases();
 
         } else if ($iTipo == 2) {
 
-          require_once("model/cronogramaMetaReceita.model.php");
+          require_once(modification("model/cronogramaMetaReceita.model.php"));
           $aReceitas[$sHash]->aMetas      = new cronogramaMetaReceita($aReceitas[$sHash]);
           $aReceitas[$sHash]->aMetas->calcularMetas();
 
@@ -269,15 +306,18 @@ class cronogramaFinanceiro {
           $oDaoCronogramaDespesa->o130_cronogramaperspectiva = $oDespesa->iPerspectiva;
           $oDaoCronogramaDespesa->incluir(null);
           if ($oDaoCronogramaDespesa->erro_status == 0) {
-            throw new Exception("Não foi possivel incluir despesa na Perspectiva\n{$oDaoCronogramaDespesa->erro_msg}");
+
+            $oStdMensagem      = new stdClass();
+            $oStdMensagem->msg = $oDaoCronogramaDespesa->erro_msg;
+            throw new Exception(_M(self::MENSAGENS . "erro_inclusao_despesa", $oStdMensagem));
           }
 
           $aDespesas[$oDespesa->dotacao]->iSequencial = $oDaoCronogramaDespesa->o130_sequencial;
 
         }
 
-        require_once("model/cronogramaMetaDespesa.model.php");
-        $aDespesas[$oDespesa->dotacao]->aMetas      = new cronogramaMetaDespesa($aDespesas[$oDespesa->dotacao]);
+        require_once(modification("model/cronogramaMetaDespesa.model.php"));
+        $aDespesas[$oDespesa->dotacao]->aMetas      = new cronogramaMetaDespesa($aDespesas[$oDespesa->dotacao], null, $this);
         $aDespesas[$oDespesa->dotacao]->aMetas->calcularMetas();
       }
     }
@@ -287,14 +327,13 @@ class cronogramaFinanceiro {
    * Retorna as bases calculadas da Receita
    *
    * @param  string $sStrutural
-   * @param  integer $iRecurso
+   * @param integer $iRecurso
    * @return array
+   * @throws Exception
    */
   public function getBaseReceitas($sStrutural= '', $iRecurso = '') {
 
-    require_once("model/cronogramaBaseReceita.model.php");
-
-    $sInstituicoes   = implode(",", $this->getInstituicoes());
+    require_once(modification("model/cronogramaBaseReceita.model.php"));
 
     $sWhere  = "  o57_anousu = {$this->getAno()} ";
     if (trim($sStrutural) != "") {
@@ -311,7 +350,6 @@ class cronogramaFinanceiro {
     $sListaCampos  = "o57_fonte,          ";
     $sListaCampos .= "o57_descr,          " ;
     $sListaCampos .= "o57_codfon,        " ;
-    //$sListaCampos .= "o60_codfon,        " ;
     $sListaCampos .= "o70_instit,         " ;
     $sListaCampos .= "o70_anousu,         " ;
     $sListaCampos .= "o70_valor,         " ;
@@ -322,7 +360,10 @@ class cronogramaFinanceiro {
     $sSqlReceita  = $oDaoOrcReceita->sql_query_receita(null,$sListaCampos, "o57_fonte,o70_concarpeculiar",$sWhere);
     $rsReceita    = $oDaoOrcReceita->sql_record($sSqlReceita);
     if ($oDaoOrcReceita->numrows == 0) {
-      throw new Exception("Não Existem Receitas cadastradas para o ano {$this->getAno()}");
+
+      $oStdMensagem      = new stdClass();
+      $oStdMensagem->ano = $this->getAno();
+      throw new Exception(_M(self::MENSAGENS . "erro_sem_receitas_ano", $oStdMensagem));
     }
     $aEstruturaisPai    = array();
     $aReceitasDesdobrar = array();
@@ -427,7 +468,7 @@ class cronogramaFinanceiro {
    */
   function getMetasReceita($sStrutural= '', $mRecurso = '') {
 
-    require_once("model/cronogramaMetaReceita.model.php");
+    require_once(modification("model/cronogramaMetaReceita.model.php"));
 
     $sInstituicoes   = implode(",", $this->getInstituicoes());
 
@@ -436,7 +477,6 @@ class cronogramaFinanceiro {
 
       $sWhere .= " and (o70_instit in({$sInstituicoes}) or o70_instit is null)";
     }
-    //$sWhere .= " and o126_cronogramaperspectiva = {$this->getPerspectiva()}";
     if (trim($sStrutural) != "") {
       $sWhere .= " and o57_fonte ilike '{$sStrutural}%'";
     }
@@ -601,7 +641,8 @@ class cronogramaFinanceiro {
     $sListaCampos  .= "o58_codigo as recurso,";
     $sListaCampos  .= "o15_descr as recursodescr,";
     $sListaCampos  .= "o58_valor as valororcado,";
-    $sListaCampos  .= "o58_localizadorgastos as localizadorgastos";
+    $sListaCampos  .= "o58_localizadorgastos as localizadorgastos,";
+    $sListaCampos  .= "o58_coddot as lista_dotacoes_grupo";
 
     $sOrderBy   = "o58_anousu,";
     $sOrderBy  .= "o58_orgao,";
@@ -617,7 +658,10 @@ class cronogramaFinanceiro {
     $sSqldotacao = $oDaoOrcDotacao->sql_query(null,null, $sListaCampos, $sOrderBy ." ", $sWhere);
     $rsDotacao   = $oDaoOrcDotacao->sql_record($sSqldotacao);
     if ($oDaoOrcDotacao->numrows == 0) {
-      throw new Exception("Não existem dotações cadastradas pra o ano de {$this->getAno()}");
+
+      $oStdMensagem      = new stdClass();
+      $oStdMensagem->ano = $this->getAno();
+      throw new Exception(_M(self::MENSAGENS . "erro_sem_dotacoes_ano", $oStdMensagem));
     }
 
     for ($i = 0; $i < $oDaoOrcDotacao->numrows; $i++) {
@@ -688,6 +732,12 @@ class cronogramaFinanceiro {
         $oFields->sOrder  = "1,2";
         break;
 
+      case 9:
+
+        $oFields->sCampos = "null as codigo, o58_orgao, o58_unidade, o58_codigo, o58_localizadorgastos, o15_descr, o11_descricao ";
+        $oFields->sOrder  = "1,2,3,4, 5,6, 7";
+        break;
+
       case 99:
 
         $oFields->sCampos  = "o58_orgao, o58_unidade, o58_funcao, o58_subfuncao, o58_programa, o58_projativ,";
@@ -695,35 +745,43 @@ class cronogramaFinanceiro {
         $oFields->sOrder  = $oFields->sCampos;
         break;
      default:
-       throw new Exception("Nivel {$iAgrupar} nao definido");
+
+       $oStdMensagem          = new stdClass();
+       $oStdMensagem->agrupar = $iAgrupar;
+       throw new Exception(_M(self::MENSAGENS . "erro_nivel_nao_definido", $oStdMensagem));
     }
 
     $aDespesas       = array();
     $sInstituicoes   = implode(",", $this->getInstituicoes());
     $oDaoOrcDotacao  = db_utils::getDao("orcdotacao");
-    require_once("libs/db_liborcamento.php");
+    require_once(modification("libs/db_liborcamento.php"));
     $oSelDotacao = new cl_selorcdotacao();
     $sWhere      = "o58_anousu = {$this->getAno()} ";
     $oSelDotacao->setDados($sFiltros); // passa os parametros vindos da func_selorcdotacao_abas.php
     $sWhere     .= " and ".$oSelDotacao->getDados(false);
     $sWhere     .= " and o58_instit in({$sInstituicoes})";
 
+    if ($this->getTipo() == cronogramaFinanceiro::TIPO_ACOMPANHAMENTO) {
+      $sWhere .= " and o58_valor > 0";
+    }
+
+    $sCampos     = "{$oFields->sCampos}, sum(o58_valor) as valororcado, array_to_string(array_accum(distinct o58_coddot), ',') as lista_dotacoes_grupo";
     $sSqldotacao = $oDaoOrcDotacao->sql_query(null,null,
-                                              "{$oFields->sCampos}, sum(o58_valor) as valororcado",
+                                               $sCampos,
                                                $oFields->sOrder ."",
-                                              $sWhere." group by {$oFields->sOrder}"
+                                               $sWhere." group by {$oFields->sOrder}",
+                                               $this->iPerspectiva
                                              );
 
 
     $rsDotacao   = $oDaoOrcDotacao->sql_record($sSqldotacao);
     if ($oDaoOrcDotacao->numrows > 0) {
 
-       require_once ("model/cronogramaMetaDespesa.model.php");
        for ($i = 0; $i < $oDaoOrcDotacao->numrows; $i++) {
 
           $aDespesas[$i] = db_utils::fieldsMemory($rsDotacao, $i, false, false, true);
           $aDespesas[$i]->iPerspectiva   = $this->getPerspectiva();
-          $aDespesas[$i]->aMetas         = new cronogramaMetaDespesa($aDespesas[$i], $iAgrupar);
+          $aDespesas[$i]->aMetas         = new cronogramaMetaDespesa($aDespesas[$i], $iAgrupar, $this);
           $aDespesas[$i]->aMetas->setInstituicoes($this->getInstituicoes());
           $aDespesas[$i]->aMetas->dados  = $aDespesas[$i]->aMetas->getMetas($sFiltros);
 
@@ -842,8 +900,9 @@ class cronogramaFinanceiro {
     $rsReceita = db_query($sSqlReceita);
     if (pg_num_rows($rsReceita) != 1) {
 
-       $sMsg =  "Erro ao ajustar receita {$iReceita}. Inconsistncia no registro.";
-       throw new Exception($sMsg);
+      $oStdMensagem          = new stdClass();
+      $oStdMensagem->receita = $iReceita;
+      throw new Exception(_M(self::MENSAGENS . "erro_ajuste_receita", $oStdMensagem));
     }
     $oReceita = db_utils::fieldsMemory($rsReceita, 0);
     $oReceita->iSequencial    = $oReceita->o126_sequencial;
@@ -862,7 +921,26 @@ class cronogramaFinanceiro {
     }
     $oReceita->aMetas->save();
   }
+
+  /**
+   * Retorna o tipo da perspectiva
+   * @return int
+   */
+  public function getTipo() {
+    return $this->iTipoPerspectiva;
+  }
+
+  /**
+   * Verifica se a perspectiva possui acompanhamento
+   * @return bool
+   */
+  public function temAcompanhamento() {
+
+    $oDaoCronogramaPerspectivaAcompanhamento = new cl_cronogramaperspectivaacompanhamento();
+
+    $sWhere                = "o151_cronogramaperspectivaorigem = {$this->iPerspectiva}";
+    $sSqlTemAcompanhamento = $oDaoCronogramaPerspectivaAcompanhamento->sql_query_acompanhamento(null, '1', null, $sWhere);
+    $oDaoCronogramaPerspectivaAcompanhamento->sql_record($sSqlTemAcompanhamento);
+    return $oDaoCronogramaPerspectivaAcompanhamento->numrows > 0;
+  }
 }
-
-
-?>

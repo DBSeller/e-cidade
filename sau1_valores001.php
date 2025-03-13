@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_procedimentos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_procedimentos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clprocedimentos = new cl_procedimentos;
 $db_opcao = 1;
@@ -52,7 +52,7 @@ elseif(isset($aterar))
 <?
  $proc  = $_GET["Procedimento"];
  $sqlvalor = "SELECT * FROM valores WHERE procedimento_i_codigo = $proc";
- $query = @pg_query($conexao,$sqlvalor);
+ $query = @db_query($conexao,$sqlvalor);
  if($query)
  {
   $linhas = pg_num_rows($query);
@@ -251,7 +251,7 @@ if(isset($_GET["Array"]))
                  $Grava[15]
                 )
                 ";
- $insert = @pg_query($conexao,$SqlValores);
+ $insert = @db_query($conexao,$SqlValores);
  if(!$insert)
  {
   $SqlValores = "UPDATE valores SET
@@ -273,7 +273,7 @@ if(isset($_GET["Array"]))
                   valor_f_total        = $Grava[16]
                  WHERE procedimento_i_codigo = $Grava[0]
                 ";
-  $update = @pg_query($conexao,$SqlValores);
+  $update = @db_query($conexao,$SqlValores);
   if($update)
    $Msg = "Valores Atualizados!";
  }

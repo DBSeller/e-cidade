@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,8 +27,8 @@
 
 /**
  * Classe representa a folha de pagamento do salário
- * @author $Author: dbrenan $
- * @version $Revision: 1.10 $
+ * @author $Author: dbigor.cemim $
+ * @version $Revision: 1.16 $
  */
 class FolhaPagamentoSalario extends FolhaPagamento {
   
@@ -73,6 +73,25 @@ class FolhaPagamentoSalario extends FolhaPagamento {
   }
 
   /**
+   * Verifica se existe algum registro do tipo folha salario na
+   * competencia passada por parametro ou caso não seja passado
+   * pega a competencia atual
+   * 
+   * @param DBCompetencia $oCompetencia Opcional
+   * @return Boolean
+   */
+  public static function hasFolha(DBCompetencia $oCompetencia = null) {
+
+    if ($oCompetencia) {
+      return FolhaPagamento::hasFolhaTipo(FolhaPagamento::TIPO_FOLHA_SALARIO, $oCompetencia);
+    }
+
+    return FolhaPagamento::hasFolhaTipo(FolhaPagamento::TIPO_FOLHA_SALARIO,
+      new DBCompetencia(DBPessoal::getAnoFolha(), DBPessoal::getMesFolha())
+    );
+  }
+
+  /**
    * Retorna o ultimo número unico da folha pagamento, conforme o tipo passado.
    * 
    * @example  FolhaPagamento:getProximoNumero(FolhaPagamento::TIPO_FOLHA_SALARIO)
@@ -87,6 +106,13 @@ class FolhaPagamentoSalario extends FolhaPagamento {
    * @return boolean
    */
   public function fechar() {
+
+    /**
+     * Verifica se existe alguma complementar aberta.
+     */
+    if (FolhaPagamentoComplementar::hasFolhaAberta($this->getCompetencia())) {
+      throw new DBException(_M(self::MENSAGENS . "folha_complementar_aberta"));
+    }
 
     /**
      * Verifica se a folha esta aberta
@@ -130,5 +156,33 @@ class FolhaPagamentoSalario extends FolhaPagamento {
    */
   public function cancelarAbertura(){
     return false;
+  }
+
+  /**
+   * Realiza o cancelamento do fechamento da Folha Salario, as seguintes 
+   * regras devem ser respeitadas:
+   * - Não pode existir uma folha suplementar
+   * - Folha informada estar fechada
+   * - Não pode existir outra folha do mesmo tipo em aberto
+   * - A folha informada não pode estar empenhada
+   * @return boolean
+   */
+  public function cancelarFechamento() {
+  
+    if (FolhaPagamentoSuplementar::hasFolha()) {
+      throw new DBException(_M(self::MENSAGENS . "erro_existe_suplementar"));
+    }
+
+    return parent::cancelarFechamento();
+  }
+
+  /**
+   * Retorna todas as folhas de salário fechadas na compentência
+   *
+   * @param  DBCompetencia $oCompetencia Competencia da Folha
+   * @return array folhas de pagamentos de salários 
+   */
+  public static function getFolhasFechadasCompetencia( DBCompetencia $oCompetencia ) {
+    return FolhaPagamento::getFolhasFechadasCompetencia($oCompetencia, FolhaPagamento::TIPO_FOLHA_SALARIO);
   }
 }

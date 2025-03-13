@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_issnotaavulsatomador_classe.php");
-include("classes/db_parissqn_classe.php");
-include("classes/db_issnotaavulsaservico_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_issnotaavulsatomador_classe.php"));
+include(modification("classes/db_parissqn_classe.php"));
+include(modification("classes/db_issnotaavulsaservico_classe.php"));
 
 $clissnotaavulsatomador = new cl_issnotaavulsatomador();
 $get                    = db_utils::postmemory($_GET);
@@ -69,7 +69,7 @@ $q53_dtservico_ano = $dtservico[0];
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
 <?
-include("forms/db_frmissnotaavulsatomadorconsulta.php");
+include(modification("forms/db_frmissnotaavulsatomadorconsulta.php"));
 ?>
 </body>
 </html>

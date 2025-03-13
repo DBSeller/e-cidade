@@ -1,65 +1,65 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: pessoal
 //CLASSE DA ENTIDADE rhempenhofolha
-class cl_rhempenhofolha { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $rh72_sequencial = 0; 
-   var $rh72_coddot = 0; 
-   var $rh72_codele = 0; 
-   var $rh72_unidade = 0; 
-   var $rh72_orgao = 0; 
-   var $rh72_projativ = 0; 
-   var $rh72_anousu = 0; 
-   var $rh72_recurso = 0; 
-   var $rh72_mesusu = 0; 
-   var $rh72_siglaarq = null; 
-   var $rh72_tipoempenho = 0; 
-   var $rh72_tabprev = 0; 
-   var $rh72_seqcompl = 0; 
-   var $rh72_concarpeculiar = null; 
-   var $rh72_funcao = 0; 
-   var $rh72_subfuncao = 0; 
-   var $rh72_programa = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_rhempenhofolha {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $rh72_sequencial = 0;
+   var $rh72_coddot = 0;
+   var $rh72_codele = 0;
+   var $rh72_unidade = 0;
+   var $rh72_orgao = 0;
+   var $rh72_projativ = 0;
+   var $rh72_anousu = 0;
+   var $rh72_recurso = 0;
+   var $rh72_mesusu = 0;
+   var $rh72_siglaarq = null;
+   var $rh72_tipoempenho = 0;
+   var $rh72_tabprev = 0;
+   var $rh72_seqcompl = 0;
+   var $rh72_concarpeculiar = null;
+   var $rh72_funcao = 0;
+   var $rh72_subfuncao = 0;
+   var $rh72_programa = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  rh72_sequencial = int4 = Sequencial 
                  rh72_coddot = int4 = Dotação 
@@ -79,14 +79,14 @@ class cl_rhempenhofolha {
                  rh72_subfuncao = int4 = Subfunção 
                  rh72_programa = int4 = Programa 
                  ";
-   //funcao construtor da classe 
-   function cl_rhempenhofolha() { 
+   //funcao construtor da classe
+   function cl_rhempenhofolha() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("rhempenhofolha"); 
+     $this->rotulo = new rotulo("rhempenhofolha");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -119,12 +119,12 @@ class cl_rhempenhofolha {
      }
    }
    // funcao para inclusao
-   function incluir ($rh72_sequencial){ 
+   function incluir ($rh72_sequencial){
       $this->atualizacampos();
-     if($this->rh72_coddot == null ){ 
+     if($this->rh72_coddot == null ){
        $this->rh72_coddot = "0";
      }
-     if($this->rh72_codele == null ){ 
+     if($this->rh72_codele == null ){
        $this->erro_sql = " Campo Elemento nao Informado.";
        $this->erro_campo = "rh72_codele";
        $this->erro_banco = "";
@@ -133,7 +133,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_unidade == null ){ 
+     if($this->rh72_unidade == null ){
        $this->erro_sql = " Campo Unidade nao Informado.";
        $this->erro_campo = "rh72_unidade";
        $this->erro_banco = "";
@@ -142,7 +142,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_orgao == null ){ 
+     if($this->rh72_orgao == null ){
        $this->erro_sql = " Campo Órgão nao Informado.";
        $this->erro_campo = "rh72_orgao";
        $this->erro_banco = "";
@@ -151,7 +151,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_projativ == null ){ 
+     if($this->rh72_projativ == null ){
        $this->erro_sql = " Campo Projetos / Atividades nao Informado.";
        $this->erro_campo = "rh72_projativ";
        $this->erro_banco = "";
@@ -160,7 +160,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_anousu == null ){ 
+     if($this->rh72_anousu == null ){
        $this->erro_sql = " Campo Exercício nao Informado.";
        $this->erro_campo = "rh72_anousu";
        $this->erro_banco = "";
@@ -169,7 +169,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_recurso == null ){ 
+     if($this->rh72_recurso == null ){
        $this->erro_sql = " Campo Recurso nao Informado.";
        $this->erro_campo = "rh72_recurso";
        $this->erro_banco = "";
@@ -178,7 +178,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_mesusu == null ){ 
+     if($this->rh72_mesusu == null ){
        $this->erro_sql = " Campo Mês nao Informado.";
        $this->erro_campo = "rh72_mesusu";
        $this->erro_banco = "";
@@ -187,7 +187,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_siglaarq == null ){ 
+     if($this->rh72_siglaarq == null ){
        $this->erro_sql = " Campo Sigla nao Informado.";
        $this->erro_campo = "rh72_siglaarq";
        $this->erro_banco = "";
@@ -196,7 +196,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_tipoempenho == null ){ 
+     if($this->rh72_tipoempenho == null ){
        $this->erro_sql = " Campo Tipo Empenho nao Informado.";
        $this->erro_campo = "rh72_tipoempenho";
        $this->erro_banco = "";
@@ -205,7 +205,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_tabprev == null ){ 
+     if($this->rh72_tabprev == null ){
        $this->erro_sql = " Campo Tabela de Previdência nao Informado.";
        $this->erro_campo = "rh72_tabprev";
        $this->erro_banco = "";
@@ -214,7 +214,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_seqcompl == null ){ 
+     if($this->rh72_seqcompl == null ){
        $this->erro_sql = " Campo Sequencia de Folha Complementar nao Informado.";
        $this->erro_campo = "rh72_seqcompl";
        $this->erro_banco = "";
@@ -223,7 +223,7 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_concarpeculiar == null ){ 
+     if($this->rh72_concarpeculiar == null ){
        $this->erro_sql = " Campo Caracteristica Peculiar nao Informado.";
        $this->erro_campo = "rh72_concarpeculiar";
        $this->erro_banco = "";
@@ -232,26 +232,26 @@ class cl_rhempenhofolha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh72_funcao == null ){ 
+     if($this->rh72_funcao == null ){
        $this->rh72_funcao = "null";
      }
-     if($this->rh72_subfuncao == null ){ 
+     if($this->rh72_subfuncao == null ){
        $this->rh72_subfuncao = "null";
      }
-     if($this->rh72_programa == null ){ 
+     if($this->rh72_programa == null ){
        $this->rh72_programa = "null";
      }
      if($rh72_sequencial == "" || $rh72_sequencial == null ){
-       $result = db_query("select nextval('rhempenhofolha_rh72_sequencial_seq')"); 
+       $result = db_query("select nextval('rhempenhofolha_rh72_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: rhempenhofolha_rh72_sequencial_seq do campo: rh72_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: rhempenhofolha_rh72_sequencial_seq do campo: rh72_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->rh72_sequencial = pg_result($result,0,0); 
+       $this->rh72_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from rhempenhofolha_rh72_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $rh72_sequencial)){
@@ -262,10 +262,10 @@ class cl_rhempenhofolha {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->rh72_sequencial = $rh72_sequencial; 
+         $this->rh72_sequencial = $rh72_sequencial;
        }
      }
-     if(($this->rh72_sequencial == null) || ($this->rh72_sequencial == "") ){ 
+     if(($this->rh72_sequencial == null) || ($this->rh72_sequencial == "") ){
        $this->erro_sql = " Campo rh72_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -311,8 +311,8 @@ class cl_rhempenhofolha {
                                ,$this->rh72_subfuncao 
                                ,$this->rh72_programa 
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "rhempenhofolha ($this->rh72_sequencial) nao Incluído. Inclusao Abortada.";
@@ -360,16 +360,16 @@ class cl_rhempenhofolha {
        $resac = db_query("insert into db_acount values($acount,2506,19175,'','".AddSlashes(pg_result($resaco,0,'rh72_programa'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($rh72_sequencial=null) { 
+   function alterar ($rh72_sequencial=null) {
       $this->atualizacampos();
      $sql = " update rhempenhofolha set ";
      $virgula = "";
-     if(trim($this->rh72_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_sequencial"])){ 
+     if(trim($this->rh72_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_sequencial"])){
        $sql  .= $virgula." rh72_sequencial = $this->rh72_sequencial ";
        $virgula = ",";
-       if(trim($this->rh72_sequencial) == null ){ 
+       if(trim($this->rh72_sequencial) == null ){
          $this->erro_sql = " Campo Sequencial nao Informado.";
          $this->erro_campo = "rh72_sequencial";
          $this->erro_banco = "";
@@ -379,17 +379,17 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_coddot)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_coddot"])){ 
-        if(trim($this->rh72_coddot)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh72_coddot"])){ 
-           $this->rh72_coddot = "0" ; 
-        } 
+     if(trim($this->rh72_coddot)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_coddot"])){
+        if(trim($this->rh72_coddot)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh72_coddot"])){
+           $this->rh72_coddot = "0" ;
+        }
        $sql  .= $virgula." rh72_coddot = $this->rh72_coddot ";
        $virgula = ",";
      }
-     if(trim($this->rh72_codele)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_codele"])){ 
+     if(trim($this->rh72_codele)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_codele"])){
        $sql  .= $virgula." rh72_codele = $this->rh72_codele ";
        $virgula = ",";
-       if(trim($this->rh72_codele) == null ){ 
+       if(trim($this->rh72_codele) == null ){
          $this->erro_sql = " Campo Elemento nao Informado.";
          $this->erro_campo = "rh72_codele";
          $this->erro_banco = "";
@@ -399,10 +399,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_unidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_unidade"])){ 
+     if(trim($this->rh72_unidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_unidade"])){
        $sql  .= $virgula." rh72_unidade = $this->rh72_unidade ";
        $virgula = ",";
-       if(trim($this->rh72_unidade) == null ){ 
+       if(trim($this->rh72_unidade) == null ){
          $this->erro_sql = " Campo Unidade nao Informado.";
          $this->erro_campo = "rh72_unidade";
          $this->erro_banco = "";
@@ -412,10 +412,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_orgao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_orgao"])){ 
+     if(trim($this->rh72_orgao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_orgao"])){
        $sql  .= $virgula." rh72_orgao = $this->rh72_orgao ";
        $virgula = ",";
-       if(trim($this->rh72_orgao) == null ){ 
+       if(trim($this->rh72_orgao) == null ){
          $this->erro_sql = " Campo Órgão nao Informado.";
          $this->erro_campo = "rh72_orgao";
          $this->erro_banco = "";
@@ -425,10 +425,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_projativ)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_projativ"])){ 
+     if(trim($this->rh72_projativ)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_projativ"])){
        $sql  .= $virgula." rh72_projativ = $this->rh72_projativ ";
        $virgula = ",";
-       if(trim($this->rh72_projativ) == null ){ 
+       if(trim($this->rh72_projativ) == null ){
          $this->erro_sql = " Campo Projetos / Atividades nao Informado.";
          $this->erro_campo = "rh72_projativ";
          $this->erro_banco = "";
@@ -438,10 +438,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_anousu"])){ 
+     if(trim($this->rh72_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_anousu"])){
        $sql  .= $virgula." rh72_anousu = $this->rh72_anousu ";
        $virgula = ",";
-       if(trim($this->rh72_anousu) == null ){ 
+       if(trim($this->rh72_anousu) == null ){
          $this->erro_sql = " Campo Exercício nao Informado.";
          $this->erro_campo = "rh72_anousu";
          $this->erro_banco = "";
@@ -451,10 +451,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_recurso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_recurso"])){ 
+     if(trim($this->rh72_recurso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_recurso"])){
        $sql  .= $virgula." rh72_recurso = $this->rh72_recurso ";
        $virgula = ",";
-       if(trim($this->rh72_recurso) == null ){ 
+       if(trim($this->rh72_recurso) == null ){
          $this->erro_sql = " Campo Recurso nao Informado.";
          $this->erro_campo = "rh72_recurso";
          $this->erro_banco = "";
@@ -464,10 +464,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_mesusu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_mesusu"])){ 
+     if(trim($this->rh72_mesusu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_mesusu"])){
        $sql  .= $virgula." rh72_mesusu = $this->rh72_mesusu ";
        $virgula = ",";
-       if(trim($this->rh72_mesusu) == null ){ 
+       if(trim($this->rh72_mesusu) == null ){
          $this->erro_sql = " Campo Mês nao Informado.";
          $this->erro_campo = "rh72_mesusu";
          $this->erro_banco = "";
@@ -477,10 +477,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_siglaarq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_siglaarq"])){ 
+     if(trim($this->rh72_siglaarq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_siglaarq"])){
        $sql  .= $virgula." rh72_siglaarq = '$this->rh72_siglaarq' ";
        $virgula = ",";
-       if(trim($this->rh72_siglaarq) == null ){ 
+       if(trim($this->rh72_siglaarq) == null ){
          $this->erro_sql = " Campo Sigla nao Informado.";
          $this->erro_campo = "rh72_siglaarq";
          $this->erro_banco = "";
@@ -490,10 +490,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_tipoempenho)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_tipoempenho"])){ 
+     if(trim($this->rh72_tipoempenho)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_tipoempenho"])){
        $sql  .= $virgula." rh72_tipoempenho = $this->rh72_tipoempenho ";
        $virgula = ",";
-       if(trim($this->rh72_tipoempenho) == null ){ 
+       if(trim($this->rh72_tipoempenho) == null ){
          $this->erro_sql = " Campo Tipo Empenho nao Informado.";
          $this->erro_campo = "rh72_tipoempenho";
          $this->erro_banco = "";
@@ -503,10 +503,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_tabprev)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_tabprev"])){ 
+     if(trim($this->rh72_tabprev)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_tabprev"])){
        $sql  .= $virgula." rh72_tabprev = $this->rh72_tabprev ";
        $virgula = ",";
-       if(trim($this->rh72_tabprev) == null ){ 
+       if(trim($this->rh72_tabprev) == null ){
          $this->erro_sql = " Campo Tabela de Previdência nao Informado.";
          $this->erro_campo = "rh72_tabprev";
          $this->erro_banco = "";
@@ -516,10 +516,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_seqcompl)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_seqcompl"])){ 
+     if(trim($this->rh72_seqcompl)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_seqcompl"])){
        $sql  .= $virgula." rh72_seqcompl = $this->rh72_seqcompl ";
        $virgula = ",";
-       if(trim($this->rh72_seqcompl) == null ){ 
+       if(trim($this->rh72_seqcompl) == null ){
          $this->erro_sql = " Campo Sequencia de Folha Complementar nao Informado.";
          $this->erro_campo = "rh72_seqcompl";
          $this->erro_banco = "";
@@ -529,10 +529,10 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_concarpeculiar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_concarpeculiar"])){ 
+     if(trim($this->rh72_concarpeculiar)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_concarpeculiar"])){
        $sql  .= $virgula." rh72_concarpeculiar = '$this->rh72_concarpeculiar' ";
        $virgula = ",";
-       if(trim($this->rh72_concarpeculiar) == null ){ 
+       if(trim($this->rh72_concarpeculiar) == null ){
          $this->erro_sql = " Campo Caracteristica Peculiar nao Informado.";
          $this->erro_campo = "rh72_concarpeculiar";
          $this->erro_banco = "";
@@ -542,24 +542,24 @@ class cl_rhempenhofolha {
          return false;
        }
      }
-     if(trim($this->rh72_funcao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_funcao"])){ 
-        if(trim($this->rh72_funcao)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh72_funcao"])){ 
-           $this->rh72_funcao = "null" ; 
-        } 
+     if(trim($this->rh72_funcao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_funcao"])){
+        if(trim($this->rh72_funcao)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh72_funcao"])){
+           $this->rh72_funcao = "null" ;
+        }
        $sql  .= $virgula." rh72_funcao = $this->rh72_funcao ";
        $virgula = ",";
      }
-     if(trim($this->rh72_subfuncao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_subfuncao"])){ 
-        if(trim($this->rh72_subfuncao)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh72_subfuncao"])){ 
-           $this->rh72_subfuncao = "null" ; 
-        } 
+     if(trim($this->rh72_subfuncao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_subfuncao"])){
+        if(trim($this->rh72_subfuncao)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh72_subfuncao"])){
+           $this->rh72_subfuncao = "null" ;
+        }
        $sql  .= $virgula." rh72_subfuncao = $this->rh72_subfuncao ";
        $virgula = ",";
      }
-     if(trim($this->rh72_programa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_programa"])){ 
-        if(trim($this->rh72_programa)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh72_programa"])){ 
-           $this->rh72_programa = "null" ; 
-        } 
+     if(trim($this->rh72_programa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh72_programa"])){
+        if(trim($this->rh72_programa)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh72_programa"])){
+           $this->rh72_programa = "null" ;
+        }
        $sql  .= $virgula." rh72_programa = $this->rh72_programa ";
        $virgula = ",";
      }
@@ -611,7 +611,7 @@ class cl_rhempenhofolha {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "rhempenhofolha nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->rh72_sequencial;
@@ -639,14 +639,14 @@ class cl_rhempenhofolha {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($rh72_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($rh72_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($rh72_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -688,7 +688,7 @@ class cl_rhempenhofolha {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "rhempenhofolha nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$rh72_sequencial;
@@ -716,11 +716,11 @@ class cl_rhempenhofolha {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -742,8 +742,8 @@ class cl_rhempenhofolha {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $rh72_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $rh72_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -786,8 +786,8 @@ class cl_rhempenhofolha {
      $sql2 = "";
      if($dbwhere==""){
        if($rh72_sequencial!=null ){
-         $sql2 .= " where rhempenhofolha.rh72_sequencial = $rh72_sequencial "; 
-       } 
+         $sql2 .= " where rhempenhofolha.rh72_sequencial = $rh72_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -803,8 +803,8 @@ class cl_rhempenhofolha {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $rh72_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $rh72_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -820,8 +820,8 @@ class cl_rhempenhofolha {
      $sql2 = "";
      if($dbwhere==""){
        if($rh72_sequencial!=null ){
-         $sql2 .= " where rhempenhofolha.rh72_sequencial = $rh72_sequencial "; 
-       } 
+         $sql2 .= " where rhempenhofolha.rh72_sequencial = $rh72_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -837,7 +837,7 @@ class cl_rhempenhofolha {
      }
      return $sql;
   }
-   function sql_query_rubricas( $rh72_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_rubricas( $rh72_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -852,12 +852,12 @@ class cl_rhempenhofolha {
      $sql .= " from rhempenhofolha ";
      $sql .= "      left  join rhempenhofolharhemprubrica on rhempenhofolharhemprubrica.rh81_rhempenhofolha = rhempenhofolha.rh72_sequencial                        ";
      $sql .= "      left  join rhempenhofolharubrica      on rhempenhofolharubrica.rh73_sequencial          = rhempenhofolharhemprubrica.rh81_rhempenhofolharubrica ";
-     
+
      $sql2 = "";
      if($dbwhere==""){
        if($rh72_sequencial!=null ){
-         $sql2 .= " where rhempenhofolha.rh72_sequencial = $rh72_sequencial "; 
-       } 
+         $sql2 .= " where rhempenhofolha.rh72_sequencial = $rh72_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -876,25 +876,32 @@ class cl_rhempenhofolha {
 
   /**
    * Retorna os empenhos da folha, que não foram cancelados.
-   * 
-   * @param  integer  $iAnoUsu       
-   * @param  integer  $iMesUsu       
-   * @param  String   $sSiglaArquivo 
-   * @param  String   $sCampos       
-   * @param  String   $seqCompl      
-   * @return String   $sSql          
+   *
+   * @param  integer  $iAnoUsu
+   * @param  integer  $iMesUsu
+   * @param  String   $sSiglaArquivo
+   * @param  String   $sCampos
+   * @param  String   $seqCompl
+   * @return String   $sSql
    */
   function sql_query_empenhado($iAnoUsu, $iMesUsu, $sSiglaArquivo = "*", $sCampos, $seqCompl = false){
+
+    $iInstit = db_getsession('DB_instit');
 
     $sSql  = "select {$sCampos} from rhempenhofolha";
     $sSql .= " inner join rhempenhofolhaempenho";
     $sSql .= "         on rh76_rhempenhofolha = rh72_sequencial";
+    $sSql .= " inner join rhempenhofolharhemprubrica ";
+    $sSql .= "         on rh81_rhempenhofolha = rh72_sequencial";
+    $sSql .= " inner join rhempenhofolharubrica ";
+    $sSql .= "         on rh81_rhempenhofolharubrica = rh73_sequencial";
     $sSql .= " where rh72_anousu   = {$iAnoUsu} ";
     $sSql .= "   and rh72_mesusu   = {$iMesUsu} ";
+    $sSql .= "   and rh73_instit   = {$iInstit} ";
     $sSql .= "   and rh72_siglaarq = '{$sSiglaArquivo}'";
 
     if ($seqCompl){
-      $sSql .= "and rh72_seqcompl = {$seqCompl} ";  
+      $sSql .= "and rh72_seqcompl = {$seqCompl} ";
     }
 
     return $sSql;

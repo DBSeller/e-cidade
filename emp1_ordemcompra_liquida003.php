@@ -26,48 +26,48 @@
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_libcontabilidade.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libcontabilidade.php"));
 
-include ("dbforms/db_funcoes.php");
-include ("classes/db_cgm_classe.php");
-include ("classes/db_matparam_classe.php");
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_matparam_classe.php"));
 
-include ("classes/db_matordem_classe.php");
-include ("classes/db_matordemitem_classe.php");
-include ("classes/db_matordemmail_classe.php");
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_matordemmail_classe.php"));
 
-include ("classes/db_empelemento_classe.php");
-include ("classes/db_empempenho_classe.php");
-include ("classes/db_empempitem_classe.php");
+include(modification("classes/db_empelemento_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_empempitem_classe.php"));
 
-include ("classes/db_empnota_classe.php");
-include ("classes/db_empnotaele_classe.php");
-include ("classes/db_empnotaord_classe.php");
+include(modification("classes/db_empnota_classe.php"));
+include(modification("classes/db_empnotaele_classe.php"));
+include(modification("classes/db_empnotaord_classe.php"));
 
-include ("classes/db_conlancam_classe.php");
-include ("classes/db_conlancamcompl_classe.php");
-include ("classes/db_conlancamele_classe.php");
-include ("classes/db_conlancamnota_classe.php");
-include ("classes/db_conlancamcgm_classe.php");
-include ("classes/db_conlancamemp_classe.php");
-include ("classes/db_conlancamdoc_classe.php");
-include ("classes/db_conlancamdot_classe.php");
-include ("classes/db_conlancamval_classe.php");
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamcompl_classe.php"));
+include(modification("classes/db_conlancamele_classe.php"));
+include(modification("classes/db_conlancamnota_classe.php"));
+include(modification("classes/db_conlancamcgm_classe.php"));
+include(modification("classes/db_conlancamemp_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_conlancamdot_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
 
-include("classes/db_pagordem_classe.php");
-include("classes/db_pagordemele_classe.php");
-include("classes/db_pagordemnota_classe.php");
-include("classes/db_pagordemval_classe.php");
-include("classes/db_pagordemrec_classe.php");
-include("classes/db_pagordemtiporec_classe.php");
-include("libs/db_utils.php");
-include("libs/db_libdocumento.php");
+include(modification("classes/db_pagordem_classe.php"));
+include(modification("classes/db_pagordemele_classe.php"));
+include(modification("classes/db_pagordemnota_classe.php"));
+include(modification("classes/db_pagordemval_classe.php"));
+include(modification("classes/db_pagordemrec_classe.php"));
+include(modification("classes/db_pagordemtiporec_classe.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_libdocumento.php"));
 
-include ("classes/empenho.php"); // funções para empenhar,liquidar,etc...
+include(modification("classes/empenho.php")); // funções para empenhar,liquidar,etc...
 
 $clmatparam = new cl_matparam;
 $clmatordem = new cl_matordem;
@@ -312,7 +312,7 @@ if (isset ($valores) && isset ($incluir)) {
 
 
 
-include ("forms/db_frmmatordemcgm_liquida.php");
+include(modification("forms/db_frmmatordemcgm_liquida.php"));
 ?>
     </td>
   </tr>

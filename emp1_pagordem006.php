@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_pagordemnota_classe.php");
-include("classes/db_pagordem_classe.php");
-include("classes/db_pagordemconta_classe.php");
-include("classes/db_pagordemele_classe.php");
-include("classes/db_empempenho_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empnota_classe.php");
-include("classes/db_empord_classe.php");
-include("classes/db_empnotaele_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_pagordemnota_classe.php"));
+include(modification("classes/db_pagordem_classe.php"));
+include(modification("classes/db_pagordemconta_classe.php"));
+include(modification("classes/db_pagordemele_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empnota_classe.php"));
+include(modification("classes/db_empord_classe.php"));
+include(modification("classes/db_empnotaele_classe.php"));
 
 $clpagordem = new cl_pagordem;
 $clpagordemconta= new cl_pagordemconta;
@@ -60,7 +60,7 @@ if(isset($anular)){
   db_inicio_transacao();
 
    $sql = "update empparametro set e39_anousu = e39_anousu where e39_anousu = ".db_getsession("DB_anousu");
-   $res = pg_query($sql);
+   $res = db_query($sql);
   
   //rotina que inclui em pagordemele 
   if($sqlerro==false){
@@ -230,7 +230,7 @@ if(isset($chavepesquisa) || isset($e50_codord)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmpagordem.php");
+	include(modification("forms/db_frmpagordem.php"));
 	?>
     </center>
 	</td>
@@ -251,7 +251,7 @@ if(isset($e50_codord)){
            <script>
 	    function js_bloqueia(){
 	        parent.document.formaba.pagordemrec.disabled=false;\n
-	        top.corpo.iframe_pagordemrec.location.href='emp1_pagordemrec001.php?db_opcaoal=33&e52_codord=$e50_codord';\n
+	        (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_pagordemrec.location.href='emp1_pagordemrec001.php?db_opcaoal=33&e52_codord=$e50_codord';\n
 	    }
 	    js_bloqueia();
 	 </script>

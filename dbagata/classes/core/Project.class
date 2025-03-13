@@ -34,7 +34,7 @@ class Project
     /***********************************************************/
     /* Read the Project File
     /***********************************************************/
-    function ReadProject($Project)
+    static function ReadProject($Project)
     {
         $array         = Xml2Array(AGATA_PATH . "/projects/{$Project}.prj");
         if ($array)

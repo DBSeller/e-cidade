@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -38,13 +38,15 @@ $oRotulo->label("coddepto");
 $oRotulo->label("descrdepto");
 $oRotulo->label("tre04_pontoreferencia");
 $oRotulo->label("db87_sequencial");
+$oRotulo->label("ed82_i_codigo");
+$oRotulo->label("ed82_c_nome");
 ?>
 <form id="frmPontosParada" method="post" action="" class="container">
   <fieldset style="width: 25%">
     <legend class="bold">Ponto de Parada</legend>
     <table>
       <tr style="display: none;">
-        <td><label class="bold">Sequencial: </label></td>
+        <td><label class="bold" for="tre04_sequencial">Sequencial: </label></td>
         <td>
           <?php
             db_input("tre04_sequencial", 10, $Itre04_sequencial, true, 'text', 3);
@@ -52,15 +54,16 @@ $oRotulo->label("db87_sequencial");
         </td>
       </tr>
       <tr>
-        <td><label class="bold">Descrição: </label></td>
+        <td><label class="bold" for="tre04_nome">Descrição: </label></td>
         <td colspan="2">
+
           <?php
             db_input("tre04_nome", 70, $Itre04_nome, true, 'text', $iOpcao);
           ?>
         </td>
       </tr>
       <tr>
-        <td><label class="bold">Abreviatura: </label></td>
+        <td><label class="bold" for="tre04_abreviatura">Abreviatura: </label></td>
         <td colspan="2">
           <?php
             db_input("tre04_abreviatura", 10, $Itre04_abreviatura, true, 'text', $iOpcao);
@@ -69,9 +72,11 @@ $oRotulo->label("db87_sequencial");
       </tr>
       <tr>
         <td>
+          <label class="bold" for="db87_cadenderrua">
           <?php
             db_ancora("<b>Logradouro:</b>", "js_pesquisaLogradouro(true);", $iOpcao);
           ?>
+            </label>
         </td>
         <td style="display: none;">
           <?php
@@ -90,7 +95,7 @@ $oRotulo->label("db87_sequencial");
         </td>
       </tr>
       <tr>
-        <td><label class="bold">Latitude: </label></td>
+        <td><label class="bold" for="tre04_latitude">Latitude: </label></td>
         <td>
           <?php
             db_input("tre04_latitude", 10, $Itre04_latitude, true, 'text', $iOpcao);
@@ -98,7 +103,7 @@ $oRotulo->label("db87_sequencial");
         </td>
       </tr>
       <tr>
-        <td><label class="bold">Longitude: </label></td>
+        <td><label class="bold" for="tre04_longitude">Longitude: </label></td>
         <td>
           <?php
             db_input("tre04_longitude", 10, $Itre04_longitude, true, 'text', $iOpcao);
@@ -106,19 +111,22 @@ $oRotulo->label("db87_sequencial");
         </td>
       </tr>
       <tr>
-        <td><label class="bold">Tipo: </label></td>
         <td>
+          <label class="bold" for="tipo">Tipo: </label></td>
+        <td colspan="3">
           <?php
-            $aTipo = array(1 => "Departamento", 2 => "Parada");
+            $aTipo = array(1 => "Departamento", 2 => "Parada", 3 => "Escola Procedência");
             db_select("tipo", $aTipo, "", 1);
           ?>
         </td>
       </tr>
       <tr id="trDepartamento">
         <td>
+          <label class="bold" for="coddepto">
           <?php
             db_ancora("<b>Departamento:</b>", "js_pesquisaDepartamentos(true);", $iOpcao);
           ?>
+          </label>
         </td>
         <td>
           <?php
@@ -131,10 +139,29 @@ $oRotulo->label("db87_sequencial");
           ?>
         </td>
       </tr>
+      <tr id="trEscolaProcedencia" style="display: none;">
+        <td nowrap>
+          <label class="bold" for="ed82_i_codigo">
+          <?php
+          db_ancora("<b>Escola de Procedência:</b>", "js_pesquisaEscolaProcedencia(true);", $iOpcao);
+          ?>
+          </label>
+        </td>
+        <td>
+          <?php
+          db_input("ed82_i_codigo", 10, $Ied82_i_codigo, true, 'text', $iOpcao, "onChange='js_pesquisaEscolaProcedencia(false);'");
+          ?>
+        </td>
+        <td>
+          <?php
+          db_input("ed82_c_nome", 50, $Ied82_c_nome, true, 'text', 3);
+          ?>
+        </td>
+      </tr>
       <tr>
         <td colspan="3">
           <fieldset>
-          <legend><b>Ponto de Referência</b></legend>
+          <legend><label for="tre04_pontoreferencia"><b>Ponto de Referência</b></label></legend>
             <?php
               db_textarea("tre04_pontoreferencia", 4, 78, $Itre04_pontoreferencia, true, "text", $iOpcao);
             ?>
@@ -153,13 +180,17 @@ var sUrlRpc = 'tre4_pontoparada.RPC.php';
 /**
  * Setamos o tamanho dos inputs
  */
-$('db74_descricao').style.width    = '380px';
-$('tre04_abreviatura').style.width = '120px';
-$('db87_cadenderrua').style.width  = '120px';
-$('tre04_latitude').style.width    = '120px';
-$('tre04_longitude').style.width   = '120px';
-$('coddepto').style.width          = '120px';
-$('descrdepto').style.width        = '380px';
+$('db74_descricao').style.width         = '380px';
+$('tre04_abreviatura').style.width      = '120px';
+$('db87_cadenderrua').style.width       = '120px';
+$('tre04_latitude').style.width         = '120px';
+$('tre04_longitude').style.width        = '120px';
+$('coddepto').style.width               = '120px';
+$('descrdepto').style.width             = '380px';
+$('ed82_i_codigo').style.width          = '120px';
+$('ed82_c_nome').style.width            = '380px';
+$('tre04_pontoreferencia').style.width  = '100%';
+$('tre04_pontoreferencia').style.resize = 'none';
 
 /**
  * Limitamos o tamanho da descricao e abreviatura
@@ -172,12 +203,29 @@ $('tre04_abreviatura').maxLength = 10;
  */
 function js_validaTipo() {
    
-  $('trDepartamento').style.display = 'table-row';
-  if ($('tipo').value == 2) {
+  switch ($('tipo').value) {
 
-    $('trDepartamento').style.display = 'none';
-    $('coddepto').value               = '';
-    $('descrdepto').value             = '';
+    case '2':
+
+      $('trDepartamento').style.display      = 'none';
+      $('trEscolaProcedencia').style.display = 'none';
+      $('coddepto').value                    = '';
+      $('ed82_i_codigo').value               = '';
+      break;
+
+    case '3':
+
+      $('trDepartamento').style.display      = 'none';
+      $('trEscolaProcedencia').style.display = 'table-row';
+      $('ed82_i_codigo').value               = '';
+      $('coddepto').value                    = '';
+
+      break;
+
+    default:
+
+      $('trDepartamento').style.display      = 'table-row';
+      $('trEscolaProcedencia').style.display = 'none';
   }
 }
 $('tipo').observe("change", function(event) {
@@ -242,7 +290,7 @@ function js_pesquisaLogradouro(lMostra) {
       sUrl += '&pesquisa_chave='+$('db87_cadenderrua').value;
     }
   }
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_bairrologradouro', sUrl, 'Pesquisa Logradouro', lMostra);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_bairrologradouro', sUrl, 'Pesquisa Logradouro', lMostra);
 }
 
 /**
@@ -278,13 +326,13 @@ function js_pesquisaDepartamentos(lMostra) {
   if (lMostra) {
 
     sUrl += '|coddepto|descrdepto';
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_db_depart', sUrl, 'Pesquisa Departamentos', true);
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_db_depart', sUrl, 'Pesquisa de Departamentos', true);
   } else {
 
     if ($('coddepto').value != '') {
 
       sUrl += '&pesquisa_chave='+$('coddepto').value;
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_db_depart', sUrl, 'Pesquisa Departamentos', false);
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_db_depart', sUrl, 'Pesquisa de Departamentos', false);
     }
   }
 }
@@ -308,6 +356,48 @@ function js_mostraDepartamentos() {
   db_iframe_db_depart.hide();
 }
 
+
+/**
+ * Pesquisamos as escolas de procedencia para vincular a uma parada
+ */
+function js_pesquisaEscolaProcedencia(lMostra) {
+
+  var sUrl  = 'func_escolaprocedencia.php?funcao_js=parent.js_preencheEscolaProcedencia';
+
+
+  if (lMostra) {
+
+    sUrl += '|ed82_i_codigo|ed82_c_nome';
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_db_escolaproc', sUrl, 'Pesquisa Escolas de Procedência', true);
+  } else {
+
+    $('ed82_c_nome').value = '';
+    if ($('ed82_i_codigo').value != '') {
+
+      sUrl += '&pesquisa_chave='+$('ed82_i_codigo').value;
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_db_escolaproc', sUrl, 'Pesquisa Escolas de Procedência', false);
+    }
+  }
+}
+
+function js_preencheEscolaProcedencia() {
+
+  if (arguments[1] != true && arguments[1] != false) {
+
+    $('ed82_i_codigo').value = arguments[0];
+    $('ed82_c_nome').value   = arguments[1];
+
+  } else if (arguments[1] === true) {
+
+    $('ed82_i_codigo').value = '';
+    $('ed82_c_nome').value   = arguments[0];
+    $('ed82_i_codigo').focus();
+
+  } else {
+    $('ed82_c_nome').value = arguments[0];
+  }
+  db_iframe_db_escolaproc.hide();
+}
 /**
  * Validamos o preenchimento dos campos obrigatorios
  */
@@ -334,6 +424,12 @@ function js_verifcaPreenchimentoCampos() {
   if ($('tipo').value == 1 && empty($('coddepto').value)) {
 
     alert(_M('educacao.transporteescolar.db_frmpontosparada.departamento_ponto_parada_vazio'));
+    return false;
+  }
+
+  if ($('tipo').value == 3 && empty($('ed82_i_codigo').value)) {
+
+    alert(_M('educacao.transporteescolar.db_frmpontosparada.escola_procedencia_ponto_parada_vazio'));
     return false;
   }
 
@@ -364,20 +460,23 @@ if (!empty($('tre04_longitude').value)) {
  */
 function js_limpaCampos() {
 
-  $('tre04_sequencial').value       = '';
-  $('tre04_nome').value             = '';
-  $('tre04_abreviatura').value      = '';
-  $('db87_sequencial').value        = '';
-  $('db87_cadenderrua').value       = '';
-  $('db74_descricao').value         = '';
-  $('tre04_latitude').value         = '';
-  $('tre04_longitude').value        = '';
-  $('coddepto').value               = '';
-  $('descrdepto').value             = '';
-  $('tre04_pontoreferencia').value  = '';
-  $('db87_sequencial').value        = '';
-  $('tipo').value                   = 1;
-  $('trDepartamento').style.display = 'table-row';
+  $('tre04_sequencial').value            = '';
+  $('tre04_nome').value                  = '';
+  $('tre04_abreviatura').value           = '';
+  $('db87_sequencial').value             = '';
+  $('db87_cadenderrua').value            = '';
+  $('db74_descricao').value              = '';
+  $('tre04_latitude').value              = '';
+  $('tre04_longitude').value             = '';
+  $('coddepto').value                    = '';
+  $('descrdepto').value                  = '';
+  $('tre04_pontoreferencia').value       = '';
+  $('db87_sequencial').value             = '';
+  $('ed82_i_codigo').value               = '';
+  $('ed82_c_nome').value                 = '';
+  $('tipo').value                        = 1;
+  $('trDepartamento').style.display      = 'table-row';
+  $('trEscolaProcedencia').style.display = 'none';
 }
 
 /**
@@ -397,6 +496,9 @@ function js_salvar() {
         oParametro.nLongitude          = $F('tre04_longitude');
         oParametro.iTipo               = $F('tipo');
         oParametro.iCodigoDepartamento = $F('coddepto');
+        if (oParametro.iTipo == 3) {
+          oParametro.iCodigoDepartamento = $F('ed82_i_codigo');
+        }
         oParametro.sPontoReferencia    = $F('tre04_pontoreferencia');
 
     var oDadosRequisicao            = new Object();
@@ -415,7 +517,7 @@ function js_salvar() {
 function js_retornoSalvar(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.message.urlDecode());
   if (oRetorno.status == 1) {
@@ -454,7 +556,7 @@ function js_excluir() {
 function js_retornoExcluir(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert(oRetorno.message.urlDecode());
   if (oRetorno.status == 1) {
@@ -472,7 +574,7 @@ function js_pesquisaPontosParada() {
   var sUrl  = 'func_pontoparada.php?funcao_js=parent.js_mostraPontoParada';
       sUrl += '|tre04_sequencial';
 
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_pontoparada', sUrl, 'Pesquisa Ponto de Parada', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_pontoparada', sUrl, 'Pesquisa Ponto de Parada', true);
 }
 
 /**
@@ -507,7 +609,7 @@ function js_mostraPontoParada() {
 function js_dadosVeiculoTransporte(oResponse) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   $('btnAcao').disabled = false;
 
@@ -521,10 +623,22 @@ function js_dadosVeiculoTransporte(oResponse) {
   $('tre04_latitude').value         = oRetorno.dados.nLatitude;
   $('tre04_longitude').value        = oRetorno.dados.nLongitude;
   $('tipo').value                   = oRetorno.dados.iTipo;
-  $('coddepto').value               = oRetorno.dados.iCodigoDepartamento;
-  $('descrdepto').value             = oRetorno.dados.sDescricaoDepartamento.urlDecode();
-
   js_validaTipo();
+  switch (oRetorno.dados.iTipo) {
+
+    case 1 :
+
+      $('coddepto').value = oRetorno.dados.iCodigoDepartamento;
+      $('descrdepto').value = oRetorno.dados.sDescricaoDepartamento.urlDecode();
+    break;
+
+    case 3:
+
+      $('ed82_i_codigo').value = oRetorno.dados.iCodigoDepartamento;
+      $('ed82_c_nome').value   = oRetorno.dados.sDescricaoDepartamento.urlDecode();
+      break;
+
+  }
 }
 
 js_validaRequisicao(iOpcao);

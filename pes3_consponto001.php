@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,15 +26,15 @@
  */
 
 //21.833.694.
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_cgm_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //echo "<BR><BR>".$HTTP_SERVER_VARS['QUERY_STRING'];
 //db_postmemory($HTTP_POST_VARS,2);
@@ -181,7 +181,7 @@ function js_relatorio(){
 		        where 
                        r01_regist = ".$HTTP_POST_VARS["r01_regist"]." limit 1" ;
         // echo $sql;
-	    $result = pg_exec($sql);
+	    $result = db_query($sql);
 	    if(pg_numrows($result) == 0) {
 	      echo "
                 <script>
@@ -198,7 +198,7 @@ function js_relatorio(){
             
         ///////// VERIFICA SE A MATRÍCULA POSSUI SALÁRIO
 	    $matricula = $HTTP_POST_VARS["r01_regist"];
- 	    $resultgerfsal = pg_exec("select * 
+ 	    $resultgerfsal = db_query("select * 
 	                              from pontofs 
 		                          where     r10_regist = $matricula 
                                         and r10_anousu = $ano 
@@ -209,7 +209,7 @@ function js_relatorio(){
           $temsalario = false;
 	    }
         ///////// VERIFICA SE A MATRÍCULA POSSUI FÉRIAS
- 	    $resultgerffer = pg_exec("select * 
+ 	    $resultgerffer = db_query("select * 
 	                              from pontofe 
 			                      where     r29_regist = $matricula 
 			                            and r29_anousu = $ano 
@@ -220,7 +220,7 @@ function js_relatorio(){
           $temferias = false;
 	    }
         ///////// VERIFICA SE A MATRÍCULA POSSUI RESCISAO
- 	    $resultgerfres = pg_exec("select * 
+ 	    $resultgerfres = db_query("select * 
 	                              from pontofr
                                   where     r19_regist = $matricula 
 			                            and r19_anousu = $ano 
@@ -231,7 +231,7 @@ function js_relatorio(){
           $temrescisao = false;
 	    }
         ///////// VERIFICA SE A MATRÍCULA POSSUI ADIANTAMENTO	
- 	    $resultgerfadi = pg_exec("select * 
+ 	    $resultgerfadi = db_query("select * 
 	                              from pontofa
 			                      where     r21_regist = $matricula 
 			                            and r21_anousu = $ano 
@@ -242,7 +242,7 @@ function js_relatorio(){
           $temadiantamento = false;
 	    }
         ///////// VERIFICA SE A MATRÍCULA POSSUI 13 SALÁRIO
- 	    $resultgerfs13 = pg_exec("select * 
+ 	    $resultgerfs13 = db_query("select * 
 	                              from pontof13
 			                      where     r34_regist = $matricula 
 			                            and r34_anousu = $ano 
@@ -253,7 +253,7 @@ function js_relatorio(){
           $tem13salario = false;
 	    }
         ///////// VERIFICA SE A MATRÍCULA POSSUI complementar
- 	    $resultgerfcom = pg_exec("select * 
+ 	    $resultgerfcom = db_query("select * 
 	                              from pontocom 
               		              where     r47_regist = $matricula 
 			                            and r47_anousu = $ano 
@@ -264,7 +264,7 @@ function js_relatorio(){
           $temcomplementar = false;
 	    }
         ///////// VERIFICA SE A MATRÍCULA POSSUI ponto fixo
- 	    $resultgerffx = pg_exec("select * 
+ 	    $resultgerffx = db_query("select * 
 	                             from pontofx 
 			                     where     r90_regist = $matricula 
 			                           and r90_anousu = $ano 
@@ -276,7 +276,7 @@ function js_relatorio(){
 	    }
 
 	  }
-	  $dados = pg_exec("select z01_numcgm,
+	  $dados = db_query("select z01_numcgm,
                                z01_nome,
                                z01_ender,
                                z01_munic,

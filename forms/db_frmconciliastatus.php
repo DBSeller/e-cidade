@@ -69,7 +69,7 @@ db_select('k95_fechada',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conciliastatus','func_conciliastatus.php?funcao_js=parent.js_preenchepesquisa|k95_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conciliastatus','func_conciliastatus.php?funcao_js=parent.js_preenchepesquisa|k95_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conciliastatus.hide();

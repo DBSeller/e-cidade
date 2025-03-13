@@ -1,0 +1,132 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010317' name='juridico.processoforomulta' description="Multa para processo do foro" prefix="j150" label="Multa para processo do foro" type="0">
+  <fields>
+    <field codigo="1009949" 
+           campo_api='' 
+           name="j150_sequencial" 
+           conteudo="int4" 
+           description="Squencial" 
+           inivalue="" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='juridico.processoforomulta_j150_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009950" 
+           campo_api='' 
+           name="j150_processoforo" 
+           conteudo="int4" 
+           description="Processo" 
+           inivalue="" 
+           label="Processo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009951" 
+           campo_api='' 
+           name="j150_data" 
+           conteudo="date" 
+           description="Data da Multa" 
+           inivalue="" 
+           label="Data" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009952" 
+           campo_api='' 
+           name="j150_percentual" 
+           conteudo="float4" 
+           description="Percentual" 
+           inivalue="0" 
+           label="Percentual" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Percentual" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009953" 
+           campo_api='' 
+           name="j150_receita" 
+           conteudo="int4" 
+           description="Receita" 
+           inivalue="" 
+           label="Receita" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Receita" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field>
+    <field codigo="1010009"
+           campo_api=''
+           name="j150_valortotal"
+           conteudo="float4"
+           description="Valor Total"
+           inivalue=""
+           label="Valor Total"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Valor Total"
+           reference=""
+           ispk="f"
+           hassequence="t" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="j150_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="tabrec" inner='t'>
+      <fieldfk name="j150_receita" reference="k02_codigo" /> 
+    </foreignkey>
+    <foreignkey reference="processoforo" inner='t'>
+      <fieldfk name="j150_processoforo" reference="v70_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -4,72 +4,73 @@ require_once('estilos/DBContextComplete.css');
  * @param sId
  * @constructor
  */
-function DBContextComplete(sId) {
+function DBContextComplete(sId)
+{
 
-  this.sId          = sId;
+    this.sId          = sId;
   /**
    * Lista de Opções que serao mostradas ao usuario
    * @type {Array}
    */
-  this.aListaOpcoes = [];
+    this.aListaOpcoes = [];
 
   /**
    * COntrole do Grupo
    * @type {Array}
    */
-  this.aGrupos = [];
+    this.aGrupos = [];
 
   /**
    * Controle da lista de opções aberta/fechada
    * @type {boolean}
    */
-  this.lListaAberta = false;
+    this.lListaAberta = false;
 
   /**
    * Elemento que dispara a invocao do contexto
    * @type {HTMLElement}
    */
-  this.oElementContext = null;
+    this.oElementContext = null;
 
   /**
    * Classe css para definir a opçcao selecionado   *
    * @type {string}
    */
-  this.sClassNameItemSelecionado = "DBContext-item-selected";
+    this.sClassNameItemSelecionado = "DBContext-item-selected";
 
   /**
    * Lista HTML copm os itens
    * @type {HTMLElement}
    */
-  this.oLista = null;
+    this.oLista = null;
 
   /**
    * Lista de Invocadores
    * @type {Array}
    */
-  this.aInvokers = [];
+    this.aInvokers = [];
 
   /**
    * ULtimo caractere digitado
    * @type {string}
    */
-  this.sUltimoCaractereDigitado = '';
+    this.sUltimoCaractereDigitado = '';
 
   /**
    * Elemento Principal do Context
    * @type {HTMLElement}
    */
-  this.oDivLista               = document.createElement("div");
-  this.oDivLista.id            = 'divVariaveis'+this.sId;
-  this.oDivLista.tabIndex      = 99;
-  this.oDivLista.style.display = 'none';
-  this.oDivLista.className     = 'DBContext-div';
+    this.oDivLista               = document.createElement("div");
+    this.oDivLista.id            = 'divVariaveis'+this.sId;
+    this.oDivLista.tabIndex      = 99;
+    this.oDivLista.style.display = 'none';
+    this.oDivLista.className     = 'DBContext-div';
 
   /**
    * Adiciona uma string Antes da variavel
    * @type {string}
    */
-  this.sPrependString = '';
+    this.sPrependString = '';
 }
 
 
@@ -78,55 +79,73 @@ function DBContextComplete(sId) {
  * @param sString
  */
 DBContextComplete.prototype.setPrependString = function (sString) {
-  this.sPrependString = sString;
+    this.sPrependString = sString;
 };
 
 /**
  * Define qual elemento o Contexto poderá ser chamado
  * @param {HTMLElement} oElement elemento html
  */
-DBContextComplete.prototype.setElementForContext = function(oElement) {
+DBContextComplete.prototype.setElementForContext = function (oElement) {
 
-  this.oElementContext = oElement;
-  oElement.parentNode.appendChild(this.oDivLista);
+    this.oElementContext = oElement;
+    oElement.parentNode.appendChild(this.oDivLista);
 };
 
 /**
  * INicia o componente
  */
-DBContextComplete.prototype.init = function() {
+DBContextComplete.prototype.init = function () {
 
-  var oSelf = this;
-  this.oDivLista.observe('keydown', function(event) {
-    oSelf.initkeyBoardEvents(event);
-  });
+    var oSelf = this;
+    this.oDivLista.observe('keydown', function (event) {
+        oSelf.initkeyBoardEvents(event);
+    });
 
-  this.oElementContext.observe('keydown', function(event) {
+    document.onkeyup = e => {
+        e = e || window.event;
 
-    if ((event.ctrlKey && event.which == 32)) {
+        if (e.keyCode == ESC) {
+            oSelf.close();
+        }
+    };
 
-      var sValue                     = oSelf.oElementContext.value;
-      oSelf.sUltimoCaractereDigitado = sValue.substr(sValue.length -1, 1);
-      oSelf.showList();
-    }
-  });
-  this.closeOnEsc();
+    this.oElementContext.observe('keydown', function (event) {
+        if ((event.ctrlKey && event.which == 32)) {
+            var sValue                     = oSelf.oElementContext.value;
+
+            oSelf.sUltimoCaractereDigitado = sValue.substr(sValue.length -1, 1);
+            oSelf.showList();
+        }
+    });
+    this.closeOnEsc();
 };
 
 /**
  * @private
  */
-DBContextComplete.prototype.showList = function() {
-
-  this.oDivLista.style.position  = 'absolute';
-  this.oDivLista.style.left      = getPageOffsetLeft(this.oElementContext);
-  this.oDivLista.style.width     = this.oElementContext.clientWidth;
-  this.oDivLista.style.top       = getPageOffsetTop(this.oElementContext) +this.oElementContext.clientHeight;
-  this.oDivLista.style.height    = '300px';
-  this.oDivLista.style.overflow  = 'hidden';
-  this.oDivLista.style.display   = '';
-  this.oDivLista.focus();
-  this.createList();
+DBContextComplete.prototype.showList = function () {
+    this.oDivLista.style.position = 'absolute';
+    this.oDivLista.style.top = getPageOffsetTop(this.oElementContext) +this.oElementContext.clientHeight;
+    this.oDivLista.style.left = getPageOffsetLeft(this.oElementContext);
+    this.oDivLista.style.zIndex = '1000';
+    this.oDivLista.style.float = 'left';
+    this.oDivLista.style.minWidth = '10rem';
+    this.oDivLista.style.padding = '.5rem 0';
+    this.oDivLista.style.margin = '.125rem 0 0';
+    this.oDivLista.style.fontSize = '1rem';
+    this.oDivLista.style.color = '#212529';
+    this.oDivLista.style.textAlign = 'left';
+    this.oDivLista.style.listStyle = 'none';
+    this.oDivLista.style.backgroundColor = '#fff';
+    this.oDivLista.style.backgroundClip = 'padding-box';
+    this.oDivLista.style.border = '1px solid rgba(0, 0, 0, .15)';
+    this.oDivLista.style.borderRadius = '.25rem';
+    this.oDivLista.style.display = 'block';
+    this.oDivLista.style.boxSizing = 'border-box';
+    this.oDivLista.style.outline = 'none';
+    this.oDivLista.focus();
+    this.createList();
 };
 
 
@@ -134,61 +153,60 @@ DBContextComplete.prototype.showList = function() {
 /**
  * Inicia os eventos de Teclado no Evento
  */
-DBContextComplete.prototype.initkeyBoardEvents = function(event) {
+DBContextComplete.prototype.initkeyBoardEvents = function (event) {
 
-  var oSelf          = this;
-  var oNoSelecionado = getElementsByClass(oSelf.sClassNameItemSelecionado)[0];
-  var lMover         = false;
-  var oProximoNo     = '';
-  switch (event.which) {
+    var oSelf          = this;
+    var oNoSelecionado = getElementsByClass(oSelf.sClassNameItemSelecionado)[0];
 
-    case KEY_ENTER:
+    var lMover         = false;
+    var oProximoNo     = '';
+    switch (event.which) {
+        case KEY_ENTER:
 
-      if (!oNoSelecionado) {
-        return ;
-      }
-      oSelf.fillValue(oNoSelecionado.innerHTML);
-      event.preventDefault();
-      break;
+            if (!oNoSelecionado) {
+                return ;
+            }
+            oSelf.fillValue(oNoSelecionado.getAttribute("value"));
 
-    case KEY_DOWN:
+            event.preventDefault();
+        break;
 
-      oProximoNo = oNoSelecionado.nextSibling;
-      lMover     = true;
-      break;
+        case KEY_DOWN:
 
-    case KEY_UP:
+            oProximoNo = oNoSelecionado.nextSibling;
+            lMover     = true;
+        break;
 
-      oProximoNo = oNoSelecionado.previousSibling;
-      lMover     = true;
-      break;
-  }
+        case KEY_UP:
 
-  if (lMover && oProximoNo) {
+            oProximoNo = oNoSelecionado.previousSibling;
+            lMover     = true;
+        break;
+    }
 
-    oNoSelecionado.className = '';
-    oProximoNo.className     = oSelf.sClassNameItemSelecionado;
-    oProximoNo.scrollIntoView();
-
-  }
+    if (lMover && oProximoNo) {
+        oNoSelecionado.className = '';
+        oProximoNo.className     = oSelf.sClassNameItemSelecionado;
+        oProximoNo.scrollIntoView();
+    }
 };
 
 /**
  * Adiciona uma opção a lista de itens
  * @param {string} sValue valor do texto
  * @param {string} sLabel label de Ajuda
+ * @param sGrupo
  */
-DBContextComplete.prototype.addOption = function(sValue, sLabel, sGrupo) {
+DBContextComplete.prototype.addOption = function (sValue, sLabel, sGrupo = null) {
 
-  if (sLabel == null) {
-    sLabel = sValue;
-  }
-  if (sGrupo != null) {
-
-    this.aGrupos[sGrupo].itens.push({value:sValue, label: sLabel});
-    return ;
-  }
-  this.aListaOpcoes.push({value:sValue, label: sLabel});
+    if (sLabel == null) {
+        sLabel = sValue;
+    }
+    if (sGrupo != null) {
+        this.aGrupos[sGrupo].itens.push({value:sValue, label: sLabel});
+        return ;
+    }
+    this.aListaOpcoes.push({value:sValue, label: sLabel});
 };
 
 /**
@@ -196,38 +214,38 @@ DBContextComplete.prototype.addOption = function(sValue, sLabel, sGrupo) {
  * cada item da colecao devera ser um Objeto com as propriedades value e label
  * @param {Array} aOptions
  */
-DBContextComplete.prototype.addOptions = function(aOptions, sGrupo) {
+DBContextComplete.prototype.addOptions = function (aOptions, sGrupo) {
 
-  var oSelf = this;
-  aOptions.each(function(oOption, iSeq) {
-    oSelf.addOption(oOption.value, oOption.label, sGrupo);
-  });
+    var oSelf = this;
+    aOptions.each(function (oOption, iSeq) {
+        oSelf.addOption(oOption.value, oOption.label, sGrupo);
+    });
 };
 
 /**
  * Cria lista de opções que podem ser Selecionadas
  * @private
  */
-DBContextComplete.prototype.createList = function() {
+DBContextComplete.prototype.createList = function () {
 
-  var oSelf    = this;
-  var sInvoker = oSelf.sUltimoCaractereDigitado;
-  if (oSelf.oLista != null) {
-    oSelf.oDivLista.removeChild(oSelf.oLista);
-  }
-  this.oLista      = document.createElement("ul");
-  var aItensToShow = this.aListaOpcoes;
-  if (sInvoker.trim() != '') {
-    aItensToShow = oSelf.getItensByInvoker(sInvoker);
-  }
+    var oSelf    = this;
+    var sInvoker = oSelf.sUltimoCaractereDigitado;
+    if (oSelf.oLista != null) {
+        oSelf.oDivLista.removeChild(oSelf.oLista);
+    }
+    this.oLista      = document.createElement("ul");
+    var aItensToShow = this.aListaOpcoes;
+    if (sInvoker.trim() != '') {
+        aItensToShow = oSelf.getItensByInvoker(sInvoker);
+    }
 
-  if (sInvoker == oSelf.setPrependString || aItensToShow.length == 0) {
-    aItensToShow = this.aListaOpcoes;
-  }
-  aItensToShow.each(function(oOption, iSeq) {
-    oSelf.itemToElement(oOption, iSeq == 0);
-  });
-  this.oDivLista.appendChild(this.oLista);
+    if (sInvoker == oSelf.setPrependString || aItensToShow.length == 0) {
+        aItensToShow = this.aListaOpcoes;
+    }
+    aItensToShow.each(function (oOption, iSeq) {
+        oSelf.itemToElement(oOption, iSeq == 0);
+    });
+    this.oDivLista.appendChild(this.oLista);
 };
 
 /**
@@ -236,93 +254,104 @@ DBContextComplete.prototype.createList = function() {
  * @param oOption item para ser convertido
  * @param lSelect trazer como selecionado
  */
-DBContextComplete.prototype.itemToElement = function(oOption, lSelect) {
+DBContextComplete.prototype.itemToElement = function (oOption, lSelect) {
 
-  var oSelf      = this;
-  var oItemLista = document.createElement("li");
-  oItemLista.display   = 'block';
-  oItemLista.innerHTML = oOption.value;
-  oItemLista.title     = oOption.label;
-  if (lSelect) {
-    oItemLista.className = this.sClassNameItemSelecionado;
-  }
-  oItemLista.observe('click', function () {
-    oSelf.fillValue(oOption.value);
-  });
+    var oSelf      = this;
+    var oItemLista = document.createElement("li");
 
-  oItemLista.observe('mouseover', function () {
-    oItemLista.className = oSelf.sClassNameItemSelecionado;
-  });
+    oItemLista.style.display = 'block';
+    oItemLista.style.padding = '.25rem 1.5rem';
+    oItemLista.style.clear = 'both';
+    oItemLista.style.fontWeight = '400';
+    oItemLista.style.textAlign = 'inherit';
+    oItemLista.style.whiteSpace = 'nowrap';
+    oItemLista.style.border = '0';
+    oItemLista.style.fontSize = '.78rem';
+    oItemLista.style.cursor = 'pointer';
 
-  oItemLista.observe('mouseout', function () {
-    oItemLista.className = '';
-  });
-  oSelf.oLista.appendChild(oItemLista);
+    oItemLista.innerHTML = oOption.label;
+    oItemLista.title     = oOption.label;
+    oItemLista.setAttribute("value",oOption.value);
+    if (lSelect) {
+        oItemLista.className = this.sClassNameItemSelecionado;
+    }
+    oItemLista.observe('click', function () {
+        oSelf.fillValue(oOption.value);
+    });
+
+    oItemLista.observe('mouseover', function () {
+        oItemLista.className = oSelf.sClassNameItemSelecionado;
+    });
+
+    oItemLista.observe('mouseout', function () {
+        oItemLista.className = '';
+    });
+    oSelf.oLista.appendChild(oItemLista);
 };
 
 /**
  * fecha a lista de variaveis
  */
-DBContextComplete.prototype.close = function() {
+DBContextComplete.prototype.close = function () {
 
-  this.oDivLista.style.display = 'none';
-  this.lListaAberta            = false;
-  this.oElementContext.focus();
+    this.oDivLista.style.display = 'none';
+    this.lListaAberta            = false;
+    this.oElementContext.focus();
 
 };
 /**
  * Adicionar atalho para fechar a janela com ESC
  * @private
  */
-DBContextComplete.prototype.closeOnEsc = function() {
+DBContextComplete.prototype.closeOnEsc = function () {
 
-  var oSelf = this;
-  this.oElementContext.observe('keydown', function(event) {
-    if (event.which == ESC) {
-      oSelf.close();
-    }
-  });
+    var oSelf = this;
+    this.oElementContext.observe('keydown', function (event) {
+        if (event.which == ESC) {
+            oSelf.close();
+        }
+    });
 };
 
 /**
  * Seta o valor da variavel no elemento de Contexto
  * @private
  */
-DBContextComplete.prototype.fillValue = function(sValue) {
+DBContextComplete.prototype.fillValue = function (sValue) {
 
-  var sValorAdicionar = this.sPrependString+sValue;
-  if (this.sUltimoCaractereDigitado.trim() != '') {
-    sValorAdicionar = sValue;
-  }
-  this.oElementContext.value += sValorAdicionar;
-  this.oElementContext.focus();
-  this.close();
+    var sValorAdicionar = this.sPrependString+sValue;
+    if (this.sUltimoCaractereDigitado.trim() != '') {
+        sValorAdicionar = sValue;
+    }
+    this.oElementContext.value += sValorAdicionar;
+    this.oElementContext.focus();
+    this.close();
 
-}
+};
 
 /**
  * Seta o valor da variavel no elemento de Contexto
  * @private
  */
-DBContextComplete.prototype.addGroup = function(sName, sKeyInvoker) {
+DBContextComplete.prototype.addGroup = function (sName, sKeyInvoker) {
 
-  if (!this.aGrupos[sName]) {
-    this.aGrupos[sName] = {itens:[]};
-  }
+    if (!this.aGrupos[sName]) {
+        this.aGrupos[sName] = {itens:[]};
+    }
 
-  this.aGrupos[sName].sKey = sKeyInvoker;
-  this.aInvokers.push(sKeyInvoker);
+    this.aGrupos[sName].sKey = sKeyInvoker;
+    this.aInvokers.push(sKeyInvoker);
 };
 
-DBContextComplete.prototype.getItensByInvoker = function(sKeyInvoker) {
+DBContextComplete.prototype.getItensByInvoker = function (sKeyInvoker) {
 
-  for (sGrupo in this.aGrupos) {
-    if (typeof(sGrupo) ==  'function') {
-      continue;
+    for (sGrupo in this.aGrupos) {
+        if (typeof(sGrupo) ==  'function') {
+            continue;
+        }
+        if (this.aGrupos[sGrupo].sKey == sKeyInvoker) {
+            return this.aGrupos[sGrupo].itens;
+        }
     }
-    if (this.aGrupos[sGrupo].sKey == sKeyInvoker) {
-      return this.aGrupos[sGrupo].itens;
-    }
-  }
-  return [];
-}
+    return [];
+};

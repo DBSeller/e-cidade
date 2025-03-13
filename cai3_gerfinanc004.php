@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_issbase_classe.php");
-include("classes/db_iptubase_classe.php");
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
 
 $head1 = "SECRETARIA DA FAZENDA";
 $head2 = "Relatório dos Débitos pendentes";
@@ -38,8 +38,8 @@ $head7 = "";
 $head8 = "";
 
 
-include("fpdf151/pdf.php");
-require("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+require(modification("libs/db_sql.php"));
 
 $DB_DATACALC = mktime(0,0,0,substr($db_datausu,5,2),substr($db_datausu,8,2),substr($db_datausu,0,4));
 $head9 = "Débitos Calculados até: ".db_formatar($db_datausu,'d');
@@ -111,7 +111,7 @@ $pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetFillColor(220);
 //Dados
-$dados = pg_exec("select z01_numcgm,z01_nome,z01_ender,z01_munic,z01_uf,z01_cgccpf,z01_ident 
+$dados = db_query("select z01_numcgm,z01_nome,z01_ender,z01_munic,z01_uf,z01_cgccpf,z01_ident 
                   from cgm 
 				  where z01_numcgm = ".pg_result($result,0,"k00_numcgm"));
 $X = 10;
@@ -235,7 +235,7 @@ for($i = 0;$i < $numrows;$i++) {
   if ( $xnumtot != pg_result($result,$i,"k00_tipo")){ 
     $sql1 = " select k00_descr from arretipo where k00_tipo = $xnumtot and k00_instit = ".db_getsession('DB_instit') ;
     $pdf->SetFont('arial','B',8);
-    $pdf->Cell($TamNumpar+$TamNumtot+17+17+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL DO TIPO : ".$xnumtot." - ".pg_result(pg_exec($sql1),0,"k00_descr"),"T",0,"L",1);
+    $pdf->Cell($TamNumpar+$TamNumtot+17+17+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL DO TIPO : ".$xnumtot." - ".pg_result(db_query($sql1),0,"k00_descr"),"T",0,"L",1);
     $pdf->Cell($TamVlrhis + 6,5,db_formatar($tothis,'f'),1,0,"R",1);
     $pdf->Cell($TamVlrcor + 6,5,db_formatar($totcor,'f'),1,0,"R",1);
     $pdf->Cell($TamVlrjuros + 6,5,db_formatar($totjuros,'f'),1,0,"R",1);
@@ -305,7 +305,7 @@ $pdf->Cell($TamVlrdesconto + 6,5,db_formatar($totdescontop,'f'),1,0,"R",1);
 $pdf->Cell($TamTotal + 6,5,db_formatar($tottotalp,'f'),1,1,"R",1);
 
 $sql1 = " select k00_descr from arretipo where k00_tipo = $xnumtot and k00_instit = ".db_getsession('DB_instit') ;
-$pdf->Cell($TamNumpar+$TamNumtot+17+17+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL DO TIPO : ".$xnumtot." - ".pg_result(pg_exec($sql1),0,"k00_descr"),"T",0,"L",1);
+$pdf->Cell($TamNumpar+$TamNumtot+17+17+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL DO TIPO : ".$xnumtot." - ".pg_result(db_query($sql1),0,"k00_descr"),"T",0,"L",1);
 $pdf->Cell($TamVlrhis + 6,5,db_formatar($tothis,'f'),1,0,"R",1);
 $pdf->Cell($TamVlrcor + 6,5,db_formatar($totcor,'f'),1,0,"R",1);
 $pdf->Cell($TamVlrjuros + 6,5,db_formatar($totjuros,'f'),1,0,"R",1);
@@ -317,7 +317,7 @@ $pdf->Ln(3);
 
 //TOTAL
 //$pdf->SetFont('arial','B',6);
-$pdf->Cell($TamNumpar+$TamNumtot+17+17+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL GERAL : ".$xnumtot." - ".pg_result(pg_exec($sql1),0,"k00_descr"),"T",0,"L",1);
+$pdf->Cell($TamNumpar+$TamNumtot+17+17+$TamK01_descr+$TamReceit+$TamK02_descr,5,"TOTAL GERAL : ".$xnumtot." - ".pg_result(db_query($sql1),0,"k00_descr"),"T",0,"L",1);
 $pdf->Cell($TamVlrhis + 6,5,db_formatar($valhis,'f'),1,0,"R",1);
 $pdf->Cell($TamVlrcor + 6,5,db_formatar($valcor,'f'),1,0,"R",1);
 $pdf->Cell($TamVlrjuros + 6,5,db_formatar($valjuros,'f'),1,0,"R",1);

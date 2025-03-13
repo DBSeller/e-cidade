@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_vac_aplica_classe.php");
-require_once("classes/db_vac_sala_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_vac_aplica_classe.php"));
+require_once(modification("classes/db_vac_sala_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
 
 $iDepartamento    = db_getsession("DB_coddepto");
 $oDaoVacSala      = new cl_vac_sala;
@@ -86,7 +86,7 @@ if ((isset($iAplica)) && (isset($iCgs))) {
       <center>
         <fieldset style='width: 60%;'> <legend><b>Anular Aplicação</b></legend>
 	        <?
-	        require_once("forms/db_frmvac_aplicaanulaiframe.php");
+	        require_once(modification("forms/db_frmvac_aplicaanulaiframe.php"));
 	        ?>
         </fieldset>
       </center>

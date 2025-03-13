@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,7 +29,7 @@
 $cllevantanotas->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("y63_codlev");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir_html = new cl_iframe_alterar_excluir_html;
 ?>
 

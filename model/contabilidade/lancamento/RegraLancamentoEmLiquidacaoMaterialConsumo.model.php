@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("interfaces/IRegraLancamentoContabil.interface.php");
-require_once ("model/contabilidade/EventoContabil.model.php");
-require_once ("model/contabilidade/EventoContabilLancamento.model.php");
+require_once(modification("interfaces/IRegraLancamentoContabil.interface.php"));
+require_once(modification("model/contabilidade/EventoContabil.model.php"));
+require_once(modification("model/contabilidade/EventoContabilLancamento.model.php"));
 
 /**
  * Verifica a regra de lançamentos para o movimento em liquidacao de materiais permanentes.
@@ -35,7 +35,7 @@ require_once ("model/contabilidade/EventoContabilLancamento.model.php");
  * @author Matheus Felini  matheus.felini@dbseller.com.br
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 class RegraLancamentoEmLiquidacaoMaterialConsumo implements IRegraLancamentoContabil {
 

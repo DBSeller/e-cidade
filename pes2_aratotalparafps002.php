@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -81,7 +81,7 @@ where ".$sigla."pd != 3
   and rh02_lota  = 71
 ";
 
-$result1 = pg_exec($sql1);
+$result1 = db_query($sql1);
 db_fieldsmemory($result1,0);
 $pdf->ln(4);
 
@@ -111,7 +111,7 @@ where ".$sigla."pd    != 3
   and rh02_lota  = 72;
 ";
 
-$result2 = pg_exec($sql2);
+$result2 = db_query($sql2);
 db_fieldsmemory($result2,0);
 
 $pdf->cell(65,$alt,'QUANTIDADE DE PENSIONISTAS',0,0,"L",0);
@@ -145,7 +145,7 @@ where (".$sigla."pd != 3 or ".$sigla."rubric = 'R992')
   and rh02_tbprev = 2
 ";
 
-$result3 = pg_exec($sql3);
+$result3 = db_query($sql3);
 db_fieldsmemory($result3,0);
 
 $pdf->cell(65,$alt,'QUANTIDADE DE ATIVOS',0,0,"L",0);
@@ -178,7 +178,7 @@ where ".$sigla."rubric = '0194'
   and ".$sigla."mesusu = $mes
 "  ;
 
-$result4 = pg_exec($sql4);
+$result4 = db_query($sql4);
 db_fieldsmemory($result4,0);
 
 $pdf->cell(65,$alt,'QTD. DE SALARIO FAMILIA',0,0,"L",0);
@@ -212,7 +212,7 @@ where ".$sigla."pd     != 3
  " ;
 
 
-$result5 = pg_exec($sql5);
+$result5 = db_query($sql5);
 db_fieldsmemory($result5,0);
 
 $pdf->cell(65,$alt,'QUANTIDADE DE SALARIO MATERNIDADE',0,0,"L",0);
@@ -256,7 +256,7 @@ where ".$sigla."pd     != 3
  " ;
 
 
-$result6 = pg_exec($sql6);
+$result6 = db_query($sql6);
 db_fieldsmemory($result6,0);
 
 $pdf->cell(65,$alt,'QUANTIDADE DE AUXILIO DOENCA',0,0,"L",0);
@@ -300,7 +300,7 @@ where (".$sigla."pd    != 3 or ".$sigla."rubric = 'R992')
   and rh02_tbprev = 2
   ";
 
-$result7 = pg_exec($sql7);
+$result7 = db_query($sql7);
 db_fieldsmemory($result7,0);
 
 $pdf->cell(65,$alt,'QUANTIDADE INATIVOS COM FPS',0,0,"L",0);
@@ -343,7 +343,7 @@ where (".$sigla."pd    != 3 or ".$sigla."rubric = 'R992')
   ";
 
 
-$result8 = pg_exec($sql8);
+$result8 = db_query($sql8);
 db_fieldsmemory($result8,0);
 
 $pdf->cell(65,$alt,'QUANTIDADE PENSIONISTAS COM FPS',0,0,"L",0);
@@ -375,7 +375,7 @@ where ".$sigla."rubric = '0148'
   and ".$sigla."mesusu = $mes
 "  ;
 
-$result9 = pg_exec($sql9);
+$result9 = db_query($sql9);
 db_fieldsmemory($result9,0);
 
 $pdf->cell(85,$alt,'VALOR DA RUBRICA 0148 (PROGRAMA SAUDE DA FAMILIA)',0,0,"L",0);

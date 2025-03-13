@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_exemplar_classe.php");
-include("classes/db_impexemplar_classe.php");
-include("classes/db_impexemplaritem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_exemplar_classe.php"));
+include(modification("classes/db_impexemplar_classe.php"));
+include(modification("classes/db_impexemplaritem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clexemplar = new cl_exemplar;
 $climpexemplar = new cl_impexemplar;
@@ -42,14 +42,14 @@ $db_opcao = 1;
 $db_botao = true;
 $depto = db_getsession("DB_coddepto");
 $sql = "SELECT bi17_codigo,bi17_nome FROM biblioteca WHERE bi17_coddepto = $depto";
-$result = pg_query($sql);;
+$result = db_query($sql);;
 $linhas = pg_num_rows($result);
 if($linhas!=0){
  db_fieldsmemory($result,0);
 }
 if(isset($processar)){
  db_inicio_transacao();
- $result2 = pg_query("DELETE FROM impexemplaritem WHERE bi25_impexemplar = $bi24_codigo AND bi25_exemplar in ($exemplares)");
+ $result2 = db_query("DELETE FROM impexemplaritem WHERE bi25_impexemplar = $bi24_codigo AND bi25_exemplar in ($exemplares)");
  db_fim_transacao();
  $result3 = $climpexemplaritem->sql_record($climpexemplaritem->sql_query("","bi25_codigo",""," bi25_impexemplar = $bi24_codigo"));
  if($climpexemplaritem->numrows==0){

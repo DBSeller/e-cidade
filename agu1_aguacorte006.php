@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_aguacorte_classe.php");
-include("classes/db_aguacortemat_classe.php");
-include("classes/db_aguacortematnumpre_classe.php");
-include("classes/db_aguacortematmov_classe.php");
-include("classes/db_aguacortetipodebito_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_aguacorte_classe.php"));
+include(modification("classes/db_aguacortemat_classe.php"));
+include(modification("classes/db_aguacortematnumpre_classe.php"));
+include(modification("classes/db_aguacortematmov_classe.php"));
+include(modification("classes/db_aguacortetipodebito_classe.php"));
 
 $claguacorte           = new cl_aguacorte;
 $claguacortemat        = new cl_aguacortemat;
@@ -120,7 +120,7 @@ if (isset($excluir)) {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmaguacorte.php");
+	include(modification("forms/db_frmaguacorte.php"));
 	?>
     </center>
 	</td>
@@ -153,9 +153,9 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.aguacortemat.disabled=false;
-         top.corpo.iframe_aguacortemat.location.href='agu1_aguacorte007.php?db_opcaoal=33&x41_codcorte=".@$x40_codcorte."&x40_dtinc=".@$x40_dtinc."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguacortemat.location.href='agu1_aguacorte007.php?db_opcaoal=33&x41_codcorte=".@$x40_codcorte."&x40_dtinc=".@$x40_dtinc."';
          parent.document.formaba.aguacortetipodebito.disabled=false;
-         top.corpo.iframe_aguacortetipodebito.location.href='agu1_aguacortetipodebito001.php?db_opcaoal=33&x45_codcorte=".@$x40_codcorte."&x40_dtinc=".@$x40_dtinc."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_aguacortetipodebito.location.href='agu1_aguacortetipodebito001.php?db_opcaoal=33&x45_codcorte=".@$x40_codcorte."&x40_dtinc=".@$x40_dtinc."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('aguacortemat');";

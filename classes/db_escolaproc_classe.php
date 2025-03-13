@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -15,7 +15,7 @@
  *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
  *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
  *  detalhes.                                                         
- *                                                                    
+ *
  *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
  *  junto com este programa; se nao, escreva para a Free Software     
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
@@ -845,8 +845,8 @@ class cl_escolaproc {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $ed82_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+
+  function sql_query_file ( $ed82_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -862,8 +862,8 @@ class cl_escolaproc {
      $sql2 = "";
      if($dbwhere==""){
        if($ed82_i_codigo!=null ){
-         $sql2 .= " where escolaproc.ed82_i_codigo = $ed82_i_codigo "; 
-       } 
+         $sql2 .= " where escolaproc.ed82_i_codigo = $ed82_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -879,5 +879,26 @@ class cl_escolaproc {
      }
      return $sql;
   }
+
+  function sql_query_escola_aluno_vinculado ( $ed82_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+
+    $sql  = "select {$campos} ";
+    $sql .= " from escolaproc ";
+    $sql .= "      left join alunoprimat on ed76_i_escola = ed82_i_codigo";
+    $sql2 = "";
+
+    if (empty($dbwhere)) {
+      if (!empty($ed82_i_codigo)){
+        $sql2 .= " where escolaproc.ed82_i_codigo = $ed82_i_codigo ";
+      }
+    } else if (!empty($dbwhere)) {
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+
+    return $sql;
+  }
 }
-?>

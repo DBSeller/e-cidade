@@ -7,6 +7,8 @@
     <campo campo="a.z01_cgccpf" label="cnpj"           />
     <campo campo="a.z01_ender"  label="endereco"       />
     <campo campo="b.z01_nome"   label="contador"       />
+    <campo campo="a.z01_email"  label="email"          />
+    <campo campo="a.z01_telcel" label="telefone"       />
   </campos>
   <from tabela="issbase" />
   <juncoes>

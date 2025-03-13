@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("libs/db_libcaixa_ze.php");
-$cllayouts_bb = new cl_layouts_bb;
-$cllayouts_bs = new cl_layouts_bs;
+include(modification("libs/db_libcaixa_ze.php"));
+$cllayouts_bb = new LayoutBB;
+$cllayouts_bs = new LayoutBS;
 
-include("classes/db_empagetipo_classe.php");
-include("classes/db_empage_classe.php");
-include("classes/db_empagemov_classe.php");
-include("classes/db_empagegera_classe.php");
-include("classes/db_empageconf_classe.php");
-include("classes/db_empageconfgera_classe.php");
-include("classes/db_conplanoconta_classe.php");
-include("classes/db_empagepag_classe.php");
-include("classes/db_empagemod_classe.php");
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("classes/db_empage_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("classes/db_empagegera_classe.php"));
+include(modification("classes/db_empageconf_classe.php"));
+include(modification("classes/db_empageconfgera_classe.php"));
+include(modification("classes/db_conplanoconta_classe.php"));
+include(modification("classes/db_empagepag_classe.php"));
+include(modification("classes/db_empagemod_classe.php"));
 
 $clempage = new cl_empage;
 $clconplanoconta = new cl_conplanoconta;
@@ -74,7 +74,7 @@ if(isset($atualizar) ){
   $sqlerro = false;
 
   $sqlinst = "select * from db_config where codigo = ".db_getsession("DB_instit"); 
-  $resultinst = pg_query($sqlinst);
+  $resultinst = db_query($sqlinst);
   
   db_fieldsmemory($resultinst,0);
  
@@ -184,7 +184,7 @@ from
      		inner join empagetipo on e85_codtipo = e83_codtipo 
      		left join empageslip on e81_codmov = e89_codmov 
      		inner join conplanoreduz on e83_conta = c61_reduz  and c61_anousu=".db_getsession("DB_anousu")."
-     		inner join conplanoconta on c63_codcon = c61_codcon and c63_anousu=c61_anousu 
+     		inner join conplanoconta on c63_codcon = c61_codcon and c63_anousu=c61_anousu and c63_reduz = c61_reduz 
      		left join slip on slip.k17_codigo = e89_codigo
      		left join slipnum on slipnum.k17_codigo = slip.k17_codigo
      		left join empageconfcanc on e88_codmov = e90_codmov
@@ -198,7 +198,7 @@ where e90_codgera = $gera
 order by c63_conta,lanc,e90_codmov		
      ";
 //echo $sql;
-$result  =  @pg_query($sql);
+$result  =  @db_query($sql);
 $numrows =  @pg_numrows($result);
 //db_criatabela($result);exit;
 if($numrows==0){
@@ -504,7 +504,7 @@ if($numrows==0){
    $clrotulo->label("e80_data");
    $clrotulo->label("e84_codmod");
 //sempre que ja existir agenda entra nesta opcao  
-	include("forms/db_frmempageconflay03.php");
+	include(modification("forms/db_frmempageconflay03.php"));
 ?>
     </td>
   </tr>
@@ -514,7 +514,7 @@ if($numrows==0){
 <script>
 
 function js_empage(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
 }
 function js_mostra(codage,data){
   arr = data.split('-');
@@ -548,7 +548,7 @@ if(isset($atualizar) ){
       echo "
         <script>
 	 function js_emitir(){
-  //          js_OpenJanelaIframe('top.corpo','e','tmp/$nomearquivo','Pesquisa',false,0,0,0,0 );
+  //          js_OpenJanelaIframe('CurrentWindow.corpo','e','tmp/$nomearquivo','Pesquisa',false,0,0,0,0 );
 
 //  jan = window.open('tmp/$nomearquivo','',width=0,height=0,scrollbars=0,location=0 ');
   jan = window.open('tmp/$nomearquivo','','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');

@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010466' name='contabilidade.conlancamlogatributos' description="conlancamlogatributos" prefix="c134" label="conlancamlogatributos" type="0">
+  <fields>
+    <field codigo="1010695" 
+           campo_api='' 
+           name="c134_sequencial" 
+           conteudo="int4" 
+           description="Sequecial" 
+           inivalue="0" 
+           label="Sequecial" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequecial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='contabilidade.conlancamlogatributos_c134_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010696" 
+           campo_api='' 
+           name="c134_codlan" 
+           conteudo="int4" 
+           description="Código do lançamento" 
+           inivalue="0" 
+           label="Cód Lan" 
+           size="8" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Cod.lan" 
+           reference="c69_codlan" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010697" 
+           campo_api='' 
+           name="c134_mensagem" 
+           conteudo="text" 
+           description="Mensagem" 
+           inivalue="" 
+           label="Mensagem" 
+           size="100" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Mensagem" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c134_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="conlancam" inner='t'>
+      <fieldfk name="c134_codlan" reference="c70_codlan" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

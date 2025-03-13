@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_libdicionario.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_matmater_classe.php");
-include ("classes/db_transmater_classe.php");
-include ("classes/db_matmaterunisai_classe.php");
-include ("classes/db_matmaterestoque_classe.php");
-include ("classes/db_db_almox_classe.php");
-require_once("classes/db_matmatermaterialestoquegrupo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_libdicionario.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_matmater_classe.php"));
+include(modification("classes/db_transmater_classe.php"));
+include(modification("classes/db_matmaterunisai_classe.php"));
+include(modification("classes/db_matmaterestoque_classe.php"));
+include(modification("classes/db_db_almox_classe.php"));
+require_once(modification("classes/db_matmatermaterialestoquegrupo_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -146,7 +146,7 @@ if (isset ($excluir)) {
 	<?
 
 
-include ("forms/db_frmmatmater.php");
+include(modification("forms/db_frmmatmater.php"));
 ?>
     </center>
 <?

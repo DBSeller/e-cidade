@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ('classes/solicitacaocompras.model.php');
-require_once ("model/itemCompilacao.model.php");
+require_once(modification('classes/solicitacaocompras.model.php'));
+require_once(modification("model/itemCompilacao.model.php"));
 
 /**
  * Cria um nova Abertura para um registro de Preço
@@ -35,6 +35,9 @@ require_once ("model/itemCompilacao.model.php");
 class compilacaoRegistroPreco extends solicitacaoCompra {
 
 
+  /**
+   * @var itemCompilacao[]
+   */
   protected $aItens = array();
 
   protected $iCodigoRegistro;
@@ -61,6 +64,8 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
 
   protected $sDataAnulacao;
 
+  protected  $iFormaControle = aberturaRegistroPreco::CONTROLA_QUANTIDADE;
+
   /**
    *@param integer $iRegistroCompras
    */
@@ -85,6 +90,7 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
         $this->iCodigoDepartamento    = $oDadosRegistro->coddepto;
         $this->sDescricaoDepartamento = $oDadosRegistro->descrdepto;
         $this->sDataAnulacao          = $oDadosRegistro->pc67_data;
+        $this->iFormaControle         = $oDadosRegistro->pc54_formacontrole;
       }
     }
   }
@@ -130,17 +136,24 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
     return $this;
 
   }
+
   /**
    * Retorna os itens cadastrados na solicitacao
    *
-   * @return collection de itemSolicitacao
+   * @return itemCompilacao[]
    */
-  public function getItens() {
+  public function getItens($iCodigoItem = null) {
 
     if ($this->iCodigoSolicitacao != "" && count($this->aItens) == 0) {
 
+        $sWhere = "pc11_numero={$this->iCodigoSolicitacao}";
+
+        if( $iCodigoItem ) {
+            $sWhere .= " and solicitem.pc11_codigo = {$iCodigoItem}" ;
+        }
+
       $oDaoSolicitem = db_utils::getDao("solicitem");
-      $sSqlItens     = $oDaoSolicitem->sql_query_mat(null,"*,
+      $sSqlItens     = $oDaoSolicitem->sqlItensComValorLancado(null," distinct solicitem.*,
                                                     exists(SELECT 1
                                                             from solicitemregistropreco b
                                                             inner join solicitemvinculo on pc55_solicitempai   = b.pc57_itemorigem
@@ -150,7 +163,9 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
                                                        where b.pc57_solicitem = solicitem.pc11_codigo
                                                          ) as item_abertura",
                                                       "pc11_seq",
-                                                      "pc11_numero={$this->iCodigoSolicitacao}");
+                                                      $sWhere
+                                                      );
+
       $rsItens       = $oDaoSolicitem->sql_record($sSqlItens);
       if ($oDaoSolicitem->numrows > 0) {
 
@@ -170,8 +185,46 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
   }
 
   /**
+   * Retorna a abertura do registro de Preco
+   * @return aberturaRegistroPreco
+   */
+  public function getAberturaRegistroPreco() {
+    return new aberturaRegistroPreco($this->iCodigoAbertura);
+  }
+
+
+  /**
+   * Salvamos os dados da Abertura
+   */
+  public function salvarDadosAbertura() {
+
+    $oAbertura         = $this->getAberturaRegistroPreco();
+    $oDaoAberturaPreco = new cl_solicitaregistropreco;
+    $oDaoAberturaPreco->pc54_datainicio    = implode("-", array_reverse(explode("/", $this->getDataInicio())));
+    $oDaoAberturaPreco->pc54_datatermino   = implode("-", array_reverse(explode("/", $this->getDataTermino())));
+    $oDaoAberturaPreco->pc54_liberado      = $this->isLiberado()?"true":"false";
+    $oDaoAberturaPreco->pc54_formacontrole = $oAbertura->getFormaDeControle();
+    if ($this->iCodigoRegistro != null) {
+
+      $oDaoAberturaPreco->pc54_sequencial = $this->iCodigoRegistro;
+      $oDaoAberturaPreco->alterar($this->iCodigoRegistro);
+
+    } else {
+
+      $oDaoAberturaPreco->pc54_solicita   = $this->getCodigoSolicitacao();
+      $oDaoAberturaPreco->incluir(null);
+      $this->iCodigoRegistro = $oDaoAberturaPreco->pc54_sequencial;
+
+    }
+    if ($oDaoAberturaPreco->erro_status == 0) {
+      throw new Exception("Erro ao salvar Abertura de Registro de Preço!\n{$oDaoAberturaPreco->erro_msg}");
+    }
+  }
+
+  /**
    * Salva os dados da Solicitaçao na base de dados
    *
+   * @throws Exception
    * @return aberturaRegistroPreco
    */
   public function save() {
@@ -196,31 +249,12 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
 
     }
     if ($oDaoSolicitacao->erro_status == 0) {
-      throw new Exception("Erro ao salvar Abertura de Registro de Preço!\n{$oDaoSolicitacao->erro_msg}");
+      throw new Exception("Erro ao salvar Compilação do registro de preço!\n{$oDaoSolicitacao->erro_msg}");
     }
+    $oAbertura = $this->getAberturaRegistroPreco();
+    $this->setFormaDeControle($oAbertura->getFormaDeControle());
 
-    /**
-     * salvamos os dados da Abertura
-     */
-    $oDaoAberturaPreco = db_utils::getDao("solicitaregistropreco");
-    $oDaoAberturaPreco->pc54_datainicio  = implode("-", array_reverse(explode("/", $this->getDataInicio())));
-    $oDaoAberturaPreco->pc54_datatermino = implode("-", array_reverse(explode("/", $this->getDataTermino())));
-    $oDaoAberturaPreco->pc54_liberado    = $this->isLiberado()?"true":"false";
-    if ($this->iCodigoRegistro != null) {
-
-      $oDaoAberturaPreco->pc54_sequencial = $this->iCodigoRegistro;
-      $oDaoAberturaPreco->alterar($this->iCodigoRegistro);
-
-    } else {
-
-      $oDaoAberturaPreco->pc54_solicita   = $this->getCodigoSolicitacao();
-      $oDaoAberturaPreco->incluir(null);
-      $this->iCodigoRegistro = $oDaoAberturaPreco->pc54_sequencial;
-
-    }
-    if ($oDaoAberturaPreco->erro_status == 0) {
-      throw new Exception("Erro ao salvar Abertura de Registro de Preço!\n{$oDaoAberturaPreco->erro_msg}");
-    }
+    $this->salvarDadosAbertura();
 
     /**
      * Salvamos o Vinculo com a abertura
@@ -277,6 +311,17 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
       $sSqlItensRegistro .= "      pc11_seq, ";
       $sSqlItensRegistro .= "      total, ";
       $sSqlItensRegistro .= "      tipoitem, ";
+      /**
+       * Quando a abertura for por valor, temos que pegar o valor unitario lancamento, ignoramos as quantidades
+       */
+      if ($this->getFormaDeControle() == aberturaRegistroPreco::CONTROLA_VALOR) {
+
+        $sSqlItensRegistro .= "(select abertura.pc11_vlrun";
+        $sSqlItensRegistro .= "   from solicitem abertura ";
+        $sSqlItensRegistro .= "  where abertura.pc11_seq    = solicitem.pc11_seq";
+        $sSqlItensRegistro .= "    and abertura.pc11_numero = {$this->iCodigoAbertura}";
+        $sSqlItensRegistro .= ") as valor_item,";
+      }
       $sSqlItensRegistro .= "      estimativas ";
       $sSqlItensRegistro .= " FROM (SELECT (case when itemabertura.pc11_codigo is null ";
       $sSqlItensRegistro .= "                    then itemestimativa.pc11_codigo ";
@@ -303,31 +348,39 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
       $sSqlItensRegistro .= "       inner join pcmater          on pc16_codmater = pc01_codmater ";
       $sSqlItensRegistro .= "       inner join solicitemunid    on pc17_codigo   = pc11_codigo ";
       $sSqlItensRegistro .= " order by pc11_seq,tipoitem";
-      $rsItens            = db_query($sSqlItensRegistro);
-      $aItens             = db_utils::getCollectionByRecord($rsItens);
-      $i = 1;
+
+      $rsItens = db_query($sSqlItensRegistro);
+      $aItens  = db_utils::getCollectionByRecord($rsItens);
+      $i       = 1;
       foreach ($aItens as $oItem) {
 
         if ($oItem->total == 0) {
           continue;
         }
 
-        $oItemNovo     =  new itemCompilacao(null, $oItem->pc01_codmater);
+        $oItemNovo = new itemCompilacao(null, $oItem->pc01_codmater);
         $oItemNovo->setCodigoItemOrigem($oItem->codigo);
         $oItemNovo->setUnidade($oItem->pc17_unid);
         $oItemNovo->setQuantidadeUnidade($oItem->pc17_quant);
         $oItemNovo->setQuantidadeMinima(1);
         $oItemNovo->setAutimatico($oItem->tipoitem == 1?true:false);
-        $nQuantidadeExtendidaItem = round(($oItem->total*$iPercentualMaximo)/100);
+        $nQuantidadeExtendidaItem = floor(($oItem->total*$iPercentualMaximo)/100);
         $oItemNovo->setQuantidadeMaxima($oItem->total+$nQuantidadeExtendidaItem);
         $oItemNovo->setAtivo(true);
         $oItemNovo->setOrdem($i);
         $oItemNovo->setJustificativa($oItem->pc11_just);
         $oItemNovo->setResumo($oItem->pc11_resum);
+        $oItemNovo->setQuantidade($oItem->total);
+        if ($this->getFormaDeControle() == aberturaRegistroPreco::CONTROLA_VALOR) {
+
+          $oItemNovo->setValorUnitario($oItem->valor_item);
+          $oItemNovo->setQuantidadeMaxima(1);
+          $oItemNovo->setQuantidadeMinima(1);
+          $oItemNovo->setQuantidade(1);
+        }
         $oItemNovo->setItensEstimativas(explode(",", $oItem->estimativas));
         $oItemNovo->setPrazos($oItem->pc11_prazo);
         $oItemNovo->setPagamento($oItem->pc11_pgto);
-        $oItemNovo->setQuantidade($oItem->total);
         $this->addItem($oItemNovo);
         $i++;
       }
@@ -746,6 +799,8 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
    * Verifica os Vencedores do julgamento
    *
    * @param integer $iCodigoOrcamento codigo do orcamento do registro de precos(pcorcam.pc22_codorc)
+   * @param null    $iItemJulgar
+   * @throws Exception
    * @return compilacaoRegistroPreco
    */
   public function julgarOrcamentoRegistroPreco($iCodigoOrcamento, $iItemJulgar = null) {
@@ -900,6 +955,7 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
     $sSqlVencedores .= "       inner join solicitempcmater on pc11_codigo      = pc16_solicitem ";
     $sSqlVencedores .= "       inner join pcmater          on pc01_codmater    = pc16_codmater ";
     $sSqlVencedores .= " where pc22_codorc = {$iOrcamento}";
+    $sSqlVencedores .= "   and pc24_pontuacao = 1";
     $sSqlVencedores .= " order by pc23_orcamitem ";
     $rsVencedores    = db_query($sSqlVencedores);
     return db_utils::getCollectionByRecord($rsVencedores, false, false, true);
@@ -921,7 +977,8 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
     $sSqlVencedores .= "       pc23_orcamforne as codigofornecedor, ";
     $sSqlVencedores .= "       pc23_obs as obsorcamento, ";
     $sSqlVencedores .= "       pc17_unid    as unidade, ";
-    $sSqlVencedores .= "       pc17_quant   as quantidadeunidade";
+    $sSqlVencedores .= "       pc17_quant   as quantidadeunidade,";
+    $sSqlVencedores .= "       pc23_percentualdesconto as percentualdesconto";
     $sSqlVencedores .= "  from pcorcamjulg ";
     $sSqlVencedores .= "       inner join pcorcamitem      on pc22_orcamitem   = pc24_orcamitem ";
     $sSqlVencedores .= "       inner join pcorcamval       on pc24_orcamitem   = pc23_orcamitem ";
@@ -935,8 +992,9 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
     $sSqlVencedores .= "       inner join solicitemunid    on pc17_codigo      = pc11_codigo ";
     $sSqlVencedores .= "       inner join solicitempcmater on pc11_codigo      = pc16_solicitem ";
     $sSqlVencedores .= "       inner join pcmater          on pc01_codmater    = pc16_codmater ";
-    $sSqlVencedores .= " where pc11_numero   = {$this->getCodigoSolicitacao()}";
-    $sSqlVencedores .= "   and pc01_codmater = {$iCodigoMaterial}";
+    $sSqlVencedores .= " where pc11_numero    = {$this->getCodigoSolicitacao()}";
+    $sSqlVencedores .= "   and pc24_pontuacao = 1";
+    $sSqlVencedores .= "   and pc01_codmater  = {$iCodigoMaterial}";
     if (!empty($iCodigoSolicitem)) {
       $sSqlVencedores .= "   and pc11_codigo = {$iCodigoSolicitem}";
     }
@@ -1142,7 +1200,7 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
     return $this;
   }
 
-    public function anular($sMotivo) {
+    public function anular($sMotivo, $sProcessoAdministrativo = null) {
 
     $lSolicitaAnulada = $this->isAnulada();
 
@@ -1160,34 +1218,41 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
         throw new Exception("Erro ao anular Estimativa de Registro de Preço!\n\n{$oDaoSolicitaAnulada->erro_msg}");
       }
     }
-
   }
 
  /**
   * retorna a quantidade solicitada do item.
   *
-  * @param unknown_type integer codigo do item
+  * @param integer $iCodigoItem codigo do item
+  * @param integer $departamento
   * @return float codigo do item
   */
-  public function getValorSolicitadoItem($iCodigoItem) {
+  public function getValorSolicitadoItem($iCodigoItem, $departamento = null) {
 
-    $sSqlValorItem  = "SELECT sum(pc11_quant) as valor";
-    $sSqlValorItem .= "  from solicitem ";
-    $sSqlValorItem .= "        inner join solicitemvinculo on pc11_codigo = pc55_solicitemfilho";
-    $sSqlValorItem .= "  where pc55_solicitempai = {$iCodigoItem}";
+    $sSqlValorItem  = "SELECT coalesce(sum(" . ($this->iFormaControle == aberturaRegistroPreco::CONTROLA_QUANTIDADE ? "pc11_quant" : "pc11_quant*pc11_vlrun") . "), 0) as valor";
+    $sSqlValorItem .= " from solicitem ";
+    $sSqlValorItem .= " inner join solicitemvinculo on pc11_codigo = pc55_solicitemfilho";
+    $sSqlValorItem .= " inner join solicita on pc11_numero = pc10_numero";
+    $sSqlValorItem .= " left join solicitaanulada on pc67_solicita = pc10_numero";
+    $sSqlValorItem .= " where pc55_solicitempai = {$iCodigoItem} and pc67_solicita is null";
+    if (!empty($departamento)) {
+        $sSqlValorItem .= " and pc10_depto = " . $departamento;
+    }
     $rsValorItem    = db_query($sSqlValorItem);
+
     return db_utils::fieldsMemory($rsValorItem, 0)->valor;
   }
 
   /**
   * retorna a quantidade empenhada do item.
   *
-  * @param  integer codigo do item
+  * @param integer $iCodigoItem codigo do item
+  * @param integer $departamento
   * @return float codigo do item
   */
-  public function getValorEmpenhadoItem($iCodigoItem) {
+  public function getValorEmpenhadoItem($iCodigoItem, $departamento = null) {
 
-    $sSqlValorItem  = "SELECT sum(e62_quant) as valor";
+    $sSqlValorItem  = "SELECT coalesce(sum(" . ($this->iFormaControle == aberturaRegistroPreco::CONTROLA_QUANTIDADE ? "e62_quant" : "e62_vltot") . "), 0) as valor";
     $sSqlValorItem .= "  from solicitem ";
     $sSqlValorItem .= "        inner join solicitemvinculo      on pc11_codigo      = pc55_solicitemfilho";
     $sSqlValorItem .= "        inner join pcprocitem            on pc11_codigo      = pc81_solicitem ";
@@ -1201,6 +1266,9 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
     $sSqlValorItem .= "                                        and e62_sequen  = e55_sequen";
     $sSqlValorItem .= "  where pc55_solicitempai = {$iCodigoItem}";
     $sSqlValorItem .= "    and e54_anulad is null ";
+    if (!empty($departamento)) {
+        $sSqlValorItem .= " and e54_depto = " . $departamento;
+    }
     $rsValorItem    = db_query($sSqlValorItem);
     return db_utils::fieldsMemory($rsValorItem, 0)->valor;
 
@@ -1258,7 +1326,7 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
   */
   public function getItemByCodigo($iCodigo) {
 
-    if (count($this->getItens()) == 0) {
+    if (count($this->getItens($iCodigo)) == 0) {
       $this->getItens();
     }
     $oItemRetorno = null;
@@ -1342,5 +1410,19 @@ class compilacaoRegistroPreco extends solicitacaoCompra {
       return false;
     }
     return new licitacao(db_utils::fieldsMemory($rsBuscaLicitacao, 0)->l20_codigo);
+  }
+
+  /**
+   * @param $iFormaControle
+   */
+  public function setFormaDeControle($iFormaControle) {
+    $this->iFormaControle = $iFormaControle;
+  }
+
+  /**
+   * @return int
+   */
+  public function getFormaDeControle() {
+    return $this->iFormaControle;
   }
 }

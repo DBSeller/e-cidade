@@ -58,7 +58,7 @@ db_input('la10_c_descr',50,$Ila10_c_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lab_sinonima','func_lab_sinonima.php?funcao_js=parent.js_preenchepesquisa|la10_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_sinonima','func_lab_sinonima.php?funcao_js=parent.js_preenchepesquisa|la10_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_lab_sinonima.hide();

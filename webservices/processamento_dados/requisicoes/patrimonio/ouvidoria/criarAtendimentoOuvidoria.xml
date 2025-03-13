@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<processamento>
+
+  <transacao>true</transacao>
+
+  <parametros>
+    <parametro nome="dadosJson" obrigatorio="true" tipo="string"     />
+  </parametros>
+
+  <configuracoes>
+    <classe nome="AtendimentoOuvidoriaWebService" parametros="" caminho="model/ouvidoria/AtendimentoOuvidoriaWebService.model.php">
+      <metodos>
+        <metodo nome="setDadosJson" parametros="$dadosJson" />
+        <metodo nome="criarNovoAtendimento" />
+      </metodos>
+    </classe>
+  </configuracoes>
+
+</processamento>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("libs/exceptions/DBException.php");
-require_once("libs/exceptions/BusinessException.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/exceptions/DBException.php"));
+require_once(modification("libs/exceptions/BusinessException.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -163,7 +163,7 @@ function js_vincularObjetivo() {
 
 function js_retornoVincularObjetivo(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.iStatus == 1) {
 
     var aRow = new Array();
@@ -216,7 +216,7 @@ function js_excluirObjetivo() {
 
 function js_retornoDesvincularObjetivo(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   alert(oRetorno.sMessage.urlDecode());
 
   js_removeObj("msgBox");
@@ -225,7 +225,7 @@ function js_retornoDesvincularObjetivo(oAjax) {
 
 function js_retornoBuscaObjetivosVinculados(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   var aLinha   = new Array();
 
   oGridObjetivos.clearAll(true);

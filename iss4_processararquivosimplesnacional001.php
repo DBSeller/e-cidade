@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once ("libs/db_stdlib.php");
-  require_once ("libs/db_conecta.php");
-  require_once ("libs/db_sessoes.php");
-  require_once ("libs/db_usuariosonline.php");
-  require_once ("libs/db_app.utils.php");
-  require_once ("libs/db_utils.php");
-  require_once ("dbforms/db_funcoes.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
 
   $oGet  = db_utils::postMemory($_GET);
   $lReprocessamento = (isset($oGet->lReprocessar));
@@ -41,9 +41,11 @@
     <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Expires" CONTENT="0">
+    <script rel="script" type="text/javascript" src="scripts/classes/http/http.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+
     <link href="estilos.css" rel="stylesheet" type="text/css">
   </head>
 
@@ -84,57 +86,44 @@
 
   </div>
   <?php
-    db_menu( db_getsession("DB_id_usuario"),
-             db_getsession("DB_modulo"),
-             db_getsession("DB_anousu"),
-             db_getsession("DB_instit") );
+    db_menu();
   ?>
   </body>
 
   <script type="text/javascript">
-    var sUrlRPC    = 'iss1_processararquivosimplesnacional.RPC.php',
+
+    var sRPC       = 'iss1_processararquivosimplesnacional.RPC.php',
         MENSAGENS  = 'tributario.issqn.iss4_processararquivosimplesnacional001.';
 
-    (function() {
-      js_divCarregando('Aguarde, Carregando Arquivos...', 'oCarregando');
+      let lReprocessamento = $('lReprocessamento').value==''?false:true;
 
-      /**
-       * Busca os arquivos existentes na base
-       */
-      var oParametros               = new Object();
-      var oDadosRequisicao          = new Object();
-
-      oParametros.sExecucao         = 'getArquivos';
-      oParametros.lReprocessamento  = $('lReprocessamento').value;
-
-      oDadosRequisicao.method       = 'POST';
-      oDadosRequisicao.asynchronous = false;
-      oDadosRequisicao.parameters   = 'json=' + Object.toJSON(oParametros);
-      oDadosRequisicao.onComplete   = function(oAjax) {
-
-        js_removeObj('oCarregando');
-
-        var oRetorno = JSON.parse( oAjax.responseText.urlDecode() );
-
-        if (oRetorno.iStatus == "2") {
-          alert(oRetorno.sMensagem);
+      const formData = new FormData();
+      formData.append('acao', 'getArquivos');
+      formData.append('lReprocessamento', lReprocessamento);
+      HttpClient.post(sRPC, 
+                    { body: formData,
+                      reportMessage: 'Aguarde, Carregando Arquivo...'
+                    })
+                .then(function(response) 
+      {
+        
+        if (response.erro) {
+          alert(response.sMensagem);
           return;
         }
 
         var oArquivos = $('q64_sequencial');
 
-        oRetorno.aArquivos.each(function(oArquivo) {
+        response.aArquivos.each(function(oArquivo) {
 
           oOpcao       = document.createElement("option");
           oOpcao.value = oArquivo.iSequencial;
           oOpcao.text  = oArquivo.sLabel;
 
           oArquivos.appendChild(oOpcao);
-        });
-      }
+        })
+      })
 
-      var oAjax  = new Ajax.Request( sUrlRPC, oDadosRequisicao );
-    })();
 
     function js_getDataVencimento(iArquivo) {
       var oDataLimiteVencimento      = $('q64_datalimitevencimentos'),
@@ -150,41 +139,33 @@
         return false;
       }
 
-      js_divCarregando('Aguarde, Carregando Arquivo...', 'oCarregando');
-
-      var oParametros               = new Object();
-      var oDadosRequisicao          = new Object();
-
-      oParametros.sExecucao         = 'getDataVencimento';
-      oParametros.iArquivo          = iArquivo;
-
-      oDadosRequisicao.method       = 'POST';
-      oDadosRequisicao.asynchronous = false;
-      oDadosRequisicao.parameters   = 'json=' + Object.toJSON(oParametros);
-      oDadosRequisicao.onComplete   = function(oAjax) {
-
-        js_removeObj('oCarregando');
-
-        var oRetorno = JSON.parse( oAjax.responseText.urlDecode() );
-
-        if (oRetorno.iStatus == "2") {
-          alert(oRetorno.sMensagem);
+      const formData = new FormData();
+      formData.append('acao', 'getDataVencimento');
+      formData.append('iArquivo', iArquivo);
+      HttpClient.post(sRPC, 
+                    { body: formData,
+                      reportMessage: 'Aguarde, Carregando Arquivo...'
+                    })
+                .then(function(response) 
+      {
+      
+        if (response.erro) {
+          alert(response.mensagem);
           return;
         }
 
         var sVisibility = 'visible';
 
-        if (oRetorno.lProcessado && !$('lReprocessamento').value) {
+        if (response.lProcessado && !$('lReprocessamento').value) {
           sVisibility = 'hidden';
           oDataLimiteVencimento.readOnly = true;
           oDataLimiteVencimento.classList.add('readonly');
         }
 
         oDatepicker.style.visibility = sVisibility;
-        oDataLimiteVencimento.value = oRetorno.dtData;
-      }
+        oDataLimiteVencimento.value = response.dtData;
+      })
 
-      var oAjax  = new Ajax.Request( sUrlRPC, oDadosRequisicao );
     }
 
     function js_processar() {

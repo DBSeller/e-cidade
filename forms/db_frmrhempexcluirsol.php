@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_gerfcom_classe.php");
+include(modification("classes/db_gerfcom_classe.php"));
 $clgerfcom = new cl_gerfcom;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -60,7 +60,7 @@ parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
     </td>
   </tr>
   <tr>
-    <td align="right"><b>Ponto:</b</td>
+    <td align="right"><b>Ponto:</b></td>
     <td>
      <?
        $x = array("s"=>"Salário","c"=>"Complementar","d"=>"13o. Salário","r"=>"Rescisão","a"=>"Adiantamento");

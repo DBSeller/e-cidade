@@ -1,0 +1,70 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010254' name='cadastro.atualizacaoiptuschemamotivorejeicao' description="Tabela que guarda o motivo de rejeição." prefix="j146" label="Tabela que guarda o motivo de rejeição." type="0">
+  <fields>
+    <field codigo="1009606" 
+           campo_api='' 
+           name="j146_atualizacaoiptuschemamatricula" 
+           conteudo="int4" 
+           description="Código sequencial da atualização de matrículas" 
+           inivalue="0" 
+           label="Código" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009607" 
+           campo_api='' 
+           name="j146_motivo_rejeicao" 
+           conteudo="text" 
+           description="Motivo da Rejeição" 
+           inivalue="" 
+           label="Motivo da Rejeição" 
+           size="255" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Motivo da Rejeição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009666" 
+           campo_api='' 
+           name="j146_data" 
+           conteudo="date" 
+           description="Data da rejeição" 
+           inivalue="null" 
+           label="Data da rejeição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data da rejeição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="j146_atualizacaoiptuschemamatricula"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="atualizacaoiptuschemamatricula" inner='t'>
+      <fieldfk name="j146_atualizacaoiptuschemamatricula" reference="j144_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,9 +26,9 @@
  */
 
 
-include ("fpdf151/pdf.php");
-include ("libs/db_liborcamento.php");
-include ("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_sql.php"));
 
 $tipo_mesini = 1;
 $tipo_mesfim = 1;
@@ -38,7 +38,7 @@ $anousu = db_getsession("DB_anousu");
 db_postmemory($HTTP_POST_VARS);
 
 $xinstit = split("-", $db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for ($xins = 0; $xins < pg_numrows($resultinst); $xins ++) {
@@ -109,7 +109,7 @@ $sql = "
               )
              order by o57_codfon              
             ";               
-$result = pg_exec($sql);
+$result = db_query($sql);
  // db_criatabela($result);
  // exit;
 

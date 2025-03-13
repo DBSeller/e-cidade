@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -98,7 +98,7 @@ class cl_atendusucliitemid {
        return false;
      }
      if($at83_seq == "" || $at83_seq == null ){
-       $result = @pg_query("select nextval('atendusucliitemid_at83_seq_seq')"); 
+       $result = @db_query("select nextval('atendusucliitemid_at83_seq_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: atendusucliitemid_at83_seq_seq do campo: at83_seq"; 
@@ -109,7 +109,7 @@ class cl_atendusucliitemid {
        }
        $this->at83_seq = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from atendusucliitemid_at83_seq_seq");
+       $result = @db_query("select last_value from atendusucliitemid_at83_seq_seq");
        if(($result != false) && (pg_result($result,0,0) < $at83_seq)){
          $this->erro_sql = " Campo at83_seq maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -139,7 +139,7 @@ class cl_atendusucliitemid {
                                ,$this->at83_usucliitem 
                                ,$this->at83_id_usuario 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -165,12 +165,12 @@ class cl_atendusucliitemid {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->at83_seq));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,9202,'$this->at83_seq','I')");
-       $resac = pg_query("insert into db_acount values($acount,1575,9202,'','".AddSlashes(pg_result($resaco,0,'at83_seq'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1575,9203,'','".AddSlashes(pg_result($resaco,0,'at83_usucliitem'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1575,9204,'','".AddSlashes(pg_result($resaco,0,'at83_id_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,9202,'$this->at83_seq','I')");
+       $resac = db_query("insert into db_acount values($acount,1575,9202,'','".AddSlashes(pg_result($resaco,0,'at83_seq'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1575,9203,'','".AddSlashes(pg_result($resaco,0,'at83_usucliitem'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1575,9204,'','".AddSlashes(pg_result($resaco,0,'at83_id_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -225,18 +225,18 @@ class cl_atendusucliitemid {
      $resaco = $this->sql_record($this->sql_query_file($this->at83_seq));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,9202,'$this->at83_seq','A')");
+         $resac = db_query("insert into db_acountkey values($acount,9202,'$this->at83_seq','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at83_seq"]))
-           $resac = pg_query("insert into db_acount values($acount,1575,9202,'".AddSlashes(pg_result($resaco,$conresaco,'at83_seq'))."','$this->at83_seq',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1575,9202,'".AddSlashes(pg_result($resaco,$conresaco,'at83_seq'))."','$this->at83_seq',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at83_usucliitem"]))
-           $resac = pg_query("insert into db_acount values($acount,1575,9203,'".AddSlashes(pg_result($resaco,$conresaco,'at83_usucliitem'))."','$this->at83_usucliitem',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1575,9203,'".AddSlashes(pg_result($resaco,$conresaco,'at83_usucliitem'))."','$this->at83_usucliitem',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at83_id_usuario"]))
-           $resac = pg_query("insert into db_acount values($acount,1575,9204,'".AddSlashes(pg_result($resaco,$conresaco,'at83_id_usuario'))."','$this->at83_id_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1575,9204,'".AddSlashes(pg_result($resaco,$conresaco,'at83_id_usuario'))."','$this->at83_id_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Usuários envonvidos nao Alterado. Alteracao Abortada.\\n";
@@ -277,12 +277,12 @@ class cl_atendusucliitemid {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,9202,'$at83_seq','E')");
-         $resac = pg_query("insert into db_acount values($acount,1575,9202,'','".AddSlashes(pg_result($resaco,$iresaco,'at83_seq'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1575,9203,'','".AddSlashes(pg_result($resaco,$iresaco,'at83_usucliitem'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1575,9204,'','".AddSlashes(pg_result($resaco,$iresaco,'at83_id_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,9202,'$at83_seq','E')");
+         $resac = db_query("insert into db_acount values($acount,1575,9202,'','".AddSlashes(pg_result($resaco,$iresaco,'at83_seq'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1575,9203,'','".AddSlashes(pg_result($resaco,$iresaco,'at83_usucliitem'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1575,9204,'','".AddSlashes(pg_result($resaco,$iresaco,'at83_id_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from atendusucliitemid
@@ -298,7 +298,7 @@ class cl_atendusucliitemid {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Usuários envonvidos nao Excluído. Exclusão Abortada.\\n";
@@ -332,7 +332,7 @@ class cl_atendusucliitemid {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

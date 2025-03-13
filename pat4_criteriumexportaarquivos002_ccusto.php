@@ -34,7 +34,7 @@ $sSqlCCusto .= "       descrdepto as nome_do_centro_de_custo";  // db_depart->de
 $sSqlCCusto .= "					from db_depart ";
 $sSqlCCusto .= "						where instit = $iIdDaEmpresa";
 
-$rsCCusto    		= pg_query($sSqlCCusto);
+$rsCCusto    		= db_query($sSqlCCusto);
 $iNumeroLinhas	= pg_num_rows($rsCCusto);
 for ($i=0; $i<$iNumeroLinhas; $i++) {
 	$oCCusto     = db_utils::fieldsMemory($rsCCusto,$i);

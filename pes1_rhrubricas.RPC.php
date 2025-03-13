@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("std/db_stdClass.php");
-require_once("libs/JSON.php");
-require_once("model/pessoal/Rubrica.model.php");
-require_once("model/pessoal/RegraPonto.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("model/pessoal/Rubrica.model.php"));
+require_once(modification("model/pessoal/RegraPonto.model.php"));
 
 $oJson        = new services_json();
 $oParametros  = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -43,6 +43,8 @@ $iInstituicao = db_getsession('DB_instit');
 $oRetorno     = new stdClass();
 $oRetorno->iStatus   = "1";
 $oRetorno->sMensagem = "";
+
+const MENSAGEM_VALIDA_LIMITE_RUBRICA = 'recursoshumanos.pessoal.pes4_valida_limite_rubrica.';
 
 try {
   
@@ -54,6 +56,9 @@ try {
 
       $oRetorno->nQuantidadePadrao = $oRubrica->getQuantidadePadrao();
       $oRetorno->nValorPadrao      = $oRubrica->getValorPadrao();
+      $oRetorno->nQuantidadeLimite = $oRubrica->getQuantidadeLimite();
+      $oRetorno->nValorLimite      = $oRubrica->getValorLimite();
+      $oRetorno->sTipoBloqueio     = $oRubrica->getTipoBloqueio();
       
     break;
 
@@ -166,6 +171,14 @@ try {
       $oServidor = new Servidor($oParametros->iMatricula, $iAnoFolha, $iMesFolha, $iInstituicao);
       $oPonto = $oServidor->getPonto($sTabelaPonto);
 
+      if (empty($oParametros->aRubricasQuantidadeValor)) {
+        $oParametros->aRubricasQuantidadeValor = array();
+      }
+      $aRubricasQuantidadeValor = array();
+      foreach ($oParametros->aRubricasQuantidadeValor as $oRubricaQuantidadeValor) {
+        $aRubricasQuantidadeValor[$oRubricaQuantidadeValor->sRubrica] = $oRubricaQuantidadeValor;
+      }
+
       /**
        * Busca regras usando as rubricas passadas por parametro
        */
@@ -203,6 +216,42 @@ try {
 
         }
 
+        /**
+         * Verifica se os valores e quantidades das rubricas
+         * estão sento passados para verificar limites
+         */
+        if(isset($aRubricasQuantidadeValor[$sRubrica])) {
+
+          /**
+           * Valida a quantidade informada para a rubrica se excede o limite configurado ou não
+           */
+          if( $oRubrica->getQuantidadeLimite() > 0 && $aRubricasQuantidadeValor[$sRubrica]->nQuantidade > $oRubrica->getQuantidadeLimite() ) { 
+
+            switch (strtolower($oRubrica->getTipoBloqueio())) { 
+              case 'b':
+                $aMensagensBloqueio[ $sRubrica ][] = _M( MENSAGEM_VALIDA_LIMITE_RUBRICA . 'limite_quantidade_excedido', (object)array('quantidade'=>$oRubrica->getQuantidadeLimite()));
+                break;
+              case 'a':
+                $aMensagensAviso[ $sRubrica ][] = _M( MENSAGEM_VALIDA_LIMITE_RUBRICA . 'limite_quantidade_excedido', (object)array('quantidade'=>$oRubrica->getQuantidadeLimite()));
+                break;
+            }
+          }
+
+          /**
+           * Valida o valor informado para a rubrica se excede o limite configurado ou não
+           */
+          if( $oRubrica->getValorLimite() > 0 && $aRubricasQuantidadeValor[$sRubrica]->nValor > $oRubrica->getValorLimite() ) { 
+            
+            switch (strtolower($oRubrica->getTipoBloqueio())) { 
+              case 'b':
+                $aMensagensBloqueio[ $sRubrica ][] = _M( MENSAGEM_VALIDA_LIMITE_RUBRICA . 'limite_valor_excedido', (object)array('valor'=>$oRubrica->getValorLimite()));
+                break;
+              case 'a':
+                $aMensagensAviso[ $sRubrica ][] = _M( MENSAGEM_VALIDA_LIMITE_RUBRICA . 'limite_valor_excedido', (object)array('valor'=>$oRubrica->getValorLimite()));
+                break;
+            }
+          }
+        }
       }
 
       /**
@@ -213,14 +262,14 @@ try {
       if ( !empty( $aMensagensAviso ) ) {
 
         $sMensagensAviso  = mensagemRegraPonto($aMensagensAviso);
-        $sMensagensAviso .= "\n\nDeseja continuar?";
+        $sMensagensAviso .= "\nDeseja continuar?";
       }
 
       /**
        * Encontrou regra do ponto com comportamento do tipo bloqueio 
        */
       if ( !empty( $aMensagensBloqueio ) ) {
-        $sMensagensBloqueio = mensagemRegraPonto($aMensagensBloqueio);        
+        $sMensagensBloqueio = mensagemRegraPonto($aMensagensBloqueio, true);
       }
 
       $oRetorno->sMensagensAviso    = urlEncode($sMensagensAviso);
@@ -244,14 +293,17 @@ $oRetorno->sMensagem = urlEncode($oRetorno->sMensagem);
 
 echo $oJson->encode($oRetorno);
 
-function mensagemRegraPonto($aMensagem) {
+function mensagemRegraPonto($aMensagem, $lBloqueio = false) {
 
-  $sMensagem = "Não foi possivel incluir rubrica no ponto:\n";
+  $sMensagem = "";
+  if ($lBloqueio) {
+    $sMensagem = "Não foi possivel incluir rubrica no ponto:\n\n";
+  }
 
   foreach ( $aMensagem as $sRubrica => $aMensagemRubrica ) {
 
     foreach ( $aMensagemRubrica as $sMensagemRegraPonto ) {
-      $sMensagem .= "\n$sRubrica - " . $sMensagemRegraPonto;
+      $sMensagem .= "$sRubrica - " . $sMensagemRegraPonto . PHP_EOL;
     }
   }
   

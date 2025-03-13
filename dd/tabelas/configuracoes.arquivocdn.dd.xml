@@ -1,0 +1,88 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010341' name='configuracoes.arquivocdn' description="Tabela que guarda os dados dos arquivos do cvn" prefix="" label="Arquivo Cvn" type="0">
+  <fields>
+    <field codigo="1010102" 
+           campo_api='' 
+           name="db59_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela" 
+           inivalue="0" 
+           label="" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='configuracoes.arquivocdn_db59_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010104" 
+           campo_api='' 
+           name="db59_nome" 
+           conteudo="varchar(1)" 
+           description="Nome do arquivo" 
+           inivalue="" 
+           label="" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010122" 
+           campo_api='' 
+           name="db59_bucket" 
+           conteudo="varchar(1)" 
+           description="Nome da bucket que se encontra o arquivo" 
+           inivalue="" 
+           label="" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010124" 
+           campo_api='' 
+           name="db59_arquivobin" 
+           conteudo="oid" 
+           description="Campo Bytea que salva os arquivos dos imoveis" 
+           inivalue="" 
+           label="" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db59_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

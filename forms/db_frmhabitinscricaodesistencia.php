@@ -129,7 +129,7 @@ $clrotulo->label("ht13_habitprograma");
 function js_pesquisa() {
 
   var sUrl = 'func_habitinscricao.php?desistencia=true&funcao_js=parent.js_preenchepesquisa|ht15_sequencial';
-  js_OpenJanelaIframe('top.corpo', 'db_iframe_habitinscricao', sUrl, 'Pesquisa', true);
+  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_habitinscricao', sUrl, 'Pesquisa', true);
 }
 
 function js_preenchepesquisa(chave) {

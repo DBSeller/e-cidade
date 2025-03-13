@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('interfaces/ICalculoMediaRubrica.interface.php');
+require_once(modification('interfaces/ICalculoMediaRubrica.interface.php'));
 
 /**
  * Classe para manipuação de rubricas
@@ -33,8 +33,8 @@ require_once('interfaces/ICalculoMediaRubrica.interface.php');
  * @author   Alberto Ferri Neto alberto@dbseller.com.br
  * @author   Everton Heckler everton.heckler@dbseller.com.br
  * @package  Pessoal
- * @revision $Author: dbrafael.nery $
- * @version  $Revision: 1.10 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version  $Revision: 1.13 $
  */
 
 class CalculoMediaRubrica {

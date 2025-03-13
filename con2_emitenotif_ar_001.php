@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-//include("fpdf151/fpdf.php");
-require_once('fpdf151/PDF_Label.php');
-include("classes/db_notificacao_classe.php");
-include("classes/db_db_config_classe.php");
+include(modification("libs/db_sql.php"));
+//include(modification("fpdf151/fpdf.php"));
+require_once(modification('fpdf151/PDF_Label.php'));
+include(modification("classes/db_notificacao_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
 $cldb_config     = new cl_db_config;
 $clnotificacao   = new cl_notificacao;
 

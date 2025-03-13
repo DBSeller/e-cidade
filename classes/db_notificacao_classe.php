@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -424,10 +424,78 @@ class cl_notificacao {
       }
      return $result;
    }
+
+
+   function sql_noticontribuicao ( $d08_contri=null,$d08_matric=null,$d08_notif=null,$campos="*",$ordem=null,$dbwhere=""){
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = explode("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from contrinot ";
+    $sql .= "      inner join contricalc  on  contricalc.d09_sequencial = contrinot.d08_contricalc ";
+    $sql .= "      inner join notificacao on  notificacao.k50_notifica = contrinot.d08_notif and notificacao.k50_instit = ".db_getsession("DB_instit");
+    $sql .= "      inner join contrib  on  contrib.d07_contri = contricalc.d09_contri and  contrib.d07_matric = contricalc.d09_matric";
+    $sql .= "      inner join editalrua on   editalrua.d02_contri = contricalc.d09_contri ";
+    $sql .= "      inner join edital on   editalrua.d02_codedi = edital.d01_codedi ";
+    $sql .= "      inner join ruas on   editalrua.d02_codigo = ruas.j14_codigo ";
+    $sql .= "      inner join ruastipo  on j14_tipo = j88_codigo ";
+    $sql .= "      inner join notitipo  on  notitipo.k51_procede = notificacao.k50_procede";
+    $sql .= "      inner join proprietario on proprietario.j01_matric = contrib.d07_matric ";
+    $sql2 = "";
+    if($dbwhere==""){
+      if($d08_contri!=null ){
+        $sql2 .= " where contricalc.d09_contri = $d08_contri ";
+      }
+      if($d08_matric!=null ){
+        if($sql2!=""){
+           $sql2 .= " and ";
+        }else{
+           $sql2 .= " where ";
+        }
+        $sql2 .= " contrinot.d08_matric = $d08_matric ";
+      }
+      if($d08_notif!=null ){
+        if($sql2!=""){
+           $sql2 .= " and ";
+        }else{
+           $sql2 .= " where ";
+        }
+        $sql2 .= " contrinot.d08_notif = $d08_notif ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = explode("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+ }
+
+
+
+
+
+
+
+
    function sql_noticontri ( $d08_contri=null,$d08_matric=null,$d08_notif=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -472,7 +540,7 @@ class cl_notificacao {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -484,7 +552,7 @@ class cl_notificacao {
    function sql_query ( $k50_notifica=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -518,7 +586,7 @@ class cl_notificacao {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -530,7 +598,7 @@ class cl_notificacao {
    function sql_query_file ( $k50_notifica=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -551,7 +619,7 @@ class cl_notificacao {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -605,7 +673,7 @@ $sql2 = "";
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -617,7 +685,7 @@ $sql2 = "";
   function sql_query_usuario ( $k50_notifica=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -636,9 +704,12 @@ $sql2 = "";
     $sql .= "      inner join db_config      on  db_config.codigo = notificacao.k50_instit";
     $sql .= "      inner join notitipo       on  notitipo.k51_procede = notificacao.k50_procede";
     $sql .= "      inner join cgm            on  cgm.z01_numcgm = db_config.numcgm";
-    $sql .= "      left  join notidebitosreg on  notificacao.k50_notifica = k43_notifica";
-    $sql .= "      left  join notidebitos    on  notidebitos.k53_notifica = notificacao.k50_notifica";
-    $sql2 = "";
+    $sql .= "      left  join notidebitos    on notidebitos.k53_notifica = notificacao.k50_notifica";
+    $sql .= "      left  join notidebitosreg on notidebitosreg.k43_notifica = notidebitos.k53_notifica ";
+    $sql .= "                               and notidebitosreg.k43_numpar = notidebitos.k53_numpar ";
+    $sql .= "                               and notidebitosreg.k43_numpre = notidebitos.k53_numpre";
+
+      $sql2 = "";
     if($dbwhere==""){
       if($k50_notifica!=null ){
         $sql2 .= " where notificacao.k50_notifica = $k50_notifica ";
@@ -649,7 +720,7 @@ $sql2 = "";
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];

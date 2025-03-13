@@ -1,7 +1,7 @@
 <?php
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -24,8 +24,8 @@
 /**
  * Classe VO representando um item na cotação
  * Class CotacaoItem
- * @author $Author: dbiuri $
- * @version $Revision: 1.1 $
+ * @author $Author: dbricardo.lopes $
+ * @version $Revision: 1.5 $
  */
 
 class CotacaoItem {
@@ -41,7 +41,7 @@ class CotacaoItem {
   /**
    * Fornecedor que cotou o item
    *
-   * @access priavate
+   * @access private
    * @var CgmFisico|CgmJuridico
    */
   private $oFornecedor;
@@ -62,10 +62,53 @@ class CotacaoItem {
   private $nQuantidade = 0;
 
   /**
+   * valor do desconto
+   * @var float
+   */
+  private $nValorDesconto = 0;
+
+  /**
+   * valor do bdi
+   * @var float
+   */
+  private $nBdi = 0;
+
+  /**
+   * valor dos encargos sociais
+   * @var float
+   */
+  private $nEncargosSociais = 0;
+
+  /**
+   * Valor da nota técnica
+   * @var float
+   */
+  private $nNotaTecnica = 0;
+
+  /**
+   * @var DBDate
+   */
+  private $oData;
+
+  /**
    * Construtor da classe
    */
   function __construct() {
 
+  }
+
+  /**
+   * @param float $nNotaTecnica
+   */
+  public function setNotaTecnica($nNotaTecnica) {
+    $this->nNotaTecnica = $nNotaTecnica;
+  }
+
+  /**
+   * @return float
+   */
+  public function getNotaTecnica() {
+    return $this->nNotaTecnica;
   }
 
   /**
@@ -153,6 +196,70 @@ class CotacaoItem {
    */
   public function getValorTotal() {
     return round($this->getValorUnitario() * $this->getQuantidade(), 2);
+  }
+
+  /**
+   * Retorna o valor do desconto concedido
+   * @return float
+   */
+  public function getValorDesconto() {
+    return $this->nValorDesconto;
+  }
+
+  /**
+   * Define o valor do desconto concedido
+   * @param float $nValorDesconto
+   */
+  public function setValorDesconto($nValorDesconto) {
+    $this->nValorDesconto = $nValorDesconto;
+  }
+
+  /**
+   * Retorna o valor do bdi
+   * @return float
+   */
+  public function getBdi() {
+    return $this->nBdi;
+  }
+
+  /**
+   * Define o valor do bdi
+   * @param float $nBdi
+   */
+  public function setBdi($nBdi) {
+    $this->nBdi = $nBdi;
+  }
+
+  /**
+   * Retorna o valor dos encargos sociais
+   * @return float
+   */
+  public function getEncargosSociais() {
+    return $this->nEncargosSociais;
+  }
+
+  /**
+   * Define o valor dos encargos sociais
+   * @param float $nEncargosSociais
+   */
+  public function setEncargosSociais($nEncargosSociais) {
+    $this->nEncargosSociais = $nEncargosSociais;
+  }
+
+  /**
+   * Retorna a data da cotação.
+   * @return DBDate
+   */
+  public function getData() {
+    return $this->oData;
+  }
+
+  /**
+   * Define a data da cotação.
+   * @param DBDate $oData
+   */
+  public function setData(DBDate $oData) {
+    $this->oData = $oData;
   }
 
 }

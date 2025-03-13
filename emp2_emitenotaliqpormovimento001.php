@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $db_opcao = 1;
 $clrotulo = new rotulocampo;
 $clrotulo->label("e50_codord");
@@ -85,11 +85,11 @@ $clrotulo->label("e81_codmov");
 function js_pesquisaOrdem(mostra) {
   
   if(mostra) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_pagordem',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pagordem',
                         'func_pagordem.php?funcao_js=parent.js_mostrapagordem1|e50_codord',
                         'Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_pagordem',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pagordem',
                         'func_pagordem.php?pesquisa_chave='+$('e50_codord').value+'&funcao_js=parent.js_mostrapagordem',
                         'Pesquisa',false);
   }
@@ -111,20 +111,20 @@ function js_pesquisaMovimento(mostra) {
   if (mostra) {
   
     if ($F('e50_codord') === '') {
-      js_OpenJanelaIframe('top.corpo','db_iframe_movs',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_movs',
                           'func_empagemovordem.php?funcao_js=parent.js_mostramov1|e81_codmov','Pesquisa',true);
     } else {
-      js_OpenJanelaIframe('top.corpo','db_iframe_movs',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_movs',
                           'func_empagemovordem.php?e50_codord='+$F('e50_codord')+'&funcao_js=parent.js_mostramov1|e81_codmov',
                           'Pesquisa',true);
     }
   }else{
     if ($F('e50_codord') === '') {
-      js_OpenJanelaIframe('top.corpo','db_iframe_movs',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_movs',
                           'func_empagemovordem.php?pesquisa_chave='+$('e81_codmov').value+'&funcao_js=parent.js_mostramov',
                           'Pesquisa',false);
     } else {
-      js_OpenJanelaIframe('top.corpo','db_iframe_movs',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_movs',
                           'func_empagemovordem.php?e50_codord='+$F('e50_codord')+'&pesquisa_chave='+$('e81_codmov').value+'&funcao_js=parent.js_mostramov',
                           'Pesquisa',false);
     }

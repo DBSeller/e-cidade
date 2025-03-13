@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: empenho
@@ -36,205 +36,287 @@ $clrotulo->label("o47_anousu");
 $clrotulo->label("c53_descr");
 $clrotulo->label("e54_valor");
 $clrotulo->label("o56_elemento");
+$clrotulo->label("o15_recurso");
 
-$result = $clempautitem->sql_record($clempautitem->sql_query_file($e56_autori)); 
+$result = $clempautitem->sql_record($clempautitem->sql_query_file($e56_autori));
 if($clempautitem->numrows==0){
   $db_opcao_item = 33;
   $db_botao = false;
 }else{
   $db_opcao_item = 1;
-} 
-?>
-<form name="form1" method="post" action="">
-<center>
-<table border="0">
-  <tr>
-    <td nowrap title="<?=@$Te56_autori?>">
-       <?=@$Le56_autori?>
-    </td>
-    <td colspan='2'> 
-<?
-db_input('e56_autori',8,$Ie56_autori,true,'text',3);
-  $result=$clorcreservaaut->sql_record( $clorcreservaaut->sql_query_file(null,"o83_codres","","o83_autori=$e56_autori"));
-  if($clorcreservaaut->numrows>0){
-    echo "<b>Já existe reserva para esta autorização</b>";
-  }else{
-    echo "<b>Não existe reserva para esta autorização</b>";
-  }
-?>
-    </td>
-  </tr>
-    <tr>
-      <td nowrap title="<?=@$Te56_anousu?>">
-	 <?=$Le56_anousu?>
-      </td>
-      <td> 
-  <?
-  if(empty($e56_anousu)){
-    $e56_anousu = db_getsession('DB_anousu');
-  }  
-  db_input('e56_anousu',4,$Ie56_anousu,true,'text',3);
-  ?>
-      </td>
-    </tr>
-    <tr>
-      <td nowrap title="<?=@$To47_coddot?>"> <? db_ancora(@$Lo47_coddot,"js_pesquisao47_coddot(true);",$db_opcao_item); ?> </td>
-      <td><? db_input('o47_coddot',8,$Io47_coddot,true,'text',3); ?> </td>
-     <td><input type="button" name="dot"  value="Processar" onclick="js_dot();"<?=($db_botao==false?"disabled":"")?> > </td>
-      <td> &nbsp;  </td>  
-      <td> &nbsp;  </td>  
-      <td> &nbsp;  </td>    
-    </tr>
-   
-     <?    /* busca dados da dotação  */
-     if((isset($o47_coddot) && !$o47_coddot== "") && empty($confirmar) && empty($cancelar)){
-          $instit=$GLOBALS["DB_instit"];
-          $clorcdotacao->sql_record($clorcdotacao->sql_query_file("","","*","","o58_coddot=$o47_coddot and o58_instit=$instit")); 	 
-          if($clorcdotacao->numrows >0){
-             $result= db_dotacaosaldo(8,2,2,"true","o58_coddot=$o47_coddot" ,db_getsession("DB_anousu")) ;
-	     
-             db_fieldsmemory($result,0);
-	     $atual=number_format($atual,2,",",".");
-	     $reservado=number_format($reservado,2,",",".");
-             $atudo=number_format($atual_menos_reservado,2,",",".");
-	   }else{
-	     $nops=" Dotação $o47_coddot  não encontrada ";
-	   }
-	   
-      }	
-     ?>
-          <tr>
-             <td nowrap title="<?=@$To58_orgao ?>"><?=@$Lo58_orgao ?> </td>
-	     <td><? db_input('o58_orgao',8,"$Io58_orgao",true,'text',3,"");  ?> </td>
-	     <td colspan=3><? db_input('o40_descr',50,"",true,'text',3,"");  ?> </td>     
-	     <td> </td>
-	  </tr>
-          <tr>
-             <td nowrap title="<?=@$To58_unidade ?>"><?=@$Lo58_unidade ?> </td>
-	     <td><? db_input('o58_unidade',8,"",true,'text',3,"");  ?> </td>
-	     <td colspan=3 ><? db_input('o41_descr',50,"",true,'text',3,"");  ?>  </td>     
-	     <td>  </td>
-	  	  </tr>
-          <tr>
-             <td nowrap title="<?=@$To58_funcao ?>"><?=@$Lo58_funcao ?> </td>
-	     <td> <? db_input('o58_funcao',8,"",true,'text',3,"");  ?> </td>
-	     <td> <? db_input('o52_descr',50,"",true,'text',3,"");  ?>  </td>
-	  </tr>
-           <tr>
-             <td nowrap title="<?=@$To58_subfuncao ?>" ><?=@$Lo58_subfuncao ?> </td>
-	     <td> <? db_input('o58_subfuncao',8,"",true,'text',3,"");  ?>  </td>	    
-	     <td><? db_input('o53_descr',50,"",true,'text',3,"");  ?></td>
-	  </tr>
-          <tr>
-             <td nowrap title="<?=@$To58_programa ?>"    ><?=@$Lo58_programa ?> </td>
-	     <td><? db_input('o58_programa',8,"",true,'text',3,"");  ?> </td>
-	     <td><? db_input('o54_descr',50,"",true,'text',3,"");  ?>       </td>
-	  </tr>
-           <tr>
-             <td nowrap title="<?=@$To58_projativ ?>"><?=@$Lo58_projativ ?> </td>
-	     <td><? db_input('o58_projativ',8,"",true,'text',3,"");  ?> </td>
-             <td><? db_input('o55_descr',50,"",true,'text',3,"");  ?>    </td>
-          	  </tr>
-            <tr>
-             <td nowrap title="<?=@$To56_elemento ?>" ><?=@$Lo56_elemento ?> </td>
-	     <td> <? db_input('o58_elemento',8,"",true,'text',3,"");  ?>  </td>
-	     <td> <? db_input('o56_descr',50,"",true,'text',3,"");  ?>       </td>
-	  </tr>
-          <tr>
-             <td nowrap title="<?=@$To58_codigo ?>" ><?=@$Lo58_codigo ?> </td>
-	     <td> <? db_input('o58_codigo',8,"",true,'text',3,"");  ?> </td>
-	     <td> <? db_input('o15_descr',50,"",true,'text',3,"");  ?> </td>
-	  </tr>
-    <tr>
-    <?
-    if (isset($o47_coddot)) {
-         
-          $rsDotacao = $clorcdotacao->sql_record($clorcdotacao->sql_query(db_getsession("DB_anousu"), $o47_coddot,"o15_tipo"));
-           if ($clorcdotacao->numrows > 0 ) {
-          
-             $oDotacao = db_utils::fieldsMemory($rsDotacao, 0);
-            
-            if ($oDotacao->o15_tipo == 1) {
-             /*
-              * Buscamos as contrapartidas da dotacao
-              */
-             $oDaoDotacaocontr = db_utils::getDao("orcdotacaocontr");
-             $oDaoTipoRec      = db_utils::getDao("orctiporec");
-             echo "<td><b>Contrapartida:</b></td><td colspan=5>";
-            /*
-             * Procuramos contrapartidas cadastradas que estão ativas para a dotacao, caso nao encontramos nenhuma,
-             * trazemos todos os recursos cadastrados.
-             */
-              $rsContrapartidas = $oDaoDotacaocontr->sql_record($oDaoDotacaocontr->sql_query_convenios (
-                                                                $o47_coddot, db_getsession("DB_anousu"),
-                                                                 date("Y-m-d",db_getsession("DB_datausu")),
-                                                                 null,"o15_codigo,o15_descr")
-                                                                );
-                                                                                            
-              $iNumRows         = $oDaoDotacaocontr->numrows; 
-              if ($oDaoDotacaocontr->numrows == 0) {
-    
-                $rsContrapartidas = $oDaoTipoRec->sql_record($oDaoTipoRec->sql_query_convenios(
-                                                             date("Y-m-d",db_getsession("DB_datausu")),
-                                                             null,
-                                                             "o15_codigo,o15_descr")
-                                                             );
-                $iNumRows         = $oDaoTipoRec->numrows;
-    
-               }
-                 db_selectrecord("e56_orctiporec",$rsContrapartidas,true,$db_opcao,"", "", "","0-Selecione");
-            }
-          }
-          echo "</td>";
-        }
-      ?>   
-  </tr>
-	  <tr>
-	     <td>&nbsp;</td>
-	     <td colspan='2'>
-	       <table>
-	         <tr>
-		   <td>Saldo da dotação:</td> 
-		   <td><? db_input('atual',13,"",true,'text',3,""); ?></td>
-		 </tr>
-		   <td>Valor reservado:</td> 
-		   <td>  <? db_input('reservado',13,"",true,'text',3,""); ?></td>
-		</tr>
-		<tr>
-		   <td>Valor disponível: </td>
-		   <td><? db_input('atudo',13,"",true,'text',3,"");?></td>
-		</tr>  
-		<tr>
-		   <td><?=$RLe54_valor?></td>
-		   <?
-		     $result = $clempautitem->sql_record($clempautitem->sql_query_file($e56_autori,null,"sum(e55_vltot) as e54_valor")); 
-		     db_fieldsmemory($result,0);
-		     if(isset($atual_menos_reservado)&&isset($e54_valor)){
- 		       $tot= number_format(($atual_menos_reservado- $e54_valor),2,",",".");
-		     }  
-		     $e54_valor=number_format($e54_valor,2,",",".");
-		     
-		   ?>
-		   <td><? db_input('e54_valor',13,"",true,'text',3,""); ?></td>
-		</tr>
-	      </table>  	
-	    </td>
-	  </tr>  
-  </table>
-  </center>
-<input name="confirmar" type="submit" id="db_opcao" value="<?=($db_botao_c==false?"Incluir":"Atualizar")?>" onclick="return js_verifica();" <?=($db_botao==false?"disabled":"")?> >
-<input name="cancelar" type="submit" id="db_opcao" value="Cancelar" <?=($db_botao_c==false?"disabled":"")?>  >
-<?
-$permissao_lancar = db_permissaomenu(db_getsession("DB_anousu"),398,3489);
-if($permissao_lancar == "true"){
-?>
-<input name="lancemp" type="button" id="lancemp" value="Lançar Empenho" onclick="top.corpo.iframe_empautoriza.js_lanc_empenho();"  <?=($db_botao==false||$db_botao_c==false?"disabled":"")?>>
-<?
 }
+
+$anoSessao = db_getsession("DB_anousu");
+
+$daoAndamentoAutorizacao = new cl_andamentoemppreautorizacao;
+if (!empty($e56_autori) &&
+    $daoAndamentoAutorizacao->travaAutorizacaoAndamento($e56_autori)
+) {
+    $db_botao =false;
+    $db_botao_c =false;
+    $msg = "2 - Não é possivel alterar a autorização no andamento em que ele está.";
+    $msg .= " Verique o status da autorização";
+    db_msgbox($msg);
+}
+
 ?>
-<input name="relatorio" type="button" id="db_opcao" value="Relatório de autorização" onclick="top.corpo.iframe_prazos.js_relatorio();"  <?=($db_botao==false||$db_botao_c==false?"disabled":"")?>>
-</form>
-<?
+  <form name="form1" method="post" action="">
+    <center>
+      <table border="0">
+        <tr>
+          <td nowrap title="<?=@$Te56_autori?>">
+            <?=@$Le56_autori?>
+          </td>
+          <td colspan='2'>
+            <?php
+            db_input('e56_autori',8,$Ie56_autori,true,'text',3);
+            $result=$clorcreservaaut->sql_record( $clorcreservaaut->sql_query_file(null,"o83_codres","","o83_autori=$e56_autori"));
+            if($clorcreservaaut->numrows>0){
+              echo "<b>Já existe reserva para esta autorização</b>";
+            }else{
+              echo "<b>Não existe reserva para esta autorização</b>";
+            }
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$Te56_anousu?>">
+            <?=$Le56_anousu?>
+          </td>
+          <td>
+            <?php
+            if(empty($e56_anousu)){
+              $e56_anousu = db_getsession('DB_anousu');
+            }
+            db_input('e56_anousu',4,$Ie56_anousu,true,'text',3);
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$To47_coddot?>"> <?php db_ancora(@$Lo47_coddot,"js_pesquisao47_coddot(true);",$db_opcao_item); ?> </td>
+          <td><?php db_input('o47_coddot',8,$Io47_coddot,true,'text',3); ?> </td>
+          <td><input type="button" name="dot"  value="Processar" onclick="js_dot();"<?=($db_botao==false?"disabled":"")?> > </td>
+          <td> &nbsp;  </td>
+          <td> &nbsp;  </td>
+          <td> &nbsp;  </td>
+        </tr>
+
+        <?php    /* busca dados da dotação  */
+
+        if ((isset($o47_coddot) && !$o47_coddot == "") && empty($confirmar) && empty($cancelar)) {
+            $instit = db_getsession('DB_instit');
+            $where = "o58_coddot = {$o47_coddot} and o58_instit = {$instit} and o58_anousu = {$anoSessao}";
+            $sql = $clorcdotacao->sql_recurso("", "", "*", "", $where);
+            $result1 = $clorcdotacao->sql_record($sql);
+            db_fieldsmemory($result1, 0);
+            if ($clorcdotacao->numrows > 0) {
+                $result = db_dotacaosaldo(8, 2, 2, "true", "o58_coddot=$o47_coddot", $anoSessao);
+
+                db_fieldsmemory($result, 0);
+                $atual = number_format(floatval($atual), 2, ",", ".");
+                $reservado = number_format(floatval($reservado), 2, ",", ".");
+                $atudo = number_format(floatval($atual_menos_reservado), 2, ",", ".");
+            } else {
+                $nops = " Dotação $o47_coddot  não encontrada ";
+            }
+        }
+        ?>
+        <tr>
+          <td nowrap title="<?=@$To58_orgao ?>"><?=@$Lo58_orgao ?> </td>
+          <td><?php db_input('o58_orgao',8,"$Io58_orgao",true,'text',3,"");  ?> </td>
+          <td colspan=3><?php db_input('o40_descr',50,"",true,'text',3,"");  ?> </td>
+          <td> </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$To58_unidade ?>"><?=@$Lo58_unidade ?> </td>
+          <td><?php db_input('o58_unidade',8,"",true,'text',3,"");  ?> </td>
+          <td colspan=3 ><?php db_input('o41_descr',50,"",true,'text',3,"");  ?>  </td>
+          <td>  </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$To58_funcao ?>"><?=@$Lo58_funcao ?> </td>
+          <td> <?php db_input('o58_funcao',8,"",true,'text',3,"");  ?> </td>
+          <td> <?php db_input('o52_descr',50,"",true,'text',3,"");  ?>  </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$To58_subfuncao ?>" ><?=@$Lo58_subfuncao ?> </td>
+          <td> <?php db_input('o58_subfuncao',8,"",true,'text',3,"");  ?>  </td>
+          <td><?php db_input('o53_descr',50,"",true,'text',3,"");  ?></td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$To58_programa ?>"    ><?=@$Lo58_programa ?> </td>
+          <td><?php db_input('o58_programa',8,"",true,'text',3,"");  ?> </td>
+          <td><?php db_input('o54_descr',50,"",true,'text',3,"");  ?>       </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$To58_projativ ?>"><?=@$Lo58_projativ ?> </td>
+          <td><?php db_input('o58_projativ',8,"",true,'text',3,"");  ?> </td>
+          <td><?php db_input('o55_descr',50,"",true,'text',3,"");  ?>    </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$To56_elemento ?>" ><?=@$Lo56_elemento ?> </td>
+          <td> <?php db_input('o58_elemento',8,"",true,'text',3,"");  ?>  </td>
+          <td> <?php db_input('o56_descr',50,"",true,'text',3,"");  ?>       </td>
+        </tr>
+        <tr>
+          <td nowrap title="<?=@$To15_recurso ?>" ><?=@$Lo15_recurso ?> </td>
+          <td> <?php db_input('o15_recurso',8,"",true,'text',3,"");  ?> </td>
+          <td> <?php db_input('o15_descr',50,"",true,'text',3,"");  ?> </td>
+        </tr>
+
+          <tr>
+              <td nowrap class="bold" >Complemento:</td>
+              <td colspan="2">
+
+                  <?php
+                  $registro = \ECidade\Financeiro\Orcamento\Recurso\Origem::getAutorizacao($e56_autori);
+                  $complemento = '';
+                  if (!empty($registro)) {
+                      $complemento = $registro->o206_complementorecurso;
+                  }
+                  ?>
+
+                  <select name="complemento" id="complemento">
+                  <?php
+                  if (!empty($o47_coddot)) {
+                      $dotacao = DotacaoRepository::getDotacaoPorCodigoAno($o47_coddot, $anoSessao);
+                      $recurso = $dotacao->getDadosRecurso();
+                      $complementosDisponiveis = ECidade\Financeiro\Orcamento\Repository\RecursoRepository::getComplementos($recurso->getRecurso());
+
+                      foreach ($complementosDisponiveis as $complementosDisponivel) {
+                          $selected = $complemento == $complementosDisponivel->codigo ? "selected" : '';
+                          echo "<option value='{$complementosDisponivel->codigo}' {$selected}>
+                         {$complementosDisponivel->descricao} </option>
+                    ";
+                      }
+                  }
+                  ?>
+                  </select>
+              </td>
+          </tr>
+        <tr>
+          <?php
+          if (isset($o47_coddot)) {
+
+            $rsDotacao = $clorcdotacao->sql_record($clorcdotacao->sql_query($anoSessao, $o47_coddot,"o15_tipo"));
+            if ($clorcdotacao->numrows > 0 ) {
+
+              $oDotacao = db_utils::fieldsMemory($rsDotacao, 0);
+
+              if ($oDotacao->o15_tipo == 1) {
+                /*
+                 * Buscamos as contrapartidas da dotacao
+                 */
+                $oDaoDotacaocontr = new cl_orcdotacaocontr;
+                $oDaoTipoRec      = new cl_orctiporec;
+                echo "<td><b>Contrapartida:</b></td><td colspan=5>";
+                /*
+                 * Procuramos contrapartidas cadastradas que estão ativas para a dotacao, caso nao encontramos nenhuma,
+                 * trazemos todos os recursos cadastrados.
+                 */
+                $rsContrapartidas = $oDaoDotacaocontr->sql_record($oDaoDotacaocontr->sql_query_convenios (
+                  $o47_coddot, $anoSessao,
+                  date("Y-m-d",db_getsession("DB_datausu")),
+                  null,"o15_codigo,o15_descr")
+                );
+
+                $iNumRows         = $oDaoDotacaocontr->numrows;
+                if ($oDaoDotacaocontr->numrows == 0) {
+
+                  $rsContrapartidas = $oDaoTipoRec->sql_record($oDaoTipoRec->sql_query_convenios(
+                    date("Y-m-d",db_getsession("DB_datausu")),
+                    null,
+                    "o15_codigo,o15_descr")
+                  );
+                  $iNumRows         = $oDaoTipoRec->numrows;
+
+                }
+                db_selectrecord("e56_orctiporec",$rsContrapartidas,true,$db_opcao,"", "", "","0-Selecione");
+              }
+            }
+            echo "</td>";
+          }
+
+          $planosOrcamentarios = array("" => "Selecione");
+          if (!empty($o47_coddot)) {
+              $daoOrcDotacaPlanoOrcamento = new cl_orcdotacaoplanoorcamentario();
+              $where = "o155_coddot = {$o47_coddot} and o155_anousu = " . $anoSessao;
+              $sqlPlanos = $daoOrcDotacaPlanoOrcamento->sql_query_file(null, "*", "o155_sequencial", $where);
+              $rsPlanos = db_query($sqlPlanos);
+              if ($rsPlanos) {
+
+                  db_utils::makeCollectionFromRecord($rsPlanos, function ($dados) use (&$planosOrcamentarios) {
+                      $planosOrcamentarios[$dados->o155_sequencial] = $dados->o155_titulo;
+                  });
+              }
+          }
+          ?>
+        </tr>
+          <tr style="<?=$mostrarLinhaPacto;?>">
+              <td>
+                  <b>Plano Orçamentário:</b>
+              </td>
+              <td colspan="2">
+                  <?php
+                  db_select("planoorcamento", $planosOrcamentarios, true, $db_opcao, "onchange='js_pesquisaLinhaPactos(this.value);' style='width:100%'");
+                  ?>
+              </td>
+          </tr>
+          <tr style="<?=$mostrarLinhaPacto;?>">
+              <td>
+                  <b>Linha de Pacto:</b>
+              </td>
+              <td colspan="2">
+                  <select id="e56_planoorcamentariolinhapacto" name="e56_planoorcamentariolinhapacto" style="width: 100%">
+                  </select>
+              </td>
+          </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td colspan='2'>
+            <table>
+              <tr>
+                <td>Saldo da dotação:</td>
+                <td><?php db_input('atual',13,"",true,'text',3,""); ?></td>
+              </tr>
+              <td>Valor reservado:</td>
+              <td>  <?php db_input('reservado',13,"",true,'text',3,""); ?></td>
+              </tr>
+              <tr>
+                <td>Valor disponível: </td>
+                <td><?php db_input('atudo',13,"",true,'text',3,"");?></td>
+              </tr>
+              <tr>
+                <td><?=$RLe54_valor?></td>
+                <?php
+                $result = $clempautitem->sql_record($clempautitem->sql_query_file($e56_autori,null,"sum(e55_vltot) as e54_valor"));
+                db_fieldsmemory($result,0);
+                if(isset($atual_menos_reservado)&&isset($e54_valor)){
+                  $tot= number_format((floatval($atual_menos_reservado) - floatval($e54_valor)),2,",",".");
+                }
+                $e54_valor=number_format(floatval($e54_valor),2,",",".");
+
+                ?>
+                <td><?php db_input('e54_valor',13,"",true,'text',3,""); ?></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </center>
+    <input name="confirmar" type="submit" id="db_opcao" value="<?=($db_botao_c==false?"Incluir":"Atualizar")?>" onclick="return js_verifica();" <?=($db_botao==false?"disabled":"")?> >
+    <input name="cancelar" type="submit" id="db_opcao" value="Cancelar" <?=($db_botao_c==false?"disabled":"")?>  >
+    <?php
+    $permissao_lancar = db_permissaomenu($anoSessao,398,3489);
+    if($permissao_lancar == "true"){
+      ?>
+      <input name="lancemp" type="button" id="lancemp" value="Lançar Empenho" onclick="(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_empautoriza.js_lanc_empenho();"  <?=($db_botao==false||$db_botao_c==false?"disabled":"")?>>
+    <?php
+    }
+    ?>
+    <input name="relatorio" type="button" id="db_opcao" value="Relatório de autorização" onclick="(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_prazos.js_relatorio();"  <?=($db_botao==false||$db_botao_c==false?"disabled":"")?>>
+  </form>
+<?php
 if(isset($nops)){
   db_msgbox($nops);
 }
@@ -246,115 +328,173 @@ if(isset($tot) && $tot<0 && empty($cancelar) && isset($pesquisa_dot)){
   </script>
   ";
   db_msgbox('Dotação sem saldo disponível!');
-} 
+}
 ?>
-<script>
-function js_calc(e54_valor){
-  <?
-    if(isset($atual_menos_reservado)){
-      echo "atum = $atual_menos_reservado;\n";
-      echo "
-       tot=new Number(atum - e54_valor);\n
-       document.form1.atudo.value= tot;\n
-       conv=document.form1.atudo.value;\n
-       t=conv.replace(\".\",\",\");\n
-       document.form1.atudo.value= t;\n";
-    }  
-  ?>
-   
-   document.form1.e54_valor.value=e54_valor;
-}
-function js_dot(){
+  <script>
+    function js_calc(e54_valor){
+      <?php
+        if(isset($atual_menos_reservado)){
+          echo "atum = $atual_menos_reservado;\n";
+          echo "
+           tot=new Number(atum - e54_valor);\n
+           document.form1.atudo.value= tot;\n
+           conv=document.form1.atudo.value;\n
+           t=conv.replace(\".\",\",\");\n
+           document.form1.atudo.value= t;\n";
+        }
+      ?>
+
+      document.form1.e54_valor.value=e54_valor;
+    }
+    function js_dot(){
 
 
-  var opcao = document.createElement("input");
-  opcao.setAttribute("type","hidden");
-  opcao.setAttribute("name","pesquisa_dot");
-  opcao.setAttribute("value","true");
-  document.form1.appendChild(opcao);
-  document.form1.submit();
-}  
-function js_verifica(){
-  if(document.form1.o47_coddot.value==''){
-    alert('Código da dotação inválida!');
-    return false;
-  }
-  tot=document.form1.atudo.value;
+      var opcao = document.createElement("input");
+      opcao.setAttribute("type","hidden");
+      opcao.setAttribute("name","pesquisa_dot");
+      opcao.setAttribute("value","true");
+      document.form1.appendChild(opcao);
+      document.form1.submit();
 
-  while(tot.search(/\./)!='-1'){
-	 tot=tot.replace(/\./,''); 
-  }
-  toti=tot.replace(",",".");
-  tot=new Number(toti);
+    }
+    function js_verifica(){
+      if(document.form1.o47_coddot.value==''){
+        alert('Código da dotação inválida!');
+        return false;
+      }
+      tot=document.form1.atudo.value;
 
-  if(isNaN(tot) || tot<0){
-    alert('Dotação sem saldo disponível!');
-    document.form1.confirmar.disabled = true;
-    return false;
-  }else{
-    document.form1.confirmar.disabled = false;
-  }
-  
-  if(document.form1.atudo.value==''){
-    alert('Primeiro clique em pesquisar para calcular os valores!');
-    return false;
-  }
-}
-function js_pesquisao47_coddot(mostra){
-  elemento=top.corpo.iframe_empautitem.document.form1.elemento01.value;
-    query='';
-  if(elemento!=''){
-    query="elemento="+elemento+"&";
-  } 
+      while(tot.search(/\./)!='-1'){
+        tot=tot.replace(/\./,'');
+      }
+      toti=tot.replace(",",".");
+      tot=new Number(toti);
 
-  if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_empautidot','db_iframe_orcdotacao','func_permorcdotacao.php?'+query+'funcao_js=parent.js_mostraorcdotacao1|o58_coddot','Pesquisa',true,0);
-  }else{
-    js_OpenJanelaIframe('top.corpo.iframe_empautidot','db_iframe_orcdotacao','func_permorcdotacao.php?'+query+'pesquisa_chave='+document.form1.o47_coddot.value+'&funcao_js=parent.js_mostraorcdotacao','Pesquisa',false);
-  }
-}
-function js_mostraorcdotacao(chave,erro){
-  if(erro==true){ 
-    document.form1.o47_coddot.focus(); 
-    document.form1.o47_coddot.value = ''; 
-  }
-}
+      if(isNaN(tot) || tot<0){
+        alert('Dotação sem saldo disponível!');
+        document.form1.confirmar.disabled = true;
+        return false;
+      }else{
+        document.form1.confirmar.disabled = false;
+      }
 
-function js_mostraorcdotacao1(chave1){
-  document.form1.o47_coddot.value = chave1;
-  js_dot();
+        var linhaPacto = $('e56_planoorcamentariolinhapacto');
+        if (!empty(linhaPacto.value)) {
 
-  
-  db_iframe_orcdotacao.hide();
-}
-function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_empautidot','func_empautidot.php?funcao_js=parent.js_preenchepesquisa|e56_autori','Pesquisa',true);
-}
-function js_preenchepesquisa(chave){
-  db_iframe_empautidot.hide();
-  <?
-  if($db_opcao!=1){
-    echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
-  }
-  ?>
-}
-</script>
-<?php 
+            var comboSelecionado = linhaPacto.selectedIndex;
+            var saldoFinal = new Number(linhaPacto.options[comboSelecionado].getAttribute('saldo_final'));
+
+            if (new js_strToFloat($F('e54_valor')) > saldoFinal) {
+                if (!confirm('O valor informado é maior que o saldo disponível da Linha de Pacto selecionada. Deseja continuar mesmo assim?')) {
+                    return;
+                }
+            }
+        }
+      if(document.form1.atudo.value==''){
+        alert('Primeiro clique em pesquisar para calcular os valores!');
+        return false;
+      }
+
+
+
+    }
+    function js_pesquisao47_coddot(mostra){
+      elemento=(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_empautitem.document.form1.elemento01.value;
+      query='';
+      if(elemento!=''){
+        query="elemento="+elemento+"&";
+      }
+
+      if(mostra==true){
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_empautidot','db_iframe_orcdotacao','func_permorcdotacao.php?'+query+'funcao_js=parent.js_mostraorcdotacao1|o58_coddot','Pesquisa',true,0);
+      }else{
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_empautidot','db_iframe_orcdotacao','func_permorcdotacao.php?'+query+'pesquisa_chave='+document.form1.o47_coddot.value+'&funcao_js=parent.js_mostraorcdotacao','Pesquisa',false);
+      }
+
+    }
+    function js_mostraorcdotacao(chave,erro){
+      if(erro==true){
+        document.form1.o47_coddot.focus();
+        document.form1.o47_coddot.value = '';
+      }
+    }
+
+    function js_mostraorcdotacao1(chave1){
+      document.form1.o47_coddot.value = chave1;
+      js_dot();
+
+
+      db_iframe_orcdotacao.hide();
+    }
+    function js_pesquisa(){
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empautidot','func_empautidot.php?funcao_js=parent.js_preenchepesquisa|e56_autori','Pesquisa',true);
+    }
+    function js_preenchepesquisa(chave){
+      db_iframe_empautidot.hide();
+      <?php
+      if($db_opcao!=1){
+        echo " location.href = '".basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])."?chavepesquisa='+chave";
+      }
+      ?>
+    }
+    /**
+     *
+     * @param planoOrcamentario
+     */
+    function js_pesquisaLinhaPactos(planoOrcamentario, valorSelecionado ) {
+
+
+        var parametro = {
+            "plano" : planoOrcamentario,
+            "exec"  : "getLinhasDePactoDoPlano"
+        };
+
+        $('e56_planoorcamentariolinhapacto').options.length = 0;
+        new AjaxRequest('orc4_dotacao.RPC.php', parametro, function (response, erro)
+        {
+
+            var elementoPlano = $('e56_planoorcamentariolinhapacto');
+            elementoPlano.options.length = 0;
+            if (erro) {
+                alert(response.mensagem)
+            }
+            quantidadeDeItens = response.linhas.length;
+            for (var linhaPacto of response.linhas) {
+
+                var itemSelecionado = quantidadeDeItens === 1;
+                if (valorSelecionado != null) {
+                    itemSelecionado = linhaPacto.codigo == valorSelecionado;
+                }
+                var option = new Option(linhaPacto.descricao+"  - Saldo Atual: R$ "+js_formatar(linhaPacto.saldo_final, 'f'), linhaPacto.codigo, itemSelecionado, itemSelecionado);
+                option.setAttribute('saldo_final', linhaPacto.saldo_final);
+                elementoPlano.add(option);
+            }
+        }).setMessage("Aguarde, pesquisando linhas de pacto.").execute();
+
+    }
+    <?php
+    if (!empty($e56_planoorcamentariolinhapacto) && FONTE_RECURSO_UNIAO) {
+        echo "js_pesquisaLinhaPactos(\$F('planoorcamento'), {$e56_planoorcamentariolinhapacto});\n";
+    }
+    ?>
+  </script>
+<?php
 
 if (isset($e56_autori) && $e56_autori != "") {
 
   $oDaoEmpAutItem = new cl_empautitem();
-  
+
   $sSql = $oDaoEmpAutItem->sql_query_file(null, null, "e55_codele", null, "e55_autori = {$e56_autori}");
-  
+
   $rsOrcDotacao = $oDaoEmpAutItem->sql_record($sSql);
   if ($oDaoEmpAutItem->numrows > 0) {
-    
+
     $iElemento = db_utils::fieldsMemory($rsOrcDotacao, 0)->e55_codele;
-    echo "<script> top.corpo.iframe_empautoriza.completaElemento(".$iElemento.");</script>";
-    
+    echo "<script> (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_empautoriza.completaElemento(".$iElemento.");</script>";
+
   }
 
 
 }
 ?>
+

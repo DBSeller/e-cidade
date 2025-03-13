@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clpcorcamitem->rotulo->label();
 $db_altexc = false;
@@ -171,7 +171,7 @@ function js_gerarel(){
 if(isset($impok)){
   echo "<script>
           alert('Usuário:\\n\\nItens desta solicitação estão em processo de compras!\\n\\nAdministrador:');";
-  echo "  top.corpo.iframe_orcam.location.href = 'com1_selsolic001.php?op=incluir&sol=true';";
+  echo "  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcam.location.href = 'com1_selsolic001.php?op=incluir&sol=true';";
   echo "</script>";  
 }
 ?>

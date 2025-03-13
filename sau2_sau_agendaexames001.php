@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/scpdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("libs/db_stdlibwebseller.php");
+include(modification("fpdf151/scpdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_stdlibwebseller.php"));
 
-include("classes/db_cgm_classe.php");
-include("classes/db_sau_agendaexames_ext_classe.php");
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_sau_agendaexames_ext_classe.php"));
 
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -101,7 +101,7 @@ $pdf->cell(20,4,"Hora",0,1,"L",0);
 $pdf->setfont('times','',8);
 $pdf->cell(20,4,$s113_i_codigo,0,0,"L",0);
 $pdf->cell(40,4,"$dia_con/$mes_con/$ano_con",0,0,"L",0);
-$pdf->cell(40,4,$diasemana ,0,0,"L",0);
+$pdf->cell(40,4,utf8_decode($diasemana) ,0,0,"L",0);
 $pdf->cell(20,4,"$obj_agendaexames->s113_c_hora",0,1,"L",0);
 
 $pdf->setfont('times','b',8);
@@ -110,20 +110,24 @@ $pdf->setfont('times','',8);
 $pdf->cell(20,4,"{$obj_agendaexames->z01_numcgm} - {$obj_agendaexames->z01_nome}" ,0,1,"L",0);
 
 $pdf->setfont('times','b',8);
-$pdf->cell(100,4,"Paciente",0,0,"L",0);
+$pdf->cell(140,4,"Paciente",0,0,"L",0);
 $pdf->cell(20,4,"Data Nasc.",0,1,"L",0);
 $pdf->setfont('times','',8);
-$pdf->cell(100,4,"{$obj_agendaexames->z01_i_cgsund} - {$obj_agendaexames->z01_v_nome}" ,0,0,"L",0);
+$paciente = "{$obj_agendaexames->z01_i_cgsund} - {$obj_agendaexames->z01_v_nome}";
+
+$pdf->cell(140,4,$paciente,0,0,"L",0);
 $pdf->cell(20,4,"$dia/$mes/$ano" ,0,1,"L",0);
 
 $pdf->setfont('times','b',8);
 $pdf->cell(100,4,"Exame",0,0,"L",0);
 $pdf->cell(20,4,"",0,1,"L",0);
 $pdf->setfont('times','',8);
-$pdf->cell(100,4,"{$obj_agendaexames->s108_i_codigo} - {$obj_agendaexames->s108_c_exame}" ,0,0,"L",0);
+$pdf->cell(100,4,"{$obj_agendaexames->sd63_c_procedimento} - {$obj_agendaexames->sd63_c_nome}" ,0,0,"L",0);
 $pdf->cell(20,4,"" ,0,1,"L",0);
 
 $pdf->cell(190,4,str_repeat("-",200),0,1,"L",0);
+
+$sHora = substr( $obj_agendaexames->s113_c_cadastro, 0, 8 );
 
 $pdf->setfont('times','b',8);
 $pdf->cell(100,4,"Atendente",0,0,"L",0);
@@ -132,7 +136,7 @@ $pdf->cell(40,4,"Hora Atend.",0,1,"L",0);
 $pdf->setfont('times','',8);
 $pdf->cell(100,4,"{$obj_agendaexames->s113_i_login} - {$obj_agendaexames->nome}",0,0,"L",0);
 $pdf->cell(40,4,"$dia_atd/$mes_atd/$ano_atd",0,0,"L",0);
-$pdf->cell(40,4,"{$obj_agendaexames->s113_c_hora}",0,1,"L",0);
+$pdf->cell(40,4,"{$sHora}",0,1,"L",0);
 
 
 $pdf->Output();

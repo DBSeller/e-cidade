@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("model/issqn/alvara/MovimentacaoAlvara.model.php");
+require_once(modification("model/issqn/alvara/MovimentacaoAlvara.model.php"));
 
 /**
  * Transformacao de alvara do tipo liberação
@@ -61,6 +61,7 @@ class LiberacaoAlvara extends MovimentacaoAlvara {
     $oIssAlvara = db_utils::getDao('issalvara');
     $oIssAlvara->q123_sequencial    = $this->getAlvara()->getCodigo();
     $oIssAlvara->q123_isstipoalvara = $this->getAlvara()->getTipoAlvara();
+    $oIssAlvara->q123_situacao      = 1;
     $oIssAlvara->alterar($this->getAlvara()->getCodigo());
 
     if ($oIssAlvara->erro_status == "0") {

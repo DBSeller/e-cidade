@@ -1,47 +1,47 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_libcaixa.php");
-require_once ("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libcaixa.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("classes/db_cfautent_classe.php");
-require_once("model/caixa/AutenticacaoArrecadacao.model.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("classes/db_cfautent_classe.php"));
+require_once(modification("model/caixa/AutenticacaoArrecadacao.model.php"));
+require_once(modification("libs/db_app.utils.php"));
 
-require_once 'model/contabilidade/planoconta/ContaPlano.model.php';
-require_once 'model/contabilidade/planoconta/ContaOrcamento.model.php';
-require_once 'model/contabilidade/planoconta/ClassificacaoConta.model.php';
-require_once 'model/contabilidade/planoconta/SistemaConta.model.php';
-require_once 'model/contabilidade/planoconta/SubSistemaConta.model.php';
-require_once 'model/CgmFactory.model.php';
+require_once modification("model/contabilidade/planoconta/ContaPlano.model.php");
+require_once modification("model/contabilidade/planoconta/ContaOrcamento.model.php");
+require_once modification("model/contabilidade/planoconta/ClassificacaoConta.model.php");
+require_once modification("model/contabilidade/planoconta/SistemaConta.model.php");
+require_once modification("model/contabilidade/planoconta/SubSistemaConta.model.php");
+require_once modification("model/CgmFactory.model.php");
 db_app::import("exceptions.*");
 db_app::import("configuracao.Instituicao");
 db_app::import("configuracao.DBEstrutura");
@@ -50,12 +50,12 @@ db_app::import("contaTesouraria");
 
 //db_app::import("caixa.*");
 //requires em substituição ao import caixa
-require_once("model/caixa/ArrecadacaoReceitaOrcamentaria.model.php");
-require_once("model/caixa/AutenticacaoArrecadacao.model.php");
-require_once("model/caixa/AutenticacaoBaixaBanco.model.php");
-require_once("model/caixa/AutenticacaoPlanilha.model.php");
-require_once("model/caixa/PlanilhaArrecadacao.model.php");
-require_once("model/caixa/ReceitaPlanilha.model.php");
+require_once(modification("model/caixa/ArrecadacaoReceitaOrcamentaria.model.php"));
+require_once(modification("model/caixa/AutenticacaoArrecadacao.model.php"));
+require_once(modification("model/caixa/AutenticacaoBaixaBanco.model.php"));
+require_once(modification("model/caixa/AutenticacaoPlanilha.model.php"));
+require_once(modification("model/caixa/PlanilhaArrecadacao.model.php"));
+require_once(modification("model/caixa/ReceitaPlanilha.model.php"));
 
 db_app::import("orcamento.*");
 db_app::import("contabilidade.*");
@@ -82,6 +82,8 @@ $dDataAutenticacao = date("Y-m-d", db_getsession("DB_datausu"));
 $porta             = 5001;
 $lErro             = false;
 
+$sRetornoAutenticacao = '';
+
 //{==============================
 //rotina que verifica se o ip do usuario irá imprimir autenticar ou naum ira fazer nada
 $sSqlValidaAutenticadora = $clcfautent->sql_query_file(null, "k11_id, k11_tipautent as tipautent, k11_zeratrocoarrec, k11_aut1, k11_aut2", '', "k11_ipterm = '{$iIp}' and k11_instit = {$iInstit}");
@@ -103,19 +105,60 @@ if (!isset($oPost->reautentica) && isset($oPost->codautent)) {
   $iNumpre           = substr($oPost->codautent, 0, 8);
   $iNumpar           = substr($oPost->codautent, 8, 3);
   $iReduz            = $oGet->reduz;
-  
+
+  /* @note: Busca pelo codigo de barras inteirro para tratar os casos dos novos nosso numero gerados */
+  $isReciboNovo = false;
+
+  if (strlen(trim($oPost->codautent)) == 44) {
+
+    $sSqlReciboCodBar = "select * from recibocodbar where k00_codbar = '{$oPost->codautent}'";
+    $rsReciboCodBar = db_query($sSqlReciboCodBar);
+
+    if (empty($rsReciboCodBar)) {
+      echo "<script>
+              parent.alert('Erro ao consultar o código de barras. Verifique. (Banco : $banco)');
+              location.href = 'cai4_arrecada002.php?invalido=true';
+            </script>";
+    }
+
+    if (pg_num_rows($rsReciboCodBar) > 0) {
+
+      $oReciboCodBar  = db_utils::fieldsMemory($rsReciboCodBar,0);
+      $sSql        = "select * from arrebanco where k00_numpre = '{$oReciboCodBar->k00_numpre}'";
+      $rsArrebanco = db_query($sSql);
+      $oArrebanco  = db_utils::fieldsMemory($rsArrebanco,0);
+
+      $iNumpre = $oArrebanco->k00_numpre;
+      $iNumpar = $oArrebanco->k00_numpar;
+      $isReciboNovo = true;
+
+    }
+
+  }
+
   if (USE_PCASP) {
 
       try {
 
         db_inicio_transacao();
-        require_once 'libs/db_liborcamento.php';
+        require_once modification("libs/db_liborcamento.php");
         $oAutenticacaoArrecadacao = new AutenticacaoArrecadacao( $iNumpre, $iNumpar, $iReduz);
 
         db_putsession("DB_desativar_account", true);
 
         if ($oPost->tipo == 'Arrecadacao') {
+
           $oAutenticacaoArrecadacao->autenticar();
+
+          /**
+           * Removemos o recibo da fila da Cobrança Registrada
+           */
+          $sSqlDeleteFila = "delete from  reciboregistra where k146_numpre = {$iNumpre}";
+          $rsDeleteFila   = db_query($sSqlDeleteFila);
+
+          if (!$rsDeleteFila) {
+            throw new DBException("Erro ao remover o recibo da fila da cobrança registrada.");
+          }
         }else{
           $oAutenticacaoArrecadacao->estornar();
         }
@@ -143,6 +186,12 @@ if (!isset($oPost->reautentica) && isset($oPost->codautent)) {
       } catch (ParameterException $oParameterException) {
 
         db_msgbox($oParameterException->getMessage());
+        db_fim_transacao(true);
+        $lErro = true;
+
+      } catch (DBException $oDBException) {
+
+        db_msgbox($oDBException->getMessage());
         db_fim_transacao(true);
         $lErro = true;
 
@@ -285,7 +334,7 @@ if (!isset($oPost->reautentica) && $clautenticar->erro == false) {
         $str_aut2 .= chr($aut2 [$i]);
       }
     }
-    
+
     if (USE_PCASP) {
       $sRetornoAutenticacao = $oAutenticacaoArrecadacao->getCodigoAutenticacao();
     }
@@ -318,7 +367,7 @@ if ($oDadosAutenticadora->tipautent == 1 && $lErro == false) {
   // abre o socket da impressora
 
   try {
-    require_once 'model/impressaoAutenticacao.php';
+    require_once modification("model/impressaoAutenticacao.php");
     $oImpressao = new impressaoAutenticacao($sRetornoAutenticacao);
     $oModelo = $oImpressao->getModelo();
     $oModelo->imprimir();
@@ -352,6 +401,7 @@ if ($lErro == false) {
   echo "     parent.db_autent_iframe.hide();";
   echo "     parent.numeros.document.form1.codrec.focus();";
   if ($oDadosAutenticadora->k11_zeratrocoarrec == 1) {
+
     echo "     parent.document.form1.apagar.value = '';";
     echo "     parent.document.form1.recebido.value = '';";
     echo "     parent.document.form1.troco.value = '';";
@@ -365,14 +415,11 @@ if ($lErro == false) {
   echo "  }";
   echo "}";
   echo "</script>";
-
-} else {
-
-  echo "<script>";
-  echo "parent.js_removeObj('msgBox');";
-  echo "</script>";
 }
 
+echo "<script>";
+echo "parent.js_removeObj('msgBox');";
+echo "</script>";
 
 
 exit();

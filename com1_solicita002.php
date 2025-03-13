@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("dbforms/db_funcoes.php");
-  include("dbforms/db_classesgenericas.php");
-  include("classes/db_pcparam_classe.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("dbforms/db_classesgenericas.php"));
+  include(modification("classes/db_pcparam_classe.php"));
 
   db_postmemory($HTTP_GET_VARS);
 
@@ -76,7 +76,7 @@
 	}
 
         if(isset($pc30_sugforn) && $pc30_sugforn=='t'){
-            $clcriaabas->identifica = array("solicita"=>"Solicitação","solicitem"=>"Itens/Dotações","sugforn"=>"Fornecedores sugeridos");//nome do iframe e o label
+            $clcriaabas->identifica = array("solicita"=>"Solicitação","solicitem"=>"Itens/Dotações","sugforn"=>"Fornecedor sugerido");//nome do iframe e o label
             $clcriaabas->src = array("solicita"=>"com1_solicita005.php".$parametro);
             $clcriaabas->title      = array("solicita"=>"Cadastro de solicitação de compras","solicitem"=>"Cadastro de Itens e Dotações","sugforn"=>"Cadastro de fornecedores sugeridos");//nome do iframe e o label
             $clcriaabas->sizecampo  = array("solicita"=>"20","solicitem"=>"20","sugforn"=>"25");

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,5 +26,5 @@
  */
 
 // @todo - fonte com nome fora do padrao, #redirecionado
-require_once ("pat4_implantacaobensdepreciacao001.php");
+require_once(modification("pat4_implantacaobensdepreciacao001.php"));
 ?>

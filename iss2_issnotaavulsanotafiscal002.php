@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/impcarne.php");
-include("fpdf151/scpdf.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_issnotaavulsaservico_classe.php");
-include("classes/db_issnotaavulsa_classe.php");
-include("classes/db_issnotaavulsatomador_classe.php");
-include("classes/db_parissqnviasnotaavulsavias_classe.php");
+include(modification("fpdf151/impcarne.php"));
+include(modification("fpdf151/scpdf.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_issnotaavulsaservico_classe.php"));
+include(modification("classes/db_issnotaavulsa_classe.php"));
+include(modification("classes/db_issnotaavulsatomador_classe.php"));
+include(modification("classes/db_parissqnviasnotaavulsavias_classe.php"));
 
 $clissnotaavulsaservico       = new cl_issnotaavulsaservico();
 $clissnotaavulsa              = new cl_issnotaavulsa();
@@ -41,7 +41,7 @@ $clissnotaavulsatomador       = new cl_issnotaavulsatomador();
 $clparissqnviasnotaavulsavias = new cl_parissqnviasnotaavulsavias();
 
 $sqlpref = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 $oInst = db_utils::fieldsmemory($resultpref,0);
 $get   = db_utils::postmemory($_GET);
 $pdf   = new scpdf();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-include("fpdf151/scpdf.php");
-include("classes/db_turma_classe.php");
-include("classes/db_escola_classe.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_regenciaperiodo_classe.php");
-include("classes/db_alunotransfturma_classe.php");
-include("classes/db_aprovconselho_classe.php");
-include("classes/db_edu_parametros_classe.php");
-include("classes/db_calendario_classe.php");
-include("classes/db_edu_relatmodel_classe.php");
-include("classes/db_telefoneescola_classe.php");
-include("classes/db_cursoato_classe.php");
-include("classes/db_aluno_classe.php");
-require_once("libs/db_utils.php");
+require(modification("libs/db_stdlibwebseller.php"));
+include(modification("fpdf151/scpdf.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_escola_classe.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_regenciaperiodo_classe.php"));
+include(modification("classes/db_alunotransfturma_classe.php"));
+include(modification("classes/db_aprovconselho_classe.php"));
+include(modification("classes/db_edu_parametros_classe.php"));
+include(modification("classes/db_calendario_classe.php"));
+include(modification("classes/db_edu_relatmodel_classe.php"));
+include(modification("classes/db_telefoneescola_classe.php"));
+include(modification("classes/db_cursoato_classe.php"));
+include(modification("classes/db_aluno_classe.php"));
+require_once(modification("libs/db_utils.php"));
 $escola             = db_getsession("DB_coddepto");
 $resultedu          = eduparametros(db_getsession("DB_coddepto"));
 $clturma            = new cl_turma();

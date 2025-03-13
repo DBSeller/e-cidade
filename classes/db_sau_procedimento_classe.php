@@ -1,92 +1,92 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Ambulatorial
 //CLASSE DA ENTIDADE sau_procedimento
-class cl_sau_procedimento { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $sd63_i_codigo = 0; 
-   var $sd63_c_procedimento = null; 
-   var $sd63_c_nome = null; 
-   var $sd63_i_complexidade = 0; 
-   var $sd63_c_sexo = null; 
-   var $sd63_i_execucaomax = 0; 
-   var $sd63_i_maxdias = 0; 
-   var $sd63_i_pontos = 0; 
-   var $sd63_i_idademin = 0; 
-   var $sd63_i_idademax = 0; 
-   var $sd63_f_sh = 0; 
-   var $sd63_f_sa = 0; 
-   var $sd63_f_sp = 0; 
-   var $sd63_i_financiamento = 0; 
-   var $sd63_i_rubrica = 0; 
-   var $sd63_i_anocomp = 0; 
-   var $sd63_i_mescomp = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_sau_procedimento {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $sd63_i_codigo = 0;
+   var $sd63_c_procedimento = null;
+   var $sd63_c_nome = null;
+   var $sd63_i_complexidade = 0;
+   var $sd63_c_sexo = null;
+   var $sd63_i_execucaomax = 0;
+   var $sd63_i_maxdias = 0;
+   var $sd63_i_pontos = 0;
+   var $sd63_i_idademin = 0;
+   var $sd63_i_idademax = 0;
+   var $sd63_f_sh = 0;
+   var $sd63_f_sa = 0;
+   var $sd63_f_sp = 0;
+   var $sd63_i_financiamento = 0;
+   var $sd63_i_rubrica = 0;
+   var $sd63_i_anocomp = 0;
+   var $sd63_i_mescomp = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 sd63_i_codigo = int8 = Código 
-                 sd63_c_procedimento = varchar(10) = Procedimento 
-                 sd63_c_nome = varchar(250) = Nome 
-                 sd63_i_complexidade = int8 = Complexidade 
-                 sd63_c_sexo = varchar(1) = Sexo 
-                 sd63_i_execucaomax = int8 = Execução Maxima 
-                 sd63_i_maxdias = int8 = Dias em Permanencia 
-                 sd63_i_pontos = int4 = Pontos 
-                 sd63_i_idademin = int8 = Idade Min. 
-                 sd63_i_idademax = int8 = Idade Max. 
-                 sd63_f_sh = float8 = Valor do Serviço Hospitalar 
-                 sd63_f_sa = float8 = Valor do Serviço Ambulatorial 
-                 sd63_f_sp = float8 = Valor do Serviço Profissional 
-                 sd63_i_financiamento = int8 = Financiamento 
-                 sd63_i_rubrica = int4 = Rubrica 
-                 sd63_i_anocomp = int4 = Ano 
-                 sd63_i_mescomp = int4 = Mes 
+                 sd63_i_codigo = int8 = Código
+                 sd63_c_procedimento = varchar(10) = Procedimento
+                 sd63_c_nome = varchar(250) = Nome
+                 sd63_i_complexidade = int8 = Complexidade
+                 sd63_c_sexo = varchar(1) = Sexo
+                 sd63_i_execucaomax = int8 = Execução Maxima
+                 sd63_i_maxdias = int8 = Dias em Permanencia
+                 sd63_i_pontos = int4 = Pontos
+                 sd63_i_idademin = int8 = Idade Min.
+                 sd63_i_idademax = int8 = Idade Max.
+                 sd63_f_sh = float8 = Valor do Serviço Hospitalar
+                 sd63_f_sa = float8 = Valor do Serviço Ambulatorial
+                 sd63_f_sp = float8 = Valor do Serviço Profissional
+                 sd63_i_financiamento = int8 = Financiamento
+                 sd63_i_rubrica = int4 = Rubrica
+                 sd63_i_anocomp = int4 = Ano
+                 sd63_i_mescomp = int4 = Mes
                  ";
-   //funcao construtor da classe 
-   function cl_sau_procedimento() { 
+   //funcao construtor da classe
+   function cl_sau_procedimento() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("sau_procedimento"); 
+     $this->rotulo = new rotulo("sau_procedimento");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -119,9 +119,9 @@ class cl_sau_procedimento {
      }
    }
    // funcao para inclusao
-   function incluir ($sd63_i_codigo){ 
+   function incluir ($sd63_i_codigo){
       $this->atualizacampos();
-     if($this->sd63_c_procedimento == null ){ 
+     if($this->sd63_c_procedimento == null ){
        $this->erro_sql = " Campo Procedimento nao Informado.";
        $this->erro_campo = "sd63_c_procedimento";
        $this->erro_banco = "";
@@ -130,7 +130,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_c_nome == null ){ 
+     if($this->sd63_c_nome == null ){
        $this->erro_sql = " Campo Nome nao Informado.";
        $this->erro_campo = "sd63_c_nome";
        $this->erro_banco = "";
@@ -139,7 +139,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_i_complexidade == null ){ 
+     if($this->sd63_i_complexidade == null ){
        $this->erro_sql = " Campo Complexidade nao Informado.";
        $this->erro_campo = "sd63_i_complexidade";
        $this->erro_banco = "";
@@ -148,7 +148,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_c_sexo == null ){ 
+     if($this->sd63_c_sexo == null ){
        $this->erro_sql = " Campo Sexo nao Informado.";
        $this->erro_campo = "sd63_c_sexo";
        $this->erro_banco = "";
@@ -157,7 +157,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_i_execucaomax == null ){ 
+     if($this->sd63_i_execucaomax == null ){
        $this->erro_sql = " Campo Execução Maxima nao Informado.";
        $this->erro_campo = "sd63_i_execucaomax";
        $this->erro_banco = "";
@@ -166,7 +166,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_i_maxdias == null ){ 
+     if($this->sd63_i_maxdias == null ){
        $this->erro_sql = " Campo Dias em Permanencia nao Informado.";
        $this->erro_campo = "sd63_i_maxdias";
        $this->erro_banco = "";
@@ -175,7 +175,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_i_pontos == null ){ 
+     if($this->sd63_i_pontos == null ){
        $this->erro_sql = " Campo Pontos nao Informado.";
        $this->erro_campo = "sd63_i_pontos";
        $this->erro_banco = "";
@@ -184,7 +184,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_i_idademin == null ){ 
+     if($this->sd63_i_idademin == null ){
        $this->erro_sql = " Campo Idade Min. nao Informado.";
        $this->erro_campo = "sd63_i_idademin";
        $this->erro_banco = "";
@@ -193,7 +193,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_i_idademax == null ){ 
+     if($this->sd63_i_idademax == null ){
        $this->erro_sql = " Campo Idade Max. nao Informado.";
        $this->erro_campo = "sd63_i_idademax";
        $this->erro_banco = "";
@@ -202,7 +202,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_f_sh == null ){ 
+     if($this->sd63_f_sh == null ){
        $this->erro_sql = " Campo Valor do Serviço Hospitalar nao Informado.";
        $this->erro_campo = "sd63_f_sh";
        $this->erro_banco = "";
@@ -211,7 +211,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_f_sa == null ){ 
+     if($this->sd63_f_sa == null ){
        $this->erro_sql = " Campo Valor do Serviço Ambulatorial nao Informado.";
        $this->erro_campo = "sd63_f_sa";
        $this->erro_banco = "";
@@ -220,7 +220,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_f_sp == null ){ 
+     if($this->sd63_f_sp == null ){
        $this->erro_sql = " Campo Valor do Serviço Profissional nao Informado.";
        $this->erro_campo = "sd63_f_sp";
        $this->erro_banco = "";
@@ -229,7 +229,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_i_financiamento == null ){ 
+     if($this->sd63_i_financiamento == null ){
        $this->erro_sql = " Campo Financiamento nao Informado.";
        $this->erro_campo = "sd63_i_financiamento";
        $this->erro_banco = "";
@@ -238,10 +238,10 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_i_rubrica == null ){ 
+     if($this->sd63_i_rubrica == null ){
        $this->sd63_i_rubrica = "null";
      }
-     if($this->sd63_i_anocomp == null ){ 
+     if($this->sd63_i_anocomp == null ){
        $this->erro_sql = " Campo Ano nao Informado.";
        $this->erro_campo = "sd63_i_anocomp";
        $this->erro_banco = "";
@@ -250,7 +250,7 @@ class cl_sau_procedimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->sd63_i_mescomp == null ){ 
+     if($this->sd63_i_mescomp == null ){
        $this->erro_sql = " Campo Mes nao Informado.";
        $this->erro_campo = "sd63_i_mescomp";
        $this->erro_banco = "";
@@ -260,16 +260,16 @@ class cl_sau_procedimento {
        return false;
      }
      if($sd63_i_codigo == "" || $sd63_i_codigo == null ){
-       $result = db_query("select nextval('sau_procedimento_sd63_i_codigo_seq')"); 
+       $result = db_query("select nextval('sau_procedimento_sd63_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: sau_procedimento_sd63_i_codigo_seq do campo: sd63_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: sau_procedimento_sd63_i_codigo_seq do campo: sd63_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->sd63_i_codigo = pg_result($result,0,0); 
+       $this->sd63_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from sau_procedimento_sd63_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $sd63_i_codigo)){
@@ -280,10 +280,10 @@ class cl_sau_procedimento {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->sd63_i_codigo = $sd63_i_codigo; 
+         $this->sd63_i_codigo = $sd63_i_codigo;
        }
      }
-     if(($this->sd63_i_codigo == null) || ($this->sd63_i_codigo == "") ){ 
+     if(($this->sd63_i_codigo == null) || ($this->sd63_i_codigo == "") ){
        $this->erro_sql = " Campo sd63_i_codigo nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -292,45 +292,45 @@ class cl_sau_procedimento {
        return false;
      }
      $sql = "insert into sau_procedimento(
-                                       sd63_i_codigo 
-                                      ,sd63_c_procedimento 
-                                      ,sd63_c_nome 
-                                      ,sd63_i_complexidade 
-                                      ,sd63_c_sexo 
-                                      ,sd63_i_execucaomax 
-                                      ,sd63_i_maxdias 
-                                      ,sd63_i_pontos 
-                                      ,sd63_i_idademin 
-                                      ,sd63_i_idademax 
-                                      ,sd63_f_sh 
-                                      ,sd63_f_sa 
-                                      ,sd63_f_sp 
-                                      ,sd63_i_financiamento 
-                                      ,sd63_i_rubrica 
-                                      ,sd63_i_anocomp 
-                                      ,sd63_i_mescomp 
+                                       sd63_i_codigo
+                                      ,sd63_c_procedimento
+                                      ,sd63_c_nome
+                                      ,sd63_i_complexidade
+                                      ,sd63_c_sexo
+                                      ,sd63_i_execucaomax
+                                      ,sd63_i_maxdias
+                                      ,sd63_i_pontos
+                                      ,sd63_i_idademin
+                                      ,sd63_i_idademax
+                                      ,sd63_f_sh
+                                      ,sd63_f_sa
+                                      ,sd63_f_sp
+                                      ,sd63_i_financiamento
+                                      ,sd63_i_rubrica
+                                      ,sd63_i_anocomp
+                                      ,sd63_i_mescomp
                        )
                 values (
-                                $this->sd63_i_codigo 
-                               ,'$this->sd63_c_procedimento' 
-                               ,'$this->sd63_c_nome' 
-                               ,$this->sd63_i_complexidade 
-                               ,'$this->sd63_c_sexo' 
-                               ,$this->sd63_i_execucaomax 
-                               ,$this->sd63_i_maxdias 
-                               ,$this->sd63_i_pontos 
-                               ,$this->sd63_i_idademin 
-                               ,$this->sd63_i_idademax 
-                               ,$this->sd63_f_sh 
-                               ,$this->sd63_f_sa 
-                               ,$this->sd63_f_sp 
-                               ,$this->sd63_i_financiamento 
-                               ,$this->sd63_i_rubrica 
-                               ,$this->sd63_i_anocomp 
-                               ,$this->sd63_i_mescomp 
+                                $this->sd63_i_codigo
+                               ,'$this->sd63_c_procedimento'
+                               ,'$this->sd63_c_nome'
+                               ,$this->sd63_i_complexidade
+                               ,'$this->sd63_c_sexo'
+                               ,$this->sd63_i_execucaomax
+                               ,$this->sd63_i_maxdias
+                               ,$this->sd63_i_pontos
+                               ,$this->sd63_i_idademin
+                               ,$this->sd63_i_idademax
+                               ,$this->sd63_f_sh
+                               ,$this->sd63_f_sa
+                               ,$this->sd63_f_sp
+                               ,$this->sd63_i_financiamento
+                               ,$this->sd63_i_rubrica
+                               ,$this->sd63_i_anocomp
+                               ,$this->sd63_i_mescomp
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Procedimentos ($this->sd63_i_codigo) nao Incluído. Inclusao Abortada.";
@@ -378,16 +378,16 @@ class cl_sau_procedimento {
        $resac = db_query("insert into db_acount values($acount,1988,11569,'','".AddSlashes(pg_result($resaco,0,'sd63_i_mescomp'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($sd63_i_codigo=null) { 
+   function alterar ($sd63_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update sau_procedimento set ";
      $virgula = "";
-     if(trim($this->sd63_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_codigo"])){ 
+     if(trim($this->sd63_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_codigo"])){
        $sql  .= $virgula." sd63_i_codigo = $this->sd63_i_codigo ";
        $virgula = ",";
-       if(trim($this->sd63_i_codigo) == null ){ 
+       if(trim($this->sd63_i_codigo) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "sd63_i_codigo";
          $this->erro_banco = "";
@@ -397,10 +397,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_c_procedimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_c_procedimento"])){ 
+     if(trim($this->sd63_c_procedimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_c_procedimento"])){
        $sql  .= $virgula." sd63_c_procedimento = '$this->sd63_c_procedimento' ";
        $virgula = ",";
-       if(trim($this->sd63_c_procedimento) == null ){ 
+       if(trim($this->sd63_c_procedimento) == null ){
          $this->erro_sql = " Campo Procedimento nao Informado.";
          $this->erro_campo = "sd63_c_procedimento";
          $this->erro_banco = "";
@@ -410,10 +410,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_c_nome)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_c_nome"])){ 
+     if(trim($this->sd63_c_nome)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_c_nome"])){
        $sql  .= $virgula." sd63_c_nome = '$this->sd63_c_nome' ";
        $virgula = ",";
-       if(trim($this->sd63_c_nome) == null ){ 
+       if(trim($this->sd63_c_nome) == null ){
          $this->erro_sql = " Campo Nome nao Informado.";
          $this->erro_campo = "sd63_c_nome";
          $this->erro_banco = "";
@@ -423,10 +423,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_i_complexidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_complexidade"])){ 
+     if(trim($this->sd63_i_complexidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_complexidade"])){
        $sql  .= $virgula." sd63_i_complexidade = $this->sd63_i_complexidade ";
        $virgula = ",";
-       if(trim($this->sd63_i_complexidade) == null ){ 
+       if(trim($this->sd63_i_complexidade) == null ){
          $this->erro_sql = " Campo Complexidade nao Informado.";
          $this->erro_campo = "sd63_i_complexidade";
          $this->erro_banco = "";
@@ -436,10 +436,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_c_sexo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_c_sexo"])){ 
+     if(trim($this->sd63_c_sexo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_c_sexo"])){
        $sql  .= $virgula." sd63_c_sexo = '$this->sd63_c_sexo' ";
        $virgula = ",";
-       if(trim($this->sd63_c_sexo) == null ){ 
+       if(trim($this->sd63_c_sexo) == null ){
          $this->erro_sql = " Campo Sexo nao Informado.";
          $this->erro_campo = "sd63_c_sexo";
          $this->erro_banco = "";
@@ -449,10 +449,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_i_execucaomax)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_execucaomax"])){ 
+     if(trim($this->sd63_i_execucaomax)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_execucaomax"])){
        $sql  .= $virgula." sd63_i_execucaomax = $this->sd63_i_execucaomax ";
        $virgula = ",";
-       if(trim($this->sd63_i_execucaomax) == null ){ 
+       if(trim($this->sd63_i_execucaomax) == null ){
          $this->erro_sql = " Campo Execução Maxima nao Informado.";
          $this->erro_campo = "sd63_i_execucaomax";
          $this->erro_banco = "";
@@ -462,10 +462,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_i_maxdias)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_maxdias"])){ 
+     if(trim($this->sd63_i_maxdias)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_maxdias"])){
        $sql  .= $virgula." sd63_i_maxdias = $this->sd63_i_maxdias ";
        $virgula = ",";
-       if(trim($this->sd63_i_maxdias) == null ){ 
+       if(trim($this->sd63_i_maxdias) == null ){
          $this->erro_sql = " Campo Dias em Permanencia nao Informado.";
          $this->erro_campo = "sd63_i_maxdias";
          $this->erro_banco = "";
@@ -475,10 +475,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_i_pontos)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_pontos"])){ 
+     if(trim($this->sd63_i_pontos)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_pontos"])){
        $sql  .= $virgula." sd63_i_pontos = $this->sd63_i_pontos ";
        $virgula = ",";
-       if(trim($this->sd63_i_pontos) == null ){ 
+       if(trim($this->sd63_i_pontos) == null ){
          $this->erro_sql = " Campo Pontos nao Informado.";
          $this->erro_campo = "sd63_i_pontos";
          $this->erro_banco = "";
@@ -488,10 +488,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_i_idademin)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_idademin"])){ 
+     if(trim($this->sd63_i_idademin)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_idademin"])){
        $sql  .= $virgula." sd63_i_idademin = $this->sd63_i_idademin ";
        $virgula = ",";
-       if(trim($this->sd63_i_idademin) == null ){ 
+       if(trim($this->sd63_i_idademin) == null ){
          $this->erro_sql = " Campo Idade Min. nao Informado.";
          $this->erro_campo = "sd63_i_idademin";
          $this->erro_banco = "";
@@ -501,10 +501,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_i_idademax)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_idademax"])){ 
+     if(trim($this->sd63_i_idademax)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_idademax"])){
        $sql  .= $virgula." sd63_i_idademax = $this->sd63_i_idademax ";
        $virgula = ",";
-       if(trim($this->sd63_i_idademax) == null ){ 
+       if(trim($this->sd63_i_idademax) == null ){
          $this->erro_sql = " Campo Idade Max. nao Informado.";
          $this->erro_campo = "sd63_i_idademax";
          $this->erro_banco = "";
@@ -514,10 +514,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_f_sh)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_f_sh"])){ 
+     if(trim($this->sd63_f_sh)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_f_sh"])){
        $sql  .= $virgula." sd63_f_sh = $this->sd63_f_sh ";
        $virgula = ",";
-       if(trim($this->sd63_f_sh) == null ){ 
+       if(trim($this->sd63_f_sh) == null ){
          $this->erro_sql = " Campo Valor do Serviço Hospitalar nao Informado.";
          $this->erro_campo = "sd63_f_sh";
          $this->erro_banco = "";
@@ -527,10 +527,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_f_sa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_f_sa"])){ 
+     if(trim($this->sd63_f_sa)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_f_sa"])){
        $sql  .= $virgula." sd63_f_sa = $this->sd63_f_sa ";
        $virgula = ",";
-       if(trim($this->sd63_f_sa) == null ){ 
+       if(trim($this->sd63_f_sa) == null ){
          $this->erro_sql = " Campo Valor do Serviço Ambulatorial nao Informado.";
          $this->erro_campo = "sd63_f_sa";
          $this->erro_banco = "";
@@ -540,10 +540,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_f_sp)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_f_sp"])){ 
+     if(trim($this->sd63_f_sp)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_f_sp"])){
        $sql  .= $virgula." sd63_f_sp = $this->sd63_f_sp ";
        $virgula = ",";
-       if(trim($this->sd63_f_sp) == null ){ 
+       if(trim($this->sd63_f_sp) == null ){
          $this->erro_sql = " Campo Valor do Serviço Profissional nao Informado.";
          $this->erro_campo = "sd63_f_sp";
          $this->erro_banco = "";
@@ -553,10 +553,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_i_financiamento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_financiamento"])){ 
+     if(trim($this->sd63_i_financiamento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_financiamento"])){
        $sql  .= $virgula." sd63_i_financiamento = $this->sd63_i_financiamento ";
        $virgula = ",";
-       if(trim($this->sd63_i_financiamento) == null ){ 
+       if(trim($this->sd63_i_financiamento) == null ){
          $this->erro_sql = " Campo Financiamento nao Informado.";
          $this->erro_campo = "sd63_i_financiamento";
          $this->erro_banco = "";
@@ -566,17 +566,17 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_i_rubrica)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_rubrica"])){ 
-        if(trim($this->sd63_i_rubrica)=="" && isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_rubrica"])){ 
-           $this->sd63_i_rubrica = "0" ; 
-        } 
+     if(trim($this->sd63_i_rubrica)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_rubrica"])){
+        if(trim($this->sd63_i_rubrica)=="" && isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_rubrica"])){
+           $this->sd63_i_rubrica = "0" ;
+        }
        $sql  .= $virgula." sd63_i_rubrica = $this->sd63_i_rubrica ";
        $virgula = ",";
      }
-     if(trim($this->sd63_i_anocomp)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_anocomp"])){ 
+     if(trim($this->sd63_i_anocomp)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_anocomp"])){
        $sql  .= $virgula." sd63_i_anocomp = $this->sd63_i_anocomp ";
        $virgula = ",";
-       if(trim($this->sd63_i_anocomp) == null ){ 
+       if(trim($this->sd63_i_anocomp) == null ){
          $this->erro_sql = " Campo Ano nao Informado.";
          $this->erro_campo = "sd63_i_anocomp";
          $this->erro_banco = "";
@@ -586,10 +586,10 @@ class cl_sau_procedimento {
          return false;
        }
      }
-     if(trim($this->sd63_i_mescomp)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_mescomp"])){ 
+     if(trim($this->sd63_i_mescomp)!="" || isset($GLOBALS["HTTP_POST_VARS"]["sd63_i_mescomp"])){
        $sql  .= $virgula." sd63_i_mescomp = $this->sd63_i_mescomp ";
        $virgula = ",";
-       if(trim($this->sd63_i_mescomp) == null ){ 
+       if(trim($this->sd63_i_mescomp) == null ){
          $this->erro_sql = " Campo Mes nao Informado.";
          $this->erro_campo = "sd63_i_mescomp";
          $this->erro_banco = "";
@@ -647,7 +647,7 @@ class cl_sau_procedimento {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Procedimentos nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->sd63_i_codigo;
@@ -675,14 +675,14 @@ class cl_sau_procedimento {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($sd63_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($sd63_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($sd63_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -724,7 +724,7 @@ class cl_sau_procedimento {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Procedimentos nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$sd63_i_codigo;
@@ -752,11 +752,11 @@ class cl_sau_procedimento {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -778,8 +778,8 @@ class cl_sau_procedimento {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $sd63_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $sd63_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -798,8 +798,8 @@ class cl_sau_procedimento {
      $sql2 = "";
      if($dbwhere==""){
        if($sd63_i_codigo!=null ){
-         $sql2 .= " where sau_procedimento.sd63_i_codigo = $sd63_i_codigo "; 
-       } 
+         $sql2 .= " where sau_procedimento.sd63_i_codigo = $sd63_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -815,8 +815,8 @@ class cl_sau_procedimento {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $sd63_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $sd63_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -832,8 +832,8 @@ class cl_sau_procedimento {
      $sql2 = "";
      if($dbwhere==""){
        if($sd63_i_codigo!=null ){
-         $sql2 .= " where sau_procedimento.sd63_i_codigo = $sd63_i_codigo "; 
-       } 
+         $sql2 .= " where sau_procedimento.sd63_i_codigo = $sd63_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -849,5 +849,28 @@ class cl_sau_procedimento {
      }
      return $sql;
   }
+
+   public function sql_query_cbo_compativel( $sd63_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "" ) {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from sau_procedimento ";
+     $sql .= " inner join sau_proccbo on sd96_i_procedimento = sd63_i_codigo";
+     $sql .= " inner join rhcbo       on rh70_sequencial     = sd96_i_cbo";
+
+     $sql2 = "";
+     if (empty($dbwhere)) {
+       if (!empty($sd63_i_codigo)){
+         $sql2 .= " where sau_procedimento.sd63_i_codigo = $sd63_i_codigo ";
+       }
+     } else if (!empty($dbwhere)) {
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
+     }
+     return $sql;
+  }
+
 }
 ?>

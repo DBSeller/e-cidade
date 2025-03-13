@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -106,7 +106,7 @@ $('btnSalvarInscricaoGenerica').observe('click', function() {
                                        onComplete: function (oAjax) {
 
                                            js_removeObj("msgBox");
-                                           var oRetorno = eval("("+oAjax.responseText+")");
+                                           var oRetorno = JSON.parse(oAjax.responseText);
                                            alert(oRetorno.message.urlDecode());
                                            if (oRetorno.status == 1) {
   
@@ -154,7 +154,7 @@ function js_pesquisaInscricaoCadastrada() {
 function js_preencheGridInscricoes(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   oGridInscricao.clearAll(true);
   oRetorno.aInscricoes.each(function (oInscricao, iLinha) {
@@ -185,7 +185,7 @@ function js_excluirInscricao(iInscricao) {
                                      onComplete: function (oAjax) {
 
                                        js_removeObj("msgBox");
-                                       var oRetorno = eval("("+oAjax.responseText+")");
+                                       var oRetorno = JSON.parse(oAjax.responseText);
                                        alert(oRetorno.message.urlDecode());
                                        js_pesquisaInscricaoCadastrada();
                                      } 
@@ -199,11 +199,11 @@ function js_pesquisaInscricaoGenerica(lMostra) {
   if (lMostra) {
 
     var sUrlOpenTrue = 'func_tipoidentificacaocredorgenerica.php?funcao_js=parent.js_preencheInscricaoGenerica|c25_sequencial|c25_descricao';
-    js_OpenJanelaIframe('top.corpo.iframe_pcforneidentificacaocredor','db_iframe_pcforneidentificacaocredor', sUrlOpenTrue, 'Pesquisa Inscrição Genérica',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pcforneidentificacaocredor','db_iframe_pcforneidentificacaocredor', sUrlOpenTrue, 'Pesquisa Inscrição Genérica',true);
   } else {
 
     var sUrlOpenFalse = 'func_tipoidentificacaocredorgenerica.php?pesquisa_chave='+$F('c25_sequencial')+'&funcao_js=parent.js_completaInscricaoGenerica';
-    js_OpenJanelaIframe('top.corpo.iframe_pcforneidentificacaocredor','db_iframe_pcforneidentificacaocredor', sUrlOpenFalse, 'Pesquisa Inscrição Genérica', false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pcforneidentificacaocredor','db_iframe_pcforneidentificacaocredor', sUrlOpenFalse, 'Pesquisa Inscrição Genérica', false);
   }
 }
 

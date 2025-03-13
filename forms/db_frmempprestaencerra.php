@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -40,7 +40,7 @@ if($db_opcao==1){
 }else{
   $nome ="Atualizar";
 }
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_app.utils.php"));
 db_app::load("scripts.js");
 db_app::load("prototype.js");
 ?>
@@ -106,5 +106,5 @@ db_inputdata('e45_acerta',@$e45_acerta_dia,@$e45_acerta_mes,@$e45_acerta_ano,tru
   }
 
   // Pega o código da movimentacao do campo na primeira aba
-  document.form1.e45_codmov.value = top.corpo.iframe_emppresta.document.form1.e45_codmov.value;
+  document.form1.e45_codmov.value = (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_emppresta.document.form1.e45_codmov.value;
 </script>

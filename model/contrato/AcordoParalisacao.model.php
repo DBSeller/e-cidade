@@ -55,6 +55,12 @@ class AcordoParalisacao {
    * @var string
    */
   protected $sObservacao = '';
+
+  /**
+   * Tipo de evento da Paralisação
+   * @var string
+   */
+  protected $sEvento = '';
   
   /**
    * Lista de Periodos da paralizacao
@@ -87,6 +93,7 @@ class AcordoParalisacao {
       $this->iCodigo     = $oDadosParalisacao->ac47_sequencial;
       $this->setAcordo(AcordoRepository::getByCodigo($oDadosParalisacao->ac47_acordo));
       $this->setDataInicio(new DBDate($oDadosParalisacao->ac47_datainicio));
+      $this->setEvento($oDadosParalisacao->ac47_acordoevento);
       if (!empty($oDadosParalisacao->ac47_datafim)) {
         $this->setDataTermino(new DBDate($oDadosParalisacao->ac47_datafim));
       }
@@ -156,6 +163,19 @@ class AcordoParalisacao {
     return $this->sObservacao;
   }
 
+   /**
+   * @param string $sEvento
+   */
+  public function setEvento($sEvento) {
+    $this->sEvento = $sEvento;
+  }
+
+  /**
+   * @return string
+   */
+  public function getEvento() {
+    return $this->sEvento;
+  }
 
   /**
    * Retorna todas as movimentacoes do Acordo
@@ -213,6 +233,7 @@ class AcordoParalisacao {
     $oDaoAcordoParalisacao                  = new cl_acordoparalisacao();
     $oDaoAcordoParalisacao->ac47_datainicio = $this->getDataInicio()->getDate();
     $oDaoAcordoParalisacao->ac47_acordo     = $this->getAcordo()->getCodigoAcordo();
+    $oDaoAcordoParalisacao->ac47_acordoevento = $this->getEvento();
     if ($this->getDataTermino() != '') {
       $oDaoAcordoParalisacao->ac47_datafim = $this->getDataTermino()->getDate();
     }

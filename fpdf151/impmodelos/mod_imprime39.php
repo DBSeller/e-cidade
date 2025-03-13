@@ -256,9 +256,9 @@ for($xxx = 0;$xxx < $this->nvias;$xxx++){
 	$file_default = 'pdfcliente/mod_rodape'.$this->impmodelo.'_default.php';
 	$file_cliente = 'pdfcliente/mod_rodape'.$this->impmodelo.'_'.db_getsession("DB_instit").'.php';
         if (file_exists($file_cliente)) {
-            include($file_cliente);// inclui arquivo padrão
+            include(modification($file_cliente));// inclui arquivo padrão
         } else {
-            include($file_default);// inclui arquivo cliente
+            include(modification($file_default));// inclui arquivo cliente
         }
       
 } // END FOR      

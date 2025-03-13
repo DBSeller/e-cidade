@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -30,7 +30,7 @@
  *
  * @author Raphael Lopes <dbrafael.lopes@dbseller.com.br>
  * @package patrimoinio
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.40 $
  */
 class Inventario {
 
@@ -116,7 +116,6 @@ class Inventario {
       if ($oDaoInventario->numrows > 0) {
 
         $oDadosInventario = db_utils::fieldsMemory($rsInventario, 0);
-
         $this->setInventario     ($oDadosInventario->t75_sequencial);
         $this->setDataAbertura   ($oDadosInventario->t75_dataabertura);
         $this->setPeriodoInicial ($oDadosInventario->t75_periodoinicial);
@@ -129,7 +128,7 @@ class Inventario {
         $this->setDepartamento   ($oDadosInventario->t75_db_depart);
 
       } else {
-        
+
         $oParms = new stdClass();
         $oParms->codigoInventario = $iInventario;
         throw new BusinessException(_M('patrimonial.patrimonio.Inventario.sequencial_nao_encotrado', $oParms));
@@ -145,20 +144,15 @@ class Inventario {
    * @throws DBException
    * @throws BusinessException
    */
-  public function 
-  processarReavaliacao() {
+  public function processarReavaliacao() {
 
     if ( !db_utils::inTransaction() ) {
       throw new DBException(_M('patrimonial.patrimonio.Inventario.nenhum_transacao_encontrada'));
     }
 
-    $oDaoBensDepreciacao         = db_utils::getDao("bensdepreciacao");
-    $oDaoBensHistoricoCalculo    = db_utils::getDao("benshistoricocalculo");
-    $oDaoBensHistoricoCalculoBem = db_utils::getDao("benshistoricocalculobem");
-
     $sObservacao     = "TRANSFERENCIA AUTOMATICA VIA REAVALIAÇÃO";
     $aInventarioBens = $this->getBens();
-
+    
     /*
      * percorremos o array de itens vinculados
      * para realizar o processamento
@@ -188,8 +182,34 @@ class Inventario {
        * inclusao dos dados na bensdepreciacao
        */
       $iCodigoBem = $oInventarioBem->getBem()->getCodigoBem();
+      $this->reavaliarBem($oInventarioBem);
+    }
 
-      $oDaoBensDepreciacao                      = db_utils::getDao("bensdepreciacao");
+    /**
+     * apos percorrer os itens atualizamos a situação do inventario para 3 - Processado
+     */
+    $oDaoInventario                 = db_utils::getDao("inventario");
+    $oDaoInventario->t75_sequencial = $this->getInventario();
+    $oDaoInventario->t75_situacao   = 3;
+    $oDaoInventario->alterar($oDaoInventario->t75_sequencial);
+    if ($oDaoInventario->erro_status == "0"){
+      throw new DBException(_M('patrimonial.patrimonio.Inventario.erro_processar_reavaliacao_inventario', (object) array("sErro" => $oDaoInventario->erro_msg)));
+    }
+
+  }
+
+    /**
+     * @param InventarioBem $oInventarioBem
+     * @throws BusinessException
+     * @throws DBException
+     * @throws Exception
+     */
+  public function reavaliarBem(InventarioBem $oInventarioBem)
+  {
+      $oDaoBensDepreciacao         = db_utils::getDao("bensdepreciacao");
+      $oDaoBensHistoricoCalculo    = db_utils::getDao("benshistoricocalculo");
+      $oDaoBensHistoricoCalculoBem = db_utils::getDao("benshistoricocalculobem");
+
       $oDaoBensDepreciacao->t44_vidautil        = $oInventarioBem->getVidaUtil();
       $oDaoBensDepreciacao->t44_valoratual      = $oInventarioBem->getValorDepreciavel();
       $oDaoBensDepreciacao->t44_valorresidual   = $oInventarioBem->getValorResidual();
@@ -200,14 +220,14 @@ class Inventario {
        */
 
       if ($oInventarioBem->getBem()->getCodigoBemDepreciacao() == null){
-        throw new BusinessException(_M('patrimonial.patrimonio.Inventario.bem_sem_informacoes'));
+          throw new BusinessException(_M('patrimonial.patrimonio.Inventario.bem_sem_informacoes'));
       }
 
-        $oDaoBensDepreciacao->t44_sequencial = $oInventarioBem->getBem()->getCodigoBemDepreciacao();
-        $oDaoBensDepreciacao->alterar($oDaoBensDepreciacao->t44_sequencial);
+      $oDaoBensDepreciacao->t44_sequencial = $oInventarioBem->getBem()->getCodigoBemDepreciacao();
+      $oDaoBensDepreciacao->alterar($oDaoBensDepreciacao->t44_sequencial);
 
       if ($oDaoBensDepreciacao->erro_status == "0"){
-        throw new DBException(_M('patrimonial.patrimonio.Inventario.erro_processar_reavaliacao_depreciacao', (object) array("sErro" => $oDaoBensDepreciacao->erro_msg)));
+          throw new DBException(_M('patrimonial.patrimonio.Inventario.erro_processar_reavaliacao_depreciacao', (object) array("sErro" => $oDaoBensDepreciacao->erro_msg)));
       }
 
       $oDaoBensHistoricoCalculo->t57_mes               = date("m"    , db_getsession("DB_datausu"));
@@ -220,27 +240,32 @@ class Inventario {
       $oDaoBensHistoricoCalculo->t57_tipoprocessamento = 2;
       $oDaoBensHistoricoCalculo->t57_ativo             = "true";
       $oDaoBensHistoricoCalculo->incluir(null);
+
       if ($oDaoBensHistoricoCalculo->erro_status == "0") {
-        throw new DBException(_M('patrimonial.patrimonio.Inventario.erro_processar_reavaliacao_historico_calculo', (object) array("sErro" => $oDaoBensHistoricoCalculo->erro_msg)));
+          throw new DBException(_M('patrimonial.patrimonio.Inventario.erro_processar_reavaliacao_historico_calculo', (object) array("sErro" => $oDaoBensHistoricoCalculo->erro_msg)));
       }
 
+      if (empty($oInventarioBem->getBem()->getValorAtual()) || $oInventarioBem->getBem()->getValorAtual() == $oInventarioBem->getValorResidual()) {
+        $daoBem = new cl_bens();
 
-      $nValorCalculado = $oInventarioBem->getBem()->getValorAtual();
-      $nValorAnterior  = $oInventarioBem->getBem()->getValorAtual();
-      if ($nValorAnterior == null) {
-        $nValorAnterior = $oInventarioBem->getBem()->getValorAquisicao();
+        $sql = $daoBem->getSqlValoresAtuaisBem($oInventarioBem->getBem()->getCodigoBem());
+        $aux = db_query($sql);
+
+        $bem = pg_fetch_object($aux, 0);
+        $nValorAnterior = $bem->t58_valoratual;
+      } else {
+        $nValorAnterior  = $oInventarioBem->getBem()->getValorAtual() - $oInventarioBem->getValorResidual();
       }
+      
+      $somaDepreciavelResidual = $oInventarioBem->getValorDepreciavel() + $oInventarioBem->getValorResidual();
       $iVidaUtilAnterior = $oInventarioBem->getBem()->getVidaUtil();
-      if ($oInventarioBem->getBem()->getValorAtual() != $oInventarioBem->getValorDepreciavel()) {
-        $nValorCalculado = abs($oInventarioBem->getBem()->getValorAtual() - $oInventarioBem->getValorDepreciavel());
-      }
-
+      
       $oDaoBensHistoricoCalculoBem->t58_benstipodepreciacao   = 6;
       $oDaoBensHistoricoCalculoBem->t58_benshistoricocalculo  = $oDaoBensHistoricoCalculo->t57_sequencial;
       $oDaoBensHistoricoCalculoBem->t58_bens                  = $oInventarioBem->getBem()->getCodigoBem();
       $oDaoBensHistoricoCalculoBem->t58_valorresidual         = $oInventarioBem->getValorResidual();
-      $oDaoBensHistoricoCalculoBem->t58_valoratual            = $oInventarioBem->getValorDepreciavel();
-      $oDaoBensHistoricoCalculoBem->t58_valorcalculado        = $nValorCalculado;
+      $oDaoBensHistoricoCalculoBem->t58_valoratual            = $somaDepreciavelResidual;
+      $oDaoBensHistoricoCalculoBem->t58_valorcalculado        = 0;
       $oDaoBensHistoricoCalculoBem->t58_valoranterior         = $nValorAnterior;
       $oDaoBensHistoricoCalculoBem->t58_vidautilanterior      = $iVidaUtilAnterior;
       $oDaoBensHistoricoCalculoBem->t58_valorresidualanterior = $oInventarioBem->getBem()->getValorResidual();
@@ -260,24 +285,9 @@ class Inventario {
 
       $oDaoBensHistoricoCalculoBem->incluir(null);
       if ($oDaoBensHistoricoCalculoBem->erro_status == "0"){
-        throw new DBException(_M('patrimonial.patrimonio.Inventario.erro_processar_reavaliacao_historico_calculo_bem', (object) array("sErro" => $oDaoBensHistoricoCalculoBem->erro_msg)));
+          throw new DBException(_M('patrimonial.patrimonio.Inventario.erro_processar_reavaliacao_historico_calculo_bem', (object) array("sErro" => $oDaoBensHistoricoCalculoBem->erro_msg)));
       }
-
-    }
-
-    /**
-     * apos percorrer os itens atualizamos a situação do inventario para 3 - Processado
-     */
-    $oDaoInventario                 = db_utils::getDao("inventario");
-    $oDaoInventario->t75_sequencial = $this->getInventario();
-    $oDaoInventario->t75_situacao   = 3;
-    $oDaoInventario->alterar($oDaoInventario->t75_sequencial);
-    if ($oDaoInventario->erro_status == "0"){
-      throw new DBException(_M('patrimonial.patrimonio.Inventario.erro_processar_reavaliacao_inventario', (object) array("sErro" => $oDaoInventario->erro_msg)));
-    }
-
   }
-
 
   /**
    * Método para desprocessar o inventário
@@ -375,18 +385,18 @@ class Inventario {
       $nValorAnterior          = 0;
       $iTipoDepreciacao        = 0;
       $nValorResidualAnterior  = 0;
-      
+
       for ($iRowBem = 0; $iRowBem < $iTotalBem; $iRowBem++) {
 
         $oStdBem = db_utils::fieldsMemory($rsBensHistoricoCalculoBem, $iRowBem);
         if ($oStdBem->t58_benstipodepreciacao == 6) {
 
           $iVidaUtilAterior = $oStdBem->t58_vidautilanterior;
-          $nValorAtualAnterior     = $oStdBem->t58_valoratual;
+          $nValorAtualAnterior     = $oStdBem->t58_valoranterior;
           $iCodigoBem              = $oStdBem->t58_bens;
           $nValorCalculado         = $oStdBem->t58_valorcalculado;
           $nPercentualAnterior     = $oStdBem->t58_percentualdepreciado;
-          $nValorAnterior          = $oStdBem->t58_valoranterior;
+          $nValorAnterior          = $oStdBem->t58_valoratual;
           $iTipoDepreciacao        = $oStdBem->t58_benstipodepreciacao;
           $nValorResidualAnterior  = $oStdBem->t58_valorresidualanterior;
 
@@ -445,7 +455,7 @@ class Inventario {
       $oDaoBensHistoricoCalculo->t57_usuario            = db_getsession("DB_id_usuario");
       $oDaoBensHistoricoCalculo->t57_instituicao        = db_getsession("DB_instit");
       $oDaoBensHistoricoCalculo->t57_tipocalculo        = 2;
-      $oDaoBensHistoricoCalculo->t57_processado         = "true";
+      $oDaoBensHistoricoCalculo->t57_processado         = "false";
       $oDaoBensHistoricoCalculo->t57_tipoprocessamento  = 2;
       $oDaoBensHistoricoCalculo->t57_ativo              = "true";
       $oDaoBensHistoricoCalculo->incluir(null);
@@ -511,7 +521,7 @@ class Inventario {
 
   /**
    * Retorna os bens vinculados ao inventario
-   * @return InventarioBem (array)
+   * @return InventarioBem[]
    */
   public function getBens() {
 
@@ -897,12 +907,10 @@ class Inventario {
       if ($oContaVerificar == null) {
 
         $sClassificacoes = implode(", ", array_unique($oDadoEscriturar->aClassificacoes));
-        
+
         $oParms = new stdClass();
         $oParms->iCodigoConta = $oDadoEscriturar->iCodigoConta;
         $oParms->sClassificacoes = $sClassificacoes;
-        /*$sMsgErro  = "Conta de codigo {$oDadoEscriturar->iCodigoConta} não existe no plano de contas.\n";
-        $sMsgErro .= "Classificacoes que utilizam essa conta: {$sClassificacoes}";*/
         throw new BusinessException(_M('patrimonial.patrimonio.Inventario.conta_de_codigo_nao_existe', $oParms));
       }
 
@@ -927,11 +935,11 @@ class Inventario {
         $nValorVerificar                 = $oDadoEscriturar->nValorReajuste;
       }
 
-      $oDadoEscriturar->nValorLancamento = abs($oDadoEscriturar->nValorAtual - $oDadoEscriturar->nSaldoAnterior);
+      $oDadoEscriturar->nValorLancamento = abs($oDadoEscriturar->nValorAtual - $oDadoEscriturar->nValorAnterior);
 
-      $iCodigoDocumento = 600;
-      if ($nValorVerificar  < $oDadoEscriturar->nSaldoAnterior) {
-        $iCodigoDocumento = 602;
+      $iCodigoDocumento = 602;
+      if ($nValorVerificar < $oDadoEscriturar->nSaldoAnterior) {
+        $iCodigoDocumento = 600;
       }
 
       if ($lEstorno) {
@@ -954,7 +962,7 @@ class Inventario {
 
         $oDadosUltimoLancamento            = db_utils::fieldsMemory($rsDadosUltimoLancamento, 0);
         if (in_array($oDadosUltimoLancamento->c71_coddoc, $aDocumentosEstorno)) {
-          
+
           $oParms = new stdClass();
           $oParms->iInventario = $this->iInventario;
           throw new BusinessException(_M('patrimonial.patrimonio.Inventario.inventario_ja_estornado', $oParms));
@@ -1056,9 +1064,11 @@ class Inventario {
      * Percorre os dados da escrituracao e executa lancamento
      */
 
-
     foreach ($aDadosEscrituracao as $iConta=>$oStdDadosEscrituracao) {
 
+      if ($oStdDadosEscrituracao->nValorLancamento <= 0) {
+        continue;
+      }
       $oEventoContabil               = new EventoContabil($oStdDadosEscrituracao->iCodigoDocumento, db_getsession("DB_anousu"));
       $aLancamentos                  = $oEventoContabil->getEventoContabilLancamento();
       $iCodigoHistorico              = $aLancamentos[0]->getHistorico();
@@ -1077,4 +1087,5 @@ class Inventario {
     }
   }
 }
+
 ?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matricula_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $escola = db_getsession("DB_coddepto");
 $clmatricula = new cl_matricula;
 ?>
@@ -53,7 +53,7 @@ $clmatricula = new cl_matricula;
          WHERE ed38_i_escola = $escola
          AND ed52_c_passivo = 'N'
          ORDER BY ed52_i_ano DESC";
- $sql_result = pg_query($sql);
+ $sql_result = db_query($sql);
  $num = pg_num_rows($sql_result);
  $conta = "";
  while ($row=pg_fetch_array($sql_result)){
@@ -73,7 +73,7 @@ $clmatricula = new cl_matricula;
               AND ed221_c_origem = 'S'
               ORDER BY ed57_c_descr,ed11_c_descr
              ";
-  $sub_result = pg_query($sub_sql);
+  $sub_result = db_query($sub_sql);
   $num_sub = pg_num_rows($sub_result);
   if ($num_sub>=1){
    # Se achar alguma base para o curso, marca a palavra Todas
@@ -163,7 +163,7 @@ function fillSelectFromArray(selectCtrl, itemArray, goodPrompt, badPrompt, defau
                WHERE ed38_i_escola = $escola
                AND ed52_c_passivo = 'N'
                ORDER BY ed52_i_ano DESC";
-       $sql_result = pg_query($sql);
+       $sql_result = db_query($sql);
        while($row=pg_fetch_array($sql_result)){
         $cod_curso=$row["ed52_i_codigo"];
         $desc_curso=$row["ed52_c_descr"];

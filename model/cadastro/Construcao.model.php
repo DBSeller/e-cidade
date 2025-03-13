@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('model/cadastro/Imovel.model.php');
-require_once('model/cadastro/CertidaoExistencia.model.php');
+require_once(modification('model/cadastro/Imovel.model.php'));
+require_once(modification('model/cadastro/CertidaoExistencia.model.php'));
 
 
 /**
@@ -35,8 +35,8 @@ require_once('model/cadastro/CertidaoExistencia.model.php');
  * @author   Rafael Serpa Nery  rafael.nery@dbseller.com.br
  * @author   Alberto Ferri Neto alberto@dbseller.com.br
  * @package  Cadastro
- * @revision $Author: dbrafael.nery $
- * @version  $Revision: 1.3 $
+ * @revision $Author: dbandrio.costa $
+ * @version  $Revision: 1.10 $
  */
 class Construcao {
 
@@ -345,7 +345,7 @@ class Construcao {
 	 * @return date dtDataDemolicao
 	 */
 	public function getDataDemolicao() {
-		return $this->dDataDemolicao;
+		return $this->dtDataDemolicao;
 	}
 
 	/**
@@ -353,7 +353,7 @@ class Construcao {
 	 * @param date $dtDataDemolicao
 	 */
 	public function setDataDemolicao($dtDataDemolicao) {
-		$this->dDataDemolicao = $dtDataDemolicao;
+		$this->dtDataDemolicao = $dtDataDemolicao;
 	}
 
 	/**
@@ -393,7 +393,7 @@ class Construcao {
 	 * @return integer iCodigoOrigemConstrucao
 	 */
 	public function getDataHabite() {
-		return $this->dDataHabite;
+		return $this->dtDataHabite;
 	}
 
 	/**
@@ -401,7 +401,7 @@ class Construcao {
 	 * @param date $dtDataHabite
 	 */
 	public function setDataHabite($dtDataHabite) {
-		$this->dDataHabite = $dtDataHabite;
+		$this->dtDataHabite = $dtDataHabite;
 	}
 
 	/**
@@ -490,39 +490,61 @@ class Construcao {
 	
 	public function getCaracteristicasConstrucao() {
 	  
-	  if(empty($this->iMatricula)) {
-	    throw new Exception('Matrícula não informada.');
-	  }
+	  	if(empty($this->iMatricula)) {
+	    	throw new Exception('Matrícula não informada.');
+	  	}
 	  
-	  if(empty($this->iCodigoConstrucao)) {
-	    throw new Exception('Código da construção não informado.');
-	  }
+	  	if(empty($this->iCodigoConstrucao)) {
+	    	throw new Exception('Código da construção não informado.');
+	  	}
 	  
-	  $oDaoCarconstr = db_utils::getDao('carconstr');
+	  	$oDaoCarconstr = new cl_carconstr();
 	  
-	  $sSqlCarconstr = $oDaoCarconstr->sql_queryCaracteristicas($this->getMatricula(), $this->getCodigoConstrucao());
+	  	$sSqlCarconstr = $oDaoCarconstr->sql_queryCaracteristicas($this->getMatricula(), $this->getCodigoConstrucao());
 	  
-	  $rsCarconstr   = $oDaoCarconstr->sql_record($sSqlCarconstr);
+	  	$rsCarconstr = $oDaoCarconstr->sql_record($sSqlCarconstr);
 	  
-	  $aCarconstr    = db_utils::getCollectionByRecord($rsCarconstr);
+	  	$aCarconstr = db_utils::getCollectionByRecord($rsCarconstr);
 	  
-	  $aCaracteristicas = array();
+	  	$aCaracteristicas = array();
 	  
-	  foreach ($aCarconstr as $oCarconstr) {
+	  	foreach ($aCarconstr as $oCarconstr) {
 	    
-	    $oCaracteristica = new stdClass();
+	    	$oCaracteristica = new stdClass();
 	    
-	    $oCaracteristica->iCodigoCaracteristica = $oCarconstr->j31_codigo;
-	    $oCaracteristica->sCaracteristica       = $oCarconstr->j31_descr ;
-	    $oCaracteristica->iNumeroPontos         = $oCarconstr->j31_pontos;
-	    $oCaracteristica->iCodigoGrupo          = $oCarconstr->j32_grupo ;
-	    $oCaracteristica->sDescricaoGrupo       = $oCarconstr->j32_descr ;
+	    	$oCaracteristica->iCodigoCaracteristica = $oCarconstr->j31_codigo;
+	    	$oCaracteristica->sCaracteristica       = $oCarconstr->j31_descr ;
+	    	$oCaracteristica->iNumeroPontos         = $oCarconstr->j31_pontos;
+	    	$oCaracteristica->iCodigoGrupo          = $oCarconstr->j32_grupo ;
+	    	$oCaracteristica->sDescricaoGrupo       = $oCarconstr->j32_descr ;
 	    
-	    $aCaracteristicas[] = $oCaracteristica;
+	    	$aCaracteristicas[] = $oCaracteristica;
 	    
-	  }
+	  	}
 	  
-	  return $aCaracteristicas;
+	  	return $aCaracteristicas; 
+	}
+
+	public function getHabite()
+	{  
+	  	if(empty($this->iMatricula)) {
+    		throw new Exception('Matrícula não informada.');
+	  	}
 	  
+	  	if(empty($this->iCodigoConstrucao)) {
+			throw new Exception('Código da construção não informado.');
+	  	}
+	  
+	  	$oDaoIptuConstrHabite = new cl_iptuconstrhabite();
+
+	  	$where = "j131_matric = ".$this->getMatricula()." and j131_idcons = ".$this->getCodigoConstrucao();
+	  	$sSqlIptuConstrHabite = $oDaoIptuConstrHabite->sql_query_dados(null, "*", null, $where);
+
+	  	$rsIptuConstrHabite = db_query($sSqlIptuConstrHabite);
+	  	if (!$rsIptuConstrHabite || pg_num_rows($rsIptuConstrHabite) == 0) {
+            return new stdClass();
+        }
+	  
+	  	return db_utils::fieldsMemory($rsIptuConstrHabite, 0);
 	}
 }

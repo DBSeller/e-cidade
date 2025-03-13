@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -48,7 +48,7 @@ abstract class ContaCorrenteBase {
 
   /**
    * data de Lancamento
-   * @var date
+   * @var string
    */
   protected $dDataLancamento;
 
@@ -96,7 +96,7 @@ abstract class ContaCorrenteBase {
 
   /**
    * Data que o lançamento foi realizado
-   * @var unknown
+   * @var string
    */
   protected $dtLancamento;
 
@@ -112,10 +112,15 @@ abstract class ContaCorrenteBase {
   protected $oContaCorrenteDetalhe;
 
   /**
+   * @var DocumentoEventoContabil
+   */
+  protected $oDocumentoEventoContabil;
+
+  /**
    * Seta as propriedades padrão para a execução do conta corrente
    * @param integer $iCodigoLancamento
    * @param integer $iCodigoReduzido
-   * @param ILancamentoAuxiliar $oLancamentoAuxiliar
+   * @param ILancamentoAuxiliar|LancamentoAuxiliarArrecadacaoReceita|LancamentoAuxiliarArrecadacaoReceitaExtraOrcamentaria|LancamentoAuxiliarContaCorrente|LancamentoAuxiliarEmpenho $oLancamentoAuxiliar
    * @throws BusinessException
    */
   public function __construct($iCodigoLancamento, $iCodigoReduzido, ILancamentoAuxiliar $oLancamentoAuxiliar) {
@@ -154,6 +159,25 @@ abstract class ContaCorrenteBase {
                                                                                         self::OPERACAO_CREDITO;
     $this->nValorLancamento = $oStdLancamento->c69_valor;
     return true;
+  }
+
+  /**
+   * @return DocumentoEventoContabil
+   * @throws Exception
+   */
+  protected function getDocumentoEventoContabil() {
+
+    if (empty($this->oDocumentoEventoContabil)) {
+
+      $oDaoDocumento = new cl_conlancamval();
+      $sSqlBuscaDocumento = $oDaoDocumento->sql_query_conta_documento("distinct c71_coddoc", "c69_sequen = {$this->iCodigoLancamento} limit 1");
+      $rsBuscaDocumento   = db_query($sSqlBuscaDocumento);
+      if (!$rsBuscaDocumento) {
+        throw new Exception("Ocorreu um erro ao buscar o documento do lançamento.");
+      }
+      $this->oDocumentoEventoContabil = DocumentoEventoContabilRepository::getPorCodigo(db_utils::fieldsMemory($rsBuscaDocumento, 0)->c71_coddoc);
+    }
+    return $this->oDocumentoEventoContabil;
   }
 
   /**

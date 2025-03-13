@@ -1,36 +1,36 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
 
 $objJson             = new services_json();
 $objParam            = $objJson->decode(str_replace("\\","",$_POST["json"]));
@@ -53,14 +53,14 @@ if ($objParam->exec == "getFAA") {
 		   			$objRetorno->message = urlencode( "FAA foi lançada no lote {$obj_prontuarios->sd59_i_lote}.");
 		   		}else{
 		   			$objRetorno->status = 1;
-		   			$objRetorno->itens  = db_utils::getColectionByRecord($res_prontuarios, true, false, true);
+		   			$objRetorno->itens  = db_utils::getCollectionByRecord($res_prontuarios, true, false, true);
 		   			//Sessão para armazenar profissional
 					//if (!isset($_SESSION["objRegProfissional"])) {
 						$clprontagendameto   = db_utils::getDao("prontagendamento_ext");
 						$strSQL              = $clprontagendameto->sql_query_ext(null,"agendamentos.*, especmedico.*, rhcbo.*, medicos.*, cgm.*",null, "prontagendamento.s102_i_prontuario = {$objParam->sd24_i_codigo}");
 						$res_prontagendameto = $clprontagendameto->sql_record( $strSQL );
 						if( $clprontagendameto->numrows > 0 ){
-							$obj_prontagendameto = db_utils::getColectionByRecord($res_prontagendameto,true,false,true);
+							$obj_prontagendameto = db_utils::getCollectionByRecord($res_prontagendameto,true,false,true);
 			  				$_SESSION["objRegProfissional"] = serialize($obj_prontagendameto);
 						}
 					//}
@@ -76,11 +76,11 @@ if ($objParam->exec == "getFAA") {
 	}
 
 }else if ($objParam->exec == "getLote") {
-	include("funcoes/db_func_sau_lotepront.php");
+	include(modification("funcoes/db_func_sau_lotepront.php"));
 	$clsau_lotepront  = db_utils::getDao("sau_lotepront_ext");
 	$res_sau_lotepront = $clsau_lotepront->sql_record( $clsau_lotepront->sql_query_ext("","distinct ".$campos,"sd59_i_codigo"," sd59_i_lote = {$objParam->sd58_i_codigo}") );
 	if($clsau_lotepront->numrows > 0){
-		$objRetorno->itens  = db_utils::getColectionByRecord($res_sau_lotepront, true, false, true);
+		$objRetorno->itens  = db_utils::getCollectionByRecord($res_sau_lotepront, true, false, true);
 	}else{
 		$objRetorno->status  = 2;
 		$objRetorno->message = urlencode( 'Lote não encontrado.' );
@@ -89,7 +89,7 @@ if ($objParam->exec == "getFAA") {
 	$clsau_cid   = db_utils::getDao("sau_cid");
 	$res_sau_cid = $clsau_cid->sql_record( $clsau_cid->sql_query("","sd70_i_codigo, sd70_c_cid, sd70_c_nome","sd70_c_cid"," sd70_c_cid = '{$objParam->sd70_c_cid}' ") );
 	if($clsau_cid->numrows > 0){
-		$objRetorno->itens  = db_utils::getColectionByRecord($res_sau_cid, true, false, true);
+		$objRetorno->itens  = db_utils::getCollectionByRecord($res_sau_cid, true, false, true);
 	}else{
 		$objRetorno->status  = 2;
 		$objRetorno->message = urlencode( 'CID não encontrado.' );
@@ -116,6 +116,7 @@ if ($objParam->exec == "getFAA") {
 
 	//Inclui no lote
 	if((int)$objParam->sd58_i_codigo == 0){
+
 		$clsau_lote->sd58_i_login = $objParam->sd58_i_login;
 		$clsau_lote->incluir(null);
 		$objParam->sd58_i_codigo   = $clsau_lote->sd58_i_codigo;
@@ -128,53 +129,86 @@ if ($objParam->exec == "getFAA") {
 
 	if( $objRetorno->status == 1 ){
 
-		//Prontuario
-		$clprontuarios->sd24_i_unidade     = $objParam->sd24_i_unidade;
-		$clprontuarios->sd24_i_numcgs      = $objParam->z01_i_cgsund;
-		$clprontuarios->sd24_t_diagnostico = $objParam->sd24_t_diagnostico;
+		// busca o primeiro setor da unidade  incluso para recepção
+		$sSqlSetor  = " select min(sd91_codigo) as sd91_codigo from setorambulatorial ";
+		$sSqlSetor .= " where sd91_unidades = {$objParam->sd24_i_unidade} and sd91_local = 1 ";
 
-		if( (int)$objParam->sd24_i_codigo == 0 ){
-			$clprontuarios->sd24_i_ano      = trim($fc_numatend[0]);
-			$clprontuarios->sd24_i_mes      = trim($fc_numatend[1]);
-			$clprontuarios->sd24_i_seq      = trim($fc_numatend[2]);
-			$clprontuarios->sd24_d_cadastro = date("Y-m-d",db_getsession("DB_datausu"));
-			$clprontuarios->sd24_c_cadastro = date("H",db_getsession("DB_datausu")).":".date("m",db_getsession("DB_datausu"));
-			$clprontuarios->sd24_i_login    = DB_getsession("DB_id_usuario");
-			$clprontuarios->sd24_c_digitada = 'N';
+		$rsSetorUnidade = db_query($sSqlSetor);
 
-			$clprontuarios->incluir(null);
-			$objParam->sd24_i_codigo = $clprontuarios->sd24_i_codigo;
-		}else{
-			$clprontuarios->sd24_i_codigo = $objParam->sd24_i_codigo;
-			$clprontuarios->alterar($objParam->sd24_i_codigo);
+		$lErroBuscarSetor = false;
+		$sMsgErroSetor    = "Não foi encontrado um setor ambulatorial para esta unidade.\n";
+		$sMsgErroSetor   .= "Cadastre um setor de ambulatorial em:\n\tCadastro > Setor Ambulatorial para o Local: RECEPÇÃO";
+		if ( !$rsSetorUnidade || pg_num_rows($rsSetorUnidade) == 0) {
+
+			$lErroBuscarSetor    = true;
+			$objRetorno->status  = 2;
+		  $objRetorno->message = urlencode( $sMsgErroSetor );
 		}
 
-		if( $clprontuarios->numrows_incluir > 0 || $clprontuarios->numrows_alterar > 0){
-			//CGS
-			$clcgs_und->z01_i_cgsund = $objParam->z01_i_cgsund;
-			$clcgs_und->z01_d_nasc   = implode("-",array_reverse(explode("/", $objParam->z01_d_nasc)));;
-			$clcgs_und->alterar($objParam->z01_i_cgsund);
-			if( $clcgs_und->numrows_alterar > 0 ){
+		$iCodigoSetorAmbulatorial = null;
+		if ( !$lErroBuscarSetor ) {
+
+			$iCodigoSetorAmbulatorial = db_utils::fieldsMemory($rsSetorUnidade, 0)->sd91_codigo;
+
+			if ( empty($iCodigoSetorAmbulatorial) ) {
+
+				$lErroBuscarSetor    = true;
+				$objRetorno->status  = 2;
+			  $objRetorno->message = urlencode( $sMsgErroSetor );
+			}
+		}
+
+		if (!$lErroBuscarSetor) {
+
+
+			$clprontuarios->sd24_setorambulatorial = $iCodigoSetorAmbulatorial;
+			//Prontuario
+			$clprontuarios->sd24_i_unidade     = $objParam->sd24_i_unidade;
+			$clprontuarios->sd24_i_numcgs      = $objParam->z01_i_cgsund;
+			$clprontuarios->sd24_t_diagnostico = $objParam->sd24_t_diagnostico;
+
+			if( (int)$objParam->sd24_i_codigo == 0 ){
+				$clprontuarios->sd24_i_ano      = trim($fc_numatend[0]);
+				$clprontuarios->sd24_i_mes      = trim($fc_numatend[1]);
+				$clprontuarios->sd24_i_seq      = trim($fc_numatend[2]);
+				$clprontuarios->sd24_d_cadastro = date("Y-m-d",db_getsession("DB_datausu"));
+				$clprontuarios->sd24_c_cadastro = date("H",db_getsession("DB_datausu")).":".date("m",db_getsession("DB_datausu"));
+				$clprontuarios->sd24_i_login    = DB_getsession("DB_id_usuario");
+				$clprontuarios->sd24_c_digitada = 'N';
+
+				$clprontuarios->incluir(null);
+				$objParam->sd24_i_codigo = $clprontuarios->sd24_i_codigo;
+			}else{
+				$clprontuarios->sd24_i_codigo = $objParam->sd24_i_codigo;
+				$clprontuarios->alterar($objParam->sd24_i_codigo);
+			}
+
+			if( $clprontuarios->numrows_incluir > 0 || $clprontuarios->numrows_alterar > 0){
+				//CGS
+
+
 				//Lote Prontuario
-				if($objParam->exec == "incluir"){
+				if ($objParam->exec == "incluir") {
+
 					$clsau_lotepront->sql_record( $clsau_lotepront->sql_query("","*","", "sd59_i_prontuario = {$objParam->sd24_i_codigo}"));
 					$clsau_lotepront->sd59_i_lote       = $objParam->sd58_i_codigo;
 					$clsau_lotepront->sd59_i_prontuario = $objParam->sd24_i_codigo;
-					if(	$clsau_lotepront->numrows == 0 ){
+					if (	$clsau_lotepront->numrows == 0 ) {
+
 						$clsau_lotepront->incluir(null);
-						if( $clsau_lotepront->numrows_incluir == 0){
+						if ( $clsau_lotepront->numrows_incluir == 0) {
+
 							$objRetorno->status  = 2;
 							$objRetorno->message = urlencode( $clsau_lotepront->erro_msg );
 						}
 					}
 				}
-			}else{
+
+			} else {
+
 				$objRetorno->status  = 2;
-				$objRetorno->message = urlencode( $clcgs_und->erro_msg );
+				$objRetorno->message = urlencode( $clprontuarios->erro_msg );
 			}
-		}else{
-			$objRetorno->status  = 2;
-			$objRetorno->message = urlencode( $clprontuarios->erro_msg );
 		}
 	}
 

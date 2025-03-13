@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -48,12 +48,12 @@ class cl_rhpesdoc {
    var $rh16_secaoe = null; 
    var $rh16_reserv = null; 
    var $rh16_catres = null; 
-   var $rh16_ctps_n = 0; 
+   var $rh16_ctps_n = null; 
    var $rh16_ctps_s = 0; 
    var $rh16_ctps_d = 0; 
    var $rh16_ctps_uf = null; 
    var $rh16_pis = null; 
-   var $rh16_carth_n = 0; 
+   var $rh16_carth_n = null; 
    var $r16_carth_cat = null; 
    var $rh16_carth_val_dia = null; 
    var $rh16_carth_val_mes = null; 
@@ -63,6 +63,17 @@ class cl_rhpesdoc {
    var $rh16_emissao_mes = null; 
    var $rh16_emissao_ano = null; 
    var $rh16_emissao = null; 
+   var $rh16_data_emissao_cnh = null;
+   var $rh16_orgao_classe = null;
+   var $rh16_data_orgao_classe = null;
+   var $rh16_orgao_emissor_classe = null;
+   var $rh16_orgao_emissor_rne = null;
+   var $rh16_data_emissao_rne = null;
+   var $rh16_data_entrada_rne = null;
+   var $rh16_data_validade_rne = null;
+   var $rh16_uf_cnh = null;
+   var $rh16_data_validade_orgao_classe = null;
+   var $rh16_registro_rne = null;
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  rh16_regist = int4 = Matrícula 
@@ -80,6 +91,17 @@ class cl_rhpesdoc {
                  r16_carth_cat = varchar(3) = Categoria 
                  rh16_carth_val = date = Validade 
                  rh16_emissao = date = Data de emissão 
+                 rh16_data_emissao_cnh = date = Data de Emissao da CNH
+                 rh16_orgao_classe = varchar(15) = Registro de Órgão de Classe
+                 rh16_data_orgao_classe = date = Data de Órgão de Classe
+                 rh16_orgao_emissor_classe = varchar(15) = Órgão Emissor da Classe 
+                 rh16_orgao_emissor_rne = varchar(15) = Órgão Emissor da RNE
+                 rh16_data_emissao_rne = date = Data de Emissão da RNE
+                 rh16_data_entrada_rne = date = Data de Entrada no País
+                 rh16_data_validade_rne = date = Data de Validade da RNE
+                 rh16_uf_cnh = varchar(2) = UF da CNH
+                 rh16_data_validade_orgao_classe = date = Data de Validade do Órgão de Classe
+                 rh16_registro_rne = varchar(15) Registro da RNE
                  ";
    //funcao construtor da classe 
    function cl_rhpesdoc() { 
@@ -112,6 +134,11 @@ class cl_rhpesdoc {
        $this->rh16_pis = ($this->rh16_pis == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_pis"]:$this->rh16_pis);
        $this->rh16_carth_n = ($this->rh16_carth_n == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_carth_n"]:$this->rh16_carth_n);
        $this->r16_carth_cat = ($this->r16_carth_cat == ""?@$GLOBALS["HTTP_POST_VARS"]["r16_carth_cat"]:$this->r16_carth_cat);
+       $this->rh16_orgao_classe = ($this->rh16_orgao_classe == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_orgao_classe"]:$this->rh16_orgao_classe);
+       $this->rh16_orgao_emissor_classe = ($this->rh16_orgao_emissor_classe == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_orgao_emissor_classe"]:$this->rh16_orgao_emissor_classe);
+       $this->rh16_orgao_emissor_rne = ($this->rh16_orgao_emissor_rne == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_orgao_emissor_rne"]:$this->rh16_orgao_emissor_rne);
+       $this->rh16_uf_cnh = ($this->rh16_uf_cnh == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_uf_cnh"]:$this->rh16_uf_cnh);
+       $this->rh16_registro_rne = ($this->rh16_registro_rne == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_registro_rne"]:$this->rh16_registro_rne);
        if($this->rh16_carth_val == ""){
          $this->rh16_carth_val_dia = ($this->rh16_carth_val_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_carth_val_dia"]:$this->rh16_carth_val_dia);
          $this->rh16_carth_val_mes = ($this->rh16_carth_val_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_carth_val_mes"]:$this->rh16_carth_val_mes);
@@ -128,6 +155,55 @@ class cl_rhpesdoc {
             $this->rh16_emissao = $this->rh16_emissao_ano."-".$this->rh16_emissao_mes."-".$this->rh16_emissao_dia;
          }
        }
+       if($this->rh16_data_emissao_cnh == ""){
+        $this->rh16_data_emissao_cnh_dia = ($this->rh16_data_emissao_cnh_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_cnh_dia"]:$this->rh16_data_emissao_cnh_dia);
+        $this->rh16_data_emissao_cnh_mes = ($this->rh16_data_emissao_cnh_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_cnh_mes"]:$this->rh16_data_emissao_cnh_mes);
+        $this->rh16_data_emissao_cnh_ano = ($this->rh16_data_emissao_cnh_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_cnh_ano"]:$this->rh16_data_emissao_cnh_ano);
+        if($this->rh16_data_emissao_cnh_dia != ""){
+           $this->rh16_data_emissao_cnh = $this->rh16_data_emissao_cnh_ano."-".$this->rh16_data_emissao_cnh_mes."-".$this->rh16_data_emissao_cnh_dia;
+        }
+      }
+      if($this->rh16_data_orgao_classe == ""){
+        $this->rh16_data_orgao_classe_dia = ($this->rh16_data_orgao_classe_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_orgao_classe_dia"]:$this->rh16_data_orgao_classe_dia);
+        $this->rh16_data_orgao_classe_mes = ($this->rh16_data_orgao_classe_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_orgao_classe_mes"]:$this->rh16_data_orgao_classe_mes);
+        $this->rh16_data_orgao_classe_ano = ($this->rh16_data_orgao_classe_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_orgao_classe_ano"]:$this->rh16_data_orgao_classe_ano);
+        if($this->rh16_data_orgao_classe_dia != ""){
+           $this->rh16_data_orgao_classe = $this->rh16_data_orgao_classe_ano."-".$this->rh16_data_orgao_classe_mes."-".$this->rh16_data_orgao_classe_dia;
+        }
+      }
+      if($this->rh16_data_emissao_rne == ""){
+        $this->rh16_data_emissao_rne_dia = ($this->rh16_data_emissao_rne_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_rne_dia"]:$this->rh16_data_emissao_rne_dia);
+        $this->rh16_data_emissao_rne_mes = ($this->rh16_data_emissao_rne_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_rne_mes"]:$this->rh16_data_emissao_rne_mes);
+        $this->rh16_data_emissao_rne_ano = ($this->rh16_data_emissao_rne_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_rne_ano"]:$this->rh16_data_emissao_rne_ano);
+        if($this->rh16_data_emissao_rne_dia != ""){
+           $this->rh16_data_emissao_rne = $this->rh16_data_emissao_rne_ano."-".$this->rh16_data_emissao_rne_mes."-".$this->rh16_data_emissao_rne_dia;
+        }
+      }
+      if($this->rh16_data_entrada_rne == ""){
+        $this->rh16_data_entrada_rne_dia = ($this->rh16_data_entrada_rne_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_entrada_rne_dia"]:$this->rh16_data_entrada_rne_dia);
+        $this->rh16_data_entrada_rne_mes = ($this->rh16_data_entrada_rne_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_entrada_rne_mes"]:$this->rh16_data_entrada_rne_mes);
+        $this->rh16_data_entrada_rne_ano = ($this->rh16_data_entrada_rne_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_entrada_rne_ano"]:$this->rh16_data_entrada_rne_ano);
+        if($this->rh16_data_entrada_rne_dia != ""){
+           $this->rh16_data_entrada_rne = $this->rh16_data_entrada_rne_ano."-".$this->rh16_data_entrada_rne_mes."-".$this->rh16_data_entrada_rne_dia;
+        }
+      }
+      if($this->rh16_data_validade_rne == ""){
+        $this->rh16_data_validade_rne_dia = ($this->rh16_data_validade_rne_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_rne_dia"]:$this->rh16_data_validade_rne_dia);
+        $this->rh16_data_validade_rne_mes = ($this->rh16_data_validade_rne_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_rne_mes"]:$this->rh16_data_validade_rne_mes);
+        $this->rh16_data_validade_rne_ano = ($this->rh16_data_validade_rne_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_rne_ano"]:$this->rh16_data_validade_rne_ano);
+        if($this->rh16_data_validade_rne_dia != ""){
+           $this->rh16_data_validade_rne = $this->rh16_data_validade_rne_ano."-".$this->rh16_data_validade_rne_mes."-".$this->rh16_data_validade_rne_dia;
+        }
+      }
+
+      if($this->rh16_data_validade_orgao_classe == ""){
+        $this->rh16_data_validade_orgao_classe_dia = ($this->rh16_data_validade_orgao_classe_dia == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_orgao_classe_dia"]:$this->rh16_data_validade_orgao_classe_dia);
+        $this->rh16_data_validade_orgao_classe_mes = ($this->rh16_data_validade_orgao_classe_mes == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_orgao_classe_mes"]:$this->rh16_data_validade_orgao_classe_mes);
+        $this->rh16_data_validade_orgao_classe_ano = ($this->rh16_data_validade_orgao_classe_ano == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_orgao_classe_ano"]:$this->rh16_data_validade_orgao_classe_ano);
+        if($this->rh16_data_validade_orgao_classe_dia != ""){
+           $this->rh16_data_validade_orgao_classe = $this->rh16_data_validade_orgao_classe_ano."-".$this->rh16_data_validade_orgao_classe_mes."-".$this->rh16_data_validade_orgao_classe_dia;
+        }
+      }
      }else{
        $this->rh16_regist = ($this->rh16_regist == ""?@$GLOBALS["HTTP_POST_VARS"]["rh16_regist"]:$this->rh16_regist);
      }
@@ -145,7 +221,7 @@ class cl_rhpesdoc {
        $this->rh16_ctps_d = "0";
      }
      if($this->rh16_carth_n == null ){ 
-       $this->rh16_carth_n = "0";
+       $this->rh16_carth_n = "";
      }
      if($this->rh16_carth_val == null ){ 
        $this->rh16_carth_val = "null";
@@ -153,7 +229,41 @@ class cl_rhpesdoc {
      if($this->rh16_emissao == null ){ 
        $this->rh16_emissao = "null";
      }
-       $this->rh16_regist = $rh16_regist; 
+     if($this->rh16_data_emissao_cnh == null ){ 
+      $this->rh16_data_emissao_cnh = "null";
+    }
+    if($this->rh16_orgao_classe == null ){ 
+      $this->rh16_orgao_classe = "0";
+    }
+    if($this->rh16_data_orgao_classe == null ){ 
+      $this->rh16_data_orgao_classe = "null";
+    }
+    if($this->rh16_orgao_emissor_classe == null ){ 
+      $this->rh16_orgao_emissor_classe = "0";
+    }
+    if($this->rh16_orgao_emissor_rne == null ){ 
+      $this->rh16_orgao_emissor_rne = "0";
+    }
+    if($this->rh16_data_emissao_rne == null ){ 
+      $this->rh16_data_emissao_rne = "null";
+    }
+    if($this->rh16_data_entrada_rne == null ){ 
+      $this->rh16_data_entrada_rne = "null";
+    }
+    if($this->rh16_data_validade_rne == null ){ 
+      $this->rh16_data_validade_rne = "null";
+    }
+    if($this->rh16_uf_chn == null ){ 
+      $this->rh16_uf_chn = "0";
+    }
+    if($this->rh16_data_validade_orgao_classe == null ){ 
+      $this->rh16_data_validade_orgao_classe = "null";
+    }
+    if($this->rh16_registro_rne == null ){ 
+      $this->rh16_registro_rne = "null";
+    }
+
+    $this->rh16_regist = $rh16_regist; 
      if(($this->rh16_regist == null) || ($this->rh16_regist == "") ){ 
        $this->erro_sql = " Campo rh16_regist nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
@@ -178,23 +288,45 @@ class cl_rhpesdoc {
                                       ,r16_carth_cat 
                                       ,rh16_carth_val 
                                       ,rh16_emissao 
+                                      ,rh16_data_emissao_cnh
+                                      ,rh16_orgao_classe
+                                      ,rh16_data_orgao_classe 
+                                      ,rh16_orgao_emissor_classe
+                                      ,rh16_orgao_emissor_rne 
+                                      ,rh16_data_emissao_rne
+                                      ,rh16_data_entrada_rne 
+                                      ,rh16_data_validade_rne
+                                      ,rh16_uf_cnh
+                                      ,rh16_data_validade_orgao_classe
+                                      ,rh16_registro_rne 
                        )
                 values (
-                                $this->rh16_regist 
+                                 $this->rh16_regist 
                                ,'$this->rh16_titele' 
                                ,'$this->rh16_zonael' 
                                ,'$this->rh16_secaoe' 
                                ,'$this->rh16_reserv' 
                                ,'$this->rh16_catres' 
-                               ,$this->rh16_ctps_n 
-                               ,$this->rh16_ctps_s 
-                               ,$this->rh16_ctps_d 
+                                ,'$this->rh16_ctps_n' 
+                                ,$this->rh16_ctps_s 
+                                ,$this->rh16_ctps_d 
                                ,'$this->rh16_ctps_uf' 
                                ,'$this->rh16_pis' 
-                               ,$this->rh16_carth_n 
+                                ,'$this->rh16_carth_n' 
                                ,'$this->r16_carth_cat' 
                                ,".($this->rh16_carth_val == "null" || $this->rh16_carth_val == ""?"null":"'".$this->rh16_carth_val."'")." 
                                ,".($this->rh16_emissao == "null" || $this->rh16_emissao == ""?"null":"'".$this->rh16_emissao."'")." 
+                               ,".($this->rh16_data_emissao_cnh == "null" || $this->rh16_data_emissao_cnh == ""?"null":"'".$this->rh16_data_emissao_cnh."'")." 
+                               ,'$this->rh16_orgao_classe'
+                               ,".($this->rh16_data_orgao_classe == "null" || $this->rh16_data_orgao_classe == ""?"null":"'".$this->rh16_data_orgao_classe."'")." 
+                               ,'$this->rh16_orgao_emissor_classe'
+                               ,'$this->rh16_orgao_emissor_rne' 
+                               ,".($this->rh16_data_emissao_rne == "null" || $this->rh16_data_emissao_rne == ""?"null":"'".$this->rh16_data_emissao_rne."'")." 
+                               ,".($this->rh16_data_entrada_rne == "null" || $this->rh16_data_entrada_rne == ""?"null":"'".$this->rh16_data_entrada_rne."'")." 
+                               ,".($this->rh16_data_validade_rne == "null" || $this->rh16_data_validade_rne == ""?"null":"'".$this->rh16_data_validade_rne."'")."
+                               ,'$this->rh16_uf_cnh'
+                               ,".($this->rh16_data_validade_orgao_classe == "null" || $this->rh16_data_validade_orgao_classe == ""?"null":"'".$this->rh16_data_validade_orgao_classe."'")."
+                               ,'$this->rh16_registro_rne'
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -246,6 +378,18 @@ class cl_rhpesdoc {
          $resac = db_query("insert into db_acount values($acount,1168,7082,'','".AddSlashes(pg_result($resaco,0,'r16_carth_cat'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1168,7083,'','".AddSlashes(pg_result($resaco,0,'rh16_carth_val'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1168,20252,'','".AddSlashes(pg_result($resaco,0,'rh16_emissao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013775,'','".AddSlashes(pg_result($resaco,0,'rh16_data_emissao_cnh'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013776,'','".AddSlashes(pg_result($resaco,0,'rh16_orgao_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013777,'','".AddSlashes(pg_result($resaco,0,'rh16_data_orgao_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013778,'','".AddSlashes(pg_result($resaco,0,'rh16_orgao_emissor_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013779,'','".AddSlashes(pg_result($resaco,0,'rh16_orgao_emissor_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013780,'','".AddSlashes(pg_result($resaco,0,'rh16_data_emissao_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013781,'','".AddSlashes(pg_result($resaco,0,'rh16_data_entrada_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013782,'','".AddSlashes(pg_result($resaco,0,'rh16_data_validade_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013792,'','".AddSlashes(pg_result($resaco,0,'rh16_uf_cnh'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013793,'','".AddSlashes(pg_result($resaco,0,'rh16_data_validade_orgao_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1168,1013794,'','".AddSlashes(pg_result($resaco,0,'rh16_registro_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+
        }
      }
      return true;
@@ -292,7 +436,7 @@ class cl_rhpesdoc {
         if(trim($this->rh16_ctps_n)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh16_ctps_n"])){ 
            $this->rh16_ctps_n = "0" ; 
         } 
-       $sql  .= $virgula." rh16_ctps_n = $this->rh16_ctps_n ";
+       $sql  .= $virgula." rh16_ctps_n = '$this->rh16_ctps_n' ";
        $virgula = ",";
      }
      if(trim($this->rh16_ctps_s)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_ctps_s"])){ 
@@ -318,10 +462,7 @@ class cl_rhpesdoc {
        $virgula = ",";
      }
      if(trim($this->rh16_carth_n)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_carth_n"])){ 
-        if(trim($this->rh16_carth_n)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh16_carth_n"])){ 
-           $this->rh16_carth_n = "0" ; 
-        } 
-       $sql  .= $virgula." rh16_carth_n = $this->rh16_carth_n ";
+       $sql  .= $virgula." rh16_carth_n = '$this->rh16_carth_n' ";
        $virgula = ",";
      }
      if(trim($this->r16_carth_cat)!="" || isset($GLOBALS["HTTP_POST_VARS"]["r16_carth_cat"])){ 
@@ -346,6 +487,80 @@ class cl_rhpesdoc {
          $virgula = ",";
        }
      }
+     if(trim($this->rh16_data_emissao_cnh)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_cnh_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_cnh_dia"] !="") ){ 
+      $sql  .= $virgula." rh16_data_emissao_cnh = '$this->rh16_data_emissao_cnh' ";
+      $virgula = ",";
+    }     else{ 
+      if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_cnh_dia"])){ 
+        $sql  .= $virgula." rh16_data_emissao_cnh = null ";
+        $virgula = ",";
+      }
+    }
+    if(trim($this->rh16_orgao_classe)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_orgao_classe"])){ 
+      $sql  .= $virgula." rh16_orgao_classe = '$this->rh16_orgao_classe' ";
+      $virgula = ",";
+    }
+    if(trim($this->rh16_data_orgao_classe)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_orgao_classe_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh16_data_orgao_classe_dia"] !="") ){ 
+      $sql  .= $virgula." rh16_data_orgao_classe = '$this->rh16_data_orgao_classe' ";
+      $virgula = ",";
+    }     else{ 
+      if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_orgao_classe_dia"])){ 
+        $sql  .= $virgula." rh16_data_orgao_classe = null ";
+        $virgula = ",";
+      }
+    }
+    if(trim($this->rh16_orgao_emissor_classe)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_orgao_emissor_classe"])){ 
+      $sql  .= $virgula." rh16_orgao_emissor_classe = '$this->rh16_orgao_emissor_classe' ";
+      $virgula = ",";
+    }
+    if(trim($this->rh16_orgao_emissor_rne)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_orgao_emissor_rne"])){ 
+      $sql  .= $virgula." rh16_orgao_emissor_rne = '$this->rh16_orgao_emissor_rne' ";
+      $virgula = ",";
+    }
+    if(trim($this->rh16_data_emissao_rne)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_rne_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_rne_dia"] !="") ){ 
+      $sql  .= $virgula." rh16_data_emissao_rne = '$this->rh16_data_emissao_rne' ";
+      $virgula = ",";
+    }     else{ 
+      if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_rne_dia"])){ 
+        $sql  .= $virgula." rh16_data_emissao_rne = null ";
+        $virgula = ",";
+      }
+    }
+    if(trim($this->rh16_data_entrada_rne)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_entrada_rne_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh16_data_entrada_rne_dia"] !="") ){ 
+      $sql  .= $virgula." rh16_data_entrada_rne = '$this->rh16_data_entrada_rne' ";
+      $virgula = ",";
+    }     else{ 
+      if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_entrada_rne_dia"])){ 
+        $sql  .= $virgula." rh16_data_entrada_rne = null ";
+        $virgula = ",";
+      }
+    }      
+    if(trim($this->rh16_data_validade_rne)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_rne_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_rne_dia"] !="") ){ 
+      $sql  .= $virgula." rh16_data_validade_rne = '$this->rh16_data_validade_rne' ";
+      $virgula = ",";
+    }     else{ 
+      if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_rne_dia"])){ 
+        $sql  .= $virgula." rh16_data_validade_rne = null ";
+        $virgula = ",";
+      }
+    }
+    if(trim($this->rh16_uf_cnh)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_uf_cnh"])){ 
+      $sql  .= $virgula." rh16_uf_cnh = '$this->rh16_uf_cnh' ";
+      $virgula = ",";
+    }
+    if(trim($this->rh16_data_validade_orgao_classe)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_orgao_classe_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_orgao_classe_dia"] !="") ){ 
+      $sql  .= $virgula." rh16_data_validade_orgao_classe = '$this->rh16_data_validade_orgao_classe' ";
+      $virgula = ",";
+    }     else{ 
+      if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_orgao_classe_dia"])){ 
+        $sql  .= $virgula." rh16_data_validade_orgao_classe = null ";
+        $virgula = ",";
+      }
+    }
+    if(trim($this->rh16_registro_rne)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh16_registro_rne"])){ 
+      $sql  .= $virgula." rh16_registro_rne = '$this->rh16_registro_rne' ";
+      $virgula = ",";
+    }
      $sql .= " where ";
      if($rh16_regist!=null){
        $sql .= " rh16_regist = $this->rh16_regist";
@@ -393,6 +608,28 @@ class cl_rhpesdoc {
              $resac = db_query("insert into db_acount values($acount,1168,7083,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_carth_val'))."','$this->rh16_carth_val',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_emissao"]) || $this->rh16_emissao != "")
              $resac = db_query("insert into db_acount values($acount,1168,20252,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_emissao'))."','$this->rh16_emissao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_cnh"]) || $this->rh16_data_emissao_cnh != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013775,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_data_emissao_cnh'))."','$this->rh16_data_emissao_cnh',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_orgao_classe"]) || $this->rh16_orgao_classe != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013776,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_orgao_classe'))."','$this->rh16_orgao_classe',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_orgao_classe"]) || $this->rh16_data_orgao_classe != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013777,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_data_orgao_classe'))."','$this->rh16_data_orgao_classe',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_orgao_emissor_classe"]) || $this->rh16_orgao_emissor_classe != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013778,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_orgao_emissor_classe'))."','$this->rh16_orgao_emissor_classe',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_orgao_emissor_rne"]) || $this->rh16_orgao_emissor_rne != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013779,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_orgao_emissor_rne'))."','$this->rh16_orgao_emissor_rne',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_emissao_rne"]) || $this->rh16_data_emissao_rne != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013780,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_data_emissao_rne'))."','$this->rh16_data_emissao_rne',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_entrada_rne"]) || $this->rh16_data_entrada_rne != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013781,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_data_entrada_rne'))."','$this->rh16_data_entrada_rne',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_rne"]) || $this->rh16_data_validade_rne != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013782,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_data_validade_rne'))."','$this->rh16_data_validade_rne',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_uf_cnh"]) || $this->rh16_uf_cnh != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013792,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_uf_cnh'))."','$this->rh16_uf_cnh',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_data_validade_orgao_classe"]) || $this->rh16_data_validade_orgao_classe != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013793,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_data_validade_orgao_classe'))."','$this->rh16_data_validade_orgao_classe',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if(isset($GLOBALS["HTTP_POST_VARS"]["rh16_regsitro_rne"]) || $this->rh16_regsitro_rne != "")
+             $resac = db_query("insert into db_acount values($acount,1168,1013794,'".AddSlashes(pg_result($resaco,$conresaco,'rh16_regsitro_rne'))."','$this->rh16_regsitro_rne',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
@@ -447,23 +684,34 @@ class cl_rhpesdoc {
 
            $resac  = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
-           $resac  = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-           $resac  = db_query("insert into db_acountkey values($acount,7070,'$rh16_regist','E')");
-           $resac  = db_query("insert into db_acount values($acount,1168,7070,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_regist'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7071,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_titele'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7072,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_zonael'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7073,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_secaoe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7074,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_reserv'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7075,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_catres'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7076,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_ctps_n'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7077,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_ctps_s'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7078,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_ctps_d'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7079,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_ctps_uf'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7080,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_pis'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7081,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_carth_n'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7082,'','".AddSlashes(pg_result($resaco,$iresaco,'r16_carth_cat'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,7083,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_carth_val'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           $resac  = db_query("insert into db_acount values($acount,1168,20252,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_emissao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac = db_query("insert into db_acountkey values($acount,7070,'$rh16_regist','E')");
+           $resac = db_query("insert into db_acount values($acount,1168,7070,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_regist'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7071,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_titele'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7072,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_zonael'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7073,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_secaoe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7074,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_reserv'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7075,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_catres'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7076,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_ctps_n'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7077,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_ctps_s'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7078,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_ctps_d'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7079,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_ctps_uf'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7080,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_pis'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7081,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_carth_n'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7082,'','".AddSlashes(pg_result($resaco,$iresaco,'r16_carth_cat'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,7083,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_carth_val'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,20252,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_emissao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013775,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_data_emissao_cnh'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013776,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_orgao_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013777,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_data_orgao_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013778,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_orgao_emissor_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013779,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_orgao_emissor_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013780,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_data_emissao_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013781,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_data_entrada_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013782,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_data_validade_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013792,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_uf_cnh'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013793,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_data_validade_orgao_classe'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1168,1013794,'','".AddSlashes(pg_result($resaco,$iresaco,'rh16_data_registro_rne'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
@@ -680,5 +928,92 @@ class cl_rhpesdoc {
      }
      return $sql;
   }
+
+  function sql_query_pessoal ( $rh16_regist=null,$campos="*",$ordem=null,$dbwhere=""){
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from rhpesdoc ";
+    $sql .= "      inner join rhpessoal on rh01_regist = rh16_regist";
+    $sql2 = "";
+    if($dbwhere==""){
+      if($rh16_regist!=null ){
+        $sql2 .= " where rhpesdoc.rh16_regist = $rh16_regist ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+  }
+
+  function sql_query_pessoal_res ( $rh16_regist=null,$campos="*",$ordem=null,$dbwhere=""){
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = split("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+
+
+    $sql .= " from rhpesdoc ";
+    $sql .= "      inner join rhpessoal on rh01_regist = rh16_regist ";
+
+    $sql .= "      inner join rhpessoalmov  on rhpessoalmov.rh02_anousu = ".DBPessoal::getCompetenciaFolha()->getAno()."
+                               					    and rhpessoalmov.rh02_mesusu = ".DBPessoal::getCompetenciaFolha()->getMes()."
+                                            and rhpessoalmov.rh02_regist = rhpesdoc.rh16_regist
+																						and rhpessoalmov.rh02_instit = ".db_getsession("DB_instit")." ";
+
+    $sql .= "      left join rhpesrescisao on rh05_seqpes = rh02_seqpes ";
+
+
+    $sql2 = " where rh05_seqpes is null ";
+
+    if($dbwhere==""){
+      if($rh16_regist!=null ){
+        $sql2 .= " and rhpesdoc.rh16_regist = $rh16_regist ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 .= " and $dbwhere ";
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = split("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+  }
+
+
+
+
+
+
 }
-?>

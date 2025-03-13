@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 define('PASSIVO_SEM_SUPORTE_ORCAMENTARIO', 1);
 define('ACORDOS',                          2);
@@ -324,7 +324,7 @@ function js_processar() {
 function js_retornoProcessar(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode();
 
   /**
@@ -471,7 +471,7 @@ function js_buscarEmpenho(lMostra) {
 
   if ( lMostra ) {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_empempenho',
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_empempenho',
                         'func_empempenho.php?funcao_js=parent.js_retornoBuscaEmpenhoAncora|e60_numemp|e60_codemp|z01_nome',
                         'Pesquisa',true);
     return true;
@@ -487,7 +487,7 @@ function js_buscarEmpenho(lMostra) {
       sParametroAnoEmpenho = '&iAnoEmpenho=' + aCodigoEmpenho[1];
     }
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_empempenho',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho',
                         'func_empempenho.php?lPesquisaPorCodigoEmpenho=true' + sParametroAnoEmpenho +
                         '&pesquisa_chave=' + iCodigoEmpenho +
                         '&funcao_js=parent.js_retornoBuscaEmpenhoInput',
@@ -541,7 +541,7 @@ function js_buscarAcordo(lMostra) {
 
   if ( lMostra ) {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_acordo',
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_acordo',
                         'func_acordo.php?lLancamento=true&funcao_js=parent.js_retornoBuscaAcordoAncora|ac16_sequencial|ac16_resumoobjeto',
                         'Pesquisa',true);
     return true;
@@ -549,7 +549,7 @@ function js_buscarAcordo(lMostra) {
 
   if ( $F('ac16_sequencial') != '' ) {
 
-    js_OpenJanelaIframe('top.corpo','db_iframe_acordo',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_acordo',
                         'func_acordo.php?pesquisa_chave=' + $F('ac16_sequencial') + '&descricao=true&lLancamento=true&funcao_js=parent.js_retornoBuscaAcordoInput',
                         'Pesquisa', false);
   }
@@ -600,7 +600,7 @@ function js_buscarPassivo(lMostra) {
 
   if ( lMostra ) {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_conlancaminscricaopassivo',
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_conlancaminscricaopassivo',
                         'func_conlancaminscricaopassivo.php?funcao_js=parent.js_retornoBuscaPassivoAncora|c37_inscricaopassivo|z01_nome',
                         'Pesquisa',true);
     return true;
@@ -608,7 +608,7 @@ function js_buscarPassivo(lMostra) {
 
   if ( $F('c36_sequencial') != '' ) {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_conlancaminscricaopassivo',
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_conlancaminscricaopassivo',
                         'func_conlancaminscricaopassivo.php?pesquisa_chave=' + $F('c36_sequencial') + '&descricao=true&funcao_js=parent.js_retornoBuscaPassivoInput&lRetornoCgm=true',
                         'Pesquisa', false);
   }

@@ -7,6 +7,7 @@
   "numero_obrigatorio"                               : "Campo Número é de preenchimento obrigatório",
   "bairro_obrigatorio"                               : "Campo Cód. do Bairro é de preenchimento obrigatório",
   "cep_obrigatorio"                                  : "Campo CEP é de preenchimento obrigatório",
+  "protocolo_obrigatorio"                            : "Campo Código do Processo é de preenchimento obrigatório",
   "erro_incluir_empreendimento"                      : "Erro ao incluir registro de Empreendimento.",
   "sucesso_cadastrar_empreendimento"                 : "Inclusão de Empreendimento realizado com sucesso!",
   "sucesso_alterar_empreendimento"                   : "Alteração de Empreendimento realizado com sucesso!",

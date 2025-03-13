@@ -38,15 +38,15 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Recursos necessários a esta página
 ///////////////////////////////////////////////////////////////////////////////////////
-  require("libs/db_stdlib.php");
+  require(modification("libs/db_stdlib.php"));
 
-  require("libs/db_conecta.php");
+  require(modification("libs/db_conecta.php"));
 
-  include("libs/db_sessoes.php");
+  include(modification("libs/db_sessoes.php"));
 
-  include("libs/db_usuariosonline.php");
+  include(modification("libs/db_usuariosonline.php"));
 
-  include ("dbforms/db_funcoes.php") ;
+  include(modification("dbforms/db_funcoes.php")) ;
   
   db_postmemory($HTTP_SERVER_VARS);
   db_postmemory($HTTP_POST_VARS);
@@ -57,7 +57,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
   db_getsession(); 
 
-  $resultPesquisaNome = pg_exec("select nome from db_usuarios where id_usuario = $DB_id_usuario");
+  $resultPesquisaNome = db_query("select nome from db_usuarios where id_usuario = $DB_id_usuario");
 
   $nomeUsuario = pg_result($resultPesquisaNome,0,0);
 
@@ -159,7 +159,7 @@
 			  ";
 			  
 	}
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 
  	$num = pg_numrows($result);
 
@@ -194,7 +194,7 @@
 
   $ordemAtual = pg_result($result,$i,"codordem");  // Variável utilizada para verificar se a ordem foi finalizada ou não
 
-  $verificaSituacao = pg_exec("select codordem from db_ordemfim where codordem = $ordemAtual limit 1");
+  $verificaSituacao = db_query("select codordem from db_ordemfim where codordem = $ordemAtual limit 1");
 
   $numItemsEncontrados = pg_numrows($verificaSituacao);
 
@@ -245,7 +245,7 @@
 //    Esta é a parte dá pagina que mostra a ordem de serviço esolhida.
 ///////////////////////////////////////////////////////////////////////////////////////
   } else if (isset($numOrdem)) { 
-    $pesquisaDadosOrdem = pg_exec("select o.dtrecebe,o.codordem, to_char(o.dataordem,'DD/MM/YYYY') as dataordem, o.descricao, o.id_usuario, o.usureceb, o.coddepto, to_char(o.dataprev,'DD/MM/YYYY') as dataprev, u.nome as nomeDestinatario, r.nome as nomeUsuario,  d.descrdepto
+    $pesquisaDadosOrdem = db_query("select o.dtrecebe,o.codordem, to_char(o.dataordem,'DD/MM/YYYY') as dataordem, o.descricao, o.id_usuario, o.usureceb, o.coddepto, to_char(o.dataprev,'DD/MM/YYYY') as dataprev, u.nome as nomeDestinatario, r.nome as nomeUsuario,  d.descrdepto
 	                               from db_ordem o 
 			                       inner join db_usuarios u on u.id_usuario = o.usureceb
 								   inner join db_usuarios r on r.id_usuario = o.id_usuario
@@ -300,7 +300,7 @@
 
 
 <?
-  $selecionaAndamento = pg_exec("select o.id_usuario, o.codandam, o.codordem, o.descricao,
+  $selecionaAndamento = db_query("select o.id_usuario, o.codandam, o.codordem, o.descricao,
 								 to_char(o.dtini,'DD/MM/YYYY') as datainicial, 
 								 to_char(o.dtfim,'DD/MM/YYYY') as datafinal, u.nome
                                  from db_ordemandam o
@@ -420,9 +420,9 @@
 		    <select name="usuario1" onChange="document.form1.opcao[0].checked=true">
 		<?
 		if(db_getsession("DB_id_usuario") == "1") {
-		  $result = pg_exec("select id_usuario,nome,login from db_usuarios where usuarioativo = 1 and usuext = 0 order by lower(login)");
+		  $result = db_query("select id_usuario,nome,login from db_usuarios where usuarioativo = 1 and usuext = 0 order by lower(login)");
 		} else {
-		  $result = pg_exec("select u.id_usuario,u.nome,u.login,u.usuext 
+		  $result = db_query("select u.id_usuario,u.nome,u.login,u.usuext 
 					 from db_usuarios u
 							 inner join db_userinst i
 							 on i.id_usuario = u.id_usuario								   
@@ -447,9 +447,9 @@
 		    <select name="usuario2" onChange="document.form1.opcao[1].checked=true">
 		<?
 		if(db_getsession("DB_id_usuario") == "1") {
-		  $result = pg_exec("select id_usuario,nome,login from db_usuarios where usuarioativo = 1 and usuext = 0 order by lower(login)");
+		  $result = db_query("select id_usuario,nome,login from db_usuarios where usuarioativo = 1 and usuext = 0 order by lower(login)");
 		} else {
-		  $result = pg_exec("select u.id_usuario,u.nome,u.login,u.usuext 
+		  $result = db_query("select u.id_usuario,u.nome,u.login,u.usuext 
 					 from db_usuarios u
 							 inner join db_userinst i
 							 on i.id_usuario = u.id_usuario								   
@@ -474,9 +474,9 @@
 		    <select name="usuario" onChange="document.form1.opcao[2].checked=true">
 		<?
 		if(db_getsession("DB_id_usuario") == "1") {
-		  $result = pg_exec("select id_usuario,nome,login from db_usuarios where usuarioativo = 1 and usuext = 0 order by lower(login)");
+		  $result = db_query("select id_usuario,nome,login from db_usuarios where usuarioativo = 1 and usuext = 0 order by lower(login)");
 		} else {
-		  $result = pg_exec("select u.id_usuario,u.nome,u.login,u.usuext 
+		  $result = db_query("select u.id_usuario,u.nome,u.login,u.usuext 
 					 from db_usuarios u
 							 inner join db_userinst i
 							 on i.id_usuario = u.id_usuario								   

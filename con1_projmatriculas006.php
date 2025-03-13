@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_iptubase_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptubase_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cliptubase = new cl_iptubase;
@@ -57,7 +57,7 @@ db_fieldsmemory($result,0);
 	from lote
 		inner join testada on j36_idbql=j34_idbql 
 	where j34_setor='$j34_setor' and j34_quadra='$j34_quadra' and j34_lote='$j34_lote'";
-  $resi=pg_query($sql) or die($sql);	
+  $resi=db_query($sql) or die($sql);	
 	if (pg_numrows($resi) == 0) {
 		$cliptubase->erro(true,false);
 		exit;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-include("fpdf151/pdfwebseller.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_matriculamov_classe.php");
-include("classes/db_aluno_classe.php");
-include("classes/db_turma_classe.php");
-include("classes/db_alunoprimat_classe.php");
-include("classes/db_alunonecessidade_classe.php");
-include("classes/db_escola_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_regenciaperiodo_classe.php");
-include("classes/db_diarioavaliacao_classe.php");
-include("classes/db_procavaliacao_classe.php");
-include("classes/db_procresultado_classe.php");
-include("classes/db_histmpsdiscfora_classe.php");
-include("classes/db_histmpsdisc_classe.php");
-require_once("libs/db_utils.php");
-require_once("model/educacao/DBEducacaoTermo.model.php");
-require_once("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlibwebseller.php"));
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_matriculamov_classe.php"));
+include(modification("classes/db_aluno_classe.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_alunoprimat_classe.php"));
+include(modification("classes/db_alunonecessidade_classe.php"));
+include(modification("classes/db_escola_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_regenciaperiodo_classe.php"));
+include(modification("classes/db_diarioavaliacao_classe.php"));
+include(modification("classes/db_procavaliacao_classe.php"));
+include(modification("classes/db_procresultado_classe.php"));
+include(modification("classes/db_histmpsdiscfora_classe.php"));
+include(modification("classes/db_histmpsdisc_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/educacao/DBEducacaoTermo.model.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $resultedu           = eduparametros(db_getsession("DB_coddepto"));
 $permitenotaembranco = VerParametroNota(db_getsession("DB_coddepto"));
 $clmatricula         = new cl_matricula;

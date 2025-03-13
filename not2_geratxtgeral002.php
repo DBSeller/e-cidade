@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,24 +26,24 @@
  */
 
 set_time_limit ( 0 );
-require_once ("fpdf151/scpdf.php");
-require_once ("fpdf151/impcarne.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_sql.php");
-require_once ("libs/db_utils.php");
-require_once ("dbforms/db_layouttxt.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_db_config_classe.php");
-require_once ("classes/db_db_docparag_classe.php");
-require_once ("classes/db_arrematric_classe.php");
-require_once ("classes/db_conveniocobranca_classe.php");
-require_once ("classes/db_cadarrecadacao_classe.php");
-require_once ("classes/db_listadoc_classe.php");
-require_once ("classes/db_db_layouttxtgeracao_classe.php");
-require_once ("model/convenio.model.php");
-require_once ("model/regraEmissao.model.php");
-require_once ("model/recibo.model.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_db_docparag_classe.php"));
+require_once(modification("classes/db_arrematric_classe.php"));
+require_once(modification("classes/db_conveniocobranca_classe.php"));
+require_once(modification("classes/db_cadarrecadacao_classe.php"));
+require_once(modification("classes/db_listadoc_classe.php"));
+require_once(modification("classes/db_db_layouttxtgeracao_classe.php"));
+require_once(modification("model/convenio.model.php"));
+require_once(modification("model/regraEmissao.model.php"));
+require_once(modification("model/recibo.model.php"));
 
 parse_str ( $HTTP_SERVER_VARS ["QUERY_STRING"] );
 db_postmemory ( $HTTP_POST_VARS );
@@ -398,7 +398,7 @@ if ($modelo == 1) {
 	
 	$processados = 0;
 	
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "01" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "01" );
 	
 	$textotipo02 = "";
 	$textotipo03 = "";
@@ -421,8 +421,8 @@ if ($modelo == 1) {
 	
 	}
 	
-	db_separainstrucao ( $textotipo02, 0, &$cldb_layouttxr, 1, "02", 4, $quantidadegeral );
-	db_separainstrucao ( $textotipo03, 0, &$cldb_layouttxr, 1, "03", 3, $quantidadegeral );
+	db_separainstrucao ( $textotipo02, 0, $cldb_layouttxr, 1, "02", 4, $quantidadegeral );
+	db_separainstrucao ( $textotipo03, 0, $cldb_layouttxr, 1, "03", 3, $quantidadegeral );
 	
 	global $matricatual;
 	
@@ -600,12 +600,12 @@ if ($modelo == 1) {
 				$opcoesdepagamento .= $$nomevar . ($contador == pg_numrows ( $resulttipoparc ) - 1 ? "" : "|");
 			}
 			
-			db_separainstrucao ( $textotipo04, 0, &$cldb_layouttxr, 1, "04", 3, $quantidadegeral );
+			db_separainstrucao ( $textotipo04, 0, $cldb_layouttxr, 1, "04", 3, $quantidadegeral );
 			
-			db_separainstrucao ( $textotipo05, 0, &$cldb_layouttxr, 3, "05", 4, $quantidadegeral );
+			db_separainstrucao ( $textotipo05, 0, $cldb_layouttxr, 3, "05", 4, $quantidadegeral );
 			
 			$quantidadegeral ++;
-			db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 3, "11" );
+			db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 3, "11" );
 			
 			db_preparageratxt ( $lista );
 			
@@ -630,33 +630,33 @@ if ($modelo == 1) {
 	}
 	
 	$quantidaderegistros = $quantidadegeral;
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 5, "99" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 5, "99" );
 
 } elseif ($modelo == 2) {
 	
 	$identificacao = "0000";
 	$segmento = "A";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "A" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "A" );
 	$sequencialregistro ++;
 	
 	$identificacao = "0000";
 	$segmento = "B";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 2, "B" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 2, "B" );
 	$sequencialregistro ++;
 	
 	$identificacao = "0000";
 	$segmento = "C";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "C" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "C" );
 	$sequencialregistro ++;
 	
 	$identificacao = "0000";
 	$segmento = "D";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "D" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "D" );
 	$sequencialregistro ++;
 	
 	$identificacao = "0000";
 	$segmento = "E";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "E" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "E" );
 	$sequencialregistro ++;
 	
 	// segmento F
@@ -684,21 +684,21 @@ if ($modelo == 1) {
 	$mascaraidentobj = str_repeat ( "9", $tamanhoidentobj );
 	$titulocaractobj = "EXERCICIOS ENVOLVIDOS";
 	$segmento = "F";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "F" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "F" );
 	$sequencialregistro ++;
 	
 	$identificacao = "0001";
 	$numerocaractobj = 1;
 	$denominacaocaractobj = "INICIAL";
 	$segmento = "G";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "G" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "G" );
 	$sequencialregistro ++;
 	
 	$identificacao = "0002";
 	$numerocaractobj = 2;
 	$denominacaocaractobj = "FINAL";
 	$segmento = "G";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "G" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "G" );
 	$sequencialregistro ++;
 	
 	// primeira composicao
@@ -708,7 +708,7 @@ if ($modelo == 1) {
 	$descricaoreceita = "VALOR CORRIGIDO";
 	$valorpercentualaliq = 0;
 	$segmento = "K";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "K" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "K" );
 	$sequencialregistro ++;
 	
 	// segunda composicao
@@ -718,7 +718,7 @@ if ($modelo == 1) {
 	$descricaoreceita = "ENCARGOS";
 	$valorpercentualaliq = 0;
 	$segmento = "K";
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "K" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "K" );
 	$sequencialregistro ++;
 	
 	// segmento L
@@ -734,7 +734,7 @@ if ($modelo == 1) {
 		$incidenciapag = $anos;
 		$descontoconcedpag = 0;
 		$segmento = "L";
-		db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 1, "L" );
+		db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 1, "L" );
 		$sequencialregistro ++;
 	
 	}
@@ -849,7 +849,7 @@ if ($modelo == 1) {
 			$nomecartorio = "";
 			$identificacao = "0000";
 			$segmento = "S";
-			db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 3, "S" );
+			db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 3, "S" );
 			$sequencialregistro ++;
 			
 			$nomecontrib = $z01_nome;
@@ -876,7 +876,7 @@ if ($modelo == 1) {
 			$cod3ativcontrib = 0;
 			$identificacao = "0000";
 			$segmento = "T";
-			db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 3, "T" );
+			db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 3, "T" );
 			$sequencialregistro ++;
 			
 			// segmento U //
@@ -889,18 +889,18 @@ if ($modelo == 1) {
 			$aliq2rec = 0;
 			
 			$segmento = "U";
-			db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 3, "U" );
+			db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 3, "U" );
 			$sequencialregistro ++;
 			
 			$segmento = "V";
-			db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 3, "V" );
+			db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 3, "V" );
 			$sequencialregistro ++;
 			
 			$identificacao = "0000";
 			$conteudo1caract = $k22_exerc_ini;
 			$conteudo2caract = $k22_exerc_fim;
 			$segmento = "W";
-			db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 3, "W" );
+			db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 3, "W" );
 			$sequencialregistro ++;
 			
 			$mensagem1guia = "";
@@ -915,15 +915,15 @@ if ($modelo == 1) {
 				db_fieldsmemory ( $resultparag, $parag );
 				
 				if ($db02_descr == "MENSAGEM1") {
-					db_separainstrucao ( $db02_texto, 0, &$cldb_layouttxr, 3, "X", 4, 0 );
+					db_separainstrucao ( $db02_texto, 0, $cldb_layouttxr, 3, "X", 4, 0 );
 					$sequencialregistro ++;
 					$identificacao ++;
 				} elseif ($db02_descr == "MENSAGEM2") {
-					db_separainstrucao ( $db02_texto, 0, &$cldb_layouttxr, 3, "X", 4, 0 );
+					db_separainstrucao ( $db02_texto, 0, $cldb_layouttxr, 3, "X", 4, 0 );
 					$sequencialregistro ++;
 					$identificacao ++;
 				} elseif ($db02_descr == "MENSAGEM3") {
-					db_separainstrucao ( $db02_texto, 0, &$cldb_layouttxr, 3, "X", 4, 0 );
+					db_separainstrucao ( $db02_texto, 0, $cldb_layouttxr, 3, "X", 4, 0 );
 					$sequencialregistro ++;
 					$identificacao ++;
 				}
@@ -1025,7 +1025,7 @@ if ($modelo == 1) {
 				$identificacao = $contador2 + 1;
 				$segmento = "Y";
 				
-				db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 3, "Y" );
+				db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 3, "Y" );
 				$sequencialregistro ++;
 			
 			}
@@ -1056,7 +1056,7 @@ if ($modelo == 1) {
 	$identificacao = "9999";
 	$segmento = "Z";
 	
-	db_setaPropriedadesLayoutTxt ( &$cldb_layouttxr, 5, "Z" );
+	db_setaPropriedadesLayoutTxt ( $cldb_layouttxr, 5, "Z" );
 
 }
 

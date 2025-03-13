@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf3.php");
-require_once("fpdf151/impcarne.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_libsys.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_parissqn_classe.php");
-require_once("dbagata/classes/core/AgataAPI.class");
-require_once("model/documentoTemplate.model.php");
+require_once(modification("fpdf151/pdf3.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_libsys.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_parissqn_classe.php"));
+require_once(modification("dbagata/classes/core/AgataAPI.class"));
+require_once(modification("model/documentoTemplate.model.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);

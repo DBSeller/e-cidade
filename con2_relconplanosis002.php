@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_conplanosis_classe.php");
-include("libs/db_libcontabilidade.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_conplanosis_classe.php"));
+include(modification("libs/db_libcontabilidade.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 $clrotulo = new rotulocampo;

@@ -25,29 +25,29 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_issarqsimples_classe.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_issarqsimplesdisarq_classe.php");
-include("classes/db_disarq_classe.php");
-include("classes/db_disbanco_classe.php");
-include("classes/db_issarqsimplesregdisbanco_classe.php");
-include("classes/db_issarqsimplesregerro_classe.php");
-include("classes/db_issarqsimplesregissvar_classe.php");
-include("classes/db_issarqsimplesreg_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_arrehist_classe.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_arreinscr_classe.php");
-include("classes/db_arrenumcgm_classe.php");
-include("classes/db_isscalc_classe.php");
-include("classes/db_parissqn_classe.php");
-include("classes/db_issvar_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_issarqsimples_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_issarqsimplesdisarq_classe.php"));
+include(modification("classes/db_disarq_classe.php"));
+include(modification("classes/db_disbanco_classe.php"));
+include(modification("classes/db_issarqsimplesregdisbanco_classe.php"));
+include(modification("classes/db_issarqsimplesregerro_classe.php"));
+include(modification("classes/db_issarqsimplesregissvar_classe.php"));
+include(modification("classes/db_issarqsimplesreg_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_arrehist_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arreinscr_classe.php"));
+include(modification("classes/db_arrenumcgm_classe.php"));
+include(modification("classes/db_isscalc_classe.php"));
+include(modification("classes/db_parissqn_classe.php"));
+include(modification("classes/db_issvar_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $post                       = db_utils::postmemory($_POST);
 $clissarqsimples            = new cl_issarqsimples();
@@ -114,7 +114,7 @@ function js_emiteinconsistencias(sNomeArquivo,iCodArquivo,totalErros,iTipo){
 </table>
 <center>
 <?
- include_once("forms/db_frmprocessaarqsimples.php");
+ include_once(modification("forms/db_frmprocessaarqsimples.php"));
 ?>
  </center>
 <?
@@ -133,7 +133,7 @@ if (isset($post->processar)){
    $sDeleteErro .= " using issarqsimplesreg";
    $sDeleteErro .= " where q23_sequencial    = q49_sequencial";
    $sDeleteErro .= "   and q23_issarqsimples = ".$post->q17_sequencial;
-   $rsDelete     = pg_query($sDeleteErro);
+   $rsDelete     = db_query($sDeleteErro);
    db_inicio_transacao();
    echo "<center>";
    db_criatermometro("divterm",'concluido...','blue',1,"Processando registros...");
@@ -210,7 +210,7 @@ if (isset($post->processar)){
          if ($oRegSimples->q23_acao == 1 and $lCgmOk){
           //inclui um isscomplementar 
             $oCGM   = db_utils::fieldsMemory($rsCgm,0);
-            $rsNumpre  = pg_exec("select nextval('numpref_k03_numpre_seq') as k03_numpre");
+            $rsNumpre  = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
             $oNumpre   = db_utils::fieldsmemory($rsNumpre,0);
             $iNumpre  = $oNumpre->k03_numpre;
             $iNumpar  = $oRegSimples->q23_mesusu;
@@ -317,11 +317,11 @@ if (isset($post->processar)){
                     $sSqlArrecad .= " where k00_numpre = ".$oIssVar->q05_numpre;
                     $sSqlArrecad .= "   and k00_numpar = ".$oIssVar->q05_numpar;
                     $sSqlArrecad .= "   and k00_receit = ".$oCalc->q01_recei;
-                    $rsArrecad    = pg_query($sSqlArrecad);
+                    $rsArrecad    = db_query($sSqlArrecad);
                     if (pg_num_rows($rsArrecad)  != 1){
                        
                         //inclui um isscomplementar 
-                        $rsNumpre  = pg_exec("select nextval('numpref_k03_numpre_seq') as k03_numpre");
+                        $rsNumpre  = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
                         $oNumpre   = db_utils::fieldsmemory($rsNumpre,0);
                         $iNumpre  = $oNumpre->k03_numpre;
                         $iNumpar  = $oRegSimples->q23_mesusu;

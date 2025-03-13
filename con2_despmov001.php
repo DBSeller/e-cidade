@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("classes/db_lote_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_empempenho_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_empempenho_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -93,7 +93,7 @@ function js_imprimir() {
        <table border="0" >
        <tr>    
          <td align="center" colspan="3">
-  	   <? db_selinstit('parent.js_limpa',300,100); 	?>
+  	   <?php db_selinstit('parent.js_limpa',300,100); 	?>
 	 </td>
       </tr>
 
@@ -103,7 +103,7 @@ function js_imprimir() {
       <tr>
           <td nowrap colspan=3>
                <b> Período </b>
-               <? 
+               <?php
 	          $dia="01";
 		  $mes="01";
 		  $ano= db_getsession("DB_anousu");
@@ -147,7 +147,7 @@ function js_imprimir() {
   </tr>
 </table>
 <!---  menu --->
-<? db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
+<?php db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
 <!--- --->
   </body>
 </html>

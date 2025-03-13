@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhpessoal_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $rotulocampo = new rotulocampo;
 $rotulocampo->label("rh01_regist");
@@ -50,7 +50,8 @@ $datai_ano = db_subdata(db_getsession("DB_datausu"),"a","t");
 
 <script>
 
-function js_emite(){
+function js_emite() {
+  
   qry = "?matric="+ document.form1.rh01_regist.value;
   qry += "&ordem="+ document.form1.ordem.value;
   qry += "&datafim=" + document.form1.datai_ano.value+'-'+document.form1.datai_mes.value+'-'+document.form1.datai_dia.value;
@@ -87,16 +88,16 @@ function js_emite(){
     </td>
     <td>
       <?
-      db_input('rh01_regist', 8, $Irh01_regist, true, 'text', 1, " onchange='js_pesquisarh01_regist(false);'")
+        db_input('rh01_regist', 8, $Irh01_regist, true, 'text', 1, " onchange='js_pesquisarh01_regist(false);'")
       ?>
       <?
-      db_input('z01_nome', 40, $Iz01_nome, true, 'text', 3, '');
+        db_input('z01_nome', 40, $Iz01_nome, true, 'text', 3, '');
       ?>
     </td>
   </tr>
       <tr >
         <td align="Right" nowrap title="Data do termino :" >
-        <strong>Data .:&nbsp;&nbsp;</strong>
+        <strong>Data: </strong>
         </td>
         <td nowrap>
         <?
@@ -105,28 +106,28 @@ function js_emite(){
         </td>
       </tr>
       <tr >
-        <td align="right" nowrap title="Tipo" ><strong>Tipo : </strong>
+        <td align="right" nowrap title="Tipo" ><strong>Tipo: </strong>
         </td>
         <td align="left">
           <?
             $xx = array("a"=>"Afastamento","s"=>"Assentamento","g"=>"Geral");
             db_select('qual_tipo',$xx,true,4,"");
-	  ?>
-	</td>
+    ?>
+  </td>
       </tr>
       <tr >
-        <td align="right" nowrap title="Ordem para a emissão do relatório" ><strong>Ordem : </strong>
+        <td align="right" nowrap title="Ordem para a emissão do relatório" ><strong>Ordem: </strong>
         </td>
         <td align="left">
           <?
             $xx = array("a"=>"Assentamento","d"=>"Data");
             db_select('ordem',$xx,true,4,"");
-	  ?>
-	</td>
+    ?>
+  </td>
       </tr>
 
       <tr>
-	<td colspan="2" align = "center"> 
+  <td colspan="2" align = "center"> 
           <input  name="relatorio" id="relatorio" type="button" value="Relatório" onclick="js_emite();" >
         </td>
       </tr>
@@ -141,19 +142,28 @@ function js_emite(){
 <script>
 function js_pesquisarh01_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostrapessoal1|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?funcao_js=parent.js_mostrapessoal|rh01_regist|z01_nome&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
   }else{
     if(document.form1.rh01_regist.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.rh01_regist.value+'&funcao_js=parent.js_mostrapessoal1&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoal.php?pesquisa_chave='+document.form1.rh01_regist.value+'&funcao_js=parent.js_mostrapessoal1&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
     }else{
       document.form1.z01_nome.value = '';
       document.form1.submit();
     }
   }
 }
+
 function js_mostrapessoal1(chave1,chave2){
   document.form1.z01_nome.value   = chave1;
   db_iframe_rhpessoal.hide();
   document.form1.submit();
 }
+
+function js_mostrapessoal(chave1,chave2){
+  document.form1.rh01_regist.value   = chave1;
+  document.form1.z01_nome.value   = chave2;
+  db_iframe_rhpessoal.hide();
+  document.form1.submit();
+}
+
 </script>

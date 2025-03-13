@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_selecao_classe.php");
-include("classes/db_rhpessoal_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $db_opcao = 1;
@@ -220,20 +218,34 @@ function js_carregaGrid(sTipo, iValor) {
 
 function js_retornoGrid(oAjax){
     
-  var sLinha  = "";	
-  var objFunc = eval("("+oAjax.responseText+")");
-	  	
+	js_removeObj("msgBox");
+  var sLinha  = "";
+  var objFunc = JSON.parse(oAjax.responseText);
+
   if (objFunc.iStatus && objFunc.iStatus == 2) {
     
-   	js_removeObj("msgBox");
+
    	alert(objFunc.sMensagem.urlDecode());
    	return false ;
   }
 
-  if ( $('ultimaLinha') ) {
-    $('listaFuncionarios').removeChild($('ultimaLinha'));
-  }
-  
+	var aObjFuncionarios     = $('listaFuncionarios').rows;
+	var iLinhasFunctionarios = aObjFuncionarios.length;
+	if (objFunc.length == 1) {
+
+			for (oRowFuncionario of aObjFuncionarios) {
+
+			if (oRowFuncionario.cells[0].innerHTML ==objFunc[0].rh01_regist) {
+
+				alert('Funcionário já lançado');
+				return false;
+			}
+		}
+	}
+
+	if ( $('ultimaLinha') ) {
+		$('listaFuncionarios').removeChild($('ultimaLinha'));
+	}
   if (objFunc) {
     
   	for ( var iInd = 0; iInd < objFunc.length; iInd++ ) {
@@ -331,9 +343,9 @@ function js_preencheSelec1(sChave, lErro) {
 function js_pesquisaFunc(lMostra) {
   
 	if (lMostra) {
-    js_OpenJanelaIframe("","db_iframe_func","func_rhpessoal.php?funcao_js=parent.js_preencheFunc|rh01_regist|z01_nome","Pesquisa",true);  	
+    js_OpenJanelaIframe("","db_iframe_func","func_rhpessoal.php?filtro_lotacao=true&funcao_js=parent.js_preencheFunc|rh01_regist|z01_nome","Pesquisa",true);  	
 	} else {
-	  js_OpenJanelaIframe("","db_iframe_func","func_rhpessoal.php?funcao_js=parent.js_preencheFunc1&pesquisa_chave="+document.form1.rh01_regist.value,"Pesquisa",false);
+	  js_OpenJanelaIframe("","db_iframe_func","func_rhpessoal.php?filtro_lotacao=true&funcao_js=parent.js_preencheFunc1&pesquisa_chave="+document.form1.rh01_regist.value,"Pesquisa",false);
 	}
 }
 

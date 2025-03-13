@@ -12,18 +12,25 @@ var MSGEALTERARESULTADOFINAL = 'educacao.escola.AlteraResultadoFinal.';
  */
 DBViewAvaliacao.AlteraResultadoFinal = function (oTurma, iRegencia, sRegencia) {
 
+  oTurma.aDisciplinas.each(function( oDisciplina ) {
+
+    if( oDisciplina.iCodigo == iRegencia ) {
+      oTurma.sTipoProcedimentoAvaliacao = oDisciplina.sFormaAvaliacao;
+    }
+  });
+
   /**
    * Dados da turma que esta sendo alterado o resultado final
-   * @exemple 
-   * ({iTurma:"680", 
-   *   iEtapa:"17", 
-   *   sEscola:"EMEF BARAO DO RIO BRANCO", 
-   *   sCalendario:"CALENDÁC1RIO 2013", 
-   *   sCurso:"ENSINO FUNDAMENTAL 9 ANOS", 
-   *   sBaseCurricular:"ANOS FINAIS", 
-   *   sTurma:"8º ANO", 
-   *   sEtapa:"8º ANO", 
-   *   sProcedimentoAvaliacao:"NOTA", 
+   * @exemple
+   * ({iTurma:"680",
+   *   iEtapa:"17",
+   *   sEscola:"EMEF BARAO DO RIO BRANCO",
+   *   sCalendario:"CALENDÁC1RIO 2013",
+   *   sCurso:"ENSINO FUNDAMENTAL 9 ANOS",
+   *   sBaseCurricular:"ANOS FINAIS",
+   *   sTurma:"8º ANO",
+   *   sEtapa:"8º ANO",
+   *   sProcedimentoAvaliacao:"NOTA",
    *   sTurno:"MANHÃ"
    *  }
    * )
@@ -37,11 +44,11 @@ DBViewAvaliacao.AlteraResultadoFinal = function (oTurma, iRegencia, sRegencia) {
   this.sRegencia = sRegencia;
 
   /**
-   * Variável para receber a intancia da grid 
+   * Variável para receber a intancia da grid
    * @var {Object}
    */
   this.oGridResultados = {};
-  
+
   /**
    * Rpc utilizado pela classe
    * @var {string}
@@ -49,7 +56,7 @@ DBViewAvaliacao.AlteraResultadoFinal = function (oTurma, iRegencia, sRegencia) {
   this.sRpcPadrao = 'edu4_alteraresultadofinal.RPC.php';
 
   this.oDBFormCache = null;
-  
+
   /** ********************************************************
    *  ----------     Componentes da interface     ------------
    * ********************************************************* */
@@ -76,7 +83,7 @@ DBViewAvaliacao.AlteraResultadoFinal = function (oTurma, iRegencia, sRegencia) {
   this.oInputNomeProfessor.type = 'text';
   this.oInputNomeProfessor.id   = 'nomeProfessor';
   this.oInputNomeProfessor.name = 'nomeProfessor';
-  this.oInputNomeProfessor.size = 80;  
+  this.oInputNomeProfessor.size = 80;
   this.oInputNomeProfessor.addClassName('readonly');
 
   this.oAncoraProfessor      = document.createElement('a');
@@ -95,18 +102,18 @@ DBViewAvaliacao.AlteraResultadoFinal = function (oTurma, iRegencia, sRegencia) {
   this.oCboAlterarNotaFinal.add( new Option ('Não informar', 1));
   this.oCboAlterarNotaFinal.add( new Option ('Informar e Substituir', 2));
   this.oCboAlterarNotaFinal.add( new Option ('Informar e NÃO Substituir', 3));
-  
+
   /**
    * Somente um dos objetos abaixos estarão visiveis para o usuário, a forma de avaliação da turma é quem define qual
    */
   this.oCboAvaliacaoNivel  = new Element('select', {'id':'novaAvaliacao', 'disabled':true});
-  this.oInputAvaliacaoNota = new Element('input', {'type':'text', 'name':'novaAvaliacao', 'id':'novaAvaliacao', 
+  this.oInputAvaliacaoNota = new Element('input', {'type':'text', 'name':'novaAvaliacao', 'id':'novaAvaliacao',
                                                    'disabled':true, 'size':10});
 
   this.oCallBackCloseWindow = function() {
-    return true;    
+    return true;
   };
-  
+
   this.getParametros();
 };
 
@@ -124,46 +131,46 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.setCallBackWindow = function (fFu
  */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.setContainer = function (oWindow) {
   this.oWindowContainer = oWindow;
-}; 
+};
 
 /**
  * Realia a chamada das funções para renderizar a View
  */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.show = function () {
-  
-  var oSelf = this; 
+
+  var oSelf = this;
   this.montaJanela();
   $('ctnCboAluno').appendChild(this.oCboAlunos);
   $('ctnProfessor').appendChild(this.oInputCodigoProfessor);
   $('ctnProfessor').appendChild(this.oInputNomeProfessor);
   $('ctnFormaAprovacao').appendChild(this.oCboFormaAprovacao);
   $('ctnLinkProfessor').appendChild(this.oAncoraProfessor);
-  
+
   $('ctnAlterarNotaFinal').appendChild(this.oCboAlterarNotaFinal);
-  
+
   this.oCboFormaAprovacao.onchange = function () {
     oSelf.validaFormaAprovacaoSelecionada();
   };
-  
+
   this.oCboAlterarNotaFinal.onchange = function () {
     oSelf.validaTipoAlterarNotaFinal();
   };
-  
+
   if (this.oParametros.sFormaAvaliacao == 'NIVEL') {
-    
+
     $('ctnNovaAvaliacao').appendChild(this.oCboAvaliacaoNivel);
     this.oParametros.aConceitos.each( function (oConceito) {
       oSelf.oCboAvaliacaoNivel.add(new Option(oConceito.sConceito, oConceito.sConceito));
     });
-    
+
   } else {
-    
+
     $('ctnNovaAvaliacao').appendChild(this.oInputAvaliacaoNota);
     this.oInputAvaliacaoNota.onchange = function () {
       oSelf.validaNovaNotaFinal();
     }
   }
-  
+
   $('ancoraProfessor').onclick = function () {
     oSelf.pesquisaProfessor();
   };
@@ -173,7 +180,7 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.show = function () {
   this.montaGrid();
 
   /**
-   * Seta funcção no onchange do combo dos alunos 
+   * Seta funcção no onchange do combo dos alunos
    */
   $('alunosDisponiveis').onchange = function () {
     oSelf.validaBloqueioOptionFormaAprovacao();
@@ -195,29 +202,29 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.show = function () {
  * Cria a instancia da View e renderiza
  */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.montaJanela = function () {
-  
+
   var iAltura  = document.body.clientHeight / 1.3;
   var oSelf    = this;
-  
+
   /**
    * Cria instancia da window
    */
-  this.oWindowResultadoFinal = new windowAux("wndResultadoFinal", 
-                                             "Alterar Resultado Final", 
+  this.oWindowResultadoFinal = new windowAux("wndResultadoFinal",
+                                             "Alterar Resultado Final",
                                              900,
                                              iAltura
                                             );
   this.oWindowResultadoFinal.allowCloseWithEsc(false);
-  
+
   /**
-   * Seta função para destruir a janela 
+   * Seta função para destruir a janela
    */
   this.oWindowResultadoFinal.setShutDownFunction(function () {
-    
+
     oSelf.oCallBackCloseWindow();
     oSelf.oWindowResultadoFinal.destroy();
   });
-  
+
   var sConteudo  = "<div class='container' id='container' style='width:840px;'>";
       sConteudo += "  <center>";
       sConteudo += "    <div>";
@@ -229,7 +236,7 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.montaJanela = function () {
       sConteudo += "            <td id='ctnCboAluno' nowrap='nowrap'>";
       sConteudo += "            </td>";
       sConteudo += "          </tr>";
-      sConteudo += "          </tr>"; 
+      sConteudo += "          </tr>";
       sConteudo += "          <tr>";
       sConteudo += "            <td class='bold' id='ctnLinkProfessor'></td>";
       sConteudo += "            <td id='ctnProfessor' nowrap='nowrap'>";
@@ -240,19 +247,19 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.montaJanela = function () {
       sConteudo += "            <td id='ctnFormaAprovacao' nowrap='nowrap'>";
       sConteudo += "            </td>";
       sConteudo += "          </tr>";
-      
+
       sConteudo += "          <tr nowrap='nowrap' id='linhaAlterarNotaFinal'>";
       sConteudo += "            <td class='bold' nowrap='nowrap'>Alterar Avaliação Final:</td>";
       sConteudo += "            <td id='ctnAlterarNotaFinal' nowrap='nowrap'>";
       sConteudo += "            </td>";
       sConteudo += "          </tr>";
-      
+
       sConteudo += "          <tr nowrap='nowrap' id='linhaNovaAvaliacao'>";
       sConteudo += "            <td class='bold' nowrap='nowrap'>Avaliação:</td>";
       sConteudo += "            <td id='ctnNovaAvaliacao' nowrap='nowrap'>";
       sConteudo += "            </td>";
       sConteudo += "          </tr>";
-      
+
       sConteudo += "          <tr id='legendaAlterarNotaFinal' style='display:none;' >";
       sConteudo += "            <td class='bold' style='white-space:pre-line;' colspan=2>";
       sConteudo += "              <fieldset class='separator' '>";
@@ -268,7 +275,7 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.montaJanela = function () {
       sConteudo += "              </fieldset>";
       sConteudo += "            </td>";
       sConteudo += "          </tr>";
-      
+
       sConteudo += "          <tr >";
       sConteudo += "            <td colspan='2'>";
       sConteudo += "              <fieldset class='separator'>";
@@ -293,24 +300,24 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.montaJanela = function () {
 
   var sMsg  = 'Alterar o resultado final para a disciplina: ';
       sMsg += this.sRegencia;
-      
+
   var sHelpMsgBox  = 'Selecione o aluno para realizar a alteração do resultado final';
       sHelpMsgBox += ' para a disciplina: ' + this.sRegencia;
-  
+
   this.oWindowResultadoFinal.setContent(sConteudo);
-  new DBMessageBoard('msgBoardAvaliacao', sMsg, sHelpMsgBox, this.oWindowResultadoFinal.getContentContainer());    
+  new DBMessageBoard('msgBoardAvaliacao', sMsg, sHelpMsgBox, this.oWindowResultadoFinal.getContentContainer());
 
 
-  
+
   if (this.oWindowContainer != '') {
     oSelf.oWindowResultadoFinal.setChildOf(this.oWindowContainer);
   }
-  
+
   this.oWindowResultadoFinal.show();
 };
 
 /**
- * 
+ *
  */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.getAlunosReprovados = function () {
 
@@ -321,9 +328,9 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.getAlunosReprovados = function ()
   oParametro.iTurma    = this.oTurma.iTurma;
   oParametro.iEtapa    = this.oTurma.iEtapa;
   oParametro.iRegencia = this.iRegencia;
-  
+
   var oSelf = this;
-  
+
   js_divCarregando("Aguarde, alunos resultados reprovados.", "msgBox");
   new Ajax.Request(this.sRpcPadrao,
                    { method:     'post',
@@ -338,8 +345,8 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.getAlunosReprovados = function ()
 DBViewAvaliacao.AlteraResultadoFinal.prototype.retornoAlunosReprovados = function (oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
-  
+  var oRetorno = JSON.parse(oAjax.responseText);
+
   oRetorno.aAlunos.each( function (oAluno) {
 
     var oOption       = document.createElement('option');
@@ -379,9 +386,9 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.getAlunosAprovadosPeloConselho = 
   oParametro.iTurma    = this.oTurma.iTurma;
   oParametro.iEtapa    = this.oTurma.iEtapa;
   oParametro.iRegencia = this.iRegencia;
-  
+
   var oSelf = this;
-  
+
   this.oGridResultados.clearAll(true);
   js_divCarregando("Aguarde, buscando alunos com resultados alterados.", "msgBox");
   new Ajax.Request(this.sRpcPadrao,
@@ -402,7 +409,7 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.getAlunosAprovadosPeloConselho = 
 DBViewAvaliacao.AlteraResultadoFinal.prototype.populaGrid = function (oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
   var oSelf    = this;
 
   this.oGridResultados.clearAll(true);
@@ -428,13 +435,13 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.populaGrid = function (oAjax) {
     oSelf.oGridResultados.addRow(aLinha);
 
   });
-  
+
   this.oGridResultados.renderRows();
 
   /**
    * Seta as funções nos botões de ação em tempo de execução
    */
-  oRetorno.aResultados.each( function (oResultado) {  
+  oRetorno.aResultados.each( function (oResultado) {
 
     $('excluirResultado'+oResultado.iAprovConselho).onclick = function() {
       oSelf.excluirResultadoFinal(oResultado.iMatricula);
@@ -459,7 +466,7 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.excluirResultadoFinal = function 
     oParametro.iMatricula = iMatricula;
 
     var oSelf = this;
-  
+
     js_divCarregando("Aguarde, excluindo alteração do resultado.", "msgBox");
     new Ajax.Request(this.sRpcPadrao,
                      { method:     'post',
@@ -475,7 +482,7 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.excluirResultadoFinal = function 
 DBViewAvaliacao.AlteraResultadoFinal.prototype.retornoExcluirResultadoFinal = function (oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   alert(oRetorno.message.urlDecode());
   if (oRetorno.status == 1) {
@@ -498,32 +505,32 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.validaFormulario = function () {
   if ($F('formaAprovacao') == '') {
 
     alert( _M(MSGEALTERARESULTADOFINAL + "selecione_forma_avaliacao"));
-    return false; 
+    return false;
   }
-  
+
   if ($F('formaAprovacao') == 1 && $F('alterarNotaFinal') == '' && this.oTurma.sTipoProcedimentoAvaliacao != 'PARECER') {
-    
+
     alert( _M(MSGEALTERARESULTADOFINAL + "selecione_altera_nota_final"));
-    return false; 
+    return false;
   }
-  
+
   if ([2, 3].in_array($F('alterarNotaFinal')) && $F('novaAvaliacao') == '') {
-    
+
     alert(_M(MSGEALTERARESULTADOFINAL + "informe_avaliacao"));
     return false;
   }
-  
+
   if ($F('justificativaResultado') == '') {
 
     alert( _M(MSGEALTERARESULTADOFINAL + "informe_justificativa") );
     return false;
   }
-  
-  return true;  
+
+  return true;
 };
 
 /**
- * Inclui uma aprovação pelo conselho 
+ * Inclui uma aprovação pelo conselho
  */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.salvarResultadoFinal = function (iAprovConselho) {
 
@@ -542,9 +549,9 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.salvarResultadoFinal = function (
   oParametro.iAlterarNotaFinal  = $F('alterarNotaFinal');
   oParametro.sAvaliacaoConselho = $F('novaAvaliacao');
   oParametro.sJustificativa     = encodeURIComponent(tagString($F('justificativaResultado')));
-  
+
   var oSelf = this;
-  
+
   js_divCarregando("Aguarde, salvando alteração do resultado.", "msgBox");
   new Ajax.Request(this.sRpcPadrao,
                    { method:     'post',
@@ -564,7 +571,7 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.salvarResultadoFinal = function (
 DBViewAvaliacao.AlteraResultadoFinal.prototype.retornoSalvarResultadoFinal = function (oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   alert(oRetorno.message.urlDecode());
   if (oRetorno.status == 1) {
@@ -581,18 +588,18 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.retornoSalvarResultadoFinal = fun
 
 /**
  * Lookup para pesquisar um professor
- */ 
+ */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.pesquisaProfessor = function () {
 
   /**
-   * ATENÇÃO: a variável 'oInstanciaAlteraResultadoFinal' foi colocado no escopo global 
+   * ATENÇÃO: a variável 'oInstanciaAlteraResultadoFinal' foi colocado no escopo global
    * para atender o retorno da lookup. Após receber os dados ela será deletada
    */
   oInstanciaAlteraResultadoFinal = this;
   var sUrl = 'func_rechumano.php?';
   sUrl += 'funcao_js=parent.oInstanciaAlteraResultadoFinal.retornoProfessor|ed20_i_codigo|z01_nome';
   js_OpenJanelaIframe('','db_iframe_rechumano', sUrl, 'Pesquisa Professor', true);
-  
+
   /**
    * Muda o zIndex do iframe de pesquisa para aparecer em cima dos outros frames abertos
    */
@@ -608,10 +615,10 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.retornoProfessor = function () {
   db_iframe_rechumano.hide();
   delete oInstanciaAlteraResultadoFinal;
 };
-  
+
 
 /**
- * Adiciona/Remove bloqueio nos options do select da Forma de Aprovação 
+ * Adiciona/Remove bloqueio nos options do select da Forma de Aprovação
  */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.validaBloqueioOptionFormaAprovacao = function () {
 
@@ -619,7 +626,7 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.validaBloqueioOptionFormaAprovaca
   var oOptionSelecionado = $('alunosDisponiveis').options[$('alunosDisponiveis').selectedIndex];
 
   if (oOptionSelecionado.value == '') {
-    
+
     $('formaAprovacao').value    = '';
     $('formaAprovacao').disabled = true;
     $('alterarNotaFinal').value  = '';
@@ -627,7 +634,7 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.validaBloqueioOptionFormaAprovaca
     $('novaAvaliacao').setAttribute( 'disabled', 'disabled' );
     $('legendaAlterarNotaFinal').style.display = 'none';
   }
-  
+
   /**
    * option[1] == Aprovado pelo conselho
    * option[2] == Reclassificação por baixa frequência
@@ -660,16 +667,16 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.limpaFormulario = function() {
   $('formaAprovacao').disabled      = true;
   $('alterarNotaFinal').setAttribute('disabled', 'disabled');
   $('novaAvaliacao').setAttribute('disabled', 'disabled');
-  
+
   if (this.oParametros.sFormaAvaliacao == 'NIVEL') {
     $('novaAvaliacao').value = $('novaAvaliacao').options[0].value;
   }
-  
+
 };
 
 
 /**
- * Busca os parâmetros 
+ * Busca os parâmetros
  *  - nota minima para aprovação na turma;
  *  - forma de avaliação (Nota, Conceito);
  *    -- Se for conceito, deve trazer um array com os conceitos (do mínimo para cima)
@@ -678,48 +685,53 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.limpaFormulario = function() {
  * @returns {void}
  */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.getParametros = function() {
-  
-  var oParametro             = new Object();
-  oParametro.exec            = 'getParamentros';
-  oParametro.iTurma          = this.oTurma.iTurma;
-  oParametro.iEtapa          = this.oTurma.iEtapa; 
-  
+
+  var oParametro           = new Object();
+      oParametro.exec      = 'getParametros';
+      oParametro.iTurma    = this.oTurma.iTurma;
+      oParametro.iEtapa    = this.oTurma.iEtapa;
+      oParametro.iRegencia = this.iRegencia;
+
   var oSelf = this;
-  
-  var oRequest          = {};
-  oRequest.method       = 'post';
-  oRequest.parameters   = 'json='+Object.toJSON(oParametro);
-  oRequest.asynchronous = false;
-  oRequest.onComplete   = function (oAjax) {
-  
-    var oRetorno      = eval ('(' + oAjax.responseText + ')');
+
+  var oRequest              = {};
+      oRequest.method       = 'post';
+      oRequest.parameters   = 'json='+Object.toJSON(oParametro);
+      oRequest.asynchronous = false;
+      oRequest.onComplete   = function (oAjax) {
+
+    var oRetorno      = JSON.parse(oAjax.responseText);
     oSelf.oParametros = oRetorno.oParametros;
-  }
-  
+  };
+
   new Ajax.Request(this.sRpcPadrao, oRequest);
 };
 
 /**
- * Valida Forma de Aprovação selecionada. 
+ * Valida Forma de Aprovação selecionada.
  * Sempre que marcado como: Aprovado pelo conselho, devemos liberar o select para cliente selecionar como deseja
  * alterar o resultado final
  * @returns {void}
  */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.validaFormaAprovacaoSelecionada = function () {
-  
+
   this.oInputAvaliacaoNota.value  = '';
   this.oCboAlterarNotaFinal.value = '';
   this.oCboAlterarNotaFinal.setAttribute('disabled', 'disabled');
   this.oCboAvaliacaoNivel.setAttribute('disabled', 'disabled');
   this.oInputAvaliacaoNota.setAttribute('disabled', 'disabled');
-  
+
   $('legendaAlterarNotaFinal').style.display = 'none';
 
-  if ( $F('formaAprovacao') == 1 && this.oTurma.sTipoProcedimentoAvaliacao != 'PARECER' ) {
-    
+  if ( $F('formaAprovacao') == 1 && this.oParametros.sFormaAvaliacao != 'PARECER' ) {
+
     this.oCboAlterarNotaFinal.removeAttribute('disabled');
     $('legendaAlterarNotaFinal').style.display = '';
     this.oDBFormCache.load();
+
+    if( this.oParametros.sFormaAvaliacao == 'NIVEL' ) {
+      this.oCboAvaliacaoNivel.removeAttribute( 'disabled' );
+    }
   }
 
   if( $F('alterarNotaFinal') == 2 || $F('alterarNotaFinal') == 3 ) {
@@ -733,13 +745,13 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.validaFormaAprovacaoSelecionada =
  * @returns {void}
  */
 DBViewAvaliacao.AlteraResultadoFinal.prototype.validaTipoAlterarNotaFinal = function () {
-  
+
   this.oInputAvaliacaoNota.value = '';
   this.oCboAvaliacaoNivel.setAttribute('disabled', 'disabled');
   this.oInputAvaliacaoNota.setAttribute('disabled', 'disabled');
 
   if ( [2, 3].in_array($F('alterarNotaFinal')) ) {
-  
+
     this.oCboAvaliacaoNivel.removeAttribute('disabled');
     this.oInputAvaliacaoNota.removeAttribute('disabled');
   }
@@ -752,30 +764,30 @@ DBViewAvaliacao.AlteraResultadoFinal.prototype.validaTipoAlterarNotaFinal = func
 DBViewAvaliacao.AlteraResultadoFinal.prototype.validaNovaNotaFinal = function () {
 
   if (this.oInputAvaliacaoNota.value == '') {
-    return;
+    return false;
   }
-  
+
   var oNota       = new Number(this.oInputAvaliacaoNota.value);
   var oNotaMinima = new Number(this.oParametros.mAvaliacaoMinima);
   var oNotaMaxima = new Number(this.oParametros.nMaiorValorNota);
 
   if ( oNota.valueOf() < oNotaMinima.valueOf()) {
-  
+
     alert(_M(MSGEALTERARESULTADOFINAL+'avaliacao_abaixo_minimo', {'mMinimo':this.oParametros.mAvaliacaoMinima}) );
     this.oInputAvaliacaoNota.value = '';
     return false;
   }
-  
+
   if ( oNota.valueOf() > oNotaMaxima.valueOf() ) {
-    
+
     var oErro = {'mMinimo':this.oParametros.mAvaliacaoMinima, 'mMaximo': this.oParametros.nMaiorValorNota}
     alert(_M(MSGEALTERARESULTADOFINAL+'avaliacao_fora_intervalo', oErro));
     this.oInputAvaliacaoNota.value = '';
     return false;
   }
-  
+
   if (!DBViewAvaliacao.ValidacaoVariacaoNota(oNota.valueOf(), this.oParametros.mVariacao, this.oParametros.sMascara)) {
-      
+
     alert('Intervalo de nota deve ser de '+this.oParametros.mVariacao);
     this.oInputAvaliacaoNota.value = '';
     return false;

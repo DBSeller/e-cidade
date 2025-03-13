@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,14 +27,14 @@
 
 set_time_limit(0);
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_propri_classe.php");
-require_once("classes/db_promitente_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_propri_classe.php"));
+require_once(modification("classes/db_promitente_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -46,8 +46,8 @@ switch ($opcao) {
     $arquivo        = 'pontofs';
     $sTituloCalculo = 'Salário';
     
-    if (isset($DB_COMPLEMENTAR) && $DB_COMPLEMENTAR) {
-      include_once 'pes3_consponto021_salario.php';
+    if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+      include_once modification("pes3_consponto021_salario.php");
       exit;
     }
     break;
@@ -83,8 +83,8 @@ switch ($opcao) {
     $arquivo        = 'pontocom';
     $sTituloCalculo = 'Complementar';
 
-    if (isset($DB_COMPLEMENTAR) && $DB_COMPLEMENTAR) {
-      include_once 'pes3_consponto021_complementar.php';
+    if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+      include_once modification("pes3_consponto021_complementar.php");
       exit;
     }
     break;
@@ -94,8 +94,8 @@ switch ($opcao) {
     $arquivo        = 'pontofs';
     $sTituloCalculo = 'Suplementar';
 
-    if (isset($DB_COMPLEMENTAR) && $DB_COMPLEMENTAR) {
-      include_once 'pes3_consponto021_suplementar.php';
+    if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+      include_once modification("pes3_consponto021_suplementar.php");
       exit;
     }
     break;
@@ -161,6 +161,7 @@ if ($opcao) {
   $sql .= "           sum(case when rh27_pd = 2 then {$sigla}valor else 0 end ) as desconto                        ";
   $sql .= "   from {$arquivo}                                                                                      ";
   $sql .= "        inner join rhrubricas on rh27_rubric = {$sigla}rubric                                           "; 
+  $sql .= "		                          and rh27_instit = {$sigla}instit                                           ";  
   $sql .= "   where {$sigla}regist = $matricula                                                                    ";
   $sql .= "     and {$sigla}anousu = $ano                                                                          ";
   $sql .= "     and {$sigla}mesusu = $mes                                                                          ";
@@ -199,7 +200,35 @@ $result = db_query($sql);
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<link rel="stylesheet" type="text/css" href="estilos.css">
+<style type="text/css">
+  html, body, table {
+    overflow: hidden;
+  }
+
+  #tabela-calculos, #tabela-calculos tr, #tabela-calculos td, #tabela-calculos th {
+    border: 1px solid #bbb;
+  }
+
+
+  #tabela-calculos tr:nth-child(odd) {
+    background-color: #EEEEEE !important;
+  }
+
+  #tabela-calculos tr:nth-child(even) {
+    background-color: #FFFFFF !important;
+  }
+
+  #tabela-calculos tr:first-child {
+    border-right:1px outset #D3D3D3;
+    padding:0;
+    margin:0;
+    white-space:nowrap;
+    overflow: hidden;
+  }
+</style>
+<script type="text/javascript" src="scripts/scripts.js"></script>
+<script type="text/javascript" src="scripts/prototype.js"></script>
 <script>
 function js_mostracgm(cgm){
   parent.func_nome.jan.location.href = 'prot3_conscgm002.php?fechar=func_nome&numcgm='+cgm;
@@ -228,29 +257,7 @@ function js_relatorio(){
   jan.moveTo(0,0);
 	  
 }
-</script>
-<style>
-.fonte {
-  font-family:Arial, Helvetica, sans-serif;
-  font-size:12px;
-}
-td {
-  font-family:Arial, Helvetica, sans-serif;
-  font-size:12px;
 
-}
-th {
-  font-family:Arial, Helvetica, sans-serif;
-  font-size:12px;
-
-}
-
-html, body, table {
-  overflow: hidden;
-}
-
-</style>
-<script>
 function MM_reloadPage(init) {  //reloads the window if Nav4 resized
   if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
     document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
@@ -266,18 +273,18 @@ MM_reloadPage(true);
 
 <form name="form1" method="post">
 
-<table width="100%" >
+<table width="100%" id="tabela-calculos" cellspacing="0">
 
-<tr bgcolor="#ddd">
+<tr>
 <?
 if ($opcao != 'previden' && $opcao != 'irf'){
 ?>
-     <th class="borda" width="25" nowrap>Código</th>
-     <th class="borda" width="25" nowrap>Descrição</th>
-     <th class="borda" nowrap>Quantidade</th>
+     <th class="borda" width="80" nowrap>Código</th>
+     <th class="borda" nowrap>Descrição</th>
+     <th class="borda" width="80" nowrap>Quantidade</th>
      <th class="borda" width="80" nowrap>Proventos</th>
      <th class="borda" width="80" nowrap>Descontos</th>
-     <th class="borda" width="90" nowrap>Prov/Desc</th>
+     <th class="borda" width="80" nowrap>Prov/Desc</th>
     <?if ($opcao == 'ferias' || $opcao == 'rescisao'){?>
        <th class="borda" style="font-size:12px" nowrap>Tipo</th>
     <?
@@ -317,12 +324,12 @@ $cor="#F0F0F0";
          }else{
 ?>
            <tr>
-           <td align="center" style="font-size:12px" nowrap bgcolor="<?=$cor?>"><?=$rubrica?>&nbsp;</td>
-           <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$rh27_descr?></td>
-           <td align="right" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=db_formatar($quant,'f')?></td>
-           <td align="right" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=db_formatar($provento,'f')?></td>
-           <td align="right" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=db_formatar($desconto,'f')?></td>
-           <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$provdesc?></td>
+           <td align="center" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$rubrica?>&nbsp;</td>
+           <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$rh27_descr?>&nbsp;</td>
+           <td align="right" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=db_formatar($quant,'f')?>&nbsp;</td>
+           <td align="right" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=db_formatar($provento,'f')?>&nbsp;</td>
+           <td align="right" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=db_formatar($desconto,'f')?>&nbsp;</td>
+           <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$provdesc?>&nbsp;</td>
            <?if ($opcao == 'ferias' || $opcao == 'rescisao'){?>
               <td align="left" style="font-size:12px" nowrap bgcolor="<?=$cor?>">&nbsp;<?=$tipo?></td>
 	   <?}?>
@@ -500,6 +507,7 @@ $cor="#EFE029";
       
   
       parent.document.getElementById('calculoFolha').style.height = html.scrollHeight + 'px';
+      parent.iframeLoaded();
    }
 
 </script>

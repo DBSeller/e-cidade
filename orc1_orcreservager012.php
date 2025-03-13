@@ -1,38 +1,38 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_orcreservager_classe.php");
-include ("classes/db_orcreserprev_classe.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcreservager_classe.php"));
+include(modification("classes/db_orcreserprev_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -54,7 +54,7 @@ if (isset ($atualiza)) {
 
 				$sql = " select o80_valor,o80_coddot
 			               from orcreserva where o80_codres = ".$mt[2];
-				$result = pg_query($sql);
+				$result = db_query($sql);
 				if ($result == false) {
 					$erro = true;
 					$msg_erro = "Erro ao alterar reserva automática (reduzir).";
@@ -64,7 +64,7 @@ if (isset ($atualiza)) {
 				$coddot = pg_result($result, 0, 1);
 				if ($saldo_reserva > 0) {
 					$sql = "update orcreserva set o80_valor = o80_valor - ".$HTTP_POST_VARS[key($HTTP_POST_VARS)]." where o80_codres = ".$mt[2];
-					$res = pg_query($sql);
+					$res = db_query($sql);
 					if ($res == false) {
 						$erro = true;
 						break;
@@ -80,11 +80,11 @@ if (isset ($atualiza)) {
 			$mt = split("\_", key($HTTP_POST_VARS));
 			if ($HTTP_POST_VARS[key($HTTP_POST_VARS)] > 0) {
 				$sql = " select  substr(fc_dotacaosaldo,133,12)::float8 as atual_menos_reservado,o80_coddot
-			                 from ( 
+			                 from (
 			                      select o80_coddot,fc_dotacaosaldo(".db_getsession("DB_anousu").",o80_coddot,4,'".date("Y-m-d", db_getsession("DB_datausu"))."','".db_getsession("DB_anousu")."-12-31')
 			                      from orcreserva where o80_codres = ".$mt[2]."
 			                      ) as x ";
-				$result = pg_query($sql);
+				$result = db_query($sql);
 				if ($result == false) {
 					$erro = true;
 					$msg_erro = "Erro ao alterar reserva automática (reduzir).";
@@ -94,7 +94,7 @@ if (isset ($atualiza)) {
 				$coddot = pg_result($result, 0, 1);
 				if ($saldo_atual >= $HTTP_POST_VARS[key($HTTP_POST_VARS)]) {
 					$sql = "update orcreserva set o80_valor = o80_valor + ".$HTTP_POST_VARS[key($HTTP_POST_VARS)]." where o80_codres = ".$mt[2];
-					$res = pg_query($sql);
+					$res = db_query($sql);
 					if ($res == false) {
 						$erro = true;
 						$msg_erro = "Erro ao alterar reserva automática (somar).";
@@ -118,14 +118,18 @@ $sql = "select fc_estruturaldotacao(".db_getsession("DB_anousu").",o58_coddot) a
           select fc_estruturaldotacao(".db_getsession("DB_anousu").",o58_coddot) as estrutural,
                o58_coddot, o80_valor, o80_codres,o58_codigo,o15_descr,o56_descr,
               fc_dotacaosaldo(".db_getsession("DB_anousu").",o58_coddot,4,'".date("Y-m-d", db_getsession("DB_datausu"))."','".db_getsession("DB_anousu")."-12-31')
-         from orcreservager           
+         from orcreservager
              inner join orcreserva on o84_codres = o80_codres
              inner join orcdotacao on o58_anousu = o80_anousu and o58_coddot = o80_coddot
              inner join orcelemento on o58_codele = o56_codele and o56_anousu = o58_anousu
              inner join orctiporec on o58_codigo = o15_codigo
          where o58_projativ = $ativid and o58_codigo = $recurso
-         order by o58_orgao,o58_unidade,o58_funcao,o58_subfuncao,o58_programa,o58_projativ,o58_codigo,o56_elemento 
+         order by o58_orgao,o58_unidade,o58_funcao,o58_subfuncao,o58_programa,o58_projativ,o58_codigo,o56_elemento
         ) as x";
+
+/* [Extensão] - Filtro da Despesa */
+
+
 
 $clorcreservager = new cl_orcreservager;
 $result = $clorcreservager->sql_record($sql);
@@ -154,9 +158,9 @@ function js_verifica_valores(){
   dimi = 0;
   for(i=0;i<elem.length;i++){
     if(elem[i].name.substr(0,13)=='dotacao_soma_')
-      soma = soma + Number(elem[i].value);  
+      soma = soma + Number(elem[i].value);
     if(elem[i].name.substr(0,13)=='dotacao_dimi_')
-      dimi = dimi + Number(elem[i].value);  
+      dimi = dimi + Number(elem[i].value);
   }
   if(soma != dimi)
     alert('Valores a serem remanejados não conferem \n Reduzir:'+dimi+' \nAumentar:'+soma+' \nDiferença:'+(dimi-soma));
@@ -188,9 +192,9 @@ function js_verifica_valor_soma(objeto,objreduz){
     dimi = 0;
     for(i=0;i<elem.length;i++){
       if(elem[i].name.substr(0,13)=='dotacao_soma_')
-        soma = soma + Number(elem[i].value);  
+        soma = soma + Number(elem[i].value);
       if(elem[i].name.substr(0,13)=='dotacao_dimi_')
-        dimi = dimi + Number(elem[i].value);  
+        dimi = dimi + Number(elem[i].value);
     }
     if(soma > dimi){
       alert('Valor a somar maior que a reduzir.');
@@ -198,7 +202,7 @@ function js_verifica_valor_soma(objeto,objreduz){
       objeto.focus();
     }
   }
-    
+
 }
 
 </script>

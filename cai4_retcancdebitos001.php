@@ -26,21 +26,21 @@
  */
 
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_arrecant_classe.php");
-include ("classes/db_arrecad_classe.php");
-include ("classes/db_arrehist_classe.php");
-include ("classes/db_cancdebitos_classe.php");
-include ("classes/db_cancdebitosprot_classe.php");
-include ("classes/db_cancdebitosreg_classe.php");
-include ("classes/db_cancdebitosproc_classe.php");
-include ("classes/db_cancdebitosprocreg_classe.php");
-include ("classes/db_cancdebitosconcarpeculiar_classe.php");
-include ("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_arrecant_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arrehist_classe.php"));
+include(modification("classes/db_cancdebitos_classe.php"));
+include(modification("classes/db_cancdebitosprot_classe.php"));
+include(modification("classes/db_cancdebitosreg_classe.php"));
+include(modification("classes/db_cancdebitosproc_classe.php"));
+include(modification("classes/db_cancdebitosprocreg_classe.php"));
+include(modification("classes/db_cancdebitosconcarpeculiar_classe.php"));
+include(modification("libs/db_sql.php"));
 
 $clarrecad            = new cl_arrecad;
 $clarrecant           = new cl_arrecant;
@@ -132,7 +132,7 @@ if (isset ($chavepesquisa)){
 	                from cancdebitosconcarpeculiar 
 	                inner join concarpeculiar on k72_concarpeculiar = c58_sequencial 
 	                where k72_cancdebitos = $k20_codigo";
-	$rsPeculiar     = pg_query($sqlPeculiar);
+	$rsPeculiar     = db_query($sqlPeculiar);
 	$linhasPeculiar =  pg_num_rows($rsPeculiar);
 	if($linhasPeculiar > 0 ){
 	  db_fieldsmemory($rsPeculiar,0);
@@ -159,7 +159,7 @@ if (isset ($chavepesquisa)){
 <br><br>
 <center>
 <?
-include ("forms/db_frmcanccancdeb.php");
+include(modification("forms/db_frmcanccancdeb.php"));
 ?>
 </center>
 </td>

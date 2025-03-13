@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_cancdebitos_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_cancdebitos_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clcancdebitos = new cl_cancdebitos;
 $clcancdebitos->rotulo->label();
@@ -69,7 +69,7 @@ if($medico != ""){
   $sql .= "and medicos.sd03_i_codigo = $medico";
 }
 $sql .= "order by nomemed, sd24_i_ano, sd24_i_mes, sd24_i_seq, z01_nome, sd63_c_procedimento";
-$result = pg_query($sql);
+$result = db_query($sql);
 //db_criatabela($result);
 //exit;
 

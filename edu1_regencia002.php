@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -55,6 +55,7 @@ $claprovconselho                 = new cl_aprovconselho;
 $oDaoDiarioClasseRegenciaHorario = new cl_diarioclasseregenciahorario();
 $oDaoDiarioClasseAlunoFalta      = new cl_diarioclassealunofalta();
 $oDaoDiarioClasse                = new cl_diarioclasse();
+$oDaoDiarioAvaliacaoAlternativa  = new cl_diarioavaliacaoalternativa();
 
 if(isset($codnobase)){
   
@@ -155,10 +156,14 @@ if(isset($codnobase)){
          if ($cldiario->erro_status == "0") {
            throw new BusinessException($cldiario->erro_msg);
          }
+         
+         $oDaoDiarioAvaliacaoAlternativa->excluir(null, "ed136_diario = {$coddiario}");
+         if ($oDaoDiarioAvaliacaoAlternativa->erro_status == "0") {
+           throw new BusinessException($oDaoDiarioAvaliacaoAlternativa->erro_msg);
+         }
        }
      }
-     
-          
+               
      /**
       * select na diarioclasseregenciahorario pelo codigo das regencias 
       *  - excluir diarioclassealunofalta

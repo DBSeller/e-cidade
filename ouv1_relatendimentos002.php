@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,10 +26,10 @@
  */
 
 
-include("fpdf151/pdf.php");
-include("libs/db_liborcamento.php");
-include("libs/db_utils.php");
-include("classes/db_db_depart_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_db_depart_classe.php"));
 
 $cldepartamento = new cl_db_depart();
 
@@ -164,7 +164,7 @@ $sQuery = " select * from ( $sQuery ) as y order by $sOrdem";
 $rsQuery = db_query($sQuery);
 
 if(pg_num_rows($rsQuery) > 0) {
-	$aRelatorio = db_utils::getColectionByRecord($rsQuery,false,false,false);
+	$aRelatorio = db_utils::getCollectionByRecord($rsQuery,false,false,false);
 }else{
 	db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum atendimento encontrado!');
 }

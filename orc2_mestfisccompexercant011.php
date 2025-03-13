@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oGet   = db_utils::postMemory($_GET);
 $codrel = $oGet->iCodRel;
@@ -208,7 +208,7 @@ $db_opcao = 1;
   function js_recarregaParametros(iAnoInicial, iAnoFinal) {
 
     var sUrl = "con2_conrelparametros.php?c83_codrel="+$F('codrel');
-    top.corpo.iframe_parametros.location.href = sUrl+"&iAnoInicial="+iAnoInicial+"&iAnoFinal="+iAnoFinal ;
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_parametros.location.href = sUrl+"&iAnoInicial="+iAnoInicial+"&iAnoFinal="+iAnoFinal ;
   }
 js_drawSelectVersaoPPA($('verppa'));    
 </script>

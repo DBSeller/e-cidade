@@ -28,6 +28,9 @@
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 ?>
+<?
+db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+?>
 <!--
 <div id="processando" style="position:absolute; left:25px; top:106px; width:975px; height:400px; z-index:1; visibility: hidden; background-color: #FFFFFF; layer-background-color: #FFFFFF; border: 1px none #000000;">
 -->
@@ -59,6 +62,16 @@ $clrotulo->label('DBtxt23');
     ?>
     </td>
   </tr>
+  <?php if ($db_opcao == 1): ?>
+      <tr>
+          <td colspan="2">
+              <b>Pagamento do período atual:</b>
+              <?php
+              db_inputdata("dtPagamento",null,null,null,true,'text',1);
+              ?>
+          </td>
+      </tr>
+  <?php endif; ?>
   <tr>
     <td align="left" nowrap title="Novo período" >
       <strong><?=($db_opcao == 1?"Novo período":"Período retorno")?>&nbsp;&nbsp;</strong>
@@ -93,6 +106,20 @@ function js_mostrardiv(TorF,texto){
   }
 }
 function js_processar(){
+  var lLotesFechados = <?php echo $lLotesFechados ?>;
+
+  var campoDataPagamento = document.querySelector('#dtPagamento');
+
+  if (campoDataPagamento && !campoDataPagamento.value) {
+      alert('Deve ser informada uma data de pagamento para o período atual.');
+      return false;
+  }
+
+  if (lLotesFechados) {
+    if (!confirm("Existem lotes não processados, deseja continuar?")) {
+      return false;
+    }
+  }
   x = document.form1;
   qry = "?dataii_dia="+x.dataii_dia.value;
   qry+= "&dataii_mes="+x.dataii_mes.value;
@@ -111,15 +138,18 @@ function js_processar(){
   qry+= "&dataff_ano="+x.dataff_ano.value;
 
   if(document.getElementById("processar").name == "false"){
+
+    qry+= "&dataPagamento=" + campoDataPagamento.value;
+
     if(confirm("Confirma fechamento do mês "+x.dataii_mes.value+"/"+x.dataii_ano.value+" ?")){
   	  js_mostrardiv(true,"Verificando dados para virada");
-      js_OpenJanelaIframe('top.corpo','db_iframe_virafolha','dbforms/db_virafolha.php'+qry,'Virada da folha',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_virafolha','dbforms/db_virafolha.php'+qry,'Virada da folha',false);
     }
   }else{
     qry+= "&desprocess="+document.getElementById("processar").name;
     if(confirm("Confirma cancelamento do mês "+x.dataii_mes.value+"/"+x.dataii_ano.value+" ?")){
   	  js_mostrardiv(true,"Verificando dados para cancelamento");
-      js_OpenJanelaIframe('top.corpo','db_iframe_virafolha','dbforms/db_virafolha.php'+qry,'Virada da folha',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_virafolha','dbforms/db_virafolha.php'+qry,'Virada da folha',false);
     }
   }
 

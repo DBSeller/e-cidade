@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_procandamint_classe.php");
-require_once("classes/db_procandamintusu_classe.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_proctransferintand_classe.php");
-require_once("classes/db_proctransfer_classe.php");
-require_once("classes/db_protparam_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_procandamint_classe.php"));
+require_once(modification("classes/db_procandamintusu_classe.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_proctransferintand_classe.php"));
+require_once(modification("classes/db_proctransfer_classe.php"));
+require_once(modification("classes/db_protparam_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -49,7 +49,7 @@ $clproctransfer       = new cl_proctransfer;
 $db_opcao = 1;
 $db_botao = true;
 $sqlerro  = false;
-
+ 
 if ( isset($incluir) ) {
 
   db_inicio_transacao();
@@ -60,7 +60,7 @@ if ( isset($incluir) ) {
   $sWhereParametrosProtocolo = "p90_instit = " . db_getsession('DB_instit');
   $sSqlParametrosProtocolo = $clprotparam->sql_query_file(null, '*', null, $sWhereParametrosProtocolo);
   $result_protparam = $clprotparam->sql_record($sSqlParametrosProtocolo);
-
+  
    /**
     * Encontrou parametros para instituicao atual 
     */
@@ -98,17 +98,51 @@ if ( isset($incluir) ) {
 
   if ( $sqlerro == false ) {
 
-  	$clprocandamint->p78_codandam = $p58_codandam;
-  	$clprocandamint->p78_data     = date("Y-m-d", db_getsession("DB_datausu"));;
-  	$clprocandamint->p78_hora     = db_hora();
-	  $clprocandamint->p78_usuario  = db_getsession("DB_id_usuario");
-  	$clprocandamint->p78_publico  = $p78_publico;
-  	$clprocandamint->p78_transint = 'false';
+    $oDaoProcAndam         = db_utils::getDao('procandam');
+    $sSqlBuscaProcAndam    = $oDaoProcAndam->sql_query_file($p58_codandam, "p61_dtandam, p61_hora");
+    $rsBuscaProcAndam      = $oDaoProcAndam->sql_record($sSqlBuscaProcAndam);
+    $oProcAndam            = db_utils::fieldsMemory($rsBuscaProcAndam, 0);
+  
+    $dDataProcAndam        = $oProcAndam->p61_dtandam;
+    $dHoraProcAndam        = $oProcAndam->p61_hora;
+    
+    $oDaoProcAndamInt      = db_utils::getDao('procandamint');
+    $sSqlBuscaProcAndamInt = "select p78_data, p78_hora 
+                                from procandamint 
+                               where p78_codandam = {$p58_codandam} 
+                               order by p78_sequencial desc limit 1";
+
+    $rsBuscaProcAndamInt   = $oDaoProcAndamInt->sql_record($sSqlBuscaProcAndamInt);
+
+    if($oDaoProcAndamInt->numrows > 0) {
+      
+      $oProcAndamInt       = db_utils::fieldsMemory($rsBuscaProcAndamInt, 0);
+      $dDataProcAndam      = $oProcAndamInt->p78_data;
+      $dHoraProcAndam      = $oProcAndamInt->p78_hora;
+    }
+    
+    if ( $dDataProcAndam > date('Y-m-d', db_getsession('DB_datausu')) || 
+        ( $dDataProcAndam == date('Y-m-d', db_getsession('DB_datausu')) 
+        && $dHoraProcAndam > db_hora() ) ) 
+    {
+  
+      $sqlerro             = true;
+      $erro_msg            = "A data do andamento é maior que a data atual. Verifique a data da sessão";
+    }
+  }
+   
+  if ( $sqlerro == false ) {
+
+  	$clprocandamint->p78_codandam     = $p58_codandam;
+  	$clprocandamint->p78_data         = date("Y-m-d", db_getsession("DB_datausu"));;
+  	$clprocandamint->p78_hora         = db_hora();
+	  $clprocandamint->p78_usuario      = db_getsession("DB_id_usuario");
+  	$clprocandamint->p78_publico      = $p78_publico;
+  	$clprocandamint->p78_transint     = 'false';
   	$clprocandamint->p78_tipodespacho = $p78_tipodespacho;
   	$clprocandamint->incluir(null);
 
   	$erro_msg = $clprocandamint->erro_msg;
-
   	if ( $clprocandamint->erro_status == '0' ) {
     	$sqlerro = true;
   	} 
@@ -121,7 +155,11 @@ if ( isset($incluir) ) {
   }
 
   db_fim_transacao($sqlerro);
+
+  $_SESSION['protprocesso_codprocandamint'] = $codprocandamint;
+ 
 }
+
 ?>
 <html>
 <head>
@@ -136,7 +174,7 @@ if ( isset($incluir) ) {
 </style>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-	<?php include("forms/db_frmprocandamint.php"); ?>
+	<?php include(modification("forms/db_frmprocandamint.php")); ?>
 </body>
 </html>
 <?php
@@ -157,6 +195,10 @@ if ( isset($incluir) ) {
       echo "<script> document.form1.".$clprocandamint->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clprocandamint->erro_campo.".focus();</script>";
     }
+
+  } else {
+    
+     echo "<script>  parent.document.formaba.g3.disabled = false; </script>";
 
   }
 }

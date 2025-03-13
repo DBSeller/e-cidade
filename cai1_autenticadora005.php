@@ -27,7 +27,7 @@
 
       db_postmemory($HTTP_POST_VARS);
       if(!empty($k11_id)) {
-        $result = pg_exec("select k11_id from cfautent where k11_id = $k11_id");
+        $result = db_query("select k11_id from cfautent where k11_id = $k11_id");
 	    if(pg_numrows($result) > 0) {
  	      db_redireciona("cai1_autenticadora002.php?".base64_encode("retorno=".pg_result($result,0,0)));
 	      exit;

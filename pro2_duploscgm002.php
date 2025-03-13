@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_cgm_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_cgm_classe.php"));
 $clcgm = new cl_cgm;
 $clcgm->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -133,11 +133,16 @@ $pdf->setfillcolor(235);
 $alt = 4;
 $troca = 0;
 $total = 0;
+
+$z01_cgccpf_setado=isset($z01_cgccpf);
+
 for($i=0;$i<$numrows_cgm;$i++){
   db_fieldsmemory($result_cgm,$i);
 
-  if ($zerados == "m" and $z01_cgccpf != "") {
-		continue;
+  if ($z01_cgccpf_setado == true) {
+		if ($zerados == "m" and $z01_cgccpf != "") {
+			continue;
+		}
 	}
 	
   $where = "";

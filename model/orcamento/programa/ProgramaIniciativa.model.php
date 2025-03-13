@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -32,7 +32,7 @@
  * @author bruno.silva
  * @author acacio.schneider
  * @package orcamento
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.11 $
  */
 class ProgramaIniciativa {
 
@@ -73,13 +73,19 @@ class ProgramaIniciativa {
   protected $oProjetoAtividade = null;
 
   /**
-   * Ano da iniciativa 
+   * Ano inicial da iniciativa
    * 
    * @var integer
    * @access protected
    */
-  protected $iAno;
-  
+  protected $iAnoInicial;
+
+  /**
+   * Ano final da iniciativa
+   * @var integer
+   */
+  protected $iAnoFinal;
+
   /**
    * Construtor da classe ProgramaIniciativa, recebe como parâmetro um sequencial da tabela orciniciativa
    * Caso contrário constrói um objeto vazio
@@ -106,7 +112,8 @@ class ProgramaIniciativa {
       $this->sDescricao        = $oIniciativa->o147_descricao;
       $this->sIniciativa       = $oIniciativa->o147_iniciativa;
       $this->iCodigoMeta       = $oIniciativa->o147_orcmeta;
-      $this->iAno              = $oIniciativa->o147_ano;
+      $this->iAnoInicial       = $oIniciativa->o147_ano;
+      $this->iAnoFinal         = $oIniciativa->o147_anofinal;
     }
   }
 
@@ -181,24 +188,43 @@ class ProgramaIniciativa {
   }
 
   /**
-   * Retorna no ano sa iniciativa
+   * Retorna no ano inicial da iniciativa
    * 
    * @access public
    * @return integer
    */
   public function getAno() {
-    return $this->iAno;
+    return $this->iAnoInicial;
   }
 
   /**
-   * Define o ano da iniciativa
+   * Define o ano inicial da iniciativa
    * 
-   * @param integer $iAno 
+   * @param integer $iAnoInicial 
    * @access public
    * @return void
    */
-  public function setAno($iAno) {
-    $this->iAno = $iAno;
+  public function setAno($iAnoInicial) {
+    $this->iAnoInicial = $iAnoInicial;
+  }
+
+  /**
+   * Retorna no ano final da iniciativa
+   * @access public
+   * @return integer
+   */
+  public function getAnoFinal() {
+    return $this->iAnoFinal;
+  }
+
+  /**
+   * Define o ano final da iniciativa
+   * @param integer $iAnoFinal
+   * @access public
+   * @return void
+   */
+  public function setAnoFinal($iAnoFinal) {
+    $this->iAnoFinal = $iAnoFinal;
   }
 
   /**
@@ -234,7 +260,8 @@ class ProgramaIniciativa {
     $oDAOOrciniciativa->o147_descricao  = $this->sDescricao;
     $oDAOOrciniciativa->o147_iniciativa = $this->sIniciativa;
     $oDAOOrciniciativa->o147_orcmeta    = $this->iCodigoMeta;
-    $oDAOOrciniciativa->o147_ano        = $this->iAno;
+    $oDAOOrciniciativa->o147_ano        = $this->iAnoInicial;
+    $oDAOOrciniciativa->o147_anofinal   = $this->iAnoFinal;
 
     if (empty($this->iCodigoSequencial)) {
       $oDAOOrciniciativa->incluir(null);
@@ -293,5 +320,4 @@ class ProgramaIniciativa {
 
     return $this->oProjetoAtividade;
   }
-  
 }

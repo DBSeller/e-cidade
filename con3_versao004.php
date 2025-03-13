@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_cadhelp_classe.php");
-include("classes/db_db_itenshelp_classe.php");
-include("classes/db_db_tipohelp_classe.php");
-include("classes/db_db_modulos_classe.php");
-include("classes/db_db_versao_classe.php");
-include("classes/db_db_versaoant_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_cadhelp_classe.php"));
+include(modification("classes/db_db_itenshelp_classe.php"));
+include(modification("classes/db_db_tipohelp_classe.php"));
+include(modification("classes/db_db_modulos_classe.php"));
+include(modification("classes/db_db_versao_classe.php"));
+include(modification("classes/db_db_versaoant_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 
@@ -220,7 +220,7 @@ if(isset($id_item) && $id_item != 0){
 }
 $sql .= " order by nome_modulo";
 
-$res = pg_exec($sql);
+$res = db_query($sql);
 
 $numrows = pg_numrows($res);
 
@@ -283,7 +283,7 @@ if( $numrows > 0 ) {
               $sql = "select descricao 
                       from db_itensmenu
                       where id_item = ".$impmat[$imp];
-              $resi = pg_exec($sql);
+              $resi = db_query($sql);
               $descr = pg_result($resi,0,0);
 
               for($xx=1;$xx<$contador*2;$xx++){
@@ -296,7 +296,7 @@ if( $numrows > 0 ) {
                            inner join db_versao on db32_codver = db30_codver
                       where db30_codver >= $versao_inicial
                         and db32_id_item = ".$impmat[$imp];
-              $resi = pg_exec($sql);
+              $resi = db_query($sql);
               for($o=0;$o<pg_numrows($resi);$o++){
                 
                 db_fieldsmemory($resi,$o);
@@ -342,7 +342,7 @@ if( $numrows > 0 ) {
               where modulo = $modulo
               order by i.codproced";
 
-      $result = pg_query($sql);
+      $result = db_query($sql);
 
       if(pg_numrows($result)>0){
         
@@ -369,7 +369,7 @@ if( $numrows > 0 ) {
                   )
                   ";
 
-          $resitem = pg_query($sql);
+          $resitem = db_query($sql);
           for($mi=0;$mi<pg_numrows($resitem);$mi++){
             db_fieldsmemory($resitem,$mi);
             echo "&nbsp&nbsp&nbsp<strong>2.$db30_codversao.$db30_codrelease</strong> $db32_obs<br>";
@@ -401,7 +401,7 @@ if ( isset($registra_atualizacao) ){
 <form name='form2' method='post'>
 <script>
 function js_confirma_leitura(){
-  top.corpo.db_iframe_confirma_atualizacoes.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_confirma_atualizacoes.hide();
   document.form2.submit();
 }
 </script>

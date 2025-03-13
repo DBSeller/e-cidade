@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 
 $oGet                     = db_utils::postMemory($_GET);
 $oRotuloInventario        = new rotulo("inventario");
@@ -327,7 +327,6 @@ var aDepartamentos          = new Array();
 var aDivisaoPorDepartamento = new Array();
 var sCorBensComInventario   = "#C0BFFF";
 var sCorBensAtualizados     = "#D1F07C";
-var aBensHint               = new Array();
 /**
  *	variável para guardar o estado de um input
  *	guarda o estado anterior a cada focus no elemento html
@@ -438,7 +437,7 @@ function js_pesquisaDivisoesDepartamentos() {
                                onComplete: function (oAjax) {
 
                                  js_removeObj("msgBox");
-                                 var oRetorno            = eval("("+oAjax.responseText+")");
+                                 var oRetorno            = JSON.parse(oAjax.responseText);
                                  aDepartamentos          = oRetorno.aDepartamentos;
                                  aDivisaoPorDepartamento = oRetorno.aDivisoes;
                                }});
@@ -456,7 +455,7 @@ function js_pesquisaSituacoes() {
                              onComplete: function (oAjax) {
 
                                js_removeObj("msgBox");
-                               var oRetorno  = eval("("+oAjax.responseText+")");
+                               var oRetorno  = JSON.parse(oAjax.responseText);
                                aSituacaoBens = oRetorno.aSituacaoBens;
                              }});
 }
@@ -464,7 +463,7 @@ function js_pesquisaSituacoes() {
 function js_montaWindowGridItens (oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.iStatus == 2) {
 
@@ -629,7 +628,7 @@ function js_salvaDadosLinhaSelecionada(oRow) {
                                    function (oAjax) {
 
                                    js_removeObj("msgBox");
-                                   var oRetorno =  eval("("+oAjax.responseText+")");
+                                   var oRetorno =  JSON.parse(oAjax.responseText);
                                    if (oRetorno.status == 2) {
                                      alert(_M('patrimonial.patrimonio.pat4_inventariomanutencao001.nao_foi_possivel_salvar_bem'));
                                    }
@@ -698,11 +697,15 @@ function js_bloqueiaLinhaCheckbox(oRow, oCellGrid, oInputCell) {
 
 function js_preencheGrid(aBens) {
 
+  js_divCarregando("Carregando dados...", "oDivDados");
+
+  var iInventario = document.getElementById('iInventario').value;
   oGridBens.clearAll(true);
+  aItensGrid = {};
   aBens.each(function (oItem, iIndice) {
 
-  /* INPUT VALOR Depreciavel */
-    var oValorAtual = eval("oTxtValorAtual"+oItem.codigo_bem+" = new DBTextField('oTxtValorAtual"+oItem.codigo_bem+"', 'oTxtValorAtual"+oItem.codigo_bem+"', '"+js_formatar(oItem.valor_atual, 'f')+"', 10)");
+    /* INPUT VALOR Depreciavel */
+    var oValorAtual = window["oTxtValorAtual" + oItem.codigo_bem] = new DBTextField("oTxtValorAtual"+oItem.codigo_bem, "oTxtValorAtual"+oItem.codigo_bem , js_formatar(oItem.valor_atual, 'f'), 10);
     oValorAtual.addEvent("onKeyPress", "return js_mask(event,\"0-9|,|-\")");
     oValorAtual.addStyle('width', '100%');
     oValorAtual.addStyle('height', '100%');
@@ -715,22 +718,16 @@ function js_preencheGrid(aBens) {
     oValorAtual.setReadOnly(true);
 
     /* INPUT VALOR Depreciavel */
-    var oValorDepreciavel = eval("oTxtValorDepreciavel"+oItem.codigo_bem+" = new DBTextField('oTxtValorDepreciavel"+oItem.codigo_bem+"', 'oTxtValorDepreciavel"+oItem.codigo_bem+"', '"+js_formatar(oItem.valor_depreciavel, 'f')+"', 10)");
+    var oValorDepreciavel = window["oTxtValorDepreciavel"+oItem.codigo_bem] = new DBTextField("oTxtValorDepreciavel" + oItem.codigo_bem, "oTxtValorDepreciavel" + oItem.codigo_bem, js_formatar(oItem.valor_depreciavel, 'f'), 10);
     oValorDepreciavel.addEvent("onKeyPress", "return js_mask(event,\"0-9|,|-\")");
     oValorDepreciavel.addStyle('width', '100%');
     oValorDepreciavel.addStyle('height', '100%');
     oValorDepreciavel.addStyle('text-align', 'right');
     oValorDepreciavel.addStyle('border', '1px solid transparent');
-    //oValorDepreciavel.addEvent("onFocus", "js_liberaDigitacao(this);");
-    //oValorDepreciavel.addEvent("onBlur", "js_bloqueiaDigitacao(this);js_atualizaValor(this, event);");
-    //oValorDepreciavel.addEvent("onChange",";js_valorAtualizado(this,"+oItem.codigo_bem+","+iIndice+"); js_atualizaValor(this, event);");
-    //oValorDepreciavel.addEvent("onKeyUp",';js_ValidaCampos(this, 4,"Valor Depreciável" , "f", "f", event)');
     oValorDepreciavel.setReadOnly(true);
 
-
-
     /* INPUT VALOR RESIDUAL */
-    var oValorResidual = eval("oTxtValorResidual"+oItem.codigo_bem+" = new DBTextField('oTxtValorResidual"+oItem.codigo_bem+"', 'oTxtValorResidual"+oItem.codigo_bem+"', '"+js_formatar(oItem.valor_residual, 'f')+"', 10)");
+    var oValorResidual = window["oTxtValorResidual" + oItem.codigo_bem] = new DBTextField("oTxtValorResidual"+oItem.codigo_bem, "oTxtValorResidual" + oItem.codigo_bem, js_formatar(oItem.valor_residual, 'f'), 10);
     oValorResidual.addEvent("onKeyPress", "return js_mask(event,\"0-9|,|-\")");
     oValorResidual.addStyle('width', '100%');
     oValorResidual.addStyle('height', '100%');
@@ -744,73 +741,90 @@ function js_preencheGrid(aBens) {
 
 
     /* BOX SITUACAO */
-    var oComboBoxSituacao = eval("oComboBoxSituacao"+oItem.codigo_bem+" = new DBComboBox ('oComboBoxSituacao"+oItem.codigo_bem+"', 'oComboBoxSituacao"+oItem.codigo_bem+"', null, null);");
-    oComboBoxSituacao.addItem('0', 'Selecione');
-    aSituacaoBens.each(function(oSituacao, iIndex) {
+    var oOptionSelecione = new Option("Selecione", 0);
 
-      var aParametros = new Array();
-      if (oSituacao.t70_situac == oItem.situacao) {
-        // configuro o valor
-        var oParametro   = new Object();
-        oParametro.nome  = "selected";
-        oParametro.valor = "selected";
-        aParametros.push(oParametro);
-      }
-      oComboBoxSituacao.addItem(oSituacao.t70_situac, oSituacao.t70_descr.urlDecode(), null, aParametros);
-    });
-    oComboBoxSituacao.addEvent("onChange",";js_alteraSituacaoBem(this,"+oItem.codigo_bem+","+iIndice+")");
-    oComboBoxSituacao.setDisable();
+    var oComboBoxSituacao = document.createElement("select");
+    oComboBoxSituacao.id = "oComboBoxSituacao" + oItem.codigo_bem;
+    oComboBoxSituacao.add( oOptionSelecione );
+
+    for (var iOption = 0; iOption < aSituacaoBens.length; iOption++) {
+
+      var oSituacao = aSituacaoBens[iOption],
+          selected = (oSituacao.t70_situac === oItem.situacao),
+          oOption = new Option(oSituacao.t70_descr.urlDecode(), oSituacao.t70_situac, selected, selected);
+
+      oComboBoxSituacao.add(oOption);
+    }
+
+    oComboBoxSituacao.onchange = function () {
+      js_alteraSituacaoBem(oComboBoxSituacao, oItem.codigo_bem, iIndice);
+    }
+    oComboBoxSituacao.style.width = "100%";
+    oComboBoxSituacao.disabled = true;
 
     /* BOX DEPARTAMENTO */
-    var oComboBoxDepartamento = eval("oComboBoxDepartamento"+oItem.codigo_bem+" = new DBComboBox ('oComboBoxDepartamento"+oItem.codigo_bem+"', 'oComboBoxDepartamento"+oItem.codigo_bem+"', null, null);");
+    var oComboBoxDivisao = document.createElement("select");
+    var oComboBoxDepartamento = document.createElement("select");
+    oComboBoxDepartamento.id = "oComboBoxDepartamento" + oItem.codigo_bem;
+    oComboBoxDepartamento.add( oOptionSelecione );
 
     var iCodigoDepartamento = oItem.codigo_departamento_bem;
     if (oItem.codigo_bem_inventario != null) {
       iCodigoDepartamento = oItem.departamento_inventario;
     }
-    aDepartamentos.each(function(oDepartamento, iIndex) {
 
-      var aParametros = new Array();
-      if (oDepartamento.coddepto == iCodigoDepartamento) {
+    for (var iOpcao = 0; iOpcao < aDepartamentos.length; iOpcao++) {
 
-        var oParametro   = new Object();
-        oParametro.nome  = "selected";
-        oParametro.valor = "selected";
-        aParametros.push(oParametro);
-      }
-      oComboBoxDepartamento.addItem(oDepartamento.coddepto, oDepartamento.descrdepto.urlDecode(), null, aParametros);
-    });
-    oComboBoxDepartamento.addEvent("onChange", ";js_pesquisaDivisaoDepartamento(this.value, oComboBoxDivisao"+oItem.codigo_bem+"); js_alterarDepartamento(this, "+oItem.codigo_bem+", "+iIndice+");");
-    oComboBoxDepartamento.setDisable();
+      var oDepartamento = aDepartamentos[iOpcao],
+          selected = (oDepartamento.coddepto === iCodigoDepartamento);
+          oOption = new Option(oDepartamento.descrdepto.urlDecode(), oDepartamento.coddepto, selected, selected);
+
+      oComboBoxDepartamento.add( oOption );
+    }
+
+    oComboBoxDepartamento.onchange = function () {
+
+      js_pesquisaDivisaoDepartamento(oComboBoxDepartamento.value, oComboBoxDivisao);
+      js_alterarDepartamento(oComboBoxDepartamento, oItem.codigo_bem, iIndice);
+    }
+
+    oComboBoxDepartamento.style.width = "100%";
+    oComboBoxDepartamento.disabled = true;
 
     /* BOX DIVISAO */
-    var oComboBoxDivisao = eval("oComboBoxDivisao"+oItem.codigo_bem+" = new DBComboBox ('oComboBoxDivisao"+oItem.codigo_bem+"', 'oComboBoxDivisao"+oItem.codigo_bem+"', null, null);");
+    oComboBoxDivisao.id = "oComboBoxDivisao" + oItem.codigo_bem;
+
     var aDivisoes = new Array();
     if (aDivisaoPorDepartamento[iCodigoDepartamento] != null) {
       aDivisoes = aDivisaoPorDepartamento[iCodigoDepartamento];
     }
+
     if (aDivisoes.length == 0) {
-      oComboBoxDivisao.addItem(0,"Sem Divisão");
+      oComboBoxDivisao.add(new Option("Sem Divisão", 0, true));
     } else {
 
       var iDivisao = oItem.codigo_divisao_bem;
       if (oItem.codigo_bem_inventario != null) {
         iDivisao = oItem.divisao_inventario;
       }
-      aDivisoes.each(function (oDivisao, iIndiceDivisao){
-        var aParametros = new Array();
-        if (oDivisao.t30_codigo == iDivisao) {
 
-          var oParametro   = new Object();
-          oParametro.nome  = "selected";
-          oParametro.valor = "selected";
-          aParametros.push(oParametro);
-        }
-        oComboBoxDivisao.addItem(oDivisao.t30_codigo, oDivisao.t30_descr.urlDecode(), null, aParametros);
-      });
+      for (var iOption = 0; iOption < aDivisoes.length; iOption++) {
+
+        var oDivisao = aDivisoes[iOption],
+            selected = (oDivisao.t30_codigo === iDivisao),
+            oOption = new Option(oDivisao.t30_descr.urlDecode(), oDivisao.t30_codigo, selected, selected);
+
+        oComboBoxDivisao.add( oOption );
+      }
     }
-    oComboBoxDivisao.addEvent("onChange", ";js_alterarDivisao(this, "+oItem.codigo_bem+", "+iIndice+");");
-    oComboBoxDivisao.setDisable();
+
+    oComboBoxDivisao.onchange = function () {
+
+      js_alterarDivisao(oComboBoxDivisao, oItem.codigo_bem, iIndice);
+    }
+
+    oComboBoxDivisao.style.width = "100%";
+    oComboBoxDivisao.disabled = true;
 
     var sDepartamentoDivisao = oItem.descricao_departamento_bem.urlDecode();
     if (oItem.descricao_divisao_bem != null && oItem.descricao_divisao_bem != "") {
@@ -818,7 +832,7 @@ function js_preencheGrid(aBens) {
     }
 
     /* INPUT VIDA UTIL */
-    var oVidaUtil = eval("oTxtVidaUtil"+oItem.codigo_bem+" = new DBTextField('oTxtVidaUtil"+oItem.codigo_bem+"', 'oTxtVidaUtil"+oItem.codigo_bem+"', '"+oItem.vida_util+"', 5)");
+    var oVidaUtil = window["oTxtVidaUtil"+oItem.codigo_bem] = new DBTextField("oTxtVidaUtil"+oItem.codigo_bem, "oTxtVidaUtil"+oItem.codigo_bem, oItem.vida_util, 5);
     oVidaUtil.addEvent("onKeyPress", "return js_mask(event,\"0-9\")");
     oVidaUtil.addStyle('width', '100%');
     oVidaUtil.addStyle('height', '100%');
@@ -830,7 +844,7 @@ function js_preencheGrid(aBens) {
     oVidaUtil.setReadOnly(true);
 
     /* INPUT   BEM-INVETARIO */
-    var oBemInvetario = eval("oTxtBemInventario"+oItem.codigo_bem+" = new DBTextField('oTxtBemInventario"+oItem.codigo_bem+"', 'oTxtBemInventario"+oItem.codigo_bem+"', '"+oItem.codigo_bem_inventario+"', 5)");
+    var oBemInvetario = window["oTxtBemInventario"+oItem.codigo_bem] = new DBTextField("oTxtBemInventario"+oItem.codigo_bem, "oTxtBemInventario"+oItem.codigo_bem, +oItem.codigo_bem_inventario, 5);
     oBemInvetario.setReadOnly(true);
 
     var iCodigoBemInventario = oItem.codigo_bem_inventario;
@@ -842,92 +856,105 @@ function js_preencheGrid(aBens) {
       iCodigoInventario = '0';
     }
 
+    if (iCodigoBemInventario != "0" && iCodigoBemInventario == iInventario) {
+
+      oValorAtual.addStyle("backgroundColor", sCorBensAtualizados);
+      oValorDepreciavel.addStyle("backgroundColor", sCorBensAtualizados);
+      oValorResidual.addStyle("backgroundColor", sCorBensAtualizados);
+      oVidaUtil.addStyle("backgroundColor", sCorBensAtualizados);
+    } else if (iCodigoInventario != "0" && iCodigoInventario == iInventario) {
+
+      oValorAtual.addStyle("backgroundColor", sCorBensComInventario);
+      oValorDepreciavel.addStyle("backgroundColor", sCorBensComInventario);
+      oValorResidual.addStyle("backgroundColor", sCorBensComInventario);
+      oVidaUtil.addStyle("backgroundColor", sCorBensComInventario);
+    }
+
+    aItensGrid[iIndice] = {
+      situacao : oComboBoxSituacao,
+      valorAtual : oValorAtual,
+      valorResidual : oValorResidual,
+      valorDepreciavel : oValorDepreciavel,
+      departamento : oComboBoxDepartamento,
+      divisao : oComboBoxDivisao,
+      vidaUtil : oVidaUtil,
+      codigoBem : iCodigoBemInventario,
+      codigoInventario : iCodigoInventario
+    };
+
     var aLinha     = new Array();
         aLinha[0]  = oItem.placa.urlDecode();
         aLinha[1]  = oItem.codigo_bem;
         aLinha[2]  = oItem.descricao.urlDecode();
         aLinha[3]  = sDepartamentoDivisao;
-        aLinha[4]  = oComboBoxSituacao.toInnerHtml();
-        aLinha[5]  = oValorAtual.toInnerHtml();  //atual
-        aLinha[6]  = oValorResidual.toInnerHtml();    //residual
-        aLinha[7]  = oValorDepreciavel.toInnerHtml();  //depreciavel
-        aLinha[8]  = oComboBoxDepartamento.toInnerHtml();
-        aLinha[9]  = oComboBoxDivisao.toInnerHtml();
-        aLinha[10] = oVidaUtil.toInnerHtml();
+        aLinha[4]  = '';
+        aLinha[5]  = '';
+        aLinha[6]  = '';
+        aLinha[7]  = '';
+        aLinha[8]  = '';
+        aLinha[9]  = '';
+        aLinha[10] = '';
         aLinha[11] = iCodigoBemInventario;
         aLinha[12] = iCodigoInventario;
 
     var lCheckBoxBloqueado = false;
-    if (oItem.codigo_inventario != null && oItem.codigo_inventario != $F("iInventario")) {
+    if (oItem.codigo_inventario != null && oItem.codigo_inventario != iInventario) {
       lCheckBoxBloqueado = true;
     }
     oGridBens.addRow(aLinha, false, lCheckBoxBloqueado);
 
     oItem.departamento_divisao = sDepartamentoDivisao;
-    aBensHint[iIndice] = oItem;
 
     var oRowAdicionado = oGridBens.aRows[iIndice];
 
-    if (iCodigoBemInventario != "0" && oItem.codigo_inventario == $F("iInventario")) {
+    if (iCodigoBemInventario != "0" && oItem.codigo_inventario == iInventario) {
       oRowAdicionado.setClassName('bensAtualizados');
-    } else if (oItem.codigo_inventario != $F("iInventario") && iCodigoBemInventario != "0") {
+    } else if (oItem.codigo_inventario != iInventario && iCodigoBemInventario != "0") {
       oRowAdicionado.setClassName('bensComInventario');
     }
   });
+
   oGridBens.renderRows();
 
-  oGridBens.aRows.each(function (aRow, iIndice) {
+  for (var iIndice = 0; iIndice < oGridBens.aRows.length; iIndice++) {
 
-    var sIdCellValorAtual       = aRow.aCells[5].sId;
-    var sIdCellValorDepreciavel = aRow.aCells[6].sId;
-    var sIdCellValorResidual    = aRow.aCells[7].sId;
-    var sIdCellVidaUtil         = aRow.aCells[10].sId;
-    var iCodigoBem              = aRow.aCells[2].getValue();
+    var oItem = aItensGrid[iIndice],
+        oRow  = oGridBens.aRows[iIndice],
+        tdSituacao = document.getElementById(oRow.aCells[5].sId),
+        tdValorAtual = document.getElementById(oRow.aCells[6].sId),
+        tdValorResidual = document.getElementById(oRow.aCells[7].sId),
+        tdValorDepreciavel = document.getElementById(oRow.aCells[8].sId),
+        tdDepartamento = document.getElementById(oRow.aCells[9].sId),
+        tdDivisao = document.getElementById(oRow.aCells[10].sId),
+        tdVidaUtil = document.getElementById(oRow.aCells[11].sId);
 
-    if (aRow.aCells[12].getValue() != "0" && aRow.aCells[13].getValue() == $F("iInventario")) {
+    tdSituacao.innerHTML = '';
+    tdSituacao.appendChild( oItem.situacao );
+    oItem.valorAtual.show( tdValorAtual );
+    oItem.valorResidual.show( tdValorResidual );
+    oItem.valorDepreciavel.show( tdValorDepreciavel );
+    tdDepartamento.innerHTML = '';
+    tdDepartamento.appendChild( oItem.departamento );
+    tdDivisao.innerHTML = '';
+    tdDivisao.appendChild( oItem.divisao );
+    oItem.vidaUtil.show( tdVidaUtil );
 
-      $(sIdCellValorAtual).style.backgroundColor                  = sCorBensAtualizados;
-      $("oTxtValorAtual"+iCodigoBem).style.backgroundColor        = sCorBensAtualizados;
-      $(sIdCellValorDepreciavel).style.backgroundColor            = sCorBensAtualizados;
-      $("oTxtValorDepreciavel"+iCodigoBem).style.backgroundColor  = sCorBensAtualizados;
-      $(sIdCellValorResidual).style.backgroundColor               = sCorBensAtualizados;
-      $("oTxtValorResidual"+iCodigoBem).style.backgroundColor     = sCorBensAtualizados;
-      $(sIdCellVidaUtil).style.backgroundColor                    = sCorBensAtualizados;
-      $("oTxtVidaUtil"+iCodigoBem).style.backgroundColor          = sCorBensAtualizados;
+    if (oItem.codigoBem != "0" && oItem.codigoBem == iInventario) {
 
-    } else if (aRow.aCells[13].getValue() != $F("iInventario") && aRow.aCells[13].getValue() != "0") {
+      tdValorAtual.style.backgroundColor       = sCorBensAtualizados;
+      tdValorResidual.style.backgroundColor    = sCorBensAtualizados;
+      tdValorDepreciavel.style.backgroundColor = sCorBensAtualizados;
+      tdVidaUtil.style.backgroundColor         = sCorBensAtualizados;
+    } else if (oItem.iCodigoInventario != "0" && oItem.iCodigoInventario == iInventario) {
 
-      $(sIdCellValorAtual).style.backgroundColor                  = sCorBensComInventario;
-      $("oTxtValorAtual"+iCodigoBem).style.backgroundColor        = sCorBensComInventario;
-      $(sIdCellValorDepreciavel).style.backgroundColor            = sCorBensComInventario;
-      $("oTxtValorDepreciavel"+iCodigoBem).style.backgroundColor  = sCorBensComInventario;
-      $(sIdCellValorResidual).style.backgroundColor               = sCorBensComInventario;
-      $("oTxtValorResidual"+iCodigoBem).style.backgroundColor     = sCorBensComInventario;
-      $(sIdCellVidaUtil).style.backgroundColor                    = sCorBensComInventario;
-      $("oTxtVidaUtil"+iCodigoBem).style.backgroundColor          = sCorBensComInventario;
+      tdValorAtual.style.backgroundColor       = sCorBensComInventario;
+      tdValorResidual.style.backgroundColor    = sCorBensComInventario;
+      tdValorDepreciavel.style.backgroundColor = sCorBensComInventario;
+      tdVidaUtil.style.backgroundColor         = sCorBensComInventario;
     }
-  });
+  }
 
-  /**
-   * Adicionamos o DBHINT em cada linha da grid
-   */
-  aBensHint.each(function(oBem, iIndice) {
-
-    var sTextEvent  = "<b>Bem: </b>"+oBem.codigo_bem+" - "+oBem.descricao.urlDecode()+"<br>";
-        sTextEvent += "<b>Departamento/Divisão: </b>"+oBem.departamento_divisao+"<br>";
-    if (oBem.codigo_inventario != null) {
-      sTextEvent += "<b>Inventário: </b>"+oBem.codigo_inventario+"<br>";
-    }
-
-    var aEventsIn   = ["onmouseover"];
-    var aEventsOut  = ["onmouseout"];
-    var oDBHint     = eval("oDBHint_"+oBem.codigo_bem+" = new DBHint('oDBHint_"+oBem.codigo_bem+"')");
-    oDBHint.setText(sTextEvent);
-    oDBHint.setShowEvents(aEventsIn);
-    oDBHint.setHideEvents(aEventsOut);
-    oDBHint.setScrollElement($("body-container-"+oGridBens.sName));
-    oDBHint.make($(oGridBens.aRows[iIndice].sId));
-  });
+  js_removeObj("oDivDados");
 }
 
 function js_alterarDepartamento(oComboBoxDepartamento, iCodigoBem, iCodigoLinha) {
@@ -935,7 +962,7 @@ function js_alterarDepartamento(oComboBoxDepartamento, iCodigoBem, iCodigoLinha)
   js_divCarregando(_M('patrimonial.patrimonio.pat4_inventariomanutencao001.salvando_informacoes'), "msgBox");
   var oParam                 = new Object();
   oParam.exec                = "alterarDepartamento";
-  oParam.iCodigoDepartamento = oComboBoxDepartamento.getValue();
+  oParam.iCodigoDepartamento = oComboBoxDepartamento.value;
   oParam.iCodigoBem          = iCodigoBem;
   oParam.iCodigoInventario   = $F('iInventario');
   oParam.iInventarioBem      = oGridBens.aRows[iCodigoLinha].aCells[12].getValue();
@@ -947,7 +974,7 @@ function js_alterarDepartamento(oComboBoxDepartamento, iCodigoBem, iCodigoLinha)
                                  function (oAjax) {
 
                                    js_removeObj("msgBox");
-                                   var oRetorno =  eval("("+oAjax.responseText+")");
+                                   var oRetorno =  JSON.parse(oAjax.responseText);
                                    if(oRetorno.status == 2) {
                                      alert(oRetorno.message.urlDecode());
                                    }
@@ -962,7 +989,7 @@ function js_alterarDivisao(oComboBoxDivisao, iCodigoBem, iCodigoLinha) {
   js_divCarregando(_M('patrimonial.patrimonio.pat4_inventariomanutencao001.salvando_informacoes'), "msgBox");
   var oParam                 = new Object();
   oParam.exec                = "alterarDivisao";
-  oParam.iCodigoDivisao      = oComboBoxDivisao.getValue();
+  oParam.iCodigoDivisao      = oComboBoxDivisao.value;
   oParam.iCodigoBem          = iCodigoBem;
   oParam.iCodigoInventario   = $F('iInventario');
   oParam.iInventarioBem      = oGridBens.aRows[iCodigoLinha].aCells[12].getValue();
@@ -974,7 +1001,7 @@ function js_alterarDivisao(oComboBoxDivisao, iCodigoBem, iCodigoLinha) {
                                  function (oAjax) {
 
                                    js_removeObj("msgBox");
-                                   var oRetorno =  eval("("+oAjax.responseText+")");
+                                   var oRetorno =  JSON.parse(oAjax.responseText);
                                    if(oRetorno.status == 2) {
                                      alert(oRetorno.message.urlDecode());
                                    }
@@ -1050,7 +1077,7 @@ function js_valorResidual(oInputValorResidual, iCodigoBem, iCodigoLinha) {
   //                                function (oAjax) {
 
   //                                  js_removeObj("msgBox");
-  //                                  var oRetorno =  eval("("+oAjax.responseText+")");
+  //                                  var oRetorno =  JSON.parse(oAjax.responseText);
   //                                  if(oRetorno.status == 2) {
   //                                    alert(oRetorno.message.urlDecode());
   //                                  }
@@ -1080,7 +1107,7 @@ function js_vidaUtil (oInputVidaUtil, iCodigoBem, iCodigoLinha) {
                                  function (oAjax) {
 
                                    js_removeObj("msgBox");
-                                   var oRetorno =  eval("("+oAjax.responseText+")");
+                                   var oRetorno =  JSON.parse(oAjax.responseText);
                                    if(oRetorno.status == 2) {
                                      alert(oRetorno.message.urlDecode());
                                    }
@@ -1099,7 +1126,7 @@ function js_alteraSituacaoBem (oComboBoxSituacao, iCodigoBem, iCodigoLinha) {
   js_divCarregando(_M('patrimonial.patrimonio.pat4_inventariomanutencao001.salvando_informacoes'), "msgBox");
   var oParam               = new Object();
   oParam.exec              = "alteraSituacao";
-  oParam.iSituacao         = oComboBoxSituacao.getValue();
+  oParam.iSituacao         = oComboBoxSituacao.value;
   oParam.iCodigoBem        = iCodigoBem;
   oParam.iCodigoInventario = $F('iInventario');
   oParam.iInventarioBem    = oGridBens.aRows[iCodigoLinha].aCells[12].getValue();
@@ -1112,7 +1139,7 @@ function js_alteraSituacaoBem (oComboBoxSituacao, iCodigoBem, iCodigoLinha) {
                                  function (oAjax) {
 
                                    js_removeObj("msgBox");
-                                   var oRetorno =  eval("("+oAjax.responseText+")");
+                                   var oRetorno =  JSON.parse(oAjax.responseText);
                                    if(oRetorno.status == 2) {
                                      alert(oRetorno.message.urlDecode());
                                    }
@@ -1140,20 +1167,16 @@ function js_pesquisaDivisaoDepartamento(iCodigoDepartamento, oObjetoDivisao) {
                                  function (oAjax) {
 
                                    js_removeObj("msgBox");
-                                   var oRetorno =  eval("("+oAjax.responseText+")");
-                                   oObjetoDivisao.clearItens();
-                                   oObjetoDivisao.addItem('0', 'Sem Divisão', null, aParametros);
+                                   var oRetorno =  JSON.parse(oAjax.responseText);
+                                   oObjetoDivisao.options.length = 0;
+                                   oObjetoDivisao.add( new Option('Sem Divisão', 0, true));
+
                                    if (oRetorno.aDivisaoDepartamento.length == 0) {
-                                     oObjetoDivisao.setValue(0);
                                      return;
                                    }
 
-                                   var oParametros   = new Object();
-                                   oParametros.nome  = "selected";
-                                   oParametros.valor = "selected";
-                                   var aParametros = new Array(oParametros);
                                    oRetorno.aDivisaoDepartamento.each(function (oDivisao, iIndice){
-                                     oObjetoDivisao.addItem(oDivisao.t30_codigo, oDivisao.t30_descr.urlDecode());
+                                     oObjetoDivisao.add( new Option(oDivisao.t30_descr.urlDecode(), oDivisao.t30_codigo) );
                                    });
                                  }
                                });

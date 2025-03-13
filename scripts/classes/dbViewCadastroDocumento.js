@@ -160,7 +160,7 @@ function dbViewCadastroDocumento() {
     
     js_removeObj("msgBox");
     
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.iStatus == 2) {
     
@@ -212,7 +212,7 @@ function dbViewCadastroDocumento() {
   
     js_removeObj("msgBox");
  
-    var oRetorno    = eval("("+oAjax.responseText+")");
+    var oRetorno    = JSON.parse(oAjax.responseText);
     
     me.createFormDocument(oRetorno.aAtributos);
     
@@ -385,7 +385,7 @@ function dbViewCadastroDocumento() {
    */
   this.retorno_loadDocumento = function (oAjax) {
   
-    var oRetorno  = eval("("+oAjax.responseText+")");
+    var oRetorno  = JSON.parse(oAjax.responseText);
     var aValores  = oRetorno.aValores;
     
     me.showForm();

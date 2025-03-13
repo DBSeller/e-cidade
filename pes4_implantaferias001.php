@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cadferia_classe.php");
-include("classes/db_cfpess_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpesrescisao_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libpessoal.php");
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_cadferia_classe.php"));
+require_once(modification("classes/db_cfpess_classe.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_rhpesrescisao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_utils.php"));
+
+db_postmemory($_POST);
+
 $clcadferia      = new cl_cadferia;
 $clcfpess        = new cl_cfpess;
 $clrhpessoal     = new cl_rhpessoal;
@@ -46,10 +49,14 @@ $rescindido = false;
 $nexistfunc = true;
 $priperiodo = true;
 
-$r30_anousu = db_anofolha();
-$r30_mesusu = db_mesfolha();
+$r30_anousu = DBPessoal::getAnoFolha();
+$r30_mesusu = DBPessoal::getMesFolha();
 
 $db_opcao = 1;
+
+if ( !isset($r30_regist) ) {
+  $db_opcao = 3;
+}
 if(isset($enviar) || isset($alterar)){
 
   $r30_perai = $r30_perai_ano."-".$r30_perai_mes."-".$r30_perai_dia;
@@ -60,21 +67,6 @@ if(isset($enviar) || isset($alterar)){
 
   $r30_per2i = $r30_per2i_ano."-".$r30_per2i_mes."-".$r30_per2i_dia;
   $r30_per2f = $r30_per2f_ano."-".$r30_per2f_mes."-".$r30_per2f_dia;
-
-  /*
-  $sql = $clcadferia->sql_query_file(
-                                     null,
-                                     " r30_perai ",
-                                     "",
-                                     "
-                                           r30_anousu = ".$r30_anousu." 
-                                       and r30_mesusu = ".$r30_mesusu."
-                                       and r30_regist = ".$r30_regist."
-                                       and r30_perai  = '".$r30_perai_ant."'"
-                                    );
-
-  $result_cadferia = $clcadferia->sql_record($sql);
-  */
 
   db_inicio_transacao();
 
@@ -154,6 +146,19 @@ if(isset($enviar) || isset($alterar)){
   $matriz1[19] = "r30_tip2";
   $matriz1[20] = "r30_dias2";
 
+  $r30_proc1_reverso = $r30_proc1;
+  $r30_proc2_reverso = $r30_proc2;
+
+  if(isset($r30_proc1) && !empty($r30_proc1)) {
+    list($r30_proc1_mes, $r30_proc1_ano) = explode("/", $r30_proc1);
+    $r30_proc1_reverso = $r30_proc1_ano ."/". $r30_proc1_mes;
+  }
+
+  if(isset($r30_proc2) && !empty($r30_proc2)) {
+    list($r30_proc2_mes, $r30_proc2_ano) = explode("/", $r30_proc2);
+    $r30_proc2_reverso = $r30_proc2_ano ."/". $r30_proc2_mes;
+  }
+
   $matriz2[1] = $r30_anousu + 0;
   $matriz2[2] = $r30_mesusu + 0;
   $matriz2[3] = $r30_regist + 0;
@@ -166,14 +171,16 @@ if(isset($enviar) || isset($alterar)){
   $matriz2[10] = $r30_ponto;
   $matriz2[11] = db_nulldata($r30_per1i);
   $matriz2[12] = db_nulldata($r30_per1f);
-  $matriz2[13] = $r30_proc1;
+  $matriz2[13] = $r30_proc1_reverso;
   $matriz2[14] = $r30_tip1;
   $matriz2[15] = $r30_dias1 + 0;
   $matriz2[16] = db_nulldata($r30_per2i);
   $matriz2[17] = db_nulldata($r30_per2f);
-  $matriz2[18] = $r30_proc2;
+  $matriz2[18] = $r30_proc2_reverso;
   $matriz2[19] = $r30_tip2;
   $matriz2[20] = $r30_dias2 + 0;
+  $matriz1[21] = "r30_obs";
+  $matriz2[21] = $r30_obs;
 
   if(isset($alterar)){
     $erro_msg = "Alteração efetuada com sucesso.";
@@ -288,36 +295,19 @@ if(isset($enviar) || isset($alterar)){
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
+<link href="estilos.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-      <?
-      include("forms/db_frmimplantaferias.php");
-      ?>
-    </center>
-    </td>
-  </tr>
-</table>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+<body>
+<?php 
+  include(modification("forms/db_frmimplantaferias.php"));
+  db_menu();
 ?>
 </body>
 </html>
-<?
+
+<?php
 if(isset($r30_regist)){
   if($nexistfunc == true && !isset($enviar) && !isset($alterar) && !isset($excluir)){
     db_msgbox("Funcionário ".$r30_regist." não encontrado. Verifique.");
@@ -328,7 +318,7 @@ if(isset($r30_regist)){
 if(isset($enviar) || isset($alterar) || isset($excluir)){
   if($result_insert == true){
     db_msgbox($erro_msg);
-    echo "<script>location.href = 'pes4_implantaferias001.php';</script>";
+    echo "<script>location.href = 'pes4_implantaferias001.php?r30_regist=$r30_regist";
   }else{
     // db_msgbox("Erro ao implantar no cadferia. Contate o suporte.");
     db_msgbox($clcadferia->erro_msg);
@@ -354,4 +344,3 @@ if(isset($r30_regist) && trim($r30_regist) != ""){
         </script>
        ";
 }
-?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -153,10 +153,10 @@ $clrotulo->label("t52_ident");
 <script>
 function js_pesquisat96_codtran(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_benstransf','func_benstransf001.php?funcao_js=parent.js_mostrabenstransf1|t93_codtran|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstransf','func_benstransf001.php?funcao_js=parent.js_mostrabenstransf1|t93_codtran|nome','Pesquisa',true);
   }else{
      if(document.form1.t96_codtran.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_benstransf','func_benstransf001.php?pesquisa_chave='+document.form1.t96_codtran.value+'&funcao_js=parent.js_mostrabenstransf','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstransf','func_benstransf001.php?pesquisa_chave='+document.form1.t96_codtran.value+'&funcao_js=parent.js_mostrabenstransf','Pesquisa',false);
      }else{
        document.form1.nome_transf.value = ''; 
      }
@@ -178,7 +178,7 @@ function js_mostrabenstransf1(chave1,chave2){
   document.form1.submit();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_benstransfconf','func_benstransfconf.php?funcao_js=parent.js_preenchepesquisa|t96_codtran&t93=false','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benstransfconf','func_benstransfconf.php?funcao_js=parent.js_preenchepesquisa|t96_codtran&t93=false','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_benstransfconf.hide();

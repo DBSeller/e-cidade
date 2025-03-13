@@ -83,7 +83,7 @@ function filtroOrcamento(id) {
   
   this.retornoGetFiltros = function (oAjax) {
     
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     for (var iFiltros = 0; iFiltros < me.aFiltros.length; iFiltros++ ) {
       
       if ($('btn'+me.aFiltros[iFiltros].ucFirst())) {

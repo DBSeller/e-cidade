@@ -1,63 +1,63 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_liborcamento.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_solicitem_classe.php");
-include ("classes/db_solicitemele_classe.php");
-include ("classes/db_pcorcamitem_classe.php");
-include ("classes/db_pcorcamjulg_classe.php");
-include ("classes/db_pcorcamval_classe.php");
-include ("classes/db_pcorcam_classe.php");
-include ("classes/db_orcreserva_classe.php");
-include ("classes/db_orcreservasol_classe.php");
-include ("classes/db_orcreservaaut_classe.php");
-include ("classes/db_pcparam_classe.php");
-include ("classes/db_pcdotac_classe.php");
-include ("classes/db_empautoriza_classe.php");
-include ("classes/db_empautitem_classe.php");
-include ("classes/db_empautidot_classe.php");
-include ("classes/db_pcprocitem_classe.php");
-include ("classes/db_pcproc_classe.php");
-include ("classes/db_pcsubgrupo_classe.php");
-include ("classes/db_solandam_classe.php");
-include ("classes/db_solandamand_classe.php");
-include ("classes/db_solandpadraodepto_classe.php");
-include ("classes/db_solicitemprot_classe.php");
-include ("classes/db_proctransfer_classe.php");
-include ("classes/db_proctransferproc_classe.php");
-include ("classes/db_proctransand_classe.php");
-include ("classes/db_procandam_classe.php");
-include ("classes/db_protprocesso_classe.php");
-include ("classes/db_solordemtransf_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_solicitemele_classe.php"));
+include(modification("classes/db_pcorcamitem_classe.php"));
+include(modification("classes/db_pcorcamjulg_classe.php"));
+include(modification("classes/db_pcorcamval_classe.php"));
+include(modification("classes/db_pcorcam_classe.php"));
+include(modification("classes/db_orcreserva_classe.php"));
+include(modification("classes/db_orcreservasol_classe.php"));
+include(modification("classes/db_orcreservaaut_classe.php"));
+include(modification("classes/db_pcparam_classe.php"));
+include(modification("classes/db_pcdotac_classe.php"));
+include(modification("classes/db_empautoriza_classe.php"));
+include(modification("classes/db_empautitem_classe.php"));
+include(modification("classes/db_empautidot_classe.php"));
+include(modification("classes/db_pcprocitem_classe.php"));
+include(modification("classes/db_pcproc_classe.php"));
+include(modification("classes/db_pcsubgrupo_classe.php"));
+include(modification("classes/db_solandam_classe.php"));
+include(modification("classes/db_solandamand_classe.php"));
+include(modification("classes/db_solandpadraodepto_classe.php"));
+include(modification("classes/db_solicitemprot_classe.php"));
+include(modification("classes/db_proctransfer_classe.php"));
+include(modification("classes/db_proctransferproc_classe.php"));
+include(modification("classes/db_proctransand_classe.php"));
+include(modification("classes/db_procandam_classe.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_solordemtransf_classe.php"));
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clproctransfer = new cl_proctransfer;
@@ -170,7 +170,7 @@ if (isset ($incluir)) {
 				*/
 				if ($o80_valor != (($pc23_valor / $pc23_quant) * $pc13_quant)) {
 					$diferenca[$pc13_coddot] += ((($pc23_valor / $pc23_quant) * $pc13_quant) - $o80_valor);
-					//	  $valres = 
+					//	  $valres =
 				}
 			} else {
 				$diferenca[$pc13_coddot] += (($pc23_valor / $pc23_quant) * $pc13_quant);
@@ -198,7 +198,7 @@ if (isset ($incluir)) {
 		//=========rotina para calcular o saldo final=========//
 		$result = db_dotacaosaldo(8, 2, 2, "true", "o58_coddot=".$difindex[$i], db_getsession("DB_anousu"));
 		db_fieldsmemory($result, 0);
-		
+
 		$verificarsaldo = (0 + $atual_menos_reservado);
 		$dif = $diferenca[$difindex[$i]];
 		if ($verificarsaldo < $dif) {
@@ -235,6 +235,7 @@ if (isset ($incluir)) {
 			$clempautoriza->e54_codtipo = $e54_codtipo;
 			$clempautoriza->e54_instit = $e54_instit;
 			$clempautoriza->e54_depto = db_getsession("DB_coddepto");
+			$clempautoriza->e54_logincriador = $e54_login;
 			$clempautoriza->incluir(null);
 			$e54_autori = $clempautoriza->e54_autori;
 			$erro_msg = $clempautoriza->erro_msg;
@@ -394,7 +395,7 @@ if (isset ($incluir)) {
 									$clproctransand->incluir(null);
 									if ($clproctransand->erro_status == "1") {
 										$erro = 0;
-										//db_msgbox("Inclui Proctransand");							
+										//db_msgbox("Inclui Proctransand");
 									} else {
 										//$clproctransand->erro(true, false);
 										$erro = 1;
@@ -403,7 +404,7 @@ if (isset ($incluir)) {
 									}
 								}
 								if ($sqlerro == false) {
-									//atualiza codandam da tabela protprocesso; 
+									//atualiza codandam da tabela protprocesso;
 									$clprotprocesso->p58_codproc = $pc49_protprocesso;
 									$clprotprocesso->p58_codandam = $clprocandam->p61_codandam;
 									$clprotprocesso->p58_despacho = " ";
@@ -468,10 +469,10 @@ if (isset ($incluir)) {
 										}
 									}
 								}
-								if ($sqlerro == false) {                                   
+								if ($sqlerro == false) {
                                     $result_prox = $clsolandpadraodepto->sql_record($clsolandpadraodepto->sql_query(null, "pc47_ordem as ordem_prox", null, "pc47_solicitem = ".$codigo."   and pc47_pctipoandam = 7"));
                                     if ($clsolandpadraodepto->numrows > 0) {
-                                       	db_fieldsmemory($result_prox,0);   
+                                       	db_fieldsmemory($result_prox,0);
 										$clsolordemtransf->pc41_solicitem = $codigo;
 										$clsolordemtransf->pc41_codtran = $codtran_transf;
 										$clsolordemtransf->pc41_ordem = $ordem_prox;
@@ -610,8 +611,8 @@ if (isset ($pc80_codproc) && trim($pc80_codproc) != "") {
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <form name="form1" method="post">
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
-  <tr> 
-    <td align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td align="left" valign="top" bgcolor="#CCCCCC">
     <center>
     <?
 
@@ -787,7 +788,7 @@ if ($numrows_itens == 0) {
 		//=========rotina para calcular o saldo final=========//
 		$result = db_dotacaosaldo(8, 2, 2, "true", "o58_coddot=$pc13_coddot", db_getsession("DB_anousu"));
 		db_fieldsmemory($result, 0);
-		
+
 		$valdisp = 'valdisp_'.$contador;
 		$$valdisp = (0 + $atual_menos_reservado) + $saldodotacoes[$pc13_coddot];
 		$valtesta = $$valdisp;
@@ -928,7 +929,7 @@ function js_relatorio(){
 }
 
 function js_troca(codigo,orcamento,sol){
-  top.corpo.document.location.href = 'com1_trocpcorcamtroca001.php?pc25_orcamitem='+codigo+'&orcamento='+orcamento+'&sol='+sol;
+  (window.CurrentWindow || parent.CurrentWindow).corpo.document.location.href = 'com1_trocpcorcamtroca001.php?pc25_orcamitem='+codigo+'&orcamento='+orcamento+'&sol='+sol;
 }
 function js_unico(nome,campo,valor,TAB,dot){
   tcampo = campo.substr(0,campo.lastIndexOf("_"));
@@ -975,7 +976,7 @@ function js_marcatudo(){
 	  x.elements[i].checked=false;
 	}else{
 	  x.elements[i].checked=true;
-	}        
+	}
       }
     }
   }
@@ -984,7 +985,7 @@ function js_marcaautoriza(valor){
   x = document.form1;
   for(i=0;i<x.length;i++){
     if(x.elements[i].type=='checkbox'){
-      splitei = x.elements[i].value.split("_");      
+      splitei = x.elements[i].value.split("_");
       if(x.elements[i].disabled==false){
 	if(splitei[1]==valor){
 	  if(x.elements[i].checked==true){

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,29 +25,29 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_libtributario.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_iptucalc_classe.php");
-require_once("classes/db_iptunump_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_massamat_classe.php");
-require_once("classes/db_iptuender_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_db_docparag_classe.php");
-require_once("classes/db_arrematric_classe.php");
-require_once("classes/db_listadoc_classe.php");
-require_once("classes/db_db_layouttxtgeracao_classe.php");
-require_once("model/regraEmissao.model.php"); 
-require_once("model/convenio.model.php");
-require_once("model/recibo.model.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_libtributario.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_iptucalc_classe.php"));
+require_once(modification("classes/db_iptunump_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_massamat_classe.php"));
+require_once(modification("classes/db_iptuender_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_db_docparag_classe.php"));
+require_once(modification("classes/db_arrematric_classe.php"));
+require_once(modification("classes/db_listadoc_classe.php"));
+require_once(modification("classes/db_db_layouttxtgeracao_classe.php"));
+require_once(modification("model/regraEmissao.model.php")); 
+require_once(modification("model/convenio.model.php"));
+require_once(modification("model/recibo.model.php"));
 
 $cliptucalc            = new cl_iptucalc;
 $cliptuender           = new cl_iptuender;
@@ -507,7 +507,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
 													         k00_dtvenc,k00_tipo
 									        order by k00_numpar ";
           $resultfinarrecad = db_query($sqlarrecad) or die($sqlarrecad);
-          $aParecelasArrecad = db_utils::getColectionByRecord($resultfinarrecad);
+          $aParecelasArrecad = db_utils::getCollectionByRecord($resultfinarrecad);
           if (pg_numrows($resultfinarrecad) == 0) {
             continue;
           }
@@ -1916,7 +1916,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             
 ########################################################################################################################            
 // Melhoria na emissao para gerar parcelas e unicas opcionais de vencimentos, aplicando correção
-include("cad4_geracarneiptutxtParcelasOpcionais.php");  
+include(modification("cad4_geracarneiptutxtParcelasOpcionais.php"));  
             
 ########################################################################################################################            
             

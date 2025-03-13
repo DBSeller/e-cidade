@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-//include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include('libs/db_stdlibwebseller.php');
-include("libs/db_usuariosonline.php");
-include("classes/db_far_retirada_classe.php");
-include("classes/db_far_farmacia_classe.php");
-include("classes/db_matestoqueinimei_classe.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_db_config_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+//include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification('libs/db_stdlibwebseller.php'));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_far_retirada_classe.php"));
+include(modification("classes/db_far_farmacia_classe.php"));
+include(modification("classes/db_matestoqueinimei_classe.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_POST_VARS);
 
@@ -73,7 +73,7 @@ $sql .= "	           inner join matestoque on m71_codmatestoque = m70_codigo ";
 $sql .= "	           inner join db_depart on m80_coddepto = coddepto ";
 $sql .= "	       where m70_codmatmater = $material and m80_data < '$date'::date ) as x ";
 
- $result= pg_query($sql);
+ $result= db_query($sql);
  //die($sql); 
  if(pg_num_rows($result)>0){
    $saldoInicial=pg_result($result,0,0);

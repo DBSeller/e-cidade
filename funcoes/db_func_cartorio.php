@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "cartorio.v82_sequencial,cartorio.v82_descricao,cartorio.v82_numcgm,cartorio.v82_obs";
+$campos = "cartorio.v82_sequencial,cartorio.v82_descricao,cartorio.v82_numcgm,cartorio.v82_obs,cartorio.v82_extrajudicial";
 ?>

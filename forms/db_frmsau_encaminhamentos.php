@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Ambulatorial
@@ -40,13 +40,16 @@ $oClrotulo->label("s110_i_codigo");
 
 <form class="container" name="form1" method="post" action="">
   <fieldset>
+    <div id="status-microarea" class="alert-danger" style="text-align: center;" role="alert" hidden>
+      Paciente sem cadastro em uma microárea!
+    </div>
     <legend>Encaminhamento</legend>
     <table class="form-container" >
       <tr>
         <td title="<?php echo $Ts142_i_codigo; ?>">
           <?=@$Ls142_i_codigo?>
         </td>
-        <td> 
+        <td>
           <?php
           db_input( 's142_i_codigo', 5, $Is142_i_codigo, true, 'text', 3 );
           ?>
@@ -58,7 +61,7 @@ $oClrotulo->label("s110_i_codigo");
           db_ancora( @$Ls142_i_profsolicitante, "js_pesquisas142_i_profsolicitante(true);", $db_opcao, '', 'ancora_profissionalsol' );
           ?>
         </td>
-        <td> 
+        <td>
           <?php
           $sChange = " onchange='js_pesquisas142_i_profsolicitante(false);'";
           db_input( 's142_i_profsolicitante',  5, $Is142_i_profsolicitante, true, 'text', $db_opcao, $sChange );
@@ -68,8 +71,8 @@ $oClrotulo->label("s110_i_codigo");
         <td title="<?php echo $Ts142_d_encaminhamento; ?>">
           <?php echo $Ls142_d_encaminhamento; ?>
         </td>
-        <td> 
-          <?php 
+        <td>
+          <?php
           if ( !isset($s142_d_encaminhamento_dia) ) {
 
             $s142_d_encaminhamento_dia = $aData_atual[0];
@@ -95,16 +98,16 @@ $oClrotulo->label("s110_i_codigo");
           db_ancora( @$Ls142_i_prontuario, "js_pesquisas142_i_prontuario(true);", $db_opcao, '', 'ancora_prontuario' );
           ?>
         </td>
-        <td> 
+        <td>
           <?php
           $sChange = " onchange='js_pesquisas142_i_prontuario(false); js_verificaFaaVazio();;'";
           db_input( 's142_i_prontuario', 5, $Is142_i_prontuario, true, 'text', $db_opcao, $sChange );
           ?>
-        </td> 
+        </td>
         <td title="<?php echo $Ts142_d_validade; ?>">
           <?php echo $Ls142_d_validade; ?>
         </td>
-        <td> 
+        <td>
           <?php
           db_inputdata(
                         's142_d_validade',
@@ -124,7 +127,7 @@ $oClrotulo->label("s110_i_codigo");
           db_ancora( 'CGS:', "js_pesquisas142_i_cgsund(true);", $db_opcao, '', 'ancora_cgs' );
           ?>
         </td>
-        <td> 
+        <td>
           <?php
           $sChange = " onchange='js_pesquisas142_i_cgsund(false);'";
           db_input( 's142_i_cgsund',  5, $Is142_i_cgsund, true, 'text', $db_opcao, $sChange );
@@ -134,7 +137,7 @@ $oClrotulo->label("s110_i_codigo");
         <td title="<?php echo $Ts142_d_retorno; ?>">
           <?php echo $Ls142_d_retorno; ?>
         </td>
-        <td> 
+        <td>
           <?php
           db_inputdata(
                         's142_d_retorno',
@@ -154,7 +157,7 @@ $oClrotulo->label("s110_i_codigo");
           db_ancora( @$Ls142_i_prestadora, "js_pesquisas142_i_prestadora(true);", $db_opcao );
           ?>
         </td>
-        <td> 
+        <td>
           <?php
           $sChange = " onchange='js_pesquisas142_i_prestadora(false);'";
           db_input( 's142_i_prestadora',  5, $Is142_i_prestadora, true, 'text', $db_opcao, $sChange );
@@ -182,7 +185,7 @@ $oClrotulo->label("s110_i_codigo");
                   db_ancora( @$Ls142_i_profissional, "js_pesquisas142_i_profissional(true);", $db_opcao, '', 'ancora_profissional' );
                   ?>
                 </td>
-                <td> 
+                <td>
                   <?php
                   $sChange = " onchange='js_pesquisas142_i_profissional(false);'";
                   db_input( 's142_i_profissional',  5, $Is142_i_profissional, true, 'text', $db_opcao, $sChange );
@@ -194,7 +197,7 @@ $oClrotulo->label("s110_i_codigo");
                 <td title="<?php echo $Ts142_i_unidade; ?>">
                   <?php echo $Ls142_i_unidade; ?>
                 </td>
-                <td> 
+                <td>
                   <?php
                   $x = array( "" => "" );
                   db_select( 's142_i_unidade', $x, true, $db_opcao, " onchange=\"js_verificacoesTrocaMedico();\"" );
@@ -207,7 +210,7 @@ $oClrotulo->label("s110_i_codigo");
                   db_ancora( @$Ls142_i_rhcbo, "js_pesquisas142_i_rhcbo(true);", $db_opcao );
                   ?>
                 </td>
-                <td> 
+                <td>
                   <?php
                   $sChange = " onchange=\"if(this.value.trim() == '')
                            { $('s142_i_rhcbo').value = $('rh70_descr').value = '';
@@ -245,7 +248,7 @@ $oClrotulo->label("s110_i_codigo");
                   else alert('Selecione uma especialidade primeiro!');",$db_opcao);
                   ?>
                 </td>
-                <td> 
+                <td>
                   <?php
                   $sChange = " onchange='js_pesquisas143_i_procedimento(false);'";
                   db_input( 'sd63_c_procedimento', 10,                    '', true, 'text',   $db_opcao, $sChange );
@@ -260,7 +263,7 @@ $oClrotulo->label("s110_i_codigo");
                   ?>
                   <input name="lancar_procedimento" type="button" id="lancar_procedimento" value="Incluir" onclick="js_lanca_procedimento();">
                 </td>
-              </tr> 
+              </tr>
               <tr>
                 <td colspan='4'>
                     <table class="form-container">
@@ -271,7 +274,7 @@ $oClrotulo->label("s110_i_codigo");
                       </tr>
                       <tr>
                         <td>
-                          <div id='grid_procedimentos' style='width: 100%;-moz-user-select:none'> 
+                          <div id='grid_procedimentos' style='width: 100%;-moz-user-select:none'>
                           </div>
                         </td>
                       </tr>
@@ -285,30 +288,30 @@ $oClrotulo->label("s110_i_codigo");
     </table>
   </fieldset>
 
-  <input onclick="return js_validaEnvio();" 
-         name="<?=($db_opcao==1?"confirmar":"alterar")?>" 
-         type="submit" 
-         id="enviar" 
+  <input onclick="return js_validaEnvio();"
+         name="<?=($db_opcao==1?"confirmar":"alterar")?>"
+         type="submit"
+         id="enviar"
          value="<?php echo ($db_opcao == 1 ? "Confirmar" : "Alterar"); ?>">
-  <input onclick="js_cancelar(true);" 
-         name="cancela" 
-         type="button" 
-         id="cancela" 
+  <input onclick="js_cancelar(true);"
+         name="cancela"
+         type="button"
+         id="cancela"
          value="Cancelar" <?php echo ($db_opcao == 1 ? 'style="display: none;"' : ''); ?>>
-  <input onclick="js_novoEncaminhamento();" 
-         name="novo_encaminhamento" 
-         type="button" 
-         id="novo_encaminhamento" 
+  <input onclick="js_novoEncaminhamento();"
+         name="novo_encaminhamento"
+         type="button"
+         id="novo_encaminhamento"
          value="Novo Encaminhamento" <?php echo ($db_opcao == 1 ? 'style="display: none;"' : ''); ?>>
-  <input onclick="js_imprimirEncaminhamento(<?=@$s142_i_tipo?>);" 
-         name="imprimir_encaminhamento" 
-         type="button" 
-         id="imprimir_encaminhamento" 
+  <input onclick="js_imprimirEncaminhamento(<?=@$s142_i_tipo?>);"
+         name="imprimir_encaminhamento"
+         type="button"
+         id="imprimir_encaminhamento"
          value="Imprimir" <?php echo ($db_opcao == 1 ? 'style="display: none;"' : ''); ?>>
-  <input name="encaminhamentos" 
-         type="button" 
-         id="encaminhamentos" 
-         value="Encaminhamentos" 
+  <input name="encaminhamentos"
+         type="button"
+         id="encaminhamentos"
+         value="Encaminhamentos"
          onclick="js_pesquisa_encaminhamento(true);" <?php echo (isset($lAba) ? 'style="display: none;"' : ''); ?> >
 
   <div id='div_cancelamento' style="display: none;">
@@ -323,9 +326,17 @@ $oClrotulo->label("s110_i_codigo");
 
 </form>
 
+<script rel="script" type="text/javascript" src="scripts/classes/saude/ValidaCgs.js"></script>
 <script>
 
 const MENSAGENS_FORMULARIO_ENCAMINHAMENTOS = 'saude.ambulatorial.db_frmsau_encaminhamentos.';
+
+const divAlertMicroarea = document.getElementById('status-microarea');
+const inputCgs = {
+  id: document.getElementById('s142_i_cgsund'),
+  nome: document.getElementById('z01_i_cgsund')
+};
+const validaCgs = new ValidaCgs(inputCgs);
 
 strURL                     = 'sau4_sau_encaminhamentos.RPC.php';
 $('s142_i_rhcboAux').value = '';
@@ -335,11 +346,15 @@ if (<?php echo $db_opcao?> != 1) {
   js_init();
 }
 
-<?php 
+<?php
   if( isset($lAba) && $lAba ) {
     echo "js_aba();";
   }
 ?>
+
+window.onload = () => {
+  validaCgs.cadastroMicroarea(inputCgs, divAlertMicroarea);
+}
 
 function js_aba() {
 
@@ -349,11 +364,11 @@ function js_aba() {
   $('s142_i_cgsund').style.backgroundColor     = "rgb(222, 184, 135)";
   $('s142_i_cgsund').readOnly                  = true;
   $('ancora_cgs').onclick                      = '';
-  
+
   js_pesquisas142_i_profsolicitante(false);
 
   var iProntuario = $F('s142_i_prontuario');
-  if ( iProntuario != '' ) { 
+  if ( iProntuario != '' ) {
     js_OpenJanelaIframe('',
                         'db_iframe_prontuarios',
                         'func_prontuarios.php?pesquisa_chave=' + iProntuario +'&funcao_js=parent.js_mostraprontuarios',
@@ -440,11 +455,11 @@ function js_validaEnvio() {
 }
 
 function js_init() {
-  
+
   if( $F('s142_i_profissional').trim() != '' ) {
     js_getUnidades();
   }
-  
+
   js_pesquisas142_i_profsolicitante(false);
   js_pesquisas142_i_rhcbo(false);
   js_pesquisas142_i_prestadora(false);
@@ -460,7 +475,7 @@ function js_init() {
 }
 
 function js_selecionaUnidade() {
-  
+
   sel = $('s142_i_unidade');
   for ( i = 0; i < sel.length; i++ ) {
 
@@ -488,7 +503,7 @@ function js_novoEncaminhamento() {
 }
 
 function js_cancelar( lCancela ) {
-  
+
   $('cancela').disabled             = lCancela;
   $('enviar').disabled              = lCancela;
   $('novo_encaminhamento').disabled = lCancela;
@@ -509,13 +524,13 @@ function js_renderizaGrid() {
   oDBGridProcedimentos.clearAll(true);
 
   var aLinha = new Array();
-  
+
   for (i = 0; i < F.length; i++ ) {
 
     aLinha[0]  = F.options[i].value;
     aLinha[1]  = F.options[i].innerHTML.substr(0,72);
     aLinha[2]  = "<span onclick=\"js_excluir_item_procedimento("+F.options[i].value+");\""+
-    " style=\"color: blue; text-decoration: underline; cursor: pointer;\"><b>E</b></span>"; 
+    " style=\"color: blue; text-decoration: underline; cursor: pointer;\"><b>E</b></span>";
     oDBGridProcedimentos.addRow(aLinha);
   }
 
@@ -523,11 +538,11 @@ function js_renderizaGrid() {
 }
 
 function js_excluir_item_procedimento( iVal ) {
- 
+
   var F = $("select_procedimento");
 
   for ( i = 0; i < F.length; i++ ) {
-    
+
     if ( F.options[i].value == iVal ) {
 
       F.options[i]                       = null;
@@ -621,7 +636,7 @@ function js_cria_datagrid() {
   aAligns[0]  = 'center';
   aAligns[1]  = 'center';
   aAligns[2]  = 'center';
-  
+
   oDBGridProcedimentos.setCellAlign(aAligns);
   oDBGridProcedimentos.allowSelectColumns(false);
   oDBGridProcedimentos.show($('grid_procedimentos'));
@@ -634,18 +649,18 @@ function js_cria_datagrid() {
  * Pesquisa o CGS de acordo com a FAA selecionada
  */
 function js_getProcedimentosEncaminhamento() {
-  
+
 	var objParam             = new Object();
 	objParam.exec            = "getProcedimentosEncaminhamento";
 	objParam.iEncaminhamento = $F('s142_i_codigo');
-	
+
 	js_ajax( objParam,'js_retornogetProcedimentosEncaminhamento');
 }
 
 function js_retornogetProcedimentosEncaminhamento( objRetorno ) {
 
   cont       = 0;
-  objRetorno = eval("("+objRetorno.responseText+")");
+  objRetorno = JSON.parse(objRetorno.responseText);
 
   if ( objRetorno.iStatus == 1 ) {
 
@@ -670,18 +685,18 @@ function js_getUnidades() {
 	var objParam     = new Object();
 	objParam.exec    = "getUnidadesMedico";
 	objParam.iMedico = $F('s142_i_profissional');
-	
+
 	js_ajax( objParam,'js_retornogetUnidades');
 }
 
 function js_verificacoesTrocaMedico() {
- 
+
   cont = $('s142_i_unidade').options.length;
 
   if ( $F('s142_i_profissional').trim() == '' ) {
 
     // for para remover todos os options
-    for ( i = 0; i < cont; i++ ) { 
+    for ( i = 0; i < cont; i++ ) {
       $('s142_i_unidade').options[0] = null
     }
   } else {
@@ -714,7 +729,7 @@ function js_retornogetUnidades( objRetorno ) {
   }
 
   cont       = 0;
-  objRetorno = eval("("+objRetorno.responseText+")");
+  objRetorno = JSON.parse(objRetorno.responseText);
 
   if ( objRetorno.iStatus == 1 ) {
 
@@ -744,12 +759,12 @@ function js_verificaFaaVazio() {
 
 function js_retornogetCgsFaa( objRetorno ) {
 
-  objRetorno = eval("("+objRetorno.responseText+")");
+  objRetorno = JSON.parse( objRetorno.responseText );
 
   if ( objRetorno.iStatus == 1 ) {
 
     $('s142_i_cgsund').value = objRetorno.iCgs;
-    $('z01_i_cgsund').value  = objRetorno.sNome;
+    $('z01_i_cgsund').value  = objRetorno.sNome.urlDecode();
   } else {
 
     $('s142_i_cgsund').value = '';
@@ -760,7 +775,7 @@ function js_retornogetCgsFaa( objRetorno ) {
 function js_ajax( oParam, jsRetorno ) {
 
 	var objAjax = new Ajax.Request(
-                         strURL, 
+                         strURL,
                          {
                           method    : 'post',
                           asynchronous: false,
@@ -786,12 +801,12 @@ function js_getCgsFaa() {
 	var objParam  = new Object();
 	objParam.exec = "getCgsFaa";
 	objParam.iFaa = $F('s142_i_prontuario');
-	
+
 	js_ajax( objParam,'js_retornogetCgsFaa');
 }
 
 function js_pesquisas142_i_cgsund( mostra ) {
- 
+
   chave_espec = '';
 
   if (    $F('s142_i_profissional') != undefined && $F('s142_i_profissional').trim() != ''
@@ -803,19 +818,19 @@ function js_pesquisas142_i_cgsund( mostra ) {
   if ( mostra == true) {
     js_OpenJanelaIframe('',
                         'db_iframe_cgs_und',
-                        'func_cgs_und.php?funcao_js=parent.js_mostracgs_und1|z01_i_cgsund|z01_v_nome' + chave_espec,
+                        `func_cgs_und.php?funcao_js=parent.js_mostracgs_und1|z01_i_cgsund|z01_v_nome` + chave_espec,
                         'Pesquisa CGS',
                         true);
   } else {
 
-     if ( document.form1.s142_i_cgsund.value != '' ) { 
+     if ( document.form1.s142_i_cgsund.value != '' ) {
         js_OpenJanelaIframe('',
                             'db_iframe_cgs_und',
                             'func_cgs_und.php?pesquisa_chave=' + $F('s142_i_cgsund') + '&funcao_js=parent.js_mostracgs_und' + chave_espec,
                             'Pesquisa CGS',
                             false);
      }else{
-       document.form1.z01_i_cgsund.value = ''; 
+       document.form1.z01_i_cgsund.value = '';
      }
   }
 }
@@ -824,10 +839,10 @@ function js_mostracgs_und( chave, erro ) {
 
   document.form1.z01_i_cgsund.value = chave;
 
-  if ( erro == true ) { 
+  if ( erro == true ) {
 
-    document.form1.s142_i_cgsund.focus(); 
-    document.form1.s142_i_cgsund.value = ''; 
+    document.form1.s142_i_cgsund.focus();
+    document.form1.s142_i_cgsund.value = '';
   }
 }
 
@@ -835,6 +850,8 @@ function js_mostracgs_und1( chave1, chave2 ) {
 
   document.form1.s142_i_cgsund.value = chave1;
   document.form1.z01_i_cgsund.value  = chave2;
+
+  document.form1.s142_i_cgsund.dispatchEvent(new Event('change'));
   db_iframe_cgs_und.hide();
 }
 
@@ -849,7 +866,7 @@ function js_pesquisas142_i_profissional( mostra ) {
   } else {
 
     var iProfissional = $F('s142_i_profissional');
-    if( iProfissional != '' ){ 
+    if( iProfissional != '' ){
        js_OpenJanelaIframe('',
                            'db_iframe_medicos',
                            'func_medicos.php?prof_ativo=1&pesquisa_chave=' + iProfissional + '&funcao_js=parent.js_mostramedicos',
@@ -867,10 +884,10 @@ function js_mostramedicos( chave, erro ) {
 
   document.form1.sd03_i_codigo.value = chave;
 
-  if ( erro == true) { 
+  if ( erro == true) {
 
-    document.form1.s142_i_profissional.focus(); 
-    document.form1.s142_i_profissional.value = ''; 
+    document.form1.s142_i_profissional.focus();
+    document.form1.s142_i_profissional.value = '';
   } else {
     js_getUnidades();
   }
@@ -903,7 +920,7 @@ function js_pesquisas142_i_prontuario( mostra ) {
 
     var iProntuario = $F('s142_i_prontuario');
 
-    if( iProntuario != '' ) { 
+    if( iProntuario != '' ) {
        js_OpenJanelaIframe('',
                            'db_iframe_prontuarios',
                            'func_prontuarios.php?' + chave_espec + '&pesquisa_chave=' + iProntuario + '&funcao_js=parent.js_mostraprontuarios',
@@ -915,9 +932,9 @@ function js_pesquisas142_i_prontuario( mostra ) {
 
 function js_mostraprontuarios( chave , erro ) {
 
-  if ( erro == true ) { 
+  if ( erro == true ) {
 
-    document.form1.s142_i_prontuario.focus(); 
+    document.form1.s142_i_prontuario.focus();
     document.form1.s142_i_prontuario.value = '';
     js_verificaFaaVazio();
     alert( _M( MENSAGENS_FORMULARIO_ENCAMINHAMENTOS + "faa_nao_encontrada" ) );
@@ -987,16 +1004,16 @@ function js_pesquisas142_i_rhcbo( mostra ) {
 }
 
 function js_mostrarhcbo( objRetorno ) {
-  
-  objRetorno                 = eval("("+objRetorno.responseText+")");
+
+  objRetorno                 = JSON.parse(objRetorno.responseText);
   $('rh70_descr').value      = objRetorno.sDescrEspecialidade.urlDecode();
-  $('s142_i_rhcbo').value    = objRetorno.iCodEspecialidade; 
-  $('rh70_estrutural').value = objRetorno.sEspecialidade; 
+  $('s142_i_rhcbo').value    = objRetorno.iCodEspecialidade;
+  $('rh70_estrutural').value = objRetorno.sEspecialidade;
 
   if ( objRetorno.iStatus == 2 ) {
-    ('rh70_estrutural').focus(); 
+    ('rh70_estrutural').focus();
   }
-  
+
   if ( $F('s142_i_rhcboAux') != $F('s142_i_rhcbo') || $F('s142_i_rhcbo').trim() == '' ) {
 
     js_esvaziaProcedimentos();
@@ -1036,14 +1053,14 @@ function js_pesquisas142_i_prestadora( mostra ) {
 
     var iPrestadora = $F('s142_i_prestadora');
 
-    if( iPrestadora != '' ) { 
+    if( iPrestadora != '' ) {
        js_OpenJanelaIframe('',
                            'db_iframe_sau_prestadores',
                            'func_sau_prestadores.php?pesquisa_chave=' + iPrestadora + '&funcao_js=parent.js_mostrasau_prestadores',
                            'Pesquisa Prestadora',
                            false);
     } else {
-      document.form1.s110_i_codigo.value = ''; 
+      document.form1.s110_i_codigo.value = '';
     }
   }
 }
@@ -1052,10 +1069,10 @@ function js_mostrasau_prestadores( chave, erro ) {
 
   document.form1.s110_i_codigo.value = chave;
 
-  if ( erro == true ) { 
+  if ( erro == true ) {
 
-    document.form1.s142_i_prestadora.focus(); 
-    document.form1.s142_i_prestadora.value = ''; 
+    document.form1.s142_i_prestadora.focus();
+    document.form1.s142_i_prestadora.value = '';
   }
 }
 
@@ -1071,7 +1088,7 @@ function js_pesquisa_encaminhamento( mostra ) {
   chave_espec = '';
 
   if(   $F('s142_i_profissional') != undefined && $F('s142_i_profissional').trim() != ''
-     && $F('s142_i_unidade')      != undefined && $F('s142_i_unidade').trim()      != '' 
+     && $F('s142_i_unidade')      != undefined && $F('s142_i_unidade').trim()      != ''
     ) {
     chave_espec = '&chave_profissional=' + $F('s142_i_profissional') + '&chave_unidade=' + $F('s142_i_unidade');
   }
@@ -1110,9 +1127,9 @@ function js_preencheencaminhamento(cod, codmed, descrmed, unid, cgs, nome, faa, 
 }
 
 function js_pesquisas143_i_procedimento( mostra ) {
-  
+
   if( $F('s142_i_rhcbo') == '' ) {
-    
+
     alert( _M( MENSAGENS_FORMULARIO_ENCAMINHAMENTOS + "selecione_especialidade" ) );
     $('sd63_c_nome').value         = '';
     $('s143_i_procedimento').value = '';
@@ -1159,14 +1176,14 @@ function js_pesquisas143_i_procedimento( mostra ) {
 
 function js_mostrasau_proccbo( objRetorno ) {
 
-  objRetorno                     = eval("("+objRetorno.responseText+")");
+  objRetorno                     = JSON.parse(objRetorno.responseText);
   $('sd63_c_nome').value         = objRetorno.sDescrProcedimento.urlDecode();
-  $('s143_i_procedimento').value = objRetorno.iCodProcedimento; 
-  $('sd63_c_procedimento').value = objRetorno.sProcedimento; 
+  $('s143_i_procedimento').value = objRetorno.iCodProcedimento;
+  $('sd63_c_procedimento').value = objRetorno.sProcedimento;
 
   if ( objRetorno.iStatus == 2 ) {
 
-    document.form1.s143_i_procedimento.focus(); 
+    document.form1.s143_i_procedimento.focus();
     document.form1.s143_i_procedimento.value = '';
   }
 }
@@ -1176,16 +1193,16 @@ function js_mostrasau_proccbo1( chave1, chave2, chave3 ) {
   $('s143_i_procedimento').value = chave1;
   $('sd63_c_nome').value         = chave2;
   $('sd63_c_procedimento').value = chave3;
-  
+
   db_iframe_sau_proccbo.hide();
 }
 
 String.prototype.trim = function() {
   return this.replace(/^\s+|\s+$/g,"");
 }
-   
+
 function js_verificaDatas() {
-  
+
   dData1 = $F('s142_d_encaminhamento').split('/');
   dData2 = $F('s142_d_validade').split('/');
   dData3 = $F('s142_d_retorno').split('/');
@@ -1194,7 +1211,7 @@ function js_verificaDatas() {
   dData3 = new Date (dData3[2], dData3[1] - 1, dData3[0]);
 
   if ( (dData2 - dData1) < 0 ) {
- 
+
     alert( _M( MENSAGENS_FORMULARIO_ENCAMINHAMENTOS + "data_validade_menor_data_encaminhamento" ) );
     $('s142_d_validade').value = '';
     $('s142_d_validade').focus();
@@ -1203,7 +1220,7 @@ function js_verificaDatas() {
   }
 
   if ( (dData3 - dData1) < 0 ) {
- 
+
     alert( _M( MENSAGENS_FORMULARIO_ENCAMINHAMENTOS + "data_retorno_menor_data_encaminhamento" ) );
     $('s142_d_retorno').value = '';
     $('s142_d_retorno').focus();
@@ -1226,7 +1243,7 @@ function js_pesquisas142_i_profsolicitante( mostra ) {
 
     var iProfissionalSolicitante = $F('s142_i_profsolicitante');
 
-    if( iProfissionalSolicitante != '') { 
+    if( iProfissionalSolicitante != '') {
        js_OpenJanelaIframe('',
                            'db_iframe_medicos',
                            'func_medicos.php?prof_ativo=1&pesquisa_chave=' + iProfissionalSolicitante + '&funcao_js=parent.js_mostrasolicitante',
@@ -1242,9 +1259,9 @@ function js_mostrasolicitante( chave, erro ) {
 
   document.form1.nome_profsolicitante.value = chave;
 
-  if ( erro == true ) { 
+  if ( erro == true ) {
 
-    document.form1.s142_i_profsolicitante.focus(); 
+    document.form1.s142_i_profsolicitante.focus();
     document.form1.s142_i_profsolicitante.value = '';
   }
 }

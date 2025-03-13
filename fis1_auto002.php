@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_auto_classe.php");
-require_once("classes/db_autolocal_classe.php");
-require_once("classes/db_autoexec_classe.php");
-require_once("classes/db_procfiscalauto_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_auto_classe.php"));
+require_once(modification("classes/db_autolocal_classe.php"));
+require_once(modification("classes/db_autoexec_classe.php"));
+require_once(modification("classes/db_procfiscalauto_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -215,7 +215,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
   <div class="container">
     <?php
     if ($passa==false){
-      include("forms/db_frmauto.php");
+      include(modification("forms/db_frmauto.php"));
     }
     ?>
   </div>

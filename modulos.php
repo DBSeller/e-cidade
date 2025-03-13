@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2013  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -36,9 +36,9 @@ if(!session_is_registered("DB_instit")) {
   exit;
 }
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 if(isset($modulo) and is_numeric($modulo)){
 
@@ -143,7 +143,7 @@ function js_mostramodulo(chave1,chave2){
   location.href="modulos.php?coddepto="+chave1+"&retorno=true&nomedepto="+chave2;
 }
 function js_atualizacao_versao(){
-  js_OpenJanelaIframe('top.corpo','dbiframe_atualiza','con3_versao004.php?id_item=<?=db_getsession("DB_modulo")."&tipo_consulta=M"?>',"Atualizacoes");
+  js_OpenJanelaIframe('CurrentWindow.corpo','dbiframe_atualiza','con3_versao004.php?id_item=<?=db_getsession("DB_modulo")."&tipo_consulta=M"?>',"Atualizacoes");
 }
 </script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
@@ -384,7 +384,7 @@ $sNome             = pg_result($rsUsuarioLogado,0,1);
       $sSql .= "                       hora,                                                             ";
       $sSql .= "                       id_item,                                                          ";
       $sSql .= "                       help,                                                             ";
-      $sSql .= "                funcao from ( select distinct on (funcao)	d.descricao,                   ";
+      $sSql .= "                funcao from ( select distinct on (funcao) d.descricao,                   ";
       $sSql .= "                                                          x.data,                        ";
       $sSql .= "                                                          x.hora,                        ";
       $sSql .= "                                                          x.id_item,                     ";
@@ -396,13 +396,20 @@ $sNome             = pg_result($rsUsuarioLogado,0,1);
       $sSql .= "                                       from db_logsacessa a                              ";
       $sSql .= "                                      where	a.id_modulo  = ".db_getsession("DB_modulo");
       $sSql .= "                                        and a.id_usuario = ".db_getsession("DB_id_usuario");
+      $sSql .= "                                        and a.instit     = ".db_getsession("DB_instit");
+
+      $dDataFim = date('Y-m-d');
+      $dDataIni = date('Y-m-d', strtotime($dDataFim . ' -365 day'));
+
+      $sSql .= "                                        and a.data between '{$dDataIni}' and '{$dDataFim}' ";
+      $sSql .= "                                        and a.id_item <> 0 ";
       $sSql .= "                                      order by a.data desc, a.hora desc                  ";
-      $sSql .= "                                         limit 20 offset 1                               ";
+      $sSql .= "                                         limit 20                                        ";
       $sSql .= "                                   ) as x                                                ";
       $sSql .= "                                   inner join db_itensmenu d    on x.id_item = d.id_item ";
       $sSql .= "                                   left outer join db_modulos m on m.id_item = d.id_item ";
       $sSql .= "                             where d.itemativo = '1'                                     ";
-  	  $sSql .= "                               and d.libcliente is true                                  ";
+      $sSql .= "                               and d.libcliente is true                                  ";
       $sSql .= "                             ) as x                                                      ";
       $sSql .= "                                    ) as x                                               ";
       $sSql .= "                        order by data desc, hora desc                                    ";
@@ -460,8 +467,8 @@ $sNome             = pg_result($rsUsuarioLogado,0,1);
   </body>
   </html>
   <script type="text/javascript">
-  parent.bstatus.document.getElementById('dtatual').innerHTML = '<?=date("d/m/Y",db_getsession("DB_datausu"))?>' ;
-  parent.bstatus.document.getElementById('dtanousu').innerHTML = '<?=(db_getsession("DB_modulo")!=952?db_getsession("DB_anousu"):db_anofolha()."/".db_mesfolha())?>' ;
+  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('dtatual').innerHTML = '<?=date("d/m/Y",db_getsession("DB_datausu"))?>' ;
+  (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('dtanousu').innerHTML = '<?=(db_getsession("DB_modulo")!=952?db_getsession("DB_anousu"):db_anofolha()."/".db_mesfolha())?>' ;
   <?
   if(db_getsession("DB_anousu")!= date("Y",db_getsession("DB_datausu"))){
     echo "alert('Exercício diferente do exercício da data. Verifique!');";

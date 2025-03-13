@@ -105,7 +105,7 @@ function js_elem(){
   return true;
 }  
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcelemento','func_orcelemento.php?funcao_js=parent.js_preenchepesquisa|o56_codele','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcelemento','func_orcelemento.php?funcao_js=parent.js_preenchepesquisa|o56_codele','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcelemento.hide();

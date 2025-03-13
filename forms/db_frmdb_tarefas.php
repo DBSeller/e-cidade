@@ -26,7 +26,7 @@
  */
 
 //MODULO: configuracoes
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
 $cldb_tarefas->rotulo->label();
@@ -121,7 +121,7 @@ db_textarea('db79_descr',2,55,$Idb79_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_tarefas','func_db_usuarios.php?funcao_js=parent.js_preenchepesquisa|id_usuario','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_tarefas','func_db_usuarios.php?funcao_js=parent.js_preenchepesquisa|id_usuario','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_tarefas.hide();

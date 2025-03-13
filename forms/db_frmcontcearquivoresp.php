@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: contabilidade
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcontcearquivoresp->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -296,10 +296,10 @@ function js_cancelar(){
 }
 function js_pesquisac12_contcearquivo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_contcearquivoresp','db_iframe_contcearquivo','func_contcearquivo.php?funcao_js=parent.js_mostracontcearquivo1|c11_sequencial|c11_id_usuario','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contcearquivoresp','db_iframe_contcearquivo','func_contcearquivo.php?funcao_js=parent.js_mostracontcearquivo1|c11_sequencial|c11_id_usuario','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.c12_contcearquivo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_contcearquivoresp','db_iframe_contcearquivo','func_contcearquivo.php?pesquisa_chave='+document.form1.c12_contcearquivo.value+'&funcao_js=parent.js_mostracontcearquivo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_contcearquivoresp','db_iframe_contcearquivo','func_contcearquivo.php?pesquisa_chave='+document.form1.c12_contcearquivo.value+'&funcao_js=parent.js_mostracontcearquivo','Pesquisa',false);
      }else{
        document.form1.c11_id_usuario.value = ''; 
      }

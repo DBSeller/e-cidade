@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -93,13 +93,13 @@
     
     if (mostra == true) {
       
-      js_OpenJanelaIframe('top.corpo.iframe_aguacondominio', 'db_iframe_aguabase', 
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacondominio', 'db_iframe_aguabase', 
         'func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|z01_nome', 'Pesquisa', true);
     } else {
       
       if (document.form1.x31_matric.value != '') {
         
-        js_OpenJanelaIframe('top.corpo.iframe_aguacondominio', 'db_iframe_aguabase', 
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacondominio', 'db_iframe_aguabase', 
           'func_aguabase.php?pesquisa_chave=' + document.form1.x31_matric.value + 
           '&funcao_js=parent.js_mostraaguabase', 'Pesquisa', false);
       } else {
@@ -132,7 +132,7 @@
   
   function js_pesquisa() {
     
-    js_OpenJanelaIframe('top.corpo.iframe_aguacondominio', 'db_iframe_aguacondominio', 
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacondominio', 'db_iframe_aguacondominio', 
       'func_aguacondominio.php?funcao_js=parent.js_preenchepesquisa|x31_codcondominio|x01_numcgm',
       'Pesquisa', true, '0', '1');
   }

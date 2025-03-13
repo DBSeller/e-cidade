@@ -1,32 +1,32 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
-require_once ("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clavalcompoeres->rotulo->label();
@@ -34,23 +34,27 @@ $clavalcompoeres->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("ed41_i_codigo");
 $clrotulo->label("ed43_i_codigo");
+$clrotulo->label("ed37_i_menorvalor");
+$clrotulo->label("ed37_i_maiorvalor");
+$clrotulo->label("ed37_i_variacao");
+$clrotulo->label("ed37_c_minimoaprov");
 
 $db_botao1 = false;
 
 if ( isset( $opcao ) && $opcao == "alterar" ) {
-  
+
   $db_opcao  = 2;
   $db_opcao1 = 3;
   $db_botao1 = true;
 } else if( isset( $opcao ) && $opcao == "excluir" || isset( $db_opcao ) && $db_opcao == 3 ) {
-  
+
   $db_botao1 = true;
   $db_opcao  = 3;
   $db_opcao1 = 3;
 } else {
-  
+
   if ( isset( $alterar ) ) {
-    
+
     $db_opcao  = 2;
     $db_botao1 = true;
   } else {
@@ -58,7 +62,9 @@ if ( isset( $opcao ) && $opcao == "alterar" ) {
   }
 }
 
-$sCamposProcRsultado = "ed43_i_sequencia as resultselec,ed43_i_formaavaliacao as formaresult";
+$sCamposProcRsultado  = "ed43_i_sequencia as resultselec,ed43_i_formaavaliacao as formaresult, ed37_i_menorvalor, ";
+$sCamposProcRsultado .= "ed37_i_maiorvalor, ed37_i_variacao, ed37_c_minimoaprov ";
+
 $sWhereProcResultado = "ed43_i_codigo = {$ed44_i_procresultado}";
 $sSqlProcResultado   = $clprocresultado->sql_query( "", $sCamposProcRsultado , "", $sWhereProcResultado );
 $result              = $clprocresultado->sql_record( $sSqlProcResultado );
@@ -101,6 +107,7 @@ db_fieldsmemory( $result, 0 );
                ?>
              </td>
            </tr>
+
            <tr>
              <td nowrap title="<?=@$Ted44_c_minimoaprov?>">
                <?=@$Led44_c_minimoaprov?>
@@ -109,7 +116,7 @@ db_fieldsmemory( $result, 0 );
                <?php
                  if ( $forma == "NIVEL" ) {
 
-                   $sSqlConceito = $clconceito->sql_query( "", "*", "ed39_i_sequencia", " ed39_i_formaavaliacao = {$formaresult}" );
+                   $sSqlConceito = $clconceito->sql_conceito( "", "*", "ed39_i_sequencia", " ed39_i_formaavaliacao = {$formaresult}" );
                    $result3      = $clconceito->sql_record( $sSqlConceito );
                ?>
                    <select name='ed44_c_minimoaprov' <?=$db_opcao == 3 ? "disabled" : ""?>>
@@ -123,10 +130,6 @@ db_fieldsmemory( $result, 0 );
                    }
                    echo "</select>";
                  } else if ( $forma == "NOTA" ) {
-
-                   $sSqlFormaAvaliacao = $clformaavaliacao->sql_query( "", "*", "", " ed37_i_codigo = {$formaresult}" );
-                   $result4            = $clformaavaliacao->sql_record( $sSqlFormaAvaliacao );
-                   db_fieldsmemory( $result4, 0 );
                ?>
                    <select name='ed44_c_minimoaprov' <?=$db_opcao == 3 ? "disabled" : ""?>>
                <?
@@ -140,6 +143,7 @@ db_fieldsmemory( $result, 0 );
                  }?>
              </td>
            </tr>
+
            <tr>
              <td nowrap title="<?=@$Ted44_c_obrigatorio?>">
                <?=@$Led44_c_obrigatorio?>
@@ -170,10 +174,10 @@ db_fieldsmemory( $result, 0 );
                <input type="hidden" name="ed14_c_descr" value="<?=@$ed14_c_descr?>">
                <input type="hidden" name="procedimento" value="<?=@$procedimento?>">
                <input type="hidden" name="forma" value="<?=@$forma?>">
-               <input name="<?=( $db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir"))?>" 
-                      type="submit" 
-                      id="db_opcao" 
-                      value="<?=( $db_opcao == 1 ? "Incluir" : ( $db_opcao == 2 || $db_opcao == 22 ? "Alterar" : "Excluir" ) )?>" 
+               <input name="<?=( $db_opcao == 1 ? "incluir" : ($db_opcao == 2 || $db_opcao == 22 ? "alterar" : "excluir"))?>"
+                      type="submit"
+                      id="db_opcao"
+                      value="<?=( $db_opcao == 1 ? "Incluir" : ( $db_opcao == 2 || $db_opcao == 22 ? "Alterar" : "Excluir" ) )?>"
                       <?=( $db_botao == false ? "disabled" : "" )?> >
                <input name="cancelar" type="submit" value="Cancelar" <?=( $db_botao1 == false ? "disabled" : "" )?> >
              </td>
@@ -203,8 +207,8 @@ db_fieldsmemory( $result, 0 );
                                ed68_i_procresultcomp,
                                ed42_c_descr,
                                case
-                                   when ed68_i_codigo > 0 
-                                   then 'RESULTADO' 
+                                   when ed68_i_codigo > 0
+                                   then 'RESULTADO'
                                end as ed14_c_descr,
                                ed68_i_peso,
                                ed68_c_minimoaprov,
@@ -263,7 +267,7 @@ if ( $linhas > 0 ) {
 
   $sep     = "";
   $cod_cad = "";
-  
+
   for ( $c = 0; $c < $linhas; $c++ ) {
 
     $dados    = pg_fetch_array( $query );
@@ -276,7 +280,7 @@ if ( $linhas > 0 ) {
 ?>
 <script>
 function js_pesquisaed44_i_procavaliacao( mostra ) {
-  
+
   if ( mostra == true ) {
     js_OpenJanelaIframe(
                          '',
@@ -294,7 +298,7 @@ function js_pesquisaed44_i_procavaliacao( mostra ) {
                          90
                        );
   } else {
-    
+
     if ( document.form1.ed44_i_procavaliacao.value != '' ) {
       js_OpenJanelaIframe(
                            '',
@@ -315,28 +319,28 @@ function js_pesquisaed44_i_procavaliacao( mostra ) {
 }
 
 function js_mostraprocavaliacao( chave, erro ) {
-  
+
   document.form1.ed09_c_descr.value = chave;
-  
+
   if ( erro == true ) {
-    
+
     document.form1.ed44_i_procavaliacao.focus();
     document.form1.ed44_i_procavaliacao.value = '';
   }
 }
 
 function js_mostraprocavaliacao1( chave1, chave2, chave3 ) {
-  
+
   document.form1.ed44_i_procavaliacao.value = chave1;
   document.form1.ed09_c_descr.value         = chave2;
   document.form1.ed14_c_descr.value         = chave3;
-  
+
   if ( chave3 == "RESULTADO" ) {
     document.form1.ed44_c_obrigatorio.disabled = true;
   } else {
     document.form1.ed44_c_obrigatorio.disabled = false;
   }
-  
+
   db_iframe_procavaliacao.hide();
 }
 </script>

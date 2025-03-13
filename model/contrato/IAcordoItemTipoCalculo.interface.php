@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
  * Interface que será implementada nas classes de cálculo de um acordo
  * @author  matheus.felini@dbseller.com.br
  * @package contrato
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.5 $
  */
 interface IAcordoItemTipoCalculo {
 

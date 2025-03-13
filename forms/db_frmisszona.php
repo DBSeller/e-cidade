@@ -72,10 +72,10 @@ db_input('j50_descr',40,$Ij50_descr,true,'text',3,'')
 <script>
 function js_pesquisaq35_zona(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_zonas','func_zonas.php?funcao_js=parent.js_mostrazonas1|j50_zona|j50_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_zonas','func_zonas.php?funcao_js=parent.js_mostrazonas1|j50_zona|j50_descr','Pesquisa',true);
   }else{
      if(document.form1.q35_zona.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_zonas','func_zonas.php?pesquisa_chave='+document.form1.q35_zona.value+'&funcao_js=parent.js_mostrazonas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_zonas','func_zonas.php?pesquisa_chave='+document.form1.q35_zona.value+'&funcao_js=parent.js_mostrazonas','Pesquisa',false);
      }else{
        document.form1.j50_descr.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostrazonas1(chave1,chave2){
 }
 function js_pesquisaq35_inscr(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issbase','func_issbase.php?funcao_js=parent.js_mostraissbase1|q02_inscr|q02_numcgm','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issbase','func_issbase.php?funcao_js=parent.js_mostraissbase1|q02_inscr|q02_numcgm','Pesquisa',true);
   }else{
      if(document.form1.q35_inscr.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_issbase','func_issbase.php?pesquisa_chave='+document.form1.q35_inscr.value+'&funcao_js=parent.js_mostraissbase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issbase','func_issbase.php?pesquisa_chave='+document.form1.q35_inscr.value+'&funcao_js=parent.js_mostraissbase','Pesquisa',false);
      }else{
        document.form1.q02_numcgm.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostraissbase1(chave1,chave2){
   db_iframe_issbase.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_isszona','func_isszona.php?funcao_js=parent.js_preenchepesquisa|q35_inscr','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_isszona','func_isszona.php?funcao_js=parent.js_preenchepesquisa|q35_inscr','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_isszona.hide();

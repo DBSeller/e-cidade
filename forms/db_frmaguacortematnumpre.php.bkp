@@ -1,0 +1,239 @@
+<?
+//MODULO: agua
+include("dbforms/db_classesgenericas.php");
+$cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
+$claguacortematnumpre->rotulo->label();
+$clrotulo = new rotulocampo;
+$clrotulo->label("x41_matric");
+$clrotulo->label("k00_descr");
+if(isset($db_opcaoal)){
+   $db_opcao=33;
+    $db_botao=false;
+}else if(isset($opcao) && $opcao=="alterar"){
+    $db_botao=true;
+    $db_opcao = 2;
+}else if(isset($opcao) && $opcao=="excluir"){
+    $db_opcao = 3;
+    $db_botao=true;
+}else{  
+    $db_opcao = 1;
+    $db_botao=true;
+    if(isset($novo) || isset($alterar) ||   isset($excluir) || (isset($incluir) && $sqlerro==false ) ){
+     $x44_codcortemat = "";
+     $x44_numpre = "";
+     $x44_numpar = "";
+     $x44_dtvenc = "";
+     $x44_tipo = "";
+     $x44_vlrhis = "";
+     $x44_vlrcor = "";
+     $x44_juros = "";
+     $x44_multa = "";
+     $x44_desconto = "";
+   }
+} 
+?>
+<form name="form1" method="post" action="">
+<center>
+<table border="0">
+  <tr>
+    <td nowrap title="<?=@$Tx44_codcortematnumpre?>">
+       <?=@$Lx44_codcortematnumpre?>
+    </td>
+    <td> 
+<?
+db_input('x44_codcortematnumpre',5,$Ix44_codcortematnumpre,true,'text',3,"")
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_codcortemat?>">
+       <?
+       db_ancora(@$Lx44_codcortemat,"js_pesquisax44_codcortemat(true);",$db_opcao);
+       ?>
+    </td>
+    <td> 
+<?
+db_input('x44_codcortemat',5,$Ix44_codcortemat,true,'text',$db_opcao," onchange='js_pesquisax44_codcortemat(false);'")
+?>
+       <?
+db_input('x41_matric',10,$Ix41_matric,true,'text',3,'')
+       ?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_numpre?>">
+       <?=@$Lx44_numpre?>
+    </td>
+    <td> 
+<?
+db_input('x44_numpre',8,$Ix44_numpre,true,'text',$db_opcao,"")
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_numpar?>">
+       <?=@$Lx44_numpar?>
+    </td>
+    <td> 
+<?
+db_input('x44_numpar',4,$Ix44_numpar,true,'text',$db_opcao,"")
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_dtvenc?>">
+       <?=@$Lx44_dtvenc?>
+    </td>
+    <td> 
+<?
+db_inputdata('x44_dtvenc',@$x44_dtvenc_dia,@$x44_dtvenc_mes,@$x44_dtvenc_ano,true,'text',$db_opcao,"")
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_tipo?>">
+       <?
+       db_ancora(@$Lx44_tipo,"js_pesquisax44_tipo(true);",$db_opcao);
+       ?>
+    </td>
+    <td> 
+<?
+db_input('x44_tipo',5,$Ix44_tipo,true,'text',$db_opcao," onchange='js_pesquisax44_tipo(false);'")
+?>
+       <?
+db_input('k00_descr',40,$Ik00_descr,true,'text',3,'')
+       ?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_vlrhis?>">
+       <?=@$Lx44_vlrhis?>
+    </td>
+    <td> 
+<?
+db_input('x44_vlrhis',15,$Ix44_vlrhis,true,'text',$db_opcao,"")
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_vlrcor?>">
+       <?=@$Lx44_vlrcor?>
+    </td>
+    <td> 
+<?
+db_input('x44_vlrcor',15,$Ix44_vlrcor,true,'text',$db_opcao,"")
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_juros?>">
+       <?=@$Lx44_juros?>
+    </td>
+    <td> 
+<?
+db_input('x44_juros',15,$Ix44_juros,true,'text',$db_opcao,"")
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_multa?>">
+       <?=@$Lx44_multa?>
+    </td>
+    <td> 
+<?
+db_input('x44_multa',15,$Ix44_multa,true,'text',$db_opcao,"")
+?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Tx44_desconto?>">
+       <?=@$Lx44_desconto?>
+    </td>
+    <td> 
+<?
+db_input('x44_desconto',15,$Ix44_desconto,true,'text',$db_opcao,"")
+?>
+    </td>
+  </tr>
+  </tr>
+    <td colspan="2" align="center">
+ <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?>  >
+ <input name="novo" type="button" id="cancelar" value="Novo" onclick="js_cancelar();" <?=($db_opcao==1||isset($db_opcaoal)?"style='visibility:hidden;'":"")?> >
+    </td>
+  </tr>
+  </table>
+ <table>
+  <tr>
+    <td valign="top"  align="center">  
+    <?
+	 $chavepri= array("x44_codcortematnumpre"=>@$x44_codcortematnumpre);
+	 $cliframe_alterar_excluir->chavepri=$chavepri;
+	 //$cliframe_alterar_excluir->sql     = $claguacortematnumpre->sql_query_file($x44_codcortematnumpre);
+	 $cliframe_alterar_excluir->sql     = $claguacortematnumpre->sql_query(null,"*","x44_numpre, x44_numpar","x44_codcortemat=$x44_codcortemat");
+	 $cliframe_alterar_excluir->campos  ="x44_codcortematnumpre,x44_codcortemat,x44_numpre,x44_numpar,x44_dtvenc,x44_tipo,x44_vlrhis,x44_vlrcor,x44_juros,x44_multa,x44_desconto";
+	 $cliframe_alterar_excluir->legenda="ITENS LANÇADOS";
+	 $cliframe_alterar_excluir->iframe_height ="160";
+	 $cliframe_alterar_excluir->iframe_width ="700";
+	 $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);
+    ?>
+    </td>
+   </tr>
+ </table>
+  </center>
+</form>
+<script>
+function js_cancelar(){
+  var opcao = document.createElement("input");
+  opcao.setAttribute("type","hidden");
+  opcao.setAttribute("name","novo");
+  opcao.setAttribute("value","true");
+  document.form1.appendChild(opcao);
+  document.form1.submit();
+}
+function js_pesquisax44_codcortemat(mostra){
+  if(mostra==true){
+    js_OpenJanelaIframe('top.corpo.iframe_aguacortematnumpre','db_iframe_aguacortemat','func_aguacortemat.php?funcao_js=parent.js_mostraaguacortemat1|x41_codcortemat|x41_matric','Pesquisa',true,'0','1','775','390');
+  }else{
+     if(document.form1.x44_codcortemat.value != ''){ 
+        js_OpenJanelaIframe('top.corpo.iframe_aguacortematnumpre','db_iframe_aguacortemat','func_aguacortemat.php?pesquisa_chave='+document.form1.x44_codcortemat.value+'&funcao_js=parent.js_mostraaguacortemat','Pesquisa',false);
+     }else{
+       document.form1.x41_matric.value = ''; 
+     }
+  }
+}
+function js_mostraaguacortemat(chave,erro){
+  document.form1.x41_matric.value = chave; 
+  if(erro==true){ 
+    document.form1.x44_codcortemat.focus(); 
+    document.form1.x44_codcortemat.value = ''; 
+  }
+}
+function js_mostraaguacortemat1(chave1,chave2){
+  document.form1.x44_codcortemat.value = chave1;
+  document.form1.x41_matric.value = chave2;
+  db_iframe_aguacortemat.hide();
+}
+function js_pesquisax44_tipo(mostra){
+  if(mostra==true){
+    js_OpenJanelaIframe('top.corpo.iframe_aguacortematnumpre','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true,'0','1','775','390');
+  }else{
+     if(document.form1.x44_tipo.value != ''){ 
+        js_OpenJanelaIframe('top.corpo.iframe_aguacortematnumpre','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.x44_tipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
+     }else{
+       document.form1.k00_descr.value = ''; 
+     }
+  }
+}
+function js_mostraarretipo(chave,erro){
+  document.form1.k00_descr.value = chave; 
+  if(erro==true){ 
+    document.form1.x44_tipo.focus(); 
+    document.form1.x44_tipo.value = ''; 
+  }
+}
+function js_mostraarretipo1(chave1,chave2){
+  document.form1.x44_tipo.value = chave1;
+  document.form1.k00_descr.value = chave2;
+  db_iframe_arretipo.hide();
+}
+</script>

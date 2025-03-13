@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,13 +24,14 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+include(modification("libs/db_stdlib.php"));
+include(modification("libs/db_conecta.php"));
+include(modification("fpdf151/impcarne.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_matpedido_classe.php"));
+include(modification("classes/db_matpedidoitem_classe.php"));
+include(modification("classes/db_db_depusu_classe.php"));
 
-require("fpdf151/scpdf.php");
-include("fpdf151/impcarne.php");
-include("libs/db_sql.php");
-include("classes/db_matpedido_classe.php");
-include("classes/db_matpedidoitem_classe.php");
-include("classes/db_db_depusu_classe.php");
 $cldb_depusu = new cl_db_depusu;
 $clmatpedido     = new cl_matpedido;
 $clmatpedidoitem = new cl_matpedidoitem;
@@ -39,7 +40,7 @@ $m97_sequencial     = null;
 $sqlpref        = "select * from db_config where codigo = ".db_getsession("DB_instit");
 $tObserva       = "18";
 
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 db_fieldsmemory($resultpref,0);
 
 db_postmemory($_GET);
@@ -92,7 +93,6 @@ $campos .= "				  m97_hora,	  ";
 $campos .= "				  m97_obs,		";
 $campos .= "				  nome				";
 $sSql = $clmatpedido->sql_query(null, $campos, "m97_sequencial", $where_matpedido);
-//die($sSql);
 $result_pesq_matpedido = $clmatpedido->sql_record($sSql);
 $numrows_matpedido     = $clmatpedido->numrows;
 
@@ -101,8 +101,7 @@ if ( $numrows_matpedido == 0 ) {
   exit;
 } 
 
-$pdf = new scpdf();
-$pdf->Open();
+$pdf = new \ECidade\Pdf\Pdf();
 $pdf1 = new db_impcarne($pdf,889);
 $pdf1->objpdf->SetTextColor(0,0,0);
 $pdf1->Snumero_ant = "";
@@ -142,7 +141,6 @@ for($contador=0;$contador<$numrows_matpedido;$contador++){
                      || coalesce(m98_obs,' ') as m98_obs
                      ";
 	$sMatpedido    = $clmatpedido->sql_query_matpedidorequi($m97_sequencial,$sCampos,"m60_descr");
-	//die($sMatpedido);
   $result_itens = $clmatpedido->sql_record($sMatpedido);
   $pdf1->Rdepart = $deptoorigem;
   $pdf1->Rdata   = $m97_data;

@@ -77,7 +77,7 @@ id           integer not null default nextval('licitacoes_documentos_id_seq'),
 licitacao_id integer not null,
 tipo         integer not null,
 documento    oid     not null,
-nome         varchar not null,
+nome         varchar(200) not null,
 CONSTRAINT licitacoes_documentos_id_pk PRIMARY KEY (id));
 
 ALTER TABLE licitacoes_documentos

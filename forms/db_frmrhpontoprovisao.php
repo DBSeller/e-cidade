@@ -72,6 +72,9 @@ $clrotulo = new rotulocampo;
 </table>
 </center>
 <input name="processar" type="submit" id="db_opcao" value="Processar" <?=($db_botao==false?"disabled":"")?> onclick="return js_testacampos();">
+<? if (db_getsession("DB_id_usuario") == 1) {?>
+<input name="db_debug" type="submit" id="db_opcao" value="Processar com Debug" <?=($db_botao==false?"disabled":"")?> onclick="return js_testacampos();">
+<? } ?>
 </form>
 <script>
 function js_testacampos(){

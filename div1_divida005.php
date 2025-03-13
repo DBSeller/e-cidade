@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_divida_classe.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_numpref_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_proced_classe.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_certdiv_classe.php");
-require_once("classes/db_dividaprotprocesso_classe.php");
+ require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_divida_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_numpref_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_proced_classe.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_certdiv_classe.php"));
+require_once(modification("classes/db_dividaprotprocesso_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $oPost                  = db_utils::postMemory($_POST);
@@ -262,7 +262,7 @@ if(isset($alterar)){
 <body bgcolor=#CCCCCC onLoad="a=1" >
 
     	<?
-    	  require_once("forms/db_frmdivida.php");
+    	  require_once(modification("forms/db_frmdivida.php"));
     	?>
 
 

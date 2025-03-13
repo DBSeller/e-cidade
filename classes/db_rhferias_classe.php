@@ -1,61 +1,62 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: pessoal
 //CLASSE DA ENTIDADE rhferias
-class cl_rhferias { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $rh109_sequencial = 0; 
-   var $rh109_regist = 0; 
-   var $rh109_periodoaquisitivoinicial_dia = null; 
-   var $rh109_periodoaquisitivoinicial_mes = null; 
-   var $rh109_periodoaquisitivoinicial_ano = null; 
-   var $rh109_periodoaquisitivoinicial = null; 
-   var $rh109_periodoaquisitivofinal_dia = null; 
-   var $rh109_periodoaquisitivofinal_mes = null; 
-   var $rh109_periodoaquisitivofinal_ano = null; 
-   var $rh109_periodoaquisitivofinal = null; 
-   var $rh109_diasdireito = 0; 
-   var $rh109_faltasperiodoaquisitivo = 0; 
-   var $rh109_observacao = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_rhferias {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $rh109_sequencial = 0;
+   var $rh109_regist = 0;
+   var $rh109_periodoaquisitivoinicial_dia = null;
+   var $rh109_periodoaquisitivoinicial_mes = null;
+   var $rh109_periodoaquisitivoinicial_ano = null;
+   var $rh109_periodoaquisitivoinicial = null;
+   var $rh109_periodoaquisitivofinal_dia = null;
+   var $rh109_periodoaquisitivofinal_mes = null;
+   var $rh109_periodoaquisitivofinal_ano = null;
+   var $rh109_periodoaquisitivofinal = null;
+   var $rh109_diasdireito = 0;
+   var $rh109_faltasperiodoaquisitivo = 0;
+   var $rh109_observacao = null;
+   var $rh109_perdeudireitoferias = 'f';
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  rh109_sequencial = int4 = Sequencial 
                  rh109_regist = int4 = Matrícula 
@@ -64,15 +65,16 @@ class cl_rhferias {
                  rh109_diasdireito = int4 = Dias de direito 
                  rh109_faltasperiodoaquisitivo = int4 = Faltas Durante o Período Aquisitivo 
                  rh109_observacao = text = Observação 
+                 rh109_perdeudireitoferias = bool = Perdeu Direito a Férias 
                  ";
-   //funcao construtor da classe 
-   function cl_rhferias() { 
+   //funcao construtor da classe
+   function cl_rhferias() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("rhferias"); 
+     $this->rotulo = new rotulo("rhferias");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -104,15 +106,16 @@ class cl_rhferias {
        $this->rh109_diasdireito = ($this->rh109_diasdireito == ""?@$GLOBALS["HTTP_POST_VARS"]["rh109_diasdireito"]:$this->rh109_diasdireito);
        $this->rh109_faltasperiodoaquisitivo = ($this->rh109_faltasperiodoaquisitivo == ""?@$GLOBALS["HTTP_POST_VARS"]["rh109_faltasperiodoaquisitivo"]:$this->rh109_faltasperiodoaquisitivo);
        $this->rh109_observacao = ($this->rh109_observacao == ""?@$GLOBALS["HTTP_POST_VARS"]["rh109_observacao"]:$this->rh109_observacao);
+       $this->rh109_perdeudireitoferias = ($this->rh109_perdeudireitoferias == "f"?@$GLOBALS["HTTP_POST_VARS"]["rh109_perdeudireitoferias"]:$this->rh109_perdeudireitoferias);
      }else{
        $this->rh109_sequencial = ($this->rh109_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["rh109_sequencial"]:$this->rh109_sequencial);
      }
    }
-   // funcao para inclusao
-   function incluir ($rh109_sequencial){ 
+   // funcao para Inclusão
+   function incluir ($rh109_sequencial){
       $this->atualizacampos();
-     if($this->rh109_regist == null ){ 
-       $this->erro_sql = " Campo Matrícula nao Informado.";
+     if($this->rh109_regist == null ){
+       $this->erro_sql = " Campo Matrícula não informado.";
        $this->erro_campo = "rh109_regist";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -120,8 +123,8 @@ class cl_rhferias {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh109_periodoaquisitivoinicial == null ){ 
-       $this->erro_sql = " Campo Período aquisitivo inicial nao Informado.";
+     if($this->rh109_periodoaquisitivoinicial == null ){
+       $this->erro_sql = " Campo Período aquisitivo inicial não informado.";
        $this->erro_campo = "rh109_periodoaquisitivoinicial_dia";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -129,8 +132,8 @@ class cl_rhferias {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh109_periodoaquisitivofinal == null ){ 
-       $this->erro_sql = " Campo Período aquisitivo final nao Informado.";
+     if($this->rh109_periodoaquisitivofinal == null ){
+       $this->erro_sql = " Campo Período aquisitivo final não informado.";
        $this->erro_campo = "rh109_periodoaquisitivofinal_dia";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -138,8 +141,8 @@ class cl_rhferias {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh109_diasdireito == null ){ 
-       $this->erro_sql = " Campo Dias de direito nao Informado.";
+     if($this->rh109_diasdireito == null ){
+       $this->erro_sql = " Campo Dias de direito não informado.";
        $this->erro_campo = "rh109_diasdireito";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -147,20 +150,29 @@ class cl_rhferias {
        $this->erro_status = "0";
        return false;
      }
-     if($this->rh109_faltasperiodoaquisitivo == null ){ 
+     if($this->rh109_faltasperiodoaquisitivo == null ){
        $this->rh109_faltasperiodoaquisitivo = "0";
      }
+     if($this->rh109_perdeudireitoferias == null ){
+       $this->erro_sql = " Campo Perdeu Direito a Férias não informado.";
+       $this->erro_campo = "rh109_perdeudireitoferias";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
      if($rh109_sequencial == "" || $rh109_sequencial == null ){
-       $result = db_query("select nextval('rhferias_rh109_sequencial_seq')"); 
+       $result = db_query("select nextval('rhferias_rh109_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: rhferias_rh109_sequencial_seq do campo: rh109_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: rhferias_rh109_sequencial_seq do campo: rh109_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->rh109_sequencial = pg_result($result,0,0); 
+       $this->rh109_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from rhferias_rh109_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $rh109_sequencial)){
@@ -171,11 +183,11 @@ class cl_rhferias {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->rh109_sequencial = $rh109_sequencial; 
+         $this->rh109_sequencial = $rh109_sequencial;
        }
      }
-     if(($this->rh109_sequencial == null) || ($this->rh109_sequencial == "") ){ 
-       $this->erro_sql = " Campo rh109_sequencial nao declarado.";
+     if(($this->rh109_sequencial == null) || ($this->rh109_sequencial == "") ){
+       $this->erro_sql = " Campo rh109_sequencial não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -190,6 +202,7 @@ class cl_rhferias {
                                       ,rh109_diasdireito 
                                       ,rh109_faltasperiodoaquisitivo 
                                       ,rh109_observacao 
+                                      ,rh109_perdeudireitoferias 
                        )
                 values (
                                 $this->rh109_sequencial 
@@ -199,17 +212,18 @@ class cl_rhferias {
                                ,$this->rh109_diasdireito 
                                ,$this->rh109_faltasperiodoaquisitivo 
                                ,'$this->rh109_observacao' 
+                               ,'$this->rh109_perdeudireitoferias' 
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Cadastro de ferias ($this->rh109_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Cadastro de ferias ($this->rh109_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Cadastro de ferias já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Cadastro de ferias ($this->rh109_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Cadastro de ferias ($this->rh109_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -218,7 +232,7 @@ class cl_rhferias {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->rh109_sequencial;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -242,20 +256,21 @@ class cl_rhferias {
          $resac = db_query("insert into db_acount values($acount,3373,18961,'','".AddSlashes(pg_result($resaco,0,'rh109_diasdireito'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3373,18966,'','".AddSlashes(pg_result($resaco,0,'rh109_faltasperiodoaquisitivo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3373,20166,'','".AddSlashes(pg_result($resaco,0,'rh109_observacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3373,1009478,'','".AddSlashes(pg_result($resaco,0,'rh109_perdeudireitoferias'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($rh109_sequencial=null) { 
+   public function alterar ($rh109_sequencial=null) {
       $this->atualizacampos();
      $sql = " update rhferias set ";
      $virgula = "";
-     if(trim($this->rh109_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_sequencial"])){ 
+     if(trim($this->rh109_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_sequencial"])){
        $sql  .= $virgula." rh109_sequencial = $this->rh109_sequencial ";
        $virgula = ",";
-       if(trim($this->rh109_sequencial) == null ){ 
-         $this->erro_sql = " Campo Sequencial nao Informado.";
+       if(trim($this->rh109_sequencial) == null ){
+         $this->erro_sql = " Campo Sequencial não informado.";
          $this->erro_campo = "rh109_sequencial";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -264,11 +279,11 @@ class cl_rhferias {
          return false;
        }
      }
-     if(trim($this->rh109_regist)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_regist"])){ 
+     if(trim($this->rh109_regist)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_regist"])){
        $sql  .= $virgula." rh109_regist = $this->rh109_regist ";
        $virgula = ",";
-       if(trim($this->rh109_regist) == null ){ 
-         $this->erro_sql = " Campo Matrícula nao Informado.";
+       if(trim($this->rh109_regist) == null ){
+         $this->erro_sql = " Campo Matrícula não informado.";
          $this->erro_campo = "rh109_regist";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -277,11 +292,11 @@ class cl_rhferias {
          return false;
        }
      }
-     if(trim($this->rh109_periodoaquisitivoinicial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivoinicial_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivoinicial_dia"] !="") ){ 
+     if(trim($this->rh109_periodoaquisitivoinicial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivoinicial_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivoinicial_dia"] !="") ){
        $sql  .= $virgula." rh109_periodoaquisitivoinicial = '$this->rh109_periodoaquisitivoinicial' ";
        $virgula = ",";
-       if(trim($this->rh109_periodoaquisitivoinicial) == null ){ 
-         $this->erro_sql = " Campo Período aquisitivo inicial nao Informado.";
+       if(trim($this->rh109_periodoaquisitivoinicial) == null ){
+         $this->erro_sql = " Campo Período aquisitivo inicial não informado.";
          $this->erro_campo = "rh109_periodoaquisitivoinicial_dia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -289,12 +304,12 @@ class cl_rhferias {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivoinicial_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivoinicial_dia"])){
          $sql  .= $virgula." rh109_periodoaquisitivoinicial = null ";
          $virgula = ",";
-         if(trim($this->rh109_periodoaquisitivoinicial) == null ){ 
-           $this->erro_sql = " Campo Período aquisitivo inicial nao Informado.";
+         if(trim($this->rh109_periodoaquisitivoinicial) == null ){
+           $this->erro_sql = " Campo Período aquisitivo inicial não informado.";
            $this->erro_campo = "rh109_periodoaquisitivoinicial_dia";
            $this->erro_banco = "";
            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -304,11 +319,11 @@ class cl_rhferias {
          }
        }
      }
-     if(trim($this->rh109_periodoaquisitivofinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivofinal_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivofinal_dia"] !="") ){ 
+     if(trim($this->rh109_periodoaquisitivofinal)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivofinal_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivofinal_dia"] !="") ){
        $sql  .= $virgula." rh109_periodoaquisitivofinal = '$this->rh109_periodoaquisitivofinal' ";
        $virgula = ",";
-       if(trim($this->rh109_periodoaquisitivofinal) == null ){ 
-         $this->erro_sql = " Campo Período aquisitivo final nao Informado.";
+       if(trim($this->rh109_periodoaquisitivofinal) == null ){
+         $this->erro_sql = " Campo Período aquisitivo final não informado.";
          $this->erro_campo = "rh109_periodoaquisitivofinal_dia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -316,12 +331,12 @@ class cl_rhferias {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivofinal_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["rh109_periodoaquisitivofinal_dia"])){
          $sql  .= $virgula." rh109_periodoaquisitivofinal = null ";
          $virgula = ",";
-         if(trim($this->rh109_periodoaquisitivofinal) == null ){ 
-           $this->erro_sql = " Campo Período aquisitivo final nao Informado.";
+         if(trim($this->rh109_periodoaquisitivofinal) == null ){
+           $this->erro_sql = " Campo Período aquisitivo final não informado.";
            $this->erro_campo = "rh109_periodoaquisitivofinal_dia";
            $this->erro_banco = "";
            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -331,11 +346,11 @@ class cl_rhferias {
          }
        }
      }
-     if(trim($this->rh109_diasdireito)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_diasdireito"])){ 
+     if(trim($this->rh109_diasdireito)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_diasdireito"])){
        $sql  .= $virgula." rh109_diasdireito = $this->rh109_diasdireito ";
        $virgula = ",";
-       if(trim($this->rh109_diasdireito) == null ){ 
-         $this->erro_sql = " Campo Dias de direito nao Informado.";
+       if(trim($this->rh109_diasdireito) == null ){
+         $this->erro_sql = " Campo Dias de direito não informado.";
          $this->erro_campo = "rh109_diasdireito";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -344,16 +359,29 @@ class cl_rhferias {
          return false;
        }
      }
-     if(trim($this->rh109_faltasperiodoaquisitivo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_faltasperiodoaquisitivo"])){ 
-        if(trim($this->rh109_faltasperiodoaquisitivo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh109_faltasperiodoaquisitivo"])){ 
-           $this->rh109_faltasperiodoaquisitivo = "0" ; 
-        } 
+     if(trim($this->rh109_faltasperiodoaquisitivo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_faltasperiodoaquisitivo"])){
+        if(trim($this->rh109_faltasperiodoaquisitivo)=="" && isset($GLOBALS["HTTP_POST_VARS"]["rh109_faltasperiodoaquisitivo"])){
+           $this->rh109_faltasperiodoaquisitivo = "0" ;
+        }
        $sql  .= $virgula." rh109_faltasperiodoaquisitivo = $this->rh109_faltasperiodoaquisitivo ";
        $virgula = ",";
      }
-     if(trim($this->rh109_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_observacao"])){ 
+     if(trim($this->rh109_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_observacao"])){
        $sql  .= $virgula." rh109_observacao = '$this->rh109_observacao' ";
        $virgula = ",";
+     }
+     if(trim($this->rh109_perdeudireitoferias)!="" || isset($GLOBALS["HTTP_POST_VARS"]["rh109_perdeudireitoferias"])){
+       $sql  .= $virgula." rh109_perdeudireitoferias = '$this->rh109_perdeudireitoferias' ";
+       $virgula = ",";
+       if(trim($this->rh109_perdeudireitoferias) == null ){
+         $this->erro_sql = " Campo Perdeu Direito a Férias não informado.";
+         $this->erro_campo = "rh109_perdeudireitoferias";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
      }
      $sql .= " where ";
      if($rh109_sequencial!=null){
@@ -386,13 +414,15 @@ class cl_rhferias {
              $resac = db_query("insert into db_acount values($acount,3373,18966,'".AddSlashes(pg_result($resaco,$conresaco,'rh109_faltasperiodoaquisitivo'))."','$this->rh109_faltasperiodoaquisitivo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            if(isset($GLOBALS["HTTP_POST_VARS"]["rh109_observacao"]) || $this->rh109_observacao != "")
              $resac = db_query("insert into db_acount values($acount,3373,20166,'".AddSlashes(pg_result($resaco,$conresaco,'rh109_observacao'))."','$this->rh109_observacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["rh109_perdeudireitoferias"]) || $this->rh109_perdeudireitoferias != "")
+             $resac = db_query("insert into db_acount values($acount,3373,1009478,'".AddSlashes(pg_result($resaco,$conresaco,'rh109_perdeudireitoferias'))."','$this->rh109_perdeudireitoferias',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) {
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Cadastro de ferias nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Cadastro de ferias não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->rh109_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -402,7 +432,7 @@ class cl_rhferias {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "Cadastro de ferias nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Cadastro de ferias não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->rh109_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -411,27 +441,27 @@ class cl_rhferias {
          return true;
        }else{
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->rh109_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($rh109_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   public function excluir ($rh109_sequencial=null,$dbwhere=null) {
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($rh109_sequencial));
-       } else { 
+       } else {
          $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
        }
        if (($resaco != false) || ($this->numrows!=0)) {
@@ -449,15 +479,16 @@ class cl_rhferias {
            $resac  = db_query("insert into db_acount values($acount,3373,18961,'','".AddSlashes(pg_result($resaco,$iresaco,'rh109_diasdireito'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3373,18966,'','".AddSlashes(pg_result($resaco,$iresaco,'rh109_faltasperiodoaquisitivo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3373,20166,'','".AddSlashes(pg_result($resaco,$iresaco,'rh109_observacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3373,1009478,'','".AddSlashes(pg_result($resaco,$iresaco,'rh109_perdeudireitoferias'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from rhferias
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($rh109_sequencial != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($rh109_sequencial)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " rh109_sequencial = $rh109_sequencial ";
@@ -466,9 +497,9 @@ class cl_rhferias {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Cadastro de ferias nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Cadastro de ferias não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$rh109_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -478,7 +509,7 @@ class cl_rhferias {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "Cadastro de ferias nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Cadastro de ferias não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$rh109_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -487,20 +518,20 @@ class cl_rhferias {
          return true;
        }else{
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$rh109_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   public function sql_record($sql) {
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -509,7 +540,7 @@ class cl_rhferias {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
+     $this->numrows = pg_num_rows($result);
       if($this->numrows==0){
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:rhferias";
@@ -520,19 +551,10 @@ class cl_rhferias {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $rh109_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
+   // funcao do sql
+   public function sql_query ($rh109_sequencial = null,$campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos}";
      $sql .= " from rhferias ";
      $sql .= "      inner join rhpessoal  on  rhpessoal.rh01_regist = rhferias.rh109_regist";
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = rhpessoal.rh01_numcgm";
@@ -543,60 +565,39 @@ class cl_rhferias {
      $sql .= "      inner join rhnacionalidade  on  rhnacionalidade.rh06_nacionalidade = rhpessoal.rh01_nacion";
      $sql .= "      left  join rhsindicato  on  rhsindicato.rh116_sequencial = rhpessoal.rh01_rhsindicato";
      $sql2 = "";
-     if($dbwhere==""){
-       if($rh109_sequencial!=null ){
-         $sql2 .= " where rhferias.rh109_sequencial = $rh109_sequencial "; 
-       } 
-     }else if($dbwhere != ""){
+     if (empty($dbwhere)) {
+       if (!empty($rh109_sequencial)) {
+         $sql2 .= " where rhferias.rh109_sequencial = $rh109_sequencial ";
+       }
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $rh109_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from rhferias ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($rh109_sequencial!=null ){
-         $sql2 .= " where rhferias.rh109_sequencial = $rh109_sequencial "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-  
+   // funcao do sql
+    public function sql_query_file ($rh109_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+        $sql  = "select {$campos} ";
+        $sql .= "  from rhferias ";
+        $sql2 = "";
+        if (empty($dbwhere)) {
+            if (!empty($rh109_sequencial)){
+                $sql2 .= " where rhferias.rh109_sequencial = $rh109_sequencial ";
+            }
+        } else if (!empty($dbwhere)) {
+            $sql2 = " where $dbwhere";
+        }
+        $sql .= $sql2;
+        if (!empty($ordem)) {
+            $sql .= " order by {$ordem}";
+        }
+        return $sql;
+    }
+
    /**
    * Sql que deverá retornar servidores que não possuem período aquisitivo cadastrado ou o último período aquisitivo
    * registrado estiver terminando entre o período informado
@@ -605,9 +606,9 @@ class cl_rhferias {
    * @return string
    */
   function sql_queryAlteracaoPeriodoAquisitivoServidores(DBDate $oDataFechamentoFolhaInicio, DBDate $oDataFechamentoFolhaFim) {
-  
+
   	$iInstituicao = db_getsession('DB_instit');
-  
+
   	$sSqlServidoresPeriodoAquisitivo  = "select rhpessoal.rh01_regist                           as matricula,                                                                                           ";
   	$sSqlServidoresPeriodoAquisitivo .= "       rhpessoal.rh01_admiss                           as data_admissao,																																				                ";
   	$sSqlServidoresPeriodoAquisitivo .= "       rhregime.rh30_periodoaquisitivo                 as meses_periodo_aquisitivo,                                                                            ";
@@ -634,11 +635,11 @@ class cl_rhferias {
   	$sSqlServidoresPeriodoAquisitivo .= "   and rhpessoalmov.rh02_anousu = {$oDataFechamentoFolhaInicio->getAno()}                                                                                      ";
   	$sSqlServidoresPeriodoAquisitivo .= "   and rhpessoalmov.rh02_mesusu = {$oDataFechamentoFolhaInicio->getMes()}                                                                                      ";
   	$sSqlServidoresPeriodoAquisitivo .= "   and rhpessoalmov.rh02_instit = {$iInstituicao}                                                                                                              ";
-  
+
   	return $sSqlServidoresPeriodoAquisitivo;
-  	 
+
   }
-  
+
   function sql_query_busca_matriculas_selecao($iAnoUsu, $iMesUsu, $sCampos, $sWhere) {
 
   	$sWhereSql = "";
@@ -698,7 +699,7 @@ class cl_rhferias {
   	return $sSql;
 
   }
-   
+
   function sql_query_ferias_selecao($iAnoUsu, $iMesUsu, $sCampos, $sWhere) {
 
   	$sWhereSql = "";
@@ -764,14 +765,17 @@ class cl_rhferias {
   	return $sSql;
 
   }
-  
+
   /**
    * Retorna o último periodo aquisitivo com dias de direito disponível para a matricula informada como parametro.
    * @param  integer $iMatricula Número da matricula que deve ser buscado o peíodo aquisitivo
    * @param  string  $sCampos    Campos que devem ser informados no select
+   * @param  array
    * @return string  $sSql
    */
-  function sql_query_proximo_periodo_aquisitivo($iMatricula, $sCampos){
+  function sql_query_proximo_periodo_aquisitivo($iMatricula, $sCampos, $aWhere = array()) {
+
+    $sWhere = count($aWhere) > 0 ? ' AND ' . implode(' AND ', $aWhere) : '';
 
     $sSql  = "  select {$sCampos}                                                                     ";
     $sSql .= "    from rhferias                                                                       ";
@@ -779,11 +783,12 @@ class cl_rhferias {
     $sSql .= "     and (rh109_diasdireito - ( select coalesce(sum(rh110_dias + rh110_diasabono ),0)   ";
     $sSql .= "                                 from rhferiasperiodo                                   ";
     $sSql .= "                                where rh110_rhferias = rh109_sequencial)::integer ) > 0 ";
+    $sSql .= "     {$sWhere} ";
     $sSql .= "order by rh109_periodoaquisitivoinicial limit 1;                                        ";
-    
+
   	return $sSql;
   }
-  
+
   /**
    * Retorna os periodos de gozo cadastrados, para a competencia e a situação informados.
    * @param  integer $iAnoPagamento Ano competência
@@ -813,6 +818,29 @@ class cl_rhferias {
     $sSql .= "       inner join cgm on z01_numcgm = rh01_numcgm                                      ";
     $sSql .= " where rh110_anopagamento = {$iAnoPagamento} and rh110_mespagamento = {$iMesPagamento} ";
     $sSql .= "       and rh110_situacao = {$iSituacao};                                              ";
+
+    return $sSql;
+  }
+
+  /**
+   * Retorna o último periodo aquisitivo com dias de direito disponível para a matricula informada como parametro.
+   * @param  integer $iMatricula Número da matricula que deve ser buscado o peíodo aquisitivo
+   * @param  string  $sCampos    Campos que devem ser informados no select
+   * @param  array
+   * @return string  $sSql
+   */
+  function sql_query_periodos_aquisitivos_com_saldo($iMatricula, $sCampos, $aWhere = array()) {
+
+    $sWhere = count($aWhere) > 0 ? ' AND ' . implode(' AND ', $aWhere) : '';
+
+    $sSql  = "  select {$sCampos}                                                                     ";
+    $sSql .= "    from rhferias                                                                       ";
+    $sSql .= "   where rh109_regist = {$iMatricula}                                                   ";
+    $sSql .= "     and (rh109_diasdireito - ( select coalesce(sum(rh110_dias + rh110_diasabono ),0)   ";
+    $sSql .= "                                 from rhferiasperiodo                                   ";
+    $sSql .= "                                where rh110_rhferias = rh109_sequencial)::integer ) > 0 ";
+    $sSql .= "    {$sWhere} ";
+    $sSql .= "order by rh109_periodoaquisitivoinicial;                                        ";
 
     return $sSql;
   }

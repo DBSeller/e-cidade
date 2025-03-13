@@ -58,7 +58,7 @@ db_input('k96_descr',40,$Ik96_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_conciliaorigem','func_conciliaorigem.php?funcao_js=parent.js_preenchepesquisa|k96_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_conciliaorigem','func_conciliaorigem.php?funcao_js=parent.js_preenchepesquisa|k96_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_conciliaorigem.hide();

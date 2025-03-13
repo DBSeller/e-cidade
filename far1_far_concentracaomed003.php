@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_far_concentracaomed_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_far_concentracaomed_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clfar_concentracaomed = new cl_far_concentracaomed;
@@ -64,7 +64,7 @@ if(isset($excluir)){
     <td  align="left" valign="top" bgcolor="#CCCCCC"> 
     <fieldset style="width:100%"><legend><b>Exclusão de Concentração</b></legend>
 	<?
-	include("forms/db_frmfar_concentracaomed.php");
+	include(modification("forms/db_frmfar_concentracaomed.php"));
 	?>
 	</fieldset>
 	</td>

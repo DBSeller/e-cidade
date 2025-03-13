@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,26 +31,26 @@
  * @package educacao
  * @subpackage avaliacao
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.14 $
  */
-require_once("model/educacao/avaliacao/FormaObtencao.model.php");
-require_once("model/educacao/avaliacao/iFormaObtencao.interface.php");
+require_once(modification("model/educacao/avaliacao/FormaObtencao.model.php"));
+require_once(modification("model/educacao/avaliacao/iFormaObtencao.interface.php"));
 class FormaObtencaoMaiorNota extends FormaObtencao implements IFormaObtencao {
-
 
   /**
    * Define as notas que ira ser usaddo no calculo
    * Deverá ser instancias de AvaliacaoAproveitamento
-   * @see IFormaObtencao::processarResultado()
-   * @param array $aAproveitamentos
+   * @param array   $aAproveitamentos
+   * @param integer $iAno
+   * @return ValorAproveitamentoNota
    */
-  public function processarResultado($aAproveitamentos) {
+  public function processarResultado( $aAproveitamentos, $iAno ) {
 
     /**
      * Verificamos a maior nota entre os Aproveitamentos
      */
     $mAproveitamento     = new ValorAproveitamentoNota('');
-    $aNotasPeriodos      = $this->getElementosParaCalculo($aAproveitamentos);
+    $aNotasPeriodos      = $this->getElementosParaCalculo( $aAproveitamentos, $iAno );
     $temNotaComValorZero = false;
     $aElementos          = $this->getResultadoAvaliacao()->getElementosComposicaoResultado();
     foreach ($aNotasPeriodos as $oNotaDoAproveitamento) {
@@ -69,14 +69,21 @@ class FormaObtencaoMaiorNota extends FormaObtencao implements IFormaObtencao {
       if ($oNotaDoAproveitamento->getValorAproveitamento()->getAproveitamento() === 0) {
         $temNotaComValorZero = true;
       }
-      if ((int)$oNotaDoAproveitamento->getValorAproveitamento()->getAproveitamento() > (int)$mAproveitamento->getAproveitamento()) {
+      if( $oNotaDoAproveitamento->getValorAproveitamento()->getAproveitamento() > $mAproveitamento->getAproveitamento() ) {
         $mAproveitamento = $oNotaDoAproveitamento->getValorAproveitamento();
       }
     }
+
+    $mAproveitamento = ArredondamentoNota::arredondar( $mAproveitamento, $iAno );
+
     if ($temNotaComValorZero && $mAproveitamento->getAproveitamento() == "") {
       $mAproveitamento->setAproveitamento(0);
     }
+
+    /**
+     * Devolvemos as notas Originais
+     */
+    $this->acertaNotasSubstituidasParaCalculo($aNotasPeriodos);
     return $mAproveitamento;
   }
 }
-?>

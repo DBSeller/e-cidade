@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_contrib_classe.php");
-include("classes/db_iptucalc_classe.php");
-include("classes/db_contlot_classe.php");
-include("classes/db_contricalc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_contrib_classe.php"));
+include(modification("classes/db_iptucalc_classe.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("classes/db_contricalc_classe.php"));
 $clcontrib = new cl_contrib;
 $clcontlot = new cl_contlot;
 $clcontricalc = new cl_contricalc;
@@ -81,7 +81,7 @@ db_postmemory($HTTP_POST_VARS);
 		(select j23_vlrter from iptucalc where j23_anousu =$ano  and j23_matric = $matric)as j23_vlrter)
 		as j23_vlrter
 	 ";
-      $result04=pg_query($sql);	
+      $result04=db_query($sql);	
       db_fieldsmemory($result04,0);
       $clcontrib->d07_venal=$j23_vlrter;
       $clcontrib->d07_contri=$contri;
@@ -98,7 +98,7 @@ db_postmemory($HTTP_POST_VARS);
     }
     $proximo=next($vt);
   }  
-  $resultos=pg_query("select d05_idbql
+  $resultos=db_query("select d05_idbql
 		 	from contlot
 			left outer join contrib on d05_contri=d07_contri and d07_idbql=d05_idbql
 			left outer join contlotv on d05_contri=d06_contri and d05_idbql=d06_idbql
@@ -162,7 +162,7 @@ class cl_fate extends cl_contrib {
 	  $Id07_vlrdes=$GLOBALS["Id07_vlrdes"];
 	  $d07_vlrdes=$GLOBALS["d07_vlrdes"];
          
-	  $resil=pg_query("select d09_contri from contricalc where d09_contri=$numcontri and d09_matric=$j01_matric");
+	  $resil=db_query("select d09_contri from contricalc where d09_contri=$numcontri and d09_matric=$j01_matric");
 		if(pg_numrows($resil)>0){
 			$GLOBALS["desabilita"]="true";
 		  $cor="#669900";
@@ -171,11 +171,11 @@ class cl_fate extends cl_contrib {
 		  $cor="";
 	  }
            
-     $resultas=pg_query("select fc_fracao($j34_idbql,".db_getsession('DB_datausu').",$j01_matric)");
+     $resultas=db_query("select fc_fracao($j34_idbql,".db_getsession('DB_datausu').",$j01_matric)");
 	   db_fieldsmemory($resultas,0);
 	   $fc_fracao=$GLOBALS["fc_fracao"];
 	   //$fc_fracao=100;
-	   $resultad=pg_query("	select d06_valor as valtot 
+	   $resultad=db_query("	select d06_valor as valtot 
 													from contlotv 
 													where d06_contri=$numcontri and d06_idbql=$j34_idbql");
 	   $nu=pg_numrows($resultad);

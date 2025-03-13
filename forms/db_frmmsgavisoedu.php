@@ -26,7 +26,7 @@
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clmsgaviso->rotulo->label();
 $db_botao1 = false;
@@ -145,7 +145,7 @@ if(isset($opcao) && $opcao=="alterar"){
 </center>
 <script>
 function js_pesquisaed90_c_tabela(){
- js_OpenJanelaIframe('top.corpo','db_iframe_tabela','func_tabela_edu.php?funcao_js=parent.js_mostratabela|nomearq|nomemod','Pesquisa de Tabelas',true);
+ js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabela','func_tabela_edu.php?funcao_js=parent.js_mostratabela|nomearq|nomemod','Pesquisa de Tabelas',true);
 }
 function js_mostratabela(chave1,chave2){
  document.form1.ed90_c_tabela.value = chave1;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,11 +26,11 @@
  */
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-require("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+require(modification("libs/db_sql.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label("v07_numpre");
 if(isset($inicial)){
@@ -68,9 +68,9 @@ if(isset($inicial)){
 </html>
 <script>
   function js_termodiv(parcel){
-      js_OpenJanelaIframe('top.corpo','db_iframe3','cai3_gerfinanc043.php?certid='+parcel+'&tipo=<?=$tipo?>','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe3','cai3_gerfinanc043.php?certid='+parcel+'&tipo=<?=$tipo?>','Pesquisa',true);
   }
   function js_termoini(parcel){
-      js_OpenJanelaIframe('top.corpo','db_iframe3','cai3_gerfinanc044.php?certid='+parcel+'&tipo=<?=$tipo?>','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe3','cai3_gerfinanc044.php?certid='+parcel+'&tipo=<?=$tipo?>','Pesquisa',true);
   }
 </script>

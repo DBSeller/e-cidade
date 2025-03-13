@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
 $dir = opendir("bin");
 clearstatcache();
@@ -52,7 +52,7 @@ if($verifica_execucao)
 
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if(isset($retorno)) {
-  $result = pg_exec("select id_lei,numerolei,to_char(datalei,'DD') as datalei_dia,to_char(datalei,'MM') as datalei_mes,to_char(datalei,'YYYY') as datalei_ano,ementa from db_leis where id_lei = $retorno");
+  $result = db_query("select id_lei,numerolei,to_char(datalei,'DD') as datalei_dia,to_char(datalei,'MM') as datalei_mes,to_char(datalei,'YYYY') as datalei_ano,ementa from db_leis where id_lei = $retorno");
   db_fieldsmemory($result,0);  
 }
 
@@ -124,9 +124,9 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   }  
   system("rm -f $ahtml");
   db_postmemory($HTTP_POST_VARS);  
-  $result = pg_exec("SELECT max(id_lei) + 1 FROM db_leis");
+  $result = db_query("SELECT max(id_lei) + 1 FROM db_leis");
   $id_lei = pg_result($result,0,0)==""?"1":pg_result($result,0,0);   
-  $result = pg_exec("INSERT INTO db_leis VALUES($id_lei,
+  $result = db_query("INSERT INTO db_leis VALUES($id_lei,
                                                 '$numerolei',
   											    '$datalei_ano-$datalei_mes-$datalei_dia',
   												'$ementa',
@@ -137,7 +137,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   db_postmemory($_FILES["arq"]);
   db_postmemory($HTTP_POST_VARS);
   if($name == "") {
-    pg_exec("update db_leis set
+    db_query("update db_leis set
 	           numerolei = '$numerolei',
 			   datalei = '$datalei_ano-$datalei_mes-$datalei_dia',
 			   ementa = '$ementa'
@@ -198,7 +198,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
   system("rm -f $ahtml");  
   db_postmemory($HTTP_POST_VARS);  
   }
-  pg_exec("update db_leis set
+  db_query("update db_leis set
 	           numerolei = '$numerolei',
 			   datalei = '$datalei_ano-$datalei_mes-$datalei_dia',
 			   ementa = '$ementa',
@@ -207,7 +207,7 @@ if(isset($HTTP_POST_VARS["incluir"])) {
 		   where id_lei = $id_lei") or die("Erro(139) atualizando db_leis: ".pg_errormessage());  
   db_redireciona();
 } else if(isset($HTTP_POST_VARS["excluir"])) {
-  pg_exec("delete from db_leis where id_lei = ".$HTTP_POST_VARS["id_lei"]) or die("Erro(141) excluindo db_leis: ".pg_errormessage());
+  db_query("delete from db_leis where id_lei = ".$HTTP_POST_VARS["id_lei"]) or die("Erro(141) excluindo db_leis: ".pg_errormessage());
   db_redireciona();
 }
 ?>
@@ -265,7 +265,7 @@ function js_submeter() {
         <td height="25" nowrap><strong>Data da Lei:</strong></td>
         <td height="25">
 		   <?
-		     include("dbforms/db_funcoes.php");
+		     include(modification("dbforms/db_funcoes.php"));
 			 db_data("datalei",@$datalei_dia,@$datalei_mes,@$datalei_ano);
 		   ?>
 		<!--input name="datalei_dia" type="text" id="datalei_dia" value="<?=@$datalei_dia?>" onkeyUp="js_digitadata(this.name)" size="2" maxlength="2">

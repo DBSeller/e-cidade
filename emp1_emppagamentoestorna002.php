@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,47 +26,47 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("libs/db_libcontabilidade.php");
+include(modification("libs/db_libcontabilidade.php"));
 
-include("libs/db_utils.php");
+include(modification("libs/db_utils.php"));
 //------------------------------------------------------
 //   Arquivos que verificam se o boletim já foi liberado ou naum
-include("classes/db_boletim_classe.php");
+include(modification("classes/db_boletim_classe.php"));
 $clverficaboletim = new cl_verificaboletim(new cl_boletim);
 //------------------------------------------------------
 
-include("libs/db_liborcamento.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_empelemento_classe.php");
-include("classes/db_pagordem_classe.php");
-include("classes/db_pagordemele_classe.php");
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_empelemento_classe.php"));
+include(modification("classes/db_pagordem_classe.php"));
+include(modification("classes/db_pagordemele_classe.php"));
 $clpagordem = new cl_pagordem;
 $clpagordemele = new cl_pagordemele;
 $clempempenho = new cl_empempenho;
 $clempelemento = new cl_empelemento;
 $clorcdotacao = new cl_orcdotacao;
 
-include("classes/db_conlancam_classe.php");
-include("classes/db_conlancamele_classe.php");
-include("classes/db_conlancampag_classe.php");
-include("classes/db_conlancamcgm_classe.php");
-include("classes/db_conparlancam_classe.php");
-include("classes/db_conlancamemp_classe.php");
-include("classes/db_conlancamval_classe.php");
-include("classes/db_conlancamdot_classe.php");
-include("classes/db_conlancamdoc_classe.php");
-include("classes/db_conlancamcompl_classe.php");
-include("classes/db_saltes_classe.php");
-include("classes/db_conplanoreduz_classe.php");
-include("classes/db_conlancamlr_classe.php");
-include("classes/db_conlancamord_classe.php");
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamele_classe.php"));
+include(modification("classes/db_conlancampag_classe.php"));
+include(modification("classes/db_conlancamcgm_classe.php"));
+include(modification("classes/db_conparlancam_classe.php"));
+include(modification("classes/db_conlancamemp_classe.php"));
+include(modification("classes/db_conlancamval_classe.php"));
+include(modification("classes/db_conlancamdot_classe.php"));
+include(modification("classes/db_conlancamdoc_classe.php"));
+include(modification("classes/db_conlancamcompl_classe.php"));
+include(modification("classes/db_saltes_classe.php"));
+include(modification("classes/db_conplanoreduz_classe.php"));
+include(modification("classes/db_conlancamlr_classe.php"));
+include(modification("classes/db_conlancamord_classe.php"));
 
 $clconlancam = new cl_conlancam;
 $clconlancamele = new cl_conlancamele;
@@ -83,13 +83,13 @@ $clconplanoreduz = new cl_conplanoreduz;
 $clconlancamord = new cl_conlancamord;
 $clconlancamlr = new cl_conlancamlr;
 
-include("classes/db_cfautent_classe.php");
+include(modification("classes/db_cfautent_classe.php"));
 $clcfautent = new cl_cfautent;
 
-include("libs/db_libcaixa.php");
+include(modification("libs/db_libcaixa.php"));
 $clautenticar = new cl_autenticar;
 
-include("classes/db_empagemov_classe.php");
+include(modification("classes/db_empagemov_classe.php"));
 $clempagemov = new cl_empagemov;
 
 //retorna os arrays de lancamento...
@@ -581,7 +581,7 @@ die();
         $retorno = $retorno_imp;
       }
 
-      require_once 'model/impressaoAutenticacao.php';
+      require_once modification("model/impressaoAutenticacao.php");
       $oImpressao = new impressaoAutenticacao($retorno);
       $oModelo = $oImpressao->getModelo();
       $oModelo->imprimir();
@@ -611,7 +611,7 @@ if (isset($retorno_imp) && !isset($confirmar_primeira_vez) ) {
     $retorno = $retorno_imp;
   }
 
-  require_once 'model/impressaoAutenticacao.php';
+  require_once modification("model/impressaoAutenticacao.php");
   $oImpressao = new impressaoAutenticacao($retorno);
   $oModelo = $oImpressao->getModelo();
   $oModelo->imprimir();
@@ -714,7 +714,7 @@ if (isset($pag_emp) && empty($confirmar) ) {
 if (isset ($confirmar) && $sqlerro == false) {
 	$c72_complem = '';
 }
-include ("forms/db_frmemppagamentoestorna.php");
+include(modification("forms/db_frmemppagamentoestorna.php"));
 ?>
     </center>
 	</td>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 //MODULO: biblioteca
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_leitor_classe.php");
-include("classes/db_cidadao_classe.php");
-include("classes/db_leitorcategoria_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_leitor_classe.php"));
+include(modification("classes/db_cidadao_classe.php"));
+include(modification("classes/db_leitorcategoria_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -49,7 +49,7 @@ $clcidadao->rotulo->label("ov02_seq");
 $clleitorcategoria->rotulo->label("bi07_biblioteca");
 
 $depto      = db_getsession("DB_coddepto");
-$result_bib = pg_query("SELECT bi17_codigo as codbiblioteca,bi17_nome as nomebiblioteca FROM biblioteca WHERE bi17_coddepto = $depto");
+$result_bib = db_query("SELECT bi17_codigo as codbiblioteca,bi17_nome as nomebiblioteca FROM biblioteca WHERE bi17_coddepto = $depto");
 db_fieldsmemory($result_bib,  0);
 
 ?>
@@ -176,7 +176,7 @@ db_fieldsmemory($result_bib,  0);
               }
             } else if (isset($pesquisa_chave) && $pesquisa_chave != "") {
             
-              $result = pg_query($sql);
+              $result = db_query($sql);
               $linhas = pg_num_rows($result);
               
               if ($linhas != 0) {
@@ -188,7 +188,7 @@ db_fieldsmemory($result_bib,  0);
               }
             } else if (isset($pesquisa_chave2) && $pesquisa_chave2 != "") {
             
-              $result = pg_query($sql);
+              $result = db_query($sql);
               $linhas = pg_num_rows($result);
               
               if ($linhas != 0) {
@@ -207,4 +207,10 @@ db_fieldsmemory($result_bib,  0);
 </html>
 <script>
   js_tabulacaoforms("form2", "chave_ov02_nome", true, 1, "chave_ov02_nome", true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

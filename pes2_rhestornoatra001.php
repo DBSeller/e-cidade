@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 
 ?>
@@ -54,7 +54,7 @@ db_postmemory($HTTP_POST_VARS);
   if(!isset($filtro)){
     $filtro = "s";
   }
-  include("dbforms/db_classesgenericas.php");
+  include(modification("dbforms/db_classesgenericas.php"));
   $geraform = new cl_formulario_rel_pes;
 
   $geraform->usaregi = true;                      // PERMITIR SELEÇÃO DE MATRÍCULAS
@@ -95,7 +95,7 @@ function js_verificar_dados(){
     qry+= "&chave_rh57_mes="+document.form1.mesfolha.value;
     qry+= "&chave_rh57_regist="+document.form1.regis.value;
     qry+= "&seleciona=S";
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpagocor','func_rhpagocor.php?funcao_js=parent.js_enviar_dados|rh58_codigo'+qry,'Foto do funcionário',true,20);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpagocor','func_rhpagocor.php?funcao_js=parent.js_enviar_dados|rh58_codigo'+qry,'Foto do funcionário',true,20);
   }
 }
 js_trocacordeselect();

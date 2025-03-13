@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_favorecido_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_favorecido_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oPost         = db_utils::postMemory($_POST);
 $oGet          = db_utils::postMemory($_GET);
@@ -175,7 +175,7 @@ if ( isset($oGet->chavepesquisa) ) {
                                       }
 
                                       parent.document.formaba.favorecidotaxas.disabled = false;
-                                      top.corpo.iframe_favorecidotaxas.location.href='jur1_favorecidotaxa001.php?v86_sequencial=' + oRetorno.registroSalvo;
+                                      CurrentWindow.corpo.iframe_favorecidotaxas.location.href='jur1_favorecidotaxa001.php?v86_sequencial=' + oRetorno.registroSalvo;
                                       alert(oRetorno.message.urlDecode());
                                       parent.mo_camada('favorecidotaxas');
                                       
@@ -257,7 +257,7 @@ if ( isset($oGet->chavepesquisa) ) {
 
     js_OpenJanelaIframe('', 
                         'db_iframe_novocgm', 
-                        'prot1_cadgeralmunic001.php?lMenu=false&lFisico=true&funcaoRetorno=top.corpo.iframe_favorecido.retornoCgm',
+                        'prot1_cadgeralmunic001.php?lMenu=false&lFisico=true&funcaoRetorno=parent.CurrentWindow.corpo.iframe_favorecido.retornoCgm',
                         'Novo CGM',
                         true,
                         '0');
@@ -269,7 +269,7 @@ if ( isset($oGet->chavepesquisa) ) {
       js_OpenJanelaIframe('', 
                           'db_iframe_novocgm', 
                           'prot1_cadgeralmunic002.php?chavepesquisa='+iCgm+
-                          '&lMenu=false&lCpf=true&funcaoRetorno=top.corpo.iframe_favorecido.retornoCgm',
+                          '&lMenu=false&lCpf=true&funcaoRetorno=parent.CurrentWindow.corpo.iframe_favorecido.retornoCgm',
                           'Novo CGM',
                           true,
                           '0');
@@ -301,7 +301,7 @@ if ( isset($oGet->chavepesquisa) ) {
                    function(oAjax) {
                              
                      js_removeObj('msgBox');
-                     var oRetorno = eval("("+oAjax.responseText+")");
+                     var oRetorno = JSON.parse(oAjax.responseText);
                      
                      if (oRetorno.status== "2") {
                        alert(oRetorno.message.urlDecode());
@@ -316,7 +316,7 @@ if ( isset($oGet->chavepesquisa) ) {
                          oContaBancaria.getDados(oRetorno.v86_contabancaria);
                          $('btnExcluir').disabled=false;      
                          parent.document.formaba.favorecidotaxas.disabled = false;
-                         top.corpo.iframe_favorecidotaxas.location.href='jur1_favorecidotaxa001.php?v86_sequencial=' + oRetorno.v86_sequencial;
+                         CurrentWindow.corpo.iframe_favorecidotaxas.location.href='jur1_favorecidotaxa001.php?v86_sequencial=' + oRetorno.v86_sequencial;
                         
 //                         parent.mo_camada('favorecidotaxas');
                        }

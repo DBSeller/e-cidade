@@ -85,7 +85,7 @@ $clatendcadarea->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_atendcadarea','db_iframe_atendcadarea',
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_atendcadarea','db_iframe_atendcadarea',
                       'func_atendcadarea.php?funcao_js=parent.js_preenchepesquisa|at26_sequencial',
                       'Pesquisa',true);
 }

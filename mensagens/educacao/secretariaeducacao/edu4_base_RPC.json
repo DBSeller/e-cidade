@@ -1,0 +1,11 @@
+{
+   "curso_nao_informado"      : "Informe o curso."
+  ,"tipo_nao_informado"       : "Informe o tipo."
+  ,"nome_nao_informado"       : "Informe o nome da base."
+  ,"erro_buscar_etapas_base"  : "Erro ao buscar dados da base:\n[sErro]"
+  ,"erro_excluir_etapas"      : "Erro ao excluir etapas."
+  ,"erro_excluir_base"        : "Erro ao excluir base."
+  ,"erro_salvar_base"         : "Erro ao salvar base."
+  ,"erro_salvar_etapa"        : "Erro ao salvar etapa."
+  ,"base_salva"               : "Base salva com sucesso."
+}

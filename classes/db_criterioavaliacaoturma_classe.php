@@ -369,7 +369,6 @@ class cl_criterioavaliacaoturma {
      $sql .= "      inner join criterioavaliacao  on  criterioavaliacao.ed338_sequencial = criterioavaliacaoturma.ed341_criterioavaliacao";
      $sql .= "      inner join turma  on  turma.ed57_i_codigo = criterioavaliacaoturma.ed341_turma";
      $sql .= "      left  join censocursoprofiss  on  censocursoprofiss.ed247_i_codigo = turma.ed57_i_censocursoprofiss";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = turma.ed57_i_censoetapa";
      $sql .= "      inner join escola  on  escola.ed18_i_codigo = turma.ed57_i_escola";
      $sql .= "      inner join turno  on  turno.ed15_i_codigo = turma.ed57_i_turno";
      $sql .= "      inner join sala  on  sala.ed16_i_codigo = turma.ed57_i_sala";

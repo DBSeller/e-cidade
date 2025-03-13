@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 if(isset($HTTP_POST_VARS["enviar"])) {
   db_postmemory($HTTP_POST_VARS);
-  $result = pg_exec("select k11_ipterm 
+  $result = db_query("select k11_ipterm 
                      from cfautent 
 	             where k11_instit = ".db_getsession("DB_instit")." and k11_ipterm = '".$k11_ipterm."'");
   if(pg_numrows($result) == 0) {
@@ -44,10 +44,10 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   }
 
   if($flag==true) {
-      $result = pg_exec("select max(k11_id) + 1 from cfautent");
+      $result = db_query("select max(k11_id) + 1 from cfautent");
       $k11_id = pg_result($result,0,0);
       $k11_id = $k11_id==""?"1":$k11_id;
-      pg_exec("insert into cfautent(k11_id,
+      db_query("insert into cfautent(k11_id,
                                     k11_ident1,
                                     k11_ident2,
                                     k11_ident3,
@@ -98,7 +98,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">	
 	<? 
-	  include("forms/db_frmautenticadora.php");
+	  include(modification("forms/db_frmautenticadora.php"));
     ?>
 	</td>
   </tr>

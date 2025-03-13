@@ -98,7 +98,7 @@ if(isset($codmatricula)){
             FROM convocacao
             WHERE ed111_d_data >= '$ed112_d_datainicio'
             ORDER BY ed111_i_ano DESC";
-    $sql_result = pg_query($sql);
+    $sql_result = db_query($sql);
     while($row=pg_fetch_array($sql_result)){
      $desc_ano=$row["ed111_i_ano"];
      ?>
@@ -124,7 +124,7 @@ if(isset($codmatricula)){
            AND ed115_i_progmatricula = $ed112_i_codigo
            ORDER BY ed111_d_data ASC
            ";
-   $sql_result = pg_query($sql);
+   $sql_result = db_query($sql);
    $linhas = pg_num_rows($sql_result);
    ?>
    <select name="convocacoes" id="convocacoes" size="18"  multiple style="font-size:9px;width:350px;">
@@ -155,7 +155,7 @@ if(isset($codmatricula)){
 <script>
 function js_pesquisaed115_i_progmatricula(mostra){
  if(mostra==true){
-  js_OpenJanelaIframe('top.corpo','db_iframe_progmatricula','func_progmatricula.php?funcao_js=parent.js_preenchepesquisamat|ed112_i_codigo','Pesquisa de Matrículas',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_progmatricula','func_progmatricula.php?funcao_js=parent.js_preenchepesquisamat|ed112_i_codigo','Pesquisa de Matrículas',true);
  }
 }
 function js_preenchepesquisamat(chave){

@@ -1,13 +1,39 @@
 <?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/JSON.php"));
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/JSON.php");
+define( "MENSAGEM_TRANSFERENCIA_RPC", "educacao.escola.edu4_transferencia_RPC." );
 
 $oJson                  = new services_json();
 $oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -124,8 +150,10 @@ try {
       $oTurma           = TurmaRepository::getTurmaByCodigo( $oParam->iTurmaDestino );
       $oAluno           = AlunoRepository::getAlunoByCodigo($oParam->iAluno);
 
-      $oTurmaAntiga             = null;
-      $oRetorno->iTurmaAnterior = '';
+      $oTurmaAntiga                             = null;
+      $oRetorno->iTurmaAnterior                 = '';
+      $oRetorno->lPermiteImportarAproveitamento = true;
+
       if ($oMatriculaAntiga->getTurma() instanceof Turma && $oMatriculaAntiga->getTurma() != '') {
 
         $oTurmaAntiga             = $oMatriculaAntiga->getTurma();
@@ -151,6 +179,7 @@ try {
       $oNovaMatricula->setTurma( $oTurma );
       $oNovaMatricula->setSituacao("MATRICULADO");
       $oNovaMatricula->setDataMatricula( new DBDate($oParam->dtMatricula) );
+      $oNovaMatricula->setTipo( 'N' );
       $oNovaMatricula->matricular( EtapaRepository::getEtapaByCodigo( $oParam->iEtapa ), $oParam->aTurnosReferente, true );
 
       /**
@@ -173,17 +202,48 @@ try {
        */
       if ( $rsVerifica && pg_num_rows($rsVerifica) > 0 ) {
 
-        $sSqlDiario    = " UPDATE diario SET ";
-        $sSqlDiario   .= "        ed95_c_encerrado = 'N' ";
-        $sSqlDiario   .= "  WHERE ed95_i_aluno = {$oParam->iAluno} ";
-        $sSqlDiario   .= "    AND ed95_i_regencia in (select ed59_i_codigo ";
-        $sSqlDiario   .= "                              from regencia ";
-        $sSqlDiario   .= "                             where ed59_i_turma = {$oParam->iTurmaDestino}) ";
-        $sResultDiario = db_query($sSqlDiario);
+        /*
+         * Verifica se o aluno já possui diario de classe lançado para a turma de destino, caso haja
+         * reativamos o diario o mesmo se não criamos um novo
+         */
+        $sWherePossuiDiario = "ed95_i_aluno = {$oParam->iAluno} AND ed59_i_turma = {$oParam->iTurmaDestino} ";
+        $oDaoDiario         = new cl_diario();
+        $sSqlPossuiDiario   = $oDaoDiario->sql_query_regencia( null, 'distinct 1', null, $sWherePossuiDiario);
+        $rsPossuiDiario     = db_query($sSqlPossuiDiario);
 
-        if ( !$sResultDiario ) {
-          throw new Exception( "Erro ao reabrir o diário do aluno.\n" . pg_last_error());
+        if ( !$rsPossuiDiario ) {
+
+          $oErro        = new stdClass();
+          $oErro->sErro = pg_last_error();
+          throw new DBException( _M( MENSAGEM_TRANSFERENCIA_RPC. 'erro_buscar_diario', $oErro ) );
         }
+
+        if ( pg_num_rows( $rsPossuiDiario ) > 0 ) {
+
+          $sSqlDiario    = " UPDATE diario SET ";
+          $sSqlDiario   .= "        ed95_c_encerrado = 'N' ";
+          $sSqlDiario   .= "  WHERE ed95_i_aluno = {$oParam->iAluno} ";
+          $sSqlDiario   .= "    AND ed95_i_regencia in (select ed59_i_codigo ";
+          $sSqlDiario   .= "                              from regencia ";
+          $sSqlDiario   .= "                             where ed59_i_turma = {$oParam->iTurmaDestino}) ";
+          $sResultDiario = db_query($sSqlDiario);
+
+          if ( !$sResultDiario ) {
+            throw new Exception( "Erro ao reabrir o diário do aluno.\n" . pg_last_error());
+          }
+        } else {
+          $oDiarioClasse = new DiarioClasse( $oNovaMatricula );
+        }
+      }
+
+      $oTurmaAntiga = $oMatriculaAntiga->getTurma();
+      $oTurmaNova   = $oNovaMatricula->getTurma();
+
+      if(    $oTurmaAntiga->getCalendario()->getAnoExecucao() != $oTurmaNova->getCalendario()->getAnoExecucao()
+          || $oTurmaAntiga->getTipoDaTurma() == 2
+          || $oTurmaNova->getTipoDaTurma() == 2
+        ) {
+        $oRetorno->lPermiteImportarAproveitamento = false;
       }
 
       $oRetorno->oDados = validaProgressaoParcial($oAluno);
@@ -195,8 +255,6 @@ try {
 
     break;
   }
-
-
 } catch (Exception $eErro){
 
   db_fim_transacao(true);

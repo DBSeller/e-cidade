@@ -61,7 +61,7 @@ db_input('fa15_c_listacontrolado',60,$Ifa15_c_listacontrolado,true,'text',$db_op
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_listacontrolado','func_far_listacontrolado.php?funcao_js=parent.js_preenchepesquisa|fa15_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_listacontrolado','func_far_listacontrolado.php?funcao_js=parent.js_preenchepesquisa|fa15_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_listacontrolado.hide();

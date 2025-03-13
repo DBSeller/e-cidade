@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -43,6 +43,9 @@ $oRotulo->label("s103_i_revisacgs");
 $oRotulo->label("s103_i_datahorafaa");
 $oRotulo->label("s103_i_modelofaa");
 $oRotulo->label("s103_i_todacomp");
+$oRotulo->label("s103_obrigarcns");
+$oRotulo->label("s103_validamicroarea");
+
 ?>
 <div class="container">
   <form name="form1" method="post" action="">
@@ -189,6 +192,28 @@ $oRotulo->label("s103_i_todacomp");
             <?php
             $x = array( '2' => 'NÃO', '1' => 'SIM' );
             db_select( 's103_i_todacomp', $x, true, $db_opcao );
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td title="<?=@$Ts103_obrigarcns?>">
+           <b> <?=$Ls103_obrigarcns?></b>
+          </td>
+          <td>
+            <?php
+            $aOpcoes = array( 'f' => 'NÃO', 't' => 'SIM' );
+            db_select( 's103_obrigarcns', $aOpcoes, true, $db_opcao );
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label class="bold">Valida Microárea:</label>
+          </td>
+          <td>
+            <?php
+              $opcoes = ['f' => 'NÃO', 't' => 'SIM'];
+              db_select('s103_validamicroarea', $opcoes, true, $db_opcao); 
             ?>
           </td>
         </tr>
@@ -352,7 +377,7 @@ function js_desabexc(){
 
 function js_pesquisa() {
   js_OpenJanelaIframe(
-                       'top.corpo.iframe_a1',
+                       'CurrentWindow.corpo.iframe_a1',
                        'db_iframe_sau_config',
                        'func_sau_config.php?funcao_js=parent.js_preenchepesquisa|0',
                        'Pesquisa',
@@ -374,7 +399,7 @@ function js_pesquisas103_i_modalidade( mostra ) {
 
   if (mostra == true) {
     js_OpenJanelaIframe(
-                         'top.corpo.iframe_a1',
+                         'CurrentWindow.corpo.iframe_a1',
                          'db_iframe_sau_modalidade',
                          'func_sau_modalidade.php?funcao_js=parent.js_mostrasau_modalidade1|sd82_i_codigo'
                                                                                          +'|sd82_c_modalidade'
@@ -411,4 +436,6 @@ $('s103_i_todacomp').className       = 'field-size2';
 $('sd82_c_modalidade').className     = 'field-size2';
 $('sd82_c_nome').className           = 'field-size7';
 $('sData').className                 = 'field-size2';
+$('s103_obrigarcns').className       = 'field-size2';
+$('s103_validamicroarea').className  = 'field-size2';
 </script>

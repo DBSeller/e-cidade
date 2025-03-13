@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -82,10 +82,10 @@ db_input('ar36_sequencial',10,$Iar36_sequencial,true,'text',3,'')
 <script>
 function js_pesquisav87_taxa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_taxa','func_taxa.php?funcao_js=parent.js_mostrataxa1|ar36_sequencial|ar36_sequencial','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_taxa','func_taxa.php?funcao_js=parent.js_mostrataxa1|ar36_sequencial|ar36_sequencial','Pesquisa',true);
   }else{
      if(document.form1.v87_taxa.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_taxa','func_taxa.php?pesquisa_chave='+document.form1.v87_taxa.value+'&funcao_js=parent.js_mostrataxa','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_taxa','func_taxa.php?pesquisa_chave='+document.form1.v87_taxa.value+'&funcao_js=parent.js_mostrataxa','Pesquisa',false);
      }else{
        document.form1.ar36_sequencial.value = ''; 
      }
@@ -105,10 +105,10 @@ function js_mostrataxa1(chave1,chave2){
 }
 function js_pesquisav87_favorecido(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_favorecido','func_favorecido.php?funcao_js=parent.js_mostrafavorecido1|v86_sequencial|v86_contabancaria','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_favorecido','func_favorecido.php?funcao_js=parent.js_mostrafavorecido1|v86_sequencial|v86_contabancaria','Pesquisa',true);
   }else{
      if(document.form1.v87_favorecido.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_favorecido','func_favorecido.php?pesquisa_chave='+document.form1.v87_favorecido.value+'&funcao_js=parent.js_mostrafavorecido','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_favorecido','func_favorecido.php?pesquisa_chave='+document.form1.v87_favorecido.value+'&funcao_js=parent.js_mostrafavorecido','Pesquisa',false);
      }else{
        document.form1.v86_contabancaria.value = ''; 
      }
@@ -127,7 +127,7 @@ function js_mostrafavorecido1(chave1,chave2){
   db_iframe_favorecido.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_favorecidotaxa','func_favorecidotaxa.php?funcao_js=parent.js_preenchepesquisa|v87_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_favorecidotaxa','func_favorecidotaxa.php?funcao_js=parent.js_preenchepesquisa|v87_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_favorecidotaxa.hide();

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_sau_prestadores_classe.php");
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory( $_POST );
+parse_str( $_SERVER["QUERY_STRING"] );
+
 $clsau_prestadores = new cl_sau_prestadores;
 
 $clsau_prestadores->rotulo->label();
 $clsau_prestadores->rotulo->label("s110_i_codigo");
-rotulocampo::label("z01_nome");
+
+$oRotulo = new rotulocampo();
+$oRotulo->label("z01_nome");
 ?>
 <html>
 <head>
@@ -46,92 +49,99 @@ rotulocampo::label("z01_nome");
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
-    <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Ts110_i_codigo?>">
-              <?=$Ls110_i_codigo?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("s110_i_codigo",10,$Is110_i_codigo,true,"text",4,"","chave_s110_i_codigo");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tz01_nome?>">
-              <?=$Lz01_nome?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("z01_nome",49,$Iz01_nome,true,"text",4,"","chave_z01_nome");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_sau_prestadores.hide();">
-             </td>
-          </tr>
+  <table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
+    <tr>
+      <td height="63" align="center" valign="top">
+        <form name="form2" method="post" action="" >
+          <table width="35%" border="0" align="center" cellspacing="0">
+            <tr>
+              <td width="4%" align="right" nowrap title="<?=$Ts110_i_codigo?>">
+                <?=$Ls110_i_codigo?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?php
+                db_input( "s110_i_codigo", 10, $Is110_i_codigo, true, "text", 4, "", "chave_s110_i_codigo" );
+                ?>
+              </td>
+            </tr>
+            <tr>
+              <td width="4%" align="right" nowrap title="<?=$Tz01_nome?>">
+                <?=$Lz01_nome?>
+              </td>
+              <td width="96%" align="left" nowrap>
+                <?php
+                db_input( "z01_nome", 49, $Iz01_nome, true, "text", 4, "", "chave_z01_nome" );
+                ?>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" align="center">
+                <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
+                <input name="limpar" type="reset" id="limpar" value="Limpar" >
+                <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_sau_prestadores.hide();">
+               </td>
+            </tr>
+          </table>
         </form>
-        </table>
       </td>
-  </tr>
-  <tr> 
-    <td align="center" valign="top"> 
-      <?
-      if(!isset($pesquisa_chave)){
-        if(isset($campos)==false){
-           if(file_exists("funcoes/db_func_sau_prestadores.php")==true){
-             include("funcoes/db_func_sau_prestadores.php");
-           }else{
-           $campos = "sau_prestadores.*";
-           }
-        }
-        if(isset($chave_s110_i_codigo) && (trim($chave_s110_i_codigo)!="") ){
-	         $sql = $clsau_prestadores->sql_query($chave_s110_i_codigo,$campos,"s110_i_codigo");
-        }else if(isset($chave_z01_nome) && (trim($chave_z01_nome)!="") ){
-	         $sql = $clsau_prestadores->sql_query("",$campos,"z01_nome"," z01_nome like '$chave_z01_nome%' ");
-        }else{
-           $sql = $clsau_prestadores->sql_query("",$campos,"s110_i_codigo","");
-        }
-        $repassa = array();
-        if(isset($chave_s110_i_codigo)){
-          $repassa = array("chave_s110_i_codigo"=>$chave_s110_i_codigo,"chave_s110_i_codigo"=>$chave_s110_i_codigo);
-        }
-        db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clsau_prestadores->sql_record($clsau_prestadores->sql_query($pesquisa_chave));
-          if($clsau_prestadores->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$z01_nome','$s110_i_codigo');</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
+    </tr>
+    <tr>
+      <td align="center" valign="top">
+        <?php
+        if( !isset( $pesquisa_chave ) ) {
+
+          if( isset( $campos ) == false ) {
+
+            if( file_exists( "funcoes/db_func_sau_prestadores.php" ) == true ) {
+              include(modification("funcoes/db_func_sau_prestadores.php"));
+            } else {
+              $campos = "sau_prestadores.*";
+            }
           }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
+
+          if( isset( $chave_s110_i_codigo ) && ( trim( $chave_s110_i_codigo ) != "" ) ) {
+            $sql = $clsau_prestadores->sql_query( $chave_s110_i_codigo, $campos, "s110_i_codigo" );
+          } else if( isset( $chave_z01_nome ) && ( trim( $chave_z01_nome ) != "" ) ) {
+            $sql = $clsau_prestadores->sql_query( "", $campos, "z01_nome", " z01_nome like '{$chave_z01_nome}%' " );
+          } else {
+            $sql = $clsau_prestadores->sql_query( "", $campos, "s110_i_codigo", "" );
+          }
+
+          $repassa = array();
+          if( isset( $chave_s110_i_codigo ) ) {
+            $repassa = array( "chave_s110_i_codigo" => $chave_s110_i_codigo );
+          }
+
+          db_lovrot( $sql, 15, "()", "", $funcao_js, "", "NoMe", $repassa );
+        } else {
+
+          if( $pesquisa_chave != null && $pesquisa_chave != "" ) {
+
+            $result = $clsau_prestadores->sql_record( $clsau_prestadores->sql_query( $pesquisa_chave ) );
+
+            if( $clsau_prestadores->numrows != 0 ) {
+
+              db_fieldsmemory( $result, 0 );
+              echo "<script>".$funcao_js."('$z01_nome','$s110_i_codigo');</script>";
+            } else {
+              echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
+            }
+          } else {
+            echo "<script>".$funcao_js."('',false);</script>";
+          }
         }
-      }
-      ?>
-     </td>
-   </tr>
-</table>
+        ?>
+       </td>
+     </tr>
+  </table>
 </body>
 </html>
-<?
-if(!isset($pesquisa_chave)){
-  ?>
-  <script>
-  </script>
-  <?
-}
-?>
 <script>
-js_tabulacaoforms("form2","chave_s110_i_codigo",true,1,"chave_s110_i_codigo",true);
+js_tabulacaoforms( "form2", "chave_s110_i_codigo", true, 1, "chave_s110_i_codigo", true );
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

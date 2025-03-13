@@ -26,19 +26,19 @@
  */
 
 //echo ($HTTP_SERVER_VARS['QUERY_STRING']);exit;
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_cgm_classe.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_matordem_classe.php");
-include("classes/db_matordemanu_classe.php");
-include("classes/db_matordemitem_classe.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_matestoqueitemoc_classe.php");
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemanu_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_matestoqueitemoc_classe.php"));
 
 $clmatordem         = new cl_matordem;
 $clmatordemanu      = new cl_matordemanu;
@@ -88,7 +88,7 @@ if (isset($anula)){
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"><center>
     <?
-      include("forms/db_frmmatordem.php");
+      include(modification("forms/db_frmmatordem.php"));
 
 if (isset($m51_codordem)&&trim($m51_codordem)!=""){
      $resultado = $clmatestoqueitemoc->sql_record($clmatestoqueitemoc->sql_query(null,null,
@@ -96,7 +96,7 @@ if (isset($m51_codordem)&&trim($m51_codordem)!=""){
      
      if ($clmatestoqueitemoc->numrows > 0){
           db_msgbox("Ordem nao pode ser anulada itens ja em estoque!");
-          echo"<script>top.corpo.location.href='emp1_ordemcompra003.php';</script>";
+          echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='emp1_ordemcompra003.php';</script>";
      }
 }
     ?></center></td>
@@ -112,7 +112,7 @@ if (isset($anula)){
       echo "<script> document.form1.".$clmatordemanu->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clmatordemanu->erro_campo.".focus();</script>";
     }else{ 
-      echo"<script>top.corpo.location.href='emp1_ordemcompra003.php';</script>";
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='emp1_ordemcompra003.php';</script>";
     }
 }
 ?>

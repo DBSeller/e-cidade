@@ -30,25 +30,25 @@ if(!isset($abas)){
   echo "<script>location.href='fis1_vistorias005.php?db_opcao=3&inscr=1'</script>";
   exit;
 }
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_vistorias_classe.php");
-include("classes/db_vistorianumpre_classe.php");
-include("classes/db_vistoriarec_classe.php");
-include("classes/db_vistoriaandam_classe.php");
-include("classes/db_vistinscr_classe.php");
-include("classes/db_vistmatric_classe.php");
-include("classes/db_vistsanitario_classe.php");
-include("classes/db_vistcgm_classe.php");
-include("classes/db_vistusuario_classe.php");
-include("classes/db_fandam_classe.php");
-include("classes/db_fandamusu_classe.php");
-include("classes/db_vistlocal_classe.php");
-include("classes/db_vistexec_classe.php");
-include("classes/db_vistestem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_vistorias_classe.php"));
+include(modification("classes/db_vistorianumpre_classe.php"));
+include(modification("classes/db_vistoriarec_classe.php"));
+include(modification("classes/db_vistoriaandam_classe.php"));
+include(modification("classes/db_vistinscr_classe.php"));
+include(modification("classes/db_vistmatric_classe.php"));
+include(modification("classes/db_vistsanitario_classe.php"));
+include(modification("classes/db_vistcgm_classe.php"));
+include(modification("classes/db_vistusuario_classe.php"));
+include(modification("classes/db_fandam_classe.php"));
+include(modification("classes/db_fandamusu_classe.php"));
+include(modification("classes/db_vistlocal_classe.php"));
+include(modification("classes/db_vistexec_classe.php"));
+include(modification("classes/db_vistestem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
@@ -233,7 +233,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmvistorias.php");
+	include(modification("forms/db_frmvistorias.php"));
 	?>
     </center>
 	</td>

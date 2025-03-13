@@ -27,7 +27,7 @@
 
 //MODULO: merenda
 $clmer_restrinutri->rotulo->label();
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo = new rotulocampo;
 $clrotulo->label("me25_i_codigo");

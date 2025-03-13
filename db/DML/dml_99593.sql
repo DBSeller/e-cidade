@@ -1,0 +1,1 @@
+update orcparamseqorcparamseqcoluna set o116_ordem = 2 where  o116_codparamrel = 145 and o116_codseq = 36 and o116_orcparamseqcoluna = 26;

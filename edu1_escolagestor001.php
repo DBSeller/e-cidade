@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,32 +25,32 @@
  *                                licenca/licenca_pt.txt 
  */
 
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_app.utils.php"));
 
-  require_once ("libs/db_stdlib.php");
-  require_once ("libs/db_conecta.php");
-  require_once ("libs/db_sessoes.php");
-  require_once ("libs/db_usuariosonline.php");
-  require_once ("dbforms/db_funcoes.php");
-  require_once ('libs/db_utils.php');
-  require_once ("dbforms/db_classesgenericas.php");
-  require_once ("libs/db_app.utils.php");
-
-  $db_opcao = 1;
-  $db_botao = true;
+$db_opcao = 1;
+$db_botao = true;
 ?>
-
 <html>
-  <head>
-    <?php 
-    
-      db_app::load("scripts.js, strings.js, estilos.css, prototype.js"); 
+<head>
+    <link rel="stylesheet" type="text/css" href="estilos.css">
+    <script rel="script" type="text/javascript" src="scripts/scripts.js"></script>
+    <script rel="script" type="text/javascript" src="scripts/strings.js"></script>
+    <script rel="script" type="text/javascript" src="scripts/prototype.js"></script>
+    <script rel="script" type="text/javascript" src="scripts/datagrid.widget.js"></script>
+    <script rel="script" type="text/javascript" src="scripts/widgets/Collection.widget.js"></script>
+    <script rel="script" type="text/javascript" src="scripts/widgets/DatagridCollection.widget.js"></script>
+</head>
+<body bgcolor="#CCCCCC">
+
+    <?php
+    include(modification("forms/db_frmescolagestor.php"));
     ?>
-  </head>
-  <body bgcolor="#CCCCCC" >
-    <div style="display: table;margin:0px auto; text-align: center">
-      <?php 
-         include ("forms/db_frmescolagestor.php");
-      ?>
-     </div>  
-  </body>
+</body>
 </html>

@@ -1,85 +1,85 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: caixa
 //CLASSE DA ENTIDADE extratolinha
-class cl_extratolinha { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $k86_sequencial = 0; 
-   var $k86_extrato = 0; 
-   var $k86_bancohistmov = 0; 
-   var $k86_contabancaria = 0; 
-   var $k86_data_dia = null; 
-   var $k86_data_mes = null; 
-   var $k86_data_ano = null; 
-   var $k86_data = null; 
-   var $k86_valor = 0; 
-   var $k86_tipo = null; 
-   var $k86_historico = null; 
-   var $k86_documento = null; 
-   var $k86_lote = null; 
-   var $k86_loteseq = null; 
-   var $k86_observacao = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_extratolinha {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $k86_sequencial = 0;
+   var $k86_extrato = 0;
+   var $k86_bancohistmov = 0;
+   var $k86_contabancaria = 0;
+   var $k86_data_dia = null;
+   var $k86_data_mes = null;
+   var $k86_data_ano = null;
+   var $k86_data = null;
+   var $k86_valor = 0;
+   var $k86_tipo = null;
+   var $k86_historico = null;
+   var $k86_documento = null;
+   var $k86_lote = null;
+   var $k86_loteseq = null;
+   var $k86_observacao = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 k86_sequencial = int8 = Codigo sequencial 
-                 k86_extrato = int4 = Codigo do extrato 
-                 k86_bancohistmov = int4 = Codigo do movimento no banco 
-                 k86_contabancaria = int4 = Codigo sequencial da conta bancaria 
-                 k86_data = date = Data 
-                 k86_valor = float8 = Valor 
-                 k86_tipo = char(1) = Tipo 
-                 k86_historico = varchar(50) = Historico 
-                 k86_documento = varchar(20) = Documento 
-                 k86_lote = char(4) = Lote 
-                 k86_loteseq = char(5) = Sequencial do lote 
-                 k86_observacao = text = Observação referente ao extrato 
+                 k86_sequencial = int8 = Codigo sequencial
+                 k86_extrato = int4 = Codigo do extrato
+                 k86_bancohistmov = int4 = Codigo do movimento no banco
+                 k86_contabancaria = int4 = Codigo sequencial da conta bancaria
+                 k86_data = date = Data
+                 k86_valor = float8 = Valor
+                 k86_tipo = char(1) = Tipo
+                 k86_historico = varchar(50) = Historico
+                 k86_documento = varchar(50) = Documento
+                 k86_lote = char(4) = Lote
+                 k86_loteseq = char(5) = Sequencial do lote
+                 k86_observacao = text = Observação referente ao extrato
                  ";
-   //funcao construtor da classe 
-   function cl_extratolinha() { 
+   //funcao construtor da classe
+   function cl_extratolinha() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("extratolinha"); 
+     $this->rotulo = new rotulo("extratolinha");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -114,9 +114,9 @@ class cl_extratolinha {
      }
    }
    // funcao para inclusao
-   function incluir ($k86_sequencial){ 
+   function incluir ($k86_sequencial){
       $this->atualizacampos();
-     if($this->k86_extrato == null ){ 
+     if($this->k86_extrato == null ){
        $this->erro_sql = " Campo Codigo do extrato nao Informado.";
        $this->erro_campo = "k86_extrato";
        $this->erro_banco = "";
@@ -125,7 +125,7 @@ class cl_extratolinha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k86_bancohistmov == null ){ 
+     if($this->k86_bancohistmov == null ){
        $this->erro_sql = " Campo Codigo do movimento no banco nao Informado.";
        $this->erro_campo = "k86_bancohistmov";
        $this->erro_banco = "";
@@ -134,7 +134,7 @@ class cl_extratolinha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k86_contabancaria == null ){ 
+     if($this->k86_contabancaria == null ){
        $this->erro_sql = " Campo Codigo sequencial da conta bancaria nao Informado.";
        $this->erro_campo = "k86_contabancaria";
        $this->erro_banco = "";
@@ -143,7 +143,7 @@ class cl_extratolinha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k86_data == null ){ 
+     if($this->k86_data == null ){
        $this->erro_sql = " Campo Data nao Informado.";
        $this->erro_campo = "k86_data_dia";
        $this->erro_banco = "";
@@ -152,7 +152,7 @@ class cl_extratolinha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k86_valor == null ){ 
+     if($this->k86_valor == null ){
        $this->erro_sql = " Campo Valor nao Informado.";
        $this->erro_campo = "k86_valor";
        $this->erro_banco = "";
@@ -161,7 +161,7 @@ class cl_extratolinha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k86_tipo == null ){ 
+     if($this->k86_tipo == null ){
        $this->erro_sql = " Campo Tipo nao Informado.";
        $this->erro_campo = "k86_tipo";
        $this->erro_banco = "";
@@ -170,7 +170,7 @@ class cl_extratolinha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k86_historico == null ){ 
+     if($this->k86_historico == null ){
        $this->erro_sql = " Campo Historico nao Informado.";
        $this->erro_campo = "k86_historico";
        $this->erro_banco = "";
@@ -179,7 +179,7 @@ class cl_extratolinha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k86_documento == null ){ 
+     if($this->k86_documento == null ){
        $this->erro_sql = " Campo Documento nao Informado.";
        $this->erro_campo = "k86_documento";
        $this->erro_banco = "";
@@ -188,7 +188,7 @@ class cl_extratolinha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k86_lote == null ){ 
+     if($this->k86_lote == null ){
        $this->erro_sql = " Campo Lote nao Informado.";
        $this->erro_campo = "k86_lote";
        $this->erro_banco = "";
@@ -197,7 +197,7 @@ class cl_extratolinha {
        $this->erro_status = "0";
        return false;
      }
-     if($this->k86_loteseq == null ){ 
+     if($this->k86_loteseq == null ){
        $this->erro_sql = " Campo Sequencial do lote nao Informado.";
        $this->erro_campo = "k86_loteseq";
        $this->erro_banco = "";
@@ -207,16 +207,16 @@ class cl_extratolinha {
        return false;
      }
      if($k86_sequencial == "" || $k86_sequencial == null ){
-       $result = db_query("select nextval('extratolinha_k86_sequencial_seq')"); 
+       $result = db_query("select nextval('extratolinha_k86_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: extratolinha_k86_sequencial_seq do campo: k86_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: extratolinha_k86_sequencial_seq do campo: k86_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->k86_sequencial = pg_result($result,0,0); 
+       $this->k86_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from extratolinha_k86_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $k86_sequencial)){
@@ -227,10 +227,10 @@ class cl_extratolinha {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->k86_sequencial = $k86_sequencial; 
+         $this->k86_sequencial = $k86_sequencial;
        }
      }
-     if(($this->k86_sequencial == null) || ($this->k86_sequencial == "") ){ 
+     if(($this->k86_sequencial == null) || ($this->k86_sequencial == "") ){
        $this->erro_sql = " Campo k86_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -239,35 +239,35 @@ class cl_extratolinha {
        return false;
      }
      $sql = "insert into extratolinha(
-                                       k86_sequencial 
-                                      ,k86_extrato 
-                                      ,k86_bancohistmov 
-                                      ,k86_contabancaria 
-                                      ,k86_data 
-                                      ,k86_valor 
-                                      ,k86_tipo 
-                                      ,k86_historico 
-                                      ,k86_documento 
-                                      ,k86_lote 
-                                      ,k86_loteseq 
-                                      ,k86_observacao 
+                                       k86_sequencial
+                                      ,k86_extrato
+                                      ,k86_bancohistmov
+                                      ,k86_contabancaria
+                                      ,k86_data
+                                      ,k86_valor
+                                      ,k86_tipo
+                                      ,k86_historico
+                                      ,k86_documento
+                                      ,k86_lote
+                                      ,k86_loteseq
+                                      ,k86_observacao
                        )
                 values (
-                                $this->k86_sequencial 
-                               ,$this->k86_extrato 
-                               ,$this->k86_bancohistmov 
-                               ,$this->k86_contabancaria 
-                               ,".($this->k86_data == "null" || $this->k86_data == ""?"null":"'".$this->k86_data."'")." 
-                               ,$this->k86_valor 
-                               ,'$this->k86_tipo' 
-                               ,'$this->k86_historico' 
-                               ,'$this->k86_documento' 
-                               ,'$this->k86_lote' 
-                               ,'$this->k86_loteseq' 
-                               ,'$this->k86_observacao' 
+                                $this->k86_sequencial
+                               ,$this->k86_extrato
+                               ,$this->k86_bancohistmov
+                               ,$this->k86_contabancaria
+                               ,".($this->k86_data == "null" || $this->k86_data == ""?"null":"'".$this->k86_data."'")."
+                               ,$this->k86_valor
+                               ,'$this->k86_tipo'
+                               ,'$this->k86_historico'
+                               ,'$this->k86_documento'
+                               ,'$this->k86_lote'
+                               ,'$this->k86_loteseq'
+                               ,'$this->k86_observacao'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Linhas do extrato ($this->k86_sequencial) nao Incluído. Inclusao Abortada.";
@@ -310,16 +310,16 @@ class cl_extratolinha {
        $resac = db_query("insert into db_acount values($acount,1732,19288,'','".AddSlashes(pg_result($resaco,0,'k86_observacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($k86_sequencial=null) { 
+   function alterar ($k86_sequencial=null) {
       $this->atualizacampos();
      $sql = " update extratolinha set ";
      $virgula = "";
-     if(trim($this->k86_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_sequencial"])){ 
+     if(trim($this->k86_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_sequencial"])){
        $sql  .= $virgula." k86_sequencial = $this->k86_sequencial ";
        $virgula = ",";
-       if(trim($this->k86_sequencial) == null ){ 
+       if(trim($this->k86_sequencial) == null ){
          $this->erro_sql = " Campo Codigo sequencial nao Informado.";
          $this->erro_campo = "k86_sequencial";
          $this->erro_banco = "";
@@ -329,10 +329,10 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_extrato)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_extrato"])){ 
+     if(trim($this->k86_extrato)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_extrato"])){
        $sql  .= $virgula." k86_extrato = $this->k86_extrato ";
        $virgula = ",";
-       if(trim($this->k86_extrato) == null ){ 
+       if(trim($this->k86_extrato) == null ){
          $this->erro_sql = " Campo Codigo do extrato nao Informado.";
          $this->erro_campo = "k86_extrato";
          $this->erro_banco = "";
@@ -342,10 +342,10 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_bancohistmov)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_bancohistmov"])){ 
+     if(trim($this->k86_bancohistmov)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_bancohistmov"])){
        $sql  .= $virgula." k86_bancohistmov = $this->k86_bancohistmov ";
        $virgula = ",";
-       if(trim($this->k86_bancohistmov) == null ){ 
+       if(trim($this->k86_bancohistmov) == null ){
          $this->erro_sql = " Campo Codigo do movimento no banco nao Informado.";
          $this->erro_campo = "k86_bancohistmov";
          $this->erro_banco = "";
@@ -355,10 +355,10 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_contabancaria)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_contabancaria"])){ 
+     if(trim($this->k86_contabancaria)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_contabancaria"])){
        $sql  .= $virgula." k86_contabancaria = $this->k86_contabancaria ";
        $virgula = ",";
-       if(trim($this->k86_contabancaria) == null ){ 
+       if(trim($this->k86_contabancaria) == null ){
          $this->erro_sql = " Campo Codigo sequencial da conta bancaria nao Informado.";
          $this->erro_campo = "k86_contabancaria";
          $this->erro_banco = "";
@@ -368,10 +368,10 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["k86_data_dia"] !="") ){ 
+     if(trim($this->k86_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["k86_data_dia"] !="") ){
        $sql  .= $virgula." k86_data = '$this->k86_data' ";
        $virgula = ",";
-       if(trim($this->k86_data) == null ){ 
+       if(trim($this->k86_data) == null ){
          $this->erro_sql = " Campo Data nao Informado.";
          $this->erro_campo = "k86_data_dia";
          $this->erro_banco = "";
@@ -380,11 +380,11 @@ class cl_extratolinha {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["k86_data_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["k86_data_dia"])){
          $sql  .= $virgula." k86_data = null ";
          $virgula = ",";
-         if(trim($this->k86_data) == null ){ 
+         if(trim($this->k86_data) == null ){
            $this->erro_sql = " Campo Data nao Informado.";
            $this->erro_campo = "k86_data_dia";
            $this->erro_banco = "";
@@ -395,10 +395,10 @@ class cl_extratolinha {
          }
        }
      }
-     if(trim($this->k86_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_valor"])){ 
+     if(trim($this->k86_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_valor"])){
        $sql  .= $virgula." k86_valor = $this->k86_valor ";
        $virgula = ",";
-       if(trim($this->k86_valor) == null ){ 
+       if(trim($this->k86_valor) == null ){
          $this->erro_sql = " Campo Valor nao Informado.";
          $this->erro_campo = "k86_valor";
          $this->erro_banco = "";
@@ -408,10 +408,10 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_tipo"])){ 
+     if(trim($this->k86_tipo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_tipo"])){
        $sql  .= $virgula." k86_tipo = '$this->k86_tipo' ";
        $virgula = ",";
-       if(trim($this->k86_tipo) == null ){ 
+       if(trim($this->k86_tipo) == null ){
          $this->erro_sql = " Campo Tipo nao Informado.";
          $this->erro_campo = "k86_tipo";
          $this->erro_banco = "";
@@ -421,10 +421,10 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_historico)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_historico"])){ 
+     if(trim($this->k86_historico)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_historico"])){
        $sql  .= $virgula." k86_historico = '$this->k86_historico' ";
        $virgula = ",";
-       if(trim($this->k86_historico) == null ){ 
+       if(trim($this->k86_historico) == null ){
          $this->erro_sql = " Campo Historico nao Informado.";
          $this->erro_campo = "k86_historico";
          $this->erro_banco = "";
@@ -434,10 +434,10 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_documento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_documento"])){ 
+     if(trim($this->k86_documento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_documento"])){
        $sql  .= $virgula." k86_documento = '$this->k86_documento' ";
        $virgula = ",";
-       if(trim($this->k86_documento) == null ){ 
+       if(trim($this->k86_documento) == null ){
          $this->erro_sql = " Campo Documento nao Informado.";
          $this->erro_campo = "k86_documento";
          $this->erro_banco = "";
@@ -447,10 +447,10 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_lote)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_lote"])){ 
+     if(trim($this->k86_lote)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_lote"])){
        $sql  .= $virgula." k86_lote = '$this->k86_lote' ";
        $virgula = ",";
-       if(trim($this->k86_lote) == null ){ 
+       if(trim($this->k86_lote) == null ){
          $this->erro_sql = " Campo Lote nao Informado.";
          $this->erro_campo = "k86_lote";
          $this->erro_banco = "";
@@ -460,10 +460,10 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_loteseq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_loteseq"])){ 
+     if(trim($this->k86_loteseq)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_loteseq"])){
        $sql  .= $virgula." k86_loteseq = '$this->k86_loteseq' ";
        $virgula = ",";
-       if(trim($this->k86_loteseq) == null ){ 
+       if(trim($this->k86_loteseq) == null ){
          $this->erro_sql = " Campo Sequencial do lote nao Informado.";
          $this->erro_campo = "k86_loteseq";
          $this->erro_banco = "";
@@ -473,7 +473,7 @@ class cl_extratolinha {
          return false;
        }
      }
-     if(trim($this->k86_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_observacao"])){ 
+     if(trim($this->k86_observacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k86_observacao"])){
        $sql  .= $virgula." k86_observacao = '$this->k86_observacao' ";
        $virgula = ",";
      }
@@ -515,7 +515,7 @@ class cl_extratolinha {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Linhas do extrato nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->k86_sequencial;
@@ -543,14 +543,14 @@ class cl_extratolinha {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($k86_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($k86_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($k86_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -587,7 +587,7 @@ class cl_extratolinha {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Linhas do extrato nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$k86_sequencial;
@@ -615,11 +615,11 @@ class cl_extratolinha {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -641,11 +641,11 @@ class cl_extratolinha {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $k86_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $k86_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -665,8 +665,8 @@ class cl_extratolinha {
      $sql2 = "";
      if($dbwhere==""){
        if($k86_sequencial!=null ){
-         $sql2 .= " where extratolinha.k86_sequencial = $k86_sequencial "; 
-       } 
+         $sql2 .= " where extratolinha.k86_sequencial = $k86_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -682,8 +682,8 @@ class cl_extratolinha {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $k86_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $k86_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -699,8 +699,8 @@ class cl_extratolinha {
      $sql2 = "";
      if($dbwhere==""){
        if($k86_sequencial!=null ){
-         $sql2 .= " where extratolinha.k86_sequencial = $k86_sequencial "; 
-       } 
+         $sql2 .= " where extratolinha.k86_sequencial = $k86_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }

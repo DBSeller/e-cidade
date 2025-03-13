@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_empempaut_classe.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_empautitem_classe.php");
-include("classes/db_empempitem_classe.php");
-include("classes/db_empparametro_classe.php");
-include("classes/db_pagordem_classe.php");
-include("classes/db_pcmater_classe.php");
-include("classes/db_cgm_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_empempaut_classe.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_empautitem_classe.php"));
+include(modification("classes/db_empempitem_classe.php"));
+include(modification("classes/db_empparametro_classe.php"));
+include(modification("classes/db_pagordem_classe.php"));
+include(modification("classes/db_pcmater_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clempempaut  = new cl_empempaut;
 $clempempenho = new cl_empempenho;

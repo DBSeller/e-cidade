@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -43,9 +43,9 @@ if(isset($db21_usasisagua) && $db21_usasisagua != "") {
 }
 
 if($db21_usasisagua==true) {
-  include("cad3_conscadastro_agua_002.php");
+  include(modification("cad3_conscadastro_agua_002.php"));
 } else {
-  include("cad3_consCadastroIptu.php");
+  include(modification("cad3_consCadastroIptu.php"));
 }
 if (isset($tiradiv) && $tiradiv == "t"){
   echo "<script> parent.document.getElementById('load').style.visibility='hidden'; </script>";

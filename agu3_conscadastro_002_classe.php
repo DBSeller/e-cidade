@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("classes/db_aguabase_classe.php");
-require_once("classes/db_aguaisencaorec_classe.php");
-require_once("classes/db_aguaconstrcar_classe.php");
-require_once("classes/db_agualeitura_classe.php");
-require_once("classes/db_aguahidrotroca_classe.php");
-require_once("classes/db_aguabasecorresp_classe.php");
-require_once("classes/db_aguacortematmov_classe.php");
-require_once("classes/db_histocorrenciamatric_classe.php");
-require_once("classes/db_aguabasebaixa_classe.php");
-require_once("classes/db_aguacondominiomat_classe.php");
+require_once(modification("classes/db_aguabase_classe.php"));
+require_once(modification("classes/db_aguaisencaorec_classe.php"));
+require_once(modification("classes/db_aguaconstrcar_classe.php"));
+require_once(modification("classes/db_agualeitura_classe.php"));
+require_once(modification("classes/db_aguahidrotroca_classe.php"));
+require_once(modification("classes/db_aguabasecorresp_classe.php"));
+require_once(modification("classes/db_aguacortematmov_classe.php"));
+require_once(modification("classes/db_histocorrenciamatric_classe.php"));
+require_once(modification("classes/db_aguabasebaixa_classe.php"));
+require_once(modification("classes/db_aguacondominiomat_classe.php"));
 
 
   

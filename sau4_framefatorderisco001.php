@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,19 +26,19 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 
-include("classes/db_cgs_classe.php");
-include("classes/db_cgs_und_classe.php");
-include("classes/db_prontuarios_ext_classe.php");
-include("classes/db_cgsfatorderisco_classe.php");
+include(modification("classes/db_cgs_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
+include(modification("classes/db_prontuarios_ext_classe.php"));
+include(modification("classes/db_cgsfatorderisco_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
 
 db_postmemory($HTTP_POST_VARS);
@@ -63,7 +63,7 @@ if( isset($chavepesquisacgs) && (int)$chavepesquisacgs != 0){
 				<td>
 					<select name="cgsfatorderisco" id="cgsfatorderisco" size="10" onclick="js_desabexc()"     style="font-size:9px;width:400px;height:120px" multiple disable>
 					<?
-					$result_cgsfatorderisco = pg_query( $clcgsfatorderisco->sql_query(null,"*","s105_v_descricao","s106_i_cgs = $chavepesquisacgs") );
+					$result_cgsfatorderisco = db_query( $clcgsfatorderisco->sql_query(null,"*","s105_v_descricao","s106_i_cgs = $chavepesquisacgs") );
 					if( pg_numrows($result_cgsfatorderisco) > 0 ){
 						for($i=0; $i < pg_numrows($result_cgsfatorderisco); $i++ ){
 							$obj_cgsfatorderisco = db_utils::fieldsMemory($result_cgsfatorderisco,$i);

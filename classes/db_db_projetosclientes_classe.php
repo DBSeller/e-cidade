@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -98,7 +98,7 @@ class cl_db_projetosclientes {
        return false;
      }
      if($at64_sequencial == "" || $at64_sequencial == null ){
-       $result = @pg_query("select nextval('db_projetosclientes_at64_sequencial_seq')"); 
+       $result = @db_query("select nextval('db_projetosclientes_at64_sequencial_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: db_projetosclientes_at64_sequencial_seq do campo: at64_sequencial"; 
@@ -109,7 +109,7 @@ class cl_db_projetosclientes {
        }
        $this->at64_sequencial = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from db_projetosclientes_at64_sequencial_seq");
+       $result = @db_query("select last_value from db_projetosclientes_at64_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $at64_sequencial)){
          $this->erro_sql = " Campo at64_sequencial maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -139,7 +139,7 @@ class cl_db_projetosclientes {
                                ,$this->at64_projeto 
                                ,$this->at64_cliente 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -165,12 +165,12 @@ class cl_db_projetosclientes {
      $this->numrows_incluir= pg_affected_rows($result);
      $resaco = $this->sql_record($this->sql_query_file($this->at64_sequencial));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,8358,'$this->at64_sequencial','I')");
-       $resac = pg_query("insert into db_acount values($acount,1414,8358,'','".AddSlashes(pg_result($resaco,0,'at64_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1414,8359,'','".AddSlashes(pg_result($resaco,0,'at64_projeto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,1414,8360,'','".AddSlashes(pg_result($resaco,0,'at64_cliente'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,8358,'$this->at64_sequencial','I')");
+       $resac = db_query("insert into db_acount values($acount,1414,8358,'','".AddSlashes(pg_result($resaco,0,'at64_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1414,8359,'','".AddSlashes(pg_result($resaco,0,'at64_projeto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,1414,8360,'','".AddSlashes(pg_result($resaco,0,'at64_cliente'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -225,18 +225,18 @@ class cl_db_projetosclientes {
      $resaco = $this->sql_record($this->sql_query_file($this->at64_sequencial));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,8358,'$this->at64_sequencial','A')");
+         $resac = db_query("insert into db_acountkey values($acount,8358,'$this->at64_sequencial','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at64_sequencial"]))
-           $resac = pg_query("insert into db_acount values($acount,1414,8358,'".AddSlashes(pg_result($resaco,$conresaco,'at64_sequencial'))."','$this->at64_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1414,8358,'".AddSlashes(pg_result($resaco,$conresaco,'at64_sequencial'))."','$this->at64_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at64_projeto"]))
-           $resac = pg_query("insert into db_acount values($acount,1414,8359,'".AddSlashes(pg_result($resaco,$conresaco,'at64_projeto'))."','$this->at64_projeto',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1414,8359,'".AddSlashes(pg_result($resaco,$conresaco,'at64_projeto'))."','$this->at64_projeto',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["at64_cliente"]))
-           $resac = pg_query("insert into db_acount values($acount,1414,8360,'".AddSlashes(pg_result($resaco,$conresaco,'at64_cliente'))."','$this->at64_cliente',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1414,8360,'".AddSlashes(pg_result($resaco,$conresaco,'at64_cliente'))."','$this->at64_cliente',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Clientes dos projetos nao Alterado. Alteracao Abortada.\\n";
@@ -277,12 +277,12 @@ class cl_db_projetosclientes {
      }
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,8358,'$at64_sequencial','E')");
-         $resac = pg_query("insert into db_acount values($acount,1414,8358,'','".AddSlashes(pg_result($resaco,$iresaco,'at64_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1414,8359,'','".AddSlashes(pg_result($resaco,$iresaco,'at64_projeto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,1414,8360,'','".AddSlashes(pg_result($resaco,$iresaco,'at64_cliente'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,8358,'$at64_sequencial','E')");
+         $resac = db_query("insert into db_acount values($acount,1414,8358,'','".AddSlashes(pg_result($resaco,$iresaco,'at64_sequencial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1414,8359,'','".AddSlashes(pg_result($resaco,$iresaco,'at64_projeto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1414,8360,'','".AddSlashes(pg_result($resaco,$iresaco,'at64_cliente'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from db_projetosclientes
@@ -298,7 +298,7 @@ class cl_db_projetosclientes {
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Clientes dos projetos nao Excluído. Exclusão Abortada.\\n";
@@ -332,7 +332,7 @@ class cl_db_projetosclientes {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

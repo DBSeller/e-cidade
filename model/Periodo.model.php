@@ -1,33 +1,7 @@
 <?php
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -57,53 +31,276 @@
  * Responsável por controlar os períodos disponíveis no sistema
  *
  * @author Matheus Felini <matheus.felini@dbseller.com.br>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.13 $
  */
-final class Periodo {
+final class Periodo
+{
 
   /**
-   * Código
-   * @var integer
+   * @type integer
    */
-  private $iCodigo;
+    const PRIMEIRO_BIMESTRE = 6;
+    const SEGUNDO_BIMESTRE = 7;
+    const TERCEIRO_BIMESTRE = 8;
+    const QUARTO_BIMESTRE = 9;
+    const QUINTO_BIMESTRE = 10;
 
-  /**
-   * Descrição
-   * @var string
-   */
-  private $sDescricao;
+    /**
+     * @var integer
+     */
+    const SEXTO_BIMESTRE = 11;
+    /**
+     * @type integer
+     */
+    const PRIMEIRO_SEMESTRE = 12;
 
-  /**
-   * Carrega as informações do objeto
-   * @throws BusinessException
-   * @param $iCodigo
-   */
-  public function __construct($iCodigo) {
+    /**
+     * @type integer
+     */
+    const SEGUNDO_SEMESTRE = 13;
 
-    $oDaoPeriodo    = new cl_periodo();
-    $rsBuscaPeriodo = $oDaoPeriodo->sql_record($oDaoPeriodo->sql_query_file($iCodigo));
-    if ($oDaoPeriodo->erro_status == "0") {
-      throw new BusinessException("Período [{$iCodigo}] não encontrado.");
+    /**
+     * @type integer
+     */
+    const PRIMEIRO_QUADRIMESTRE = 14;
+
+    /**
+     * @type integer
+     */
+    const SEGUNDO_QUADRIMESTRE  = 15;
+
+    /**
+     * @type integer
+     */
+    const TERCEIRO_QUADRIMESTRE = 16;
+
+
+    const MARCO = 19;
+
+    const ABRIL = 20;
+
+    const JUNHO = 22;
+
+    const AGOSTO = 24;
+
+    const SETEMBRO = 25;
+
+    const DEZEMBRO = 28;
+
+    /**
+     * @type integer
+     */
+    const ANO = 1;
+    /**
+     * Código
+     * @var integer
+     */
+    private $iCodigo;
+
+    /**
+     * Descrição
+     * @var string
+     */
+    private $sDescricao;
+
+    /**
+     * @var integer
+     */
+    private $iOrdem;
+
+    /**
+     * @var integer
+     */
+    private $iDiaInicial;
+
+    /**
+     * @var integer
+     */
+    private $iMesInicial;
+
+    /**
+     * @var integer
+     */
+    private $iDiaFinal;
+
+    /**
+     * @var integer
+     */
+    private $iMesFinal;
+
+    /**
+     * @var string
+     */
+    private $sSigla;
+
+    /**
+     * Carrega as informações do objeto
+     * @throws BusinessException
+     * @param integer $iCodigo
+     */
+    public function __construct($iCodigo = null)
+    {
+        $this->iCodigo = $iCodigo;
+        if (empty($this->iCodigo)) {
+            return;
+        }
+
+        $oDaoPeriodo    = new cl_periodo();
+        $rsBuscaPeriodo = db_query($oDaoPeriodo->sql_query_file($iCodigo));
+        if (!$rsBuscaPeriodo || pg_num_rows($rsBuscaPeriodo) == 0) {
+            throw new BusinessException("Período [{$iCodigo}] não encontrado.");
+        }
+        $oStdPeriodo       = db_utils::fieldsMemory($rsBuscaPeriodo, 0);
+        $this->sDescricao  = $oStdPeriodo->o114_descricao;
+        $this->iOrdem      = $oStdPeriodo->o114_ordem;
+        $this->iDiaInicial = $oStdPeriodo->o114_diainicial;
+        $this->iMesInicial = $oStdPeriodo->o114_mesinicial;
+        $this->iDiaFinal   = $oStdPeriodo->o114_diafinal;
+        $this->iMesFinal   = $oStdPeriodo->o114_mesfinal;
+        $this->sSigla      = $oStdPeriodo->o114_sigla;
+        unset($oStdPeriodo);
     }
-    $oStdPeriodo      = db_utils::fieldsMemory($rsBuscaPeriodo, 0);
-    $this->iCodigo    = $iCodigo;
-    $this->sDescricao = $oStdPeriodo->o114_descricao;
-    unset($oStdPeriodo);
-  }
 
-  /**
-   * Retorna o código sequencial
-   * @return int
-   */
-  public function getCodigo() {
-    return $this->iCodigo;
-  }
+    /**
+     * @param $iAno
+     * @return DBDate
+     */
+    public function getDataInicial($iAno)
+    {
+        return new DBDate("{$this->iDiaInicial}/{$this->iMesInicial}/{$iAno}");
+    }
 
-  /**
-   * Retorna a descrição completa
-   * @return string
-   */
-  public function getDescricao() {
-    return $this->sDescricao;
-  }
+    /**
+     * @param $iAno
+     * @return DBDate
+     */
+    public function getDataFinal($iAno)
+    {
+        $dia = cal_days_in_month(CAL_GREGORIAN, $this->iMesFinal, $iAno);
+        return new DBDate("{$dia}/{$this->iMesFinal}/{$iAno}");
+    }
+
+    /**
+     * Retorna o código sequencial
+     * @return int
+     */
+    public function getCodigo()
+    {
+        return $this->iCodigo;
+    }
+
+    /**
+     * Retorna a descrição completa
+     * @return string
+     */
+    public function getDescricao()
+    {
+        return $this->sDescricao;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrdem()
+    {
+        return $this->iOrdem;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDiaInicial()
+    {
+        return $this->iDiaInicial;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMesInicial()
+    {
+        return $this->iMesInicial;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDiaFinal()
+    {
+        return $this->iDiaFinal;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMesFinal()
+    {
+        return $this->iMesFinal;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSigla()
+    {
+        return $this->sSigla;
+    }
+
+    /**
+     * Retorna a data final do período informado
+     * @param  integer $iPeriodo código do período
+     * @param  integer $iAno     ano
+     * @throws \Exception
+     * @return DBDate
+     */
+    public static function dataFinalPeriodo($iPeriodo, $iAno)
+    {
+        switch ($iPeriodo) {
+            case 12: // 1º SEMESTRE
+            case 22: // JUNHO
+                return new \DBDate("{$iAno}-06-30");
+            break;
+            case 13: // 2º SEMESTRE
+            case 16: // 3º QUADRIMESTRE
+            case 28: // DEZEMBRO
+                return new \DBDate("{$iAno}-12-31");
+            break;
+            case 14: // 1º QUADRIMESTRE
+            case 20: // ABRIL
+                return new \DBDate("{$iAno}-04-30");
+            break;
+            case 15: // 2º QUADRIMESTRE
+            case 24: // AGOSTO
+                return new \DBDate("{$iAno}-08-31");
+            break;
+            case 17: // JANEIRO
+                return new \DBDate("{$iAno}-01-31");
+            break;
+            case 18:
+                $iDia = cal_days_in_month(CAL_GREGORIAN, '02', $iAno);
+                return new \DBDate("{$iAno}-02-{$iDia}");
+            break;
+            case 19: // MARÇO
+                return new \DBDate("{$iAno}-03-31");
+            break;
+            case 21: // MAIO
+                return new \DBDate("{$iAno}-05-31");
+            break;
+            case 23: // JULHO
+                return new \DBDate("{$iAno}-07-31");
+            break;
+            case 25: // SETEMBRO
+                return new \DBDate("{$iAno}-09-30");
+            break;
+            case 26: // OUTUBRO
+                return new \DBDate("{$iAno}-10-31");
+            break;
+            case 27: // NOVEMBRO
+                return new \DBDate("{$iAno}-11-30");
+            break;
+            default:
+                throw new \Exception("Período não implementado.");
+            break;
+        }
+    }
 }

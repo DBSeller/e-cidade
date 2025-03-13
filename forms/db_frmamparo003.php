@@ -45,7 +45,7 @@ $clrotulo->label("ed06_i_codigo");
            AND ed95_c_encerrado = 'N'
            ORDER BY ed47_v_nome
           ";
-   $result = pg_query($sql);
+   $result = db_query($sql);
    $linhas = pg_num_rows($result);
    ?>
    <b>Alunos:</b><br>

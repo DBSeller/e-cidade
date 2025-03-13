@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -54,7 +54,7 @@ $pdf->AliasNbPages();
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(24,135,18);
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 $pdf->SetFont('Courier','B',4);
 $linha = 60;

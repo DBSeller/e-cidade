@@ -181,7 +181,7 @@ function js_retornoPesquisaEscola(oAjax) {
   $('listaDptos').innerHTML         = "";
   $('dptosSelecionados').innerHTML  = "";
   
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   
   $('listaDptos').innerHTML  = js_carregaGridDeptos(aRetorno.aItensDptos);
 
@@ -232,7 +232,7 @@ function js_retornoAtualizaEscola(oAjax) {
   js_removeObj('msgBoxAtualizaEscola');
 
   var iCodNutricionista = $F('me31_i_nutricionista'); 
-  var aRetorno    = eval("("+oAjax.responseText+")");
+  var aRetorno    = JSON.parse(oAjax.responseText);
   
   if (aRetorno.erro == 1) {
   

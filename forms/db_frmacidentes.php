@@ -187,9 +187,9 @@ db_input('j13_descr',40,$Ij13_descr,true,'text',3,'')
 <script>
 function js_pesquisatr07_tipoacid(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_tipo_acidentes','func_tipo_acidentes.php?funcao_js=parent.js_mostratipo_acidentes1|tr01_id|tr01_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_tipo_acidentes','func_tipo_acidentes.php?funcao_js=parent.js_mostratipo_acidentes1|tr01_id|tr01_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_tipo_acidentes','func_tipo_acidentes.php?pesquisa_chave='+document.form1.tr07_tipoacid.value+'&funcao_js=parent.js_mostratipo_acidentes','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_tipo_acidentes','func_tipo_acidentes.php?pesquisa_chave='+document.form1.tr07_tipoacid.value+'&funcao_js=parent.js_mostratipo_acidentes','Pesquisa',false);
   }
 }
 function js_mostratipo_acidentes(chave,erro){
@@ -206,9 +206,9 @@ function js_mostratipo_acidentes1(chave1,chave2){
 }
 function js_pesquisatr07_idtempo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_tipo_tempo','func_tipo_tempo.php?funcao_js=parent.js_mostratipo_tempo1|tr04_id|tr04_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_tipo_tempo','func_tipo_tempo.php?funcao_js=parent.js_mostratipo_tempo1|tr04_id|tr04_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_tipo_tempo','func_tipo_tempo.php?pesquisa_chave='+document.form1.tr07_idtempo.value+'&funcao_js=parent.js_mostratipo_tempo','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_tipo_tempo','func_tipo_tempo.php?pesquisa_chave='+document.form1.tr07_idtempo.value+'&funcao_js=parent.js_mostratipo_tempo','Pesquisa',false);
   }
 }
 function js_mostratipo_tempo(chave,erro){
@@ -225,9 +225,9 @@ function js_mostratipo_tempo1(chave1,chave2){
 }
 function js_pesquisatr07_idpista(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_tipo_pista','func_tipo_pista.php?funcao_js=parent.js_mostratipo_pista1|tr03_id|tr03_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_tipo_pista','func_tipo_pista.php?funcao_js=parent.js_mostratipo_pista1|tr03_id|tr03_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_tipo_pista','func_tipo_pista.php?pesquisa_chave='+document.form1.tr07_idpista.value+'&funcao_js=parent.js_mostratipo_pista','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_tipo_pista','func_tipo_pista.php?pesquisa_chave='+document.form1.tr07_idpista.value+'&funcao_js=parent.js_mostratipo_pista','Pesquisa',false);
   }
 }
 function js_mostratipo_pista(chave,erro){
@@ -244,21 +244,21 @@ function js_mostratipo_pista1(chave1,chave2){
 }
 function js_pesquisatr07_local1(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome&rural=1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome&rural=1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.tr07_local1.value+'&funcao_js=parent.js_mostraruas&rural=1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.tr07_local1.value+'&funcao_js=parent.js_mostraruas&rural=1','Pesquisa',false);
   }
 }
 function js_pesquisatr07_local2(mostra){
   if(mostra==false){
-  js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.tr07locdescr.value+'&funcao_js=parent.js_mostraruas&rural=1','Pesquisa',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.tr07locdescr.value+'&funcao_js=parent.js_mostraruas&rural=1','Pesquisa',false);
 
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas3|j14_codigo|j14_nome&rural=1','Pesquisa',true)
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas3|j14_codigo|j14_nome&rural=1','Pesquisa',true)
   }
 }
 function js_pesquisatr07_local45(){
-   js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.tr07_local2.value+'&funcao_js=parent.js_mostraruas2&rural=1','Pesquisa',false);
+   js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.tr07_local2.value+'&funcao_js=parent.js_mostraruas2&rural=1','Pesquisa',false);
 }
 function js_mostraruas(chave,erro){
   document.form1.j14_nome.value = chave;
@@ -286,9 +286,9 @@ function js_mostraruas3(chave1,chave2){
 }
 function js_pesquisatr07_idcausa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_causas','func_causas.php?funcao_js=parent.js_mostracausas1|tr02_id|tr02_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_causas','func_causas.php?funcao_js=parent.js_mostracausas1|tr02_id|tr02_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_causas','func_causas.php?pesquisa_chave='+document.form1.tr07_idcausa.value+'&funcao_js=parent.js_mostracausas','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_causas','func_causas.php?pesquisa_chave='+document.form1.tr07_idcausa.value+'&funcao_js=parent.js_mostracausas','Pesquisa',false);
   }
 }
 function js_mostracausas(chave,erro){
@@ -305,9 +305,9 @@ function js_mostracausas1(chave1,chave2){
 }
 function js_pesquisatr07_idbairro(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_bairro','func_bairro.php?pesquisa_chave='+document.form1.tr07_idbairro.value+'&funcao_js=parent.js_mostrabairro','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_bairro','func_bairro.php?pesquisa_chave='+document.form1.tr07_idbairro.value+'&funcao_js=parent.js_mostrabairro','Pesquisa',false);
   }
 }
 function js_mostrabairro(chave,erro){
@@ -323,7 +323,7 @@ function js_mostrabairro1(chave1,chave2){
   db_iframe_bairro.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_acidente','db_iframe_acidentes','func_acidentes.php?funcao_js=parent.js_preenchepesquisa|tr07_id','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_acidente','db_iframe_acidentes','func_acidentes.php?funcao_js=parent.js_preenchepesquisa|tr07_id','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_acidentes.hide();

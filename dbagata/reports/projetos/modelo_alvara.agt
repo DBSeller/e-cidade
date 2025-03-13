@@ -59,7 +59,7 @@
         <PreQuery></PreQuery>
         <PosQuery></PosQuery>
         <Query>
-            <Select>
+		<Select>
               sequencial_alvara,
               ano_sequencial_alvara,
               validade_alvara,
@@ -67,6 +67,7 @@
               data_final_alvara,
               cgm,
               nome_proprietario,
+              nome_outros_proprietarios,
               cpf_cnpj_proprietario,
               matricula_imovel,
               logradouro,
@@ -100,7 +101,25 @@
               carac_tipo_construcao,
               carac_tipo_lancamento,
               observacoes,
-              data_expedicao
+	      data_expedicao,
+          data_expedicao_extenso,
+	      cgm_resp_projeto,
+	      cpf_resp_projeto,
+	      nome_resp_projeto,
+	      crea_resp_projeto,
+	      prof_resp_projeto,
+	      cgm_resp_acomp_obra,
+	      cpf_resp_acomp_obra,
+	      nome_resp_acomp_obra,
+	      crea_resp_acomp_obra,
+	      prof_resp_acomp_obra,
+          nome_obra,
+          art_rrt_responsavel_projeto,
+          art_rrt_responsavel_tecnico,
+          cgm_responsavel_execucao,
+          nome_responsavel_execucao,
+          cpf_responsavel_execucao
+
             </Select>
             <From>
               ( select x.*,
@@ -121,13 +140,24 @@
                       dias || string_dia
                     else '0'
                   end as validade_alvara
-                from (select obraspropri.ob03_numcgm as cgm,
-                             cgm.z01_nome            as nome_proprietario,
-                             cgm.z01_cgccpf          as cpf_cnpj_proprietario,
-                             cgm.z01_ender           as logradouro,
-                             cgm.z01_numero          as numero,
-                             cgm.z01_compl           as complemento,
-                             cgm.z01_bairro          as bairro,
+                from (select obraspropri.ob03_numcgm           as cgm,
+                             acgm.z01_nome                     as nome_proprietario,
+                             (select STRING_AGG(cgm.z01_nome, ', ') from projetos.obrasoutrosprop inner join protocolo.cgm on ob32_numcgm = z01_numcgm where ob32_codobra = $codigo_obra) as nome_outros_proprietarios,
+                             acgm.z01_cgccpf                   as cpf_cnpj_proprietario,
+                             acgm.z01_ender                    as logradouro,
+                             acgm.z01_numero                   as numero,
+                             acgm.z01_compl                    as complemento,
+		             acgm.z01_bairro                   as bairro,
+		             bcgm.z01_numcgm                   as cgm_resp_projeto,
+		             bcgm.z01_cgccpf                   as cpf_resp_projeto,
+		             bcgm.z01_nome                     as nome_resp_projeto,
+		             bobrastec.ob15_crea               as crea_resp_projeto,
+		             aobrastecprofissao.ob30_descricao as prof_resp_projeto,
+		             ccgm.z01_numcgm                   as cgm_resp_acomp_obra,
+		             ccgm.z01_cgccpf                   as cpf_resp_acomp_obra,
+		             ccgm.z01_nome                     as nome_resp_acomp_obra,
+		             cobrastec.ob15_crea               as crea_resp_acomp_obra,
+		             bobrastecprofissao.ob30_descricao as prof_resp_acomp_obra,
                              lote.j34_setor || '-' || setor.j30_descr || '/' || lote.j34_quadra || '/' || lote.j34_lote as sql,
                              setorloc.j05_codigoproprio || '-' || setorloc.j05_descr || '/' || loteloc.j06_quadraloc  || '/' || loteloc.j06_lote as pql,
                              setorloc.j05_codigoproprio || '-' || setorloc.j05_descr as setor_pql,
@@ -135,14 +165,14 @@
                              loteloc.j06_lote as lote_pql,
                              iptubase.j01_matric      as matricula_imovel,
                              obrasalvara.ob04_codobra as cod_obra,
-                             obrasalvara.ob04_alvara  as seq_alvara,
-                             obrasalvara.ob04_alvara  as sequencial_alvara,
+                             obrasalvara.ob04_alvara as seq_alvara,
+                             obrasalvara.ob04_alvara as sequencial_alvara,
                              extract (year from obrasalvara.ob04_data)    as ano_sequencial_alvara,
                              to_char(obrasalvara.ob04_data,'dd/mm/yyyy' ) as data_inicio_alvara,
                              to_char(obrasalvara.ob04_dtvalidade, 'dd/mm/yyyy') as data_final_alvara,
                              to_char(obrasalvara.ob04_data,'dd/mm/yyyy' )       as data_aprovacao,
                              engenheiro.z01_nome                                as engenheiro,
-                             obrastec.ob15_crea                                 as crea,
+                             aobrastec.ob15_crea                                as crea,
                              case
                                when ob26_sequencial is not null then
                                  to_char(protprocesso.p58_codproc,'9999999999')
@@ -165,73 +195,179 @@
                                 from db_usuacgm
                                inner join cgm on cgm.z01_numcgm = db_usuacgm.cgmlogin
                                where db_usuacgm.id_usuario = $codigo_usuario)               as nome_servidor,
-                               (select rh37_descr
+                             (select rh37_descr
                                  from rhpessoal
-                                inner join rhfuncao    on rhpessoal.rh01_funcao = rhfuncao.rh37_funcao
-                                                      and rhfuncao.rh37_instit  = $codigo_instituicao
-                                inner join db_usuacgm  on db_usuacgm.cgmlogin   = rhpessoal.rh01_numcgm
-                                                      and db_usuacgm.id_usuario = $codigo_usuario
-                                left join pessoal.rhpessoalmov  on rh02_regist = rh01_regist
-                                                               and rh02_anousu = fc_anofolha($codigo_instituicao::integer)
-                                                               and rh02_mesusu = fc_mesfolha($codigo_instituicao::integer)
-                                                               and rh02_instit = $codigo_instituicao
-                                left join pessoal.rhpesrescisao on rh02_seqpes = rh05_seqpes
+                                    inner join rhfuncao    on rhpessoal.rh01_funcao = rhfuncao.rh37_funcao
+                                                          and rhfuncao.rh37_instit  = $codigo_instituicao
+                                    inner join db_usuacgm  on db_usuacgm.cgmlogin   = rhpessoal.rh01_numcgm
+                                                          and db_usuacgm.id_usuario = $codigo_usuario
+                                     left join pessoal.rhpessoalmov  on rh02_regist = rh01_regist
+                                                                    and rh02_anousu = fc_anofolha($codigo_instituicao::integer)
+                                                                    and rh02_mesusu = fc_mesfolha($codigo_instituicao::integer)
+                                                                    and rh02_instit = $codigo_instituicao
+                                     left join pessoal.rhpesrescisao on rh02_seqpes = rh05_seqpes
                                where rh05_seqpes is null
+                               order by rh01_regist desc limit 1
                                 )   as cargo_servidor,
-                               (select rh01_regist
-                                  from rhpessoal
-                                 inner join db_usuacgm  on db_usuacgm.cgmlogin   = rhpessoal.rh01_numcgm
-                                                       and db_usuacgm.id_usuario = $codigo_usuario
-                                left join pessoal.rhpessoalmov  on rh02_regist = rh01_regist
-                                                               and rh02_anousu = fc_anofolha($codigo_instituicao::integer)
-                                                               and rh02_mesusu = fc_mesfolha($codigo_instituicao::integer)
-                                                               and rh02_instit = $codigo_instituicao
-                                left join pessoal.rhpesrescisao on rh02_seqpes = rh05_seqpes
-                               where rh05_seqpes is null
-                                )  as matricula_servidor,
-                                       ob04_obsprocesso     as observacoes,
-                                       a.j31_descr          as carac_ocupacao,
-                                       b.j31_descr          as carac_tipo_construcao,
-                                       c.j31_descr          as carac_tipo_lancamento,
-                                       extract (day from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data))   as dias,
-                                       extract (month from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) as meses,
-                                       extract (year from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data))  as anos,
-                                       case
-                                         when extract (day from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) = 1 then
-                                           ' dia '
-                                         when extract (day from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) &gt; 1 then
-                                           ' dias '
-                                       end as string_dia,
-                                       case
-                                         when extract (month from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) = 1 then
-                                           ' mês '
-                                         when extract (month from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) &gt; 1 then
-                                           ' meses '
-                                       end as string_mes,
-                                       case
-                                         when extract (year from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) = 1 then
-                                           ' ano '
-                                         when extract (year from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) &gt; 1 then
-                                           ' anos '
-                                       end as string_ano,
-                                  to_char(ob04_dataexpedicao,'dd/mm/yyyy') as data_expedicao
-                                from obrasalvara
-                               inner join obras           on obras.ob01_codobra         = obrasalvara.ob04_codobra
-                               inner join obrasconstr     on obrasconstr.ob08_codobra   = obrasalvara.ob04_codobra
-                               inner join obrasiptubase   on obrasiptubase.ob24_obras   = obras.ob01_codobra
-                               inner join iptubase        on iptubase.j01_matric        = obrasiptubase.ob24_iptubase
-                               inner join obraspropri     on obraspropri.ob03_codobra   = obras.ob01_codobra
-                               inner join cgm             on cgm.z01_numcgm             = obraspropri.ob03_numcgm
-                               inner join lote            on lote.j34_idbql             = iptubase.j01_idbql
-                               inner join setor           on setor.j30_codi             = lote.j34_setor
-                                left join loteloc         on loteloc.j06_idbql          = iptubase.j01_idbql
-                                left join setorloc        on setorloc.j05_codigo        = loteloc.j06_setorloc
-                               inner join obrastecnicos   on obrastecnicos.ob20_codobra = obras.ob01_codobra
-                               inner join obrastec        on obrastec.ob15_sequencial   = obrastecnicos.ob20_obrastec
-                               inner join cgm engenheiro  on engenheiro.z01_numcgm       = obrastec.ob15_numcgm   left join obrasalvaraprotprocesso on ob26_obrasalvara            = obrasalvara.ob04_codobra   left join protprocesso            on protprocesso.p58_codproc    = obrasalvaraprotprocesso.ob26_protprocesso  inner join obrasender              on obrasender.ob07_codconstr   = obrasconstr.ob08_codconstr  inner join ruas                    on ruas.j14_codigo             = obrasender.ob07_lograd inner join ruastipo on j14_tipo = j88_codigo  inner join bairro                  on bairro.j13_codi             = obrasender.ob07_bairro  inner join caracter a              on a.j31_codigo                = obrasconstr.ob08_ocupacao  inner join caracter b              on b.j31_codigo                = obrasconstr.ob08_tipoconstr  inner join caracter c              on c.j31_codigo                = obrasconstr.ob08_tipolanc  where obrasalvara.ob04_codobra = $codigo_obra ) as x ) as alvara</From>
+                             (select rh01_regist
+                                from rhpessoal
+                                   inner join db_usuacgm  on db_usuacgm.cgmlogin   = rhpessoal.rh01_numcgm
+                                                         and db_usuacgm.id_usuario = $codigo_usuario
+                                    left join pessoal.rhpessoalmov  on rh02_regist = rh01_regist
+                                                                   and rh02_anousu = fc_anofolha($codigo_instituicao::integer)
+                                                                   and rh02_mesusu = fc_mesfolha($codigo_instituicao::integer)
+                                                                   and rh02_instit = $codigo_instituicao
+                                    left join pessoal.rhpesrescisao on rh02_seqpes = rh05_seqpes
+                                 where rh05_seqpes is null
+                                 order by rh01_regist desc limit 1
+                              )  as matricula_servidor,
+                              ob04_obsprocesso     as observacoes,
+                              a.j31_descr          as carac_ocupacao,
+                              b.j31_descr          as carac_tipo_construcao,
+                              c.j31_descr          as carac_tipo_lancamento,
+                              extract (day from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data))   as dias,
+                              extract (month from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) as meses,
+                              extract (year from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data))  as anos,
+                              case
+                                when extract (day from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) = 1 then
+                                  ' dia '
+                                when extract (day from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) &gt; 1 then
+                                  ' dias '
+                              end as string_dia,
+                              case
+                                when extract (month from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) = 1 then
+                                  ' mês '
+                                when extract (month from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) &gt; 1 then
+                                  ' meses '
+                              end as string_mes,
+                              case
+                                when extract (year from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) = 1 then
+                                  ' ano '
+                                when extract (year from age(obrasalvara.ob04_dtvalidade, obrasalvara.ob04_data)) &gt; 1 then
+                                  ' anos '
+                              end as string_ano,
+                              to_char(ob04_dataexpedicao,'dd/mm/yyyy') as data_expedicao,
+                              fc_dataextenso(coalesce(ob04_dataexpedicao,current_date))      as data_expedicao_extenso,
+                              obras.ob01_nomeobra                      as nome_obra,
+                              case when trim(coalesce(obras.ob01_numeroartprojeto, '0')) != '0' then
+                                        obras.ob01_numeroartprojeto
+                                   when trim(coalesce(obras.ob01_numerorrtprojeto, '0')) != '0' then
+                                        obras.ob01_numerorrtprojeto
+                                   else ''
+                              end                                                             as art_rrt_responsavel_projeto,
+                              case when trim(coalesce(obras.ob01_numeroarttecnico, '0')) != '0' then
+                                        obras.ob01_numeroarttecnico
+                                   when trim(coalesce(obras.ob01_numerorrttecnico, '0')) != '0' then
+                                        obras.ob01_numerorrttecnico
+                                   else ''
+                              end                                                             as art_rrt_responsavel_tecnico,
+                              case when obrasresp_cgm.z01_numcgm is not null then
+                                        obrasresp_cgm.z01_numcgm::varchar
+                                   else ''
+                              end                                                             as cgm_responsavel_execucao,
+                              case when obrasresp_cgm.z01_nome is not null then
+                                        obrasresp_cgm.z01_nome::varchar
+                                   else ''
+                              end                                                             as nome_responsavel_execucao,
+                              case when obrasresp_cgm.z01_cgccpf is not null then
+                                        obrasresp_cgm.z01_cgccpf::varchar
+                                   else ''
+                              end                                                             as cpf_responsavel_execucao
 
+                         from obrasalvara
+                            inner join obras                                    on obras.ob01_codobra          = obrasalvara.ob04_codobra
+                            inner join obrasconstr                              on obrasconstr.ob08_codobra    = obrasalvara.ob04_codobra
+                            inner join obrasiptubase                            on obrasiptubase.ob24_obras    = obras.ob01_codobra
+                            inner join iptubase                                 on iptubase.j01_matric         = obrasiptubase.ob24_iptubase
+                            inner join obraspropri                              on obraspropri.ob03_codobra    = obras.ob01_codobra
+                            left join obrasoutrosprop                           on obrasoutrosprop.ob32_codobra = obras.ob01_codobra
+                            inner join cgm    acgm                              on acgm.z01_numcgm             = obraspropri.ob03_numcgm
+                            inner join lote                                     on lote.j34_idbql              = iptubase.j01_idbql
+                            inner join setor                                    on setor.j30_codi              = lote.j34_setor
+                             left join loteloc                                  on loteloc.j06_idbql           = iptubase.j01_idbql
+                             left join setorloc                                 on setorloc.j05_codigo         = loteloc.j06_setorloc
+		            inner join obrastecnicos                            on obrastecnicos.ob20_codobra  = obras.ob01_codobra
+                            inner join obrastec aobrastec                       on aobrastec.ob15_sequencial   = obrastecnicos.ob20_obrastec
+		            inner join cgm engenheiro                           on engenheiro.z01_numcgm       = aobrastec.ob15_numcgm
+		            inner join obrastec as bobrastec                    on ob01_responsavelprojeto     = bobrastec.ob15_sequencial
+		            inner join obrastecprofissao as aobrastecprofissao  on bobrastec.ob15_profissao    = aobrastecprofissao.ob30_sequencial
+		            inner join cgm as bcgm                              on bobrastec.ob15_numcgm       = bcgm.z01_numcgm
+		            inner join obrastec as cobrastec                    on ob01_arquitetoobra          = cobrastec.ob15_sequencial
+		            inner join obrastecprofissao as bobrastecprofissao  on cobrastec.ob15_profissao    = bobrastecprofissao.ob30_sequencial
+		            inner join cgm as ccgm                              on cobrastec.ob15_numcgm       = ccgm.z01_numcgm
+			     left join obrasalvaraprotprocesso                  on ob26_obrasalvara            = obrasalvara.ob04_codobra
+			     left join protprocesso                             on protprocesso.p58_codproc    = obrasalvaraprotprocesso.ob26_protprocesso
+			    inner join obrasender                               on obrasender.ob07_codconstr   = obrasconstr.ob08_codconstr
+			    inner join ruas                                     on ruas.j14_codigo             = obrasender.ob07_lograd
+			    inner join ruastipo                                 on j14_tipo                    = j88_codigo
+			    inner join bairro                                   on bairro.j13_codi             = obrasender.ob07_bairro
+			    inner join caracter a                               on a.j31_codigo                = obrasconstr.ob08_ocupacao
+			    inner join caracter b                               on b.j31_codigo                = obrasconstr.ob08_tipoconstr
+			    inner join caracter c                               on c.j31_codigo                = obrasconstr.ob08_tipolanc
+                left join obrasresp                                 on obras.ob01_codobra          = obrasresp.ob10_codobra
+                left join cgm obrasresp_cgm                         on obrasresp.ob10_numcgm       = obrasresp_cgm.z01_numcgm
+			    where obrasalvara.ob04_codobra = $codigo_obra ) as x ) as alvara
+	    </From>
             <Where></Where>
-            <GroupBy></GroupBy>
+            <GroupBy>sequencial_alvara,
+                    ano_sequencial_alvara,
+                    validade_alvara,
+                    data_inicio_alvara,
+                    data_final_alvara,
+                    cgm,
+                    nome_proprietario,
+                    nome_outros_proprietarios,
+                    cpf_cnpj_proprietario,
+                    matricula_imovel,
+                    logradouro,
+                    numero,
+                    bairro,
+                    complemento,
+                    sql,
+                    pql,
+                    setor_pql,
+                    quadra_pql,
+                    lote_pql,
+                    cod_obra,
+                    engenheiro,
+                    seq_alvara,
+                    crea,
+                    area_total,
+                    area_total_atual,
+                    unidade,
+                    pavimentos,
+                    protocolo,
+                    data_protocolo,
+                    data_aprovacao,
+                    endereco_obra,
+                    numero_endereco_obra,
+                    bairro_endereco_obra,
+                    complemento_endereco_obra,
+                    nome_servidor,
+                    cargo_servidor,
+                    matricula_servidor,
+                    carac_ocupacao,
+                    carac_tipo_construcao,
+                    carac_tipo_lancamento,
+                    observacoes,
+                    data_expedicao,
+                    data_expedicao_extenso,
+                    cgm_resp_projeto,
+                    cpf_resp_projeto,
+                    nome_resp_projeto,
+                    crea_resp_projeto,
+                    prof_resp_projeto,
+                    cgm_resp_acomp_obra,
+                    cpf_resp_acomp_obra,
+                    nome_resp_acomp_obra,
+                    crea_resp_acomp_obra,
+                    prof_resp_acomp_obra,
+                    nome_obra,
+                    art_rrt_responsavel_projeto,
+                    art_rrt_responsavel_tecnico,
+                    cgm_responsavel_execucao,
+                    nome_responsavel_execucao,
+                    cpf_responsavel_execucao;</GroupBy>
             <OrderBy></OrderBy>
             <Config>
                 <Distinct></Distinct>

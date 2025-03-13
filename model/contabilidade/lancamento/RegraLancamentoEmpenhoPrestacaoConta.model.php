@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("interfaces/IRegraLancamentoContabil.interface.php");
+require_once(modification("interfaces/IRegraLancamentoContabil.interface.php"));
 
 /**
  * Model que responsavel por localizar as contas credito/debito para que seja executado o
@@ -33,7 +33,7 @@ require_once("interfaces/IRegraLancamentoContabil.interface.php");
  * @author     Matheus Felini <matheus.felini@dbseller.com.br>
  * @package    contabilidade
  * @subpackage lancamento
- * @version    $Revision: 1.4 $
+ * @version    $Revision: 1.7 $
  */
 class RegraLancamentoEmpenhoPrestacaoConta implements IRegraLancamentoContabil {
 

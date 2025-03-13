@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_saltes_classe.php");
-include_once("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_saltes_classe.php"));
+include_once(modification("dbforms/db_classesgenericas.php"));
 
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clsaltes = new cl_saltes;
@@ -60,7 +60,7 @@ db_postmemory($HTTP_POST_VARS);
 </table>
 <table width="100%" height="" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
   <?
-	  include("forms/db_frmgerapendenciasalt.php");
+	  include(modification("forms/db_frmgerapendenciasalt.php"));
 	?>
 </table>
 <?

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,19 +26,19 @@
  */
 
 set_time_limit(0);
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
-require_once ("classes/db_lista_classe.php");
-require_once ("classes/db_listadeb_classe.php");
-require_once ("classes/db_listanotifica_classe.php");
-require_once ("libs/db_sql.php");
-require_once ("classes/db_termo_classe.php");
-require_once ("classes/db_cgm_classe.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_listacda_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_lista_classe.php"));
+require_once(modification("classes/db_listadeb_classe.php"));
+require_once(modification("classes/db_listanotifica_classe.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_termo_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_listacda_classe.php"));
 
 $clcgm           = new cl_cgm;
 $cllista         = new cl_lista;
@@ -212,7 +212,7 @@ function js_emitirInicial() {
   var iInicialIni = $F('iInicialIni');
   var iInicialFim = $F('iInicialFim'); 
   var sQryString  = "iInicialIni="+iInicialIni+"&iInicialFim="+iInicialFim;
-  js_OpenJanelaIframe('top.corpo','db_iframe_remessaprocessados',"div2_inicial_001.php?"+sQryString,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_remessaprocessados',"div2_inicial_001.php?"+sQryString,'Pesquisa',true);
 }
 
 function js_emitirDivida() {
@@ -220,7 +220,7 @@ function js_emitirDivida() {
   var iCdaDividaIni = $F('iCdaIni');
   var iCdaDividaFim = $F('iCdaFim');
   var sQryString    = "iCdaDividaIni="+iCdaDividaIni+"&iCdaDividaFim="+iCdaDividaFim;
-  js_OpenJanelaIframe('top.corpo','db_iframe_remessaprocessados',"div2_certdiv_001.php?"+sQryString,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_remessaprocessados',"div2_certdiv_001.php?"+sQryString,'Pesquisa',true);
 }
 
 function js_emitirParcel() {
@@ -228,12 +228,12 @@ function js_emitirParcel() {
   var iCdaParcelIni = $F('iCdaIni');
   var iCdaParcelFim = $F('iCdaFim');
   var sQryString    = "iCdaParcelIni="+iCdaParcelIni+"&iCdaParcelFim="+iCdaParcelFim;
-  js_OpenJanelaIframe('top.corpo','db_iframe_remessaprocessados',"div2_certparc_001.php?"+sQryString,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_remessaprocessados',"div2_certparc_001.php?"+sQryString,'Pesquisa',true);
 }
 
 function js_pesquisar(){
 
-  js_OpenJanelaIframe('top.corpo','db_iframe_remessaprocessados','func_remessaprocessados.php?funcao_js=parent.js_mostraremessa1|iArqRemessa|v83_nomearq','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_remessaprocessados','func_remessaprocessados.php?funcao_js=parent.js_mostraremessa1|iArqRemessa|v83_nomearq','Pesquisa',true);
 }
 function js_mostraremessa1(chave1,chave2){
   document.form1.iArqRemessa.value = chave1;

@@ -59,7 +59,7 @@ $clmer_grupoalimento->rotulo->label();
 <script>
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_grupoalimento',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_grupoalimento',
 		              'func_mer_grupoalimento.php?funcao_js=parent.js_preenchepesquisa|me30_i_codigo','Pesquisa',true
 		             );
   

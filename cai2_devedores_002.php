@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 set_time_limit(0);
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -230,7 +230,7 @@ if ($grupo == 'nome'){
 //echo $sql;exit;
 $head7 = 'Valores entre :  '.trim(db_formatar($valorminimo,'f')).'   e   '.trim(db_formatar($valormaximo,'f'));
 $head8 = 'Posição em : '.db_formatar($data,'d');
-$result1 = pg_exec($sql);
+$result1 = db_query($sql);
 $resultnrows = pg_numrows($result1);
 if( $resultnrows == 0 ){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não há valores calculados na data ( '.$data.' ). Verifique!');
@@ -291,9 +291,9 @@ for($yy=0;$yy<$resultnrows;$yy++){
   if ($quebrar == 't' && $grupo != 'tipo'){
      $pdf->Cell(30,04,db_formatar($valor,'f'),$xborda,0,"R",$preenc);
      $sql = "select k00_descr from arretipo where k00_tipo = $k22_tipo";
-//     echo pg_result(pg_exec($sql),0,'k02_descr');exit;
+//     echo pg_result(db_query($sql),0,'k02_descr');exit;
      $pdf->cell(10,05,$k22_tipo,$xborda,0,"C",$preenc);
-     $pdf->cell(40,05,pg_result(pg_exec($sql),0,'k00_descr'),$xborda,1,"L",$preenc);
+     $pdf->cell(40,05,pg_result(db_query($sql),0,'k00_descr'),$xborda,1,"L",$preenc);
      
   }else{
      $pdf->Cell(30,04,db_formatar($valor_hist,'f'),$xborda,0,"R",$preenc);
@@ -389,7 +389,7 @@ if ($grupo == 'tipo'){
 
     for ($x = 0; $x < count($tiposdeb); $x++) {
       $sql = "select k00_tipo, k00_descr from arretipo where k00_tipo = " . $tiposdeb[$x];
-      $result = pg_exec($sql);
+      $result = db_query($sql);
       db_fieldsmemory($result, 0);
       
       $pdf->Cell(50 + ($x*2), 05, "$k00_tipo - $k00_descr", "", 1, "L", 0);

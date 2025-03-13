@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
 
 $oJson      = new services_json();
 $oParametro = $oJson->decode(db_stdClass::db_stripTagsJsonSemEscape(str_replace("\\","",$_POST["json"])));
@@ -152,7 +152,7 @@ try {
 }
 
 $oRetorno->mensagem = urlencode($oRetorno->mensagem);
-echo json_encode($oRetorno);
+echo $oJson->encode($oRetorno);
 
 /**
  * Retorna uma array associativo com as tabelas da contabilidade.
@@ -179,7 +179,7 @@ function getTabelasContabilidade() {
     'c67_codlan' => 'conlancamele',
     'c75_codlan' => 'conlancamemp',
     'c88_codlan' => 'conlancamimp',
-    'c108_codlan' => 'conlancaminscrestosapagarnaoprocessados',
+    'c108_codlan' => 'conlancaminscrestosapagar',
     'c37_conlancam' => 'conlancaminscricaopassivo',
     'c85_codlan' => 'conlancaminventario',
     'c103_conlancam' => 'conlancammatestoqueinimei',

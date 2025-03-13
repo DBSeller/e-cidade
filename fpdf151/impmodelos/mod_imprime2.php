@@ -16,7 +16,7 @@ for ($i = 0;$i < 2;$i++){
   $this->objpdf->setfillcolor(245);
   $this->objpdf->roundedrect($xcol-2,$xlin-18,206,144.5,2,'DF','1234');
   $this->objpdf->setfillcolor(255,255,255);
-  //		$this->objpdf->roundedrect(10,07,190,183,2,'DF','1234');
+  //    $this->objpdf->roundedrect(10,07,190,183,2,'DF','1234');
   $this->objpdf->Setfont('Arial','B',11);
   $this->objpdf->text(150,$xlin-13,'RECIBO VÁLIDO ATÉ: ');
   $this->objpdf->text(159,$xlin-8,$this->dtvenc);
@@ -32,14 +32,14 @@ for ($i = 0;$i < 2;$i++){
   $this->objpdf->Image('imagens/files/'.$this->logo,15,$xlin-17,12);
   $this->objpdf->Setfont('Arial','B',9);
   $this->objpdf->text(40,$xlin-15,$this->prefeitura);
-  $this->objpdf->Setfont('Arial','',9);	
+  $this->objpdf->Setfont('Arial','',9);  
   $this->objpdf->text(40,$xlin-11,$this->enderpref);
   $this->objpdf->text(40,$xlin-8,$this->municpref);
   $this->objpdf->text(40,$xlin-5,$this->telefpref);
   $this->objpdf->text($xcol+60,$xlin-5,"CNPJ: ");
   $this->objpdf->text($xcol+70,$xlin-5,db_formatar($this->cgcpref,'cnpj')); 
   $this->objpdf->text(40,$xlin-2,$this->emailpref);
-  //		$this->objpdf->setfillcolor(245);
+  //    $this->objpdf->setfillcolor(245);
   
   $this->objpdf->Roundedrect($xcol,$xlin+2,$xcol+119,20,2,'DF','1234');
   $this->objpdf->Setfont('Arial','',6);
@@ -141,33 +141,33 @@ for ($i = 0;$i < 2;$i++){
   $this->objpdf->text(182,$xlin+73,'( = ) Valor Documento');
   $this->objpdf->text(182,$xlin+83.5,'( - ) Desconto ');
   $this->objpdf->text(182,$xlin+94,'( + ) Mora / Multa');
-	
+  
   if(isset($this->lEmiteVal)){
-		if( $this->lEmiteVal == false){
-			$totalrec   = "";
-			$totaldesc  = "";
-			$totalacres = "";
-			$valtotal   = "";
-		}else{
-			$totalrec   = $this->totalrec;
-			$totaldesc  = abs($this->totaldesc);
-			$totalacres = $this->totalacres;
-			$valtotal   = $this->valtotal;
-		}
+    if( $this->lEmiteVal == false){
+      $totalrec   = "";
+      $totaldesc  = "";
+      $totalacres = "";
+      $valtotal   = "";
+    }else{
+      $totalrec   = $this->totalrec;
+      $totaldesc  = abs($this->totaldesc);
+      $totalacres = $this->totalacres;
+      $valtotal   = $this->valtotal;
+    }
   }else{
-		$totalrec   = db_formatar($this->totalrec,'f');
-		$totaldesc  = db_formatar(abs($this->totaldesc),'f');
-		$totalacres = db_formatar($this->totalacres,'f');
-		$valtotal   = $this->valtotal;
-	}
-	
-	$this->objpdf->setfont('Arial','',10);
-	$this->objpdf->setxy(181,$xlin+71);
-	$this->objpdf->cell(25,9,$totalrec,0,0,"R");
-	$this->objpdf->setxy(181,$xlin+81.5);
-	$this->objpdf->cell(25,9,$totaldesc,0,0,"R");
-	$this->objpdf->setxy(181,$xlin+92);
-	$this->objpdf->cell(25,9,$totalacres,0,0,"R");
+    $totalrec   = db_formatar($this->totalrec,'f');
+    $totaldesc  = db_formatar(abs($this->totaldesc),'f');
+    $totalacres = db_formatar($this->totalacres,'f');
+    $valtotal   = $this->valtotal;
+  }
+  
+  $this->objpdf->setfont('Arial','',10);
+  $this->objpdf->setxy(181,$xlin+71);
+  $this->objpdf->cell(25,9,$totalrec,0,0,"R");
+  $this->objpdf->setxy(181,$xlin+81.5);
+  $this->objpdf->cell(25,9,$totaldesc,0,0,"R");
+  $this->objpdf->setxy(181,$xlin+92);
+  $this->objpdf->cell(25,9,$totalacres,0,0,"R");
 
 
   $this->objpdf->setx(15);
@@ -198,7 +198,7 @@ for ($i = 0;$i < 2;$i++){
   $this->objpdf->setfillcolor(0,0,0);
   $this->objpdf->SetFont('Arial','',4);
   $this->objpdf->TextWithDirection(1.5,$xlin+60,$this->texto,'U'); // texto no canhoto do carne
-  //		$this->objpdf->TextWithDirection(1.5,$xlin+60,$this->texto . ' - ' . ($i == 1?'2ª VIA - CONTRIBUINTE':'1ª VIA - PREFEITURA'),'U'); // texto no canhoto do carne
+  //    $this->objpdf->TextWithDirection(1.5,$xlin+60,$this->texto . ' - ' . ($i == 1?'2ª VIA - CONTRIBUINTE':'1ª VIA - PREFEITURA'),'U'); // texto no canhoto do carne
   $this->objpdf->setfont('Arial','',11);
   $this->objpdf->text(10,$xlin+108,@$this->linhadigitavel);
   
@@ -214,7 +214,7 @@ for ($i = 0;$i < 2;$i++){
 if ($this->loteamento == true) {
   
   
-  $sqlrecibo =	"
+  $sqlrecibo =  "
   select 
   a.k99_numpre,
   a.k99_desconto,
@@ -301,7 +301,7 @@ if ($this->loteamento == true) {
   tipoparc.descmul,
   tipoparc.descjur
   ) as a
-  inner join arrematric		on a.k99_numpre = arrematric.k00_numpre
+  inner join arrematric    on a.k99_numpre = arrematric.k00_numpre
   inner join iptubase      on iptubase.j01_matric = arrematric.k00_matric
   inner join lote          on lote.j34_idbql = iptubase.j01_idbql
   left  join testpri       on testpri.j49_idbql = lote.j34_idbql
@@ -314,11 +314,11 @@ if ($this->loteamento == true) {
   
   global $k00_matric, $j14_nome, $j34_setor, $j34_quadra, $j34_lote, $k99_desconto, $descmul, $descjur, $descvlr, $vlrcor, $vlrjuros, $vlrmulta, $descontovlr, $descontojur, $descontomul, $k00_ano, $fc_calcula;
   
-  $totvlrcor			= 0;
-  $totvlrmul			= 0;
-  $totvlrjur			= 0;
+  $totvlrcor      = 0;
+  $totvlrmul      = 0;
+  $totvlrjur      = 0;
   $totvlrdesconto = 0;
-  $totapagar			= 0;
+  $totapagar      = 0;
   
   for ($reg=0; $reg < pg_numrows($resultrecibo); $reg++) {
     db_fieldsmemory($resultrecibo, $reg);
@@ -344,7 +344,7 @@ if ($this->loteamento == true) {
       $this->objpdf->Text(33,9,$nome);
       $this->objpdf->SetFont('Arial','I',8);
       $this->objpdf->Text(33,14,$this->enderpref);
-      $this->objpdf->Text(33,18,$this->municpref);	
+      $this->objpdf->Text(33,18,$this->municpref);  
       $this->objpdf->Text(33,22,$this->telefpref);
       $this->objpdf->Text(33,26,$this->emailpref);
       $comprim = ($this->objpdf->w - $this->objpdf->rMargin - $this->objpdf->lMargin);
@@ -358,12 +358,12 @@ if ($this->loteamento == true) {
       $this->objpdf->line(10,33,$comprim,33);
       $this->objpdf->setfillcolor(255);
       $this->objpdf->multicell(0,3,"DETALHAMENTO DO RECIBO DE PAGAMENTO",0,1,"J",0);
-      $this->objpdf->multicell(0,3,"CODIGO DE ARRECADACAO: " . $this->numpre,0,1,"J",0);	
-      $this->objpdf->multicell(0,3,"LOTEAMENTO: " . $this->descr11_1,0,1,"J",0);	
-      $this->objpdf->multicell(0,3,"DESCONTO NO VALOR: " . $descvlr . "%",0,1,"J",0);	
-      $this->objpdf->multicell(0,3,"DESCONTO NOS JUROS: " . $descjur . "%",0,1,"J",0);	
-      $this->objpdf->multicell(0,3,"DESCONTO NA MULTA: " . $descmul . "%",0,1,"J",0);	
-      $this->objpdf->multicell(0,3,"DATA: " . date("d-m-Y",db_getsession("DB_datausu")) . " - HORA: " . date("H:i:s") ,0,1,"J",0);	
+      $this->objpdf->multicell(0,3,"CODIGO DE ARRECADACAO: " . $this->numpre,0,1,"J",0);  
+      $this->objpdf->multicell(0,3,"LOTEAMENTO: " . $this->descr11_1,0,1,"J",0);  
+      $this->objpdf->multicell(0,3,"DESCONTO NO VALOR: " . $descvlr . "%",0,1,"J",0);  
+      $this->objpdf->multicell(0,3,"DESCONTO NOS JUROS: " . $descjur . "%",0,1,"J",0);  
+      $this->objpdf->multicell(0,3,"DESCONTO NA MULTA: " . $descmul . "%",0,1,"J",0);  
+      $this->objpdf->multicell(0,3,"DATA: " . date("d-m-Y",db_getsession("DB_datausu")) . " - HORA: " . date("H:i:s") ,0,1,"J",0);  
       
       $this->objpdf->setleftmargin($margemesquerda);
       $this->objpdf->SetY(35);
@@ -398,11 +398,11 @@ if ($this->loteamento == true) {
     $this->objpdf->cell(22, 5, db_formatar($vlrdesconto, "f", ' ', 20) , 0, 0, 'R');
     $this->objpdf->cell(22, 5, db_formatar($vlrtotal - $vlrdesconto, "f", ' ', 20) , 0, 0, 'R');
     
-    $totvlrcor			+= $vlrcor;
-    $totvlrmul			+= $vlrmulta;
-    $totvlrjur			+= $vlrjuros;
+    $totvlrcor      += $vlrcor;
+    $totvlrmul      += $vlrmulta;
+    $totvlrjur      += $vlrjuros;
     $totvlrdesconto += $vlrdesconto;
-    $totapagar			+= ($vlrtotal - $vlrdesconto);
+    $totapagar      += ($vlrtotal - $vlrdesconto);
     
     $this->objpdf->ln();
     

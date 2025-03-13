@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_arrecad_classe.php");
-require_once("classes/db_arresusp_classe.php");
-require_once("classes/db_db_usuarios_classe.php");
-require_once("classes/db_procjur_classe.php");
-require_once("classes/db_suspensao_classe.php");
-require_once("model/suspensaoDebitos.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_arrecad_classe.php"));
+require_once(modification("classes/db_arresusp_classe.php"));
+require_once(modification("classes/db_db_usuarios_classe.php"));
+require_once(modification("classes/db_procjur_classe.php"));
+require_once(modification("classes/db_suspensao_classe.php"));
+require_once(modification("model/suspensaoDebitos.model.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -367,10 +367,10 @@ $db_opcao = 1;
 
 function js_pesquisaar18_procjur(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_procjur','func_procjur.php?validaativ=true&funcao_js=parent.debitos.js_mostraprocjur1|v62_sequencial|v62_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procjur','func_procjur.php?validaativ=true&funcao_js=parent.debitos.js_mostraprocjur1|v62_sequencial|v62_descricao','Pesquisa',true);
   }else{
      if(document.form1.ar18_procjur.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_procjur','func_procjur.php?validaativ=true&pesquisa_chave='+document.form1.ar18_procjur.value+'&funcao_js=parent.debitos.js_mostraprocjur','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procjur','func_procjur.php?validaativ=true&pesquisa_chave='+document.form1.ar18_procjur.value+'&funcao_js=parent.debitos.js_mostraprocjur','Pesquisa',false);
      }else{
        document.form1.v62_descricao.value = '';
      }
@@ -393,7 +393,7 @@ function js_mostraprocjur1(iSeq,sDescr){
   document.form1.ar18_procjur.value	 = iSeq;
   document.form1.v62_descricao.value = sDescr;
   
-  top.corpo.db_iframe_procjur.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_procjur.hide();
   
 }
 

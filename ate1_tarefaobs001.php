@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,27 +27,27 @@
 
 define("TAREFA",true);
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_tarefa_lanc_classe.php");
-include("classes/db_tarefa_aut_classe.php");
-include("classes/db_tarefaparam_classe.php");
-include("classes/db_atendimento_classe.php");
-include("classes/db_tecnico_classe.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefamodulo_classe.php");
-include("classes/db_tarefaproced_classe.php");
-include("classes/db_tarefasituacao_classe.php");
-include("classes/db_tarefausu_classe.php");
-include("classes/db_atenditem_classe.php");
-include("classes/db_tarefaitem_classe.php");
-include("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefamotivo_classe.php");
-include("classes/db_tarefaclientes_classe.php");
-include("classes/db_tarefa_agenda_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tarefa_lanc_classe.php"));
+include(modification("classes/db_tarefa_aut_classe.php"));
+include(modification("classes/db_tarefaparam_classe.php"));
+include(modification("classes/db_atendimento_classe.php"));
+include(modification("classes/db_tecnico_classe.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefamodulo_classe.php"));
+include(modification("classes/db_tarefaproced_classe.php"));
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefausu_classe.php"));
+include(modification("classes/db_atenditem_classe.php"));
+include(modification("classes/db_tarefaitem_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefamotivo_classe.php"));
+include(modification("classes/db_tarefaclientes_classe.php"));
+include(modification("classes/db_tarefa_agenda_classe.php"));
 $cltarefa         = new cl_tarefa;
 $cltarefamodulo   = new cl_tarefamodulo;
 $cltarefaproced   = new cl_tarefaproced;
@@ -102,7 +102,7 @@ if(isset($alterar)) {
 			where at05_codatend = $at02_codatend
 			and at05_seq = $at05_seq;
 		";
-		$res = pg_query($sql); 
+		$res = db_query($sql); 
 		$linhas =pg_num_rows($res);
 	
 	  	if ($linhas > 0) {
@@ -111,7 +111,7 @@ if(isset($alterar)) {
 		    //$cltarefa->at40_obs = '$at40_obs';
 		   // $cltarefa->alterar($at42_tarefa);
 		    $upd = "update tarefa set at40_obs = '$at40_obs' where at40_sequencial = $at42_tarefa";
-		    pg_query($upd);
+		    db_query($upd);
 	    }
 	}
 }
@@ -134,7 +134,7 @@ $db_botao = true;
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmtarefaobs.php");
+	include(modification("forms/db_frmtarefaobs.php"));
 	?>
     </center>
 	</td>
@@ -152,7 +152,7 @@ if(isset($alterar)){
     };
   } else {
     db_msgbox($erro_msg);
-    echo "<script>top.corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at42_tarefa."'</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at42_tarefa."'</script>";
   }
 }
 

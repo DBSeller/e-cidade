@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,18 +24,17 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_barras.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_db_bancos_classe.php"));
+require_once(modification("model/regraEmissao.model.php"));
+require_once(modification("model/convenio.model.php"));
 
-//require("libs/db_stdlib.php");
-include("fpdf151/scpdf.php");
-include("dbforms/db_funcoes.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_barras.php");
-require_once("libs/db_sql.php");
-include_once("libs/db_utils.php");
-require_once("classes/db_db_bancos_classe.php");
-require_once("model/regraEmissao.model.php");
-require_once("model/convenio.model.php");
-if (isset($listaordens)){
+if (isset($listaordens)) {
   
   $aOrdens = explode(",", $listaordens);
   for ($i = 0; $i < count($aOrdens); $i++) {
@@ -80,39 +79,46 @@ if (isset($listaordens)){
     
     $rsRecibos    = db_query($sSqlRecibos);
     if ($rsRecibos) {
-      $aRecibos = db_utils::getColectionByRecord($rsRecibos);
+      $aRecibos = db_utils::getCollectionByRecord($rsRecibos);
     }
-    if (count($aRecibos) > 0) {
-      $pdf  = new scpdf();
-      foreach ($aRecibos as $oRecibo) {
-        
-        $DB_DATACALC = db_getsession("DB_datausu");
-        $_POST["CHECK10"]          = "";
-        $_POST["ver_inscr"]        = "";
-        $_POST["ver_numcgm"]       = $oRecibo->numcgm;
-        $_POST["numcgm"]           = $oRecibo->numcgm;
-        $_POST["lGerarOutput"]     = "f";
-        $_POST["k03_perparc"]      = "f";
-        $_POST["numpre"]           = $oRecibo->codarrecad;
-        $_POST["iNumpre"]          = $oRecibo->codarrecad;
-        $_POST["k03_numpre"]        = $oRecibo->codarrecad;
-        $_POST["k03_tipo"]         = $oRecibo->k00_tipo;
-        $_POST["tipo_debito"]      = $oRecibo->k00_tipo;
-        $_POST["tipo"]             = $oRecibo->k00_tipo;
-        $_POST["k00_histtxt"]      = "";
-        $_POST["k03_parcelamento"] = "f";
-        $_POST["emrec"]            = "t";
-        $_POST["reemite_recibo"]   = "1";
-        $_POST["lReemissao"]       = true;
-        if ($oRecibo->tiporecibo == 1) {
-          unset($emite_recibo_protocolo);
-          include("cai3_reemiterecibo.php");        
-        } else {
-          include("cai4_recibo003.php"); 
-        }
-      }
+
+    if (count($aRecibos) == 0) {
+
+      $sErroMsg = urlencode("Nenhum registro foi encontrado.");
+      db_redireciona("db_erros.php?fechar=true&db_erro={$sErroMsg}");
+    }
+
+    $pdf  = new scpdf();
+    foreach ($aRecibos as $oRecibo) {
       
-    } 
+      $DB_DATACALC = db_getsession("DB_datausu");
+      $_POST["CHECK10"]          = "";
+      $_POST["ver_inscr"]        = "";
+      $_POST["ver_numcgm"]       = $oRecibo->numcgm;
+      $_POST["numcgm"]           = $oRecibo->numcgm;
+      $_POST["lGerarOutput"]     = "f";
+      $_POST["k03_perparc"]      = "f";
+      $_POST["numpre"]           = $oRecibo->codarrecad;
+      $_POST["iNumpre"]          = $oRecibo->codarrecad;
+      $_POST["k03_numpre"]        = $oRecibo->codarrecad;
+      $_POST["k03_tipo"]         = $oRecibo->k00_tipo;
+      $_POST["tipo_debito"]      = $oRecibo->k00_tipo;
+      $_POST["tipo"]             = $oRecibo->k00_tipo;
+      $_POST["k00_histtxt"]      = "";
+      $_POST["k03_parcelamento"] = "f";
+      $_POST["emrec"]            = "t";
+      $_POST["reemite_recibo"]   = "1";
+      $_POST["lReemissao"]       = true;
+
+      if ($oRecibo->tiporecibo == 1) {
+
+        unset($emite_recibo_protocolo);
+        require_once(modification("cai3_reemiterecibo.php"));
+      } else {
+        require_once(modification("cai4_recibo003.php"));
+      }
+    }
+
     $pdf1->objpdf->output();
   }
   
@@ -122,7 +128,6 @@ if (isset($listaordens)){
   $_POST["CHECK10"]    = $_GET["CHECK10"];
   $_POST["ver_inscr"]  = $_GET["ver_inscr"];
   $_POST["ver_numcgm"] = $_GET["ver_numcgm"];
-  include("cai3_reemiterecibo.php");
-  
+
+  require_once(modification("cai3_reemiterecibo.php"));
 }
-?>

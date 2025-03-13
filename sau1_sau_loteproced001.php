@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_jsplibwebseller.php");
-include("libs/db_utils.php");
-require("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_jsplibwebseller.php"));
+include(modification("libs/db_utils.php"));
+require(modification("libs/db_app.utils.php"));
 
-include("classes/db_sau_lote_classe.php");
-include("classes/db_sau_lotepront_classe.php");
-include("classes/db_sau_lotepront_ext_classe.php");
-include("classes/db_prontuarios_classe.php");
-include("classes/db_prontproced_classe.php");
-include("classes/db_prontproced_ext_classe.php");
-include("classes/db_tmp_prontproced_classe.php");
-include("classes/db_cgs_und_classe.php");
+include(modification("classes/db_sau_lote_classe.php"));
+include(modification("classes/db_sau_lotepront_classe.php"));
+include(modification("classes/db_sau_lotepront_ext_classe.php"));
+include(modification("classes/db_prontuarios_classe.php"));
+include(modification("classes/db_prontproced_classe.php"));
+include(modification("classes/db_prontproced_ext_classe.php"));
+include(modification("classes/db_tmp_prontproced_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -92,7 +92,7 @@ try{
     <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
         <?
-        include("forms/db_frmsau_loteproced001.php");
+        include(modification("forms/db_frmsau_loteproced001.php"));
         ?>
     </center>
     </td>

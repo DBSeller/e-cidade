@@ -86,7 +86,7 @@ DBViewPesquisaSetorQuadraLote = function(sContainer, sInstancia) {
 	                               method: 'POST',
 	                               parameters: 'json='+Object.toJSON(oParametro), 
 	                               onComplete: function(oAjax) {
-	                                 var oRetorno = eval("("+oAjax.responseText+")");
+	                                 var oRetorno = JSON.parse(oAjax.responseText);
 	                                 
 	                                 me.oCboSetorCodigo.clearItens();
 	                                 me.oCboSetor.clearItens();
@@ -140,7 +140,7 @@ DBViewPesquisaSetorQuadraLote = function(sContainer, sInstancia) {
                                  parameters: 'json='+Object.toJSON(oParametro), 
                                  onComplete: function(oAjax) {
                                    
-                                   var oRetorno = eval("("+oAjax.responseText+")");
+                                   var oRetorno = JSON.parse(oAjax.responseText);
                                    
                                    me.oCboQuadra.clearItens();
                                    if (oRetorno.status != "2") {
@@ -180,7 +180,7 @@ DBViewPesquisaSetorQuadraLote = function(sContainer, sInstancia) {
                                  parameters: 'json='+Object.toJSON(oParametro), 
                                  onComplete: function(oAjax) {
                                    
-                                   var oRetorno = eval("("+oAjax.responseText+")");
+                                   var oRetorno = JSON.parse(oAjax.responseText);
                                    
                                    me.oCboLote.clearItens();
                                    if (oRetorno.status != "2") {

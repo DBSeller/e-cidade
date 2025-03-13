@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_notificaarretipodoc_classe.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_notificaarretipodoc_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 $oPost = db_utils::postMemory($_POST);
 
@@ -207,9 +207,9 @@ if (isset($oPost->incluir)) {
   
   function js_pesquisaDoc(lMostra) {
   	if (lMostra) {
-	  js_OpenJanelaIframe("top.corpo","db_iframe_documentos","func_db_documento.php?funcao_js=parent.js_preencheDoc|db03_docum|db03_descr","Pesquisa",true);  	
+	  js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_documentos","func_db_documento.php?funcao_js=parent.js_preencheDoc|db03_docum|db03_descr","Pesquisa",true);  	
   	} else {
-  	  js_OpenJanelaIframe("top.corpo","db_iframe_documentos","func_db_documento.php?funcao_js=parent.js_preencheDoc1&pesquisa_chave="+document.form1.k101_db_documento.value,"Pesquisa",false);
+  	  js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_documentos","func_db_documento.php?funcao_js=parent.js_preencheDoc1&pesquisa_chave="+document.form1.k101_db_documento.value,"Pesquisa",false);
   	}
   }
   
@@ -231,9 +231,9 @@ if (isset($oPost->incluir)) {
  
   function js_pesquisaTipo(lMostra) {
   	if (lMostra) {
-	  js_OpenJanelaIframe("top.corpo","db_iframe_tipo","func_arretipo.php?funcao_js=parent.js_preencheTipo|k00_tipo|k00_descr","Pesquisa",true);  	
+	  js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_tipo","func_arretipo.php?funcao_js=parent.js_preencheTipo|k00_tipo|k00_descr","Pesquisa",true);  	
   	} else {
-  	  js_OpenJanelaIframe("top.corpo","db_iframe_tipo","func_arretipo.php?funcao_js=parent.js_preencheTipo1&pesquisa_chave="+document.form1.k101_tipo.value,"Pesquisa",false);
+  	  js_OpenJanelaIframe("CurrentWindow.corpo","db_iframe_tipo","func_arretipo.php?funcao_js=parent.js_preencheTipo1&pesquisa_chave="+document.form1.k101_tipo.value,"Pesquisa",false);
   	}
   }
  

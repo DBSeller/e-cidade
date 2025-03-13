@@ -1,7 +1,7 @@
 <?php
 /**
  * E-cidade Software Publico para Gestão Municipal
- *   Copyright (C) 2014 DBSeller Serviços de Informática Ltda
+ *   Copyright (C) 2009 DBSeller Serviços de Informática Ltda
  *                          www.dbseller.com.br
  *                          e-cidade@dbseller.com.br
  *   Este programa é software livre; você pode redistribuí-lo e/ou
@@ -21,12 +21,12 @@
  *                                 licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 define( "MENSAGENS_RESULTADOEXAME_RPC", "saude.laboratorio.lab4_resultadoexame_RPC." );
 
@@ -70,7 +70,7 @@ try {
       break;
 
     /**
-     * Busca os exames de uma requisição que estão conferidos '7 - Conferido'
+     * Busca os exames de uma requisição que estão conferidos '60 - Conferido'
      * @param integer $oParam->iRequisicao - Código da requisição
      */
     case 'examesRequisicao':

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_utils.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_iptubase_classe.php");
-include ("classes/db_cgm_classe.php");
-include ("classes/db_advog_classe.php");
-include ("classes/db_inicial_classe.php");
-include ("classes/db_processoforoinicial_classe.php");
-include ("classes/db_inicialnomes_classe.php");
-include ("classes/db_inicialnumpre_classe.php");
-include ("classes/db_inicialcert_classe.php");
-include ("classes/db_inicialmov_classe.php");
-include ("classes/db_inicialcodforo_classe.php");
-include ("classes/db_termoini_classe.php");
-include ("classes/db_arrecad_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_advog_classe.php"));
+include(modification("classes/db_inicial_classe.php"));
+include(modification("classes/db_processoforoinicial_classe.php"));
+include(modification("classes/db_inicialnomes_classe.php"));
+include(modification("classes/db_inicialnumpre_classe.php"));
+include(modification("classes/db_inicialcert_classe.php"));
+include(modification("classes/db_inicialmov_classe.php"));
+include(modification("classes/db_inicialcodforo_classe.php"));
+include(modification("classes/db_termoini_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 
@@ -127,7 +127,7 @@ if (!isset ($excluir)) {
 </head>
 <body bgcolor=#CCCCCC>
     <?
-    include ("forms/db_frmemiteinicialexc.php"); 
+    include(modification("forms/db_frmemiteinicialexc.php")); 
     ?>   
 <?
 db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit"));

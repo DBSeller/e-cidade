@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,10 +29,10 @@
 /**
  * Model para geração de arquivos do pit documentos tipo 50
  * @author Iuri Guntchnigg
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.5 $
  * @package empenho
  */
-require_once ('model/arquivoPit.model.php');
+require_once(modification('model/arquivoPit.model.php'));
 
 final class arquivoPit50 extends arquivoPit {
   

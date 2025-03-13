@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,23 +24,20 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
+db_postmemory( $_POST );
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_baseato_classe.php");
-require_once("classes/db_baseatoserie_classe.php");
-require_once("classes/db_escolabase_classe.php");
-require_once("dbforms/db_funcoes.php");
-
-db_postmemory($HTTP_POST_VARS);
-$clbaseato = new cl_baseato;
+$clbaseato      = new cl_baseato;
 $clbaseatoserie = new cl_baseatoserie;
-$clescolabase = new cl_escolabase;
+$clescolabase   = new cl_escolabase;
+
 $db_opcao = 1;
 $db_botao = false;
 
@@ -49,7 +46,8 @@ $ed18_c_nome   = db_getsession("DB_nomedepto");
 
 $sCampos       = " cursoedu.ed29_i_codigo as codcursobase, ed77_i_codigo as codbaseescola ";
 $sWhere        = " ed77_i_base = $ed77_i_base and ed77_i_escola = $ed77_i_escola ";
-$sSql = $clescolabase->sql_query("", $sCampos, "", $sWhere);
+
+$sSql       = $clescolabase->sql_query("", $sCampos, "", $sWhere);
 $result_ver = $clescolabase->sql_record($sSql);
 
 if ($clescolabase->numrows > 0) {
@@ -75,7 +73,6 @@ if (isset($incluir)) {
   db_fim_transacao();
   
   $db_botao = false;
-  
 }
 
 if (isset($alterar)) {
@@ -96,7 +93,6 @@ if (isset($alterar)) {
   $clbaseato->erro_status = "1";
   
   db_fim_transacao();
-
 }
 
 if (isset($excluir)) {
@@ -109,9 +105,7 @@ if (isset($excluir)) {
   $clbaseato->excluir($ed278_i_codigo);
   
   db_fim_transacao();
-
 }
-
 ?>
 <html>
 <head>
@@ -123,62 +117,69 @@ if (isset($excluir)) {
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
- <tr>
-  <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-   <br>
-   <center>
-   <fieldset style="width:95%"><legend><b>Atos Legais que regulamentam esta base curricular na escola <?=$ed18_c_nome?></b></legend>
-    <?include("forms/db_frmbaseato.php");?>
-   </fieldset>
-   </center>
-  </td>
- </tr>
-</table>
+<body>
+  <?php
+  include(modification("forms/db_frmbaseato.php"));
+  ?>
 </body>
 </html>
 <script>
 js_tabulacaoforms("form1","ed278_i_atolegal",true,1,"ed278_i_atolegal",true);
 </script>
-<?
-if(isset($incluir)){
-  if($clbaseato->erro_status=="0"){
-    $clbaseato->erro(true,false);
-    $db_botao=true;
+<?php
+if( isset( $incluir ) ) {
+
+  if( $clbaseato->erro_status == "0" ) {
+
+    $clbaseato->erro( true, false );
+    $db_botao = true;
+
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if($clbaseato->erro_campo!=""){
+
+    if( $clbaseato->erro_campo != "" ) {
+
       echo "<script> document.form1.".$clbaseato->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clbaseato->erro_campo.".focus();</script>";
     }
-  }else{
+  } else {
+
     $clbaseato->erro(true,false);
     db_redireciona("edu1_baseato001.php?ed77_i_base=$ed77_i_base&ed31_c_descr=$ed31_c_descr");
   }
 }
-if(isset($alterar)){
- if($clbaseato->erro_status=="0"){
-  $clbaseato->erro(true,false);
-  $db_botao=true;
-  echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-  if($clbaseato->erro_campo!=""){
-   echo "<script> document.form1.".$clbaseato->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-   echo "<script> document.form1.".$clbaseato->erro_campo.".focus();</script>";
+
+if( isset( $alterar ) ) {
+
+  if( $clbaseato->erro_status == "0" ) {
+
+    $clbaseato->erro( true, false );
+    $db_botao = true;
+
+    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+
+    if( $clbaseato->erro_campo != "" ) {
+
+      echo "<script> document.form1.".$clbaseato->erro_campo.".style.backgroundColor='#99A9AE';</script>";
+      echo "<script> document.form1.".$clbaseato->erro_campo.".focus();</script>";
+    }
+  } else {
+
+    $clbaseato->erro(true,false);
+    db_redireciona("edu1_baseato001.php?ed77_i_base=$ed77_i_base&ed31_c_descr=$ed31_c_descr");
   }
- }else{
-  $clbaseato->erro(true,false);
-  db_redireciona("edu1_baseato001.php?ed77_i_base=$ed77_i_base&ed31_c_descr=$ed31_c_descr");
- }
 }
-if(isset($excluir)){
- if($clbaseato->erro_status=="0"){
-  $clbaseato->erro(true,false);
- }else{
-  $clbaseato->erro(true,false);
-  db_redireciona("edu1_baseato001.php?ed77_i_base=$ed77_i_base&ed31_c_descr=$ed31_c_descr");
- }
+
+if( isset( $excluir ) ) {
+
+  if( $clbaseato->erro_status == "0" ) {
+    $clbaseato->erro( true, false );
+  } else {
+
+    $clbaseato->erro(true,false);
+    db_redireciona("edu1_baseato001.php?ed77_i_base=$ed77_i_base&ed31_c_descr=$ed31_c_descr");
+  }
 }
-if(isset($cancelar)){
+
+if( isset( $cancelar ) ) {
   db_redireciona("edu1_baseato001.php?ed77_i_base=$ed77_i_base&ed31_c_descr=$ed31_c_descr");
 }
-?>

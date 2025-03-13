@@ -25,5 +25,5 @@
  *                                licenca/licenca_pt.txt 
  */
 
-$campos = "divida.v01_coddiv,divida.v01_numcgm,divida.v01_dtinsc,divida.v01_exerc,divida.v01_numpre,divida.v01_numpar,divida.v01_numtot,divida.v01_vlrhis,divida.v01_proced,divida.v01_livro,divida.v01_folha,divida.v01_dtvenc,divida.v01_dtoper,divida.v01_valor,divida.v01_obs,divida.v01_numdig";
+$campos = "divida.v01_coddiv,divida.v01_numcgm,divida.v01_dtinsc,divida.v01_exerc,divida.v01_numpre,divida.v01_numpar,divida.v01_numtot,divida.v01_vlrhis,divida.v01_proced,divida.v01_livro,divida.v01_folha,divida.v01_dtvenc,divida.v01_dtoper,divida.v01_valor,divida.v01_obs,divida.v01_numdig, cgm.z01_nome";
 ?>

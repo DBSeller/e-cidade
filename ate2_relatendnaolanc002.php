@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 
-require ('fpdf151/pdf.php');
-include("classes/db_db_modulos_classe.php");
+require(modification('fpdf151/pdf.php'));
+include(modification("classes/db_db_modulos_classe.php"));
 $total2 = 0;
 $cl_db_modulos = new cl_db_modulos;
 
@@ -54,7 +54,7 @@ $sql = "select at06_datalanc,nome,count(*) as quant
 		and at02_datafim is null
 		group by at06_datalanc,nome 
 		order by nome";
-$result = pg_query($sql);
+$result = db_query($sql);
 $linhas  = pg_num_rows($result);
 $pdf->Cell(40,6,"DATA",1,0,"C",1);
 $pdf->Cell(80,6,"NOME",1,0,"C",1);

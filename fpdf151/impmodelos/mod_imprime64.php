@@ -1,5 +1,5 @@
 <?
-//require('fpdf151/alphapdf.php');
+//require(modification('fpdf151/alphapdf.php'));
 //$obj_alpha   = new alphapdf;
 
 $cldb_config = new cl_db_config;
@@ -366,7 +366,7 @@ $sqlass = "
 			and db02_descr = 'ASSINATURAS_CODIGOPHP'
 			";
 			//die($sqlass);
-$resultass = pg_query($sqlass);
+$resultass = db_query($sqlass);
 $linhasass = pg_num_rows($resultass);
 if ($linhasass>0){
 	//db_fieldsmemory($resultass,0);
@@ -383,7 +383,7 @@ if ($linhasass>0){
 					where db03_tipodoc = 1010 and db03_instit = ".db_getsession("DB_instit")." 
 					  and db02_descr ilike 'assinatura_%' 
 					order by db04_ordem ";
-		$resparag = pg_query($sqlparag);
+		$resparag = db_query($sqlparag);
 		
 //		db_criatabela($resparag);exit;
 //		die($sqlparag);

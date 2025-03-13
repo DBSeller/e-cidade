@@ -59,7 +59,7 @@ db_input('fa27_c_denominacao',30,$Ifa27_c_denominacao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_tipodc','func_far_tipodc.php?funcao_js=parent.js_preenchepesquisa|fa27_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_tipodc','func_far_tipodc.php?funcao_js=parent.js_preenchepesquisa|fa27_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_tipodc.hide();

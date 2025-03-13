@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -30,7 +30,7 @@
  *
  * @author matheus felini
  * @package contabilidade
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.17 $
  */
 class GrupoContaOrcamento {
 
@@ -59,6 +59,8 @@ class GrupoContaOrcamento {
    * @var array
    */
   protected $aContas = array();
+
+  const MATERIAL_PERMANENTE = 9;
 
   /**
    * Constroi um objeto com os dados do grupo
@@ -144,16 +146,32 @@ class GrupoContaOrcamento {
 
     $this->excluirConta($iCodigoConta);
 
-    $oDaoContaGrupo                 = db_utils::getDao('conplanoorcamentogrupo');
-    $oDaoContaGrupo->c21_sequencial = null;
-    $oDaoContaGrupo->c21_anousu     = db_getsession('DB_anousu');
-    $oDaoContaGrupo->c21_codcon     = $iCodigoConta;
-    $oDaoContaGrupo->c21_congrupo   = $this->getCodigo();
-    $oDaoContaGrupo->c21_instit     = db_getsession('DB_instit');
-    $oDaoContaGrupo->incluir(null);
-    if ($oDaoContaGrupo->erro_status == "0") {
-      throw new BusinessException("Não foi possível vincular a conta {$iCodigoConta} ao grupo {$this->getDescricao()}");
+    /**
+     * Pega o ultimo ano do plano de contas, para criar o vinculo com a conta de todos os anos
+     */
+    $oDaoPlano     = new cl_conplanoorcamento();
+    $sCampo        = "max(c60_anousu) as c60_anousu";
+    $sSqlMaximoAno = $oDaoPlano->sql_query_file(null, null, $sCampo);
+    $rsMaximoAno   = $oDaoPlano->sql_record($sSqlMaximoAno);
+
+    $iAnoAtual = db_getsession('DB_anousu');
+    $iUltimoAno = db_utils::fieldsMemory($rsMaximoAno, 0)->c60_anousu;
+
+    $oDaoContaGrupo = new cl_conplanoorcamentogrupo();
+
+    for ($iAno = $iAnoAtual; $iAno <= $iUltimoAno; $iAno++) {
+
+      $oDaoContaGrupo->c21_sequencial = null;
+      $oDaoContaGrupo->c21_anousu     = $iAno;
+      $oDaoContaGrupo->c21_codcon     = $iCodigoConta;
+      $oDaoContaGrupo->c21_congrupo   = $this->getCodigo();
+      $oDaoContaGrupo->c21_instit     = db_getsession('DB_instit');
+      $oDaoContaGrupo->incluir(null);
+      if ($oDaoContaGrupo->erro_status == "0") {
+        throw new BusinessException("Não foi possível vincular a conta {$iCodigoConta} ao grupo {$this->getDescricao()}");
+      }
     }
+
     return true;
   }
 
@@ -168,7 +186,7 @@ class GrupoContaOrcamento {
     $iAnoSessao     = db_getsession("DB_anousu");
     $oDaoContaGrupo = db_utils::getDao('conplanoorcamentogrupo');
     $iInstituicao   = db_getsession("DB_instit");
-    $sWhereExcluir  = "c21_anousu = {$iAnoSessao} and c21_codcon = {$iCodigoConta} and c21_instit = {$iInstituicao}";
+    $sWhereExcluir  = "c21_anousu >= {$iAnoSessao} and c21_congrupo = {$this->getCodigo()} and c21_codcon = {$iCodigoConta} and c21_instit = {$iInstituicao}";
     $oDaoContaGrupo->excluir(null, $sWhereExcluir);
     if ($oDaoContaGrupo->erro_status == "0") {
       throw new BusinessException("Não foi possível excluir a conta {$iCodigoConta} do grupo {$this->getDescricao()}");

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sql.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_issportetipo_classe.php");
-include("classes/db_ativtipo_classe.php");
-include("classes/db_tipcalc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_issportetipo_classe.php"));
+include(modification("classes/db_ativtipo_classe.php"));
+include(modification("classes/db_tipcalc_classe.php"));
 
 $clissportetipo = new cl_issportetipo;
 $clativtipo = new cl_ativtipo;
@@ -243,10 +243,10 @@ background-color:#ccddcc;
 //---------------------------------------------------------------
 function js_pesquisaq40_codporte(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issporte','func_issporte.php?funcao_js=parent.js_mostraporte1|q40_codporte|q40_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issporte','func_issporte.php?funcao_js=parent.js_mostraporte1|q40_codporte|q40_descr','Pesquisa',true);
   }else{
      if(document.form1.q41_codporte.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_issporte','func_issporte.php?pesquisa_chave='+document.form1.q41_codporte.value+'&funcao_js=parent.js_mostraporte','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issporte','func_issporte.php?pesquisa_chave='+document.form1.q41_codporte.value+'&funcao_js=parent.js_mostraporte','Pesquisa',false);
      }else{
        document.form1.q40_descr.value = ''; 
      }
@@ -267,10 +267,10 @@ function js_mostraporte1(chave1,chave2){
 //----------------------------------------------------------------------
 function js_pesquisaq12_classe(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_classe','func_classe.php?funcao_js=parent.js_mostraclasse1|q12_classe|q12_descr','Pesquisa',true);  
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_classe','func_classe.php?funcao_js=parent.js_mostraclasse1|q12_classe|q12_descr','Pesquisa',true);  
     }else{
      if(document.form1.q41_codclasse.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_classe','func_classe.php?pesquisa_chave='+document.form1.q41_codclasse.value+'&funcao_js=parent.js_mostraclasse','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_classe','func_classe.php?pesquisa_chave='+document.form1.q41_codclasse.value+'&funcao_js=parent.js_mostraclasse','Pesquisa',false);
      }else{
        document.form1.q12_descr.value = ''; 
      }
@@ -291,10 +291,10 @@ function js_mostraclasse1(chave1,chave2){
 //-----------------------------------------------------
 function js_pesquisaq41_codtipcalc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issportetipo','func_tipcalc.php?funcao_js=parent.js_mostraportetipo1|q81_codigo|q81_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issportetipo','func_tipcalc.php?funcao_js=parent.js_mostraportetipo1|q81_codigo|q81_descr','Pesquisa',true);
   }else{
      if(document.form1.q41_codtipcalc.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_issportetipo','func_tipcalc.php?pesquisa_chave='+document.form1.q41_codtipcalc.value+'&funcao_js=parent.js_mostraportetipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issportetipo','func_tipcalc.php?pesquisa_chave='+document.form1.q41_codtipcalc.value+'&funcao_js=parent.js_mostraportetipo','Pesquisa',false);
      }else{
        document.form1.q81_descr.value = ''; 
      }
@@ -321,7 +321,7 @@ if (isset($atualizar)){
       echo "<script> document.form1.".$clissportetipo->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clissportetipo->erro_campo.".focus();</script>";
     }else{ 
-      echo"<script>top.corpo.location.href='iss4_issportetipo001.php';</script>";
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='iss4_issportetipo001.php';</script>";
     }
 }
 ?>

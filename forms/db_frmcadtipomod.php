@@ -58,7 +58,7 @@ db_input('k46_descr',40,$Ik46_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cadtipomod','func_cadtipomod.php?funcao_js=parent.js_preenchepesquisa|k46_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadtipomod','func_cadtipomod.php?funcao_js=parent.js_preenchepesquisa|k46_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadtipomod.hide();

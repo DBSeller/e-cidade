@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -53,7 +53,7 @@ class cl_restosgavetas {
    var $campos = "
                  cm26_i_codigo = int4 = Código
                  cm26_i_sepultamento = int4 = Sepultamento
-                 cm26_i_ossoariojazigo = int4 = Ossoário/ Jazigo
+                 cm26_i_ossoariojazigo = int4 = Ossário/ Jazigo
                  cm26_d_entrada = date = Entrada
                  ";
    //funcao construtor da classe
@@ -102,7 +102,7 @@ class cl_restosgavetas {
        return false;
      }
      if($this->cm26_i_ossoariojazigo == null ){
-       $this->erro_sql = " Campo Ossoário/ Jazigo nao Informado.";
+       $this->erro_sql = " Campo Ossário/ Jazigo nao Informado.";
        $this->erro_campo = "cm26_i_ossoariojazigo";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -167,12 +167,12 @@ class cl_restosgavetas {
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Restos no Ossoário ($this->cm26_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Restos no Ossário ($this->cm26_i_codigo) nao Incluído. Inclusao Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_banco = "Restos no Ossoário já Cadastrado";
+         $this->erro_banco = "Restos no Ossário já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Restos no Ossoário ($this->cm26_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Restos no Ossário ($this->cm26_i_codigo) nao Incluído. Inclusao Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -235,7 +235,7 @@ class cl_restosgavetas {
        $sql  .= $virgula." cm26_i_ossoariojazigo = $this->cm26_i_ossoariojazigo ";
        $virgula = ",";
        if(trim($this->cm26_i_ossoariojazigo) == null ){
-         $this->erro_sql = " Campo Ossoário/ Jazigo nao Informado.";
+         $this->erro_sql = " Campo Ossário/ Jazigo nao Informado.";
          $this->erro_campo = "cm26_i_ossoariojazigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -295,7 +295,7 @@ class cl_restosgavetas {
      $result = db_query($sql);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Restos no Ossoário nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Restos no Ossário nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->cm26_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -305,7 +305,7 @@ class cl_restosgavetas {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "Restos no Ossoário nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Restos no Ossário nao foi Alterado. Alteracao Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->cm26_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -359,7 +359,7 @@ class cl_restosgavetas {
      $result = db_query($sql.$sql2);
      if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Restos no Ossoário nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Restos no Ossário nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$cm26_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -369,7 +369,7 @@ class cl_restosgavetas {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "Restos no Ossoário nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Restos no Ossário nao Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$cm26_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -429,11 +429,11 @@ class cl_restosgavetas {
      $sql .= "      inner join lotecemit  on  lotecemit.cm23_i_codigo = ossoariojazigo.cm25_i_lotecemit               ";
      $sql .= "      inner join cgm  on  cgm.z01_numcgm = sepultamentos.cm01_i_codigo                                  ";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = sepultamentos.cm01_i_funcionario             ";
-     $sql .= "      inner join legista  on  legista.cm32_i_codigo = sepultamentos.cm01_i_medico                       ";
+     $sql .= "      left  join legista  on  legista.cm32_i_codigo = sepultamentos.cm01_i_medico                       ";
      $sql .= "      inner join causa  on  causa.cm04_i_codigo = sepultamentos.cm01_i_causa                            ";
      $sql .= "      inner join cemiterio  on  cemiterio.cm14_i_codigo = sepultamentos.cm01_i_cemiterio                ";
-     $sql .= "      inner join funerarias  on  funerarias.cm17_i_funeraria = sepultamentos.cm01_i_funeraria           ";
-     $sql .= "      inner join hospitais  on  hospitais.cm18_i_hospital = sepultamentos.cm01_i_hospital               ";
+     $sql .= "      left  join funerarias  on  funerarias.cm17_i_funeraria = sepultamentos.cm01_i_funeraria           ";
+     $sql .= "      left  join hospitais  on  hospitais.cm18_i_hospital = sepultamentos.cm01_i_hospital               ";
      $sql2 = "";
      if($dbwhere==""){
        if($cm26_i_codigo!=null ){
@@ -507,11 +507,11 @@ class cl_restosgavetas {
   	$sql .= "      inner join quadracemit     on  cm23_i_quadracemit = cm22_i_codigo                                 ";
   	$sql .= "      inner join cgm             on  cgm.z01_numcgm = sepultamentos.cm01_i_codigo                       ";
   	$sql .= "      inner join db_usuarios     on  db_usuarios.id_usuario = sepultamentos.cm01_i_funcionario          ";
-  	$sql .= "      inner join legista         on  legista.cm32_i_codigo = sepultamentos.cm01_i_medico                ";
+  	$sql .= "      left  join legista         on  legista.cm32_i_codigo = sepultamentos.cm01_i_medico                ";
   	$sql .= "      inner join causa           on  causa.cm04_i_codigo = sepultamentos.cm01_i_causa                   ";
   	$sql .= "      inner join cemiterio       on  cemiterio.cm14_i_codigo = sepultamentos.cm01_i_cemiterio           ";
-  	$sql .= "      inner join funerarias      on  funerarias.cm17_i_funeraria = sepultamentos.cm01_i_funeraria       ";
-  	$sql .= "      inner join hospitais       on  hospitais.cm18_i_hospital = sepultamentos.cm01_i_hospital          ";
+  	$sql .= "      left  join funerarias      on  funerarias.cm17_i_funeraria = sepultamentos.cm01_i_funeraria       ";
+  	$sql .= "      left  join hospitais       on  hospitais.cm18_i_hospital = sepultamentos.cm01_i_hospital          ";
   	$sql .= "      left  join propricemit     on  cm28_i_ossoariojazigo = cm25_i_codigo                              ";
   	$sql .= "      left  join cgm cgmpropri   on  cm28_i_proprietario = cgmpropri.z01_numcgm                         ";
   	$sql .= "      left  join gavetas         on  cm27_i_restogaveta              = cm26_i_codigo                    ";

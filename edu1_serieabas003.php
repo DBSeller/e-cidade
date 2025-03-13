@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,48 +24,48 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
 $clcriaabas = new cl_criaabas;
-$db_opcao = 1;
+$db_opcao   = 1;
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+  <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Expires" CONTENT="0">
+  <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+  <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="#CCCCCC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
-<table width="100%" height="18"  border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
- <tr>
-  <td>&nbsp;</td>
- </tr>
-</table>
+  <table width="100%" height="18"  border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
+    <tr>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
 <form name="formaba">
-<table valign="top" marginwidth="0" width="100%" border="0" cellspacing="0" cellpadding="0">
- <tr>
-  <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-   <?
-   $clcriaabas->identifica = array("a1"=>"Etapas","a2"=>"Regime de Matrícula");
-   $clcriaabas->src        = array("a1"=>"edu1_serie003.php","a2"=>"");
-   $clcriaabas->sizecampo  = array("a1"=>"20","a2"=>"25");
-   $clcriaabas->disabled  = array("a2"=>"true");
-   $clcriaabas->cordisabled = "#9b9b9b";
-   $clcriaabas->iframe_height = "1000";
-   $clcriaabas->iframe_width = "100%";
-   $clcriaabas->cria_abas();
-   ?>
-  </td>
- </tr>
-</table>
+  <table valign="top" marginwidth="0" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
+        <?php
+        $clcriaabas->identifica    = array( "a1" => "Etapas", "a2" => "Regime de Matrícula", "a3" => "Vínculo Etapa Censo"  );
+        $clcriaabas->src           = array( "a1" => "edu1_serie003.php", "a2" => "", "a3" => "" );
+        $clcriaabas->sizecampo     = array( "a1" => "20", "a2" => "25", "a3" => "25" );
+        $clcriaabas->disabled      = array( "a2" => "true", "a3" => "true" );
+        $clcriaabas->cordisabled   = "#9b9b9b";
+        $clcriaabas->iframe_height = "1000";
+        $clcriaabas->iframe_width  = "100%";
+        $clcriaabas->cria_abas();
+        ?>
+      </td>
+    </tr>
+  </table>
 </form>
 <?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
 </body>

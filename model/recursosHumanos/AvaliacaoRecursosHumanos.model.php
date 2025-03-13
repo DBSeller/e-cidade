@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,8 +30,8 @@
  *
  * @author   Rafael Serpa Nery rafael.nery@dbseller.com.br
  * @package  Recursos Humanos
- * @revision $Author: dbrafael.lopes $
- * @version  $Revision: 1.1 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version  $Revision: 1.5 $
  */
 class AvaliacaoRecursosHumanos {
 
@@ -82,7 +82,7 @@ class AvaliacaoRecursosHumanos {
      */
     if (!empty($iCodigoAvaliacao)) {
 
-      require_once ("classes/db_rhavaliacao_classe.php");
+      require_once(modification("classes/db_rhavaliacao_classe.php"));
 
       $oDaoRHAvaliacao    = new cl_rhavaliacao();
       $sSqlDadosAvaliacao = $oDaoRHAvaliacao->sql_query_file($iCodigoAvaliacao);
@@ -121,7 +121,7 @@ class AvaliacaoRecursosHumanos {
 
   public function setDataAvaliacao($dDataAvaliacao){
      
-    require_once ("classes/db_rhavaliacao_classe.php");
+    require_once(modification("classes/db_rhavaliacao_classe.php"));
     $oDaoRHAvaliacao   = new cl_rhavaliacao();
     $aAnoAvaliacao     = explode("-", $dDataAvaliacao);
     $iAnoAvaliacao     = $aAnoAvaliacao[0];
@@ -159,7 +159,7 @@ class AvaliacaoRecursosHumanos {
       throw new Exception("Salvar dados: Não Existe transação ativa.");
     }
      
-    require_once("classes/db_rhavaliacao_classe.php");
+    require_once(modification("classes/db_rhavaliacao_classe.php"));
 
     $oRhavaliacao                  = new cl_rhavaliacao();
     $oRhavaliacao->h73_rhpromocao  = $this->iCodigoPromocao;
@@ -193,7 +193,7 @@ class AvaliacaoRecursosHumanos {
       throw new Exception("Adicionar Tipos de Avaliação: Não Existe transação ativa.");
     }
 
-    require_once("classes/db_rhavaliacaotipoavaliacao_classe.php");
+    require_once(modification("classes/db_rhavaliacaotipoavaliacao_classe.php"));
      
     $oRhavaliacaotipoavaliacao = new cl_rhavaliacaotipoavaliacao();
     $oRhavaliacaotipoavaliacao->h76_rhtipoavaliacao = $iTipoAvaliacao;
@@ -220,7 +220,7 @@ class AvaliacaoRecursosHumanos {
       throw new Exception("Adicionar Curso: Não Existe transação ativa.");
     }
     
-    require_once ("classes/db_rhpromocaocursosavaliacao_classe.php");
+    require_once(modification("classes/db_rhpromocaocursosavaliacao_classe.php"));
     
     $oDaoRHPromocaoCursosAvaliacao = new cl_rhpromocaocursosavaliacao();
     $oDaoRHPromocaoCursosAvaliacao->h75_rhpromocaocurso = $oPromocaoCurso->h74_sequencial;
@@ -240,7 +240,7 @@ class AvaliacaoRecursosHumanos {
    */
   public function remover() {
   	
-  	require_once("classes/db_rhavaliacao_classe.php");
+  	require_once(modification("classes/db_rhavaliacao_classe.php"));
     $oDaoRhavaliacao = new cl_rhavaliacao();
     
     $aCursosExcluidos = $this->removerCursoAvaliacao();
@@ -265,7 +265,7 @@ class AvaliacaoRecursosHumanos {
    */
   public function removerCursoAvaliacao() {
   	
-  	require_once("classes/db_rhpromocaocursosavaliacao_classe.php");
+  	require_once(modification("classes/db_rhpromocaocursosavaliacao_classe.php"));
   	$oDaoRhpromocaocursosavaliacao = new cl_rhpromocaocursosavaliacao;
   	
   	$sSqlCursos  = $oDaoRhpromocaocursosavaliacao->sql_query_file(null, 
@@ -276,7 +276,7 @@ class AvaliacaoRecursosHumanos {
   	
   	$aRetorno    = array();
 
-  	$aCursos     = db_utils::getColectionByRecord($rsCursos);
+  	$aCursos     = db_utils::getCollectionByRecord($rsCursos);
   	
   	foreach ($aCursos as $oCursos) {
   		$aRetorno[] = $oCursos->h75_rhpromocaocurso;
@@ -297,7 +297,7 @@ class AvaliacaoRecursosHumanos {
    */
   public function removerTipoAvaliacao() {
   	
-  	require_once("classes/db_rhavaliacaotipoavaliacao_classe.php");
+  	require_once(modification("classes/db_rhavaliacaotipoavaliacao_classe.php"));
   	$oDaoRhAvaliacaotipoavaliacao  = new cl_rhavaliacaotipoavaliacao;
   	
     $oDaoRhAvaliacaotipoavaliacao->excluir(null, "h76_rhavaliacao = {$this->iCodigoAvaliacao}");

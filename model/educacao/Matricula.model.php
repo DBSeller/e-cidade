@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,11 +26,13 @@
  */
 
 define("URL_MENSAGEM_MATRICULA", "educacao.escola.Matricula.");
+
 /**
  * Matriculas dos alunos
+ *
  * @package educacao
  * @author Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.64 $
  */
 class Matricula {
 
@@ -144,6 +146,9 @@ class Matricula {
                                        'CLASS' => 'CLASSIFICADO'
                                      );
 
+    /**
+     * @var DiarioClasse
+     */
   private $oDiarioClasse;
 
   /**
@@ -196,7 +201,7 @@ class Matricula {
 
 
   private static $aSituacoesMatriculaMov = array("ALTERAÇÃO DE DATA DA MATRÍCULA E/OU OBSERVAÇÕES",
-                                                 "ALTERAR SITUAÇÂO DA MATRÍCULA",
+                                                 "ALTERAR SITUAÇÃO DA MATRÍCULA",
                                                  "CANCELAR ENCERRAMENTO DE AVALIAÇÕES",
                                                  "ENCERRAR AVALIAÇÕES",
                                                  "MATRICULAR ALUNO",
@@ -209,14 +214,24 @@ class Matricula {
                                                  "TRANSFERÊNCIA PARA OUTRA ESCOLA",
                                                  "TROCAR ALUNO DE MODALIDADE",
                                                  "TROCAR ALUNO DE TURMA",
-                                                 "TROCA TURNO ED. INFANTIL");
+                                                 "TROCA TURNO ED. INFANTIL",
+                                                 "TRANSFERÊNCIA APÓS ENCERRAMENTO");
 
+    /**
+     * @var DBDate
+     */
+  private $dataModificacao;
+    /**
+     * @var DBDate
+     */
+  private $dataModificacaoAnterior;
 
-  /**
-   * cria uma Instancia de Matricula
-   * Caso seja informado o codigo da matricula.
-   * @param string $iCodigoMatricula Codigo da matricula do aluno
-   */
+    /**
+     * cria uma Instancia de Matricula
+     * Caso seja informado o codigo da matricula.
+     * @param string $iCodigoMatricula Codigo da matricula do aluno
+     * @throws ParameterException
+     */
   public function __construct($iCodigoMatricula = null) {
 
 
@@ -243,6 +258,12 @@ class Matricula {
         $this->lAvaliacaoParecer       = $oAluno->ed60_c_parecer == 'S' ? true : false;
         $this->iTipoIngresso           = $oAluno->ed60_tipoingresso;
 
+        if (!empty($oAluno->ed60_d_datamodif)) {
+            $this->dataModificacao         = new DBDate($oAluno->ed60_d_datamodif);
+        }
+        if (!empty($oAluno->ed60_d_datamodifant)) {
+            $this->dataModificacaoAnterior = new DBDate($oAluno->ed60_d_datamodifant);
+        }
         if (!empty($oAluno->ed60_d_datasaida)) {
           $this->oDataEncerramento    = new DBDate($oAluno->ed60_d_datasaida);
         }
@@ -251,6 +272,27 @@ class Matricula {
       }
     }
   }
+
+  /**
+   * instancia todas as Matrículas pelo número de matrícula inicial
+   * @param string $iMatricula Número da matricula inicial do aluno
+   * @throws ParameterException
+   */
+  public static function getMatriculas($iMatricula = null) {
+    $matriculasAluno = [];
+    if (!empty($iMatricula)) {
+      $oDaoAluno = db_utils::getDao('matricula');
+      $sSqlAluno = "SELECT * from matricula where ed60_matricula = $iMatricula order by ed60_i_codigo asc";
+      $rsAluno   = $oDaoAluno->sql_record($sSqlAluno);
+
+      while ($matricula = pg_fetch_assoc($rsAluno)) {
+        $matriculasAluno[] = new Matricula($matricula['ed60_i_codigo']);
+      }
+    } else {
+      throw new Exception("getMatriculas precisa de um parâmetro", 1);
+    }
+    return $matriculasAluno;
+  }      
 
   /**
    * Retorna o codigo sequencial da Matricula
@@ -540,17 +582,20 @@ class Matricula {
    * Retorna a Etapa de Origem da matricula
    * @return Etapa
    */
-  public function getEtapaDeOrigem() {
+  public function getEtapaDeOrigem($trocaMatricula = false) {
 
     if ($this->oEtapaOrigem == null) {
 
       $oDaoMatriculaSerie = db_utils::getDao("matriculaserie");
-      $sWhere             = "ed221_i_matricula = {$this->getCodigo()} ";
+      $sWhere             = $trocaMatricula == true ? "ed60_matricula = {$this->getCodigo()} " : 
+                                                      "ed221_i_matricula = {$this->getCodigo()} ";
       $sWhere            .= " and ed221_c_origem  = 'S' ";
-      $sSqlSerieOrigem    = $oDaoMatriculaSerie->sql_query_file(null, "ed221_i_serie", null, $sWhere);
+      $sWhere            .= $trocaMatricula == true ? " and ed60_c_concluida = 'N'" : "";
+      
+      $sSqlSerieOrigem    = $oDaoMatriculaSerie->sql_query(null, "ed221_i_serie", null, $sWhere);
       $rsSerieOrigem      = $oDaoMatriculaSerie->sql_record($sSqlSerieOrigem);
-      if ($oDaoMatriculaSerie->numrows == 1) {
-
+      
+      if ($oDaoMatriculaSerie->numrows > 0) {
         $iCodigoEtapa       = db_utils::fieldsMemory($rsSerieOrigem, 0)->ed221_i_serie;
         $this->oEtapaOrigem = EtapaRepository::getEtapaByCodigo($iCodigoEtapa);
       }
@@ -683,7 +728,7 @@ class Matricula {
     /**
      * Excluimos da tabela alunotransfturma o registro referente a troca de turma da matricula anterior
      */
-    $sWhereAlunoTransfTurma  = "ed69_i_matricula = {$oMatriculaAnterior->getCodigo()}";
+    $sWhereAlunoTransfTurma  = "ed69_i_matricula = {$this->getCodigo()}";
     $sSqlAlunoTransfTurma    = $oDaoAlunoTransfTurma->sql_query_file(null, "ed69_i_codigo", null, $sWhereAlunoTransfTurma);
     $rsAlunoTransfTurma      = $oDaoAlunoTransfTurma->sql_record($sSqlAlunoTransfTurma);
     $iLinhasAlunoTransfTurma = $oDaoAlunoTransfTurma->numrows;
@@ -737,26 +782,38 @@ class Matricula {
    * Salva os dados da matricula
    */
   public function salvar() {
-
-    $oDaoMatricula                    = db_utils::getDao("matricula");
+    $oDaoMatricula                    = new cl_matricula();
+    $oDaoMatricula->ed60_i_aluno   = $this->getAluno()->getCodigoAluno();
     $oDaoMatricula->ed60_c_situacao   = $this->sSituacao;
     $oDaoMatricula->ed60_c_ativa      = $this->lAtiva == true ? 'S' : 'N';
     $oDaoMatricula->ed60_c_concluida  = $this->lConcluida ? 'S' : 'N';
     $oDaoMatricula->ed60_i_turma      = $this->getTurma()->getCodigo();
     $oDaoMatricula->ed60_i_turmaant   = $this->iTurmaAnterior;
+    $oDaoMatricula->ed60_c_rfanterior  = $this->sResultadoFinalAnterior;
     $oDaoMatricula->ed60_i_numaluno   = "{$this->getNumeroOrdemAluno()}";
     $oDaoMatricula->ed60_tipoingresso = $this->getTipoIngresso();
+    $oDaoMatricula->ed60_matricula = $this->getMatricula();
+    $oDaoMatricula->ed60_c_tipo = $this->getTipo();
+    $oDaoMatricula->ed60_c_parecer = $this->lAvaliacaoParecer ? 'S' : 'N';
     if ($this->getNumeroOrdemAluno() == '') {
       $oDaoMatricula->ed60_i_numaluno = 'null';
     }
-    $oDaoMatricula->ed60_d_datasaida = null;
+    $oDaoMatricula->ed60_d_datasaida = 'null';
 
-    if ( $this->oDataEncerramento != null ) {
-      $oDaoMatricula->ed60_d_datasaida = $this->oDataEncerramento->convertTo(DBDate::DATA_EN);
-    }
+      if ( $this->oDataEncerramento != null ) {
+          $oDaoMatricula->ed60_d_datasaida = $this->oDataEncerramento->convertTo(DBDate::DATA_EN);
+      }
+      if ( $this->oDataMatricula != null ) {
+          $oDaoMatricula->ed60_d_datamatricula = $this->oDataMatricula->convertTo(DBDate::DATA_EN);
+      }
+      if ( $this->dataModificacao != null ) {
+          $oDaoMatricula->ed60_d_datamodif = $this->dataModificacao->convertTo(DBDate::DATA_EN);
+      }
+      if ( $this->dataModificacaoAnterior != null ) {
+          $oDaoMatricula->ed60_d_datamodifant = $this->dataModificacaoAnterior->convertTo(DBDate::DATA_EN);
+      }
 
     if (!isset($this->iCodigo)) {
-
       $oDaoMatricula->incluir(null);
       $this->iCodigo = $oDaoMatricula->ed60_i_codigo;
     } else {
@@ -768,6 +825,7 @@ class Matricula {
     if ($oDaoMatricula->erro_status == "0") {
       throw new DBException($oDaoMatricula->erro_msg);
     }
+    $this->iCodigo = $oDaoMatricula->ed60_i_codigo;
   }
 
   /**
@@ -859,12 +917,11 @@ class Matricula {
       throw new ParameterException(_M(URL_MENSAGEM_MATRICULA."situacao_matriculamov_invalida"));
     }
 
-
-    $oDaoMatriculaMov                       = db_utils::getDao("matriculamov");
+    $oDaoMatriculaMov                       = new cl_matriculamov();
     $oDaoMatriculaMov->ed229_i_matricula    = $this->getCodigo();
     $oDaoMatriculaMov->ed229_i_usuario      = db_getsession("DB_id_usuario");
-    $oDaoMatriculaMov->ed229_c_procedimento = strtoupper($sTipoProcedimento);
-    $oDaoMatriculaMov->ed229_t_descr        = strtoupper($sTipoMovimentacao);
+    $oDaoMatriculaMov->ed229_c_procedimento = $sTipoProcedimento;
+    $oDaoMatriculaMov->ed229_t_descr        = $sTipoMovimentacao;
     $oDaoMatriculaMov->ed229_d_dataevento   = $oData->getDate();
     $oDaoMatriculaMov->ed229_c_horaevento   = date("H:i");
     $oDaoMatriculaMov->ed229_d_data         = date("Y-m-d",db_getsession("DB_datausu"));
@@ -875,6 +932,24 @@ class Matricula {
     }
   }
 
+    /**
+     * Atualiza movimentação do aluno na tabela alunoTransfTurma.
+     * @param DBDate $oData
+     * @throws DBException
+     */
+    public function atualizarMovimentacaoAlunoTransfTurma(DBDate $oData) {
+        $oDaoTransfTurma                      = new cl_alunotransfturma();
+        $oDaoTransfTurma->ed69_i_matricula    = $this->getMatricula();
+        $oDaoTransfTurma->ed69_i_turmaorigem    = $this->getTurmaAnterior()->getCodigo();
+        $oDaoTransfTurma->ed69_i_turmadestino    = $this->getTurma()->getCodigo();
+        $oDaoTransfTurma->ed69_d_datatransf   = $oData->getDate();
+        $oDaoTransfTurma->incluir(null);
+
+        if ($oDaoTransfTurma->erro_status == "0") {
+            throw new DBException($oDaoTransfTurma->erro_msg);
+        }
+    }
+
   /**
    * Efetua a matrícula de um aluno
    * @param Etapa $oEtapa
@@ -884,13 +959,22 @@ class Matricula {
    */
   public function matricular (Etapa $oEtapa, array $aTurnoReferencia, $lTransferencia = false) {
 
-    $aVagasTurma = $this->oTurma->getVagasDisponiveis();
+    if ( empty($aTurnoReferencia) ) {
+      throw new BusinessException( _M(URL_MENSAGEM_MATRICULA."turno_nao_informado") );
+    }
 
-    foreach ($aVagasTurma as $iNumeroVagas) {
+    $aVagasTurma   = $this->oTurma->getVagasDisponiveis();
+    $lTurmaTemVaga = true;
 
-      if ( $iNumeroVagas <= 0) {
-      	throw new BusinessException(_M(URL_MENSAGEM_MATRICULA."turma_sem_vagas"));
+    foreach( $aTurnoReferencia as $iTurnoReferencia ) {
+
+      if( $aVagasTurma[ $iTurnoReferencia ] == 0 ) {
+        $lTurmaTemVaga = false;
       }
+    }
+
+    if ( !$lTurmaTemVaga ) {
+     throw new BusinessException(_M(URL_MENSAGEM_MATRICULA."turma_sem_vagas"));
     }
 
     $oDaoMatricula = new cl_matricula();
@@ -953,12 +1037,14 @@ class Matricula {
     /**
      * @todo Setar estas propriedades na classe também
      */
-    $oDaoMatricula->ed60_i_numaluno      = $this->oTurma->getUltimoNumeroClassificado() + 1;
-    $oDaoMatricula->ed60_i_aluno         = $this->oAluno->getCodigoAluno();
-    $oDaoMatricula->ed60_c_situacao      = "MATRICULADO";
-    $oDaoMatricula->ed60_c_concluida     = "N";
-    $oDaoMatricula->ed60_t_obs           = "";
-    $oDaoMatricula->ed60_i_turma         = $this->oTurma->getCodigo();
+
+    $iUltimoNumero                   = $this->oTurma->getUltimoNumeroClassificado();
+    $oDaoMatricula->ed60_i_numaluno  = empty($iUltimoNumero) ? "" : $iUltimoNumero +1;
+    $oDaoMatricula->ed60_i_aluno     = $this->oAluno->getCodigoAluno();
+    $oDaoMatricula->ed60_c_situacao  = "MATRICULADO";
+    $oDaoMatricula->ed60_c_concluida = "N";
+    $oDaoMatricula->ed60_t_obs       = "";
+    $oDaoMatricula->ed60_i_turma     = $this->oTurma->getCodigo();
 
     /**
      * Ao realizar uma nova matrícula, setar a turma anterior como vazia para não quebrar ao salvar
@@ -975,7 +1061,12 @@ class Matricula {
     $oDaoMatricula->ed60_d_datamodifant  = null;
     $oDaoMatricula->ed60_d_datasaida     = null;
     $oDaoMatricula->ed60_c_ativa         = "S";
-    $oDaoMatricula->ed60_c_tipo          = $oSituacaoAluno->getSituacaoAnterior() == "CANDIDATO" ? "N" : "R";
+    $oDaoMatricula->ed60_c_tipo          = $this->sTipo;
+
+    if( empty( $this->sTipo ) ) {
+      $oDaoMatricula->ed60_c_tipo = $oSituacaoAluno->getSituacaoAnterior() == "CANDIDATO" ? "N" : "R";
+    }
+
     $oDaoMatricula->ed60_c_parecer       = "N";
     $oDaoMatricula->ed60_matricula       = null;
     $oDaoMatricula->ed60_i_codigo        = null;
@@ -1006,11 +1097,19 @@ class Matricula {
 
     }
 
-
     $sSituacaoAnterior      = $oSituacaoAluno->getSituacaoAnterior() == "CANDIDATO" ? "MATRICULAR"  : "REMATRICULAR";
     $sSituacaoAnteriorMov   = $oSituacaoAluno->getSituacaoAnterior() == "CANDIDATO" ? "MATRICULADO" : "REMATRICULADO";
     $sSituacaoProcedimento  = "{$sSituacaoAnterior} ALUNO";
-    $sMensagemMovimento     = "ALUNO $sSituacaoAnteriorMov NA TURMA {$this->oTurma->getDescricao()}. SITUAÇÂO ANTERIOR: {$sSituacaoAnterior}";
+
+    if ( $lTransferencia ) {
+
+      $sSituacaoAnterior     = $oSituacaoAluno->getSitucaoAlunoCurso();
+      $sSituacaoAnteriorMov  = "MATRICULADO";
+      $sSituacaoProcedimento = "MATRICULAR ALUNO";
+    }
+
+    $sMensagemMovimento  = "ALUNO {$sSituacaoAnteriorMov} NA TURMA {$this->oTurma->getDescricao()}.";
+    $sMensagemMovimento .= " SITUAÇÃO ANTERIOR: {$sSituacaoAnterior}";
 
     $this->atualizarMovimentacao($sMensagemMovimento, $sSituacaoProcedimento, $this->oDataMatricula);
 
@@ -1094,4 +1193,171 @@ class Matricula {
 
     return $sAbreviatura;
   }
+
+  /**
+   * Verifica se o aluno foi matriculado após a data de início do primeiro período do calendário
+   * @return bool
+   */
+  public function matriculaMaiorDataInicioPrimeiroPeriodoCalendario() {
+
+    $aPeriodosCalendario = $this->getTurma()->getCalendario()->getPeriodos();
+    $oDataInicio         = $aPeriodosCalendario[0]->getDataInicio();
+
+    if( DBDate::calculaIntervaloEntreDatas( $this->getDataMatricula(), $oDataInicio, 'd' ) > 0 ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Valida se a matrícula possui uma transferência após ter sido encerrada no ano letivo.
+   * Procedimentos > Transferência de Alunos Encerrados
+   * @return boolean
+   */
+  public function hasTransferenciaEncerrada() {
+
+    $lSituacaoTransferenciaEncerrada = false;
+
+    if ( empty($this->iCodigo) ) {
+      return $lSituacaoTransferenciaEncerrada;
+    }
+
+    $oDaoTransferencia   = new cl_transferencialotematricula();
+    $sWhereTransferencia = "ed138_matricula = {$this->iCodigo}";
+    $sSqlTransferencia   = $oDaoTransferencia->sql_query_file(null, "1", null, $sWhereTransferencia);
+    $rsTransferencia     = db_query($sSqlTransferencia);
+
+    if ( !$rsTransferencia ) {
+      throw new DBException("Não foi possível verificar se a matrícula possui uma transferência após encerrada.");
+    }
+
+    if ( pg_num_rows($rsTransferencia) > 0 ) {
+      $lSituacaoTransferenciaEncerrada = true;
+    }
+
+    return $lSituacaoTransferenciaEncerrada;
+  }
+
+    /**
+     * Retorna o andamento da matrícula segundo regra implementada na db_stdlibwebseller
+     * @return string
+     * @todo tem que prever turmas com procedimetno de avaliação por área
+     */
+    public function retornaAndamentoDaMatricula()
+    {
+        $sSituacaoMatricula = $this->getSituacao();
+        $matricula = $this;
+        $concluida = $this->isConcluida();
+        // TROCA DE TURMA pegar o resultado da turma de destino
+        if ($sSituacaoMatricula === 'TROCA DE TURMA' && !$concluida) {
+            $filtros = array(
+                "ed60_matricula = {$this->getMatricula()}",
+                "ed60_i_turmaant = {$this->getTurma()->getCodigo()}"
+            );
+            $matricula = MatriculaRepository::getMatriculaByFiltros($filtros);
+            $sSituacaoMatricula = $this->getSituacao();
+        }
+
+        $aSituacoesRetorna = array(
+            'CLASSIFICADO',
+            'AVANÇADO',
+            'RECLASSIFICADO',
+            'EVADIDO',
+            'CANCELADO',
+            'MATRICULA TRANCADA',
+            'MATRICULA INDEVIDA',
+            'TRANSFERIDO REDE',
+            'TRANSFERIDO FORA',
+            'TROCA DE MODALIDADE',
+            'FALECIDO',
+            'DESISTENTE'
+        );
+
+        if (in_array($sSituacaoMatricula, $aSituacoesRetorna)) {
+            return $sSituacaoMatricula;
+        }
+
+
+        if ($this->getDiarioDeClasse()->temRecuperacao()) {
+            return 'EM RECUPERAÇÃO';
+        }
+
+        if ($this->isConcluida()) {
+            if ($this->getDiarioDeClasse()->aprovadoComProgressaoParcial()) {
+                return 'APROVADO COM PROGRESSAO PARCIAL / DEPENDÊNCIA';
+            }
+
+            if ($this->getDiarioDeClasse()->getResultadoFinal() == 'A') {
+                return 'APROVADO';
+            }
+            if ($this->getDiarioDeClasse()->getResultadoFinal() == 'R') {
+                return 'REPROVADO';
+            }
+        }
+
+        return 'EM ANDAMENTO';
+    }
+
+    /**
+     * @param $turnoReferente
+     * @return bool
+     */
+    public function estaMatriculadoNoTurnoReferente($turnoReferente)
+    {
+        $turnos = $this->getTurnosVinculados();
+        foreach ($turnos as $turno) {
+            if ($turnoReferente == $turno->ed336_turnoreferente) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return Matricula
+     */
+    public function duplicar()
+    {
+        $matricula = clone $this;
+        $matricula->iCodigo = null;
+        return $matricula;
+    }
+
+    /**
+     * @return DBDate
+     */
+    public function getDataModificacao()
+    {
+        return $this->dataModificacao;
+    }
+
+    /**
+     * @param DBDate $dataModificacao
+     */
+    public function setDataModificacao($dataModificacao)
+    {
+        $this->dataModificacao = $dataModificacao;
+    }
+
+    /**
+     * @return DBDate
+     */
+    public function getDataModificacaoAnterior()
+    {
+        return $this->dataModificacaoAnterior;
+    }
+
+    /**
+     * @param DBDate $dataModificacaoAnterior
+     */
+    public function setDataModificacaoAnterior($dataModificacaoAnterior)
+    {
+        $this->dataModificacaoAnterior = $dataModificacaoAnterior;
+    }
+
+    /**
+   * PLUGIN DiarioProgressaoParcial adiciona metodos abaixo
+   */
+
 }

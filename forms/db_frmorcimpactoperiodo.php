@@ -78,7 +78,7 @@ db_input('o96_descr',40,$Io96_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcimpactoperiodo','func_orcimpactoperiodo.php?funcao_js=parent.js_preenchepesquisa|o96_codperiodo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcimpactoperiodo','func_orcimpactoperiodo.php?funcao_js=parent.js_preenchepesquisa|o96_codperiodo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcimpactoperiodo.hide();

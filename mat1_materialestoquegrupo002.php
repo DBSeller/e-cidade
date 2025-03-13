@@ -1,7 +1,7 @@
 <?PHP
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_materialestoquegrupo_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_materialestoquegrupo_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 ?>
 <html>
 <head>
@@ -79,6 +79,7 @@ oCadastroGrupo.onSaveComplete = function (oRetorno) {
   oCadastroGrupo.txtDescricaoContaVPD.setValue('');
   $('txtEstrutural').focus();
   alert('Operação realizada com sucesso.');
+  pesquisarGrupos();
 }
 
 oCadastroGrupo.onBeforeSave = function (oGrupo) {
@@ -101,12 +102,14 @@ getDados = function (iCodigo) {
   db_iframe_materialestoquegrupo.hide();
   oCadastroGrupo.getDados(iCodigo);
 }
-$('btnPesquisar').observe("click", function() {
+$('btnPesquisar').observe("click", pesquisarGrupos);
+pesquisarGrupos();
+function pesquisarGrupos() {
   js_OpenJanelaIframe('', 
                       'db_iframe_materialestoquegrupo', 
                       'func_materialestoquegrupo.php?funcao_js=parent.getDados|m65_sequencial', 
                       'Pesquisar Grupos/Subgrupos',
                       true
                      );
-})
+}
 </script>

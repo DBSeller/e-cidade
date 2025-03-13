@@ -1,0 +1,92 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010408' name='siconfidotacaofinalidade' description="siconfidotacaofinalidade" prefix="c119" label="siconfidotacaofinalidade" type="0">
+  <fields>
+    <field codigo="1010318" 
+           campo_api='' 
+           name="c119_coddot" 
+           conteudo="int4" 
+           description="Código da Dotação" 
+           inivalue="0" 
+           label="Código da Dotação" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código da Dotação" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010319" 
+           campo_api='' 
+           name="c119_anousu" 
+           conteudo="int4" 
+           description="Ano da Dotação" 
+           inivalue="0" 
+           label="Ano da Dotação" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano da Dotação" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010320" 
+           campo_api='' 
+           name="c119_tipo" 
+           conteudo="int4" 
+           description="Tipo de Finalidade" 
+           inivalue="0" 
+           label="Tipo de Finalidade" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Finalidade" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009577" 
+           campo_api='' 
+           name="c119_sequencial" 
+           conteudo="int4" 
+           description="Código Sequencial" 
+           inivalue="0" 
+           label="Código Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código Sequencial" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+           
+      <sequence name='siconfidotacaofinalidade_c119_sequencial_seq' />
+     
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c119_coddot"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="orcdotacao" inner='t'>
+      <fieldfk name="c119_anousu" reference="o58_anousu" /> 
+      <fieldfk name="c119_coddot" reference="o58_coddot" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

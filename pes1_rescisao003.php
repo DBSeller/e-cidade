@@ -25,32 +25,53 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rescisao_classe.php");
-include("classes/db_rhcadregime_classe.php");
-include("classes/db_codmovsefip_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_rescisao_classe.php"));
+include(modification("classes/db_rhcadregime_classe.php"));
+include(modification("classes/db_codmovsefip_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
+
 $clrescisao = new cl_rescisao;
 $clrhcadregime = new cl_rhcadregime;
 $clcodmovsefip = new cl_codmovsefip;
+
 $db_botao = false;
 $db_opcao = 33;
+
+$iInstituicao = db_getsession('DB_instit');
+
 if(isset($excluir)){
-  db_inicio_transacao();
-  $db_opcao = 3;
-  $clrescisao->excluir($r59_anousu,$r59_mesusu,$r59_regime,$r59_causa,$r59_caub,$r59_menos1);
-  db_fim_transacao();
+  try {
+    db_inicio_transacao();
+    $naoExcluir = $clrescisao->naoExcluirComRescisaoCadastrada($r59_regime,$r59_causa,$r59_caub,$r59_menos1,$iInstituicao);
+    $exclusao = db_query($naoExcluir);
+
+    if(pg_num_rows($exclusao) > 0) {
+      throw new Exception("Não foi possível excluir a causa, causa já utilizada");
+    }
+
+    $db_opcao = 3;
+    $clrescisao->excluir($r59_anousu,$r59_mesusu,$r59_regime,$r59_causa,$r59_caub,$r59_menos1);
+    db_fim_transacao();
+
+  } catch (Exception $e) {
+      db_fim_transacao(true);  
+      db_msgbox($e->getMessage()); 
+  }
+
 }else if(isset($chavepesquisa)){
    $db_opcao = 3;
    $result = $clrescisao->sql_record($clrescisao->sql_query($chavepesquisa,$chavepesquisa1,$chavepesquisa2,$chavepesquisa3,$chavepesquisa4,$chavepesquisa5)); 
    db_fieldsmemory($result,0);
    $db_botao = true;
 }
+
 ?>
 <html>
 <head>
@@ -74,7 +95,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmrescisao.php");
+	include(modification("forms/db_frmrescisao.php"));
 	?>
     </center>
 	</td>

@@ -1,38 +1,38 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include ("fpdf151/pdf.php");
-require ("libs/db_utils.php");
-include ("fpdf151/assinatura.php");
-include ("classes/db_orcfontesdes_classe.php");
-include ("classes/db_orcfontes_classe.php");
-// include ("classes/db_caiparametro_classe.php");
+include(modification("fpdf151/pdf.php"));
+require(modification("libs/db_utils.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("classes/db_orcfontesdes_classe.php"));
+include(modification("classes/db_orcfontes_classe.php"));
+// include(modification("classes/db_caiparametro_classe.php"));
 
-include ("libs/db_liborcamento.php");
+include(modification("libs/db_liborcamento.php"));
 
 $clorcfontesdes = new cl_orcfontesdes;
 $clorcfontes = new cl_orcfontes;
@@ -46,22 +46,22 @@ db_postmemory($HTTP_SERVER_VARS);
 // $res = $clcaiparametro->sql_record($clcaiparametro->sql_query_file(db_getsession("DB_instit")));
 // if ($clcaiparametro->numrows >0){
 //    db_fieldsmemory($res,0);
-// }  
+// }
 
 
 $dataatual = date("Y-m-d",db_getsession("DB_datausu"));
 
  if (isset($k29_boletimzerado) && $k29_boletimzerado=='f'){
   // permite exibição de boletim zerado !
-  $sql = " select k12_data 
+  $sql = " select k12_data
            from corrente
-           where corrente.k12_instit = ".db_getsession("DB_instit")." and 
+           where corrente.k12_instit = ".db_getsession("DB_instit")." and
                  corrente.k12_data  = '".$datai."' limit 1";
   $res = db_query($sql);
   if(pg_numrows($res)==0){
     db_redireciona("db_erros.php?fechar=true&db_erro=Não existem laçamentos nesta data (".db_formatar($datai,'d').")");
-    exit;	
-  }	  
+    exit;
+  }
  }
 
 
@@ -84,7 +84,7 @@ if ($conta != 0) {
 	$sql .= ' inner join conplanoexe on c62_reduz = k13_reduz and c62_anousu = '.db_getsession('DB_anousu');
 	$sql .= ' inner join conplanoreduz on c62_reduz = c61_reduz and c61_anousu=c62_anousu  and c61_instit = '.db_getsession('DB_instit');
 	$sql .= ' where k13_conta = '.$conta;
-  $sql .= "   and (k13_limite is null or k13_limite >= '$dataatual') ";
+    //$sql .= "   and (k13_limite is null or k13_limite >= '$dataatual') ";
 	//  echo $sql;
 	$result = db_query($sql);
 	db_fieldsmemory($result, 0);
@@ -110,18 +110,18 @@ if ($caixa != 0) {
 /*
 
 if($datai == $dataf){
-  $sql = "select k12_data 
+  $sql = "select k12_data
           from boletim";
 
   $head1 = "BOLETIM DA TESOURARIA";
   $head3 = "BOLETIM NÚMERO: ".@$numbol;
   $head5 = "DATA : ".@$datai;
-  
+
 }else{
   */
-////  RECEITAS 
+////  RECEITAS
 $sql = " select c60_codsis, k12_conta, k12_receit, tabrec.k02_tipo, tabrec.k02_drecei,
-                round(cornump.k12_valor,2) as k12_valor 
+                round(cornump.k12_valor,2) as k12_valor
          from corrente
               inner join cornump on corrente.k12_id = cornump.k12_id
 				                        and corrente.k12_data = cornump.k12_data
@@ -131,8 +131,9 @@ $sql = " select c60_codsis, k12_conta, k12_receit, tabrec.k02_tipo, tabrec.k02_d
 	                                  and c62_anousu = ".db_getsession('DB_anousu')."
       	      inner join conplanoreduz on c62_reduz = c61_reduz and c61_anousu = c62_anousu
 	            inner join conplano      on c60_codcon = c61_codcon and c60_anousu = c61_anousu
-         where corrente.k12_instit = ".db_getsession("DB_instit")." and
-	             corrente.k12_data  = '".$datai."' $seleciona_conta $seleciona 
+         where conplano.c60_codsis in (5,6)
+           and corrente.k12_instit = ".db_getsession("DB_instit")." and
+	             corrente.k12_data  = '".$datai."' $seleciona_conta $seleciona
          order by k02_tipo";
 $resultorcamentaria = db_query($sql);
 
@@ -140,7 +141,7 @@ $resultorcamentaria = db_query($sql);
   Incluído as receitas extras de slips
 */
 $sql_rec_ext = "
-                select  
+                select
                        k12_id,
                        k12_autent,
                        k12_data,
@@ -151,15 +152,15 @@ $sql_rec_ext = "
                        saiu as credito,
                        h.c60_descr as descr_credito,
                        h.c60_codsis as sis_credito
-                from 
-                     (select 
+                from
+                     (select
                              k12_id,
                              k12_autent,
                              k12_data,
                              k12_valor,
                              corlanc as entrou,
                              corrente as saiu
-                      from 
+                      from
                            (select corrente.k12_id,
                                    corrente.k12_autent,
                                    corrente.k12_data,
@@ -168,33 +169,33 @@ $sql_rec_ext = "
                                    coalesce(c.k13_conta,0) as corr_saltes,
                                    b.k12_conta as corlanc,
                                    coalesce(d.k13_conta,0) as corl_saltes
-                            from corrente 
-                                 inner join corlanc b on corrente.k12_id = b.k12_id 
-                                                     and corrente.k12_autent=b.k12_autent 
+                            from corrente
+                                 inner join corlanc b on corrente.k12_id = b.k12_id
+                                                     and corrente.k12_autent=b.k12_autent
                                                      and corrente.k12_data = b.k12_data
                                  inner join sliptipooperacaovinculo on b.k12_codigo = k153_slip
                                                                    and k153_slipoperacaotipo not in (1,2,5,6,9,10,13,14)
                                  left join saltes c   on c.k13_conta = corrente.k12_conta
                                  left join saltes d   on d.k13_conta = b.k12_conta
-                     	      where corrente.k12_instit = ".db_getsession("DB_instit")." and 
+                     	      where corrente.k12_instit = ".db_getsession("DB_instit")." and
                             corrente.k12_data = '$datai' $seleciona_conta $seleciona
                            ) as xx
                      ) as xxx
                           inner join conplanoexe   e on entrou = e.c62_reduz
                                               and e.c62_anousu = ".db_getsession('DB_anousu')."
-                          inner join conplanoreduz i on e.c62_reduz  = i.c61_reduz and 
+                          inner join conplanoreduz i on e.c62_reduz  = i.c61_reduz and
                 	                                e.c62_anousu = i.c61_anousu
                           inner join conplano      f on i.c61_codcon = f.c60_codcon and
-                                                        i.c61_anousu = f.c60_anousu and 
+                                                        i.c61_anousu = f.c60_anousu and
                                                         i.c61_instit = ".db_getsession("DB_instit")."
                           inner join conplanoexe   g on saiu = g.c62_reduz and
                                                 g.c62_anousu = ".db_getsession('DB_anousu')."
-                          inner join conplanoreduz j on g.c62_reduz  = j.c61_reduz  and 
+                          inner join conplanoreduz j on g.c62_reduz  = j.c61_reduz  and
                                                         g.c62_anousu = j.c61_anousu
-                          inner join conplano      h on j.c61_codcon = h.c60_codcon and 
+                          inner join conplano      h on j.c61_codcon = h.c60_codcon and
                                                         j.c61_anousu = h.c60_anousu
                                                         and j.c61_instit = ".db_getsession("DB_instit")."
-               ";
+               where h.c60_codsis in (5,6) ";
 
 $resultextraorcamentaria = db_query($sql_rec_ext);
 
@@ -209,7 +210,7 @@ if (USE_PCASP) {
 }
 
 $sql = "
-select  
+select
        k12_id,
        k12_autent,
        k12_data,
@@ -225,8 +226,8 @@ select
        saiu as credito,
        h.c60_descr as descr_credito,
        h.c60_codsis as sis_credito
-from 
-(select 
+from
+(select
        k12_id,
        k12_autent,
        k12_data,
@@ -234,12 +235,12 @@ from
        tipo,
        corlanc as entrou,
        corrente as saiu
-from 
-    (select *, case when coalesce(corl_saltes,0) = 0 
+from
+    (select *, case when coalesce(corl_saltes,0) = 0
                    then 'desp'
 	           else 'tran'
 	    	     end as tipo
-    from 
+    from
         (select corrente.k12_id,
                 corrente.k12_autent,
                 corrente.k12_data,
@@ -248,31 +249,31 @@ from
                 coalesce(c.k13_conta,0) as corr_saltes,
                 b.k12_conta as corlanc,
                 coalesce(d.k13_conta,0) as corl_saltes
-         from corrente  
-              inner join corlanc b on corrente.k12_id = b.k12_id 
-                                  and corrente.k12_autent=b.k12_autent 
+         from corrente
+              inner join corlanc b on corrente.k12_id = b.k12_id
+                                  and corrente.k12_autent=b.k12_autent
                                   and corrente.k12_data = b.k12_data
               $sWherePCASP
               left join saltes c   on c.k13_conta = corrente.k12_conta
               left join saltes d   on d.k13_conta = b.k12_conta
-	 where corrente.k12_instit = ".db_getsession("DB_instit")." and 
-	       corrente.k12_data = '$datai' $seleciona_conta $seleciona)	
+	 where corrente.k12_instit = ".db_getsession("DB_instit")." and
+	       corrente.k12_data = '$datai' $seleciona_conta $seleciona)
 	as x) as xx) as xxx
           inner join conplanoexe   e on entrou = e.c62_reduz
                               and e.c62_anousu = ".db_getsession('DB_anousu')."
-          inner join conplanoreduz i on e.c62_reduz  = i.c61_reduz and 
+          inner join conplanoreduz i on e.c62_reduz  = i.c61_reduz and
 	                                e.c62_anousu = i.c61_anousu
           inner join conplano      f on i.c61_codcon = f.c60_codcon and
-                                        i.c61_anousu = f.c60_anousu and 
+                                        i.c61_anousu = f.c60_anousu and
                                         i.c61_instit = ".db_getsession("DB_instit")."
           inner join conplanoexe   g on saiu = g.c62_reduz and
                                 g.c62_anousu = ".db_getsession('DB_anousu')."
-          inner join conplanoreduz j on g.c62_reduz  = j.c61_reduz  and 
+          inner join conplanoreduz j on g.c62_reduz  = j.c61_reduz  and
                                         g.c62_anousu = j.c61_anousu
-          inner join conplano      h on j.c61_codcon = h.c60_codcon and 
+          inner join conplano      h on j.c61_codcon = h.c60_codcon and
                                         j.c61_anousu = h.c60_anousu
                                         and j.c61_instit = ".db_getsession("DB_instit")."
-    ";
+     where f.c60_codsis in (5,6)  ";
 $resultdespesaextra = db_query($sql);
 //echo ' Despesa Extra-Orçamentaria ';
 //db_criatabela($resultdespesaextra);exit;
@@ -286,17 +287,19 @@ if ($ordem_conta == 1) {
 	$ordem_conta = " c60_descr ";
 }
 /// CONTAS MOVIMENTO
-$sql="select k13_reduz,
-               k13_descr,
-               c60_estrut,
-               c60_codsis,
-	       c63_conta,
-	       substr(fc_saltessaldo,2,13)::float8 as anterior,
-	       substr(fc_saltessaldo,15,13)::float8 as debitado ,
-	       substr(fc_saltessaldo,28,13)::float8 as creditado,
-	       substr(fc_saltessaldo,41,13)::float8 as atual
+$sql="select k13_limite,
+             k13_reduz,
+             k13_descr,
+             c60_estrut,
+             c60_codsis,
+	         c63_conta,
+	         substr(fc_saltessaldo,2,13)::float8 as anterior,
+	         substr(fc_saltessaldo,15,13)::float8 as debitado ,
+	         substr(fc_saltessaldo,28,13)::float8 as creditado,
+	         substr(fc_saltessaldo,41,13)::float8 as atual
 	from (
- 	      select k13_reduz,
+ 	      select k13_limite,
+                 k13_reduz,
  	             k13_descr,
 	             c60_estrut,
 		     c60_codsis,
@@ -305,16 +308,15 @@ $sql="select k13_reduz,
 	      from  saltes
 	             inner join conplanoexe   on k13_reduz = c62_reduz
 		                             and c62_anousu = ".db_getsession('DB_anousu')."
-		     inner join conplanoreduz on c62_reduz  = c61_reduz and 
-		                                 c61_anousu = c62_anousu and 
+		     inner join conplanoreduz on c62_reduz  = c61_reduz and
+		                                 c61_anousu = c62_anousu and
 		                                 c61_instit = ".db_getsession("DB_instit")."
 	             inner join conplano      on c60_codcon = c61_codcon and c60_anousu=c61_anousu
-	             left  join conplanoconta on c60_codcon = c63_codcon and c63_anousu=c60_anousu
-  where (k13_limite is null or k13_limite >= '$dataatual' )
- 	order by $ordem_conta
+	             left  join conplanoconta on c60_codcon = c63_codcon and c63_anousu=c60_anousu and c61_reduz = c63_reduz
+  where conplano.c60_codsis in (5, 6)
+   -- and (k13_limite is null or k13_limite >= '$dataatual' )
+ 	order by $ordem_conta ) as x ";
 
-          ) as x         
-	      ";
 //echo $sql;exit;
 $resultcontasmovimento = db_query($sql);
 //db_criatabela($resultcontasmovimento);exit;
@@ -333,31 +335,31 @@ echo ' bancos atual     '.$bancos_saldo_atual."<br>";
 
 ///DESPESAS ORCAMENTARIAS
 
-$sql = " 
+$sql = "
          select c60_codsis,
 	                corrente.k12_conta,
 	                c60_descr,
 		            case when corrente.k12_estorn = 'f' then sum(round(k12_valor,2)) else 0 end as valor,
 		            case when corrente.k12_estorn = 't' then sum(round(k12_valor,2)) else 0 end as estorno
-         from corrente  
-		              inner join coremp b       on corrente.k12_autent = b.k12_autent 
-		                                       and corrente.k12_id = b.k12_id 
+         from corrente
+		              inner join coremp b       on corrente.k12_autent = b.k12_autent
+		                                       and corrente.k12_id = b.k12_id
 				 	                           and corrente.k12_data = b.k12_data
 			          left join corlanc c       on c.k12_autent = b.k12_autent
 			                               and c.k12_id = b.k12_id
 					                       and c.k12_data = b.k12_data
 		              inner join empempenho e   on e60_numemp = b.k12_empen
 			          inner join conplanoreduz on c61_reduz = corrente.k12_conta and c61_anousu= e.e60_anousu
-			          inner join conplano on c61_codcon = c60_codcon and c60_anousu=c61_anousu	      
-         where corrente.k12_instit = ".db_getsession("DB_instit")." and 
-	            c.k12_codigo is null and 
-	            e.e60_anousu = ".db_getsession("DB_anousu")." and 
-	            corrente.k12_data = '$datai' $seleciona_conta $seleciona
+			          inner join conplano on c61_codcon = c60_codcon and c60_anousu=c61_anousu
+         where conplano.c60_codsis in (5,6)
+           and corrente.k12_instit = ".db_getsession("DB_instit")."
+           and c.k12_codigo is null
+           and e.e60_anousu = ".db_getsession("DB_anousu")."
+           and corrente.k12_data = '$datai' $seleciona_conta $seleciona
 	     group by c60_codsis,corrente.k12_conta,c60_descr,k12_estorn
-	     order by c60_codsis,corrente.k12_conta
-       ";
+	     order by c60_codsis,corrente.k12_conta ";
 
-//echo $sql;       
+//echo $sql;
 $resultdespesaorca = db_query($sql);
 //db_criatabela($resultdespesaorca);
 
@@ -421,7 +423,7 @@ for ($i = 0; $i < $numlin; $i ++) {
 		} else {
 			if ($sis_debito == 5) {
 				$cai_ret_bco += $k12_valor;
-			} 
+			}
 			if ($sis_credito == 5 || $sis_debito != 5) {
 				$cai_dep_bco += $k12_valor;
 			}
@@ -697,9 +699,9 @@ for ($i = 0; $i < pg_numrows($resultcontasmovimento); $i ++) {
              $pre = 1;
              $pdf->Setfillcolor(220);
         }
-				       
 
-	
+
+
 	if ($c60_codsis == 6) {
 		$pdf->cell(80, $alt, $k13_reduz.' - '.$k13_descr, "LTB", 0, 'L', $pre);
 
@@ -741,48 +743,48 @@ from
         case when sis_credito = 5 then k12_valor else 0 end as caixa,
         case when sis_credito = 6 then k12_valor else 0 end as banco
 from
-	(select k12_id, 
-       		k12_autent, 
-       		k12_data, 
-       		k12_valor, 
-       		tipo, 
-       		entrou as debito, 
-       		f.c60_descr as descr_debito, 
-       		f.c60_codsis as sis_debito, 
-       		saiu as credito, 
-       		h.c60_descr as descr_credito, 
-       		h.c60_codsis as sis_credito 
-	from 	(select k12_id, 
-             		k12_autent, 
-	     		k12_data, 
-	     		k12_valor, 
-	     		tipo, 
-	     		corlanc as entrou, 
-	     		corrente as saiu from 	(select *, case when coalesce(corl_saltes,0) = 0 
-	                                           	      then 'desp' 
-						              else 'tran' 
-						                end as tipo 
-				    		from 	(select corrente.k12_id, 
-				                 	     corrente.k12_autent, 
-						 	     corrente.k12_data, 
-						 	     corrente.k12_valor, 
-						 	     corrente.k12_conta as corrente, 
-						 	     c.k13_conta as corr_saltes, 
-						 	     b.k12_conta as corlanc, 
-							     d.k13_conta as corl_saltes 
-				          		from corrente  
-					       			inner join corlanc b on corrente.k12_id = b.k12_id 
-					                		            and corrente.k12_autent=b.k12_autent 
-								   		    and corrente.k12_data = b.k12_data 
-					       			left join saltes c   on c.k13_conta = corrente.k12_conta 
-					       			left join saltes d   on d.k13_conta = b.k12_conta 
-					  		where corrente.k12_data = '$datai' $seleciona_conta $seleciona ) 
-				          		as x) 
-	                            		as xx) 
-      		as xxx 
-      		inner join conplanoexe   e on entrou = e.c62_reduz 
+	(select k12_id,
+       		k12_autent,
+       		k12_data,
+       		k12_valor,
+       		tipo,
+       		entrou as debito,
+       		f.c60_descr as descr_debito,
+       		f.c60_codsis as sis_debito,
+       		saiu as credito,
+       		h.c60_descr as descr_credito,
+       		h.c60_codsis as sis_credito
+	from 	(select k12_id,
+             		k12_autent,
+	     		k12_data,
+	     		k12_valor,
+	     		tipo,
+	     		corlanc as entrou,
+	     		corrente as saiu from 	(select *, case when coalesce(corl_saltes,0) = 0
+	                                           	      then 'desp'
+						              else 'tran'
+						                end as tipo
+				    		from 	(select corrente.k12_id,
+				                 	     corrente.k12_autent,
+						 	     corrente.k12_data,
+						 	     corrente.k12_valor,
+						 	     corrente.k12_conta as corrente,
+						 	     c.k13_conta as corr_saltes,
+						 	     b.k12_conta as corlanc,
+							     d.k13_conta as corl_saltes
+				          		from corrente
+					       			inner join corlanc b on corrente.k12_id = b.k12_id
+					                		            and corrente.k12_autent=b.k12_autent
+								   		    and corrente.k12_data = b.k12_data
+					       			left join saltes c   on c.k13_conta = corrente.k12_conta
+					       			left join saltes d   on d.k13_conta = b.k12_conta
+					  		where corrente.k12_data = '$datai' $seleciona_conta $seleciona )
+				          		as x)
+	                            		as xx)
+      		as xxx
+      		inner join conplanoexe   e on entrou = e.c62_reduz
 		inner join conplanoreduz i on e.c62_reduz  = i.c61_reduz
-      		inner join conplano      f on i.c61_codcon = f.c60_codcon 
+      		inner join conplano      f on i.c61_codcon = f.c60_codcon
       		inner join conplanoexe   g on saiu = g.c62_reduz
 		inner join conplanoreduz j on g.c62_reduz = j.c61_reduz
       		inner join conplano      h on j.c61_codcon = h.c60_codcon)
@@ -829,8 +831,9 @@ from corrente
      inner join conplano      p1 on r1.c61_codcon = p1.c60_codcon and r1.c61_anousu=p1.c60_anousu
      inner join conplanoreduz r2 on corrente.k12_conta = r2.c61_reduz and r2.c61_anousu=".db_getsession("DB_anousu")."
      inner join conplano      p2 on r2.c61_codcon = p2.c60_codcon and r2.c61_anousu=p2.c60_anousu
-where corrente.k12_instit = ".db_getsession("DB_instit")." and 
-      corrente.k12_data = '$datai' $seleciona_conta $seleciona
+where p1.c60_codsis in (1,5,6,7,8)
+  and corrente.k12_instit = ".db_getsession("DB_instit")."
+  and corrente.k12_data = '$datai' $seleciona_conta $seleciona
 group by corrente.k12_id,
        corrente.k12_data,
        corrente.k12_conta,
@@ -844,10 +847,9 @@ group by corrente.k12_id,
        k12_estorn
 order by corrente.k12_conta,
          p2.c60_descr,
-	 b.k12_conta,
-	 p1.c60_descr
-) as x
-    ";
+         b.k12_conta,
+         p1.c60_descr ) as x ";
+
 //echo $sql;exit;
 $resultdespesaextra = db_query($sql);
 //db_criatabela($resultdespesaextra);
@@ -879,27 +881,27 @@ $quebra = 0;
 for ($i = 0; $i < $numlin; $i ++) {
 	db_fieldsmemory($resultdespesaextra, $i);
     if ($tipo == "desp") {
-      
+
       continue;
     }
 	$sql = "select k13_conta
 	           from saltes
-	             inner join conplanoexe on c62_reduz = k13_reduz and 
+	             inner join conplanoexe on c62_reduz = k13_reduz and
 		                              c62_anousu = ".db_getsession('DB_anousu')."
-	             inner join conplanoreduz on c61_reduz = c62_reduz and 
+	             inner join conplanoreduz on c61_reduz = c62_reduz and
 		                                c61_anousu = c62_anousu and
 		                                c61_instit = ".db_getsession('DB_instit')."
 	           where k13_conta = $corr_saltes
 	 	   union all
 		   select k13_conta
-		   from saltes 
-	             inner join conplanoexe on c62_reduz = k13_reduz and 
+		   from saltes
+	             inner join conplanoexe on c62_reduz = k13_reduz and
 		                              c62_anousu = ".db_getsession('DB_anousu')."
-	             inner join conplanoreduz on c62_reduz = c61_reduz and 
+	             inner join conplanoreduz on c62_reduz = c61_reduz and
 	                                        c61_anousu = c62_anousu and
 		                                c61_instit = ".db_getsession('DB_instit')."
 		   where k13_conta = $corl_saltes
-         and (k13_limite is null or k13_limite >= '$dataatual' )";
+       --  and (k13_limite is null or k13_limite >= '$dataatual' )";
   $result = db_query($sql);
 
 	if ($result == false || pg_numrows($result) != 2)
@@ -928,11 +930,11 @@ for ($i = 0; $i < $numlin; $i ++) {
 		$total_banco = 0;
 	}
 	elseif ($quebra != pg_result($resultdespesaextra, $i +1, "corrente")) {
-	        
+
 		$pdf->cell(20, $alt, db_formatar($total_banco, 'f'), 1, 1, "R", 0);
 		$total_banco = 0;
 	} else {
-	        
+
 		$pdf->cell(20, $alt, db_formatar($total_banco, 'f'), 1, 1, "R", 0);
 	}
 	$total_valor += $valor;
@@ -984,7 +986,7 @@ $sql_rec_ext = "
                        ctarec,
                        descr_ctarec
                 from (
-                      select  
+                      select
                              entrou as debito,
                              max(f.c60_descr) as descr_debito,
                              saiu as credito,
@@ -995,8 +997,8 @@ $sql_rec_ext = "
                              case when k12_estorn = 'f' then entrou else saiu end as ctarec,
                              case when k12_estorn = 'f' then max(h.c60_descr) else max(f.c60_descr) end as descr_ctarec,
                              k12_estorn
-                      from 
-                           (select 
+                      from
+                           (select
                                    k12_id,
                                    k12_autent,
                                    k12_data,
@@ -1004,7 +1006,7 @@ $sql_rec_ext = "
                                    corlanc as entrou,
                                    corrente as saiu,
                                    k12_estorn
-                            from 
+                            from
                                  (select corrente.k12_id,
                                          corrente.k12_autent,
                                          corrente.k12_data,
@@ -1014,36 +1016,36 @@ $sql_rec_ext = "
                                          b.k12_conta as corlanc,
                                          coalesce(d.k13_conta,0) as corl_saltes,
                                          corrente.k12_estorn
-                                  from corrente 
-                                       inner join corlanc b on corrente.k12_id = b.k12_id 
-                                                           and corrente.k12_autent=b.k12_autent 
+                                  from corrente
+                                       inner join corlanc b on corrente.k12_id = b.k12_id
+                                                           and corrente.k12_autent=b.k12_autent
                                                            and corrente.k12_data = b.k12_data
                                        inner join sliptipooperacaovinculo on b.k12_codigo = k153_slip
                                                                          and k153_slipoperacaotipo not in (1,2,5,6,9,10,13,14)
                                        left join saltes c   on c.k13_conta = corrente.k12_conta
                                        left join saltes d   on d.k13_conta = b.k12_conta
-                           	      where corrente.k12_instit = ".db_getsession("DB_instit")." and 
+                           	      where corrente.k12_instit = ".db_getsession("DB_instit")." and
                                   corrente.k12_data = '$datai' $seleciona_conta $seleciona
                                  ) as xx
                            ) as xxx
                                 inner join conplanoexe   e on entrou = e.c62_reduz
                                                     and e.c62_anousu = ".db_getsession('DB_anousu')."
-                                inner join conplanoreduz i on e.c62_reduz  = i.c61_reduz and 
+                                inner join conplanoreduz i on e.c62_reduz  = i.c61_reduz and
                       	                                e.c62_anousu = i.c61_anousu
                                 inner join conplano      f on i.c61_codcon = f.c60_codcon and
-                                                              i.c61_anousu = f.c60_anousu and 
+                                                              i.c61_anousu = f.c60_anousu and
                                                               i.c61_instit = ".db_getsession("DB_instit")."
                                 inner join conplanoexe   g on saiu = g.c62_reduz and
                                                       g.c62_anousu = ".db_getsession('DB_anousu')."
-                                inner join conplanoreduz j on g.c62_reduz  = j.c61_reduz  and 
+                                inner join conplanoreduz j on g.c62_reduz  = j.c61_reduz  and
                                                               g.c62_anousu = j.c61_anousu
-                                inner join conplano      h on j.c61_codcon = h.c60_codcon and 
-                                                              j.c61_anousu = h.c60_anousu
-                                                              and j.c61_instit = ".db_getsession("DB_instit")."
+                                inner join conplano      h on j.c61_codcon = h.c60_codcon
+                                                          and j.c61_anousu = h.c60_anousu
+                                                          and j.c61_instit = ".db_getsession("DB_instit")."
+                          where f.c60_codsis in (5,6)
                       group by entrou, saiu, k12_estorn
                      ) as x
-                group by k12_conta, k12_dconta, ctarec, descr_ctarec
-               ";
+                group by k12_conta, k12_dconta, ctarec, descr_ctarec ";
 
 $resultextraorcamentaria = db_query($sql_rec_ext);
 
@@ -1056,8 +1058,8 @@ select k12_conta,
        k02_drecei,
        sum(case when k12_estorn = 'f' then round(valor,2) else 0 end) as valor,
        sum(case when k12_estorn = 't' then round(valor,2) else 0 end) as estorno
-from 
-(select c60_codsis, 
+from
+(select c60_codsis,
        k12_estorn,
        k12_conta,
        c60_descr,
@@ -1066,16 +1068,17 @@ from
        tabrec.k02_drecei,
        sum(round(cornump.k12_valor,2)) as valor
 from corrente
-              inner join cornump  on corrente.k12_id      = cornump.k12_id     
-				 and corrente.k12_data   = cornump.k12_data   
-				 and corrente.k12_autent = cornump.k12_autent 
-              inner join tabrec  on k12_receit = k02_codigo 
+              inner join cornump  on corrente.k12_id      = cornump.k12_id
+				 and corrente.k12_data   = cornump.k12_data
+				 and corrente.k12_autent = cornump.k12_autent
+              inner join tabrec  on k12_receit = k02_codigo
 	      inner join conplanoexe on k12_conta = c62_reduz
 	                            and c62_anousu = ".db_getsession('DB_anousu')."
 	      inner join conplanoreduz on c62_reduz = c61_reduz and c61_anousu=c62_anousu
 	      inner join conplano on c60_codcon = c61_codcon and c60_anousu=c61_anousu
-         where corrente.k12_instit = ".db_getsession('DB_instit')." and 
-	       corrente.k12_data  = '".$datai."' $seleciona_conta $seleciona 
+         where conplano.c60_codsis in (5,6)
+           and corrente.k12_instit = ".db_getsession('DB_instit')."
+           and corrente.k12_data  = '".$datai."' $seleciona_conta $seleciona
 group by c60_codsis,
          k12_estorn,
          k12_conta,
@@ -1297,12 +1300,12 @@ for ($i = 0; $i < $numlin; $i ++) {
 	db_fieldsmemory($resultdespesaorca, $i);
 	/*   if($quebra != $k12_conta){
 	      $pdf->SetFont('Arial','B',8);
-	      $pdf->cell(10,$alt,$k12_conta,"LTB",0,"R",0); 
-	      $pdf->cell(102,$alt,'- '.$c60_descr,"RTB",0,"L",0); 
-	      $pdf->cell(20,$alt,'',1,0,"R",0); 
-	      $pdf->cell(20,$alt,'',1,0,"R",0); 
-	      $pdf->cell(20,$alt,'',1,0,"R",0); 
-	      $pdf->cell(20,$alt,'',1,1,"R",0); 
+	      $pdf->cell(10,$alt,$k12_conta,"LTB",0,"R",0);
+	      $pdf->cell(102,$alt,'- '.$c60_descr,"RTB",0,"L",0);
+	      $pdf->cell(20,$alt,'',1,0,"R",0);
+	      $pdf->cell(20,$alt,'',1,0,"R",0);
+	      $pdf->cell(20,$alt,'',1,0,"R",0);
+	      $pdf->cell(20,$alt,'',1,1,"R",0);
 	      $quebra = $k12_conta;
 	      $pdf->SetFont('Arial','',6);
 	   }*/
@@ -1370,20 +1373,20 @@ $tipo = null;
 for ($i = 0; $i < $numlin; $i ++) {
 	db_fieldsmemory($resultdespesaextra, $i);
 	$sql = "select k13_conta
-	           from saltes 
-	             inner join conplanoexe on c62_reduz = k13_reduz and 
+	           from saltes
+	             inner join conplanoexe on c62_reduz = k13_reduz and
 		                              c62_anousu = ".db_getsession('DB_anousu')."
-	             inner join conplanoreduz on c62_reduz = c61_reduz and 
-		                                c61_anousu = c62_anousu and 
+	             inner join conplanoreduz on c62_reduz = c61_reduz and
+		                                c61_anousu = c62_anousu and
 		                                c61_instit = ".db_getsession('DB_instit')."
 		   where k13_conta = $corr_saltes
 		   union all
 		   select k13_conta
 		   from saltes
-	             inner join conplanoexe on c62_reduz = k13_reduz and 
+	             inner join conplanoexe on c62_reduz = k13_reduz and
 		                              c62_anousu = ".db_getsession('DB_anousu')."
-	             inner join conplanoreduz on c62_reduz = c61_reduz and 
-		                                c61_anousu = c62_anousu and   
+	             inner join conplanoreduz on c62_reduz = c61_reduz and
+		                                c61_anousu = c62_anousu and
 		                                c61_instit = ".db_getsession('DB_instit')."
 		   where k13_conta = $corl_saltes";
 	$result = db_query($sql);
@@ -1435,7 +1438,7 @@ $pdf->cell(20, $alt, db_formatar($total_valor + $total_estorno, 'f'), 1, 1, 'R',
 $pdf->cell(192, 5, '', 1, 1, 'R', 0);
 
 /**
- * 
+ *
  */
 if( $pdf->gety() > ( $pdf->h - 50 ) ){
 	$pdf->addpage();

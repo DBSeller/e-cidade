@@ -1,75 +1,77 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("interfaces/ILancamentoAuxiliar.interface.php");
-require_once ("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php");
-require_once("model/empenho/EmpenhoFinanceiro.model.php");
+use ECidade\Patrimonial\Acordo\RegimeCompetencia\Model\Parcela;
+
+require_once(modification("interfaces/ILancamentoAuxiliar.interface.php"));
+require_once(modification("model/contabilidade/lancamento/LancamentoAuxiliarBase.model.php"));
+require_once(modification("model/empenho/EmpenhoFinanceiro.model.php"));
 
 /**
  * Model que executa os lancamentos auxiliares de uma liquidacao de empenho.
  * @author matheus felini
  * @package contabilidade
  * @subpackage lancamento
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.20 $
  */
 class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase implements ILancamentoAuxiliar {
-  
+
   /**
    * Dados da tabela conhist
    * @var integer
    */
   private $iHistorico;
-  
+
   /**
    * Valor total do empenho
    * @var float
    */
   private $nValorTotal;
-  
+
   /**
    * Sequencial da ordem de pagamento
    * @var integer
    */
   private $iCodigoOrdemPagameanto;
-  
-  
+
+
   /**
    * Retonar uma conta do plano (PCASP) para identificar a conta credito e debito do lancamento
-   * @var integer 
+   * @var integer
    */
   private $iCodigoContaPlano;
-  
-  
+
+
   /**
    * Caracteristica Peculiar da conta credito
    * @var string
    */
   private $sCaracteristicaPeculiarCredito;
-  
+
   /**
    * Característica Peculiar da conta Débito
    * @var string
@@ -83,13 +85,18 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   private $oEmpenhoFinanceiro;
 
   /**
+   * @var Parcela
+   */
+  private $oParcela;
+
+  /**
    * Seta a característica peculiar da conta débito
    * @param string $sCaracteristicaPeculiarDebito
    */
   public function setCaracteristicaPeculiarDebito($sCaracteristicaPeculiarDebito) {
   	$this->sCaracteristicaPeculiarDebito = $sCaracteristicaPeculiarDebito;
   }
-  
+
   /**
    * Retorna a característica peculiar da conta débito
    * @return string
@@ -97,7 +104,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function getCaracteristicaPeculiarDebito() {
   	return $this->sCaracteristicaPeculiarDebito;
   }
-  
+
   /**
    * Seta a característica peculiar da conta crédito
    * @param string $sCaracteristicaPeculiarCredito
@@ -105,7 +112,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function setCaracteristicaPeculiarCredito($sCaracteristicaPeculiarCredito) {
   	$this->sCaracteristicaPeculiarCredito = $sCaracteristicaPeculiarCredito;
   }
-  
+
   /**
    * Retorna a característica peculiar da conta crédito
    * @return string
@@ -113,47 +120,56 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function getCaracteristicaPeculiarCredito() {
   	return $this->sCaracteristicaPeculiarCredito;
   }
-  
-  
+
+
   /**
    * Executa os lançamentos auxiliares de uma liquidacao de Empenho
-   * @see ILancamentoAuxiliar::executaLancamentoAuxiliar()
-   * @param integer $iCodigoLancamento - Código do Lancamento (conlancam)
-   * @param date    $dtLancamento      - data do lancamento
+   * @param int   $iCodigoLancamento
+   * @param string $dtLancamento
+   *
+   * @return bool
+   * @throws \BusinessException
+   *
+   * @todo fazer com que chame os métodos da classe LancamentoAuxiliarBase
    */
   public function executaLancamentoAuxiliar($iCodigoLancamento, $dtLancamento) {
-  	
+
+    $this->iCodigoLancamento = $iCodigoLancamento;
+
     /**
-     * Incluindo vinculo do Lançamento com Favorecido 
+     * Incluindo vinculo do Lançamento com Favorecido
      */
     $oDaoConLanCamCgm = db_utils::getDao('conlancamcgm');
     $oDaoConLanCamCgm->c76_codlan = $iCodigoLancamento;
     $oDaoConLanCamCgm->c76_numcgm = $this->getFavorecido();
     $oDaoConLanCamCgm->c76_data   = $dtLancamento;
     $oDaoConLanCamCgm->incluir($iCodigoLancamento);
-    
+
     if ($oDaoConLanCamCgm->erro_status == 0) {
-    
+
       $sErroMsg  = "Não foi possível incluir vinculo do lançamento com o Favorecido.\n\n";
       $sErroMsg .= "Erro Técnico: {$oDaoConLanCamCgm->erro_msg}";
       throw new BusinessException($sErroMsg);
     }
-        
+
     /**
      * Incluindo vinculo do Lançamento com o Complemento (observação do histórico [conhist])
      */
-    $oDaoConLanCamCompl = db_utils::getDao('conlancamcompl');
-    $oDaoConLanCamCompl->c72_codlan  = $iCodigoLancamento;
-    $oDaoConLanCamCompl->c72_complem = $this->getObservacaoHistorico();
-    $oDaoConLanCamCompl->incluir($iCodigoLancamento);
-    
-    if ($oDaoConLanCamCompl->erro_status == 0) {
-    
-    	$sErroMsg  = "Não foi possível incluir o complemento do lançamento.\n\n";
-    	$sErroMsg .= "Erro Técnico: {$oDaoConLanCamCompl->erro_msg}";
-    	throw new BusinessException($sErroMsg);
+    if ($this->getObservacaoHistorico() != '') {
+
+      $oDaoConLanCamCompl              = db_utils::getDao('conlancamcompl');
+      $oDaoConLanCamCompl->c72_codlan  = $iCodigoLancamento;
+      $oDaoConLanCamCompl->c72_complem = $this->getObservacaoHistorico();
+      $oDaoConLanCamCompl->incluir($iCodigoLancamento);
+
+      if ($oDaoConLanCamCompl->erro_status == 0) {
+
+        $sErroMsg = "Não foi possível incluir o complemento do lançamento.\n\n";
+        $sErroMsg .= "Erro Técnico: {$oDaoConLanCamCompl->erro_msg}";
+        throw new BusinessException($sErroMsg);
+      }
     }
-    
+
     /**
      * Grava o desdobramento da inscrição.
      */
@@ -161,35 +177,35 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
     $oDaoConLancamEle->c67_codlan = $iCodigoLancamento;
     $oDaoConLancamEle->c67_codele = $this->getCodigoElemento();
     $oDaoConLancamEle->incluir($iCodigoLancamento);
-    
+
     if ($oDaoConLancamEle->erro_status == 0) {
-    
+
     	$sErroMsg  = "Não foi possível incluir o vínculo com o elemento.\n\n";
     	$sErroMsg .= "Erro Técnico: {$oDaoConLancamEle->erro_msg}";
     	throw new BusinessException($sErroMsg);
     }
-    
+
     /**
      * Vínculo do empenho com o conlancam
      */
-    
-    $oDaoConLancamEmp = db_utils::getDao('conlancamemp');    
+
+    $oDaoConLancamEmp = db_utils::getDao('conlancamemp');
     $oDaoConLancamEmp->c75_codlan = $iCodigoLancamento;
     $oDaoConLancamEmp->c75_numemp = $this->getNumeroEmpenho();
     $oDaoConLancamEmp->c75_data   = $dtLancamento;
     $oDaoConLancamEmp->incluir($iCodigoLancamento);
     if ($oDaoConLancamEmp->erro_status == 0) {
-    
+
     	$sErroMsg  = "Não foi possível incluir o vínculo do lançamento com o empenho.\n\n";
     	$sErroMsg .= "Erro Técnico: {$oDaoConLancamEmp->erro_msg}";
     	throw new BusinessException($sErroMsg);
     }
-    
+
     /**
      * Vinculo da dotacao com o lancamento
      * Só realizamos o vínculo caso o Empenho Financeiro não seja um RP (Restos à Pagar)
      */
-    if ($this->getEmpenhoFinanceiro()->getAnoUso() == db_getsession("DB_anousu")) {
+    if ($this->getEmpenhoFinanceiro()->getAno() == db_getsession("DB_anousu")) {
 
       $oDaoConLancamDot = db_utils::getDao('conlancamdot');
       $oDaoConLancamDot->c73_codlan = $iCodigoLancamento;
@@ -198,44 +214,99 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
       $oDaoConLancamDot->c73_data   = $dtLancamento;
       $oDaoConLancamDot->incluir($iCodigoLancamento);
       if ($oDaoConLancamDot->erro_status == 0) {
-      
+
         $sErroMsg  = "Não foi possível incluir o vínculo da dotacão com o lançamento.\n\n";
         $sErroMsg .= "Erro Técnico: {$oDaoConLancamDot->erro_msg}";
         throw new BusinessException($sErroMsg);
       }
     }
-    
+
     /**
      * Vinculo da ordem de pagamento com o lançamento
      */
-    $oDaoConLancamOrd = db_utils::getDao('conlancamord');
-    $oDaoConLancamOrd->c80_codlan = $iCodigoLancamento;
-    $oDaoConLancamOrd->c80_codord = $this->getCodigoOrdemPagamento();
-    $oDaoConLancamOrd->c80_data   = $dtLancamento;
-    $oDaoConLancamOrd->incluir($iCodigoLancamento);
-    if ($oDaoConLancamOrd->erro_status == 0) {
-    
-    	$sErroMsg  = "Não foi possível incluir o vínculo da ordem de pagamento com o lançamento.\n\n";
-    	$sErroMsg .= "Erro Técnico: {$oDaoConLancamDot->erro_msg}";
-    	throw new BusinessException($sErroMsg);
+    if ($this->getCodigoOrdemPagamento() != '') {
+
+      $oDaoConLancamOrd             = db_utils::getDao('conlancamord');
+      $oDaoConLancamOrd->c80_codlan = $iCodigoLancamento;
+      $oDaoConLancamOrd->c80_codord = $this->getCodigoOrdemPagamento();
+      $oDaoConLancamOrd->c80_data   = $dtLancamento;
+      $oDaoConLancamOrd->incluir($iCodigoLancamento);
+      if ($oDaoConLancamOrd->erro_status == 0) {
+
+        $sErroMsg = "Não foi possível incluir o vínculo da ordem de pagamento com o lançamento.\n\n";
+        $sErroMsg .= "Erro Técnico: {$oDaoConLancamDot->erro_msg}";
+        throw new BusinessException($sErroMsg);
+      }
     }
-    
+
     /**
      * Vinculo da nota de liquidacao com o lançamento
      */
-    $oDaoConLancamNota = db_utils::getDao('conlancamnota');
-    $oDaoConLancamNota->c66_codlan  = $iCodigoLancamento;
-    $oDaoConLancamNota->c66_codnota = $this->getCodigoNotaLiquidacao();
-    $oDaoConLancamNota->incluir($iCodigoLancamento, $this->getCodigoNotaLiquidacao());
-    if ($oDaoConLancamNota->erro_status == 0) {
-    
-    	$sErroMsg  = "Não foi possível incluir o vínculo da nota de liquidacao com o lançamento.\n\n";
-    	$sErroMsg .= "Erro Técnico: {$oDaoConLancamDot->erro_msg}";
-    	throw new BusinessException($sErroMsg);
+    if ($this->getCodigoNotaLiquidacao() != '') {
+
+      $oDaoConLancamNota              = db_utils::getDao('conlancamnota');
+      $oDaoConLancamNota->c66_codlan  = $iCodigoLancamento;
+      $oDaoConLancamNota->c66_codnota = $this->getCodigoNotaLiquidacao();
+      $oDaoConLancamNota->incluir($iCodigoLancamento, $this->getCodigoNotaLiquidacao());
+      if ($oDaoConLancamNota->erro_status == 0) {
+
+        $sErroMsg = "Não foi possível incluir o vínculo da nota de liquidacao com o lançamento.\n\n";
+        $sErroMsg .= "Erro Técnico: {$oDaoConLancamDot->erro_msg}";
+        throw new BusinessException($sErroMsg);
+      }
+    }
+
+    $this->salvarCaracteristicaPeculiar();
+    $this->salvarVinculoParcelaRegimeDeCompetencia();
+
+    return true;
+  }
+
+  /**
+    * @throws DBException
+    */
+  protected function salvarCaracteristicaPeculiar() {
+
+      $empenho = $this->getEmpenho();
+      if (empty($empenho)) {
+          $empenho = $this->getEmpenhoFinanceiro();
+      }
+
+      if (empty($empenho)) {
+          return;
+      }
+
+      $daoCaracteristicaPeculiar = new cl_conlancamconcarpeculiar();
+      $daoCaracteristicaPeculiar->c08_sequencial = null;
+      $daoCaracteristicaPeculiar->c08_codlan = $this->iCodigoLancamento;
+      $daoCaracteristicaPeculiar->c08_concarpeculiar = $empenho->getCaracteristicaPeculiar();
+      $daoCaracteristicaPeculiar->incluir(null);
+      if ($daoCaracteristicaPeculiar->erro_status === '0') {
+          throw new DBException("Ocorreu um erro ao vincular a liquidação na caracteristica peculiar.");
+      }
+  }
+
+
+  /**
+   * @return bool
+   * @throws BusinessException
+   */
+  protected function salvarVinculoParcelaRegimeDeCompetencia() {
+
+    if (empty($this->oParcela)) {
+      return true;
+    }
+
+    $oDaoCompetencia = new cl_conlancamprogramacaofinanceiraparcela();
+    $oDaoCompetencia->c118_conlancam = $this->iCodigoLancamento;
+    $oDaoCompetencia->c118_programacaofinanceiraparcela = $this->oParcela->getCodigo();
+    $oDaoCompetencia->incluir();
+    if ($oDaoCompetencia->erro_status == "0") {
+      throw new BusinessException("Ocorreu um erro ao salvar o vínculo entre o lançamento e a parcela do reconhecimento de competência.");
     }
     return true;
   }
-  
+
   /**
    * Seta o codigo da nota de liquidacao
    * @param integer $iCodigoNotaLiquidacao
@@ -251,7 +322,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function getCodigoNotaLiquidacao() {
     return $this->iCodigoNotaLiquidacao;
   }
-  
+
   /**
    * Seta o codigo da ordem de pagamento
    * @param integer $iCodigoOrdemPagameanto
@@ -259,7 +330,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function setCodigoOrdemPagamento($iCodigoOrdemPagameanto){
     $this->iCodigoOrdemPagameanto = $iCodigoOrdemPagameanto;
   }
-  
+
   /**
    * Retorna o codigo da ordem de pagamento
    * @return integer
@@ -267,7 +338,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function getCodigoOrdemPagamento() {
     return $this->iCodigoOrdemPagameanto;
   }
-  
+
   /**
    * Seta o codigo da dotacao
    * @param integer $iCodigoDotacao
@@ -275,7 +346,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function setCodigoDotacao($iCodigoDotacao) {
     $this->iCodigoDotacao = $iCodigoDotacao;
   }
-  
+
   /**
    * Retorna o codigo da dotacao
    * @return integer
@@ -283,7 +354,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function getCodigoDotacao() {
     return $this->iCodigoDotacao;
   }
-  
+
   /**
    * Seta o numero do empenho
    * @param integer $iNumeroEmpenho
@@ -291,7 +362,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function setNumeroEmpenho($iNumeroEmpenho) {
     $this->iNumeroEmpenho = $iNumeroEmpenho;
   }
-  
+
   /**
    * Retorna o numero do empenho
    * @return integer
@@ -299,7 +370,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function getNumeroEmpenho() {
     return $this->iNumeroEmpenho;
   }
-  
+
   /**
    * Seta o favorecido CGM
    * @param integer $iFavorecido
@@ -307,7 +378,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function setFavorecido($iFavorecido) {
     $this->iFavorecido = $iFavorecido;
   }
-  
+
   /**
    * Retorna o favorecido CGM
    * @return integer
@@ -315,7 +386,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function getFavorecido() {
   	return $this->iFavorecido;
   }
-  
+
   /**
    * Seta o codigo do elemento
    * @param integer $iCodigoElemento
@@ -336,7 +407,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
    * @see ILancamentoAuxiliar::setHistorico()
    */
   public function setHistorico($iHistorico) {
-    $this->iHistorico = $iHistorico; 
+    $this->iHistorico = $iHistorico;
   }
 
   /**
@@ -350,7 +421,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
    * @see ILancamentoAuxiliar::setValorTotal()
    */
   public function setValorTotal($nValorTotal) {
-    $this->nValorTotal = $nValorTotal; 
+    $this->nValorTotal = $nValorTotal;
   }
 
   /**
@@ -372,16 +443,16 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
   public function getObservacaoHistorico() {
     return $this->sObservacao;
   }
-  
+
   /**
    * Atribui uma conta do plano (PCASP) para identificar a conta credito e debito do lancamento
-   * @param integer $iContaPlano 
+   * @param integer $iContaPlano
    */
   public function setCodigoContaPlano($iContaPlano) {
-    
+
     $this->iCodigoContaPlano = $iContaPlano;
   }
-  
+
   /**
    * Retonar uma conta do plano (PCASP) para identificar a conta credito e debito do lancamento
    * @return integer $iContaPlano
@@ -404,17 +475,35 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
    */
   public function getEmpenhoFinanceiro() {
 
-    if (!empty($this->iNumeroEmpenho)) {
+    if (!empty($this->iNumeroEmpenho) && empty($this->oEmpenhoFinanceiro) ) {
       $this->oEmpenhoFinanceiro = new EmpenhoFinanceiro($this->iNumeroEmpenho);
     }
     return $this->oEmpenhoFinanceiro;
   }
 
   /**
-   * Função da classe que constroi uma instância de LancamentoAuxiliarEmpenhoLiquidacao, 
+   * @param Parcela $oParcela
+   */
+  public function setParcelaRegimeDeCompetencia(Parcela $oParcela) {
+    $this->oParcela = $oParcela;
+  }
+
+  /**
+   * @param Parcela $oParcela
+   * @return mixed
+   */
+  public function getParcelaRegimeDeCompetencia(Parcela $oParcela) {
+    return $this->oParcela;
+  }
+
+  /**
+   * Função da classe que constroi uma instância de LancamentoAuxiliarEmpenhoLiquidacao,
    * de acordo com código do lançamento, passado como parâmetro
-   * @param  integer $iCodigoLancamento
+   * @param $iCodigoLancamento
+   *
    * @return LancamentoAuxiliarEmpenhoLiquidacao
+   * @throws BusinessException
+   * @throws Exception
    */
   public static function getInstance($iCodigoLancamento) {
 
@@ -456,8 +545,7 @@ class LancamentoAuxiliarEmpenhoLiquidacao extends LancamentoAuxiliarBase impleme
     $oContaCorrenteDetalhe->setRecurso($oEmpenhoFinanceiro->getDotacao()->getDadosRecurso());
     $oContaCorrenteDetalhe->setDotacao($oEmpenhoFinanceiro->getDotacao());
     $oLancamentoAuxiliar->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
-    
+
     return $oLancamentoAuxiliar;
   }
-  
 }

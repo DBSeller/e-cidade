@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 $oDaoCaracteristica = db_utils::getDao("caracteristica");
 ?>
@@ -90,7 +90,7 @@ $oDaoCaracteristica = db_utils::getDao("caracteristica");
 								  db_select("atividade", $aAtividade, null, 1, "onchange='js_removeElementSelect()'; style='width: 150px;'"); 
 							  ?>
 							</td> 
-						<tr>
+                        </tr>
 						
 						<tr>	
 							<td> <b> Data de Início da Atividade: </b> </td>
@@ -121,7 +121,21 @@ $oDaoCaracteristica = db_utils::getDao("caracteristica");
 							  ?>
 							</td> 
 						</tr>
-												
+						
+				          
+				      <tr>
+				        <td>
+				          <b>Tipo:</b>
+				        </td>
+				        <td>
+				          <? 
+				            $aTipo = array( "0"=>"Todos",
+				                            "t"=>"Permanente",
+				                            "f"=>"Provisório");
+				            db_select("tipo",$aTipo,true,2,"style='width:150px;'"); 
+				          ?>
+				        </td>
+				      </tr>						
 						<tr>
 							<td> <b> Ordenar por </b> </td>
 							<td>
@@ -154,6 +168,7 @@ function js_relatorio(){
 	// configurados por $_GET
 	var sUrl = 'iss2_relatorioinscricoes002.php?pessoa='+$F('pessoa')+
 	                                           '&atividade='+$F('atividade')+
+											   '&tipo='+$F('tipo')+
 	                                           '&baixa='+$F('baixada')+
 	                                           '&regime='+$F('regime')+
 	                                           '&descricaoregime='+$('regime').options[$('regime').selectedIndex].text+

@@ -138,7 +138,7 @@ db_input('h06_nrproc',28,$Ih06_nrproc,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_concur','func_concur.php?funcao_js=parent.js_preenchepesquisa|h06_refer','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_concur','func_concur.php?funcao_js=parent.js_preenchepesquisa|h06_refer','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_concur.hide();

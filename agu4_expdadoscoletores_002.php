@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once ("libs/db_libpessoal.php");
-require_once ("libs/db_utils.php");
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once ("model/agua/ArquivoExportaColetor.model.php"); // classe para geração de arquivos txt coletores
-require_once ("model/agua/ExportaDadosColetores.model.php"); // classe com informações de exportação de dados
+require_once(modification("model/agua/ArquivoExportaColetor.model.php")); // classe para geração de arquivos txt coletores
+require_once(modification("model/agua/ExportaDadosColetores.model.php")); // classe com informações de exportação de dados
+
+$geraArquivo    = false;
 
 $oPost = db_utils::postMemory($_POST);
 
@@ -156,6 +158,8 @@ if ($oPost->geraDadosArquivos == "t") {
       //condição para não exportar matricula que leitura tenha sido realizada em determinado mês 
       if($clExpDadosColetores->statusMesMatricula($iAnoExportacao, $iMesExportacao, $oAguaBase->x01_matric) > 0) {
         continue;
+      }else{
+      	$geraArquivo = true;
       }
       
       $clExpDadosColetores->iCodColetorExporta      = $iCodColetorExporta;
@@ -310,7 +314,17 @@ if ($oPost->geraDadosArquivos == "t") {
   
     } //for matriculas
 
-    db_fim_transacao();
+    if( !$geraArquivo ){
+    
+    	db_msgbox("Nenhuma matricula sem leitura foi encontrada. Operação Cancelada!");
+    	db_fim_transacao(true);
+    	db_redireciona("agu4_expdadoscoletores_001.php");
+    
+    } else {
+    
+      db_fim_transacao();
+    
+    }
 
   } else {
     

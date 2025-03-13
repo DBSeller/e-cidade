@@ -116,14 +116,14 @@ function js_pesquisao103_pactovalor(mostra) {
   var sFiltro  = "&programa=1&projeto=1";
   if(mostra==true){
   
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_pactovalor',
                         'func_pactovalor.php?funcao_js=parent.js_mostrapactovalor1|o87_sequencial|dl_item'+sFiltro,
                         'Pesquisa',
                         true);
   }else{
      if(document.form1.o103_pactovalor.value != ''){ 
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_pactovalor',
                             'func_pactovalor.php?pesquisa_chave='+document.form1.o103_pactovalor.value+
                             '&funcao_js=parent.js_mostrapactovalor'+sFiltro,'Pesquisa'
@@ -150,7 +150,7 @@ function js_mostrapactovalor1(chave1,chave2) {
   db_iframe_pactovalor.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_pactovalorsaldo',
                       'func_pactovalorsaldo.php?funcao_js=parent.js_preenchepesquisa|o103_sequencial&iTipo=1,3',
                       'Pesquisa Valores Lançados',true);

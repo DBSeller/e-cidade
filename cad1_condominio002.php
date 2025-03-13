@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_condominio_classe.php");
-include("classes/db_condominiocgm_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_condominio_classe.php"));
+include(modification("classes/db_condominiocgm_classe.php"));
+include(modification("classes/db_condominioprocesso_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clcondominio = new cl_condominio;
 $clcondominiocgm 		= new cl_condominiocgm();
+$clcondominioprocesso = new cl_condominioprocesso();
 $db_opcao = 22;
 $db_botao = false;
 if(isset($alterar)){
 	$sqlerro = false;
   db_inicio_transacao();
   $db_opcao = 2;
-  
   $clcondominiocgm->sql_query(null,"j106_sequencial",null,"j106_condominio = $j107_sequencial");
 	$resCondominioCgm = db_query($clcondominiocgm->sql_query(null,"j106_sequencial",null,"j106_condominio = $j107_sequencial"));
 	if (pg_num_rows($resCondominioCgm)>0) {
@@ -59,6 +60,25 @@ if(isset($alterar)){
 	  }
  	}
   
+   if($y60_proces != ""){
+
+    $partProc = explode("/", $y60_proces);
+    $sWhere = "WHERE p58_numero = '$partProc[0]' AND p58_ano = $partProc[1]";
+    $resProt = db_query("SELECT p58_codproc FROM protocolo.protprocesso $sWhere");
+
+    $num_codproc = null;
+    if (pg_num_rows($resProt)>0) {
+      db_fieldsmemory($resProt,0);
+      $num_codproc = $p58_codproc;
+    }
+    
+    $clcondominioprocesso->j179_sequencial = $j179_sequencial;
+    $clcondominioprocesso->j179_condominio = $j179_condominio;
+    $clcondominioprocesso->j179_processo   = (int) $num_codproc;
+  	$clcondominioprocesso->alterar(null);
+
+   }
+
   //echo "<br><br>aqui1<br<br>";
   if(!$sqlerro){
 		$clcondominio->alterar($j107_sequencial);
@@ -71,7 +91,7 @@ if(isset($alterar)){
   
 }else if(isset($chavepesquisa)){
    $db_opcao = 2;
-   $campos = "condominio.*,cgm.z01_nome,condominiocgm.j106_numcgm";
+   $campos = "condominio.*,cgm.z01_nome,condominiocgm.j106_numcgm, p58_numero || '/' || p58_ano as y60_proces, p58_requer, j179_sequencial, j179_condominio";
    $result = $clcondominio->sql_record($clcondominio->sql_query_condominio($chavepesquisa,$campos)); 
    db_fieldsmemory($result,0);
    $db_botao = true;
@@ -99,7 +119,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcondominio.php");
+	include(modification("forms/db_frmcondominio.php"));
 	?>
     </center>
 	</td>
@@ -121,6 +141,7 @@ if(isset($alterar)){
       echo "<script> document.form1.".$clcondominio->erro_campo.".focus();</script>";
     }
   }else{
+    
     $clcondominio->erro(true,true);
   }
 	if($sqlerro==true){

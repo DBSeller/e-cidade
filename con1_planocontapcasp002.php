@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas      = new cl_criaabas;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -63,23 +63,29 @@ $sizecp  = array();
     <?
     $clcriaabas->identifica = array("conta"    => "Conta",
                                     "reduzido" => "Reduzidos",
-                                    "vinculo"  => "Vínculos");
+                                    "vinculo"  => "Vínculos",
+                                    "contacorrente" => "Conta Corrente");
     
     $clcriaabas->title      = array("conta"    => "Conta",
            							"reduzido" => "Reduzidos",
-           							"vinculo"  => "Vínculos");
+           							"vinculo"  => "Vínculos",
+                                    "contacorrente" => "Conta Corrente");
     
     $clcriaabas->src        = array("conta"    => "con1_planocontapcasp011.php?db_opcao=2",
                                     "reduzido" => "",
-                                    "vinculo"  => "");
+                                    "vinculo"  => "",
+                                    "contacorrente" => "con1_planocontapcasp006.php");
     
     $clcriaabas->sizecampo  = array("conta"    => "23",
      							    "reduzido" => "15",
      							    "grupos"   => "15");
     
     $clcriaabas->disabled   = array("reduzido" => "true",
-    							    "vinculo"  => "false");   
-    $clcriaabas->cria_abas();   
+    							    "vinculo"  => "false",
+    							    "contacorrente"  => "false");
+
+
+    $clcriaabas->cria_abas();
     ?>
     </center>
   </td>
@@ -90,3 +96,15 @@ $sizecp  = array();
 ?>
 </body>
 </html>
+
+
+<script>
+
+    var abaReduzidos = document.getElementsByName('reduzido');
+    abaReduzidos[0].addEventListener('click',
+        function() {
+            iframe_reduzido.verificarSistemaDeContas();
+        }
+    );
+
+</script>

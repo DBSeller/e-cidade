@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 //db_postmemory($HTTP_SERVER_VARS,2);
 
@@ -246,7 +246,7 @@ if($nivel >= '1A'){
 	                           on o40_orgao = o58_orgao
          where o41_anousu = ".db_getsession("DB_anousu");
 //echo $sql1;
-$result1 = pg_exec($sql1);
+$result1 = db_query($sql1);
 for($i1=0;$i1<pg_numrows($result1);$i1++){
    db_fieldsmemory($result1,$i1);
 ?>
@@ -264,7 +264,7 @@ for($i1=0;$i1<pg_numrows($result1);$i1++){
            from orcunidade 
 	        inner join orcorgao on o41_orgao = $o41_orgao 
 	                           and o41_anousu = ".db_getsession("DB_anousu");
-      $result2 = pg_exec($sql2);
+      $result2 = db_query($sql2);
        for($i2=0;$i2<pg_numrows($result2);$i2++){
          db_fieldsmemory($result2,$i2);
    ?>
@@ -284,7 +284,7 @@ for($i1=0;$i1<pg_numrows($result1);$i1++){
 	         where o58_orgao 	= $o41_orgao 
 	           and o58_unidade 	= $o41_unidade 
 	           and o58_anousu = ".db_getsession("DB_anousu");
-        $result3 = pg_exec($sql3);
+        $result3 = db_query($sql3);
         for($i3=0;$i3<pg_numrows($result3);$i3++){
            db_fieldsmemory($result3,$i3);
        ?>
@@ -305,7 +305,7 @@ for($i1=0;$i1<pg_numrows($result1);$i1++){
 	           and o58_unidade 	= $o41_unidade 
 		   and o58_funcao       = $o52_funcao
 	           and o58_anousu = ".db_getsession("DB_anousu");
-      $result4 = pg_exec($sql4);
+      $result4 = db_query($sql4);
        for($i4=0;$i4<pg_numrows($result4);$i4++){
          db_fieldsmemory($result4,$i4);
    ?>
@@ -329,7 +329,7 @@ for($i1=0;$i1<pg_numrows($result1);$i1++){
 		   and o58_funcao       = $o52_funcao
 		   and o58_subfuncao    = $o53_subfuncao
 	           and o58_anousu = ".db_getsession("DB_anousu");
-      $result5 = pg_exec($sql5);
+      $result5 = db_query($sql5);
        for($i5=0;$i5<pg_numrows($result5);$i5++){
          db_fieldsmemory($result5,$i5);
    ?>
@@ -355,7 +355,7 @@ for($i1=0;$i1<pg_numrows($result1);$i1++){
 		   and o58_subfuncao    = $o53_subfuncao
 		   and o58_programa     = $o54_programa
 	           and o58_anousu = ".db_getsession("DB_anousu");
-      $result6 = pg_exec($sql6);
+      $result6 = db_query($sql6);
        for($i6=0;$i6<pg_numrows($result6);$i6++){
          db_fieldsmemory($result6,$i6);
    ?>
@@ -383,7 +383,7 @@ for($i1=0;$i1<pg_numrows($result1);$i1++){
 		   and o58_programa     = $o54_programa
 		   and o58_projativ     = $o55_projativ
 	           and o58_anousu = ".db_getsession("DB_anousu");
-      $result7 = pg_exec($sql7);
+      $result7 = db_query($sql7);
        for($i7=0;$i7<pg_numrows($result7);$i7++){
          db_fieldsmemory($result7,$i7);
    ?>
@@ -411,7 +411,7 @@ for($i1=0;$i1<pg_numrows($result1);$i1++){
 		   and o58_projativ     = $o55_projativ
 		   and o58_codele       = $o56_codele
 		   and o58_anousu = ".db_getsession("DB_anousu");
-      $result8 = pg_exec($sql8);
+      $result8 = db_query($sql8);
        for($i8=0;$i8<pg_numrows($result8);$i8++){
          db_fieldsmemory($result8,$i8);
    ?>
@@ -448,3 +448,9 @@ for($i1=0;$i1<pg_numrows($result1);$i1++){
 </form>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

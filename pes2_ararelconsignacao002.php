@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_rhlocaltrab_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_rhlocaltrab_classe.php"));
 $clrhlocaltrab = new cl_rhlocaltrab;
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -214,7 +214,7 @@ select  $select_campos
 ";
 
 //echo $sql_basico;exit;
-$res_basico = pg_query($sql_certo);
+$res_basico = db_query($sql_certo);
 //db_criatabela($res_basico);exit;
 
 
@@ -451,7 +451,7 @@ function imprime_quebra($xquebra = null, $xdescr_quebra = '' ){
   $total_rub_quant1 = 0;
   
   
-  $res_total = pg_query($sql_total);
+  $res_total = db_query($sql_total);
 
   for($xy = 0; $xy < pg_numrows($res_total);$xy++){
      db_fieldsmemory($res_total,$xy);

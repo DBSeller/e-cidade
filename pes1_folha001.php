@@ -1,64 +1,67 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_sql.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_sql.php"));
 
-db_postmemory($HTTP_POST_VARS); 
+db_postmemory($_POST);
 
 define("FOLHA_SALARIO",      0);
 define("FOLHA_COMPLEMENTAR", 5);
 define("FOLHA_SUPLEMENTAR",  6);
 
-$clfolha   = new cl_folha;
-$clselecao = new cl_selecao;
-$clgerfsal = new cl_gerfsal;
-$clgerfadi = new cl_gerfadi;
-$clgerffer = new cl_gerffer;
-$clgerfres = new cl_gerfres;
-$clgerfs13 = new cl_gerfs13;
-$clgerfcom = new cl_gerfcom;
-$clgerffx  = new cl_gerffx;
-$clsubsql  = new cl_gera_sql_folha;
+$clfolha        = new cl_folha;
+$clselecao      = new cl_selecao;
+$clgerfsal      = new cl_gerfsal;
+$clgerfadi      = new cl_gerfadi;
+$clgerffer      = new cl_gerffer;
+$clgerfres      = new cl_gerfres;
+$clgerfs13      = new cl_gerfs13;
+$clgerfcom      = new cl_gerfcom;
+$clgerffx       = new cl_gerffx;
+$clsubsql       = new cl_gera_sql_folha;
 
 $db_opcao = 1;
 $db_botao = true;
 
-if(isset($incluir)) {
-  
+if ( DBPessoal::verificarUtilizacaoEstruturaSuplementar() ) {
+  $aSequencialFolhas = array();
+}
+
+if (isset($incluir)) {
+
   try {
 
     db_inicio_transacao();
-    $sqlerro = false;
-    
+
     $contaREG = "Nenhum Registro Encontrado.";
 
     $sqlsal  = "";
@@ -71,15 +74,37 @@ if(isset($incluir)) {
     $sqlsupl = "";
     $DBwher  = "";
     $DBands  = "";
-    // $DBgerrs = " and rh05_seqpes is null ";
+    
     $DBgerrs = "  ";
-    if(isset($folhaselecion) && trim($folhaselecion) != ""){
-      if(trim($anofolha) == ""){
+    
+    $sFiltrosGeracao = "";
+    
+    if (isset($folhaselecion) && trim($folhaselecion) != "") {
+        
+      if (trim($anofolha) == "") {
         $anofolha = db_anofolha();
       }
-      if(trim($mesfolha) == ""){
+      
+      if (trim($mesfolha) == "") {
         $mesfolha = db_mesfolha();
       }
+      
+      $sFiltrosGeracao .= "Ano/Mês: $anofolha/$mesfolha;";
+      if ($opcao_gml=="g") {
+          $sResumo = "Geral";
+      } else if ($opcao_gml=="l") {
+          $sResumo = "Lotação";
+      } else if ($opcao_gml=="o") {
+          $sResumo = "Orgão";
+      } else if ($opcao_gml=="m") {
+          $sResumo = "Matricula";
+      }
+      $sFiltrosGeracao .= "Tipo de Resumo: $sResumo;";
+      
+      if($liquido1 < 0 || $liquido2 < 0) {
+        throw new BusinessException("Informe valor maior ou igual a zero na faixa de valor líquido.");
+      }
+      
       $faixa_lotac = str_replace("\'","'",$faixa_lotac);
       $faixa_orgao = str_replace("\'","'",$faixa_orgao);
       $DBwher.= $DBands." #s#_anousu = ".$anofolha;
@@ -89,50 +114,60 @@ if(isset($incluir)) {
 
       $campos = "#s#_regist as regist, #s#_lotac as lotac, case when #s#_pd = 1 then #s#_valor else 0 end as proven, case when #s#_pd = 2 then #s#_valor else 0 end as descon, #s#_anousu as anousu, #s#_mesusu as mesusu";
 
-      $arr_folha = split(",",$folhaselecion);
-      for($i=0; $i<count($arr_folha); $i++){
-        if($arr_folha[$i] == 0){
+      
+              
+      $sFiltrosGeracao .= "Folha(s) selecionada(s): ";
+      $arr_folha = explode(",",$folhaselecion);
+      for ($i=0; $i<count($arr_folha); $i++) {
+          
+        if ($arr_folha[$i] == 0) { //Folha de salario
           $DBwher1 = str_replace("#s#","r14",$DBwher);
           $campos1 = str_replace("#s#","r14",$campos);
           $sqlsal  = $clgerfsal->sql_query_file(null,null,null,null,$campos1,"",$DBwher1);
 
-          if ( isset($DB_COMPLEMENTAR) ) {
+          if ( DBPessoal::verificarUtilizacaoEstruturaSuplementar() ) {
 
-            $oCompetencia         = new DBCompetencia($anofolha, $mesfolha);
-            $clrhhistoricocalculo = new cl_rhhistoricocalculo();
-            $aFolhaPagamento      = FolhaPagamento::getFolhaCompetenciaTipo( $oCompetencia, FolhaPagamento::TIPO_FOLHA_SALARIO);
-            $iFolhaSalario        = $aFolhaPagamento[0]->getSequencial();
+            $oCompetencia             = new DBCompetencia($anofolha, $mesfolha);
+            $clrhhistoricocalculo     = new cl_rhhistoricocalculo();
+            $aFolhaPagamento          = FolhaPagamento::getFolhaCompetenciaTipo( $oCompetencia, FolhaPagamento::TIPO_FOLHA_SALARIO);
+            $iFolhaSalario            = $aFolhaPagamento[0]->getSequencial();
+            $aSequencialFolhas[]      = $iFolhaSalario;
 
             $sqlsal = $clrhhistoricocalculo->sql_query_geracao($iFolhaSalario, "Salário", null);
           }
-
-        }else if($arr_folha[$i] == 1){
+          $sFiltrosGeracao .= " Salário";
+          
+        }else if($arr_folha[$i] == 1){ //Folha de adiantamento
           $DBwher2 = str_replace("#s#","r22",$DBwher);
           $campos2 = str_replace("#s#","r22",$campos);
           $sqladi  = $clgerfadi->sql_query_file(null,null,null,null,$campos2,"",$DBwher2);
+          $sFiltrosGeracao .= ", Adiantamento";
         }else if($arr_folha[$i] == 2){
           $DBwher3 = str_replace("#s#","r31",$DBwher);
           $campos3 = str_replace("#s#","r31",$campos);
           $sqlfer  = $clgerffer->sql_query_file(null,null,null,null,null,$campos3,"",$DBwher3);
-        }else if($arr_folha[$i] == 3){
+          $sFiltrosGeracao .= ", Férias";
+        }else if($arr_folha[$i] == 3){ //Folha de rescisao
           $DBgerrs = "";
           $DBwher4 = str_replace("#s#","r20",$DBwher);
           $campos4 = str_replace("#s#","r20",$campos);
           $sqlres  = $clgerfres->sql_query_file(null,null,null,null,null,$campos4,"",$DBwher4);
-        }else if($arr_folha[$i] == 4){
+          $sFiltrosGeracao .= ", Rescisao";
+        }else if($arr_folha[$i] == 4){ //Folha de 13 Salario
           $DBwher5 = str_replace("#s#","r35",$DBwher);
           $campos5 = str_replace("#s#","r35",$campos);
           $sql13o  = $clgerfs13->sql_query_file(null,null,null,null,$campos5,"",$DBwher5);
-        }else if($arr_folha[$i] == 5){
+          $sFiltrosGeracao .= ", 13 Salário";
+        }else if($arr_folha[$i] == 5){ //Folha complementar
           $DBwher6 = str_replace("#s#","r48",$DBwher);
           $campos6 = str_replace("#s#","r48",$campos);
           if(isset($complementares) && $complementares != 0){
             $DBwher6.= " and r48_semest = ".$complementares;
           }
-
           $sqlcom  = $clgerfcom->sql_query_file(null,null,null,null,$campos6,"",$DBwher6);
-
-          if ( isset($DB_COMPLEMENTAR) ) {
+          $sFiltrosGeracao .= ", Complementar";
+          
+          if ( DBPessoal::verificarUtilizacaoEstruturaSuplementar() ) {
 
             $oCompetencia             = new DBCompetencia($anofolha, $mesfolha);
             $clrhhistoricocalculo     = new cl_rhhistoricocalculo();
@@ -140,7 +175,9 @@ if(isset($incluir)) {
             $aNumerosFolhasPagamentos = array();
 
             foreach ($aFolhasPagamentos as $oFolhaPagamentoComplementar) {
+
               $aNumerosFolhasPagamentos[] = $oFolhaPagamentoComplementar->getSequencial();
+              $aSequencialFolhas[]        = $oFolhaPagamentoComplementar->getSequencial();
             }
 
             $sqlcom = $clrhhistoricocalculo->sql_query_geracao(implode(',', $aNumerosFolhasPagamentos), "Complementar", null);
@@ -149,7 +186,7 @@ if(isset($incluir)) {
         }else if($arr_folha[$i] == 6){
 
 
-          if ( isset($DB_COMPLEMENTAR) ) {
+          if ( DBPessoal::verificarUtilizacaoEstruturaSuplementar() ) {
 
             $oCompetencia             = new DBCompetencia($anofolha, $mesfolha);
             $clrhhistoricocalculo     = new cl_rhhistoricocalculo();
@@ -157,11 +194,35 @@ if(isset($incluir)) {
             $aNumerosFolhasPagamentos = array();
 
             foreach ($aFolhasPagamentos as $oFolhaPagamentoSuplementar) {
+
               $aNumerosFolhasPagamentos[] = $oFolhaPagamentoSuplementar->getSequencial();
+              $aSequencialFolhas[]        = $oFolhaPagamentoSuplementar->getSequencial();
             }
 
             $sqlsupl = $clrhhistoricocalculo->sql_query_geracao(implode(',', $aNumerosFolhasPagamentos), "Suplementar", null);
-          } 
+            $sFiltrosGeracao .= ", Suplementar";
+          }
+        }
+      }
+      $sFiltrosGeracao .= ";";
+
+      if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+
+        $oDaoFolhaGeracao = new cl_folhapagamentogeracao();
+        $oDaoFolhaGeracao->excluir();
+
+        if($oDaoFolhaGeracao->erro_status == "0") {
+          throw new DBException("Ocorreu um erro ao excluir as folhas de pagamento na geração de disco.");
+        }
+
+        foreach ($aSequencialFolhas as $iSequencial) {
+
+          $oDaoFolhaGeracao->rh146_folhapagamento = $iSequencial;
+          $oDaoFolhaGeracao->incluir(null);
+
+          if($oDaoFolhaGeracao->erro_status == "0") {
+            throw new DBException("Ocorreu um erro ao salvar a folha de pagamento na geração de disco.");
+          }
         }
       }
 
@@ -191,7 +252,7 @@ if(isset($incluir)) {
         $sqlgrunion.= $valorunion.$sqlcom;
         $valorunion = " union all ";
       }
-      
+
       if ($sqlsupl != "") {
         $sqlgrunion.= $valorunion.$sqlsupl;
         $valorunion = " union all ";
@@ -203,56 +264,88 @@ if(isset($incluir)) {
       }
 
       if(trim($selecao) != ""){
-        $result_selecao = $clselecao->sql_record($clselecao->sql_query_file($selecao,db_getsession('DB_instit'),"r44_where as wher"));
-        if($clselecao->numrows > 0){
+        $sSqlSelecao    = $clselecao->sql_query_file($selecao,db_getsession('DB_instit'),"r44_where as wher");
+        $result_selecao = db_query($sSqlSelecao);
+
+        if(!$result_selecao) {
+          throw new DBException("Ocorreu um erro ao consultar as seleções na base de dados");
+        }
+
+        if(pg_num_rows($result_selecao) > 0) {
           db_fieldsmemory($result_selecao, 0);
           $DBwher = " where 1=1 and ".$wher;
         }
+        
+        $sFiltrosGeracao .= "Seleção: $selecao;";
+        
       }else{
         $DBwher = " where 1=1 ";
       }
+      
       if(isset($lotaci) && trim($lotaci) != "" && isset($lotacf) && trim($lotacf) != ""){
         // Se for por intervalos e vier lotação inicial e final
         $DBwher .= " and r70_estrut between '".$lotaci."' and '".$lotacf."' ";
+        $sFiltrosGeracao .= "Lotação Inicial: $lotaci - Lotação Final: $lotacf;";
       }else if(isset($lotaci) && trim($lotaci) != ""){
         // Se for por intervalos e vier somente lotação inicial
         $DBwher .= " and r70_estrut >= '".$lotaci."' ";
+        $sFiltrosGeracao .= "Lotação Inicial: $lotaci;";
       }else if(isset($lotacf) && trim($lotacf) != ""){
         // Se for por intervalos e vier somente lotação final
         $DBwher .= " and r70_estrut <= '".$lotacf."' ";
+        $sFiltrosGeracao .= "Lotação Final: $lotacf;";
       }else if(isset($faixa_lotac) && $faixa_lotac != ''){
         $DBwher.= " and r70_estrut in ($faixa_lotac) ";
+        $sFiltrosGeracao .= "Lotações: ".str_replace("'", "", $faixa_lotac).";";
       }
-      
+
       if(isset($orgaoi) && trim($orgaoi) != "" && isset($orgaof) && trim($orgaof) != ""){
 
         // Se for por intervalos e vier órgão inicial e final
         $DBwher .= " and o40_orgao between ".$orgaoi." and ".$orgaof;
+        $sFiltrosGeracao .= "Orgão Inicial: $orgaoi - Orgão Final: $orgaof;"; 
       }else if(isset($orgaoi) && trim($orgaoi) != ""){
         // Se for por intervalos e vier somente órgão inicial
         $DBwher .= " and o40_orgao >= ".$orgaoi;
+        $sFiltrosGeracao .= "Orgão Inicial: $orgaoi;";
       }else if(isset($orgaof) && trim($orgaof) != ""){
         // Se for por intervalos e vier somente órgão final
         $DBwher .= " and o40_orgao <= ".$orgaof;
+        $sFiltrosGeracao .= "Orgão Final: $orgaof;";
       }else if(isset($faixa_orgao) && trim($faixa_orgao) != ""){
         // Se for por selecionados
         $DBwher .= " and o40_orgao in (".$faixa_orgao.") ";
+        $sFiltrosGeracao .= "Orgãos: $sOrgaos;";
       }
-      
+
       if(isset($registini) && trim($registini) != "" && isset($registfim) && trim($registfim) != ""){
 
         // Se for por intervalos e vier órgão inicial e final
         $DBwher .= " and rh02_regist between ".$registini." and ".$registfim;
+        $sFiltrosGeracao .= "Matricula Inicial: $registini - Matricula Final: $registfim;";
       }else if(isset($registini) && trim($registini) != ""){
         // Se for por intervalos e vier somente órgão inicial
         $DBwher .= " and rh02_regist >= ".$registini;
+        $sFiltrosGeracao .= "Matricula Inicial: $registini;";
       }else if(isset($registfim) && trim($registfim) != ""){
         // Se for por intervalos e vier somente órgão final
         $DBwher .= " and rh02_regist <= ".$registfim;
+        if (isset($registfim) && !empty($registfim)) {
+            $sFiltrosGeracao .= "Matricula Final: $registfim;";
+        }
       } else if (isset($faixa_matricula) && $faixa_matricula != "") {
         $DBwher .= " and rh02_regist in (".$faixa_matricula.") ";
+        $sFiltrosGeracao .= "Matriculas: $sMatriculas;";
       }
-      //echo "<br><br> where $DBwher";exit;
+      
+      $sFiltrosGeracao .= "Valor líquido total de $liquido1 até $liquido2;";
+      if (isset($pagtosaldo)){
+          $sFiltrosGeracao .= "Incluir pagamento de saldo: ".($pagtosaldo=="t"?"SIM":"NÃO").";";
+      }
+      if (!empty($percpago)) {
+          $sFiltrosGeracao .= "Percentual pago: %: $percpago;";
+      }
+      
       if(isset($pagtosaldo) && $pagtosaldo == "t"){
         $pagarliq = 999999999.99;
         $pagarperc= 100;
@@ -263,13 +356,13 @@ if(isset($incluir)) {
                                ( ( (sum(proven) - sum(descon) ) / 100 ) * {$percpago} )
                              ),2 
                            )  ";
-        }else if(trim($pagarliq) == ""){
+        
+      }else if(trim($pagarliq) == ""){
         $liquidar = " (sum(proven) - sum(descon)) ";
       }else{
         $liquidar = " (case when (sum(proven) - sum(descon)) > ".$pagarliq." then ".$pagarliq." else (sum(proven) - sum(descon)) end) ";
+        $sFiltrosGeracao .= "Faixa líquida a pagar (até): {$pagarliq};";
       }
-
-      //echo "LIQUIDAR --".$liquidar;exit;
 
       if($pagarperc == 0 || trim($pagarperc) == ""){
         $case = " round((".$liquidar." - ".$liquido1."),2) as liquido, ";
@@ -278,18 +371,24 @@ if(isset($incluir)) {
         $pagarperc = ($pagarperc / 100);
         $percpago  = ($percpago / 100);
         if(isset($pagtosaldo) && $pagtosaldo == "t"){
-          // $case = " round((".$liquidar." - (".$liquidar." * (".$percpago."))),2) as liquido, ";
-          // $havi = " round((".$liquidar." - (".$liquidar." * (".$percpago."))),2) ";
-
           $case = " round(".$liquidar.",2) as liquido, ";
           $havi = " round(".$liquidar.",2) ";
         }else{
           $case = " round((".$liquidar." * (".$pagarperc.")),2) as liquido, ";
           $havi = " round((".$liquidar." * (".$pagarperc.")),2) ";
         }
+        $sFiltrosGeracao .= "Faixa líquida a pagar (até): {$pagarperc}%;";
+      }
+      
+      if (!empty($faixa_orgao) || !empty($orgaoi) || !empty($orgaof)) {
+          $clsubsql->usar_org = true;
       }
 
-
+      if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+          $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+          $DBwher .= " and rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+      }
+        
       $clsubsql->inner_atv = false;
       $clsubsql->inner_pad = false;
       $clsubsql->inner_fun = false;
@@ -346,71 +445,98 @@ if(isset($incluir)) {
               rh44_conta||rh44_dvconta,
               rh02_fpagto,
               rh05_seqpes
-                having     ".$havi." > 0
-                and (sum(proven) - sum(descon)) between ".$liquido1." and ".$liquido2."
+                having     ".$havi." >= 0
+                and round((sum(proven) - sum(descon)),2) between ".$liquido1." and ".$liquido2."
                 ".$DBgerrs."
                 order by regist ";
 
-      $result_grsubsql = $clfolha->sql_record($grsubsql);
-      $numrows_folha = $clfolha->numrows;
+      $result_grsubsql = db_query($grsubsql);
 
-      if($numrows_folha > 0){
+      if(!$result_grsubsql) {
+        throw new DBException("Ocorreu um erro ao consultar os servidores nas folhas de pagamento selecionados.");
+      }
+
+      if(pg_num_rows($result_grsubsql) == 0) {
+        throw new BusinessException("Nenhum servidor encontrado na folha de pagamento selecinada.");
+      }
+
+      $numrows_folha   = pg_num_rows($result_grsubsql);
+
+      if ($numrows_folha > 0) {
+          
         unset($contaREG);
         $contaREG = 0;
         $clfolha->excluir(null,null,"1=1 and r38_instit = ".db_getsession("DB_instit"));
         if($clfolha->erro_status == 0){
-          $erro_msg = $clfolha->erro_msg;
-          $sqlerro = true;
+          throw new Exception($clfolha->erro_msg);
         }
-        if($sqlerro == false){
-          for($i=0; $i<$numrows_folha; $i++){
-            db_fieldsmemory($result_grsubsql, $i);
-            if ($rh02_fpagto  == 4) {
+        
+        for($i=0; $i<$numrows_folha; $i++){
+            
+          db_fieldsmemory($result_grsubsql, $i);
+          if ($rh02_fpagto  == 4) {
 
-              $rh44_agencia = "";
-              $rh44_conta   = "";
-            } else  if ($rh02_fpagto != 3) {
-              
-              $rh44_codban  = "";
-              $rh44_agencia = "";
-              $rh44_conta   = "";
-            }
+            $rh44_agencia = "";
+            $rh44_conta   = "";
+          } else  if ($rh02_fpagto != 3) {
 
-            $clfolha->r38_nome   = db_translate($z01_nome);
-            $clfolha->r38_numcgm = $z01_numcgm;
-            $clfolha->r38_regime = $rh02_codreg;
-            $clfolha->r38_lotac  = $lotac;
-            $clfolha->r38_vincul = $rh30_vinculo;
-            $clfolha->r38_padrao = $rh03_padrao;
-            $clfolha->r38_salari = $f010;
-            $clfolha->r38_funcao = $rh37_descr;
-            $clfolha->r38_situac = "1";
-            $clfolha->r38_previd = $rh02_tbprev;
-            $clfolha->r38_liq    = "$liquido";
-            $clfolha->r38_prov   = "$proven";
-            $clfolha->r38_desc   = "$descon";
-            $clfolha->r38_proc   = date("Y-m-d",db_getsession("DB_datausu"));
-            $clfolha->r38_banco  = $rh44_codban;
-            $clfolha->r38_agenc  = $rh44_agencia;
-            $clfolha->r38_conta  = $rh44_conta;
-            $clfolha->r38_instit = db_getsession("DB_instit");
-            $clfolha->incluir($regist,db_getsession("DB_instit"));
-            $contaREG ++;
-            //					echo "<br>  $contaREG   regist --> $regist    instit --> ".db_getsession("DB_instit");
-            if($clfolha->erro_status == 0){
-              $erro_msg = $clfolha->erro_msg;
-              $sqlerro = true;
-              break;
-            }
+            $rh44_codban  = "";
+            $rh44_agencia = "";
+            $rh44_conta   = "";
           }
+
+          $clfolha->r38_nome   = db_translate($z01_nome);
+          $clfolha->r38_numcgm = $z01_numcgm;
+          $clfolha->r38_regime = $rh02_codreg;
+          $clfolha->r38_lotac  = $lotac;
+          $clfolha->r38_vincul = $rh30_vinculo;
+          $clfolha->r38_padrao = $rh03_padrao;
+          $clfolha->r38_salari = $f010;
+          $clfolha->r38_funcao = $rh37_descr;
+          $clfolha->r38_situac = "1";
+          $clfolha->r38_previd = $rh02_tbprev;
+          $clfolha->r38_liq    = "$liquido";
+          $clfolha->r38_prov   = "$proven";
+          $clfolha->r38_desc   = "$descon";
+          $clfolha->r38_proc   = date("Y-m-d",db_getsession("DB_datausu"));
+          $clfolha->r38_banco  = $rh44_codban;
+          $clfolha->r38_agenc  = $rh44_agencia;
+          $clfolha->r38_conta  = $rh44_conta;
+          $clfolha->r38_instit = db_getsession("DB_instit");
+          $clfolha->incluir($regist,db_getsession("DB_instit"));
+          if ($clfolha->erro_status == 0) {
+             throw new Exception($clfolha->erro_msg);
+          }
+          
+          $contaREG ++;
+          
+          $clfolhafiltros = new cl_folhafiltros;
+          $clfolhafiltros->excluir(db_getsession("DB_instit"));
+          if ($clfolhafiltros->erro_status == 0) {
+              throw new Exception($clfolhafiltros->erro_msg);
+          }
+          
+          $clfolhafiltros = new cl_folhafiltros;
+          $clfolhafiltros->r39_instituicao   = db_getsession("DB_instit");
+          $clfolhafiltros->r39_filtros       = pg_escape_string($sFiltrosGeracao);
+          $clfolhafiltros->r39_processamento = date("Y-m-d",db_getsession("DB_datausu"));
+          $clfolhafiltros->incluir(db_getsession("DB_instit"));
+          if ($clfolhafiltros->erro_status == 0) {
+              throw new Exception($clfolhafiltros->erro_msg);
+          }
+          
         }
+        
         $contaREG = $contaREG." registros incluídos.";
-        }
+        
+      }
+      
     }
     db_fim_transacao($sqlerro);
 
   } catch ( Exception $eErro ) {
 
+    $sqlerro              = true;
     $clfolha->erro_msg    = $eErro->getMessage();
     $clfolha->erro_status = "0";
   }
@@ -426,7 +552,7 @@ if(isset($incluir)) {
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-<tr> 
+<tr>
 <td width="360" height="18">&nbsp;</td>
 <td width="263">&nbsp;</td>
 <td width="25">&nbsp;</td>
@@ -434,23 +560,22 @@ if(isset($incluir)) {
 </tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr> 
-<td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
+<tr>
+<td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 <center>
-<?
-include("forms/db_frmfolha.php");
+<?php
+include(modification("forms/db_frmfolha.php"));
 ?>
 </center>
 </td>
 </tr>
 </table>
-<?
+<?php
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
 </html>
-<?
-//exit;
+<?php
 if(isset($incluir)){
 
   if($sqlerro == true){
@@ -465,10 +590,10 @@ if(isset($incluir)){
 js_tabulacaoforms("form1","selecao",true,1,"selecao",true);
 
 document.getElementById('anofolha').addEventListener('change', function() {
-  window.location = 'pes1_folha001.php?anofolha='+this.value;
+  window.location = 'pes1_folha001.php?anofolha='+this.value+'&mesfolha='+document.getElementById('mesfolha').value;
 });
 
 document.getElementById('mesfolha').addEventListener('change', function() {
-  window.location = 'pes1_folha001.php?mesfolha='+this.value;
+  window.location = 'pes1_folha001.php?mesfolha='+this.value+'&anofolha='+document.getElementById('anofolha').value;
 });
 </script>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -32,7 +32,7 @@
  * essa forma de avaliacao.
  * @filesource
  * @author Iuri Guntchnigg - iuri@dbseller.com.br
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @package
  */
 final class ProgressaoParcialParametro {
@@ -122,6 +122,8 @@ final class ProgressaoParcialParametro {
    */
   private $lEtapasCarregadas = false;
 
+  /* ATENCAO: PLUGIN ParametroProgressaoParcial - VARIAVEL - INSTALADO AQUI - NAO REMOVER */
+
   /**
    * Metodo construtor
    * Inicia os dados do parametro para a escola.
@@ -135,6 +137,8 @@ final class ProgressaoParcialParametro {
       $oDaoProgressaoParcial = db_utils::getDao("parametroprogressaoparcial");
 
       $sWhere                   = "ed112_escola = {$iEscola}";
+
+      /* ATENCAO: PLUGIN ParametroProgressaoParcial - QUERY - INSTALADO AQUI - NAO REMOVER */
       $sSqlProgressaoParcial    = $oDaoProgressaoParcial->sql_query_file(null, "*", null, $sWhere);
       $rsDadosProgressaoParcial = $oDaoProgressaoParcial->sql_record($sSqlProgressaoParcial);
       if ($oDaoProgressaoParcial->numrows == 1) {
@@ -148,6 +152,7 @@ final class ProgressaoParcialParametro {
         $this->setQuantidadeDisciplina($oDadosProgressaoParcial->ed112_quantidadedisciplinas);
         $this->setJustificativa($oDadosProgressaoParcial->ed112_justificativa);
         $this->iCodigo = $oDadosProgressaoParcial->ed112_sequencial;
+        /* ATENCAO: PLUGIN ParametroProgressaoParcial - CONSTRUTOR - INSTALADO AQUI - NAO REMOVER */
         unset($oDadosProgressaoParcial);
       }
     }
@@ -387,6 +392,8 @@ final class ProgressaoParcialParametro {
     }
   }
 
+  /* ATENCAO: PLUGIN ParametroProgressaoParcial - GETTER E SETTER - INSTALADO AQUI - NAO REMOVER */
+
   /**
    * Persiste os dados da configuracao da progressao parcial;
    * @throws BusinessException
@@ -396,7 +403,7 @@ final class ProgressaoParcialParametro {
     if (!db_utils::inTransaction()) {
      throw new DBException("Não existe transação com o banco de dados ativa.");
     }
-
+    
     $oDaoParametroProgressaoParcial = db_utils::getDao("parametroprogressaoparcial");
 
     $lDisciplinaElimina = $this->disciplinaAprovadaEliminaProgressao() === true ? "true" : "false";
@@ -412,10 +419,13 @@ final class ProgressaoParcialParametro {
 
     $oDaoParametroProgressaoParcial->ed112_justificativa = $this->getJustificativa();
 
+    /* ATENCAO: PLUGIN ParametroProgressaoParcial - Definindo Parametro Incluir - INSTALADO AQUI - NAO REMOVER */
+
     if (empty($this->iCodigo)) {
 
       $oDaoParametroProgressaoParcial->incluir(null);
       $this->iCodigo = $oDaoParametroProgressaoParcial->ed112_sequencial;
+      /* ATENCAO: PLUGIN ParametroProgressaoParcial - Setando Parametro Incluir - INSTALADO AQUI - NAO REMOVER */
     } else {
 
       $oDaoParametroProgressaoParcial->ed112_sequencial = $this->iCodigo;
@@ -428,6 +438,8 @@ final class ProgressaoParcialParametro {
       $sErroMensagem .= "Erro Técnico: {$oDaoParametroProgressaoParcial->erro_msg}";
       throw new BusinessException($sErroMensagem);
     }
+
+    /* ATENCAO: PLUGIN ParametroProgressaoParcial - INCLUINDO E ALTERANDO - INSTALADO AQUI - NAO REMOVER */
 
     /**
      * Persistimos os dados das etapas;

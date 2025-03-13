@@ -27,14 +27,14 @@
 
 define("TAREFA", true);
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefalog_classe.php");
-include("classes/db_tarefalogsituacao_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefalog_classe.php"));
+include(modification("classes/db_tarefalogsituacao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cltarefa            = new cl_tarefa;
@@ -64,7 +64,7 @@ if(isset($incluir)){
 		  $cltarefa->at40_sequencial = $cltarefalog->at43_tarefa;
 		  $cltarefa->alterar($cltarefalog->at43_tarefa);
 	      if($cltarefa->erro_status!=0) {
-			  echo "<script>top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."'</script>";
+			  echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."'</script>";
 	      }
 	      else {
 		      $sqlerro  = true;
@@ -103,13 +103,13 @@ if(isset($incluir)){
 			      $sqlerro = true;
 		      }
 		      else {
-				  echo "<script>top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."'</script>";
+				  echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."'</script>";
 		      }
           }
   	  } 
   }
   else {
-	  echo "<script>top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."'</script>";
+	  echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."'</script>";
   }
   db_fim_transacao($sqlerro);
 }else if(isset($excluir)){
@@ -130,7 +130,7 @@ if(isset($incluir)){
 	    $erro_msg = $cltarefalog->erro_msg; 
     }
     else {
-	  echo "<script>top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."'</script>";
+	  echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."'</script>";
     } 
   	
     db_fim_transacao($sqlerro);
@@ -161,7 +161,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmtarefalogand.php");
+	include(modification("forms/db_frmtarefalogand.php"));
 	?>
     </center>
 	</td>

@@ -55,10 +55,24 @@ db_input('h02_descr',60,$Ih02_descr,true,'text',$db_opcao,"")
     <td nowrap title="<?=@$Th02_obs?>">
        <?=@$Lh02_obs?>
     </td>
-    <td> 
-<?
-db_textarea('h02_obs',5,70,$Ih02_obs,true,'text',$db_opcao,"")
-?>
+    <td>
+        <?
+        db_textarea('h02_obs',5,70,$Ih02_obs,true,'text',$db_opcao,"");
+        ?>
+    </td>
+  </tr>
+  <tr>
+
+    <td>
+      <?php
+        db_ancora("<b>Tipo de treinamento/Capacitacao da tabela 28 do esocial:</b>","pesquisaOpcoes('tabela28','h02_tipotreinamento')",$db_opcao,"width: 100%;");
+      ?>
+    </td>
+    <td>
+      <?php
+        db_input("h02_tipotreinamento",10,$Ih02_tipotreinamento,true,'hidden',$db_opcao);
+        db_input("h84_descricao",40,$Ih84_descricao,true,'text',3);
+      ?>
     </td>
   </tr>
   </table>
@@ -68,7 +82,7 @@ db_textarea('h02_obs',5,70,$Ih02_obs,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tabcurritipo','func_tabcurritipo.php?funcao_js=parent.js_preenchepesquisa|h02_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tabcurritipo','func_tabcurritipo.php?funcao_js=parent.js_preenchepesquisa|h02_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tabcurritipo.hide();
@@ -78,4 +92,41 @@ function js_preenchepesquisa(chave){
   }
   ?>
 }
+
+function pesquisaOpcoes(sArquivoDados,sIdCampo) {
+
+parametros  = "sArquivoDados="+sArquivoDados;
+parametros += "&sIdCampo="+sIdCampo;
+parametros += "&funcao_js=retornoOpcoes1";
+
+// console.log(parametros)
+
+  js_OpenJanelaIframe('',
+                      'db_iframe_opcoes',
+                      'func_rhlocaltrabopcoesesocial.php?'+parametros,
+                      'Pesquisar Opcoes',
+                      true);
+
+
+
+}
+
+/*
+* Funcao de retorno da opcao escolhida
+*/
+function retornoOpcoes1(sIdCampo,iCodigo,sDescricao) {
+
+var sIdCampoDescricao = "h84_descricao";
+var objCampo = eval(`document.form1.${sIdCampo}`);
+
+var objCampoDescricao = eval(`document.form1.${sIdCampoDescricao}`);
+
+objCampo.value = iCodigo;
+objCampoDescricao.value = sDescricao;
+
+  db_iframe_opcoes.hide();
+
+}
+
+
 </script>

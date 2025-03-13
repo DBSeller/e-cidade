@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sql.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_issportetipo_classe.php");
-include("classes/db_ativid_classe.php");
-include("classes/db_ativtipo_classe.php");
-include("classes/db_tipcalc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_issportetipo_classe.php"));
+include(modification("classes/db_ativid_classe.php"));
+include(modification("classes/db_ativtipo_classe.php"));
+include(modification("classes/db_tipcalc_classe.php"));
 
 $clissportetipo = new cl_issportetipo;
 $clativid = new cl_ativid;
@@ -247,10 +247,10 @@ background-color:#ccddcc;
 //---------------------------------------------------------------
 function js_pesquisa_tipcalc(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issportetipo','func_tipcalc.php?funcao_js=parent.js_mostraportetipo1|q81_codigo|q81_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issportetipo','func_tipcalc.php?funcao_js=parent.js_mostraportetipo1|q81_codigo|q81_descr','Pesquisa',true);
   }else{
      if(document.form1.q81_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_issportetipo','func_tipcalc.php?pesquisa_chave='+document.form1.q81_codigo.value+'&funcao_js=parent.js_mostraportetipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issportetipo','func_tipcalc.php?pesquisa_chave='+document.form1.q81_codigo.value+'&funcao_js=parent.js_mostraportetipo','Pesquisa',false);
      }else{
        document.form1.q81_descr.value = ''; 
      }
@@ -277,7 +277,7 @@ if (isset($atualizar)){
       echo "<script> document.form1.".$clativtipo->erro_campo.".style.backgroundColor='#99A9AE';</script>";
       echo "<script> document.form1.".$clativtipo->erro_campo.".focus();</script>";
     }else{ 
-      echo"<script>top.corpo.location.href='iss1_ativtipo004.php';</script>";
+      echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='iss1_ativtipo004.php';</script>";
     }
 }
 ?>

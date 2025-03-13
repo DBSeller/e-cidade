@@ -1,33 +1,33 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("model/CgmFactory.model.php");
-require_once("model/issqn/alvara/Alvara.model.php");
-require_once("std/DBDate.php");
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification("model/issqn/alvara/Alvara.model.php"));
+require_once(modification("std/DBDate.php"));
 
 /**
  * Model para processamento de arquivo para optantes do simples nacional
@@ -53,6 +53,10 @@ require_once("std/DBDate.php");
    * @var String
    */
   private $sDataLimite;
+  /**
+   * @var array
+   */
+  private $aEmpresasModificadas = [];
 
   public function __construct() {}
 
@@ -117,7 +121,7 @@ require_once("std/DBDate.php");
   /**
    * Realiza a validação automatica do arquivo.
    */
-  public function validacaoAutomatica() {
+  public function validacaoAutomatica($lReprocessamento=false) {
 
     $rsEmpresas     = $this->getEmpresas();
 
@@ -135,22 +139,32 @@ require_once("std/DBDate.php");
 
       if (empty($sValidaEmpresa)) {
 
-        $oDaoArquivoSimplesImportacaoDetalhe->q142_apto       = 'true';
+        $oDaoArquivoSimplesImportacaoDetalhe->q142_apto       = 't';
         $oDaoArquivoSimplesImportacaoDetalhe->q142_observacao = "";
       } else {
 
-        $oDaoArquivoSimplesImportacaoDetalhe->q142_apto       = 'false';
+        $oDaoArquivoSimplesImportacaoDetalhe->q142_apto       = 'f';
         $oDaoArquivoSimplesImportacaoDetalhe->q142_observacao = $sValidaEmpresa;
       }
 
-      $oDaoArquivoSimplesImportacaoDetalhe->q142_sequencial = $oEmpresa->q142_sequencial;
-      $oDaoArquivoSimplesImportacaoDetalhe->alterar($oEmpresa->q142_sequencial);
+      if($oEmpresa->q142_apto != $oDaoArquivoSimplesImportacaoDetalhe->q142_apto && $lReprocessamento == true) {
+        
+        $oEmpresa->q142_apto       = $oDaoArquivoSimplesImportacaoDetalhe->q142_apto;
+        $oEmpresa->q142_observacao = $oDaoArquivoSimplesImportacaoDetalhe->q142_observacao;
+        $this->aEmpresasModificadas[] = $oEmpresa;
+      }
+
+      if($lReprocessamento == false) {
+
+        $oDaoArquivoSimplesImportacaoDetalhe->q142_sequencial = $oEmpresa->q142_sequencial;
+        $oDaoArquivoSimplesImportacaoDetalhe->alterar($oEmpresa->q142_sequencial);
+      }
     }
   }
 
-  private function getEmpresas( $lAptos = null ){
+  private function getEmpresas( $lAptos = null, $aFiltroRegistro = []){
 
-    $oDaoArquivoSimplesImportacaoDetalhe = db_utils::getDao('arquivosimplesimportacaodetalhe');
+    $oDaoArquivoSimplesImportacaoDetalhe = new cl_arquivosimplesimportacaodetalhe();
 
     $sWhere       = "q142_arquivosimplesimportacao = {$this->iArquivoSimplesImportacao} ";
 
@@ -158,7 +172,21 @@ require_once("std/DBDate.php");
   		$sWhere .= " and q142_apto = " . ($lAptos ? 'true' : 'false');
   	}
 
-  	$sSqlEmpresas = $oDaoArquivoSimplesImportacaoDetalhe->sql_query_file(null, 'q142_sequencial, q142_cnpj', null, $sWhere);
+    if(count($aFiltroRegistro) > 0) {
+
+      $sWhere .= " and  q142_sequencial in (".implode(",", $aFiltroRegistro).")";
+    }
+    
+    
+  	$sSqlEmpresas = $oDaoArquivoSimplesImportacaoDetalhe->sql_query_file(null, 
+                                                                        'q142_sequencial, 
+                                                                         q142_arquivosimplesimportacao, 
+                                                                         q142_cnpj, 
+                                                                         q142_cnae, 
+                                                                         q142_apto, 
+                                                                         q142_observacao', 
+                                                                         null, $sWhere);
+                                                                             
     $rsEmpresas   = $oDaoArquivoSimplesImportacaoDetalhe->sql_record($sSqlEmpresas);
 
     return $rsEmpresas;
@@ -166,7 +194,7 @@ require_once("std/DBDate.php");
 
   public function isValido() {
 
-    $oDaoArquivoSimplesImportacaoDetalhe = db_utils::getDao('arquivosimplesimportacaodetalhe');
+    $oDaoArquivoSimplesImportacaoDetalhe = new cl_arquivosimplesimportacaodetalhe();
 
     $sWhere  = "q142_arquivosimplesimportacao = {$this->iArquivoSimplesImportacao}";
     $sWhere .= " and (q142_observacao is null";
@@ -192,7 +220,7 @@ require_once("std/DBDate.php");
    */
   private function validaEmpresa( $iCnpj ){
 
-    $sMensagem = "";
+    $aMensagem = [];
 
     /**
      * Verificar se existe CGM / E se esta duplicado
@@ -214,44 +242,58 @@ require_once("std/DBDate.php");
     /**
      * verificar se existe inscricao ativa
      */
-    $iIncricao = $this->getInscricaoByCgm($iCgm);
-
-    if (!$iIncricao) {
+    $aInscricao = $this->getInscricaoByCgm($iCgm);
+    if (empty($aInscricao)) {
 
       return _M ( self::MENSAGENS . 'inscricao_nao_cadastrada' );
     }
 
-    $oEmpresa = new Empresa($iIncricao);
-    if (!$oEmpresa->isAtiva()) {
+    foreach ($aInscricao as $iInscricao) {
+      $oEmpresa = new Empresa($iInscricao);
 
-      return _M ( self::MENSAGENS . 'inscricao_invalida' );
+      if ($this->isInscricaoBaixada($iInscricao)) {
+        $aMensagem[$iInscricao] = _M ( self::MENSAGENS . 'inscricao_baixada' );
+        continue;
+      }
+
+      if (!$oEmpresa->isAtiva()) {
+        $aMensagem[$iInscricao] = _M ( self::MENSAGENS . 'inscricao_invalida' );
+        continue;
+      }
+
+      /**
+       * Verificar se possui débito vencido
+       */
+      $oDebitosVencidos = $oEmpresa->getDebitos()->getDebitosVencidos($this->sDataLimite);
+      if (count( (array) $oDebitosVencidos )  > 0) {
+        return _M ( self::MENSAGENS . 'empresa_com_debitos_em_aberto' );
+      }
+
+      /**
+       * Alvara valido - No redmine 19502 foi solicitado para não ser mais validado o alvará
+       */
+      // $iCodigoAlvara = $this->getCodigoAlvaraByInscricao($oEmpresa->getInscricao());
+      // if(!$iCodigoAlvara){
+      //   return _M ( self::MENSAGENS . 'empresa_sem_alvara' );
+      // }
+
+      // $oAlvara       = new Alvara($iCodigoAlvara);
+      // if( $oAlvara->getSituacao() == Alvara::INATIVO ) {
+      //   return _M ( self::MENSAGENS . 'alvara_inativo' );
+      // }
+      if (!$this->isInscricaoBaixada($iInscricao) && ($oEmpresa->isAtiva())) {
+        $aMensagem[$iInscricao] = '';
+      }
     }
 
-    /**
-     * Verificar se possui débito vencido
-     */
-    $oDebitosVencidos = $oEmpresa->getDebitos()->getDebitosVencidos($this->sDataLimite);
-    if (count( (array) $oDebitosVencidos )  > 0) {
-
-      return _M ( self::MENSAGENS . 'empresa_com_debitos_em_aberto' );
+    if (sizeof($aMensagem)>1) {
+      foreach ($aMensagem as $value) {
+        if (empty($value)) {
+          return '';
+        }
+      }
     }
-
-    /**
-     * Alvara valido
-     */
-    $iCodigoAlvara = $this->getCodigoAlvaraByInscricao($oEmpresa->getInscricao());
-    if(!$iCodigoAlvara){
-
-      return _M ( self::MENSAGENS . 'empresa_sem_alvara' );
-    }
-
-    $oAlvara       = new Alvara($iCodigoAlvara);
-    if( $oAlvara->getSituacao() == Alvara::INATIVO ) {
-
-      return _M ( self::MENSAGENS . 'alvara_inativo' );
-    }
-
-    return $sMensagem;
+    return array_pop(array_reverse($aMensagem));
   }
 
   public function gerarTxt() {
@@ -260,7 +302,7 @@ require_once("std/DBDate.php");
 
     $dtArquivo = date("Ymd");
     $tArquivo  = date("His");
-
+    
     $sNomeArquivo = "01-$iCodTom-UP-OPC-$dtArquivo-$tArquivo.txt";
 
     $rsFile       = fopen("tmp/" . $sNomeArquivo, "w");
@@ -268,18 +310,22 @@ require_once("std/DBDate.php");
     $rsEmpresas = $this->getEmpresas(false);
 
     if (!$rsEmpresas) {
-      return null;
+      throw new Exception("[ERRO] - Não foi possível buscar os registros");
     }
+    
+    if(pg_num_rows($rsEmpresas) == 0) {
 
+      throw new Exception( _M( self::MENSAGENS . 'todos_os_registros_aptos' ));
+    }
     /**
      * HEADER
      */
-    fwrite($rsFile, str_repeat("0", 14) . "\n");
+    fwrite($rsFile, "INI".str_repeat("0", 11) . "\n");
 
     for ($i = 0; $i < pg_num_rows($rsEmpresas); $i++) {
 
       $oEmpresa = db_utils::fieldsMemory($rsEmpresas, $i);
-      fwrite($rsFile, str_pad($oEmpresa->q142_cnpj, 14, "0", STR_PAD_LEFT) . "\n");
+      fwrite($rsFile, str_pad($oEmpresa->q142_cnpj, 11, "0", STR_PAD_LEFT) . "\n");
     }
 
     /**
@@ -290,7 +336,6 @@ require_once("std/DBDate.php");
     fclose($rsFile);
 
     return "tmp/$sNomeArquivo";
-
   }
 
   private function getTom() {
@@ -314,12 +359,12 @@ require_once("std/DBDate.php");
    * @return null|String
    */
   public function relatorioInconsistencias() {
-    $oDaoArquivoSimplesDetalhe = db_utils::getDao('arquivosimplesimportacaodetalhe');
+    $oDaoArquivoSimplesDetalhe = new cl_arquivosimplesimportacaodetalhe();
 
     $sSql = $oDaoArquivoSimplesDetalhe->sql_query_inconsistencias( null,
-                                                                   'q142_cnpj, z01_numcgm, z01_nome, q02_inscr,'
-                                                                   . ' q142_observacao, q64_nomearquivo',
-                                                                   null,
+                                                                   "distinct ON (z01_numcgm,q142_cnpj) q142_cnpj, z01_numcgm, z01_nome, q02_inscr,"
+                                                                   . " q142_observacao, q64_nomearquivo, (array_to_string(array(SELECT x.q02_inscr FROM issbase x WHERE x.q02_numcgm = cgm.z01_numcgm),', ','')) AS inscricoes",
+                                                                   'q142_cnpj',
                                                                    "q64_sequencial = {$this->iArquivoSimplesImportacao}"
                                                                    . " and q142_apto = false" );
 
@@ -337,7 +382,7 @@ require_once("std/DBDate.php");
     $oPdf->addTableHeader('CNPJ', 25, 4, 'C');
     $oPdf->addTableHeader('CGM', 13, 4, 'C');
     $oPdf->addTableHeader('NOME', 70, 4, 'C');
-    $oPdf->addTableHeader('INSCRIÇÃO', 18, 4, 'C');
+    $oPdf->addTableHeader('INSCRIÇÃO', 35, 4, 'C');
     $oPdf->addTableHeader('MOTIVO', 0, 4, 'C');
 
     $oRegistro = db_utils::fieldsMemory($rsIncosistencias, 0);
@@ -372,12 +417,36 @@ require_once("std/DBDate.php");
         $oRegistro->q142_observacao = substr($oRegistro->q142_observacao, 0, strlen($oRegistro->q142_observacao)-2);
       }
 
+      /**
+       * Cria outra linha caso o número de inscrições seja maior que o tamanho da célula
+       */ 
+
+      if($oPdf->GetStringWidth($oRegistro->inscricoes) > 35){
+          $y = $oPdf->y;
+          $oPdf->Cell(25, 8, $oRegistro->q142_cnpj, true, 0, 'C', $lFill);
+          $oPdf->Cell(13, 8, $oRegistro->z01_numcgm, true, 0, 'C', $lFill);
+          $oPdf->Cell(70, 8, $oRegistro->z01_nome, true, 0, 'L', $lFill);
+          $oPdf->setX(118);
+          $oPdf->MultiCell(35, 4, $oRegistro->inscricoes, true, "L", $lFill, 0);
+          $ym = $oPdf->y;
+          $oPdf->setY($y);
+          $oPdf->setX(153);
+          $oPdf->Cell(0, 8,  $oRegistro->q142_observacao, true, 1, 'L', $lFill);
+
+          $oPdf->setY($ym);
+        
+      } else {
+
       $oPdf->Cell(25, 4, $oRegistro->q142_cnpj, true, 0, 'C', $lFill);
       $oPdf->Cell(13, 4, $oRegistro->z01_numcgm, true, 0, 'C', $lFill);
       $oPdf->Cell(70, 4, $oRegistro->z01_nome, true, 0, 'L', $lFill);
-      $oPdf->Cell(18, 4, $oRegistro->q02_inscr, true, 0, 'C', $lFill);
+      $oPdf->Cell(35, 4, $oRegistro->inscricoes, true, 0, 'C', $lFill);
       $oPdf->Cell(0, 4,  $oRegistro->q142_observacao, true, 1, 'L', $lFill);
+      
+      }
     }
+
+    $oPdf->Cell(0, 4,  'TOTAL: '.$oDaoArquivoSimplesDetalhe->numrows, true, 1, 'L', true);
 
     $sCaminho = "tmp/Inconsistencias_Simples_Nacional_" . date('ymd-His') . ".pdf";
 
@@ -393,7 +462,7 @@ require_once("std/DBDate.php");
    */
   public function getCgmByCnpj($iCnpj) {
 
-    $oDaoCgm = db_utils::getDao('cgm');
+    $oDaoCgm = new cl_cgm();
 
     $sWhereCgm = " z01_cgccpf = '{$iCnpj}'";
     $sSqlCgm   = $oDaoCgm->sql_query_file(null,"z01_numcgm",null,$sWhereCgm);
@@ -405,26 +474,29 @@ require_once("std/DBDate.php");
   /**
    * Retorna a Inscrição da empresa a partir do CGM informado
    * @param  integer $iCgm CGM da empresa
-   * @return integer       INscrição
+   * @return array       INscrição
    */
   public function getInscricaoByCgm($iCgm) {
 
-    $oDaoIssbase = db_utils::getDao('issbase');
+    $oDaoIssbase = new cl_issbase();
 
     $dtOper         = date('Y-m-d');
-    $sWhereIssbase  = " q02_numcgm = {$iCgm} and (q02_dtbaix is null or q02_dtbaix < '{$dtOper}') ";
-    $sWhereIssbase .= " and (q07_inscr is null or (q07_databx is null and (q07_datafi is null or q07_datafi < '{$dtOper}'))) ";
+    $sWhereIssbase  = " q02_numcgm = {$iCgm} ";
 
-    $sSqlIssbase    = $oDaoIssbase->sql_query_atividades(null,"q02_inscr",null,$sWhereIssbase);
+    $sSqlIssbase    = $oDaoIssbase->sql_query(null,"q02_inscr",null,$sWhereIssbase);
     $rsIssbase      = $oDaoIssbase->sql_record($sSqlIssbase);
+    $aInscricao = [];
 
     if ( $oDaoIssbase->numrows > 0 ) {
-      $iInscricao = db_utils::fieldsMemory($rsIssbase,0)->q02_inscr;
+      // $iInscricao = db_utils::fieldsMemory($rsIssbase,0)->q02_inscr;
+      foreach (pg_fetch_all($rsIssbase) as $value) {
+        array_push($aInscricao, $value['q02_inscr']);
+      }
     } else {
-      $iInscricao = null;
+      $aInscricao = [];
     }
 
-    return $iInscricao;
+    return $aInscricao;
   }
 
   /**
@@ -491,13 +563,168 @@ require_once("std/DBDate.php");
 
       if ($lApto !== null){
 
-        $oDaoArquivoSimplesImportacaoDetalhe->q142_apto = 'false';
+        $oDaoArquivoSimplesImportacaoDetalhe->q142_apto = 'f';
         if ($lApto) {
-          $oDaoArquivoSimplesImportacaoDetalhe->q142_apto = 'true';
+          $oDaoArquivoSimplesImportacaoDetalhe->q142_apto = 't';
         }
       }
 
       $oDaoArquivoSimplesImportacaoDetalhe->alterar($oEmpresa->iSequencial);
     }
+  }
+
+  /**
+   * Retorna se a inscrição está baixada
+   * @param  integer $iInscricao Inscrição
+   * @return boolean
+   */
+  public function isInscricaoBaixada($iInscricao) {
+
+    $oDaoIssbase = new cl_issbase();
+    // $dtOper         = date('Y-m-d');  
+    // $sWhereIssbase  = " q02_inscr = {$iInscricao} and (q02_dtbaix is null or q02_dtbaix > '{$dtOper}') ";
+
+    $sWhereIssbase     = " q02_inscr = {$iInscricao} and (q02_dtbaix is not null) ";
+    $sSqlIssbase       = $oDaoIssbase->sql_query_atividades(null,"q02_inscr",null,$sWhereIssbase);
+    $rsIssbase         = $oDaoIssbase->sql_record($sSqlIssbase);
+    $oInscricaoBaixada = db_utils::fieldsMemory($rsIssbase,0);
+
+    if ( $oDaoIssbase->numrows > 0 ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public function gerarTxtArquivosADC($aCNPJAlterado){
+    
+    
+    $iCodTom      = $this->getTom();
+    $dtArquivo    = date("Ymd");
+    $tArquivo     = date("His");    
+    
+    $aCnpj        = array_reduce($aCNPJAlterado, function($dados, $data) 
+                       {  
+                         
+                         if($data->q142_apto == 'f') {
+                           
+                           $dados[] = $data->q142_sequencial;
+                         }                                  
+                         
+                         return $dados;
+                       }              
+                      );
+    if(count($aCnpj) == 0) {
+    
+      return false;
+    }  
+    
+    $rsEmpresas = $this->getEmpresas(true, $aCnpj);
+
+    if (!$rsEmpresas) {
+      throw new Exception("[ERRO] - Não foi possível buscar os registros");
+    }
+    
+    if(pg_num_rows($rsEmpresas) == 0) {
+
+      return false;
+    }
+    
+    $sNomeArquivo = "03-$iCodTom-UP-OPC-$dtArquivo-$tArquivo.txt";
+    $rsFile       = fopen("tmp/" . $sNomeArquivo, "w");
+    /**
+     * HEADER
+     */
+    fwrite($rsFile, "ADC".str_repeat("0", 11) . "\n");
+
+    for ($i = 0; $i < pg_num_rows($rsEmpresas); $i++) {
+
+      $oEmpresa = db_utils::fieldsMemory($rsEmpresas, $i);
+      fwrite($rsFile, str_pad($oEmpresa->q142_cnpj, 11, "0", STR_PAD_LEFT) . "\n");
+    }
+
+    /**
+     * TRAILLER
+     */
+    fwrite($rsFile, str_repeat("9", 14));
+
+    fclose($rsFile);
+    
+    return "tmp/$sNomeArquivo"; 
+  }
+
+  public function gerarTxtArquivosEXC($aCNPJAlterado){
+    
+    $iCodTom      = $this->getTom();
+    $dtArquivo    = date("Ymd");
+    $tArquivo     = date("His");    
+    $aCnpj        = array_reduce($aCNPJAlterado, function($dados, $data) 
+                      {  
+                       
+                       if($data->q142_apto == 't') {
+                         
+                         $dados[] = $data->q142_sequencial;
+                       }                                  
+                       
+                       return $dados;
+                     }              
+                    );
+
+    if(count($aCnpj) == 0) {
+    
+      return false;
+    }  
+                  
+    $rsEmpresas = $this->getEmpresas(false, $aCnpj);
+
+    if (!$rsEmpresas) {
+
+      throw new Exception("[ERRO] - Não foi possível buscar os registros");
+    }
+    
+    if(pg_num_rows($rsEmpresas) == 0) {
+
+      return false;
+    }
+    
+    $sNomeArquivo = "04-$iCodTom-UP-OPC-$dtArquivo-$tArquivo.txt";
+    $rsFile       = fopen("tmp/" . $sNomeArquivo, "w"); 
+    
+    /**
+     * HEADER
+     */
+    fwrite($rsFile, "EXC".str_repeat("0", 11) . "\n");
+
+    for ($i = 0; $i < pg_num_rows($rsEmpresas); $i++) {
+
+      $oEmpresa = db_utils::fieldsMemory($rsEmpresas, $i);
+      fwrite($rsFile, str_pad($oEmpresa->q142_cnpj, 11, "0", STR_PAD_LEFT) . "\n");
+    }
+
+    /**
+     * TRAILLER
+     */
+    fwrite($rsFile, str_repeat("9", 14));
+
+    fclose($rsFile);
+
+    return "tmp/$sNomeArquivo"; 
+  }
+   
+  public function empresasModificadasReprocessamento() {
+    return $this->aEmpresasModificadas;
+  }
+
+  public function getArquivosGerados() {
+
+    $oDaoArquivoSimplesImportacaoRetorno = new cl_arquivosimplesimportacaoretorno();
+    $sSqlRetono                          = $oDaoArquivoSimplesImportacaoRetorno
+                          ->sql_query(null, 
+                                     "q182_sequencial, q182_nomearquivo, nome", 
+                                     null, 
+                                     "q182_arquivosimplesimportacao = {$this->iArquivoSimplesImportacao}");
+    $rsRetorno                           = $oDaoArquivoSimplesImportacaoRetorno->sql_record($sSqlRetono);
+    
+    return db_utils::getCollectionByRecord( $rsRetorno, false, false, true );
   }
 }

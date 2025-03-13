@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_selecao_classe.php");
-include("classes/db_cfpess_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpesrescisao_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libpessoal.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_selecao_classe.php"));
+include(modification("classes/db_cfpess_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhpesrescisao_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libpessoal.php"));
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clselecao = new cl_selecao;
@@ -108,7 +108,7 @@ if(!isset($_SESSION['campomatriculas'])){
     }
   }
    
-  include("libs/db_sql.php");
+  include(modification("libs/db_sql.php"));
   $clsql = new cl_gera_sql_folha;
   $clsql->usar_pes = true;
   $clsql->usar_pad = true;
@@ -186,7 +186,7 @@ if($r30_regist != '' ){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
       <center>
         <?
-        include("forms/db_frmrhpesrescis001.php");
+        include(modification("forms/db_frmrhpesrescis001.php"));
         ?>
       </center>
     </td>

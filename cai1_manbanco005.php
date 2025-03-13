@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,22 +28,22 @@
 /**
  * Libs 
  */
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_usuariosonline.php';
-require_once 'libs/db_utils.php';
-require_once 'libs/db_app.utils.php';
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/db_utils.php");
+require_once modification("libs/db_app.utils.php");
 
 /**
  * classes 
  */
-require_once 'classes/db_cadban_classe.php';
+require_once modification("classes/db_cadban_classe.php");
 
 /**
  * Funções 
  */
-require_once 'dbforms/db_funcoes.php';
+require_once modification("dbforms/db_funcoes.php");
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -87,7 +87,7 @@ if ( isset($alterar) ) {
 	<br /> <br /> 
 
 	<center>
-		<?php require_once 'forms/db_frmcadbanaltpos.php'; ?>
+		<?php require_once modification("forms/db_frmcadbanaltpos.php"); ?>
 	</center>
 
 	<?php db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit")); ?>

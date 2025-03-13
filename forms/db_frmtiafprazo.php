@@ -76,10 +76,10 @@ $clrotulo->label("y90_codtiaf");
 <script>
 function js_pesquisay96_codtiaf(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_mostratiaf1|y90_codtiaf|y90_codtiaf','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiaf','func_tiaf.php?funcao_js=parent.js_mostratiaf1|y90_codtiaf|y90_codtiaf','Pesquisa',true);
   }else{
      if(document.form1.y96_codtiaf.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_tiaf','func_tiaf.php?pesquisa_chave='+document.form1.y96_codtiaf.value+'&funcao_js=parent.js_mostratiaf','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiaf','func_tiaf.php?pesquisa_chave='+document.form1.y96_codtiaf.value+'&funcao_js=parent.js_mostratiaf','Pesquisa',false);
      }else{
        document.form1.y90_codtiaf.value = ''; 
      }
@@ -98,7 +98,7 @@ function js_mostratiaf1(chave1,chave2){
   db_iframe_tiaf.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tiafprazo','func_tiafprazo.php?funcao_js=parent.js_preenchepesquisa|y96_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tiafprazo','func_tiafprazo.php?funcao_js=parent.js_preenchepesquisa|y96_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tiafprazo.hide();

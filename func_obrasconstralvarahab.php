@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_obrasconstr_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_obrasconstr_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -154,6 +154,7 @@ $clRotulo->label("ob06_lote");
 			  $sSqlHabiteSe = "   select *                                                                                             \n";
 			  $sSqlHabiteSe.= "     from (  select obrasconstr.ob08_codconstr,                                                         \n";
 			  $sSqlHabiteSe.= "                    obrasconstr.ob08_codobra,                                                           \n";
+			  $sSqlHabiteSe.= "                    obrasalvara.ob04_alvara as dl_Alvará,                                               \n";
 			  $sSqlHabiteSe.= "                    obrasconstr.ob08_area,                                                              \n";
 			  $sSqlHabiteSe.= "                    obras.ob01_nomeobra,                                                                \n";
 			  $sSqlHabiteSe.= "                    case when ob01_regular is false then ob06_setor  else j34_setor  end as ob06_setor ,\n";
@@ -173,6 +174,7 @@ $clRotulo->label("ob06_lote");
 			  $sSqlHabiteSe.= "                    {$sWhere}                                                                           \n";
 			  $sSqlHabiteSe.= "           group by obrasconstr.ob08_codconstr,                                                         \n";
 			  $sSqlHabiteSe.= "                    obrasconstr.ob08_codobra,                                                           \n";
+			  $sSqlHabiteSe.= "                    obrasalvara.ob04_alvara,                                                            \n";
 			  $sSqlHabiteSe.= "                    obras.ob01_nomeobra,                                                                \n";
 			  $sSqlHabiteSe.= "                    ob08_area,                                                                          \n";
 			  $sSqlHabiteSe.= "                    ob01_regular,                                                                       \n";
@@ -195,6 +197,7 @@ $clRotulo->label("ob06_lote");
 			    
 			    $sSqlHabiteSe = "   select obrasconstr.ob08_codconstr,                                                         ";
 			    $sSqlHabiteSe.= "          obrasconstr.ob08_codobra,                                                           ";
+				$sSqlHabiteSe.= "          obrasalvara.ob04_alvara as dl_Alvara,                                               ";
 			    $sSqlHabiteSe.= "          obras.ob01_nomeobra,                                                                ";
 			    $sSqlHabiteSe.= "          ob08_area                                                                           ";
 			    $sSqlHabiteSe.= "     from obrasconstr                                                                         ";
@@ -207,6 +210,7 @@ $clRotulo->label("ob06_lote");
 			    $sSqlHabiteSe.= "    where ob08_codconstr = {$pesquisa_chave}                                                  ";
 			    $sSqlHabiteSe.= " group by obrasconstr.ob08_codconstr,                                                         ";
 			    $sSqlHabiteSe.= "          obrasconstr.ob08_codobra,                                                           ";
+				$sSqlHabiteSe.= "          ob04_alvara,                                                                        ";
 			    $sSqlHabiteSe.= "          obras.ob01_nomeobra,                                                                ";
 			    $sSqlHabiteSe.= "          ob08_area                                                                           ";
 			    $sSqlHabiteSe.= "   having ob08_area <> sum(ob09_area)                                                         ";
@@ -243,3 +247,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

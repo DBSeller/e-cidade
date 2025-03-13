@@ -6,7 +6,7 @@ $contapagina = 1;
 $flag_rodape = false;
 
 if (!in_array("cl_orcreservasol",get_declared_classes())) {
-  include("classes/db_orcreservasol_classe.php");
+  include(modification("classes/db_orcreservasol_classe.php"));
 }
 $clorcreservasol = new cl_orcreservasol;
 $this->objpdf->AliasNbPages();
@@ -18,7 +18,7 @@ $xcol   = 4;
 
 // Imprime caixa externa
 $this->objpdf->setfillcolor(245);
-$this->objpdf->rect($xcol-2,$xlin-21,206,292,2,'DF','1234');
+$this->objpdf->rect($xcol-2,$xlin-21,206,297,2,'DF','1234');
 
 // Imprime o cabeçalho com dados sobre a prefeitura
 $this->objpdf->setfillcolor(255,255,255);
@@ -108,8 +108,8 @@ if($this->Sresumo != "") {
   }
 
 }else {
-	$this->objpdf->multicell(178,3, "" ,0,"j");
-	$getdoy = 35;
+	$this->objpdf->multicell(172,3, "" ,0,"j");
+	$getdoy = 39;
 }
 $this->objpdf->Setfont('Arial','',6);
 $setaut = $this->objpdf->gety()+3;
@@ -255,19 +255,18 @@ if ($this->linhasdosfornec==0 && $oldsetaut > 64) {
   $menos = 23;
 }
 
-
-$this->objpdf->rect($xcol,    $xlin+$getdoy+6,10,224-$menos,2,'DF','34');
+$this->objpdf->rect($xcol,    $xlin+$getdoy+6,10,205-$menos,2,'DF','20');
 // Caixa da quantidade
-$this->objpdf->rect($xcol+ 10,$xlin+$getdoy+6,12,224-$menos,2,'DF','34');
+$this->objpdf->rect($xcol+ 10,$xlin+$getdoy+6,12,205-$menos,2,'DF','20');
 
-$this->objpdf->rect($xcol+ 22,$xlin+$getdoy+6,22,224-$menos,2,'DF','34');
+$this->objpdf->rect($xcol+ 22,$xlin+$getdoy+6,22,205-$menos,2,'DF','20');
 // Caixa dos materiais ou serviços
-$this->objpdf->rect($xcol+ 44,$xlin+$getdoy+6,98,224-$menos,2,'DF','34');
+$this->objpdf->rect($xcol+ 44,$xlin+$getdoy+6,98,205-$menos,2,'DF','20');
 // Caixa dos valores unitários
-$this->objpdf->rect($xcol+142,$xlin+$getdoy+6,30,224-$menos,2,'DF','');
+$this->objpdf->rect($xcol+142,$xlin+$getdoy+6,30,205-$menos,2,'DF','');
 
 // Caixa dos valores totais dos itens
-$this->objpdf->rect($xcol+172,$xlin+$getdoy+6,30,224-$menos,2,'DF','34');
+$this->objpdf->rect($xcol+172,$xlin+$getdoy+6,30,205-$menos,2,'DF','34');
 
 $this->objpdf->sety($xlin+28);
 
@@ -394,7 +393,7 @@ for ($ii = 0; $ii < $this->linhasdositens ; $ii++) {
        $lin_mais = 0;
 //       $muda_pag = false;
   }
-
+  //number_format($valtot, 2, '.', '')
   $codigo         = pg_result($this->recorddositens,$ii,"pc11_codigo");
   $item           = pg_result($this->recorddositens,$ii,$this->item);
   $quantitem      = pg_result($this->recorddositens,$ii,$this->quantitem);
@@ -415,6 +414,7 @@ for ($ii = 0; $ii < $this->linhasdositens ; $ii++) {
   $unid           = pg_result($this->recorddositens,$ii,$this->sunidade);
   $abrevunid      = pg_result($this->recorddositens,$ii,$this->sabrevunidade);
   $servico        = pg_result($this->recorddositens,$ii,$this->sservico);
+  $servicoquant   = pg_result($this->recorddositens,$ii,$this->sservicoquant);
   $quantunid      = pg_result($this->recorddositens,$ii,$this->squantunid);
   $susaquant      = pg_result($this->recorddositens,$ii,$this->susaquant);
   $scodpcmater    = pg_result($this->recorddositens,$ii,$this->scodpcmater);
@@ -423,9 +423,11 @@ for ($ii = 0; $ii < $this->linhasdositens ; $ii++) {
   $iCodigoSolicita = pg_result($this->recorddositens,$ii,$this->pc10_numero);
   $sProcessoAdministrativo = pg_result($this->recorddositens,$ii,$this->processo_administrativo);
 
-
   $xtotal    += number_format($valtot, 2, '.', '');
-  $xtotalitem+= number_format($valoritem,2, '.', '');
+  if (!is_null($this->casadec_medicamentos)) {
+    //
+  }
+  $xtotalitem+= number_format($valoritem,2, ',', '');
 
   if ($item == 8){
 //    echo $this->objpdf->h."<br><br>";
@@ -453,13 +455,15 @@ for ($ii = 0; $ii < $this->linhasdositens ; $ii++) {
     $just = "JUSTIFICATIVA: ".trim(stripslashes($just));
   }
 
-  if ((isset($servico) && (trim($servico)=="f" || trim($servico)=="")) || !isset($servico)) {
+  $servico      = !empty($servico) ? trim($servico) : null;
+  $servicoquant = !empty($servicoquant) ? trim($servicoquant) : null;
+  if (!empty($servico) && $servico=="t" && !empty($servicoquant) && $servicoquant=="f") {
+      $unid = "SERVIÇO";
+  } else {
     $unid = trim(substr($unid,0,10));
     if ($susaquant=="t") {
       $unid .= " \n$quantunid UNIDADES\n";
     }
-  } else {
-    $unid = "SERVIÇO";
   }
 
   //    $descricaoitem .= " - ".$unid;
@@ -490,7 +494,12 @@ for ($ii = 0; $ii < $this->linhasdositens ; $ii++) {
   $mais   = $this->objpdf->NbLines(95,$scodpcmater.$descricaoitem.$barran);
   $mostra = $xlin;
   $x      = $this->muda_pag3($pagina,$mostra,$xcol,"false",$contapagina,$mais);
-  $this->objpdf->Row(array($item, $quantitem, $unid, $scodpcmater.$descricaoitem." - SOLICITAÇÃO: {$iCodigoSolicita} PA: {$sProcessoAdministrativo}".$barran, $valoritem, $valimp),3,false,$distanciar,0,true);
+
+  $casas_decimais = $this->casadec;
+  if (isset($this->casadec_medicamentos) and $this->grupo == 11 ) {
+    $casas_decimais = $this->casadec_medicamentos;
+  }
+  $this->objpdf->Row(array($item, $quantitem, $unid, $scodpcmater.$descricaoitem." - SOLICITAÇÃO: {$iCodigoSolicita} PA: {$sProcessoAdministrativo}".$barran, number_format($valoritem, $casas_decimais, ',', '.'), $valimp),3,false,$distanciar,0,true);
 
   $dist = 2.7;
   $x    = $this->muda_pag3($pagina,$xlin,$xcol,"false",$contapagina,0);
@@ -634,14 +643,10 @@ for ($ii = 0; $ii < $this->linhasdositens ; $ii++) {
   $rsMenuAcess    = db_query($sSqlMenuAcess);
   $sMenuAcess     = substr(pg_result($rsMenuAcess, 0, "menu"), 0, 50);
 
-  $oGlobals       = db_utils::postMemory($GLOBALS);
-
   $sNomeArquivo   = $_SERVER["PHP_SELF"];
   $sNomeArquivo   = substr( $sNomeArquivo, strrpos($_SERVER["PHP_SELF"], "/") + 1);
   $rsNomeUsuario  = db_query("select nome as nomeusu from db_usuarios where id_usuario = ".db_getsession("DB_id_usuario"));
   $sEmissor       = "";
-
-
 
   if ( pg_num_rows($rsNomeUsuario) > 0 ) {
   	$sEmissor = trim(pg_result($rsNomeUsuario, 0, 0));
@@ -658,4 +663,4 @@ for ($ii = 0; $ii < $this->linhasdositens ; $ii++) {
   $sRodape       .= ' - Data: '    . date("d/m/Y", db_getsession("DB_datausu") ) . " " . date("H:i:s");
 
   $this->objpdf->SetFont('Arial','I',5);
-  $this->objpdf->text(1, $this->objpdf->h - 3, $sRodape);
+  $this->objpdf->text(2.5, $this->objpdf->h - 3, $sRodape);

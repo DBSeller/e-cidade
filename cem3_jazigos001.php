@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_jazigos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_jazigos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cljazigos = new cl_jazigos;
@@ -82,7 +82,7 @@ $db_botao = false;
       $antigo="1";
       $result = $cljazigos->sql_record($cljazigos->sql_query($cm03_i_jazigo,"jazigos.*, cgm.z01_nome"));
       db_fieldsmemory($result,0);
-   	  include("forms/db_frmjazigos.php");
+   	  include(modification("forms/db_frmjazigos.php"));
    	 }
 	?>
     </center>
@@ -93,10 +93,10 @@ $db_botao = false;
 <script>
 function js_pesquisa_jazigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_jazigos','func_jazigos.php?funcao_js=parent.js_mostrajazigos1|cm03_i_codigo|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_jazigos','func_jazigos.php?funcao_js=parent.js_mostrajazigos1|cm03_i_codigo|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.cm03_i_jazigo.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_jazigos','func_jazigos.php?pesquisa_chave='+document.form1.cm03_i_jazigo.value+'&funcao_js=parent.js_mostrajazigos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_jazigos','func_jazigos.php?pesquisa_chave='+document.form1.cm03_i_jazigo.value+'&funcao_js=parent.js_mostrajazigos','Pesquisa',false);
      }else{
        document.form1.proprietario.value = '';
      }

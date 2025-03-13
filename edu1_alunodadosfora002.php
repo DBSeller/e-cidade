@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -118,8 +118,8 @@ if (isset($alterar)) {
     parent.document.formaba.a2.style.color = "black";
     parent.document.formaba.a3.disabled    = false;
     parent.document.formaba.a3.style.color = "black";
-    top.corpo.iframe_a2.location.href='edu1_foraaluno002.php?chavepesquisa=<?=$ed47_i_codigo?>';
-    top.corpo.iframe_a3.location.href='edu1_alunofora001.php?ed216_i_aluno=<?=$ed47_i_codigo?>&ed47_v_nome=<?=$ed47_v_nome?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='edu1_foraaluno002.php?chavepesquisa=<?=$ed47_i_codigo?>';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href='edu1_alunofora001.php?ed216_i_aluno=<?=$ed47_i_codigo?>&ed47_v_nome=<?=$ed47_v_nome?>';
   </script>
  <?
 
@@ -143,7 +143,7 @@ if (isset($alterar)) {
           <center>
             <fieldset style="width:95%"><legend><b>Alteração de Aluno</b></legend>
               <?
-                include("forms/db_frmalunodadosfora.php");
+                include(modification("forms/db_frmalunodadosfora.php"));
               ?>
             </fieldset>
           </center>

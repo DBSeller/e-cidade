@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,11 +26,11 @@
  */
 
 session_start();
-include("fpdf151/scpdf.php");
-include("classes/db_exemplar_classe.php");
-include("classes/db_assunto_classe.php");
-include("classes/db_localacervo_classe.php");
-include("classes/db_localizacao_classe.php");
+include(modification("fpdf151/scpdf.php"));
+include(modification("classes/db_exemplar_classe.php"));
+include(modification("classes/db_assunto_classe.php"));
+include(modification("classes/db_localacervo_classe.php"));
+include(modification("classes/db_localizacao_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 $lista = db_getsession('sListaImpressao');

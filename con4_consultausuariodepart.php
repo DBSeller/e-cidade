@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -37,7 +37,7 @@ $sqldepart = "select distinct db_depart.coddepto, descrdepto,instit
               inner join db_depart on db_depusu.coddepto = db_depart.coddepto 
               where db_depusu.id_usuario = $id_usuario
               ";
-$resultdepart = pg_query($sqldepart);
+$resultdepart = db_query($sqldepart);
 $linhasdepart = pg_num_rows($resultdepart);
 ?>
 <html>

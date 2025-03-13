@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,55 +25,66 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas     = new cl_criaabas;
 $db_opcao = 1;
 ?>
 <html>
 <head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
-<table width="790" height="18"  border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
+
 <table width="100" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-     <?
-	 $clcriaabas->identifica = array (
-	                                   "orcdotacao"      => "Dotação",
-	                                   "orcdotacaocontr" => "Contra-Partida"
-	                                 ); 
-	 $clcriaabas->src        = array("orcdotacao"      => "orc4_manutdotacao004.php");
-	 $clcriaabas->disabled   = array("orcdotacaocontr" => "true"); 
-	 $clcriaabas->sizecampo  = array(
-	                                "orcdotacao"      => 30,
-	                                "orcdotacaocontr" => 30
-	                                );
-	 $clcriaabas->cria_abas(); 
-       ?> 
-       </td>
+    <tr>
+        <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
+            <?
+            $clcriaabas->identifica = array (
+                "orcdotacao"      => "Dotação",
+                "orcdotacaocontr" => "Contra-Partida",
+                "dotacaoplanoorcamentario" => "Plano Orçamentário"
+            );
+            $clcriaabas->src        = array(
+                "orcdotacao"      => "orc4_manutdotacao004.php",
+                'dotacaoplanoorcamentario' => 'orc4_dotacaoplanoorcamentario001.php'
+            );
+            $clcriaabas->disabled   = array(
+                "orcdotacaocontr" => "true"
+            );
+            $clcriaabas->sizecampo  = array(
+                "orcdotacao"      => 40,
+                "orcdotacaocontr" => 40,
+                "dotacaoplanoorcamentario" => 40,
+            );
+            $clcriaabas->cria_abas();
+            ?>
+        </td>
     </tr>
-  </table>
-  <form name="form1">
-  </form>
-      <? 
-	db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-      ?>
-  </body>
-  </html>
+</table>
+<form name="form1">
+</form>
+<?php
+db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+?>
+</body>
+</html>
+
+<script>
+
+    var abaPlanoOrcamentario = document.getElementsByName('dotacaoplanoorcamentario');
+    abaPlanoOrcamentario[0].addEventListener('click',
+        function() {
+            iframe_dotacaoplanoorcamentario.getPlanos();
+        }
+    );
+
+</script>

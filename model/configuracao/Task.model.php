@@ -1,28 +1,28 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 db_app::import("configuracao.DBLog");
@@ -37,10 +37,15 @@ class _TaskSession {
 /**
  * Classe de definições para cada tarefa do Gerenciador de Tarefas.
  * @author Rafael Serpa Nery <rafael.nery@dbseller.com.br>
- * @revision $Author: dbandrio.costa $
- * @version $Revision: 1.4 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.13 $
  */
 abstract class Task {
+
+  /**
+   * Constante com o caminho do diretório de logs do gerenciador de tarefas
+   */
+  const CAMINHO_LOG = "jobs/configuracoes/taskManager/logs/";
 
   /**
    * Log que ser autilizado
@@ -76,7 +81,7 @@ abstract class Task {
    * Construtor da Classe
    */
   public function __construct(){
-
+    register_shutdown_function(array($this, 'shutdown'));
   }
 
   /**
@@ -100,9 +105,9 @@ abstract class Task {
    */
   public function iniciar(){
 
-    $this->log("Inicio Processamento.");
     $this->iPIDTask   = posix_getpid();
     $this->iParentPID = posix_getppid();
+    $this->log("Inicio Processamento.");
     $this->gerarArquivoLock();
   }
 
@@ -112,8 +117,6 @@ abstract class Task {
   public function terminar(){
 
     $this->log("Fim Processamento.");
-    $this->removerArquivoLock();
-
 
     /**
      * Cria/altera arquivo com os dados da execucao da tarefa
@@ -138,6 +141,11 @@ abstract class Task {
     $oXML->formatOutput = true;
     $oXML->save($sCaminhoArquivo);
 
+    if ($this->oTarefa->getTipoPeriodicidade() == Agenda::PERIODICIDADE_UNICA) {
+        $this->oTarefa->excluir();
+    }
+
+    $this->removerArquivoLock();
     exit (0);
   }
 
@@ -167,8 +175,18 @@ abstract class Task {
     db_app::import('configuracao.DBLog');
 
     if ( !isset($this->oLog) ) {
-      $this->oLog = new DBLog( "XML", "jobs/configuracoes/taskManager/logs/".get_class($this)."-".date("Ymd_His") );
+
+        $path = sprintf(
+            '%s%s-%s-%s-%s',
+            self::CAMINHO_LOG,
+            get_class($this),
+            $this->oTarefa->getNome(),
+            $this->iPIDTask,
+            date("Ymd_His")
+        );
+        $this->oLog = new DBLog( "XML", $path);
     }
+
     $this->oLog->escreverLog($sMensagem, $iTipo);
   }
 
@@ -211,6 +229,23 @@ abstract class Task {
     foreach  ($oSession as $sAtributo => $sValor) {
       db_putsession($sAtributo, $sValor);
     }
+  }
+
+  public function shutdown() {
+
+    if (!file_exists($this->sCaminhoArquivoLock)) {
+      return;
+    }
+
+    $error = error_get_last();
+    $e_fatal = (E_ERROR | E_USER_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR);
+
+    if (empty($error) || !($error['type'] & $e_fatal)) {
+      return;
+    }
+
+    $message = $error['type'] . ' - ' . $error['message'] . ' in ' . $error['file'] . ' on line ' . $error['line'];
+    file_put_contents($this->sCaminhoArquivoLock, "UltimoErro=" . str_replace("\n", "<CRLF>", $message) . "\n", FILE_APPEND);
   }
 
 }

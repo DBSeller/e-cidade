@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,6 +24,9 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+
+use ECidade\RecursosHumanos\ESocial\Enum\TipoRescisao;
+use ECidade\RecursosHumanos\ESocial\Enum\CessacaoBeneficios;
 
 $clrescisao->rotulo->label();
 
@@ -126,6 +129,36 @@ $r59_mesusu = db_mesfolha();
 	      ?>
 	    </td>
 	  </tr>
+        <tr>
+            <td nowrap title="<?=@$Tr59_motivoesocial?>">
+                <?=@$Lr59_motivoesocial?>
+            </td>
+            <td colspan=2>
+                <?php
+
+                $tiposDeRescisao = new TipoRescisao();
+                $tipos = $tiposDeRescisao->getTipos();
+                $tipos[0] = "Selecione";
+                ksort($tipos).
+                db_select("r59_motivoesocial", $tipos, true, $db_opcao);
+                ?>
+            </td>
+        </tr>
+		<tr>
+            <td nowrap title="<?=@$Tr59_cessacaobeneficios?>">
+                <?=@$Lr59_cessacaobeneficios?>
+            </td>
+            <td colspan=2>
+                <?php
+
+                $tiposDeCessacaoBeneficios = new CessacaoBeneficios();
+                $tiposCessacao = $tiposDeCessacaoBeneficios->getTiposCessacao();
+                $tiposCessacao[0] = "Selecione";
+                ksort($tiposCessacao).
+                db_select("r59_cessacaobeneficios", $tiposCessacao, true, $db_opcao);
+                ?>
+            </td>
+        </tr>
 	  <tr>
 	    <td nowrap title="<?=@$Tr59_aviso?>">
 	      <?=@$Lr59_aviso?>
@@ -305,11 +338,11 @@ function js_pesquisar59_causa(mostra,dig){
       ok = true;
     }
     if(ok == true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_rescisao','func_rescisaoalt.php?funcao_js=parent.js_mostrarescisao1|r59_causa|r59_descr|r59_caub|r59_descr1&chave_r59_anousu=<?=$r59_anousu?>&chave_r59_mesusu=<?=$r59_mesusu?>&chave_r59_regime='+document.form1.r59_regime.value+qry,'Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rescisao','func_rescisaoalt.php?funcao_js=parent.js_mostrarescisao1|r59_causa|r59_descr|r59_caub|r59_descr1&chave_r59_anousu=<?=$r59_anousu?>&chave_r59_mesusu=<?=$r59_mesusu?>&chave_r59_regime='+document.form1.r59_regime.value+qry,'Pesquisa',true);
     }
   }else{
     if(document.form1.r59_causa.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_rescisao','func_rescisaoalt.php?pesquisa_chave='+document.form1.r59_causa.value+'&funcao_js=parent.js_mostrarescisao&ano=<?=$r59_anousu?>&mes=<?=$r59_mesusu?>&chave_r59_regime='+document.form1.r59_regime.value,'pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rescisao','func_rescisaoalt.php?pesquisa_chave='+document.form1.r59_causa.value+'&funcao_js=parent.js_mostrarescisao&ano=<?=$r59_anousu?>&mes=<?=$r59_mesusu?>&chave_r59_regime='+document.form1.r59_regime.value,'pesquisa',false);
     }else{
       document.form1.r59_caub.value  = '';
       document.form1.r59_descr.value  = '';
@@ -340,10 +373,10 @@ function js_mostrarescisao1(chave1,chave2,chave3,chave4){
 
 function js_pesquisarCausaAfastamento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_causaafastamento','func_causaafastamento.php?funcao_js=parent.js_retornoCausaAfastamentoAncora|rh115_sigla|rh115_descricao|rh115_sequencial','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_causaafastamento','func_causaafastamento.php?funcao_js=parent.js_retornoCausaAfastamentoAncora|rh115_sigla|rh115_descricao|rh115_sequencial','Pesquisa',true);
   }else{
      if(document.form1.rh115_sigla.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_causaafastamento','func_causaafastamento.php?sSigla='+document.form1.rh115_sigla.value+'&funcao_js=parent.js_retornoCausaAfastamentoInput','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_causaafastamento','func_causaafastamento.php?sSigla='+document.form1.rh115_sigla.value+'&funcao_js=parent.js_retornoCausaAfastamentoInput','Pesquisa',false);
      }else{
        document.form1.rh115_descricao.value = ''; 
      }
@@ -372,7 +405,7 @@ function js_retornoCausaAfastamentoAncora(sSigla,sDescricao, iSequencial) {
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rescisao','func_rescisao.php?funcao_js=parent.js_preenchepesquisa|r59_anousu|r59_mesusu|r59_regime|r59_causa|r59_caub|r59_menos1','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rescisao','func_rescisao.php?funcao_js=parent.js_preenchepesquisa|r59_anousu|r59_mesusu|r59_regime|r59_causa|r59_caub|r59_menos1','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2,chave3,chave4,chave5){
   db_iframe_rescisao.hide();
@@ -382,6 +415,8 @@ function js_preenchepesquisa(chave,chave1,chave2,chave3,chave4,chave5){
   }
   ?>
 }
+document.getElementById('r59_motivoesocial').style.width='500px';
+document.getElementById('r59_cessacaobeneficios').style.width='500px';
 </script>
 <?
 if ($db_opcao==2){

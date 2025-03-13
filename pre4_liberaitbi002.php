@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 ?>
@@ -50,7 +50,7 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 <tr><td>
 <div align="left" class="observ">
 <?
-$result = pg_exec("select obs from db_itbi where id_itbi = $itbi");
+$result = db_query("select obs from db_itbi where id_itbi = $itbi");
 echo str_replace("\n","<br>",pg_result($result,0,0));
 ?>
 </div>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_basemps_classe.php");
-include("classes/db_baseserie_classe.php");
-include("classes/db_serie_classe.php");
-include("classes/db_base_classe.php");
-include("classes/db_turma_classe.php");
-include("classes/db_regencia_classe.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_basemps_classe.php"));
+include(modification("classes/db_baseserie_classe.php"));
+include(modification("classes/db_serie_classe.php"));
+include(modification("classes/db_base_classe.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
 db_postmemory($_POST);
 $clbaseserie = new cl_baseserie;
 $clserie     = new cl_serie;
@@ -97,7 +97,7 @@ if (isset($excluir)) {
   <td align="left" valign="top" bgcolor="#CCCCCC">
    <br>
    <center>
-    <?include("forms/db_frmbasemps.php");?>
+    <?include(modification("forms/db_frmbasemps.php"));?>
    </center>
   </td>
  </tr>

@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhregime_classe.php");
-include("classes/db_rhcadregime_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_rhregime_classe.php"));
+include(modification("classes/db_rhcadregime_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clrhregime = new cl_rhregime;
@@ -79,7 +79,7 @@ if (isset($alterar)) {
       <br> 
       <center>
       <fieldset style="width:95%"><legend><b>Alteração de Vínculos</b></legend>
-      <?include("forms/db_frmrhregimeedu.php");?>
+      <?include(modification("forms/db_frmrhregimeedu.php"));?>
       </fieldset>
       </center>
     </td>

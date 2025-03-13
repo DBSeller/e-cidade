@@ -26,7 +26,7 @@
  */
 
 //MODULO: agua
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $claguacortetipodebito->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -216,10 +216,10 @@ function js_cancelar(){
 }
 function js_pesquisax45_codcorte(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguacortetipodebito','db_iframe_aguacorte','func_aguacorte.php?funcao_js=parent.js_mostraaguacorte1|x40_codcorte|x40_dtinc','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacortetipodebito','db_iframe_aguacorte','func_aguacorte.php?funcao_js=parent.js_mostraaguacorte1|x40_codcorte|x40_dtinc','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x45_codcorte.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguacortetipodebito','db_iframe_aguacorte','func_aguacorte.php?pesquisa_chave='+document.form1.x45_codcorte.value+'&funcao_js=parent.js_mostraaguacorte','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacortetipodebito','db_iframe_aguacorte','func_aguacorte.php?pesquisa_chave='+document.form1.x45_codcorte.value+'&funcao_js=parent.js_mostraaguacorte','Pesquisa',false);
      }else{
        document.form1.x40_dtinc.value = ''; 
      }
@@ -228,10 +228,10 @@ function js_pesquisax45_codcorte(mostra){
 
 function js_pesquisax45_tipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguacortetipodebito','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true,'0','1','800','400');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacortetipodebito','db_iframe_arretipo','func_arretipo.php?funcao_js=parent.js_mostraarretipo1|k00_tipo|k00_descr','Pesquisa',true,'0','1','800','400');
   }else{
      if(document.form1.x45_tipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguacortetipodebito','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.x45_tipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguacortetipodebito','db_iframe_arretipo','func_arretipo.php?pesquisa_chave='+document.form1.x45_tipo.value+'&funcao_js=parent.js_mostraarretipo','Pesquisa',false);
      }else{
        document.form1.k00_descr.value = ''; 
      }

@@ -26,7 +26,7 @@
  */
 
 //MODULO: configuracoes
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_syscadproceditem->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -132,7 +132,7 @@ function js_pesquisaitemcad(item,modulo){
 	document.form1.itens.value = document.form1.itens.value+"-"+item;
 }
 function js_pesquisaid_item(mostra){
-    js_OpenJanelaIframe('top.corpo.iframe_db_syscadproceditem','db_iframe_db_syscadproceditem','con1_caditens002.php?proced=true','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_syscadproceditem','db_iframe_db_syscadproceditem','con1_caditens002.php?proced=true','Pesquisa',true);
 }
 function js_mostradb_itensmenu(chave,erro){
   document.form1.descricao.value = chave; 
@@ -148,10 +148,10 @@ function js_mostradb_itensmenu1(chave1,chave2){
 }
 function js_pesquisacodproced(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_syscadproceditem','db_iframe_db_syscadproced','func_db_syscadproced.php?funcao_js=parent.js_mostradb_syscadproced1|codproced|descrproced','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_syscadproceditem','db_iframe_db_syscadproced','func_db_syscadproced.php?funcao_js=parent.js_mostradb_syscadproced1|codproced|descrproced','Pesquisa',true);
   }else{
      if(document.form1.codproced.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_syscadproceditem','db_iframe_db_syscadproced','func_db_syscadproced.php?pesquisa_chave='+document.form1.codproced.value+'&funcao_js=parent.js_mostradb_syscadproced','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_syscadproceditem','db_iframe_db_syscadproced','func_db_syscadproced.php?pesquisa_chave='+document.form1.codproced.value+'&funcao_js=parent.js_mostradb_syscadproced','Pesquisa',false);
      }else{
        document.form1.descrproced.value = ''; 
      }

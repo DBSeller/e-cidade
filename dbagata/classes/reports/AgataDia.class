@@ -357,8 +357,8 @@ class Dia extends AgataCore
         fclose($fd);
         if ($this->posAction)
         {
-            $obj = &$this->posAction[0];
-            $att = &$this->posAction[1];
+            $obj = $this->posAction[0];
+            $att = $this->posAction[1];
             $obj->{$att}();
         }
         

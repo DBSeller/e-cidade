@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: recursoshumanos
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo                 = new rotulocampo;
 $clrhtipoperdatipoassentamento->rotulo->label();
@@ -160,10 +160,10 @@ function js_cancelar(){
 }
 function js_pesquisah71_rhtipoperda(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhtipoperdatipoassentamento','db_iframe_rhtipoperda','func_rhtipoperda.php?funcao_js=parent.js_mostrarhtipoperda1|h70_sequencial|h70_descricao','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhtipoperdatipoassentamento','db_iframe_rhtipoperda','func_rhtipoperda.php?funcao_js=parent.js_mostrarhtipoperda1|h70_sequencial|h70_descricao','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.h71_rhtipoperda.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhtipoperdatipoassentamento','db_iframe_rhtipoperda','func_rhtipoperda.php?pesquisa_chave='+document.form1.h71_rhtipoperda.value+'&funcao_js=parent.js_mostrarhtipoperda','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhtipoperdatipoassentamento','db_iframe_rhtipoperda','func_rhtipoperda.php?pesquisa_chave='+document.form1.h71_rhtipoperda.value+'&funcao_js=parent.js_mostrarhtipoperda','Pesquisa',false);
      }else{
        document.form1.h70_descricao.value = ''; 
      }
@@ -183,10 +183,10 @@ function js_mostrarhtipoperda1(chave1,chave2){
 }
 function js_pesquisah71_tipoassentamento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_rhtipoperdatipoassentamento','db_iframe_tipoasse','func_tipoasse.php?funcao_js=parent.js_mostratipoasse1|h12_codigo|h12_descr','Pesquisa', true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhtipoperdatipoassentamento','db_iframe_tipoasse','func_tipoasse.php?funcao_js=parent.js_mostratipoasse1|h12_codigo|h12_descr','Pesquisa', true);
   }else{
      if(document.form1.h71_tipoassentamento.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_rhtipoperdatipoassentamento','db_iframe_tipoasse','func_tipoasse.php?pesquisa_chave='+document.form1.h71_tipoassentamento.value+'&funcao_js=parent.js_mostratipoasse','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_rhtipoperdatipoassentamento','db_iframe_tipoasse','func_tipoasse.php?pesquisa_chave='+document.form1.h71_tipoassentamento.value+'&funcao_js=parent.js_mostratipoasse','Pesquisa',false);
      }else{
        document.form1.h12_descr.value = ''; 
      }

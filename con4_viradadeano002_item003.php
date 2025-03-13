@@ -1,33 +1,33 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 // Para garantir que nao houve erros em outros itens
 if($sqlerro == false) {
-	
+
   $iTotPassos = 2;
   db_atutermometro(0, $iTotPassos, 'termometroitem', 1, $sMensagemTermometroItem);
 
@@ -41,7 +41,7 @@ if($sqlerro == false) {
   $linhasdestino = pg_num_rows($resultdestino);
 
   if (($linhasorigem > 0) && ($linhasdestino == 0 )) {
-    
+
     // $sqlrhlotaex = "select fc_duplica_exercicio('rhlotaexe', 'rh26_anousu', ".$anoorigem.",".$anodestino.",null);";
     // $resultrhlotaex = db_query($sqlrhlotaex);
     $oDaoRhlotaexe = db_utils::getDao('rhlotaexe');
@@ -52,9 +52,9 @@ if($sqlerro == false) {
     $sqlrhlotaex .= "                             and orcunidade.o41_anousu  = {$anodestino} ";
     $sqlrhlotaex .= " where rhlotaexe.rh26_anousu = {$anoorigem} ";
     $rsLotaExe    = db_query($sqlrhlotaex);
-  
+
     if ($rsLotaExe) {
-      $sqlerro = false;      
+      $sqlerro = false;
     } else {
       $sqlerro   = true;
       $erro_msg .= pg_last_error($rsLotaExe); //"Ocorreu um erro durante o processamento do item $c33_descricao. Processamento cancelado.";
@@ -75,17 +75,17 @@ if($sqlerro == false) {
       }
 
     }
-    
+
   } else {
-  	
+
     if ($linhasorigem==0) {
       $cldb_viradaitemlog->c35_log = "Não existem dados de orgaos e unidades da folha cadastrados para o exercicio $anoorigem";
     }
-    
+
     if ($linhasdestino>0) {
       $cldb_viradaitemlog->c35_log = "Ja existem dados de orgaos e unidades da folha cadastrados para ano de destino $anodestino";
     }
-    
+
     $cldb_viradaitemlog->c35_codarq        = 1181;
     $cldb_viradaitemlog->c35_db_viradaitem = $cldb_viradaitem->c31_sequencial;
     $cldb_viradaitemlog->c35_data          = date("Y-m-d");
@@ -96,17 +96,19 @@ if($sqlerro == false) {
       $erro_msg .= $cldb_viradaitemlog->erro_msg;
     }
   }
- 
+
   $sSqlrhElementoEmp  = " select *                          ";
-  $sSqlrhElementoEmp .= "   from pessoal.rhelementoemp      "; 
+  $sSqlrhElementoEmp .= "   from pessoal.rhelementoemp   ";
+  $sSqlrhElementoEmp .= " inner join  conplanoorcamento on c60_codcon = rh38_codele ";
+  $sSqlrhElementoEmp .= "                              and rh38_anousu = c60_anousu  ";
   $sSqlrhElementoEmp .= "  where rh38_anousu = {$anoorigem} ";
   $rsConsultaElemEmp  = db_query($sSqlrhElementoEmp);
   $iLinhasElemEmp     = pg_num_rows($rsConsultaElemEmp);
-  
+
   if ( $iLinhasElemEmp > 0 ) {
-  	
+
 	  $oDaoRHElementoEmp = db_utils::getDao('rhelementoemp');
-	  
+
   	for ( $iInd=0; $iInd < $iLinhasElemEmp; $iInd++ ) {
       db_inicio_transacao();
   		$oElemEmp = db_utils::fieldsMemory($rsConsultaElemEmp,$iInd);
@@ -164,28 +166,28 @@ if($sqlerro == false) {
       }
   	}
   }
-  
-  $sSqlElemPCMater  = " select rh36_pcmater,e_destino.rh38_seq                                                            "; 
-	$sSqlElemPCMater .= "   from pessoal.rhelementoemppcmater                                                               "; 
-	$sSqlElemPCMater .= "        inner join pessoal.rhelementoemp e_origem  on e_origem.rh38_seq     = rh36_rhelementoemp   "; 
+
+  $sSqlElemPCMater  = " select rh36_pcmater,e_destino.rh38_seq                                                            ";
+	$sSqlElemPCMater .= "   from pessoal.rhelementoemppcmater                                                               ";
+	$sSqlElemPCMater .= "        inner join pessoal.rhelementoemp e_origem  on e_origem.rh38_seq     = rh36_rhelementoemp   ";
 	$sSqlElemPCMater .= "                                                  and e_origem.rh38_anousu  = {$anoorigem}         ";
-	$sSqlElemPCMater .= "        inner join pessoal.rhelementoemp e_destino on e_destino.rh38_codele = e_origem.rh38_codele "; 
+	$sSqlElemPCMater .= "        inner join pessoal.rhelementoemp e_destino on e_destino.rh38_codele = e_origem.rh38_codele ";
 	$sSqlElemPCMater .= "                                                  and e_destino.rh38_anousu = {$anodestino}        ";
-  
+
 	$rsConsultaElemPCMater = db_query($sSqlElemPCMater);
   $iLinhasElemPCMater    = pg_num_rows($rsConsultaElemPCMater);
-  
+
   if ( $iLinhasElemPCMater > 0 ) {
-  	
+
   	$oDaoRHElementoEmpPcmater = db_utils::getDao('rhelementoemppcmater');
-  	
+
   	for ( $iInd=0; $iInd < $iLinhasElemPCMater; $iInd++ ) {
   		$oElemEmpPCMater = db_utils::fieldsMemory($rsConsultaElemPCMater,$iInd);
 
       $oDaoRHElementoEmpPcmater->rh36_pcmater       = $oElemEmpPCMater->rh36_pcmater;
       $oDaoRHElementoEmpPcmater->rh36_rhelementoemp = $oElemEmpPCMater->rh38_seq;
       $oDaoRHElementoEmpPcmater->incluir(null);
-      
+
       if ( $oDaoRHElementoEmpPcmater->erro_status == 0 )  {
       	$sqlerro  = true;
       	$erro_msg = $oDaoRHElementoEmpPcmater->erro_msg;
@@ -193,21 +195,21 @@ if($sqlerro == false) {
       }
   	}
   }
-  
+
   if ($sqlerro == false) {
-  	
+
     $oDaoRhEmpenhoFolhaExcecaoRubrica     = db_utils::getDao("rhempenhofolhaexcecaorubrica");
-    
+
 	  $sWhere                               = "rh74_anousu = {$anoorigem}";
 	  $sSqlRhEmpenhoFolhaExcecaoRubrica     = $oDaoRhEmpenhoFolhaExcecaoRubrica->sql_query_file(null, "*", null, $sWhere);
 	  $rsSqlRhEmpenhoFolhaExcecaoRubrica    = $oDaoRhEmpenhoFolhaExcecaoRubrica->sql_record($sSqlRhEmpenhoFolhaExcecaoRubrica);
 	  $iNumRowsRhEmpenhoFolhaExcecaoRubrica = $oDaoRhEmpenhoFolhaExcecaoRubrica->numrows;
 	  if ($iNumRowsRhEmpenhoFolhaExcecaoRubrica > 0) {
-	    
+
 	    for ($iIndRubrica = 0; $iIndRubrica < $iNumRowsRhEmpenhoFolhaExcecaoRubrica; $iIndRubrica++) {
-	      
+
 	      $oRhEmpenhoFolhaExcecaoRubrica = db_utils::fieldsMemory($rsSqlRhEmpenhoFolhaExcecaoRubrica, $iIndRubrica);
-	      
+
 	      $oDaoRhEmpenhoFolhaExcecaoRubrica->rh74_rubric                     = $oRhEmpenhoFolhaExcecaoRubrica->rh74_rubric;
 	      $oDaoRhEmpenhoFolhaExcecaoRubrica->rh74_instit                     = $oRhEmpenhoFolhaExcecaoRubrica->rh74_instit;
 	      $oDaoRhEmpenhoFolhaExcecaoRubrica->rh74_unidade                    = $oRhEmpenhoFolhaExcecaoRubrica->rh74_unidade;
@@ -245,7 +247,7 @@ if($sqlerro == false) {
     $sSqlRhcontasrec = $oDaoRhcontasrec->sql_query_file(null, null, null, null, "*", null, $sWhere);
     $rsRhcontasrec   = $oDaoRhcontasrec->sql_record( $sSqlRhcontasrec );
     $iNumRows        = $oDaoRhcontasrec->numrows;
-    
+
     if ($iNumRows > 0) {
 
       for ($iIndice = 0; $iIndice < $iNumRows; $iIndice++) {
@@ -263,7 +265,7 @@ if($sqlerro == false) {
       }
     }
   }
-  
+
   db_atutermometro(1, $iTotPassos, 'termometroitem', 1, $sMensagemTermometroItem);
 }
 ?>

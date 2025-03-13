@@ -110,10 +110,10 @@ db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
 <script>
 function js_pesquisay108_procfiscal(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_procfiscalfases','db_iframe_procfiscal','func_procfiscal_tfaf.php?funcao_js=parent.js_mostraprocfiscal1|y100_sequencial|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscalfases','db_iframe_procfiscal','func_procfiscal_tfaf.php?funcao_js=parent.js_mostraprocfiscal1|y100_sequencial|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.y108_procfiscal.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_procfiscalfases','db_iframe_procfiscal','func_procfiscal_tfaf.php?pesquisa_chave='+document.form1.y108_procfiscal.value+'&funcao_js=parent.js_mostraprocfiscal','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscalfases','db_iframe_procfiscal','func_procfiscal_tfaf.php?pesquisa_chave='+document.form1.y108_procfiscal.value+'&funcao_js=parent.js_mostraprocfiscal','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.y100_coddepto.value = ''; 
      }
@@ -133,10 +133,10 @@ function js_mostraprocfiscal1(chave1,chave2){
 }
 function js_pesquisay108_responsavel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_procfiscalfases','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscalfases','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.y108_responsavel.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_procfiscalfases','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.y108_responsavel.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscalfases','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.y108_responsavel.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -155,7 +155,7 @@ function js_mostracgm1(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_procfiscalfases','db_iframe_procfiscalfases','func_procfiscalfasesTfaf.php?funcao_js=parent.js_preenchepesquisa|y108_sequencial','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscalfases','db_iframe_procfiscalfases','func_procfiscalfasesTfaf.php?funcao_js=parent.js_preenchepesquisa|y108_sequencial','Pesquisa',true,'0','1','775','390');
 }
 function js_preenchepesquisa(chave){
   db_iframe_procfiscalfases.hide();

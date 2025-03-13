@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: material
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clmatestoqueinimei->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -296,10 +296,10 @@ function js_pesquisam60_codmater(mostra){
   }
   ?>
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_itens','db_iframe_matmater','func_matmaterdepto.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr'+qry,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_itens','db_iframe_matmater','func_matmaterdepto.php?funcao_js=parent.js_mostramatmater1|m60_codmater|m60_descr'+qry,'Pesquisa',true);
   }else{
      if(document.form1.m60_codmater.value != ''){
-        js_OpenJanelaIframe('top.corpo.iframe_itens','db_iframe_matmater','func_matmaterdepto.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostramatmater'+qry,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_itens','db_iframe_matmater','func_matmaterdepto.php?pesquisa_chave='+document.form1.m60_codmater.value+'&funcao_js=parent.js_mostramatmater'+qry,'Pesquisa',false);
      }else{
        document.form1.m60_descr.value = '';
      }
@@ -331,7 +331,7 @@ function js_mostraLotes(iItem, iCodEstoque) {
   
     sUrl  = 'mat4_mostraitemlotes.php?iCodMater='+iCodItem+'&iCodDepto='+iCodEstoque+'&nValor='+nValor;
     sUrl += '&nValorSolicitado='+nValorReqItem+'&updateField=quantlanc';
-    js_OpenJanelaIframe('top.corpo.iframe_itens','db_iframe_lotes',sUrl,'Lotes ',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_itens','db_iframe_lotes',sUrl,'Lotes ',true);
     
   }
   

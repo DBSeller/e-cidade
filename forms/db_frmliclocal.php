@@ -112,10 +112,10 @@ db_textarea('l26_obs',0,50,$Il26_obs,true,'text',$db_opcao,"")
 <script>
 function js_pesquisal26_lograd(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruas.php?funcao_js=parent.js_mostraruas1|j14_codigo|j14_nome','Pesquisa',true);
   }else{
      if(document.form1.l26_lograd.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.l26_lograd.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruas.php?pesquisa_chave='+document.form1.l26_lograd.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
      }else{
        document.form1.j14_nome.value = ''; 
      }
@@ -135,10 +135,10 @@ function js_mostraruas1(chave1,chave2){
 }
 function js_pesquisal26_bairro(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bairro','func_bairro.php?funcao_js=parent.js_mostrabairro1|j13_codi|j13_descr','Pesquisa',true);
   }else{
      if(document.form1.l26_bairro.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_bairro','func_bairro.php?pesquisa_chave='+document.form1.l26_bairro.value+'&funcao_js=parent.js_mostrabairro','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bairro','func_bairro.php?pesquisa_chave='+document.form1.l26_bairro.value+'&funcao_js=parent.js_mostrabairro','Pesquisa',false);
      }else{
        document.form1.j13_descr.value = ''; 
      }
@@ -157,7 +157,7 @@ function js_mostrabairro1(chave1,chave2){
   db_iframe_bairro.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_liclocal','func_liclocal.php?funcao_js=parent.js_preenchepesquisa|l26_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_liclocal','func_liclocal.php?funcao_js=parent.js_preenchepesquisa|l26_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_liclocal.hide();

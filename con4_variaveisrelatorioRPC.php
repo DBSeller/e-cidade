@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
 ini_set("error_reporting","E_ALL & E_NOTICE");
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("std/db_stdClass.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_liborcamento.php");
-include("dbforms/db_funcoes.php");
-require_once("model/linhaColunaRelatorio.model.php");
-require_once("model/linhaRelatorioContabil.model.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("std/db_stdClass.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("model/linhaColunaRelatorio.model.php"));
+require_once(modification("model/linhaRelatorioContabil.model.php"));
+include(modification("libs/JSON.php"));
 
 $oGet              = db_utils::postMemory($_GET);
 $oJson             = new services_json();

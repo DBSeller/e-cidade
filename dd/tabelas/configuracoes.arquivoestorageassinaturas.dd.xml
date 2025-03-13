@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010483' name='configuracoes.arquivoestorageassinaturas' description="Tabela de vínculo entre arquivos do e-Storage e assinaturas destes arquivos" prefix="db179" label="Assinatura de Arquivo do e-Storage" type="0">
+  <fields>
+    <field codigo="1010811" 
+           campo_api='' 
+           name="db179_sequencial" 
+           conteudo="int8" 
+           description="Código sequencial da tabela" 
+           inivalue="0" 
+           label="Código" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='configuracoes.arquivoestorageassinaturas_db179_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010812" 
+           campo_api='' 
+           name="db179_arquivo" 
+           conteudo="int8" 
+           description="ID de referência do arquivo no e-Storage" 
+           inivalue="0" 
+           label="Arquivo e-Storage" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Arquivo e-Storage" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010813" 
+           campo_api='' 
+           name="db179_assinatura" 
+           conteudo="int8" 
+           description="Assinatura no documento" 
+           inivalue="0" 
+           label="Assinatura" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Assinatura" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010814" 
+           campo_api='' 
+           name="db179_dataassinatura" 
+           conteudo="date" 
+           description="Data da assinatura no documento" 
+           inivalue="null" 
+           label="Data da Assinatura" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data da Assinatura" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="db179_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="arquivoestorage" inner='t'>
+      <fieldfk name="db179_arquivo" reference="db177_idestorage" /> 
+    </foreignkey>
+    <foreignkey reference="assinaturasdocumento" inner='t'>
+      <fieldfk name="db179_assinatura" reference="db178_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

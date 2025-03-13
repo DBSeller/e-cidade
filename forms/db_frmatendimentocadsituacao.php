@@ -58,7 +58,7 @@ db_input('at15_descr',40,$Iat15_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_atendimentocadsituacao','func_atendimentocadsituacao.php?funcao_js=parent.js_preenchepesquisa|at15_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atendimentocadsituacao','func_atendimentocadsituacao.php?funcao_js=parent.js_preenchepesquisa|at15_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_atendimentocadsituacao.hide();

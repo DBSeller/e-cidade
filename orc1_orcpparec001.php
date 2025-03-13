@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 
-include("classes/db_orcpparec_classe.php");
-include("classes/db_orcppa_classe.php");
-include("classes/db_orcppalei_classe.php");
-include("classes/db_orcfontes_classe.php");
-include("classes/db_concarpeculiar_classe.php");
+include(modification("classes/db_orcpparec_classe.php"));
+include(modification("classes/db_orcppa_classe.php"));
+include(modification("classes/db_orcppalei_classe.php"));
+include(modification("classes/db_orcfontes_classe.php"));
+include(modification("classes/db_concarpeculiar_classe.php"));
 
-include("dbforms/db_funcoes.php");
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -239,7 +239,7 @@ if(isset($o27_codleippa) && empty($testado)){
 
 if($libera==true || isset($testado)){
 
-	include("forms/db_frmorcpparec.php");
+	include(modification("forms/db_frmorcpparec.php"));
 
 }else{
 $clrotulo = new rotulocampo;
@@ -278,9 +278,9 @@ $clrotulo->label("o27_codleippa");
 <script>
 function js_cod(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_orcpparec','db_iframe_orcppa','func_orcppa.php?funcao_js=parent.js_mostracod1|o23_codppa','Pesquisa',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcpparec','db_iframe_orcppa','func_orcppa.php?funcao_js=parent.js_mostracod1|o23_codppa','Pesquisa',true,0);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_orcpparec','db_iframe_orcppa','func_orcppa.php?pesquisa_chave='+document.form1.o24_codppa.value+'&funcao_js=parent.js_mostracod','Pesquisa',false,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcpparec','db_iframe_orcppa','func_orcppa.php?pesquisa_chave='+document.form1.o24_codppa.value+'&funcao_js=parent.js_mostracod','Pesquisa',false,0);
   }
 }
 function js_mostracod(chave,erro){
@@ -317,7 +317,7 @@ if(isset($incluir) || isset($alterar) || isset($excluir)){
       echo "<script> 
                     document.location.href = 'orc1_orcpparec001.php?o27_codleippa=$o27_codleippa&o27_codleippadescr=$o27_codleippadescr&testado=$testado';
                     parent.document.formaba.orcpparec02.disabled=false;
-                    top.corpo.iframe_orcpparec02.location.href='orc1_orcpparec002.php?o27_codleippa=".@$o27_codleippa."';
+                    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcpparec02.location.href='orc1_orcpparec002.php?o27_codleippa=".@$o27_codleippa."';
             </script>";
     }
 }
@@ -325,7 +325,7 @@ if( empty($opcao) &&  (($libera==true || isset($testado)) && isset($pesquisar)) 
   echo "<script>";
   echo "
        parent.document.formaba.orcpparec02.disabled=false;
-       top.corpo.iframe_orcpparec02.location.href='orc1_orcpparec002.php?o27_codleippa=".@$o27_codleippa."';
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcpparec02.location.href='orc1_orcpparec002.php?o27_codleippa=".@$o27_codleippa."';
       ";	 
   echo "</script>";
 }

@@ -1,37 +1,37 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clcriaabas = new cl_criaabas;
 $db_opcao = 1;
 ?>
@@ -62,13 +62,14 @@ $db_opcao = 1;
                     "a3" => "Horários",
                     "a4" => "Alunos",
                     "a5" => "Pareceres",
-                    "a6" => "Outros Profissionais"
+                    "a6" => "Outros Profissionais",
+                    "a7" => "Atividades Complementares"
                    );
 
    $clcriaabas->identifica = $aIdentifica;
-   $clcriaabas->sizecampo  = array( "a1" => "15", "a2" => "15", "a3" => "15", "a4" => "15", "a5" => "15", "a6"=>"20");
-   $clcriaabas->src        = array( "a1" => "edu1_turma001.php", "a2" => "", "a3" => "", "a4" => "", "a5" => "", "a6" => "" );
-   $clcriaabas->disabled   = array( "a2" => "true", "a3" => "true", "a4" => "true", "a5" => "true", "a6" => "true");
+   $clcriaabas->sizecampo  = array( "a1" => "15", "a2" => "15", "a3" => "15", "a4" => "15", "a5" => "15", "a6"=>"20", "a7" => "20");
+   $clcriaabas->src        = array( "a1" => "edu1_turma001.php", "a2" => "", "a3" => "", "a4" => "", "a5" => "", "a6" => "", "a7" => "");
+   $clcriaabas->disabled   = array( "a2" => "true", "a3" => "true", "a4" => "true", "a5" => "true", "a6" => "true", "a7" => "true");
    $clcriaabas->cordisabled = "#9b9b9b";
    $clcriaabas->iframe_width = '100%';
    $clcriaabas->iframe_height = '100%';

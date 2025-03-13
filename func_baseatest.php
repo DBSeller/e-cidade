@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_base_classe.php");
-include("classes/db_escolabase_classe.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_base_classe.php"));
+include(modification("classes/db_escolabase_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clbase = new cl_base;
@@ -85,7 +85,7 @@ $clbase->rotulo->label("ed31_c_descr");
    <?
    $escola = db_getsession("DB_coddepto");
    $sql = "SELECT ARRAY(SELECT ed234_i_serieequiv FROM serieequiv WHERE ed234_i_serie = $serie) as seriesequivalentes";
-   $result = pg_query($sql);
+   $result = db_query($sql);
    db_fieldsmemory($result,0);
    $seriesequivalentes = str_replace("{","(",$seriesequivalentes);
 	 $seriesequivalentes = str_replace("}",")",$seriesequivalentes);
@@ -104,16 +104,16 @@ $clbase->rotulo->label("ed31_c_descr");
                cursoedu.ed29_i_codigo
               ";
     if(isset($chave_ed31_i_codigo) && (trim($chave_ed31_i_codigo)!="") ){
-     $sql = $clbase->sql_query_hist(""," distinct ".$campos,"ed31_c_descr"," (ed34_i_serie in $seriesequivalentes or ed34_i_serie= $serie) AND  ed31_i_codigo = $chave_ed31_i_codigo AND ed71_c_situacao = 'S' AND ed77_i_escola = $escola");
+     $sql = $clbase->sql_query_hist(""," distinct ".$campos,"ed31_c_descr"," (ed34_i_serie in $seriesequivalentes or ed34_i_serie= $serie) AND  ed31_i_codigo = $chave_ed31_i_codigo AND ed71_c_situacao = 'S' AND ed31_c_ativo = 'S' AND ed77_i_escola = $escola");
     }else if(isset($chave_ed31_c_descr) && (trim($chave_ed31_c_descr)!="") ){
-     $sql = $clbase->sql_query_hist(""," distinct ".$campos,"ed31_c_descr"," (ed34_i_serie in $seriesequivalentes or ed34_i_serie= $serie) AND  ed31_c_descr like '$chave_ed31_c_descr%' AND ed71_c_situacao = 'S' AND ed77_i_escola = $escola");
+     $sql = $clbase->sql_query_hist(""," distinct ".$campos,"ed31_c_descr"," (ed34_i_serie in $seriesequivalentes or ed34_i_serie= $serie) AND  ed31_c_descr like '$chave_ed31_c_descr%' AND ed71_c_situacao = 'S' AND ed31_c_ativo = 'S' AND ed77_i_escola = $escola");
     }else{
-     $sql = $clbase->sql_query_hist(""," distinct ".$campos,"ed31_c_descr"," (ed34_i_serie in $seriesequivalentes or ed34_i_serie= $serie)  AND ed71_c_situacao = 'S' AND ed77_i_escola = $escola");
+     $sql = $clbase->sql_query_hist(""," distinct ".$campos,"ed31_c_descr"," (ed34_i_serie in $seriesequivalentes or ed34_i_serie= $serie)  AND ed71_c_situacao = 'S' AND ed31_c_ativo = 'S' AND ed77_i_escola = $escola");
     }
     db_lovrot($sql,15,"()","",$funcao_js);
    }else{
     if($pesquisa_chave!=null && $pesquisa_chave!=""){
-     $result = $clbase->sql_record($clbase->sql_query_hist("","*",""," (ed34_i_serie in $seriesequivalentes or ed34_i_serie= $serie) AND  ed31_i_codigo = $pesquisa_chave AND ed71_c_situacao = 'S' AND ed77_i_escola = $escola"));
+     $result = $clbase->sql_record($clbase->sql_query_hist("","*",""," (ed34_i_serie in $seriesequivalentes or ed34_i_serie= $serie) AND  ed31_i_codigo = $pesquisa_chave AND ed71_c_situacao = 'S' AND ed31_c_ativo = 'S' AND ed77_i_escola = $escola"));
      if($clbase->numrows!=0){
       db_fieldsmemory($result,0);
       echo "<script>".$funcao_js."('$ed31_c_descr',$ed29_i_codigo,'$ed29_c_descr',false);</script>";
@@ -130,3 +130,9 @@ $clbase->rotulo->label("ed31_c_descr");
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

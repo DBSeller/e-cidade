@@ -1,37 +1,37 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 //$clcriaabas     = new cl_criaabas;
 
 $oGet     = db_utils::postMemory($_GET);
@@ -77,7 +77,7 @@ $oRotuloConhist->label();
   <fieldset  style="position:relative;  width:600px; ">
   <legend><b>Transações</b></legend>
     <table border="0" width="100%">
-    
+
       <!-- Transação -->
       <tr>
         <td nowrap="nowrap">
@@ -93,7 +93,7 @@ $oRotuloConhist->label();
           <? db_input('c46_seqtranslan', 10, $Ic46_seqtranslan, true,'text',3);?>
         </td>
       </tr>
-      
+
       <!-- Ordem //constranlan-->
       <tr>
         <td>
@@ -103,13 +103,13 @@ $oRotuloConhist->label();
           <? db_input('c46_ordem',10,$Ic46_ordem,true,'text', 3);?>
         </td>
       </tr>
-      
+
       <!-- Descrição //constranlan -->
       <tr>
         <td><b><?=$Lc46_descricao;?></b></td>
         <td colspan="4"><? db_input('c46_descricao',69,'', true,'text',$db_opcao);?></td>
       </tr>
-      
+
       <!-- Documento //conhistdoc -->
       <tr>
         <td width="100" id="tdDocumento">
@@ -122,20 +122,20 @@ $oRotuloConhist->label();
           ?>
         </td>
       </tr>
-      
+
      <!-- Histórico //conhist -->
       <tr>
         <td>
           <b><? db_ancora($Lc50_codhist, "js_pesquisaHistorico(true);", $db_opcao, "onchange='js_pesquisaDocumento(true);'");?></b>
         </td>
         <td colspan="4">
-          <? 
-            db_input('c50_codhist', 10, $Ic50_codhist, true, 'text', $db_opcao, "onchange='js_pesquisaHistorico(false);'");
+          <?
+            db_input('c50_codhist', 10, $Ic50_codhist, true, 'text', $db_opcao, "onchange='js_pesquisaHistorico(false);'", '', '', '', 5);
             db_input('c50_descr', 55, $Ic50_descr, true, 'text', 3);
           ?>
           </td>
       </tr>
-      
+
        <!-- Obrigatorio //contranslan -->
       <tr>
         <td><b><?=$Lc46_obrigatorio;?></b></td>
@@ -146,7 +146,7 @@ $oRotuloConhist->label();
           ?>
         </td>
       </tr>
-      
+
       <!-- Observações //contranslan -->
       <tr>
         <td colspan="5">
@@ -171,8 +171,8 @@ $oRotuloConhist->label();
   <span id="spanBotaoPesquisarLancamento">
   	<input type="button" name="btnPesquisarLancamento" id="btnPesquisarLancamento" value="Pesquisar Lançamentos"  />
   </span>
-  <span id="spanBotaoPesquisarDocumento">	
-  	<input type="button" name="btnPesquisarDocumento" id="btnPesquisarDocumento" value="Pesquisar Documentos"  />
+  <span id="spanBotaoPesquisarDocumento">
+  	<input type="button" name="btnPesquisarDocumento" id="btnPesquisarDocumento" value="Pesquisar Documentos" />
   </form>
   </spam>
 </center>
@@ -197,7 +197,7 @@ $oRotuloConhist->label();
 			alert("Selecione um documento.");
 			return false;
 		}
-			 
+
 		if ($('c50_codhist').value == "") {
 
 			alert("Selecione o histórico.");
@@ -220,14 +220,14 @@ $oRotuloConhist->label();
                                 {method:'post',
          											   parameters:'json='+Object.toJSON(oParam),
                                  onComplete: js_finalizaSalvarTransacao});
-		
-		
+
+
   });
 
 	function js_finalizaSalvarTransacao(oAjax) {
 
 	  js_removeObj("msgBox");
-		var oRetorno = eval("("+oAjax.responseText+")");
+		var oRetorno = JSON.parse(oAjax.responseText);
 
 		alert(oRetorno.message.urlDecode());
 		if (oRetorno.status == 1) {
@@ -239,9 +239,9 @@ $oRotuloConhist->label();
 	    $('c45_coddoc').readOnly              = true;
 	    $('c45_coddoc').style.backgroundColor = "#DEB887";
 	    $('c45_coddoc').style.color           = "#000000";
-	    
+
 	    parent.document.formaba.contranslr.disabled = false;
-	    top.corpo.iframe_contranslr.location.href   = "con1_regraeventocontabil001.php?iCodigoLancamento="+oRetorno.iSequencialLancamento; 
+	    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_contranslr.location.href   = "con1_regraeventocontabil001.php?iCodigoLancamento="+oRetorno.iSequencialLancamento;
 		}
 	}
 
@@ -264,11 +264,11 @@ $oRotuloConhist->label();
 																   parameters:'json='+Object.toJSON(oParam),
 												         onComplete: js_finalizaExcluirTransacao});
   });
-		
+
 	function js_finalizaExcluirTransacao(oAjax) {
 
 	  js_removeObj("msgBox");
-		var oRetorno = eval("("+oAjax.responseText+")");
+		var oRetorno = JSON.parse(oAjax.responseText);
 		alert(oRetorno.message.urlDecode());
 		js_buscaHistoricoAlteracaoExclusao();
 	}
@@ -298,7 +298,7 @@ $oRotuloConhist->label();
 
     var sTituloMsgBoard     = "Lançamentos do Evento Contábil";
     var sHelpMsgBoard       = "Dê um clique duplo sob a linha para alterar um lançamento ou clique em fechar para incluir um novo.";
-    var oMsgBoardLancamento = new DBMessageBoard("oMsgBoardLancamento_"+iCodigoDocumento, sTituloMsgBoard, 
+    var oMsgBoardLancamento = new DBMessageBoard("oMsgBoardLancamento_"+iCodigoDocumento, sTituloMsgBoard,
                                                  sHelpMsgBoard, oWindowAuxLancamento.getContentContainer());
     oMsgBoardLancamento.show();
 		oGridLancamentos              = new DBGrid('ctnGridLancamentos');
@@ -329,7 +329,7 @@ $oRotuloConhist->label();
 
     $('c45_coddoc').value = iCodigoDocumento;
 	  js_pesquisaDocumento(false);
-	  
+
 		js_divCarregando("Aguarde, buscando lançamentos...", "msgBox");
     var oAjax = new Ajax.Request("con4_cadastrotransacao.RPC.php",
                                 {method:'post',
@@ -343,7 +343,7 @@ $oRotuloConhist->label();
   function js_preencheGridLancamentos(oAjax) {
 
     js_removeObj("msgBox");
-		var oRetorno = eval("("+oAjax.responseText+")");
+		var oRetorno = JSON.parse(oAjax.responseText);
 
 		if (oRetorno.status == 2) {
 
@@ -358,7 +358,7 @@ $oRotuloConhist->label();
 		$('tdDocumento').innerHTML            = "<b>Documento</b>";
 		oGridLancamentos.clearAll(true);
 		if (oRetorno.aLancamentos.length > 0) {
-		 
+
 		  oRetorno.aLancamentos.each(function (oLancamento, iLinha) {
 
 		    var aLinha = new Array();
@@ -395,7 +395,7 @@ $oRotuloConhist->label();
   function js_preencheFormularioLancamento(oAjax) {
 
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     oWindowAuxLancamento.destroy();
     $('c45_seqtrans').value    = oRetorno.c45_seqtrans;
@@ -411,9 +411,9 @@ $oRotuloConhist->label();
     }
   	$('c46_obs').value         = oRetorno.c46_obs.urlDecode();
   	js_pesquisaHistorico(false);
-  	top.corpo.iframe_contranslr.location.href      = "con1_regraeventocontabil001.php?iCodigoLancamento="+oRetorno.c46_seqtranslan;
+  	(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_contranslr.location.href      = "con1_regraeventocontabil001.php?iCodigoLancamento="+oRetorno.c46_seqtranslan;
   }
-          
+
   /* Funções de pesquisa do Histórico */
   function js_pesquisaDocumento(lMostra) {
 
@@ -430,14 +430,14 @@ $oRotuloConhist->label();
 
     $("c45_coddoc").value = iCodigoDocumento;
     $("c53_descr").value = sDescricaoDocumento;
-    top.corpo.iframe_conhistdocregra.location.href = "con1_regraoperacaocontabil001.php?iCodigoDocumento="+iCodigoDocumento+"&sDescricaoDocumento="+sDescricaoDocumento;
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_conhistdocregra.location.href = "con1_regraoperacaocontabil001.php?iCodigoDocumento="+iCodigoDocumento+"&sDescricaoDocumento="+sDescricaoDocumento;
     db_iframe_conhistdoc.hide();
   }
 
   function js_completaDocumento(sDescricao, lErro) {
 
     $("c53_descr").value = sDescricao;
-    top.corpo.iframe_conhistdocregra.location.href = "con1_regraoperacaocontabil001.php?iCodigoDocumento="+$F('c45_coddoc')+"&sDescricaoDocumento="+sDescricao;
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_conhistdocregra.location.href = "con1_regraoperacaocontabil001.php?iCodigoDocumento="+$F('c45_coddoc')+"&sDescricaoDocumento="+sDescricao;
     if (lErro) {
       $("c45_coddoc").value = "";
     }
@@ -446,7 +446,7 @@ $oRotuloConhist->label();
 
   /* Funções de pesquisa do Histórico */
   function js_pesquisaHistorico(lMostra){
-  
+
     var sUrlHistorico = "";
 
     if(lMostra){
@@ -455,7 +455,7 @@ $oRotuloConhist->label();
       sUrlHistorico = "func_conhist.php?pesquisa_chave="+$F("c50_codhist")+"&funcao_js=parent.js_completaHistorico";
     }
     js_OpenJanelaIframe("", "db_iframe_conhist", sUrlHistorico, "Pesquisa Histórico", lMostra);
-  
+
   }
 
   function js_preencheHistorico(iCodigoHistorico, sDescricaoHistorico) {
@@ -464,7 +464,7 @@ $oRotuloConhist->label();
     $("c50_descr").value   = sDescricaoHistorico;
     db_iframe_conhist.hide();
   }
-              
+
   function js_completaHistorico(sDescricao, lErro) {
 
     $("c50_descr").value = sDescricao;
@@ -483,7 +483,7 @@ $oRotuloConhist->label();
     var sUrlEventoContabil = "func_conhistdoc.php?$lEventoContabil=true&funcao_js=parent.js_windowLancamentoEventoContabil|c53_coddoc";
     js_OpenJanelaIframe("", "db_iframe_conhistdoc", sUrlEventoContabil, "Pesquisa Documento", true);
   }
-  
+
   if (oGet.db_opcao != 1) {
     js_buscaHistoricoAlteracaoExclusao();
   }
@@ -506,7 +506,7 @@ $oRotuloConhist->label();
     if ($F('c45_seqtrans') != "") {
 
       parent.document.formaba.contranslr.disabled = true;
-      js_limpaFormulario();
+      js_limpaFormulario(false);
 
 	    if (oWindowAuxLancamento != null) {
 				oWindowAuxLancamento.destroy();
@@ -514,7 +514,7 @@ $oRotuloConhist->label();
     }
   };
 
-  
+
 
   $('btnPesquisarLancamento').observe('click', function() {
     js_windowLancamentoEventoContabil($F('c45_coddoc'));
@@ -525,15 +525,17 @@ $oRotuloConhist->label();
    */
   $('btnPesquisarDocumento').observe('click', function() {
 
-    js_limpaFormulario();
+    console.log('teste click');
+
+    js_limpaFormulario(true);
     js_buscaHistoricoAlteracaoExclusao();
   });
 
   /**
    * Limpa os dados do formulario
    */
-  function js_limpaFormulario() {
-    
+  function js_limpaFormulario(lPesquisaDocumento = false) {
+
     $('c46_seqtranslan').value = '';
     $('c46_ordem').value       = '';
     $('c46_descricao').value   = '';
@@ -541,6 +543,9 @@ $oRotuloConhist->label();
     $('c50_codhist').value     = '';
     $('c45_coddoc').style.backgroundColor = '#DEB887';
     $('c45_coddoc').readOnly   = true;
+    if(lPesquisaDocumento) {
+      $('c45_seqtrans').value    = '';
+    }
     $('c46_obrigatorio').value = 'f';
     $('c50_descr').value       = '';
     $('tdDocumento').innerHTML = "<b>Documento</b>";

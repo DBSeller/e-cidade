@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_utils.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/JSON.php');
-require_once('dbforms/db_funcoes.php');
-require_once('model/encaminhamentos.model.php');
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/JSON.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification('model/encaminhamentos.model.php'));
 
 $oEncaminhamentos = new encaminhamento;
 
@@ -48,28 +48,20 @@ if($oParam->exec == 'getCgsFaa') {
   if(empty($oTmp)) {
      
     $oRetorno->iStatus = 2;
-    $oRetorno->iCgs = '';
-    $oRetorno->sNome = '';
-
+    $oRetorno->iCgs    = '';
+    $oRetorno->sNome   = urlencode('');
   } else {
 
-    $oRetorno->iCgs = $oTmp->sd24_i_numcgs;
-    $oRetorno->sNome = $oTmp->z01_v_nome;
-
+    $oRetorno->iCgs  = $oTmp->sd24_i_numcgs;
+    $oRetorno->sNome = urlencode( $oTmp->z01_v_nome );
   }
-
-}
-
-elseif($oParam->exec == 'getUnidadesMedico') {
+} else if($oParam->exec == 'getUnidadesMedico') {
   
   $oRetorno->oUnidades = $oEncaminhamentos->getUnidadesMedico($oParam->iMedico)->oUnidades;
   if(empty($oRetorno->oUnidades)) {
     $oRetorno->iStatus = 2;
   }
-
-}
-
-elseif($oParam->exec == 'getProcedimento') {
+} else if($oParam->exec == 'getProcedimento') {
   
   $oRetorno->sProcedimento = $oParam->sProcedimento;
   $oTmp = $oEncaminhamentos->getProcedimento($oParam->sProcedimento,$oParam->iEspecialidade,
@@ -77,59 +69,46 @@ elseif($oParam->exec == 'getProcedimento') {
   if(empty($oTmp)) {
      
     $oRetorno->iStatus = 2;
-    $oRetorno->sDescrProcedimento = "Chave($oParam->sProcedimento) nÃ£o Encontrado";
+    $oRetorno->sDescrProcedimento = "Chave($oParam->sProcedimento) não Encontrado";
     $oRetorno->iCodProcedimento = '';
     $oRetorno->sProcedimento = '';
-
   } else {
 
     $oRetorno->sDescrProcedimento = urlencode($oTmp->sd63_c_nome);
     $oRetorno->iCodProcedimento = $oTmp->sd96_i_procedimento;
-
   }
-
-}
-
-elseif($oParam->exec == 'getEspecialidadeMedico' || $oParam->exec == 'getEspecialidade') {
+} else if($oParam->exec == 'getEspecialidadeMedico' || $oParam->exec == 'getEspecialidade') {
   
   $oRetorno->sEspecialidade = $oParam->sEspecialidade;
   if($oParam->exec == 'getEspecialidade') {
     $oTmp = $oEncaminhamentos->getEspecialidade($oParam->sEspecialidade,false);
   } else {
-    $oTmp = $oEncaminhamentos->getEspecialidade($oParam->sEspecialidade,true,
-                                                 $oParam->iCodMedico,$oParam->iCodUnidade);
+    $oTmp = $oEncaminhamentos->getEspecialidade($oParam->sEspecialidade,true,$oParam->iCodMedico,$oParam->iCodUnidade);
   }
    
   if(empty($oTmp)) {
  
     $oRetorno->iStatus = 2;
-    $oRetorno->sDescrEspecialidade = "Chave($oParam->sEspecialidade) nÃ£o Encontrado";
+    $oRetorno->sDescrEspecialidade = "Chave($oParam->sEspecialidade) não Encontrado";
     $oRetorno->iCodEspecialidade = '';
     $oRetorno->sEspecialidade = '';
-
   } else {
 
     $oRetorno->iCodEspecialidade = $oTmp->rh70_sequencial;
     $oRetorno->sDescrEspecialidade = urlencode($oTmp->rh70_descr);
-
   }
-
-}
-
-elseif($oParam->exec == 'getProcedimentosEncaminhamento') {
+} else if($oParam->exec == 'getProcedimentosEncaminhamento') {
   
   $oRetorno->oProcedimentos = $oEncaminhamentos->getProcedimentosEncaminhamento($oParam->iEncaminhamento)->oProcedimentos;
 
   if(empty($oRetorno->oProcedimentos)) {
     $oRetorno->iStatus = 2;
   }
-
-}
-
-elseif($oParam->exec == 'alteraProcedimentosDoEncaminhamento') {
+} else if($oParam->exec == 'alteraProcedimentosDoEncaminhamento') {
   
   db_inicio_transacao();
   $lSucesso = $oEncaminhamentos->alteraProcedimentosEncaminhamento($oParam->iEncaminhamento,$oParam->aProcedimentos);
+
   if(!$lSucesso) {
     
     $oRetorno->iStatus = 2;
@@ -138,8 +117,6 @@ elseif($oParam->exec == 'alteraProcedimentosDoEncaminhamento') {
   } else {
     db_inicio_transacao();
   }
-
 }
 
 echo $oJson->encode($oRetorno);
-?>

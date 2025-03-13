@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -381,7 +381,6 @@ class cl_mer_tpcardapioturma {
      $sql .= "      inner join serie  on  serie.ed11_i_codigo = mer_tpcardapioturma.me28_i_serie";
      $sql .= "      inner join mer_tipocardapio  on  mer_tipocardapio.me27_i_codigo = mer_cardapioescola.me32_i_tipocardapio";
      //$sql .= "      inner join escola  on  escola.ed18_i_codigo = mer_cardapioescola.me32_i_escola";
-     $sql .= "      inner join censoetapa  on  censoetapa.ed266_i_codigo = serie.ed11_i_codcenso";
      $sql .= "      inner join ensino  on  ensino.ed10_i_codigo = serie.ed11_i_ensino";
      $sql2 = "";
      if($dbwhere==""){

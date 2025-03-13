@@ -1,45 +1,45 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_lote_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_proced_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_proced_classe.php"));
 
 //---  parser POST/GET
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 
-$aux    = new cl_arquivo_auxiliar;
+$aux      = new cl_arquivo_auxiliar;
 $clproced = new cl_proced;
-$cllote = new cl_lote;
+$cllote   = new cl_lote;
 $cliframe_seleciona = new cl_iframe_seleciona;
 
 $clrotulo = new rotulocampo;
@@ -71,7 +71,7 @@ $clrotulo->label('v01_proced');
     </tr>
     <tr>
        <td colspan="2">
-            <?
+            <?php
               // $aux = new cl_arquivo_auxiliar;
               $aux->cabecalho = "<strong>Procedencias</strong>";
               $aux->codigo = "v03_codigo"; //chave de retorno da func
@@ -95,15 +95,15 @@ $clrotulo->label('v01_proced');
 						    $aux->sql_exec = $clproced->sql_query("",
 							                                      "v03_codigo, v03_descr",
 								                                  "v03_codigo",
-																  "{$sWhere} and v03_instit=".db_getsession('DB_instit'));	
-									
+																  "{$sWhere} and v03_instit=".db_getsession('DB_instit'));
+
 						 }
               $aux->funcao_gera_formulario();
-						 
-           ?>    
+
+           ?>
        </td>
-    </tr>    
-    <tr> 
+    </tr>
+    <tr>
         <td><!-- iframe --><center>
 		  <?
 		        if (isset($botao)){
@@ -114,10 +114,10 @@ $clrotulo->label('v01_proced');
 		          for ($x=0;$x < $tamanho;$x++){
 		            $listas .= $vir.$lista[$x];
 		            $vir = ",";
-		          }   
+		          }
 		        }else {
-			  $lista="";			
-			  }/* 
+			  $lista="";
+			  }/*
 		          $vir = "";
 		          $listas = "";
 			  $result2= db_query("select v01_proced from divida");
@@ -127,29 +127,29 @@ $clrotulo->label('v01_proced');
 			      $vir=",";
 			  }
 			  }*/
-		           $where = ""; 
+		           $where = "";
 		         if ((isset($lista))&&($lista!="")){
 		            if (isset($ver) and $ver=="com"){
 		                 $where = " where  v01_proced in ($listas) ";
 		          } else {
 		            $where =  "  where v01_proced = v03_codigo and v01_proced not in ($listas) and v01_instit = ".db_getsession('DB_instit');
-			     
-		           }  
-		         } 
-		         //echo $txt;exit; 
-		           
+
+		           }
+		         }
+		         //echo $txt;exit;
+
 		         $txt = " select distinct v01_exerc
-		     	              from divida 
-		             		         inner join arrecad on v01_numpre = k00_numpre 
-		                   		                     and v01_numpar = k00_numpar 
-		                   			 inner join proced on divida.v01_proced = proced.v03_codigo 
-		         					$where and divida.v01_instit = ".db_getsession('DB_instit') ;
-		
+		     	              from divida
+		             		         inner join arrecad on v01_numpre = k00_numpre
+		                   		                     and v01_numpar = k00_numpar
+		                   			 inner join proced on divida.v01_proced = proced.v03_codigo
+		         					$where and divida.v01_instit = ".db_getsession('DB_instit')." order by v01_exerc";
+
 		          $result3 = db_query($txt);
 		          //db_criatabela($result);
-		
+
 		          //$numrows = pg_numrows($result);
-		      
+
 		          //if ($numrows==0){
 		          //  echo "Não tem anos pra procedências selecionadas";
 		         // }
@@ -161,34 +161,34 @@ $clrotulo->label('v01_proced');
 			  $cliframe_seleciona->iframe_width ="450";
 			  $cliframe_seleciona->iframe_nome ="proced";
 			  $cliframe_seleciona->fieldset =false;
-		
+
 			  $cliframe_seleciona->marcador = true;
 			  //$cliframe_seleciona->dbscript = "onclick=\\\"\\\"";
-			  
-			  
+
+
 			  $cliframe_seleciona->campos  = "v01_exerc";
 			  $cliframe_seleciona->sql = $txt;
 			  $cliframe_seleciona->input_hidden = true;
 			  $cliframe_seleciona->chaves ="v01_exerc";
-			  $cliframe_seleciona->iframe_seleciona(1);   
-		   
+			  $cliframe_seleciona->iframe_seleciona(1);
+
 		    }
-		  ?>   
+		  ?>
           <!--- <iframe name="proced" src="div2_divipnome0011.php?lista=<?//=@$w?>&ver=<?//=@$ver?> "  width="600" align="top"  height="150" >
  	      </iframe>-->
         </center>
         </td>
-      </tr> 
+      </tr>
     </table>
   </fieldset>
-  <input type="submit" name="botao"  value="Escolher Anos" onClick='js_seleciona();'> 
-  <input type="hidden" name="botao1"  value="<?=@$lista?>"> 
+  <input type="submit" name="botao"  value="Escolher Anos" onClick='js_seleciona();'>
+  <input type="hidden" name="botao1"  value="<?=@$lista?>">
   <? if ((isset($botao)) && (pg_numrows($result3)!=0)) {
   ?>
   <input type="button" value="Emitir Relatório" onclick='js_gera();' >
-  <?}else{?> 
-  <input type="button" value="Emitir Relatório" disabled >	
-  <?}?>	
+  <?}else{?>
+  <input type="button" value="Emitir Relatório" disabled >
+  <?}?>
 </form>
  <!---  menu -->
 <? db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
@@ -208,9 +208,9 @@ function js_seleciona(){
   //jan = window.open('','safo' + variavel,'scrollbars=yes resizable=1');
   //document.form1.target = 'safo' + variavel++;
   setTimeout("document.form1.submit()",1000);
-                     
+
   return true;
-  
+
 }
 
 function js_gera(){

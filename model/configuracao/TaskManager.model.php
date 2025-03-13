@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("std/Thread.php");
+require_once(modification("std/Thread.php"));
 
 /**
  * Classe que define os comportamentos do Gerenciador de Tarefas
  * @author Rafael Serpa Nery <rafael.nery@dbseller.com.br>
- * @revision $Author: dbvitor $
- * @version $Revision: 1.7 $
+ * @revision $Author: dbjohn.reis $
+ * @version $Revision: 1.10 $
  */
 class TaskManager {
 
@@ -219,13 +219,7 @@ class TaskManager {
        */
       foreach (self::$aTarefasExecutando as $sIndiceThread => $oThreadExecucao ) {
 
-        $lLiberadoExecucao = false;
-
-        $oJob = $oThreadExecucao->getJob();
-
-        if ($oJob) {
-          $lLiberadoExecucao = $oJob->isLiberadaExecucao();
-        }
+          $lLiberadoExecucao = !file_exists(TaskManager::PATH_LOCKS . $oThreadExecucao->getJob()->getNome() . ".lock");
 
         /**
          * Caso o processo tenha sido concluido,
@@ -238,31 +232,40 @@ class TaskManager {
 
       }
 
-      $aTarefas       = $oAgenda->getTarefas( $iInstante );
+      $aTarefas = $oAgenda->getTarefas( $iInstante );
+
       /**
        * Percorre as Tarefas Encontradas
        */
       foreach ($aTarefas as $oJob ) {
 
-        require_once($oJob->getCaminhoPrograma());
+          $caminhoLock = TaskManager::PATH_LOCKS . $oJob->getNome() . ".lock";
+
+          if ( file_exists($caminhoLock) ) {
+              continue;
+          }
+
+          $iniciar = function () use ($oJob) {
+              require (modification($oJob->getCaminhoPrograma()));
+
         $sNomeTarefa = $oJob->getNomeClasse();
-
-        $oTarefaExecucao          = new $sNomeTarefa;
+        $oTarefaExecucao = new $sNomeTarefa;
         $oTarefaExecucao->setTarefa($oJob);
+              $oTarefaExecucao->iniciar();
+          };
 
-        if ( $oTarefaExecucao->isLiberadaExecucao() ) {
-
-          $oThread          = new Thread( array( $oTarefaExecucao, 'iniciar' ) );
+          $oThread = new Thread($iniciar);
+          $oThread->setJob($oJob);
           $oThread->start();
 
           self::$aTarefasExecutando[$oJob->getNomeClasse()] = $oThread;
-        }
       }
 
       unset($aTarefas);
       sleep(60);
     }
-    return "Fim da Execução...";
+
+    return true;
   }
 
   /**

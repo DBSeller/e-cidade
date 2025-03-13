@@ -1,33 +1,7 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-/*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -51,62 +25,123 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("model/pessoal/ArquivoEconsig.model.php");
-
-$oPost  = db_utils::postMemory($_POST);
-$oFiles = db_utils::postMemory($_FILES);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $sPosScripts = '';
-$sMensagens = "recursoshumanos.pessoal.pes4_importacaoarquivoeconsig.";
+$sMensagens  = "recursoshumanos.pessoal.pes4_importacaoarquivoeconsig.";
+
+define('MENSAGENS', $sMensagens);
+
+$oPost       = db_utils::postMemory($_POST);
+$oGet        = db_utils::postMemory($_GET);
+$oFiles      = db_utils::postMemory($_FILES);
+
+$oCompetencia= DBPessoal::getCompetenciaFolha();
+$iAnoFolha   = $oCompetencia->getAno();
+$iMesFolha   = $oCompetencia->getMes();
+
+include(modification("forms/db_frmimportacaoarquivoeconsig.php"));
+
+
+/**
+ * Valida se o ponto esta inicializado na competência.
+ */
+try {
+
+  validarPontoInicializado($oCompetencia);
+
+} catch (Exception $oException) {
+
+  /**
+   * Desabilita o botão processar.
+   */
+  $sPosScripts .= "$('db_opcao').disable(); ";
+  $sPosScripts .= "alert('" . $oException->getMessage() . "');\n";
+}
 
 if (isset($oPost->incluir)) {
 
   if ($oFiles->aArquivoMovimento['error'] != 0) {
 
-    $sPosScripts .= "alert('" . _M("{$sMensagens}falha_importacao") . "');\n";
-  } else if (move_uploaded_file($oFiles->aArquivoMovimento['tmp_name'], "tmp/{$oFiles->aArquivoMovimento['name']}")) {
+    db_msgbox(_M("{$sMensagens}falha_importacao"));
+    exit;
+  } 
 
-    $oArquivoEconsig = new ArquivoEconsig( db_getsession("DB_instit") );
+  if ( !move_uploaded_file($oFiles->aArquivoMovimento['tmp_name'], "tmp/{$oFiles->aArquivoMovimento['name']}") ) {
+
+    db_msgbox(_M("{$sMensagens}falha_importacao"));
+    exit;
+  }
+
+  try {
 
     db_inicio_transacao();
+    
+    $oCompetencia    = new DBCompetencia($oPost->ano, $oPost->mes);
+    $oInstituicao    = InstituicaoRepository::getInstituicaoByCodigo(db_getsession('DB_instit'));
+    $oArquivoEconsig = new ProcessamentoArquivoEConsig("tmp/{$oFiles->aArquivoMovimento['name']}", $oCompetencia, $oInstituicao);
+  
+    $oArquivoEconsig->importar();
+    $sCaminho = $oArquivoEconsig->getCaminhoArquivoInconsistencias();
+    if (!empty($sCaminho) ) {
 
-    try {
-
-      if (!preg_match('/.*\.txt$/i', $oFiles->aArquivoMovimento['name'])) {
-        throw new Exception( _M("{$sMensagens}extensao_invalida") );
-      }
-
-      if (!preg_match('/econsig_(\d{4})_(\d{2})_(\d{3})\.txt/i', $oFiles->aArquivoMovimento['name'])) {
-        throw new Exception( _M("{$sMensagens}nome_invalido") );
-      }
-
-      $lFalha = $oArquivoEconsig->importarArquivoMovimento("tmp/{$oFiles->aArquivoMovimento['name']}");
-      db_fim_transacao(!$lFalha);
-
-      if ($lFalha) {
-        $sPosScripts .= "alert('" . _M("{$sMensagens}arquivo_importado") . "');\n";
-      } else {
-
-        $sPosScripts .= "alert('" . _M("{$sMensagens}inconsistencias") . "');\n";
-        $sPosScripts .= "js_exibeInconsistencias(['" . $oArquivoEconsig->imprimeRelatorio()  . "']);";
-      }
-
-    } catch(Exception $e) {
-
-      $sPosScripts .= "alert('" . $e->getMessage() . "');\n";
-      db_fim_transacao(true);
+      echo "<script>js_exibeRelatorioImportacao('{$oArquivoEconsig->getCaminhoArquivoInconsistencias()}');</script>";
+      db_fim_transacao(false);
     }
 
+    db_msgbox(_M("{$sMensagens}arquivo_importado"));
+    db_fim_transacao(false);
+  } catch(Exception $e) {
+    db_fim_transacao(true);
+    db_msgbox( $e->getMessage() );
   }
+
+  
 }
+echo "<script>{$sPosScripts}</script>";  
 
-$iAnoFolha = DBPessoal::getAnoFolha();
-$iMesFolha = DBPessoal::getMesFolha();
+function validarPontoInicializado( DBCompetencia $oCompetencia ) {
 
-include("forms/db_frmimportacaoarquivoeconsig.php");
+    /**
+     * Se utiliza a estrutura nova de complementar verifica 
+     * se existe uma folha de salário aberta.
+     */
+    if ( DBPessoal::verificarUtilizacaoEstruturaSuplementar() ) {
+
+      $lFolhaAberta = FolhaPagamento::hasFolhaAberta(FolhaPagamento::TIPO_FOLHA_SALARIO, $oCompetencia);
+
+      if (!$lFolhaAberta){
+        throw new BusinessException(_M(MENSAGENS . 'salario_fechado'));
+      }
+      return true;
+    }
+
+    /**
+     * Se não utilizar a estrutura nova de complementar
+     * verifica se existe dados no pontofs para a competência, 
+     * se existir é porque o ponto foi inicializado.
+     */
+    $oDaoPontoFs = new cl_pontofs();
+    $sSqlPontoFs = $oDaoPontoFs->sql_query_file ( $oCompetencia->getAno(), 
+                                                  $oCompetencia->getMes(), 
+                                                  null, 
+                                                  null, 
+                                                  "r10_rubric"
+                                                );
+    $rsPontoFs = db_query($sSqlPontoFs);
+
+    if (!$rsPontoFs) {
+      throw new DBException(_M(MENSAGENS . 'erro_ponto'));
+    }
+
+    if (pg_num_rows($rsPontoFs) == 0) {
+      throw new BusinessException(_M(MENSAGENS . 'erro_ponto_nao_inicializado'));
+    }
+    
+    return true;
+  }

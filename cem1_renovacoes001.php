@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_renovacoes_classe.php");
-include("classes/db_sepulta_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_renovacoes_classe.php"));
+include(modification("classes/db_sepulta_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS); 
 $clsepulta   = new cl_sepulta;
 $clrenovacoes = new cl_renovacoes;
@@ -95,7 +95,7 @@ if(isset($processar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center> <br>
      <?
-     include("forms/db_frmrenovacoes.php");
+     include(modification("forms/db_frmrenovacoes.php"));
      ?>
     </center>
      </td>

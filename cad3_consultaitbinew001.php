@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_lote_classe.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_lote_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $cllote = new cl_lote;
@@ -52,7 +52,7 @@ $db_opcao=1;
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-<?
+<?php
  db_app::load('estilos.css');
  db_app::load('scripts.js, prototype.js, strings.js, DBViewPesquisaSetorQuadraLote.js, dbcomboBox.widget.js');
 ?>
@@ -68,7 +68,7 @@ $db_opcao=1;
       <strong>Guia:</strong>
     </td>
     <td> 
-     <?
+     <?php
        db_input('guia',10,"",true,'text',1,"");
      ?>
     </td>
@@ -76,12 +76,12 @@ $db_opcao=1;
   <tr>
     <td title="Pesquisa por nome do adquirente">
       
-      <?
+      <?php
        db_ancora("<strong>Adquirente</strong>",' js_cgm(true); ',1);
       ?>
     </td>
     <td> 
-     <?
+     <?php
 
        db_input('z01_numcgm',10,$Iz01_numcgm,true,'text',1,"onchange='js_cgm(false)'","z_numcgm");
        db_input('z01_nome',36,0,true,'text',3,"","adquirente");
@@ -95,7 +95,7 @@ $db_opcao=1;
       <strong>Transmitente: </strong>
     </td>
     <td> 
-     <?
+     <?php
        db_input('transmitente',48,"",true,'text',1,"");
      ?>
     </td>
@@ -105,7 +105,7 @@ $db_opcao=1;
       <strong>Data inicial: </strong>
     </td>
     <td>
-      <?
+      <?php
         db_inputdata("dataini",@$dataini_dia,@$dataini_mes,@$dataini_ano,true,'text',1);
       ?>
     </td>
@@ -115,7 +115,7 @@ $db_opcao=1;
       <strong>Data final: </strong>
     </td>
     <td>
-      <?
+      <?php
         db_inputdata("datafim",@$datafim_dia,@$datafim_mes,@$datafim_ano,true,'text',1);
       ?>
     </td>
@@ -127,7 +127,7 @@ $db_opcao=1;
       <strong>Tipo de ITBI: </strong>
     </td>
     <td> 
-     <?
+     <?php
       $x = array("u"=>"Urbana","r"=>"Rural");
       db_select('tipo',$x,true,1,"onClick='js_controlatipo(this.value);'");
      ?>
@@ -143,12 +143,12 @@ $db_opcao=1;
 <table>
   <tr>
     <td title="<?=@$Tj01_matric?>">
-       <?
+       <?php
        db_ancora(@$Lj01_matric,"js_matric(true);",1);
        ?>
     </td>
     <td> 
-     <?
+     <?php
        db_input('j01_matric',10,$Ij01_matric,true,'text',1," onChange='js_matric(false)'");
        db_input('z01_nome',40,$Iz01_nome,true,'text',3,"")
      ?>
@@ -159,31 +159,31 @@ $db_opcao=1;
        <?=$Lj34_setor?>
     </td>
     <td> 
-    <?
+    <?php
      db_input('j34_setor',10,$Ij34_setor,true,'text',$db_opcao);
      ?>
      <?=$Lj34_quadra?>
-     <?
+     <?php
        db_input('j34_quadra',10,$Ij34_quadra,true,'text',$db_opcao);
      ?>
      
      <?=$Lj34_lote?>
-     <?
+     <?php
        db_input('j34_lote',10,$Ij34_lote,true,'text',$db_opcao);
      ?>
     </td>
   </tr>
   <tr> 
     <td title="<?=@$Tj14_nome?>"> 
-       <?
+       <?php
        db_ancora(@$Lj14_nome,"js_ruas(true);",$db_opcao);
        ?>
     </td>
     <td> 
-      <?
+      <?php
        	db_input('j14_codigo',10,$Ij14_codigo,true,'text',$db_opcao," onChange='js_ruas(false)'");
       ?>
-      <?
+      <?php
        	db_input('j14_nome',40,$Ij14_nome,true,'text',3);
       ?>
     </td>
@@ -234,7 +234,7 @@ onLoad = js_limpacampos();
   </table>
   </center>
 </form>
-<?
+<?php
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 <script>
@@ -292,18 +292,18 @@ function js_abreconsulta(chave){
 }
   function js_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matric','func_iptubaseitbi.php?funcao_js=parent.js_mostramatric1|j01_matric|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matric','func_iptubaseitbi.php?funcao_js=parent.js_mostramatric1|j01_matric|z01_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_matric','func_iptubaseitbi.php?pesquisa_chave='+document.form1.j01_matric.value+'&funcao_js=parent.js_mostramatric','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matric','func_iptubaseitbi.php?pesquisa_chave='+document.form1.j01_matric.value+'&funcao_js=parent.js_mostramatric','Pesquisa',false);
   }
 }
 
 function js_cgm(mostra){
   var cgm=document.form1.z_numcgm.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_mostracgm|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?funcao_js=parent.js_mostracgm|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe2','func_nome.php?pesquisa_chave='+cgm+'&funcao_js=parent.js_mostracgm1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe2','func_nome.php?pesquisa_chave='+cgm+'&funcao_js=parent.js_mostracgm1','Pesquisa',false);
   }
 }
 function js_mostracgm(chave1,chave2){
@@ -340,9 +340,9 @@ function js_mostrasetor(chave1,chave2){
 }
 function js_ruas(mostra){
   if(mostra == true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruasitbi.php?rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruasitbi.php?rural=1&funcao_js=parent.js_preenchepesquisa|j14_codigo|j14_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_ruas','func_ruasitbi.php?rural=1&funcao_js=parent.js_preenchepesquisa1&pesquisa_chave='+document.form1.j14_codigo.value,'Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ruas','func_ruasitbi.php?rural=1&funcao_js=parent.js_preenchepesquisa1&pesquisa_chave='+document.form1.j14_codigo.value,'Pesquisa',false);
   }
 }
 function js_preenchepesquisa(chave,chave1){
@@ -359,7 +359,7 @@ function js_preenchepesquisa1(chave,erro){
   db_iframe_ruas.hide();
 }
 </script>
-<?
+<?php
 if(isset($j01_matric) && $j01_matric != "" || 1==1){
 //  echo "<script>js_OpenJanelaIframe('','db_iframe_itbi','cad3_consultaitbinew003.php?j01_matric=$j01_matric','Pesquisa',true,30);</script>";
 }elseif(isset($j34_setor) && $j34_setor != ""){
@@ -371,7 +371,7 @@ if(isset($j01_matric) && $j01_matric != "" || 1==1){
 var oPesquisa = new DBViewPesquisaSetorQuadraLote('pesquisa', 'oPesquisa');
     oPesquisa.show();
     oPesquisa.appendForm();
-<? 
+<?php 
 	//echo "oPesquisa.setValues('{$setorCodigo}','{$quadra}','{$lote}');"; 
 ?>
 </script>

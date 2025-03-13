@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_habitgrupoprograma_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_habitgrupoprograma_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotuloCampos = new rotulocampo();
 $oRotuloCampos->label("z01_nome");
@@ -112,7 +112,7 @@ unset($_SESSION["oCandidatoHabitacao"]);
                        $sSqlGrupos = $oDaoHabitacaoGrupo->sql_query_file(null,"*","ht03_descricao");
                        $rsGrupos   = $oDaoHabitacaoGrupo->sql_record($sSqlGrupos);
                      
-                       $aGrupos = db_utils::getColectionByRecord($rsGrupos);
+                       $aGrupos = db_utils::getCollectionByRecord($rsGrupos);
                        foreach ($aGrupos as $oGrupo) {
 
                          $sHtml  = " <input type='checkbox'                        "; 
@@ -207,7 +207,7 @@ function js_retornoGetPrograma(oAjax) {
   
   js_removeObj("msgBox");
   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   $('programasgrupos').innerHTML = '';
   
@@ -271,7 +271,7 @@ function js_retornoGetCandidato(oAjax) {
   
   js_removeObj('msgBox');
   
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   
   if (oRetorno.iStatus == 1 ) {
   
@@ -351,7 +351,7 @@ function js_mostracgm1(chave1, chave2) {
 function js_novoCgm() {
   js_OpenJanelaIframe('', 
                       'db_iframe_novocgm', 
-                      'prot1_cadgeralmunic001.php?lMenu=false&lFisico=true&funcaoRetorno=top.corpo.iframe_grupoprograma.retornoCgm',
+                      'prot1_cadgeralmunic001.php?lMenu=false&lFisico=true&funcaoRetorno=parent.CurrentWindow.corpo.iframe_grupoprograma.retornoCgm',
                       'Novo CGM',
                       true,
                       '0');
@@ -363,7 +363,7 @@ function js_alterarCgm(iCgm) {
     js_OpenJanelaIframe('', 
                         'db_iframe_novocgm', 
                         'prot1_cadgeralmunic002.php?chavepesquisa='+iCgm+
-                        '&lMenu=false&lCpf=true&funcaoRetorno=top.corpo.iframe_grupoprograma.retornoCgm',
+                        '&lMenu=false&lCpf=true&funcaoRetorno=parent.CurrentWindow.corpo.iframe_grupoprograma.retornoCgm',
                         'Novo CGM',
                         true,
                         '0');
@@ -401,7 +401,7 @@ function situacaoCpf() {
 }
 function js_retornoSituacaoCpf(oAjax) {
     
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.iStatus == 1) {
       if ( oRetorno.sResult == "1" || oRetorno.sResult == 1 ) {
 		      $("situacaocpf").options.length = 0;

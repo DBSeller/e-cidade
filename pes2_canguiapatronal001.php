@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhrubricas_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhrubricas_classe.php"));
 $clrhrubricas = new cl_rhrubricas;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -161,7 +161,7 @@ function js_emite(){
                    and r33_mesusu = $DBtxt25 
                    and r33_codtab > 2 
                    and r33_instit = ".db_getsession('DB_instit') ;
-	        $res = pg_query($sql);
+	        $res = db_query($sql);
         db_multiploselect("r33_codtab", "r33_nome", "nselecionados", "sselecionados", $res, array(), 4, 250);
          ?>
         </td>

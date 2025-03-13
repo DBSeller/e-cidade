@@ -26,7 +26,7 @@
  */
 
 //MODULO: Gestor BI
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
 $clgestorindicadorregistro->rotulo->label();
@@ -212,12 +212,12 @@ function js_pesquisag05_gestorgrupoindicador(mostra){
   if(mostra==true){
   
     var sUrl = 'func_gestorgrupoindicador.php?dtlimite=true&funcao_js=parent.js_mostragestorgrupoindicador1|g03_sequencial|g03_descricao';
-    js_OpenJanelaIframe('top.corpo','db_iframe_gestorgrupoindicador',sUrl,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_gestorgrupoindicador',sUrl,'Pesquisa',true);
   }else{
      if($F('g05_gestorgrupoindicador') != ''){ 
      
        var sUrl = 'func_gestorgrupoindicador.php?pesquisa_chave='+$F('g05_gestorgrupoindicador')+'&dtlimite=true&funcao_js=parent.js_mostragestorgrupoindicador';
-       js_OpenJanelaIframe('top.corpo','db_iframe_gestorgrupoindicador',sUrl,'Pesquisa',false);
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_gestorgrupoindicador',sUrl,'Pesquisa',false);
      }else{
        $('g03_sequencial').value = ''; 
      }
@@ -243,12 +243,12 @@ function js_pesquisag05_gestorindicador(mostra){
   if(mostra==true){
   
     var sUrl = 'func_gestorindicador.php?dtlimite=true&funcao_js=parent.js_mostragestorindicador1|g04_sequencial|g04_descricao';
-    js_OpenJanelaIframe('top.corpo','db_iframe_gestorindicador',sUrl,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_gestorindicador',sUrl,'Pesquisa',true);
   }else{
      if($F('g05_gestorindicador') != ''){ 
      
         var sUrl = 'func_gestorindicador.php?pesquisa_chave='+$F('g05_gestorindicador')+'&dtlimite=true&funcao_js=parent.js_mostragestorindicador';
-        js_OpenJanelaIframe('top.corpo','db_iframe_gestorindicador',sUrl,'Pesquisa',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_gestorindicador',sUrl,'Pesquisa',true);
      }else{
        $('g05_gestorindicador').value = ''; 
      }

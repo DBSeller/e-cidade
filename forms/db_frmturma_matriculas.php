@@ -72,10 +72,10 @@ db_input('ed09_c_situacao',20,$Ied09_c_situacao,true,'text',3,'')
 <script>
 function js_pesquisaed36_i_turma(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_turmas','func_turmas.php?funcao_js=parent.js_mostraturmas1|ed05_i_codigo|ed05_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_turmas','func_turmas.php?funcao_js=parent.js_mostraturmas1|ed05_i_codigo|ed05_c_nome','Pesquisa',true);
   }else{
      if(document.form1.ed36_i_turma.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_turmas','func_turmas.php?pesquisa_chave='+document.form1.ed36_i_turma.value+'&funcao_js=parent.js_mostraturmas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_turmas','func_turmas.php?pesquisa_chave='+document.form1.ed36_i_turma.value+'&funcao_js=parent.js_mostraturmas','Pesquisa',false);
      }else{
        document.form1.ed05_c_nome.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostraturmas1(chave1,chave2){
 }
 function js_pesquisaed36_i_matricula(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_matriculas','func_matriculas.php?funcao_js=parent.js_mostramatriculas1|ed09_i_codigo|ed09_c_situacao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matriculas','func_matriculas.php?funcao_js=parent.js_mostramatriculas1|ed09_i_codigo|ed09_c_situacao','Pesquisa',true);
   }else{
      if(document.form1.ed36_i_matricula.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_matriculas','func_matriculas.php?pesquisa_chave='+document.form1.ed36_i_matricula.value+'&funcao_js=parent.js_mostramatriculas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_matriculas','func_matriculas.php?pesquisa_chave='+document.form1.ed36_i_matricula.value+'&funcao_js=parent.js_mostramatriculas','Pesquisa',false);
      }else{
        document.form1.ed09_c_situacao.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostramatriculas1(chave1,chave2){
   db_iframe_matriculas.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_turma_matriculas','func_turma_matriculas.php?funcao_js=parent.js_preenchepesquisa|ed36_i_turma|ed36_i_matricula','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_turma_matriculas','func_turma_matriculas.php?funcao_js=parent.js_preenchepesquisa|ed36_i_turma|ed36_i_matricula','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_turma_matriculas.hide();

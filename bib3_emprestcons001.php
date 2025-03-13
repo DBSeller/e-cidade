@@ -1,38 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_acervo_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_acervo_classe.php"));
 
 $clacervo = new cl_acervo;
 $clacervo->rotulo->label('bi06_seq');
@@ -58,15 +58,17 @@ $clacervo->rotulo->label('bi06_seq');
      <legend><b>Consulta de Empréstimos por Acervo</b></legend>
      <table border="0" cellpadding="0" cellspacing="2" bgcolor="#CCCCCC" align="center">
       <tr>
-       <td><b>Informe o período <small><i>(Opcional) </i></small>:</b></td>
+       <td><label for="data_ini"><b>Informe o período <small><i>(Opcional) </i></small>:</b></label></td>
        <td>
         <?php db_inputdata('data_ini','','','',true,'text',1,""); ?>
-        Até:
+        <label for="data_fim">Até:</label>
         <?php db_inputdata('data_fim','','','',true,'text',1,""); ?>
        </td>
       </tr>
       <tr>
-       <td><?php db_ancora(@$Lbi06_seq,"js_pesquisabi06_seq(true);",1); ?></td>
+       <td>
+         <label for="bi06_seq"><?php db_ancora(@$Lbi06_seq,"js_pesquisabi06_seq(true);",1); ?></label>
+        </td>
        <td>
          <?php db_input('bi06_seq', 10, @$Ibi06_seq, true,' text', 1, " onchange='js_pesquisabi06_seq(false);'"); ?>
          <?php db_input('bi06_titulo', 40, @$Ibi06_titulo, true, 'text', 3, ''); ?>
@@ -113,7 +115,7 @@ function js_pesquisa() {
 function js_pesquisabi06_seq(mostra) {
 
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_acervo',
                         'func_acervo.php?funcao_js=parent.js_mostracodbarras1|bi06_seq|bi06_titulo',
                         'Pesquisa',
@@ -122,7 +124,7 @@ function js_pesquisabi06_seq(mostra) {
   } else {
 
     if (document.form1.bi06_seq.value != '') {
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_acervo',
                           'func_acervo.php?pesquisa_chave='+document.form1.bi06_seq.value
                                         +'&funcao_js=parent.js_mostracodbarras',

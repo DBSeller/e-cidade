@@ -77,7 +77,7 @@ function js_pesquisame20_i_unidade(mostra) {
 	
   if (mostra==true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_mer_unidade',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_unidade',
     	                'func_mer_unidade.php?funcao_js=parent.js_mostramer_unidade1|me15_i_codigo|me15_i_codigo',
     	                'Pesquisa',true
     	               );
@@ -86,7 +86,7 @@ function js_pesquisame20_i_unidade(mostra) {
 	  
     if (document.form1.me20_i_unidade.value != '') {
          
-      js_OpenJanelaIframe('top.corpo','db_iframe_mer_unidade',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_unidade',
     	                  'func_mer_unidade.php?pesquisa_chave='+document.form1.me20_i_unidade.value+
     	                  '&funcao_js=parent.js_mostramer_unidade','Pesquisa',false
     	                 );
@@ -120,7 +120,7 @@ function js_pesquisame20_i_item(mostra) {
 	
   if (mostra==true) {
 	  
-    js_OpenJanelaIframe('top.corpo','db_iframe_mer_item',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_item',
     	                'func_mer_item.php?funcao_js=parent.js_mostramer_item1|me10_i_codigo|me10_i_codigo',
     	                'Pesquisa',true
     	               );
@@ -129,7 +129,7 @@ function js_pesquisame20_i_item(mostra) {
 	  
     if (document.form1.me20_i_item.value != '') {
          
-        js_OpenJanelaIframe('top.corpo','db_iframe_mer_item',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_item',
                             'func_mer_item.php?pesquisa_chave='+document.form1.me20_i_item.value+
                             '&funcao_js=parent.js_mostramer_item','Pesquisa',false
                            );
@@ -161,7 +161,7 @@ function js_mostramer_item1(chave1,chave2) {
 
 function js_pesquisa() {
 	
-  js_OpenJanelaIframe('top.corpo','db_iframe_mer_itemunisaida',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mer_itemunisaida',
 		              'func_mer_itemunisaida.php?funcao_js=parent.js_preenchepesquisa|me20_i_codigo','Pesquisa',true
 		             );
   

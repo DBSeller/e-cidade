@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -198,9 +198,19 @@ class BemHistoricoMovimentacao {
    * Persiste o Historico na base de dados
    */
   public function salvar($iBem) {
-    
-    
-    $oDaoHistBem             = db_utils::getDao("histbem");
+
+    $iCodigoDepartamento = $this->getDepartamento();
+    $iCodigoSituacao     = $this->getCodigoSituacao();
+
+    if (empty($iCodigoDepartamento)) {
+      throw new ParameterException("Código do Departamento é de preenchimento obrigatório.");
+    }
+
+    if (empty($iCodigoSituacao)) {
+      throw new ParameterException("Código da situação é de preenchimento obrigatório.");
+    }
+
+    $oDaoHistBem             = new cl_histbem();
     $oDaoHistBem->t56_data   = $this->getData();
     $oDaoHistBem->t56_depart = $this->getDepartamento();
     $oDaoHistBem->t56_histor = $this->getHistorico();
@@ -217,7 +227,7 @@ class BemHistoricoMovimentacao {
     }
     
     if ($oDaoHistBem->erro_status == 0) {
-      
+
       throw new Exception('Erro ao salvar histórico do bem.');
     }
   }

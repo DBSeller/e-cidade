@@ -46,9 +46,9 @@ $clrotulo->label("j13_codi");
        if((isset($chavepesquisa) || isset($alterar)) && isset($ed47_c_foto)){
         if($ed47_o_oid!=0){
          $arquivo = "tmp/".$ed47_c_foto;
-         pg_exec("begin");
+         db_query("begin");
          pg_loexport($ed47_o_oid,$arquivo);
-         pg_exec("end");
+         db_query("end");
          if($db_botao==true){
           ?>
           <br><input type="button" name="excfoto" value="Excluir Foto" onclick="location.href='bib1_alunodados002.php?excluirfoto&chavepesquisa=<?=$chavepesquisa?>'" style="font-size:9px;height:14px;padding:0px;">

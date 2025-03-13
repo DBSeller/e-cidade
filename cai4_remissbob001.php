@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libcaixa.php");
-require_once("classes/db_cfautent_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libcaixa.php"));
+require_once(modification("classes/db_cfautent_classe.php"));
 
 $clcfautent = new cl_cfautent;
 
@@ -65,7 +65,7 @@ function js_imprime(tipo){
   dia = obj.data_dia.value;
   mes = obj.data_mes.value;
   ano = obj.data_ano.value;
-  js_OpenJanelaIframe('top.corpo','db_iframe_imprime','cai4_remissbob003.php?tipo='+tipo+'&dia='+dia+'&mes='+mes+'&ano='+ano,'Impressão',true,150,200,300,200);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_imprime','cai4_remissbob003.php?tipo='+tipo+'&dia='+dia+'&mes='+mes+'&ano='+ano,'Impressão',true,150,200,300,200);
 }
 </script>
 <link href="estilos.css" rel="stylesheet" type="text/css">

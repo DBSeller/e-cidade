@@ -1,82 +1,82 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se não, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: ambulatorial
 //CLASSE DA ENTIDADE sau_receitamedica
-class cl_sau_receitamedica { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $s158_i_codigo = 0; 
-   var $s158_i_profissional = 0; 
-   var $s158_i_tiporeceita = 0; 
-   var $s158_t_prescricao = null; 
-   var $s158_i_situacao = 0; 
-   var $s158_d_validade_dia = null; 
-   var $s158_d_validade_mes = null; 
-   var $s158_d_validade_ano = null; 
-   var $s158_d_validade = null; 
-   var $s158_i_login = 0; 
-   var $s158_d_data_dia = null; 
-   var $s158_d_data_mes = null; 
-   var $s158_d_data_ano = null; 
-   var $s158_d_data = null; 
-   var $s158_c_hora = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_sau_receitamedica {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $s158_i_codigo = 0;
+   var $s158_i_profissional = 0;
+   var $s158_i_tiporeceita = 0;
+   var $s158_t_prescricao = null;
+   var $s158_i_situacao = 0;
+   var $s158_d_validade_dia = null;
+   var $s158_d_validade_mes = null;
+   var $s158_d_validade_ano = null;
+   var $s158_d_validade = null;
+   var $s158_i_login = 0;
+   var $s158_d_data_dia = null;
+   var $s158_d_data_mes = null;
+   var $s158_d_data_ano = null;
+   var $s158_d_data = null;
+   var $s158_c_hora = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 s158_i_codigo = int4 = Código 
-                 s158_i_profissional = int4 = Profissional 
-                 s158_i_tiporeceita = int4 = Tipo de Receita 
-                 s158_t_prescricao = text = Prescrição 
-                 s158_i_situacao = int4 = Situação 
-                 s158_d_validade = date = Validade 
-                 s158_i_login = int4 = Login 
-                 s158_d_data = date = Data do sistema 
-                 s158_c_hora = char(5) = Hora do sistema 
+                 s158_i_codigo = int4 = Código
+                 s158_i_profissional = int4 = Profissional
+                 s158_i_tiporeceita = int4 = Tipo de Receita
+                 s158_t_prescricao = text = Prescrição
+                 s158_i_situacao = int4 = Situação
+                 s158_d_validade = date = Validade
+                 s158_i_login = int4 = Login
+                 s158_d_data = date = Data do sistema
+                 s158_c_hora = char(5) = Hora do sistema
                  ";
-   //funcao construtor da classe 
-   function cl_sau_receitamedica() { 
+   //funcao construtor da classe
+   function cl_sau_receitamedica() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("sau_receitamedica"); 
+     $this->rotulo = new rotulo("sau_receitamedica");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -115,10 +115,10 @@ class cl_sau_receitamedica {
      }
    }
    // funcao para inclusao
-   function incluir ($s158_i_codigo){ 
+   function incluir ($s158_i_codigo){
       $this->atualizacampos();
-     if($this->s158_i_profissional == null ){ 
-       $this->erro_sql = " Campo Profissional nao Informado.";
+     if($this->s158_i_profissional == null ){
+       $this->erro_sql = " Campo Profissional não Informado.";
        $this->erro_campo = "s158_i_profissional";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -126,8 +126,8 @@ class cl_sau_receitamedica {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s158_i_tiporeceita == null ){ 
-       $this->erro_sql = " Campo Tipo de Receita nao Informado.";
+     if($this->s158_i_tiporeceita == null ){
+       $this->erro_sql = " Campo Tipo de Receita não Informado.";
        $this->erro_campo = "s158_i_tiporeceita";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -135,8 +135,8 @@ class cl_sau_receitamedica {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s158_t_prescricao == null ){ 
-       $this->erro_sql = " Campo Prescrição nao Informado.";
+     if($this->s158_t_prescricao == null ){
+       $this->erro_sql = " Campo Prescrição não Informado.";
        $this->erro_campo = "s158_t_prescricao";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -144,8 +144,8 @@ class cl_sau_receitamedica {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s158_i_situacao == null ){ 
-       $this->erro_sql = " Campo Situação nao Informado.";
+     if($this->s158_i_situacao == null ){
+       $this->erro_sql = " Campo Situação não Informado.";
        $this->erro_campo = "s158_i_situacao";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -153,8 +153,8 @@ class cl_sau_receitamedica {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s158_d_validade == null ){ 
-       $this->erro_sql = " Campo Validade nao Informado.";
+     if($this->s158_d_validade == null ){
+       $this->erro_sql = " Campo Validade não Informado.";
        $this->erro_campo = "s158_d_validade_dia";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -162,8 +162,8 @@ class cl_sau_receitamedica {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s158_i_login == null ){ 
-       $this->erro_sql = " Campo Login nao Informado.";
+     if($this->s158_i_login == null ){
+       $this->erro_sql = " Campo Login não Informado.";
        $this->erro_campo = "s158_i_login";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -171,8 +171,8 @@ class cl_sau_receitamedica {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s158_d_data == null ){ 
-       $this->erro_sql = " Campo Data do sistema nao Informado.";
+     if($this->s158_d_data == null ){
+       $this->erro_sql = " Campo Data do sistema não Informado.";
        $this->erro_campo = "s158_d_data_dia";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -180,8 +180,8 @@ class cl_sau_receitamedica {
        $this->erro_status = "0";
        return false;
      }
-     if($this->s158_c_hora == null ){ 
-       $this->erro_sql = " Campo Hora do sistema nao Informado.";
+     if($this->s158_c_hora == null ){
+       $this->erro_sql = " Campo Hora do sistema não Informado.";
        $this->erro_campo = "s158_c_hora";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -190,16 +190,16 @@ class cl_sau_receitamedica {
        return false;
      }
      if($s158_i_codigo == "" || $s158_i_codigo == null ){
-       $result = db_query("select nextval('sau_receitamedica_s158_i_codigo_seq')"); 
+       $result = db_query("select nextval('sau_receitamedica_s158_i_codigo_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: sau_receitamedica_s158_i_codigo_seq do campo: s158_i_codigo"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: sau_receitamedica_s158_i_codigo_seq do campo: s158_i_codigo";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->s158_i_codigo = pg_result($result,0,0); 
+       $this->s158_i_codigo = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from sau_receitamedica_s158_i_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $s158_i_codigo)){
@@ -210,11 +210,11 @@ class cl_sau_receitamedica {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->s158_i_codigo = $s158_i_codigo; 
+         $this->s158_i_codigo = $s158_i_codigo;
        }
      }
-     if(($this->s158_i_codigo == null) || ($this->s158_i_codigo == "") ){ 
-       $this->erro_sql = " Campo s158_i_codigo nao declarado.";
+     if(($this->s158_i_codigo == null) || ($this->s158_i_codigo == "") ){
+       $this->erro_sql = " Campo s158_i_codigo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -222,37 +222,37 @@ class cl_sau_receitamedica {
        return false;
      }
      $sql = "insert into sau_receitamedica(
-                                       s158_i_codigo 
-                                      ,s158_i_profissional 
-                                      ,s158_i_tiporeceita 
-                                      ,s158_t_prescricao 
-                                      ,s158_i_situacao 
-                                      ,s158_d_validade 
-                                      ,s158_i_login 
-                                      ,s158_d_data 
-                                      ,s158_c_hora 
+                                       s158_i_codigo
+                                      ,s158_i_profissional
+                                      ,s158_i_tiporeceita
+                                      ,s158_t_prescricao
+                                      ,s158_i_situacao
+                                      ,s158_d_validade
+                                      ,s158_i_login
+                                      ,s158_d_data
+                                      ,s158_c_hora
                        )
                 values (
-                                $this->s158_i_codigo 
-                               ,$this->s158_i_profissional 
-                               ,$this->s158_i_tiporeceita 
-                               ,'$this->s158_t_prescricao' 
-                               ,$this->s158_i_situacao 
-                               ,".($this->s158_d_validade == "null" || $this->s158_d_validade == ""?"null":"'".$this->s158_d_validade."'")." 
-                               ,$this->s158_i_login 
-                               ,".($this->s158_d_data == "null" || $this->s158_d_data == ""?"null":"'".$this->s158_d_data."'")." 
-                               ,'$this->s158_c_hora' 
+                                $this->s158_i_codigo
+                               ,$this->s158_i_profissional
+                               ,$this->s158_i_tiporeceita
+                               ,'$this->s158_t_prescricao'
+                               ,$this->s158_i_situacao
+                               ,".($this->s158_d_validade == "null" || $this->s158_d_validade == ""?"null":"'".$this->s158_d_validade."'")."
+                               ,$this->s158_i_login
+                               ,".($this->s158_d_data == "null" || $this->s158_d_data == ""?"null":"'".$this->s158_d_data."'")."
+                               ,'$this->s158_c_hora'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "sau_receitamedica ($this->s158_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "sau_receitamedica ($this->s158_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "sau_receitamedica já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "sau_receitamedica ($this->s158_i_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "sau_receitamedica ($this->s158_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -261,7 +261,7 @@ class cl_sau_receitamedica {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->s158_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -284,17 +284,17 @@ class cl_sau_receitamedica {
        $resac = db_query("insert into db_acount values($acount,3130,17736,'','".AddSlashes(pg_result($resaco,0,'s158_c_hora'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($s158_i_codigo=null) { 
+   function alterar ($s158_i_codigo=null) {
       $this->atualizacampos();
      $sql = " update sau_receitamedica set ";
      $virgula = "";
-     if(trim($this->s158_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_codigo"])){ 
+     if(trim($this->s158_i_codigo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_codigo"])){
        $sql  .= $virgula." s158_i_codigo = $this->s158_i_codigo ";
        $virgula = ",";
-       if(trim($this->s158_i_codigo) == null ){ 
-         $this->erro_sql = " Campo Código nao Informado.";
+       if(trim($this->s158_i_codigo) == null ){
+         $this->erro_sql = " Campo Código não Informado.";
          $this->erro_campo = "s158_i_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -303,11 +303,11 @@ class cl_sau_receitamedica {
          return false;
        }
      }
-     if(trim($this->s158_i_profissional)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_profissional"])){ 
+     if(trim($this->s158_i_profissional)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_profissional"])){
        $sql  .= $virgula." s158_i_profissional = $this->s158_i_profissional ";
        $virgula = ",";
-       if(trim($this->s158_i_profissional) == null ){ 
-         $this->erro_sql = " Campo Profissional nao Informado.";
+       if(trim($this->s158_i_profissional) == null ){
+         $this->erro_sql = " Campo Profissional não Informado.";
          $this->erro_campo = "s158_i_profissional";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -316,11 +316,11 @@ class cl_sau_receitamedica {
          return false;
        }
      }
-     if(trim($this->s158_i_tiporeceita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_tiporeceita"])){ 
+     if(trim($this->s158_i_tiporeceita)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_tiporeceita"])){
        $sql  .= $virgula." s158_i_tiporeceita = $this->s158_i_tiporeceita ";
        $virgula = ",";
-       if(trim($this->s158_i_tiporeceita) == null ){ 
-         $this->erro_sql = " Campo Tipo de Receita nao Informado.";
+       if(trim($this->s158_i_tiporeceita) == null ){
+         $this->erro_sql = " Campo Tipo de Receita não Informado.";
          $this->erro_campo = "s158_i_tiporeceita";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -329,11 +329,11 @@ class cl_sau_receitamedica {
          return false;
        }
      }
-     if(trim($this->s158_t_prescricao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_t_prescricao"])){ 
+     if(trim($this->s158_t_prescricao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_t_prescricao"])){
        $sql  .= $virgula." s158_t_prescricao = '$this->s158_t_prescricao' ";
        $virgula = ",";
-       if(trim($this->s158_t_prescricao) == null ){ 
-         $this->erro_sql = " Campo Prescrição nao Informado.";
+       if(trim($this->s158_t_prescricao) == null ){
+         $this->erro_sql = " Campo Prescrição não Informado.";
          $this->erro_campo = "s158_t_prescricao";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -342,11 +342,11 @@ class cl_sau_receitamedica {
          return false;
        }
      }
-     if(trim($this->s158_i_situacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_situacao"])){ 
+     if(trim($this->s158_i_situacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_situacao"])){
        $sql  .= $virgula." s158_i_situacao = $this->s158_i_situacao ";
        $virgula = ",";
-       if(trim($this->s158_i_situacao) == null ){ 
-         $this->erro_sql = " Campo Situação nao Informado.";
+       if(trim($this->s158_i_situacao) == null ){
+         $this->erro_sql = " Campo Situação não Informado.";
          $this->erro_campo = "s158_i_situacao";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -355,11 +355,11 @@ class cl_sau_receitamedica {
          return false;
        }
      }
-     if(trim($this->s158_d_validade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_d_validade_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["s158_d_validade_dia"] !="") ){ 
+     if(trim($this->s158_d_validade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_d_validade_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["s158_d_validade_dia"] !="") ){
        $sql  .= $virgula." s158_d_validade = '$this->s158_d_validade' ";
        $virgula = ",";
-       if(trim($this->s158_d_validade) == null ){ 
-         $this->erro_sql = " Campo Validade nao Informado.";
+       if(trim($this->s158_d_validade) == null ){
+         $this->erro_sql = " Campo Validade não Informado.";
          $this->erro_campo = "s158_d_validade_dia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -367,12 +367,12 @@ class cl_sau_receitamedica {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["s158_d_validade_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["s158_d_validade_dia"])){
          $sql  .= $virgula." s158_d_validade = null ";
          $virgula = ",";
-         if(trim($this->s158_d_validade) == null ){ 
-           $this->erro_sql = " Campo Validade nao Informado.";
+         if(trim($this->s158_d_validade) == null ){
+           $this->erro_sql = " Campo Validade não Informado.";
            $this->erro_campo = "s158_d_validade_dia";
            $this->erro_banco = "";
            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -382,11 +382,11 @@ class cl_sau_receitamedica {
          }
        }
      }
-     if(trim($this->s158_i_login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_login"])){ 
+     if(trim($this->s158_i_login)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_i_login"])){
        $sql  .= $virgula." s158_i_login = $this->s158_i_login ";
        $virgula = ",";
-       if(trim($this->s158_i_login) == null ){ 
-         $this->erro_sql = " Campo Login nao Informado.";
+       if(trim($this->s158_i_login) == null ){
+         $this->erro_sql = " Campo Login não Informado.";
          $this->erro_campo = "s158_i_login";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -395,11 +395,11 @@ class cl_sau_receitamedica {
          return false;
        }
      }
-     if(trim($this->s158_d_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_d_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["s158_d_data_dia"] !="") ){ 
+     if(trim($this->s158_d_data)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_d_data_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["s158_d_data_dia"] !="") ){
        $sql  .= $virgula." s158_d_data = '$this->s158_d_data' ";
        $virgula = ",";
-       if(trim($this->s158_d_data) == null ){ 
-         $this->erro_sql = " Campo Data do sistema nao Informado.";
+       if(trim($this->s158_d_data) == null ){
+         $this->erro_sql = " Campo Data do sistema não Informado.";
          $this->erro_campo = "s158_d_data_dia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -407,12 +407,12 @@ class cl_sau_receitamedica {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["s158_d_data_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["s158_d_data_dia"])){
          $sql  .= $virgula." s158_d_data = null ";
          $virgula = ",";
-         if(trim($this->s158_d_data) == null ){ 
-           $this->erro_sql = " Campo Data do sistema nao Informado.";
+         if(trim($this->s158_d_data) == null ){
+           $this->erro_sql = " Campo Data do sistema não Informado.";
            $this->erro_campo = "s158_d_data_dia";
            $this->erro_banco = "";
            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -422,11 +422,11 @@ class cl_sau_receitamedica {
          }
        }
      }
-     if(trim($this->s158_c_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_c_hora"])){ 
+     if(trim($this->s158_c_hora)!="" || isset($GLOBALS["HTTP_POST_VARS"]["s158_c_hora"])){
        $sql  .= $virgula." s158_c_hora = '$this->s158_c_hora' ";
        $virgula = ",";
-       if(trim($this->s158_c_hora) == null ){ 
-         $this->erro_sql = " Campo Hora do sistema nao Informado.";
+       if(trim($this->s158_c_hora) == null ){
+         $this->erro_sql = " Campo Hora do sistema não Informado.";
          $this->erro_campo = "s158_c_hora";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -467,9 +467,9 @@ class cl_sau_receitamedica {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "sau_receitamedica nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "sau_receitamedica não Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->s158_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -479,7 +479,7 @@ class cl_sau_receitamedica {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "sau_receitamedica nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "sau_receitamedica não foi Alterado. Alteracao Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->s158_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -495,14 +495,14 @@ class cl_sau_receitamedica {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($s158_i_codigo=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($s158_i_codigo=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($s158_i_codigo));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -536,9 +536,9 @@ class cl_sau_receitamedica {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "sau_receitamedica nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "sau_receitamedica não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$s158_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -548,7 +548,7 @@ class cl_sau_receitamedica {
      }else{
        if(pg_affected_rows($result)==0){
          $this->erro_banco = "";
-         $this->erro_sql = "sau_receitamedica nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "sau_receitamedica não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$s158_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -564,11 +564,11 @@ class cl_sau_receitamedica {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -590,8 +590,8 @@ class cl_sau_receitamedica {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $s158_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $s158_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -612,8 +612,8 @@ class cl_sau_receitamedica {
      $sql2 = "";
      if($dbwhere==""){
        if($s158_i_codigo!=null ){
-         $sql2 .= " where sau_receitamedica.s158_i_codigo = $s158_i_codigo "; 
-       } 
+         $sql2 .= " where sau_receitamedica.s158_i_codigo = $s158_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -629,8 +629,8 @@ class cl_sau_receitamedica {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $s158_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $s158_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -646,8 +646,8 @@ class cl_sau_receitamedica {
      $sql2 = "";
      if($dbwhere==""){
        if($s158_i_codigo!=null ){
-         $sql2 .= " where sau_receitamedica.s158_i_codigo = $s158_i_codigo "; 
-       } 
+         $sql2 .= " where sau_receitamedica.s158_i_codigo = $s158_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -664,7 +664,7 @@ class cl_sau_receitamedica {
      return $sql;
   }
 
-  function sql_query_prontuario ( $s158_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  function sql_query_prontuario ( $s158_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -687,8 +687,8 @@ class cl_sau_receitamedica {
      $sql2 = "";
      if($dbwhere==""){
        if($s158_i_codigo!=null ){
-         $sql2 .= " where sau_receitamedica.s158_i_codigo = $s158_i_codigo "; 
-       } 
+         $sql2 .= " where sau_receitamedica.s158_i_codigo = $s158_i_codigo ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
@@ -734,8 +734,8 @@ class cl_sau_receitamedica {
     $sql2 = "";
     if($dbwhere==""){
       if($s158_i_codigo!=null ){
-        $sql2 .= " where sau_receitamedica.s158_i_codigo = $s158_i_codigo "; 
-      } 
+        $sql2 .= " where sau_receitamedica.s158_i_codigo = $s158_i_codigo ";
+      }
     }else if($dbwhere != ""){
       $sql2 = " where $dbwhere";
     }

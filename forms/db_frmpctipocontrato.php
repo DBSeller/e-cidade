@@ -69,7 +69,7 @@ db_select('p70_tipo',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pctipocontrato','func_pctipocontrato.php?funcao_js=parent.js_preenchepesquisa|p70_codtipo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pctipocontrato','func_pctipocontrato.php?funcao_js=parent.js_preenchepesquisa|p70_codtipo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_pctipocontrato.hide();

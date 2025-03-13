@@ -110,7 +110,7 @@ function js_verificacodigo(){
   return false;
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pesdiver','func_pesdiver.php?funcao_js=parent.js_preenchepesquisa|r07_anousu|r07_mesusu|r07_codigo&instit=<?=(db_getsession("DB_instit"))?>&chave_r07_mesusu='+document.form1.r07_mesusu.value+'&chave_r07_anousu='+document.form1.r07_anousu.value,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesdiver','func_pesdiver.php?funcao_js=parent.js_preenchepesquisa|r07_anousu|r07_mesusu|r07_codigo&instit=<?=(db_getsession("DB_instit"))?>&chave_r07_mesusu='+document.form1.r07_mesusu.value+'&chave_r07_anousu='+document.form1.r07_anousu.value,'Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_pesdiver.hide();

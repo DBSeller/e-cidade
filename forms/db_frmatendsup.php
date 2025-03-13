@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,9 +26,9 @@
  */
 //MODULO: atendimento
 
-include ("classes/db_tipoatend_classe.php");
-include ("classes/db_db_usuarios_classe.php");
-include ("classes/db_clientes_classe.php");
+include(modification("classes/db_tipoatend_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_clientes_classe.php"));
 $cldb_usuarios      = new cl_db_usuarios;
 $clclientes         = new cl_clientes;
 $cltecnico          = new cl_tecnico;
@@ -47,9 +47,9 @@ $clrotulo->label("at05_feito");
 $clrotulo->label("at05_solicitado");
 $clrotulo->label("at08_modulo");
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 
-include("classes/db_db_projetosativcli_classe.php");
+include(modification("classes/db_db_projetosativcli_classe.php"));
 $cldb_projetosativcli= new cl_db_projetosativcli;
 
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
@@ -352,7 +352,7 @@ $at05_solicitado=stripslashes(@$at05_solicitado);
 		        <?
 		        $sqlmod = "select codmod,nomemod from db_sysmodulo where ativo = 't' order by nomemod";
 		        //$sqlmod = "select id_item, nome_modulo from db_modulos order by nome_modulo";
-		        $result_modulo = pg_exec($sqlmod);
+		        $result_modulo = db_query($sqlmod);
 		        db_selectrecord('modulo',$result_modulo,true,$db_opcao,"","","","0-Nenhum","js_verifica();");
 		        
 		        ?>
@@ -417,7 +417,7 @@ $at05_solicitado=stripslashes(@$at05_solicitado);
 		    	Procedimento:
 		    	<?
 		    	if( $result_syscadproced==null || pg_numrows($result_syscadproced) == 0 ){
-				  $result_syscadproced = pg_query("select 0 as codproced,'Nenhuma' as descrproced");
+				  $result_syscadproced = db_query("select 0 as codproced,'Nenhuma' as descrproced");
 		    	}
 		    	db_selectrecord('codproced',$result_syscadproced,true,$db_opcao,"","","","","js_verifica();");
 				?>
@@ -465,7 +465,7 @@ $at05_solicitado=stripslashes(@$at05_solicitado);
 							order by at40_sequencial desc
   				";
 //  				die($sqltarefa);
-					$resulttarefa = pg_query($sqltarefa);
+					$resulttarefa = db_query($sqltarefa);
 					$linhastarefa = pg_num_rows($resulttarefa);
 					if ($linhastarefa>0){
 					  db_selectrecord('at40_sequencial',$resulttarefa,true,$db_opcao,"","","","0-Nenhum","js_disablebotao(this.value);");
@@ -473,13 +473,13 @@ $at05_solicitado=stripslashes(@$at05_solicitado);
 				<input name="pesquisar" type="button" value="Consultar tarefa" onclick = "js_pesquisa_tarefa(document.form1.at40_sequencial.value);" disabled>
 				<?
 				    }else{
-					  $resulttarefa = pg_query("select 0 as at40_sequencial,'Nenhuma' as at40_descr");
+					  $resulttarefa = db_query("select 0 as at40_sequencial,'Nenhuma' as at40_descr");
 				    
 					  db_selectrecord('at40_sequencial',$resulttarefa,true,$db_opcao,"","","","0-Nenhum","js_disablebotao(this.value);");
 				    
 				    }
 				}else{
-					  $resulttarefa = pg_query("select 0 as at40_sequencial,'Nenhuma'as at40_descr");
+					  $resulttarefa = db_query("select 0 as at40_sequencial,'Nenhuma'as at40_descr");
 				    
 					  db_selectrecord('at40_sequencial',$resulttarefa,true,$db_opcao,"","","","","js_disablebotao(this.value);");
 				    
@@ -566,7 +566,7 @@ function js_disablebotao(val){
 }
 
 function js_pesquisa(){
-	js_OpenJanelaIframe('top.corpo','db_iframe_atend','func_atendimentoinc.php?opcao=<?=$opcao?>&funcao_js=parent.js_preenchepesquisa|at02_codatend','Pesquisa',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atend','func_atendimentoinc.php?opcao=<?=$opcao?>&funcao_js=parent.js_preenchepesquisa|at02_codatend','Pesquisa',true);
   	document.form1.opcao.value=<?=$opcao?>;	
 }
 function js_preenchepesquisa(chave){

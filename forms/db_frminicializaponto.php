@@ -25,44 +25,121 @@
  *                                licenca/licenca_pt.txt 
  */
 ?>
-<form name="form1" method="post" action="">
 <center>
-  <table>
-    <?
-if(!isset($rubini)){
-   $rubini = "0001";
-}
-if(!isset($rubfim)){
-   $rubfim = "R999";
-}
-    $clformulario_rel_pes = new cl_formulario_rel_pes;
-    $clformulario_rel_pes->ru1nome = "rubini";
-    $clformulario_rel_pes->ru2nome = "rubfim";
-    $clformulario_rel_pes->lo1nome = "lotini";
-    $clformulario_rel_pes->lo2nome = "lotfim";
-    $clformulario_rel_pes->re1nome = "matini";
-    $clformulario_rel_pes->re2nome = "matfim";
-    $clformulario_rel_pes->tfonome = "opcao";
-    $clformulario_rel_pes->trenome = "glm";
-    $clformulario_rel_pes->onchpad = true;
-    $clformulario_rel_pes->usaregi = true;
-    $clformulario_rel_pes->usalota = true;
-    $clformulario_rel_pes->usarubr = true;
-    $clformulario_rel_pes->intrubr = true;
-    $clformulario_rel_pes->tipofol = true;
-    $clformulario_rel_pes->tipores = true;
-    $clformulario_rel_pes->strngtipores = "glm";
-    $clformulario_rel_pes->arr_tipofol = Array("1"=>"Salário","2"=>"Adiantamento");
-    $clformulario_rel_pes->desabam = true;
-    $clformulario_rel_pes->testarescisaoregi = "r";
-    $clformulario_rel_pes->gera_form(db_anofolha(),db_mesfolha());
-    ?>
-  </table>
-<input name="incluir" type="submit" id="db_opcao" value="Inicializar ponto" onblur="js_setfocus(2);" onclick="return js_enviar();">
-</center>
+<form name="form1" method="post" action="">
+  <fieldset class="form-container text-center">
+    <legend>Inicialização do Ponto</legend>
+    <table>
+
+        <?php
+
+          if(!isset($rubini)){
+             $rubini = "0001";
+          }
+
+          if(!isset($rubfim)){
+             $rubfim = "R999";
+          }
+
+          $clformulario_rel_pes = new cl_formulario_rel_pes;
+          $clformulario_rel_pes->ru1nome = "rubini";
+          $clformulario_rel_pes->ru2nome = "rubfim";
+          $clformulario_rel_pes->lo1nome = "lotini";
+          $clformulario_rel_pes->lo2nome = "lotfim";
+          $clformulario_rel_pes->re1nome = "matini";
+          $clformulario_rel_pes->re2nome = "matfim";
+          $clformulario_rel_pes->tfonome = "opcao";
+          $clformulario_rel_pes->trenome = "glm";
+          $clformulario_rel_pes->onchpad = true;
+          $clformulario_rel_pes->usaregi = true;
+          $clformulario_rel_pes->usalota = true;
+          $clformulario_rel_pes->usarubr = true;
+          $clformulario_rel_pes->intrubr = true;
+          $clformulario_rel_pes->tipofol = true;
+          $clformulario_rel_pes->tipores = true;
+          $clformulario_rel_pes->strngtipores = "glm";
+          $clformulario_rel_pes->arr_tipofol = Array("1"=>"Salário","2"=>"Adiantamento");
+          $clformulario_rel_pes->desabam = true;
+          $clformulario_rel_pes->testarescisaoregi = "r";
+          $clformulario_rel_pes->gera_form(db_anofolha(),db_mesfolha());
+        ?>
+
+     </table>
+  </fieldset>
+  <br><br>
+    <input name="incluir" type="submit" id="db_opcao" value="Inicializar ponto" onblur="js_setfocus(2);" onclick="return js_enviar();">
+
+    <?php if (count($aConfiguracoesAutomaticas) > 0 ) { ?>
+        <div id="oLancamentos"></div>
+
+        <?php foreach ($aConfiguracoesAutomaticas as $oConfiguracaoAutomatica) { ?>
+
+          <table cellpadding="0" cellspacing="0" width="400px" class="lancamento">
+            <tr>
+              <td><b>Descrição: </b><?=$oConfiguracaoAutomatica->getDescricao(); ?></td>
+            </tr>
+            <tr>
+              <td><b>Seleção: </b><?=$oConfiguracaoAutomatica->getSelecao()->getDescricao(); ?></td>
+            </tr>
+            <tr>
+              <td><b>Rubrica: </b><?=$oConfiguracaoAutomatica->getRubrica()->getCodigo()." - ".$oConfiguracaoAutomatica->getRubrica()->getDescricao(); ?></td>
+            </tr>
+          </table>
+
+        <?php } ?>
+
+    <?php } ?>
 </form>
+</center>
+<style type="text/css">
+
+  #oLancamentos {
+    margin-bottom: 10px;
+  }
+
+  .form-container {
+    margin-top: 20px;
+  }
+
+  .lancamento {
+    margin-bottom: 5px;
+  }
+
+  .lancamento tr {
+    background-color: #fcf8e3; 
+    border: 1px solid #fcc888; 
+  }
+
+  .lancamento tr td{
+    padding: 0 10px;
+  }
+
+  fieldset{
+    width: 400px;
+  }
+  
+</style>
+
 <script>
+
+
+(function() {
+
+  if ($('oLancamentos') !== null){
+
+    var oMessageBoard = new DBMessageBoard('msgboard1','Lançamentos Automáticos','Nesta competência serão lançados os seguintes eventos financeiros:',$('oLancamentos'));
+        oMessageBoard.show();
+  }
+})();
+
 function js_enviar(){
+
+  var sCompetencia = $F('anofolha')+"/"+$F('mesfolha');
+
+  if(!confirm("Confirma a inicialização do ponto para a competência "+sCompetencia+" com os filtros informados ?\n Caso existam alterações realizadas nestes pontos, os mesmos serão perdidos.")) {
+    return;
+  }
+
   if(document.form1.rubini.value == "" || document.form1.rubfim.value == ""){
     alert("Informe uma faixa de rubricas.");
   }else{

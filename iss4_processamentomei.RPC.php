@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/JSON.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_meiimporta_classe.php");
-require_once("classes/db_meiimportamei_classe.php");
-require_once("classes/db_parissqn_classe.php");
-require_once("model/meiArquivo.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_meiimporta_classe.php"));
+require_once(modification("classes/db_meiimportamei_classe.php"));
+require_once(modification("classes/db_parissqn_classe.php"));
+require_once(modification("model/meiArquivo.model.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -66,7 +66,7 @@ try {
     
     $rsImporta      = $clMeiImporta->sql_record($sSqlImporta);
       
-    $aCompetencias  = db_utils::getColectionByRecord($rsImporta,false,false,true);
+    $aCompetencias  = db_utils::getCollectionByRecord($rsImporta,false,false,true);
     
     $oRetorno->aCompetencias = $aCompetencias;
 
@@ -139,7 +139,7 @@ try {
     
 	  $sSqlImporta     = $clMeiImporta->sql_query_reg(null,"*","q111_data",$sWhereImporta);
 	  $rsDadosImporta  = $clMeiImporta->sql_record($sSqlImporta);
-	  $aDadosImporta   = db_utils::getColectionByRecord($rsDadosImporta,false,false,true); 
+	  $aDadosImporta   = db_utils::getCollectionByRecord($rsDadosImporta,false,false,true); 
 		
 	  $aDadosAgrupados = array();
     $aRetornoImporta = array();

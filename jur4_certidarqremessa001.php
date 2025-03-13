@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,22 +26,22 @@
  */
 
 set_time_limit(0);
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once ("classes/db_lista_classe.php");
-require_once ("classes/db_listadeb_classe.php");
-require_once ("classes/db_listanotifica_classe.php");
+require_once(modification("classes/db_lista_classe.php"));
+require_once(modification("classes/db_listadeb_classe.php"));
+require_once(modification("classes/db_listanotifica_classe.php"));
 
-require_once ("libs/db_sql.php");
-require_once ("classes/db_termo_classe.php");
-require_once ("classes/db_cgm_classe.php");
-require_once("libs/db_app.utils.php");
-require_once("classes/db_listacda_classe.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_termo_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("classes/db_listacda_classe.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $clcgm           = new cl_cgm;
 $cllista         = new cl_lista;
@@ -121,7 +121,7 @@ function js_processar(){
 function js_retornoProcessar(oAjax){
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     
     if (oRetorno.status == 1) {
       
@@ -155,9 +155,9 @@ function js_habilita(){
 
 function js_pesquisalista(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_lista','func_listacda.php?funcao_js=parent.js_mostralista1|k60_codigo|k60_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lista','func_listacda.php?funcao_js=parent.js_mostralista1|k60_codigo|k60_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_lista','func_listacda.php?pesquisa_chave='+document.form1.k60_codigo.value+'&funcao_js=parent.js_mostralista','Pesquisa','false');
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lista','func_listacda.php?pesquisa_chave='+document.form1.k60_codigo.value+'&funcao_js=parent.js_mostralista','Pesquisa','false');
   }
 }
 

@@ -26,7 +26,7 @@
  */
 
 //MODULO: Habitacao
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clhabitprogramalote->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -118,10 +118,10 @@ function js_cancelar(){
 
 function js_pesquisaht05_idbql(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_habitprogramalote','db_iframe_lote','func_lote.php?funcao_js=parent.js_mostralote1|j34_idbql|j34_setor','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_habitprogramalote','db_iframe_lote','func_lote.php?funcao_js=parent.js_mostralote1|j34_idbql|j34_setor','Pesquisa',true);
   }else{
      if(document.form1.ht05_idbql.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_habitprogramalote','db_iframe_lote','func_lote.php?pesquisa_chave='+document.form1.ht05_idbql.value+'&funcao_js=parent.js_mostralote','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_habitprogramalote','db_iframe_lote','func_lote.php?pesquisa_chave='+document.form1.ht05_idbql.value+'&funcao_js=parent.js_mostralote','Pesquisa',false);
      }else{
        document.form1.j34_setor.value = ''; 
      }

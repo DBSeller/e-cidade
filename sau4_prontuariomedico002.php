@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller2.php");
-//include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_prontuariomedico_classe.php");
-include("classes/db_cgs_und_classe.php");
+include(modification("fpdf151/pdfwebseller2.php"));
+//include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_prontuariomedico_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -44,7 +44,7 @@ $result = $clcgs_und->sql_record( $clcgs_und->sql_query( $cgs ) );
 db_fieldsmemory($result,0);
 
 
-$query = @pg_query($clprontuariomedico->sql_query("","*","sd32_d_atendimento desc ","sd32_i_numcgs = $cgs" ));
+$query = @db_query($clprontuariomedico->sql_query("","*","sd32_d_atendimento desc ","sd32_i_numcgs = $cgs" ));
 $linhas = @pg_num_rows($query);
 
 if($linhas == 0){

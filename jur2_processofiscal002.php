@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_sql.php");
-require_once("libs/JSON.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("classes/db_parjuridico_classe.php");
-require_once("classes/db_cgm_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("classes/db_parjuridico_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -106,7 +106,7 @@ $sSqlRelatorio .= "    inner join processoforoinicial on processoforoinicial.v71
 $sSqlRelatorio .= "    inner join processoforo        on processoforo.v70_sequencial           = processoforoinicial.v71_processoforo ";
 $sSqlRelatorio .= "   where certidarqretorno.v84_sequencial = {$iSeqRetorno} order by v70_codforo ";
 $rsDadosRelatorio = db_query($sSqlRelatorio);
-$aDadosRelatorio  = db_utils::getColectionByRecord($rsDadosRelatorio);
+$aDadosRelatorio  = db_utils::getCollectionByRecord($rsDadosRelatorio);
 
 foreach ($aDadosRelatorio as $oDadosRelatorio) {
  	

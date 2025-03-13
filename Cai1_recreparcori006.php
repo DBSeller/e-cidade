@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_recreparcori_classe.php");
-include("classes/db_recreparcdest_classe.php");
-require_once("classes/db_recreparcarretipo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_recreparcori_classe.php"));
+include(modification("classes/db_recreparcdest_classe.php"));
+require_once(modification("classes/db_recreparcarretipo_classe.php"));
 
 $oPost = db_utils::postMemory($_POST);
 $oGet  = db_utils::postMemory($_GET);
@@ -111,7 +111,7 @@ if ( isset($oPost->excluir) ) {
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <center>
 	<?
-  	include("forms/db_frmrecreparcori.php");
+  	include(modification("forms/db_frmrecreparcori.php"));
 	?>
 </center>
 </body>
@@ -134,7 +134,7 @@ if(isset($oGet->chavepesquisa)){
       function js_db_libera(){
          parent.document.formaba.tipodebito.disabled = false;
          
-         top.corpo.iframe_tipodebito.location.href='cai1_reparcoritipodebito001.php?k72_codigo=".@$k70_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tipodebito.location.href='cai1_reparcoritipodebito001.php?k72_codigo=".@$k70_codigo."';
          
      ";
       if(isset($oGet->liberaaba)){

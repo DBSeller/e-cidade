@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
-include("classes/db_tabativ_classe.php");
-include("classes/db_issporte_classe.php");
-include("classes/db_classe_classe.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
+include(modification("classes/db_tabativ_classe.php"));
+include(modification("classes/db_issporte_classe.php"));
+include(modification("classes/db_classe_classe.php"));
 
 $cl_tabativ = new cl_tabativ;
 $cl_porte = new cl_issporte;
@@ -82,7 +82,7 @@ $p = "0";
           q41_codclasse,
           q45_codporte
 	";
-   $result = pg_exec($sql);
+   $result = db_query($sql);
    $numrows = pg_numrows($result);
    if($numrows == 0){
     echo " <div align=\"center\">Nenhum registro cadastrado <br> <input type=\"button\" value=\"Fechar\" onclick=\"window.close()\"></div>";

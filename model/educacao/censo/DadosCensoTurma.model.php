@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -38,22 +38,36 @@ class DadosCensoTurma extends DadosCenso {
 
   /**
    * Código da turma do censo
+   * Turma do censo é uma turma unificada através da rotina Turmas Multietapa de Ensinos Diferentes
    * @var integer
    */
   protected $iTurmaCenso = null;
 
   /**
    * Nome da turma do censo
+   * Novo nome da turma informado na unificação de turmas através da rotina Turmas Multietapa de Ensinos Diferentes
    * @var string
    */
   protected $sTurmaCenso = null;
 
   /**
    * Etapa do censo para turmacenso
+   * Nova etapa atribuida a Turma ao unificar turmas através da rotina Turmas Multietapa de Ensinos Diferentes
    * @var integer
    */
   protected $iEtapaTurmaCenso = null;
 
+  /**
+   * Data limite da geração do censo
+   * @var string
+   */
+  protected $dtDataCenso = null;
+
+  /**
+   * Se a turma instanciada faz parte de uma turma unificada
+   * @var boolean
+   */
+  protected $lTurmaUnificada = false;
 
   /**
    *
@@ -89,13 +103,21 @@ class DadosCensoTurma extends DadosCenso {
     $this->iTurma     = $iCodigoTurma;
   }
 
+  /**
+   * Seta a data do censo
+   * @param string $dtDataCenso
+   */
+  public function setDataCenso( $dtDataCenso ) {
+    $this->dtDataCenso = $dtDataCenso;
+  }
+
   public function getDados() {
 
     $oDaoTurma     = new cl_turma();
     $sCamposTurma  = " ed57_i_codigoinep as codigo_turma_inep, 													";
     $sCamposTurma .= " ed57_i_codigo as codigo_turma_entidade_escola, 									";
-    $sCamposTurma .= " ed57_i_escola, 			";
-    $sCamposTurma .= " ed36_i_codigo,                                                    ";
+    $sCamposTurma .= " ed57_i_escola, 			                                            ";
+    $sCamposTurma .= " ed36_i_codigo,                                                   ";
     $sCamposTurma .= " trim(ed57_c_descr) as nome_turma, 																";
     $sCamposTurma .= " fc_nomeetapaturma(ed57_i_codigo) as etapa_turma, 								";
     $sCamposTurma .= " (SELECT min(ed17_h_inicio) 																			";
@@ -109,24 +131,28 @@ class DadosCensoTurma extends DadosCenso {
     $sCamposTurma .= " ed57_i_tipoatend as tipo_atendimento, 														";
     $sCamposTurma .= " ed36_i_codigo as tipo_ensino, 																		";
     $sCamposTurma .= " ed57_i_censocursoprofiss as codigo_curso_educacao_profissional, 	";
-    $sCamposTurma .= " ed57_i_censoetapa as etapa_ensino_turma, 												";
+    $sCamposTurma .= " ed132_censoetapa as etapa_ensino_turma, 												  ";
     $sCamposTurma .= " ed57_i_tipoturma as modalidade_turma,														";
-    $sCamposTurma .= " ed57_censoprogramamaiseducacao as turma_participante_mais_educacao_ensino_medio_inov ";
+    $sCamposTurma .= " ed57_censoprogramamaiseducacao as turma_participante_mais_educacao_ensino_medio_inov, ";
+    $sCamposTurma .= " ed10_mediacaodidaticopedagogica as mediacao_didatico_pedagogica  ";
     $sSqlTurma     = $oDaoTurma->sql_query($this->getCodigoTurma(), $sCamposTurma);
     $rsDadosTurma  = $oDaoTurma->sql_record($sSqlTurma);
+
     if ($oDaoTurma->numrows == 0) {
       throw new Exception('não existe turma com os dados informados');
     }
-    $oDadosTurma = db_utils::fieldsMemory($rsDadosTurma, 0);
+
+    $oDadosTurma                  = db_utils::fieldsMemory($rsDadosTurma, 0);
+    $oDadosTurma->lTurmaUnificada = $this->lTurmaUnificada;
 
     if ( !empty($this->sTurmaCenso) ) {
       $oDadosTurma->nome_turma = $this->sTurmaCenso;
     }
-    $oDadosTurma->nome_turma = $this->removeCaracteres(trim($oDadosTurma->nome_turma), 2);
 
+    $oDadosTurma->nome_turma = $this->removeCaracteres( $oDadosTurma->nome_turma, 6, false );
     if (!empty($this->iTurmaCenso) ){
       $oDadosTurma->codigo_turma_entidade_escola = $this->iTurmaCenso;
-      }
+    }
 
     if ( !empty($this->iEtapaTurmaCenso) ) {
       $oDadosTurma->etapa_ensino_turma = $this->iEtapaTurmaCenso;
@@ -136,9 +162,20 @@ class DadosCensoTurma extends DadosCenso {
     $oDadosTurma->horario_turma_horario_inicial_minuto = substr($oDadosTurma->horario_inicial, 3, 2);
     $oDadosTurma->horario_turma_horario_final_hora     = substr($oDadosTurma->horario_final, 0, 2);
     $oDadosTurma->horario_turma_horario_final_minuto   = substr($oDadosTurma->horario_final, 3, 2);
+
     switch ($oDadosTurma->modalidade_turma) {
 
       case 1:
+
+        $oDadosTurma->modalidade_turma = 1;
+
+        $oDataCenso = new DBDate( $this->dtDataCenso );
+        if( $oDataCenso->getAno() > 2014 ) {
+          $oDadosTurma->modalidade_turma = $oDadosTurma->ed36_i_codigo;
+        }
+
+        break;
+
       case 7:
 
         $oDadosTurma->modalidade_turma = 1;
@@ -154,6 +191,7 @@ class DadosCensoTurma extends DadosCenso {
         $oDadosTurma->modalidade_turma = $oDadosTurma->ed36_i_codigo;
         break;
     }
+
     $iParticipaPrograma = $oDadosTurma->turma_participante_mais_educacao_ensino_medio_inov == 't'?1:0;
     $oDadosTurma->turma_participante_mais_educacao_ensino_medio_inov = $iParticipaPrograma;
     $this->iCodigoEscola = $oDadosTurma->ed57_i_escola;
@@ -184,8 +222,6 @@ class DadosCensoTurma extends DadosCenso {
     $oDadosTurma->aee_ensino_lingua_portuguesa_modalidade_escrita    = '';
     $oDadosTurma->aee_estrategias_autonomia_ambiente_escolar         = '';
 
-
-
     if ( $oDadosTurma->tipo_atendimento == 4 ) {
 
       $oDadosTurma->etapa_ensino_turma = '';
@@ -198,7 +234,7 @@ class DadosCensoTurma extends DadosCenso {
 
     /**
      * Validamos o codigo do curso para educacao profissional
-     * para censo 2014 foi removido a etapa 66 
+     * para censo 2014 foi removido a etapa 66
      */
     $aEtapas = array(30, 31, 32, 33, 34, 39, 40, 62, 63, 64);
     if ( !in_array($oDadosTurma->etapa_ensino_turma, $aEtapas) ) {
@@ -251,6 +287,7 @@ class DadosCensoTurma extends DadosCenso {
           break;
       }
     }
+
     /**
      * Carregamos as Disciplinas que a turma oferece.
      */
@@ -258,17 +295,29 @@ class DadosCensoTurma extends DadosCenso {
     foreach ($this->getDisciplinasCenso() as $oDisciplinaCenso) {
 
       $oDadosTurma->{$oDisciplinaCenso->getCampoLayout()} = $this->oferereDisciplina($oDisciplinaCenso);
+
       if ($oDadosTurma->{$oDisciplinaCenso->getCampoLayout()} == 1) {
         $iTurmaSemProfessor = 0;
       }
 
       $aEtapasCensoTurma = array(1, 2, 3, 65);
       if ( in_array($oDadosTurma->etapa_ensino_turma, $aEtapasCensoTurma) || ( ($oDadosTurma->tipo_atendimento == 4 || $oDadosTurma->tipo_atendimento == 5) ) ) {
-      	$oDadosTurma->{$oDisciplinaCenso->getCampoLayout()} 						 = '';
-      	$oDadosTurma->turma_participante_mais_educacao_ensino_medio_inov = '';
+
+        $oDadosTurma->{$oDisciplinaCenso->getCampoLayout()}              = '';
+        $oDadosTurma->turma_participante_mais_educacao_ensino_medio_inov = '';
       }
+
       $oDadosTurma->turma_sem_docente = $iTurmaSemProfessor;
     }
+
+    $oDataCenso   = new DBDate( $this->dtDataCenso );
+    $aEtapaEnsino = array('4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22',
+                          '23','24','25','26','27','28','29','35','36','37','38','41');
+    if ( !in_array($oDadosTurma->etapa_ensino_turma, $aEtapaEnsino) && $oDataCenso->getAno() != 2014 ) {
+      $oDadosTurma->turma_participante_mais_educacao_ensino_medio_inov = '';
+    }
+
+    $oDadosTurma->lTurmaRegular = true;
     return $oDadosTurma;
   }
 
@@ -279,7 +328,6 @@ class DadosCensoTurma extends DadosCenso {
   public function getCodigoTurma() {
     return $this->iTurma;
   }
-
 
   /**
    * Retorna os dias da semana que a turma tem aula.
@@ -348,15 +396,22 @@ class DadosCensoTurma extends DadosCenso {
   /**
    * Verifica se a turma oferece a disciplina do censo.
    * @param DisciplinaCenso $oDisciplinaCenso Instancia da Disciplina do censo
-   * @return retornoa o valores 0 - nao oferece, 1  OFerecem sem Professor, 2 - Oferece com professor.
+   * @return integer retorna o valores 0 - nao oferece, 1  OFerecem sem Professor, 2 - Oferece com professor.
    */
   public function oferereDisciplina(DisciplinaCenso $oDisciplinaCenso) {
 
-    $oDaoRegencia   = db_utils::getDao("regencia");
+    $oDaoRegencia   = new cl_regencia();
 
-    $sSqlTemProfessor   = "(select 1 ";
-    $sSqlTemProfessor  .= "   from regenciahorario ";
-    $sSqlTemProfessor  .= "  where ed58_i_regencia = ed59_i_codigo and ed58_ativo is true)";
+    $sSqlTemProfessor  = "select 1 \n";
+    $sSqlTemProfessor .= "  from regenciahorario \n";
+    $sSqlTemProfessor .= "       inner join rechumanoescola on rechumanoescola.ed75_i_rechumano = regenciahorario.ed58_i_rechumano \n";
+    $sSqlTemProfessor .= "       left  join docenteausencia on docenteausencia.ed321_rechumano  = regenciahorario.ed58_i_rechumano \n";
+    $sSqlTemProfessor .= "  where ed58_i_regencia = ed59_i_codigo \n";
+    $sSqlTemProfessor .= "    and ed58_ativo is true \n";
+    $sSqlTemProfessor .= "    and ed75_d_ingresso <= '{$this->dtDataCenso}' \n";
+    $sSqlTemProfessor .= "    and ( ed75_i_saidaescola is null or ed75_i_saidaescola > '{$this->dtDataCenso}' ) \n";
+    $sSqlTemProfessor .= "    and (    ed321_inicio is null or ed321_inicio > '{$this->dtDataCenso}' \n";
+    $sSqlTemProfessor .= "          or ( ed321_inicio < '{$this->dtDataCenso}' and ed321_final < '{$this->dtDataCenso}' ) ) \n";
 
     $sCampos            = "ed59_i_codigo, ";
     $sCampos           .= " exists ({$sSqlTemProfessor}) as tem_regente";
@@ -368,8 +423,13 @@ class DadosCensoTurma extends DadosCenso {
     if ($oDaoRegencia->numrows > 0) {
 
       $iOfereceDisciplina = 2;
-      if (db_utils::fieldsMemory($rsDisciplina, 0)->tem_regente == 't') {
-        $iOfereceDisciplina = 1;
+      for ( $iContador = 0; $iContador < $oDaoRegencia->numrows; $iContador++ ) {
+
+        if (  db_utils::fieldsMemory($rsDisciplina, $iContador)->tem_regente == 't' ) {
+
+          $iOfereceDisciplina = 1;
+          break;
+        }
       }
     }
     return $iOfereceDisciplina;
@@ -380,7 +440,8 @@ class DadosCensoTurma extends DadosCenso {
    * @param IExportacaoCenso $oExportacaoCenso da Importacao do censo
    * @return boolean
    */
-  public function validarDados(IExportacaoCenso $oExportacaoCenso) {
+    public static function validarDados(IExportacaoCenso $oExportacaoCenso)
+    {
 
     $lDadosValidos = true;
     $aDadosDaTurma = $oExportacaoCenso->getDadosProcessadosTurma();
@@ -397,7 +458,7 @@ class DadosCensoTurma extends DadosCenso {
         $sMsgErro  = "Turma {$oDadosTurma->nome_turma}: ";
         $sMsgErro .= "Código da Turma na Entidade/Escola não atribuído pelo próprio sistema do usuário migrador.";
         $oExportacaoCenso->logErro($sMsgErro, ExportacaoCensoBase::LOG_TURMA);
-        $lDadosValidos = false;        
+        $lDadosValidos = false;
       }
 
       /**
@@ -408,7 +469,7 @@ class DadosCensoTurma extends DadosCenso {
         $sMsgErro  = "Turma {$oDadosTurma->codigo_turma_entidade_escola} - {$oDadosTurma->nome_turma}: ";
         $sMsgErro .= "Nome da Turma deve conter no máximo 80 caracteres.";
         $oExportacaoCenso->logErro($sMsgErro, ExportacaoCensoBase::LOG_TURMA);
-        $lDadosValidos = false; 
+        $lDadosValidos = false;
       }
 
       if ( preg_match ('/\s{2,}/',  $oDadosTurma->nome_turma) == 1) {
@@ -441,14 +502,14 @@ class DadosCensoTurma extends DadosCenso {
       /**
        * Valida se a hora do horário inicial esta entre 0 e 23
        */
-      if ( $oDadosTurma->horario_turma_horario_inicial_hora < 0 || 
+      if ( $oDadosTurma->horario_turma_horario_inicial_hora < 0 ||
            $oDadosTurma->horario_turma_horario_inicial_hora > 23 ) {
 
         $sMsgErro  = "Turma {$oDadosTurma->codigo_turma_entidade_escola} - {$oDadosTurma->nome_turma}: ";
         $sMsgErro .= "A hora do horário inicial da turma deve ser maior que 0 e menor que 24";
         $oExportacaoCenso->logErro($sMsgErro, ExportacaoCensoBase::LOG_TURMA);
         $lDadosValidos = false;
-      } 
+      }
 
       /**
        * Valida se os minutos do horario inicial da turma possui 2 dígitos
@@ -491,7 +552,7 @@ class DadosCensoTurma extends DadosCenso {
       /**
        * Valida se a hora do horário final esta entre 0 e 23
        */
-      if ( $oDadosTurma->horario_turma_horario_final_hora < 0 || 
+      if ( $oDadosTurma->horario_turma_horario_final_hora < 0 ||
            $oDadosTurma->horario_turma_horario_final_hora > 23 ) {
 
         $sMsgErro  = "Turma {$oDadosTurma->codigo_turma_entidade_escola} - {$oDadosTurma->nome_turma}: ";
@@ -526,7 +587,7 @@ class DadosCensoTurma extends DadosCenso {
         $oExportacaoCenso->logErro($sMsgErro, ExportacaoCensoBase::LOG_TURMA);
         $lDadosValidos = false;
       }
-      
+
       $sHorarioInicial = "{$oDadosTurma->horario_turma_horario_inicial_hora}:$oDadosTurma->horario_turma_horario_inicial_minuto";
       $sHorarioFinal   = "{$oDadosTurma->horario_turma_horario_final_hora}:$oDadosTurma->horario_turma_horario_final_minuto";
 
@@ -539,7 +600,7 @@ class DadosCensoTurma extends DadosCenso {
         $sMsgErro .= "O horário inicial da turma não pode ser maior ou igual ao horário final.";
         $oExportacaoCenso->logErro($sMsgErro, ExportacaoCensoBase::LOG_TURMA);
         $lDadosValidos = false;
-      }    
+      }
 
       if ($oDadosTurma->dia_semana_domingo == 0 &&
           $oDadosTurma->dia_semana_segunda == 0 &&
@@ -600,7 +661,7 @@ class DadosCensoTurma extends DadosCenso {
         $sMsgErro .= " - EDUCACAO INFANTIL - CRECHE (0 A 3 ANOS);\n";
         $sMsgErro .= " - EDUCACAO INFANTIL - PRE ESCOLA (4 E 5 ANOS);\n";
         $sMsgErro .= " - EDUCACAO INFANTIL - UNIFICADA (0 A 5 ANOS).\n";
-                      
+
         $oExportacaoCenso->logErro($sMsgErro, ExportacaoCensoBase::LOG_TURMA);
         $lDadosValidos = false;
       }
@@ -613,7 +674,7 @@ class DadosCensoTurma extends DadosCenso {
       if ( !in_array($oDadosTurma->tipo_atendimento, array(4, 5) ) ) {
 
         if ($oDadosTurma->tipo_atendimento == 1) {
-         
+
           if ($oDadosEscola->registro10->modalidade_ensino_regular != 1) {
 
             $sMsgErro  = "Turma {$oDadosTurma->codigo_turma_entidade_escola} - {$oDadosTurma->nome_turma} é de Ensino Regular. ";
@@ -627,12 +688,11 @@ class DadosCensoTurma extends DadosCenso {
             $sMsgErro  = "Turma {$oDadosTurma->codigo_turma_entidade_escola} - {$oDadosTurma->nome_turma} é de Ensino Regular. ";
             $sMsgErro .= "Turmas de de classe hospitalar, não podem participar do programa Mais Educação.";
             $oExportacaoCenso->logErro($sMsgErro, ExportacaoCensoBase::LOG_TURMA);
-            $lDadosValidos = false; 
+            $lDadosValidos = false;
           }
         }
 
-        if ($oDadosTurma->tipo_atendimento == 2 &&
-            $this->oDadosEscola->modalidade_educacao_especial_modalidade_substutiva != 1) {
+          if ($oDadosTurma->tipo_atendimento == 2 && $oDadosEscola->modalidade_educacao_especial_modalidade_substutiva != 1) {
 
           $sMsgErro  = "Turma {$oDadosTurma->codigo_turma_entidade_escola} - {$oDadosTurma->nome_turma}: ";
           $sMsgErro .= "O campo Modalidade deve ser informado como Educação especial - modalidade substutiva";
@@ -808,5 +868,9 @@ class DadosCensoTurma extends DadosCenso {
    */
   public function setEtapaTurmaCenso ($iEtapaTurmaCenso) {
     $this->iEtapaTurmaCenso = $iEtapaTurmaCenso;
+  }
+
+  public function setTurmaUnificada($lTurmaUnificada = false) {
+    $this->lTurmaUnificada = $lTurmaUnificada;
   }
 }

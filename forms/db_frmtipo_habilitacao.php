@@ -68,7 +68,7 @@ db_input('tr09_descr',35,$Itr09_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tipo_habilitacao','func_tipo_habilitacao.php?funcao_js=parent.js_preenchepesquisa|tr09_id','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipo_habilitacao','func_tipo_habilitacao.php?funcao_js=parent.js_preenchepesquisa|tr09_id','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tipo_habilitacao.hide();

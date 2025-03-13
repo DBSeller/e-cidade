@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_edu_relatmodel_classe.php");
-include("dbforms/db_funcoes.php");
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_edu_relatmodel_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+parse_str($_SERVER["QUERY_STRING"]);
 db_postmemory($_POST);
+
 $cledu_relatmodel = new cl_edu_relatmodel;
 $db_opcao         = 22;
 $db_botao         = false;
@@ -78,10 +80,12 @@ if (isset($alterar)) {
 <body class='body-default' >
 
   <div class='container'>
-    <?include("forms/db_frmedu_relatmodel.php");?>
+    <?php 
+      include(modification("forms/db_frmedu_relatmodel.php")); 
+    ?>
   </div>
 <?php
-  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit") );
+  db_menu();
 ?>
 
 </body>

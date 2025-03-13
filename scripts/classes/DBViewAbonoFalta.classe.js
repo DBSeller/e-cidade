@@ -303,7 +303,7 @@ DBViewAbonoFalta.prototype.retornoGetAlunos = function ( oResponse, oSelf ) {
   js_removeObj("msgBox");
   oSelf.oCboAlunos.clearItens();
   
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   
   if (oRetorno.aAlunos.length > 0) {
   
@@ -408,7 +408,7 @@ DBViewAbonoFalta.prototype.salvar = function () {
 DBViewAbonoFalta.prototype.retornoSalvar = function ( oResponse, oSelf ) {
   
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   
   if (oRetorno.status == 1) {
     
@@ -460,7 +460,7 @@ DBViewAbonoFalta.prototype.excluir = function () {
 DBViewAbonoFalta.prototype.retornoExcluir = function ( oResponse, oSelf ) {
   
   js_removeObj("msgBox");
-  var oRetorno = eval('('+oResponse.responseText+')');
+  var oRetorno = JSON.parse(oResponse.responseText);
   
   if (oRetorno.status == 1) {
     

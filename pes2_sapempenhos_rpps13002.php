@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_inssirf_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_inssirf_classe.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_codigo');
@@ -41,12 +41,12 @@ parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 if($prev == 's'){
 
   $tbp      = 4;
-  $especial = '2.90';
+  $especial = ($ano >= 2019 ? '4.15' :'2.90');
   $head2    = "EMPENHOS DO RPPS - SERVIDORES";
 }else{
 
   $tbp      = 6;
-  $especial = '1.22';
+  $especial = ($ano >= 2019 ? '2.45' : '1.22');
   $head2    = "EMPENHOS DO RPPS - MAGISTERIO";
 }
 
@@ -70,12 +70,12 @@ $sSql .= "       o55_descr,                                                     
 $sSql .= "       rh25_recurso,                                                                                                      ";
 $sSql .= "       o15_descr,                                                                                                         ";
 $sSql .= "       fund60,                                                                                                            ";
-$sSql .= "       ded60,                                                                                                             ";
+$sSql .= "       ROUND(fund60 / 100 * 1, 2) AS ded60,                                                                               ";
 $sSql .= "       fund40,                                                                                                            ";
-$sSql .= "       ded40,                                                                                                             ";
+$sSql .= "       ROUND(fund40 / 100 * 1, 2) AS ded40,                                                                               ";
 $sSql .= "       inss,                                                                                                              ";
 $sSql .= "       sub,                                                                                                               ";
-$sSql .= "       ded,                                                                                                               ";
+$sSql .= "       inss / 100 * 1 AS ded,                                                                                             ";
 $sSql .= "       round(case when rh26_orgao = 2 and rh26_unidade = 3 then (inss)/100*20 else (inss)/100*$r33_ppatro end,2) as pat,  ";
 $sSql .= "       round(case when rh26_orgao = 2 and rh26_unidade = 3 then (sub)/100*20 else (sub)/100*$r33_ppatro end,2) as pat_sub,";
 $sSql .= "       round(fund60/100*$r33_ppatro,2) as pat60,                                                                          ";
@@ -197,7 +197,7 @@ $pat60        = 0;
 $pat40        = 0;
 $pat          = 0;
 $teste        = 0;
-
+//Enviar uma mensagem
 for($x = 0; $x < pg_numrows($result);$x++){
 
    db_fieldsmemory($result,$x);
@@ -259,14 +259,14 @@ for($x = 0; $x < pg_numrows($result);$x++){
      $pdf->cell(20,$alt,db_formatar($fund60,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar($pat60,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar($ded60,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar(($pat60 - $ded60),'f'),0,1,"R",0);
+     $pdf->cell(20,$alt,db_formatar(($pat60 + $ded60),'f'),0,1,"R",0);
 
      $pdf->cell(25,$alt,'',0,0,"C",0);
      $pdf->cell(80,$alt,'FUNDEB 40%',0,0,"L",0);
      $pdf->cell(20,$alt,db_formatar($fund40,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar($pat40,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar($ded40,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar(($pat40 - $ded40),'f'),0,1,"R",0);
+     $pdf->cell(20,$alt,db_formatar(($pat40 + $ded40),'f'),0,1,"R",0);
      $pat  = $pat60  + $pat40;
      $ded  = $ded60  + $ded40;
      $inss = $fund60 + $fund40;
@@ -279,12 +279,13 @@ for($x = 0; $x < pg_numrows($result);$x++){
      $pdf->cell(20,$alt,db_formatar($inss,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar($pat,'f'),0,0,"R",0);
      $pdf->cell(20,$alt,db_formatar($ded,'f'),0,0,"R",0);
-     $pdf->cell(20,$alt,db_formatar(($pat - $ded),'f'),0,1,"R",0);
+     $pdf->cell(20,$alt,db_formatar(($pat + $ded),'f'),0,1,"R",0);
    }
 
    $val_pat      += $pat + $pat_sub;
    $val_fgts     += $inss+$sub;
    $val_ded      += $ded;
+   $val_ad_pat   += $ded;
 }
 
 $pdf->ln(5);
@@ -328,6 +329,6 @@ $pdf->cell(105,$alt,'TOTAL GERAL',0,0,"C",0);
 $pdf->cell(20,$alt,db_formatar($val_fgts,'f'),0,0,"R",0);
 $pdf->cell(20,$alt,db_formatar($val_pat + $taxa_ad,'f'),0,0,"R",0);
 $pdf->cell(20,$alt,db_formatar($val_ded,'f'),0,0,"R",0);
-$pdf->cell(20,$alt,db_formatar($val_pat - $val_ded,'f'),0,1,"R",0);
+$pdf->cell(20,$alt,db_formatar($val_pat + $val_ded + $taxa_ad,'f'),0,1,"R",0);
 
 $pdf->Output();

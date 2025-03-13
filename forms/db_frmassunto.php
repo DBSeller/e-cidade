@@ -1,97 +1,189 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-//MODULO: Biblioteca
-include("dbforms/db_classesgenericas.php");
-$cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
-$classunto->rotulo->label();
-$db_botao1 = false;
-if(isset($opcao) && $opcao=="alterar"){
- $db_opcao = 2;
- $db_botao1 = true;
-}elseif(isset($opcao) && $opcao=="excluir" || isset($db_opcao) && $db_opcao==3){
- $db_botao1 = true;
- $db_opcao = 3;
-}else{
- if(isset($alterar)){
-  $db_opcao = 2;
-  $db_botao1 = true;
- }else{
-  $db_opcao = 1;
- }
-}
+$oRotulo = new rotulocampo();
+$oRotulo->label('bi15_acervo');
+$oRotulo->label('bi15_codigo');
+$oRotulo->label('bi06_titulo');
+
 ?>
-<form name="form1" method="post" action="">
-<?db_input('bi15_codigo',10,$Ibi15_codigo,true,'hidden',"","")?>
-<center>
-<table border="0">
- <tr>
-  <td nowrap title="<?=@$Tbi15_acervo?>">
-   <?=@$Lbi15_acervo?>
-  </td>
-  <td>
-   <?db_input('bi15_acervo',10,@$Ibi15_acervo,true,'text',3,"")?>
-   <?db_input('bi06_titulo',80,@$Ibi06_titulo,true,'text',3,'')?>
-  </td>
- </tr>
- <tr>
-  <td nowrap title="<?=@$Tbi15_assunto?>">
-   <?=@$Lbi15_assunto?>
-  </td>
-  <td>
-   <?db_textarea('bi15_assunto',5,93,@$Ibi15_assunto,true,'text',$db_opcao,"")?>
-  </td>
- </tr>
-</table>
-<input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
-<input name="cancelar" type="submit" value="Cancelar" <?=($db_botao1==false?"disabled":"")?> >
-<table>
- <tr>
-  <td valign="top">
-  <?
-   $chavepri= array("bi15_codigo"=>@$bi15_codigo,"bi15_acervo"=>@$bi15_acervo,"bi06_titulo"=>@$bi06_titulo,"bi15_assunto"=>@$bi15_assunto);
-   $cliframe_alterar_excluir->chavepri=$chavepri;
-   @$cliframe_alterar_excluir->sql = $classunto->sql_query("","*","bi15_assunto"," bi15_acervo = $bi15_acervo");
-   $cliframe_alterar_excluir->campos  ="bi15_codigo,bi15_assunto";
-   $cliframe_alterar_excluir->legenda="Registros";
-   $cliframe_alterar_excluir->msg_vazio ="Não foi encontrado nenhum registro.";
-   $cliframe_alterar_excluir->textocabec ="#DEB887";
-   $cliframe_alterar_excluir->textocorpo ="#444444";
-   $cliframe_alterar_excluir->fundocabec ="#444444";
-   $cliframe_alterar_excluir->fundocorpo ="#eaeaea";
-   $cliframe_alterar_excluir->iframe_height ="160";
-   $cliframe_alterar_excluir->iframe_width ="650";
-   $cliframe_alterar_excluir->tamfontecabec = 9;
-   $cliframe_alterar_excluir->tamfontecorpo = 9;
-   $cliframe_alterar_excluir->formulario = false;
-   $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);
-  ?>
-  </td>
- </tr>
-</table>
-</form>
-</center>
+<div class="container">
+  <form name="form1" method="post" action="">
+    <fieldset>
+      <legend><b>Assuntos do Acervo</b></legend>
+      <table class="form-container">
+        <tr>
+          <td>
+            <label for="bi06_titulo"><?=$Lbi15_acervo?></label>
+          </td>
+          <td>
+            <?php
+              db_input('bi15_acervo', 10, $Ibi15_acervo, true, 'hidden', 3);
+              db_input('bi06_titulo', 50, $Ibi06_titulo, true, 'text', 3);
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="bi30_descricao"><a href="#" id='ancoraAssunto'>Assunto:</a></label>
+          </td>
+          <td>
+            <input type='hidden' name='bi30_sequencial' id='bi30_sequencial' />
+            <input type='text'   name='bi30_descricao'  id='bi30_descricao'  class='field-size-max ' />
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+    <input type='button' name='btnSalvar' id='btnSalvarAssunto' value="Salvar" />
+  </form>
+</div>
+
+<div class="subcontainer" style="width:600px;">
+  <fieldset >
+    <legend>Assuntos vinculados ao acervo</legend>
+    <div id='ctnGrid'></div>
+  </fieldset>
+</div>
+
+<script type="text/javascript">
+
+  var oLookUp = new DBLookUp( $('ancoraAssunto'), $('bi30_sequencial'), $('bi30_descricao'), {
+    sArquivo: 'func_tipoassunto.php',
+    sLabel: 'Pesquisa Assuntos Cadastrados',
+    sObjetoLookUp: 'db_iframe_rechumano'
+  });
+
+var oCollection  = new Collection().setId("codigo");
+var oGridAssunto = new DatagridCollection(oCollection).configure({
+  order  : false,
+  height : 120
+});
+
+oGridAssunto.addColumn("descricao", {
+  label : "Descrição",
+  align : "left",
+  width : "85%"
+});
+
+oGridAssunto.addAction("Remover", null, function(oEvento, oItem) {
+
+  var sMsgExcluir  = 'Você esta prestes a remover o assunto: ' + oItem.descricao
+      sMsgExcluir += ' do acervo. \nDeseja prosseguir e remover?';
+
+  if ( !confirm(sMsgExcluir) ) {
+    return;
+  }
+
+  var oParametros = {
+    "exec"     : "excluirAssuntoAcervo",
+    "iAssunto" : oItem.codigo,
+    "iAcervo"  : $F('bi15_acervo')
+  };
+
+  new AjaxRequest("bib4_acervo.RPC.php", oParametros, function(oRetorno, lErro) {
+
+    alert(oRetorno.sMessage);
+    if (lErro) {
+      return;
+    }
+    oCollection.remove( oItem.codigo );
+    oGridAssunto.reload();
+
+  }).execute();
+});
+
+oGridAssunto.show($("ctnGrid"));
+
+
+(function() {
+
+  var oParametros = {
+    "exec"     : "buscaAssuntoAcervo",
+    "iAcervo"  : $F('bi15_acervo')
+  };
+
+  new AjaxRequest("bib4_acervo.RPC.php", oParametros, function(oRetorno, lErro) {
+
+    if (lErro) {
+      alert(oRetorno.sMessage);
+      return;
+    }
+
+    for ( var oAssunto of oRetorno.aAssuntos ) {
+      oCollection.add(oAssunto);
+    }
+    oGridAssunto.reload();
+
+  }).setMessage( "Buscando assuntos cadastrados para o acervo, aguarde..." ).execute();
+})();
+
+function validarDadosObrigatorios() {
+
+  if ( $F('bi15_acervo') == '') {
+
+    alert('Selecione o Acervo.');
+    return false;
+  }
+
+  if ( $F('bi30_sequencial') == '') {
+
+    alert('Selecione o Assunto.');
+    return false;
+  }
+
+  return true;
+}
+
+$('btnSalvarAssunto').addEventListener('click', function(){
+
+  if ( !validarDadosObrigatorios() ) {
+    return;
+  }
+
+  var oParametros = {
+    "exec"     : "adicionarAssunto",
+    "iAcervo"  : $F('bi15_acervo'),
+    "sAssunto" : $F('bi30_descricao')
+  };
+
+  new AjaxRequest("bib4_acervo.RPC.php", oParametros, function(oRetorno, lErro) {
+
+    alert(oRetorno.sMessage);
+    if (lErro) {
+      alert(oRetorno.sMessage);
+      return;
+    }
+
+    oCollection.add({'codigo': oRetorno.iCodigoAssuntoAdicionado, 'descricao': $F('bi30_descricao')});
+    oGridAssunto.reload();
+    $('bi30_descricao').value  = '';
+    $('bi30_sequencial').value = '';
+
+  }).setMessage( "Adicionando assunto ao acervo, aguarde..." ).execute();
+});
+
+</script>

@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_libpessoal.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 global $db_config;
 db_selectmax("db_config","select lower(trim(munic)) as d08_carnes , cgc from db_config where codigo = ".db_getsession("DB_instit"));
@@ -65,12 +65,12 @@ function js_emite(){
   if(document.form1.pref_fun){
     qry += '&pref_fun=' + document.form1.pref_fun.value;
   }
-  js_OpenJanelaIframe('top.corpo','db_iframe_geradirf','pes4_geradirf002.php?'+qry,'Gerando Arquivo',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_geradirf','pes4_geradirf002.php?'+qry,'Gerando Arquivo',true);
 }
 
 function js_erro(msg){
   //js_controlarodape(false);
-  top.corpo.db_iframe_geradirf.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_geradirf.hide();
   alert(msg);
 }
 function js_fechaiframe(){
@@ -78,16 +78,16 @@ function js_fechaiframe(){
 }
 function js_controlarodape(mostra){
   if(mostra == true){
-    document.form1.rodape.value = parent.bstatus.document.getElementById('st').innerHTML;
-    parent.bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
+    document.form1.rodape.value = (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
   }else{
-    parent.bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
   }
 }
 
 function js_detectaarquivo(arquivo,pdf){
 //  js_controlarodape(false);
-  top.corpo.db_iframe_geradirf.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_geradirf.hide();
   listagem = arquivo+"#Download Arquivo TXT |";
   listagem+= pdf+"#Download Relatório";
   js_montarlista(listagem,"form1");
@@ -119,7 +119,7 @@ function js_detectaarquivo(arquivo,pdf){
         <td align="left">
           <?
           $sqlanomes = "select max(r11_anousu||lpad(r11_mesusu,2,0)) from cfpess";
-          $resultanomes = pg_exec($sqlanomes);
+          $resultanomes = db_query($sqlanomes);
           db_fieldsmemory($resultanomes,0);
           $ano_base = substr($max,0,4)-1;
             db_input('ano_base',4,'',true,'text',2,'')
@@ -222,7 +222,7 @@ function js_detectaarquivo(arquivo,pdf){
               <?
 $instit=db_getsession("DB_instit");
 $sql = "select distinct z01_numcgm,z01_cgccpf||'-'||z01_nome as z01_nome from rhlota inner join cgm on rhlota.r70_numcgm=cgm.z01_numcgm  where r70_instit=$instit;";
-$result= pg_query($sql);
+$result= db_query($sql);
 db_selectrecord("r70_numcgm", $result, true     , @$db_opcao, "",           "",          "",       "0", "","2");
 
               ?>

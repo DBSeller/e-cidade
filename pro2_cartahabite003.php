@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,60 +24,43 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/db_usuariosonline.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('std/db_stdClass.php'));
+require_once(modification('libs/db_libsys.php'));
+require_once(modification('dbagata/classes/core/AgataAPI.class'));
+require_once(modification('model/documentoTemplate.model.php'));
+include_once(modification("classes/db_obrashabite_classe.php"));
+use App\Domain\Configuracao\DocumentosTemplate\Reports\Projetos\CartaHabitese;
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_conecta.php');
-require_once('dbforms/db_funcoes.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/db_usuariosonline.php');
-require_once('libs/db_utils.php');
-require_once('std/db_stdClass.php');
-require_once('libs/db_libsys.php');
-require_once('dbagata/classes/core/AgataAPI.class');
-require_once('model/documentoTemplate.model.php');
+$clobrashabite    = new cl_obrashabite;
 
 $oGet = db_utils::postMemory($_GET);
 
-ini_set("error_reporting","E_ALL & ~NOTICE");
-
-$clagata = new cl_dbagata("projetos/modelo_habite.agt");
-
-$api     = $clagata->api;
-
-$sCaminhoSalvoSxw = "tmp/carta_habite_" . date('YmdHis') . db_getsession("DB_id_usuario") . ".sxw";
-
-$api->setOutputPath($sCaminhoSalvoSxw);
-
-$api->setParameter('$codigo_habite', $oGet->codigo);
-$api->setParameter('$codigo_instituicao', db_getsession('DB_instit'));
-$api->setParameter('$codigo_usuario', db_getsession('DB_id_usuario'));
-
 try {
 
-	$oDocumentoTemplate = new documentoTemplate(15);
+	$sCamposHabite  = " obrashabite.ob09_ativo,  ";
+	$sCamposHabite .= " obras.ob01_codobra  	 ";
+	$result_obrashabite = $clobrashabite->sql_record($clobrashabite->sql_query($oGet->codigo,$sCamposHabite));
+	db_fieldsmemory($result_obrashabite,0);
+
+	if($ob09_ativo == 'f'){
+		$sMsg = _M('tributario.projetos.pro2_cartahabite003.habite_cancelado');
+		db_redireciona("db_erros.php?fechar=true&db_erro={$sMsg}");		
+	}
+
+	$oDocumentoTemplateCartaHabitese = new CartaHabitese($oGet->codigo);
+    $oDocumentoTemplateCartaHabitese->configuraDadosVariaveis();
+    $pathDocumento                 = $oDocumentoTemplateCartaHabitese->processaTemplate();
+    db_redireciona($pathDocumento);
 
 } catch (Exception $eException){
 
 	$sErroMsg  = $eException->getMessage();
 	db_redireciona("db_erros.php?fechar=true&db_erro={$sErroMsg}");
-
-}
-
-if($api->parseOpenOffice($oDocumentoTemplate->getArquivoTemplate())){
-
-	$sNomeRelatorio   = "tmp/carta_habite_" . date('YmdHis') . db_getsession("DB_id_usuario") . ".pdf";
-
-	$sComandoConverte = db_stdClass::ex_oo2pdf($sCaminhoSalvoSxw, $sNomeRelatorio);
-
-	if (!$sComandoConverte) {
-
-	  $sMsg = _M('tributario.projetos.pro2_cartahabite003.falha_gerar_pdf');
-		db_redireciona("db_erros.php?fechar=true&db_erro={$sMsg}");
-
-	} else {
-
-		db_redireciona($sNomeRelatorio);
-
-	}
 
 }

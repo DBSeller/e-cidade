@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ('fpdf151/pdf1.php');
-include ("dbforms/db_funcoes.php");
-include ("classes/db_listainscrcab_classe.php");
-include ("classes/db_listainscr_classe.php");
-include ("classes/db_cgm_classe.php");
-include ("classes/db_issbase_classe.php");
+require(modification('fpdf151/pdf1.php'));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_listainscrcab_classe.php"));
+include(modification("classes/db_listainscr_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
 
 parse_str ( $HTTP_SERVER_VARS ['QUERY_STRING'] );
 $cllistainscr = new cl_listainscr ( );
@@ -78,7 +78,7 @@ $sSql = "select codigo,
            where codigo = " . db_getsession ( 'DB_instit' );
 
 //die($sSql);
-$rsSql = pg_query ( $sSql );
+$rsSql = db_query ( $sSql );
 
 if (pg_numrows ( $rsSql ) > 0) {
 	db_fieldsmemory ( $rsSql, 0 );

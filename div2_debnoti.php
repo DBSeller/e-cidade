@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('');
@@ -46,13 +46,13 @@ if (isset($datadeb)&&$datadeb!=""){
 $sqlCriaTabela = "CREATE TEMP TABLE w_numpre_numpar (
                          numpre   int4,
                          numpar   int4)";
-$rsCriaTabela  = pg_query($sqlCriaTabela);
+$rsCriaTabela  = db_query($sqlCriaTabela);
 if( $rsCriaTabela == false ){          
 	//db_msgbox("Erro ao tentar cria a tabela");
   exit;
 }else{
    $sqlIndex = "create index w_numpre_numpar_n_p_in  on w_numpre_numpar(numpre,numpar)";
-	 $rsIndex  = pg_query($sqlIndex);
+	 $rsIndex  = db_query($sqlIndex);
 }
 $where = " where ";
 $or = ""; 
@@ -66,7 +66,7 @@ for ($w=0;$w<count($arr_info);$w++){
 	
 	// inserir o numpre e numpar na tabela temp
 	$sqlInclui = " insert into w_numpre_numpar (numpre,numpar) values ($numpre1,$numpar1)";
-	$rsInclui  = pg_query($sqlInclui);
+	$rsInclui  = db_query($sqlInclui);
 	if( $rsInclui == false ){          
 	 // db_msgbox("Erro ao tentar incluir na tabela temp ");
     exit;
@@ -109,7 +109,7 @@ $sql ="select k00_numcgm,k00_matric,k00_inscr,k00_numpre,k00_numpar,k53_notifica
 
 					    		";
 									//die($sql);
-$result=pg_exec($sql);
+$result=db_query($sql);
 $numrows = pg_numrows($result);
 
 if ($numrows == 0){

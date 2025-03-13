@@ -1,32 +1,32 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: Habitacao
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo                 = new rotulocampo;
 
@@ -34,22 +34,22 @@ $clavaliacaoperguntaopcao->rotulo->label();
 $clavaliacaopergunta->rotulo->label();
 
 if (isset($oPost->db_opcaoal)) {
-  
+
   $db_opcao = 33;
   $db_botao = false;
 } else if (isset($oPost->opcao) && $oPost->opcao == "alterar") {
-  
+
   $db_botao = true;
   $db_opcao = 2;
 } else if(isset($oPost->opcao) && $oPost->opcao == "excluir") {
-  
+
   $db_opcao = 3;
   $db_botao = true;
 } else {
-    
+
   $db_opcao = 1;
   $db_botao = true;
-  
+
   if (isset($oPost->novo) || isset($oPost->incluir) || isset($oPost->alterar) || isset($oPost->excluir) ) {
 
     $db104_sequencial    = "";
@@ -57,7 +57,7 @@ if (isset($oPost->db_opcaoal)) {
     $db104_aceitatexto   = "";
     $db104_identificador = "";
   }
-} 
+}
 ?>
 <form name="form1" method="post" action="">
 <fieldset><legend><b>Respostas</b></legend>
@@ -66,7 +66,7 @@ if (isset($oPost->db_opcaoal)) {
     <td nowrap title="<?=@$Tdb104_avaliacaopergunta?>">
       <b>Código da Pergunta:</b>
     </td>
-    <td colspan="3"> 
+    <td colspan="3">
       <?
         db_input('db104_sequencial',10,$Idb104_sequencial,true,'hidden',3,"");
         db_input('db103_sequencial',10,$Idb103_sequencial,true,'text',3,"");
@@ -78,7 +78,7 @@ if (isset($oPost->db_opcaoal)) {
     <td nowrap title="<?=@$Tdb104_descricao?>">
       <?=@$Ldb104_descricao?>
     </td>
-    <td colspan="4"> 
+    <td colspan="4">
       <?
         db_input('db104_descricao',255,$Idb104_descricao,true,'text',$db_opcao,"")
       ?>
@@ -88,7 +88,7 @@ if (isset($oPost->db_opcaoal)) {
     <td nowrap title="<?=@$Tdb104_identificador?>">
       <?=@$Ldb104_identificador?>
     </td>
-    <td colspan="4"> 
+    <td colspan="4">
       <?
         db_input('db104_identificador',65,$Idb104_identificador,true,'text',$db_opcao,"")
       ?>
@@ -98,9 +98,19 @@ if (isset($oPost->db_opcaoal)) {
     <td nowrap title="<?=@$Tdb104_peso?>">
       <?=@$Ldb104_peso?>
     </td>
-    <td colspan="4"> 
+    <td colspan="4">
       <?
         db_input('db104_peso',10,$Idb104_peso,true,'text',$db_opcao,"")
+      ?>
+    </td>
+  </tr>
+  <tr>
+    <td nowrap title="Valor da Resposta">
+      <b>Valor da Resposta:</b>
+    </td>
+    <td colspan="4">
+      <?
+      db_input('db104_valorresposta',10,"0",true,'text',$db_opcao,"")
       ?>
     </td>
   </tr>
@@ -108,7 +118,7 @@ if (isset($oPost->db_opcaoal)) {
     <td nowrap title="<?=@$Tdb104_aceitatexto?>">
       <?=@$Ldb104_aceitatexto?>
     </td>
-    <td> 
+    <td>
       <?
         $aAceitaTexto = array("f"=>"NAO","t"=>"SIM");
         db_select('db104_aceitatexto',$aAceitaTexto,true,$db_opcao,"");
@@ -138,7 +148,7 @@ if (isset($oPost->db_opcaoal)) {
 </table>
 <table>
   <tr>
-    <td valign="top" align="center">  
+    <td valign="top" align="center">
       <?
         $sWhere    = "db104_avaliacaopergunta = {$db103_sequencial}";
         $sCampos   = "db104_sequencial, db104_avaliacaopergunta, db104_descricao, db104_identificador";
@@ -187,8 +197,8 @@ function js_validaCaracteres() {
     alert('É necessário informar um identificador');
     $('db104_identificador').focus();
     return false;
-  } 
-  
+  }
+
   if (lResultadoInicial) {
 
     var sValorCaracteres      = $F('db104_identificador').substring(1);
@@ -206,4 +216,28 @@ function js_validaCaracteres() {
     return false;
   }
 }
+
+function montarIdentificador(textoBase) {  
+  
+    var listaStringTrocar = "áàãâäéèêëíìîïóòõôöúùûüçÁÀÃÂÄÉÈÊËÍÌÎÏÓÒÕÖÔÚÙÛÜÇ";
+    var listaStringSubstituir = "aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC";
+    var stringIdentificador = "";
+    for (var i = 0; i < textoBase.length; i++) {
+      if (listaStringTrocar.indexOf(textoBase.charAt(i)) != -1) {
+        stringIdentificador += listaStringSubstituir.substr(listaStringTrocar.search(textoBase.substr(i, 1)), 1);
+      } else {
+        stringIdentificador += textoBase.substr(i, 1);
+      }
+    }
+  
+  stringIdentificador = stringIdentificador.replace(/[^a-zA-Z 0-9]/g, '');
+  var identificador = stringIdentificador.replace(/ /g, '_').toLowerCase().substr(0, 50);
+  return identificador;  
+}
+$('db104_descricao').observe('blur', function() {  
+    if ($F('db104_identificador') == ''){
+      $('db104_identificador').value = montarIdentificador(this.value); 
+    }
+});
+  
 </script>

@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $db_opcao = 1;
 
@@ -51,6 +51,13 @@ $anofi = $arr_datafinal[2];                                        // ANO DO PER
 
 // DIA FINAL DO PERÍODO FINAL
 $diaff = db_dias_mes($anofi,$mesfi);                               // QUANTIDADE DE DIAS DO MÊS INFORMADO
+
+$lLotesFechados    = 0;
+$oCompetenciaLotes = DBPessoal::getCompetenciaFolha();
+$aLotesFechados    = LoteRegistrosPontoRepository::getLotesByCompetencia($oCompetenciaLotes, true, null, LoteRegistrosPonto::FECHADO);
+if(count($aLotesFechados) > 0) {
+  $lLotesFechados = 1;
+}
 ?>
 <html>
 <head>
@@ -58,11 +65,12 @@ $diaff = db_dias_mes($anofi,$mesfi);                               // QUANTIDADE
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" bgcolor="#cccccc">
 <?
-include("forms/db_frmvirafolha.php");
+include(modification("forms/db_frmvirafolha.php"));
 ?>
 <?
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));

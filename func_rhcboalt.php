@@ -1,38 +1,40 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhcbo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhcbo_classe.php"));
+
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+
 $clrhcbo = new cl_rhcbo;
 $clrhcbo->rotulo->label("rh70_sequencial");
 $clrhcbo->rotulo->label("rh70_descr");
@@ -46,94 +48,94 @@ $clrhcbo->rotulo->label("rh70_descr");
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
+  <tr>
     <td height="63" align="center" valign="top">
         <table width="100%" border="0" align="center" cellspacing="0">
 	     <form name="form1" method="post" action="" >
-          <tr> 
+          <tr>
             <td width="4%" align="left" nowrap title="<?=$Trh70_sequencial?>">
               <?=$Lrh70_sequencial?>
             </td>
-            <td width="96%" align="left" nowrap> 
+            <td width="96%" align="left" nowrap>
               <?
 		       db_input("rh70_estrutural",10,$Irh70_sequencial,true,"text",4,"","chave_rh70_estrutural");
 		       ?>
             </td>
           </tr>
-          <tr> 
-             <td  align="left"> <b>Descrição:</b>
+          <tr>
+             <td  align="left"> <strong>Descrição:</strong>
              </td>
-             <td > 
+             <td >
                  <? db_input("rh70_descr",40,$Irh70_descr,true,"text",4,"","chave_rh70_descr");?>
              </td>
           </tr>
-         <tr> 
-             <td  align="left"> <b>Grande Grupo:</b>
+         <tr>
+             <td  align="left"> <strong>Grande Grupo:</strong>
              </td>
-             <td > 
+             <td >
               <?
-             
-              $sqlgg= "select rh70_estrutural as rh70_estrutural_1, 
-												case when length(rh70_descr)>60 
-												then substr(rh70_descr,0,60)||'...' 
-												else rh70_descr 
-												end as rh70_descr_1 
+
+              $sqlgg= "select rh70_estrutural as rh70_estrutural_1,
+												case when length(rh70_descr)>60
+												then substr(rh70_descr,0,60)||'...'
+												else rh70_descr
+												end as rh70_descr_1
 												from rhcbo where rh70_tipo = 0
 												order by rh70_estrutural ";
-              
-              $resultgg = pg_query($sqlgg);
+
+              $resultgg = db_query($sqlgg);
               db_selectrecord('grandegrupo', $resultgg, true, 1,"","","","","js_gg();");
-              
-              
+
+
               ?>
              </td>
           </tr>
-          <tr> 
-             <td ><b>Subgrupo Principal</b>
+          <tr>
+             <td ><strong>Subgrupo Principal</strong>
              </td>
-             <td > 
+             <td >
              <?
              if(!isset($grandegrupo)){
                  $grandegrupo = '0';
              }
-             $sqlsgp = "select rh70_estrutural as rh70_estrutural_2, 
-																case when length(rh70_descr)>60 
-																then substr(rh70_descr,0,60)||'...' 
-																else rh70_descr 
-																end as tamanho 
-													from rhcbo 
+             $sqlsgp = "select rh70_estrutural as rh70_estrutural_2,
+																case when length(rh70_descr)>60
+																then substr(rh70_descr,0,60)||'...'
+																else rh70_descr
+																end as tamanho
+													from rhcbo
 													where rh70_tipo = 1 and rh70_estrutural like '$grandegrupo%'";
-             $resultsgp= pg_query($sqlsgp);
+             $resultsgp= db_query($sqlsgp);
              db_selectrecord('subgrupoprincipal', $resultsgp, true, 1,"","","","","js_gg();");
              ?>
             </td>
           </tr>
-          <tr> 
-             <td ><b>Subgrupo</b>
+          <tr>
+             <td ><strong>Subgrupo</strong>
              </td>
-             <td > 
+             <td >
              <?
-              
+
              if(isset($grandegrupo) && @$ggantes!= $grandegrupo){
-                 $ggantes = $grandegrupo;
-                 $subgrupoprincipal=$grandegrupo;
+               $ggantes = $grandegrupo;
+               $subgrupoprincipal=$grandegrupo;
              }
 
              if(isset($subgrupoprincipal)){
-                 $subgrupoprincipal=$subgrupoprincipal;
+               $subgrupoprincipal=$subgrupoprincipal;
              }
              if(!isset($subgrupoprincipal)){
                 $subgrupoprincipal='0';
              }
               db_input("ggantes",10,$Irh70_sequencial,true,"hidden",4,"","");
-             $sqlsg = "select rh70_estrutural as rh70_estrutural_2, 
-																case when length(rh70_descr)>60 
-																then substr(rh70_descr,0,60)||'...' 
-																else rh70_descr 
-																end as tamanho 
-													from rhcbo 
+             $sqlsg = "select rh70_estrutural as rh70_estrutural_2,
+																case when length(rh70_descr)>60
+																then substr(rh70_descr,0,60)||'...'
+																else rh70_descr
+																end as tamanho
+													from rhcbo
 													where rh70_tipo = 2 and rh70_estrutural like '$subgrupoprincipal%'";
-              $resultsg= pg_query($sqlsg);
+              $resultsg = db_query($sqlsg);
               db_selectrecord('subgrupo', $resultsg, true, 1,"","","","","js_gg();");
 				      if($subgrupoprincipal != @$sub ){
 				         $sub = $subgrupoprincipal;
@@ -145,87 +147,87 @@ $clrhcbo->rotulo->label("rh70_descr");
              </td>
           </tr>
           <tr>
-	          <td ><b>Mostrar:</b></td>
-	          <td align="left" > 
+	          <td ><strong>Mostrar:</strong></td>
+	          <td align="left" >
 	          <?
 		        $arraymostra = array("A" => "Somente analítico ","T" => "Todos");
 		        db_select("mostra",$arraymostra,1,1,"onchange='document.form1.submit();'");
 		        ?>
 	          </td>
          </tr>
-         <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
+         <tr>
+            <td colspan="2" align="center">
+              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
               <input name="limpar" type="reset" id="limpar" value="Limpar" >
               <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_rhcbo.hide();">
              </td>
           </tr>
-                  
+
         </form>
         </table>
       </td>
   </tr>
-  <tr> 
-    <td align="center" valign="top"> 
-      <?
+  <tr>
+    <td align="center" valign="top">
+      <?php
         $where = "";
-           if(!isset($mostra) ||$mostra=='A'){
-              $where = " and rh70_tipo=5";
-           }
-      
-      
-      if(!isset($pesquisa_chave)){
-         $campos = " case when rh70_tipo=5 then 'Analitico' else 'Sintetico' end as tipo,rh70_sequencial,rh70_estrutural,rh70_descr ";
-        if(isset($chave_rh70_estrutural) && (trim($chave_rh70_estrutural)!="") ){
-          //db_msgbox("1111");
-	         $sql = $clrhcbo->sql_query("",$campos,"rh70_estrutural", "rh70_sequencial = '$chave_rh70_estrutural' $where");
-        }else if(trim(@$chave_rh70_descr!="")){
-           $sql = $clrhcbo->sql_query("",$campos,"rh70_sequencial"," rh70_descr ilike '%$chave_rh70_descr%' $where ");
-        }else{
-          //db_msgbox("444");
-          $campos = " case when rh70_tipo=5 then 'Analitico' else 'Sintetico' end as tipo,rh70_sequencial,rh70_estrutural,rh70_descr ";
-           $sql = $clrhcbo->sql_query("",$campos,"rh70_estrutural","rh70_estrutural like '$subgrupoprincipal%' $where");
+        if(!isset($mostra) ||$mostra=='A'){
+           $where = " and rh70_tipo=5";
         }
-        $repassa = array();
-        if(isset($chave_rh70_sequencial)){
-         
-          $repassa = array("chave_rh70_sequencial"=>$chave_rh70_sequencial,"chave_rh70_sequencial"=>$chave_rh70_sequencial);
-        }
-        //echo "<br>$sql";
-        db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          //die($clrhcbo->sql_query($pesquisa_chave));
+
+        if(!isset($pesquisa_chave)){
+
           $campos = " case when rh70_tipo=5 then 'Analitico' else 'Sintetico' end as tipo,rh70_sequencial,rh70_estrutural,rh70_descr ";
-          $result = $clrhcbo->sql_record($clrhcbo->sql_query(null,"$campos",null,"rh70_estrutural = '".$pesquisa_chave."'"));
-          if($clrhcbo->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$rh70_estrutural','$rh70_descr','$rh70_sequencial','$tipo',false);</script>";
+
+          if(isset($chave_rh70_estrutural) && (trim($chave_rh70_estrutural)!="") ){
+            $where = "rh70_sequencial = '$chave_rh70_estrutural' $where";
+          }else if(trim(@$chave_rh70_descr!="")){
+            $where = "rh70_descr ilike '%$chave_rh70_descr%' $where ";
           }else{
-	         echo "<script>".$funcao_js."('','Chave(".$pesquisa_chave.") não Encontrado','',true);</script>";
+            $where = "rh70_estrutural like '$subgrupoprincipal%' $where";
           }
+
+          $sql     = $clrhcbo->sql_query("",$campos,"rh70_estrutural",$where);
+          $repassa = array();
+
+          if(isset($chave_rh70_sequencial)){
+            $repassa = array("chave_rh70_sequencial"=>$chave_rh70_sequencial,"chave_rh70_sequencial"=>$chave_rh70_sequencial);
+          }
+
+          db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
         }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
+          if($pesquisa_chave!=null && $pesquisa_chave!=""){
+
+            $campos = " case when rh70_tipo=5 then 'Analitico' else 'Sintetico' end as tipo,rh70_sequencial,rh70_estrutural,rh70_descr ";
+            $result = $clrhcbo->sql_record($clrhcbo->sql_query(null,"$campos",null,"rh70_estrutural = '".$pesquisa_chave."' {$where}"));
+
+            if($clrhcbo->numrows!=0){
+
+              db_fieldsmemory($result,0);
+              echo "<script>".$funcao_js."('$rh70_estrutural','$rh70_descr','$rh70_sequencial','$tipo',false);</script>";
+            }else{
+  	         echo "<script>".$funcao_js."('','Chave(".$pesquisa_chave.") não Encontrado','',true);</script>";
+            }
+          }else{
+  	       echo "<script>".$funcao_js."('',false);</script>";
+          }
         }
-      }
       ?>
      </td>
    </tr>
 </table>
 </body>
 </html>
-<?
-if(!isset($pesquisa_chave)){
-  ?>
-  <script>
-  </script>
-  <?
-}
-?>
 <script>
-//js_tabulacaoforms("form2","chave_rh70_sequencial",true,1,"chave_rh70_sequencial",true);
+
 function js_gg(){
-document.form1.submit();
+  document.form1.submit();
 }
 
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

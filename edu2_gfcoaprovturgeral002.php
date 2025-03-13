@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_turma_classe.php");
-require("libs/db_stdlibwebseller.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_turma_classe.php"));
+require(modification("libs/db_stdlibwebseller.php"));
 $resultedu = eduparametros(db_getsession("DB_coddepto"));
 $decimais = $resultedu=="N"?0:2;
 $clturma = new cl_turma;
@@ -59,7 +59,7 @@ if($clturma->numrows>0){
           GROUP BY ed232_c_descr,ed09_c_descr,ed41_i_sequencia,ed59_i_ordenacao
           ORDER BY ed41_i_sequencia,ed59_i_ordenacao
          ";
- $result1 = pg_query($sql1);
+ $result1 = db_query($sql1);
  $linhas1 = pg_num_rows($result1);
  //seleciona disciplinas da turma escolhida
  $sql2 = "SELECT DISTINCT
@@ -79,7 +79,7 @@ if($clturma->numrows>0){
           AND ed59_c_freqglob != 'F'
           ORDER BY ed59_i_ordenacao
          ";
- $result2 = pg_query($sql2);
+ $result2 = db_query($sql2);
  $linhas2 = pg_num_rows($result2);
  //db_criatabela($result2);
  //exit;

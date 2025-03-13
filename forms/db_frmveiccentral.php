@@ -34,21 +34,16 @@ if (!isset($ve09_usuario)){
 }
 ?>
 <form name="form1" method="post" action="">
-<center>
-<table border="0" width="790">
+<table class="container" border="0" width="790">
  <?
 db_input("sequencial",10,"",true,"hidden",3);
 
 
  ?>
 <tr>
-    <td nowrap title="<?=@$Tve40_veiccadcentral?>">
+    <td align="center">
     <?
-       db_ancora(@$Lve40_veiccadcentral,"js_pesquisave40_veiccadcentral(true);",$db_opcao);
-    ?>
-    </td>
-    <td>
-    <?
+     db_ancora(@$Lve40_veiccadcentral,"js_pesquisave40_veiccadcentral(true);",$db_opcao);
      db_input("ve40_veiccadcentral",10,$Ive40_veiccadcentral,true,"text",$db_opcao," onChange='js_pesquisave40_veiccadcentral(false);'");
      db_input("descrdepto",40,0,true,"text",3);
     ?>
@@ -89,17 +84,16 @@ db_input("sequencial",10,"",true,"hidden",3);
     </td>
   </tr>
 </table>
-</center>
 </form>
 <script>
 
 function js_pesquisave40_veiccadcentral(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_veiccentral','db_iframe_veiccadcentral','func_veiccadcentral.php?funcao_js=parent.js_mostraveiccadcentral1|ve36_sequencial|descrdepto','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veiccentral','db_iframe_veiccadcentral','func_veiccadcentralveic.php?funcao_js=parent.js_mostraveiccadcentral1|ve36_sequencial|descrdepto','Pesquisa',true);
 
 }else{
      if(document.form1.ve40_veiccadcentral.value != ''){
-        js_OpenJanelaIframe('top.corpo.iframe_veiccentral','db_iframe_veiccadcentral','func_veiccadcentral.php?pesquisa_chave='+document.form1.ve40_veiccadcentral.value+'&funcao_js=parent.js_mostraveiccadcentral','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_veiccentral','db_iframe_veiccadcentral','func_veiccadcentral.php?pesquisa_chave='+document.form1.ve40_veiccadcentral.value+'&funcao_js=parent.js_mostraveiccadcentral','Pesquisa',false);
      }else{
        document.form1.descrdepto.value = '';
      }

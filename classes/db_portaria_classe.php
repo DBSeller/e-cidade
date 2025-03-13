@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -637,7 +637,7 @@ class cl_portaria {
    function sql_query ( $h31_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -654,6 +654,9 @@ class cl_portaria {
      $sql .= "      inner join portariaenvolv  on  portariaenvolv.h42_sequencial = portariatipo.h30_portariaenvolv";
      $sql .= "      inner join portariatipoato  on  portariatipoato.h41_sequencial = portariatipo.h30_portariatipoato";
      $sql .= "      inner join portariaproced  on  portariaproced.h40_sequencial = portariatipo.h30_portariaproced";
+     $sql .= "      left  join portariaassenta on portariaassenta.h33_portaria = portaria.h31_sequencial        ";
+     $sql .= "      left  join assenta       on assenta.h16_codigo       = portariaassenta.h33_assenta    ";
+     $sql .= "      left  join assentamentosubstituicao  on  assentamentosubstituicao.rh161_assentamento = assenta.h16_codigo";
      $sql2 = "";
      if($dbwhere==""){
        if($h31_sequencial!=null ){
@@ -665,7 +668,7 @@ class cl_portaria {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -677,7 +680,7 @@ class cl_portaria {
    function sql_query_asse( $h31_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -704,7 +707,7 @@ class cl_portaria {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -717,7 +720,7 @@ class cl_portaria {
    function sql_query_asse_func( $h31_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -746,7 +749,7 @@ class cl_portaria {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -758,7 +761,7 @@ class cl_portaria {
    function sql_query_file ( $h31_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -779,7 +782,7 @@ class cl_portaria {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -788,5 +791,85 @@ class cl_portaria {
      }
      return $sql;
   }
+
+  function sql_query_assentamento_funcional ( $h31_sequencial=null,$campos="*",$ordem=null,$dbwhere="", $sVerificaLotacao = null, $iTipoFuncionamento){
+    $sql = "select ";
+    if($campos != "*" ){
+      $campos_sql = explode("#",$campos);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }else{
+      $sql .= $campos;
+    }
+    $sql .= " from portaria ";
+    $sql .= "      inner join db_usuarios              on db_usuarios.id_usuario                      = portaria.h31_usuario";
+    $sql .= "      inner join portariatipo             on portariatipo.h30_sequencial                 = portaria.h31_portariatipo";
+    $sql .= "      left  join portariaassinatura       on portariaassinatura.rh136_sequencial         = portaria.h31_portariaassinatura";
+    $sql .= "      inner join tipoasse                 on tipoasse.h12_codigo                         = portariatipo.h30_tipoasse";
+    $sql .= "      inner join portariaenvolv           on portariaenvolv.h42_sequencial               = portariatipo.h30_portariaenvolv";
+    $sql .= "      inner join portariatipoato          on portariatipoato.h41_sequencial              = portariatipo.h30_portariatipoato";
+    $sql .= "      inner join portariaproced           on portariaproced.h40_sequencial               = portariatipo.h30_portariaproced";
+    $sql .= "      left  join portariaassenta          on portariaassenta.h33_portaria                = portaria.h31_sequencial        ";
+    $sql .= "      left  join assenta                  on assenta.h16_codigo                          = portariaassenta.h33_assenta    ";
+    $sql .= "      inner join assentamentofuncional    on rh193_assentamento_funcional                = assenta.h16_codigo ";
+    $sql .= "      left  join assentamentosubstituicao on assentamentosubstituicao.rh161_assentamento = assenta.h16_codigo";
+
+    $sql .= "
+      LEFT JOIN documentoportaria
+          ON documentoportaria.rh235_portaria = portaria.h31_sequencial
+      LEFT JOIN arquivoestorage
+          ON db177_idestorage = rh235_documento and db177_idestorage_arquivoanterior IS NULL
+    ";
+
+    $sql2 = "";
+    if($dbwhere==""){
+      if($h31_sequencial!=null ){
+        $sql2 .= " where portaria.h31_sequencial = $h31_sequencial ";
+      }
+    }else if($dbwhere != ""){
+      $sql2 = " where $dbwhere";
+    }
+    if($iTipoFuncionamento == 1){ //Assentamentos de efetividade
+      $sql2 .= " AND assentamentofuncional.rh193_assentamento_funcional is null";
+    }
+    if($iTipoFuncionamento == 2){ //Assentamentos de vida funcional
+      $sql2 .= " AND assentamentofuncional.rh193_assentamento_funcional is not null";
+    }
+    if(!empty($sVerificaLotacao)) {
+      $sql2 .= $sVerificaLotacao;
+    }
+    $sql .= $sql2;
+    if($ordem != null ){
+      $sql .= " order by ";
+      $campos_sql = explode("#",$ordem);
+      $virgula = "";
+      for($i=0;$i<sizeof($campos_sql);$i++){
+        $sql .= $virgula.$campos_sql[$i];
+        $virgula = ",";
+      }
+    }
+    return $sql;
+  }
+
+  function sql_query_assentamento_servidor($sequencialPortaria)
+  {
+    $sSql = "
+        SELECT
+            h16_codigo,
+            h16_regist
+        FROM
+            portaria
+        INNER JOIN portariaassenta
+            ON h33_portaria = h31_sequencial
+        INNER JOIN assenta
+            ON h16_codigo = h33_assenta
+        WHERE
+            portaria.h31_sequencial = {$sequencialPortaria}
+    ";
+
+    return $sSql;
+  }
 }
-?>

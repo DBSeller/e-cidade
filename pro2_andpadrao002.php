@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include("fpdf151/pdf.php");
- //include("libs/db_stdlib.php");
+ include(modification("fpdf151/pdf.php"));
+ //include(modification("libs/db_stdlib.php"));
  $processo = '';
  $total    = ''; 
  $sql = "select   p51_codigo,
@@ -40,7 +40,7 @@
                   on p53_coddepto  = coddepto
          where  p51_instit         = ".db_getsession("DB_instit")."         
          order by p51_descr,p53_ordem";
- $rs = pg_exec($sql);
+ $rs = db_query($sql);
  $pdf = new pdf();
  $head3 = 'Quantidade Estimada de Dias'; 
  $head4 = 'e Andamento Padrão Por tipo de Processo'; 

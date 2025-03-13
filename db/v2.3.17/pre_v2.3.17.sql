@@ -41,3 +41,4 @@ CREATE INDEX vinculoeventoscontabeis_conhistdocinclusao_in ON vinculoeventoscont
  * -----------------------------------------------------------------------------
  */
  select fc_executa_ddl('alter table meigrupoevento set schema issqn');
+ 

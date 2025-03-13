@@ -58,7 +58,7 @@ db_input('rh29_descr',40,$Irh29_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhtipomedia','func_rhtipomedia.php?funcao_js=parent.js_preenchepesquisa|rh29_tipo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhtipomedia','func_rhtipomedia.php?funcao_js=parent.js_preenchepesquisa|rh29_tipo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhtipomedia.hide();

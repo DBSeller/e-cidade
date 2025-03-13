@@ -1,38 +1,38 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cfautent_classe.php");
-include("classes/db_cfautentdocasschq_classe.php");
-include("classes/db_cfautentconta_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cfautent_classe.php"));
+include(modification("classes/db_cfautentdocasschq_classe.php"));
+include(modification("classes/db_cfautentconta_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcfautent = new cl_cfautent;
 $clcfautentconta = new cl_cfautentconta;
@@ -43,6 +43,7 @@ if(isset($incluir)){
 	$sqlerro = false;
   db_inicio_transacao();
   $clcfautent->k11_impassche = $k11_impassche;
+  $clcfautent->k11_tef = isset($k11_tef) ? "t" : "f";
   $clcfautent->incluir($k11_id);
 //	db_msgbox($k11_id);
 	if($clcfautent->erro_status == 0){
@@ -56,7 +57,7 @@ if(isset($incluir)){
     $clcfautentconta->incluir($clcfautent->k11_id);
 	  if($clcfautentconta->erro_status == 0){
 	    $sqlerro = true;
-        $clcfautent->erro_msg = "AUTENTCONTA - ".$clcfautentconta->erro_msg;		
+        $clcfautent->erro_msg = "AUTENTCONTA - ".$clcfautentconta->erro_msg;
 	  }
 	}
 	if($k11_impassche==1){
@@ -66,7 +67,7 @@ if(isset($incluir)){
 	  $clcfautentdocasschq->incluir(null);
 	  if($clcfautentdocasschq->erro_status == 0){
 	    $sqlerro = true;
-        $clcfautentdocasschq->erro_msg = " - ".$clcfautentdocasschq->erro_msg;		
+        $clcfautentdocasschq->erro_msg = " - ".$clcfautentdocasschq->erro_msg;
 	  }
 	}
 
@@ -84,11 +85,11 @@ if(isset($incluir)){
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="430" align="center" valign="top" bgcolor="#CCCCCC">
     <center>
 	<?
-	include("forms/db_frmcfautent.php");
+	include(modification("forms/db_frmcfautent.php"));
 	?>
     </center>
 	</td>
@@ -110,16 +111,16 @@ if(isset($incluir)){
       echo "<script> document.form1.".$clcfautent->erro_campo.".focus();</script>";
     }
   }else{
-  	
+
     $clcfautent->erro(true,false);
-    
+
     echo " <script> 																																														   ";
     echo "   parent.iframe_autent.location.href='cai1_cfautent012.php?chavepesquisa={$clcfautent->k11_id}';	 		   ";
 	  echo "   parent.document.formaba.modimprime.disabled = false; 																							   ";
 	  echo "   parent.mo_camada('modimprime');																	   		   	 												   ";
     echo "   parent.iframe_modimprime.location.href='cai1_cfautentmodimprime.php?idAutent={$clcfautent->k11_id}';  ";
   	echo " </script>												  										  	         															   		 ";
-    
+
   }
 }
 ?>

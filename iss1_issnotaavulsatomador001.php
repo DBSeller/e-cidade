@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_issnotaavulsatomador_classe.php");
-include("classes/db_issnotaavulsatomadorcgm_classe.php");
-include("classes/db_issnotaavulsatomadorinscr_classe.php");
-include("classes/db_issbase_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_issnotaavulsa_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_issnotaavulsatomador_classe.php"));
+include(modification("classes/db_issnotaavulsatomadorcgm_classe.php"));
+include(modification("classes/db_issnotaavulsatomadorinscr_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_issnotaavulsa_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clissnotaavulsatomador      = new cl_issnotaavulsatomador();
 $clissnotaavulsatomadorcgm   = new cl_issnotaavulsatomadorcgm();
@@ -231,7 +231,7 @@ if (isset($post->q54_inscr) and $post->q54_inscr !=''){
 </table>
     <center>
 	<?
-	include("forms/db_frmissnotaavulsatomadoralt.php");
+	include(modification("forms/db_frmissnotaavulsatomadoralt.php"));
 	?>
     </center>
 </body>

@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orctiporec_classe.php");
-include("classes/db_orctiporecconvenio_classe.php");
-require("libs/db_libdicionario.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_orctiporecconvenio_classe.php"));
+require(modification("libs/db_libdicionario.php"));
 $clorctiporec = new cl_orctiporec;
   /*
 $clorctiporecconvenio = new cl_orctiporecconvenio;
@@ -72,7 +72,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorctiporec.php");
+	include(modification("forms/db_frmorctiporec.php"));
 	?>
     </center>
 	</td>
@@ -97,7 +97,7 @@ if(isset($chavepesquisa) && $o15_tipo == 2){
   <script>
       function js_db_libera(){
          parent.document.formaba.orctiporecconvenio.disabled=false;
-         top.corpo.iframe_orctiporecconvenio.location.href='orc1_orctiporecconvenio001.php?o16_orctiporec=".@$o15_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orctiporecconvenio.location.href='orc1_orctiporecconvenio001.php?o16_orctiporec=".@$o15_codigo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('orctiporecconvenio');";

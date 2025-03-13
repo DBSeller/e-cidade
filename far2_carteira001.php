@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_far_controle_classe.php");
-include("classes/db_far_controlemed_classe.php");
-include("classes/db_far_retiradaitens_classe.php");
-include("classes/db_cgs_und_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_far_controle_classe.php"));
+include(modification("classes/db_far_controlemed_classe.php"));
+include(modification("classes/db_far_retiradaitens_classe.php"));
+include(modification("classes/db_cgs_und_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clfar_controle = new cl_far_controle;
 $clfar_controlemed = new cl_far_controlemed;
@@ -42,7 +42,7 @@ $nome=db_getsession("DB_instit");
 $ano=date("Y");
 $hoje=date("Y-m-d",db_getsession("DB_datausu"));
 $sqlpref  = "select nomeinst from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref = pg_exec($sqlpref);
+$resultpref = db_query($sqlpref);
 db_fieldsmemory($resultpref,0);
 
 
@@ -99,12 +99,12 @@ $pdf->text( $pdf->getX()+22, $pdf->getY()+21, "Carteirinha de Medicamento");
 $pdf->setfont('arial','',10);
 $pdf->text( $pdf->getX()+35, $pdf->getY()+25, $ano);
 $pdf->setfont('arial','b',7);
-$pdf->text( $pdf->getX()+3, $pdf->getY()+30, "CGS:".$fa11_i_cgsund."-".$z01_v_nome);
-$pdf->text( $pdf->getX()+3, $pdf->getY()+35, "Mãe:".$z01_v_mae);
-$pdf->text( $pdf->getX()+3, $pdf->getY()+40, "Nasc:".db_formatar($z01_d_nasc,'d'));
-$pdf->text( $pdf->getX()+60, $pdf->getY()+40, "Sexo:".$z01_v_sexo);
-$pdf->text( $pdf->getX()+3, $pdf->getY()+45, "Cartão SUS:".$z01_c_cartaosus);
-$pdf->text( $pdf->getX()+3, $pdf->getY()+50, "Data de Validade: 31/12/".$ano);
+$pdf->text( $pdf->getX()+3, $pdf->getY()+30, "CGS:".$nomeCgs);
+$pdf->text( $pdf->getX()+3, $pdf->getY()+39, "Mãe:".$z01_v_mae);
+$pdf->text( $pdf->getX()+3, $pdf->getY()+44, "Nasc:".db_formatar($z01_d_nasc,'d'));
+$pdf->text( $pdf->getX()+60, $pdf->getY()+44, "Sexo:".$z01_v_sexo);
+$pdf->text( $pdf->getX()+3, $pdf->getY()+49, "Cartão SUS:".$z01_c_cartaosus);
+$pdf->text( $pdf->getX()+3, $pdf->getY()+54, "Data de Validade: 31/12/".$ano);
 
 $pdf->rect( $pdf->getX()+95, $pdf->getY()+10, 95, 45, "D");
 $pdf->setfont('arial','b',7);
@@ -117,10 +117,13 @@ $pdf->text( $pdf->getX()+165, $pdf->getY()+18, "Freq.");
 $pdf->text( $pdf->getX()+173, $pdf->getY()+18, "Programa");
 $pdf->text( $pdf->getX()+98, $pdf->getY()+46, "Obs:");
 
+
+
 $altura+=21;
 for($s=0; $s < $clfar_controlemed->numrows; $s++){	
    	 db_fieldsmemory($result,$s);
 	  if($cont==8){
+
 	   //$pdf->ln(5);
        //$pdf->addpage('P');
 	   $pdf->rect( $pdf->getX(), $pdf->getY()+80, 95, 45, "D");
@@ -132,12 +135,14 @@ for($s=0; $s < $clfar_controlemed->numrows; $s++){
        $pdf->setfont('arial','',10);
        $pdf->text( $pdf->getX()+35, $pdf->getY()+95, $ano);
        $pdf->setfont('arial','b',7);
-       $pdf->text( $pdf->getX()+3, $pdf->getY()+100, "CGS:".$fa11_i_cgsund."-".$z01_v_nome);
-       $pdf->text( $pdf->getX()+3, $pdf->getY()+106, "Mãe:".$z01_v_mae);
-       $pdf->text( $pdf->getX()+3, $pdf->getY()+110, "Nasc:".db_formatar($z01_d_nasc,'d'));
-       $pdf->text( $pdf->getX()+60, $pdf->getY()+110, "Sexo:".$z01_v_sexo);
-       $pdf->text( $pdf->getX()+3, $pdf->getY()+115, "Cartão SUS:".$z01_c_cartaosus);
-       $pdf->text( $pdf->getX()+3, $pdf->getY()+120, "Data de Validade: 31/12/".$ano);
+
+       $pdf->text( $pdf->getX()+3, $pdf->getY()+100, "CGS:".$z01_v_nome);
+       $pdf->text( $pdf->getX()+3, $pdf->getY()+109, "Mãe:".$z01_v_mae);
+       $pdf->text( $pdf->getX()+3, $pdf->getY()+114, "Nasc:".db_formatar($z01_d_nasc,'d'));
+       $pdf->text( $pdf->getX()+60, $pdf->getY()+114, "Sexo:".$z01_v_sexo);
+       $pdf->text( $pdf->getX()+3, $pdf->getY()+120, "Cartão SUS:".$z01_c_cartaosus);
+       $pdf->text( $pdf->getX()+3, $pdf->getY()+125, "Data de Validade: 31/12/".$ano);
+
 	   $pdf->rect( $pdf->getX()+95, $pdf->getY()+10, 95, 45, "D");
 	   $pdf->setfont('arial','b',7);
 	   $pdf->rect( $pdf->getX()+95, $pdf->getY()+80, 95, 45, "D");

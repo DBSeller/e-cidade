@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -196,7 +196,7 @@ function js_getPedidosTfd(sPedidos) {
 
 function js_retornogetPedidosTfd(oRetorno) {
 	  
-  oRetorno          = eval("("+oRetorno.responseText+")");
+  oRetorno          = JSON.parse(oRetorno.responseText);
 	if(oRetorno.iStatus != 1) {
 
 	  alert('Pedido TFD não encontrado.');
@@ -527,7 +527,7 @@ function js_mandarDados(oParam) {
 
 function js_retornoMandaDados(oRetorno) {
 
-	oRetorno = eval("("+oRetorno.responseText+")");
+	oRetorno = JSON.parse(oRetorno.responseText);
   if	(oRetorno.iStatus != 2) {
 
 	  if (oRetorno.aSaidaCadastrada.length > 0) {

@@ -1,6 +1,7 @@
-<?
-include("assinatura.php");
-
+<?php
+if ( !class_exists('cl_assinatura') ) {
+  require_once(modification("fpdf151/assinatura.php"));
+}
 /**
  * Classe para impressão de modelos pdf
  *
@@ -113,6 +114,7 @@ class db_impcarne extends cl_assinatura {
   var $qtdcarne     = null;
   var $dtparapag    = null;
   var $confirmdtpag = 'f';
+  var $capa         = 'f';
 
   var $tipodebito= 'TIPO DE DÉBITO';
   var $tipoinscr1= null;
@@ -677,12 +679,71 @@ var $it01_data          = "";
 var $linhasitbiruralcaract= "";
 var $outrostransmitentes="";
 var $it01_obs           ="";
+var $aTaxas = array();//array da taxas do ITBI
+var $aTaxas2 = array();//array da taxas do ITBI
+var $numero_emissoes = 1;
+var $transmitente = "";
+var $fracaoIdeal = 0;
+
 
 // VARIAVEIS DA CAPA DE PROCESSO
 var $result_vars;
 
 
 var $lUtilizaModeloDefault = true;
+
+  /**
+   * Variáveis de controle da marca d'agua
+   */
+  private $lWaterMark = false;
+  private $aWaterMark = array();
+
+  /**
+   * Limpa os dados da marca d'agua
+   */
+  public function clearWaterMark() {
+
+    $this->lWaterMark = false;
+    $this->aWaterMark = array();
+  }
+
+  /**
+   * Seta uma marca d'agua
+   *
+   * @param integer $x - Posição inicial
+   * @param integer $y - Posição inicial
+   * @param string  $sTexto - Texto a ser impresso
+   * @param float   $nDirection - Ângulo de inclinação do texto
+   * @param integer $iFontSize - Tamanho da fonte
+   * @param integer $iFillColor - Cor de preenchimento
+   */
+  public function setWaterMark($x, $y, $sTexto, $nDirection, $iFontSize = 150, $iFillColor = 178) {
+
+    $this->lWaterMark = true;
+    $this->aWaterMark = array(
+        'x' => $x,
+        'y' => $y,
+        'text' => $sTexto,
+        'direction' => $nDirection,
+        'font' => $iFontSize,
+        'fillcolor' => $iFillColor
+      );
+  }
+
+  /**
+   * Imprime a marca d'agua na página atual
+   */
+  public function printWaterMark() {
+
+    if (!$this->lWaterMark) {
+      return false;
+    }
+
+    $this->objpdf->SetFont('Arial', 'B', $this->aWaterMark['font']);
+    $this->objpdf->SetFillColor($this->aWaterMark['fillcolor']);
+    $this->objpdf->TextWithRotation($this->aWaterMark['x'], $this->aWaterMark['y'], $this->aWaterMark['text'], $this->aWaterMark['direction']);
+  }
+
 //************************************************************//
 
 // variaveis para a nota de empenho
@@ -691,7 +752,7 @@ var $lUtilizaModeloDefault = true;
  * @param object  $objpdf    - Instancia da classe FPDF
  * @param integer $impmodelo - Numero do Modelo a ser utilizado.
  */
-  function db_impcarne($objpdf,$impmodelo){
+  function __construct(&$objpdf,$impmodelo){
     $this->objpdf = $objpdf;
     $this->impmodelo = $impmodelo;
   }
@@ -767,6 +828,10 @@ var $lUtilizaModeloDefault = true;
       $this->objpdf->addpage();
       $pagina += 1;
       $muda_pag = true;
+
+      if ($this->lWaterMark) {
+        $this->printWaterMark();
+      }
 
       $this->objpdf->settopmargin(1);
       $xlin = 20;
@@ -1266,25 +1331,43 @@ var $lUtilizaModeloDefault = true;
 
  function imprime(){
 
- 	$sSqlConfig  = "select db21_codcli from db_config where prefeitura is true";
+ 	$sSqlConfig  = "select db21_codcli, cgc from db_config where prefeitura is true";
  	$rsSqlConfig = db_query($sSqlConfig);
- 	$sCodCliente = pg_fetch_object($rsSqlConfig,0);
+  $sCodCliente = pg_fetch_object($rsSqlConfig,0);
+  $sCgcCliente = $sCodCliente->cgc;
  	$sCodCliente = $sCodCliente->db21_codcli;
  	$sCodCliente = str_pad($sCodCliente,6,0,STR_PAD_LEFT);
  	$sInstit     = str_pad(db_getsession("DB_instit"), 2,0,STR_PAD_LEFT);
+
+  /** Extensao : Inicio [guia-itbi-recibo-mensagem-modelo-codcli15] */
+  /** Extensao : Fim [guia-itbi-recibo-mensagem-modelo-codcli15] */
+
+  // verifica se é Paty do Alferes
+  if ($sCgcCliente == '31844889000117') {
+    $this->casadec_medicamentos = 4;
+  }
 
  	/**
  	 * Valida se existe modelo especifico
  	 */
  	if (file_exists("fpdf151/impmodelos/especificos/mod_imprime_especifico_{$this->impmodelo}_{$sCodCliente}{$sInstit}.php") ) {
- 		include ("impmodelos/especificos/mod_imprime_especifico_{$this->impmodelo}_{$sCodCliente}{$sInstit}.php");
- 	}
+    // Verifica código de cliente, se for Bagé, utiliza apenas mod_imprime_especifico
+    if ($sCodCliente == '000015') {
+      $this->lUtilizaModeloDefault = false;
+    }
+ 		include(modification(Modification::getFile("fpdf151/impmodelos/especificos/mod_imprime_especifico_{$this->impmodelo}_{$sCodCliente}{$sInstit}.php")));
+     }
+    if (file_exists("fpdf151/impmodelos/especificos/mod_imprime_especifico_{$this->impmodelo}_{$sCgcCliente}{$sInstit}.php") ) {
+        include(modification(Modification::getFile("fpdf151/impmodelos/especificos/mod_imprime_especifico_{$this->impmodelo}_{$sCgcCliente}{$sInstit}.php")));
+    }
 
  	/**
  	 * Valida se utiliza modelo default junto com especifico
  	 */
+  // echo("impmodelo = " . $this->impmodelo); die;
  	if ($this->lUtilizaModeloDefault) {
- 	  include("impmodelos/mod_imprime".$this->impmodelo.".php");
+
+ 	  include(modification(Modification::getFile("fpdf151/impmodelos/mod_imprime".$this->impmodelo.".php")));
  	}
 
  }

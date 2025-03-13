@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -42,7 +42,7 @@ $clrotulo->label("pc23_obs");
            <?=@$Lpc25_orcamitem?>
         </td>
         <td>
-        <?
+        <?php
         db_input('pc25_orcamitem',8,$Ipc25_orcamitem,true,'text',3);
         db_input('sol',10,0,true,'hidden',3);
         db_input('orcamento',10,0,true,'hidden',3);
@@ -54,7 +54,7 @@ $clrotulo->label("pc23_obs");
     	<strong>Fornecedor cotado:</strong>
         </td>
         <td>
-        <?
+        <?php
         $result_forneccotado = $clpcorcamjulg->sql_record($clpcorcamjulg->sql_query(null,null,"pc24_orcamforne as pc24_orcamforne_ant,z01_nome as z01_nome_ant","","pc24_orcamitem=$pc25_orcamitem and pc24_pontuacao=1"));
         if($clpcorcamjulg->numrows>0){
           db_fieldsmemory($result_forneccotado,0);
@@ -69,7 +69,7 @@ $clrotulo->label("pc23_obs");
     	<strong>Obs do item:</strong>
         </td>
         <td>
-        <?
+        <?php
         db_input('pc23_obs',51,$Ipc23_obs,true,'text',3);
         ?>
         </td>
@@ -79,7 +79,7 @@ $clrotulo->label("pc23_obs");
     	<strong>Fornecedor para troca:</strong>
         </td>
         <td>
-        <?
+        <?php
         $result_fornec = $clpcorcamjulg->sql_record($clpcorcamjulg->sql_query(null,null,"pc24_orcamforne,z01_nome","pc24_orcamforne","pc24_orcamitem=$pc25_orcamitem and pc24_pontuacao<>1"));
         db_selectrecord("pc24_orcamforne",$result_fornec,true,1,"","","","","js_mostravalor(this.value);");
         db_input('pc23_valor',13,$Ipc23_valor,true,'text',3);
@@ -91,7 +91,7 @@ $clrotulo->label("pc23_obs");
            <?=@$Lpc25_motivo?>
         </td>
         <td>
-        <?
+        <?php
         db_textarea('pc25_motivo',3,48,$Ipc25_motivo,true,'text',1);
         ?>
         </td>
@@ -110,7 +110,7 @@ function js_voltar(){
   qry+= "&sol="+document.form1.sol.value;
   document.location.href = "com1_pcorcamtroca001.php?"+qry;
 }
-<?
+<?php
 $result_valores = $clpcorcamval->sql_record($clpcorcamval->sql_query_file(null,$pc25_orcamitem,"pc23_orcamforne,pc23_valor,pc23_obs","pc23_orcamforne"));
 for($i=0;$i<$clpcorcamval->numrows;$i++){
   db_fieldsmemory($result_valores,$i);
@@ -119,8 +119,8 @@ for($i=0;$i<$clpcorcamval->numrows;$i++){
 }
 ?>
 function js_mostravalor(valor){
-  document.form1.pc23_valor.value = arr_valores[valor];
-  document.form1.pc23_obs.value = arr_obsss[valor];
+  document.form1.pc23_valor.value = arr_valores[valor] === undefined ? '' : arr_valores[valor];
+  document.form1.pc23_obs.value = arr_obsss[valor] === undefined ? '' : arr_valores[valor];
 }
 js_mostravalor(document.form1.pc24_orcamforne.value);
 </script>

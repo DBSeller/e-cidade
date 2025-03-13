@@ -67,7 +67,7 @@ db_input('sd70_c_nome',60,$Isd70_c_nome,true,'text',$db_opcao,"")
     </td>
     <td>
       <?
-       include("classes/db_sau_agravo_classe.php");
+       include(modification("classes/db_sau_agravo_classe.php"));
        $clsau_agravo = new cl_sau_agravo;
        $result = $clsau_agravo->sql_record($clsau_agravo->sql_query("","*"));
        db_selectrecord("sd70_i_agravo",$result,true,$db_opcao);
@@ -92,7 +92,7 @@ db_select('sd70_c_sexo',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_cid','func_sau_cid.php?funcao_js=parent.js_preenchepesquisa|sd70_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_cid','func_sau_cid.php?funcao_js=parent.js_preenchepesquisa|sd70_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_cid.hide();

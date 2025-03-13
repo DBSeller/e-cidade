@@ -47,7 +47,7 @@ if(isset($dados)){
   $d04_vlrcal="";
   $d04_vlrval="";
   $d04_mult=""; 
-  $d04_forma=""; 
+  //$d04_forma=""; 
   $d04_vlrobra=""; 
 }
 ?>
@@ -173,42 +173,58 @@ function js_trocarua(valor){
   document.form1.d02_valorizacao.value = valorizacao;
   js_pesquisad02_codigo(false);
 }
+
+
+
+
+
+
+
 </script>
+
+
+<style>
+     #d40_codigo {
+       width:100px;
+     }
+     #d40_codigodescr {
+       width:370px;
+     }
+</style>  
+
 
 
 <form name="form1" method="post" action="">
 <center>
 
-<table border='0'>
-<tr>    
-
-<td width="70%">
-	    <td width="100%" colspan="2" align="center">
-	      <fieldset>
+<fieldset style="width:815px; margin-top: 10px;">
           <Legend>
             <b>Dados da contribuição</b>
           </legend>
 
-	       <table border='0' width="100%">
-           <tr>
-             <td nowrap title="<?=@$Td02_contri?>" width="25%">
-                <input name="dados" type="hidden">
-                <input name="numedital" type="hidden">
-                <?=@$Ld02_contri?>
-             </td>
-             <td> 
-               <?
-                 db_input('d02_contri',10,$Id02_contri,true,'text',3,"")
-               ?>
-             </td>
-           </tr>
-           <tr>
-             <td nowrap title="<?=@$Td02_codedi?>">
+   <table align="left" >
+
+
+     <tr>
+       <td title="<?=@$Td02_contri?>" >
+         <input name="dados" type="hidden">
+         <input name="numedital" type="hidden">
+           <?=@$Ld02_contri?>
+       </td>
+       <td> 
+          <?
+             db_input('d02_contri',10,$Id02_contri,true,'text',3,"")
+          ?>
+       </td>
+    </tr>
+
+    <tr>
+         <td nowrap title="<?=@$Td02_codedi?>">
                 <?
                 db_ancora(@$Ld02_codedi,"js_pesquisad02_codedi(true);",$db_opcao);
                 ?>
-             	</td>
-             <td> 
+       	</td>
+         <td> 
                <?
                  if(empty($d02_codedi)|| isset($d02_codedi) && $d02_codedi==""){
                    $d01_descr="";  
@@ -217,9 +233,11 @@ function js_trocarua(valor){
          
                  db_input('d01_descr',50,$Id01_descr,true,'text',3,'');
                ?>
-              </td>
-           </tr>
-           <?
+       </td>
+    </tr>
+    
+
+    <?
               if (isset($numedital)&& $numedital!="" && $d02_codedi!="") {
                 if ($db_opcao==1) {
                   $result=$cleditalproj->sql_record($cleditalproj->sql_query($numedital,"","d40_codigo,d40_trecho,d40_codlog,j14_nome,d40_profun","","d40_codigo not in (select d11_codproj from editalruaproj)  and d10_codedi=$numedital"));
@@ -264,6 +282,14 @@ function js_trocarua(valor){
                 }                
               }
            ?>	  
+
+
+
+
+
+
+
+
 	         <tr>
 	         <?
 	           if(isset($numrows2) && $numrows2>0){
@@ -289,6 +315,9 @@ function js_trocarua(valor){
 	           ?>
 	           </td>
 	         </tr>
+
+
+
 	         <tr>
 	           <td nowrap title="<?=@$Td02_profun?>">
 	            <?=$Ld02_profun?>
@@ -316,26 +345,29 @@ function js_trocarua(valor){
 	             db_input('d02_valorizacao',10,$Id02_valorizacao,true,'text',$db_opcao);
            	 ?>
 	           </td>   
-	         </tr> 
-	       </table>
-       </fieldset>
-     </td>	 
+           </tr> 
+           
+   
+
+
 	     <?
    		 $d02_autori="f";
    		 db_input('d02_autori',3,$Id02_autori,true,'hidden',3,'')
    		 ?>
-  </td>
-</tr>
+      
 
-<tr>    
-  <td>
-	  <td colspan="2" align="center">
-	    <fieldset>
+</table>
+</fieldset>
+
+
+<fieldset style="width:700px; margin-top: 10px;">
         <Legend>
           <b>Selecione os serviços</b>
         </legend>
-	    <table border="0">
-				<tr>
+<table align="left" >
+
+
+<tr>
 				  <td nowrap title="<?=@$Td03_tipos?>">
 				   <?
 				     db_ancora(@$Ld03_tipos,"js_tipos(true);",$db_opcao);
@@ -409,31 +441,31 @@ function js_trocarua(valor){
           </td>
         </tr>
         <tr>
-     		  <td align="right" colspan='4'>
+     		  <td align="center" colspan='2'>
 	     	    <input name="lanca" type="button" value="Lançar">
 	   	    </td>
         </tr>
 
         <tr>   
-				  <td align="center" colspan="4" width="100%"> 
+				  <td align="center" colspan="3" width="100%"> 
 				    <div id="id_div" <?=(!isset($dados)?'style="visibility:hidden"':'')?>>  
          			<iframe name="tiposerv" id="tiposerv" src="con1_editalrua004.php?db_opcao=<?=$db_opcao?><?=(isset($dados)?'&dados='.$dados:"")?>" width="100%" height="150">
 				      </iframe>
 				    </div>
 				  </td>
 				</tr>
-   	  </table>
-    </fieldset>
-  </td>	 
-</td>
-</tr>
+
 </table>
+
+</fieldset>
+
 
 </center>
 
-<input name="db_opcao" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"  <?=($db_botao==false?"disabled":"")?> <?=($db_opcao!=3?"onclick='return js_confirma()'":"")?> >
-<input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
-
+<div style="margin-top:10px;">
+  <input name="db_opcao" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"  <?=($db_botao==false?"disabled":"")?> <?=($db_opcao!=3?"onclick='return js_confirma()'":"")?> >
+  <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
+</div>
 </form>
 <script>
 <?
@@ -464,9 +496,9 @@ function js_controlaFormaCalculo(sValor) {
 function js_tipos(mostra){
   document.form1.lanca.onclick = "";
   if (mostra==true) {
-    js_OpenJanelaIframe('top.corpo','db_iframet','func_editaltipo.php?funcao_js=parent.js_mostraeditaltipos1|d03_tipos|d03_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframet','func_editaltipo.php?funcao_js=parent.js_mostraeditaltipos1|d03_tipos|d03_descr','Pesquisa',true);
   } else {
-    js_OpenJanelaIframe('top.corpo','db_iframet','func_editaltipo.php?pesquisa_chave='+document.form1.d03_tipos.value+'&funcao_js=parent.js_mostraeditaltipos','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframet','func_editaltipo.php?pesquisa_chave='+document.form1.d03_tipos.value+'&funcao_js=parent.js_mostraeditaltipos','Pesquisa',false);
   }
 }
 function js_mostraeditaltipos(chave,erro){
@@ -490,9 +522,9 @@ function js_pesquisad02_codedi(mostra){
   document.form1.d03_tipos.disabled=true;
   document.form1.d02_codigo.disabled=true;
   if (mostra==true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe02','func_edital.php?funcao_js=parent.js_mostraedital1|d01_codedi|d01_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe02','func_edital.php?funcao_js=parent.js_mostraedital1|d01_codedi|d01_descr','Pesquisa',true);
   } else {
-    js_OpenJanelaIframe('top.corpo','db_iframe02','func_edital.php?pesquisa_chave='+document.form1.d02_codedi.value+'&funcao_js=parent.js_mostraedital','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe02','func_edital.php?pesquisa_chave='+document.form1.d02_codedi.value+'&funcao_js=parent.js_mostraedital','Pesquisa',false);
   }
 }
 function js_mostraedital(chave,erro) {
@@ -558,9 +590,9 @@ function js_mostraedital1(chave1,chave2){
 
 function js_pesquisad02_codigo(mostra){
   if (mostra==true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe03','func_ruas.php?funcao_js=parent.js_mostraruas1|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe03','func_ruas.php?funcao_js=parent.js_mostraruas1|0|1','Pesquisa',true);
   } else {
-    js_OpenJanelaIframe('top.corpo','db_iframe03','func_ruas.php?pesquisa_chave='+document.form1.d02_codigo.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe03','func_ruas.php?pesquisa_chave='+document.form1.d02_codigo.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
   }
 }
 function js_mostraruas(chave,erro){
@@ -576,7 +608,7 @@ function js_mostraruas1(chave1,chave2){
   db_iframe.hide03();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe04','func_editalrua.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe04','func_editalrua.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe04.hide();
@@ -594,4 +626,5 @@ if (($db_opcao==33 || $db_opcao==22) && empty($calcnops) && empty($chavepesquisa
   echo "\njs_pesquisa();";
 }
 ?>
+
 </script>

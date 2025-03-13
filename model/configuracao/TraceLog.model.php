@@ -1,33 +1,33 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
- 
+
 /**
  * TraceLog
- * @author Rafael Serpa Nery  <rafael.nery@dbseller.com.br> 
+ * @author Rafael Serpa Nery  <rafael.nery@dbseller.com.br>
  */
 class TraceLog {
 
@@ -36,34 +36,36 @@ class TraceLog {
    */
   private $lActive          = false;
   private $lShowAccount     = false;
+  private $lShowDefault     = false;
   private $lShowSourceInfo  = false;
   private $lShowFunctionName= false;
   private $lShowTime        = true;
   private $lShowBackTrace   = false;
-  private $sDiretorio       = "./";
-  
+  private $sDiretorio       = ECIDADE_PATH;
+
   /**
    * Caminho do Arquivo do Tracelog
    */
-  private $sFilePath        = null;
-
+  private $sFilePath = null;
+  private $aComandos = array();
 
   private static $oInstanciaTraceLog;
 
   /**
    * Construtor da Classe
    * @access private
+   * @param string $sDiretorio
    */
-  private function __construct($sDiretorio = "./") { 
-    
+  private function __construct($sDiretorio = ECIDADE_PATH) {
+
   	$this->sDiretorio = $sDiretorio;
-  	
-  	$this->sFilePath = "tmp/TRACELOG_FILE_".db_getsession('DB_login', false)."_".date('Ymd',db_getsession('DB_datausu',false)).".log";
+
+  	$this->sFilePath = "tmp/TRACELOG_FILE_DBSeller_".date('Ymd').".log";
     $this->persistSession();
     return;
   }
 
-  
+
   /**
    * Salva objeto na sessão
    * @access public
@@ -78,9 +80,9 @@ class TraceLog {
    * Valida se o tracelog esta ativo
    *
    * @access public
-   * @return void
+   * @return boolean
    */
-  public function isActive() { 
+  public function isActive() {
     return $this->lActive;
   }
 
@@ -106,7 +108,7 @@ class TraceLog {
   /**
    * Escreve no arquivo
    *
-   * @param mixed $sQuery
+   * @param mixed $sMessage
    * @access public
    * @return void
    */
@@ -119,9 +121,9 @@ class TraceLog {
   }
 
   /**
-   * Retorna o caminho do arquvo   
+   * Retorna o caminho do arquvo
    * @access public
-   * @return void
+   * @return string
    */
   public function getFilePath() {
     return $this->sDiretorio.$this->sFilePath;
@@ -129,15 +131,16 @@ class TraceLog {
 
   /**
    * Verifica se é mostrado
-   * 
-   * @param mixed $sProperty
+   *
+   * @param mixed$sProperty
    * @access public
-   * @return void
+   * @return boolean
+   * @throws ParameterException
    */
   public function isDisplayed( $sProperty ) {
 
     if ( !isset($this->{"lShow".$sProperty}) ) {
-      throw new ParameterException("Propriedade {$sProperty} não encontrada.");      
+      throw new ParameterException("Propriedade {$sProperty} não encontrada.");
     }
 
     return $this->{"lShow".$sProperty};
@@ -145,25 +148,22 @@ class TraceLog {
 
   /**
    * Define uma propriedade do tracelog
-   *
    * @param mixed $sProperty
    * @param mixed $sValue
-   * @access public
-   * @return void
+   * @throws ParameterException
    */
   public function setProperty( $sProperty, $sValue ) {
 
     if ( !isset($this->{$sProperty}) ) {
-      throw new ParameterException("Propriedade {$sProperty} não encontrada.");      
+      throw new ParameterException("Propriedade {$sProperty} não encontrada.");
     }
     $this->{$sProperty} = $sValue;
     $this->persistSession();
     return;
   }
-  
+
   /**
-   * 
-   * 
+   * @param $sDiretorio
    */
   public function setDiretorio($sDiretorio) {
   	$this->sDiretorio = $sDiretorio;
@@ -197,14 +197,14 @@ class TraceLog {
       if ( $this->lShowFunctionName ) {
         $sBackTrace .= "({$sFunction})";
       }
-      $aBackTrace[] = $sBackTrace;
 
+      $aBackTrace[] = $sBackTrace;
     }
 
     if ( $this->lShowBackTrace ) {
       return implode(" > ", $aBackTrace);
     }
-    
+
     return isset($aBackTrace[count($aBackTrace) - 1]) ? $aBackTrace[count($aBackTrace) - 1] : '';
   }
 
@@ -212,13 +212,13 @@ class TraceLog {
    * Monta a mensagem para ser enviada ao Tracelog
    *
    * @param mixed $sSql
-   * @param mixed $lErro
+   * @param boolean $lErro
    * @access public
    * @return void
    */
   public function makeMessage($sSql, $lErro) {
 
-    if ( $this->lShowAccount ) {
+    if ( !$this->lShowAccount ) {
 
       $aWordsBlock = array(
         "db_acount",
@@ -240,24 +240,57 @@ class TraceLog {
       }
     }
 
-    $sInfo       = TraceLog::getFormatedBacktrace( debug_backtrace() );
-    $sFlag       = $lErro ? "ERRO" : "INFO";
-    $sData       = date("d/m/Y - H:i:s");
-    $sSql        = str_replace("\n","",$sSql);
-    $sSql        = preg_replace("/\s+/", " ", $sSql);
-    $sMensagem   = "[";
-    $sMensagem  .= "$sFlag";   
-    if ( $this->lShowSourceInfo || $this->lShowBackTrace ) {
-      $sMensagem  .= " - $sInfo";   
-    }
-    
-    if ( $this->lShowTime ) {
-      $sMensagem  .= " | $sData";   
-    }
+    $this->aComandos[] = 'begin';
+    $this->aComandos[] = 'commit';
+    $this->aComandos[] = 'rollback';
 
-    $sMensagem  .= "] ";
-    $sMensagem  .= trim($sSql);
-    $sMensagem  .= "\n";
-    $this->write($sMensagem);
+    foreach( $this->aComandos as $sComando ) {
+
+      if( !$this->lShowDefault ) {
+
+        $aRegistrosPadrao = array( 'db_itensmenu', 'pg_backend_pid', 'ultimaversao', 'ultimarelease', 'pg_stat_activity', 'usapcasp' );
+        foreach( $aRegistrosPadrao as $sRegistro ) {
+
+          $mRegistro = strstr(strtolower($sSql), $sRegistro);
+          if( $mRegistro ) {
+            return;
+          }
+        }
+      }
+
+      $mComando = strstr(strtolower($sSql), $sComando);
+
+      if (is_string($mComando)) {
+
+        $sInfo      = TraceLog::getFormatedBacktrace(debug_backtrace());
+        $sFlag      = $lErro ? "ERRO" : "INFO";
+        $sData      = date("d/m/Y - H:i:s");
+        $sSql       = str_replace("\n", "", $sSql);
+        $sSql       = preg_replace("/\s+/", " ", $sSql);
+        $sMensagem  = "[";
+        $sMensagem .= "$sFlag";
+
+        if ($this->lShowSourceInfo || $this->lShowBackTrace) {
+          $sMensagem .= " - $sInfo";
+        }
+
+        if ($this->lShowTime) {
+          $sMensagem .= " | $sData";
+        }
+
+        $sMensagem .= "] ";
+        $sMensagem .= trim($sSql . ';');
+        $sMensagem .= "\n";
+        $this->write($sMensagem);
+      }
+    }
+  }
+
+  /**
+   * Retorna os comandos exibidos no tracelog
+   * @return array
+   */
+  public function getComandos() {
+    return $this->aComandos;
   }
 }

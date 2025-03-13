@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_cflicita_classe.php");
-include("dbforms/db_classesgenericas.php");
+include(modification("classes/db_cflicita_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcflicita = new cl_cflicita;
 $clliclicita->rotulo->label();

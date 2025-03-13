@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 //MODULO: educação
-require_once("dbforms/db_classesgenericas.php");
-require_once("libs/db_jsplibwebseller.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cltrocaserie->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -159,7 +159,7 @@ function js_pesquisaed101_i_aluno(mostra) {
 
   if (mostra==true) {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_aluno', 'func_alunoavanco.php?'+
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aluno', 'func_alunoavanco.php?'+
                         'funcao_js=parent.js_mostraaluno1|ed60_i_aluno|ed47_v_nome|'+
                         'ed60_i_turma|ed57_c_descr|ed11_c_descr|ed11_i_codigo|'+
                         'ed60_d_datamatricula|ed52_d_inicio|ed52_d_fim|db_ed60_i_codigo',
@@ -170,7 +170,7 @@ function js_pesquisaed101_i_aluno(mostra) {
 
     if (document.form1.ed101_i_aluno.value != '') {
 
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_aluno', 'func_alunoavanco.php?pesquisa_chave='+
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aluno', 'func_alunoavanco.php?pesquisa_chave='+
                           document.form1.ed101_i_aluno.value+'&funcao_js=parent.js_mostraaluno',
                           'Pesquisa', false
                          );
@@ -257,7 +257,7 @@ function js_pesquisaed101_i_turmadest(mostra) {
 
   } else {
 
-    js_OpenJanelaIframe('top.corpo', 'db_iframe_turma', 'func_turmaavanco.php?aluno='+
+    js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_turma', 'func_turmaavanco.php?aluno='+
                         document.form1.ed47_v_nome.value+'&codaluno='+
                         document.form1.ed101_i_aluno.value+'&turma='+
                         document.form1.ed101_i_turmaorig.value+

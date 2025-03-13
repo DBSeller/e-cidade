@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,29 +25,31 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_testada_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_testpri_classe.php");
-include("classes/db_face_classe.php");
-include("classes/db_lote_classe.php");
-include("classes/db_carlote_classe.php");
-include("classes/db_lotedist_classe.php");
-include("classes/db_setor_classe.php");
-include("classes/db_loteam_classe.php");
-include("classes/db_loteloc_classe.php");
-include("classes/db_loteloteam_classe.php");
-include("classes/db_lotesetorfiscal_classe.php");
-include("classes/db_cfiptu_classe.php");
-include("classes/db_testadanumero_classe.php");
-include ("classes/db_tesinter_classe.php");
-include ("classes/db_tesinterlote_classe.php");
-
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
+/*
+include(modification("classes/db_testada_classe.php"));
+include(modification("classes/db_testpri_classe.php"));
+include(modification("classes/db_face_classe.php"));
+include(modification("classes/db_lote_classe.php"));
+include(modification("classes/db_carlote_classe.php"));
+include(modification("classes/db_lotedist_classe.php"));
+include(modification("classes/db_setor_classe.php"));
+include(modification("classes/db_loteam_classe.php"));
+include(modification("classes/db_loteloc_classe.php"));
+include(modification("classes/db_loteloteam_classe.php"));
+include(modification("classes/db_lotesetorfiscal_classe.php"));
+include(modification("classes/db_cfiptu_classe.php"));
+include(modification("classes/db_testadanumero_classe.php"));
+include(modification("classes/db_tesinter_classe.php"));
+include(modification("classes/db_tesinterlote_classe.php"));
+
+
 $cllotedist = new cl_lotedist;
 $clface = new cl_face;
 $cllote = new cl_lote;
@@ -125,7 +127,7 @@ if($replote==true){
    
    $j34_idbql=$cllote->j34_idbql;   
 //   die("select * from face where j37_face = $cartestpri");
-   $resultado=pg_exec("select * from face where j37_face = $cartestpri");
+   $resultado=db_query("select * from face where j37_face = $cartestpri");
    $j37_codigo=pg_result($resultado,0,3);  
    $cltestpri->j49_face=$cartestpri;
    $cltestpri->j49_codigo=$j37_codigo;
@@ -188,7 +190,7 @@ if($replote==true){
 */
 // 	exit;
 	 //=============================================
-
+/*
 
   $matriztesta = explode("x", $cartestada);
   for ($i = 0; $i < sizeof($matriztesta); $i++) {
@@ -289,6 +291,7 @@ if($replote==true){
   }
  }
 }
+*/
 ?>
 <html>
 <head>
@@ -307,13 +310,42 @@ if($replote==true){
     <td width="140">&nbsp;</td>
   </tr>
 </table>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmlote.php");
-	?>
+    <td height="430" align="left" valign="center" bgcolor="#CCCCCC"> 
+    <center> 
+    <table  border="0"  >
+    <tr>
+      <td align="center"><b>
+    ESTE MENU SERA DESATIVADO.<br><br><br>
+          </b>
+      </td>
+    </tr>
+    <tr>
+      <td>
+         UTILIZAR O MODULO CADASTRO, ITEM DE MENU PROCEDIMENTOS > MANUTENÇÃO DE ECôNOMIA > INCLUSÃO DE MATRÍCULA
+         <br>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      <?
+      $ano = db_getsession("DB_anousu");
+      $modulo= db_getsession("DB_modulo");
+      $mostra =  db_permissaomenu($ano, $modulo, 1721);
+     // echo "ano = $ano modulo = $modulo mostra = $mostra"; 
+      if($mostra==true){
+        echo "<br>CLICK AQUI PARA ACESSAR DIRETO ";
+        echo "<input name='acessar' type='button' value='Acessar' onClick='js_chama();' >";
+      }
+      ?>
+         
+         
+         
+      </td>
+    </tr>
+    </table>
+    
     </center>
 	</td>
   </tr>
@@ -324,6 +356,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 </body>
 </html>
 <?
+/*
 if($replote==true){
  
  echo "<script>";
@@ -354,10 +387,17 @@ if($cllote->erro_status=="0"){
 }else{
   $cllote->erro(true,false);
 };
-*/
+
 if(isset($incluir) || isset($alterar)){
 	if($trans_erro==false){
 	  $cllote->erro(true,true);
 	}
 }
+*/
 ?>
+<script >
+function js_chama(){
+  location.href = 'cad1_iptubase001.php' ;
+}
+
+</script>

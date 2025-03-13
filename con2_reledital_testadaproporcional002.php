@@ -1,41 +1,41 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-//include("fpdf151/scpdf.php");
-include("fpdf151/pdf.php");
-include("classes/db_contlot_classe.php");
-include("classes/db_contrib_classe.php");
-include("classes/db_contlotv_classe.php");
-include("classes/db_contricalc_classe.php");
-include("classes/db_editalserv_classe.php");
-include("classes/db_editalrua_classe.php");
-include("classes/db_editalruaproj_classe.php");
+//include(modification("fpdf151/scpdf.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("classes/db_contrib_classe.php"));
+include(modification("classes/db_contlotv_classe.php"));
+include(modification("classes/db_contricalc_classe.php"));
+include(modification("classes/db_editalserv_classe.php"));
+include(modification("classes/db_editalrua_classe.php"));
+include(modification("classes/db_editalruaproj_classe.php"));
 
-include("libs/db_utils.php");
+include(modification("libs/db_utils.php"));
 
 $clcontlot				= new cl_contlot;
 $clcontrib				= new cl_contrib;
@@ -70,10 +70,10 @@ $virgz = '';
 $lin    = 0;
 $pri    = false;
 $pripag = "true";
-//$pdf    = new SCPDF(); 
-$pdf    = new PDF(); 
-$pdf->Open(); 
-$pdf->AliasNbPages(); 
+//$pdf    = new SCPDF();
+$pdf    = new PDF();
+$pdf->Open();
+$pdf->AliasNbPages();
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(220);
 $pdf->SetFont('Arial','',11);
@@ -86,7 +86,7 @@ $sSqlConfig .= "   from db_config ";
 $sSqlConfig .= "        inner join db_uf on db12_uf = uf ";
 $sSqlConfig .= "  where codigo = ".db_getsession("DB_instit");
 
-$rsConfig    = pg_query($sSqlConfig);
+$rsConfig    = db_query($sSqlConfig);
 
 $objConfig   = db_utils::fieldsMemory($rsConfig,0);
 
@@ -103,22 +103,22 @@ $objConfig   = db_utils::fieldsMemory($rsConfig,0);
 (float)$nTotalTestada            = 0;
 (float)$nTotalAreaParcial        = 0;
 (float)$nTotalAreaCorrigida      = 0;
-(float)$iTotalRegistros          = 0; 
-(float)$nTotalValorVenal         = 0; 
-(float)$nTotalValorFinal         = 0; 
+(float)$iTotalRegistros          = 0;
+(float)$nTotalValorVenal         = 0;
+(float)$nTotalValorFinal         = 0;
 (float)$nTotalCusto              = 0;
 (float)$nTotalCustoInte          = 0;
-(float)$iTotalGeralRegistros     = 0; 
+(float)$iTotalGeralRegistros     = 0;
 (float)$nTotalGeralAreaCorrigida = 0;
-(float)$nTotalGeralValorVenal    = 0; 
+(float)$nTotalGeralValorVenal    = 0;
 (float)$nTotalGeralValorFinal    = 0;
 (float)$nTotalGeralCusto         = 0;
 (float)$nTotalGeralCustoInte     = 0;
 (float)$nTotalGeralAreaParcial   = 0;
 (float)$nTotalGeralTestada       = 0;
 (int)$iSequencial                = 0;
-        
-$pdf->AddPage("L"); 
+
+$pdf->AddPage("L");
 
 //
 // For percorrendo as listas do edital
@@ -132,7 +132,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
   $clcontrib->sql_record($clcontrib->sql_query_file($objEdital->d02_contri,"","d07_valor,d07_venal"));
 
   if($clcontrib->numrows>0){
-    
+
     $cabec  = "";
     $pri01  = "false";
     $propag = "true";
@@ -158,7 +158,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
     $sSqlMatricula .= "        inner join lote                on j34_idbql               = d05_idbql ";
     $sSqlMatricula .= "        left  join testada             on testada.j36_idbql       = lote.j34_idbql ";
     $sSqlMatricula .= "                                      and testada.j36_codigo      = {$objEdital->d02_codigo} ";
-    $sSqlMatricula .= "        left  join face                on face.j37_face           = testada.j36_face"; 
+    $sSqlMatricula .= "        left  join face                on face.j37_face           = testada.j36_face";
     $sSqlMatricula .= "                                      and face.j37_codigo         = {$objEdital->d02_codigo} ";
     $sSqlMatricula .= "        left  join testadanumero       on testadanumero.j15_idbql = lote.j34_idbql ";
     $sSqlMatricula .= "                                      and testadanumero.j15_face  = face.j37_face ";
@@ -174,8 +174,8 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
     $sSqlMatricula .= "  where d05_contri = {$objEdital->d02_contri} ";
     $sSqlMatricula .= "  order by j40_refant ";
 
-    $rsMatriculas = pg_query($sSqlMatricula) or die($sSqlMatricula);
-    
+    $rsMatriculas = db_query($sSqlMatricula) or die($sSqlMatricula);
+
     $sqlSomaTestada  = " select sum(d41_testada + d41_eixo) as total_testada  ";
     $sqlSomaTestada .= "   from contlot  ";
     $sqlSomaTestada .= "        inner join lote                on j34_idbql = d05_idbql ";
@@ -185,35 +185,35 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
     $sqlSomaTestada .= "                                      and d41_matric = j01_matric  ";
     $sqlSomaTestada .= "  where d05_contri = {$objEdital->d02_contri} ";
 
-    $rsSomaTestada   = pg_query($sqlSomaTestada) or die($sqlSomaTestada);
-    
+    $rsSomaTestada   = db_query($sqlSomaTestada) or die($sqlSomaTestada);
+
     if (pg_numrows($rsSomaTestada) == 0) {
       $total_testada = 0;
     } else {
       $objSomaTestada  = db_utils::fieldsMemory($rsSomaTestada,0);
       $total_testada   = $objSomaTestada->total_testada;
     }
-    
+
     $iNumrowsMatricula = pg_numrows($rsMatriculas);
 
     $linha = 60;
 
 
     if($pri01=="false"){// testa quando e uma nova contribucao
-    
-      
-      $pri01 = "true";	
-      $y     = $pdf->GetY(); 
-      
+
+
+      $pri01 = "true";
+      $y     = $pdf->GetY();
+
       $rsEditalServ  = $cleditalserv->sql_record($cleditalserv->sql_query($objEdital->d02_contri,"","(100 - d01_perc) as d01_perc ,d01_descr,d02_profun,d04_quant,d04_vlrcal,d04_vlrval,d04_mult,d04_vlrobra "));
       $objEditalServ = db_utils::fieldsMemory($rsEditalServ,0);
 
       $rsEditalRuaProj  = $cleditalruaproj->sql_record($cleditalruaproj->sql_query($objEdital->d02_contri,"","d40_trecho"));
 			$oEditalRuaProj   = db_utils::fieldsMemory($rsEditalRuaProj,0);
-			
-			
-			(float)$nLarguraRua = ($objEditalServ->d02_profun * 2); 
- 
+
+
+			(float)$nLarguraRua = ($objEditalServ->d02_profun * 2);
+
       $pripag="false";
 
       if ( $i > 0 ) {
@@ -224,16 +224,16 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
       $S = $pdf->lMargin;
       $Letra  = 'Times';
 
-      
-      // Altera o tamanho da celula rua e trecho 
+
+      // Altera o tamanho da celula rua e trecho
 			$iTamanhoTrecho = strlen($oEditalRuaProj->d40_trecho);
-			
+
 			if($iTamanhoTrecho < 50){
 				$iTamanhoTrecho = 50;
 			}
 			$iColunaInf = (190 - (round(1.6 * $iTamanhoTrecho)));
 			$iColTrech  = round(1.6 * $iTamanhoTrecho);
-			
+
 			$pdf->SetFillColor(220);
 
       if ($objGet->tipocusto == 2 ) {
@@ -242,7 +242,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
       if ( $tipocusto != '3' ) {
         $iQuebra = 1;
       }
-			
+
 			$pdf->SetFont($Letra,'B',7);
       $pdf->SetX($iColunaInf);
       $pdf->Cell(20,4,"Edital Nº"      ,1,0,"C",1);
@@ -267,7 +267,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
       $pdf->Cell(20,4,"Valor da Obra"  ,1,0,"C",1);
       $pdf->Cell(20,4,"Fator Resgate"  ,1,0,"C",1);
       $pdf->Cell(20,4,"Resgate"        ,1,1,"C",1);
-      
+
       $pdf->SetX($iColunaInf);
       $pdf->Cell(20,4,"1"																						 ,1,0,"C",0);
       //$pdf->Cell(60,4,$objEditalServ->d01_descr   ,1,0,"C",0);
@@ -276,7 +276,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
       $pdf->Cell(20,4,db_formatar( $objEditalServ->d04_vlrobra,'f')  ,1,0,"C",0);
       $pdf->Cell(20,4,db_formatar( $objEditalServ->d01_perc ,'f')    ,1,0,"C",0);
       $pdf->Cell(20,4,db_formatar( ( ( $objEditalServ->d04_vlrobra / 100) * $objEditalServ->d01_perc ),'f') ,1,1,"C",0);
-      
+
 
       $pdf->Ln(10);
       $pdf->SetFont($Letra,'B',12);
@@ -285,7 +285,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
 
       $propag="false";
 
-      
+
       $cabec="1";
       $rsContribuicao= $cleditalrua->sql_record($cleditalrua->sql_query($objEdital->d02_contri,"d02_codedi,j14_nome,d02_profun,d02_valorizacao"));
       $objContribuicao = db_utils::fieldsMemory($rsContribuicao,0);
@@ -293,9 +293,9 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
       //
       // Mostra o cabecalho
       //
-      cabecalhoRelatorio( &$pdf,$tipocusto );    
+      cabecalhoRelatorio( $pdf,$tipocusto );
 
-    }   
+    }
 
     $pri02="false";
 
@@ -308,10 +308,10 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
         $pdf->AddPage("L");
         $pri02="false";
         $cabec="";
-        $propag="true"; 
+        $propag="true";
 
       }
-      
+
       if($pri02=="false" && $propag=="true" && $cabec!="1"){
 
         $pri02 = "true";
@@ -320,9 +320,9 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
 
         //
         // Funcao para criar o cabecalho
-        //        
-        cabecalhoRelatorio(&$pdf,$tipocusto );
-        
+        //
+        cabecalhoRelatorio($pdf,$tipocusto );
+
       }
 
       $cont++;
@@ -353,7 +353,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
         $sql .= "                    where j23_anousu = {$iAno} ";
         $sql .= "                      and j23_matric = {$objMatriculas->j01_matric} ) as j23_vlrter ) as j23_vlrter ";
 
-        $rsValorVenal = pg_query($sql) or die($sql);
+        $rsValorVenal = db_query($sql) or die($sql);
 
         $objValorVenal = db_utils::fieldsMemory($rsValorVenal,0);
 
@@ -365,7 +365,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
         // area total
         (float)$nAreaTotal     = ( $objSomaTestada->total_testada *  $objContribuicao->d02_profun );
 
-        // valor do m2 
+        // valor do m2
 
         //(float)$nValorM2       = round( ( $objEditalServ->d04_vlrobra / $nAreaRealTotal ) ,2);
         (float)$nValorM2       = ( $objEditalServ->d04_vlrobra / $nAreaRealTotal );
@@ -373,7 +373,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
         // valor valorizacao
         (float)$nValorizacao   = ( $nValorVenal * $objContribuicao->d02_valorizacao / 100 );
 
-        // area parcial  
+        // area parcial
         (float)$nAreaParcial   = ( $objMatriculas->d05_testad * $objContribuicao->d02_profun );
 
         // area corrigida
@@ -389,7 +389,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
         (float)$nCustoIntegral = ( $nAreaCorrigida * $nValorM2 );
 
         //
-        // Se Custo maior que a valorizacao entao custo fica a valorizacao 
+        // Se Custo maior que a valorizacao entao custo fica a valorizacao
         //
         if ( $nCusto > $nValorizacao ) {
 
@@ -400,11 +400,11 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
         (float)$nCustoTotal += $nCusto;
 
       }
-      
+
       $pdf->SetFont('Times','',6);
 
       //
-      // Dados da matricula 
+      // Dados da matricula
       //
       $sImovel = "";
       if ($objMatriculas->j34_setor != '' && $objMatriculas->j34_quadra != '' && $objMatriculas->j34_lote != '') {
@@ -418,7 +418,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
       }
 
       $pdf->SetFillColor($corfundo);
-      
+
       $sNumeroComplemento = ($objMatriculas->numero_complemento != ""?",{$objMatriculas->numero_complemento}":"");
 
       $pdf->Cell(10,4,(++$iSequencial)                                            ,1,0,"C",1);
@@ -438,10 +438,10 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
         $pdf->Cell(20,4,db_formatar( $nCustoIntegral ,'f') ,1,1,"R",1);
       }else{
         $pdf->Cell(20,4,db_formatar($nCusto,'f')           ,1,0,"R",1); // 280
-        $pdf->Cell(20,4,db_formatar( $nCustoIntegral ,'f') ,1,1,"R",1);        
+        $pdf->Cell(20,4,db_formatar( $nCustoIntegral ,'f') ,1,1,"R",1);
       }
-      
-      $iTotalRegistros++; 
+
+      $iTotalRegistros++;
       $nTotalValorVenal    += round($nValorVenal,2);
       $nTotalValorFinal    += round($nValorFinal,2);
       $nTotalCusto         += round($nCusto,2);
@@ -450,16 +450,16 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
       $nTotalAreaParcial   += round($nAreaParcial,2);
       $nTotalAreaCorrigida += round($nAreaCorrigida,2);
 
-      $iTotalGeralRegistros++; 
-      $nTotalGeralValorVenal    += round($nValorVenal,2);             
-      $nTotalGeralValorFinal    += round($nValorFinal,2);             
-      $nTotalGeralCusto         += round($nCusto,2);             
-      $nTotalGeralCustoInte     += round($nCustoIntegral,2);             
+      $iTotalGeralRegistros++;
+      $nTotalGeralValorVenal    += round($nValorVenal,2);
+      $nTotalGeralValorFinal    += round($nValorFinal,2);
+      $nTotalGeralCusto         += round($nCusto,2);
+      $nTotalGeralCustoInte     += round($nCustoIntegral,2);
       $nTotalGeralTestada       += round($objMatriculas->d05_testad,2);
-			$nTotalGeralAreaParcial   += round($nAreaParcial,2);            
-      
-			$nTotalGeralAreaCorrigida += $nAreaCorrigida;          
-      
+			$nTotalGeralAreaParcial   += round($nAreaParcial,2);
+
+			$nTotalGeralAreaCorrigida += $nAreaCorrigida;
+
       if ( $iNumrowsMatricula == ($b+1) && $iNumrows > 1 ) {
 
         $pdf->SetFont('Arial','B',7);
@@ -479,7 +479,7 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
 					$pdf->Cell(20,4,db_formatar( $nTotalCustoInte ,'f')			 ,1,1,"R",1);
 				}else{
 					$pdf->Cell(20,4,db_formatar( $nTotalCusto,'f')					 ,1,0,"R",1); // 280
-					$pdf->Cell(20,4,db_formatar( $nTotalCustoInte ,'f')			 ,1,1,"R",1);        
+					$pdf->Cell(20,4,db_formatar( $nTotalCustoInte ,'f')			 ,1,1,"R",1);
 				}
 
         $iTotalRegistros      = 0;
@@ -492,9 +492,9 @@ for( $i = 0; $i < $iNumrows; $i++ ) {
         $nTotalCustoInte      = 0;
 
       }
-      	
-    }   
-    
+
+    }
+
   }else{
 
     $contriz .= $virgz.$d02_contri;
@@ -530,14 +530,14 @@ $pdf->Output();
 //
 // Funcao para montar o cabecalho do relatorio
 //
-function cabecalhoRelatorio( $pdf, $iTipo=1 ) {    
-        
-  $iQuebra = 0;    
+function cabecalhoRelatorio( &$pdf, $iTipo=1 ) {
+
+  $iQuebra = 0;
   $pdf->SetFont('Arial','B',7);
   $pdf->SetFillColor(220);
-  
+
   $pdf->Ln(1);
-  
+
   $pdf->Cell(10,4,"Seq"                   ,1,0,"C",1);
   $pdf->Cell(10,4,"Mat"                   ,1,0,"C",1);
   $pdf->Cell(20,4,"Imóvel"                ,1,0,"C",1);
@@ -547,7 +547,7 @@ function cabecalhoRelatorio( $pdf, $iTipo=1 ) {
   $pdf->Cell(20,4,"Área"                  ,1,0,"C",1);
   $pdf->Cell(20,4,"Área Corrigida"        ,1,0,"C",1);
   $pdf->Cell(20,4,"Valor Venal"           ,1,0,"C",1);
-  $pdf->Cell(20,4,"Valor Final"           ,1,0,"C",1);  
+  $pdf->Cell(20,4,"Valor Final"           ,1,0,"C",1);
 
   if ( $iTipo == '1' ) {
     $pdf->Cell(20,4,"C. Melhoria"     ,1,1,"C",1);

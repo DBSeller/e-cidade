@@ -1,0 +1,1 @@
+delete from causaafastamento where rh115_sequencial = 13;

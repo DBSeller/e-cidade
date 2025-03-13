@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_rhteutri_classe.php");
-include("classes/db_rhtipovale_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_rhteutri_classe.php"));
+include(modification("classes/db_rhtipovale_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clrhteutri   = new cl_rhteutri;
 $clrhtipovale = new cl_rhtipovale;
@@ -59,7 +59,7 @@ if($tipo == 'a'){
 }
 
 $xgrupo = '';
-if(trim($grupo) != ''){
+if(trim($grupo) != '' && trim($grupo) != 'todos'){
   $where .= " and rh67_grupo = $grupo ";
 }
 
@@ -89,7 +89,8 @@ for($x = 0; $x < pg_numrows($result);$x++){
       $pdf->cell(60,$alt,'NOME',1,0,"C",1);
       $pdf->cell(20,$alt,'GRUPO',1,0,"C",1);
       $pdf->cell(30,$alt,'CARTÃO',1,0,"C",1);
-      $pdf->cell(12,$alt,'DIAS',1,0,"C",1);
+      $pdf->cell(10,$alt,'DIAS',1,0,"C",1);
+      $pdf->cell(20,$alt,'VALOR',1,0,"C",1);
       $pdf->cell(20,$alt,'ATI/INA',1,1,"C",1);
       $troca = 0;
       $pre = 1;
@@ -105,11 +106,32 @@ for($x = 0; $x < pg_numrows($result);$x++){
    }else{
      $xativo = 'INATIVO';
    }
+   // @todo - retirar os valores fixos da query e ver de onde buscar a competencia
+   $sSql  = " select round(sum(r16_valor * r63_quant), 2) as valor ";
+   $sSql .= "  from vtfempr  ";
+   $sSql .= "       inner join vtffunc on vtffunc.r17_codigo = vtfempr.r16_codigo ";
+   $sSql .= "                         and vtffunc.r17_anousu = vtfempr.r16_anousu ";
+   $sSql .= "                         and vtffunc.r17_mesusu = vtfempr.r16_mesusu ";
+   $sSql .= "       inner join vtfdias on vtfdias.r63_vale   = vtfempr.r16_codigo ";
+   $sSql .= "                         and vtfdias.r63_anousu = vtfempr.r16_anousu ";
+   $sSql .= "                         and vtfdias.r63_mesusu = vtfempr.r16_mesusu ";
+   $sSql .= " where r16_anousu = ".db_anofolha();
+   $sSql .= "   and r16_mesusu = ".db_mesfolha();
+   $sSql .= "   and r17_regist = {$rh67_regist} ";
+   $sSql .= "   and r63_regist = {$rh67_regist} ";
+   $rsValorVtf = db_query($sSql);
+   //db_criatabela($rsValorVtf);
+   if (!$rsValorVtf || pg_num_rows($rsValorVtf) == 0){
+     continue;
+   }
+   $nValor = db_formatar(db_utils::fieldsMemory($rsValorVtf, 0)->valor , "f") ;
+
    $pdf->cell(15,$alt,$rh67_regist,0,0,"C",$pre);
    $pdf->cell(60,$alt,$z01_nome,0,0,"L",$pre);
    $pdf->cell(20,$alt,$rh67_grupo,0,0,"L",$pre);
    $pdf->cell(30,$alt,$rh67_cartao,0,0,"L",$pre);
-   $pdf->cell(12,$alt,$rh67_dias,0,0,"C",$pre);
+   $pdf->cell(10,$alt,$rh67_dias,0,0,"C",$pre);
+   $pdf->cell(20,$alt,$nValor,0,0,"C",$pre);
    $pdf->cell(20,$alt,$xativo,0,1,"C",$pre);
    $total += 1;
 }

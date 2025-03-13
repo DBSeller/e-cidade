@@ -98,10 +98,10 @@ db_inputdata('sd08_d_data',@$sd08_d_data_dia,@$sd08_d_data_mes,@$sd08_d_data_ano
 <script>
 function js_pesquisasd08_i_cgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.sd08_i_cgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.sd08_i_cgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_cgm.php?pesquisa_chave='+document.form1.sd08_i_cgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -121,10 +121,10 @@ function js_mostracgm1(chave1,chave2){
 }
 function js_pesquisasd08_i_unidade(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_unidades','func_unidades.php?funcao_js=parent.js_mostraunidades1|sd02_i_codigo|sd02_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidades','func_unidades.php?funcao_js=parent.js_mostraunidades1|sd02_i_codigo|sd02_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd08_i_unidade.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_unidades','func_unidades.php?pesquisa_chave='+document.form1.sd08_i_unidade.value+'&funcao_js=parent.js_mostraunidades','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_unidades','func_unidades.php?pesquisa_chave='+document.form1.sd08_i_unidade.value+'&funcao_js=parent.js_mostraunidades','Pesquisa',false);
      }else{
        document.form1.sd02_c_nome.value = ''; 
      }
@@ -144,10 +144,10 @@ function js_mostraunidades1(chave1,chave2){
 }
 function js_pesquisasd08_c_vacina(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_vacinas','func_vacinas.php?funcao_js=parent.js_mostravacinas1|sd07_c_codigo|sd07_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vacinas','func_vacinas.php?funcao_js=parent.js_mostravacinas1|sd07_c_codigo|sd07_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd08_c_vacina.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_vacinas','func_vacinas.php?pesquisa_chave='+document.form1.sd08_c_vacina.value+'&funcao_js=parent.js_mostravacinas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vacinas','func_vacinas.php?pesquisa_chave='+document.form1.sd08_c_vacina.value+'&funcao_js=parent.js_mostravacinas','Pesquisa',false);
      }else{
        document.form1.sd07_c_nome.value = ''; 
      }
@@ -166,7 +166,7 @@ function js_mostravacinas1(chave1,chave2){
   db_iframe_vacinas.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_vacinasaplicadas','func_vacinasaplicadas.php?funcao_js=parent.js_preenchepesquisa|sd08_i_cgm|sd08_i_unidade|sd08_c_vacina','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vacinasaplicadas','func_vacinasaplicadas.php?funcao_js=parent.js_preenchepesquisa|sd08_i_cgm|sd08_i_unidade|sd08_c_vacina','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1,chave2){
   db_iframe_vacinasaplicadas.hide();

@@ -1,0 +1,258 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010821' name='caixa.linha_tef' description="Guarda os arquivos importados do tef" prefix="t69" label="Arquivo do tef" type="0">
+  <fields>
+    <field codigo="1011345"
+           campo_api=''
+           name="id"
+           conteudo="int8"
+           description="id"
+           inivalue="0"
+           label="id"
+           size="11"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="id"
+           reference=""
+           ispk="t"
+           hassequence="t" >
+       <sequence name='caixa.linha_tef_id_seq' />
+
+    </field>
+    <field codigo="1013387"
+           campo_api=''
+           name="numero_autorizacao"
+           conteudo="text"
+           description="Número da Autorização"
+           inivalue="0"
+           label="Número da Autorização"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Número da Autorização"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013388"
+           campo_api=''
+           name="numero_cv"
+           conteudo="int8"
+           description="Número da CV"
+           inivalue="0"
+           label="Número da CV"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Número da CV"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013389"
+           campo_api=''
+           name="cartao"
+           conteudo="varchar(30)"
+           description="Nº do Cartão de Crédito"
+           inivalue=""
+           label="Nº do Cartão de Crédito"
+           size="30"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="0"
+           tipoobj="text"
+           labelrel="Nº do Cartão de Crédito"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013390"
+           campo_api=''
+           name="data_venda"
+           conteudo="date"
+           description="Data da venda"
+           inivalue="null"
+           label="Data Venda"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Data Venda"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="16006"
+           campo_api=''
+           name="data_vencimento"
+           conteudo="date"
+           description="Data Vencimento"
+           inivalue="null"
+           label="Data Vencimento"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Data Vencimento"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="16005"
+           campo_api=''
+           name="parcela"
+           conteudo="float4"
+           description="Numero da Parcela"
+           inivalue="0"
+           label="Numero da Parcela"
+           size="2"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Numero da Parcela"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013392"
+           campo_api=''
+           name="total_parcelas"
+           conteudo="int4"
+           description="Total de Parcelas"
+           inivalue="0"
+           label="Total de Parcelas"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Total de Parcelas"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013393"
+           campo_api=''
+           name="valor_original"
+           conteudo="float8"
+           description="Valor Original"
+           inivalue="0"
+           label="Valor Original"
+           size="15"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor Original"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013394"
+           campo_api=''
+           name="valor_bruto"
+           conteudo="float8"
+           description="Valor Bruto"
+           inivalue="0"
+           label="Valor Bruto"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor Bruto"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013395"
+           campo_api=''
+           name="valor_descontos"
+           conteudo="float8"
+           description="Descontos"
+           inivalue="0"
+           label="Descontos"
+           size="15"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Descontos"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013396"
+           campo_api=''
+           name="valor_liquido"
+           conteudo="float8"
+           description="Valor Líquido"
+           inivalue="0"
+           label="Valor Líquido"
+           size="18"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="4"
+           tipoobj="text"
+           labelrel="Valor Líquido"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+    <field codigo="1013401"
+           campo_api=''
+           name="consistente"
+           conteudo="bool"
+           description="Registro consiste com dado do sistema"
+           inivalue="f"
+           label="Consistente"
+           size="1"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="5"
+           tipoobj="text"
+           labelrel="Consistente"
+           reference=""
+           ispk="f"
+           hassequence="f" >
+
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="id"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,19 +25,28 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf3.php");
-require_once("fpdf151/impcarne.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_libsys.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_iptuisen_classe.php");
-require_once("classes/db_isenproc_classe.php");
-require_once("classes/db_cfiptu_classe.php");
-require_once("dbagata/classes/core/AgataAPI.class");
-require_once("model/documentoTemplate.model.php");
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_libsys.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbagata/classes/core/AgataAPI.class"));
+require_once(modification("model/documentoTemplate.model.php"));
+require_once(modification("model/cadastro/CertidaoIsencaoPdf.php"));
+
+$dotenv = new \Dotenv\Dotenv('./');
+$dotenv->load();
 
 db_postmemory($HTTP_SERVER_VARS);
+
+$oGet           = db_utils::postMemory($_GET);
+$iMatricula     = $oGet->matric;
+$iCodigoIsencao = $oGet->codigoIsencao;
 
 $cliptuisen = new cl_iptuisen;
 $clcfiptu   = new cl_cfiptu;
@@ -48,14 +57,13 @@ if ($j18_templatecertidaoisencao != "") {
 
 	$sDescrDoc        = date("YmdHis").db_getsession("DB_id_usuario");
 	$sNomeRelatorio   = "tmp/CertidaoIsencao{$sDescrDoc}.pdf";
-	$sCaminhoSalvoSxw = "tmp/CertidaoIsencao_{$sDescrDoc}_{$matric}.sxw";
+	$sCaminhoSalvoSxw = "tmp/CertidaoIsencao_{$sDescrDoc}_{$iMatricula}.sxw";
 
 	$sAgt = "cadastro/certidao_isencao.agt";
 
-	$aParam                 = array();
-	$aParam['$matricula']   = $matric;
-	$aParam['$datainicial'] = $dtini;
-	$aParam['$datafinal']   = $dtfim;
+	$aParam                  = array();
+  $aParam['$matricula']     = $iMatricula;
+	$aParam['$codigoisencao'] = $iCodigoIsencao;
 
 	db_stdClass::oo2pdf(44, $j18_templatecertidaoisencao, $sAgt, $aParam, $sCaminhoSalvoSxw, $sNomeRelatorio);
 	exit;
@@ -69,144 +77,176 @@ $dia = date("d",db_getsession("DB_datausu"));
 $mes = db_mes(date("m",db_getsession("DB_datausu")),2);
 $ano = date("Y",db_getsession("DB_datausu"));
 
+
 //Busca nome do usuário
 $sqlnome = "select nome from db_usuarios where id_usuario = ".db_getsession("DB_id_usuario");
 $resnome = db_query($sqlnome);
 db_fieldsmemory($resnome,0);
 
-	// Busca cabec_sec -- CABEÇALHO NOME SECRETARIA
-	$sqlparag = "select db02_texto
-	               from db_documento
-	                    inner join db_docparag  on db03_docum   = db04_docum
-	                    inner join db_tipodoc   on db08_codigo  = db03_tipodoc
-	                    inner join db_paragrafo on db04_idparag = db02_idparag
-	              where db03_tipodoc = 1017
-                  and db03_instit  = " . db_getsession("DB_instit")." order by db04_ordem ";
-	$resparag = db_query($sqlparag);
-  global $head1;
-	if ( pg_numrows($resparag) == 0 ) {
-  	$head1 = 'SECRETARIA DE FINANÇAS';
+$sqlparag = "select db02_texto
+               from db_documento
+                    inner join db_docparag  on db03_docum   = db04_docum
+                    inner join db_tipodoc   on db08_codigo  = db03_tipodoc
+                    inner join db_paragrafo on db04_idparag = db02_idparag
+              where db03_tipodoc = 1017
+                and db03_instit  = " . db_getsession("DB_instit")." order by db04_ordem ";
+$resparag = db_query($sqlparag);
+
+$head1 = 'SECRETARIA DE FINANÇAS';
+  if ( pg_numrows($resparag) > 0 ) {
+
+	  db_fieldsmemory( $resparag, 0 );
+ 	  $head1 = $db02_texto;
+  }
+
+$pdf = new CertidaoInsencaoPdf('P', 'mm', 'A4');
+$pdf->titulos["head1"] = $head1;
+$oPdf= new db_impcarne($pdf, '29');
+$oPdf->objpdf->AddPage();
+$oPdf->objpdf->SetTextColor(0, 0, 0);
+
+$sqlMunic     = "select nomeinst, logo, munic from db_config where codigo = ". db_getsession("DB_instit");
+$rsMunic      = db_query($sqlMunic);
+$numrowsmunic = pg_numrows($rsMunic);
+if ($numrowsmunic == 0){
+
+  db_redireciona('db_erros.php?fechar=true&db_erro=Nome da instituição não encontrado!');
+  exit;
+}
+
+db_fieldsmemory($rsMunic,0);
+
+$oPdf->isenprefeitura = $nomeinst;
+$oPdf->isenlogo       = $logo;
+$oPdf->munic          = $munic;
+$sqlparag = "select *
+	             from db_documento
+	                  inner join db_docparag  on db03_docum   = db04_docum
+	                  inner join db_tipodoc   on db08_codigo  = db03_tipodoc
+	                  inner join db_paragrafo on db04_idparag = db02_idparag
+	            where db03_tipodoc = 1019
+                and db03_instit = " . db_getsession("DB_instit")." order by db04_ordem ";
+$resparag = db_query($sqlparag);
+$numrows  = pg_numrows($resparag);
+if ( $numrows == 0 ) {
+
+ db_redireciona('db_erros.php?fechar=true&db_erro=Configure o documento da certidão de isenção!');
+ exit;
+}
+
+for($cont=0;$cont<$numrows;$cont++){
+
+  db_fieldsmemory($resparag,$cont);
+  if($db04_ordem == 1){
+    $oPdf->isenmsg1 = db_geratexto($db02_texto);     		// Cabec CERTIDÃO
+  }
+  if($db04_ordem == 2){
+    $oPdf->isenmsg4 = db_geratexto($db02_texto);			// texto CERTIDÃO
+  }
+  if($db04_ordem == 3){
+    // Assinatura Inspetor
+  	$oPdf->isenassinatura2 = db_geratexto($db02_texto);
+    if($db02_descr == "ASSINATURAS_CODIGOPHP") {
+      
+      $oPdf->isenassinatura2 = $db02_texto;
+    }		
+  }
+  if($db04_ordem == 4){
+    $oPdf->isenassinatura  = db_geratexto($db02_texto);		// Assinatura Secretario
+  }
+}
+
+$rsCfiptu  = $clcfiptu->sql_record($clcfiptu->sql_query_file(db_getsession('DB_anousu'),"*",null,""));
+$numrows   = $clcfiptu->numrows;
+if ($numrows==0){
+
+  db_redireciona('db_erros.php?fechar=true&db_erro=Configure os parametros do modulo ');
+  exit;
+}
+
+db_fieldsmemory($rsCfiptu,0);
+
+$sWhereTipoPromitente = '';
+if(isset($j18_dadoscertisen) && $j18_dadoscertisen == 1){
+  $sWhereTipoPromitente = " and (j41_tipopro is true or j41_tipopro is null) ";
+}
+
+$j46_dtini = null;
+$j46_dtfim = null;
+
+$sSqlIsencao = $cliptuisen->sql_query_isen( null,
+                                            " proprietario.*,
+                                              cgm_propri.z01_cgccpf as cpfpropri,
+                                              isenproc.*,
+                                              cgm.z01_nome as nomepromi,
+                                              cgm.z01_cgccpf as cpfpromi,
+                                              j45_obscertidao,
+                                              j41_tipopro,
+                                              j46_codigo,
+                                              j46_matric,
+                                              j46_dtini,
+                                              extract(year from j46_dtini) as anoini,
+                                              j46_dtfim,
+                                              extract(year from j46_dtfim) as anofim,
+                                              fc_dataextenso(current_date) as data_extenso",
+                                              null,
+                                            " j46_matric = $iMatricula and j46_codigo = {$iCodigoIsencao} {$sWhereTipoPromitente}");
+
+$rsIptuisen  = $cliptuisen->sql_record($sSqlIsencao);
+$numrowsisen = $cliptuisen->numrows;
+if ($numrowsisen==0){
+
+  db_redireciona('db_erros.php?fechar=true&db_erro=Não foi possível encontrar registros ');
+  exit;
+}
+db_fieldsmemory($rsIptuisen,0);
+
+$oPdf->isenmatric = $iMatricula;
+$oPdf->codisen    = $j46_codigo;
+$oPdf->isennome   = $proprietario;
+$oPdf->isencgc    = $cpfpropri;
+
+/**
+ * Valida regra do promitente
+ */
+if(isset($j18_dadoscertisen) && $j18_dadoscertisen == 0){
+
+	$oPdf->isennome = $proprietario;
+	$oPdf->isencgc  = $cpfpropri;
+
+}else if(isset($j18_dadoscertisen) && $j18_dadoscertisen == 1){
+
+  if(isset($nomepromi) && $nomepromi != ""){
+
+		$oPdf->isennome = $nomepromi;
+		$oPdf->isencgc  = $cpfpromi;
 	}else{
 
-  	db_fieldsmemory( $resparag, 0 );
-   	$head1 = $db02_texto;
+		$oPdf->isennome = $proprietario;
+		$oPdf->isencgc  = $cpfpropri;
 	}
+}
 
-	$pdf = new pdf3();
-	$pdf->Open();
-	$pdf1= new db_impcarne($pdf, '29');
-	$pdf1->objpdf->AddPage();
-	$pdf1->objpdf->SetTextColor(0, 0, 0);
+$oPdf->isenmsg3 = "";
+if(isset($j45_obscertidao) && $j45_obscertidao != ""){
+  $oPdf->isenmsg3 = $j45_obscertidao;
+}
 
-	$sqlMunic     = " select nomeinst, logo from db_config where codigo = ". db_getsession("DB_instit");
-	$rsMunic      = db_query($sqlMunic);
-	$numrowsmunic = pg_numrows($rsMunic);
-  if ($numrowsmunic == 0){
+$oPdf->isenender     = (isset($nomepri)&&$nomepri!=""?$nomepri.",".$j39_numero."/".$j39_compl:"Sem endereço cadastrado");
+$oPdf->isenbairro    = $j13_descr;
+$oPdf->isendtini     = $j46_dtini;
+$oPdf->isendtfim     = $j46_dtfim;
+$oPdf->isenanoini    = $anoini;
+$oPdf->isenanofim    = $anofim;
+$oPdf->data_extenso  = $data_extenso;
+$oPdf->isenproc      = $j61_codproc;
+$oPdf->isensetor     = $j34_setor;
+$oPdf->isenquadra    = $j34_quadra;
+$oPdf->isenlote      = $j34_lote;
 
-    db_redireciona('db_erros.php?fechar=true&db_erro=Nome da instituição não encontrado!');
-    exit;
-	}
-	db_fieldsmemory($rsMunic,0);
-	$pdf1->isenprefeitura = $nomeinst;
-	$pdf1->isenlogo       = $logo;
-	$sqlparag = "select *
-		             from db_documento
-		                  inner join db_docparag  on db03_docum   = db04_docum
-		                  inner join db_tipodoc   on db08_codigo  = db03_tipodoc
-		                  inner join db_paragrafo on db04_idparag = db02_idparag
-		            where db03_tipodoc = 1019
-                  and db03_instit = " . db_getsession("DB_instit")." order by db04_ordem ";
-  $resparag = db_query($sqlparag);
-  $numrows  = pg_numrows($resparag);
-  if ( $numrows == 0 ) {
+$oPdf->j05_setorloc  = $j06_setorloc;
+$oPdf->j05_quadraloc = $j06_quadraloc;
+$oPdf->j05_loteloc   = $j06_lote;
 
-   db_redireciona('db_erros.php?fechar=true&db_erro=Configure o documento da certidão de isenção!');
-   exit;
-	}
-
-	for($cont=0;$cont<$numrows;$cont++){
-
-	    db_fieldsmemory($resparag,$cont);
-	    if($db04_ordem == 1){
-		    $pdf1->isenmsg1 = db_geratexto($db02_texto);     		// Cabec CERTIDÃO
-	    }
-	    if($db04_ordem == 2){
-	        $pdf1->isenmsg4 = db_geratexto($db02_texto);			// texto CERTIDÃO
-	    }
-	    if($db04_ordem == 3){
-	    	  $pdf1->isenassinatura2 = db_geratexto($db02_texto);		// Assinatura Inspetor
-	    }
-	    if($db04_ordem == 4){
-	        $pdf1->isenassinatura  = db_geratexto($db02_texto);		// Assinatura Secretario
-	    }
-	}
-  /* parametros do modulo */
-  $rsCfiptu  = $clcfiptu->sql_record($clcfiptu->sql_query_file(db_getsession('DB_anousu'),"*",null,""));
-  $numrows   = $clcfiptu->numrows;
-  if ($numrows==0){
-
-    db_redireciona('db_erros.php?fechar=true&db_erro=Configure os parametros do modulo ');
-    exit;
-  }
-  db_fieldsmemory($rsCfiptu,0);
-
-  $sWhereTipoPromitente = '';
-  if(isset($j18_dadoscertisen) && $j18_dadoscertisen == 1){
-    $sWhereTipoPromitente = " and (j41_tipopro is true or j41_tipopro is null) ";
-  }
-
-  $rsIptuisen  = $cliptuisen->sql_record($cliptuisen->sql_query_isen(null,"proprietario.*, cgm_propri.z01_cgccpf as cpfpropri, isenproc.*,cgm.z01_nome as nomepromi, cgm.z01_cgccpf as cpfpromi, j45_obscertidao, j41_tipopro",null," j46_matric = $matric and j46_dtini = '".$dtini."' and j46_dtfim = '".$dtfim."' $sWhereTipoPromitente "));
-  $numrowsisen = $cliptuisen->numrows;
-  if ($numrowsisen==0){
-
-    db_redireciona('db_erros.php?fechar=true&db_erro=Não foi possível encontrar registros ');
-    exit;
-  }
-	db_fieldsmemory($rsIptuisen,0);
-
-	$pdf1->isenmatric = $matric;
-	$pdf1->isennome   = $proprietario;
-	$pdf1->isencgc    = $cpfpropri;
-
-  /**
-   * Valida regra do promitente
-   */
-  if(isset($j18_dadoscertisen) && $j18_dadoscertisen == 0){
-
-		$pdf1->isennome = $proprietario;
-		$pdf1->isencgc  = $cpfpropri;
-
-	}else if(isset($j18_dadoscertisen) && $j18_dadoscertisen == 1){
-
-	  if(isset($nomepromi) && $nomepromi != ""){
-
-			$pdf1->isennome = $nomepromi;
-			$pdf1->isencgc  = $cpfpromi;
-		}else{
-
-			$pdf1->isennome = $proprietario;
-			$pdf1->isencgc  = $cpfpropri;
-		}
-	}
-
-  if(isset($j45_obscertidao) && $j45_obscertidao != ""){
-  	$pdf1->isenmsg3 = $j45_obscertidao;
-	}else{
-   	$pdf1->isenmsg3 = "";
-	}
-
-	$pdf1->isenender     = (isset($nomepri)&&$nomepri!=""?$nomepri.",".$j39_numero."/".$j39_compl:"Sem endereço cadastrado");
-	$pdf1->isenbairro    = $j34_bairro;
-	$pdf1->isendtini     = $dtini;
-	$pdf1->isendtfim     = $dtfim;
-	$pdf1->isenproc      = $j61_codproc;
-	$pdf1->isensetor     = $j34_setor;
-	$pdf1->isenquadra    = $j34_quadra;
-	$pdf1->isenlote      = $j34_lote;
-
-	$pdf1->j05_setorloc  = $j06_setorloc;
-	$pdf1->j05_quadraloc = $j06_quadraloc;
-	$pdf1->j05_loteloc   = $j06_lote;
-
-	$pdf1->imprime();
-	$pdf1->objpdf->Output();
+$oPdf->imprime();
+$oPdf->objpdf->Output();

@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
@@ -51,11 +51,36 @@ class MaterialAlmoxarifado {
    */
   private $oGrupo;
 
-  private $aPontosPedido = array();
   /**
-   * @param integer $iCodigo
+   * @var UnidadeMaterial
    */
-  public function __construct($iCodigo = 0) {
+  private $oUnidade;
+
+  /**
+   * @type integer
+   */
+  private $iUnidade;
+
+  /**
+   * @var boolean
+   */
+  private $lAtivo;
+
+  /**
+   * @type array
+   */
+  private $aPontosPedido = array();
+    /**
+     * @var bool
+     */
+    private $lServico;
+
+    /**
+   * @param null $iCodigo
+   *
+   * @throws Exception
+   */
+  public function __construct($iCodigo = null) {
 
     if (empty($iCodigo)) {
       return;
@@ -70,10 +95,22 @@ class MaterialAlmoxarifado {
     }
 
     $oDados = db_utils::fieldsMemory($rsDados, 0);
-  
-    $this->iCodigo = $iCodigo;
-    $this->iGrupo = $oDados->m68_materialestoquegrupo;
+
+    $this->iCodigo    = $iCodigo;
+
+    $m68_materialestoquegrupo = null;
+    $sqlDadosGrupo = "select * from matmatermaterialestoquegrupo where m68_matmater = {$iCodigo}";
+    $rsDadosGrupo = db_query($sqlDadosGrupo);
+    if (pg_num_rows($rsDadosGrupo) > 0) {
+        $oDadosGrupo = db_utils::fieldsMemory($rsDadosGrupo, 0);
+        $m68_materialestoquegrupo = $oDadosGrupo->m68_materialestoquegrupo;
+    }
+
+    $this->iGrupo     = $m68_materialestoquegrupo;
     $this->sDescricao = $oDados->m60_descr;
+    $this->iUnidade   = $oDados->m60_codmatunid;
+    $this->lAtivo     = $oDados->m60_ativo == 't';
+    $this->lServico     = $oDados->m60_servico == 't';
   }
 
   /**
@@ -94,7 +131,7 @@ class MaterialAlmoxarifado {
    * @return MaterialGrupo | void
    */
   public function getGrupo() {
-  
+
     if (empty($this->oGrupo) && !empty($this->iGrupo)) {
       $this->oGrupo = new MaterialGrupo($this->iGrupo);
     }
@@ -103,9 +140,10 @@ class MaterialAlmoxarifado {
   }
 
   /**
-   * Retorna o ponto de Pedido do item no almoxarifado Informado
    * @param Almoxarifado $oAlmoxarifado
+   *
    * @return mixed
+   * @throws DBException
    */
   public function getPontoDePedidoNoAlmoxarifado(Almoxarifado $oAlmoxarifado) {
 
@@ -131,4 +169,43 @@ class MaterialAlmoxarifado {
     return $this->aPontosPedido[$oAlmoxarifado->getCodigo()];
   }
 
+  /**
+   * @return UnidadeMaterial
+   */
+  public function getUnidade() {
+
+    if (empty($this->oUnidade) && !empty($this->iUnidade)) {
+      $this->oUnidade = UnidadeMaterialRepository::getByCodigo($this->iUnidade);
+    }
+    return $this->oUnidade;
+  }
+
+  /**
+   * @param UnidadeMaterial $oUnidade
+   */
+  public function setUnidade(UnidadeMaterial $oUnidade) {
+    $this->oUnidade = $oUnidade;
+  }
+
+  /**
+   * @return boolean
+   */
+  public function ativo() {
+    return $this->lAtivo;
+  }
+
+  /**
+   * @param boolean $lAtivo
+   */
+  public function setAtivo($lAtivo) {
+    $this->lAtivo = $lAtivo;
+  }
+
+    /**
+     * @return bool
+     */
+    public function isServico()
+    {
+        return $this->lServico;
+    }
 }

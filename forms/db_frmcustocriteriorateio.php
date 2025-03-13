@@ -112,10 +112,10 @@ db_input('cc08_sequencial',10,$Icc08_sequencial,true,'text',3,"")
  <script>
 function js_pesquisacc08_instit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_custocriteriorateio','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriorateio','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.cc08_instit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_custocriteriorateio','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.cc08_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriorateio','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.cc08_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.nomeinst.value = ''; 
      }
@@ -135,7 +135,7 @@ function js_mostradb_config1(chave1,chave2){
 }
 function js_pesquisacc08_matunid(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_custocriteriorateio',
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriorateio',
                         'db_iframe_matunid',
                         'func_matunid.php?funcao_js=parent.js_mostramatunid1|m61_codmatunid|m61_descr',
                         'Pesquisa',
@@ -144,7 +144,7 @@ function js_pesquisacc08_matunid(mostra){
                         (document.body.scrollHeight-80));
   }else{
      if(document.form1.cc08_matunid.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_custocriteriorateio',
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriorateio',
                             'db_iframe_matunid',
                             'func_matunid.php?pesquisa_chave='+document.form1.cc08_matunid.value+'&funcao_js=parent.js_mostramatunid',
                             'Consulta de Unidades',
@@ -171,7 +171,7 @@ function js_mostramatunid1(chave1,chave2){
   db_iframe_matunid.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_custocriteriorateio',
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_custocriteriorateio',
                       'db_iframe_custocriteriorateio',
                       'func_custocriteriorateio.php?funcao_js=parent.js_preenchepesquisa|cc08_sequencial',
                       'Critérios de Rateios ',

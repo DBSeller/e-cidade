@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once 'libs/db_stdlib.php';
-require_once 'libs/db_conecta.php';
-require_once 'libs/db_sessoes.php';
-require_once 'libs/db_usuariosonline.php';
-require_once 'libs/JSON.php';
-require_once 'libs/db_utils.php';
+require_once modification("libs/db_stdlib.php");
+require_once modification("libs/db_conecta.php");
+require_once modification("libs/db_sessoes.php");
+require_once modification("libs/db_usuariosonline.php");
+require_once modification("libs/JSON.php");
+require_once modification("libs/db_utils.php");
 
 $oJson         = new services_json();
 $oDaoRecHumano = new cl_rechumano();
-$sName         = $_POST["string"];
+$sName         = utf8_decode($_POST["string"]);
 
 $iEscola = db_getsession('DB_coddepto');
 if ( !empty($_GET['iEscola']) ) {
@@ -51,10 +51,14 @@ $sCampos .= " end as label                    ";
 
 $sWhere  = " (cgmrh.z01_nome ilike '{$sName}%' or cgmcgm.z01_nome ilike '$sName%')";
 $sWhere .= " and ed75_i_escola = {$iEscola} ";
+
 $sWhere .= " and ed75_i_saidaescola is null ";
 
-if ( isset($_GET['lFiltraAtividade']) && !empty($_GET['iAtividade']) ) {
-  $sWhere .= " and ed01_funcaoatividade = {$_GET['iAtividade']}";
+if (isset($_GET['lFiltraAtividade']) && !empty($_GET['iAtividade'])) {
+    $sWhere .= " and ed01_funcaoatividade = {$_GET['iAtividade']}";
+    if ($_GET['iAtividade'] == 1) {
+        $sWhere .= " and ed01_c_regencia = 'S'";
+    }
 }
 
 $sSql   = $oDaoRecHumano->sql_query_relatorio(null, $sCampos, " 2 ", $sWhere);

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/pdf.php");
-require_once("fpdf151/assinatura.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libcaixa_ze.php");
-require_once("libs/db_libgertxtfolha.php");
-require_once("classes/db_folha_classe.php");
-require_once("classes/db_pensao_classe.php");
-require_once("classes/db_rharqbanco_classe.php");
-require_once("classes/db_orctiporec_classe.php");
-require_once("classes/db_rhgeracaofolhareg_classe.php");
-require_once("classes/db_rhgeracaofolhaarquivo_classe.php");
-require_once("classes/db_rhgeracaofolhaarquivoreg_classe.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("fpdf151/assinatura.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libcaixa_ze.php"));
+require_once(modification("libs/db_libgertxtfolha.php"));
+require_once(modification("classes/db_folha_classe.php"));
+require_once(modification("classes/db_pensao_classe.php"));
+require_once(modification("classes/db_rharqbanco_classe.php"));
+require_once(modification("classes/db_orctiporec_classe.php"));
+require_once(modification("classes/db_rhgeracaofolhareg_classe.php"));
+require_once(modification("classes/db_rhgeracaofolhaarquivo_classe.php"));
+require_once(modification("classes/db_rhgeracaofolhaarquivoreg_classe.php"));
+require_once(modification("libs/db_utils.php"));
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($HTTP_POST_VARS);
 $oGet = db_utils::postMemory($_GET);
 
-$cllayouts_bb               = new cl_layouts_bb;
-$cllayout_BBBS              = new cl_layout_BBBS;
+$cllayouts_bb               = new LayoutBB;
+$cllayout_BBBS              = new LayoutBBBSFolha;
 $clfolha                    = new cl_folha;
 $clpensao                   = new cl_pensao;
 $clrharqbanco               = new cl_rharqbanco;
@@ -208,7 +208,7 @@ if($sqlerro == false){
   }
   
   // Coleta os dados da consulta sql e coloca em um vetor
-  $oDados  = db_utils::getColectionByRecord($result);
+  $oDados  = db_utils::getCollectionByRecord($result);
 
   // echo $sql; exit;
   if($numrows > 0 && $rh34_codban == "041"){

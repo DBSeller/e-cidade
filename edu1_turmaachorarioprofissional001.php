@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 ?>
 <html>
@@ -107,7 +107,7 @@ require_once ("dbforms/db_funcoes.php");
             <td nowrap='nowrap'>Profissional/Monitor:</td>
             <td nowrap='nowrap' colspan="3">
               <input type="hidden" value="" id="iRecHumano" name="iRecHumano" />
-              <input type="text"   value="" id="sNomeRechumano" name="sNomeRechumano" size="53" />
+              <input type="text"   value="" id="sNomeRechumano" name="sNomeRechumano" size="53"/>
             </td>
           </tr>
 
@@ -177,7 +177,7 @@ require_once ("dbforms/db_funcoes.php");
     oRequest.onComplete   = function( oAjax ) {
 
       js_removeObj('msgBoxA');
-      var oRetorno = eval('(' + oAjax.responseText + ')');
+      var oRetorno = JSON.parse(oAjax.responseText);
 
       oGrid.clearAll(true);
       if (oRetorno.aVinculados.length == 0) {
@@ -187,7 +187,7 @@ require_once ("dbforms/db_funcoes.php");
       oRetorno.aVinculados.each( function (oProfissional, i) {
 
         var oBtn   = new Element ('input', {'type': 'button', 'value':'E', 'rechumano':oProfissional.iRecHumano});
-        oBtn.setAttribute("onclick", 'desvincluarProfissional('+ oProfissional.iCodigo + ')')
+        oBtn.setAttribute("onclick", 'desvincluarProfissional('+ oProfissional.iCodigo + ', '+ oProfissional.iRecHumano +')')
 
         var sHorario = oProfissional.sHoraInicial + ' às ' + oProfissional.sHoraFinal;
         var aLinha = [];
@@ -221,7 +221,7 @@ require_once ("dbforms/db_funcoes.php");
     oRequest.onComplete   = function( oAjax ) {
 
       js_removeObj('msgBoxB');
-      var oRetorno = eval('(' + oAjax.responseText + ')');
+      var oRetorno = JSON.parse(oAjax.responseText);
 
 
 
@@ -230,6 +230,7 @@ require_once ("dbforms/db_funcoes.php");
       }
       $('atividade').options.length = 0;
       $('atividade').add( new Option("Selecione", '') );
+      $('atividade').add( new Option ("Sem Profissional/Monitor", '0') );
       oRetorno.aFuncoes.each( function (oAtividade) {
         $('atividade').add( new Option(oAtividade.ed119_descricao.urlDecode(), oAtividade.ed119_sequencial) );
       });
@@ -245,6 +246,13 @@ require_once ("dbforms/db_funcoes.php");
 
     $('iRecHumano').value     = '';
     $('sNomeRechumano').value = '';
+
+    if ($F('atividade') == 0 && $F('atividade') != '') {
+        $('sNomeRechumano').setAttribute('disabled', 'disabled');
+        $('sNomeRechumano').value = 'SEM Profissional/Monitor Viculado';
+    } else {
+        $('sNomeRechumano').removeAttribute('disabled', 'disabled');
+    }
 
     if ( $F('atividade') != '' ) {
 
@@ -354,8 +362,8 @@ require_once ("dbforms/db_funcoes.php");
       return false;
     }
 
-    if ( empty( $F('iRecHumano') ) ) {
 
+    if (empty($F('iRecHumano')) && $F('atividade') != 0)  {
       alert( _M(MSG_TURMAACHORARIO+ "profissional_nao_informado") );
       return false;
     }
@@ -375,9 +383,13 @@ require_once ("dbforms/db_funcoes.php");
     if ( !js_validaCamposObrigatorios() ) {
       return false;
     }
+    var oParam = 'vincularProfissional'
 
+    if($F('iRecHumano') == '') {
+        var oParam = 'vincularHorarioSemProfissional'
+    }
     var oParametros              = {};
-    oParametros.sExecutar        = 'vincularProfissional';
+    oParametros.sExecutar        = oParam;
     oParametros.iTurmaAc         = oGet.ed270_i_turmaac;
     oParametros.iFuncaoAtividade = $F('atividade');
     oParametros.iRecHumano       = $F('iRecHumano');
@@ -392,7 +404,7 @@ require_once ("dbforms/db_funcoes.php");
     oRequest.onComplete   = function( oAjax ) {
 
       js_removeObj('msgBoxB');
-      var oRetorno = eval('(' + oAjax.responseText + ')');
+      var oRetorno = JSON.parse(oAjax.responseText);
 
       alert(oRetorno.sMensagem.urlDecode());
       if ( parseInt(oRetorno.iStatus) == 2 ) {
@@ -414,11 +426,12 @@ require_once ("dbforms/db_funcoes.php");
    * Revome o profissional da TurmaAC
    * @param iCodigoVinculo
    */
-  function desvincluarProfissional ( iCodigoVinculo ) {
+  function desvincluarProfissional ( iCodigoVinculo, iRecHumano ) {
 
     var oParametros       = {};
     oParametros.sExecutar = 'removerVinculo';
     oParametros.iVinculo  = iCodigoVinculo;
+    oParametros.iRecHumano = iRecHumano;
 
     var oRequest          = {};
     oRequest.asynchronous = false;
@@ -427,7 +440,7 @@ require_once ("dbforms/db_funcoes.php");
     oRequest.onComplete   = function( oAjax ) {
 
       js_removeObj('msgBoxB');
-      var oRetorno = eval('(' + oAjax.responseText + ')');
+      var oRetorno = JSON.parse(oAjax.responseText);
 
       alert(oRetorno.sMensagem.urlDecode());
       if ( parseInt(oRetorno.iStatus) == 2 ) {

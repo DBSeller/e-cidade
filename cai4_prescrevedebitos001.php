@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_prescricao_classe.php");
-include("classes/db_arreprescr_classe.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_prescricao_classe.php"));
+include(modification("classes/db_arreprescr_classe.php"));
+include(modification("libs/db_sql.php"));
 ?>
 <html>
 <head>
@@ -67,7 +67,7 @@ $db_botao = true;
 $sql = "select db_usuarios.nome as db_usunome
           from db_usuarios 
 	       where db_usuarios.id_usuario = ".db_getsession("DB_id_usuario");
-$result = pg_query($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 ?>
 <table>

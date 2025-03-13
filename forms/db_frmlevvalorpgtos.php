@@ -29,7 +29,7 @@
 $cllevvalorpgtos->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("y63_codlev");
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir_html = new cl_iframe_alterar_excluir_html;
 ?>
 <script>

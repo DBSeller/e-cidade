@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -32,10 +32,10 @@ if(isset($HTTP_POST_VARS)) {
 	   $verfEstrut = "";
 	   if($k02_tipo == "O") {
 	     $tipo = "Orçamentária";
-	     $result = pg_exec("select o02_descr from orcam where o02_anousu = ".db_getsession("DB_anousu")." and o02_codigo = '$k02_estrut'");
+	     $result = db_query("select o02_descr from orcam where o02_anousu = ".db_getsession("DB_anousu")." and o02_codigo = '$k02_estrut'");
 	   } else if($k02_tipo == "E") {
 	     $tipo = "Extra-orçamentária";
-	     $result = pg_exec("select c01_descr from plano where c01_anousu = ".db_getsession("DB_anousu")." and c01_estrut = '$k02_estrut'");
+	     $result = db_query("select c01_descr from plano where c01_anousu = ".db_getsession("DB_anousu")." and c01_estrut = '$k02_estrut'");
 	   }
 	   if(pg_numrows($result) == 0) {
 	     echo "<script>alert('Código da receita $tipo não encontrado!')</script>\n";
@@ -73,7 +73,7 @@ if(isset($HTTP_POST_VARS)) {
 				<td align="left" ><select name="k02_corr">
 							<option value="null">Nenhum...</option>
 							<?
-					  $result = pg_exec("select i01_codigo,i01_descr from inflan");
+					  $result = db_query("select i01_codigo,i01_descr from inflan");
 					  $numrows = pg_numrows($result);
 					  for($i = 0;$i < $numrows;$i++)
 					  echo "<option value=\"".pg_result($result,$i,"i01_codigo")."\" ".(isset($k02_corr)?($k02_corr==pg_result($result,$i,"i01_codigo")?"selected":""):"").">".pg_result($result,$i,"i01_codigo")." - ".pg_result($result,$i,"i01_descr")."</option>\n";

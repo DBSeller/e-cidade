@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
 if($sqlerro==false) {
 
   //RECEITAS EXTRA-ORÇAMENTÁRIAS";
-  include("classes/db_tabplan_classe.php");
+  include(modification("classes/db_tabplan_classe.php"));
   $cl_tabplan = new cl_tabplan;
   $sqldeporigem = "select * from tabplan where k02_anousu = $anoorigem ";
   $resultdeporigem = db_query($sqldeporigem);

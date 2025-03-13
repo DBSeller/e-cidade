@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010307' name='recursoshumanos.documentoportaria' description="Tabela para guardar vinculo portaria com assinatura digital" prefix="rh235" label="" type="0">
+  <fields>
+    <field codigo="1009923" 
+           campo_api='' 
+           name="rh235_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.documentoportaria_rh235_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009908" 
+           campo_api='' 
+           name="rh235_documento" 
+           conteudo="int8" 
+           description="Documento" 
+           inivalue="0" 
+           label="Documento" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Assinatura" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1009907" 
+           campo_api='' 
+           name="rh235_portaria" 
+           conteudo="int8" 
+           description="Portaria" 
+           inivalue="0" 
+           label="Portaria" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Portaria" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh235_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="portaria" inner='t'>
+      <fieldfk name="rh235_portaria" reference="h31_sequencial" /> 
+    </foreignkey>
+    <foreignkey reference="arquivoestorage" inner='t'>
+      <fieldfk name="rh235_documento" reference="db177_idestorage" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,50 +1,50 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("model/dbGeradorRelatorio.model.php");
-require_once("model/dbColunaRelatorio.php");
-require_once("model/dbFiltroRelatorio.php");
-require_once("model/dbOrdemRelatorio.model.php");
-require_once("model/dbPropriedadeRelatorio.php");
-require_once("model/dbVariaveisRelatorio.php");
-require_once("classes/db_db_relatorio_classe.php");
-require_once("classes/db_db_itensmenu_classe.php");
-require_once("classes/db_db_permissao_classe.php");
-require_once("classes/db_db_menu_classe.php");
-require_once("classes/db_db_relatoriousuario_classe.php"); 
-require_once("classes/db_db_relatoriodepart_classe.php");
-require_once("classes/db_db_geradorrelatoriotemplate_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("model/dbGeradorRelatorio.model.php"));
+require_once(modification("model/dbColunaRelatorio.php"));
+require_once(modification("model/dbFiltroRelatorio.php"));
+require_once(modification("model/dbOrdemRelatorio.model.php"));
+require_once(modification("model/dbPropriedadeRelatorio.php"));
+require_once(modification("model/dbVariaveisRelatorio.php"));
+require_once(modification("classes/db_db_relatorio_classe.php"));
+require_once(modification("classes/db_db_itensmenu_classe.php"));
+require_once(modification("classes/db_db_permissao_classe.php"));
+require_once(modification("classes/db_db_menu_classe.php"));
+require_once(modification("classes/db_db_relatoriousuario_classe.php"));
+require_once(modification("classes/db_db_relatoriodepart_classe.php"));
+require_once(modification("classes/db_db_geradorrelatoriotemplate_classe.php"));
 
 
 
@@ -63,77 +63,78 @@ $sMsgErro = '';
 
 
 if ( $oPost->tipo == "consultaCampos" ) {
-	
+
 	try {
-	  
+
     $aCampos = $oXML->getDadosCampos();
-    
+
     foreach ($aCampos as $iInd => $oCampo) {
-    	
+
       $oRetornoColuna = new stdClass();
       $oRetornoColuna->iId              = $oCampo->getId();
       $oRetornoColuna->sNome            = urlencode($oCampo->getNome());
       $oRetornoColuna->sAlias           = urlencode($oCampo->getAlias());
       $oRetornoColuna->iLargura         = $oCampo->getLargura();
       $oRetornoColuna->sAlinhamento     = $oCampo->getAlinhamento();
-      $oRetornoColuna->sAlinhamentoCab  = $oCampo->getAlinhamentoCab(); 
+      $oRetornoColuna->sAlinhamentoCab  = $oCampo->getAlinhamentoCab();
       $oRetornoColuna->sMascara         = $oCampo->getMascara();
       $oRetornoColuna->sTotalizar       = $oCampo->getTotalizar();
       $oRetornoColuna->lQuebra          = $oCampo->getQuebra();
       $aRetornaCampos[] = $oRetornoColuna;
-      
+
     }
-      
-	} catch ( Exception $eException ) {  
+
+	} catch ( Exception $eException ) {
     $sMsgErro   	  = $eException->getMessage();
     $lErro          = true;
-  } 
-    
+  }
+
   try {
-    
+
     $aVariaveis        = $oXML->getVariaveis();
     $aRetornaVariaveis = array();
-         
+
     foreach ($aVariaveis as $sNome => $oVariavel){
       $oRetornoVariavel = new stdClass();
       $oRetornoVariavel->sNome     = $oVariavel->getNome();
       $oRetornoVariavel->sLabel    = $oVariavel->getLabel();
       $oRetornoVariavel->sValor    = $oVariavel->getValor();
       $oRetornoVariavel->sTipoDado = $oVariavel->getTipoDado();
-      
+      $oRetornoVariavel->sSql      = $oVariavel->getSql();
+
       $aRetornaVariaveis[] = $oRetornoVariavel;
-    }  	
-      
-  } catch ( Exception $eException ) {  
+    }
+
+  } catch ( Exception $eException ) {
     $sMsgErro       = $eException->getMessage();
     $lErro          = true;
-  }   
-  
+  }
+
   if ( $lErro ) {
-  	
+
   	unset($_SESSION['objetoXML']);
-  	
+
 	  $aRetorno  = array( "msg" =>urlencode($sMsgErro),
-                        "erro"=>true );  	
+                        "erro"=>true );
   } else {
-  	
+
     $aRetorno  = array( "aCampos"   =>$aRetornaCampos,
                         "aVariaveis"=>$aRetornaVariaveis,
                         "erro"      =>false );
   }
-    
-  
+
+
   echo $oJson->encode($aRetorno);
 
-    
-//************************************************************************************************************************//  
-// Inclui colunas e seus atributos    
-//************************************************************************************************************************//    
-    
+
+//************************************************************************************************************************//
+// Inclui colunas e seus atributos
+//************************************************************************************************************************//
+
 } else if ($oPost->tipo == "incluirCampos") {
 
 	$aObjCampos = $oJson->decode(str_replace("\\","",$oPost->aObjCampos));
-	
+
 	foreach ($aObjCampos as $oCampos){
 
 		$oColunaRelatorio = new dbColunaRelatorio( $oCampos->iId,
@@ -145,44 +146,44 @@ if ( $oPost->tipo == "consultaCampos" ) {
 	                                             $oCampos->sMascara,
 	                                             $oCampos->sTotalizar,
 	                                             $oCampos->lQuebra);
-	  
+
 	  $oXML->addColuna($oColunaRelatorio);
 
 	  $oRetornoColuna = new stdClass();
-	  
+
  	  $oRetornoColuna->iId       		    = $oColunaRelatorio->getId();
-	  $oRetornoColuna->sNome    		    = urlencode($oColunaRelatorio->getNome());  	    	  
-    $oRetornoColuna->sAlias    		    = urlencode($oColunaRelatorio->getAlias());	
+	  $oRetornoColuna->sNome    		    = urlencode($oColunaRelatorio->getNome());
+    $oRetornoColuna->sAlias    		    = urlencode($oColunaRelatorio->getAlias());
     $oRetornoColuna->iLargura  	      = $oColunaRelatorio->getLargura();
 	  $oRetornoColuna->sAlinhamento   	= $oColunaRelatorio->getAlinhamento();
-	  $oRetornoColuna->sAlinhamentoCab  = $oColunaRelatorio->getAlinhamentoCab(); 
+	  $oRetornoColuna->sAlinhamentoCab  = $oColunaRelatorio->getAlinhamentoCab();
 	  $oRetornoColuna->sMascara 	      = $oColunaRelatorio->getMascara();
 	  $oRetornoColuna->sTotalizar 	    = $oColunaRelatorio->getTotalizar();
 	  $oRetornoColuna->lQuebra          = $oColunaRelatorio->getQuebra();
 
-	  
+
 	  $aRetornaCampos[] = $oRetornoColuna;
-	  
+
 	}
-	
+
 	$_SESSION['objetoXML'] = serialize($oXML);
-	
+
 
 	echo $oJson->encode($aRetornaCampos);
-	
-	
-	
-	
+
+
+
+
   //************************************************************************************************************************//
-  // Altera uma coluna do relatório	
+  // Altera uma coluna do relatório
   //************************************************************************************************************************//
-  	
-	
-	
+
+
+
   } else if ($oPost->tipo == "alterarCampos") {
-  	
+
   	$aReplace = array("\\","(",")");
-  	
+
   	$objCampo = $oJson->decode(str_replace($aReplace,"",$oPost->objCampo));
 
   	$oColuna  = new dbColunaRelatorio( $objCampo->iId,
@@ -194,48 +195,48 @@ if ( $oPost->tipo == "consultaCampos" ) {
   	                                   $objCampo->sMascara,
   	                                   $objCampo->sTotalizar,
   	                                   $objCampo->lQuebra);
-    
+
     $oXML->addColuna($oColuna);
-       		
+
   	$_SESSION['objetoXML'] = serialize($oXML);
-	
-  	
-  	
+
+
+
   //************************************************************************************************************************//
-  // Exclui uma coluna do relatório	
+  // Exclui uma coluna do relatório
   //************************************************************************************************************************//
-  	
-  	
+
+
   } else if ($oPost->tipo == "excluirCampos") {
 
-  	
+
   	$aCampos = split(",",$oPost->aCampos);
-  	
+
   	foreach ( $aCampos as $sNomeCampo){
- 	    unset($oXML->aColunas["Principal"][$sNomeCampo]);	
+ 	    unset($oXML->aColunas["Principal"][$sNomeCampo]);
   	}
-  	
+
   	$_SESSION['objetoXML'] = serialize($oXML);
-  	
-  	
-  	
-  //************************************************************************************************************************//  	
-  // Inclui um filtro no relatório	
+
+
+
   //************************************************************************************************************************//
-    	
+  // Inclui um filtro no relatório
+  //************************************************************************************************************************//
+
   } else if ($oPost->tipo == "incluirFiltro") {
 
-  	
+
    	if ($oPost->tipoCampo == "d"){
 		  $aData  = explode("/",$oPost->sValor);
-		  $sValor = implode("-",array_reverse($aData));  				
+		  $sValor = implode("-",array_reverse($aData));
   	} else {
-  	  $sValor = $oPost->sValor; 	
+  	  $sValor = $oPost->sValor;
   	}
-  	
+
   	switch ($oPost->sCondicao){
   	  case "Igual":
-  		$sCond = " = ";  
+  		$sCond = " = ";
   	  break;
   	  case "Diferente":
   	  	$sCond = " <> ";
@@ -262,104 +263,106 @@ if ( $oPost->tipo == "consultaCampos" ) {
   	  	$sCond = " is not null ";
   	  break;
   	}
-  	
+
   	$oFiltroRelatorio = new dbFiltroRelatorio($oPost->sCampo,$sCond,$sValor,$oPost->sOperador);
-  	
+
   	$oXML->addFiltro($oFiltroRelatorio);
-  	
+
   	$oFiltros = new stdClass();
-  	
+
   	$oFiltros->sCampo 	  = urlencode($oFiltroRelatorio->getCampo());
-  	$oFiltros->sCondicao  = $oFiltroRelatorio->getCondicao();	
-	  $oFiltros->sOperador  = $oFiltroRelatorio->getOperador();  	    	  
-  	$oFiltros->sValor     = urlencode($oPost->sValor);	
-	
+  	$oFiltros->sCondicao  = $oFiltroRelatorio->getCondicao();
+	  $oFiltros->sOperador  = $oFiltroRelatorio->getOperador();
+  	$oFiltros->sValor     = urlencode($oPost->sValor);
+
   	$aFiltros[] = $oFiltros;
-  	
+
   	$_SESSION['objetoXML'] = serialize($oXML);
-  	
+
 	  echo $oJson->encode($aFiltros);
 
 
-		
-	
+
+
   //************************************************************************************************************************//
   // Exclui um filtro do relatório
-  //************************************************************************************************************************//	
-  	
+  //************************************************************************************************************************//
+
   } else if ($oPost->tipo == "excluirFiltro") {
-    
-	
+
+
 	$aObjFiltros = $oJson->decode(str_replace("\\","",$oPost->aObjFiltros));
 
-	
+
 	foreach ($aObjFiltros as $sInd => $oFiltros){
 	  unset($oXML->aFiltros["Principal"]["{$oFiltros->sCampo}{$oFiltros->sCondicao}{$oFiltros->sValor}"]);
 	}
 
-	
+
 	$_SESSION['objetoXML'] = serialize($oXML);
 
-		
 
-	
-  //************************************************************************************************************************//  
-  // Inclui variáveis    
-  //************************************************************************************************************************//    
-    
+
+
+  //************************************************************************************************************************//
+  // Inclui variáveis
+  //************************************************************************************************************************//
+
   } else if ($oPost->tipo == "incluirVariaveis") {
 
-  	
+
 		$oPostVariavel = $oJson->decode(str_replace("\\","",$oPost->objVariavel));
-	
-		unset($oXML->aVariaveis[$oPostVariavel->sNome]);                                               
-		
+
+		unset($oXML->aVariaveis[$oPostVariavel->sNome]);
+
 		$oVariavel     = new dbVariaveisRelatorio( utf8_decode($oPostVariavel->sNome),
 				  								                     utf8_decode($oPostVariavel->sLabel),
 			                  										   utf8_decode($oPostVariavel->sValor),
-			                                         utf8_decode($oPostVariavel->sTipoDado));	
-		  
+															   utf8_decode($oPostVariavel->sTipoDado), 
+															   utf8_decode($oPostVariavel->sSql));
+
 		$oXML->addVariavel($oPostVariavel->sNome,$oVariavel);
-		
+
 	  $oRetornoVariavel = new stdClass();
 		$oRetornoVariavel->sNome     = urlencode($oVariavel->getNome());
 		$oRetornoVariavel->sLabel    = urlencode($oVariavel->getLabel());
 		$oRetornoVariavel->sValor    = urlencode($oVariavel->getValor());
 	  $oRetornoVariavel->sTipoDado = urlencode($oVariavel->getTipoDado());
-	  
+	  $oRetornoVariavel->sSql = urlencode($oVariavel->getSql());;
+
 	  $aRetornaVariaveis[] = $oRetornoVariavel;
-		  
+
 		$_SESSION['objetoXML'] = serialize($oXML);
-	
+
 		echo $oJson->encode($aRetornaVariaveis);
-	
-	
-  //************************************************************************************************************************//  
-  // Exclui variáveis    
-  //************************************************************************************************************************//    
-    
+
+
+  //************************************************************************************************************************//
+  // Exclui variáveis
+  //************************************************************************************************************************//
+
   } else if ($oPost->tipo == "excluirVariaveis") {
 
-	  	
+
   	$aReplace = array("\\","(",")");
   	$aPostVar = $oJson->decode(str_replace($aReplace	,"",$oPost->aObjVariavel));
-	
+
 		foreach ( $aPostVar as $sInd => $oPostVariavel ) {
 		  unset($oXML->aVariaveis[$oPostVariavel->sNome]);
 		}
-		
-		$_SESSION['objetoXML'] = serialize($oXML);
-	
-	
-	
 
-  //************************************************************************************************************************//	
+		$_SESSION['objetoXML'] = serialize($oXML);
+
+
+
+
+  //************************************************************************************************************************//
   // Incluir as propriedades do relatório
-  //************************************************************************************************************************//	
-	
-  } else if ($oPost->tipo == "incluirPropriedades") {	
-	
-	
+  //************************************************************************************************************************//
+
+  } else if ($oPost->tipo == "incluirPropriedades") {
+
+
   	$objPostPropriedades = $oJson->decode(str_replace("\\","",$oPost->objPropriedades));
 
 		$oPropriedades = new dbPropriedadeRelatorio( $objPostPropriedades->sNome,
@@ -373,48 +376,48 @@ if ( $oPost->tipo == "consultaCampos" ) {
 																								 $objPostPropriedades->iMargemDir,
                                                  $objPostPropriedades->sTipoSaida);
 		$oXML->addPropriedades($oPropriedades);
-		
+
 		$_SESSION['objetoXML'] = serialize($oXML);
 
-	
-  //************************************************************************************************************************//	
+
+  //************************************************************************************************************************//
   // Incluir ordem do relatório
-  //************************************************************************************************************************//	
-	
-  } else if ($oPost->tipo == "incluirOrdem") {	
-	
-  	
+  //************************************************************************************************************************//
+
+  } else if ($oPost->tipo == "incluirOrdem") {
+
+
     $aReplace = array("\\","(",")");
 	  $aObjCampos = $oJson->decode(str_replace($aReplace,"",$oPost->aObjCampos));
-	
+
 	  if (isset($oXML->aOrdem["Principal"])) {
 		  unset($oXML->aOrdem["Principal"]);
 	  }
-	  
+
 	  foreach ($aObjCampos as $sInd => $oCampos){
-	  	
+
 		  if ( $oCampos ) {
-		  	
+
 			  $oOrdemRelatorio = new dbOrdemRelatorio( $oCampos->iId,
 			                                           $oCampos->sNome,
 			                                           $oCampos->sAscDesc,
 			                                           $oCampos->sAlias);
 			  $oXML->addOrdem($oOrdemRelatorio);
-		
+
 		  }
 		}
-		
+
 		$_SESSION['objetoXML'] = serialize($oXML);
-		
-	
+
+
   //************************************************************************************************************************//
-  // Visualiza um relatório apartir do objeto em sessão, sem salvar nada no banco	
+  // Visualiza um relatório apartir do objeto em sessão, sem salvar nada no banco
   //************************************************************************************************************************//
-  	
+
   } else if ($oPost->tipo == "visualizarRelatorio") {
-	
-		$lErro = false; 
-		
+
+		$lErro = false;
+
 		try {
       $oXML->addConsulta();
 		} catch (Exception $e){
@@ -423,94 +426,95 @@ if ( $oPost->tipo == "consultaCampos" ) {
 		}
 
 		if (!$lErro) {
-			
+
 			try {
 			  $oXML->buildXML();
 			} catch (Exception $e){
 		 	  $sMsgErro = $e->getMessage();
 		 	  $lErro = true;
 			}
-			
+
 			if (!$lErro) {
-			
+
 			  $oXML->converteAgt($oXML->getBuffer());
-				
+
 			  $sArquivo   	     = "geraRelatorio".date("YmdHis").db_getsession("DB_id_usuario").".agt";
 			  $sCaminhoRelatorio = "tmp/".$sArquivo;
-			
+
 			  $rsRelatorioTemp   = fopen($sCaminhoRelatorio,"w");
-		    
+
 			  fputs($rsRelatorioTemp ,$oXML->getBufferAgt());
 			  fclose($rsRelatorioTemp);
-		
-			  
+
+
 			  $aObjVariaveis = $oXML->getVariaveis();
-			  
+
 			  $aVariaveis	 = array();
-			  
+
 			  foreach ($aObjVariaveis as $sNome => $oVariavel){
-			    
+
 			  	$oRetornoVariavel = new stdClass();
 			    $oRetornoVariavel->sNome     = urlencode($oVariavel->getNome());
 			    $oRetornoVariavel->sLabel    = urlencode($oVariavel->getLabel());
 			    $oRetornoVariavel->sValor    = urlencode($oVariavel->getValor());
           $oRetornoVariavel->sTipoDado = urlencode($oVariavel->getTipoDado());
-          
+          $oRetornoVariavel->sSql = urlencode($oVariavel->getSql());
+
 			    $aVariaveis[] = $oRetornoVariavel;
-			    
+
 			  }
 			}
-		}	
-		  
-	  if ( !$lErro ) {		  
+		}
+
+	  if ( !$lErro ) {
 		  $aRetorno = array("caminho"=>$sCaminhoRelatorio,"erro"=>false,"variaveis"=>$aVariaveis);
 		} else {
 		  $aRetorno = array("msg"=>urlencode($sMsgErro)  ,"erro"=>true);
 		}
-		
+
 		echo $oJson->encode($aRetorno);
-	
-	
+
+
   //************************************************************************************************************************//
   // Inclui o relatório no banco
   //************************************************************************************************************************//
-  	
+
   } else if ($oPost->tipo == "salvarRelatorio") {
-	
+
 	$cldb_relatorio 	     = new cl_db_relatorio();
 	$cldb_relatoriousuario = new cl_db_relatoriousuario();
 	$cldb_relatoriodepart  = new cl_db_relatoriodepart();
-	
+
 	// Retira alias dos campos do relatório
 	if( $oPost->tipoRelatorio == 2 ){
 	  $oXML->converteColunaDocumento($oXML->getColunas());
 	}
-	
+
 	try {
 	  $oXML->addConsulta();
 	} catch (Exception $e){
   	  $sMsgErro = $e->getMessage();
   	  $lErro = true;
 	}
-	
+
 	try {
 	  $oXML->buildXML();
 	} catch (Exception $e){
   	$sMsgErro = $e->getMessage();
   	$lErro = true;
 	}
-  	  
+
 	$oPropriedades = $oXML->getPropriedades();
-	
+
 	if (trim($oPropriedades->getNome()) == ""){
 	  $sMsgErro = "Inclusão abortada, favor incluir Nome do Relatório";
   	  $lErro    = true;
 	}
-		
+
 	if (!$lErro) {
-	  
+
 	  db_inicio_transacao();
-	
+
 	  $cldb_relatorio->db63_db_gruporelatorio  = $oPost->grupoRelatorio;
 	  $cldb_relatorio->db63_db_tiporelatorio   = $oPost->tipoRelatorio;
 	  $cldb_relatorio->db63_nomerelatorio	     = "{$oPropriedades->getNome()}";
@@ -519,60 +523,71 @@ if ( $oPost->tipo == "consultaCampos" ) {
 	  $cldb_relatorio->db63_xmlestruturarel    = addslashes($oXML->getBuffer());
 	  $cldb_relatorio->db63_db_relatorioorigem = $oXML->getOrigemRelatorio();
 	  $cldb_relatorio->incluir(null);
-	
+
 	  if($cldb_relatorio->erro_status == 0){
-	    $lErro = true;	
-	    $sMsgErro = $cldb_relatorio->erro_msg;	
+	    $lErro = true;
+	    $sMsgErro = $cldb_relatorio->erro_msg;
 	  }
-	
+
 	  if (!$lErro) {
-	  	  
+
+             if ($oPost->tipoVisualizacao == 'usuario' ){ 
+
   	 	$cldb_relatoriousuario->db09_db_relatorio = $cldb_relatorio->db63_sequencial;
 	  	$cldb_relatoriousuario->db09_db_usuarios  = db_getsession("DB_id_usuario");
 	  	$cldb_relatoriousuario->incluir(null);
-	  
-	  	if($cldb_relatoriousuario->erro_status == 0){
-	      $lErro = true;	
-	      $sMsgErro = $cldb_relatoriousuario->erro_msg;	
-      }
 
-	    $cldb_relatoriodepart->db07_db_relatorio = $cldb_relatorio->db63_sequencial;
-	    $cldb_relatoriodepart->db07_db_depart	 = db_getsession("DB_coddepto");
-	    $cldb_relatoriodepart->incluir(null);
-	  
-	    if($cldb_relatoriodepart->erro_status == 0){
-	      $lErro = true;	
-	      $sMsgErro = $cldb_relatoriodepart->erro_msg;
-      }
-      
+	  	if($cldb_relatoriousuario->erro_status == 0){
+	          $lErro = true;
+	          $sMsgErro = $cldb_relatoriousuario->erro_msg;
+                }
+             }
+
+
+           if ($oPost->tipoVisualizacao == 'depto' ){ 
+
+	     $cldb_relatoriodepart->db07_db_relatorio = $cldb_relatorio->db63_sequencial;
+	     $cldb_relatoriodepart->db07_db_depart	 = db_getsession("DB_coddepto");
+	     $cldb_relatoriodepart->incluir(null);
+
+	     if($cldb_relatoriodepart->erro_status == 0){
+	       $lErro = true;
+	       $sMsgErro = $cldb_relatoriodepart->erro_msg;
+
+             }
+	   }
+
 	  }
 
-	  db_fim_transacao($lErro);	
+	  db_fim_transacao($lErro);
 	}
-	
+
 	if (!$lErro){
 	  if( isset($_SESSION['objetoXML']) ){
       unset($_SESSION['objetoXML']);
     }
     $aRetorno = array( "msg"=>urlencode('Inclusão feita com sucesso!'),
-                       "erro"=>false);		
+                       "erro"=>false);
 	} else {
 	  $aRetorno = array( "msg"=>urlencode($sMsgErro),
 	                     "erro"=>true);
 	}
 
   echo $oJson->encode($aRetorno);
- 
-    
+
+
   //************************************************************************************************************************//
   // Altera o registros do relatório no banco
-  //************************************************************************************************************************//	
-      
+  //************************************************************************************************************************//
+
   } else if ($oPost->tipo == "alterarRelatorio") {
 
-	
+
 	$cldb_relatorio = new cl_db_relatorio();
-	
+	$cldb_relatoriousuario = new cl_db_relatoriousuario();
+	$cldb_relatoriodepart  = new cl_db_relatoriodepart();
+
+
 	try {
 	  $oXML->addConsulta();
 	} catch (Exception $e){
@@ -585,18 +600,18 @@ if ( $oPost->tipo == "consultaCampos" ) {
  	  $sMsgErro = $e->getMessage();
  	  $lErro = true;
 	}
-	
+
 	$oPropriedades = $oXML->getPropriedades();
-	
+
 	if (trim($oPropriedades->getNome()) == ""){
 	  $sMsgErro = "Inclusão abortada, favor incluir Nome do Relatório";
     $lErro    = true;
 	}
-		
+
 	if (!$lErro) {
-	  
+
 	  db_inicio_transacao();
-	
+
 	  $cldb_relatorio->db63_db_gruporelatorio = $oPost->grupoRelatorio;
 	  $cldb_relatorio->db63_db_tiporelatorio  = $oPost->tipoRelatorio;
 	  $cldb_relatorio->db63_nomerelatorio	    = "{$oPropriedades->getNome()}";
@@ -605,91 +620,133 @@ if ( $oPost->tipo == "consultaCampos" ) {
 	  $cldb_relatorio->db63_xmlestruturarel   = addslashes($oXML->getBuffer());
 	  $cldb_relatorio->db63_sequencial		    = $oXML->getCodRelatorio();
 	  $cldb_relatorio->alterar($oXML->getCodRelatorio());
-									   
+
 	  if($cldb_relatorio->erro_status == 0){
-	    $lErro    = true;	
-	    $sMsgErro = $cldb_relatorio->erro_msg;	
+	    $lErro    = true;
+	    $sMsgErro = $cldb_relatorio->erro_msg;
 	  }
 
-	  db_fim_transacao($lErro);	
+		
+	  	$cldb_relatoriousuario->excluir(null,' db09_db_relatorio = '.$oXML->getCodRelatorio());
+
+	  	if($cldb_relatoriousuario->erro_status == 0){
+	          $lErro = true;
+	          $sMsgErro = $cldb_relatoriousuario->erro_msg;
+		}
+
+		if( $oPost->tipoVisualizacao == 'usuario' ){
+
+  	 	  $cldb_relatoriousuario->db09_db_relatorio = $oXML->getCodRelatorio();
+	  	  $cldb_relatoriousuario->db09_db_usuarios  = db_getsession("DB_id_usuario");
+	  	  $cldb_relatoriousuario->incluir(null);
+
+	  	  if($cldb_relatoriousuario->erro_status == 0){
+	            $lErro = true;
+	            $sMsgErro = $cldb_relatoriousuario->erro_msg;
+                  }
+                }
+
+             
+	     $cldb_relatoriodepart->excluir(null, ' db07_db_relatorio = '.$oXML->getCodRelatorio());
+
+	     if($cldb_relatoriodepart->erro_status == 0){
+	       $lErro = true;
+	       $sMsgErro = $cldb_relatoriodepart->erro_msg;
+
+	     }
+
+             if( $oPost->tipoVisualizacao == 'depto' ){
+	       $cldb_relatoriodepart->db07_db_relatorio = $oXML->getCodRelatorio();
+	       $cldb_relatoriodepart->db07_db_depart    = db_getsession("DB_coddepto");
+	       $cldb_relatoriodepart->incluir(null);
+
+	       if($cldb_relatoriodepart->erro_status == 0){
+	         $lErro = true;
+	         $sMsgErro = $cldb_relatoriodepart->erro_msg;
+
+               }
+
+	  }
+
+	  db_fim_transacao($lErro);
 	}
-	
+
 	if (!$lErro){
 	  if( isset($_SESSION['objetoXML']) ){
       unset($_SESSION['objetoXML']);
-    }		
+    }
     $aRetorno = array("msg"=>urlencode('Alteração feita com sucesso!'),"erro"=>false);
 	} else {
 	  $aRetorno = array("msg"=>urlencode($sMsgErro),"erro"=>true);
-	  
+
 	}
- 	
+
     echo $oJson->encode($aRetorno);
 
-    
-    
-    
+
+
+
   //************************************************************************************************************************//
   // Exclui o relatório do banco
-  //************************************************************************************************************************//    
-    	
-  } else if ($oPost->tipo == "excluirRelatorio") {	
+  //************************************************************************************************************************//
+
+  } else if ($oPost->tipo == "excluirRelatorio") {
 
     $cldb_relatorio 	   			= new cl_db_relatorio();
 	$cldb_relatoriousuario 			= new cl_db_relatoriousuario();
 	$cldb_relatoriodepart  			= new cl_db_relatoriodepart();
  	$cldb_geradorrelatoriotemplate  = new cl_db_geradorrelatoriotemplate();
-	
+
  	$lSqlErro = false;
- 	
+
  	db_inicio_transacao();
- 	
+
  	$cldb_relatoriodepart->excluir(null," db07_db_relatorio = {$oPost->codRelatorio}");
- 	
+
  	if ($cldb_relatoriodepart->erro_status == 0){
  	  $lSqlErro = true;
- 	  $sMsgErro = urlencode($cldb_relatoriodepart->erro_msg); 
+ 	  $sMsgErro = urlencode($cldb_relatoriodepart->erro_msg);
  	}
- 	
- 	
+
+
  	$cldb_relatoriousuario->excluir(null," db09_db_relatorio = {$oPost->codRelatorio}");
-  	
+
  	if ($cldb_relatoriousuario->erro_status == 0){
  	  $lSqlErro = true;
- 	  $sMsgErro = urlencode($cldb_relatoriousuario->erro_msg); 
+ 	  $sMsgErro = urlencode($cldb_relatoriousuario->erro_msg);
  	}
-	
- 	
-	$rsConsultaTemplate = $cldb_geradorrelatoriotemplate->sql_record($cldb_geradorrelatoriotemplate->sql_query(null,"db15_sequencial",null," db15_db_relatorio = {$oPost->codRelatorio}")); 
- 	
+
+
+	$rsConsultaTemplate = $cldb_geradorrelatoriotemplate->sql_record($cldb_geradorrelatoriotemplate->sql_query(null,"db15_sequencial",null," db15_db_relatorio = {$oPost->codRelatorio}"));
+
 	if ($cldb_geradorrelatoriotemplate->numrows > 0 ){
 	  $oTemplate = db_utils::fieldsMemory($rsConsultaTemplate,0);
 	  $cldb_geradorrelatoriotemplate->excluir($oTemplate->db15_sequencial);
 	}
-	
+
 	$cldb_relatorio->excluir($oPost->codRelatorio);
-  	
+
 	if ($cldb_relatorio->erro_status == 0){
  	  $lSqlErro = true;
- 	  $sMsgErro = urlencode($cldb_relatorio->erro_msg); 
+ 	  $sMsgErro = urlencode($cldb_relatorio->erro_msg);
  	}
-	
+
 	db_fim_transacao($lSqlErro);
-	
+
  	if (!$lSqlErro){
 	  $aRetorno = array("idRel"=>$oPost->codRelatorio,"erro"=>false);
 	} else {
 	  $aRetorno = array("msg"=>$sMsgErro,"erro"=>true);
 	}
-	
-  echo $oJson->encode($aRetorno);	
-    
+
+  echo $oJson->encode($aRetorno);
+
   //************************************************************************************************************************//
   // Retorna as informações do relatório apartir do código e monta um objeto na sessão
-  //************************************************************************************************************************//    
-  
-  } else if ($oPost->tipo == "buscaDadosRelatorio") {	
-	
+  //************************************************************************************************************************//
+
+  } else if ($oPost->tipo == "buscaDadosRelatorio") {
+
     try{
 
       $aRetornaCampos             = array();
@@ -697,62 +754,62 @@ if ( $oPost->tipo == "consultaCampos" ) {
       $aRetornaOrdem              = array();
       $aRetornaFiltros            = array();
       $aRetornoVariaveis          = array();
-        
+
       $cldb_relatorio = new cl_db_relatorio();
-      
+
       $aCampos = $oXML->getDadosCampos();
-      
+
       foreach ($aCampos as $iInd => $oCampo) {
         $oRetornoColuna = new stdClass();
         $oRetornoColuna->iId              = $oCampo->getId();
-        $oRetornoColuna->sNome            = urlencode($oCampo->getNome());           
-        $oRetornoColuna->sAlias           = urlencode($oCampo->getAlias()); 
+        $oRetornoColuna->sNome            = urlencode($oCampo->getNome());
+        $oRetornoColuna->sAlias           = urlencode($oCampo->getAlias());
         $oRetornoColuna->iLargura         = $oCampo->getLargura();
         $oRetornoColuna->sAlinhamento     = $oCampo->getAlinhamento();
-        $oRetornoColuna->sAlinhamentoCab  = $oCampo->getAlinhamentoCab(); 
+        $oRetornoColuna->sAlinhamentoCab  = $oCampo->getAlinhamentoCab();
         $oRetornoColuna->sMascara         = $oCampo->getMascara();
         $oRetornoColuna->sTotalizar       = $oCampo->getTotalizar();
         $oRetornoColuna->lQuebra          = $oCampo->getQuebra();
         $aRetornaCampos[] = $oRetornoColuna;
       }
-      
-      
+
+
       $aColunas = $oXML->getColunas();
-      
+
       if ( !empty($aColunas) ) {
         foreach ( $aColunas as $sNomeCampo => $oCampoConfigurado) {
-          
+
           $oRetornoColunaConf = new stdClass();
           $oRetornoColunaConf->iId              = $oCampoConfigurado->getId();
-          $oRetornoColunaConf->sNome            = urlencode($oCampoConfigurado->getNome());           
-          $oRetornoColunaConf->sAlias           = urlencode($oCampoConfigurado->getAlias());  
+          $oRetornoColunaConf->sNome            = urlencode($oCampoConfigurado->getNome());
+          $oRetornoColunaConf->sAlias           = urlencode($oCampoConfigurado->getAlias());
           $oRetornoColunaConf->iLargura         = $oCampoConfigurado->getLargura();
           $oRetornoColunaConf->sAlinhamento     = $oCampoConfigurado->getAlinhamento();
-          $oRetornoColunaConf->sAlinhamentoCab  = $oCampoConfigurado->getAlinhamentoCab(); 
+          $oRetornoColunaConf->sAlinhamentoCab  = $oCampoConfigurado->getAlinhamentoCab();
           $oRetornoColunaConf->sMascara         = $oCampoConfigurado->getMascara();
           $oRetornoColunaConf->sTotalizar       = $oCampoConfigurado->getTotalizar();
           $oRetornoColunaConf->lQuebra          = $oCampoConfigurado->getQuebra();
           $aRetornaCamposConfigurados[]         = $oRetornoColunaConf;
-          
+
         }
       }
-      
+
       $aOrdens = $oXML->getOrdem();
-      
+
       foreach ($aOrdens as $iInd => $aOrdem){
         foreach ($aOrdem as $sInd => $oOrdem){
           $oRetornoOrdem = new stdClass();
-          $oRetornoOrdem->iId      = $oOrdem->getId(); 
+          $oRetornoOrdem->iId      = $oOrdem->getId();
           $oRetornoOrdem->sNome    = urlencode($oOrdem->getNome());
           $oRetornoOrdem->sAscDesc = $oOrdem->getAscDesc();
           $oRetornoOrdem->sAlias   = urlencode($oOrdem->getAlias());
           $aRetornaOrdem[] = $oRetornoOrdem;
         }
       }
-      
-      
+
+
       $aFiltros = $oXML->getFiltros();
-    
+
       foreach ($aFiltros as $iInd => $aFiltro){
         foreach ($aFiltro as $sInd => $oFiltro){
           $oRetornoFiltro = new stdClass();
@@ -760,12 +817,12 @@ if ( $oPost->tipo == "consultaCampos" ) {
           $oRetornoFiltro->sCampo    = urlencode($oFiltro->getCampo());
           $oRetornoFiltro->sCondicao = $oFiltro->getCondicao();
           $oRetornoFiltro->sValor    = urlencode($oFiltro->getValor());
-          $aRetornaFiltros[] = $oRetornoFiltro;   
+          $aRetornaFiltros[] = $oRetornoFiltro;
         }
       }
-      
+
       $oPropriedades = $oXML->getPropriedades();
-      
+
       $oRetornoPropriedades = new stdClass();
       $oRetornoPropriedades->iVersao     = $oPropriedades->getVersao();
       $oRetornoPropriedades->sNome       = urlencode($oPropriedades->getNome());
@@ -777,24 +834,25 @@ if ( $oPost->tipo == "consultaCampos" ) {
       $oRetornoPropriedades->iMargemInf  = $oPropriedades->getMargemInf();
       $oRetornoPropriedades->iMargemSup  = $oPropriedades->getMargemSup();
     $oRetornoPropriedades->sTipoSaida  = $oPropriedades->getTipoSaida();
-    
-        
+
+
       $aVariaveis = $oXML->getVariaveis();
-        
+
       foreach ($aVariaveis as $sNomeVar => $oVariavel ){
         $oRetornoVariaveis = new stdClass();
         $oRetornoVariaveis->sNome     = $oVariavel->getNome();
         $oRetornoVariaveis->sLabel    = urlencode($oVariavel->getLabel());
         $oRetornoVariaveis->sValor    = urlencode($oVariavel->getValor());
         $oRetornoVariaveis->sTipoDado = $oVariavel->getTipoDado();
-          
+        $oRetornoVariaveis->sSql      = $oVariavel->getSql();
+
         $aRetornoVariaveis[] = $oRetornoVariaveis;
       }
-        
-        
+
+
       $rsConsultaTipoGrupo = $cldb_relatorio->sql_record($cldb_relatorio->sql_query_file($oXML->getCodRelatorio(),"db63_db_tiporelatorio as tiporel,db63_db_gruporelatorio as gruporel "));
       $oRetornoTipoGrupo   = db_utils::fieldsMemory($rsConsultaTipoGrupo,0);
-        
+
       $aRetorno = array(
                         "aCampos"            =>$aRetornaCampos,
                         "aCamposConfigurados"=>$aRetornaCamposConfigurados,
@@ -804,95 +862,102 @@ if ( $oPost->tipo == "consultaCampos" ) {
                         "aVariaveis"         =>$aRetornoVariaveis,
                         "oTipoGrupo"         =>$oRetornoTipoGrupo
                        );
-      
-               
-      $_SESSION['objetoXML'] = serialize($oXML);           
-  
-  
+
+
+      $_SESSION['objetoXML'] = serialize($oXML);
+
+
     } catch (Exception $oException) {
       $aRetorno = array("msg"=>$oException->getMessage(),"erro"=>true);
     }
-    
+
     echo $oJson->encode($aRetorno);
 
   //************************************************************************************************************************//
   // Retorna todos relatório por departamento ou usuário
-  //************************************************************************************************************************//  
-    
-  } else if ($oPost->tipo == "consultaRelatorios") {    
-    
+  //************************************************************************************************************************//
+
+  } else if ($oPost->tipo == "consultaRelatorios") {
+
     $cldb_relatoriousuario = new cl_db_relatoriousuario();
     $cldb_relatoriodepart  = new cl_db_relatoriodepart();
     $cldb_relatorio        = new cl_db_relatorio();
-    
+
   if ($oPost->sTipoPesquisa == "Depto"){
-    
-	  $rsConsultaRelatorios = $cldb_relatoriodepart->sql_record($cldb_relatoriodepart->sql_query(null,"db63_nomerelatorio as nomeRelatorio, db63_sequencial as idRel","db63_sequencial"," db07_db_depart = ".$oPost->codDepto));	
+
+	  $rsConsultaRelatorios = $cldb_relatoriodepart->sql_record($cldb_relatoriodepart->sql_query(null,"db63_nomerelatorio as nomeRelatorio, db63_sequencial as idRel","db63_sequencial desc"," db07_db_depart = ".$oPost->codDepto));
 	  $iNroLinhas = $cldb_relatoriodepart->numrows;
-	  
+
 	} elseif ($oPost->sTipoPesquisa == "Usuario") {
 
-		$rsConsultaRelatorios = $cldb_relatoriousuario->sql_record($cldb_relatoriousuario->sql_query(null,"db63_nomerelatorio as nomeRelatorio, db63_sequencial as idRel","db63_sequencial","db09_db_usuarios = ".$oPost->idUsuario)); 
+		$rsConsultaRelatorios = $cldb_relatoriousuario->sql_record($cldb_relatoriousuario->sql_query(null,"db63_nomerelatorio as nomeRelatorio, db63_sequencial as idRel","db63_sequencial desc","db09_db_usuarios = ".$oPost->idUsuario));
 	  $iNroLinhas = $cldb_relatoriousuario->numrows;
-	  
+
+	}	else if ($oPost->sTipoPesquisa == "Cubos" ) {
+
+		$sWhere               = " db63_db_gruporelatorio in (4,5) ";
+		$rsConsultaRelatorios = $cldb_relatorio->sql_record($cldb_relatorio->sql_query_file(null,"db63_nomerelatorio as nomeRelatorio, db63_sequencial as idRel","db63_sequencial desc", $sWhere));
+		$iNroLinhas           = $cldb_relatorio->numrows;
 	}	else {
-		
+
 		$sWhere               = "(    not exists (select 1 from db_relatoriodepart where db07_db_relatorio = db_relatorio.db63_sequencial)  ";
 		$sWhere              .= " and not exists (select 1 from db_relatoriousuario where db09_db_relatorio = db_relatorio.db63_sequencial)) ";
-		$rsConsultaRelatorios = $cldb_relatorio->sql_record($cldb_relatorio->sql_query_file(null,"db63_nomerelatorio as nomeRelatorio, db63_sequencial as idRel","db63_sequencial", $sWhere));
+		$rsConsultaRelatorios = $cldb_relatorio->sql_record($cldb_relatorio->sql_query_file(null,"db63_nomerelatorio as nomeRelatorio, db63_sequencial as idRel","db63_sequencial desc", $sWhere));
 		$iNroLinhas           = $cldb_relatorio->numrows;
-		
+
+
 	}
-	
+
  	if ( $iNroLinhas > 0 ){
- 	  $aRetornaRel = db_utils::getColectionByRecord($rsConsultaRelatorios,false,false,true); 		
+ 	  $aRetornaRel = db_utils::getCollectionByRecord($rsConsultaRelatorios,false,false,true);
  	  $aRetorno    = array("objRel"=>$aRetornaRel,"erro"=>false);
 	} else {
 	  $aRetorno    = array("msg"=>urlencode("Nenhum relatório cadastrado!"),"erro"=>true);
 	}
-	
-    echo $oJson->encode($aRetorno);  	
-    
-    
-    
+
+    echo $oJson->encode($aRetorno);
+
+
+
   //************************************************************************************************************************//
   // Remove o objeto da sessão
   //************************************************************************************************************************//
-    
-    
-  } else if ($oPost->tipo == "retiraObjetoSessao") {    
-    
-  	
+
+
+  } else if ($oPost->tipo == "retiraObjetoSessao") {
+
+
     if( isset($_SESSION['objetoXML']) ){
   	  unset($_SESSION['objetoXML']);
     }
-  
-    
-    
+
+
+
   //************************************************************************************************************************//
   // Consulta Variáveis
-  //************************************************************************************************************************//    
-  
-  
-  } else if ($oPost->tipo == "consultaVariaveis") {        
+  //************************************************************************************************************************//
+
+
+  } else if ($oPost->tipo == "consultaVariaveis") {
 
   	$aRetorno   = array();
   	$aVariaveis = $oXML->getVariaveis();
-  	
+
   	foreach ( $aVariaveis as $sInd => $objVariavel ){
-  		
+
   	  $objRetornoVariavel = new stdClass();
   	  $objRetornoVariavel->sNome     = utf8_encode($objVariavel->getNome());
   	  $objRetornoVariavel->sLabel    = utf8_encode($objVariavel->getLabel());
   	  $objRetornoVariavel->sValor    = utf8_encode($objVariavel->getValor());
       $objRetornoVariavel->sTipoDado = utf8_encode($objVariavel->getTipoDado());
+      $objRetornoVariavel->sSql = utf8_encode($objVariavel->getSql());
   	  $aRetorno[] = $objRetornoVariavel;
     }
-    
+
   	echo $oJson->encode($aRetorno);
-  	
-  	
-  	
+
+
+
   } else  if ( $oPost->tipo == "incluirConsulta" ) {
 
   	unset($oXML->aColunas);
@@ -901,36 +966,47 @@ if ( $oPost->tipo == "consultaCampos" ) {
   	unset($oXML->aFiltros);
 
   	if ( isset($oPost->sql) ) {
-  		
+
+      /**
+       * Alteração realizada por motivos de sql injection detectado pelo firewall do cliente
+       */
+      $oPost->sql = base64_decode($oPost->sql);
+
   		$sSql = stripslashes($oPost->sql);
   		$oXML->setOrigemRelatorio(1);
-  		
+
   		try {
+        if (DBSqlValidador::sqlAlteraDadosOuEstrutura($sSql)) {
+          throw new Exception('O sql informado contém comandos inválidos!');
+        }
+
   		  $oXML->addSqlFrom(str_replace(";","",$sSql));
   		} catch ( Exception $eException ) {
   			$sMsgErro = $eException->getMessage();
   			$lErro    = true;
   		}
-  		
-  	  try {
-        $oXML->verificaVariaveisConsulta();
-      } catch ( Exception $eException ) {
-        $sMsgErro = $eException->getMessage();
-        $lErro    = true;
+
+  		if (!$lErro) {
+          try {
+              $oXML->verificaVariaveisConsulta();
+          } catch ( Exception $eException ) {
+              $sMsgErro = $eException->getMessage();
+              $lErro    = true;
+          }
       }
-  		
-  		
+
+
   	} else if (isset($oPost->view)) {
-  	  
+
   		$oXML->setOrigemRelatorio(2);
-  		
+
   		try {
         $oXML->addSqlFrom($oPost->view);
       } catch ( Exception $eException ) {
         $sMsgErro = $eException->getMessage();
         $lErro    = true;
-      }  		
-  		
+      }
+
   	} else {
  		  $sMsgErro = 'Nenhuma consulta informada!';
   		$lErro    = true;
@@ -940,59 +1016,59 @@ if ( $oPost->tipo == "consultaCampos" ) {
   	  $aRetorno  = array( "msg" =>urlencode($sMsgErro),
   	                      "erro"=>true );
   	} else {
-  		
+
       $_SESSION['objetoXML'] = serialize($oXML);
-        		
-      $aRetorno  = array( "erro"=>false );  		
+
+      $aRetorno  = array( "erro"=>false );
   	}
-  	
-    echo $oJson->encode($aRetorno);  	
-  	
-    
-    
+
+    echo $oJson->encode($aRetorno);
+
+
+
  } else  if ( $oPost->tipo == "consultaSQL" ) {
 
- 	
+
 	 try {
 	   $sSql = $oXML->getSqlFrom('Principal');
 	 } catch ( Exception $eException ) {
 	   $sMsgErro = $eException->getMessage();
 	   $lErro    = true;
 	 }
-	      
-	
+
+
 	 if ($lErro) {
 	   $aRetorno  = array( "msg" =>urlencode($sMsgErro),
 	                       "erro"=>true );
 	 } else {
-	   $aRetorno  = array( "sSql"=>$sSql,
-	                       "erro"=>false );      
+	   $aRetorno  = array( "sSql"=>urlencode($sSql),
+	                       "erro"=>false );
 	 }
-	    
-	 echo $oJson->encode($aRetorno);    
-    
-    
+
+	 echo $oJson->encode($aRetorno);
+
+
  } else if ( $oPost->tipo == "carregarRelatorio" ) {
-    
+
     if ( isset($oPost->iCodRelatorio) ) {
-    	
+
     	try {
  	      $oXML = new dbGeradorRelatorio($oPost->iCodRelatorio);
     	} catch ( Exception $eException ){
         $sMsgErro = $eException->getMessage();
-        $lErro    = true;    		  
+        $lErro    = true;
     	}
-    	
+
     } else {
       $sMsgErro = 'Código do relatório não informado!';
-      $lErro    = true;    	  
+      $lErro    = true;
     }
-    
+
     if ($lErro) {
       $aRetorno  = array( "msg" =>urlencode($sMsgErro),
                           "erro"=>true );
     } else {
-    	
+
       if( isset($_SESSION['objetoXML']) ){
         unset($_SESSION['objetoXML']);
       }
@@ -1005,25 +1081,25 @@ if ( $oPost->tipo == "consultaCampos" ) {
       } else {
       	$lSql = false;
       }
-      
+
       $aRetorno  = array( "lSql"=>$lSql,
                           "erro"=>false );
-    }    
+    }
 
-    echo $oJson->encode($aRetorno);    
-    
+    echo $oJson->encode($aRetorno);
+
  } else if ( $oPost->tipo == "verificaAlteracao" ) {
- 	  
- 	  
+
+
  	  if ( $_SESSION['lAlteraRelatorio'] ) {
  	  	$aRetorno = array("lAlteracao"=>true);
  	  } else {
  	  	$aRetorno = array("lAlteracao"=>false);
  	  }
- 	
- 	  echo $oJson->encode($aRetorno);    
- 	  
-  } else if ($oPost->tipo == "cadastrarMenu") {        
+
+ 	  echo $oJson->encode($aRetorno);
+
+  } else if ($oPost->tipo == "cadastrarMenu") {
 
   	$oDaoDbrelatorio = new cl_db_relatorio();
   	$oDaoDbitensmenu = new cl_db_itensmenu();
@@ -1031,19 +1107,19 @@ if ( $oPost->tipo == "consultaCampos" ) {
   	$oDaoDbmenu      = new cl_db_menu();
   	$sMensagemErro   = "";
   	$lErroTransacao  = false;
-  	
+
   	db_inicio_transacao();
-  	
+
   	$rsDbrelatorio = $oDaoDbrelatorio->sql_record($oDaoDbrelatorio->sql_query_file($oPost->iCodRelatorio));
-  	
+
   	$oDbrelatorio  = db_utils::fieldsMemory($rsDbrelatorio,0);
-  	
+
     /**
      * Cadastrando item de menu para o relatorio criado pelo gerador de relatorio
      *   Item de menu e criado com o nome do relatorio
      */
   	$oDaoDbitensmenu->id_item    = null;
-    $oDaoDbitensmenu->descricao  = $oDbrelatorio->db63_nomerelatorio; 
+    $oDaoDbitensmenu->descricao  = $oDbrelatorio->db63_nomerelatorio;
     $oDaoDbitensmenu->help       = $oDbrelatorio->db63_nomerelatorio;
     $oDaoDbitensmenu->funcao     = "sys4_geradorteladinamica001.php?iCodRelatorio={$oPost->iCodRelatorio}";
     $oDaoDbitensmenu->itemativo  = "1";
@@ -1053,7 +1129,7 @@ if ( $oPost->tipo == "consultaCampos" ) {
  	  $oDaoDbitensmenu->incluir(null);
  	  if ($oDaoDbitensmenu->erro_status == '0') {
  	  	$lErroTransacao = true;
- 	  	$sMensagemErro  = $oDaoDbitensmenu->erro_msg;  	  	
+ 	  	$sMensagemErro  = $oDaoDbitensmenu->erro_msg;
  	  }
 
  	  $rsSequenciaMenu = $oDaoDbmenu->sql_record($oDaoDbmenu->sql_query_file(null,
@@ -1071,7 +1147,7 @@ if ( $oPost->tipo == "consultaCampos" ) {
     $oDaoDbmenu->incluir();
     if ($oDaoDbmenu->erro_status == '0') {
       $lErroTransacao = true;
-      $sMensagemErro  = $oDaoDbmenu->erro_msg;       
+      $sMensagemErro  = $oDaoDbmenu->erro_msg;
     }
     /**
      * Liberando permissao de menu para o usuario que criou o relatorio
@@ -1086,66 +1162,67 @@ if ( $oPost->tipo == "consultaCampos" ) {
                               db_getsession('DB_instit'), $oPost->iModulo);
     if ($oDaoDbpermissao->erro_status == '0') {
       $lErroTransacao = true;
-      $sMensagemErro  = $oDaoDbpermissao->erro_msg;       
+      $sMensagemErro  = $oDaoDbpermissao->erro_msg;
     }
-  	
+
+    DBMenu::limpaCache();
+
  	  db_fim_transacao($lErroTransacao);
- 	  
+
     $oRetorno = new stdClass();
     $oRetorno->sMensagem = urlencode($sMensagemErro);
-    $oRetorno->lErro     = $lErroTransacao;      
-    
+    $oRetorno->lErro     = $lErroTransacao;
+
     echo $oJson->encode($oRetorno);
-    
 
   } else if ($oPost->tipo == 'exportarRelatorio') {
 
   	$oRetorno = new stdClass();
-  	
+
   	$oRetorno->iStatus = 1;
-  	
+
   	try {
-  			
+
   		$oDBGeradorRelatorio     = new dbGeradorRelatorio($oPost->iCodigoRelatorio);
-  		 
+
   		$oRetorno->sNomeArquivo  = $oDBGeradorRelatorio->exportar();
-  			
+
   	} catch (Exception $oException) {
 
   		$oRetorno->iStatus   = 2;
   		$oRetorno->sMensagem = urlencode($oException->getMessage());
-  			
+
   	}
 
   	echo $oJson->encode($oRetorno);
 
   } else if ($oPost->tipo == 'importarRelatorio') {
-  	
+
   	$oRetorno = new stdClass();
   	$oRetorno->iStatus = 1;
-  	
+
   	try {
-  			
+
   		$iGrupoRelatorio = $oPost->codigo_grupo;
   		$iTipoRelatorio  = $oPost->codigo_tipo;
-  		
+
   		$oDomDocument = new DOMDocument();
-  		
+
   		/**
-  		 * Utilizado operador de silêncio (@) para evitar warning decorrente da classe DOMDocument, quando é carregado um arquivo 
+  		 * Utilizado operador de silêncio (@) para evitar warning decorrente da classe DOMDocument, quando é carregado um arquivo
   		 * xml inválido
   		 */
   		if ( !@$oDomDocument->load($oPost->arquivo) ) {
   			throw new Exception(_M('configuracao.configuracao.sys4_consultaviewRPC.erro_importar_arquivo'));
   		}
-  		
+
   		dbGeradorRelatorio::importar($oDomDocument, $iGrupoRelatorio, $iTipoRelatorio);
-  		
+
   	} catch (Exception $oException) {
 
   		$oRetorno->iStatus   = 2;
   		$oRetorno->sMensagem = urlencode($oException->getMessage());
-  		
+
   	}
 
   	echo $oJson->encode($oRetorno);

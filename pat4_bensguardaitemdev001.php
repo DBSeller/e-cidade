@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_bensguardaitemdev_classe.php");
-require_once("classes/db_bensguardaitem_classe.php");
-require_once("classes/db_bensguarda_classe.php");
-require_once("classes/db_situabens_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_bensguardaitemdev_classe.php"));
+require_once(modification("classes/db_bensguardaitem_classe.php"));
+require_once(modification("classes/db_bensguarda_classe.php"));
+require_once(modification("classes/db_situabens_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clbensguardaitemdev = new cl_bensguardaitemdev;
@@ -108,7 +108,7 @@ if (isset($incluir)) {
 </head>
 <body bgcolor=#CCCCCC >
     	<?
-    	  include("forms/db_frmbensguardaitemdev.php");
+    	  include(modification("forms/db_frmbensguardaitemdev.php"));
       ?>
 	
 <?

@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 ?>
 <html>
@@ -50,7 +50,7 @@ require_once("libs/db_app.utils.php");
   <tr>
     <td>
 	    <?
-	      include("forms/db_frmrhempenhoprev.php");
+	      include(modification("forms/db_frmrhempenhoprev.php"));
 	    ?>
     </td>
   </tr>

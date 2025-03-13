@@ -1,7 +1,7 @@
 <?PHP
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_empage_classe.php");
-require_once("classes/db_empagedadosret_classe.php");
-require_once("classes/db_empagedadosretmov_classe.php");
-require_once("classes/db_errobanco_classe.php");
-require_once("classes/db_empagetipo_classe.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_empage_classe.php"));
+require_once(modification("classes/db_empagedadosret_classe.php"));
+require_once(modification("classes/db_empagedadosretmov_classe.php"));
+require_once(modification("classes/db_errobanco_classe.php"));
+require_once(modification("classes/db_empagetipo_classe.php"));
 $clempage = new cl_empage;
 $clempagedadosret = new cl_empagedadosret;
 $clempagedadosretmov = new cl_empagedadosretmov;
@@ -48,7 +48,7 @@ $clrotulo->label("z01_nome");
 $clrotulo->label("e82_codord");
 $clrotulo->label("e60_codemp");
 
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+parse_str($_SERVER['QUERY_STRING']);
 
 if (isset($iCodigoGeracao) && !empty($iCodigoGeracao)) {
 
@@ -127,6 +127,8 @@ for ($iFiltro = 0; $iFiltro < 2; $iFiltro++) {
                                             e76_valorefet,
                                             e81_codmov,
                                             e60_codemp,
+                                            e60_anousu,
+                                            e60_instit,
                                             e89_codigo,
                                             e82_codord,
                                             e86_codmov,
@@ -157,6 +159,7 @@ for ($iFiltro = 0; $iFiltro < 2; $iFiltro++) {
                                              e76_movlote,
                                              e82_codord",
                                              $dbwhere);
+
   $result_retorno = $clempage->sql_record($sSqlEmpAge);
   $numrows_retorno = $clempage->numrows;
   if ($numrows_retorno == 0) {
@@ -166,15 +169,25 @@ for ($iFiltro = 0; $iFiltro < 2; $iFiltro++) {
   }
   db_fieldsmemory($result_retorno,0);
 
-  $oEmpenhoFinanceiro = EmpenhoFinanceiro::getInstanceByCodigo($e60_codemp, db_getsession('DB_anousu'));
-  $oConlancamEmp = new cl_conlancamemp();
-  $sWhere  = " c75_numemp = {$oEmpenhoFinanceiro->getNumero()} ";
-  $sWhere .= " and c53_tipo   = 30 order by c75_codlan desc limit 1";
-  $sSqlLancamentoEmpenho = $oConlancamEmp->sql_query_documentos(null, 'c75_data', null, $sWhere);
-  $rsBuscaLancamento = db_query($sSqlLancamentoEmpenho);
+  if (!empty($e60_codemp)) {
+    try {
+      $oEmpenhoFinanceiro = EmpenhoFinanceiroRepository::getEmpenhoFinanceiroPorCodigoAno($e60_codemp, $e60_anousu, InstituicaoRepository::getInstituicaoByCodigo($e60_instit));
+    } catch (Exception $e) {
+      db_redireciona("db_erros.php?fechar=true&db_erro={$e->getMessage()}.");
+      exit;
+    }
+  }
+
   $dtPagamento = null;
-  if ($rsBuscaLancamento) {
-    $dtPagamento = db_utils::fieldsMemory($rsBuscaLancamento, 0)->c75_data;
+  if (!empty($e60_codemp)) {
+    $oConlancamEmp = new cl_conlancamemp();
+    $sWhere        = " c75_numemp = {$oEmpenhoFinanceiro->getNumero()} ";
+    $sWhere .= " and c53_tipo   = 30 order by c75_codlan desc limit 1";
+    $sSqlLancamentoEmpenho = $oConlancamEmp->sql_query_documentos(null, 'c75_data', null, $sWhere);
+    $rsBuscaLancamento     = db_query($sSqlLancamentoEmpenho);
+    if ($rsBuscaLancamento) {
+      $dtPagamento = db_utils::fieldsMemory($rsBuscaLancamento, 0)->c75_data;
+    }
   }
 
   $head3 = "BAIXA DE PAGAMENTOS POR TRANSMISSÃO" ;
@@ -206,7 +219,7 @@ for ($iFiltro = 0; $iFiltro < 2; $iFiltro++) {
      * Somente soma quando nao for erro/aviso
      * 00 - CREDITO EFETUADO
      */
-    if ( $oRetorno->e92_coderro == '00' ) {
+    if ( $oRetorno->e92_coderro == '00'  || $oRetorno->e92_coderro == 'BW') {
 
       $arr_valmovis[$oRetorno->e83_codtipo] += $oRetorno->e81_valor;
       $arr_valconta[$oRetorno->e83_codtipo] += $oRetorno->e76_valorefet;

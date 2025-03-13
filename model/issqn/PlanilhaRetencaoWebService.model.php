@@ -1,31 +1,31 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("model/planilhaRetencao.model.php");
+require_once(modification("model/planilhaRetencao.model.php"));
 
 /**
  * Classe responsavel por realizar os Lançamentos do prestador,
@@ -64,28 +64,28 @@ class PlanilhaRetencaoWebService extends planilhaRetencao {
    * @var integer
    */
   private $iCgmTomador;
-  
+
   /**
    * Ano da competencia
    * @var integer
    */
   private $iAnoCompetencia;
-  
+
   /**
    * Motivo anualacao da planilha
    */
   private $sMotivoAnulacao;
-   
+
   /**
    * Sobrecarregado para não executar validação de parametros.
    */
   public function __construct( $iCodigoPlanilha = null){
-    
+
     if ( !empty($iCodigoPlanilha) ) {
       parent::__construct($iCodigoPlanilha);
     }
   }
-  
+
   /**
    * Retornar mes competencia
    *
@@ -103,20 +103,22 @@ class PlanilhaRetencaoWebService extends planilhaRetencao {
   public function salvar() {
 
     try {
-        
+
       //Se houver inscricao nao precisa cgm e verifica o numero do CGM de acordo com o Cpf ou o Cnpj informados
       db_app::import('CgmFactory');
       db_app::import('issqn.Empresa');
+
+      $oCGM = null;
 
       if ( empty($this->iInscricaoTomador) ) {
 
         if (!empty($this->sCnpj)) {
           $oCGM = CgmFactory::getInstanceByCnpjCpf($this->sCnpj);
-        } else {
+        } else if (!empty($this->sCpf)) {
           $oCGM = CgmFactory::getInstanceByCnpjCpf($this->sCpf);
         }
 
-        if (!$oCGM) {
+        if (!$oCGM && empty($this->iCgmTomador)) {
           throw new BusinessException("CPF ou CNPJ nao cadastrados");
         }
       } else {
@@ -125,7 +127,7 @@ class PlanilhaRetencaoWebService extends planilhaRetencao {
         $oCGM     = $oEmpresa->getCgmEmpresa();
       }
 
-      $iNumCgm = $oCGM->getCodigo();
+      $iNumCgm = ($oCGM) ? $oCGM->getCodigo() : null;
 
       // Verificação caso o prestador seja eventual e não exista uma inscrição municipal no NFS-e
       if (empty($iNumCgm)) {
@@ -146,24 +148,22 @@ class PlanilhaRetencaoWebService extends planilhaRetencao {
   }
 
   public function anularPlanilha() {
-    
+
+    if (!db_utils::inTransaction()) {
+      throw new Exception("Sem transação ativa");
+    }
+
     try {
-    
-      db_inicio_transacao();
+
       parent::anularPlanilha($this->getMotivoAnulacao());
-      
-      db_fim_transacao(false);
-    
     } catch ( Exception $eErro ) {
-    
-      db_fim_transacao(true);
       throw new Exception($eErro->getMessage());
     }
-    
+
     return true;
   }
-  
-  
+
+
   /**
    * Seta o Tipo de Imposto
    * @param string $sTipoImposto
@@ -203,7 +203,7 @@ class PlanilhaRetencaoWebService extends planilhaRetencao {
   public function setCgmTomador($iCgmTomador) {
     $this->iCgmTomador = $iCgmTomador;
   }
-  
+
   /**
    * Define a Compertencia do Imposto Retido
    *
@@ -211,7 +211,7 @@ class PlanilhaRetencaoWebService extends planilhaRetencao {
    * @param integer $iAnoCompetencia
    */
   public function setCompetencia($iMesCompetencia, $iAnoCompetencia) {
-    
+
     $this->iMesCompetencia = $iMesCompetencia;
     $this->iAnoCompetencia = $iAnoCompetencia;
   }
@@ -222,10 +222,10 @@ class PlanilhaRetencaoWebService extends planilhaRetencao {
    * @return void
    */
   public function setMotivoAnulacao($sMotivoAnulacao) {
-    
+
     $this->sMotivoAnulacao = $sMotivoAnulacao;
   }
-  
+
   /**
    * retorna o motivo da anulacao
    * @return string
@@ -233,7 +233,7 @@ class PlanilhaRetencaoWebService extends planilhaRetencao {
   public function getMotivoAnulacao () {
     return $this->sMotivoAnulacao;
   }
-  
+
   /**
    * define o codigo da planilha
    * @return integer
@@ -241,15 +241,13 @@ class PlanilhaRetencaoWebService extends planilhaRetencao {
   public function setCodigoPlanilha ($iCodigoPlanilha) {
     $this->iCodigoPlanilha = $iCodigoPlanilha;
   }
-  
-  
-  
+
   /**
    * Verifica se Cpf, Cnpj ou numero de inscrição estão preenchidos
    * @throws BusinessException
    */
   public function validaDados() {
-     
+
     if( empty($this->sCpf) && empty($this->sCnpj) && empty($this->iInscricaoTomador) ) {
       throw new BusinessException('Cpf, Cnpj ou numero de inscricao do tomador devem ser preenchidos');
     }

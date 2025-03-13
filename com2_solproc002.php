@@ -1,40 +1,40 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include ("fpdf151/pdf.php");
-include ("libs/db_sql.php");
-include ("classes/db_solicita_classe.php");
-include ("classes/db_solicitem_classe.php");
-include ("classes/db_empautitem_classe.php");
-include ("classes/db_pcproc_classe.php");
-include ("classes/db_pcprocitem_classe.php");
-include ("classes/db_pcorcam_classe.php");
-include ("classes/db_pcorcamitem_classe.php");
-include ("classes/db_pcorcamforne_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_solicita_classe.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_empautitem_classe.php"));
+include(modification("classes/db_pcproc_classe.php"));
+include(modification("classes/db_pcprocitem_classe.php"));
+include(modification("classes/db_pcorcam_classe.php"));
+include(modification("classes/db_pcorcamitem_classe.php"));
+include(modification("classes/db_pcorcamforne_classe.php"));
 $clsolicita = new cl_solicita;
 $clsolicitem = new cl_solicitem;
 $clpcproc = new cl_pcproc;
@@ -130,11 +130,23 @@ if ($ordem == "pc10_data") {
 
 //die($clpcprocitem->sql_query_pcmater(null,"pc80_codproc,pc80_data,pc80_usuario,pc80_resumo,pc10_numero,pc10_data,pc10_resumo",$ordem,$where));
 //die($clpcprocitem->sql_query_pcmater(null,"distinct e54_autori,pc80_codproc,pc80_data,pc80_usuario,descrdepto as departamento,pc80_resumo,pc10_numero,pc10_data,pc10_resumo",$ordem,$where));
-$result_solicita = $clpcprocitem->sql_record($clpcprocitem->sql_query_pcmater(null,
-      "distinct  e54_autori,e60_codemp,e60_numemp,pc80_codproc,pc80_data,login,pc05_descr,z01_nome,
-			          pc80_usuario,descrdepto as departamento,pc80_resumo,pc10_numero,pc10_data,pc10_resumo",
-								$ordem,$where));
- 
+$result_solicita = $clpcprocitem->sql_record(
+    $clpcprocitem->sql_query_pcmater(
+        null,
+        "
+                    distinct
+                        e54_autori,e60_codemp,e60_numemp,
+                        pc80_codproc,pc80_data,login,
+                        pc05_descr,z01_nome, pc80_usuario,
+                        descrdepto as departamento,pc80_resumo,
+                        pc10_numero,pc10_data,pc10_resumo, e60_anousu,
+                        pc50_descr, o56_elemento
+                ",
+        $ordem,
+        $where
+    )
+);
+
 /*die($clpcprocitem->sql_query_pcmater(null,
      "distinct  e54_autori,e60_codemp,e60_numemp,pc80_codproc,pc80_data,login,pc05_descr,z01_numcgm,
 			          pc80_usuario,descrdepto as departamento,pc80_resumo,pc10_numero,pc10_data,pc10_resumo",
@@ -164,9 +176,9 @@ $c = 1;
 $quanttot = 0;
 $valortot = 0;
 $conttot = 0;
-//    $pdf->addpage("L");    
+//    $pdf->addpage("L");
 for ($i = 0; $i < $numrows_solicita; $i ++) {
-			
+
 	db_fieldsmemory($result_solicita, $i);
 //	echo "$pc80_codproc, $pc80_resumo<br>";
 	if ($c == 1) {
@@ -177,7 +189,7 @@ for ($i = 0; $i < $numrows_solicita; $i ++) {
 	if ($pdf->gety() > $pdf->h - 32 || $troca != 0) {
 		$pdf->addpage("L");
 		$pdf->setfont('arial', 'b', 8);
-		$pdf->cell(19, $alt, "solicitação", 1, 0, "L", 1);
+		$pdf->cell(19, $alt, "Solicitação", 1, 0, "L", 1);
 		$pdf->cell(19, $alt, "Emissão", 1, 0, "C", 1);
 		$pdf->cell(50, $alt, "Credor", 1, 0, "C", 1);
 		$pdf->cell(50, $alt, "Tipo de compra", 1, 0, "C", 1);
@@ -198,11 +210,11 @@ for ($i = 0; $i < $numrows_solicita; $i ++) {
 			$pdf->cell(15, $alt, "Quant.", 1, 0, "C", 1);
 			$pdf->cell(20, $alt, 'Valor', 1, 1, "C", 1);
 		}
-		
+
 		$c = 0;
 		$troca = 0;
 	}
-	
+
   $valortot = 0;	//dados empsolicita
 	if ($e54_autori != ''){
 	   $result_valortot = $clempautitem->sql_record($clempautitem->sql_query_file($e54_autori));
@@ -211,24 +223,24 @@ for ($i = 0; $i < $numrows_solicita; $i ++) {
 		    db_fieldsmemory($result_valortot, $x);
 		    $valortot = $valortot + $e55_vltot;
 		 }
- }	
-	
+ }
+
 	//-----------------
-//  echo "aqui -> solicita ->$i<br>"; 
+//  echo "aqui -> solicita ->$i<br>";
 	$pdf->setfont('arial', 'b', 7);
-	$pdf->cell(19, $alt, @ $e54_autori, 0, 0, "C", $c);
-	$pdf->cell(19, $alt, @ $pc10_data, 0, 0, "C", $c);
+	$pdf->cell(19, $alt, @ $pc10_numero, 0, 0, "C", $c);
+	$pdf->cell(19, $alt, @ date('d/m/Y', strtotime($pc10_data)), 0, 0, "C", $c);
 	$pdf->cell(50, $alt, substr(@ $z01_nome, 0, 31), 0, 0, "L", $c);
-	$pdf->cell(50, $alt, substr(@ $pc05_descr, 0, 31), 0, 0, "L", $c);
+	$pdf->cell(50, $alt, substr(@ $pc50_descr, 0, 31), 0, 0, "L", $c);
 	$pdf->cell(50, $alt, substr(@ $departamento, 0, 31), 0, 0, "L", $c);
 	$pdf->cell(30, $alt, substr(@ $login, 0, 30), 0, 0, "L", $c);
-	$pdf->cell(20, $alt, @ $e60_codemp, 0, 0, "C", $c);
 	$pdf->cell(20, $alt, @ $e60_numemp, 0, 0, "C", $c);
+	$pdf->cell(20, $alt, empty($e60_codemp) ? '' : "{$e60_codemp} / {$e60_anousu}", 0, 0, "C", $c);
 	$pdf->cell(25, $alt, db_formatar(@ $valortot, 'f'), 0, 1, "R", $c);
 	//------------------
 	if ($listar == 's') {
-		 if ($e54_autori !=''){ 
-	
+		 if ($e54_autori !=''){
+
   		$result_itens = $clempautitem->sql_record($clempautitem->sql_query($e54_autori, null, "e55_item,pc01_descrmater,e55_descr,e55_codele,o56_descr,e55_sequen,e55_quant,e55_vltot"));
 	  	//  fc_estruturaldotacao(e56_anousu,e56_coddot);
 		  $quanttot = 0;
@@ -266,7 +278,7 @@ for ($i = 0; $i < $numrows_solicita; $i ++) {
 			  $pdf->cell(50, $alt, substr($pc01_descrmater, 0, 31), 0, 0, "L", $c);
 			  $pdf->cell(50, $alt, substr($e55_descr, 0, 30), 0, 0, "L", $c);
 			  $pdf->cell(15, $alt, $e55_codele, 0, 0, "C", $c);
-			  $pdf->cell(53, $alt, 'strut', 0, 0, "C", $c);
+			  $pdf->cell(53, $alt, $o56_elemento, 0, 0, "C", $c);
 			  $pdf->cell(50, $alt, substr(@ $o56_descr, 0, 30), 0, 0, "L", $c);
 			  $pdf->cell(15, $alt, $e55_sequen, 0, 0, "C", $c);
 			  $pdf->cell(15, $alt, $e55_quant, 0, 0, "C", $c);

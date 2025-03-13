@@ -68,7 +68,7 @@ db_textarea('h42_amparolegal',5,40,$Ih42_amparolegal,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_portariaenvolv','func_portariaenvolv.php?funcao_js=parent.js_preenchepesquisa|h42_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_portariaenvolv','func_portariaenvolv.php?funcao_js=parent.js_preenchepesquisa|h42_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_portariaenvolv.hide();

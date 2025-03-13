@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+
 $clcriaabas = new cl_criaabas;
-$db_opcao = 1;
+$db_opcao   = 1;
 ?>
 <html>
 <head>
@@ -53,24 +54,23 @@ $db_opcao = 1;
 <table valign="top" marginwidth="0" width="100%" border="0" cellspacing="0" cellpadding="0">
  <tr>
   <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
-   <?
-   if(isset($triagem) && $triagem=="false"){ 	
-   $clcriaabas->identifica = array("a1"=>"Paciente","a3"=>"Procedimentos","a4"=>"Diagnóstico",);
-   $clcriaabas->sizecampo  = array("a1"=>"20","a3"=>"30","a4"=>"30");
-   $clcriaabas->src        = array("a1"=>"sau4_fichaatendabas001.php?triagem=false","a3"=>"");
-   $clcriaabas->disabled   = array("a3"=>"true");
-   $clcriaabas->cordisabled = "#9b9b9b";
-   $clcriaabas->iframe_height = "600";
-   $clcriaabas->cria_abas(); 
-   }else{
-   $clcriaabas->identifica = array("a1"=>"Paciente","a2"=>"Triagem","a3"=>"Procedimentos", "a4"=>"Diagnóstico",);
-   $clcriaabas->sizecampo  = array("a1"=>"20","a2"=>"30","a3"=>"30","a4"=>"30");
-   $clcriaabas->src        = array("a1"=>"sau4_fichaatendabas001.php","a2"=>"","a3"=>"","a4"=>"");
-   $clcriaabas->disabled   = array("a2"=>"true","a3"=>"true","a4"=>"true");
-   $clcriaabas->cordisabled = "#9b9b9b";
-   $clcriaabas->iframe_height = "600";
-   $clcriaabas->cria_abas(); 
-   	
+   <?php
+   if( isset( $triagem ) && $triagem == "false" ) {
+
+     $clcriaabas->identifica  = array( "a1" => "Paciente", "a3" => "Procedimentos", "a4" => "Diagnóstico" );
+     $clcriaabas->sizecampo   = array( "a1" => "20", "a3" => "30", "a4" => "30" );
+     $clcriaabas->src         = array( "a1" => "sau4_fichaatendabas001.php?triagem=false", "a3" => "" );
+     $clcriaabas->disabled    = array( "a3" => "true");
+     $clcriaabas->cordisabled = "#9b9b9b";
+     $clcriaabas->cria_abas();
+   } else {
+
+     $clcriaabas->identifica  = array( "a1" => "Paciente", "a2" => "Triagem", "a3" => "Procedimentos", "a4" => "Diagnóstico" );
+     $clcriaabas->sizecampo   = array( "a1" => "20", "a2" => "30", "a3" => "30", "a4" => "30" );
+     $clcriaabas->src         = array( "a1" => "sau4_fichaatendabas001.php", "a2" => "", "a3" => "", "a4" => "" );
+     $clcriaabas->disabled    = array( "a2" => "true", "a3" => "true", "a4" => "true" );
+     $clcriaabas->cordisabled = "#9b9b9b";
+     $clcriaabas->cria_abas();
    }
    ?>
   </td>

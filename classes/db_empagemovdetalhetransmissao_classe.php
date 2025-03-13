@@ -1,30 +1,4 @@
 <?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 //MODULO: empenho
 //CLASSE DA ENTIDADE empagemovdetalhetransmissao
 class cl_empagemovdetalhetransmissao { 
@@ -53,6 +27,10 @@ class cl_empagemovdetalhetransmissao {
    var $e74_valorjuros = 0; 
    var $e74_valordesconto = 0; 
    var $e74_tipofatura = 0; 
+   var $e74_linhadigitavel = null; 
+   var $e74_finalidade = null; 
+   var $e74_valorabatimento = 0; 
+   var $e74_valormulta = 0; 
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  e74_sequencial = int4 = sequencial empagemovdetalhetransmissao 
@@ -63,6 +41,10 @@ class cl_empagemovdetalhetransmissao {
                  e74_valorjuros = float8 = Valor de Juros 
                  e74_valordesconto = float8 = Valor de Desconto 
                  e74_tipofatura = int4 = Tipo de Fatura 
+                 e74_linhadigitavel = varchar(100) = Linha Digitável 
+                 e74_finalidade = varchar(3) = Finalidade 
+                 e74_valorabatimento = float4 = Abatimento 
+                 e74_valormulta = float4 = Multa 
                  ";
    //funcao construtor da classe 
    function cl_empagemovdetalhetransmissao() { 
@@ -97,15 +79,19 @@ class cl_empagemovdetalhetransmissao {
        $this->e74_valorjuros = ($this->e74_valorjuros == ""?@$GLOBALS["HTTP_POST_VARS"]["e74_valorjuros"]:$this->e74_valorjuros);
        $this->e74_valordesconto = ($this->e74_valordesconto == ""?@$GLOBALS["HTTP_POST_VARS"]["e74_valordesconto"]:$this->e74_valordesconto);
        $this->e74_tipofatura = ($this->e74_tipofatura == ""?@$GLOBALS["HTTP_POST_VARS"]["e74_tipofatura"]:$this->e74_tipofatura);
+       $this->e74_linhadigitavel = ($this->e74_linhadigitavel == ""?@$GLOBALS["HTTP_POST_VARS"]["e74_linhadigitavel"]:$this->e74_linhadigitavel);
+       $this->e74_finalidade = ($this->e74_finalidade == ""?@$GLOBALS["HTTP_POST_VARS"]["e74_finalidade"]:$this->e74_finalidade);
+       $this->e74_valorabatimento = ($this->e74_valorabatimento == ""?@$GLOBALS["HTTP_POST_VARS"]["e74_valorabatimento"]:$this->e74_valorabatimento);
+       $this->e74_valormulta = ($this->e74_valormulta == ""?@$GLOBALS["HTTP_POST_VARS"]["e74_valormulta"]:$this->e74_valormulta);
      }else{
        $this->e74_sequencial = ($this->e74_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["e74_sequencial"]:$this->e74_sequencial);
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir ($e74_sequencial){ 
       $this->atualizacampos();
      if($this->e74_empagemov == null ){ 
-       $this->erro_sql = " Campo Código do Movimento nao Informado.";
+       $this->erro_sql = " Campo Código do Movimento não informado.";
        $this->erro_campo = "e74_empagemov";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -127,6 +113,12 @@ class cl_empagemovdetalhetransmissao {
      }
      if($this->e74_tipofatura == null ){ 
        $this->e74_tipofatura = "0";
+     }
+     if($this->e74_valorabatimento == null ){ 
+       $this->e74_valorabatimento = "0";
+     }
+     if($this->e74_valormulta == null ){ 
+       $this->e74_valormulta = "0";
      }
      if($e74_sequencial == "" || $e74_sequencial == null ){
        $result = db_query("select nextval('empagemovdetalhetransmissao_e74_sequencial_seq')"); 
@@ -153,7 +145,7 @@ class cl_empagemovdetalhetransmissao {
        }
      }
      if(($this->e74_sequencial == null) || ($this->e74_sequencial == "") ){ 
-       $this->erro_sql = " Campo e74_sequencial nao declarado.";
+       $this->erro_sql = " Campo e74_sequencial não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -169,6 +161,10 @@ class cl_empagemovdetalhetransmissao {
                                       ,e74_valorjuros 
                                       ,e74_valordesconto 
                                       ,e74_tipofatura 
+                                      ,e74_linhadigitavel 
+                                      ,e74_finalidade 
+                                      ,e74_valorabatimento 
+                                      ,e74_valormulta 
                        )
                 values (
                                 $this->e74_sequencial 
@@ -179,17 +175,21 @@ class cl_empagemovdetalhetransmissao {
                                ,$this->e74_valorjuros 
                                ,$this->e74_valordesconto 
                                ,$this->e74_tipofatura 
+                               ,'$this->e74_linhadigitavel' 
+                               ,'$this->e74_finalidade' 
+                               ,$this->e74_valorabatimento 
+                               ,$this->e74_valormulta 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Detalhamentos de movimento com tipo de transmissão ($this->e74_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Detalhamentos de movimento com tipo de transmissão ($this->e74_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Detalhamentos de movimento com tipo de transmissão já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Detalhamentos de movimento com tipo de transmissão ($this->e74_sequencial) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Detalhamentos de movimento com tipo de transmissão ($this->e74_sequencial) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -198,7 +198,7 @@ class cl_empagemovdetalhetransmissao {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->e74_sequencial;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -223,12 +223,16 @@ class cl_empagemovdetalhetransmissao {
          $resac = db_query("insert into db_acount values($acount,3595,20062,'','".AddSlashes(pg_result($resaco,0,'e74_valorjuros'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3595,20063,'','".AddSlashes(pg_result($resaco,0,'e74_valordesconto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,3595,20133,'','".AddSlashes(pg_result($resaco,0,'e74_tipofatura'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3595,21278,'','".AddSlashes(pg_result($resaco,0,'e74_linhadigitavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3595,1009339,'','".AddSlashes(pg_result($resaco,0,'e74_finalidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3595,1009798,'','".AddSlashes(pg_result($resaco,0,'e74_valorabatimento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,3595,1009799,'','".AddSlashes(pg_result($resaco,0,'e74_valormulta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
    } 
    // funcao para alteracao
-   function alterar ($e74_sequencial=null) { 
+   public function alterar ($e74_sequencial=null) { 
       $this->atualizacampos();
      $sql = " update empagemovdetalhetransmissao set ";
      $virgula = "";
@@ -236,7 +240,7 @@ class cl_empagemovdetalhetransmissao {
        $sql  .= $virgula." e74_sequencial = $this->e74_sequencial ";
        $virgula = ",";
        if(trim($this->e74_sequencial) == null ){ 
-         $this->erro_sql = " Campo sequencial empagemovdetalhetransmissao nao Informado.";
+         $this->erro_sql = " Campo sequencial empagemovdetalhetransmissao não informado.";
          $this->erro_campo = "e74_sequencial";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -249,7 +253,7 @@ class cl_empagemovdetalhetransmissao {
        $sql  .= $virgula." e74_empagemov = $this->e74_empagemov ";
        $virgula = ",";
        if(trim($this->e74_empagemov) == null ){ 
-         $this->erro_sql = " Campo Código do Movimento nao Informado.";
+         $this->erro_sql = " Campo Código do Movimento não informado.";
          $this->erro_campo = "e74_empagemov";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -299,6 +303,28 @@ class cl_empagemovdetalhetransmissao {
        $sql  .= $virgula." e74_tipofatura = $this->e74_tipofatura ";
        $virgula = ",";
      }
+     if(trim($this->e74_linhadigitavel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e74_linhadigitavel"])){ 
+       $sql  .= $virgula." e74_linhadigitavel = '$this->e74_linhadigitavel' ";
+       $virgula = ",";
+     }
+     if(trim($this->e74_finalidade)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e74_finalidade"])){ 
+       $sql  .= $virgula." e74_finalidade = '$this->e74_finalidade' ";
+       $virgula = ",";
+     }
+     if(trim($this->e74_valorabatimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e74_valorabatimento"])){ 
+        if(trim($this->e74_valorabatimento)=="" && isset($GLOBALS["HTTP_POST_VARS"]["e74_valorabatimento"])){ 
+           $this->e74_valorabatimento = "0" ; 
+        } 
+       $sql  .= $virgula." e74_valorabatimento = $this->e74_valorabatimento ";
+       $virgula = ",";
+     }
+     if(trim($this->e74_valormulta)!="" || isset($GLOBALS["HTTP_POST_VARS"]["e74_valormulta"])){ 
+        if(trim($this->e74_valormulta)=="" && isset($GLOBALS["HTTP_POST_VARS"]["e74_valormulta"])){ 
+           $this->e74_valormulta = "0" ; 
+        } 
+       $sql  .= $virgula." e74_valormulta = $this->e74_valormulta ";
+       $virgula = ",";
+     }
      $sql .= " where ";
      if($e74_sequencial!=null){
        $sql .= " e74_sequencial = $this->e74_sequencial";
@@ -308,56 +334,64 @@ class cl_empagemovdetalhetransmissao {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->e74_sequencial));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,20057,'$this->e74_sequencial','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["e74_sequencial"]) || $this->e74_sequencial != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_sequencial"]) || $this->e74_sequencial != "")
              $resac = db_query("insert into db_acount values($acount,3595,20057,'".AddSlashes(pg_result($resaco,$conresaco,'e74_sequencial'))."','$this->e74_sequencial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["e74_empagemov"]) || $this->e74_empagemov != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_empagemov"]) || $this->e74_empagemov != "")
              $resac = db_query("insert into db_acount values($acount,3595,20058,'".AddSlashes(pg_result($resaco,$conresaco,'e74_empagemov'))."','$this->e74_empagemov',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["e74_codigodebarra"]) || $this->e74_codigodebarra != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_codigodebarra"]) || $this->e74_codigodebarra != "")
              $resac = db_query("insert into db_acount values($acount,3595,20059,'".AddSlashes(pg_result($resaco,$conresaco,'e74_codigodebarra'))."','$this->e74_codigodebarra',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["e74_valornominal"]) || $this->e74_valornominal != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_valornominal"]) || $this->e74_valornominal != "")
              $resac = db_query("insert into db_acount values($acount,3595,20060,'".AddSlashes(pg_result($resaco,$conresaco,'e74_valornominal'))."','$this->e74_valornominal',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["e74_datavencimento"]) || $this->e74_datavencimento != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_datavencimento"]) || $this->e74_datavencimento != "")
              $resac = db_query("insert into db_acount values($acount,3595,20061,'".AddSlashes(pg_result($resaco,$conresaco,'e74_datavencimento'))."','$this->e74_datavencimento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["e74_valorjuros"]) || $this->e74_valorjuros != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_valorjuros"]) || $this->e74_valorjuros != "")
              $resac = db_query("insert into db_acount values($acount,3595,20062,'".AddSlashes(pg_result($resaco,$conresaco,'e74_valorjuros'))."','$this->e74_valorjuros',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["e74_valordesconto"]) || $this->e74_valordesconto != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_valordesconto"]) || $this->e74_valordesconto != "")
              $resac = db_query("insert into db_acount values($acount,3595,20063,'".AddSlashes(pg_result($resaco,$conresaco,'e74_valordesconto'))."','$this->e74_valordesconto',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["e74_tipofatura"]) || $this->e74_tipofatura != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_tipofatura"]) || $this->e74_tipofatura != "")
              $resac = db_query("insert into db_acount values($acount,3595,20133,'".AddSlashes(pg_result($resaco,$conresaco,'e74_tipofatura'))."','$this->e74_tipofatura',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_linhadigitavel"]) || $this->e74_linhadigitavel != "")
+             $resac = db_query("insert into db_acount values($acount,3595,21278,'".AddSlashes(pg_result($resaco,$conresaco,'e74_linhadigitavel'))."','$this->e74_linhadigitavel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_finalidade"]) || $this->e74_finalidade != "")
+             $resac = db_query("insert into db_acount values($acount,3595,1009339,'".AddSlashes(pg_result($resaco,$conresaco,'e74_finalidade'))."','$this->e74_finalidade',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_valorabatimento"]) || $this->e74_valorabatimento != "")
+             $resac = db_query("insert into db_acount values($acount,3595,1009798,'".AddSlashes(pg_result($resaco,$conresaco,'e74_valorabatimento'))."','$this->e74_valorabatimento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["e74_valormulta"]) || $this->e74_valormulta != "")
+             $resac = db_query("insert into db_acount values($acount,3595,1009799,'".AddSlashes(pg_result($resaco,$conresaco,'e74_valormulta'))."','$this->e74_valormulta',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Detalhamentos de movimento com tipo de transmissão nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Detalhamentos de movimento com tipo de transmissão não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->e74_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Detalhamentos de movimento com tipo de transmissão nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Detalhamentos de movimento com tipo de transmissão não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->e74_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->e74_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -368,13 +402,13 @@ class cl_empagemovdetalhetransmissao {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($e74_sequencial=null,$dbwhere=null) { 
+   public function excluir ($e74_sequencial=null,$dbwhere=null) { 
 
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($e74_sequencial));
        } else { 
@@ -396,45 +430,49 @@ class cl_empagemovdetalhetransmissao {
            $resac  = db_query("insert into db_acount values($acount,3595,20062,'','".AddSlashes(pg_result($resaco,$iresaco,'e74_valorjuros'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3595,20063,'','".AddSlashes(pg_result($resaco,$iresaco,'e74_valordesconto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,3595,20133,'','".AddSlashes(pg_result($resaco,$iresaco,'e74_tipofatura'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3595,21278,'','".AddSlashes(pg_result($resaco,$iresaco,'e74_linhadigitavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3595,1009339,'','".AddSlashes(pg_result($resaco,$iresaco,'e74_finalidade'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3595,1009798,'','".AddSlashes(pg_result($resaco,$iresaco,'e74_valorabatimento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,3595,1009799,'','".AddSlashes(pg_result($resaco,$iresaco,'e74_valormulta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from empagemovdetalhetransmissao
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($e74_sequencial != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($e74_sequencial)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " e74_sequencial = $e74_sequencial ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Detalhamentos de movimento com tipo de transmissão nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Detalhamentos de movimento com tipo de transmissão não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$e74_sequencial;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Detalhamentos de movimento com tipo de transmissão nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Detalhamentos de movimento com tipo de transmissão não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$e74_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$e74_sequencial;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -445,9 +483,9 @@ class cl_empagemovdetalhetransmissao {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -456,8 +494,8 @@ class cl_empagemovdetalhetransmissao {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:empagemovdetalhetransmissao";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -468,76 +506,45 @@ class cl_empagemovdetalhetransmissao {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $e74_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from empagemovdetalhetransmissao ";
+   public function sql_query ($e74_sequencial = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from empagemovdetalhetransmissao ";
      $sql .= "      inner join empagemov  on  empagemov.e81_codmov = empagemovdetalhetransmissao.e74_empagemov";
      $sql .= "      inner join empage  on  empage.e80_codage = empagemov.e81_codage";
      $sql2 = "";
-     if($dbwhere==""){
-       if($e74_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($e74_sequencial)) {
          $sql2 .= " where empagemovdetalhetransmissao.e74_sequencial = $e74_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $e74_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from empagemovdetalhetransmissao ";
+   public function sql_query_file ($e74_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from empagemovdetalhetransmissao ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($e74_sequencial!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($e74_sequencial)){
          $sql2 .= " where empagemovdetalhetransmissao.e74_sequencial = $e74_sequencial "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-
   /**
    * Valida se codigo de barras ja esta configurado em algum outro movimento
    *
@@ -553,8 +560,7 @@ class cl_empagemovdetalhetransmissao {
     $sSql .= "  where e74_codigodebarra = '{$iCodigoBarras}'";
     $sSql .= "    and e74_empagemov != $iMovimento ";
     $sSql .= "    and (e90_cancelado is null or e90_cancelado = false) ";
-  
+
     return $sSql;
   }
-
 }

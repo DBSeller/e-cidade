@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
  
 //con1_alterarestrutural.RPC.php
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/JSON.php");  
-require_once ("libs/exceptions/BusinessException.php");
-require_once ("libs/exceptions/DBException.php");
-require_once ("libs/exceptions/ParameterException.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/JSON.php"));  
+require_once(modification("libs/exceptions/BusinessException.php"));
+require_once(modification("libs/exceptions/DBException.php"));
+require_once(modification("libs/exceptions/ParameterException.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oJson                  = new services_json();
 $oParam                 = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -60,10 +60,13 @@ try {
   		db_inicio_transacao();
   		
   		foreach ($aContasAlterar as $iDadoAlterar => $oDadoAlterar) {
-  			
-	  		$oDaoConplanoOrcamento   = db_utils::getDao("conplanoorcamento");
-	  		$oDaoOrcFontes           = db_utils::getDao("orcfontes");
-	  		$oDaoOrcElemento         = db_utils::getDao("orcelemento");
+        $oDaoConplanoOrcamento   = new cl_conplanoorcamento();
+        $oDaoOrcFontes           = new cl_orcfontes();
+        $oDaoOrcElemento         = new cl_orcelemento();
+        $daoTabOrc               = new cl_taborc();
+        $daoTabPlan              = new cl_tabplan();
+        $estruturalDeReceita     = false;
+        $estruturalAnterior      = $oDadoAlterar->c60_estrut;
   			
 	  		//pegamos a parte que sera substituida, baseada no total de caracter do novo estrutural
   		  $sParteAlterada = substr($oDadoAlterar->c60_estrut, 0, $iCaracterNovoEstrutural);
@@ -73,6 +76,7 @@ try {
   			$sConplanoOrcFontes = $sAlterarPara;
   			// cortamos para 13 digitos para a orcelemento
   			$sOrcElemento       = substr($sAlterarPara, 0, 13);
+        $estruturalDeReceita = in_array(substr($oDadoAlterar->c60_estrut,0,1), [4,9]) ;
   			
   			$oDaoConplanoOrcamento->c60_codcon = $oDadoAlterar->c60_codcon;
   			$oDaoConplanoOrcamento->c60_estrut = $sConplanoOrcFontes;
@@ -82,23 +86,99 @@ try {
   			
   			$oDaoOrcElemento->o56_codele   = $oDadoAlterar->c60_codcon;
   			$oDaoOrcElemento->o56_elemento = $sOrcElemento;
-  			
-  			
-  			$oDaoConplanoOrcamento->alterar($oDadoAlterar->c60_codcon, null);
-  			$oDaoOrcFontes        ->alterar($oDadoAlterar->c60_codcon, null);
-  			$oDaoOrcElemento      ->alterar($oDadoAlterar->c60_codcon, null);
-  			
-  			
-  			if ($oDaoConplanoOrcamento->erro_status == '0') {
-  				throw new DBException($oDaoConplanoOrcamento->erro_msg);
-  			}
-  			if ($oDaoOrcFontes->erro_status == '0') {
-  				throw new DBException($oDaoOrcFontes->erro_msg);
-  			}
-  			if ($oDaoOrcElemento->erro_status == '0') {
-  				throw new DBException($oDaoConplanoOrcamento->erro_msg);
-  			}
-  			
+
+
+  			$sSqlAnosOrcamento = $oDaoConplanoOrcamento->sql_query(null, null, "c60_anousu", null, "c60_codcon = {$oDadoAlterar->c60_codcon} AND c60_anousu >= {$iAnoUsu}");
+  			$rsAnosOrcamento   = db_query($sSqlAnosOrcamento);
+
+  			if (!$rsAnosOrcamento) {
+  			  throw new DBException("Não foi possível buscar as informações dos planos orçamentários.");
+        }
+
+        $aPlanoOrcamentario = db_utils::makeCollectionFromRecord($rsAnosOrcamento, function ($dado) {
+          return $dado->c60_anousu;
+        });
+
+        $sSqlAnosOrcamentoCheck = $oDaoConplanoOrcamento->sql_query(null, null, "c60_anousu", null, "c60_estrut = '{$sConplanoOrcFontes}' AND c60_anousu = {$iAnoUsu}");
+        $rsAnosOrcamentoCheck   = db_query($sSqlAnosOrcamentoCheck);
+        if(pg_num_rows($rsAnosOrcamentoCheck) > 0){
+          throw new DBException("Não foi possível alterar o estrutural. O estrutural informado já está sendo usado no ano posicionado.");
+        }
+
+  			foreach ($aPlanoOrcamentario as $c60_anousu) {
+
+  			  $oDaoConplanoOrcamento->c60_anousu = $c60_anousu;
+          $oDaoConplanoOrcamento->alterar($oDadoAlterar->c60_codcon, $c60_anousu);
+
+          if ($oDaoConplanoOrcamento->erro_status == '0') {
+            throw new DBException($oDaoConplanoOrcamento->erro_msg);
+          }
+          else
+          {
+            if($estruturalDeReceita) // Atualizando demais tabelas com esse estrutural
+            {
+              $sqlSearch = $daoTabOrc->sql_query(null, null, "k02_codigo, k02_anousu", null, "k02_estorc = '{$estruturalAnterior}' AND k02_anousu = $c60_anousu");
+              $rsSearch = db_query($sqlSearch);
+              
+              while($linha = pg_fetch_array($rsSearch)){
+                $daoTabOrc->k02_anousu = $linha['k02_anousu'];
+                $daoTabOrc->k02_codigo = $linha['k02_codigo'];
+                $daoTabOrc->k02_estorc = $sConplanoOrcFontes;
+                $daoTabOrc->alterar($linha['k02_anousu'], $linha['k02_codigo']);
+              }
+              
+              $sqlSearch2 = $daoTabPlan->sql_query(null, null, "k02_codigo, k02_anousu", null, "k02_estpla = '{$estruturalAnterior}' AND k02_anousu = $c60_anousu");
+              $rsSearch2 = db_query($sqlSearch2);
+
+              while($linha2 = pg_fetch_array($rsSearch2)){
+                $daoTabPlan->k02_anousu = $linha2['k02_anousu'];
+                $daoTabPlan->k02_codigo = $linha2['k02_codigo'];
+                $daoTabPlan->k02_estpla = $sConplanoOrcFontes;
+                $daoTabPlan->alterar($linha2['k02_codigo'], $linha2['k02_anousu']);
+              }             
+            }
+          } 
+        }
+
+        $sSqlAnosFontes = $oDaoOrcFontes->sql_query(null, null, "o57_anousu", null, "o57_codfon = {$oDadoAlterar->c60_codcon} AND o57_anousu >= {$iAnoUsu}");
+        $rsAnosFontes   = db_query($sSqlAnosFontes);
+
+        if (!$rsAnosFontes) {
+          throw new DBException("Não foi possível buscar as informações dos planos orçamentários.");
+        }
+
+        $aPlanoOrcamentario = db_utils::makeCollectionFromRecord($rsAnosFontes, function ($dado) {
+          return $dado->o57_anousu;
+        });
+
+        foreach ($aPlanoOrcamentario as $o57_anousu) {
+          $oDaoOrcFontes->o57_anousu = $o57_anousu;
+          $oDaoOrcFontes->alterar($oDadoAlterar->c60_codcon, $o57_anousu);
+
+          if ($oDaoOrcFontes->erro_status == '0') {
+            throw new DBException($oDaoOrcFontes->erro_msg);
+          }
+        }
+
+        $sSqlAnosElemento = $oDaoOrcElemento->sql_query(null, null, "o56_anousu", null, "o56_codele = {$oDadoAlterar->c60_codcon} AND o56_anousu >= {$iAnoUsu}");
+        $rsAnosElemento   = db_query($sSqlAnosElemento);
+
+        if (!$rsAnosElemento) {
+          throw new DBException("Não foi possível buscar as informações dos planos orçamentários.");
+        }
+
+        $aPlanoOrcamentario = db_utils::makeCollectionFromRecord($rsAnosElemento, function ($dado) {
+          return $dado->o56_anousu;
+        });
+
+        foreach ($aPlanoOrcamentario as $o56_anousu) {
+          $oDaoOrcElemento->o56_anousu = $o56_anousu;
+          $oDaoOrcElemento->alterar($oDadoAlterar->c60_codcon, $o56_anousu);
+
+          if ($oDaoOrcElemento->erro_status == '0') {
+            throw new DBException($oDaoOrcElemento->erro_msg);
+          }
+        }
   		}
   		
   		db_fim_transacao(false);

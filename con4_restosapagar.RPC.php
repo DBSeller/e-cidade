@@ -1,42 +1,42 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_libcontabilidade.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_libcontabilidade.php"));
+require_once(modification("libs/JSON.php"));
 
-require_once("dbforms/db_funcoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
 
-require_once("std/db_stdClass.php");
-require_once("std/DBNumber.php");
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBNumber.php"));
 
 db_app::import("exceptions.*");
 db_app::import("configuracao.*");
@@ -57,89 +57,87 @@ $iAnoSessao   = db_getsession("DB_anousu");
 
 try {
 
-	switch ($oParam->exec) {
+    switch ($oParam->exec) {
 
-		case 'getDadosRestosAPagar' :
+        case 'getDadosRestosAPagar' :
 
-			$oRetorno->lBloquearTela = false;
+            $oRetorno->lBloquearTela = false;
 
-			if ( EscrituracaoRestosAPagarNaoProcessados::existeLancamentoPeriodo($iAnoSessao, $iInstituicao, $oParam->lProcessados) ) {
-				$oRetorno->lBloquearTela = true;
-			}
+            $lProcessados = !empty($oParam->lProcessados) ? $oParam->lProcessados : null;
+            $iTipo        = !empty($oParam->iTipo) ? (int) $oParam->iTipo : null;
 
-			$nValor  = EscrituracaoRestosAPagarNaoProcessados::getValorLancamento($iAnoSessao,
-						                                                                $iInstituicao,
-						                                                                $oParam->lProcessados);
-			if ($nValor == 0) {
-				$nValor = RestosAPagar::getValorNaoProcessadoAno($iAnoSessao, $iInstituicao);
-			}
+            if ( EscrituracaoRestosAPagar::existeLancamentoPeriodo($iAnoSessao,
+                $iInstituicao,
+                $lProcessados,
+                $iTipo) ) {
+                $oRetorno->lBloquearTela = true;
+            }
 
-			$oRetorno->nValor = $nValor;
+            $nValorExercicioAtual = RestosAPagar::getValor($iTipo, $iAnoSessao, $iInstituicao, false);
+            $nValorExerciciosAnteriores = RestosAPagar::getValor($iTipo, $iAnoSessao, $iInstituicao, true);
+            $oRetorno->nValorExercicioAtual       = $nValorExercicioAtual;
+            $oRetorno->nValorExerciciosAnteriores = $nValorExerciciosAnteriores;
 
-		break;
+            break;
 
-	  case 'processar'    :
-		case 'desprocessar' :
+        case 'processar'    :
+        case 'desprocessar' :
 
-			db_inicio_transacao();
+            db_inicio_transacao();
 
-	  	$oEscrituracao       = new EscrituracaoRestosAPagarNaoProcessados($iAnoSessao, $iInstituicao);
+            $sObservacao         = db_stdClass::normalizeStringJsonEscapeString($oParam->sObservacao);
+            $iCodigoEscrituracao = null;
+            $iCodigoDocumento    = null;
+            $oEscrituracao       = new EscrituracaoRestosAPagar($iAnoSessao, $iInstituicao);
+            $oEscrituracao->setTipoRestoAPagar($oParam->iTipo);
 
-	  	$iCodigoEscrituracao = null;
-	  	$iCodigoDocumento    = null;
-			$sObservacao         = db_stdClass::normalizeStringJson($oParam->sObservacao);
+            if ($oParam->exec == 'processar') {
 
-	  	if ($oParam->exec == 'processar') {
+                $iCodigoEscrituracao = $oEscrituracao->escriturar();
+                $lEstorno = false;
+            } else {
 
-		  	// Documento 2005: INSCRIÇÃO DE RESTOS A PAGAR NÃO PROCESSADOS
-	  		$iCodigoDocumento    = 2005;
-		  	$iCodigoEscrituracao = $oEscrituracao->escriturar();
+                $iCodigoEscrituracao = $oEscrituracao->cancelarEscrituracao();
+                $lEstorno = true;
+            }
 
-	  	} else {
+            $iCodigoDocumentoExercicioAtual = RestosAPagar::getDocumento($oParam->iTipo, false, $lEstorno);
+            $empenhosParaProcessar = RestosAPagar::getEmpenhos($oParam->iTipo, $iAnoSessao, $iInstituicao, false);
+            foreach ($empenhosParaProcessar as $stdEmpenho) {
 
-				// Documento 2006:	ESTORNO DE INSCR. DE RP NÃO PROCESSADOS
-	  		$iCodigoDocumento    = 2006;
-				$iCodigoEscrituracao = $oEscrituracao->cancelarEscrituracao();
-	  	}
+                $oLancamentoAuxiliar = new LancamentoAuxiliarInscricaoRestosAPagar();
+                $oLancamentoAuxiliar->setNumeroEmpenho($stdEmpenho->e60_numemp);
+                $oLancamentoAuxiliar->setValorTotal($stdEmpenho->valor);
+                $oLancamentoAuxiliar->setObservacaoHistorico($sObservacao);
+                $oLancamentoAuxiliar->setInscricaoRestosAPagar($iCodigoEscrituracao);
+                $oEscrituracao->processarLancamentosContabeis($oLancamentoAuxiliar, $iCodigoDocumentoExercicioAtual);
+            }
+            unset($empenhosParaProcessar, $stdEmpenho);
 
-	  	$oLancamentoAuxiliar = new LancamentoAuxiliarInscricaoRestosAPagarNaoProcessado();
-	  	$oLancamentoAuxiliar->setValorTotal($oParam->nValor);
-	  	$oLancamentoAuxiliar->setObservacaoHistorico($sObservacao);
-	  	$oLancamentoAuxiliar->setInscricaoRestosAPagarNaoProcessados($iCodigoEscrituracao);
+            $empenhosParaProcessarAnterior = RestosAPagar::getEmpenhos($oParam->iTipo, $iAnoSessao, $iInstituicao, true);
+            $iCodigoDocumentoExercicioAnterior = RestosAPagar::getDocumento($oParam->iTipo, true,  $lEstorno);
+            foreach ($empenhosParaProcessarAnterior as $stdEmpenho) {
 
-	  	$oEscrituracao->processarLancamentosContabeis($oLancamentoAuxiliar, $iCodigoDocumento);
+                $oLancamentoAuxiliar = new LancamentoAuxiliarInscricaoRestosAPagar();
+                $oLancamentoAuxiliar->setNumeroEmpenho($stdEmpenho->e60_numemp);
+                $oLancamentoAuxiliar->setValorTotal($stdEmpenho->valor);
+                $oLancamentoAuxiliar->setObservacaoHistorico($sObservacao);
+                $oLancamentoAuxiliar->setInscricaoRestosAPagar($iCodigoEscrituracao);
+                $oEscrituracao->processarLancamentosContabeis($oLancamentoAuxiliar, $iCodigoDocumentoExercicioAnterior);
+            }
+            unset($iCodigoDocumentoExercicioAnterior, $stdEmpenho);
+            db_fim_transacao(false);
 
-	  	db_fim_transacao(false);
+            break;
 
-		break;
-
-  }
-
-} catch (BusinessException $oErro){
-
-	$oRetorno->status  = 2;
-	$oRetorno->message = $oErro->getMessage();
-
-	db_fim_transacao(true);
-
-} catch (ParameterException $oErro) {
-
-	$oRetorno->status  = 2;
-	$oRetorno->message = $oErro->getMessage();
-
-} catch (DBException $oErro) {
-
-	$oRetorno->status  = 2;
-	$oRetorno->message = $oErro->getMessage();
-
-	db_fim_transacao(true);
+    }
 
 } catch (Exception $oErro) {
 
-	$oRetorno->status  = 2;
-	$oRetorno->message = $oErro->getMessage();
+    $oRetorno->status  = 2;
+    $oRetorno->message = $oErro->getMessage();
 
-	db_fim_transacao(true);
+    db_fim_transacao(true);
 }
 
 $oRetorno->message = urlEncode($oRetorno->message);

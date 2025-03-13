@@ -124,13 +124,13 @@ function js_pesquisadb08_codigo(mostra) {
   if (mostra == true) {
   
     var sUrl = 'func_db_tipodoc.php?funcao_js=parent.js_mostradb_tipodoc1|db08_codigo|db08_descr';
-    js_OpenJanelaIframe('top.corpo.iframe_pctipocertif', 'db_iframe_db_tipodoc', sUrl, 'Pesquisa', true, '0', '1');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pctipocertif', 'db_iframe_db_tipodoc', sUrl, 'Pesquisa', true, '0', '1');
   } else {
   
     if ($('db08_codigo').value != '') { 
     
       var sUrl = 'func_db_tipodoc.php?pesquisa_chave='+$('db08_codigo').value+'&funcao_js=parent.js_mostradb_tipodoc';
-      js_OpenJanelaIframe('top.corpo.iframe_pctipocertif', 'db_iframe_db_tipodoc', sUrl, 'Pesquisa', false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pctipocertif', 'db_iframe_db_tipodoc', sUrl, 'Pesquisa', false);
     } else {
       $('db08_descr').value = ''; 
     }
@@ -157,7 +157,7 @@ function js_mostradb_tipodoc1(chave1,chave2) {
 function js_pesquisa() {
 
   var sUrl = 'func_pctipocertif.php?funcao_js=parent.js_preenchepesquisa|pc70_codigo&viewAll=1';
-  js_OpenJanelaIframe('top.corpo.iframe_pctipocertif', 'db_iframe_pctipocertif', sUrl, 'Pesquisa', true, '0', '1');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_pctipocertif', 'db_iframe_pctipocertif', sUrl, 'Pesquisa', true, '0', '1');
 }
 
 function js_preenchepesquisa(chave) {

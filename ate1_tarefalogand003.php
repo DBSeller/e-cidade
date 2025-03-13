@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,12 +26,12 @@
  */
 
 define("TAREFA", true);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_clientes_classe.php");
-include("classes/db_tarefaclientes_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_clientes_classe.php"));
+include(modification("classes/db_tarefaclientes_classe.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -54,15 +54,16 @@ function js_envia_dados(){
   deb = document.form1;
   parent.document.form1.itens_clientes_escolhidos.value = '';
   marcados = '';
-  separador = '-';
+  separador = '';
   for(i=0;i< deb.length ;i++){
     if(deb.elements[i].type == "checkbox") {
       if(deb.elements[i].checked == true) {
         marcados += separador + deb.elements[i].name.substr(4) ;
+        separador = '-';
       }
     }
   }
-  marcados += separador;
+  //marcados += separador;
 
   parent.document.form1.itens_clientes_escolhidos.value = marcados;
 
@@ -121,11 +122,13 @@ function js_marcadesmarca(){
     echo "</td>\n";
 
 
- 
+    $aSelecionados = split("-", $clientes_selecionados);
+
     for($i=0;$i<$clclientes->numrows;$i++){
       db_fieldsmemory($result,$i);
 
-      if($clientes_selecionados=='' || strpos("##".$clientes_selecionados,'-'.$at01_codcli.'-')>0){
+      //if($clientes_selecionados=='' || strpos("##".$clientes_selecionados,'-'.$at01_codcli.'-')>0){
+      if(in_array($at01_codcli, $aSelecionados)){
         $marca = 'checked';
       }else{
         $marca = '';
@@ -154,7 +157,9 @@ function js_marcadesmarca(){
       }
       db_fieldsmemory($result,$i);
 
-      if($clientes_selecionados=='' || strpos("##".$clientes_selecionados,'-'.$at01_codcli.'-')>0){
+      //if($clientes_selecionados=='' || strpos("##".$clientes_selecionados,'-'.$at01_codcli.'-')>0){
+      if(in_array($at01_codcli, $aSelecionados)){
+
         $marca = 'checked';
       }else{
         $marca = '';

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cadtipoparc_classe.php");
-include("classes/db_cadtipoparcdeb_classe.php");
-include("classes/db_tipoparc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cadtipoparc_classe.php"));
+include(modification("classes/db_cadtipoparcdeb_classe.php"));
+include(modification("classes/db_tipoparc_classe.php"));
 $clcadtipoparc = new cl_cadtipoparc;  
 $clcadtipoparcdeb = new cl_cadtipoparcdeb;
 $cltipoparc = new cl_tipoparc;
@@ -86,7 +86,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcadtipoparc.php");
+	include(modification("forms/db_frmcadtipoparc.php"));
 	?>
     </center>
 	</td>
@@ -119,9 +119,9 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.cadtipoparcdeb.disabled=false;
-         top.corpo.iframe_cadtipoparcdeb.location.href='cai1_cadtipoparcdeb001.php?db_opcaoal=33&k41_cadtipoparc=".@$k40_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_cadtipoparcdeb.location.href='cai1_cadtipoparcdeb001.php?db_opcaoal=33&k41_cadtipoparc=".@$k40_codigo."';
          parent.document.formaba.tipoparc.disabled=false;
-         top.corpo.iframe_tipoparc.location.href='cai1_tipoparc001.php?db_opcaoal=33&cadtipoparc=".@$k40_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tipoparc.location.href='cai1_tipoparc001.php?db_opcaoal=33&cadtipoparc=".@$k40_codigo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('tipoparc');";

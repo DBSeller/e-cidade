@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -228,12 +228,12 @@
   function js_pesquisax04_codmarca(mostra){
 
 	  if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_aguahidromarca',
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguahidromarca',
     	                    'func_aguahidromarca.php?funcao_js=parent.js_mostraaguahidromarca1|x03_codmarca|x03_nomemarca',
     	                    'Pesquisa', true);
     } else {
       if (document.form1.x04_codmarca.value != '') { 
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_aguahidromarca',
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguahidromarca',
                             'func_aguahidromarca.php?pesquisa_chave=' + document.form1.x04_codmarca.value + 
                               '&funcao_js=parent.js_mostraaguahidromarca',
                             'Pesquisa', false);
@@ -264,12 +264,12 @@
   
   function js_pesquisax04_coddiametro(mostra) {
 	  if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_aguahidrodiametro',
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguahidrodiametro',
     	                    'func_aguahidrodiametro.php?funcao_js=parent.js_mostraaguahidrodiametro1|x15_coddiametro|x15_diametro',
     	                    'Pesquisa', true);
     }else{
       if (document.form1.x04_coddiametro.value != '') { 
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_aguahidrodiametro',
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguahidrodiametro',
                             'func_aguahidrodiametro.php?pesquisa_chave=' + document.form1.x04_coddiametro.value + 
                               '&funcao_js=parent.js_mostraaguahidrodiametro',
                             'Pesquisa', false);
@@ -299,13 +299,13 @@
 	
   function js_pesquisax04_matric(mostra) {
 	  if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_aguabase',
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguabase',
     	                    'func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|z01_nome',
     	                    'Pesquisa', true);
     } else {
 
       if (document.form1.x04_matric.value != '') { 
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_aguabase',
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguabase',
                             'func_aguabase.php?pesquisa_chave=' + document.form1.x04_matric.value + 
                               '&funcao_js=parent.js_mostraaguabase',
                             'Pesquisa', false);
@@ -335,7 +335,7 @@
 
 	
   function js_pesquisa() {
-	  js_OpenJanelaIframe('top.corpo', 'db_iframe_aguahidromatric', 
+	  js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguahidromatric', 
 			                  'func_aguahidromatric.php?funcao_js=parent.js_preenchepesquisa|x04_codhidrometro',
 			                  'Pesquisa', true);
 	}
@@ -353,12 +353,12 @@
   
   function js_pesquisax21_situacao(mostra){
 	  if (mostra == true) {
-      js_OpenJanelaIframe('top.corpo', 'db_iframe_aguasitleitura',
+      js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguasitleitura',
     	                    'func_aguasitleituraalt.php?funcao_js=parent.js_mostraaguasitleitura1|x17_codigo|x17_descr|x17_regra',
     	                    'Pesquisa', true);
     } else {
       if (document.form1.x21_situacao.value != '') { 
-        js_OpenJanelaIframe('top.corpo', 'db_iframe_aguasitleitura', 
+        js_OpenJanelaIframe('CurrentWindow.corpo', 'db_iframe_aguasitleitura', 
                             'func_aguasitleituraalt.php?pesquisa_chave=' + document.form1.x21_situacao.value +
                               '&funcao_js=parent.js_mostraaguasitleitura',
                             'Pesquisa', false);

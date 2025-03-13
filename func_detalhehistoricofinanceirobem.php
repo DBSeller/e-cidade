@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
 $oGet = db_utils::postMemory($_GET, false);
 
 $oDaoBensHistoricoCalculoBem      = db_utils::getDao("benshistoricocalculobem");
 $sCamposBuscaHistoricoFinanceiro  = "t57_datacalculo,";
 $sCamposBuscaHistoricoFinanceiro .= "t58_valoranterior,";
-$sCamposBuscaHistoricoFinanceiro .= "t58_valorcalculado,";
-$sCamposBuscaHistoricoFinanceiro .= "t58_valoratual as dl_Valor_Depreciável,";
+$sCamposBuscaHistoricoFinanceiro .= "t58_valorcalculado as dl_cota_depreciação,";
+$sCamposBuscaHistoricoFinanceiro .= "t58_valoratual,";
 $sCamposBuscaHistoricoFinanceiro .= "case when t57_tipoprocessamento = 1 ";
 $sCamposBuscaHistoricoFinanceiro .= "     then 'Automático' ";
 $sCamposBuscaHistoricoFinanceiro .= "     else 'Manual' end as t57_tipoprocessamento ,";
@@ -49,7 +49,7 @@ $sCamposBuscaHistoricoFinanceiro .= "     THEN 'Desprocessado' ";
 $sCamposBuscaHistoricoFinanceiro .= "     ELSE 'Processado' END as t57_processado, ";
 $sCamposBuscaHistoricoFinanceiro .= "fc_mesextenso(t57_mes, 'sigla') || '/' || t57_ano AS dl_Competencia";
 $sWhereBuscaHistoricoFinanceiro   = " t58_bens = {$oGet->t52_bem} ";
-$sOrder                           =  "t57_ano desc, t57_mes desc";
+$sOrder                           =  "t57_ano desc, t57_mes desc,  t58_sequencial desc";
 $sSqlBuscaHistoricoFinanceiro     = $oDaoBensHistoricoCalculoBem->sql_query(null, $sCamposBuscaHistoricoFinanceiro,
                                                                             $sOrder, $sWhereBuscaHistoricoFinanceiro);
 ?>
@@ -69,3 +69,9 @@ $sSqlBuscaHistoricoFinanceiro     = $oDaoBensHistoricoCalculoBem->sql_query(null
     </center>
   </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

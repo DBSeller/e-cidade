@@ -167,7 +167,7 @@ db_textarea('d01_descr',5,40,$Id01_descr,true,'text',$db_opcao,"")
       <?
         if($db_opcao!=1){
           $sql="select  d10_codigo from  editalproj where d10_codedi=$d01_codedi";
-           $result=pg_query($sql);
+           $result=db_query($sql);
            $num=pg_numrows($result);
      	   for($x=0; $x<$num; $x++){
        	     db_fieldsmemory($result,$x);
@@ -179,7 +179,7 @@ db_textarea('d01_descr',5,40,$Id01_descr,true,'text',$db_opcao,"")
         $sql="select * from
  	    	(select d40_codigo, d10_codigo from projmelhorias left join editalproj on d40_codigo=d10_codigo)
   	       	as x  where d10_codigo is null";
-        $result=pg_query($sql);
+        $result=db_query($sql);
         $num=pg_numrows($result);
 	for($x=0; $x<$num; $x++){
      	  db_fieldsmemory($result,$x);

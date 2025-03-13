@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -226,10 +226,10 @@ $clrotulo->label("cc01_estrutural");
 
         function js_pesquisacc01_instit(mostra){
           if(mostra==true){
-            js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
+            js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true);
           }else{
              if(document.form1.cc01_instit.value != ''){ 
-                js_OpenJanelaIframe('top.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.cc01_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
+                js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.cc01_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false);
              }else{
                document.form1.nomeinst.value = ''; 
              }

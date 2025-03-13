@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: patrim
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clbensbaix->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -96,10 +96,10 @@ db_input('t51_descr',40,$It51_descr,true,'text',3,"js_pesquisat55_motivo(false)"
 <script>
 function js_pesquisat55_motivo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_bensbaix','db_iframe_bensmotbaixa','func_bensmotbaixa.php?funcao_js=parent.js_mostramotivo1|t51_motivo|t51_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_bensbaix','db_iframe_bensmotbaixa','func_bensmotbaixa.php?funcao_js=parent.js_mostramotivo1|t51_motivo|t51_descr','Pesquisa',true);
   }else{
     if(document.form1.t55_motivo.value != ''){
-      js_OpenJanelaIframe('top.corpo.iframe_bensbaix','db_iframe_bensmotbaixa','func_bensmotbaixa.php?pesquisa_chave='+document.form1.t55_motivo.value+'&funcao_js=parent.js_mostramotivo','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_bensbaix','db_iframe_bensmotbaixa','func_bensmotbaixa.php?pesquisa_chave='+document.form1.t55_motivo.value+'&funcao_js=parent.js_mostramotivo','Pesquisa',false);
     }else{
       document.form1.t51_descr.value = '';
     }

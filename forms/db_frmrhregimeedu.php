@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -106,7 +106,7 @@ $clrhregime->rotulo->label();
     </td>
     <td>
       <?
-      include("classes/db_vinculomanad_classe.php");
+      include(modification("classes/db_vinculomanad_classe.php"));
       $clvinculomanad   = new cl_vinculomanad();
       $sSqlVinculomanad = $clvinculomanad->sql_query_file();
       $rsVinculomanad   = $clvinculomanad->sql_record($sSqlVinculomanad);
@@ -130,7 +130,7 @@ $clrhregime->rotulo->label();
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhregime','func_rhregimesec.php?funcao_js=parent.js_preenchepesquisa|rh30_codreg','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhregime','func_rhregimesec.php?funcao_js=parent.js_preenchepesquisa|rh30_codreg','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
 

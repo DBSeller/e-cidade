@@ -69,7 +69,7 @@ db_select('v11_regra',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_isencaotipo','func_isencaotipo.php?funcao_js=parent.js_preenchepesquisa|v11_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_isencaotipo','func_isencaotipo.php?funcao_js=parent.js_preenchepesquisa|v11_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_isencaotipo.hide();

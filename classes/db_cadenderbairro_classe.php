@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -373,7 +373,7 @@ class cl_cadenderbairro {
    function sql_query ( $db73_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -384,19 +384,23 @@ class cl_cadenderbairro {
      }
      $sql .= " from cadenderbairro ";
      $sql .= "      inner join cadendermunicipio  on  cadendermunicipio.db72_sequencial = cadenderbairro.db73_cadendermunicipio";
+     $sql .= "      inner join cadendermunicipiosistema ";
+     $sql .= "         on cadendermunicipio.db72_sequencial = cadendermunicipiosistema.db125_cadendermunicipio";
+     $sql .= "        and cadendermunicipiosistema.db125_db_sistemaexterno = 4";
      $sql .= "      inner join cadenderestado  on  cadenderestado.db71_sequencial = cadendermunicipio.db72_cadenderestado";
+
      $sql2 = "";
      if($dbwhere==""){
        if($db73_sequencial!=null ){
          $sql2 .= " where cadenderbairro.db73_sequencial = $db73_sequencial "; 
        } 
      }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
+       $sql2 = " where cadenderbairro.db73_descricao <> ' ' and $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -409,7 +413,7 @@ class cl_cadenderbairro {
    function sql_query_file ( $db73_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -425,12 +429,12 @@ class cl_cadenderbairro {
          $sql2 .= " where cadenderbairro.db73_sequencial = $db73_sequencial "; 
        } 
      }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
+       $sql2 = " where cadenderbairro.db73_descricao <> ' ' and $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -440,4 +444,3 @@ class cl_cadenderbairro {
      return $sql;
   }
 }
-?>

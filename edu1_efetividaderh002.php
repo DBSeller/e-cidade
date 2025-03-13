@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $oDaoEfetividadeRh = db_utils::getdao("efetividaderh");
@@ -58,7 +58,7 @@ if (isset($alterar)) {
  ?>
  <script>
   parent.document.formaba.a2.disabled = false;
-  top.corpo.iframe_a2.location.href='edu1_efetividade001.php?efetividaderh=<?=$ed98_i_codigo?>';
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href='edu1_efetividade001.php?efetividaderh=<?=$ed98_i_codigo?>';
  </script>
  <?
  
@@ -82,7 +82,7 @@ if (isset($alterar)) {
      <br>
      <center>
       <fieldset style="width:95%"><legend><b>Informe a competência da efetividade:</b></legend>
-       <?include("forms/db_frmefetividaderh.php");?>
+       <?include(modification("forms/db_frmefetividaderh.php"));?>
       </fieldset>
      </center>
     </td>

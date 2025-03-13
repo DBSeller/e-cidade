@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orcduplicacao_classe.php");
-include("classes/db_orcduplicacaodotacao_classe.php");
-include("classes/db_orcduplicacaoreceita_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcreceita_classe.php");
-include("classes/db_conaberturaexe_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcduplicacao_classe.php"));
+include(modification("classes/db_orcduplicacaodotacao_classe.php"));
+include(modification("classes/db_orcduplicacaoreceita_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcreceita_classe.php"));
+include(modification("classes/db_conaberturaexe_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 //Inicializando e tipando variaveis.
 (string)$sErro       = null;
@@ -199,7 +199,7 @@ if(isset($p->incluir)){
 			     }elseif ($p->c91_origem == 2){
                
 					  	if ($i > 0){	 
-                pg_query('drop table work_receita');
+                db_query('drop table work_receita');
 						  }
 						  $rsSre = db_receitasaldo(11,1,2,true," o70_codrec = ".$oRec->o70_codrec."
 						                            and o70_anousu =".$p->c91_anousuorigem,$p->c91_anousuorigem,
@@ -213,7 +213,7 @@ if(isset($p->incluir)){
 				  }elseif ($p->c91_origem == 3){
                
 					  	if ($i > 0){	 
-                pg_query('drop table work_receita');
+                db_query('drop table work_receita');
 						  }
 						  $rsSre = db_receitasaldo(11,1,3,true," o70_codrec = ".$oRec->o70_codrec."
 						                            and o70_anousu =".$p->c91_anousuorigem,$p->c91_anousuorigem,
@@ -390,7 +390,7 @@ if ($clconaberturaexe->numrows == 0){
   
         <script>
 				     
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcduplicacao','orc4_orcduplicao005.php?o75_conaberturaexe=<?=$c91_seq?>','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcduplicacao','orc4_orcduplicao005.php?o75_conaberturaexe=<?=$c91_seq?>','Pesquisa',true);
 				</script> 
 
       <?      

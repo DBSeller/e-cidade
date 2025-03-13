@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once ("libs/db_stdlib.php");
-  require_once ("libs/db_conecta.php");
-  require_once ("libs/db_sessoes.php");
-  require_once ("libs/db_usuariosonline.php");
-  require_once ("dbforms/db_funcoes.php");
-  require_once ("libs/db_app.utils.php");
-  require_once ("classes/db_aguahidromatric_classe.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("libs/db_usuariosonline.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("classes/db_aguahidromatric_classe.php"));
 
   $cl_aguahidromatric_origem  = new cl_aguahidromatric();
   $cl_aguahidromatric_destino = new cl_aguahidromatric();
@@ -71,8 +71,8 @@
       	
       }else{
       	
-      	require_once("classes/db_histocorrencia_classe.php");
-    		require_once("classes/db_histocorrenciamatric_classe.php");
+      	require_once(modification("classes/db_histocorrencia_classe.php"));
+    		require_once(modification("classes/db_histocorrenciamatric_classe.php"));
     	
     		$clhistocorrencia                    = new cl_histocorrencia;
     	
@@ -166,7 +166,7 @@
     <tr>
       <td height="430" align="center" valign="top" bgcolor="#CCCCCC">
         <center>
-          <?php include("forms/db_frmaguahidrometroinvercao.php"); ?>
+          <?php include(modification("forms/db_frmaguahidrometroinvercao.php")); ?>
         </center>
       </td>
     </tr>

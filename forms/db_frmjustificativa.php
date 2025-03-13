@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -39,6 +39,16 @@ $oDaoJustificativa->rotulo->label();
      <?db_input('ed06_i_codigo',15,$Ied06_i_codigo,true,'text',3,"")?>
     </td>
    </tr>
+   
+   <tr>
+    <td nowrap title="<?=@$Ted06_abreviatura?>">
+     <?=@$Led06_abreviatura?>
+    </td>
+    <td>
+     <?db_input('ed06_abreviatura', 3,$Ied06_abreviatura,true,'text',$db_opcao,"")?>
+    </td>
+   </tr>
+   
    <tr>
     <td nowrap title="<?=@$Ted06_c_descr?>">
      <?=@$Led06_c_descr?>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 $oJson        = new services_json();
 $oParam       = $oJson->decode((str_replace("\\","",$_POST["json"])));
@@ -167,14 +167,19 @@ switch ($oParam->exec) {
 	      
 	      $sCamposSqlFolha  = "rh01_regist, z01_nome, rh16_pis";
 	      $sWhereSqlFolha   = "     rh02_tbprev in ({$aCheckBoxes})                               ";
-        $sWhereSqlFolha  .= " and ( rh05_recis is null                                          ";
-        $sWhereSqlFolha  .= "       or ( rh05_recis is not null                                 ";
-        $sWhereSqlFolha  .= "            and ( ( cast(extract(year from rh05_recis) as integer) = {$iAnoUsu}       ";
-        $sWhereSqlFolha  .= "                  and extract(month from rh05_recis) as integer) = {$iMesUsu} )   ";
-        $sWhereSqlFolha  .= "             or ( cast(extract(year from rh05_recis) as integer) = {$iAnoAnt}         ";
-        $sWhereSqlFolha  .= "                  and cast(extract(month from rh05_recis) as integer) = {$iMesAnt}     ";
-        $sWhereSqlFolha  .= "                  and rh01_regist not in ({$sSubSqlRescisao}) )))) ";
-        $sWhereSqlFolha  .= " {$sWhereRHLota}                                                   ";
+              $sWhereSqlFolha  .= " and ( rh05_recis is null                                          ";
+              $sWhereSqlFolha  .= "       or ( rh05_recis is not null                                 ";
+              $sWhereSqlFolha  .= "            and ( ( cast(extract(year from rh05_recis) as integer) = {$iAnoUsu}       ";
+              $sWhereSqlFolha  .= "                  and extract(month from rh05_recis) as integer) = {$iMesUsu} )   ";
+              $sWhereSqlFolha  .= "             or ( cast(extract(year from rh05_recis) as integer) = {$iAnoAnt}         ";
+              $sWhereSqlFolha  .= "                  and cast(extract(month from rh05_recis) as integer) = {$iMesAnt}     ";
+              $sWhereSqlFolha  .= "                  and rh01_regist not in ({$sSubSqlRescisao}) )))) ";
+              $sWhereSqlFolha  .= " {$sWhereRHLota}                                                   ";
+
+              if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+                $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+                $sWhereSqlFolha .= " and rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+              }
 	      
 	      $sSqlDadosFolha   = $clgera_sql_folha->gerador_sql("", 
 	                                                         $iAnoUsu, 

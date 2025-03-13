@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
  
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']); // ta com o globals desativado no php -- Crestani
 
@@ -141,7 +141,7 @@ class calendario{
                 from db_departpai
                      inner join db_depart on db_depart.coddepto = db_departpai.coddepto
                 where db_departpai.coddeptopai = $coddepto";
-        $result = pg_query($sql);
+        $result = db_query($sql);
         if ( pg_numrows($result) > 0 ){
            
            for ($i=0;$i<pg_numrows($result);$i++){
@@ -155,7 +155,7 @@ class calendario{
                       where db_depusu.coddepto = $coddepto
                         and db_usuarios.usuarioativo = '1'
                       order by db_depusu.coddepto, responsavel desc, nome";
-              $resultm = pg_query($sql);
+              $resultm = db_query($sql);
               for ($m=0;$m<pg_numrows($resultm);$m++){
                  $responsavel = pg_result($resultm,$m,2);
                  $mostra_integrantes[$coddepto."-".pg_result($resultm,$m,0)] =  "$descrdepto:".pg_result($resultm,$m,1)." - ".( $responsavel == 't'?" Resp ":" Inte   " );
@@ -166,7 +166,7 @@ class calendario{
            $sql = "select db_depart.coddepto, db_depart.descrdepto
                    from db_depart
                    where db_depart.coddepto = $coddepto";
-           $result = pg_query($sql);
+           $result = db_query($sql);
            if ( pg_numrows($result) > 0 ){
               for ($i=0;$i<pg_numrows($result);$i++){
                  $coddepto = pg_result($result,$i,0);
@@ -179,7 +179,7 @@ class calendario{
                          where db_depusu.coddepto = $coddepto
                            and db_usuarios.usuarioativo = '1'
                          order by db_depusu.coddepto, responsavel desc, nome";
-                 $resultm = pg_query($sql);
+                 $resultm = db_query($sql);
                  for ($m=0;$m<pg_numrows($resultm);$m++){
                     $responsavel = pg_result($resultm,$m,2);
                     $mostra_integrantes[$coddepto."-".pg_result($resultm,$m,0)] =  "$descrdepto:".pg_result($resultm,$m,1)." - ".( $responsavel == 't'?" Resp ":" Inte   " );
@@ -352,7 +352,7 @@ class calendario{
               where extract( month from at13_dia ) = $mes  and extract( year from at13_dia ) = $ano and at41_proced in ( 9 , 16)
              ) as x order by at01_nomecli ";
 
-     $result = pg_exec($sql);
+     $result = db_query($sql);
 
      $str = $stra;
      if (pg_numrows($result)>0){
@@ -520,7 +520,7 @@ class calendario{
      
      }
 
-     $result = pg_exec($sql);
+     $result = db_query($sql);
       
      if (pg_numrows($result)>0){
        
@@ -588,7 +588,7 @@ class calendario{
                        and at77_id_usuario = ".$this->tecnico_solicitado."
                        and at77_datavalidade is not null
                      ";
-         $resulthist = pg_exec($sqlhist);
+         $resulthist = db_query($sqlhist);
          $texto = "";
          if( pg_numrows($resulthist) > 0 ){
            for($hh=0;$hh<pg_numrows($resulthist);$hh++){
@@ -666,7 +666,7 @@ class calendario{
                            atendimentosituacao.at16_situacao in (1, 4) 
                            and (tecnico.at03_id_usuario=$this->tecnico_solicitado or (at28_atendcadarea is not null and at27_usuarios = $this->tecnico_solicitado)) 
                      order by at02_codatend desc";
-     $resulthist = pg_exec($executa_sql);
+     $resulthist = db_query($executa_sql);
      
      $txttexto = "";
      if( pg_numrows($resulthist) > 0 ){
@@ -756,7 +756,7 @@ function js_remove_lembrete(lembrete){
 
 function js_retornoAjax(oAjax){
 
-  var obj = eval('(' + oAjax.responseText + ')');
+  var obj = JSON.parse(oAjax.responseText);
   if (obj.status && obj.status == 2){
     js_removeObj('msgBox');
     alert(obj.sMensagem.urlDecode());
@@ -787,7 +787,7 @@ function js_dadosViewLembrete(iLembrete){
 
 function js_viewProrrogarLembrete(oAjax){
   
-  var obj = eval('(' + oAjax.responseText + ')');
+  var obj = JSON.parse(oAjax.responseText);
 
   if (obj.iStatus && obj.iStatus == 2){
     js_removeObj('msgBox');
@@ -857,7 +857,7 @@ function js_consulta(){
 
 function js_viewConsulta(oAjax){
 
-  var obj = eval('(' + oAjax.responseText + ')');
+  var obj = JSON.parse(oAjax.responseText);
 
   if (obj.iStatus && obj.iStatus == 2){
     js_removeObj('msgBox');
@@ -969,7 +969,7 @@ function js_consultaAgenda(){
 
 function js_criaGridConsulta(oAjax){
 
-  var obj = eval('(' + oAjax.responseText + ')');
+  var obj = JSON.parse(oAjax.responseText);
 
   if (obj.iStatus && obj.iStatus == 2){
     js_removeObj('msgBox');
@@ -1068,7 +1068,7 @@ function js_processar(iLembrete){
 
 function js_retornoLembrete(oAjax){
 
-  var obj = eval('(' + oAjax.responseText + ')');
+  var obj = JSON.parse(oAjax.responseText);
   if (obj.iStatus && obj.iStatus == 2){
     js_removeObj('msgBox');
     alert(obj.sMensagem.urlDecode());
@@ -1160,7 +1160,7 @@ if ( isset($tecnico_solicitado) ){
   $clcalendario->tecnico_solicitado = db_getsession("DB_id_usuario");
   $sql = "select nome from db_usuarios where id_usuario = ".db_getsession("DB_id_usuario");
 }  
-$result = pg_exec($sql);
+$result = db_query($sql);
 $clcalendario->tecnico_solicitado_nome = pg_result($result,0,'nome');
 
 $clcalendario->cria($dia_solicitado,$mes_solicitado,$ano_solicitado,1);
@@ -1175,3 +1175,9 @@ echo "</html>";
 echo "<script>$clcalendario->agenda</script>";
 
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

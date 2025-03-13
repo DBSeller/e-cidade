@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 ?>
 <html>
@@ -62,7 +62,7 @@ if(!empty($codcid))
   $str = " upper(codcid) like upper('$codcid%') ";
 else
   $str = " upper(descr) like upper('%$descr%') ";
-$result = pg_exec("select codcid,descr from cid10 where $str");
+$result = db_query("select codcid,descr from cid10 where $str");
 $numrows = pg_numrows($result);
 if($numrows > 0) {
   for($i = 0;$i < $numrows;$i++) {

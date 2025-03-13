@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -62,6 +62,11 @@ class Thread {
    */
   private $pid;
 
+
+    /**
+     * @var Job
+     */
+  private $oJob;
   /**
    * checks if threading is supported by the current
    * PHP configuration
@@ -194,7 +199,8 @@ class Thread {
     if( $this->isAlive() || $lForce ) {
       posix_kill( $this->pid, $_signal );
       if( $_wait ) {
-        pcntl_waitpid( $this->pid, $status = 0 );
+        $status = 0;
+        pcntl_waitpid( $this->pid, $status);
       }
     }
   }
@@ -238,17 +244,16 @@ class Thread {
     }
   }
 
+  public function setJob($oJob) {
+      $this->oJob = $oJob;
+  }
+
   /**
    * Retorna a instancia do Job vinculado a thread
-   * @return Job|null instancia do Job
+   * @return mixed|null instancia do Job
    */
   public function getJob() {
-
-    if ( isset($this->runnable[0]) ) {
-      return $this->runnable[0];
-    }
-
-    return null;
+      return $this->oJob;
   }
 }
 

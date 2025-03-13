@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_liclicita_classe.php");
-include("classes/db_licbaixa_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_liclicita_classe.php"));
+include(modification("classes/db_licbaixa_classe.php"));
 $clliclicita = new cl_liclicita;
 $cllicbaixa = new cl_licbaixa;
 $clliclicita->rotulo->label();

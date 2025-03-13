@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -35,7 +35,7 @@ $sSqlLocalizacao .= "       descrdepto		as nome_da_localizacao							";
 $sSqlLocalizacao .= " 	from db_depart 																				"; 
 $sSqlLocalizacao .=	" where instit = $iIdDaEmpresa												";
 
-$rsLocalizacao    = pg_query($sSqlLocalizacao);
+$rsLocalizacao    = db_query($sSqlLocalizacao);
 $iNumeroLinhas    = pg_num_rows($rsLocalizacao);
 
 for ($i=0; $i<$iNumeroLinhas; $i++) {

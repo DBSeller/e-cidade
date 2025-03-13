@@ -1,39 +1,39 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_levanta_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_levanta_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $cllevanta      = new cl_levanta;
 
 $sqlreceit = "select y32_receit,y32_receitexp from parfiscal";
-$result_receit = pg_query($sqlreceit);
+$result_receit = db_query($sqlreceit);
 db_fieldsmemory($result_receit,0);
 $anousu = db_getsession("DB_anousu");
 
@@ -54,8 +54,7 @@ $sql = "  select  y60_codlev,
 		  sum(liquido) - sum(y63_pago) as apagar,
 		  sum(round(vlr_corrigido,2)) as corrigido,
 		  sum(round(juros * vlr_corrigido,2)) as juros,
-		  sum(round(multa * vlr_corrigido,2)) as multa,
-		  sum(round(vlr_corrigido,2)) + sum(round(juros,2)) + sum(round(multa,2)) as valor_total
+      sum(round(multa * vlr_corrigido,2)) as multa
 	   from(  select  y60_codlev,
                           y63_bruto,
 			  y60_dtini,
@@ -78,7 +77,7 @@ $sql = "  select  y60_codlev,
 
 	    group by y60_codlev,q02_inscr,nome,dataini,datafim,data";
 
-//die($sql);       
+//die($sql);
 $result  = $cllevanta->sql_record($sql);
 $numrows = $cllevanta->numrows;
 if($numrows>0){
@@ -111,15 +110,15 @@ $pri = true;
  $vtot_total   = 0;
  $vtot_apagar  = 0;
 
- 
+
 
 for ($i = 0;$i < $numrows;$i++){
  db_fieldsmemory($result,$i);
 
  if($i%2){
    $cor = 1;
- }else $cor = 0;  
-  
+ }else $cor = 0;
+
   //cabeçalho
   if (  ($pdf->gety() > $pdf->h -30)  || $pri==true ){
       $pdf->addpage("L");
@@ -148,13 +147,13 @@ for ($i = 0;$i < $numrows;$i++){
       $vtot_correcao+= $corrigido;
       $vtot_multa   += $multa;
       $vtot_juros   += $juros;
-      $vtot_total   += $valor_total;
       $total         = round($corrigido + $multa + $juros,2);
-      
+      $vtot_total   += $total;
+
       $dataini   = db_formatar($dataini,"d");
       $datafim   = db_formatar($datafim,"d");
       $data      = db_formatar($data,"d");
-      $bruto     = db_formatar($y63_bruto,"f"); 
+      $bruto     = db_formatar($y63_bruto,"f");
       $imposto   = db_formatar($imposto,"f");
       $pago      = db_formatar($y63_pago,"f");
       $apagar    = db_formatar($apagar,"f");
@@ -162,7 +161,7 @@ for ($i = 0;$i < $numrows;$i++){
       $juros     = db_formatar($juros,"f");
       $multa     = db_formatar($multa,"f");
       $total     = db_formatar($total,"f");
-      
+
       $pdf->setfont('arial','',6);
       $pdf->cell(14,4,"$y60_codlev",1,0,"L",$cor);
       $pdf->cell(14,4,"$q02_inscr",1,0,"C",$cor);
@@ -177,7 +176,7 @@ for ($i = 0;$i < $numrows;$i++){
       $pdf->cell(14,4,"$juros",1,0,"R",$cor);
       $pdf->cell(14,4,"$multa",1,0,"R",$cor);
       $pdf->cell(15,4,"$total",1,1,"R",$cor);
-   
+
 }
 if($cor%1){
   $cor = 0;

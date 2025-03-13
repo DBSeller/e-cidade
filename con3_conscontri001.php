@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_editalrua_classe.php");
-include("classes/db_editalserv_classe.php");
-include("classes/db_contlot_classe.php");
-include("classes/db_iptubase_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_editalrua_classe.php"));
+include(modification("classes/db_editalserv_classe.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
 $cleditalserv= new cl_editalserv;
 $cleditalrua = new cl_editalrua;
 $clcontlot = new cl_contlot;
@@ -216,9 +216,9 @@ db_input('d03_descr',40,$Id03_descr,true,'text',3,'');
 <script>
 function js_contri(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_editalrua.php?funcao_js=parent.js_mostracontri1|d02_contri','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_editalrua.php?funcao_js=parent.js_mostracontri1|d02_contri','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_editalrua.php?pesquisa_chave='+document.form1.d02_contri.value+'&funcao_js=parent.js_mostracontri','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_editalrua.php?pesquisa_chave='+document.form1.d02_contri.value+'&funcao_js=parent.js_mostracontri','Pesquisa',false);
   }
 }
 function js_mostracontri(chave,erro){
@@ -233,9 +233,9 @@ function js_mostracontri1(chave1){
 }
 function js_edi(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_edital.php?funcao_js=parent.js_mostraedi1|d01_codedi','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_edital.php?funcao_js=parent.js_mostraedi1|d01_codedi','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_edital.php?pesquisa_chave='+document.form1.d01_codedi.value+'&funcao_js=parent.js_mostraedi','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_edital.php?pesquisa_chave='+document.form1.d01_codedi.value+'&funcao_js=parent.js_mostraedi','Pesquisa',false);
   }
 }
 function js_mostraedi(chave,erro){
@@ -250,9 +250,9 @@ function js_mostraedi1(chave1){
 }
 function js_pesquisad02_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_ruas.php?funcao_js=parent.js_mostraruas1|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_ruas.php?funcao_js=parent.js_mostraruas1|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_ruas.php?pesquisa_chave='+document.form1.d02_codigo.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_ruas.php?pesquisa_chave='+document.form1.d02_codigo.value+'&funcao_js=parent.js_mostraruas','Pesquisa',false);
   }
 }
 function js_mostraruas(chave,erro){
@@ -269,9 +269,9 @@ function js_mostraruas1(chave1,chave2){
 }
 function js_pesquisad04_tipos(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_editaltipo.php?funcao_js=parent.js_mostraeditaltipo1|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_editaltipo.php?funcao_js=parent.js_mostraeditaltipo1|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_editaltipo.php?pesquisa_chave='+document.form1.d04_tipos.value+'&funcao_js=parent.js_mostraeditaltipo','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_editaltipo.php?pesquisa_chave='+document.form1.d04_tipos.value+'&funcao_js=parent.js_mostraeditaltipo','Pesquisa',false);
   }
 }
 function js_mostraeditaltipo(chave,erro){
@@ -288,9 +288,9 @@ function js_mostraeditaltipo1(chave1,chave2){
 }
 function js_lista(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_projmelhorias.php?funcao_js=parent.js_mostraproj1|d40_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_projmelhorias.php?funcao_js=parent.js_mostraproj1|d40_codigo','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_projmelhorias.php?pesquisa_chave='+document.form1.d40_codigo.value+'&funcao_js=parent.js_mostraproj','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_projmelhorias.php?pesquisa_chave='+document.form1.d40_codigo.value+'&funcao_js=parent.js_mostraproj','Pesquisa',false);
   }
 }
 function js_mostraproj(chave,erro){
@@ -306,9 +306,9 @@ function js_mostraproj1(chave1){
 function js_matri(mostra){
   var matri=document.form1.j01_matric.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_iptubase.php?funcao_js=parent.js_mostra|0|1','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_iptubase.php?funcao_js=parent.js_mostra|0|1','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_iptubase.php?pesquisa_chave='+matri+'&funcao_js=parent.js_mostra1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_iptubase.php?pesquisa_chave='+matri+'&funcao_js=parent.js_mostra1','Pesquisa',false);
   }
 }
 function js_mostra(chave1,chave2){

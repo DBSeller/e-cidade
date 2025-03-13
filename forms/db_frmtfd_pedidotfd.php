@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 define("URL_MESSAGE_FROMPEDIDOTFD", "saude.tfd.db_frmtfd_pedidotfd.");
@@ -44,9 +44,14 @@ $oRotulo->label('nome');
 $oRotulo->label('descrdepto');
 $oRotulo->label('z01_nome');
 $oRotulo->label('z01_i_cgsund');
+$oRotulo->label('tf01_rhcbosolicitante');
 
+$iCboSolicitanteSelecionado = !empty($tf01_rhcbosolicitante) ? $tf01_rhcbosolicitante : '';
 //$oRotulo->label('tf01_v_complespec');
 ?>
+<div id="status-microarea" class="alert-danger" style="text-align: center;" role="alert" hidden>
+  Paciente sem cadastro em uma microárea!
+</div>
 <form name="form1" method="post" action="">
 <center>
 <table border="0" width="100%" style="padding-left: 11px;">
@@ -57,7 +62,7 @@ $oRotulo->label('z01_i_cgsund');
           <td nowrap title="<?=@$Ttf01_i_codigo?>">
             <?=@$Ltf01_i_codigo?>
           </td>
-          <td> 
+          <td>
             <?
             db_input('tf01_i_codigo', 10, $Itf01_i_codigo, true, 'text', 3, "");
             ?>
@@ -70,16 +75,14 @@ $oRotulo->label('z01_i_cgsund');
             }
             $dTmp = explode('/', $tf01_d_datapedido);
             if (count($dTmp) == 3) {
-                   
+
               $tf01_d_datapedido_dia = $dTmp[0];
               $tf01_d_datapedido_mes = $dTmp[1];
               $tf01_d_datapedido_ano = $dTmp[2];
 
             }
 
-            db_inputdata('tf01_d_datapedido', @$tf01_d_datapedido_dia, @$tf01_d_datapedido_mes, @$tf01_d_datapedido_ano, 
-                         true, 'text', 3
-                        );
+            db_inputdata('tf01_d_datapedido', @$tf01_d_datapedido_dia, @$tf01_d_datapedido_mes, @$tf01_d_datapedido_ano,  true, 'text', 1 );
             ?>
           </td>
         </tr>
@@ -89,7 +92,7 @@ $oRotulo->label('z01_i_cgsund');
             echo $Ltf01_i_cgsund;
             ?>
           </td>
-          <td colspan="3"> 
+          <td colspan="3">
             <?
             db_input('tf01_i_cgsund', 10, $Itf01_i_cgsund, true, 'text', 3, '');
             db_input('z01_v_nome', 58, $Iz01_v_nome, true, 'text', 3, '');
@@ -125,9 +128,9 @@ $oRotulo->label('z01_i_cgsund');
             db_ancora(@$Ltf01_i_rhcbo, "js_pesquisatf01_i_rhcbo(true);", $db_opcao);
             ?>
           </td>
-          <td colspan="2"> 
+          <td colspan="2">
             <?
-            db_input('rh70_estrutural', 10, $Irh70_estrutural, true, 'text', $db_opcao, 
+            db_input('rh70_estrutural', 10, $Irh70_estrutural, true, 'text', $db_opcao,
                      " onchange='js_pesquisatf01_i_rhcbo(false);'"
                     );
             db_input('tf01_i_rhcbo', 10, $Itf01_i_rhcbo, true, 'hidden', 3);
@@ -154,14 +157,14 @@ $oRotulo->label('z01_i_cgsund');
              <td nowrap title="<?=@$Ttf01_i_tipotratamento?>" style="padding-bottom: 8px;">
                <?=@$Ltf01_i_tipotratamento?>
              </td>
-             <td style="padding-bottom: 8px;"> 
-               <?              
+             <td style="padding-bottom: 8px;">
+               <?
                $aX                   = array();
                $sSql                 = $oDaoTfdTipoTratamento->sql_query_file(null, '* ');
                $rsTfd_tipotratamento = $oDaoTfdTipoTratamento->sql_record($sSql);
 
                for ($iCont = 0; $iCont < $oDaoTfdTipoTratamento->numrows; $iCont++) {
-                 
+
                  $oDados                     = db_utils::fieldsmemory($rsTfd_tipotratamento, $iCont);
                  $aX[$oDados->tf04_i_codigo] = $oDados->tf04_c_descr;
 
@@ -172,7 +175,7 @@ $oRotulo->label('z01_i_cgsund');
                ?>
              </td>
              <td align="right" style="padding-bottom: 8px;">
-               <input type="button" name="documentos" id="documentos" value="Documentos Entregues" 
+               <input type="button" name="documentos" id="documentos" value="Documentos Entregues"
                  onclick="js_documentos();">
                <input type="hidden" name="entregues" id="entregues" value="">
                <input type="hidden" name="lEntregues" id="lEntregues" value="">
@@ -184,9 +187,9 @@ $oRotulo->label('z01_i_cgsund');
               db_ancora($Ltf23_i_procedimento, "js_pesquisatf23_i_procedimento(true);", $iDbOpcaoRegulado);
               ?>
             </td>
-            <td nowrap colspan="2"> 
+            <td nowrap colspan="2">
               <?
-              db_input('sd63_c_procedimento', 10, '', true, 'text', $iDbOpcaoRegulado, 
+              db_input('sd63_c_procedimento', 10, '', true, 'text', $iDbOpcaoRegulado,
                        " onchange='js_pesquisatf23_i_procedimento(false);'"
                       );
               db_input('tf23_i_procedimento', 1, '', true, 'hidden', 3);
@@ -196,7 +199,7 @@ $oRotulo->label('z01_i_cgsund');
               }
               db_input('lProcedimentosAlterados', 1, '', true, 'hidden', 3, "");
               ?>
-              <input name="lancar_procedimento" type="button" id="lancar_procedimento" value="Incluir" 
+              <input name="lancar_procedimento" type="button" id="lancar_procedimento" value="Incluir"
                 onclick="js_lanca_procedimento();">
               <select multiple  name='select_procedimento[]' id='select_procedimento' style="display: none;">
             </td>
@@ -205,7 +208,7 @@ $oRotulo->label('z01_i_cgsund');
             <td colspan="3">
               <div id='grid_procedimentos' style='width:595px;'></div>
             </td>
-          </tr> 
+          </tr>
         </table>
       </fieldset>
     </td>
@@ -227,37 +230,38 @@ $oRotulo->label('z01_i_cgsund');
                        ' onchange="js_pesquisatf01_i_profissionalsolic(false);"'
                       );
               db_input('z01_nome', 40, $Iz01_nome, true, 'text', 1, "onchange='js_validaAlteracaoNome();'");
-              if (db_permissaomenu(date('Y'), 1000004, 8675) == 'true') { 
+              if (db_permissaomenu(date('Y'), 1000004, 8675) == 'true') {
               ?>
-                <input type="button" id="cadProf" title="Cadastro de Profissionais Fora da Rede"  
+                <input type="button" id="cadProf" title="Cadastro de Profissionais Fora da Rede"
                   name="cadProf" value="Cadastro de Profissionais" onclick="js_abreCadProf();">
               <?
               }
               ?>
             </td>
           </tr>
-          
+
           <tr>
             <td class='bold'>
-              CBO Solicitante: 
+              CBO Solicitante:
             </td>
             <td colspan="4" nowrap="nowrap">
+              <?db_input('iCboSolicitanteSelecionado', 72, "iCboSolicitanteSelecionado", true, 'hidden', 3, '');?>
               <select id='cboSolicitante' name='tf01_rhcbosolicitante' class="field-size-max">
               </select>
             </td>
           </tr>
-          
+
           <tr>
             <td nowrap title="<?=@$Ttf01_d_datapreferencia?>">
               <?=@$Ltf01_d_datapreferencia?>
             </td>
-            <td nowrap> 
+            <td nowrap>
               <?
               if (isset($tf01_d_datapreferencia) && !empty($tf01_d_datapreferencia)) {
 
                 $dTmp = explode('/', $tf01_d_datapreferencia);
                 if (count($dTmp) == 3) {
-                   
+
                   $tf01_d_datapreferencia_dia = $dTmp[0];
                   $tf01_d_datapreferencia_mes = $dTmp[1];
                   $tf01_d_datapreferencia_ano = $dTmp[2];
@@ -265,18 +269,18 @@ $oRotulo->label('z01_i_cgsund');
                 }
 
               } else {
-              
-                
+
+
                 $tf01_d_datapreferencia = date('d/m/Y', db_getsession('DB_datausu'));
                 $dTmp                   = explode('/', $tf01_d_datapreferencia);
                 if (count($dTmp) == 3) {
-                   
+
                   $tf01_d_datapreferencia_dia = $dTmp[0];
                   $tf01_d_datapreferencia_mes = $dTmp[1];
                   $tf01_d_datapreferencia_ano = $dTmp[2];
 
                 }
-                
+
               }
               db_inputdata('tf01_d_datapreferencia', @$tf01_d_datapreferencia_dia, @$tf01_d_datapreferencia_mes,
                            @$tf01_d_datapreferencia_ano, true, 'text', $db_opcao, ""
@@ -299,13 +303,13 @@ $oRotulo->label('z01_i_cgsund');
             <td nowrap title="<?=@$Ttf01_i_tipotransporte?>">
               <?=@$Ltf01_i_tipotransporte;?>
             </td>
-            <td> 
+            <td>
               <?
               $aX = array();
               $sSql = $oDaoTfdTipoTransporte->sql_query_file(null, '* ');
               $rsTfd_tipotransporte = $oDaoTfdTipoTransporte->sql_record($sSql);
               for ($iCont = 0; $iCont < $oDaoTfdTipoTransporte->numrows; $iCont++) {
-                 
+
                 $oDados = db_utils::fieldsmemory($rsTfd_tipotransporte, $iCont);
                 $aX[$oDados->tf27_i_codigo] = $oDados->tf27_c_descr;
 
@@ -357,7 +361,7 @@ $oRotulo->label('z01_i_cgsund');
 
       }
       ?>
-      <input type="submit" name="<?=$sNome1?>" id="<?=$sNome1?>" value="<?=$sNome2?>" 
+      <input type="submit" name="<?=$sNome1?>" id="<?=$sNome1?>" value="<?=$sNome2?>"
         onclick="return js_validaEnvio(<?=$lAlterar?>);">
       <input type="button" name="protocolo" id="protocolo" value="Protocolo" onclick="js_protocolo();"
         <?=(isset($tf01_i_codigo) && !empty($tf01_i_codigo) ? '' : ' disabled')?>>
@@ -372,17 +376,28 @@ $oRotulo->label('z01_i_cgsund');
            isset($tf01_i_codigo) && !empty($tf01_i_codigo) ? '' : ' disabled')?>>
       <input type="button" name="saida" id="saida" value="Saída" onclick="js_saida();"
         <?=(isset($tf01_i_codigo) && !empty($tf01_i_codigo) ? '' : ' disabled')?>>
-      <input type="button" name="fecha" id="fecha" value="Fecha" 
+      <input type="button" name="fecha" id="fecha" value="Fecha"
         onclick="js_fecha(<?=(isset($chavepesquisa) ? 'false' : 'true')?>);">
     </td>
   </tr>
 </table>
 </center>
 </form>
-
+<script rel="script" type="text/javascript" src="scripts/classes/saude/ValidaCgs.js"></script>
 <script>
 
 const URL_MESSAGE_FROMPEDIDOTFD = "saude.tfd.db_frmtfd_pedidotfd.";
+
+const divAlert = document.getElementById('status-microarea');
+const inputCgs = {
+  id: document.getElementById('tf01_i_cgsund'),
+  nome: document.getElementById('z01_v_nome')
+};
+const validaCgs = new ValidaCgs(inputCgs);
+
+window.onload = () => {
+  validaCgs.cadastroMicroarea(inputCgs, divAlert)
+}
 
 oDBGridProcedimentos         = js_cria_datagrid();
 iSelectedIndexTipoTratamento = $('tf01_i_tipotratamento').selectedIndex;
@@ -397,9 +412,9 @@ oAutoComplete.setTxtFieldId(document.getElementById('tf01_i_profissionalsolic'))
 oAutoComplete.setHeightList(180);
 oAutoComplete.show();
 oAutoComplete.setCallBackFunction( function(id, label) {
-  
+
                                      $('tf01_i_profissionalsolic').value = id;
-                                     $('z01_nome').value                 = label; 
+                                     $('z01_nome').value                 = label;
                                      buscaCBOSolicitante();
                                    }
                                  );
@@ -430,17 +445,17 @@ function js_ajax(oParam, jsRetorno, sUrl, lAsync) {
   if (lAsync == undefined) {
     lAsync = false;
   }
-	
-  var oAjax = new Ajax.Request(sUrl, 
+
+  var oAjax = new Ajax.Request(sUrl,
                                {
-                                 method: 'post', 
+                                 method: 'post',
                                  asynchronous: lAsync,
                                  parameters: 'json='+Object.toJSON(oParam),
                                  onComplete: function(oAjax) {
-                                    
+
                                                var evlJS    = jsRetorno+'(oAjax);';
                                                return mRetornoAjax = eval(evlJS);
-                                               
+
                                            }
                               }
                              );
@@ -493,7 +508,7 @@ function js_validaEnvio(lAlterar) {
 }
 
 function js_getProcedimentosPedidoTfd() {
-  
+
   if ($F('tf01_i_codigo').trim() == '') {
     return false;
   }
@@ -507,8 +522,8 @@ function js_getProcedimentosPedidoTfd() {
 }
 
 function js_retornogetProcedimentosPedidoTfd(oRetorno) {
-  
-  oRetorno = eval("("+oRetorno.responseText+")");
+
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
 
@@ -522,9 +537,9 @@ function js_retornogetProcedimentosPedidoTfd(oRetorno) {
 
     oRetorno.oProcedimentos.each(
       function (oProcedimentos) {
-        
+
       oF.options[iCont]   = new Option(oProcedimentos.sd63_c_procedimento+' ## '+
-                                       oProcedimentos.sd63_c_nome.urlDecode(), 
+                                       oProcedimentos.sd63_c_nome.urlDecode(),
                                        oProcedimentos.tf23_i_procedimento
                                       );
       oF.options[iCont].selected = true;
@@ -576,7 +591,7 @@ function js_getInfoCgs() {
 
 function js_retornogetInfoCgs(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   $('z01_v_cgccpf').value = oRetorno.z01_v_cgccpf.urlDecode();
   $('z01_v_ident').value  = oRetorno.z01_v_ident.urlDecode();
@@ -634,7 +649,7 @@ function js_existeDocObrigatorio() {
 
 function js_retornoexisteDocObrigatorio(oRetorno) {
 
-  oRetorno = eval('('+oRetorno.responseText+')');
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.lPossuiDocObrigatorio) { // possui documentos obrigatórios e eles ainda não foram entregues
     $('lEntregues').value = 'false';
@@ -654,7 +669,7 @@ function js_documentos() {
     sChave = sChave + '&tf01_i_codigo='+$F('tf01_i_codigo');
   }
 
-  js_OpenJanelaIframe('', 'db_iframe_documentos', 'tfd4_tfd_documentosentregues001.php?'+sChave, 
+  js_OpenJanelaIframe('', 'db_iframe_documentos', 'tfd4_tfd_documentosentregues001.php?'+sChave,
                       'Documentos do Pedido TFD', true
                      );
 
@@ -668,7 +683,7 @@ function js_situacao() {
   sChave += $F('tf01_i_codigo');
   if ($F('tf01_i_codigo') != '') {
 
-    js_OpenJanelaIframe('', 'db_iframe_situacao', 'tfd4_tfd_situacaopedidotfd001.php?'+sChave, 
+    js_OpenJanelaIframe('', 'db_iframe_situacao', 'tfd4_tfd_situacaopedidotfd001.php?'+sChave,
                         'Situação do Pedido TFD', true
                        );
 
@@ -684,7 +699,7 @@ function js_comunicado() {
   sChave += $F('tf01_i_codigo');
   if ($F('tf01_i_codigo') != '') {
 
-    js_OpenJanelaIframe('', 'db_iframe_comunicado', 'tfd4_tfd_avisopaciente001.php?'+sChave, 
+    js_OpenJanelaIframe('', 'db_iframe_comunicado', 'tfd4_tfd_avisopaciente001.php?'+sChave,
                         'Aviso ao Paciente', true
                        );
 
@@ -700,7 +715,9 @@ function js_acompanhantes() {
   sChave += $F('tf01_i_codigo');
 
   if ($F('tf01_i_codigo') != '') {
-    js_OpenJanelaIframe('', 'db_iframe_acompanhantes', 'tfd4_tfd_acompanhantes001.php?'+sChave, 'Acompanhantes', true);
+   var janela = js_OpenJanelaIframe('', 'db_iframe_acompanhantes', 'tfd4_tfd_acompanhantes001.php?'+sChave, 'Acompanhantes', true, 0, 0);
+   janela.setLargura("calc(100% - 15px)");
+   janela.setAltura("calc(100% - 25px)");
   }
 
 }
@@ -713,7 +730,7 @@ function js_ajuda() {
   sChave += $F('tf01_i_codigo');
   if ($F('tf01_i_codigo') != '') {
 
-    js_OpenJanelaIframe('', 'db_iframe_ajuda', 'tfd4_tfd_ajudacustopedido001.php?'+sChave, 
+    js_OpenJanelaIframe('', 'db_iframe_ajuda', 'tfd4_tfd_ajudacustopedido001.php?'+sChave,
                         'Ajuda de Custo', true
                        );
 
@@ -729,7 +746,7 @@ function js_prestadora() {
   sChave += $F('tf01_i_codigo');
   if ($F('tf01_i_codigo') != '') {
 
-    js_OpenJanelaIframe('', 'db_iframe_prestadora', 'tfd4_tfd_agendamentoprestadora001.php?'+sChave, 
+    js_OpenJanelaIframe('', 'db_iframe_prestadora', 'tfd4_tfd_agendamentoprestadora001.php?'+sChave,
                         'Agendamento com a Prestadora', true
                        );
 
@@ -743,7 +760,7 @@ function js_regulador() {
 
   if ($F('tf01_i_codigo') != '') {
 
-    js_OpenJanelaIframe('', 'db_iframe_regulador', 'tfd4_tfd_selecionarregulador001.php?&tf01_i_codigo=' + $F('tf01_i_codigo'), 
+    js_OpenJanelaIframe('', 'db_iframe_regulador', 'tfd4_tfd_selecionarregulador001.php?&tf01_i_codigo=' + $F('tf01_i_codigo'),
                         'Regulador', true
                        );
   }
@@ -758,9 +775,10 @@ function js_saida() {
 
   sChave  = '&tf01_i_cgsund='+$F('tf01_i_cgsund')+'&z01_v_nome='+$F('z01_v_nome')+'&tf17_i_pedidotfd=';
   sChave += $F('tf01_i_codigo')+'&z01_v_ident='+$F('z01_v_ident')+'&z01_v_cgccpf='+$F('z01_v_cgccpf');
+  sChave += '&dataPedido='+$F('tf01_d_datapedido');
   if ($F('tf01_i_codigo') != '') {
 
-    js_OpenJanelaIframe('', 'db_iframe_saida', 'tfd4_tfd_agendasaida001.php?'+sChave, 
+    js_OpenJanelaIframe('', 'db_iframe_saida', 'tfd4_tfd_agendasaida001.php?'+sChave,
                         'Saída', true
                        );
 
@@ -775,7 +793,7 @@ function js_protocolo() {
   sChave = 'tf01_i_pedidotfd='+$F('tf01_i_codigo');
   if ($F('tf01_i_codigo') != '') {
 
-    jan = window.open('tfd2_protocolopedidotfd002.php?'+sChave, '', 
+    jan = window.open('tfd2_protocolopedidotfd002.php?'+sChave, '',
                       'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 '
                      );
     jan.moveTo(0, 0);
@@ -797,7 +815,7 @@ function js_fecha(lAlerta) {
   }
 
   parent.document.formaba.a2.disabled = true;
-  top.corpo.iframe_a1.location.href   = 'tfd4_tfd_pedidotfd001.php';
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href   = 'tfd4_tfd_pedidotfd001.php';
   parent.mo_camada('a1');
 
 }
@@ -820,7 +838,7 @@ function js_renderizaGrid() {
     aLinha[1] = aInfo[1].substr(0, 54);
     if(<?=$iDbOpcaoRegulado?> == 3) {
 
-      aLinha[2]  = "<span><b>E</b></span>"; 
+      aLinha[2]  = "<span><b>E</b></span>";
 
     } else {
 
@@ -836,10 +854,10 @@ function js_renderizaGrid() {
 }
 
 function js_excluir_item_procedimento(iVal) {
- 
+
   var oF = $("select_procedimento");
   for (i = 0; i < oF.length; i++) {
-    
+
     if (oF.options[i].value == iVal) {
 
       oF.options[i]                      = null;
@@ -914,7 +932,7 @@ function js_cria_datagrid() {
   aAligns[0]  = 'center';
   aAligns[1]  = 'center';
   aAligns[2]  = 'center';
-  
+
   oDBGridProcedimentos.setCellAlign(aAligns);
   oDBGridProcedimentos.allowSelectColumns(false);
   oDBGridProcedimentos.show($('grid_procedimentos'));
@@ -947,13 +965,13 @@ function js_pesquisatf01_i_rhcbo(mostra) {
     if (document.form1.rh70_estrutural.value != '') {
 
       js_OpenJanelaIframe('', 'db_iframe_rhcbo', 'func_rhcbosaude.php?pesquisa_chave='+
-                          document.form1.rh70_estrutural.value+'&funcao_js=parent.js_mostrarhcbo', 
+                          document.form1.rh70_estrutural.value+'&funcao_js=parent.js_mostrarhcbo',
                           'Pesquisa', false
                          );
 
     } else {
 
-       document.form1.tf01_i_rhcbo.value = ''; 
+       document.form1.tf01_i_rhcbo.value = '';
        document.form1.rh70_descr.value   = '';
        js_esvaziaProcedimentos();
        js_renderizaGrid();
@@ -966,12 +984,12 @@ function js_pesquisatf01_i_rhcbo(mostra) {
 }
 function js_mostrarhcbo(chave1, chave2, chave3, erro) {
 
-  document.form1.rh70_estrutural.value = chave1; 
+  document.form1.rh70_estrutural.value = chave1;
   document.form1.rh70_descr.value      = chave2;
   document.form1.tf01_i_rhcbo.value    = chave3;
 
   if (erro == true) {
-    document.form1.rh70_estrutural.focus(); 
+    document.form1.rh70_estrutural.focus();
   }
 
 }
@@ -986,7 +1004,7 @@ function js_mostrarhcbo1(chave1, chave2, chave3) {
 }
 
 function js_pesquisatf23_i_procedimento(mostra) {
-  
+
   sChave = '&chave_tf05_i_tipotratamento='+$F('tf01_i_tipotratamento');
   if (mostra == true) {
 
@@ -998,7 +1016,7 @@ function js_pesquisatf23_i_procedimento(mostra) {
   } else {
 
     if ( $F('sd63_c_procedimento') != '') {
- 
+
       js_OpenJanelaIframe('', 'db_iframe_tfd_tipotratamentoproced', 'func_tfd_tipotratamentoproced.php?'+sChave+
                           '&chave_sd63_c_procedimento='+$F('sd63_c_procedimento')+
                           '&funcao_js=parent.js_mostrasau_procedimento|sd63_c_procedimento|sd63_c_nome|'+
@@ -1014,7 +1032,7 @@ function js_pesquisatf23_i_procedimento(mostra) {
 		}
 
 	}
- 
+
 }
 
 function js_mostrasau_procedimento(chave1, chave2, chave3) {
@@ -1042,12 +1060,12 @@ function js_abreCadProf() {
 
     sGet = 's154_c_nome='+$F('z01_nome')+'&sd03_i_tipo=2&lBotao=true';
 
-    js_OpenJanelaIframe('', "db_iframe_cadprof", "sau1_sau_medicosforarede001.php?"+sGet, 
+    js_OpenJanelaIframe('', "db_iframe_cadprof", "sau1_sau_medicosforarede001.php?"+sGet,
                         'Cadastro de Profissionais Fora da Rede', true, iTop, iLeft, 800, 300
                        );
 
   } else {
-   
+
     var oParam     = new Object();
     oParam.exec    = 'verificaForaRede';
     oParam.iMedico = $F('tf01_i_profissionalsolic');
@@ -1055,25 +1073,25 @@ function js_abreCadProf() {
     if (js_ajax(oParam, 'js_retornoVerificaForaRede', 'sau4_ambulatorial.RPC.php', false)) {
 
       sGet = 'chavepesquisa='+$F('tf01_i_profissionalsolic')+'&lBotao=true';
-      
-      js_OpenJanelaIframe('', 'db_iframe_cadprof', 'sau1_sau_medicosforarede002.php?'+sGet, 
+
+      js_OpenJanelaIframe('', 'db_iframe_cadprof', 'sau1_sau_medicosforarede002.php?'+sGet,
                           'Cadastro de Profissionais Fora da Rede', true, iTop, iLeft, 800, 300
                          );
 
     } else {
 
       var sMsg = 'Profissional selecionado não é um profissional de fora da rede.';
-      sMsg += "\nLimpe o nome do profissional selecionado antes de cadastrar um novo profissional."; 
+      sMsg += "\nLimpe o nome do profissional selecionado antes de cadastrar um novo profissional.";
       alert(sMsg);
     }
- 
+
   }
 
 }
 
 function js_retornoVerificaForaRede(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
   if (oRetorno.lForaRede == 'true') {
     return true;
   } else {
@@ -1114,9 +1132,9 @@ function js_pesquisatf01_i_profissionalsolic(mostra) {
 function js_mostramedicos(chave, erro) {
 
   document.form1.z01_nome.value = chave;
-  if (erro == true) { 
+  if (erro == true) {
 
-    document.form1.tf01_i_profissionalsolic.focus(); 
+    document.form1.tf01_i_profissionalsolic.focus();
     document.form1.tf01_i_profissionalsolic.value = '';
     return false;
   }
@@ -1149,45 +1167,54 @@ function buscaCBOSolicitante() {
   oParametros.iMedico = $F('tf01_i_profissionalsolic');
 
   js_divCarregando("Aguarde... buscando CBO do médico.", "db_msgbox");
-  
+
   var oRequest = new Object();
-  oRequest.method     = 'post';                            
-  oRequest.parameters = 'json='+Object.toJSON(oParametros); 
+  oRequest.method     = 'post';
+  oRequest.parameters = 'json='+Object.toJSON(oParametros);
   oRequest.onComplete = js_retornoGetCboSolicitante;
 
-  new Ajax.Request("sau4_medicos.RPC.php", oRequest);  
-  
+  new Ajax.Request("sau4_medicos.RPC.php", oRequest);
+
 }
 
 function js_retornoGetCboSolicitante(oAjax) {
 
   js_removeObj("db_msgbox");
-  
-  var oRetorno = eval( "(" +oAjax.responseText+ ")" );
 
-  var aDadosCBO = new Array();
+  var oRetorno    = JSON.parse(oAjax.responseText);
+  var lSelecionar = false;
+  var aDadosCBO   = new Array();
   oRetorno.aDados.each(function (oMedico) {
 
     if (oMedico.codigo_cbo == '') {
       return;
     }
 
-    var sStringCbo = oMedico.estrutura_cbo + " - " + oMedico.nome_cbo.urlDecode(); 
+    var sStringCbo = oMedico.estrutura_cbo + " - " + oMedico.nome_cbo.urlDecode();
     aDadosCBO.push(new Option(sStringCbo, oMedico.codigo_cbo));
+
+    if ( !empty($F('iCboSolicitanteSelecionado')) && $F('iCboSolicitanteSelecionado') == oMedico.codigo_cbo ) {
+      lSelecionar = true;
+    }
+
   });
 
   if (aDadosCBO.length == 0) {
-    
+
     alert(_M(URL_MESSAGE_FROMPEDIDOTFD+"medico_sem_cbo"));
     return false;
   }
-  
+
   $('cboSolicitante').options.length = 0;
   aDadosCBO.each(function (oOption) {
 
-    $('cboSolicitante').add(oOption);  
+    $('cboSolicitante').add(oOption);
   });
-  
+
+  if ( lSelecionar ) {
+    $('cboSolicitante').value = $F('iCboSolicitanteSelecionado');
+  }
+
 }
 
 

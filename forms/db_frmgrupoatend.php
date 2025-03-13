@@ -58,7 +58,7 @@ db_input('sd15_c_descr',50,$Isd15_c_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_grupoatend','func_grupoatend.php?funcao_js=parent.js_preenchepesquisa|sd15_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_grupoatend','func_grupoatend.php?funcao_js=parent.js_preenchepesquisa|sd15_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_grupoatend.hide();

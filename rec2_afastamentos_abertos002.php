@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -63,7 +63,14 @@ function afastamentos_abertos($tipos,$regime,$datai){
    
    for($Itipoasse=0;$Itipoasse< count($tipoasse);$Itipoasse++){
       global $assenta;
-      if( db_selectmax("assenta","select * from assenta where h16_assent = ".db_sqlformat($tipoasse[$Itipoasse]["h12_codigo"]))){
+      $sWhereVerificaLotacao = " select distinct rh02_regist";
+      $sWhereVerificaLotacao .= "  from rhpessoalmov                             ";
+      $sWhereVerificaLotacao .= " where rh02_anousu = ".DBPessoal::getAnoFolha()  ;
+      $sWhereVerificaLotacao .= "   and rh02_mesusu = ".DBPessoal::getMesFolha()  ;
+      $sWhereVerificaLotacao .= "   and rh02_lota in (select rh157_lotacao       ";
+      $sWhereVerificaLotacao .= "                       from db_usuariosrhlota   ";
+      $sWhereVerificaLotacao .= "                      where rh157_usuario = ".db_getsession("DB_instit").")";
+      if( db_selectmax("assenta","select * from assenta inner join assentamentofuncional on rh193_assentamento_funcional = h16_codigo where h16_regist in (".$sWhereVerificaLotacao.") and h16_assent = ".db_sqlformat($tipoasse[$Itipoasse]["h12_codigo"]))){
 
          $mat_campos  = array();
 	 $mat_valores = array();
@@ -160,12 +167,12 @@ function afastamentos_abertos($tipos,$regime,$datai){
    $pdf->Output();
 }
 
-global $cfpess,$subpes,$db21_codcli,$matric ;
+global $cfpess,$subpes,$d08_carnes,$matric ;
 
-include("fpdf151/pdf.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sql.php"));
 
 db_postmemory($HTTP_GET_VARS);
 

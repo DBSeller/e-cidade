@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,6 +26,10 @@
  */
 
 class loginscricao {
+
+  const INGRESSO_RETIRADA_SOCIO = 3;
+  const INCLUSAO_ESCRITORIO_CONTABIL = 9;
+  const EXCLUSAO_ESCRITORIO_CONTABIL = 10;
 
   /**
    * Código da Inscrição municipal (issbase.q02_inscr);
@@ -152,7 +156,7 @@ class loginscricao {
     if (!db_utils::inTransaction()) {
       throw new Exception("Erro: Não existe Transação Ativa.");
     }
-    
+
   	foreach ($this->aIssBaseLog as $oIssBaseLog) {
 
   		$this->setObservacao($oIssBaseLog);

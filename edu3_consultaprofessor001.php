@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,12 +26,12 @@
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clrotulo = new rotulocampo();
 $clrotulo->label("ed284_i_rhpessoal");
@@ -154,7 +154,7 @@ $clrotulo->label("ed18_i_escola");
   function js_retornoPesquisaProfessores(oAjax) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval( "(" + oAjax.responseText + ")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     oGridProfessores.clearAll(true);
 

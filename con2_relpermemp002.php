@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
-include("classes/db_db_permemp_classe.php");
-include("classes/db_db_usupermemp_classe.php");
-include("classes/db_db_depusuemp_classe.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_orcunidade_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcelemento_classe.php");
+include(modification("classes/db_db_permemp_classe.php"));
+include(modification("classes/db_db_usupermemp_classe.php"));
+include(modification("classes/db_db_depusuemp_classe.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_orcunidade_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
 
 $clorcelemento   = new cl_orcelemento;
 $clorcorgao      = new cl_orcorgao;
@@ -145,7 +145,7 @@ $sql = "
 		   db20_tipoperm
        ";
        
-// $res = pg_query($sql);
+// $res = db_query($sql);
 // echo $sql;
 // db_criatabela($res);
 // exit;

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
 
-require_once("classes/db_habitprograma_classe.php");
-require_once("classes/db_habitcandidato_classe.php");
-require_once("classes/db_habitcandidatointeresse_classe.php");
+require_once(modification("classes/db_habitprograma_classe.php"));
+require_once(modification("classes/db_habitcandidato_classe.php"));
+require_once(modification("classes/db_habitcandidatointeresse_classe.php"));
 
-require_once("model/habitacao/CandidatoHabitacao.model.php");
-require_once("model/habitacao/InscricaoHabitacao.model.php");
-require_once("model/habitacao/InteresseHabitacao.model.php");
-require_once("model/habitacao/InteresseProgramaHabitacao.model.php");
-require_once("model/processoProtocolo.model.php");
-require_once("model/CgmBase.model.php");
-require_once("model/CgmFisico.model.php");
+require_once(modification("model/habitacao/CandidatoHabitacao.model.php"));
+require_once(modification("model/habitacao/InscricaoHabitacao.model.php"));
+require_once(modification("model/habitacao/InteresseHabitacao.model.php"));
+require_once(modification("model/habitacao/InteresseProgramaHabitacao.model.php"));
+require_once(modification("model/processoProtocolo.model.php"));
+require_once(modification("model/CgmBase.model.php"));
+require_once(modification("model/CgmFisico.model.php"));
 
 
 $oJson             = new services_json();
@@ -72,7 +72,7 @@ switch($oParam->exec) {
   	$sSqlProgramas    = $cl_habitprograma->sql_query_file(null,"ht01_sequencial, ht01_descricao","ht01_sequencial",
   	                                                                                                       "{$sWhere}");
 		$rsProgramas      = $cl_habitprograma->sql_record($sSqlProgramas); 
-		$aListaProgramas  = db_utils::getColectionByRecord($rsProgramas, false, false, true);
+		$aListaProgramas  = db_utils::getCollectionByRecord($rsProgramas, false, false, true);
     foreach ($aListaProgramas as $oIndiceProgramas => $oValorProgramas) {
       
       $oDados             = new stdClass();	
@@ -126,7 +126,7 @@ switch($oParam->exec) {
     //die();
     
     $rsInteresse     = $cl_interesses->sql_record($sSqlInteresse);
-    $aListaInteresse = db_utils::getColectionByRecord($rsInteresse, false, false, true);
+    $aListaInteresse = db_utils::getCollectionByRecord($rsInteresse, false, false, true);
     
     foreach ($aListaInteresse as $oIndiceInteresse => $oValorInteresse) {
     	
@@ -185,7 +185,7 @@ switch($oParam->exec) {
     $sSqlAvalGrupo   .= "  where ht10_numcgm = {$iCgm}  ";  
 
     $rsFicha = db_query($sSqlAvalGrupo);
-    $aFicha  = db_utils::getColectionByRecord($rsFicha, false, false, true);    
+    $aFicha  = db_utils::getCollectionByRecord($rsFicha, false, false, true);    
     foreach ($aFicha as $oIndiceFicha => $oValorFicha) {
       
         $oDadosInteressados           = new stdClass(); 

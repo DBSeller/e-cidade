@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orcfontes_classe.php");
-include("classes/db_orcfontesdes_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcfontes_classe.php"));
+include(modification("classes/db_orcfontesdes_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 if(!isset($codfon)){
@@ -63,7 +63,7 @@ $mae  = db_le_mae_rec_sin($o57_fonte,false);
 $sql = "select * from orcfontes inner join orcfontesdes on o57_codfon = o60_codfon and o60_anousu = ".db_getsession("DB_anousu")." 
         where o57_fonte like '$mae%' and o57_anousu = $anousu";
 
-$result = pg_query($sql);
+$result = db_query($sql);
 if(pg_numrows($result)==0){
   echo "<script> parent.alert('Verifique as fontes da receita!')</script>";
   exit;

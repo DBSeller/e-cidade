@@ -146,7 +146,7 @@ class XML extends Tree {
 						if(($tagName == "" || $this->nodes[$arrKeys[$index]]->tag->getTagName() == $tagName) &&
 							($attrName == "" || $this->nodes[$arrKeys[$index]]->tag->attributeExists($attrName)) &&
 							($attrValue == "" || $this->nodes[$arrKeys[$index]]->tag->getTagAttribute($attrName) == $attrValue)) {
-							$branchArray[] = &$this->nodes[$arrKeys[$index]];
+							$branchArray[] = $this->nodes[$arrKeys[$index]];
 						}
 					}
 				}
@@ -187,7 +187,7 @@ class XML extends Tree {
 					if(($tagName == "" || $this->nodes[$arrKeys[$last]]->tag->getTagName() == $tagName) &&
 						($attrName == "" || $this->nodes[$arrKeys[$last]]->tag->attributeExists($attrName)) &&
 						($attrValue == "" || $this->nodes[$arrKeys[$last]]->tag->getTagAttribute($attrName) == $attrValue)) {
-						$lastbranch = &$this->nodes[$arrKeys[$last]];
+						$lastbranch = $this->nodes[$arrKeys[$last]];
 					}
 				}
 			}
@@ -229,7 +229,7 @@ class XML extends Tree {
 				$arrKeys = array_keys($this->nodes);
 				for($index = 0; $index < count($arrKeys); $index ++) {
 					if(gettype($this->nodes[$arrKeys[$index]]) == "object" && get_class($this->nodes[$arrKeys[$index]]) == "xmlleaf") {
-						$leafArray[] = &$this->nodes[$arrKeys[$index]];
+						$leafArray[] = $this->nodes[$arrKeys[$index]];
 					}
 				}
 			}
@@ -481,7 +481,7 @@ class XML extends Tree {
 			$referencedBranches = $this->getBranches($parentTagPath, $parentTagName);
 		}
 		else {
-			$referencedBranches[] = &$this;
+			$referencedBranches[] = $this;
 		}
 		for($i = 0; $i < count($referencedBranches); $i ++) {
 			$arrKeys = array_keys($referencedBranches[$i]->nodes);

@@ -93,7 +93,7 @@ function js_fonte(){
   return true;
 }  
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_preenchepesquisa|o57_codfon','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_preenchepesquisa|o57_codfon','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_orcfontes.hide();

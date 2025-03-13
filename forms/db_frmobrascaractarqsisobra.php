@@ -75,9 +75,9 @@ $clobrascaractarqsisobra->rotulo->label();
 function js_consultaorigem(mostra){
 	
 	if (mostra) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_caracter','func_caracter.php?funcao_js=parent.js_mostraorigem1|j31_codigo|j31_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_caracter','func_caracter.php?funcao_js=parent.js_mostraorigem1|j31_codigo|j31_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_caracter','func_caracter.php?pesquisa_chave='+document.form1.ob23_caractorigem.value+'&funcao_js=parent.js_mostraorigem','Pesquisa',false);	
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_caracter','func_caracter.php?pesquisa_chave='+document.form1.ob23_caractorigem.value+'&funcao_js=parent.js_mostraorigem','Pesquisa',false);	
 	}
 
 }
@@ -101,9 +101,9 @@ function js_mostraorigem1(chave1,chave2) {
 function js_consultadestino(mostra){
 	
 	if (mostra) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_caracter','func_caracter.php?funcao_js=parent.js_mostradestino1|j31_codigo|j31_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_caracter','func_caracter.php?funcao_js=parent.js_mostradestino1|j31_codigo|j31_descr','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_caracter','func_caracter.php?pesquisa_chave='+document.form1.ob23_caractdestino.value+'&funcao_js=parent.js_mostradestino','Pesquisa',false);	
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_caracter','func_caracter.php?pesquisa_chave='+document.form1.ob23_caractdestino.value+'&funcao_js=parent.js_mostradestino','Pesquisa',false);	
 	}
 
 }
@@ -125,7 +125,7 @@ function js_mostradestino1(chave1,chave2) {
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_obrascaractarqsisobra','func_obrascaractarqsisobra.php?funcao_js=parent.js_preenchepesquisa|ob23_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obrascaractarqsisobra','func_obrascaractarqsisobra.php?funcao_js=parent.js_preenchepesquisa|ob23_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_obrascaractarqsisobra.hide();

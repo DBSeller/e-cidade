@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: caixa
@@ -602,7 +602,7 @@ class cl_arrepaga {
    function sql_query ( $oid = null,$campos="arrepaga.oid,*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -623,7 +623,7 @@ class cl_arrepaga {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -635,7 +635,7 @@ class cl_arrepaga {
    function sql_query_file ( $oid = null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -653,7 +653,7 @@ class cl_arrepaga {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -662,22 +662,22 @@ class cl_arrepaga {
      }
      return $sql;
   }
-  
-  function sql_queryDescontoConcedidoPorRegra ($dDataInicial, $dDataFinal) {
-    
+
+  function sql_queryDescontoConcedidoPorRegra ($dDataInicial, $dDataFinal, $aTipo = null) {
+
     $iInstituicao         = db_getsession('DB_instit');
     $iAnoUsu              = db_getsession('DB_anousu');
-    
+
     list($iAnoInicio, $iMesInicio, $iDiaInicio) = explode("-", $dDataInicial);
     list($iAnoFim, $iMesFim, $iDiaFim)          = explode("-", $dDataFinal);
-    
+
     for ( $iIndice = $iAnoInicio; $iIndice <= $iAnoFim; $iIndice++ ) {
       $aListaExercicios[] = $iIndice;
     }
 
     $aListaExercicios = array_unique($aListaExercicios);
     $sListaExercicios = implode(",", $aListaExercicios);
-    
+
 
     $sSqlDividasCertidao  = "  create temp table w_origem_dividas as                                                \n";
     $sSqlDividasCertidao .= "  select 1 as tipo,                                                                    \n";
@@ -733,9 +733,9 @@ class cl_arrepaga {
     $sSqlDividasCertidao .= "                                                                                       \n";
     $sSqlDividasCertidao .= "  create index w_origem_dividas_1_in on w_origem_dividas(inicial);                     \n";
     $sSqlDividasCertidao .= "  create index w_origem_dividas_2_in on w_origem_dividas(v01_numpre, v01_numpar);      \n";
-    
+
     $rsDividasCertidao = db_query($sSqlDividasCertidao);
-    
+
     if (!$rsDividasCertidao) {
       throw new Exception('Erro ao consultar dívidas para o processamento.');
     }
@@ -819,6 +819,10 @@ class cl_arrepaga {
     $sSqlDescontos .= "                left  join tipoproced on tipoproced.v07_sequencial = proced.v03_tributaria                                                                                 \n";
     $sSqlDescontos .= "                inner join cgm        on cgm.z01_numcgm            = arrepaga.k00_numcgm                                                                                   \n";
     $sSqlDescontos .= "          where cornump.k12_data between '{$dDataInicial}' and '{$dDataFinal}'                                                                                             \n";
+    if( isset($aTipo) && $aTipo != null ) {
+
+       $sSqlDescontos .= "                   and exists( select 1 from arrecant c where arrepaga.k00_numpre = c.k00_numpre and arrepaga.k00_numpar = c.k00_numpar and c.k00_tipo in ($aTipo))"; 
+    }
     $sSqlDescontos .= "            and exists ( select 1                                                                                                                                          \n";
     $sSqlDescontos .= "                           from db_reciboweb                                                                                                                               \n";
     $sSqlDescontos .= "                          where db_reciboweb.k99_numpre_n = cornump.k12_numnov                                                                                             \n";
@@ -901,6 +905,10 @@ class cl_arrepaga {
     $sSqlDescontos .= "                                     and taborc.k02_anousu         = {$iAnoUsu}                                                                                            \n";
     $sSqlDescontos .= "                inner join cgm        on cgm.z01_numcgm            = arrepaga.k00_numcgm                                                                                   \n";
     $sSqlDescontos .= "          where disbanco.dtpago between '{$dDataInicial}' and '{$dDataFinal}'                                                                                              \n";
+    if( isset($aTipo) && $aTipo != null ) {
+
+       $sSqlDescontos .= "                   and exists( select 1 from arrecant c where arrepaga.k00_numpre = c.k00_numpre and arrepaga.k00_numpar = c.k00_numpar and c.k00_tipo in ($aTipo))"; 
+    }
     $sSqlDescontos .= "            and disbanco.instit = {$iInstituicao}                                                                                                                          \n";
     $sSqlDescontos .= "            and exists ( select k99_numpre_n                                                                                                                               \n";
     $sSqlDescontos .= "                               from db_reciboweb                                                                                                                           \n";
@@ -992,6 +1000,10 @@ class cl_arrepaga {
     $sSqlDescontos .= "                                               and taborc.k02_anousu   = {$iAnoUsu}                                                                                        \n";
     $sSqlDescontos .= "                          inner join cgm        on cgm.z01_numcgm      = arrepaga.k00_numcgm                                                                               \n";
     $sSqlDescontos .= "                    where arrepaga.k00_dtpaga between '{$dDataInicial}' and '{$dDataFinal}'                                                                                \n";
+    if( isset($aTipo) && $aTipo != null ) {
+
+       $sSqlDescontos .= "                   and exists( select 1 from arrecant c where arrepaga.k00_numpre = c.k00_numpre and arrepaga.k00_numpar = c.k00_numpar and c.k00_tipo in ($aTipo))"; 
+    }
     $sSqlDescontos .= "                      and termo.v07_instit = {$iInstituicao}                                                                                                               \n";
     $sSqlDescontos .= "                      and ((((termo.v07_vlrcor+termo.v07_vlrjur+termo.v07_vlrmul)*100)/fc_iif((termo.v07_valor=0::float8), 1::float8, termo.v07_valor))-100) is not null   \n";
     $sSqlDescontos .= "                 ) as y                                                                                                                                                    \n";
@@ -1023,13 +1035,13 @@ class cl_arrepaga {
     $sSqlDescontos .= "           k02_estorc                                                                                                                                                      \n";
     $sSqlDescontos .= "    having abs(sum(valor_desconto)) > 0                                                                                                                                    \n";
     $sSqlDescontos .= "  order by z01_nome                                                                                                                                                        \n";
-    
+
     return $sSqlDescontos;
 
   }
-  
+
   function sql_queryDescontoConcedidoPorRegraAgrupado($dDataInicial, $dDataFinal) {
-    
+
     $sSqlDescontos  = "select receitorcamentoestrutural as receita_orcamento,                                   ";
     $sSqlDescontos .= "       receit           as receita_tesouraria,                                           ";
     $sSqlDescontos .= "       descrreceit      as descricao_receita_tesouraria,                                 ";
@@ -1050,16 +1062,16 @@ class cl_arrepaga {
     $sSqlDescontos .= " order by receitorcamentoestrutural,                                                     ";
     $sSqlDescontos .= "          receit,                                                                        ";
     $sSqlDescontos .= "          descrreceit                                                                    ";
-    
+
     return $sSqlDescontos;
-    
+
   }
-  
-  function sql_queryPagamentosPorPeriodo($dDataInicial, $dDataFinal) {    
+
+  function sql_queryPagamentosPorPeriodo($dDataInicial, $dDataFinal) {
 
     $iInstituicao = db_getsession('DB_instit');
     $iAnoUsu      = db_getsession('DB_anousu');
-    
+
     $sSql  = "select receita_orcamento,                                                                       \n";
     $sSql .= "       receita_tesouraria,                                                                      \n";
     $sSql .= "       descricao_receita,                                                                       \n";
@@ -1098,9 +1110,9 @@ class cl_arrepaga {
     $sSql .= "group by receita_orcamento,                                                                     \n";
     $sSql .= "         receita_tesouraria,                                                                    \n";
     $sSql .= "         descricao_receita                                                                      \n";
-    
+
     return $sSql;
-    
+
   }
 }
 ?>

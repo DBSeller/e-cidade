@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_selecao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_selecao_classe.php"));
 ?>
 <html>
 <head>
@@ -77,8 +77,8 @@ if ($_POST["vinculo"] == "A"){
   $arq = 'tmp/calc_ativosbb.txt';
   $arquivo = fopen($arq,'w');  
 
-  pg_query("drop sequence layout_ati_seq");
-  pg_query("create sequence layout_ati_seq");
+  db_query("drop sequence layout_ati_seq");
+  db_query("create sequence layout_ati_seq");
 
   $sql = "
     select rh01_regist as matricula,
@@ -121,7 +121,7 @@ if ($_POST["vinculo"] == "A"){
 	$wh
 ";
   
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $num = pg_numrows($result);
   for($x = 0;$x < pg_numrows($result);$x++){
     
@@ -139,7 +139,7 @@ if ($_POST["vinculo"] == "A"){
 	       and rh31_regist = $matric 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       $dtconj  = pg_result($res1,0,'nasc');
@@ -157,7 +157,7 @@ if ($_POST["vinculo"] == "A"){
 	             and rh31_regist = $matric 
 	          ";
 				 
-    $res2 = pg_query($sql2);
+    $res2 = db_query($sql2);
     
     if(pg_numrows($res2) > 0){
       $numfilhos = pg_result($res2,0,'soma_filhos');
@@ -175,7 +175,7 @@ if ($_POST["vinculo"] == "A"){
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       $cacula = pg_result($res3,0,'nasc');
@@ -213,8 +213,8 @@ if ($_POST["vinculo"] == "A"){
 
   $arquivo = fopen($arq,'w');  
 
-  pg_query("drop sequence layout_ina_seq");
-  pg_query("create sequence layout_ina_seq");
+  db_query("drop sequence layout_ina_seq");
+  db_query("create sequence layout_ina_seq");
 
 $sql = "
   select rh01_regist as matricula,
@@ -257,7 +257,7 @@ $sql = "
 ";
   
   //echo $sql;
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $num = pg_numrows($result);
   for($x = 0;$x < pg_numrows($result);$x++){
     
@@ -274,7 +274,7 @@ $sql = "
 	       and rh31_regist = $matric 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       $dtconj  = pg_result($res1,0,'nasc');
@@ -292,7 +292,7 @@ $sql = "
 	             and rh31_regist = $matric 
 	          ";
 				 
-    $res2 = pg_query($sql2);
+    $res2 = db_query($sql2);
     
     if(pg_numrows($res2) > 0){
       $numfilhos = pg_result($res2,0,'soma_filhos');
@@ -310,7 +310,7 @@ $sql = "
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       $cacula = pg_result($res3,0,'nasc');
@@ -341,8 +341,8 @@ $sql = "
   $arq = 'tmp/calc_pensbb.txt';
   $arquivo = fopen($arq,'w');  
 
-  pg_query("drop sequence layout_pen_seq");
-  pg_query("create sequence layout_pen_seq");
+  db_query("drop sequence layout_pen_seq");
+  db_query("create sequence layout_pen_seq");
 
 $sql = "
   select rh01_regist as matricula,
@@ -395,7 +395,7 @@ $sql = "
 ";
   
 //  echo $sql;
-  $result = pg_query($sql);
+  $result = db_query($sql);
   $num = pg_numrows($result);
   for($x = 0;$x < pg_numrows($result);$x++){
     
@@ -412,7 +412,7 @@ $sql = "
 	       and rh31_regist = $matric 
 	     limit 1";
 				 
-    $res1 = pg_query($sql1);
+    $res1 = db_query($sql1);
     
     if(pg_numrows($res1) > 0){
       $dtconj  = pg_result($res1,0,'nasc');
@@ -430,7 +430,7 @@ $sql = "
 	             and rh31_regist = $matric 
 	          ";
 				 
-    $res2 = pg_query($sql2);
+    $res2 = db_query($sql2);
     
     if(pg_numrows($res2) > 0){
       $numfilhos = pg_result($res2,0,'soma_filhos');
@@ -448,7 +448,7 @@ $sql = "
 	       order by rh31_dtnasc desc
 	     limit 1";
 				 
-    $res3 = pg_query($sql3);
+    $res3 = db_query($sql3);
     
     if(pg_numrows($res3) > 0){
       $cacula = pg_result($res3,0,'nasc');

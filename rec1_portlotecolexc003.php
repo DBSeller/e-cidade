@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_portaria_classe.php");
-include("classes/db_assenta_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_portariaassenta_classe.php");
-include("classes/db_portariatipo_classe.php");
-include("classes/db_rhparam_classe.php");
-include('libs/db_utils.php');
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_portaria_classe.php"));
+include(modification("classes/db_assenta_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_portariaassenta_classe.php"));
+include(modification("classes/db_portariatipo_classe.php"));
+include(modification("classes/db_rhparam_classe.php"));
+include(modification('libs/db_utils.php'));
 
 $oPost = db_utils::postMemory($HTTP_POST_VARS);
 $oGet  = db_utils::postMemory($HTTP_GET_VARS);
@@ -69,7 +69,33 @@ if (isset($oPost->excluir)) {
   	  $sMsgErro = $clportariaassenta->erro_msg;
     }
     
+    /**
+     * verificamos se o assentamento tem vinculo com afastamento no pessoal, 
+     * e efetuamos a exclusao do mesmo
+     */
+    $clafastaassenta   = new cl_afastaassenta();
+    $sSqlAfastaAssenta = $clafastaassenta->sql_query_file(null, "h81_afasta", null, "h81_assenta = {$oPortariaAssenta->h33_assenta}");
+    $rsAfastaAssenta   = db_query($sSqlAfastaAssenta);
+
+    if (!$rsAfastaAssenta) {
+      throw new DBException($rsAfastaAssenta->erro_msg);
+    }
+
+    if (pg_num_rows($rsAfastaAssenta) > 0) {
+      
+      $clafastaassenta->excluir(null, "h81_assenta = {$oPortariaAssenta->h33_assenta}");
+      $clafasta = new cl_afasta();
+      $clafasta->excluir(db_utils::fieldsMemory($rsAfastaAssenta, 0)->h81_afasta);
+    }
+
+    $classentadbcadattdinamicovalorgrupo = new cl_assentadb_cadattdinamicovalorgrupo();;
+    $classentadbcadattdinamicovalorgrupo->excluir($oPortariaAssenta->h33_assenta);
+    
+    $classentamentofuncional = new cl_assentamentofuncional();;
+    $classentamentofuncional->excluir($oPortariaAssenta->h33_assenta);
+    
     $classenta->excluir($oPortariaAssenta->h33_assenta);
+
     if($classenta->erro_status == 0){
  	  $lSqlErro = true;
  	  $sMsgErro = $classenta->erro_msg;     
@@ -94,7 +120,7 @@ if (isset($oPost->excluir)) {
   	
   	$oPortaria = db_utils::fieldsMemory($rsConsultaPortaria,0);
 	
-	$h31_sequencial	  = $oPortaria->h31_sequencial;  	
+	  $h31_sequencial	  = $oPortaria->h31_sequencial;  	
   	$h31_portariatipo = $oPortaria->h31_portariatipo; 
   	$h12_descr        = $oPortaria->h12_descr;         
   	$h31_numero       = $oPortaria->h31_numero;        
@@ -125,7 +151,18 @@ if (isset($oPost->excluir)) {
     $h16_quant      = $oPortaria->h16_quant;
     $quantidade     = $oPortaria->h16_quant;
     $h16_atofic     = $oPortaria->h16_atofic;       
-    $h16_histor     = $oPortaria->h16_histor;        	
+    $h16_histor     = $oPortaria->h16_histor;
+
+    $oDaoAssentaAttr = new cl_assentadb_cadattdinamicovalorgrupo();
+    $rsComplemento   = db_query($oDaoAssentaAttr->sql_query(null,null, "h80_db_cadattdinamicovalorgrupo", null, "h80_assenta = {$oPortaria->h16_codigo}"));
+
+
+    if (pg_num_rows($rsComplemento) > 0) {
+      db_fieldsmemory($rsComplemento,0);
+    }
+
+
+              	
 
     echo "<script>";
     echo "  parent.iframe_funcionarios.js_carregaGrid('portaria',".$oGet->chavepesquisa.");";
@@ -142,6 +179,9 @@ if (isset($oPost->excluir)) {
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+      <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+      <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+      
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -150,7 +190,7 @@ if (isset($oPost->excluir)) {
     <tr> 
       <td> 
 	    <?
-	      include("forms/db_frmportarialotecol.php");
+	      include(modification("forms/db_frmportarialotecol.php"));
 	    ?>
 	  </td>
     </tr>
@@ -160,6 +200,8 @@ if (isset($oPost->excluir)) {
 </html>
 <script>
 js_tabulacaoforms("form1","h31_portariatipo",true,1,"h31_portariatipo",true);
+js_pesquisa_Assinaturas(false);
+      
 </script>
 <?
 

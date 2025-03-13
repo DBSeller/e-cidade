@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_aguacorte_classe.php");
-include("classes/db_aguacortemat_classe.php");
-include("classes/db_aguacortematmov_classe.php");
-include("classes/db_aguacortematnumpre_classe.php");
-include("classes/db_aguacortetipodebito_classe.php");
-include("classes/db_aguabasecar_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_aguacorte_classe.php"));
+include(modification("classes/db_aguacortemat_classe.php"));
+include(modification("classes/db_aguacortematmov_classe.php"));
+include(modification("classes/db_aguacortematnumpre_classe.php"));
+include(modification("classes/db_aguacortetipodebito_classe.php"));
+include(modification("classes/db_aguabasecar_classe.php"));
 
 $claguacorte = new cl_aguacorte;
 $claguacortemat = new cl_aguacortemat;

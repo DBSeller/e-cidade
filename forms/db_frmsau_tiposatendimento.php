@@ -63,7 +63,7 @@ db_input('s145_c_descr',30,$Is145_c_descr,true,'text',$db_opcao,"")
 </center>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_tiposatendimento','func_sau_tiposatendimento.php?funcao_js=parent.js_preenchepesquisa|s145_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_tiposatendimento','func_sau_tiposatendimento.php?funcao_js=parent.js_preenchepesquisa|s145_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_tiposatendimento.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 //db_postmemory($HTTP_GET_VARS,2);exit;
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -291,7 +291,7 @@ function js_enviarvalores(){
   }
   if(erro == false && valores_cheques != ""){
   	<?if(!isset($forma)){?>
-  	top.corpo.db_iframe_cheque.jan.js_recebeval(con,valores_cheques);
+  	(window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_cheque.jan.js_recebeval(con,valores_cheques);
   	<?}else{?>
   	parent.js_recebeval(con,valores_cheques);
   	<?}?>
@@ -306,11 +306,17 @@ function js_verificardados(){
 	}
 	?>
 	<?if(!isset($forma)){?>
-	top.corpo.db_iframe_cheque.jan.js_fechariframe(con);
+	(window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_cheque.jan.js_fechariframe(con);
 	<?}else{?>
 	parent.js_fechariframe(con);
 	<?}?>
 }
 document.form1.elements[0].select();
 document.form1.elements[0].focus();
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

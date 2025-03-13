@@ -58,7 +58,7 @@ db_input('sd89_c_nome',60,$Isd89_c_nome,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sau_ocupacao','func_sau_ocupacao.php?funcao_js=parent.js_preenchepesquisa|sd89_c_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sau_ocupacao','func_sau_ocupacao.php?funcao_js=parent.js_preenchepesquisa|sd89_c_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sau_ocupacao.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,14 +27,14 @@
 
 if (!isset($arqinclude)){
   
-  include("fpdf151/pdf.php");
-  include("fpdf151/assinatura.php");
-  include("libs/db_sql.php");
-  include("libs/db_libcontabilidade.php");
-  include("libs/db_liborcamento.php");
-  include("classes/db_orcparamrel_classe.php");
-  include("dbforms/db_funcoes.php");
-  include("classes/db_orcparamrelopcre_classe.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_orcparamrelopcre_classe.php"));
   
   $classinatura = new cl_assinatura;
   $orcparamrel  = new cl_orcparamrel;
@@ -44,17 +44,17 @@ if (!isset($arqinclude)){
   
 }
 
-include_once("classes/db_conrelinfo_classe.php");
-include_once("classes/db_conrelvalor_classe.php");
-require_once("classes/db_orcparamrelopcre_classe.php");
-require_once("libs/db_utils.php");
+include_once(modification("classes/db_conrelinfo_classe.php"));
+include_once(modification("classes/db_conrelvalor_classe.php"));
+require_once(modification("classes/db_orcparamrelopcre_classe.php"));
+require_once(modification("libs/db_utils.php"));
 
 $clconrelinfo      = new cl_conrelinfo;
 $clconrelvalor     = new cl_conrelvalor;
 $oOrcParamRelopcre = new cl_orcparamrelopcre;
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,munic,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,munic,nomeinst,nomeinstabrev from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 $flag_abrev = false;
@@ -203,7 +203,7 @@ if ($oOrcParamRelopcre->numrows > 0){
   }
 }
 $sTodasInstit = null;
-$rsInstit =  pg_query("select codigo from db_config");
+$rsInstit =  db_query("select codigo from db_config");
 for ($xinstit=0; $xinstit < pg_num_rows($rsInstit); $xinstit++) {
   db_fieldsmemory($rsInstit, $xinstit);
   $sTodasInstit .= $codigo . ($xinstit==pg_num_rows($rsInstit)-1?"":",");

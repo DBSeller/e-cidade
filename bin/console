@@ -1,0 +1,63 @@
+#!/usr/bin/env php
+<?php
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+
+use \ECidade\V3\Extension\Registry;
+
+require dirname(__DIR__) . '/bootstrap.php';
+
+$application = new Application('binary tools', '1.0');
+
+// configure output
+$output = new ConsoleOutput();
+$output->getFormatter()->setStyle('red', new OutputFormatterStyle('red'));
+$output->getFormatter()->setStyle('yellow', new OutputFormatterStyle('yellow'));
+$output->getFormatter()->setStyle('green', new OutputFormatterStyle('green'));
+$output->getFormatter()->setStyle('blue', new OutputFormatterStyle('blue'));
+$output->getFormatter()->setStyle('magenta', new OutputFormatterStyle('magenta'));
+$output->getFormatter()->setStyle('cyan', new OutputFormatterStyle('cyan'));
+
+$container = Registry::get('app.container');
+$container->get('app.configData')->loadEvents();
+
+// configure error
+ini_set('display_errors', false);
+$container->register('app.logger', function() use ($output) {
+    return new ConsoleLogger($output);
+});
+
+// extension
+$application->add(new ECidade\Console\Command\Extension\Install());
+$application->add(new ECidade\Console\Command\Extension\Uninstall());
+$application->add(new ECidade\Console\Command\Extension\Pack());
+$application->add(new ECidade\Console\Command\Extension\Unpack());
+$application->add(new ECidade\Console\Command\Extension\Status());
+
+// modification
+$application->add(new ECidade\Console\Command\Modification\Install());
+$application->add(new ECidade\Console\Command\Modification\Uninstall());
+$application->add(new ECidade\Console\Command\Modification\Unpack());
+$application->add(new ECidade\Console\Command\Modification\Apply());
+$application->add(new ECidade\Console\Command\Modification\UpdateFile());
+$application->add(new ECidade\Console\Command\Modification\UpdateFileTest());
+$application->add(new ECidade\Console\Command\Modification\RefreshCache());
+$application->add(new ECidade\Console\Command\Modification\RefreshMetaData());
+
+// plugin
+$application->add(new ECidade\Console\Command\Plugin\Install());
+$application->add(new ECidade\Console\Command\Plugin\Uninstall());
+$application->add(new ECidade\Console\Command\Plugin\Status());
+$application->add(new ECidade\Console\Command\Plugin\Pack());
+$application->add(new ECidade\Console\Command\Plugin\Unpack());
+
+// tools
+$application->add(new ECidade\Console\Command\Tools\DebugData());
+$application->add(new ECidade\Console\Command\Tools\DiffCache());
+
+// add beforeRun event
+Registry::get('app.eventManager')->trigger('console.beforeRun', null, array($application));
+
+$application->run(null, $output);

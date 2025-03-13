@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_causaafastamento_classe.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_causaafastamento_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -70,16 +70,6 @@ if ( !empty($oGet->sSigla) ) {
             </td>
           </tr>
           <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Trh115_sequencial?>">
-              <?=$Lrh115_sequencial?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("rh115_sequencial",10,$Irh115_sequencial,true,"text",4,"","chave_rh115_sequencial");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
             <td colspan="2" align="center"> 
               <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
               <input name="limpar" type="reset" id="limpar" value="Limpar" >
@@ -96,7 +86,7 @@ if ( !empty($oGet->sSigla) ) {
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_causaafastamento.php")==true){
-             include("funcoes/db_func_causaafastamento.php");
+             include(modification("funcoes/db_func_causaafastamento.php"));
            }else{
            $campos = "causaafastamento.*";
            }
@@ -165,4 +155,10 @@ if(!isset($pesquisa_chave)){
 ?>
 <script>
 js_tabulacaoforms("form2","chave_rh115_sequencial",true,1,"chave_rh115_sequencial",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

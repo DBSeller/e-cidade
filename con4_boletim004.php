@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -64,7 +64,7 @@ if (!USE_PCASP) {
       inner join orcfontes on o57_codfon = o70_codfon and orcfontes.o57_anousu = o70_anousu
       inner join orcfontesdes on o60_anousu = orcreceita.o70_anousu and o57_codfon = o60_codfon
       where o70_instit = ".db_getsession("DB_instit")." and o70_anousu = ".db_getsession("DB_anousu")." and o70_codrec = $k02_codrec ";
-      $resultrec = pg_query($sqlrec) or die($sqlrec);
+      $resultrec = db_query($sqlrec) or die($sqlrec);
       if ($debug==true){
         db_criatabela($resultrec);
       }
@@ -80,7 +80,7 @@ if (!USE_PCASP) {
           inner join orcreceita on o70_codfon = o57_codfon and o70_anousu =  o57_anousu
           where o57_anousu = ".db_getsession("DB_anousu")." and o70_instit=".db_getsession("DB_instit")." and o57_fonte like '$contamae%'
           order by o57_fonte";
-          $resultm = pg_query($sqlm) or die($sqlm);
+          $resultm = db_query($sqlm) or die($sqlm);
           if ($debug==true){
             db_criatabela($resultm);
           }
@@ -234,7 +234,7 @@ if (!USE_PCASP) {
           c60_anousu=".db_getsession("DB_anousu")." and
           fc_conplano_grupo(".db_getsession("DB_anousu").",substr(c60_estrut,1,2)||'%',9000) is true";
 
-          $resultded = pg_exec(analiseQueryPlanoOrcamento($sql));
+          $resultded = db_query(analiseQueryPlanoOrcamento($sql));
           if (pg_numrows($resultded) > 0) {
             $receita_deducao = true; // sempre que for 49xx e for negativo deduz, se for positivo estorna
             if($valor>0){
@@ -506,7 +506,7 @@ if (!USE_PCASP) {
     order by corrente.k12_conta,
     b.k12_conta
     ) as x ";
-    $resultdesp = pg_query($sql);
+    $resultdesp = db_query($sql);
     if ($debug==true){
       db_criatabela($resultdesp);
     }
@@ -653,7 +653,7 @@ if (!USE_PCASP) {
     order by corrente.k12_conta,
     b.k12_conta
     ) as x ";
-    $resultdesp = pg_query($sql);
+    $resultdesp = db_query($sql);
     if ($debug==true){
       db_criatabela($resultdesp);
     }
@@ -815,7 +815,7 @@ if (!USE_PCASP) {
 
     ";
 
-    $resultextra = pg_query($sql);
+    $resultextra = db_query($sql);
     if ($debug==true){
       db_criatabela($resultextra);
     }

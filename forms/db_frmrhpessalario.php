@@ -58,7 +58,7 @@ db_input('rh04_salari',15,$Irh04_salari,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhpessalario','func_rhpessalario.php?funcao_js=parent.js_preenchepesquisa|rh04_seqpes','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessalario','func_rhpessalario.php?funcao_js=parent.js_preenchepesquisa|rh04_seqpes','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhpessalario.hide();

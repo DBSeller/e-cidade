@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_db_depart_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
 
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
 $cldbdepart = new cl_db_depart;
 
 ?>
@@ -55,10 +55,10 @@ $cldbdepart = new cl_db_depart;
 			    			</td>
 			    		</tr>
 			    		<tr>
-			      		<td colspan="4" align="center">
-			      			<input name="Pesquisar" type="submit" id="Pesquisar" value="Pesquisar" >
-			       			<input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_departamento.hide();">
-			       		</td>
+							<td colspan="4" align="center">
+								<input name="Pesquisar" type="submit" id="Pesquisar" value="Pesquisar" >
+								<input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_departamento.hide();">
+							</td>
 			    		</tr>
 			    	</table>
 			    </form>
@@ -69,17 +69,17 @@ $cldbdepart = new cl_db_depart;
 		      <?php
 		      $sCampos = "coddepto, descrdepto";
 		      $sOrder  = "coddepto";
+			  $sDataAtual  = date('Y-m-d');
+
 		      if (!isset($pesquisa_chave)) {
-		      	
-						$sWhere = "";
+					$sWhere = "limite >= '{$sDataAtual}' OR limite IS NULL";
 		      	if (isset($iCodigoDepartamento) && $iCodigoDepartamento != "") {
-		      		$sWhere = " coddepto = {$iCodigoDepartamento}";
+		      		$sWhere = " coddepto = {$iCodigoDepartamento} and limite >= '{$sDataAtual}' OR limite IS NULL";
 		      	}
-		      	
-		        $sSql = $cldbdepart->sql_query_file(null, $sCampos, $sOrder, $sWhere);
+				$sSql = $cldbdepart->sql_query_file(null, $sCampos, $sOrder, $sWhere);
 		        db_lovrot($sSql, 15, "()", "", $funcao_js);
+
 		      } else {
-		      	
 		        if ($pesquisa_chave != null && $pesquisa_chave != "" ) {
 		        	
 		          $sWhere = " coddepto = $pesquisa_chave";
@@ -102,11 +102,19 @@ $cldbdepart = new cl_db_depart;
 		</table>
 	</body>
 </html>
-<?
+
+<?php
 if(!isset($pesquisa_chave)) {
   ?>
   <script>
   </script>
-  <?
+<?php
 }
 ?>
+
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

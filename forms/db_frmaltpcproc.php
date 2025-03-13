@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_liclicitem_classe.php");
+include(modification("classes/db_liclicitem_classe.php"));
 $clliclicitem = new cl_liclicitem;
 $clrotulo = new rotulocampo;
 $clrotulo->label("pc80_codproc");
@@ -118,7 +118,7 @@ if ($clliclicitem->numrows>0){
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pcproc','func_excautitem.php?exc=ok&funcao_js=parent.js_preenchepesquisa|pc80_codproc','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcproc','func_excautitem.php?exc=ok&funcao_js=parent.js_preenchepesquisa|pc80_codproc','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_pcproc.hide();

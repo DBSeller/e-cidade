@@ -26,13 +26,13 @@
  */
 
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamseq_classe.php");
-include("classes/db_orcparamelemento_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamseq_classe.php"));
+include(modification("classes/db_orcparamelemento_classe.php"));
 
 
 db_postmemory($HTTP_POST_VARS);
@@ -228,7 +228,7 @@ function js_select(tipo){
 	      where o69_codparamrel = $o69_codparamrel
 	             and o69_codseq = $o69_codseq 
               ";
-	$r = pg_exec($s);
+	$r = db_query($s);
 	if (pg_numrows($r)>0){
             db_fieldsmemory($r,0);
 	    echo  "<b>Parametro: $o69_descr </b>";	
@@ -502,10 +502,10 @@ function js_select(tipo){
 <script>
 function js_pesquisao69_codparamrel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcparamrel','func_orcparamrel.php?funcao_js=parent.js_mostraorcparamrel1|o42_codparrel|o42_descrrel','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcparamrel','func_orcparamrel.php?funcao_js=parent.js_mostraorcparamrel1|o42_codparrel|o42_descrrel','Pesquisa',true);
   }else{
      if(document.form1.o69_codparamrel.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_orcparamrel','func_orcparamrel.php?pesquisa_chave='+document.form1.o69_codparamrel.value+'&funcao_js=parent.js_mostraorcparamrel','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcparamrel','func_orcparamrel.php?pesquisa_chave='+document.form1.o69_codparamrel.value+'&funcao_js=parent.js_mostraorcparamrel','Pesquisa',false);
      }else{
        document.form1.o42_descrrel.value = ''; 
      }
@@ -540,3 +540,9 @@ function js_mostraorcparamrel1(chave1,chave2){
 ?>
 </script>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

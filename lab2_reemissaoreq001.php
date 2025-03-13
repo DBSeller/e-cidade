@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_lab_requisicao_classe.php");
-include("classes/db_lab_requiitem_classe.php");
-include("classes/db_lab_laboratorio_classe.php");
-include("classes/db_lab_exame_classe.php");
-include("classes/db_lab_setorexame_classe.php");
-include("classes/db_lab_medico_classe.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_app.utils.php");
-require("libs/db_utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_lab_requisicao_classe.php"));
+include(modification("classes/db_lab_requiitem_classe.php"));
+include(modification("classes/db_lab_laboratorio_classe.php"));
+include(modification("classes/db_lab_exame_classe.php"));
+include(modification("classes/db_lab_setorexame_classe.php"));
+include(modification("classes/db_lab_medico_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_utils.php"));
 db_postmemory($HTTP_POST_VARS);
 $cllab_requisicao  = new cl_lab_requisicao;
 $cllab_requiitem   = new cl_lab_requiitem;
@@ -53,7 +53,7 @@ $departamento=db_getsession("DB_coddepto");
  */
 function laboratorioLogado(){
   
-  require_once('libs/db_utils.php');
+  require_once(modification('libs/db_utils.php'));
   $iUsuario = db_getsession('DB_id_usuario');
   $iDepto = db_getsession('DB_coddepto');
   $oLab_labusuario = db_utils::getdao('lab_labusuario');
@@ -68,7 +68,7 @@ function laboratorioLogado(){
       	  return 0;
       }
   }
-  $oLab = db_utils::getColectionByRecord($rResult);
+  $oLab = db_utils::getCollectionByRecord($rResult);
   return $oLab[0]->la02_i_codigo;
   
 }
@@ -126,7 +126,7 @@ db_app::load("webseller.js");
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmlab_requisicao001.php");
+	include(modification("forms/db_frmlab_requisicao001.php"));
 	?>
     </center>
 	</td>

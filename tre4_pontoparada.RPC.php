@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,20 +25,16 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("std/db_stdClass.php");
-require_once ("std/DBNumber.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/JSON.php");
-require_once ("dbforms/db_funcoes.php");
-require_once 'libs/exceptions/DBException.php';
-require_once 'libs/exceptions/FileException.php';
-require_once 'libs/exceptions/BusinessException.php';
-require_once 'libs/exceptions/ParameterException.php';
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("std/DBNumber.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oJson  = new services_json();
 $oParam = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -64,10 +60,20 @@ try {
       $oPontoParada->setPontoReferencia(db_stdClass::normalizeStringJsonEscapeString($oParam->sPontoReferencia));
       $oPontoParada->setLatitude($oParam->nLatitude);
       $oPontoParada->setLongitude($oParam->nLongitude);
-      if (!empty($oParam->iCodigoDepartamento)) {
+      $oPontoParada->setTipo($oParam->iTipo);
 
+      if ( $oParam->iTipo == 1 ) {
         $oPontoParada->setDepartamento(DBDepartamentoRepository::getDBDepartamentoByCodigo($oParam->iCodigoDepartamento));
       }
+
+      if ( $oParam->iTipo == 3 ) {
+
+        $oEscolaProcedencia = new EscolaProcedencia( $oParam->iCodigoDepartamento );
+        if ( !empty($oEscolaProcedencia) ) {
+          $oPontoParada->setEscolaProcedencia( $oEscolaProcedencia );
+        }
+      }
+
       $oPontoParada->salvar();
       $oRetorno->iCodigoParada = $oPontoParada->getCodigo();
       $oRetorno->message       = urlencode(_M('educacao.transporteescolar.db_frmpontosparada.confirma_salvar'));
@@ -101,12 +107,21 @@ try {
       $oDadosParada->iCodigoDepartamento    = '';
       $oDadosParada->sDescricaoDepartamento = '';
       $oDepartamento                        = $oPontoParada->getDepartamento();
+      $oEscolaProcedencia                   = $oPontoParada->getEscolaProcedencia();
       if (!empty($oDepartamento)) {
 
         $oDadosParada->iTipo                  = 1;
         $oDadosParada->iCodigoDepartamento    = $oDepartamento->getCodigo();
-        $oDadosParada->sDescricaoDepartamento = urldecode($oDepartamento->getNomeDepartamento());
+        $oDadosParada->sDescricaoDepartamento = urlencode($oDepartamento->getNomeDepartamento());
       }
+
+      if (!empty($oEscolaProcedencia)) {
+
+        $oDadosParada->iTipo                  = 3;
+        $oDadosParada->iCodigoDepartamento    = $oEscolaProcedencia->getCodigo();
+        $oDadosParada->sDescricaoDepartamento = urlencode($oEscolaProcedencia->getNome());
+      }
+
       $oRetorno->dados = $oDadosParada;
       break;
 
@@ -118,8 +133,8 @@ try {
       $oItinerarioVinculoAluno->setAluno($oAluno);
       $oItinerarioVinculoAluno->setItinerarioPontoParada($oItinerarioPontoParada);
       $oItinerarioVinculoAluno->setLinhaTransporteHorarioVeiculo($oParam->iLinhaHorarioVeiculo);
-    
       $oItinerarioVinculoAluno->salvar();
+
       $oRetorno->message = urlencode(_M('educacao.transporteescolar.tre4_pontoparada.vinculo_salvo'));
       
       break;
@@ -176,8 +191,16 @@ try {
                   }
                 }
 
+                if (empty($sEscola)) {
+
+                  $oEscolaProcedencia = $oAluno->getEscolaDeProcedencia();
+                  if (!empty($oEscolaProcedencia)) {
+                    $sEscola = urlencode($oEscolaProcedencia->getNome());
+                  }
+                }
                 $oTemporario->sEmbarque     = $sPontoParada;
                 $oTemporario->sDesembarque  = $sEscola;
+
                 // Se tipo == 2 o aluno esta retornando, portanto o embarque é na escola
                 if ( $oLinhaItinerario->getTipo() == 2 ) {
 
@@ -186,12 +209,19 @@ try {
                 }
 
                 $oTemporario->sItinerario = urlencode($oLinhaItinerario->getTipo() == LinhaItinerario::IDA ? "Ida" : "Volta");
+                $iItinerario              = $oLinhaItinerario->getTipo() == LinhaItinerario::IDA ? 1 : 2;
                 $oRetorno->aAlunos[]      = $oTemporario;
               }
             }
           }
         }
+
+        usort( $oRetorno->aAlunos, function($oAlunoCorrente, $oProximoAluno) {
+          return strcasecmp( $oAlunoCorrente->sItinerario.$oAlunoCorrente->sNome,
+                             $oProximoAluno->sItinerario.$oProximoAluno->sNome );
+        });
       }
+
       break;
 
     case 'pesquisaEscola':
@@ -236,6 +266,26 @@ try {
 
       $oRetorno->aHorarioLinha = db_utils::getCollectionByRecord( $rsLinaTransporte, false, false, true );
       break;
+
+    /**
+     * Retorna todas as escolas de procedência, podendo validar somente escolas com alunos de fora
+     */
+    case 'pesquisaEscolasProcedencia':
+
+      $lSomenteAlunosForaRede = isset( $oParam->lSomenteAlunosForaRede ) ? true : false;
+      $aEscolasProcedencia    = EscolaProcedenciaRepository::getTodasEscolasProcedencia( $lSomenteAlunosForaRede );
+      $oRetorno->dados        = array();
+
+      foreach( $aEscolasProcedencia as $oEscolaProcedencia ) {
+
+        $oDadosEscola                = new stdClass();
+        $oDadosEscola->codigo_escola = $oEscolaProcedencia->getCodigo();
+        $oDadosEscola->nome_escola   = urlencode( $oEscolaProcedencia->getNome() );
+
+        $oRetorno->dados[] = $oDadosEscola;
+      }
+
+      break;
   }
   db_fim_transacao(false);
 } catch (Exception $eException) {
@@ -244,4 +294,5 @@ try {
   $oRetorno->message = urlencode($eException->getMessage());
   db_fim_transacao(true);
 }
+
 echo $oJson->encode($oRetorno);

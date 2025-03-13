@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory( $_POST );
-$clcensoetapa = new cl_censoetapa;
+$oDadoEtapa = new cl_censoetapa;
 parse_str( $_SERVER["QUERY_STRING"] );
 ?>
 <html>
@@ -52,25 +52,45 @@ parse_str( $_SERVER["QUERY_STRING"] );
             if( isset( $campos ) == false ) {
 
               if( file_exists( "funcoes/db_func_censoetapa.php" ) == true ) {
-                include("funcoes/db_func_censoetapa.php");
+                include(modification("funcoes/db_func_censoetapa.php"));
               } else {
                 $campos = "censoetapa.*";
               }
             }
 
-            $aEnsinosCenso = array( 12, 13, 22, 23, 24, 51, 56, 58 );
-            $condicao      = " ed266_i_codigo in ( " . implode( ", ", $aEnsinosCenso ) . " )";
+            /* Busca o codigo do ensino */
+            $oCursoEdu = new Curso( $iCursoEdu );
+            $iEnsino   = $oCursoEdu->getEnsino()->getCodigo();
 
-            if( trim( $abrevtipoensino ) == "ER" ) {
-              $condicao .= " AND ed266_c_regular = 'S'";
-            } else if( trim( $abrevtipoensino ) == "ES" ) {
-              $condicao .= " AND ed266_c_especial = 'S'";
-            } else if( trim( $abrevtipoensino ) == "EJ" ) {
-              $condicao .= " AND ed266_c_eja = 'S'";
+            /* Busca o ano valido do censo */
+            $oCalendario   = new Calendario( $iCalendario );
+            $iAnoCenso     = DadosCenso::getUltimoAnoEtapaCenso();
+            $iAnoConsulta  = 2014;
+            $aEnsinosCenso = array( 12, 13, 22, 23, 24, 51, 56, 58 );
+            
+            if ( $oCalendario->getAnoExecucao() > 2014 && $oCalendario->getAnoExecucao() == $iAnoCenso ) {
+
+              $iAnoConsulta  = $iAnoCenso;
+              $aEnsinosCenso = array( 3, 12, 13, 22, 23, 24, 56, 72);
             }
 
+            $sCondicao      = " ed266_i_codigo in ( " . implode( ", ", $aEnsinosCenso ) . " )";
+
+            if( trim( $abrevtipoensino ) == "ER" ) {
+              $sCondicao .= " AND ed131_regular = 'S'";
+            } else if( trim( $abrevtipoensino ) == "ES" ) {
+              $sCondicao .= " AND ed131_especial = 'S'";
+            } else if( trim( $abrevtipoensino ) == "EJ" ) {
+              $sCondicao .= " AND ed131_eja = 'S'";
+            } else if ( trim( $abrevtipoensino) == "EP" ) {
+              $sCondicao .= " AND ed131_profissional = 'S'";
+            }
+            
+            $sCondicao .= " AND ed131_ano = {$iAnoConsulta}";
+            $sCondicao .= " AND ed10_i_codigo = {$iEnsino}";
+
             $repassa = array();
-            $sql     = $clcensoetapa->sql_query( "", $campos, "ed266_c_descr", $condicao );
+            $sql     = $oDadoEtapa->sql_query_mediacao( "", "", $campos, "ed266_c_descr", $sCondicao );
             db_lovrot( $sql, 15, "()", "", $funcao_js, "", "NoMe", $repassa );
           }
         ?>
@@ -79,3 +99,9 @@ parse_str( $_SERVER["QUERY_STRING"] );
   </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

@@ -58,7 +58,7 @@ db_input('rh60_descr',40,$Irh60_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhtipoatras','func_rhtipoatras.php?funcao_js=parent.js_preenchepesquisa|rh60_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhtipoatras','func_rhtipoatras.php?funcao_js=parent.js_preenchepesquisa|rh60_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhtipoatras.hide();

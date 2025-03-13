@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -59,6 +59,16 @@ $clrotulo->label("z01_nome");
           ?>
         </td>
       </tr>
+        <tr>
+            <td nowrap title="<?= @$Tv57_matriculaadvogado ?>">
+                <?= @$Lv57_matriculaadvogado ?>
+            </td>
+            <td>
+                <?
+                db_input('v57_matriculaadvogado', 20, $Iv57_matriculaadvogado, true, 'text', $db_opcao, "")
+                ?>
+            </td>
+        </tr>
     </table>
   </fieldset>
   <input name="db_opcao" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
@@ -113,5 +123,6 @@ $func_iframe->mostrar();
 $("v57_numcgm").addClassName("field-size2");
 $("z01_nome").addClassName("field-size7");
 $("v57_oab").addClassName("field-size9");
+$("v57_matriculaadvogado").addClassName("field-size9");
 
 </script>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -112,8 +112,8 @@ class cl_dbagata {
   var $api;
   var $arquivo = "";
 
-  function cl_dbagata($_relatorio=ии) {
-    $this->api = new AgataAPI;
+  function cl_dbagata($_relatorio='') {
+    $this->api = new \AgataAPI;
     $this->api->setLanguage('pt'); //'en', 'pt', 'es', 'de', 'fr', 'it', 'se'
 
     if(!empty($_relatorio)) {
@@ -128,7 +128,7 @@ class cl_dbagata {
     $this->api->setParameter('$db_nomeinst', "$nomeinst");
 
     // A resolucao da Imagem deve ser 68 x 74 pixels
-    $this->api->setParameter('$db_logo', "imagens/files/$logo");
+      $this->api->setParameter('$db_logo', "imagens/files/agata{$logo}");
 
     $this->api->setParameter('$db_enderinst', "$ender");
 
@@ -149,7 +149,7 @@ class cl_dbagata {
 
 
     $sDadosUsuarioFolha = "
-    select nome, rh01_regist, rh37_descr
+    select nome, rh01_regist, rh37_descr, login
         from configuracoes.db_usuarios
         left join configuracoes.db_usuacgm on db_usuacgm.id_usuario = db_usuarios.id_usuario
         left join pessoal.rhpessoal     on rh01_numcgm = cgmlogin
@@ -163,7 +163,8 @@ class cl_dbagata {
     $rsDadosUsuarioFolha= db_query($sDadosUsuarioFolha);
 
     $this->api->setParameter('$db_nomeusu',          trim(pg_result($rsDadosUsuarioFolha, 0, "nome"       )) );
-    $this->api->setParameter('$db_cargofolhausu',         trim(pg_result($rsDadosUsuarioFolha, 0, "rh37_descr" )) );
+    $this->api->setParameter('$db_login',            trim(pg_result($rsDadosUsuarioFolha, 0, "login"       )) );
+    $this->api->setParameter('$db_cargofolhausu',    trim(pg_result($rsDadosUsuarioFolha, 0, "rh37_descr" )) );
     $this->api->setParameter('$db_matriculafolhausu',trim(pg_result($rsDadosUsuarioFolha, 0, "rh01_regist")) );
 
     $sSqlDataExtenso = " SELECT fc_dataextenso('" . date("Y-m-d",db_getsession("DB_datausu")) . "') as data_atual_extenso; ";

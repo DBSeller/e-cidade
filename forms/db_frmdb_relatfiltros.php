@@ -26,7 +26,7 @@
  */
 
 //MODULO: configuracoes
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_relatfiltros->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -151,10 +151,10 @@ function js_cancelar(){
 }
 function js_pesquisadb94_codrel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_relatfiltros','db_iframe_db_relat','func_db_relat.php?funcao_js=parent.js_mostradb_relat1|db91_codrel|db91_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_relatfiltros','db_iframe_db_relat','func_db_relat.php?funcao_js=parent.js_mostradb_relat1|db91_codrel|db91_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.db94_codrel.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_relatfiltros','db_iframe_db_relat','func_db_relat.php?pesquisa_chave='+document.form1.db94_codrel.value+'&funcao_js=parent.js_mostradb_relat','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_relatfiltros','db_iframe_db_relat','func_db_relat.php?pesquisa_chave='+document.form1.db94_codrel.value+'&funcao_js=parent.js_mostradb_relat','Pesquisa',false);
      }else{
        document.form1.db91_descr.value = ''; 
      }
@@ -174,10 +174,10 @@ function js_mostradb_relat1(chave1,chave2){
 }
 function js_pesquisadb94_codcam(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_relatfiltros','db_iframe_db_syscampo','func_db_syscampo.php?funcao_js=parent.js_mostradb_syscampo1|codcam|nomecam','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_relatfiltros','db_iframe_db_syscampo','func_db_syscampo.php?funcao_js=parent.js_mostradb_syscampo1|codcam|nomecam','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.db94_codcam.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_relatfiltros','db_iframe_db_syscampo','func_db_syscampo.php?pesquisa_chave='+document.form1.db94_codcam.value+'&funcao_js=parent.js_mostradb_syscampo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_relatfiltros','db_iframe_db_syscampo','func_db_syscampo.php?pesquisa_chave='+document.form1.db94_codcam.value+'&funcao_js=parent.js_mostradb_syscampo','Pesquisa',false);
      }else{
        document.form1.nomecam.value = ''; 
      }

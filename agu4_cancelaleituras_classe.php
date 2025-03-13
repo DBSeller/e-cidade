@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,10 +26,10 @@
  */
 
 
-require_once ('libs/db_utils.php');
-require_once ('dbforms/db_funcoes.php');
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
+require_once(modification('libs/db_utils.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
 
 class cl_cancelaleituras {
   
@@ -112,8 +112,8 @@ class cl_cancelaleituras {
    */
   public function mudaStatusLeitura($iCodLeitura, $iStatus) {
     
-    require_once ('classes/db_agualeitura_classe.php');
-    require_once ('classes/db_agualeituracancela_classe.php');
+    require_once(modification('classes/db_agualeitura_classe.php'));
+    require_once(modification('classes/db_agualeituracancela_classe.php'));
     
     $clAguaLeitura = new cl_agualeitura ();
     
@@ -177,7 +177,7 @@ class cl_cancelaleituras {
    */
   public function cancelaExportacao($iCodExportacao) {
     
-    require_once ("classes/db_aguacoletorexporta_classe.php");
+    require_once(modification("classes/db_aguacoletorexporta_classe.php"));
     
     $clAguaColetorExporta = new cl_aguacoletorexporta ();
     
@@ -219,7 +219,7 @@ class cl_cancelaleituras {
    */
   public function registraSituacao($iSituacao = 3) {
     
-    require_once ("classes/db_aguacoletorexportasituacao_classe.php");
+    require_once(modification("classes/db_aguacoletorexportasituacao_classe.php"));
     
     $clAguaColetorExportaSituacao = new cl_aguacoletorexportasituacao ();
     
@@ -244,7 +244,7 @@ class cl_cancelaleituras {
    */
   public function cancelaLeiturasExportadas() {
     
-    require_once ("classes/db_aguacoletorexportadadosleitura_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadadosleitura_classe.php"));
     
     $clAguaColetorExportaDadosLeitura = new cl_aguacoletorexportadadosleitura ();
     
@@ -270,7 +270,7 @@ class cl_cancelaleituras {
    */
   public function ativaLeiturasExportadas() {
     
-    require_once ("classes/db_aguacoletorexportadadosleitura_classe.php");
+    require_once(modification("classes/db_aguacoletorexportadadosleitura_classe.php"));
     
     $clAguaColetorExportaDadosLeitura = new cl_aguacoletorexportadadosleitura ();
     

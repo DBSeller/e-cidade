@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_pcdotac_classe.php");
-db_postmemory($HTTP_POST_VARS);
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_pcdotac_classe.php"));
+db_postmemory($_POST);
+parse_str($_SERVER["QUERY_STRING"]);
 $clpcdotac = new cl_pcdotac;
 $clpcdotac->rotulo->label("pc13_codigo");
 $clpcdotac->rotulo->label("pc13_anousu");
@@ -40,102 +40,116 @@ $clpcdotac->rotulo->label("pc13_coddot");
 $clpcdotac->rotulo->label("pc13_quant");
 ?>
 <html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link href="estilos.css" rel="stylesheet" type="text/css">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 </head>
+
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-  <tr> 
-    <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tpc13_codigo?>">
-              <?=$Lpc13_codigo?>
+    <table height="100%" border="0" align="center" cellspacing="0" bgcolor="#CCCCCC">
+        <tr>
+            <td height="63" align="center" valign="top">
+                <table width="35%" border="0" align="center" cellspacing="0">
+                    <form name="form2" method="post" action="">
+                        <tr>
+                            <td width="4%" align="right" nowrap title="<?= $Tpc13_codigo ?>">
+                                <?= $Lpc13_codigo ?>
+                            </td>
+                            <td width="96%" align="left" nowrap>
+                                <?php
+                                db_input("pc13_codigo", 10, $Ipc13_codigo, true, "text", 4, "", "chave_pc13_codigo");
+                                ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="4%" align="right" nowrap title="<?= $Tpc13_coddot ?>">
+                                <?= $Lpc13_coddot ?>
+                            </td>
+                            <td width="96%" align="left" nowrap>
+                                <?php
+                                db_input("pc13_coddot", 6, $Ipc13_coddot, true, "text", 4, "", "chave_pc13_coddot");
+                                ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="4%" align="right" nowrap title="<?= $Tpc13_quant ?>">
+                                <?= $Lpc13_quant ?>
+                            </td>
+                            <td width="96%" align="left" nowrap>
+                                <?php
+                                db_input("pc13_quant", 10, $Ipc13_quant, true, "numeric", 4, "", "chave_pc13_quant");
+                                ?>
+                            </td>
+                        </tr>
+                        <tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
+                                <input name="limpar" type="reset" id="limpar" value="Limpar">
+                                <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_pcdotac.hide();">
+                            </td>
+                        </tr>
+                    </form>
+                </table>
             </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("pc13_codigo",10,$Ipc13_codigo,true,"text",4,"","chave_pc13_codigo");
-		       ?>
+        </tr>
+        <tr>
+            <td align="center" valign="top">
+                <?php
+
+                include(modification("funcoes/db_func_pcdotac.php"));
+
+                $condicoes = [];
+                $where = '';
+
+                if (empty($pesquisa_chave)) {
+                    if (!empty($chave_pc13_codigo)) {
+                        $condicoes[] = "pc13_codigo = '{$chave_pc13_codigo}'";
+                    }
+
+                    if (!empty($chave_pc13_coddot)) {
+                        $condicoes[] = "pc13_coddot = '{$chave_pc13_coddot}'";
+                    }
+
+                    if (!empty($chave_pc13_quant)) {
+                        $condicoes[] = "pc13_quant = '{$chave_pc13_quant}'";
+                    }
+
+                    $where = implode(' AND ', $condicoes);
+
+                    $sql = $clpcdotac->sql_query_file(null, null, null, $campos, null, $where);
+                    db_lovrot($sql, 15, '()', '', $funcao_js);
+                }
+
+                if (!empty($pesquisa_chave)) {
+
+                    $result = $clpcdotac->sql_record($clpcdotac->sql_query_file(null, null, $pesquisa_chave));
+
+                    if (!empty($clpcdotac->numrows)) {
+
+                        db_fieldsmemory($result, 0);
+                        echo "<script>" . $funcao_js . "('$pc13_anousu',false);</script>";
+                    } else {
+                        echo "<script>" . $funcao_js . "('Chave(" . $pesquisa_chave . ") não Encontrado',true);</script>";
+                    }
+                }
+
+                if (empty($pesquisa_chave)) {
+                    echo "<script>" . $funcao_js . "('', false, false);</script>";
+                }
+                ?>
             </td>
-          </tr>
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tpc13_coddot?>">
-              <?=$Lpc13_coddot?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("pc13_coddot",6,$Ipc13_coddot,true,"text",4,"","chave_pc13_coddot");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tpc13_quant?>">
-              <?=$Lpc13_quant?>
-            </td>
-            <td width="96%" align="left" nowrap> 
-              <?
-		       db_input("pc13_quant",10,$Ipc13_quant,true,"text",4,"","chave_pc13_quant");
-		       ?>
-            </td>
-          </tr>
-          <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_pcdotac.hide();">
-             </td>
-          </tr>
-        </form>
-        </table>
-      </td>
-  </tr>
-  <tr> 
-    <td align="center" valign="top"> 
-      <?
-      if(!isset($pesquisa_chave)){
-        if(isset($campos)==false){
-           if(file_exists("funcoes/db_func_pcdotac.php")==true){
-             include("funcoes/db_func_pcdotac.php");
-           }else{
-           $campos = "pcdotac.*";
-           }
-        }
-        if(isset($chave_pc13_codigo) && (trim($chave_pc13_codigo)!="") ){
-	         $sql = $clpcdotac->sql_query_file($chave_pc13_codigo,$chave_pc13_anousu,$chave_pc13_coddot,$campos,"pc13_codigo");
-        }else if(isset($chave_pc13_quant) && (trim($chave_pc13_quant)!="") ){
-	         $sql = $clpcdotac->sql_query_file("","","",$campos,"pc13_quant"," pc13_quant like '$chave_pc13_quant%' ");
-        }else{
-           $sql = $clpcdotac->sql_query_file("","","",$campos,"pc13_codigo#pc13_anousu#pc13_coddot","");
-        }
-//	die($sql);
-        db_lovrot($sql,15,"()","",$funcao_js);
-      }else{
-        if($pesquisa_chave!=null && $pesquisa_chave!=""){
-          $result = $clpcdotac->sql_record($clpcdotac->sql_query($pesquisa_chave));
-          if($clpcdotac->numrows!=0){
-            db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$pc13_quant',false);</script>";
-          }else{
-	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
-          }
-        }else{
-	       echo "<script>".$funcao_js."('',false);</script>";
-        }
-      }
-      ?>
-     </td>
-   </tr>
-</table>
+        </tr>
+    </table>
 </body>
+
 </html>
-<?
-if(!isset($pesquisa_chave)){
-  ?>
-  <script>
-  </script>
-  <?
-}
-?>
+<script type="text/javascript">
+    (function() {
+        var query = frameElement.getAttribute('name').replace('IF', ''),
+            input = document.querySelector('input[value="Fechar"]');
+        input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+    })();
+</script>

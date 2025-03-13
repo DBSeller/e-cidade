@@ -72,10 +72,10 @@ db_input('y60_data',10,$Iy60_data,true,'text',3,'')
 <script>
 function js_pesquisaq18_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_issvar','func_issvar.php?funcao_js=parent.js_mostraissvar1|q05_codigo|q05_numpre','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issvar','func_issvar.php?funcao_js=parent.js_mostraissvar1|q05_codigo|q05_numpre','Pesquisa',true);
   }else{
      if(document.form1.q18_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_issvar','func_issvar.php?pesquisa_chave='+document.form1.q18_codigo.value+'&funcao_js=parent.js_mostraissvar','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issvar','func_issvar.php?pesquisa_chave='+document.form1.q18_codigo.value+'&funcao_js=parent.js_mostraissvar','Pesquisa',false);
      }else{
        document.form1.q05_numpre.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostraissvar1(chave1,chave2){
 }
 function js_pesquisaq18_codlev(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_levanta','func_levanta.php?funcao_js=parent.js_mostralevanta1|y60_codlev|y60_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_levanta','func_levanta.php?funcao_js=parent.js_mostralevanta1|y60_codlev|y60_data','Pesquisa',true);
   }else{
      if(document.form1.q18_codlev.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_levanta','func_levanta.php?pesquisa_chave='+document.form1.q18_codlev.value+'&funcao_js=parent.js_mostralevanta','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_levanta','func_levanta.php?pesquisa_chave='+document.form1.q18_codlev.value+'&funcao_js=parent.js_mostralevanta','Pesquisa',false);
      }else{
        document.form1.y60_data.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostralevanta1(chave1,chave2){
   db_iframe_levanta.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_issvarlev','func_issvarlev.php?funcao_js=parent.js_preenchepesquisa|q18_codigo|q18_codlev','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issvarlev','func_issvarlev.php?funcao_js=parent.js_preenchepesquisa|q18_codigo|q18_codlev','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_issvarlev.hide();

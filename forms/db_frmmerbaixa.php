@@ -43,7 +43,7 @@ $clrotulo->label("ed18_i_codigo");
      <td>  
        <?
        $sqlturn="select me03_c_tipo,me03_i_orden,me03_i_codigo,ed15_c_nome from mer_tprefeicao inner join turno on ed15_i_codigo=me03_i_turno order by me03_i_orden";
-       $resultturn=pg_query($sqlturn);
+       $resultturn=db_query($sqlturn);
        $linhasturn=pg_num_rows($resultturn);
        ?>  
             <table cellspacing="0" cellpading="0" border="1" bordercolor="#000000">
@@ -91,7 +91,7 @@ $clrotulo->label("ed18_i_codigo");
 	               inner join mer_cardapio on me01_i_codigo=me12_i_cardapio
 	               inner join mer_tprefeicao on me03_i_codigo=me12_i_tprefeicao
 	               where me12_i_diasemana=".$ed32_i_codigo." and me03_i_codigo=".$me03_i_codigo;
-                   $result2 = pg_query($sql2);
+                   $result2 = db_query($sql2);
                    $linhas2 = pg_num_rows($result2);
                    if($linhas2>0){
                        db_fieldsmemory($result2,0);                                          
@@ -167,7 +167,7 @@ $clrotulo->label("ed18_i_codigo");
 $sql="select me07_i_codigo,me07_f_quantidade,me07_i_codmater,me07_i_cardapio from mer_cardapioitem
         inner join mer_cardapio on me07_i_cardapio=me01_i_codigo
         inner join mer_cardapiodia on me01_i_codigo=me12_i_cardapio";
-$result=pg_query($sql);
+$result=db_query($sql);
 $linhas = pg_num_rows($result);
 for($x=0;$x<$linhas;$x++){
    db_fieldsmemory($result,$x);
@@ -206,7 +206,7 @@ $sql="select me07_i_codmater,m60_descr,(sum(me07_f_quantidade)) as me07_f_quanti
        inner join mer_cardapiodia on me07_i_cardapio=me12_i_cardapio
        inner join matmater on me07_i_codmater=m60_codmater
 group by me07_i_codmater,m60_descr";
-$result=pg_query($sql);
+$result=db_query($sql);
 $linhas=pg_num_rows($result);
 ?>
 <center>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -78,7 +78,7 @@ fieldset table td:first-child {
     </td>
     <td> 
        <?
-       include("classes/db_db_periodicidade_classe.php");
+       include(modification("classes/db_db_periodicidade_classe.php"));
        $cldb_periodicidade = new cl_db_periodicidade;
        $sSqlPeriodicidade = $cldb_periodicidade->sql_query("","*","db84_sequencial ASC");       
        $result = $cldb_periodicidade->sql_record($sSqlPeriodicidade);
@@ -610,10 +610,10 @@ function js_valida_faixas() {
 
 function js_pesquisag04_periodicidade(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_periodicidade','func_db_periodicidade.php?funcao_js=parent.js_mostradb_periodicidade1|db84_sequencial|db84_sequencial','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_periodicidade','func_db_periodicidade.php?funcao_js=parent.js_mostradb_periodicidade1|db84_sequencial|db84_sequencial','Pesquisa',true);
   }else{
      if(document.form1.g04_periodicidade.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_periodicidade','func_db_periodicidade.php?pesquisa_chave='+document.form1.g04_periodicidade.value+'&funcao_js=parent.js_mostradb_periodicidade','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_periodicidade','func_db_periodicidade.php?pesquisa_chave='+document.form1.g04_periodicidade.value+'&funcao_js=parent.js_mostradb_periodicidade','Pesquisa',false);
      }else{
        document.form1.db84_sequencial.value = ''; 
      }
@@ -632,7 +632,7 @@ function js_mostradb_periodicidade1(chave1,chave2){
   db_iframe_db_periodicidade.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_gestorindicador','func_gestorindicador.php?funcao_js=parent.js_preenchepesquisa|g04_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_gestorindicador','func_gestorindicador.php?funcao_js=parent.js_preenchepesquisa|g04_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
 

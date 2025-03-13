@@ -26,9 +26,9 @@
  */
 
 set_time_limit(0);
-include("libs/db_sql.php");
-require("fpdf151/pdf.php");
-include("classes/db_tabativ_classe.php");
+include(modification("libs/db_sql.php"));
+require(modification("fpdf151/pdf.php"));
+include(modification("classes/db_tabativ_classe.php"));
 $cltabativ = new cl_tabativ;
 db_postmemory($HTTP_POST_VARS);
 //db_postmemory($HTTP_POST_VARS,2);exit;
@@ -106,7 +106,7 @@ issruas.j14_codigo ";
 
 //die($sql);
 
-$result = pg_query($sql) or die($sql);
+$result = db_query($sql) or die($sql);
 //db_criatabela($result);exit;             
 $numlinhas = pg_numrows($result);
 if($numlinhas == 0){
@@ -149,7 +149,7 @@ for($i=0;$i<$numlinhas;$i++){
 //      inner join arrecad on arrecad.k00_numpre = arreinscr.k00_numpre 
 //      where k00_inscr = $inscrant
 //      group by extract (year from k00_dtoper)";
-//      $rsTotal =  pg_query($sqltotal);
+//      $rsTotal =  db_query($sqltotal);
 //      $toti    =  pg_numrows($rsTotal);
       if($toti > 0 and $debitos != "s") {
         for($ii=0;$ii<$toti;$ii++){
@@ -177,7 +177,7 @@ for($i=0;$i<$numlinhas;$i++){
 		where k00_inscr = $q02_inscr
 		group by extract (year from k00_dtoper)";
 		//die($sqltotal);
-		$rsTotal =  pg_query($sqltotal);
+		$rsTotal =  db_query($sqltotal);
 		$toti    =  pg_numrows($rsTotal);
 		$passa = true;	
 		

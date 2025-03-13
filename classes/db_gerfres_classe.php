@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -930,5 +930,34 @@ class cl_gerfres {
      }
      return $sql;
   }
+
+  public function migraGerfRes($iInstituicao) {
+
+    $sSql  = "create table w_migracao_rescisao as select distinct r19_anousu,                                                    ";
+    $sSql .= "                                                         r19_mesusu,                                               ";
+    $sSql .= "                                                         r19_instit                                                ";
+    $sSql .= "                                      from pontofr                                                                 ";
+    $sSql .= "                                     inner join gerfres on r19_anousu = r20_anousu                                 ";
+    $sSql .= "                                                       and r19_mesusu = r20_mesusu                                 ";
+    $sSql .= "                                                       and r19_instit = {$iInstituicao};                           ";
+    $sSql .= "                                                                                                                   ";
+    
+    $sSql .= "insert into rhfolhapagamento                                                                                       ";
+    $sSql .= "select nextval('rhfolhapagamento_rh141_sequencial_seq'),                                                           ";
+    $sSql .= "       0,                                                                                                          ";
+    $sSql .= "       r19_anousu,                                                                                                 ";
+    $sSql .= "       r19_mesusu,                                                                                                 ";
+    $sSql .= "       r19_anousu,                                                                                                 ";
+    $sSql .= "       r19_mesusu,                                                                                                 ";
+    $sSql .= "       r19_instit,                                                                                                 ";
+    $sSql .= "       2,                                                                                                          ";
+    $sSql .= "       false,                                                                                                      ";
+    $sSql .= "       'Folha Rescisão número: 0 da competência: ' || r19_anousu || '/' || r19_mesusu || ' gerada automaticamente.'";
+    $sSql .= "  from w_migracao_rescisao                                                                                         ";
+    $sSql .= "  order by r19_anousu asc,                                                                                         ";
+    $sSql .= "           r19_mesusu asc;                                                                                         ";
+
+    return $sSql;      
+  }
+
 }
-?>

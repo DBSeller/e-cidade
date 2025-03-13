@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010465' name='protocolo.preprocessoprotprocesso' description="Vínculo de um pré processo, com um processo criado." prefix="p107" label="Pré Processo / Processo" type="0">
+  <fields>
+    <field codigo="1010669" 
+           campo_api='' 
+           name="p107_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.preprocessoprotprocesso_p107_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010670" 
+           campo_api='' 
+           name="p107_preprocesso" 
+           conteudo="int4" 
+           description="Sequencial da tabela preprocesso." 
+           inivalue="0" 
+           label="Pré-Processo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Pré-Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010671" 
+           campo_api='' 
+           name="p107_protprocesso" 
+           conteudo="int4" 
+           description="Vínculo da tabela protprocesso." 
+           inivalue="0" 
+           label="Processo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="p107_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="protprocesso" inner='t'>
+      <fieldfk name="p107_protprocesso" reference="p58_codproc" /> 
+    </foreignkey>
+    <foreignkey reference="preprocesso" inner='t'>
+      <fieldfk name="p107_preprocesso" reference="p106_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

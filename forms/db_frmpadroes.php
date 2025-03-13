@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -31,53 +31,86 @@ $clpadroes->rotulo->label();
 $clrotulo->label("r07_descr");
 $r02_anousu = db_anofolha();
 $r02_mesusu = db_mesfolha();
+
+$Ir02_descr_padraopai = $Ir02_descr;
 ?>
+<div class="container">
+
+ <style>
+     #r02_regimedescr {
+         width: 70%;
+     }
+     #r02_regime {
+         width: 30%;
+     }
+ </style>
+
 <form name="form1" method="post" action="">
-<center>
-<table border="0">
+<fieldset>
+<legend>Padrões</legend>
+<table border="0" class="form-container">
   <tr>
     <td align="center">
-      <fieldset>
-        <table>
-          <tr>
-            <td nowrap align="right" title="<?=@$Tr02_regime?>">
-              <?=@$Lr02_regime?>
-            </td>
-            <td> 
-              <?
-              $result_regime = $clrhcadregime->sql_record($clrhcadregime->sql_query_file(null,"*"));
-              db_selectrecord("r02_regime",$result_regime,true,($db_opcao == 1?1:3));
-              db_input('r02_anousu',4,$Ir02_anousu,true,'hidden',3,"");
-              db_input('r02_mesusu',2,$Ir02_mesusu,true,'hidden',3,"");
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td nowrap align="right" title="<?=@$Tr02_codigo?>">
-              <?=@$Lr02_codigo?>
-            </td>
-            <td> 
-              <?
-              db_input('r02_codigo',10,$Ir02_codigo,true,'text',($db_opcao == 1?1:3),"")
-              ?>
-            </td>
-          </tr>
-          <tr>
-            <td nowrap align="right" title="<?=@$Tr02_descr?>">
-              <?=@$Lr02_descr?>
-            </td>
-            <td> 
-              <?
-              db_input('r02_descr',30,$Ir02_descr,true,'text',$db_opcao,"", "", "", "", 25)
-              ?>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+      <table>
+        <tr>
+          <td nowrap align="right" title="<?=@$Tr02_regime?>">
+            <?=@$Lr02_regime?>
+          </td>
+          <td> 
+            <?
+            $result_regime = $clrhcadregime->sql_record($clrhcadregime->sql_query_file(null,"*"));
+            db_selectrecord("r02_regime",$result_regime,true,($db_opcao == 1?1:3) );
+            db_input('r02_anousu',4,$Ir02_anousu,true,'hidden',3,"");
+            db_input('r02_mesusu',2,$Ir02_mesusu,true,'hidden',3,"");
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap align="right" title="<?=@$Tr02_codigo?>">
+            <?=@$Lr02_codigo?>
+          </td>
+          <td> 
+            <?
+            db_input('r02_codigo',10,$Ir02_codigo,true,'text',($db_opcao == 1?1:3),"")
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap align="right" title="<?=@$Tr02_descr?>">
+            <?=@$Lr02_descr?>
+          </td>
+          <td> 
+            <?
+            db_input('r02_descr',30,$Ir02_descr,true,'text',$db_opcao,"", "", "", "", 25)
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap align="right" title="<?=@$Tr02_nivel?>">
+            <?=@$Lr02_nivel?>
+          </td>
+          <td> 
+            <?
+            db_input('r02_nivel',30,$Ir02_nivel,true,'text',$db_opcao,"", "", "", "", 25)
+            ?>
+          </td>
+        </tr>
+        <tr>
+          <td nowrap align="right" title="<?=@$Tr02_classe?>">
+            <?=@$Lr02_classe?>
+          </td>
+          <td> 
+            <?
+            db_input('r02_classe',30,$Ir02_classe,true,'text',$db_opcao,"", "", "", "", 25)
+            ?>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
   <tr>
     <td align="center">
-      <fieldset>
+      <fieldset class="separator">
         <table>
           <tr>
             <td nowrap align="right" title="<?=@$Tr02_tipo?>">
@@ -86,7 +119,7 @@ $r02_mesusu = db_mesfolha();
             <td> 
               <?
 	      if(!isset($r02_tipo)){
-		$r02_tipo = "M";
+		          $r02_tipo = "M";
               }
               $arr_tipo = array("H"=>"Horas","M"=>"Mês");
               db_select('r02_tipo',$arr_tipo,true,$db_opcao,"onchange='js_trancaform(this.value,true);'");
@@ -110,11 +143,12 @@ $r02_mesusu = db_mesfolha();
             </td>
           </tr>
         </table>
-      </td>
-    </tr>
+      </fieldset>
+    </td>
+  </tr>
   <tr>
     <td align="center">
-      <fieldset>
+      <fieldset class="separator">
         <table>
           <tr>
             <td nowrap align="right" title="<?=@$Tr02_form?>">
@@ -144,8 +178,19 @@ $r02_mesusu = db_mesfolha();
             </td>
             <td> 
               <?
-              db_input('r02_minimo',4,$Ir02_minimo,true,'text',$db_opcao,"onchange='js_pesquisar02_minimo(false);'");
-              db_input('r07_descr',40,$Ir07_descr,true,'text',3,"");
+                db_input('r02_minimo', 4, $Ir02_minimo, true, 'text', $db_opcao, "onchange='js_pesquisar02_minimo(false);'");
+                db_input('r07_descr', 40, $Ir07_descr, true, 'text', 3, "  data=r07_descr");
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td nowrap align="right" title="<?=@$Tr02_padraopai_codigo?>">
+              <a href="#" id="lbl_r02_padraopai_codigo"><? echo $Lr02_padraopai_codigo; ?></a>
+            </td>
+            <td> 
+              <?
+              db_input('r02_padraopai_codigo',4,$Ir02_padraopai_codigo,true,'text',$db_opcao,"onchange='js_pesquisar02_padraopai_codigo(false);' data=r02_codigo");
+              db_input('r02_descr_padraopai',40,$Ir02_descr_padraopai,true,'text',3,"data=r02_descr");
               ?>
             </td>
           </tr>
@@ -155,7 +200,7 @@ $r02_mesusu = db_mesfolha();
   </tr>
   <tr>
     <td align="center">
-      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
+      <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" onclick="return js_validarFormulario();" <?=($db_botao==false?"disabled":"")?> >
       <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();">
     </td>
   </tr>
@@ -166,7 +211,8 @@ $r02_mesusu = db_mesfolha();
 </table>
 </center>
 </form>
-<script>
+</div>
+<script>  
 function js_trancaform(valor,change){
   <?if($db_opcao == 1 || $db_opcao == 2){?>
   if(valor == "H"){
@@ -224,7 +270,7 @@ function js_calculavalorform(submita){
       if(arr_div.length > 1){
         qry = 'opcao=dadosdiversos';
 	qry+= '&div='+qry_diversos;
-        js_OpenJanelaIframe('top.corpo','db_iframe_faltas','func_scriptsdb.php?'+qry,'Pesquisa',false,10,10,10,10);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_faltas','func_scriptsdb.php?'+qry,'Pesquisa',false,10,10,10,10);
       }
     }else{
       alert(mensagem);
@@ -234,14 +280,14 @@ function js_calculavalorform(submita){
   }
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_padroes','func_padroes.php?funcao_js=parent.js_preenchepesquisa|r02_anousu|r02_mesusu|r02_regime|r02_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_padroes','func_padroes.php?funcao_js=parent.js_preenchepesquisa|r02_anousu|r02_mesusu|r02_regime|r02_codigo','Pesquisa',true);
 }
 function js_pesquisar02_minimo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pesdiver','func_pesdiver.php?funcao_js=parent.js_mostraminimo1|r07_codigo|r07_descr&instit=<?=(db_getsession("DB_instit"))?>&chave_r07_mesusu=<?=$r02_anousu?>&chave_r07_anousu=<?=$r02_mesusu?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesdiver','func_pesdiver.php?funcao_js=parent.js_mostraminimo1|r07_codigo|r07_descr&instit=<?=(db_getsession("DB_instit"))?>&chave_r07_mesusu=<?=$r02_anousu?>&chave_r07_anousu=<?=$r02_mesusu?>','Pesquisa',true);
   }else{
      if(document.form1.r02_minimo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pesdiver','func_pesdiver.php?pesquisa_chave='+document.form1.r02_minimo.value+'&funcao_js=parent.js_mostraminimo&instit=<?=(db_getsession("DB_instit"))?>&chave_r07_mesusu=<?=$r02_anousu?>&chave_r07_anousu=<?=$r02_mesusu?>','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pesdiver','func_pesdiver.php?pesquisa_chave='+document.form1.r02_minimo.value+'&funcao_js=parent.js_mostraminimo&instit=<?=(db_getsession("DB_instit"))?>&chave_r07_mesusu=<?=$r02_anousu?>&chave_r07_anousu=<?=$r02_mesusu?>','Pesquisa',false);
      }else{
        document.form1.r07_descr.value = ''; 
      }
@@ -267,5 +313,64 @@ function js_preenchepesquisa(chave,chave1,chave2,chave3){
   }
   ?>
 }
+
+/**
+ * Válida o formulário antes de submeter
+ * 
+ * @returns {Boolean}
+ */
+function js_validarFormulario() {
+  
+  var sValorPadrao = document.getElementById("r02_valor").value;
+  var fValorPadrao = parseFloat(sValorPadrao);
+  if (fValorPadrao < 0) {
+    
+    alert("O valor do padrão é negativo.");
+    return false;
+  }
+  
+  return true;
+}
+
 js_trancaform("<?=$r02_tipo?>",false);
+
+function validarPadraoPai(valorInformado) {
+
+  var codigoPadrao = document.getElementById('r02_codigo');
+
+  if(valorInformado == codigoPadrao) {
+    alert('Informe um padrão diferente do atual');
+    return false;
+  }
+
+  return true;
+}
+
+var oLookupPadraoPai = new DBLookUp (document.getElementById('lbl_r02_padraopai_codigo'),
+                                     document.getElementById('r02_padraopai_codigo'),
+                                     document.getElementById('r02_descr_padraopai'),
+                                     {sArquivo : 'func_padroes.php'}
+                                    );
+
+    oLookupPadraoPai.setCallBack('onClick', function(codigo, descricao) {
+
+      if(!validarPadraoPai(codigo)) {
+        $('#r02_padraopai_codigo').value = '';
+        $('#r02_descr_padraopai').value  = '';
+      }
+    });
+
+    oLookupPadraoPai.setCallBack('onChange', function(lErro, parametros) {
+
+      var descricaoValor = parametros[0];      
+      var descricao      = descricaoValor.replace(/^(.+?)-([^-]*?)$/, "$1").trim();
+
+      $('r02_descr_padraopai').value = descricao;
+      
+      if(!validarPadraoPai(this.value)) {
+        $('#r02_padraopai_codigo').value = '';
+        $('#r02_descr_padraopai').value  = '';
+      }
+    });
+
 </script>

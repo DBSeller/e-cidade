@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("classes/db_contlot_classe.php");
-include("classes/db_contlotv_classe.php");
-include("classes/db_projmelhorias_classe.php");
-include("classes/db_editalrua_classe.php");
-include("classes/db_editalproj_classe.php");
-include("classes/db_projmelhoriasmatric_classe.php");
-include("classes/db_testada_classe.php");
-include("classes/db_face_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("classes/db_contlot_classe.php"));
+include(modification("classes/db_contlotv_classe.php"));
+include(modification("classes/db_projmelhorias_classe.php"));
+include(modification("classes/db_editalrua_classe.php"));
+include(modification("classes/db_editalproj_classe.php"));
+include(modification("classes/db_projmelhoriasmatric_classe.php"));
+include(modification("classes/db_testada_classe.php"));
+include(modification("classes/db_face_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clprojmelhorias = new cl_projmelhorias;
 $cleditalrua = new cl_editalrua;
 $cleditalproj = new cl_editalproj;
@@ -119,7 +119,7 @@ class cl_fate extends cl_testada {
     $numrows=$this->numrows;
     if($numrows>0){
       static $pri=true;
-      $re=pg_query("select d03_tipos,d03_descr,d04_quant,d04_vlrcal,d04_vlrval from editalserv inner join editaltipo on d03_tipos=d04_tipos where d04_contri=$numcontri");  
+      $re=db_query("select d03_tipos,d03_descr,d04_quant,d04_vlrcal,d04_vlrval from editalserv inner join editaltipo on d03_tipos=d04_tipos where d04_contri=$numcontri");  
       $numlinhas= pg_numrows($re);
       if($pri){
         echo "
@@ -151,7 +151,7 @@ class cl_fate extends cl_testada {
         $j34_zona=$GLOBALS["j34_zona"];
         $j36_testad=$GLOBALS["j36_testad"];
         $Ij36_testad=$GLOBALS["Ij36_testad"];
-        $rest=pg_query("select d41_eixo,d41_testada from projmelhoriasmatric where d41_matric=$j01_matric");
+        $rest=db_query("select d41_eixo,d41_testada from projmelhoriasmatric where d41_matric=$j01_matric");
         if(pg_numrows($rest)>0){
           db_fieldsmemory($rest,0);
           $d41_testada=$GLOBALS["d41_testada"];
@@ -315,7 +315,7 @@ if(isset($face)){
     inner join edital on d01_codedi=d10_codedi
     inner join editalrua on d02_codedi=d01_codedi
     where d02_contri=$contri";
-  $result=pg_query($sql);  
+  $result=db_query($sql);  
   $num=pg_numrows($result);
   if($num>0){
     for($d=0; $d<$num; $d++){

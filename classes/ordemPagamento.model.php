@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,18 +26,20 @@
  */
 
 
-require_once("model/contabilidade/GrupoContaOrcamento.model.php");
-require_once("model/contabilidade/DocumentoContabil.model.php");
+require_once(modification("model/contabilidade/GrupoContaOrcamento.model.php"));
+require_once(modification("model/contabilidade/DocumentoContabil.model.php"));
 
 /**
  * Model para controle de ordens de pagamento (Notas liquidacao)
  * @package empenho
- * @author Iuri Guntchnigg
- * @revision $Author: dbiuri $
- * @version $Revision: 1.89 $
  */
+class ordemPagamento
+{
 
-class ordemPagamento {
+    /**
+     * @var string
+     */
+    const COMPLEMENTO = 'Controle de prestação de contas.';
 
   /**
    * Codigo da ordem;
@@ -106,60 +108,79 @@ class ordemPagamento {
    */
   private $iTipoAutentica  = null;
   private $iNovoMovimento  = null;
-   const AUTENTICAR  = true;
-   const ESTORNAR    = false;
-   public $iCodLanc;
+  const AUTENTICAR  = true;
+  const ESTORNAR    = false;
+  public $iCodLanc;
+
+  /**
+   * Valor pago no movimento
+   * @var float
+   */
+  protected $nValorPago = 0;
+
+
   /**
    * metodo construtor;
    * @param integer $iCodOrdem codigo da ordem
    */
-  function __construct($iCodOrdem) {
+    function __construct($iCodOrdem)
+    {
 
     $this->iCodOrdem    = $iCodOrdem;
     $this->iAnoUsu      = db_getsession("DB_anousu");
     $this->dtDataUsu    = date("Y-m-d",db_getsession("DB_datausu"));
-    $this->oDaoPagOrdem = db_utils::getDao("pagordem");
+    $this->oDaoPagOrdem = new cl_pagordem;
   }
+
   /**
    * seta o historico do movimento.
    * @param string $sHistorico
-  */
-  function setHistorico($sHistorico) {
+   */
+    function setHistorico($sHistorico)
+    {
 
-     $this->sHistorico = $sHistorico;
+    $this->sHistorico = $sHistorico;
   }
 
-  function getHistorico () {
+    function getHistorico()
+    {
     return $this->sHistorico;
   }
+
   /**
    * Seta o urlencode das strings
    * @param boolean $lEncode
    * @return void
    */
-  function setEncode($lEncode) {
+    function setEncode($lEncode)
+    {
 
     $this->lEncode = $lEncode;
 
   }
 
-  function getEncode() {
+    function getEncode()
+    {
 
     return $this->lEncode;
 
   }
+
   /**
    * Seta a conta a set debita/creditado o pagamento;
    * @param integer $iCodConta codigo da conta
    */
-  function setConta($iCodConta) {
+    function setConta($iCodConta)
+    {
     $this->iCodConta = $iCodConta;
   }
+
   /**
    * Retorna a conta selecionado pelo usuario.
    * @return integer
    */
-  function getConta() {
+    function getConta()
+    {
     return $this->iCodConta;
   }
 
@@ -167,14 +188,17 @@ class ordemPagamento {
    * Seta o cheque
    * @param integer $iCodCheque codigo do cheque
    */
-  function setCheque($iCodCheque) {
+    function setCheque($iCodCheque)
+    {
     $this->iCodCheque = $iCodCheque;
   }
+
   /**
    * Retorna o cheque
    * @return integer
    */
-  function getCheque() {
+    function getCheque()
+    {
 
     if ($this->iCodCheque == null) {
       $this->iCodCheque = 0;
@@ -186,14 +210,17 @@ class ordemPagamento {
    * Seta o cheque da agenda de pagamento.
    * @param integer $iCodChequeAgenda codigo do cheque da agenda
    */
-  function setChequeAgenda($iCodCheque) {
+    function setChequeAgenda($iCodCheque)
+    {
     $this->iCodChequeAgenda = $iCodCheque;
   }
+
   /**
    * Retorna o cheque da agenda de pagagamento
    * @return integer
    */
-  function getChequeAgenda() {
+    function getChequeAgenda()
+    {
 
     if ($this->iCodChequeAgenda == null) {
       $this->iCodChequeAgenda = 0;
@@ -205,28 +232,35 @@ class ordemPagamento {
    * Seta o valor pago
    * @param float $nValorPago valor pago
    */
-  function setValorPago($nValorPago) {
+    function setValorPago($nValorPago)
+    {
     $this->nValorPago = $nValorPago;
   }
+
   /**
    * retorna o valor pago
    * @return float
    */
-  function getValorPago() {
+    function getValorPago()
+    {
     return $this->nValorPago ;
   }
+
   /**
    * Seta a Data do pagamento
    * @param string $sData Data
    */
-  function setDataUsu($sData) {
+    function setDataUsu($sData)
+    {
     $this->dtDataUsu = $sData;
   }
+
   /**
    * retorna o Data do pagamento
    * @return string
    */
-  function getDataUsu() {
+    function getDataUsu()
+    {
     return $this->dtDataUsu;
   }
 
@@ -237,27 +271,32 @@ class ordemPagamento {
    *
    */
 
-  function setMovimentoAgenda($iCodMov) {
+    function setMovimentoAgenda($iCodMov)
+    {
     $this->iMovimentoAgenda = $iCodMov;
   }
+
   /**
    * retorna o codigo do movimento da agenda
    * @return integer
    */
-  function getMovimentoAgenda() {
+    function getMovimentoAgenda()
+    {
 
     if ($this->iMovimentoAgenda == "") {
       $this->iMovimentoAgenda = "null";
     }
     return $this->iMovimentoAgenda;
   }
-  /**
-   * Retorna os dados da ordem, (empenho, nota e ordem.)
-   * @param string $sWhere Condição especial para a consulta.
-   * @return object db_util
-   */
 
-  function getDadosOrdem($sWhere = null) {
+  /**
+   * @param null $sWhere
+   *
+   * @return _db_fields|stdClass
+   * @throws exception
+   */
+    function getDadosOrdem($sWhere = null)
+    {
 
     $sSqlOrdem  = "select pagordem.*,pagordemele.*,empnota.*,empempenho.*,empnota.*,  ";
     $sSqlOrdem .= "       case when cgmordem.z01_numcgm is not null then cgmordem.z01_numcgm else cgm.z01_numcgm end as z01_numcgm,";
@@ -298,14 +337,92 @@ class ordemPagamento {
    *
    * @return string
    */
-  function getRetornoautenticacao() {
-     return $this->sRetornoAutentica;
+    function getRetornoautenticacao()
+    {
+    return $this->sRetornoAutentica;
   }
+
+
+  public function gerarSlipDasRetencoesApropriadas($oMovimento = null)
+  {
+
+    $oInstituicao = new Instituicao(db_getsession("DB_instit"));
+    $oDadosOrdem = $this->getDadosOrdem();
+    $oEmpenhoFinanceiro = EmpenhoFinanceiroRepository::getEmpenhoFinanceiroPorNumero($oDadosOrdem->e60_numemp);
+    $aRecursosNaoGera = ["0001", "0050", "0051", "0400"];
+    $sRecursoEmpenho = $oEmpenhoFinanceiro->getDotacao()->getDadosRecurso()->getRecurso();
+
+    // se o empenho for da folha, não gera os slips
+    if ($oEmpenhoFinanceiro->isFolhaPagamento()) {
+      return;
+    }
+    $nValorSlip = 0;
+
+    // aqui validamos se o recurso do empenho está entre os da lista que nao sao necessarios executar o slip
+    if (in_array($sRecursoEmpenho, $aRecursosNaoGera)) {
+        return;
+    }
+
+    if (isset($oMovimento->nValorRetencao)) {
+
+        $nValorSlip = $oMovimento->nValorRetencao;
+    }
+
+    $sql = "
+
+    select sum(e23_valorretencao) as total
+       from retencaopagordem
+       inner join retencaoreceitas on e23_retencaopagordem = e20_sequencial
+       where e20_pagordem = {$this->iCodOrdem}
+         and e23_ativo is true
+         and e23_recolhido is true
+
+    ";
+
+    $rs = db_query($sql);
+    if (pg_numrows($rs) > 0 ) {
+      $nValorSlip += db_utils::fieldsMemory($rs, 0)->total;
+    }
+    if ($nValorSlip <= 0) {
+      return;
+    }
+
+    $oContaTesouraria = new contaTesouraria($this->getConta());
+
+    $iContaCredito = $oContaTesouraria->getCodigoConta();
+    $iContaDebito  = $oContaTesouraria->getContrapartida();
+
+
+
+    $sObservacao  = "Correspondente a transferencia bancária da OP: ";
+    $sObservacao .= "{$this->iCodOrdem}:";
+
+    $cgm = $oInstituicao->getCgm()->getCodigo();
+    $oSlip = new \slip();
+
+    $oSlip->setContaCredito($iContaCredito);
+    $oSlip->setContaDebito($iContaDebito);
+    $oSlip->setNumCgm($cgm);
+    $oSlip->setHistorico(9700);
+    $oSlip->setCaracteristicaPeculiarCredito("000");
+    $oSlip->setCaracteristicaPeculiarDebito("000");
+    $oSlip->setValor($nValorSlip);
+    $oSlip->setTipoPagamento(3);
+    $oSlip->setSituacao(1);
+    $oSlip->setObservacoes($sObservacao);
+    $oSlip->save();
+    \Slip::vincularTipoOperacaoSlip($oSlip->getSlip(), 5);
+    \Slip::vincularSlipOrdemPagamento($oSlip->getSlip(), $this->iCodOrdem);
+
+  }
+
   /**
    * faz o pagamento da ordem;
    * @return void;
    */
-  function pagarOrdem() {
+    function pagarOrdem()
+    {
+
 
     //Testa se existe uma transacao aberta com o banco
     if (!db_utils::inTransaction()) {
@@ -315,21 +432,23 @@ class ordemPagamento {
     $oDadosOrdem    = $this->getDadosOrdem();
     $iCodDoc        = null;
 
-  /*
-   * Testa para ver se a nota já está paga.
-   *
-   */
-  if (db_round(($oDadosOrdem->e53_vlrpag+$this->getValorPago()),2) > db_round($oDadosOrdem->e53_valor,2) ){
+    //$this->gerarSlipDasRetencoes();
 
-    $sMsg = "Pagamento já foi efetuado.";
-     throw new exception($sMsg);
-     return false;
+    /*
+     * Testa para ver se a nota já está paga.
+     *
+     */
+    if (db_round(($oDadosOrdem->e53_vlrpag+$this->getValorPago()),2) > db_round($oDadosOrdem->e53_valor,2) ){
 
-  }
+      $sMsg = "Pagamento já foi efetuado.";
+      throw new exception($sMsg);
+      return false;
 
-   /**
-    * Validadmos a data da emissao do cheque
-    */
+    }
+
+    /**
+     * Validadmos a data da emissao do cheque
+     */
 
     if ($this->getChequeAgenda() != 0) {
       /**
@@ -352,44 +471,44 @@ class ordemPagamento {
 
         if (db_strtotime($this->dtDataUsu) < db_strtotime($oEmpAgeConfChe->e86_data)) {
 
-           $sMsg  = "Data atual é menor que a data de emissão do cheque. \n";
-           $sMsg .= "Processamento cancelado.";
+          $sMsg  = "Data atual é menor que a data de emissão do cheque. \n";
+          $sMsg .= "Processamento cancelado.";
           throw new exception($sMsg);
           return  false;
         }
       }
     }
 
-   /**
-    * Validadmos o valor da retencao
-    */
-   require_once("model/retencaoNota.model.php");
-   if ($oDadosOrdem->e69_codnota != "") {
+    /**
+     * Validadmos o valor da retencao
+     */
+    require_once(modification("model/retencaoNota.model.php"));
+    if ($oDadosOrdem->e69_codnota != "") {
 
-     $dtSessao             = date("Y-m-d");
-     $oRetencaoNota        = new retencaoNota($oDadosOrdem->e69_codnota);
-     $nValorTotalRetencoes = $oRetencaoNota->getValorRetencaoMovimento($this->getMovimentoAgenda(),
-                                                                       false,
-                                                                       $this->dtDataUsu
-                                                                       );
-     if ($nValorTotalRetencoes > $oDadosOrdem->e53_valor) {
-
-
-       $sMsg  = "Pagamento da OP {$this->iCodOrdem} não Efetuado.\n";
-       $sMsg .= "Valor da Retenção maior que o valor que está sendo pago.\n";
-       throw new exception($sMsg);
-
-     }
+      $dtSessao             = date("Y-m-d");
+      $oRetencaoNota        = new retencaoNota($oDadosOrdem->e69_codnota);
+      $nValorTotalRetencoes = $oRetencaoNota->getValorRetencaoMovimento($this->getMovimentoAgenda(),
+                                                                        false,
+                                                                        $this->dtDataUsu
+      );
+      if ($nValorTotalRetencoes > $oDadosOrdem->e53_valor) {
 
 
-   }
+        $sMsg  = "Pagamento da OP {$this->iCodOrdem} não Efetuado.\n";
+        $sMsg .= "Valor da Retenção maior que o valor que está sendo pago.\n";
+        throw new exception($sMsg);
 
-   /*
-    * Somente podemos pagar, se a data do pagamento for maior ou igual a data da nota de liquidacao;
-    *
-    */
+      }
+
+
+    }
+
+    /*
+     * Somente podemos pagar, se a data do pagamento for maior ou igual a data da nota de liquidacao;
+     *
+     */
     if (db_strtotime($this->dtDataUsu) < db_strtotime($oDadosOrdem->e60_emiss)
-        || $this->iAnoUsu < $oDadosOrdem->e60_anousu ) {
+      || $this->iAnoUsu < $oDadosOrdem->e60_anousu ) {
 
       $sMsg = "Data inválida. Data de pagamento menor que a data do empenho.";
       throw new exception($sMsg);
@@ -399,30 +518,30 @@ class ordemPagamento {
      * Verificamos se o boletim de caixa já foi processado/liberado.
      * caso esteja, cancelamos o processamento do pagamento.
      */
-     $sSqlBoletim  = "select *       ";
-     $sSqlBoletim .= "  from boletim ";
-     $sSqlBoletim .= " where k11_data   = '{$this->dtDataUsu}' ";
-     $sSqlBoletim .= "   and k11_instit = ".db_getsession("DB_instit");
-     $rsBoletim    = db_query($sSqlBoletim);
-     $oBoletim     = db_utils::fieldsMemory($rsBoletim, 0);
+    $sSqlBoletim  = "select *       ";
+    $sSqlBoletim .= "  from boletim ";
+    $sSqlBoletim .= " where k11_data   = '{$this->dtDataUsu}' ";
+    $sSqlBoletim .= "   and k11_instit = ".db_getsession("DB_instit");
+    $rsBoletim    = db_query($sSqlBoletim);
+    $oBoletim     = db_utils::fieldsMemory($rsBoletim, 0);
 
-     if ($oBoletim->k11_libera == "t"  ) {
+    if ($oBoletim->k11_libera == "t"  ) {
 
-       $dtDiaBoletim = db_formatar($this->dtDataUsu, "d");
-       $sMsg  = "Pagamento não realizado.\nBoletim do caixa para o dia {$dtDiaBoletim} ";
-       $sMsg .= "já liberado para a contabilidade.";
-       throw new exception ($sMsg);
+      $dtDiaBoletim = db_formatar($this->dtDataUsu, "d");
+      $sMsg  = "Pagamento não realizado.\nBoletim do caixa para o dia {$dtDiaBoletim} ";
+      $sMsg .= "já liberado para a contabilidade.";
+      throw new exception ($sMsg);
 
-     }
+    }
 
     if ($oBoletim->k11_lanca == "t"  ) {
 
-       $dtDiaBoletim = db_formatar($this->dtDataUsu, "d");
-       $sMsg  = "Pagamento não realizado.\nBoletim do caixa para o dia {$dtDiaBoletim} ";
-       $sMsg .= "já processado na contabilidade.";
-       throw new exception ($sMsg);
+      $dtDiaBoletim = db_formatar($this->dtDataUsu, "d");
+      $sMsg  = "Pagamento não realizado.\nBoletim do caixa para o dia {$dtDiaBoletim} ";
+      $sMsg .= "já processado na contabilidade.";
+      throw new exception ($sMsg);
 
-     }
+    }
 
     /*
      * Verificamos se o empenho ainda tem saldo para fazer o pagamento do empenho.
@@ -466,7 +585,7 @@ class ordemPagamento {
     }
 
     // Caso nao esteje como nota de liquidação, devemos setar o codigo do documento como 35;
-    $oDaoEmpparametro = db_utils::getDao("empparametro");
+    $oDaoEmpparametro = new cl_empparametro;
     $rsParametro      = $oDaoEmpparametro->sql_record($oDaoEmpparametro->sql_query_file($this->iAnoUsu));
     if ($oDaoEmpparametro->numrows > 0 ) {
 
@@ -501,7 +620,7 @@ class ordemPagamento {
      * (empempenho, empelemento, pagordemele, pagordem)
      */
 
-    $oDaoEmpenho             = db_utils::getDao("empempenho");
+    $oDaoEmpenho             = new cl_empempenho;
     $oDaoEmpenho->e60_numemp = $oDadosOrdem->e60_numemp;
     $oDaoEmpenho->e60_vlrpag = $nValorPagoTotal;
     $oDaoEmpenho->alterar($oDadosOrdem->e60_numemp);
@@ -511,7 +630,7 @@ class ordemPagamento {
       $sErroMsg .= "Erro Técnico: {$oDaoEmpenho->erro_msg}";
       throw new exception ($sErroMsg);
     }
-    $oDaoEmpElemento = db_utils::getDao("empelemento");
+    $oDaoEmpElemento = new cl_empelemento;
     /*
      * Verificamos se o empenho possui mais de um elemento.
      * Caso houver, devemos cancelar o processamento, pois
@@ -537,9 +656,9 @@ class ordemPagamento {
       throw new exception ($sErroMsg);
     }
 
-    $oDaoPagOrdemEle = db_utils::getDao("pagordemele");
+    $oDaoPagOrdemEle = new cl_pagordemele;
     $rsElementoOrdem = $oDaoPagOrdemEle->sql_record(
-        $oDaoPagOrdemEle->sql_query_file($oDadosOrdem->e50_codord, $oDadosOrdem->e53_codele));
+      $oDaoPagOrdemEle->sql_query_file($oDadosOrdem->e50_codord, $oDadosOrdem->e53_codele));
     if ($oDaoPagOrdemEle->numrows == 0) {
 
       $sErroMsg  = "Erro [4] - Ordem de pagamento {$oDadosOrdem->e50_codord}";
@@ -559,8 +678,8 @@ class ordemPagamento {
     }
 
     //Iniciamos os lancamentos Contabeis;
-    require_once("classes/lancamentoContabil.model.php");
-    $oDaoSaltes = db_utils::getDao("saltes");
+    require_once(modification("classes/lancamentoContabil.model.php"));
+    $oDaoSaltes = new cl_saltes;
     $rsSaltes   = $oDaoSaltes->sql_record($oDaoSaltes->sql_query_file($this->getConta(), "k13_reduz"));
     if ($oDaoSaltes->numrows > 0) {
       $oSaltes = db_utils::fieldsMemory($rsSaltes, 0);
@@ -568,7 +687,7 @@ class ordemPagamento {
       throw new exception("Conta tributária inválida!");
     }
 
-    $oDaoCorGrupo   = db_utils::getDao("corgrupo");
+    $oDaoCorGrupo   = new cl_corgrupo;
     $oDaoCorGrupo->k104_tipo = 1;
     $oDaoCorGrupo->incluir(null);
     if ($oDaoCorGrupo->erro_status == 0) {
@@ -583,7 +702,7 @@ class ordemPagamento {
                                         $this->iAnoUsu,
                                         $this->dtDataUsu,
                                         $this->getValorPago()
-                                       );
+      );
 
       $oLancam->setCgm($oDadosOrdem->e60_numcgm);
       $oLancam->setEmpenho($oDadosOrdem->e60_numemp, $oDadosOrdem->e60_anousu, $oDadosOrdem->e60_codcom);
@@ -616,22 +735,21 @@ class ordemPagamento {
       /**
        * incluimos o lancamento contabil no grupo de autenticações
        */
-      $oDaoCorrenteGrupo = db_utils::getDao("corgrupocorrente");
+      $oDaoCorrenteGrupo = new cl_corgrupocorrente;
       $sSqlCorgrupo      = $oDaoCorrenteGrupo->sql_query_file(null,"*",null,"k105_corgrupo = ".$this->getCodigoGrupoCorrente());
       $rsCorGrupo        = $oDaoCorrenteGrupo->sql_record($sSqlCorgrupo);
       if ($oDaoCorrenteGrupo->numrows == 0) {
 
         throw new Exception("Não Foi possivel encontrar grupo de lancamentos.");
       }
-      $oDaoConlancamCorrente = db_utils::getDao("conlancamcorgrupocorrente");
+      $oDaoConlancamCorrente = new cl_conlancamcorgrupocorrente;
       $oDaoConlancamCorrente->c23_conlancam        = $this->iCodLanc;
       $oDaoConlancamCorrente->c23_corgrupocorrente = db_utils::fieldsMemory($rsCorGrupo,0)->k105_sequencial;
       $oDaoConlancamCorrente->incluir(null);
-
     }
 
     $lPrestacaoConta = false;
-    $oEmpenhoFinanceiro = new EmpenhoFinanceiro($oDadosOrdem->e60_numemp);
+    $oEmpenhoFinanceiro = EmpenhoFinanceiroRepository::getEmpenhoFinanceiroPorNumero($oDadosOrdem->e60_numemp);
     if (USE_PCASP) {
       $lPrestacaoConta    = $oEmpenhoFinanceiro->isPrestacaoContas();
     }
@@ -646,7 +764,7 @@ class ordemPagamento {
 
       $oEventoContabilPrestacaoConta     = new EventoContabil(90, $this->iAnoUsu);
       $oLancamentoAuxiliarPrestacaoConta = new LancamentoAuxiliarEmpenho();
-      $oLancamentoAuxiliarPrestacaoConta->setObservacaoHistorico("Lançamento de prestação de contas.");
+            $oLancamentoAuxiliarPrestacaoConta->setObservacaoHistorico(self::COMPLEMENTO);
       $oLancamentoAuxiliarPrestacaoConta->setFavorecido($oEmpenhoFinanceiro->getFornecedor()->getCodigo());
       $oLancamentoAuxiliarPrestacaoConta->setCodigoElemento($oElemento->e64_codele);
       $oLancamentoAuxiliarPrestacaoConta->setCodigoDotacao($oDadosOrdem->e60_coddot);
@@ -665,7 +783,7 @@ class ordemPagamento {
      */
 
     $nValorPagoTotalOrdem = $this->getValorPago();
-    require_once("model/retencaoNota.model.php");
+    require_once(modification("model/retencaoNota.model.php"));
     if ($oDadosOrdem->e69_codnota != "") {
 
       $dtSessao               = date("Y-m-d");
@@ -673,185 +791,242 @@ class ordemPagamento {
       if ($this->getValorPago() > 0) {
         $lAtualizaObjetoRetorno = false;
       }
-      $oRetencaoNota        = new retencaoNota($oDadosOrdem->e69_codnota);
+      $oRetencaoNota        = new \retencaoNota($oDadosOrdem->e69_codnota);
       $nValorTotalRetencoes = $oRetencaoNota->getValorRetencaoMovimento($this->getMovimentoAgenda(),false,
                                                                         $this->dtDataUsu );
       $nValorPagoTotalOrdem += $nValorTotalRetencoes;
-      if ($nValorTotalRetencoes > 0) {
+      if (APROPRIACAO_RETENCAO && !$oEmpenhoFinanceiro->isFolhaPagamento()) {
 
-        $oRetencaoNota->setINotaLiquidacao($oDadosOrdem->e50_codord);
-        $sInfoRetencao = "";
-        $oRetencaoNota->setCodigoMovimento($this->getMovimentoAgenda());
-        $aRetencoes    = $oRetencaoNota->getRetencoesFromDB($oDadosOrdem->e50_codord, false);
-        foreach ($aRetencoes as $oRetencao) {
+          $sIpUsuario    = db_getsession("DB_ip");
+          //rotina que verifica se o ip do usuario irá imprimir autenticar ou naum ira fazer nada
+          $oDaoAutentica   = new cl_cfautent;
+          $rsTipoAutentica = $oDaoAutentica->sql_record(
+              $oDaoAutentica->sql_query_file(null, "k11_tipautent",
+                  '', "k11_ipterm = '{$sIpUsuario}'
+          and k11_instit = ".db_getsession("DB_instit")));
+          if ($oDaoAutentica->numrows > 0) {
+              $this->oAutentica = db_utils::fieldsMemory($rsTipoAutentica, 0);
+          } else {
 
-          $sInfoRetencao .= "Referente a {$oRetencao->e21_descricao} no valor ".db_formatar($oRetencao->e23_valorretencao,"f");
-          $sInfoRetencao .= " da Nota {$oDadosOrdem->e69_numero}\n";
-
-        }
-
-        /*
-         *  Fazemos o lançamento contabil do valor total das retenções
-         */
-
-        $this->setValorPago($nValorTotalRetencoes);
-        $this->setCheque("");
-        $this->setChequeAgenda("");
-        $oLancam = new LancamentoContabil(
-                                          $iCodDoc,
-                                          $this->iAnoUsu,
-                                          $this->dtDataUsu,
-                                          $this->getValorPago()
-                                         );
-        $oLancam->setCgm($oDadosOrdem->e60_numcgm);
-        $oLancam->setComplemento($sInfoRetencao);
-        $oLancam->setEmpenho($oDadosOrdem->e60_numemp, $oDadosOrdem->e60_anousu, $oDadosOrdem->e60_codcom);
-        $oLancam->setElemento($oElemento->e64_codele);
-        $oLancam->setOrdemPagamento($oDadosOrdem->e50_codord);
-        $oLancam->setReduz($oSaltes->k13_reduz);
-        if ($oDadosOrdem->e60_anousu == $this->iAnoUsu) {
-
-          $sSqlSaldoDot   = "select fc_lancam_dotacao({$oDadosOrdem->e60_coddot},";
-          $sSqlSaldoDot  .= "                         '{$this->dtDataUsu}',";
-          $sSqlSaldoDot  .= "                          {$iCodDoc},";
-          $sSqlSaldoDot  .= $this->getValorPago().") as dotacao";
-          $rsDotacaoSaldo = db_query($sSqlSaldoDot);
-          $oSaldoDot      = db_utils::fieldsMemory($rsDotacaoSaldo, 0);
-          if (substr($oSaldoDot->dotacao, 0, 1) == 0) {
-
-            throw new exception("Erro na atualização do orçamento \\n ".substr($oSaldoDot->dotacao, 1));
-            return false;
-
+              $sErroMsg = "Cadastre o ip {$sIpUsuario} como um caixa.";
+              throw new exception($sErroMsg);
           }
-          $oLancam->setDotacao($oDadosOrdem->e60_coddot);
-        }
-        $oLancam->salvar();
-        if ($this->iCodLanc == "") {
-          $this->iCodLanc = $oLancam->getCodigoLancamento();
-        }
-        $this->iContaRP = $oLancam->iContaEmp;
 
-        /*
-         * Verificamos se nao existe uma conta de recurso livre vinculado com a conta.
-         * caso existir, devemos realizar a autenticaççao do recibo nessa conta,
-         * e criar um slip para esse movimetno., creditando esse valor contra a conta
-         * pagadora do empenho.
-         */
-        //Autenticamos como recolhimento de retencao
-        $this->autenticar(2, self::AUTENTICAR, $lAtualizaObjetoRetorno);
-        $oDaoSaltesContapartida = db_utils::getDao("saltescontrapartida");
-        require_once("std/db_stdClass.php");
-        $oInstit = db_stdClass::getDadosInstit();
-        $sSqlContrapartida      = $oDaoSaltesContapartida->sql_query(null,"*", null, "k103_saltes = ".$this->getConta());
-        $rsContrapartida        = $oDaoSaltesContapartida->sql_record($sSqlContrapartida);
-        if ($oDaoSaltesContapartida->numrows > 0 && $oInstit->prefeitura = "t") {
+        $retornoAutenticacao =  $this->apropriarRetencoes($oEmpenhoFinanceiro);
+        if ($lAtualizaObjetoRetorno) {
+            $this->sRetornoAutentica = $retornoAutenticacao;
+        }
 
-          $oContaLivre = db_utils::fieldsMemory($rsContrapartida, 0);
-          $oDaoEmpAgeSlip = db_utils::getDao("empagemovslips");
-          $oDaoEmpAgeSlip->k107_data       = $this->dtDataUsu;
-          $oDaoEmpAgeSlip->k107_empagemov  = $this->getMovimentoAgenda();
-          $oDaoEmpAgeSlip->k107_valor      = $this->getValorPago();
-          $oDaoEmpAgeSlip->k107_ctadebito  = $oContaLivre->k103_contrapartida;
-          $oDaoEmpAgeSlip->k107_ctacredito = $oContaLivre->k103_saltes;
-          $oDaoEmpAgeSlip->incluir(null);
-          if ($oDaoEmpAgeSlip->erro_status == 0) {
-            throw new Exception("Erro Ao incluir informacoes do slip.\n Processamento cancelado.");
+      }  else {
+
+
+          if ($nValorTotalRetencoes > 0) {
+
+              $oRetencaoNota->setINotaLiquidacao($oDadosOrdem->e50_codord);
+              $sInfoRetencao = "";
+              $oRetencaoNota->setCodigoMovimento($this->getMovimentoAgenda());
+              $aRetencoes = $oRetencaoNota->getRetencoesFromDB($oDadosOrdem->e50_codord, false);
+
+              foreach ($aRetencoes as $oRetencao) {
+
+                  $sInfoRetencao .= "Referente a {$oRetencao->e21_descricao} no valor " . db_formatar($oRetencao->e23_valorretencao,
+                          "f");
+                  $sInfoRetencao .= " da Nota {$oDadosOrdem->e69_numero}\n";
+
+
+              }
+
+              /*
+               *  Fazemos o lançamento contabil do valor total das retenções
+               */
+
+              $this->setValorPago($nValorTotalRetencoes);
+              $this->setCheque("");
+              $this->setChequeAgenda("");
+              $oLancam = new LancamentoContabil(
+                  $iCodDoc,
+                  $this->iAnoUsu,
+                  $this->dtDataUsu,
+                  $this->getValorPago()
+              );
+              $oLancam->setCgm($oDadosOrdem->e60_numcgm);
+              $oLancam->setComplemento($sInfoRetencao);
+              $oLancam->setEmpenho($oDadosOrdem->e60_numemp, $oDadosOrdem->e60_anousu, $oDadosOrdem->e60_codcom);
+              $oLancam->setElemento($oElemento->e64_codele);
+              $oLancam->setOrdemPagamento($oDadosOrdem->e50_codord);
+              $oLancam->setReduz($oSaltes->k13_reduz);
+              if ($oDadosOrdem->e60_anousu == $this->iAnoUsu) {
+
+                  $sSqlSaldoDot = "select fc_lancam_dotacao({$oDadosOrdem->e60_coddot},";
+                  $sSqlSaldoDot .= "                         '{$this->dtDataUsu}',";
+                  $sSqlSaldoDot .= "                          {$iCodDoc},";
+                  $sSqlSaldoDot .= $this->getValorPago() . ") as dotacao";
+                  $rsDotacaoSaldo = db_query($sSqlSaldoDot);
+                  $oSaldoDot = db_utils::fieldsMemory($rsDotacaoSaldo, 0);
+                  if (substr($oSaldoDot->dotacao, 0, 1) == 0) {
+
+                      throw new exception("Erro na atualização do orçamento \\n " . substr($oSaldoDot->dotacao, 1));
+                      return false;
+
+                  }
+                  $oLancam->setDotacao($oDadosOrdem->e60_coddot);
+              }
+              $oLancam->salvar();
+              if ($this->iCodLanc == "") {
+                  $this->iCodLanc = $oLancam->getCodigoLancamento();
+              }
+              $this->iContaRP = $oLancam->iContaEmp;
+
+              /*
+               * Verificamos se nao existe uma conta de recurso livre vinculado com a conta.
+               * caso existir, devemos realizar a autenticaççao do recibo nessa conta,
+               * e criar um slip para esse movimetno., creditando esse valor contra a conta
+               * pagadora do empenho.
+               */
+              //Autenticamos como recolhimento de retencao
+              $this->autenticar(2, self::AUTENTICAR, $lAtualizaObjetoRetorno);
+              $oDaoSaltesContapartida = new cl_saltescontrapartida;
+              require_once(modification("std/db_stdClass.php"));
+              $oInstit = db_stdClass::getDadosInstit();
+              $sSqlContrapartida = $oDaoSaltesContapartida->sql_query(null, "*", null,
+                  "k103_saltes = " . $this->getConta());
+              $rsContrapartida = $oDaoSaltesContapartida->sql_record($sSqlContrapartida);
+              if ($oDaoSaltesContapartida->numrows > 0 && $oInstit->prefeitura = "t") {
+
+                  $oContaLivre = db_utils::fieldsMemory($rsContrapartida, 0);
+                  $oDaoEmpAgeSlip = new cl_empagemovslips;
+                  $oDaoEmpAgeSlip->k107_data = $this->dtDataUsu;
+                  $oDaoEmpAgeSlip->k107_empagemov = $this->getMovimentoAgenda();
+                  $oDaoEmpAgeSlip->k107_valor = $this->getValorPago();
+                  $oDaoEmpAgeSlip->k107_ctadebito = $oContaLivre->k103_contrapartida;
+                  $oDaoEmpAgeSlip->k107_ctacredito = $oContaLivre->k103_saltes;
+                  $oDaoEmpAgeSlip->incluir(null);
+                  if ($oDaoEmpAgeSlip->erro_status == 0) {
+                      throw new Exception("Erro Ao incluir informacoes do slip.\n Processamento cancelado.");
+                  }
+              }
+
+              /**
+               * incluimos o lancamento contabil no grupo de autenticações
+               */
+              $oDaoCorrenteGrupo = new cl_corgrupocorrente;
+              $sSqlCorgrupo = $oDaoCorrenteGrupo->sql_query_file(null,
+                  "*",
+                  "k105_autent desc limit 1",
+                  "k105_corgrupo = " . $this->getCodigoGrupoCorrente());
+              $rsCorGrupo = $oDaoCorrenteGrupo->sql_record($sSqlCorgrupo);
+              if ($oDaoCorrenteGrupo->numrows == 0) {
+
+                  throw new Exception("Não Foi possivel encontrar grupo de lancamentos.");
+              }
+              $oDaoConlancamCorrente = new cl_conlancamcorgrupocorrente;
+              $oDaoConlancamCorrente->c23_conlancam = $oLancam->getCodigoLancamento();
+              $oDaoConlancamCorrente->c23_corgrupocorrente = db_utils::fieldsMemory($rsCorGrupo,
+                  0)->k105_sequencial;
+              $oDaoConlancamCorrente->incluir(null);
+
+              $oDaoEmpenho = new cl_empempenho;
+              $oDaoEmpenho->e60_numemp = $oDadosOrdem->e60_numemp;
+              $oDaoEmpenho->e60_vlrpag = $nValorPagoTotal + $this->getValorPago();
+              $oDaoEmpenho->alterar($oDadosOrdem->e60_numemp);
+              if ($oDaoEmpenho->erro_status == 0) {
+
+                  $sErroMsg = "Erro [1] - Erro ao pagar empenho.\n";
+                  $sErroMsg .= "Erro Técnico: {$oDaoEmpenho->erro_msg}";
+                  throw new exception ($sErroMsg);
+                  return false;
+
+              }
+
+              $oDaoEmpElemento = new cl_empelemento;
+              /*
+               * Verificamos se o empenho possui mais de um elemento.
+               * Caso houver, devemos cancelar o processamento, pois
+               * um empenho nao pode ter mais de um elemento.
+               */
+
+              $rsElemento = $oDaoEmpElemento->sql_record($oDaoEmpElemento->sql_query_file($oDadosOrdem->e60_numemp));
+              if ($oDaoEmpElemento->numrows > 1) {
+
+                  $sErroMsg = "Erro [2] - Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu}";
+                  $sErroMsg .= "Possui dois elementos. Processo Cancelado.";
+                  throw new exception($sErroMsg);
+                  return false;
+
+              }
+              $oElemento = db_utils::fieldsMemory($rsElemento, 0);
+              $oDaoEmpElemento->e64_numemp = $oDadosOrdem->e60_numemp;
+              $oDaoEmpElemento->e64_codele = $oElemento->e64_codele;
+              $oDaoEmpElemento->e64_vlrpag = $nValorPagoTotal + $this->getValorPago();
+              $oDaoEmpElemento->alterar($oDadosOrdem->e60_numemp, $oElemento->e64_codele);
+              if ($oDaoEmpElemento->erro_status == 0) {
+
+                  $sErroMsg = "Erro [3] - Erro ao pagar empenho.\n";
+                  $sErroMsg .= "Erro Técnico: {$oDaoEmpElemento->erro_msg}";
+                  throw new exception ($sErroMsg);
+                  return false;
+
+              }
+
+              $oDaoPagOrdemEle = new cl_pagordemele;
+              $rsElementoOrdem = $oDaoPagOrdemEle->sql_record(
+                  $oDaoPagOrdemEle->sql_query_file($oDadosOrdem->e50_codord, $oDadosOrdem->e53_codele));
+              if ($oDaoPagOrdemEle->numrows == 0) {
+
+                  $sErroMsg = "Erro [4] - Ordem de pagamento {$oDadosOrdem->e50_codord}";
+                  $sErroMsg .= "não possui elemento cadastrado. Operação cancelada";
+                  throw new exception($sErroMsg);
+                  return false;
+              }
+              $oPagOrdemEle = db_utils::fieldsMemory($rsElementoOrdem, 0);
+              $oDaoPagOrdemEle->e53_vlrpag = $oPagOrdemEle->e53_vlrpag + $this->getValorPago();
+              $oDaoPagOrdemEle->e53_codele = $oDadosOrdem->e53_codele;
+              $oDaoPagOrdemEle->e53_codord = $oDadosOrdem->e50_codord;
+              $oDaoPagOrdemEle->alterar($oDadosOrdem->e50_codord);
+              if ($oDaoPagOrdemEle->erro_status == 0) {
+
+                  $sErroMsg = "Erro [5] - Erro ao pagar empenho.\n";
+                  $sErroMsg .= "Erro Técnico: {$oDaoPagOrdemEle->erro_msg}";
+                  throw new exception ($sErroMsg);
+                  return false;
+
+              }
+
+              /**
+               * baixamos as Retencoes.
+               */
+              $oRetencaoNota->setGrupoAutenticacao($this->getCodigoGrupoCorrente());
+              $oRetencaoNota->setConta($this->getConta());
+              $oRetencaoNota->setDataBase($this->dtDataUsu);
+              $oRetencaoNota->setNumCgm($oDadosOrdem->z01_numcgm);
+              $oRetencaoNota->baixarRetencoes($aRetencoes);
+
+              /*
+               * verifica se é prestação de conta e possui retenção
+               * para realizar o lancamento de suprimento de fundo para a retenção
+               */
+
+              if ($this->getValorPago() > 0 && $lPrestacaoConta && $nValorTotalRetencoes > 0) {
+
+                  // Valida se exite a ContaCorrenteDetalhe, caso nao exista, cria o objeto.
+                  if (empty($oContaCorrenteDetalhe)) {
+                      $oContaCorrenteDetalhe = new ContaCorrenteDetalhe();
+                      $oContaCorrenteDetalhe->setCredor($oEmpenhoFinanceiro->getCgm());
+                  }
+                  $oEventoContabilRetencao = new EventoContabil(90, $this->iAnoUsu);
+                  $oLancamentoAuxiliarRetencao = new LancamentoAuxiliarEmpenho();
+                  $oLancamentoAuxiliarRetencao->setObservacaoHistorico("Lançamento da retenção de prestação de contas.");
+                  $oLancamentoAuxiliarRetencao->setFavorecido($oEmpenhoFinanceiro->getFornecedor()->getCodigo());
+                  $oLancamentoAuxiliarRetencao->setCodigoElemento($oElemento->e64_codele);
+                  $oLancamentoAuxiliarRetencao->setCodigoDotacao($oDadosOrdem->e60_coddot);
+                  $oLancamentoAuxiliarRetencao->setCaracteristicaPeculiar($oEmpenhoFinanceiro->getCaracteristicaPeculiar());
+                  $oLancamentoAuxiliarRetencao->setEmpenhoFinanceiro($oEmpenhoFinanceiro);
+                  $oLancamentoAuxiliarRetencao->setNumeroEmpenho($oDadosOrdem->e60_numemp);
+                  $oLancamentoAuxiliarRetencao->setValorTotal($nValorTotalRetencoes);
+                  $oLancamentoAuxiliarRetencao->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
+                  $oEventoContabilRetencao->executaLancamento($oLancamentoAuxiliarRetencao);
+              }
           }
-        }
-
-        /**
-         * incluimos o lancamento contabil no grupo de autenticações
-         */
-        $oDaoCorrenteGrupo = db_utils::getDao("corgrupocorrente");
-        $sSqlCorgrupo      = $oDaoCorrenteGrupo->sql_query_file(null,
-                                                                "*",
-                                                                "k105_autent desc limit 1",
-                                                                "k105_corgrupo = ".$this->getCodigoGrupoCorrente());
-        $rsCorGrupo        = $oDaoCorrenteGrupo->sql_record($sSqlCorgrupo);
-        if ($oDaoCorrenteGrupo->numrows == 0) {
-
-          throw new Exception("Não Foi possivel encontrar grupo de lancamentos.");
-        }
-        $oDaoConlancamCorrente = db_utils::getDao("conlancamcorgrupocorrente");
-        $oDaoConlancamCorrente->c23_conlancam        = $oLancam->getCodigoLancamento();
-        $oDaoConlancamCorrente->c23_corgrupocorrente = db_utils::fieldsMemory($rsCorGrupo,0)->k105_sequencial;
-        $oDaoConlancamCorrente->incluir(null);
-
-        $oDaoEmpenho             = db_utils::getDao("empempenho");
-        $oDaoEmpenho->e60_numemp = $oDadosOrdem->e60_numemp;
-        $oDaoEmpenho->e60_vlrpag = $nValorPagoTotal+$this->getValorPago();
-        $oDaoEmpenho->alterar($oDadosOrdem->e60_numemp);
-        if ($oDaoEmpenho->erro_status == 0) {
-
-          $sErroMsg  = "Erro [1] - Erro ao pagar empenho.\n";
-          $sErroMsg .= "Erro Técnico: {$oDaoEmpenho->erro_msg}";
-          throw new exception ($sErroMsg);
-          return false;
-
-        }
-        $oDaoEmpElemento = db_utils::getDao("empelemento");
-
-        /*
-         * Verificamos se o empenho possui mais de um elemento.
-         * Caso houver, devemos cancelar o processamento, pois
-         * um empenho nao pode ter mais de um elemento.
-         */
-
-        $rsElemento = $oDaoEmpElemento->sql_record($oDaoEmpElemento->sql_query_file($oDadosOrdem->e60_numemp));
-        if ($oDaoEmpElemento->numrows > 1) {
-
-          $sErroMsg  = "Erro [2] - Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu}";
-          $sErroMsg .= "Possui dois elementos. Processo Cancelado.";
-          throw new exception($sErroMsg);
-          return false;
-
-        }
-        $oElemento                   = db_utils::fieldsMemory($rsElemento, 0);
-        $oDaoEmpElemento->e64_numemp = $oDadosOrdem->e60_numemp;
-        $oDaoEmpElemento->e64_codele = $oElemento->e64_codele;
-        $oDaoEmpElemento->e64_vlrpag = $nValorPagoTotal+$this->getValorPago();
-        $oDaoEmpElemento->alterar($oDadosOrdem->e60_numemp, $oElemento->e64_codele);
-        if ($oDaoEmpElemento->erro_status == 0) {
-
-          $sErroMsg  = "Erro [3] - Erro ao pagar empenho.\n";
-          $sErroMsg .= "Erro Técnico: {$oDaoEmpElemento->erro_msg}";
-          throw new exception ($sErroMsg);
-          return false;
-
-        }
-
-        $oDaoPagOrdemEle = db_utils::getDao("pagordemele");
-        $rsElementoOrdem = $oDaoPagOrdemEle->sql_record(
-        $oDaoPagOrdemEle->sql_query_file($oDadosOrdem->e50_codord, $oDadosOrdem->e53_codele));
-        if ($oDaoPagOrdemEle->numrows == 0) {
-
-          $sErroMsg  = "Erro [4] - Ordem de pagamento {$oDadosOrdem->e50_codord}";
-          $sErroMsg .= "não possui elemento cadastrado. Operação cancelada";
-          throw new exception($sErroMsg);
-          return false;
-        }
-        $oPagOrdemEle                = db_utils::fieldsMemory($rsElementoOrdem, 0);
-        $oDaoPagOrdemEle->e53_vlrpag = $oPagOrdemEle->e53_vlrpag+$this->getValorPago();
-        $oDaoPagOrdemEle->e53_codele = $oDadosOrdem->e53_codele;
-        $oDaoPagOrdemEle->e53_codord = $oDadosOrdem->e50_codord;
-        $oDaoPagOrdemEle->alterar($oDadosOrdem->e50_codord);
-        if ($oDaoPagOrdemEle->erro_status == 0) {
-
-          $sErroMsg  = "Erro [5] - Erro ao pagar empenho.\n";
-          $sErroMsg .= "Erro Técnico: {$oDaoPagOrdemEle->erro_msg}";
-          throw new exception ($sErroMsg);
-          return false;
-
-        }
-
-        /**
-         * baixamos as Retencoes.
-         */
-         $oRetencaoNota->setGrupoAutenticacao($this->getCodigoGrupoCorrente());
-         $oRetencaoNota->setConta($this->getConta());
-         $oRetencaoNota->setDataBase($this->dtDataUsu);
-         $oRetencaoNota->setNumCgm($oDadosOrdem->z01_numcgm);
-         $oRetencaoNota->baixarRetencoes($aRetencoes);
 
       }
     }
@@ -867,7 +1042,8 @@ class ordemPagamento {
    *
    * @param integer $iCodigoGrupo
    */
-  function setCodigoGrupoCorrente($iCodigoGrupo) {
+    function setCodigoGrupoCorrente($iCodigoGrupo)
+    {
     $this->iCodigoGrupo = $iCodigoGrupo;
   }
 
@@ -876,7 +1052,8 @@ class ordemPagamento {
    *
    * @return integer
    */
-  function getCodigoGrupoCorrente() {
+    function getCodigoGrupoCorrente()
+    {
     return $this->iCodigoGrupo;
   }
 
@@ -886,7 +1063,8 @@ class ordemPagamento {
    * @param integer $iCodigoTipoGrupo Código do tipo
    * @return unknown
    */
-  function autenticar($iCodigoTipoGrupo, $lAutenticar, $lAtualizarObjetoAutenticacao= true) {
+    function autenticar($iCodigoTipoGrupo, $lAutenticar, $lAtualizarObjetoAutenticacao = true)
+    {
 
     $iCodigogrupo  = $this->getCodigoGrupoCorrente();
     if ($iCodigogrupo == null) {
@@ -896,10 +1074,10 @@ class ordemPagamento {
     $iCodigoAgenda = $this->getMovimentoAgenda();
     $sIpUsuario    = db_getsession("DB_ip");
     //rotina que verifica se o ip do usuario irá imprimir autenticar ou naum ira fazer nada
-    $oDaoAutentica   = db_utils::getDao("cfautent");
+    $oDaoAutentica   = new cl_cfautent;
     $rsTipoAutentica = $oDaoAutentica->sql_record(
-    $oDaoAutentica->sql_query_file(null, "k11_tipautent",
-          '', "k11_ipterm = '{$sIpUsuario}'
+      $oDaoAutentica->sql_query_file(null, "k11_tipautent",
+                                     '', "k11_ipterm = '{$sIpUsuario}'
           and k11_instit = ".db_getsession("DB_instit")));
     if ($oDaoAutentica->numrows > 0) {
       $this->oAutentica = db_utils::fieldsMemory($rsTipoAutentica, 0);
@@ -925,13 +1103,13 @@ class ordemPagamento {
 
       if ($oDadosOrdem->e60_anousu < $this->iAnoUsu) {
 
-          /*RESTO A PAGAR*/
-       if ($this->iContaRP == ""){
+        /*RESTO A PAGAR*/
+        if ($this->iContaRP == ""){
 
-         throw new exception("Verifique o tipo do RP e o cadastro das transações !");
-         return false;
+          throw new exception("Verifique o tipo do RP e o cadastro das transações !");
+          return false;
 
-       } else {
+        } else {
 
           $sSqlAut  = "select {$sExecFuncao}({$oDadosOrdem->e60_numemp},";
           $sSqlAut .= $this->getConta().", ";
@@ -962,10 +1140,10 @@ class ordemPagamento {
       $rsAut     = $this->oDaoPagOrdem->sql_record($sSqlAut);
       if (!$rsAut) {
 
-         $sErroMsg  = "Erro na autenticação do empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu}.\n";
-         $sErroMsg .= "Contate suporte.".pg_last_error();
-         throw new exception($sErroMsg);
-         return false;
+        $sErroMsg  = "Erro na autenticação do empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu}.\n";
+        $sErroMsg .= "Contate suporte.".pg_last_error();
+        throw new exception($sErroMsg);
+        return false;
 
       } else {
 
@@ -987,10 +1165,10 @@ class ordemPagamento {
 
   /**
    * Retorna o tipo de autenticação
-   *
-   * @return unknown
+   * @return integer
    */
-  function getTipoAutenticacao() {
+    function getTipoAutenticacao()
+    {
 
     return $this->iTipoAutentica;
   }
@@ -1000,15 +1178,36 @@ class ordemPagamento {
    *
    * @param integer $iTipo
    */
-  function setTipoAutentica($iTipo) {
+    function setTipoAutentica($iTipo)
+    {
     $this->iTipoAutentica = $iTipo;
   }
 
   /**
-   * Realizar o estorno do pagamento da ordem de compra;.
-   * @return void;
+   * estorna os slips gerados automaticamente
    */
-  function estornarOrdem($iCaracteristicaPeculiar = null) {
+  public function estornarSlipsAutomaticos()
+  {
+      $aSlips = $this->getSlipsGeradosAutomaticamente(2);
+      foreach($aSlips as $iSlipAuto) {
+
+        $smg = "Estorno de Slip Gerado automaticamente da OP {$this->iCodOrdem}";
+        $oTransferenciaSlipAutomatico = TransferenciaFactory::getInstance( null, $iSlipAuto);
+        $oTransferenciaSlipAutomatico->anular($smg);
+        $oTransferenciaSlipAutomatico->executarLancamentoContabil(null, true);
+      }
+
+  }
+
+  /**
+   * @param string $iCaracteristicaPeculiar
+   *
+   * @return bool
+   * @throws \BusinessException
+   * @throws \exception
+   */
+    public function estornarOrdem($iCaracteristicaPeculiar = null )
+    {
 
     //Testa se existe uma transacao aberta com o banco
     if (!db_utils::inTransaction()) {
@@ -1021,7 +1220,7 @@ class ordemPagamento {
      * Somente podemos estornar, se a data do estorno for maior ou igual a data da nota de liquidacao;
      */
     if (db_strtotime($this->dtDataUsu) < db_strtotime($oDadosOrdem->e50_data)
-        || $this->iAnoUsu < $oDadosOrdem->e50_anousu ) {
+      || $this->iAnoUsu < $oDadosOrdem->e50_anousu ) {
 
       $sMsg = "Data inválida. Data do estorno menor que a data da nota de liquidação.";
       throw new exception($sMsg);
@@ -1044,7 +1243,34 @@ class ordemPagamento {
 
       //verificamos se está na empresto. geramos um estorno pagamento de RP não processado.
       if ($this->isRestoPagar($oDadosOrdem->e60_numemp)) {
+
         $iCodDoc = 38; //rp não processado
+
+        $sqlBuscaPagamento = "
+           select conlancam.*
+             from conlancam
+                  inner join conlancamord on conlancamord.c80_codlan = conlancam.c70_codlan
+                  inner join conlancamdoc on conlancamdoc.c71_codlan = conlancamord.c80_codlan
+            where conlancamord.c80_codord = {$this->iCodOrdem}
+              and conlancamdoc.c71_coddoc in (35)
+              and conlancam.c70_valor = {$this->nValorPago}
+            order by c70_codlan desc limit 1;
+        ";
+        $resBuscaPagamento = db_query($sqlBuscaPagamento);
+        if (!$resBuscaPagamento) {
+          throw new Exception("Ocorreu um erro ao buscar o lançamento contábil para o pagamento que está sendo estornado.");
+        }
+
+        if (pg_num_rows($resBuscaPagamento) === 0){
+           $iCodDoc = 38;
+        } else {
+
+          $stdLancamento = db_utils::fieldsMemory($resBuscaPagamento, 0);
+          if ($oDadosOrdem->e50_anousu < $stdLancamento->c70_anousu) {
+            $iCodDoc = 36;
+          }
+        }
+
       } else {
 
         $sMsg  = "Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu} ";
@@ -1069,12 +1295,13 @@ class ordemPagamento {
       }
     }
     //Caso nao esteje como nota de liquidação, devemos setar o codigo do documento como 35;
-    $oDaoEmpparametro = db_utils::getDao("empparametro");
+    $oDaoEmpparametro = new cl_empparametro;
     $rsParametro      = $oDaoEmpparametro->sql_record($oDaoEmpparametro->sql_query_file($this->iAnoUsu));
     if ($oDaoEmpparametro->numrows > 0 ) {
 
       $oParametro = db_utils::fieldsMemory($rsParametro,0);
       if ($oParametro->e30_notaliquidacao == '') {
+
         if ($oDadosOrdem->e60_anousu < $this->iAnoUsu) {
           $iCodDoc = 36;
         } else {
@@ -1105,7 +1332,7 @@ class ordemPagamento {
      * alteramos as tabelas necessárias (empempenho, empelemento, pagordemele)
      */
 
-    $oDaoEmpenho             = db_utils::getDao("empempenho");
+    $oDaoEmpenho             = new cl_empempenho;
     $oDaoEmpenho->e60_numemp = $oDadosOrdem->e60_numemp;
     $oDaoEmpenho->e60_vlrpag = "$nSaldoEstornar";
     $oDaoEmpenho->alterar($oDadosOrdem->e60_numemp);
@@ -1117,7 +1344,7 @@ class ordemPagamento {
       throw new exception ($sErroMsg);
     }
 
-    $oDaoEmpElemento = db_utils::getDao("empelemento");
+    $oDaoEmpElemento = new cl_empelemento;
     /*
      * Verificamos se o empenho possui mais de um elemento.
      * Caso houver, devemos cancelar o processamento, pois
@@ -1143,9 +1370,9 @@ class ordemPagamento {
       throw new exception ($sErroMsg);
     }
 
-    $oDaoPagOrdemEle = db_utils::getDao("pagordemele");
+    $oDaoPagOrdemEle = new cl_pagordemele;
     $rsElementoOrdem = $oDaoPagOrdemEle->sql_record(
-        $oDaoPagOrdemEle->sql_query_file($oDadosOrdem->e50_codord, $oDadosOrdem->e53_codele));
+      $oDaoPagOrdemEle->sql_query_file($oDadosOrdem->e50_codord, $oDadosOrdem->e53_codele));
     if ($oDaoPagOrdemEle->numrows == 0) {
 
       $sErroMsg  = "Erro [4] - Ordem de pagamento {$oDadosOrdem->e50_codord}";
@@ -1166,8 +1393,8 @@ class ordemPagamento {
       throw new exception ($sErroMsg);
     }
     //Iniciamos os lancamentos Contabeis;
-    require_once("classes/lancamentoContabil.model.php");
-    $oDaoSaltes = db_utils::getDao("saltes");
+    require_once(modification("classes/lancamentoContabil.model.php"));
+    $oDaoSaltes = new cl_saltes;
     $rsSaltes   = $oDaoSaltes->sql_record($oDaoSaltes->sql_query_file($this->getConta(), "k13_reduz"));
     if ($oDaoSaltes->numrows > 0) {
       $oSaltes = db_utils::fieldsMemory($rsSaltes, 0);
@@ -1176,11 +1403,11 @@ class ordemPagamento {
     }
 
     $oLancam = new LancamentoContabil(
-                                      $iCodDoc,
-                                      $this->iAnoUsu,
-                                      $this->dtDataUsu,
-                                      $this->getValorPago()
-                                     );
+      $iCodDoc,
+      $this->iAnoUsu,
+      $this->dtDataUsu,
+      $this->getValorPago()
+    );
     $oLancam->setCgm($oDadosOrdem->e60_numcgm);
     $oLancam->setEmpenho($oDadosOrdem->e60_numemp, $oDadosOrdem->e60_anousu, $oDadosOrdem->e60_codcom);
     $oLancam->setElemento($oElemento->e64_codele);
@@ -1222,7 +1449,7 @@ class ordemPagamento {
        * 91 - ESTORNO SUPRIMENTO DE FUNDOS
        * 92 - DEVOLUCAO DE ADIANTAMENTO
        */
-      $oDaoEmpPresta = db_utils::getDao("emppresta");
+      $oDaoEmpPresta = new cl_emppresta;
       $sSqlEmpPresta = $oDaoEmpPresta->sql_query_file( null,
                                                        "e45_conferido",
                                                        null,
@@ -1259,116 +1486,108 @@ class ordemPagamento {
     // Fim dos lancamento de prestacao de conta
 
 
-    $oDaoCorGrupo   = db_utils::getDao("corgrupo");
+    $oDaoCorGrupo   = new cl_corgrupo;
     $oDaoCorGrupo->k104_tipo = 1;
     $oDaoCorGrupo->incluir(null);
-    if ($oDaoCorGrupo->erro_status == 0) {
-
+    if ($oDaoCorGrupo->erro_status == "0") {
       throw new exception("Erro ao Incluir grupo de autenticação!");
     }
     $this->setCodigoGrupoCorrente($oDaoCorGrupo->k104_sequencial);
     $this->autenticar(4, self::ESTORNAR);
-    $oDaoCorrenteGrupo = db_utils::getDao("corgrupocorrente");
+    $oDaoCorrenteGrupo = new cl_corgrupocorrente();
     $sSqlCorgrupo      = $oDaoCorrenteGrupo->sql_query_file(null,"*",
                                                             null,
                                                             "k105_corgrupo = ".$this->getCodigoGrupoCorrente()."
                                                             and k105_corgrupotipo = 4");
     $rsCorGrupo        = $oDaoCorrenteGrupo->sql_record($sSqlCorgrupo);
     if ($oDaoCorrenteGrupo->numrows == 0) {
-
       throw new Exception("Não Foi possivel encontrar grupo de lancamentos.");
     }
-    $oDaoConlancamCorrente = db_utils::getDao("conlancamcorgrupocorrente");
+    $oDaoConlancamCorrente = new cl_conlancamcorgrupocorrente();
     $oDaoConlancamCorrente->c23_conlancam        = $this->iCodLanc;
     $oDaoConlancamCorrente->c23_corgrupocorrente = db_utils::fieldsMemory($rsCorGrupo,0)->k105_sequencial;
     $oDaoConlancamCorrente->incluir(null);
 
-    /**
-     * verificamos se há movimento setado, e o cancelamos,
-     * entao criamos um movimento novo para a ordem de pagamento
-     *
-     */
-    require_once("std/db_stdClass.php");
-    $e30_agendaautomatico = "f";
-    $aParametrosEmpenho   =  db_stdClass::getParametro("empparametro",array(db_getsession("DB_anousu")));
-    if (count($aParametrosEmpenho) > 0) {
-      $e30_agendaautomatico = $aParametrosEmpenho[0]->e30_agendaautomatico;
+    if ($oDaoConlancamCorrente->erro_status == "0") {
+      throw new Exception("Ocorreu um erro ao salvar o grupo grupo da tesouraria.");
     }
+
+
     if ($this->getMovimentoAgenda() != "null") {
 
-      if ($this->getMovimentoAgenda() != "null") {
-
-        $oDaoEmpAgeMov = db_utils::getDao("empagemov");
-        $oDaoEmpAgeMov->e81_cancelado = $this->getDataUsu();
-        $oDaoEmpAgeMov->e81_codmov    = $this->getMovimentoAgenda();
-
-
-        $oDaoEmpAgeMov->alterar($this->getMovimentoAgenda());
-
-
-
-        if ($oDaoEmpAgeMov->erro_status == 0) {
-          throw new Exception("Não Foi possivel cancelar Movimento da agenda");
-        }
-
-      }
-      $sSqlMovimento = "select e81_codmov, e81_valor
-                          from empagemov
-                               inner join empord on e82_codmov   = e81_codmov
-                               left join empagepag on e81_codmov = e85_codmov
-                               left join empagemovforma on e97_codmov = e81_codmov
-                               left join empagenotasordem on e43_empagemov = e81_codmov
-                          where e82_codord = $this->iCodOrdem
-                            and e97_codmov is null
-                            and e85_codmov is null
-                            and e43_empagemov is NULL
-                            and e81_cancelado is null
-                             order by e81_codmov";
-      $rsMovimento = db_query($sSqlMovimento);
-
-      if (pg_num_rows($rsMovimento) > 0) {
-
-        $oMovimento = db_utils::fieldsMemory($rsMovimento, 0);
-        $this->iNovoMovimento         = $oMovimento->e81_codmov;
-        $oDaoEmpAgeMov                = db_utils::getDao("empagemov");
-        $oDaoEmpAgeMov->e81_valor     = $oMovimento->e81_valor + $this->getValorPago();
-        $oDaoEmpAgeMov->e81_codmov    = $oMovimento->e81_codmov;
-
-        $oDaoEmpAgeMov->alterar($oMovimento->e81_codmov);
-
-      } else {
-
-
-        require_once("model/agendaPagamento.model.php");
-        $oAgendaPagamento = new agendaPagamento();
-        $oNovoMovimento->iCodTipo        = null;
-        $oNovoMovimento->iNumEmp         = $oDadosOrdem->e50_numemp;
-        $oNovoMovimento->nValor          = $this->getValorPago();
-        $oNovoMovimento->iCodNota        = $oDadosOrdem->e50_codord;
-        if (isset($iCaracteristicaPeculiar) && $iCaracteristicaPeculiar != null) {
-
-          $oNovoMovimento->iConcarPeculiar = $iCaracteristicaPeculiar;
-
-        }
-
-        $this->iNovoMovimento     = $oAgendaPagamento->addMovimentoAgenda(1, $oNovoMovimento);
-
+      $oDaoEmpAgeMov = new cl_empagemov;
+      $oDaoEmpAgeMov->e81_cancelado = date('Y-m-d', db_getsession('DB_datausu'));
+      $oDaoEmpAgeMov->e81_codmov    = $this->getMovimentoAgenda();
+      $oDaoEmpAgeMov->alterar($this->getMovimentoAgenda());
+      if ($oDaoEmpAgeMov->erro_status == 0) {
+        throw new Exception("Não Foi possivel cancelar Movimento da agenda");
       }
     }
+
+    $aWhere = array(
+      "e82_codord = {$this->iCodOrdem}",
+      "e97_codmov is null",
+      "e85_codmov is null",
+      "e43_empagemov is null",
+      "e81_cancelado is null",
+      "k12_sequencial is null"
+    );
+
+    $oDaoMovimentoPago = new cl_empagemov();
+    $sSqlMovimentoPago = $oDaoMovimentoPago->sql_query_movimentos_desconto("e81_codmov, e81_valor", implode(' and ', $aWhere));
+    $rsMovimento       = db_query($sSqlMovimentoPago);
+    if (!$rsMovimento) {
+      throw new Exception("Ocorreu um erro ao buscar os movimentos em aberto para pagamento.");
+    }
+
+    if (pg_num_rows($rsMovimento) > 0) {
+
+      $oMovimento = db_utils::fieldsMemory($rsMovimento, 0);
+      $this->iNovoMovimento         = $oMovimento->e81_codmov;
+      $oDaoEmpAgeMov                = new cl_empagemov;
+      $oDaoEmpAgeMov->e81_valor     = $oMovimento->e81_valor + $this->getValorPago();
+      $oDaoEmpAgeMov->e81_codmov    = $oMovimento->e81_codmov;
+      $oDaoEmpAgeMov->alterar($oMovimento->e81_codmov);
+      if ($oDaoEmpAgeMov->erro_status == "0") {
+        throw new Exception("Ocorreu um erro ao atualizar o movimento existente para pagamento.");
+      }
+
+    } else {
+
+
+      require_once(modification('model/agendaPagamento.model.php'));
+      $oAgendaPagamento = new agendaPagamento();
+      $oNovoMovimento = new stdClass();
+      $oNovoMovimento->iCodTipo        = null;
+      $oNovoMovimento->iNumEmp         = $oDadosOrdem->e50_numemp;
+      $oNovoMovimento->nValor          = $this->getValorPago();
+      $oNovoMovimento->iCodNota        = $oDadosOrdem->e50_codord;
+      if (isset($iCaracteristicaPeculiar) && $iCaracteristicaPeculiar != null) {
+        $oNovoMovimento->iConcarPeculiar = $iCaracteristicaPeculiar;
+      }
+      $this->iNovoMovimento     = $oAgendaPagamento->addMovimentoAgenda(1, $oNovoMovimento);
+    }
+
     $this->atualizarSaldoPacto($this->getValorPago()*-1, $oDadosOrdem->e69_codnota, $this->oDadosOrdem->e53_valor);
+
     return true;
   }
 
+
   /**
-   * Efetua um desconto na nota de liquidacao.
-   * faz um estorno de liquidacao, e uma anulacao.
-   * @param float $nValor valor a descontar;
+   * @param        $oNota
+   * @param        $nValor
+   * @param string $sMotivo
+   *
+   * @return bool
+   * @throws Exception
    */
-  function desconto($oNota, $nValor, $sMotivo = '') {
+    public function desconto($oNota, $nValor, $sMotivo = '')
+    {
 
     $oDadosOrdem = $this->getDadosOrdem();
 
-    $oDaoEmpord = db_utils::getDao('empord');
+    $oDaoEmpord = new cl_empord;
     $sCampos    = 'e90_cancelado, e91_ativo, e90_codgera, e91_cheque';
     $sSqlEmpord = $oDaoEmpord->sql_query_validaDescontoMovimento($oDadosOrdem->e50_codord, $sCampos);
     $rsEmpord   = $oDaoEmpord->sql_record($sSqlEmpord);
@@ -1404,7 +1623,7 @@ class ordemPagamento {
     }
 
 
-    $oDaoLancamentosAutonomos = db_utils::getDao("rhautonomolanc");
+    $oDaoLancamentosAutonomos = new cl_rhautonomolanc;
     $sSqlVerificaAutonomos    = $oDaoLancamentosAutonomos->sql_query_file(null,
                                                                           "rh89_anousu,
                                                                            rh89_mesusu,
@@ -1436,12 +1655,10 @@ class ordemPagamento {
      * Somente podemos estornar, se a data do estorno for maior ou igual a data da nota de liquidacao;
      */
     if (db_strtotime($this->dtDataUsu) < db_strtotime($oDadosOrdem->e50_data)
-        || $this->iAnoUsu < $oDadosOrdem->e50_anousu ) {
+      || $this->iAnoUsu < $oDadosOrdem->e50_anousu ) {
 
       $sMsg = "Data inválida. Data do desconto menor que a data da nota de liquidação.";
       throw new exception($sMsg);
-      return false;
-
     }
     /*
      * Verificamos o saldo contabil, para poder realizar os lancamentos.
@@ -1457,8 +1674,6 @@ class ordemPagamento {
         $sMsg  = "Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu} ";
         $sMsg .="não cadastrado como Restos a Pagar em {$this->iAnoUsu} ";
         throw new exception ($sMsg);
-        return false;
-
       }
     } else if ($oDadosOrdem->e60_anousu == $oDadosOrdem->e50_anousu) {
 
@@ -1468,23 +1683,21 @@ class ordemPagamento {
       } else {
         if ($this->isRestoPagar($oDadosOrdem->e60_numemp)) {
           if ($oDadosOrdem->e60_anousu == $oDadosOrdem->e50_anousu) {
-             $iCodDoc = 31; //estorno de liquidacao
+            $iCodDoc = 31; //estorno de liquidacao
           } else {
-             $iCodDoc = 34;
+            $iCodDoc = 34;
           }
         } else {
 
           $sMsg  = "Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu} ";
           $sMsg .="não cadastrado como Restos a Pagar em {$this->iAnoUsu} ";
           throw new exception ($sMsg);
-          return false;
-
         }
       }
     }
     $sql    = "select fc_verifica_lancamento(".$oDadosOrdem->e60_numemp.",'".
-                                               date("Y-m-d", db_getsession("DB_datausu")).
-                                               "',".$iCodDoc.",".$nValor.") as teste";
+      date("Y-m-d", db_getsession("DB_datausu")).
+      "',".$iCodDoc.",".$nValor.") as teste";
     $result = db_query($sql);
     $status = pg_result($result, 0, "teste");
     if (substr($status, 0, 2) > 0) {
@@ -1493,13 +1706,13 @@ class ordemPagamento {
       throw new exception ($sErroMsg);
     }
     //primeiro atualizamos a tabelas necessárias, (empempenho, empelemento, empnotalem pagordemele.)
-    $oDaoEmpenho = db_utils::getDao("empempenho");
+    $oDaoEmpenho = new cl_empempenho;
     $rsEmpenho   = $oDaoEmpenho->sql_record($oDaoEmpenho->sql_query($oDadosOrdem->e60_numemp));
-    if ($oDaoEmpenho->numrows > 0) {
-      $oEmpenho = db_utils::fieldsMemory($rsEmpenho, 0);
-    } else {
+    if ($oDaoEmpenho->numrows == 0) {
       throw new exception ("Empenho não encontrado");
     }
+
+    $oEmpenho = db_utils::fieldsMemory($rsEmpenho, 0);
     $nValorLiq               = ($oEmpenho->e60_vlrliq - $nValor);
     $nValorAnu               = ($oEmpenho->e60_vlranu + $nValor);
     $oDaoEmpenho->e60_vlrliq = "{$nValorLiq}";
@@ -1509,13 +1722,13 @@ class ordemPagamento {
     if ($oDaoEmpenho->erro_status == 0) {
       throw new exception ("Erro[1] - Não foi possível alterar Empenho.\nErro tecnico:".pg_last_error());
     }
-    $oDaoEmpElemento = db_utils::getDao("empelemento");
+    $oDaoEmpElemento = new cl_empelemento;
     $rsElemento      = $oDaoEmpElemento->sql_record($oDaoEmpElemento->sql_query($oEmpenho->e60_numemp));
-    if ($oDaoEmpElemento->numrows > 0) {
-      $oElemento = db_utils::fieldsMemory($rsElemento, 0);
-    } else {
+    if ($oDaoEmpElemento->numrows == 0) {
       throw new exception ("Erro[2] - Não foi possível encontrar elemento do empenho");
     }
+
+    $oElemento = db_utils::fieldsMemory($rsElemento, 0);
     $nValorLiq                   = $oElemento->e64_vlrliq - $nValor;
     $nValorAnu                   = $oElemento->e64_vlranu + $nValor;
     $oDaoEmpElemento->e64_vlrliq = "{$nValorLiq}";
@@ -1527,15 +1740,13 @@ class ordemPagamento {
       throw new exception ("Erro[3] - Não foi possível alterar elemento do empenho");
     }
 
-    $oDaoEmpNotaEle = db_utils::getDao("empnotaele");
+    $oDaoEmpNotaEle = new cl_empnotaele;
     $rsEmpNotaEle   = $oDaoEmpNotaEle->sql_record($oDaoEmpNotaEle->sql_query_file($iCodNota));
-    if ($oDaoEmpNotaEle->numrows > 0) {
-       $oEmpNotaEle    = db_utils::fieldsMemory($rsEmpNotaEle,0);
-    } else {
-
+    if ($oDaoEmpNotaEle->numrows == 0) {
       throw new exception ("Erro[5] - Nota de liquidação sem Elemento");
-
     }
+
+    $oEmpNotaEle    = db_utils::fieldsMemory($rsEmpNotaEle,0);
     $nValorLiquidado             = $oEmpNotaEle->e70_vlrliq - $nValor;
     $nValorAnulado               = $oEmpNotaEle->e70_vlranu + $nValor;
     $oDaoEmpNotaEle->e70_vlrliq  = $nValorLiquidado;
@@ -1547,7 +1758,7 @@ class ordemPagamento {
       throw new exception ("Erro[8] - nao foi possivel alterar elemento.");
     }
 
-    $oDaoEmpNotaItem = db_utils::getDao("empnotaitem");
+    $oDaoEmpNotaItem = new cl_empnotaitem;
 
     foreach ($oNota->aItens as $oDadosItem) {
 
@@ -1568,13 +1779,13 @@ class ordemPagamento {
     }
 
 
-    $oDaoPagOrdemEle              = db_utils::getDao("pagordemele");
+    $oDaoPagOrdemEle              = new cl_pagordemele;
     $rsPagOrdemEle                = $oDaoPagOrdemEle->sql_record($oDaoPagOrdemEle->sql_query_file($this->iCodOrdem));
-    if ($oDaoPagOrdemEle->numrows > 0 ) {
-      $oPagOrdemEle = db_utils::fieldsMemory($rsPagOrdemEle, 0);
-    } else {
+    if ($oDaoPagOrdemEle->numrows == 0 ) {
       throw new exception ("Erro[5] - Nota de liquidação sem Elemento");
     }
+
+    $oPagOrdemEle = db_utils::fieldsMemory($rsPagOrdemEle, 0);
     $nValorAnu                    = round($oPagOrdemEle->e53_vlranu + $nValor,2);
     $oDaoPagOrdemEle->e53_vlranu  = "$nValorAnu";
     $oDaoPagOrdemEle->e53_codele  = $oPagOrdemEle->e53_codele;
@@ -1586,58 +1797,51 @@ class ordemPagamento {
 
 
     //Alteração do Valor do Movimento
-    $oDaoEmpAgeMov  = db_utils::getDao("empagemov");
-
+    $oDaoEmpAgeMov  = new cl_empagemov();
     $sWhere  = " e53_codord = {$this->iCodOrdem}     ";
     $sWhere .= " and e97_codforma is null            ";
     $sWhere .= " and corempagemov.k12_codmov is null ";
     $sWhere .= " and e81_cancelado is null           ";
-    $nValorFinal = round($nValor,2);
-//echo("nValorFinal: $nValorFinal - nValor: $nValor\n");
+    $nValorTotalDescontoFinal = round($nValor,2);
+    $nValorTotalDescontoMenosValorMovimento = round($nValor,2);
 
     $rsDaoEmpAgeMov = $oDaoEmpAgeMov->sql_record($oDaoEmpAgeMov->sql_query_consemp(null,"e81_codmov, e81_valor","e81_valor",$sWhere));
     if ($oDaoEmpAgeMov->numrows > 0) {
 
-      $iLinhasEmpAgeMov = $oDaoEmpAgeMov->numrows;
+      for ($x=0; $x < $oDaoEmpAgeMov->numrows; $x++) {
 
-      for ($x=0; $x < $iLinhasEmpAgeMov; $x++) {
-         $oEmpAgeMov    = db_utils::fieldsMemory($rsDaoEmpAgeMov,$x);
+        $oEmpAgeMov    = db_utils::fieldsMemory($rsDaoEmpAgeMov,$x);
+        if (round($nValorTotalDescontoFinal,2) > 0) {
 
-//         echo "  xx - $x/" . $oDaoEmpAgeMov->numrows . " - " . round($nValorFinal,2) . "\n";
+          $nValorTotalDescontoMenosValorMovimento = round($nValorTotalDescontoMenosValorMovimento, 2) - round($oEmpAgeMov->e81_valor,2);
+          $oDaoEmpAgeMov->e81_codmov    = $oEmpAgeMov->e81_codmov;
+          $oDaoEmpAgeMov->e81_cancelado = '';
+          $oDaoEmpAgeMov->e81_valor     = $oEmpAgeMov->e81_valor - $nValor;
 
-         if (round($nValorFinal,2) > 0) {
+          if ($oEmpAgeMov->e81_valor == $nValorTotalDescontoFinal) {
 
-            $nValorFinal = round($nValorFinal,2) - round($oEmpAgeMov->e81_valor,2);
-//            echo("    yy: $nValorFinal - e81_valor: " . $oEmpAgeMov->e81_valor . "\n");
-            if ($oEmpAgeMov->e81_valor < $nValorFinal) {
-              $oDaoEmpAgeMov->e81_e81_cancelado  = db_getsession('DB_datausu');
-              $oDaoEmpAgeMov->e81_codmov         = $oEmpAgeMov->e81_codmov;
-              $oDaoEmpAgeMov->alterar($oEmpAgeMov->e81_codmov);
-            } else {
-              $oDaoEmpAgeMov->e81_valor  = $oEmpAgeMov->e81_valor - $nValor;
-              $oDaoEmpAgeMov->e81_codmov = $oEmpAgeMov->e81_codmov;
-              $oDaoEmpAgeMov->alterar($oEmpAgeMov->e81_codmov);
-            }
+            $oDaoEmpAgeMov->e81_cancelado = date("Y-m-d", db_getsession('DB_datausu'));
+            $oDaoEmpAgeMov->e81_codmov    = $oEmpAgeMov->e81_codmov;
+            $oDaoEmpAgeMov->e81_valor     = $oEmpAgeMov->e81_valor;
+            $oDaoEmpAgeMov->alterar($oEmpAgeMov->e81_codmov);
+          }
 
-            if ($oDaoEmpAgeMov->erro_status == 0) {
-              throw new exception ($oDaoEmpAgeMov->alterar($oEmpAgeMov->e81_codmov)." - Erro[9] - nao foi possivel alterar Valor do Movimento.");
-            }
-         }
+          $oDaoEmpAgeMov->alterar($oEmpAgeMov->e81_codmov);
+          if ($oDaoEmpAgeMov->erro_status == "0") {
+            throw new Exception ("Ocorreu um erro ao atualizar os valores do movimento existente na agenda de pagamento.");
+          }
+        }
 
       }
-
-//die("zzz: " . round($nValorFinal,2) . "\n\n\n");
-
-      if (round($nValorFinal,2) > 0) {
-         throw new exception ("Erro[8] - Valor do Movimento menor que o valor de desconto [" . round($nValorFinal,2) ."]");
+      if (round($nValorTotalDescontoMenosValorMovimento, 2) > 0) {
+        throw new exception ("Erro[8] - Valor do Movimento menor que o valor de desconto [" . round($nValorTotalDescontoMenosValorMovimento, 2) ."]");
       }
-
     }
 
     //Fim da alteração do valor do Movimento
 
 
-    $oDaoPagOrdemDesconto = db_utils::getDao("pagordemdesconto");
+    $oDaoPagOrdemDesconto = new cl_pagordemdesconto;
     $oDaoPagOrdemDesconto->e34_codord        = $this->iCodOrdem;
     $oDaoPagOrdemDesconto->e34_data          = $this->dtDataUsu;
     $oDaoPagOrdemDesconto->e34_valordesconto = "$nValor";
@@ -1647,7 +1851,7 @@ class ordemPagamento {
       throw new exception ("Erro[5] - Não foi possível incluir desconto do empenho [ET]".pg_last_error());
     }
 
-    require_once("classes/lancamentoContabil.model.php");
+    require_once(modification("classes/lancamentoContabil.model.php"));
 
     /*se o documento e diferente de 32, (estorno RP processado) devemos fazer o lancamento de estorno de liquicao.
      * conforme cada elemento;
@@ -1661,7 +1865,8 @@ class ordemPagamento {
     $lPassivo                = $oEmpenhoFinanceiro->isEmpenhoPassivo();
     $oCodigoGrupoContaOrcamento = GrupoContaOrcamento::getGrupoConta($oEmpenhoFinanceiro->getDesdobramentoEmpenho(),
                                                                      $this->iAnoUsu
-                                                                    );
+    );
+
     if ($iCodDoc != 31) {
 
       if ($this->iAnoUsu == $oEmpenho->e60_anousu) {
@@ -1669,7 +1874,7 @@ class ordemPagamento {
         if (substr($oEmpenho->o56_elemento, 0, 2) == '33') {
           $iCodDoc = '4'; // despesa corrente
         } else if (substr($oEmpenho->o56_elemento, 0, 2) == '34') {
-            $iCodDoc = '24'; //estorno de despesa capital
+          $iCodDoc = '24'; //estorno de despesa capital
         }
         /**
          * Verificamos se o empenho eh prestacao de contas
@@ -1689,7 +1894,8 @@ class ordemPagamento {
           if ($lAmortizacaoDivida) {
             $iCodDoc = 507;
           }
-          if ($oCodigoGrupoContaOrcamento) {
+
+        if ($oCodigoGrupoContaOrcamento && !$lPassivo && !$lPrestacaoConta) {
             switch ($oCodigoGrupoContaOrcamento->getCodigo()) {
 
               case 7 :
@@ -1710,6 +1916,10 @@ class ordemPagamento {
         $iCodDoc = 34; // estorno de liquacao RPs
       }
 
+      if ( ! cl_translan::possuiLancamentoDeControle($oEmpenhoFinanceiro->getNumero(), false) && in_array($iCodDoc, array(203,205)) ) {
+        $iCodDoc = 4;
+      }
+
       $oLancam = new lancamentoContabil($iCodDoc,$this->iAnoUsu, $this->dtDataUsu, $nValor);
       $oLancam->setCgm($oEmpenho->e60_numcgm);
       $oLancam->setEmpenho($oEmpenho->e60_numemp, $oEmpenho->e60_anousu, $oEmpenho->e60_codcom);
@@ -1723,8 +1933,11 @@ class ordemPagamento {
         $oLancam->setDotacao($oEmpenho->e60_coddot);
       }
       $oLancam->salvar();
+
+      /* #1 - modification: ContratosPADRS */
+
       //incluimos o lancamento do desconto na pagordemdescontolanc;
-      $oDaoPagordemDescontoLanc = db_utils::getDao("pagordemdescontolanc");
+      $oDaoPagordemDescontoLanc = new cl_pagordemdescontolanc;
       $oDaoPagordemDescontoLanc->e33_pagordemdesconto = $oDaoPagOrdemDesconto->e34_sequencial;
       $oDaoPagordemDescontoLanc->e33_conlancam        = $oLancam->iCodLanc;
       $oDaoPagordemDescontoLanc->incluir(null);
@@ -1814,14 +2027,14 @@ class ordemPagamento {
     }
     $oLancam->salvar();
     //incluimos o lancamento do desconto na pagordemdescontolanc;
-    $oDaoPagordemDescontoLanc = db_utils::getDao("pagordemdescontolanc");
+    $oDaoPagordemDescontoLanc = new cl_pagordemdescontolanc;
     $oDaoPagordemDescontoLanc->e33_pagordemdesconto = $oDaoPagOrdemDesconto->e34_sequencial;
     $oDaoPagordemDescontoLanc->e33_conlancam        = $oLancam->iCodLanc;
     $oDaoPagordemDescontoLanc->incluir(null);
     if ($oDaoPagordemDescontoLanc->erro_status == 0) {
       throw new exception ("Erro[5] - Não foi possível incluir desconto do empenho");
     }
-    $clempanulado = db_utils::getDao("empanulado");
+    $clempanulado = new cl_empanulado;
     $clempanulado->e94_numemp         = $oEmpenho->e60_numemp;
     $clempanulado->e94_valor          = $nValor;
     $clempanulado->e94_saldoant       = $nValor;
@@ -1834,12 +2047,24 @@ class ordemPagamento {
       throw new Exception("Erro ao Incluir anulação de Empenho.\n{$clempanulado->erro_msg}");
     }
 
-    $oDaoEmpanuladoItem = db_utils::getDao("empanuladoitem");
+    /**
+     * Vinculo da anulação do empenho com a nota de desconto
+     */
+    $oDaoVinculoDescontoAnulacao = new cl_pagordemdescontoempanulado();
+    $oDaoVinculoDescontoAnulacao->e06_sequencial       = null;
+    $oDaoVinculoDescontoAnulacao->e06_pagordemdesconto = $oDaoPagOrdemDesconto->e34_sequencial;
+    $oDaoVinculoDescontoAnulacao->e06_empanulado       = $clempanulado->e94_codanu;
+    $oDaoVinculoDescontoAnulacao->incluir(null);
+    if ($oDaoVinculoDescontoAnulacao->erro_status == "0") {
+      throw new Exception("Impossível vincular a anu lação do empenho com o desconto.");
+    }
+
+    $oDaoEmpanuladoItem = new cl_empanuladoitem;
     foreach ($oNota->aItens as $oItem) {
 
       if ($oItem->nTotalDesconto > 0) {
 
-        $sBuscaDadosItem   = $oDaoEmpNotaItem->sql_query_file($oDadosItem->e72_sequencial);
+        $sBuscaDadosItem   = $oDaoEmpNotaItem->sql_query_file($oItem->e72_sequencial);
         $rsBuscaDadosItem  = $oDaoEmpNotaItem->sql_record($sBuscaDadosItem);
         $oRetornoDadosItem = db_utils::fieldsMemory($rsBuscaDadosItem, 0);
 
@@ -1858,12 +2083,15 @@ class ordemPagamento {
     /**
      * incluimos os itens na tabela empanuladoite,
      */
-    $clempanuladoele = db_utils::getDao("empanuladoele");
+    $clempanuladoele = new cl_empanuladoele;
     $clempanuladoele->e95_valor          = $nValor;
     $clempanuladoele->e95_codele         = $oElemento->e64_codele;
     $clempanuladoele->e95_codanu         = $clempanulado->e94_codanu;
     $clempanuladoele->incluir($clempanulado->e94_codanu);
+
     $this->iCodigoDesconto = $clempanulado->e94_codanu;
+
+    /**[Extensao OrdenadorDespesa] inclusao_ordenador*/
 
     return true;
   }
@@ -1874,9 +2102,10 @@ class ordemPagamento {
    * @return boolean;
    */
 
-  function isRestoPagar($iNumEmp){
+    function isRestoPagar($iNumEmp)
+    {
 
-    $oEmpResto  = db_utils::getDao("empresto", true);
+    $oEmpResto  = new cl_empresto;
     $rsEmpResto = $oEmpResto->sql_record($oEmpResto->sql_query_empenho($this->iAnoUsu, $iNumEmp));
     if ($oEmpResto->numrows > 0 ) {
       return true;
@@ -1890,15 +2119,25 @@ class ordemPagamento {
    *
    * @param array $aRetencoes
    */
-  function setRetencoes($aRetencoes) {
+    function setRetencoes($aRetencoes)
+    {
     $this->aRetencoes = $aRetencoes;
   }
 
-  /**
-   *  Estorna as retencões
-   * @return void
-   */
-  function estornarRetencoes() {
+
+    /**
+     * Estorno de retenções
+     *
+     * @return bool
+     * @throws BusinessException
+     * @throws DBException
+     * @throws ParameterException
+     * @throws ReflectionException
+     */
+    public function estornarRetencoes()
+    {
+
+
 
     $this->getDadosOrdem();
     $oDadosOrdem = $this->oDadosOrdem;
@@ -1907,7 +2146,7 @@ class ordemPagamento {
      */
     if ($this->getCodigoGrupoCorrente() == "") {
 
-      $oDaoCorGrupo            = db_utils::getDao("corgrupo");
+      $oDaoCorGrupo            = new cl_corgrupo;
       $oDaoCorGrupo->k104_tipo = 2;
       $oDaoCorGrupo->incluir(null);
       if ($oDaoCorGrupo->erro_status == 0) {
@@ -1917,224 +2156,297 @@ class ordemPagamento {
       $this->setCodigoGrupoCorrente($oDaoCorGrupo->k104_sequencial);
 
     }
-    require_once("model/retencaoNota.model.php");
-    $oRetencaoNota   = new retencaoNota($this->oDadosOrdem->e69_codnota);
-    $oRetencaoNota->setINotaLiquidacao($this->oDadosOrdem->e50_codord);
+    $oEmpenhoFinanceiro = new EmpenhoFinanceiro($oDadosOrdem->e60_numemp);
     $nValorRetencoes = 0;
-    if (is_array($this->aRetencoes) && count($this->aRetencoes > 0)) {
+    if (APROPRIACAO_RETENCAO && !$oEmpenhoFinanceiro->isFolhaPagamento()) {
 
-      /*
-       * Percorremos as retencoes, e repassamos ela ao model retencaoNota,
-       * para fazermos o estorno conforme o tipo da retencao.
-       */
+
+        /**
+         * faz mao aqui
+         */
+        $sIpUsuario    = db_getsession("DB_ip");
+        //rotina que verifica se o ip do usuario irá imprimir autenticar ou naum ira fazer nada
+        $oDaoAutentica   = new cl_cfautent;
+        $rsTipoAutentica = $oDaoAutentica->sql_record(
+            $oDaoAutentica->sql_query_file(null, "k11_tipautent",
+                '', "k11_ipterm = '{$sIpUsuario}'
+          and k11_instit = ".db_getsession("DB_instit")));
+        if ($oDaoAutentica->numrows > 0) {
+            $this->oAutentica = db_utils::fieldsMemory($rsTipoAutentica, 0);
+        } else {
+
+            $sErroMsg = "Cadastre o ip {$sIpUsuario} como um caixa.";
+            throw new exception($sErroMsg);
+        }
+        $this->estornarApropriacaoDasRetencoes($oEmpenhoFinanceiro);
         foreach ($this->aRetencoes as $oRetencao) {
-
-          $oRetencaoNota->setGrupoAutenticacao($this->getCodigoGrupoCorrente());
-          $oRetencaoNota->setConta($this->getConta());
-          $oRetencaoNota->setNumCgm($this->oDadosOrdem->e60_numcgm);
-          $oRetencaoNota->estornarRetencoes($oRetencao);
-          $nValorRetencoes += $oRetencao->nValor;
-
-      }
-
-      /**
-       * Atualizamos o empenho, e fizemos o lancamento contabil de estorno de pagamento
-       */
-      if ($oDadosOrdem->e60_anousu < $oDadosOrdem->e50_anousu) {
-
-      //verificamos se está na empresto. geramos um estorno pagamento de RP não processado.
-        if ($this->isRestoPagar($oDadosOrdem->e60_numemp)) {
-          $iCodDoc = 38; //rp não processado
-        } else {
-
-          $sMsg  = "Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu} ";
-          $sMsg .="não cadastrado como Restos a Pagar em {$this->iAnoUsu} ";
-          throw new exception ($sMsg);
-          return false;
-
+            $nValorRetencoes += $oRetencao->nValor;
         }
-      } else if ($oDadosOrdem->e60_anousu == $oDadosOrdem->e50_anousu) {
 
-      //se o ano da ordem for igual ao ano corrente, é um estorno de pagamento normal
-        if ($oDadosOrdem->e50_anousu == $this->iAnoUsu) {
-          $iCodDoc = 6; //ordem do exercicio;
-        } else {
-          if ($this->isRestoPagar($oDadosOrdem->e60_numemp)) {
-            $iCodDoc = 36; //estorno pagamento de rp processado
-          } else {
 
-            $sMsg  = "Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu} ";
-            $sMsg .="não cadastrado como Restos a Pagar em {$this->iAnoUsu} ";
-            throw new exception ($sMsg);
-            return false;
+    } else {
 
-          }
+        require_once(modification("model/retencaoNota.model.php"));
+        $oRetencaoNota = new retencaoNota($this->oDadosOrdem->e69_codnota);
+        $oRetencaoNota->setINotaLiquidacao($this->oDadosOrdem->e50_codord);
+        $nValorRetencoes = 0;
+        if (is_array($this->aRetencoes) && count($this->aRetencoes) > 0) {
+
+            /*
+             * Percorremos as retencoes, e repassamos ela ao model retencaoNota,
+             * para fazermos o estorno conforme o tipo da retencao.
+             */
+            foreach ($this->aRetencoes as $oRetencao) {
+
+                $oRetencaoNota->setGrupoAutenticacao($this->getCodigoGrupoCorrente());
+                $oRetencaoNota->setConta($this->getConta());
+                $oRetencaoNota->setNumCgm($this->oDadosOrdem->e60_numcgm);
+                $oRetencaoNota->estornarRetencoes($oRetencao);
+                $nValorRetencoes += $oRetencao->nValor;
+
+            }
+
+            /**
+             * Atualizamos o empenho, e fizemos o lancamento contabil de estorno de pagamento
+             */
+            if ($oDadosOrdem->e60_anousu < $oDadosOrdem->e50_anousu) {
+
+                //verificamos se está na empresto. geramos um estorno pagamento de RP não processado.
+                if ($this->isRestoPagar($oDadosOrdem->e60_numemp)) {
+
+                    $iCodDoc = 38; //rp não processado
+
+                    $sqlBuscaPagamento = "
+           select conlancam.*
+             from conlancam
+                  inner join conlancamord on conlancamord.c80_codlan = conlancam.c70_codlan
+                  inner join conlancamdoc on conlancamdoc.c71_codlan = conlancamord.c80_codlan
+            where conlancamord.c80_codord = {$this->iCodOrdem}
+              and conlancamdoc.c71_coddoc in (35)
+              and conlancam.c70_valor = {$this->nValorPago}
+            order by c70_codlan desc limit 1;
+        ";
+                    $resBuscaPagamento = db_query($sqlBuscaPagamento);
+                    if (!$resBuscaPagamento) {
+                        throw new Exception("Ocorreu um erro ao buscar o lançamento contábil para o pagamento que está sendo estornado.");
+                    }
+
+                    if (pg_num_rows($resBuscaPagamento) === 0) {
+                        $iCodDoc = 38;
+                    } else {
+
+                        $stdLancamento = db_utils::fieldsMemory($resBuscaPagamento, 0);
+                        if ($oDadosOrdem->e50_anousu < $stdLancamento->c70_anousu) {
+                            $iCodDoc = 36;
+                        }
+                    }
+
+                } else {
+
+                    $sMsg = "Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu} ";
+                    $sMsg .= "não cadastrado como Restos a Pagar em {$this->iAnoUsu} ";
+                    throw new exception ($sMsg);
+
+                }
+            } else {
+                if ($oDadosOrdem->e60_anousu == $oDadosOrdem->e50_anousu) {
+
+                    //se o ano da ordem for igual ao ano corrente, é um estorno de pagamento normal
+                    if ($oDadosOrdem->e50_anousu == $this->iAnoUsu) {
+                        $iCodDoc = 6; //ordem do exercicio;
+                    } else {
+                        if ($this->isRestoPagar($oDadosOrdem->e60_numemp)) {
+                            $iCodDoc = 36; //estorno pagamento de rp processado
+                        } else {
+
+                            $sMsg = "Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu} ";
+                            $sMsg .= "não cadastrado como Restos a Pagar em {$this->iAnoUsu} ";
+                            throw new exception ($sMsg);
+                        }
+                    }
+                }
+            }
+            /*
+             * setamos o valor final do empenho.
+             */
+            $nValorEstornar = round($this->oDadosOrdem->e60_vlrpag, 2) - round($nValorRetencoes, 2);
+            $oDaoEmpenho = new cl_empempenho;
+            $oDaoEmpenho->e60_numemp = $oDadosOrdem->e60_numemp;
+            $oDaoEmpenho->e60_vlrpag = "$nValorEstornar";
+            $oDaoEmpenho->e60_concarpeculiar = $oEmpenhoFinanceiro->getCaracteristicaPeculiar();
+            $oDaoEmpenho->alterar($oDadosOrdem->e60_numemp);
+            if ($oDaoEmpenho->erro_status == 0) {
+
+                $sErroMsg = "Erro [1] - Erro ao pagar empenho.\n";
+                $sErroMsg .= "Erro Técnico: {$oDaoEmpenho->erro_msg}";
+                throw new exception ($sErroMsg);
+            }
+
+
+
+            $oDaoEmpElemento = new cl_empelemento;
+            /*
+             * Verificamos se o empenho possui mais de um elemento.
+             * Caso houver, devemos cancelar o processamento, pois
+             * um empenho nao pode ter mais de um elemento.
+             */
+
+            $rsElemento = $oDaoEmpElemento->sql_record($oDaoEmpElemento->sql_query_file($oDadosOrdem->e60_numemp));
+            if ($oDaoEmpElemento->numrows > 1) {
+
+                $sErroMsg = "Erro [2] - Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu}";
+                $sErroMsg .= "Possui dois elementos. Processo Cancelado.";
+                throw new exception($sErroMsg);
+                return false;
+
+            }
+            $oElemento = db_utils::fieldsMemory($rsElemento, 0);
+            $oDaoEmpElemento->e64_numemp = $oDadosOrdem->e60_numemp;
+            $oDaoEmpElemento->e64_codele = $oElemento->e64_codele;
+            $oDaoEmpElemento->e64_vlrpag = "{$nValorEstornar}";
+            $oDaoEmpElemento->alterar($oDadosOrdem->e60_numemp, $oElemento->e64_codele);
+            if ($oDaoEmpElemento->erro_status == 0) {
+
+                $sErroMsg = "Erro [3] - Erro ao estornar pagamento de empenho.\n";
+                $sErroMsg .= "Erro Técnico: {$oDaoEmpElemento->erro_msg}";
+                throw new exception ($sErroMsg);
+                return false;
+
+            }
+
+            $oDaoPagOrdemEle = new cl_pagordemele;
+            $rsElementoOrdem = $oDaoPagOrdemEle->sql_record(
+                $oDaoPagOrdemEle->sql_query_file($oDadosOrdem->e50_codord, $oDadosOrdem->e53_codele));
+            if ($oDaoPagOrdemEle->numrows == 0) {
+
+                $sErroMsg = "Erro [4] - Ordem de pagamento {$oDadosOrdem->e50_codord}";
+                $sErroMsg .= "não possui elemento cadastrado. Operação cancelada";
+                throw new exception($sErroMsg);
+                return false;
+            }
+            $oPagOrdemEle = db_utils::fieldsMemory($rsElementoOrdem, 0);
+            $nValorEstornar = round($oPagOrdemEle->e53_vlrpag - $nValorRetencoes, 2);
+            $oDaoPagOrdemEle->e53_vlrpag = "{$nValorEstornar}";
+            $oDaoPagOrdemEle->e53_codele = $oDadosOrdem->e53_codele;
+            $oDaoPagOrdemEle->e53_codord = $oDadosOrdem->e50_codord;
+            $oDaoPagOrdemEle->alterar($oDadosOrdem->e50_codord);
+            if ($oDaoPagOrdemEle->erro_status == 0) {
+
+                $sErroMsg = "Erro [5] - Erro ao pagar empenho.\n";
+                $sErroMsg .= "Erro Técnico: {$oDaoPagOrdemEle->erro_msg}";
+                throw new exception ($sErroMsg);
+                return false;
+
+            }
         }
-      }
-      /*
-       * setamos o valor final do empenho.
-       */
-      $nValorEstornar          = round($this->oDadosOrdem->e60_vlrpag, 2) - round($nValorRetencoes, 2);
-      $oDaoEmpenho             = db_utils::getDao("empempenho");
-      $oDaoEmpenho->e60_numemp = $oDadosOrdem->e60_numemp;
-      $oDaoEmpenho->e60_vlrpag = "$nValorEstornar";
-      $oDaoEmpenho->alterar($oDadosOrdem->e60_numemp);
-      if ($oDaoEmpenho->erro_status == 0) {
+        $this->setValorPago($nValorRetencoes);
+        /**
+         * Iniciamos os lancamentos contabeis do estorno.
+         */
+        require_once(modification("classes/lancamentoContabil.model.php"));
+        require_once(modification("std/db_stdClass.php"));
+        $oInstit = db_stdClass::getDadosInstit();
 
-        $sErroMsg  = "Erro [1] - Erro ao pagar empenho.\n";
-        $sErroMsg .= "Erro Técnico: {$oDaoEmpenho->erro_msg}";
-        throw new exception ($sErroMsg);
-        return false;
+        $oDaoSaltesContapartida = new cl_saltescontrapartida;
+        $sSqlContrapartida = $oDaoSaltesContapartida->sql_query(null, "*", null, "k103_saltes = " . $this->getConta());
+        $rsContrapartida = $oDaoSaltesContapartida->sql_record($sSqlContrapartida);
 
-      }
+        if ($oDaoSaltesContapartida->numrows > 0 && $oInstit->prefeitura == "t") {
 
-      $oDaoEmpElemento = db_utils::getDao("empelemento");
-      /*
-       * Verificamos se o empenho possui mais de um elemento.
-       * Caso houver, devemos cancelar o processamento, pois
-       * um empenho nao pode ter mais de um elemento.
-       */
+            $oContaLivre = db_utils::fieldsMemory($rsContrapartida, 0);
+            $oDaoEmpAgeSlip = new cl_empagemovslips;
+            $oDaoEmpAgeSlip->k107_data = $this->dtDataUsu;
+            $oDaoEmpAgeSlip->k107_empagemov = $this->getMovimentoAgenda();
+            $oDaoEmpAgeSlip->k107_valor = $nValorRetencoes * -1;
+            $oDaoEmpAgeSlip->k107_ctadebito = $oContaLivre->k103_contrapartida;
+            $oDaoEmpAgeSlip->k107_ctacredito = $oContaLivre->k103_saltes;
+            $oDaoEmpAgeSlip->incluir(null);
+            if ($oDaoEmpAgeSlip->erro_status == 0) {
+                throw new Exception("Erro Ao incluir informacoes do slip.\n Processamento cancelado.");
+            }
+        }
+        $oLancam = new LancamentoContabil(
+            $iCodDoc,
+            $this->iAnoUsu,
+            $this->dtDataUsu,
+            $nValorRetencoes
+        );
+        $oLancam->setCgm($oDadosOrdem->e60_numcgm);
+        $oLancam->setEmpenho($oDadosOrdem->e60_numemp, $oDadosOrdem->e60_anousu, $oDadosOrdem->e60_codcom);
+        $oLancam->setElemento($oElemento->e64_codele);
+        $oLancam->setOrdemPagamento($oDadosOrdem->e50_codord);
+        $oLancam->setReduz($this->getConta());
+        if ($this->getHistorico() != '') {
+            $oLancam->setComplemento($this->getHistorico());
+        }
+        if ($oDadosOrdem->e60_anousu == $this->iAnoUsu) {
 
-      $rsElemento = $oDaoEmpElemento->sql_record($oDaoEmpElemento->sql_query_file($oDadosOrdem->e60_numemp));
-      if ($oDaoEmpElemento->numrows > 1) {
+            $sSqlSaldoDot = "select fc_lancam_dotacao({$oDadosOrdem->e60_coddot},";
+            $sSqlSaldoDot .= "                         '{$this->dtDataUsu}',";
+            $sSqlSaldoDot .= "                          {$iCodDoc},";
+            $sSqlSaldoDot .= $this->getValorPago() . ") as dotacao";
+            $rsDotacaoSaldo = db_query($sSqlSaldoDot);
+            $oSaldoDot = db_utils::fieldsMemory($rsDotacaoSaldo, 0);
+            if (substr($oSaldoDot->dotacao, 0, 1) == 0) {
 
-        $sErroMsg  = "Erro [2] - Empenho {$oDadosOrdem->e60_codemp}/{$oDadosOrdem->e60_anousu}";
-        $sErroMsg .= "Possui dois elementos. Processo Cancelado.";
-        throw new exception($sErroMsg);
-        return false;
+                throw new exception("Erro na atualização do orçamento \\n " . substr($oSaldoDot->dotacao, 1));
+                return false;
 
-      }
-      $oElemento                   = db_utils::fieldsMemory($rsElemento, 0);
-      $oDaoEmpElemento->e64_numemp = $oDadosOrdem->e60_numemp;
-      $oDaoEmpElemento->e64_codele = $oElemento->e64_codele;
-      $oDaoEmpElemento->e64_vlrpag = "{$nValorEstornar}";
-      $oDaoEmpElemento->alterar($oDadosOrdem->e60_numemp, $oElemento->e64_codele);
-      if ($oDaoEmpElemento->erro_status == 0) {
+            }
+            $oLancam->setDotacao($oDadosOrdem->e60_coddot);
+        }
+        $oLancam->salvar();
+        $this->iCodLanc = $oLancam->getCodigoLancamento();
+        $this->iContaRP = $oLancam->iContaEmp;
 
-        $sErroMsg  = "Erro [3] - Erro ao estornar pagamento de empenho.\n";
-        $sErroMsg .= "Erro Técnico: {$oDaoEmpElemento->erro_msg}";
-        throw new exception ($sErroMsg);
-        return false;
-
-      }
-
-      $oDaoPagOrdemEle = db_utils::getDao("pagordemele");
-      $rsElementoOrdem = $oDaoPagOrdemEle->sql_record(
-      $oDaoPagOrdemEle->sql_query_file($oDadosOrdem->e50_codord, $oDadosOrdem->e53_codele));
-      if ($oDaoPagOrdemEle->numrows == 0) {
-
-        $sErroMsg  = "Erro [4] - Ordem de pagamento {$oDadosOrdem->e50_codord}";
-        $sErroMsg .= "não possui elemento cadastrado. Operação cancelada";
-        throw new exception($sErroMsg);
-        return false;
-      }
-      $oPagOrdemEle                = db_utils::fieldsMemory($rsElementoOrdem, 0);
-      $nValorEstornar              = round($oPagOrdemEle->e53_vlrpag - $nValorRetencoes,2);
-      $oDaoPagOrdemEle->e53_vlrpag = "{$nValorEstornar}";
-      $oDaoPagOrdemEle->e53_codele = $oDadosOrdem->e53_codele;
-      $oDaoPagOrdemEle->e53_codord = $oDadosOrdem->e50_codord;
-      $oDaoPagOrdemEle->alterar($oDadosOrdem->e50_codord);
-      if ($oDaoPagOrdemEle->erro_status == 0) {
-
-        $sErroMsg  = "Erro [5] - Erro ao pagar empenho.\n";
-        $sErroMsg .= "Erro Técnico: {$oDaoPagOrdemEle->erro_msg}";
-        throw new exception ($sErroMsg);
-        return false;
-
-      }
-    }
-    $this->setValorPago($nValorRetencoes);
-    /**
-     * Iniciamos os lancamentos contabeis do estorno.
-     */
-    require_once("classes/lancamentoContabil.model.php");
-    require_once("std/db_stdClass.php");
-    $oInstit = db_stdClass::getDadosInstit();
-
-    $oDaoSaltesContapartida = db_utils::getDao("saltescontrapartida");
-    $sSqlContrapartida      = $oDaoSaltesContapartida->sql_query(null,"*", null, "k103_saltes = ".$this->getConta());
-    $rsContrapartida        = $oDaoSaltesContapartida->sql_record($sSqlContrapartida);
-
-    if ($oDaoSaltesContapartida->numrows > 0 && $oInstit->prefeitura == "t") {
-
-      $oContaLivre = db_utils::fieldsMemory($rsContrapartida, 0);
-      $oDaoEmpAgeSlip = db_utils::getDao("empagemovslips");
-      $oDaoEmpAgeSlip->k107_data       = $this->dtDataUsu;
-      $oDaoEmpAgeSlip->k107_empagemov  = $this->getMovimentoAgenda();
-      $oDaoEmpAgeSlip->k107_valor      = $nValorRetencoes*-1;
-      $oDaoEmpAgeSlip->k107_ctadebito  = $oContaLivre->k103_contrapartida;
-      $oDaoEmpAgeSlip->k107_ctacredito = $oContaLivre->k103_saltes;
-      $oDaoEmpAgeSlip->incluir(null);
-      if ($oDaoEmpAgeSlip->erro_status == 0) {
-         throw new Exception("Erro Ao incluir informacoes do slip.\n Processamento cancelado.");
-      }
-    }
-    $oLancam = new LancamentoContabil(
-                                      $iCodDoc,
-                                      $this->iAnoUsu,
-                                      $this->dtDataUsu,
-                                      $nValorRetencoes
-                                     );
-    $oLancam->setCgm($oDadosOrdem->e60_numcgm);
-    $oLancam->setEmpenho($oDadosOrdem->e60_numemp, $oDadosOrdem->e60_anousu, $oDadosOrdem->e60_codcom);
-    $oLancam->setElemento($oElemento->e64_codele);
-    $oLancam->setOrdemPagamento($oDadosOrdem->e50_codord);
-    $oLancam->setReduz($this->getConta());
-    if ($this->getHistorico() != '') {
-      $oLancam->setComplemento($this->getHistorico());
-    }
-    if ($oDadosOrdem->e60_anousu == $this->iAnoUsu) {
-
-      $sSqlSaldoDot   = "select fc_lancam_dotacao({$oDadosOrdem->e60_coddot},";
-      $sSqlSaldoDot  .= "                         '{$this->dtDataUsu}',";
-      $sSqlSaldoDot  .= "                          {$iCodDoc},";
-      $sSqlSaldoDot  .= $this->getValorPago().") as dotacao";
-      $rsDotacaoSaldo = db_query($sSqlSaldoDot);
-      $oSaldoDot      = db_utils::fieldsMemory($rsDotacaoSaldo, 0);
-      if (substr($oSaldoDot->dotacao, 0, 1) == 0) {
-
-        throw new exception("Erro na atualização do orçamento \\n ".substr($oSaldoDot->dotacao, 1));
-        return false;
-
-      }
-      $oLancam->setDotacao($oDadosOrdem->e60_coddot);
-    }
-    $oLancam->salvar();
-    $this->iCodLanc = $oLancam->getCodigoLancamento();
-    $this->iContaRP = $oLancam->iContaEmp;
-
-    $this->autenticar(5, self::ESTORNAR);
-    /*
-     * incluimos o lancamento contabil no grupo de autenticações
-     */
-    $oDaoCorrenteGrupo = db_utils::getDao("corgrupocorrente");
-    $sSqlCorgrupo      = $oDaoCorrenteGrupo->sql_query_file(null,"*",null,
-                                                            "k105_corgrupo         = ".$this->getCodigoGrupoCorrente()."
+        $this->autenticar(5, self::ESTORNAR);
+        /*
+         * incluimos o lancamento contabil no grupo de autenticações
+         */
+        $oDaoCorrenteGrupo = new cl_corgrupocorrente;
+        $sSqlCorgrupo = $oDaoCorrenteGrupo->sql_query_file(null, "*", null,
+            "k105_corgrupo         = " . $this->getCodigoGrupoCorrente() . "
                                                             and k105_corgrupotipo  = 5");
-    $rsCorGrupo        = $oDaoCorrenteGrupo->sql_record($sSqlCorgrupo);
-    if ($oDaoCorrenteGrupo->numrows == 0) {
+        $rsCorGrupo = $oDaoCorrenteGrupo->sql_record($sSqlCorgrupo);
+        if ($oDaoCorrenteGrupo->numrows == 0) {
 
-      throw new Exception("Não Foi possivel encontrar grupo de lancamentos.");
+            throw new Exception("Não Foi possivel encontrar grupo de lancamentos.");
+        }
+        $oDaoConlancamCorrente = new cl_conlancamcorgrupocorrente;
+        $oDaoConlancamCorrente->c23_conlancam = $oLancam->getCodigoLancamento();
+        $oDaoConlancamCorrente->c23_corgrupocorrente = db_utils::fieldsMemory($rsCorGrupo, 0)->k105_sequencial;
+        $oDaoConlancamCorrente->incluir(null);
     }
-    $oDaoConlancamCorrente = db_utils::getDao("conlancamcorgrupocorrente");
-    $oDaoConlancamCorrente->c23_conlancam        = $oLancam->getCodigoLancamento();
-    $oDaoConlancamCorrente->c23_corgrupocorrente = db_utils::fieldsMemory($rsCorGrupo,0)->k105_sequencial;
-    $oDaoConlancamCorrente->incluir(null);
 
 
     /**
      * Verificamos se o movimento atual esta com valor 0 (ZERO), se sim inserimos a data de anulação
      */
-    $oDaoEmpAgeMov         = db_utils::getDao("empagemov");
+    $oDaoEmpAgeMov         = new cl_empagemov;
     $iMovimento            = $this->getMovimentoAgenda();
 
     $sSqlVerificaMovimento = $oDaoEmpAgeMov->sql_query_file($iMovimento);
     $rsEmpagemov           = $oDaoEmpAgeMov->sql_record($sSqlVerificaMovimento);
     $oMovimento            = db_utils::fieldsMemory($rsEmpagemov, 0);
-    if ($oMovimento->e81_valor == 0 ) {
-      $oDaoEmpAgeMov->e81_codmov    = $iMovimento;
-      $oDaoEmpAgeMov->e81_cancelado = date('Y-m-d');
-      $oDaoEmpAgeMov->alterar($iMovimento);
+
+    $daoRetencaoEmpAgemov = new cl_retencaoempagemov();
+    $sqlTotalRetencao = $daoRetencaoEmpAgemov->sql_query(
+        null,
+        "retencaoreceitas.*",
+        null,
+        "e81_codmov = {$iMovimento} and e23_ativo is true");
+    $resTotalRetencao = db_query($sqlTotalRetencao);
+    $totalRegistrosRetencao = pg_num_rows($resTotalRetencao);
+    if ($nValorRetencoes > 0 && $resTotalRetencao && $totalRegistrosRetencao == 0) {
+        $oDaoEmpAgeMov->e81_codmov = $iMovimento;
+        $oDaoEmpAgeMov->e81_cancelado = date('Y-m-d');
+        $oDaoEmpAgeMov->alterar($iMovimento);
+    }
+
+    if ($oMovimento->e81_valor == 0 && $nValorRetencoes == 0) {
+        $oDaoEmpAgeMov->e81_codmov = $iMovimento;
+        $oDaoEmpAgeMov->e81_cancelado = date('Y-m-d');
+        $oDaoEmpAgeMov->alterar($iMovimento);
     }
     unset($rsEmpagemov);
 
@@ -2144,18 +2456,34 @@ class ordemPagamento {
      * caso exista, atualizamos o valor do movimento, como o valor das retencoes;
      * senao. incluimos um movimento pela agenda;
      */
-    if ($this->iNovoMovimento != null) {
+    $sequencialEmpenho = $oEmpenhoFinanceiro->getNumero();
+    $whereMovimento = implode(' and ', array(
+            "not exists (select 1 from corempagemov where corempagemov.k12_codmov = empagemov.e81_codmov)",
+            "not exists (select 1 from empageconfche where empageconfche.e91_codmov = empagemov.e81_codmov)",
+            "e81_numemp = {$sequencialEmpenho}",
+            "e81_valor > 0",
+            "e82_codord = {$oDadosOrdem->e50_codord}",
+            "e81_cancelado is null"
+        )) . " order by empagemov.e81_codmov limit 1 ";
+    $daoEmpOrd = new cl_empord();
+    $buscaMovimento = $daoEmpOrd->sql_query_movimento_ordem("empagemov.*", $whereMovimento);
+    $buscaMovimento = db_query($buscaMovimento);
+//    if ($this->iNovoMovimento != null) {
+    if (pg_num_rows($buscaMovimento) > 0) {
 
-      $rsEmpagemov                  = $oDaoEmpAgeMov->sql_record($oDaoEmpAgeMov->sql_query_file($this->iNovoMovimento));
-      $oMovimentoNovo               = db_utils::fieldsMemory($rsEmpagemov, 0);
-      $oDaoEmpAgeMov->e81_valor     = $oMovimentoNovo->e81_valor + $nValorRetencoes;
-      $oDaoEmpAgeMov->e81_codmov    = $this->iNovoMovimento;
-      $oDaoEmpAgeMov->alterar($this->iNovoMovimento);
+      $stdMovimento = db_utils::fieldsMemory($buscaMovimento, 0);
+      $daoMovimento = new cl_empagemov();
+      $daoMovimento->e81_valor     = ($stdMovimento->e81_valor + $nValorRetencoes);
+      $daoMovimento->e81_codmov    = $stdMovimento->e81_codmov;
+      $daoMovimento->alterar($daoMovimento->e81_codmov);
+      if ($daoMovimento->erro_status === '0') {
+          throw new Exception("Não foi possível alterar o valor do movimento.");
+      }
 
     } else {
-
-      require_once("model/agendaPagamento.model.php");
+      require_once(modification(Modification::getFile('model/agendaPagamento.model.php')));
       $oAgendaPagamento = new agendaPagamento();
+      $oNovoMovimento = new stdClass();
       $oNovoMovimento->iCodTipo = null;
       $oNovoMovimento->iNumEmp  = $oDadosOrdem->e50_numemp;
       $oNovoMovimento->nValor   = $nValorRetencoes;
@@ -2164,12 +2492,19 @@ class ordemPagamento {
 
     }
     $this->atualizarSaldoPacto($nValorRetencoes*-1, $oDadosOrdem->e69_codnota, $this->oDadosOrdem->e53_valor);
+
+    // estorna slips gerados automaticamente
+    if (slip::getParametroSlipAutomatico()) {
+        $this->estornarSlipsAutomaticos();
+    }
+
     return true;
   }
 
-  function atualizarSaldoPacto($nValorPago, $iNota, $nValorTotalNota) {
+    function atualizarSaldoPacto($nValorPago, $iNota, $nValorTotalNota)
+    {
 
-    require_once("std/db_stdClass.php");
+    require_once(modification("std/db_stdClass.php"));
     $lControlePacto       = false;
     $aParametrosOrcamento = db_stdClass::getParametro("orcparametro",array(db_getsession("DB_anousu")));
     if (count($aParametrosOrcamento) > 0) {
@@ -2179,15 +2514,15 @@ class ordemPagamento {
     }
 
     if ($lControlePacto) {
-      require_once("model/itempacto.model.php");
+      require_once(modification("model/itempacto.model.php"));
 
-      $oDaoEmpItem   = db_utils::getDao("empempitem");
+      $oDaoEmpItem   = new cl_empempitem;
       $sSqlItemPacto = $oDaoEmpItem->sql_query_item_pacto(null,
                                                           null,
                                                           "*",
                                                           null,
-                                                         "e72_codnota = {$iNota}"
-                                                          );
+                                                          "e72_codnota = {$iNota}"
+      );
       $rsItemPacto   = $oDaoEmpItem->sql_record($sSqlItemPacto);
       if ($oDaoEmpItem->numrows > 0) {
 
@@ -2209,4 +2544,99 @@ class ordemPagamento {
       }
     }
   }
+
+
+    /**
+     * retorna os slips gerados automaticamente para a OP
+     *  1 | Não - Autenticado
+     *  2 | Autenticado
+     *  3 | Estornado
+     *  4 | Anulado
+
+     */
+
+    public function getSlipsGeradosAutomaticamente( $situacao = null )
+    {
+        $oDao = new cl_slipretencaoreceitas;
+        $aWhere = array();
+
+        $aWhere[] = "e20_pagordem = {$this->iCodOrdem}";
+        if (!empty($situacao)) {
+          $aWhere[] = "k17_situacao = {$situacao}";
+        }
+
+        $sWhere = implode(" and ", $aWhere);
+        $sql = $oDao->sql_query(null, "k206_slip", 1, $sWhere );
+        $rs = $oDao->sql_record($sql);
+        $aSlips = array();
+
+        if ( $oDao->numrows > 0 ) {
+
+          for ($i = 0; $i < $oDao->numrows; $i++) {
+            $aSlips[] = db_utils::fieldsMemory($rs, $i)->k206_slip;
+          }
+        }
+        /**
+         * busca o slip de transferencia bancaria gerado automaticamente
+         */
+        $aWhere = array("k209_pagordem = {$this->iCodOrdem}");
+        if (!empty($situacao)) {
+          $aWhere[] = "k17_situacao = {$situacao}";
+        }
+        $sWhere = implode(" and ", $aWhere);
+        $oDaoSlipPagordem = new cl_slippagordem;
+        $sql = $oDaoSlipPagordem->sql_query(null, "k17_codigo", 1,$sWhere);
+        $rs = $oDaoSlipPagordem->sql_record($sql);
+        if ( $oDaoSlipPagordem->numrows > 0 ) {
+
+            for ($i = 0; $i < $oDaoSlipPagordem->numrows; $i++) {
+              $aSlips[] = db_utils::fieldsMemory($rs, $i)->k17_codigo;
+            }
+        }
+
+        return  $aSlips;
+    }
+
+
+
+    /**
+     * Realiza a apropriacao das retenções
+     * @param EmpenhoFinanceiro $empenhoFinanceiro
+     * @throws Exception
+     */
+      public function apropriarRetencoes(EmpenhoFinanceiro $empenhoFinanceiro)
+      {
+
+          if (!APROPRIACAO_RETENCAO || $empenhoFinanceiro->isFolhaPagamento()) {
+              return;
+          }
+
+          $apropriacao = new \ECidade\Financeiro\Empenho\Retencao\Apropriacao\Apropriacao($empenhoFinanceiro, $this->iAnoUsu);
+          $apropriacao->setDataEvento(new \DateTime($this->dtDataUsu));
+          $apropriacao->apropriar($this->oDadosOrdem->e69_codnota, $this->oDadosOrdem->e50_codord, $this->getCodigoGrupoCorrente(), $this->getMovimentoAgenda());
+      }
+
+    /**
+     * @param EmpenhoFinanceiro $empenhoFinanceiro
+     * @throws Exception
+     */
+    public function estornarApropriacaoDasRetencoes(EmpenhoFinanceiro $empenhoFinanceiro)
+    {
+
+        if (!APROPRIACAO_RETENCAO || $empenhoFinanceiro->isFolhaPagamento()) {
+            return;
+        }
+
+        $apropriacao = new \ECidade\Financeiro\Empenho\Retencao\Apropriacao\Apropriacao($empenhoFinanceiro, $this->iAnoUsu);
+        $apropriacao->setDataEvento(new \DateTime($this->dtDataUsu));
+        $this->sRetornoAutentica  = $apropriacao->estornar($this->oDadosOrdem->e69_codnota, $this->oDadosOrdem->e50_codord,
+            $this->aRetencoes,
+            $this->getCodigoGrupoCorrente(),
+            $this->getMovimentoAgenda()
+        );
+        $this->iCodLanc  = implode(',', $apropriacao->getCodigosLancamentos());
+    }
+
+
+  /* [Extensão] ContratosPADRS: Atributos e Persistência do Tipo Instrumento Contratual */
 }

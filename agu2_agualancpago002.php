@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 $head1 = "LANÇADO & ARRECADADO - ÁGUA";
@@ -43,7 +43,7 @@ $pdf->SetFillColor(220);
 $alt = 5;
 
 $sqlconsumotipo = "SELECT * from aguaconsumotipo order by x25_codconsumotipo;";
-$resultconsumotipo = pg_exec($sqlconsumotipo) or die($sqlconsumotipo);
+$resultconsumotipo = db_query($sqlconsumotipo) or die($sqlconsumotipo);
 
 $array_tipos = array();
 $x23_valor_total=0;
@@ -58,46 +58,118 @@ $mediatotal_exer      = 0;
 
 for ($mes=1; $mes <= $mesfinal; $mes++) {
   
-  $sql = "select	x23_codconsumotipo, 
-  x25_descr, 
-  round(sum(x23_valor),2) as x23_valor, 
-  round(sum(k00_valor),2) as k00_valor,
-  count(distinct x22_matric) as quant_matric_calc,
-  count(distinct x22_matric_pago) as quant_matric_pago
-  from 
-  ( 
-  select	aguacalc.x22_matric, 
-  aguacalcval.x23_codconsumotipo, 
-  aguaconsumotipo.x25_descr, 
-  aguaconsumotipo.x25_receit, 
-  aguacalc.x22_numpre, 
-  aguacalcval.x23_valor,
-  case when arrepaga.k00_valor is null then 0 else aguacalc.x22_matric end as x22_matric_pago,
-  coalesce( arrepaga.k00_valor, 0) as k00_valor
-  --								max(case when disbanco.dtpago is null then arrepaga.k00_dtpaga else disbanco.dtpago end) as k00_dtpaga 
-  from aguacalc 
-  inner join aguacalcval on aguacalcval.x23_codcalc = aguacalc.x22_codcalc 
-  inner join aguaconsumotipo on aguaconsumotipo.x25_codconsumotipo = aguacalcval.x23_codconsumotipo 
-  left join arrepaga on arrepaga.k00_numpre = aguacalc.x22_numpre and arrepaga.k00_receit = aguaconsumotipo.x25_receit 
-  --					left join arreidret on arreidret.k00_numpre = arrepaga.k00_numpre and arreidret.k00_numpar = arrepaga.k00_numpar 
-  --					left join disbanco on arreidret.idret = disbanco.idret 
-  where x22_exerc = $anousu and x22_mes = $mes
-  group by	aguacalc.x22_matric, 
-  aguacalcval.x23_codconsumotipo, 
-  aguaconsumotipo.x25_descr, 
-  aguaconsumotipo.x25_receit, 
-  aguacalc.x22_numpre, 
-  aguacalcval.x23_valor,
-  case when arrepaga.k00_valor is null then 0 else aguacalc.x22_matric end, 
-  arrepaga.k00_valor
-  ) as x 
-  group by	x23_codconsumotipo, 
-  x25_descr
-  order by x23_codconsumotipo";
+  $sql = "
+    select x23_codconsumotipo, 
+           x25_descr, 
+           round(sum(valor_calculado),2) as x23_valor, 
+           round(sum(valor_pago+valor_pago_parcial),2) as k00_valor,
+           count(distinct x22_matric) as quant_matric_calc,
+           count(distinct x22_matric_pago)+count(distinct x22_matric_pago_parcial) as quant_matric_pago
+     from (
+                 select x23_codconsumotipo, 
+                        k02_descr as x25_descr,
+                        sum(x23_valor) as valor_calculado,
+                        0 as valor_pago,
+                        0 as valor_pago_parcial,
+                        count(x22_matric) as x22_matric,
+                        0 as x22_matric_pago,
+                        0 as x22_matric_pago_parcial
+                   from aguacalc
+             inner join aguacalcval         on x23_codcalc             = x22_codcalc 
+             inner join aguaconsumotipo     on x25_codconsumotipo      = x23_codconsumotipo
+             inner join tabrec              on k02_codigo              = x25_receit             
+                  where x22_exerc = $anousu
+                    and x22_mes = $mes
+               group by x23_codconsumotipo,
+                        k02_descr
+
+              union all
+
+                 select x23_codconsumotipo, 
+                        x25_descr,
+                        0 as valor_calculado,                        
+                        sum(k00_valor) as valor_pago,
+                        0 as valor_pago_parcial,
+                        0 as x22_matric,
+                        count(distinct x22_matric) as x22_matric_pago,
+                        0 as x22_matric_pago_parcial
+                   from (      select x23_codconsumotipo,
+                                      k02_descr as x25_descr,
+                                      x22_matric,
+                                      k00_numpre,
+                                      k00_numpar,
+                                      k00_receit,
+                                      k00_valor
+                                 from aguacalc
+                           inner join aguacalcval         on x23_codcalc             = x22_codcalc 
+                           inner join aguaconsumotipo     on x25_codconsumotipo      = x23_codconsumotipo
+                           inner join tabrec              on k02_codigo              = x25_receit             
+                           inner join arrepaga            on k00_numpre              = x22_numpre
+                                                         and k00_numpar              = x22_mes
+                                                         and k00_receit              = x25_receit
+                                where x22_exerc = $anousu
+                                  and x22_mes = $mes
+                             group by x23_codconsumotipo,
+                                      k02_descr,
+                                      x22_matric,
+                                      k00_numpre,
+                                      k00_numpar,
+                                      k00_receit,
+                                      k00_valor ) as valores_pagos
+               group by x23_codconsumotipo, 
+                        x25_descr
+
+              union all
+
+                 select x23_codconsumotipo, 
+                        x25_descr,
+                        0 as valor_calculado,                        
+                        0 as valor_pago,
+                        sum(k00_valor) as valor_pago_parcial,
+                        0 as x22_matric,
+                        0 as x22_matric_pago,
+                        count(distinct x22_matric) as x22_matric_pago_parcial
+                   from (      select x23_codconsumotipo,
+                                      k02_descr as x25_descr,
+                                      x22_matric,
+                                      arrepaga.k00_numpre,
+                                      arrepaga.k00_numpar,
+                                      arrepaga.k00_receit,
+                                      arrepaga.k00_valor
+                                 from aguacalc
+                           inner join aguacalcval         on x23_codcalc             = x22_codcalc 
+                           inner join aguaconsumotipo     on x25_codconsumotipo      = x23_codconsumotipo
+                           inner join tabrec              on k02_codigo              = x25_receit
+                           inner join arreckey            on arreckey.k00_numpre     = x22_numpre
+                                                         and arreckey.k00_numpar     = x22_mes
+                                                         and arreckey.k00_receit     = x25_receit
+                           inner join abatimentoarreckey  on k128_arreckey           = arreckey.k00_sequencial
+                           inner join abatimento          on k125_sequencial         = k128_abatimento
+                                                         and k125_tipoabatimento     = 1                                            
+                           inner join abatimentorecibo    on k127_abatimento         = k125_sequencial
+                           inner join recibo              on recibo.k00_numpre       = k127_numprerecibo
+                           inner join arrepaga            on arrepaga.k00_numpre     = recibo.k00_numpre
+                                                         and arrepaga.k00_numpar     = recibo.k00_numpar
+                                                         and arrepaga.k00_receit     = recibo.k00_receit
+                            left join aguaconsumo         on x19_codconsumo          = x22_codconsumo
+                                where x22_exerc = $anousu
+                                  and x22_mes = $mes
+                             group by x23_codconsumotipo,
+                                      k02_descr,
+                                      x22_matric,
+                                      arrepaga.k00_numpre,
+                                      arrepaga.k00_numpar,
+                                      arrepaga.k00_receit,
+                                      arrepaga.k00_valor ) as valores_pagos_parcial
+               group by x23_codconsumotipo, 
+                        x25_descr
+          ) as w
+ group by x23_codconsumotipo, 
+          x25_descr";
   
   if($tipo=="s") $sql="select sum (x23_valor) as x23_valor,sum (k00_valor) as k00_valor from ($sql) as x";
   
-  $result = pg_query($sql) or die($sql);
+  $result = db_query($sql) or die($sql);
   
   if($tipo=="a"){
     $pdf->Cell(49,$alt,"",0,0,"C",1);
@@ -259,7 +331,7 @@ for ($mes=1; $mes <= $mesfinal; $mes++) {
     $pdf->Cell(10,$alt,"",0,0,"R",1);
     $pdf->Cell(1,$alt,"",0,0,"C",1);
     $k00_valor_total_exer+=$k00_valor_total;
-    $pdf->Cell(18,$alt,db_formatar($k00_valor_total,"f"),0,0,"R",0);
+    $pdf->Cell(18,$alt,db_formatar($k00_valor_total_exer,"f"),0,0,"R",0);
     $pdf->Cell(1,$alt,"",0,0,"C",1);
     $pdf->Cell(10,$alt,"",0,0,"R",1);
     $pdf->Cell(1,$alt,"",0,0,"C",1);
@@ -312,6 +384,9 @@ for ($mes=1; $mes <= $mesfinal; $mes++) {
       //	$k00_valor_total+=$k00_valor;
       
     //}
+    
+    //$x23_valor_exerc = 0;
+    //$k00_valor_exerc = 0;
     
     for ($x=0; $x < pg_num_rows($result); $x++) {
       db_fieldsmemory($result, $x);

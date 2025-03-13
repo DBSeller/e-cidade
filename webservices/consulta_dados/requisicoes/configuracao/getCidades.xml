@@ -1,0 +1,18 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="cp05_codlocalidades"   label="codigo"   />
+    <campo campo="cp05_localidades"  label="descricao"   />
+    <campo campo="cp03_sigla"   label="estado"            />
+    <campo campo="cp03_estado"  label="estado_descricao"  />
+  </campos>
+  <from tabela="ceplocalidades" />
+    <juncoes>
+      <join tipo="inner" tabela="cepestados" condicao="cp03_sigla = cp05_sigla"  />
+    </juncoes>
+  <filtros>
+      <filtro label="uf" condicao=" cp05_sigla = upper('$uf')" obrigatorio="false" />
+  </filtros>
+  <agrupamento campos="" />
+  <ordenacao   campos="descricao" />
+</consulta>

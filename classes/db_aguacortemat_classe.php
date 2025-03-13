@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -491,7 +491,7 @@ class cl_aguacortemat {
     //if($matric==35551) {
     //  die($sql);
     //}
-    $result = pg_query($sql);
+    $result = db_query($sql);
 
     if(pg_numrows($result)==0) {
       return false;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,15 +30,15 @@ if(!isset($abas)){
   echo "<script>location.href='itb1_itbi005.php?db_opcao=2'</script>";
   exit;
 }
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_itbi_classe.php");
-include("classes/db_itburbano_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_itbirural_classe.php");
-include("classes/db_itbiruralcaract_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_itbi_classe.php"));
+include(modification("classes/db_itburbano_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_itbirural_classe.php"));
+include(modification("classes/db_itbiruralcaract_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clitbi = new cl_itbi;
@@ -132,7 +132,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Alterar
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmitbi.php");
+	include(modification("forms/db_frmitbi.php"));
 	?>
     </center>
 	</td>

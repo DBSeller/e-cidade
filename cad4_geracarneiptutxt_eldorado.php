@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,29 +25,29 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_libtributario.php");
-require_once("dbforms/db_layouttxt.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_iptucalc_classe.php");
-require_once("classes/db_iptunump_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_massamat_classe.php");
-require_once("classes/db_iptuender_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("classes/db_db_docparag_classe.php");
-require_once("classes/db_arrematric_classe.php");
-require_once("classes/db_listadoc_classe.php");
-require_once("classes/db_db_layouttxtgeracao_classe.php");
-require_once("model/regraEmissao.model.php");
-require_once("model/convenio.model.php");
-require_once("model/recibo.model.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libtributario.php"));
+require_once(modification("dbforms/db_layouttxt.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_iptucalc_classe.php"));
+require_once(modification("classes/db_iptunump_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_massamat_classe.php"));
+require_once(modification("classes/db_iptuender_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_db_docparag_classe.php"));
+require_once(modification("classes/db_arrematric_classe.php"));
+require_once(modification("classes/db_listadoc_classe.php"));
+require_once(modification("classes/db_db_layouttxtgeracao_classe.php"));
+require_once(modification("model/regraEmissao.model.php"));
+require_once(modification("model/convenio.model.php"));
+require_once(modification("model/recibo.model.php"));
 
 $cliptucalc            = new cl_iptucalc;
 $cliptuender           = new cl_iptuender;
@@ -146,7 +146,7 @@ if (isset($unica) && $unica != "") {
 </body>
 </html>
 <?
-$rsPref = pg_query("select munic from db_config where prefeitura is true ");
+$rsPref = db_query("select munic from db_config where prefeitura is true ");
 db_fieldsMemory($rsPref,0);
 if ($munic == 'ALEGRETE'){
    $iTamCodArrecadao = 13;
@@ -163,7 +163,7 @@ $sSqlReceitas .= "select j18_rpredi as j18_receit from cfiptu where j18_anousu =
 $sSqlReceitas .= "union ";
 $sSqlReceitas .= "select distinct j23_recdst as j18_receit from iptucalcconfrec where j23_anousu = $anousu and j23_tipo = 1";
 
-$rsReceitas = pg_query($sSqlReceitas);
+$rsReceitas = db_query($sSqlReceitas);
 $iLinhasRec = pg_numrows($rsReceitas);
 
 if($iLinhasRec>0) {
@@ -370,7 +370,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
         $sqlnaogera = "	select * from iptunaogeracarne 
         inner join iptunaogeracarnesetqua on j66_sequencial = j67_naogeracarne
         where j67_setor = '$j34_setor' and j67_quadra = '$j34_quadra' ";
-        $resultgera = pg_exec($sqlnaogera) or die($sqlnaogera);
+        $resultgera = db_query($sqlnaogera) or die($sqlnaogera);
         if (pg_numrows($resultgera) > 0) {
           continue;
         }
@@ -379,7 +379,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
         inner join iptunaogeracarnecgm on j66_sequencial = j68_naogeracarne
         where j68_numcgm = $z01_cgmpri
         ";
-        $resultgeracgm = pg_exec($sqlnaogeracgm) or die($sqlnaogeracgm);
+        $resultgeracgm = db_query($sqlnaogeracgm) or die($sqlnaogeracgm);
         if (pg_numrows($resultgeracgm) > 0) {
           continue;
         }
@@ -394,7 +394,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
 
 				$sqvalorMax  = "select sum(k00_valor) as viptu from arrecad where k00_numpre = $j20_numpre ";
 				
-				$rsValorMax = pg_query($sqvalorMax) or die($sqvalorMax);
+				$rsValorMax = db_query($sqvalorMax) or die($sqvalorMax);
 				$intNumrowsValorMax = pg_numrows($rsValorMax);
 				if($intNumrowsValorMax > 0){
 					db_fieldsmemory($rsValorMax,0);
@@ -432,12 +432,12 @@ for ($vez = 0; $vez <= 1; $vez++) {
 				
         
         $sqlfin = "select * from iptunump where j20_anousu = $anousu and j20_matric = $j23_matric";
-        $resultfin = pg_exec($sqlfin) or die($sqlfin);
+        $resultfin = db_query($sqlfin) or die($sqlfin);
         if (pg_numrows($resultfin) > 0) {
           db_fieldsmemory($resultfin, 0);
           
           $sqlsetfisc = "select * from lotesetorfiscal inner join iptubase on j01_idbql = j91_idbql where j01_matric = $j23_matric";
-          $resultsetfisc = pg_exec($sqlsetfisc);
+          $resultsetfisc = db_query($sqlsetfisc);
           if (pg_numrows($resultsetfisc) == 0) {
             $j91_codigo = 0;
           } else {
@@ -457,7 +457,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                         order by k140_multa
                         limit 1";
           
-          $resultjuros = pg_exec($sqljuros);
+          $resultjuros = db_query($sqljuros);
           if (pg_numrows($resultjuros) == 0) {
             $k02_juros  = 0;
             $k140_faixa = 0;
@@ -473,7 +473,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
           $sqlisen .= "        inner join tipoisen on j46_tipo   = j45_tipo ";
           $sqlisen .= "  where j46_matric = {$j23_matric}";
           
-          $resultisen = pg_exec($sqlisen);
+          $resultisen = db_query($sqlisen);
           if (pg_numrows($resultisen) == 0) {
             
             $j46_tipo = 0;
@@ -501,7 +501,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
           k00_dtvenc,
           k00_tipo
           order by k00_numpar";
-          $resultfinarrecad = pg_exec($sqlarrecad) or die($sqlarrecad);
+          $resultfinarrecad = db_query($sqlarrecad) or die($sqlarrecad);
           
           if (pg_numrows($resultfinarrecad) == 0) {
             continue;
@@ -521,7 +521,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             where m.k00_numpre = $j20_numpre and
             k00_numpar = $parcobrig 
             limit 1";
-            $resultfinparcobrig = pg_exec($sqlparcobrig) or die($sqlparcobrig);
+            $resultfinparcobrig = db_query($sqlparcobrig) or die($sqlparcobrig);
             
             if (pg_numrows($resultfinparcobrig) == 0) {
               $passar = false;
@@ -536,7 +536,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             inner join arrecad a on m.k00_numpre = a.k00_numpre 
             where 	m.k00_numpre = $j20_numpre and 
             a.k00_dtvenc < '" . date("Y-m-d", db_getsession("DB_datausu")) . "'";
-            $resultfinpripaga = pg_exec($sqlfinpripaga) or die($sqlfinpripaga);
+            $resultfinpripaga = db_query($sqlfinpripaga) or die($sqlfinpripaga);
             
             if (pg_numrows($resultfinpripaga) > 0) {
               $passar = false;
@@ -550,7 +550,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             inner join arrecant t on m.k00_numpre = t.k00_numpre 
             where m.k00_numpre = $j20_numpre
             limit 1";
-            $resultfinpripaga = pg_exec($sqlfinpripaga) or die($sqlfinpripaga);
+            $resultfinpripaga = db_query($sqlfinpripaga) or die($sqlfinpripaga);
             
             if (pg_numrows($resultfinpripaga) == 1) {
               $passar = false;
@@ -716,7 +716,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             count(*) as quant_taxas
             from iptucalv
             where j21_anousu = $anousu and j21_matric = $j23_matric";
-            $resultcalc = pg_exec($sqlcalc) or die($sqlcalc);
+            $resultcalc = db_query($sqlcalc) or die($sqlcalc);
             if (pg_numrows($resultcalc) == 0) {
               $total_j21_valor = 0;
               $quant_taxas = 0;
@@ -738,7 +738,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             where 	j21_anousu = $anousu and j21_matric = $j23_matric and
             j21_receit in (select j19_receit from iptutaxa where j19_anousu = $anousu)
             ";
-            $resultcalc = pg_exec($sqlcalc) or die($sqlcalc);
+            $resultcalc = db_query($sqlcalc) or die($sqlcalc);
             if (pg_numrows($resultcalc) == 0) {
               $total_j21_valor = 0;
               $quant_taxas = 0;
@@ -764,7 +764,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             $sqliptu .= "      where j20_anousu = {$anoant} " ; 
             $sqliptu .= "        and k00_matric = {$j23_matric} ) as x";
             
-            $resultiptu = pg_exec($sqliptu) or die($sqliptu);
+            $resultiptu = db_query($sqliptu) or die($sqliptu);
             
             $iptucor     	 = 0;
             $iptujuros 	   = 0;
@@ -813,7 +813,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             left  join facevalor on j81_face = j37_face and j81_anousu = $anousu
             inner join iptubase on j01_matric = j39_matric
             where j39_matric = $j23_matric and j39_dtdemo is null and j01_baixa is null limit 1";
-            $resultvalorm2 = pg_exec($sqlvalorm2);
+            $resultvalorm2 = db_query($sqlvalorm2);
             if (pg_numrows($resultvalorm2) == 0) {
               
               $sqlvalorm2 = "	select 	j49_face as j37_face, 
@@ -825,7 +825,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
               left  join facevalor on j81_face = j37_face and j81_anousu = $anousu
               inner join testada on j49_face = j36_face and j49_idbql = j36_idbql
               where j49_idbql = $j01_idbql";
-              $resultvalorm2 = pg_exec($sqlvalorm2);
+              $resultvalorm2 = db_query($sqlvalorm2);
               if (pg_numrows($resultvalorm2) == 0) {
                 
                 if ($gerar == "dados") {
@@ -851,7 +851,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
               }
             }
             
-            $resultcalc = pg_exec("select sum(j22_valor) as j22_valor from iptucale where	j22_anousu = $anousu and j22_matric = $j23_matric");
+            $resultcalc = db_query("select sum(j22_valor) as j22_valor from iptucale where	j22_anousu = $anousu and j22_matric = $j23_matric");
             
             if (pg_numrows($resultcalc) > 0) {
               db_fieldsmemory($resultcalc, 0);
@@ -895,7 +895,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                               and r.k00_dtoper = '$operunica' 
                               and k00_percdes = $percunica";
                               
-								$resultfin = pg_exec($sqlfin) or die($sqlfin);
+								$resultfin = db_query($sqlfin) or die($sqlfin);
 								if ($gerar == "layout"){
 								  	$sqlLayout = "select r.k00_percdes,r.k00_dtvenc                    							 
                            						  from recibounica r
@@ -903,7 +903,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                                          and r.k00_dtoper = '$operunica' 
                                          and k00_percdes = $percunica
                                        limit 1";
-     								$rsLaytout = pg_exec($sqlLayout) or die($sqlLayout); 
+     								$rsLaytout = db_query($sqlLayout) or die($sqlLayout); 
                     db_fieldsMemory($rsLaytout, 0);
 										fputs($clabre_arquivo->arquivo,db_contador("OPERUNICA".$k00_percdes,"OPERACAO/LANCAMENTO DA UNICA DE $k00_percdes% DE DESCONTO COM VENCIMENTO EM " . db_formatar($k00_dtvenc,'d'),$contador,10));
 										fputs($clabre_arquivo->arquivo,db_contador("VENCUNICA".$k00_percdes,"VENCIMENTO",$contador,10));
@@ -978,7 +978,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                                        k03_tipo
                                   from arretipo
                                  where k00_tipo = {$k00_tipo}";
-                        $result = pg_query($sql);         
+                        $result = db_query($sql);         
                         
                        if (pg_numrows($result)==0){
                           echo "O código do banco não esta cadastrado no arquivo arretipo para este tipo!";
@@ -1017,7 +1017,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
 										
 										/* PARA PADRAO COBRANCA */
 										$sqltipo = " select k00_tipo from arrecad where k00_numpre = $k00_numpre limit 1 ";
-										$rsTipo  = pg_query($sqltipo);
+										$rsTipo  = db_query($sqltipo);
 										if (pg_numrows($rsTipo) == 0) {
 											echo "Erro ao processar tipos de debito! Contate suporte!";	
 											exit;
@@ -1143,7 +1143,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                     // calcula valor
                     $data_calc   = date("Y-m-d",db_getsession("DB_datausu"));
                     $sql_calcula = "select fc_calcula({$k00_numpre}, {$k00_numpar}, 0, '{$data_calc}', '{$data_calc}', $anousu)";
-                    $rsCalcula = pg_query($sql_calcula);
+                    $rsCalcula = db_query($sql_calcula);
                     if(pg_numrows($rsCalcula)>0) {
 
                       db_fieldsmemory($rsCalcula, 0);
@@ -1211,7 +1211,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                                       k03_tipo
                                  from arretipo
                                 where k00_tipo = {$k00_tipo}";
-                      $result = pg_query($sql);         
+                      $result = db_query($sql);         
                       
                       if (pg_numrows($result)==0){
                          echo "O código do banco não esta cadastrado no arquivo arretipo para este tipo!";
@@ -1368,7 +1368,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
               arrepaga.k00_numpar = $parcpaga
               order by j20_matric) as x;
               ";
-              $resultpagas = pg_exec($sqlpagas) or die($sqlpagas);
+              $resultpagas = db_query($sqlpagas) or die($sqlpagas);
               
               if ($gerar == "dados") {
                 if (pg_numrows($resultpagas) == 0) {
@@ -1406,7 +1406,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             from iptunump 
             inner join arrepaga on arrepaga.k00_numpre = j20_numpre 
             where j20_numpre = $j20_numpre) as x";
-            $resultpagas = pg_exec($sqlpagas) or die($sqlpagas);
+            $resultpagas = db_query($sqlpagas) or die($sqlpagas);
             if (pg_numrows($resultpagas) == 0) {
               $valorpago = 0;
             } else {
@@ -1430,7 +1430,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             k00_numpar,k00_tipo
             order by 	k00_numpre, 
             k00_numpar";
-            $resultfin2 = pg_query($sqlfin2) or die($sqlfin2);
+            $resultfin2 = db_query($sqlfin2) or die($sqlfin2);
             
             if ($gerar == "dados") {
 
@@ -1490,7 +1490,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             $sqlcalc .= " order by j17_codhis ";
 //	    die($sqlcalc);
 
-            $resultcalc = pg_exec($sqlcalc) or die($sqlcalc);
+            $resultcalc = db_query($sqlcalc) or die($sqlcalc);
             if (pg_numrows($resultcalc) > 0) {
               
               for ($vlr = 0; $vlr < pg_numrows($resultcalc); $vlr ++) {
@@ -1547,7 +1547,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             inner join testada on j36_idbql = j01_idbql 
             inner join testpri on j49_idbql = testada.j36_idbql 
             where j01_matric = $j23_matric";
-            $resulttestada = pg_exec($sqltestada) or die($sqltestada);
+            $resulttestada = db_query($sqltestada) or die($sqltestada);
             if (pg_numrows($resulttestada) > 0) {
               db_fieldsmemory($resulttestada, 0);
             } else {
@@ -1558,7 +1558,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             from iptuconstr 
             where j39_dtdemo is null and 
             j39_matric = $j23_matric";
-            $resultsqlareaconstr = pg_exec($sqlareaconstr) or die($sqlareaconstr);
+            $resultsqlareaconstr = db_query($sqlareaconstr) or die($sqlareaconstr);
             if (pg_numrows($resulttestada) > 0) {
               db_fieldsmemory($resultsqlareaconstr, 0);
             } else {
@@ -1568,7 +1568,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             $sqliptuant = "select	*
             from iptuant
             where j40_matric = $j23_matric";
-            $resultiptuant = pg_exec($sqliptuant) or die($sqliptuant);
+            $resultiptuant = db_query($sqliptuant) or die($sqliptuant);
             if (pg_numrows($resultiptuant) > 0) {
               db_fieldsmemory($resultiptuant, 0);
             } else {
@@ -1595,7 +1595,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             	
               // recibo com parcelas agrupadas a pagar        
               $sqltipo = "select q92_tipo as tipodeb from cfiptu inner join cadvencdesc on q92_codigo = j18_vencim where j18_anousu = $anousu";
-              $resulttipo = pg_exec($sqltipo) or die($sqltipo);
+              $resulttipo = db_query($sqltipo) or die($sqltipo);
               
               if (pg_numrows($resulttipo) == 0) {
                 $tipodeb = 1;
@@ -1603,7 +1603,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                 db_fieldsmemory($resulttipo,0);
               }
               
-              $result = pg_exec("select k00_tipo,k00_codbco,k00_codage,k00_descr,k00_hist1,k00_hist2,k00_hist3,k00_hist4,k00_hist5,k00_hist6,k00_hist7,k00_hist8,k03_tipo from arretipo where k00_tipo = $tipodeb");
+              $result = db_query("select k00_tipo,k00_codbco,k00_codage,k00_descr,k00_hist1,k00_hist2,k00_hist3,k00_hist4,k00_hist5,k00_hist6,k00_hist7,k00_hist8,k03_tipo from arretipo where k00_tipo = $tipodeb");
               
               if(pg_numrows($result)==0){
                 echo "O código do banco não esta cadastrado no arquivo arretipo para este tipo!";
@@ -1626,7 +1626,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
               from arrematric m 
               inner join arrecad a on m.k00_numpre = a.k00_numpre 
               where m.k00_numpre = $j20_numpre and a.k00_dtvenc > current_date";
-              $resultfinvcto = pg_exec($sqlfinvcto);
+              $resultfinvcto = db_query($sqlfinvcto);
               
               if (pg_numrows($resultfinvcto) == 0) {
                 db_msgbox("Problema ao definir vcto do recibo! Contate suporte!");
@@ -1638,7 +1638,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
               from arrematric m 
               inner join arrecad a on m.k00_numpre = a.k00_numpre 
               where m.k00_numpre = $j20_numpre and a.k00_dtvenc < current_date";
-              $resultfinrecibo = pg_exec($sqlfinrecibo) or die($sqlfinrecibo);
+              $resultfinrecibo = db_query($sqlfinrecibo) or die($sqlfinrecibo);
               
               try {
                 $oRecibo = new recibo(2, null, 5);
@@ -1676,7 +1676,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
               db_fim_transacao();
               
               $sql = "select sum(k00_valor) as valorrecibo from recibopaga where k00_numnov = $k03_numpre";
-              $recibo = pg_exec($sql);
+              $recibo = db_query($sql);
               db_fieldsmemory($recibo,0,true);
               
               $numpre  = db_numpre($k03_numpre).'000';
@@ -1748,7 +1748,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
               inner join arrecad on arrematric.k00_numpre = arrecad.k00_numpre
               where j20_anousu = $anousu) as x
               order by k00_receit	";
-              $resultfinarrecadrecgeral = pg_exec($sqlarrecadrecgeral) or die($sqlarrecadrecgeral);
+              $resultfinarrecadrecgeral = db_query($sqlarrecadrecgeral) or die($sqlarrecadrecgeral);
               
               if (pg_numrows($resultfinarrecadrecgeral) > 0) {
                 for ($unicont = 1; $unicont <= 12; $unicont ++) {
@@ -1778,7 +1778,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                   inner join arrecad on arrematric.k00_numpre = arrecad.k00_numpre
                   where iptunump.j20_anousu = $anousu and iptunump.j20_matric = $j23_matric and k00_numpar = $unicont and 
                   case when $k00_receit in ($sListaReceitas) then k00_receit in ($sListaReceitas) else k00_receit = $k00_receit end";
-                  $resultfinarrecadrec = pg_exec($sqlarrecadrec) or die($sqlarrecadrec);
+                  $resultfinarrecadrec = db_query($sqlarrecadrec) or die($sqlarrecadrec);
                   
                   if (pg_numrows($resultfinarrecadrec) == 0) {
                     $k00_valor  = 0;
@@ -1790,7 +1790,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                   fputs($clabre_arquivo->arquivo, str_pad($k00_receit,3,"0", STR_PAD_LEFT));
                   
                   $sqlimposto = "select $k00_receit in ($sListaReceitas) as imposto";
-                  $resultimposto = pg_exec($sqlimposto) or die($sqlimposto);
+                  $resultimposto = db_query($sqlimposto) or die($sqlimposto);
                   db_fieldsmemory($resultimposto , 0);
                   
                   if ($imposto == 't') {
@@ -1810,7 +1810,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
                     case when $k00_receit in ($sListaReceitas) then j56_receit in ($sListaReceitas) else j56_receit = $k00_receit end";
                     
                   }
-                  $resultisencao = pg_exec($sqlisencao) or die($sqlisencao);
+                  $resultisencao = db_query($sqlisencao) or die($sqlisencao);
                   
                   if (pg_numrows($resultisencao) == 0 or $k00_valor > 0) {
                     fputs($clabre_arquivo->arquivo, db_formatar($k00_valor, 'f', ' ', 15));
@@ -1833,7 +1833,7 @@ for ($vez = 0; $vez <= 1; $vez++) {
             
 ########################################################################################################################            
 // Melhoria na emissao para gerar parcelas e unicas opcionais de vencimentos, aplicando correção
-include("cad4_geracarneiptutxtParcelasOpcionais.php");  
+include(modification("cad4_geracarneiptutxtParcelasOpcionais.php"));  
             
 ########################################################################################################################  
                         
@@ -1856,7 +1856,7 @@ include("cad4_geracarneiptutxtParcelasOpcionais.php");
           fputs($clabre_arquivo->arquivo, "IMPRIMIR APENAS REGISTROS COM ENDERECO DE ENTREGA VALIDOS: " . (!empty($entregavalido)?"SIM":"NAO"));
           
           $sqlnaogeracgm = "select j68_numcgm, z01_nome from iptunaogeracarnecgm inner join cgm on z01_numcgm = j68_numcgm order by j68_numcgm";
-          $resultnaogeracgm = pg_exec($sqlnaogeracgm) or die($sqlnaogeracgm);
+          $resultnaogeracgm = db_query($sqlnaogeracgm) or die($sqlnaogeracgm);
           
           if (pg_numrows($resultnaogeracgm) > 0) {
             fputs($clabre_arquivo->arquivo, "{$sQuebraLinha}{$sQuebraLinha}{$sQuebraLinha}");

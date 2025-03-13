@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,34 +25,38 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_tfd_acompanhantes_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_tfd_acompanhantes_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
-db_postmemory($HTTP_POST_VARS);
+db_postmemory( $_POST );
 
-$oIframeAE = new cl_iframe_alterar_excluir();
-
-$oDaotfd_acompanhantes = db_utils::getdao('tfd_acompanhantes');
+$oIframeAE                    = new cl_iframe_alterar_excluir();
+$oDaotfd_acompanhantes        = db_utils::getdao('tfd_acompanhantes');
 $oDaotfd_motivoacompanhamento = db_utils::getdao('tfd_motivoacompanhamento');
-$oDaocgs_und = db_utils::getdao('cgs_und');
+$oDaocgs_und                  = db_utils::getdao('cgs_und');
 
 $db_opcao = 1;
 $db_botao = true;
 
-if(isset($incluir)) {
+if( isset( $incluir ) ) {
+
+  if( $tf01_i_cgsund == $tf13_i_cgsund ) {
+
+    db_msgbox( "Inclusão não permitida. CGS do acompanhante é o mesmo do paciente." );
+    db_redireciona( "tfd4_tfd_acompanhantes001.php?iPedido=" . $tf13_i_pedidotfd );
+  }
 
   db_inicio_transacao();
   $oDaotfd_acompanhantes->tf13_i_anulado = 2;
   $oDaotfd_acompanhantes->incluir($tf13_i_codigo);
   db_fim_transacao($oDaotfd_acompanhantes->erro_status == '0' ? true : false);
-
 }
 ?>
 <html>
@@ -67,48 +71,28 @@ db_app::load("prototype.js, datagrid.widget.js, strings.js, webseller.js");
 db_app::load(" grid.style.css");
 ?>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
-<center>
-<br><br>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-      <fieldset style='width: 80%;'> <legend><b>Acompanhantes</b></legend>
-	      <?
-	      require_once("forms/db_frmtfd_acompanhantes.php");
-        ?>
-      </fieldset>
-    </center>
-	</td>
-  </tr>
-</table>
-</center>
-<?
-//db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
+<body class="body-container">
+  <?php
+  require_once(modification("forms/db_frmtfd_acompanhantes.php"));
+  ?>
 </body>
 </html>
 <script>
 js_tabulacaoforms("form1","tf13_i_cgsund",true,1,"tf13_i_cgsund",true);
 </script>
-<?
+<?php
 if(isset($incluir)) {
 
   if($oDaotfd_acompanhantes->erro_status=="0") {
 
     $oDaotfd_acompanhantes->erro(true,false);
-    $db_botao=true;
+    $db_botao = true;
     echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-
   } else {
 
     $oDaotfd_acompanhantes->erro(true, false);
     db_redireciona('tfd4_tfd_acompanhantes001.php?tf13_i_pedidotfd='.
                    $tf13_i_pedidotfd.'&tf01_i_cgsund=\''.
                    '+document.getElementById(\'tf01_i_cgsund\').value+\'&z01_v_nome='.$z01_v_nome);
-
-
   }
 }
-?>

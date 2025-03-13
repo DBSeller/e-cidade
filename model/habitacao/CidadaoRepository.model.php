@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -111,6 +111,34 @@
      */
     public static function getTotalCidadoes() {
       return count(CidadaoRepository::getInstance()->aCidadoes);
+    }
+
+    /**
+     * Retorna uma coleção de cidadãos por nome e cpf
+     *
+     * @param string $sNomeCidadao nome do cidadao
+     * @param string $oDataNascimento data de nascimento
+     * @return Cidadao[] Coleção de Cidadãos
+     */
+    public static function getCidadaoPorNomeCpf($sNomeCidadao, $sCpf) {
+
+      $oDaoCidadao   = new cl_cidadao();
+      $sWhere        = "ov02_nome                ilike '{$sNomeCidadao}'";
+      $sWhere       .= " and ov02_cnpjcpf        = '{$sCpf}'";
+      $sSqlCidadao   = $oDaoCidadao->sql_query(null, null, "ov02_sequencial", null, $sWhere);
+      $rsCidadao     = $oDaoCidadao->sql_record($sSqlCidadao);
+      $aCidadaos     = array();
+
+      if ($rsCidadao && $oDaoCidadao->numrows > 0) {
+
+        for ($iLinhas = 0; $iLinhas < $oDaoCidadao->numrows; $iLinhas++) {
+
+          $iCodigoCidadao = db_utils::fieldsMemory($rsCidadao, $iLinhas)->ov02_sequencial;
+          array_push($aCidadaos, CidadaoRepository::getCidadaoByCodigo($iCodigoCidadao));
+        }
+      }
+
+      return $aCidadaos;
     }
 
     /**

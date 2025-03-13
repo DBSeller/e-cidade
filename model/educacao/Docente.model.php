@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,7 +29,7 @@
  * Classe para conrole das informações do docente
  * @package educacao
  * @author Fabio Esteves - fabio.esteves@dbseller.com.br
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.12 $
  */
 class Docente {
 
@@ -51,38 +51,139 @@ class Docente {
    */
   private $aDisciplinas;
 
-
+  /**
+   * Coleção das atividades do docente
+   * @var array
+   */
   private $aListaAtividades;
 
+  /**
+   * Instância de CGM
+   * @var CgmBase|CgmFisico|CgmJuridico
+   */
   private $oCgm;
+
   /**
    * Array de todas as turmas que o docente leciona em todas as escolas
    * @var array Turmas
    */
-  private $aTurmas;
+  private $aTurmas = array();
+
+  /**
+   * Número do NIS
+   * @var string
+   */
+  private $sNis = '';
+
+  /**
+   * Número do Passaporte
+   * @var string
+   */
+  private $sPassaporte = '';
+
+  /**
+   * Sigla da UF da Identidade
+   * @var string
+   */
+  private $sUfIdentidadeSigla = '';
+
+  /**
+   * Data de expedição da Identidade
+   * @var DBDate
+   */
+  private $oDataExpedicaoIdentidade = null;
+
+  /**
+   * Orgão emissor da Identidade
+   * @var string
+   */
+  private $sOrgaoEmissorIdentidade = '';
+
+  /**
+   * Complemento dos documentos do Recurso Humano
+   * @var string
+   */
+  private $sComplemento = '';
+
+  /**
+   * Titulo eleitoral
+   * @var string
+   */
+  private $sTituloEleitoral = '';
+
+  /**
+   * Zona Eleitoral
+   * @var string
+   */
+  private $sZonaEleitoral = '';
+
+  /**
+   * Seção Eleitoral
+   * @var string
+   */
+  private $sSecaoEleitoral = '';
+
+  /**
+   * Número do CTPS
+   * @var string
+   */
+  private $sCtps = '';
+
+  /**
+   * Número de Série do CTPS
+   * @var string
+   */
+  private $sSerieCtps = '';
+
+  /**
+   * Sígla da UF do CTPS
+   * @var string
+   */
+  private $sSiglaUfCtps = '';
+
+  /**
+   * Número do PIS/PASEP
+   * @var string
+   */
+  private $sPisPasep = '';
 
   public function __construct($iCodigoDocente) {
 
     if (!empty($iCodigoDocente)) {
 
-      $this->iCodigoDocente = $iCodigoDocente;
-      $this->oCgm           = CgmFactory::getInstanceByCgm($iCodigoDocente);
-      $oDaoRecHumano        = db_utils::getDao("rechumano");
-      $sWhereListaAtividades = " (rh01_numcgm = {$iCodigoDocente} or ed285_i_cgm = {$iCodigoDocente})";
-      $sSqlListaAtividades  = $oDaoRecHumano->sql_query_escola(null,
-                                                               "distinct ed20_i_codigo",
+      $this->iCodigoDocente    = $iCodigoDocente;
+      $this->oCgm              = CgmFactory::getInstanceByCgm($iCodigoDocente);
+      $oDaoRecHumano           = new cl_rechumano();
+      $sCamposListaAtividades  = " distinct ed20_i_codigo, ed20_c_nis, ed20_c_passaporte, censoufident.ed260_c_sigla, ";
+      $sCamposListaAtividades .= " ed20_d_dataident, ed20_c_identcompl, ed132_c_descr, rh16_titele, rh16_zonael, ";
+      $sCamposListaAtividades .= " rh16_secaoe, rh16_ctps_n, rh16_ctps_s, rh16_ctps_uf, rh16_pis ";
+      $sWhereListaAtividades   = " (rh01_numcgm = {$iCodigoDocente} or ed285_i_cgm = {$iCodigoDocente})";
+      $sSqlListaAtividades     = $oDaoRecHumano->sql_query_escola(null,
+                                                               $sCamposListaAtividades,
                                                                null,
                                                                $sWhereListaAtividades
                                                               );
-      $rsListaAtividades    = $oDaoRecHumano->sql_record($sSqlListaAtividades);
-      $iTotalLinhas         = $oDaoRecHumano->numrows;
+      $rsListaAtividades      = $oDaoRecHumano->sql_record($sSqlListaAtividades);
+      $iTotalLinhas           = $oDaoRecHumano->numrows;
 
       if ($iTotalLinhas > 0) {
 
         for ($iContador = 0; $iContador < $iTotalLinhas; $iContador++) {
-
           $oDadosListaAtividades = db_utils::fieldsMemory($rsListaAtividades, $iContador);
-          $this->aListaAtividades[] = $oDadosListaAtividades->ed20_i_codigo;
+          $this->aListaAtividades[]       = $oDadosListaAtividades->ed20_i_codigo;
+          $this->sNis                     = empty($this->sNis)        ? $oDadosListaAtividades->ed20_c_nis        : $this->sNis;
+          $this->sPassaporte              = empty($this->sPassaporte) ? $oDadosListaAtividades->ed20_c_passaporte : $this->sPassaporte;
+          $this->sUfIdentidadeSigla       = empty($this->sUfIdentidadeSigla) ? $oDadosListaAtividades->ed260_c_sigla : $this->sUfIdentidadeSigla;
+          $this->oDataExpedicaoIdentidade = empty($this->oDataExpedicaoIdentidade) && !empty( $oDadosListaAtividades->ed20_d_dataident ) ? new DBDate($oDadosListaAtividades->ed20_d_dataident) : $this->oDataExpedicaoIdentidade;
+          $this->sComplemento             = empty($this->sComplemento) ? $oDadosListaAtividades->ed20_c_identcompl : $this->sComplemento;
+          $this->sOrgaoEmissorIdentidade  = empty($this->sOrgaoEmissorIdentidade) ? $oDadosListaAtividades->ed132_c_descr : $this->sOrgaoEmissorIdentidade;
+          $this->sTituloEleitoral         = empty($this->sTituloEleitoral) ? $oDadosListaAtividades->rh16_titele : $this->sTituloEleitoral;
+          $this->sZonaEleitoral           = empty($this->sZonaEleitoral) ? $oDadosListaAtividades->rh16_zonael : $this->sZonaEleitoral;
+          $this->sSecaoEleitoral          = empty($this->sSecaoEleitoral) ? $oDadosListaAtividades->rh16_secaoe : $this->sSecaoEleitoral;
+          $this->sCtps                    = empty($this->sCtps) ? $oDadosListaAtividades->rh16_ctps_n : $this->sCtps;
+          $this->sSerieCtps               = empty($this->sSerieCtps) ? $oDadosListaAtividades->rh16_ctps_s : $this->sSerieCtps;
+          $this->sSiglaUfCtps             = empty($this->sSiglaUfCtps) ? $oDadosListaAtividades->rh16_ctps_uf : $this->sSiglaUfCtps;
+          $this->sPisPasep                = empty($this->sPisPasep) ? $oDadosListaAtividades->rh16_pis : $this->sPisPasep;
         }
       }
     }
@@ -106,8 +207,7 @@ class Docente {
 
   /**
    * Retorna um array de disciplinas do docente
-   * @param integer $iCodigoRecHumano
-   * @return array Disciplina
+   * @return Disciplina[]
    */
   public function getDisciplinas() {
 
@@ -132,7 +232,7 @@ class Docente {
           for ($iContador = 0; $iContador < $iTotalLinhas; $iContador++) {
 
             $oDadosRelacaoTrabalho = db_utils::fieldsMemory($rsRelacaoTrabalho, $iContador);
-            $oDisciplina           = new Disciplina($oDadosRelacaoTrabalho->ed12_i_codigo);
+            $oDisciplina           = DisciplinaRepository::getDisciplinaByCodigo( $oDadosRelacaoTrabalho->ed12_i_codigo );
             $this->aDisciplinas[]  = $oDisciplina;
           }
           unset($oDisciplina);
@@ -174,12 +274,12 @@ class Docente {
    */
   public function getTurmas() {
 
-    if (!isset($this->aTurmas) && count($this->aTurmas) == 0) {
+    if ( isset($this->aTurmas) && count($this->aTurmas) == 0 ) {
 
       if (count($this->aListaAtividades) > 0) {
 
         $sListaRecursoHumano    = implode(",", $this->aListaAtividades);
-        $oDaoRegenciaHorario    = db_utils::getDao("regenciahorario");
+        $oDaoRegenciaHorario    = new cl_regenciahorario();
         $sCamposRegenciaHorario = " DISTINCT ed57_i_codigo ";
         $sWhereRegenciaHorario  = " ed58_i_rechumano in({$sListaRecursoHumano}) and ed58_ativo is true ";
         $sOrderRegenciaHorario  = " ed57_i_codigo ";
@@ -207,11 +307,13 @@ class Docente {
   /**
    * Retorna as turmas que o docente leciona por escola
    * @param Escola $oEscola
-   * @return array Turma
+   * @return Turma[]
    */
   public function getTurmasPorEscola(Escola $oEscola) {
 
     $aTurmaPorEscola = array();
+    $this->getTurmas();
+
     foreach ($this->aTurmas as $oTurma) {
 
       if ($oTurma->getEscola()->getCodigo() == $oEscola->getCodigo()) {
@@ -242,7 +344,9 @@ class Docente {
    * @return array
    */
   public function getAtividades(Escola $oEscola) {
-    
+
+    $aAtividades = array();
+
     if (count($this->aListaAtividades) > 0) {
       
       $aAtividades         = array(); 
@@ -265,5 +369,140 @@ class Docente {
     }
     return $aAtividades;
   }
+
+  /**
+   * Retorna a Identidade do CGM
+   * @return string
+   */
+  public function getIdentidade() {
+    return $this->oCgm->getIdentidade();
+  }
+
+  /**
+   * Retorna o CPF do CGM
+   * @return string
+   */
+  public function getCpf() {
+    return $this->oCgm->getCpf();
+  }
+
+  /**
+   * Retorna o número NIS do Recurso Humano
+   * @return string
+   */
+  public function getNis() {
+    return $this->sNis;
+  }
+
+  /**
+   * Retorna o passaporte do Recurso Humano
+   * @return string
+   */
+  public function getPassaporte() {
+    return $this->sPassaporte;
+  }
+
+  /**
+   * Retorna a sigla da UF da Identidade do Recurso Humano
+   * @return string
+   */
+  public function getUfIdentidadeSigla() {
+    return $this->sUfIdentidadeSigla;
+  }
+
+  /**
+   * Retorna a data de expedição da carteira de identidade do Recurso Humano
+   * @return DBDate
+   */
+  public function getDataExpedicaoIdentidade() {
+    return $this->oDataExpedicaoIdentidade;
+  }
+
+  /**
+   * Retorna o complemento do Recurso Humano
+   * @return string
+   */
+  public function getComplemento() {
+    return $this->sComplemento;
+  }
+
+  /**
+   * Retorna o orgão emissor da identidade
+   * @return string
+   */
+  public function getOrgaoEmissorIdentidade() {
+    return $this->sOrgaoEmissorIdentidade;
+  }
+
+  /**
+   * Retorna o Titulo Eleitoral
+   * @return string
+   */
+  public function getTituloEleitoral() {
+    return $this->sTituloEleitoral;
+  }
+
+  /**
+   * Retorna a Zona Eleitoral
+   * @return string
+   */
+  public function getZonaEleitoral() {
+    return $this->sZonaEleitoral;
+  }
+
+  /**
+   * Retorna a Seção Eleitoral
+   * @return string
+   */
+  public function getSecaoEleitoral() {
+    return $this->sSecaoEleitoral;
+  }
+
+  /**
+   * Retorna a CTPS
+   * @return string
+   */
+  public function getCtps() {
+    return $this->sCtps;
+  }
+
+  /**
+   * Retorna a Serie da CTPS
+   * @return string
+   */
+  public function getSerieCtps() {
+    return $this->sSerieCtps;
+  }
+
+  /**
+   * Retorna a UF da CTPS
+   * @return string
+   */
+  public function getSiglaUfCtps() {
+    return $this->sSiglaUfCtps;
+  }
+
+  /**
+   * Retorna PIS/PASEP
+   * @return string
+   */
+  public function getPisPasep() {
+    return $this->sPisPasep; 
+  }
+
+  /**
+   * Retorna a instância de CGM
+   * @return CgmBase|CgmFisico|CgmJuridico
+   */
+  public function getCgm() {
+    return $this->oCgm;
+  }
+
+  /**
+   * retorna os códigos da tabela rechumano que o profissional possui
+   */
+  public function getListaAtividades()
+  {
+    return $this->aListaAtividades;
+  }
 }
-?>

@@ -26,7 +26,7 @@
  */
 
 //MODULO: tributario
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clisencaolanc->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -103,7 +103,7 @@ db_input('v10_isencaotipo',10,$Iv10_isencaotipo,true,'hidden',3,'')
 					$sqlBuscaOrigem .= "    left join isencaocgm    on v12_isencao = v10_sequencial ";
 					$sqlBuscaOrigem .= "    left join isencaoinscr  on v16_isencao = v10_sequencial ";
 					$sqlBuscaOrigem .= " where v10_sequencial = $v18_isencao ";
-					$rsBuscaOrigem = pg_query($sqlBuscaOrigem);
+					$rsBuscaOrigem = db_query($sqlBuscaOrigem);
 					if(pg_numrows($rsBuscaOrigem) > 0){
 					  db_fieldsmemory($rsBuscaOrigem,0);
 					}
@@ -118,7 +118,7 @@ db_input('v10_isencaotipo',10,$Iv10_isencaotipo,true,'hidden',3,'')
 					$sqlCadtipo .= "        inner join cadtipoitem   on k03_tipo = k09_cadtipo ";
 					$sqlCadtipo .= "    	  inner join cadtipoorigem on k03_tipo = k14_cadtipo ";
 					$sqlCadtipo .= " where k14_cadorigem = $origem "; //(filtro escolhido para lancar a isencao)
-					$rsCadtipo   = pg_query($sqlCadtipo);
+					$rsCadtipo   = db_query($sqlCadtipo);
 					$intCadtipo  = pg_numrows($rsCadtipo);
 					if($intCadtipo > 0){
 						for($i=0;$i<$intCadtipo;$i++){
@@ -162,7 +162,7 @@ db_input('v10_isencaotipo',10,$Iv10_isencaotipo,true,'hidden',3,'')
 				  $sqlItem  .= "        inner join cadtipoitem      on k03_tipo = k09_cadtipo ";
 				  $sqlItem  .= "        inner join cadtipoitemgrupo on k09_cadtipoitemgrupo = k37_sequencial ";
 				  $sqlItem  .= " where k09_cadtipo = $k03_tipo";
-				  $rsItem    = pg_query($sqlItem);
+				  $rsItem    = db_query($sqlItem);
 				  $intItem   = pg_numrows($rsItem);
 					if($intItem > 0){
 				    for($iItem=0;$iItem<$intItem;$iItem++){
@@ -312,10 +312,10 @@ function js_cancelar(){
 }
 function js_pesquisav18_cadtipoitem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_isencaolanc','db_iframe_cadtipoitem','func_cadtipoitem.php?funcao_js=parent.js_mostracadtipoitem1|k09_sequencial|k09_cadtipoitemgrupo','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_isencaolanc','db_iframe_cadtipoitem','func_cadtipoitem.php?funcao_js=parent.js_mostracadtipoitem1|k09_sequencial|k09_cadtipoitemgrupo','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.v18_cadtipoitem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_isencaolanc','db_iframe_cadtipoitem','func_cadtipoitem.php?pesquisa_chave='+document.form1.v18_cadtipoitem.value+'&funcao_js=parent.js_mostracadtipoitem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_isencaolanc','db_iframe_cadtipoitem','func_cadtipoitem.php?pesquisa_chave='+document.form1.v18_cadtipoitem.value+'&funcao_js=parent.js_mostracadtipoitem','Pesquisa',false);
      }else{
        document.form1.k09_cadtipoitemgrupo.value = ''; 
      }
@@ -335,10 +335,10 @@ function js_mostracadtipoitem1(chave1,chave2){
 }
 function js_pesquisav18_isencao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_isencaolanc','db_iframe_isencao','func_isencao.php?funcao_js=parent.js_mostraisencao1|v10_sequencial|v10_isencaotipo','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_isencaolanc','db_iframe_isencao','func_isencao.php?funcao_js=parent.js_mostraisencao1|v10_sequencial|v10_isencaotipo','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.v18_isencao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_isencaolanc','db_iframe_isencao','func_isencao.php?pesquisa_chave='+document.form1.v18_isencao.value+'&funcao_js=parent.js_mostraisencao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_isencaolanc','db_iframe_isencao','func_isencao.php?pesquisa_chave='+document.form1.v18_isencao.value+'&funcao_js=parent.js_mostraisencao','Pesquisa',false);
      }else{
        document.form1.v10_isencaotipo.value = ''; 
      }

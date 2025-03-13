@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_cardapio_classe.php");
-include("classes/db_mer_cardapiodia_classe.php");
-include("classes/db_mer_cardapioitem_classe.php");
-include("classes/db_mer_cardapionutri_classe.php");
-include("classes/db_mer_cardapiotipo_classe.php");
-include("classes/db_mer_caractpreparo_classe.php");
-include("classes/db_mer_modpreparo_classe.php");
-include("classes/db_mer_subitem_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_cardapio_classe.php"));
+include(modification("classes/db_mer_cardapiodia_classe.php"));
+include(modification("classes/db_mer_cardapioitem_classe.php"));
+include(modification("classes/db_mer_cardapionutri_classe.php"));
+include(modification("classes/db_mer_cardapiotipo_classe.php"));
+include(modification("classes/db_mer_caractpreparo_classe.php"));
+include(modification("classes/db_mer_modpreparo_classe.php"));
+include(modification("classes/db_mer_subitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_cardapio      = new cl_mer_cardapio;
@@ -77,11 +77,11 @@ if (isset($cod_refeicao)) {
   $sql_ver   .= "            AND (me12_d_data > '$dataatual' ";
   $sql_ver   .= "            OR (me12_d_data = '$dataatual' AND me03_c_fim > '$horaatual'))";
   $sql_ver   .= "	          AND not exists(select * from mer_cardapiodata inner join mer_cardapiodiaescola on me37_i_codigo = me13_i_cardapiodiaescola where me12_i_codigo = me37_i_cardapiodia) ";
-  $result_ver = pg_query($sql_ver);
+  $result_ver = db_query($sql_ver);
   for ($t=0;$t<pg_num_rows($result_ver);$t++) {
   	
     db_fieldsmemory($result_ver,$t);
-    pg_query("update mer_cardapiodia set
+    db_query("update mer_cardapiodia set
                me12_i_cardapio    = $novaversao
                where me12_i_codigo = $cod_carddia"
             );

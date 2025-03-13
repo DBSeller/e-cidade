@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_ativid_classe.php");
-//include("classes/db_clasativ_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_ativid_classe.php"));
+//include(modification("classes/db_clasativ_classe.php"));
 
 //$clclasativ = new cl_clasativ;
 $clativid = new cl_ativid;
@@ -46,7 +46,7 @@ $vir="";
 $head3 = "ATIVIDADES SEM CLASSE CONFIGURADA.";
 $head5 = "ORDEM POR COD.";
 
-$result1=pg_query("select q82_ativ from clasativ;");
+$result1=db_query("select q82_ativ from clasativ;");
 if(pg_numrows($result1) == 0){
     
 }else{

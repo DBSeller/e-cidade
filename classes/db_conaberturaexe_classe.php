@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -71,7 +71,7 @@ class cl_conaberturaexe {
                  c91_origem = int4 = Origem 
                  ";
    //funcao construtor da classe 
-   function cl_conaberturaexe() { 
+   function __construct() {
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("conaberturaexe"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);

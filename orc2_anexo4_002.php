@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("libs/db_sql.php");
-include("libs/db_libcontabilidade.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $classinatura = new cl_assinatura;
 
@@ -55,7 +55,7 @@ $sql = "
        ";
 //echo $sql ; exit;
 */
-// $result = pg_exec($sql);
+// $result = db_query($sql);
 
 $result = db_elementosaldo(0,2,'',db_getsession("DB_anousu"),null,null,false);
 //db_criatabela($result);exit;

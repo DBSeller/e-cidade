@@ -26,16 +26,16 @@
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_disciplina_classe.php");
-include("classes/db_histmpsdisc_classe.php");
-include("classes/db_historicomps_classe.php");
-include("classes/db_base_classe.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_disciplina_classe.php"));
+include(modification("classes/db_histmpsdisc_classe.php"));
+include(modification("classes/db_historicomps_classe.php"));
+include(modification("classes/db_base_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cldisciplina = new cl_disciplina;
@@ -61,7 +61,7 @@ $clbase = new cl_base;
    echo "<b>Escolha a Disciplina:</b>";
     if(isset($campos)==false){
      if(file_exists("funcoes/db_func_disciplina.php")==true){
-      include("funcoes/db_func_disciplina.php");
+      include(modification("funcoes/db_func_disciplina.php"));
      }else{
       $campos = "disciplina.*";
      }
@@ -88,3 +88,9 @@ $clbase = new cl_base;
 </form>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

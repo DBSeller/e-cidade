@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_cadhelp_classe.php");
-include("classes/db_db_itenshelp_classe.php");
-include("classes/db_db_tipohelp_classe.php");
-include("classes/db_db_modulos_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_cadhelp_classe.php"));
+include(modification("classes/db_db_itenshelp_classe.php"));
+include(modification("classes/db_db_tipohelp_classe.php"));
+include(modification("classes/db_db_modulos_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
 ?>
@@ -186,10 +186,10 @@ if($result!=false&&$cldb_itenshelp->numrows>0){
   <table  height="100%">
   <tr>
   <td width='100%'>
-  <!--a href='' onclick='document.getElementById("mostrahelp").src="con1_help002.php?id_help=<?=$id_help?>";return false;' >Descrição do Help</a>: &nbsp <?=$dhelp_resum?></strong--!> 
-  <!--a href='' onclick='document.getElementById("mostrahelp").src="con1_help002.php?tipo_chamada=logs&id_help=<?=$id_help?>";return false;'  name='logs' >Consulta Logs</a--!> 
-	<!--<input name="helps_acessados_r" value="-I<?=$id_help?>" type="hidden"><input name="itens_retorna" onclick="js_help_retorna()" type="button" value="Retornar" disabled id="itens_retorna">--!>
-	<!--<input name="helps_acessados_a" value="" type="hidden">               <input name="itens_avanca" onclick="js_help_avanca()" type="button" value="Avançar" disabled id="itens_avanca">--!>
+  <!--a href='' onclick='document.getElementById("mostrahelp").src="con1_help002.php?id_help=<?=$id_help?>";return false;' >Descrição do Help</a>: &nbsp <?=$dhelp_resum?></strong--> 
+  <!--a href='' onclick='document.getElementById("mostrahelp").src="con1_help002.php?tipo_chamada=logs&id_help=<?=$id_help?>";return false;'  name='logs' >Consulta Logs</a--> 
+	<!--<input name="helps_acessados_r" value="-I<?=$id_help?>" type="hidden"><input name="itens_retorna" onclick="js_help_retorna()" type="button" value="Retornar" disabled id="itens_retorna">-->
+	<!--<input name="helps_acessados_a" value="" type="hidden">               <input name="itens_avanca" onclick="js_help_avanca()" type="button" value="Avançar" disabled id="itens_avanca">-->
   </td>
   <tr>
   <tr><td>

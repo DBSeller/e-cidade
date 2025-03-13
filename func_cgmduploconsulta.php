@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 
-require("libs/db_stdlib.php");
-require_once('libs/db_utils.php');
-require_once ('libs/db_app.utils.php');
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_cgmcorreto_classe.php");
+require(modification("libs/db_stdlib.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_app.utils.php'));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_cgmcorreto_classe.php"));
 $oGet = db_utils::postMemory($_GET);
 $clrotulo = new rotulocampo();
 $clrotulo->label("z10_numcgm");
@@ -178,4 +178,10 @@ db_app::load('prototype.js');
     $('voltar').enable();
     
   } 
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

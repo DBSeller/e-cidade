@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("classes/db_tabativ_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("classes/db_tabativ_classe.php"));
 $cltabativ = new cl_tabativ;
 $clrotulo = new rotulocampo;
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
@@ -36,6 +36,8 @@ if(isset($q07_inscr) && $q07_inscr!=""){
   $msg_vazio='<b>Nenhum registro encontrado</b>';
   $chaves="q88_inscr,q07_seq";
   $campos= "q07_inscr,q07_seq,q88_inscr,q07_ativ,q03_descr,q07_datain,q07_datafi,q07_databx,q07_perman,q07_quant,q11_tipcalc, q81_descr";
+} else {
+  $q07_inscr = '';
 }
 
 ?>
@@ -95,7 +97,7 @@ function js_trocapri(seq){
       <table border='1' width="100%" bgcolor="#cccccc" id="tabela_seleciona">
 <?
 if(isset($sql) && $sql!=""){ 
-       $result=pg_query($sql);
+       $result=db_query($sql);
        $numrows=pg_numrows($result);
        $numcols=pg_numfields($result);
        if($db_opcao=="Incluir"){

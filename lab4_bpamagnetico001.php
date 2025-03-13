@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_conecta.php");
-include_once ("libs/db_sessoes.php");
-include_once ("libs/db_usuariosonline.php");
-include_once ("libs/db_app.utils.php");
-include_once ("libs/db_utils.php");
-include_once ("dbforms/db_funcoes.php");
-include_once ("libs/JSON.php");
-include_once ("classes/db_lab_fechamento_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("libs/db_app.utils.php"));
+include_once(modification("libs/db_utils.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+include_once(modification("libs/JSON.php"));
+include_once(modification("classes/db_lab_fechamento_classe.php"));
 
 db_postmemory ($HTTP_POST_VARS);
 $clrotulo           = new rotulocampo ();
@@ -312,7 +312,7 @@ if ($oSauConfig != false) {
 
   function js_pesquisala54_i_codigo(mostra) {
 
-      js_OpenJanelaIframe('top.corpo','db_iframe_lab_fechamento',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_fechamento',
                           'func_lab_fechamento.php?'
                           +'funcao_js=parent.js_mostralab_fechamento1|la54_i_compmes|la54_i_compano|la54_i_codigo|'
                           +'la54_d_ini|la54_d_fim|la54_i_financiamento|sd65_c_nome','Pesquisa',true);
@@ -346,7 +346,7 @@ function js_mostralab_fechamento1(chave1, chave2, chave3, ini, fim, iFinanciamen
 }
 function js_pesquisa() {
 
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_sau_fechapront',
                       'func_sau_fechapront.php?funcao_js=parent.js_preenchepesquisa|sd98_i_codigo',
                       'Pesquisa',true);
@@ -419,7 +419,7 @@ function js_nomeMes(iNumero, iTipo) {
 
     /* PEGA A ULTIMA RELEASE */
     $sqlCodRelease         = "select db30_codrelease as ultimarelease from db_versao order by db30_codver desc limit 1";
-    $rsCodRelease          = pg_query($sqlCodRelease);
+    $rsCodRelease          = db_query($sqlCodRelease);
     $oDados->iCompano      = $la54_i_compano;
     $oDados->iCompmes      = $la54_i_compmes;
     $oDados->dIni          = $la54_d_ini;
@@ -436,7 +436,7 @@ function js_nomeMes(iNumero, iTipo) {
     $oDados->sOrgResp      = $snomedepart;
     $sSql                  = $cllab_bpamagnetico->sql_querry_prd_bpa($oDados);
     $sErro                 = "Erro ao selecionar registros. <p>Comunique o adminstrador. <br> $sSql;";
-    $rsProducao            = pg_query($sSql) or die($sErro);
+    $rsProducao            = db_query($sSql) or die($sErro);
     $iLinhasProducao       = pg_num_rows($rsProducao);
     
     if ($iLinhasProducao == 0) {
@@ -446,7 +446,7 @@ function js_nomeMes(iNumero, iTipo) {
       $oDados->iLinhas      = $iLinhasProducao;
       $sSql                 = $cllab_bpamagnetico->sql_querry_cbr_bpa($oDados, $sSql);
       $sErro                = "Erro ao selecionar o Cabeçalho. <p>Comunique o adminstrador.";
-      $rsCabecalho          = pg_query($sSql) or die ($sErro);
+      $rsCabecalho          = db_query($sSql) or die ($sErro);
       $sAbrevMes            = data_farmacia($la54_i_compano, $la54_i_compmes."M");
       $sAbrevMes            = strtoupper(substr($sAbrevMes['periodo'], 0, 3));
       $pont                 = "/tmp/PA".$sNomeArquivo.".".$sAbrevMes;
@@ -516,7 +516,7 @@ function js_nomeMes(iNumero, iTipo) {
  */
 function laboratorioLogado() {
   
-  require_once('libs/db_utils.php');
+  require_once(modification('libs/db_utils.php'));
   $iUsuario        = db_getsession('DB_id_usuario');
   $iDepto          = db_getsession('DB_coddepto');
   $oLab_labusuario = db_utils::getdao('lab_labusuario');
@@ -533,7 +533,7 @@ function laboratorioLogado() {
       return 0;
     }
   }
-  $oLab = db_utils::getColectionByRecord($rResult);
+  $oLab = db_utils::getCollectionByRecord($rResult);
   return $oLab[0]->la02_i_codigo;
   
 }

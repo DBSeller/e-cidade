@@ -78,7 +78,7 @@ db_input('db12_extenso',40,@$Idb12_extenso,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_uf','func_db_uf.php?funcao_js=parent.js_preenchepesquisa|db12_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_uf','func_db_uf.php?funcao_js=parent.js_preenchepesquisa|db12_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_uf.hide();

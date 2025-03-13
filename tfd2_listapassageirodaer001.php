@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oRotulo = new rotulocampo;
 $oRotulo->label("tf18_i_destino");
@@ -131,6 +131,21 @@ $oRotulo->label("tf18_c_horasaida");
               ?>
             </td>
           </tr>
+          <tr>
+            <td>
+              <label class="bold">Situação:</label>
+            </td>
+            <td>
+              <?php
+              $aSituacoes      = array( "A"  => "Somente Ativos", 
+                                        "E"  => "Somente Encerrados", 
+                                        "AE" => "Ativos e Encerrados" );
+
+              db_select( 'situacao', $aSituacoes, true, 1 );
+              ?>
+            </td>
+          </tr>
+
         </table>
       </fieldset>
       <input name='start' type='button' value='Gerar' onclick="js_mandaDados()">
@@ -292,10 +307,11 @@ function js_mandaDados() {
   iCodDestino = '&coddestino='+$F('tf18_i_destino');
   sDatasaida  = '&datasaida='+$F('tf18_d_datasaida');
   iHora       = '&hora='+$F('tf18_c_horasaida');
+  sSituacao   = '&situacao='+$F('situacao');
 
   sArquivo    = (iMenu == 0) ? 'tfd2_listapassageirodaer002.php?' : 'tfd2_saidaveiculo001.php?';
   
-  oJan        = window.open(sArquivo+iCodVeiculo+sDatasaida+iHora+iCodDestino,'',
+  oJan        = window.open(sArquivo+iCodVeiculo+sDatasaida+iHora+iCodDestino+sSituacao,'',
                             'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+
                             ',scrollbars=1,location=0 '
                            );
@@ -338,7 +354,7 @@ function js_retornogetHorariosData(oRetorno) {
     $('tf18_c_horasaida').options[0] = null;
   }
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus == 1) {
 

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-require("libs/db_libpessoal.php");
-include("libs/db_sessoes.php");
-include("dbforms/db_funcoes.php");
-include("libs/JSON.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_libpessoal.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/JSON.php"));
 
 $oJson       = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -65,7 +65,7 @@ switch ($oParam->exec) {
     $sSqlFerias .= "   and rh93_anousu = {$iAnoUsu} ";
     $sSqlFerias .= " order by rh93_regist";
     $rsFerias    = db_query($sSqlFerias);
-    $oRetorno->itens =  db_utils::getColectionByRecord($rsFerias, false, false, true); 
+    $oRetorno->itens =  db_utils::getCollectionByRecord($rsFerias, false, false, true); 
     break;
 }
 echo $oJson->encode($oRetorno);

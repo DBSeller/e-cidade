@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,16 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-  /**
-   * Classe repository para classes Turno
-   * @author Iuri Guntchnigg <iuri@dbseller.com.br>
-   * @package
-   */
-  class TurnoRepository {
+/**
+ * Classe repository para classes Turno
+ * @author Iuri Guntchnigg <iuri@dbseller.com.br>
+ * @package
+ */
+class TurnoRepository
+{
 
     /**
      * Collection de Turno
-     * @var array
+     * @var Turno[]
      */
     private $aTurno = array();
 
@@ -44,10 +45,13 @@
      */
     private static $oInstance;
 
-    private function __construct() {
+    private function __construct()
+    {
 
     }
-    private function __clone() {
+
+    private function __clone()
+    {
 
     }
 
@@ -56,25 +60,25 @@
      * @param integer $iCodigo Codigo do Turno
      * @return Turno
      */
-    public static function getTurnoByCodigo($iCodigoTurno) {
+    public static function getTurnoByCodigo($iCodigoTurno)
+    {
 
-      if (!array_key_exists($iCodigoTurno, TurnoRepository::getInstance()->aTurno)) {
-        TurnoRepository::getInstance()->aTurno[$iCodigoTurno] = new Turno($iCodigoTurno);
-      }
-      return TurnoRepository::getInstance()->aTurno[$iCodigoTurno];
+        if (!array_key_exists($iCodigoTurno, TurnoRepository::getInstance()->aTurno)) {
+            TurnoRepository::getInstance()->aTurno[$iCodigoTurno] = new Turno($iCodigoTurno);
+        }
+        return TurnoRepository::getInstance()->aTurno[$iCodigoTurno];
     }
 
     /**
      * Retorna a instancia da classe
      * @return TurnoRepository
      */
-    protected static function getInstance() {
-
-      if (self::$oInstance == null) {
-
-        self::$oInstance = new TurnoRepository();
-      }
-      return self::$oInstance;
+    protected static function getInstance()
+    {
+        if (self::$oInstance == null) {
+            self::$oInstance = new TurnoRepository();
+        }
+        return self::$oInstance;
     }
 
     /**
@@ -82,12 +86,13 @@
      * @param Turno $oTurno Instancia do Turno
      * @return boolean
      */
-    public static function adicionarTurno(Turno $oTurno) {
+    public static function adicionarTurno(Turno $oTurno)
+    {
 
-      if(!array_key_exists($oTurno->getCodigo(), TurnoRepository::getInstance()->aTurno)) {
-        TurnoRepository::getInstance()->aTurno[$oTurno->getCodigo()] = $oTurno;
-      }
-      return true;
+        if (!array_key_exists($oTurno->getCodigoTurno(), TurnoRepository::getInstance()->aTurno)) {
+            TurnoRepository::getInstance()->aTurno[$oTurno->getCodigoTurno()] = $oTurno;
+        }
+        return true;
     }
 
     /**
@@ -95,42 +100,64 @@
      * @param Turno $oTurno
      * @return boolean
      */
-    public static function removerTurno(Turno $oTurno) {
-       /**
-        *
-        */
-      if (array_key_exists($oTurno->getCodigo(), TurnoRepository::getInstance()->aTurno)) {
-        unset(TurnoRepository::getInstance()->aTurno[$oTurno->getCodigo()]);
-      }
-      return true;
+    public static function removerTurno(Turno $oTurno)
+    {
+        if (array_key_exists($oTurno->getCodigoTurno(), TurnoRepository::getInstance()->aTurno)) {
+            unset(TurnoRepository::getInstance()->aTurno[$oTurno->getCodigoTurno()]);
+        }
+        return true;
     }
 
     /**
      * Retorna o total de cidadoes existentes no repositorio;
      * @return integer;
      */
-    public static function getTotalTurno() {
-      return count(TurnoRepository::getInstance()->aTurno);
+    public static function getTotalTurno()
+    {
+        return count(TurnoRepository::getInstance()->aTurno);
     }
 
 
-    public static function getTurnosCadastrados() {
+    public static function getTurnosCadastrados()
+    {
+        $oDaoTurno = new cl_turno();
+        $sSqlTurnos = $oDaoTurno->sql_query_file(null, "ed15_i_codigo", "ed15_i_sequencia");
+        $rsTurnos = $oDaoTurno->sql_record($sSqlTurnos);
 
-      $oDaoTurno  = new cl_turno();
-      $sSqlTurnos = $oDaoTurno->sql_query_file(null, "ed15_i_codigo", "ed15_i_sequencia");
-      $rsTurnos   = $oDaoTurno->sql_record($sSqlTurnos);
+        if ($rsTurnos && $oDaoTurno->numrows > 0) {
+            $iLinha = $oDaoTurno->numrows;
 
-      if ($rsTurnos && $oDaoTurno->numrows > 0) {
-
-        $iLinha = $oDaoTurno->numrows;
-
-        for ($i = 0; $i < $iLinha; $i++) {
-
-          $iCodigoTurno = db_utils::fieldsMemory($rsTurnos, $i)->ed15_i_codigo;
-          TurnoRepository::getTurnoByCodigo($iCodigoTurno);
+            for ($i = 0; $i < $iLinha; $i++) {
+                $iCodigoTurno = db_utils::fieldsMemory($rsTurnos, $i)->ed15_i_codigo;
+                TurnoRepository::getTurnoByCodigo($iCodigoTurno);
+            }
         }
-      }
 
-      return TurnoRepository::getInstance()->aTurno;
+        return TurnoRepository::getInstance()->aTurno;
     }
-  }
+
+    /**
+     * Retorno uma lista e instancias
+     * @param int $iCodigoEscola
+     * @param int $iCodigoEnsino
+     * @return Turno[]
+     */
+    public static function getTurnoByEscolaAndEnsino($iCodigoEscola, $iCodigoEnsino)
+    {
+        $oDaoTurno = new cl_turno();
+        $sSqlTurnos = $oDaoTurno->sql_query_turnosporensino(" * ", "ed85_i_escola = {$iCodigoEscola} AND ed29_i_ensino = {$iCodigoEnsino} ");
+        $rsTurnos = $oDaoTurno->sql_record($sSqlTurnos);
+
+        if ($rsTurnos && $oDaoTurno->numrows > 0) {
+            $iLinha = $oDaoTurno->numrows;
+
+            for ($i = 0; $i < $iLinha; $i++) {
+                $iCodigoTurno = db_utils::fieldsMemory($rsTurnos, $i)->ed15_i_codigo;
+                TurnoRepository::getTurnoByCodigo($iCodigoTurno);
+            }
+        }
+
+
+        return TurnoRepository::getInstance()->aTurno;
+    }
+}

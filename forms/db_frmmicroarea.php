@@ -58,7 +58,7 @@ db_input('sd34_v_descricao',40,$Isd34_v_descricao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_microarea','func_microarea.php?funcao_js=parent.js_preenchepesquisa|sd34_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_microarea','func_microarea.php?funcao_js=parent.js_preenchepesquisa|sd34_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_microarea.hide();

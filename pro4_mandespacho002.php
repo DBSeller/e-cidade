@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_protprocesso_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clprotprocesso = new cl_protprocesso();
 $rotulo = new rotulocampo();
@@ -52,7 +52,7 @@ $sql2 = "select p58_despacho,z01_nome,p51_descr,p61_coddepto
 		inner join procandam on p58_codandam = p61_codandam
          where  p58_codproc = ".$p58_codproc;
 //echo $sql2;
-$rs = pg_exec($sql2);
+$rs = db_query($sql2);
 //db_criatabela($rs);exit;
 if(pg_numrows($rs)==0){
   $p58_despacho = "";

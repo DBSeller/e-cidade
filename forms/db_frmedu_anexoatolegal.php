@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -161,7 +161,7 @@ function js_buscaArquivos() {
 
 function js_retornoBuscaArquivos(oRetorno) {
 
-  oRetorno = eval("("+oRetorno.responseText+")");
+  oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
     
@@ -267,8 +267,8 @@ function js_cancelaAcao() {
 function js_novoRegistro() {
 
   parent.document.formaba.a2.disabled = true;
-  top.corpo.iframe_a2.location.href   = 'edu1_edu_anexoatolegal001.php';
-  top.corpo.iframe_a1.location.href   = 'edu1_atolegal001.php';
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'edu1_edu_anexoatolegal001.php';
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href   = 'edu1_atolegal001.php';
   location.href                       = 'edu1_atolegal001.php';
   parent.mo_camada('a1');
 
@@ -289,7 +289,7 @@ function js_downloadFile(iAnexo) {
 
 function js_retornoDownloadFile(oRetorno) {
 
-  var oRetorno = eval("("+oRetorno.responseText+")");
+  var oRetorno = JSON.parse(oRetorno.responseText);
 
   if (oRetorno.iStatus != 1) {
 

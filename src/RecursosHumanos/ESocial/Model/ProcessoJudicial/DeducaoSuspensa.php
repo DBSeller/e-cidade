@@ -1,0 +1,166 @@
+<?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ */
+namespace ECidade\RecursosHumanos\ESocial\Model\ProcessoJudicial;
+
+use JSON;
+
+class DeducaoSuspensa
+{
+    /**
+     * @var int
+     */
+    private $sequencial;
+
+    /**
+     * @var int
+     */
+    private $sequencialValorRetencao;
+
+    /**
+     * @var string
+     */
+    private $tipoDeducao;
+
+    /**
+     * @var numeric
+     */
+    private $valorDeducao;
+
+    /**
+     * Get the value of sequencial
+     *
+     * @return  int
+     */
+    public function getSequencial()
+    {
+        return $this->sequencial;
+    }
+
+    /**
+     * Set the value of sequencial
+     *
+     * @param  int  $sequencial
+     */
+    public function setSequencial($sequencial)
+    {
+        $this->sequencial = $sequencial;
+    }
+
+    /**
+     * Get the value of sequencialValorRetencao
+     *
+     * @return  int
+     */
+    public function getSequencialValorRetencao()
+    {
+        return $this->sequencialValorRetencao;
+    }
+
+    /**
+     * Set the value of sequencialValorRetencao
+     *
+     * @param  int  $sequencialValorRetencao
+     */
+    public function setSequencialValorRetencao($sequencialValorRetencao)
+    {
+        $this->sequencialValorRetencao = $sequencialValorRetencao;
+    }
+
+    /**
+     * Get the value of valorDeducao
+     *
+     * @return  numeric
+     */
+    public function getValorDeducao()
+    {
+        return $this->valorDeducao;
+    }
+
+    /**
+     * Set the value of valorDeducao
+     *
+     * @param  numeric  $valorDeducao
+     */
+    public function setValorDeducao($valorDeducao)
+    {
+        $this->valorDeducao = $valorDeducao;
+    }
+
+    /**
+     * Get the value of tipoDeducao
+     *
+     * @return  string
+     */
+    public function getTipoDeducao()
+    {
+        return $this->tipoDeducao;
+    }
+
+    /**
+     * Set the value of tipoDeducao
+     *
+     * @param  string  $tipoDeducao
+     */
+    public function setTipoDeducao($tipoDeducao)
+    {
+        $this->tipoDeducao = $tipoDeducao;
+    }
+
+    /**
+     * @param array $state
+     * @return Mudanca
+     * @throws Exception
+     */
+    public static function fromState(array $state)
+    {
+        $suspensaPensao = new self();
+
+        if (array_key_exists('rh308_sequencial', $state)) {
+            $suspensaPensao->setSequencial((int)$state['rh308_sequencial']);
+        }
+
+        if (array_key_exists('rh308_sequencialvalorretencao', $state)) {
+            $suspensaPensao->setSequencialValorRetencao((int)$state['rh308_sequencialvalorretencao']);
+        }
+
+        if (array_key_exists('rh308_indtpdeducao', $state)) {
+            $suspensaPensao->setTipoDeducao($state['rh308_indtpdeducao']);
+        }
+
+        if (array_key_exists('rh308_vlrdedsusp', $state)) {
+            $suspensaPensao->setValorDeducao($state['rh308_vlrdedsusp']);
+        }
+
+        return $suspensaPensao;
+    }
+
+    public function serialize()
+    {
+        $serialize = clone $this;
+        return JSON::create()->stringify(get_object_vars($serialize));
+    }
+}

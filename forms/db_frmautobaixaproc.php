@@ -26,7 +26,7 @@
  */
 
 //MODULO: issqn
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 $cliframe_seleciona = new cl_iframe_seleciona;
 
 $clrotulo = new rotulocampo;
@@ -151,10 +151,10 @@ function js_validaprocesso(validarprocesso,gerachaves) {
 function js_inscr(mostra){
   var inscr=document.form1.y50_codauto.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_inscr','func_autoalt.php?funcao_js=parent.js_mostrainscr|dl_auto|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inscr','func_autoalt.php?funcao_js=parent.js_mostrainscr|dl_auto|z01_nome','Pesquisa',true);
   }else{
     if(inscr!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe_inscr','func_autoalt.php?pesquisa_chave='+inscr+'&funcao_js=parent.js_mostrainscr1','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_inscr','func_autoalt.php?pesquisa_chave='+inscr+'&funcao_js=parent.js_mostrainscr1','Pesquisa',false);
     }else{
       document.form1.z01_nome.value="";
       document.form1.submit();  
@@ -178,10 +178,10 @@ function js_mostrainscr1(chave,erro){
 }
 function js_pesquisay114_processo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_processo','func_protprocesso.php?funcao_js=parent.js_mostraprocesso1|p58_codproc|p58_requer','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processo','func_protprocesso.php?funcao_js=parent.js_mostraprocesso1|p58_codproc|p58_requer','Pesquisa',true);
   }else{
      if(document.form1.y114_processo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_processo','func_protprocesso.php?pesquisa_chave='+document.form1.y114_processo.value+'&funcao_js=parent.js_mostraprocesso','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processo','func_protprocesso.php?pesquisa_chave='+document.form1.y114_processo.value+'&funcao_js=parent.js_mostraprocesso','Pesquisa',false);
      }else{
        document.form1.y114_processo.value = ''; 
      }

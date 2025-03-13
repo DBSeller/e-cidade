@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ("libs/db_stdlibwebseller.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-include_once ("libs/db_sessoes.php");
-include_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-include_once ("classes/db_escolaproc_classe.php");
-include_once ("classes/db_censouf_classe.php");
-include_once ("classes/db_censomunic_classe.php");
-include_once ("classes/db_censodistrito_classe.php");
-include_once ("dbforms/db_funcoes.php");
-require_once ("libs/db_jsplibwebseller.php");
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+include_once(modification("classes/db_escolaproc_classe.php"));
+include_once(modification("classes/db_censouf_classe.php"));
+include_once(modification("classes/db_censomunic_classe.php"));
+include_once(modification("classes/db_censodistrito_classe.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_jsplibwebseller.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $clescolaproc    = new cl_escolaproc;
@@ -99,7 +99,7 @@ if(isset($excluir)){
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Cadastro de Escolas de Procedência de Alunos</b></legend>
-    <?include("forms/db_frmescolaprocnova.php");?>
+    <?include(modification("forms/db_frmescolaprocnova.php"));?>
    </fieldset>
    </center>
   </td>

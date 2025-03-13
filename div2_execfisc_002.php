@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,7 +30,7 @@ if ( !isset($parcel) || $parcel == '' ) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Parcelamento não Encontrado.');
   exit; 
 }
-include("fpdf151/pdf1.php");
+include(modification("fpdf151/pdf1.php"));
 $exercicio = db_getsession("DB_anousu");
 $borda = 1; 
 $bordat = 1;
@@ -60,7 +60,7 @@ $TPagina = 57;
 		on termo.v07_parcel = certter.v14_parcel
 	where inicial.inicial = $xinicial
 ";
-$result=pg_query($sql);
+$result=db_query($sql);
 if ( pg_numrows($result) == 0 ) {
   db_redireciona('db_erros.php?fechar=true&db_erro=Parcelamento no. '.$parcel. ' não Encontrado.');
   exit; 
@@ -170,7 +170,7 @@ $sql = "select termodiv.*,
 		      on b.j01_matric = contrib.d07_matric
 		      
 	where parcel = $parcel";
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 if ( pg_result($result,0,"matric") > 0 ) {
    $nomedeb = 'Imposto Predial Territorial Urbano em débitos de '.pg_result($result,0,"nomematric");

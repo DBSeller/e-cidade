@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,19 +25,20 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_solicita_classe.php");
-require_once("classes/db_pcparam_classe.php");
-require_once("classes/db_db_depusu_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_solicita_classe.php"));
+require_once(modification("classes/db_pcparam_classe.php"));
+require_once(modification("classes/db_db_depusu_classe.php"));
 
 $oDaoPcParam             = new cl_pcparam;
 $oDaoDepartamentoUsuario = new cl_db_depusu;
 
+$oGet = db_utils::postMemory($_GET);
 $sSqlParam     = $oDaoPcParam->sql_query_file(db_getsession("DB_instit"),
                                               "*",
                                               null,
@@ -165,7 +166,9 @@ $sWhereContrato = " and 1 = 1 ";
           $where_depart .= $nulo;
         }
       }
-
+      if (!empty($ativas)) {
+        $where_depart .= " and not exists(select 1 from solicitaanulada where pc67_solicita = pc10_numero)";
+      }
       if (isset($_GET["validar_liberacao_solicitacao"]) && $lNecessitaLiberarSolicitacao) {
         $where_depart .= " and exists (select 1 from solicitem where pc11_numero = solicita.pc10_numero and pc11_liberado is true)";
       }
@@ -198,13 +201,17 @@ $sWhereContrato = " and 1 = 1 ";
         $where_depart .= " and pc10_solicitacaotipo <> 5";
       }
 
+      if (!empty($oGet->tiposolicitacao)) {
+        $where_depart .= " and pc10_solicitacaotipo in ({$oGet->tiposolicitacao}) ";
+      }
+
 
 
       if (!isset($pesquisa_chave)) {
 
         if (isset($campos)==false) {
           if (file_exists("funcoes/db_func_solicita.php")==true) {
-            include("funcoes/db_func_solicita.php");
+            include(modification("funcoes/db_func_solicita.php"));
           } else {
             $campos = "solicita.*";
           }
@@ -232,9 +239,15 @@ $sWhereContrato = " and 1 = 1 ";
           }
 
         } else {
-
           $sql = $clsolicita->sql_query("",$campos,"pc10_numero desc "," 1=1 $where_depart {$sFiltrarDepartamento}  $sWhereContrato");
         }
+
+        // $rs = db_query($sql);
+
+        // if (pg_num_rows($rs) == 1) {
+        //   $aux = explode('|', $funcao_js);
+        //   echo "<script>".$aux[0]."('$chave_pc10_numero',false);</script>";
+        // }
 
         db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",array(),false);
 
@@ -271,3 +284,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

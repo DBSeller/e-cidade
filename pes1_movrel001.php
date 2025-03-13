@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_movrel_classe.php");
-include("classes/db_convenio_classe.php");
-include("classes/db_relac_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_pontofs_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_movrel_classe.php"));
+include(modification("classes/db_convenio_classe.php"));
+include(modification("classes/db_relac_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_pontofs_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clmovrel = new cl_movrel;
 $clconvenio = new cl_convenio;
@@ -277,7 +277,7 @@ if(isset($incluir) || isset($confirma)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmmovrel.php");
+	include(modification("forms/db_frmmovrel.php"));
 	?>
     </center>
 	</td>

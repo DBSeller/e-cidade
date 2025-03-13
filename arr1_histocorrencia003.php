@@ -1,39 +1,39 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_histocorrencia_classe.php");
-include("classes/db_histocorrenciacgm_classe.php");
-include("classes/db_histocorrenciamatric_classe.php");
-include("classes/db_histocorrenciainscr_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_histocorrencia_classe.php"));
+include(modification("classes/db_histocorrenciacgm_classe.php"));
+include(modification("classes/db_histocorrenciamatric_classe.php"));
+include(modification("classes/db_histocorrenciainscr_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clhistocorrencia = new cl_histocorrencia;
@@ -41,38 +41,37 @@ $db_botao = false;
 $db_opcao = 33;
 
 if(isset($excluir)){
-  
+
   if(isset($z01_numcgm) and ($z01_numcgm != '')) {
-    
+
     $clhistocorrenciacgm = new cl_histocorrenciacgm;
     db_inicio_transacao();
     $clhistocorrenciacgm->excluir("", "ar24_histocorrencia = $ar23_sequencial");
     db_fim_transacao();
-    
+
   }elseif(isset($j01_matric) and ($j01_matric != '')){
-    
+
     $clhistocorrenciamatric = new cl_histocorrenciamatric;
     db_inicio_transacao();
     $clhistocorrenciamatric->excluir("", "ar25_histocorrencia = $ar23_sequencial");
     db_fim_transacao();
-    
+
   }elseif(isset($q02_inscr) and ($q02_inscr != '')) {
-    db_msgbox('aqui');
+
     $clhistocorrenciainscr = new cl_histocorrenciainscr;
     db_inicio_transacao();
     $clhistocorrenciainscr->excluir("", "ar26_histocorrencia = $ar23_sequencial");
     db_fim_transacao();
-   
   }
-  
+
   db_inicio_transacao();
   $db_opcao = 3;
   $clhistocorrencia->excluir($ar23_sequencial);
   db_fim_transacao();
-  
+
 }else if((isset($chavepesquisa)) and (isset($tipoPesquisa)) and (isset($idchave))){
-  
-  
+
+
   $campos = "ar23_sequencial		, ";
   $campos .= "ar23_id_usuario		, ";
   $campos .= "ar23_instit				, ";
@@ -85,9 +84,9 @@ if(isset($excluir)){
   $campos .= "ar23_ocorrencia		";
   $result = $clhistocorrencia->sql_record($clhistocorrencia->sql_query($chavepesquisa, $campos));
   db_fieldsmemory($result, 0);
-  
+
   if($tipoPesquisa == 'cgm'){
-    
+
     $campos  = "ar24_numcgm, ";
     $campos .= "z01_nome";
     $clhistocorrenciacgm = new cl_histocorrenciacgm;
@@ -96,31 +95,31 @@ if(isset($excluir)){
     $z01_numcgm = $ar24_numcgm;
 
   }elseif($tipoPesquisa == 'matric'){
-    
+
     $campos  = "ar25_matric, ";
     $campos .= "z01_nome";
     $clhistocorrenciamatric = new cl_histocorrenciamatric;
     $result = $clhistocorrenciamatric->sql_record($clhistocorrenciamatric->sql_query("", $campos, "", "ar25_histocorrencia = $ar23_sequencial"));
     db_fieldsmemory($result, 0);
     $j01_matric = $ar25_matric;
-    
+
   }elseif($tipoPesquisa == 'inscr') {
-    
+
     $campos  = "ar26_inscr, ";
     $campos .= "z01_nome";
     $clhistocorrenciainscr = new cl_histocorrenciainscr;
     $result = $clhistocorrenciainscr->sql_record($clhistocorrenciainscr->sql_query("", $campos, "", "ar26_histocorrencia = $ar23_sequencial"));
     db_fieldsmemory($result, 0);
     $q02_inscr = $ar26_inscr;
-    
+
   }
 
   if (($ar23_id_usuario == db_getsession("DB_id_usuario") || db_getsession('DB_administrador') == '1' )) {
-    $db_botao = true;  
+    $db_botao = true;
   } else {
     $db_botao = false;
   }
-  
+
   $db_opcao = 3;
 }
 ?>
@@ -134,7 +133,7 @@ if(isset($excluir)){
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
 <table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
+  <tr>
     <td width="360" height="18">&nbsp;</td>
     <td width="263">&nbsp;</td>
     <td width="25">&nbsp;</td>
@@ -142,11 +141,11 @@ if(isset($excluir)){
   </tr>
 </table>
 <table width="790" border="0" cellspacing="0" cellpadding="0" align="center">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
 	<?
-	include("forms/db_frmhistocorrencia.php");
+	include(modification("forms/db_frmhistocorrencia.php"));
 	?>
     </center>
 	</td>

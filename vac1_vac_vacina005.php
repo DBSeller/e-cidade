@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $oDaoVacVacina         = db_utils::getdao('vac_vacina');
@@ -60,11 +60,11 @@ if (isset($alterar)) {
   parent.document.formaba.a2.disabled = false;
   parent.document.formaba.a3.disabled = false;
   parent.document.formaba.a4.disabled = false;
-  top.corpo.iframe_a2.location.href   = 'vac1_vac_vacina007.php?'+
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'vac1_vac_vacina007.php?'+
                                         'chavepesquisa=<?=$vc06_i_codigo?>&vc06_c_descr=<?=$vc06_c_descr?>';
-  top.corpo.iframe_a3.location.href   = 'vac1_vac_vacinadose001.php?'+
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href   = 'vac1_vac_vacinadose001.php?'+
                                         'vc07_i_vacina=<?=$vc06_i_codigo?>&vc06_c_descr=<?=$vc06_c_descr?>';
-  top.corpo.iframe_a4.location.href   = 'vac1_vac_vacinadoenca004.php?'+
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a4.location.href   = 'vac1_vac_vacinadoenca004.php?'+
                                         'vc10_i_vacina=<?=$vc06_i_codigo?>&vc06_c_descr=<?=$vc06_c_descr?>';
 
   </script>
@@ -95,7 +95,7 @@ if (isset($alterar)) {
           <td height="430" align="center" valign="top" bgcolor="#CCCCCC"> 
             <center>
               <?
-              require_once("forms/db_frmvac_vacina.php");
+              require_once(modification("forms/db_frmvac_vacina.php"));
               ?>
             </center>
           </td>

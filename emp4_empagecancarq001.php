@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,26 +25,26 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libcaixa_ze.php");
-require_once("libs/db_libgertxt.php");
-require_once("classes/db_empage_classe.php");
-require_once("classes/db_empagetipo_classe.php");
-require_once("classes/db_empagemov_classe.php");
-require_once("classes/db_empord_classe.php");
-require_once("classes/db_empagepag_classe.php");
-require_once("classes/db_empageslip_classe.php");
-require_once("classes/db_empagemovforma_classe.php");
-require_once("classes/db_empagegera_classe.php");
-require_once("classes/db_empageconf_classe.php");
-require_once("classes/db_empageconfgera_classe.php");
-require_once("classes/db_conplanoconta_classe.php");
-require_once("classes/db_empagemod_classe.php");
-require_once("classes/db_db_bancos_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libcaixa_ze.php"));
+require_once(modification("libs/db_libgertxt.php"));
+require_once(modification("classes/db_empage_classe.php"));
+require_once(modification("classes/db_empagetipo_classe.php"));
+require_once(modification("classes/db_empagemov_classe.php"));
+require_once(modification("classes/db_empord_classe.php"));
+require_once(modification("classes/db_empagepag_classe.php"));
+require_once(modification("classes/db_empageslip_classe.php"));
+require_once(modification("classes/db_empagemovforma_classe.php"));
+require_once(modification("classes/db_empagegera_classe.php"));
+require_once(modification("classes/db_empageconf_classe.php"));
+require_once(modification("classes/db_empageconfgera_classe.php"));
+require_once(modification("classes/db_conplanoconta_classe.php"));
+require_once(modification("classes/db_empagemod_classe.php"));
+require_once(modification("classes/db_db_bancos_classe.php"));
 
 $cllayout_BBBS    = new cl_layout_BBBS;
 $clempage         = new cl_empage;
@@ -153,7 +153,7 @@ if(isset($mostra)){
 	  inner join empagetipo on e85_codtipo = e83_codtipo 
 	  left join empageslip on e81_codmov = e89_codmov 
 	  inner join conplanoreduz on e83_conta = c61_reduz and c61_anousu=".db_getsession("DB_anousu")." and c61_instit = " . db_getsession("DB_instit") . "
-	  inner join conplanoconta on c63_codcon = c61_codcon and c63_anousu = c61_anousu 
+	  inner join conplanoconta on c63_codcon = c61_codcon and c63_anousu = c61_anousu and c63_reduz = c61_reduz
 	  left join slip on slip.k17_codigo = e89_codigo
 	  left join slipnum on slipnum.k17_codigo = slip.k17_codigo
 	  left join empageconfcanc on e88_codmov = e90_codmov
@@ -661,7 +661,7 @@ if(isset($mostra)){
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="if(document.form1.e87_codgera)document.form1.e87_codgera.focus();" >
 <center>
    <?
-   	include("forms/db_frmcancarq.php");
+   	include(modification("forms/db_frmcancarq.php"));
    ?>
 </center>
 
@@ -674,7 +674,7 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <script>
 
 function js_empage(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empage','func_empage.php?funcao_js=parent.js_mostra|e80_codage|e80_data','Pesquisa',true);
 }
 function js_mostra(codage,data){
   arr = data.split('-');

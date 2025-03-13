@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_solicita_classe.php");
-include("classes/db_solicitatipo_classe.php");
-include("classes/db_solicitem_classe.php");
-include("classes/db_pcdotac_classe.php");
-include("classes/db_pctipocompra_classe.php");
-include("classes/db_db_depart_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_solicita_classe.php"));
+include(modification("classes/db_solicitatipo_classe.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_pcdotac_classe.php"));
+include(modification("classes/db_pctipocompra_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
 $clsolicita     = new cl_solicita;
 $clsolicitatipo = new cl_solicitatipo;
 $clsolicitem    = new cl_solicitem;

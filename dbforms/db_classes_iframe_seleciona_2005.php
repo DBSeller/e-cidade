@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
 $clrotulo = new rotulocampo;
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 if(file_exists(base64_decode($arquivo))){
-  include(base64_decode($arquivo));
+  include(modification(base64_decode($arquivo)));
 }else{
   echo "
   
@@ -111,18 +111,18 @@ if(isset($sql) && $sql!=""){
 }
 if(isset($sql_disabled) && $sql_disabled!=""){ 
   $sql_disabled=base64_decode($sql_disabled);
-  $result03=pg_query($sql_disabled);
+  $result03=db_query($sql_disabled);
   $numrows03=pg_num_rows($result03);
 }
 if(isset($sql_marca) && $sql_marca!=""){ 
   $sql_marca=base64_decode($sql_marca);
-  $result02=pg_query($sql_marca);
+  $result02=db_query($sql_marca);
   $numrows02=pg_num_rows($result02);
 }
 
 
 if(isset($sql) && $sql!=""){ 
-       $result=pg_query($sql);
+       $result=db_query($sql);
        $numrows=pg_numrows($result);
        $numcols=pg_numfields($result);
        if($db_opcao=="Incluir"){

@@ -1,57 +1,60 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
-require_once('libs/db_utils.php');
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_turma_classe.php");
-require_once("classes/db_calendario_classe.php");
-require_once("classes/db_turno_classe.php");
-require_once("classes/db_cursoedu_classe.php");
-require_once("classes/db_procedimento_classe.php");
-require_once("classes/db_sala_classe.php");
-require_once("classes/db_edu_parametros_classe.php");
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_turma_classe.php"));
+require_once(modification("classes/db_calendario_classe.php"));
+require_once(modification("classes/db_turno_classe.php"));
+require_once(modification("classes/db_cursoedu_classe.php"));
+require_once(modification("classes/db_procedimento_classe.php"));
+require_once(modification("classes/db_sala_classe.php"));
+require_once(modification("classes/db_edu_parametros_classe.php"));
 
-db_postmemory($HTTP_POST_VARS);
-db_postmemory($HTTP_GET_VARS);
+db_postmemory($_POST);
+db_postmemory($_GET);
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-$clturma = new cl_turma;
-$clcalendario = new cl_calendario;
-$clturno = new cl_turno;
-$clcurso = new cl_curso;
-$clprocedimento = new cl_procedimento;
-$clsala = new cl_sala;
-$clrotulo = new rotulocampo;
+$clturma         = new cl_turma;
+$clcalendario    = new cl_calendario;
+$clturno         = new cl_turno;
+$clcurso         = new cl_curso;
+$clprocedimento  = new cl_procedimento;
+$clsala          = new cl_sala;
+$clrotulo        = new rotulocampo;
+$oDaoAlunopossib = new cl_alunopossib();
+$oDaoAlunoCurso  = new cl_alunocurso();
+
 $clturma->rotulo->label("ed57_i_codigo");
 $clturma->rotulo->label("ed57_c_descr");
 $clturma->rotulo->label("ed57_i_calendario");
@@ -175,33 +178,47 @@ if ($oDaoEduParametros->numrows > 0) {
  <tr>
   <td align="center" valign="top">
    <?
-   $campos = "DISTINCT turma.ed57_i_codigo,
-              turma.ed57_c_descr,
-              fc_nomeetapaturma(ed57_i_codigo) as ed11_c_descr,
-              calendario.ed52_c_descr,
-              calendario.ed52_i_ano,
-              cursoedu.ed29_c_descr,
-              base.ed31_c_descr,
-              turno.ed15_c_nome,
-              fc_codetapaturma(ed57_i_codigo) as ed11_i_codigo,
-              fc_seqetapaturma(ed57_i_codigo) as ed11_i_sequencia,
-              calendario.ed52_i_codigo ,
-              cursoedu.ed29_i_codigo,
-              base.ed31_i_codigo,
-              turno.ed15_i_codigo,
-              calendario.ed52_d_inicio,
-              calendario.ed52_d_fim
-             ";
+    $campos = "DISTINCT turma.ed57_i_codigo,
+               turma.ed57_c_descr,
+               fc_nomeetapaturma(ed57_i_codigo) as ed11_c_descr,
+               calendario.ed52_c_descr,
+               calendario.ed52_i_ano,
+               cursoedu.ed29_c_descr,
+               base.ed31_c_descr,
+               turno.ed15_c_nome,
+               fc_codetapaturma(ed57_i_codigo) as ed11_i_codigo,
+               fc_seqetapaturma(ed57_i_codigo) as ed11_i_sequencia,
+               calendario.ed52_i_codigo ,
+               cursoedu.ed29_i_codigo,
+               base.ed31_i_codigo,
+               turno.ed15_i_codigo,
+               calendario.ed52_d_inicio,
+               calendario.ed52_d_fim
+              ";
 
-   $sWhere = '';
-   $sSep   = '';
-   if (isset($turmasprogressao) && $turmasprogressao == 'f') {
+    $sWhere = '';
+    $sSep   = '';
+    if (isset($turmasprogressao) && $turmasprogressao == 'f') {
 
-     $sWhere .= " ed57_i_tipoturma <> 6";
-     $sSep    = " and ";
-   }
+      $sWhere .= " ed57_i_tipoturma <> 6";
+      $sSep    = " and ";
+    }
+
+
+    $sSqlSituacao = $oDaoAlunoCurso->sql_query(null, "trim(ed56_c_situacao) as situacao", ""," ed56_i_aluno = $aluno ");
+    $rsSituacao   = db_query($sSqlSituacao);
+
+    $lValidaSeriesAnteriores = $lEliminarSeriesAnteriores == "S";
+
+    if ($rsSituacao && pg_num_rows($rsSituacao) > 0) {
+
+      if (db_utils::fieldsMemory($rsSituacao, 0)->situacao == 'CANDIDATO') {
+        $lValidaSeriesAnteriores = false;
+      }
+    }
+
    /* Rotina igual a de func_turmamatrtransffora.php */
-   if ($lEliminarSeriesAnteriores == "S") { // Elimina séries já cursadas e com aprovação do aluno
+   if ($lValidaSeriesAnteriores) { // Elimina séries já cursadas e com aprovação do aluno
 
      $aEnsino     = array();
      $aOrdemSerie = array();
@@ -215,7 +232,7 @@ if ($oDaoEduParametros->numrows > 0) {
      $sSubAux      .= '         order by s.ed11_i_sequencia desc ';
      $sSubAux      .= '           limit 1 ';
 
-     $sCampos       = 'ed11_i_ensino, ';
+     $sCampos       = 'ed11_i_ensino, ano, ';
      $sCampos      .= "case when resfinal = 'A' ";
      $sCampos      .= '  then ed11_i_codigo ';
      $sCampos      .= "  else (select s.ed11_i_codigo $sSubAux) ";// Reprovou, mas na série anterior aprovou(óbvio)
@@ -243,14 +260,16 @@ if ($oDaoEduParametros->numrows > 0) {
      $sSubAux      .= '         order by s.ed11_i_sequencia desc ';
      $sSubAux      .= '           limit 1 ';
 
-     $sCampos       = "(select s.ed11_i_codigo $sSubAux) as ed11_i_codigo,";
-     $sCampos      .= "(select s.ed11_i_sequencia $sSubAux) as ed11_i_sequencia,";
+     $sCampos       = " ed52_i_ano, ";
+     $sCampos      .= " (select s.ed11_i_codigo $sSubAux) as ed11_i_codigo,";
+     $sCampos      .= " (select s.ed11_i_sequencia $sSubAux) as ed11_i_sequencia,";
      $sCampos      .= 'ed11_i_ensino ';
      $sOrderBy      = 'calendario.ed52_i_ano desc, matricula.ed60_i_codigo desc, ed11_i_sequencia desc limit 1';
      $sSqlTmp       = $oDaoMatricula->sql_query_bolsafamilia(null, $sCampos, $sOrderBy,
                                                              " ed60_i_aluno = $aluno ".
                                                              " and exists(select s.ed11_i_codigo $sSubAux)"
                                                             );
+
      $rsMat         = $oDaoMatricula->sql_record($sSqlTmp);
 
      if ($oDaoHistorico->numrows > 0) {
@@ -260,8 +279,10 @@ if ($oDaoEduParametros->numrows > 0) {
      if ($oDaoMatricula->numrows > 0) {
 
        $oDadosUltimaEtapaTmp = db_utils::fieldsmemory($rsMat, 0);
+
        /* A etapa com a maior sequência é considerada a última cursada e concluída pelo aluno */
        if (isset($oDadosUltimaEtapa) // Encontrou registros no histórico e a etapa tem a seq menor que da matricula
+           && $oDadosUltimaEtapa->ano < $oDadosUltimaEtapaTmp->ed52_i_ano
            && $oDadosUltimaEtapa->ed11_i_sequencia < $oDadosUltimaEtapaTmp->ed11_i_sequencia) {
          $oDadosUltimaEtapa = $oDadosUltimaEtapaTmp;
        } else { // Senao, $oDadosUltimaEtapaTmp somente é uitilizado se não existe dados no histórico
@@ -285,6 +306,8 @@ if ($oDaoEduParametros->numrows > 0) {
        $sSqlTmp        = $oDaoSerieEquiv->sql_query_serieequiv(null, 'ed11_i_ensino, ed11_i_sequencia', '',
                                                                'ed234_i_serie = '.$oDadosUltimaEtapa->ed11_i_codigo
                                                               );
+
+
        $rs             = $oDaoSerieEquiv->sql_record($sSqlTmp);
        for ($iCont = 0; $iCont < $oDaoSerieEquiv->numrows; $iCont++) {
 
@@ -315,7 +338,6 @@ if ($oDaoEduParametros->numrows > 0) {
                                             'and ed77_i_basecont is not null) '
                                            );
        $rs      = $clturma->sql_record($sSqlTmp);
-//echo $sSqlTmp;
        $sBases  = '';
        $sVir    = '';
        for ($iCont = 0; $iCont < $clturma->numrows; $iCont++) {
@@ -392,9 +414,10 @@ if ($oDaoEduParametros->numrows > 0) {
        $sSep    = ' and ';
 
      }
+
      if ($esc) {
 
-       $oDaoAlunopossib = db_utils::getdao('alunopossib');
+
        $sSqlPossib = $oDaoAlunopossib->sql_query(null, "ed79_i_serie", ""," ed56_i_aluno = $aluno ");
        $rsPossib   = $oDaoAlunopossib->sql_record($sSqlPossib);
        if($oDaoAlunopossib->numrows > 0){
@@ -454,3 +477,9 @@ if ($oDaoEduParametros->numrows > 0) {
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

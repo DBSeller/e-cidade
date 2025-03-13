@@ -1,33 +1,7 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-/*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -77,20 +51,20 @@ class ExportacaoSituacaoAlunoCenso2013 {
    * @var DBLogJSON
    */
   private $oLog;
-  
+
   /**
    * Ano do censo
    * @var interger
    */
   private $iAno;
-  
+
   /**
    * Escola
    * @var Escola
    */
   private $oEscola;
-  
-  
+
+
   /**
    * Etapas NÃO permitidas no aquivo Situação do Aluno Censo
    * @var array
@@ -115,9 +89,9 @@ class ExportacaoSituacaoAlunoCenso2013 {
    * @var array
    */
   private $aEtapasEmAndamento = array(1, 2, 39, 40, 43, 44, 45, 46, 47, 48, 60, 61, 62, 63, 65);
-  
+
   private $aEtapasEnsinoInfantil = array(1, 2);
-  
+
   /**
    * Movimentos permitidos para campo:
    *  -> 10 do registro 90
@@ -133,7 +107,7 @@ class ExportacaoSituacaoAlunoCenso2013 {
   private $aMovimento = array('TRANSFERIDO REDE' => 1, 'TRANSFERIDO FORA' => 1,
                               'EVADIDO' => 2, 'MATRICULA TRANCADA' => 2,'CANCELADO' => 2,'EVADIDO' => 2,
                               'FALECIDO' => 3);
-  
+
   /**
    * Identifica se tem inconsistencia
    * @var boolean
@@ -151,7 +125,7 @@ class ExportacaoSituacaoAlunoCenso2013 {
    * @var array
    */
   private $aAlunosAntesCenso = array();
-  
+
    /**
    * Método construtor
    *
@@ -188,9 +162,17 @@ class ExportacaoSituacaoAlunoCenso2013 {
     $oDaoEscolaGestorCenso = new cl_escolagestorcenso();
 
     $sCamposDadosEscola  = "distinct escolagestorcenso.ed325_email as email_gestor_escolar ";
-    $sCamposDadosEscola .= ",escola.ed18_c_codigoinep as codigo_escola_inep                ";
-    $sCamposDadosEscola .= ",cgmrh.z01_cgccpf as cpf_gestor_escolar                        ";
-    $sCamposDadosEscola .= ",cgmrh.z01_nome as nome_gestor_escolar                         ";
+    $sCamposDadosEscola .= ",escola.ed18_c_codigoinep as codigo_escola_inep               ";
+    $sCamposDadosEscola .= ",case                                  ";
+    $sCamposDadosEscola .= "   when  cgmrh.z01_cgccpf is not null  ";
+    $sCamposDadosEscola .= "     then cgmrh.z01_cgccpf             ";
+    $sCamposDadosEscola .= "   else cgmcgm.z01_cgccpf              ";
+    $sCamposDadosEscola .= " end as cpf_gestor_escolar            ";
+    $sCamposDadosEscola .= ",case                                  ";
+    $sCamposDadosEscola .= "   when cgmrh.z01_nome is not null     ";
+    $sCamposDadosEscola .= "     then cgmrh.z01_nome               ";
+    $sCamposDadosEscola .= "   else cgmcgm.z01_nome                ";
+    $sCamposDadosEscola .= " end as nome_gestor_escolar         ";
     $sCamposDadosEscola .= ",case when trim(atividaderh.ed01_c_descr) = 'DIRETOR' then 1 else 2 end as cargo_gestor_escolar";
     $sCamposDadosEscola .= ",'' as separador_final ";
 
@@ -199,27 +181,28 @@ class ExportacaoSituacaoAlunoCenso2013 {
     $rsEscolaGestorCenso   = $oDaoEscolaGestorCenso->sql_record($sSqlEscolaGestorCenso);
 
     if ( !$rsEscolaGestorCenso || pg_num_rows( $rsEscolaGestorCenso ) == 0 ) {
-      
+
       $sMensagem = "Dados do gestor da escola não cadastrados. Acesse: Cadastros -> Dados da Escola -> aba Gestor.";
       $this->logErro($sMensagem, 89);
+    } else {
+
+      $oEscolaGestorCenso    = db_utils::fieldsMemory($rsEscolaGestorCenso, 0);
+      $oEscolaGestorCenso->tipo_registro = 89;
+
+      if ( $this->validaDados($oEscolaGestorCenso) ) {
+        $this->oLayout->setByLineOfDBUtils($oEscolaGestorCenso, 1, "89");
+      }
     }
-    
-    $oEscolaGestorCenso    = db_utils::fieldsMemory($rsEscolaGestorCenso, 0);
-    
-    $oEscolaGestorCenso->tipo_registro = 89;
-    
-    if ( $this->validaDados($oEscolaGestorCenso) ) {
-      $this->oLayout->setByLineOfDBUtils($oEscolaGestorCenso, 1, "89");
-    }
+
   }
-  
+
   /**
    * Retorna os alunos matriculados na escola no ano do censo
    * @param boolean $lMatriculadoAposCenso
    * @return stdClass[]
    */
   private function getAlunos($lMatriculadoAposCenso = true) {
-    
+
     $sCampos  = "  distinct ";
     $sCampos .= "  ed18_c_codigoinep     as codigo_escola_inep  ";
     $sCampos .= " ,ed57_i_codigo         as codigo_turma_escola  ";
@@ -238,6 +221,8 @@ class ExportacaoSituacaoAlunoCenso2013 {
     $sCampos .= " ,trim(ed11_c_descr)    as etapa  ";
     $sCampos .= " ,ed60_i_codigo         as codigo_matricula_aluno  ";
     $sCampos .= " ,trim(ed60_c_situacao) as situacao  ";
+    $sCampos .= " ,ed60_d_datasaida      as data_saida  ";
+    $sCampos .= " ,ed52_i_ano            as ano  ";
 
     $aWhere   = array();
     $aWhere[] = " serie.ed11_i_codcenso not in (".implode(", ", $this->aEtapasNaoPermitidasNoArquivo).") ";
@@ -245,22 +230,23 @@ class ExportacaoSituacaoAlunoCenso2013 {
     $aWhere[] = " escola.ed18_i_codigo  = ". $this->oEscola->getCodigo();
     $aWhere[] = " calendario.ed52_i_ano = {$this->iAno} ";
     $aWhere[] = " ed10_i_tipoensino in (1,2,3) ";
-    
+    $aWhere[] = " ed221_c_origem = 'S' ";
+
     $sWhereDataCenso = " matricula.ed60_d_datamatricula <= '" . $this->getDataCenso()->getDate(). "'";
     $sWhereDadaSaida = " ( matricula.ed60_d_datasaida > '" . $this->getDataCenso()->getDate(). "' or ed60_c_situacao = 'MATRICULADO')";
     if ($lMatriculadoAposCenso) {
-      
+
       $sWhereDadaSaida = "";
       $sWhereDataCenso = " matricula.ed60_d_datamatricula > '" . $this->getDataCenso()->getDate(). "'";
     }
-    
+
     $aWhere[] = $sWhereDataCenso;
     if ( !empty($sWhereDadaSaida) ) {
       $aWhere[] = $sWhereDadaSaida;
     }
-    
+
     $sWhere = implode(" and ", $aWhere);
-    
+
     $sSql  = " select {$sCampos}  ";
     $sSql .= "   from aluno       ";
     $sSql .= "   left join alunomatcenso  on alunomatcenso.ed280_i_aluno      = aluno.ed47_i_codigo ";
@@ -276,10 +262,10 @@ class ExportacaoSituacaoAlunoCenso2013 {
     $sSql .= "  inner join ensino         on ensino.ed10_i_codigo             = serie.ed11_i_ensino ";
     $sSql .= "  ";
     $sSql .= "  where {$sWhere}";
-    
+
     $rs      = db_query($sSql);
     $iLinhas = pg_num_rows($rs);
-    
+
     $aAlunosFiltrados = array();
     for ($i = 0; $i < $iLinhas; $i++) {
 
@@ -309,12 +295,17 @@ class ExportacaoSituacaoAlunoCenso2013 {
        * Neste caso devemos verificar se aluno possui uma matrícula posterior no mesmo ano e escola
        */
       if ( in_array( $oDadosAluno->situacao, array('TRANSFERIDO REDE', 'TRANSFERIDO FORA') ) ) {
-        
+
         $sSqlValidaProximaMatricula  = " select max(ed60_i_codigo) as matricula, trim(ed60_c_situacao) as situacao ";
         $sSqlValidaProximaMatricula .= "   from matricula ";
+        $sSqlValidaProximaMatricula .= "  inner join turma      on ed57_i_codigo = ed60_i_turma ";
+        $sSqlValidaProximaMatricula .= "  inner join calendario on ed52_i_codigo = ed57_i_calendario";
         $sSqlValidaProximaMatricula .= "  where ed60_c_situacao in ('TROCA DE MODALIDADE', 'MATRICULADO', 'AVANÇADO', 'CLASSIFICADO') ";
-        $sSqlValidaProximaMatricula .= "    and ed60_i_aluno = {$oDadosAluno->codigo_aluno_escola} ";
-        $sSqlValidaProximaMatricula .= "    and ed60_c_ativa = 'S'  ";
+        $sSqlValidaProximaMatricula .= "    and ed60_i_aluno          = {$oDadosAluno->codigo_aluno_escola} ";
+        $sSqlValidaProximaMatricula .= "    and ed57_i_escola         = {$this->oEscola->getCodigo()} ";
+        $sSqlValidaProximaMatricula .= "    and ed60_c_ativa          = 'S'  ";
+        $sSqlValidaProximaMatricula .= "    and ed60_d_datamatricula >= '{$oDadosAluno->data_saida}'  ";
+        $sSqlValidaProximaMatricula .= "    and ed52_i_ano            = {$oDadosAluno->ano} ";
         $sSqlValidaProximaMatricula .= "  group by ed60_c_situacao  ";
 
         $rsValida = db_query($sSqlValidaProximaMatricula);
@@ -324,16 +315,15 @@ class ExportacaoSituacaoAlunoCenso2013 {
           $oDadosAluno->codigo_matricula_aluno = $oMatriculaCerta->matricula;
           $oDadosAluno->situacao               = $oMatriculaCerta->situacao;
         }
-
       }
 
       $oMatricula = MatriculaRepository::getMatriculaByCodigo($oDadosAluno->codigo_matricula_aluno);
 
       db_inicio_transacao();
       $oDiario = new DiarioClasse($oMatricula, false);
-      
+
       if ( count( $oDiario->getDisciplinas() ) == 0 ) {
-        
+
         $aAlunosFiltrados[$oDadosAluno->codigo_aluno_escola] = $oDadosAluno;
         continue;
       }
@@ -343,7 +333,7 @@ class ExportacaoSituacaoAlunoCenso2013 {
         $sResultadoFinal = $oDiario->aprovadoComProgressaoParcial() ? 'A' : "R";
       }
       db_fim_transacao(true);
-      
+
       $oDadosAluno->resultado = $sResultadoFinal;
       $aAlunosFiltrados[$oDadosAluno->codigo_aluno_escola] = $oDadosAluno;
 
@@ -352,11 +342,11 @@ class ExportacaoSituacaoAlunoCenso2013 {
     if (!$lMatriculadoAposCenso) {
       $this->aAlunosAntesCenso = $aAlunosFiltrados;
     }
-    
+
     return $aAlunosFiltrados;
   }
-  
-  
+
+
   /**
    * Escreve os registros da linha 90 no arquivo
    * @return
@@ -364,15 +354,15 @@ class ExportacaoSituacaoAlunoCenso2013 {
   private function escreverAlunosAdmitidosAntesCenso() {
 
     $aAlunos = $this->getAlunos(false);
-    
+
     foreach ($aAlunos as $oAluno) {
-    	
+
       $oAluno->tipo_registro = 90;
-      
+
       if ( !$this->validaDados($oAluno) ) {
       	continue;
       }
-      
+
       $oLinha                        = new stdClass();
       $oLinha->tipo_registro         = $oAluno->tipo_registro;
       $oLinha->codigo_escola_inep    = $oAluno->codigo_escola_inep;
@@ -388,43 +378,43 @@ class ExportacaoSituacaoAlunoCenso2013 {
       $oLinha->concluinte            = '';
       $oLinha->em_andamento          = 1;
       $oLinha->separador_final       = '';
-      
+
       if ( array_key_exists($oAluno->situacao, $this->aMovimento) ) {
-        
+
         $oLinha->movimento    = $this->aMovimento[$oAluno->situacao];
         $oLinha->em_andamento = '';
       }
-      
+
       // Valida o resultado do aluno
       if ( !empty($oAluno->resultado) && empty($oLinha->movimento) ) {
-        
+
         $oLinha->rendimento   = $oAluno->resultado == 'A' ? 1 : 0;
         $oLinha->em_andamento = '';
       }
-      
+
       if (    in_array($oAluno->codigo_etapa_censo, $this->aEtapasConcluintes) && empty($oLinha->movimento)
            && !empty($oAluno->resultado) ) {
         $oLinha->concluinte = $oAluno->resultado == 'A' ? 1 : 0;
       }
-      
-      if ( in_array($oAluno->codigo_etapa_censo , $this->aEtapasEnsinoInfantil) ) {
-        
+
+      if ( in_array($oAluno->codigo_etapa_censo , $this->aEtapasEnsinoInfantil) && empty($oLinha->movimento) ) {
+
         $oLinha->movimento    = '';
         $oLinha->rendimento   = '';
         $oLinha->concluinte   = '';
         $oLinha->em_andamento = 1;
       }
-           
+
       $this->oLayout->setByLineOfDBUtils($oLinha, 1, "90");
     }
   }
-  
+
   /**
    * Escreve os registros da linha 91 no arquivo do censo
    * @return
    */
   private function escreverAlunosAdmitidosAposCenso() {
-    
+
     $aAlunos = $this->getAlunos(true) ;
 
     foreach ($aAlunos as $oAluno) {
@@ -436,95 +426,91 @@ class ExportacaoSituacaoAlunoCenso2013 {
       if ( array_key_exists($oAluno->codigo_aluno_escola, $this->aAlunosAntesCenso) ) {
         continue;
       }
-       
+
       $oAluno->tipo_registro = 91;
-    
+
       if ( !$this->validaDados($oAluno) ) {
         continue;
       }
-      
+
       $oDataNascimento = new DBDate($oAluno->data_nascimento);
-      
+
       $oLinha                        = new stdClass();
       $oLinha->tipo_registro         = $oAluno->tipo_registro;                         // 1
       $oLinha->codigo_escola_inep    = $oAluno->codigo_escola_inep;                    // 2
       $oLinha->codigo_turma_escola   = $oAluno->codigo_turma_escola;                   // 3
-      $oLinha->codigo_turma_inep     = $oAluno->codigo_turma_inep;                     // 4
+      $oLinha->codigo_turma_inep     = '';                                             // 4
       $oLinha->codigo_aluno_inep     = $oAluno->codigo_aluno_inep;                     // 5
       $oLinha->codigo_aluno_escola   = $oAluno->codigo_aluno_escola;                   // 6
       $oLinha->nome_aluno            = $oAluno->aluno;                                 // 7
       $oLinha->data_nascimento       = $oDataNascimento->convertTo(DBDate::DATA_PTBR); // 8
       $oLinha->nome_mae              = $oAluno->nome_mae;                              // 9
       $oLinha->codigo_matricula_inep = '';                                             // 10
-      $oLinha->modalidade            = '';                                             // 11
+      $oLinha->modalidade            = $oAluno->codigo_modalidade;                     // 11
       $oLinha->codigo_etapa          = $oAluno->codigo_etapa_censo;                    // 12
       $oLinha->movimento             = '';                                             // 13
       $oLinha->rendimento            = '';                                             // 14
       $oLinha->concluinte            = '';                                             // 15
       $oLinha->em_andamento          = 1;                                              // 16
       $oLinha->separador_final       = '';
-      
-      if ( empty($oLinha->codigo_turma_inep) ) {
-        $oLinha->modalidade = $oAluno->codigo_modalidade;
-      }
-      
+
       if ( array_key_exists($oAluno->situacao, $this->aMovimento) ) {
-      
+
         $oLinha->movimento    = $this->aMovimento[$oAluno->situacao];
         $oLinha->em_andamento = '';
       }
-      
+
       // Valida o resultado do aluno
       if ( !empty($oAluno->resultado) && empty($oLinha->movimento) ) {
-      
+
         $oLinha->rendimento   = $oAluno->resultado == 'A' ? 1 : 0;
         $oLinha->em_andamento = '';
       }
-      
+
       if (    in_array($oAluno->codigo_etapa_censo, $this->aEtapasConcluintes) && empty($oLinha->movimento)
       && !empty($oAluno->resultado) ) {
         $oLinha->concluinte = $oAluno->resultado == 'A' ? 1 : 0;
       }
-      
+
       if ( in_array($oAluno->codigo_etapa_censo , $this->aEtapasEnsinoInfantil) ) {
-      
+
         $oLinha->movimento    = '';
         $oLinha->rendimento   = '';
         $oLinha->concluinte   = '';
         $oLinha->em_andamento = 1;
       }
-       
+
       $this->oLayout->setByLineOfDBUtils($oLinha, 1, "91");
     }
   }
-  
+
   /**
    * Define a escola que esta gerando o censo
    * @param Escola $oEscola
    */
   public function setEscola( Escola $oEscola) {
-  	
+
     $this->oEscola = $oEscola;
   }
-  
+
   /**
    * Retorna a data do censo
    * @return DBDate
    */
   private function getDataCenso () {
-    
+
     for ($dia = 31; $dia > 0; $dia-- ) {
-    	
+
       if ( date ( "w", mktime(0, 0, 0, 5, $dia, $this->iAno) ) == 3 ) {
-      
+
         $iDia = str_pad($dia, 2, '0', STR_PAD_LEFT);
         $oData = new DBDate("{$iDia}/05/{$this->iAno}");
         return $oData;
       }
     }
   }
-  
-  
+
+
   /**
    * Gera o arquivo
    * @return boolean
@@ -534,30 +520,38 @@ class ExportacaoSituacaoAlunoCenso2013 {
     $this->escreverDadosEscola();
     $this->escreverAlunosAdmitidosAntesCenso();
     $this->escreverAlunosAdmitidosAposCenso();
-    
+
     if ($this->lTemInconsistencia) {
     	unlink($this->sNomeArquivo);
     }
     return !$this->lTemInconsistencia;
   }
-  
+
   /**
    * Valida os dados dos campos conforme layout
    * @param stdClass $oDados os dados variam de acordo com o identificador a ser validado
    * @return boolean
    */
   private function validaDados($oDados) {
-    
+
     /**
      * Quando alizamos os dados do registro 89 não temos as propriedades setadas abaixo.
      * Setamos elas com vazi para o php não lançar um warning ao montar o array de validações.
      */
     if ($oDados->tipo_registro == 89) {
-      
+
       $oDados->aluno = $oDados->turma = $oDados->etapa = "";
       $this->validaDadosEscola( $oDados );
     }
-  	
+
+
+    $iCodigo      = !empty($oDados->codigo_aluno_escola) ? $oDados->codigo_aluno_escola : '';
+    $dtNascimento = !empty($oDados->data_nascimento) ? $oDados->data_nascimento : '';
+
+    $iTurmaInep   = !empty($oDados->codigo_turma_inep) ? $oDados->codigo_turma_inep : '';
+    $sTurma       = !empty($oDados->turma) ? $oDados->turma : '';
+
+
     $aValidacoes = array( 89 => array( "email_gestor_escolar" => "Email do gestor não informado."
                                       ,"cargo_gestor_escolar" => "Cargo do gestor não foi informado."
                                       ,"nome_gestor_escolar" => "Nome do gestor não informado."
@@ -565,24 +559,24 @@ class ExportacaoSituacaoAlunoCenso2013 {
                                       ,"codigo_escola_inep" => "Escola não possui código INEP."
                                      ),
                           90 => array( "codigo_turma_inep" => "Turma {$oDados->turma} - {$oDados->etapa} do aluno(a) {$oDados->aluno} está sem o código do INEP."
-                                      ,"codigo_aluno_inep" => "O(a) aluno(a) {$oDados->aluno} está sem o código do INEP."
-                                      ,"codigo_matricula_inep" => "O(a) aluno(a) {$oDados->aluno} não possui matrícula do INEP."
+                                      ,"codigo_aluno_inep" => "O(a) aluno(a) {$iCodigo} - {$oDados->aluno} ({$dtNascimento}) está sem o código do INEP."
+                                      ,"codigo_matricula_inep" => "O(a) aluno(a) {$iCodigo} - {$oDados->aluno} ({$dtNascimento}) não possui matrícula do INEP. Turma {$sTurma} INEP: {$iTurmaInep} "
                                       ,"codigo_modalidade" => "Modalidade não informada."
                                       ,"codigo_etapa_censo" => "Etapa do censo da turma {$oDados->turma} - {$oDados->etapa} não informada."
                                      ),
-                          91  => array( "codigo_aluno_inep" => "O(a) aluno(a) {$oDados->aluno} está sem o código do INEP.")
+                          91  => array( "codigo_aluno_inep" => "O(a) aluno(a) {$iCodigo} - {$oDados->aluno} ({$dtNascimento}) está sem o código do INEP.")
                         );
-    
+
     foreach ($aValidacoes[$oDados->tipo_registro] as $sCampoValidar => $sMensagem) {
-    	
+
       if (empty($oDados->{$sCampoValidar}) ) {
       	$this->logErro($sMensagem, $oDados->tipo_registro);
       }
     }
-    
+
     return !$this->lTemInconsistencia;
   }
-  
+
   /**
    * Retorna o path do arquivo gerado
    * @return string
@@ -590,7 +584,7 @@ class ExportacaoSituacaoAlunoCenso2013 {
   public function getNomeArquivoCenso() {
     return $this->sNomeArquivo;
   }
-  
+
   /**
    * Validações referentes ao registro 89. Retorna se encontrou alguma inconsistência
    *
@@ -598,42 +592,42 @@ class ExportacaoSituacaoAlunoCenso2013 {
    * @return boolean
    */
   public function validaDadosEscola( $oDados ) {
-    
+
     /**
      * Valida se o CPF é valido
      */
     if ( !DBString::isCPF( $oDados->cpf_gestor_escolar ) || $oDados->cpf_gestor_escolar == "00000000191" ) {
-      
+
       $sMensagem = "Número do CPF [{$oDados->cpf_gestor_escolar}] do gestor é inválido.";
       $this->logErro( $sMensagem, $oDados->tipo_registro );
     }
-    
+
     /**
      * Valida se o nome do gestor foi informado
      */
     if ( $oDados->nome_gestor_escolar == '' ) {
-       
+
       $sMensagem = "Nome do gestor é obrigatório.";
       $this->logErro( $sMensagem, $oDados->tipo_registro );
     }
-     
+
     /**
      * Valida se o nome do gestor possui 4 letras repetidas em sequência
      */
     $sExpressao          = '/([a-zA-Z])\1{3}/';
     $lValidacaoExpressao = preg_match( $sExpressao, $oDados->nome_gestor_escolar ) ? true : false;
-     
+
     if ( $lValidacaoExpressao ) {
-       
+
       $sMensagem = "Nome do gestor inválido. Não é possível informar mais de 4 letras repetidas em sequência.";
       $this->logErro( $sMensagem, $oDados->tipo_registro );
     }
-    
+
     /**
      * Valida se o nome possui nome e sobrenome
      */
     if ( !DBString::isNomeValido( $oDados->nome_gestor_escolar, DBString::NOME_REGRA_3 ) ) {
-      
+
       $sMensagem = "Nome do gestor inválido. Deve ser composto de nome e sobrenome.";
       $this->logErro( $sMensagem, $oDados->tipo_registro );
     }
@@ -642,16 +636,16 @@ class ExportacaoSituacaoAlunoCenso2013 {
      * Valida se o nome contem somente letras
      */
     if ( !DBString::isSomenteLetras( str_replace( " ", "", $oDados->nome_gestor_escolar ) ) ) {
-      
+
       $sMensagem = "Nome do gestor inválido. Deve conter somente letras.";
       $this->logErro( $sMensagem, $oDados->tipo_registro );
     }
-    
+
     /**
      * Valida o email do gestor
      */
     if ( !DBString::isEmail( $oDados->email_gestor_escolar ) ) {
-      
+
       $sMensagem = "E-mail do gestor inválido.";
       $this->logErro( $sMensagem, $oDados->tipo_registro );
     }

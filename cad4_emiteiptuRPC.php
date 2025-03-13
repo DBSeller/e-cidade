@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("model/regraEmissao.model.php");
-require_once("std/db_stdClass.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("model/regraEmissao.model.php"));
+require_once(modification("std/db_stdClass.php"));
 
 $oPost  = db_utils::postMemory($_POST);
 $oJson  = new services_json();
@@ -62,15 +62,30 @@ if (isset($_POST["json"])) {
       $iAnousu     = $oParam->iAnousu;
     	$sDatausu    = date('Y-m-d',db_getsession('DB_datausu'));
       
-      $sSqlUnicas  =  " select distinct k00_dtvenc, k00_dtoper, k00_percdes "; 
-      $sSqlUnicas .=  "   from recibounica ";
-      $sSqlUnicas .=  "        inner join iptunump on j20_numpre = k00_numpre ";
-      $sSqlUnicas .=  "                           and j20_anousu = {$iAnousu} ";
-      $sSqlUnicas .=  "  where k00_tipoger = 'G' ";
-      $sSqlUnicas .=  "    and k00_dtvenc > '{$sDatausu}' order by k00_dtvenc, k00_percdes ";    	
-    	
+          $sSqlUnicas = "
+            select distinct 
+                   k00_dtvenc, 
+                   k00_dtoper, 
+                   k00_percdes 
+              from recibounica 
+                   inner join (select j20_numpre as numpre
+                                 from iptunump
+                                where j20_anousu = {$iAnousu} 
+                                union 
+                               select j151_numpre as numpre
+                                 from iptutaxanump
+                                      inner join iptutaxacalv on iptutaxacalv.j152_iptutaxanump = iptutaxanump.j151_codigo
+                                      inner join iptucadtaxaexe on iptucadtaxaexe.j08_iptucadtaxaexe = iptutaxanump.j151_iptucadtaxaexe
+                                where iptucadtaxaexe.j08_anousu = {$iAnousu} 
+                   ) as nump on nump.numpre = recibounica.k00_numpre
+             where k00_tipoger = 'G'
+               and k00_dtvenc > '{$sDatausu}' 
+             order by k00_dtvenc, 
+                      k00_percdes 
+          ";
+
 	    $rsUnicas = db_query($sSqlUnicas);
-	    $aUnicas  = db_utils::getColectionByRecord($rsUnicas, false, false, false);
+	    $aUnicas  = db_utils::getCollectionByRecord($rsUnicas, false, false, false);
     	
 	    foreach ($aUnicas as $iIndUnicas => $oValorUnicas){
 	    	
@@ -113,7 +128,7 @@ if (isset($_POST["json"])) {
      $sSqlBuscaTipo .= "        inner join cadvencdesc on cadvencdesc.q92_codigo = cfiptu.j18_vencim   ";  
      $sSqlBuscaTipo .= "  where j18_anousu = {$oPost->anousu}                                          ";
 
-     $rsBuscaTipo = pg_query($sSqlBuscaTipo);
+     $rsBuscaTipo = db_query($sSqlBuscaTipo);
      $iLinhasTipo = pg_numrows($rsBuscaTipo);
    
      if ( $iLinhasTipo > 0 ) {

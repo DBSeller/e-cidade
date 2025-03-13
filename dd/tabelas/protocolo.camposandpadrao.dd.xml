@@ -1,0 +1,114 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010595' name='protocolo.camposandpadrao' description="Tabela que vincula campos do sistema ao andamento padrÃ£o, para que seja possivel preencher informaÃ§Ãµes ao fazer um despacho no processo" prefix="p110" label="camposandpadrao" type="2">
+  <fields>
+    <field codigo="1011644" 
+           campo_api='' 
+           name="p110_sequencial" 
+           conteudo="int8" 
+           description="CÃ³digo sequencial da tabela que serve de primary key e facilita manutenÃ§Ã£o na tabela." 
+           inivalue="0" 
+           label="CÃ³digo" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="CÃ³digo" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.camposandpadrao_p110_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011645" 
+           campo_api='' 
+           name="p110_andpadrao_codigo" 
+           conteudo="int8" 
+           description="Tipo de processo do andamento padrÃ£o ao qual o campo estÃ¡ vinculado" 
+           inivalue="0" 
+           label="Tipo Processo" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1011648" 
+           campo_api='' 
+           name="p110_andpadrao_ordem" 
+           conteudo="int8" 
+           description="Ordem do andamento padrÃ£o" 
+           inivalue="0" 
+           label="Ordem" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ordem" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1011646" 
+           campo_api='' 
+           name="p110_codcam" 
+           conteudo="int8" 
+           description="CÃ³digo do campo que estÃ¡ vinculado ao andamento padrÃ£o" 
+           inivalue="0" 
+           label="Campo" 
+           size="19" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1011647" 
+           campo_api='' 
+           name="p110_obrigatorio" 
+           conteudo="bool" 
+           description="Informa se o campo terÃ¡ o preenchimento obrigatÃ³rio ou nÃ£o" 
+           inivalue="f" 
+           label="ObrigatÃ³rio" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="ObrigatÃ³rio" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="p110_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="db_syscampo" inner='t'>
+      <fieldfk name="p110_codcam" reference="codcam" /> 
+    </foreignkey>
+    <foreignkey reference="andpadrao" inner='t'>
+      <fieldfk name="p110_andpadrao_codigo" reference="p53_codigo" /> 
+      <fieldfk name="p110_andpadrao_ordem" reference="p53_ordem" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

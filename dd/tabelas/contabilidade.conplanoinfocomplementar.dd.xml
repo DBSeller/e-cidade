@@ -1,0 +1,126 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010256' name='contabilidade.conplanoinfocomplementar' description="Informação complementar das contas do plano de contas contábil" prefix="c121" label="Informação comeplementar" type="0">
+  <fields>
+    <field codigo="1009615" 
+           campo_api='' 
+           name="c121_sequencial" 
+           conteudo="int4" 
+           description="Sequencial" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='contabilidade.conplanoinfocomplementar_c121_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009616" 
+           campo_api='' 
+           name="c121_sigla" 
+           conteudo="varchar(5)" 
+           description="Sigla" 
+           inivalue="" 
+           label="Sigla" 
+           size="5" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Sigla" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009617" 
+           campo_api='' 
+           name="c121_descricao" 
+           conteudo="varchar(45)" 
+           description="Descrição" 
+           inivalue="" 
+           label="Descrição" 
+           size="45" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010074" 
+           campo_api='' 
+           name="c121_sql" 
+           conteudo="text" 
+           description="Consulta para descobrir a origem dos dados do atributo atraves dos lancamentos" 
+           inivalue="" 
+           label="Consulta" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Consulta" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010075" 
+           campo_api='' 
+           name="c121_ajuda" 
+           conteudo="text" 
+           description="texto de ajuda para o preenchimento do atributo" 
+           inivalue="" 
+           label="Ajuda" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Ajuda" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1010076" 
+           campo_api='' 
+           name="c121_nomepropriedade" 
+           conteudo="varchar(40)" 
+           description="Nome da propriedade dentro do conta corrente. Deve ser um nome Unico." 
+           inivalue="" 
+           label="Nome da Propriedade" 
+           size="40" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Nome da Propriedade" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="c121_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

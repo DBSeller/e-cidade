@@ -86,10 +86,10 @@ db_textarea('la16_t_preparo',10,60,$Ila16_t_preparo,true,'text',$db_opcao,"")
 <script>
 function js_pesquisala16_i_materialcoleta(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_lab_materialcoleta','func_lab_materialcoleta.php?funcao_js=parent.js_mostralab_materialcoleta1|la15_i_codigo|la15_c_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_materialcoleta','func_lab_materialcoleta.php?funcao_js=parent.js_mostralab_materialcoleta1|la15_i_codigo|la15_c_descr','Pesquisa',true);
   }else{
      if(document.form1.la16_i_materialcoleta.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_lab_materialcoleta','func_lab_materialcoleta.php?pesquisa_chave='+document.form1.la16_i_materialcoleta.value+'&funcao_js=parent.js_mostralab_materialcoleta','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_materialcoleta','func_lab_materialcoleta.php?pesquisa_chave='+document.form1.la16_i_materialcoleta.value+'&funcao_js=parent.js_mostralab_materialcoleta','Pesquisa',false);
      }else{
        document.form1.la15_c_descr.value = ''; 
      }
@@ -108,7 +108,7 @@ function js_mostralab_materialcoleta1(chave1,chave2){
   db_iframe_lab_materialcoleta.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_lab_metodologia','func_lab_metodologia.php?funcao_js=parent.js_preenchepesquisa|la16_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lab_metodologia','func_lab_metodologia.php?funcao_js=parent.js_preenchepesquisa|la16_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_lab_metodologia.hide();

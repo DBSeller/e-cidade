@@ -136,7 +136,7 @@ db_textarea('k85_conteudo',0,0,$Ik85_conteudo,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_extrato','db_iframe_extrato','func_extrato.php?funcao_js=parent.js_preenchepesquisa|k85_sequencial','Pesquisa',true,'0','1','775','390');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_extrato','db_iframe_extrato','func_extrato.php?funcao_js=parent.js_preenchepesquisa|k85_sequencial','Pesquisa',true,'0','1','775','390');
 }
 function js_preenchepesquisa(chave){
   db_iframe_extrato.hide();

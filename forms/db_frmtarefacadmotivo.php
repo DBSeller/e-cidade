@@ -79,7 +79,7 @@ db_input('at54_nome',20,$Iat54_nome,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_tarefacadmotivo','func_tarefacadmotivo.php?funcao_js=parent.js_preenchepesquisa|at54_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tarefacadmotivo','func_tarefacadmotivo.php?funcao_js=parent.js_preenchepesquisa|at54_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_tarefacadmotivo.hide();

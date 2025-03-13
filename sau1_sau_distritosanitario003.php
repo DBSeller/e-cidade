@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_sau_distritosanitario_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_sau_distritosanitario_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -73,7 +73,7 @@ if (isset($excluir)) {
       <center>
         <fieldset style='width: 75%;'> <legend><b>Destino</b></legend>
           <?
-          require_once("forms/db_frmsau_distritosanitario.php");
+          require_once(modification("forms/db_frmsau_distritosanitario.php"));
           ?>
         </fieldset>
       </center>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_liborcamento.php");
-include("libs/db_libcontabilidade.php");
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcparamrel_classe.php");
-include("classes/db_conrelinfo_classe.php");
-include("classes/db_empresto_classe.php");
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("classes/db_conrelinfo_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
 
 $orcparamrel = new cl_orcparamrel;
 $clconrelinfo = new cl_conrelinfo;
@@ -59,7 +59,7 @@ $rec["3"]["valor"] = 0;
 
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst,uf from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst,uf from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for($xins = 0; $xins < pg_numrows($resultinst); $xins++){
@@ -92,7 +92,7 @@ $head7 = "DESPESA: ".$xtipo;
 $db_filtro='';
 $result_receita = db_receitasaldo(11,1,3,true,$db_filtro,$anousu,$dataini,$datafin);
 //db_criatabela($result_receita);exit;
-@pg_query("drop table work_receita");
+@db_query("drop table work_receita");
 
 for ($i = 0; $i < pg_numrows($result_receita); $i ++) {
   db_fieldsmemory($result_receita, $i);
@@ -161,7 +161,7 @@ $sqlperiodo = " select e60_instit, nomeinst, o58_subfuncao, o53_descr,
                 sum(coalesce(vlrpag,0)) as pago
                 from ($sqlperiodo) as x
                 group by e60_instit, nomeinst, o58_subfuncao, o53_descr";
-$resultado_rp = pg_query($sqlperiodo) or die($sqlperiodo);
+$resultado_rp = db_query($sqlperiodo) or die($sqlperiodo);
 //db_criatabela($resultado_rp);exit;
 
 // pega os parametros selecionados para as contas de contribuições ( interferencias ) grupo 5xx
@@ -434,7 +434,7 @@ if ($total_deducoes > 0 and $soma_receitas > 0) {
   $pdf->cell(40,$alt+2,db_formatar(0,'f'),'0',1,"R",1);
 }
 
-//include("fpdf151/geraarquivo.php");
+//include(modification("fpdf151/geraarquivo.php"));
 
 $pdf->Output();
 

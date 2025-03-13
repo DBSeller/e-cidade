@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_sau_receitamedica_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_sau_receitamedica_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
-$oDaoSauReceitaMedica       = db_utils::getdao('sau_receitamedica');
-$oDaoFarTipoReceita         = db_utils::getdao('far_tiporeceita');
-$oDaoSauFormaAdmMedicamento = db_utils::getdao('sau_formaadmmedicamento');
-$oDaoDbDocumentoTemplate    = db_utils::getdao('db_documentotemplate');
+$oDaoSauReceitaMedica       = new cl_sau_receitamedica();
+$oDaoFarTipoReceita         = new cl_far_tiporeceita();
+$oDaoSauFormaAdmMedicamento = new cl_sau_formaadmmedicamento();
+$oDaoDbDocumentoTemplate    = new cl_db_documentotemplate();
 
 $db_opcao    = 1;
 $db_botao    = true;
@@ -52,48 +52,36 @@ if (isset($chavepesquisa)) {
    db_fieldsmemory($rs, 0);
    $db_opcao    = 2;
    $lImpedirAlt = $s158_i_situacao == 1 ? false : true; // Receitas atendidas ou anuladas não podem ser alteradas
-
  }
 
 }
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
+<meta charset="iso-8859-1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link type="text/css" href="assets/bootstrap-table/css/bootstrap.min.css" rel="stylesheet"/>
+<link type="text/css" href="assets/bootstrap-table/bootstrap-table.min.css" rel="stylesheet"/>
+<link href="estilos.css" rel="stylesheet" type="text/css">
+<link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script rel="script" type="text/javascript" src="scripts/classes/http/http.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/datagrid.widget.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/widgets/dbautocomplete.widget.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-<link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
-<br>
-<center>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-      <center>
-        <fieldset style='width: 75%;'> <legend><b>Receita Médica</b></legend>
-          <?
-          require_once('forms/db_frmsau_receitamedica.php');
-          ?>
-        </fieldset>
-      </center>
-    </td>
-  </tr>
-</table>
-</center>
-<?
-/*
-db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"),
-        db_getsession("DB_anousu"), db_getsession("DB_instit")
-       );
-*/
-?>
+<body onLoad="a=1">
+  <div class="container">
+    <fieldset style='width: 75%;'> <legend><b>Receita Médica</b></legend>
+      <?
+      require_once(modification('forms/db_frmsau_receitamedica.php'));
+      ?>
+    </fieldset>
+  </div>
 </body>
 </html>
 <script>

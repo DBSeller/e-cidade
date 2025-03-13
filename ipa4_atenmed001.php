@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 ?>
@@ -81,7 +81,7 @@ input {
   <tr> 
     <td height="430" align="center" valign="top" bgcolor="#CCCCCC">
 	<?
-	$medico = pg_exec("select aa01_codig,aa01_nome,aa01_espec 
+	$medico = db_query("select aa01_codig,aa01_nome,aa01_espec 
 	                   from medicos 
 					   where aa01_codlog = ".db_getsession("DB_id_usuario")."
 					   and aa01_tipoate >= 2 ");
@@ -110,7 +110,7 @@ input {
 		  <td width="80" align="right" nowrap><strong>Data:</strong>&nbsp;&nbsp;&nbsp;</td>
         <td nowrap>
 	    <?
-		include("dbforms/db_funcoes.php");
+		include(modification("dbforms/db_funcoes.php"));
 		db_data("data",@$data_dia,@$data_mes,@$data_ano);
 		?>&nbsp;
 		</td>
@@ -142,7 +142,7 @@ input {
 						 on w12_codigo = agenesp.ag05_codesp
                          where '".(isset($data)?$data:date("Y-m-d",db_getsession("DB_datausu")))."' = agendam.ag20_data
 						 and ((agenmed.ag06_codmed is not null and agenmed.ag06_codmed = $aa01_codig) or (agenesp.ag05_codesp is not null and agenesp.ag05_codesp = $aa01_espec))";
-	$agenda = pg_exec($sql);
+	$agenda = db_query($sql);
 	$numrows = pg_numrows($agenda);
 	if($numrows == 0) {
 	  $DB_MSG = "Não existe agenda para esta data.";		
@@ -184,7 +184,7 @@ input {
   }//fim do else do if(pg_numrows($medico) == 0) {
   if(1==2 && !isset($HTTP_POST_VARS["pesquisar"])) {
   	$codmed = str_pad(trim(db_getsession("codmed")),6," ",STR_PAD_LEFT);
-	$result = @pg_exec("select distinct to_char(ag30_data,'DD-MM-YYYY') as data,ag30_data
+	$result = @db_query("select distinct to_char(ag30_data,'DD-MM-YYYY') as data,ag30_data
 	                   from agenate
 					   inner join agenmed
 					   on ag30_codage = ag06_codage

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,13 +29,13 @@
 * Cristian Tales
 * 2005/1027
 ****/
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_sql.php");
-include("classes/db_arrecad_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clrotulo = new rotulocampo;
@@ -75,7 +75,7 @@ if(isset($desconto)){
            //echo $ttotal."<br>"; 
            $destot = 0;
            $vlrdes = 0;
-           pg_query("begin");
+           db_query("begin");
            $erro = false;
            for($i=0;$i<pg_numrows($record);$i++){
              db_fieldsmemory($record,$i);
@@ -119,7 +119,7 @@ if(isset($desconto)){
                          $k00_numcgm  ,'$k00_dtoper' , $k00_receit, 918   ,
                          $vlrdes*-1   ,'$k00_dtvenc' , $k00_numpre, $k00_numpar ,
                          '$k00_numtot', $k00_numdig  , $k00_tipo  , null)";
-                $result = pg_query($sql);
+                $result = db_query($sql);
                 if($result == false){
                     $erro = true;
                     break;
@@ -131,7 +131,7 @@ if(isset($desconto)){
 												      inner join arreinstit on arreinstit.k00_numpre = arrecad.k00_numpre 
 															                     and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
               				  where k00_numpre=$k00_numpre ";
-           $res_valor = pg_query( $str_sql );
+           $res_valor = db_query( $str_sql );
            db_fieldsmemory( $res_valor, 0 );
            if( $flt_valor < 1 ){
              $erro = true;
@@ -179,7 +179,7 @@ if(isset($desconto)){
                       																	  and arreinstit.k00_instit = ".db_getsession('DB_instit')." 
                                where k00_numpre = $k00_numpre";
                     }
-                    $result = pg_query($sql);
+                    $result = db_query($sql);
                     if(pg_affected_rows($result)==0){
                         $erro = true;
                     }
@@ -189,7 +189,7 @@ if(isset($desconto)){
                     }else{
                         $sql = "delete from  arrecad where k00_numpre = $k00_numpre";
                     }
-                    $result = pg_query($sql);
+                    $result = db_query($sql);
                     if(pg_affected_rows($result)==0){
                         $erro = true;
                     }
@@ -205,21 +205,21 @@ if(isset($desconto)){
                             date("H:i")."',".db_getsession("DB_id_usuario")."
                             ,'".$k00_histtxt."')";
                     }
-                    $result = pg_query($sql);
+                    $result = db_query($sql);
                     if(pg_affected_rows($result)==0){
                         $erro = true;
                     }
                 }
            }
            if($erro == false){
-               pg_query("commit");
+               db_query("commit");
                echo "<script>alert('Processamento concluído!\\n Não esqueceça de fazer o REPARCELAMENTO.');</script>";
                db_redireciona("cai3_gerfinanc001.php");
            } else {
                echo "<script>alert('Processamento nao efetuado!');</script>";
-               pg_query("rollback");
+               db_query("rollback");
            }
-           pg_query("end");
+           db_query("end");
      }
    }
 }
@@ -335,7 +335,7 @@ if(isset($desconto)){
 																  and	termo.v07_instit =".db_getsession('DB_instit') ."
                                 GROUP BY v07_numpre, v07_totpar ";
                         //AND EXISTS ( SELECT * FROM ARRECAD WHERE ARRECAD.K00_NUMPRE = TERMO.V07_NUMPRE )
-                        $result = pg_query( $sql );
+                        $result = db_query( $sql );
 			if( pg_numrows( $result ) > 0 ){
                             db_fieldsmemory( $result, 0 );
 			}
@@ -357,7 +357,7 @@ if(isset($desconto)){
                         if($record!=false){
                             if(pg_numrows($record) != 0){
                                 $sql = "select count(*) as int_totpar from ( select distinct k00_numpre, k00_numpar from arrecad where k00_numpre=$v07_numpre ) tt";
-                                $result = pg_query( $sql );
+                                $result = db_query( $sql );
                                 db_fieldsmemory( $result, 0 );
                                 
                                 $matrec=array();
@@ -578,7 +578,7 @@ if(isset($desconto)){
                                             <td width="84%">
                                                 <?
                                                 $clrotulo->label("k00_hist");
-                                                $record = pg_exec("select * from histcalc order by k01_descr");
+                                                $record = db_query("select * from histcalc order by k01_descr");
                                                 db_selectrecord('k00_hist',$record,true,2,"","","");
                                                 ?>
                                             </td>

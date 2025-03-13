@@ -1,0 +1,55 @@
+[
+    {
+        "label": "Conta",
+        "width": "15",
+        "nome": "conta",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "conta"
+    },
+    {
+        "label": "Estrutural",
+        "width": "15",
+        "nome": "estrutural",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "estrutural"
+    },
+    {
+        "label": "Descrição",
+        "width": "33",
+        "nome": "descricao",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "descricao"
+    },
+    {
+        "label": "Indicador Resultado",
+        "width": "44",
+        "nome": "indicador_superavit",
+        "tipo": "combo",
+        "lista": [
+            {
+                "codigo": "1",
+                "descricao": "Financeiro"
+            },
+            {
+                "codigo": "2",
+                "descricao": "Primário"
+            },
+            {
+                "codigo": "3",
+                "descricao": "Primária Obrigatória"
+            },
+            {
+                "codigo": "4",
+                "descricao": "Primária Discricionária"
+            }
+        ],
+        "editavel": true,
+        "valor": "indicador_superavit"
+    }
+]

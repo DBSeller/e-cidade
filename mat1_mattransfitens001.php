@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,24 +25,24 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_matestoque_classe.php");
-require_once("classes/db_matestoqueitem_classe.php");
-require_once("classes/db_matestoqueini_classe.php");
-require_once("classes/db_matestoqueinimei_classe.php");
-require_once("classes/db_matestoqueinimeipm_classe.php");
-require_once("classes/db_matestoquetransf_classe.php");
-require_once("classes/db_db_depart_classe.php");
-require_once("classes/db_matmater_classe.php");
-require_once("classes/db_db_usuarios_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/materialestoque.model.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_matparam_classe.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_matestoque_classe.php"));
+require_once(modification("classes/db_matestoqueitem_classe.php"));
+require_once(modification("classes/db_matestoqueini_classe.php"));
+require_once(modification("classes/db_matestoqueinimei_classe.php"));
+require_once(modification("classes/db_matestoqueinimeipm_classe.php"));
+require_once(modification("classes/db_matestoquetransf_classe.php"));
+require_once(modification("classes/db_db_depart_classe.php"));
+require_once(modification("classes/db_matmater_classe.php"));
+require_once(modification("classes/db_db_usuarios_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/materialestoque.model.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_matparam_classe.php"));
+require_once(modification("libs/db_app.utils.php"));
 
 db_app::import("contabilidade.contacorrente.ContaCorrenteFactory");
 db_app::import("Acordo");
@@ -55,41 +55,40 @@ db_app::import("Dotacao");
 db_app::import("contabilidade.planoconta.*");
 db_app::import("contabilidade.contacorrente.*");
 
-(float) $quantlanc   = 0;
-$valores             = null;
+(float)$quantlanc = 0;
+$valores = null;
 $departamentodestino = null;
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_GET_VARS);
 
-$clmatestoque         = new cl_matestoque;
-$clmatestoqueitem     = new cl_matestoqueitem;
-$clmatestoqueini      = new cl_matestoqueini;
-$clmatestoqueinimei   = new cl_matestoqueinimei;
+$clmatestoque = new cl_matestoque;
+$clmatestoqueitem = new cl_matestoqueitem;
+$clmatestoqueini = new cl_matestoqueini;
+$clmatestoqueinimei = new cl_matestoqueinimei;
 $clmatestoqueinimeipm = new cl_matestoqueinimeipm;
-$cldb_depart          = new cl_db_depart;
-$cldb_usuarios        = new cl_db_usuarios;
-$clmatestoquetransf   = new cl_matestoquetransf;
+$cldb_depart = new cl_db_depart;
+$cldb_usuarios = new cl_db_usuarios;
+$clmatestoquetransf = new cl_matestoquetransf;
 
-$db_opcao    = 1;
-$db_botao    = true;
+$db_opcao = 1;
+$db_botao = true;
 $lBotaoTermo = true;
 
 /**
  * Verifica se retorna álgum valor dentro de $valores
  */
-if ((empty($valores)) || ($valores == null)){
-  $lBotaoTermo = false;
+if ((empty($valores)) || ($valores == null)) {
+    $lBotaoTermo = false;
 }
 
 if (isset ($incluir) || isset ($alterar) || isset ($excluir)) {
+    $where_valores = "";
+    $sqlerro = false;
+    db_inicio_transacao();
 
-	$where_valores = "";
-	$sqlerro = false;
-	db_inicio_transacao();
-
-	if (isset ($alterar) || isset ($excluir)) {
-                $valores = (isset($valores)&&!empty($valores))?$valores:'null';
-		$sSqlMatEstoqueIni = $clmatestoqueini->sql_query_mater(null, " distinct m82_codigo,
+    if (isset ($alterar) || isset ($excluir)) {
+        $valores = (isset($valores) && !empty($valores)) ? $valores : 'null';
+        $sSqlMatEstoqueIni = $clmatestoqueini->sql_query_mater(null, " distinct m82_codigo,
 		                                                               m70_codigo,
 		                                                               m70_quant,
 		                                                               m70_valor,
@@ -98,151 +97,168 @@ if (isset ($incluir) || isset ($alterar) || isset ($excluir)) {
 		                                                               (m71_valor/m71_quant) as valorunitarioitem,
 		                                                               m71_quantatend,
 		                                                               m82_quant",
-		                                                               "",
-		                                                               "matestoqueini.m80_codigo=$valores and m60_codmater=$m60_codmater ");
+            "",
+            "matestoqueini.m80_codigo=$valores and m60_codmater=$m60_codmater ");
 
-		$result_matestoque = $clmatestoqueini->sql_record($sSqlMatEstoqueIni);
-		$numrows_matestoque = $clmatestoqueini->numrows;
-		if ($numrows_matestoque > 0) {
+        $result_matestoque = $clmatestoqueini->sql_record($sSqlMatEstoqueIni);
+        $numrows_matestoque = $clmatestoqueini->numrows;
+        if ($numrows_matestoque > 0) {
+            for ($i = 0; $i < $numrows_matestoque; $i++) {
+                db_fieldsmemory($result_matestoque, $i);
+                if ($sqlerro == false) {
+                    $quantidadeatender = $m71_quantatend - $m82_quant;
+                    $clmatestoqueitem->m71_codlanc = $m71_codlanc;
+                    $clmatestoqueitem->m71_quantatend = "$quantidadeatender";
+                    $clmatestoqueitem->alterar($m71_codlanc);
+                    if ($clmatestoqueitem->erro_status == 0) {
+                        $erro_msg = $clmatestoqueitem->erro_msg;
+                        $sqlerro = true;
+                    }
+                }
 
-			for ($i = 0; $i < $numrows_matestoque; $i ++) {
+                if ($sqlerro == false) {
+                    $clmatestoque->m70_codigo = $m70_codigo;
+                    $clmatestoque->m70_quant = $m70_quant + $m82_quant;
+                    $clmatestoque->m70_valor = $m70_valor + ($m82_quant * $valorunitarioitem);
+                    $clmatestoque->alterar($m70_codigo);
+                    if ($clmatestoque->erro_status == 0) {
+                        $erro_msg = $clmatestoque->erro_msg;
+                        $sqlerro = true;
+                    }
+                }
 
-				db_fieldsmemory($result_matestoque, $i);
-				if ($sqlerro == false) {
+                if ($sqlerro == false && isset ($excluir)) {
+                    $sWhereExcluiPrecoMedio = " m89_matestoqueinimei = {$m82_codigo} ";
+                    $clmatestoqueinimeipm->excluir(null, $sWhereExcluiPrecoMedio);
+                    $erro_msg = $clmatestoqueinimeipm->erro_msg;
+                    if ($clmatestoqueinimeipm->erro_status == 0) {
+                        $sqlerro = true;
+                    }
+                }
 
-				  $quantidadeatender = $m71_quantatend - $m82_quant;
-					$clmatestoqueitem->m71_codlanc = $m71_codlanc;
-					$clmatestoqueitem->m71_quantatend = "$quantidadeatender";
-					$clmatestoqueitem->alterar($m71_codlanc);
-					if ($clmatestoqueitem->erro_status == 0) {
-						$erro_msg = $clmatestoqueitem->erro_msg;
-						$sqlerro = true;
-					}
-				}
-
-				if ($sqlerro == false) {
-					$clmatestoque->m70_codigo = $m70_codigo;
-					$clmatestoque->m70_quant = $m70_quant + $m82_quant;
-					$clmatestoque->m70_valor = $m70_valor + ($m82_quant * $valorunitarioitem);
-					$clmatestoque->alterar($m70_codigo);
-					if ($clmatestoque->erro_status == 0) {
-						$erro_msg = $clmatestoque->erro_msg;
-						$sqlerro = true;
-					}
-				}
-
-			  if ($sqlerro == false && isset ($excluir)) {
-			    $sWhereExcluiPrecoMedio = " m89_matestoqueinimei = {$m82_codigo} ";
-			    $clmatestoqueinimeipm->excluir(null, $sWhereExcluiPrecoMedio);
-          $erro_msg = $clmatestoqueinimeipm->erro_msg;
-          if ($clmatestoqueinimeipm->erro_status == 0) {
-           $sqlerro = true;
-          }
+                if ($sqlerro == false && isset ($excluir)) {
+                    $clmatestoqueinimei->excluir($m82_codigo);
+                    $erro_msg = $clmatestoqueinimei->erro_msg;
+                    if ($clmatestoqueinimei->erro_status == 0) {
+                        $sqlerro = true;
+                    }
+                }
+            }
         }
+        if ($sqlerro == false && isset ($excluir)) {
+            $where_valores = "&valores=" . @ $valores;
 
-				if ($sqlerro == false && isset ($excluir)) {
-			      $clmatestoqueinimei->excluir($m82_codigo);
-				  $erro_msg = $clmatestoqueinimei->erro_msg;
-				  if ($clmatestoqueinimei->erro_status == 0) {
-					 $sqlerro = true;
-				  }
-				}
-			}
-		}
-		   if ($sqlerro == false && isset ($excluir)) {
+            $result_testmei = $clmatestoqueinimei->sql_record($clmatestoqueinimei->sql_query_file(null, "*", null,
+                "m82_matestoqueini=$valores"));
+            if ($numrows_matestoque <= 1 && $clmatestoqueinimei->numrows == 0) {
+                $clmatestoquetransf->excluir($valores);
+                $erro_msg = $clmatestoquetransf->erro_msg;
+                if ($clmatestoquetransf->erro_status == 0) {
+                    $sqlerro = true;
+                }
 
-				$where_valores = "&valores=".@ $valores;
+                if ($sqlerro == false) {
+                    $clmatestoqueini->excluir($valores);
+                    $erro_msg = $clmatestoqueini->erro_msg;
+                    if ($clmatestoqueini->erro_status == 0) {
+                        $sqlerro = true;
+                    } else {
+                        $where_valores = "";
+                    }
+                }
+            }
+        }
+    }
 
-				$result_testmei=$clmatestoqueinimei->sql_record($clmatestoqueinimei->sql_query_file(null,"*",null,"m82_matestoqueini=$valores"));
-				if ($numrows_matestoque <= 1 && $clmatestoqueinimei->numrows == 0) {
-				  $clmatestoquetransf->excluir($valores);
-					$erro_msg = $clmatestoquetransf->erro_msg;
-					if ($clmatestoquetransf->erro_status == 0) {
-					  $sqlerro=true;
-					}
+    if (isset ($incluir)) {
+        try {
+            // Valida se a transferência ja foi aceita no outro estoque.
+            if (!empty($valores)) {
+                $oDaoMatestoqueIni = new cl_matestoqueini;
+                $sSqlDadosTransferencia = $oDaoMatestoqueIni->sql_query_transf($valores);
+                $rsDadosTransferencia = $oDaoMatestoqueIni->sql_record($sSqlDadosTransferencia);
 
-					if ($sqlerro == false) {
+                // valida se a query retornou registro
+                if ($oDaoMatestoqueIni->numrows == 0) {
+                    $sErroMsg = "Erro ao pesquisar dados da transferência.\n";
+                    $sErroMsg .= "Transferência já realizada, ou cancelada.";
+                    throw new BusinessException($sErroMsg);
+                }
 
-					  $clmatestoqueini->excluir($valores);
-				  	$erro_msg = $clmatestoqueini->erro_msg;
-					  if ($clmatestoqueini->erro_status == 0) {
-					    $sqlerro=true;
-					  } else {
-				      $where_valores = "";
-					  }
-					}
-				}
-			}
-	}
+                $oDadosTransferencia = db_utils::fieldsMemory($rsDadosTransferencia, 0);
+                // se m86_codigo estiver preenchido, transferência já foi realizada
+                if ($oDadosTransferencia->m86_codigo != "") {
+                    $sErroMsg = "Não é possível lançar itens nesta transferência.\n";
+                    $sErroMsg .= "Transferência já realizada, ou cancelada.";
+                    throw new BusinessException($sErroMsg);
+                }
+            }
 
-	if (isset ($incluir)) {
+            $nomecampo = 'quantlanc';
+            $m80_codtipo = 7; // Em transferência
+            $m80_login = db_getsession("DB_id_usuario");
+            $m80_data = date("Y-m-d", db_getsession("DB_datausu"));
+            $m80_coddepto = db_getsession("DB_coddepto");
+            $m80_hora = date('H:i:s');
 
-	  $nomecampo    = 'quantlanc';
-	  $m80_codtipo  = 7; // Em transferência
-	  $m80_login    = db_getsession("DB_id_usuario");
-	  $m80_data     = date("Y-m-d", db_getsession("DB_datausu"));
-	  $m80_coddepto = db_getsession("DB_coddepto");
-	  $m80_hora     = date('H:i:s');
 
-	  try {
+            $oMaterialEstoque = new materialEstoque($m60_codmater);
+            $aItensDepto = $oMaterialEstoque->transferirMaterial($quantlanc,
+                $departamentoorigem,
+                $departamentodestino,
+                $valores,
+                $m80_obs);
 
-      $oMaterialEstoque = new materialEstoque($m60_codmater);
-	    $aItensDepto      = $oMaterialEstoque->transferirMaterial($quantlanc,
-	                                                              $departamentoorigem,
-	                                                              $departamentodestino,
-	                                                              $valores,
-	                                                              $m80_obs);
-
-	    $where_valores = "&valores=".$oMaterialEstoque->getiCodMovimento();
-	    $oMaterialEstoque->cancelarLoteSession();
-	    $erro_msg  = "Transferência incluída com sucesso.\\n\\n";
-	    $erro_msg .= "Código da Transferência: {$oMaterialEstoque->getiCodMovimento()}.";
-
-	  } catch (Exception  $eErro) {
-
-	    $sqlerro = true;
-	    $erro_msg = str_replace("\n", "\\n",$eErro->getMessage());
-	    $oMaterialEstoque->cancelarLoteSession();
-	  }
-  }
-	db_fim_transacao($sqlerro);
+            $where_valores = "&valores=" . $oMaterialEstoque->getiCodMovimento();
+            $oMaterialEstoque->cancelarLoteSession();
+            $erro_msg = "Transferência incluída com sucesso.\\n\\n";
+            $erro_msg .= "Código da Transferência: {$oMaterialEstoque->getiCodMovimento()}.";
+        } catch (BusinessException $eErro) {
+            $sqlerro = true;
+            $erro_msg = $eErro->getMessage();
+        } catch (Exception  $eErro) {
+            $sqlerro = true;
+            $erro_msg = str_replace("\n", "\\n", $eErro->getMessage());
+            $oMaterialEstoque->cancelarLoteSession();
+        }
+    }
+    db_fim_transacao($sqlerro);
 }
 ?>
-<html>
-<head>
-<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
-<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
-</head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
+    <html>
+    <head>
+        <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Expires" CONTENT="0">
+        <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/strings.js"></script>
+        <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+        <link href="estilos.css" rel="stylesheet" type="text/css">
+    </head>
+    <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
     <center>
-	<?
+        <?
 
 
-include ("forms/db_frmmattransfitens.php");
-?>
+        include(modification("forms/db_frmmattransfitens.php"));
+        ?>
     </center>
-</body>
-</html>
+    </body>
+    </html>
 <?
 
 
 if (isset ($incluir) || isset ($alterar) || isset ($excluir)) {
-  db_msgbox($erro_msg);
-	if ($sqlerro == false) {
-
-		echo "
+    db_msgbox($erro_msg);
+    if ($sqlerro == false) {
+        echo "
 		    <script>
-		      top.corpo.iframe_depart.document.form1.enviar.disabled = true;
+		      (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_depart.document.form1.enviar.disabled = true;
 		    </script>
 		    ";
-	}
-	if (isset ($incluir) || isset ($excluir)) {
-		echo "<script>document.location.href='mat1_mattransfitens001.php?departamentoorigem=".$departamentoorigem."&departamentodestino=".$departamentodestino.$where_valores."'</script>";
-	}
+    }
+    if (isset ($incluir) || isset ($excluir)) {
+        echo "<script>document.location.href='mat1_mattransfitens001.php?departamentoorigem=" . $departamentoorigem . "&departamentodestino=" . $departamentodestino . $where_valores . "'</script>";
+    }
 }
 ?>

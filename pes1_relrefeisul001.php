@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once ("libs/db_utils.php");
-require_once ("classes/db_db_config_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_db_config_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -40,11 +40,11 @@ $cldbconfig = new cl_db_config();
 // Preenche os inputs com o ano/mes da folha atual
 $anofolha             = db_anofolha();
 $mesfolha             = db_mesfolha();
-$sDataBaseUso         = db_getsession('DB_base');
+$sDataBaseUso         = trim(db_getsession('DB_base'));
 $sSqlConfigPrefeitura = $cldbconfig->sql_query_file (null, 'munic', null, 'prefeitura = true');
 $rsConfigPrefeitura   = $cldbconfig->sql_record($sSqlConfigPrefeitura);
 $oConfigPrefeitura    = db_utils::fieldsMemory($rsConfigPrefeitura, 0);
-$sPrefeituraProducao  = strtolower($oConfigPrefeitura->munic);
+$sPrefeituraProducao  = trim(strtolower($oConfigPrefeitura->munic));
 ?>
 <html>
 <head>
@@ -77,7 +77,7 @@ $sPrefeituraProducao  = strtolower($oConfigPrefeitura->munic);
           <td>
             <?
               $sSqlDataBases = "select datname,datname from pg_database where substr(datname, 1, 6) != 'templa' and " . (substr(db_getsession('DB_base'),0,5) == "ontem"?"true":" datname != '".db_getsession('DB_base') . "'") . " order by datname;";
-              $rsDatabases   = pg_query($sSqlDataBases);
+              $rsDatabases   = db_query($sSqlDataBases);
               db_selectrecord('datname', $rsDatabases, true, 1, "style: width:100%;", '', '', '', '', 1);
             ?>
           </td>
@@ -131,7 +131,7 @@ $sPrefeituraProducao  = strtolower($oConfigPrefeitura->munic);
     if ( lRetorno ) {
     
       var sParametro = "iMesFolha="+iMesFolha+"&iAnoFolha="+iAnoFolha+"&sBase="+sBaseSelecionada+"&sMunicipio=+<?=$sPrefeituraProducao;?>";
-      js_OpenJanelaIframe('top.corpo', 
+      js_OpenJanelaIframe('CurrentWindow.corpo', 
                           'db_iframe_relrefeisul', 
                           'pes1_relrefeisul002.php?'+sParametro,
                           'Processando ... ',

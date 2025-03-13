@@ -3,7 +3,7 @@
  * Model para controle dos itens de um empenho financeiro
  * @author  Matheus Felini <matheus.felini@dbseller.com.br>
  * @package empenho
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.11 $
  */
 class EmpenhoFinanceiroItem {
 
@@ -315,4 +315,40 @@ class EmpenhoFinanceiroItem {
     return $this->oMaterialAlmoxarifado;
   }
 
+
+  /**
+   * Busca o valor de desconto de um item do empenho.
+   *
+   * @param integer $iSequencial
+   * @param integer $iOrdemInclusao
+   * @param integer $iNumeroEmpenho
+   * @throws ParameterException|Exception
+   * @return float
+   */
+  public static function getValorDeDescontoPorItem($iSequencial, $iOrdemInclusao = null, $iNumeroEmpenho = null) {
+
+    if (empty($iSequencial) && empty($iOrdemInclusao) && empty($iNumeroEmpenho)) {
+      throw new ParameterException("Nenhum parâmetro válido informado para buscar o valor do item anulado.");
+    }
+
+    $aWhere = array("empempitem.e62_sequencial = {$iSequencial}");
+    if (!empty($iOrdemInclusao) && !empty($iNumeroEmpenho)) {
+      $aWhere = array(
+        "empempitem.e62_sequen = {$iOrdemInclusao}",
+        "empempitem.e62_numemp = {$iNumeroEmpenho}",
+      );
+    }
+
+    $oDaoDesconto      = new cl_pagordemdescontoempanulado();
+    $sSqlBuscaDesconto = $oDaoDesconto->sql_query_itens_empenho("coalesce(sum(e37_vlranu),0) as valor_anulado", implode(' and ', $aWhere));
+    $rsBuscaDesconto   = db_query($sSqlBuscaDesconto);
+    if (!$rsBuscaDesconto) {
+      throw new Exception("Não foi possível buscar os dados de anulação do item do empenho.");
+    }
+    $nValorRetorno = 0;
+    if (pg_num_rows($rsBuscaDesconto) > 0) {
+      $nValorRetorno = db_utils::fieldsMemory($rsBuscaDesconto, 0)->valor_anulado;
+    }
+    return $nValorRetorno;
+  }
 }

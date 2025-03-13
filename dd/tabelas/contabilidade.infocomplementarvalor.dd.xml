@@ -1,0 +1,135 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010258' name='contabilidade.infocomplementarvalor' description="Cadastros dos valores das informações complementares da tabela conplanoatributos." prefix="c123" label="Info complementar valor" type="0">
+    <fields>
+        <field codigo="1009622"
+               campo_api=''
+               name="c123_sequencial"
+               conteudo="int4"
+               description="Sequencial"
+               inivalue="0"
+               label="Sequencial"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Sequencial"
+               reference=""
+               ispk="t"
+               hassequence="t" >
+
+            <sequence name='contabilidade.infocomplementarvalor_c123_sequencial_seq' />
+
+        </field>
+        <field codigo="1009624"
+               campo_api=''
+               name="c123_conplanoatributolancamentos"
+               conteudo="int4"
+               description="Chave estrangeira da tabela conplanoatributolancamentos"
+               inivalue="0"
+               label="conplanoatributolancamentos"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="conplanoatributolancamentos"
+               reference=""
+               ispk="f"
+               hassequence="t" >
+
+        </field>
+        <field codigo="1009625"
+               campo_api=''
+               name="c123_valor"
+               conteudo="varchar(20)"
+               description="Numero ou valor da informação complementar no e-cidade."
+               inivalue=""
+               label="Valor da informação complementar"
+               size="20"
+               null="t"
+               uppercase="t"
+               autocompl="f"
+               aceitatipo="0"
+               tipoobj="text"
+               labelrel="Valor da informação complementar"
+               reference=""
+               ispk="f"
+               hassequence="t" >
+
+        </field>
+        <field codigo="1009631"
+               campo_api=''
+               name="c123_reduzido"
+               conteudo="int4"
+               description="Conta Reduzida"
+               inivalue="0"
+               label="Reduzido"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Reduzido"
+               reference=""
+               ispk="f"
+               hassequence="t" >
+
+        </field>
+        <field codigo="1009653"
+               campo_api=''
+               name="c123_infocomplementar"
+               conteudo="int4"
+               description="Chave estrangeira da tabela conplanoinfocomplementar."
+               inivalue="0"
+               label="Informação comeplementar"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Informação comeplementar"
+               reference=""
+               ispk="f"
+               hassequence="t" >
+
+        </field>
+        <field codigo="1009654"
+               campo_api=''
+               name="c123_conplanosistema"
+               conteudo="int4"
+               description="Chave estrangeira da tabela conplanosistema."
+               inivalue="0"
+               label="Sistema"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Sistema"
+               reference=""
+               ispk="f"
+               hassequence="t" >
+
+        </field>
+    </fields>
+    <primarykey>
+        <fieldpk name="c123_sequencial"></fieldpk>
+    </primarykey>
+    <foreignkeys>
+        <foreignkey reference="conplanoinfocomplementar" inner='t'>
+            <fieldfk name="c123_infocomplementar" reference="" />
+        </foreignkey>
+        <foreignkey reference="conplanosistema" inner='t'>
+            <fieldfk name="c123_conplanosistema" reference="" />
+        </foreignkey>
+        <foreignkey reference="conplanoatributolancamentos" inner='t'>
+            <fieldfk name="c123_conplanoatributolancamentos" reference="c124_sequencial" />
+        </foreignkey>
+    </foreignkeys>
+</table>

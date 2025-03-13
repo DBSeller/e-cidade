@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 //MODULO: caixa
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clrotulo           = new rotulocampo;
@@ -279,17 +279,17 @@ function js_submit() {
 
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_cancdebitos',
                       'func_canceladebitosanulaprocessamento.php?funcao_js=parent.js_preenchepesquisa|k20_codigo',
                       'Pesquisa',
                       true);
-  //js_OpenJanelaIframe('top.corpo','db_iframe_cancdebitos','func_canccancproc.php?funcao_js=parent.js_preenchepesquisa|k20_codigo','Pesquisa',true);
+  //js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cancdebitos','func_canccancproc.php?funcao_js=parent.js_preenchepesquisa|k20_codigo','Pesquisa',true);
 
 }
 
 function js_pesquisaSuspensao(iCodSuspensao){
-  js_OpenJanelaIframe('top.corpo','db_iframe_consultasusp'+iCodSuspensao,'cai3_consultasusp001.php?suspensao='+iCodSuspensao,'Consulta Suspensão',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_consultasusp'+iCodSuspensao,'cai3_consultasusp001.php?suspensao='+iCodSuspensao,'Consulta Suspensão',true);
 }
 
 function js_preenchepesquisa(chave){

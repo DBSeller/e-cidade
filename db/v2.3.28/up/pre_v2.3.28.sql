@@ -468,3 +468,6 @@ insert into db_syscadind values(4102,20698,1);
 insert into db_syssequencia values(1000385, 'db_releasenotes_db147_sequencial_seq', 1, 1, 9223372036854775807, 1, 1);
 update db_sysarqcamp set codsequencia = 1000385 where codarq = 3725 and codcam = 20696;
 
+-------------------------------------------------------------------------------
+--                            FIM INTEGRACAO                                 --
+-------------------------------------------------------------------------------

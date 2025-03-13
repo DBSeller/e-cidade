@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-require("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+require(modification("libs/db_app.utils.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -259,7 +259,7 @@ function js_Limpa() {
 
   // for que percorre a quantidade de elementos do select unidades e exclui todos.
   for(var iConta = 0; iConta <iElem2; iConta++) { 
-  document.form1.select_unidade.remove (select_unidade.lenght-1);
+  document.form1.select_unidade.remove (select_unidade.length-1);
   }//fim do for que percorre as unidades selecionadas
 
   //percorre os campos selects do formulario resetandos as informaçoes aleteradas

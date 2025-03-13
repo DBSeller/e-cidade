@@ -1,0 +1,73 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010323' name='esocial.esocialconfiguracao' description="Configurações gerais do eSocial." prefix="eso25"
+       label="eSocial Configuração" type="0">
+    <fields>
+        <field codigo="1009963"
+               campo_api=''
+               name="eso25_sequencial"
+               conteudo="int4"
+               description="Código sequencial da tabela."
+               inivalue="0"
+               label="Código"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Código"
+               reference=""
+               ispk="t"
+               hassequence="t">
+
+            <sequence name='esocial.esocialconfiguracao_eso25_sequencial_seq'/>
+
+        </field>
+        <field codigo="1009964"
+               campo_api=''
+               name="eso25_exibirbotaoesocial"
+               conteudo="bool"
+               description="Valida se deve ou não apresentar o botão do formulário S-2200 para o usuário logado."
+               inivalue="f"
+               label="Exibir botão eSocial para os usuários"
+               size="1"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="5"
+               tipoobj="text"
+               labelrel="Exibir botão eSocial para os usuários"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+        <field codigo="1009965"
+               campo_api=''
+               name="eso25_instit"
+               conteudo="int4"
+               description="Instituição."
+               inivalue="0"
+               label="Instituição"
+               size="10"
+               null="f"
+               uppercase="f"
+               autocompl="f"
+               aceitatipo="1"
+               tipoobj="text"
+               labelrel="Instituição"
+               reference=""
+               ispk="f"
+               hassequence="t">
+
+        </field>
+    </fields>
+    <primarykey>
+        <fieldpk name="eso25_sequencial"></fieldpk>
+    </primarykey>
+    <foreignkeys>
+        <foreignkey reference="db_config" inner='t'>
+            <fieldfk name="eso25_instit" reference="codigo"/>
+        </foreignkey>
+    </foreignkeys>
+</table>

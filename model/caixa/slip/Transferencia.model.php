@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,966 +25,1597 @@
  *                                licenca/licenca_pt.txt
  */
 
-//require_once ("model/empenho/FinalidadePagamentoFundeb.model.php");
-require_once ("model/contabilidade/planoconta/ContaPlanoPCASP.model.php");
-require_once ("std/DBDate.php");
+//require_once(modification("model/empenho/FinalidadePagamentoFundeb.model.php"));
+use ECidade\Financeiro\Empenho\Retencao\Apropriacao\Apropriacao;
+
+require_once(modification("model/contabilidade/planoconta/ContaPlanoPCASP.model.php"));
+require_once(modification("std/DBDate.php"));
 
 /**
  * Model para encapsulamento de um SLIP
  * @author Matheus Felini / Bruno Silva
  * @package caixa
  * @subpackage slip
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.67 $
  */
-abstract class Transferencia {
+abstract class Transferencia
+{
 
-  /**
-   * Objeto Slip
-   * @var slip
-   */
-  protected $oSlip;
+    const SITUACAO_NAO_AUTENTICADO = 1;
+    const SITUACAO_AUTENTICADO = 2;
+    const SITUACAO_ESTORNADO = 3;
+    const SITUACAO_ANULADO = 4;
 
-  /**
-   * Tipo de operação da tansferencia
-   * @var integer
-   */
-  protected $iTipoOperacao;
+    /**
+     * Objeto Slip
+     * @var slip
+     */
+    protected $oSlip;
 
-  /**
-   * Código do Lançamento contábil executado pela transferencia
-   * @var integer
-   */
-  protected $iCodigoLancamento;
+    /**
+     * Tipo de operação da tansferencia
+     * @var integer
+     */
+    protected $iTipoOperacao;
 
-  /**
-   * Codigo do terminal da autenticacao
-   * @var integer
-   */
-  private $iIDTerminal;
+    /**
+     * Código do Lançamento contábil executado pela transferencia
+     * @var integer
+     */
+    protected $iCodigoLancamento;
 
-  /**
-   * numero sequencial da autenticao
-   * @var integer
-   */
-  private $iNumeroAutenticacao;
+    /**
+     * Codigo do terminal da autenticacao
+     * @var integer
+     */
+    private $iIDTerminal;
 
-  /**
-   * data da autenticao
-   * @var string
-   */
+    /**
+     * numero sequencial da autenticao
+     * @var integer
+     */
+    private $iNumeroAutenticacao;
 
-  /**
-   * string para autenticação
-   * @var string
-   */
-  private $sStringAutenticacao;
+    /**
+     * data da autenticao
+     * @var string
+     */
 
-  /**
-   * Data da autenticação
-   * @var date
-   */
-  private $dtDataAutenticacao;
+    /**
+     * string para autenticação
+     * @var string
+     */
+    private $sStringAutenticacao;
 
-  /**
-   * Finalidade de pagamento a Credito
-   * @var FinalidadePagamentoFundeb
-   */
-  private $oFinalidadePagamentoFundebCredito;
+    /**
+     * Data da autenticação
+     * @var date
+     */
+    private $dtDataAutenticacao;
 
-  /**
-   * Conta crédito do plano de contas
-   * @var ContaPlanoPCASP
-   */
-  private $oContaPlanoCredito;
+    /**
+     * Finalidade de pagamento a Credito
+     * @var FinalidadePagamentoFundeb
+     */
+    private $oFinalidadePagamentoFundebCredito;
 
-  /**
-   * @var string
-   */
-  protected $sProcessoAdministrativo;
+    /**
+     * Conta crédito do plano de contas
+     * @var ContaPlanoPCASP
+     */
+    private $oContaPlanoCredito;
 
-  /**
-   * Construtor da classe
-   */
-  public function __construct($iCodigoSlip = null) {
-    $this->oSlip = new slip($iCodigoSlip);
-  }
+    /**
+     * @var string
+     */
+    protected $sProcessoAdministrativo;
 
-  /**
-   * Retorna o código do lançamento
-   * @return integer
-   */
-  public function getCodigoLancamento() {
-    return $this->iCodigoLancamento;
-  }
+    /**
+     * Grupo de autenticacao
+     * @var integer
+     */
+    private $grupoAutenticacao;
 
-  /**
-   * Salva os dados do slip
-   */
-  public function salvar() {
-
-    $this->oSlip->save();
-    $this->salvarVinculoComProcesso();
-  }
-
-  /**
-   * @param null $sDataLancamento
-   * @param bool $lEstorno
-   * @return bool
-   * @throws Exception
-   */
-  public function executarLancamentoContabil($sDataLancamento = null, $lEstorno = false, $iCodigoMovimento = null) {
-
-    $iCodigoDocumento        = $this->getDocumentoPorTipoInclusao();
-
-    $sEstornar = 'f';
-    if ($lEstorno){
-      $sEstornar = 't';
+    /**
+     * Construtor da classe
+     */
+    public function __construct($iCodigoSlip = null)
+    {
+        $this->oSlip = new slip($iCodigoSlip);
     }
 
-    if ($lEstorno) {
-
-      switch ($iCodigoDocumento) {
-
-        case 160:
-          $iCodigoDocumento = 162;
-          break;
-
-        case 150:
-          $iCodigoDocumento = 152;
-          break;
-      }
+    /**
+     * Retorna o código do lançamento
+     * @return integer
+     */
+    public function getCodigoLancamento()
+    {
+        return $this->iCodigoLancamento;
     }
 
-    $sSqlBuscaContaCorrente  = "select corrente.k12_conta,   ";
-    $sSqlBuscaContaCorrente .= "       corrente.k12_id,      ";
-    $sSqlBuscaContaCorrente .= "       corrente.k12_data,    ";
-    $sSqlBuscaContaCorrente .= "       corrente.k12_autent,  ";
-    $sSqlBuscaContaCorrente .= "       corrente.k12_valor    ";
-    $sSqlBuscaContaCorrente .= "  from corrente ";
-    $sSqlBuscaContaCorrente .= "       inner join corlanc  on corrente.k12_id     = corlanc.k12_id      ";
-    $sSqlBuscaContaCorrente .= "                          and corrente.k12_data   = corlanc.k12_data    ";
-    $sSqlBuscaContaCorrente .= "                          and corrente.k12_autent = corlanc.k12_autent  ";
-    $sSqlBuscaContaCorrente .= "       left join corconf  on corconf.k12_id      = corrente.k12_id     ";
-    $sSqlBuscaContaCorrente .= "                          and corconf.k12_data    = corrente.k12_data   ";
-    $sSqlBuscaContaCorrente .= "                          and corconf.k12_autent  = corrente.k12_autent ";
-    $sSqlBuscaContaCorrente .= " where corlanc.k12_codigo  = {$this->getCodigoSlip()} ";
-    $sSqlBuscaContaCorrente .= "   and corrente.k12_estorn = '{$sEstornar}' ";
-    if (!empty($iCodigoMovimento)) {
-      $sSqlBuscaContaCorrente .= " and corconf.k12_codmov = {$iCodigoMovimento} ";
-    }
-    $rsBuscaCorrente         = db_query($sSqlBuscaContaCorrente);
+    /**
+     * Salva os dados do slip
+     */
+    public function salvar()
+    {
 
-    if (pg_num_rows($rsBuscaCorrente) == 0) {
-      throw new Exception("Não foi possível buscar os dados da autenticação para execução dos lançamentos contábeis.");
+        $this->oSlip->save();
+        $this->salvarVinculoComProcesso();
     }
 
-    $oDadosAutenticao        = db_utils::fieldsMemory($rsBuscaCorrente, 0);
-    $iCodigoContaCorrente    = $oDadosAutenticao->k12_conta;
+    /**
+     * Executa os lancamentos contabeis do slip
+     * @param null $sDataLancamento data do lancamento
+     * @param bool $lEstorno
+     * @param null $iCodigoMovimento
+     * @param bool $devolverParaAgenda movimento deve ser devolvido para agenda
+     * @return bool
+     * @throws BusinessException
+     * @throws DBException
+     * @throws \Exception
+     */
+    public function executarLancamentoContabil($sDataLancamento = null, $lEstorno = false, $iCodigoMovimento = null, $devolverParaAgenda = false)
+    {
 
-    $oContaPlano = new ContaPlanoPCASP(
-      null,
-      db_getsession('DB_anousu'),
-      $iCodigoContaCorrente,
-      db_getsession('DB_instit')
-    );
+        $iCodigoDocumento = $this->getDocumentoPorTipoInclusao();
+        $sEstornar = 'f';
+        if ($lEstorno) {
+            $sEstornar = 't';
+        }
 
-    $oContaCorrenteDetalhe = new ContaCorrenteDetalhe();
-    $oContaCorrenteDetalhe->setRecurso(new Recurso($oContaPlano->getRecurso()));
-    $oContaCorrenteDetalhe->setContaBancaria(null);
-    $oContaCorrenteDetalhe->setCredor(CgmFactory::getInstanceByCgm($this->getCodigoCgm()));
+        if ($lEstorno) {
 
-    $oLancamentoAuxiliarSlip = new LancamentoAuxiliarSlip();
-    $oLancamentoAuxiliarSlip->setIDTerminal($oDadosAutenticao->k12_id);
-    $oLancamentoAuxiliarSlip->setDataAutenticacao($oDadosAutenticao->k12_data);
-    $oLancamentoAuxiliarSlip->setNumeroAutenticacao($oDadosAutenticao->k12_autent);
-    $oLancamentoAuxiliarSlip->setHistorico($this->getHistorico());
-    $oLancamentoAuxiliarSlip->setValorTotal(abs($oDadosAutenticao->k12_valor));
-    $oLancamentoAuxiliarSlip->setObservacaoHistorico($this->getObservacao());
-    $oLancamentoAuxiliarSlip->setCodigoSlip($this->getCodigoSlip());
-    $oLancamentoAuxiliarSlip->setCodigoReduzido($iCodigoContaCorrente);
-    $oLancamentoAuxiliarSlip->setFavorecido($this->getCodigoCgm());
-    $oLancamentoAuxiliarSlip->setEstorno(false);
-    $oLancamentoAuxiliarSlip->setCaracteristicaPeculiarCredito($this->getCaracteristicaPeculiarCredito());
-    $oLancamentoAuxiliarSlip->setCaracteristicaPeculiarDebito($this->getCaracteristicaPeculiarDebito());
-    $oLancamentoAuxiliarSlip->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
+            switch ($iCodigoDocumento) {
 
-    $oDocumentoContabil       = SingletonRegraDocumentoContabil::getDocumento($iCodigoDocumento);
-    $iCodigoDocumentoExecutar = $oDocumentoContabil->getCodigoDocumento();
+                case 160:
+                    $iCodigoDocumento = 162;
+                    break;
 
-    $oEventoContabil          = new EventoContabil($iCodigoDocumentoExecutar, db_getsession("DB_anousu"));
-    if ($oEventoContabil->estorno()) {
-      $oLancamentoAuxiliarSlip->setEstorno(true);
+                case 161:
+                    $iCodigoDocumento = 163;
+                    break;
+
+                case 150:
+                    $iCodigoDocumento = 152;
+                    break;
+            }
+        }
+
+        $sSqlBuscaContaCorrente  = "select corrente.k12_conta,   ";
+        $sSqlBuscaContaCorrente .= "       corlanc.k12_conta as conta_bancaria,    ";
+        $sSqlBuscaContaCorrente .= "       corrente.k12_id,      ";
+        $sSqlBuscaContaCorrente .= "       corrente.k12_data,    ";
+        $sSqlBuscaContaCorrente .= "       corrente.k12_autent,  ";
+        $sSqlBuscaContaCorrente .= "       corrente.k12_valor    ";
+        $sSqlBuscaContaCorrente .= "  from corrente ";
+        $sSqlBuscaContaCorrente .= "       inner join corlanc  on corrente.k12_id     = corlanc.k12_id      ";
+        $sSqlBuscaContaCorrente .= "                          and corrente.k12_data   = corlanc.k12_data    ";
+        $sSqlBuscaContaCorrente .= "                          and corrente.k12_autent = corlanc.k12_autent  ";
+        $sSqlBuscaContaCorrente .= "       left join corconf  on corconf.k12_id      = corrente.k12_id     ";
+        $sSqlBuscaContaCorrente .= "                          and corconf.k12_data    = corrente.k12_data   ";
+        $sSqlBuscaContaCorrente .= "                          and corconf.k12_autent  = corrente.k12_autent ";
+        $sSqlBuscaContaCorrente .= " where corlanc.k12_codigo  = {$this->getCodigoSlip()} ";
+        $sSqlBuscaContaCorrente .= "   and corrente.k12_estorn = '{$sEstornar}' ";
+        if (!empty($iCodigoMovimento)) {
+            $sSqlBuscaContaCorrente .= " and corconf.k12_codmov = {$iCodigoMovimento} ";
+        }
+        $sSqlBuscaContaCorrente .= "order by k12_autent desc limit 1";
+        $rsBuscaCorrente = db_query($sSqlBuscaContaCorrente);
+
+
+        if (pg_num_rows($rsBuscaCorrente) == 0) {
+            throw new Exception("Não foi possível buscar os dados da autenticação para execução dos lançamentos contábeis.");
+        }
+
+        $oDadosAutenticao = db_utils::fieldsMemory($rsBuscaCorrente, 0);
+        $iCodigoContaCorrente = $oDadosAutenticao->k12_conta;
+        $iCodigoContaBancaria = $oDadosAutenticao->conta_bancaria;
+
+        $oContaPlano = new ContaPlanoPCASP(
+            null,
+            db_getsession('DB_anousu'),
+            in_array($iCodigoDocumento, array(161, 163)) ? $iCodigoContaCorrente : $iCodigoContaBancaria,
+            db_getsession('DB_instit')
+        );
+
+        $oContaCorrenteDetalhe = new ContaCorrenteDetalhe();
+        $oContaCorrenteDetalhe->setRecurso(new Recurso($oContaPlano->getRecurso()));
+        $oContaCorrenteDetalhe->setContaBancaria(null);
+        $oContaCorrenteDetalhe->setCredor(CgmFactory::getInstanceByCgm($this->getCodigoCgm()));
+
+        $oLancamentoAuxiliarSlip = new LancamentoAuxiliarSlip();
+        $oLancamentoAuxiliarSlip->setIDTerminal($oDadosAutenticao->k12_id);
+        $oLancamentoAuxiliarSlip->setDataAutenticacao($oDadosAutenticao->k12_data);
+        $oLancamentoAuxiliarSlip->setNumeroAutenticacao($oDadosAutenticao->k12_autent);
+        $oLancamentoAuxiliarSlip->setHistorico($this->getHistorico());
+        $oLancamentoAuxiliarSlip->setValorTotal(abs($oDadosAutenticao->k12_valor));
+        $oLancamentoAuxiliarSlip->setObservacaoHistorico($this->getObservacao());
+        $oLancamentoAuxiliarSlip->setCodigoSlip($this->getCodigoSlip());
+        $oLancamentoAuxiliarSlip->setCodigoReduzido($iCodigoContaCorrente);
+        $oLancamentoAuxiliarSlip->setFavorecido($this->getCodigoCgm());
+        $oLancamentoAuxiliarSlip->setEstorno(false);
+        $oLancamentoAuxiliarSlip->setCaracteristicaPeculiarCredito($this->getCaracteristicaPeculiarCredito());
+        $oLancamentoAuxiliarSlip->setCaracteristicaPeculiarDebito($this->getCaracteristicaPeculiarDebito());
+        $oLancamentoAuxiliarSlip->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
+        $recurso = $this->oSlip->getRecursoDebito();
+        if (!empty($recurso)) {
+            $oLancamentoAuxiliarSlip->setRecurso($recurso);
+        }
+
+
+        if (APROPRIACAO_RETENCAO) {
+
+            $empenhoVinculado = $this->getEmpenhoVinculado($lEstorno);
+            $ordemVinculada = $this->getOrdemVinculada($lEstorno);
+            $retencaoVInculada = $this->getRetencaoVinculada($lEstorno);
+            if (!empty($empenhoVinculado)) {
+                $oLancamentoAuxiliarSlip->setEmpenho($empenhoVinculado);
+            }
+            if (!empty($ordemVinculada)) {
+                $oLancamentoAuxiliarSlip->setCodigoOrdemPagamento($ordemVinculada);
+            }
+            if (!empty($retencaoVInculada)) {
+                $oLancamentoAuxiliarSlip->setRetencao($retencaoVInculada);
+            }
+        }
+
+        $oDocumentoContabil = SingletonRegraDocumentoContabil::getDocumento($iCodigoDocumento);
+        $iCodigoDocumentoExecutar = $oDocumentoContabil->getCodigoDocumento();
+
+       // dd("DOC:  $iCodigoDocumentoExecutar", $retencaoVInculada);
+
+        if ($this->getTipoOperacaoPorInclusao() == 17) {
+            $iCodigoDocumentoExecutar = 142;
+        } else if ($this->getTipoOperacaoPorInclusao() == 18) {
+            $iCodigoDocumentoExecutar = 143;
+        }
+
+        $oEventoContabil = new EventoContabil($iCodigoDocumentoExecutar, db_getsession("DB_anousu"));
+        if ($oEventoContabil->estorno()) {
+            $motivo = $this->oSlip->getMotivoEstornoAnulacao();
+            if (!empty($motivo)) {
+                $oLancamentoAuxiliarSlip->setObservacaoHistorico($motivo);
+            }
+            $oLancamentoAuxiliarSlip->setEstorno(true);
+        }
+        $oEventoContabil->executaLancamento($oLancamentoAuxiliarSlip, $sDataLancamento);
+        $this->iCodigoLancamento = $oEventoContabil->getCodigoLancamento();
+
+        if (APROPRIACAO_RETENCAO) {
+
+            /**
+             * fizemos o lancamento nas Retenções em que existe uma instituição configurada
+             */
+            $this->realizarLancamentosDeApropriacao($oDadosAutenticao, $lEstorno);
+
+        }
+
+        if ($lEstorno && !$devolverParaAgenda) {
+
+            $oDaoSlipMov = new cl_slipempagemovslips();
+            $oDaoSlipMov->excluir(null, "k108_slip = {$this->getCodigoSlip()}");
+
+            if ($oDaoSlipMov->erro_status == 0) {
+
+                $sMensagemUsuario = "Erro 3 - Não foi possível anular o slip.\n\n";
+                $sMensagemUsuario .= "Erro Técnico: {$oDaoSlipMov->erro_msg}";
+                throw new Exception($sMensagemUsuario);
+            }
+        }
+        return true;
     }
-    $oEventoContabil->executaLancamento($oLancamentoAuxiliarSlip, $sDataLancamento);
-    $this->iCodigoLancamento =  $oEventoContabil->getCodigoLancamento();
-    return true;
-  }
 
-  /**
-   * Retorna o tipo de operacao que usuário incluiu de acordo com a tabela sliptipooperacao
-   * @throws Exception
-   * @return integer codigo do tipo da operacao (sliptipooperacao)
-   */
-  public function getTipoOperacaoPorInclusao() {
+    /**
+     * Retorna o tipo de operacao que usuário incluiu de acordo com a tabela sliptipooperacao
+     * @throws Exception
+     * @return integer codigo do tipo da operacao (sliptipooperacao)
+     */
+    public function getTipoOperacaoPorInclusao()
+    {
 
-    if (empty($this->iTipoOperacao)) {
+        if (empty($this->iTipoOperacao)) {
 
-      /*
-       * Busca o tipo de inclusão para descobrirmos qual documento vamos executar
-       */
-      $oDaoSlipTipoOperacao  = db_utils::getDao('sliptipooperacaovinculo');
-      $sSqlBuscaTipoOperacao = $oDaoSlipTipoOperacao->sql_query_file($this->getCodigoSlip());
-      $rsBuscaTipoOperacao   = $oDaoSlipTipoOperacao->sql_record($sSqlBuscaTipoOperacao);
-      if ($oDaoSlipTipoOperacao->numrows == 0) {
-        throw new Exception("Não foi possível localizar o tipo de operação do slip {$this->getCodigoSlip()}.");
-      }
-      $iTipoOperacao       = db_utils::fieldsMemory($rsBuscaTipoOperacao, 0)->k153_slipoperacaotipo;
-      $this->iTipoOperacao = $iTipoOperacao;
-    }
-    return $this->iTipoOperacao;
-  }
-
-  /**
-   * Autentica um slip
-   * @throws Exception
-   * @return boolean
-   */
-  public function executaAutenticacao() {
-
-    $iIp                = db_getsession("DB_ip");
-    $oDaocfautent       = db_utils::getDao('cfautent');
-    $iInstituicaoSessao = db_getsession("DB_instit");
-    $sSqlAutenticadora  = $oDaocfautent->sql_query_file(null,
-      "k11_id,
-       k11_tipautent",
-      '',
-      "k11_ipterm = '{$iIp}'
-                                                         and k11_instit = {$iInstituicaoSessao}"
-    );
-    $rsAutenticador    = $oDaocfautent->sql_record($sSqlAutenticadora);
-
-    if ($oDaocfautent->numrows == '0') {
-      throw new Exception("Cadastre o ip {$iIp} como um caixa.");
+            /*
+             * Busca o tipo de inclusão para descobrirmos qual documento vamos executar
+             */
+            $oDaoSlipTipoOperacao = new cl_sliptipooperacaovinculo();
+            $sSqlBuscaTipoOperacao = $oDaoSlipTipoOperacao->sql_query_file($this->getCodigoSlip());
+            $rsBuscaTipoOperacao = $oDaoSlipTipoOperacao->sql_record($sSqlBuscaTipoOperacao);
+            if ($oDaoSlipTipoOperacao->numrows == 0) {
+                throw new Exception("Não foi possível localizar o tipo de operação do slip {$this->getCodigoSlip()}.");
+            }
+            $iTipoOperacao = db_utils::fieldsMemory($rsBuscaTipoOperacao, 0)->k153_slipoperacaotipo;
+            $this->iTipoOperacao = $iTipoOperacao;
+        }
+        return $this->iTipoOperacao;
     }
 
-    $iCodigoTerminal    = db_utils::fieldsMemory($rsAutenticador, 0)->k11_id;
-    $iCodigoSlip        = $this->getCodigoSlip();
-    $iCodigoInstituicao = db_getsession("DB_instit");
-    $dtSessao           = date("Y-m-d", db_getsession("DB_datausu"));
+    /**
+     * Autentica um slip
+     * @param bool $lArrecadar - define se é para arrecadar ou estornar
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function executaAutenticacao($lArrecadar = true, $dataAtutenticacao=null)
+    {
+        $iIp = db_getsession("DB_ip");
+        $oDaocfautent = new cl_cfautent();
+        $iInstituicaoSessao = db_getsession("DB_instit");
+        $where = "k11_ipterm = '{$iIp}' and k11_instit = {$iInstituicaoSessao}";
+        $sSqlAutenticadora = $oDaocfautent->sql_query_file(null, "k11_id,k11_tipautent", '', $where);
+        $rsAutenticador = $oDaocfautent->sql_record($sSqlAutenticadora);
 
-    $sSqlExecutaAutenticacao = "select fc_auttransf({$iCodigoSlip}, '{$dtSessao}', '{$iIp}', true, 0, {$iCodigoInstituicao}) as fc_autenticacao";
-    $rsExecutaAutenticacao = db_query($sSqlExecutaAutenticacao);
-    if (!$rsExecutaAutenticacao) {
-      throw new Exception("Não foi possível realizar a autenticação");
+        if ($oDaocfautent->numrows == '0') {
+            throw new Exception("Cadastre o ip {$iIp} como um caixa.");
+        }
+
+        $iCodigoTerminal = db_utils::fieldsMemory($rsAutenticador, 0)->k11_id;
+        $iCodigoSlip = $this->getCodigoSlip();
+        $iCodigoInstituicao = db_getsession("DB_instit");
+        $dtSessao = date("Y-m-d", db_getsession("DB_datausu"));
+        if ( ! empty($dataAtutenticacao) ) {
+            $dtSessao = $dataAtutenticacao;
+        }
+
+        $lArrecadar = $lArrecadar ? 'true' : 'false';
+        $sSqlExecutaAutenticacao = "select fc_auttransf({$iCodigoSlip}, '{$dtSessao}', '{$iIp}', {$lArrecadar}, 0, {$iCodigoInstituicao}) as fc_autenticacao";
+        $rsExecutaAutenticacao = db_query($sSqlExecutaAutenticacao);
+        if (!$rsExecutaAutenticacao) {
+            throw new Exception("Não foi possível realizar a autenticação.\nPossível causa: Conciliação da conta bancária pode estar fechada. Verifique.");
+        }
+        $sStringAutenticacao = db_utils::fieldsMemory($rsExecutaAutenticacao, 0)->fc_autenticacao;
+        if (substr($sStringAutenticacao, 0, 1) != 1) {
+            throw new Exception("Não foi possível executar a autenticação.\n\n{$sStringAutenticacao}");
+        }
+
+
+        $this->setIDTerminal($iCodigoTerminal);
+
+        // @todo - verificar esta regra com o Leandro
+        $this->setDataAutenticacao($dtSessao);
+        $this->setNumeroAutenticacao(substr($sStringAutenticacao, 1, 7));
+        $this->setStringAutenticacao($sStringAutenticacao);
+
+        /**
+         * Inlcuir grupo de autenticacao para o slip.
+         */
+        $oDaoCorGrupo   = new cl_corgrupo;
+        $oDaoCorGrupo->k104_tipo = 9;
+        $oDaoCorGrupo->incluir(null);
+        if ($oDaoCorGrupo->erro_status == 0) {
+            throw new exception("Erro ao Incluir grupo de autenticação!");
+        }
+
+        $this->grupoAutenticacao = $oDaoCorGrupo->k104_sequencial;
+        return true;
     }
-    $sStringAutenticacao = db_utils::fieldsMemory($rsExecutaAutenticacao, 0)->fc_autenticacao;
-    if (substr($sStringAutenticacao, 0, 1) != 1) {
-      throw new Exception("Não foi possível executar a autenticação.\n\n{$sStringAutenticacao}");
+
+    /**
+     * Retorna o documento por tipo de inclusão
+     * @throws Exception
+     * @return integer - Codigo do documento que será executado no lançamento contábil
+     */
+    public function getDocumentoPorTipoInclusao()
+    {
+
+        $iTipoOperacao = $this->getTipoOperacaoPorInclusao();
+        $iCodigoDocumento = 0;
+        switch ($iTipoOperacao) {
+            /**
+             * Transferencia Financeira
+             */
+            case 1:
+                $iCodigoDocumento = 120;
+                break;
+            case 2:
+                $iCodigoDocumento = 121;
+                break;
+            case 3:
+                $iCodigoDocumento = 130;
+                break;
+            case 4:
+                $iCodigoDocumento = 131;
+                break;
+
+            /**
+             * Transferencia Bancaria
+             */
+            case 5:
+            case 16:
+            case 17:
+                $iCodigoDocumento = 140;
+                break;
+            case 6:
+            case 18:
+                $iCodigoDocumento = 141;
+                break;
+            /**
+             * Caução
+             */
+            case 7:
+                $iCodigoDocumento = 150;
+                break;
+            case 8:
+                $iCodigoDocumento = 152;
+                break;
+            case 9:
+                $iCodigoDocumento = 151;
+                break;
+            case 10:
+                $iCodigoDocumento = 153;
+                break;
+
+            /**
+             * Depósito de Diversas Origens
+             */
+            case 11:
+                $iCodigoDocumento = 160;
+                break;
+            case 12:
+                $iCodigoDocumento = 162;
+                break;
+            case 13:
+                $iCodigoDocumento = 161;
+                break;
+            case 14:
+                $iCodigoDocumento = 163;
+                break;
+            case 500:
+                $iCodigoDocumento = 5000;
+                break;
+            case 501:
+                $iCodigoDocumento = 5001;
+                break;
+            case 502:
+                $iCodigoDocumento = 5002;
+                break;
+            case 503:
+                $iCodigoDocumento = 5003;
+                break;
+        }
+        return $iCodigoDocumento;
     }
 
-    $this->setIDTerminal($iCodigoTerminal);
-    $this->setDataAutenticacao($dtSessao);
-    $this->setNumeroAutenticacao(substr($sStringAutenticacao, 1, 7));
-    $this->setStringAutenticacao($sStringAutenticacao);
 
-    return true;
-  }
-
-  /**
-   * Retorna o documento por tipo de inclusão
-   * @throws Exception
-   * @return integer - Codigo do documento que será executado no lançamento contábil
-   */
-  public function getDocumentoPorTipoInclusao() {
-
-    $iTipoOperacao    = $this->getTipoOperacaoPorInclusao();
-    $iCodigoDocumento = 0;
-    switch ($iTipoOperacao) {
-
-      /**
-       * Transferencia Financeira
-       */
-      case 1:
-        $iCodigoDocumento = 120;
-        break;
-      case 2:
-        $iCodigoDocumento = 121;
-        break;
-      case 3:
-        $iCodigoDocumento = 130;
-        break;
-      case 4:
-        $iCodigoDocumento = 131;
-        break;
-
-      /**
-       * Transferencia Bancaria
-       */
-      case 5:
-        $iCodigoDocumento = 140;
-        break;
-      case 6:
-        $iCodigoDocumento = 141;
-        break;
-
-      /**
-       * Caução
-       */
-      case 7:
-        $iCodigoDocumento = 150;
-        break;
-      case 8:
-        $iCodigoDocumento = 152;
-        break;
-      case 9:
-        $iCodigoDocumento = 151;
-        break;
-      case 10:
-        $iCodigoDocumento = 153;
-        break;
-
-      /**
-       * Depósito de Diversas Origens
-       */
-      case 11:
-        $iCodigoDocumento = 160;
-        break;
-      case 12:
-        $iCodigoDocumento = 162;
-        break;
-      case 13:
-        $iCodigoDocumento = 161;
-        break;
-      case 14:
-        $iCodigoDocumento = 163;
-        break;
+    /**
+     * @param $sMotivo
+     * @throws Exception
+     */
+    public function anular($sMotivo)
+    {
+        /**
+         * Inlcuir grupo de autenticacao para o slip.
+         */
+        $oDaoCorGrupo   = new cl_corgrupo;
+        $oDaoCorGrupo->k104_tipo = 10;
+        $oDaoCorGrupo->incluir(null);
+        if ($oDaoCorGrupo->erro_status == 0) {
+            throw new exception("Erro ao Incluir grupo de autenticação!");
+        }
+        $this->grupoAutenticacao = $oDaoCorGrupo->k104_sequencial;
+        $this->oSlip->anular($sMotivo, true, $this);
     }
-    return $iCodigoDocumento;
-  }
 
-  /**
-   * Anula um slip
-   * @param string $sMotivo
-   */
-  public function anular($sMotivo) {
-    $this->oSlip->anular($sMotivo, true, $this);
-  }
+    /**
+     * @param $iCodigoSlip
+     */
+    public function setCodigoSlip($iCodigoSlip)
+    {
+        $this->oSlip->setSlip($iCodigoSlip);
+    }
 
-  /**
-   * @param $iCodigoSlip
-   */
-  public function setCodigoSlip($iCodigoSlip) {
-    $this->oSlip->setSlip($iCodigoSlip);
-  }
+    /**
+     * Código sequencial do Slip
+     * @return int
+     */
+    public function getCodigoSlip()
+    {
+        return $this->oSlip->getSlip();
+    }
 
-  /**
-   * Código sequencial do Slip
-   * @return int
-   */
-  public function getCodigoSlip() {
-    return $this->oSlip->getSlip();
-  }
+    /**
+     * @return array
+     */
+    public function getArrecacoes()
+    {
+        return $this->oSlip->getArrecacoes();
+    }
 
-  /**
-   * @return array
-   */
-  public function getArrecacoes() {
-    return $this->oSlip->getArrecacoes();
-  }
+    /**
+     * @param integer $iArrecacoes
+     */
+    public function adicionarArrecadacao($iArrecadacoes)
+    {
+        $this->oSlip->addArrecadacao($iArrecadacoes);
+    }
 
-  /**
-   * @param integer $iArrecacoes
-   */
-  public function adicionarArrecadacao($iArrecadacoes) {
-    $this->oSlip->addArrecadacao($iArrecadacoes);
-  }
+    /**
+     * @return array
+     */
+    public function getPagamentos()
+    {
+        return $this->oSlip->getPagamentos();
+    }
 
-  /**
-   * @return array
-   */
-  public function getPagamentos() {
-    return $this->oSlip->getPagamentos();
-  }
-
-  /**
-   * @param array $aPagamentos
-   */
-  private function setPagamentos($aPagamentos) {
+    /**
+     * @param array $aPagamentos
+     */
+    private function setPagamentos($aPagamentos)
+    {
 //  	$this->oSlip->setPagamentos($aPagamentos);
-  }
-
-  /**
-   * @return array
-   */
-  public function getRecursos() {
-    return $this->oSlip->getRecursos();
-  }
-
-  /**
-   * Adiciona um Recurso ao Slip
-   *
-   * @param integer $iRecurso codigo do recurso
-   * @param float   $nValor valor do Recurso
-   */
-  public function adicionarRecurso($iRecurso, $nValor = 0) {
-    $this->oSlip->addRecurso($iRecurso, $nValor);
-  }
-
-  /**
-   * @return string
-   */
-
-  public function getData() {
-    return $this->oSlip->getData();
-  }
-
-  /**
-   * @param string $dtData
-   */
-
-  public function setData($dtData) {
-    $this->oSlip->setData($dtData);
-  }
-
-  /**
-   * @return integer
-   */
-  public function getContaCredito() {
-    return  $this->oSlip->getContaCredito();
-  }
-
-  /**
-   * @param integer $iContaCredito
-   */
-  public function setContaCredito($iContaCredito) {
-    $this->oSlip->setContaCredito($iContaCredito);
-  }
-
-  /**
-   * @return integer
-   */
-  public function getContaDebito() {
-    return $this->oSlip->getContaDebito();
-  }
-
-  /**
-   * Retorna um objeto do tipo ContaPlanoPCASP
-   * @return ContaPlanoPCASP
-   */
-  public function getContaPlanoDebito() {
-
-    if ($this->getContaDebito() != "" && empty($this->oContaPlanoDebito)) {
-
-      $oDBDate          = new DBDate($this->getData());
-      $oPlanoContaPCASP = new ContaPlanoPCASP(null, $oDBDate->getAno(), $this->getContaDebito(), $this->getInstituicao());
-      $this->oContaPlanoDebito = $oPlanoContaPCASP;
     }
-    return $this->oContaPlanoDebito;
-  }
-
-  /**
-   * Retorna um objeto do tipo ContaPlanoPCASP
-   * @return ContaPlanoPCASP
-   */
-  public function getContaPlanoCredito() {
-
-    if ($this->getContaCredito() != "" && empty($this->oContaPlanoCredito)) {
-
-      $oDBDate          = new DBDate($this->getData());
-      $oPlanoContaPCASP = new ContaPlanoPCASP(null, $oDBDate->getAno(), $this->getContaCredito(), $this->getInstituicao());
-      $this->oContaPlanoCredito = $oPlanoContaPCASP;
-    }
-    return $this->oContaPlanoCredito;
-  }
-
-  /**
-   * @param integer $iContaDebito
-   */
-  public function setContaDebito($iContaDebito) {
-    $this->oSlip->setContaDebito($iContaDebito);
-  }
-
-  /**
-   * @return integer
-   */
-  public function getSituacao() {
-    return $this->oSlip->getSituacao();
-  }
-
-  /**
-   * @param integer $iSituacao
-   */
-  public function setSituacao($iSituacao) {
-    $this->oSlip->setSituacao($iSituacao);
-  }
-
-  /**
-   * @return unknown_type
-   */
-  public function getTipoPagamento() {
-    return $this->oSlip->getTipoPagamento();
-  }
-
-  /**
-   * @param unknown_type $iTipoPagamento
-   */
-  public function setTipoPagamento($iTipoPagamento) {
-    $this->oSlip->setTipoPagamento($iTipoPagamento);
-  }
-
-  /**
-   * @return float
-   */
-  public function getValor() {
-    return $this->oSlip->getValor();
-  }
-
-  /**
-   * @param float $nValor
-   */
-  public function setValor($nValor) {
-    $this->oSlip->setValor($nValor);
-  }
-
-  /**
-   * @return string
-   */
-  public function getObservacao() {
-    return $this->oSlip->getObservacoes();
-  }
-
-  /**
-   * @param string $sObservacoes
-   */
-  public function setObservacao($sObservacoes) {
-    $this->oSlip->setObservacoes($sObservacoes);
-  }
-  /**
-   * @return integer
-   */
-  public function getCodigoCgm() {
-    return $this->oSlip->getNumCgm();
-  }
-
-  /**
-   * @param integer $iNumCgm
-   */
-  public function setCodigoCgm($iNumCgm) {
-    $this->oSlip->setNumCgm($iNumCgm);
-  }
-  /**
-   * @return integer
-   */
-  public function getHistorico() {
-    return $this->oSlip->getHistorico();
-  }
-
-  /**
-   * @param integer $iHistorico
-   */
-  public function setHistorico($iHistorico) {
-    $this->oSlip->setHistorico($iHistorico);
-  }
-  /**
-   * @return integer
-   */
-  public function getMovimento() {
-    return $this->oSlip->getMovimento();
-  }
-
-  /**
-   * Retorna a instituição que criou a transferencia
-   * @return integer
-   */
-  public function getInstituicao() {
-    return $this->oSlip->getInstituicao();
-  }
-  /**
-   * Seta a instituição que criou a transferencia
-   * @param integer
-   */
-  public function setInstituicao($iInstituicao) {
-    $this->oSlip->setInstituicao($iInstituicao);
-  }
-
-  /**
-   * Seta a caracteristica peculiar debito
-   * @param string $sCodigoCaracteristica
-   */
-  public function setCaracteristicaPeculiarDebito($sCodigoCaracteristica) {
-    $this->oSlip->setCaracteristicaPeculiarDebito($sCodigoCaracteristica);
-  }
-
-  /**
-   * Retorna a caracteristica peculiar debito
-   * @param string
-   */
-  public function getCaracteristicaPeculiarDebito() {
-    return $this->oSlip->getCaracteristicaPeculiarDebito();
-  }
-
-  /**
-   * Seta a caracteristica peculiar credito
-   * @param string $sCodigoCaracteristica
-   */
-  public function setCaracteristicaPeculiarCredito($sCodigoCaracteristica) {
-    $this->oSlip->setCaracteristicaPeculiarCredito($sCodigoCaracteristica);
-  }
-
-  /**
-   * Retorna a caracteristica peculiar credito
-   * @param string
-   */
-  public function getCaracteristicaPeculiarCredito() {
-    return $this->oSlip->getCaracteristicaPeculiarCredito();
-  }
-
-  /**
-   * Seta o tipo de operação
-   * @param integer $iTipoOperacao
-   */
-  public function setTipoOperacao($iTipoOperacao) {
-    $this->iTipoOperacao = $iTipoOperacao;
-  }
-
-  /**
-   * Retorna o tipo de operação de um slip
-   * @return integer
-   */
-  public function getTipoOperacao() {
-    return $this->iTipoOperacao;
-  }
-
-  /**
-   * Define a data de autenticacao do SLIP
-   * @param string $sDataAutenticacao data da autenticacao
-   */
-  public function setDataAutenticacao($sDataAutenticacao) {
-    $this->dtDataAutenticacao = $sDataAutenticacao;
-  }
-
-  /**
-   * retorna a data de autenticacao do SLIP
-   * @return string data de autenticacao
-   */
-  public function getDataAutenticacao() {
-    return $this->dtDataAutenticacao;
-  }
-
-  /**
-   * Define o Numero autenticacao do SLIP
-   * @param integer $iNumeroAutenticacao numero da autenticacao
-   */
-  public function setNumeroAutenticacao($iNumeroAutenticacao) {
-    $this->iNumeroAutenticacao = $iNumeroAutenticacao;
-  }
-
-  /**
-   * retorna  numero da autenticacao
-   * @return integer numero da autenticacao
-   */
-  public function getNumeroAutenticacao() {
-    return $this->iNumeroAutenticacao;
-  }
-
-  /**
-   * Define o o id do terminal da autenticacao do SLIP
-   * @param integer $iIDTerminal o id do terminal da autenticacao
-   */
-  public function setIDTerminal($iIDTerminal) {
-    $this->iIDTerminal = $iIDTerminal;
-  }
-
-  /**
-   * retorna o id do terminal da autenticacao
-   * @return integer id do terminal autenticacao
-   */
-  public function getIDTerminal() {
-    return $this->iIDTerminal;
-  }
-
-  /**
-   * Define string para impressao
-   * @param string
-   */
-  public function setStringAutenticacao($sStringAutenticacao) {
-    $this->sStringAutenticacao = $sStringAutenticacao;
-  }
-
-  /**
-   * retorna string para impressao
-   * @return string
-   */
-  public function getStringAutenticacao() {
-    return $this->sStringAutenticacao;
-  }
-
-  /**
-   * Salva a finalidade de pagamento do slip
-   * @throws BusinessException
-   * @throws Exception
-   * @return boolean
-   */
-  public function salvarFinalidadePagamentoFundeb() {
-
-    $sLocalizacao = "contabilidade.caixa.Transferencia.";
-
-    if (empty($this->oFinalidadePagamentoFundebCredito)) {
-      throw new BusinessException("Não é possível executar o método. Objetos FinalidadePagamentoFundeb não foram setados.");
-    }
-
-    if ($this->getDataAutenticacao() != "") {
-      throw new Exception($sLocalizacao."slip_autenticado");
-    }
-
-    $oDaoExcluiFinalidade = db_utils::getDao('slipfinalidadepagamentofundeb');
-    $oDaoExcluiFinalidade->excluir(null, "e153_slip = {$this->getCodigoSlip()}");
-
-    if ( !empty($this->oFinalidadePagamentoFundebCredito) ) {
-
-      $oDaoSlipFinalidadePagamentoCredito = db_utils::getDao('slipfinalidadepagamentofundeb');
-      $oDaoSlipFinalidadePagamentoCredito->e153_sequencial                = null;
-      $oDaoSlipFinalidadePagamentoCredito->e153_slip                      = $this->getCodigoSlip();
-      $oDaoSlipFinalidadePagamentoCredito->e153_finalidadepagamentofundeb = $this->oFinalidadePagamentoFundebCredito->getCodigoSequencial();
-      $oDaoSlipFinalidadePagamentoCredito->incluir(null);
-
-      if ($oDaoSlipFinalidadePagamentoCredito->erro_status == "0") {
-        throw new BusinessException(_M($sLocalizacao."vinculo_conta_finalidadefundeb"));
-      }
-    }
-
-    return true;
-  }
-
-  /**
-   * Seta a finalidade de pagamento do fundeb
-   * @param FinalidadePagamentoFundeb $oFinalidadePagamentoCredito
-   */
-  public function setFinalidadePagamentoFundebCredito (FinalidadePagamentoFundeb $oFinalidadePagamentoCredito) {
-    $this->oFinalidadePagamentoFundebCredito = $oFinalidadePagamentoCredito;
-  }
-
-  /**
-   * Retorna a finalidade de pagamento do empenho para a conta credito
-   * @return FinalidadePagamentoFundeb
-   */
-  public function getFinalidadePagamentoFundebCredito() {
-
-    if (empty($this->oFinalidadePagamentoFundebCredito)) {
-
-      $oDaoFinalidadePagamento = db_utils::getDao('slipfinalidadepagamentofundeb');
-      $sWhereFinalidade        = "e153_slip = {$this->getCodigoSlip()}";
-      $sSqlBuscaFinalidade     = $oDaoFinalidadePagamento->sql_query_file(null, "e153_finalidadepagamentofundeb",
-        null, $sWhereFinalidade);
-      $rsBuscaFinalidade = $oDaoFinalidadePagamento->sql_record($sSqlBuscaFinalidade);
-      if ($oDaoFinalidadePagamento->numrows == 1) {
-
-        $iCodigoSequencialFinalidade = db_utils::fieldsMemory($rsBuscaFinalidade, 0)->e153_finalidadepagamentofundeb;
-        $this->oFinalidadePagamentoFundebCredito = new FinalidadePagamentoFundeb($iCodigoSequencialFinalidade);
-      }
-    }
-    return $this->oFinalidadePagamentoFundebCredito;
-  }
-
-  /**
-   * Exclui o vinculo do tipo de operacao com o slip
-   * @throws BusinessException
-   * @return boolean true
-   */
-  protected function excluiVinculoTipoDeOperacao() {
-
-    $oDaoSlipTipoOperacaoVinculo = db_utils::getDao('sliptipooperacaovinculo');
-    $oDaoSlipTipoOperacaoVinculo->excluir($this->getCodigoSlip());
-    if ($oDaoSlipTipoOperacaoVinculo->erro_status === "0") {
-
-      $sLocalizacao = "financeiro.caixa.Transferencia.exclusao_sliptipooperacaovinculo";
-      throw new BusinessException(_M($sLocalizacao));
-    }
-    return true;
-  }
-
-
-  /**
-   * Vincula o slip ao tipo de operacao
-   * @throws BusinessException
-   * @return boolean true
-   */
-  protected function vinculaSlipTipoDeOperacao() {
 
     /**
-     * Excluimos o vínculo para incluirmos novamente
+     * @return array
      */
-    $this->excluiVinculoTipoDeOperacao();
-
-    $oDaoTipoOperacaoVinculo = db_utils::getDao('sliptipooperacaovinculo');
-    $oDaoTipoOperacaoVinculo->k153_slip             = $this->getCodigoSlip();
-    $oDaoTipoOperacaoVinculo->k153_slipoperacaotipo = $this->getTipoOperacao();
-    $oDaoTipoOperacaoVinculo->incluir($this->getCodigoSlip());
-
-    if ($oDaoTipoOperacaoVinculo->erro_status == 0) {
-
-      $sLocalizacao = "financeiro.caixa.Transferencia.vincular_sliptipooperacaovinculo";
-      throw new BusinessException(_M($sLocalizacao));
+    public function getRecursos()
+    {
+        return $this->oSlip->getRecursos();
     }
-    return true;
-  }
-
-  /**
-   * Método que verifica se o slip já possui alguma autenticação
-   * @return boolean
-   */
-  public function possuiAutenticacao() {
-
-    $oDaoLancamento      = new cl_conlancamslip();
-    $sSqlBuscaLancamento = $oDaoLancamento->sql_query_file(null, "*", null, "c84_slip = {$this->getCodigoSlip()}");
-    $rsBuscaLancamento   = $oDaoLancamento->sql_record($sSqlBuscaLancamento);
-    if ($oDaoLancamento->numrows > 0) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Exclui o slip em caso de não ter sido autenticado nenhuma vez.
-   * @throws BusinessException
-   * @return boolean true
-   */
-  public function excluir() {
 
     /**
-     * Não é permitido excluir uma autenticação em que já tenha ocorrido alguma autenticação
+     * Adiciona um Recurso ao Slip
+     *
+     * @param integer $iRecurso codigo do recurso
+     * @param float $nValor valor do Recurso
      */
-    if ($this->possuiAutenticacao()) {
-      throw new BusinessException(_M("financeiro.caixa.Transferencia.exclusao_transferencia_autenticacao"));
+    public function adicionarRecurso($iRecurso, $nValor = 0)
+    {
+        $this->oSlip->addRecurso($iRecurso, $nValor);
     }
 
-    $oDaoExcluirSlip = new cl_slipconcarpeculiar();
-    $oDaoExcluirSlip->excluir(null, "k131_slip  = {$this->getCodigoSlip()}");
-    if ($oDaoExcluirSlip->erro_status == "0") {
-      throw new BusinessException("financeiro.caixa.Transferencia.exclusao_vinculo_cpca");
+    /**
+     * @return string
+     */
+
+    public function getData()
+    {
+        return $this->oSlip->getData();
     }
 
-    $oDaoExcluirSlip = new cl_slipnum();
-    $oDaoExcluirSlip->excluir(null, "k17_codigo = {$this->getCodigoSlip()}");
-    if ($oDaoExcluirSlip->erro_status == "0") {
-      throw new BusinessException("financeiro.caixa.Transferencia.exclusao_vinculo_cpca");
+    /**
+     * @param string $dtData
+     */
+
+    public function setData($dtData)
+    {
+        $this->oSlip->setData($dtData);
     }
 
-    $oDaoExcluirSlip = new cl_sliptipooperacaovinculo();
-    $oDaoExcluirSlip->excluir(null, "k153_slip  = {$this->getCodigoSlip()}");
-    if ($oDaoExcluirSlip->erro_status == "0") {
-      throw new BusinessException("financeiro.caixa.Transferencia.exclusao_vinculo_tipotransferencia");
+    /**
+     * @return integer
+     */
+    public function getContaCredito()
+    {
+        return $this->oSlip->getContaCredito();
     }
 
-    $oDaoExcluirSlip = new cl_transferenciafinanceira();
-    $oDaoExcluirSlip ->excluir(null, "k150_slip  = {$this->getCodigoSlip()}");
-    if ($oDaoExcluirSlip->erro_status == "0") {
-      throw new BusinessException("financeiro.caixa.Transferencia.exclusao_vinculo_tipotransferencia");
+    /**
+     * @param integer $iContaCredito
+     */
+    public function setContaCredito($iContaCredito)
+    {
+        $this->oSlip->setContaCredito($iContaCredito);
     }
 
-    $oDaoExcluirSlip = new cl_empageslip();
-    $oDaoExcluirSlip->excluir(null, null, "e89_codigo = {$this->getCodigoSlip()}");
-    if ($oDaoExcluirSlip->erro_status == "0") {
-      throw new BusinessException("financeiro.caixa.Transferencia.exclusao_agenda");
+    /**
+     * @return integer
+     */
+    public function getContaDebito()
+    {
+        return $this->oSlip->getContaDebito();
     }
 
-    $this->excluirVinculoComProcesso();
+    /**
+     * Retorna um objeto do tipo ContaPlanoPCASP
+     * @return ContaPlanoPCASP
+     */
+    public function getContaPlanoDebito()
+    {
 
-    $oDaoExcluirSlip = new cl_slip();
-    $oDaoExcluirSlip->excluir($this->getCodigoSlip());
-    if ($oDaoExcluirSlip->erro_status == "0") {
-      throw new BusinessException("financeiro.caixa.Transferencia.exclusao_transferencia");
-    }
-    return true;
-  }
+        if ($this->getContaDebito() != "" && empty($this->oContaPlanoDebito)) {
 
-  /**
-   * @param $sProcesso
-   */
-  public function setProcessoAdministrativo($sProcesso) {
-    $this->sProcessoAdministrativo = $sProcesso;
-  }
-
-  /**
-   * @return string
-   */
-  public function getProcessoAdministrativo() {
-    return $this->sProcessoAdministrativo;
-  }
-
-  /**
-   * Vincula um processo administrativo a um slip
-   * @return bool
-   * @throws BusinessException
-   */
-  protected function salvarVinculoComProcesso() {
-
-    $this->excluirVinculoComProcesso();
-
-    if (empty($this->sProcessoAdministrativo)) {
-      return false;
+            $oDBDate = new DBDate($this->getData());
+            $oPlanoContaPCASP = new ContaPlanoPCASP(null, $oDBDate->getAno(), $this->getContaDebito(),
+                $this->getInstituicao());
+            $this->oContaPlanoDebito = $oPlanoContaPCASP;
+        }
+        return $this->oContaPlanoDebito;
     }
 
-    $oDaoSlipProcesso                      = new cl_slipprocesso();
-    $oDaoSlipProcesso->k145_sequencial     = null;
-    $oDaoSlipProcesso->k145_slip           = $this->getCodigoSlip();
-    $oDaoSlipProcesso->k145_numeroprocesso = $this->getProcessoAdministrativo();
-    $oDaoSlipProcesso->incluir(null);
-    if ($oDaoSlipProcesso->erro_status == "0") {
-      throw new BusinessException("financeiro.caixa.Transferencia.vinculo_processo");
+    /**
+     * Retorna um objeto do tipo ContaPlanoPCASP
+     * @return ContaPlanoPCASP
+     */
+    public function getContaPlanoCredito()
+    {
+
+        if ($this->getContaCredito() != "" && empty($this->oContaPlanoCredito)) {
+
+            $oDBDate = new DBDate($this->getData());
+            $oPlanoContaPCASP = new ContaPlanoPCASP(null, $oDBDate->getAno(), $this->getContaCredito(),
+                $this->getInstituicao());
+            $this->oContaPlanoCredito = $oPlanoContaPCASP;
+        }
+        return $this->oContaPlanoCredito;
     }
-    return true;
-  }
 
-  /**
-   * @return bool
-   * @throws BusinessException
-   */
-  protected function excluirVinculoComProcesso() {
-
-    $oDaoSlipProcesso = new cl_slipprocesso();
-    $oDaoSlipProcesso->excluir(null, "k145_slip = {$this->getCodigoSlip()}");
-    if ($oDaoSlipProcesso->erro_status == "0") {
-      throw new BusinessException("financeiro.caixa.Transferencia.exclusao_processo");
+    /**
+     * @param integer $iContaDebito
+     */
+    public function setContaDebito($iContaDebito)
+    {
+        $this->oSlip->setContaDebito($iContaDebito);
     }
-    return true;
-  }
 
-
-  /**
-   * Executa o lançamento na contabilidade com os dados autenticados na tesouraria
-   * @param AutenticacaoTesouraria $oAutenticacao
-   * @return bool
-   */
-  public function executarLancamentoContabilidade (AutenticacaoTesouraria $oAutenticacao) {
-
-    $oContaCorrenteDetalhe = new ContaCorrenteDetalhe();
-    $oContaCorrenteDetalhe->setRecurso(new Recurso($oAutenticacao->getContaPagadora()->getRecurso()));
-    $oContaCorrenteDetalhe->setContaBancaria(null);
-    $oContaCorrenteDetalhe->setCredor(CgmFactory::getInstanceByCgm($this->getCodigoCgm()));
-
-    $oLancamentoAuxiliarSlip = new LancamentoAuxiliarSlip();
-    $oLancamentoAuxiliarSlip->setIDTerminal($oAutenticacao->getTerminal());
-    $oLancamentoAuxiliarSlip->setDataAutenticacao($oAutenticacao->getData()->getDate());
-    $oLancamentoAuxiliarSlip->setNumeroAutenticacao($oAutenticacao->getAutenticacao());
-    $oLancamentoAuxiliarSlip->setHistorico($this->getHistorico());
-    $oLancamentoAuxiliarSlip->setValorTotal(abs($oAutenticacao->getValor()));
-    $oLancamentoAuxiliarSlip->setObservacaoHistorico($this->getObservacao());
-    $oLancamentoAuxiliarSlip->setCodigoSlip($this->getCodigoSlip());
-    $oLancamentoAuxiliarSlip->setCodigoReduzido($oAutenticacao->getContaPagadora()->getReduzido());
-    $oLancamentoAuxiliarSlip->setFavorecido($this->getCodigoCgm());
-    $oLancamentoAuxiliarSlip->setEstorno(false);
-    $oLancamentoAuxiliarSlip->setCaracteristicaPeculiarCredito($this->getCaracteristicaPeculiarCredito());
-    $oLancamentoAuxiliarSlip->setCaracteristicaPeculiarDebito($this->getCaracteristicaPeculiarDebito());
-    $oLancamentoAuxiliarSlip->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
-
-    $iCodigoDocumento = $this->getDocumentoPorTipoInclusao();
-    $oEventoContabil  = EventoContabilRepository::getEventoContabilByCodigo($iCodigoDocumento, $oAutenticacao->getData()->getAno(), $this->getInstituicao());
-    if ($oEventoContabil->estorno()) {
-      $oLancamentoAuxiliarSlip->setEstorno(true);
+    /**
+     * @return integer
+     */
+    public function getSituacao()
+    {
+        return $this->oSlip->getSituacao();
     }
-    $oEventoContabil->executaLancamento($oLancamentoAuxiliarSlip, $oAutenticacao->getData()->getDate());
-    $this->iCodigoLancamento =  $oEventoContabil->getCodigoLancamento();
-    return true;
-  }
+
+    /**
+     * @param integer $iSituacao
+     */
+    public function setSituacao($iSituacao)
+    {
+        $this->oSlip->setSituacao($iSituacao);
+    }
+
+    /**
+     * @return unknown_type
+     */
+    public function getTipoPagamento()
+    {
+        return $this->oSlip->getTipoPagamento();
+    }
+
+    /**
+     * @param unknown_type $iTipoPagamento
+     */
+    public function setTipoPagamento($iTipoPagamento)
+    {
+        $this->oSlip->setTipoPagamento($iTipoPagamento);
+    }
+
+    /**
+     * @return float
+     */
+    public function getValor()
+    {
+        return $this->oSlip->getValor();
+    }
+
+    /**
+     * @param float $nValor
+     */
+    public function setValor($nValor)
+    {
+        $this->oSlip->setValor($nValor);
+    }
+
+    /**
+     * @return string
+     */
+    public function getObservacao()
+    {
+        return $this->oSlip->getObservacoes();
+    }
+
+    /**
+     * @param string $sObservacoes
+     */
+    public function setObservacao($sObservacoes)
+    {
+        $this->oSlip->setObservacoes($sObservacoes);
+    }
+
+    /**
+     * @return integer
+     */
+    public function getCodigoCgm()
+    {
+        return $this->oSlip->getNumCgm();
+    }
+
+    /**
+     * @param integer $iNumCgm
+     */
+    public function setCodigoCgm($iNumCgm)
+    {
+        $this->oSlip->setNumCgm($iNumCgm);
+    }
+
+    /**
+     * @return integer
+     */
+    public function getHistorico()
+    {
+        return $this->oSlip->getHistorico();
+    }
+
+    /**
+     * @param integer $iHistorico
+     */
+    public function setHistorico($iHistorico)
+    {
+        $this->oSlip->setHistorico($iHistorico);
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMovimento()
+    {
+        return $this->oSlip->getMovimento();
+    }
+
+    /**
+     * Retorna a instituição que criou a transferencia
+     * @return integer
+     */
+    public function getInstituicao()
+    {
+        return $this->oSlip->getInstituicao();
+    }
+
+    /**
+     * Seta a instituição que criou a transferencia
+     * @param integer
+     */
+    public function setInstituicao($iInstituicao)
+    {
+        $this->oSlip->setInstituicao($iInstituicao);
+    }
+
+    /**
+     * Seta a caracteristica peculiar debito
+     * @param string $sCodigoCaracteristica
+     */
+    public function setCaracteristicaPeculiarDebito($sCodigoCaracteristica)
+    {
+        $this->oSlip->setCaracteristicaPeculiarDebito($sCodigoCaracteristica);
+    }
+
+    /**
+     * Retorna a caracteristica peculiar debito
+     * @param string
+     */
+    public function getCaracteristicaPeculiarDebito()
+    {
+        return $this->oSlip->getCaracteristicaPeculiarDebito();
+    }
+
+    /**
+     * Seta a caracteristica peculiar credito
+     * @param string $sCodigoCaracteristica
+     */
+    public function setCaracteristicaPeculiarCredito($sCodigoCaracteristica)
+    {
+        $this->oSlip->setCaracteristicaPeculiarCredito($sCodigoCaracteristica);
+    }
+
+    /**
+     * Retorna a caracteristica peculiar credito
+     * @param string
+     */
+    public function getCaracteristicaPeculiarCredito()
+    {
+        return $this->oSlip->getCaracteristicaPeculiarCredito();
+    }
+
+    /**
+     * Seta o tipo de operação
+     * @param integer $iTipoOperacao
+     */
+    public function setTipoOperacao($iTipoOperacao)
+    {
+        $this->iTipoOperacao = $iTipoOperacao;
+    }
+
+    /**
+     * Retorna o tipo de operação de um slip
+     * @return integer
+     */
+    public function getTipoOperacao()
+    {
+        return $this->iTipoOperacao;
+    }
+
+    /**
+     * Define a data de autenticacao do SLIP
+     * @param string $sDataAutenticacao data da autenticacao
+     */
+    public function setDataAutenticacao($sDataAutenticacao)
+    {
+        $this->dtDataAutenticacao = $sDataAutenticacao;
+    }
+
+    /**
+     * retorna a data de autenticacao do SLIP
+     * @return string data de autenticacao
+     */
+    public function getDataAutenticacao()
+    {
+        return $this->dtDataAutenticacao;
+    }
+
+    /**
+     * Define o Numero autenticacao do SLIP
+     * @param integer $iNumeroAutenticacao numero da autenticacao
+     */
+    public function setNumeroAutenticacao($iNumeroAutenticacao)
+    {
+        $this->iNumeroAutenticacao = $iNumeroAutenticacao;
+    }
+
+    /**
+     * retorna  numero da autenticacao
+     * @return integer numero da autenticacao
+     */
+    public function getNumeroAutenticacao()
+    {
+        return $this->iNumeroAutenticacao;
+    }
+
+    /**
+     * Define o o id do terminal da autenticacao do SLIP
+     * @param integer $iIDTerminal o id do terminal da autenticacao
+     */
+    public function setIDTerminal($iIDTerminal)
+    {
+        $this->iIDTerminal = $iIDTerminal;
+    }
+
+    /**
+     * retorna o id do terminal da autenticacao
+     * @return integer id do terminal autenticacao
+     */
+    public function getIDTerminal()
+    {
+        return $this->iIDTerminal;
+    }
+
+    /**
+     * Define string para impressao
+     * @param string
+     */
+    public function setStringAutenticacao($sStringAutenticacao)
+    {
+        $this->sStringAutenticacao = $sStringAutenticacao;
+    }
+
+    /**
+     * retorna string para impressao
+     * @return string
+     */
+    public function getStringAutenticacao()
+    {
+        return $this->sStringAutenticacao;
+    }
+
+    /**
+     * Salva a finalidade de pagamento do slip
+     * @throws BusinessException
+     * @throws Exception
+     * @return boolean
+     */
+    public function salvarFinalidadePagamentoFundeb()
+    {
+
+        $sLocalizacao = "contabilidade.caixa.Transferencia.";
+
+        if (empty($this->oFinalidadePagamentoFundebCredito)) {
+            throw new BusinessException("Não é possível executar o método. Objetos FinalidadePagamentoFundeb não foram setados.");
+        }
+
+        if ($this->getDataAutenticacao() != "") {
+            throw new Exception($sLocalizacao . "slip_autenticado");
+        }
+
+        $oDaoExcluiFinalidade = new cl_slipfinalidadepagamentofundeb();
+        $oDaoExcluiFinalidade->excluir(null, "e153_slip = {$this->getCodigoSlip()}");
+
+        if (!empty($this->oFinalidadePagamentoFundebCredito)) {
+
+            $oDaoSlipFinalidadePagamentoCredito = new cl_slipfinalidadepagamentofundeb();
+            $oDaoSlipFinalidadePagamentoCredito->e153_sequencial = null;
+            $oDaoSlipFinalidadePagamentoCredito->e153_slip = $this->getCodigoSlip();
+            $oDaoSlipFinalidadePagamentoCredito->e153_finalidadepagamentofundeb = $this->oFinalidadePagamentoFundebCredito->getCodigoSequencial();
+            $oDaoSlipFinalidadePagamentoCredito->incluir(null);
+
+            if ($oDaoSlipFinalidadePagamentoCredito->erro_status == "0") {
+                throw new BusinessException(_M($sLocalizacao . "vinculo_conta_finalidadefundeb"));
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Seta a finalidade de pagamento do fundeb
+     * @param FinalidadePagamentoFundeb $oFinalidadePagamentoCredito
+     */
+    public function setFinalidadePagamentoFundebCredito(FinalidadePagamentoFundeb $oFinalidadePagamentoCredito)
+    {
+        $this->oFinalidadePagamentoFundebCredito = $oFinalidadePagamentoCredito;
+    }
+
+    /**
+     * Retorna a finalidade de pagamento do empenho para a conta credito
+     * @return FinalidadePagamentoFundeb
+     */
+    public function getFinalidadePagamentoFundebCredito()
+    {
+
+        if (empty($this->oFinalidadePagamentoFundebCredito)) {
+
+            $oDaoFinalidadePagamento = new cl_slipfinalidadepagamentofundeb();
+            $sWhereFinalidade = "e153_slip = {$this->getCodigoSlip()}";
+            $sSqlBuscaFinalidade = $oDaoFinalidadePagamento->sql_query_file(null, "e153_finalidadepagamentofundeb",
+                null, $sWhereFinalidade);
+            $rsBuscaFinalidade = $oDaoFinalidadePagamento->sql_record($sSqlBuscaFinalidade);
+            if ($oDaoFinalidadePagamento->numrows == 1) {
+
+                $iCodigoSequencialFinalidade = db_utils::fieldsMemory($rsBuscaFinalidade,
+                    0)->e153_finalidadepagamentofundeb;
+                $this->oFinalidadePagamentoFundebCredito = new FinalidadePagamentoFundeb($iCodigoSequencialFinalidade);
+            }
+        }
+        return $this->oFinalidadePagamentoFundebCredito;
+    }
+
+    /**
+     * Exclui o vinculo do tipo de operacao com o slip
+     * @throws BusinessException
+     * @return boolean true
+     */
+    protected function excluiVinculoTipoDeOperacao()
+    {
+
+        $oDaoSlipTipoOperacaoVinculo = new cl_sliptipooperacaovinculo();
+        $oDaoSlipTipoOperacaoVinculo->excluir($this->getCodigoSlip());
+        if ($oDaoSlipTipoOperacaoVinculo->erro_status === "0") {
+
+            $sLocalizacao = "financeiro.caixa.Transferencia.exclusao_sliptipooperacaovinculo";
+            throw new BusinessException(_M($sLocalizacao));
+        }
+        return true;
+    }
+
+
+    /**
+     * Vincula o slip ao tipo de operacao
+     * @throws BusinessException
+     * @return boolean true
+     */
+    protected function vinculaSlipTipoDeOperacao()
+    {
+
+        /**
+         * Excluimos o vínculo para incluirmos novamente
+         */
+        $this->excluiVinculoTipoDeOperacao();
+
+        $oDaoTipoOperacaoVinculo = new cl_sliptipooperacaovinculo();
+        $oDaoTipoOperacaoVinculo->k153_slip = $this->getCodigoSlip();
+        $oDaoTipoOperacaoVinculo->k153_slipoperacaotipo = $this->getTipoOperacao();
+        $oDaoTipoOperacaoVinculo->incluir($this->getCodigoSlip());
+
+        if ($oDaoTipoOperacaoVinculo->erro_status == 0) {
+
+            $sLocalizacao = "financeiro.caixa.Transferencia.vincular_sliptipooperacaovinculo";
+            throw new BusinessException(_M($sLocalizacao));
+        }
+        return true;
+    }
+
+    /**
+     * Método que verifica se o slip já possui alguma autenticação
+     * @return boolean
+     */
+    public function possuiAutenticacao()
+    {
+
+        $oDaoLancamento = new cl_conlancamslip();
+        $sSqlBuscaLancamento = $oDaoLancamento->sql_query_file(null, "*", null, "c84_slip = {$this->getCodigoSlip()}");
+        $rsBuscaLancamento = $oDaoLancamento->sql_record($sSqlBuscaLancamento);
+        if ($oDaoLancamento->numrows > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Exclui o slip em caso de não ter sido autenticado nenhuma vez.
+     * @return bool
+     * @throws BusinessException
+     * @throws DBException
+     */
+    public function excluir()
+    {
+
+        /**
+         * Não é permitido excluir uma autenticação em que já tenha ocorrido alguma autenticação
+         */
+        if ($this->possuiAutenticacao()) {
+            throw new BusinessException(_M("financeiro.caixa.Transferencia.exclusao_transferencia_autenticacao"));
+        }
+
+        if (Transferencia::possuiChequeEmitido($this->getCodigoSlip())) {
+            throw new BusinessException(_M("financeiro.caixa.Transferencia.slip_com_cheque_emitido"));
+        }
+
+
+        $oDaoSlipFundeb = new cl_slipfinalidadepagamentofundeb();
+        if (!$oDaoSlipFundeb->excluir(null, " e153_slip = " . $this->getCodigoSlip())) {
+            throw new DBException("Não foi possível excluir o vínculo do slip com a finalidade de pagamento do FUNDEB.");
+        }
+
+        $oDaoExcluirSlip = new cl_slipconcarpeculiar();
+        $oDaoExcluirSlip->excluir(null, "k131_slip  = {$this->getCodigoSlip()}");
+        if ($oDaoExcluirSlip->erro_status == "0") {
+            throw new BusinessException(_M("financeiro.caixa.Transferencia.exclusao_vinculo_cpca"));
+        }
+
+        $oDaoExcluirSlip = new cl_slipnum();
+        $oDaoExcluirSlip->excluir(null, "k17_codigo = {$this->getCodigoSlip()}");
+        if ($oDaoExcluirSlip->erro_status == "0") {
+            throw new BusinessException(_M("financeiro.caixa.Transferencia.exclusao_vinculo_cpca"));
+        }
+
+        $oDaoExcluirSlip = new cl_sliptipooperacaovinculo();
+        $oDaoExcluirSlip->excluir(null, "k153_slip  = {$this->getCodigoSlip()}");
+        if ($oDaoExcluirSlip->erro_status == "0") {
+            throw new BusinessException(_M("financeiro.caixa.Transferencia.exclusao_vinculo_tipotransferencia"));
+        }
+
+        $oDaoExcluirSlip = new cl_transferenciafinanceira();
+        $oDaoExcluirSlip->excluir(null, "k150_slip  = {$this->getCodigoSlip()}");
+        if ($oDaoExcluirSlip->erro_status == "0") {
+            throw new BusinessException(_M("financeiro.caixa.Transferencia.exclusao_vinculo_tipotransferencia"));
+        }
+
+        $oDaoExcluirSlip = new cl_empageslip();
+        $oDaoExcluirSlip->excluir(null, null, "e89_codigo = {$this->getCodigoSlip()}");
+        if ($oDaoExcluirSlip->erro_status == "0") {
+            throw new BusinessException(_M("financeiro.caixa.Transferencia.exclusao_agenda"));
+        }
+
+        $daoRecursoSlip = new cl_sliprecursocontas();
+        $daoRecursoSlip->excluir(null, 'k181_slip = ' . $this->getCodigoSlip());
+
+        $this->excluirVinculoComProcesso();
+
+        $oDaoExcluirSlipconcarpeculiar = new cl_slipconcarpeculiar();
+        $oDaoExcluirSlipconcarpeculiar->excluir(null, " k131_slip = " . $this->getCodigoSlip());
+        if ($oDaoExcluirSlipconcarpeculiar->erro_status == "0") {
+            throw new BusinessException(_M('financeiro.caixa.Transferencia.exclusao_vinculo_cpca'));
+        }
+
+        $oDaoExcluirSlipempagemovslips = new cl_slipempagemovslips();
+        $oDaoExcluirSlipempagemovslips->excluir(null, "k108_slip =" . $this->getCodigoSlip());
+        if ($oDaoExcluirSlipempagemovslips->erro_status == "0") {
+            throw new BusinessException(_M('financeiro.caixa.Transferencia.exclusao_vinculo_slipempagemovslips'));
+        }
+
+        $daoSlipCorrente = new cl_slipcorrente();
+        $daoSlipCorrente->excluir(null, "k112_slip = {$this->getCodigoSlip()}");
+        if ($daoSlipCorrente->erro_status === "0") {
+            throw new BusinessException(_M('financeiro.caixa.Transferencia.exclusao_slip_corrente'));
+        }
+
+        $daoSlipRecurso = new cl_sliprecurso();
+        $daoSlipRecurso->excluir(null, "k29_slip = {$this->getCodigoSlip()}");
+        if ($daoSlipRecurso->erro_status === "0") {
+            throw new BusinessException("Não foi possível excluir o recurso vinculado ao slip.");
+        }
+
+        $oDaoSlipPagordem = new cl_slippagordem;
+        $oDaoSlipPagordem->excluir(null, " k209_slip = {$this->getCodigoSlip()}");
+        if ($oDaoSlipPagordem->erro_status == "0") {
+            throw new BusinessException("Erro ao remover vinculo do slip com a OP." .  $oDaoSlipPagordem->erro_msg  );
+        }
+
+        $dao = new cl_slipdepartamento();
+        $dao->excluir($this->getCodigoSlip());
+        if ($dao->erro_status == "0") {
+            throw new Exception('Erro ao excluir slip.');
+        }
+
+        $oDaoSlipRetencaoReceita = new cl_slipretencaoreceitas;
+        $oDaoSlipRetencaoReceita->excluir(null, "k206_slip = {$this->getCodigoSlip()}");
+        if ($oDaoSlipRetencaoReceita->erro_status == "0") {
+            throw new Exception('Erro ao excluir vinculo do slip com retenção: ' . $oDaoSlipRetencaoReceita->erro_msg);
+        }
+
+        $oDaoExcluirSlip = new cl_slip();
+        $oDaoExcluirSlip->excluir($this->getCodigoSlip());
+
+        if ($oDaoExcluirSlip->erro_status == "0") {
+            throw new BusinessException(_M("financeiro.caixa.Transferencia.exclusao_transferencia" .  pg_last_error()));
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $sProcesso
+     */
+    public function setProcessoAdministrativo($sProcesso)
+    {
+        $this->sProcessoAdministrativo = $sProcesso;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProcessoAdministrativo()
+    {
+        return $this->sProcessoAdministrativo;
+    }
+
+    /**
+     * Vincula um processo administrativo a um slip
+     * @return bool
+     * @throws BusinessException
+     */
+    protected function salvarVinculoComProcesso()
+    {
+
+        $this->excluirVinculoComProcesso();
+
+        if (empty($this->sProcessoAdministrativo)) {
+            return false;
+        }
+
+        $oDaoSlipProcesso = new cl_slipprocesso();
+        $oDaoSlipProcesso->k145_sequencial = null;
+        $oDaoSlipProcesso->k145_slip = $this->getCodigoSlip();
+        $oDaoSlipProcesso->k145_numeroprocesso = $this->getProcessoAdministrativo();
+        $oDaoSlipProcesso->incluir(null);
+        if ($oDaoSlipProcesso->erro_status == "0") {
+            throw new BusinessException("financeiro.caixa.Transferencia.vinculo_processo");
+        }
+        return true;
+    }
+
+    /**
+     * @return bool
+     * @throws BusinessException
+     */
+    protected function excluirVinculoComProcesso()
+    {
+
+        $oDaoSlipProcesso = new cl_slipprocesso();
+        $oDaoSlipProcesso->excluir(null, "k145_slip = {$this->getCodigoSlip()}");
+        if ($oDaoSlipProcesso->erro_status == "0") {
+            throw new BusinessException("financeiro.caixa.Transferencia.exclusao_processo");
+        }
+        return true;
+    }
+
+
+    /**
+     * Executa o lançamento na contabilidade com os dados autenticados na tesouraria
+     * @param AutenticacaoTesouraria $oAutenticacao
+     * @return bool
+     */
+    public function executarLancamentoContabilidade(AutenticacaoTesouraria $oAutenticacao)
+    {
+
+        $oContaCorrenteDetalhe = new ContaCorrenteDetalhe();
+        $oContaCorrenteDetalhe->setRecurso(new Recurso($oAutenticacao->getContaPagadora()->getRecurso()));
+        $oContaCorrenteDetalhe->setContaBancaria(null);
+        $oContaCorrenteDetalhe->setCredor(CgmFactory::getInstanceByCgm($this->getCodigoCgm()));
+
+        $oLancamentoAuxiliarSlip = new LancamentoAuxiliarSlip();
+        $oLancamentoAuxiliarSlip->setIDTerminal($oAutenticacao->getTerminal());
+        $oLancamentoAuxiliarSlip->setDataAutenticacao($oAutenticacao->getData()->getDate());
+        $oLancamentoAuxiliarSlip->setNumeroAutenticacao($oAutenticacao->getAutenticacao());
+        $oLancamentoAuxiliarSlip->setHistorico($this->getHistorico());
+        $oLancamentoAuxiliarSlip->setValorTotal(abs($oAutenticacao->getValor()));
+        $oLancamentoAuxiliarSlip->setObservacaoHistorico($this->getObservacao());
+        $oLancamentoAuxiliarSlip->setCodigoSlip($this->getCodigoSlip());
+        $oLancamentoAuxiliarSlip->setCodigoReduzido($oAutenticacao->getContaPagadora()->getReduzido());
+        $oLancamentoAuxiliarSlip->setFavorecido($this->getCodigoCgm());
+        $oLancamentoAuxiliarSlip->setEstorno(false);
+        $oLancamentoAuxiliarSlip->setCaracteristicaPeculiarCredito($this->getCaracteristicaPeculiarCredito());
+        $oLancamentoAuxiliarSlip->setCaracteristicaPeculiarDebito($this->getCaracteristicaPeculiarDebito());
+        $oLancamentoAuxiliarSlip->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
+
+        $empenhoVinculado = $this->getEmpenhoVinculado();
+        if (!empty($empenhoVinculado)) {
+            $oLancamentoAuxiliarSlip->setEmpenho($empenhoVinculado);
+        }
+        $iCodigoDocumento = $this->getDocumentoPorTipoInclusao();
+
+        $oEventoContabil = EventoContabilRepository::getEventoContabilByCodigo($iCodigoDocumento,
+            $oAutenticacao->getData()->getAno(), $this->getInstituicao());
+        if ($oEventoContabil->estorno()) {
+            $oLancamentoAuxiliarSlip->setEstorno(true);
+        }
+        $oEventoContabil->executaLancamento($oLancamentoAuxiliarSlip, $oAutenticacao->getData()->getDate());
+        $this->iCodigoLancamento = $oEventoContabil->getCodigoLancamento();
+        return true;
+    }
+
+    /**
+     * Método que verifica se o slip possui cheque emitido ainda ativo.
+     * @param $iCodigoSlip
+     * @return bool
+     * @throws DBException
+     */
+    public static function possuiChequeEmitido($iCodigoSlip)
+    {
+
+        $oDaoChequeEmitido = new cl_empageconfche();
+        $sSqlBuscaCheque = $oDaoChequeEmitido->sql_query_cheque_slip('empageconfche.*', null,
+            "k17_codigo = {$iCodigoSlip} and e91_ativo is true ");
+        $rsBuscaCheque = db_query($sSqlBuscaCheque);
+        if (!$rsBuscaCheque) {
+            throw new DBException(_M("financeiro.caixa.Transferencia.erro_busca_slip_com_cheque_emitido"));
+        }
+        return pg_num_rows($rsBuscaCheque) > 0;
+    }
+
+    /**
+     * @param $oAutenticacao
+     * @param bool $estorno
+     * @throws Exception
+     */
+    protected function realizarLancamentosDeApropriacao($oAutenticacao, $estorno = false)
+    {
+        /*
+        $sqlRetencoes  = "select e21_retencaotipocalc, ";
+        $sqlRetencoes .= "       e21_sequencial, ";
+        $sqlRetencoes .= "       retencaoreceitas.*,";
+        $sqlRetencoes .= "       e21_enterecebedor, ";
+        $sqlRetencoes .= "       e50_numemp, ";
+        $sqlRetencoes .= "       e50_codord, ";
+        $sqlRetencoes .= "       e71_codnota, ";
+        $sqlRetencoes .= "       e48_Cgm as credor,";
+        $sqlRetencoes .= "       e21_receitaenterecebedor";
+        $sqlRetencoes .= "  from slipempagemovslips ";
+        $sqlRetencoes .= "       inner join empagemovslips     on k108_empagemovslips = k107_sequencial ";
+        $sqlRetencoes .= "       inner join retencaoreceitas   on k107_retencao       = e23_sequencial ";
+        $sqlRetencoes .= "       inner join retencaotiporec    on e21_sequencial       = e23_retencaotiporec";
+        $sqlRetencoes .= "       inner join retencaopagordem   on e20_sequencial       = e23_retencaopagordem";
+        $sqlRetencoes .= "       inner join pagordem           on e20_pagordem       = e50_codord";
+        $sqlRetencoes .= "       inner join pagordemnota       on e71_codord       = e50_codord and e71_anulado is false";
+        $sqlRetencoes .= "       left  join retencaotiporeccgm on e21_sequencial       = e48_retencaotiporec";
+        $sqlRetencoes .= " where k108_slip = {$this->getCodigoSlip()} ";
+        $sqlRetencoes .= "   and e21_enterecebedor is not null";
+*/
+
+
+        $sqlRetencoes  = " SELECT e21_retencaotipocalc, ";
+        $sqlRetencoes .= "        e21_sequencial, ";
+        $sqlRetencoes .= "        retencaoreceitas.*, ";
+        $sqlRetencoes .= "        e21_enterecebedor, ";
+        $sqlRetencoes .= "        e50_numemp, ";
+        $sqlRetencoes .= "        e50_codord, ";
+        $sqlRetencoes .= "        e71_codnota, ";
+        $sqlRetencoes .= "        e48_Cgm AS credor, ";
+        $sqlRetencoes .= "        e21_receitaenterecebedor ";
+        $sqlRetencoes .= "   from slipretencaoreceitas ";
+        $sqlRetencoes .= "   join retencaoreceitas on e23_sequencial = k206_retencaoreceitas ";
+        $sqlRetencoes .= "   join retencaotiporec on e23_retencaotiporec = e21_sequencial ";
+        $sqlRetencoes .= "   JOIN retencaopagordem ON e20_sequencial = e23_retencaopagordem ";
+        $sqlRetencoes .= "   JOIN pagordem ON e20_pagordem = e50_codord ";
+        $sqlRetencoes .= "   JOIN pagordemnota ON e71_codord = e50_codord ";
+        $sqlRetencoes .= "                    and e71_anulado IS FALSE ";
+        $sqlRetencoes .= "  LEFT JOIN retencaotiporeccgm ON e21_sequencial = e48_retencaotiporec ";
+        $sqlRetencoes .= "        where k206_slip = {$this->getCodigoSlip()} ";
+        $sqlRetencoes .= "          AND e21_enterecebedor is not null ";
+
+        $rsRetencoes = db_query($sqlRetencoes);
+        $retencoes = db_utils::getCollectionByRecord($rsRetencoes);
+
+        if (count($retencoes) == 0) {
+            return;
+        }
+        $dadosEmpenho = $retencoes[0];
+        $data = new \DateTime(implode("-", array_reverse(explode("/", $this->getData()))));
+        $empenho = EmpenhoFinanceiroRepository::getEmpenhoFinanceiroPorNumero($dadosEmpenho->e50_numemp);
+        $apropriacaoRetencao = new Apropriacao($empenho,
+            $data->format("Y")
+        );
+        $apropriacaoRetencao->setDataEvento($data);
+        $apropriacaoRetencao->setOrdemPagamento($dadosEmpenho->e50_codord);
+        $apropriacaoRetencao->setNota($dadosEmpenho->e71_codnota);
+        $apropriacaoRetencao->setCodigoGrupoAutenticacao($this->grupoAutenticacao);
+        foreach ($retencoes as $retencao) {
+
+            try {
+
+                Apropriacao::setInstituicaoProcessamento($retencao->e21_enterecebedor);
+                if (!$estorno) {
+                    $apropriacaoRetencao->gerarRecibosDeArrecadacaoNaInstituicaoParaRetencao($retencao->e21_enterecebedor,
+                        $retencao);
+                } else {
+                    $apropriacaoRetencao->estornarRecidosNoEnteRecebedor($retencao);
+                }
+                Apropriacao::restaurarInstituicaoUsuario();
+            } catch (\Exception $e) {
+
+                Apropriacao::restaurarInstituicaoUsuario();
+                throw new \Exception($e->getMessage());
+            }
+        }
+        Apropriacao::restaurarInstituicaoUsuario();
+    }
+
+    /**
+     * Retorna a conta pagadora para o credor na instituição
+     * @param $credor
+     * @return int|null
+     * @throws BusinessException
+     */
+    public static function getContaPagadoraParaRetencaoDoCredor($credor)
+    {
+        /**
+         * 1 - verificar se a conta selecionada para pagamentdo slip não é uma conta de limite de saco
+         * Caso for, devemos usar esta.s
+         *
+         * 2 - Caso a conta nao for limite de saque, devemos retorna a conta do credor na Instituição recebedora da retenção
+         * como conta pagadora
+         */
+        $instituicaoSessao = $_SESSION["DB_instit"];
+        $contaFornededor = fornecedor::getContaContabilNaInstituicao($credor, $_SESSION["DB_instit"],
+            db_getsession("DB_anousu"));
+        if (empty($contaFornededor)) {
+
+            $mensagem = "Não foi encontrada uma conta contábil para o fornecedor {$credor} na instituicao {$instituicaoSessao}.\n";
+            $mensagem .= "Para realizar a autenticação deste slip é necessário que a conta vinculada do fornecedor ( DB:PATRIMONIAL > Compras > Cadastros > Fornecedores)\n";
+            $mensagem .= "esteja cadastrada como uma conta contábil. (DB:FINANCEIRO > Contabilidade > Cadastros > Plano de Contas (PCASP) > Inclusão)";
+            throw new BusinessException($mensagem);
+        }
+        return $contaFornededor;
+    }
+
+    /**
+     * Retorna o codigo do empenho vinculado.
+     * @return null|int
+     */
+    private function getEmpenhoVinculado($estorno = false)
+    {
+
+        if ($this->getCodigoSlip() == '') {
+            return null;
+        }
+        $daoEmpagemovSlips = new \cl_slipempagemovslips();
+        $where = "k108_slip = {$this->getCodigoSlip()}";
+        $sqlEmpenho = $daoEmpagemovSlips->sql_query(null, "e81_numemp as empenho", null, $where);
+
+        if ($estorno) {
+
+            $sqlEmpenho = "select c75_numemp as empenho";
+            $sqlEmpenho .= "  from conlancamslip";
+            $sqlEmpenho .= "       inner join conlancamemp on c84_conlancam = c75_codlan";
+            $sqlEmpenho .= "  where c84_slip = {$this->getCodigoSlip()} ";
+        }
+        $rsEmpenho = db_query($sqlEmpenho);
+        if (pg_num_rows($rsEmpenho) == 0) {
+            return null;
+        }
+        return db_utils::fieldsMemory($rsEmpenho, 0)->empenho;
+    }
+
+    /**
+     * Retorna o codigo do empenho vinculado.
+     * @return null|int
+     */
+    private function getRetencaoVinculada($estorno = false)
+    {
+        if ($this->getCodigoSlip() == '') {
+            return null;
+        }
+        $daoEmpagemovSlips = new \cl_slipempagemovslips();
+        $where = "k108_slip = {$this->getCodigoSlip()}";
+        $sqlEmpenho = $daoEmpagemovSlips->sql_query_retencao(null, "e21_sequencial as retencao", null, $where);
+        if ($estorno) {
+
+            $sqlEmpenho = "select c127_retencaotiporec as retencao";
+            $sqlEmpenho .= "  from conlancamslip";
+            $sqlEmpenho .= "       inner join conlancamretencao on c84_conlancam = c127_conlancam";
+            $sqlEmpenho .= " where c84_slip = {$this->getCodigoSlip()} ";
+        }
+
+
+
+        $rsEmpenho = db_query($sqlEmpenho);
+        // se não achou a retencao e nao for estorno vamos buscar pelas tabelas do slip automatico
+        if (pg_num_rows($rsEmpenho) == 0) {
+
+
+            $sqlRetencaoSlip = "
+                 select e21_sequencial as retencao
+                   from slipretencaoreceitas
+                   join retencaoreceitas on e23_sequencial = k206_retencaoreceitas
+                   join retencaotiporec on e23_retencaotiporec = e21_sequencial
+                  where k206_slip =  {$this->getCodigoSlip()}
+            ";
+
+            $rsRetencao = db_query($sqlRetencaoSlip);
+            if (pg_numrows($rsRetencao) == 0 ) {
+                return null;
+            }
+            $iRetencao = db_utils::fieldsMemory($rsRetencao, 0)->retencao ;
+
+        } else {
+            $iRetencao = db_utils::fieldsMemory($rsEmpenho, 0)->retencao ;
+        }
+
+        return $iRetencao;
+    }
+
+    /**
+     * @param $codigoSlip
+     * @param $recursoCredito
+     * @param $recursoDebito
+     * @return bool
+     * @throws DBException
+     */
+    public static function vincularRecursoCreditoDebito($codigoSlip, $recursoCredito, $recursoDebito) {
+
+        $daoRecurso = new cl_sliprecursocontas();
+        $daoRecurso->excluir(null, "k181_slip = {$codigoSlip}");
+
+        $daoRecurso->k181_sequencial = null;
+        $daoRecurso->k181_slip = $codigoSlip;
+        $daoRecurso->k181_recursocredito = $recursoCredito;
+        $daoRecurso->k181_recursodebito = $recursoDebito;
+        $daoRecurso->incluir(null);
+        if ($daoRecurso->erro_status === '0') {
+            throw new DBException("Ocorreu um erro ao incluir o vínculo do recurso com o slip.");
+        }
+        return true;
+    }
+
+
+    /**
+     * @param integer $codigoSlip
+     * @param integer $codigoConta
+     * @return bool
+     * @throws DBException
+     */
+    public static function alterarContaCredito($codigoSlip, $codigoConta) {
+
+        $daoSlip = new cl_slip();
+        $daoSlip->k17_codigo = $codigoSlip;
+        $daoSlip->k17_credito = $codigoConta;
+        $daoSlip->alterar($daoSlip->k17_codigo);
+        if ($daoSlip->erro_status === '0') {
+            throw new DBException("Ocorreu um erro ao alterar a conta crédito do slip.");
+        }
+        return true;
+    }
+
+
+    /**
+     * retorna o código do usuario emissor do slio
+     * @param $codigoSlip
+     * @return mixed
+     * @throws Exception
+     */
+    public static function retornaEmissorSlip($codigoSlip)
+    {
+
+
+        /* busca os dados da tabela auditoria */
+        $buscaLogAuditoria = db_query("
+                    select to_char(datahora_servidor , 'dd/mm/YYYY HH24:MI:SS') as data,
+                           datahora_servidor as data_original,
+                           (select id_usuario from db_usuarios where lower(db_usuarios.login) = lower(db_auditoria.usuario)) as id_usuario,
+                           db_auditoria.usuario as login,
+                           (mudancas).valor_novo[1]::integer as lancamento
+                      from db_auditoria
+                     where tabela = 'slip'
+                       and operacao = 'I'
+                       and instit = " . db_getsession('DB_instit') . "
+                       and (mudancas).valor_novo[1]::integer = {$codigoSlip}
+                     limit 1;
+                ");
+
+        if (!$buscaLogAuditoria) {
+            throw new Exception("Ocorreu um erro ao consultar o log do lançamento contábil na tabela de auditoria.");
+        }
+
+        if (pg_num_rows($buscaLogAuditoria) === 1) {
+
+            $stdRegistro = db_utils::fieldsMemory($buscaLogAuditoria, 0);
+            $insertLog = db_query("update slip set k17_idusuario =  {$stdRegistro->id_usuario} where k17_codigo = $codigoSlip");
+            if (!$insertLog) {
+                throw new Exception("Ocorreu um erro ao ajustar emisso do slip.");
+            }
+            return $stdRegistro->id_usuario;
+        }
+
+        /* busca os dados da tabela db_acount */
+        if (pg_num_rows($buscaLogAuditoria) === 0) {
+
+            $buscaLogAccount = db_query("
+                        select datahr,
+                               id_usuario
+                          from db_acount
+                         where contatu::integer = {$codigoSlip}
+                           and codcam = 196
+                           and codarq = 1114
+                         limit 1
+                    ");
+
+            if (!$buscaLogAccount) {
+                throw new Exception("Ocorreu um erro ao consultar os dados do db_account.");
+            }
+
+            if (pg_num_rows($buscaLogAccount) === 1) {
+
+                $stdRegistro = db_utils::fieldsMemory($buscaLogAuditoria, 0);
+                $insertLog = db_query("update slip set k17_idusuario =  {$stdRegistro->id_usuario} where k17_codigo = $codigoSlip");
+                if (!$insertLog) {
+                    throw new Exception("Ocorreu um erro ao ajustar emisso do slip.");
+                }
+                return $stdRegistro->id_usuario;
+            }
+        }
+    }
+
+    /**
+     * Retorna se o slip está anulado.
+     * @return bool
+     */
+    public function anulado() {
+        return $this->oSlip->isAnulado();
+    }
+
+    /**
+     * Retorna a ordem de pagamento vinculada
+     * @param $lEstorno
+     * @return |null
+     */
+    private function getOrdemVinculada($lEstorno)
+    {
+
+        if ($this->getCodigoSlip() == '') {
+            return null;
+        }
+        $daoEmpagemovSlips = new \cl_slipempagemovslips();
+        $where = "k108_slip = {$this->getCodigoSlip()}";
+        $sqlEmpenho = $daoEmpagemovSlips->sql_query_retencao(null, "e20_pagordem as ordem_pagamento", null, $where);
+
+        if ($lEstorno) {
+
+            $sqlEmpenho = "select c80_codord as ordem_pagamento";
+            $sqlEmpenho .= "  from conlancamslip";
+            $sqlEmpenho .= "       inner join conlancamemp on c84_conlancam = c75_codlan";
+            $sqlEmpenho .= "       inner join conlancamord on c80_codlan = c75_codlan";
+            $sqlEmpenho .= "  where c84_slip = {$this->getCodigoSlip()} ";
+        }
+        $rsEmpenho = db_query($sqlEmpenho);
+        if (pg_num_rows($rsEmpenho) == 0) {
+            return null;
+        }
+        return db_utils::fieldsMemory($rsEmpenho, 0)->ordem_pagamento;
+    }
+
+    /**
+     * @param integer $novaSituacao
+     * @return bool
+     * @throws Exception
+     */
+    public function alterarSituacao($novaSituacao)
+    {
+        $daoSlip = new cl_slip();
+        $daoSlip->k17_codigo = $this->getCodigoSlip();
+        $daoSlip->k17_situacao = $novaSituacao;
+        $daoSlip->alterar($daoSlip->k17_codigo);
+        if ($daoSlip->erro_status === '0') {
+            throw new Exception("Ocorreu um erro ao alterar a situação do slip.");
+        }
+        return true;
+    }
 }

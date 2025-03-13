@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,27 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_utils.php");
-include("classes/db_bens_classe.php");
-include("classes/db_clabens_classe.php");
-include("classes/db_bensmater_classe.php");
-include("classes/db_bensimoveis_classe.php");
-include("classes/db_bensbaix_classe.php");
-include("dbforms/db_classesgenericas.php");
-include("classes/db_cfpatri_classe.php");
-include("classes/db_bensplaca_classe.php");
-include("classes/db_benslote_classe.php");
-include("classes/db_benstransfcodigo_classe.php");
-include("classes/db_departdiv_classe.php");
-include("classes/db_bensdiv_classe.php");
-include("classes/db_db_departorg_classe.php");
-include_once("classes/db_cfpatriplaca_classe.php");
-include_once("classes/db_histbem_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_bens_classe.php"));
+include(modification("classes/db_clabens_classe.php"));
+include(modification("classes/db_bensmater_classe.php"));
+include(modification("classes/db_bensimoveis_classe.php"));
+include(modification("classes/db_bensbaix_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_cfpatri_classe.php"));
+include(modification("classes/db_bensplaca_classe.php"));
+include(modification("classes/db_benslote_classe.php"));
+include(modification("classes/db_benstransfcodigo_classe.php"));
+include(modification("classes/db_departdiv_classe.php"));
+include(modification("classes/db_bensdiv_classe.php"));
+include(modification("classes/db_db_departorg_classe.php"));
+include_once(modification("classes/db_cfpatriplaca_classe.php"));
+include_once(modification("classes/db_histbem_classe.php"));
 
 $oDaoCfPatri        = new cl_cfpatriinstituicao();
 $sSqlPatri          = $oDaoCfPatri->sql_query_file(null, 't59_dataimplanatacaodepreciacao', null, 't59_instituicao = '.db_getsession("DB_instit"));
@@ -357,7 +357,7 @@ if(isset($chavepesquisa)){
       <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
         <center>
           <?
-            include("forms/db_frmbensaltlote.php");
+            include(modification("forms/db_frmbensaltlote.php"));
           ?>
         </center>
       </td>

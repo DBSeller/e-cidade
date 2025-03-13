@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_habitgrupoprograma_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_habitgrupoprograma_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $oRotuloCampos = new rotulocampo();
 $oRotuloCampos->label("z01_nome");
 $oRotuloCampos->label("z01_numcgm");
@@ -131,7 +131,7 @@ function setDados(oCandidato) {
 function js_novoCgm() {
   js_OpenJanelaIframe('', 
                       'db_iframe_novocgm', 
-                      'prot1_cadgeralmunic001.php?lMenu=false&lFisico=true&funcaoRetorno=top.corpo.iframe_candidato.teste',
+                      'prot1_cadgeralmunic001.php?lMenu=false&lFisico=true&funcaoRetorno=parent.CurrentWindow.corpo.iframe_candidato.teste',
                       'Novo CGM',
                          true,'0');
 }
@@ -141,7 +141,7 @@ function js_alterarCgm(iCgm) {
   js_OpenJanelaIframe('', 
                       'db_iframe_novocgm', 
                       'prot1_cadgeralmunic002.php?chavepesquisa='+iCgm+
-                      '&lMenu=false&lCpf=true&funcaoRetorno=top.corpo.iframe_candidato.teste',
+                      '&lMenu=false&lCpf=true&funcaoRetorno=parent.CurrentWindow.corpo.iframe_candidato.teste',
                       'Novo CGM',
                          true,'0');
  }

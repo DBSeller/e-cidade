@@ -167,10 +167,10 @@ db_input('x24_nrohidro',15,$Ix24_nrohidro,true,'text',$db_opcao,"")
 <script>
 function js_pesquisax24_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguabase','func_aguabase.php?funcao_js=parent.js_mostraaguabase1|x01_matric|x01_numcgm','Pesquisa',true);
   }else{
      if(document.form1.x24_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x24_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguabase','func_aguabase.php?pesquisa_chave='+document.form1.x24_matric.value+'&funcao_js=parent.js_mostraaguabase','Pesquisa',false);
      }else{
        document.form1.x01_numcgm.value = ''; 
      }
@@ -189,7 +189,7 @@ function js_mostraaguabase1(chave1,chave2){
   db_iframe_aguabase.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguaplanilha','func_aguaplanilha.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguaplanilha','func_aguaplanilha.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguaplanilha.hide();

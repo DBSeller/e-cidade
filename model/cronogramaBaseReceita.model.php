@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -58,8 +58,8 @@ final class cronogramaBaseReceita {
     /**
      * Verificamos o total arrecadado nos Anos
      */
-    require_once("libs/db_liborcamento.php");
-    require_once("libs/db_libcontabilidade.php");
+    require_once(modification("libs/db_liborcamento.php"));
+    require_once(modification("libs/db_libcontabilidade.php"));
     $iAnoInicial = ($this->oReceita->o70_anousu - 4);
     $iAnoFinal   = ($this->oReceita->o70_anousu - 1);
     $iInstit     = db_getsession("DB_instit");
@@ -81,7 +81,7 @@ final class cronogramaBaseReceita {
         $dtDataFinal       = "{$iAno}-{$mesAnterior}-{$ultimoDiaMesAtual}";
         $lMediaPonderada   = true;
       }
-      require_once("libs/db_libpostgres.php");
+      require_once(modification("libs/db_libpostgres.php"));
       if (PostgreSQLUtils::isTableExists("work_receita")) {
         db_query("drop table if exists work_receita");
       }
@@ -174,7 +174,7 @@ final class cronogramaBaseReceita {
           
         }
 
-        require_once("libs/db_libpostgres.php");
+        require_once(modification("libs/db_libpostgres.php"));
         if (PostgreSQLUtils::isTableExists("work_receita")) {
           db_query("drop table if exists work_receita");
         }

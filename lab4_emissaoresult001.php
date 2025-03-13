@@ -1,36 +1,37 @@
-<?
+<?php
+
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once('libs/db_stdlibwebseller.php');
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once('libs/db_utils.php');
-require_once('libs/db_app.utils.php');
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification('libs/db_stdlibwebseller.php'));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_app.utils.php'));
 
 $cllab_labsetor   = new cl_lab_labsetor;
 $cllab_requisicao = new cl_lab_requisicao;
@@ -48,7 +49,7 @@ $clrotulo->label("la24_i_codigo");
  * @return integer Codigo do laboratorio logado
  */
 function laboratorioLogado(){
-  
+
   $iUsuario        = db_getsession('DB_id_usuario');
   $iDepto          = db_getsession('DB_coddepto');
   $oLab_labusuario = new cl_lab_labusuario();
@@ -61,7 +62,7 @@ function laboratorioLogado(){
   if ($oLab_labusuario->numrows == 0) {
 
     $sCampos = 'la02_i_codigo, la02_c_descr';
-    $sql     = $oLab_labdepart->sql_query(null, $sCampos, "la02_i_codigo", "la03_i_departamento = {$iDepto}");
+    $sql     = $oLab_labdepart->sql_query(null, $sCampos, "la02_i_codigo");
     $rResult = $oLab_labdepart->sql_record($sql);
 
     if ($oLab_labdepart->numrows == 0) {
@@ -79,17 +80,14 @@ if ( isset( $requisicao ) ) {
 
   if ( $sSituacao != '6 - importado' ) {
 
-  	if ( !defined('DB_BIBLIOT') ) {
+    $sParametros = "requisicao={$requisicao}&requiitem={$requiitem}&iLabSetor={$iLabSetor}&iModelo=$iModelo";
+    $sParametros .= "&liberarPorExame={$liberarPorExame}&iAtributo={$iAtributo}";
 
-  	  define('DB_BIBLIOT','OK');
-  	  define('FPDF_FONTPATH','font/');
-      require_once('fpdf151/fpdf.php');
-    }
-
-    require_once("fpdf151/scpdf.php");
-    require_once("lab4_emissaoresultnovo002.php");
+    echo "<script>
+            jan = window.open( 'lab4_emissaoresultnovo002.php?{$sParametros}', '', 'width=1000,height=600' );
+          </script>";
   }else{
-    
+
     $oDaoLabEmissao = new cl_lab_emissao();
     $sWhere         = "la34_i_requiitem = {$requiitem}";
 
@@ -102,11 +100,11 @@ if ( isset( $requisicao ) ) {
     $rsEmissao = $oDaoLabEmissao->sql_record($sSql);
 
     if ($oDaoLabEmissao->numrows > 0) {
-      
+
       $oEmissao = db_utils::fieldsmemory($rsEmissao,0);
       db_inicio_transacao();
       if (pg_lo_export($oEmissao->la34_o_laudo,'tmp/'.$oEmissao->la34_c_nomearq,$conn)) {
-      
+
         ?>
         <script>
           jan = window.open('tmp/<?=$oEmissao->la34_c_nomearq?>',
@@ -114,8 +112,8 @@ if ( isset( $requisicao ) ) {
                             'width='+(screen.availWidth-5)+
                             ',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
         </script>
-        <?
-    
+        <?php
+
       } else {
         db_msgbox("Erro durante abertura do arquivo!");
       }
@@ -135,10 +133,20 @@ if ( isset( $requisicao ) ) {
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/DBFormCache.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/DBFormSelectCache.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
+<script language="JavaScript" type="text/javascript"
+            src="scripts/classes/saude/laboratorio/ViewNumeroControleInterno.classe.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/datagrid.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/Collection.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DatagridCollection.widget.js"></script>
+<script rel="script" type="text/javascript" src="scripts/classes/http/http.js"></script>
+<!-- PLUGIN AUTENTICADORA - Adicionando script scripts/autenticadora-client.js -->
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body class="body-default">
-<? if ( $iLaboratorioLogado == 0 ) { ?>
+<?php if ( $iLaboratorioLogado == 0 ) { ?>
     <table width='100%'>
       <tr>
         <td align='center'>
@@ -151,69 +159,202 @@ if ( isset( $requisicao ) ) {
       </tr>
     </table>
     </center>
-<?  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+<?php  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
     exit;
-  } 
+  }
 ?>
   <div class='container'>
-    <fieldset> 
+    <fieldset>
       <legend>Emissão/Reemissão de Resultado</legend>
       <form name='form1'>
-        <table class="form-container">    
+        <table class="form-container">
+          <tr>
+            <td id="viewNumeroControleInterno" colspan="2"></td>
+          </tr>
           <tr>
             <td title="<?=@$Tla22_i_codigo?>">
-              <? db_ancora ( '<b>Requisição:</b>', "js_pesquisala22_i_codigo(true);", "" );?>
+              <?php db_ancora ( '<b>Requisição:</b>', "js_pesquisala22_i_codigo(true);", "" );?>
             </td>
-            <td> 
-              <? db_input ( 'la22_i_codigo', 10, @$Ila22_i_codigo, true, 'text',"", " onchange='js_pesquisala22_i_codigo(false);'" )?>
-              <? db_input ( 'z01_v_nome2', 50, @$Iz01_v_nome, true, 'text', 3, '' )?>
+            <td>
+              <?php db_input ( 'la22_i_codigo', 10, @$Ila22_i_codigo, true, 'text',"", " onchange='js_pesquisala22_i_codigo(false);'" )?>
+              <?php db_input ( 'z01_v_nome2', 50, @$Iz01_v_nome, true, 'text', 3, '' )?>
             </td>
-          </tr> 
-          <tr>
-            <td title="requiitem">
-              <? db_ancora ( '<b>Exame:</b>', "js_pesquisala21_i_codigo(true);", "" );?>
-            </td>
-            <td> 
-              <? db_input ( 'la08_i_codigo',   10, @$Ila08_i_codigo,   true, 'text',   "", " onchange='js_pesquisala21_i_codigo(false);'" )?>
-              <? db_input ( 'la21_i_codigo',   10, @$Ila21_i_codigo,   true, 'hidden', "", "")?>
-              <? db_input ( 'la21_c_situacao', 10, @$Ila21_c_situacao, true, 'hidden', "", "")?>
-              <? db_input ( 'la08_c_descr',    50, @$Ila08_c_descr,    true, 'text',    3, '')?>
-             </td>
           </tr>
           <tr>
             <td>
-              <? db_ancora ( 'Setor:', "js_pesquisala23_i_codigo(true);", "" );?>
+              <label for="la23_i_codigo"><?php db_ancora ( '<b>Setor:</b>', "js_pesquisala23_i_codigo(true);", "" );?></label>
             </td>
             <td>
-              <? db_input ( 'la23_i_codigo', 10, $Ila23_i_codigo, true, 'text', "", " onchange='js_pesquisala23_i_codigo(false);'" )?>
-              <? db_input ( 'la23_c_descr',  50, $Ila23_c_descr,  true, 'text', 3, '' )?>
-              <? db_input ( 'la24_i_codigo', 10, $Ila24_i_codigo, true, 'hidden', "", "")?>
+              <?php db_input ( 'la23_i_codigo', 10, $Ila23_i_codigo, true, 'text', "", " onchange='js_pesquisala23_i_codigo(false);'" )?>
+              <?php db_input ( 'la23_c_descr',  50, $Ila23_c_descr,  true, 'text', 3, '' )?>
+              <?php db_input ( 'la24_i_codigo', 10, $Ila24_i_codigo, true, 'hidden', "", "")?>
             </td>
-          </tr> 
+          </tr>
+          <tr>
+            <td title="requiitem">
+              <label for='la08_i_codigo'><?php db_ancora ( '<b>Exame:</b>', "js_pesquisala21_i_codigo(true);", "" );?></label>
+            </td>
+            <td>
+              <?php db_input ( 'la08_i_codigo',   10, @$Ila08_i_codigo,   true, 'text',   "", " onchange='js_pesquisala21_i_codigo(false);'" )?>
+              <?php db_input ( 'la21_i_codigo',   10, @$Ila21_i_codigo,   true, 'hidden', "", "")?>
+              <?php db_input ( 'la21_c_situacao', 10, @$Ila21_c_situacao, true, 'hidden', "", "")?>
+              <?php db_input ( 'la08_c_descr',    50, @$Ila08_c_descr,    true, 'text',    3, '')?>
+             </td>
+          </tr>
+          <tr>
+            <td><label for="modelo">Modelo: </label></td>
+            <td>
+              <select id='modelo'>
+                <option value="1">MODELO 1</option>
+                <option value="2">MODELO 2</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label for="atributos">Tipo de Impressão: </label></td>
+            <td>
+              <select id='atributos'>
+                <option value="1">PDF</option>
+                <option value="2">MATRICIAL</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span>Exibir Liberação por Exame: </span>
+            </td>
+            <td>
+              <select name="liberarPorExame" id="liberarPorExame">
+                <option value="0">NÃO</option>
+                <option value="1">SIM</option>
+              </select>
+            </td>
+          </tr>
         </table>
       </form>
     </fieldset>
     <input name='start' type='button' value='Gerar' onclick="js_mandaDados()">
+    <div id="gridExames" class="gridExames" style="margin-top:10px"></div>
   </div>
-<?db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));?>
+  <?php db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit")); ?>
 </body>
 </html>
 <script>
+const
+
+modeloImpressaoSelect = $('atributos'),
+modeloSelect = $('modelo');
+
+let collectionExames = new Collection().setId('codigo');
+let gridExames = DatagridCollection.create(collectionExames);
+gridExames.configure({order: false, height: 200});
+gridExames.addColumn('descricao', {label: 'Exame', width: '40%'});
+gridExames.addColumn('situacao', {label: 'Situação', width: '20%'});
+gridExames.addColumn('motivo', {label: 'Motivo Nova Coleta', width: '40%'});
+gridExames.show($('gridExames'));
+
+function buscaExames(){
+  const form = new FormData();
+
+  form.append('acao', 'buscaExamesPorRequisicao');
+  form.append('codigoRequisicao', $('la22_i_codigo').value);
+
+  HttpClient.post('lab3_statusmaterialexame.RPC.php', {body: form}).then(response => {
+    if (response.erro) {
+      return alert(response.mensagem);
+    }
+
+    var chave = 0;
+    var exames = [];
+
+    for (var i = 0; i < response.listaExames.length; i++) {
+        exames.push({
+          id: chave,
+          la21_c_situacao: response.listaExames[i].la21_c_situacao,
+          la08_c_descr: response.listaExames[i].la08_c_descr,
+          la21_motivonovacoleta: response.listaExames[i].la21_motivonovacoleta || ''
+        });
+
+        chave += 1;
+    }
+    setGridExames(exames);
+  });
+}
+
+const setGridExames = (listaExames) => {
+  gridExames.clear();
+  var liberado = true;
+
+  for (var i = 0; i < listaExames.length; i++) {
+    var motivo = '';
+    if(listaExames[i].la21_motivonovacoleta.length > 20){
+      motivo = listaExames[i].la21_motivonovacoleta.substr(0, 20);
+      motivo += '...'
+    }else if(listaExames[i].la21_motivonovacoleta != ''){
+        motivo = listaExames[i].la21_motivonovacoleta;
+    }
+    var obj = {
+      codigo: listaExames[i].id,
+      situacao: listaExames[i].la21_c_situacao,
+      descricao: listaExames[i].la08_c_descr,
+      motivo: motivo
+    };
+
+    collectionExames.add(obj, 1);
+  }
+
+  gridExames.reload();
+
+  const trs = gridExames.target.childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[0].children;
+  for(var i = 0; i < trs.length; i++){
+    if(trs[i].children[1].childNodes[0].data == '9 - Nova Coleta' || trs[i].children[1].childNodes[0].data == '40 - Nova Coleta'){
+      trs[i].setAttribute('style', 'background-color: #FB9C9C');
+    } else if (trs[i].children[1].childNodes[0].data == '7 - Conferido' || trs[i].children[1].childNodes[0].data == '60 - Conferido'){
+      trs[i].setAttribute('style', 'background-color: #80b554');
+    }
+
+    if(trs[i].children[2].childNodes[0].data != ""){
+      trs[i].children[2].setAttribute('title', listaExames[i].la21_motivonovacoleta);
+    };
+  }
+}
+
+var viewNumeroControleInterno = new ViewNumeroControleInterno('viewNumeroControleInterno', true);
+viewNumeroControleInterno.setRequisicaoElemento($('la22_i_codigo'));
+viewNumeroControleInterno.show($('viewNumeroControleInterno'));
+
+if (viewNumeroControleInterno.getParametroAtivo()) {
+  viewNumeroControleInterno.inputNumero.setAttribute('style', 'margin-left:16px');
+}
+
+modeloImpressaoSelect.addEventListener("change", (event) => {
+    if(modeloImpressaoSelect.value == 2){
+    modeloSelect.value = 1;
+    modeloSelect.disabled = true;
+  } else {
+    modeloSelect.disabled = false;
+  }
+  // PLUGIN saudeassinatura - Adicionado validação para matricial
+});
+
 function js_limpaCamposTrocaReq() {
 
-  document.form1.la21_i_codigo.value   = '';
-  document.form1.la21_c_situacao.value = '';
-  document.form1.la08_c_descr.value    = '';
+  $('la08_i_codigo').value   = '';
+  $('la21_i_codigo').value   = '';
+  $('la21_c_situacao').value = '';
+  $('la08_c_descr').value    = '';
+  $('la23_i_codigo').value   = '';
+  $('la23_c_descr').value    = '';
+  $('la24_i_codigo').value   = '';
 }
-  
+
 function js_pesquisala22_i_codigo(mostra) {
 
   if( mostra == true) {
     js_OpenJanelaIframe(
                          '',
                          'db_iframe_lab_requisicao',
-                         'func_lab_requisicao.php?iLaboratorioLogado=<?=$iLaboratorioLogado?>'
-                                               +'&autoriza=2'
+                         'func_lab_requisicao.php?autoriza=2'
                                                +'&funcao_js=parent.js_mostrarequisicao1|la22_i_codigo'
                                                                                      +'|z01_v_nome',
                          'Pesquisa',
@@ -225,8 +366,7 @@ function js_pesquisala22_i_codigo(mostra) {
       js_OpenJanelaIframe(
                            '',
                            'db_iframe_lab_requisicao',
-                           'func_lab_requisicao.php?iLaboratorioLogado=<?=$iLaboratorioLogado?>'
-                                                 +'&autoriza=2'
+                           'func_lab_requisicao.php?autoriza=2'
                                                  +'&pesquisa_chave='+document.form1.la22_i_codigo.value
                                                  +'&funcao_js=parent.js_mostrarequisicao',
                            'Pesquisa',
@@ -248,7 +388,13 @@ function js_mostrarequisicao(chave, erro) {
     document.form1.la22_i_codigo.value = '';
   }
 
+  if (viewNumeroControleInterno.getParametroAtivo() && $('la22_i_codigo').value != '') {
+    viewNumeroControleInterno.getNumeroControleInternoPorRequisicao($('la22_i_codigo').value);
+  }
+
   js_limpaCamposTrocaReq();
+
+  buscaExames();
 }
 
 function js_mostrarequisicao1(chave1, chave2){
@@ -256,9 +402,16 @@ function js_mostrarequisicao1(chave1, chave2){
   document.form1.la22_i_codigo.value = chave1;
   document.form1.z01_v_nome2.value   = chave2;
   db_iframe_lab_requisicao.hide();
+
+  if (viewNumeroControleInterno.getParametroAtivo() && $('la22_i_codigo').value != '') {
+    viewNumeroControleInterno.getNumeroControleInternoPorRequisicao($('la22_i_codigo').value);
+  }
+
   js_limpaCamposTrocaReq();
+  
+  buscaExames();
 }
-    
+
 function js_pesquisala21_i_codigo(mostra){
 
   if(document.form1.la22_i_codigo.value == '') {
@@ -269,7 +422,7 @@ function js_pesquisala21_i_codigo(mostra){
   }
 
   sPesq  = 'la21_i_requisicao='+document.form1.la22_i_codigo.value;
-  sPesq += '&iLaboratorioLogado=<?=$iLaboratorioLogado?>&sSituacao=|7 - Conferido|,|6 - importado|,|3 - Entregue|';
+  sPesq += '&iLaboratorioLogado=<?=$iLaboratorioLogado?>&sSituacao=|60 - Conferido|,|6 - importado|,|70 - Entregue|';
 
   if(mostra == true) {
     js_OpenJanelaIframe(
@@ -310,7 +463,7 @@ function js_mostrarequiitem(chave, erro, requiitem, situacao) {
   } else {
 
     document.form1.la21_i_codigo.value   = requiitem;
-    document.form1.la21_c_situacao.value = situacao; 
+    document.form1.la21_c_situacao.value = situacao;
   }
 }
 
@@ -324,18 +477,41 @@ function js_mostrarequiitem1(chave1, chave2, requiitem, situacao) {
 }
 
 function js_mandaDados() {
- 
+
   oF = document.form1;
 
   if(!js_validaDados()) {
     return false;
   }
 
-  iRequisicao   = 'requisicao=' + oF.la22_i_codigo.value;
-  iRequiitem    = '&requiitem=' + oF.la21_i_codigo.value;
-  sSituacao     = '&sSituacao=' + oF.la21_c_situacao.value;
-  iLabSetor     = '&iLabSetor=' + $F('la23_i_codigo');  
-  location.href = 'lab4_emissaoresult001.php?' + iRequisicao + iRequiitem + sSituacao + iLabSetor;
+  oDBFormCache.save();
+
+  var sParametros  = 'requisicao=' + oF.la22_i_codigo.value;
+  sParametros += '&requiitem=' + oF.la21_i_codigo.value;
+  sParametros += '&sSituacao=' + oF.la21_c_situacao.value;
+  sParametros += '&iLabSetor=' + $F('la23_i_codigo');
+  sParametros += '&iModelo='   + $F('modelo');
+  sParametros += '&liberarPorExame='   + $F('liberarPorExame');
+  sParametros += '&iAtributo=' + oF.atributos.value;
+
+  if(modeloImpressaoSelect.value == 1){
+    let url = 'lab4_emissaoresult001.php?' + sParametros;
+
+    location.href = url;
+  } else if(modeloImpressaoSelect.value = 2) {
+    new AjaxRequest('lab4_emissaoresultnovo002.php?' + sParametros , {}, function(retorno, erro) {
+
+        if (erro || !retorno.utilizarAutenticadoraNova) {
+            alert(retorno.mensagem);
+            return false;
+        }
+
+        // PLUGIN AUTENTICADORA - Conectando com AutenticadoraClient
+    }).setMessage("Aguarde, gerando os dados para impressão...").execute();
+  }  else {
+    alert('Modelo de impressão inválido');
+    return false;
+  }
 }
 
 function js_validaDados(){
@@ -353,7 +529,7 @@ function js_validaDados(){
 
 /**
  * Função para buscar os setores cadastrados para o laboratório que o usuário está logado
- * @param  {boolean} lMostra 
+ * @param  {boolean} lMostra
  */
 function js_pesquisala23_i_codigo( lMostra ) {
 
@@ -374,7 +550,7 @@ function js_pesquisala23_i_codigo( lMostra ) {
   } else {
 
     if ( $F('la23_i_codigo') != '' ) {
-      
+
       sGet += '&pesquisa_chave=' + $F('la23_i_codigo') + '&funcao_js=parent.js_mostralab_labsetor';
       js_OpenJanelaIframe( '', 'db_iframe_lab_labsetor', 'func_lab_labsetor.php?' + sGet, 'Pesquisa', false);
     } else {
@@ -384,9 +560,9 @@ function js_pesquisala23_i_codigo( lMostra ) {
 }
 
 /**
- * Função chamada após selecionar o setor desejado. 
+ * Função chamada após selecionar o setor desejado.
  * Altera os valores do código do setor e da descrição pelo selecionado.
- * @param  {integer} iCodigoSetor   
+ * @param  {integer} iCodigoSetor
  * @param  {string}  sDescricaoSetor
  */
 function js_mostralab_labsetor1( iCodigoSetor, sDescricaoSetor, iCodigoLabSetor ) {
@@ -401,18 +577,29 @@ function js_mostralab_labsetor1( iCodigoSetor, sDescricaoSetor, iCodigoLabSetor 
  * Função chamada após digitado código do setor desejado.
  * Caso código exista, preenche o campo descrição do setor com o valor referênte.
  * @param  {string}  sDescricaoSetor
- * @param  {boolean} lErro          
+ * @param  {boolean} lErro
  */
 function js_mostralab_labsetor( sDescricaoSetor, lErro, iCodigoLabSetor) {
 
-  $('la23_c_descr').value  = sDescricaoSetor; 
+  $('la23_c_descr').value  = sDescricaoSetor;
   $('la24_i_codigo').value = iCodigoLabSetor;
 
-  if ( lErro ) { 
+  if ( lErro ) {
 
-    $('la23_i_codigo').focus(); 
-    $('la23_i_codigo').value = ''; 
+    $('la23_i_codigo').focus();
+    $('la23_i_codigo').value = '';
     $('la24_i_codigo').value = '';
   }
 }
+
+var oDBFormCache = new DBFormCache('oDBFormCache', 'lab4_emissaoresult001.php');
+(function () {
+
+  oDBFormCache.setElements([$('modelo'), $('liberarPorExame'), $('atributos')]);
+  oDBFormCache.load();
+  // PLUGIN saudeassinatura - Adicionado validação para matricial
+
+  $('la22_i_codigo').focus();
+})();
+
 </script>

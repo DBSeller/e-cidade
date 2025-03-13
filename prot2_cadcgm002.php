@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_cgm_classe.php");
-include("classes/db_cgmalt_classe.php");
-include("fpdf151/pdf.php");
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_cgmalt_classe.php"));
+include(modification("fpdf151/pdf.php"));
 
 db_postmemory($HTTP_GET_VARS);
 

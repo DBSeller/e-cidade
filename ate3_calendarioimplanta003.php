@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -431,7 +431,7 @@ class db_calendario {
       $sql = "select * 
               from calend
               where k13_data = '".date('Y-m-d',$datat)."'";
-      $resultc = pg_query($sql);
+      $resultc = db_query($sql);
       if( pg_numrows($resultc) > 0 ){
         $cor = 'lightblue';
       }

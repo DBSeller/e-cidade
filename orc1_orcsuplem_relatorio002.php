@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include("fpdf151/pdf.php");
- include("classes/db_orcsuplem_classe.php");
- include("libs/db_liborcamento.php");
- include("classes/db_db_config_classe.php");
- include("classes/db_db_paragrafo_classe.php");
+ include(modification("fpdf151/pdf.php"));
+ include(modification("classes/db_orcsuplem_classe.php"));
+ include(modification("libs/db_liborcamento.php"));
+ include(modification("classes/db_db_config_classe.php"));
+ include(modification("classes/db_db_paragrafo_classe.php"));
  
  $cldbconfig = new cl_db_config;
  $cldbparagrafo = new cl_db_paragrafo;

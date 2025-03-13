@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $instit = db_getsession("DB_instit");
 
 $sql = "select *from lista where k60_codigo = $lista";
-$result= pg_query($sql);
+$result= db_query($sql);
 db_fieldsmemory($result,0);
 $head1 = "Descrição: ".$k60_descr;
 $head2 = "Lista Número: ".$lista;
@@ -73,7 +73,7 @@ $sqlLista = " select	distinct
 
       where k61_codigo = $lista and k03_tipo <> 5";
 //die($sqlLista);
-$resultLista = pg_query($sqlLista);
+$resultLista = db_query($sqlLista);
 $linhasLista= pg_num_rows($resultLista);
 
 $pdf = new PDF(); // abre a classe

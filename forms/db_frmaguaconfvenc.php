@@ -68,7 +68,7 @@ db_inputdata('x33_dtvenc',@$x33_dtvenc_dia,@$x33_dtvenc_mes,@$x33_dtvenc_ano,tru
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguaconfvenc','func_aguaconfvenc.php?funcao_js=parent.js_preenchepesquisa|x33_exerc|x33_parcela','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguaconfvenc','func_aguaconfvenc.php?funcao_js=parent.js_preenchepesquisa|x33_exerc|x33_parcela','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_aguaconfvenc.hide();

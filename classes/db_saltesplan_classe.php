@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -115,7 +115,7 @@ class cl_saltesplan {
                                ,$this->c01_anousu 
                                ,$this->c01_reduz 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -139,14 +139,14 @@ class cl_saltesplan {
      $this->erro_status = "1";
      $resaco = $this->sql_record($this->sql_query_file($this->k13_conta,$this->c01_anousu,$this->c01_reduz));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,1173,'$this->k13_conta','I')");
-       $resac = pg_query("insert into db_acountkey values($acount,1274,'$this->c01_anousu','I')");
-       $resac = pg_query("insert into db_acountkey values($acount,1276,'$this->c01_reduz','I')");
-       $resac = pg_query("insert into db_acount values($acount,319,1173,'','".AddSlashes(pg_result($resaco,0,'k13_conta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,319,1274,'','".AddSlashes(pg_result($resaco,0,'c01_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,319,1276,'','".AddSlashes(pg_result($resaco,0,'c01_reduz'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,1173,'$this->k13_conta','I')");
+       $resac = db_query("insert into db_acountkey values($acount,1274,'$this->c01_anousu','I')");
+       $resac = db_query("insert into db_acountkey values($acount,1276,'$this->c01_reduz','I')");
+       $resac = db_query("insert into db_acount values($acount,319,1173,'','".AddSlashes(pg_result($resaco,0,'k13_conta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,319,1274,'','".AddSlashes(pg_result($resaco,0,'c01_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,319,1276,'','".AddSlashes(pg_result($resaco,0,'c01_reduz'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -199,19 +199,19 @@ class cl_saltesplan {
  and  c01_reduz = $this->c01_reduz
 ";
      $resaco = $this->sql_record($this->sql_query_file($this->k13_conta,$this->c01_anousu,$this->c01_reduz));
-     if($this->numrows>0){       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     if($this->numrows>0){       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,1173,'$this->k13_conta','A')");
-       $resac = pg_query("insert into db_acountkey values($acount,1274,'$this->c01_anousu','A')");
-       $resac = pg_query("insert into db_acountkey values($acount,1276,'$this->c01_reduz','A')");
+       $resac = db_query("insert into db_acountkey values($acount,1173,'$this->k13_conta','A')");
+       $resac = db_query("insert into db_acountkey values($acount,1274,'$this->c01_anousu','A')");
+       $resac = db_query("insert into db_acountkey values($acount,1276,'$this->c01_reduz','A')");
        if(isset($GLOBALS["HTTP_POST_VARS"]["k13_conta"]))
-         $resac = pg_query("insert into db_acount values($acount,319,1173,'".AddSlashes(pg_result($resaco,0,'k13_conta'))."','$this->k13_conta',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,319,1173,'".AddSlashes(pg_result($resaco,0,'k13_conta'))."','$this->k13_conta',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["c01_anousu"]))
-         $resac = pg_query("insert into db_acount values($acount,319,1274,'".AddSlashes(pg_result($resaco,0,'c01_anousu'))."','$this->c01_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,319,1274,'".AddSlashes(pg_result($resaco,0,'c01_anousu'))."','$this->c01_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["c01_reduz"]))
-         $resac = pg_query("insert into db_acount values($acount,319,1276,'".AddSlashes(pg_result($resaco,0,'c01_reduz'))."','$this->c01_reduz',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,319,1276,'".AddSlashes(pg_result($resaco,0,'c01_reduz'))."','$this->c01_reduz',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Saltes / Plano nao Alterado. Alteracao Abortada.\\n";
@@ -245,14 +245,14 @@ class cl_saltesplan {
      $resaco = $this->sql_record($this->sql_query_file($k13_conta,$c01_anousu,$c01_reduz));
      if(($resaco!=false)||($this->numrows!=0)){
        for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,1173,'".pg_result($resaco,$iresaco,'k13_conta')."','E')");
-         $resac = pg_query("insert into db_acountkey values($acount,1274,'".pg_result($resaco,$iresaco,'c01_anousu')."','E')");
-         $resac = pg_query("insert into db_acountkey values($acount,1276,'".pg_result($resaco,$iresaco,'c01_reduz')."','E')");
-         $resac = pg_query("insert into db_acount values($acount,319,1173,'','".AddSlashes(pg_result($resaco,$iresaco,'k13_conta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,319,1274,'','".AddSlashes(pg_result($resaco,$iresaco,'c01_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = pg_query("insert into db_acount values($acount,319,1276,'','".AddSlashes(pg_result($resaco,$iresaco,'c01_reduz'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acountkey values($acount,1173,'".pg_result($resaco,$iresaco,'k13_conta')."','E')");
+         $resac = db_query("insert into db_acountkey values($acount,1274,'".pg_result($resaco,$iresaco,'c01_anousu')."','E')");
+         $resac = db_query("insert into db_acountkey values($acount,1276,'".pg_result($resaco,$iresaco,'c01_reduz')."','E')");
+         $resac = db_query("insert into db_acount values($acount,319,1173,'','".AddSlashes(pg_result($resaco,$iresaco,'k13_conta'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,319,1274,'','".AddSlashes(pg_result($resaco,$iresaco,'c01_anousu'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,319,1276,'','".AddSlashes(pg_result($resaco,$iresaco,'c01_reduz'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from saltesplan
@@ -276,7 +276,7 @@ class cl_saltesplan {
       }
       $sql2 .= " c01_reduz = $c01_reduz ";
 }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Saltes / Plano nao Excluído. Exclusão Abortada.\\n";
@@ -307,7 +307,7 @@ class cl_saltesplan {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

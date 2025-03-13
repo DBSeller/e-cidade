@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,8 +26,8 @@
  */
 
 set_time_limit(0);
-include("libs/db_sql.php");
-include("fpdf151/pdf.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $pdf = new pdf();
 $pdf->Open();
@@ -62,7 +62,7 @@ left join cgm on q02_numcgm = z01_numcgm
 where tipo = 3 and w04_enviado is not true
 order by w04_inscr;		
 ";
-$result = pg_exec($sql);
+$result = db_query($sql);
 $num = pg_numrows($result);
 $linha = 70;
 $pdf->AddPage();

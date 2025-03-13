@@ -1,38 +1,49 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
+ *
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_stdlibwebseller.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+use ECidade\Saude\Laboratorio\Service\ItemRequisicaoService;
+use ECidade\Saude\Laboratorio\Service\GrupoExameService;
+use ECidade\Saude\Laboratorio\Service\LaboratorioDepartamentoService;
+use ECidade\Saude\Laboratorio\Repository\LaboratorioDepartamentoRepository;
+use ECidade\Saude\Laboratorio\Repository\ItemRequisicaoRepository;
+use ECidade\Saude\Laboratorio\Repository\GrupoExameRepository;
+use ECidade\Saude\Laboratorio\Repository\SetorExameRepository;
+use ECidade\Saude\Laboratorio\Repository\GrupoLaboratorioRepository;
+use ECidade\Saude\Laboratorio\Service\GrupoLaboratorioService;
+
+require_once (modification("libs/db_stdlib.php"));
+require_once (modification("libs/db_utils.php"));
+require_once (modification("libs/db_conecta.php"));
+require_once (modification("libs/db_sessoes.php"));
+require_once (modification("libs/db_stdlibwebseller.php"));
+require_once (modification("libs/JSON.php"));
+require_once (modification("libs/db_usuariosonline.php"));
+require_once (modification("dbforms/db_funcoes.php"));
 
 $objJson             = new services_json();
 if(isset($_GET['tipo'])){
@@ -45,6 +56,7 @@ if(isset($_GET['tipo'])){
 $objRetorno          = new stdClass();
 $objRetorno->status  = 1;
 $objRetorno->message = '';
+$objRetorno->erro    = false;
 
 //Variaveis uteis
 $departamento = db_getsession("DB_coddepto");
@@ -61,8 +73,17 @@ $cllab_resultado      = new cl_lab_resultado;
 $cllab_resultadoitem  = new cl_lab_resultadoitem;
 $cllab_resultadoalfa  = new cl_lab_resultadoalfa;
 $cllab_resultadonum   = new cl_lab_resultadonum;
+$cllab_grupo          = new cl_lab_grupo;
+$cllab_grupoexame     = new cl_lab_grupoexame;
+$cllab_grupo          = new cl_lab_labgrupoexame;
+$cllab_labdepart      = new cl_lab_labdepart;
 
-if($iTipo==1){ //Auto complete profissional agendamento de exames 
+$itemRequisicaoService = new ItemRequisicaoService(new ItemRequisicaoRepository($cllab_requiitem));
+$laboratorioDepartamentoService = new LaboratorioDepartamentoService(new LaboratorioDepartamentoRepository($cllab_labdepart));
+$grupoExameService = new GrupoExameService(new GrupoExameRepository($cllab_grupoexame), new SetorExameRepository($cllab_setorexame));
+$grupoLaboratorioService = new GrupoLaboratorioService(new GrupoLaboratorioRepository($cllab_grupo));
+
+if($iTipo==1){ //Auto complete profissional agendamento de exames
 	$sName   = html_entity_decode(crossUrlDecode($_POST['string']));
 	$oDaoMedicos = db_utils::getdao('medicos');
   $sCampos  = 'distinct medicos.sd03_i_codigo as cod, ';
@@ -80,24 +101,37 @@ if($iTipo==1){ //Auto complete profissional agendamento de exames
   if ($iLinhas > 0){
     $aRetorno = db_utils::getCollectionByRecord($rs, false, false, true);
   }
-	echo $objJson->encode($aRetorno);
+  echo $objJson->encode($aRetorno);
 	exit;
 }
 if ($iTipo == 2) { //Auto complete exames agendamento de exames
 
   $sName         = html_entity_decode(crossUrlDecode($_POST['string']));
   $oDaoLabExames = db_utils::getdao('lab_exame');
+  $departamento = $_SESSION['DB_coddepto'];
 
+  if(isset($_GET['sexoPaciente'])){
+    $sexoPaciente = str_replace(chr(92), '', str_replace('\'', '', $_GET['sexoPaciente']));
+    $sexoPaciente = $sexoPaciente == 'M' ? 1 : 2;
+  }
+  
   $sCampos  = 'la08_i_codigo as cod, ';
   $sCampos .= 'la08_c_descr as label ';
-  $sWhere   = "(la08_c_descr like upper('%".$sName."%') or sau_procedimento.sd63_c_procedimento like ('".$sName."%'))"; 
-  $sWhere  .= "and lab_exameproced.la53_i_ativo = 1";
-  $sWhere  .= "and EXISTS ( select * from lab_setorexame where la09_i_exame = la08_i_codigo ) ";
+  $sWhere   = "(la08_c_descr like upper('%".$sName."%') or sau_procedimento.sd63_c_procedimento like ('".$sName."%'))";
+  $sWhere  .= "and lab_exameproced.la53_i_ativo = 1 ";
+  $sWhere  .= "and EXISTS ( select * from lab_setorexame where la09_i_exame = la08_i_codigo )";
+  $sWhere  .= "and lab_labsetor.la24_i_laboratorio in (select la03_i_laboratorio from lab_labdepart where la03_i_departamento = $departamento)";
+
+  if(isset($_GET['sexoPaciente'])){
+    $sWhere  .= "and (la08_i_sexo = $sexoPaciente or la08_i_sexo = 3)";
+  }
+
   $sSql     = $oDaoLabExames->sql_query_procedimento(null, $sCampos, 'label', $sWhere);
   $rs       = $oDaoLabExames->sql_record($sSql);
   $iLinhas  = $oDaoLabExames->numrows;
-  $aRetorno = "";
   
+  $aRetorno = "";
+
   if ($iLinhas > 0){
     $aRetorno = db_utils::getCollectionByRecord($rs, false, false, true);
   }
@@ -187,17 +221,18 @@ if($objParam->exec == 'LoadLaboratorio'){
      for($x=0;$x<$cllab_setorexame->numrows;$x++){
 
         db_fieldsmemory($rResult,$x);
-        $codigos[] = $chave;
-        $laboratorios[]  = $descricao;
+        $codigos[]      = $chave;
+        $laboratorios[] = urlencode($descricao);
 
      }
-     $objRetorno->codigos=$codigos;
-     $objRetorno->laboratorios=$laboratorios;
+     $objRetorno->codigos      = $codigos;
+     $objRetorno->laboratorios = $laboratorios;
   }else{
      $objRetorno->status  = 0;
      $objRetorno->message = ' Exame sem laboratorios! ';
   }
 }
+
 if($objParam->exec == 'DadosExame'){
   $sSql=$cllab_setorexame->sql_query(""," la08_i_dias as dias,la08_c_descr as sexame,la09_i_exame as iexame,la02_i_codigo,la02_c_descr ",""," la09_i_codigo=$objParam->la09_i_codigo");
   $rResult=$cllab_setorexame->sql_record($sSql);
@@ -212,15 +247,16 @@ if($objParam->exec == 'DadosExame'){
           $sStr = $sStr."\n *$trequisito - $srequisito ";
       }
 
-      $objRetorno->dias=$dias;
-      $objRetorno->sRequisitos=$sStr;
-      $objRetorno->iLaboratorio=$la02_i_codigo;
-      $objRetorno->sLaboratorio=$la02_c_descr;
+      $objRetorno->dias         = $dias;
+      $objRetorno->sRequisitos  = $sStr;
+      $objRetorno->iLaboratorio = $la02_i_codigo;
+      $objRetorno->sLaboratorio = urlencode($la02_c_descr);
   }else{
       $objRetorno->status  = 0;
       $objRetorno->message = ' Exame codigo '+$objParam->la29_i_codigo+' inexistente! ';
   }
 }
+
 if($objParam->exec == 'CarregaGrid'){
 
 	$sSql=$cllab_requisicao->sql_query_requiitem("","lab_requiitem.*,lab_exame.*,lab_laboratorio.*,lab_coletaitem.la32_i_codigo",""," la21_i_requisicao=$objParam->requisicao ");
@@ -238,6 +274,7 @@ if($objParam->exec == 'CarregaGrid'){
     }
 	$objRetorno->alinhasgrid=$alinhasgrid;
 }
+
 if ( $objParam->exec == 'CarregaGridAutorizado' ) {
 
   $sCampos     = "lab_requiitem.*, lab_exame.*, lab_laboratorio.*";
@@ -251,12 +288,15 @@ if ( $objParam->exec == 'CarregaGridAutorizado' ) {
 
     $oExame = db_utils::fieldsmemory( $result, $x );
 
-    if ( ( $oExame->la21_c_situacao == "8 - Autorizado" ) || ( $oExame->la21_c_situacao == "f - falta material" ) ) {
+    if ($oExame->la21_c_situacao == "20 - Autorizado" ||
+        $oExame->la21_c_situacao == "30 - Coletado" ||
+        $oExame->la21_c_situacao == "50 - Lancado" ||
+        $oExame->la21_c_situacao == "f - falta material") {
 
       //montar array com linhas do grid
       $aData            = explode( "-", $oExame->la21_d_data );
       $aData2           = explode( "-", $oExame->la21_d_entrega );
-      $alinhasgrid[$y]  = "{$oExame->la21_i_setorexame}#{$oExame->la02_c_descr}#{$oExame->la08_c_descr}#";
+      $alinhasgrid[$y]  = "{$oExame->la21_i_setorexame}#" . urlencode($oExame->la02_c_descr) . "#" . urlencode($oExame->la08_c_descr) . "#";
       $alinhasgrid[$y] .= $aData[2] . "/" . $aData[1] . "/" . $aData[0];
       $alinhasgrid[$y] .= "#{$oExame->la21_c_hora}#{$oExame->la21_c_situacao}#{$oExame->la21_i_emergencia}";
       $alinhasgrid[$y] .= "#{$oExame->la21_i_codigo}#" . $aData2[2] . "/" . $aData2[1] . "/" . $aData2[0];
@@ -270,11 +310,11 @@ if ( $objParam->exec == 'CarregaGridAutorizado' ) {
 if($objParam->exec == 'CarregaGridRequi'){
 
   $sSql=$cllab_requisicao->sql_query_requiitem("",
-                                               "nome,lab_requiitem.*,lab_requisicao.*,lab_exame.*,lab_laboratorio.*",
+                                               "db_usuarios.nome,lab_requiitem.*,lab_requisicao.*,lab_exame.*,lab_laboratorio.*",
                                                "",
                                                " la21_i_requisicao=$objParam->requisicao and".
                                                " la02_i_codigo=$objParam->iLaboratorioLogado and ".
-                                               " la21_c_situacao='1 - Nao Digitado' ");
+                                               " la21_c_situacao='10 - Nao Digitado' ");
   $result      = $cllab_requisicao->sql_record($sSql);
   $alinhasgrid = Array();
   $iCgs        = 0;
@@ -305,6 +345,7 @@ if($objParam->exec == 'CarregaGridRequi'){
   $objRetorno->dDataRequi  = $dDataRequi;
   $objRetorno->alinhasgrid = $alinhasgrid;
 }
+
 if($objParam->exec == 'CarregaGridColetado'){
 
 	$sSql=$cllab_requisicao->sql_query_requiitem("","lab_requiitem.*,lab_exame.*,lab_laboratorio.*,lab_coletaitem.la32_i_codigo",""," la21_i_requisicao=$objParam->requisicao ");
@@ -313,7 +354,7 @@ if($objParam->exec == 'CarregaGridColetado'){
     $y=0;
     for($x=0;$x<$cllab_requisicao->numrows;$x++){
     	$oExame=db_utils::fieldsmemory($result,$x);
-        if((($oExame->la32_i_codigo!="")&&($oExame->la21_c_situacao=="6 - Coletado")||($oExame->la21_c_situacao=="2 - Lancado"))){
+        if((($oExame->la32_i_codigo!="")&&($oExame->la21_c_situacao=="30 - Coletado")||($oExame->la21_c_situacao=="50 - Lancado"))){
           //montar array com linhas do grid
           $aData=explode("-",$oExame->la21_d_data);
           $alinhasgrid[$y]="$oExame->la21_i_setorexame#$oExame->la02_c_descr#$oExame->la08_c_descr#".$aData[2]."/".$aData[1]."/".$aData[0]."#$oExame->la21_c_hora#$oExame->la08_i_dias#$oExame->la21_i_emergencia#$oExame->la21_i_codigo";
@@ -322,6 +363,7 @@ if($objParam->exec == 'CarregaGridColetado'){
     }
 	$objRetorno->alinhasgrid=$alinhasgrid;
 }
+
 if($objParam->exec == 'CarregaGridConfirmado'){
 
 	$sSql=$cllab_requisicao->sql_query_requiitem("","lab_requiitem.*,lab_exame.*,lab_laboratorio.*,lab_coletaitem.la32_i_codigo",""," la21_i_requisicao=$objParam->requisicao ");
@@ -330,7 +372,7 @@ if($objParam->exec == 'CarregaGridConfirmado'){
     $y=0;
     for($x=0;$x<$cllab_requisicao->numrows;$x++){
     	$oExame=db_utils::fieldsmemory($result,$x);
-        if(($oExame->la32_i_codigo!="")&&($oExame->la21_c_situacao=="6 - Coletado")){
+        if(($oExame->la32_i_codigo!="")&&($oExame->la21_c_situacao=="30 - Coletado")){
           //montar array com linhas do grid
           $aData=explode("-",$oExame->la21_d_data);
           $alinhasgrid[$y]="$oExame->la21_i_setorexame#$oExame->la02_c_descr#$oExame->la08_c_descr#".$aData[2]."/".$aData[1]."/".$aData[0]."#$oExame->la21_c_hora#$oExame->la08_i_dias#$oExame->la21_i_emergencia#$oExame->la21_i_codigo";
@@ -339,7 +381,6 @@ if($objParam->exec == 'CarregaGridConfirmado'){
     }
 	$objRetorno->alinhasgrid=$alinhasgrid;
 }
-
 
 if($objParam->exec == 'digitacaoinc'){
 
@@ -436,7 +477,7 @@ if($objParam->exec == 'digitacaoinc'){
     }
     if($cllab_resultado->erro_status!="0"){
 
-       $cllab_requiitem->la21_c_situacao="2 - Lancado";
+       $cllab_requiitem->la21_c_situacao="50 - Lancado";
        $cllab_requiitem->la21_i_codigo=$objParam->iRequiitem;
        $cllab_requiitem->alterar($objParam->iRequiitem);
        if($cllab_requiitem->erro_status=="0"){
@@ -624,7 +665,7 @@ if($objParam->exec == 'digitacaoalt'){
     }
     if($cllab_resultado->erro_status!="0"){
 
-       $cllab_requiitem->la21_c_situacao="2 - Lancado";
+       $cllab_requiitem->la21_c_situacao="50 - Lancado";
        $cllab_requiitem->la21_i_codigo=$objParam->iRequiitem;
        $cllab_requiitem->alterar($objParam->iRequiitem);
        if($cllab_requiitem->erro_status=="0"){
@@ -645,36 +686,53 @@ if($objParam->exec == 'digitacaoalt'){
     db_fim_transacao($cllab_resultado->erro_status=="0");
 }
 
-/*
-if($objParam->exec == 'DadosExame'){
-  //select que traz o saldo 
-  $sSql = "select la35_i_fichas,
-                  
-                       ( select count(la21_d_data) from lab_requisicao
-                           inner join lab_requiitem on la21_i_requisicao = la22_i_codigo
-                           where la21_d_data = '$ano/$mes/$s'
-                            and la35_i_setorexame=la21_i_setorexame
-                            
-                          group by la21_d_data
-                       )::integer as total_agendado
-                    from lab_horario
-                    inner join lab_setorexame on la35_i_setorexame=la09_i_codigo
-                    left join lab_ausencia       on la36_i_setorexame = lab_setorexame.la09_i_codigo
-                                                    and '$ano/$mes/$s' between lab_ausencia.la36_d_ini and lab_ausencia.la36_d_fim             
-                   left join sau_motivo_ausencia on lab_ausencia.la36_i_tipo = sau_motivo_ausencia.s139_i_codigo
-                   where $str_where 
-                     and la35_i_diasemana = {$this->sem[$diasem]}
-                      and ( la35_d_valfim is null or 
-                     ( la35_d_valfim is not null and la35_d_valfim >= '$ano/$mes/$s' ) 
-                    )
-                and ( la35_d_valinicio is null or 
-                     ( la35_d_valinicio is not null and la35_d_valinicio <= '$ano/$mes/$s' ) 
-                    )                 
-                     "; 
-
-   
+if($objParam->exec == 'verificaSituacaoExamesRequisicao'){
+  $objRetorno->possuiExamesMencionados = $itemRequisicaoService->verificaSePossuiItensConferidos($objParam->requisicao, $objParam->situacao);
 }
-*/
+
+if($objParam->exec == 'verificaExameAtivo'){
+    $sSqlExame = "
+      SELECT
+        la08_c_descr
+      FROM
+        lab_exame
+      WHERE
+        la08_i_codigo = {$objParam->codigoExame}
+        AND la08_i_ativo = 2
+    ";
+
+    $oPostgresresource = db_query($sSqlExame);
+    
+    $objRetorno->exameAtivo = pg_numrows($oPostgresresource) == 0;
+}
+
+if($objParam->exec == 'excluirExamesPorRequisicao'){
+  $objRetorno->possuiExamesMencionados = $itemRequisicaoService->excluirExamesPorRequisicao($objParam->exames);
+}
+
+if($objParam->exec == 'buscaExamesPorGrupoELaboratorio'){
+  $objParam->laboratorio = $laboratorioDepartamentoService->buscarLaboratorioPorDepartamento($objParam);
+  $objRetorno->exames = $grupoExameService->buscarGrupoExamesPorGrupoELaboratprio($objParam);
+}
+
+if($autoCompleteGrupos){
+  $descricao   = html_entity_decode(crossUrlDecode($_POST['string']));
+  $objParam->descricaoGrupo = $descricao;
+  $objParam->departamento = $departamento;
+  $objParam->laboratorio = $laboratorioDepartamentoService->buscarLaboratorioPorDepartamento($objParam);
+  $retorno = $grupoLaboratorioService->autoCompleteGruposLaboratorio($objParam);
+  $grupos = array();
+  foreach($retorno as $grupo){
+    $objetoGrupo = new stdClass();
+    $objetoGrupo->cod = $grupo['codigo'];
+    $objetoGrupo->label = $grupo['descricao'];
+    $grupos[] = $objetoGrupo;
+  }
+  echo $objJson->encode($grupos);
+  exit;
+}
+
+$objRetorno->erro = $objRetorno->status == 1;
 echo $objJson->encode($objRetorno);
 
 function crossUrlDecode($sSource) {
@@ -685,7 +743,4 @@ function crossUrlDecode($sSource) {
                  );
 
  return str_replace($aOrig, '_', mb_convert_encoding($sSource, "ISO-8859-1", "UTF-8"));
-
 }
-
-?>

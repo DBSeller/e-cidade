@@ -1,0 +1,1 @@
+update db_itensmenu set descricao = 'Reimprimir arquivo CNAB240', help = 'Reimprimir arquivo CNAB240', desctec = 'Reimprimir arquivo CNAB240' where id_item = 4420;

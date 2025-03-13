@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2014  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once ("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
 $clrotulo->label('DBtxt25');
@@ -40,7 +41,6 @@ $clrotulo->label('rh27_rubric');
 $clrotulo->label('rh27_descr');
 $clrotulo->label('r44_des');
 
-//db_postmemory($HTTP_POST_VARS);
 $oPost = db_utils::postMemory($_POST);
 ?>
 
@@ -51,34 +51,25 @@ $oPost = db_utils::postMemory($_POST);
     <meta http-equiv="Expires" CONTENT="0">
     <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
-    <style>
-      select {
-        width: 315px;
-      } 
-      fieldset{
-        width: 500px; 
-        margin: 25px auto 10px;
-      }
-    </style>  
-  <link href="estilos.css" rel="stylesheet" type="text/css">
+    <link href="estilos.css" rel="stylesheet" type="text/css">
   </head>
-  <body bgcolor=#CCCCCC>
-    <form name="form1" method="post" action="" onSubmit="return js_verifica();" id="formularioRelatorio">
+  <body>
+  <div class="container">
+    <form name="form1" method="post" action="">
       <fieldset>
-        <table  align="center">
-          <legend><strong>Relatório por código</strong></legend>
-          
+        <legend>Relatório por código - pelo Cálculo</legend>
+        <table class="form-container">
             <tr>
-              <td nowrap title="Ano / Mes de competência" >
+              <td title="Ano / Mes de competência" >
               <strong>Ano / Mês :&nbsp;&nbsp;</strong>
               </td>
               <td>
-                <?
+                <?php
                  $DBtxt23 = db_anofolha();
                  db_input('DBtxt23',4,$IDBtxt23,true,'text',2,'')
                 ?>
                 &nbsp;/&nbsp;
-                <?
+                <?php
                  $DBtxt25 = db_mesfolha();
                  db_input('DBtxt25',2,$IDBtxt25,true,'text',2,'')
                 ?>
@@ -87,12 +78,12 @@ $oPost = db_utils::postMemory($_POST);
             
             <tr> 
                 <td title="<?=$Trh27_rubric?>"> 
-                  <?
+                  <?php
                   db_ancora(@ $Lrh27_rubric, "js_pesquisarrubric(true);", 1);
                   ?>
                 </td>
                 <td> 
-                  <?
+                  <?php
                   db_input('rh27_rubric', 8, $Irh27_rubric, true, 'text', 1, " onchange='js_pesquisarrubric(false);'");
                   db_input('rh27_descr', 30, $Irh27_descr,  true, 'text', 3, '');
                   ?>
@@ -116,9 +107,18 @@ $oPost = db_utils::postMemory($_POST);
             <tr title="Tipo de folha">
               <td><b>Ponto :&nbsp;&nbsp;</b></td>
               <td>
-               <?
-                 $x = array("s"=>"Salário","c"=>"Complementar","d"=>"13o. Salário","r"=>"Rescisão","a"=>"Adiantamento");
-                 db_select('ponto',$x,true,4,"");
+               <?php
+                 $aTipos = array("s"=>"Salário",
+                                 "c"=>"Complementar",
+                                 "d"=>"13o. Salário",
+                                 "r"=>"Rescisão",
+                                 "a"=>"Adiantamento");
+                 
+                 if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+                   $aTipos["u"] = "Suplementar"; 
+                 }
+                 
+                 db_select('ponto', $aTipos, true, 4, "");
                ?>
               </td>
             </tr>
@@ -126,7 +126,7 @@ $oPost = db_utils::postMemory($_POST);
             <tr  title="Ordem">
               <td><b>Ordem :&nbsp;&nbsp;</b></td>
               <td>
-               <?
+               <?php
                  $x = array("a"=>"Alfabética","n"=>"Numérica","r"=>"Recurso","l"=>"Lotação","v"=>"Valor","q"=>"Quantidade");
                  db_select('ordem',$x,true,4,"");
                ?>
@@ -136,7 +136,7 @@ $oPost = db_utils::postMemory($_POST);
             <tr  title="Tipo de Ordem">
               <td><b>Tipo de Ordem :&nbsp;&nbsp;</b></td>
               <td>
-               <?
+               <?php
                  $x = array("asc"=>"Ascendente","desc"=>"Descendente");
                  db_select('tipoordem',$x,true,4,"");
                ?>
@@ -146,7 +146,7 @@ $oPost = db_utils::postMemory($_POST);
             <tr title="Caso Analítico mostra servidores da rubrica selecionada, Sintético mostra somente o número.">
               <td><b>Totalização :&nbsp;&nbsp;</b></td>
               <td>
-               <?
+               <?php
                  $x = array("a"=>"Analítico","s"=>"Sintético");
                  db_select('total',$x,true,4,"");
                ?>
@@ -156,7 +156,7 @@ $oPost = db_utils::postMemory($_POST);
             <tr  title="Tipo de Relatório">
               <td><b>Tipo :&nbsp;&nbsp;</b></td>
               <td>
-               <?
+               <?php
                  $x = array("r"=>"Relatório","a"=>"Arquivo","p"=>"Planilha");
                  db_select('tipo',$x,true,4,"");
                ?>
@@ -166,7 +166,7 @@ $oPost = db_utils::postMemory($_POST);
             <tr  title="Modelo da Página">
               <td><b>Página :&nbsp;&nbsp;</b></td>
               <td>
-               <?
+               <?php
                  $xy = array("p"=>"Paisagem","r"=>"Retrato");
                  db_select('pagina',$xy,true,4,"");
                ?>
@@ -176,177 +176,185 @@ $oPost = db_utils::postMemory($_POST);
             <tr  title="Dados Cadastrais atual ou por período">
               <td><b>Dados Cadastrais :&nbsp;&nbsp;</b></td>
               <td >
-               <?
+               <?php
                  $xcad = array("a"=>"Atual","p"=>"Período");
                  db_select('mes_dados',$xcad,true,4,"");
                ?>
               </td>
             </tr>
+            <tr  title="Mostra Local de Trabalho - Este filtro somente é aplicado quando Tipo de Relatório for 'Relatório'">
+              <td><b>Local de Trabalho :&nbsp;&nbsp;</b></td>
+              <td >
+               <?php
+                 $opcoes = array("N"=>"Não","S"=>"Sim");
+                 db_select('localtrab',$opcoes,true,4,"");
+               ?>
+              </td>
+            </tr>            
         </table>
       </fieldset>
-      <center>
-        <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >
-      </center>
+      <input  name="emite2" id="emite2" type="button" value="Processar" onclick="js_emite();" >
     </form>
-    <?
-      db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-    ?>
+    </div>
+    <?php db_menu(); ?>
   </body>
-  <script>
-    /**
-    * Realiza a busca de rubricas, retornando o código e descrição da rubrica escolhida
-    */
-    function js_pesquisarrubric(lMostra) {
+</html>
+  
+<script>
+  /**
+  * Realiza a busca de rubricas, retornando o código e descrição da rubrica escolhida
+  */
+  function js_pesquisarrubric(lMostra) {
+      
+    if ( lMostra) {
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr','Pesquisa',true);
+    } else {
         
-      if ( lMostra) {
-        js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricas.php?funcao_js=parent.js_mostrarubricas1|rh27_rubric|rh27_descr','Pesquisa',true);
+       if ( $F(rh27_rubric) != '' ) {
+           
+         quantcaracteres = $F(rh27_rubric).length;
+         
+         for ( i=quantcaracteres;i<4;i++ ) {
+           $(rh27_rubric).setValue("0"+$F(rh27_rubric));
+         }
+         
+         js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+$F(rh27_rubric)+'&funcao_js=parent.js_mostrarubricas','Pesquisa',false);
+       } else { 
+         $(rh27_descr).setValue(''); 
+       }
+    }
+  }
+
+  /**
+  * Trata o retorno da função js_pesquisarrubric()
+  */
+  function js_mostrarubricas(sChave, lErro) {
+      
+    $(rh27_descr).setValue(sChave);
+    if ( lErro ) {
+        
+      $(rh27_rubric).setValue('');
+      $(rh27_rubric).focus();
+    }
+  }
+
+  /**
+  * Trata o retorno da função js_pesquisarrubric()
+  */
+  function js_mostrarubricas1(sChave1,sChave2){
+      
+    $(rh27_rubric).setValue(sChave1);
+    $(rh27_descr).setValue(sChave2);
+    $(db_iframe_rhrubricas).hide();
+  }
+
+  /**
+  * Realiza a busca de seleções retornando o código e descrição da rubrica escolhida;
+  */
+  function js_pesquisaSelecao(lMostra) {
+      	  
+  	if ( lMostra ) {
+  	  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_geraform_mostraselecao1|r44_selec|r44_descr&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
+  	} else {
+  	  if ( $F(r44_selec) != "" ) {
+  	    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave=' + $F(r44_selec) + '&funcao_js=parent.js_geraform_mostraselecao&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
+  	  } else {
+  	    $(r44_des).setValue(""); 
+  	  }
+  	}
+  }
+
+  /**
+  * Trata o retorno da função js_pesquisaSelecao().
+  */
+  function js_geraform_mostraselecao(sDescricao, lErro) {
+    
+  	if ( lErro ) { 
+
+  	  $(r44_selec).setValue('');
+  	  $(r44_selec).focus(); 
+  	}
+  	
+  	$(r44_des).setValue(sDescricao); 
+  }
+
+  /**
+  * Trata o retorno da função js_pesquisaSelecao();
+  */
+  function js_geraform_mostraselecao1(sChave1, sChave2) {
+  	  
+    $(r44_selec).setValue(sChave1);
+    
+    if( $(r44_des) ) {
+      $(r44_des).setValue(sChave2);
+    }
+    
+    db_iframe_selecao.hide();
+  }
+
+  /**
+  * Emite o Relatorio a partir dos dados enviados
+  */
+  function js_emite(){
+  	  
+    var lEmite = true;
+          
+    if ( $F(rh27_rubric) == '' ) {
+        
+      if ( confirm ( "Você escolheu nenhuma rubrica. Imprimir todas ?" ) ) {
+      	lEmite = true;
+      } else {
+      	lEmite = false;
+      }
+    }
+    
+    if ( lEmite ) {
+
+      /**
+      * Monta um objeto com os dados do formulario, para ser enviado para a geração do relatório
+      */  
+      var oDados = new Object();
+      
+      oDados.sTotalizacao     = $F(total);
+      oDados.sTipoOrdem       = $F(tipoordem);
+      oDados.sOrdem           = $F(ordem);
+      oDados.sTipo            = $F(tipo);
+      oDados.sPonto           = $F(ponto);
+      oDados.sPagina          = $F(pagina);
+      oDados.iRubrica         = $F(rh27_rubric);
+      oDados.iSelecao         = $F(r44_selec);
+      oDados.iAno             = $F(DBtxt23);
+      oDados.iMes             = $F(DBtxt25);
+      oDados.sDadosCadastrais = $F(mes_dados);
+      oDados.sLocalTrab       = $F(localtrab);
+      
+      if ( $F(tipo) == 'a' || $F(tipo) == 'p' ) {
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bbrubmescalculo','pes2_rubmescalculo002.php?sParametros='+Object.toJSON(oDados),'Gerando Arquivo',false);
       } else {
           
-         if ( $F(rh27_rubric) != '' ) {
-             
-           quantcaracteres = $F(rh27_rubric).length;
-           
-           for ( i=quantcaracteres;i<4;i++ ) {
-             $(rh27_rubric).setValue("0"+$F(rh27_rubric));
-           }
-           
-           js_OpenJanelaIframe('top.corpo','db_iframe_rhrubricas','func_rhrubricas.php?pesquisa_chave='+$F(rh27_rubric)+'&funcao_js=parent.js_mostrarubricas','Pesquisa',false);
-         } else { 
-           $(rh27_descr).setValue(''); 
-         }
+        jan = window.open('pes2_rubmescalculo002.php?sParametros='+Object.toJSON(oDados),'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+        jan.moveTo(0,0);
       }
     }
+  }
 
-    /**
-    * Trata o retorno da função js_pesquisarrubric()
-    */
-    function js_mostrarubricas(sChave, lErro) {
-        
-      $(rh27_descr).setValue(sChave);
-      if ( lErro ) {
-          
-        $(rh27_rubric).setValue('');
-        $(rh27_rubric).focus();
-      }
-    }
-
-    /**
-    * Trata o retorno da função js_pesquisarrubric()
-    */
-    function js_mostrarubricas1(sChave1,sChave2){
-        
-      $(rh27_rubric).setValue(sChave1);
-      $(rh27_descr).setValue(sChave2);
-      $(db_iframe_rhrubricas).hide();
-    }
-
-    /**
-    * Realiza a busca de seleções retornando o código e descrição da rubrica escolhida;
-    */
-    function js_pesquisaSelecao(lMostra) {
-        	  
-    	if ( lMostra ) {
-    	  js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_geraform_mostraselecao1|r44_selec|r44_descr&instit=<?=db_getsession("DB_instit")?>','Pesquisa',true);
-    	} else {
-    	  if ( $F(r44_selec) != "" ) {
-    	    js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave=' + $F(r44_selec) + '&funcao_js=parent.js_geraform_mostraselecao&instit=<?=db_getsession("DB_instit")?>','Pesquisa',false);
-    	  } else {
-    	    $(r44_des).setValue(""); 
-    	  }
-    	}
-    }
-
-    /**
-    * Trata o retorno da função js_pesquisaSelecao().
-    */
-    function js_geraform_mostraselecao(sDescricao, lErro) {
+  /**
+  * Realiza a abertura do arquivo quando for do tipo TXT.
+  */
+  function js_detectaarquivo(sArquivo){
       
-    	if ( lErro ) { 
+  	var sListagem = sArquivo + "#Download arquivo TXT ";
+    (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_bbrubmescalculo.hide();
+    js_montarlista(sListagem,"form1");
+  }
 
-    	  $(r44_selec).setValue('');
-    	  $(r44_selec).focus(); 
-    	}
-    	
-    	$(r44_des).setValue(sDescricao); 
-    }
+  /**
+  * Realiza a abertura do arquivo quando for do tipo CSV.
+  */
+  function js_detectaarquivo1(sArquivo){
 
-    /**
-    * Trata o retorno da função js_pesquisaSelecao();
-    */
-    function js_geraform_mostraselecao1(sChave1, sChave2) {
-    	  
-      $(r44_selec).setValue(sChave1);
-      
-      if( $(r44_des) ) {
-        $(r44_des).setValue(sChave2);
-      }
-      
-      db_iframe_selecao.hide();
-    }
-
-    /**
-    * Emite o Relatorio a partir dos dados enviados
-    */
-    function js_emite(){
-    	  
-      var lEmite = true;
-            
-      if ( $F(rh27_rubric) == '' ) {
-          
-        if ( confirm ( "Você escolheu nenhuma rubrica. Imprimir todas ?" ) ) {
-        	lEmite = true;
-        } else {
-        	lEmite = false;
-        }
-      }
-      
-      if ( lEmite ) {
-
-        /**
-        * Monta um objeto com os dados do formulario, para ser enviado para a geração do relatório
-        */  
-        var oDados = new Object();
-        
-        oDados.sTotalizacao     = $F(total);
-        oDados.sTipoOrdem       = $F(tipoordem);
-        oDados.sOrdem           = $F(ordem);
-        oDados.sTipo            = $F(tipo);
-        oDados.sPonto           = $F(ponto);
-        oDados.sPagina          = $F(pagina);
-        oDados.iRubrica         = $F(rh27_rubric);
-        oDados.iSelecao         = $F(r44_selec);
-        oDados.iAno             = $F(DBtxt23);
-        oDados.iMes             = $F(DBtxt25);
-        oDados.sDadosCadastrais = $F(mes_dados);
-        
-        if ( $F(tipo) == 'a' || $F(tipo) == 'p' ) {
-          js_OpenJanelaIframe('top.corpo','db_iframe_bbrubmescalculo','pes2_rubmescalculo002.php?sParametros='+Object.toJSON(oDados),'Gerando Arquivo',false);
-        } else {
-            
-          jan = window.open('pes2_rubmescalculo002.php?sParametros='+Object.toJSON(oDados),'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-          jan.moveTo(0,0);
-        }
-      }
-    }
-
-    /**
-    * Realiza a abertura do arquivo quando for do tipo TXT.
-    */
-    function js_detectaarquivo(sArquivo){
-        
-    	var sListagem = sArquivo + "#Download arquivo TXT ";
-      top.corpo.db_iframe_bbrubmescalculo.hide();
-      js_montarlista(sListagem,"form1");
-    }
-
-    /**
-    * Realiza a abertura do arquivo quando for do tipo CSV.
-    */
-    function js_detectaarquivo1(sArquivo){
-
-    	var sListagem = sArquivo + "#Download arquivo CSV ";
-    	top.corpo.db_iframe_bbrubmescalculo.hide();
-      js_montarlista(sListagem,"form1");
-    }
-  </script>
-</html>
+  	var sListagem = sArquivo + "#Download arquivo CSV ";
+  	(window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_bbrubmescalculo.hide();
+    js_montarlista(sListagem,"form1");
+  }
+</script>

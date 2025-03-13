@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -148,7 +148,7 @@ if (@$bi14_situacao == "R") {
 </center>
 <script>
 <?if ($db_opcao != 1) {?>
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_acervo',
                         'func_exemplarreserva.php?pesquisa_chave='+document.form1.bi14_acervo.value
                                                +'&funcao_js=parent.js_mostraacervo',
@@ -159,7 +159,7 @@ if (@$bi14_situacao == "R") {
 function js_pesquisabi14_carteira(mostra) {
   
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_leitor',
                         'func_leitorproc.php?funcao_js=parent.js_mostraleitor1|bi16_codigo|ov02_nome',
                         'Pesquisa',
@@ -167,7 +167,7 @@ function js_pesquisabi14_carteira(mostra) {
   } else {
     
     if (document.form1.bi14_carteira.value != '') {
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_leitor',
                           'func_leitorproc.php?pesquisa_chave='+document.form1.bi14_carteira.value
                                             +'&funcao_js=parent.js_mostraleitor',
@@ -199,7 +199,7 @@ function js_mostraleitor1(chave1, chave2) {
 function js_pesquisabi14_acervo(mostra) {
   
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_acervo',
                         'func_exemplarreserva.php?funcao_js=parent.js_mostraacervo1|bi06_seq|bi06_titulo|bi18_devolucao',
                         'Pesquisa',
@@ -207,7 +207,7 @@ function js_pesquisabi14_acervo(mostra) {
   } else {
     
     if (document.form1.bi14_acervo.value != '') {
-      js_OpenJanelaIframe('top.corpo',
+      js_OpenJanelaIframe('CurrentWindow.corpo',
                           'db_iframe_acervo',
                           'func_exemplarreserva.php?pesquisa_chave='+document.form1.bi14_acervo.value
                                                 +'&funcao_js=parent.js_mostraacervo',
@@ -306,7 +306,7 @@ function verifica_hora(x) {
 }
 
 function js_pesquisa() {
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_reserva',
                       'func_reserva.php?funcao_js=parent.js_preenchepesquisa|bi14_codigo',
                       'Pesquisa',

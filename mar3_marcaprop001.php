@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -119,10 +119,10 @@ include("dbforms/db_funcoes.php");
 <script>
 function js_pesquisama01_i_cgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_consmarca.php?funcao_js=parent.js_mostracgmnome1|z01_numcgm|z01_nome','Pesquisa de Marcas por Proprietário',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_consmarca.php?funcao_js=parent.js_mostracgmnome1|z01_numcgm|z01_nome','Pesquisa de Marcas por Proprietário',true);
   }else{
      if(document.form1.z01_numcgm.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_consmarca.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgmnome','Pesquisa de Marcas por Proprietário',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_consmarca.php?pesquisa_chave='+document.form1.z01_numcgm.value+'&funcao_js=parent.js_mostracgmnome','Pesquisa de Marcas por Proprietário',false);
      }else{
        document.form1.z01_nome.value = '';
      }

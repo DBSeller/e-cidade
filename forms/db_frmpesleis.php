@@ -208,7 +208,7 @@ function js_atualixaIframe(stringatu){
   }
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_leis','func_leis.php?funcao_js=parent.js_preenchepesquisa|h08_codlei','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_leis','func_leis.php?funcao_js=parent.js_preenchepesquisa|h08_codlei','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_leis.hide();

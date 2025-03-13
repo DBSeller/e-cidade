@@ -1,0 +1,50 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010798' name='projetos.obrastecprofissao' description="profissao responsavel tecnico da obra" prefix="ob30" label="profissao responsavel tecnico da obra" type="0">
+  <fields>
+    <field codigo="1013240" 
+           campo_api='' 
+           name="ob30_sequencial" 
+           conteudo="int4" 
+           description="sequencial da tabela obrastecprofissao" 
+           inivalue="0" 
+           label="sequencial da tabela obrastecprofissao" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="sequencial da tabela obrastecprofissao" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='projetos.obrastecprofissao_ob30_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013241" 
+           campo_api='' 
+           name="ob30_descricao" 
+           conteudo="varchar(50)" 
+           description="descricao da profissao do responsável técnico da obrea" 
+           inivalue="" 
+           label="descricao da profissao obrastecprofissao" 
+           size="50" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="descricao da profissao obrastecprofissao" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="ob30_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

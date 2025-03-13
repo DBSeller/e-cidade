@@ -36,12 +36,12 @@ function js_ProtegeTextoEsc() {
   db_getsession(); 
 $clrotulo = new rotulocampo;
 $clrotulo->label("or10_codatend");
-  $resultPesquisaNome = pg_exec("select nome from db_usuarios where id_usuario = $DB_id_usuario");
+  $resultPesquisaNome = db_query("select nome from db_usuarios where id_usuario = $DB_id_usuario");
   $nomeUsuario = pg_result($resultPesquisaNome,0,0);
   
   //Implementação da troca dos items do menu departamento e usuário através de javaScript
   //seleciona todos os departamentos e verifica o total de registros encontrados
-  $departamentos = pg_exec("select * from db_depart");
+  $departamentos = db_query("select * from db_depart");
   $numeroDepartamentos = pg_numrows($departamentos);
 
   //para cada departamento encontrado verifica quais sao seus usuarios e separa em arrays
@@ -50,7 +50,7 @@ $clrotulo->label("or10_codatend");
     echo "\n\n<script>\n";
 	// Carrega a array com a lista de nomes de usuarios em cada array com  nome do setor
     for ($i=0;$i<$numeroDepartamentos;$i++) {
-	  $usu =  pg_exec("select us.id_usuario, us.nome 
+	  $usu =  db_query("select us.id_usuario, us.nome 
 	                   from db_usuarios us
         	           inner join db_depusu du 
 		        	   on du.id_usuario = us.id_usuario
@@ -68,7 +68,7 @@ $clrotulo->label("or10_codatend");
 
 	// Carrega a array com a lista de id_usuario de cada usuario em cada array com  nome do setor mais o sufixo "1"
     for ($i=0;$i<$numeroDepartamentos;$i++) {
-	  $usu =  pg_exec("select us.id_usuario, us.nome 
+	  $usu =  db_query("select us.id_usuario, us.nome 
 	                   from db_usuarios us
         	           inner join db_depusu du 
 		        	   on du.id_usuario = us.id_usuario
@@ -116,7 +116,7 @@ $clrotulo->label("or10_codatend");
           </strong> <div align="left"></div></td>
         <td nowrap ><div align="left"></div>
           <strong>Data :</strong> 
-          <? include ("dbforms/db_funcoes.php") ;
+          <? include(modification("dbforms/db_funcoes.php")) ;
 		    db_data("dataordem",date("d"),date("m"),date("Y"));
 		  ?>
         </td>
@@ -132,13 +132,13 @@ $clrotulo->label("or10_codatend");
                 : </strong> <select name="depto" id="select3" onChange="vai(eval('a' + this.options[this.selectedIndex].value),eval('a' + this.options[this.selectedIndex].value + '1'))">
                   <?
 				    // Identifica o departamento atual da pessoa que está acessando
-					$result = pg_exec("select d.id_usuario, d.coddepto, p.descrdepto
+					$result = db_query("select d.id_usuario, d.coddepto, p.descrdepto
 					                   from db_depusu d
 									   inner join db_depart p on d.coddepto = p.coddepto
 									   where d.id_usuario = $DB_id_usuario limit 1
 									  ");
 					$descratual = pg_result($result,0,"descrdepto");
-					$listaDepartamentos = pg_exec("select * from db_depart where descrdepto not like '$descratual'");
+					$listaDepartamentos = db_query("select * from db_depart where descrdepto not like '$descratual'");
 					$numdep = pg_numrows($listaDepartamentos);
 					// Deixa selecionado o departamento da pessoa que está acessando
  				    echo "<option selected value=\"".pg_result($result,0,"coddepto")."\">".pg_result($result,0,"descrdepto")."</option>\n";
@@ -161,7 +161,7 @@ $clrotulo->label("or10_codatend");
 						// Carrega a lista de usuarios do departamento selecionado na rotina acima
 						// e deixa selecionado o nome do usuario que está acessando
     					$coddepartamento = pg_result($result,0,"coddepto");
-		    			$listanomes = pg_exec("select u.id_usuario , d.nome
+		    			$listanomes = db_query("select u.id_usuario , d.nome
 			    	                           from db_depusu u 
 				     					       inner join db_usuarios d
 					    				       on d.id_usuario = u.id_usuario
@@ -211,7 +211,7 @@ $clrotulo->label("or10_codatend");
                 <select name="modulos[]" size="5" multiple id="modulos[]">
                   <?
 		  // Carrega a lista de modulos
-		  $listaDeModulos = pg_exec("Select id_item, nome_modulo from db_modulos");
+		  $listaDeModulos = db_query("Select id_item, nome_modulo from db_modulos");
 		  $numListaDeModulos = pg_numrows($listaDeModulos);
           for ($i=0;$i<$numListaDeModulos;$i++) {
 		    echo "
@@ -302,9 +302,9 @@ $clrotulo->label("or10_codatend");
 <script>
 function js_pesquisaor10_codatend(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_atenditem','func_atenditemordem.php?funcao_js=parent.js_mostraatenditem1|at05_seq|at05_codatend|at05_solicitado|at05_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atenditem','func_atenditemordem.php?funcao_js=parent.js_mostraatenditem1|at05_seq|at05_codatend|at05_solicitado|at05_data','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_atenditem','func_atenditemordem.php?pesquisa_chave='+document.form1.or10_codatend.value+'&funcao_js=parent.js_mostraatenditem','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atenditem','func_atenditemordem.php?pesquisa_chave='+document.form1.or10_codatend.value+'&funcao_js=parent.js_mostraatenditem','Pesquisa',false);
   }
 }
 function js_mostraatenditem(chave,erro){

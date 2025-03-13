@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010800' name='caixa.recibocobrancawebservice' description="Salva os recibos que foram registrados por webservice." prefix="k199" label="Recibo Cobrança Registrada Webservice" type="0">
+  <fields>
+    <field codigo="1013253" 
+           campo_api='' 
+           name="k199_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela recibocobrancawebservice." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='caixa.recibocobrancawebservice_k199_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1013254" 
+           campo_api='' 
+           name="k199_numnov" 
+           conteudo="int8" 
+           description="Numnov do recibo" 
+           inivalue="0" 
+           label="Numnov" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Numnov" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1013255" 
+           campo_api='' 
+           name="k199_convenio" 
+           conteudo="int8" 
+           description="Convênio utilizado no recibo que foi registrado por webservice." 
+           inivalue="0" 
+           label="Convênio" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Convênio" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k199_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

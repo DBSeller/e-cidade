@@ -26,7 +26,7 @@
  */
 
 //MODULO: caixa
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clcadtipoorigem->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -130,10 +130,10 @@ function js_cancelar(){
 }
 function js_pesquisak14_cadtipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadtipoorigem','db_iframe_cadtipo','func_cadtipo.php?funcao_js=parent.js_mostracadtipo1|k03_tipo|k03_tipo','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoorigem','db_iframe_cadtipo','func_cadtipo.php?funcao_js=parent.js_mostracadtipo1|k03_tipo|k03_tipo','Pesquisa',true,'0');
   }else{
      if(document.form1.k14_cadtipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadtipoorigem','db_iframe_cadtipo','func_cadtipo.php?pesquisa_chave='+document.form1.k14_cadtipo.value+'&funcao_js=parent.js_mostracadtipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoorigem','db_iframe_cadtipo','func_cadtipo.php?pesquisa_chave='+document.form1.k14_cadtipo.value+'&funcao_js=parent.js_mostracadtipo','Pesquisa',false);
      }else{
        document.form1.k03_tipo.value = ''; 
      }
@@ -153,10 +153,10 @@ function js_mostracadtipo1(chave1,chave2){
 }
 function js_pesquisak14_cadorigem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadtipoorigem','db_iframe_cadorigem','func_cadorigem.php?funcao_js=parent.js_mostracadorigem1|k33_sequencial|k33_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoorigem','db_iframe_cadorigem','func_cadorigem.php?funcao_js=parent.js_mostracadorigem1|k33_sequencial|k33_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.k14_cadorigem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadtipoorigem','db_iframe_cadorigem','func_cadorigem.php?pesquisa_chave='+document.form1.k14_cadorigem.value+'&funcao_js=parent.js_mostracadorigem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadtipoorigem','db_iframe_cadorigem','func_cadorigem.php?pesquisa_chave='+document.form1.k14_cadorigem.value+'&funcao_js=parent.js_mostracadorigem','Pesquisa',false);
      }else{
        document.form1.k33_descr.value = ''; 
      }

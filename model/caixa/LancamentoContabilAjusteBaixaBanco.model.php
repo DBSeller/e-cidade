@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Classe para autenticar Baixas de banco
  * @author Iuri Guntchnigg iuri@dbseller.com.br
  * @package caixa
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.6 $
  */
 class LancamentoContabilAjusteBaixaBanco {
 
@@ -128,21 +128,16 @@ class LancamentoContabilAjusteBaixaBanco {
     }
 
     $sSqlDisrec = $oDaoDisrec->$sNomeMetodo (null,
-                                             "corrente.k12_id,
-  	                                          corrente.k12_data,
-  	                                          corrente.k12_autent,
-                                              corrente.k12_conta,
-                                              k02_codrec,
-  	                                          sum(cornump.k12_valor) as total_receita",
+                                             "distinct corrente.k12_id,
+  	                                                   corrente.k12_data,
+  	                                                   corrente.k12_autent,
+                                                       corrente.k12_conta,
+                                                       taborc.k02_codigo,
+                                                       k02_codrec,
+  	                                                   cornump.k12_valor as total_receita",
                                               null,
                                               "k12_codcla = {$this->iCodigoBaixaBanco}
-                                              and orcreceita.o70_anousu = {$this->iAnoUsu}
-  	                                          group by
-  	                                          corrente.k12_id,
-  	                                          corrente.k12_data,
-  	                                          corrente.k12_conta,
-                                              k02_codrec,
-  	                                          corrente.k12_autent"
+                                              and orcreceita.o70_anousu = {$this->iAnoUsu}"
                                             );
 
 
@@ -206,23 +201,16 @@ class LancamentoContabilAjusteBaixaBanco {
 
     $oDaoDisrec = db_utils::getDao("disrec");
     $sSqlBuscaReceita = $oDaoDisrec->sql_query_receita_extra(null,
-                                                            "corrente.k12_id,
-                                                      	    corrente.k12_data,
-                                                      	    corrente.k12_autent,
-                                                            corrente.k12_conta,
-                                                            tabrec.k02_codigo,
-                                                            tabplan.k02_reduz,
-                                                      	    sum(cornump.k12_valor) as total_receita",
+                                                            "distinct corrente.k12_id,
+                                                      	              corrente.k12_data,
+                                                      	              corrente.k12_autent,
+                                                                      corrente.k12_conta,
+                                                                      tabrec.k02_codigo,
+                                                                      tabplan.k02_reduz,
+                                                      	              cornump.k12_valor as total_receita",
                                                             null,
                                                             "    k12_codcla = {$this->iCodigoBaixaBanco}
-                                                            and tabplan.k02_anousu = {$this->iAnoUsu}
-                                                            group by
-                                                            corrente.k12_id,
-                                                            corrente.k12_data,
-                                                            corrente.k12_conta,
-                                                            tabrec.k02_codigo,
-                                                            tabplan.k02_reduz,
-                                                            corrente.k12_autent");
+                                                            and tabplan.k02_anousu = {$this->iAnoUsu}");
     $rsBuscaReceita = db_query($sSqlBuscaReceita);
 
     if (!$rsBuscaReceita) {

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -39,10 +39,20 @@ class AutenticacaoArrecadacao extends Autenticacao {
   private $iCodigoGrupoArrecadacao;
   private $iCodigoRecurso;
   private $sCaracteristicaPeculiar = null;
+  private $iSequencialEmpenho = null;
+  private $retencao = null;
 
-  public function __construct($iNumpre = null, $iNumpar = null, $iContaDebito=null,
+    /**
+     * @var bool Deve realizar o lançamento Contabil
+     */
+  private $executaLancamentoContabil = true;
+
+  private $lancamentoOutraInstuicao = false;
+
+
+    public function __construct($iNumpre = null, $iNumpar = null, $iContaDebito=null,
                              $iCodigoGrupoArrecadacao = null, $dDataAutenticacao = null,
-                             $sCaracteristicaPeculiar = null) {
+                             $sCaracteristicaPeculiar = null, $iSequencialEmpenho = null) {
 
     if (empty($iNumpre)) {
       throw new ParameterException("Numpre não informado !");
@@ -56,6 +66,7 @@ class AutenticacaoArrecadacao extends Autenticacao {
     $this->iContaDebito            = $iContaDebito;
     $this->iCodigoGrupoArrecadacao = $iCodigoGrupoArrecadacao;
     $this->sCaracteristicaPeculiar = $sCaracteristicaPeculiar;
+    $this->iSequencialEmpenho      = $iSequencialEmpenho;
 
     if (!empty($dDataAutenticacao)) {
       $this->dtSessao = $dDataAutenticacao;
@@ -73,7 +84,7 @@ class AutenticacaoArrecadacao extends Autenticacao {
    * @throws BusinessException
    * @return void
    */
-  public function autenticar() {
+  public function autenticar($tipoAutenticacao = 3) {
 
     $iCodigoGrupoArrecadacao = 0;
     if (isset($this->iCodigoGrupoArrecadacao) && $this->iCodigoGrupoArrecadacao != null) {
@@ -89,7 +100,8 @@ class AutenticacaoArrecadacao extends Autenticacao {
                                               {$this->iContaDebito},
                                              '{$this->iIpTerminal}',
                                               {$this->iCodigoInstituicao},
-                                              {$iCodigoGrupoArrecadacao}) as fc_autentica";
+                                              {$iCodigoGrupoArrecadacao},
+                                              $tipoAutenticacao) as fc_autentica";
 
     $rsAutenticacao = db_query($sSqlAutenticacao);
     if (!$rsAutenticacao ) {
@@ -102,11 +114,16 @@ class AutenticacaoArrecadacao extends Autenticacao {
     }
     $this->sCodigoAutenticacao = $oDadosAutenticacao->autenticacao;
 
+    if (!$this->executaLancamentoContabil()) {
+        return;
+    }
+    $this->lancamentoOutraInstuicao = $tipoAutenticacao == 7;
     $lReceitaContabil = $this->efetuarLancamentos($oDadosAutenticacao->data,
                                                   $oDadosAutenticacao->id,
                                                   $oDadosAutenticacao->codautent,
                                                   $this->iContaDebito,
-                                                  false);
+                                                  false,false, false
+                                                  );
 
     if ($lReceitaContabil) {
 
@@ -139,7 +156,7 @@ class AutenticacaoArrecadacao extends Autenticacao {
    * @throws BusinessException
    * @return void
    */
-  public function estornar() {
+  public function estornar($tipoGrupo = 6) {
 
     $iCodigoGrupoArrecadacao = 0;
     if (isset($this->iCodigoGrupoArrecadacao) && $this->iCodigoGrupoArrecadacao != null) {
@@ -168,7 +185,10 @@ class AutenticacaoArrecadacao extends Autenticacao {
     }
 
     $this->sCodigoAutenticacao = $oDadosAutenticacao->autenticacao;
-
+      $this->lancamentoOutraInstuicao = $tipoGrupo == 8;
+      if (!$this->executaLancamentoContabil()) {
+          return;
+      }
     /**
      * Lancamento de receita normal
      */
@@ -206,17 +226,18 @@ class AutenticacaoArrecadacao extends Autenticacao {
     }
   }
 
-  /**
-   * Executa os lançamentos contabeis de uma arrecadação de receita
-   * @param string $dtAutenticacao
-   * @param string $iId
-   * @param string $iAutent
-   * @param integer $iCodigoContaDebito
-   * @param boolean $lEstorno
-   * @throws BusinessException
-   */
+    /**
+     * Executa os lançamentos contabeis de uma arrecadação de receita
+     * @param string $dtAutenticacao
+     * @param string $iId
+     * @param string $iAutent
+     * @param integer $iCodigoContaDebito
+     * @param boolean $lEstorno
+     * @return bool
+     * @throws BusinessException
+     */
   public function efetuarLancamentos($dtAutenticacao="", $iId="", $iAutent="",
-                                     $iCodigoContaDebito, $lEstorno, $lDesconto=false, $lArrecadaDesconto = false) {
+                  $iCodigoContaDebito, $lEstorno, $lDesconto=false, $lArrecadaDesconto = false) {
 
     if (USE_PCASP) {
 
@@ -237,7 +258,6 @@ class AutenticacaoArrecadacao extends Autenticacao {
       $sql                          = self::getSqlAutenticacoes($iId, $dtAutenticacao, $iAutent, $lEstorno, $lDesconto);
       $resultorcamentaria           = db_query($sql);
       $iTotalLinhasReceitaOrcamento = pg_num_rows($resultorcamentaria);
-
       if ($iTotalLinhasReceitaOrcamento == 0) {
 
         return false;
@@ -288,7 +308,10 @@ class AutenticacaoArrecadacao extends Autenticacao {
                                                       $lDesconto,
                                                       $this->getCodigoRecurso(),
                                                       $this->sCaracteristicaPeculiar,
-                                                      $iCodigoCgm
+                                                      $iCodigoCgm,
+                                                      $this->retencao,
+                                                      $this->iSequencialEmpenho,
+                                                      $this->lancamentoOutraInstuicao
                                                      );
 
       } // final for
@@ -312,7 +335,7 @@ class AutenticacaoArrecadacao extends Autenticacao {
     if ($lDesconto) {
       $sMetodoUtilizar = "sql_query_arrecadacao_desconto";
     }
-    $oDaoCorrente     = db_utils::getDao('corrente');
+    $oDaoCorrente     =new cl_corrente;
     $sSqlAutenticacao = $oDaoCorrente->$sMetodoUtilizar($iId,
                                                         $dtAutenticacao,
                                                         $iAutent,
@@ -323,7 +346,7 @@ class AutenticacaoArrecadacao extends Autenticacao {
 
   public static function getReceitasSemVinculoPcasp($iId="", $sData="", $iAutent="") {
 
-    $oDaoCorNump     = db_utils::getDao('cornump');
+    $oDaoCorNump     = new cl_cornump;
     $sCamposCorNump  = "distinct c60_codcon, ";
     $sCamposCorNump .= "         c60_estrut, ";
     $sCamposCorNump .= "         c60_descr   ";
@@ -392,19 +415,14 @@ class AutenticacaoArrecadacao extends Autenticacao {
     }
 
 
-    $iCodigoDocumento = 160;
-    $sNegacao         = "not";
-    if ($lEstorno) {
-
-      $iCodigoDocumento = 162;
-      $sNegacao         = "";
-    }
 
     $sCamposExtra  = " k12_conta,";
     $sCamposExtra .= " tabrec.k02_codigo,";
     $sCamposExtra .= " k02_reduz,";
     $sCamposExtra .= " case when k130_concarpeculiar is null then '000' else k130_concarpeculiar end k130_concarpeculiar, ";
     $sCamposExtra .= " k12_histcor,";
+    $sCamposExtra .= " k00_numcgm as cgm,";
+    $sCamposExtra .= " c61_codigo,";
     $sCamposExtra .= " corrente.k12_id,";
     $sCamposExtra .= " corrente.k12_autent,";
     $sCamposExtra .= " empprestarecibo.e170_numpre,";
@@ -424,9 +442,9 @@ class AutenticacaoArrecadacao extends Autenticacao {
     $sWhereExtra .= " and corrente.k12_data   = '{$dtAutenticacao}'";
     $sWhereExtra .= " and corrente.k12_autent = {$iAutenticacao}";
     $sWhereExtra .= " and corrente.k12_id     = {$iId}";
-    $sWhereExtra .= " and corhist.k12_id is {$sNegacao} null";
+//    $sWhereExtra .= " and corhist.k12_id is {$sNegacao} null";
 
-    $oDaoCorrente          = db_utils::getDao("corrente");
+    $oDaoCorrente          = new cl_corrente;
     $sSqlBuscaReceitaExtra = $oDaoCorrente->sql_query_autenticacao_receita_extra(null,
                                                                                  null,
                                                                                  null,
@@ -451,12 +469,37 @@ class AutenticacaoArrecadacao extends Autenticacao {
     for ($iRowAutenticacao = 0; $iRowAutenticacao < $iTotalReceitasExtras; $iRowAutenticacao++) {
 
 
+      $iCodigoDocumento = 160;
+      if ($lEstorno) {
+        $iCodigoDocumento = 162;
+      }
       $oDadoAutenticacao    = db_utils::fieldsMemory($rsBuscaReceitaExtra, $iRowAutenticacao);
       $sObservacaoHistorico = "Arrecadação de Receita Extra-Orçamentária";
       if ($oDadoAutenticacao->k12_histcor != "") {
         $sObservacaoHistorico = $oDadoAutenticacao->k12_histcor;
       }
 
+      $oContaCorrenteDetalhe = new ContaCorrenteDetalhe();
+      if (!empty($this->iSequencialEmpenho)) {
+
+        $oEmpenhoFinanceiro = EmpenhoFinanceiroRepository::getEmpenhoFinanceiroPorNumero($this->iSequencialEmpenho);
+        $oContaCorrenteDetalhe->setCredor($oEmpenhoFinanceiro->getFornecedor());
+        $oContaCorrenteDetalhe->setEmpenho($oEmpenhoFinanceiro);
+        $oContaCorrenteDetalhe->setRecurso($oEmpenhoFinanceiro->getDotacao()->getDadosRecurso());
+      } else if (!empty($oDadoAutenticacao->cgm)) {
+
+        $oContaCorrenteDetalhe->setCredor(CgmFactory::getInstanceByCgm($oDadoAutenticacao->cgm));
+        $oContaCorrenteDetalhe->setRecurso(new Recurso($oDadoAutenticacao->c61_codigo));
+
+      }
+        /**
+         * adicionar a troca do documento para 150 e 152
+         * quando a conta for 21881
+         */
+      $oContaContabil = new ContaPlanoPCASP(null, $iAnoSessao, $oDadoAutenticacao->k02_reduz);
+      if ( substr($oContaContabil->getEstrutural(), 0, 4) != '2188' ) {
+         $iCodigoDocumento = ( $lEstorno? 152: 150 );
+      }
       $oLancamentoAuxiliar = new LancamentoAuxiliarArrecadacaoReceitaExtraOrcamentaria();
       $oLancamentoAuxiliar->setObservacaoHistorico($sObservacaoHistorico);
       $oLancamentoAuxiliar->setValorTotal(abs($oDadoAutenticacao->valor_arrecadar));
@@ -464,10 +507,12 @@ class AutenticacaoArrecadacao extends Autenticacao {
       $oLancamentoAuxiliar->setContaCredito($oDadoAutenticacao->k02_reduz);
       $oLancamentoAuxiliar->setContaDebito($oDadoAutenticacao->k12_conta);
       $oLancamentoAuxiliar->setEstorno($lEstorno);
+      $oLancamentoAuxiliar->setFavorecido($oDadoAutenticacao->cgm);
       $oLancamentoAuxiliar->setCaracteristicaPeculiar($oDadoAutenticacao->k130_concarpeculiar);
       $oLancamentoAuxiliar->setAutenticacao($iId);
       $oLancamentoAuxiliar->setDataAutenticacao($dtAutenticacao);
       $oLancamentoAuxiliar->setAutenticadora($iAutenticacao);
+      $oLancamentoAuxiliar->setContaCorrenteDetalhe($oContaCorrenteDetalhe);
 
       if (!empty($oDadoAutenticacao->e170_numpre) && !empty($oDadoAutenticacao->e170_numpar)) {
 
@@ -484,8 +529,36 @@ class AutenticacaoArrecadacao extends Autenticacao {
     }
     return true;
   }
-}
 
-abstract class Autenticacao {
+    /**
+     * @return null
+     */
+    public function getRetencao()
+    {
+        return $this->retencao;
+    }
 
+    /**
+     * @param null $retencao
+     */
+    public function setRetencao($retencao)
+    {
+        $this->retencao = $retencao;
+    }
+
+    /**
+     * @return bool
+     */
+    public function executaLancamentoContabil()
+    {
+        return $this->executaLancamentoContabil;
+    }
+
+    /**
+     * @param bool $executaLancamentoContabil
+     */
+    public function setExecutaLancamentoContabil($executaLancamentoContabil)
+    {
+        $this->executaLancamentoContabil = $executaLancamentoContabil;
+    }
 }

@@ -58,7 +58,7 @@ db_input('x09_nomesituacao',30,$Ix09_nomesituacao,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguasitesgoto','func_aguasitesgoto.php?funcao_js=parent.js_preenchepesquisa|x09_codsitesgoto','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguasitesgoto','func_aguasitesgoto.php?funcao_js=parent.js_preenchepesquisa|x09_codsitesgoto','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguasitesgoto.hide();

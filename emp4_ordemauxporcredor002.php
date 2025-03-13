@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $oGet = db_utils::postMemory($_GET);
 if ($oGet->e42_sequencial != "") {
   $sCampos = " e42_sequencial,e42_dtpagamento,z01_numcgm,z01_nome,e94_sequencial,e94_historico ";
@@ -86,7 +86,7 @@ if ($oGet->e42_sequencial != "") {
   <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
     <center>
     <?
-     require("forms/db_frmordemauxporcredor.php");
+     require(modification("forms/db_frmordemauxporcredor.php"));
     ?>
     </center>
   </body>

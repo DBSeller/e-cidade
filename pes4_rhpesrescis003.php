@@ -1,5 +1,6 @@
-<?
-/*
+<?php
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
  *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
@@ -25,105 +26,181 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("classes/db_rhpesrescisao_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_rhpesrescisao_classe.php"));
+require_once(modification("classes/db_pontofr_classe.php"));
+require_once(modification("classes/db_gerfres_classe.php"));
+require_once(modification("classes/db_previden_classe.php"));
+require_once(modification("classes/db_ajusteir_classe.php"));
+require_once(modification("classes/db_pensao_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libpessoal.php"));
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
+
 $clrhpesrescisao = new cl_rhpesrescisao;
-$clrhpessoal = new cl_rhpessoal;
-$db_opcao = 1;
-$db_botao = true;
+$clrhpessoal     = new cl_rhpessoal;
+$clpontofr       = new cl_pontofr;
+$clgerfres       = new cl_gerfres;
+$clpreviden      = new cl_previden;
+$clajusteir      = new cl_ajusteir;
+$clpensao        = new cl_pensao;
 
-$rh02_anousu = db_anofolha();
-$rh02_mesusu = db_mesfolha();
-if(isset($excluir)){
+$db_opcao        = 1;
+$db_botao        = true;
+
+$iAnoFolha       = DBPessoal::getAnoFolha();
+$iMesFolha       = DBPessoal::getMesFolha();
+
+// Bloqueio da liberação do contracheque no DBPref
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()) {
+
+  try {
+    FolhaPagamentoRescisao::verificaLiberacaoDBPref();
+  } catch (Exception $e) {
+
+    $db_opcao = 3;
+    $db_botao = false;
+    db_msgbox($e->getMessage());
+  }
+}
+
+if (isset($excluir)) {
+	
   db_inicio_transacao();
-  $subpes = db_anofolha()."/".db_mesfolha();
-  $erro = false;
+  
+  $lSqlErro  = false;
+  
   $erro_msg = "Processo concluído com sucesso.";
-  $result_rhpesrescisao = db_delete("rhpesrescisao", " where rh05_seqpes = ".db_sqlformat($rh02_seqpes));
-  if($result_rhpesrescisao == false){
-    $erro_msg = "Erro ao excluir rescisão. Contate o suporte.";
-    $erro = true;
-  }
 
-  $result_rhpessoal = $clrhpessoal->sql_record($clrhpessoal->sql_query_rescisao(null,"rh01_regist as matric,rh01_numcgm,rh02_tbprev","","rh02_seqpes = ".$rh02_seqpes));
-  if($clrhpessoal->numrows > 0){
+  if (!$lSqlErro) {
+                
+    $clrhpesrescisao->excluir($rh02_seqpes);
+    if ( $clrhpesrescisao->erro_status == 0 ) {
+      $lSqlErro = true;
+      $erro_msg = $clrhpesrescisao->erro_msg;
+    }               
+  }
+  
+  $sWhereRhpessoal  = "rh02_seqpes = {$rh02_seqpes}";
+  $sCampos          = "rh01_regist as matric,rh01_numcgm,rh02_tbprev";
+  $result_rhpessoal = $clrhpessoal->sql_record($clrhpessoal->sql_query_rescisao(null,$sCampos,"",$sWhereRhpessoal));
+  if ($clrhpessoal->numrows > 0) {
+  	
     db_fieldsmemory($result_rhpessoal,0);
-    $condicaoaux = " and r19_regist = ".db_sqlformat($matric);
-    $result_pontofr = db_delete("pontofr", bb_condicaosubpes("r19_").$condicaoaux);
-    if($result_pontofr == false){
-      $erro_msg = "Erro ao excluir ponto de rescisão. Contate o suporte.";
-      $erro = true;
+
+    if (!$lSqlErro) {
+
+      $sWherePontofr  = "     r19_regist = {$matric}";
+      $sWherePontofr .= " and r19_anousu = {$iAnoFolha}";
+      $sWherePontofr .= " and r19_mesusu = {$iMesFolha}";
+      $sWherePontofr .= " and r19_instit = 1";
+      $clpontofr->excluir(null,null,null,null,null,$sWherePontofr);
+	    if ( $clpontofr->erro_status == 0 ) {
+	      $lSqlErro = true;
+	      $erro_msg = $clpontofr->erro_msg;
+	    }               
+    }   
+
+    if (!$lSqlErro) {
+
+      $sWhereGerfRes  = "     r20_regist = {$matric}     ";
+      $sWhereGerfRes .= " and r20_anousu = {$iAnoFolha}  ";
+      $sWhereGerfRes .= " and r20_mesusu = {$iMesFolha}  ";
+      $sWhereGerfRes .= " and r20_instit = 1             ";
+      $clgerfres->excluir(null,null,null,null,null,$sWhereGerfRes);
+      if ( $clgerfres->erro_status == 0 ) {
+        $lSqlErro = true;
+        $erro_msg = $clgerfres->erro_msg;
+      }               
+    }     
+
+    if (!$lSqlErro) {
+
+      $sWhere  = "     r60_numcgm       = {$rh01_numcgm}   ";
+      $sWhere .= " and r60_tbprev       = {$rh02_tbprev}   ";
+      $sWhere .= " and r60_regist       = {$matric}        ";
+      $sWhere .= " and lower(r60_folha) = 'r'              ";    	
+      $clpreviden->excluir(null,null,null,null,null,$sWhere);
+      if ( $clpreviden->erro_status == 0 ) {
+        $lSqlErro = true;
+        $erro_msg = $clpreviden->erro_msg;
+      }               
     }
 
-    $condicaoaux = " and r20_regist = ".db_sqlformat($matric);
-    $result_gerfres = db_delete("gerfres", bb_condicaosubpes("r20_").$condicaoaux);
-    if($result_gerfres == false){
-      $erro_msg = "Erro ao excluir folha de rescisão. Contate o suporte.";
-      $erro = true;
-    }
+    if (!$lSqlErro) {
 
-    $condicaoaux  = " and r60_numcgm = ".db_sqlformat($rh01_numcgm);
-    $condicaoaux .= " and r60_tbprev = ".db_sqlformat($rh02_tbprev);
-    $condicaoaux .= " and r60_regist = ".db_sqlformat($matric);
-    $condicaoaux .= " and lower(r60_folha)  = ".db_sqlformat('r');
-    $result_previden = db_delete("previden", bb_condicaosubpes("r60_").$condicaoaux);
-    if($result_previden == false){
-      $erro_msg = "Erro ao excluir previdência. Contate o suporte.";
-      $erro = true;
-    }
+      $sWhere  = "     r61_numcgm       = {$rh01_numcgm}    ";
+      $sWhere .= " and r61_regist       = {$matric}         ";
+      $sWhere .= " and lower(r61_folha) = 'r'               ";     
+      $clajusteir->excluir(null,null,null,null,null,null,$sWhere);
+      if ($clajusteir->erro_status == 0) {
+      	
+        $lSqlErro = true;
+        $erro_msg = $clajusteir->erro_msg;
+      }               
+    }     
+    
+    if (!$lSqlErro) {
+    	
+      $sSqlPensao   = " select distinct pensao.*,                                                                     "; 
+      $sSqlPensao  .= "        rh01_regist as r01_regist,                                                             ";
+      $sSqlPensao  .= "        trim(TO_CHAR(RH02_LOTA,'9999')) as r01_lotac                                           "; 
+      $sSqlPensao  .= "   from pensao                                                                                 ";
+      $sSqlPensao  .= "        inner join rhpessoalmov on pensao.r52_anousu         = rhpessoalmov.rh02_anousu        "; 
+      $sSqlPensao  .= "                               and pensao.r52_mesusu         = rhpessoalmov.rh02_mesusu        ";
+      $sSqlPensao  .= "                               and pensao.r52_regist         = rhpessoalmov.rh02_regist        ";
+      $sSqlPensao  .= "        left  join pontofe      on pontofe.r29_anousu        = rhpessoalmov.rh02_anousu        ";
+      $sSqlPensao  .= "                               and pontofe.r29_mesusu        = rhpessoalmov.rh02_mesusu        ";
+      $sSqlPensao  .= "                               and pontofe.r29_regist        = rhpessoalmov.rh02_regist        ";
+      $sSqlPensao  .= "        inner join rhpessoal    on rhpessoal.rh01_regist     = rhpessoalmov.rh02_regist        ";
+      $sSqlPensao  .= "        inner join rhlota       on rhlota.r70_codigo         = rhpessoalmov.rh02_lota          ";
+      $sSqlPensao  .= "                               and rhlota.r70_instit         = rhpessoalmov.rh02_instit        "; 
+      $sSqlPensao  .= "        inner join cgm          on cgm.z01_numcgm            = rhpessoal.rh01_numcgm           ";
+      $sSqlPensao  .= "        left join rhpesrescisao on rhpesrescisao.rh05_seqpes = rhpessoalmov.rh02_seqpes        ";
+      $sSqlPensao  .= "  where r52_anousu = {$iAnoFolha}                                                              ";
+      $sSqlPensao  .= "    and r52_mesusu = {$iMesFolha}                                                              ";
+      $sSqlPensao  .= "    and rh05_recis is null                                                                     ";
+      $sSqlPensao  .= "    and r52_regist = {$matric}                                                                 ";
+      $sSqlPensao  .= "  order by r52_regist                                                                          ";
 
-    $condicaoaux  = " and r61_numcgm = ".db_sqlformat($rh01_numcgm);
-    $condicaoaux .= " and r61_regist = ".db_sqlformat($matric);
-    $condicaoaux .= " and lower(r61_folha)  = ".db_sqlformat('r');
-    $result_ajusteir = db_delete("ajusteir", bb_condicaosubpes("r61_").$condicaoaux);
-    if($result_ajusteir == false){
-      $erro_msg = "Erro ao excluir ajuste do IR. Contate o suporte.";
-      $erro = true;
+      $rsPensao     = db_query($sSqlPensao);
+      $iNumrows     = pg_num_rows($rsPensao);
+
+      if ($iNumrows > 0) {
+      	
+	      for ( $Ipensao = 0; $Ipensao < $iNumrows; $Ipensao++ ) {   
+	      
+	      	$oPensao = db_utils::fieldsMemory($rsPensao,$Ipensao);
+	      	
+	        if (!$lSqlErro) {
+	          
+	          $r52_regist = db_sqlformat($oPensao->r52_regist);
+	          $r52_numcgm = db_sqlformat($oPensao->r52_numcgm);  
+	          $clpensao->r52_regist = $oPensao->r52_regist;
+	          $clpensao->r52_numcgm = $oPensao->r52_numcgm;
+	          $clpensao->r52_mesusu = $iMesFolha;
+	          $clpensao->r52_anousu = $iAnoFolha; 
+	          $clpensao->r52_valres = 0;
+	          $clpensao->alterar($iAnoFolha,$iMesFolha,$oPensao->r52_regist,$oPensao->r52_numcgm);
+	          if ($clpensao->erro_status == 0) {
+	            $lSqlErro = true;
+	            $erro_msg = $clpensao->erro_msg;
+	            break;
+	          }               
+	        } 
+	      }      	
+      }    	
     }
-    global $pensao;
-      $condicaoaux  = " and  rh05_recis is null ";
-      $condicaoaux .= " and r52_regist = ".db_sqlformat($matric);
-      $condicaoaux .= " order by r52_regist ";
-      $sql = "select distinct(r52_regist+r52_numcgm), 
-                                     pensao.*, 
-                                     rh01_regist as r01_regist,
-                                     trim(TO_CHAR(RH02_LOTA,'9999')) as r01_lotac 
-                              from pensao
-                                  inner join rhpessoalmov on pensao.r52_anousu         = rhpessoalmov.rh02_anousu 
-                                                         and pensao.r52_mesusu         = rhpessoalmov.rh02_mesusu 
-                                                         and pensao.r52_regist         = rhpessoalmov.rh02_regist
-                                  left  join pontofe      on pontofe.r29_anousu        = rhpessoalmov.rh02_anousu 
-                                                         and pontofe.r29_mesusu        = rhpessoalmov.rh02_mesusu 
-                                                         and pontofe.r29_regist        = rhpessoalmov.rh02_regist
-                                  inner join rhpessoal    on rhpessoal.rh01_regist     = rhpessoalmov.rh02_regist
-                                  inner join rhlota       on rhlota.r70_codigo         = rhpessoalmov.rh02_lota
-                                                         and rhlota.r70_instit         = rhpessoalmov.rh02_instit  
-                                  inner join cgm          on cgm.z01_numcgm            = rhpessoal.rh01_numcgm
-                                  left join rhpesrescisao on rhpesrescisao.rh05_seqpes = rhpessoalmov.rh02_seqpes
-                                  ".bb_condicaosubpes("r52_" ).$condicaoaux ;
-     //echo "<BR> ".count($pensao)." $sql";exit;
-     db_selectmax("pensao", $sql);
-     for ($Ipensao=0; $Ipensao<count($pensao); $Ipensao++) {
-         $matriz1 = array();
-         $matriz2 = array();
-         $condicaoaux  = " and r52_regist = ".db_sqlformat($pensao[$Ipensao]["r52_regist"]);
-         $condicaoaux .= " and r52_numcgm = ".db_sqlformat($pensao[$Ipensao]["r52_numcgm"]);
-         
-         $matriz1[1] = "r52_valres";
-         $matriz2[1] = 0;
-         //echo "<BR> ".bb_condicaosubpes("r52_").$condicaoaux ;
-         $retornar = db_update("pensao", $matriz1, $matriz2, bb_condicaosubpes("r52_").$condicaoaux );
-     }
   }
-  db_fim_transacao();
+  
+  db_fim_transacao($lSqlErro);
 }
 ?>
 <html>
@@ -140,22 +217,21 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
     <br><br>
-    <? 
-    include("forms/db_frmexcrhpesrescis.php");
-    ?>
+    <?php include(modification("forms/db_frmexcrhpesrescis.php")); ?>
     </center>
     </td>
   </tr>
 </table>
-<?
+<?php
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
 </html>
-<?
-if(isset($excluir)){
+<?php
+if (isset($excluir)) {
+	
   db_msgbox($erro_msg);
-  if($erro == false){
+  if( $lSqlErro == false ) {
     echo "
           <script>
             location.href = 'pes4_rhpesrescis003.php';

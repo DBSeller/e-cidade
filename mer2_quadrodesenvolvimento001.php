@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_periodocalendario_classe.php");
-include("classes/db_turma_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_periodocalendario_classe.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $escola = db_getsession("DB_coddepto");
 $clmatricula = new cl_matricula;
 $clturma = new cl_turma;
@@ -624,9 +624,9 @@ function fillSelectFromArray2(selectCtrl, itemArray, goodPrompt, badPrompt, defa
     </tr>
     <tr>
      <td valign="top">
-      <input type="checkbox" name="campos" value="case when ed47_c_bolsafamilia='S' then 'SIM - '||trim(ed47_c_nis) else 'NÃO' end" onclick="VerificaTamanho(9);"> Bolsa Família
+      <input type="checkbox" name="campos" value="case when ed47_c_bolsafamilia='S' then 'SIM - '||trim(ed47_c_nis) else 'NÃO' end" onclick="VerificaTamanho(9);"> Auxílio Brasil
       <input type="hidden" name="largura" id="largura" value="30">
-      <input type="hidden" name="cabecalho" value="Bolsa Família"><br>
+      <input type="hidden" name="cabecalho" value="Auxílio Brasil"><br>
      </td>
      <td>
       30
@@ -988,7 +988,7 @@ function js_competencia(valor){
 }
 function js_retornoPesquisaPeriodo(oAjax) {
  js_removeObj("msgBox");
- var oRetorno = eval("("+oAjax.responseText+")");
+ var oRetorno = JSON.parse(oAjax.responseText);
  sHtml  = '<b>Período:<br></b>';
  sHtml += '<select name="tipoperiodo" style="font-size:9px;height:18px;">';
  for (var i = 0;i < oRetorno.length; i++) {

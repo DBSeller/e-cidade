@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcprojativ_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcprojativ_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 
 $chave_o55_descr = isset($chave_o55_descr) ? stripslashes($chave_o55_descr) : '';
@@ -40,6 +40,10 @@ $clorcprojativ = new cl_orcprojativ;
 $clorcprojativ->rotulo->label("o55_anousu");
 $clorcprojativ->rotulo->label("o55_projativ");
 $clorcprojativ->rotulo->label("o55_descr");
+
+$get = (object)filter_input_array(INPUT_GET);
+$ano = isset($get->previsao) ? $get->ano : db_getsession('DB_anousu');
+
 ?>
 <html>
 <head>
@@ -111,7 +115,7 @@ $clorcprojativ->rotulo->label("o55_descr");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_orcprojativ.php")==true){
-             include("funcoes/db_func_orcprojativ.php");
+             include(modification("funcoes/db_func_orcprojativ.php"));
            }else{
            $campos = "orcprojativ.*";
            }
@@ -127,13 +131,14 @@ $clorcprojativ->rotulo->label("o55_descr");
           if (isset($sWhere) && !empty($sWhere)) {
             $sAnd = " and ";
           }
-	        $sql = $clorcprojativ->sql_query(db_getsession('DB_anousu'),$chave_o55_projativ,$campos,"o55_projativ",
-			    $sWhere ." {$sAnd} o55_projativ=$chave_o55_projativ  and o55_anousu=".db_getsession("DB_anousu"));
+            $sql = $clorcprojativ->sql_query($ano, $chave_o55_projativ, $campos, "o55_projativ",
+                $sWhere . " {$sAnd} o55_projativ=$chave_o55_projativ  and o55_anousu=" . $ano);
         } else if(isset($chave_o55_descr) && (trim($chave_o55_descr)!="") ) {
         	if (isset($sWhere) && !empty($sWhere)) {
         		$sAnd = " and ";
         	}
-	        $sql = $clorcprojativ->sql_query(db_getsession('DB_anousu'),"",$campos,"o55_descr","{$sWhere} {$sAnd} o55_descr like '$chave_o55_descr%' and o55_anousu=".db_getsession("DB_anousu"));
+            $sql = $clorcprojativ->sql_query($ano, "", $campos, "o55_descr",
+                "{$sWhere} {$sAnd} o55_descr like '$chave_o55_descr%' and o55_anousu=" . $ano);
         } else if(isset($o55_tipo)) {
 	        
         	if ($o55_tipo==1) {
@@ -146,13 +151,15 @@ $clorcprojativ->rotulo->label("o55_descr");
 	          $where = " o55_projativ > 3000 and o55_projativ < 3999 ";
 	          $sAnd  = " and ";
 	        }
-	          
-          $sql = $clorcprojativ->sql_query("","",$campos,"o55_anousu#o55_projativ","{$sWhere} {$sAnd} o55_anousu=".db_getsession('DB_anousu')." and ".$where);
+
+            $sql = $clorcprojativ->sql_query("", "", $campos, "o55_anousu#o55_projativ",
+                "{$sWhere} {$sAnd} o55_anousu=" . $ano . " and " . $where);
         } else {
         	if($sWhere != '' && $sAnd == ''){
         		$sAnd = " and ";
         	}
-          $sql = $clorcprojativ->sql_query(null,"",$campos,"o55_anousu#o55_projativ","{$sWhere} {$sAnd} o55_anousu=".db_getsession("DB_anousu"));
+            $sql = $clorcprojativ->sql_query(null, "", $campos, "o55_anousu#o55_projativ",
+                "{$sWhere} {$sAnd} o55_anousu=" . $ano);
         }
 
         if( isset($chave_o55_descr) ){
@@ -165,12 +172,13 @@ $clorcprojativ->rotulo->label("o55_descr");
           if (isset($sWhere) && !empty($sWhere)) {
             $sAnd = " and ";
           }
-          $sSql   = $clorcprojativ->sql_query(null,null,"*",null,"{$sWhere} {$sAnd} o55_projativ=$pesquisa_chave  and o55_anousu=".db_getsession("DB_anousu"));
+            $sSql = $clorcprojativ->sql_query(null, null, "*", null,
+                "{$sWhere} {$sAnd} o55_projativ=$pesquisa_chave  and o55_anousu=" . $ano);
           $result = $clorcprojativ->sql_record($sSql);
           if($clorcprojativ->numrows!=0){
             db_fieldsmemory($result,0);
 	    if(isset($mostraprojativ)){
-              echo "<script>".$funcao_js."('".db_getsession("DB_anousu")."','$pesquisa_chave');</script>";
+            echo "<script>" . $funcao_js . "('" . $ano . "','$pesquisa_chave');</script>";
 	    }else{
               echo "<script>".$funcao_js."('$o55_descr',false);</script>";
 	    }
@@ -207,3 +215,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

@@ -120,7 +120,7 @@ db_select('db53_alinha',$x,true,$db_opcao,"");
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_db_layoutformat','func_db_layoutformat.php?funcao_js=parent.js_preenchepesquisa|db53_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_layoutformat','func_db_layoutformat.php?funcao_js=parent.js_preenchepesquisa|db53_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_layoutformat.hide();

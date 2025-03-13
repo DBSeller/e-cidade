@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -27,6 +27,7 @@
 
 /**
  * Classe que realiza cache de conteudo.
+ *
  * @author Maurício Costa
  * @author Vitor Rocha
  */
@@ -42,6 +43,10 @@ class DBCache {
    * @return boolean
    */
   public static function check($sCache, $time = false) {
+
+      if (!is_string($sCache)) {
+          return false;
+      }
 
     if ( file_exists(self::PATH_CACHE . $sCache) ) {
 
@@ -78,7 +83,7 @@ class DBCache {
       unlink(self::PATH_CACHE . $mCache);
     }
 
-    return;    
+    return;
   }
 
   /**
@@ -94,7 +99,7 @@ class DBCache {
     $sPath = self::PATH_CACHE . $sCache;
 
     if (preg_match('/(.*)\/.*$/', $sPath, $aPath) && !is_dir($aPath[1])) {
-      
+
       mkdir($aPath[1], 0775, true);
     }
 
@@ -115,7 +120,7 @@ class DBCache {
 
       $aConteudo = file(self::PATH_CACHE . $sCache);
 
-      $content = unserialize($aConteudo[1]);
+      $content = @unserialize($aConteudo[1]);
 
       return $content;
     }

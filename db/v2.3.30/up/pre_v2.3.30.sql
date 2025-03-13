@@ -391,3 +391,5 @@ insert into db_menu      ( id_item ,id_item_filho ,menusequencia ,modulo )      
 insert into db_itensmenu ( id_item ,descricao ,help ,funcao ,itemativo ,manutencao ,desctec ,libcliente ) values ( 9989 ,'Modelo 6' ,'Gerar o Modelo 6 do Relatório Conciliação Bancária TCE/RJ' ,'cai2_modelo6delibtcerj001.php' ,'1' ,'1' ,'O usuário vai poder gerar PDF do modelo 6 do relatório conciliação bancária TCE/RJ.' ,'true' );
 insert into db_menu      ( id_item ,id_item_filho ,menusequencia ,modulo )                                values ( 9433 ,9989 ,1 ,39 );
 
+----------------------------------------------------
+----------------------------------------------------

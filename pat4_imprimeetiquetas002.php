@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("libs/db_utils.php");
-require_once ("classes/db_bens_classe.php");
-require_once ("model/impressao.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_utils.php"));
+require_once(modification("classes/db_bens_classe.php"));
+require_once(modification("model/impressao.model.php"));
 
 $clBens   = new cl_bens();
 $erro_msg = "";
@@ -96,7 +96,7 @@ $oImpressao->setIp($sIp);
       
 			
 			$sqlInstit = "select nomeinstabrev as nomeabrev,uf from db_config where codigo = ".db_getsession("DB_instit");
-			$rsqlInstit = pg_query($sqlInstit);
+			$rsqlInstit = db_query($sqlInstit);
 			if(pg_num_rows($rsqlInstit) > 0){
 				$oInstit = db_utils::fieldsMemory($rsqlInstit,0);
 			}

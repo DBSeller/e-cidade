@@ -138,7 +138,7 @@ function js_mostrafar_medanvisa1(chave1,chave2){
   db_iframe_far_medanvisa.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_far_codigodcb','func_far_codigodcb.php?funcao_js=parent.js_preenchepesquisa|fa28_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_far_codigodcb','func_far_codigodcb.php?funcao_js=parent.js_preenchepesquisa|fa28_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_far_codigodcb.hide();

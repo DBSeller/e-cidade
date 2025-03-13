@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_sql.php");
-include ("libs/db_liborcamento.php");
-include ("libs/db_libcontabilidade.php");
-include ("libs/db_libtxt.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_libtxt.php"));
 // classes do pad
-//include ("con4_padbvmovant.php");
-include ("classes/db_orcparametro_classe.php");
-include ("classes/db_db_config_classe.php");
-include ("classes/db_conhistdoc_classe.php");
-include ("classes/db_consistencia_classe.php");
+//include(modification("con4_padbvmovant.php"));
+include(modification("classes/db_orcparametro_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_conhistdoc_classe.php"));
+include(modification("classes/db_consistencia_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
@@ -78,7 +78,7 @@ if ($cldb_config->numrows > 0) {
 
 		if (count($matriz) > 1) {
 			// monta header
-			$res = pg_exec("select nomeinst,cgc from db_config where codigo=".db_getsession("DB_instit"));
+			$res = db_query("select nomeinst,cgc from db_config where codigo=".db_getsession("DB_instit"));
 			db_fieldsmemory($res, 0);
 			$ini = split("-", $data_ini);
 			$ini = "$ini[2]$ini[1]$ini[0]";

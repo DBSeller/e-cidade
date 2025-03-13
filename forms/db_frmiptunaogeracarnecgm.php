@@ -26,7 +26,7 @@
  */
 
 //MODULO: cadastro
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cliptunaogeracarnecgm->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -133,10 +133,10 @@ function js_cancelar(){
 }
 function js_pesquisaj68_naogeracarne(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarnecgm','db_iframe_iptunaogeracarne','func_iptunaogeracarne.php?funcao_js=parent.js_mostraiptunaogeracarne1|j66_sequencial|j66_data','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarnecgm','db_iframe_iptunaogeracarne','func_iptunaogeracarne.php?funcao_js=parent.js_mostraiptunaogeracarne1|j66_sequencial|j66_data','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.j68_naogeracarne.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarnecgm','db_iframe_iptunaogeracarne','func_iptunaogeracarne.php?pesquisa_chave='+document.form1.j68_naogeracarne.value+'&funcao_js=parent.js_mostraiptunaogeracarne','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarnecgm','db_iframe_iptunaogeracarne','func_iptunaogeracarne.php?pesquisa_chave='+document.form1.j68_naogeracarne.value+'&funcao_js=parent.js_mostraiptunaogeracarne','Pesquisa',false);
      }else{
        document.form1.j66_data.value = ''; 
      }
@@ -156,10 +156,10 @@ function js_mostraiptunaogeracarne1(chave1,chave2){
 }
 function js_pesquisaj68_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarnecgm','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarnecgm','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.j68_numcgm.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_iptunaogeracarnecgm','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.j68_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_iptunaogeracarnecgm','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.j68_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,32 +25,39 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_propri_classe.php");
-require_once("classes/db_itbipropriold_classe.php");
-require_once("classes/db_itbi_classe.php");
-require_once("classes/db_itbilogin_classe.php");
-require_once("classes/db_itbinome_classe.php");
-require_once("classes/db_itbinomecgm_classe.php");
-require_once("classes/db_itbimatric_classe.php");
-require_once("classes/db_itburbano_classe.php");
-require_once("classes/db_itbirural_classe.php");
-require_once("classes/db_itbiruralcaract_classe.php");
-require_once("classes/db_itbidadosimovel_classe.php");
-require_once("classes/db_itbidadosimovelsetorloc_classe.php");
-require_once("classes/db_itbiformapagamentovalor_classe.php");
-require_once("classes/db_itbiavalia_classe.php");
-require_once("classes/db_localidaderural_classe.php");
-require_once("classes/db_itbilocalidaderural_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_propri_classe.php"));
+require_once(modification("classes/db_itbipropriold_classe.php"));
+require_once(modification("classes/db_itbi_classe.php"));
+require_once(modification("classes/db_itbilogin_classe.php"));
+require_once(modification("classes/db_itbinome_classe.php"));
+require_once(modification("classes/db_itbinomecgm_classe.php"));
+require_once(modification("classes/db_itbimatric_classe.php"));
+require_once(modification("classes/db_itburbano_classe.php"));
+require_once(modification("classes/db_itbirural_classe.php"));
+require_once(modification("classes/db_itbiruralcaract_classe.php"));
+require_once(modification("classes/db_itbidadosimovel_classe.php"));
+require_once(modification("classes/db_itbidadosimovelsetorloc_classe.php"));
+require_once(modification("classes/db_itbiformapagamentovalor_classe.php"));
+require_once(modification("classes/db_itbiavalia_classe.php"));
+require_once(modification("classes/db_localidaderural_classe.php"));
+require_once(modification("classes/db_itbilocalidaderural_classe.php"));
+require_once(modification("classes/db_iptuant_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-$oGet                      = db_utils::postMemory($_GET);
-$oPost                     = db_utils::postMemory($_POST);
+use ECidade\Tributario\ITBI\Repository\ItbitaxasitbiRepository;
+use ECidade\Tributario\ITBI\Model\Itbitaxasitbi;
+
+$itbitaxasitbiRepository = ItbitaxasitbiRepository::getInstance();
+$itbitaxasitbi = new Itbitaxasitbi();
+
+$oGet  = db_utils::postMemory($_GET);
+$oPost = db_utils::postMemory($_POST);
 
 $cliptubase				         = new cl_iptubase();
 $clpropri 		  		       = new cl_propri();
@@ -69,97 +76,58 @@ $clitbidadosimovelsetorloc = new cl_itbidadosimovelsetorloc();
 $clitbiformapagamentovalor = new cl_itbiformapagamentovalor();
 $cllocalidaderural         = new cl_localidaderural();
 $clitbilocalidaderural     = new cl_itbilocalidaderural();
+$cl_iptucalc               = new cl_iptucalc();
+$cl_iptucale               = new cl_iptucale();
+$cliptuant 		   		   = new cl_iptuant();
 
-$db_opcao                  = 2;
-$db_botao                  = false;
-$lSqlErro                  = false;
-$lItbiAvalia               = false;
-$lLiberar                  = false;
+$db_opcao    = 2;
+$db_botao    = false;
+$lSqlErro    = false;
+$lItbiAvalia = false;
+$lLiberar    = false;
+
 
 $sBtnEnviaLiberacao = 'liberar';
 $sBtnLiberacao      = 'Enviar para liberação';
 
 $iAnoUsu   = db_getsession('DB_anousu');
-$lPermMenu = db_permissaomenu($iAnoUsu,2544,2571);
+$lPermMenu = db_permissaomenu($iAnoUsu, 2544, 2571);
 
-if ( isset($oGet->chavepesquisa) && !empty($oGet->chavepesquisa) ){
+if (isset($oGet->chavepesquisa) && !empty($oGet->chavepesquisa)) {
 	$it01_guia = $oGet->chavepesquisa;
 }
 
-if(isset($oPost->liberacao)){
+if (isset($it01_guia) && !empty($it01_guia)) {
 
-  if ($oPost->envialiberacao == 'liberar') {
+  $rsItbiAvalia = $clitbiavalia->sql_record($clitbiavalia->sql_query_file($it01_guia, "*", null, ""));
 
-  	/*
-  	 * Verificamos se a guia que estamos tentando liberar possui transmitente e adquirente cadastrados
-  	 */
-  	$sSqlTransmitente = "select distinct
-  	                            it03_tipo
-  	                       from itbinome
-  	                      where it03_guia = $it01_guia
-  	                        and it03_tipo in ('T','C')";
-  	$rsTransmitente   = db_query($sSqlTransmitente);
-  	if(pg_num_rows($rsTransmitente) < 2){
-  		$sMsgErro = "Não é permitido envio de uma guia sem transmitentes e adquirentes cadastrados!";
-  	} else {
-	    $sBtnEnviaLiberacao   = 'cancelar';
-	    $clitbi->it01_envia   = 'true';
-	    $clitbi->alterar($it01_guia);
-	    if ( $clitbi->erro_status == 0 ) {
-	     $lSqlErro = true;
-	    }
-	    $sMsgErro = $clitbi->erro_msg;
-  	}
-
-  } else if ($oPost->envialiberacao == 'cancelar') {
-
-    if (isset($lItbiAvalia) && $lItbiAvalia != false) {
-    	$sMsgErro = "Não é permitido cancelar o envio de uma guia já liberada!";
-    } else {
-
-      $sBtnEnviaLiberacao   = 'liberar';
-      $clitbi->it01_envia   = 'false';
-	    $clitbi->alterar($it01_guia);
-	    if ( $clitbi->erro_status == 0 ) {
-	     $lSqlErro = true;
-	    }
-
-	    $sMsgErro = $clitbi->erro_msg;
-	  }
-  }
-}
-
-if ( isset($it01_guia) && !empty($it01_guia) ) {
-
-  $rsItbiAvalia = $clitbiavalia->sql_record($clitbiavalia->sql_query_file($it01_guia,"*",null,""));
-
-  if ( $clitbiavalia->numrows > 0 ) {
+  if ($clitbiavalia->numrows > 0) {
     $lItbiAvalia = true;
   }
 
-  $rsItbi = $clitbi->sql_record($clitbi->sql_query_file($it01_guia,"it01_envia",null,""));
-  if ( $clitbi->numrows > 0 ) {
+  $rsItbi = $clitbi->sql_record($clitbi->sql_query_file($it01_guia, "it01_envia", null, ""));
+  if ($clitbi->numrows > 0) {
     $oItbi = db_utils::fieldsMemory($rsItbi,0);
   }
 }
 
-if ( isset($oItbi->it01_envia) ) {
+if (isset($oItbi->it01_envia)) {
 
-  if ( $oItbi->it01_envia == 't') {
+  if ($oItbi->it01_envia == 't') {
 
     $sBtnLiberacao      = 'Cancela envio a guia';
     $sBtnEnviaLiberacao = 'cancelar';
-    if ( $lPermMenu ) {
+    if ($lPermMenu) {
       $lLiberar = true;
     }
-  } else if ( $oItbi->it01_envia == 'f') {
+  } else if ($oItbi->it01_envia == 'f') {
 
     $sBtnLiberacao      = 'Enviar para liberação';
     $sBtnEnviaLiberacao = 'liberar';
   }
 }
 
-if(isset($oPost->alterar)){
+if (isset($oPost->alterar) or isset($oPost->liberacao)) {
 
   db_inicio_transacao();
 
@@ -176,8 +144,22 @@ if(isset($oPost->alterar)){
   $clitbi->it01_data		       = date('Y-m-d',db_getsession('DB_datausu'));
   $clitbi->it01_hora		       = db_hora();
   $clitbi->it01_percentualareatransmitida = $oPost->it01_percentualareatransmitida;
+  $clitbi->it01_cartorioextra = $oPost->j167_sequencial;
 
-  if (isset($oPost->it01_valortransacao)){
+  if($oPost->it01_processoexterno == null) {
+    $clitbi->it01_processo = $oPost->it01_processo;
+    $clitbi->it01_tituprocesso = $oPost->p58_requer;
+    $clitbi->it01_dtprocesso = null;
+  } else {
+    $data = str_replace('/', '-', $oPost->it01_dtprocesso);
+    $clitbi->it01_processo = $oPost->it01_processoexterno;
+    $clitbi->it01_tituprocesso = $oPost->it01_tituprocesso;
+    $clitbi->it01_dtprocesso = date('Y-m-d', strtotime(str_replace('/', '-', $oPost->it01_dtprocesso)));
+  }
+
+
+
+  if (isset($oPost->it01_valortransacao)) {
     $clitbi->it01_valorterreno   = null;
     $clitbi->it01_valorconstr    = null;
     $clitbi->it01_valortransacao = $oPost->it01_valortransacao;
@@ -189,13 +171,15 @@ if(isset($oPost->alterar)){
 
   $clitbi->alterar($oPost->it01_guia);
 
-  if ( $clitbi->erro_status == 0 ) {
+  $clitbi->it01_guia = $oPost->it01_guia;
+
+  if ($clitbi->erro_status == 0) {
   	$lSqlErro = true;
   }
 
   $sMsgErro = $clitbi->erro_msg;
 
-  if($oPost->tipo == "urbano"){
+  if ($oPost->tipo == "urbano") {
 
     $clitburbano->it05_guia 	  	  = $clitbi->it01_guia;
     $clitburbano->it05_frente   	  = $oPost->it05_frente;
@@ -324,7 +308,6 @@ if(isset($oPost->alterar)){
 	 	     }
 	     }
 	  }
-
   }
 
   $rsDadosImovel = $clitbidadosimovel->sql_record($clitbidadosimovel->sql_query_file(null,"*",null," it22_itbi = {$oPost->it01_guia}"));
@@ -374,7 +357,7 @@ if(isset($oPost->alterar)){
   	  $clitbiformapagamentovalor->it26_itbitransacaoformapag = $aListaValorFormaPag[0];
  	    $clitbiformapagamentovalor->it26_valor				 = $aListaValorFormaPag[1];
 
- 	    if ( $iLinhasForma > 0  ) {
+ 	    if($iLinhasForma > 0){
 
  	  	  $oDadosForma = db_utils::fieldsMemory($rsConsultaForma,0);
 
@@ -390,16 +373,17 @@ if(isset($oPost->alterar)){
       * Exclui as formas de pagamentos de outros tipos de transação da guia caso existam.
       *
       */
-      $sWhere2  = "     it26_itbitransacaoformapag not in (select it25_sequencial ";
-	    $sWhere2 .= "                                          from itbitransacao   ";
-	    $sWhere2 .= "		                                    inner join itbitransacaoformapag   on it25_itbitransacao         = it04_codigo     ";
-   	  $sWhere2 .= "		                                    inner join itbiformapagamentovalor on it26_itbitransacaoformapag = it25_sequencial ";
- 	    $sWhere2 .= "											where it26_guia = {$clitbi->it01_guia} ";
-	    $sWhere2 .= "											  and it04_codigo = {$it01_tipotransacao} )";
-      $sWhere2 .= "	and it26_guia = {$clitbi->it01_guia} ";
-	    $clitbiformapagamentovalor->excluir(null,$sWhere2);
+      $sWhere2  = " it26_itbitransacaoformapag not in (select it25_sequencial ";
+	    $sWhere2 .= "                                      from itbitransacao   ";
+	    $sWhere2 .= "                                           inner join itbitransacaoformapag   on it25_itbitransacao         = it04_codigo     ";
+   	  $sWhere2 .= "                                           inner join itbiformapagamentovalor on it26_itbitransacaoformapag = it25_sequencial ";
+ 	    $sWhere2 .= "       					                    where it26_guia = {$clitbi->it01_guia}     ";
+	    $sWhere2 .= "     						                      and it04_codigo = {$it01_tipotransacao}) ";
+      $sWhere2 .= "                                       and it26_guia = {$clitbi->it01_guia}     ";
 
- 	    if ( $clitbiformapagamentovalor->erro_status == 0 ) {
+      $clitbiformapagamentovalor->excluir(null, $sWhere2);
+
+ 	    if ($clitbiformapagamentovalor->erro_status == 0 ) {
  	  	  $sMsgErro = $clitbiformapagamentovalor->erro_msg;
  		    $lSqlErro = true;
  	      break;
@@ -408,6 +392,67 @@ if(isset($oPost->alterar)){
  	}
 
   }
+
+  if (!$lSqlErro) {
+
+    $clitbiEnvia = new cl_itbi();
+
+    if ($oPost->envialiberacao == 'liberar') {
+
+      /*
+       * Verificamos se a guia que estamos tentando liberar possui transmitente e adquirente cadastrados
+       */
+      $sSqlTransmitente = "select distinct
+                                  it03_tipo
+                             from itbinome
+                            where it03_guia = $it01_guia
+                              and it03_tipo in ('T','C')";
+      $rsTransmitente   = db_query($sSqlTransmitente);
+
+      if (pg_num_rows($rsTransmitente) < 2) {
+        $sMsgErro = "Não é permitido envio de uma guia sem transmitentes e adquirentes cadastrados!";
+      } else {
+        $sBtnEnviaLiberacao   = 'cancelar';
+        $clitbiEnvia->it01_envia   = 'true';
+        $clitbiEnvia->alterar($it01_guia);
+
+        if ($clitbiEnvia->erro_status == 0) {
+          $lSqlErro = true;
+        }
+
+        $sMsgErro = $clitbiEnvia->erro_msg;
+      }
+
+    } else if ($oPost->envialiberacao == 'cancelar') {
+
+      if (isset($lItbiAvalia) && $lItbiAvalia != false) {
+        $sMsgErro = "Não é permitido cancelar o envio de uma guia já liberada!";
+      } else {
+
+        $sBtnEnviaLiberacao = 'liberar';
+        $clitbiEnvia->it01_envia = 'false';
+        $clitbiEnvia->alterar($it01_guia);
+
+        if ($clitbiEnvia->erro_status == 0) {
+          $lSqlErro = true;
+        }
+
+        $sMsgErro = $clitbiEnvia->erro_msg;
+      }
+    }
+  }
+
+  if (!$lSqlErro AND !empty($oPost->codigoTipoTaxa)) {
+    $itbitaxasitbi->setItbi($it01_guia);
+
+    $oItbitaxasitbi = $itbitaxasitbiRepository->getDados($itbitaxasitbi);
+
+    $itbitaxasitbi->setSequencial($oItbitaxasitbi->it38_sequencial);
+    $itbitaxasitbi->setTaxasitbi($oPost->codigoTipoTaxa);
+
+    $itbitaxasitbiRepository->persist($itbitaxasitbi);
+  }
+
   db_fim_transacao($lSqlErro);
 
 } else if (isset($oGet->chavepesquisa)){
@@ -415,7 +460,7 @@ if(isset($oPost->alterar)){
    $db_opcao  = 2;
    $it22_itbi = $oGet->chavepesquisa;
 
-   $rsDadosITBI = $clitbi->sql_record($clitbi->sql_query_dados($oGet->chavepesquisa,'*, it33_localidaderural as j137_sequencial, it33_localidaderural as j137_descricao'));
+   $rsDadosITBI = $clitbi->sql_record($clitbi->sql_query_dados($oGet->chavepesquisa,"*, it33_localidaderural as j137_sequencial, it33_localidaderural as j137_descricao, (CASE WHEN it01_dtprocesso IS NOT NULL THEN it01_processo ELSE '' END) AS it01_processoExterno"));
    if ($clitbi->numrows > 0) {
    	 db_fieldsmemory($rsDadosITBI,0);
    	 if ( isset($it05_guia) && trim($it05_guia) ){
@@ -425,19 +470,44 @@ if(isset($oPost->alterar)){
    	 }
    }
 
-   $db_botao = true;
+  $rItbiMatric = db_query($clitbimatric->sql_query_file($it22_itbi, null, "it06_matric AS j01_matric"));
+
+  if ($rItbiMatric AND pg_numrows($rItbiMatric) > 0) {
+    db_fieldsmemory($rItbiMatric,0);
+
+    $rIptuant  = db_query($cliptuant->sql_query_file($j01_matric));
+
+    if (!$rIptuant) {
+        throw new Exception("Erro ao buscar a referência anterior.\n\nErro: ".pg_last_error());
+    }
+
+      db_fieldsmemory($rIptuant, 0);
+  }
+
+    $it01_valorterreno = number_format($it01_valorterreno, 2, ",", ".");
+    $it01_valorconstr = number_format($it01_valorconstr, 2, ",", ".");
+    $it01_valortransacao = number_format($it01_valortransacao, 2, ",", ".");
+
+    $itbitaxasitbi->setItbi($oGet->chavepesquisa);
+    $oItbitaxasitbi = $itbitaxasitbiRepository->getDados($itbitaxasitbi);
+    $db_botao = true;
 
       echo " <script>
 
-				      parent.document.formaba.dados.disabled    = false;
-	            parent.document.formaba.transm.disabled   = false;
-	            parent.document.formaba.compnome.disabled = false;
-	            parent.document.formaba.constr.disabled   = false;
+              parent.document.formaba.dados.disabled    = false;
+              parent.document.formaba.transm.disabled   = false;
+              parent.document.formaba.compnome.disabled = false;
+              parent.document.formaba.constr.disabled   = false;
 
-	            parent.iframe_transm.location.href 	 = 'itb1_itbinome001.php?tiponome=t&it03_guia=".$oGet->chavepesquisa."';
-	            parent.iframe_compnome.location.href = 'itb1_itbinomecomp001.php?tiponome=c&it03_guia=".$oGet->chavepesquisa."';
-	            parent.iframe_constr.location.href 	 = 'itb1_itbiconstr001.php?it08_guia=".$oGet->chavepesquisa."&tipo=".$oGet->tipo."';
+              parent.iframe_transm.location.href   = 'itb1_itbinome001.php?tiponome=t&it03_guia=".$oGet->chavepesquisa."';
+              parent.iframe_compnome.location.href = 'itb1_itbinomecomp001.php?tiponome=c&it03_guia=".$oGet->chavepesquisa."';
+              parent.iframe_constr.location.href   = 'itb1_itbiconstr001.php?it08_guia=".$oGet->chavepesquisa."&tipo=".$oGet->tipo."';
 
+            </script>";
+
+      echo " <script>
+              parent.document.formaba.inter.disabled = false;
+              parent.iframe_inter.location.href      = 'itb1_itbiintermediario001.php?tiponome=t&it03_guia=".$oGet->chavepesquisa."';
             </script>";
 
 } else {
@@ -445,7 +515,15 @@ if(isset($oPost->alterar)){
   $db_opcao   = 22;
   $oGet->tipo = "urbano";
 }
-
+/*
+ * Plugin ajustacadastroitbi Cria
+ if ($tipo == "urbano") {
+     $db_opcao_plugin = 3;
+ } else {
+     $db_opcao_plugin_rural = 3;
+ }
+*/
+/* M16507 - ajustacadastroitbi - Plugin que ajusta os campos do ITBI para Porto Velho */
 ?>
 <html>
 <head>
@@ -457,6 +535,7 @@ if(isset($oPost->alterar)){
 <script language="JavaScript" type="text/javascript" src="scripts/numbers.js"></script>
 <script language="JavaScript" type="text/javascript"src="scripts/prototype.js"></script>
 <script language="JavaScript" type="text/javascript"src="scripts/datagrid.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <link href="estilos/grid.style.css" rel="stylesheet" type="text/css">
 </head>
@@ -464,8 +543,8 @@ if(isset($oPost->alterar)){
 <table align="center" border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td>
-	  <?
-  	    include("forms/db_frmitbidadosimovel.php");
+	  <?php
+  	    include(modification("forms/db_frmitbidadosimovel.php"));
 	  ?>
 	</td>
   </tr>
@@ -473,25 +552,29 @@ if(isset($oPost->alterar)){
 </body>
 </html>
 <?
-if (isset($oPost->alterar)) {
+if (isset($oPost->alterar) or isset($oPost->liberacao)) {
 
-  if( $lSqlErro ){
-    db_msgbox($sMsgErro);
-    $db_botao=true;
-    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-    if($clitbidadosimovel->erro_campo!=""){
-      echo "<script> document.form1.".$clitbidadosimovel->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-      echo "<script> document.form1.".$clitbidadosimovel->erro_campo.".focus();</script>";
+  if ($lSqlErro) {
+
+    if (isset($oPost->alterar)) {
+
+      db_msgbox($sMsgErro);
+      $db_botao=true;
+      echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+      if($clitbidadosimovel->erro_campo!=""){
+        echo "<script> document.form1.".$clitbidadosimovel->erro_campo.".style.backgroundColor='#99A9AE';</script>";
+        echo "<script> document.form1.".$clitbidadosimovel->erro_campo.".focus();</script>";
+      }
+    }elseif (isset($oPost->liberacao)) {
+
+      if (isset($sMsgErro) && !empty($sMsgErro)) {
+        db_msgbox($sMsgErro);
+      }
     }
   } else {
     db_msgbox($sMsgErro);
-    db_redireciona("itb1_itbidadosimovel002.php");
+    db_redireciona("itb1_itbidadosimovel002.php?chavepesquisa={$oPost->it01_guia}&tipo={$tipo}");
   }
-} else if ( isset($oPost->liberacao) ) {
-
-	if (isset($sMsgErro) && !empty($sMsgErro)) {
-		db_msgbox($sMsgErro);
-	}
 }
 
 if ( $db_opcao == 22 ) {

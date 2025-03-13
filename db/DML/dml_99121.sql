@@ -1,0 +1,6 @@
+select fc_executa_ddl('insert into db_itensmenu ( id_item ,descricao ,help ,funcao ,itemativo ,manutencao ,desctec ,libcliente ) values ( 10185 ,\'Ata de Resultados Finais\' ,\'Ata de Resultados Finais\' ,\'edu2_ataresultadosfinaisprogressao001.php\' ,\'1\' ,\'1\' ,\'Formulário para impressão da ata de resultados finais da progressão parcial.\' ,\'true\' )');
+select fc_executa_ddl('insert into db_itensmenu ( id_item ,descricao ,help ,funcao ,itemativo ,manutencao ,desctec ,libcliente ) values ( 10186 ,\'Progressão Parcial\' ,\'Progressão Parcial\' ,\'\' ,\'1\' ,\'1\' ,\'Menu com os relatórios referentes a progressão parcial.\' ,\'true\' )');
+select fc_executa_ddl('insert into db_menu ( id_item ,id_item_filho ,menusequencia ,modulo ) values ( 4964 ,10186 ,22 ,1100747 )');
+select fc_executa_ddl('insert into db_menu ( id_item ,id_item_filho ,menusequencia ,modulo ) values ( 4964 ,10186 ,23 ,7159 )');
+select fc_executa_ddl('insert into db_menu ( id_item ,id_item_filho ,menusequencia ,modulo ) values ( 10186 ,10185 ,1 ,1100747 )');
+select fc_executa_ddl('insert into db_menu ( id_item ,id_item_filho ,menusequencia ,modulo ) values ( 10186 ,10185 ,2 ,7159 )');

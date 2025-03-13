@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-	require("libs/db_stdlib.php");
-	require("libs/db_conecta.php");
-	include("libs/db_sessoes.php");
-	include("libs/db_usuariosonline.php");
+	require(modification("libs/db_stdlib.php"));
+	require(modification("libs/db_conecta.php"));
+	include(modification("libs/db_sessoes.php"));
+	include(modification("libs/db_usuariosonline.php"));
 	$fonteorig="";
 	$sqltab ="select * from pg_tables where tablename = 'temp_classeatualiza'";
-	$resulttab = pg_query($sqltab);
+	$resulttab = db_query($sqltab);
 	$linhatab = pg_num_rows($resulttab);
 	if($linhatab>0){
 		$sql = "select * from temp_classeatualiza where seq = $seq";
-		$result = pg_query($sql);
+		$result = db_query($sql);
 		$linha = pg_num_rows($result);
 		db_fieldsmemory($result,0);
 		
@@ -66,7 +66,7 @@ table.tab td {
 </head>
 <script type="text/javascript">
 function js_codigo(seq){
-	js_OpenJanelaIframe('top.corpo','db_iframe_codigo','func_codigo.php?seq='+seq,'Código',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_codigo','func_codigo.php?seq='+seq,'Código',true);
 }
 </script>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
@@ -97,3 +97,9 @@ function js_codigo(seq){
 </form>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

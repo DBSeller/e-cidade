@@ -1,28 +1,28 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: material
@@ -30,6 +30,9 @@ $clatendrequi->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("nome");
 $clrotulo->label("descrdepto");
+$clrotulo->label("m40_data");
+$clrotulo->label("m40_hora");
+$clrotulo->label("m40_login");
 ?>
 <form name="form1" method="post" action=""  >
 <center>
@@ -41,7 +44,7 @@ $clrotulo->label("descrdepto");
         <table border="0">
           <tr>
             <td nowrap title="<?=@$Tm40_codigo?>">
-              <b>Código da Requisição: </b>
+              <label class="bold" for="m40_codigo" id="lbl_codigo">Código da Requisição:</label>
             </td>
             <td>
               <?db_input('m40_codigo',10,@$Im40_codigo,true,'text',3,"")?>
@@ -49,7 +52,7 @@ $clrotulo->label("descrdepto");
           </tr>
           <tr>
             <td nowrap title="<?=@$Tm40_data?>">
-              <?=@$Lm40_data?>
+              <label class="bold" for="m40_data" id="lbl_data"><?=@$Lm40_data?></label>
             </td>
             <td>
               <?db_inputdata('m40_data',@$m40_data_dia,@$m40_data_mes,@$m40_data_ano,true,'text',3,"")?>
@@ -57,7 +60,7 @@ $clrotulo->label("descrdepto");
           </tr>
           <tr>
             <td nowrap title="<?=@$Tm40_hora?>">
-              <?=@$Lm40_hora?>
+              <label class="bold" for="m40_hora" id="lbl_hora"><?=@$Lm40_hora?></label>
             </td>
             <td>
               <?db_input('m40_hora',5,@$Im40_hora,true,'text',3,"")?>
@@ -65,7 +68,7 @@ $clrotulo->label("descrdepto");
           </tr>
           <tr>
             <td nowrap title="<?=@$Tm40_login?>">
-              <?=@$Lm40_login?>
+              <label class="bold" for="m40_login" id="lbl_login"><?=@$Lm40_login?></label>
             </td>
             <td>
               <?db_input('m40_login',10,@$Im40_login,true,'text',3," ")?>
@@ -74,7 +77,7 @@ $clrotulo->label("descrdepto");
           </tr>
           <tr>
             <td nowrap title="departamento destino">
-              <b>Departamento Destino</b>
+              <label class="bold" for="m40_depto" id="lbl_solicitante">Departamento Solicitante:</label>
             </td>
             <td>
               <?
@@ -85,7 +88,7 @@ $clrotulo->label("descrdepto");
           </tr>
           <tr>
             <td nowrap title="departamento origem">
-              <b>Departamento Origem</b>
+              <label class="bold" for="m91_depto" id="lbl_almoxarifado">Almoxarifado:</label>
             </td>
             <td>
               <?
@@ -104,7 +107,7 @@ $clrotulo->label("descrdepto");
       <table width='100%'>
         <tr>
           <td rowspan='1' valign='top' height='100%'>
-            <fieldset><legend><b>Itens da Solicitação: </legend>
+            <fieldset><legend><b>Itens da Solicitação</legend>
               <div id='grid_anularequisicao' style='width: 100%; -moz-user-select: none'></div>
             </fieldset>
           </td>
@@ -114,13 +117,7 @@ $clrotulo->label("descrdepto");
   </tr>
   <tr>
     <td align="center">
-
-      <?php
-        if (!USE_PCASP) {
-          echo '<input id="btnAnularRequisicao" name="anular" type="button"  value="Anular Requisição" onclick="return js_atendeRequisicao();" >';
-        }
-      ?>
-
+      <input id="btnAnularRequisicao" name="anular" type="button"  value="Anular" onclick="return js_atendeRequisicao();" >
       <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" >
       <?
       db_input('atendimento',10,'',true,'hidden',3);
@@ -136,8 +133,8 @@ $clrotulo->label("descrdepto");
 iTipoControle = <?=$iTipoControleCustos;?>;
 function js_pesquisa() {
 
-  sFiltro = "sFiltro=almox";
-  js_OpenJanelaIframe('top.corpo','db_iframe_atendrequi','func_matrequianula.php?'+sFiltro+'&lSaldoZerado=1&funcao_js=parent.js_preenchepesquisa|m40_codigo','Pesquisa',true);
+  sFiltro = "sFiltro=almox&lSaldoZerado=true";
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_atendrequi','func_matrequianula.php?'+sFiltro+'&funcao_js=parent.js_preenchepesquisa|m40_codigo','Pesquisa de Requisições',true);
 }
 
 
@@ -148,17 +145,15 @@ function js_preenchepesquisa(chave) {
 
 }
 
-
-
 function js_marca(){
 
-  for (var a=0; a < document.form1.linha.value ; a++) {
+  for (var a = 0; a < document.form1.linha.value; a++) {
 
-    if(document.getElementById('chk'+a).disabled==false){
+    if (document.getElementById('chk'+a).disabled == false) {
 
-      if(document.getElementById('chk'+a).checked==false){
+      if (document.getElementById('chk'+a).checked == false) {
         document.getElementById('chk'+a).checked = true;
-      }else{
+      } else {
         document.getElementById('chk'+a).checked = false;
       }
 
@@ -168,9 +163,54 @@ function js_marca(){
 
 }
 
+function js_montaGrid() {
+
+  oDBGridanulaRequisicao                = new DBGrid('grid_anulaRequisicao');
+  oDBGridanulaRequisicao.nameInstance   = 'oDBGridanulaRequisicao';
+  oDBGridanulaRequisicao.hasTotalizador = true;
+  oDBGridanulaRequisicao.setCheckbox(0);
+
+  aHeader    = new Array();
+  aHeader[0] = 'Código do Material';
+  aHeader[1] = 'Descrição do Material';
+  aHeader[2] = 'Unidade de Saída';
+  aHeader[3] = 'Qtd. Solicitada';
+  aHeader[4] = 'Qtd. Atendida';
+  aHeader[5] = 'Qtd. em Estoque';
+  aHeader[6] = 'Qtd. Anulada';
+  aHeader[7] = 'Qtd. Anular';
+  aHeader[8] = 'Motivo';
+  aHeader[9] = 'Cód. Atendimento';
+  oDBGridanulaRequisicao.setHeader(aHeader);
+  oDBGridanulaRequisicao.aHeaders[6].lDisplayed  = false;
+  oDBGridanulaRequisicao.aHeaders[10].lDisplayed = false;
+  oDBGridanulaRequisicao.setHeight(200);
+  oDBGridanulaRequisicao.allowSelectColumns(true);
+
+  var aAligns = new Array();
+  aAligns[0]  = 'right';
+  aAligns[1]  = 'left';
+  aAligns[2]  = 'left';
+  aAligns[3]  = 'right';
+  aAligns[4]  = 'right';
+  aAligns[5]  = 'right';
+  aAligns[6]  = 'right';
+  aAligns[7]  = 'right';
+  aAligns[8]  = 'right';
+  aAligns[9]  = 'right';
+
+  oDBGridanulaRequisicao.setCellAlign(aAligns);
+
+  var aWidth = ['10%', '30%', '10%', '10%', '10%', '10%', '10%',' 10%', '30%', '10%'];
+
+  oDBGridanulaRequisicao.setCellWidth(aWidth);
+  oDBGridanulaRequisicao.show($('grid_anularequisicao'));
+}
+
+
 function js_janelaSolicitacao(oAjax) {
 
-  var obj = eval("(" + oAjax.responseText + ")");
+  var obj = JSON.parse(oAjax.responseText);
   if (obj.status && obj.status == 2) {
 
     js_removeObj("msgBox");
@@ -178,6 +218,9 @@ function js_janelaSolicitacao(oAjax) {
     return false ;
 
   }
+
+  oDBGridanulaRequisicao.clearAll(true);
+
   $('m40_codigo').value  = obj.m40_codigo;
   $('m40_data').value    = js_formatar(obj.m40_data,"d");
   $('m40_hora').value    = obj.m40_hora.urlDecode();
@@ -187,73 +230,51 @@ function js_janelaSolicitacao(oAjax) {
   $('descrdepto').value  = obj.descrdepto.urlDecode();
   $('descr_depto').value = obj.descr_depto.urlDecode();
   $('nome').value        = obj.nome.urlDecode();
+
   var iErros             = new Number(0);
   var lDisabled          = true;
   var lHabilitado        = "";
   var saida              = "";
-  oDBGridanulaRequisicao                = new DBGrid('grid_anulaRequisicao');
-  oDBGridanulaRequisicao.nameInstance   = 'oDBGridanulaRequisicao';
-  oDBGridanulaRequisicao.hasTotalizador = true;
-  oDBGridanulaRequisicao.setCheckbox(0);
 
-  aHeader     = new Array();
-  aHeader[0]  = 'Código do Material';
-  aHeader[1]  = 'Descrição do Material';
-  aHeader[2]  = 'Unidade de Saída';
-  aHeader[3]  = 'Qtd.Solic';
-  aHeader[4]  = 'Qtd.Atendida';
-  aHeader[5]  = 'Qtd.em Estoque';
-  aHeader[6]  = 'Qtd.Anulada';
-  aHeader[7]  = 'Qtd.Pendente';
-  aHeader[8]  = 'Qtd.Anular';
-  aHeader[9]  = 'Motivo';
-  aHeader[10] = 'Cód. Atendimento';
-  oDBGridanulaRequisicao.setHeader(aHeader);
-  oDBGridanulaRequisicao.setHeight(200);
-  oDBGridanulaRequisicao.allowSelectColumns(true);
+  var lDesabilitado = false;
+  var sClassName    = "normal";
 
-  var aAligns = new Array();
-  aAligns[0]  = 'left';
-  aAligns[1]  = 'left';
-  aAligns[2]  = 'center';
-  aAligns[3]  = 'center';
-  aAligns[4]  = 'center';
-  aAligns[5]  = 'center';
-  aAligns[6]  = 'center';
-  aAligns[7]  = 'center';
-  aAligns[8]  = 'center';
-  aAligns[9]  = 'center';
-  aAligns[10] = 'center';
-  oDBGridanulaRequisicao.setCellAlign(aAligns);
-  oDBGridanulaRequisicao.show($('grid_anularequisicao'));
-  oDBGridanulaRequisicao.clearAll(true);
   if (obj) {
 
     var aLinha = new Array();
     for (var iInd = 0; iInd < obj.itens.length; iInd++) {
 
+      lDesabilitado = false;
+      sClassName    = "normal";
+
       with (obj.itens[iInd]) {
 
-        eval("oMotivo"+iInd+" = new DBTextField('motivo"+iInd+"','oMotivo"+iInd+"',''),10;");
-        eval("oMotivo"+iInd+".setExpansible(true);");
-        lhabilitado = "false";
-        if (qtdpendente==0 ){
-          lhabilitado = "true";
+        if (qtdpendente == 0){
+          lDesabilitado = true;
+          sClassName    = "disabled"
         }
-        aLinha[0]  = m41_codmatmater;
-        aLinha[1]  = m60_descr.urlDecode();
-        aLinha[2]  = m61_descr.urlDecode();
-        aLinha[3]  = m41_quant;
-        aLinha[4]  = totalatendido;
-        aLinha[5]  = qtdeestoque;
-        aLinha[6]  = qtdanulada;
-        aLinha[7]  = qtdpendente;
-        aLinha[8]  =" <input readonly "+lhabilitado+" name='atendido"+iInd+"' id='atendido"+iInd+"' value='"+(qtdpendente)+"'size=10 type='text' onblur='js_verificaQuantidade(this.value, \""+(qtdpendente)+"\",\"Quantidade maior que o saldo.\",\"Quantidade deve ser maior que zero.\")'>";
-        aLinha[9]  = eval("oMotivo"+iInd+".toInnerHtml();");
-        aLinha[10] = m41_codigo;
-        oDBGridanulaRequisicao.addRow(aLinha);
-        oDBGridanulaRequisicao.aRows[iInd].isSelected = true;
 
+
+        var sMotivo = motivo.urlDecode().replace(/\'/g, "\\'");
+        sMotivo     = sMotivo.replace(/\"/g, '\\"');
+        eval("oMotivo"+iInd+" = new DBTextField('motivo"+iInd+"','oMotivo"+iInd+"', \"" + sMotivo+ "\", '25');");
+        eval("oMotivo"+iInd+".setExpansible(true);");
+        eval("oMotivo"+iInd+".setReadOnly(" + lDesabilitado + ");");
+        eval("oMotivo"+iInd+".sStyle += ';width:99%;';");
+
+        aLinha[0] = m41_codmatmater;
+        aLinha[1] = m60_descr.urlDecode();
+        aLinha[2] = m61_descr.urlDecode();
+        aLinha[3] = m41_quant;
+        aLinha[4] = totalatendido;
+        aLinha[5] = qtdeestoque;
+        aLinha[6] = qtdanulada;
+        aLinha[7] = qtdpendente + " <input type='hidden' name='atendido" + iInd + "' id='atendido" + iInd + "' value='" + (qtdpendente) + "' >";;
+        aLinha[8] = eval("oMotivo"+iInd+".toInnerHtml();");
+        aLinha[9] = m41_codigo;
+
+        oDBGridanulaRequisicao.addRow(aLinha, null, lDesabilitado);
+        oDBGridanulaRequisicao.aRows[iInd].setClassName(sClassName);
       }
 
     }
@@ -274,7 +295,8 @@ function js_verificaQuantidade(nValor, nMaximo, sMsg, sMsg1) {
     return false;
 
   }
-  if (parseFloat(nValor) > parseFloat(nMaximo)) {
+
+  if (parseFloat(round(nValor,2)) > parseFloat(round(nMaximo,2))) {
 
     alert(sMsg);
     return false;
@@ -282,6 +304,10 @@ function js_verificaQuantidade(nValor, nMaximo, sMsg, sMsg1) {
   }
   return true;
 
+}
+
+function round(value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }
 
 function js_consultaRequisicao(iRequisicao) {
@@ -303,36 +329,42 @@ function js_atendeRequisicao() {
 
   if (confirm('Confirma Anulação da Requisição?')) {
 
-    aItens = oDBGridanulaRequisicao.getSelection();
+    aItens = oDBGridanulaRequisicao.getRows();
 
     sJsonItem = "";
-    if ( aItens.length == 0) {
+    if (aItens.length == 0) {
 
       alert('Selecione um item para efetuar a Anulação');
       return false;
-
     }
 
     js_divCarregando("Aguarde, efetuando atendimento","msgBox");
-    sVirgula         = "";
+    sVirgula               = "";
+    var nItensSelecionados = 0;
     for (var i = 0; i < aItens.length; i++) {
 
       with(aItens[i]) {
 
+        var nValorCampo      = oDBGridanulaRequisicao.aRows[i].aCells[0].getValue();
         var nTotalAtendido   = oDBGridanulaRequisicao.aRows[i].aCells[5].getValue();
         var nTotalSolicitado = oDBGridanulaRequisicao.aRows[i].aCells[4].getValue() ;
         var nTotalDigitado   = new Number($('atendido'+i).value);
         var sItemDescr       = oDBGridanulaRequisicao.aRows[i].aCells[2].getValue();
         var iCodMater        = oDBGridanulaRequisicao.aRows[i].aCells[1].getValue();
         var nSaldo           = new Number(nTotalSolicitado-nTotalAtendido);
-        var sItemMotivo      = oDBGridanulaRequisicao.aRows[i].aCells[10].getValue();
-        var iCodItemReq      = oDBGridanulaRequisicao.aRows[i].aCells[11].getValue();
+        var sItemMotivo      = encodeURIComponent(tagString(oDBGridanulaRequisicao.aRows[i].aCells[9].getValue()));
+        var iCodItemReq      = oDBGridanulaRequisicao.aRows[i].aCells[10].getValue();
+
+        if (nValorCampo == null) {
+          continue;
+        }
+
         if ($('cc08_sequencial'+aItens[i].value)) {
           var iCodigoCriterio  = $('cc08_sequencial'+aItens[i].value).innerHTML;
         }
         var sMsg  = "Item ("+sItemDescr+") sem saldo para efetuar o atendimento.";
         var sMsg1 = "Item ("+sItemDescr+") deve ter quantidade maior que zero.";
-        if (js_verificaQuantidade(nTotalDigitado,nSaldo,sMsg,sMsg1)) {
+        if (js_verificaQuantidade(nTotalDigitado, nSaldo, sMsg, sMsg1)) {
 
           sJsonItem += sVirgula+"{'iCodItemReq':"+iCodItemReq+",'nQtde':"+nTotalDigitado+",";
           sJsonItem += "'iCodMater':"+iCodMater+",'iCentroDeCusto':"+iCodigoCriterio+",'sItemMotivo':'"+sItemMotivo+"'}";
@@ -352,9 +384,15 @@ function js_atendeRequisicao() {
           return false;
 
         }
-
+        nItensSelecionados++;
       }
 
+    }
+
+    if (nItensSelecionados == 0) {
+      alert("Não foi selecionado nenhum item para anulação.");
+      js_removeObj("msgBox");
+      return false;
     }
     sParams    = "'iCodReq':"+$F('m40_codigo')+",'iTipo':17,'aItens':["+sJsonItem+"],'iCodEstoque':"+$F('m91_depto');
     var sJson  = "{'exec':'anularRequisicao','params':[{"+sParams+"}]}";
@@ -374,7 +412,7 @@ function js_atendeRequisicao() {
 function js_saidaAtendimento(oAjax) {
 
   js_removeObj("msgBox");
-  var obj = eval("(" + oAjax.responseText + ")");
+  var obj = JSON.parse(oAjax.responseText);
   if (obj.status == 2) {
 
     alert(obj.message.urlDecode());
@@ -408,14 +446,14 @@ function js_mostraLotes(iItem) {
   sField        = new Number($('atendido'+iItem).value);
   sUrl          = 'mat4_mostraitemlotes.php?iCodMater='+iCodItem+'&iCodDepto='+iCodEstoque;
   sUrl         += '&nValor='+nValor+'&nValorSolicitado='+nValorReqItem+'&updateField='+sField;
-  js_OpenJanelaIframe('top.corpo','db_iframe_lotes',sUrl,'Lotes ',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotes',sUrl,'Lotes ',true);
 
 }
 
 function js_reset() {
 
   document.form1.reset();
-  $('dadosrequisicao').innerHTML = '';
+  oDBGridanulaRequisicao.clearAll(true);
 
 }
 
@@ -431,8 +469,8 @@ function js_adicionaCentroCusto(iLinha, iCodItem) {
                       true,
                       '25',
                       '1',
-                      (document.body.scrollWidth-10),
-                      (document.body.scrollHeight-100)
+                      (document.body.scrollWidth - 10),
+                      (document.body.scrollHeight - 100)
                      );
 
 }
@@ -448,8 +486,8 @@ function js_completaCustos(iCodigo, iCriterio, iDescr) {
 function js_reset() {
 
   document.form1.reset();
-  $('grid_anularequisicao').innerHTML = '';
-
+  oDBGridanulaRequisicao.clearAll(true);
 }
+js_montaGrid();
 js_pesquisa();
 </script>

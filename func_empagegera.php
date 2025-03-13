@@ -1,36 +1,36 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_empagegera_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_empagegera_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clempagegera = new cl_empagegera;
@@ -46,15 +46,15 @@ $clrotulo     ->label("z01_nome");
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 <table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
-<tr> 
+<tr>
 <td height="63" align="center" valign="top">
 <table width="35%" border="0" align="center" cellspacing="0">
 <form name="form2" method="post" action="" >
-<tr> 
+<tr>
 <td width="4%" align="right" nowrap title="<?=$Te87_codgera?>">
 <?=$Le87_codgera?>
 </td>
-<td width="96%" align="left" nowrap> 
+<td width="96%" align="left" nowrap>
 <?
 db_input("e87_codgera",6,$Ie87_codgera,true,"text",4,"","chave_e87_codgera");
 ?>
@@ -63,17 +63,17 @@ db_input("e87_codgera",6,$Ie87_codgera,true,"text",4,"","chave_e87_codgera");
 <td width="4%" align="right" nowrap title="<?=$Tz01_nome?>">
 <?=$Lz01_nome?>
 </td>
-<td width="96%" align="left" nowrap> 
+<td width="96%" align="left" nowrap>
 <?
 db_input("z01_nome",40,$Iz01_nome,true,"text",4,"","chave_z01_nome");
 ?>
 </td>
 </tr>
-<tr> 
+<tr>
 <td width="4%" align="right" nowrap title="<?=$Te87_descgera?>">
 <?=$Le87_descgera?>
 </td>
-<td width="96%" align="left" nowrap> 
+<td width="96%" align="left" nowrap>
 <?
 db_input("e87_descgera",40,$Ie87_descgera,true,"text",4,"","chave_e87_descgera");
 ?>
@@ -83,16 +83,18 @@ db_input("e87_descgera",40,$Ie87_descgera,true,"text",4,"","chave_e87_descgera")
 <strong>Período de </strong>
 <?
 db_inputdata('e87_data',@$e87_data_dia,@$e87_data_mes,@$e87_data_ano,true,'text',4,"","e87_dataini");
-?>                                                                                                 
-<b> a </b>                                                                                         
-<?                                                                                                 
+?>
+<b> a </b>
+<?
 db_inputdata('e87_data',@$e87_data_dia,@$e87_data_mes,@$e87_data_ano,true,'text',4,"","e87_datafim");
 ?>
 </td>
 </tr>
-<tr> 
-<td colspan="5" align="center"> 
-<input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
+<!-- [Inicio plugin GeracaoArquivoOBN - parte1] -->
+<!-- [Fim plugin GeracaoArquivoOBN - parte1] -->
+<tr>
+<td colspan="5" align="center">
+<input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar">
 <input name="limpar" type="reset" id="limpar" value="Limpar" >
 <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_empagegera.hide();">
 </td>
@@ -101,10 +103,13 @@ db_inputdata('e87_data',@$e87_data_dia,@$e87_data_mes,@$e87_data_ano,true,'text'
 </table>
 </td>
 </tr>
-<tr> 
-<td align="center" valign="top"> 
+<tr>
+<td align="center" valign="top">
 <?
 $where = " e91_codcheque is null and e80_instit = " . db_getsession("DB_instit");
+
+/* [Inicio plugin GeracaoArquivoOBN - parte2] */
+/* [Fim plugin GeracaoArquivoOBN - parte2] */
 
 $sVerificarCancelado = 'false';
 if (isset($lCancelado) && $lCancelado == '1') {
@@ -112,22 +117,37 @@ if (isset($lCancelado) && $lCancelado == '1') {
 }
 $where  .= " and e90_cancelado is {$sVerificarCancelado} ";
 
-
-if(isset($processado)){
+if(isset($processado)) {
   $where .= " and e75_codret is null  ";
 }
+
+if (!empty($filtrocnab)) {
+  $where .= " and not exists (select * from empagegeraobn where e138_empagegera = e87_codgera) ";
+}
+
+if (!empty($lFiltroOBN)) {
+  $where .= " and exists (select * from empagegeraobn where e138_empagegera = e87_codgera) ";
+}
+
+if (!empty($lFiltroPagFor)) {
+  $where .= " and exists (select * from pagfornumeracao where o152_empagegera = e87_codgera) ";
+}
+if (empty($e87_dataini) && empty($e87_datafim)) {
+    $where .= " and EXTRACT(year from e87_data) = " . db_getsession("DB_anousu");
+}
+
 if(!isset($pesquisa_chave)){
-  if(isset($campos)==false){
-    if(file_exists("funcoes/db_func_empagegera.php")==true){
-      include("funcoes/db_func_empagegera.php");
-    }else{
+
+  if (isset($campos) == false) {
+    if (file_exists("funcoes/db_func_empagegera.php") == true) {
+      include(modification("funcoes/db_func_empagegera.php"));
+    } else {
       $campos = "empagegera.*";
     }
   }
-  
-  $campos  = " distinct ".$campos;
 
-  
+  $campos  = " distinct ".$campos.", empagedadosret.e75_codret, empagedadosret.e75_arquivoret";
+
   if(isset($chave_e87_codgera) && (trim($chave_e87_codgera)!="") ){
     $sql = $clempagegera->sql_query_inner(null,$campos,"e87_codgera desc"," e87_codgera=$chave_e87_codgera and $where ");
   }else if(isset($chave_z01_nome) && (trim($chave_z01_nome)!="") ){
@@ -150,28 +170,27 @@ if(!isset($pesquisa_chave)){
     }else if($e87_datafim!="null"){
       $where = " e87_data <= '$e87_datafim' and $where ";
     }
-    
+
     if (isset($lRetorno) && $lRetorno == '1') {
-      
+
       $where .= " and empagedadosret.e75_codgera is not null ";
     }
-    
+
     $sql = $clempagegera->sql_query_inner(null,$campos,"e87_codgera desc"," $where ");
   }else{
-    
+
     if (isset($lRetorno) && $lRetorno == '1') {
-    
+
       $where .= " and empagedadosret.e75_codgera is not null ";
     }
     $sql = $clempagegera->sql_query_inner(null,$campos,"e87_codgera desc"," $where");
   }
-  //die($sql);
   db_lovrot($sql,15,"()","",$funcao_js);
 } else {
   if ($pesquisa_chave!=null && $pesquisa_chave!="") {
-    
+
     if (isset($lRetorno) && $lRetorno == '1') {
-    
+
       $where .= " and empagedadosret.e75_codgera is not null ";
     }
     $result = $clempagegera->sql_record($clempagegera->sql_query_inner(null,"*","","e87_codgera=$pesquisa_chave and $where"));
@@ -199,3 +218,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

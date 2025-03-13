@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_app.utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_app.utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label("ed61_i_aluno");
 $clrotulo->label("ed47_i_codigo");
@@ -199,7 +199,7 @@ $clrotulo->label("ed47_v_nome");
   js_retornoPreencheEscolas = function (oAjax) {
       
    js_removeObj('msgBox');
-   var oRetorno = eval("("+oAjax.responseText+")");
+   var oRetorno = JSON.parse(oAjax.responseText);
 
      oCboEscola.clearItens(); 
      oCboEscola.addItem("", "Selecione");
@@ -240,7 +240,7 @@ $clrotulo->label("ed47_v_nome");
   function js_retornoPesquisarCalendario(oResponse) {
 
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
     oRetorno.aResult.each(function(oCalendario, iSeq) {   
       oCboCalendario.addItem(oCalendario.ed52_i_codigo, oCalendario.ed52_c_descr.urlDecode());
     });
@@ -284,7 +284,7 @@ $clrotulo->label("ed47_v_nome");
   function js_retornoGetTurmas(oResponse) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
       oRetorno.aTurmas.each(function(oTurma, iSeq) {
         oCboTurma.addItem(oTurma.codigo_turma, oTurma.nome_turma.urlDecode());
       });
@@ -320,7 +320,7 @@ $clrotulo->label("ed47_v_nome");
   function js_retornoGetDisciplinas(oResponse) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
     oCboDisciplinas.clearItens(); 
     oRetorno.aDisciplinas.each(function(oDisciplina, iSeq) {
       oCboDisciplinas.addItem(oDisciplina.codigo_disciplina, oDisciplina.nome_disciplina.urlDecode());
@@ -349,7 +349,7 @@ $clrotulo->label("ed47_v_nome");
   function js_retornoGetPeriodos(oResponse) {
     
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oResponse.responseText+")");
+    var oRetorno = JSON.parse(oResponse.responseText);
     oRetorno.aPeriodos.each(function(oPeriodo, iSeq) {
       oCboPeriodo.addItem(oPeriodo.codigo_periodo, oPeriodo.descricao_periodo.urlDecode());
     });
@@ -427,7 +427,7 @@ $clrotulo->label("ed47_v_nome");
   function js_openVisualizadorImpressao(oAjax) {
     
     js_removeObj('msgBox');
-    var oRetorno            = eval("("+oAjax.responseText+")");
+    var oRetorno            = JSON.parse(oAjax.responseText);
     $('sSessionNome').value = oRetorno.sSessionNome; 
     var iWidth  = document.body.getWidth() - 10;
     oWindow = new windowAux('oWindow', 'Visualizar Impressão', iWidth);

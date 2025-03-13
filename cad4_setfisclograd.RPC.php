@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
 
-require_once("classes/db_face_classe.php");
-require_once("classes/db_lote_classe.php");
-require_once("classes/db_testada_classe.php");
-require_once("classes/db_lotesetorfiscal_classe.php");
-require_once("classes/db_ruasbairro_classe.php");
+require_once(modification("classes/db_face_classe.php"));
+require_once(modification("classes/db_lote_classe.php"));
+require_once(modification("classes/db_testada_classe.php"));
+require_once(modification("classes/db_lotesetorfiscal_classe.php"));
+require_once(modification("classes/db_ruasbairro_classe.php"));
 
 
 
@@ -91,7 +91,7 @@ switch($oParam->exec) {
   	$sSqlFace   .= " left join setorfiscal     on j90_codigo       = j91_codigo            \n";
   	$sSqlFace   .= "where j37_codigo = {$oParam->iCodigo}                                  \n";
   	$rsFace      = $oFace->sql_record($sSqlFace);
-  	$aListaFace  = db_utils::getColectionByRecord($rsFace, false, false, true);
+  	$aListaFace  = db_utils::getCollectionByRecord($rsFace, false, false, true);
   	
   	//echo $sSqlFace; die();
   	/*
@@ -101,7 +101,7 @@ switch($oParam->exec) {
     $sSqlNovoSetorFiscal .= "  union all                                         \n";
     $sSqlNovoSetorFiscal .= " select j90_codigo,j90_descr from setorfiscal       \n";  
     $rsNovoSetorFiscal    = db_query($sSqlNovoSetorFiscal);  
-    $aListaNovoSetor      = db_utils::getColectionByRecord($rsNovoSetorFiscal, false, false, false);
+    $aListaNovoSetor      = db_utils::getCollectionByRecord($rsNovoSetorFiscal, false, false, false);
     
     /*
      * Novas Zonas Para Lotes de Face
@@ -111,7 +111,7 @@ switch($oParam->exec) {
     $sSqlNovaZona .= " union all ";
     $sSqlNovaZona .= "select j50_zona,j50_descr from zonas ";
     $rsNovaZona    = db_query($sSqlNovaZona);
-    $aNovaZona     = db_utils::getColectionByRecord($rsNovaZona, false, false, false);
+    $aNovaZona     = db_utils::getCollectionByRecord($rsNovaZona, false, false, false);
     
     /*
      * Lista de bairros
@@ -122,7 +122,7 @@ switch($oParam->exec) {
     $sSqlBairros .= "  from bairro order by j13_descr   \n\n";
     
     $rsBairros    = db_query($sSqlBairros);
-    $aBairros     = db_utils::getColectionByRecord($rsBairros, false, false, false);
+    $aBairros     = db_utils::getCollectionByRecord($rsBairros, false, false, false);
     
     foreach ($aListaFace as $oIndiceFace => $oValorFace) {
       
@@ -179,7 +179,7 @@ switch($oParam->exec) {
 	    	
 	    	$sSqlTestada = $oTestada->sql_query(null,null,"distinct j36_idbql",null,"j36_face in ({$oValorAtualizar->face})");
 	    	$rsTestada = $oTestada->sql_record($sSqlTestada);
-	    	$aTestada  = db_utils::getColectionByRecord($rsTestada, false, false, false);
+	    	$aTestada  = db_utils::getCollectionByRecord($rsTestada, false, false, false);
 
 	    		//atualiza o bairro
 	    	if ($oValorAtualizar->n_bairro != null || $oValorAtualizar->n_bairro != "" ) {

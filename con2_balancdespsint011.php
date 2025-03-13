@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt21');
 $clrotulo->label('DBtxt22');
 
+
+$display = "display: none";
+if ( FONTE_RECURSO_UNIAO ) {
+    $display = "";
+}
 ?>
 
 <html>
@@ -43,51 +48,40 @@ $clrotulo->label('DBtxt22');
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/windowAux.widget.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/classes/DBViewFiltroRecursos.classe.js"></script>
 <script>
 variavel = 1;
 function js_emite(){
+
    valor_nivel = new Number(document.form1.orgaos.value);
    sel_instit  = new Number(document.form1.db_selinstit.value);
-
+    if (filtroRecursos !== false) {
+        $('recursos_selecionados').value = filtroRecursos.getListaRecursos();
+    }
    if(sel_instit == 0){
       alert('Você não escolheu nenhuma Instituição. Verifique!');
       return false;
    } else {
-    jan = window.open('','safo' + variavel,'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-    document.form1.target = 'safo' + variavel++;
-    document.form1.filtra_despesa.value = parent.iframe_filtro.js_atualiza_variavel_retorno();
-    var obj      = document.form1.nivel;
-    var virgula  = "";
-    var vernivel = "";
+        jan = window.open('','safo' + variavel,'width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
+        document.form1.target = 'safo' + variavel++;
+        document.form1.filtra_despesa.value = parent.iframe_filtro.js_atualiza_variavel_retorno();
+        var obj      = document.form1.nivel;
+        var virgula  = "";
+        var vernivel = "";
 
-    var flag_elemento = false;
-    var flag_grupo    = false;
-    for (var i = 0; i < obj.options.length; i++){
-          if (obj.options[i].selected == true){
-//               if (obj.options[i].value == "7B" && flag_grupo == false){
-                    vernivel += virgula+obj.options[i].value;
-                    virgula   = ",";
-//                    flag_elemento = true;
-//               }
-/*
-               if (obj.options[i].value == "9B" && flag_elemento == false){
-                    vernivel += virgula+obj.options[i].value;
-                    virgula   = ",";
-                    flag_grupo = true;
-               }
+        var flag_elemento = false;
+        var flag_grupo    = false;
+        for (var i = 0; i < obj.options.length; i++){
+              if (obj.options[i].selected == true){
+                vernivel += virgula+obj.options[i].value;
+                virgula   = ",";
+              }
+        }
 
-               if (obj.options[i].value != "7B" && obj.options[i].value != "9B"){
-                    vernivel += virgula+obj.options[i].value;
-                    virgula   = ",";
-               }
-*/               
-          }
-    }
-
-    document.form1.vernivel.value = vernivel;
-    //setTimeout("document.form1.submit()",1000);
-    return true;
+        document.form1.vernivel.value = vernivel;
+        return true;
     }
 }
 </script>  
@@ -113,7 +107,8 @@ function js_emite(){
        <tr>
          <td colspan="2">
            <fieldset>
-             <table border="0">
+             <legend>Filtros: </legend>
+             <table>
                <tr>
                  <td align="right" ><strong>Nível :</strong></td>
                  <td>
@@ -123,18 +118,7 @@ function js_emite(){
 	               ?>
                  </td>
                </tr>
-             </table>
-           </fieldset>
-         </td>
-       </tr> 
-      </table>
-
-      <table border="0" align="center" width="400">
-       <tr>
-         <td colspan="2">
-           <fieldset>
-             <table border="0">
-               <tr>
+              <tr>
                  <td nowrap align="right" title="<?=@$TDBtxt21?>"><?=@$LDBtxt21?></td>
                  <td>
                  <?
@@ -156,17 +140,6 @@ function js_emite(){
                  ?>
                  </td>
                </tr>
-             </table>  
-           </fieldset>
-         </td>
-       </tr> 
-      </table>
-
-      <table border="0" align="center" width="400">
-       <tr>
-         <td colspan="2">
-           <fieldset>
-             <table border="0">
                <tr>
                  <td nowrap><b>Imprime Filtro:</b></td>
                  <td>
@@ -184,14 +157,11 @@ function js_emite(){
 
       <table align="center">
         <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
           <td colspan="2" align = "center"> 
-            <input  name="emite2" id="emite2" type="submit" value="Processar" onclick="return js_emite();">
-            <input  name="orgaos" id="orgaos" type="hidden" value="">
+            <input  name="emite2"   id="emite2"   type="submit" value="Processar" onclick="return js_emite();">
+            <input  name="orgaos"   id="orgaos"   type="hidden" value="">
             <input  name="vernivel" id="vernivel" type="hidden" value="">
+            <input  name="recursos_selecionados" id="recursos_selecionados" type="hidden" value="">
             <input  name="filtra_despesa" id="filtra_despesa" type="hidden" value="">
           </td>
         </tr>
@@ -202,4 +172,14 @@ function js_emite(){
 </html>
 <script>
    document.forms[0].nivel.multiple = true;
+
+   var filtroRecursos = false;
+   function abrirJanela() {
+       if ( ! filtroRecursos) {
+           filtroRecursos = new DBViewFiltroRecursos();
+           filtroRecursos.construirJanela();
+       }
+       filtroRecursos.show();
+   }
+
 </script>

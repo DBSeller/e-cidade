@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
+include(modification("fpdf151/pdf.php"));
 
 if($totalizar=="cp"){
   $T= "cliente e procedimento.";
@@ -238,7 +238,7 @@ if($ordem2=="d"){
   $sql .= " desc";
 }
 //die($sql);
-$result = pg_exec($sql);
+$result = db_query($sql);
 $linhas= pg_num_rows($result);
 if($linhas>0){
   if($totalizar=="cp"){

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 ?>
 
@@ -52,12 +52,12 @@ function js_emite(){
   qry += '&dddresp=' + document.form1.dddresp.value;
   qry += '&foneresp=' + document.form1.foneresp.value;
   qry += '&pref_fun=' + document.form1.pref_fun.value;
-  js_OpenJanelaIframe('top.corpo','db_iframe_geradirf','pes4_geradirf002.php?'+qry,'Gerando Arquivo',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_geradirf','pes4_geradirf002.php?'+qry,'Gerando Arquivo',true);
 }
 
 function js_erro(msg){
   //js_controlarodape(false);
-  top.corpo.db_iframe_geradirf.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_geradirf.hide();
   alert(msg);
 }
 function js_fechaiframe(){
@@ -65,16 +65,16 @@ function js_fechaiframe(){
 }
 function js_controlarodape(mostra){
   if(mostra == true){
-    document.form1.rodape.value = parent.bstatus.document.getElementById('st').innerHTML;
-    parent.bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
+    document.form1.rodape.value = (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = '&nbsp;&nbsp;<blink><strong><font color="red">GERANDO ARQUIVO</font></strong></blink>' ;
   }else{
-    parent.bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
+    (window.CurrentWindow || parent.CurrentWindow).bstatus.document.getElementById('st').innerHTML = document.form1.rodape.value;
   }
 }
 
 function js_detectaarquivo(arquivo,pdf){
 //  js_controlarodape(false);
-  top.corpo.db_iframe_geradirf.hide();
+  (window.CurrentWindow || parent.CurrentWindow).corpo.db_iframe_geradirf.hide();
   listagem = arquivo+"#Download arquivo TXT (pagamento eletrônico)|";
   listagem+= pdf+"#Download relatório";
   js_montarlista(listagem,"form1");

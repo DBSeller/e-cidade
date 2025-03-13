@@ -1,33 +1,7 @@
-<?
-/*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -51,12 +25,20 @@
  *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-require_once ("libs/db_utils.php");
-parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
+use ECidade\Pdf\Pdf;
+
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+
+parse_str($_SERVER['QUERY_STRING']);
 
 $instit = db_getsession("DB_instit");
+
+if (DBPessoal::verificaBloqueioCompetenciasAbertas($ano,$mes,$instit)) {
+    db_redireciona('db_erros.php?fechar=true&db_erro=Relatório sem acesso. Folha em aberto');
+}
 
 $sValoresPatronais = " select distinct r33_codtab,
                                        r33_nome,
@@ -71,15 +53,19 @@ $rsValoresPatronais = db_query($sValoresPatronais);
 $iNunRows           = pg_num_rows($rsValoresPatronais);
 
 if($iNunRows > 0){
-  $aValoresPatronais = db_utils::getColectionByRecord($rsValoresPatronais);
+  $aValoresPatronais = db_utils::getCollectionByRecord($rsValoresPatronais);
 }
 $oValoresPatronais = new stdClass();
+$oValoresPatronais->data[0] = new \stdClass();
 $oValoresPatronais->data[0]->nome = "BASE PREV.1";
 $oValoresPatronais->data[0]->valor= 0;
+$oValoresPatronais->data[1] = new \stdClass();
 $oValoresPatronais->data[1]->nome = "BASE PREV.2";
 $oValoresPatronais->data[1]->valor= 0;
+$oValoresPatronais->data[2] = new \stdClass();
 $oValoresPatronais->data[2]->nome = "BASE PREV.3";
 $oValoresPatronais->data[2]->valor= 0;
+$oValoresPatronais->data[3] = new \stdClass();
 $oValoresPatronais->data[3]->nome = "BASE PREV.4";
 $oValoresPatronais->data[3]->valor= 0;
 
@@ -142,7 +128,7 @@ if($vinc == 'a'){
   $dvinc = ' PENSIONISTAS';
   $xvinc = " and rh30_vinculo = 'P' " ;
 }elseif($vinc == 'ip'){
-  $dvinc = ' ATIVOS/PENSIONISTAS ';
+  $dvinc = ' INATIVOS/PENSIONISTAS ';
   $xvinc = " and rh30_vinculo in ('P','I') ";
 }else{
   $dvinc = ' GERAL';
@@ -194,6 +180,11 @@ if($sel != 0){
   }
 }
 
+if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+    $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+    $wherepes .= " and rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+}
+        
 if(isset($previdencia) && $previdencia != 0 ){
   if($previdencia != 5){
     $wherepes .= " and rh02_tbprev = ".$previdencia;
@@ -211,9 +202,9 @@ $head1 = "RESUMO DA FOLHA DE PAGAMENTO ";
 $head2 = "ARQUIVO : ".$xarquivo;
 $head3 = "PERÍODO : ".$mes." / ".$ano;
 $head4 = "VINCULO : ".$dvinc;
-
-
-
+$head5 = "";
+$head6 = "";
+$head8 = "";
 
 $inner_join = "";
 $whereestrut = " ";
@@ -615,11 +606,19 @@ if ($xxnum == 0){
 
 }
 
-$pdf = new PDF();
-$pdf->Open();
+$pdf = new Pdf();
+$pdf->addTitulo($head1,1);
+$pdf->addTitulo($head2,2);
+$pdf->addTitulo($head3,3);
+$pdf->addTitulo($head4,4);
+$pdf->addTitulo($head5,5);
+$pdf->addTitulo($head6,6);
+$pdf->addTitulo($head7,7);
+$pdf->addTitulo($head8,8);
 $pdf->AliasNbPages();
-$pdf->addpage();
 $pdf->setfillcolor(235);
+$pdf->init();
+
 $baseprev = 0;
 $baseirf  = 0;
 $alt = 4;
@@ -630,14 +629,14 @@ $retencao = 0;
 $deducao  = 0;
 $pextra   = 0;
 $rub_dif  = 0;
-$pdf->setfont('arial','b',8);
-db_fieldsmemory($result,0);
-//echo substr($r14_rubric,1,4) ;exit;
 
+db_fieldsmemory($result,0);
+
+$pdf->setfont('arial','b',8);
 $pdf->cell(15,$alt,'RUBRICA',1,0,"C",1);
 $pdf->cell(15,$alt,'N.FUNC.',1,0,"C",1);
 $pdf->cell(15,$alt,'QUANT.',1,0,"C",1);
-$pdf->cell(60,$alt,'DESCRIÇÃO',1,0,"C",1);
+$pdf->cell(100,$alt,'DESCRIÇÃO',1,0,"C",1);
 $pdf->cell(20,$alt,'PROVENTOS',1,0,"C",1);
 $pdf->cell(20,$alt,'DESCONTOS',1,1,"C",1);
 
@@ -656,18 +655,18 @@ for($x = 0;$x < pg_numrows($result);$x++){
       $pdf->cell(15,$alt,'',"T",0,"C",0);
       $pdf->cell(15,$alt,'',"T",0,"C",0);
       $pdf->cell(15,$alt,'',"T",0,"C",0);
-      $pdf->cell(60,$alt,'',"T",0,"C",0);
+      $pdf->cell(100,$alt,'',"T",0,"C",0);
       $pdf->cell(20,$alt,'',"T",0,"C",0);
       $pdf->cell(20,$alt,'',"T",1,"C",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'TOTAL',0,0,"L",0);
       $pdf->cell(20,$alt,db_formatar($vencimentos,'f'),0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar($descontos,'f'),0,1,"R",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'TOTAL LÍQUIDO ',0,0,"L",0);
       $pdf->cell(20,$alt,'',0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar($vencimentos - $descontos,'f'),0,1,"R",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'N. FUNCIONÁRIOS ',0,0,"L",0);
       $pdf->cell(20,$alt,'',0,0,"R",0);
       if($tipo == "l"){
@@ -730,31 +729,31 @@ for($x = 0;$x < pg_numrows($result);$x++){
       $resultlota = db_query($sqllota);
       db_fieldsmemory($resultlota,0);
       $pdf->cell(20,$alt,$count,0,1,"R",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'BASE PREVIDÊNCIA ',0,0,"L",0);
       $pdf->cell(20,$alt,'',0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar($baseprev,'f'),0,1,"R",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'BASE I.R.R.F  ',0,0,"L",0);
       $pdf->cell(20,$alt,'',0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar($baseirf,'f'),0,1,"R",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'EMPENHOS  ',0,0,"L",0);
       $pdf->cell(20,$alt,'',0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar($empenho,'f'),0,1,"R",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'P.EXTRA   ',0,0,"L",0);
       $pdf->cell(20,$alt,'',0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar($pextra,'f'),0,1,"R",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'RETENCAO  ',0,0,"L",0);
       $pdf->cell(20,$alt,'',0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar($retencao,'f'),0,1,"R",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'DEDUCAO   ',0,0,"L",0);
       $pdf->cell(20,$alt,'',0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar($deducao,'f'),0,1,"R",0);
-      $pdf->cell(60,$alt,'',0,0,"C",0);
+      $pdf->cell(100,$alt,'',0,0,"C",0);
       $pdf->cell(45,$alt,'DIFERENCA ',0,0,"L",0);
       $pdf->cell(20,$alt,'',0,0,"R",0);
       $pdf->cell(20,$alt,db_formatar($rub_dif,'f'),0,1,"R",0);
@@ -821,13 +820,13 @@ for($x = 0;$x < pg_numrows($result);$x++){
       }
       $pdf->sety(290);
    }
-   if ($pdf->gety() > $pdf->h -30){
+   if ($pdf->gety() > $pdf->getH() -30){
       $pdf->addpage();
       $pdf->setfont('arial','b',8);
       $pdf->cell(15,$alt,'RUBRICA',1,0,"C",1);
       $pdf->cell(15,$alt,'N.FUNC.',1,0,"C",1);
       $pdf->cell(15,$alt,'QUANT.',1,0,"C",1);
-      $pdf->cell(60,$alt,'DESCRIÇÃO',1,0,"C",1);
+      $pdf->cell(100,$alt,'DESCRIÇÃO',1,0,"C",1);
       $pdf->cell(20,$alt,'PROVENTOS',1,0,"C",1);
       $pdf->cell(20,$alt,'DESCONTOS',1,1,"C",1);
       if($tipo == "l" || $tipo == "o" || $tipo == "s" || $tipo == "t" ){
@@ -839,7 +838,7 @@ for($x = 0;$x < pg_numrows($result);$x++){
      $pdf->cell(15,$alt,$emp.$r14_rubric,0,0,"R",0);
      $pdf->cell(15,$alt,$soma,0,0,"R",0);
      $pdf->cell(15,$alt,$quant,0,0,"R",0);
-     $pdf->cell(60,$alt,$rh27_descr,0,0,"L",0);
+     $pdf->cell(100,$alt,$rh27_descr,0,0,"L",0);
      if ($r14_pd == 1){
         $pdf->cell(20,$alt,db_formatar($valor,'f'),0,0,"R",0);
         $pdf->cell(20,$alt,'',0,1,"R",0);
@@ -894,18 +893,18 @@ if ($tipo == "l" || $tipo == "o" || $tipo == "s" || $tipo == "t"){
    $pdf->cell(15,$alt,'',"T",0,"C",0);
    $pdf->cell(15,$alt,'',"T",0,"C",0);
    $pdf->cell(15,$alt,'',"T",0,"C",0);
-   $pdf->cell(60,$alt,'',"T",0,"C",0);
+   $pdf->cell(100,$alt,'',"T",0,"C",0);
    $pdf->cell(20,$alt,'',"T",0,"C",0);
    $pdf->cell(20,$alt,'',"T",1,"C",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'TOTAL',0,0,"L",0);
    $pdf->cell(20,$alt,db_formatar($vencimentos,'f'),0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($descontos,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'TOTAL LÍQUIDO ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($vencimentos - $descontos,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'N. FUNCIONÁRIOS ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $dbwherelta = " r70_estrut >= '$lotaini' and r70_estrut <= '$lotafin' ";
@@ -962,31 +961,31 @@ if ($tipo == "l" || $tipo == "o" || $tipo == "s" || $tipo == "t"){
    $resultlota = db_query($sqllota);
    db_fieldsmemory($resultlota,0);
    $pdf->cell(20,$alt,$count,0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'BASE PREVIDÊNCIA ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($baseprev,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'BASE I.R.R.F  ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($baseirf,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'EMPENHOS  ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($empenho,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'P.EXTRA   ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($pextra,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'RETENCAO  ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($retencao,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'DEDUCAO  ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($deducao,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'DIFERENCA ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($rub_dif,'f'),0,1,"R",0);
@@ -1044,18 +1043,18 @@ if ($tipo == "l" || $tipo == "o" || $tipo == "s" || $tipo == "t"){
    $pdf->cell(15,$alt,'',"T",0,"C",0);
    $pdf->cell(15,$alt,'',"T",0,"C",0);
    $pdf->cell(15,$alt,'',"T",0,"C",0);
-   $pdf->cell(60,$alt,'',"T",0,"C",0);
+   $pdf->cell(100,$alt,'',"T",0,"C",0);
    $pdf->cell(20,$alt,'',"T",0,"C",0);
    $pdf->cell(20,$alt,'',"T",1,"C",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'TOTAL',0,0,"L",0);
    $pdf->cell(20,$alt,db_formatar($vencimentos,'f'),0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($descontos,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'TOTAL LÍQUIDO ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($vencimentos - $descontos,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'N. FUNCIONÁRIOS ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $sqllota = "select count(distinct(".$folha."_regist))
@@ -1080,31 +1079,31 @@ if ($tipo == "l" || $tipo == "o" || $tipo == "s" || $tipo == "t"){
    $resultlota = db_query($sqllota);
    db_fieldsmemory($resultlota,0);
    $pdf->cell(20,$alt,$count,0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'BASE PREVIDÊNCIA ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($baseprev,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'BASE I.R.R.F  ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($baseirf,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'EMPENHOS  ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($empenho,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'P.EXTRA   ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($pextra,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'RETENCAO  ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($retencao,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'DEDUCAO   ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($deducao,'f'),0,1,"R",0);
-   $pdf->cell(60,$alt,'',0,0,"C",0);
+   $pdf->cell(100,$alt,'',0,0,"C",0);
    $pdf->cell(45,$alt,'DIFERENCA ',0,0,"L",0);
    $pdf->cell(20,$alt,'',0,0,"R",0);
    $pdf->cell(20,$alt,db_formatar($rub_dif,'f'),0,1,"R",0);
@@ -1181,6 +1180,5 @@ if ($tipo == "l" || $tipo == "o" || $tipo == "s" || $tipo == "t"){
    $pdf->cell(20,$alt,trim(db_formatar($fgts,'f')),0,1,"R",0);
 
 }
+
 $pdf->Output();
-//exit;
-?>

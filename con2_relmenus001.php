@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_SERVER_VARS);
@@ -80,7 +80,7 @@ echo " sel = $ssel4[2] <br> "; */
                               from db_modulos m
                                    inner join db_itensmenu i on i.id_item = m.id_item
                               where libcliente is true order by nomemod";
-		$resultmodulo=pg_query($sqlmodulo);
+		$resultmodulo=db_query($sqlmodulo);
 //		db_criatabela($resultmodulo);
 
 		db_multiploselect("codmod", "nomemod", "nsel4", "ssel4", $resultmodulo, array(), 20, 250,'','',true,'js_pegaValores(document.form1.ssel4);');

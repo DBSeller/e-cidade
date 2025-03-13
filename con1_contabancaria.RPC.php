@@ -1,41 +1,41 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ('libs/db_conn.php');
-require_once ('libs/db_stdlib.php');
-require_once ('libs/db_utils.php');
-require_once ("libs/db_app.utils.php");
-require_once ('libs/db_conecta.php');
-require_once ('libs/JSON.php');
-require_once ('libs/db_utils.php');
-require_once ('dbforms/db_funcoes.php');
-require_once ("classes/db_bancoagencia_classe.php");
-require_once ("classes/db_contabancaria_classe.php");
-require_once ("model/financeiro/ContaBancaria.model.php");
+require_once(modification('libs/db_conn.php'));
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/JSON.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification("classes/db_bancoagencia_classe.php"));
+require_once(modification("classes/db_contabancaria_classe.php"));
+require_once(modification("model/financeiro/ContaBancaria.model.php"));
 
 db_app::import("exceptions.*");
 
@@ -209,6 +209,41 @@ switch ($oParam->exec) {
     }
 
     break;
+    case "buscaContasComArquivos":
+        try {
+            $sqlContas = "select distinct(db83_sequencial), db83_descricao
+                from contabancaria
+             join contabilidade.conplanocontabancaria ON conplanocontabancaria.c56_contabancaria = contabancaria.db83_sequencial
+             join contabilidade.conplanoreduz ON conplanoreduz.c61_reduz = conplanocontabancaria.c56_reduz
+                and conplanoreduz.c61_anousu = conplanocontabancaria.c56_anousu
+             join saltes on saltes.k13_reduz = c56_reduz
+             join empenho.empagetipo ON empagetipo.e83_conta = saltes.k13_conta
+             join empenho.empagepag ON empagepag.e85_codtipo = empagetipo.e83_codtipo
+             join empenho.empagemov ON empagemov.e81_codmov = empagepag.e85_codmov
+             join empenho.empageconfgera ON empageconfgera.e90_codmov = empagemov.e81_codmov
+             join empenho.empagegera ON empagegera.e87_codgera = empageconfgera.e90_codgera;";
+
+            $rsContas = pg_query($sqlContas);
+
+            if (!$rsContas) {
+                throw new Exception("Erro ao buscar Contas.");
+            }
+
+            $contas = [];
+            while ($conta = pg_fetch_array($rsContas)) {
+                $contas[] = (object)[
+                    "sequencial" => $conta['db83_sequencial'],
+                    "descricao" => $conta['db83_descricao']
+                ];
+            }
+
+            $oRetorno->contas = $contas;
+        } catch (Exception $eErro) {
+            $oRetorno->message = $eErro->getMessage();
+            $oRetorno->status = 2;
+        }
+
+        break;
 }
 $oRetorno->message = urlencode($oRetorno->message);
 if ($iRetorno == 1) {
@@ -216,5 +251,4 @@ if ($iRetorno == 1) {
 } else {
   echo($oJson->encode($oRetorno));
 }
-
 ?>

@@ -1,28 +1,28 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: saude
@@ -52,119 +52,115 @@ $clrotulo->label("sd27_i_codigo");
 $clrotulo->label("rh70_sequencial");
 $clrotulo->label("rh70_estrutural");
 $clrotulo->label("rh70_descr");
+
+//Setor ambulatorial
+$oDaoSetorAmbulatorial  = new cl_setorambulatorial();
+
 ?>
-   <SCRIPT LANGUAGE="JavaScript">
-    team = new Array(
-    <?
-    # Seleciona todos os calendï¿½rios
-    $sql1 = "SELECT sd34_i_codigo,sd34_v_descricao
-               FROM microarea
-              ORDER BY sd34_v_descricao";
-    $sql_result = db_query($sql1);
-    $num        = pg_num_rows($sql_result);
-    $conta      = "";
+<SCRIPT LANGUAGE="JavaScript">
+  team = []
+  <?php
 
-    while($row = pg_fetch_array($sql_result)) {
+  $sql1       = "SELECT sd34_i_codigo,sd34_v_descricao ";
+  $sql1      .= "  FROM microarea  ";
+  $sql1      .= "  ORDER BY sd34_v_descricao";
+  $sql_result = db_query( $sql1 );
+  $num        = pg_num_rows( $sql_result );
+  $conta      = "";
 
-      $conta     = $conta+1;
-      $cod_micro = $row["sd34_i_codigo"];
-      echo "new Array(\n";
-      $sub_sql = "SELECT sd35_i_codigo,sd33_v_descricao
-                  FROM familiamicroarea
-                       inner join familia on sd33_i_codigo = sd35_i_familia
-                 WHERE sd35_i_microarea = '$cod_micro'
-                 ORDER BY sd33_v_descricao";
-      $sub_result = db_query($sub_sql);
-      $num_sub    = pg_num_rows($sub_result);
+  $aArrayPai = array();
+  while( $row = pg_fetch_array( $sql_result ) ) {
 
-      if( $num_sub >= 1 ) {
+    $conta     = $conta+1;
+    $cod_micro = $row["sd34_i_codigo"];
+    $aArrayFilho = array();
 
-        echo "new Array(\"\", ''),\n";
-        $conta_sub = "";
+    $sub_sql    = "SELECT sd35_i_codigo,sd33_v_descricao ";
+    $sub_sql   .= "  FROM familiamicroarea ";
+    $sub_sql   .= "       inner join familia on sd33_i_codigo = sd35_i_familia ";
+    $sub_sql   .= " WHERE sd35_i_microarea = '{$cod_micro}' ";
+    $sub_sql   .= " ORDER BY sd33_v_descricao";
+    $sub_result = db_query( $sub_sql );
+    $num_sub    = pg_num_rows( $sub_result );
 
-        while( $rowx = pg_fetch_array( $sub_result ) ) {
+    if($num_sub>=1){
 
-          $codigo_fam = $rowx["sd35_i_codigo"];
-          $nome_fam   = $rowx["sd33_v_descricao"];
-          $conta_sub  = $conta_sub + 1;
+      $aArrayFilho[] = array('', '');
+      $conta_sub = "";
 
-          if( $conta_sub == $num_sub ) {
+      while( $rowx = pg_fetch_array( $sub_result ) ) {
 
-            echo "new Array(\"$nome_fam\", $codigo_fam)\n";
-            $conta_sub = "";
-          } else {
-            echo "new Array(\"$nome_fam\", $codigo_fam),\n";
-          }
+        $codigo_fam = $rowx["sd35_i_codigo"];
+        $nome_fam   = $rowx["sd33_v_descricao"];
+        $conta_sub  = $conta_sub+1;
+
+        if( $conta_sub == $num_sub ) {
+
+          $aArrayFilho[] = array(urlencode($nome_fam), $codigo_fam);
+          $conta_sub = "";
+        } else {
+          $aArrayFilho[] = array(urlencode($nome_fam), $codigo_fam);
         }
-      } else {
-        echo "new Array(\"Microarea sem famílias cadastradas.\", '')\n";
       }
-
-      if ($num>$conta){
-       echo "),\n";
-      }
+    } else {
+      $aArrayFilho[] = array("Microarea sem familias cadastradas.", '');
     }
-   echo ")\n";
-   ?>
-   //Inicio da funï¿½ï¿½o JS
-   function fillSelectFromArray(selectCtrl, itemArray, goodPrompt, badPrompt, defaultItem) {
+    $aArrayPai[] = $aArrayFilho ;
+  }
+  $sArrayJson = JSON::create()->stringify($aArrayPai);
+  ?>
+  team = <?=$sArrayJson?>;
+
+  //Inicio da função JS
+  function fillSelectFromArray( selectCtrl, itemArray, goodPrompt, badPrompt, defaultItem ) {
+
     var i, j;
     var prompt;
 
     // empty existing items
-    for (i = selectCtrl.options.length; i >= 0; i--) {
-     selectCtrl.options[i] = null;
+    for( i = selectCtrl.options.length; i >= 0; i-- ) {
+      selectCtrl.options[i] = null;
     }
+
     prompt = (itemArray != null) ? goodPrompt : badPrompt;
-    if (prompt == null) {
-     selectCtrl.options[0] = new Option('','');
-     j = 0;
-    }else{
-     selectCtrl.options[0] = new Option(prompt);
-     j = 1;
+    if( prompt == null ) {
+
+      selectCtrl.options[0] = new Option('','');
+      j = 0;
+    } else {
+
+      selectCtrl.options[0] = new Option(prompt);
+      j = 1;
     }
-    if (itemArray != null) {
-     // add new items
-     for (i = 0; i < itemArray.length; i++){
-      selectCtrl.options[j] = new Option(itemArray[i][0]);
-      if (itemArray[i][1] != null){
-       selectCtrl.options[j].value = itemArray[i][1];
+
+    if( itemArray != null ) {
+
+      // add new items
+      for( i = 0; i < itemArray.length; i++ ) {
+
+        selectCtrl.options[j] = new Option(itemArray[i][0].urlDecode());
+
+        if( itemArray[i][1] != null ) {
+          selectCtrl.options[j].value = itemArray[i][1];
+        }
+
+        <?php
+        if( isset( $z01_i_familiamicroarea ) && $z01_i_familiamicroarea != "" ) {?>
+         if(<?=trim($z01_i_familiamicroarea)?>==itemArray[i][1]){
+           indice = i;
+         }
+        <?}?>
+        j++;
       }
+
       <?if(isset($z01_i_familiamicroarea)&&$z01_i_familiamicroarea!=""){?>
-       if(<?=trim($z01_i_familiamicroarea)?>==itemArray[i][1]){
-        indice = i;
-       }
+       selectCtrl.options[indice].selected = true;
+      <?}else{?>
+       selectCtrl.options[0].selected = true;
       <?}?>
-      j++;
-     }
-     <?if(isset($z01_i_familiamicroarea)&&$z01_i_familiamicroarea!=""){?>
-      selectCtrl.options[indice].selected = true;
-     <?}else{?>
-      selectCtrl.options[0].selected = true;
-     <?}?>
     }
-   }
-   </script>
-
-<?php
-if( !$lDepartamentoValido ) {
-?>
-  <table width='100%'>
-    <tr>
-      <td align='center'>
-        <br><br>
-        <b>Departamento <?=db_getsession("DB_coddepto");?> não cadastrado como UPS.
-          <p> Selecione um departamento válido.<br>
-        </b>
-      </td>
-    </tr>
-  </table>
-<?php
-
-  db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-  exit;
-}
-?>
+  }
+</script>
 <div class="container">
   <form name="form1" method="post" action="">
     <table width='65%'>
@@ -172,11 +168,14 @@ if( !$lDepartamentoValido ) {
         <td>
           <fieldset>
             <legend><b>Paciente</b></legend>
+            <div id="status-microarea" class="alert-danger" style="text-align: center;" role="alert" hidden>
+              Paciente sem cadastro em uma microárea!
+            </div>
             <table border="0" width="100%">
               <tr>
                 <td align="right" nowrap title="<?=@$Tsd24_i_codigo?>">
                   <div style="width: 130px;">
-                    <?=@$Lsd24_i_codigo?>
+                    <label for="sd24_i_codigo"><?=@$Lsd24_i_codigo?></label>
                   </div>
                 </td>
                 <td>
@@ -186,9 +185,11 @@ if( !$lDepartamentoValido ) {
                 </td>
                 <? if( $obj_sau_config->s103_c_lancafaa == "I" ){ ?>
                 <td align="right" title="<?=@$Tsd23_i_codigo?>">
-                  <?php
-                  db_ancora( @$Lsd23_i_codigo, "js_pesquisasd23_i_codigo(true);", $db_opcao );
-                  ?>
+                  <label for="sd23_i_codigo">
+                    <?php
+                    db_ancora( @$Lsd23_i_codigo, "js_pesquisasd23_i_codigo(true);", $db_opcao );
+                    ?>
+                  </label>
                 </td>
                 <td>
                   <?php
@@ -199,9 +200,11 @@ if( !$lDepartamentoValido ) {
               </tr>
               <tr>
                 <td align="right" nowrap title="<?=@$Tsd24_i_unidade?>">
-                  <?php
-                  db_ancora( @$Lsd24_i_unidade, "js_pesquisasd24_i_unidade(true);", 3 );
-                  ?>
+                  <label for="sd24_i_unidade">
+                    <?php
+                    db_ancora( @$Lsd24_i_unidade, "js_pesquisasd24_i_unidade(true);", 3 );
+                    ?>
+                  </label>
                 </td>
                 <td colspan='3' nowrap>
                   <?php
@@ -212,26 +215,35 @@ if( !$lDepartamentoValido ) {
               </tr>
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_i_cgsund?>">
-                  <?php
-                  db_ancora( @$Lz01_i_cgsund, "js_pesquisaz01_i_cgsund(true);", $db_opcao );
-                  ?>
+                  <label for="z01_i_cgsund">
+                    <?php
+                    db_ancora( @$Lz01_i_cgsund, "js_pesquisaz01_i_cgsund(true);", $db_opcao );
+                    ?>
+                  </label>
                 </td>
                 <td colspan="3" nowrap>
                   <?php
                   db_input( 'z01_i_cgsund', 12, $Iz01_i_cgsund, true, 'text', $db_opcao, "onchange='js_pesquisaz01_i_cgsund(false);'");
-                  db_input( 'z01_v_nome',   52, $Iz01_v_nome,   true, 'text', $db_opcao );
+                  if (isset($nome_social)) {
+                    db_input( 'nome_social',   52, $Iz01_v_nome,   true, 'text', 3);  
+                  } else {
+                    db_input( 'z01_v_nome',   52, $Iz01_v_nome,   true, 'text', 3);
+                  }
                   ?>
                 </td>
               </tr>
-
               <!-- Micro Área / Familia -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tsd35_i_microarea?>">
-                  <b>Micro:</b>
+                  <label for="z01_v_micro" class="bold">Micro:</label>
                 </td>
                 <td>
-                  <select name="z01_v_micro"
-                          onChange="fillSelectFromArray(this.form.z01_i_familiamicroarea, ((this.selectedIndex == -1) ? null : team[this.selectedIndex-1]));" >
+                  <select 
+                    name="z01_v_micro" 
+                    class="readonly" 
+                    style="pointer-events: none; touch-action: none;"  
+                    aria-disabled="true"
+                    onChange="fillSelectFromArray(this.form.z01_i_familiamicroarea, ((this.selectedIndex == -1) ? null : team[this.selectedIndex-1]));" >
                    <option></option>
                    <?php
                    $sql1        = "SELECT sd34_i_codigo,sd34_v_descricao ";
@@ -256,11 +268,15 @@ if( !$lDepartamentoValido ) {
                    ?>
                  </td>
                 <td nowrap title="<?=@$Tsd35_i_familia?>" align="right">
-                  <b>Familia:</b>
+                  <label for="z01_i_familiamicroarea" class="bold">Família:</label>
                 </td>
                 <td>
-                  <select name="z01_i_familiamicroarea"
-                          onchange="if(this.value=='')document.form1.z01_v_micro.value='';">
+                  <select 
+                    name="z01_i_familiamicroarea" 
+                    class="readonly" 
+                    style="pointer-events: none; touch-action: none;"  
+                    aria-disabled="true"
+                    onchange="if(this.value=='')document.form1.z01_v_micro.value='';">
                     <option value=""></option>
                   </select>
                   <?if( isset( $z01_i_familiamicroarea ) && $z01_i_familiamicroarea != "" ) {?>
@@ -272,20 +288,20 @@ if( !$lDepartamentoValido ) {
               <!-- CPF / CGS do municipio -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_v_cgccpf?>">
-                  <?=@$Lz01_v_cgccpf?>
+                  <label for="z01_v_cgccpf"><?=@$Lz01_v_cgccpf?></label>
                 </td>
                 <td>
                   <?php
                   db_input( 'z01_v_cgccpf', 12, $Iz01_v_cgccpf, true, 'text', $db_opcao );
                   ?>
                 </td>
-                <td nowrap title="<?=@$Tz01_c_municipio?>"  align="right">
-                  <B>CGS do Munic.</B>
+                <td nowrap title="<?=@$Tz01_registromunicipio?>"  align="right">
+                  <label for="z01_registromunicipio" class="bold">CGS do Munic.</label>
                 </td>
                 <td>
                   <?php
-                  $xz01_c_municipio = array( 'S' => 'SIM', 'N' => 'NÃO');
-                  db_select( 'z01_c_municipio', $xz01_c_municipio, true, $db_opcao, "onchange=js_municipio()" );
+                  $xz01_registromunicipio = array( 't' => 'SIM', 'f' => 'NÃO');
+                  db_select( 'z01_registromunicipio', $xz01_registromunicipio, true, $db_opcao, "onchange=js_municipio()" );
                   ?>
                 </td>
               </tr>
@@ -293,13 +309,15 @@ if( !$lDepartamentoValido ) {
               <!--  CEP  -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_v_cep?>">
-                 <?php
-                   if( !isset( $z01_c_municipio ) || $z01_c_municipio == 'S' ) {
-                     echo @$Lz01_v_cep;
-                   } else {
-                     db_ancora( @$Lz01_v_cep, "js_cepcon(true);", 1 );
-                   }
-                 ?>
+                  <label for='z01_v_cep'>
+                    <?php
+                    if( !isset( $z01_registromunicipio ) || $z01_registromunicipio == 't' ) {
+                      echo @$Lz01_v_cep;
+                    } else {
+                      db_ancora( @$Lz01_v_cep, "js_cepcon(true);", 1 );
+                    }
+                    ?>
+                  </label>
                 </td>
                 <td colspan="3">
                   <?php
@@ -309,22 +327,24 @@ if( !$lDepartamentoValido ) {
                               $Iz01_v_cep,
                               true,
                               'text',
-                              ( !isset( $z01_c_municipio ) || $z01_c_municipio == 'S' ? 3 : $db_opcao )
+                              ( !isset( $z01_registromunicipio ) || $z01_registromunicipio == 't' ? 3 : $db_opcao )
                             );
                   ?>
                   <input type="button"
                          name="buscacep"
                          value="Pesquisar"
-                         onClick="js_cepcon(false)" <?=(!isset($z01_c_municipio)||$z01_c_municipio=="S"?"disabled":"")?> >
+                         onClick="js_cepcon(false)" <?=(!isset($z01_registromunicipio)||$z01_registromunicipio=="t"?"disabled":"")?> >
                 </td>
               </tr>
 
               <!--  Endereço -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_v_ender?>">
-                 <?php
-                   db_ancora( @$Lz01_v_ender, "js_ruas();", $db_opcao );
-                 ?>
+                  <label for='z01_v_ender'>
+                    <?php
+                      db_ancora( @$Lz01_v_ender, "js_ruas();", $db_opcao );
+                    ?>
+                  </label>
                 </td>
                 <td colspan="3">
                   <?php
@@ -334,7 +354,7 @@ if( !$lDepartamentoValido ) {
                               $Iz01_v_ender,
                               true,
                               'text',
-                              ( !isset( $z01_c_municipio ) || $z01_c_municipio == 'S' ? 3 : $db_opcao )
+                              ( !isset( $z01_registromunicipio ) || $z01_registromunicipio == 't' ? 3 : $db_opcao )
                             );
                   ?>
                 </td>
@@ -343,7 +363,7 @@ if( !$lDepartamentoValido ) {
               <!--  Número / Complemento -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_i_numero?>">
-                   <?=@$Lz01_i_numero?>
+                   <label for="z01_i_numero"><?=@$Lz01_i_numero?></label>
                 </td>
                 <td>
                   <?php
@@ -351,7 +371,7 @@ if( !$lDepartamentoValido ) {
                   ?>
                 </td>
                 <td nowrap title="<?=@$Tz01_v_compl?>" align="right">
-                  <?=@$Lz01_v_compl?>
+                  <label for="z01_v_compl"><?=@$Lz01_v_compl?></label>
                 </td>
                 <td>
                   <?php
@@ -363,9 +383,11 @@ if( !$lDepartamentoValido ) {
               <!--  Bairro -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_v_bairro?>">
-                  <?php
-                    db_ancora( @$Lz01_v_bairro, "js_bairro();", $db_opcao );
-                  ?>
+                  <label for='z01_v_bairro'>
+                    <?php
+                      db_ancora( @$Lz01_v_bairro, "js_bairro();", $db_opcao );
+                    ?>
+                  </label>
                 </td>
                 <td colspan="3">
                  <?php
@@ -376,7 +398,7 @@ if( !$lDepartamentoValido ) {
                              $Iz01_v_bairro,
                              true,
                              'text',
-                             ( !isset( $z01_c_municipio ) || $z01_c_municipio == 'S' ? 3 : $db_opcao )
+                             ( !isset( $z01_registromunicipio ) || $z01_registromunicipio == 't' ? 3 : $db_opcao )
                            );
                  ?>
                 </td>
@@ -385,7 +407,7 @@ if( !$lDepartamentoValido ) {
               <!--  Municipio / UF -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_v_munic?>">
-                  <?=@$Lz01_v_munic?>
+                  <label for="z01_v_munic" class="bold">Município:</label>
                 </td>
                 <td>
                   <?php
@@ -393,7 +415,7 @@ if( !$lDepartamentoValido ) {
                   ?>
                 </td>
                 <td nowrap title="<?=@$Tz01_v_uf?>" align="right">
-                  <?=@$Lz01_v_uf?>
+                  <label for="z01_v_uf"><?=@$Lz01_v_uf?></label>
                 </td>
                 <td>
                   <?php
@@ -405,7 +427,7 @@ if( !$lDepartamentoValido ) {
               <!--  Telefone / Cartão SUS -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_v_telef?>">
-                  <?=@$Lz01_v_telef?>
+                  <label for="z01_v_telef"><?=@$Lz01_v_telef?></label>
                 </td>
                 <td>
                   <?php
@@ -413,7 +435,7 @@ if( !$lDepartamentoValido ) {
                   ?>
                 </td>
                 <td nowrap title="<?=@$Ts115_c_cartaosus?>" align="right">
-                  <?=@$Ls115_c_cartaosus?>
+                  <label for="s115_c_cartaosus"><?=@$Ls115_c_cartaosus?></label>
                 </td>
                 <td>
                   <?php
@@ -429,7 +451,7 @@ if( !$lDepartamentoValido ) {
               <!--  Nascimento / Sexo -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_d_nasc?>">
-                  <?=@$Lz01_d_nasc?>
+                  <label for="z01_d_nasc"><?=@$Lz01_d_nasc?></label>
                 </td>
                 <td>
                   <?php
@@ -437,7 +459,7 @@ if( !$lDepartamentoValido ) {
                   ?>
                 </td>
                 <td nowrap title="<?=@$Tz01_v_sexo?>" align="right">
-                  <?=@$Lz01_v_sexo?>
+                  <label for="z01_v_sexo"><?=@$Lz01_v_sexo?></label>
                 </td>
                 <td>
                 <?php
@@ -450,7 +472,7 @@ if( !$lDepartamentoValido ) {
               <!-- Data Cadastro / Login -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tz01_d_cadast?>">
-                  <B>Cadastro:</B>
+                  <label for="z01_d_cadast" class="bold">Cadastro:</label>
                 </td>
                 <td>
                  <?php
@@ -458,7 +480,7 @@ if( !$lDepartamentoValido ) {
                  ?>
                 </td>
                 <td nowrap title="<?=@$Tz01_i_login?>" align="right">
-                   <?=@$Lz01_i_login?>
+                   <label for="nome"><?=@$Lz01_i_login?></label>
                 </td>
                 <td>
                    <?php
@@ -469,7 +491,7 @@ if( !$lDepartamentoValido ) {
               </tr>
               <tr>
                 <td nowrap title="<?=@$Tsd24_i_tipo?>" align="right">
-                  <?=@$Lsd24_i_tipo?>
+                  <label for="sd24_i_tipo"><?=@$Lsd24_i_tipo?></label>
                 </td>
                 <td colspan="3">
                   <select name="sd24_i_tipo" id="sd24_i_tipo">
@@ -489,7 +511,7 @@ if( !$lDepartamentoValido ) {
               </tr>
               <tr>
                 <td nowrap title="<?=@$Tsd24_i_motivo?>" align="right">
-                  <?=@$Lsd24_i_motivo?>
+                  <label for="sd24_i_motivo"><?=@$Lsd24_i_motivo?></label>
                 </td>
                 <td colspan="3">
                   <select name="sd24_i_motivo" id="sd24_i_motivo">
@@ -509,7 +531,7 @@ if( !$lDepartamentoValido ) {
               </tr>
               <tr>
                 <td nowrap title="<?=@$Tz01_i_login?>" align="right">
-                   <?=@$Lsd24_i_acaoprog?>
+                   <label for="sd24_i_acaoprog" class="bold">Ação Programática:</label>
                 </td>
                 <td colspan="3">
                   <select name="sd24_i_acaoprog" id="sd24_i_acaoprog">
@@ -527,6 +549,20 @@ if( !$lDepartamentoValido ) {
                   </select>
                 </td>
               </tr>
+              <tr>
+                <td nowrap align="right" class="bold">
+                   <label for="sd24_setorambulatorial" class="bold">Setor:</label>
+                </td>
+                <td colspan="3">
+                  <?php
+                    $sCampos  = "sd91_codigo,sd91_descricao";
+                    $sWhere   = "sd91_local = 1 and sd91_unidades = " . db_getsession('DB_coddepto');
+                    $sSql     = $oDaoSetorAmbulatorial->sql_query_file( null, $sCampos, null, $sWhere );
+                    $rsSelect = db_query( $sSql );
+                    db_selectrecord("sd24_setorambulatorial",$rsSelect,true,1,"","","","","",1);
+                  ?>
+                </td>
+              </tr>
             </table>
           </fieldset>
         </td>
@@ -537,28 +573,30 @@ if( !$lDepartamentoValido ) {
             $db_opcaoprof = isset( $sd29_i_profissional ) && (int) $sd29_i_profissional != 0 ? 3 : $db_opcao;
           ?>
           <fieldset>
-            <legend><b>Profissional de Atendimento</b></legend>
+            <legend>Profissional de Atendimento</legend>
             <table border="0" width="100%">
               <!-- PROFISSIONAL -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tsd03_i_codigo?>" >
                   <div style="width: 130px;">
-                  <?php
-                    db_ancora( @$Lsd03_i_codigo, "js_pesquisasd03_i_codigo(true,1);", $db_opcaoprof );
-                  ?>
+                    <label for='sd03_i_codigo'>
+                      <?php
+                        db_ancora( @$Lsd03_i_codigo, "js_pesquisasd03_i_codigo(true,1);", $db_opcaoprof );
+                      ?>
+                    </label>
                   </div>
                 </td>
                 <td>
                   <?php
                     db_input(
-                              'sd03_i_codigo',
-                              12,
-                              $Isd03_i_codigo,
-                              true,
-                              'text',
-                              $db_opcaoprof,
-                              "onchange='js_pesquisasd03_i_codigo(false,1);' onFocus=\"nextfield='rh70_estrutural'\""
-                            );
+                      'sd03_i_codigo',
+                      12,
+                      $Isd03_i_codigo,
+                      true,
+                      'text',
+                      $db_opcaoprof,
+                      "onchange='js_pesquisasd03_i_codigo(false,1);' onFocus=\"nextfield='rh70_estrutural'\""
+                    );
                     db_input( 'z01_nome', 52, $Iz01_nome, true, 'text', 3 );
                   ?>
                  </td>
@@ -566,25 +604,25 @@ if( !$lDepartamentoValido ) {
               <!-- CBO -->
               <tr>
                 <td align="right" nowrap title="<?=@$Tsd04_i_cbo?>">
-                  <?php
-                    db_ancora( @$Lsd04_i_cbo, "js_pesquisasd04_i_cbo(true,1);", $db_opcaoprof );
-                  ?>
+                  <label for='rh70_estrutural'>
+                    <?php
+                      db_ancora( @$Lsd04_i_cbo, "js_pesquisasd04_i_cbo(true,1);", $db_opcaoprof );
+                    ?>
+                  </label>
                 </td>
                 <td>
                   <?php
                     db_input( 'sd27_i_codigo',   10, $Isd27_i_codigo,   true, 'hidden', $db_opcaoprof );
                     db_input( 'rh70_sequencial', 10, $Irh70_sequencial, true, 'hidden', $db_opcaoprof );
                     db_input(
-                              'rh70_estrutural',
-                              12,
-                              $Irh70_estrutural,
-                              true,
-                              'text',
-                              $db_opcaoprof,
-                              "onchange='js_pesquisasd04_i_cbo(false,1);' onFocus=\"nextfield='sd23_d_consulta'\""
-                            );
-                  ?>
-                  <?php
+                      'rh70_estrutural',
+                      12,
+                      $Irh70_estrutural,
+                      true,
+                      'text',
+                      $db_opcaoprof,
+                      "onchange='js_pesquisasd04_i_cbo(false,1);' onFocus=\"nextfield='sd23_d_consulta'\""
+                    );
                     db_input( 'rh70_descr', 52, $Irh70_descr, true, 'text', 3 );
                   ?>
                 </td>
@@ -594,18 +632,122 @@ if( !$lDepartamentoValido ) {
         </td>
       </tr>
     </table>
-    <p>
-    <input name="incluir" type="submit" id="db_opcao" value="Confirmar" >
-    <input name="pesquisar" type="button" id="pesquisar" value="Consulta FAA" onclick="js_pesquisaprontuarios();" >
-    <input name="limpar" type="button" id="limpar" value="Nova FAA" onclick="js_limpa()">
-    <input name="emitir" type="button" id="emitir" value="Emitir FAA" onclick="js_emitirFaa()">
-    <?
+    <input type="hidden" value="incluir" name="incluir"/>
+    <button type="button" id="db_opcao">
+      <i class="fas fa-check"></i> 
+      Confirmar
+    </button>
+    <button name="pesquisar" type="button" id="pesquisar" onclick="js_pesquisaprontuarios();">
+      <i class="fas fa-search"></i>
+      Pesquisar
+    </button>
+    <button name="limpar" type="button" id="limpar" onclick="js_limpa();">
+      <i class="fas fa-file-medical"></i>
+      Nova FAA
+    </button>
+    <button name="finalizarAtendimento" type="button" id="finalizarAtendimento" onclick="js_finalizarAtendimento();">
+      <i class="fas fa-check-double"></i>
+      Finalizar Atendimento
+    </button>
+    <button name="encaminhar" type="button" id="encaminhar" onclick="js_encaminharProcedimento();">
+      <i class="fas fa-forward"></i>
+      Encaminhar
+    </button>
+    <br>
+    <button name="emitir" type="button" id="emitir" onclick="js_emitirFaa();">
+      <i class="fas fa-print"></i>
+      Emitir FAA
+    </button>
+    <?php
     $oSauConfig = loadConfig('sau_config');
     selectModelosFaa($oSauConfig->s103_i_modelofaa);
     ?>
   </form>
 </div>
+<script rel="script" type="text/javascript" src="scripts/classes/saude/ValidaCgs.js"></script>
 <script>
+
+const MENSAGENS_FICHAATENDIMENTORPC = "saude.ambulatorial.sau4_fichaatendimento_RPC.";
+const divAlert = document.getElementById('status-microarea');
+const inputCgs = {
+  id: document.getElementById('z01_i_cgsund'),
+  nome: document.getElementById('z01_v_nome')
+};
+const validaCgs = new ValidaCgs(inputCgs);
+
+window.onload = () => {
+  validaCgs.cadastroMicroarea(inputCgs, divAlert);
+}
+/**
+ * Realiza a validação do CNS ao submeter o formulario
+ */
+$('db_opcao').onclick = function() {
+  validaCampos();
+};
+<?php 
+  if (isset($desabilitaencaminhamento) && !empty($desabilitaencaminhamento && !$incluir)) { ?>
+    $('encaminhar').disabled = true;
+    alert('Necessário confirmar Ficha de Atendimento antes de encaminhar.');
+<?php
+  } ?> 
+
+function validaCampos() {
+
+  var lObrigarCNS = <?=$lObrigarCNS ? 1 : 0;?>
+
+  if( lObrigarCNS && empty( $F('s115_c_cartaosus') ) ) {
+
+    alert( _M( MENSAGENS_FICHAATENDIMENTORPC + 'erro_buscar_cartao_sus' ) );
+    return;
+  }
+
+  if ( !empty( $F('s115_c_cartaosus') ) && !$F('s115_c_cartaosus').validaCNS() ) {
+
+    alert( _M( MENSAGENS_FICHAATENDIMENTORPC + 'numero_cns_invalido' ) );
+    return false;
+  }
+
+  if( !empty( $F('sd03_i_codigo') ) && empty( $F('rh70_estrutural') ) ) {
+
+    alert( _M( MENSAGENS_FICHAATENDIMENTORPC + 'especialidade_nao_informado' ) );
+    return false;
+  }
+
+  document.form1.submit();
+}
+
+var oGet = js_urlToObject();
+
+if(oGet.chavepesquisaprontuario && oGet.chavepesquisaprontuario != "") {
+
+  var oParametro                = new Object();
+  oParametro.sExecucao          = 'buscaUltimaObservacaoDaMovimentacao';
+  oParametro.iProntuario        = oGet.chavepesquisaprontuario;
+  oParametro.iTelaOrigem        = 1;
+
+  var oObjeto        = {};
+  oObjeto.method     = 'post';
+  oObjeto.parameters = 'json='+Object.toJSON(oParametro);
+  oObjeto.onComplete = function(oAjax) {
+
+    var oRetorno = JSON.parse(oAjax.responseText);
+
+    if ( oRetorno.iStatus != 1 ) {
+
+      alert( _M( MENSAGENS_FICHAATENDIMENTORPC + 'erro_buscar_ultima_observacao' ) );
+      return false;
+    }
+
+    if( oRetorno.sObservacao != '' ) {
+      alert( oRetorno.sObservacao.urlDecode() );
+    }
+  };
+
+  oObjeto.asynchronous = true;
+
+  new Ajax.Request("sau4_fichaatendimento.RPC.php", oObjeto);
+}
+
 
 function js_emitirFaa() {
 
@@ -623,7 +765,7 @@ function js_emitirFaa() {
 
 function js_retornoEmissaofaa (oAjax) {
 
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.iStatus == 2) {
 
     message_ajax(oRetorno.sMessage.urlDecode());
@@ -681,14 +823,21 @@ function js_getArquivoFaa(iCodModelo) {
 
 function js_pesquisasd03_i_codigo(mostra){
 
+  var sEspecialidade = '';
+
+  if( !empty( $F('rh70_sequencial') ) ) {
+    sEspecialidade = '&iRhcboSequencial=' + $F('rh70_sequencial');
+  }
+
   if( mostra == true ) {
 
     js_OpenJanelaIframe(
                          '',
                          'db_iframe_medicos',
                          'func_medicos.php?funcao_js=parent.js_mostramedicos1|sd03_i_codigo|z01_nome'
-                                        +'&chave_sd06_i_unidade='+document.form1.sd24_i_unidade.value,
-                         'Pesquisa',
+                                        +'&chave_sd06_i_unidade='+document.form1.sd24_i_unidade.value
+                                        + sEspecialidade + '&prof_ativo=1',
+                         'Pesquisa Profissional',
                          true
                        );
   } else {
@@ -700,12 +849,15 @@ function js_pesquisasd03_i_codigo(mostra){
                            'db_iframe_medicos',
                            'func_medicos.php?pesquisa_chave='+document.form1.sd03_i_codigo.value
                                           +'&funcao_js=parent.js_mostramedicos'
-                                          +'&chave_sd06_i_unidade='+document.form1.sd24_i_unidade.value,
-                           'Pesquisa',
+                                          +'&chave_sd06_i_unidade='+document.form1.sd24_i_unidade.value
+                                          + sEspecialidade + '&prof_ativo=1',
+                           'Pesquisa Profissional',
                            false
                          );
-    }else{
-     document.form1.z01_nome.value = '';
+    } else {
+
+      $('sd27_i_codigo').value = '';
+      $('z01_nome').value      = '';
     }
   }
 }
@@ -722,7 +874,14 @@ function js_mostramedicos( chave, erro ) {
     document.form1.rh70_estrutural.value = '';
     document.form1.rh70_descr.value      = '';
   } else {
-    js_pesquisasd04_i_cbo(true);    
+
+    if( empty( $F('rh70_sequencial') ) ) {
+
+      limpaCamposEspecialidade();
+      js_pesquisasd04_i_cbo(true);
+    } else {
+      js_pesquisasd04_i_cbo(false);
+    }
   }
 }
 
@@ -731,74 +890,97 @@ function js_mostramedicos1( chave1, chave2 ) {
   document.form1.sd03_i_codigo.value = chave1;
   document.form1.z01_nome.value      = chave2;
   db_iframe_medicos.hide();
-  js_pesquisasd04_i_cbo(true);
+
+  if( empty( $F('rh70_sequencial') ) ) {
+
+    limpaCamposEspecialidade();
+    js_pesquisasd04_i_cbo(true);
+  } else {
+      js_pesquisasd04_i_cbo(false);
+  }
 }
 
 function js_pesquisasd04_i_cbo( mostra ) {
+
+  var sUrl    = 'func_especialidade_recepcao.php?funcao_js=parent.js_mostrarhcbo';
+  var sCampos = '|rh70_estrutural|rh70_descr|rh70_sequencial';
+
+  if( !empty( $F('sd03_i_codigo') ) ) {
+    sCampos = '|sd27_i_codigo|rh70_estrutural|rh70_descr|rh70_sequencial';
+  }
 
   if( mostra == true ) {
 
     js_OpenJanelaIframe(
                          '',
                          'db_iframe_especmedico',
-                         'func_especmedico.php?funcao_js=parent.js_mostrarhcbo1|sd27_i_codigo|rh70_estrutural'
-                                                                             +'|rh70_descr|sd27_i_rhcbo'
-                                            +'&chave_sd04_i_unidade='+document.form1.sd24_i_unidade.value
-                                            +'&chave_sd04_i_medico='+document.form1.sd03_i_codigo.value,
-                         'Pesquisa',
-                         true
+                         sUrl + sCampos +'&chave_sd04_i_unidade='+document.form1.sd24_i_unidade.value
+                                        +'&chave_sd04_i_medico='+document.form1.sd03_i_codigo.value,
+                         'Pesquisa Especialidade',
+                         mostra
                        );
   } else {
 
     if( document.form1.rh70_estrutural.value != '' ) {
 
+      sUrl  = 'func_especialidade_recepcao.php?pesquisa_chave='+document.form1.rh70_estrutural.value;
+      sUrl += '&funcao_js=parent.js_mostrarhcbo';
+
       js_OpenJanelaIframe(
                            '',
                            'db_iframe_especmedico',
-                           'func_especmedico.php?chave_rh70_estrutural='+document.form1.rh70_estrutural.value
-                                              +'&funcao_js=parent.js_mostrarhcbo1|sd27_i_codigo|rh70_estrutural'
-                                                                               +'|rh70_descr|sd27_i_rhcbo'
-                                              +'&chave_sd04_i_unidade='+document.form1.sd24_i_unidade.value
-                                              +'&chave_sd04_i_medico='+document.form1.sd03_i_codigo.value,
-                           'Pesquisa',
-                           false
+                           sUrl +'&chave_sd04_i_unidade='+document.form1.sd24_i_unidade.value
+                                +'&chave_sd04_i_medico='+document.form1.sd03_i_codigo.value,
+                           'Pesquisa Especialidade',
+                           mostra
                          );
-      document.form1.rh70_estrutural.value = '';
-      document.form1.rh70_descr.value      = '';
     } else {
-      document.form1.rh70_estrutural.value = '';
+      limpaCamposEspecialidade();
     }
   }
 }
 
-function js_mostrarhcbo( erro, chave1, chave2, chave3, chave4 ) {
+function js_mostrarhcbo() {
 
-  document.form1.rh70_descr.value      = chave1;
-  document.form1.rh70_estrutural.value = chave2;
-  document.form1.sd27_i_codigo.value   = chave3;
-  document.form1.rh70_sequencial.value = chave4;
+  switch( arguments.length ) {
 
-  if( erro == true ) {
+    case 2:
 
-    document.form1.rh70_estrutural.focus(); 
-    document.form1.rh70_estrutural.value = ''; 
+      limpaCamposEspecialidade();
+      $('rh70_descr').value = arguments[1];
+
+      break;
+
+    case 3:
+
+      $('rh70_estrutural').value = arguments[0];
+      $('rh70_descr').value      = arguments[1];
+      $('rh70_sequencial').value = arguments[2];
+
+      break;
+
+    case 4:
+
+      $('sd27_i_codigo').value   = arguments[0];
+      $('rh70_estrutural').value = arguments[1];
+      $('rh70_descr').value      = arguments[2];
+      $('rh70_sequencial').value = arguments[3];
+
+      break;
+
+    case 5:
+
+      if ( $F('sd03_i_codigo') != '' ) {
+        $('sd27_i_codigo').value = arguments[1];
+      }
+      $('rh70_estrutural').value = arguments[2];
+      $('rh70_descr').value      = arguments[3];
+      $('rh70_sequencial').value = arguments[4];
+
+      break;
   }
-}
-
-function js_mostrarhcbo1( chave1, chave2, chave3, chave4 ) {
-
-  document.form1.sd27_i_codigo.value   = chave1;
-  document.form1.rh70_estrutural.value = chave2;
-  document.form1.rh70_descr.value      = chave3;
-  document.form1.rh70_sequencial.value = chave4;
 
   db_iframe_especmedico.hide();
-
-  if( chave2 = '' ) {
-
-    document.form1.rh70_estrutural.focus(); 
-    document.form1.rh70_estrutural.value = ''; 
-  }  
 }
 
 function js_pesquisasd23_i_codigo( mostra ) {
@@ -809,7 +991,7 @@ function js_pesquisasd23_i_codigo( mostra ) {
                          '',
                          'db_iframe_prontagendamento',
                          'func_prontagendamento.php?funcao_js=parent.js_mostraagendamento1|dl_FAA|dl_Agenda|sd23_i_numcgs',
-                         'Pesquisa',
+                         'Pesquisa Agenda',
                          true
                        );
   } else {
@@ -818,14 +1000,13 @@ function js_pesquisasd23_i_codigo( mostra ) {
 }
 
 function js_mostraagendamento1( faa, agenda, cgs ) {
-
   db_iframe_prontagendamento.hide();
   if( faa != "" ) {
-  	location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisaprontuario='+faa+'&triagem='+'<?=@$triagem?>';
+    location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisaprontuario='+faa+'&triagem='+'<?=@$triagem?>&desabilitaencaminhamento=1';
   } else if( agenda != "" ) {
-  	location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisaagenda='+agenda+'&triagem='+'<?=@$triagem?>';
+    location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisaagenda='+agenda+'&triagem='+'<?=@$triagem?>&desabilitaencaminhamento=1';
   } else {
-  	location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisacgs='+cgs+'&triagem='+'<?=@$triagem?>';
+    location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisacgs='+cgs+'&triagem='+'<?=@$triagem?>&desabilitaencaminhamento=1';
   }
 }
 
@@ -835,7 +1016,7 @@ function js_ruas() {
                        '',
                        'db_iframe_ruas',
                        'func_ruas.php?rural=1&funcao_js=parent.js_preenchepesquisaruas|j14_codigo|j14_nome',
-                       'Pesquisa',
+                       'Pesquisa Endereço',
                        true
                      );
 }
@@ -852,7 +1033,7 @@ function js_bairro() {
                        '',
                        'db_iframe_bairro',
                        'func_bairro.php?rural=1&funcao_js=parent.js_preenchebairro|j13_codi|j13_descr',
-                       'Pesquisa',
+                       'Pesquisa Bairro',
                        true
                      );
 }
@@ -954,7 +1135,7 @@ function js_pesquisaz01_i_cgsund( mostra ) {
                          'func_cgs_und.php?funcao_js=parent.js_preenchecgs|z01_i_cgsund'
                                         +'&retornacgs=p.p.document.form1.z01_i_cgsund.value'
                                         +'&retornanome=p.p.js_preenchecgs(p.p.document.form1.z01_i_cgsund.value);p.p.document.form1.z01_v_nome.value',
-                         'Pesquisa',
+                         'Pesquisa CGS',
                          true
                        );
   } else {
@@ -968,7 +1149,7 @@ function js_pesquisaz01_i_cgsund( mostra ) {
                                           +'&retornacgs=p.p.document.form1.z01_i_cgsund.value'
                                           +'&retornanome=p.p.js_preenchecgs(p.p.document.form1.z01_i_cgsund.value);p.p.document.form1.z01_v_nome.value'
                                           +'&chave_z01_i_cgsund='+document.form1.z01_i_cgsund.value,
-                           'Pesquisa',
+                           'Pesquisa CGS',
                            true
                          );
     } else {
@@ -979,11 +1160,11 @@ function js_pesquisaz01_i_cgsund( mostra ) {
 
 function js_mostracgs( erro, chave ) {
 
-  document.form1.z01_v_nome.value = chave;
+  document.form1.z01_v_nome.value = 'teste ->' + chave;
 
   if( erro == true ) {
 
-    document.form1.z01_i_cgsund.focus(); 
+    document.form1.z01_i_cgsund.focus();
     document.form1.z01_v_nome.value = '';
   }
 }
@@ -995,6 +1176,7 @@ function js_mostracgs1( chave1, chave2 ) {
   db_iframe_cgs.hide();
 }
 
+
 <?if(isset($triagem) && $triagem=="false"){?>
 function js_pesquisaprontuarios() {
 
@@ -1002,7 +1184,7 @@ function js_pesquisaprontuarios() {
                        '',
                        'db_iframe_prontuarios002',
                        'func_prontuarios002.php?funcao_js=parent.js_preenchepesquisa|sd24_i_codigo',
-                       'Pesquisa',
+                       'Pesquisa de FAA',
                        true
                      );
 }
@@ -1013,8 +1195,8 @@ function js_pesquisaprontuarios() {
   js_OpenJanelaIframe(
                        '',
                        'db_iframe_prontuarios',
-                       'func_prontuarios.php?funcao_js=parent.js_preenchepesquisa|sd24_i_codigo',
-                       'Pesquisa',
+                       'func_prontuarios_novo.php?funcao_js=parent.js_preenchepesquisa|sd24_i_codigo',
+                       'Pesquisa de FAA',
                        true
                      );
 }
@@ -1029,7 +1211,6 @@ function js_preenchecgs( chave ) {
 <?if( isset( $triagem ) && $triagem == "false" ) {?>
 
 function js_preenchepesquisa( chave ) {
-
   db_iframe_prontuarios002.hide();
   location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisaprontuario='+chave+'&triagem='+'<?=@$triagem?>';
 }
@@ -1129,10 +1310,10 @@ function js_municipio() {
 	if( document.form1.z01_i_cgsund.value != "" ) {
     location.href ='<?=basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"])?>?chavepesquisacgs='+document.form1.z01_i_cgsund.value
                                                                          +'&chavepesquisaprontuario='+document.form1.sd24_i_codigo.value
-                                                                         +'&chavepesquiamunicipio='+document.form1.z01_c_municipio.value;
+                                                                         +'&chavepesquiamunicipio='+document.form1.z01_registromunicipio.value;
   } else {
 
-    query  = '?chavepesquiamunicipio='+document.form1.z01_c_municipio.value;
+    query  = '?chavepesquiamunicipio='+document.form1.z01_registromunicipio.value;
     query += '&z01_v_nome='+document.form1.z01_v_nome.value;
     query += '&sd34_i_codigo='+document.form1.z01_v_micro.value;
     query += '&z01_v_cgccpf='+document.form1.z01_v_cgccpf.value;
@@ -1143,9 +1324,60 @@ function js_municipio() {
 $('z01_d_nasc').size   = 12;
 $('z01_d_cadast').size = 12;
 
-$('z01_c_municipio').className = 'field-size-max';
-$('z01_v_sexo').className      = 'field-size-max';
-$('sd24_i_tipo').className     = 'field-size-max';
-$('sd24_i_motivo').className   = 'field-size-max';
-$('sd24_i_acaoprog').className = 'field-size-max';
+$('z01_registromunicipio').className          = 'field-size-max';
+$('z01_v_sexo').className               = 'field-size-max';
+$('sd24_i_tipo').className              = 'field-size-max';
+$('sd24_i_motivo').className            = 'field-size-max';
+$('sd24_i_acaoprog').className          = 'field-size-max';
+$('sd24_setorambulatorial').className   = 'field-size-max';
+
+/**
+ * [js_finalizarAtendimento description]
+ * @return {[type]} [description]
+ */
+function js_finalizarAtendimento() {
+
+  if ($F('sd24_i_codigo') != '') {
+
+    var fCallbackSalvar = function() {
+      location.href = 'sau4_recepcao001.php';
+    };
+
+    var oRetorno = new DBViewMotivosAlta();
+        oRetorno.setCallbackSalvar( fCallbackSalvar );
+        oRetorno.setProntuario( $F('sd24_i_codigo') );
+        oRetorno.show();
+  } else {
+    alert('Informe o procedimento');
+  }
+}
+
+/**
+ * [js_encaminharProcedimento description]
+ * @return {[type]} [description]
+ */
+function js_encaminharProcedimento() {
+
+  if ($F('sd24_i_codigo') != '') {
+
+    var fCallbackSalvar = function() {
+      location.href = 'sau4_recepcao001.php';
+    };
+
+    var oRetorno = new DBViewEncaminhamento(DBViewEncaminhamento.RECEPCAO, $F('sd24_i_codigo'));
+        oRetorno.setCallbackSalvar( fCallbackSalvar );
+        oRetorno.show();
+  } else {
+    alert('Informe o procedimento');
+  }
+}
+
+function limpaCamposEspecialidade() {
+
+  $('sd27_i_codigo').value   = '';
+  $('rh70_sequencial').value = '';
+  $('rh70_estrutural').value = '';
+  $('rh70_descr').value      = '';
+}
+
 </script>

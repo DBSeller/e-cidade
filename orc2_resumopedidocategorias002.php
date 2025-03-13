@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_utils.php");
-include("libs/db_liborcamento.php");
-include("fpdf151/assinatura.php");
-include("classes/db_orcparamrel_classe.php");
-include("libs/db_libcontabilidade.php");
-include("libs/db_libtxt.php");
-include("dbforms/db_funcoes.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("classes/db_orcparamrel_classe.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("libs/db_libtxt.php"));
+include(modification("dbforms/db_funcoes.php"));
 $oGet = db_utils::postMemory($_GET);
 
 
@@ -134,7 +134,7 @@ $sSqlDados    .= " from   categoriapacto";
 $sSqlDados    .= " where o31_tipopacto = {$oConvenio->o16_tipopacto} order by o31_sequencial";
 $rsDados       = db_query($sSqlDados);
 $iTotalRows    = pg_num_rows($rsDados);
-$aLinhaRelatorio = db_utils::getColectionByRecord($rsDados);
+$aLinhaRelatorio = db_utils::getCollectionByRecord($rsDados);
 
 $iAlt = 4;
 $pdf->AddPage();

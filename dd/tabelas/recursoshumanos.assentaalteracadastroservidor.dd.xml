@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010278' name='recursoshumanos.assentaalteracadastroservidor' description="Tabela responsavel por quardar os servidores, que teram seu cargo alterao devido a progressao" prefix="" label="assentaalteracadastroservidor" type="0">
+  <fields>
+    <field codigo="1009720" 
+           campo_api='' 
+           name="h15_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela assentaalteracadastroservidor" 
+           inivalue="0" 
+           label="h15_sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="h15_sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.assentaalteracadastroservidor_h15_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009716" 
+           campo_api='' 
+           name="h15_assent" 
+           conteudo="int8" 
+           description="Quarda o assentamento" 
+           inivalue="0" 
+           label="h15_assent" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009717" 
+           campo_api='' 
+           name="h15_regist" 
+           conteudo="int8" 
+           description="Matricula do servidor" 
+           inivalue="0" 
+           label="h15_regist" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="h15_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+  </foreignkeys>
+</table>

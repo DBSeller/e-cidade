@@ -1,12 +1,38 @@
 <?php
+/*
+ *     E-cidade Software Publico para Gestao Municipal                
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
+ *                            www.dbseller.com.br                     
+ *                         e-cidade@dbseller.com.br                   
+ *                                                                    
+ *  Este programa e software livre; voce pode redistribui-lo e/ou     
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
+ *  publicada pela Free Software Foundation; tanto a versao 2 da      
+ *  Licenca como (a seu criterio) qualquer versao mais nova.          
+ *                                                                    
+ *  Este programa e distribuido na expectativa de ser util, mas SEM   
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
+ *  detalhes.                                                         
+ *                                                                    
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
+ *  junto com este programa; se nao, escreva para a Free Software     
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
+ *  02111-1307, USA.                                                  
+ *  
+ *  Copia da licenca no diretorio licenca/licenca_en.txt 
+ *                                licenca/licenca_pt.txt 
+ */
+
 /**
  * Classe para processamento da Reinclusao de Imoveis no Recadastro imobiliario
  * 
  * @uses     RecadastroImobiliarioImoveisInterface
  * @package  Recadastro Imobiliario
  * @author   Rafael Serpa Nery <rafael.nery@dbseller.com.br> 
- * @revision $Author: dbalberto $
- * @version  $Revision: 1.3 $
+ * @revision $Author: dbanderson $
+ * @version  $Revision: 1.6 $
  */
 require_once(PATH_IMPORTACAO . "RecadastroImobiliarioImoveis.interface.php");
 class RecadastroImobiliarioImoveisReinclusao  implements RecadastroImobiliarioImoveisInterface {
@@ -76,14 +102,14 @@ class RecadastroImobiliarioImoveisReinclusao  implements RecadastroImobiliarioIm
       $sUpdateIptuBaixa     = "update iptubase set j01_baixa = null where j01_matric = '{$this->iMatricula}'";
 
 
-      if ( !pg_query($sSqlRemocaoIptuBaixa ) ) {
+      if ( !db_query($sSqlRemocaoIptuBaixa ) ) {
 
         $this->log( "Erro ao Processar Exclusao dos Registros da Baixa da Matrícula", DBLog::LOG_ERRO );
         $this->log( "Descricao do Erro: ".pg_last_error(), DBLog::LOG_ERRO );
         throw new Exception("Erro ao Processar Exclusao dos Registros da Baixa da Matrícula:".pg_last_error());
       }
 
-      if ( !pg_query($sUpdateIptubaixa) ) {
+      if ( !db_query($sUpdateIptubaixa) ) {
         $this->log( "Erro ao Processar Alteração da Data de Baixa da Matrícula", DBLog::LOG_ERRO );
         $this->log( "Descricao do Erro: ".pg_last_error(), DBLog::LOG_ERRO );
         throw new Exception("Erro ao Processar Alteração da Data de Baixa da Matrícula".pg_last_error());
@@ -136,7 +162,7 @@ class RecadastroImobiliarioImoveisReinclusao  implements RecadastroImobiliarioIm
     $sInsertHistocorrencia .= "         '$sMensagemOcorrencia.',                             ";
     $sInsertHistocorrencia .= "         '$sMensagemOcorrencia.')                             ";
   
-    if (pg_query ($sInsertHistocorrencia)) {
+    if (db_query ($sInsertHistocorrencia)) {
   
       $sInsertHistocorrenciaMatric  = "insert into histocorrenciamatric                            ";
       $sInsertHistocorrenciaMatric .= "       (ar25_sequencial   ,                                 ";
@@ -146,7 +172,7 @@ class RecadastroImobiliarioImoveisReinclusao  implements RecadastroImobiliarioIm
       $sInsertHistocorrenciaMatric .= "        {$this->iMatricula},                                ";
       $sInsertHistocorrenciaMatric .= "        currval('histocorrencia_ar23_sequencial_seq'))      ";
   
-      if (pg_query($sInsertHistocorrenciaMatric)) {
+      if (db_query($sInsertHistocorrenciaMatric)) {
         return true;
       }
   
@@ -173,7 +199,7 @@ class RecadastroImobiliarioImoveisReinclusao  implements RecadastroImobiliarioIm
 
 
       $sSqlIptubaixa = "select * from iptubaixa where j02_matric = {$this->iMatricula}";
-      $rsIptubaixa   = pg_query($sSqlIptubaixa);
+      $rsIptubaixa   = db_query($sSqlIptubaixa);
 
       if ( !$rsIptubaixa ) {
 
@@ -201,7 +227,7 @@ class RecadastroImobiliarioImoveisReinclusao  implements RecadastroImobiliarioIm
     $sUpdateRecadastroImobiliarioImoveis .= "       ie28_observacoes = '{$this->sMensagemLog}'   ";
     $sUpdateRecadastroImobiliarioImoveis .= " where ie28_sequencial  =  {$this->iCodigoRegistro} ";
   
-    if (!pg_query(Conexao::getInstancia()->getConexao(), $sUpdateRecadastroImobiliarioImoveis)) {
+    if (!db_query(Conexao::getInstancia()->getConexao(), $sUpdateRecadastroImobiliarioImoveis)) {
   
       $sMensagem = "Erro ao salvar log das opera��es do setor/quadra/lote: {$this->sSQL}.";
   

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
-$result = pg_exec("select proprietario.* , c.z01_nome as promitente, c.z01_ender as ender_promitente,j.z01_nome as imobiliaria,j.z01_ender as ender_imobiliaria
+$result = db_query("select proprietario.* , c.z01_nome as promitente, c.z01_ender as ender_promitente,j.z01_nome as imobiliaria,j.z01_ender as ender_imobiliaria
                    from proprietario
                         left outer join cgm c on j41_numcgm = c.z01_numcgm              
                         left outer join cgm j on j44_numcgm = j.z01_numcgm              
@@ -252,7 +252,7 @@ a.nome:hover {
             CARACTER&Iacute;STICAS DO IM&Oacute;VEL</strong> <table width="100%" border="1"  cellpadding="0" cellspacing="0" bordercolor="#000000">
               <?
   	    $controle = 1;
-	    $result = pg_exec("select * from carlote,caracter 
+	    $result = db_query("select * from carlote,caracter 
 		                   where j35_idbql = $j01_idbql and
 						         j35_caract = j31_codigo");
 		if( pg_numrows($result) != 0 ) {
@@ -299,7 +299,7 @@ a.nome:hover {
             <font size="2" face="Arial, Helvetica, sans-serif"><strong><br>
             ISEN&Ccedil;&Otilde;ES</strong></font> <table width="100%" border="1"  cellpadding="0" cellspacing="0" bordercolor="#000000">
               <?
-	   $result = pg_exec("select distinct iptuisen.*,tipoisen.* from iptuisen
+	   $result = db_query("select distinct iptuisen.*,tipoisen.* from iptuisen
 		                                inner join isenexe on iptuisen.j46_codigo = isenexe.j47_codigo
 										 ,tipoisen 
 		                   where j46_matric = $cod_matricula and j47_anousu >= 
@@ -307,7 +307,7 @@ a.nome:hover {
 		if( pg_numrows($result) != 0 ) {
 		  for ($contador=0;$contador < pg_numrows($result);$contador ++ ){
 		    db_fieldsmemory($result,$contador);
-	        $result_lim = pg_exec("select j47_anousu
+	        $result_lim = db_query("select j47_anousu
 			                       from isenexe 
 		                           where j47_codigo = $j46_codigo order by  j47_anousu ");
 		    $numrows = pg_numrows($result_lim);
@@ -347,7 +347,7 @@ a.nome:hover {
             <font size="2" face="Arial, Helvetica, sans-serif"><strong><br>
             TESTADA</strong></font><br> <table width="100%" border="1"  cellpadding="0" cellspacing="0" bordercolor="#000000">
               <?
-		$result = pg_exec("select * from testada,ruas 
+		$result = db_query("select * from testada,ruas 
 		                   where j36_idbql  = $j01_idbql  and
 								 j36_codigo = j14_codigo");
 		if( pg_numrows($result) != 0 ) {
@@ -379,7 +379,7 @@ a.nome:hover {
             EDIFICA&Ccedil;&Otilde;ES( Constru&ccedil;&otilde;es Lan&ccedil;adas 
             )</strong></font> <strong> 
             <?
-		$result = pg_exec("select * from iptuconstr,carconstr,caracter,ruas
+		$result = db_query("select * from iptuconstr,carconstr,caracter,ruas
 		                   where j39_matric = $cod_matricula and
 						   j39_matric = j48_matric and
 						   j39_idcons = j48_idcons and
@@ -469,7 +469,7 @@ a.nome:hover {
             <font size="2" face="Arial, Helvetica, sans-serif"> OUTROS PROPRIET&Aacute;RIOS</font></strong><br> 
             <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
               <?
-		$result = pg_exec("select z01_nome,z01_ender from propri,cgm
+		$result = db_query("select z01_nome,z01_ender from propri,cgm
 		                   where j42_matric = $cod_matricula and
 						   j42_numcgm = z01_numcgm");
 		if( pg_numrows($result) != 0 ) {
@@ -500,8 +500,8 @@ a.nome:hover {
   <tr bordercolor="#000000"> 
     <td class="tabfonte" align="center"> 
       <?
-	pg_exec("begin");			
-    $img = pg_exec("select arq from db_imgsitbi where trim(matricula) = trim('$j11_matric') order by data desc limit 1");
+	db_query("begin");			
+    $img = db_query("select arq from db_imgsitbi where trim(matricula) = trim('$j11_matric') order by data desc limit 1");
     if(pg_numrows($img) > 0) {
 	  $oid = pg_result($img,0,0);
 	  $DocHome = "http://".$_SERVER["SERVER_ADDR"].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],"/"));
@@ -522,7 +522,7 @@ a.nome:hover {
       </table>
       <?
 	}
-    pg_exec("end");
+    db_query("end");
 	?>
     </td>
   </tr>

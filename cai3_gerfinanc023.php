@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("classes/db_arreprescr_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_arreprescr_classe.php"));
 
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 //db_postmemory($HTTP_SERVER_VARS,2);exit;
@@ -128,7 +128,7 @@ function js_imprime(){
                         where k28_numpre = $cod_filtro $where";
   }
 //  die("$sqlarrejustreg");
-  $resultarrejustreg = pg_query($sqlarrejustreg);
+  $resultarrejustreg = db_query($sqlarrejustreg);
 	$linhasarrejustreg = pg_num_rows($resultarrejustreg);
 
   $ConfCor1 = "#EFE029";
@@ -217,7 +217,7 @@ function js_mostradiv(hist,mostra) {
 
   if(mostra == true){
   
-   var camada = top.corpo.document.createElement("DIV");
+   var camada = (window.CurrentWindow || parent.CurrentWindow).corpo.document.createElement("DIV");
    camada.setAttribute("id","info");
    camada.setAttribute("align","center");
    camada.style.backgroundColor = "#FFFF99";
@@ -230,10 +230,10 @@ function js_mostradiv(hist,mostra) {
    camada.style.width = "500px";
    //camada.style.height = "60px";
    camada.innerHTML = '<table><tr><td>'+hist+'</td></tr></table>';
-   top.corpo.document.body.appendChild(camada);
+   (window.CurrentWindow || parent.CurrentWindow).corpo.document.body.appendChild(camada);
   }else{
-   if(top.corpo.document.getElementById("info")){
-     top.corpo.document.body.removeChild(top.corpo.document.getElementById("info"));
+   if((window.CurrentWindow || parent.CurrentWindow).corpo.document.getElementById("info")){
+     (window.CurrentWindow || parent.CurrentWindow).corpo.document.body.removeChild((window.CurrentWindow || parent.CurrentWindow).corpo.document.getElementById("info"));
     } 
   }
 }

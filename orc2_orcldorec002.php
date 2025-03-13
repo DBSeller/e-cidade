@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_orcppa_classe.php");
-include("classes/db_orcppaval_classe.php");
-include("classes/db_orcppatiporec_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_orcppa_classe.php"));
+include(modification("classes/db_orcppaval_classe.php"));
+include(modification("classes/db_orcppatiporec_classe.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clorcppa    = new cl_orcppa;
 $clorcppaval = new cl_orcppaval;

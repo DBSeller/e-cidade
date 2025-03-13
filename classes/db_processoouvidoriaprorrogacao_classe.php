@@ -1,61 +1,61 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: ouvidoria
 //CLASSE DA ENTIDADE processoouvidoriaprorrogacao
-class cl_processoouvidoriaprorrogacao { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ov15_sequencial = 0; 
-   var $ov15_protprocesso = 0; 
-   var $ov15_coddepto = 0; 
-   var $ov15_dtini_dia = null; 
-   var $ov15_dtini_mes = null; 
-   var $ov15_dtini_ano = null; 
-   var $ov15_dtini = null; 
-   var $ov15_dtfim_dia = null; 
-   var $ov15_dtfim_mes = null; 
-   var $ov15_dtfim_ano = null; 
-   var $ov15_dtfim = null; 
-   var $ov15_motivo = null; 
-   var $ov15_ativo = 'f'; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_processoouvidoriaprorrogacao {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ov15_sequencial = 0;
+   var $ov15_protprocesso = 0;
+   var $ov15_coddepto = 0;
+   var $ov15_dtini_dia = null;
+   var $ov15_dtini_mes = null;
+   var $ov15_dtini_ano = null;
+   var $ov15_dtini = null;
+   var $ov15_dtfim_dia = null;
+   var $ov15_dtfim_mes = null;
+   var $ov15_dtfim_ano = null;
+   var $ov15_dtfim = null;
+   var $ov15_motivo = null;
+   var $ov15_ativo = 'f';
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  ov15_sequencial = int4 = Sequencial 
                  ov15_protprocesso = int4 = Processo 
@@ -65,14 +65,14 @@ class cl_processoouvidoriaprorrogacao {
                  ov15_motivo = text = Motivo 
                  ov15_ativo = bool = Ativo 
                  ";
-   //funcao construtor da classe 
-   function cl_processoouvidoriaprorrogacao() { 
+   //funcao construtor da classe
+   function cl_processoouvidoriaprorrogacao() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("processoouvidoriaprorrogacao"); 
+     $this->rotulo = new rotulo("processoouvidoriaprorrogacao");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -109,9 +109,9 @@ class cl_processoouvidoriaprorrogacao {
      }
    }
    // funcao para inclusao
-   function incluir ($ov15_sequencial){ 
+   function incluir ($ov15_sequencial){
       $this->atualizacampos();
-     if($this->ov15_protprocesso == null ){ 
+     if($this->ov15_protprocesso == null ){
        $this->erro_sql = " Campo Processo nao Informado.";
        $this->erro_campo = "ov15_protprocesso";
        $this->erro_banco = "";
@@ -120,7 +120,7 @@ class cl_processoouvidoriaprorrogacao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov15_coddepto == null ){ 
+     if($this->ov15_coddepto == null ){
        $this->erro_sql = " Campo Departamento nao Informado.";
        $this->erro_campo = "ov15_coddepto";
        $this->erro_banco = "";
@@ -129,7 +129,7 @@ class cl_processoouvidoriaprorrogacao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov15_dtini == null ){ 
+     if($this->ov15_dtini == null ){
        $this->erro_sql = " Campo Data Inicial nao Informado.";
        $this->erro_campo = "ov15_dtini_dia";
        $this->erro_banco = "";
@@ -138,7 +138,7 @@ class cl_processoouvidoriaprorrogacao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov15_dtfim == null ){ 
+     if($this->ov15_dtfim == null ){
        $this->erro_sql = " Campo Data Final nao Informado.";
        $this->erro_campo = "ov15_dtfim_dia";
        $this->erro_banco = "";
@@ -147,7 +147,7 @@ class cl_processoouvidoriaprorrogacao {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov15_ativo == null ){ 
+     if($this->ov15_ativo == null ){
        $this->erro_sql = " Campo Ativo nao Informado.";
        $this->erro_campo = "ov15_ativo";
        $this->erro_banco = "";
@@ -157,16 +157,16 @@ class cl_processoouvidoriaprorrogacao {
        return false;
      }
      if($ov15_sequencial == "" || $ov15_sequencial == null ){
-       $result = db_query("select nextval('processoouvidoriaprorrogacao_ov15_sequencial_seq')"); 
+       $result = db_query("select nextval('processoouvidoriaprorrogacao_ov15_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: processoouvidoriaprorrogacao_ov15_sequencial_seq do campo: ov15_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: processoouvidoriaprorrogacao_ov15_sequencial_seq do campo: ov15_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->ov15_sequencial = pg_result($result,0,0); 
+       $this->ov15_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from processoouvidoriaprorrogacao_ov15_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $ov15_sequencial)){
@@ -177,10 +177,10 @@ class cl_processoouvidoriaprorrogacao {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->ov15_sequencial = $ov15_sequencial; 
+         $this->ov15_sequencial = $ov15_sequencial;
        }
      }
-     if(($this->ov15_sequencial == null) || ($this->ov15_sequencial == "") ){ 
+     if(($this->ov15_sequencial == null) || ($this->ov15_sequencial == "") ){
        $this->erro_sql = " Campo ov15_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -206,8 +206,8 @@ class cl_processoouvidoriaprorrogacao {
                                ,'$this->ov15_motivo' 
                                ,'$this->ov15_ativo' 
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Prazo por setor do processo de ouvidoria ($this->ov15_sequencial) nao Incluído. Inclusao Abortada.";
@@ -245,16 +245,16 @@ class cl_processoouvidoriaprorrogacao {
        $resac = db_query("insert into db_acount values($acount,2607,14818,'','".AddSlashes(pg_result($resaco,0,'ov15_ativo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($ov15_sequencial=null) { 
+   function alterar ($ov15_sequencial=null) {
       $this->atualizacampos();
      $sql = " update processoouvidoriaprorrogacao set ";
      $virgula = "";
-     if(trim($this->ov15_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_sequencial"])){ 
+     if(trim($this->ov15_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_sequencial"])){
        $sql  .= $virgula." ov15_sequencial = $this->ov15_sequencial ";
        $virgula = ",";
-       if(trim($this->ov15_sequencial) == null ){ 
+       if(trim($this->ov15_sequencial) == null ){
          $this->erro_sql = " Campo Sequencial nao Informado.";
          $this->erro_campo = "ov15_sequencial";
          $this->erro_banco = "";
@@ -264,10 +264,10 @@ class cl_processoouvidoriaprorrogacao {
          return false;
        }
      }
-     if(trim($this->ov15_protprocesso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_protprocesso"])){ 
+     if(trim($this->ov15_protprocesso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_protprocesso"])){
        $sql  .= $virgula." ov15_protprocesso = $this->ov15_protprocesso ";
        $virgula = ",";
-       if(trim($this->ov15_protprocesso) == null ){ 
+       if(trim($this->ov15_protprocesso) == null ){
          $this->erro_sql = " Campo Processo nao Informado.";
          $this->erro_campo = "ov15_protprocesso";
          $this->erro_banco = "";
@@ -277,10 +277,10 @@ class cl_processoouvidoriaprorrogacao {
          return false;
        }
      }
-     if(trim($this->ov15_coddepto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_coddepto"])){ 
+     if(trim($this->ov15_coddepto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_coddepto"])){
        $sql  .= $virgula." ov15_coddepto = $this->ov15_coddepto ";
        $virgula = ",";
-       if(trim($this->ov15_coddepto) == null ){ 
+       if(trim($this->ov15_coddepto) == null ){
          $this->erro_sql = " Campo Departamento nao Informado.";
          $this->erro_campo = "ov15_coddepto";
          $this->erro_banco = "";
@@ -290,10 +290,10 @@ class cl_processoouvidoriaprorrogacao {
          return false;
        }
      }
-     if(trim($this->ov15_dtini)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_dtini_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ov15_dtini_dia"] !="") ){ 
+     if(trim($this->ov15_dtini)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_dtini_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ov15_dtini_dia"] !="") ){
        $sql  .= $virgula." ov15_dtini = '$this->ov15_dtini' ";
        $virgula = ",";
-       if(trim($this->ov15_dtini) == null ){ 
+       if(trim($this->ov15_dtini) == null ){
          $this->erro_sql = " Campo Data Inicial nao Informado.";
          $this->erro_campo = "ov15_dtini_dia";
          $this->erro_banco = "";
@@ -302,11 +302,11 @@ class cl_processoouvidoriaprorrogacao {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["ov15_dtini_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["ov15_dtini_dia"])){
          $sql  .= $virgula." ov15_dtini = null ";
          $virgula = ",";
-         if(trim($this->ov15_dtini) == null ){ 
+         if(trim($this->ov15_dtini) == null ){
            $this->erro_sql = " Campo Data Inicial nao Informado.";
            $this->erro_campo = "ov15_dtini_dia";
            $this->erro_banco = "";
@@ -317,10 +317,10 @@ class cl_processoouvidoriaprorrogacao {
          }
        }
      }
-     if(trim($this->ov15_dtfim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_dtfim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ov15_dtfim_dia"] !="") ){ 
+     if(trim($this->ov15_dtfim)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_dtfim_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ov15_dtfim_dia"] !="") ){
        $sql  .= $virgula." ov15_dtfim = '$this->ov15_dtfim' ";
        $virgula = ",";
-       if(trim($this->ov15_dtfim) == null ){ 
+       if(trim($this->ov15_dtfim) == null ){
          $this->erro_sql = " Campo Data Final nao Informado.";
          $this->erro_campo = "ov15_dtfim_dia";
          $this->erro_banco = "";
@@ -329,11 +329,11 @@ class cl_processoouvidoriaprorrogacao {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["ov15_dtfim_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["ov15_dtfim_dia"])){
          $sql  .= $virgula." ov15_dtfim = null ";
          $virgula = ",";
-         if(trim($this->ov15_dtfim) == null ){ 
+         if(trim($this->ov15_dtfim) == null ){
            $this->erro_sql = " Campo Data Final nao Informado.";
            $this->erro_campo = "ov15_dtfim_dia";
            $this->erro_banco = "";
@@ -344,14 +344,14 @@ class cl_processoouvidoriaprorrogacao {
          }
        }
      }
-     if(trim($this->ov15_motivo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_motivo"])){ 
+     if(trim($this->ov15_motivo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_motivo"])){
        $sql  .= $virgula." ov15_motivo = '$this->ov15_motivo' ";
        $virgula = ",";
      }
-     if(trim($this->ov15_ativo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_ativo"])){ 
+     if(trim($this->ov15_ativo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov15_ativo"])){
        $sql  .= $virgula." ov15_ativo = '$this->ov15_ativo' ";
        $virgula = ",";
-       if(trim($this->ov15_ativo) == null ){ 
+       if(trim($this->ov15_ativo) == null ){
          $this->erro_sql = " Campo Ativo nao Informado.";
          $this->erro_campo = "ov15_ativo";
          $this->erro_banco = "";
@@ -389,7 +389,7 @@ class cl_processoouvidoriaprorrogacao {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Prazo por setor do processo de ouvidoria nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ov15_sequencial;
@@ -417,14 +417,14 @@ class cl_processoouvidoriaprorrogacao {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($ov15_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($ov15_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ov15_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -456,7 +456,7 @@ class cl_processoouvidoriaprorrogacao {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Prazo por setor do processo de ouvidoria nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ov15_sequencial;
@@ -484,11 +484,11 @@ class cl_processoouvidoriaprorrogacao {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -510,11 +510,11 @@ class cl_processoouvidoriaprorrogacao {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $ov15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $ov15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -534,15 +534,15 @@ class cl_processoouvidoriaprorrogacao {
      $sql2 = "";
      if($dbwhere==""){
        if($ov15_sequencial!=null ){
-         $sql2 .= " where processoouvidoriaprorrogacao.ov15_sequencial = $ov15_sequencial "; 
-       } 
+         $sql2 .= " where processoouvidoriaprorrogacao.ov15_sequencial = $ov15_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -551,11 +551,11 @@ class cl_processoouvidoriaprorrogacao {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $ov15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $ov15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -568,15 +568,15 @@ class cl_processoouvidoriaprorrogacao {
      $sql2 = "";
      if($dbwhere==""){
        if($ov15_sequencial!=null ){
-         $sql2 .= " where processoouvidoriaprorrogacao.ov15_sequencial = $ov15_sequencial "; 
-       } 
+         $sql2 .= " where processoouvidoriaprorrogacao.ov15_sequencial = $ov15_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -585,10 +585,10 @@ class cl_processoouvidoriaprorrogacao {
      }
      return $sql;
   }
-	function sql_query_ouvidoria ( $ov15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+	function sql_query_ouvidoria ( $ov15_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -609,15 +609,15 @@ class cl_processoouvidoriaprorrogacao {
      $sql2 = "";
      if($dbwhere==""){
        if($ov15_sequencial!=null ){
-         $sql2 .= " where processoouvidoriaprorrogacao.ov15_sequencial = $ov15_sequencial "; 
-       } 
+         $sql2 .= " where processoouvidoriaprorrogacao.ov15_sequencial = $ov15_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -625,6 +625,6 @@ class cl_processoouvidoriaprorrogacao {
        }
      }
      return $sql;
-  }  
+  }
 }
 ?>

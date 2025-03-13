@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_escola_classe.php");
-include("classes/db_aluno_classe.php");
-include("classes/db_censouf_classe.php");
-include("classes/db_censomunic_classe.php");
-include("classes/db_censodistrito_classe.php");
-include("classes/db_censoorgreg_classe.php");
-include("classes/db_censolinguaindig_classe.php");
-include("dbforms/db_funcoes.php");
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+
+db_postmemory( $_POST );
+
 $clescola           = new cl_escola;
 $claluno            = new cl_aluno;
 $clcensouf          = new cl_censouf;
@@ -65,30 +60,31 @@ if ($campo == "end") {
 }
 
 if (isset($censouf)) {
+
   ?>
   <script>
   M = parent.document.form1.<?=$campomunic?>;
-  for (i = 0; i < M.length; i++) {
+  for ( var i = 0; i < M.length; i++ ) {
+
     M.options[i] = null;
     i--;
   }
  </script>
- <?
+ <?php
  if ($censouf == "") {
  	
   ?>
    <script>
     parent.document.form1.elements["<?=$campomunic?>"].options[0] = new Option("Selecione o Estado"," ");
    </script>
-   <?
-   
+   <?php
  } else {
  	
    ?>
    <script>
-   parent.document.form1.elements["<?=$campomunic?>"].options[0] = new Option(""," ");
+     parent.document.form1.elements["<?=$campomunic?>"].options[0] = new Option(""," ");
    </script>
-   <?
+   <?php
    $sSqlMunic     = $clcensomunic->sql_query_file("","ed261_i_codigo,ed261_c_nome",
                                                   "ed261_c_nome","ed261_i_censouf = $censouf"); 
    $rsResultMunic = $clcensomunic->sql_record($sSqlMunic);
@@ -96,23 +92,24 @@ if (isset($censouf)) {
      db_fieldsmemory($rsResultMunic,$x);
    ?>
    <script>
-   parent.document.form1.elements["<?=$campomunic?>"].options[<?=($x+1)?>] = new Option("<?=$ed261_c_nome?>",<?=$ed261_i_codigo?>);
+     parent.document.form1.elements["<?=$campomunic?>"].options[<?=($x+1)?>] = new Option("<?=$ed261_c_nome?>",<?=$ed261_i_codigo?>);
    </script>
-   <?
-   
+   <?php
   }
  }
 }
 
 if (isset($nacionalidade)) {
 	
-  $sWhere        = " ed47_i_codigo = $nacionalidade AND ed47_i_censomuniccert is null AND ed47_i_censoufcert is null ";
+  $sWhere        = "     ed47_i_codigo = $nacionalidade AND ed47_i_censomuniccert is null";
   $sWhere       .= " AND ed47_c_certidaotipo = '' AND ed47_c_certidaonum = '' AND ed47_c_certidaolivro = '' ";
-  $sWhere       .= " AND ed47_c_certidaofolha = '' AND ed47_c_certidaocart = '' AND ed47_c_certidaodata is null ";
+  $sWhere       .= " AND ed47_c_certidaofolha = '' AND ed47_c_certidaodata is null ";
   $sWhere       .= " AND ed47_i_censoufident is null AND ed47_i_censoorgemissrg is null AND ed47_v_identcompl = '' ";
-  $sWhere       .= " AND ed47_v_ident = '' AND ed47_d_identdtexp is null";
-  $sSqlAluno     = $claluno->sql_query_file("","ed47_i_codigo","",$sWhere); 
-  $rsResultAluno = $claluno->sql_record($sSqlAluno);
+  $sWhere       .= " AND ed47_v_ident = '' AND ed47_d_identdtexp is null AND ed47_i_censoufcert is null ";
+  $sWhere       .= " AND ( trim(ed47_c_certidaocart) = '' OR ed47_c_certidaocart is null ) ";
+  $sSqlAluno     = $claluno->sql_query_file( "", "ed47_i_codigo", "", $sWhere );
+  $rsResultAluno = $claluno->sql_record( $sSqlAluno );
+
   if ($claluno->numrows == 0) {
   	
   	$sMsg  = "Quando o aluno tiver nacionalidade Estrangeira, os campos referentes a Certidão e Identidade não devem ";
@@ -122,7 +119,6 @@ if (isset($nacionalidade)) {
    <script>
     parent.document.form1.ed47_i_nacion.value = 1;
    </script>
-   <?
+   <?php
   }
 }
-?>

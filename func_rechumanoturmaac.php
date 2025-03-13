@@ -26,16 +26,16 @@
  */
 
 //MODULO: educação
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_atividaderh_classe.php");
-include("classes/db_ensino_classe.php");
-include("classes/db_disciplina_classe.php");
-include ("classes/db_rechumanoturmaac_ext_classe.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_atividaderh_classe.php"));
+include(modification("classes/db_ensino_classe.php"));
+include(modification("classes/db_disciplina_classe.php"));
+include(modification("classes/db_rechumanoturmaac_ext_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clatividaderh = new cl_atividaderh;
@@ -85,7 +85,7 @@ $escola = db_getsession("DB_coddepto");
           inner join rechumanoescola on ed75_i_codigo = ed23_i_rechumanoescola
          WHERE ed75_i_escola = $escola
          ORDER BY ed10_c_abrev";
- $sql_result = pg_query($sql);
+ $sql_result = db_query($sql);
  $num = pg_num_rows($sql_result);
  $conta = "";
  while ($row=pg_fetch_array($sql_result)){
@@ -101,7 +101,7 @@ $escola = db_getsession("DB_coddepto");
               AND ed75_i_escola = $escola
               ORDER BY ed59_i_ordenacao
              ";
-  $sub_result = pg_query($sub_sql);
+  $sub_result = db_query($sub_sql);
   $num_sub = pg_num_rows($sub_result);
   if ($num_sub>=1){
    # Se achar alguma base para o curso, marca a palavra Todas
@@ -243,7 +243,7 @@ function fillSelectFromArray2(selectCtrl, itemArray, goodPrompt, badPrompt, defa
                 inner join rechumanoescola on ed75_i_codigo = ed23_i_rechumanoescola
                WHERE ed75_i_escola = $escola
                ORDER BY ed10_c_abrev";
-       $sql_result = pg_query($sql);
+       $sql_result = db_query($sql);
        while($row=pg_fetch_array($sql_result)){
         $cod_curso=$row["ed10_i_codigo"];
         $desc_curso=$row["ed10_c_descr"];
@@ -358,3 +358,9 @@ function fillSelectFromArray2(selectCtrl, itemArray, goodPrompt, badPrompt, defa
 </table>
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_unidades_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_unidades_classe.php"));
 $clunidades = new cl_unidades;
 $clrotulo = new rotulocampo;
 $clrotulo->label("sd29_i_procedimento");
@@ -141,10 +141,10 @@ $clrotulo->label("sd29_i_procedimento");
 <script>
 function js_pesquisa_procedimento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_procedimento','func_sau_procedimento.php?funcao_js=parent.js_mostraprocedimento1|sd63_c_procedimento|sd63_c_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedimento','func_sau_procedimento.php?funcao_js=parent.js_mostraprocedimento1|sd63_c_procedimento|sd63_c_nome','Pesquisa',true);
   }else{
      if(document.form1.sd63_c_procedimento.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_procedimento','func_sau_procedimento.php?pesquisa_chave='+document.form1.sd63_c_procedimento.value+'&funcao_js=parent.js_mostraprocedimento','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedimento','func_sau_procedimento.php?pesquisa_chave='+document.form1.sd63_c_procedimento.value+'&funcao_js=parent.js_mostraprocedimento','Pesquisa',false);
      }else{
        document.form1.sd09_c_descr.value = '';
      }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
 if(isset($HTTP_POST_VARS["codigo"])) {	
   $codigo = $HTTP_POST_VARS["codigo"];	
-  pg_exec("begin");
-  pg_exec("delete from db_carnescampos where codmodelo = $codigo") or die("Erro excluindo db_carnescampos");
+  db_query("begin");
+  db_query("delete from db_carnescampos where codmodelo = $codigo") or die("Erro excluindo db_carnescampos");
   $tam_vetor = sizeof($HTTP_POST_VARS);
   reset($HTTP_POST_VARS);
   next($HTTP_POST_VARS);
@@ -43,17 +43,17 @@ if(isset($HTTP_POST_VARS["codigo"])) {
   //$aux[2] nomcam
   for($i = 1;$i < $tam_vetor;$i++) {
     $aux = split(";",$HTTP_POST_VARS[key($HTTP_POST_VARS)]);
-	$result = pg_exec("select 0 from db_syscampo where nomecam = '".trim($aux[2])."'");
+	$result = db_query("select 0 from db_syscampo where nomecam = '".trim($aux[2])."'");
 	if(pg_numrows($result)==0) 
 	   $var = 'f';
 	else
 	   $var = 't';
 	 
 echo    $sql = "insert into db_carnescampos values(".$codigo.",".$aux[0].",".$aux[1].",'".$aux[2]."','".$var."')";
-	$result = pg_exec($sql) or die("Erro inserindo em db_carnescampos");
+	$result = db_query($sql) or die("Erro inserindo em db_carnescampos");
     next($HTTP_POST_VARS);
   }
-  pg_exec("commit");
+  db_query("commit");
 }
 ?>
 <html>
@@ -155,28 +155,28 @@ function removeElem(cod) {
 		<?
 
 		if(isset($codigo)) {//var vem do parse_str
-          $result = pg_exec("select nomemodelo,imgmodelo from db_carnesimg where codmodelo = $codigo");
+          $result = db_query("select nomemodelo,imgmodelo from db_carnesimg where codmodelo = $codigo");
 		  if(pg_numrows($result) > 0) {
 		  //escreve a imagem
 	        $arquivo = "tmp/".str_replace(" ","_",pg_result($result,0,"nomemodelo")).".jpg";
-   		    pg_exec("begin");
+   		    db_query("begin");
             $oid = pg_result($result,0,"imgmodelo");
             pg_loexport($oid,$arquivo);
-            pg_exec("end");
+            db_query("end");
             echo "<img style=\"position:absolute;left:0px; top:0px\" src=\"".$arquivo."\" border=\"0\" onclick=\"js_posicao()\">\n";			  
 		    ///escreve os campos///
-			$reccampos = pg_exec("select nomecam,posxmodelo,posymodelo from db_carnescampos where codmodelo = $codigo");
+			$reccampos = db_query("select nomecam,posxmodelo,posymodelo from db_carnescampos where codmodelo = $codigo");
 			$numcampos = pg_numrows($reccampos);
 //			if($numcampos > 0) {			  
 			  //escreve as div
 			  for($i = 0;$i < $numcampos;$i++) {
 			    db_fieldsmemory($reccampos,$i);
-				$comprimento = pg_exec("select tamanho
+				$comprimento = db_query("select tamanho
 		                                from db_syscampo							            
 							            where nomecam = '".$nomecam."'");
 				if(pg_numrows($comprimento) == 0){
 				   $xx = split("->",$nomecam);
-				   $comprimento = pg_exec("select length(txcampo),txcampo
+				   $comprimento = db_query("select length(txcampo),txcampo
 		                                   from db_carnesdados							            
 							               where idtx = '".trim($xx[0])."'::integer");
 				   if(pg_numrows($comprimento) == 0){

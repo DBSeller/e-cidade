@@ -1,55 +1,57 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_serieregimemat_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_serieregimemat_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clserieregimemat = new cl_serieregimemat;
-$db_opcao = 1;
-$db_botao = true;
-$escola = db_getsession("DB_coddepto");
+$db_opcao         = 1;
+$db_botao         = true;
+$escola           = db_getsession("DB_coddepto");
 $clserieregimemat->pagina_retorno = "edu1_serieregimemat001.php?ed223_i_serie=$ed223_i_serie&ed11_c_descr=$ed11_c_descr";
-if(isset($incluir)){
+if (isset($incluir)) {
+
  db_inicio_transacao();
  $clserieregimemat->ed223_i_ordenacao = 1;
  $clserieregimemat->incluir($ed223_i_codigo);
  db_fim_transacao();
 }
-if(isset($alterar)){
+if (isset($alterar)) {
+
  $db_opcao = 2;
  db_inicio_transacao();
  $clserieregimemat->alterar($ed223_i_codigo);
  db_fim_transacao();
 }
-if(isset($excluir)){
+if (isset($excluir)) {
  $db_opcao = 3;
  db_inicio_transacao();
  $sql = "select * from basemps
@@ -58,7 +60,7 @@ if(isset($excluir)){
          where ed34_i_serie = $ed223_i_serie
          and ed31_i_regimemat = $ed223_i_regimemat
          and ed77_i_escola = $escola";
- $result= pg_query($sql);
+ $result= db_query($sql);
  $linhas = pg_num_rows($result);
  if($linhas>0){
  	db_msgbox("Registro não pode ser excluído pois já esta vinculado a uma base curricular");
@@ -84,7 +86,7 @@ if(isset($excluir)){
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Vincular Etapa ao Regime de Matrícula</b></legend>
-    <?include("forms/db_frmserieregimemat.php");?>
+    <?include(modification("forms/db_frmserieregimemat.php"));?>
    </fieldset>
    </center>
   </td>
@@ -94,33 +96,52 @@ if(isset($excluir)){
 </html>
 <script>
 js_tabulacaoforms("form1","ed223_i_regimemat",true,1,"ed223_i_regimemat",true);
+
+
+function redirecionaVinculoEtapaCenso(iEtapa, sDescricao) {
+
+  var sParametros = '?iEtapa=' + iEtapa + '&sEtapa='+sDescricao;
+  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a3.location.href = 'edu1_vinculoserieetapacenso001.php' + sParametros;
+  parent.mo_camada("a3");
+}
+
 </script>
 <?
-if(isset($incluir)){
- if($clserieregimemat->erro_status=="0"){
-  $clserieregimemat->erro(true,false);
-  $db_botao=true;
-  echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-  if($clserieregimemat->erro_campo!=""){
-   echo "<script> document.form1.".$clserieregimemat->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-   echo "<script> document.form1.".$clserieregimemat->erro_campo.".focus();</script>";
+if (isset($incluir)) {
+
+  if ($clserieregimemat->erro_status=="0") {
+
+    $clserieregimemat->erro(true,false);
+    $db_botao=true;
+    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+    if ($clserieregimemat->erro_campo != "") {
+
+     echo "<script> document.form1.".$clserieregimemat->erro_campo.".style.backgroundColor='#99A9AE';</script>";
+     echo "<script> document.form1.".$clserieregimemat->erro_campo.".focus();</script>";
+    }
+  } else {
+
+    db_msgbox( str_replace("\\n", "\n",$clserieregimemat->erro_msg) );
+    echo "<script> redirecionaVinculoEtapaCenso($ed223_i_serie, '$ed11_c_descr')</script>";
   }
- }else{
-  $clserieregimemat->erro(true,true);
- }
 }
-if(isset($alterar)){
- if($clserieregimemat->erro_status=="0"){
-  $clserieregimemat->erro(true,false);
-  $db_botao=true;
-  echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
-  if($clserieregimemat->erro_campo!=""){
-   echo "<script> document.form1.".$clserieregimemat->erro_campo.".style.backgroundColor='#99A9AE';</script>";
-   echo "<script> document.form1.".$clserieregimemat->erro_campo.".focus();</script>";
+if (isset($alterar)) {
+
+  if ( $clserieregimemat->erro_status == "0") {
+
+    $clserieregimemat->erro(true,false);
+    $db_botao=true;
+    echo "<script> document.form1.db_opcao.disabled=false;</script>  ";
+    if($clserieregimemat->erro_campo!=""){
+     echo "<script> document.form1.".$clserieregimemat->erro_campo.".style.backgroundColor='#99A9AE';</script>";
+     echo "<script> document.form1.".$clserieregimemat->erro_campo.".focus();</script>";
+    }
+  } else {
+
+    db_msgbox( str_replace("\\n", "\n",$clserieregimemat->erro_msg) );
+    echo "<script> redirecionaVinculoEtapaCenso($ed223_i_serie, '$ed11_c_descr')</script>";
+    $clserieregimemat->erro(true,true);
   }
- }else{
-  $clserieregimemat->erro(true,true);
- }
 }
 if(isset($excluir)){
  if($clserieregimemat->erro_status=="0"){
@@ -132,4 +153,6 @@ if(isset($excluir)){
 if(isset($cancelar)){
  echo "<script>location.href='".$clserieregimemat->pagina_retorno."'</script>";
 }
+
 ?>
+

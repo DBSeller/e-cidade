@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -208,10 +208,10 @@ db_input('y100_instit',10,$Iy100_instit,true,'hidden',$db_opcao);
 
 function js_pesquisay100_instit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_procfiscal','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscal','db_iframe_db_config','func_db_config.php?funcao_js=parent.js_mostradb_config1|codigo|nomeinst','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.y100_instit.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_procfiscal','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.y100_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscal','db_iframe_db_config','func_db_config.php?pesquisa_chave='+document.form1.y100_instit.value+'&funcao_js=parent.js_mostradb_config','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.nomeinst.value = ''; 
      }
@@ -231,10 +231,10 @@ function js_mostradb_config1(chave1,chave2){
 }
 function js_pesquisay100_procfiscalcadtipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_procfiscal','db_iframe_procfiscalcadtipo','func_procfiscalcadtipo.php?funcao_js=parent.js_mostraprocfiscalcadtipo1|y33_sequencial|y33_descricao','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscal','db_iframe_procfiscalcadtipo','func_procfiscalcadtipo.php?funcao_js=parent.js_mostraprocfiscalcadtipo1|y33_sequencial|y33_descricao','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.y100_procfiscalcadtipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_procfiscal','db_iframe_procfiscalcadtipo','func_procfiscalcadtipo.php?pesquisa_chave='+document.form1.y100_procfiscalcadtipo.value+'&funcao_js=parent.js_mostraprocfiscalcadtipo','Pesquisa',false,'0','1','775','390');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscal','db_iframe_procfiscalcadtipo','func_procfiscalcadtipo.php?pesquisa_chave='+document.form1.y100_procfiscalcadtipo.value+'&funcao_js=parent.js_mostraprocfiscalcadtipo','Pesquisa',false,'0','1','775','390');
      }else{
        document.form1.y33_descricao.value = ''; 
      }
@@ -253,7 +253,7 @@ function js_mostraprocfiscalcadtipo1(chave1,chave2){
   db_iframe_procfiscalcadtipo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_procfiscal','db_iframe_procfiscal','func_procfiscal.php?funcao_js=parent.js_preenchepesquisa|y100_sequencial','Pesquisa');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscal','db_iframe_procfiscal','func_procfiscal.php?funcao_js=parent.js_preenchepesquisa|y100_sequencial','Pesquisa');
 }
 
 function js_numcgm(mostra){

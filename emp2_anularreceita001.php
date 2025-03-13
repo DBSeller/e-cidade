@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("z01_numcgm");
@@ -46,7 +46,7 @@ $clrotulo->label("z01_nome");
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_preenchepesquisa|z01_numcgm|z01_nome','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_preenchepesquisa|z01_numcgm|z01_nome','Pesquisa',true);
 }
 function js_preenchepesquisa(numcgm,nome){
   document.form1.z01_numcgm.value = numcgm;

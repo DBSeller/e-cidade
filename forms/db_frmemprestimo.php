@@ -86,7 +86,7 @@ db_inputdata('bi18_devolucao',@$bi18_devolucao_dia,@$bi18_devolucao_mes,@$bi18_d
   <tr>
     <td colspan="2">
       <fieldset width="100%"><legend><b>Acervo:</b></legend>
-      <?include("forms/db_frmemprestimoacervo.php");?>
+      <?include(modification("forms/db_frmemprestimoacervo.php"));?>
       </fieldset>
     </td>
   </tr>
@@ -118,10 +118,10 @@ db_inputdata('bi18_devolucao',@$bi18_devolucao_dia,@$bi18_devolucao_mes,@$bi18_d
 <script>
 function js_pesquisabi18_leitor(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_leitor','func_leitor.php?funcao_js=parent.js_mostraleitor1|bi10_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_leitor','func_leitor.php?funcao_js=parent.js_mostraleitor1|bi10_numcgm|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.bi18_leitor.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_leitor','func_leitor.php?pesquisa_chave='+document.form1.bi18_leitor.value+'&funcao_js=parent.js_mostraleitor','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_leitor','func_leitor.php?pesquisa_chave='+document.form1.bi18_leitor.value+'&funcao_js=parent.js_mostraleitor','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = '';
      }
@@ -140,10 +140,10 @@ function js_mostraleitor1(chave1,chave2){
   db_iframe_leitor.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_emprestimo','func_emprestimo.php?funcao_js=parent.js_preenchepesquisa|bi18_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emprestimo','func_emprestimo.php?funcao_js=parent.js_preenchepesquisa|bi18_codigo','Pesquisa',true);
 }
 function js_pesquisa2(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_emprestimo','func_leitorcategoria.php?funcao_js=parent.js_preenchepesquisa|bi07_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emprestimo','func_leitorcategoria.php?funcao_js=parent.js_preenchepesquisa|bi07_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_emprestimo.hide();

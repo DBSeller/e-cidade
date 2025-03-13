@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
- include_once("fpdf151/pdf.php");
+ include_once(modification("fpdf151/pdf.php"));
  db_postmemory($HTTP_SERVER_VARS);
 
  $instituicao = str_replace("-",",",$db_selinstit);
@@ -83,7 +83,7 @@
 
    //--
    //echo $sql;exit;
-   $result = pg_exec($sql);
+   $result = db_query($sql);
    $rows = pg_numrows($result);
    if($result==false){
         db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum registro encontrado, verifique as datas e tente novamente');   

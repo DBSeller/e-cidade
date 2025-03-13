@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_sepultamentos_classe.php");
-require_once("classes/db_sepulturas_classe.php");
-require_once("classes/db_ossoario_classe.php");
-require_once("classes/db_retiradas_classe.php");
-require_once("classes/db_renovacoes_classe.php");
-require_once("classes/db_sepulta_classe.php");
-require_once("classes/db_ossoariojazigo_classe.php");
-require_once("classes/db_restosgavetas_classe.php");
-require_once("classes/db_gavetas_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_sepultamentos_classe.php"));
+require_once(modification("classes/db_sepulturas_classe.php"));
+require_once(modification("classes/db_ossoario_classe.php"));
+require_once(modification("classes/db_retiradas_classe.php"));
+require_once(modification("classes/db_renovacoes_classe.php"));
+require_once(modification("classes/db_sepulta_classe.php"));
+require_once(modification("classes/db_ossoariojazigo_classe.php"));
+require_once(modification("classes/db_restosgavetas_classe.php"));
+require_once(modification("classes/db_gavetas_classe.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -64,7 +64,7 @@ $clgavetas        = new cl_gavetas;
 <body class="body-default abas">
   <div class="container">
    <?php
-     include("forms/db_frmtransacoes.php");
+     include(modification("forms/db_frmtransacoes.php"));
    ?>
   </div>
 </body>

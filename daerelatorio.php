@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require('fpdf151/pdf.php');
-$result = pg_exec("select * from db_dae where w04_codigo = $codigo");
+require(modification('fpdf151/pdf.php'));
+$result = db_query("select * from db_dae where w04_codigo = $codigo");
 if(pg_numrows($result) != 0){
   db_fieldsmemory($result,0);
 }
-$result = pg_exec("select * from issbase inner join cgm on q02_numcgm = z01_numcgm where q02_inscr = $w04_inscr");
+$result = db_query("select * from issbase inner join cgm on q02_numcgm = z01_numcgm where q02_inscr = $w04_inscr");
 if(pg_numrows($result) != 0){
   db_fieldsmemory($result,0);
 }
-$resultender = pg_exec("select * from db_daeend where w05_codigo = $codigo");
+$resultender = db_query("select * from db_daeend where w05_codigo = $codigo");
 if(pg_numrows($resultender) != 0){
   db_fieldsmemory($resultender,0);
 }
-$resultsocios = pg_exec("select * from db_daesocios where w06_codigo = $codigo");
-$resultval = pg_exec("select * from db_daevalores where w07_codigo = $codigo order by to_number(w07_mes,'99')");
+$resultsocios = db_query("select * from db_daesocios where w06_codigo = $codigo");
+$resultval = db_query("select * from db_daevalores where w07_codigo = $codigo order by to_number(w07_mes,'99')");
 $pdf = new PDF(); // abre a classe
 $head1 = "DECLARAÇÃO ANUAL DE ISSQN";
 $head2 = "EXERCÍCIO: $w04_ano"; 

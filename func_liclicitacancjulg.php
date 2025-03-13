@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_liclicita_classe.php");
-include("classes/db_liclicitem_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_liclicita_classe.php"));
+include(modification("classes/db_liclicitem_classe.php"));
 
 db_postmemory($HTTP_GET_VARS);
 db_postmemory($HTTP_POST_VARS);
@@ -117,32 +117,17 @@ $clrotulo->label("l03_descr");
   <tr> 
     <td align="center" valign="top"> 
       <?
-//      $dbwhere = " and l20_correto is true and ((e55_sequen is not null and e54_anulad is null) or e55_sequen is null) and l20_instit = ".db_getsession("DB_instit");
-      $dbwhere = " and l20_licsituacao = 1 and (e54_anulad is not null or e55_sequen is null) 
+      $dbwhere = " and l20_licsituacao in (1, 6, 7) and (e54_anulad is not null or e55_sequen is null) 
                    and l20_instit = ".db_getsession("DB_instit");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_liclicita.php")==true){
-             include("funcoes/db_func_liclicita.php");
+             include(modification("funcoes/db_func_liclicita.php"));
            }else{
            $campos = "liclicita.*";
            }
         }
-/*
-        if(isset($chave_l20_codigo) && (trim($chave_l20_codigo)!="") ){
-	         $sql = $clliclicita->sql_query(null,$campos,"l20_codigo","l20_codigo=$chave_l20_codigo and l20_correto is false");
-        }else if(isset($chave_l20_numero) && (trim($chave_l20_numero)!="") ){
-	         $sql = $clliclicita->sql_query(null,$campos,"l20_codigo","l20_numero=$chave_l20_numero and l20_correto is false");
-	}else if(isset($chave_l03_descr) && (trim($chave_l03_descr)!="") ){
-	         $sql = $clliclicita->sql_query(null,$campos,"l20_codigo","l03_descr like '$chave_l03_descr%' and l20_correto is false");
-        }else if(isset($chave_l03_codigo) && (trim($chave_l03_codigo)!="") ){
-	         $sql = $clliclicita->sql_query(null,$campos,"l20_codigo","l03_codigo=$chave_l03_codigo and l20_correto is false");        
-        }else{
-                 $sql = $clliclicita->sql_query("",$campos,"l20_codigo","l20_correto is false");
-        }
-*/
-//        if (isset($param) && trim($param) != ""){
-//	     $dbwhere = " and (e55_sequen is null or (e55_sequen is not null and e54_anulad is not null))";
+
        $campos  = "distinct ".$campos;
 
        if(isset($chave_l20_codigo) && (trim($chave_l20_codigo)!="") ){
@@ -158,10 +143,7 @@ $clrotulo->label("l03_descr");
        }else{
            $sql = $clliclicitem->sql_query_inf("",$campos,"l20_codigo","1=1$dbwhere");
        }
-//	}
 
-//        die( $sql );
-//        echo $sql;
         db_lovrot($sql,15,"()","",$funcao_js);
       }else{
         if($pesquisa_chave!=null && $pesquisa_chave!=""){
@@ -190,3 +172,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

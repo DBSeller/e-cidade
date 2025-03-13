@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_versao_classe.php");
-include("classes/db_db_versaocpd_classe.php");
-include("classes/db_db_versaousu_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_versao_classe.php"));
+include(modification("classes/db_db_versaocpd_classe.php"));
+include(modification("classes/db_db_versaousu_classe.php"));
 $cldb_versao = new cl_db_versao;
 $cldb_versaocpd = new cl_db_versaocpd;
 $cldb_versaousu = new cl_db_versaousu;
@@ -71,7 +71,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_versao.php");
+	include(modification("forms/db_frmdb_versao.php"));
 	?>
     </center>
 	</td>
@@ -96,13 +96,13 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_versaocpd.disabled=false;
-         top.corpo.iframe_db_versaocpd.location.href='con1_db_versaocpd001.php?db33_codver=".@$db30_codver."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_versaocpd.location.href='con1_db_versaocpd001.php?db33_codver=".@$db30_codver."';
          parent.document.formaba.db_versaousu.disabled=false;
-         top.corpo.iframe_db_versaousu.location.href='con1_db_versaousu001.php?db32_codver=".@$db30_codver."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_versaousu.location.href='con1_db_versaousu001.php?db32_codver=".@$db30_codver."';
          parent.document.formaba.db_versaotarefa.disabled=false;
-         top.corpo.iframe_db_versaotarefa.location.href='con1_db_versaotarefa_001.php?db29_codver=".@$db30_codver."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_versaotarefa.location.href='con1_db_versaotarefa_001.php?db29_codver=".@$db30_codver."';
           parent.document.formaba.db_versaoclientes.disabled=false;
-         top.corpo.iframe_db_versaoclientes.location.href='con1_db_versaoclientes_001.php?db29_codver=".@$db30_codver."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_versaoclientes.location.href='con1_db_versaoclientes_001.php?db29_codver=".@$db30_codver."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_versaocpd');";

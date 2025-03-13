@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $cllevanta      = new cl_levanta;
 $clparfiscal    = new cl_parfiscal;
@@ -37,6 +37,7 @@ $cllevinscr     = new cl_levinscr;
 $clativprinc    = new cl_ativprinc;
 $cllevusu       = new cl_levusu;
 $cllevcgm       = new cl_levcgm;
+$clautolevanta  = new cl_autolevanta;
 
 $clrotulo = new rotulocampo;
 $clrotulo->label("q02_inscr");
@@ -103,6 +104,10 @@ $head6 = "Período: $y60_dtini a $y60_dtfim";
 $pdf->addpage("L");
 
 $result01  =  $cllevvalor->sql_record($cllevvalor->sql_query_file(null,"distinct y63_mes,y63_ano","y63_ano asc, y63_mes asc","y63_codlev=$codlev"));
+
+$result02  =  $clautolevanta->sql_record($clautolevanta->sql_query(null,"y50_codauto, y50_dtvenc, y117_sequencial, y117_levanta,y117_auto","y117_sequencial desc limit 1","y117_levanta=$codlev"));
+db_fieldsmemory($result02,0);
+
 $numrows01 =  $cllevvalor->numrows;
 
 for ($x=0; $x<$numrows01; $x++) {
@@ -166,14 +171,48 @@ for ($x=0; $x<$numrows01; $x++) {
 
     $dtoper = date("Y-m-d",db_getsession("DB_datausu"));
 
-    $aData = split("-", $y63_dtvenc);
+    $aData = explode("-", $y63_dtvenc);
     $dDtOperData = $aData[0] . "-" . $aData[1] . "-01";
 
-    $result = db_query("select round(fc_corre(".($y60_espontaneo=='t'?$y32_receitexp:$y32_receit).",'".$y63_dtvenc."',".$y63_saldo.",'".$dtoper."',".db_getsession("DB_anousu").",'$y63_dtvenc'),2) as correcao");
+    /**
+     *  paramentro : $y32_tipodataoperacao (1=igual data vencimento, 2=igual data levantamento)
+    **/
+    $dDataOperParam = $y63_dtvenc;
+    if ($y32_tipodataoperacao == 2 && isset($y60_data)) {
+       $aDataOperParam = explode("/", $y60_data);
+       $dDataOperParam    = $aDataOperParam[2] . "-" . $aDataOperParam[1] . "-" . $aDataOperParam[0];
+    }
+    //dd($dDataOperParam,$y63_dtvenc);
+
+    /**
+     *  parametro: $y32_tipodatavencimento (1=igual data de vencimento do levantamento, 2=igual data vencimento do auto
+     *  de infracao)
+    **/
+    $dDataVencParam = $y63_dtvenc;
+    if ($y32_tipodatavencimento == 2 && isset($y50_dtvenc)) {
+        $dDataVencParam = $y50_dtvenc;
+    }
+        
+    if ( intval(str_replace('-', '', $y63_dtvenc)) < intval(str_replace('-', '', $dDataOperParam)) ) {
+      $dDataVencParam = $dDataOperParam;
+
+    
+    }
+    
+    //dd($dDataOperParam, $dDataVencParam, $y63_dtvenc, $dDtOperData );
+    //* talvez mudar para $dDataOperParam = $y63_dtvenc;
+
+    //teste: select fc_juros(560,'2019-04-20','2021-08-02','2019-04-20',false,2021);
+
+    $result = db_query("select round(fc_corre(".($y60_espontaneo=='t'?$y32_receitexp:$y32_receit).",'".$y63_dtvenc."',".$y63_saldo.",'".$dtoper."',".db_getsession("DB_anousu").",'$dDataVencParam'),2) as correcao");
     db_fieldsmemory($result,0);
+
+    //dd('RECEITA1', $y32_receit,'RECEITAEXP', $y32_receitexp,'DATA LEVANTA',$y60_data,'OPERCAO:',$dDataOperParam, 'TIPOOPERACAO:', $y32_tipodataoperacao, 'VENCIMENTO',$dDataVencParam, 'TIPOVENC:', $y32_tipodatavencimento, 'CORECAO', $correcao, "JURO",$juro, 'MULTA', $multa, 'dtoper', $dtoper, 'y63_dtvenc', $y63_dtvenc);
 
     $result = db_query("select fc_juros(".($y60_espontaneo=='t'?$y32_receitexp:$y32_receit).",'".$y63_dtvenc."','".$dtoper."','".$dDtOperData."','f',".db_getsession("DB_anousu").") as juro");
     db_fieldsmemory($result,0);
+
+    //dump($juro, $correcao, $dtoper, $y63_dtvenc, $dDataOperParam, $dDataVencParam);
     $juro = round($correcao * $juro,2);
 
     $result = db_query("select fc_multa(".($y60_espontaneo=='t'?$y32_receitexp:$y32_receit).",'".$y63_dtvenc."','".$dtoper."','".$dDtOperData."',".db_getsession("DB_anousu").") as multa");
@@ -181,7 +220,11 @@ for ($x=0; $x<$numrows01; $x++) {
 
     $multa = round($correcao * $multa,2);
 
+    //dd($correcao, $multa, $juro, $tot_imposto, $numpre, $numpar, $k00_numpre, $k00_numpar);  
+
     $total = round($correcao + $juro + $multa,2);
+
+    //dd('RECEITA1', $y32_receit,'RECEITAEXP', $y32_receitexp,'DATA LEVANTA',$y60_data,'OPERCAO:',$dDataOperParam, 'TIPOOPERACAO:', $y32_tipodataoperacao, 'VENCIMENTO',$dDataVencParam, 'TIPOVENC:', $y32_tipodatavencimento, 'CORECAO', $correcao, "JURO",$juro, 'MULTA', $multa, 'dtoper', $dtoper, 'y63_dtvenc', $y63_dtvenc);
 
   } else {
 
@@ -191,6 +234,7 @@ for ($x=0; $x<$numrows01; $x++) {
     $total     = '0.00';
     $y63_saldo = '0.00';
   }
+  
 
   $pdf->setfont('arial','',7);
   $pdf->cell(20,$alt,"","T",0,"C",0);
@@ -198,9 +242,9 @@ for ($x=0; $x<$numrows01; $x++) {
   $pdf->cell(20,$alt,db_formatar($tot_valor,"p"),"T",0,"C",0);
   $pdf->cell(20,$alt,"","T",0,"C",0);
   $pdf->cell(20,$alt,db_formatar($tot_imposto,"p"),"T",0,"C",0);
-  $pdf->cell(20,$alt,$y63_dtvenc,"T",0,"C",0);
+  $pdf->cell(20,$alt,db_formatar($dDataVencParam, "d"),"T",0,"C",0);
   $pdf->cell(20,$alt,db_formatar($y63_pago,"p"),"T",0,"C",0);
-  $pdf->cell(20,$alt,$y63_saldo,"T",0,"C",0);
+  $pdf->cell(20,$alt,db_formatar($y63_saldo,"p"),"T",0,"C",0);
   $pdf->cell(25,$alt,db_formatar($correcao,"p"),"T",0,"C",0);
   $pdf->cell(20,$alt,db_formatar($multa,"p"),"T",0,"C",0);
   $pdf->cell(20,$alt,db_formatar($juro,"p"),"T",0,"C",0);

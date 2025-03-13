@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -26,17 +26,16 @@
  */
 
 //MODULO: material
-require_once("classes/db_matunid_classe.php");
+require_once(modification("classes/db_matunid_classe.php"));
 $clmatunid = new cl_matunid;
 $clmatmater->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("m61_descr");
 $clrotulo->label("m62_codmatunid");
 $clrotulo->label("m63_codpcmater");
-
 ?>
 <form name="form1" method="post" action="">
-<center>
+<div class="container">
 <table border="0">
 <tr>
 <td>
@@ -45,12 +44,12 @@ $clrotulo->label("m63_codpcmater");
 <!--
   <tr>
     <td nowrap title="<?=@$Tm63_codpcmater?>">
-       <?
+       <?php
         db_ancora(@$Lm63_codpcmater,"js_pesquisam63_codpcmater(true);",$db_opcao);
        ?>
     </td>
     <td>
-      <?
+      <?php
         db_input('m63_codpcmater',10,$Im63_codpcmater,true,'text',$db_opcao,"onchange='js_pesquisam63_codpcmater(false);'");
         db_input('pc01_descrmater',40,'',true,'text',3)
       ?>
@@ -79,12 +78,12 @@ $clrotulo->label("m63_codpcmater");
   </tr>
   <tr>
     <td nowrap title="<?=@$Tm60_codmatunid?>">
-       <?
+       <?php
          db_ancora(@$Lm60_codmatunid,"js_pesquisam60_codmatunid(true);",$db_opcao);
        ?>
     </td>
     <td>
-      <?
+      <?php
         if($db_opcao == 1 && (!isset($m60_codmatunid) || (isset($m60_codmatunid) && trim($m60_codmatunid)=="")) && (!isset($m62_codmatunid) || (isset($m62_codmatunid) && trim($m62_codmatunid)==""))){
           $result_unidade=$clmatunid->sql_record($clmatunid->sql_query_file('1'));
           if ($clmatunid->numrows!=0){
@@ -104,12 +103,12 @@ $clrotulo->label("m63_codpcmater");
   </tr>
   <tr>
     <td nowrap title="<?=@$Tm62_codmatunid?>">
-      <?
+      <?php
         db_ancora(@$Lm62_codmatunid,"js_pesquisam62_codmatunid(true);",$db_opcao);
       ?>
     </td>
     <td>
-      <?
+      <?php
         db_input('m62_codmatunid',10,$Im62_codmatunid,true,'text',$db_opcao," onchange='js_pesquisam62_codmatunid(false);'");
         db_input('descr_uni',40,'',true,'text',3);
       ?>
@@ -118,29 +117,49 @@ $clrotulo->label("m63_codpcmater");
   <tr>
     <td>
       <b>
-        <?
-          db_ancora('Grupo:',"js_pesquisaGrupo(true);",$db_opcao);
+        <?php
+        /*
+         * modificação para liberar a alteração do grupo do material, somente se nao tiver lancamento no material
+         */
+        $iLiberaGrupo = $db_opcao;
+        $instituicoes = InstituicaoRepository::getInstituicoes();
+        foreach ($instituicoes as $instituicao) {
+            $lPossuiIntegracaoMaterial = ParametroIntegracaoPatrimonial::possuiIntegracaoMaterial(
+                new DBDate(date('Y-m-d')),
+                $instituicao
+            );
+            if ($lPossuiIntegracaoMaterial) {
+                $daoMatestoque = new cl_matestoque();
+                $where = "m70_codmatmater = " . $m60_codmater;
+                $sqlVerificaLancamentoNoMaterial = $daoMatestoque->sql_query(null, "1", null, $where);
+                $resource = db_query($sqlVerificaLancamentoNoMaterial);
+                $temLancamentoMaterial = pg_num_rows($resource) == 0 ? false : true;
+
+                if(!$temLancamentoMaterial) {
+                    $iLiberaGrupo = 2;
+                } else {
+                    $iLiberaGrupo = 3;
+                }
+            }
+        }
+          db_ancora('Grupo:',"js_pesquisaGrupo(true);",$iLiberaGrupo);
         ?>
       </b>
     </td>
     <td>
       <?
-             //db_input('m65_sequencial',10,'text',$db_opcao," onchange='js_pesquisaGrupo(false);'");
-        db_input('m65_sequencial',10,'',true,'text',$db_opcao," onchange='js_pesquisaGrupo(false);'");
-        db_input('db121_descricao',40,'text',$db_opcao,'');
+        db_input('m65_sequencial',10,'',true,'text',$iLiberaGrupo," onchange='js_pesquisaGrupo(false);'");
+        db_input('db121_descricao',40,'text',$iLiberaGrupo,'');
       ?>
     </td>
   </tr>
-  <tr>
     <td nowrap title="<?=@$Tm60_quantent?>">
        <?=@$Lm60_quantent?>
     </td>
     <td>
       <?php
-
         $opc=3;
         if (isset($m60_codmatunid)&&$m60_codmatunid!="") {
-
           $result_unidade=$clmatunid->sql_record($clmatunid->sql_query_file($m60_codmatunid));
           if ($clmatunid->numrows!=0){
              db_fieldsmemory($result_unidade,0);
@@ -163,22 +182,34 @@ $clrotulo->label("m63_codpcmater");
        <?=@$Lm60_codant?>
     </td>
     <td>
-      <?
+      <?php
         db_input('m60_codant',20,$Im60_codant,true,'text',$db_opcao,"")
       ?>
     </td>
   </tr>
-  <tr>
-    <td nowrap align=right title="<?=@$Tm60_ativo?>">
-       <?=@$Lm60_ativo?>
-    </td>
-    <td>
-      <?
-        $xx = array("t"=>"SIM","f"=>"NAO");
-        db_select('m60_ativo',$xx,true,$db_opcao,"");
-      ?>
-    </td>
-  </tr>
+    <tr>
+        <td nowrap align=right title="<?=@$Tm60_ativo?>">
+            <?=@$Lm60_ativo?>
+        </td>
+        <td>
+            <?php
+            $xx = array("t"=>"SIM","f"=>"NAO");
+            db_select('m60_ativo',$xx,true,$db_opcao,"");
+            ?>
+        </td>
+    </tr>
+    <tr>
+        <td nowrap align=right title="<?=@$Tm60_servico?>">
+            <?=@$Lm60_servico?>
+        </td>
+        <td>
+            <?php
+            $xx = array("f"=>"NAO", "t"=>"SIM");
+            $m60_servico_disabled = $db_opcao != 1 ? "disabled" : "";
+            db_select('m60_servico', $xx, true, $db_opcao, $m60_servico_disabled);
+            ?>
+        </td>
+    </tr>
     <tr>
     <td nowrap align=right title="<?=@$Tm60_controlavalidade?>">
        <?=@$Lm60_controlavalidade?>
@@ -202,14 +233,14 @@ $clrotulo->label("m63_codpcmater");
        id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>"
        <?=($db_botao == false?"disabled":"")?> />
 <input name="pesquisar" type="button" id="pesquisar" value="Pesquisar" onclick="js_pesquisa();" />
-<?
+<?php
   if($db_opcao==2||$db_opcao==22){
     ?>
     <input name="novo" type="button" id="novo" value="Novo" onclick="js_novo();" />
-    <?
+    <?php
   }
 ?>
-  </center>
+</div>
 </form>
 <script>
 //----------- lokup grupo ----
@@ -281,15 +312,17 @@ function js_mostramatunid1(chave1,chave2) {
 //-----------------------------------------------------------
 function js_pesquisam63_codpcmater(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pcmater','func_pcmater.php?funcao_js=parent.js_mostrapcmater1|pc01_codmater|pc01_descrmater','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcmater','func_pcmater.php?funcao_js=parent.js_mostrapcmater1|pc01_codmater|pc01_descrmater','Pesquisa',true);
   }else{
      if(document.form1.m63_codpcmater.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_pcmater','func_pcmater.php?pesquisa_chave='+document.form1.m63_codpcmater.value+'&funcao_js=parent.js_mostrapcmater','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcmater','func_pcmater.php?pesquisa_chave='+document.form1.m63_codpcmater.value+'&funcao_js=parent.js_mostrapcmater','Pesquisa',false);
      }else{
         document.form1.pc01_descrmater.value = "";
      }
   }
 }
+
+
 function js_mostrapcmater(chave,erro) {
 
   document.form1.pc01_descrmater.value = chave;

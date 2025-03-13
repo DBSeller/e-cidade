@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -150,7 +150,7 @@ class TransferenciaBens {
     $oDaoBensTransfConf->t96_data       = $this->getData();
     $oDaoBensTransfConf->incluir($oDaoBensTransfConf->t96_codtran);
     if ($oDaoBensTransfConf->erro_status == "0") {
-      throw new DBException("[ 2 - receberTransferencia ] - " . $oDaoBensTransfConf->erro_msg);
+      throw new DBException("[ 2 - receberTransferencia ] Código do bem: {$this->getBem()} - " . $oDaoBensTransfConf->erro_msg);
     }
 
     // incluimos dados na histbem
@@ -161,7 +161,7 @@ class TransferenciaBens {
     $oDaoHistbens->t56_histor = $this->getHistorico();
     $oDaoHistbens->incluir(null);
     if ($oDaoHistbens->erro_status == "0") {
-      throw new DBException(" [ 3 - receberTransferencia] - " . $oDaoHistbens->erro_msg);
+      throw new DBException(" [ 3 - receberTransferencia] Código do bem: {$this->getBem()} - " . $oDaoHistbens->erro_msg);
     }
 
     // inserir na histbensocorrencia
@@ -172,7 +172,7 @@ class TransferenciaBens {
     $oDaoHistBensOcorrencia->t69_hora             = date("H:i");
     $oDaoHistBensOcorrencia->incluir(null);
     if ($oDaoHistBensOcorrencia->erro_status == "0") {
-      throw new DBException(" [ 4 - receberTransferencia ] - " . $oDaoHistBensOcorrencia->erro_msg);
+      throw new DBException(" [ 4 - receberTransferencia ] Código do bem: {$this->getBem()} - " . $oDaoHistBensOcorrencia->erro_msg);
     }
 
     // altera na tabela bens setando o novo departamento
@@ -180,7 +180,7 @@ class TransferenciaBens {
     $oDaoBens->t52_depart = $this->getDepartamentoDestino();
     $oDaoBens->alterar($oDaoBens->t52_bem);
     if ($oDaoBens->erro_status == "0") {
-      throw new DBException(" [ 5 - receberTransferencia ] - " . $oDaoBens->erro_msg);
+      throw new DBException(" [ 5 - receberTransferencia ] Código do bem: {$this->getBem()} - " . $oDaoBens->erro_msg);
     }
 
     //incluir na tabela histbemtrans vinculando a transferencia com o bem
@@ -188,7 +188,7 @@ class TransferenciaBens {
     $oDaoHistBemTrans->t97_codtran = $this->getTransferencia();
     $oDaoHistBemTrans->incluir($oDaoHistBemTrans->t97_histbem, $oDaoHistBemTrans->t97_codtran);
     if ($oDaoHistBemTrans->erro_status == "0") {
-      throw new DBException(" [ 6 - receberTransferencia ] - " . $oDaoHistBemTrans->erro_msg);
+      throw new DBException(" [ 6 - receberTransferencia ] Código do bem: {$this->getBem()} - " . $oDaoHistBemTrans->erro_msg);
     }
 
     // incluir histbemdiv
@@ -196,20 +196,20 @@ class TransferenciaBens {
     $oDaoHistBemDiv->t32_divisao = $this->getDivisaoDestino();
     $oDaoHistBemDiv->incluir(null);
     if ($oDaoHistBemDiv->erro_status == "0") {
-       throw new DBException(" [ 7 - receberTransferencia ] - " . $oDaoHistBemDiv->erro_msg);
+       throw new DBException(" [ 7 - receberTransferencia ] Código do bem: {$this->getBem()} - " . $oDaoHistBemDiv->erro_msg);
     }
 
     // excluir bensdiv , divisao atual
     $oDaoBensDiv->excluir($this->getBem());
     if ($oDaoBensDiv->erro_status == "0") {
-      throw new DBException(" [ 8 - receberTransferencia ] - " . $oDaoBensDiv->erro_msg);
+      throw new DBException(" [ 8 - receberTransferencia ] Código do bem: {$this->getBem()} - " . $oDaoBensDiv->erro_msg);
     }
 
     // incluir na bensdiv o bem com a nova divisao
     $oDaoBensDiv->t33_divisao = $this->getDivisaoDestino();
     $oDaoBensDiv->incluir($this->getBem());
     if ($oDaoBensDiv->erro_status == "0") {
-      throw new DBException(" [ 9 - receberTransferencia ] - " . $oDaoBensDiv->erro_msg);
+      throw new DBException(" [ 9 - receberTransferencia ] Código do bem: {$this->getBem()} - " . $oDaoBensDiv->erro_msg);
     }
 
   }
@@ -246,7 +246,7 @@ class TransferenciaBens {
       $oDaoBensTransf->t93_divisao    = $this->getDivisaoDestino();
       $oDaoBensTransf->incluir($this->getTransferencia(), $oDaoBensTransf->t93_depart);
       if ($oDaoBensTransf->erro_status == "0") {
-        throw new DBException(" [ 2 -  transferenciaAutomatica ] -  " . $oDaoBensTransf->erro_msg);
+        throw new DBException(" [ 2 -  transferenciaAutomatica ] Código do bem: {$this->getBem()} -  " . $oDaoBensTransf->erro_msg);
       }
       $this->setTransferencia($oDaoBensTransf->t93_codtran);
 
@@ -256,7 +256,7 @@ class TransferenciaBens {
       $oDaoBensTransfdes->t94_divisao = $this->getDivisaoDestino();
       $oDaoBensTransfdes->incluir($oDaoBensTransfdes->t94_codtran, $oDaoBensTransfdes->t94_depart);
       if ($oDaoBensTransfdes->erro_status == "0") {
-        throw new DBException(" [3 - transferenciaAutomatica] - " . $oDaoBensTransfdes->erro_msg );
+        throw new DBException(" [3 - transferenciaAutomatica] Código do bem: {$this->getBem()} - " . $oDaoBensTransfdes->erro_msg );
       }
 
 
@@ -266,7 +266,7 @@ class TransferenciaBens {
       $oDaoBensTransfDiv->t31_divisao = $this->getDivisaoDestino();
       $oDaoBensTransfDiv->incluir(null);
       if ($oDaoBensTransfDiv->erro_status == "0"){
-        throw new DBException("[ 4 - transferenciaAutomatica] - " . $oDaoBensTransfDiv->erro_msg);
+        throw new DBException("[ 4 - transferenciaAutomatica] Código do bem: {$this->getBem()} - " . $oDaoBensTransfDiv->erro_msg);
       }
 
 
@@ -277,7 +277,7 @@ class TransferenciaBens {
       $oDaoBensTransfCodigo->t95_histor  = $this->getHistorico();
       $oDaoBensTransfCodigo->incluir($oDaoBensTransfCodigo->t95_codtran, $oDaoBensTransfCodigo->t95_codbem);
       if ($oDaoBensTransfCodigo->erro_status == "0") {
-        throw new DBException( "[ 5 - transferenciaAutomatica ] - " . $oDaoBensTransfCodigo->erro_msg);
+        throw new DBException( "[ 5 - transferenciaAutomatica ] Código do bem: {$this->getBem()} - " . $oDaoBensTransfCodigo->erro_msg );
       }
 
       // incluimos BensTransfOrigemDestino
@@ -289,7 +289,7 @@ class TransferenciaBens {
       $oDaoBensTransfOrigemDestino->t34_departamentodestino = $this->getDepartamentoDestino();
       $oDaoBensTransfOrigemDestino->incluir(null);
       if ($oDaoBensTransfOrigemDestino->erro_status == "0") {
-        throw new DBException(" [6 - transferenciaAutomatica - ]" . $oDaoBensTransfOrigemDestino->erro_msg);
+        throw new DBException(" [6 - transferenciaAutomatica Código do bem: {$this->getBem()} - ]" . $oDaoBensTransfOrigemDestino->erro_msg);
       }
       $this->receberTransferencia();
     }

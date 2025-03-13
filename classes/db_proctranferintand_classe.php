@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -101,7 +101,7 @@ class cl_proctranferintand {
                                 $this->p87_codtransferint 
                                ,$this->p87_codandam 
                       )";
-     $result = @pg_exec($sql); 
+     $result = @db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
@@ -158,7 +158,7 @@ class cl_proctranferintand {
        }
      }
      $sql .= " where ";
-$sql .= "oid = '$oid'";     $result = @pg_exec($sql);
+$sql .= "oid = '$oid'";     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "andamento da tranferencia do processo nao Alterado. Alteracao Abortada.\\n";
@@ -197,7 +197,7 @@ $sql .= "oid = '$oid'";     $result = @pg_exec($sql);
      }else{
        $sql2 = $dbwhere;
      }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "andamento da tranferencia do processo nao Excluído. Exclusão Abortada.\\n";
@@ -228,7 +228,7 @@ $sql .= "oid = '$oid'";     $result = @pg_exec($sql);
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

@@ -1,0 +1,134 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo="1010447" name="recursoshumanos.pontoeletronicoarquivoimportacaoregistro"
+       prefix="rh229" description="Tabela de relógio ponto" type="0">
+  <fields>
+    <field codigo="1010520"
+           name="rh229_sequencial"
+           conteudo="int4"
+           description="Sequencial"
+           inivalue="0"
+           label="Sequencial"
+           size="10"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="1"
+           tipoobj="text"
+           labelrel="Sequencial"
+           reference=""
+           ispk="t"
+           hassequence="t">
+        <sequence name="recursoshumanos.pontoeletronicoarquivoimportacaoregistro_sequencial_seq"></sequence>
+    </field>
+    <field codigo="1010524"
+           name="rh229_pontoeletronicoarquivoimportacao"
+           conteudo="int4"
+           description="pontoeletronicoarquivoimportacao"
+           inivalue="0"
+           label="pontoeletronicoarquivoimportacao"
+           size="250"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="3"
+           tipoobj="text"
+           labelrel="pontoeletronicoarquivoimportacao"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+    <field codigo="1010529"
+           name="rh229_matricula"
+           conteudo="int4"
+           description="Matrícula"
+           inivalue="0"
+           label="Matrícula"
+           size="250"
+           null="t"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="3"
+           tipoobj="text"
+           labelrel="Matrícula"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+    <field codigo="1010528"
+           name="rh229_pis"
+           conteudo="varchar"
+           description="Pis"
+           inivalue="0"
+           label="Pis"
+           size="250"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="3"
+           tipoobj="text"
+           labelrel="Pis"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+    <field codigo="1010530"
+           name="rh229_data"
+           conteudo="date"
+           description="Data da batida"
+           inivalue="0"
+           label="Data da Batida"
+           size="250"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="3"
+           tipoobj="text"
+           labelrel="Data da Batida"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+    <field codigo="1010531"
+           name="rh229_hora"
+           conteudo="varchar"
+           description="Hora da Batida"
+           inivalue="0"
+           label="Hora Batida"
+           size="250"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="3"
+           tipoobj="text"
+           labelrel="ora Batida"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+    <field codigo="1010532"
+           name="rh229_serial"
+           conteudo="varchar"
+           description="Número de série do equipamento."
+           inivalue="0"
+           label="Número de Série"
+           size="250"
+           null="f"
+           uppercase="f"
+           autocompl="f"
+           aceitatipo="3"
+           tipoobj="text"
+           labelrel="Número de Série"
+           reference=""
+           ispk="f"
+           hassequence="f">
+    </field>
+  </fields>
+  <primarykey>
+    <fieldpk name="sequencial"></fieldpk>
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="recursoshumanos.pontoeletronicoarquivoimportacao">
+      <fieldfk name="pontoeletronicoarquivoimportacao" reference="sequencial" inner='t'></fieldfk> 
+    </foreignkey>
+  </foreignkeys>
+</table>

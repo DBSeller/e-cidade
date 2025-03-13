@@ -6,11 +6,11 @@
     <parametro nome="lprefeitura"        obrigatorio="true"    tipo="integer" />
   </parametros>
   <configuracoes>
-    <classe nome="InstituicaoWebservice" parametros="" caminho="model/configuracao/InstituicaoWebService.model.php" />
+    <classe nome="InstituicaoWebservice" referencia="dados" parametros="" caminho="model/configuracao/InstituicaoWebService.model.php" />
     <exec>
-      <metodo nome="setCodigo" parametros="$codigo_instituicao" />
-      <metodo nome="setPrefeitura" parametros="$lprefeitura" />
-      <metodo nome="getDadosInstituicao" parametros="" />
+      <metodo referencia="dados" nome="setCodigo" parametros="$codigo_instituicao" />
+      <metodo referencia="dados" nome="setPrefeitura" parametros="$lprefeitura" />
+      <metodo referencia="dados" nome="getDadosInstituicao" parametros="" />
     </exec>
   </configuracoes>
 </processamento>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_liborcamento.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 $clrotulo = new rotulocampo;
 $db_opcao = 3;
 $clrotulo->label("descrdepto");
@@ -116,7 +116,7 @@ db_app::load("widgets/windowAux.widget.js");
               </td>
               <td colspan='3'>
               <?
-               @$pc10_resumo = stripslashes($pc10_resumo);
+               @$pc10_resumo = htmlspecialchars_decode(stripslashes($pc10_resumo));
                db_textarea("pc10_resumo",10,120,"",true,"text",$db_opcao,"","","",735);
               ?>
               </td>
@@ -154,7 +154,8 @@ db_app::load("widgets/windowAux.widget.js");
 db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 <script>
-var sUrlRC = 'com4_solicitacaoComprasRegistroPreco.RPC.php';
+var sUrlRC     = 'com4_solicitacaoComprasRegistroPreco.RPC.php';
+iFormaControle = 1;
 function js_pesquisar() {
 
   js_OpenJanelaIframe('',
@@ -183,17 +184,19 @@ function js_completaPesquisa(iSolicitacao) {
 
 function js_retornoCompletaPesquisa(oAjax) {
 
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
-
     $('pc54_datainicio').value  = oRetorno.datainicio;
     $('pc54_datatermino').value = oRetorno.datatermino;
-    $('pc10_resumo').value      = oRetorno.resumo.urlDecode();
+
+    var resumo = oRetorno.resumo.urlDecode();
+    $('pc10_resumo').value = resumo.replace(/&#(\d+);/g, function (m, n) { return String.fromCharCode(n); });
+
     $('pc10_numero').value      = oRetorno.solicitacao;
-    $('pc54_solicita').value = oRetorno.codigoabertura;
+    $('pc54_solicita').value    = oRetorno.codigoabertura;
+    iFormaControle              = oRetorno.formacontrole;
     js_preencheGrid(oRetorno.itens);
     $('btnProcessar').disabled = false;
-
   } else {
     alert(oRetorno.message.urlDecode());
   }
@@ -202,17 +205,27 @@ function js_retornoCompletaPesquisa(oAjax) {
 
 function js_init() {
 
-  windowAuxiliar = new windowAux('wndAuxiliar', 'itens', 600, 400);
+  windowAuxiliar = new windowAux('wndAuxiliar', 'itens', screen.availWidth - 50,  screen.availHeight - 200);
   windowAuxiliar.setContent("<fieldset><legend>Itens da Compilação</legend><div  id='griditens'></div></fieldset>");
   windowAuxiliar.hide();
   $('btnProcessar').disabled = true;
   oGridItens     = new DBGrid('gridItens');
   oGridItens.nameInstance = "oGridItens";
-  oGridItens.setHeight(200);
-  oGridItens.setCellAlign(new Array("right","right","Left","left","center","right","right", "right"));
-  oGridItens.setCellWidth(new Array("4%","10%","45%",'10%', "5%","10%",'16%','16%','16%'));
-  oGridItens.setHeader(new Array("Seq","Codigo","Descrição","Unidade(Qtd)","Out.Inf.","Qtde","Qtd. Min.","Qtd. Min.",
-                                 "Ativo"));
+  oGridItens.setHeight(screen.availHeight - 400);
+  oGridItens.setCellAlign(new Array("right","right","Left","left","center", "right", "right","right", "right"));
+  oGridItens.setCellWidth(new Array("4%", "10%","45%",'10%', "5%","15%", '16%', '16%','16%','16%'));
+  oGridItens.setHeader(["Seq",
+                        "Codigo",
+                        "Descrição",
+                        "Unidade(Qtd)",
+                        "Out.Inf.",
+                        "Qtde",
+                        "Valor",
+                        "Qtd. Min.",
+                        "Qtd. Min.",
+                        "Ativo"]
+                       );
+
   oGridItens.show($('griditens'));
 
 }
@@ -228,33 +241,45 @@ function js_preencheGrid(aItens) {
       aLinha[0]  = i+1;
       aLinha[1]  = codigoitem;
       aLinha[2]  = descricaoitem.urlDecode();
-      aLinha[3]  = "<span id='unidade"+indice+"'>"+unidade+"</span>";
+      aLinha[3]  = "<span id='unidade"+indice+"'>"+unidade_descr+"</span>";
       aLinha[3] += "<span id='quantunid"+indice+"' style='display:none'>"+quantidadeunid+"</span>("+quantidadeunid+")";
       aLinha[4]  = "<span id='justificativa"+indice+"' style='display:none'>"+justificativa.urlDecode()+"</span>";
       aLinha[4] += "<span id='resumo"+indice+"'        style='display:none'>"+resumo.urlDecode()+"</span>";
       aLinha[4] += "<span id='pgto"+indice+"'          style='display:none'>"+pagamento.urlDecode()+"</span>";
       aLinha[4] += "<span id='prazo"+indice+"'         style='display:none'>"+prazo.urlDecode()+"</span>";
       aLinha[4] += "<span><a href='#' ></a></span>";
-      aLinha[5] = js_formatar(aItens[i].quantidade,'f');
-      aLinha[6] = js_formatar(aItens[i].qtdemin,'f');
-      aLinha[7] = js_formatar(aItens[i].qtdemax,'f');
-      aLinha[8] = ativo?"Sim":"Não";
+      aLinha[5] = js_formatar(aItens[i].quantidade, 'f');
+      aLinha[6] = js_formatar(aItens[i].valor_unitario, 'f');
+      aLinha[7] = js_formatar(aItens[i].qtdemin, 'f');
+      aLinha[8] = js_formatar(aItens[i].qtdemax, 'f');
+      aLinha[9] = ativo?"Sim":"Não";
       oGridItens.addRow(aLinha);
       if (!automatico) {
          oGridItens.aRows[i].setClassName("fora");
       }
       //oGridItens.aRows[i].aCells[0].sStyle +="background-color:#DED5CB;font-weight:bold;padding:1px";
-
     }
   }
   oGridItens.renderRows();
+  //oGridItens.resizeCols();
 }
 js_init();
 function js_showItens() {
 
-  windowAuxiliar.show(100,10);
+  windowAuxiliar.show(30, 10);
   oGridItens.clearAll();
   oGridItens.renderRows();
+  switch  (iFormaControle) {
+
+    case '1':
+      oGridItens.showColumn(false, 7);
+      break;
+    case '2':
+      oGridItens.showColumn(false, 6);
+      oGridItens.showColumn(false, 8);
+      oGridItens.showColumn(false, 9);
+      break;
+  }
 }
 
 function js_processarCompilacao() {
@@ -286,7 +311,7 @@ function js_processarCompilacao() {
 function js_retornoProcessarCompilacao(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 
    alert('Compilacao Processada com sucesso!\nProcesso de Compras Gerado: '+oRetorno.iProcessoCompras);

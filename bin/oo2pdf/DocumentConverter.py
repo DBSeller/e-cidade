@@ -4,7 +4,7 @@
 # This script converts a document from one office format to another by
 # connecting to an OpenOffice.org instance via Python-UNO bridge.
 #
-# Copyright (C) 2008 Mirko Nasato <mirko@artofsolving.com>
+# Copyright (C) 2009 Mirko Nasato <mirko@artofsolving.com>
 # Licensed under the GNU LGPL v2.1 - http://www.gnu.org/licenses/lgpl.html
 #
 DEFAULT_OPENOFFICE_PORT = 8100
@@ -140,3 +140,4 @@ if __name__ == "__main__":
     except DocumentConversionException, exception:
         print "ERROR! " + str(exception)
         exit(1)
+

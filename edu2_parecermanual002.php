@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,23 +25,23 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_stdlib.php");
-require_once("classes/db_matricula_classe.php");
-require_once("classes/db_turma_classe.php");
-require_once("classes/db_regencia_classe.php");
-require_once("classes/db_escola_classe.php");
-require_once("classes/db_diarioresultado_classe.php");
-require_once("classes/db_diarioavaliacao_classe.php");
-require_once("classes/db_procresultado_classe.php");
-require_once("classes/db_procavaliacao_classe.php");
-require_once("classes/db_regenciaperiodo_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("libs/db_utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_libdocumento.php");
-require_once("std/DBDate.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("classes/db_matricula_classe.php"));
+require_once(modification("classes/db_turma_classe.php"));
+require_once(modification("classes/db_regencia_classe.php"));
+require_once(modification("classes/db_escola_classe.php"));
+require_once(modification("classes/db_diarioresultado_classe.php"));
+require_once(modification("classes/db_diarioavaliacao_classe.php"));
+require_once(modification("classes/db_procresultado_classe.php"));
+require_once(modification("classes/db_procavaliacao_classe.php"));
+require_once(modification("classes/db_regenciaperiodo_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("std/DBDate.php"));
 $cldiarioresultado = new cl_diarioresultado;
 $cldiarioavaliacao = new cl_diarioavaliacao;
 $clprocresultado   = new cl_procresultado;

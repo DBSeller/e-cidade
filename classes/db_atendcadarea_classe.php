@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -129,7 +129,7 @@ class cl_atendcadarea {
        $this->erro_status = "0";
        return false;
      }
-     $sql = "insert into atendcadarea(
+     $sql = "insert into atendcadarea (
                                        at26_sequencial 
                                       ,at25_descr 
                                       ,at25_figura 

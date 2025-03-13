@@ -29,14 +29,14 @@
 *  ROTINA DE CANCELAMENTO DE BAIXA DE MATRICULA
 *  26-02-2007
 */
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_iptubaixa_classe.php");
-include("classes/db_iptubaixaproc_classe.php");
-include("classes/db_iptubase_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_iptubaixa_classe.php"));
+include(modification("classes/db_iptubaixaproc_classe.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $cliptubaixa = new cl_iptubaixa;
@@ -100,7 +100,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmiptubaixa.php");
+	include(modification("forms/db_frmiptubaixa.php"));
 	?>
     </center>
 	</td>

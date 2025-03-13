@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oDaoCgsUnd = new cl_cgs_und_ext;
 $oRotulo    = new rotulocampo();
@@ -68,7 +68,8 @@ $oRotulo->label( 'z01_v_ident' );
             </td>
             <td>
               <?php
-              db_inputdata( 'z01_d_nasc', @$z01_d_nasc_dia, @$z01_d_nasc_mes, @$z01_d_nasc_ano, true, 'text', 4, "", 'chave_z01_d_nasc' );
+              db_inputdata( 'z01_d_nasc', @$z01_d_nasc_dia, @$z01_d_nasc_mes, @$z01_d_nasc_ano, true, 'text', 4,
+                "onkeydown='return js_controla_tecla_enter(this, event)'", 'chave_z01_d_nasc' );
               ?>
             </td>
           </tr>
@@ -117,10 +118,17 @@ $oRotulo->label( 'z01_v_ident' );
           $aWhere = array();
           $sSql   = '';
 
-          if( !isset( $pesquisa_chave ) ) {
+          $sWhereInativos  = " not exists (select 1 from cgs_und_ext ";
+          $sWhereInativos .= "              where cgs_und_ext.z01_i_cgsund = cgs_und.z01_i_cgsund ";
+          $sWhereInativos .= "                and (z01_b_inativo is true or z01_b_faleceu is true) ) ";
 
-            $sCampos  = "z01_i_cgsund, z01_v_nome, s115_c_cartaosus, z01_d_nasc, z01_v_sexo, z01_v_ender, z01_i_numero";
+          $sCampoNome = 'z01_v_nome';
+
+          if( !isset( $pesquisa_chave ) ) {
+            //Plugin OcultarCGSInativo - ajuste --->>> #2
+            $sCampos  = "z01_i_cgsund, {$sCampoNome}, s115_c_cartaosus, z01_d_nasc, z01_v_sexo, z01_v_ender, z01_i_numero";
             $sCampos .= ", z01_v_bairro, z01_v_ident, z01_v_mae";
+            //Plugin OcultarCGSInativo - ajuste --->>> #3
 
             if( isset( $chave_z01_i_cgsund ) && trim( $chave_z01_i_cgsund ) != "" ) {
               $aWhere[] = "z01_i_cgsund = {$chave_z01_i_cgsund}";
@@ -137,6 +145,7 @@ $oRotulo->label( 'z01_v_ident' );
             if( isset( $chave_z01_d_nasc ) && trim( $chave_z01_d_nasc ) != "" ) {
 
               $oDataNascimento = new DBDate( $chave_z01_d_nasc );
+
               $aWhere[]        = "z01_d_nasc = '{$oDataNascimento->getDate()}'";
             }
 
@@ -159,23 +168,23 @@ $oRotulo->label( 'z01_v_ident' );
             }
 
             if( count( $aWhere ) > 0 ) {
-
+              $aWhere[] = $sWhereInativos;
               $sWhere = implode( ' and ', $aWhere );
               $sSql   = $oDaoCgsUnd->sql_query( null, $sCampos, "z01_i_cgsund", $sWhere );
-
               db_lovrot( $sSql, 15, "()", "", $funcao_js, "", "NoMe", $repassa );
             }
           } else {
 
             if( isset( $pesquisa_chave ) && $pesquisa_chave != "" && $pesquisa_chave != null ) {
 
-              $sSql     = $oDaoCgsUnd->sql_query( $pesquisa_chave );
+              $sWhere   = " cgs_und.z01_i_cgsund = {$pesquisa_chave} and {$sWhereInativos} ";
+              $sSql     = $oDaoCgsUnd->sql_query( null, "*, $sCampoNome", null, $sWhere );
               $rsCgsUnd = db_query( $sSql );
 
               if( $rsCgsUnd && pg_num_rows( $rsCgsUnd ) > 0 ) {
 
                 db_fieldsmemory( $rsCgsUnd, 0 );
-                echo "<script>" . $funcao_js . "( '{$z01_v_nome}', false, '{$z01_v_sexo}' );</script>";
+                echo "<script>" . $funcao_js . "( '{$z01_v_nome}', false, '{$z01_v_sexo}', '{$s115_c_cartaosus}', '{$z01_d_nasc}' );</script>";
               } else {
                 echo "<script>" . $funcao_js . "( 'Chave(" . $pesquisa_chave . ") não Encontrado', true );</script>";
               }
@@ -190,19 +199,20 @@ $oRotulo->label( 'z01_v_ident' );
   </div>
 </body>
 <script>
-$('chave_z01_i_cgsund').className     = 'field-size2';
-$('chave_z01_d_nasc').className       = 'field-size2';
-$('chave_z01_v_nome').className       = 'field-size7';
-$('chave_z01_v_ident').className      = 'field-size3';
-$('chave_s115_c_cartaosus').className = 'field-size3';
+
+$('chave_z01_i_cgsund').className      = 'field-size2';
+$('chave_z01_d_nasc').className        = 'field-size2';
+$('chave_z01_v_nome').className        = 'field-size7';
+$('chave_z01_v_ident').className       = 'field-size3';
+$('chave_s115_c_cartaosus').className  = 'field-size3';
 
 function limparCampos() {
 
-  $('chave_z01_i_cgsund').value     = '';
-  $('chave_z01_d_nasc').value       = '';
-  $('chave_z01_v_nome').value       = '';
-  $('chave_z01_v_ident').value      = '';
-  $('chave_s115_c_cartaosus').value = '';
+  $('chave_z01_i_cgsund').value      = '';
+  $('chave_z01_d_nasc').value        = '';
+  $('chave_z01_v_nome').value        = '';
+  $('chave_z01_v_ident').value       = '';
+  $('chave_s115_c_cartaosus').value  = '';
 
   document.form1.submit();
 }
@@ -210,4 +220,10 @@ function limparCampos() {
 document.body.onload = function() {
   $('chave_z01_v_nome').focus();
 };
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

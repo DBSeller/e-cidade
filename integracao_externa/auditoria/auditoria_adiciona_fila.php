@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,6 +27,7 @@
 
 /* Seta Nome do Script para ser utilizado nos logs */
 $sNomeScript = basename(__FILE__);
+$iHora = (int)date('i');
 
 /* Conexao com base - seta $pConexao */
 include("lib/db_conecta.php");
@@ -38,14 +39,25 @@ error_reporting(E_ALL);
 ini_set('display_errors','On');
 ini_set('error_log','log/php_error.log');
 
+$sSql = "SELECT * FROM pg_stat_activity WHERE state = 'active' AND query ~ 'fc_auditoria_adiciona' AND pid <> pg_backend_pid()";
+$rsCheckRunning = db_query($pConexao, $sSql, $sArquivoLog);
 
-db_log("Adicionando registros da db_acount* para fila de migração", $sArquivoLog);
-$sSql  = "SELECT fc_auditoria_adiciona_acount_fila() ";
-
-db_query($pConexao, $sSql, $sArquivoLog);
+if (db_numrows($rsCheckRunning) > 0) {
+	db_log("AVISO: Abortando pois já existe outro processo executando essa operação ...", $sArquivoLog);
+	db_log("", $sArquivoLog);
+} else {
+	/* A cada hora cheia (minuto=0) rodamos a PL para adicionar "eventuais perdidos" na fila */
+	if ($iHora == 0) {
+		db_log("Adicionando TODOS registros da db_acount* para fila de migracao", $sArquivoLog);
+		$sSql  = "SELECT fc_auditoria_adiciona_todos_acount_fila() ";
+	} else {
+		db_log("Adicionando registros da db_acount* para fila de migracao", $sArquivoLog);
+		$sSql  = "SELECT fc_auditoria_adiciona_acount_fila() ";
+	}
+	db_query($pConexao, $sSql, $sArquivoLog);
+}
 
 echo "";
-
 
 /* Final do Script */
 include("lib/db_final_script.php");

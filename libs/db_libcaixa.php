@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -58,7 +58,7 @@ class cl_autenticar {
    }
    function cabecalho (){
       $sql = "select nomeinst,cgc from  db_config where codigo= ".db_getsession('DB_instit');
-      $result = pg_query($sql);
+      $result = db_query($sql);
       global $nomeinst,$cgc;
       db_fieldsmemory($result,0);
      $this->condensado(true);
@@ -95,7 +95,7 @@ class cl_autenticar {
 	     return false;
 	   }else{ 	 
 	       $sql     = "select k11_id from cfautent where k11_instit = " . db_getsession('DB_instit') . " and k11_ipterm = '$ip'"; 
-	       $result  = pg_query($sql);
+	       $result  = db_query($sql);
 	       $numrows = pg_numrows($result);
 	       if($numrows<1){
 		   $this->cancelar("IP ".db_getsession('DB_ip')." não autorizado! ");
@@ -116,11 +116,11 @@ class cl_autenticar {
        $this->testando=true;
        global $k11_id;
        $sql    = "select k11_id from cfautent where k11_instit = " . db_getsession('DB_instit') . " and k11_ipterm ='".$this->ip."'"; 
-       $result = pg_query($sql);
+       $result = db_query($sql);
        db_fieldsmemory($result,0);
        if(empty($HTTP_SESSION_VARS['autenticando'])){
 	  $sql = "select 0 from corrente where k12_instit = " . db_getsession('DB_instit') . " and k12_id = $k11_id and k12_data ='".date("Y-m-d",db_getsession('DB_datausu'))."' limit 2";
-	  $result  = pg_query($sql);
+	  $result  = db_query($sql);
 	  $numrows = pg_numrows($result);
 	  if($numrows==1){
 	    db_putsession('autenticando',true);
@@ -478,7 +478,7 @@ function db_imprimecheque ($nome, $codbco, $valor, $data, $modelo = 1, $ip_impri
     inner join db_docparag on db04_docum=k39_documento 
     inner join db_paragrafo on db02_idparag=db04_idparag 
     where k11_ipterm = '".$ip_imprime ."' and k11_impassche = 1";
-    $resultass = pg_query($sqlass);
+    $resultass = db_query($sqlass);
     $linhasass = pg_num_rows($resultass);
     if($linhasass>0){
       for($as=0;$as<$linhasass;$as++){

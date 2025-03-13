@@ -26,7 +26,7 @@
  */
 
 //MODULO: atendimento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clatendemail->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -123,10 +123,10 @@ function js_cancelar(){
 }
 function js_pesquisaat12_codcli(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_atendemail','db_iframe_clientes','func_clientes.php?funcao_js=parent.js_mostraclientes1|at01_codcli|at01_nomecli','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_atendemail','db_iframe_clientes','func_clientes.php?funcao_js=parent.js_mostraclientes1|at01_codcli|at01_nomecli','Pesquisa',true);
   }else{
      if(document.form1.at12_codcli.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_atendemail','db_iframe_clientes','func_clientes.php?pesquisa_chave='+document.form1.at12_codcli.value+'&funcao_js=parent.js_mostraclientes','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_atendemail','db_iframe_clientes','func_clientes.php?pesquisa_chave='+document.form1.at12_codcli.value+'&funcao_js=parent.js_mostraclientes','Pesquisa',false);
      }else{
        document.form1.at01_nomecli.value = ''; 
      }

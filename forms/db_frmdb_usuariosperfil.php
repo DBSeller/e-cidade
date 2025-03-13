@@ -71,7 +71,7 @@ db_input('id_usuario',10,0,true,'text',3,"")
     <?
        $res_instit = $cldb_config->sql_record($cldb_config->sql_query_file(null,"codigo,substr(nomeinst,1,40)"));
        if(isset($id_usuario) && $id_usuario != ""){
-          $record_select = pg_exec("select id_instit from db_userinst where id_usuario = $id_usuario");
+          $record_select = db_query("select id_instit from db_userinst where id_usuario = $id_usuario");
        }else{
           $record_select = "";
        }

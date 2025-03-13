@@ -1,144 +1,128 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
+<?php
 
-//MODULO: escola
-//CLASSE DA ENTIDADE aluno
-class cl_aluno { 
+class cl_aluno
+{
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ed47_i_codigo = 0; 
-   var $ed47_v_nome = null; 
-   var $ed47_v_ender = null; 
-   var $ed47_c_numero = null; 
-   var $ed47_v_compl = null; 
-   var $ed47_v_bairro = null; 
-   var $ed47_v_cep = null; 
-   var $ed47_c_raca = null; 
-   var $ed47_v_cxpostal = null; 
-   var $ed47_v_telef = null; 
-   var $ed47_d_cadast_dia = null; 
-   var $ed47_d_cadast_mes = null; 
-   var $ed47_d_cadast_ano = null; 
-   var $ed47_d_cadast = null; 
-   var $ed47_v_ident = null; 
-   var $ed47_i_login = 0; 
-   var $ed47_c_nomeresp = null; 
-   var $ed47_c_emailresp = null; 
-   var $ed47_c_atenddifer = null; 
-   var $ed47_t_obs = null; 
-   var $ed47_c_transporte = null; 
-   var $ed47_c_zona = null; 
-   var $ed47_certidaomatricula = null; 
-   var $ed47_c_certidaotipo = null; 
-   var $ed47_c_certidaonum = null; 
-   var $ed47_c_certidaolivro = null; 
-   var $ed47_c_certidaofolha = null; 
-   var $ed47_c_certidaocart = null; 
-   var $ed47_c_certidaodata_dia = null; 
-   var $ed47_c_certidaodata_mes = null; 
-   var $ed47_c_certidaodata_ano = null; 
-   var $ed47_c_certidaodata = null; 
-   var $ed47_c_nis = null; 
-   var $ed47_c_bolsafamilia = null; 
-   var $ed47_c_passivo = null; 
-   var $ed47_d_dtemissao_dia = null; 
-   var $ed47_d_dtemissao_mes = null; 
-   var $ed47_d_dtemissao_ano = null; 
-   var $ed47_d_dtemissao = null; 
-   var $ed47_d_dthabilitacao_dia = null; 
-   var $ed47_d_dthabilitacao_mes = null; 
-   var $ed47_d_dthabilitacao_ano = null; 
-   var $ed47_d_dthabilitacao = null; 
-   var $ed47_d_dtvencimento_dia = null; 
-   var $ed47_d_dtvencimento_mes = null; 
-   var $ed47_d_dtvencimento_ano = null; 
-   var $ed47_d_dtvencimento = null; 
-   var $ed47_d_nasc_dia = null; 
-   var $ed47_d_nasc_mes = null; 
-   var $ed47_d_nasc_ano = null; 
-   var $ed47_d_nasc = null; 
-   var $ed47_d_ultalt_dia = null; 
-   var $ed47_d_ultalt_mes = null; 
-   var $ed47_d_ultalt_ano = null; 
-   var $ed47_d_ultalt = null; 
-   var $ed47_i_estciv = 0; 
-   var $ed47_i_nacion = 0; 
-   var $ed47_v_categoria = null; 
-   var $ed47_v_cnh = null; 
-   var $ed47_v_contato = null; 
-   var $ed47_v_cpf = null; 
-   var $ed47_v_email = null; 
-   var $ed47_v_fax = null; 
-   var $ed47_v_hora = null; 
-   var $ed47_v_mae = null; 
-   var $ed47_v_pai = null; 
-   var $ed47_v_profis = null; 
-   var $ed47_v_sexo = null; 
-   var $ed47_v_telcel = null; 
-   var $ed47_c_foto = null; 
-   var $ed47_o_oid = 0; 
-   var $ed47_c_codigoinep = null; 
-   var $ed47_i_pais = 0; 
-   var $ed47_d_identdtexp_dia = null; 
-   var $ed47_d_identdtexp_mes = null; 
-   var $ed47_d_identdtexp_ano = null; 
-   var $ed47_d_identdtexp = null; 
-   var $ed47_v_identcompl = null; 
-   var $ed47_c_passaporte = null; 
-   var $ed47_i_transpublico = 0; 
-   var $ed47_i_filiacao = 0; 
-   var $ed47_i_censoufend = 0; 
-   var $ed47_i_censomunicend = 0; 
-   var $ed47_i_censoorgemissrg = 0; 
-   var $ed47_i_censoufident = 0; 
-   var $ed47_i_censoufcert = 0; 
-   var $ed47_i_censomuniccert = 0; 
-   var $ed47_i_censoufnat = 0; 
-   var $ed47_i_censomunicnat = 0; 
-   var $ed47_i_atendespec = 0; 
-   var $ed47_i_censocartorio = 0; 
-   var $ed47_celularresponsavel = null; 
-   var $ed47_situacaodocumentacao = 0; 
-   var $ed47_cartaosus = null; 
-   var $ed47_tiposanguineo = null; 
+    public $rotulo = null; 
+    public $query_sql = null; 
+    public $numrows = 0; 
+    public $numrows_incluir = 0; 
+    public $numrows_alterar = 0; 
+    public $numrows_excluir = 0; 
+    public $erro_status = null; 
+    public $erro_sql = null; 
+    public $erro_banco = null;  
+    public $erro_msg = null;  
+    public $erro_campo = null;  
+    public $pagina_retorno = null; 
+    /* Variáveis do Arquivo */
+    public $ed47_i_codigo = 0; 
+    public $ed47_v_nome = null; 
+    public $ed47_v_nomesocial = null; 
+    public $ed47_v_ender = null; 
+    public $ed47_c_numero = null; 
+    public $ed47_v_compl = null; 
+    public $ed47_v_bairro = null; 
+    public $ed47_v_cep = null; 
+    public $ed47_c_raca = null; 
+    public $ed47_v_cxpostal = null; 
+    public $ed47_v_telef = null; 
+    public $ed47_d_cadast_dia = null; 
+    public $ed47_d_cadast_mes = null; 
+    public $ed47_d_cadast_ano = null; 
+    public $ed47_d_cadast = null; 
+    public $ed47_v_ident = null; 
+    public $ed47_i_login = 0; 
+    public $ed47_c_nomeresp = null; 
+    public $ed47_c_emailresp = null; 
+    public $ed47_c_atenddifer = null; 
+    public $ed47_t_obs = null; 
+    public $ed47_c_transporte = null; 
+    public $ed47_c_zona = null; 
+    public $ed47_certidaomatricula = null; 
+    public $ed47_c_certidaotipo = null; 
+    public $ed47_c_certidaonum = null; 
+    public $ed47_c_certidaolivro = null; 
+    public $ed47_c_certidaofolha = null; 
+    public $ed47_c_certidaocart = null; 
+    public $ed47_c_certidaodata_dia = null; 
+    public $ed47_c_certidaodata_mes = null; 
+    public $ed47_c_certidaodata_ano = null; 
+    public $ed47_c_certidaodata = null; 
+    public $ed47_c_nis = null; 
+    public $ed47_c_bolsafamilia = null; 
+    public $ed47_c_passivo = null; 
+    public $ed47_d_dtemissao_dia = null; 
+    public $ed47_d_dtemissao_mes = null; 
+    public $ed47_d_dtemissao_ano = null; 
+    public $ed47_d_dtemissao = null; 
+    public $ed47_d_dthabilitacao_dia = null; 
+    public $ed47_d_dthabilitacao_mes = null; 
+    public $ed47_d_dthabilitacao_ano = null; 
+    public $ed47_d_dthabilitacao = null; 
+    public $ed47_d_dtvencimento_dia = null; 
+    public $ed47_d_dtvencimento_mes = null; 
+    public $ed47_d_dtvencimento_ano = null; 
+    public $ed47_d_dtvencimento = null; 
+    public $ed47_d_nasc_dia = null; 
+    public $ed47_d_nasc_mes = null; 
+    public $ed47_d_nasc_ano = null; 
+    public $ed47_d_nasc = null; 
+    public $ed47_d_ultalt_dia = null; 
+    public $ed47_d_ultalt_mes = null; 
+    public $ed47_d_ultalt_ano = null; 
+    public $ed47_d_ultalt = null; 
+    public $ed47_i_estciv = 0; 
+    public $ed47_i_nacion = 0; 
+    public $ed47_v_categoria = null; 
+    public $ed47_v_cnh = null; 
+    public $ed47_v_contato = null; 
+    public $ed47_v_cpf = null; 
+    public $ed47_v_email = null; 
+    public $ed47_v_fax = null; 
+    public $ed47_v_hora = null; 
+    public $ed47_v_mae = null; 
+    public $ed47_v_pai = null; 
+    public $ed47_v_profis = null; 
+    public $ed47_v_sexo = null; 
+    public $ed47_v_telcel = null; 
+    public $ed47_c_foto = null; 
+    public $ed47_o_oid = 0; 
+    public $ed47_c_codigoinep = null; 
+    public $ed47_i_pais = 0; 
+    public $ed47_d_identdtexp_dia = null; 
+    public $ed47_d_identdtexp_mes = null; 
+    public $ed47_d_identdtexp_ano = null; 
+    public $ed47_d_identdtexp = null; 
+    public $ed47_v_identcompl = null; 
+    public $ed47_c_passaporte = null; 
+    public $ed47_i_transpublico = 0; 
+    public $ed47_i_filiacao = 0; 
+    public $ed47_i_censoufend = 0; 
+    public $ed47_i_censomunicend = 0; 
+    public $ed47_i_censoorgemissrg = 0; 
+    public $ed47_i_censoufident = 0; 
+    public $ed47_i_censoufcert = 0; 
+    public $ed47_i_censomuniccert = 0; 
+    public $ed47_i_censoufnat = 0; 
+    public $ed47_i_censomunicnat = 0; 
+    public $ed47_i_atendespec = 0; 
+    public $ed47_i_censocartorio = 0; 
+    public $ed47_celularresponsavel = null; 
+    public $ed47_situacaodocumentacao = 0; 
+    public $ed47_cartaosus = null; 
+    public $ed47_tiposanguineo = 0; 
+    public $ed47_municipioestrangeiro = null; 
+    public $ed47_paisresidencia = null; 
+    public $ed47_localizacaodiferenciada = 0; 
+    public $ed47_visto = null; 
+    public $ed47_vistoresponsavel = null; 
+    public $ed47_rnm = null; 
+    public $ed47_rnmresponsavel = null; 
+    public $ed47_censoregiao = null; 
+    public $ed47_censoregiaonat = null; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+    public $campos = "
                  ed47_i_codigo = int8 = Código 
                  ed47_v_nome = char(70) = Nome 
                  ed47_v_ender = varchar(100) = Endereço 
@@ -152,7 +136,7 @@ class cl_aluno {
                  ed47_d_cadast = date = Data do Cadastramento 
                  ed47_v_ident = varchar(20) = N° Identidade 
                  ed47_i_login = int4 = Login 
-                 ed47_c_nomeresp = char(70) = Responsável Legal 
+                 ed47_c_nomeresp = char(70) = Responsável 
                  ed47_c_emailresp = char(50) = Email do Responsável 
                  ed47_c_atenddifer = char(30) = Recebe Escolarização em Outro Espaço 
                  ed47_t_obs = text = Observações 
@@ -166,7 +150,7 @@ class cl_aluno {
                  ed47_c_certidaocart = char(150) = Cartório 
                  ed47_c_certidaodata = date = Data de Emissão 
                  ed47_c_nis = char(11) = N° NIS 
-                 ed47_c_bolsafamilia = char(1) = Bolsa Família 
+                 ed47_c_bolsafamilia = char(1) = Auxílio Brasil 
                  ed47_c_passivo = char(1) = Passivo 
                  ed47_d_dtemissao = date = Emissão CNH 
                  ed47_d_dthabilitacao = date = 1ª CNH 
@@ -182,8 +166,8 @@ class cl_aluno {
                  ed47_v_email = varchar(100) = Email 
                  ed47_v_fax = varchar(12) = Fax 
                  ed47_v_hora = varchar(5) = Hora do Cadastramento 
-                 ed47_v_mae = char(70) = Mãe 
-                 ed47_v_pai = char(70) = Pai 
+                 ed47_v_mae = char(70) = Filiação 1 
+                 ed47_v_pai = char(70) = Filiação 2 
                  ed47_v_profis = varchar(40) = Profissão 
                  ed47_v_sexo = varchar(1) = Sexo 
                  ed47_v_telcel = varchar(12) = Telefone Celular 
@@ -209,28 +193,41 @@ class cl_aluno {
                  ed47_celularresponsavel = varchar(10) = Celular do Responsável 
                  ed47_situacaodocumentacao = int4 = Situação Documentação do aluno 
                  ed47_cartaosus = varchar(15) = Cartão SUS 
-                 ed47_tiposanguineo = int8 = Tipo Sanguineo 
+                 ed47_tiposanguineo = int8 = Tipo Sanguíneo 
+                 ed47_municipioestrangeiro = varchar(255) = Localidade 
+                 ed47_paisresidencia = int4 = País de residencia 
+                 ed47_localizacaodiferenciada = int4 = Localização diferenciada 
+                 ed47_visto = varchar(20) = Visto do Aluno 
+                 ed47_vistoresponsavel = varchar(20) = Visto do Responsável 
+                 ed47_rnm = varchar(20) = Registro Nacional de Migração 
+                 ed47_rnmresponsavel = varchar(20) = Registro Nacional de Migração 
+                 ed47_censoregiao = int4 = Região Aluno 
+                 ed47_censoregiaonat = int4 = Região Naturalidade 
+                 ed47_v_nomesocial = varchar(70) = Nome Social 
                  ";
-   //funcao construtor da classe 
-   function cl_aluno() { 
-     //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("aluno"); 
-     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+
+    public function __construct()
+    {
+        $this->rotulo = new rotulo("aluno"); 
+        $this->pagina_retorno = basename($_SERVER['PHP_SELF']);
+    }
+
+    public function erro($mostra, $retorna)
+    {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
-        echo "<script>alert(\"".$this->erro_msg."\");</script>";
+        echo "<script>alert(\"".$this->erro_msg."\")</script>";
         if($retorna==true){
            echo "<script>location.href='".$this->pagina_retorno."'</script>";
         }
      }
    }
-   // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+
+    public function atualizacampos($exclusao = false)
+    {
      if($exclusao==false){
        $this->ed47_i_codigo = ($this->ed47_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_i_codigo"]:$this->ed47_i_codigo);
        $this->ed47_v_nome = ($this->ed47_v_nome == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_v_nome"]:$this->ed47_v_nome);
+       $this->ed47_v_nomesocial = ($this->ed47_v_nomesocial == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_v_nomesocial"]:$this->ed47_v_nomesocial);
        $this->ed47_v_ender = ($this->ed47_v_ender == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_v_ender"]:$this->ed47_v_ender);
        $this->ed47_c_numero = ($this->ed47_c_numero == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_c_numero"]:$this->ed47_c_numero);
        $this->ed47_v_compl = ($this->ed47_v_compl == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_v_compl"]:$this->ed47_v_compl);
@@ -356,12 +353,22 @@ class cl_aluno {
        $this->ed47_situacaodocumentacao = ($this->ed47_situacaodocumentacao == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_situacaodocumentacao"]:$this->ed47_situacaodocumentacao);
        $this->ed47_cartaosus = ($this->ed47_cartaosus == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_cartaosus"]:$this->ed47_cartaosus);
        $this->ed47_tiposanguineo = ($this->ed47_tiposanguineo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_tiposanguineo"]:$this->ed47_tiposanguineo);
+       $this->ed47_municipioestrangeiro = ($this->ed47_municipioestrangeiro == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_municipioestrangeiro"]:$this->ed47_municipioestrangeiro);
+       $this->ed47_paisresidencia = ($this->ed47_paisresidencia == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_paisresidencia"]:$this->ed47_paisresidencia);
+       $this->ed47_localizacaodiferenciada = ($this->ed47_localizacaodiferenciada == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_localizacaodiferenciada"]:$this->ed47_localizacaodiferenciada);
+       $this->ed47_visto = ($this->ed47_visto == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_visto"]:$this->ed47_visto);
+       $this->ed47_vistoresponsavel = ($this->ed47_vistoresponsavel == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_vistoresponsavel"]:$this->ed47_vistoresponsavel);
+       $this->ed47_rnm = ($this->ed47_rnm == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_rnm"]:$this->ed47_rnm);
+       $this->ed47_rnmresponsavel = ($this->ed47_rnmresponsavel == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_rnmresponsavel"]:$this->ed47_rnmresponsavel);
+       $this->ed47_censoregiao = ($this->ed47_censoregiao == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_censoregiao"]:$this->ed47_censoregiao);
+       $this->ed47_censoregiaonat = ($this->ed47_censoregiaonat == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_censoregiaonat"]:$this->ed47_censoregiaonat);
      }else{
        $this->ed47_i_codigo = ($this->ed47_i_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["ed47_i_codigo"]:$this->ed47_i_codigo);
      }
    }
-   // funcao para inclusao
-   function incluir ($ed47_i_codigo){ 
+
+    public function incluir($ed47_i_codigo)
+    {
       $this->atualizacampos();
      if($this->ed47_v_nome == null ){ 
        $this->erro_sql = " Campo Nome não informado.";
@@ -371,6 +378,9 @@ class cl_aluno {
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        return false;
+     }
+     if($this->ed47_v_nomesocial == null ){ 
+       $this->ed47_v_nomesocial = "null";
      }
      if($this->ed47_v_ender == null ){ 
        $this->erro_sql = " Campo Endereço não informado.";
@@ -450,8 +460,8 @@ class cl_aluno {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ed47_o_oid == null ){
-       $this->ed47_o_oid = 'null';
+     if($this->ed47_o_oid == null ){ 
+          $this->ed47_o_oid = 'null';
      }
      if($this->ed47_i_pais == null ){ 
        $this->erro_sql = " Campo País não informado.";
@@ -501,10 +511,10 @@ class cl_aluno {
      if($this->ed47_i_censomuniccert == null ){ 
        $this->ed47_i_censomuniccert = "null";
      }
-     if($this->ed47_i_censoufnat == null || $this->ed47_i_censoufnat == " " ){
+     if($this->ed47_i_censoufnat == null || $this->ed47_i_censoufnat == " " ){ 
        $this->ed47_i_censoufnat = "null";
      }
-     if($this->ed47_i_censomunicnat == null || $this->ed47_i_censomunicnat == " " ){
+     if($this->ed47_i_censomunicnat == null || $this->ed47_i_censomunicnat == " " ){ 
        $this->ed47_i_censomunicnat = "null";
      }
      if($this->ed47_i_atendespec == null ){ 
@@ -524,6 +534,18 @@ class cl_aluno {
      }
      if($this->ed47_tiposanguineo == null ){ 
        $this->ed47_tiposanguineo = "null";
+     }
+     if($this->ed47_paisresidencia == null ){ 
+       $this->ed47_paisresidencia = "null";
+     }
+     if($this->ed47_localizacaodiferenciada == null ){ 
+       $this->ed47_localizacaodiferenciada = "0";
+     }
+     if($this->ed47_censoregiao == null ){ 
+       $this->ed47_censoregiao = "null";
+     }
+     if($this->ed47_censoregiaonat == null ){ 
+       $this->ed47_censoregiaonat = "null";
      }
      if($ed47_i_codigo == "" || $ed47_i_codigo == null ){
        $result = db_query("select nextval('aluno_ed47_i_codigo_seq')"); 
@@ -557,6 +579,9 @@ class cl_aluno {
        $this->erro_status = "0";
        return false;
      }
+
+     $this->ed47_v_nomesocial = $this->ed47_v_nomesocial == "null" ? null : $this->ed47_v_nomesocial;
+
      $sql = "insert into aluno(
                                        ed47_i_codigo 
                                       ,ed47_v_nome 
@@ -629,6 +654,16 @@ class cl_aluno {
                                       ,ed47_situacaodocumentacao 
                                       ,ed47_cartaosus 
                                       ,ed47_tiposanguineo 
+                                      ,ed47_municipioestrangeiro 
+                                      ,ed47_paisresidencia 
+                                      ,ed47_localizacaodiferenciada 
+                                      ,ed47_visto 
+                                      ,ed47_vistoresponsavel 
+                                      ,ed47_rnm 
+                                      ,ed47_rnmresponsavel 
+                                      ,ed47_censoregiao 
+                                      ,ed47_censoregiaonat 
+                                      ,ed47_v_nomesocial 
                        )
                 values (
                                 $this->ed47_i_codigo 
@@ -702,17 +737,28 @@ class cl_aluno {
                                ,$this->ed47_situacaodocumentacao 
                                ,'$this->ed47_cartaosus' 
                                ,$this->ed47_tiposanguineo 
+                               ,'$this->ed47_municipioestrangeiro' 
+                               ,$this->ed47_paisresidencia 
+                               ,$this->ed47_localizacaodiferenciada 
+                               ,'$this->ed47_visto' 
+                               ,'$this->ed47_vistoresponsavel' 
+                               ,'$this->ed47_rnm' 
+                               ,'$this->ed47_rnmresponsavel' 
+                               ,$this->ed47_censoregiao 
+                               ,$this->ed47_censoregiaonat
+                               ,'{$this->ed47_v_nomesocial}' 
                       )";
+
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Alunos ($this->ed47_i_codigo) nao Incluído. Inclusão Abortada.";
+         $this->erro_sql   = "Alunos ($this->ed47_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Alunos já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Alunos ($this->ed47_i_codigo) nao Incluído. Inclusão Abortada.";
+         $this->erro_sql   = "Alunos ($this->ed47_i_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -721,7 +767,7 @@ class cl_aluno {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->ed47_i_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -740,6 +786,7 @@ class cl_aluno {
          $resac = db_query("insert into db_acountkey values($acount,1008287,'$this->ed47_i_codigo','I')");
          $resac = db_query("insert into db_acount values($acount,1010051,1008287,'','".AddSlashes(pg_result($resaco,0,'ed47_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010051,1008867,'','".AddSlashes(pg_result($resaco,0,'ed47_v_nome'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,1014008,'','".AddSlashes(pg_result($resaco,0,'ed47_v_nomesocial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010051,1008868,'','".AddSlashes(pg_result($resaco,0,'ed47_v_ender'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010051,1008869,'','".AddSlashes(pg_result($resaco,0,'ed47_c_numero'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010051,1008870,'','".AddSlashes(pg_result($resaco,0,'ed47_v_compl'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
@@ -809,12 +856,22 @@ class cl_aluno {
          $resac = db_query("insert into db_acount values($acount,1010051,19802,'','".AddSlashes(pg_result($resaco,0,'ed47_situacaodocumentacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010051,20499,'','".AddSlashes(pg_result($resaco,0,'ed47_cartaosus'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,1010051,20504,'','".AddSlashes(pg_result($resaco,0,'ed47_tiposanguineo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,22180,'','".AddSlashes(pg_result($resaco,0,'ed47_municipioestrangeiro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,1010418,'','".AddSlashes(pg_result($resaco,0,'ed47_paisresidencia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,1010417,'','".AddSlashes(pg_result($resaco,0,'ed47_localizacaodiferenciada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,1011751,'','".AddSlashes(pg_result($resaco,0,'ed47_visto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,1011752,'','".AddSlashes(pg_result($resaco,0,'ed47_vistoresponsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,1011753,'','".AddSlashes(pg_result($resaco,0,'ed47_rnm'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,1011754,'','".AddSlashes(pg_result($resaco,0,'ed47_rnmresponsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,1013162,'','".AddSlashes(pg_result($resaco,0,'ed47_censoregiao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1010051,1013163,'','".AddSlashes(pg_result($resaco,0,'ed47_censoregiaonat'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      return true;
    } 
-   // funcao para alteracao
-   function alterar ($ed47_i_codigo=null) { 
+
+    public function alterar($ed47_i_codigo=null)
+    {
       $this->atualizacampos();
      $sql = " update aluno set ";
      $virgula = "";
@@ -843,6 +900,10 @@ class cl_aluno {
          $this->erro_status = "0";
          return false;
        }
+     }
+     if(trim($this->ed47_v_nomesocial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_nomesocial"])){ 
+       $sql  .= $virgula." ed47_v_nomesocial = '$this->ed47_v_nomesocial' ";
+       $virgula = ",";
      }
      if(trim($this->ed47_v_ender)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_ender"])){ 
        $sql  .= $virgula." ed47_v_ender = '$this->ed47_v_ender' ";
@@ -967,10 +1028,8 @@ class cl_aluno {
        $sql  .= $virgula." ed47_c_certidaofolha = '$this->ed47_c_certidaofolha' ";
        $virgula = ",";
      }
-     if(trim($this->ed47_c_certidaocart)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaocart"])){ 
        $sql  .= $virgula." ed47_c_certidaocart = '$this->ed47_c_certidaocart' ";
        $virgula = ",";
-     }
      if(trim($this->ed47_c_certidaodata)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaodata_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaodata_dia"] !="") ){ 
        $sql  .= $virgula." ed47_c_certidaodata = '$this->ed47_c_certidaodata' ";
        $virgula = ",";
@@ -1223,58 +1282,66 @@ class cl_aluno {
        $sql  .= $virgula." ed47_i_censomunicend = $this->ed47_i_censomunicend ";
        $virgula = ",";
      }
-     if(trim($this->ed47_i_censoorgemissrg)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoorgemissrg"])){ 
-        if(trim($this->ed47_i_censoorgemissrg)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoorgemissrg"])){ 
-           $this->ed47_i_censoorgemissrg = "null" ; 
-        } 
-       $sql  .= $virgula." ed47_i_censoorgemissrg = $this->ed47_i_censoorgemissrg ";
-       $virgula = ",";
-     }
-     if(trim($this->ed47_i_censoufident)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufident"])){ 
-        if(trim($this->ed47_i_censoufident)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufident"])){ 
-           $this->ed47_i_censoufident = "null" ; 
-        } 
-       $sql  .= $virgula." ed47_i_censoufident = $this->ed47_i_censoufident ";
-       $virgula = ",";
-     }
-     if(trim($this->ed47_i_censoufcert)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufcert"])){ 
-        if(trim($this->ed47_i_censoufcert)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufcert"])){ 
-           $this->ed47_i_censoufcert = "null" ; 
-        } 
-       $sql  .= $virgula." ed47_i_censoufcert = $this->ed47_i_censoufcert ";
-       $virgula = ",";
-     }
-     if(trim($this->ed47_i_censomuniccert)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomuniccert"])){ 
-        if(trim($this->ed47_i_censomuniccert)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomuniccert"])){ 
-           $this->ed47_i_censomuniccert = "null" ; 
-        } 
-       $sql  .= $virgula." ed47_i_censomuniccert = $this->ed47_i_censomuniccert ";
-       $virgula = ",";
-     }
+
+     if (isset($this->ed47_i_censoorgemissrg)) {
+
+      if (trim($this->ed47_i_censoorgemissrg) == '') {
+          $this->ed47_i_censoorgemissrg = 'null';
+  }
+      $sql .= $virgula . " ed47_i_censoorgemissrg = {$this->ed47_i_censoorgemissrg} ";
+ $virgula = ",";
+}
+
+  if (isset($this->ed47_i_censoufident)) {
+
+        if (trim($this->ed47_i_censoufident) == '') {
+            $this->ed47_i_censoufident = 'null';
+        }
+        $sql .= $virgula . " ed47_i_censoufident = {$this->ed47_i_censoufident} ";
+        $virgula = ",";
+    }
+
+  if (isset($this->ed47_i_censoufcert)) {
+
+    if (trim($this->ed47_i_censoufcert) == '') {
+        $this->ed47_i_censoufcert = 'null';
+    }
+      $sql .= $virgula . " ed47_i_censoufcert = {$this->ed47_i_censoufcert} ";
+      $virgula = ",";
+    }
+
+  if (isset($this->ed47_i_censomuniccert)) {
+
+      if (trim($this->ed47_i_censomuniccert) == '') {
+        $this->ed47_i_censomuniccert = 'null';
+      }
+      $sql .= $virgula . " ed47_i_censomuniccert = {$this->ed47_i_censomuniccert} ";
+      $virgula = ",";
+    }
      if(trim($this->ed47_i_censoufnat)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufnat"])){ 
         if(trim($this->ed47_i_censoufnat)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufnat"])){ 
-           $this->ed47_i_censoufnat = "null" ; 
+           $this->ed47_i_censoufnat = "0" ; 
         } 
        $sql  .= $virgula." ed47_i_censoufnat = $this->ed47_i_censoufnat ";
        $virgula = ",";
      }
      if(trim($this->ed47_i_censomunicnat)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomunicnat"])){ 
         if(trim($this->ed47_i_censomunicnat)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomunicnat"])){ 
-           $this->ed47_i_censomunicnat = "null" ; 
+           $this->ed47_i_censomunicnat = "0" ; 
         } 
        $sql  .= $virgula." ed47_i_censomunicnat = $this->ed47_i_censomunicnat ";
        $virgula = ",";
      }
      if(trim($this->ed47_i_atendespec)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_atendespec"])){ 
         if(trim($this->ed47_i_atendespec)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_atendespec"])){ 
-           $this->ed47_i_atendespec = "null" ; 
+           $this->ed47_i_atendespec = "0" ; 
         } 
        $sql  .= $virgula." ed47_i_atendespec = $this->ed47_i_atendespec ";
        $virgula = ",";
      }
      if(trim($this->ed47_i_censocartorio)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censocartorio"])){ 
         if(trim($this->ed47_i_censocartorio)=="" && isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censocartorio"])){ 
-           $this->ed47_i_censocartorio = "null" ; 
+           $this->ed47_i_censocartorio = "0" ; 
         } 
        $sql  .= $virgula." ed47_i_censocartorio = $this->ed47_i_censocartorio ";
        $virgula = ",";
@@ -1301,10 +1368,47 @@ class cl_aluno {
        $virgula = ",";
      }
      if(trim($this->ed47_tiposanguineo)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_tiposanguineo"])){ 
-       
+
        $sql  .= $virgula." ed47_tiposanguineo = $this->ed47_tiposanguineo ";
        $virgula = ",";
      }
+     if(trim($this->ed47_municipioestrangeiro)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_municipioestrangeiro"])){ 
+       $sql  .= $virgula." ed47_municipioestrangeiro = '$this->ed47_municipioestrangeiro' ";
+       $virgula = ",";
+     }
+ 
+     if (empty($this->ed47_paisresidencia)) {
+            $this->ed47_paisresidencia = "null";
+      }
+
+      $sql .= $virgula . " ed47_paisresidencia = $this->ed47_paisresidencia ";
+      $virgula = ",";
+      if (empty($this->ed47_localizacaodiferenciada)) {
+        $this->ed47_localizacaodiferenciada = "null";
+      }
+      $sql .= $virgula . " ed47_localizacaodiferenciada = $this->ed47_localizacaodiferenciada ";
+     if(trim($this->ed47_visto)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_visto"])){ 
+       $sql  .= $virgula." ed47_visto = '$this->ed47_visto' ";
+       $virgula = ",";
+     }
+     if(trim($this->ed47_vistoresponsavel)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_vistoresponsavel"])){ 
+       $sql  .= $virgula." ed47_vistoresponsavel = '$this->ed47_vistoresponsavel' ";
+       $virgula = ",";
+     }
+     if(trim($this->ed47_rnm)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ed47_rnm"])){ 
+       $sql  .= $virgula." ed47_rnm = '$this->ed47_rnm' ";
+       $virgula = ",";
+     }
+
+     if (empty($this->ed47_censoregiao)) {
+          $this->ed47_censoregiao = "null";
+      }
+    $sql .= $virgula . " ed47_censoregiao = $this->ed47_censoregiao ";
+    if (empty($this->ed47_censoregiaonat)) {
+        $this->ed47_censoregiaonat = "null";
+    }
+    $sql .= $virgula . " ed47_censoregiaonat = $this->ed47_censoregiaonat ";
+    $virgula = ",";
      $sql .= " where ";
      if($ed47_i_codigo!=null){
        $sql .= " ed47_i_codigo = $this->ed47_i_codigo";
@@ -1314,182 +1418,202 @@ class cl_aluno {
        && ($lSessaoDesativarAccount === false))) {
 
        $resaco = $this->sql_record($this->sql_query_file($this->ed47_i_codigo));
-       if($this->numrows>0){
+       if ($this->numrows > 0) {
 
-         for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
 
            $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
            $acount = pg_result($resac,0,0);
            $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
            $resac = db_query("insert into db_acountkey values($acount,1008287,'$this->ed47_i_codigo','A')");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_codigo"]) || $this->ed47_i_codigo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_codigo"]) || $this->ed47_i_codigo != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008287,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_codigo'))."','$this->ed47_i_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_nome"]) || $this->ed47_v_nome != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_nome"]) || $this->ed47_v_nome != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008867,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_nome'))."','$this->ed47_v_nome',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_ender"]) || $this->ed47_v_ender != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_nomesocial"]) || $this->ed47_v_nomesocial != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,1014008,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_nomesocial'))."','$this->ed47_v_nomesocial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_ender"]) || $this->ed47_v_ender != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008868,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_ender'))."','$this->ed47_v_ender',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_numero"]) || $this->ed47_c_numero != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_numero"]) || $this->ed47_c_numero != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008869,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_numero'))."','$this->ed47_c_numero',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_compl"]) || $this->ed47_v_compl != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_compl"]) || $this->ed47_v_compl != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008870,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_compl'))."','$this->ed47_v_compl',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_bairro"]) || $this->ed47_v_bairro != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_bairro"]) || $this->ed47_v_bairro != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008871,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_bairro'))."','$this->ed47_v_bairro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_cep"]) || $this->ed47_v_cep != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_cep"]) || $this->ed47_v_cep != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008874,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_cep'))."','$this->ed47_v_cep',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_raca"]) || $this->ed47_c_raca != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_raca"]) || $this->ed47_c_raca != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008289,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_raca'))."','$this->ed47_c_raca',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_cxpostal"]) || $this->ed47_v_cxpostal != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_cxpostal"]) || $this->ed47_v_cxpostal != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008875,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_cxpostal'))."','$this->ed47_v_cxpostal',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_telef"]) || $this->ed47_v_telef != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_telef"]) || $this->ed47_v_telef != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008877,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_telef'))."','$this->ed47_v_telef',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_cadast"]) || $this->ed47_d_cadast != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_cadast"]) || $this->ed47_d_cadast != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008876,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_d_cadast'))."','$this->ed47_d_cadast',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_ident"]) || $this->ed47_v_ident != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_ident"]) || $this->ed47_v_ident != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008878,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_ident'))."','$this->ed47_v_ident',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_login"]) || $this->ed47_i_login != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_login"]) || $this->ed47_i_login != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008879,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_login'))."','$this->ed47_i_login',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_nomeresp"]) || $this->ed47_c_nomeresp != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_nomeresp"]) || $this->ed47_c_nomeresp != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008295,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_nomeresp'))."','$this->ed47_c_nomeresp',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_emailresp"]) || $this->ed47_c_emailresp != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_emailresp"]) || $this->ed47_c_emailresp != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008296,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_emailresp'))."','$this->ed47_c_emailresp',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_atenddifer"]) || $this->ed47_c_atenddifer != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_atenddifer"]) || $this->ed47_c_atenddifer != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008290,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_atenddifer'))."','$this->ed47_c_atenddifer',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_t_obs"]) || $this->ed47_t_obs != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_t_obs"]) || $this->ed47_t_obs != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008292,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_t_obs'))."','$this->ed47_t_obs',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_transporte"]) || $this->ed47_c_transporte != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_transporte"]) || $this->ed47_c_transporte != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008293,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_transporte'))."','$this->ed47_c_transporte',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_zona"]) || $this->ed47_c_zona != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_zona"]) || $this->ed47_c_zona != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008294,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_zona'))."','$this->ed47_c_zona',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_certidaomatricula"]) || $this->ed47_certidaomatricula != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_certidaomatricula"]) || $this->ed47_certidaomatricula != "")
              $resac = db_query("insert into db_acount values($acount,1010051,18283,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_certidaomatricula'))."','$this->ed47_certidaomatricula',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaotipo"]) || $this->ed47_c_certidaotipo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaotipo"]) || $this->ed47_c_certidaotipo != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008297,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_certidaotipo'))."','$this->ed47_c_certidaotipo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaonum"]) || $this->ed47_c_certidaonum != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaonum"]) || $this->ed47_c_certidaonum != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008298,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_certidaonum'))."','$this->ed47_c_certidaonum',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaolivro"]) || $this->ed47_c_certidaolivro != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaolivro"]) || $this->ed47_c_certidaolivro != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008299,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_certidaolivro'))."','$this->ed47_c_certidaolivro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaofolha"]) || $this->ed47_c_certidaofolha != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaofolha"]) || $this->ed47_c_certidaofolha != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008300,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_certidaofolha'))."','$this->ed47_c_certidaofolha',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaocart"]) || $this->ed47_c_certidaocart != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaocart"]) || $this->ed47_c_certidaocart != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008301,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_certidaocart'))."','$this->ed47_c_certidaocart',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaodata"]) || $this->ed47_c_certidaodata != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_certidaodata"]) || $this->ed47_c_certidaodata != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008302,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_certidaodata'))."','$this->ed47_c_certidaodata',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_nis"]) || $this->ed47_c_nis != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_nis"]) || $this->ed47_c_nis != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008303,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_nis'))."','$this->ed47_c_nis',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_bolsafamilia"]) || $this->ed47_c_bolsafamilia != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_bolsafamilia"]) || $this->ed47_c_bolsafamilia != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008304,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_bolsafamilia'))."','$this->ed47_c_bolsafamilia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_passivo"]) || $this->ed47_c_passivo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_passivo"]) || $this->ed47_c_passivo != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008305,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_passivo'))."','$this->ed47_c_passivo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_dtemissao"]) || $this->ed47_d_dtemissao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_dtemissao"]) || $this->ed47_d_dtemissao != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008907,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_d_dtemissao'))."','$this->ed47_d_dtemissao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_dthabilitacao"]) || $this->ed47_d_dthabilitacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_dthabilitacao"]) || $this->ed47_d_dthabilitacao != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008908,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_d_dthabilitacao'))."','$this->ed47_d_dthabilitacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_dtvencimento"]) || $this->ed47_d_dtvencimento != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_dtvencimento"]) || $this->ed47_d_dtvencimento != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008909,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_d_dtvencimento'))."','$this->ed47_d_dtvencimento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_nasc"]) || $this->ed47_d_nasc != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_nasc"]) || $this->ed47_d_nasc != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008898,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_d_nasc'))."','$this->ed47_d_nasc',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_ultalt"]) || $this->ed47_d_ultalt != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_ultalt"]) || $this->ed47_d_ultalt != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008902,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_d_ultalt'))."','$this->ed47_d_ultalt',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_estciv"]) || $this->ed47_i_estciv != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_estciv"]) || $this->ed47_i_estciv != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008894,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_estciv'))."','$this->ed47_i_estciv',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_nacion"]) || $this->ed47_i_nacion != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_nacion"]) || $this->ed47_i_nacion != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008893,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_nacion'))."','$this->ed47_i_nacion',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_categoria"]) || $this->ed47_v_categoria != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_categoria"]) || $this->ed47_v_categoria != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008906,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_categoria'))."','$this->ed47_v_categoria',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_cnh"]) || $this->ed47_v_cnh != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_cnh"]) || $this->ed47_v_cnh != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008905,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_cnh'))."','$this->ed47_v_cnh',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_contato"]) || $this->ed47_v_contato != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_contato"]) || $this->ed47_v_contato != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008903,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_contato'))."','$this->ed47_v_contato',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_cpf"]) || $this->ed47_v_cpf != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_cpf"]) || $this->ed47_v_cpf != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008896,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_cpf'))."','$this->ed47_v_cpf',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_email"]) || $this->ed47_v_email != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_email"]) || $this->ed47_v_email != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008881,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_email'))."','$this->ed47_v_email',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_fax"]) || $this->ed47_v_fax != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_fax"]) || $this->ed47_v_fax != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008897,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_fax'))."','$this->ed47_v_fax',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_hora"]) || $this->ed47_v_hora != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_hora"]) || $this->ed47_v_hora != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008904,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_hora'))."','$this->ed47_v_hora',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_mae"]) || $this->ed47_v_mae != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_mae"]) || $this->ed47_v_mae != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008900,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_mae'))."','$this->ed47_v_mae',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_pai"]) || $this->ed47_v_pai != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_pai"]) || $this->ed47_v_pai != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008899,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_pai'))."','$this->ed47_v_pai',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_profis"]) || $this->ed47_v_profis != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_profis"]) || $this->ed47_v_profis != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008895,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_profis'))."','$this->ed47_v_profis',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_sexo"]) || $this->ed47_v_sexo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_sexo"]) || $this->ed47_v_sexo != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008901,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_sexo'))."','$this->ed47_v_sexo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_telcel"]) || $this->ed47_v_telcel != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_telcel"]) || $this->ed47_v_telcel != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008880,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_telcel'))."','$this->ed47_v_telcel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_foto"]) || $this->ed47_c_foto != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_foto"]) || $this->ed47_c_foto != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1009178,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_foto'))."','$this->ed47_c_foto',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_o_oid"]) || $this->ed47_o_oid != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_o_oid"]) || $this->ed47_o_oid != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1009184,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_o_oid'))."','$this->ed47_o_oid',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_codigoinep"]) || $this->ed47_c_codigoinep != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_codigoinep"]) || $this->ed47_c_codigoinep != "")
              $resac = db_query("insert into db_acount values($acount,1010051,11289,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_codigoinep'))."','$this->ed47_c_codigoinep',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_pais"]) || $this->ed47_i_pais != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_pais"]) || $this->ed47_i_pais != "")
              $resac = db_query("insert into db_acount values($acount,1010051,11290,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_pais'))."','$this->ed47_i_pais',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_identdtexp"]) || $this->ed47_d_identdtexp != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_d_identdtexp"]) || $this->ed47_d_identdtexp != "")
              $resac = db_query("insert into db_acount values($acount,1010051,11293,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_d_identdtexp'))."','$this->ed47_d_identdtexp',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_identcompl"]) || $this->ed47_v_identcompl != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_v_identcompl"]) || $this->ed47_v_identcompl != "")
              $resac = db_query("insert into db_acount values($acount,1010051,11294,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_v_identcompl'))."','$this->ed47_v_identcompl',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_passaporte"]) || $this->ed47_c_passaporte != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_c_passaporte"]) || $this->ed47_c_passaporte != "")
              $resac = db_query("insert into db_acount values($acount,1010051,11297,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_c_passaporte'))."','$this->ed47_c_passaporte',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_transpublico"]) || $this->ed47_i_transpublico != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_transpublico"]) || $this->ed47_i_transpublico != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13486,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_transpublico'))."','$this->ed47_i_transpublico',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_filiacao"]) || $this->ed47_i_filiacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_filiacao"]) || $this->ed47_i_filiacao != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13482,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_filiacao'))."','$this->ed47_i_filiacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufend"]) || $this->ed47_i_censoufend != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufend"]) || $this->ed47_i_censoufend != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13635,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_censoufend'))."','$this->ed47_i_censoufend',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomunicend"]) || $this->ed47_i_censomunicend != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomunicend"]) || $this->ed47_i_censomunicend != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13636,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_censomunicend'))."','$this->ed47_i_censomunicend',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoorgemissrg"]) || $this->ed47_i_censoorgemissrg != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoorgemissrg"]) || $this->ed47_i_censoorgemissrg != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13485,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_censoorgemissrg'))."','$this->ed47_i_censoorgemissrg',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufident"]) || $this->ed47_i_censoufident != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufident"]) || $this->ed47_i_censoufident != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13633,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_censoufident'))."','$this->ed47_i_censoufident',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufcert"]) || $this->ed47_i_censoufcert != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufcert"]) || $this->ed47_i_censoufcert != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13634,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_censoufcert'))."','$this->ed47_i_censoufcert',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomuniccert"]) || $this->ed47_i_censomuniccert != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomuniccert"]) || $this->ed47_i_censomuniccert != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13639,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_censomuniccert'))."','$this->ed47_i_censomuniccert',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufnat"]) || $this->ed47_i_censoufnat != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censoufnat"]) || $this->ed47_i_censoufnat != "")
              $resac = db_query("insert into db_acount values($acount,1010051,1008291,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_censoufnat'))."','$this->ed47_i_censoufnat',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomunicnat"]) || $this->ed47_i_censomunicnat != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censomunicnat"]) || $this->ed47_i_censomunicnat != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13484,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_censomunicnat'))."','$this->ed47_i_censomunicnat',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_atendespec"]) || $this->ed47_i_atendespec != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_atendespec"]) || $this->ed47_i_atendespec != "")
              $resac = db_query("insert into db_acount values($acount,1010051,13638,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_atendespec'))."','$this->ed47_i_atendespec',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censocartorio"]) || $this->ed47_i_censocartorio != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_i_censocartorio"]) || $this->ed47_i_censocartorio != "")
              $resac = db_query("insert into db_acount values($acount,1010051,18010,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_i_censocartorio'))."','$this->ed47_i_censocartorio',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_celularresponsavel"]) || $this->ed47_celularresponsavel != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_celularresponsavel"]) || $this->ed47_celularresponsavel != "")
              $resac = db_query("insert into db_acount values($acount,1010051,19269,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_celularresponsavel'))."','$this->ed47_celularresponsavel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_situacaodocumentacao"]) || $this->ed47_situacaodocumentacao != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_situacaodocumentacao"]) || $this->ed47_situacaodocumentacao != "")
              $resac = db_query("insert into db_acount values($acount,1010051,19802,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_situacaodocumentacao'))."','$this->ed47_situacaodocumentacao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_cartaosus"]) || $this->ed47_cartaosus != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_cartaosus"]) || $this->ed47_cartaosus != "")
              $resac = db_query("insert into db_acount values($acount,1010051,20499,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_cartaosus'))."','$this->ed47_cartaosus',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-           if(isset($GLOBALS["HTTP_POST_VARS"]["ed47_tiposanguineo"]) || $this->ed47_tiposanguineo != "")
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_tiposanguineo"]) || $this->ed47_tiposanguineo != "")
              $resac = db_query("insert into db_acount values($acount,1010051,20504,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_tiposanguineo'))."','$this->ed47_tiposanguineo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_municipioestrangeiro"]) || $this->ed47_municipioestrangeiro != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,22180,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_municipioestrangeiro'))."','$this->ed47_municipioestrangeiro',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_paisresidencia"]) || $this->ed47_paisresidencia != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,1010418,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_paisresidencia'))."','$this->ed47_paisresidencia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_localizacaodiferenciada"]) || $this->ed47_localizacaodiferenciada != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,1010417,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_localizacaodiferenciada'))."','$this->ed47_localizacaodiferenciada',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_visto"]) || $this->ed47_visto != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,1011751,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_visto'))."','$this->ed47_visto',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_vistoresponsavel"]) || $this->ed47_vistoresponsavel != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,1011752,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_vistoresponsavel'))."','$this->ed47_vistoresponsavel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_rnm"]) || $this->ed47_rnm != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,1011753,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_rnm'))."','$this->ed47_rnm',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_rnmresponsavel"]) || $this->ed47_rnmresponsavel != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,1011754,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_rnmresponsavel'))."','$this->ed47_rnmresponsavel',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_censoregiao"]) || $this->ed47_censoregiao != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,1013162,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_censoregiao'))."','$this->ed47_censoregiao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["ed47_censoregiaonat"]) || $this->ed47_censoregiaonat != "")
+             $resac = db_query("insert into db_acount values($acount,1010051,1013163,'".AddSlashes(pg_result($resaco,$conresaco,'ed47_censoregiaonat'))."','$this->ed47_censoregiaonat',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Alunos nao Alterado. Alteracão Abortada.\\n";
+       $this->erro_sql   = "Alunos não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed47_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Alunos nao foi Alterado. Alteracão Executada.\\n";
+         $this->erro_sql = "Alunos não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->ed47_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->ed47_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -1499,14 +1623,14 @@ class cl_aluno {
        } 
      } 
    } 
-   // funcao para exclusao 
-   function excluir ($ed47_i_codigo=null,$dbwhere=null) { 
 
+    public function excluir($ed47_i_codigo=null, $dbwhere = null)
+    {
      $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
      if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
        && ($lSessaoDesativarAccount === false))) {
 
-       if ($dbwhere==null || $dbwhere=="") {
+       if (empty($dbwhere)) {
 
          $resaco = $this->sql_record($this->sql_query_file($ed47_i_codigo));
        } else { 
@@ -1522,6 +1646,7 @@ class cl_aluno {
            $resac  = db_query("insert into db_acountkey values($acount,1008287,'$ed47_i_codigo','E')");
            $resac  = db_query("insert into db_acount values($acount,1010051,1008287,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_i_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010051,1008867,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_v_nome'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,1014008,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_v_nomesocial'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010051,1008868,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_v_ender'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010051,1008869,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_c_numero'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010051,1008870,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_v_compl'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
@@ -1591,45 +1716,54 @@ class cl_aluno {
            $resac  = db_query("insert into db_acount values($acount,1010051,19802,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_situacaodocumentacao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010051,20499,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_cartaosus'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
            $resac  = db_query("insert into db_acount values($acount,1010051,20504,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_tiposanguineo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,22180,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_municipioestrangeiro'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,1010418,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_paisresidencia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,1010417,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_localizacaodiferenciada'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,1011751,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_visto'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,1011752,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_vistoresponsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,1011753,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_rnm'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,1011754,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_rnmresponsavel'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,1013162,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_censoregiao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1010051,1013163,'','".AddSlashes(pg_result($resaco,$iresaco,'ed47_censoregiaonat'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          }
        }
      }
      $sql = " delete from aluno
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($ed47_i_codigo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($ed47_i_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " ed47_i_codigo = $ed47_i_codigo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Alunos nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Alunos não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ed47_i_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Alunos nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Alunos não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$ed47_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$ed47_i_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -1639,10 +1773,11 @@ class cl_aluno {
        } 
      } 
    } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+
+    public function sql_record($sql)
+    {
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -1651,8 +1786,8 @@ class cl_aluno {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:aluno";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -1662,227 +1797,232 @@ class cl_aluno {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $ed47_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
+
+   public function sql_query($ed47_i_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") {
+
+    $sql  = "select {$campos}";
+    $sql .= "  from aluno ";
+    $sql .= "      inner join pais  on  pais.ed228_i_codigo = aluno.ed47_i_pais";
+    $sql .= "      left  join censouf as censoufident on  censoufident.ed260_i_codigo = aluno.ed47_i_censoufident";
+    $sql .= "      left  join censouf as censoufnat on  censoufnat.ed260_i_codigo = aluno.ed47_i_censoufnat";
+    $sql .= "      left  join censouf as censoufcert on  censoufcert.ed260_i_codigo = aluno.ed47_i_censoufcert";
+    $sql .= "      left  join censouf as censoufend on  censoufend.ed260_i_codigo = aluno.ed47_i_censoufend";
+    $sql .= "      left  join censomunic as censomunicnat on  censomunicnat.ed261_i_codigo = aluno.ed47_i_censomunicnat";
+    $sql .= "      left  join censomunic as censomuniccert on  censomuniccert.ed261_i_codigo = aluno.ed47_i_censomuniccert";
+    $sql .= "      left  join censomunic as censomunicend on  censomunicend.ed261_i_codigo = aluno.ed47_i_censomunicend";
+    $sql .= "      left  join censoorgemissrg  on  censoorgemissrg.ed132_i_codigo = aluno.ed47_i_censoorgemissrg";
+    $sql .= "      left  join censocartorio  on  censocartorio.ed291_i_codigo = aluno.ed47_i_censocartorio";
+    $sql .= "      left  join tiposanguineo  as d on   d.sd100_sequencial = aluno.ed47_tiposanguineo";
+    $sql .= "      left  join censoregiao as regiao on regiao.ed174_codigo = aluno.ed47_censoregiao";
+    $sql .= "      left  join censoregiao as regiaonat on regiaonat.ed174_codigo = aluno.ed47_censoregiaonat";
+    $sql2 = "";
+    if (empty($dbwhere)) {
+      if (!empty($ed47_i_codigo)) {
+        $sql2 .= " where aluno.ed47_i_codigo = $ed47_i_codigo ";
+      }
+       } else {
+           if (!empty($dbwhere)) {
+      $sql2 = " where $dbwhere";
+    }
        }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from aluno ";
-     $sql .= "      inner join pais  on  pais.ed228_i_codigo = aluno.ed47_i_pais";
-     $sql .= "      left  join censouf as censoufident on  censoufident.ed260_i_codigo = aluno.ed47_i_censoufident";
-     $sql .= "      left  join censouf as censoufnat on  censoufnat.ed260_i_codigo = aluno.ed47_i_censoufnat";
-     $sql .= "      left  join censouf as censoufcert on  censoufcert.ed260_i_codigo = aluno.ed47_i_censoufcert";
-     $sql .= "      left  join censouf as censoufend on  censoufend.ed260_i_codigo = aluno.ed47_i_censoufend";
-     $sql .= "      left  join censomunic as censomunicnat on  censomunicnat.ed261_i_codigo = aluno.ed47_i_censomunicnat";
-     $sql .= "      left  join censomunic as censomuniccert on  censomuniccert.ed261_i_codigo = aluno.ed47_i_censomuniccert";
-     $sql .= "      left  join censomunic as censomunicend on  censomunicend.ed261_i_codigo = aluno.ed47_i_censomunicend";
-     $sql .= "      left  join censoorgemissrg  on  censoorgemissrg.ed132_i_codigo = aluno.ed47_i_censoorgemissrg";
-     $sql .= "      left  join censocartorio  on  censocartorio.ed291_i_codigo = aluno.ed47_i_censocartorio";
-     $sql .= "      left  join tiposanguineo  as d on   d.sd100_sequencial = aluno.ed47_tiposanguineo";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($ed47_i_codigo!=null ){
-         $sql2 .= " where aluno.ed47_i_codigo = $ed47_i_codigo "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-   // funcao do sql 
-   function sql_query_file ( $ed47_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from aluno ";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($ed47_i_codigo!=null ){
-         $sql2 .= " where aluno.ed47_i_codigo = $ed47_i_codigo "; 
-       } 
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
-  }
-   function sql_query_censo($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
+    $sql .= $sql2;
+    if (!empty($ordem)) {
+      $sql .= " order by {$ordem}";
+    }
+    return $sql;
+ }
+
+    public function sql_query_file($ed47_i_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+      $sql  = "select {$campos} ";
+      $sql .= "  from aluno ";
+      $sql2 = "";
+      if (empty($dbwhere)) {
+        if (!empty($ed47_i_codigo)){
+          $sql2 .= " where aluno.ed47_i_codigo = $ed47_i_codigo ";
+        }
+         } else {
+             if (!empty($dbwhere)) {
+        $sql2 = " where $dbwhere";
+      }
+         }
+      $sql .= $sql2;
+      if (!empty($ordem)) {
+        $sql .= " order by {$ordem}";
+      }
+      return $sql;
+   }
+
+   public function sql_query_matricula_ano($ed47_i_codigo = null, $campos = "*", $group = null,$ordem = null, $dbwhere = "") {
+    $sql  = "select {$campos} ";
+    $sql .= "  from aluno ";
+    $sql .= "join matricula ON matricula.ed60_i_aluno = aluno.ed47_i_codigo";
+    $sql2 = "";
+    if (empty($dbwhere)) {
+        if (!empty($ed47_i_codigo)){
+            $sql2 .= " where aluno.ed47_i_codigo = $ed47_i_codigo ";
+        }
+    } else {
+        if (!empty($dbwhere)) {
+            $sql2 = " where $dbwhere";
+        }
+    }
+    $sql .= $sql2;
+    if (!empty($group)) {
+        $sql .= " group by {$group}";
+    }
+    if (!empty($ordem)) {
+        $sql .= " order by {$ordem}";
+    }
+    return $sql;
+}
+
+function sql_query_censo($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '')
+{
 
     $sSql = 'select ';
     if ($sCampos != '*') {
 
-      $sCamposSql = split('#', $sCampos);
-      $sVirgula   = '';
-      for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
+        $sCamposSql = explode('#', $sCampos);
+        $sVirgula = '';
+        for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
 
-        $sSql .= $sVirgula.$sCamposSql[$iCont];
-        $virgula = ",";
+            $sSql .= $sVirgula . $sCamposSql[$iCont];
+            $virgula = ",";
 
-      }
+        }
 
     } else {
-      $sSql .= $sCampos;
+        $sSql .= $sCampos;
     }
     $sSql .= " from aluno ";
     $sSql .= "      left join alunocurso on ed56_i_aluno = aluno.ed47_i_codigo";
-    $sSql .= "      left join escola on ed18_i_codigo = alunocurso.ed56_i_escola"; 
-    $sSql .= "      inner join pais on pais.ed228_i_codigo = aluno.ed47_i_pais"; 
+    $sSql .= "      left join escola on ed18_i_codigo = alunocurso.ed56_i_escola";
+    $sSql .= "      inner join pais on pais.ed228_i_codigo = aluno.ed47_i_pais";
     $sSql2 = '';
     if ($sDbWhere == '') {
 
-      if ($iCodigo != null ){
-        $sSql2 .= " where aluno.ed47_i_codigo = $iCodigo "; 
-      }
+        if ($iCodigo != null) {
+            $sSql2 .= " where aluno.ed47_i_codigo = $iCodigo ";
+        }
 
     } elseif ($sDbWhere != '') {
-      $sSql2 = " where $sDbWhere";
+        $sSql2 = " where $sDbWhere";
     }
     $sSql .= $sSql2;
 
     if ($sOrdem != null) {
 
-      $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
-      $sVirgula   = '';
-      for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
+        $sSql .= ' order by ';
+        $sCamposSql = explode('#', $sOrdem);
+        $sVirgula = '';
+        for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
 
-        $sSql    .= $sVirgula.$sCamposSql[$iCont];
-        $sVirgula = ',';
-
-      }
-
-    }
-
-    return $sSql;
-
-  }
-   function sql_query_alunotrocaturma($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
-  
-    $sSql = 'select ';
-    if ($sCampos != '*') {
-  
-      $sCamposSql = split('#', $sCampos);
-      $sVirgula   = '';
-      for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
-  
-        $sSql .= $sVirgula.$sCamposSql[$iCont];
-        $virgula = ",";
-  
-      }
-  
-    } else {
-      $sSql .= $sCampos;
-    }
-    $sSql .= " from aluno ";
-    $sSql .= "      inner join matricula      on ed47_i_codigo     = ed60_i_aluno ";
-    $sSql .= "      inner join turma          on ed60_i_turma      = ed57_i_codigo ";
-    $sSql .= "      inner join matriculaserie on ed221_i_matricula = ed60_i_codigo ";
-    $sSql .= "      inner join serie          on ed11_i_codigo     = ed221_i_serie ";
-    $sSql .= "      inner join calendario     on ed52_i_codigo     = ed57_i_calendario ";
-    $sSql .= "      inner join regencia       on ed59_i_turma      = ed57_i_codigo ";
-    $sSql2 = '';
-    if ($sDbWhere == '') {
-  
-      if ($iCodigo != null ){
-        $sSql2 .= " where aluno.ed47_i_codigo = $iCodigo ";
-      }
-  
-    } elseif ($sDbWhere != '') {
-    $sSql2 = " where $sDbWhere";
-    }
-    $sSql .= $sSql2;
-  
-    if ($sOrdem != null) {
-  
-    $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
-            $sVirgula   = '';
-            for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
-  
-            $sSql    .= $sVirgula.$sCamposSql[$iCont];
+            $sSql .= $sVirgula . $sCamposSql[$iCont];
             $sVirgula = ',';
-  
-            }
-  
+
+        }
+
     }
+
     return $sSql;
+
 }
-   function sql_query_matr ( $ed47_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from aluno ";
-     $sql .= "      inner join alunocurso  on  alunocurso.ed56_i_aluno = aluno.ed47_i_codigo";
-     $sql .= "      inner join alunopossib  on  alunopossib.ed79_i_alunocurso = alunocurso.ed56_i_codigo";
-     $sql2 = "";
-     if($dbwhere==""){
-       if($ed47_i_codigo!=null ){
-         $sql2 .= " where aluno.ed47_i_codigo = $ed47_i_codigo ";
-       }
-     }else if($dbwhere != ""){
-       $sql2 = " where $dbwhere";
-     }
-     $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }
-     return $sql;
+
+function sql_query_alunotrocaturma($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
+
+  $sSql = 'select ';
+  if ($sCampos != '*') {
+
+    $sCamposSql = explode('#', $sCampos);
+    $sVirgula   = '';
+    for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
+
+      $sSql .= $sVirgula.$sCamposSql[$iCont];
+      $virgula = ",";
+
+    }
+
+  } else {
+    $sSql .= $sCampos;
   }
+  $sSql .= " from aluno ";
+  $sSql .= "      inner join matricula      on ed47_i_codigo     = ed60_i_aluno ";
+  $sSql .= "      inner join turma          on ed60_i_turma      = ed57_i_codigo ";
+  $sSql .= "      inner join matriculaserie on ed221_i_matricula = ed60_i_codigo ";
+      $sSql .= "                               and ed221_c_origem    = 'S' ";
+  $sSql .= "      inner join serie          on ed11_i_codigo     = ed221_i_serie ";
+  $sSql .= "      inner join calendario     on ed52_i_codigo     = ed57_i_calendario ";
+  $sSql .= "      inner join regencia       on ed59_i_turma      = ed57_i_codigo ";
+  $sSql2 = '';
+  if ($sDbWhere == '') {
+
+    if ($iCodigo != null ){
+      $sSql2 .= " where aluno.ed47_i_codigo = $iCodigo ";
+    }
+
+  } elseif ($sDbWhere != '') {
+  $sSql2 = " where $sDbWhere";
+  }
+  $sSql .= $sSql2;
+
+  if ($sOrdem != null) {
+
+  $sSql      .= ' order by ';
+    $sCamposSql = explode('#', $sOrdem);
+          $sVirgula   = '';
+          for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
+
+          $sSql    .= $sVirgula.$sCamposSql[$iCont];
+          $sVirgula = ',';
+
+          }
+
+  }
+  return $sSql;
+}
+function sql_query_matr ( $ed47_i_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+  $sql = "select ";
+  if($campos != "*" ){
+    $campos_sql = explode("#",$campos);
+    $virgula = "";
+    for($i=0;$i<sizeof($campos_sql);$i++){
+      $sql .= $virgula.$campos_sql[$i];
+      $virgula = ",";
+    }
+  }else{
+    $sql .= $campos;
+  }
+  $sql .= " from aluno ";
+  $sql .= "      inner join alunocurso  on  alunocurso.ed56_i_aluno = aluno.ed47_i_codigo";
+  $sql .= "      inner join alunopossib  on  alunopossib.ed79_i_alunocurso = alunocurso.ed56_i_codigo";
+  $sql2 = "";
+  if($dbwhere==""){
+    if($ed47_i_codigo!=null ){
+      $sql2 .= " where aluno.ed47_i_codigo = $ed47_i_codigo ";
+    }
+     } else {
+         if ($dbwhere != "") {
+    $sql2 = " where $dbwhere";
+  }
+     }
+  $sql .= $sql2;
+  if($ordem != null ){
+    $sql .= " order by ";
+    $campos_sql = explode("#",$ordem);
+    $virgula = "";
+    for($i=0;$i<sizeof($campos_sql);$i++){
+      $sql .= $virgula.$campos_sql[$i];
+      $virgula = ",";
+    }
+  }
+  return $sql;
+}
    function sql_query_atestvaga($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
 
     $sSql = 'select ';
     if ($sCampos != '*') {
 
-      $sCamposSql = split('#', $sCampos);
+      $sCamposSql = explode('#', $sCampos);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
 
@@ -1917,7 +2057,7 @@ class cl_aluno {
     if ($sOrdem != null) {
 
       $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
+      $sCamposSql = explode('#', $sOrdem);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
 
@@ -1931,12 +2071,13 @@ class cl_aluno {
     return $sSql;
 
   }
-   function sql_query_matricula($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') { 
+
+  function sql_query_matricula($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
 
     $sSql = 'select ';
     if ($sCampos != '*') {
 
-      $sCamposSql = split('#', $sCampos);
+      $sCamposSql = explode('#', $sCampos);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
 
@@ -1950,8 +2091,8 @@ class cl_aluno {
     }
     $sSql .= " from aluno ";
     $sSql .= "      inner join alunocurso  on  alunocurso.ed56_i_aluno = aluno.ed47_i_codigo";
-    $sSql .= "      inner join base on  base.ed31_i_codigo = alunocurso.ed56_i_base";
-    $sSql .= "      inner join cursoedu  on  cursoedu.ed29_i_codigo = base.ed31_i_curso";
+        $sSql .= "      inner join base on  base.ed31_i_codigo = alunocurso.ed56_i_base";
+        $sSql .= "      inner join cursoedu  on  cursoedu.ed29_i_codigo = base.ed31_i_curso";
     $sSql .= "      inner join calendario  on  calendario.ed52_i_codigo = alunocurso.ed56_i_calendario";
     $sSql .= "      inner join alunopossib  on  alunopossib.ed79_i_alunocurso = alunocurso.ed56_i_codigo";
     $sSql .= "      inner join serie  on  serie.ed11_i_codigo = alunopossib.ed79_i_serie";
@@ -1960,7 +2101,7 @@ class cl_aluno {
     if ($sDbWhere == '') {
 
       if ($iCodigo != null ){
-        $sSql2 .= " where aluno.ed47_i_codigo = $iCodigo "; 
+        $sSql2 .= " where aluno.ed47_i_codigo = $iCodigo ";
       }
 
     } elseif ($sDbWhere != '') {
@@ -1971,7 +2112,7 @@ class cl_aluno {
     if ($sOrdem != null) {
 
       $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
+      $sCamposSql = explode('#', $sOrdem);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
 
@@ -1990,7 +2131,7 @@ class cl_aluno {
     $sSql = 'select ';
     if ($sCampos != '*') {
 
-      $sCamposSql = split('#', $sCampos);
+      $sCamposSql = explode('#', $sCampos);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
 
@@ -2023,7 +2164,7 @@ class cl_aluno {
     if ($sOrdem != null) {
 
       $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
+      $sCamposSql = explode('#', $sOrdem);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
 
@@ -2038,11 +2179,11 @@ class cl_aluno {
 
   }
    function sql_query_censo_inep ($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '') {
-    
+
     $sSql = 'select ';
     if ($sCampos != '*') {
 
-      $sCamposSql = split('#', $sCampos);
+      $sCamposSql = explode('#', $sCampos);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
 
@@ -2076,7 +2217,7 @@ class cl_aluno {
     if ($sOrdem != null) {
 
       $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
+      $sCamposSql = explode('#', $sOrdem);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
 
@@ -2094,7 +2235,7 @@ class cl_aluno {
     $sSql = 'select ';
     if ($sCampos != '*') {
 
-      $sCamposSql = split('#', $sCampos);
+      $sCamposSql = explode('#', $sCampos);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++){
 
@@ -2129,7 +2270,7 @@ class cl_aluno {
     if ($sOrdem != null) {
 
       $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
+      $sCamposSql = explode('#', $sOrdem);
       $sVirgula   = '';
       for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
 
@@ -2141,61 +2282,100 @@ class cl_aluno {
     }
     return $sSql;
   }
-  
-  function sql_query_aluno_historico ( $iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '' ) {
-  
-    $sSql = 'select ';
-    if ($sCampos != '*') {
-  
-      $sCamposSql = split('#', $sCampos);
-      $sVirgula   = '';
-      
-      for ( $iCont = 0; $iCont < sizeof( $sCamposSql ); $iCont++ ) {
-  
-        $sSql .= $sVirgula.$sCamposSql[$iCont];
-        $virgula = ",";
+
+  function sql_query_aluno_historico($iCodigo = null, $sCampos = '*', $sOrdem = null, $sDbWhere = '')
+  {
+
+      $sSql = 'select ';
+      if ($sCampos != '*') {
+
+          $sCamposSql = explode('#', $sCampos);
+          $sVirgula = '';
+
+          for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
+
+              $sSql .= $sVirgula . $sCamposSql[$iCont];
+              $virgula = ",";
+          }
+      } else {
+          $sSql .= $sCampos;
       }
-    } else {
-      $sSql .= $sCampos;
-    }
-    
-    $sSql  .= " FROM aluno ";
-    $sSql  .= "      inner join matricula           on ed60_i_aluno     = ed47_i_codigo          ";
-    $sSql  .= "      inner join turma               on ed57_i_codigo    = ed60_i_turma           ";
-    $sSql  .= "      inner join turmaserieregimemat on ed220_i_turma    = ed57_i_codigo          ";
-    $sSql  .= "      inner join serieregimemat      on ed223_i_codigo   = ed220_i_serieregimemat ";
-    $sSql  .= "      inner join serie               on ed11_i_codigo    = ed223_i_serie          ";
-    $sSql  .= "      inner join ensino              on ed10_i_codigo    = ed11_i_ensino          ";
-    $sSql  .= "      inner join historico           on ed61_i_aluno     = ed60_i_aluno           ";
-    $sSql  .= "      left  join historicomps        on ed62_i_historico = ed61_i_codigo          ";
-    $sSql  .= "      left  join historicompsfora    on ed99_i_historico = ed61_i_codigo          ";
-    $sSql2  = "";
-    
-    if ( $sDbWhere == '' ) {
-  
-      if ( $iCodigo != null ) {
-        $sSql2 .= " where aluno.ed47_i_codigo = $iCodigo ";
+
+      $sSql .= " FROM aluno ";
+      $sSql .= "      inner join matricula           on ed60_i_aluno     = ed47_i_codigo          ";
+      $sSql .= "      inner join turma               on ed57_i_codigo    = ed60_i_turma           ";
+      $sSql .= "      inner join turmaserieregimemat on ed220_i_turma    = ed57_i_codigo          ";
+      $sSql .= "      inner join serieregimemat      on ed223_i_codigo   = ed220_i_serieregimemat ";
+      $sSql .= "      inner join serie               on ed11_i_codigo    = ed223_i_serie          ";
+      $sSql .= "      inner join ensino              on ed10_i_codigo    = ed11_i_ensino          ";
+      $sSql .= "      inner join historico           on ed61_i_aluno     = ed60_i_aluno           ";
+      $sSql .= "      left  join historicomps        on ed62_i_historico = ed61_i_codigo          ";
+      $sSql .= "      left  join historicompsfora    on ed99_i_historico = ed61_i_codigo          ";
+      $sSql2 = "";
+
+      if ($sDbWhere == '') {
+
+          if ($iCodigo != null) {
+              $sSql2 .= " where aluno.ed47_i_codigo = $iCodigo ";
+          }
+      } elseif ($sDbWhere != '') {
+          $sSql2 = " where $sDbWhere";
       }
-    } elseif ( $sDbWhere != '' ) {
-      $sSql2 = " where $sDbWhere";
+
+      $sSql .= $sSql2;
+
+  if ($sOrdem != null) {
+
+    $sSql      .= ' order by ';
+    $sCamposSql = explode('#', $sOrdem);
+    $sVirgula   = '';
+
+    for ($iCont = 0; $iCont < sizeof($sCamposSql); $iCont++) {
+
+      $sSql    .= $sVirgula.$sCamposSql[$iCont];
+      $sVirgula = ',';
     }
-    
-    $sSql .= $sSql2;
-  
-    if ( $sOrdem != null ) {
-  
-      $sSql      .= ' order by ';
-      $sCamposSql = split('#', $sOrdem);
-      $sVirgula   = '';
-      
-      for ( $iCont = 0; $iCont < sizeof( $sCamposSql ); $iCont++ ) {
-  
-        $sSql    .= $sVirgula.$sCamposSql[$iCont];
-        $sVirgula = ',';
       }
-    }
-    
-    return $sSql;
+
+  return $sSql;
+}
+
+  public function sqlAlunosMatriculadosCenso($whereTurmarRegular, $whereTurmaAC, $where = [], $order = 'ed47_v_nome' )
+  {
+      $sql = "
+      with alunos_turma_regular as (
+        select matricula.ed60_i_aluno
+        from matricula
+             join matriculaserie on matriculaserie.ed221_i_matricula = matricula.ed60_i_codigo
+                                and matriculaserie.ed221_c_origem = 'S'
+             join aluno on aluno.ed47_i_codigo = matricula.ed60_i_aluno
+             join turma on turma.ed57_i_codigo = matricula.ed60_i_turma
+             join calendario on calendario.ed52_i_codigo = turma.ed57_i_calendario
+        where {$whereTurmarRegular}
+      ), alunos_turma_nee as (
+         select ed269_aluno
+         from turmaac
+              join turmaacmatricula on turmaacmatricula.ed269_i_turmaac = turmaac.ed268_i_codigo
+              join calendario on calendario.ed52_i_codigo = turmaac.ed268_i_calendario
+         where {$whereTurmaAC}
+       ), alunos_matriculados as (
+        select *
+          from alunos_turma_regular
+        union
+        select *
+          from alunos_turma_nee
+      ) select aluno.*
+          from alunos_matriculados
+          join aluno on aluno.ed47_i_codigo = alunos_matriculados.ed60_i_aluno
+      ";
+
+      if (!empty($where)) {
+          $sql .= ' where ' . implode(' and ', $where);
+      }
+      if (!empty($order)) {
+          $sql .= " order by {$order}";
+      }
+
+      return $sql;
   }
 }
-?>

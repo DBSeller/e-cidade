@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empempenho_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_empempaut_classe.php");
-include("classes/db_empemphist_classe.php");
-include("classes/db_emphist_classe.php");
-include("classes/db_empempitem_classe.php");
-include("classes/db_conlancam_classe.php");
-include("classes/db_conlancamemp_classe.php");
-include("classes/db_empnotaele_classe.php");
-include("classes/db_empnota_classe.php");
-include("classes/db_pagordem_classe.php");
-include("classes/db_pagordemele_classe.php");
-include("classes/db_empagemov_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empempenho_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_empempaut_classe.php"));
+include(modification("classes/db_empemphist_classe.php"));
+include(modification("classes/db_emphist_classe.php"));
+include(modification("classes/db_empempitem_classe.php"));
+include(modification("classes/db_conlancam_classe.php"));
+include(modification("classes/db_conlancamemp_classe.php"));
+include(modification("classes/db_empnotaele_classe.php"));
+include(modification("classes/db_empnota_classe.php"));
+include(modification("classes/db_pagordem_classe.php"));
+include(modification("classes/db_pagordemele_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -387,7 +387,7 @@ if (isset($sNotas)) {
 }
 if (isset($sAgenda)) {
   $sql = $clempagemov->sql_query_consemp(null,"
-             e81_codage,
+             distinct e81_codage,
              e80_data,
              e81_codmov,
              e82_codord,
@@ -398,21 +398,23 @@ if (isset($sAgenda)) {
                   else case when e96_descr = 'CHE' then 'CHEQUE'
                        else case when e96_descr = 'TRA' then 'TRANSMISSÃO'
                             else case when e86_codmov is not null and e86_cheque <> '0' then 'CHEQUE'
-                                 else '...'
+                                else e96_descr
                             end
                        end
                  end
              end as e96_descr
              ,
              e86_cheque,
-             case when e86_codmov is not null and e86_cheque <> '0' then e86_data 
+             case when e86_codmov is not null then e86_data 
                   else e87_dataproc 
              end as e87_dataproc,
              e76_codret,
-             case when e86_codmov is not null and e86_cheque <> '0' and round(e53_valor,2)-round(e53_vlranu,2)-round(e53_vlrpag,2) = 0 then 'MOVIMENTO PAGO'
-                  else case when e86_codmov is not null and e86_cheque <> '0' and round(e53_valor,2)-round(e53_vlranu,2)-round(e53_vlrpag,2) > 0 then 'A PAGAR'
-                       else e92_descrerro
-                  end
+             case when e86_codmov is not null and e86_cheque <> '0' and round(e53_valor,2)-round(e53_vlranu,2)-round(e53_vlrpag,2) <= 0 then 'MOVIMENTO PAGO'
+                  else (case when e86_codmov is not null and e86_cheque <> '0' and round(e53_valor,2)-round(e53_vlranu,2)-round(e53_vlrpag,2) > 0 then 'A PAGAR' 
+                             when e86_codmov IS NOT NULL AND e86_cheque = '0' OR e86_cheque IS NOT NULL AND corempagemov.k12_id IS NOT NULL 
+                                  THEN CASE WHEN corempagemov.k12_sequencial IS NOT NULL THEN 'MOVIMENTO PAGO' 
+                                  ELSE 'MOVIMENTO AGENDADO' end 
+                             ELSE e92_descrerro end)
              end as e92_descrerro","
              e81_codage,
              e81_codmov","

@@ -1,7 +1,8 @@
 <?php
-/*
+
+/**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,8 +26,8 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once('std/DBDate.php');
-require_once('model/arrecadacao/boletos/EmissaoBoletoWebService.model.php');
+require_once(modification('std/DBDate.php'));
+require_once(modification('model/arrecadacao/boletos/EmissaoBoletoWebService.model.php'));
 
 /**
  * Classe responsavel por receber e tratar os dados referentes ao Prestador recebidos do Web Service
@@ -111,9 +112,7 @@ class GeracaoGuiaPrestadorWebService {
   /**
    * Metodo Construtor da Classe
    */
-  public function __construct() {
-
-  }
+  public function __construct() {}
 
   /**
    * Seta o tipo de Imposto
@@ -196,21 +195,17 @@ class GeracaoGuiaPrestadorWebService {
    */
   public function gerarGuia() {
 
-    db_inicio_transacao();
+    if (!db_utils::inTransaction()) {
+      throw new Exception("Sem transação ativa");
+    }
 
     try {
 
       $oRetorno = $this->salvar();
-
-      db_fim_transacao(false);
-
       return $oRetorno;
 
     } catch ( Exception $eErro ) {
-
-      db_fim_transacao(true);
       throw new Exception( $eErro->getMessage() );
-
     }
 
   }
@@ -222,50 +217,54 @@ class GeracaoGuiaPrestadorWebService {
    */
   public function salvar() {
 
-    db_utils::getDao('arreinscr'   ,false);
-    db_utils::getDao('arrecad'     ,false);
-    db_utils::getDao('arrenumcgm'  ,false);
-    db_utils::getDao('issvarnotas' ,false);
+    db_utils::getDao('arreinscr',   false);
+    db_utils::getDao('arrecad',     false);
+    db_utils::getDao('arrenumcgm',  false);
+    db_utils::getDao('issvarnotas', false);
 
+    if (!db_utils::inTransaction()) {
+      throw new Exception("Sem transação ativa");
+    }
+
+    if (empty($this->iInscricao) && empty($this->iNumcgm)) {
+      throw new Exception('Inscrição ou CGM não foi informado na geração da guia!');
+    }
+
+    $oDaoIssVar = db_utils::getDao('issvar');
+
+    $sWhereDadosCompetencia  = " issvar.q05_ano       = {$this->iAnoCompetencia} ";
+    $sWhereDadosCompetencia .= " and issvar.q05_mes   = {$this->iMesCompetencia} ";
+    $sWhereDadosCompetencia .= " and issvar.q05_valor = 0                        ";
 
     if (!empty($this->iInscricao)) {
 
-      $oDaoArrecad             = db_utils::getDao('arrecad');
-      $oDaoIssVar              = db_utils::getDao('issvar');
-      $sWhereDadosCompetencia  = "    arreinscr.k00_inscr = {$this->iInscricao}      ";
-      $sWhereDadosCompetencia .= "and issvar.q05_ano      = {$this->iAnoCompetencia} ";
-      $sWhereDadosCompetencia .= "and issvar.q05_mes      = {$this->iMesCompetencia} ";
-      $sWhereDadosCompetencia .= "and issvar.q05_valor    = 0                         ";
+      // Consulta se existe arrecadação pela inscrição
+      $sWhereDadosCompetencia .= " and arreinscr.k00_inscr = {$this->iInscricao} ";
+      $sSqlDadosCompetencia    = $oDaoIssVar->sql_query_arreinscr(null, "*", null, $sWhereDadosCompetencia);
 
-      $sSqlDadosCompetencia = $oDaoIssVar->sql_query_arrecad(null, "*", null, $sWhereDadosCompetencia);
-      $rsDadosCompentencia  = $oDaoIssVar->sql_record($sSqlDadosCompetencia);
-      $aDadosCompetencia = db_utils::getCollectionByRecord($rsDadosCompentencia);
+      /* Pegar o numpre pelo calculo do ano */
+      $oDaoIssCalc = db_utils::getDao("isscalc");
+      $sSqlIssCalc = $oDaoIssCalc->sql_query($this->iAnoCompetencia, $this->iInscricao, 3);
+      $rsIssCalc   = db_query($sSqlIssCalc);
 
-      foreach ($aDadosCompetencia as $oDadosCompetencia) {
+    } else if (!empty($this->iNumcgm)) {
 
-        $oDaoIssVar->excluir(null, "q05_codigo = {$oDadosCompetencia->q05_codigo}");
-
-        if ($oDaoIssVar->erro_status == "0") {
-          throw new Exception('Erro ao excluir valores zerados da issvar.' . $oDaoIssVar->erro_msg);
-        }
-        $sWhere = "k00_numpre = {$oDadosCompetencia->k00_numpre} and k00_numpar = {$oDadosCompetencia->k00_numpar}";
-        $oDaoArrecad->excluir(null, $sWhere);
-
-        if ($oDaoArrecad->erro_status == "0") {
-          throw new Exception('Erro ao excluir valores zerados da arrecad.' . $oDaoArrecad->erro_msg);
-        }
-      }
+      // Consulta se existe arrecadação pelo número do cgm
+      $sWhereDadosCompetencia .= " and arrenumcgm.k00_numcgm = {$this->iNumcgm} ";
+      $sSqlDadosCompetencia    = $oDaoIssVar->sql_query_arrenumcgm(null, "*", null, $sWhereDadosCompetencia);
     }
-    $nValorTotal     = 0;
-    $nValorImposto   = 0;
+
+    $rsDadosCompentencia  = $oDaoIssVar->sql_record($sSqlDadosCompetencia);
+
     $aListaPlanilhas = array();
+    $aDebitos        = array();
 
     foreach ($this->aPlanilhas as $iCodigoPlanilha) {
 
       $oNotaPlanilha = new NotaPlanilhaRetencao($iCodigoPlanilha);
       if (!isset($aListaPlanilhas[$oNotaPlanilha->getCodigoPlanilha()])) {
 
-        $oPlanilha                = new stdClass;
+        $oPlanilha                = new stdClass();
         $oPlanilha->codigo        = $oNotaPlanilha->getCodigoPlanilha();
         $oPlanilha->valor_imposto = 0;
         $oPlanilha->valor_servico = 0;
@@ -278,22 +277,62 @@ class GeracaoGuiaPrestadorWebService {
       $oPlanilha->valor_servico += $oNotaPlanilha->getValorServico();
     }
 
-    $oDadosRetorno                = new stdClass;
+    $oDadosRetorno                = new stdClass();
     $oDadosRetorno->dados_boleto  = '';
     $oDadosRetorno->lista_debitos = array();
+
     foreach ($aListaPlanilhas as $oPlanilha) {
 
       $rsNumpre = db_query("select nextval('numpref_k03_numpre_seq') as k03_numpre");
       if (!$rsNumpre) {
         throw new Exception("Ocorreu um erro ao retornar o numero do debito $rsNumpre");
       }
-      $iNumpreGerado                  = db_utils::fieldsMemory($rsNumpre, 0)->k03_numpre;
+
+
+      // Verifica se for uma guia de nfse e tiver registos para a competência informada mantem o numpre e altera apenas
+      // os valores e datas devidos.
+      if ($this->sTipoDebito == 'P' && pg_num_rows($rsDadosCompentencia) > 0) {
+        $iNumpreGerado = db_utils::fieldsMemory($rsDadosCompentencia, 0)->k00_numpre;
+
+		/* Obtem o numpre do calculo para usar o debito */
+        if ( pg_num_rows($rsIssCalc) > 0) {
+          $oCalc           = db_utils::fieldsMemory($rsIssCalc, 0);
+          $iNumpreGerado = $oCalc->q01_numpre;
+        }
+
+        /* Valida se o numpre/numpar da competencia foi cancelado */
+        $sSqlParcelaCancelada  = "select * from cancdebitosreg ";
+        $sSqlParcelaCancelada .= "inner join cancdebitos on (k20_codigo = k21_codigo) ";
+        $sSqlParcelaCancelada .= "inner join cancdebitosprocreg on (k24_cancdebitosreg = k21_sequencia) ";
+        $sSqlParcelaCancelada .= "inner join cancdebitosproc on (k23_codigo = k24_codigo) ";
+        $sSqlParcelaCancelada .= "where k21_numpre = {$iNumpreGerado} and k21_numpar = {$this->iMesCompetencia}";
+
+        $rsParcelaCancelada    = db_query($sSqlParcelaCancelada);
+        if (!$rsParcelaCancelada) {
+          throw new Exception("Ocorreu um erro ao retornar o numero do debito $rsNumpre");
+        }
+
+        if (pg_num_rows($rsParcelaCancelada) > 0) {
+          $iNumpreGerado = db_utils::fieldsMemory($rsNumpre, 0)->k03_numpre;
+        }
+
+      } else {
+        $iNumpreGerado = db_utils::fieldsMemory($rsNumpre, 0)->k03_numpre;
+      }
+
       $oDebito                        = new stdClass();
       $oDebito->planilha              = $oPlanilha->codigo;
       $oDebito->numpre                = $iNumpreGerado;
       $oDadosRetorno->lista_debitos[] = $oDebito;
 
       $aDebitos[] = $iNumpreGerado;
+
+      // Trata a mensagem de observação do débito
+      $sTipoDebito  = ($this->sTipoDebito == 'P') ? '- NFS-e' : '- DMS';
+      $sObservacao  = 'Recebido pelo WebService';
+      $sObservacao .= (is_null($this->iCodigoGuia)) ? '' : ' #' . $this->iCodigoGuia;
+      $sObservacao .= $sTipoDebito;
+
       // Trata os dados para incluir o ISSQN variável complementar.
       $oDaoIssVar             = new cl_issvar();
       $oDaoIssVar->q05_numpre = $iNumpreGerado;
@@ -301,14 +340,23 @@ class GeracaoGuiaPrestadorWebService {
       $oDaoIssVar->q05_valor  = $oPlanilha->valor_imposto;
       $oDaoIssVar->q05_ano    = $this->iAnoCompetencia;
       $oDaoIssVar->q05_mes    = $this->iMesCompetencia;
-      $sHistorico = 'Recebido pelo WebService'.((is_null($this->iCodigoGuia))? '' : ' #'.$this->iCodigoGuia);
-      $oDaoIssVar->q05_histor =  $sHistorico;
+      $oDaoIssVar->q05_histor = $sObservacao;
+      //$oDaoIssVar->q05_histor = 'Recebido pelo WebService'.((is_null($this->iCodigoGuia))? '' : ' #'.$this->iCodigoGuia);
       $oDaoIssVar->q05_aliq   = '0';
       $oDaoIssVar->q05_bruto  = '0';
       $oDaoIssVar->q05_vlrinf = 'null';
 
-      if ( !$oDaoIssVar->incluir_issvar_complementar(array(), $this->iInscricao, $this->iNumcgm, $this->sTipoDebito) ) {
-        throw new Exception("Ocorreu um erro ao incluir o issqn.{$oDaoIssVar->erro_msg}" );
+
+      if ($this->sTipoDebito == 'P') {
+
+        if (!$oDaoIssVar->incluir_issvar_nfse(array(), $this->iInscricao, $this->iNumcgm)) {
+          throw new Exception("Ocorreu um erro ao incluir o issqn.{$oDaoIssVar->erro_msg}");
+        }
+      } else {
+
+        if (!$oDaoIssVar->incluir_issvar_dms(array(), $this->iInscricao, $this->iNumcgm)) {
+          throw new Exception("Ocorreu um erro ao incluir o issqn.{$oDaoIssVar->erro_msg}");
+        }
       }
 
       /**
@@ -318,16 +366,19 @@ class GeracaoGuiaPrestadorWebService {
       $oDaoIssplan->q20_numpre   = $iNumpreGerado;
       $oDaoIssplan->q20_planilha = $oPlanilha->codigo;
       $oDaoIssplan->alterar($oPlanilha->codigo);
+
       if ($oDaoIssplan->erro_status == 0) {
         throw new Exception("Não Foi possível vincular débito com a Planilha");
       }
-      $oDaoIssPlanNumpre               = new cl_issplannumpre;
+
+      $oDaoIssPlanNumpre               = new cl_issplannumpre();
       $oDaoIssPlanNumpre->q32_planilha = $oPlanilha->codigo;
       $oDaoIssPlanNumpre->q32_numpre   = $iNumpreGerado;
       $oDaoIssPlanNumpre->q32_dataop   = date('Y-m-d');
       $oDaoIssPlanNumpre->q32_horaop   = db_hora();
       $oDaoIssPlanNumpre->q32_status   = 1 ;
       $oDaoIssPlanNumpre->incluir(null);
+
       if ($oDaoIssPlanNumpre->erro_status == 0) {
         throw new Exception("Não Foi possível vincular débito com a Planilha");
       }
@@ -335,37 +386,46 @@ class GeracaoGuiaPrestadorWebService {
       /**
        * Vincula Todas as notas da planilha ao debito
        */
-      $oDaoIssplanIt     = new cl_issplanit;
-      $sSqlNotasPlanilha = $oDaoIssplanIt->sql_query_file(null,"*",
-                                                          null,
-                                                          "q21_planilha = {$oPlanilha->codigo} and q21_status = 1"
-                                                         );
+      $oDaoIssplanIt     = new cl_issplanit();
+      $sIssplanItWhere   = "q21_planilha = {$oPlanilha->codigo} and q21_status = 1";
+      $sSqlNotasPlanilha = $oDaoIssplanIt->sql_query_file(null, '*', null, $sIssplanItWhere);
       $rsNotasPlanilha   = $oDaoIssplanIt->sql_record($sSqlNotasPlanilha);
+
       if (!$rsNotasPlanilha) {
         throw new Exception("Erro ao pesquisar dados da planilha");
       }
+
       for ($i = 0; $i < $oDaoIssplanIt->numrows; $i++) {
 
         $oNotaPlanilha = db_utils::fieldsMemory($rsNotasPlanilha, $i);
 
-        $oDaoNotaNumpre                    = new cl_issplannumpreissplanit;
+        $oDaoNotaNumpre                    = new cl_issplannumpreissplanit();
         $oDaoNotaNumpre->q77_issplanit     = $oNotaPlanilha->q21_sequencial;
-        $oDaoNotaNumpre->q77_issplannumpre = $oDaoIssPlanNumpre-> q32_sequencial;
+        $oDaoNotaNumpre->q77_issplannumpre = $oDaoIssPlanNumpre->q32_sequencial;
         $oDaoNotaNumpre->incluir(null);
+
         if ($oDaoNotaNumpre->erro_status == 0) {
           throw new Exception("Não Foi possível incluir débito na nota ");
         }
       }
     }
 
+    if( empty($aDebitos) ){
+      throw new Exception("Não Foi possível gerar débito");
+    }
+
     $oDadosRetorno->dados_boleto = $this->gerarRecibo($aDebitos);
+
     // Realiza a geração do recibo
     return $oDadosRetorno;
   }
 
   /**
    * Gera o Recibo a partir do debitos gerados para o iss
-   * @param array $aListaDebitos lista de numpres
+   *
+   * @param array $aListaDebitos
+   * @return StdClass
+   * @throws Exception
    */
   public function gerarRecibo(array $aListaDebitos) {
 
@@ -373,13 +433,17 @@ class GeracaoGuiaPrestadorWebService {
     foreach ($aListaDebitos as $iNumpre) {
       $oGerarBoleto->adicionarDebito($iNumpre, $this->iMesCompetencia);
     }
+
     $oGerarBoleto->setInscricao($this->iInscricao);
     $oGerarBoleto->setCodigoCgm($this->iNumcgm);
     $oGerarBoleto->setDataVencimento($this->oDataPagamento);
     $oGerarBoleto->setForcaVencimento(true);
     $oGerarBoleto->setModeloImpressao(21);
-    $oGerarBoleto->gerarRecibo();
-    $oGerarBoleto->imprimir();
+
+    //Gerador de recibo retorna o o bjeto  convenio devido new Convenio, sendo usado em dois fontes, quebrando o codigo de barra da cobranca registrada
+    $oConvenio = $oGerarBoleto->gerarRecibo();
+
+    $oGerarBoleto->imprimir($oConvenio);
 
     return $oGerarBoleto->getDadosBoleto();
   }
@@ -391,5 +455,4 @@ class GeracaoGuiaPrestadorWebService {
   public function adicionarPlanilhasNotas($aPlanilhas) {
     $this->aPlanilhas = $aPlanilhas;
   }
-
 }

@@ -26,13 +26,13 @@
  */
 
 
-require ("../libs/db_stdlib.php");
-require ("../libs/db_conecta.php");
-include ("../libs/db_sessoes.php");
-include ("../libs/db_usuariosonline.php");
-include ("../classes/db_matordem_classe.php");
-include ("../classes/db_matordemitem_classe.php");
-include ("../dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -94,7 +94,7 @@ function js_marca(obj){
 </style>
 <script>
 function pesquisa_emp(qchave){
- js_OpenJanelaIframe('top.corpo.iframe_oc','db_janelaReceita','func_empempenho001.php?fechar=top.corpo.db_janelaReceita&e60_numemp='+qchave,'Dados Cadastrais do Empenho',true,10);
+ js_OpenJanelaIframe('CurrentWindow.corpo.iframe_oc','db_janelaReceita','func_empempenho001.php?fechar=parent.CurrentWindow.corpo.db_janelaReceita&e60_numemp='+qchave,'Dados Cadastrais do Empenho',true,10);
 }
 </script>
 </head>
@@ -137,7 +137,7 @@ if ((isset ($e60_numcgm) && $e60_numcgm != "") && (isset ($erro) && $erro == 'fa
 			      inner join pctipo on pc05_codtipo = pc04_codtipo
 	   where e60_numcgm = $e60_numcgm $where $where1
 	   order by e60_numemp");
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	$numrows = pg_numrows($result);
 
 	if ($numrows > 0) {
@@ -382,7 +382,7 @@ function js_atuValor(){
 	       }
 	}	
 	// alert('  Atualizando valor >> ' + tvalor);
-	top.corpo.iframe_ret.setValorNota(tvalor);		 
+	CurrentWindow.corpo.iframe_ret.setValorNota(tvalor);		 
 }
 </script>
 </body>

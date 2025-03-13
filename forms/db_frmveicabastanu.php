@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -91,10 +91,10 @@ $clrotulo->label("nome");
 <script>
 function js_pesquisave74_veicabast(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_veicabast','func_veicabast.php?funcao_js=parent.js_mostraveicabast1|ve70_codigo|ve70_codigo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veicabast','func_veicabast.php?funcao_js=parent.js_mostraveicabast1|ve70_codigo|ve70_codigo','Pesquisa',true);
   }else{
      if(document.form1.ve74_veicabast.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_veicabast','func_veicabast.php?pesquisa_chave='+document.form1.ve74_veicabast.value+'&funcao_js=parent.js_mostraveicabast','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veicabast','func_veicabast.php?pesquisa_chave='+document.form1.ve74_veicabast.value+'&funcao_js=parent.js_mostraveicabast','Pesquisa',false);
      }else{
        document.form1.ve70_codigo.value = ''; 
      }
@@ -114,10 +114,10 @@ function js_mostraveicabast1(chave1,chave2){
 }
 function js_pesquisave74_usuario(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?funcao_js=parent.js_mostradb_usuarios1|id_usuario|nome','Pesquisa',true);
   }else{
      if(document.form1.ve74_usuario.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.ve74_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_db_usuarios','func_db_usuarios.php?pesquisa_chave='+document.form1.ve74_usuario.value+'&funcao_js=parent.js_mostradb_usuarios','Pesquisa',false);
      }else{
        document.form1.nome.value = ''; 
      }
@@ -136,7 +136,7 @@ function js_mostradb_usuarios1(chave1,chave2){
   db_iframe_db_usuarios.hide();
 }
 function js_pesquisa_abast(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veicabast','func_veicabastalt.php?anul=true&funcao_js=parent.js_preenchepesquisa_abast|dl_Cod_Abast','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veicabast','func_veicabastalt.php?anul=true&funcao_js=parent.js_preenchepesquisa_abast|dl_Cod_Abast','Pesquisa',true);
 }
 function js_preenchepesquisa_abast(chave){
   db_iframe_veicabast.hide();
@@ -145,7 +145,7 @@ function js_preenchepesquisa_abast(chave){
   ?>
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veicabastanu','func_veicabastanu.php?funcao_js=parent.js_preenchepesquisa|ve74_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veicabastanu','func_veicabastanu.php?funcao_js=parent.js_preenchepesquisa|ve74_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veicabastanu.hide();

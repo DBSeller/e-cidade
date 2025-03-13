@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,8 +29,8 @@
  * Classe de modelo para usuários do sistema
  * @package configuracao
  * @author Rafael Nery <rafael.nery@dbseller.com.br>
- * @version $Revision: 1.20 $
- * @revision $Author: dbrafael.nery $
+ * @version $Revision: 1.28 $
+ * @revision $Author: dbvitor $
  */
 class UsuarioSistema {
 
@@ -109,6 +109,19 @@ class UsuarioSistema {
    */
   protected $aDepartamentos = array();
 
+
+  /**
+   * Cgm Vinculado ao usuário
+   * @var CgmJuridico|CgmFisico
+   */
+  protected $oCgm = null;
+
+  /**
+   * Define se o CGM vinculado ao usuário
+   * preencheu os dados para o e-Social
+   */
+  protected $lPreencheuEsocial = false;
+
   /**
    * Construtor da Classe
    */
@@ -139,7 +152,7 @@ class UsuarioSistema {
       $this->ativo         ($oUsuario->usuarioativo );
       $this->usuarioExterno($oUsuario->usuext       );
       $this->administrador ($oUsuario->administrador);
-      $this->setDataToken  ($oUsuario->datatoken    );
+      $this->setDataToken  (isset($oUsuario->datatoken) ? $oUsuario->datatoken : '');
     }
 
   }
@@ -314,7 +327,7 @@ class UsuarioSistema {
    */
   public function autenticar($sSenhaUsuario) {
 
-    if ( $sSenhaUsuario == Encriptacao::hash( $this->sSenha ) ) {
+    if (Encriptacao::hash($sSenhaUsuario) == ($this->sSenha)) {
       return true;
     }
     return false;
@@ -336,14 +349,13 @@ class UsuarioSistema {
     $oDaoUsuarioSistema->usuext        = $this->isUsuarioExterno();
     $oDaoUsuarioSistema->administrador = $this->isAdministrador();
     $oDaoUsuarioSistema->datatoken     = $this->getDataToken();
-    
 
     if ($this->getIdUsuario() == "") {
       $oDaoUsuarioSistema->incluir(null);
     } else {
       $oDaoUsuarioSistema->alterar($this->getIdUsuario());
     }
-    
+
 
 
     if ($oDaoUsuarioSistema->erro_status == 0) {
@@ -355,8 +367,9 @@ class UsuarioSistema {
   /**
    * Método criado para carregar o objeto sem utilizar as classes.
    * Deve ser utilizado somente no Webservice de autenticacao
+   *
    * @param  string $sLoginUsuario
-   * @throws DBException
+   * @throws Exception
    * @return UsuarioSistema
    */
   public function getUsuarioByLogin($sLoginUsuario) {
@@ -373,7 +386,10 @@ class UsuarioSistema {
     $this->setIdUsuario  ($oDadoUsuario->id_usuario   );
     $this->setLogin      ($oDadoUsuario->login        );
     $this->setSenha      ($oDadoUsuario->senha        );
-    $this->setEmail      ($oDadoUsuario->email        );
+
+      /* Ajuste feito pois em Charqueadas o campo email tinha caracteres inválidos 21/06/2021 */
+    $this->setEmail      (utf8_encode($oDadoUsuario->email));
+
     $this->ativo         ($oDadoUsuario->usuarioativo );
     $this->usuarioExterno($oDadoUsuario->usuext       );
     $this->administrador ($oDadoUsuario->administrador);
@@ -388,7 +404,7 @@ class UsuarioSistema {
    */
   public function getPreferenciasUsuario() {
 
-    require_once('model/configuracao/PreferenciaUsuario.model.php');
+    require_once(modification('model/configuracao/PreferenciaUsuario.model.php'));
     $oPreferenciaUsuario = new PreferenciaUsuario($this);
     return $oPreferenciaUsuario;
   }
@@ -532,7 +548,7 @@ class UsuarioSistema {
    */
   public function enviarAtivacaoSenha() {
 
-    require_once("libs/smtp.class.php");
+    require_once(modification("libs/smtp.class.php"));
 
     $oSmtp          = new Smtp();
     $oDaoUsuaCgm    = db_utils::getDao("db_usuacgm");
@@ -573,4 +589,68 @@ class UsuarioSistema {
     return true;
   }
 
+  /**
+   * Retorna o Cgm do usuario
+   * @return CgmFisico|CgmJuridico
+   */
+  public function getCGM() {
+
+    if (!empty($this->oCgm)) {
+      return $this->oCgm;
+    }
+
+    $oDaoUSuarioCGM = new cl_db_usuacgm();
+    $sSqlDadosCgm   = $oDaoUSuarioCGM->sql_query_file($this->getCodigo());
+    $rsDadosCgm     = $oDaoUSuarioCGM->sql_record($sSqlDadosCgm);
+    if (!$rsDadosCgm) {
+      return false;
+    }
+    $this->oCgm = CgmFactory::getInstanceByCgm(db_utils::fieldsMemory($rsDadosCgm, 0)->cgmlogin);
+    return $this->oCgm;
+  }
+
+  /**
+   * Retorna se o CGM vinculado ao usuário
+   * preencheu o cadastro do e-Social
+   */
+  public function isAtualizadoEsocial() {
+
+    $oCgm = $this->getCGM();
+
+    if($oCgm instanceof CgmFisico) {
+
+      if($oCgm->preencheuEsocial()) {
+        $this->lPreencheuEsocial = true;
+      }
+    }
+
+    if ( $this->lPreencheuEsocial ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public function   isAtualizado() {
+
+    if ( empty($this->sEmail) ) {
+      return false;
+    }
+
+    /*
+     * Valida email
+     */
+    $hostNamePattern = '(?:[_\p{L}0-9][-_\p{L}0-9]*\.)*(?:[\p{L}0-9][-\p{L}0-9]{0,62})\.(?:(?:[a-z]{2}\.)?[a-z]{2,})';
+    $regex = '/^[\p{L}0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[\p{L}0-9!#$%&\'*+\/=?^_`{|}~-]+)*@' . $hostNamePattern . '$/ui';
+    $return = (bool) preg_match($regex, $this->sEmail);
+
+    return $return;
+  }
+
+  public function toArray() {
+    return array(
+      'sequencial' => $this->getCodigo(),
+      'descricao' => $this->getNome()
+    );
+  }
 }

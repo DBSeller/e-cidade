@@ -105,10 +105,11 @@ DBViewManutencaoLocalTrabalho.prototype.renderizarHTMLBase = function() {
   this.oForm.oLegendDadosLocalTrabalho                = document.createElement( 'legend' );
   this.oForm.oLegendDadosLocalTrabalho.innerHTML      = "<STRONG>Dados do Local de Trabalho: </STRONG>";
   this.oForm.oDivDadosLocalTrabalho                   = document.createElement( 'div' );
-  this.oForm.oDivDadosLocalTrabalho.style.float       = "right";
-  this.oForm.oDivDadosLocalTrabalho.style.textAlign   = "right";
+  this.oForm.oDivDadosLocalTrabalho.style.float       = "center";
+  this.oForm.oDivDadosLocalTrabalho.style.textAlign   = "left";
   
   this.oForm.oTable                          = document.createElement( 'table' );
+  this.oForm.oTable.border                   = '0';
   this.oForm.oTable.style.margin             = '0 auto';
   this.oForm.oDivDadosLocalTrabalho.appendChild(this.oForm.oTable);
   
@@ -127,18 +128,15 @@ DBViewManutencaoLocalTrabalho.prototype.renderizarHTMLBase = function() {
   };
   
   this.oForm.oCelulaLocalTrabalhoCodigo                   = document.createElement( 'td' );
-  this.oForm.oCelulaLocalTrabalhoCodigo.innerHTML         = '<div id="' + this.sNomeComponente + '_localTrabalhoCodigo"></div>';
-  
-  
-  this.oForm.oCelulaLocalTrabalhoDescricao                = document.createElement( 'td' );
-  this.oForm.oCelulaLocalTrabalhoDescricao.innerHTML      = '<div id="' + this.sNomeComponente + '_localTrabalhoDescricao"></div>';
+  sInputCodigoDescricao  = '<div style=\'float: left\' id="' + this.sNomeComponente + '_localTrabalhoCodigo"></div> &nbsp; ';
+  sInputCodigoDescricao += '<div style=\'float: left\' id="' + this.sNomeComponente + '_localTrabalhoDescricao"></div>';
+  this.oForm.oCelulaLocalTrabalhoCodigo.innerHTML         = sInputCodigoDescricao;  
   
   this.oForm.oCelulaLabelLocalTrabalho.appendChild(this.oForm.oElementoAncoraLocalTrabalho);
   this.oForm.oTable.appendChild(this.oForm.oLinhaLocalTrabalho);
   
   this.oForm.oLinhaLocalTrabalho.appendChild(this.oForm.oCelulaLabelLocalTrabalho);
   this.oForm.oLinhaLocalTrabalho.appendChild(this.oForm.oCelulaLocalTrabalhoCodigo);
-  this.oForm.oLinhaLocalTrabalho.appendChild(this.oForm.oCelulaLocalTrabalhoDescricao);
   
   this.oForm.oLinhaQuantidade                  = document.createElement( 'tr' );
   this.oForm.oLinhaQuantidade.id               = this.sNomeComponente + "_lquantidade"; 
@@ -163,6 +161,31 @@ DBViewManutencaoLocalTrabalho.prototype.renderizarHTMLBase = function() {
   this.oForm.oLinhaPrincipal.appendChild( this.oForm.oCelulaLabelPrincipal );
   this.oForm.oLinhaPrincipal.appendChild( this.oForm.oCelulaPrincipal );
   
+  this.oForm.oLinhaDataInicio                  = document.createElement( 'tr' );
+  this.oForm.oLinhaDataInicio.id               = this.sNomeComponente + "_lDataInicio"; 
+  this.oForm.oTable.appendChild(this.oForm.oLinhaDataInicio);
+  
+  this.oForm.oCelulaLabelDataInicio            = document.createElement( 'td' );
+  this.oForm.oCelulaLabelDataInicio.innerHTML  = '<strong>Data Inicial:</strong>';
+  this.oForm.oCelulaDataInicio                 = document.createElement( 'td' );
+  this.oForm.oCelulaDataInicio.innerHTML       = '<div id="' + this.sNomeComponente + '_DataInicio"></div>';
+  
+  this.oForm.oLinhaDataInicio.appendChild( this.oForm.oCelulaLabelDataInicio );
+  this.oForm.oLinhaDataInicio.appendChild( this.oForm.oCelulaDataInicio );  
+  
+  
+  this.oForm.oLinhaDataFim                  = document.createElement( 'tr' );
+  this.oForm.oLinhaDataFim.id               = this.sNomeComponente + "_lDataFim"; 
+  this.oForm.oTable.appendChild(this.oForm.oLinhaDataFim);
+  
+  this.oForm.oCelulaLabelDataFim            = document.createElement( 'td' );
+  this.oForm.oCelulaLabelDataFim.innerHTML  = '<strong>Data Final:</strong>';
+  this.oForm.oCelulaDataFim                 = document.createElement( 'td' );
+  this.oForm.oCelulaDataFim.innerHTML       = '<div id="' + this.sNomeComponente + '_DataFim"></div>';
+  
+  this.oForm.oLinhaDataFim.appendChild( this.oForm.oCelulaLabelDataFim );
+  this.oForm.oLinhaDataFim.appendChild( this.oForm.oCelulaDataFim );  
+  
   this.oForm.oLinhaPercentual                  = document.createElement( 'tr' );
   this.oForm.oLinhaPercentual.id               = this.sNomeComponente + "_lpercentual"; 
   this.oForm.oTable.appendChild( this.oForm.oLinhaPercentual );
@@ -175,7 +198,6 @@ DBViewManutencaoLocalTrabalho.prototype.renderizarHTMLBase = function() {
   this.oForm.oLinhaPercentual.appendChild( this.oForm.oCelulaLabelPercentual );
   this.oForm.oLinhaPercentual.appendChild( this.oForm.oCelulaPercentual );
   
-  
   this.oForm.oLinhaEstrutural                  = document.createElement( 'tr' );
   this.oForm.oLinhaEstrutural.id               = this.sNomeComponente + "_lEstrutural"; 
   this.oForm.oTable.appendChild ( this.oForm.oLinhaEstrutural );
@@ -184,7 +206,6 @@ DBViewManutencaoLocalTrabalho.prototype.renderizarHTMLBase = function() {
   this.oForm.oCelulaLabelEstrutural.setAttribute ( "colspan", "3" );
   
   this.oForm.oLinhaEstrutural.appendChild( this.oForm.oCelulaLabelEstrutural );
-  
   
   this.oForm.oLinhalancar                  = document.createElement( 'tr' );
   this.oForm.oLinhalancar.id               = this.sNomeComponente + "_lLancar"; 
@@ -202,7 +223,7 @@ DBViewManutencaoLocalTrabalho.prototype.renderizarHTMLBase = function() {
   this.oForm.oLegendGrid.innerHTML       = "<STRONG>Locais de Trabalho Lançados: </STRONG>";
   this.oForm.oContainerGrid              = document.createElement( 'div' );
   this.oForm.oContainerGrid.id           = 'gridLocaisDeTrabalho';
-  this.oForm.oContainerGrid.style.width  = "762px";
+  this.oForm.oContainerGrid.style.width  = "800px";
   
   
   this.oForm.oFieldSetDadosLocalTrabalho.appendChild ( this.oForm.oLegendDadosLocalTrabalho );
@@ -319,11 +340,12 @@ DBViewManutencaoLocalTrabalho.prototype.criarComponentes = function() {
      
   };
   
+  this.oInputDataInicio = new DBTextFieldData( this.sNomeComponente + '_oInputDataInicio',this.sNomeInstancia + '.oInputDataInicio',null,null);
+  this.oInputDataInicio.show( $( this.sNomeComponente + '_DataInicio' ) );
   
+  this.oInputDataFim = new DBTextFieldData( this.sNomeComponente + '_oInputDataFim',this.sNomeInstancia + '.oInputDataFim',null,null);
+  this.oInputDataFim.show( $( this.sNomeComponente + '_DataFim' ) );
   
-  
-  
-
   this.oInputPrincipal =  document.createElement( 'input' );
   this.oInputPrincipal.setAttribute( 'type', 'checkbox');
   this.oInputPrincipal.setAttribute( 'id'  , this.sNomeComponente + '_InputPrincipal' );
@@ -384,22 +406,28 @@ DBViewManutencaoLocalTrabalho.prototype.renderizarGridLocaisDeTrabalho = functio
                                             "left"  ,
                                             "center",
                                             "center",
+                                            "center",
+                                            "center",
                                             "right" ,
                                             "center"
                                            )
                                );
   
-  this.gridLocais.setCellWidth ( new Array ("15%",
+  this.gridLocais.setCellWidth ( new Array ("10%",
                                             "50%",
                                             "10%",
-                                            "20%",
-                                            "20%",
+                                            "10%",
+                                            "10%",
+                                            "15%",
+                                            "15%",
                                             "10%"
                                            )
                                );
   
   this.gridLocais.setHeader ( new Array ('Estrutural'  ,
                                          'Descrição'   ,
+                                         'Dt. Inicio'   ,
+                                         'Dt. Fim',
                                          'Principal',
                                          'Quantidade'   ,
                                          'Percentual' ,
@@ -458,7 +486,7 @@ DBViewManutencaoLocalTrabalho.prototype.retornoLocais = function(oAjax) {
   
   if (oAjax != null) {
     
-    var oRetorno  = eval("(" + oAjax.responseText + ")");
+    var oRetorno  = JSON.parse(oAjax.responseText);
     
     if ( oRetorno.status == 2 ) {
       
@@ -469,7 +497,7 @@ DBViewManutencaoLocalTrabalho.prototype.retornoLocais = function(oAjax) {
     } 
     
   };
-  
+
   for ( var iIndiceGrid = 0; iIndiceGrid < oRetorno.aLocaisDeTrabalho.length; iIndiceGrid++ ) {
     
     var oLocal   = oRetorno.aLocaisDeTrabalho[iIndiceGrid];
@@ -479,7 +507,9 @@ DBViewManutencaoLocalTrabalho.prototype.retornoLocais = function(oAjax) {
                                 oLocal.rh56_princ == 't',
                                 new Number(oLocal.rh56_quantidadecusto), 
                                 new Number(oLocal.rh56_percentualcusto),
-                                new Number(oLocal.rh55_codigo) );
+                                new Number(oLocal.rh55_codigo), 
+                                js_formatar(oLocal.rh56_datainicio,'d'),
+                                js_formatar(oLocal.rh56_datafim,'d'));
   }
   
   this.incluirRegistrosGrid();
@@ -513,19 +543,22 @@ DBViewManutencaoLocalTrabalho.prototype.incluirRegistrosGrid = function() {
     
     aCelulas[0]  = oDadosLocal.sEstrutural;
     aCelulas[1]  = oDadosLocal.sDescricao;
+    aCelulas[2]  = oDadosLocal.dDataInicio;
+    aCelulas[3]  = oDadosLocal.dDataFim;
+    
     if ( oDadosLocal.lPrincipal ) {
     
-      aCelulas[2]  = '<input type="radio" name="lPrincipal" onClick="' + this.sNomeInstancia + '.trocaLocalPrincipal(' + oDadosLocal.iCodigoLocal + ');" checked>';
+      aCelulas[4]  = '<input type="radio" name="lPrincipal" onClick="' + this.sNomeInstancia + '.trocaLocalPrincipal(' + oDadosLocal.iCodigoLocal + ');" checked>';
     } else {
       
-      aCelulas[2]  = '<input type="radio" name="lPrincipal" onClick="' + this.sNomeInstancia + '.trocaLocalPrincipal(' + oDadosLocal.iCodigoLocal + ');">';
+      aCelulas[4]  = '<input type="radio" name="lPrincipal" onClick="' + this.sNomeInstancia + '.trocaLocalPrincipal(' + oDadosLocal.iCodigoLocal + ');">';
     }
     
-    aCelulas[3]  = js_formatar(oDadosLocal.iQuantidade, "f");
-    aCelulas[4]  = js_formatar(oDadosLocal.nPercentual, "f") + ' %';
-    aCelulas[5]  = '<a href="#" onClick="' + this.sNomeInstancia + '.liberaManutencaoRegistro(' +  oDadosLocal.iCodigoLocal + ', true);">A</a>'; 
-    aCelulas[5] += ' &nbsp; ';
-    aCelulas[5] += '<a href="#" onClick="' + this.sNomeInstancia + '.excluiRegistro(' +  oDadosLocal.iCodigoLocal + ', false);">E</a>';
+    aCelulas[5]  = js_formatar(oDadosLocal.iQuantidade, "f");
+    aCelulas[6]  = js_formatar(oDadosLocal.nPercentual, "f") + ' %';
+    aCelulas[7]  = '<a href="#" onClick="' + this.sNomeInstancia + '.liberaManutencaoRegistro(' +  oDadosLocal.iCodigoLocal + ', true);">A</a>'; 
+    aCelulas[7] += ' &nbsp; ';
+    aCelulas[7] += '<a href="#" onClick="' + this.sNomeInstancia + '.excluiRegistro(' +  oDadosLocal.iCodigoLocal + ', false);">E</a>';
     
     this.gridLocais.addRow( aCelulas );
   }
@@ -583,6 +616,9 @@ DBViewManutencaoLocalTrabalho.prototype.liberaManutencaoRegistro = function( iCo
   this.oInputLocalTrabalhoDescricao.setValue(oLocalTrabalho.sDescricao);
   this.oInputEstrutural.setValue(oLocalTrabalho.sEstrutural);
   
+  this.oInputDataInicio.setValue(oLocalTrabalho.dDataInicio);
+  this.oInputDataFim.setValue(oLocalTrabalho.dDataFim);
+  
   this.oInputQuantidade.setValue(oLocalTrabalho.iQuantidade);
   
   this.oInputPrincipal.checked = oLocalTrabalho.lPrincipal;
@@ -613,11 +649,23 @@ DBViewManutencaoLocalTrabalho.prototype.liberaManutencaoRegistro = function( iCo
  */
 DBViewManutencaoLocalTrabalho.prototype.adicionarLocalTrabalho = function(iEstrutural, sDescricao,
                                                                    lPrincipal , iQuantidade,
-                                                                   iPercentual, iCodigoLocal) {
+                                                                   iPercentual, iCodigoLocal,
+                                                                   dDataInicio, dDataFim) {
+                                                                    
+  if (dDataInicio == "undefined") {
+    dDataInicio = "";
+  }
+  
+  if (dDataFim == "undefined") {
+    dDataFim = "";
+  }
+                                                                      
   var oLocalTrabalho          = new Object();
   oLocalTrabalho.iCodigoLocal = iCodigoLocal;
   oLocalTrabalho.sEstrutural  = iEstrutural;
   oLocalTrabalho.sDescricao   = sDescricao;
+  oLocalTrabalho.dDataInicio  = dDataInicio;
+  oLocalTrabalho.dDataFim     = dDataFim;
   oLocalTrabalho.lPrincipal   = lPrincipal;
   oLocalTrabalho.iQuantidade  = iQuantidade;
   oLocalTrabalho.nPercentual  = iPercentual;
@@ -742,7 +790,7 @@ DBViewManutencaoLocalTrabalho.prototype.retornoSalvarLocais = function(oAjax) {
 
   if (oAjax != null) {
     
-    var oRetorno  = eval("(" + oAjax.responseText + ")");
+    var oRetorno  = JSON.parse(oAjax.responseText);
    
     if ( oRetorno.status == 2 ) {
       
@@ -765,7 +813,7 @@ DBViewManutencaoLocalTrabalho.prototype.retornoSalvarLocais = function(oAjax) {
  * @param mostra
  */
 DBViewManutencaoLocalTrabalho.prototype.pesquisarLocalTrabalho = function(mostra) {
-
+   
    if ( mostra == true ) {
      
      js_OpenJanelaIframe( '',
@@ -778,7 +826,9 @@ DBViewManutencaoLocalTrabalho.prototype.pesquisarLocalTrabalho = function(mostra
                         );
    } else {
 
+   this.oBotaoLancar.disabled = true; 
    if ( this.oInputLocalTrabalhoCodigo.getValue() != '' ) {
+       
        
        js_OpenJanelaIframe( '',
                             'db_iframe_rhlocaltrab',
@@ -788,8 +838,9 @@ DBViewManutencaoLocalTrabalho.prototype.pesquisarLocalTrabalho = function(mostra
                             false
                           );
      } else {
-       
-       this.oInputLocalTrabalhoDescricao.setValue( '' );
+
+     this.oBotaoLancar.disabled = false;
+     this.oInputLocalTrabalhoDescricao.setValue( '' );
      }
    }
    
@@ -809,7 +860,7 @@ DBViewManutencaoLocalTrabalho.prototype.retornoPesquisaAncora = function() {
   
   var aArgumentos = arguments;
 
-  
+  this.oBotaoLancar.disabled = false;
   if (aArgumentos.length == 2) {
     
     this.oInputLocalTrabalhoDescricao.setValue( aArgumentos[0] );
@@ -908,7 +959,7 @@ DBViewManutencaoLocalTrabalho.prototype.getTotalQuantidadeLocaisTrabalho = funct
 
 
 /**
- * Função para atualizar os registros no objeto
+ * Funcao para atualizar os registros no objeto
  */
 DBViewManutencaoLocalTrabalho.prototype.lancarRegistros = function() {
   
@@ -937,10 +988,14 @@ DBViewManutencaoLocalTrabalho.prototype.lancarRegistros = function() {
                               this.oInputPrincipal.checked, 
                               this.oInputQuantidade.getValue(), 
                               nPercentual,
-                              this.oInputLocalTrabalhoCodigo.getValue());
+                              this.oInputLocalTrabalhoCodigo.getValue(), 
+                              this.oInputDataInicio.getValue(),
+                              this.oInputDataFim.getValue());
   
   this.oInputEstrutural.setValue('');
   this.oInputLocalTrabalhoDescricao.setValue('');
+  this.oInputDataInicio.setValue('');
+  this.oInputDataFim.setValue('');
   this.oInputPrincipal.setValue('');
   this.oInputQuantidade.setValue('');
   this.oInputPercentual.setValue('');

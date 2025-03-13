@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_veiccadcentral_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_veiccadcentral_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -51,13 +51,13 @@ if(isset($alterar)){
 ?>
     <script>
        parent.document.formaba.veiccadcentraldepart.disabled=false;
-       top.corpo.iframe_veiccadcentraldepart.location.href='vei1_veiccadcentraldepart001.php?ve37_veiccadcentral=<?=@$chavepesquisa?>';
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_veiccadcentraldepart.location.href='vei1_veiccadcentraldepart001.php?ve37_veiccadcentral=<?=@$chavepesquisa?>';
        
        parent.document.formaba.veicmotoristascentral.disabled=false;
-       top.corpo.iframe_veicmotoristascentral.location.href='vei1_veicmotoristascentral001.php?ve41_veiccadcentral=<?=@$chavepesquisa?>';
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_veicmotoristascentral.location.href='vei1_veicmotoristascentral001.php?ve41_veiccadcentral=<?=@$chavepesquisa?>';
        
        parent.document.formaba.veiccadcentralveiculo.disabled=false;
-       top.corpo.iframe_veiccadcentralveiculo.location.href='vei1_veiccadcentralveiculo001.php?ve41_veiccadcentral=<?=@$chavepesquisa?>';
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_veiccadcentralveiculo.location.href='vei1_veiccadcentralveiculo001.php?ve41_veiccadcentral=<?=@$chavepesquisa?>';
 
 <?
    if (isset($liberaaba) && $liberaaba == true){
@@ -84,7 +84,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmveiccadcentral.php");
+	include(modification("forms/db_frmveiccadcentral.php"));
 	?>
     </center>
 	</td>

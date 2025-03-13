@@ -65,7 +65,7 @@ db_input('e40_descr',60,$Ie40_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_emphist','func_emphist.php?funcao_js=parent.js_preenchepesquisa|e40_codhist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_emphist','func_emphist.php?funcao_js=parent.js_preenchepesquisa|e40_codhist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_emphist.hide();

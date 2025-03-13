@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once ('SigfisArquivoBase.model.php');
-require_once ('model/ppadespesa.model.php');
+require_once(modification('model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php'));
+require_once(modification('model/ppadespesa.model.php'));
 
 /**
  * Classe que processa as informações para serem inseridas no
@@ -57,7 +57,7 @@ class SigfisArquivoProgramaPPA extends SigfisArquivoBase implements iPadArquivoT
     $sWhereBuscaVersaoPpa .= " AND ppaintegracao.o123_instit         = {$iInstituicaoSessao} ";
     $sSqlBuscaVersaoPpa    = $oDaoPpaintegracao->sql_query_versaoppa(null, $sCampos, null, $sWhereBuscaVersaoPpa);
     $rsSqlBuscaVersaoPpa   = $oDaoPpaintegracao->sql_record($sSqlBuscaVersaoPpa);
-    $oBuscaVersaoPpa       = db_utils::getColectionByRecord($rsSqlBuscaVersaoPpa);
+    $oBuscaVersaoPpa       = db_utils::getCollectionByRecord($rsSqlBuscaVersaoPpa);
     
     if (count($oBuscaVersaoPpa) > 0) {
     

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -207,7 +207,7 @@ function js_load() {
 
 function js_retornoLoad(objAjax) {
 	
-  oAjax = eval("("+objAjax.responseText+")");
+  oAjax = JSON.parse(objAjax.responseText);
   if (oAjax.iStatus == 1) {
 
 	oGridVacinas.clearAll(true);
@@ -270,7 +270,7 @@ function js_Material(iOp, iCodigo, sDescr){
 
 function js_retornoMaterial(objAjax) {
 	
-  oAjax = eval("("+objAjax.responseText+")");
+  oAjax = JSON.parse(objAjax.responseText);
   if (oAjax.iStatus == 1) {
 	  
     js_cancelarMaterial();

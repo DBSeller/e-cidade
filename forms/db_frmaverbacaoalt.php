@@ -230,7 +230,7 @@ db_select('j75_situacao',$y,true,3,"");
 </form>
 <script>
 function js_consulta_matric(){
-	js_OpenJanelaIframe('top.corpo','db_iframe','cad3_conscadastro_002.php?cod_matricula='+document.form1.j75_matric.value,'Consulta Matrcula',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','cad3_conscadastro_002.php?cod_matricula='+document.form1.j75_matric.value,'Consulta Matrcula',true);
 }
 function js_pesquisaj77_codproc(mostra){
   if(mostra==true){
@@ -253,10 +253,10 @@ function js_mostraprotprocesso1(chave1,chave2){
 }
 function js_pesquisaj75_matric(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubase.php?funcao_js=parent.js_mostraiptubase1|j01_matric|j01_numcgm','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubase','func_iptubase.php?funcao_js=parent.js_mostraiptubase1|j01_matric|j01_numcgm','Pesquisa',true);
   }else{
      if(document.form1.j75_matric.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_iptubase','func_iptubase.php?pesquisa_chave='+document.form1.j75_matric.value+'&funcao_js=parent.js_mostraiptubase','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_iptubase','func_iptubase.php?pesquisa_chave='+document.form1.j75_matric.value+'&funcao_js=parent.js_mostraiptubase','Pesquisa',false);
      }else{
        document.form1.j01_numcgm.value = ''; 
      }
@@ -275,7 +275,7 @@ function js_mostraiptubase1(chave1,chave2){
   db_iframe_iptubase.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_averbacao','func_averbacaoalt.php?funcao_js=parent.js_preenchepesquisa|j75_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_averbacao','func_averbacaoalt.php?funcao_js=parent.js_preenchepesquisa|j75_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_averbacao.hide();

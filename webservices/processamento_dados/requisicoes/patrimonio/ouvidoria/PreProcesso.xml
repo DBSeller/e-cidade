@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<processamento>
+
+    <transacao>true</transacao>
+
+    <parametros>
+        <parametro nome="observacao" obrigatorio="true" tipo="string"/>
+        <parametro nome="metadados" obrigatorio="true" tipo="string"/>
+        <parametro nome="instituicao" obrigatorio="true" tipo="integer"/>
+        <parametro nome="departamento" obrigatorio="true" tipo="integer"/>
+        <parametro nome="tipoprocesso" obrigatorio="true" tipo="integer"/>
+        <parametro nome="requerente_nome" obrigatorio="true" tipo="string"/>
+        <parametro nome="requerente_cpf" obrigatorio="fase" tipo="string"/>
+    </parametros>
+
+    <configuracoes>
+        <classe nome="ECidade\Patrimonial\Ouvidoria\Externa\WebService\PreProcesso" parametros="" caminho="src/Patrimonial/Ouvidoria/Externa/WebService/PreProcesso.php">
+            <metodos>
+                <metodo nome="setObservacao" parametros="$observacao"/>
+                <metodo nome="setMetadados" parametros="$metadados"/>
+                <metodo nome="setInstituicao" parametros="$instituicao"/>
+                <metodo nome="setDepartamento" parametros="$departamento"/>
+                <metodo nome="setTipoProcesso" parametros="$tipoprocesso"/>
+                <metodo nome="setRequerenteNome" parametros="$requerente_nome"/>
+                <metodo nome="setRequerenteCpf" parametros="$requerente_cpf"/>
+                <metodo nome="salvar"/>
+            </metodos>
+        </classe>
+    </configuracoes>
+
+</processamento>

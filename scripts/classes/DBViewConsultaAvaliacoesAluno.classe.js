@@ -45,8 +45,6 @@ DBViewConsultaAvaliacoesAluno = function(sInstancia, iMatricula) {
         sConteudo   += "  </div>                                                                      \n";
         sConteudo   += "</div>                                                                        \n";
 
-
-
     me.oWindowAuxAvaliacao.setShutDownFunction(function() {
 
       delete me.oGridAproveitamento;
@@ -95,7 +93,7 @@ DBViewConsultaAvaliacoesAluno = function(sInstancia, iMatricula) {
    */
   this.retornoDadosMatricula = function(oAjax) {
 
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     me.sNomeAluno       = oRetorno.sNomeAluno.urlDecode();
     me.iCodigoAluno     = oRetorno.iCodigoAluno;
@@ -128,7 +126,7 @@ DBViewConsultaAvaliacoesAluno = function(sInstancia, iMatricula) {
 
   this.retornoGradeAproveitamento = function (oAjax) {
 
-    var oRetorno = eval('('+oAjax.responseText+')');
+    var oRetorno = JSON.parse(oAjax.responseText);
 
     if (oRetorno.status == 2) {
 
@@ -171,7 +169,7 @@ DBViewConsultaAvaliacoesAluno = function(sInstancia, iMatricula) {
         aHeader.push(oPeriodo.sFormaAvaliacao);
         aHeader.push('Falta');
         aAlign.push('center', 'right');
-        aWidth.push('8%');
+        aWidth.push('8%', '8%');
         iUltimoPeriodo  = iPeriodo+2;
       });
 
@@ -187,7 +185,7 @@ DBViewConsultaAvaliacoesAluno = function(sInstancia, iMatricula) {
       aHeader.push('Aulas');
       aHeader.push('% Freq');
       aAlign.push('right','right');
-      aWidth.push('8%');
+      aWidth.push('8%', '8%');
 
       /**
        * Coluna do Resultado Final
@@ -200,7 +198,7 @@ DBViewConsultaAvaliacoesAluno = function(sInstancia, iMatricula) {
       aHeader.push('Aproveitamento');
       aHeader.push('RF');
       aAlign.push('center', 'center');
-      aWidth.push('10%');
+      aWidth.push('10%', '10%');
 
       throw $break;
 
@@ -244,7 +242,8 @@ DBViewConsultaAvaliacoesAluno = function(sInstancia, iMatricula) {
 
         if (oPeriodo.oAproveitamento.sFormaAvaliacao == 'NOTA') {
 
-          if (new Number(oPeriodo.oAproveitamento.nAproveitamento) < new Number(oPeriodo.oAproveitamento.nMinimoAprovacao)) {
+          // sempre que o aluno não atingir o mínimo e não estiver amparado, deve-se colocar em negrito a avaliação
+          if (!oPeriodo.oAproveitamento.lAmparado && !oPeriodo.oAproveitamento.lAtingiuMinimo ) {
             sNota += " style = 'font-weight:bold' ";
           }
 
@@ -276,7 +275,7 @@ DBViewConsultaAvaliacoesAluno = function(sInstancia, iMatricula) {
       aLinha.push(oDisciplina.oFrequencia.nPercentualFrequencia);
 
       var sNotaFinal = "<span ";
-      if (new Number(oDisciplina.oResultadoFinal.nAproveitamentoFinal) < new Number(me.mMinimoAprovacao)) {
+      if (oDisciplina.oResultadoFinal.sResultadoAprovacao != 'A') {
         sNotaFinal += " style = 'font-weight:bold' ";
       }
       sNotaFinal += ">" + oDisciplina.oResultadoFinal.nAproveitamentoFinal + "</span>";
@@ -310,7 +309,7 @@ DBViewConsultaAvaliacoesAluno = function(sInstancia, iMatricula) {
         if ( oPeriodo.oAproveitamento.iFaltasAbonadas != '' ) {
 
           var oCelulaStatus         = $(me.oGridAproveitamento.aRows[iDisciplina].aCells[iColuna].sId);
-          var oDBHintFaltasAbonadas = eval("oDBHint_"+iDisciplina+"_"+iColuna+" = new DBHint('oDBHint_"+iDisciplina+"_"+iColuna+"')");
+          var oDBHintFaltasAbonadas = new DBHint(`oDBHint_${iDisciplina}_${iColuna}`);
           var sMensagem             = "Número de Faltas Abonadas: " + oPeriodo.oAproveitamento.iFaltasAbonadas;
 
           oDBHintFaltasAbonadas.setText(sMensagem.urlDecode());

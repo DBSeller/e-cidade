@@ -1,38 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $oGet = db_utils::postMemory($_GET);
 
@@ -116,8 +116,8 @@ $iAnoSessao = db_getsession("DB_anousu");
               ?>
             </td>
           </tr>
-          
-	         
+
+
 	          <tr class="estorno">
 	            <td><b>Valor Anterior:</b></td>
 	            <td>
@@ -126,7 +126,7 @@ $iAnoSessao = db_getsession("DB_anousu");
 	              ?>
 	            </td>
 	          </tr>
-	          
+
 	          <tr class="estorno">
 	            <td><b>Valor da Provisão:</b></td>
 	            <td>
@@ -135,7 +135,7 @@ $iAnoSessao = db_getsession("DB_anousu");
 	              ?>
 	            </td>
 	          </tr>
-          
+
           <tr class="estorno">
             <td><b>Valor do Lançamento:</b></td>
             <td>
@@ -144,7 +144,7 @@ $iAnoSessao = db_getsession("DB_anousu");
               ?>
             </td>
           </tr>
-          
+
           <tr class="estorno">
             <td colspan="2">
               <fieldset>
@@ -177,7 +177,7 @@ var sLocation     = document.location.href;
  * Em caso de estorno deve mostrar apenas o valor do lançamento
  */
 if (lEstorno) {
-  
+
 	$$('.estorno')[0].style.display = 'none';
 	$$('.estorno')[1].style.display = 'none';
 }
@@ -192,18 +192,22 @@ $('btnProcessar').observe('click', function() {
 
   if (new Number($F('nValorLancamento')) <= 0) {
 
-    alert("O valor do lançamento é igual e/ou menor que zero. Procedimento abortado.");
-    return false;
+    var sMsg  = "O valor a ser contabilizado representa uma redução no valor da Provisão.";
+        sMsg += "Deste modo, o sistema executará o documento de estorno (301). Confirmar ?";
+    if ( !confirm(sMsg)) {
+
+        return false;
+    }
   }
 
   if ($F('sObservacao').trim() == "") {
 
     alert("O campo observação é obrigatório.");
     return false;
-  } 
+  }
 
   js_divCarregando('Aguarde... Processando.', 'msgBox');
-  
+
   var oParam              = new Object();
   oParam.exec             = sCaseExecutar;
   oParam.iMes             = $F('iMesDisponivel');
@@ -211,7 +215,7 @@ $('btnProcessar').observe('click', function() {
   oParam.nValor           = $F('nValorLancamento');
   oParam.sObservacao      = $F('sObservacao');
   oParam.iCodigoDocumento = js_getCodigoDocumento();
-  
+
   var oAjax = new Ajax.Request (sUrlRpc, { method:'post',
                                            parameters:'json=' + Object.toJSON(oParam),
                                            onComplete:js_retornoProcessar
@@ -221,14 +225,14 @@ $('btnProcessar').observe('click', function() {
 function js_retornoProcessar(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if(oRetorno.status == 2) {
-    
+
     alert(oRetorno.message.urlDecode());
     return false;
   }
-  
+
   alert('Lançamento processado com sucesso.');
 
 	document.location.href = sLocation;
@@ -253,9 +257,9 @@ function js_getContasCreditoDebito() {
 function js_concluirBuscaContaCreditoDebito(oAjax) {
 
   js_removeObj("msgBox");
-  
-  var oRetorno = eval("("+oAjax.responseText+")");
-  
+
+  var oRetorno = JSON.parse(oAjax.responseText);
+
   if (oRetorno.status == 2) {
 
     alert(oRetorno.message.urlDecode());
@@ -296,14 +300,14 @@ function js_tipoProvisao() {
   var sTipoProvisao = null;
   if (oGet.tipofolha == 2) {
 
-    sTipoProvisao = 'provisaoferias'; 
+    sTipoProvisao = 'provisaoferias';
   } else if (oGet.tipofolha == 1) {
 
     sTipoProvisao = 'provisaodecimoterceiro';
   }
 
   return sTipoProvisao;
-}  
+}
 
 function js_getMesDispinivel() {
 
@@ -313,33 +317,33 @@ function js_getMesDispinivel() {
   oParam.lProcessado   = oGet.lEstorno == 'true' ? false : true;
 
   js_divCarregando("Carregando meses, aguarde...", "msgBox");
-  
+
   var oAjax = new Ajax.Request (sUrlRpc,{ method:'post',
                                           parameters:'json='+Object.toJSON(oParam),
                                           asynchronous: false,
                                           onComplete:js_preencheMesDispinivel
                                         });
  }
- 
+
  /**
   * Preenche o combobox com os meses que o usuário pode depreciar.
   */
 function js_preencheMesDispinivel(oAjax) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oAjax.responseText+")");
-  
+  var oRetorno = JSON.parse(oAjax.responseText);
+
   if ( oRetorno.status == 2 ) {
 
     $('sObservacao').disabled = true;
     $('sObservacao').style.backgroundColor = '#DEB887';
     $('iMesDisponivel').disabled = true;
     $('btnProcessar').disabled = true;
-    
+
  	 alert(oRetorno.message.urlDecode());
- 	 	  
+
  	 return false;
-  } 
+  }
 
   $('iAnoSessao').value = oRetorno.iAnoDisponivel;
 
@@ -371,33 +375,33 @@ function js_getDadosProvisao(iMesDisponivel) {
   oParam.iAno             = $F('iAnoSessao');
 	oParam.lEstorno         = lEstorno;
 	oParam.sTipoLancamento  = 'provisaoDecimoTerceiro';
-	
+
 	if (oGet.tipofolha == 2) {
 		oParam.sTipoLancamento  = 'provisaoFerias';
-	} 
-	
+	}
+
   js_divCarregando("Carregando da, aguarde...", "msgBox");
-  
+
   var oAjax = new Ajax.Request (sUrlRpc,{ method:'post',
                                           parameters:'json='+Object.toJSON(oParam),
                                           asynchronous: false,
                                           onComplete:js_retornoDadosPrevisao
                                         });
 }
- 
+
 function js_retornoDadosPrevisao(oAjax) {
 
   js_removeObj('msgBox');
-  var oRetorno = eval("(" + oAjax.responseText + ")");
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   if (oRetorno.status == 2) {
     alert(oRetorno.urlDecode());
   }
 
   $('nValorAnterior').value   = oRetorno.nSaldoAnterior;
-  $('nSaldoProvisao').value   = oRetorno.nValorProvisao;  
+  $('nSaldoProvisao').value   = oRetorno.nValorProvisao;
   $('nValorLancamento').value = oRetorno.nValorLancamento;
-} 
+}
 
 /**
  * Verificamos se o campo observacao foi devidamente preenchido

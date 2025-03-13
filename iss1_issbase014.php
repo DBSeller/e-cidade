@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,36 +25,37 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_issbaseporte_classe.php");
-require_once("classes/db_issmatric_classe.php");
-require_once("classes/db_escrito_classe.php");
-require_once("classes/db_issbairro_classe.php");
-require_once("classes/db_issquant_classe.php");
-require_once("classes/db_issruas_classe.php");
-require_once("classes/db_issprocesso_classe.php");
-require_once("classes/db_cgm_classe.php");
-require_once("classes/db_bairro_classe.php");
-require_once("classes/db_iptuconstr_classe.php");
-require_once("classes/db_iptubase_classe.php");
-require_once("classes/db_db_cgmruas_classe.php");
-require_once("classes/db_db_cgmbairro_classe.php");
-require_once("classes/db_db_cgmcpf_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_protprocesso_classe.php");
-require_once("classes/db_issporte_classe.php");
-require_once("classes/db_socios_classe.php");
-require_once("classes/db_isszona_classe.php");
-require_once("classes/db_sanitario_classe.php");
-require_once("classes/db_sanitarioinscr_classe.php");
-require_once("classes/db_parissqn_classe.php");
-require_once("model/logInscricao.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_issbase_classe.php"));
+require_once(modification("classes/db_issbaseporte_classe.php"));
+require_once(modification("classes/db_issmatric_classe.php"));
+require_once(modification("classes/db_escrito_classe.php"));
+require_once(modification("classes/db_issbairro_classe.php"));
+require_once(modification("classes/db_issquant_classe.php"));
+require_once(modification("classes/db_issruas_classe.php"));
+require_once(modification("classes/db_issprocesso_classe.php"));
+require_once(modification("classes/db_cgm_classe.php"));
+require_once(modification("classes/db_bairro_classe.php"));
+require_once(modification("classes/db_iptuconstr_classe.php"));
+require_once(modification("classes/db_iptubase_classe.php"));
+require_once(modification("classes/db_db_cgmruas_classe.php"));
+require_once(modification("classes/db_db_cgmbairro_classe.php"));
+require_once(modification("classes/db_db_cgmcpf_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_protprocesso_classe.php"));
+require_once(modification("classes/db_issporte_classe.php"));
+require_once(modification("classes/db_socios_classe.php"));
+require_once(modification("classes/db_isszona_classe.php"));
+require_once(modification("classes/db_sanitario_classe.php"));
+require_once(modification("classes/db_sanitarioinscr_classe.php"));
+require_once(modification("classes/db_parissqn_classe.php"));
+require_once(modification("classes/db_isssetorfiscal_classe.php"));
+require_once(modification("model/logInscricao.model.php"));
 
 db_postmemory($_POST);
 
@@ -87,6 +88,7 @@ $clsanitario      = new cl_sanitario;
 $clsanitarioinscr = new cl_sanitarioinscr;
 $clparissqn       = new cl_parissqn;
 $cllogincricao    = new loginscricao;
+$clisssetorfiscal = new cl_isssetorfiscal;
 $clrotulo         = new rotulocampo;
 
 $clissquant->rotulo->label();
@@ -179,212 +181,249 @@ if (isset($incluir)) {
     $q02_dtcada = $q02_dtcada_ano."-".$q02_dtcada_mes."-".$q02_dtcada_dia;
   }
 
-  $clissbase->q02_numcgm   = $q02_numcgm;
-  $clissbase->q02_memo     = '';
-  $clissbase->q02_tiplic   = "0";
-  $clissbase->q02_fantaold = "0";
-  $clissbase->q02_regjuc   = $q02_regjuc;
-  $clissbase->q02_inscmu   = $q02_inscmu;
-  $clissbase->q02_obs      = '';
-  $clissbase->q02_dtcada   = $q02_dtcada;
-  $clissbase->q02_dtinic   = date("Y-m-d",$ano);
-  $clissbase->q02_ultalt   = date("Y-m-d",$ano);
-  $clissbase->q02_dtalt    = date("Y-m-d",$ano);
-  $clissbase->q02_dtjunta  = $q02_dtjunta;
-  $clissbase->q02_dtbaix   = null;
-  $clissbase->q02_capit    = "0";
-  $clissbase->q02_cep      = $cep;
-  $clissbase->incluirNumeracaoContinua($q02_inscr);
+  $sql = "SELECT * FROM issqn.formalocalvara WHERE q167_sequencial = $selectformalocalvara";
+  $result = db_query($sql);
+  db_fieldsmemory($result,0);
 
-  if ($clissbase->erro_status==0) {
-
-    $sqlerro = true;
-    $erro    = $clissbase->erro_msg;
+  // Caso forma de localização for vazia
+  if (empty($selectformalocalvara)) {
+    $erro = "Forma de Lozalização não selecionada.";
+    $sqlerro=true;
   }
-
-  if (!$sqlerro) {
-
-    $clissquant->q30_anousu=date("Y",$ano);
-    $clissquant->q30_inscr=$clissbase->q02_inscr;
-    $clissquant->q30_quant=$q30_quant;
-    $clissquant->q30_mult=$q30_mult;
-    $clissquant->q30_area = $q30_area;
-    $clissquant->incluir(date("Y",$ano),$clissbase->q02_inscr);
-      //$clissquant->erro(true,false);
-    if ($clissquant->erro_status==0) {
-
-      $sqlerro=true;
-      $erro=$clissquant->erro_msg;
-    }
+  // Caso a data da Forma de Localização seja menor q a data atual
+  else if (!empty($q167_data_validade) && ($q167_data_validade) < date('Y-m-d')) {
+    $erro = "Forma localização expirada.";
+    $sqlerro=true;
   }
-////////////////////////////////////////////////////////////////////////////////////////////////
-//  db_msgbox($q02_inscr." inscr");
-  if (!$sqlerro) {
+  else {
 
-    if (isset($q35_zona)&&$q35_zona!="") {
+    $clissbase->q02_numcgm   = $q02_numcgm;
+    $clissbase->q02_memo     = '';
+    $clissbase->q02_tiplic   = "0";
+    $clissbase->q02_fantaold = "0";
+    $clissbase->q02_regjuc   = $q02_regjuc;
+    $clissbase->q02_inscmu   = $q02_inscmu;
+    $clissbase->q02_obs      = '';
+    $clissbase->q02_dtcada   = $q02_dtcada;
+    $clissbase->q02_dtinic   = date("Y-m-d",$ano);
+    $clissbase->q02_ultalt   = date("Y-m-d",$ano);
+    $clissbase->q02_dtalt    = date("Y-m-d",$ano);
+    $clissbase->q02_dtjunta  = $q02_dtjunta;
+    $clissbase->q02_dtbaix   = null;
+    $clissbase->q02_capit    = "0";
+    $clissbase->q02_cep      = $cep;
+    $clissbase->q02_formalocalvara = $selectformalocalvara;
+    $clissbase->q02_protocolojuntacomercial = $q02_protocolojuntacomercial;
+    $clissbase->incluirNumeracaoContinua($q02_inscr);
 
-     $clisszona->q35_zona  = $q35_zona;
-     $clisszona->q35_inscr = $clissbase->q02_inscr;
-     $clisszona->incluir($clissbase->q02_inscr);
-     if ($clisszona->erro_status==0) {
-
-       $sqlerro=true;
-       $erro=$clisszona->erro_msg;
-     }
-   }
- }
-//////////////////////////////////////////////////////////////////////////////////////////////
-
-  if (!$sqlerro) {
-
-    if ($q14_proces!="") {
-
-      $clissprocesso->q14_inscr  = $clissbase->q02_inscr;
-      $clissprocesso->q14_proces = $q14_proces;
-      $clissprocesso->incluir($clissbase->q02_inscr);
-          //$clissprocesso->erro(true,false);
-      if ($clissprocesso->erro_status==0) {
-
-        $sqlerro = true;
-        $erro    = $clissprocesso->erro_msg;
-      }
-    }
-  }
-  if (!$sqlerro) {
-
-    if (@$q45_codporte!="") {
-
-      $clissbaseporte->q45_inscr    = $clissbase->q02_inscr;
-      $clissbaseporte->q45_codporte = $q45_codporte;
-      $clissbaseporte->incluir($clissbase->q02_inscr);
-          //$clissbaseporte->erro(true,false);
-      if ($clissbaseporte->erro_status==0) {
-
-        $sqlerro = true;
-        $erro    = $clissbaseporte->erro_msg;
-      }
-    }
-  }
-  if (!$sqlerro) {
-
-    if ($q10_numcgm!="") {
-
-      $clescrito->q10_inscr  = $clissbase->q02_inscr;
-      $clescrito->q10_numcgm = $q10_numcgm;
-      $clescrito->incluir(null);
-      if ($clescrito->erro_status==0) {
-
-        $sqlerro=true;
-        $erro=$clescrito->erro_msg;
-      }
-    }
-  }
-
-
-  if (!$sqlerro) {
-
-    $clissruas->q02_inscr  = $clissbase->q02_inscr;
-    $clissruas->j14_codigo = $j14_codigo;
-    $clissruas->q02_numero = $q02_numero;
-    $clissruas->q02_compl  = $q02_compl;
-    $clissruas->q02_cxpost = $q02_cxpost;
-    $clissruas->z01_cep    = $cepIssRuas;
-    $clissruas->incluir($clissbase->q02_inscr);
-    if ($clissruas->erro_status==0) {
+    if ($clissbase->erro_status==0) {
 
       $sqlerro = true;
-      $erro    = $clissruas->erro_msg;
+      $erro    = $clissbase->erro_msg;
     }
-  }
-
-  if(!$sqlerro){
-
-    $clissbairro->q13_inscr  = $clissbase->q02_inscr;
-    $clissbairro->q13_bairro = $j13_codi;
-    $clissbairro->incluir($clissbase->q02_inscr);
-    if($clissbairro->erro_status==0){
-
-      $sqlerro=true;
-      $erro=$clissbairro->erro_msg;
-    }
-  }
-  if (!$sqlerro) {
-  	  	// sanitario ..........
-    if ($y80_codsani!="") {
-
-      $clsanitarioinscr->y18_codsani = $y80_codsani ;
-      $clsanitarioinscr->y18_inscr   = $clissbase->q02_inscr;
-      $clsanitarioinscr->incluir($y80_codsani,$clissbase->q02_inscr) ;
-      if ($clsanitarioinscr->erro_status==0) {
-
-        $sqlerro = true;
-        $erro    = $clsanitarioinscr->erro_msg;
-      }
-    }
-  }
-  if (strtoupper($munic)==strtoupper($z01_munic)) {
 
     if (!$sqlerro) {
 
-      if ($q05_matric!="") {
+      $clissquant->q30_anousu=date("Y",$ano);
+      $clissquant->q30_inscr=$clissbase->q02_inscr;
+      $clissquant->q30_quant=$q30_quant;
+      $clissquant->q30_mult=$q30_mult;
+      $clissquant->q30_area = $q30_area;
+      $clissquant->q30_areapublicidade = $q30_areapublicidade;
+      $clissquant->q30_tempofuncionamento = $q30_tempofuncionamento;
+      $clissquant->incluir(date("Y",$ano),$clissbase->q02_inscr);
+        //$clissquant->erro(true,false);
+      if ($clissquant->erro_status==0) {
 
-        $clissmatric->q05_inscr  = $clissbase->q02_inscr;
-        $clissmatric->q05_matric = $q05_matric;
-        $clissmatric->q05_idcons = $q05_idcons;
-        $clissmatric->incluir($clissbase->q02_inscr,$q05_matric);
-        if ($clissmatric->erro_status==0) {
+        $sqlerro=true;
+        $erro=$clissquant->erro_msg;
+      }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //  db_msgbox($q02_inscr." inscr");
+      if (!$sqlerro) {
 
-          $sqlerro = true;
-          $erro    = $clissmatric->erro_msg;
+        if (isset($q35_zona)&&$q35_zona!="") {
+
+        $clisszona->q35_zona  = $q35_zona;
+        $clisszona->q35_inscr = $clissbase->q02_inscr;
+        $clisszona->incluir($clissbase->q02_inscr);
+        if ($clisszona->erro_status==0) {
+
+          $sqlerro=true;
+          $erro=$clisszona->erro_msg;
         }
       }
     }
-  }
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
-  if (!$sqlerro) {
+    if (!$sqlerro) {
 
-    try {
+      if ($q14_proces!="") {
 
-      $cllogincricao->identificaAlteracao($clissbase->q02_inscr,1,1);
-      if (isset($q10_numcgm) && !empty($q10_numcgm)) {
-        $cllogincricao->identificaAlteracao($clissbase->q02_inscr,1,9,$q10_numcgm);
-      }
+        $clissprocesso->q14_inscr  = $clissbase->q02_inscr;
+        $clissprocesso->q14_proces = $q14_proces;
+        $clissprocesso->incluir($clissbase->q02_inscr);
+            //$clissprocesso->erro(true,false);
+        if ($clissprocesso->erro_status==0) {
 
-      $cllogincricao->gravarLog();
-    } catch ( Exception $eExeption ){
-
-     $sqlerro = true;
-     $erro    = $eExeption->getMessage();
-    }
-  }
-
-  if (!$sqlerro) {
-        //Valida o CGM se foi alterado o nome fantasia
-
-    $rsCgm = $clcgm->sql_record($clcgm->sql_query($oPost->q02_numcgm, "z01_nomefanta", null, null));
-    if ($rsCgm !== false) {
-
-      $sZ01_nomefanta = db_utils::fieldsMemory($rsCgm,0)->z01_nomefanta;
-      if (trim($sZ01_nomefanta) != trim($oPost->z01_nomefanta)) {
-            //update na cgm
-        $clcgm->z01_numcgm    = $oPost->q02_numcgm;
-        $clcgm->z01_nomefanta = $oPost->z01_nomefanta;
-        $clcgm->alterar($oPost->q02_numcgm);
-
-        if ($clcgm->erro_status == "0") {
           $sqlerro = true;
-          $erro    = $clcgm->erro_msg;
+          $erro    = $clissprocesso->erro_msg;
         }
       }
+    }
+    if (!$sqlerro) {
 
-    } else {
+      if (@$q45_codporte!="") {
+
+        $clissbaseporte->q45_inscr    = $clissbase->q02_inscr;
+        $clissbaseporte->q45_codporte = $q45_codporte;
+        $clissbaseporte->incluir($clissbase->q02_inscr);
+            //$clissbaseporte->erro(true,false);
+        if ($clissbaseporte->erro_status==0) {
+
+          $sqlerro = true;
+          $erro    = $clissbaseporte->erro_msg;
+        }
+      }
+    }
+    if (!$sqlerro) {
+
+      if ($q10_numcgm!="") {
+
+        $clescrito->q10_inscr  = $clissbase->q02_inscr;
+        $clescrito->q10_numcgm = $q10_numcgm;
+        $clescrito->incluir(null);
+        if ($clescrito->erro_status==0) {
+
+          $sqlerro=true;
+          $erro=$clescrito->erro_msg;
+        }
+      }
+    }
+
+
+    if (!$sqlerro) {
+
+      $clissruas->q02_inscr  = $clissbase->q02_inscr;
+      $clissruas->j14_codigo = $j14_codigo;
+      $clissruas->q02_numero = $q02_numero;
+      $clissruas->q02_compl  = $q02_compl;
+      $clissruas->q02_cxpost = $q02_cxpost;
+      $clissruas->z01_cep    = $cepIssRuas;
+      $clissruas->incluir($clissbase->q02_inscr);
+      if ($clissruas->erro_status==0) {
+
+        $sqlerro = true;
+        $erro    = $clissruas->erro_msg;
+      }
+    }
+
+    if (!$sqlerro) {
+
+      if(isset($q177_setorfiscal) and $q177_setorfiscal != ""){
+        $clisssetorfiscal->excluir(null, "q177_issbase = $clissbase->q02_inscr");
+        $clisssetorfiscal->q177_issbase = $clissbase->q02_inscr;
+        $clisssetorfiscal->q177_setorfiscal = $q177_setorfiscal;
+        $clisssetorfiscal->incluir(null);
+
+        $erromsg = $clisssetorfiscal->erro_msg;
+
+        if($clisssetorfiscal->erro_status == 0){
+          $sqlerro=true;
+        }
+      }
+    }
+
+    if(!$sqlerro){
+
+      $clissbairro->q13_inscr  = $clissbase->q02_inscr;
+      $clissbairro->q13_bairro = $j13_codi;
+      $clissbairro->incluir($clissbase->q02_inscr);
+      if($clissbairro->erro_status==0){
+
+        $sqlerro=true;
+        $erro=$clissbairro->erro_msg;
+      }
+    }
+    if (!$sqlerro) {
+          // sanitario ..........
+      if ($y80_codsani!="") {
+
+        $clsanitarioinscr->y18_codsani = $y80_codsani ;
+        $clsanitarioinscr->y18_inscr   = $clissbase->q02_inscr;
+        $clsanitarioinscr->incluir($y80_codsani,$clissbase->q02_inscr) ;
+        if ($clsanitarioinscr->erro_status==0) {
+
+          $sqlerro = true;
+          $erro    = $clsanitarioinscr->erro_msg;
+        }
+      }
+    }
+    if (strtoupper($munic)==strtoupper($z01_munic)) {
+
+      if (!$sqlerro) {
+
+        if ($q05_matric!="") {
+
+          $clissmatric->q05_inscr  = $clissbase->q02_inscr;
+          $clissmatric->q05_matric = $q05_matric;
+          $clissmatric->q05_idcons = $q05_idcons;
+          $clissmatric->incluir($clissbase->q02_inscr,$q05_matric);
+          if ($clissmatric->erro_status==0) {
+
+            $sqlerro = true;
+            $erro    = $clissmatric->erro_msg;
+          }
+        }
+      }
+    }
+
+    if (!$sqlerro) {
+
+      try {
+
+        $cllogincricao->identificaAlteracao($clissbase->q02_inscr,1,1);
+        if (isset($q10_numcgm) && !empty($q10_numcgm)) {
+          $cllogincricao->identificaAlteracao($clissbase->q02_inscr,1,9,$q10_numcgm);
+        }
+
+        $cllogincricao->gravarLog();
+      } catch ( Exception $eExeption ){
 
       $sqlerro = true;
-      $erro    = $clcgm->erro_msg;
+      $erro    = $eExeption->getMessage();
+      }
     }
-  }
 
-  db_fim_transacao($sqlerro);
+    if (!$sqlerro) {
+          //Valida o CGM se foi alterado o nome fantasia
+
+      $rsCgm = $clcgm->sql_record($clcgm->sql_query($oPost->q02_numcgm, "z01_nomefanta", null, null));
+      if ($rsCgm !== false) {
+
+        $sZ01_nomefanta = db_utils::fieldsMemory($rsCgm,0)->z01_nomefanta;
+        if (trim($sZ01_nomefanta) != trim($oPost->z01_nomefanta)) {
+              //update na cgm
+          $clcgm->z01_numcgm    = $oPost->q02_numcgm;
+          $clcgm->z01_nomefanta = $oPost->z01_nomefanta;
+          $clcgm->alterar($oPost->q02_numcgm);
+
+          if ($clcgm->erro_status == "0") {
+            $sqlerro = true;
+            $erro    = $clcgm->erro_msg;
+          }
+        }
+
+      } else {
+
+        $sqlerro = true;
+        $erro    = $clcgm->erro_msg;
+      }
+    }
+
+    db_fim_transacao($sqlerro);
+  }
 }
 ?>
 <html>
@@ -394,6 +433,7 @@ if (isset($incluir)) {
   <meta http-equiv="Expires" CONTENT="0">
   <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
   <script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
+  <script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
   <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body class="body-default">
@@ -401,7 +441,7 @@ if (isset($incluir)) {
   <div class ='container'>
 
     <?php
-    include("forms/db_frmissbasealt.php");
+    include(modification("forms/db_frmissbasealt.php"));
     ?>
   </div>
 </body>
@@ -425,12 +465,12 @@ if(isset($incluir)){
     parent.document.formaba.socios.disabled=false;
     parent.document.formaba.calculo.disabled=false;
     parent.document.formaba.caracteristicas.disabled=false;
-    top.corpo.iframe_observacao.location.href='iss1_issbase017.php?z01_nome=$z01_nome&q02_inscr=$clissbase->q02_inscr&Z01_numcgm=$q02_numcgm&opcao=1';
-    top.corpo.iframe_atividades.location.href='iss1_tabativ004.php?z01_nome=$z01_nome&q07_inscr=$clissbase->q02_inscr';
-    top.corpo.iframe_socios.location.href='iss1_socios004.php?q95_cgmpri=$q02_numcgm&z01_nome=$z01_nome';
-    top.corpo.iframe_calculo.location.href='iss1_isscalc004.php?q07_inscr=$clissbase->q02_inscr&z01_nome=$z01_nome';
-    top.corpo.iframe_documentos.location.href='iss1_isscalc004.php?q123_inscr=$clissbase->q02_inscr&z01_nome=$z01_nome';
-    top.corpo.iframe_caracteristicas.location.href=\"iss4_issbasecaracteristicas001.php?q123_inscr=$clissbase->q02_inscr&z01_nome=$z01_nome\";\n
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_observacao.location.href='iss1_issbase017.php?z01_nome=$z01_nome&q02_inscr=$clissbase->q02_inscr&Z01_numcgm=$q02_numcgm&opcao=1';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_atividades.location.href='iss1_tabativ004.php?z01_nome=$z01_nome&q07_inscr=$clissbase->q02_inscr';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_socios.location.href='iss1_socios004.php?q95_cgmpri=$q02_numcgm&z01_nome=$z01_nome';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_calculo.location.href='iss1_isscalc004.php?q07_inscr=$clissbase->q02_inscr&z01_nome=$z01_nome';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_documentos.location.href='iss1_isscalc004.php?q123_inscr=$clissbase->q02_inscr&z01_nome=$z01_nome';
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_caracteristicas.location.href=\"iss4_issbasecaracteristicas001.php?q123_inscr=$clissbase->q02_inscr&z01_nome=$z01_nome\";\n
     parent.mo_camada('observacao');
   </script>";
   db_redireciona("iss1_issbase015.php?nomenu=nops&chavepesquisa=$clissbase->q02_inscr");

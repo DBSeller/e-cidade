@@ -1,0 +1,113 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010603' name='issqn.issveiculocondutorauxiliar' description="Guarda os condutores auxiliares de uma inscriÃ§Ã£o de veÃ­culo." prefix="q173" label="Condutor Auxiliar" type="0">
+  <fields>
+    <field codigo="1011708" 
+           campo_api='' 
+           name="q173_sequencial" 
+           conteudo="int4" 
+           description="CÃ³digo sequencial da tabela." 
+           inivalue="0" 
+           label="CÃ³digo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="CÃ³digo" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='issqn.issveiculocondutorauxiliar_q173_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1011709" 
+           campo_api='' 
+           name="q173_issveiculo" 
+           conteudo="int8" 
+           description="Guarda o vÃ­nculo cm a inscriÃ§Ã£o do veÃ­culo (issveiculo)." 
+           inivalue="0" 
+           label="InscriÃ§Ã£o do veÃ­culo" 
+           size="20" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="InscriÃ§Ã£o do veÃ­culo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011705" 
+           campo_api='' 
+           name="q173_cgm" 
+           conteudo="int8" 
+           description="CGM do condutor auxiliar." 
+           inivalue="0" 
+           label="Condutor Auxiliar" 
+           size="20" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Condutor Auxiliar" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011706" 
+           campo_api='' 
+           name="q173_datainicio" 
+           conteudo="date" 
+           description="Data de inÃ­cio." 
+           inivalue="null" 
+           label="Data de inÃ­cio" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data de inÃ­cio" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011707" 
+           campo_api='' 
+           name="q173_datafim" 
+           conteudo="date" 
+           description="Data final." 
+           inivalue="null" 
+           label="Data de fim" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data de fim" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q173_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="q173_cgm" reference="z01_numcgm" /> 
+    </foreignkey>
+    <foreignkey reference="issveiculo" inner='t'>
+      <fieldfk name="q173_issveiculo" reference="q172_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

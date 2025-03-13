@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -29,10 +29,10 @@
  * Classe para representacao dos dados da escola
  * @author Iuri Guntchnigg
  * @package Educacao
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.31 $
  *
  */
-require_once("IEscola.interface.php");
+require_once(modification("model/educacao/IEscola.interface.php"));
 class Escola implements IEscola {
 
   protected $iCodigoEscola;
@@ -135,7 +135,14 @@ class Escola implements IEscola {
   protected $aPeriodos = array();
 
   /**
+   * Procedimentos de Avaliações que a Escola possui
+   * @var array
+   */
+  protected $aProcedimentosAvaliacao = array();
+
+  /**
    * Identifica que a escola oferece atendimento especial exclusivo
+   * @deprecated
    * @var integer
    */
   CONST OFERECE_EXCLUSIVAMENTE_ATENDIMENTO_ESPECIAL = 1;
@@ -154,6 +161,7 @@ class Escola implements IEscola {
 
   /**
    * Identifica que a escola oferece atividade complementar exclusiva
+   * @deprecated
    * @var integer
    */
   CONST OFERECE_EXCLUSIVAMENTE_ATIVIDADE_COMPLEMENTAR = 1;
@@ -212,6 +220,8 @@ class Escola implements IEscola {
    */
   protected $sHomePage = "";
 
+  protected $sDistrito;
+
   /**
    * Construtor da classe. Recebe o codigo da escola como parametro. Caso seja diferente de null, seta o valor dos
    * atributos
@@ -242,6 +252,7 @@ class Escola implements IEscola {
         $this->sLogoEscola          = $oDadosEscola->ed18_c_logo;
         $this->sNomeEstadoExtenso   = $oDadosEscola->db12_extenso;
         $this->sEmail               = $oDadosEscola->ed18_c_email;
+        $this->setDistrito($oDadosEscola->ed18_i_censodistrito);
         $this->sUrl                 = $oDadosEscola->url;
         $this->oDepartamento        = DBDepartamentoRepository::getDBDepartamentoByCodigo($oDadosEscola->coddepto);
         $this->iCodigoInep          = $oDadosEscola->ed18_c_codigoinep;
@@ -277,51 +288,55 @@ class Escola implements IEscola {
     $this->sNomeEscola = $sNome;
   }
 
+
+   /**
+   * Retorna o nome da Escola;
+   * @return string
+   */
+  public function getDistrito() {
+    return $this->sDistrito;
+  }
+
+  /**
+   * Define o nome da Escola
+   * @param string $sNome nome da escola
+   *
+   */
+  public function setDistrito($distrito) {
+      $daoDistrito =  new cl_censodistrito;
+      $sql = $daoDistrito->sql_query(null, 'ed262_c_nome', null, "ed262_i_codigo = {$distrito}");
+
+      $rs = db_query($sql);
+      $distrito = pg_fetch_assoc($rs);
+      $this->sDistrito = empty($distrito['ed262_c_nome']) ? "" : '/' . $distrito['ed262_c_nome'];
+  }
+
   /**
    * Verifica se a escola Oferece Atividade especial.
    * A validada é feita pelo cadastro da infra estrutura da escola
    * o retorno é um dos seguintes tipos:
-   * Escola::OFERECE_EXCLUSIVAMENTE_ATIVIDADE_COMPLEMENTAR = exclusivamente
-   * Escola::NAO_OFERECE_ATIVIDADE_COMPLEMENTAR            = não Oferece Exclusivamente
-   * Escola::OFERECE_ATIVIDADE_COMPLEMENTAR                = não oferece
+   * Escola::NAO_OFERECE_ATIVIDADE_COMPLEMENTAR            = Não oferece
+   * Escola::OFERECE_ATIVIDADE_COMPLEMENTAR                = Oferece
    * @return integer
    */
-  public function ofereceAtividadeComplementar() {
-
-    $iAtividadeComplementar                = 3;
+  public function ofereceAtividadeComplementar()
+  {
     $oDaoDadosCenso                        = db_utils::getDao("escoladadoscenso");
-    $iCodigoPerguntaAtividadeComplementar  = 3000021;
-    $sWhere                                = "db104_avaliacaopergunta = {$iCodigoPerguntaAtividadeComplementar}";
-    $sWhere                               .= " and ed308_escola = {$this->getCodigo()}";
+    $iCodigoRespostaAtividadeComplementar  = 4001297;
+    $sWhere                                = "db104_sequencial = {$iCodigoRespostaAtividadeComplementar}";
+    $sWhere                                .= " and ed308_escola = {$this->getCodigo()}";
     $sSqlPergunta                          = $oDaoDadosCenso->sql_query_resposta(null,
                                                                                 "db104_sequencial as resposta",
-                                                                                 null,
+                                                                                 'db107_datalancamento desc',
                                                                                  $sWhere
-                                                                               );
+                                                                                );
+    $oDaoDadosCenso->sql_record($sSqlPergunta);
 
-    $rsPergunta = $oDaoDadosCenso->sql_record($sSqlPergunta);
-    if ($oDaoDadosCenso->numrows > 0) {
-
-      $iCodigoResposta = db_utils::fieldsMemory($rsPergunta, 0)->resposta;
-      switch ($iCodigoResposta) {
-
-        case 3000107:
-
-          $iAtividadeComplementar = Escola::OFERECE_EXCLUSIVAMENTE_ATIVIDADE_COMPLEMENTAR;
-          break;
-
-        case 3000106:
-
-          $iAtividadeComplementar = Escola::NAO_OFERECE_ATIVIDADE_COMPLEMENTAR;
-          break;
-
-        case 3000105:
-
-          $iAtividadeComplementar = Escola::OFERECE_ATIVIDADE_COMPLEMENTAR;
-          break;
-      }
+    if ($oDaoDadosCenso->numrows > 0) { // Se a resposta existe, oferecemos atividade complementar
+        return Escola::OFERECE_ATIVIDADE_COMPLEMENTAR;
+    } else { // Do contrário, não oferecemos
+        return Escola::NAO_OFERECE_ATIVIDADE_COMPLEMENTAR;
     }
-    return $iAtividadeComplementar;
   }
 
 /**
@@ -333,41 +348,24 @@ class Escola implements IEscola {
    * Escola::NAO_OFERECE_ATENDIMENTO_ESPECIAL            = não oferece
    * @return integer
    */
-  public function ofereceEducacaoEspecializada() {
+  public function ofereceEducacaoEspecializada()
+  {
+    $oDaoDadosCenso                        = db_utils::getDao("escoladadoscenso");
+    $iCodigoRespostaEducacaoEspecializada  = 4001298;
+    $sWhere                                = "db104_sequencial = {$iCodigoRespostaEducacaoEspecializada}";
+    $sWhere                                .= " and ed308_escola = {$this->getCodigo()}";
+    $sSqlPergunta                          = $oDaoDadosCenso->sql_query_resposta(null,
+                                                                                "db104_sequencial as resposta",
+                                                                                 'db107_datalancamento desc',
+                                                                                 $sWhere
+                                                                                );
+    $oDaoDadosCenso->sql_record($sSqlPergunta);
 
-    $iAtividadeEspecial               = 3;
-    $oDaoDadosCenso                   = db_utils::getDao("escoladadoscenso");
-    $iCodigoPerguntaAtividadeEspecial = 3000022;
-    $sWhere                           = "db104_avaliacaopergunta = {$iCodigoPerguntaAtividadeEspecial}";
-    $sWhere                          .= " and ed308_escola = {$this->getCodigo()}";
-    $sSqlPergunta                     = $oDaoDadosCenso->sql_query_resposta(null,
-                                                                            "db104_sequencial as resposta",
-                                                                             null,
-                                                                             $sWhere
-                                                                            );
-    $rsPergunta = $oDaoDadosCenso->sql_record($sSqlPergunta);
-    if ($oDaoDadosCenso->numrows > 0) {
-
-      $iCodigoResposta = db_utils::fieldsMemory($rsPergunta, 0)->resposta;
-      switch ($iCodigoResposta) {
-
-        case 3000108:
-
-          $iAtividadeEspecial = Escola::OFERECE_ATENDIMENTO_ESPECIAL;
-          break;
-
-        case 3000109:
-
-          $iAtividadeEspecial = Escola::OFERECE_EXCLUSIVAMENTE_ATENDIMENTO_ESPECIAL;
-          break;
-
-        case 3000110:
-
-          $iAtividadeEspecial = Escola::NAO_OFERECE_ATENDIMENTO_ESPECIAL;
-          break;
-      }
+    if ($oDaoDadosCenso->numrows > 0) { // Se a resposta existe, oferecemos educação especializada
+        return Escola::OFERECE_ATENDIMENTO_ESPECIAL;
+    } else { // Do contrário, não oferecemos
+        return Escola::NAO_OFERECE_ATENDIMENTO_ESPECIAL;
     }
-    return $iAtividadeEspecial;
   }
 
   /**
@@ -491,7 +489,7 @@ class Escola implements IEscola {
    */
   public function getDiretor($iDiretor = null) {
 
-    $oDaoEscolaDiretor = db_utils::getdao('escoladiretor');
+    $oDaoEscolaDiretor = new cl_escoladiretor();
     $sCamposDiretor    = "distinct ed254_i_codigo, ed15_c_nome as turno,";
     $sCamposDiretor   .= "case when ed20_i_tiposervidor = 1 then ";
     $sCamposDiretor   .= "          cgmrh.z01_nome ";
@@ -530,6 +528,10 @@ class Escola implements IEscola {
    * @return array
    */
   public function getTelefones() {
+
+    if ( count($this->aTelefonesEscola) > 0 ) {
+      return $this->aTelefonesEscola;
+    }
 
     $oDaoTelefoneEscola     = new cl_telefoneescola();
     $sCamposTelefoneEscola  = "escola.*, telefoneescola.*, tipotelefone.*";
@@ -689,7 +691,7 @@ class Escola implements IEscola {
 
     $sWhere = " ed17_i_escola = {$this->iCodigoEscola} ";
     if ( !empty($oTurno) ) {
-      $sWhere = " and ed17_i_turno = {$oTurno->getCodigo()} ";
+      $sWhere .= " and ed17_i_turno = {$oTurno->getCodigoTurno()} ";
     }
     // orderna pelo turno e ordem dos períodos
     $sOrdem         = "ed15_i_sequencia, ed08_i_sequencia";
@@ -711,6 +713,68 @@ class Escola implements IEscola {
     return $this->aPeriodos;
   }
 
+  /**
+   * Retorna todos os Procedimentos de Avaliação que a Escola possui
+   * @return ProcedimentoAvaliacao[]
+   */
+  public function getProcedimentosAvaliacao( $oCalendario = null ) {
+
+    if ( empty($this->iCodigoEscola) ) {
+      return null;
+    }
+
+    $sWhere = " ed86_i_escola = {$this->iCodigoEscola}";
+
+    if ( !empty($oCalendario) ) {
+      $sWhere .= " AND ed52_i_ano = {$oCalendario->getAnoExecucao()}";
+    }
+
+    $oDaoEscola        = new cl_escola();
+    $sSqlProcedimentos = $oDaoEscola->sql_query_procedimentos(null, "distinct ed40_i_codigo", null, $sWhere);
+    $rsProcedimentos   =  db_query( $sSqlProcedimentos );
+
+    if ( $rsProcedimentos && pg_num_rows($rsProcedimentos) > 0 ) {
+
+      $iLinhas = pg_num_rows($rsProcedimentos);
+
+      for ($iContador = 0; $iContador < $iLinhas; $iContador++ ) {
+
+        $iProcedimentoAvaliacao          = db_utils::fieldsMemory( $rsProcedimentos, $iContador)->ed40_i_codigo;
+        $oProcedimentoAvaliacao          = new ProcedimentoAvaliacao($iProcedimentoAvaliacao);
+        $this->aProcedimentosAvaliacao[] = $oProcedimentoAvaliacao;
+      }
+    }
+
+    return $this->aProcedimentosAvaliacao;
+  }
 
 
+  /**
+   * Retorna a situação do parâmetro "Apresentar Nota Proporcional"
+   * @param  interger $iEscola código da escola
+   * @return boolean  true se ativo
+   */
+  static public function apresentarNotaProporcional( $iEscola ) {
+
+    if ( empty($iEscola) ) {
+      throw new ParameterException("Informe o código da escola");
+    }
+
+    if ( is_bool( DBRegistry::get( 'apresentarNotaProporcional' ) ) ) {
+      return DBRegistry::get( 'apresentarNotaProporcional' );
+    }
+
+    $oDaoParametros   = new cl_edu_parametros();
+    $sWhereParametros = " ed233_i_escola = {$iEscola} ";
+    $sSqlParametros   = $oDaoParametros->sql_query_file( null, "ed233_apresentarnotaproporcional", null, $sWhereParametros);
+    $rsParametros     = db_query( $sSqlParametros );
+
+    if ( !$rsParametros || pg_num_rows($rsParametros) == 0) {
+      throw new DBException("Erro ao buscar parâmetro de apresentação da nota proporcional do Aluno.");
+    }
+
+    $lApresentarNotaProporcional = db_utils::fieldsMemory( $rsParametros, 0 )->ed233_apresentarnotaproporcional == 't';
+    DBRegistry::add( 'apresentarNotaProporcional', $lApresentarNotaProporcional );
+    return $lApresentarNotaProporcional;
+  }
 }

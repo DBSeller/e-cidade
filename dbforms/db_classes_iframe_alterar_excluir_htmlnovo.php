@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("../libs/db_stdlib.php");
-require("../libs/db_conecta.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
 parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 if(file_exists(base64_decode($arquivo))){
-  include(base64_decode($arquivo));
+  include(modification(base64_decode($arquivo)));
 }else{
   echo "
      <script>
@@ -92,7 +92,7 @@ function js_alterar(a,b,c,d){
          $coluna.=$virgula.$colunas[$i];
          $virgula=",";
        }
-       $result90= pg_query($sql);
+       $result90= db_query($sql);
        $numrows90= @pg_numrows($result90);
          if($numrows90!=false && $numrows90>0){
             for($i=0; $i<$numrows90; $i++){

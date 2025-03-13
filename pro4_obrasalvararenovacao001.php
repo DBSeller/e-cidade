@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require_once("libs/db_stdlib.php");
-  require_once("libs/db_utils.php");
-  require_once("libs/db_app.utils.php");
-  require_once("libs/db_conecta.php");
-  require_once("libs/db_sessoes.php");
-  require_once("dbforms/db_funcoes.php");
+  require_once(modification("libs/db_stdlib.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("libs/db_app.utils.php"));
+  require_once(modification("libs/db_conecta.php"));
+  require_once(modification("libs/db_sessoes.php"));
+  require_once(modification("dbforms/db_funcoes.php"));
 
   $clObrasAlvara = new cl_obrasalvara;
   $clObrasAlvaraHistorico = new cl_obrasalvarahistorico;
@@ -149,19 +149,19 @@
         return false;
       }
 
-
-      var oParam          = {};
-      oParam.exec         = 'renovaAlvara';
-      oParam.iCodigoObra  = $F('ob04_codobra');
-      oParam.sDataInicial = js_formatar($F('datainicial'),'d');
-      oParam.sDataFinal   = js_formatar($F('datafinal'),'d');
+      var oParam           = {};
+      oParam.exec          = 'renovaAlvara';
+      oParam.iCodigoObra   = $F('ob04_codobra');
+      oParam.iCodigoAlvara = $F('ob04_alvara');
+      oParam.sDataInicial  = js_formatar($F('datainicial'),'d');
+      oParam.sDataFinal    = js_formatar($F('datafinal'),'d');
       var oAjax = new Ajax.Request(sURL,
                                   {
                                     method    : 'POST',
                                     parameters: 'json=' + Object.toJSON(oParam), 
                                     onComplete: function(oAjax){
 
-                                      var oRetorno = eval("("+oAjax.responseText+")");
+                                      var oRetorno = JSON.parse(oAjax.responseText);
                                       
                                       alert(oRetorno.sMessage.urlDecode());
 
@@ -185,18 +185,30 @@
                                     parameters: 'json=' + Object.toJSON(oParam), 
                                     onComplete: function(oAjax){
 
-                                      var oRetorno = eval("("+oAjax.responseText+")");
+                                      var oRetorno = JSON.parse(oAjax.responseText);
                                       var oAlvara  = oRetorno.oAlvara;
                                       $('ob04_alvara').value        = oAlvara.ob04_alvara;
                                       $('ob04_dataexpedicao').value = js_formatar(oAlvara.ob04_dataexpedicao,'d');
-                                      $('ob04_data').value          = js_formatar(oAlvara.ob04_data,'d');
-                                      $('ob04_dtvalidade').value    = js_formatar(oAlvara.ob04_dtvalidade,'d');
-                                      $('datafinal').value          = '';
 
-                                      var aData = oAlvara.ob04_dtvalidade.split('-');
-                                      var dDate = new Date(+aData[0], +aData[1]-1, +aData[2]+1);
-                                      
-                                      $('datainicial').value = dDate.toLocaleDateString().replace(/(\d{2})-(\d{2})-(\d+)/, "$1/$2/$3");
+                                      if (oAlvara.ob33_dtrenovacao !== undefined) {
+                                        $('ob04_data').value          = js_formatar(oAlvara.ob33_dtrenovacao,'d');
+                                        $('ob04_dtvalidade').value    = js_formatar(oAlvara.ob33_dtvalidade,'d');
+                                        $('datafinal').value          = '';
+
+                                        var aData = oAlvara.ob33_dtvalidade.split('-');
+                                        var dDate = new Date(+aData[0], +aData[1]-1, +aData[2]+1);
+                                        
+                                        $('datainicial').value = dDate.toLocaleDateString().replace(/(\d{2})-(\d{2})-(\d+)/, "$1/$2/$3");
+                                      } else {
+                                        $('ob04_data').value          = js_formatar(oAlvara.ob04_data,'d');
+                                        $('ob04_dtvalidade').value    = js_formatar(oAlvara.ob04_dtvalidade,'d');
+                                        $('datafinal').value          = '';
+
+                                        var aData = oAlvara.ob04_dtvalidade.split('-');
+                                        var dDate = new Date(+aData[0], +aData[1]-1, +aData[2]+1);
+                                        
+                                        $('datainicial').value = dDate.toLocaleDateString().replace(/(\d{2})-(\d{2})-(\d+)/, "$1/$2/$3");
+                                      }
                                     }
                                   });
     }
@@ -211,7 +223,7 @@
     }
 
     function js_pesquisa(){
-        js_OpenJanelaIframe('top.corpo','db_iframe_obrasalvara','func_obrasalvara.php?funcao_js=parent.js_mostraObra|ob04_codobra|ob01_nomeobra','Pesquisa',true);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obrasalvara','func_obrasalvara.php?funcao_js=parent.js_mostraObra|ob04_codobra|ob01_nomeobra','Pesquisa',true);
     }
   </script>
   <?php

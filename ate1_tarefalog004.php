@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -27,16 +27,16 @@
 
 define("TAREFA", true);
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/smtp.class.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefalog_classe.php");
-include("classes/db_tarefalogsituacao_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/smtp.class.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefalog_classe.php"));
+include(modification("classes/db_tarefalogsituacao_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $cltarefa            = new cl_tarefa;
 $cltarefalog         = new cl_tarefalog;
@@ -157,7 +157,7 @@ if(isset($at40_sequencial)&&$at40_sequencial!="") {
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmtarefalog.php");
+	include(modification("forms/db_frmtarefalog.php"));
 	?>
     </center>
 	</td>
@@ -186,9 +186,9 @@ if(isset($db_opcao)&&$db_opcao == 1) {
          parent.document.formaba.tarefalog.disabled=false;
          parent.document.formaba.tarefaclientes.disabled=false;
          parent.document.formaba.tarefausu.disabled=false;
-         top.corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."';
-         top.corpo.iframe_tarefaclientes.location.href='ate1_tarefaclientes001.php?at70_tarefa=".@$at43_tarefa."';
-         top.corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at43_tarefa."'";
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefalog.location.href='ate1_tarefalogand001.php?at43_tarefa=".@$at43_tarefa."&at43_usuario=".@$at43_usuario."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefaclientes.location.href='ate1_tarefaclientes001.php?at70_tarefa=".@$at43_tarefa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?at42_tarefa=".@$at43_tarefa."'";
 	if (isset ($liberaaba)) {
 		echo "  parent.mo_camada('tarefalog');";
 	}

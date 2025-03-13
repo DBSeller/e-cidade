@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_liborcamento.php");
-include("libs/db_utils.php");
-include("classes/db_cidadao_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_utils.php"));
+include(modification("classes/db_cidadao_classe.php"));
 
 $clcidado = new cl_cidadao();
 
@@ -50,15 +50,15 @@ $sWhere 	= " ov02_ativo is true and ov02_situacaocidadao = 4 ";
 $rsQueryCidadao = $clcidado->sql_record($clcidado->sql_query(null,null,$sCampos,'ov03_numcgm,ov02_nome,ov02_sequencial',$sWhere));
 
 if ($clcidado->numrows > 0){
-	$aDados = db_utils::getColectionByRecord($rsQueryCidadao,false,false,false);
+	$aDados = db_utils::getCollectionByRecord($rsQueryCidadao,false,false,false);
 } else {
 	db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum dado para gerar relatório!');
 }
 
 /*  
-		$rsQueryProcessos	= pg_query($sQueryProcessos);
+		$rsQueryProcessos	= db_query($sQueryProcessos);
 		if(pg_num_rows($rsQueryProcessos)>0){
-			$aDados = db_utils::getColectionByRecord($rsQueryProcessos,false,false,false);
+			$aDados = db_utils::getCollectionByRecord($rsQueryProcessos,false,false,false);
 		}else{
 			db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum processo encontrado!');
 		}

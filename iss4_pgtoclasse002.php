@@ -26,11 +26,11 @@
  */
 
 set_time_limit(0);
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_sql.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_sql.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_SERVER_VARS);
 ?>
 </script>
@@ -132,7 +132,7 @@ $sql = "select q03_ativ,
 					  inner join clasativ on q82_ativ = q03_ativ 
 	        where q82_classe in ($dados)"; 
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 if(pg_numrows($result) == 0 ){
   db_redireciona("db_erros.php?fechar=true&db_erro=Não Existe Atividade Para o Intervalo Digitado.&pagina_retorno=iss4_pgtoclasse001.php");
   exit;

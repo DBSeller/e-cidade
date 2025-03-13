@@ -1,44 +1,49 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdfwebseller.php");
-require_once("libs/db_stdlibwebseller.php");
-require_once("libs/db_utils.php");
-require_once("libs/JSON.php");
-require_once("libs/db_libdocumento.php");
-require_once ("std/db_stdClass.php");
+require_once(modification("fpdf151/pdfwebseller.php"));
+require_once(modification("libs/db_stdlibwebseller.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_libdocumento.php"));
+require_once(modification("std/db_stdClass.php"));
 
 $oDaoPeriodoEscola = new cl_periodoescola;
 
 $oJson       = new services_json();
 $oParametros = new stdClass();
-$oGet        = db_utils::postMemory($_GET);
+$oGet        = JSON::requestParameters();
 
-$oParametros->aMatriculas      = $oJson->decode(str_replace("\\", "", $oGet->aMatriculas));
+
+
+$oParametros->aMatriculas      = JSON::create()->parse($oGet->aMatriculas);
+
+
+$oGet->sDiretor                = base64_decode($oGet->sDiretor);
 $aDiretor                      = explode('|', $oGet->sDiretor);
 $oParametros->sDiretor         = '';
 $oParametros->sCargo           = '';
@@ -59,11 +64,10 @@ if (count($aDiretor) > 1) {
 $oParametros->lExibeGradeAluno = $oGet->lExibeGradeAluno == 'S' ? true : false;
 $oParametros->iAlturaLinha     = 4;
 
-
 $oParametros->sObservacao = "";
-
+//dd(base64_decode($_GET) , base64_decode($oGet));
 if (trim($oGet->sObservacao) != '') {
-  $oParametros->sObservacao = trim(db_stdClass::db_stripTagsJsonSemEscape($oGet->sObservacao));
+  $oParametros->sObservacao = trim(base64_decode($oGet->sObservacao));
 }
 
 $oTurma = TurmaRepository::getTurmaByCodigo($oGet->iTurma);
@@ -128,16 +132,16 @@ foreach ($oParametros->aMatriculas as $oMat) {
 
   $oParagrafo                         = new libdocumento(5009);
   $oMatricula                         = new Matricula($oMat->iMatricula);
-  
-  try { 
- 
+
+  try {
+
     $oDataNascimento                    = new DBDate($oMatricula->getAluno()->getDataNascimento());
     $oParagrafo->dia_nascimento         = $oDataNascimento->getDia();
     $oParagrafo->mes_extenso_nascimento = DBDate::getMesExtenso((int)$oDataNascimento->getMes());
     $oParagrafo->mes_numeral_nascimento = $oDataNascimento->getMes();
     $oParagrafo->ano_nascimento         = $oDataNascimento->getAno();
-  } catch( Exception $oErro ) { 
-   
+  } catch( Exception $oErro ) {
+
     $oParagrafo->dia_nascimento         = "";
     $oParagrafo->mes_extenso_nascimento = "";
     $oParagrafo->mes_numeral_nascimento = "";
@@ -152,14 +156,14 @@ foreach ($oParametros->aMatriculas as $oMat) {
     $aFiliacao[] = $oMatricula->getAluno()->getNomePai();
   }
 
-  $oParagrafo->naturalidade         = $oMatricula->getAluno()->getNaturalidade()->getNome(); 
-  $oParagrafo->estado_naturalidade  = ""; 
-  $oParagrafo->uf_naturalidade      = "";     
+  $oParagrafo->naturalidade         = $oMatricula->getAluno()->getNaturalidade()->getNome();
+  $oParagrafo->estado_naturalidade  = "";
+  $oParagrafo->uf_naturalidade      = "";
 
   if ( !empty($oParagrafo->naturalidade) ) {
 
-    $oParagrafo->estado_naturalidade  = $oMatricula->getAluno()->getNaturalidade()->getUF()->getNomeEstado(); 
-    $oParagrafo->uf_naturalidade      = $oMatricula->getAluno()->getNaturalidade()->getUF()->getUF();             
+    $oParagrafo->estado_naturalidade  = $oMatricula->getAluno()->getNaturalidade()->getUF()->getNomeEstado();
+    $oParagrafo->uf_naturalidade      = $oMatricula->getAluno()->getNaturalidade()->getUF()->getUF();
   }
 
   $oParagrafo->aluno                  = $oMatricula->getAluno()->getNome();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhcadregime_classe.php");
-include("classes/db_tipoasse_classe.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhcadregime_classe.php"));
+include(modification("classes/db_tipoasse_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 $cltipoasse   = new cl_tipoasse;
 $clrhcadregime = new cl_rhcadregime;
@@ -49,11 +49,25 @@ $datai_ano = db_subdata(db_getsession("DB_datausu"),"a","t");
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
 
 <script>
 
-function js_emite(){
+function js_emite() {
+
+  if ($F('regime') == 0) {
+
+    alert('Favor informar o Regime.');
+    return false;
+  }
+
+  if (js_db_multiploselect_retornaselecionados() === ""){
+
+    alert('Favor informar o Tipo de Assentamento.');
+    return false;
+  };
+
   qry = "?regime="+ document.form1.regime.value;
   qry += "&ordem="+ document.form1.ordem.value;
   qry += "&datai=" + document.form1.datai_ano.value+'-'+document.form1.datai_mes.value+'-'+document.form1.datai_dia.value;

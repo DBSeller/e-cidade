@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_liborcamento.php");
-include("classes/db_orcduplicacao_classe.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_orcduplicacaodotacao_classe.php");
-include("classes/db_orcduplicacaoreceita_classe.php");
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_conaberturaexe_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcduplicacao_classe.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcduplicacaodotacao_classe.php"));
+include(modification("classes/db_orcduplicacaoreceita_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_conaberturaexe_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $get                     = db_utils::postmemory($_GET);
 $post                    = db_utils::postmemory($_POST);
@@ -238,7 +238,7 @@ if (isset($post->o40_orgao) or $iTipo == 3){
 							where o75_conaberturaexe = ".$get->o75_conaberturaexe." 
 							$sWh
 							order by $order";
-  $rs       = pg_query($sSql);
+  $rs       = db_query($sSql);
 	$iNumRows = pg_num_rows($rs);
   $pDisabled = '';
  for ($i = 0;$i < $iNumRows;$i++){
@@ -315,7 +315,7 @@ function js_mostraSaldo(chave,tipo){
        
 
 		}
-  js_OpenJanelaIframe('top.corpo','db_iframe_saldos',arq,'Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_saldos',arq,'Pesquisa',true);
 }
 function js_marca(){
   

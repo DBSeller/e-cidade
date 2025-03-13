@@ -7,5 +7,14 @@
   "informe_atividade"                         : "Código da atividade não informado.",
   "salvo_sucesso"                             : "Vínculo salvo com sucesso!",
   "vinculo_excluido"                          : "Vínculo com o profissional excluído com sucesso!",
-  "nenhuma_dependencia_com_mais_de_uma_turma" : "Nenhuma dependência, com mais de uma turma vinculada, encontrada."
+  "nenhuma_dependencia_com_mais_de_uma_turma" : "Nenhuma dependência, com mais de uma turma vinculada, encontrada.",
+  "procedimentos_salvo_sucesso"               : "Procedimentos de Avaliação salvos com sucesso!",
+  "informe_escola"                            : "Código da escola não informado.",
+  "informe_calendario"                        : "Calendário não informado.",
+  "turmas_nao_alteradas"                      : "Turma(s) não alterada(s) pois ao menos um procedimento das disciplinas, deve ser igual ao procedimento da turma:\n[sMensagem]",
+  "turma_atual_nao_informada"                 : "Código da turma Atual não informado.",
+  "turma_destino_nao_informada"               : "Turma Destino não informada.",
+  "turma_sem_procedimento_resultado_final"    : "Turma não possui um resultado que gera resultado final.",
+  "turno_nao_informado"                       : "Turno não informado.",
+  "nao_ha_vaga"                               : "Não há vaga para o turno selecionado."
 }

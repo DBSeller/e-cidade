@@ -6,4 +6,5 @@
   "incluido_com_sucesso"    : "Abertura da folha suplementar efetuada com sucesso.",
   "folha_suplementar_aberta": "Já existe uma folha suplementar aberta.",
   "ponto_nao_inicializado"  : "Não é possível abrir uma folha suplementar, pois o ponto não encontra-se inicializado.",
+  "rotina_desativada"       : "A estrutura suplementar não está ativada. Contate um Suporte."
 }

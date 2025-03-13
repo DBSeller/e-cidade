@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,6 +24,9 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
+
+use ECidade\Educacao\Escola\Model\AreaHistoricoRede;
+use ECidade\Educacao\Escola\Repository\AreaHistoricoRedeRepository;
 
 class HistoricoEtapaRede extends HistoricoEtapa {
 
@@ -49,6 +52,7 @@ class HistoricoEtapaRede extends HistoricoEtapa {
         $this->setEscola( EscolaRepository::getEscolaByCodigo($oDadosEtapa->ed62_i_escola) );
         $this->setEtapa( EtapaRepository::getEtapaByCodigo($oDadosEtapa->ed62_i_serie) );
         $this->setJustificativa($oDadosEtapa->ed62_i_justificativa);
+        $this->setPeriodoReferencia($oDadosEtapa->ed62_i_periodoref);
         $this->setMininoParaAprovacao($oDadosEtapa->ed62_c_minimo);
         $this->setResultadoAno($oDadosEtapa->ed62_c_resultadofinal);
         $this->setSituacaoEtapa($oDadosEtapa->ed62_c_situacao);
@@ -80,7 +84,7 @@ class HistoricoEtapaRede extends HistoricoEtapa {
     $oDaoHistorico->ed62_i_diasletivos        = $this->getDiasLetivos();
     $oDaoHistorico->ed62_i_escola             = $this->getEscola()->getCodigo();
     $oDaoHistorico->ed62_i_justificativa      = $this->getJustificativa();
-    $oDaoHistorico->ed62_i_periodoref         = $this->getAnoCurso();
+    $oDaoHistorico->ed62_i_periodoref         = $this->getPeriodoReferencia();
     $oDaoHistorico->ed62_i_qtdch              = $this->getCargaHoraria();
     $oDaoHistorico->ed62_i_serie              = $this->getEtapa()->getCodigo();
     $oDaoHistorico->ed62_i_turma              = $this->getTurma();
@@ -106,7 +110,6 @@ class HistoricoEtapaRede extends HistoricoEtapa {
     if ($oDaoHistorico->erro_status == 0) {
       throw new BusinessException($oDaoHistorico->erro_msg);
     }
-
     foreach ($this->aDisciplinas as $oDisciplina) {
       $oDisciplina->salvar($this->iCodigoEtapa);
     }
@@ -138,9 +141,7 @@ class HistoricoEtapaRede extends HistoricoEtapa {
    * @return DisciplinaHistoricoRede[];
    */
   public function getDisciplinas() {
-
     if (count($this->aDisciplinas) == 0 && !empty($this->iCodigoEtapa)) {
-
       $oDaoDisciplina = new cl_histmpsdisc();
       $sWhere         = "ed65_i_historicomps = {$this->iCodigoEtapa}";
       $sSqlDisciplina = $oDaoDisciplina->sql_query_file(null, "ed65_i_codigo", "ed65_i_ordenacao", $sWhere);
@@ -178,4 +179,16 @@ class HistoricoEtapaRede extends HistoricoEtapa {
 
     return $oDisciplinaRetorno;
   }
+
+    /**
+     * @return AreaHistoricoRede[]
+     * @throws Exception
+     */
+    public function getAreasConhecimento()
+    {
+        $areaHistoricoRepository = new AreaHistoricoRedeRepository();
+        return $areaHistoricoRepository
+            ->scopeHistoricoEtapaRede(new HistoricoEtapaRede($this->iCodigoEtapa))
+            ->get();
+    }
 }

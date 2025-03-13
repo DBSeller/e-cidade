@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_liclicitem_classe.php");
-include("classes/db_solicitemprot_classe.php");
-include("classes/db_pcparam_classe.php");
-include("classes/db_solandam_classe.php");
-include("classes/db_solandpadraodepto_classe.php");
+include(modification("classes/db_liclicitem_classe.php"));
+include(modification("classes/db_solicitemprot_classe.php"));
+include(modification("classes/db_pcparam_classe.php"));
+include(modification("classes/db_solandam_classe.php"));
+include(modification("classes/db_solandpadraodepto_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_GET_VARS);
 $clsolicitemprot = new cl_solicitemprot;
@@ -167,7 +167,7 @@ if (isset($pc80_codproc) && trim($pc80_codproc)!=""){
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pcproc','func_excautitem.php?exc=ok&funcao_js=parent.js_preenchepesquisa|pc80_codproc','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcproc','func_excautitem.php?exc=ok&funcao_js=parent.js_preenchepesquisa|pc80_codproc','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_pcproc.hide();

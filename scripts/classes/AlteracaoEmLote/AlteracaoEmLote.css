@@ -1,0 +1,14 @@
+.body-container tr:first-child > td {
+    color: red;
+    position: sticky;
+    top: 0;
+    background-color: #cccccc;
+}
+
+.body-container tr:first-child > td > input[type='checkbox'] {
+    display: none
+}
+
+.body-container select {
+    width: 100%;
+}

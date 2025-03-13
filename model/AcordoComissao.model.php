@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -111,7 +111,7 @@ class AcordoComissao {
 	  		
 	  		if($oDaoComissaoMembro->numrows > 0) {
 	  			
-	  		  $aMembros           = db_utils::getColectionByRecord($rsCM);
+	  		  $aMembros           = db_utils::getCollectionByRecord($rsCM);
 		  		
 		  		foreach($aMembros AS $oMembroC) {
 		  		

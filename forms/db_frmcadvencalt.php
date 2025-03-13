@@ -25,7 +25,7 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 
 $clcadvenc->rotulo->label();
@@ -194,9 +194,9 @@ function js_cancelar(){
 }
 function js_pesquisaq82_hist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadvenc','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true,"0");
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadvenc','db_iframe_histcalc','func_histcalc.php?funcao_js=parent.js_mostrahistcalc1|k01_codigo|k01_descr','Pesquisa',true,"0");
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_cadvenc','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.q82_hist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false,"0");
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadvenc','db_iframe_histcalc','func_histcalc.php?pesquisa_chave='+document.form1.q82_hist.value+'&funcao_js=parent.js_mostrahistcalc','Pesquisa',false,"0");
   }
 }
 function js_mostrahistcalc(chave,erro){
@@ -212,7 +212,7 @@ function js_mostrahistcalc1(chave1,chave2){
   db_iframe_histcalc.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_cadvenc','db_iframe_cadvenc','func_cadvenc.php?funcao_js=parent.js_preenchepesquisa|q82_codigo|1','Pesquisa',true,"0");
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadvenc','db_iframe_cadvenc','func_cadvenc.php?funcao_js=parent.js_preenchepesquisa|q82_codigo|1','Pesquisa',true,"0");
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_cadvenc.hide();

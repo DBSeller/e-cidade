@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_sysfuncoes_classe.php");
-include("classes/db_db_sysfuncoesparam_classe.php");
-include("classes/db_db_sysfuncoescliente_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_sysfuncoes_classe.php"));
+include(modification("classes/db_db_sysfuncoesparam_classe.php"));
+include(modification("classes/db_db_sysfuncoescliente_classe.php"));
 $cldb_sysfuncoescliente = new cl_db_sysfuncoescliente;
 $cldb_sysfuncoes = new cl_db_sysfuncoes;
   
@@ -88,7 +88,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_sysfuncoes.php");
+	include(modification("forms/db_frmdb_sysfuncoes.php"));
 	?>
     </center>
 	</td>
@@ -121,7 +121,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_sysfuncoesparam.disabled=false;
-         top.corpo.iframe_db_sysfuncoesparam.location.href='con1_db_sysfuncoesparam001.php?db_opcaoal=33&db42_funcao=".@$codfuncao."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_sysfuncoesparam.location.href='con1_db_sysfuncoesparam001.php?db_opcaoal=33&db42_funcao=".@$codfuncao."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_sysfuncoesparam');";

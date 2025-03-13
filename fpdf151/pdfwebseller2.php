@@ -6,15 +6,15 @@ if(!defined('DB_BIBLIOT')){
   session_cache_limiter('none');
   session_start();
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
   db_postmemory($HTTP_POST_VARS);
   db_postmemory($HTTP_SERVER_VARS);
 
-  define('FPDF_FONTPATH','font/');
-  require('fpdf.php');
+  define('FPDF_FONTPATH','fpdf151/font/');
+  require(modification('fpdf151/fpdf.php'));
   
 }
 
@@ -36,7 +36,7 @@ class PDF extends FPDF
      $this->aligns=$a;
    }
 
-   function Row($data,$altura=5)
+   function Row($data,$altura=5,$borda=true,$espaco=5,$preenche=0,$naousaespaco=false)
    {
      //Calculate the height of the row
      $nb=0;
@@ -152,9 +152,9 @@ class PDF extends FPDF
      //Dados da instituição
 
 //   echo ("select nomeinst,ender,munic,uf,telef,email,url,logo from db_config where codigo = ".db_getsession("DB_instit"));
-//   $dados = pg_query("select nomeinst,ender,munic,uf,telef,email,url,logo from db_config where codigo = ".db_getsession("DB_instit"));
+//   $dados = db_query("select nomeinst,ender,munic,uf,telef,email,url,logo from db_config where codigo = ".db_getsession("DB_instit"));
 
-    $dados = pg_query($conn,"select nomeinst,trim(ender)||','||trim(cast(numero as text)) as ender,munic,uf,telef,email,url,logo from db_config where codigo = ".db_getsession("DB_instit"));
+    $dados = db_query($conn,"select nomeinst,trim(ender)||','||trim(cast(numero as text)) as ender,munic,uf,telef,email,url,logo from db_config where codigo = ".db_getsession("DB_instit"));
     $url = @pg_result($dados,0,"url");
     $this->SetXY(1,1);
     $this->Image('imagens/files/'.pg_result($dados,0,"logo"),7,3,20);
@@ -231,7 +231,7 @@ class PDF extends FPDF
          $this->SetY(-10);
          $nome = @$GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"];
          $nome = substr($nome,strrpos($nome,"/")+1);
-         $result_nomeusu = pg_query("select nome as nomeusu from db_usuarios where id_usuario =".db_getsession("DB_id_usuario"));
+         $result_nomeusu = db_query("select nome as nomeusu from db_usuarios where id_usuario =".db_getsession("DB_id_usuario"));
          if (pg_numrows($result_nomeusu)>0){
               $nomeusu = pg_result($result_nomeusu,0,0);
          }

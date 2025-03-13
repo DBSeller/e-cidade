@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,188 +25,276 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("classes/db_lab_requiitem_classe.php");
-include("dbforms/db_funcoes.php");
-db_postmemory($HTTP_POST_VARS);
-$cllab_requiitem = new cl_lab_requiitem;
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_lab_requiitem_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-$sAdd    = "";
-$sCampos = "";
-if ($iTipo == 2) {
-	
-  $sAdd = "||'__'||(coalesce(sd63_f_sa,0)+coalesce(sd63_f_sp,0))";
-  
-  $sCampos .= " la21_d_data,";
-  $sCampos .= " z01_i_cgsund,";
-  $sCampos .= " z01_v_nome,";
-  $sCampos .= " la08_c_sigla,";
-  
+function avisoNenhumRegistro()
+{
+  die("
+    <table width='100%'>
+      <tr>
+      <td align='center'>
+        <font color='#FF0000' face='arial'>
+        <b>Nenhum registro encontrado<br>
+        <input type='button' value='Fechar' onclick='window.close()'></b>
+        </font>
+      </td>
+      </tr>
+    </table>
+  ");
 }
-$sCampos .= " la02_i_codigo, ";
-$sCampos .= " la02_c_descr, ";
-$sCampos .= " (select sd63_c_nome||'__'||sd63_c_procedimento$sAdd from lab_conferencia
-               inner join sau_procedimento on sd63_i_codigo = la47_i_procedimento
-               inner join db_usuarios on id_usuario = la47_i_login
-               where la47_i_requiitem=la21_i_codigo 
-               order by la47_d_data desc,la47_c_hora desc limit 1) as conferencia, ";
-$sCampos .= " la08_c_descr";
 
-$sWhere   = "exists (select * from lab_conferencia
-                     inner join sau_procedimento on sd63_i_codigo = la47_i_procedimento
-                     inner join db_usuarios on id_usuario = la47_i_login
-                     where la47_i_requiitem=la21_i_codigo and
-                     la47_d_data between '$dInicio' and '$dFim'
-                     order by la47_d_data desc,la47_c_hora desc limit 1)";
-$sWhere  .= " and la02_i_codigo in ($sLaboratorios) ";
-if ($iTipo == 1) {
-	
-	$sCampos .= " ,count(la21_i_codigo) as total";
-  $sWhere .= " group by la02_i_codigo,la02_c_descr,la08_c_descr,conferencia ";
-  $order   = " la02_i_codigo ";
-  
-} else {
-  $order   = " la21_d_data asc,z01_v_nome,la02_c_descr ";	
-}
-$sSql = $cllab_requiitem->sql_query2("",$sCampos,$order,$sWhere);
-$result = $cllab_requiitem->sql_record($sSql);
+function buscarRegistros()
+{
+  global $_GET;
+  $get = \db_utils::postMemory($_GET);
+  $cllab_requiitem = new \cl_lab_requiitem;
 
-if($cllab_requiitem->numrows==0){?>
- <table width='100%'>
-  <tr>
-   <td align='center'>
-    <font color='#FF0000' face='arial'>
-     <b>Nenhum registro encontrado<br>
-     <input type='button' value='Fechar' onclick='window.close()'></b>
-    </font>
-   </td>
-  </tr>
- </table>
- <?
- exit;
+  $sAdd    = "";
+  $sCampos = "";
+  if ($get->iTipo == 2) {
+    
+    $sAdd = "||'__'||(coalesce(sd63_f_sa,0)+coalesce(sd63_f_sp,0))";
+    
+    $sCampos .= " la21_d_data,";
+    $sCampos .= " z01_i_cgsund,";
+    $sCampos .= " z01_v_nome,";
+    $sCampos .= " la08_c_sigla,";
+    
+  }
+  if ($get->sLaboratorios == 'TODOS') {
+    $sCampos .= " '0' as la02_i_codigo, ";
+    $sCampos .= " 'TODOS' as la02_c_descr, ";
+  } else {
+    $sCampos .= " la02_i_codigo, ";
+    $sCampos .= " la02_c_descr, ";
+  }
+  $sCampos .= " (select sd63_c_nome||'__'||sd63_c_procedimento{$sAdd} from lab_conferencia
+                inner join sau_procedimento on sd63_i_codigo = la47_i_procedimento
+                inner join db_usuarios on id_usuario = la47_i_login
+                where la47_i_requiitem=la21_i_codigo 
+                order by la47_d_data desc,la47_c_hora desc limit 1) as conferencia, ";
+  $sCampos .= " la08_c_descr";
+
+  $sWhere   = "exists (select * from lab_conferencia
+                      inner join sau_procedimento on sd63_i_codigo = la47_i_procedimento
+                      inner join db_usuarios on id_usuario = la47_i_login
+                      where la47_i_requiitem=la21_i_codigo and
+                      la47_d_data between '{$get->dInicio}' and '{$get->dFim}'
+                      order by la47_d_data desc,la47_c_hora desc limit 1)";
+  if ($get->sLaboratorios != 'TODOS') {
+    $sWhere  .= " and la02_i_codigo in ({$get->sLaboratorios}) ";
+  }
+  if ($get->iTipo == 1) {
+    $sCampos .= " , la21_i_codigo ";
+    $order   = " la02_i_codigo ";
+  }	else {
+    $order   = " la21_d_data asc,z01_v_nome,la02_c_descr ";	
+  }
+
+  $sSql = $cllab_requiitem->sql_query2("",$sCampos,$order,$sWhere);
+
+  if ($get->iTipo == 1) {
+    $sSql = "SELECT 
+        la02_i_codigo, 
+        la02_c_descr, 
+        conferencia, 
+        la08_c_descr,
+        count(la21_i_codigo) as total 
+      FROM ({$sSql}) as x
+      GROUP BY la02_i_codigo,la02_c_descr,la08_c_descr,conferencia
+      ORDER BY la02_i_codigo";
+  }
+
+  $result = $cllab_requiitem->sql_record($sSql);
+
+  if (!$result) {
+    avisoNenhumRegistro();
+  }
+
+  return \db_utils::getCollectionByRecord($result);
 }
+
+function buscarTotais($dados)
+{
+  global $_GET;
+  //iTipo 1 = Sintético
+  if ($_GET['iTipo'] == 1) {
+    $totalColetas = 0;
+    $totalExames = 0;
+    foreach ($dados as $dado) {
+        $totalExames++;
+        $totalColetas += $dado->total;
+    }
+    
+    return (object)['exames' => $totalExames, 'coletas' => $totalColetas];
+  } 
+  //Analitico
+  $totalExames = [];
+  $totalColetas = 0;
+  foreach ($dados as $dado) {
+      $totalExames[] = $dado->la08_c_descr;
+      $totalColetas++;
+  }
+  
+  return (object)['exames' => count(array_unique($totalExames)), 'coletas' => $totalColetas];
+}
+
+function imprimiCabecalhoSintetico($pdf, $dado)
+{
+  $pdf->ln(5);
+  $pdf->addpage('P');
+  $pdf->setfont('arial', 'b', 10);
+  $pdf->cell(190, 4, "Laboratorio: {$dado->la02_c_descr}", 1, 1, "C", 0);
+  $pdf->cell(30, 4, "Procedimento", 0, 0, "C", 0);
+  $pdf->cell(100, 4, "Descrição", 0, 0, "C", 0);
+  $pdf->cell(50, 4, "Exame", 0, 0, "C", 0);
+  $pdf->cell(10, 4, "Total", 0, 1, "C", 0);
+}
+
+function imprimiLinhaSintetico($pdf, $dado)
+{
+  $pdf->setfont('arial', '', 7);
+  $aProc = explode("__", $dado->conferencia);
+  $procedimento = $aProc[1];
+  $descricao = substr($aProc[0],0,58);
+
+  $pdf->cell(30, 4, $procedimento, 0, 0, "L", 0);
+  $pdf->cell(100, 4, $descricao, 0, 0, "L", 0);
+  $pdf->cell(50, 4, "{$dado->la08_c_descr}", 0, 0, "C", 0);
+  $pdf->cell(10, 4, "{$dado->total}", 0, 1, "R", 0);
+  return $dado->total;
+}
+
+function imprimiTotalSintetico($pdf, $total)
+{
+  $pdf->setfont('arial', 'b', 10);
+  $pdf->cell(190, 4, "Total: {$total}" , 1, 1, "R", 0);
+}
+
+function imprimirDadosSintetico($pdf, $dados)
+{
+  global $head5;
+  $lab = '';
+  $total = 0;
+  foreach ($dados as $dado) {
+    if ($dado->la02_i_codigo != $lab) {
+      if ($lab != '') {
+        imprimiTotalSintetico($pdf, $total);
+        $total = 0;
+      }
+      $head5 = "LABORATÓRIO: {$dado->la02_c_descr}";
+      imprimiCabecalhoSintetico($pdf, $dado);
+      $lab = $dado->la02_i_codigo; 
+    }
+
+    if ($pdf->getAvailHeight() < 8) {
+      imprimiCabecalhoSintetico($pdf, $dado);
+    }
+
+    imprimiLinhaSintetico($pdf, $dado);
+    $total += $dado->total;
+  }
+  imprimiTotalSintetico($pdf, $total);
+}
+
+function imprimiCabecalhoAnalitico($pdf, $dado)
+{
+  $data = db_formatar($dado->la21_d_data, 'd');
+
+  $pdf->setfont('arial', 'b', 8);
+  $pdf->cell(20, 4, $data, "T", 0, "L", 0);
+  $pdf->cell(30, 4, $dado->z01_i_cgsund, "T" ,0, "L", 0);
+  $pdf->cell(70, 4, $dado->z01_v_nome, "T", 0, "L", 0);
+  $pdf->cell(25, 4, 'Código', "T", 0, "C", 0);
+  $pdf->cell(45, 4, 'Valor Procedimento', "T", 1, "R", 0);
+}
+
+function imprimiInfoLaboratorio($pdf, $dado)
+{
+  $pdf->cell(20, 4, '', 0, 0, "L", 0);
+  $pdf->cell(30, 4, '', 0, 0, "L", 0);
+  $pdf->cell(70, 4, $dado->la02_c_descr, 0, 1, "L", 0);
+}
+
+function imprimiLinhaAnalitico($pdf, $dado)
+{
+  $aProc = explode("__", $dado->conferencia);
+  $procedimento = $aProc[1];
+  $valor = $aProc[2];
+
+  $pdf->setfont('arial', '', 8);
+  $pdf->cell(20, 4, '', 0, 0, "L", 0);
+  $pdf->cell(30, 4, $dado->la08_c_sigla, 0, 0, "L", 0);
+  $pdf->cell(70, 4, $dado->la08_c_descr, 0, 0, "L", 0);
+  $pdf->cell(25, 4, $procedimento, 0, 0, "C", 0);
+  $pdf->cell(45, 4, "R$ " . number_format($valor, 2, ',', ''), 0, 1, "R", 0);
+}
+
+function imprimiTotalAnalitico($pdf, $total)
+{
+  $pdf->setfont('arial', 'b', 8);
+  $pdf->cell(20, 4, '', 0, 0, "L", 0);
+  $pdf->cell(30, 4, '', 0, 0, "L", 0);
+  $pdf->cell(70, 4, '', 0, 0, "L", 0);
+  $pdf->cell(25, 4, '', 0, 0, "C", 0);
+  $pdf->cell(45, 4, "R$ " . number_format($total, 2, ',', ''), "T", 1, "R", 0);
+}
+
+function imprimirDadosAnalitico($pdf, $dados)
+{
+  $lab = 0;
+  $cgs = 0;
+  $total = 0;
+  foreach ($dados as $dado) {
+    if (($cgs != $dado->z01_i_cgsund || $dado->la02_i_codigo != $lab) && $cgs != 0 && $lab != 0) {
+      imprimiTotalAnalitico($pdf, $total);
+      $total = 0;
+    }
+
+    if ($pdf->getAvailHeight() < 16) {
+      $pdf->ln(5);
+      $pdf->addpage('P');
+      imprimiCabecalhoAnalitico($pdf, $dado);
+      imprimiInfoLaboratorio($pdf, $dado);
+      $cgs = $dado->z01_i_cgsund;
+      $lab = $dado->la02_i_codigo;
+    }
+
+    if ($cgs != $dado->z01_i_cgsund) {
+      imprimiCabecalhoAnalitico($pdf, $dado);
+      $cgs = $dado->z01_i_cgsund;
+      $lab = 0;
+    }
+
+    if ($dado->la02_i_codigo != $lab) {
+      imprimiInfoLaboratorio($pdf, $dado);
+      $lab = $dado->la02_i_codigo;
+    }
+
+    imprimiLinhaAnalitico($pdf, $dado);
+    $total += explode("__", $dado->conferencia)[2];
+  }
+  imprimiTotalAnalitico($pdf, $total);
+}
+
+$dados = buscarRegistros();
+$totais = buscarTotais($dados);
+
 $pdf = new PDF();
 $pdf->Open();
 $pdf->AliasNbPages();
-$lFirst  = true;
-$iLab    = 0;
-$iCgs    = 0;
-$iQuebra = 0;
-$iTotal  = 0;
-$head1   = "RELATÓRIO DE PRODUÇÃO";
-$head2   = "PERIODO: $dInicio até $dFim ";
-$head3   = "TOTAL DE EXAMES: $cllab_requiitem->numrows ";
-$head4   = "TOTAL DE COLETA: $cllab_requiitem->numrows ";
-$iCont   = 0;
-if ($iTipo==1) {
-  for($iI=0; $iI < $cllab_requiitem->numrows; $iI++){
+$head1 = "RELATÓRIO DE PRODUÇÃO";
+$head2 = "PERIODO: {$_GET['dInicio']} até {$_GET['dFim']}";
+$head3 = "TOTAL DE EXAMES: {$totais->exames}";
+$head4 = "TOTAL DE COLETA: {$totais->coletas}";
 
-    db_fieldsmemory($result,$iI);
-    if ($iQuebra == 35 || $la02_i_codigo != $iLab || $lFirst==true) {
-  
-	    if($lFirst == false){
-	  	
-        $pdf->cell(190,4,"Total: $iCont",1,1,"R",0);     
-        $head5   = "LABORATÓRIO: $la02_c_descr ";
-        $iCont = 0;
-
-	    }
-	    $head5   = "LABORATÓRIO: $la02_c_descr ";
-      $pdf->ln(5);
-      $pdf->addpage('P');
-	    $pdf->setfont('arial','b',10);
-      $pdf->cell(190,4,"Laboratorio: $la02_c_descr",1,1,"C",0);
-      $pdf->cell(30,4,"Procedimento ",0,0,"C",0);
-      $pdf->cell(100,4,"Descrição ",0,0,"C",0);
-      $pdf->cell(50,4,"Exame ",0,0,"C",0);
-      $pdf->cell(10,4,"Total ",0,1,"C",0);
-      $lFirst  = false;
-      $iLab  = $la02_i_codigo;
-      $iQuebra = 0;
-    
-	  } 
-	  $pdf->setfont('arial','',8);
-    $aProc = explode("__",$conferencia);
-    $pdf->cell(30,4,$aProc[1],0,0,"L",0);
-    $pdf->cell(100,4,substr($aProc[0],0,58),0,0,"L",0);
-    $pdf->cell(50,4,"$la08_c_descr",0,0,"C",0);
-    $pdf->cell(10,4,"$total",0,1,"R",0);
-    $iQuebra++;
-    $iCont += $total;
-  }
-  $pdf->setfont('arial','b',10);
-  $pdf->cell(190,4,"Total: ".$iCont,1,1,"R",0);
+if ($_GET['iTipo'] == 1) {
+  imprimirDadosSintetico($pdf, $dados);
 } else {
-  for($iI=0; $iI < $cllab_requiitem->numrows; $iI++){
-
-    db_fieldsmemory($result,$iI);
-    if ($iQuebra == 35 || $la02_i_codigo != $iLab || $z01_i_cgsund != $iCgs || $lFirst==true) {
-
-      $pdf->setfont('arial','b',8);
-
-      if($lFirst == false) {
-        
-        $pdf->cell(20,4,'',0,0,"L",0);
-        $pdf->cell(30,4,'',0,0,"L",0);
-        $pdf->cell(70,4,'',0,0,"L",0);
-        $pdf->cell(25,4,'',0,0,"C",0);
-        $pdf->cell(45,4,"R$ ".number_format($iTotal, 2,',',''),"T",1,"R",0);
-        $iTotal = 0;
-        
-      }
-      
-      if ($iQuebra == 35 || $lFirst == true) {
-      	
-        $head5   = "LABORATÓRIO: $la02_c_descr ";
-        $pdf->ln(5);
-        $pdf->addpage('P');
-        $iQuebra = 0;
-        
-      }
-      if ($iCgs != $z01_i_cgsund) {
-      	 
-        $aData = explode("-",$la21_d_data);
-      	$pdf->cell(20,4,$aData[2]."/".$aData[1]."/".$aData[0],"T",0,"L",0);
-        $pdf->cell(30,4,$z01_i_cgsund,"T",0,"L",0);
-        $pdf->cell(70,4,$z01_v_nome,"T",0,"L",0);
-        $pdf->cell(25,4,'Código',"T",0,"C",0);
-        $pdf->cell(45,4,'Valor Procedimento',"T",1,"R",0);
-        
-      }
-      
-      if ($iLab != $la02_i_codigo || $iCgs != $z01_i_cgsund) {
-      	
-        $iLab = $la02_i_codigo;
-        $iCgs = $z01_i_cgsund;
-        $pdf->cell(20,4,'',0,0,"L",0);
-        $pdf->cell(30,4,'',0,0,"L",0);
-        $pdf->cell(70,4,$la02_c_descr,0,0,"L",0);
-        $pdf->cell(25,4,'',0,0,"C",0);
-        $pdf->cell(45,4,'',0,1,"R",0);
-      
-      }
-      $lFirst  = false;
-
-    } 
-    $pdf->setfont('arial','',8);
-    $aProc = explode("__", $conferencia);
-    $pdf->cell(20,4,'',0,0,"L",0);
-    $pdf->cell(30,4,$la08_c_sigla,0,0,"L",0);
-    $pdf->cell(70,4,$la08_c_descr,0,0,"L",0);
-    $pdf->cell(25,4,$aProc[1],0,0,"C",0);
-    $pdf->cell(45,4,"R$ ".number_format($aProc[2], 2,',',''),0,1,"R",0);
-    $iTotal += $aProc[2];
-    $iQuebra++;
-
-  }
-  $pdf->setfont('arial','b',8);
-  $pdf->cell(20,4,'',0,0,"L",0);
-  $pdf->cell(30,4,'',0,0,"L",0);
-  $pdf->cell(70,4,'',0,0,"L",0);
-  $pdf->cell(25,4,'',0,0,"C",0);
-  $pdf->cell(45,4,"R$ ".number_format($iTotal, 2,',',''),"T",1,"R",0);	
+  imprimirDadosAnalitico($pdf, $dados);
 }
-
 
 $pdf->Output();
 ?>

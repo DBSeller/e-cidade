@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_mer_nutricionista_classe.php");
-include("classes/db_mer_nutricionistaescola_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_mer_nutricionista_classe.php"));
+include(modification("classes/db_mer_nutricionistaescola_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clmer_nutricionista       = new cl_mer_nutricionista;
@@ -61,7 +61,7 @@ if (isset($alterar)) {
   <script>
     parent.document.formaba.a2.disabled    = false;
     parent.document.formaba.a2.style.color = "black";
-    top.corpo.iframe_a2.location.href      = 'mer1_mer_nutricionistaescola001.php?me31_i_nutricionista=<?=$chavepesquisa?>'+
+    (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href      = 'mer1_mer_nutricionistaescola001.php?me31_i_nutricionista=<?=$chavepesquisa?>'+
                                              '&iCodNutricionista=<?=$chavepesquisa?>&z01_nome=<?=$z01_nome?>';
   </script> 
   
@@ -85,7 +85,7 @@ if (isset($alterar)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Alteração de Nutricionista</b></legend>
-    <?include("forms/db_frmmer_nutricionista.php");?>
+    <?include(modification("forms/db_frmmer_nutricionista.php"));?>
    </fieldset>
    </center>
   </td>
@@ -114,7 +114,7 @@ if (isset($alterar)) {
 	?>
     <script>
      parent.document.formaba.a2.disabled = false;  
-     top.corpo.iframe_a2.location.href   = 'mer1_mer_nutricionistaescola001.php?iCodNutricionista=<?=$chavepesquisa?>'+
+     (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a2.location.href   = 'mer1_mer_nutricionistaescola001.php?iCodNutricionista=<?=$chavepesquisa?>'+
                                            '&me31_i_nutricionista=<?=$chavepesquisa?>&z01_nome=<?=$z01_nome?>';
      parent.mo_camada('a2'); 
     </script>

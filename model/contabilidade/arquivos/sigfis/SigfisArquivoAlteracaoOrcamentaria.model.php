@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,14 +26,14 @@
  */
 
 
-require_once ('interfaces/iPadArquivoTxtBase.interface.php');
-require_once ('model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php');
+require_once(modification('interfaces/iPadArquivoTxtBase.interface.php'));
+require_once(modification('model/contabilidade/arquivos/sigfis/SigfisArquivoBase.model.php'));
 /**
  * Classe para geraçao dos dados de decretos, suplementacoes.
  * @author iuri@dbseller.com.br
  * @package contabilidade
  * @subpackage sigfis
- * @version  $Revision: 1.7 $
+ * @version  $Revision: 1.11 $
  */
 class SigfisArquivoAlteracaoOrcamentaria extends SigfisArquivoBase implements iPadArquivoTXTBase {
   
@@ -197,7 +197,6 @@ class SigfisArquivoAlteracaoOrcamentaria extends SigfisArquivoBase implements iP
           
           $sDescricao           = str_replace("\n", " ", $oDadosSuplementacao->descricao);
           $sDescricao           = str_replace("\r", " ", $sDescricao);
-//          $UnidadeOrcamentaria  = str_pad($oDadosSuplementacao->orgao, 2, '0', STR_PAD_LEFT);
           $UnidadeOrcamentaria = str_pad($oDadosSuplementacao->unidade, 4, ' ', STR_PAD_LEFT);
           
           $dtDataLei            = $this->formataData($oDadosSuplementacao->data_lei);
@@ -212,7 +211,7 @@ class SigfisArquivoAlteracaoOrcamentaria extends SigfisArquivoBase implements iP
           $oSuplementacao->tp_ProjetoAtividade     = str_pad($oDadosSuplementacao->tipo_projeto, 1, "0", STR_PAD_LEFT);
           $oSuplementacao->tp_Fundamento           = 1;
           $oSuplementacao->tp_Alteracao            = str_pad($iTipoSuplementacao, 2, ' ', STR_PAD_LEFT);
-          $oSuplementacao->nu_Fundamento           = str_pad(substr($sDescricao,0,16), 16, ' ', STR_PAD_RIGHT);
+          $oSuplementacao->nu_Fundamento           = str_pad(substr($oDadosSuplementacao->num_decreto,0,16), 16, ' ', STR_PAD_RIGHT);
           $oSuplementacao->cd_UnidadeOrcamentaria  = str_pad($UnidadeOrcamentaria,4, ' ', STR_PAD_LEFT);
           $oSuplementacao->cd_Elemento             = str_pad(substr($oDadosSuplementacao->elemento, 1, 8), 8, ' ', 
                                                              STR_PAD_LEFT); 

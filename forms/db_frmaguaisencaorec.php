@@ -26,7 +26,7 @@
  */
 
 //MODULO: agua
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $claguaisencaorec->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -141,10 +141,10 @@ function js_cancelar(){
 }
 function js_pesquisax26_codisencao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguaisencaorec','db_iframe_aguaisencao','func_aguaisencao.php?funcao_js=parent.js_mostraaguaisencao1|x10_codisencao|x10_matric','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencaorec','db_iframe_aguaisencao','func_aguaisencao.php?funcao_js=parent.js_mostraaguaisencao1|x10_codisencao|x10_matric','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x26_codisencao.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguaisencaorec','db_iframe_aguaisencao','func_aguaisencao.php?pesquisa_chave='+document.form1.x26_codisencao.value+'&funcao_js=parent.js_mostraaguaisencao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencaorec','db_iframe_aguaisencao','func_aguaisencao.php?pesquisa_chave='+document.form1.x26_codisencao.value+'&funcao_js=parent.js_mostraaguaisencao','Pesquisa',false);
      }else{
        document.form1.x10_matric.value = ''; 
      }
@@ -164,10 +164,10 @@ function js_mostraaguaisencao1(chave1,chave2){
 }
 function js_pesquisax26_codconsumotipo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_aguaisencaorec','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?funcao_js=parent.js_mostraaguaconsumotipo1|x25_codconsumotipo|x25_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencaorec','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?funcao_js=parent.js_mostraaguaconsumotipo1|x25_codconsumotipo|x25_descr','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.x26_codconsumotipo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_aguaisencaorec','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?pesquisa_chave='+document.form1.x26_codconsumotipo.value+'&funcao_js=parent.js_mostraaguaconsumotipo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_aguaisencaorec','db_iframe_aguaconsumotipo','func_aguaconsumotipo.php?pesquisa_chave='+document.form1.x26_codconsumotipo.value+'&funcao_js=parent.js_mostraaguaconsumotipo','Pesquisa',false);
      }else{
        document.form1.x25_descr.value = ''; 
      }

@@ -1,6 +1,6 @@
 <?php
-define('FPDF_FONTPATH','font/');
-require_once('PDF_Label.php');
+define('FPDF_FONTPATH','fpdf151/font/');
+require_once(modification('fpdf151/label/PDF_Label.php'));
 
 /*-------------------------------------------------
 To create the object, 2 possibilities:

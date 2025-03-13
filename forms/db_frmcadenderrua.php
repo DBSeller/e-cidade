@@ -190,10 +190,10 @@ db_input('db74_cep',8,$Idb74_cep,true,'text',$db_opcao,"")
 <script>
 function js_pesquisadb74_cadendermunicipio(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadendermunicipio','func_cadendermunicipio.php?funcao_js=parent.js_mostracadendermunicipio1|db72_sequencial|db72_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadendermunicipio','func_cadendermunicipio.php?funcao_js=parent.js_mostracadendermunicipio1|db72_sequencial|db72_descricao','Pesquisa',true);
   }else{
      if(document.form1.db74_cadendermunicipio.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cadendermunicipio','func_cadendermunicipio.php?pesquisa_chave='+document.form1.db74_cadendermunicipio.value+'&funcao_js=parent.js_mostracadendermunicipio','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadendermunicipio','func_cadendermunicipio.php?pesquisa_chave='+document.form1.db74_cadendermunicipio.value+'&funcao_js=parent.js_mostracadendermunicipio','Pesquisa',false);
      }else{
        document.form1.db72_descricao.value = ''; 
      }
@@ -214,10 +214,10 @@ function js_mostracadendermunicipio1(chave1,chave2){
 
 function js_pesquisadb74_cadenderbairroinicial(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadenderrua','db_iframe_cadenderbairroinicial','func_cadenderbairro.php?funcao_js=parent.js_mostracadenderbairroinicial1|db73_sequencial|db73_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadenderrua','db_iframe_cadenderbairroinicial','func_cadenderbairro.php?funcao_js=parent.js_mostracadenderbairroinicial1|db73_sequencial|db73_descricao','Pesquisa',true);
   }else{
      if(document.form1.db74_bairroinicial.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadenderrua','db_iframe_cadenderbairroinicial','func_cadenderbairro.php?pesquisa_chave='+document.form1.db74_bairroinicial.value+'&funcao_js=parent.js_mostracadenderbairroinicial','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadenderrua','db_iframe_cadenderbairroinicial','func_cadenderbairro.php?pesquisa_chave='+document.form1.db74_bairroinicial.value+'&funcao_js=parent.js_mostracadenderbairroinicial','Pesquisa',false);
      }else{
        document.form1.bi_descricao.value = ''; 
      }
@@ -239,10 +239,10 @@ function js_mostracadenderbairroinicial1(chave1,chave2){
 
 function js_pesquisadb74_cadenderbairrofinal(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_cadenderrua','db_iframe_cadenderbairrofinal','func_cadenderbairro.php?funcao_js=parent.js_mostracadenderbairrofinal1|db73_sequencial|db73_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadenderrua','db_iframe_cadenderbairrofinal','func_cadenderbairro.php?funcao_js=parent.js_mostracadenderbairrofinal1|db73_sequencial|db73_descricao','Pesquisa',true);
   }else{
      if(document.form1.db74_bairrofinal.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_cadenderrua','db_iframe_cadenderbairrofinal','func_cadenderbairro.php?pesquisa_chave='+document.form1.db74_bairrofinal.value+'&funcao_js=parent.js_mostracadenderbairrofinal','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadenderrua','db_iframe_cadenderbairrofinal','func_cadenderbairro.php?pesquisa_chave='+document.form1.db74_bairrofinal.value+'&funcao_js=parent.js_mostracadenderbairrofinal','Pesquisa',false);
      }else{
        document.form1.bf_descricao.value = ''; 
      }
@@ -261,7 +261,7 @@ function js_mostracadenderbairrofinal1(chave1,chave2){
   db_iframe_cadenderbairrofinal.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_cadenderrua','db_iframe_cadenderrua','func_cadenderrua.php?funcao_js=parent.js_preenchepesquisa|db74_sequencial','Pesquisa',true,'0','1');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_cadenderrua','db_iframe_cadenderrua','func_cadenderrua.php?funcao_js=parent.js_preenchepesquisa|db74_sequencial','Pesquisa',true,'0','1');
 }
 function js_preenchepesquisa(chave){
   db_iframe_cadenderrua.hide();

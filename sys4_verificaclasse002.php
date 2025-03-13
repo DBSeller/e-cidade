@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-	require("libs/db_stdlib.php");
-	require("libs/db_conecta.php");
-	include("libs/db_sessoes.php");
-	include("libs/db_usuariosonline.php");
+	require(modification("libs/db_stdlib.php"));
+	require(modification("libs/db_conecta.php"));
+	include(modification("libs/db_sessoes.php"));
+	include(modification("libs/db_usuariosonline.php"));
 	
 	$sqltab ="select * from pg_tables where tablename = 'temp_classeatualiza'";
-	$resulttab = pg_query($sqltab);
+	$resulttab = db_query($sqltab);
 	$linhatab = pg_num_rows($resulttab);
 	if($linhatab>0){
 		$sql = "select * from temp_classeatualiza";
-		$result = pg_query($sql);
+		$result = db_query($sql);
 		$linha = pg_num_rows($result);
     if(pg_num_rows($result)>0){
 		  db_fieldsmemory($result,0);
@@ -67,7 +67,7 @@ table.tab td {
 </head>
 <script type="text/javascript">
 function js_codigo(seq){
-	js_OpenJanelaIframe('top.corpo','db_iframe_codigo','func_codigo.php?seq='+seq,'Código',true);
+	js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_codigo','func_codigo.php?seq='+seq,'Código',true);
 }
 
 function js_marca(obj){ 

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_regenciahorario_classe.php");
-include("dbforms/db_funcoes.php");
+include(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_regenciahorario_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clregenciahorario = new cl_regenciahorario;
 $db_opcao = 1;
@@ -91,7 +91,7 @@ $codigo_escola = db_getsession("DB_coddepto");
   $result_ano .= " inner join turmaac  on  turmaac.ed268_i_codigo = turmaachorario.ed270_i_turmaac";
   $result_ano .= " inner join calendario  on  calendario.ed52_i_codigo = turmaac.ed268_i_calendario";
   $result_ano .= " where ed270_i_rechumano= $cod_rec order by ed52_i_ano desc";
-  $result1 = pg_query($result_ano) ;
+  $result1 = db_query($result_ano) ;
   $num_sub = pg_num_rows($result1);
   if ($num_sub>=1){
    echo "new Array(\"\", ''),\n";
@@ -259,7 +259,7 @@ function fillSelectFromArray2(selectCtrl, itemArray, goodPrompt, badPrompt, defa
        $resultano .= " inner join calendario  on  calendario.ed52_i_codigo = turmaac.ed268_i_calendario";
        $resultano .= " inner join escola  on  escola.ed18_i_codigo = turmaac.ed268_i_escola";
        $resultano .= " where ed270_i_rechumano= $rechumano and ed52_i_ano=$anohorario order by ed18_c_nome";
-       $result2 = pg_query($resultano) ;
+       $result2 = db_query($resultano) ;
        $linhas2 = pg_num_rows($result2);
        if($linhas2>0){
         ?><option value="">TODAS</option><?

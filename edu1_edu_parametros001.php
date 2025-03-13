@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libdicionario.php");
-include("classes/db_edu_parametros_classe.php");
-include("classes/db_db_depart_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libdicionario.php"));
+include(modification("classes/db_edu_parametros_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $cledu_parametros = new cl_edu_parametros;
 $cldb_depart = new cl_db_depart;
@@ -90,7 +90,7 @@ if ( isset($alterar) ) {
   <?MsgAviso(db_getsession("DB_coddepto"),"escola");?>
   <br>
   <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-    <?include("forms/db_frmedu_parametros.php");?>
+    <?include(modification("forms/db_frmedu_parametros.php"));?>
   </td>
  </tr>
 </table>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -43,6 +43,7 @@ $clrotulo->label("t52_depart");
 $clrotulo->label("t52_bem");
 $clrotulo->label("t52_descr");
 $clrotulo->label("t52_dtaqu");
+$clrotulo->label("t52_dtinclusao");
 $clrotulo->label("t52_numcgm");
 $clrotulo->label("t64_descr");
 $clrotulo->label("t64_class");
@@ -64,6 +65,11 @@ $clrotulo->label("z01_nome");
 $clrotulo->label("descrdepto");
 $clrotulo->label("e60_numemp");
 $clrotulo->label("t44_vidautil");
+
+$oDataAtual   = new DBDate(date("d/m/Y", db_getsession("DB_datausu")));
+$oInstituicao = new Instituicao(db_getsession("DB_instit"));
+
+$lPossuiIntegracaoPatrimonial = ParametroIntegracaoPatrimonial::possuiIntegracaoPatrimonio($oDataAtual, $oInstituicao);
 ?>
 
 <fieldset style="text-align: left; width: 800px;">
@@ -99,54 +105,81 @@ $clrotulo->label("t44_vidautil");
 	      <legend class="bold">Informações do Bem</legend>
 	      <table>
 	        <tr>
-	          <td title="<?=$Tt52_bem?>">
-	            <?=$Lt52_bem?>
-	          </td>
-	          <td>
-	            <?
-	              db_input('t52_bem',10,$It52_bem,true,"text",3,"");
-	            ?>
-	          </td>
-	          <td  id='placa' title="<?=$Tt41_placa?>">
-	            <?=$Lt41_placa?>
-	          </td>
-	          <td>
-	            <?
-	              db_input('sPlaca', 10, "text", true, "text", 1, "onblue='js_ValidaMaiusculo(this,'t',event);'",
-                         "", "", "text-transform: uppercase;" );
-	              db_input('t41_placa', 10, "", true, "text", 1, "onkeypress=\"return js_mask(event, '0-9')\"");
-	            ?>
-	          </td>
-	          <td colspan="2"></td>
-	        </tr>
-	        <tr >
-	          <td title="<?=$Tt52_dtaqu?>"><?=$Lt52_dtaqu?></td>
-	          <td colspan="6">
-	            <?
-	              db_inputdata('t52_dtaqu',@$t52_dtaqu_dia,@$t52_dtaqu_mes,@$t52_dtaqu_ano,true,'text',$db_opcao,"");
-	            ?>
-	          </td>
-	        </tr>
+            <td>
+              <div class="ctnFoto">
+                <fieldset>
+                  <legend>Foto</legend>
+                  <input id="fotoBem" name="fotoBem" />
+                </fieldset>
 
-	        <tr>
-	          <td title="<?=$Tt52_descr?>"><?=$Lt52_descr?></td>
-	          <td colspan="6">
-	            <?
-	              db_input('t52_descr',81,$It52_descr,true,'text',$db_opcao);
-	            ?>
-	          </td>
-	        </tr>
+                <input id="removerFoto" name="removerFoto" type="button" value="Remover Foto" />
+              </div>
+            </td>
+            <td>
+              <table>
+                <tr>
+                  <td title="<?=$Tt52_bem?>">
+                    <?=$Lt52_bem?>
+                  </td>
+                  <td>
+                    <?
+                      db_input('t52_bem',10,$It52_bem,true,"text",3,"");
+                    ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td  id='placa' title="<?="$Tt41_placa"?>">
+                    <?=$Lt41_placa?>
+                  </td>
+                  <td>
+                    <?
+                      db_input('sPlaca', 10, "text", true, "text", 1, "onblue='js_ValidaMaiusculo(this,'t',event);'",
+                              "", "", "text-transform: uppercase;" );
+                      db_input('t41_placa', 10, "", true, "text", 1, "onkeypress=\"return js_mask(event, '0-9')\"", "", "", "", 10);
+                    ?>
+                  </td>
+                  <td colspan="2"></td>
+                </tr>
+                <tr >
+                  <td title="<?=$Tt52_dtaqu?>"><?=$Lt52_dtaqu?></td>
+                  <td colspan="6">
+                    <?
+                      db_inputdata('t52_dtaqu',@$t52_dtaqu_dia,@$t52_dtaqu_mes,@$t52_dtaqu_ano,true,'text',$db_opcao,"");
+                    ?>
+                  </td>
+                </tr>
+
+                <tr >
+                  <td title="<?=$Tt52_dtinclusao?>"><?=$Lt52_dtinclusao?></td>
+                  <td colspan="6">
+                    <?
+                      $data = date('d/m/Y', db_getsession('DB_datausu'));
+                      echo "<input type='text' id='t52_dtinclusao' name='t52_dtinclusao' value='{$data}' size='10' style='background-color: #DEB887' readonly />";
+                    ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td title="<?=$Tt52_descr?>"><?=$Lt52_descr?></td>
+                  <td colspan="6">
+                    <?
+                      db_input('t52_descr',81,$It52_descr,true,'text',$db_opcao);
+                    ?>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 	        <tr>
 	          <td nowrap="nowrap" title="<?=@$Tt64_class?>">
 	            <?
-	              db_ancora(@$Lt64_class,"js_pesquisaClasse(true);",$db_opcao);
+	              db_ancora(@$Lt64_class,"js_pesquisaClasse(true);",(($db_opcao == 2 && $lPossuiIntegracaoPatrimonial) ? 3 : $db_opcao));
 	            ?>
 	          </td>
 	          <td colspan="6">
 	            <?
 	              db_input('t64_codcla',10,"",true,'hidden',$db_opcao);
-	              db_input('t64_class',10,$It64_class,true,'text',$db_opcao,"onchange='js_pesquisaClasse(false);'");
-	              db_input('t64_descr',67,$It64_descr,true,'text',3,'');
+	              db_input('t64_class',10,$It64_class,true,'text',(($db_opcao == 2 && $lPossuiIntegracaoPatrimonial) ? 3 : $db_opcao),"onchange='js_pesquisaClasse(false);'");
+	              db_input('t64_descr',85,$It64_descr,true,'text',3,'');
 	             ?>
 	          </td>
 	        </tr>
@@ -159,7 +192,7 @@ $clrotulo->label("t44_vidautil");
 	          <td colspan="6">
 	            <?
 	              db_input('t52_numcgm', 10, $It52_numcgm, true, 'text', $db_opcao, "onchange='js_pesquisaFornecedor(false);'");
-	              db_input('z01_nome', 67, $Iz01_nome, true, 'text', 3, '');
+	              db_input('z01_nome', 85, $Iz01_nome, true, 'text', 3, '');
 	             ?>
 	          </td>
 	        </tr>
@@ -173,7 +206,7 @@ $clrotulo->label("t44_vidautil");
 	            <?
 	              db_input('t45_sequencial', 10, $It45_sequencial, true, 'text', $db_opcao,
 	                       "onchange='js_pesquisaTipoAquisicao(false);'");
-	              db_input('t45_descricao', 67, $It45_descricao, true, 'text', 3, '');
+	              db_input('t45_descricao', 85, $It45_descricao, true, 'text', 3, '');
 	             ?>
 	          </td>
 	        </tr>
@@ -181,7 +214,7 @@ $clrotulo->label("t44_vidautil");
 	          <td><b>Orgão:</b></td>
 	          <td colspan="5">
 	            <?
-	              db_input('o40_descr', 81, "", true, 'text', 3);
+	              db_input('o40_descr', 85, "", true, 'text', 3);
 	            ?>
 	          </td>
 	        </tr>
@@ -189,7 +222,7 @@ $clrotulo->label("t44_vidautil");
 	          <td><b>Unidade:</b></td>
 	          <td colspan="5">
 	            <?
-	              db_input('o41_descr', 81, "", true, 'text', 3);
+	              db_input('o41_descr', 85, "", true, 'text', 3);
 	            ?>
 	          </td>
 	        </tr>
@@ -202,7 +235,7 @@ $clrotulo->label("t44_vidautil");
 	          <td colspan="3">
 	            <?
 	              db_input('t52_depart', 10, $It52_depart, true, 'text', $db_opcao, "onchange='js_pesquisaDepartamento(false);'");
-	              db_input('descrdepto', 40, $Idescrdepto, true, 'text', 3, '');
+	              db_input('descrdepto', 85, $Idescrdepto, true, 'text', 3, '');
 	             ?>
 	          </td>
 	          <td id="l-divisao" style="display: none;" title="<?=$Tt52_dtaqu?>">
@@ -224,7 +257,7 @@ $clrotulo->label("t44_vidautil");
 	          <td nowrap="nowrap" colspan="6">
 	            <?
 	              db_input('t04_sequencial', 10, $It04_sequencial, true, 'text', $db_opcao, "onchange='js_pesquisaConvenio(false);'");
-	              db_input('z01_nome_convenio', 67, '', true, 'text', 3, '');
+	              db_input('z01_nome_convenio', 85, '', true, 'text', 3, '');
 	             ?>
 	          </td>
 	        </tr>
@@ -237,7 +270,7 @@ $clrotulo->label("t44_vidautil");
 	          <td nowrap="nowrap" colspan="6">
 	            <?
 	              db_input('t56_situac',10,$It56_situac,true,'text',1," onchange='js_pesquisaSituacaoBem(false);'");
-	              db_input('t70_descr',67,$It70_descr,true,'text',3,'');
+	              db_input('t70_descr',85,$It70_descr,true,'text',3,'');
 	              db_input("tipo_inclui",40,"0",true,"hidden",3,"");
 	             ?>
 	          </td>
@@ -252,22 +285,21 @@ $clrotulo->label("t44_vidautil");
 	          <td>
 	            <?
 	              db_input('vlAquisicao',10,$It64_descr,true,'text',$db_opcao,
-	                       'onchange = "js_calculaValorTotal();"
-                          onkeypress="return js_mask(event, \'0-9|.\')"');
+	                       'onchange = "js_calculaValorTotal();"');
 	            ?>
 	          </td>
 	          <td style="text-align: right;">
-	            <b>Valor de Residual:</b>
+	            <b><?php echo $valor = $db_opcao==2 ? $valor = 'Valor Residual(%):' : 'Valor Residual (%):' ?></b>
 	          </td>
 	          <td style="text-align: left ;">
 	            <?
+                  db_input('perc_residual', 5, $It64_descr, true,'text',1, '', '', '', "text-align: right");
 	              db_input('vlResidual', 10,
 	                       $It64_descr,
 	                       true,
 	                       'text',
-	                       $db_opcao,
-	                       'onchange = "js_calculaValorTotal();"
-                          onkeypress="return js_mask(event, \'0-9|.\')"');
+	                       3,
+	                       'onchange = "js_calculaValorTotal();"');
 	            ?>
 	          </td>
 	          <td style="text-align: right;">
@@ -291,7 +323,8 @@ $clrotulo->label("t44_vidautil");
 	        <tr>
 	          <td id="tdLookupTipoDepreciacao" nowrap="nowrap" title=" alterar  <?=@$Tt64_class?>">
 	            <b><?
-	              db_ancora("Tipo Depreciação","js_pesquisaTipoDepreciacao(true);",$db_opcao);
+	              db_ancora("Tipo Depreciação","js_pesquisaTipoDepreciacao(true);", $db_opcao, "",
+                      "linkLookupTipoDepreciacao");
 	            ?></b>
 	          </td>
 	          <td nowrap="nowrap" colspan="3">
@@ -432,12 +465,18 @@ $clrotulo->label("t44_vidautil");
   <input type="button" id="db_opcao" name="<?= $sNmDbOpcao ?>" value="<?= $sVlDbOpcao ?>" onclick="salvarDados();" />
   <input type="button" id="pesquisar" name="pesquisar" value="Pesquisar" onclick="js_pesquisa();" />
 </div>
+
+<script type="text/javascript" src="scripts/widgets/Input/DBInput.widget.js"></script>
+<script type="text/javascript" src="scripts/widgets/Input/DBInputValor.widget.js"></script>
 <script type="text/javascript">
 
 $("form1").reset();
 var iParametro;
 var dbOpcao = <?= $db_opcao ?>;
 var iParametroPlaca = null;
+var bemComCalculo = false;
+var lPossuiIntegracaoPatrimonial = false;
+var fotoBem = new DBInputFoto($('fotoBem'));
 
 /**
  * Função chamada ao iniciar
@@ -452,9 +491,9 @@ function js_carregaDadosForm(iDbOpcao) {
   if (iDbOpcao == 2) {
 
     $("quant_lote").setAttribute("readonly", "readonly");
-    $("quant_lote").setAttribute("class", "leiutura");
+    $("quant_lote").setAttribute("disabled", "disabled");
     $("sPlaca").setAttribute("readonly", "readonly");
-    $("sPlaca").setAttribute("class", "leiutura");
+    $("sPlaca").setAttribute("disabled", "disabled");
     js_pesquisa();
     return false;
   }
@@ -473,9 +512,9 @@ function js_carregaDadosForm(iDbOpcao) {
 function js_retornoBusca(oJson) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
-  if (oRetorno.status == 2 && oRetorno.dados.parametro == 1) {
+  if (oRetorno.status == 2) {
 
     alert(oRetorno.message.urlDecode());
   } else {
@@ -545,7 +584,7 @@ function js_buscaPlacaStringDigitda(){
 
 function js_retornoPlacaStringDigitda(oJson) {
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (oRetorno.status == 1) {
     $("t41_placa").value = oRetorno.dados.t41_placa;
@@ -556,7 +595,7 @@ function js_retornoPlacaStringDigitda(oJson) {
  *
  */
 function js_pesquisaPlacaString(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_bensplaca',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bensplaca',
                       'func_bensplacatext.php?funcao_js=parent.js_mostratext|t41_placa','Pesquisa',true);
 }
 
@@ -566,7 +605,7 @@ function js_mostratext(placa) {
   js_buscplaca(placa);
 }
 function js_buscplaca(classif) {
-  js_OpenJanelaIframe('top.corpo','db_iframe_bp','pat1_retseqplaca.php?classif='+classif,'',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_bp','pat1_retseqplaca.php?classif='+classif,'',false);
 }
 
 function js_retplaca(placa,seq) {
@@ -582,8 +621,9 @@ function js_retplaca(placa,seq) {
 function js_pesquisaClasse(mostra) {
 
   if (mostra) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_clabens',
-                        'func_clabens.php?funcao_js=parent.js_mostraclabens1|t64_class|t64_descr|t64_codcla&analitica=true',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_clabens',
+                        'func_clabens.php?funcao_js=parent.js_mostraclabens1|t64_class|t64_descr|' +
+                        't64_codcla|t64_benstipodepreciacao|t46_descricao|t64_vidautil|t64_valorresidual&analitica=true',
                         'Pesquisa',true);
   } else {
 
@@ -595,7 +635,7 @@ function js_pesquisaClasse(mostra) {
        for (i = 0; i < $("t64_class").value.length; i++){
          testa = testa.replace('.','');
        }
-       js_OpenJanelaIframe('top.corpo','db_iframe_clabens',
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_clabens',
                            'func_clabens.php?pesquisa_chave='+testa+'&funcao_js=parent.js_mostraclabens&analitica=true',
                            'Pesquisa',false);
      } else {
@@ -608,29 +648,41 @@ function js_pesquisaClasse(mostra) {
   }
 }
 
-function js_mostraclabens(chave, erro, chave2) {
+function js_mostraclabens(chave, erro, chave2, iCodigoDepreciacao, sDescricaoDepreciacao, iVidaUtil, iValorResidual) {
+    $("t64_descr").value = chave;
+    $("t64_codcla").value = chave2;
+    if(erro) {
 
-  $("t64_descr").value  = chave;
-  $("t64_codcla").value = chave2;
-  if(erro) {
+        $("t64_class").value = "";
+        $("t64_class").focus();
+        $("t64_codcla").value = "";
+    } else {
 
-    $("t64_class").value = "";
-    $("t64_class").focus();
-    $("t64_codcla").value = "";
-  } else {
+        if(!bemComCalculo) {
 
-    if (iParametroPlaca == 2 && dbOpcao == 1) {
-      js_buscaPlaca($F("t64_class"));
+            $("vidaUtil").value = iVidaUtil;
+            $("perc_residual").value = iValorResidual;
+            $("perc_residual").dispatchEvent(new Event('change'));
+            $("descr").value = sDescricaoDepreciacao;
+            $("cod_depreciacao").value = iCodigoDepreciacao;
+        }
+        if(iParametroPlaca == 2 && dbOpcao == 1) {
+            js_buscaPlaca($F("t64_class"));
     }
   }
 }
 
-function js_mostraclabens1(chave1, chave2, chave3) {
-
+function js_mostraclabens1(chave1, chave2, chave3, iCodigoDepreciacao, sDescricaoDepreciacao, iVidaUtil, iValorResidual) {
   $("t64_class").value  = chave1;
   $("t64_descr").value  = chave2;
   $("t64_codcla").value = chave3;
-
+    if(!bemComCalculo) {
+        $("vidaUtil").value = iVidaUtil;
+        $("perc_residual").value = iValorResidual;
+        $("perc_residual").dispatchEvent(new Event('change'));
+        $("descr").value = sDescricaoDepreciacao;
+        $("cod_depreciacao").value = iCodigoDepreciacao;
+    }
   db_iframe_clabens.hide();
   if (iParametroPlaca == 2 && dbOpcao == 1) {
     js_buscaPlaca($F("t64_class"));
@@ -660,7 +712,7 @@ function js_buscaPlaca(iClasse) {
 function js_retornoPlaca(oJson) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (oRetorno.status == 2) {
     alert(oRetorno.message);
@@ -677,7 +729,7 @@ function js_retornoPlaca(oJson) {
         var sPlacaClasse     = new String($F("t64_class"));
         $("t41_placa").setAttribute("readonly", "readonly");
         $("t41_placa").value = sPlacaClasse+""+oRetorno.dados.t41_placa;
-        $("sPlaca").value    = sPlacaClasse
+        $("sPlaca").value    = sPlacaClasse;
         break;
     }
   }
@@ -689,12 +741,12 @@ function js_retornoPlaca(oJson) {
 function js_pesquisaFornecedor(mostra) {
 
    if (mostra == true) {
-     js_OpenJanelaIframe('top.corpo','db_iframe_forne',
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_forne',
                          'func_nome.php?funcao_js=parent.js_mostraforne1|z01_numcgm|z01_nome','Pesquisa',true);
    } else {
 
       if (document.form1.t52_numcgm.value != '') {
-         js_OpenJanelaIframe('top.corpo','db_iframe_forne',
+         js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_forne',
                              'func_nome.php?pesquisa_chave='+document.form1.t52_numcgm.value+'&funcao_js=parent.js_mostraforne',
                              'Pesquisa',false);
       } else {
@@ -723,12 +775,12 @@ function js_mostraforne1(chave1, chave2) {
 function js_pesquisaTipoAquisicao(mostra) {
 
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_aquisicao',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aquisicao',
                         'func_benstipoaquisicao.php?funcao_js=parent.js_mostraAquisicao1|t45_sequencial|t45_descricao','Pesquisa',true);
   } else {
 
      if ($F("t45_sequencial") != '') {
-        js_OpenJanelaIframe('top.corpo','db_iframe_aquisicao',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aquisicao',
                             'func_benstipoaquisicao.php?pesquisa_chave='+$F("t45_sequencial")+'&funcao_js=parent.js_mostraAquisicao',
                             'Pesquisa',false);
      } else {
@@ -757,13 +809,13 @@ function js_mostraAquisicao1(chave1, chave2) {
 function js_pesquisaDepartamento(mostra) {
 
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_db_depart',
                         'func_db_depart.php?funcao_js=parent.js_mostradb_depart1|coddepto|descrdepto','Pesquisa',true);
   } else {
 
      if (document.form1.t52_depart.value != '') {
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_db_depart',
                             'func_db_depart.php?pesquisa_chave='+$F("t52_depart")+'&funcao_js=parent.js_mostradb_depart',
                             'Pesquisa',false);
@@ -816,7 +868,7 @@ function js_carregaOrgaoUnidade(iDepartamento) {
 function js_retornoOrgaoUnidade(oJson) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
 
   if (oRetorno.status == 2) {
 
@@ -836,12 +888,13 @@ function js_retornoOrgaoUnidade(oJson) {
 /** ***********************************************************************************************************
  * Busca Divisão, se o Departamento tiver divisão
  */
-function js_carregaDadosDivisao(iDepartamento) {
+function js_carregaDadosDivisao(iDepartamento, iDivisao = 0) {
 
   var url              = 'pat1_bensnovo.RPC.php';
   var oObject          = new Object();
   oObject.exec         = "buscaDivisao";
   oObject.departamento = iDepartamento;
+  oObject.divisaoselecionada = iDivisao;
 
   js_divCarregando(_M('patrimonial.patrimonio.db_frm_bensglobalnovo.buscando_divisao'),'msgBox');
   var objAjax   = new Ajax.Request (url,{
@@ -856,11 +909,13 @@ function js_carregaDadosDivisao(iDepartamento) {
 function js_retornoBuscaDivisao(oJson) {
 
   js_removeObj("msgBox");
-  var oRetorno = eval("("+oJson.responseText+")");
+  var oRetorno = JSON.parse(oJson.responseText);
   if (oRetorno.status == 2) {
 
     $("l-divisao").style.display = "none";
     $("c-divisao").style.display = "none";
+
+    alert(oRetorno.message.urlDecode());
   } else {
 
     $("divisao").options.length = 1;
@@ -868,6 +923,11 @@ function js_retornoBuscaDivisao(oJson) {
 
       var oOption = new Element('option', {'value': ''+oRetorno.departamento[i].t30_codigo+''}).
                                                       update(oRetorno.departamento[i].t30_descr.urlDecode());
+
+      if(oOption.value == oRetorno.divisaoselecionada) {
+
+        oOption.setAttribute("selected", "selected");
+      }
       $("divisao").appendChild(oOption);
       $("divisao").style.width = "100px";
     }
@@ -882,14 +942,14 @@ function js_retornoBuscaDivisao(oJson) {
  function js_pesquisaConvenio(mostra) {
 
    if(mostra == true) {
-     js_OpenJanelaIframe('top.corpo',
+     js_OpenJanelaIframe('CurrentWindow.corpo',
                          'db_iframe_benscadcedente',
                          'func_benscadcedente.php?funcao_js=parent.js_mostraconvenio1|t04_sequencial|z01_nome',
                          'Pesquisa',true);
    } else {
 
       if ($F("t04_sequencial") != '') {
-         js_OpenJanelaIframe('top.corpo','db_iframe_benscadcedente',
+         js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_benscadcedente',
                              'func_benscadcedente.php?pesquisa_chave='+$F("t04_sequencial")+'&funcao_js=parent.js_mostraconvenio',
                              'Pesquisa',false);
       } else {
@@ -919,12 +979,12 @@ function js_mostraconvenio1(chave1, chave2) {
 function js_pesquisaSituacaoBem(mostra) {
 
   if(mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_situabens',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_situabens',
                         'func_situabens.php?funcao_js=parent.js_mostrasituabens1|t70_situac|t70_descr','Pesquisa',true);
   } else {
 
     if ($F("t56_situac") != '') {
-       js_OpenJanelaIframe('top.corpo','db_iframe_situabens',
+       js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_situabens',
                            'func_situabens.php?pesquisa_chave='+$F("t56_situac")+'&funcao_js=parent.js_mostrasituabens',
                            'Pesquisa',false);
     }else{
@@ -954,12 +1014,12 @@ function js_mostrasituabens1(chave1,chave2) {
 function js_pesquisaTipoDepreciacao(mostra) {
 
   if(mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_deprecBem',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_deprecBem',
                          'func_benstipodepreciacao.php?funcao_js=parent.js_mostraDepreciacao1|t46_sequencial|t46_descricao&limita=true','Pesquisa',true);
   } else {
 
     if ($F("cod_depreciacao") != '') {
-      js_OpenJanelaIframe('top.corpo','db_iframe_deprecBem',
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_deprecBem',
                           'func_benstipodepreciacao.php?pesquisa_chave='+$F("cod_depreciacao")+'&funcao_js=parent.js_mostraDepreciacao&limita=true',
                           'Pesquisa',false);
     }else{
@@ -987,13 +1047,17 @@ function js_mostraDepreciacao1(chave1, chave2) {
  */
 function salvarDados() {
 
-   var url     = 'pat1_benslotenovo.RPC.php';
-   var oObject = new Object();
+  $('db_opcao').disabled = true;
+  const QUOTAS_CONSTATES = 2;
+
+  var url     = 'pat1_benslotenovo.RPC.php';
+  var oObject = new Object();
 
    oObject.exec              = "salvar";
+   oObject.pathImage         = fotoBem.getValue();
    oObject.cod_lote          = $F("cod_lote");
    oObject.quant_lote        = $F("quant_lote");
-   oObject.descr_lote        = $F("descr_lote");
+   oObject.descr_lote        = encodeURIComponent(tagString($F("descr_lote")));
    oObject.t52_bem           = $F("t52_bem");
    oObject.sPlaca            = $F("sPlaca");
    oObject.t41_placa         = $F("t41_placa");
@@ -1006,53 +1070,73 @@ function salvarDados() {
    oObject.divisao           = $F("divisao");
    oObject.t04_sequencial    = $F("t04_sequencial");
    oObject.t56_situac        = $F("t56_situac");
-   oObject.vlAquisicao       = $F("vlAquisicao");
-   oObject.vlResidual        = $F("vlResidual");
+   oObject.vlAquisicao       = $F("vlAquisicao").getNumber();
+   oObject.vlResidual        = $F("vlResidual").getNumber();
    oObject.vlTotal           = $F("vlAquisicao");
    oObject.cod_depreciacao   = $F("cod_depreciacao");
    oObject.vidaUtil          = $F("vidaUtil");
    oObject.t67_sequencial    = $F("t67_sequencial");
    oObject.t66_sequencial    = $F("t66_sequencial");
    oObject.t65_sequencial    = $F("t65_sequencial");
-   oObject.t54_itbql         = $F("t54_itbql");
+   oObject.t54_itbql         = encodeURIComponent(tagString($F("t54_itbql")));
    oObject.observacoesimovel = encodeURIComponent(tagString($F("observacoesimovel")));
-   oObject.cod_notafiscal    = $F("cod_notafiscal");
+   oObject.cod_notafiscal    = encodeURIComponent(tagString($F("cod_notafiscal")));
    oObject.t53_empen         = $F("t53_empen");
-   oObject.cod_ordemdecompra = $F("cod_ordemdecompra");
+   oObject.cod_ordemdecompra = encodeURIComponent(tagString($F("cod_ordemdecompra")));
    oObject.garantia          = $F("garantia");
    oObject.obser             = encodeURIComponent(tagString($F("obser")));
    oObject.empenhosistema    = $F("emp_sistema");
 
-   if (oObject.t41_placa.trim() == "") {
+    let inclusao = $F("t52_dtinclusao").split('/');
+    let dataInclusao = inclusao[2] + '-' + inclusao[1] + '-' + inclusao[0];
 
-     alert(_M('patrimonial.patrimonio.db_frm_bensglobalnovo.informe_placa_bem'));
+    var aquisicao = $F("t52_dtaqu").split('/');
+    var dataAquisicao = aquisicao[2] + '-' + aquisicao[1] + '-' + aquisicao[0];
+
+    if (new Date(dataAquisicao) > new Date(dataInclusao)) {
+        alert("Data de aquisição maior que a data de inclusão");
+        return;
+    }
+
+   if (oObject.t41_placa.trim() == "") {
+       $('db_opcao').disabled = false;
+       alert(_M('patrimonial.patrimonio.db_frm_bensglobalnovo.informe_placa_bem'));
      return false;
+   }
+
+   if (oObject.vlResidual == 0 && oObject.cod_depreciacao == QUOTAS_CONSTATES) {
+       $('db_opcao').disabled = false;
+      alert("Valor residual (%) é obrigatório para Tipo de depreciação QUOTAS CONSTANTES");
+      return false;
    }
 
    if (typeof lViewNotasPendentes != "undefined" && !lViewNotasPendentes) {
      oObject.iCodigoNotaItem = oUrl.iCodigoEmpNotaItem;
    }
+    js_divCarregando("Incluindo bens, aguarde...", "msgBox");
+   var objAjax = new Ajax.Request (url, {method:'post',
+                                         parameters:'json='+Object.toJSON(oObject),
+                                         onComplete: js_retornoBuscaSalvar
+                                        }
+                                  );
 
-   js_divCarregando(_M('patrimonial.patrimonio.db_frm_bensglobalnovo.buscando'),'msgBox');
-   var objAjax = new Ajax.Request (url,{method:'post',
-                                        parameters:'json='+Object.toJSON(oObject),
-                                        onComplete:js_retornoBuscaSalvar
-                                       });
  }
+
  /**
   * Retorno do js_carregaDadosForm
   */
- function js_retornoBuscaSalvar(oJson) {
-
+ function js_retornoBuscaSalvar(oAjax) {
    js_removeObj("msgBox");
-   var oRetorno = eval("("+oJson.responseText+")");
-
+   $('db_opcao').disabled = false;
+   var oRetorno = JSON.parse(oAjax.responseText);
    if (oRetorno.status == 2) {
+
      alert(oRetorno.mesage.urlDecode());
    } else {
 
      alert(_M('patrimonial.patrimonio.db_frm_bensglobalnovo.bens_cadastrados'));
      $('form1').reset();
+     js_carregaDadosForm(1);
    }
  }
 
@@ -1068,19 +1152,85 @@ function js_calculaValorTotal() {
     $("vlAquisicao").focus();
     return false;
   } else {
-    $("vlTotalDepreciavel").value = (vlAquisicao - vlResidual);
+    $("vlTotalDepreciavel").value = parseFloat(vlAquisicao - vlResidual).toFixed(2);
     $("vlTotal").value            = (vlAquisicao);
   }
 }
 
+var oCampos = {
+    valor_aquisicao : $("vlAquisicao"),
+    perc_residual : $("perc_residual"),
+    valor_residual : $("vlResidual"),
+    valor_depreciavel : $("vlTotalDepreciavel"),
+    valor_atual : $("vlTotal"),
+    vida_util : $("vidaUtil")
+}
+
+
+oCampos.valor_aquisicao.onchange = function() {
+    calculaDadosFinanceiros();
+}
+
+new DBInputValor(oCampos.valor_aquisicao);
+
+oCampos.perc_residual.onfocus = function() {
+    this.value = this.value.getNumber();
+}
+
+oCampos.valor_aquisicao.addEventListener('change', () => {
+    let valor = oCampos.valor_aquisicao.value.getNumber();
+    oCampos.valor_aquisicao.value = js_formatar(valor, 'f', 2);
+})
+
+oCampos.perc_residual.onblur = function() {
+
+    if (isNaN(this.value.getNumber())) {
+        this.value = 0;
+    }
+
+    this.value = js_formatar(this.value, 'f', 2);
+}
+
+oCampos.perc_residual.oninput = function() {
+    this.value = this.value.replace(/[^0-9\.,]/g, '');
+}
+
+oCampos.perc_residual.oninput = function() {
+    this.value = this.value.replace(/[^0-9\.,]/g, '');
+}
+
+oCampos.perc_residual.onchange = function() {
+    calculaDadosFinanceiros();
+}
+
+function calculaDadosFinanceiros() {
+
+    oCampos.valor_residual.value = '';
+    oCampos.valor_depreciavel.value = '';
+    oCampos.valor_atual.value = '';
+
+    var nValor = oCampos.valor_aquisicao.value.getNumber(),
+        nPerc = oCampos.perc_residual.value.getNumber();
+
+    if (isNaN(nValor) || isNaN(nPerc)) {
+        return false;
+    }
+
+    var nValorResidual = (nPerc/100)*nValor;
+
+    oCampos.valor_depreciavel.value = js_formatar(nValor-nValorResidual, 'f', 2);
+    oCampos.valor_atual.value = js_formatar(nValor, 'f', 2);
+    oCampos.valor_residual.value = js_formatar(nValorResidual, 'f', 2);
+}
+
 function js_pesquisaEmpenho(mostra) {
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_empempenho',
-                        'func_empempenho.php?funcao_js=parent.js_mostraEmpenho|e60_numemp|z01_nome',
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho',
+                        'func_empempenho.php?funcao_js=parent.js_mostraEmpenho|e60_numemp|z01_nome&anoAtual=false',
                         'Pesquisa',true);
   }else{
      if(document.form1.t53_empen.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_empempenho',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_empempenho',
                             'func_empempenho.php?pesquisa_chave='+document.form1.t53_empen.value+'&funcao_js=parent.js_mostraEmpenho',
                             'Pesquisa',false);
      } else {
@@ -1093,17 +1243,24 @@ function js_pesquisaEmpenho(mostra) {
 function js_mostraEmpenho() {
 
   if (arguments[1] === false) {
-
     $("z01_nome_empenho").value = arguments[0];
-  } else {
+  }
+
+  if (arguments[1] === true) {
+    $("t53_empen").value        = '';
+    $("z01_nome_empenho").value = arguments[0];
+  }
+
+  if(typeof arguments[1] !== 'boolean') {
     $("t53_empen").value        = arguments[0];
     $("z01_nome_empenho").value = arguments[1];
   }
+
   db_iframe_empempenho.hide();
 }
 
 function js_pesquisaCodigoLote(mostra) {
-  js_OpenJanelaIframe('top.corpo','db_iframe_lote',
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lote',
                       'func_lote.php?funcao_js=parent.js_mostraCodigoLote|j34_idbql',
                       'Pesquisa',true);
 }
@@ -1156,10 +1313,10 @@ function js_mudaProc(sValor) {
 }
 
 // Configura Form
-var oOutrosDados                     = new DBToogle($('outros-dados'), false);
-var oObservacoes                     = new DBToogle($('observacoes'), false);
-var oDadosImovel                     = new DBToogle($('dadosdoimovel'), false);
-var oDadosMaterial                   = new DBToogle($('dadosdomaterial'), false);
+var oOutrosDados                     = new DBToogle('outros-dados', false);
+var oObservacoes                     = new DBToogle('observacoes', false);
+var oDadosImovel                     = new DBToogle('dadosdoimovel', false);
+var oDadosMaterial                   = new DBToogle('dadosdomaterial', false);
 $("t67_sequencial").style.width      = "50px";
 $("t66_sequencial").style.width      = "50px";
 $("t65_sequencial").style.width      = "50px";
@@ -1175,7 +1332,7 @@ $("obser").style.width               = "100%";
 var alturaJanela = document.body.clientHeight;
 $('fieldsetInclusaoBensGlobal').style.height = alturaJanela - 170;
 function js_pesquisa() {
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_benslote',
                       'func_benslotealt.php?funcao_js=parent.js_preenchepesquisa|t42_codigo',
                       'Pesquisa',
@@ -1183,11 +1340,11 @@ function js_pesquisa() {
                      );
 }
 function js_preenchepesquisa(chave){
-
+  js_limpaCamposAlteracao()
   db_iframe_benslote.hide();
 
   $("t41_placa").setAttribute("readonly", "readonly");
-  $("t41_placa").setAttribute("class", "leiutura");
+  $("t41_placa").setAttribute("class", "leitura");
 
   var oObject         = new Object();
   oObject.exec        = 'getDadosLote';
@@ -1202,9 +1359,27 @@ function js_preenchepesquisa(chave){
 
 }
 
+function js_limpaCamposAlteracao() {
+
+    $("perc_residual").removeAttribute("hidden");
+    $("cod_depreciacao").removeAttribute("readonly");
+    $("cod_depreciacao").removeAttribute("disabled");
+    $("vidaUtil").removeAttribute("readonly");
+    $("vidaUtil").removeAttribute("disabled");
+
+    $("cod_depreciacao").style.backgroundColor = "#FFFFFF";
+    $("vidaUtil").style.backgroundColor = "#FFFFFF";
+
+}
+
+var sLinkLookupTipoDepreciacao = $('tdLookupTipoDepreciacao').innerHTML;
+
 function js_retornoBuscaDadoLote(oAjax) {
 
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
+
+  lPossuiIntegracaoPatrimonial = oRetorno.lPossuiIntegracaoPatrimonial;
+
   if (oRetorno.status == 1) {
 
     js_bloquearValores(oRetorno.dados.dadosbem.bemComCalculo);
@@ -1255,7 +1430,10 @@ function js_retornoBuscaDadoLote(oAjax) {
     	$('z01_nome_empenho').value  = oRetorno.dados.dadosbem.z01_nome_empenho.urlDecode();
     }
 
-    console.log (oRetorno.dados.dadosbem.emp_sistema);
+    if(oRetorno.dados.dadosbem.imagePath) {
+      fotoBem.setValue(oRetorno.dados.dadosbem.imagePath);
+    }
+
     if (oRetorno.dados.dadosbem.emp_sistema == 's') {
 
       $("cod_notafiscal").disabled    = true;
@@ -1276,10 +1454,20 @@ function js_retornoBuscaDadoLote(oAjax) {
 
     }
 
+      if(oRetorno.dados.dadosbem.valorDepreciado > 0) {
+          js_hasDepreciacaoBloqueiaCampos();
+      }
+
 
     for (var iField = 0; iField < aFields.length; iField++) {
 
       with (aFields[iField]) {
+
+        if (id == 't52_depart') {
+
+          js_carregaDadosDivisao(oRetorno.dados.dadosbem[id], oRetorno.dados.dadosbem['divisao']);
+        }
+
         if (oRetorno.dados[id]) {
 
           if (oRetorno.dados[id].urlDecode) {
@@ -1291,7 +1479,7 @@ function js_retornoBuscaDadoLote(oAjax) {
           if (oRetorno.dados.dadosbem[id].urlDecode) {
             oRetorno.dados.dadosbem[id] = oRetorno.dados.dadosbem[id].urlDecode();
           }
-          value = oRetorno.dados.dadosbem[id].urlDecode();
+          value = oRetorno.dados.dadosbem[id];
         }
 
       }
@@ -1308,27 +1496,46 @@ function js_retornoBuscaDadoLote(oAjax) {
 function js_bloquearValores(lBloquear) {
 
   var sCor = 'white';
+    $('tdLookupTipoDepreciacao').innerHTML = sLinkLookupTipoDepreciacao;
   if (lBloquear) {
     $('tdLookupTipoDepreciacao').innerHTML = "<b>Tipo Depreciação<b>";
     sCor = '#DEB887';
   }
-  $("vlAquisicao").disabled                  = lBloquear;
-  $("vlAquisicao").style.backgroundColor     = sCor;
-  $("vlAquisicao").style.color               = "#000000";
-  $("vlResidual").disabled                   = lBloquear;
-  $("vlResidual").style.backgroundColor      = sCor;
-  $("vlResidual").style.color                = "#000000";
+
+  $("vlAquisicao").classList.remove('readonly');
+  $("vlResidual").classList.remove('readonly');
+  $("perc_residual").classList.remove('hidden');
+
+  /**
+   * Caso seja alteração bloqueia os campos vlr aquisição e vlr residual
+   */
+  if (dbOpcao != 1 && lPossuiIntegracaoPatrimonial) {
+
+    $("vlAquisicao").disabled = true;
+    $("vlResidual").disabled  = true;
+
+    $("vlAquisicao").classList.add('readonly');
+    $("vlResidual").classList.add('readonly');
+
+  } else {
+
+	  $("vlAquisicao").disabled                  = lBloquear;
+	  $("vlAquisicao").style.backgroundColor     = sCor;
+	  $("vlAquisicao").style.color               = "#000000";
+	  $("vlResidual").disabled                   = lBloquear;
+	  $("vlResidual").style.backgroundColor      = "#DEB887";
+	  $("vlResidual").style.color                = "#000000";
+	  $("perc_residual").style.backgroundColor   = sCor;
+	  $("perc_residual").style.color             = "#000000";
+
+
+  }
+
   $("vlTotal").disabled                      = lBloquear;
   $("vlTotal").style.backgroundColor         = '#DEB887';
   $("vlTotal").style.color                   = "#000000";
-  $("cod_depreciacao").disabled              = lBloquear;
-  $("cod_depreciacao").style.backgroundColor = sCor;
-  $("cod_depreciacao").style.color           = "#000000";
   $("descr").disabled                        = lBloquear;
   $("descr").style.color                     = "#000000";
-  $("vidaUtil").disabled                     = lBloquear;
-  $("vidaUtil").style.backgroundColor        = sCor;
-  $("vidaUtil").style.color                  = "#000000";
   $('t52_dtaqu').style.backgroundColor       = sCor;
   $('t52_dtaqu').disabled                    = lBloquear;
   $("t52_dtaqu").style.color                 = "#000000";
@@ -1345,7 +1552,7 @@ function js_carregaDadosNota() {
 
 function js_retornoDadosNota(oAjax) {
 
-  var oRetorno = eval('('+oAjax.responseText+')');
+  var oRetorno = JSON.parse(oAjax.responseText);
 
   $('vlAquisicao').value      = oRetorno.dados.e62_vlrun;
   $('quant_lote').value       = oRetorno.dados.e72_qtd;
@@ -1388,13 +1595,41 @@ function js_retornoDadosNota(oAjax) {
   $('td-fornecedor').innerHTML = "<b>Fornecedor</b>";
 }
 
+function js_hasDepreciacaoBloqueiaCampos() {
+
+    $("t52_dtaqu").setAttribute("readonly", "readonly");
+    $("vlAquisicao").setAttribute("readonly", "readonly");
+    $("vlResidual").setAttribute("readonly", "readonly");
+    $("perc_residual").setAttribute("hidden", "hidden");
+    $("cod_depreciacao").setAttribute("readonly", "readonly");
+    $("vidaUtil").setAttribute("readonly", "readonly");
+
+
+    form1.dtjs_t52_dtaqu.removeAttribute("onclick");
+    form1.dtjs_t52_dtaqu.setAttribute("disabled", "disabled");
+
+    $("t52_dtaqu").style.backgroundColor = "#DEB887";
+    $("vlAquisicao").style.backgroundColor = "#DEB887";
+    $("cod_depreciacao").style.backgroundColor = "#DEB887";
+    $("vidaUtil").style.backgroundColor = "#DEB887";
+    $("vlResidual").style.backgroundColor = "#DEB887";
+
+    if($("linkLookupTipoDepreciacao") != null) {
+        $("linkLookupTipoDepreciacao").removeAttribute("class");
+        $("linkLookupTipoDepreciacao").style.color = "#000";
+        $("linkLookupTipoDepreciacao").style.textDecoration = "none";
+        $("linkLookupTipoDepreciacao").style.cursor = "default";
+        $("linkLookupTipoDepreciacao").setAttribute("onClick", "return false;");
+    }
+}
+
 /**
  * Busca os dados da nota
  */
 function getDadosNota () {
 
   var oGet = js_urlToObject();
-  if (oGet.iCodigoEmpNotaItem != "") {
+  if (oGet.iCodigoEmpNotaItem !== "" && oGet.iCodigoEmpNotaItem != undefined) {
 
     var oObject          = new Object();
     oObject.exec         = 'getDadosNota';
@@ -1409,4 +1644,8 @@ function getDadosNota () {
   }
 }
 getDadosNota();
+
+$('removerFoto').observe('click', function() {
+  fotoBem.setValue('');
+});
 </script>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -61,7 +61,7 @@ db_input('v28_descricao',50,$Iv28_descricao,true,'text',$db_opcao,"")
     </td>
     <td> 
        <?
-       include("classes/db_procedtipogrupo_classe.php");
+       include(modification("classes/db_procedtipogrupo_classe.php"));
        $clprocedtipogrupo = new cl_procedtipogrupo;
        $result = $clprocedtipogrupo->sql_record($clprocedtipogrupo->sql_query("","*","", ""));
        db_selectrecord("v28_grupo",$result,true,$db_opcao);
@@ -77,10 +77,10 @@ db_input('v28_descricao',50,$Iv28_descricao,true,'text',$db_opcao,"")
 <script>
 function js_pesquisav28_grupo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_procedtipogrupo','func_procedtipogrupo.php?funcao_js=parent.js_mostraprocedtipogrupo1|v29_sequencial|v29_descricao','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedtipogrupo','func_procedtipogrupo.php?funcao_js=parent.js_mostraprocedtipogrupo1|v29_sequencial|v29_descricao','Pesquisa',true);
   }else{
      if(document.form1.v28_grupo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_procedtipogrupo','func_procedtipogrupo.php?pesquisa_chave='+document.form1.v28_grupo.value+'&funcao_js=parent.js_mostraprocedtipogrupo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedtipogrupo','func_procedtipogrupo.php?pesquisa_chave='+document.form1.v28_grupo.value+'&funcao_js=parent.js_mostraprocedtipogrupo','Pesquisa',false);
      }else{
        document.form1.v29_descricao.value = ''; 
      }
@@ -99,7 +99,7 @@ function js_mostraprocedtipogrupo1(chave1,chave2){
   db_iframe_procedtipogrupo.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_procedtipo','func_procedtipo.php?funcao_js=parent.js_preenchepesquisa|v28_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedtipo','func_procedtipo.php?funcao_js=parent.js_preenchepesquisa|v28_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_procedtipo.hide();

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oGet = db_utils::postMemory($_GET);
 $iCodigoCredito = $oGet->iCodigoCredito;
@@ -65,34 +65,34 @@ var aHeader       = new Array();
 var aWidth        = new Array();
 
 /**
- * Array com headers dos dados da credito 
+ * Array com headers dos dados da credito
  */
-aHeader[0] = 'CGM';
-aHeader[1] = 'Código';
-aHeader[2] = 'Origem';
-aHeader[3] = 'Valor';
-aHeader[4] = 'Tipo de debito';
-aHeader[5] = 'Receita';
+aHeader[0] = 'Origem';
+aHeader[1] = 'Tipo de Débito';
+aHeader[2] = 'CGM';
+aHeader[3] = 'Código';
+aHeader[5] = 'Valor';
+aHeader[4] = 'Rec. Crédito';
 
 /**
  * Tamanho das colunas dos dados da credito
  */
-aWidth[0] = '16.66%';  
-aWidth[1] = '16.66%';
-aWidth[2] = '16.66%';
-aWidth[3] = '16.66%';  
-aWidth[4] = '16.66%';  
-aWidth[5] = '16.66%';  
+aWidth[0] = '10%';
+aWidth[1] = '25%';
+aWidth[2] = '10%';
+aWidth[3] = '10.66%';
+aWidth[4] = '22.66%';
+aWidth[5] = '15%';
 
 /**
  * Alinhamento das colunas dos dados da credito
  */
-aAlinhamentos[0] = 'left';
-aAlinhamentos[1] = 'left';
-aAlinhamentos[2] = 'left';
-aAlinhamentos[3] = 'right';
-aAlinhamentos[4] = 'left';
-aAlinhamentos[5] = 'left';
+aAlinhamentos[0] = 'center';
+aAlinhamentos[1] = 'center';
+aAlinhamentos[2] = 'center';
+aAlinhamentos[3] = 'center';
+aAlinhamentos[4] = 'center';
+aAlinhamentos[5] = 'right';
 
 /**
  * Monta html da grid dos dados do credito
@@ -129,7 +129,7 @@ function js_retornoDadosCredito(oAjax) {
 
   js_removeObj('msgBox');
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode();
 
   /**
@@ -144,7 +144,7 @@ function js_retornoDadosCredito(oAjax) {
   /**
    * Nao encontrou origem 
    */
-  if ( oRetorno.oCredito == undefined ) {
+  if ( oRetorno.aCreditos == undefined ) {
     return;
   }
 
@@ -153,17 +153,24 @@ function js_retornoDadosCredito(oAjax) {
    */
   oGridCredito.clearAll(true);
 
-  var oCredito = oRetorno.oCredito;
-  var aLinha = new Array();
+  var iTotalCreditos = oRetorno.aCreditos.length;
+    
+  for ( iIndice = 0; iIndice < iTotalCreditos; iIndice++ ) {
+    
+    var oCredito = oRetorno.aCreditos[iIndice];
+    var aLinha = [];
 
-  aLinha[0] = oCredito.sCgm;
-  aLinha[1] = '<a onClick="js_detalheCredito('+ oCredito.iCodigo +');" href="#">' + oCredito.iCodigo+ '</a>';
-  aLinha[2] = oCredito.sOrigem;
-  aLinha[3] = oCredito.nValor;
-  aLinha[4] = oCredito.sTipoDebito;
-  aLinha[5] = oCredito.sReceita;
+    aLinha[0] = oCredito.sOrigem;
+    aLinha[1] = oCredito.sTipoDebito;
+    aLinha[3] = oCredito.iCodigo;
+    aLinha[2] = oCredito.sCgm;
+    aLinha[5] = oCredito.nValor;
+    aLinha[4] = oCredito.iReceita + ' - ' + oCredito.sReceita;
+  
+    oGridCredito.addRow(aLinha);
+  }
 
-  oGridCredito.addRow(aLinha);
+console.log(oGridCredito);
 
   /**
    * Rendereriza grid 
@@ -189,3 +196,9 @@ function js_detalheCredito(iCredito) {
          
 </body>
 </html>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

@@ -26,7 +26,7 @@
  */
 
 //MODULO: configuracoes
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $cldb_versaocpd->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -180,10 +180,10 @@ function js_cancelar(){
 }
 function js_pesquisadb33_codver(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_db_versaocpd','db_iframe_db_versao','func_db_versao.php?funcao_js=parent.js_mostradb_versao1|db30_codver|db30_codversao','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_versaocpd','db_iframe_db_versao','func_db_versao.php?funcao_js=parent.js_mostradb_versao1|db30_codver|db30_codversao','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.db33_codver.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_db_versaocpd','db_iframe_db_versao','func_db_versao.php?pesquisa_chave='+document.form1.db33_codver.value+'&funcao_js=parent.js_mostradb_versao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_versaocpd','db_iframe_db_versao','func_db_versao.php?pesquisa_chave='+document.form1.db33_codver.value+'&funcao_js=parent.js_mostradb_versao','Pesquisa',false);
      }else{
        document.form1.db30_codversao.value = ''; 
      }
@@ -203,9 +203,9 @@ function js_mostradb_versao1(chave1,chave2){
 }
 function js_novo(codcpd,db_opcao,codarq){
   if(db_opcao == 1){
-    js_OpenJanelaIframe('top.corpo.iframe_db_versaocpd','db_iframe_novo','con1_db_versaocpdarq001.php?db_opcao='+db_opcao+'&codcpd='+codcpd+'&codarq='+codarq,'ANEXOS',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_versaocpd','db_iframe_novo','con1_db_versaocpdarq001.php?db_opcao='+db_opcao+'&codcpd='+codcpd+'&codarq='+codarq,'ANEXOS',true,0);
   }else{
-    js_OpenJanelaIframe('top.corpo.iframe_db_versaocpd','db_iframe_novo','con1_db_versaocpdarq002.php?db_opcao='+db_opcao+'&codcpd='+codcpd+'&codarq='+codarq,'ANEXOS',true,0);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_versaocpd','db_iframe_novo','con1_db_versaocpdarq002.php?db_opcao='+db_opcao+'&codcpd='+codcpd+'&codarq='+codarq,'ANEXOS',true,0);
   }
   
 }    

@@ -1,0 +1,40 @@
+[
+    {
+        "label": "Lançamento",
+        "width": "10",
+        "nome": "lancamento",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "lancamento"
+    },
+    {
+        "label": "Valor",
+        "width": "10",
+        "nome": "valor",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "valor",
+        "align": "right"
+    },
+    {
+        "label": "Receita",
+        "width": "40",
+        "nome": "receita",
+        "chave": true,
+        "tipo": "texto",
+        "editavel": false,
+        "valor": "receita"
+    },
+    {
+        "label": "Complemento",
+        "width": "40",
+        "nome": "complemento",
+        "tipo": "combo",
+        "lista": "\\ECidade\\Financeiro\\Orcamento\\Repository\\RecursoRepository::getComplementos",
+        "editavel": true,
+        "valor": "codigo",
+        "utilizaParametro": true
+    }
+]

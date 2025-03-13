@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/scpdf.php");
-require_once("fpdf151/impcarne.php");
-require_once("classes/db_tabativ_classe.php");
-require_once("classes/db_issprocesso_classe.php");
-require_once("classes/db_isstipoalvara_classe.php");
-require_once("classes/db_ativprinc_classe.php");
-require_once("classes/db_db_config_classe.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_libtributario.php");
-require_once("libs/db_libsys.php");
-require_once("dbagata/classes/core/AgataAPI.class");
-require_once("model/documentoTemplate.model.php");
-require_once("std/db_stdClass.php");
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("classes/db_tabativ_classe.php"));
+require_once(modification("classes/db_issprocesso_classe.php"));
+require_once(modification("classes/db_isstipoalvara_classe.php"));
+require_once(modification("classes/db_ativprinc_classe.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libtributario.php"));
+require_once(modification("libs/db_libsys.php"));
+require_once(modification("dbagata/classes/core/AgataAPI.class"));
+require_once(modification("model/documentoTemplate.model.php"));
+require_once(modification("std/db_stdClass.php"));
 
 $clisstipoalvara = new cl_isstipoalvara;
 
@@ -345,8 +345,8 @@ if (isset($q60_modalvara) && $q60_modalvara == "3") {
   $arr02 = array ();
   $descr = "";
 
-  //   die($cltabativ->sql_queryinf($oGet->inscricao, "", "*", "", " q88_inscr is null and q11_inscr is null and (q07_databx < '".date("Y-m-d", db_getsession("DB_datausu"))."' or  q07_databx is null) and tabativ.q07_inscr = $oGet->inscricao "));
-  $result = $cltabativ->sql_record($cltabativ->sql_queryinf($oGet->inscricao, "", "*", "", " q88_inscr is null and q11_inscr is null and (q07_databx < '" . date("Y-m-d", db_getsession("DB_datausu")) . "' or  q07_databx is null) and tabativ.q07_inscr = $oGet->inscricao "));
+    // die($cltabativ->sql_queryinf($oGet->inscricao, "", "*", "", " q88_inscr is null and q11_inscr is null and (q07_databx > '".date("Y-m-d", db_getsession("DB_datausu"))."' or  q07_databx is null) and tabativ.q07_inscr = $oGet->inscricao "));
+  $result = $cltabativ->sql_record($cltabativ->sql_queryinf($oGet->inscricao, "", "*", "", " q88_inscr is null and q11_inscr is null and (q07_databx > '" . date("Y-m-d", db_getsession("DB_datausu")) . "' or  q07_databx is null) and tabativ.q07_inscr = $oGet->inscricao "));
   $numrows = $cltabativ->numrows;
   //	die($numrows);
   if ($numrows != 0) {

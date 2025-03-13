@@ -26,7 +26,7 @@
  */
 
 //MODULO: orcamento
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clorcimpactorecmov->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -303,7 +303,7 @@ for($i=$o96_anoini; $i<= $o96_anofim; $i++){
 //elemento
 function js_fonte_<?=$i?>(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_orcimpactorecmov','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostrafonte1_<?=$i?>|o57_fonte|o57_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcimpactorecmov','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostrafonte1_<?=$i?>|o57_fonte|o57_descr','Pesquisa',true,'0','1','775','390');
   }else{
     fonte = document.form1.o57_fonte_<?=$i?>.value;
     if(fonte != ''){
@@ -311,7 +311,7 @@ function js_fonte_<?=$i?>(mostra){
 	fonte = fonte+"0";
       }
        document.form1.o57_fonte_<?=$i?>.value=fonte;
-      js_OpenJanelaIframe('top.corpo.iframe_orcimpactorecmov','db_iframe_orcfontes','func_orcfontes.php?pesquisa_chave='+document.form1.o57_fonte_<?=$i?>.value+'&funcao_js=parent.js_mostrafonte_<?=$i?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcimpactorecmov','db_iframe_orcfontes','func_orcfontes.php?pesquisa_chave='+document.form1.o57_fonte_<?=$i?>.value+'&funcao_js=parent.js_mostrafonte_<?=$i?>','Pesquisa',false);
     }      
   }
 }
@@ -348,10 +348,10 @@ document.form1.o57_fonte_<?=$i?>.value = chave1;
 //recurso
 function js_codigo_<?=$i?>(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_orcimpactorecmov','db_iframe_orctiporec','func_orctiporec.php?funcao_js=parent.js_mostraorctiporec1_<?=$i?>|o15_codigo|o15_descr','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcimpactorecmov','db_iframe_orctiporec','func_orctiporec.php?funcao_js=parent.js_mostraorctiporec1_<?=$i?>|o15_codigo|o15_descr','Pesquisa',true,'0','1','775','390');
   }else{
     if( document.form1.o69_codigo_<?=$i?>.value != ''){
-      js_OpenJanelaIframe('top.corpo.iframe_orcimpactorecmov','db_iframe_orctiporec','func_orctiporec.php?pesquisa_chave='+document.form1.o69_codigo_<?=$i?>.value+'&funcao_js=parent.js_mostraorctiporec_<?=$i?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcimpactorecmov','db_iframe_orctiporec','func_orctiporec.php?pesquisa_chave='+document.form1.o69_codigo_<?=$i?>.value+'&funcao_js=parent.js_mostraorctiporec_<?=$i?>','Pesquisa',false);
      }       
   }
 }
@@ -390,7 +390,7 @@ function js_mostraorctiporec1_<?=$i?>(chave1,chave2){
 
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_orcimpactorecmov','db_iframe_orcimpactoperiodo','func_orcimpactoperiodo.php?funcao_js=parent.js_preenchepesquisa|o96_codperiodo','Pesquisa',true,0);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcimpactorecmov','db_iframe_orcimpactoperiodo','func_orcimpactoperiodo.php?funcao_js=parent.js_preenchepesquisa|o96_codperiodo','Pesquisa',true,0);
 }
 function js_preenchepesquisa(chave){
    document.form1.o69_codperiodo.value=chave;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -116,7 +116,7 @@ class cl_hist {
        $this->erro_status = "0";
        return false;
      }
-     $result = @pg_query("insert into hist(
+     $result = @db_query("insert into hist(
                                        c03_anousu 
                                       ,c03_codigo 
                                       ,c03_descr 
@@ -151,14 +151,14 @@ class cl_hist {
      $this->erro_status = "1";
      $resaco = $this->sql_record($this->sql_query_file($this->c03_anousu,$this->c03_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,2935,'$this->c03_anousu','I')");
-       $resac = pg_query("insert into db_acountkey values($acount,4671,'$this->c03_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,451,2935,'','".pg_result($resaco,0,'c03_anousu')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,451,4671,'','".pg_result($resaco,0,'c03_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,451,2938,'','".pg_result($resaco,0,'c03_descr')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,451,2939,'','".pg_result($resaco,0,'c03_compl')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,2935,'$this->c03_anousu','I')");
+       $resac = db_query("insert into db_acountkey values($acount,4671,'$this->c03_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,451,2935,'','".pg_result($resaco,0,'c03_anousu')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,451,4671,'','".pg_result($resaco,0,'c03_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,451,2938,'','".pg_result($resaco,0,'c03_descr')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,451,2939,'','".pg_result($resaco,0,'c03_compl')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -229,20 +229,20 @@ class cl_hist {
  and  c03_codigo = $this->c03_codigo
 ";
      $resaco = $this->sql_record($this->sql_query_file($this->c03_anousu,$this->c03_codigo));
-     if($this->numrows>0){       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     if($this->numrows>0){       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,2935,'$this->c03_anousu','A')");
-       $resac = pg_query("insert into db_acountkey values($acount,4671,'$this->c03_codigo','A')");
+       $resac = db_query("insert into db_acountkey values($acount,2935,'$this->c03_anousu','A')");
+       $resac = db_query("insert into db_acountkey values($acount,4671,'$this->c03_codigo','A')");
        if(isset($GLOBALS["HTTP_POST_VARS"]["c03_anousu"]))
-         $resac = pg_query("insert into db_acount values($acount,451,2935,'".pg_result($resaco,0,'c03_anousu')."','$this->c03_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,451,2935,'".pg_result($resaco,0,'c03_anousu')."','$this->c03_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["c03_codigo"]))
-         $resac = pg_query("insert into db_acount values($acount,451,4671,'".pg_result($resaco,0,'c03_codigo')."','$this->c03_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,451,4671,'".pg_result($resaco,0,'c03_codigo')."','$this->c03_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["c03_descr"]))
-         $resac = pg_query("insert into db_acount values($acount,451,2938,'".pg_result($resaco,0,'c03_descr')."','$this->c03_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,451,2938,'".pg_result($resaco,0,'c03_descr')."','$this->c03_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["c03_compl"]))
-         $resac = pg_query("insert into db_acount values($acount,451,2939,'".pg_result($resaco,0,'c03_compl')."','$this->c03_compl',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,451,2939,'".pg_result($resaco,0,'c03_compl')."','$this->c03_compl',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Historico de Lancamentos                           nao Alterado. Alteracao Abortada.\\n";
@@ -276,14 +276,14 @@ class cl_hist {
      $this->atualizacampos(true);
      $resaco = $this->sql_record($this->sql_query_file($this->c03_anousu,$this->c03_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,2935,'".pg_result($resaco,$iresaco,'c03_anousu')."','E')");
-       $resac = pg_query("insert into db_acountkey values($acount,4671,'".pg_result($resaco,$iresaco,'c03_codigo')."','E')");
-       $resac = pg_query("insert into db_acount values($acount,451,2935,'','".pg_result($resaco,0,'c03_anousu')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,451,4671,'','".pg_result($resaco,0,'c03_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,451,2938,'','".pg_result($resaco,0,'c03_descr')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,451,2939,'','".pg_result($resaco,0,'c03_compl')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,2935,'".pg_result($resaco,$iresaco,'c03_anousu')."','E')");
+       $resac = db_query("insert into db_acountkey values($acount,4671,'".pg_result($resaco,$iresaco,'c03_codigo')."','E')");
+       $resac = db_query("insert into db_acount values($acount,451,2935,'','".pg_result($resaco,0,'c03_anousu')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,451,4671,'','".pg_result($resaco,0,'c03_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,451,2938,'','".pg_result($resaco,0,'c03_descr')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,451,2939,'','".pg_result($resaco,0,'c03_compl')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      $sql = " delete from hist
                     where ";
@@ -300,7 +300,7 @@ class cl_hist {
       }
       $sql2 .= " c03_codigo = $this->c03_codigo ";
 }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Historico de Lancamentos                           nao Excluído. Exclusão Abortada.\\n";
@@ -331,7 +331,7 @@ class cl_hist {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

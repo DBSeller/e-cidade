@@ -1,7 +1,8 @@
 <?php
-/*
+
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +26,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_rhfuncao_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhfuncao_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -70,7 +70,7 @@ $chave_rh37_descr = isset($chave_rh37_descr) ? stripslashes($chave_rh37_descr) :
   <tr>
     <td height="63" align="center" valign="top">
       <form name="form2" method="post" action="" >
-        <fieldset>
+        <fieldset style="width: 35%">
           <legend>Pesquisa de Cargo</legend>
           <table width="35%" border="0" align="center" cellspacing="0">
             <tr>
@@ -143,7 +143,7 @@ $chave_rh37_descr = isset($chave_rh37_descr) ? stripslashes($chave_rh37_descr) :
         if (!isset($campos)) {
 
           if (file_exists("funcoes/db_func_rhfuncao.php")) {
-            include("funcoes/db_func_rhfuncao.php");
+            include(modification("funcoes/db_func_rhfuncao.php"));
           } else {
             $campos = "rhfuncao.*";
           }
@@ -211,4 +211,10 @@ $chave_rh37_descr = isset($chave_rh37_descr) ? stripslashes($chave_rh37_descr) :
 <?php } ?>
 <script>
   js_tabulacaoforms("form2", "chave_rh37_descr", true, 1, "chave_rh37_descr", true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

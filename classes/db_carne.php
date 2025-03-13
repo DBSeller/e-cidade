@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -62,7 +62,7 @@ class cl_carne {
 	    $this->sql .= " and k00_numpar = $this->npi";
 	  }
 	}
-    $this->resultparcelas = pg_exec($this->sql);
+    $this->resultparcelas = db_query($this->sql);
 	if(pg_numrows($this->resultparcelas)==0){
 	  $this->db_erro = "Código de Arrecadacao nao Encontrado ou Quitado.";
 	  return false;

@@ -1,43 +1,47 @@
-<?
+<?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once('libs/db_stdlib.php');
-require_once('libs/db_stdlibwebseller.php');
-require_once('libs/db_utils.php');
-require_once('libs/db_conecta.php');
-require_once('libs/db_sessoes.php');
-require_once('libs/JSON.php');
-require_once('dbforms/db_funcoes.php');
+use ECidade\Patrimonial\Material\Helpers\Material;
+
+require_once(modification('libs/db_stdlib.php'));
+require_once(modification('libs/db_stdlibwebseller.php'));
+require_once(modification('libs/db_utils.php'));
+require_once(modification('libs/db_conecta.php'));
+require_once(modification('libs/db_sessoes.php'));
+require_once(modification('libs/JSON.php'));
+require_once(modification('dbforms/db_funcoes.php'));
+require_once(modification('std/db_stdClass.php'));
 
 $oJson              = new services_json();
 $oParam             = $oJson->decode(str_replace("\\","",$_POST["json"]));
 $oRetorno           = new stdClass();
 $oRetorno->iStatus  = 1;
 $oRetorno->sMessage = '';
+$oRetorno->erro     = false;
 
 function formataData($dData, $iTipo = 1) {
 
@@ -52,7 +56,7 @@ function formataData($dData, $iTipo = 1) {
     return $dData;
 
   }
- 
+
  $dData = explode('-',$dData);
  $dData = @$dData[2].'/'.@$dData[1].'/'.@$dData[0];
 
@@ -62,8 +66,8 @@ function formataData($dData, $iTipo = 1) {
 
 if ($oParam->exec == 'getCotasEspecialidades') {
 
-  $oDaoSauCotas       = db_utils::getdao('sau_cotasagendamento');
-  $oDaoUnidadeMedicos = db_utils::getdao('especmedico');
+  $oDaoSauCotas       = new cl_sau_cotasagendamento();
+  $oDaoUnidadeMedicos = new cl_especmedico();
   $sCampos            = "distinct sd27_i_rhcbo as cod,rh70_descr as descr,rh70_estrutural as estrutural,";
   $sCampos           .="fc_totalCotasPrestEspecComp";
   $sCampos           .="($oParam->iUpsPrestadora,rh70_estrutural,$oParam->iMescomp,$oParam->iAnocomp)";
@@ -74,7 +78,7 @@ if ($oParam->exec == 'getCotasEspecialidades') {
   $sSubSqlWhere       = " s163_i_upsprestadora = ".$oParam->iUpsPrestadora;
   $sSubSqlWhere      .= " and ((s163_i_mescomp >  ".$oParam->iMescomp." and s163_i_anocomp = ".$oParam->iAnocomp.")";
   $sSubSqlWhere      .= " or (s163_i_anocomp > ".$oParam->iAnocomp.")) limit 1";
-  $sSubSql            = $oDaoSauCotas->sql_query_cotas("","s163_i_codigo","",$sSubSqlWhere); 
+  $sSubSql            = $oDaoSauCotas->sql_query_cotas("","s163_i_codigo","",$sSubSqlWhere);
   $sCampos           .= "coalesce(($sSubSql),0) as proximo";
   $sWhere             = " sd04_i_unidade = $oParam->iUpsPrestadora ";
   $sWhere            .= " and fc_totalCotasPrestEspecComp";
@@ -131,13 +135,13 @@ if ($oParam->exec == 'getCotasEspecialidades') {
   }
   $oRetorno->iProximo = $iProximo;
   $oRetorno->aEspec   = $aEspec;
-  
+
 
 }
 
 if ($oParam->exec == 'getCotasUnidadesDuplicar') {
 
-  $oDaoSauCotas  = db_utils::getdao('sau_cotasagendamento');
+  $oDaoSauCotas  = new cl_sau_cotasagendamento();
   $sCampos       = " distinct s163_i_codigo as codigo, ";
   $sCampos      .= " sau_cotasagendamento.s163_i_upssolicitante as ups_solicitante, ";
   $sCampos      .= " db_departsolic.descrdepto as ups_descr, ";
@@ -185,7 +189,7 @@ if ($oParam->exec == 'getCotasUnidadesDuplicar') {
       $oEspec->iCotas    = $oDados->cotas;
       $oEspec->iSaldo    = $oDados->saldo;
       $oEspec->iMostra   = false;
-      
+
       //Seleciona medicos que tem alguma cota lançada e calcula o saldo do mesmo
       $sCampos     = " distinct sd27_i_codigo as codigo, ";
       $sCampos    .= " z01_nome               as nome, ";
@@ -249,7 +253,7 @@ if ($oParam->exec == 'getCotasUnidadesDuplicar') {
     $sWhere     .= " and s164_cotaagendamento = $oDados->codigo ";
     $sSql        = $oDaoSauCotas->sql_query_cotas("", $sCampos, "", $sWhere);
     $rsResult    = $oDaoSauCotas->sql_record($sSql);
-    
+
     $iLinhasProf = $oDaoSauCotas->numrows;
     $aProf       = array();
     for ($iX = 0; $iX < $iLinhasProf; $iX++) {
@@ -288,12 +292,12 @@ if ($oParam->exec == 'getCotasUnidades') {
   $dFim             = "$oParam->iAnocomp-$oParam->iMescomp-";
   $dFim            .= date("t", strtotime("$oParam->iAnocomp-$oParam->iMescomp-1"));
   $dAtual           = date('Y-m-d', db_getsession('DB_datausu'));
-  $sHAtual          = date('H:i'); 
-  $oDaoUnidades     = db_utils::getdao('unidades');
-  $oDaoSauCotas     = db_utils::getdao('sau_cotasagendamento');
-  $oDaoAgendamentos = db_utils::getdao('agendamentos');
+  $sHAtual          = date('H:i');
+  $oDaoUnidades     = new cl_unidades();
+  $oDaoSauCotas     = new cl_sau_cotasagendamento();
+  $oDaoAgendamentos = new cl_agendamentos();
   $sCampos          = "sd02_i_codigo as cod,descrdepto as descr,";
-  
+
   if ($oParam->iProfissional != -1) {
 
     $sSubSqlWhere  = " s163_i_upsprestadora = $oParam->iUpsPrestadora ";
@@ -301,7 +305,7 @@ if ($oParam->exec == 'getCotasUnidades') {
     $sSubSqlWhere .= " and rh70_estrutural like '".$oParam->iEspecialidade."' ";
     $sSubSqlWhere .= " and s163_i_mescomp = $oParam->iMescomp ";
     $sSubSqlWhere .= " and s163_i_anocomp = $oParam->iAnocomp limit 1";
-    $sSubSql       = $oDaoSauCotas->sql_query_cotas("", "s163_i_quantidade", "", $sSubSqlWhere); 
+    $sSubSql       = $oDaoSauCotas->sql_query_cotas("", "s163_i_quantidade", "", $sSubSqlWhere);
     $sCampos      .= "coalesce(($sSubSql),0) as cotas,";
 
   }
@@ -319,15 +323,15 @@ if ($oParam->exec == 'getCotasUnidades') {
 
   }
   $sSubSqlWhere .= " limit 1";
-  
-  $sSubSql  = $oDaoSauCotas->sql_query_cotas("", $sCamposQaunt, "", $sSubSqlWhere); 
+
+  $sSubSql  = $oDaoSauCotas->sql_query_cotas("", $sCamposQaunt, "", $sSubSqlWhere);
   $sCampos .= "coalesce(($sSubSql),0) as distribuido,";
-  
+
   $sSubSqlWhere  = " sd27_i_rhcbo = $oParam->iCodEspec ";
   $sSubSqlWhere .= " and sd23_i_upssolicitante = unidade.sd02_i_codigo ";
   $sSubSqlWhere .= " and sd04_i_unidade = $oParam->iUpsPrestadora ";
   $sSubSqlWhere .= " and sd23_d_consulta between '$dIni' and '$dFim' ";
-  $sSubSqlWhere .= " and not EXISTS ( select * from agendaconsultaanula where"; 
+  $sSubSqlWhere .= " and not EXISTS ( select * from agendaconsultaanula where";
   $sSubSqlWhere .= " s114_i_agendaconsulta = sd23_i_codigo ) ";
   if ($oParam->iProfissional != -1) {
     $sSubSqlWhere     .= " and sd27_i_codigo = $oParam->iProfissional ";
@@ -338,7 +342,7 @@ if ($oParam->exec == 'getCotasUnidades') {
   $sSubSqlWhere .= " and sd23_i_upssolicitante = unidade.sd02_i_codigo ";
   $sSubSqlWhere .= " and sd04_i_unidade = $oParam->iUpsPrestadora ";
   $sSubSqlWhere .= " and sd23_d_consulta between '$dIni' and '".$dAtual."' ";
-  $sSubSqlWhere .= " and not EXISTS ( select * from agendaconsultaanula where"; 
+  $sSubSqlWhere .= " and not EXISTS ( select * from agendaconsultaanula where";
   $sSubSqlWhere .= " s114_i_agendaconsulta = sd23_i_codigo ) ";
   $sSubSqlWhere .= " and sd23_i_codigo in (select s102_i_agendamento from prontagendamento) ";
   if ($oParam->iProfissional != -1) {
@@ -346,13 +350,13 @@ if ($oParam->exec == 'getCotasUnidades') {
   }
   $sSubSql           = $oDaoAgendamentos->sql_query_consulta_geral("", "count(sd23_i_codigo)", "", $sSubSqlWhere);
   $sCampos          .= "coalesce(($sSubSql),0) as realizado,";
-  
+
   $sSubSqlWhere      = " sd27_i_rhcbo = $oParam->iCodEspec ";
   $sSubSqlWhere     .= " and sd23_i_upssolicitante = unidade.sd02_i_codigo ";
   $sSubSqlWhere     .= " and sd04_i_unidade = $oParam->iUpsPrestadora ";
   $sSubSqlWhere     .= " and ((sd23_d_consulta >= '$dIni' and sd23_d_consulta < '".$dAtual."' )";
   $sSubSqlWhere     .= " or  (sd23_d_consulta = '$dAtual' and sd23_c_hora < '$sHAtual'))";
-  $sSubSqlWhere     .= " and not exists ( select * from agendaconsultaanula where"; 
+  $sSubSqlWhere     .= " and not exists ( select * from agendaconsultaanula where";
   $sSubSqlWhere     .= " s114_i_agendaconsulta = sd23_i_codigo ) ";
   $sSubSqlWhere     .= " and sd23_i_codigo not in (select s102_i_agendamento from prontagendamento) ";
   if ($oParam->iProfissional != -1) {
@@ -360,7 +364,7 @@ if ($oParam->exec == 'getCotasUnidades') {
   }
   $sSubSql           = $oDaoAgendamentos->sql_query_consulta_geral("", "count(sd23_i_codigo)", "", $sSubSqlWhere);
   $sCampos          .= "coalesce(($sSubSql),0) as ausente";
-  
+
   $sWhere            = " sd02_i_codigo <> $oParam->iUpsPrestadora ";
   $sOrder            = "sd02_i_codigo";
   $sSql              = "select $sCampos from unidades as unidade  ";
@@ -368,7 +372,7 @@ if ($oParam->exec == 'getCotasUnidades') {
   $sSql             .= " where $sWhere order by $sOrder;";
 
   $rsResult          = $oDaoUnidades->sql_record($sSql);
-  $aSolicitantes     = array(); 
+  $aSolicitantes     = array();
   for ($iInd=0; $iInd < $oDaoUnidades->numrows; $iInd++) {
 
     $oUnidade                             = db_utils::fieldsmemory($rsResult,$iInd);
@@ -388,13 +392,13 @@ if ($oParam->exec == 'getCotasUnidades') {
 
   }
   if (count($aSolicitantes) == 0) {
-    
+
     $oRetorno->iStatus  = 0;
     $oRetorno->sMessage = 'Nenhuma unidade encontrada!';
-    
+
   }
   $oRetorno->aSolicitantes = $aSolicitantes;
-  
+
 }
 
 if ($oParam->exec == 'duplicarCotas') {
@@ -405,9 +409,9 @@ if ($oParam->exec == 'duplicarCotas') {
   $dIniAlvo          = "$oParam->iAnocompAlvo-$oParam->iMescompAlvo-1";
   $dFimAlvo          = "$oParam->iAnocompAlvo-$oParam->iMescompAlvo-";
   $dFimAlvo         .= date("t", strtotime("$oParam->iAnocomp-$oParam->iMescompAlvo-1"));
-  $oDaoSauCotas      = db_utils::getdao('sau_cotasagendamento');
-  $oDaoSauCotasProf  = db_utils::getdao('sau_cotasagendamentoprofissional');
-  $oDaoUndmedhorario = db_utils::getdao('undmedhorario');
+  $oDaoSauCotas      = new cl_sau_cotasagendamento();
+  $oDaoSauCotasProf  = new cl_sau_cotasagendamentoprofissional();
+  $oDaoUndmedhorario = new cl_undmedhorario();
 
   db_inicio_transacao();
   if (count($oParam->aEspec) == 0) {
@@ -565,7 +569,7 @@ if ($oParam->exec == 'duplicarCotas') {
       $sSql .= "fc_saldoCotasPrestEspecComp";
       $sSql .= "($oParam->iUps,'".$oParam->aEspec[$iX]->iEspecEst."',$oParam->iMescompAlvo,$oParam->iAnocompAlvo) as saldo ;";
       $rsResult = $oDaoSauCotas->sql_record($sSql);
-      
+
       $oEspec = db_utils::fieldsmemory($rsResult,0);
       $aEspec[$iX][2] = $oEspec->cotas;
       $aEspec[$iX][3] = $oEspec->saldo;
@@ -596,18 +600,72 @@ if ($oParam->exec == 'duplicarCotas') {
     db_fim_transacao(false);
   }
   $oRetorno->sMessage = urlencode($oDaoSauCotas->erro_msg);
-  
+
 }
 if ($oParam->exec == 'saveCotas') {
 
-  $dIni                     = "$oParam->iAnocomp-$oParam->iMescomp-1";
-  $dFim                     = "$oParam->iAnocomp-$oParam->iMescomp-";
-  $dFim                    .= date("t", strtotime("$oParam->iAnocomp-$oParam->iMescomp-1")); 
-  $oDaoSauCotas             = db_utils::getdao('sau_cotasagendamento');
-  $oDaoUndmedhorario        = db_utils::getdao('undmedhorario');
-  $oDaoSauCotasProfissional = db_utils::getdao('sau_cotasagendamentoprofissional');
+  $oDaoSauCotas             = new cl_sau_cotasagendamento();
+  $oDaoUndmedhorario        = new cl_undmedhorario();
+  $oDaoSauCotasProfissional = new cl_sau_cotasagendamentoprofissional();
+
+  $iTotalUnidades          = count( $oParam->aUnidades );
+  $aUnidadesCotasExcedidas = array();
+
+  foreach( $oParam->aUnidades as $oDadosUnidade ) {
+
+    if( isset($oDadosUnidade->iCotas) && $oDadosUnidade->iCotas == 0 ) {
+      continue;
+    }
+
+    if($oDadosUnidade->iDistribuido < $oDadosUnidade->iDistribuidoOld) {
+
+      $sCampos  = "( s163_i_quantidade - sum( s164_quantidade ) ) as cotas_disponiveis";
+      $sWhere   = "     s163_i_upssolicitante = {$oDadosUnidade->iCodigo}";
+      $sWhere  .= " AND s163_i_rhcbo          = {$oParam->iCodEspec}";
+      $sWhere  .= " AND s163_i_mescomp        = {$oParam->iMescomp}";
+      $sWhere  .= " AND s163_i_anocomp        = {$oParam->iAnocomp}";
+
+      if($oParam->iProf <> -1) {
+        $sWhere .= " AND s164_especmedico <> {$oParam->iProf}";
+      }
+
+      $sWhere            .= " GROUP BY s163_i_quantidade";
+      $sSqlContadorCotas  = $oDaoSauCotasProfissional->sql_query_cotas_profissionais( null, $sCampos, null, $sWhere );
+      $rsSqlContadorCotas = db_query( $sSqlContadorCotas );
+
+      if( is_resource( $rsSqlContadorCotas ) && pg_num_rows( $rsSqlContadorCotas ) > 0 ) {
+
+        $iCotasLiberadas = db_utils::fieldsMemory( $rsSqlContadorCotas, 0 )->cotas_disponiveis;
+
+        if( ( $oDadosUnidade->iDistribuidoOld - $oDadosUnidade->iDistribuido ) > $iCotasLiberadas ) {
+
+          $aUnidadesCotasExcedidas[]  = $oDadosUnidade->iCodigo;
+          $aUnidadesCotasExcedidas[] .= " - " . db_stdClass::normalizeStringJsonEscapeString( $oDadosUnidade->sNome );
+        }
+      }
+    }
+  }
+
+  if( count( $aUnidadesCotasExcedidas ) > 0 ) {
+
+    $sMensagem  = "Distribuição não realizada. Os seguintes departamentos excederam o limite de cotas permitidas entre";
+    $sMensagem .= " os profissionais:\n\n";
+    $sUnidades  = implode( "\n", $aUnidadesCotasExcedidas );
+
+    $oRetorno->sMessage = urlencode( $sMensagem . $sUnidades );
+    $oRetorno->iStatus  = 0;
+
+    echo $oJson->encode($oRetorno);
+
+    return;
+  }
+
+  $dIni  = "$oParam->iAnocomp-$oParam->iMescomp-1";
+  $dFim  = "$oParam->iAnocomp-$oParam->iMescomp-";
+  $dFim .= date("t", strtotime("$oParam->iAnocomp-$oParam->iMescomp-1"));
 
   db_inicio_transacao();
+
   $sWhere   = "unidademedicos.sd04_i_unidade = ".$oParam->iUpsPrestadora;
   $sWhere  .= " AND rhcbo.rh70_estrutural LIKE '$oParam->iEspecialidade' ";
   $sWhere  .= " AND especmedico.sd27_c_situacao = 'A' ";
@@ -624,35 +682,8 @@ if ($oParam->exec == 'saveCotas') {
   $sWhere  .= " OR  undmedhorario.sd30_d_valinicial BETWEEN '$dIni' AND '$dFim' ";
   $sWhere  .= " OR  undmedhorario.sd30_d_valfinal BETWEEN '$dIni' AND '$dFim'))) ";
   $sSql     = $oDaoUndmedhorario->sql_query("","undmedhorario.*","",$sWhere);
-  
+
   $rsResult = $oDaoUndmedhorario->sql_record($sSql);
-
-  if ($oDaoUndmedhorario->numrows > 0) {
-
-    $iTam = $oDaoUndmedhorario->numrows;
-    for ($iInd=0; $iInd < $iTam; $iInd++) {
-
-      $oGrades                              = db_utils::fieldsmemory($rsResult,$iInd);
-      $oDaoUndmedhorario->sd30_i_codigo     = $oGrades->sd30_i_codigo;
-      $oDaoUndmedhorario->sd30_d_valinicial = $dIni;
-      $oDaoUndmedhorario->sd30_d_valfinal   = $dFim;
-      $oDaoUndmedhorario->alterar($oGrades->sd30_i_codigo);
-      if ($oDaoUndmedhorario->erro_status == "0") {
-
-        $oDaoSauCotas->erro_status = "0";
-        $oDaoSauCotas->erro_msg    = $oDaoUndmedhorario->erro_msg;
-        break;
-
-      }
-
-    }
-
-  } else {
-
-    $oDaoSauCotas->erro_status = "0";
-    $oDaoSauCotas->erro_msg    = "Nenhuma grade de horario alterada!";
-
-  }
 
   if ($oDaoSauCotas->erro_status != "0") {
 
@@ -682,101 +713,95 @@ if ($oParam->exec == 'saveCotas') {
           $oDaoSauCotas->s163_i_codigo          = null;
           $oDaoSauCotas->incluir(null);
 
-        if ($oParam->iProf != -1) {
+          if ($oParam->iProf != -1) {
 
-          //Inclui profissional
-          $oDaoSauCotasProfissional->s164_especmedico     = $oDaoSauCotas->s163_i_codigo;
-          $oDaoSauCotasProfissional->s164_cotaagendamento = $oCotas->s163_i_codigo;
-          $oDaoSauCotasProfissional->s164_quantidade      = $oParam->aUnidades[$iInd]->iDistribuido;
-          $oDaoSauCotasProfissional->s164_codigo          = null;
-          $oDaoSauCotasProfissional->incluir(null);
-          if ($oDaoSauCotasProfissional->erro_status == "0") {
+            //Inclui profissional
+            $oDaoSauCotasProfissional->s164_especmedico     = $oDaoSauCotas->s163_i_codigo;
+            $oDaoSauCotasProfissional->s164_cotaagendamento = $oCotas->s163_i_codigo;
+            $oDaoSauCotasProfissional->s164_quantidade      = $oParam->aUnidades[$iInd]->iDistribuido;
+            $oDaoSauCotasProfissional->s164_codigo          = null;
+            $oDaoSauCotasProfissional->incluir(null);
+            if ($oDaoSauCotasProfissional->erro_status == "0") {
 
-            $oDaoSauCotas->erro_status = "0";
-            $oDaoSauCotas->erro_msg    = $oDaoSauCotasProfissional->erro_msg;
-
-          }
-
-        }
-
-      } else {
-
-        $oCotas = db_utils::fieldsmemory($rsCotas, 0);
-        if ($oParam->iProf == -1) {
-
-          $oDaoSauCotas->s163_i_upssolicitante  = $oParam->aUnidades[$iInd]->iCodigo;
-          $oDaoSauCotas->s163_i_quantidade      = $oParam->aUnidades[$iInd]->iDistribuido;
-          $oDaoSauCotas->s163_i_codigo = $oCotas->s163_i_codigo;
-          if ($oDaoSauCotas->s163_i_quantidade == 0) {
-            $oDaoSauCotas->excluir($oCotas->s163_i_codigo);
-          } else {
-            $oDaoSauCotas->alterar($oCotas->s163_i_codigo);
+              $oDaoSauCotas->erro_status = "0";
+              $oDaoSauCotas->erro_msg    = $oDaoSauCotasProfissional->erro_msg;
+            }
           }
         } else {
 
-          //verificar se existe lançamento para o medico
-          $sWhere      = " s163_i_codigo = $oCotas->s163_i_codigo ";
-          $sWhere     .= " and s164_especmedico = $oParam->iProf ";
-          $sSql        = $oDaoSauCotas->sql_query_cotas("", "s164_codigo", "", $sWhere);
-          $rsCotasProf = $oDaoSauCotasProfissional->sql_record($sSql);
+          $oCotas = db_utils::fieldsmemory($rsCotas, 0);
+          if ($oParam->iProf == -1) {
 
-          //Seta valores na classe
-          $oDaoSauCotasProfissional->s164_especmedico     = $oParam->iProf;
-          $oDaoSauCotasProfissional->s164_cotaagendamento = $oCotas->s163_i_codigo;
-          $oDaoSauCotasProfissional->s164_quantidade      = $oParam->aUnidades[$iInd]->iDistribuido;
-
-          if ($oDaoSauCotasProfissional->numrows > 0) {
-
-            $oCotasProf                            = db_utils::fieldsmemory($rsCotasProf, 0);
-            $oDaoSauCotasProfissional->s164_codigo = $oCotasProf->s164_codigo;
-            if ($oDaoSauCotasProfissional->s164_quantidade == 0) {
-              $oDaoSauCotasProfissional->excluir($oCotasProf->s164_codigo);
+            $oDaoSauCotas->s163_i_upssolicitante  = $oParam->aUnidades[$iInd]->iCodigo;
+            $oDaoSauCotas->s163_i_quantidade      = $oParam->aUnidades[$iInd]->iDistribuido;
+            $oDaoSauCotas->s163_i_codigo = $oCotas->s163_i_codigo;
+            if ($oDaoSauCotas->s163_i_quantidade == 0) {
+              $oDaoSauCotas->excluir($oCotas->s163_i_codigo);
             } else {
-              $oDaoSauCotasProfissional->alterar($oCotasProf->s164_codigo);
+              $oDaoSauCotas->alterar($oCotas->s163_i_codigo);
             }
-            if ($oDaoSauCotasProfissional->erro_status == "0") {
-              $oDaoSauCotas->erro_status = "0";
-            }
-            $oDaoSauCotas->erro_msg    = $oDaoSauCotasProfissional->erro_msg;
-
           } else {
 
-            $oDaoSauCotasProfissional->erro_status = "1";
-            $oDaoSauCotasProfissional->s164_codigo = null;
-            $oDaoSauCotasProfissional->incluir(null);
-            if ($oDaoSauCotasProfissional->erro_status == "0") {
-              $oDaoSauCotas->erro_status = "0";
+            //verificar se existe lançamento para o medico
+            $sWhere      = " s163_i_codigo = $oCotas->s163_i_codigo ";
+            $sWhere     .= " and s164_especmedico = $oParam->iProf ";
+            $sSql        = $oDaoSauCotas->sql_query_cotas("", "s164_codigo", "", $sWhere);
+            $rsCotasProf = $oDaoSauCotasProfissional->sql_record($sSql);
+
+            //Seta valores na classe
+            $oDaoSauCotasProfissional->s164_especmedico     = $oParam->iProf;
+            $oDaoSauCotasProfissional->s164_cotaagendamento = $oCotas->s163_i_codigo;
+            $oDaoSauCotasProfissional->s164_quantidade      = $oParam->aUnidades[$iInd]->iDistribuido;
+
+            if ($oDaoSauCotasProfissional->numrows > 0) {
+
+              $oCotasProf                            = db_utils::fieldsmemory($rsCotasProf, 0);
+              $oDaoSauCotasProfissional->s164_codigo = $oCotasProf->s164_codigo;
+              if ($oDaoSauCotasProfissional->s164_quantidade == 0) {
+                $oDaoSauCotasProfissional->excluir($oCotasProf->s164_codigo);
+              } else {
+                $oDaoSauCotasProfissional->alterar($oCotasProf->s164_codigo);
+              }
+              if ($oDaoSauCotasProfissional->erro_status == "0") {
+                $oDaoSauCotas->erro_status = "0";
+              }
+              $oDaoSauCotas->erro_msg    = $oDaoSauCotasProfissional->erro_msg;
+            } else {
+
+              $oDaoSauCotasProfissional->erro_status = "1";
+              $oDaoSauCotasProfissional->s164_codigo = null;
+              $oDaoSauCotasProfissional->incluir(null);
+              if ($oDaoSauCotasProfissional->erro_status == "0") {
+                $oDaoSauCotas->erro_status = "0";
+              }
+              $oDaoSauCotas->erro_msg    = $oDaoSauCotasProfissional->erro_msg;
             }
-            $oDaoSauCotas->erro_msg    = $oDaoSauCotasProfissional->erro_msg;
-
           }
-
         }
 
-      }
-      if ($oDaoSauCotas->erro_status == "0") {
-        break;
-      }
+        if ($oDaoSauCotas->erro_status == "0") {
+          break;
+        }
 
       }
 
     }
   }
   if ($oDaoSauCotas->erro_status == "0") {
-    
+
     db_fim_transacao(true);
     $oRetorno->iStatus  = 0;
-    
+
   } else {
     db_fim_transacao(false);
   }
   $oRetorno->sMessage = urlencode($oDaoSauCotas->erro_msg);
-  
+
 }
 
 if ($oParam->exec == 'getUnidadesMedicos') {
 
-  $oDaoUnidadeMedicos = db_utils::getdao('unidademedicos');
+  $oDaoUnidadeMedicos = new cl_unidademedicos();
 
   if (!empty($oParam->sMedicos)) {
     $sWhere = " sd04_i_medico in ($oParam->sMedicos) ";
@@ -784,7 +809,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $sWhere = '';
   }
 
-  $sSql               = $oDaoUnidadeMedicos->sql_query(null, ' distinct sd04_i_unidade, descrdepto ', 
+  $sSql               = $oDaoUnidadeMedicos->sql_query(null, ' distinct sd04_i_unidade, descrdepto ',
                                                        'sd04_i_unidade', $sWhere
                                                       );
   $rsUnidadeMedicos   = $oDaoUnidadeMedicos->sql_record($sSql);
@@ -809,13 +834,13 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'getCgsCns') {
 
-  $oDaoCgsCartaoSus = db_utils::getdao('cgs_cartaosus');
-  
-  $sSql             = $oDaoCgsCartaoSus->sql_query(null, 'z01_i_cgsund, z01_v_nome', 
+  $oDaoCgsCartaoSus = new cl_cgs_cartaosus();
+
+  $sSql             = $oDaoCgsCartaoSus->sql_query(null, 'z01_i_cgsund, z01_v_nome',
                                                    null, ' s115_c_cartaosus = \''.$oParam->iCns.'\''
                                                   );
   $rsCgsCartaoSus   = $oDaoCgsCartaoSus->sql_record($sSql);
-  
+
   if ($oDaoCgsCartaoSus->numrows > 0) { // se encontrou o cgs
 
     $oDadosCgsCartaoSus     = db_utils::fieldsmemory($rsCgsCartaoSus, 0);
@@ -823,7 +848,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $oRetorno->z01_v_nome   = urlencode($oDadosCgsCartaoSus->z01_v_nome);
 
   } else {
- 
+
     $oRetorno->z01_i_cgsund = '';
     $oRetorno->z01_v_nome   = '';
 
@@ -831,13 +856,13 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'getUltimaTriagemAvulsa') {
 
-  $oDaoSauTriagemAvulsa = db_utils::getdao('sau_triagemavulsa');
+  $oDaoSauTriagemAvulsa = new cl_sau_triagemavulsa();
 
   $sCampos              = 's152_i_codigo, s152_i_pressaosistolica, s152_i_cintura, s152_n_peso, ';
   $sCampos             .= 's152_i_altura, s152_i_glicemia, s152_i_alimentacaoexameglicemia, s152_i_login, ';
   $sCampos             .= 'sd03_i_codigo, z01_nome, sd04_i_unidade, sd04_i_codigo, descrdepto, ';
   $sCampos             .= 's152_d_dataconsulta, s152_i_cgsund, z01_v_nome, s152_i_pressaodiastolica ';
-                       
+
   $sSql                 = $oDaoSauTriagemAvulsa->sql_query_grid(null, $sCampos, ' s152_i_codigo desc ',
                                                                 ' s152_i_cgsund = '.$oParam->iCgs
                                                                );
@@ -852,7 +877,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
       $oRetorno->aTriagens[$iCont]->s152_i_codigo                   = $oDados->s152_i_codigo;
       $oRetorno->aTriagens[$iCont]->s152_i_pressaosistolica         = $oDados->s152_i_pressaosistolica;
       $oRetorno->aTriagens[$iCont]->s152_i_pressaodiastolica        = $oDados->s152_i_pressaodiastolica;
-      $oRetorno->aTriagens[$iCont]->s152_i_cintura                  = $oDados->s152_i_cintura;       
+      $oRetorno->aTriagens[$iCont]->s152_i_cintura                  = $oDados->s152_i_cintura;
       $oRetorno->aTriagens[$iCont]->s152_n_peso                     = $oDados->s152_n_peso;
       $oRetorno->aTriagens[$iCont]->s152_i_altura                   = $oDados->s152_i_altura;
       $oRetorno->aTriagens[$iCont]->s152_i_glicemia                 = $oDados->s152_i_glicemia;
@@ -875,7 +900,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
         $oRetorno->aTriagens[$iCont]->sAlimentacao = '';
       }
 
-        
+
       if ($iCont == 0) { // Última triagem lançada. Somente a última pode ser editada
 
         if (db_getsession('DB_id_usuario') == $oDados->s152_i_login) { // Somente o usuário que lançou pode editar
@@ -891,14 +916,14 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     }
 
   } else {
- 
+
     $oRetorno->iStatus = 2;
 
   }
 
 } elseif ($oParam->exec == 'verificaHipertensaoDiabetes') {
 
-  $oDaoCgsFatorDeRisco = db_utils::getdao('cgsfatorderisco');
+  $oDaoCgsFatorDeRisco = new cl_cgsfatorderisco();
 
   // Verifica se possui hipertensão
   $sSql = $oDaoCgsFatorDeRisco->sql_query_fator_risco_farmacia(null, 's105_i_codigo', '',
@@ -926,13 +951,13 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'getAcompanhamentos') {
 
-  $oDaoFarCadAcompPacHiperdia = db_utils::getdao('far_cadacomppachiperdia');
+  $oDaoFarCadAcompPacHiperdia = new cl_far_cadacomppachiperdia();
 
   $sCampos                    = 's152_i_codigo, s152_i_pressaosistolica, s152_i_cintura, s152_n_peso, ';
   $sCampos                   .= 's152_i_altura, s152_i_glicemia, s152_i_alimentacaoexameglicemia, s152_i_login, ';
   $sCampos                   .= 'sd03_i_codigo, z01_nome, sd04_i_unidade, sd04_i_codigo, descrdepto, fa50_i_codigo, ';
   $sCampos                   .= 's152_d_dataconsulta, s152_i_cgsund, z01_v_nome, s152_i_pressaodiastolica ';
-                             
+
   $sSql                       = $oDaoFarCadAcompPacHiperdia->sql_query2(null, $sCampos, ' s152_i_codigo desc ',
                                                                         ' fa50_i_cgsund = '.$oParam->iCgs
                                                                        );
@@ -948,7 +973,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
       $oRetorno->aAcompanhamentos[$iCont]->s152_i_codigo                   = $oDados->s152_i_codigo;
       $oRetorno->aAcompanhamentos[$iCont]->s152_i_pressaosistolica         = $oDados->s152_i_pressaosistolica;
       $oRetorno->aAcompanhamentos[$iCont]->s152_i_pressaodiastolica        = $oDados->s152_i_pressaodiastolica;
-      $oRetorno->aAcompanhamentos[$iCont]->s152_i_cintura                  = $oDados->s152_i_cintura;       
+      $oRetorno->aAcompanhamentos[$iCont]->s152_i_cintura                  = $oDados->s152_i_cintura;
       $oRetorno->aAcompanhamentos[$iCont]->s152_n_peso                     = $oDados->s152_n_peso;
       $oRetorno->aAcompanhamentos[$iCont]->s152_i_altura                   = $oDados->s152_i_altura;
       $oRetorno->aAcompanhamentos[$iCont]->s152_i_glicemia                 = $oDados->s152_i_glicemia;
@@ -971,7 +996,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
         $oRetorno->aAcompanhamentos[$iCont]->sAlimentacao = '';
       }
 
-        
+
       if ($iCont == 0) { // Última triagem lançada. Somente a última pode ser editada
 
         if (db_getsession('DB_id_usuario') == $oDados->s152_i_login) { // Somente o usuário que lançou pode editar
@@ -987,14 +1012,14 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     }
 
   } else {
- 
+
     $oRetorno->iStatus = 2;
 
   }
 
 } elseif ($oParam->exec == 'getMedicamentosCadAcomp') {
 
-  $oDaoFarMedicamentoCadAcomp = db_utils::getdao('far_medicamentocadacomp');
+  $oDaoFarMedicamentoCadAcomp = new cl_far_medicamentocadacomp();
 
   $sSql                       = $oDaoFarMedicamentoCadAcomp->sql_query_file(null, '*', 'fa49_i_codigo',
                                                                             ' fa49_i_cadacomp = '.$oParam->iCadAcomp
@@ -1013,19 +1038,19 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     }
 
   } else {
- 
+
     $oRetorno->iStatus = 2;
 
   }
 
 } elseif ($oParam->exec == 'getInfoCgs') {
-  
-  $oDaoCgsUnd       = db_utils::getdao('cgs_und');
-  $oDaoCgsCartaoSus = db_utils::getdao('cgs_cartaosus');
-  
+
+  $oDaoCgsUnd       = new cl_cgs_und();
+  $oDaoCgsCartaoSus = new cl_cgs_cartaosus();
+
   $sSql             = $oDaoCgsUnd->sql_query($oParam->iCgs);
   $rsCgsUnd         = $oDaoCgsUnd->sql_record($sSql);
-  
+
   $oRetorno->z01_i_cgsund = $oParam->iCgs;
   if ($oDaoCgsUnd->numrows > 0) { // se encontrou o cgs
 
@@ -1051,24 +1076,24 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
   } else {
 
-    $oRetorno->z01_v_ender  = ''; 
-    $oRetorno->z01_v_bairro = '';
-    $oRetorno->z01_v_munic  = '';
-    $oRetorno->z01_v_cep    = '';
-    $oRetorno->z01_v_uf     = '';
-    $oRetorno->z01_v_email  = '';
-    $oRetorno->z01_v_telef  = '';
-    $oRetorno->z01_v_telcel = '';
-    $oRetorno->z01_d_nasc   = '';
-    $oRetorno->z01_v_cgccpf = '';
-    $oRetorno->z01_v_ident  = '';
-    $oRetorno->z01_v_mae    = '';
-    $oRetorno->z01_v_pai    = '';
-    $oRetorno->z01_v_nome   = '';
-    $oRetorno->z01_i_estciv = '';
-    $oRetorno->z01_v_sexo   = '';
-    $oRetorno->z01_i_numero = '';
-    $oRetorno->z01_v_compl  = '';
+    $oRetorno->z01_v_ender       = '';
+    $oRetorno->z01_v_bairro      = '';
+    $oRetorno->z01_v_munic       = '';
+    $oRetorno->z01_v_cep         = '';
+    $oRetorno->z01_v_uf          = '';
+    $oRetorno->z01_v_email       = '';
+    $oRetorno->z01_v_telef       = '';
+    $oRetorno->z01_v_telcel      = '';
+    $oRetorno->z01_d_nasc        = '';
+    $oRetorno->z01_v_cgccpf      = '';
+    $oRetorno->z01_v_ident       = '';
+    $oRetorno->z01_v_mae         = '';
+    $oRetorno->z01_v_pai         = '';
+    $oRetorno->z01_v_nome        = '';
+    $oRetorno->z01_i_estciv      = '';
+    $oRetorno->z01_v_sexo        = '';
+    $oRetorno->z01_i_numero      = '';
+    $oRetorno->z01_v_compl       = '';
 
   }
 
@@ -1094,8 +1119,8 @@ if ($oParam->exec == 'getUnidadesMedicos') {
   }
 
 } elseif ($oParam->exec == 'getTodosCnsCgs') {
-  
-  $oDaoCgsCartaoSus = db_utils::getdao('cgs_cartaosus');
+
+  $oDaoCgsCartaoSus = new cl_cgs_cartaosus();
 
   /* pega os cartões sus */
   $sSql               = $oDaoCgsCartaoSus->sql_query(null, ' s115_c_cartaosus, s115_c_tipo, s115_i_codigo ',
@@ -1123,8 +1148,8 @@ if ($oParam->exec == 'getUnidadesMedicos') {
   }
 
 } elseif ($oParam->exec == 'getAgendamentosCgs') {
-  
-  $oDaoAgendamentos = db_utils::getdao('agendamentos');
+
+  $oDaoAgendamentos = new cl_agendamentos();
   $dDataAtual       = date('Y-m-d', db_getsession('DB_datausu'));
 
   $sSubAtendido     = 'select sd29_i_codigo from prontagendamento inner join prontproced ';
@@ -1149,7 +1174,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
   $sOrderBy         = ' sd23_d_consulta desc, sd23_c_hora desc ';
 
-  $sSql             = $oDaoAgendamentos->sql_query_consulta_geral(null, $sCampos, $sOrderBy, 
+  $sSql             = $oDaoAgendamentos->sql_query_consulta_geral(null, $sCampos, $sOrderBy,
                                                                   ' sd23_i_numcgs = '.$oParam->iCgs
                                                                  );
   $rs               = $oDaoAgendamentos->sql_record($sSql);
@@ -1162,10 +1187,10 @@ if ($oParam->exec == 'getUnidadesMedicos') {
       $oDados = db_utils::fieldsmemory($rs, $iCont);
 
       /* Verifico qual a situação do agendamentos */
-      $sSituacao = $oDados->anulado == 'true' ? 'Anulado' : 
-                                                 (empty($oDados->situacao) ? 'Não compareceu' :
+      $sSituacao = $oDados->anulado == 'true' ? 'Anulado' :
+                                                 (empty($oDados->situacao) ? 'não compareceu' :
                                                                              $oDados->situacao);
-                                                                            
+
       /* Seto as variáveis para retorno */
       $oRetorno->aAgendamentos[$iCont]->sd23_d_agendamento = urlencode($oDados->sd23_d_agendamento);
       $oRetorno->aAgendamentos[$iCont]->id_usuario         = urlencode($oDados->id_usuario);
@@ -1190,20 +1215,20 @@ if ($oParam->exec == 'getUnidadesMedicos') {
   }
 
 } elseif ($oParam->exec == 'getProntuariosCgs') {
-  
-  $oDaoProntProced = db_utils::getdao('prontproced');
 
-  $sCampos         = 'sd24_i_codigo, s102_i_agendamento, sd29_d_data, sd29_c_hora, coddepto, ';
+  $oDaoProntProced = new cl_prontproced();
+
+  $sCampos         = 'distinct sd24_i_codigo, s102_i_agendamento, sd29_d_data, sd29_c_hora, coddepto, ';
   $sCampos        .= 'descrdepto, sd03_i_codigo, z01_nome, rh70_estrutural, rh70_descr, ';
   $sCampos        .= 'sd29_i_usuario, login, sd29_d_cadastro, sd29_c_cadastro ';
 
   $sOrderBy        = 'sd29_d_data desc, sd29_c_hora desc, sd24_i_codigo desc';
 
-  $sSql            = $oDaoProntProced->sql_query_consulta_geral(null, $sCampos, $sOrderBy, 
+  $sSql            = $oDaoProntProced->sql_query_consulta_geral(null, $sCampos, $sOrderBy,
                                                                  ' sd24_i_numcgs = '.$oParam->iCgs
                                                                 );
   $rs              = $oDaoProntProced->sql_record($sSql);
-  
+
   $oRetorno->aProntuarios = array();
   if ($oDaoProntProced->numrows > 0) { // se o paciente possui prontuarios
 
@@ -1212,6 +1237,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
       $oDados = db_utils::fieldsmemory($rs, $iCont);
 
       /* Seto as variáveis para retorno */
+      $oRetorno->aProntuarios[$iCont]                     = new stdClass();
       $oRetorno->aProntuarios[$iCont]->sd24_i_codigo      = urlencode($oDados->sd24_i_codigo);
       $oRetorno->aProntuarios[$iCont]->s102_i_agendamento = urlencode($oDados->s102_i_agendamento);
       $oRetorno->aProntuarios[$iCont]->sd29_d_data        = urlencode($oDados->sd29_d_data);
@@ -1233,18 +1259,18 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
     $oRetorno->iStatus  = 2;
     $oRetorno->sMessage = urlencode('Nenhum prontuário encontrado para este paciente.');
-
+    $oRetorno->erro     = true;
   }
 
 } elseif ($oParam->exec == 'getExamesCgs') {
-  
-  $oDaoLabRequiItem = db_utils::getdao('lab_requiitem');
+
+  $oDaoLabRequiItem = new cl_lab_requiitem();
 
   $sCampos          = 'la21_d_data, la02_c_descr, la08_c_descr, la32_d_data, la31_d_data';
 
   $sOrderBy         = 'la21_d_data';
 
-  $sSql             = $oDaoLabRequiItem->sql_query_consulta_geral(null, $sCampos, $sOrderBy, 
+  $sSql             = $oDaoLabRequiItem->sql_query_consulta_geral(null, $sCampos, $sOrderBy,
                                                                   ' la22_i_cgs = '.$oParam->iCgs
                                                                  );
   $rs               = $oDaoLabRequiItem->sql_record($sSql);
@@ -1273,41 +1299,42 @@ if ($oParam->exec == 'getUnidadesMedicos') {
   }
 
 } elseif ($oParam->exec == 'getInfoCgm') {
-  
-  $oDaoCgm = db_utils::getdao('cgm');
-  
+
+  $oDaoCgm = new cl_cgm();
+
   $sSql    = $oDaoCgm->sql_query($oParam->iCgm);
   $rs      = $oDaoCgm->sql_record($sSql);
-  
+
   $oRetorno->z01_numcgm = $oParam->iCgm;
   if ($oDaoCgm->numrows > 0) { // se encontrou o cgs
 
-    $oDados                 = db_utils::fieldsmemory($rs, 0);
-    $oRetorno->z01_ender    = urlencode($oDados->z01_ender);
-    $oRetorno->z01_bairro   = urlencode($oDados->z01_bairro);
-    $oRetorno->z01_munic    = urlencode($oDados->z01_munic);
-    $oRetorno->z01_cep      = urlencode($oDados->z01_cep);
-    $oRetorno->z01_uf       = urlencode($oDados->z01_uf);
-    $oRetorno->z01_email    = urlencode($oDados->z01_email);
-    $oRetorno->z01_telef    = urlencode($oDados->z01_telef);
-    $oRetorno->z01_telcel   = urlencode($oDados->z01_telcel);
-    $oRetorno->z01_nasc     = urlencode($oDados->z01_nasc);
-    $oRetorno->z01_cgccpf   = urlencode($oDados->z01_cgccpf);
-    $oRetorno->z01_ident    = urlencode($oDados->z01_ident);
-    $oRetorno->z01_mae      = urlencode($oDados->z01_mae);
-    $oRetorno->z01_pai      = urlencode($oDados->z01_pai);
-    $oRetorno->z01_nome     = urlencode($oDados->z01_nome);
-    $oRetorno->z01_estciv   = urlencode($oDados->z01_estciv);
-    $oRetorno->z01_sexo     = urlencode($oDados->z01_sexo);
-    $oRetorno->z01_numero   = urlencode($oDados->z01_numero);
-    $oRetorno->z01_compl    = urlencode($oDados->z01_compl);
-    $oRetorno->z01_cxpostal = urlencode($oDados->z01_cxpostal);
-    $oRetorno->z01_cadast   = urlencode($oDados->z01_cadast);
-    $oRetorno->z01_ultalt   = urlencode($oDados->z01_ultalt);
+    $oDados                   = db_utils::fieldsmemory($rs, 0);
+    $oRetorno->z01_ender      = urlencode($oDados->z01_ender);
+    $oRetorno->z01_bairro     = urlencode($oDados->z01_bairro);
+    $oRetorno->z01_munic      = urlencode($oDados->z01_munic);
+    $oRetorno->z01_cep        = urlencode($oDados->z01_cep);
+    $oRetorno->z01_uf         = urlencode($oDados->z01_uf);
+    $oRetorno->z01_email      = urlencode($oDados->z01_email);
+    $oRetorno->z01_telef      = urlencode($oDados->z01_telef);
+    $oRetorno->z01_telcel     = urlencode($oDados->z01_telcel);
+    $oRetorno->z01_nasc       = urlencode($oDados->z01_nasc);
+    $oRetorno->z01_cgccpf     = urlencode($oDados->z01_cgccpf);
+    $oRetorno->z01_ident      = urlencode($oDados->z01_ident);
+    $oRetorno->z01_mae        = urlencode($oDados->z01_mae);
+    $oRetorno->z01_pai        = urlencode($oDados->z01_pai);
+    $oRetorno->z01_nome       = urlencode($oDados->z01_nome);
+    $oRetorno->z01_nomecomple = urlencode($oDados->z01_nomecomple);
+    $oRetorno->z01_estciv     = urlencode($oDados->z01_estciv);
+    $oRetorno->z01_sexo       = urlencode($oDados->z01_sexo);
+    $oRetorno->z01_numero     = urlencode($oDados->z01_numero);
+    $oRetorno->z01_compl      = urlencode($oDados->z01_compl);
+    $oRetorno->z01_cxpostal   = urlencode($oDados->z01_cxpostal);
+    $oRetorno->z01_cadast     = urlencode($oDados->z01_cadast);
+    $oRetorno->z01_ultalt     = urlencode($oDados->z01_ultalt);
 
   } else {
 
-    $oRetorno->z01_ender    = ''; 
+    $oRetorno->z01_ender    = '';
     $oRetorno->z01_bairro   = '';
     $oRetorno->z01_munic    = '';
     $oRetorno->z01_cep      = '';
@@ -1333,10 +1360,10 @@ if ($oParam->exec == 'getUnidadesMedicos') {
   }
 
 } elseif ($oParam->exec == 'verificaForaRede') {
-  
-  $oDaoSauMedicosForaRede = db_utils::getdao('sau_medicosforarede');
 
-  $sSql                   = $oDaoSauMedicosForaRede->sql_query_file(null, 's154_i_codigo', '', 
+  $oDaoSauMedicosForaRede = new cl_sau_medicosforarede();
+
+  $sSql                   = $oDaoSauMedicosForaRede->sql_query_file(null, 's154_i_codigo', '',
                                                                     ' s154_i_medico = '.$oParam->iMedico
                                                                    );
   $rs                     = $oDaoSauMedicosForaRede->sql_record($sSql);
@@ -1353,7 +1380,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'lancarAusenciaProfissional') {
 
-  $oDaoAusencias    = db_utils::getdao('ausencias');
+  $oDaoAusencias    = new cl_ausencias();
 
   $aHorariosIni = explode(',', $oParam->sHorariosIni);
   $aHorariosFim = explode(',', $oParam->sHorariosFim);
@@ -1362,19 +1389,19 @@ if ($oParam->exec == 'getUnidadesMedicos') {
   db_inicio_transacao();
   for ($iCont = 0; $iCont < $iTam; $iCont++) {
 
-    $lAgendado = verificaAgendamentoHorario($aHorariosIni[$iCont], $aHorariosFim[$iCont], 
+    $lAgendado = verificaAgendamentoHorario($aHorariosIni[$iCont], $aHorariosFim[$iCont],
                                             formataData($oParam->dIni), formataData($oParam->dFim),
                                             $oParam->iEspecMed
                                            );
     if ($lAgendado) {
 
       $oRetorno->iStatus  = 0;
-      $oRetorno->sMessage = urlencode('Não foi possível lançar ausência para o profissional, pois o mesmo '.
+      $oRetorno->sMessage = urlencode('não foi possível lançar ausência para o profissional, pois o mesmo '.
                                       'possui agendamento no período de '.$aHorariosIni[$iCont].
                                       ' a '.$aHorariosFim[$iCont]
                                      );
       break;
-   
+
     }
 
     $oDaoAusencias->sd06_d_data       = date('Y-m-d', db_getsession('DB_datausu'));
@@ -1402,9 +1429,9 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'getCbosProfissional') {
 
-  $oDaoFarCbosProfissional = db_utils::getdao('far_cbosprofissional');
+  $oDaoFarCbosProfissional = new cl_far_cbosprofissional();
 
-  $sSql                    = $oDaoFarCbosProfissional->sql_query_file(null, 'fa54_i_codigo, fa54_i_cbos ', '', 
+  $sSql                    = $oDaoFarCbosProfissional->sql_query_file(null, 'fa54_i_codigo, fa54_i_cbos ', '',
                                                                       'fa54_i_unidademedico = '.$oParam->iUndMed
                                                                      );
   $rs                      = $oDaoFarCbosProfissional->sql_record($sSql);
@@ -1420,16 +1447,16 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $oRetorno->iStatus       = 0;
     $oRetorno->fa54_i_codigo = '';
     $oRetorno->fa54_i_cbos   = '';
-    
+
   }
 
 } elseif ($oParam->exec == 'getProcedimentosAgendaProfissional') {
 
-  $oDaoSauProcedMedAgendamento = db_utils::getdao('sau_procedmedagendamento');
+  $oDaoSauProcedMedAgendamento = new cl_sau_procedmedagendamento();
 
   $sSql                        = $oDaoSauProcedMedAgendamento->sql_query(null, 's156_i_codigo, '.
                                                                          'sd63_c_procedimento, '.
-                                                                         'sd63_c_nome ', 
+                                                                         'sd63_c_nome ',
                                                                          's156_i_codigo asc',
                                                                          's156_i_especmed = '.
                                                                          $oParam->iEspecMed
@@ -1438,7 +1465,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
   if ($oDaoSauProcedMedAgendamento->numrows > 0) {
 
-    $oRetorno->aProcedimentos = db_utils::getColectionByRecord($rs, false, false, true);
+    $oRetorno->aProcedimentos = db_utils::getCollectionByRecord($rs, false, false, true);
 
   } else {
 
@@ -1449,7 +1476,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'incluirProcedimentoAgendaProfissional') {
 
-  $oDaoSauProcedMedAgendamento                      = db_utils::getdao('sau_procedmedagendamento');
+  $oDaoSauProcedMedAgendamento                      = new cl_sau_procedmedagendamento();
   $oDaoSauProcedMedAgendamento->s156_i_especmed     = $oParam->iEspecMed;
   $oDaoSauProcedMedAgendamento->s156_i_procedimento = $oParam->iProcedimento;
   $oDaoSauProcedMedAgendamento->incluir(null);
@@ -1460,7 +1487,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'excluirProcedimentoAgendaProfissional') {
 
-  $oDaoSauProcedMedAgendamento                = db_utils::getdao('sau_procedmedagendamento');
+  $oDaoSauProcedMedAgendamento                = new cl_sau_procedmedagendamento();
   $oDaoSauProcedMedAgendamento->s156_i_codigo = $oParam->iCodigo;
   $oDaoSauProcedMedAgendamento->excluir($oParam->iCodigo);
   if ($oDaoSauProcedMedAgendamento->erro_status == '0') {
@@ -1470,11 +1497,11 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'getProcedimentosAgendaUnidade') {
 
-  $oDaoSauProcedUnidadeAgendamento = db_utils::getdao('sau_procedunidadeagendamento');
+  $oDaoSauProcedUnidadeAgendamento = new cl_sau_procedunidadeagendamento();
 
   $sSql                            = $oDaoSauProcedUnidadeAgendamento->sql_query(null, 's157_i_codigo, '.
                                                                                  'sd63_c_procedimento, '.
-                                                                                 'sd63_c_nome ', 
+                                                                                 'sd63_c_nome ',
                                                                                  's157_i_codigo asc',
                                                                                  's157_i_unidade = '.
                                                                                  $oParam->iUnidade
@@ -1482,7 +1509,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
   $rs                              = $oDaoSauProcedUnidadeAgendamento->sql_record($sSql);
   if ($oDaoSauProcedUnidadeAgendamento->numrows > 0) {
 
-    $oRetorno->aProcedimentos = db_utils::getColectionByRecord($rs, false, false, true);
+    $oRetorno->aProcedimentos = db_utils::getCollectionByRecord($rs, false, false, true);
 
   } else {
 
@@ -1493,7 +1520,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'incluirProcedimentoAgendaUnidade') {
 
-  $oDaoSauProcedUnidadeAgendamento                      = db_utils::getdao('sau_procedunidadeagendamento');
+  $oDaoSauProcedUnidadeAgendamento                      = new cl_sau_procedunidadeagendamento();
   $oDaoSauProcedUnidadeAgendamento->s157_i_unidade      = $oParam->iUnidade;
   $oDaoSauProcedUnidadeAgendamento->s157_i_procedimento = $oParam->iProcedimento;
   $oDaoSauProcedUnidadeAgendamento->incluir(null);
@@ -1504,7 +1531,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'excluirProcedimentoAgendaUnidade') {
 
-  $oDaoSauProcedUnidadeAgendamento                = db_utils::getdao('sau_procedunidadeagendamento');
+  $oDaoSauProcedUnidadeAgendamento                = new cl_sau_procedunidadeagendamento();
   $oDaoSauProcedUnidadeAgendamento->s157_i_codigo = $oParam->iCodigo;
   $oDaoSauProcedUnidadeAgendamento->excluir($oParam->iCodigo);
   if ($oDaoSauProcedUnidadeAgendamento->erro_status == '0') {
@@ -1514,8 +1541,8 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'getInfoProfissional') {
 
-  $oDaoMedicos = db_utils::getdao('medicos');
-  $sSql        = $oDaoMedicos->sql_query_info_profissional(null, '*', '', 
+  $oDaoMedicos = new cl_medicos();
+  $sSql        = $oDaoMedicos->sql_query_cgm_fora_rede(null, '*', '',
                                                            'sd03_i_codigo = '.$oParam->iProfissional
                                                           );
   $rs          = $oDaoMedicos->sql_record($sSql);
@@ -1526,14 +1553,14 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
     $oRetorno->iStatus       = 0;
     $oRetorno->sMessage      = urlencode('Profissional não encontrado.');
-    
+
   }
 
 } elseif ($oParam->exec == 'incluirReceitaMedica') {
 
-  $oDaoSauReceitaMedica       = db_utils::getdao('sau_receitamedica');
-  $oDaoSauReceitaProntuario   = db_utils::getdao('sau_receitaprontuario');
-  $oDaoSauMedicamentosReceita = db_utils::getdao('sau_medicamentosreceita');
+  $oDaoSauReceitaMedica       = new cl_sau_receitamedica();
+  $oDaoSauReceitaProntuario   = new cl_sau_receitaprontuario();
+  $oDaoSauMedicamentosReceita = new cl_sau_medicamentosreceita();
 
   db_inicio_transacao();
 
@@ -1541,7 +1568,8 @@ if ($oParam->exec == 'getUnidadesMedicos') {
   $oDaoSauReceitaMedica->s158_i_profissional = $oParam->s158_i_profissional;
   $oDaoSauReceitaMedica->s158_i_tiporeceita  = $oParam->s158_i_tiporeceita;
   $oDaoSauReceitaMedica->s158_d_validade     = formataData($oParam->s158_d_validade);
-  $oDaoSauReceitaMedica->s158_t_prescricao   = $oParam->s158_t_prescricao;
+
+  $oDaoSauReceitaMedica->s158_t_prescricao   = db_stdClass::normalizeStringJsonEscapeString($oParam->s158_t_prescricao);
   $oDaoSauReceitaMedica->s158_i_situacao     = 1; // 1 - Normal, 2 - Atendida, 3 - Anulada
   $oDaoSauReceitaMedica->s158_i_login        = db_getsession('DB_id_usuario');
   $oDaoSauReceitaMedica->s158_d_data         = date('Y-m-d', db_getsession('DB_datausu'));
@@ -1563,24 +1591,24 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $iTam                                       = count($oParam->aMedicamentos);
     for ($iCont = 0; $iCont < $iTam; $iCont++) {
 
-      $oDaoSauMedicamentosReceita->s159_i_formaadm = $oParam->aMedicamentos[$iCont]->s159_i_formaadm;
+      $oDaoSauMedicamentosReceita->s159_i_formaadm    = $oParam->aMedicamentos[$iCont]->s159_i_formaadm;
       $oDaoSauMedicamentosReceita->s159_i_medicamento = $oParam->aMedicamentos[$iCont]->s159_i_medicamento;
-      $oDaoSauMedicamentosReceita->s159_n_quant = $oParam->aMedicamentos[$iCont]->s159_n_quant;
-      $oDaoSauMedicamentosReceita->s159_t_posologia = $oParam->aMedicamentos[$iCont]->s159_t_posologia;
+      $oDaoSauMedicamentosReceita->s159_n_quant       = $oParam->aMedicamentos[$iCont]->s159_n_quant;
+      $oDaoSauMedicamentosReceita->s159_t_posologia   = db_stdClass::normalizeStringJsonEscapeString($oParam->aMedicamentos[$iCont]->s159_t_posologia);
       $oDaoSauMedicamentosReceita->incluir(null);
       if ($oDaoSauMedicamentosReceita->erro_status == '0') {
-       
+
        $oRetorno->iStatus  = 0;
        $oRetorno->sMessage = urlencode($oDaoSauMedicamentosReceita->erro_msg);
        break;
 
       }
       $aCodMed[$iCont] = $oDaoSauMedicamentosReceita->s159_i_codigo;
-      
+
     }
 
   }
-  
+
   if ($oRetorno->iStatus != 0) {
 
     /* Vinculação da receita a um prontuário (FAA) */
@@ -1588,7 +1616,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $oDaoSauReceitaProntuario->s162_i_prontuario = $oParam->s162_i_prontuario;
     $oDaoSauReceitaProntuario->incluir(null);
     if ($oDaoSauReceitaProntuario->erro_status == '0') {
-     
+
      $oRetorno->iStatus  = 0;
      $oRetorno->sMessage = urlencode($oDaoSauReceitaProntuario->erro_msg);
 
@@ -1608,9 +1636,9 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'alterarReceitaMedica') {
 
-  $oDaoSauReceitaMedica       = db_utils::getdao('sau_receitamedica');
-  $oDaoSauReceitaProntuario   = db_utils::getdao('sau_receitaprontuario');
-  $oDaoSauMedicamentosReceita = db_utils::getdao('sau_medicamentosreceita');
+  $oDaoSauReceitaMedica       = new cl_sau_receitamedica();
+  $oDaoSauReceitaProntuario   = new cl_sau_receitaprontuario();
+  $oDaoSauMedicamentosReceita = new cl_sau_medicamentosreceita();
 
   db_inicio_transacao();
 
@@ -1619,7 +1647,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
   $oDaoSauReceitaMedica->s158_i_profissional = $oParam->s158_i_profissional;
   $oDaoSauReceitaMedica->s158_i_tiporeceita  = $oParam->s158_i_tiporeceita;
   $oDaoSauReceitaMedica->s158_d_validade     = formataData($oParam->s158_d_validade);
-  $oDaoSauReceitaMedica->s158_t_prescricao   = $oParam->s158_t_prescricao;
+  $oDaoSauReceitaMedica->s158_t_prescricao   = db_stdClass::normalizeStringJsonEscapeString( $oParam->s158_t_prescricao );
   $oDaoSauReceitaMedica->alterar($oParam->s158_i_codigo);
 
   if ($oDaoSauReceitaMedica->erro_status == '0') {
@@ -1634,12 +1662,12 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     /* Exclusão dos medicamentos da receita médica */
     $oDaoSauMedicamentosReceita->excluir(null, ' s159_i_receita = '.$oDaoSauReceitaMedica->s158_i_codigo);
     if ($oDaoSauMedicamentosReceita->erro_status == '0') {
-     
+
       $oRetorno->iStatus  = 0;
       $oRetorno->sMessage = urlencode($oDaoSauMedicamentosReceita->erro_msg);
 
     }
-  
+
   }
 
   if ($oRetorno->iStatus != 0) {
@@ -1650,24 +1678,24 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $iTam                                       = count($oParam->aMedicamentos);
     for ($iCont = 0; $iCont < $iTam; $iCont++) {
 
-      $oDaoSauMedicamentosReceita->s159_i_formaadm = $oParam->aMedicamentos[$iCont]->s159_i_formaadm;
+      $oDaoSauMedicamentosReceita->s159_i_formaadm    = $oParam->aMedicamentos[$iCont]->s159_i_formaadm;
       $oDaoSauMedicamentosReceita->s159_i_medicamento = $oParam->aMedicamentos[$iCont]->s159_i_medicamento;
-      $oDaoSauMedicamentosReceita->s159_n_quant = $oParam->aMedicamentos[$iCont]->s159_n_quant;
-      $oDaoSauMedicamentosReceita->s159_t_posologia = $oParam->aMedicamentos[$iCont]->s159_t_posologia;
+      $oDaoSauMedicamentosReceita->s159_n_quant       = $oParam->aMedicamentos[$iCont]->s159_n_quant;
+      $oDaoSauMedicamentosReceita->s159_t_posologia   = db_stdClass::normalizeStringJsonEscapeString( $oParam->aMedicamentos[$iCont]->s159_t_posologia );
       $oDaoSauMedicamentosReceita->incluir(null);
       if ($oDaoSauMedicamentosReceita->erro_status == '0') {
-       
+
        $oRetorno->iStatus  = 0;
        $oRetorno->sMessage = urlencode($oDaoSauMedicamentosReceita->erro_msg);
        break;
 
       }
       $aCodMed[$iCont] = $oDaoSauMedicamentosReceita->s159_i_codigo;
-      
+
     }
 
   }
-  
+
   if ($oRetorno->iStatus != 0) {
 
     $oRetorno->sMessage      = urlencode($oDaoSauReceitaMedica->erro_msg);
@@ -1680,10 +1708,10 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'anularReceitaMedica') {
 
-  $oDaoSauReceitaMedicaAnulada = db_utils::getdao('sau_receitamedicaanulada');
+  $oDaoSauReceitaMedicaAnulada = new cl_sau_receitamedicaanulada();
 
   /* Anulação da receita médica incluir na tabela sau_receitamedicaanulada. O campo s158_i_situacao
-     da tabela sau_receitamedica é setado para 3 automaticamente via trigger 
+     da tabela sau_receitamedica é setado para 3 automaticamente via trigger
   */
   $oDaoSauReceitaMedicaAnulada->s161_i_receita = $oParam->s161_i_receita;
   $oDaoSauReceitaMedicaAnulada->s161_i_login   = db_getsession('DB_id_usuario');
@@ -1698,7 +1726,7 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'excluirMedicamentoReceita') {
 
-  $oDaoSauMedicamentosReceita = db_utils::getdao('sau_medicamentosreceita');
+  $oDaoSauMedicamentosReceita = new cl_sau_medicamentosreceita();
   $oDaoSauMedicamentosReceita->excluir($oParam->s159_i_codigo);
   if ($oDaoSauMedicamentosReceita->erro_status == '0') {
     $oRetorno->iStatus  = 0;
@@ -1707,37 +1735,40 @@ if ($oParam->exec == 'getUnidadesMedicos') {
 
 } elseif ($oParam->exec == 'getReceitasFaa') {
 
-  $oDaoSauReceitaMedica = db_utils::getdao('sau_receitamedica');
+  $oDaoSauReceitaMedica = new cl_sau_receitamedica();
 
-  $sSql                 = $oDaoSauReceitaMedica->sql_query_prontuario(null, '*', 's158_i_codigo desc', 
+  $sSql                 = $oDaoSauReceitaMedica->sql_query_prontuario(null, '*', 's158_i_codigo desc',
                                                                       's162_i_prontuario = '.$oParam->iFaa
                                                                      );
   $rs                   = $oDaoSauReceitaMedica->sql_record($sSql);
   if ($oDaoSauReceitaMedica->numrows > 0) {
-    $oRetorno->aReceitas = db_utils::getColectionByRecord($rs, false, false, true);
+    $oRetorno->aReceitas = db_utils::getCollectionByRecord($rs, false, false, true);
   } else {
    $oRetorno->iStatus = 0;
   }
 
 } elseif ($oParam->exec == 'getRemediosReceita') {
 
-  $oDaoSauMedicamentosReceita = db_utils::getdao('sau_medicamentosreceita');
+  $oDaoSauMedicamentosReceita = new cl_sau_medicamentosreceita();
 
   $sCampos                    = 's159_i_codigo, s159_i_formaadm, s159_i_medicamento, ';
   $sCampos                   .= 'm60_descr, s159_n_quant, s160_c_descr, s159_t_posologia ';
-  $sSql                       = $oDaoSauMedicamentosReceita->sql_query_receita(null, $sCampos, 's159_i_codigo', 
+  $sSql                       = $oDaoSauMedicamentosReceita->sql_query_receita(null, $sCampos, 's159_i_codigo',
                                                                                's159_i_receita = '.$oParam->iReceita
                                                                               );
   $rs                         = $oDaoSauMedicamentosReceita->sql_record($sSql);
   if ($oDaoSauMedicamentosReceita->numrows > 0) {
-    $oRetorno->aMedicamentos = db_utils::getColectionByRecord($rs, false, false, true);
+    $oRetorno->aMedicamentos = db_utils::getCollectionByRecord($rs, false, false, true);
+    foreach ($oRetorno->aMedicamentos as $medicamento) { 
+      $medicamento->s159_n_quant = Material::arredondarQuantidade($medicamento->s159_n_quant);
+    }
   } else {
    $oRetorno->iStatus = 0;
   }
 
 } elseif ($oParam->exec == 'getUnidadesSaude') {
-    
-  $oDaoUnidades = db_utils::getdao('unidades');
+
+  $oDaoUnidades = new cl_unidades();
   $sSql         = $oDaoUnidades->sql_query("", "sd02_i_codigo as cod, descrdepto as desc", "sd02_i_codigo");
   $rsUnidades   = $oDaoUnidades->sql_record($sSql);
   for ($iInd = 0; $iInd < $oDaoUnidades->numrows; $iInd++) {
@@ -1745,21 +1776,21 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $oDataUnidade                             = db_utils::fieldsmemory($rsUnidades,$iInd);
     $oRetorno->unidades[$iInd]->sd02_i_codigo = $oDataUnidade->cod;
     $oRetorno->unidades[$iInd]->descrdepto    = urlencode($oDataUnidade->desc);
-    
+
   }
   if ($oDaoUnidades->numrows == 0) {
-    
+
     $oRetorno->iStatus  = 2;
     $oRetorno->sMessage = urlencode('Nenhuma unidade encontrada.');
-  
+
   }
-  
+
 } elseif ($oParam->exec == 'getGrupos') {
-    
-  $oDaoGrupo = db_utils::getdao('sau_grupo');
-  $sSql      = $oDaoGrupo->sql_query("", 
+
+  $oDaoGrupo = new cl_sau_grupo();
+  $sSql      = $oDaoGrupo->sql_query("",
                                      " distinct on (sd60_c_grupo) sd60_c_grupo||' - '||sd60_c_nome as nome, sd60_c_nome".
-                                       ", sd60_i_anocomp, sd60_i_mescomp, sd60_i_codigo", 
+                                       ", sd60_i_anocomp, sd60_i_mescomp, sd60_i_codigo",
                                      "sd60_c_grupo, sd60_i_anocomp desc, sd60_i_mescomp desc"
                                     );
   $rsGrupo   = $oDaoGrupo->sql_record($sSql);
@@ -1768,22 +1799,22 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $oDataGrupo                      = db_utils::fieldsmemory($rsGrupo, $iInd);
     $oRetorno->grupo[$iInd]->codigo  = $oDataGrupo->sd60_i_codigo;
     $oRetorno->grupo[$iInd]->nome    = urlencode($oDataGrupo->nome);
-    
+
   }
   if ($oDaoGrupo->numrows == 0) {
-    
+
     $oRetorno->iStatus  = 2;
     $oRetorno->sMessage = urlencode('Nenhum grupo encontrado.');
-  
+
   }
-  
+
 } elseif ($oParam->exec == 'getSubGrupos') {
-    
-  $oDaoSubGrupo = db_utils::getdao('sau_subgrupo');
-  $sSql         = $oDaoSubGrupo->sql_query("", 
-                                           "distinct on (sd61_c_subgrupo) sd61_c_subgrupo||' - '||sd61_c_nome as nome ". 
+
+  $oDaoSubGrupo = new cl_sau_subgrupo();
+  $sSql         = $oDaoSubGrupo->sql_query("",
+                                           "distinct on (sd61_c_subgrupo) sd61_c_subgrupo||' - '||sd61_c_nome as nome ".
                                             ", sd61_i_codigo, sd61_c_nome, sd61_i_anocomp, sd61_i_mescomp ",
-                                           "sd61_c_subgrupo, sd61_i_anocomp desc, sd61_i_mescomp desc", 
+                                           "sd61_c_subgrupo, sd61_i_anocomp desc, sd61_i_mescomp desc",
                                            " sd60_c_grupo = '".$oParam->grupo."'"
                                           );
   $rsSubGrupo   = $oDaoSubGrupo->sql_record($sSql);
@@ -1792,25 +1823,25 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $oDataSubGrupo                      = db_utils::fieldsmemory($rsSubGrupo, $iInd);
     $oRetorno->subgrupo[$iInd]->codigo  = $oDataSubGrupo->sd61_i_codigo;
     $oRetorno->subgrupo[$iInd]->nome    = urlencode($oDataSubGrupo->nome);
-    
+
   }
   if ($oDaoSubGrupo->numrows == 0) {
-    
+
     $oRetorno->iStatus  = 2;
     $oRetorno->sMessage = urlencode('Nenhum grupo encontrado.');
-  
+
   }
-  
+
 } elseif ($oParam->exec == 'getFormaOrganizacao') {
-    
-  $oDaoFormaOrganizacao = db_utils::getdao('sau_formaorganizacao');
-  $sSql                 = $oDaoFormaOrganizacao->sql_query("", 
+
+  $oDaoFormaOrganizacao = new cl_sau_formaorganizacao();
+  $sSql                 = $oDaoFormaOrganizacao->sql_query("",
                                                     "distinct on (sd62_c_formaorganizacao) sd62_c_nome, ".
                                                     " sd62_c_formaorganizacao||' - '||sd62_c_nome as nome ".
-                                                    ", sd62_i_anocomp, sd62_i_mescomp, sd62_i_codigo", 
-                                                    "sd62_c_formaorganizacao, sd62_i_anocomp desc, sd62_i_mescomp desc", 
+                                                    ", sd62_i_anocomp, sd62_i_mescomp, sd62_i_codigo",
+                                                    "sd62_c_formaorganizacao, sd62_i_anocomp desc, sd62_i_mescomp desc",
                                                     " a.sd60_c_grupo = '".$oParam->grupo.
-                                                    "' and sau_subgrupo.sd61_c_subgrupo = '".$oParam->subgrupo."'" 
+                                                    "' and sau_subgrupo.sd61_c_subgrupo = '".$oParam->subgrupo."'"
                                                    );
   $rsFormaOrganizacao   = $oDaoFormaOrganizacao->sql_record($sSql);
   for ($iInd = 0; $iInd < $oDaoFormaOrganizacao->numrows; $iInd++) {
@@ -1818,44 +1849,44 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $oDataFormaOrganizacao                      = db_utils::fieldsmemory($rsFormaOrganizacao, $iInd);
     $oRetorno->formaorganizacao[$iInd]->codigo  = $oDataFormaOrganizacao->sd62_i_codigo;
     $oRetorno->formaorganizacao[$iInd]->nome    = urlencode($oDataFormaOrganizacao->nome);
-    
+
   }
   if ($oDaoFormaOrganizacao->numrows == 0) {
-    
+
     $oRetorno->iStatus  = 2;
     $oRetorno->sMessage = urlencode('Nenhuma Forma de Organização encontrada.');
-  
+
   }
-  
+
 } elseif ($oParam->exec == 'getProcedimentos') {
-    
-  $oDaoProcedimento = db_utils::getdao('sau_procedimento_ext');
+
+  $oDaoProcedimento = new cl_sau_procedimento_ext();
   $sCampos          = "distinct on (sd63_c_procedimento) sd63_c_procedimento, sd63_i_codigo, sd63_c_nome";
   $sWhere           = "";
   $sOrdem           = " sd63_c_procedimento ";
   if (isset($oParam->sProcedimento) && $oParam->sProcedimento != '') {
 
     $sWhere  = " sd63_c_procedimento = '".$oParam->sProcedimento."' ";
-    
+
   } elseif (isset($oParam->sFormaOrg) && $oParam->sFormaOrg != '') {
 
     $sWhere  = " sd63_c_procedimento like '";
     $sWhere .= $oParam->sGrupo.$oParam->sSubGrupo.$oParam->sFormaOrg;
-    $sWhere .= "%' ";    
-    
+    $sWhere .= "%' ";
+
   } elseif (isset($oParam->sSubGrupo) && $oParam->sSubGrupo != '') {
-    
+
     $sWhere  = " sd63_c_procedimento like '";
     $sWhere .= $oParam->sGrupo.$oParam->sSubGrupo;
-    $sWhere .= "%' ";    
-    
+    $sWhere .= "%' ";
+
   } elseif (isset($oParam->sGrupo) && $oParam->sGrupo != '') {
-    
+
     $sWhere  = " sd63_c_procedimento like '";
     $sWhere .= $oParam->sGrupo;
-    $sWhere .= "%' ";    
-    
-  } 
+    $sWhere .= "%' ";
+
+  }
   $sSql            = $oDaoProcedimento->sql_query_ext("", $sCampos, $sOrdem, $sWhere);
   $rsProcedimento  = $oDaoProcedimento->sql_record($sSql);
   for ($iInd = 0; $iInd < $oDaoProcedimento->numrows; $iInd++) {
@@ -1864,31 +1895,31 @@ if ($oParam->exec == 'getUnidadesMedicos') {
     $oRetorno->procedimento[$iInd]->sd63_i_codigo       = $oDataProcedimento->sd63_i_codigo;
     $oRetorno->procedimento[$iInd]->sd63_c_nome         = urlencode($oDataProcedimento->sd63_c_nome);
     $oRetorno->procedimento[$iInd]->sd63_c_procedimento = urlencode($oDataProcedimento->sd63_c_procedimento);
-    
+
   }
   if ($oDaoProcedimento->numrows == 0) {
-    
+
     $oRetorno->iStatus  = 2;
     $oRetorno->sMessage = urlencode('Nenhuma Procedimentos encontrado.');
-  
+
   }
-  
+
 } elseif ($oParam->exec == 'gerarTxtProcedimentos') {
 
   $pArquivo = fopen("tmp/".$oParam->sNomeArquivo, "w");
   if ($pArquivo) {
-    
+
     fwrite($pArquivo, $oParam->sProcedimentos, strlen($oParam->sProcedimentos));
     fclose($pArquivo);
     $oRetorno->sNomeArquivo = $oParam->sNomeArquivo;
-    
+
   } else {
-    
+
     $oRetorno->iStatus  = 2;
     $oRetorno->sMessage = urlencode('Nenhum procedimento foi informado.');
-  
+
   }
-  
+
 }
 
 if ($oParam->exec == 'gerarFAATXT') {
@@ -1903,22 +1934,22 @@ if ($oParam->exec == 'gerarFAATXT') {
 
   set_time_limit ( 0 );
 
-  $clprontuarios      = db_utils::getdao('prontuarios_ext');
-  $clagendamentos     = db_utils::getdao('agendamentos_ext');
-  $clprontagendamento = db_utils::getdao('prontagendamento');
-  $clsau_proccbo      = db_utils::getdao('sau_proccbo');
-  $clprontproced      = db_utils::getdao('prontproced_ext');
-  $clprontprofatend   = db_utils::getdao('prontprofatend_ext');
+  $clprontuarios      = new cl_prontuarios_ext();
+  $clagendamentos     = new cl_agendamentos_ext();
+  $clprontagendamento = new cl_prontagendamento();
+  $clsau_proccbo      = new cl_sau_proccbo();
+  $clprontproced      = new cl_prontproced_ext();
+  $clprontprofatend   = new cl_prontprofatend_ext();
 
   if($lProntuario == false) {
 
     $sSql = "select unidades.*,
                   cgm.z01_nome as estabelecimento,
                   cgm.z01_ender as est_ender,
-                  cgm.z01_bairro as est_bairro, 
+                  cgm.z01_bairro as est_bairro,
                   cgm.z01_munic as est_munic,
                   cgm.z01_uf as est_uf
-           from unidades 
+           from unidades
              inner join db_depart   on db_depart.coddepto = unidades.sd02_i_codigo
              left join cgm         on cgm.z01_numcgm = unidades.sd02_i_numcgm
            where unidades.sd02_i_codigo = ".$oParam->iUnidade;
@@ -1939,7 +1970,7 @@ if ($oParam->exec == 'gerarFAATXT') {
       $iAno = $aVet[2];
       $iMes = $aVet[1];
       $iDia = $aVet[0];
-  
+
       if (isset ( $oParam->iCodAgendamento )) {
         $sCodAgendamento = " and sd23_i_codigo in ($oParam->iCodAgendamento) ";
       }
@@ -1957,16 +1988,46 @@ if ($oParam->exec == 'gerarFAATXT') {
       $oAgendamento  = db_utils::fieldsMemory($rsAgendamento, 0);
       $aTotalAgenda  = explode (",", $oAgendamento->total_agendado);
       $iQtd          = $clagendamentos->numrows;
-
     }
 
     db_inicio_transacao ();
+
+    // busca o primeiro setor da unidade  incluso para recepção
+    $sSqlSetor  = " select min(sd91_codigo) as sd91_codigo from setorambulatorial ";
+    $sSqlSetor .= " where sd91_unidades = {$oParam->iUnidade} and sd91_local = 1 ";
+
+    $rsSetorUnidade = db_query($sSqlSetor);
+
+    $lErroBuscarSetor = false;
+    $sMsgErroSetor    = "não foi encontrado um setor ambulatorial para esta unidade.\n";
+    $sMsgErroSetor   .= "Cadastre um setor ambulatorial em:\n\tCadastro > Setor Ambulatorial para o Local: RECEPÇÃO";
+    if ( !$rsSetorUnidade || pg_num_rows($rsSetorUnidade) == 0) {
+
+      $lErroBuscarSetor   = true;
+      $oRetorno->iStatus  = 2;
+      $oRetorno->sMessage = urlencode( $sMsgErroSetor );
+    }
+
+    $iCodigoSetorAmbulatorial = null;
+    if ( !$lErroBuscarSetor ) {
+
+      $iCodigoSetorAmbulatorial = db_utils::fieldsMemory($rsSetorUnidade, 0)->sd91_codigo;
+
+      if ( empty($iCodigoSetorAmbulatorial) ) {
+
+        $lErroBuscarSetor   = true;
+        $oRetorno->iStatus  = 2;
+        $oRetorno->sMessage = urlencode( $sMsgErroSetor );
+        echo $oJson->encode($oRetorno);
+        exit;
+      }
+    }
+
     //linca agendamento com prontuario
     for ($i = 0; $i < $iQtd; $i++) {
 
       $oAgendamento  = db_utils::fieldsMemory($rsAgendamento, $i);
       if ($oAgendamento->s102_i_prontuario == 0 || $oAgendamento->s102_i_prontuario == null) {
-        
 
         $sSql = $clprontagendamento->sql_query(null, "*", null, "s102_i_agendamento = ".$oAgendamento->sd23_i_codigo);
         $clprontagendamento->sql_record($sSql);
@@ -1974,17 +2035,19 @@ if ($oParam->exec == 'gerarFAATXT') {
 
           //Gerar número prontuário automático
           $sFcNumatend  = "select fc_numatend()";
-          $rsFcNumatend = pg_query($sFcNumatend);
+          $rsFcNumatend = db_query($sFcNumatend);
           $aFcNumatend  = explode(",", pg_result($rsFcNumatend, 0, 0));
 
-          $clprontuarios->sd24_i_ano      = trim($aFcNumatend[0]);
-          $clprontuarios->sd24_i_mes      = trim($aFcNumatend[1]);
-          $clprontuarios->sd24_i_seq      = trim($aFcNumatend[2]);
-          $clprontuarios->sd24_i_login    = DB_getsession("DB_id_usuario");
-          $clprontuarios->sd24_i_unidade  = $oParam->iUnidade;
-          $clprontuarios->sd24_i_numcgs   = isset ( $oParam->lAgendamentoFaa ) ? $oAgendamento->sd23_i_numcgs : null;
-          $clprontuarios->sd24_d_cadastro = $oAgendamento->sd23_d_consulta;
-          $clprontuarios->sd24_c_cadastro = $oAgendamento->sd23_c_hora;
+          $clprontuarios->sd24_i_ano              = trim($aFcNumatend[0]);
+          $clprontuarios->sd24_i_mes              = trim($aFcNumatend[1]);
+          $clprontuarios->sd24_i_seq              = trim($aFcNumatend[2]);
+          $clprontuarios->sd24_i_login            = DB_getsession("DB_id_usuario");
+          $clprontuarios->sd24_i_unidade          = $oParam->iUnidade;
+          $clprontuarios->sd24_i_numcgs           = isset ( $oParam->lAgendamentoFaa ) ? $oAgendamento->sd23_i_numcgs : null;
+          $clprontuarios->sd24_d_cadastro         = $oAgendamento->sd23_d_consulta;
+          $clprontuarios->sd24_c_cadastro         = $oAgendamento->sd23_c_hora;
+          $clprontuarios->sd24_setorambulatorial  = $iCodigoSetorAmbulatorial;
+
           $clprontuarios->incluir (null);
           if ($clprontuarios->erro_status == "0") {
 
@@ -1992,7 +2055,6 @@ if ($oParam->exec == 'gerarFAATXT') {
             $oRetorno->sMessage = urlencode(" Prontuários: ".$clprontuarios->erro_msg);
             echo $oJson->encode($oRetorno);
             exit;
-
           }
 
           //linca agendamento com prontuario
@@ -2005,7 +2067,6 @@ if ($oParam->exec == 'gerarFAATXT') {
 
               $oRetorno->iStatus  = 2;
               $oRetorno->sMessage = urlencode("Prontuário Agendamento: ".$clprontagendamento->erro_msg);
-
             }
             //Profissional de Atendimento
             $clprontprofatend->s104_i_prontuario   = $clprontuarios->sd24_i_codigo;
@@ -2019,7 +2080,6 @@ if ($oParam->exec == 'gerarFAATXT') {
               exit;
 
             }
-
           }
           //prontproced
           if (isset ( $oAgendamento->s125_i_procedimento ) && ( int )$oAgendamento->s125_i_procedimento > 0) {
@@ -2030,6 +2090,7 @@ if ($oParam->exec == 'gerarFAATXT') {
             $clprontproced->sd29_d_data         = $oAgendamento->sd23_d_consulta;
             $clprontproced->sd29_c_hora         = $oAgendamento->sd23_c_hora;
             $clprontproced->sd29_i_usuario      = $oAgendamento->sd23_i_usuario;
+            $clprontproced->sd29_sigilosa       = 'false';
             $clprontproced->incluir(null);
             if( $clprontproced->numrows_incluir == 0 ){
 
@@ -2066,7 +2127,7 @@ if ($oParam->exec == 'gerarFAATXT') {
     $sWhere  .= " and sd27_i_codigo = ".$oParam->iProfissional;
     $clagendamentos->sql_query_ext (null,
                                     $sCampos,
-                                    "sd23_i_codigo", 
+                                    "sd23_i_codigo",
                                     $sWhere );
     $rsAgendamento = $clagendamentos->sql_record ($sSql);
     if ($clagendamentos->numrows == 0) {
@@ -2086,9 +2147,9 @@ if ($oParam->exec == 'gerarFAATXT') {
       $sSep=",";
 
     }
-  
+
   }
-  
+
   if(isset($oParam->iModelo)){
     if($oParam->iModelo == 6 || $oParam->iModelo == 7){
       $oRetorno->iTipo = 2;
@@ -2115,12 +2176,12 @@ if ($oParam->exec == 'gerarFAATXT') {
     } else {
       $sModelo = "documentos/templates/txt/sau_modelo_faa_bage.txt";
     }
-    
+
 
     $dHoje      = date("Y-m-d",db_getsession("DB_datausu"));
     $iInstitui  = db_getsession("DB_instit");
 
-    require_once('model/DBProcessaTemplateTXT.model.php');
+    require_once(modification('model/DBProcessaTemplateTXT.model.php'));
     try {
       $oGerador = new DBProcessaTemplateTXT($sModelo);
     } catch (Exception $oExcecao) {
@@ -2138,8 +2199,8 @@ if ($oParam->exec == 'gerarFAATXT') {
     if ($iModelo == 6) {
 
       //Seleciona os dados da FAA
-      $oProntuarios  = db_utils::getdao('prontuarios');
-      $oProntproced  = db_utils::getdao('prontproced');
+      $oProntuarios  = new cl_prontuarios();
+      $oProntproced  = new cl_prontproced();
 
       /* Sub sql para obter os procedimentos (prontproced) */
       $sSubProc      = ' from prontproced as a ';
@@ -2246,7 +2307,7 @@ if ($oParam->exec == 'gerarFAATXT') {
       $sCamposGeral .= " fc_idade(z01_d_nasc,'$dHoje') as idade_pac, ";
       $sCamposGeral .= " case when z01_v_sexo = 'M' then 'MASCULINO' when z01_v_sexo = 'F' then 'FEMININO' ";
       $sCamposGeral .= " else z01_v_sexo end as sexo_pac, ";
-      
+
       $sSubSql       = " from prontproced ";
       $sSubSql      .= "  inner join especmedico    as sa on sa.sd27_i_codigo   = sd29_i_profissional";
       $sSubSql      .= "  inner join rhcbo          as sb on sb.rh70_sequencial = sa.sd27_i_rhcbo ";
@@ -2254,7 +2315,7 @@ if ($oParam->exec == 'gerarFAATXT') {
       $sSubSql      .= "  inner join medicos        as sd on sd.sd03_i_codigo   = sc.sd04_i_medico ";
       $sSubSql      .= "  inner join cgm            as se on se.z01_numcgm      = sd.sd03_i_cgm ";
       $sSubSql      .= "  where sd29_i_prontuario = sd24_i_codigo limit 1) ";
-      
+
       $sCamposGeral .= " case when sd03_i_codigo is null then ( select sd.sd03_i_codigo $sSubSql else sd03_i_codigo end as cod_medico, ";
       $sCamposGeral .= " case when cgm_med.z01_nome is null then ( select se.z01_nome $sSubSql else cgm_med.z01_nome end as nome_medico, ";
       $sCamposGeral .= " case when sd03_i_crm is null then ( select sd.sd03_i_crm $sSubSql else sd03_i_codigo end as crm, ";
@@ -2268,7 +2329,7 @@ if ($oParam->exec == 'gerarFAATXT') {
 
     }
     for ($iInd = 0; $iInd < $iTam; $iInd++) {
-  
+
       $sSql   = $clprontuarios->sql_query_faa($aChaveProntuarios[$iInd], $sCamposGeral);
       $rs     = $clprontuarios->sql_record($sSql);
       if ($clprontuarios->numrows == 0) {
@@ -2279,7 +2340,7 @@ if ($oParam->exec == 'gerarFAATXT') {
         exit;
 
       }
-      $oGeral = db_utils::getColectionByRecord($rs);
+      $oGeral = db_utils::getCollectionByRecord($rs);
       $aDados = array($oGeral);
 
      if ($iModelo == 6) {
@@ -2290,7 +2351,7 @@ if ($oParam->exec == 'gerarFAATXT') {
                                                  " sd29_i_prontuario = ".$aChaveProntuarios[$iInd]
                                                 );
         $rsProc             = $clprontuarios->sql_record($sSqlProc);
-        $oProcedimentos = db_utils::getColectionByRecord($rsProc);
+        $oProcedimentos = db_utils::getCollectionByRecord($rsProc);
         $aDados[ ]      = $oProcedimentos;
 
       }
@@ -2305,25 +2366,25 @@ if ($oParam->exec == 'gerarFAATXT') {
         $sSqlProc    = $clprontproced->sql_query_ext(null,
                                                        $sCampos,
                                                        " sd29_d_data desc ",
-                                                       " sd24_i_numcgs = ".$oGeral[0]->nro_cgs." and ". 
-                                                       " substr( sd63_c_procedimento, 1, 2 ) = '02' and ". 
+                                                       " sd24_i_numcgs = ".$oGeral[0]->nro_cgs." and ".
+                                                       " substr( sd63_c_procedimento, 1, 2 ) = '02' and ".
                                                        "sd29_i_prontuario != ".$aChaveProntuarios[$iInd]
                                                       );
 
         $rs          = $clprontproced->sql_record($sSqlProc);
         $iLinhasProc = $clprontproced->numrows;
         if ($iLinhasProc > 0) {
-          $aDados[ ] = db_utils::getColectionByRecord($rs);
+          $aDados[ ] = db_utils::getCollectionByRecord($rs);
         }else{
           $aDados[ ] = array();
         }
-        
+
               $sSqlConsultas   = $clprontproced->sql_query_ext(null,
                                                            " sd63_c_procedimento        as proced_proc, ".
                                                            " sd63_c_nome                as proced_nome, ".
                                                            " m.z01_nome                 as proced_prof,".
                                                            " fc_formatadata(sd29_d_data) as proced_data",
-                                                           " sd29_d_data desc limit 11", 
+                                                           " sd29_d_data desc limit 11",
                                                            " sd24_i_numcgs = ".$oGeral[0]->nro_cgs." and ".
                                                            " substr( sd63_c_procedimento, 1, 2 ) = '03' and ".
                                                            " sd29_i_prontuario != ".$aChaveProntuarios[$iInd]
@@ -2331,7 +2392,7 @@ if ($oParam->exec == 'gerarFAATXT') {
         $rsProntprocedConsultas = $clprontproced->sql_record ($sSqlConsultas);
         $iLinhasConsultas = $clprontproced->numrows;
         if ($iLinhasConsultas > 0) {
-          $aDados[ ] = db_utils::getColectionByRecord($rsProntprocedConsultas);
+          $aDados[ ] = db_utils::getCollectionByRecord($rsProntprocedConsultas);
         } else {
           $aDados[ ] = array();
         }
@@ -2353,7 +2414,7 @@ if ($oParam->exec == 'gerarFAATXT') {
       }
 
     }
-    
+
     $sSessionNome = "FAA_".date("d-m-Y",db_getsession("DB_datausu"))."_".date("H:i:s");
     if (isset ($_SESSION [$sSessionNome])) {
       unset ($_SESSION [$sSessionNome]);
@@ -2375,7 +2436,7 @@ if ($oParam->exec == 'gerarFAATXT') {
     $oRetorno->aArquivo = $_SESSION [$oParam->sSessionNome];
 
     //Lista de impressoras
-    $oCfauntent       = db_utils::getdao('cfautent');
+    $oCfauntent       = new cl_cfautent();
     $sCampos          = "k11_id, k11_ipimpcheque, k11_local";
     $sSql             = $oCfauntent->sql_query(null,$sCampos);
     $rs               = $oCfauntent->sql_record($sSql);
@@ -2407,7 +2468,7 @@ if ($oParam->exec == 'gerarFAATXT') {
   }
 } elseif ($oParam->exec == 'imprimeArquivoTXT') {
 
-  include("model/impressaoTXT.model.php");
+  include(modification("model/impressaoTXT.model.php"));
 
   $iTam = count($_SESSION [$oParam->sSessionNome]);
   $sStr = '';
@@ -2416,7 +2477,7 @@ if ($oParam->exec == 'gerarFAATXT') {
   }
 
   //selecionar o IP e a porta da impressoara padrão do sistema
-  $oCfauntent  = db_utils::getdao('cfautent');
+  $oCfauntent  = new cl_cfautent();
   $sCampos     = "k11_ipimpcheque, k11_portaimpcheque";
   $sWhere      = " k11_id = ".$oParam->idImpressora;
   $sSql        = $oCfauntent->sql_query(null,$sCampos,null,$sWhere);
@@ -2452,7 +2513,7 @@ if ($oParam->exec == 'gerarFAATXT') {
   if (!$pArquivoDestino) {
 
     $oRetorno->iStatus  = 2;
-    $sErro = "Não foi possível salvar o arquivo em '$sNomeArquivo'. Verique se o caminho está correto.";
+    $sErro = "não foi possível salvar o arquivo em '$sNomeArquivo'. Verique se o caminho está correto.";
     $oRetorno->sMessage = urlencode(str_replace('"', '\"', sErro));
     echo $oJson->encode($oRetorno);
     exit;
@@ -2464,17 +2525,17 @@ if ($oParam->exec == 'gerarFAATXT') {
   if ($lRetorno === false) {
 
     $oRetorno->iStatus  = 2;
-    $sErro = "Não foi possível salvar o arquivo em '$sNomeArquivo'. Erro ao escrever no arquivo.";
+    $sErro = "não foi possível salvar o arquivo em '$sNomeArquivo'. Erro ao escrever no arquivo.";
     $oRetorno->sMessage = urlencode(str_replace('"', '\"', $sErro));
 
   } else {
     $oRetorno->sNomeArquivo = $sNomeArquivo;
-    
+
   }
 
 } elseif ($oParam->exec == 'gerarComprovanteTXT') {
 
-  require_once('model/DBProcessaTemplateTXT.model.php');
+  require_once(modification('model/DBProcessaTemplateTXT.model.php'));
   $dHoje     = date("Y-m-d",db_getsession("DB_datausu"));
   $iInstitui = db_getsession("DB_instit");
   $sModelo   = "documentos/templates/txt/sau_modelo_comprovante_agendamento.txt";
@@ -2486,7 +2547,7 @@ if ($oParam->exec == 'gerarFAATXT') {
     exit;
 
   }
-  $oAgendamentos = db_utils::getdao('agendamentos');
+  $oAgendamentos = new cl_agendamentos();
   $ad23_i_codigo = explode(",",$oParam->sd23_i_codigo);
   $iTam          = count($ad23_i_codigo);
   $aArquivos     = array();
@@ -2518,7 +2579,7 @@ if ($oParam->exec == 'gerarFAATXT') {
   $sCampos .= " fc_idade(z01_d_nasc,'$dHoje') as idade_pac, ";
   $sCampos .= " case when z01_v_sexo = 'M' then 'MASCULINO' when z01_v_sexo = 'F' then 'FEMININO' else z01_v_sexo end as sexo_pac, ";
   $sCampos .= " sd03_i_codigo      as cod_medico, ";
-  $sCampos .= " cgm_med.z01_nome   as nome_medico, "; 
+  $sCampos .= " cgm_med.z01_nome   as nome_medico, ";
   $sCampos .= " sd03_i_crm         as crm ";
 
   for ($iInd = 0; $iInd < $iTam; $iInd++) {
@@ -2526,7 +2587,7 @@ if ($oParam->exec == 'gerarFAATXT') {
     $sSql      = $oAgendamentos->sql_query_comprovante($ad23_i_codigo[$iInd], $sCampos);
     $rs        = $oAgendamentos->sql_record($sSql);
     $aDados    = array();
-    $aDados[0] = db_utils::getColectionByRecord($rs);
+    $aDados[0] = db_utils::getCollectionByRecord($rs);
     if ($oAgendamentos->numrows < 0) {
 
       $oRetorno->iStatus  = 2;
@@ -2536,7 +2597,7 @@ if ($oParam->exec == 'gerarFAATXT') {
       exit;
 
     }
-  
+
     try {
 
       $oGerador->setDados($aDados);
@@ -2562,4 +2623,3 @@ if ($oParam->exec == 'gerarFAATXT') {
 }
 
 echo $oJson->encode($oRetorno);
-?>

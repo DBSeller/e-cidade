@@ -1,0 +1,17 @@
+<?xml version='1.0' ?>
+<consulta distinct="true">
+    <campos>
+        <campo campo="p51_codigo"   label="codigo" />
+        <campo campo="p51_descr"    label="descricao"   />
+    </campos>
+    <from tabela="tipoproc"/>
+    <juncoes>
+        <join tipo="inner"  tabela="tipoprocformareclamacao" condicao="p43_tipoproc = p51_codigo" />
+    </juncoes>
+    <filtros>
+        <filtro label="instituicoes"     condicao="p51_instit in ($instituicoes)" obrigatorio="false"/>
+        <filtro label="formareclamacao" condicao="p43_formareclamacao IN ($formareclamacao)" obrigatorio="false"/>
+    </filtros>
+    <agrupamento campos=""/>
+    <ordenacao   campos="codigo"/>
+</consulta>

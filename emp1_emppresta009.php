@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_emppresta_classe.php");
-require_once("classes/db_empprestaitem_classe.php");
-require_once ("model/contabilidade/planoconta/ContaPlano.model.php");
-require_once ("model/contabilidade/planoconta/SubSistemaConta.model.php");
-require_once ("model/contabilidade/planoconta/ContaPlanoPCASP.model.php");
-require_once("model/CgmFactory.model.php");
-require_once("model/Dotacao.model.php");
-require_once ("model/contabilidade/planoconta/ContaOrcamento.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_emppresta_classe.php"));
+require_once(modification("classes/db_empprestaitem_classe.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlano.model.php"));
+require_once(modification("model/contabilidade/planoconta/SubSistemaConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaPlanoPCASP.model.php"));
+require_once(modification("model/CgmFactory.model.php"));
+require_once(modification("model/Dotacao.model.php"));
+require_once(modification("model/contabilidade/planoconta/ContaOrcamento.model.php"));
 db_app::import("configuracao.*");
 db_app::import("empenho.*");
 db_app::import("orcamento.*");
@@ -55,9 +55,9 @@ db_app::import("financeiro.*");
 db_app::import("Dotacao");
 
 
-require_once ("model/contabilidade/planoconta/ClassificacaoConta.model.php");
-require_once ("model/empenho/PrestacaoConta.model.php");
-require_once ("model/contabilidade/planoconta/SistemaConta.model.php");
+require_once(modification("model/contabilidade/planoconta/ClassificacaoConta.model.php"));
+require_once(modification("model/empenho/PrestacaoConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaConta.model.php"));
 
 
 db_app::import("exceptions.*");
@@ -138,7 +138,7 @@ if ( isset($alterar) ) {
 <body bgcolor=#CCCCCC style="margin-top: 30px;">
 <center>
 	<?
-	include("forms/db_frmemppresta09.php");
+	include(modification("forms/db_frmemppresta09.php"));
 	?>
 </center>
 </body>
@@ -176,8 +176,8 @@ if ( isset($chavepesquisa) && !isset($alterar) ) {
 		  parent.document.formaba.encerra.disabled       = false;
 		  parent.document.formaba.empprestaitem.disabled = false;
 
-		  top.corpo.iframe_empprestaitem.location.href = 'emp1_empprestaitem001.php?tranca=true&e60_codemp=$e60_codemp&e46_numemp=".@$e45_numemp."&e45_sequencial={$e45_sequencial}';
-		  top.corpo.iframe_encerra.location.href       = 'emp1_empprestaencerra.php?tranca=true&e60_codemp=$e60_codemp&e60_numemp=".@$e45_numemp."&e45_sequencial={$e45_sequencial}';
+		  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_empprestaitem.location.href = 'emp1_empprestaitem001.php?tranca=true&e60_codemp=$e60_codemp&e46_numemp=".@$e45_numemp."&e45_sequencial={$e45_sequencial}';
+		  (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_encerra.location.href       = 'emp1_empprestaencerra.php?tranca=true&e60_codemp=$e60_codemp&e60_numemp=".@$e45_numemp."&e45_sequencial={$e45_sequencial}';
     }\n
 
 		js_db_libera();

@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_db_almox_classe.php");
-include("classes/db_db_almoxdepto_classe.php");
-include("classes/db_matrequi_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_db_almox_classe.php"));
+include(modification("classes/db_db_almoxdepto_classe.php"));
+include(modification("classes/db_matrequi_classe.php"));
 
 $cldb_almox      = new cl_db_almox;
 $cldb_almoxdepto = new cl_db_almoxdepto;
@@ -114,7 +114,7 @@ if (isset($excluir)) {
   <tr> 
     <td align="center" bgcolor="#CCCCCC"> 
 	  <?
-	    include("forms/db_frmdb_almox.php");
+	    include(modification("forms/db_frmdb_almox.php"));
 	  ?>
     </td>
   </tr>
@@ -147,7 +147,7 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.db_almoxdepto.disabled=false;
-         top.corpo.iframe_db_almoxdepto.location.href='mat1_matdb_almoxdepto001.php?db_opcao=33&codalmox=".@$m91_codigo."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_almoxdepto.location.href='mat1_matdb_almoxdepto001.php?db_opcao=33&codalmox=".@$m91_codigo."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_almoxdepto');";

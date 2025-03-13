@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include("classes/db_termoanuproc_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_termoanuproc_classe.php"));
 $cltermoanuproc = new cl_termoanuproc;
 $cltermoanuproc->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -42,7 +42,7 @@ db_postmemory($HTTP_POST_VARS);
 //echo "<script>alert('parcel =$parcel e usuario = $usu');</script>";
 $db_opcao = 1;
 $sql = "select * from db_usuarios where id_usuario =$usu";
-$result = pg_query($sql);
+$result = db_query($sql);
 db_fieldsmemory($result,0);
 
 ?>
@@ -138,7 +138,7 @@ function js_anula(){
 	    return true;
 		//var usu = <?=$usu?>;
 		//var parcel =<?=$parcel?>;
-		//js_OpenJanelaIframe('top.corpo','db_iframe_anulaparc','cai4_anulaparc.php?parcel='+parcel+'&usu='+usu+'&motivo='+document.form1.motivo.value+'&processo='+document.form1.v22_processo.value,'Pesquisa',false);
+		//js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_anulaparc','cai4_anulaparc.php?parcel='+parcel+'&usu='+usu+'&motivo='+document.form1.motivo.value+'&processo='+document.form1.v22_processo.value,'Pesquisa',false);
  
 	}else{
 	return false;

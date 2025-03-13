@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,29 +26,29 @@
  */
 
 //echo ($HTTP_SERVER_VARS['QUERY_STRING']);exit;
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_empnota_classe.php");
-include("classes/db_empnotaord_classe.php");
-include("classes/db_empnotaele_classe.php");
-include("classes/db_db_usuarios_classe.php");
-include("classes/db_matordem_classe.php");
-include("classes/db_matordemitem_classe.php");
-include("classes/db_matordemitement_classe.php");
-include("classes/db_matestoque_classe.php");
-include("classes/db_matestoqueitem_classe.php");
-include("classes/db_matestoqueitemnota_classe.php");
-include("classes/db_matestoqueitemoc_classe.php");
-include("classes/db_matmater_classe.php");
-include("classes/db_matmaterunisai_classe.php");
-include("classes/db_transmater_classe.php");
-include("classes/db_matestoqueini_classe.php");
-include("classes/db_matestoqueinimei_classe.php");
-include("classes/db_matestoqueitemunid_classe.php");
-include("classes/db_matparam_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_empnota_classe.php"));
+include(modification("classes/db_empnotaord_classe.php"));
+include(modification("classes/db_empnotaele_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
+include(modification("classes/db_matordem_classe.php"));
+include(modification("classes/db_matordemitem_classe.php"));
+include(modification("classes/db_matordemitement_classe.php"));
+include(modification("classes/db_matestoque_classe.php"));
+include(modification("classes/db_matestoqueitem_classe.php"));
+include(modification("classes/db_matestoqueitemnota_classe.php"));
+include(modification("classes/db_matestoqueitemoc_classe.php"));
+include(modification("classes/db_matmater_classe.php"));
+include(modification("classes/db_matmaterunisai_classe.php"));
+include(modification("classes/db_transmater_classe.php"));
+include(modification("classes/db_matestoqueini_classe.php"));
+include(modification("classes/db_matestoqueinimei_classe.php"));
+include(modification("classes/db_matestoqueitemunid_classe.php"));
+include(modification("classes/db_matparam_classe.php"));
 $clmatparam = new cl_matparam;
 $clusuarios = new cl_db_usuarios;
 $clempnota = new cl_empnota; 
@@ -776,7 +776,7 @@ if (isset($confirma)){
 <td height="100%" align="left" valign="top" bgcolor="#CCCCCC">
 <center>
 <?
-include("forms/db_frmentraordcom.php");
+include(modification("forms/db_frmentraordcom.php"));
 ?>
 </center>
 </td>
@@ -800,8 +800,8 @@ if (isset($confirma)){
          db_msgbox($erro_msg);
     }
     $sql="delete from matordemitement";
-    $result_deleta=pg_exec($sql);
-    echo"<script>top.corpo.location.href='mat1_entraordcom001.php';</script>";
+    $result_deleta=db_query($sql);
+    echo"<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href='mat1_entraordcom001.php';</script>";
   }
 }
 ?>

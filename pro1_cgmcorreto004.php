@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,75 +25,66 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-db_postmemory($HTTP_POST_VARS);
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+include_once(modification("libs/db_sessoes.php"));
+include_once(modification("libs/db_usuariosonline.php"));
+include_once(modification("dbforms/db_funcoes.php"));
+include_once(modification("dbforms/db_classesgenericas.php"));
+db_postmemory($_POST);
 $clcriaabas = new cl_criaabas;
 ?>
-  <html>
-  <head>
-  <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+<html>
+<head>
+    <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Expires" CONTENT="0">
+    <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+    <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-<table valign="top" marginwidth="0" width="790" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-     <td>
-     <?
-       $clcriaabas->identifica = array("cgmcorreto"=>"cgm correto","cgmerrado"=>"cgm errado"); 
-       $clcriaabas->title = array("cgmcorreto"=>"CGM CORRETO","cgmerrado"=>"CGM ERRADO");    
-       $clcriaabas->src = array("cgmcorreto"=>"pro1_cgmcorreto001.php?abas=1","cgmerrado"=>"pro1_cgmerrado001.php");  
-       $clcriaabas->cria_abas();    
-     ?> 
-     </td>
-  </tr>
-<tr>
-</tr>
-</table>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
-?>
+<body background-color=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+    <table valign="top" marginwidth="0" width="790" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td>
+                <?php
+                $clcriaabas->identifica = array("cgmcorreto" => "CGM Correto", "cgmerrado" => "CGM Errado");
+                $clcriaabas->title = array("cgmcorreto" => "CGM CORRETO", "cgmerrado" => "CGM errado");
+                $clcriaabas->src = array("cgmcorreto" => "pro1_cgmcorreto001.php?abas=1", "cgmerrado" => "pro1_cgmerrado001.php");
+                $clcriaabas->cria_abas();
+                ?>
+            </td>
+        </tr>
+        <tr>
+        </tr>
+    </table>
+    <?php db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsession("DB_anousu"), db_getsession("DB_instit")); ?>
 </body>
+
 </html>
-<?
-if(isset($db_opcao) && $db_opcao==2){
-  echo "
+<?php
+if (isset($db_opcao) && $db_opcao == 2) {
+    echo "
          <script>
             iframe_cgmcorreto.location.href='pro1_cgmcorreto002.php?abas=1';\n
          </script>
        ";
-       exit;
-}else if(isset($db_opcao) && $db_opcao==3){
-	
-echo "
+    exit;
+} else if (isset($db_opcao) && $db_opcao == 3) {
+
+    echo "
          <script>
 			
             iframe_cgmcorreto.location.href='pro1_cgmcorreto003.php?abas=1';\n
 	    	document.formaba.cgmerrado.disabled=false; 
          </script>
        ";
-exit; 
+    exit;
 }
 
-  echo "
+echo "
 	 <script>
 	    document.formaba.cgmerrado.disabled=true; 
-         </script>
-       "; 
-       exit;
+    </script>
+";
+exit;
 ?>

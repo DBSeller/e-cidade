@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oDaoInssIrf     = db_utils::getDao("inssirf");
 $sSqlTabelaIRRF  = "select r33_inic,                                               ";
@@ -45,7 +45,7 @@ $sSqlTabelaIRRF .= "                       from inssirf where r33_codtab = 1 and
 $sSqlTabelaIRRF .= "   and r33_instit = ".db_getsession("DB_instit");
 $sSqlTabelaIRRF .= " order by r33_inic                                     ";
 $rsTabelaIrrf    = $oDaoInssIrf->sql_record($sSqlTabelaIRRF);
-$aTabelaIrrf     = db_utils::getColectionByRecord($rsTabelaIrrf);
+$aTabelaIrrf     = db_utils::getCollectionByRecord($rsTabelaIrrf);
 
 
 
@@ -82,7 +82,7 @@ $sSqlTabelaINSS .= "                       from inssirf where r33_codtab = 1 and
 $sSqlTabelaINSS .= "   and r33_instit = " . db_getsession("DB_instit");
 $sSqlTabelaINSS .= " order by r33_inic                                     ";
 $rsTabelaInss = $oDaoInssIrf->sql_record($sSqlTabelaINSS);
-$aTabelaINSS  = db_utils::getColectionByRecord($rsTabelaInss);
+$aTabelaINSS  = db_utils::getCollectionByRecord($rsTabelaInss);
 echo pg_last_error();
 ?>
 <html>

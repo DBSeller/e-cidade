@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include_once("dbforms/db_classesgenericas.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_arrecant_classe.php");
-include("classes/db_prescricao_classe.php");
-include("classes/db_prescricaolista_classe.php");
-include("classes/db_arreprescr_classe.php");
-include("classes/db_listadeb_classe.php");
-include("classes/db_arrehist_classe.php");
-include("classes/db_divida_classe.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include_once(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arrecant_classe.php"));
+include(modification("classes/db_prescricao_classe.php"));
+include(modification("classes/db_prescricaolista_classe.php"));
+include(modification("classes/db_arreprescr_classe.php"));
+include(modification("classes/db_listadeb_classe.php"));
+include(modification("classes/db_arrehist_classe.php"));
+include(modification("classes/db_divida_classe.php"));
+include(modification("libs/db_sql.php"));
 
 $cliframe_seleciona = new cl_iframe_seleciona;
 $clprescricao = new cl_prescricao;
@@ -116,7 +116,7 @@ if($prescrnoti=="n"){
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0"
 	marginheight="0">
 <table width="100%" height="" border="0" align="center" cellspacing="0"	bgcolor="#CCCCCC">
-	<? include("forms/db_frmprescrevedebitosalt.php"); ?>
+	<? include(modification("forms/db_frmprescrevedebitosalt.php")); ?>
 </table>
 	<?
 	// se clicou em processar
@@ -446,4 +446,10 @@ function js_preencheruas(chave,chave1){
   document.form2.j14_nome.value = chave1;
   db_iframe.hide();
 }*/
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

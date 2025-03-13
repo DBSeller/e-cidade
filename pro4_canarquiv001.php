@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_procvar_classe.php");
-include("classes/db_proctipovar_classe.php");
-include("classes/db_db_syscampo_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_procvar_classe.php"));
+include(modification("classes/db_proctipovar_classe.php"));
+include(modification("classes/db_db_syscampo_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+
+require_once('model/protocolo/ProcessoProtocoloNumeracao.model.php');
+
 $clprotprocesso = new cl_protprocesso;
 $rotulo = new rotulocampo();
 $rotulo->label("p58_codproc");
+
 ?>
 <html>
 <head>
@@ -44,14 +48,58 @@ $rotulo->label("p58_codproc");
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/AjaxRequest.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 <script>
-   function js_processo(valor,nome){
-     
+ 
+<?php
+  if (ProcessoProtocoloNumeracao::getTipoConfiguracao() == ProcessoProtocoloNumeracao::TIPOORGAO) { ?>
+    function js_processo(valor, nome) {
+      var parametros = {
+        exec: 'buscarVolumes',
+        codigoProcesso: valor,
+        desarquivamento: true
+      };
+
+      new AjaxRequest(
+        'pro4_protprocessovolume.RPC.php',
+        parametros,
+        function(retorno, erro) {
+          if (retorno.erro) {
+            alert(retorno.message.urlDecode());
+            return;
+          }
+          
+          if (confirm("Confirma desarquivamento do Processo " + valor + " - " + nome + " ?")) {
+            if (retorno.volumes.length > 0) {
+              var mensagem = "Deseja desarquivar os Volumes desse Processo:\n\n";
+              var volumes = '';
+
+              retorno.volumes.forEach(function(volume) {
+                mensagem += `${volume.p58_numero}\n`;
+              });
+              
+              if (confirm(mensagem)) {
+                location.href=`pro4_desarquivamentovolumes.php?processopai=${valor}`;
+              } else {
+                location.href='pro4_canarquiv002.php?p58_codproc=' + valor;
+              }
+            } else {
+              location.href='pro4_canarquiv002.php?p58_codproc=' + valor;
+            }
+          }
+        }
+      ).execute();
+    }
+<?php
+  } else { ?>
+    function js_processo(valor,nome){
       if (confirm("Confirma desarquivamento do Processo "+valor+" - "+nome+" ?")){
-          location.href='pro4_canarquiv002.php?p58_codproc='+valor;
+        location.href='pro4_canarquiv002.php?p58_codproc='+valor;
       }
-   }
+    }
+<?php
+  } ?>
 
 </script>
 </head>
@@ -91,7 +139,8 @@ $rotulo->label("p58_codproc");
     	if(isset($p58_codproc) && $p58_codproc != '' ){
     	  $where .= " and p68_codproc={$p58_codproc}";	  
     	}
-      $sql = "SELECT distinct p67_codproc,
+      $sql = "SELECT distinct on(p67_codproc)
+                     p67_codproc,
                      cast(p58_numero||'/'||p58_ano::varchar as varchar) as p58_numero, 
                      p67_dtarq,
                      (case when p58_requer isnull then z01_nome else p58_requer end) as dl_Requerente,
@@ -103,7 +152,8 @@ $rotulo->label("p58_codproc");
                      left join arqandam on p69_codarquiv = p67_codarquiv and p69_arquivado is false
                where {$where}
                order by p67_codproc ";
-    $rs = pg_query($sql);
+    $rs = db_query($sql);
+    // die($sql);
    // db_lovrot($query, $numlinhas, $arquivo = "", $filtro = "%", $aonde = "_self", $campos_layer = "", $NomeForm = "NoMe", $variaveis_repassa = array (), $automatico = true, $totalizacao = array()) {
     db_lovrot($sql,20,"()","","js_processo|p67_codproc|dl_requerente",'',"NoMe",array(),false);
    

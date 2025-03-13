@@ -119,7 +119,7 @@ function js_CarregaItens() {
 
 function js_RetornoCarregaItens(oAjax) {
 
-  oRetorno = eval("("+oAjax.responseText+")");
+  oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 
     oGridExames.clearAll(true);
@@ -296,7 +296,7 @@ function js_buscaProc (sProcedimento,iIndex) {
 }
 function js_retornoProcedimento (oAjax) {
 	
-	oRetorno = eval("("+oAjax.responseText+")");
+	oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
 	  
 	  document.getElementById('iproc'+oRetorno.iIndex).value = oRetorno.itens[0].sd63_i_codigo;

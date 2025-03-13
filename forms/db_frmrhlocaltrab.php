@@ -89,6 +89,17 @@ $clrotulo->label("cc08_descricao");
       db_input('cc08_descricao',30,$Icc08_descricao,true,'text',3,'')
        ?>
     </td>
+  </tr>
+  <tr>
+    <td nowrap title="<?=@$Trh55_inep?>">
+      <?=@$Lrh55_inep?>
+    </td>
+    <td> 
+      <?
+      db_input('rh55_inep', 10, $Irh55_inep, true, 'text', $db_opcao, "")
+      ?>
+    </td>
+  </tr>
 </table>
 </center>
 <input name="<?=($db_opcao==1?"incluir":($db_opcao==2||$db_opcao==22?"alterar":"excluir"))?>" type="submit" id="db_opcao" value="<?=($db_opcao==1?"Incluir":($db_opcao==2||$db_opcao==22?"Alterar":"Excluir"))?>" <?=($db_botao==false?"disabled":"")?> >
@@ -127,7 +138,7 @@ function js_completaCustos(iCodigo, iCriterio, iDescr) {
 
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhlocaltrab','func_rhlocaltrab.php?funcao_js=parent.js_preenchepesquisa|rh55_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhlocaltrab','func_rhlocaltrab.php?funcao_js=parent.js_preenchepesquisa|rh55_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhlocaltrab.hide();

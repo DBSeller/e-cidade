@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once 'model/pessoal/calculoatuarial/cnm/ArquivoCalculoAtuarialCNM.model.php';
-require_once 'model/pessoal/calculoatuarial/cnm/InformacaoCalculoAtuarialAtivos.model.php';
-require_once 'model/pessoal/calculoatuarial/cnm/InformacaoCalculoAtuarialInativos.model.php';
-require_once 'model/pessoal/calculoatuarial/cnm/InformacaoCalculoAtuarialPensionistas.model.php';
+require_once modification("model/pessoal/calculoatuarial/cnm/ArquivoCalculoAtuarialCNM.model.php");
+require_once modification("model/pessoal/calculoatuarial/cnm/InformacaoCalculoAtuarialAtivos.model.php");
+require_once modification("model/pessoal/calculoatuarial/cnm/InformacaoCalculoAtuarialInativos.model.php");
+require_once modification("model/pessoal/calculoatuarial/cnm/InformacaoCalculoAtuarialPensionistas.model.php");
 
 /**
  * Calculo Atuarial
@@ -122,11 +122,11 @@ class CalculoAtuarialCNM {
 
             $oServidor = $aServidoresAtivos[$iIndice];
 
-            if ( $oServidor->getCodigoRegime() != "1" ) { // != Estatutario
+            if ( $oServidor->getTipoRegime() != "1" ) { // != Estatutario
               continue;
             }
  
-            if ( $oServidor->getVinculo() != 'A' ) { //Ativo
+            if ( $oServidor->getVinculo()->getTipo() != 'A' ) { //Ativo
               continue;
             }
  
@@ -245,7 +245,7 @@ class CalculoAtuarialCNM {
             $oInformacoes->setTempoServicoAnterior ( self::getTempoAverbado($oServidor, $this->aAssentamentos) );
             $oInformacoes->setQuantidadeDependentes( $iQuantidadeDependentes ) ;
             $oInformacoes->setTipoVinculacaoEstatal( $oServidor->getInstituicao()->getTipo() ) ;
-            $oInformacoes->setTipoServidor($oServidor->getCodigoRegime()) ;
+            $oInformacoes->setTipoServidor($oServidor->getTipoRegime()) ;
 
             $oArquivo->lancarRegistro( $oInformacoes );
 
@@ -269,13 +269,13 @@ class CalculoAtuarialCNM {
           
           foreach ( $aServidoresInativos as $oServidor ) {
 
-            if ( $oServidor->getCodigoRegime() != "1" ) {
+            if ( $oServidor->getTipoRegime() != "1" ) {
               continue;
             }
 
             if ( $iTipoArquivo == VinculoServidor::PENSIONISTA ) {
 
-              if ( $oServidor->getVinculo() != 'P' ) {
+              if ( $oServidor->getVinculo()->getTipo() != 'P' ) {
                 continue;
               }
               $oInformacoes = new InformacaoCalculoAtuarialPensionistas();						
@@ -287,7 +287,7 @@ class CalculoAtuarialCNM {
 
             } else {
 
-              if ( $oServidor->getVinculo() != 'I' ) {
+              if ( $oServidor->getVinculo()->getTipo() != 'I' ) {
                 continue;
               }
               $oInformacoes = new InformacaoCalculoAtuarialInativos();						

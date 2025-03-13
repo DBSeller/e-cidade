@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_classesgenericas.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_matestoquetipo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_matestoquetipo_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $cliframe_seleciona     = new cl_iframe_seleciona;
@@ -78,8 +78,8 @@ $clmatestoquetipo       = new cl_matestoquetipo;
       <?
       $cliframe_seleciona->chaves = "m81_codtipo";
       $cliframe_seleciona->campos  = "m81_codtipo, m81_descr";
-      $cliframe_seleciona->legenda="Tipos de Entradas";
-      $cliframe_seleciona->sql=$clmatestoquetipo->sql_query_file(null,"m81_codtipo, m81_descr","m81_codtipo","m81_codtipo in (1, 3, 8, 9, 12, 18)");
+      $cliframe_seleciona->legenda="Tipos de Entradas";      
+      $cliframe_seleciona->sql=$clmatestoquetipo->sql_query_file(null,"m81_codtipo, m81_descr","m81_codtipo","m81_codtipo in (1, 3, 8, 9, 12, 18, 25)");
       $cliframe_seleciona->iframe_height ="300";
       $cliframe_seleciona->iframe_width  ="400";
       $cliframe_seleciona->iframe_nome ="db_iframe_matestoquetipo";

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -225,20 +225,20 @@ class cl_rubteste {
  and  descrrub = '$this->descrrub'
 ";
      $resaco = $this->sql_record($this->sql_query_file($this->rubant,$this->descrrub));
-     if($this->numrows>0){       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     if($this->numrows>0){       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,5731,'$this->rubant','A')");
-       $resac = pg_query("insert into db_acountkey values($acount,5732,'$this->descrrub','A')");
+       $resac = db_query("insert into db_acountkey values($acount,5731,'$this->rubant','A')");
+       $resac = db_query("insert into db_acountkey values($acount,5732,'$this->descrrub','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["rubant"]))
-         $resac = pg_query("insert into db_acount values($acount,908,5731,'".AddSlashes(pg_result($resaco,0,'rubant'))."','$this->rubant',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,908,5731,'".AddSlashes(pg_result($resaco,0,'rubant'))."','$this->rubant',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["descrrub"]))
-         $resac = pg_query("insert into db_acount values($acount,908,5732,'".AddSlashes(pg_result($resaco,0,'descrrub'))."','$this->descrrub',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,908,5732,'".AddSlashes(pg_result($resaco,0,'descrrub'))."','$this->descrrub',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["rubnova"]))
-         $resac = pg_query("insert into db_acount values($acount,908,5733,'".AddSlashes(pg_result($resaco,0,'rubnova'))."','$this->rubnova',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,908,5733,'".AddSlashes(pg_result($resaco,0,'rubnova'))."','$this->rubnova',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["anomes"]))
-         $resac = pg_query("insert into db_acount values($acount,908,5734,'".AddSlashes(pg_result($resaco,0,'anomes'))."','$this->anomes',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,908,5734,'".AddSlashes(pg_result($resaco,0,'anomes'))."','$this->anomes',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "rubteste nao Alterado. Alteracao Abortada.\\n";

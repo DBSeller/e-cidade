@@ -5,33 +5,50 @@ if (!function_exists('addCaracter')){
 
 	function addCaracter($sString, $sQuebra = "\n", $iLimite = 86){
 		$aPalavras = explode(' ', $sString);
-				
+
 		$iTamanho = 0;
 		$index    = 0;
 		$aRetorno = array('');
-		
+
 		foreach($aPalavras as $sPalavra) {
 		  $iTamanhoPalavra = strlen($sPalavra) + 1;
-		
+
 		  if( ( $iTamanho + $iTamanhoPalavra ) <= $iLimite ){
-		
+
 		    $aRetorno[$index] .= $sPalavra . ' ';
 		    $iTamanho 			  += $iTamanhoPalavra;
 		  } else {
-		
+
 		    $index += 1;
 		    $iTamanho 		    = $iTamanhoPalavra;
 		    $aRetorno[$index] = $sPalavra . ' ';
 		  }
 		}
-		
+
 		return implode ("$sQuebra",$aRetorno);
 	}
-	
+
 }
 
 $seq_item = 1;
 $pagina = 1;
+
+$origem = \ECidade\Financeiro\Orcamento\Recurso\Origem::getAutorizacao($this->numaut);
+$complemento = '';
+if (!empty($origem)) {
+    $complemento = "{$origem->o200_sequencial} - {$origem->o200_descricao}";
+}
+
+$destino = "";
+if (!empty($this->destino)) {
+    $destino = " / DESTINO: ".stripslashes($this->destino);
+}
+
+$this->numeroLicitacao = $this->num_licitacao;
+if (!empty($this->numero_licitacao)) {
+    $this->numeroLicitacao = $this->numero_licitacao . '/' . $this->ano_licitacao;
+}
+
 if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
 
   $this->objpdf->AliasNbPages();
@@ -59,10 +76,10 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
     $this->objpdf->text(137, $xlin - 3, 'EMPENHO N' . CHR(176));
     $this->objpdf->text(180, $xlin - 3, $this->Scodemp);
   }
-  
+
   if (isset($this->iPlanoPacto) && $this->iPlanoPacto != "") {
-     
-    
+
+
     $this->objpdf->text(130,$xlin-2,'PLANO');
     $this->objpdf->text(180,$xlin-2,': '.substr($this->iPlanoPacto."-".$this->SdescrPacto,0,40));
   }
@@ -80,7 +97,7 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
   $this->objpdf->Setfont('Arial', '', 6);
   $this->objpdf->text($xcol + 2, $xlin + 4, 'Dados da Compra');
   $this->objpdf->Setfont('Arial', 'B', 8);
-  
+
   $this->objpdf->text($xcol + 2, $xlin + 7,    'Licitação');
   $this->objpdf->text($xcol + 2, $xlin + 10.5, 'Modalidade da Licitação');
   $this->objpdf->text($xcol + 2, $xlin + 14.5, 'Tipo de Compra');
@@ -89,18 +106,18 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
   $this->objpdf->text($xcol + 2, $xlin + 26.5, 'Cond.de Pagto');
   $this->objpdf->text($xcol + 2, $xlin + 30.5, 'Outras Condições');
   $this->objpdf->text($xcol + 2, $xlin + 34.5, 'Proc. Administrativo');
-  
+
   $this->objpdf->Setfont('Arial', '', 8);
-  
-  $this->objpdf->text($xcol + 35, $xlin + 7,    ':  ' . $this->edital_licitacao . '/' . $this->ano_licitacao);
-  $this->objpdf->text($xcol + 35, $xlin + 10.5, ':  ' . $this->num_licitacao . '  -  ' . substr($this->descr_licitacao,0,30));
+
+  $this->objpdf->text($xcol + 35, $xlin + 7,    ':  ' . $this->numeroLicitacao);
+  $this->objpdf->text($xcol + 35, $xlin + 10.5, ':  ' .  substr($this->descr_licitacao,0,30));
   $this->objpdf->text($xcol + 35, $xlin + 14.5, ':  ' . $this->descr_tipocompra);
   $this->objpdf->text($xcol + 35, $xlin + 18.5, ':  ' . stripslashes($this->prazo_ent));
   $this->objpdf->text($xcol + 35, $xlin + 22.5, ':  ' . stripslashes($this->obs));
   $this->objpdf->text($xcol + 35, $xlin + 26.5, ':  ' . stripslashes($this->cond_pag));
   $this->objpdf->text($xcol + 35, $xlin + 30.5, ':  ' . stripslashes($this->out_cond));
   $this->objpdf->text($xcol + 35, $xlin + 34.5, ':  ' . stripslashes($this->processoadministrativo));
-  
+
   $this->objpdf->rect($xcol + 106, $xlin + 2, 96, 33.2, 2, 'DF', '1234');
   $this->objpdf->Setfont('Arial', '', 6);
   $this->objpdf->text($xcol + 110, $xlin + 4, 'Dados da Dotação');
@@ -115,7 +132,8 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
   $this->objpdf->text($xcol + 108, $xlin + 26,   'Elemento');
   $this->objpdf->text($xcol + 108, $xlin + 29,   'Recurso');
   $this->objpdf->text($xcol + 178, $xlin + 29,   'Reduz');
-  $this->objpdf->text($xcol + 108, $xlin + 32,   'Destino');
+  //  $this->objpdf->text($xcol + 108, $xlin + 32,   'Destino');
+  $this->objpdf->text($xcol + 108, $xlin + 32,   'Complemento');
   $this->objpdf->text($xcol + 108, $xlin + 34.5, "Característica Peculiar");
 
   $this->objpdf->Setfont('Arial', '', 8);
@@ -128,7 +146,9 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
   $this->objpdf->text($xcol + 122, $xlin + 26,   ' :  ' . $this->descrdotacao);
   $this->objpdf->text($xcol + 122, $xlin + 29,   ' :  ' . $this->recurso . ' - ' . $this->descr_recurso);
   $this->objpdf->text($xcol + 188, $xlin + 29,   ' :  ' . $this->coddot . '-' . db_CalculaDV($this->coddot));
-  $this->objpdf->text($xcol + 122, $xlin + 32,   ' :  ' . stripslashes($this->destino));
+  //  $this->objpdf->text($xcol + 122, $xlin + 32,   ' :  ' . stripslashes($this->destino));
+  $this->objpdf->text($xcol + 126, $xlin + 32,   ' :  ' . $complemento);
+
   $this->objpdf->text($xcol + 138, $xlin + 34.5, ' :  ' . $this->cod_concarpeculiar . " - " . $this->descr_concarpeculiar);
 
   $this->objpdf->rect($xcol, $xlin + 36, $xcol + 198, 20, 2, 'DF', '1234');
@@ -200,21 +220,21 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
 
   $this->objpdf->SetWidths(array (
 
-        9, 
-        10, 
-        17, 
-        105, 
-        30, 
-        30 
+        9,
+        10,
+        17,
+        105,
+        30,
+        30
         ));
   $this->objpdf->SetAligns(array (
 
-        'C', 
-        'C', 
-        'C', 
-        'L', 
-        'R', 
-        'R' 
+        'C',
+        'C',
+        'C',
+        'L',
+        'R',
+        'R'
         ));
 
   $this->objpdf->setleftmargin(4);
@@ -248,12 +268,12 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
 
       $this->objpdf->Row(array (
 
-            db_formatar($seq_item, "s", "0", (strlen($seq_item) + 1), "e", 0), 
-            pg_result($this->recorddositens, $ii, $this->item), 
-            pg_result($this->recorddositens, $ii, $this->quantitem), 
-            $descricaoitem, 
-            db_formatar(pg_result($this->recorddositens, $ii, $this->valor), 'v', " ", $this->casadec), 
-            db_formatar(pg_result($this->recorddositens, $ii, $this->valoritem), 'f') 
+            db_formatar($seq_item, "s", "0", (strlen($seq_item) + 1), "e", 0),
+            pg_result($this->recorddositens, $ii, $this->item),
+            pg_result($this->recorddositens, $ii, $this->quantitem),
+            $descricaoitem,
+            db_formatar(pg_result($this->recorddositens, $ii, $this->valor), 'v', " ", $this->casadec),
+            db_formatar(pg_result($this->recorddositens, $ii, $this->valoritem), 'f')
             ), 3, false, 4, 0, true);
       $seq_item ++;
       $xtotal += pg_result($this->recorddositens, $ii, $this->valoritem);
@@ -264,7 +284,7 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
       } else {
         $obsitem = pg_result($this->recorddositens, $ii, $this->observacaoitem);
       }
-			
+
     } else {
       $retorna_obs = 0;
     }
@@ -275,9 +295,9 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
     }
 
     $obsitem = str_replace("\\n", "\n", $obsitem);
-    
+
     $this->objpdf->Setfont('Arial', '', 7);
-    
+
     if(count(split("\n", $obsitem)) <= 3 &&  strlen($obsitem) > 2000){ //Texto em bloco
     	$obsitem = addCaracter($obsitem, "\n", 86);
     }
@@ -294,32 +314,36 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
     /////// troca de pagina
 
 
+
+
     if (($this->objpdf->gety() > $this->objpdf->h - 100 && $pagina == 1) || ($this->objpdf->gety() > $this->objpdf->h - 30 && $pagina != 1)) {
-    	
+
 				  if ($pagina == 1) {
 				    $this->objpdf->setxy($xcol + 1, $xlin + 187);
 				    $this->objpdf->text($xcol + 2, $xlin + 186, 'RESUMO : ', 0, 1, 'L', 0);
 				    $this->objpdf->Setfont('Arial', '', 7);
-				    $this->objpdf->multicell(140, 3, $this->resumo);
+
+
+				    $this->objpdf->multicell(140, 3, $this->resumo . $destino);
 				    $this->objpdf->Setfont('Arial', 'B', 8);
 				  }
-				
+
 				  if ($pagina == 1) {
-				    // Assinatura documento    
-				
-				
+				    // Assinatura documento
+
+
 				    $sqlparag = "select db02_texto ";
 				    $sqlparag .= "  from db_documento ";
 				    $sqlparag .= "       inner join db_docparag on db03_docum = db04_docum ";
 				    $sqlparag .= "       inner join db_tipodoc on db08_codigo  = db03_tipodoc ";
 				    $sqlparag .= "       inner join db_paragrafo on db04_idparag = db02_idparag ";
 				    $sqlparag .= " where db03_tipodoc = 1503 and db03_instit = " . db_getsession("DB_instit") . " order by db04_ordem ";
-				
+
 				    $resparag = @db_query($sqlparag);
-				
+
 				    if (@pg_numrows($resparag) > 0) {
 				      db_fieldsmemory($resparag, 0);
-				
+
 				      eval($db02_texto);
 				    } else {
 				      $sqlparagpadrao = "select db61_texto ";
@@ -328,21 +352,21 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
 				      $sqlparagpadrao .= "       inner join db_tipodoc         on db08_codigo   = db60_tipodoc ";
 				      $sqlparagpadrao .= "       inner join db_paragrafopadrao on db61_codparag = db62_codparag ";
 				      $sqlparagpadrao .= " where db60_tipodoc = 1503 order by db62_ordem";
-				
+
 				      $resparagpadrao = @db_query($sqlparagpadrao);
 				      if (@pg_numrows($resparagpadrao) > 0) {
 				        db_fieldsmemory($resparagpadrao, 0);
-				
+
 				        eval($db61_texto);
 				      }
 				    }
-				  }    	
+				  }
 
       if ($this->objpdf->PageNo() == 1) {
 
         $this->objpdf->text(110, $xlin + 214, 'Continua na Página ' . ($this->objpdf->PageNo() + 1));
 
-        // Assinatura documento    
+        // Assinatura documento
 
 
         $sqlparag = "select db02_texto ";
@@ -378,7 +402,7 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
           $this->objpdf->setxy($xcol + 1, $xlin + 187);
           $this->objpdf->text($xcol + 2, $xlin + 186, 'RESUMO : ', 0, 1, 'L', 0);
           $this->objpdf->Setfont('Arial', '', 7);
-          $this->objpdf->multicell(140, 3, $this->resumo);
+          $this->objpdf->multicell(140, 3, $this->resumo . $destino);
           $this->objpdf->Setfont('Arial', 'B', 8);
         }
 
@@ -454,12 +478,12 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
     $this->objpdf->setxy($xcol + 1, $xlin + 187);
     $this->objpdf->text($xcol + 2, $xlin + 186, 'RESUMO : ', 0, 1, 'L', 0);
     $this->objpdf->Setfont('Arial', '', 7);
-    $this->objpdf->multicell(140, 3, $this->resumo);
+    $this->objpdf->multicell(140, 3, $this->resumo . $destino);
     $this->objpdf->Setfont('Arial', 'B', 8);
   }
 
   if ($pagina == 1) {
-    // Assinatura documento    
+    // Assinatura documento
 
 
     $sqlparag = "select db02_texto ";
@@ -526,8 +550,8 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
     $this->objpdf->text(180, $xlin - 3, $this->Scodemp);
   }
   if (isset($this->iPlanoPacto) && $this->iPlanoPacto != "") {
-     
-    $this->objpdf->Setfont('Arial', 'B', 8);  
+
+    $this->objpdf->Setfont('Arial', 'B', 8);
     $this->objpdf->text(130,$xlin,'PLANO N'. CHR(176));
     $this->objpdf->text(145,$xlin,' '.substr($this->iPlanoPacto."-".$this->SdescrPacto,0,40));
   }
@@ -554,16 +578,16 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
   $this->objpdf->text($xcol + 2, $xlin + 26.5, 'Cond.de Pagto');
   $this->objpdf->text($xcol + 2, $xlin + 30.5, 'Outras Condições');
   $this->objpdf->text($xcol + 2, $xlin + 34.5, 'Proc. Administrativo');
-  $this->objpdf->Setfont('Arial', '', 8);
-  $this->objpdf->text($xcol + 35, $xlin + 7,    ':  ' . $this->edital_licitacao . '/' . $this->ano_licitacao);
-  $this->objpdf->text($xcol + 35, $xlin + 10.5, ':  ' . $this->num_licitacao . '  -  ' . $this->descr_licitacao);  
+  $this->objpdf->Setfont('Arial', '', 6);
+  $this->objpdf->text($xcol + 35, $xlin + 7,    ':  ' . $this->numeroLicitacao);
+  $this->objpdf->text($xcol + 35, $xlin + 10.5, ':  ' . $this->descr_licitacao);
   $this->objpdf->text($xcol + 35, $xlin + 14.5, ':  ' . $this->descr_tipocompra);
   $this->objpdf->text($xcol + 35, $xlin + 18.5, ':  ' . stripslashes($this->prazo_ent));
   $this->objpdf->text($xcol + 35, $xlin + 22.5, ':  ' . stripslashes($this->obs));
   $this->objpdf->text($xcol + 35, $xlin + 26.5, ':  ' . stripslashes($this->cond_pag));
   $this->objpdf->text($xcol + 35, $xlin + 30.5, ':  ' . stripslashes($this->out_cond));
   $this->objpdf->text($xcol + 35, $xlin + 34.5, ':  ' . stripslashes($this->processoadministrativo));
-  
+
   $this->objpdf->rect($xcol + 106, $xlin + 2, 96, 33.2, 2, 'DF', '1234');
   $this->objpdf->Setfont('Arial', '', 6);
 
@@ -579,9 +603,10 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
   $this->objpdf->text($xcol + 108, $xlin + 26, 'Elemento');
   $this->objpdf->text($xcol + 108, $xlin + 29, 'Recurso');
   $this->objpdf->text($xcol + 178, $xlin + 29, 'Reduz');
-  $this->objpdf->text($xcol + 108, $xlin + 32, 'Destino');
+//  $this->objpdf->text($xcol + 108, $xlin + 32, 'Destino');
+  $this->objpdf->text($xcol + 108, $xlin + 32, 'Complemento');
   $this->objpdf->text($xcol + 108, $xlin + 34.5, "Característica Peculiar");
-//Quebrar o nome da unidade para 48 caracteres (3 parametro) 
+//Quebrar o nome da unidade para 48 caracteres (3 parametro)
 
   $this->objpdf->Setfont('Arial', '', 8);
   $this->objpdf->text($xcol + 122, $xlin + 8, ' :  ' . $this->dotacao);
@@ -593,7 +618,10 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
   $this->objpdf->text($xcol + 122, $xlin + 26, ' :  ' . $this->descrdotacao);
   $this->objpdf->text($xcol + 122, $xlin + 29, ' :  ' . $this->recurso . ' - ' . $this->descr_recurso);
   $this->objpdf->text($xcol + 188, $xlin + 29, ' :  ' . $this->coddot . '-' . db_CalculaDV($this->coddot));
-  $this->objpdf->text($xcol + 122, $xlin + 32, ' :  ' . stripslashes($this->destino));
+
+//  $this->objpdf->text($xcol + 122, $xlin + 32, ' :  ' . stripslashes($this->destino));
+  $this->objpdf->text($xcol + 126, $xlin + 32, ' :  ' . $complemento);
+
   $this->objpdf->text($xcol + 138, $xlin + 34.5, ' :  ' . $this->cod_concarpeculiar . " - " . $this->descr_concarpeculiar);
 
   $this->objpdf->rect($xcol, $xlin + 36, $xcol + 198, 20, 2, 'DF', '1234');
@@ -670,9 +698,25 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
   $xtotal = 0;
 
   $retorna_obs = 0;
-  
-  for($ii = 0; $ii < $this->linhasdositens; $ii ++) {
 
+  $this->casadec_original = $this->casadec;
+  for($ii = 0; $ii < $this->linhasdositens; $ii ++) {
+    // verifica se é Paty
+    if (isset($this->casadec_medicamentos)) {
+      // verifica se é medicamento
+      $codigo_material = pg_result($this->recorddositens, $ii, $this->item);
+      // verifica se é medicamento
+      $classe_pcmater = new cl_pcmater();
+      $sSqlMedicamento = $classe_pcmater->sql_query_grupo($codigo_material);
+
+      $codgrupo = pg_fetch_assoc( @db_query($sSqlMedicamento) )['pc03_codgrupo'];
+
+      if ($codgrupo == 11) {
+        $this->casadec = $this->casadec_medicamentos;
+      } else {
+        $this->casadec = $this->casadec_original;
+      }
+    }
     db_fieldsmemory($this->recorddositens, $ii);
 
     if ($retorna_obs == 0) {
@@ -696,16 +740,16 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
           $descricaoitem .= "\n" . 'SOLICITAÇÃO: ' . pg_result($this->recorddositens, $ii, $this->Snumero);
         }
       }
-
       $this->objpdf->Setfont('Arial', '', 7);
       $this->objpdf->Row(array (
 
-            db_formatar($seq_item, "s", "0", (strlen($seq_item) + 1), "e", 0), 
-            pg_result($this->recorddositens, $ii, $this->item), 
-            pg_result($this->recorddositens, $ii, $this->quantitem), 
-            $descricaoitem, 
-            db_formatar(pg_result($this->recorddositens, $ii, $this->valor), 'v', " ", $this->casadec), 
-            db_formatar(pg_result($this->recorddositens, $ii, $this->valoritem), 'f') 
+            db_formatar($seq_item, "s", "0", (strlen($seq_item) + 1), "e", 0),
+            pg_result($this->recorddositens, $ii, $this->item),
+            pg_result($this->recorddositens, $ii, $this->quantitem),
+            $descricaoitem,
+            //db_formatar(pg_result($this->recorddositens, $ii, $this->valor), 'v', " ", $this->casadec),
+            number_format(pg_result($this->recorddositens, $ii, $this->valor), $this->casadec, ",", "."),
+            db_formatar(pg_result($this->recorddositens, $ii, $this->valoritem), 'f')
             ), 3, false, 4);
 
       $seq_item ++;
@@ -717,6 +761,7 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
         $obsitem .=  "\n".pg_result($this->recorddositens, $ii, $this->observacaoitem);
       } else {
         $obsitem = pg_result($this->recorddositens, $ii, $this->observacaoitem);
+        $obsitem = urldecode($obsitem);
       }
 
     } else {
@@ -728,15 +773,15 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
     if ($pagina != 1) {
       $seta_altura_pagina_row = $this->objpdf->h - 40;
     }
-    
+
     $obsitem = str_replace("\\n", "\n", $obsitem);
-    
+
     $this->objpdf->Setfont('Arial', '', 7);
 
     if(count(split("\n", $obsitem)) <= 3 && strlen($obsitem) > 2000){ //Texto em bloco
     	$obsitem = addCaracter($obsitem, "\n", 86);
     }
-    
+
     $obsitem = $this->objpdf->Row_multicell(array('','','', $obsitem), 3, false, 5, 0, true, true, 3, $seta_altura_pagina_row, null, null);
 
     if (trim($obsitem) != "") {
@@ -757,33 +802,33 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
             $this->objpdf->setxy($xcol + 1, $xlin + 187);
             $this->objpdf->text($xcol + 2, $xlin + 186, 'RESUMO: ', 0, 1, 'L', 0);
             $this->objpdf->Setfont('Arial', '', 7);
-            $this->objpdf->multicell(140, 3, $this->resumo);
+            $this->objpdf->multicell(140, 3, $this->resumo . $destino);
             $this->objpdf->Setfont('Arial', 'B', 8);
-          } 
+          }
 
 					  if ($pagina == 1) {
-					
+
 					    $this->objpdf->text($xcol + 120, $xlin + 211, 'T O T A L');
 					    $this->objpdf->SetXY(172, $xlin + 205);
 					    $this->objpdf->cell(30, 10, db_formatar($this->valtotal, 'f'), 0, 0, "R");
-					
-					    // Assinatura documento    
-					
-					
+
+					    // Assinatura documento
+
+
 					    $sqlparag = "select db02_texto ";
 					    $sqlparag .= "  from db_documento ";
 					    $sqlparag .= "       inner join db_docparag on db03_docum = db04_docum ";
 					    $sqlparag .= "       inner join db_tipodoc on db08_codigo  = db03_tipodoc ";
 					    $sqlparag .= "       inner join db_paragrafo on db04_idparag = db02_idparag ";
 					    $sqlparag .= " where db03_tipodoc = 1503 and db03_instit = " . db_getsession("DB_instit") . " order by db04_ordem ";
-					
+
 					    $resparag = @db_query($sqlparag);
-					
+
 					    if (@pg_numrows($resparag) > 0) {
 					      db_fieldsmemory($resparag, 0);
-					
+
 					      eval($db02_texto);
-					
+
 					    } else {
 					      $sqlparagpadrao = "select db61_texto ";
 					      $sqlparagpadrao .= "  from db_documentopadrao ";
@@ -791,24 +836,24 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
 					      $sqlparagpadrao .= "       inner join db_tipodoc         on db08_codigo   = db60_tipodoc ";
 					      $sqlparagpadrao .= "       inner join db_paragrafopadrao on db61_codparag = db62_codparag ";
 					      $sqlparagpadrao .= " where db60_tipodoc = 1503 order by db62_ordem";
-					
+
 					      $resparagpadrao = @db_query($sqlparagpadrao);
 					      if (@pg_numrows($resparagpadrao) > 0) {
 					        db_fieldsmemory($resparagpadrao, 0);
-					
+
 					        eval($db61_texto);
 					      }
 					    }
-					  }          
-          
+					  }
+
         if ($this->objpdf->PageNo() == 1) {
-          
+
           $this->objpdf->text(85, $xlin + 214, 'Continua na Página  ' . ($this->objpdf->PageNo() + 1));
           $this->objpdf->SetXY(172, $xlin + 205);
           //$this->objpdf->cell(30, 10, db_formatar($this->valtotal, 'f'), 0, 0, "R");
 
 
-          // Assinatura documento    
+          // Assinatura documento
 
 
           $sqlparag = "select db02_texto ";
@@ -846,7 +891,7 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
             $this->objpdf->setxy($xcol + 1, $xlin + 187);
             $this->objpdf->text($xcol + 2, $xlin + 186, 'RESUMO: ', 0, 1, 'L', 0);
             $this->objpdf->Setfont('Arial', '', 7);
-            $this->objpdf->multicell(140, 3, $this->resumo);
+            $this->objpdf->multicell(140, 3, $this->resumo . $destino);
             $this->objpdf->Setfont('Arial', 'B', 8);
           }
 
@@ -926,13 +971,18 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
   }
   if ($pagina == 1) {
     $this->objpdf->setxy($xcol + 1, $xlin + 187);
-    $this->objpdf->text($xcol + 2, $xlin + 186, 'RESUMO : ', 0, 1, 'L', 0);
-    $this->objpdf->Setfont('Arial', '', 7);
-    
-    $sResumo =  $this->resumo;
+    //$this->objpdf->text($xcol + 2, $xlin + 186, 'RESUMO : ', 0, 1, 'L', 0);
+    $this->objpdf->Setfont('Arial', '', 6);
 
-    $this->objpdf->multicell(140, 3, $sResumo); //stripslashes($this->resumo));
-    
+    $this->objpdf->setxy($xcol +1, $xlin +181.5);
+
+
+    $sResumo =  substr($this->resumo . $destino, 0, 730) ;
+
+
+
+    $this->objpdf->multicell(140, 4, "RESUMO: " . $sResumo); //stripslashes($this->resumo));
+
     $this->objpdf->Setfont('Arial', 'B', 8);
   }
 
@@ -942,7 +992,7 @@ if (strtoupper(trim($this->municpref)) == 'GUAIBA') {
     $this->objpdf->SetXY(172, $xlin + 205);
     $this->objpdf->cell(30, 10, db_formatar($this->valtotal, 'f'), 0, 0, "R");
 
-    // Assinatura documento    
+    // Assinatura documento
 
 
     $sqlparag = "select db02_texto ";

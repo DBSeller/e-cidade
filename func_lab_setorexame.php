@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
@@ -37,6 +37,13 @@ parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $cllab_setorexame = new cl_lab_setorexame;
 $cllab_setorexame->rotulo->label("la09_i_codigo");
 $cllab_setorexame->rotulo->label("la08_c_descr");
+
+$parametros = explode('|', $_GET['funcao_js']);
+foreach($parametros as $parametro){
+  if(str_contains($parametro, 'la23_i_codigo')){
+    $la23_i_codigo = explode('=', $parametro)[1];
+  }
+}
 ?>
 <html>
 <head>
@@ -150,4 +157,10 @@ $cllab_setorexame->rotulo->label("la08_c_descr");
 $('chave_la09_i_codigo').className = 'field-size2';
 $('chave_la08_c_descr').className  = 'field-size7';
 js_tabulacaoforms("form2","chave_la09_i_codigo",true,1,"chave_la09_i_codigo",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

@@ -1,0 +1,18 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+    <campos>
+        <campo campo="procdoc.p56_coddoc" label="documento_codigo" />
+        <campo campo="procdoc.p56_descr" label="documento_descricao" />
+        <campo campo="procdoc.p56_ouvidoriatipodado" label="documento_tipodado" />
+        <campo campo="procdoctipo.p57_ouvidoriaobrigatorio" label="documento_obrigatorio" />
+    </campos>
+    <from tabela="procdoc" />
+    <juncoes>
+        <join tipo="inner" tabela="procdoctipo" condicao="procdoctipo.p57_coddoc = procdoc.p56_coddoc" />
+    </juncoes>
+    <filtros>
+        <filtro label="tipo_processo" condicao="procdoctipo.p57_codigo = $tipo_processo" obrigatorio="true" />
+    </filtros>
+    <agrupamento />
+    <ordenacao />
+</consulta>

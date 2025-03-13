@@ -1,9 +1,34 @@
 <?
+if (!function_exists('truncar')) {
+    function truncar($valor)
+    {
+        $novoValor = (string)$valor;
+        $novoValor = explode(".", $novoValor);
+        if (sizeof($novoValor) > 1) {
+            if (strlen($novoValor[1]) > 2) {
+                $novoValor[1] = substr($novoValor[1], 0, 2);
+                $valor = (float)($novoValor[0] . "." . $novoValor[1]);
+            }
+        }
+        return $valor;
+    }
+}
+if (!function_exists('getValorPrint')) {
+    function getValorPrint($valor)
+    {
+        if (isParaiba()) {
+            return trim(db_formatar($valor, "f"));
+        }
+        return trim(db_formatar($valor, "f", " ", 0, "e", 4));
+    }
+}
+
+
+
 $this->objpdf->SetAutoPageBreak('on',0);
 $this->objpdf->AliasNbPages();
 $this->objpdf->AddPage();
 $this->objpdf->settopmargin(1);
-
 $pagina = 1;
 $xlin   = 20;
 $xcol   = 4;
@@ -16,7 +41,6 @@ for($j = 0; $j < $this->linhasdositens; $j++){
            $imprimevalidmin="true";
                                                     }
 }
-
 
 // Caixa externa
 $this->objpdf->setfillcolor(245);
@@ -41,7 +65,7 @@ $this->objpdf->text(146,$xlin-8,": ".$this->Sdepart);
 $this->objpdf->text(146,$xlin-5,": ".$this->fonedepto." / ".$this->ramaldepto);
 $this->objpdf->text(146,$xlin-2,": ".$this->faxdepto);
 $this->objpdf->text(130,$xlin+1,$this->emaildepto);
-$this->objpdf->text(195,$xlin+1,"Página ".$pagina);
+$this->objpdf->text(185,$xlin+1,"Página ".$pagina);
 $this->objpdf->Setfont('Arial','B',9);
 $this->objpdf->text(40,$xlin-15,$this->prefeitura);
 $this->objpdf->Setfont('Arial','',7);
@@ -80,6 +104,8 @@ $this->objpdf->setxy($xcol+22,$xlin+18);
 $this->objpdf->cell(3,4,':  ',0,0,"L",0);
 $this->objpdf->setxy($xcol+24.5,$xlin+18);
 
+$nTotalGeral = 0;
+$nTotalGeralUnitario = 0;
 $Sresumo = trim($this->Sresumo);
 $vresumo = split("\n",$Sresumo);
 
@@ -123,9 +149,12 @@ $this->objpdf->text($xcol+150,$xlin+46,'Fone/Fax');
 $this->objpdf->Setfont('Arial','',8);
 
 // Imprime dados dos fornecedores
+$sCpfCnpj = (trim($this->cnpj)!=""?
+                 (strlen($this->cnpj) == 11?db_formatar($this->cnpj,'cpf'):db_formatar($this->cnpj,'cnpj')):"");
+
 $this->objpdf->text($xcol+ 18,$xlin+ 38,':  '.$this->nome);
 $this->objpdf->text($xcol+122,$xlin+38,':  '.$this->numcgm);
-$this->objpdf->text($xcol+163,$xlin+38,':  '.(trim($this->cnpj)!=""?(strlen($this->cnpj) == 11?db_formatar($this->cnpj,'cpf'):db_formatar($this->cnpj,'cnpj')):""));
+$this->objpdf->text($xcol+163,$xlin+38,':  '.$sCpfCnpj);
 $this->objpdf->text($xcol+ 18,$xlin+ 42,':  '.$this->ender);
 $this->objpdf->text($xcol+122,$xlin+42,':  '.substr($this->compl,0,15));
 $this->objpdf->text($xcol+ 18,$xlin+ 46,':  '.(trim($this->cnpj)!=""?($this->munic.'-'.$this->uf):""));
@@ -201,16 +230,16 @@ if($this->linhasdosdepart>0){
 // Caixa com Rotulos item, quantidade, descricao, valor
 $this->objpdf->Setfont('Arial','B',8);
 
-$this->objpdf->rect($xcol    ,$xlin+$getdoy,12,6,2,'DF','12');
-$this->objpdf->rect($xcol+ 12,$xlin+$getdoy,15,6,2,'DF','12');
-$this->objpdf->rect($xcol+ 27,$xlin+$getdoy,18,6,2,'DF','12');
-$this->objpdf->rect($xcol+ 45,$xlin+$getdoy,70,6,2,'DF','12');
-$this->objpdf->rect($xcol+115,$xlin+$getdoy,49,6,2,'DF','12');
-if ($imprimevalidmin=="true"){
-$this->objpdf->rect($xcol+141,$xlin+$getdoy,23,6,2,'DF','12');
+$this->objpdf->rect($xcol      ,$xlin+$getdoy,12,6,2,'DF','12');
+$this->objpdf->rect($xcol+ 12  ,$xlin+$getdoy,15,6,2,'DF','12');
+$this->objpdf->rect($xcol+ 27  ,$xlin+$getdoy,18,6,2,'DF','12');
+$this->objpdf->rect($xcol+ 45  ,$xlin+$getdoy,70,6,2,'DF','12');
+$this->objpdf->rect($xcol+115  ,$xlin+$getdoy,49,6,2,'DF','12');
+if ($imprimevalidmin=="true") {
+$this->objpdf->rect($xcol+141, $xlin+$getdoy,23,6,2,'DF','12');
 }
-$this->objpdf->rect($xcol+164,$xlin+$getdoy,19,6,2,'DF','12');
-$this->objpdf->rect($xcol+183,$xlin+$getdoy,19,6,2,'DF','12');
+$this->objpdf->rect($xcol+164, $xlin+$getdoy,17,6,2,'DF','12');
+$this->objpdf->rect($xcol+181, $xlin+$getdoy,21,6,2,'DF','12');
 
 $menos = 16.9;
 if($this->linhasdosfornec==0){
@@ -260,12 +289,12 @@ $this->objpdf->rect($xcol+141,$xlin+$getdoy+6,23,$alturaini,2,'DF','34');
 }
 
 // Caixa dos valores unitários
-$this->objpdf->rect($xcol+164,$xlin+$getdoy+6,19,$alturaini,2,'DF','34');
+$this->objpdf->rect($xcol+164,$xlin+$getdoy+6,17,$alturaini,2,'DF','34');
 
 // Caixa dos valores totais dos itens
-$this->objpdf->rect($xcol+183,$xlin+$getdoy+6,19,$alturaini,2,'DF','34');
+$this->objpdf->rect($xcol+181,$xlin+$getdoy+6,21,$alturaini,2,'DF','34');
 // Caixa dos validade minima
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $this->objpdf->sety($xlin+48);
 
 $alt = 4;
@@ -286,11 +315,11 @@ if ($imprimevalidmin=="true"){
 $this->objpdf->text($xcol+ 142,$xlin+$getdoy+4,'VALIDAD. MIN.');
 }
 $this->objpdf->text($xcol+ 167,$xlin+$getdoy+4,'VLR UNIT.');
-$this->objpdf->text($xcol+ 186,$xlin+$getdoy+4,'VLR TOT.');
+$this->objpdf->text($xcol+ 185,$xlin+$getdoy+4,'VLR TOT.');
 
 $maiscol = 0;
-$this->objpdf->SetWidths(array(12,15,19,69,29,23,7,17));
-$this->objpdf->SetAligns(array('C','C','C','J','J','J','R','R'));
+$this->objpdf->SetWidths(array(12,15,19,69,29,23,12));
+$this->objpdf->SetAligns(array('C','C','C','J','J','J','L','R'));
 
 $this->objpdf->setleftmargin(4);
 $this->objpdf->sety($xlin+$getdoy+7);
@@ -300,9 +329,19 @@ $xtotal = 0;
 $pag    = 1;
 $muda_pagina     = false;
 $volta_impressao = 0;
+$nTotalGeral = "";
+$nTotalGeralUnitario = "";
 
+
+$dValidadeMinima = "";
+$sMarca = "";
+// dd(pg_fetch_all($this->recorddositens));
+// pc11_codigo 55670
 for($ii = 0; $ii < $this->linhasdositens; $ii++){
      db_fieldsmemory($this->recorddositens,$ii);
+
+     $oDadosItens = db_utils::fieldsMemory( $this->recorddositens, $ii );
+
 
      $prazo  = "";
      $pgto   = "";
@@ -393,7 +432,7 @@ for($ii = 0; $ii < $this->linhasdositens; $ii++){
          $this->objpdf->text(146,$xlin-5,": ".$this->fonedepto." / ".$this->ramaldepto);
          $this->objpdf->text(146,$xlin-2,": ".$this->faxdepto);
          $this->objpdf->text(130,$xlin+1,$this->emaildepto);
-         $this->objpdf->text(195,$xlin+1,"Página ".$pagina);
+         $this->objpdf->text(185,$xlin+1,"Página ".$pagina);
          $this->objpdf->Setfont('Arial','B',9);
          $this->objpdf->text(40,$xlin-15,$this->prefeitura);
          $this->objpdf->Setfont('Arial','',7);
@@ -446,7 +485,7 @@ for($ii = 0; $ii < $this->linhasdositens; $ii++){
          $this->objpdf->text($xcol+ 142,$xlin+58,'VALIDAD. MIN.');
        }
          $this->objpdf->text($xcol+ 167,$xlin+58,'VLR UNIT.');
-         $this->objpdf->text($xcol+ 186,$xlin+58,'VLR TOT.');
+         $this->objpdf->text($xcol+ 185,$xlin+58,'VLR TOT.');
 
          $maiscol = 0;
          $xlin    = 20;
@@ -463,16 +502,42 @@ for($ii = 0; $ii < $this->linhasdositens; $ii++){
 
      $this->objpdf->Setfont('Arial','',7);
 
+
+
+     $nValorUnitario = "";
+     $nValorTotal = "";
+
+     if ( empty($this->imprimirbranco ) && $volta_impressao == 0  ) {
+      $oDadosValoresItens = getValoresOrcamentoItens($this->orccodigo, $oDadosItens->pc22_orcamitem, $this->numcgm);
+      if (isParaiba()){
+          $oDadosValoresItens->pc23_vlrun = truncar($oDadosValoresItens->pc23_vlrun);
+          $oDadosValoresItens->pc23_valor = truncar($oDadosValoresItens->pc23_valor);
+      }
+      $nValorUnitario = getValorPrint($oDadosValoresItens->pc23_vlrun);
+      $nValorTotal    = number_format(floatval($oDadosValoresItens->pc23_valor), 2, '.', ',');
+
+      $nTotalGeral         += $oDadosValoresItens->pc23_valor;
+      $nTotalGeralUnitario += $oDadosValoresItens->pc23_vlrun;
+      $dValidadeMinima = db_formatar($oDadosValoresItens->pc23_validmin, "d");
+      $sMarca = $oDadosValoresItens->pc23_obs;
+     }
+
+
+
+
      if($volta_impressao == 0){
+
          $this->objpdf->Row(array(pg_result($this->recorddositens,$ii,$this->item),
                                   pg_result($this->recorddositens,$ii,$this->quantitem),
                                   $unid,
                                   stripslashes($descricaoitem)."\n\n",
-                                  '',
-                                  '',
-                                  '',
-                                  '',
+                                  $sMarca,
+                                  $dValidadeMinima,
+                                  $nValorUnitario,
+                                  $nValorTotal,
                                   ),5,false,3);
+
+
      }else if($volta_impressao == 1){
          $resumo = $texto_impressao;
      }else if($volta_impressao == 2){
@@ -509,7 +574,7 @@ for($ii = 0; $ii < $this->linhasdositens; $ii++){
            $iTotalCaract = ( $iWidthMulticell * $iLinhasRestantes );
            $iLimitString = $iTotalCaract;
 
-           // Percorre o resumo do limite de caraceters até um ponto que haja espaço em branco para não quebre alguma palavra
+      // Percorre o resumo do limite de caraceters até um ponto que haja espaço em branco para não quebre alguma palavra
            for ($iInd = $iTotalCaract; $iInd < strlen($resumo); $iInd++) {
              if ( $resumo{$iInd} == ' ') {
                $iLimitString = $iInd;
@@ -560,7 +625,7 @@ for($ii = 0; $ii < $this->linhasdositens; $ii++){
      }
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // caixas para total e FIM do Relatorio
 
 if (strlen(trim($this->declaracao)) > 0) {
@@ -569,9 +634,19 @@ if (strlen(trim($this->declaracao)) > 0) {
      $linha = (280);
 }
 
+if ( empty($this->imprimirbranco ) ) {
+
+  $nTotalGeralUnitario =   trim(db_formatar($nTotalGeralUnitario, "f"));
+  $nTotalGeral = trim(db_formatar($nTotalGeral , "f"));
+}
+
 $this->objpdf->Setfont('Arial','B',7);
 $this->objpdf->rect($xcol,$linha, 164,10,2,'DF','34');
 $this->objpdf->text($xcol+139,($linha+6),'T O T A L   G E R A L');
+
+$this->objpdf->text($xcol+175,($linha+6), $nTotalGeralUnitario );
+$this->objpdf->text($xcol+185,($linha+6), $nTotalGeral);
+
 $this->objpdf->rect($xcol+164,$linha, 19,10,2,'DF','34');
 $this->objpdf->rect($xcol+183,$linha, 19,10,2,'DF','34');
 
@@ -580,5 +655,8 @@ if (strlen(trim($this->declaracao)) > 0) {
   $this->objpdf->sety($linha+12);
   $this->objpdf->multicell(200,3,trim($this->declaracao),0,"J");
 }
+
+
+
 
 ?>

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -190,10 +190,10 @@ $clrotulo->label("o05_valor");
 sUrlRPC    = 'orc4_ppaRPC.php';
 function js_pesquisao06_codrec(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostraorcfontes1|o57_codfon|o57_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcfontes','func_orcfontes.php?funcao_js=parent.js_mostraorcfontes1|o57_codfon|o57_descr','Pesquisa',true);
   }else{
      if(document.form1.o06_codrec.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_orcfontes',
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcfontes',
                             'func_orcfontes.php?lPesquisaCodigo=true&pesquisa_chave='+document.form1.o06_codrec.value+
                             '&funcao_js=parent.js_mostraorcfontes','Pesquisa',false);
      }else{
@@ -214,7 +214,7 @@ function js_mostraorcfontes1(chave1,chave2){
   db_iframe_orcfontes.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_ppaestimativareceita','func_ppaestimativareceita.php?lEstimativa=true&funcao_js=parent.js_preenchepesquisa|o06_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ppaestimativareceita','func_ppaestimativareceita.php?lEstimativa=true&funcao_js=parent.js_preenchepesquisa|o06_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_ppaestimativareceita.hide();
@@ -226,14 +226,14 @@ function js_preenchepesquisa(chave){
 }
 function js_pesquisao05_ppalei(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo',
+    js_OpenJanelaIframe('CurrentWindow.corpo',
                         'db_iframe_ppalei',
                         'func_ppalei.php?funcao_js=parent.js_mostrappalei1|o01_sequencial|o01_descricao&verificaano=1',
                         'Pesquisa de Versões para o PPA',
                         true);
   }else{
      if(document.form1.o05_ppalei.value != ''){ 
-        js_OpenJanelaIframe('top.corpo',
+        js_OpenJanelaIframe('CurrentWindow.corpo',
                             'db_iframe_ppalei',
                             'func_ppalei.php?pesquisa_chave='
                             +document.form1.o05_ppalei.value+'&funcao_js=parent.js_mostrappalei&verificaano=1',
@@ -332,7 +332,7 @@ function js_retornoCalculo(oAjax) {
   
   js_removeObj("msgBox"); 
   $('btncadastrar').disabled = false;
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1){
   
     var aInputsValores = js_getElementbyClass(form1,"anovalor");
@@ -416,7 +416,7 @@ function js_retornoAdicaoReceita(oAjax) {
    
   js_removeObj("msgBox"); 
   $('btncadastrar').disabled = false;
-  var oRetorno = eval("("+oAjax.responseText+")");
+  var oRetorno = JSON.parse(oAjax.responseText);
   if (oRetorno.status == 1) {
     
     if (!confirm('Cadastro das Estimativas Realizadas com sucesso.\nDeseja incluir novas estimativas para a Receita?')) {

@@ -25,19 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("dbforms/db_funcoes.php");
-include("pes4_avalferia001.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("pes4_avalferia001.php"));
 
 
 function diferencaferias($subpes)
 {
   
-  global $m_rubr, $rubricas , $db21_codcli ,$vtipo, $qmesesavalia,$pontofx,$nsaldo,$dias_adi,$nabono,
+  global $m_rubr, $rubricas , $d08_carnes, $db21_codcli,$vtipo, $qmesesavalia,$pontofx,$nsaldo,$dias_adi,$nabono,
   $m_quant, $nsaldo_anterior ,$m_media,$m_quant, $saldo,$m_valor,$qten, $vlrn,$matric,
   $pessoal,$Ipessoal, $subpes, $max,$qmeses,$mpsal,$nsalar,$max;
   
@@ -82,13 +82,13 @@ function diferencaferias($subpes)
       $condicaoaux .= " and r30_per2f >= ".db_sqlformat($fim_mes_seek )."))";
       db_selectmax("cadferia", "select * from cadferia ".bb_condicaosubpes("r30_" ).$condicaoaux .$condicao_selecao );
 //      echo "<BR> select * from cadferia ".bb_condicaosubpes("r30_" ).$condicaoaux .$condicao_selecao;
-//      db_criatabela(pg_query("select * from cadferia ".bb_condicaosubpes("r30_" ).$condicaoaux .$condicao_selecao));
+//      db_criatabela(db_query("select * from cadferia ".bb_condicaosubpes("r30_" ).$condicaoaux .$condicao_selecao));
       $max_total = count($cadferia);
     } else {
       $condicaoaux  = " and ( r30_proc1 = ".db_sqlformat($subpes ). " or r30_proc2 = ".db_sqlformat($subpes ).")";
       db_selectmax("cadferia", "select * from cadferia ".bb_condicaosubpes("r30_" ).$condicaoaux .$condicao_selecao);
 //      echo "<BR> select * from cadferia ".bb_condicaosubpes("r30_" ).$condicaoaux .$condicao_selecao;
-//      db_criatabela(pg_query("select * from cadferia ".bb_condicaosubpes("r30_" ).$condicaoaux .$condicao_selecao));
+//      db_criatabela(db_query("select * from cadferia ".bb_condicaosubpes("r30_" ).$condicaoaux .$condicao_selecao));
       $max_total = count($cadferia);
       $chave_seek2 = "999999";
     }
@@ -315,7 +315,7 @@ function diferencaferias($subpes)
           $indano++;
         }
       }
-      if ( trim($db21_codcli) == 12 ) {
+      if ( $db21_codcli == "12") {
         $indmes = db_val(db_substr($subpes, 6, 2) );
         $indano = db_val(db_substr($subpes, 1, 4) );
         for ($i=1; $i<=12; $i++) {
@@ -339,15 +339,12 @@ function diferencaferias($subpes)
 //echo "<BR> 3 passou aqui!";
       acrescentapontofx();
 
-      if (trim($db21_codcli) == 51) {
-        $nsaldo = 30;
-      }
       $tot_retornar = 0;
-      if( trim( $db21_codcli ) == 18 && $pessoal[0]["r01_regime"] != 2 ){
-         horasextras18();
+      if( $db21_codcli == "18" && $pessoal[0]["r01_regime"] != 2 ){
+         horasextrascarazinho();
       }
-      if( trim( $db21_codcli ) == 12 ){
-         horasextras12();
+      if( $db21_codcli == "12" ){
+         horasextrasguaiba();
          acrescentapontofx();
       }
      if( db_substr($subpes_ant,6,2) == "02" &&  db_month($cadferia[$Icadferia][$r30_peri]) == 2 && $cadferia[$Icadferia]["r30_tip1"] == "01"
@@ -451,7 +448,7 @@ function exclusao_167(){
 }
 
 
-global $cfpess,$subpes, $db21_codcli ,$anousu, $mesusu,$DB_instit;
+global $cfpess,$subpes,$d08_carnes,$anousu, $mesusu,$DB_instit, $db21_codcli;
 
 $subpes = db_anofolha().'/'.db_mesfolha();
 $anousu = db_anofolha();
@@ -497,7 +494,13 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 <?
 
 global $db_config;
-db_selectmax("db_config","select db21_codcli , cgc from db_config where codigo = ".db_getsession("DB_instit"));
+db_selectmax("db_config","select lower(trim(munic)) as d08_carnes , cgc, db21_codcli from db_config where codigo = ".db_getsession("DB_instit"));
+
+if(trim($db_config[0]["cgc"]) == "90940172000138"){
+     $d08_carnes = "daeb";
+}else{
+     $d08_carnes = $db_config[0]["d08_carnes"];
+}
 
 $db21_codcli = $db_config[0]["db21_codcli"];
 

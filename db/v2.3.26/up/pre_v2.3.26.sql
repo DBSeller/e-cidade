@@ -14,6 +14,7 @@ insert into db_itensfilho (id_item, codfilho) values(9952,1);
 delete from db_menu where id_item_filho = 9952;
 insert into db_menu ( id_item ,id_item_filho ,menusequencia ,modulo ) values ( 8787 ,9952 ,19 ,480 );
 update db_itensmenu set id_item = 9952 , descricao = 'Ficha financeira' , help = 'Ficha financeira' , funcao = 'mat2_fichafinanceira001.php' , itemativo = '1' , manutencao = '1' , desctec = 'Ficha financeira' , libcliente = 'false' where id_item = 9952;
+update db_itensmenu set libcliente = true where id_item = 9952;
 
 /* 93465 { */
 
@@ -317,6 +318,8 @@ update db_itensmenu
 
 update db_itensmenu set libcliente = false where id_item = 6976;
 update db_itensmenu set descricao = 'Gerar Arquivo' where id_item = 9825;
+
+update db_itensmenu set funcao = 'lab4_fechacompetencia001.php' where id_item = 8456;
 
  /**
  * FIM Time C
@@ -631,7 +634,7 @@ update db_syscampo set nomecam = 'db89_digito',
                        rotulorel = 'DV da Agência'
 where codcam = 12537;
 delete from db_syscampodep where codcam = 12537;
-delete from db_syscampodef where codcam = 12537;  
+delete from db_syscampodef where codcam = 12537;
 update db_syscampo set rotulo = 'Descrição' where codcam = '7105';
 
 
@@ -690,9 +693,3 @@ insert into db_syscadind values(4091,20666,1);
 /**
  * Fim Time Tributário
  */
-
-
-/** ACERTOS POS FECHAMENTO **/
-update db_itensmenu set libcliente = true where id_item = 9952;
-
-update db_itensmenu set funcao = 'lab4_fechacompetencia001.php' where id_item = 8456;

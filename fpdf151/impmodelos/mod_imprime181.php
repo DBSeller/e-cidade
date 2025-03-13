@@ -173,14 +173,15 @@ for ($i = 0;$i < $iVias;$i++){
 
 	  $this->objpdf->Roundedrect($xcol,$xlin+18,202,78,2,'DF','1234');
 	  $this->objpdf->Setfont('Arial','b',8);
-	  $this->objpdf->text($xcol+169,$xlin+21,'QUANTIDADES');
+	  $this->objpdf->text($xcol+160,$xlin+21,'QUANTIDADES');
 	  $this->objpdf->Setfont('Arial','b',8);
 	  $this->objpdf->text($xcol+2,$xlin+24,'CÓDIGO');
-	  $this->objpdf->text($xcol+25,$xlin+24,'DESCRIÇÃO');
-	  $this->objpdf->text($xcol+95 ,$xlin+24,'LOCAL');
-	  $this->objpdf->text($xcol+150,$xlin+24,'UNID.');
-	  $this->objpdf->text($xcol+166,$xlin+24,'REQUISIT.');
-	  $this->objpdf->text($xcol+183,$xlin+24,'FORNECIDA');
+	  $this->objpdf->text($xcol+22,$xlin+24,'DESCRIÇÃO');
+	  $this->objpdf->text($xcol+85 ,$xlin+24,'LOCAL');
+	  $this->objpdf->text($xcol+132,$xlin+24,'UNID.');
+	  $this->objpdf->text($xcol+145,$xlin+24,'REQUISIT.');
+	  $this->objpdf->text($xcol+162,$xlin+24,'FORNECIDA');
+	  $this->objpdf->text($xcol+182,$xlin+24,'ANULADA');
 	  //$this->objpdf->text($xcol+12,$xlin+28,'OBS. ITEM');
 	  $this->objpdf->Setfont('Arial','',8);
 	  $this->objpdf->sety($xlin+25);
@@ -211,21 +212,21 @@ for ($i = 0;$i < $iVias;$i++){
 	     }
 
        $this->objpdf->setx($xcol+3+$maiscol);
-       $this->objpdf->cell(21.2,5,trim(pg_result($this->recorddositens,$ii,$this->rcodmaterial)),0,0,"L",0);
-	     $this->objpdf->cell(73.8,5,substr(trim(pg_result($this->recorddositens,$ii,$this->rdescmaterial)),0,70),0,0,"L",0);
-	     $this->objpdf->cell(53,5,pg_result($this->recorddositens,$ii,$this->rlocalizacao),0,0,"L",0);
+       $this->objpdf->cell(18.2,5,trim(pg_result($this->recorddositens,$ii,$this->rcodmaterial)),0,0,"L",0);
+	     $this->objpdf->cell(62.8,5,substr(trim(pg_result($this->recorddositens,$ii,$this->rdescmaterial)),0,70),0,0,"L",0);
+	     $this->objpdf->cell(47,5,pg_result($this->recorddositens,$ii,$this->rlocalizacao),0,0,"L",0);
 
 	     if ($iCodigoUnidadeSaida != "" && $sSiglaUnidadeSaida != "") {
-	       $this->objpdf->cell(16,5,$sSiglaUnidadeSaida,0,0,"L",0);
+	       $this->objpdf->cell(10,5,$sSiglaUnidadeSaida,0,0,"L",0);
 	     } else {
-	       $this->objpdf->cell(16,5,pg_result($this->recorddositens,$ii,$this->runidadesaida),0,0,"L",0);
+	       $this->objpdf->cell(10,5,pg_result($this->recorddositens,$ii,$this->runidadesaida),0,0,"L",0);
 	     }
 
-	     $this->objpdf->cell(16,5,trim(pg_result($this->recorddositens,$ii,$this->rquantdeitens)),0,0,"C",0);
-	     $this->objpdf->cell(16,5,trim(pg_result($this->recorddositens,$ii,$this->rquantatend)),0,1,"C",0);
-
+	     $this->objpdf->cell(20,5,trim(pg_result($this->recorddositens,$ii,$this->rquantdeitens)),0,0,"C",0);
+	     $this->objpdf->cell(18,5,trim(pg_result($this->recorddositens,$ii,$this->rquantatend)),0,0,"C",0);
+	     $this->objpdf->cell(18,5,trim(pg_result($this->recorddositens,$ii,$this->rquantanulada)),0,1,"C",0);
        if (trim(pg_result($this->recorddositens,$ii,$this->robsdositens)) != ''){
-         $obsitens=substr(trim(pg_result($this->recorddositens,$ii,$this->robsdositens)),0,110);
+         $obsitens=substr(trim(pg_result($this->recorddositens,$ii,$this->robsdositens)),0,220);
           $this->objpdf->multicell(180,4,str_replace("\n",'',($obsitens)));
 	     }
        if ($quant_itens==8 && (trim(pg_result($this->recorddositens,$ii,$this->robsdositens)) == '')){

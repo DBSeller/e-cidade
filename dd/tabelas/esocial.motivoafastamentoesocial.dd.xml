@@ -1,0 +1,70 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010269' name='esocial.motivoafastamentoesocial' description="Motivos de afastamento do eSocial." prefix="eso09" label="Motivo de Afastamento" type="0">
+  <fields>
+    <field codigo="1009676" 
+           campo_api='' 
+           name="eso09_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009677" 
+           campo_api='' 
+           name="eso09_descricao" 
+           conteudo="text" 
+           description="Descrição do motivo de afastamento." 
+           inivalue="" 
+           label="Descrição" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Descrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009699" 
+           campo_api='' 
+           name="eso09_grupomotivoafastamentoesocial" 
+           conteudo="int4" 
+           description="Vínculo com o grupo de motivo de afastamento." 
+           inivalue="0" 
+           label="Grupo de motivo de afastamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Grupo de motivo de afastamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso09_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="grupomotivoafastamentoesocial" inner='t'>
+      <fieldfk name="eso09_grupomotivoafastamentoesocial" reference="eso10_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

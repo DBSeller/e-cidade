@@ -26,10 +26,9 @@
  */
 
 //MODULO: caixa
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clextratolinha->rotulo->label();
-$clrotulo = new rotulocampo;
 $clrotulo->label("k66_descricao");
 $clrotulo->label("k85_nomearq");
 $clrotulo->label("k13_descr");
@@ -79,66 +78,69 @@ $ativo = $db_opcao;
     <td >
     </td>
     <td> 
-      <?
-      db_input('k86_sequencial',10,$Ik86_sequencial,true,'hidden',3,"")
+<?
+if( isset($opcao) ){
+	db_input('k86_sequencial',10,$Ik86_sequencial,true,'hidden',3,"");
+}
       ?>
     </td>
   </tr>
-  <tr>
-    <td nowrap title="<?=@$Tk86_extrato?>">
+  <!--tr>
+    <td nowrap title="<? //=@$Tk86_extrato?>">
       <?
-      db_ancora(@$Lk86_extrato,"js_pesquisak86_extrato(true);",3);
+ //     db_ancora(@$Lk86_extrato,"js_pesquisak86_extrato(true);",3);
       ?>
     </td>
     <td> 
       <?
-      db_input('k86_extrato',10,$Ik86_extrato,true,'text',3," onchange='js_pesquisak86_extrato(false);'")
+  //    db_input('k86_extrato',10,$Ik86_extrato,true,'text',3," onchange='js_pesquisak86_extrato(false);'")
       ?>
        <?
-       db_input('k85_nomearq',50,$Ik85_nomearq,true,'text',3,'')
+  //     db_input('k85_nomearq',50,$Ik85_nomearq,true,'text',3,'')
        ?>
     </td>
-  </tr>
+  </tr--!>
   <tr>
-    <td nowrap title="<?=@$Tk86_bancohistmov?>">
-       <?
-       db_ancora(@$Lk86_bancohistmov,"js_pesquisak86_bancohistmov(true);",$db_opcao);
-       ?>
+    <td nowrap title="Origem do Movimento">
+        <b>Origem de Movimento:</b>
     </td>
     <td> 
 <?
-db_input('k86_bancohistmov',10,$Ik86_bancohistmov,true,'text',$db_opcao," onchange='js_pesquisak86_bancohistmov(false);'")
+//db_input('k86_bancohistmov',10,$Ik86_bancohistmov,true,'text',$db_opcao," onchange='js_pesquisak86_bancohistmov(false);'")
+      $arraytipo = array('1'=>'Extrato Bancário','2'=>'Tesouraria'); 
+      db_select('k86_bancohistmov',$arraytipo,true,$ativo);
+	
 ?>
        <?
-db_input('k66_descricao',50,$Ik66_descricao,true,'text',3,'')
+//db_input('k66_descricao',50,$Ik66_descricao,true,'text',3,'')
        ?>
     </td>
   </tr>
-  <tr>
-    <td nowrap title="<?=@$Tk86_contabancaria?>">
+  <!--tr>
+    <td nowrap title="<? //@$Tk86_contabancaria?>">
        <?
-       db_ancora(@$Lk86_contabancaria,"js_pesquisak86_contabancaria(true);",$db_opcao);
+  //     db_ancora(@$Lk86_contabancaria,"js_pesquisak86_contabancaria(true);",$db_opcao);
        ?>
     </td>
     <td nowrap> 
 <?
-db_input('k86_contabancaria',10,$Ik86_contabancaria,true,'text',$ativo," onchange='js_pesquisak86_contabancaria(false);'")
+//db_input('k86_contabancaria',10,$Ik86_contabancaria,true,'text',$ativo," onchange='js_pesquisak86_contabancaria(false);'")
 ?>
        <?
-db_input('db83_descricao',50,$Idb83_descricao,true,'text',3,'')
+//db_input('db83_descricao',50,$Idb83_descricao,true,'text',3,'')
        ?>
     </td>
-  </tr>
-  <tr>
-    <td nowrap title="<?=@$Tk86_data?>">
-       <?=@$Lk86_data?>
+  </tr--!>
+  <!--tr>
+    <td nowrap title="<? //@$Tk86_data?>">
+       <?//=@$Lk86_data?>
     </td>
     <td> 
 <?
-db_inputdata('k86_data',@$k86_data_dia,@$k86_data_mes,@$k86_data_ano,true,'text',$db_opcao,"")
+//db_inputdata('k86_data',@$k86_data_dia,@$k86_data_mes,@$k86_data_ano,true,'text',$db_opcao,"")
 ?>
     </td>
-  </tr>
+  </tr--!>
   <tr>
 	  <td>
 		  <b>Tipo :</b>
@@ -185,12 +187,13 @@ db_input('k86_historico',64,$Ik86_historico,true,'text',$db_opcao,"")
 <? if ($ativo != 3) { ?>
   <tr>
     <td nowrap>
-      <strong>Recalcula Saldo do Extrato: </strong>
+      <!--strong>Recalcula Saldo do Extrato: </strong--!>
     </td>
     <td> 
 <?
- $x = array("t"=>"SIM","f"=>"NÃO");
- db_select("recalcula",$x, true, 1);
+ //$x = array("f"=>"SIM","f"=>"NÃO");
+ $x = array("f"=>"NÃO");
+ db_select("recalcula",$x, true, 1,'hidden');
 ?>
     </td>
   </tr>  
@@ -222,10 +225,10 @@ db_input('k86_historico',64,$Ik86_historico,true,'text',$db_opcao,"")
   <tr>
     <td valign="top"  align="center">  
     <?
-	 $chavepri= array("k86_sequencial"=>@$k86_sequencial);
+         $chavepri= array("k86_sequencial"=>@$k86_sequencial);
 	 $cliframe_alterar_excluir->chavepri      = $chavepri;
-	 $cliframe_alterar_excluir->sql           = $clextratolinha->sql_query_file(null,"*","extratolinha.k86_data, extratolinha.k86_sequencial"," k86_extrato = $k86_extrato ");
-	 $cliframe_alterar_excluir->sql_disabled  = "select * from extratolinha inner join conciliaextrato on k86_sequencial = k87_extratolinha where k86_extrato = $k86_extrato ";
+	 $cliframe_alterar_excluir->sql           = $clextratolinha->sql_query_file(null,"*","extratolinha.k86_data, extratolinha.k86_sequencial"," k86_contabancaria = $conta and k86_data = '$sDtSaldoFinal'");
+	 $cliframe_alterar_excluir->sql_disabled  = "select * from extratolinha inner join conciliaextrato on k86_sequencial = k87_extratolinha where k86_contabancaria = $conta and k86_data = '$sDtSaldoFinal' ";
 	 $cliframe_alterar_excluir->campos        = "k86_sequencial,k86_extrato,k86_bancohistmov,k86_contabancaria,k86_data,k86_valor,k86_tipo,k86_historico,k86_documento,k86_lote,k86_loteseq";
 	 $cliframe_alterar_excluir->legenda       = "ITENS LANÇADOS";
 	 $cliframe_alterar_excluir->iframe_height = "180";
@@ -248,10 +251,10 @@ function js_cancelar(){
 }
 function js_pesquisak86_bancohistmov(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_extratolinha','db_iframe_bancoshistmov','func_bancoshistmov.php?funcao_js=parent.js_mostrabancoshistmov1|k66_sequencial|k66_descricao','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_extratolinha','db_iframe_bancoshistmov','func_bancoshistmov.php?funcao_js=parent.js_mostrabancoshistmov1|k66_sequencial|k66_descricao','Pesquisa',true,'0');
   }else{
      if(document.form1.k86_bancohistmov.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_extratolinha','db_iframe_bancoshistmov','func_bancoshistmov.php?pesquisa_chave='+document.form1.k86_bancohistmov.value+'&funcao_js=parent.js_mostrabancoshistmov','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_extratolinha','db_iframe_bancoshistmov','func_bancoshistmov.php?pesquisa_chave='+document.form1.k86_bancohistmov.value+'&funcao_js=parent.js_mostrabancoshistmov','Pesquisa',false);
      }else{
        document.form1.k66_descricao.value = ''; 
      }
@@ -271,10 +274,10 @@ function js_mostrabancoshistmov1(chave1,chave2){
 }
 function js_pesquisak86_extrato(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_extratolinha','db_iframe_extrato','func_extrato.php?funcao_js=parent.js_mostraextrato1|k85_sequencial|k85_nomearq','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_extratolinha','db_iframe_extrato','func_extrato.php?funcao_js=parent.js_mostraextrato1|k85_sequencial|k85_nomearq','Pesquisa',true,'0');
   }else{
      if(document.form1.k86_extrato.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_extratolinha','db_iframe_extrato','func_extrato.php?pesquisa_chave='+document.form1.k86_extrato.value+'&funcao_js=parent.js_mostraextrato','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_extratolinha','db_iframe_extrato','func_extrato.php?pesquisa_chave='+document.form1.k86_extrato.value+'&funcao_js=parent.js_mostraextrato','Pesquisa',false);
      }else{
        document.form1.k85_nomearq.value = ''; 
      }
@@ -294,10 +297,10 @@ function js_mostraextrato1(chave1,chave2){
 }
 function js_pesquisak86_contabancaria(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_extratolinha','db_iframe_contabancaria','func_contabancaria.php?funcao_js=parent.js_mostracontabancaria1|db83_sequencial|db83_descricao|db83_tipoconta','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_extratolinha','db_iframe_contabancaria','func_contabancaria.php?funcao_js=parent.js_mostracontabancaria1|db83_sequencial|db83_descricao|db83_tipoconta','Pesquisa',true,'0');
   }else{
      if(document.form1.k86_contabancaria.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_extratolinha','db_iframe_contabancaria','func_contabancaria.php?tp=1&pesquisa_chave='+document.form1.k86_contabancaria.value+'&funcao_js=parent.js_mostracontabancaria','Pesquisa',false);     
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_extratolinha','db_iframe_contabancaria','func_contabancaria.php?tp=1&pesquisa_chave='+document.form1.k86_contabancaria.value+'&funcao_js=parent.js_mostracontabancaria','Pesquisa',false);     
      }else{
        document.form1.db83_descricao.value = ''; 
      }

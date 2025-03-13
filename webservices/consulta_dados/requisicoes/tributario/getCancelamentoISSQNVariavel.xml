@@ -14,8 +14,12 @@
   <from tabela="arreinscr" />
   <juncoes>
     <join tipo="inner" tabela="issvar"   condicao="issvar.q05_numpre  = arreinscr.k00_numpre" />
-    <join tipo="inner" tabela="arrecant" condicao="arrecant.k00_numpre = q05_numpre AND 
+    <join tipo="inner" tabela="arrecant" condicao="arrecant.k00_numpre = q05_numpre AND
                                                    arrecant.k00_numpar = issvar.q05_numpar"   />
+    <join tipo="inner" tabela="cancdebitosreg" condicao="arrecant.k00_numpre = cancdebitosreg.k21_numpre
+                                                         and cancdebitosreg.k21_numpar = arrecant.k00_numpar" />
+    <join tipo="inner" tabela="cancdebitosprocreg" condicao="cancdebitosprocreg.k24_cancdebitosreg = cancdebitosreg.k21_sequencia" />
+    <join tipo="inner" tabela="cancdebitosproc" condicao="cancdebitosproc.k23_codigo = cancdebitosprocreg.k24_codigo" />
   </juncoes>
   <filtros>
     <filtro label=""                    condicao="arrecant.k00_valor  = 0"                        obrigatorio="true"  />

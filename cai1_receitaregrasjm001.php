@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_tabrec_classe.php");
-include("classes/db_tabrecregrasjm_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_tabrec_classe.php"));
+include(modification("classes/db_tabrecregrasjm_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $cltabrec = new cl_tabrec;
 $cltabrecregrasjm = new cl_tabrecregrasjm;
 $db_opcao = 1;
@@ -104,11 +104,12 @@ if(isset($incluir)){
   }else{
     $db_opcao = 3; 
   }
-}else if(isset($k04_receit)){
+}else if(!empty($k04_receit)){
   $result = $cltabrec->sql_record($cltabrec->sql_query($k04_receit));
   db_fieldsmemory($result,0);
 
-  $result_tabrecregrasjm = $cltabrecregrasjm->sql_record($cltabrecregrasjm->sql_query_file(null,"k04_codjm as testajuroemulta","","k04_receit = ".$k04_receit." and '".date("Y-m-d",db_getsession("DB_datausu"))."' between k04_dtini and k04_dtfim"));
+  $sSqlRegras = $cltabrecregrasjm->sql_query_file(null,"k04_codjm as testajuroemulta","","k04_receit = ".$k04_receit." and '".date("Y-m-d",db_getsession("DB_datausu"))."' between k04_dtini and k04_dtfim");
+  $result_tabrecregrasjm = $cltabrecregrasjm->sql_record($sSqlRegras);
   if($cltabrecregrasjm->numrows > 0){
     db_fieldsmemory($result_tabrecregrasjm, 0);
     if($testajuroemulta != $k02_codjm){
@@ -135,7 +136,7 @@ if((isset($incluir) || isset($alterar) || isset($excluir)) && $cltabrecregrasjm-
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
       <center>
       <?
-      include("forms/db_frmreceitasregrasjm.php");
+      include(modification("forms/db_frmreceitasregrasjm.php"));
       ?>
       </center>
     </td>

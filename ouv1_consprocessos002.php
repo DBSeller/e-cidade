@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_liborcamento.php");
-include("libs/db_utils.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_utils.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_GET_VARS);
@@ -134,10 +134,10 @@ if ($tipo == 0) {
     
   $sQueryProcessos .= $sWhere;		
 
-  $rsQueryProcessos	= pg_query($sQueryProcessos);
+  $rsQueryProcessos	= db_query($sQueryProcessos);
 
 	if(pg_num_rows($rsQueryProcessos)>0){
-		$aDados = db_utils::getColectionByRecord($rsQueryProcessos,false,false,false);
+		$aDados = db_utils::getCollectionByRecord($rsQueryProcessos,false,false,false);
 	}else{
 		db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum processo encontrado!');		
 	}
@@ -176,9 +176,9 @@ if ($tipo == 0) {
 		$sQueryProcessos .= " and pp.p58_dtproc between '".$dtini."' and '".$dtfim."'";
 	}
 	
-	$rsQueryProcessos	= pg_query($sQueryProcessos);
+	$rsQueryProcessos	= db_query($sQueryProcessos);
 	if(pg_num_rows($rsQueryProcessos)>0){
-		$aDados = db_utils::getColectionByRecord($rsQueryProcessos,false,false,false);
+		$aDados = db_utils::getCollectionByRecord($rsQueryProcessos,false,false,false);
 	}else{
 		db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum processo encontrado!');
 	}
@@ -297,9 +297,9 @@ if ($tipo == 0) {
     
   $sQueryProcessos .=                       $sWhere;		
 
-	$rsQueryProcessos	= pg_query($sQueryProcessos);
+	$rsQueryProcessos	= db_query($sQueryProcessos);
 	if (pg_num_rows($rsQueryProcessos) > 0) {
-		$aDados = db_utils::getColectionByRecord($rsQueryProcessos,false,false,false);
+		$aDados = db_utils::getCollectionByRecord($rsQueryProcessos,false,false,false);
 	} else {
 		db_redireciona('db_erros.php?fechar=true&db_erro=Nenhum processo encontrado!');
 	}
@@ -325,7 +325,7 @@ if(trim($dtini) != "" && trim($dtfim) != ""){
 
 if ( trim($p58_codigo) != '' ) {
 	$sQueryTipo  = "select p51_descr,p51_codigo from tipoproc where p51_codigo = $p58_codigo";
-	$rsQueryTipo = pg_query($sQueryTipo);
+	$rsQueryTipo = db_query($sQueryTipo);
 	if (pg_num_rows($rsQueryTipo) > 0) {
 		db_fieldsmemory($rsQueryTipo,0);
 		$head3 .= " ".$p51_codigo." - ".$p51_descr;		
@@ -333,7 +333,7 @@ if ( trim($p58_codigo) != '' ) {
 }
 
 $sQueryDepartamento  = "select coddepto,descrdepto from db_depart where coddepto = $coddepto";
-$rsQueryDepartamento = pg_query($sQueryDepartamento);
+$rsQueryDepartamento = db_query($sQueryDepartamento);
 if (pg_num_rows($rsQueryDepartamento) > 0) {
 	db_fieldsmemory($rsQueryDepartamento,0);
 	$head4 .= " ".$coddepto." - ".$descrdepto;		

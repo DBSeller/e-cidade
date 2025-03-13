@@ -37,17 +37,17 @@ class ColorButton
     function ColorButton($Description)
     {
         global $Pixmaps;
-        $tooltip = &new GtkTooltips;
-        $this->button = &new GtkButton;
-        $this->entry  = &new GtkEntry;
+        $tooltip = new GtkTooltips;
+        $this->button = new GtkButton;
+        $this->entry  = new GtkEntry;
         $this->entry->set_usize(80,-1);
         $this->button->set_usize(24,-1);
         
-        $box = &new GtkHBox;
+        $box = new GtkHBox;
         $this->widget = new Box($box, $Description);
         $tooltip->set_tip($this->button, _a('Color Selection'), '');
 
-        $pixmap = &new GtkPixmap($Pixmaps['cor'][0], $Pixmaps['cor'][1]);
+        $pixmap = new GtkPixmap($Pixmaps['cor'][0], $Pixmaps['cor'][1]);
         $this->button->add($pixmap);
         $box->pack_start($this->entry, FALSE, FALSE);
         $box->pack_start($this->button, FALSE, FALSE);
@@ -115,7 +115,7 @@ class ColorButton
     function SelColor()
     {
         $this->cswindow = $cswindow = new GtkWindow();
-        $this->cswindow->connect_object('key_press_event', array(&$this,'KeyTest'), $this->cswindow);
+        $this->cswindow->connect_object('key_press_event', array($this,'KeyTest'), $this->cswindow);
         $this->cswindow->set_position(GTK_WIN_POS_CENTER);
         $cswindow->show();
         $cswindow->set_title(_a('Color Selection'));
@@ -126,11 +126,11 @@ class ColorButton
         $rgb = $this->get_text();
         $int = rgb2int($rgb);
         $this->cs->set_color($int[0], $int[1], $int[2]);
-        $this->cs->connect_object('key_press_event', array(&$this,'KeyTest'), $cs);
+        $this->cs->connect_object('key_press_event', array($this,'KeyTest'), $cs);
         $box->pack_start($cs, false, false);
         
         $bt = new GtkButton('ok');
-        $bt->connect_object('clicked', array(&$this,'GetColor'));
+        $bt->connect_object('clicked', array($this,'GetColor'));
         $bt->set_usize(-1,20);
         $box->pack_start($bt, false, false);
         

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -97,6 +97,10 @@ class impressaoAutenticacao {
     $sSqlAutenticao .= "  where corrente.k12_id     = {$this->iId} ";
     $sSqlAutenticao .= "    and corrente.k12_data   = cast('{$this->sData}' as date)";
     $sSqlAutenticao .= "    and corrente.k12_autent = {$this->sAutent}";
+
+    if (empty($this->sAutent) || empty($this->sData) || empty($this->iId)) {
+      throw new Exception("Não foi encontrado o ID, Autent ou Data da autenticação corrente.");
+    }
     
    // echo $sSqlAutenticao. " --- ".pg_last_error();
     
@@ -113,31 +117,31 @@ class impressaoAutenticacao {
 	    switch ( strtoupper($oAutenticacao->tipo_autenticacao) ) {
 	      case 'ARRECADACAO':             
 	        if ( !class_exists('modeloAutentTermicaArrecadacao') ) {
-	          require_once("modeloAutentTermicaArrecadacao.model.php");
+	          require_once(modification("model/modeloAutentTermicaArrecadacao.model.php"));
 	        }
 	        $oImpressao = new modeloAutentTermicaArrecadacao(db_getsession('DB_ip'),4444,$this->iId,$this->sData,$this->sAutent);
 	        break;
 	      case 'EMPENHO':
 	        if ( !class_exists('modeloAutentTermicaEmpenho') ) {
-	          require_once("modeloAutentTermicaEmpenho.model.php");  
+	          require_once(modification("model/modeloAutentTermicaEmpenho.model.php"));  
 	        }
 	        $oImpressao = new modeloAutentTermicaEmpenho(db_getsession('DB_ip'),4444,$this->iId,$this->sData,$this->sAutent);
 	        break;
 	      case 'SLIP':
 	        if ( !class_exists('modeloAutentTermicaSlip') ) {
-	          require_once("modeloAutentTermicaSlip.model.php");  
+	          require_once(modification("model/modeloAutentTermicaSlip.model.php"));  
 	        }
 	        $oImpressao = new modeloAutentTermicaSlip(db_getsession('DB_ip'),4444,$this->iId,$this->sData,$this->sAutent);
 	        break;
 	    } 
     }else if ($oAutenticacao->k11_tipoimp == 11) {
       if ( !class_exists('modeloAutenticadoraElginXprint') ) {
-        require_once("modeloAutenticadoraElginXprint.model.php");  
+        require_once(modification("model/modeloAutenticadoraElginXprint.model.php"));  
       }
       $oImpressao = new modeloAutenticadoraElginXprint($this->sStringAutenticacao,db_getsession('DB_ip'),4444);
     }else{
       if ( !class_exists('modeloAutentGenerica') ) {
-        require_once("modeloAutentGenerica.model.php");  
+        require_once(modification("model/modeloAutentGenerica.model.php"));  
       }
     	$oImpressao = new modeloAutentGenerica($this->sStringAutenticacao,db_getsession('DB_ip'),4444);
     }

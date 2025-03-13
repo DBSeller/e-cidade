@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_utils.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_itbi_classe.php");
-include("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_utils.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_itbi_classe.php"));
+include(modification("libs/db_app.utils.php"));
 
 $situacao = "";
 $tipo     = "";
@@ -44,9 +44,11 @@ parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 if(!isset($setorCodigo)) {
 	$setorCodigo = '';
 }
+
 if(!isset($quadra)) {
 	$quadra = '';
 }
+
 if(!isset($lote)) {
 	$lote = '';
 }
@@ -262,7 +264,7 @@ function js_mostramatri1(chave,erro){
 	  	if(!isset($pesquisa_chave)){
 	  		if(isset($campos)==false){
 	  			if(file_exists("funcoes/db_func_itbi.php")==true){
-	  				include("funcoes/db_func_itbi.php");
+	  				include(modification("funcoes/db_func_itbi.php"));
 	  		  }else{
 	  			  $campos = "itbi.*";
 	  		  }
@@ -317,16 +319,20 @@ function js_mostramatri1(chave,erro){
 					}
 					if(isset($lote) and $lote != '') {
 						$sWhere .= " and j06_lote = '{$lote}' ";
-					}
-
+				  }
 				}
 
-		  	if ( $situacao == "2" ) {
-		  		$sWhere         .= " and arrepaga.k00_numpre is null";
-		  		$sWhere         .= " and it16_guia is null";
-		  	} else if ( $situacao == "3" ) {
+		  	if ( $situacao == "2" ) { // Em Aberto
+
+		  		$sWhere .= " and not exists ( select 1                                                       ";
+		  		$sWhere .= "                    from arrepaga                                                ";
+		  		$sWhere .= "                         inner join itbinumpre itnmp on it15_numpre = k00_numpre ";
+		  		$sWhere .= "                   where it15_guia  = it01_guia                                  ";
+		  		$sWhere .= "                     and k00_numpar = 1 )                                        ";
+		  		$sWhere .= " and it16_guia is null                                                           ";
+		  	} else if ( $situacao == "3" ) { // Pago
 		  		$sWhere         .= " and arrepaga.k00_numpre is not null";
-		  	} else if ( $situacao == "4" ) {
+		  	} else if ( $situacao == "4" ) { //Cancelada
 		  		$sWhere         .= " and it16_guia is not null";
 		  	}
 
@@ -335,10 +341,17 @@ function js_mostramatri1(chave,erro){
 		  	} else if ( $tipo == "r"  ) {
 		  		$sWhere     .= " and it18_guia is not null ";
 		  	}
-		  	$sql = $clitbi->sql_query_itbi("",$campos,"it01_guia desc",$sWhere,$sWhereLogradouro);
+
+		  	$sql = "";
+
+		  	if (isset($pesquisar)) {
+		  		$sql = $clitbi->sql_query_itbi("",$campos,"it01_guia desc",$sWhere,$sWhereLogradouro);
+		  	}
+
 		  	db_lovrot($sql,15,"()","",$funcao_js);
 
 		  }else{
+
 		  	if($pesquisa_chave!=null && $pesquisa_chave!=""){
 		  		$sql = $clitbi->sql_query_canc(null,$campos,"it01_guia",$sWhere." and it01_guia = $pesquisa_chave ");
 		  		$result = $clitbi->sql_record($sql);
@@ -374,4 +387,10 @@ function js_mostramatri1(chave,erro){
 	<?php
 		echo "oPesquisa.setValues('{$setorCodigo}','{$quadra}','{$lote}');";
 	?>
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

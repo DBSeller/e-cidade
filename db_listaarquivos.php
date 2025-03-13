@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 ?>
 <html>
 <head>
@@ -63,12 +63,18 @@ include ("dbforms/db_funcoes.php");
          background-color: #999999;
 }
 </style>
+<script type="text/javascript" src="scripts/prototype.js"></script>
+<script type="text/javascript" src="scripts/strings.js"></script>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1">
 
 </body>
 </html>
 <script>
+
+//Vai retornar a query string da pagina atual como um objeto
+var oGet = js_urlToObject();
+
 function js_arquivo(sel){
   opener.js_arquivo_abrir(sel);
 }
@@ -114,11 +120,15 @@ function js_enviar_valores(arquivo,label,cabec,TorF){
 
   	document.getElementById('links').innerHTML = "SEM ARQUIVO(S) PARA DOWNLOAD";
   }
+  
+  //Verifica o callback e faz redirect 
+  if (oGet.callbackName) {    
+    opener[oGet.callbackName]();
+  }
+
 }
 
-
-if(opener.document.<?=($form)?>.query_arquivo){
-  // opener.document.<?=($form)?>.query_arquivo.value = "";
+if(opener.document.<?=($form)?>.query_arquivo){  
   if(opener.document.<?=($form)?>.query_arquivo.value != ""){
     arr_lista = opener.document.<?=($form)?>.query_arquivo.value.split("|");
     primeiro = true;

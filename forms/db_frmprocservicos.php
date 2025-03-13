@@ -26,7 +26,7 @@
  */
 
 //MODULO: saude
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clprocservicos->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -123,10 +123,10 @@ db_input('sd12_c_descr',40,$Isd12_c_descr,true,'text',3,'')
 <script>
 function js_pesquisasd19_i_procedimento(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_procedimentos','func_procedimentos.php?funcao_js=parent.js_mostraprocedimentos1|sd09_i_codigo|sd09_c_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedimentos','func_procedimentos.php?funcao_js=parent.js_mostraprocedimentos1|sd09_i_codigo|sd09_c_descr','Pesquisa',true);
   }else{
      if(document.form1.sd19_i_procedimento.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_procedimentos','func_procedimentos.php?pesquisa_chave='+document.form1.sd19_i_procedimento.value+'&funcao_js=parent.js_mostraprocedimentos','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_procedimentos','func_procedimentos.php?pesquisa_chave='+document.form1.sd19_i_procedimento.value+'&funcao_js=parent.js_mostraprocedimentos','Pesquisa',false);
      }else{
        document.form1.sd09_c_descr.value = ''; 
      }

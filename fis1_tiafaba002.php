@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("classes/db_tiaftipodoc_classe.php");
-include("classes/db_tiafdoc_classe.php");
-include("classes/db_tiaf_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("classes/db_tiaftipodoc_classe.php"));
+include(modification("classes/db_tiafdoc_classe.php"));
+include(modification("classes/db_tiaf_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 
 db_postmemory($HTTP_POST_VARS);
 db_postmemory($HTTP_SERVER_VARS);
@@ -151,7 +151,7 @@ if (isset($opcao) && $opcao != ""){
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
 	    <?
-	    	include("forms/db_frmtiaf002.php");
+	    	include(modification("forms/db_frmtiaf002.php"));
 	    ?> 
 	</td>
   </tr>

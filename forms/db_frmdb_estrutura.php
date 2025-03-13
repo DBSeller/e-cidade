@@ -68,7 +68,7 @@ db_input('db77_descr',40,$Idb77_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_db_estrutura','db_iframe_db_estrutura','func_db_estrutura.php?funcao_js=parent.js_preenchepesquisa|db77_codestrut','Pesquisa',true,'-2');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_db_estrutura','db_iframe_db_estrutura','func_db_estrutura.php?funcao_js=parent.js_preenchepesquisa|db77_codestrut','Pesquisa',true,'-2');
 }
 function js_preenchepesquisa(chave){
   db_iframe_db_estrutura.hide();

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_libcaixa_ze.php");
-include("libs/db_libgertxtfolha.php");
-include("classes/db_rharqbanco_classe.php");
-include("classes/db_rhlocaltrab_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_libcaixa_ze.php"));
+include(modification("libs/db_libgertxtfolha.php"));
+include(modification("classes/db_rharqbanco_classe.php"));
+include(modification("classes/db_rhlocaltrab_classe.php"));
 parse_str(base64_decode($HTTP_SERVER_VARS["QUERY_STRING"]));
 db_postmemory($HTTP_POST_VARS);
 //db_postmemory($HTTP_SERVER_VARS,2);
@@ -39,8 +39,8 @@ db_postmemory($HTTP_POST_VARS);
 
 $tiparq = 4;
 
-$cllayouts_bb  = new cl_layouts_bb;
-$cllayout_BBBS = new cl_layout_BBBS;
+$cllayouts_bb  = new LayoutBB;
+$cllayout_BBBS = new LayoutBBBSFolha;
 $clrharqbanco  = new cl_rharqbanco;
 $clrhlocaltrab = new cl_rhlocaltrab;
 $clrotulo = new rotulocampo;
@@ -116,7 +116,7 @@ if($clrharqbanco->numrows>0){
 
   $nomearquivo .= ".txt";
 
-  include("dbforms/db_layouttxt.php");
+  include(modification("dbforms/db_layouttxt.php"));
   $posicao = "A";
   if($rh34_codban == "001"){
     $layoutimprime = 7;
@@ -248,7 +248,7 @@ if($sqlerro == false){
                                         and rh02_instit = rh30_instit
                $wherefolha";
           
-  $result  = pg_query($sql);
+  $result  = db_query($sql);
   $numrows = pg_numrows($result);
 //  die($sql);
 //  db_criatabela($result);exit;
@@ -352,7 +352,7 @@ if($sqlerro == false){
 
       $sequencialreg       = $i + 1;
       $sequencialbb120     = $i + 2;
-			//echo "<br> matricula --> $numerocontrolemov   banco --> $bancofavorecido   agencia --> $agenciafavorecido   dvagencia --> $dvagenciafavorecido   conta --> $contafavorecido  dvconta --> $dvcontafavorecido ";
+      //echo "<br> matricula --> $numerocontrolemov   banco --> $bancofavorecido   agencia --> $agenciafavorecido   dvagencia --> $dvagenciafavorecido   conta --> $contafavorecido  dvconta --> $dvcontafavorecido ";
       //////////////////////////////////////////////
       //////////////////////////////////////////////
       
@@ -377,19 +377,19 @@ if($sqlerro == false){
       ///// FINAL DO REGISTRO B
 
       if($i == 0 || $pdf->gety() > $pdf->h - 30){
-	$pdf->addpage("L");
+  $pdf->addpage("L");
         $pdf->cell(15,$alt,$RLrh01_regist,1,0,"C",1);
         if($tiparq < 5){
           $pdf->cell(15,$alt,$RLz01_numcgm,1,0,"C",1);
           $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
           $pdf->cell(65,$alt,$RLz01_nome,1,0,"C",1);
           $pdf->cell(65,$alt,$RLr70_descr,1,0,"C",1);
-	}else{
+  }else{
           $pdf->cell(65,$alt,"Pensionista",1,0,"C",1);
           $pdf->cell(65,$alt,"Funcionário",1,0,"C",1);
           $pdf->cell(15,$alt,$RLz01_numcgm,1,0,"C",1);
           $pdf->cell(20,$alt,$RLz01_cgccpf,1,0,"C",1);
-	}
+  }
         $pdf->cell(17,$alt,$RLr38_liq,1,0,"C",1);
         $pdf->cell(13,$alt,$RLr38_agenc,1,0,"C",1);
         $pdf->cell(20,$alt,$RLr38_conta,1,1,"C",1);
@@ -476,5 +476,3 @@ if($sqlerro == false){
     ";
   }
   db_fim_transacao($sql);
-
-?>

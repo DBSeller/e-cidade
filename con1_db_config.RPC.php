@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("classes/db_ceplocalidades_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("classes/db_ceplocalidades_classe.php"));
 
 $clCepLocalicades = new cl_ceplocalidades();
 
@@ -49,7 +49,7 @@ if ($oParam->acao == "pesquisar") {
 		$rsLocalidades = $clCepLocalicades->sql_record($clCepLocalicades->sql_query_file(null,"cp05_localidades",null,$sWhere));
 		
 		if(pg_num_rows($rsLocalidades) > 0){
-			$oRetorno->localidades = db_utils::getColectionByRecord($rsLocalidades,false,false,true);
+			$oRetorno->localidades = db_utils::getCollectionByRecord($rsLocalidades,false,false,true);
 			$oRetorno->status  = 2;
 		}else{
 			$oRetorno->message = "Falha ao buscar localidades da UF{{$oParam->cp05_sigla}}";

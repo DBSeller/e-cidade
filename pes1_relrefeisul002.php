@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once ("libs/db_utils.php");
-require_once ("classes/db_db_config_classe.php");
-require_once ("classes/db_gerfadi_classe.php");
-require_once ("classes/db_rhrubelemento_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_db_config_classe.php"));
+require_once(modification("classes/db_gerfadi_classe.php"));
+require_once(modification("classes/db_rhrubelemento_classe.php"));
 
 db_postmemory($HTTP_GET_VARS);
 
@@ -123,7 +123,7 @@ if ( trim($sMunicipio) == trim($sBaseSessao) ) {
       $sSqlDadosRefeisul .= "                              from gerfsal  ";
       $sSqlDadosRefeisul .= "                             where r14_anousu = {$iAnoFolha} "; 
       $sSqlDadosRefeisul .= "                               and r14_mesusu = {$iMesFolha}  ";
-      $sSqlDadosRefeisul .= "                               and r14_rubric = '1706'  ";
+      $sSqlDadosRefeisul .= "                               and r14_rubric in ('1705', '1706')";
       $sSqlDadosRefeisul .= "                      union  ";
       $sSqlDadosRefeisul .= "                            select r20_anousu, "; 
       $sSqlDadosRefeisul .= "                                   r20_mesusu, ";
@@ -133,7 +133,7 @@ if ( trim($sMunicipio) == trim($sBaseSessao) ) {
       $sSqlDadosRefeisul .= "                             from gerfres  ";
       $sSqlDadosRefeisul .= "                             where r20_anousu = {$iAnoFolha} "; 
       $sSqlDadosRefeisul .= "                               and r20_mesusu = {$iMesFolha}  ";
-      $sSqlDadosRefeisul .= "                               and r20_rubric = '1706' ) as x on rh49_regist = r14_regist "; 
+      $sSqlDadosRefeisul .= "                               and r20_rubric in ('1705', '1706') ) as x on rh49_regist = r14_regist "; 
       $sSqlDadosRefeisul .= "          where rh49_anousu = {$iAnoFolha}  ";
       $sSqlDadosRefeisul .= "            and rh49_mesusu = {$iMesFolha} ) as xxx "; 
       $sSqlDadosRefeisul .= "       inner join rhpessoalmov on rh02_regist = rh49_regist   ";

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_acidentes_classe.php");
-include("classes/db_veiculos_env_classe.php");
-include("classes/db_vitimas_acid_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_acidentes_classe.php"));
+include(modification("classes/db_veiculos_env_classe.php"));
+include(modification("classes/db_vitimas_acid_classe.php"));
 $clacidentes = new cl_acidentes;
   /*
 $clveiculos_env = new cl_veiculos_env;
@@ -87,7 +87,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmacidentes.php");
+	include(modification("forms/db_frmacidentes.php"));
 	?>
     </center>
 	</td>
@@ -120,9 +120,9 @@ if(isset($chavepesquisa)){
   <script>
       function js_db_libera(){
          parent.document.formaba.veiculos_env.disabled=false;
-         top.corpo.iframe_veiculos_env.location.href='tra1_veiculos_env001.php?db_opcaoal=33&tr08_id=".@$tr07_id."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_veiculos_env.location.href='tra1_veiculos_env001.php?db_opcaoal=33&tr08_id=".@$tr07_id."';
          parent.document.formaba.vitimas_acid.disabled=false;
-         top.corpo.iframe_vitimas_acid.location.href='tra1_vitimas_acid001.php?db_opcaoal=33&tr10_id=".@$tr07_id."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_vitimas_acid.location.href='tra1_vitimas_acid001.php?db_opcaoal=33&tr10_id=".@$tr07_id."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('veiculos_env');";

@@ -73,10 +73,10 @@ db_input('y70_id_usuario',10,$Iy70_id_usuario,true,'text',3,'')
 <script>
 function js_pesquisay92_termovist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_termovist','func_termovist.php?funcao_js=parent.js_mostratermovist1|y91_termovist|y91_datatermo','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_termovist','func_termovist.php?funcao_js=parent.js_mostratermovist1|y91_termovist|y91_datatermo','Pesquisa',true);
   }else{
      if(document.form1.y92_termovist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_termovist','func_termovist.php?pesquisa_chave='+document.form1.y92_termovist.value+'&funcao_js=parent.js_mostratermovist','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_termovist','func_termovist.php?pesquisa_chave='+document.form1.y92_termovist.value+'&funcao_js=parent.js_mostratermovist','Pesquisa',false);
      }else{
        document.form1.y91_datatermo.value = ''; 
      }
@@ -96,10 +96,10 @@ function js_mostratermovist1(chave1,chave2){
 }
 function js_pesquisay92_codvist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_vistorias','func_vistorias.php?funcao_js=parent.js_mostravistorias1|y70_codvist|y70_id_usuario','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistorias','func_vistorias.php?funcao_js=parent.js_mostravistorias1|y70_codvist|y70_id_usuario','Pesquisa',true);
   }else{
      if(document.form1.y92_codvist.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_vistorias','func_vistorias.php?pesquisa_chave='+document.form1.y92_codvist.value+'&funcao_js=parent.js_mostravistorias','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistorias','func_vistorias.php?pesquisa_chave='+document.form1.y92_codvist.value+'&funcao_js=parent.js_mostravistorias','Pesquisa',false);
      }else{
        document.form1.y70_id_usuario.value = ''; 
      }
@@ -118,7 +118,7 @@ function js_mostravistorias1(chave1,chave2){
   db_iframe_vistorias.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_termovistlanc','func_termovistlanc.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_termovistlanc','func_termovistlanc.php?funcao_js=parent.js_preenchepesquisa|0','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_termovistlanc.hide();

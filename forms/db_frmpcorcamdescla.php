@@ -70,10 +70,10 @@ function js_fechar(){
 }
 function js_pesquisapc32_orcamitem(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pcorcamitem','func_pcorcamitem.php?funcao_js=parent.js_mostrapcorcamitem1|pc22_orcamitem|pc22_codorc','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcorcamitem','func_pcorcamitem.php?funcao_js=parent.js_mostrapcorcamitem1|pc22_orcamitem|pc22_codorc','Pesquisa',true);
   }else{
      if(document.form1.pc32_orcamitem.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pcorcamitem','func_pcorcamitem.php?pesquisa_chave='+document.form1.pc32_orcamitem.value+'&funcao_js=parent.js_mostrapcorcamitem','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcorcamitem','func_pcorcamitem.php?pesquisa_chave='+document.form1.pc32_orcamitem.value+'&funcao_js=parent.js_mostrapcorcamitem','Pesquisa',false);
      }
   }
 }
@@ -89,10 +89,10 @@ function js_mostrapcorcamitem1(chave1,chave2){
 }
 function js_pesquisapc32_orcamforne(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pcorcamforne','func_pcorcamforne.php?funcao_js=parent.js_mostrapcorcamforne1|pc21_orcamforne|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcorcamforne','func_pcorcamforne.php?funcao_js=parent.js_mostrapcorcamforne1|pc21_orcamforne|z01_nome','Pesquisa',true);
   }else{
      if(document.form1.pc32_orcamforne.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pcorcamforne','func_pcorcamforne.php?pesquisa_chave='+document.form1.pc32_orcamforne.value+'&funcao_js=parent.js_mostrapcorcamforne','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcorcamforne','func_pcorcamforne.php?pesquisa_chave='+document.form1.pc32_orcamforne.value+'&funcao_js=parent.js_mostrapcorcamforne','Pesquisa',false);
      }else{
        document.form1.z01_nome.value = ''; 
      }
@@ -111,7 +111,7 @@ function js_mostrapcorcamforne1(chave1,chave2){
   db_iframe_pcorcamforne.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_pcorcamdescla','func_pcorcamdescla.php?funcao_js=parent.js_preenchepesquisa|pc32_orcamitem|pc32_orcamforne','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcorcamdescla','func_pcorcamdescla.php?funcao_js=parent.js_preenchepesquisa|pc32_orcamitem|pc32_orcamforne','Pesquisa',true);
 }
 function js_preenchepesquisa(chave,chave1){
   db_iframe_pcorcamdescla.hide();

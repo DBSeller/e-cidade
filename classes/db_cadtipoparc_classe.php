@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -74,6 +74,10 @@ class cl_cadtipoparc {
    var $k40_regraunif = 0; 
    var $k40_bloqueio = 'f'; 
    var $k40_tipoanulacao = 0; 
+   var $k40_permvalcadparc = 'f';
+   var $k40_permdataparc = 'f';
+   var $k40_controlavencimento = 'f';
+
    // cria propriedade com as variaveis do arquivo 
    var $campos = "
                  k40_codigo = int4 = Código 
@@ -96,6 +100,9 @@ class cl_cadtipoparc {
                  k40_regraunif = int4 = Regras 
                  k40_bloqueio = bool = Bloqueio 
                  k40_tipoanulacao = int4 = Tipo de Anulação
+                 k40_permvalcadparc = bool = Permite digitar valor de cada parcela
+                 k40_permdataparc = bool = Permite digitar data das parcelas
+                 k40_controlavencimento = bool = Controla Vencimento até o fim do ano
                  ";
    //funcao construtor da classe 
    function cl_cadtipoparc() { 
@@ -163,6 +170,9 @@ class cl_cadtipoparc {
        $this->k40_regraunif = ($this->k40_regraunif == ""?@$GLOBALS["HTTP_POST_VARS"]["k40_regraunif"]:$this->k40_regraunif);
        $this->k40_bloqueio = ($this->k40_bloqueio == "f"?@$GLOBALS["HTTP_POST_VARS"]["k40_bloqueio"]:$this->k40_bloqueio);
        $this->k40_tipoanulacao = ($this->k40_tipoanulacao == "f"?@$GLOBALS["HTTP_POST_VARS"]["k40_tipoanulacao"]:$this->k40_tipoanulacao);
+       $this->k40_permvalcadparc = ($this->k40_permvalcadparc == "f"?@$GLOBALS["HTTP_POST_VARS"]["k40_permvalcadparc"]:$this->k40_permvalcadparc);
+       $this->k40_permdataparc = ($this->k40_permdataparc == "f"?@$GLOBALS["HTTP_POST_VARS"]["k40_permdataparc"]:$this->k40_permdataparc);
+       $this->k40_controlavencimento = ($this->k40_controlavencimento == "f"?@$GLOBALS["HTTP_POST_VARS"]["k40_controlavencimento"]:$this->k40_controlavencimento);
      }else{
        $this->k40_codigo = ($this->k40_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["k40_codigo"]:$this->k40_codigo);
      }
@@ -341,6 +351,36 @@ class cl_cadtipoparc {
        $this->erro_status = "0";
        return false;
      }
+
+     if($this->k40_permvalcadparc == null ){ 
+       $this->erro_sql = " Campo Permite valor em cada parcela nao Informado.";
+       $this->erro_campo = "k40_permvalcadparc";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+     
+     if($this->k40_permdataparc == null ){ 
+       $this->erro_sql = " Campo Permite data em cada parcela nao Informado.";
+       $this->erro_campo = "k40_permdataparc";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
+
+     if($this->k40_controlavencimento == null ){ 
+       $this->erro_sql = " Campo controla vencimento ao ano nao Informado.";
+       $this->erro_campo = "k40_controlavencimento";
+       $this->erro_banco = "";
+       $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+       $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+       $this->erro_status = "0";
+       return false;
+     }
      
      if($k40_codigo == "" || $k40_codigo == null ){
        $result = db_query("select nextval('cadtipoparc_k40_codigo_seq')"); 
@@ -397,6 +437,9 @@ class cl_cadtipoparc {
                                       ,k40_regraunif 
                                       ,k40_bloqueio
                                       ,k40_tipoanulacao 
+                                      ,k40_permvalcadparc
+                                      ,k40_permdataparc
+                                      ,k40_controlavencimento
                        )
                 values (
                                 $this->k40_codigo 
@@ -419,6 +462,9 @@ class cl_cadtipoparc {
                                ,$this->k40_regraunif 
                                ,'$this->k40_bloqueio' 
                                ,$this->k40_tipoanulacao
+                               ,'$this->k40_permvalcadparc'
+                               ,'$this->k40_permdataparc'
+                               ,'$this->k40_controlavencimento'
                       )";
      $result = db_query($sql); 
      if($result==false){ 
@@ -795,6 +841,48 @@ class cl_cadtipoparc {
          return false;
        }
      }
+
+     if(trim($this->k40_permvalcadparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k40_permvalcadparc"])){ 
+       $sql  .= $virgula." k40_permvalcadparc = '$this->k40_permvalcadparc' ";
+       $virgula = ",";
+       if(trim($this->k40_permvalcadparc) == null ){ 
+         $this->erro_sql = " Campo Permite digitar valor de cada parcelas nao Informado.";
+         $this->erro_campo = "k40_permvalcadparc";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+
+     if(trim($this->k40_permdataparc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k40_permdataparc"])){ 
+       $sql  .= $virgula." k40_permdataparc = '$this->k40_permdataparc' ";
+       $virgula = ",";
+       if(trim($this->k40_permdataparc) == null ){ 
+         $this->erro_sql = " Campo Permite digitar data das parcelas nao Informado.";
+         $this->erro_campo = "k40_permdataparc";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
+
+     if(trim($this->k40_controlavencimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["k40_controlavencimento"])){ 
+       $sql  .= $virgula." k40_controlavencimento = '$this->k40_controlavencimento' ";
+       $virgula = ",";
+       if(trim($this->k40_controlavencimento) == null ){ 
+         $this->erro_sql = " Campo controlar data ao ano nao Informado.";
+         $this->erro_campo = "k40_controlavencimento";
+         $this->erro_banco = "";
+         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
+         $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
+         $this->erro_status = "0";
+         return false;
+       }
+     }
      
      
      $sql .= " where ";
@@ -1058,7 +1146,7 @@ class cl_cadtipoparc {
      }
      return $sql;
   }
-   function sql_query_alt ( $k40_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  function sql_query_alt ( $k40_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
        $campos_sql = split("#",$campos);
@@ -1095,5 +1183,36 @@ class cl_cadtipoparc {
      }
      return $sql;
   }
+
+  //função por hora não necessaria
+  /* function sql_query_parcelamento($k40_codigo = null, $campos = '*', $ordem = null, $dbwhere='')
+  {
+    $sql = "select ";
+     if($campos != "*" ){
+      $campos_sql = implode(', ', explode("#", $campos));
+      $sql .= $campos_sql;
+     }else{
+       $sql .= $campos;
+     }
+     $sql .= " from cadtipoparc ";
+     $sql .= "      inner join cadtipoparcdeb on cadtipoparcdeb.k41_cadtipoparc = cadtipoparc.k40_codigo"; 
+     $sql .= "      inner join arretipo on arretipo.k00_tipo = cadtipoparcdeb.k41_arretipo"; 
+     $sql .= "      inner join cadtipo on cadtipo.k03_tipo = arretipo.k03_tipo"; 
+     $sql2 = "";
+     if($dbwhere==""){
+       if($k40_codigo!=null ){
+         $sql2 .= " where cadtipoparc.k40_codigo = $k40_codigo "; 
+       }
+     }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+     }
+     $sql .= $sql2;
+     if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = implode(', ', explode("#", $ordem));
+       $sql .= $campos_sql;
+     }
+     return $sql;
+  } */
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-require_once ('model/tceEstruturaBasica.php');
+require_once(modification('model/tceEstruturaBasica.php'));
 
 class tceArrecadacaoMunicipal extends tceEstruturaBasica {
   
@@ -92,13 +92,21 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
                                                                  $this->sDataIni, 
                                                                  $this->sDataFim, 
                                                                  $this->sCodRemessa), 1);
-                                                                 
-    $rsArrecadacao = pg_query($this->sqlArrecadacao($this->iInstit, $this->sDataIni, $this->sDataFim));
+
+    $rsArrecadacao = db_query($this->sqlArrecadacao($this->iInstit, $this->sDataIni, $this->sDataFim));
     $iNumRows = pg_num_rows($rsArrecadacao);
     $iTotalRegistros = 0;
+    $iQuant          = 0;
+
     for($i = 0; $i < $iNumRows; $i ++) {
-      
-      db_atutermometro($i, $iNumRows, "terTCE4010");
+
+      $iNew = intval($i*100/$iNumRows);
+      if ($iNew > $iQuant) {
+
+        $iQuant = $iNew;
+        db_atutermometro($i, $iNumRows, "terTCE4010");
+      }
+
       // guardar sessao notificando o usuario do estado do processamento
       $oArrecadacao = db_utils::fieldsMemory($rsArrecadacao, $i);
       
@@ -107,7 +115,7 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
                                                             $oArrecadacao->k00_valor, 
                                                             $oArrecadacao->k00_dtvenc, 
                                                             $oArrecadacao->k00_dtoper);
-      
+
       $oArrecadacao->valormultajurosdescontos  = ( $oAcrescimosDescontos->juros + 
                                                    $oAcrescimosDescontos->multa -
                                                    $oAcrescimosDescontos->desconto );
@@ -124,10 +132,8 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
 
       $oArrecadacao->valormoeda = $formatar_valormoeda;
       
-      $oArrecadacao->dataregistrocontabilidade = $this->getDataBoletim( $oArrecadacao->k00_numpre, 
-                                                                        $oArrecadacao->k00_numpar, 
-                                                                        $oArrecadacao->k00_receit );
-                                                                       
+      $oArrecadacao->dataregistrocontabilidade = "";
+      
       $oArrecadacao->datacriacaoreceita = db_getsession("DB_anousu") . "-01-01";
 
       $oArrecadacao->estruturareceita = $this->getEstrutural($oArrecadacao->k00_receit);
@@ -151,6 +157,8 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
         // Recebimento em Espécie
         case 2:
          
+        	$oArrecadacao->dataregistrocontabilidade = $this->getDataBoletim( $oArrecadacao->k00_numpre, $oArrecadacao->k00_numpar, $oArrecadacao->k00_receit );
+        	
           //Se o tipo de operação for 2 e o estrutural da receita iniciar com 4, retiramos o 4 do estrutural da receita.	
           if(substr($oArrecadacao->estruturareceita,0,1) == "4") {
         	$oArrecadacao->estruturareceita = substr($oArrecadacao->estruturareceita,1);
@@ -175,6 +183,14 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
 
         break;
         
+      }
+
+      $oArrecadacao->estruturareceita = str_pad($oArrecadacao->estruturareceita, 20, "0");
+
+      $valorTotal = $oArrecadacao->valorrecibo + $oArrecadacao->valormultajurosdescontos + $oArrecadacao->valororiginal;
+
+      if (empty($valorTotal)) {
+        continue;
       }
 
       $this->oTxtLayout->setByLineOfDBUtils($oArrecadacao, 3);
@@ -227,8 +243,7 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
     $sqlAcrescimosDescontos .= "                             " . db_getsession('DB_anousu') . ",";
     $sqlAcrescimosDescontos .= "                             '{$sVencimento}'),0) as valorcorrigido";
     
-    $rsAcrescimosDescontos = pg_query($sqlAcrescimosDescontos);
-    
+    $rsAcrescimosDescontos = db_query($sqlAcrescimosDescontos);
     if (pg_num_rows($rsAcrescimosDescontos) > 0) {
       $oAcrescimosDescontos = db_utils::fieldsMemory($rsAcrescimosDescontos, 0);
       // Calculando o total dos acrescimos     
@@ -257,31 +272,26 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
     $sSqlDataBoletim .= "        x.k12_data, ";
     $sSqlDataBoletim .= "        x.k12_autent ";
     $sSqlDataBoletim .= "   from (  select k12_id,k12_data,k12_autent ";
-    $sSqlDataBoletim .= "             from arrepaga ";
-    $sSqlDataBoletim .= "                  inner join cornump on cornump.k12_numpre = arrepaga.k00_numpre ";
-    $sSqlDataBoletim .= "                                   and cornump.k12_numpar = arrepaga.k00_numpar ";
-    $sSqlDataBoletim .= "                                   and cornump.k12_receit = arrepaga.k00_receit ";
-    $sSqlDataBoletim .= "            where arrepaga.k00_numpre = {$iNumpre}";
-    $sSqlDataBoletim .= "              and arrepaga.k00_numpar = {$iNumpar}";
-    $sSqlDataBoletim .= "              and arrepaga.k00_receit = {$iReceita}";
+    $sSqlDataBoletim .= "             from cornump ";
+    $sSqlDataBoletim .= "            where cornump.k12_numpre = {$iNumpre}";
+    $sSqlDataBoletim .= "              and cornump.k12_numpar = {$iNumpar}";
+    $sSqlDataBoletim .= "              and cornump.k12_receit = {$iReceita}";
     $sSqlDataBoletim .= "         union  ";
     $sSqlDataBoletim .= "           select k12_id,k12_data,k12_autent ";
-    $sSqlDataBoletim .= "             from arrepaga ";
-    $sSqlDataBoletim .= "                  inner join arreidret on arreidret.k00_numpre = arrepaga.k00_numpre ";
-    $sSqlDataBoletim .= "                                      and arreidret.k00_numpar = arrepaga.k00_numpar ";
+    $sSqlDataBoletim .= "             from arreidret ";
     $sSqlDataBoletim .= "                  inner join disrec    on disrec.idret         = arreidret.idret ";
     $sSqlDataBoletim .= "                  inner join corcla    on corcla.k12_codcla    = disrec.codcla ";
-    $sSqlDataBoletim .= "            where arrepaga.k00_numpre = {$iNumpre}";
-    $sSqlDataBoletim .= "              and arrepaga.k00_numpar = {$iNumpar}";
-    $sSqlDataBoletim .= "              and arrepaga.k00_receit = {$iReceita}";
+    $sSqlDataBoletim .= "            where arreidret.k00_numpre = {$iNumpre}";
+    $sSqlDataBoletim .= "              and arreidret.k00_numpar = {$iNumpar}";
+    $sSqlDataBoletim .= "              and disrec.k00_receit    = {$iReceita}";
     $sSqlDataBoletim .= " ) as x  ";
     $sSqlDataBoletim .= "        inner join corrente      on corrente.k12_id           = x.k12_id ";
     $sSqlDataBoletim .= "                                and corrente.k12_data         = x.k12_data ";
-    $sSqlDataBoletim .= "                                and corrente.k12_autent       = x.k12_data ";
+    $sSqlDataBoletim .= "                                and corrente.k12_autent       = x.k12_autent ";
     $sSqlDataBoletim .= "        inner join conlancambol  on conlancambol.c77_id       = x.k12_id ";
     $sSqlDataBoletim .= "                                and conlancambol.c77_dataproc = x.k12_data ";
     $sSqlDataBoletim .= "                                and conlancambol.c77_autent   = x.k12_autent ";
-    $rsDataBoletim    = pg_query($sSqlDataBoletim);
+    $rsDataBoletim    = db_query($sSqlDataBoletim);
     
     if (pg_num_rows($rsDataBoletim) > 0) {
       $oDataBoletim     = db_utils::fieldsMemory($rsDataBoletim,0); 
@@ -309,7 +319,7 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
     $sSqlEstrut .= "        k02_estpla as estrutural";
     $sSqlEstrut .= "   from tabplan ";
     $sSqlEstrut .= "  where k02_codigo = {$iReceita} and k02_anousu = ".db_getsession('DB_anousu');
-    $rsEstrut    = pg_query($sSqlEstrut);
+    $rsEstrut    = db_query($sSqlEstrut);
     if (pg_num_rows($rsEstrut) > 0) {
       $oEstrut = db_utils::fieldsMemory($rsEstrut,0);
       return $oEstrut->estrutural;
@@ -354,8 +364,8 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
   
   function sqlArrecadacao($iInstit, $sDataini, $sDatafim) {
 
-    $sSqlArrecadacao = "select k00_numpre||lpad(k00_numpar,3,0)||k00_receit as codigobarras,";
-    $sSqlArrecadacao .= "       min(k00_dtpaga)    as datapagamento, ";
+    $sSqlArrecadacao  = "select k00_numpre||lpad(k00_numpar,3,0)||k00_receit as codigobarras,";
+    $sSqlArrecadacao .= "       case when min(k00_dtpaga)::text is null then '0000-00-00' else min(k00_dtpaga)::text end as datapagamento, ";
     $sSqlArrecadacao .= "       '0000-00-00'       as dataregistrocontabilidade, ";
     $sSqlArrecadacao .= "       sum(valor)         as valororiginal, ";
     $sSqlArrecadacao .= "       0                  as valormultajurosdescontos, ";
@@ -371,7 +381,7 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
     $sSqlArrecadacao .= "       min(translate(z01_incest, '/-.',''))    as numeroincricaoestadual, ";
     $sSqlArrecadacao .= "       0                  as estruturareceita, ";
     $sSqlArrecadacao .= "       codtrib            as orgaotributario, "; 
-    $sSqlArrecadacao .= "       min(k00_dtoper)    as dataoperacao, ";
+    $sSqlArrecadacao .= "       case when min(k00_dtoper)::text is null then '0000-00-00' else min(k00_dtoper)::text end as dataoperacao, ";
     $sSqlArrecadacao .= "       min(k00_dtvenc)    as vencimento, ";
     $sSqlArrecadacao .= "       tipo_oper          as tipooperacao, ";
     $sSqlArrecadacao .= "       0                  as modalidade, ";
@@ -402,7 +412,7 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
     $sSqlArrecadacao .= "                a.k00_numcgm, ";
     $sSqlArrecadacao .= "                a.k00_dtoper, ";
     $sSqlArrecadacao .= "                a.k00_dtvenc, ";
-    $sSqlArrecadacao .= "                '          ' as k00_dtpaga,";
+    $sSqlArrecadacao .= "                null as k00_dtpaga,";
     $sSqlArrecadacao .= "                coalesce(a.k00_valor,0) as valor,";
     $sSqlArrecadacao .= "                0                       as valor_pago,";
     $sSqlArrecadacao .= "                case ";
@@ -457,7 +467,7 @@ class tceArrecadacaoMunicipal extends tceEstruturaBasica {
     $sSqlArrecadacao .= "                 a.k00_numcgm, ";
     $sSqlArrecadacao .= "                 a.k00_dtoper, ";
     $sSqlArrecadacao .= "                 a.k00_dtvenc, ";
-    $sSqlArrecadacao .= "                 '          ' as k00_dtpaga,";
+    $sSqlArrecadacao .= "                 null as k00_dtpaga,";
     $sSqlArrecadacao .= "                 coalesce( a.k00_valor,0) as valor,";
     $sSqlArrecadacao .= "                 0                        as valor_pago, ";
     $sSqlArrecadacao .= "                '99' as tipo_oper, ";

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_bens_classe.php");
-include ("classes/db_bensplaca_classe.php");
-include ("classes/db_cfpatriplaca_classe.php");
-include ("classes/db_histbensocorrencia_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_bens_classe.php"));
+include(modification("classes/db_bensplaca_classe.php"));
+include(modification("classes/db_cfpatriplaca_classe.php"));
+include(modification("classes/db_histbensocorrencia_classe.php"));
 
 parse_str ( $HTTP_SERVER_VARS ["QUERY_STRING"] );
 db_postmemory ( $HTTP_POST_VARS );
@@ -54,6 +54,12 @@ if (isset ( $alterar )) {
   $sqlerro = false;
   $placa = "";
   
+  if (BensParametroPlaca::getCodigoParametro() == BensParametroPlaca::PLACA_SEQUENCIAL_DIGITADO && $placa_ant == $t52_ident) {
+    $clbens->erro_campo = "t52_ident";
+    $sqlerro = true;
+    $erro_msg = _M('patrimonial.patrimonio.db_frmaltplaca.novo_sequencial_placa_igual_atual');
+  }
+
   if (trim ( @$t52_ident ) == "0") {
     
     $clbens->erro_campo = "t52_ident";
@@ -273,7 +279,7 @@ if (isset ( $alterar )) {
 </head>
 <body bgcolor=#CCCCCC>
 	<?php 
-	  include ("forms/db_frmaltplaca.php"); 
+	  include(modification("forms/db_frmaltplaca.php")); 
 	  db_menu ( db_getsession ( "DB_id_usuario" ), db_getsession ( "DB_modulo" ), db_getsession ( "DB_anousu" ), db_getsession ( "DB_instit" ) ); 
 	?>
 </body>

@@ -1,0 +1,94 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010942' name='issqn.dadosredesim' description="Esta tabela salva os JSONs e XMLs enviados pela REDESIM para conferências dos dados" prefix="q181" label="Dados enviados pela REDESIM" type="0">
+  <fields>
+    <field codigo="1014201" 
+           campo_api='' 
+           name="q181_sequencial" 
+           conteudo="int8" 
+           description="Sequencial da tabela dadosredesim" 
+           inivalue="0" 
+           label="Sequencial" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='issqn.dadosredesim_q181_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1014202" 
+           campo_api='' 
+           name="q181_inscricao" 
+           conteudo="int8" 
+           description="Inscrição" 
+           inivalue="0" 
+           label="Inscrição" 
+           size="11" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Inscrição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1014203" 
+           campo_api='' 
+           name="q181_processo" 
+           conteudo="int8" 
+           description="Processo" 
+           inivalue="0" 
+           label="Processo" 
+           size="11" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1014204" 
+           campo_api='' 
+           name="q181_dadosbalcaounico" 
+           conteudo="text" 
+           description="Campo que salva os dados que foram recebidos via requisição da modalidade Balcão Único da REDESIM" 
+           inivalue="" 
+           label="Dados Balcão Único" 
+           size="1000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Dados Balcão Único" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="q181_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="issbase" inner='t'>
+      <fieldfk name="q181_inscricao" reference="q02_inscr" /> 
+    </foreignkey>
+    <foreignkey reference="protprocesso" inner='f'>
+      <fieldfk name="q181_processo" reference="p58_codproc" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

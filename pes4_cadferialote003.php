@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libpessoal.php");
-include("classes/db_cadferia_classe.php");
-include("classes/db_selecao_classe.php");
-include("classes/db_cfpess_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("classes/db_cadferia_classe.php"));
+include(modification("classes/db_selecao_classe.php"));
+include(modification("classes/db_cfpess_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clcadferia = new cl_cadferia;
 $clselecao = new cl_selecao;
@@ -58,7 +58,7 @@ if(isset($excluir)){
     $r44_where .= " and rh05_seqpes is null";
     $r44_where .= " and rh01_regist in (" . $sql_cadferia . ") ";
     
-    include("libs/db_sql.php");
+    include(modification("libs/db_sql.php"));
     $clsql = new cl_gera_sql_folha;
     $clsql->usar_pes = true;
     $clsql->usar_pad = true;
@@ -153,7 +153,7 @@ if(isset($excluir)){
       }
       
       $erro_msg.= "\\n- Recalcule folha de salário.";
-      $erro_msg.= "\\n- Lance e recalcule folha complementare.";
+      $erro_msg.= "\\n- Lance e recalcule folha complementar.";
 
       if ($lExisteDadosPessoal) {
         
@@ -184,6 +184,7 @@ if(isset($excluir)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/prototype.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -200,7 +201,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
       <center>
       <?
-      include("forms/db_frmexcferialote.php");
+      include(modification("forms/db_frmexcferialote.php"));
       ?>
       </center>
     </td>

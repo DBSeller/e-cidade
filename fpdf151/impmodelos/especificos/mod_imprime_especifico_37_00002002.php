@@ -85,8 +85,8 @@ $ass_cont     = str_replace( "_", "", $classinatura->assinatura(1005,"","0"));
 $ass_contFunc = str_replace( "_", "", $classinatura->assinatura(1005,"","1"));
 
 // retorna a assinatura e o modelo de recibo conforme a configuração do cliente
-require_once("libs/db_utils.php");
-require_once("libs/db_libdocumento.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_libdocumento.php"));
 $oAssinaturas = new libdocumento(1705);
 $aParagrafo = $oAssinaturas->getDocParagrafos();
 

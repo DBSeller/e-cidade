@@ -84,7 +84,7 @@ DBViewEscrituracaoInventario = function (sNameInstance, iCodigoInventario, lEsto
   this.retornoDadosGrid = function (oJson) {
     
     js_removeObj("msgBox");  
-    var oRetorno = eval("("+oJson.responseText+")");
+    var oRetorno = JSON.parse(oJson.responseText);
     
     if (oRetorno.iStatus == 2) {
 
@@ -146,7 +146,7 @@ DBViewEscrituracaoInventario = function (sNameInstance, iCodigoInventario, lEsto
   me.concluirProcessamento = function(oAjax) {
     
     js_removeObj("msgBox");
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     alert(oRetorno.sMessage.urlDecode());
     if (oRetorno.iStatus == 1) {
 

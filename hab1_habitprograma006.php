@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-require_once("libs/db_utils.php");
-require_once("classes/db_habitprograma_classe.php");
-require_once("classes/db_habitprogramalote_classe.php");
-require_once("classes/db_habitprogramalistacompra_classe.php");
-require_once("classes/db_habitprogramalistacompraitem_classe.php");
-require_once("classes/db_habitprogramaconcedente_classe.php");
+require_once(modification("libs/db_utils.php"));
+require_once(modification("classes/db_habitprograma_classe.php"));
+require_once(modification("classes/db_habitprogramalote_classe.php"));
+require_once(modification("classes/db_habitprogramalistacompra_classe.php"));
+require_once(modification("classes/db_habitprogramalistacompraitem_classe.php"));
+require_once(modification("classes/db_habitprogramaconcedente_classe.php"));
 
 $clHabitPrograma            = new cl_habitprograma();
 $clHabitProgramaLote        = new cl_habitprogramalote();
@@ -138,7 +138,7 @@ if(isset($oPost->excluir)){
 	  <tr> 
 	    <td> 
 				<?
-				  include("forms/db_frmhabitprograma.php");
+				  include(modification("forms/db_frmhabitprograma.php"));
 				?>
 	 	  </td>
 	  </tr>
@@ -173,7 +173,7 @@ if (isset($oGet->chavepesquisa)) {
   $sHtml .= "   function js_db_libera(){";
 
   $sHtml .= "     parent.document.formaba.habitprogramalistacompra.disabled=false;";
-  $sHtml .= "     top.corpo.iframe_habitprogramalistacompra.location.href='hab1_habitprogramalistacompra001.php?ht17_habitprograma=".@$ht01_sequencial."';";
+  $sHtml .= "     (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_habitprogramalistacompra.location.href='hab1_habitprogramalistacompra001.php?ht17_habitprograma=".@$ht01_sequencial."';";
   
   if ( isset($oGet->liberaaba)) {
     $sHtml .= "   parent.mo_camada('habitprogramalistacompra');";
@@ -181,7 +181,7 @@ if (isset($oGet->chavepesquisa)) {
   
 //  if ( in_array( $ht01_habitgrupoprograma,array(1,2,3)) ) {
 //    $sHtml .= "   parent.document.formaba.habitprogramalote.disabled=false;";
-//    $sHtml .= "   top.corpo.iframe_habitprogramalote.location.href='hab1_habitprogramalote001.php?ht05_habitprograma=".@$ht01_sequencial."';";
+//    $sHtml .= "   (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_habitprogramalote.location.href='hab1_habitprogramalote001.php?ht05_habitprograma=".@$ht01_sequencial."';";
 //  } else {
 //    $sHtml .= "   parent.document.formaba.habitprogramalote.disabled=true;";
 //  }

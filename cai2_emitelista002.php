@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009 DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,10 +26,10 @@
  */
 
 set_time_limit(0);
-include ("libs/db_sql.php");
-include ("fpdf151/pdf.php");
-include ("classes/db_tabativ_classe.php");
-include ("dbforms/db_funcoes.php");
+include(modification("libs/db_sql.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_tabativ_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $cltabativ = new cl_tabativ;
 $clrotulo = new rotulocampo;
 $clrotulo->label('z01_nome');
@@ -70,7 +70,7 @@ elseif ($k60_tipo == 'I') {
 	$xrel = "Inscr";
   $where_tipo = " and coalesce(k22_inscr,0) <> 0 ";
 }
-elseif ($k60_tipo == 'N' or $k60_tipo == 'C') {
+elseif ($k60_tipo == 'N' or $k60_tipo == 'C' or $k60_tipo == 'A') {
 	if ($agrupar == "s") {
 		$xcodigo = 'numcgm';
 	  $xcodigo1 = 'numcgm';
@@ -122,6 +122,7 @@ if ($agrupar == "s") {
 	                  where k60_codigo = $lista 
 	                    and k60_instit = $instit 
                     group by debitos.k22_numcgm, 
+                             cgm.z01_cgccpf, 
                              cgm.z01_nome,
                              k63_notifica
                  ) as x $xxordem";
@@ -308,7 +309,7 @@ if ($tipo == 'p') {
 		$pdf->cell(25, 05, '', 0, 1, "R", 0);
 	}
 
-	//include("fpdf151/geraarquivo.php");
+	//include(modification("fpdf151/geraarquivo.php"));
 	if(($filtro=='s')&&($tipo=='p')){
 		$sqlfiltro = "select k60_codigo,login,nome,k60_filtros from lista inner join db_usuarios on id_usuario = k60_usuario where k60_codigo = $lista and k60_instit = $instit";
 		$resultfiltro = db_query($sqlfiltro);

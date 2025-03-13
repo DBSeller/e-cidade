@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -401,5 +401,21 @@ class cl_propri {
      }
      return $sql;
   }
+
+		function sql_query_enderecoEntrega($iNumCgmProprietario = null, $sCampos = "*", $sWhere = null) {
+			
+			if (empty($sWhere) && !empty($iNumCgmProprietario)) {
+				$sWhere = " where j42_numcgm = {$iNumCgmProprietario} ";
+			} else if (!empty($sWhere) && !empty($iNumCgmProprietario)) {
+				$sWhere = " where {$sWhere} and j42_numcgm = {$iNumCgmProprietario} ";
+			}
+			
+			$sSql  = "select {$sCampos}                                      ";
+			$sSql .= "  from propri                                          ";
+			$sSql .= "       inner join iptubase  on j01_matric = j42_matric ";
+			$sSql .= "       left  join iptuender on j43_matric = j01_matric ";
+			$sSql .= $sWhere;
+			return $sSql;
+		}
 }
 ?>

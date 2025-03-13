@@ -124,10 +124,10 @@ db_input('cm23_i_lotecemit',10,$Icm23_i_lotecemit,true,'text',3,'');
 <script>
 function js_pesquisacm05_i_campa(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_campas','func_campas.php?funcao_js=parent.js_mostracampas1|cm19_i_codigo|cm19_c_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_campas','func_campas.php?funcao_js=parent.js_mostracampas1|cm19_i_codigo|cm19_c_descr','Pesquisa',true);
   }else{
      if(document.form1.cm05_i_campa.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_campas','func_campas.php?pesquisa_chave='+document.form1.cm05_i_campa.value+'&funcao_js=parent.js_mostracampas','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_campas','func_campas.php?pesquisa_chave='+document.form1.cm05_i_campa.value+'&funcao_js=parent.js_mostracampas','Pesquisa',false);
      }else{
        document.form1.cm19_c_descr.value = '';
      }
@@ -147,10 +147,10 @@ function js_mostracampas1(chave1,chave2){
 }
 function js_pesquisacm05_i_lotecemit(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_lotecemit',"func_lotecemit.php?tp=S,C&funcao_js=parent.js_mostralotecemit1|cm23_i_codigo|cm23_i_lotecemit|cm23_i_quadracemit|cm22_c_quadra|cm22_i_cemiterio|z01_nome",'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotecemit',"func_lotecemit.php?tp=S,C&funcao_js=parent.js_mostralotecemit1|cm23_i_codigo|cm23_i_lotecemit|cm23_i_quadracemit|cm22_c_quadra|cm22_i_cemiterio|z01_nome",'Pesquisa',true);
   }else{
      if(document.form1.cm05_i_lotecemit.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_lotecemit',"func_lotecemit.php?tp=S,C&pesquisa_chave="+document.form1.cm05_i_lotecemit.value+"&funcao_js=parent.js_mostralotecemit",'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lotecemit',"func_lotecemit.php?tp=S,C&pesquisa_chave="+document.form1.cm05_i_lotecemit.value+"&funcao_js=parent.js_mostralotecemit",'Pesquisa',false);
      }else{
        document.form1.cm23_i_codigo.value = '';
      }
@@ -173,7 +173,7 @@ function js_mostralotecemit1(chave1,chave2,chave3,chave4,chave5,chave6){
   db_iframe_lotecemit.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_sepulturas','func_sepulturas.php?funcao_js=parent.js_preenchepesquisa|cm05_i_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_sepulturas','func_sepulturas.php?funcao_js=parent.js_preenchepesquisa|cm05_i_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_sepulturas.hide();

@@ -1,38 +1,38 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("classes/db_protprocesso_classe.php");
-include("classes/db_tipoproc_classe.php");
-include("classes/db_db_depart_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_procandam_classe.php");
-include("classes/db_db_usuarios_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("classes/db_protprocesso_classe.php"));
+include(modification("classes/db_tipoproc_classe.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_procandam_classe.php"));
+include(modification("classes/db_db_usuarios_classe.php"));
 
 //estancia as classes
 $cl_processos   = new cl_protprocesso;
@@ -54,7 +54,7 @@ if ($_GET["listacgm"] != "") {
   } else {
    $db_where .= " p58_numcgm NOT IN ( $_GET[listacgm])";
  }
-} 
+}
 //
 if ($_GET["listadept"] != "") {
  if ( $_GET["listacgm"] != "") {
@@ -89,19 +89,19 @@ if ($_GET["listaprocand"] != "") {
  }
 }
 
-if (($_GET["listacgm"]     != "") || 
+if (($_GET["listacgm"]     != "") ||
     ($_GET["listatipo"]    != "") ||
-    ($_GET["listaprocand"] != "") || 
+    ($_GET["listaprocand"] != "") ||
     ($_GET["listadept"] != "")) {
   $db_where .= " AND";
 }
 $sSqlUsuInsti  = "select id_instit from db_userinst where id_usuario = ".db_getsession("DB_id_usuario");
-$rsUsuInsti    = pg_query($sSqlUsuInsti);
+$rsUsuInsti    = db_query($sSqlUsuInsti);
 $strWhereinsti = '';
 $strV          = '';
 
 if (pg_num_rows($rsUsuInsti) > 0) {
-  
+
    for ($i = 0; $i < pg_num_rows($rsUsuInsti); $i++) {
 
      $strWhereinsti .= $strV.pg_result($rsUsuInsti, $i, 0);
@@ -114,7 +114,7 @@ if ($strWhereinsti != null) {
   $strWhereinsti = "  and p58_instit in ($strWhereinsti)";
 
 }
-//filtro das data  
+//filtro das data
 /*
 if( ($_GET["data1"] != "//") and ($_GET["data1"] == $_GET["data2"]) ) {
   $db_where .= " p58_dtproc = '$_GET[data1]'";
@@ -150,17 +150,17 @@ if (isset($tipo)) {
 	}
 
   if ($tipo == "n") {
-  	
+
 		$db_where .= " and p68_codproc is null ";
     $head4     = "SOMENTE OS EM ANDAMENTO";
 	} elseif ($tipo == "a") {
-		
+
 		$db_where .= " and p68_codproc is not null ";
     $head4     = "SOMENTE OS ARQUIVADOS";
 	} else {
     $head4     = "TODOS (ARQUIVADOS E EM ANDAMENTO)";
 	}
-	
+
 }
 
 $ordem = $Ordem;
@@ -189,11 +189,11 @@ $db_where .= $strWhereinsti;
 /**
  * Verifica o campo que deverá ser buscado no banco
  * $sTituloCampo = titulo do campo a ser impresso no PDF
- */ 
+ */
 if ($_GET["tipoCGMProcesso"] == 1) {
 	// Requerente
 	$sCampoMostrar = "p58_requer";
-	$sTituloCampo  = "Requerente";	
+	$sTituloCampo  = "Requerente";
 } else if ($_GET["tipoCGMProcesso"] == 2) {
 	// Titular
 	$sCampoMostrar = "z01_nome";
@@ -222,7 +222,11 @@ $sSqlProcessos = "p58_codproc,
                   p61_coddepto,
                   b.descrdepto as deptoandam";
 
-$sProcessaSql = $cl_processos->sql_query_deptarq("", $sSqlProcessos, $ordenacao, $db_where);
+if ($tipo == 't') {
+  $sProcessaSql = $cl_processos->sql_query_todos("", $sSqlProcessos, $ordenacao, $db_where);
+} else {
+  $sProcessaSql = $cl_processos->sql_query_deptarq("", $sSqlProcessos, $ordenacao, $db_where);
+}
 $result       = $cl_processos->sql_record($sProcessaSql);
 
 /**
@@ -242,33 +246,36 @@ $alt    = 4;
 $p      = 0;
 
 for($x = 0; $x < $cl_processos->numrows; $x++) {
-   
+
   db_fieldsmemory($result,$x);
   if ($pdf->gety() > $pdf->h - 30 || $troca != 0 ) {
-     
+
     $pdf->addpage("L");
     $pdf->setfont('arial', 'b', 8);
-    $pdf->cell(21, $alt, "Processo", 1, 0, "C", 1);
+    $pdf->cell(32, $alt, "Processo", 1, 0, "C", 1);
     $pdf->cell(14, $alt, "Data", 1, 0, "C", 1);
     $pdf->cell(10, $alt, "Hora", 1, 0, "C", 1);
     $pdf->cell(8, $alt, $RLp58_codigo, 1, 0, "C", 1);
     $pdf->cell(50, $alt, $RLp51_descr, 1, 0, "C", 1);
     $pdf->cell(15, $alt, "Login", 1, 0, "C", 1);
     $pdf->cell(10, $alt, "CGM", 1, 0, "C", 1);
-    $pdf->cell(65, $alt, $sTituloCampo, 1, 0,"C", 1);
-    $pdf->cell(43, $alt, "Dept. Ini.", 1, 0, "C", 1);
-    $pdf->cell(43, $alt, "Dept. Atual", 1, 1, "C", 1);
-   
+    $pdf->cell(60, $alt, $sTituloCampo, 1, 0,"C", 1);
+    $pdf->cell(40, $alt, "Dept. Ini.", 1, 0, "C", 1);
+    $pdf->cell(40, $alt, "Dept. Atual", 1, 1, "C", 1);
+
     $troca = 0;
-  }  
+  }
   $pdf->setfont('arial', '', 7);
-  
+
   $sNumeroProcesso = $p58_numero."/".$p58_ano;
   if (empty($p58_numero)) {
     $sNumeroProcesso = "";
   }
+
+  $pdf->setfont('arial', '', 6.5);
+  $pdf->cell(32, $alt, $sNumeroProcesso, 0, 0, "C", $p);
+  $pdf->setfont('arial', '', 7);
   
-  $pdf->cell(21, $alt, $sNumeroProcesso, 0, 0, "C", $p);
   $pdf->cell(14, $alt, $to_char, 0, 0, "C", $p);
   $pdf->cell(10, $alt, $p58_hora, 0, 0, "C", $p);
   $pdf->cell(8, $alt, $p58_codigo, 0, 0, "L", $p);
@@ -276,20 +283,22 @@ for($x = 0; $x < $cl_processos->numrows; $x++) {
   $pdf->cell(15, $alt, substr($login, 0, 10), 0, 0, "L", $p);
   //$pdf->cell(10, $alt, $p58_numcgm, 0, 0, "C", $p);
   $pdf->cell(10, $alt, $p58_numcgm, 0, 0, "C", $p);
-  $pdf->cell(65, $alt, substr($titular, 0, 40), 0, 0, "L", $p);
-  $pdf->cell(43, $alt, substr($p58_coddepto . "-" . substr($deptoproc, 0, 25), 0, 25), 0, 0, "L", $p);
-  $pdf->cell(43, $alt, substr($p61_coddepto . "-" . substr($deptoandam, 0, 25), 0, 25), 0, 1, "l", $p);
+  $pdf->setfont('arial', '', 6.5);
+  $pdf->cell(60, $alt, substr($titular, 0, 40), 0, 0, "L", $p);
+  $pdf->cell(40, $alt, substr($p58_coddepto . "-" . substr($deptoproc, 0, 25), 0, 25), 0, 0, "L", $p);
+  $pdf->cell(40, $alt, substr($p61_coddepto . "-" . substr($deptoandam, 0, 25), 0, 25), 0, 1, "l", $p);
+  $pdf->setfont('arial', '', 7);
 
   if ($Observacao == '1') {
     $pdf->multicell(279,$alt,$p58_obs,0,"L",$p);
   }
 
-      
+
   if ($p == 0) {
     $p = 1;
   } else {
     $p = 0;
-  }  
+  }
 }
 $pdf->ln();
 $pdf->cell(43, $alt, "TOTAL DE REGISTROS: " . $cl_processos->numrows, 0, 1, "L", 0);

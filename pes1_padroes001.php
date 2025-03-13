@@ -25,13 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_padroes_classe.php");
-include("classes/db_rhcadregime_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("classes/db_padroes_classe.php"));
+include(modification("classes/db_rhcadregime_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clpadroes = new cl_padroes;
 $clrhcadregime = new cl_rhcadregime;
@@ -39,8 +40,22 @@ $db_opcao = 1;
 $db_botao = true;
 if(isset($incluir)){
   db_inicio_transacao();
-  $clpadroes->r02_instit = db_getsession("DB_instit");
-  $clpadroes->incluir($r02_anousu,$r02_mesusu,$r02_regime,$r02_codigo,db_getsession("DB_instit"));
+
+  $validacaoNivel = validarPadraoSalarioServidor($r02_codigo, $r02_padraopai_codigo, $r02_regime, db_getsession("DB_instit"));
+
+  if($validacaoNivel === true) {
+
+    $clpadroes->r02_padraopai_regime = $r02_regime;
+    $clpadroes->r02_padraopai_instit = db_getsession("DB_instit");
+    $clpadroes->r02_instit           = db_getsession("DB_instit");
+    $clpadroes->incluir($r02_anousu,$r02_mesusu,$r02_regime,$r02_codigo,db_getsession("DB_instit"));
+  
+  } else {
+    
+    $clpadroes->erro_status = '0';
+    $clpadroes->erro_msg    = $validacaoNivel;
+  }
+
   db_fim_transacao();
 }
 ?>
@@ -50,6 +65,7 @@ if(isset($incluir)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBLookUp.widget.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -66,7 +82,7 @@ if(isset($incluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
     <?
-    include("forms/db_frmpadroes.php");
+    include(modification("forms/db_frmpadroes.php"));
     ?>
     </center>
     </td>

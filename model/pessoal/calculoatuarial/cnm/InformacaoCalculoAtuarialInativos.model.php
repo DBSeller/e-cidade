@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("std/DBDate.php");
-require_once("model/pessoal/calculoatuarial/cnm/InformacaoCalculoAtuarial.model.php");
+require_once(modification("std/DBDate.php"));
+require_once(modification("model/pessoal/calculoatuarial/cnm/InformacaoCalculoAtuarial.model.php"));
 
 /**
  * Classe reponsavel por tratar as Informações dos Servidores Inativos 

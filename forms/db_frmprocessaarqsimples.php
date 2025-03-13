@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -99,12 +99,12 @@ $clrotulo->label("k15_codage");
 <script>
 function js_pesquisaq17_sequencial(mostra){
   if (mostra==true){
-     js_OpenJanelaIframe('top.corpo','db_iframe_issarqsimples','func_issarqsimples.php?semproc=1&funcao_js=parent.js_mostraissarqsimples1|q17_sequencial|q17_nomearq','Arquivos de Retorno',true);
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issarqsimples','func_issarqsimples.php?semproc=1&funcao_js=parent.js_mostraissarqsimples1|q17_sequencial|q17_nomearq','Arquivos de Retorno',true);
   }
 }
 function js_pesquisacadban(mostra){
   if (mostra==true){
-     js_OpenJanelaIframe('top.corpo','db_iframe_cadban','func_cadban.php?method=sql_query_tabplan&funcao_js=parent.js_mostracadban|k15_codbco|k15_codage|z01_nome|k15_conta','Consulta Bancos',true);
+     js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadban','func_cadban.php?method=sql_query_tabplan&funcao_js=parent.js_mostracadban|k15_codbco|k15_codage|z01_nome|k15_conta','Consulta Bancos',true);
   }
 }
 
@@ -125,7 +125,7 @@ function js_mostracadban(chave1,chave2,chave3, chave4){
   db_iframe_cadban.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_issarqsimples','func_issarqsimples.php?semproc=1&funcao_js=parent.js_mostraissarqsimples1|q17_sequencial|q17_nomearq','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_issarqsimples','func_issarqsimples.php?semproc=1&funcao_js=parent.js_mostraissarqsimples1|q17_sequencial|q17_nomearq','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_issarqsimples.hide();

@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('v07_parcel');
@@ -146,7 +146,7 @@ $sql .= " where v07_instit = ".db_getsession('DB_instit')." $where $order_by ";
 
 //die($sql);
 
-$result = pg_query($sql);
+$result = db_query($sql);
 
 if (pg_numrows($result) == 0){
   db_redireciona('db_erros.php?fechar=true&db_erro=Não existem parcelamentos.');
@@ -297,7 +297,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
 		$sqlOutrosNomes .= "        inner join cgm on k00_numcgm = z01_numcgm ";
 		$sqlOutrosNomes .= "  where k00_numpre = $v07_numpre ";
 		$sqlOutrosNomes .= "    and k00_numcgm <> $v07_numcgm ";
-		$rsOutrosNomes   = pg_query($sqlOutrosNomes);
+		$rsOutrosNomes   = db_query($sqlOutrosNomes);
 		$intNumrows      = pg_numrows($rsOutrosNomes);
 	
 		if($intNumrows > 1){
@@ -339,7 +339,7 @@ for($x = 0; $x < pg_numrows($result);$x++){
   
   } else {
     
-    $rsMatricula = pg_query("select K00_matric from arrematric where k00_numpre = $v07_numpre");
+    $rsMatricula = db_query("select K00_matric from arrematric where k00_numpre = $v07_numpre");
     
     db_fieldsmemory($rsMatricula, 0);
     

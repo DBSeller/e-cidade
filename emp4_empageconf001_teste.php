@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
-include("classes/db_empagetipo_classe.php");
-include("classes/db_empage_classe.php");
-include("classes/db_empagemov_classe.php");
-include("classes/db_empagegera_classe.php");
-include("classes/db_empageconf_classe.php");
+include(modification("classes/db_empagetipo_classe.php"));
+include(modification("classes/db_empage_classe.php"));
+include(modification("classes/db_empagemov_classe.php"));
+include(modification("classes/db_empagegera_classe.php"));
+include(modification("classes/db_empageconf_classe.php"));
 $clempage = new cl_empage;
 $clempagetipo = new cl_empagetipo;
 $clempagemov = new cl_empagemov;
@@ -159,7 +159,7 @@ if(isset($entrar) || isset($nova)){
    
 //sempre que ja existir agenda entra nesta opcao  
   if(isset($e80_codage)){  
-	include("forms/db_frmempageconf.php");
+	include(modification("forms/db_frmempageconf.php"));
 
 //pela primeira vez que entrar neste arquivo, entra nesta opcao para digitar a data da agenda 
   }else if(empty($entrar) && empty($e80_codage)){?>
@@ -252,10 +252,10 @@ if((isset($e83_codmod) && $e83_codmod == 1) || isset($reemite)){
 
    $sql = "select c63_banco 
            from conplanoreduz
-	        inner join conplanoconta on c61_codcon = c63_codcon and c61_anousu=c63_anousu
+	        inner join conplanoconta on c61_codcon = c63_codcon and c61_anousu=c63_anousu and c63_reduz = c61_reduz
 	   where c61_anousu = ".db_getsession("DB_anousu")." and c61_reduz = $e83_conta";
    
-   $result = pg_exec($sql);
+   $result = db_query($sql);
   
    $codbco = pg_result($result,0,0);
   

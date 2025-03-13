@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-	require("libs/db_stdlib.php");
-	require("libs/db_conecta.php");
-	include("libs/db_sessoes.php");
-	include("dbforms/db_funcoes.php");
-	include("libs/db_usuariosonline.php");
-	include("classes/db_db_sysclasseatualizareg_classe.php");
-	include("classes/db_db_sysclasses_classe.php");
+	require(modification("libs/db_stdlib.php"));
+	require(modification("libs/db_conecta.php"));
+	include(modification("libs/db_sessoes.php"));
+	include(modification("dbforms/db_funcoes.php"));
+	include(modification("libs/db_usuariosonline.php"));
+	include(modification("classes/db_db_sysclasseatualizareg_classe.php"));
+	include(modification("classes/db_db_sysclasses_classe.php"));
 	$cldb_sysclasses = new cl_db_sysclasses;
 	$cldb_sysclassesatualizareg = new cl_db_sysclasseatualizareg;
 	db_postmemory($_POST);
@@ -43,13 +43,13 @@
   $lErro = false;
 	db_inicio_transacao();
 	$sqltab ="select * from pg_tables where tablename = 'temp_classeatualiza'";
-	$resulttab = pg_query($sqltab);
+	$resulttab = db_query($sqltab);
 	$linhatab = pg_num_rows($resulttab);
 	if($linhatab>0){
 		for($x=0;$x<$count;$x++){
 			$sql = "select * from temp_classeatualiza where seq = ".$arr[$x];
 			//die($sql);
-			$result = pg_query($sql);
+			$result = db_query($sql);
 			db_fieldsmemory($result,0);
 
 			// tem q gravar na db_sysclasseatualizareg e na db_sysclasses
@@ -97,6 +97,6 @@
 
 	// drop a tabela
 	$sqldrop = "DROP TABLE temp_classeatualiza";
-	$resultdrop = @pg_query($sqldrop);
+	$resultdrop = @db_query($sqldrop);
 	//echo "<script>parent.js_apaga()</script>";
 ?>

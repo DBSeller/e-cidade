@@ -26,7 +26,7 @@
  */
 
 //MODULO: fiscal
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clprocfiscalfiscais->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -147,10 +147,10 @@ function js_cancelar(){
 
 function js_pesquisay106_cadfiscais(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_procfiscalfiscais','db_iframe_cadfiscais','func_cadfiscaisalt.php?funcao_js=parent.js_mostracadfiscais1|id_usuario|nome','Pesquisa',true,'0','1','775','390');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscalfiscais','db_iframe_cadfiscais','func_cadfiscaisalt.php?funcao_js=parent.js_mostracadfiscais1|id_usuario|nome','Pesquisa',true,'0','1','775','390');
   }else{
      if(document.form1.y106_cadfiscais.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_procfiscalfiscais','db_iframe_cadfiscais','func_cadfiscaisalt.php?pesquisa_chave='+document.form1.y106_cadfiscais.value+'&funcao_js=parent.js_mostracadfiscais','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_procfiscalfiscais','db_iframe_cadfiscais','func_cadfiscaisalt.php?pesquisa_chave='+document.form1.y106_cadfiscais.value+'&funcao_js=parent.js_mostracadfiscais','Pesquisa',false);
      }else{
        document.form1.id_usuario.value = ''; 
      }

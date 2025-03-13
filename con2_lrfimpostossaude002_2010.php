@@ -1,61 +1,61 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 if (! isset($arqinclude)) { // se este arquivo não esta incluido por outro
   set_time_limit(0);
-  include ("fpdf151/pdf.php");
-  include ("fpdf151/assinatura.php");
-  include ("libs/db_sql.php");
-  include ("libs/db_liborcamento.php");
-  include ("libs/db_libcontabilidade.php");
-  include ("libs/db_libtxt.php");
-  include ("dbforms/db_funcoes.php");
-  include ("classes/db_conrelinfo_classe.php");
-  include ("classes/db_orcparamrel_classe.php");
-  include ("classes/db_empresto_classe.php"); 
-  require_once("libs/db_utils.php");
-  require_once("model/linhaRelatorioContabil.model.php");
-  require_once("model/relatorioContabil.model.php");
+  include(modification("fpdf151/pdf.php"));
+  include(modification("fpdf151/assinatura.php"));
+  include(modification("libs/db_sql.php"));
+  include(modification("libs/db_liborcamento.php"));
+  include(modification("libs/db_libcontabilidade.php"));
+  include(modification("libs/db_libtxt.php"));
+  include(modification("dbforms/db_funcoes.php"));
+  include(modification("classes/db_conrelinfo_classe.php"));
+  include(modification("classes/db_orcparamrel_classe.php"));
+  include(modification("classes/db_empresto_classe.php"));
+  require_once(modification("libs/db_utils.php"));
+  require_once(modification("model/linhaRelatorioContabil.model.php"));
+  require_once(modification("model/relatorioContabil.model.php"));
   parse_str($HTTP_SERVER_VARS ['QUERY_STRING']);
   db_postmemory($_GET);
-  
+
   $classinatura  = new cl_assinatura();
   $orcparamrel   = new cl_orcparamrel();
   $clconrelinfo  = new cl_conrelinfo();
   $clempresto    = new cl_empresto();
-  
+
   $anousu         = db_getsession("DB_anousu");
   $oDaoPeriodo     = db_utils::getDao("periodo");
   $iCodigoPeriodo  = $periodo;
-  $sSqlPeriodo   = $oDaoPeriodo->sql_query($periodo); 
-  $sSiglaPeriodo = db_utils::fieldsMemory($oDaoPeriodo->sql_record($sSqlPeriodo),0)->o114_sigla; 
+  $sSqlPeriodo   = $oDaoPeriodo->sql_query($periodo);
+  $sSiglaPeriodo = db_utils::fieldsMemory($oDaoPeriodo->sql_record($sSqlPeriodo),0)->o114_sigla;
   $dt            = data_periodo($anousu,$sSiglaPeriodo);
   $periodo       = $sSiglaPeriodo;
-  
+
 
   $dt_ini = $dt [0]; // data inicial do período
   $dt_fin = $dt [1]; // data final do período
@@ -65,21 +65,21 @@ if (! isset($arqinclude)) { // se este arquivo não esta incluido por outro
 $lGeraColunaRps = false;
 
 if ($sSiglaPeriodo == '2S' || $sSiglaPeriodo == '6B') {
-  $lGeraColunaRps = true;  
+  $lGeraColunaRps = true;
 }
 
-$lEscreveBimestre = true; 
+$lEscreveBimestre = true;
 if ($sSiglaPeriodo == '1S' || $sSiglaPeriodo == '2S') {
   $lEscreveBimestre = false;
 } else {
-  
+
   $dados  = data_periodo($anousu,$sSiglaPeriodo);
   $perini = split("-",$dados[0]);
   $perfin = split("-",$dados[1]);
-  
+
   $mesini    = strtoupper(db_mes($perini[1]));
   $mesfin    = strtoupper(db_mes($perfin[1]));
-  $sBimestre = "{$mesini}/{$mesfin}"; 
+  $sBimestre = "{$mesini}/{$mesfin}";
   $lEscreveBimestre = true;
 }
 
@@ -132,7 +132,7 @@ $contas [3] = "  Recursos de Operações de Crédito";
 $contas [4] = "  Outros Recursos";
 
 $iCodigoRelatorio   = 85;
-$sListaInstituicoes = db_getsession("DB_instit"); 
+$sListaInstituicoes = db_getsession("DB_instit");
 ///////////////////////////////////////////////////////////////////
 // 15 linhas de receita
 
@@ -145,17 +145,17 @@ for ($iLinha = 0; $iLinha <= 13; $iLinha++) {
   $receitas_prevatu[$iIndiceLinha] = 0;
   $receitas_atebime[$iIndiceLinha] = 0;
   $receitas_nobimes[$iIndiceLinha] = 0;
-  
+
   if (in_array($iIndiceLinha, $aReceitasIgnorar)) {
-    continue;   
+    continue;
   } else {
-    
+
     $rec[$iLinha] = new linhaRelatorioContabil($iCodigoRelatorio, $iParam);
     $rec[$iLinha]->setPeriodo($iCodigoPeriodo);
-    $rec[$iLinha]->parametro = $rec[$iLinha]->getParametros($anousu); 
+    $rec[$iLinha]->parametro = $rec[$iLinha]->getParametros($anousu);
     $aColunas  = $rec[$iLinha]->getValoresSomadosColunas($sListaInstituicoes, $anousu);
     foreach ($aColunas as $oLinha) {
-  
+
       $receitas_previni[$iLinha] += @$oLinha->colunas[1]->o117_valor;
       $receitas_prevatu[$iLinha] += @$oLinha->colunas[2]->o117_valor;
       $receitas_atebime[$iLinha] += @$oLinha->colunas[3]->o117_valor;
@@ -167,18 +167,18 @@ for ($iLinha = 0; $iLinha <= 13; $iLinha++) {
 // PESSOAL E ENCARGOS SOCIAIS
 $iParam = 12;
 for ($iLinha = 1; $iLinha <= 6; $iLinha++) {
-  
+
   $desp[$iLinha]['previni']         = 0;
   $desp[$iLinha]['prevatu']         = 0;
   $desp[$iLinha]['rpNaoProcessado'] = 0;
   $desp[$iLinha]['bimestre']        = 0;
-  
+
   $desp[$iLinha]['linha'] = new linhaRelatorioContabil($iCodigoRelatorio, $iParam);
   $desp[$iLinha]['linha']->setPeriodo($iCodigoPeriodo);
-  $desp[$iLinha]['linha']->parametro = $desp[$iLinha]["linha"]->getParametros($anousu); 
+  $desp[$iLinha]['linha']->parametro = $desp[$iLinha]["linha"]->getParametros($anousu);
   $aLinhas = $desp[$iLinha]['linha']->getValoresSomadosColunas($sListaInstituicoes, $anousu);
   foreach ($aLinhas as $oLinha) {
-  
+
     $desp[$iLinha]['previni']         += @$oLinha->colunas[1]->o117_valor;
     $desp[$iLinha]['prevatu']         += @$oLinha->colunas[2]->o117_valor;
     $desp[$iLinha]['bimestre']        += @$oLinha->colunas[3]->o117_valor;
@@ -187,7 +187,7 @@ for ($iLinha = 1; $iLinha <= 6; $iLinha++) {
     }
   }
   $iParam++;
-  
+
 }
 
 
@@ -197,7 +197,7 @@ $iParam               = 18;
 $VARIAVEL_COMPENSACAO = 0;
 $nValorOutrosRecursos = 0;
 for ($iLinha = 1; $iLinha <= 5; $iLinha++) {
-  
+
   $desp_p[$iLinha]['linha'] = new linhaRelatorioContabil($iCodigoRelatorio, $iParam);
   $desp_p[$iLinha]['linha']->setPeriodo($iCodigoPeriodo);
   $desp_p[$iLinha]['linha']->parametro = $desp_p[$iLinha]["linha"]->getParametros($anousu);
@@ -207,7 +207,7 @@ for ($iLinha = 1; $iLinha <= 5; $iLinha++) {
   $desp_p[$iLinha]['bimestre']         = 0;
   $aLinhas = $desp_p[$iLinha]['linha']->getValoresSomadosColunas($sListaInstituicoes, $anousu);
   foreach ($aLinhas as $oLinha) {
-  
+
     $desp_p[$iLinha]['previni']         += @$oLinha->colunas[1]->o117_valor;
     $desp_p[$iLinha]['prevatu']         += @$oLinha->colunas[2]->o117_valor;
     $desp_p[$iLinha]['bimestre']        += @$oLinha->colunas[3]->o117_valor;
@@ -230,7 +230,7 @@ $result_despesa = db_dotacaosaldo(8, 2, 3, true, $sele_work, $anousu, $dt_ini, $
 
 $db_filtro = " o70_instit in ({$sListaInstituicoes})";
 $result_rec = db_receitasaldo(11, 1, 3, true, $db_filtro, $anousu, $dt_ini, $dt_fin);
-@ pg_exec("drop table work_receita");
+@ db_query("drop table work_receita");
 
 //db_criatabela($result_despesa);exit;
 
@@ -272,27 +272,27 @@ $sql_order = " order by e91_recurso, e91_numemp ";
 $dt_ini2 = $anousu . "-01-01";
 
 $sqlperiodo  = $clempresto->sql_rp_novo($anousu, $sele_work, $dt_ini2, $dt_fin, $sele_work1, $sql_where_externo, "$sql_order ");
-$result_restos_mde1 = @pg_query($sqlperiodo);
+$result_restos_mde1 = @db_query($sqlperiodo);
 $numrows_restos_mde1 = @pg_numrows($result_restos_mde1);
 
 $saldo     = 0;
 $cancelado = 0;
 for($i = 0; $i < pg_numrows($result_restos_mde1); $i ++) {
   db_fieldsmemory($result_restos_mde1, $i);
-  
-//  Total de RP processado .....:  ($e91_vlrliq - $e91_vlrpag); 
+
+//  Total de RP processado .....:  ($e91_vlrliq - $e91_vlrpag);
 //  Total de RP não processado .:  ($e91_vlremp - $e91_vlranu - $e91_vlrliq);
 
   $saldo     += (($e91_vlrliq - $e91_vlrpag) + ($e91_vlremp - $e91_vlranu - $e91_vlrliq));
-  
+
   $cancelado += $vlranuliq;
-  
+
 }
 
-// DESPESAS POR SUBFUNCAO 
+// DESPESAS POR SUBFUNCAO
 $iParam = 24;
 for ($i = 1; $i <= 7; $i++) {
-  
+
   $m_desp_subfunc[$i]['estrut'] = new linhaRelatorioContabil($iCodigoRelatorio, $iParam);
   $m_desp_subfunc[$i]['estrut']->setPeriodo($iCodigoPeriodo);
   $m_desp_subfunc[$i]['estrut']->parametro =$m_desp_subfunc[$i]['estrut']->getParametros($anousu);
@@ -302,7 +302,7 @@ for ($i = 1; $i <= 7; $i++) {
   $m_desp_subfunc[$i]['restos']     = 0;
   $aLinhas = $m_desp_subfunc[$i]['estrut']->getValoresSomadosColunas($sListaInstituicoes, $anousu);
   foreach ($aLinhas as $oLinha) {
-    
+
     $m_desp_subfunc[$i]['inicial']    += $oLinha->colunas[1]->o117_valor;
     $m_desp_subfunc[$i]['atualizada'] += $oLinha->colunas[2]->o117_valor;
     $m_desp_subfunc[$i]['bimestre']   += $oLinha->colunas[3]->o117_valor;
@@ -318,13 +318,13 @@ $total_rec_atu    = 0;
 $total_rec_atebim = 0;
 $iTotalLinhasReceita = pg_num_rows($result_rec);
 // RECEITA DE IMPOSTOS LIQUIDA [1...4] + TOTAL DAS RECEITAS[0]
- 
+
 for ($i = 0; $i < $iTotalLinhasReceita; $i ++) {
 
-  
+
   $oReceita   = db_utils::fieldsmemory($result_rec, $i);
   for ($p = 0; $p <= 13; $p ++) {
-    
+
    if (in_array($p, $aReceitasIgnorar)) {
       continue;
     }
@@ -332,12 +332,12 @@ for ($i = 0; $i < $iTotalLinhasReceita; $i ++) {
     $oParametro = $rec[$p]->parametro;
     $oReceitaCalcular = clone $oReceita;
     foreach ($oParametro->contas as $oEstrutural) {
-      
+
       $oVerificacao  = $rec[$p]->match($oEstrutural ,$oParametro->orcamento, $oReceitaCalcular, 1);
-      if ($oVerificacao->match) {  
-        
+      if ($oVerificacao->match) {
+
         if ($oVerificacao->exclusao) {
-          
+
           $oReceitaCalcular->saldo_inicial              *=-1;
           $oReceitaCalcular->saldo_inicial_prevadic     *=-1;
           $oReceitaCalcular->saldo_arrecadado_acumulado *=-1;
@@ -387,21 +387,21 @@ $receitas_nobimes [6] = $receitas_nobimes [7] + $receitas_nobimes [8] + $receita
 //------------------------------------------------- Despesas -----------------------------------------
 
 ///db_criatabela($result_despesa);exit;
-$iTotalLinhasDespesa = pg_num_rows($result_despesa); 
+$iTotalLinhasDespesa = pg_num_rows($result_despesa);
 for($i = 0; $i < $iTotalLinhasDespesa; $i ++) {
-  
+
   $oDespesa = db_utils::fieldsmemory($result_despesa, $i);
-  
+
   for($linha = 1; $linha <= 6; $linha ++) {
-    
+
     $oParametro  = $desp[$linha]["linha"]->parametro;
     foreach ($oParametro->contas as $oConta) {
-      
+
       $oVerificacao    = $desp[$linha]["linha"]->match($oConta,$oParametro->orcamento,$oDespesa, 2);
-      if ($oVerificacao->match) {    
+      if ($oVerificacao->match) {
 
         if ($oVerificacao->exclusao) {
-          
+
           $oDespesa->dot_ini;
           $oDespesa->suplementado_acumulado *= -1;
           $oDespesa->reduzido_acumulado     *= -1;
@@ -409,30 +409,30 @@ for($i = 0; $i < $iTotalLinhasDespesa; $i ++) {
           $oDespesa->anulado_acumulado      *= -1;
           $oDespesa->liquidado_acumulado    *= -1;
         }
-        
+
         $desp[$linha]['previni']         += $oDespesa->dot_ini;
-        $desp[$linha]['prevatu']         += $oDespesa->dot_ini + 
+        $desp[$linha]['prevatu']         += $oDespesa->dot_ini +
                                             ($oDespesa->suplementado_acumulado - $oDespesa->reduzido_acumulado);
-        $desp[$linha]['rpNaoProcessado'] += abs(round($oDespesa->empenhado_acumulado - 
-                                                      $oDespesa->anulado_acumulado - 
+        $desp[$linha]['rpNaoProcessado'] += abs(round($oDespesa->empenhado_acumulado -
+                                                      $oDespesa->anulado_acumulado -
                                                       $oDespesa->liquidado_acumulado,2)
                                                 );
         $desp[$linha]['bimestre']        += $oDespesa->liquidado_acumulado;
-          
-      } 
-    } 
+
+      }
+    }
   }
-  
+
   for($linha = 1; $linha <= 4; $linha ++) {
-    
+
     $oParametro  = $desp_p[$linha]["linha"]->parametro;
     foreach ($oParametro->contas as $oConta) {
-      
+
       $oVerificacao    = $desp_p[$linha]["linha"]->match($oConta,$oParametro->orcamento,$oDespesa, 2);
-      if ($oVerificacao->match) {    
+      if ($oVerificacao->match) {
 
         if ($oVerificacao->exclusao) {
-          
+
           $oDespesa->dot_ini;
           $oDespesa->suplementado_acumulado *= -1;
           $oDespesa->reduzido_acumulado     *= -1;
@@ -440,19 +440,19 @@ for($i = 0; $i < $iTotalLinhasDespesa; $i ++) {
           $oDespesa->anulado_acumulado      *= -1;
           $oDespesa->liquidado_acumulado    *= -1;
         }
-        
+
         $desp_p[$linha]['previni']         += $oDespesa->dot_ini;
-        $desp_p[$linha]['prevatu']         += $oDespesa->dot_ini + 
+        $desp_p[$linha]['prevatu']         += $oDespesa->dot_ini +
                                             ($oDespesa->suplementado_acumulado - $oDespesa->reduzido_acumulado);
-        $desp_p[$linha]['rpNaoProcessado'] += abs(round($oDespesa->empenhado_acumulado - 
-                                                      $oDespesa->anulado_acumulado - 
+        $desp_p[$linha]['rpNaoProcessado'] += abs(round($oDespesa->empenhado_acumulado -
+                                                      $oDespesa->anulado_acumulado -
                                                       $oDespesa->liquidado_acumulado,2)
                                                 );
         $desp_p[$linha]['bimestre']        += $oDespesa->liquidado_acumulado;
-          
-      } 
+
+      }
     }
-    
+
   }
 }
 
@@ -468,33 +468,33 @@ for($i = 0; $i < pg_numrows($result_despesa); $i ++) {
   for ($iLinha = 1; $iLinha <= 7; $iLinha++) {
     $oParametro  = $m_desp_subfunc[$iLinha]["estrut"]->parametro;
     foreach ($oParametro->contas as $oConta) {
-      
+
       $oVerificacao    = $m_desp_subfunc[$iLinha]["estrut"]->match($oConta,$oParametro->orcamento,$oDespesa, 2);
-      if ($oVerificacao->match) {    
+      if ($oVerificacao->match) {
 
         if ($oVerificacao->exclusao) {
-          
+
           $oDespesa->dot_ini;
           $oDespesa->suplementado_acumulado *= -1;
           $oDespesa->reduzido_acumulado     *= -1;
           $oDespesa->empenhado_acumulado    *= -1;
        }
-       
+
        $m_desp_subfunc[$iLinha]['inicial']    += $oDespesa->dot_ini;
-       $m_desp_subfunc[$iLinha]['atualizada'] += $oDespesa->dot_ini + 
+       $m_desp_subfunc[$iLinha]['atualizada'] += $oDespesa->dot_ini +
                                                 ($oDespesa->suplementado_acumulado - $oDespesa->reduzido_acumulado);
-       $m_desp_subfunc[$iLinha]['restos']     += abs(round($oDespesa->empenhado_acumulado - 
-                                                      $oDespesa->anulado_acumulado - 
+       $m_desp_subfunc[$iLinha]['restos']     += abs(round($oDespesa->empenhado_acumulado -
+                                                      $oDespesa->anulado_acumulado -
                                                         $oDespesa->liquidado_acumulado,2)
                                                   );
        $m_desp_subfunc[$iLinha]['bimestre']    += $oDespesa->liquidado_acumulado;
-       
+
       }
     }
   }
 }
 for ($iLinha = 1; $iLinha <= 7; $iLinha++) {
-  
+
   $total_ini  += $m_desp_subfunc[$iLinha]['inicial'];
   $total_atu  += $m_desp_subfunc[$iLinha]['atualizada'];
   $total_acum += $m_desp_subfunc[$iLinha]['bimestre'];
@@ -507,7 +507,7 @@ $n2 = 10;
 
 // end se incluido em outro arquivo
 
-$resultinst = pg_exec("select munic from db_config where codigo in ({$sListaInstituicoes}) ");
+$resultinst = db_query("select munic from db_config where codigo in ({$sListaInstituicoes}) ");
 $descr_inst = '';
 db_fieldsmemory($resultinst, 0);
 $descr_inst = $munic;
@@ -537,7 +537,7 @@ if ($lGeraColunaRps) {
   $iTamanhoFonte = 5;
 } else {
   $iLarguraColunaValor = 20;
-  $iNumcols = 2;  
+  $iNumcols = 2;
   $iTamanhoFonte = 6;
 }
 
@@ -561,7 +561,7 @@ $pdf->cell(20, $alt, "% (b/a) *100", "LTB", 1, "C", 0);
 $alt = 3;
 
 for($i = 0; $i <= 13; $i ++) {
-  
+
   $pdf->cell($iLarguraColunaDescr, $alt, $recita1 [$i], "", 0, "L", 0);
   $pdf->cell(20, $alt, db_formatar($receitas_previni [$i], 'f'), "L", 0, "R", 0);
   $pdf->cell(20, $alt, db_formatar($receitas_prevatu [$i], 'f'), "L", 0, "R", 0);
@@ -791,14 +791,14 @@ $aDescricao['F4'] = "((f+g)/(f+g)g)*100";
 cabecalhoDespesa($pdf,$aDescricao,$iLarguraColunaDescr,$iLarguraColunaValor,$alt,$iNumcols,$lGeraColunaRps);
 
 if ($desp_p[2]['previni'] == 0 && $desp_p[2]['prevatu'] == 0 && $desp_p[2]['bimestre'] == 0) {
-  
+
   $desp_p[2]['previni']  = $receitas_previni[6];
   $desp_p[2]['prevatu']  = $receitas_prevatu[6];
   $desp_p[2]['bimestre'] = $receitas_atebime[6];
 }
 
 if ($desp_p[3]['previni'] == 0 && $desp_p[3]['prevatu'] == 0 && $desp_p[3]['bimestre'] == 0) {
-  
+
   $desp_p[3]['previni']  = $receitas_previni[11];
   $desp_p[3]['prevatu']  = $receitas_prevatu[11];
   $desp_p[3]['bimestre'] = $receitas_atebime[11];
@@ -810,10 +810,10 @@ $pdf->cell($iLarguraColunaValor, $alt, db_formatar($total_IV_atu, 'f'), "L", 0, 
 $pdf->cell($iLarguraColunaValor, $alt, db_formatar($total_IV_atebim, 'f'), "L", 0, "R", 0);
 $total_IV_atebimfinal = $total_IV_atebim;
 if ($lGeraColunaRps) {
-	
+
   $pdf->cell($iLarguraColunaValor, $alt, db_formatar($total_IV_rp, 'f'), "L", 0, "R", 0);
 //  $pdf->cell($iLarguraColunaValor, $alt, "sdfsddsf", "L", 0, "R", 0);
-  
+
   @$nTotalPercIV = ( ( ( $total_IV_atebim  ) * 100 ) / $total_IV_atebim);
 }else{
   @$nTotalPercIV = ($total_IV_atebim * 100) / $total_IV_atebim;
@@ -833,7 +833,7 @@ if ($lGeraColunaRps) {
 }else{
   @$nPercInatPen = ( ( $desp_p[1]['bimestre'] * 100 ) / $total_IV_atebim );
 }
-  
+
 $pdf->cell($iLarguraColunaValor, $alt, db_formatar($nPercInatPen, 'f'), 'L', 1, "R", 0);
 
 // caso a linha abaixo seja zerada,  o manual diz que os valores devem ser pegos do quadro da receita
@@ -845,7 +845,7 @@ $aTotalDespCustRecSaude['bimestre']        = ( $desp_p[2]['bimestre']        + $
 $aTotalDespCustRecSaude['rpNaoProcessado'] = ( $desp_p[2]['rpNaoProcessado'] + $desp_p[3]['rpNaoProcessado'] + $desp_p[4]['rpNaoProcessado'] );
 
 $iDespCusteadaOutrosRecursosDotIni  = $desp_p[2]['previni']  + $desp_p[4]['previni'];
-$iDespCusteadaOutrosRecursosDotAt   = $desp_p[2]['prevatu']  + $desp_p[4]['prevatu']; 
+$iDespCusteadaOutrosRecursosDotAt   = $desp_p[2]['prevatu']  + $desp_p[4]['prevatu'];
 $iDespCusteadaOutrosRecursosAteSem  = $desp_p[2]['bimestre'] + $desp_p[4]['bimestre'];
 $iDespCusteadaOutrosRecursosNaoProc = $desp_p[2]['rpNaoProcessado'] + $desp_p[3]['rpNaoProcessado'] + $desp_p[4]['rpNaoProcessado'];
 
@@ -858,14 +858,14 @@ $pdf->cell($iLarguraColunaValor, $alt, db_formatar($aTotalDespCustRecSaude['bime
 //$pdf->cell($iLarguraColunaValor, $alt, db_formatar($iDespCusteadaOutrosRecursosAteSem,'f'), "L", 0, "R", 0);
 $descustoutrecsau = $aTotalDespCustRecSaude['bimestre'];
 if ($lGeraColunaRps) {
-  
+
   //$pdf->cell($iLarguraColunaValor, $alt, db_formatar($aTotalDespCustRecSaude['rpNaoProcessado'], 'f'), "L", 0, "R", 0); // se for semestre
-  $pdf->cell($iLarguraColunaValor, $alt, db_formatar($iDespCusteadaOutrosRecursosNaoProc, 'f'), "L", 0, "R", 0); 
-  
+  $pdf->cell($iLarguraColunaValor, $alt, db_formatar($iDespCusteadaOutrosRecursosNaoProc, 'f'), "L", 0, "R", 0);
+
   @$nPercDespCustRecSaude = ( ( ( $aTotalDespCustRecSaude['bimestre'] + $aTotalDespCustRecSaude['rpNaoProcessado'] ) * 100 ) / $total_IV_atebim );
-  
+
 }else{
-  
+
   @$nPercDespCustRecSaude = ( ( $aTotalDespCustRecSaude['bimestre'] * 100 ) / $total_IV_atebim );
 }
 $pdf->cell($iLarguraColunaValor, $alt, db_formatar($nPercDespCustRecSaude, 'f'), 'L', 1, "R", 0);           // Total a Verificar
@@ -996,7 +996,7 @@ if ($lGeraColunaRps) {
   $total_acum += $total_rp;
 }
 for($i = 1; $i <= 7; $i ++) {
-  
+
   $pdf->cell($iLarguraColunaDescr, $alt, $subfuncao [$i], "", 0, "L", 0);
   $pdf->cell($iLarguraColunaValor, $alt, db_formatar($m_desp_subfunc[$i]["inicial"], 'f'),   "L", 0, "R", 0);
   $pdf->cell($iLarguraColunaValor, $alt, db_formatar($m_desp_subfunc[$i]["atualizada"], 'f'),   "L", 0, "R", 0);
@@ -1025,13 +1025,13 @@ $pdf->cell($iLarguraColunaValor, $alt, db_formatar($total_acum, 'f'), "TB", 0, "
 
 if (! isset($arqinclude)) {
   $oRelatorio = new relatorioContabil($iCodigoRelatorio, false);
-  $oRelatorio->getNotaExplicativa(&$pdf, $iCodigoPeriodo);
-  
+  $oRelatorio->getNotaExplicativa($pdf, $iCodigoPeriodo);
+
   //assinaturas
   $pdf->Ln(15);
-  
-  assinaturas(&$pdf, &$classinatura, 'LRF');
-  
+
+  assinaturas($pdf, $classinatura, 'LRF');
+
   $pdf->Output();
 }
 
@@ -1061,7 +1061,7 @@ function cabecalhoDespesa($pdf,$aDescricao,$iLarguraColunaDescr,$iLarguraColunaV
     $pdf->cell($iLarguraColunaValor,$alt,$aDescricao["D3"],"L",0,"C",0); // D3
     $pdf->cell($iLarguraColunaValor,$alt,$aDescricao["E3"],"L",0,"C",0); // E3
     $pdf->cell($iLarguraColunaValor,$alt,$aDescricao["F3"],"L",1,"C",0); // F3
-    
+
     $pdf->cell($iLarguraColunaDescr,$alt,$aDescricao["A4"],"", 0,"C",0); // A4
     $pdf->cell($iLarguraColunaValor,$alt,$aDescricao["B4"],"L",0,"C",0); // B4
     $pdf->cell($iLarguraColunaValor,$alt,$aDescricao["C4"],"L",0,"C",0); // C4
@@ -1070,7 +1070,7 @@ function cabecalhoDespesa($pdf,$aDescricao,$iLarguraColunaDescr,$iLarguraColunaV
     $pdf->cell($iLarguraColunaValor,$alt,$aDescricao["F4"],"L",1,"C",0); // F4
 
   }
-  
+
   $pdf->cell($iLarguraTotal,0,"","T","1","C",0);
 
 }

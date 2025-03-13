@@ -1,28 +1,28 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 
@@ -32,7 +32,7 @@ $clorcprogramahorizontetemp->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("nomeinst");
 
-require_once("classes/db_orcparametro_classe.php");
+require_once(modification("classes/db_orcparametro_classe.php"));
 $clorcparametro = new cl_orcparametro;
 
 if ($db_opcao == 1 && empty($o54_programa) || (isset($o50_programa)) && $o50_programa == '') {
@@ -46,7 +46,7 @@ if ($db_opcao == 1 && empty($o54_programa) || (isset($o50_programa)) && $o50_pro
     $clorcparametro->o50_programa = $o50_programa + 1;
     $clorcparametro->o50_anousu = db_getsession("DB_anousu");
     $clorcparametro->alterar(db_getsession("DB_anousu"));
-  } 
+  }
 }
 
 ?>
@@ -112,8 +112,8 @@ db_input('o54_descr', 65, $Io54_descr, true, 'text', $db_opcao, "")
 				       <?=@$Lo54_tipoprograma ?>
 				    </td>
 				    <td>
-					   <?
-$aTipoPrograma = array(1 => "Programas Finalísticos", 2 => "Programas de Apoio as Políticas e Áreas Especiais",
+					   <?php
+$aTipoPrograma = array(0=>'Selecione', 1 => "Programas Finalísticos", 2 => "Programas de Apoio as Políticas e Áreas Especiais",
     3 => "Programas Temáticos", 4 => "Programas de Gestão, Manutenção e Serviços ao Estado");
 
 db_select("o54_tipoprograma", $aTipoPrograma, true, $db_opcao);

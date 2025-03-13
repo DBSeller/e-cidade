@@ -1,40 +1,40 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_libdicionario.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_clabens_classe.php");
-require_once("classes/db_cfpatri_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_libdicionario.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_clabens_classe.php"));
+require_once(modification("classes/db_cfpatri_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 $oGet = db_utils::postMemory($_GET);
 $iAnoSessao = db_getsession("DB_anousu");
@@ -43,7 +43,6 @@ $iAnoSessao = db_getsession("DB_anousu");
 <head>
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<meta http-equiv="Expires" CONTENT="0">
 	<script type="text/javascript" src="scripts/scripts.js"></script>
 	<script type="text/javascript" src="scripts/strings.js"></script>
 	<script type="text/javascript" src="scripts/prototype.js"></script>
@@ -63,7 +62,7 @@ $iAnoSessao = db_getsession("DB_anousu");
 				<td>Ano:</td>
 				<td>
 					<?php
-					  db_input("iAnoSessao", 10, false, true, "text", 3); 
+					  db_input("iAnoSessao", 10, false, true, "text", 3);
 					?>
 				</td>
 			</tr>
@@ -77,7 +76,7 @@ $iAnoSessao = db_getsession("DB_anousu");
                                        1 => "Automático",
                                        2 => "Manual"
                                        );
-          db_select("tipoprocessamento", $aTiposProcessamento, true, 1, "onchange='js_getProximoMesPorTipo()'");                                        
+          db_select("tipoprocessamento", $aTiposProcessamento, true, 1, "onchange='js_getProximoMesPorTipo()'");
 			  ?>
 			  </td>
 			</tr>
@@ -93,7 +92,7 @@ $iAnoSessao = db_getsession("DB_anousu");
 	<input type="button" name="btnProcessa" id="btnProcessa" value="Desprocessar">
 </div>
 
-<?php 
+<?php
   db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
 ?>
 </body>
@@ -102,7 +101,7 @@ $iAnoSessao = db_getsession("DB_anousu");
 <script>
 
 	var sUrlRPC = "pat4_processamentodepreciacao.RPC.php";
-  var aMeses = new Array();
+  var aMeses = [];
   aMeses[0]  = "Janeiro";
   aMeses[1]  = "Fevereiro";
   aMeses[2]  = "Março";
@@ -115,28 +114,46 @@ $iAnoSessao = db_getsession("DB_anousu");
   aMeses[9]  = "Outubro";
   aMeses[10] = "Novembro";
   aMeses[11] = "Dezembro";
-  var oOptionSelecione = new Option("Selecione", 0);
-  $("iMes").appendChild(oOptionSelecione);
-  aMeses.each(function (sMes, iMes) {
 
-    var iMesCorrente  = iMes + 1 ;
-    var oOption       = new Option(sMes, iMesCorrente);
-    oOption.disabled  = true;
-    oOption.value     = iMesCorrente;
-    $("iMes").appendChild(oOption);
-  
-  });
+  /**
+   * Função utilizada para criar o combobox com os meses disponíveis.
+   */
+  function criarComboBoxMeses() {
+
+    var oComboMes = $('iMes');
+    oComboMes.options.length = 0;
+
+    var oOptionSelecione = new Option("Selecione", 0);
+    oComboMes.appendChild(oOptionSelecione);
+    aMeses.each(
+      function (sMes, iMes) {
+
+        var iMesCorrente = iMes + 1;
+        var oOption      = new Option(sMes, iMesCorrente);
+        oOption.disabled = true;
+        oOption.value    = iMesCorrente;
+        oComboMes.appendChild(oOption);
+      }
+    );
+  }
+  criarComboBoxMeses();
+
 	/*
 	 * Função que será executada para buscar os meses que o usuário pode depreciar
 	 */
 	function js_getProximoMesPorTipo() {
 
-	  var oParam  							= new Object();
+    if ($F('tipoprocessamento') == "0") {
+      criarComboBoxMeses();
+      return;
+    }
+
+	  var oParam  							= {};
 	  oParam.exec 							= "getMesesDepreciadosParaCancelamento";
 	  oParam.iTipoProcessamento = $F('tipoprocessamento');
 
 	  js_divCarregando(_M('patrimonial.patrimonio.pat4_desprocessadepreciacao001.carregando_meses'), "msgBox");
-	  
+
 		var oAjax = new Ajax.Request(sUrlRPC,
                                 {method: 'post',
                                  asynchronous: false,
@@ -145,13 +162,14 @@ $iAnoSessao = db_getsession("DB_anousu");
                                 }
                                );
 	}
+
 	/**
 	 * Preenche o combobox com os meses que o usuário pode depreciar.
 	 */
 	function js_preencheMesesDepreciados(Ajax) {
 
 	  js_removeObj("msgBox");
-	  var oRetorno = eval("("+Ajax.responseText+")");
+	  var oRetorno = JSON.parse(Ajax.responseText);
 	  /*
 	   * Verifica se o mes disponível é 0. Caso seja as depreciações já foram realizadas para o ano.
 	   */
@@ -170,27 +188,27 @@ $iAnoSessao = db_getsession("DB_anousu");
 	  var aMeses           = $('iMes').options;
 	  var iTotalMeses      = aMeses.length;
 	  for (var iMes = 0; iMes < iTotalMeses; iMes++) {
-      
-      oOption = aMeses[iMes]; 
+
+      oOption = aMeses[iMes];
 			if (oOption.value != oRetorno.iMesDisponivel && oOption.value != 0) {
 				oOption.disabled = true;
 			} else {
-			
+
 				oOption.selected = true;
 				oOption.disabled = false;
 			}
-		};
+		}
 	}
 
 	/**
 	 *  Valida os dados do formulário e o tipo de processamento que o usuário está acessando.
-   *  Direciona o programa para a função JS responsável.  
+   *  Direciona o programa para a função JS responsável.
 	 */
   $("btnProcessa").observe('click', function() {
 
-    var iMes = $F("iMes"); 
+    var iMes = $F("iMes");
     if ($F('tipoprocessamento') == 0) {
-      
+
       alert(_M('patrimonial.patrimonio.pat4_desprocessadepreciacao001.informe_tipo'));
       return false;
     }
@@ -199,14 +217,14 @@ $iAnoSessao = db_getsession("DB_anousu");
 			alert(_M('patrimonial.patrimonio.pat4_desprocessadepreciacao001.informe_mes'));
 			return false;
 		}
-	  iMes                   = new Number(iMes); 
+	  iMes                   = new Number(iMes);
 		var sTipoProcessamento = $('tipoprocessamento').options[$('tipoprocessamento').selectedIndex].innerHTML;
 		var sMsgCancelamento   = 'Confirma o cancelamento do cálculo da depreciação do mês '+(iMes)+" - "+aMeses[iMes - 1];
-		    sMsgCancelamento  += ' do tipo '+$F('tipoprocessamento')+" - "+sTipoProcessamento+"?"; 
+		    sMsgCancelamento  += ' do tipo '+$F('tipoprocessamento')+" - "+sTipoProcessamento+"?";
     if (!confirm(sMsgCancelamento)) {
       return false;
     }
-    
+
     js_divCarregando(_M('patrimonial.patrimonio.pat4_desprocessadepreciacao001.cancelando_processamento'), "msgBox");
     var oParam                = new Object();
     oParam.exec               = "cancelarProcessamento";
@@ -219,24 +237,24 @@ $iAnoSessao = db_getsession("DB_anousu");
                                  onComplete: js_retornoCancelaProcessamento
                                 }
                                );
-    
+
   });
-  
-  
+
+
   function js_retornoCancelaProcessamento(oAjax) {
-    
+
     js_removeObj('msgBox');
-    var oRetorno = eval("("+oAjax.responseText+")");
+    var oRetorno = JSON.parse(oAjax.responseText);
     if (oRetorno.status == 2) {
-      
+
       alert(oRetorno.message.urlDecode());
     } else {
-    
+
       alert(_M('patrimonial.patrimonio.pat4_desprocessadepreciacao001.cancelada_com_sucesso'));
       js_getProximoMesPorTipo();
     }
   }
-  
+
 
 </script>
 <script>

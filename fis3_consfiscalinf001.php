@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
 $clrotulo = new rotulocampo;
 $clrotulo->label("z01_nome");
 $clrotulo->label("y30_codnoti");
@@ -48,7 +48,7 @@ function js_consulta(){
     alert('Informe uma  Notificação!!Campo vazio!!');
     document.form1.y30_codnoti.focus();
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe','fis3_consfiscalinf002.php?codauto='+document.form1.y30_codnoti.value,'Consulta Notificação',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','fis3_consfiscalinf002.php?codauto='+document.form1.y30_codnoti.value,'Consulta Notificação',true);
   }
 }
 </script>
@@ -101,10 +101,10 @@ db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession(
 function js_noti(mostra){
   var noti=document.form1.y30_codnoti.value;
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_noti','func_fiscalalt.php?funcao_js=parent.js_mostranoti|y30_codnoti|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_noti','func_fiscalalt.php?funcao_js=parent.js_mostranoti|y30_codnoti|z01_nome','Pesquisa',true);
   }else{
     if(noti!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe_noti','func_fiscalalt.php?pesquisa_chave='+noti+'&funcao_js=parent.js_mostranoti1','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_noti','func_fiscalalt.php?pesquisa_chave='+noti+'&funcao_js=parent.js_mostranoti1','Pesquisa',false);
     }else{
       document.form1.z01_nome.value="";
       document.form1.submit();  

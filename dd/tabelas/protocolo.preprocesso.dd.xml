@@ -1,0 +1,312 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010464' name='protocolo.preprocesso' description="Tabela que armazenará as informações de ouvidoria a serem lançadas no processo." prefix="p106" label="Pré Processo" type="0">
+  <fields>
+    <field codigo="1010655" 
+           campo_api='' 
+           name="p106_sequencial" 
+           conteudo="int4" 
+           description="Sequencial da tabela." 
+           inivalue="0" 
+           label="Sequencial" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Sequencial" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='protocolo.preprocesso_p106_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1010656" 
+           campo_api='' 
+           name="p106_data" 
+           conteudo="date" 
+           description="Data da ouvidoria." 
+           inivalue="null" 
+           label="Data" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Data" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010657" 
+           campo_api='' 
+           name="p106_usuario" 
+           conteudo="int4" 
+           description="Usuário responsável pelo lançamento da ouvidoria." 
+           inivalue="0" 
+           label="Usuário" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Usuário" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010658" 
+           campo_api='' 
+           name="p106_cgm" 
+           conteudo="int4" 
+           description="CGM titular da ouvidoria." 
+           inivalue="0" 
+           label="CGM" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="CGM" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010659" 
+           campo_api='' 
+           name="p106_requerente" 
+           conteudo="varchar(80)" 
+           description="Descrição do requerente." 
+           inivalue="" 
+           label="Requerente" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Requerente" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010660" 
+           campo_api='' 
+           name="p106_departamento" 
+           conteudo="int4" 
+           description="Departamento inicial da ouvidoria." 
+           inivalue="0" 
+           label="Departamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Departamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010661" 
+           campo_api='' 
+           name="p106_observacao" 
+           conteudo="text" 
+           description="Observação da ouvidoria." 
+           inivalue="" 
+           label="Observação" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Observação" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010662" 
+           campo_api='' 
+           name="p106_despacho" 
+           conteudo="text" 
+           description="Informações do despacho." 
+           inivalue="" 
+           label="Despacho" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Despacho" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010663" 
+           campo_api='' 
+           name="p106_hora" 
+           conteudo="varchar(5)" 
+           description="Hora do lançamento da ouvidoria." 
+           inivalue="" 
+           label="Hora" 
+           size="5" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Hora" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010664" 
+           campo_api='' 
+           name="p106_interno" 
+           conteudo="bool" 
+           description="Controla se é interna ou não." 
+           inivalue="false" 
+           label="Interno" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Interno" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010665" 
+           campo_api='' 
+           name="p106_publico" 
+           conteudo="bool" 
+           description="Controla se é um despacho público." 
+           inivalue="false" 
+           label="Despacho Público" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Despacho Público" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010666" 
+           campo_api='' 
+           name="p106_instituicao" 
+           conteudo="int4" 
+           description="Instituição responsável pela ouvidoria." 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010667" 
+           campo_api='' 
+           name="p106_ano" 
+           conteudo="int4" 
+           description="Ano da ouvidoria." 
+           inivalue="0" 
+           label="Ano" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Ano" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010668" 
+           campo_api='' 
+           name="p106_metadados" 
+           conteudo="text" 
+           description="Metadados vindos da ouvidoria externa." 
+           inivalue="" 
+           label="Metadados" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Metadados" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010693" 
+           campo_api='' 
+           name="p106_tipoprocesso" 
+           conteudo="int4" 
+           description="Tipo de processo referente a ouvidoria aberta." 
+           inivalue="0" 
+           label="Tipo de Processo" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="p106_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="p106_cgm" reference="z01_numcgm" /> 
+    </foreignkey>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="p106_instituicao" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="db_usuarios" inner='t'>
+      <fieldfk name="p106_usuario" reference="id_usuario" /> 
+    </foreignkey>
+    <foreignkey reference="db_depart" inner='t'>
+      <fieldfk name="p106_departamento" reference="coddepto" /> 
+    </foreignkey>
+    <foreignkey reference="tipoproc" inner='t'>
+      <fieldfk name="p106_tipoprocesso" reference="p51_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

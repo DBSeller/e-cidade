@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $escola = db_getsession("DB_coddepto");
 function db_criatermometro_edu($dbnametermo='termometro',$dbtexto='Concluído',$dbcor='blue',$dbborda=1,$dbacao='Aguarde Processando...'){
@@ -123,7 +123,7 @@ if(isset($ano_opcao)){
    <center>
    <fieldset style="width:95%"><legend><b>Importação de informações do CENSO ESCOLAR <?=$titulofieldset?></b></legend>
     <?
-    $result = pg_query("SELECT ed18_c_codigoinep FROM escola WHERE ed18_i_codigo = $escola");
+    $result = db_query("SELECT ed18_c_codigoinep FROM escola WHERE ed18_i_codigo = $escola");
     $codigoinep_banco = pg_result($result,0,0);
     ?>
     <table border="0" align="left">
@@ -268,7 +268,7 @@ function js_anoopcao(valor){
 </script>
 <?
 $sql_nomes = "SELECT ed47_i_codigo as cod1,trim(ed47_v_nome) as nome1 FROM aluno WHERE trim(ed47_v_nome) like '%  %'";
-$result_nomes = pg_query($sql_nomes);
+$result_nomes = db_query($sql_nomes);
 $linhas_nomes = pg_num_rows($result_nomes);
 for($t=0;$t<$linhas_nomes;$t++){
  db_fieldsmemory($result_nomes,$t);
@@ -282,7 +282,7 @@ for($t=0;$t<$linhas_nomes;$t++){
   }
  }
  $update_nome = "UPDATE ALUNO SET ed47_v_nome = '$novo_nome' WHERE ed47_i_codigo = $cod1";
- $result_nome = pg_query($update_nome);
+ $result_nome = db_query($update_nome);
 }
 if(isset($processar)){
   $tmp_name = $_FILES["arquivo_censo"]["tmp_name"];
@@ -342,7 +342,7 @@ if(isset($processar)){
    $arquivo_logerro = "tmp/censo_impMatInep_".$escola."_".db_getsession("DB_id_usuario")."_".date("dmY")."_".date("His")."_log.txt";
    $ponteiro_log = fopen($arquivo_logerro,"w");
    fwrite($ponteiro_log,"Registros não atualizados na importação do Censo Escolar:\n\n");
-   pg_exec("begin");
+   db_query("begin");
    $ponteiro4 = fopen($caminho_arquivo,"r");
    $erro_naoencontrado = false;
    while(!feof($ponteiro4)){
@@ -368,7 +368,7 @@ if(isset($processar)){
               WHERE to_ascii(translate(ed47_v_nome,'´`',''),'LATIN1') = '$nome_censo2'
               ORDER BY vinculo_escola DESC
               ";
-    $result11 = pg_query($sql11);
+    $result11 = db_query($sql11);
     $linhas11 = pg_num_rows($result11);
     if($linhas11==0){
       fwrite($ponteiro_log,"\n[Matr.INEP: $matcenso Turma INEP: $turmacenso Ano: $anocenso] $nome_censo2 : Nome cadastrado no censo não existe no sistema.");
@@ -379,7 +379,7 @@ if(isset($processar)){
                  ed47_c_codigoinep = '$codigoinepaluno' 
                 WHERE ed47_i_codigo = $codigoaluno 
                ";
-      $result21 = pg_query($sql21);
+      $result21 = db_query($sql21);
       if($matcenso!=""){
        $linhas21 = pg_num_rows($result21);
         
@@ -389,7 +389,7 @@ if(isset($processar)){
                  AND ed280_i_ano = $anocenso
                  AND ed280_i_aluno = $codigoaluno 
                 ";
-       $result22 = pg_query($sql22);
+       $result22 = db_query($sql22);
        $linhas22 = pg_num_rows($result22);
        if($linhas22==0){
         $sql4 = "INSERT INTO alunomatcenso (ed280_i_codigo,
@@ -405,7 +405,7 @@ if(isset($processar)){
                                             $anocenso,
                                             $matcenso
                                            )";
-        $result4 = pg_query($sql4);
+        $result4 = db_query($sql4);
         if(!$result4){
          die("ERRO ALUNOMATCENSO[1]: ".$sql4."<br><br>");
         }           
@@ -429,7 +429,7 @@ if(isset($processar)){
     clearTimeout(varTempo);
     document.form1.recomecar.style.visibility = "visible";
    </script><?
-   pg_exec("commit");
+   db_query("commit");
    unlink($caminho_arquivo);
    db_msgbox("Importação realizada com sucesso!");
   }

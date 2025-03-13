@@ -1,62 +1,62 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: licitação
 //CLASSE DA ENTIDADE pcorcamitemlic
-class cl_pcorcamitemlic { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $pc26_orcamitem = 0; 
-   var $pc26_liclicitem = 0; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_pcorcamitemlic {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $pc26_orcamitem = 0;
+   var $pc26_liclicitem = 0;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 pc26_orcamitem = int4 = Código sequencial do item no orçamento 
-                 pc26_liclicitem = int8 = Cod. Sequencial 
+                 pc26_orcamitem = int4 = Código sequencial do item no orçamento
+                 pc26_liclicitem = int8 = Cod. Sequencial
                  ";
-   //funcao construtor da classe 
-   function cl_pcorcamitemlic() { 
+   //funcao construtor da classe
+   function cl_pcorcamitemlic() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("pcorcamitemlic"); 
+     $this->rotulo = new rotulo("pcorcamitemlic");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -73,9 +73,9 @@ class cl_pcorcamitemlic {
      }
    }
    // funcao para inclusao
-   function incluir (){ 
+   function incluir (){
       $this->atualizacampos();
-     if($this->pc26_orcamitem == null ){ 
+     if($this->pc26_orcamitem == null ){
        $this->erro_sql = " Campo Código sequencial do item no orçamento nao Informado.";
        $this->erro_campo = "pc26_orcamitem";
        $this->erro_banco = "";
@@ -84,7 +84,7 @@ class cl_pcorcamitemlic {
        $this->erro_status = "0";
        return false;
      }
-     if($this->pc26_liclicitem == null ){ 
+     if($this->pc26_liclicitem == null ){
        $this->erro_sql = " Campo Cod. Sequencial nao Informado.";
        $this->erro_campo = "pc26_liclicitem";
        $this->erro_banco = "";
@@ -94,15 +94,15 @@ class cl_pcorcamitemlic {
        return false;
      }
      $sql = "insert into pcorcamitemlic(
-                                       pc26_orcamitem 
-                                      ,pc26_liclicitem 
+                                       pc26_orcamitem
+                                      ,pc26_liclicitem
                        )
                 values (
-                                $this->pc26_orcamitem 
-                               ,$this->pc26_liclicitem 
+                                $this->pc26_orcamitem
+                               ,$this->pc26_liclicitem
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "pcorcamitemlic () nao Incluído. Inclusao Abortada.";
@@ -125,16 +125,16 @@ class cl_pcorcamitemlic {
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ( $oid=null ) { 
+   function alterar ( $oid=null ) {
       $this->atualizacampos();
      $sql = " update pcorcamitemlic set ";
      $virgula = "";
-     if(trim($this->pc26_orcamitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc26_orcamitem"])){ 
+     if(trim($this->pc26_orcamitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc26_orcamitem"])){
        $sql  .= $virgula." pc26_orcamitem = $this->pc26_orcamitem ";
        $virgula = ",";
-       if(trim($this->pc26_orcamitem) == null ){ 
+       if(trim($this->pc26_orcamitem) == null ){
          $this->erro_sql = " Campo Código sequencial do item no orçamento nao Informado.";
          $this->erro_campo = "pc26_orcamitem";
          $this->erro_banco = "";
@@ -144,10 +144,10 @@ class cl_pcorcamitemlic {
          return false;
        }
      }
-     if(trim($this->pc26_liclicitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc26_liclicitem"])){ 
+     if(trim($this->pc26_liclicitem)!="" || isset($GLOBALS["HTTP_POST_VARS"]["pc26_liclicitem"])){
        $sql  .= $virgula." pc26_liclicitem = $this->pc26_liclicitem ";
        $virgula = ",";
-       if(trim($this->pc26_liclicitem) == null ){ 
+       if(trim($this->pc26_liclicitem) == null ){
          $this->erro_sql = " Campo Cod. Sequencial nao Informado.";
          $this->erro_campo = "pc26_liclicitem";
          $this->erro_banco = "";
@@ -159,7 +159,7 @@ class cl_pcorcamitemlic {
      }
      $sql .= " where ";
 $sql .= "oid = '$oid'";     $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "pcorcamitemlic nao Alterado. Alteracao Abortada.\\n";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -184,11 +184,11 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ( $oid=null ,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ( $oid=null ,$dbwhere=null) {
      $sql = " delete from pcorcamitemlic
                     where ";
      $sql2 = "";
@@ -198,7 +198,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "pcorcamitemlic nao Excluído. Exclusão Abortada.\\n";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -223,11 +223,11 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -249,10 +249,10 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
       }
      return $result;
    }
-   function sql_query ( $oid = null,$campos="pcorcamitemlic.oid,*",$ordem=null,$dbwhere=""){ 
+   function sql_query ( $oid = null,$campos="pcorcamitemlic.oid,*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -278,7 +278,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -287,10 +287,10 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      }
      return $sql;
   }
-   function sql_query_file ( $oid = null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_file ( $oid = null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -308,7 +308,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -317,12 +317,12 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
      }
      return $sql;
   }
-  
+
   public function sql_query_fornecedores( $oid = null,$campos="*",$ordem=null,$dbwhere="") {
-    
+
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -332,11 +332,11 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
       $sql .= $campos;
     }
     $sql .= " from pcorcamitemlic ";
-    $sql .= "      inner join pcorcamitem  on pc22_orcamitem = pc26_orcamitem   ";
-    $sql .= "      inner join pcorcamforne on    pc21_codorc = pc22_codorc      ";
-    $sql .= "      inner join cgm          on     z01_numcgm = pc21_numcgm      ";
-    $sql .= "      inner join liclicitem   on     l21_codigo = pc26_liclicitem  ";
-    $sql .= "      inner join liclicita    on     l20_codigo = l21_codliclicita ";
+    $sql .= "      inner join pcorcamitem     on pc22_orcamitem = pc26_orcamitem   ";
+    $sql .= "      inner join pcorcamforne    on pc21_codorc    = pc22_codorc      ";
+    $sql .= "      inner join cgm             on z01_numcgm     = pc21_numcgm      ";
+    $sql .= "      inner join liclicitem      on l21_codigo     = pc26_liclicitem  ";
+    $sql .= "      inner join liclicita       on l20_codigo     = l21_codliclicita ";
     $sql2 = "";
     if($dbwhere==""){
       if( $oid != "" && $oid != null){
@@ -348,7 +348,7 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -357,5 +357,72 @@ $sql .= "oid = '$oid'";     $result = db_query($sql);
     }
     return $sql;
   }
+
+  public function sql_query_fornecedores_licitacon($sCampos, $sWhere) {
+
+    if (empty($sCampos)) {
+      $sCampos = " * ";
+    }
+
+    $sSql = "select {$sCampos} ";
+    $sSql .= " from pcorcamitemlic ";
+    $sSql .= "      inner join pcorcamitem                    on pc22_orcamitem = pc26_orcamitem   ";
+    $sSql .= "      inner join pcorcamforne                   on pc21_codorc    = pc22_codorc      ";
+    $sSql .= "      inner join cgm                            on z01_numcgm     = pc21_numcgm      ";
+    $sSql .= "      inner join liclicitem                     on l21_codigo     = pc26_liclicitem  ";
+    $sSql .= "      inner join liclicita                      on l20_codigo     = l21_codliclicita ";
+    $sSql .= "      left  join liclicitaencerramentolicitacon on l18_liclicita  = l20_codigo       ";
+
+    if (!empty($sWhere)) {
+      $sSql .= " where {$sWhere} ";
+    }
+    return $sSql;
+  }
+
+  public function sql_query_representantes_fornecedores_licitacon($sCampos, $sWhere) {
+
+    if (empty($sCampos)) {
+      $sCampos = " * ";
+    }
+
+    $sSql = "select {$sCampos} ";
+    $sSql .= " from pcorcamitemlic ";
+    $sSql .= "      inner join pcorcamitem                    on pc22_orcamitem = pc26_orcamitem   ";
+    $sSql .= "      inner join pcorcamforne                   on pc21_codorc    = pc22_codorc      ";
+    $sSql .= "       left join pcfornereprlegal               on pc81_cgmforn   = pc21_numcgm      ";
+    $sSql .= "      inner join cgm                            on z01_numcgm     = pc81_cgmresp     ";
+    $sSql .= "      inner join liclicitem                     on l21_codigo     = pc26_liclicitem  ";
+    $sSql .= "      inner join liclicita                      on l20_codigo     = l21_codliclicita ";
+    $sSql .= "      left  join liclicitaencerramentolicitacon on l18_liclicita  = l20_codigo       ";
+
+    if (!empty($sWhere)) {
+      $sSql .= " where {$sWhere} ";
+    }
+    return $sSql;
+  }
+
+  public function sql_query_fornecedor_valores($sCampos, $sWhere) {
+
+    if (empty($sCampos)) {
+      $sCampos = " * ";
+    }
+
+    $sSql = "select {$sCampos} ";
+    $sSql .= " from pcorcamitemlic ";
+    $sSql .= "      inner join pcorcamitem                    on pc22_orcamitem = pc26_orcamitem   ";
+    $sSql .= "      inner join pcorcamforne                   on pc21_codorc    = pc22_codorc      ";
+    $sSql .= "      inner join cgm                            on z01_numcgm     = pc21_numcgm      ";
+    $sSql .= "      inner join liclicitem                     on l21_codigo     = pc26_liclicitem  ";
+    $sSql .= "      inner join liclicita                      on l20_codigo     = l21_codliclicita ";
+    $sSql .= "      left  join pcorcamval                     on pcorcamval.pc23_orcamitem = pcorcamitem.pc22_orcamitem";
+    $sSql .= "                                               and pcorcamval.pc23_orcamforne = pcorcamforne.pc21_orcamforne ";
+    $sSql .= "      left  join pcorcamdescla                  on pcorcamdescla.pc32_orcamitem = pcorcamitem.pc22_orcamitem ";
+    $sSql .= "                                               and pcorcamdescla.pc32_orcamforne = pcorcamforne.pc21_orcamforne ";
+
+    if (!empty($sWhere)) {
+      $sSql .= " where {$sWhere} ";
+    }
+    return $sSql;
+  }
+
 }
-?>

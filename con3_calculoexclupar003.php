@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_editalrua_classe.php");
-include("classes/db_contrib_classe.php");
-include("classes/db_contricalc_classe.php");
-include("classes/db_arrecad_classe.php");
-include("classes/db_arreold_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_editalrua_classe.php"));
+include(modification("classes/db_contrib_classe.php"));
+include(modification("classes/db_contricalc_classe.php"));
+include(modification("classes/db_arrecad_classe.php"));
+include(modification("classes/db_arreold_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $cleditalrua = new cl_editalrua;
 $clcontrib = new cl_contrib;
 $clcontricalc = new cl_contricalc;
@@ -55,7 +55,7 @@ if(isset($confirmar)){
   $sqlerro=false;
    $result=$clcontricalc->sql_record($clcontricalc->sql_query(null, "d09_numpre",null,"d09_contri = $d02_contri and d09_matric = $j01_matric"));
    db_fieldsmemory($result,0); 
-   $result=pg_query("select arrecad.k00_numpre from arrecant inner join arrecad on arrecad.k00_numpre=arrecant.k00_numpre where arrecant.k00_numpre=$d09_numpre");
+   $result=db_query("select arrecad.k00_numpre from arrecant inner join arrecad on arrecad.k00_numpre=arrecant.k00_numpre where arrecant.k00_numpre=$d09_numpre");
    if(pg_numrows($result)>0){
      die("ja foi pago");
    }else{

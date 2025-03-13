@@ -58,7 +58,7 @@ db_input('rh18_descr',40,$Irh18_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhraca','func_rhraca.php?funcao_js=parent.js_preenchepesquisa|rh18_raca','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhraca','func_rhraca.php?funcao_js=parent.js_preenchepesquisa|rh18_raca','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhraca.hide();

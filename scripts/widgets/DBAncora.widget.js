@@ -5,7 +5,7 @@
   *
   * @author Rafael Lopes rafael.lopes@dbseller.com.br
   * @author Rafael Nery  rafael.nery@dbseller.com.br
-  * @version  $Revision: 1.5 $
+  * @version  $Revision: 1.7 $
   */
 
 DBAncora = function ( sLabel, sURL, lHabilitado ) {
@@ -41,7 +41,7 @@ DBAncora = function ( sLabel, sURL, lHabilitado ) {
 DBAncora.prototype.criarElementos = function() {
   
   var me = this;
-  
+
   this.oElementos.oTexto = document.createTextNode( this.getLabel() );
   this.oElementos.oLink  = document.createElement("a");
   this.oElementos.oLink.setAttribute('class', 'DBAncora') ;
@@ -55,8 +55,8 @@ DBAncora.prototype.criarElementos = function() {
   
   this.oElementos.oLink.href = this.getUrl();
   this.oElementos.oLink.sUrl = this.getUrl();
+
   this.oElementos.oLink.appendChild(this.oElementos.oTexto);
-  
   return this.oElementos.oLink;
 };
 

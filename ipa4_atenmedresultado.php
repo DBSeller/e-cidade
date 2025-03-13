@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
 
 if(isset($HTTP_POST_VARS["enviar"])) {
-  pg_exec("update atendmedexa set resultado = '".$HTTP_POST_VARS["resultado"]."'
+  db_query("update atendmedexa set resultado = '".$HTTP_POST_VARS["resultado"]."'
            where codate = ".db_getsession("COD_atendimento")."
 		   and id_exame = ".$HTTP_POST_VARS["id_exame"]) or die("Erro atualizando atendmedexa");
   echo "<script>  parent.document.getElementById('Iresultado').style.visibility = 'hidden'; parent.location.href = 'ipa4_atenmed0045.php';  </script>\n";
@@ -38,7 +38,7 @@ if(isset($HTTP_POST_VARS["enviar"])) {
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
-$result = pg_exec("select resultado 
+$result = db_query("select resultado 
                    from atendmedexa 
 				   where codate = ".db_getsession("COD_atendimento")."
 				   and id_exame = $id_exame");

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_regenteconselho_classe.php");
-include("classes/db_turma_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_regenteconselho_classe.php"));
+include(modification("classes/db_turma_classe.php"));
 $clmatricula = new cl_matricula;
 $clregenteconselho = new cl_regenteconselho;
 $clturma = new cl_turma;
@@ -85,7 +85,7 @@ $sql2 = "SELECT $campos
          $condicao2
          ORDER BY $ordenacao , ed60_c_ativa
         ";
-$result2 = pg_query($sql2);
+$result2 = db_query($sql2);
 $linhas2 = pg_num_rows($result2);
 if($linhas2==0){?>
  <table width='100%'>

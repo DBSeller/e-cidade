@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("fpdf151/assinatura.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 db_postmemory($HTTP_SERVER_VARS);
@@ -70,7 +70,7 @@ if(strlen($dbwhere)>0) {
                inner join conplano c2 on c2.c60_codcon =r2.c61_codcon and c2.c60_anousu=r2.c61_anousu 
           where $dbwhere   
 	  order by c69_sequen, c69_data";
-    $resultado = @pg_exec($sql);
+    $resultado = @db_query($sql);
 //    db_criatabela($resultado); exit;
 }
 
@@ -82,7 +82,7 @@ if(@pg_numrows($resultado)==0) {
 $numrows = pg_numrows($resultado);
 
 $xinstit = split("-",$db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-',', ',$db_selinstit).") ");
 
 $descr_inst = '';
 $xvirg = '';

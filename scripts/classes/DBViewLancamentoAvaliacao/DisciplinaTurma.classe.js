@@ -5,7 +5,7 @@ require_once("scripts/classes/DBViewLancamentoAvaliacao/DBViewLancamentoAvaliaca
  * Monta um select-multiple com as disiciplinas da turma
  * @dependency Utiliza DBViewLancamentoAvaliacao.classe.js
  * @autor Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  *
  * @param {integer} iTurma código da turma 
  * @param {integer} iEtapa código da etapa
@@ -54,7 +54,8 @@ DBViewAvaliacao.DisciplinaTurma = function (iTurma, iEtapa, lDisciplinasProfesso
   this.oCboDisciplinas.multiple     = true;
   this.oCboDisciplinas.style.height = '100px';
   this.oCboDisciplinas.style.width  = '250px';
-  
+
+  this.mSomenteDisciplinasParecer = null;
 };
 
 /**
@@ -66,7 +67,6 @@ DBViewAvaliacao.DisciplinaTurma = function (iTurma, iEtapa, lDisciplinasProfesso
  * @returns void          
  */
 DBViewAvaliacao.DisciplinaTurma.prototype.setAltura = function (sAltura) {
-
   this.oCboDisciplinas.style.height = sAltura;
 };
 
@@ -80,7 +80,6 @@ DBViewAvaliacao.DisciplinaTurma.prototype.setAltura = function (sAltura) {
  * @returns void          
  */
 DBViewAvaliacao.DisciplinaTurma.prototype.setLargura = function (sLargura) {
-
   this.oCboDisciplinas.style.width = sLargura;
 };
 
@@ -95,7 +94,6 @@ DBViewAvaliacao.DisciplinaTurma.prototype.setLargura = function (sLargura) {
  * @returns void
  */
 DBViewAvaliacao.DisciplinaTurma.prototype.adicionaClasseCSS = function (sClass) {
-
   this.oCboDisciplinas.addClassName(sClass);
 };
 
@@ -107,7 +105,6 @@ DBViewAvaliacao.DisciplinaTurma.prototype.adicionaClasseCSS = function (sClass) 
  * @returns void
  */
 DBViewAvaliacao.DisciplinaTurma.prototype.trocarID = function (sID) {
-
   this.oCboDisciplinas.id = sId;
 };
 
@@ -124,7 +121,11 @@ DBViewAvaliacao.DisciplinaTurma.prototype.buscaDisciplinas = function() {
   oParametro.iTurma                = this.iTurma;
   oParametro.iEtapa                = this.iEtapa;
   oParametro.lDisciplinasProfessor = this.lDisciplinasProfessor;
-  
+
+  if( this.mSomenteDisciplinasParecer !== null ) {
+    oParametro.lSomenteDisciplinasParecer = this.mSomenteDisciplinasParecer;
+  }
+
   var oObjeto        = new Object();
   oObjeto.method     = 'post';
   oObjeto.parameters = 'json='+Object.toJSON(oParametro);
@@ -143,7 +144,7 @@ DBViewAvaliacao.DisciplinaTurma.prototype.buscaDisciplinas = function() {
 DBViewAvaliacao.DisciplinaTurma.prototype.retornoDisciplinas = function (oAjax) {
   
   js_removeObj('msgBox');
-  var oRetorno = eval('('+oAjax.responseText+')'); 
+  var oRetorno = JSON.parse(oAjax.responseText); 
   var oSelf    = this;
   
   oRetorno.aRegencias.each( function (oRegencia) {
@@ -198,7 +199,6 @@ DBViewAvaliacao.DisciplinaTurma.prototype.show = function(oElement) {
  * @param {Array} aRegencia
  */
 DBViewAvaliacao.DisciplinaTurma.prototype.naoListarAsRegencias = function (aRegencia) {
-  
   this.aNaoListar = aRegencia;
 };
 
@@ -219,4 +219,12 @@ DBViewAvaliacao.DisciplinaTurma.prototype.removerSelecao = function() {
   for (var i = 0; i < iOptions; i++) {
     this.oCboDisciplinas.options[i].selected = false;
   }
+};
+
+/**
+ * Seta se devem ser apresentadas somente disciplinas com procedimento de avaliação do tipo PARECER
+ * @param {bool} lSomenteDisciplinasParecer
+ */
+DBViewAvaliacao.DisciplinaTurma.prototype.somenteDisciplinasParecer = function( lSomenteDisciplinasParecer ) {
+  this.mSomenteDisciplinasParecer = lSomenteDisciplinasParecer;
 };

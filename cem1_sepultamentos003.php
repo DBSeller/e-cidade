@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt
  */
 
-	require_once("libs/db_stdlib.php");
-	require_once("libs/db_conecta.php");
-	require_once("libs/db_usuariosonline.php");
-	require_once("classes/db_sepultamentos_classe.php");
-	require_once("classes/db_sepulturas_classe.php");
-	require_once("classes/db_sepulta_classe.php");
-	require_once("classes/db_lotecemit_classe.php");
-	require_once("classes/db_ossoario_classe.php");
-	require_once("classes/db_restosgavetas_classe.php");
-	require_once("classes/db_gavetas_classe.php");
-	require_once("dbforms/db_funcoes.php");
+	require_once(modification("libs/db_stdlib.php"));
+	require_once(modification("libs/db_conecta.php"));
+	require_once(modification("libs/db_usuariosonline.php"));
+	require_once(modification("classes/db_sepultamentos_classe.php"));
+	require_once(modification("classes/db_sepulturas_classe.php"));
+	require_once(modification("classes/db_sepulta_classe.php"));
+	require_once(modification("classes/db_lotecemit_classe.php"));
+	require_once(modification("classes/db_ossoario_classe.php"));
+	require_once(modification("classes/db_restosgavetas_classe.php"));
+	require_once(modification("classes/db_gavetas_classe.php"));
+	require_once(modification("dbforms/db_funcoes.php"));
 
 	parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 
@@ -64,197 +64,210 @@
 		$lotecemit = "";
 	}
 
-	if ( isset($alterar) || isset($incluir) ) {
+	if (isset($alterar) || isset($incluir)) {
 
 		db_inicio_transacao();
 
-		/**
-		 * Caso seja alteração, exlcui os registro das tabelas corretas e insere novamente.
-		 */
-		if ( isset($alterar) ) {
+		if (!$lErro) {
 
-			if ($tipoant == 1) {
-				/**
-				 * Sepulturas
-				 */
-				$clsepulta->excluir( $codigoant );
-				if ($clsepulta->erro_status == 0) {
+			/**
+			 * Caso seja alteração, exlcui os registro das tabelas corretas e insere novamente.
+			 */
+			if (isset($alterar)) {
 
-					$lErro = true;
-					$sErroBanco = $clsepulta->erro_msg;
+				if ($tipoant == 1) {
+
+					/**
+					 * Sepulturas
+					 */
+					$clsepulta->excluir($codigoant);
+
+					if ($clsepulta->erro_status == 0) {
+
+						$lErro = true;
+						$sErroBanco = $clsepulta->erro_msg;
+					}
+
+				} elseif ($tipoant == 2) {
+
+					/**
+					 * Ossoário geral
+					 */
+					$clossoario->excluir($codigoant);
+
+					if ($clossoario->erro_status == 0) {
+
+						$lErro = true;
+						$sErroBanco = $clossoario->erro_msg;
+					}
+
+				} elseif ($tipoant == 3 || $tipoant == 4) {
+
+					/**
+					 * Ossoário particular ou Jazigos
+					 */
+
+					/**
+					 * Apaga todas as gavetas do sepultado no Jazigo
+					 */
+					if ($tipoant == 4) {
+						$clgavetas->excluir(null, "cm27_i_restogaveta = {$codigoant}");
+					}
+
+					$clrestosgavetas->excluir($codigoant);
+
+					if ($clrestosgavetas->erro_status == 0) {
+
+						$lErro = true;
+						$sErroBanco  = $clrestosgavetas->erro_msg;
+					}
 				}
-			} elseif ($tipoant == 2) {
-				/**
-				 * Ossoário geral
-				 */
-				$clossoario->excluir( $codigoant );
-				if ($clossoario->erro_status == 0) {
 
-					$lErro = true;
-					$sErroBanco = $clossoario->erro_msg;
+				if ($lotecemit != "") {
+
+	        $sUpdateLote  = $cllotecemit->sql_query_atualiza_situacao($lotecemit, 'D');
+	        $rsUpdateLote = db_query($sUpdateLote);
+
+	        if (empty($rsUpdateLote)) {
+
+						$sErroBanco = "Erro ao alterar situação da sepultura atual para ocupada.";
+						$lErro = true;
+	        }
 				}
 
-			} elseif ($tipoant == 3 || $tipoant == 4) {
-				/**
-				 * Ossoário particular ou Jazigos
-				 */
-
-				/**
-				 * Apaga todas as gavetas do sepultado no Jazigo
-				 */
-				if ($tipoant == 4) {
-
-					$clgavetas->excluir(null, "cm27_i_restogaveta = {$codigoant}");
-				}
-
-				$clrestosgavetas->excluir($codigoant);
-				if ($clrestosgavetas->erro_status == 0) {
-
-					$lErro = true;
-					$sErroBanco  = $clrestosgavetas->erro_msg;
-				}
-
+				$incluir = true;
 			}
 
-			if ($lotecemit != "") {
+			//incluir
+			if (isset($incluir)) {
 
-				$cllotecemit->cm23_i_codigo = $lotecemit;
-				$cllotecemit->cm23_c_situacao = 'D';
-				$cllotecemit->alterar($lotecemit);
-				if (!$lErro && $cllotecemit->erro_status == 0 ) {
+			  if ($local == 1) {
 
-					$lErro = true;
-					$sErroBanco = $cllotecemit->erro_msg;
-				}
-			}
+			    //sepulturas
+			    $cllotecemit->cm23_i_codigo   = $cm23_i_codigo;
+			    $cllotecemit->cm23_c_situacao = 'O';
 
-			$incluir = true;
-		}
+			    $cllotecemit->alterar($cm23_i_codigo);
 
-		//incluir
-		if ( isset($incluir) ) {
+			    $clsepulta->incluir(null);
 
-		  if ($local == 1) {
+			    if ($clsepulta->erro_status == 0) {
 
-		    //sepulturas
-		    $cllotecemit->cm23_i_codigo = $cm23_i_codigo;
-		    $cllotecemit->cm23_c_situacao = 'O';
-		    $cllotecemit->alterar( $cm23_i_codigo );
+			    	 $lErro = true;
+			    	 $sErroBanco = $clsepulta->erro_msg;
+			    } else {
 
-		    $clsepulta->incluir(null);
-		    if ($clsepulta->erro_status == 0) {
+				    $codigoant = $clsepulta->cm24_i_codigo;
+				    $tipoant = 1;
+			    }
 
-		    	 $lErro = true;
-		    	 $sErroBanco = $clsepulta->erro_msg;
-		    } else {
+			  } elseif ($local == 2) {
 
-			    $codigoant = $clsepulta->cm24_i_codigo;
-			    $tipoant = 1;
-		    }
+			    //ossoario geral
+			    $clossoario->cm06_d_entrada = $cm06_d_entrada;
+			    $clossoario->incluir(null);
 
-		  } elseif($local == 2) {
+			    if ($clossoario->erro_status == 0) {
 
-		    //ossoario geral
-		    $clossoario->cm06_d_entrada = date("Y-m-d",db_getsession("DB_datausu"));
-		    $clossoario->incluir(null);
-		    if ($clossoario->erro_status == 0) {
+				    $lErro = true;
+				    $sErroBanco = $clossoario->erro_msg;
+			    } else {
 
-			    $lErro = true;
-			    $sErroBanco = $clossoario->erro_msg;
-		    } else {
+			    	$codigoant = $clossoario->cm06_i_codigo;
+			    	$tipoant = 2;
+			    }
 
-		    	$codigoant = $clossoario->cm06_i_codigo;
-		    	$tipoant = 2;
-		    }
+			  } elseif($local == 3) {
 
-		  } elseif($local == 3) {
+			    //ossoario particular / restos
+			    $cllotecemit->cm23_i_codigo   = $cm23_i_codigo;
+			    $cllotecemit->cm23_c_situacao = 'O';
 
-		    //ossoario particular / restos
-		    $cllotecemit->cm23_i_codigo = $cm23_i_codigo;
-		    $cllotecemit->cm23_c_situacao = 'O';
-		    $cllotecemit->alterar( $cm23_i_codigo );
+			    $cllotecemit->alterar($cm23_i_codigo);
 
-		    $clrestosgavetas->incluir(null);
-		    if ($clrestosgavetas->erro_status == 0) {
+			    $clrestosgavetas->incluir(null);
 
-		    	$lErro      = true;
-		    	$sErroBanco = $clrestosgavetas->erro_msg;
-		    } else {
+			    if ($clrestosgavetas->erro_status == 0) {
 
-		    	$codigoant = $clrestosgavetas->cm26_i_codigo;
-		    	$tipoant   = 3;
-		    }
+			    	$lErro      = true;
+			    	$sErroBanco = $clrestosgavetas->erro_msg;
+			    } else {
 
-		  } elseif($local == 4) {
+			    	$codigoant = $clrestosgavetas->cm26_i_codigo;
+			    	$tipoant   = 3;
+			    }
 
-		    //jazigo
-		    $cllotecemit->cm23_i_codigo = $cm23_i_codigo;
-		    $cllotecemit->cm23_c_situacao = 'O';
-		    $cllotecemit->alterar( $cm23_i_codigo );
-		    $clrestosgavetas->incluir(null);
+			  } elseif ($local == 4) {
 
-		    if ($clrestosgavetas->erro_status == 0) {
+			    //jazigo
+			    $cllotecemit->cm23_i_codigo   = $cm23_i_codigo;
+			    $cllotecemit->cm23_c_situacao = 'O';
 
-		    	$lErro = true;
-		    	$sErroBanco = $clrestosgavetas->erro_msg;
-		    } else {
+			    $cllotecemit->alterar($cm23_i_codigo);
 
-		    	$codigoant = $clrestosgavetas->cm26_i_codigo;
-		    	$tipoant = 4;
-		    }
+			    $clrestosgavetas->incluir(null);
 
-		    if (!$lErro) {
-
-			    //Gavetas
-			    $clgavetas->cm27_i_restogaveta = $clrestosgavetas->cm26_i_codigo;
-			    $clgavetas->incluir(null);
-
-			    if ($clgavetas->erro_status == 0) {
+			    if ($clrestosgavetas->erro_status == 0) {
 
 			    	$lErro = true;
-			    	$sErroBanco = $clgavetas->erro_msg;
-			    }
-		    }
-		  }
+			    	$sErroBanco = $clrestosgavetas->erro_msg;
+			    } else {
 
+			    	$codigoant = $clrestosgavetas->cm26_i_codigo;
+			    	$tipoant = 4;
+			    }
+
+			    if (!$lErro) {
+
+				    //Gavetas
+				    $clgavetas->cm27_i_restogaveta = $clrestosgavetas->cm26_i_codigo;
+
+				    $clgavetas->incluir(null);
+
+				    if ($clgavetas->erro_status == 0) {
+
+				    	$lErro = true;
+				    	$sErroBanco = $clgavetas->erro_msg;
+				    }
+			    }
+			  }
+			}
 		}
 
 		db_fim_transacao($lErro);
 	}
 ?>
-
 <html>
 	<head>
 		<title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<meta http-equiv="Expires" CONTENT="0">
-		<script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+		<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+		<meta http-equiv="expires" CONTENT="0">
+		<script language="javascript" type="text/javascript" src="scripts/scripts.js"></script>
 		<link href="estilos.css" rel="stylesheet" type="text/css">
 	</head>
-
-	<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-		<?php
-			require_once ('forms/db_frmSepultamentosNovo.php');
-		?>
+	<body class="abas">
+		<div class="container">
+			<?php
+				require_once(modification('forms/db_frmSepultamentosNovo.php'));
+			?>
+		</div>
 	</body>
 </html>
 <?php
 
-	if ( isset($incluir) || isset($alterar)) {
+	if (isset($incluir) || isset($alterar)) {
 
     db_msgbox($sErroBanco);
 
-    if ( ! $lErro) {
+    if (!$lErro) {
 
       echo "<script>";
       echo " parent.document.formaba.a4.disabled=false;";
       echo " parent.document.formaba.a2.disabled=true; ";
       echo " parent.document.formaba.a3.disabled=true; ";
-      echo " top.corpo.iframe_a1.location.href='cem1_sepultamentos001.php';";
+      echo " (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_a1.location.href='cem1_sepultamentos001.php';";
       echo " parent.mo_camada('a4'); ";
       echo "</script>";
-
     }
-
 	}
 ?>

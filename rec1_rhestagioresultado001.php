@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_rhestagioresultado_classe.php");
-include("classes/db_portaria_classe.php");
-include("classes/db_portariatipo_classe.php");
-include("classes/db_assenta_classe.php");
-include("classes/db_portariaassenta_classe.php");
-include("classes/db_tipoasse_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+require(modification("libs/db_utils.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_rhestagioresultado_classe.php"));
+include(modification("classes/db_portaria_classe.php"));
+include(modification("classes/db_portariatipo_classe.php"));
+include(modification("classes/db_assenta_classe.php"));
+include(modification("classes/db_portariaassenta_classe.php"));
+include(modification("classes/db_tipoasse_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $oGet                 = db_utils::postmemory($_GET);
 $oPost                = db_utils::postmemory($_POST);
 $clrhestagioresultado = new cl_rhestagioresultado;
@@ -106,7 +106,7 @@ if(isset($oPost->incluir)){
        $sSQLDatas .= "       (max(h64_data) - min(h64_data)) as tdias ";
        $sSQLDatas .= "  from rhestagioagendadata ";
        $sSQLDatas .= " where h64_estagioagenda = {$oEstagio->h57_sequencial}";
-       $rDatas     = pg_query($sSQLDatas);
+       $rDatas     = db_query($sSQLDatas);
        $oDatas     = db_utils::fieldsMemory($rDatas,0);
        $classenta->h16_regist  = $oEstagio->h57_regist;
        $classenta->h16_assent  = $iTipoAsse;
@@ -215,7 +215,7 @@ if (isset($oGet->chavepesquisa)){
 </table>
     <center>
 	<?
-	include("forms/db_frmrhestagioresultado.php");
+	include(modification("forms/db_frmrhestagioresultado.php"));
 	?>
     </center>
 <?

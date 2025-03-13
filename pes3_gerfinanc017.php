@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,11 +25,11 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("classes/db_cgm_classe.php");
-include("fpdf151/pdf.php");
-include("classes/db_iptubase_classe.php");
-include("classes/db_issbase_classe.php");
-include("libs/db_utils.php");
+include(modification("classes/db_cgm_classe.php"));
+include(modification("fpdf151/pdf.php"));
+include(modification("classes/db_iptubase_classe.php"));
+include(modification("classes/db_issbase_classe.php"));
+include(modification("libs/db_utils.php"));
 
 db_postmemory($HTTP_SERVER_VARS);
 $sql = "select z01_nome , 
@@ -208,9 +208,107 @@ $sql = " select ajusteir.*,
             and r61_mesusu = $mes  
             and r61_numcgm = $numcgm
           order by r61_numcgm,  r61_rubric, r61_regist, r61_folha ";
+} else if ($opcao == 'complementar') {
+
+
 }
+
+if (DBPessoal::verificarUtilizacaoEstruturaSuplementar() && $opcao == 'complementar') {
+
+  $sql = "select * from (
+       select rh143_rubrica as rubrica,
+               1 as ordem_rub,
+               case
+                 when rh27_pd = 3 then 0
+                 else case
+                        when rh143_tipoevento = 1 then rh143_valor
+                        else 0
+                      end
+               end as Provento,
+               case
+                 when rh27_pd = 3 then 0
+                 else case
+                        when rh143_tipoevento = 2 then rh143_valor
+                        else 0
+                      end
+               end as Desconto,
+               rh143_quantidade as quant,
+               rh27_descr,
+               ".$xtipo." as tipo ,
+               case
+                 when rh27_pd = 3 then 'Base'
+                 else case
+                        when rh143_tipoevento = 1 then 'Provento'
+                        else 'Desconto'
+               end
+               end as provdesc
+
+          from rhfolhapagamento 
+               inner join rhhistoricocalculo on rh143_folhapagamento = rh141_sequencial
+               inner join rhrubricas         on rh27_rubric = rh143_rubrica
+                                            and rh27_instit = rh141_instit
+         where rh143_regist    = $matricula
+           and rh141_anousu    = $ano
+           and rh141_mesusu    = $mes
+           and rh141_tipofolha = 3
+           and rh141_instit    = ".db_getsession("DB_instit")."
+           and rh143_tipoevento != 3
+
+         union
+
+        select 'R950'::varchar(4) as rubrica,
+               2,
+               provento,
+               desconto,
+               0 as quant,
+               'TOTAL'::varchar(40) ,
+               ''::varchar(1) as tipo ,
+               ''::varchar(10) as provdesc
+          from (select sum(case when rh143_tipoevento = 1 then rh143_valor else 0 end ) as provento,
+                       sum(case when rh143_tipoevento = 2 then rh143_valor else 0 end ) as desconto
+                  from rhfolhapagamento 
+                       inner join rhhistoricocalculo on rh143_folhapagamento = rh141_sequencial
+                       inner join rhrubricas         on rh27_rubric = rh143_rubrica
+                                            and rh27_instit = rh141_instit
+                 where rh143_regist = $matricula
+                   and rh141_anousu = $ano
+                   and rh141_mesusu = $mes
+                   and rh141_tipofolha = 3
+                   and rh141_instit = ".db_getsession("DB_instit")."
+                   and rh143_tipoevento != 3
+               ) as  x
+  
+         union
+
+        select rh143_rubrica as rubrica,
+               3,
+               rh143_valor as Provento,
+               0 as Desconto ,
+               rh143_quantidade as quant,
+               rh27_descr,
+               ".$xtipo." as tipo ,
+               case
+                 when rh27_pd = 3 then 'Base'
+                else case
+                  when  rh143_tipoevento = 1 then 'Provento'
+                 else 'Desconto' end
+               end as provdesc
+          from rhfolhapagamento 
+               inner join rhhistoricocalculo on rh143_folhapagamento = rh141_sequencial
+               inner join rhrubricas         on rh27_rubric = rh143_rubrica
+                                            and rh27_instit = rh141_instit
+         where rh143_regist = $matricula
+           and rh141_anousu = $ano
+           and rh141_tipofolha = 3
+           and rh141_mesusu = $mes
+           and rh141_instit = ".db_getsession("DB_instit")."
+           and rh143_tipoevento = 3
+        ) as yy order by ordem_rub, rubrica ";
+
+}
+
 $result = db_query($sql);
-$oResult = db_utils::getColectionByRecord($result);
+$oResult = db_utils::getCollectionByRecord($result);
 
 if ($opcao != 'previden' && $opcao != 'irf'){
   $pdf = new PDF(); // abre a classe
@@ -368,4 +466,3 @@ if ($opcao != 'previden' && $opcao != 'irf'){
   $pdf->cell(145,1,'',"T",1,"C",0);
 }
 $pdf->Output();
-?>

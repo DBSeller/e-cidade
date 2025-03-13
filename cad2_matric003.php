@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_setor_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
-require_once("classes/db_sanitario_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_setor_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
+require_once(modification("classes/db_sanitario_classe.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clsetor = new cl_setor;
@@ -50,45 +50,37 @@ $clrotulo->label("z01_nome");
 </head>
 <script>
   function js_imprime() {
-    
-    if(document.form1.idbql.value!="") {
 
-      jan = window.open('','rel','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
-      jan.moveTo(0,0);
-      document.form1.action = "cad2_matric002.php";
-      document.form1.target = "rel";
-      document.form1.submit();
-    } else {
-     
-      alert("Selecione corretamente os setores, as quadras e os lotes que deverão constar no relatório.");
-      return false;
-    }
+    jan = window.open('','rel','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0');
+    jan.moveTo(0,0);
+    document.form1.action = "cad2_matric002.php";
+    document.form1.target = "rel";
+    document.form1.submit();
   }
-  
+
   function js_nome(obj){
-    
+
     j34_setor = "";
     vir = "";
     x = 0;
     for(i=0;i<setor.document.form1.length;i++) {
-      
+
       if(setor.document.form1.elements[i].type == "checkbox") {
 
         if(setor.document.form1.elements[i].checked == true) {
-       
-          valor = setor.document.form1.elements[i].value.split("_")
+
+          valor      = setor.document.form1.elements[i].value.split("_")
           j34_setor += vir + valor[0];
-          vir = ",";
-          x += 1; 
+          vir        = ",";
+          x += 1;
         }
       }
     }
-  
-    parent.iframe_g2.location.href = '../cad2_matric004.php?j34_setor='+j34_setor;
-    if(j34_setor == "") {
 
-      parent.iframe_g1.document.form1.idbql.value = '';    
-    }
+    parent.iframe_g2.location.href = '../cad2_matric004.php?j34_setor='+j34_setor;
+    parent.iframe_g1.document.form1.setorParametro.value  = j34_setor;
+    parent.iframe_g1.document.form1.quadraParametro.value = '';
+    parent.iframe_g1.document.form1.loteParametro.value   = '';
   }
 
 </script>
@@ -102,7 +94,7 @@ $clrotulo->label("z01_nome");
             <?php
                $cliframe_seleciona->campos        = "j30_codi,j30_descr";
                $cliframe_seleciona->legenda       = "Setor";
-               $cliframe_seleciona->sql=$clsetor->sql_query(""," * ","j30_codi");      
+               $cliframe_seleciona->sql=$clsetor->sql_query(""," * ","j30_codi");
                $cliframe_seleciona->textocabec    = "darkblue";
                $cliframe_seleciona->textocorpo    = "black";
                $cliframe_seleciona->fundocabec    = "#aacccc";
@@ -115,17 +107,19 @@ $clrotulo->label("z01_nome");
                $cliframe_seleciona->marcador      = true;
                $cliframe_seleciona->js_marcador   = "parent.js_nome()";
                $cliframe_seleciona->alignlegenda  = "left";
-               $cliframe_seleciona->iframe_seleciona(@$db_opcao);    
+               $cliframe_seleciona->iframe_seleciona(@$db_opcao);
             ?>
           </td>
-        </tr> 
+        </tr>
         </table >
           <?
-            db_input('idbql',"",0,true,'hidden',3,"");
+            db_input('setorParametro',"",0,true,'hidden',3,"");
+            db_input('quadraParametro',"",0,true,'hidden',3,"");
+            db_input('loteParametro',"",0,true,'hidden',3,"");
           ?>
         <fieldset>
-          <legend>Opções</legend>     
-        <table border="0" align='center'>  
+          <legend>Opções</legend>
+        <table border="0" align='center'>
         <tr>
 	        <td colspan=2 align='right' >
 	          <strong>Tipo Imóvel:</strong>
@@ -134,7 +128,7 @@ $clrotulo->label("z01_nome");
 	          <?php
 
 	            $tipo_t = array("T"=>"Todos","B"=>"Territorial","P"=>"Predial");
-	            db_select("terreno",$tipo_t,true,2); 	      
+	            db_select("terreno",$tipo_t,true,2);
 	          ?>
 	        </td>
         </tr>
@@ -157,17 +151,17 @@ $clrotulo->label("z01_nome");
           <td colspan=3 align='left' >
 	          <?php
 	            $tipo_m = array("n"=>"Não","s"=>"Sim");
-	            db_select("mostra",$tipo_m,true,2); 	      
+	            db_select("mostra",$tipo_m,true,2);
 	          ?>
 	        </td>
         </tr>
         </table>
         </fieldset>
         <table align="center">
-        <tr>	
+        <tr>
           <td colspan='5' align='center'>
 	          <input type="submit" name="relatorio1" value="Gerar relatório" onClick="return js_imprime();">
-          </td>          	
+          </td>
         </tr>
       </table>
     </form>

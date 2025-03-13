@@ -112,10 +112,10 @@ db_textarea('x28_obs',5, 60,$Ix28_obs,true,'text',$db_opcao,"")
 <script>
 function js_pesquisax28_codhidrometro(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_aguahidromatric','func_aguahidromatricalt.php?funcao_js=parent.js_mostraaguahidromatric1|x04_codhidrometro|x04_codmarca|x03_nomemarca|x04_coddiametro|x15_diametro','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguahidromatric','func_aguahidromatricalt.php?funcao_js=parent.js_mostraaguahidromatric1|x04_codhidrometro|x04_codmarca|x03_nomemarca|x04_coddiametro|x15_diametro','Pesquisa',true);
   }else{
      if(document.form1.x28_codhidrometro.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_aguahidromatric','func_aguahidromatricalt.php?pesquisa_chave='+document.form1.x28_codhidrometro.value+'&funcao_js=parent.js_mostraaguahidromatric','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguahidromatric','func_aguahidromatricalt.php?pesquisa_chave='+document.form1.x28_codhidrometro.value+'&funcao_js=parent.js_mostraaguahidromatric','Pesquisa',false);
      }else{      
 		document.form1.x04_codmarca.value = "";
 		document.form1.x03_nomemarca.value = "";
@@ -148,7 +148,7 @@ function js_mostraaguahidromatric1(chave,chave1,chave2,chave3,chave4){
   db_iframe_aguahidromatric.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_aguahidrotroca','func_aguahidrotroca.php?funcao_js=parent.js_preenchepesquisa|x28_codhidrometro','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_aguahidrotroca','func_aguahidrotroca.php?funcao_js=parent.js_preenchepesquisa|x28_codhidrometro','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_aguahidrotroca.hide();
@@ -160,10 +160,10 @@ function js_preenchepesquisa(chave){
 }
 function js_pesquisax28_codigo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_codigo','func_caracter.php?grupo=84&funcao_js=parent.js_mostracodigo1|j31_codigo|j31_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_codigo','func_caracter.php?grupo=84&funcao_js=parent.js_mostracodigo1|j31_codigo|j31_descr','Pesquisa',true);
   }else{
      if(document.form1.x28_codigo.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_codigo','func_caracter.php?grupo=84&pesquisa_chave='+document.form1.x28_codigo.value+'&funcao_js=parent.js_mostracodigo','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_codigo','func_caracter.php?grupo=84&pesquisa_chave='+document.form1.x28_codigo.value+'&funcao_js=parent.js_mostracodigo','Pesquisa',false);
      }else{
        document.form1.x04_codmarca.value = ''; 
      }

@@ -44,14 +44,14 @@ class Ask
         $this->window->set_policy(false, true, false);
         $this->window->set_modal(true);
         $this->window->realize();
-        $this->window->connect_object('key_press_event', array(&$this,'KeyTest'), null);
+        $this->window->connect_object('key_press_event', array($this,'KeyTest'), null);
         
         $vbox = new GtkVBox(false,10);
         $this->window->add($vbox);
         
         $hbox1 = new GtkHbox(false, 10);
         $img   = Gdk::pixmap_create_from_xpm($this->window->window, null,  images . 'ico_ask.xpm');
-        $pixmapwid = &new GtkPixmap($img[0], $img[1]);
+        $pixmapwid = new GtkPixmap($img[0], $img[1]);
         $hbox1->pack_start($pixmapwid, false, false);
         $texto = new GtkLabel($question);
         

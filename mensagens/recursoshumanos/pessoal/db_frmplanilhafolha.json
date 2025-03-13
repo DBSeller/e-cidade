@@ -4,5 +4,7 @@
   "mes_invalido"         : "Mês inválido!",
   "ano_invalido"         : "Ano inválido!",
   "rescisao"             : "Selecione alguma rescisão para continuar.",
+  "competencia_invalida" : "A competência informada é maior que a competência atual.",
+  "carregando"           : "Carregando as informações...",
   "folha_salario_fechada": "A folha de salário esta aberta. Execute o fechamento."
 }

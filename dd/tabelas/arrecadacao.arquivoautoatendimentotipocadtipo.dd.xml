@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010434' name='arrecadacao.arquivoautoatendimentotipocadtipo' description="Tabela responsável por guardar os tipos de débitos." prefix="K185" label="arquivoautoatendimentotipocadtipo" type="0">
+  <fields>
+    <field codigo="1010390" 
+           campo_api='' 
+           name="k185_codigo" 
+           conteudo="int8" 
+           description="Campo que armazena o sequencial da chave primária." 
+           inivalue="0" 
+           label="Campo código" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='arrecadacao.arquivoautoatendimentotipocadtipo_k185_codigo_seq' />
+     
+    </field> 
+    <field codigo="1010391" 
+           campo_api='' 
+           name="k185_arquivoautoatendimentotipo" 
+           conteudo="int8" 
+           description="Armazena a chave estrangeira do campo k184_codigo da tabela arquivoautoatendimentotipo." 
+           inivalue="0" 
+           label="Campo tipo cadastro" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo tipo cadastro" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010392" 
+           campo_api='' 
+           name="k185_cadtipo" 
+           conteudo="int8" 
+           description="Armazena a chave estrangeira do campo k03_tipo da tabela cadtipo." 
+           inivalue="0" 
+           label="Campo tipo cadastro" 
+           size="2000000" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Campo tipo cadastro" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k185_codigo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cadtipo" inner='t'>
+      <fieldfk name="k185_cadtipo" reference="k03_tipo" /> 
+    </foreignkey>
+    <foreignkey reference="arquivoautoatendimentotipo" inner='t'>
+      <fieldfk name="k185_arquivoautoatendimentotipo" reference="k184_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -1,0 +1,18 @@
+<?xml version='1.0' ?>
+<consulta distinct="false">
+  <campos>
+    <campo campo="codigo"   label="codigo" />
+    <campo campo="nomeinst" label="nome" />
+    <campo campo="nomeinstabrev" label="nome_abreviado" />
+    <campo campo="uf" label="uf" />
+    <campo campo="munic" label="municipio" />
+  </campos>
+  <from tabela="db_config" />
+  <juncoes>
+  </juncoes>
+  <filtros>
+    <filtro label="" condicao=" prefeitura is true" obrigatorio="true" />
+  </filtros>
+  <agrupamento campos="" />
+  <ordenacao />
+</consulta>

@@ -72,9 +72,9 @@ db_input('z01_nome',40,$Iz01_nome,true,'text',3,'')
 <script>
 function js_pesquisay73_codvist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_vistorias','func_vistorias.php?funcao_js=parent.js_mostravistorias1|y70_codvist|y70_data','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistorias','func_vistorias.php?funcao_js=parent.js_mostravistorias1|y70_codvist|y70_data','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_vistorias','func_vistorias.php?pesquisa_chave='+document.form1.y73_codvist.value+'&funcao_js=parent.js_mostravistorias','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistorias','func_vistorias.php?pesquisa_chave='+document.form1.y73_codvist.value+'&funcao_js=parent.js_mostravistorias','Pesquisa',false);
   }
 }
 function js_mostravistorias(chave,erro){
@@ -91,9 +91,9 @@ function js_mostravistorias1(chave1,chave2){
 }
 function js_pesquisay73_numcgm(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?funcao_js=parent.js_mostracgm1|z01_numcgm|z01_nome','Pesquisa',true);
   }else{
-    js_OpenJanelaIframe('top.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.y73_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cgm','func_nome.php?pesquisa_chave='+document.form1.y73_numcgm.value+'&funcao_js=parent.js_mostracgm','Pesquisa',false);
   }
 }
 function js_mostracgm(erro,chave){
@@ -109,7 +109,7 @@ function js_mostracgm1(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_vistcgm','func_vistcgm.php?funcao_js=parent.js_preenchepesquisa|y73_codvist','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_vistcgm','func_vistcgm.php?funcao_js=parent.js_preenchepesquisa|y73_codvist','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_vistcgm.hide();

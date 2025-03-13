@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_liborcamento.php");
-require_once("libs/db_utils.php");
-require_once("model/relatorioContabil.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_liborcamento.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("model/relatorioContabil.model.php"));
 
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt21');
@@ -121,7 +121,7 @@ function js_emite(sFonte){
         </td>
       </tr>
       <tr>
-        <td colspan=2 nowrap><b>Periodo: </b>
+        <td colspan=2 nowrap><b>Período:</b>
           <select name='o116_periodo'> 
           <option value="1Q">Primeiro Quadrimestre</option>
           <option value="2Q">Segundo  Quadrimestre</option>
@@ -161,7 +161,7 @@ function js_emite(sFonte){
             <table>
               <tr>
                 <td nowrap>
-                  <b>Periodo:</b>
+                  <b>Período:</b>
                 </td>
                 <td>
                    <?

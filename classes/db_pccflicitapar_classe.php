@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -455,20 +455,20 @@ class cl_pccflicitapar {
      $resaco = $this->sql_record($this->sql_query_file($this->l25_codigo));
      if($this->numrows>0){
        for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
          $acount = pg_result($resac,0,0);
-         $resac = pg_query("insert into db_acountkey values($acount,7766,'$this->l25_codigo','A')");
+         $resac = db_query("insert into db_acountkey values($acount,7766,'$this->l25_codigo','A')");
          if(isset($GLOBALS["HTTP_POST_VARS"]["l25_codigo"]))
-           $resac = pg_query("insert into db_acount values($acount,1272,7766,'".AddSlashes(pg_result($resaco,$conresaco,'l25_codigo'))."','$this->l25_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1272,7766,'".AddSlashes(pg_result($resaco,$conresaco,'l25_codigo'))."','$this->l25_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["l25_codcflicita"]))
-           $resac = pg_query("insert into db_acount values($acount,1272,7667,'".AddSlashes(pg_result($resaco,$conresaco,'l25_codcflicita'))."','$this->l25_codcflicita',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1272,7667,'".AddSlashes(pg_result($resaco,$conresaco,'l25_codcflicita'))."','$this->l25_codcflicita',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["l25_anousu"]))
-           $resac = pg_query("insert into db_acount values($acount,1272,7668,'".AddSlashes(pg_result($resaco,$conresaco,'l25_anousu'))."','$this->l25_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1272,7668,'".AddSlashes(pg_result($resaco,$conresaco,'l25_anousu'))."','$this->l25_anousu',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["l25_numero"]))
-           $resac = pg_query("insert into db_acount values($acount,1272,7669,'".AddSlashes(pg_result($resaco,$conresaco,'l25_numero'))."','$this->l25_numero',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac = db_query("insert into db_acount values($acount,1272,7669,'".AddSlashes(pg_result($resaco,$conresaco,'l25_numero'))."','$this->l25_numero',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "pccflicitapar nao Alterado. Alteracao Abortada.\\n";
@@ -619,6 +619,8 @@ function sql_query_mod_licita( $l25_codigo=null,$campos="*",$ordem=null,$dbwhere
      }
      $sql .= " from pccflicitapar ";
      $sql .= " inner join liclicita on pccflicitapar.l25_codcflicita=liclicita.l20_codtipocom ";
+     $sql .= " inner join cflicita on l03_codigo = l25_codcflicita";
+     $sql .= " inner join pctipocompratribunal on l44_sequencial = l03_pctipocompratribunal";
      $sql2 = "";
      if($dbwhere==""){
        if($l25_codigo!=null ){

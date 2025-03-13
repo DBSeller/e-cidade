@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once 'model/ambulatorial/ICompetenciaSaude.interface.php';
+require_once modification("model/ambulatorial/ICompetenciaSaude.interface.php");
 define("URL_MENSAGEM_COMPETENCIATFD", "saude.tfd.CompetenciaTFD.");
 
 /**
  * Pedidos de TFP por Competencia
  * @package tfd
  * @author  Andrio Costa <andrio.costa@dbseller.com.br>
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.10 $
  */
 class CompetenciaTFD implements ICompetenciaSaude {
 	
@@ -335,13 +335,15 @@ class CompetenciaTFD implements ICompetenciaSaude {
         throw new BusinessException(_M(URL_MENSAGEM_COMPETENCIATFD."erro_ao_encerrar_procedimentos", $oMsgErro));
       }
     }
-    
   }
   
   /**
    * Busca todos pedidos encerrados no período
-   * @todo retornar um array com os dados filtrados pronto para salvar 
-   * @return 
+   *
+   * @return array
+   * @throws BusinessException
+   * @throws DBException
+   * @throws ParameterException
    */
   private function getPedidosEncerradosNoPeriodo() {
   	
@@ -364,7 +366,8 @@ class CompetenciaTFD implements ICompetenciaSaude {
     
     for ($i = 0; $i < $iLinhas; $i++) {
     	
-      $oPedidoTFD = new PedidoTFD(db_utils::fieldsMemory($rsPedidos, $i)->tf01_i_codigo);
+      $oPedidoTFD        = new PedidoTFD(db_utils::fieldsMemory($rsPedidos, $i)->tf01_i_codigo);
+      $lSaidaPorPassagem = count( $oPedidoTFD->getDadosSaidaTransporteColetivo() ) > 0;
 
       /**
        * Criamos um array de stdclass com o paciente e acompanhantes com as informações necessárias 
@@ -407,9 +410,8 @@ class CompetenciaTFD implements ICompetenciaSaude {
       /**
        * Busca os procedimentos padrões (que são lançados de forma automática)
        */
-      
       foreach ($aPessoasTFD as $oPessoaTDF) {
-        
+
         foreach (AjudaCustoRepository::getAjudaCustoAutomatico() as $oAjudaCustoAutomatico) {
       	
           /**
@@ -429,6 +431,10 @@ class CompetenciaTFD implements ICompetenciaSaude {
           if (!$this->procedimentoComFinanciamentoValido($oAjudaCustoAutomatico->getProcedimento()->getFinanciamentoSaude())) {
             continue;
           }
+
+          if( $lSaidaPorPassagem ) {
+            continue;
+          }
           
           /**
            * Redefinido a stdClass com os dados das pessoas envolvidas no pedido tfd (paciente e acompanhante)
@@ -442,7 +448,6 @@ class CompetenciaTFD implements ICompetenciaSaude {
           $oPessoa->oAjudaCusto       = $oAjudaCustoAutomatico;
           $aProcedimentosEncerrados[] = $oPessoa;
         }
-        
       }
     }
 

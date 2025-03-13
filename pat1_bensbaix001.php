@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_bensbaix_classe.php");
-include("classes/db_bensmotbaixa_classe.php");
-include("classes/db_bens_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_bensbaix_classe.php"));
+include(modification("classes/db_bensmotbaixa_classe.php"));
+include(modification("classes/db_bens_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_SERVER_VARS);
 db_postmemory($HTTP_POST_VARS);
 $clbensbaix = new cl_bensbaix;
@@ -190,7 +190,7 @@ if(isset($excluir) || isset($incluir)){
 }
 
 if($h != null){
-    echo "<script>top.corpo.iframe_bens.location.href='pat1_bens005.php?chavepesquisa=$t55_codbem';</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.iframe_bens.location.href='pat1_bens005.php?chavepesquisa=$t55_codbem';</script>";
 }
 ?>
 fieldset>
@@ -257,10 +257,10 @@ db_input('t51_descr',40,$It51_descr,true,'text',3,"js_pesquisat55_motivo(false)"
 <script>
 function js_pesquisat55_motivo(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_bensbaix','db_iframe_bensmotbaixa','func_bensmotbaixa.php?funcao_js=parent.js_mostramotivo1|t51_motivo|t51_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_bensbaix','db_iframe_bensmotbaixa','func_bensmotbaixa.php?funcao_js=parent.js_mostramotivo1|t51_motivo|t51_descr','Pesquisa',true);
   }else{
     if(document.form1.t55_motivo.value != ''){
-      js_OpenJanelaIframe('top.corpo.iframe_bensbaix','db_iframe_bensmotbaixa','func_bensmotbaixa.php?pesquisa_chave='+document.form1.t55_motivo.value+'&funcao_js=parent.js_mostramotivo','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_bensbaix','db_iframe_bensmotbaixa','func_bensmotbaixa.php?pesquisa_chave='+document.form1.t55_motivo.value+'&funcao_js=parent.js_mostramotivo','Pesquisa',false);
     }else{
       document.form1.t51_descr.value = '';
     }

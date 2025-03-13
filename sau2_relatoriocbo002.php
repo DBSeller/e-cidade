@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once('fpdf151/pdf.php');
-require_once('libs/db_utils.php');
+require_once(modification('fpdf151/pdf.php'));
+require_once(modification('libs/db_utils.php'));
 
 $oDaoProntproced = db_utils::getdao('prontproced');
 

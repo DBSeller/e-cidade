@@ -1,67 +1,89 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (c) 2014  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_rhpessoal_classe.php");
-require_once("classes/db_rhpesrescisao_classe.php");
-require_once("classes/db_rhpesfgts_classe.php");
-require_once("classes/db_rhpesdoc_classe.php");
-require_once("classes/db_rhpessoalmov_classe.php");
-require_once("classes/db_rhraca_classe.php");
-require_once("classes/db_rhinstrucao_classe.php");
-require_once("classes/db_rhestcivil_classe.php");
-require_once("classes/db_rhnacionalidade_classe.php");
-require_once("classes/db_cfpess_classe.php");
-require_once("classes/db_rhpespadrao_classe.php");
-require_once("classes/db_rhpesbanco_classe.php");
-require_once("classes/db_rhfotos_classe.php");
-require_once("classes/db_rhpesorigem_classe.php");
-require_once("libs/db_libpessoal.php");
-require_once("classes/db_rhferias_classe.php");
+use ECidade\RecursosHumanos\ESocial\Repository\ServidorAlteracao;
 
-$clrhferias = new cl_rhferias;
-$clrhpessoal = new cl_rhpessoal;
-$clrhpesrescisao = new cl_rhpesrescisao;
-$clrhpesbanco = new cl_rhpesbanco;
-$clrhpespadrao = new cl_rhpespadrao;
-$clrhpesfgts = new cl_rhpesfgts;
-$clrhpesdoc = new cl_rhpesdoc;
-$clrhpessoalmov = new cl_rhpessoalmov;
-$clrhraca = new cl_rhraca;
-$clrhinstrucao = new cl_rhinstrucao;
-$clrhestcivil = new cl_rhestcivil;
-$clrhnacionalidade = new cl_rhnacionalidade;
-$clcfpess = new cl_cfpess;
-$clrhfotos = new cl_rhfotos;
-$clrhpesorigem = new cl_rhpesorigem;
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_rhpessoal_classe.php"));
+require_once(modification("classes/db_rhpesrescisao_classe.php"));
+require_once(modification("classes/db_rhpesfgts_classe.php"));
+require_once(modification("classes/db_rhpesdoc_classe.php"));
+require_once(modification("classes/db_rhpessoalmov_classe.php"));
+require_once(modification("classes/db_rhraca_classe.php"));
+require_once(modification("classes/db_rhinstrucao_classe.php"));
+require_once(modification("classes/db_rhestcivil_classe.php"));
+require_once(modification("classes/db_rhnacionalidade_classe.php"));
+require_once(modification("classes/db_cfpess_classe.php"));
+require_once(modification("classes/db_rhpespadrao_classe.php"));
+require_once(modification("classes/db_rhpesbanco_classe.php"));
+require_once(modification("classes/db_rhfotos_classe.php"));
+require_once(modification("classes/db_rhpesorigem_classe.php"));
+require_once(modification("libs/db_libpessoal.php"));
+require_once(modification("classes/db_rhferias_classe.php"));
+require_once(modification("classes/db_registrapontoeletronicohistorico_classe.php"));
+require_once(modification("classes/db_rhdeficiente_classe.php"));
+require_once(modification("classes/db_rhdepend_classe.php"));
+require_once(modification("classes/db_tomador_classe.php"));
+require_once(modification("classes/db_assenta_classe.php"));
+require_once(modification("classes/db_rhestagiovinculo_classe.php"));
+require_once(modification("classes/db_rhimigrante_classe.php"));
+require_once(modification("classes/db_rhcedencia_classe.php"));
+
+
+$clrhferias                       = new cl_rhferias;
+$clrhpessoal                      = new cl_rhpessoal;
+$clrhpesrescisao                  = new cl_rhpesrescisao;
+$clrhpesbanco                     = new cl_rhpesbanco;
+$clrhpespadrao                    = new cl_rhpespadrao;
+$clrhpesfgts                      = new cl_rhpesfgts;
+$clrhpesdoc                       = new cl_rhpesdoc;
+$clrhpessoalmov                   = new cl_rhpessoalmov;
+$clrhraca                         = new cl_rhraca;
+$clrhinstrucao                    = new cl_rhinstrucao;
+$clrhestcivil                     = new cl_rhestcivil;
+$clrhnacionalidade                = new cl_rhnacionalidade;
+$clcfpess                         = new cl_cfpess;
+$clrhfotos                        = new cl_rhfotos;
+$clrhpesorigem                    = new cl_rhpesorigem;
+$clrhcontratoemergencial          = new cl_rhcontratoemergencial;
+$clrhcontratoemergencialrenovacao = new cl_rhcontratoemergencialrenovacao;
+$clrhdependeplug                  = new cl_rhdependeplug();
+$clregistrapontoeletronicohistorico  = new cl_registrapontoeletronicohistorico;
+$clrhdeficiente                   = new cl_rhdeficiente;
+$cltomador                        = new cl_tomador;
+$clrhdepend                       = new cl_rhdepend;
+$classenta                        = new cl_assenta;
+$clrhestagiovinculo               = new cl_rhestagiovinculo;
+$clrhimigrante                    = new cl_rhimigrante;
+$clrhcedencia                     = new cl_rhcedencia;
 
 db_postmemory($HTTP_POST_VARS);
 $db_opcao = 33;
@@ -74,85 +96,196 @@ if(isset($excluir)){
   $sqlerro=false;
   db_inicio_transacao();
 
-  $clrhpesdoc->excluir($rh01_regist);
-  $erro_msg = $clrhpesdoc->erro_msg;
-  if($clrhpesdoc->erro_status==0){
-    $sqlerro=true;
-  } 
+  $clrhdependeplug->excluir(null, "dp01_regist = {$rh01_regist}");
+  if ($clrhdependeplug->erro_status == '0') {
+      $sqlerro = true;
+      $erro_msg = "Erro ao excluir as informações do dependente.";
+  }
 
-  $result_pessoalmov = $clrhpessoalmov->sql_record($clrhpessoalmov->sql_query_file(null,null,"distinct rh02_seqpes as seqpes","","rh02_regist=".$rh01_regist." and rh02_instit = ".db_getsession("DB_instit")));
-  for($i=0; $i<$clrhpessoalmov->numrows; $i++){
-  	db_fieldsmemory($result_pessoalmov,$i);
-
-    if($sqlerro==false){
-      $clrhpespadrao->excluir($seqpes);
-      if($clrhpespadrao->erro_status==0){
-        $erro_msg = $clrhpespadrao->erro_msg;
+  if($sqlerro == false) {
+    $clregistrapontoeletronicohistorico->excluir(null, "rh215_matricula = ".$rh01_regist);
+    $erro_msg = $clregistrapontoeletronicohistorico->erro_msg;
+      if($clregistrapontoeletronicohistorico->erro_status==0){
         $sqlerro=true;
-        break;
       }
-    }
+  }
 
-    if($sqlerro==false){
-      $clrhpesbanco->excluir($seqpes);
-      if($clrhpesbanco->erro_status==0){
-        $erro_msg = $clrhpesbanco->erro_msg;
+  if($sqlerro == false) {
+      $clrhdeficiente->excluir(null, "rh253_matricula = " .$rh01_regist);
+      $erro_msg = $clrhdeficiente->erro_msg;
+      if ($clrhdeficiente->erro_status==0){
         $sqlerro=true;
-        break;
       }
-    }
-
-    if($sqlerro==false){ 
-      $clrhpesrescisao->excluir($seqpes);
-      if($clrhpesrescisao->erro_status==0){
-        $erro_msg = $clrhpesrescisao->erro_msg;
-        $sqlerro=true;
-        break;
-      }
-    }
   }
 
-  if($sqlerro == false){
-      $clrhpessoalmov->excluir(null,db_getsession("DB_instit"),"rh02_regist=".$rh01_regist." and rh02_instit = ".db_getsession("DB_instit"));
-    $erro_msg = $clrhpessoalmov->erro_msg;
-    if($clrhpessoalmov->erro_status==0){
-      $sqlerro=true;
-    } 
-  }
-
-  if($sqlerro == false){
-    $clrhpesorigem->excluir($rh01_regist);
-    if($clrhpesorigem->erro_status==0){
-      $erro_msg = $clrhpesorigem->erro_msg;
+  if(!$sqlerro) {
+    $clrhdepend->excluirByRegist($rh01_regist);
+    $erro_msg = $clrhdepend->erro_msg;
+    if ($clrhdepend->erro_status == 0) {
       $sqlerro=true;
     }
   }
 
-  if($sqlerro == false){
-    $clrhferias->excluir(null,"rh109_regist = ".$rh01_regist);
-    $erro_msg = $clrhferias->erro_msg;
-    if($clrhferias->erro_status==0){
+  if(!$sqlerro) {
+    $classenta->excluir(null, "h16_regist = " .$rh01_regist);
+    $erro_msg = $classenta->erro_msg;
+    if ($classenta->erro_status == 0) {
       $sqlerro=true;
-    } 
+    }
   }
 
-  if($sqlerro == false){
-    $clrhpessoal->excluir($rh01_regist);
-    $erro_msg = $clrhpessoal->erro_msg;
-    if($clrhpessoal->erro_status==0){
+  if(!$sqlerro) {
+    $clrhestagiovinculo->excluir(null, "rh260_matricula = " .$rh01_regist);
+    $erro_msg = $clrhestagiovinculo->erro_msg;
+    if ($clrhestagiovinculo->erro_status == 0) {
       $sqlerro=true;
-    } 
+    }
   }
+
+  if(!$sqlerro) {
+    $clrhimigrante->excluir(null, "rh252_matricula = " .$rh01_regist);
+    $erro_msg = $clrhimigrante->erro_msg;
+    if ($clrhimigrante->erro_status == 0) {
+      $sqlerro=true;
+    }
+  }
+
+  if(!$sqlerro) {
+    $clrhcedencia->excluir(null, "rh261_regist = " .$rh01_regist);
+    $erro_msg = $clrhcedencia->erro_msg;
+    if ($clrhcedencia->erro_status == 0) {
+      $sqlerro=true;
+    }
+  }
+
+    if(!$sqlerro) {
+
+        $clrhpesdoc->excluir($rh01_regist);
+        $erro_msg = $clrhpesdoc->erro_msg;
+        if($clrhpesdoc->erro_status==0){
+          $sqlerro=true;
+        }
+
+        $result_pessoalmov = $clrhpessoalmov->sql_record($clrhpessoalmov->sql_query_file(null,null,"distinct rh02_seqpes as seqpes","","rh02_regist=".$rh01_regist." and rh02_instit = ".db_getsession("DB_instit")));
+        for($i=0; $i<$clrhpessoalmov->numrows; $i++){
+          db_fieldsmemory($result_pessoalmov,$i);
+
+          if($sqlerro==false){
+            $clrhpespadrao->excluir($seqpes);
+            if($clrhpespadrao->erro_status==0){
+              $erro_msg = $clrhpespadrao->erro_msg;
+              $sqlerro=true;
+              break;
+            }
+          }
+
+          if($sqlerro==false){
+            $clrhpesbanco->excluir($seqpes);
+            if($clrhpesbanco->erro_status==0){
+              $erro_msg = $clrhpesbanco->erro_msg;
+              $sqlerro=true;
+              break;
+            }
+          }
+
+          if($sqlerro==false){
+            $clrhpesrescisao->excluir($seqpes);
+            if($clrhpesrescisao->erro_status==0){
+              $erro_msg = $clrhpesrescisao->erro_msg;
+              $sqlerro=true;
+              break;
+            }
+          }
+            if ($sqlerro == false) {
+                $cltomador->excluir($seqpes);
+
+                if($cltomador->erro_status==0){
+                    $erro_msg = $cltomador->erro_msg;
+                    $sqlerro = true;
+                }
+            }
+        }
+
+        if($sqlerro == false){
+            $clrhpessoalmov->excluir(null,db_getsession("DB_instit"),"rh02_regist=".$rh01_regist." and rh02_instit = ".db_getsession("DB_instit"));
+          $erro_msg = $clrhpessoalmov->erro_msg;
+          if($clrhpessoalmov->erro_status==0){
+            $sqlerro=true;
+          }
+        }
+
+        if($sqlerro == false){
+          $clrhpesorigem->excluir($rh01_regist);
+          if($clrhpesorigem->erro_status==0){
+            $erro_msg = $clrhpesorigem->erro_msg;
+            $sqlerro=true;
+          }
+        }
+
+        if($sqlerro == false){
+          $clrhferias->excluir(null,"rh109_regist = ".$rh01_regist);
+          $erro_msg = $clrhferias->erro_msg;
+          if($clrhferias->erro_status==0){
+            $sqlerro=true;
+          }
+        }
+
+        if($sqlerro == false) {
+            $clregistrapontoeletronicohistorico->excluir(null, "rh215_matricula = ".$rh01_regist);
+            $erro_msg = $clregistrapontoeletronicohistorico->erro_msg;
+            if($clregistrapontoeletronicohistorico->erro_status==0){
+                $sqlerro=true;
+            }
+        }
+        $alteracoes = ServidorAlteracao::findMatriculaByLayout($rh01_regist, '', true);
+        if (is_array($alteracoes)) {
+            foreach ($alteracoes as $alteracao) {
+                $alteracao->delete();
+            }
+        }
+        // <!-- [Extensao Data Assentamentos] data assentamento 006 -->
+
+        if($sqlerro == false) {
+          $clrhpessoal->excluir($rh01_regist);
+          $erro_msg = $clrhpessoal->erro_msg;
+          if($clrhpessoal->erro_status==0){
+            $sqlerro=true;
+          }
+        }
+
+        if($sqlerro == false && $hasContratoEmergencial == "t") {
+
+          $clrhcontratoemergencialrenovacao->excluir(null, "rh164_contratoemergencial in (select rh163_sequencial from rhcontratoemergencial where rh163_matricula = {$rh01_regist})");
+
+          $erro_msg = $clrhcontratoemergencialrenovacao->erro_msg;
+          if ($clrhcontratoemergencialrenovacao->erro_status == 0) {
+            $sqlerro=true;
+          }
+
+          $clrhcontratoemergencial->excluir(null, "rh163_matricula = {$rh01_regist}");
+
+          $erro_msg = $clrhcontratoemergencial->erro_msg;
+          if ($clrhcontratoemergencial->erro_status == 0) {
+            $sqlerro=true;
+          }
+        }
+    }
+
 
   db_fim_transacao($sqlerro);
   $db_opcao = 3;
   $db_botao = true;
+
 }else if(isset($chavepesquisa)){
    $db_opcao = 3;
    $db_botao = true;
-   $result = $clrhpessoal->sql_record($clrhpessoal->sql_query($chavepesquisa));
+   $result = $clrhpessoal->sql_record($clrhpessoal->sql_query_com_temporarios($chavepesquisa, "*", "rh164_datafim desc"));
    if($clrhpessoal->numrows > 0){
      db_fieldsmemory($result,0);
+     if(!empty($rh163_matricula)){
+       $visibilityContratoEmergencial  = true;
+       $contratoEmergencial = 't';
+     }
      $result_rhpesfgts = $clrhpesfgts->sql_record($clrhpesfgts->sql_query_banco($rh01_regist,"rh15_data,rh15_banco,rh15_agencia,rh15_agencia_d,rh15_contac,rh15_contac_d,db90_descr"));
      if($clrhpesfgts->numrows > 0){
      	db_fieldsmemory($result_rhpesfgts,0);
@@ -166,15 +299,25 @@ if(isset($excluir)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<?
+    db_app::load("prototype.js, widgets/Input/DBInput.widget.js, widgets/Input/DBInputDate.widget.js,
+                widgets/windowAux.widget.js, AjaxRequest.js, widgets/Collection.widget.js, widgets/DatagridCollection.widget.js");
+?>
 <link href="estilos.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+  .fieldset-hr {
+    border:none;
+    border-top: 1px outset #000;
+  }
+</style>
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="document.getElementById('db_opcao').focus();" >
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr> 
-    <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
+  <tr>
+    <td height="430" align="left" valign="top" bgcolor="#CCCCCC">
     <center>
 	<?
-	include("forms/db_frmrhpessoal.php");
+	include(modification("forms/db_frmrhpessoal.php"));
 	?>
     </center>
 	</td>
@@ -206,16 +349,19 @@ if(isset($chavepesquisa)){
  echo "
   <script>
       function js_db_libera(){
-      
+
          parent.document.formaba.rhpesdoc.disabled=false;
-         top.corpo.iframe_rhpesdoc.location.href='pes1_rhpesdoc001.php?db_opcaoal=33&rh16_regist=".@$rh01_regist."';
-         
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhpesdoc.location.href='pes1_rhpesdoc001.php?db_opcaoal=33&rh16_regist=".@$rh01_regist."';
+
          parent.document.formaba.rhpessoalmov.disabled=false;
-         top.corpo.iframe_rhpessoalmov.location.href='pes1_rhpessoalmov001.php?db_opcaoal=33&rh02_regist=".@$rh01_regist."';
-         
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhpessoalmov.location.href='pes1_rhpessoalmov001.php?db_opcaoal=33&rh02_regist=".@$rh01_regist."';
+
          parent.document.formaba.rhsuspensaopag.disabled=false;
-         top.corpo.iframe_rhsuspensaopag.location.href='pes1_rhsuspensaopag001.php?iMatricula=".@$rh01_regist."&db_opcao={$db_opcao}';
-         
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhsuspensaopag.location.href='pes1_rhsuspensaopag001.php?iMatricula=".@$rh01_regist."&db_opcao={$db_opcao}';
+
+         parent.document.formaba.rhcedente.disabled=false;
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_rhcedente.location.href='pes1_rhsuspensaopag001.php?iMatricula=".@$rh01_regist."&db_opcao={$db_opcao}';
+
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('rhpesdoc');";

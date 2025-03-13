@@ -167,10 +167,10 @@ function js_testacampos(){
 function js_pesquisarh49_regist(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoalnome.php?instit=<?=(db_getsession("DB_instit"))?>&funcao_js=parent.js_mostrarhpessoal1|rh01_regist|rh01_numcgm|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoalnome.php?instit=<?=(db_getsession("DB_instit"))?>&funcao_js=parent.js_mostrarhpessoal1|rh01_regist|rh01_numcgm|z01_nome','Pesquisa',true);
   }else{
     if(document.form1.rh49_regist.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_rhpessoal','func_rhpessoalnome.php?instit=<?=(db_getsession("DB_instit"))?>&pesquisa_chave='+document.form1.rh49_regist.value+'&funcao_js=parent.js_mostrarhpessoal','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhpessoal','func_rhpessoalnome.php?instit=<?=(db_getsession("DB_instit"))?>&pesquisa_chave='+document.form1.rh49_regist.value+'&funcao_js=parent.js_mostrarhpessoal','Pesquisa',false);
     }else{
       document.form1.rh49_numcgm.value = '';
       document.form1.z01_nome.value    = '';
@@ -198,7 +198,7 @@ function js_mostrarhpessoal1(chave1,chave2,chave3){
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_rhvisavalecad','func_rhvisavalecad.php?instit=<?=db_getsession("DB_instit")?>&funcao_js=parent.js_preenchepesquisa|rh49_codigo','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_rhvisavalecad','func_rhvisavalecad.php?instit=<?=db_getsession("DB_instit")?>&funcao_js=parent.js_preenchepesquisa|rh49_codigo','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_rhvisavalecad.hide();

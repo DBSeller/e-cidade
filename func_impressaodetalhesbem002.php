@@ -1,44 +1,44 @@
 <?php
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/pdf.php");
-require_once("libs/db_sql.php");
-require_once("libs/db_utils.php");
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_utils.php"));
 
-require_once("model/patrimonio/Bem.model.php");
-require_once("model/patrimonio/BemCedente.model.php");
-require_once("model/patrimonio/BemClassificacao.model.php");
-require_once("model/patrimonio/PlacaBem.model.php");
-require_once("model/patrimonio/BemHistoricoMovimentacao.model.php");
-require_once("model/patrimonio/BemDadosMaterial.model.php");
-require_once("model/patrimonio/BemDadosImovel.model.php");
-require_once("model/patrimonio/BemTipoAquisicao.php");
-require_once("model/patrimonio/BemTipoDepreciacao.php");
-require_once("model/CgmFactory.model.php");
+require_once(modification("model/patrimonio/Bem.model.php"));
+require_once(modification("model/patrimonio/BemCedente.model.php"));
+require_once(modification("model/patrimonio/BemClassificacao.model.php"));
+require_once(modification("model/patrimonio/PlacaBem.model.php"));
+require_once(modification("model/patrimonio/BemHistoricoMovimentacao.model.php"));
+require_once(modification("model/patrimonio/BemDadosMaterial.model.php"));
+require_once(modification("model/patrimonio/BemDadosImovel.model.php"));
+require_once(modification("model/patrimonio/BemTipoAquisicao.php"));
+require_once(modification("model/patrimonio/BemTipoDepreciacao.php"));
+require_once(modification("model/CgmFactory.model.php"));
 
 /**
  * Variáveis de parâmetros passadas por GET
@@ -67,7 +67,7 @@ $oTipoDepreciacao = $oBem->getTipoDepreciacao();
 /**
 * Carregamos a DAO e efetuamos a consulta necessária de Orgão e Unidade
 */
-$oDaoDbDepartOrg          = db_utils::getDao('db_departorg');
+$oDaoDbDepartOrg          = new cl_db_departorg;
 $sCamposBuscaOrgaoUnidade = " db01_orgao, o40_descr, db01_unidade, o41_descr ";
 $sWhereBuscaOrgaoUnidade  = "     db01_anousu = ".db_getsession("DB_anousu");
 $sWhereBuscaOrgaoUnidade .= " AND db01_coddepto = {$oBem->getDepartamento()} ";
@@ -94,7 +94,7 @@ $oDepartamento            = db_utils::fieldsMemory($rsBuscaDepartameto, 0);
 */
 if ($oCedente != null){
 
-  $oDaoConvenio         = db_utils::getDao('benscadcedente');
+  $oDaoConvenio         = new cl_benscadcedente;
   $sCamposBuscaConvenio = " z01_nome ";
   $sWhereBuscaConvenio  = " t04_sequencial = {$oCedente->getCodigo()} ";
   $sSqlBuscaConvenio    = $oDaoConvenio->sql_query(null, $sCamposBuscaConvenio, null, $sWhereBuscaConvenio);
@@ -145,10 +145,10 @@ if ($oImovel != null){
 $sObservacoes  = $oBem->getObservacao();
 
 /**
- * 
+ *
  */
 if (isset($oGet->lDadosMaterial)){
-  
+
   $oDadosMaterial                = new stdClass();
   $oDadosMaterial->sNotaFiscal   = "";
   $oDadosMaterial->sEmpenho      = "";
@@ -156,9 +156,9 @@ if (isset($oGet->lDadosMaterial)){
   $oDadosMaterial->sDataGarantia = "";
   $oDadosMaterial->sCredor       = "";
   if ($oMaterial != null){
-    
+
     $oDadosMaterial->sNotaFiscal   = $oMaterial->getNotaFiscal();
-    $oDadosMaterial->sEmpenho      = $oMaterial->getEmpenho();
+    $oDadosMaterial->sEmpenho      = "{$oMaterial->getCodigoEmpenho()} / {$oMaterial->getAnoEmpenho()}";
     $oDadosMaterial->sOrdemCompra  = $oMaterial->getOrdemCompra();
     $oDadosMaterial->sDataGarantia = $oMaterial->getDataGarantia();
     $oDadosMaterial->sCredor       = $oMaterial->getCredor();
@@ -166,32 +166,32 @@ if (isset($oGet->lDadosMaterial)){
 }
 
 if (isset($oGet->lDadosImovel)){
-  
+
   $oDadosImovel              = new stdClass();
   $oDadosImovel->sLote       = "";
   $oDadosImovel->sObservacao = "";
-  
+
   if ($oImovel != null){
-    
+
     $oDadosImovel->sLote       = $oImovel->getIdBql();
     $oDadosImovel->sObservacao = $oImovel->getObservacao();
   }
 }
 
 if (isset($oGet->lHistoricoMovimentacao)){
-  
-  $oDaoHistBem                       = db_utils::getDao('histbem');
+
+  $oDaoHistBem                       = new cl_histbem;
   $sCamposBuscaHistoricoMovimentacao = " t56_data, t56_histor, db_depart.descrdepto as descrdepto, t70_descr, z01_nome ";
   $sWhereBuscaHistoricoMovimentacao  = " t56_codbem = {$oGet->t52_bem} ";
-  $sSqlBuscaHistoricoMovimentacao    = $oDaoHistBem->sql_query(null, $sCamposBuscaHistoricoMovimentacao, 
+  $sSqlBuscaHistoricoMovimentacao    = $oDaoHistBem->sql_query(null, $sCamposBuscaHistoricoMovimentacao,
                                                                null, $sWhereBuscaHistoricoMovimentacao);
   $rsBuscaHistoricoMovimentacao      = $oDaoHistBem->sql_record($sSqlBuscaHistoricoMovimentacao);
   $aHistoricoMovimentacao            = db_utils::getCollectionByRecord($rsBuscaHistoricoMovimentacao);
 }
 
 if (isset($oGet->lHistoricoFinanceiro)){
-  
-  $oDaoBensHistoricoCalculoBem      = db_utils::getDao('benshistoricocalculobem');
+
+  $oDaoBensHistoricoCalculoBem      = new cl_benshistoricocalculobem;
   $sCamposBuscaHistoricoFinanceiro  = " t57_datacalculo,t58_valoranterior,t58_valorcalculado, t58_valoratual, ";
   $sCamposBuscaHistoricoFinanceiro .= " CASE WHEN t57_tipoprocessamento = 1 ";
   $sCamposBuscaHistoricoFinanceiro .= "      THEN 'Automático' ";
@@ -204,7 +204,7 @@ if (isset($oGet->lHistoricoFinanceiro)){
   $sCamposBuscaHistoricoFinanceiro .= "      ELSE 'Processado' END AS t57_processado, ";
   $sCamposBuscaHistoricoFinanceiro .= " fc_mesextenso(t57_mes, 'sigla') || '/' || t57_ano AS competencia, z01_nome ";
   $sWhereBuscaHistoricoFinanceiro   = " t58_bens = {$oGet->t52_bem} ";
-  $sSqlBuscaHistoricoFinanceiro     = $oDaoBensHistoricoCalculoBem->sql_query(null, $sCamposBuscaHistoricoFinanceiro, 
+  $sSqlBuscaHistoricoFinanceiro     = $oDaoBensHistoricoCalculoBem->sql_query(null, $sCamposBuscaHistoricoFinanceiro,
                                                                               null, $sWhereBuscaHistoricoFinanceiro);
   $rsBuscaHistoricoFinanceiro       = $oDaoBensHistoricoCalculoBem->sql_record($sSqlBuscaHistoricoFinanceiro);
   $aHistoricoFinanceiro             = db_utils::getCollectionByRecord($rsBuscaHistoricoFinanceiro);
@@ -214,11 +214,11 @@ if (isset($oGet->lHistoricoPlaca)){
 
   $aHistoricoPlaca = array(); // @todo tratar para exibir se oPlaca for nulo no relatório em sí
   if ($oPlaca != null){
-    
-    $oDaoBensPlaca              = db_utils::getDao('bensplaca');
+
+    $oDaoBensPlaca              = new cl_bensplaca;
     $sCamposBuscaHistoricoPlaca = " t41_data, t41_obs, descrdepto, '{$oPlaca->getNumeroPlaca()} - ' || t41_placaseq as placa ";
     $sWhereBuscaHistoricoPlaca  = " t41_bem = {$oGet->t52_bem} ";
-    $sSqlBuscaHistoricoPlaca    = $oDaoBensPlaca->sql_query(null, $sCamposBuscaHistoricoPlaca, 
+    $sSqlBuscaHistoricoPlaca    = $oDaoBensPlaca->sql_query(null, $sCamposBuscaHistoricoPlaca,
                                                             null, $sWhereBuscaHistoricoPlaca);
     $rsBuscaHistoricoPlaca      = $oDaoBensPlaca->sql_record($sSqlBuscaHistoricoPlaca);
     $aHistoricoPlaca            = db_utils::getCollectionByRecord($rsBuscaHistoricoPlaca);
@@ -318,11 +318,11 @@ $oPdf->MultiCell(150, $iAlturaCelula, $sObservacoes, 0, 1, "L", 0);
 
 
 if (isset($oGet->lDadosMaterial)){
-  
+
   $oPdf->setfont('arial','b',8);
   $oPdf->cell(0,$iAlturaCelula,'DADOS MATERIAL',0,1,"L",0);
   $oPdf->cell(0,$iAlturaCelula,'','T',1,"R",0);
-  
+
   $oPdf->SetFont('arial', 'b', 8);
   $oPdf->Cell(30, $iAlturaCelula, 'Nota Fiscal :', 0, 0, "R", 0);
   $oPdf->SetFont('arial', '', 7);
@@ -331,7 +331,7 @@ if (isset($oGet->lDadosMaterial)){
   $oPdf->Cell(30, $iAlturaCelula, 'Empenho :', 0, 0, "R", 0);
   $oPdf->SetFont('arial', '', 7);
   $oPdf->Cell(60, $iAlturaCelula, $oDadosMaterial->sEmpenho, 0, 1, "L", 0);
-  
+
   $oPdf->SetFont('arial', 'b', 8);
   $oPdf->Cell(30, $iAlturaCelula, 'Ordem de Compra :', 0, 0, "R", 0);
   $oPdf->SetFont('arial', '', 7);
@@ -340,7 +340,7 @@ if (isset($oGet->lDadosMaterial)){
   $oPdf->Cell(30, $iAlturaCelula, 'Data Garantia :', 0, 0, "R", 0);
   $oPdf->SetFont('arial', '', 7);
   $oPdf->Cell(60, $iAlturaCelula, $oDadosMaterial->sDataGarantia, 0, 1, "L", 0);
-  
+
   $oPdf->SetFont('arial', 'b', 8);
   $oPdf->Cell(30, $iAlturaCelula, 'Credor :', 0, 0, "R", 0);
   $oPdf->SetFont('arial', '', 7);
@@ -348,11 +348,11 @@ if (isset($oGet->lDadosMaterial)){
 }
 
 if (isset($oGet->lDadosImovel)){
-  
+
   $oPdf->setfont('arial','b',8);
   $oPdf->cell(0,$iAlturaCelula,'DADOS IMOVEL',0,1,"L",0);
   $oPdf->cell(0,$iAlturaCelula,'','T',1,"R",0);
-  
+
   $oPdf->SetFont('arial', 'b', 8);
   $oPdf->Cell(30, $iAlturaCelula, 'Lote :', 0, 0, "R", 0);
   $oPdf->SetFont('arial', '', 7);
@@ -364,19 +364,19 @@ if (isset($oGet->lDadosImovel)){
 }
 
 if (isset($oGet->lHistoricoMovimentacao)){
-  
+
   $oPdf->setfont('arial','b',8);
   $oPdf->cell(0,$iAlturaCelula,'HISTÓRICO MOVIMENTAÇÃO',0,1,"L",0);
   $oPdf->cell(0,$iAlturaCelula,'','T',1,"R",0);
-  
+
   $oPdf->setfont('arial','b',8);
   $oPdf->cell(28, $iAlturaCelula, "Data", 1, 0, "C", 1);
   $oPdf->cell(54, $iAlturaCelula, "Histórico", 1, 0, "C", 1);
   $oPdf->cell(54, $iAlturaCelula, "Descrição Departamento", 1, 0, "C", 1);
   $oPdf->cell(54, $iAlturaCelula, "Descrição da Situação", 1, 1, "C", 1);
-  
+
   foreach ($aHistoricoMovimentacao as $oMovimentacao){
-    
+
     $oPdf->setfont('arial','',7);
     $oPdf->cell(28, $iAlturaCelula, db_formatar($oMovimentacao->t56_data, 'd'), 0, 0, "C", 0);
     $oPdf->cell(54, $iAlturaCelula, $oMovimentacao->t56_histor, 0, 0, "L", 0);
@@ -386,11 +386,11 @@ if (isset($oGet->lHistoricoMovimentacao)){
 }
 
 if (isset($oGet->lHistoricoFinanceiro)){
-  
+
   $oPdf->setfont('arial','b',8);
   $oPdf->cell(0,$iAlturaCelula,'HISTÓRICO FINANCEIRO',0,1,"L",0);
   $oPdf->cell(0,$iAlturaCelula,'','T',1,"R",0);
-  
+
   $oPdf->setfont('arial','b',8);
   $oPdf->cell(23, $iAlturaCelula, "Data", 1, 0, "C", 1);
   $oPdf->cell(18, $iAlturaCelula, "Vlr. Anter.", 1, 0, "C", 1);
@@ -400,9 +400,9 @@ if (isset($oGet->lHistoricoFinanceiro)){
   $oPdf->cell(28, $iAlturaCelula, "Tp. Cálculo", 1, 0, "C", 1);
   $oPdf->cell(23, $iAlturaCelula, "Processado", 1, 0, "C", 1);
   $oPdf->cell(23, $iAlturaCelula, "Competência", 1, 1, "C", 1);
-  
+
   foreach ($aHistoricoFinanceiro as $oFinanceiro){
-    
+
     $oPdf->setfont('arial','',7);
     $oPdf->cell(23, $iAlturaCelula, db_formatar($oFinanceiro->t57_datacalculo, "d"), 0, 0, "C", 0);
     $oPdf->cell(18, $iAlturaCelula, db_formatar($oFinanceiro->t58_valoranterior, "f"), 0, 0, "R", 0);
@@ -416,25 +416,23 @@ if (isset($oGet->lHistoricoFinanceiro)){
 }
 
 if (isset($oGet->lHistoricoPlaca)){
-  
+
   $oPdf->setfont('arial','b',8);
   $oPdf->cell(0,$iAlturaCelula,'PLACA',0,1,"L",0);
   $oPdf->cell(0,$iAlturaCelula,'','T',1,"R",0);
-  
+
   $oPdf->setfont('arial','b',8);
   $oPdf->cell(27, $iAlturaCelula, "Data Placa", 1, 0, "C", 1);
   $oPdf->cell(67, $iAlturaCelula, "Observação Referente a Placa", 1, 0, "C", 1);
   $oPdf->cell(67, $iAlturaCelula, "Descrição Departamento", 1, 0, "C", 1);
   $oPdf->cell(27, $iAlturaCelula, "Placa", 1, 1, "C", 1);
   // t41_data, t41_obs, descrdepto, '{$oPlaca->getNumeroPlaca()} - ' || t41_placaseq as placa
-  
+
   foreach ($aHistoricoPlaca as $oPlacaInfo){
-    
+
     $oPdf->setfont('arial','',7);
-    $oPdf->cell(27, $iAlturaCelula, db_formatar($oPlacaInfo->t41_data, "d"), 0, 0, "C", 0);
-    $oPdf->cell(67, $iAlturaCelula, $oPlacaInfo->t41_obs, 0, 0, "L", 0);
-    $oPdf->cell(67, $iAlturaCelula, $oPlacaInfo->descrdepto, 0, 0, "L", 0);
-    $oPdf->cell(27, $iAlturaCelula, $oPlacaInfo->placa, 0, 1, "C", 0);
+    $oPdf->SetWidths(array(27,67,67,27));
+    $oPdf->Row(array(db_formatar($oPlacaInfo->t41_data, "d"), $oPlacaInfo->t41_obs, $oPlacaInfo->descrdepto, $oPlacaInfo->placa));
   }
 }
 $oPdf->Output();

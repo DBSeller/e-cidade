@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_noticonf_classe.php");
-include("classes/db_notificacao_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_noticonf_classe.php"));
+include(modification("classes/db_notificacao_classe.php"));
 $clrotulo      = new rotulocampo;
 $clnoticonf    = new cl_noticonf;
 $clnotificacao = new cl_notificacao;
@@ -123,10 +123,10 @@ function js_executar(){
 
 function js_pesquisalista(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe','func_lista.php?funcao_js=parent.js_mostra1|k60_codigo|k60_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_lista.php?funcao_js=parent.js_mostra1|k60_codigo|k60_descr','Pesquisa',true);
   }else{
      if(document.form1.k60_codigo.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe','func_lista.php?pesquisa_chave='+document.form1.k60_codigo.value+'&funcao_js=parent.js_mostra','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe','func_lista.php?pesquisa_chave='+document.form1.k60_codigo.value+'&funcao_js=parent.js_mostra','Pesquisa',false);
      }else{
        document.form1.k60_descr.value = '';
      }

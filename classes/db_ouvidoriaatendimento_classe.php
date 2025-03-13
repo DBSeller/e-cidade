@@ -1,91 +1,91 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: ouvidoria
 //CLASSE DA ENTIDADE ouvidoriaatendimento
-class cl_ouvidoriaatendimento { 
-   // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $ov01_sequencial = 0; 
-   var $ov01_situacaoouvidoriaatendimento = 0; 
-   var $ov01_tipoprocesso = 0; 
-   var $ov01_formareclamacao = 0; 
-   var $ov01_tipoidentificacao = 0; 
-   var $ov01_usuario = 0; 
-   var $ov01_depart = 0; 
-   var $ov01_instit = 0; 
-   var $ov01_numero = 0; 
-   var $ov01_anousu = 0; 
-   var $ov01_dataatend_dia = null; 
-   var $ov01_dataatend_mes = null; 
-   var $ov01_dataatend_ano = null; 
-   var $ov01_dataatend = null; 
-   var $ov01_horaatend = null; 
-   var $ov01_requerente = null; 
-   var $ov01_solicitacao = null; 
-   var $ov01_executado = null; 
-   // cria propriedade com as variaveis do arquivo 
+class cl_ouvidoriaatendimento {
+   // cria variaveis de erro
+   var $rotulo     = null;
+   var $query_sql  = null;
+   var $numrows    = 0;
+   var $numrows_incluir = 0;
+   var $numrows_alterar = 0;
+   var $numrows_excluir = 0;
+   var $erro_status= null;
+   var $erro_sql   = null;
+   var $erro_banco = null;
+   var $erro_msg   = null;
+   var $erro_campo = null;
+   var $pagina_retorno = null;
+   // cria variaveis do arquivo
+   var $ov01_sequencial = 0;
+   var $ov01_situacaoouvidoriaatendimento = 0;
+   var $ov01_tipoprocesso = 0;
+   var $ov01_formareclamacao = 0;
+   var $ov01_tipoidentificacao = 0;
+   var $ov01_usuario = 0;
+   var $ov01_depart = 0;
+   var $ov01_instit = 0;
+   var $ov01_numero = 0;
+   var $ov01_anousu = 0;
+   var $ov01_dataatend_dia = null;
+   var $ov01_dataatend_mes = null;
+   var $ov01_dataatend_ano = null;
+   var $ov01_dataatend = null;
+   var $ov01_horaatend = null;
+   var $ov01_requerente = null;
+   var $ov01_solicitacao = null;
+   var $ov01_executado = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
-                 ov01_sequencial = int4 = Sequencial 
-                 ov01_situacaoouvidoriaatendimento = int4 = Situação 
-                 ov01_tipoprocesso = int4 = Tipo de Processo 
-                 ov01_formareclamacao = int4 = Forma de Reclamação 
-                 ov01_tipoidentificacao = int4 = Tipo de Identificação 
-                 ov01_usuario = int4 = Usuário 
-                 ov01_depart = int4 = Departamento 
-                 ov01_instit = int4 = Instituição 
-                 ov01_numero = int4 = Número do Atendimento 
-                 ov01_anousu = int4 = Ano 
-                 ov01_dataatend = date = Data Atendimento 
-                 ov01_horaatend = char(5) = Hora Atendimento 
-                 ov01_requerente = varchar(100) = Requerente 
-                 ov01_solicitacao = text = Solicitação 
-                 ov01_executado = text = Executado 
+                 ov01_sequencial = int4 = Sequencial
+                 ov01_situacaoouvidoriaatendimento = int4 = Situação
+                 ov01_tipoprocesso = int4 = Tipo de Processo
+                 ov01_formareclamacao = int4 = Forma de Reclamação
+                 ov01_tipoidentificacao = int4 = Tipo de Identificação
+                 ov01_usuario = int4 = Usuário
+                 ov01_depart = int4 = Departamento
+                 ov01_instit = int4 = Instituição
+                 ov01_numero = int4 = Número do Atendimento
+                 ov01_anousu = int4 = Ano
+                 ov01_dataatend = date = Data Atendimento
+                 ov01_horaatend = char(5) = Hora Atendimento
+                 ov01_requerente = varchar(100) = Requerente
+                 ov01_solicitacao = text = Solicitação
+                 ov01_executado = text = Executado
                  ";
-   //funcao construtor da classe 
-   function cl_ouvidoriaatendimento() { 
+   //funcao construtor da classe
+   function cl_ouvidoriaatendimento() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("ouvidoriaatendimento"); 
+     $this->rotulo = new rotulo("ouvidoriaatendimento");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -123,9 +123,9 @@ class cl_ouvidoriaatendimento {
      }
    }
    // funcao para inclusao
-   function incluir ($ov01_sequencial){ 
+   function incluir ($ov01_sequencial){
       $this->atualizacampos();
-     if($this->ov01_situacaoouvidoriaatendimento == null ){ 
+     if($this->ov01_situacaoouvidoriaatendimento == null ){
        $this->erro_sql = " Campo Situação nao Informado.";
        $this->erro_campo = "ov01_situacaoouvidoriaatendimento";
        $this->erro_banco = "";
@@ -134,7 +134,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_tipoprocesso == null ){ 
+     if($this->ov01_tipoprocesso == null ){
        $this->erro_sql = " Campo Tipo de Processo nao Informado.";
        $this->erro_campo = "ov01_tipoprocesso";
        $this->erro_banco = "";
@@ -143,7 +143,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_formareclamacao == null ){ 
+     if($this->ov01_formareclamacao == null ){
        $this->erro_sql = " Campo Forma de Reclamação nao Informado.";
        $this->erro_campo = "ov01_formareclamacao";
        $this->erro_banco = "";
@@ -152,7 +152,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_tipoidentificacao == null ){ 
+     if($this->ov01_tipoidentificacao == null ){
        $this->erro_sql = " Campo Tipo de Identificação nao Informado.";
        $this->erro_campo = "ov01_tipoidentificacao";
        $this->erro_banco = "";
@@ -161,7 +161,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_usuario == null ){ 
+     if($this->ov01_usuario == null ){
        $this->erro_sql = " Campo Usuário nao Informado.";
        $this->erro_campo = "ov01_usuario";
        $this->erro_banco = "";
@@ -170,7 +170,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_depart == null ){ 
+     if($this->ov01_depart == null ){
        $this->erro_sql = " Campo Departamento nao Informado.";
        $this->erro_campo = "ov01_depart";
        $this->erro_banco = "";
@@ -179,7 +179,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_instit == null ){ 
+     if($this->ov01_instit == null ){
        $this->erro_sql = " Campo Instituição nao Informado.";
        $this->erro_campo = "ov01_instit";
        $this->erro_banco = "";
@@ -188,7 +188,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_numero == null ){ 
+     if($this->ov01_numero == null ){
        $this->erro_sql = " Campo Número do Atendimento nao Informado.";
        $this->erro_campo = "ov01_numero";
        $this->erro_banco = "";
@@ -197,7 +197,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_anousu == null ){ 
+     if($this->ov01_anousu == null ){
        $this->erro_sql = " Campo Ano nao Informado.";
        $this->erro_campo = "ov01_anousu";
        $this->erro_banco = "";
@@ -206,7 +206,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_dataatend == null ){ 
+     if($this->ov01_dataatend == null ){
        $this->erro_sql = " Campo Data Atendimento nao Informado.";
        $this->erro_campo = "ov01_dataatend_dia";
        $this->erro_banco = "";
@@ -215,7 +215,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_horaatend == null ){ 
+     if($this->ov01_horaatend == null ){
        $this->erro_sql = " Campo Hora Atendimento nao Informado.";
        $this->erro_campo = "ov01_horaatend";
        $this->erro_banco = "";
@@ -224,7 +224,7 @@ class cl_ouvidoriaatendimento {
        $this->erro_status = "0";
        return false;
      }
-     if($this->ov01_requerente == null ){ 
+     if($this->ov01_requerente == null ){
        $this->erro_sql = " Campo Requerente nao Informado.";
        $this->erro_campo = "ov01_requerente";
        $this->erro_banco = "";
@@ -234,16 +234,16 @@ class cl_ouvidoriaatendimento {
        return false;
      }
      if($ov01_sequencial == "" || $ov01_sequencial == null ){
-       $result = db_query("select nextval('ouvidoriaatendimento_ov01_sequencial_seq')"); 
+       $result = db_query("select nextval('ouvidoriaatendimento_ov01_sequencial_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: ouvidoriaatendimento_ov01_sequencial_seq do campo: ov01_sequencial"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: ouvidoriaatendimento_ov01_sequencial_seq do campo: ov01_sequencial";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->ov01_sequencial = pg_result($result,0,0); 
+       $this->ov01_sequencial = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from ouvidoriaatendimento_ov01_sequencial_seq");
        if(($result != false) && (pg_result($result,0,0) < $ov01_sequencial)){
@@ -254,10 +254,10 @@ class cl_ouvidoriaatendimento {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->ov01_sequencial = $ov01_sequencial; 
+         $this->ov01_sequencial = $ov01_sequencial;
        }
      }
-     if(($this->ov01_sequencial == null) || ($this->ov01_sequencial == "") ){ 
+     if(($this->ov01_sequencial == null) || ($this->ov01_sequencial == "") ){
        $this->erro_sql = " Campo ov01_sequencial nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -266,41 +266,41 @@ class cl_ouvidoriaatendimento {
        return false;
      }
      $sql = "insert into ouvidoriaatendimento(
-                                       ov01_sequencial 
-                                      ,ov01_situacaoouvidoriaatendimento 
-                                      ,ov01_tipoprocesso 
-                                      ,ov01_formareclamacao 
-                                      ,ov01_tipoidentificacao 
-                                      ,ov01_usuario 
-                                      ,ov01_depart 
-                                      ,ov01_instit 
-                                      ,ov01_numero 
-                                      ,ov01_anousu 
-                                      ,ov01_dataatend 
-                                      ,ov01_horaatend 
-                                      ,ov01_requerente 
-                                      ,ov01_solicitacao 
-                                      ,ov01_executado 
+                                       ov01_sequencial
+                                      ,ov01_situacaoouvidoriaatendimento
+                                      ,ov01_tipoprocesso
+                                      ,ov01_formareclamacao
+                                      ,ov01_tipoidentificacao
+                                      ,ov01_usuario
+                                      ,ov01_depart
+                                      ,ov01_instit
+                                      ,ov01_numero
+                                      ,ov01_anousu
+                                      ,ov01_dataatend
+                                      ,ov01_horaatend
+                                      ,ov01_requerente
+                                      ,ov01_solicitacao
+                                      ,ov01_executado
                        )
                 values (
-                                $this->ov01_sequencial 
-                               ,$this->ov01_situacaoouvidoriaatendimento 
-                               ,$this->ov01_tipoprocesso 
-                               ,$this->ov01_formareclamacao 
-                               ,$this->ov01_tipoidentificacao 
-                               ,$this->ov01_usuario 
-                               ,$this->ov01_depart 
-                               ,$this->ov01_instit 
-                               ,$this->ov01_numero 
-                               ,$this->ov01_anousu 
-                               ,".($this->ov01_dataatend == "null" || $this->ov01_dataatend == ""?"null":"'".$this->ov01_dataatend."'")." 
-                               ,'$this->ov01_horaatend' 
-                               ,'$this->ov01_requerente' 
-                               ,'$this->ov01_solicitacao' 
-                               ,'$this->ov01_executado' 
+                                $this->ov01_sequencial
+                               ,$this->ov01_situacaoouvidoriaatendimento
+                               ,$this->ov01_tipoprocesso
+                               ,$this->ov01_formareclamacao
+                               ,$this->ov01_tipoidentificacao
+                               ,$this->ov01_usuario
+                               ,$this->ov01_depart
+                               ,$this->ov01_instit
+                               ,$this->ov01_numero
+                               ,$this->ov01_anousu
+                               ,".($this->ov01_dataatend == "null" || $this->ov01_dataatend == ""?"null":"'".$this->ov01_dataatend."'")."
+                               ,'$this->ov01_horaatend'
+                               ,'$this->ov01_requerente'
+                               ,'$this->ov01_solicitacao'
+                               ,'$this->ov01_executado'
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Cadastro de Atendimentos da Ouvidoria ($this->ov01_sequencial) nao Incluído. Inclusao Abortada.";
@@ -346,16 +346,16 @@ class cl_ouvidoriaatendimento {
        $resac = db_query("insert into db_acount values($acount,2600,14780,'','".AddSlashes(pg_result($resaco,0,'ov01_executado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($ov01_sequencial=null) { 
+   function alterar ($ov01_sequencial=null) {
       $this->atualizacampos();
      $sql = " update ouvidoriaatendimento set ";
      $virgula = "";
-     if(trim($this->ov01_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_sequencial"])){ 
+     if(trim($this->ov01_sequencial)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_sequencial"])){
        $sql  .= $virgula." ov01_sequencial = $this->ov01_sequencial ";
        $virgula = ",";
-       if(trim($this->ov01_sequencial) == null ){ 
+       if(trim($this->ov01_sequencial) == null ){
          $this->erro_sql = " Campo Sequencial nao Informado.";
          $this->erro_campo = "ov01_sequencial";
          $this->erro_banco = "";
@@ -365,10 +365,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_situacaoouvidoriaatendimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_situacaoouvidoriaatendimento"])){ 
+     if(trim($this->ov01_situacaoouvidoriaatendimento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_situacaoouvidoriaatendimento"])){
        $sql  .= $virgula." ov01_situacaoouvidoriaatendimento = $this->ov01_situacaoouvidoriaatendimento ";
        $virgula = ",";
-       if(trim($this->ov01_situacaoouvidoriaatendimento) == null ){ 
+       if(trim($this->ov01_situacaoouvidoriaatendimento) == null ){
          $this->erro_sql = " Campo Situação nao Informado.";
          $this->erro_campo = "ov01_situacaoouvidoriaatendimento";
          $this->erro_banco = "";
@@ -378,10 +378,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_tipoprocesso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_tipoprocesso"])){ 
+     if(trim($this->ov01_tipoprocesso)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_tipoprocesso"])){
        $sql  .= $virgula." ov01_tipoprocesso = $this->ov01_tipoprocesso ";
        $virgula = ",";
-       if(trim($this->ov01_tipoprocesso) == null ){ 
+       if(trim($this->ov01_tipoprocesso) == null ){
          $this->erro_sql = " Campo Tipo de Processo nao Informado.";
          $this->erro_campo = "ov01_tipoprocesso";
          $this->erro_banco = "";
@@ -391,10 +391,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_formareclamacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_formareclamacao"])){ 
+     if(trim($this->ov01_formareclamacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_formareclamacao"])){
        $sql  .= $virgula." ov01_formareclamacao = $this->ov01_formareclamacao ";
        $virgula = ",";
-       if(trim($this->ov01_formareclamacao) == null ){ 
+       if(trim($this->ov01_formareclamacao) == null ){
          $this->erro_sql = " Campo Forma de Reclamação nao Informado.";
          $this->erro_campo = "ov01_formareclamacao";
          $this->erro_banco = "";
@@ -404,10 +404,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_tipoidentificacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_tipoidentificacao"])){ 
+     if(trim($this->ov01_tipoidentificacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_tipoidentificacao"])){
        $sql  .= $virgula." ov01_tipoidentificacao = $this->ov01_tipoidentificacao ";
        $virgula = ",";
-       if(trim($this->ov01_tipoidentificacao) == null ){ 
+       if(trim($this->ov01_tipoidentificacao) == null ){
          $this->erro_sql = " Campo Tipo de Identificação nao Informado.";
          $this->erro_campo = "ov01_tipoidentificacao";
          $this->erro_banco = "";
@@ -417,10 +417,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_usuario"])){ 
+     if(trim($this->ov01_usuario)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_usuario"])){
        $sql  .= $virgula." ov01_usuario = $this->ov01_usuario ";
        $virgula = ",";
-       if(trim($this->ov01_usuario) == null ){ 
+       if(trim($this->ov01_usuario) == null ){
          $this->erro_sql = " Campo Usuário nao Informado.";
          $this->erro_campo = "ov01_usuario";
          $this->erro_banco = "";
@@ -430,10 +430,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_depart)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_depart"])){ 
+     if(trim($this->ov01_depart)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_depart"])){
        $sql  .= $virgula." ov01_depart = $this->ov01_depart ";
        $virgula = ",";
-       if(trim($this->ov01_depart) == null ){ 
+       if(trim($this->ov01_depart) == null ){
          $this->erro_sql = " Campo Departamento nao Informado.";
          $this->erro_campo = "ov01_depart";
          $this->erro_banco = "";
@@ -443,10 +443,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_instit"])){ 
+     if(trim($this->ov01_instit)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_instit"])){
        $sql  .= $virgula." ov01_instit = $this->ov01_instit ";
        $virgula = ",";
-       if(trim($this->ov01_instit) == null ){ 
+       if(trim($this->ov01_instit) == null ){
          $this->erro_sql = " Campo Instituição nao Informado.";
          $this->erro_campo = "ov01_instit";
          $this->erro_banco = "";
@@ -456,10 +456,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_numero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_numero"])){ 
+     if(trim($this->ov01_numero)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_numero"])){
        $sql  .= $virgula." ov01_numero = $this->ov01_numero ";
        $virgula = ",";
-       if(trim($this->ov01_numero) == null ){ 
+       if(trim($this->ov01_numero) == null ){
          $this->erro_sql = " Campo Número do Atendimento nao Informado.";
          $this->erro_campo = "ov01_numero";
          $this->erro_banco = "";
@@ -469,10 +469,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_anousu"])){ 
+     if(trim($this->ov01_anousu)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_anousu"])){
        $sql  .= $virgula." ov01_anousu = $this->ov01_anousu ";
        $virgula = ",";
-       if(trim($this->ov01_anousu) == null ){ 
+       if(trim($this->ov01_anousu) == null ){
          $this->erro_sql = " Campo Ano nao Informado.";
          $this->erro_campo = "ov01_anousu";
          $this->erro_banco = "";
@@ -482,10 +482,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_dataatend)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_dataatend_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ov01_dataatend_dia"] !="") ){ 
+     if(trim($this->ov01_dataatend)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_dataatend_dia"]) &&  ($GLOBALS["HTTP_POST_VARS"]["ov01_dataatend_dia"] !="") ){
        $sql  .= $virgula." ov01_dataatend = '$this->ov01_dataatend' ";
        $virgula = ",";
-       if(trim($this->ov01_dataatend) == null ){ 
+       if(trim($this->ov01_dataatend) == null ){
          $this->erro_sql = " Campo Data Atendimento nao Informado.";
          $this->erro_campo = "ov01_dataatend_dia";
          $this->erro_banco = "";
@@ -494,11 +494,11 @@ class cl_ouvidoriaatendimento {
          $this->erro_status = "0";
          return false;
        }
-     }     else{ 
-       if(isset($GLOBALS["HTTP_POST_VARS"]["ov01_dataatend_dia"])){ 
+     }     else{
+       if(isset($GLOBALS["HTTP_POST_VARS"]["ov01_dataatend_dia"])){
          $sql  .= $virgula." ov01_dataatend = null ";
          $virgula = ",";
-         if(trim($this->ov01_dataatend) == null ){ 
+         if(trim($this->ov01_dataatend) == null ){
            $this->erro_sql = " Campo Data Atendimento nao Informado.";
            $this->erro_campo = "ov01_dataatend_dia";
            $this->erro_banco = "";
@@ -509,10 +509,10 @@ class cl_ouvidoriaatendimento {
          }
        }
      }
-     if(trim($this->ov01_horaatend)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_horaatend"])){ 
+     if(trim($this->ov01_horaatend)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_horaatend"])){
        $sql  .= $virgula." ov01_horaatend = '$this->ov01_horaatend' ";
        $virgula = ",";
-       if(trim($this->ov01_horaatend) == null ){ 
+       if(trim($this->ov01_horaatend) == null ){
          $this->erro_sql = " Campo Hora Atendimento nao Informado.";
          $this->erro_campo = "ov01_horaatend";
          $this->erro_banco = "";
@@ -522,10 +522,10 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_requerente)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_requerente"])){ 
+     if(trim($this->ov01_requerente)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_requerente"])){
        $sql  .= $virgula." ov01_requerente = '$this->ov01_requerente' ";
        $virgula = ",";
-       if(trim($this->ov01_requerente) == null ){ 
+       if(trim($this->ov01_requerente) == null ){
          $this->erro_sql = " Campo Requerente nao Informado.";
          $this->erro_campo = "ov01_requerente";
          $this->erro_banco = "";
@@ -535,11 +535,11 @@ class cl_ouvidoriaatendimento {
          return false;
        }
      }
-     if(trim($this->ov01_solicitacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_solicitacao"])){ 
+     if(trim($this->ov01_solicitacao)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_solicitacao"])){
        $sql  .= $virgula." ov01_solicitacao = '$this->ov01_solicitacao' ";
        $virgula = ",";
      }
-     if(trim($this->ov01_executado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_executado"])){ 
+     if(trim($this->ov01_executado)!="" || isset($GLOBALS["HTTP_POST_VARS"]["ov01_executado"])){
        $sql  .= $virgula." ov01_executado = '$this->ov01_executado' ";
        $virgula = ",";
      }
@@ -587,7 +587,7 @@ class cl_ouvidoriaatendimento {
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cadastro de Atendimentos da Ouvidoria nao Alterado. Alteracao Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->ov01_sequencial;
@@ -615,14 +615,14 @@ class cl_ouvidoriaatendimento {
          $this->erro_status = "1";
          $this->numrows_alterar = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao para exclusao 
-   function excluir ($ov01_sequencial=null,$dbwhere=null) { 
+       }
+     }
+   }
+   // funcao para exclusao
+   function excluir ($ov01_sequencial=null,$dbwhere=null) {
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($ov01_sequencial));
-     }else{ 
+     }else{
        $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
      }
      if(($resaco!=false)||($this->numrows!=0)){
@@ -662,7 +662,7 @@ class cl_ouvidoriaatendimento {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Cadastro de Atendimentos da Ouvidoria nao Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$ov01_sequencial;
@@ -690,11 +690,11 @@ class cl_ouvidoriaatendimento {
          $this->erro_status = "1";
          $this->numrows_excluir = pg_affected_rows($result);
          return true;
-       } 
-     } 
-   } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+       }
+     }
+   }
+   // funcao do recordset
+   function sql_record($sql) {
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -716,11 +716,11 @@ class cl_ouvidoriaatendimento {
       }
      return $result;
    }
-   // funcao do sql 
-   function sql_query ( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query ( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -742,15 +742,15 @@ class cl_ouvidoriaatendimento {
      $sql2 = "";
      if($dbwhere==""){
        if($ov01_sequencial!=null ){
-         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial "; 
-       } 
+         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -759,11 +759,11 @@ class cl_ouvidoriaatendimento {
      }
      return $sql;
   }
-   // funcao do sql 
-   function sql_query_file ( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   // funcao do sql
+   function sql_query_file ( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -776,15 +776,15 @@ class cl_ouvidoriaatendimento {
      $sql2 = "";
      if($dbwhere==""){
        if($ov01_sequencial!=null ){
-         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial "; 
-       } 
+         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -793,11 +793,11 @@ class cl_ouvidoriaatendimento {
      }
      return $sql;
   }
-   function sql_query_dados_atendimento($ov01_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") { 
-     
+   function sql_query_dados_atendimento($ov01_sequencial = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
     $sql = "select ";
     if($campos != "*" ){
-      $campos_sql = split("#",$campos);
+      $campos_sql = explode("#",$campos);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -811,7 +811,7 @@ class cl_ouvidoriaatendimento {
     $sql .= "      inner join tipoidentificacao             on tipoidentificacao.ov05_sequencial                     = ouvidoriaatendimento.ov01_tipoidentificacao";
     $sql .= "      inner join formareclamacao               on formareclamacao.p42_sequencial                        = ouvidoriaatendimento.ov01_formareclamacao";
     $sql .= "      inner join tipoprocgrupo                 on tipoprocgrupo.p40_sequencial                          = tipoproc.p51_tipoprocgrupo";
-    $sql .= "      inner join situacaoouvidoriaatendimento  on situacaoouvidoriaatendimento.ov18_sequencial          = ouvidoriaatendimento.ov01_situacaoouvidoriaatendimento";     
+    $sql .= "      inner join situacaoouvidoriaatendimento  on situacaoouvidoriaatendimento.ov18_sequencial          = ouvidoriaatendimento.ov01_situacaoouvidoriaatendimento";
     $sql .= "      inner join processoouvidoria             on processoouvidoria.ov09_ouvidoriaatendimento           = ouvidoriaatendimento.ov01_sequencial";
     $sql .= "      inner join protprocesso                  on protprocesso.p58_codproc                              = processoouvidoria.ov09_protprocesso ";
     $sql .= "      left  join processoouvidoriaprorrogacao  on processoouvidoriaprorrogacao.ov15_protprocesso        = protprocesso.p58_codproc";
@@ -826,20 +826,20 @@ class cl_ouvidoriaatendimento {
     $sql .= "      left  join ouvidoriacadlocaldepart       on ouvidoriacadlocaldepart.ov27_ouvidoriacadlocal        = ouvidoriacadlocal.ov25_sequencial";
     $sql .= "      left  join ouvidoriacadlocalgeral        on ouvidoriacadlocalgeral.ov28_ouvidoriacadlocal         = ouvidoriacadlocal.ov25_sequencial";
     $sql .= "      left  join db_depart                     on db_depart.coddepto                                    = protprocesso.p58_coddepto";
-    $sql .= "      left  join procandam                     on procandam.p61_codandam                                = protprocesso.p58_codandam";   
-    
+    $sql .= "      left  join procandam                     on procandam.p61_codandam                                = protprocesso.p58_codandam";
+
     $sql2 = "";
     if($dbwhere==""){
       if($ov01_sequencial!=null ){
-        $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial "; 
-      } 
+        $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial ";
+      }
     }else if($dbwhere != ""){
       $sql2 = " where $dbwhere";
     }
     $sql .= $sql2;
     if($ordem != null ){
       $sql .= " order by ";
-      $campos_sql = split("#",$ordem);
+      $campos_sql = explode("#",$ordem);
       $virgula = "";
       for($i=0;$i<sizeof($campos_sql);$i++){
         $sql .= $virgula.$campos_sql[$i];
@@ -848,10 +848,10 @@ class cl_ouvidoriaatendimento {
     }
     return $sql;
   }
-   function sql_query_proc( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_proc( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -865,7 +865,7 @@ class cl_ouvidoriaatendimento {
      $sql .= "      inner join tipoidentificacao             on tipoidentificacao.ov05_sequencial = ouvidoriaatendimento.ov01_tipoidentificacao";
      $sql .= "      inner join formareclamacao               on formareclamacao.p42_sequencial    = ouvidoriaatendimento.ov01_formareclamacao";
      $sql .= "      inner join tipoprocgrupo                 on tipoprocgrupo.p40_sequencial      = tipoproc.p51_tipoprocgrupo";
-     $sql .= "      inner join situacaoouvidoriaatendimento  on situacaoouvidoriaatendimento.ov18_sequencial = ouvidoriaatendimento.ov01_situacaoouvidoriaatendimento";     
+     $sql .= "      inner join situacaoouvidoriaatendimento  on situacaoouvidoriaatendimento.ov18_sequencial = ouvidoriaatendimento.ov01_situacaoouvidoriaatendimento";
      $sql .= "      left  join processoouvidoria             on processoouvidoria.ov09_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial";
      $sql .= "      left  join protprocesso                  on protprocesso.p58_codproc          = processoouvidoria.ov09_protprocesso ";
      $sql .= "      left  join processoouvidoriaprorrogacao  on processoouvidoriaprorrogacao.ov15_protprocesso = protprocesso.p58_codproc";
@@ -874,15 +874,15 @@ class cl_ouvidoriaatendimento {
      $sql2 = "";
      if($dbwhere==""){
        if($ov01_sequencial!=null ){
-         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial "; 
-       } 
+         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -891,10 +891,10 @@ class cl_ouvidoriaatendimento {
      }
      return $sql;
   }
-   function sql_query_proctitular( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_proctitular( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -911,20 +911,20 @@ class cl_ouvidoriaatendimento {
                         left  join arqproc                     on p68_codproc               = p58_codproc
                         left  join ouvidoriaatendimentocgm     on ov11_ouvidoriaatendimento = ov01_sequencial
                         left  join ouvidoriaatendimentocidadao on ov10_ouvidoriaatendimento = ov01_sequencial ";
-     
-     
+
+
      $sql2 = "";
      if($dbwhere==""){
        if($ov01_sequencial!=null ){
-         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial "; 
-       } 
+         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -933,10 +933,10 @@ class cl_ouvidoriaatendimento {
      }
      return $sql;
   }
-   function sql_query_retorno( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_retorno( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -950,26 +950,26 @@ class cl_ouvidoriaatendimento {
      $sql .= "      inner join tipoidentificacao             on tipoidentificacao.ov05_sequencial = ouvidoriaatendimento.ov01_tipoidentificacao";
      $sql .= "      inner join formareclamacao               on formareclamacao.p42_sequencial    = ouvidoriaatendimento.ov01_formareclamacao";
      $sql .= "      inner join tipoprocgrupo                 on tipoprocgrupo.p40_sequencial      = tipoproc.p51_tipoprocgrupo";
-     $sql .= "      inner join situacaoouvidoriaatendimento  on situacaoouvidoriaatendimento.ov18_sequencial = ouvidoriaatendimento.ov01_situacaoouvidoriaatendimento";     
+     $sql .= "      inner join situacaoouvidoriaatendimento  on situacaoouvidoriaatendimento.ov18_sequencial = ouvidoriaatendimento.ov01_situacaoouvidoriaatendimento";
      $sql .= "      left  join processoouvidoria             on processoouvidoria.ov09_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial";
      $sql .= "      left  join protprocesso                  on protprocesso.p58_codproc          = processoouvidoria.ov09_protprocesso ";
      $sql .= "      left  join processoouvidoriaprorrogacao  on processoouvidoriaprorrogacao.ov15_protprocesso = protprocesso.p58_codproc";
      $sql .= "      left  join ouvidoriaatendimentoretorno   on ouvidoriaatendimentoretorno.ov20_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial";
      $sql .= "      left  join tiporetorno                   on tiporetorno.ov22_sequencial = ouvidoriaatendimentoretorno.ov20_tiporetorno";
-     
-     
+
+
      $sql2 = "";
      if($dbwhere==""){
        if($ov01_sequencial!=null ){
-         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial "; 
-       } 
+         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -978,10 +978,10 @@ class cl_ouvidoriaatendimento {
      }
      return $sql;
   }
-   function sql_query_titular( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   function sql_query_titular( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1001,24 +1001,24 @@ class cl_ouvidoriaatendimento {
      $sql .= "      left  join ouvidoriaatendimentolocal    on ouvidoriaatendimentolocal.ov24_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial";
      $sql .= "      left  join ouvidoriacadlocal            on ouvidoriacadlocal. ov25_sequencial = ouvidoriaatendimentolocal.ov24_ouvidoriacadlocal";
      $sql .= "      left  join ouvidoriaatendimentocidadao  on ouvidoriaatendimentocidadao.ov10_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial";
-     $sql .= "      left  join cidadao                      on cidadao.ov02_sequencial =  ouvidoriaatendimentocidadao.ov10_cidadao";     
+     $sql .= "      left  join cidadao                      on cidadao.ov02_sequencial =  ouvidoriaatendimentocidadao.ov10_cidadao";
      $sql .= "                                             and cidadao.ov02_seq        =  ouvidoriaatendimentocidadao.ov10_seq";
      $sql .= "      left  join ouvidoriaatendimentocgm      on ouvidoriaatendimentocgm.ov11_ouvidoriaatendimento     = ouvidoriaatendimento.ov01_sequencial";
      $sql .= "      left  join cgm                          on cgm.z01_numcgm = ouvidoriaatendimentocgm.ov11_cgm";
      $sql .= "      left  join processoouvidoria            on processoouvidoria.ov09_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial";
-     
+
      $sql2 = "";
      if($dbwhere==""){
        if($ov01_sequencial!=null ){
-         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial "; 
-       } 
+         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1027,10 +1027,10 @@ class cl_ouvidoriaatendimento {
      }
      return $sql;
   }
-  function sql_query_consultaatendimentos( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+  function sql_query_consultaatendimentos( $ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1044,19 +1044,19 @@ class cl_ouvidoriaatendimento {
      $sql .= " LEFT JOIN processoouvidoria ON processoouvidoria.ov09_ouvidoriaatendimento = ouvidoriaatendimento.ov01_sequencial ";
      $sql .= " LEFT JOIN protprocesso ON protprocesso.p58_codproc = processoouvidoria.ov09_protprocesso                          ";
      $sql .= " LEFT JOIN db_depart ON db_depart.coddepto = ouvidoriaatendimento.ov01_depart                                      ";
-     
+
      $sql2 = "";
      if($dbwhere==""){
        if($ov01_sequencial!=null ){
-         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial "; 
-       } 
+         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1065,12 +1065,12 @@ class cl_ouvidoriaatendimento {
      }
      return $sql;
   }
-  
+
   function sql_query_atendimento_processo($ov01_sequencial=null,$campos="*",$ordem=null,$dbwhere="") {
-    
+
      $sql = "select ";
      if ($campos != "*" ) {
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1088,19 +1088,19 @@ class cl_ouvidoriaatendimento {
      $sql .= "      left  join ouvidoriacadlocal            on ouvidoriacadlocal.ov25_sequencial                   = ouvidoriaatendimentolocal.ov24_ouvidoriacadlocal";
      $sql .= "      left  join processoouvidoria            on processoouvidoria.ov09_ouvidoriaatendimento         = ouvidoriaatendimento.ov01_sequencial";
      $sql .= "      left  join protprocesso                 on protprocesso.p58_codproc                            = processoouvidoria.ov09_protprocesso";
-     
+
      $sql2 = "";
      if($dbwhere==""){
        if($ov01_sequencial!=null ){
-         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial "; 
-       } 
+         $sql2 .= " where ouvidoriaatendimento.ov01_sequencial = $ov01_sequencial ";
+       }
      }else if($dbwhere != ""){
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -1109,6 +1109,45 @@ class cl_ouvidoriaatendimento {
      }
      return $sql;
   }
-  
+
+  public function buscarSolicitacaoOuvidoria($sWhere)
+  {
+      if (empty($sWhere)) throw new Exception("Informe algum filtro");
+
+      $sSQL = "
+            SELECT ov01_sequencial as sequencial,
+                   ov01_tipoprocesso as tipo_processo,
+                   ov02_sequencial,
+                   ov01_numero||'/'||ov01_anousu as processo,
+                   ov33_informacoesprocesso as metadados,
+                   p43_formareclamacao as formareclamacao,
+                   ov01_numero as numero_processo,
+                   ov01_anousu as ano_processo,
+                   ov01_depart as departamento,
+                   ov33_client_atendimento_id
+              FROM ouvidoria.ouvidoriaatendimento
+             INNER JOIN ouvidoriaatendimentoprocessoeletronico
+                ON ov33_ouvidoriaatendimento = ov01_sequencial
+             INNER JOIN tipoproc
+                ON p51_codigo = ov01_tipoprocesso
+              LEFT JOIN ouvidoriaatendimentocidadao
+                ON ov10_ouvidoriaatendimento = ov01_sequencial
+              LEFT JOIN tipoprocformareclamacao
+                ON p43_tipoproc = ov01_tipoprocesso
+              LEFT JOIN cidadao
+                ON ov02_sequencial = ov10_cidadao AND ov02_seq = ov10_seq
+              LEFT JOIN processoouvidoria
+                ON ov09_ouvidoriaatendimento = ov01_sequencial
+             WHERE {$sWhere}
+                ORDER BY sequencial";
+
+      $rResult = db_query($sSQL);
+
+      if ($rResult) {
+          return \db_utils::fieldsMemory($rResult, 0);
+      }
+
+      return null;
+  }
 }
 ?>

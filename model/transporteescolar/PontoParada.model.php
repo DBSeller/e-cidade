@@ -1,35 +1,35 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 /**
  * Pontos de parada do transporte
  * @author Iuri Guntchnigg
  * @package transporteescolar
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.5 $
  */
 class PontoParada {
 
@@ -96,6 +96,12 @@ class PontoParada {
   protected $iTipo = 1;
 
   /**
+   * Escola de procedencia
+   * @var EscolaProcedencia
+   */
+  protected $oEscolaProcedencia = null;
+
+  /**
    * Instancia um Ponto de parada
    * @param string $iCodigo Codigo do ponto de parada
    * @throws ParameterException codigo não é do tipo inteiro
@@ -128,6 +134,10 @@ class PontoParada {
       $this->setNome($oDadosPontoParada->tre04_nome);
       $this->setPontoReferencia($oDadosPontoParada->tre04_pontoreferencia);
       $this->setTipo($oDadosPontoParada->tre04_tipo);
+
+      if ( !empty($oDadosPontoParada->tre13_escolaproc) ) {
+        $this->setEscolaProcedencia(EscolaProcedenciaRepository::getEscolaByCodigo($oDadosPontoParada->tre13_escolaproc));
+      }
     }
   }
 
@@ -273,7 +283,7 @@ class PontoParada {
    * Define o tipo do ponto de Parada
    * @param integer $iTipo tipo do ponto de parada
    */
-  protected function setTipo($iTipo) {
+  public function setTipo($iTipo) {
     $this->iTipo = $iTipo;
   }
 
@@ -294,9 +304,6 @@ class PontoParada {
     if (empty($this->iCodigoRuaBairro)) {
       throw new BusinessException(_M('educacao.transporteescolar.PontoParada.rua_bairro_ponto_nao_informado'));
     }
-
-
-    $this->iTipo = empty($this->oDBDepartamento) ? 1 : 2;
 
     $oDaoPontoParada                                  = new cl_pontoparada();
     $oDaoPontoParada->tre04_abreviatura               = $this->getAbreviatura();
@@ -338,6 +345,29 @@ class PontoParada {
         throw new BusinessException(_M($sMensagem, $oVariaveis));
       }
     }
+
+    /**
+     * Remove, se houver, os vínculos com escola de procedencia, e inclui novamente, se informado
+     */
+    $this->removerVinculoComEscolaProcedencia();
+    if (!empty($this->oEscolaProcedencia)) {
+
+      $oDaoEscolaProcedencia = new cl_pontoparadaescolaproc();
+      $oDaoEscolaProcedencia->tre13_sequencial   = null;
+      $oDaoEscolaProcedencia->tre13_pontoparada  = $this->getCodigo();
+      $oDaoEscolaProcedencia->tre13_escolaproc   = $this->oEscolaProcedencia->getCodigo();
+
+      $oDaoEscolaProcedencia->incluir(null);
+      if ($oDaoEscolaProcedencia->erro_status == 0) {
+
+        $sMensagem       = 'educacao.transporteescolar.PontoParada.erro_persitir_dados_escola_procedencia';
+        $oMsgErro        = new stdClass();
+        $oMsgErro->sErro = $oDaoEscolaProcedencia->erro_msg;
+        throw new BusinessException(_M($sMensagem, $oMsgErro));
+      }
+
+    }
+
   }
 
   /**
@@ -362,7 +392,7 @@ class PontoParada {
     if (!db_utils::inTransaction()) {
       throw new DBException('Não existe transação com o banco de dados.');
     }
-    
+
     if (!empty($this->iCodigo)) {
 
       /**
@@ -377,9 +407,9 @@ class PontoParada {
                                                                                       $sWhereLinhaTransportePontoParada
                                                                                     );
       $rsLinhaTransportePontoParada = $oDaoLinhaTransportePontoParada->sql_record($sSqlLinhaTransportePontoParada);
-      
+
       if ($oDaoLinhaTransportePontoParada->numrows > 0) {
-        
+
         $iLinhaItinerario   = db_utils::fieldsMemory($rsLinhaTransportePontoParada, 0)->tre09_sequencial;
         $oLinhaItinerario   = new LinhaItinerario($iLinhaItinerario);
         $sMensagem          = 'educacao.transporteescolar.PontoParada.ponto_parada_vinculada_linha_transporte';
@@ -387,8 +417,10 @@ class PontoParada {
         $oVariaveis->sLinha = $oLinhaItinerario->getLinhaTransporte()->getNome();
         throw new BusinessException(_M($sMensagem, $oVariaveis));
       }
-      
+
       $this->removerVinculoComDepartamento();
+      $this->removerVinculoComEscolaProcedencia();
+
       $oDaoPontoParada = new cl_pontoparada();
       $oDaoPontoParada->excluir($this->getCodigo());
       if ($oDaoPontoParada->erro_status == 0) {
@@ -400,4 +432,45 @@ class PontoParada {
       }
     }
   }
+
+
+  /**
+   * Setter Escola Procedencia
+   * @param EscolaProcedencia
+   */
+  public function setEscolaProcedencia (EscolaProcedencia $oEscolaProcedencia) {
+    $this->oEscolaProcedencia = $oEscolaProcedencia;
+  }
+
+  /**
+   * Getter Escola Procedencia
+   * @param EscolaProcedencia
+   */
+  public function getEscolaProcedencia () {
+    return $this->oEscolaProcedencia;
+  }
+
+  /**
+   * Remove o vínculo do ponto de parada com a escola de procedencia
+   * @return boolean
+   * @throws DBException
+   */
+  private function removerVinculoComEscolaProcedencia() {
+
+    if ( empty($this->oEscolaProcedencia) ) {
+      return true;
+    }
+
+    $oDaoEscolaProcedencia = new cl_pontoparadaescolaproc();
+    $oDaoEscolaProcedencia->excluir(null, " tre13_pontoparada = {$this->iCodigo}");
+    if ( $oDaoEscolaProcedencia->erro_status == 0) {
+
+      $sMensagem       = 'educacao.transporteescolar.PontoParada.erro_remover_escola_procedencia';
+      $oMsgErro        = new stdClass();
+      $oMsgErro->sErro = $oDaoPontoParada->erro_msg;
+      throw new DBException(_M($sMensagem, $oMsgErro));
+    }
+    return true;
+  }
+
 }

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -141,7 +141,7 @@ class cl_inicialdoc {
        return false;
      }
      if($v59_codigo == "" || $v59_codigo == null ){
-       $result = @pg_query("select nextval('inicialdoc_v59_codigo_seq')"); 
+       $result = @db_query("select nextval('inicialdoc_v59_codigo_seq')"); 
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
          $this->erro_sql   = "Verifique o cadastro da sequencia: inicialdoc_v59_codigo_seq do campo: v59_codigo"; 
@@ -152,7 +152,7 @@ class cl_inicialdoc {
        }
        $this->v59_codigo = pg_result($result,0,0); 
      }else{
-       $result = @pg_query("select last_value from inicialdoc_v59_codigo_seq");
+       $result = @db_query("select last_value from inicialdoc_v59_codigo_seq");
        if(($result != false) && (pg_result($result,0,0) < $v59_codigo)){
          $this->erro_sql = " Campo v59_codigo maior que último número da sequencia.";
          $this->erro_banco = "Sequencia menor que este número.";
@@ -172,7 +172,7 @@ class cl_inicialdoc {
        $this->erro_status = "0";
        return false;
      }
-     $result = @pg_query("insert into inicialdoc(
+     $result = @db_query("insert into inicialdoc(
                                        v59_codigo 
                                       ,v59_inicial 
                                       ,v59_docum 
@@ -211,15 +211,15 @@ class cl_inicialdoc {
      $this->erro_status = "1";
      $resaco = $this->sql_record($this->sql_query_file($this->v59_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,4660,'$this->v59_codigo','I')");
-       $resac = pg_query("insert into db_acount values($acount,611,4660,'','".pg_result($resaco,0,'v59_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4661,'','".pg_result($resaco,0,'v59_inicial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4665,'','".pg_result($resaco,0,'v59_docum')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4663,'','".pg_result($resaco,0,'v59_objtexto')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4662,'','".pg_result($resaco,0,'v59_dtemissao')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4664,'','".pg_result($resaco,0,'v59_id_usuario')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,4660,'$this->v59_codigo','I')");
+       $resac = db_query("insert into db_acount values($acount,611,4660,'','".pg_result($resaco,0,'v59_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4661,'','".pg_result($resaco,0,'v59_inicial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4665,'','".pg_result($resaco,0,'v59_docum')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4663,'','".pg_result($resaco,0,'v59_objtexto')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4662,'','".pg_result($resaco,0,'v59_dtemissao')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4664,'','".pg_result($resaco,0,'v59_id_usuario')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
    } 
@@ -335,23 +335,23 @@ class cl_inicialdoc {
      $sql .= " where  v59_codigo = $this->v59_codigo
 ";
      $resaco = $this->sql_record($this->sql_query_file($this->v59_codigo));
-     if($this->numrows>0){       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+     if($this->numrows>0){       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,4660,'$this->v59_codigo','A')");
+       $resac = db_query("insert into db_acountkey values($acount,4660,'$this->v59_codigo','A')");
        if(isset($GLOBALS["HTTP_POST_VARS"]["v59_codigo"]))
-         $resac = pg_query("insert into db_acount values($acount,611,4660,'".pg_result($resaco,0,'v59_codigo')."','$this->v59_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,611,4660,'".pg_result($resaco,0,'v59_codigo')."','$this->v59_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["v59_inicial"]))
-         $resac = pg_query("insert into db_acount values($acount,611,4661,'".pg_result($resaco,0,'v59_inicial')."','$this->v59_inicial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,611,4661,'".pg_result($resaco,0,'v59_inicial')."','$this->v59_inicial',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["v59_docum"]))
-         $resac = pg_query("insert into db_acount values($acount,611,4665,'".pg_result($resaco,0,'v59_docum')."','$this->v59_docum',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,611,4665,'".pg_result($resaco,0,'v59_docum')."','$this->v59_docum',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["v59_objtexto"]))
-         $resac = pg_query("insert into db_acount values($acount,611,4663,'".pg_result($resaco,0,'v59_objtexto')."','$this->v59_objtexto',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,611,4663,'".pg_result($resaco,0,'v59_objtexto')."','$this->v59_objtexto',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["v59_dtemissao"]))
-         $resac = pg_query("insert into db_acount values($acount,611,4662,'".pg_result($resaco,0,'v59_dtemissao')."','$this->v59_dtemissao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,611,4662,'".pg_result($resaco,0,'v59_dtemissao')."','$this->v59_dtemissao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        if(isset($GLOBALS["HTTP_POST_VARS"]["v59_id_usuario"]))
-         $resac = pg_query("insert into db_acount values($acount,611,4664,'".pg_result($resaco,0,'v59_id_usuario')."','$this->v59_id_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,611,4664,'".pg_result($resaco,0,'v59_id_usuario')."','$this->v59_id_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
-     $result = @pg_exec($sql);
+     $result = @db_query($sql);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Petições das iniciais nao Alterado. Alteracao Abortada.\\n";
@@ -385,15 +385,15 @@ class cl_inicialdoc {
      $this->atualizacampos(true);
      $resaco = $this->sql_record($this->sql_query_file($this->v59_codigo));
      if(($resaco!=false)||($this->numrows!=0)){
-       $resac = pg_query("select nextval('db_acount_id_acount_seq') as acount");
+       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
        $acount = pg_result($resac,0,0);
-       $resac = pg_query("insert into db_acountkey values($acount,4660,'".pg_result($resaco,$iresaco,'v59_codigo')."','E')");
-       $resac = pg_query("insert into db_acount values($acount,611,4660,'','".pg_result($resaco,0,'v59_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4661,'','".pg_result($resaco,0,'v59_inicial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4665,'','".pg_result($resaco,0,'v59_docum')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4663,'','".pg_result($resaco,0,'v59_objtexto')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4662,'','".pg_result($resaco,0,'v59_dtemissao')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = pg_query("insert into db_acount values($acount,611,4664,'','".pg_result($resaco,0,'v59_id_usuario')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acountkey values($acount,4660,'".pg_result($resaco,$iresaco,'v59_codigo')."','E')");
+       $resac = db_query("insert into db_acount values($acount,611,4660,'','".pg_result($resaco,0,'v59_codigo')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4661,'','".pg_result($resaco,0,'v59_inicial')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4665,'','".pg_result($resaco,0,'v59_docum')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4663,'','".pg_result($resaco,0,'v59_objtexto')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4662,'','".pg_result($resaco,0,'v59_dtemissao')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,611,4664,'','".pg_result($resaco,0,'v59_id_usuario')."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      $sql = " delete from inicialdoc
                     where ";
@@ -404,7 +404,7 @@ class cl_inicialdoc {
       }
       $sql2 .= " v59_codigo = $this->v59_codigo ";
 }
-     $result = @pg_exec($sql.$sql2);
+     $result = @db_query($sql.$sql2);
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Petições das iniciais nao Excluído. Exclusão Abortada.\\n";
@@ -435,7 +435,7 @@ class cl_inicialdoc {
    } 
    // funcao do recordset 
    function sql_record($sql) { 
-     $result = @pg_query($sql);
+     $result = @db_query($sql);
      if($result==false){
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());

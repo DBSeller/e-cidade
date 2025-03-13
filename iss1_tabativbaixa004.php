@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,23 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("libs/db_utils.php");
-require_once("classes/db_tabativbaixa_classe.php");
-require_once("classes/db_tabativ_classe.php");
-require_once("classes/db_ativprinc_classe.php");
-require_once("classes/db_issbase_classe.php");
-require_once("classes/db_arreinscr_classe.php");
-require_once("classes/db_parissqn_classe.php");
-require_once("classes/db_certbaixanumero_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("model/logBaixaAlvara.model.php");
-require_once("model/issqn/AlvaraMovimentacao.model.php");
-require_once("model/issqn/AlvaraMovimentacaoBaixa.model.php");
-require_once("classes/db_issmovalvara_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -56,6 +45,7 @@ $clarreinscr       = new cl_arreinscr;
 $clparissqn        = new cl_parissqn;
 $clcertbaixanumero = new cl_certbaixanumero;
 $cllogbaixaalvara  = new logbaixaalvara;
+$clexcluirarrecad  = new cl_arrecad;
 
 $db_opcao = 1;
 $db_botao = true;
@@ -136,10 +126,14 @@ if (isset($baixar)) {
         $virgu=",";
       }
 
-      $ano=db_getsession("DB_anousu");
       $instit=db_getsession('DB_instit');
       $q07_databx="$q07_databx_ano-$q07_databx_mes-$q07_databx_dia";
-      $sql02 = "SELECT fc_issqn($q07_inscr,'".date('Y-m-d',db_getsession("DB_datausu"))."',$ano,'$q07_databx','true','false',".$instit.",'".$seqs."') AS RETORNO";
+      $somenteISSQN = '';
+      if (isset($veiculo) && $veiculo == true) {
+        $somenteISSQN = ', 1 ';
+      }
+
+      $sql02 = "SELECT fc_issqn($q07_inscr,'".date('Y-m-d',db_getsession("DB_datausu"))."',$ano,'$q07_databx','true','false',".$instit.",'".$seqs."'". $somenteISSQN .") AS RETORNO";
 
       $result02=db_query($sql02) or die($sql02);
       @db_fieldsmemory($result02,0);
@@ -326,10 +320,20 @@ if ($sqlerro==false){
   }
 
 // BAIXA DE ALVARA AUTOMATICA CASO SEJA BAIXADO A INSCRIÇÂO
-
   $sSqlAlvara = "select * from issalvara where q123_inscr = {$oPost->q07_inscr}";
   $rsAlvara   = db_query($sSqlAlvara) ;
-  if (pg_num_rows($rsAlvara) > 0) {
+
+  //TER UMA OCORRENCIA DE ALVARA LIBERADO (M20527)
+  $sSqlAlvaraLiberado = "select 1 
+                           from issalvara 
+                     inner join issmovalvara 
+                             on issmovalvara.q120_issalvara = issalvara.q123_sequencial 
+                          where q123_inscr = {$oPost->q07_inscr}
+                            and q120_isstipomovalvara = 1;"; // Movimento liberacao: q120_isstipomovalvara = 1
+  
+  $rsAlvaraLiberado   = db_query($sSqlAlvaraLiberado) ;
+
+  if (pg_num_rows($rsAlvara) > 0 && pg_num_rows($rsAlvaraLiberado) > 0) {
 
   	db_fieldsmemory($rsAlvara,0);
 	  $oLiberarAlvara  = new AlvaraMovimentacaoBaixa($q123_sequencial);
@@ -345,15 +349,16 @@ if ($sqlerro==false){
 	    db_fim_transacao(false);
 	  } catch (ErrorException $erro) {
 
+      db_fim_transacao(true);
 	    db_msgbox($erro->getMessage().$erro->getLine().$erro->getFile());
-	    db_fim_transacao(true);
+
 	  }
 
   }else {
-  	db_msgbox("Não Existe Alvara Gerado para esta Inscrição");
+    if (pg_num_rows($rsAlvara) == 0) {
+  	   db_msgbox("Não Existe Alvara Gerado para esta Inscrição");
+    }
   }
-
-
 
 } else if(isset($q07_inscr) && $q07_inscr !=""){
 
@@ -368,7 +373,7 @@ if ($sqlerro==false){
   }
 
 }
-if(empty($sqlerro) || $sqlerro=false){
+if(empty($sqlerro) || $sqlerro==false){
   $load="onLoad='document.form1.q07_inscr.focus();'";
 }else{
   $load="";
@@ -379,40 +384,23 @@ if(empty($sqlerro) || $sqlerro=false){
 <title>DBSeller Inform&aacute;tica Ltda - P&aacute;gina Inicial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
-<script language="JavaScript" type="text/javascript"
-	src="scripts/scripts.js"></script>
-<link href="estilos.css" rel="stylesheet" type="text/css">
+<?php db_app::load("scripts.js, strings.js, numbers.js, prototype.js, estilos.css"); ?>
 </head>
-<body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0"
-	marginheight="0" <?=$load?>>
-	<center>
-<table width="790" border="0" cellpadding="0" cellspacing="0"
-	bgcolor="#5786B2">
-	<tr>
-		<td width="360" height="18">&nbsp;</td>
-		<td width="263">&nbsp;</td>
-		<td width="25">&nbsp;</td>
-		<td width="140">&nbsp;</td>
-	</tr>
-</table>
-<table width="790" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td height="430" align="left" valign="top" bgcolor="#CCCCCC">
-		<center>
-			<?
-			  include("forms/db_frmtabativbaixa.php");
+<body class="body-default" <?=$load?>>
+  <div class="container">
+			<?php
+			  require_once(modification("forms/db_frmtabativbaixa.php"));
 			?>
-		</center>
-		</td>
-	</tr>
-</table>
- </center>
- <?
+  </div>
+ <?php
 	db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
  ?>
 </body>
 </html>
-<?
+<?php
+  /** Extensao : Inicio [BloqueioManutencaoInscricaoSistemaExterno] */
+  /** Extensao : Fim [BloqueioManutencaoInscricaoSistemaExterno] */
+
 	if(isset($baixada)){
 	  db_msgbox("Inscrição $baixada baixada.");
 	}
@@ -430,6 +418,56 @@ if(empty($sqlerro) || $sqlerro=false){
 	  if(isset($trans_calculo)){
 	    if($trans_calculo==true){
 	      $cltabativbaixa->erro(true,false);
+        $sSqlBaixa = "select
+                        arreinscr.k00_inscr,
+                        arrecad.k00_numpre,
+                        arrecad.k00_numpar,
+                        arrecad.k00_receit,
+                        arrecad.k00_dtvenc
+                      from
+                        arrecad
+                      inner join arreinscr on
+                        arrecad.k00_numpre = arreinscr.k00_numpre
+                      where
+                        arreinscr.k00_inscr = $q07_inscr
+                        and arrecad.k00_dtvenc >= ((date_trunc('month', '$q07_databx'::date + interval '1 month'))::date)
+                        and exists (select 1 
+                                      from isscalc 
+                                     where isscalc.q01_numpre = arrecad.k00_numpre 
+                                       and isscalc.q01_recei  = arrecad.k00_receit
+                                       and isscalc.q01_cadcal in (2, 3)            /* ISSQN Fixo e Variavel */
+                                       and isscalc.q01_anousu = fc_getsession('DB_anousu')::int)
+                      order by
+                        arrecad.k00_numpre,
+                        arrecad.k00_numpar,
+                        arrecad.k00_receit";
+
+        try {
+
+          $rsArrecExcluir = db_query($sSqlBaixa);
+
+          for($i = 0; $i < pg_num_rows($rsArrecExcluir); $i ++) {
+            if ($i == 0) { //NAO Excluir o primeiro para cobrança em uma parcela
+               continue;
+            }
+            $oArrecExcluir = db_utils::fieldsMemory($rsArrecExcluir, $i);
+            $sWhere = " arrecad.k00_numpre = $oArrecExcluir->k00_numpre
+                        and arrecad.k00_numpar = $oArrecExcluir->k00_numpar
+                        and arrecad.k00_receit = $oArrecExcluir->k00_receit ";
+
+            $clexcluirarrecad->excluir(null, $sWhere);
+            
+          }
+
+          db_fim_transacao(false);
+
+        } catch (ErrorException $erro) {
+
+          db_fim_transacao(true);
+          db_msgbox($erro->getMessage().$erro->getLine().$erro->getFile());
+
+        }
+
 	      db_msgbox('Calculo efetuado com sucesso!');
 	    }else{
 	      db_msgbox("Operação cancelada. \\nOcorreu algum problema durante o calculo!\\n Mensagem retornada:$retorno");

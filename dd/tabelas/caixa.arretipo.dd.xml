@@ -1,0 +1,921 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='82' name='caixa.arretipo' description="tipos de debito" prefix="k00" label="" type="0">
+  <fields>
+    <field codigo="380" 
+           campo_api='' 
+           name="k00_tipo" 
+           conteudo="int4" 
+           description="tipo de débito, para possibilitar e facilitar saber o tipo buscando na tabela arretipo onde estao as descricões" 
+           inivalue="0" 
+           label="Tipo de Débito" 
+           size="4" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Tipo de Débito" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='caixa.arretipo_k00_tipo_seq' />
+     
+    </field> 
+    <field codigo="364" 
+           campo_api='' 
+           name="k00_codage" 
+           conteudo="char(5)" 
+           description="codigo da agencia" 
+           inivalue="" 
+           label="codigo da agencia" 
+           size="5" 
+           null="" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="" 
+           tipoobj="" 
+           labelrel="codigo da agencia" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="473" 
+           campo_api='' 
+           name="k00_descr" 
+           conteudo="varchar(40)" 
+           description="descricao do tipo de debito" 
+           inivalue="" 
+           label="Tipo de Débito" 
+           size="40" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Tipo de Debito" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="474" 
+           campo_api='' 
+           name="k00_emrec" 
+           conteudo="bool" 
+           description="Libera a emissao de recibo na consulta geral financeira. Serve para casos onde se quer desabilitar a emissao de recibo para um tipo de debito" 
+           inivalue="" 
+           label="emite recibo" 
+           size="1" 
+           null="" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="" 
+           tipoobj="" 
+           labelrel="emite recibo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="475" 
+           campo_api='' 
+           name="k00_agnum" 
+           conteudo="bool" 
+           description="agrupa pelo numpre" 
+           inivalue="" 
+           label="agrupa pelo numpre" 
+           size="1" 
+           null="" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="" 
+           tipoobj="" 
+           labelrel="agrupa pelo numpre" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="476" 
+           campo_api='' 
+           name="k00_agpar" 
+           conteudo="bool" 
+           description="agrupa pelo numpar (numero da parcela)" 
+           inivalue="" 
+           label="agrupa pelo numpar" 
+           size="1" 
+           null="" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="" 
+           tipoobj="" 
+           labelrel="agrupa pelo numpar" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8575" 
+           campo_api='' 
+           name="k00_msguni" 
+           conteudo="text" 
+           description="Mensagem de instrução do carne única" 
+           inivalue="" 
+           label="Mensagem de instrução do carne única" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Mensagem de instrução do carne única" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8578" 
+           campo_api='' 
+           name="k00_msguni2" 
+           conteudo="text" 
+           description="Mensagem de instrução do carne única via 2" 
+           inivalue="" 
+           label="Mensagem de instrução do carne única via 2" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Mensagem de instrução do carne única" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8576" 
+           campo_api='' 
+           name="k00_msgparc" 
+           conteudo="text" 
+           description="Mensagem de instrução do carne parcelado" 
+           inivalue="" 
+           label="Mensagem de instrução do carne parcelado" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Mensagem de instrução do carne parcelado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8577" 
+           campo_api='' 
+           name="k00_msgparc2" 
+           conteudo="text" 
+           description="Mensagem de instrução do carne parcelado via 2" 
+           inivalue="" 
+           label="Mensagem de instrução do carne parcelado via 2" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Mensagem de instrução do carne parcelado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8606" 
+           campo_api='' 
+           name="k00_msgparcvenc" 
+           conteudo="text" 
+           description="Mensagem de instrução do carne parcelado" 
+           inivalue="" 
+           label="Mensagem de instrução do carne com parcela vencida" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Mensagem de instrução do carne parcelado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8607" 
+           campo_api='' 
+           name="k00_msgparcvenc2" 
+           conteudo="text" 
+           description="Mensagem de instrução do carne com parcelada" 
+           inivalue="" 
+           label="Mensagem de instrução do carne com parcela vencida" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Mensagem de instrução do carne com parce" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8579" 
+           campo_api='' 
+           name="k00_msgrecibo" 
+           conteudo="text" 
+           description="Mensagem do recibo" 
+           inivalue="" 
+           label="Mensagem do recibo" 
+           size="1" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Mensagem do recibo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8854" 
+           campo_api='' 
+           name="k00_tercdigcarneunica" 
+           conteudo="int4" 
+           description="Terc. digito cod. barras carne única" 
+           inivalue="0" 
+           label="Terc. digito cod. barras carne única" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Terc. digito cod. barras carne única" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8853" 
+           campo_api='' 
+           name="k00_tercdigcarnenormal" 
+           conteudo="int4" 
+           description="Terc. digito cod. barras carne normal" 
+           inivalue="0" 
+           label="Terc. digito cod. barras carne normal" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Terc. digito cod. barras carne normal" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8852" 
+           campo_api='' 
+           name="k00_tercdigrecunica" 
+           conteudo="int4" 
+           description="Terc. digito cod. barras recibo cota unica" 
+           inivalue="0" 
+           label="Terc. digito cod. barras recibo unica" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Terc. digito cod. barras recibo unica" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8851" 
+           campo_api='' 
+           name="k00_tercdigrecnormal" 
+           conteudo="int4" 
+           description="Terc. digito cod. barras recibo normal" 
+           inivalue="0" 
+           label="Terc. digito cod. barras recibo normal" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Terc. digito cod. barras recibo normal" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1206" 
+           campo_api='' 
+           name="k00_txban" 
+           conteudo="float8" 
+           description="Valor da taxa bancária cobrada na emissao de boletos bancários" 
+           inivalue="0" 
+           label="Taxa Bancária" 
+           size="15" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="" 
+           tipoobj="" 
+           labelrel="Taxa Bancária" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1207" 
+           campo_api='' 
+           name="k00_rectx" 
+           conteudo="int4" 
+           description="Código da receita do tabrec" 
+           inivalue="0" 
+           label="Receita da Taxa Bancaria" 
+           size="4" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Receita da Taxa Bancaria" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1153" 
+           campo_api='' 
+           name="codmodelo" 
+           conteudo="int4" 
+           description="Código do modelo do carne" 
+           inivalue="0" 
+           label="Código Modelo" 
+           size="6" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="" 
+           tipoobj="" 
+           labelrel="Código Modelo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="2426" 
+           campo_api='' 
+           name="k00_impval" 
+           conteudo="bool" 
+           description="Imprime o valor da parcela no carne ou imprime o indexador da prefeitura." 
+           inivalue="t" 
+           label="Imprime valor" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="" 
+           labelrel="Imprime valor" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="7381" 
+           campo_api='' 
+           name="k00_vlrmin" 
+           conteudo="float8" 
+           description="Valor minimo" 
+           inivalue="0" 
+           label="Valor minimo" 
+           size="15" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="4" 
+           tipoobj="text" 
+           labelrel="Valor minimo" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="2482" 
+           campo_api='' 
+           name="k03_tipo" 
+           conteudo="int4" 
+           description="Tipo de débito" 
+           inivalue="0" 
+           label="Grupo de  Débito" 
+           size="3" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Grupo de  Débito" 
+           reference="k00_tipo" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8234" 
+           campo_api='' 
+           name="k00_marcado" 
+           conteudo="varchar(1)" 
+           description="Marcado" 
+           inivalue="" 
+           label="Marcado" 
+           size="1" 
+           null="f" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="select" 
+           labelrel="Marcado" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="477" 
+           campo_api='' 
+           name="k00_hist1" 
+           conteudo="varchar(80)" 
+           description="historico do recibo 1" 
+           inivalue="" 
+           label="historico do recibo 1" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="historico do recibo 1" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="478" 
+           campo_api='' 
+           name="k00_hist2" 
+           conteudo="varchar(80)" 
+           description="historico do recibo 2" 
+           inivalue="" 
+           label="historico do recibo 2" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="historico do recibo 2" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="479" 
+           campo_api='' 
+           name="k00_hist3" 
+           conteudo="varchar(80)" 
+           description="historico do recibo 3" 
+           inivalue="" 
+           label="historico do recibo 3" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="historico do recibo 3" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="484" 
+           campo_api='' 
+           name="k00_hist4" 
+           conteudo="varchar(80)" 
+           description="historico do recibo 4" 
+           inivalue="" 
+           label="historico do recibo 4" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="historico do recibo 4" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="480" 
+           campo_api='' 
+           name="k00_hist5" 
+           conteudo="varchar(80)" 
+           description="historico do recibo 5" 
+           inivalue="" 
+           label="historico do recibo 5" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="historico do recibo 5" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="481" 
+           campo_api='' 
+           name="k00_hist6" 
+           conteudo="varchar(80)" 
+           description="historico do recibo 6" 
+           inivalue="" 
+           label="historico do recibo 6" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="historico do recibo 6" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="482" 
+           campo_api='' 
+           name="k00_hist7" 
+           conteudo="varchar(80)" 
+           description="historico do recibo 7" 
+           inivalue="" 
+           label="historico do recibo 7" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="historico do recibo 7" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="483" 
+           campo_api='' 
+           name="k00_hist8" 
+           conteudo="varchar(80)" 
+           description="historico do recibo 8" 
+           inivalue="" 
+           label="historico do recibo 8" 
+           size="80" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="historico do recibo 8" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="8627" 
+           campo_api='' 
+           name="k00_tipoagrup" 
+           conteudo="int4" 
+           description="Tipo de agrupamento durante a emissao dos recibos pela CGF, pois se existirem debitos no mesmo mes de vencimento das parcelas que estao sendo emitidas, os registros sao incluidos junto no recibo automaticamente. Isso serve para caso queiram que ao emitir uma parcela do IPTU do exercicio por exemplo, e se tem um parcelamento com vencimento no mesmo mes, ja imprime junto a parcela do IPTU no recibo automaticamente." 
+           inivalue="0" 
+           label="Tipo de agrupamento" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de agrupamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="10286" 
+           campo_api='' 
+           name="k00_recibodbpref" 
+           conteudo="int4" 
+           description="Libera recibo dbpref
+
+1 - Emissão Liberada (Essa regra deixa o dbpref trabalhar como faz atualmente)
+
+2 - Mostrar Débito e Não Emitir Recibo (essa regra faz com que seja mostrado o débito no dbpref, entretando não permitir que o usuário emita recibo e nem selecione nenhuma parcela do débito
+
+3 - Não Mostrar Débito (essa regra faz com que não mostre esse débito antes de selecionar as parcelas)" 
+           inivalue="0" 
+           label="Libera recibo dbpref" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="select" 
+           labelrel="Libera recibo dbpref" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="10555" 
+           campo_api='' 
+           name="k00_instit" 
+           conteudo="int4" 
+           description="Instituição" 
+           inivalue="0" 
+           label="Instituição" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Instituição" 
+           reference="codigo" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="17508" 
+           campo_api='' 
+           name="k00_formemissao" 
+           conteudo="int4" 
+           description="Forma Emissão 2a. Via de Carnês" 
+           inivalue="2" 
+           label="Forma Emissão 2a. Via de Carnês" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Forma Emissão 2a. Via de Carnês" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="18078" 
+           campo_api='' 
+           name="k00_receitacredito" 
+           conteudo="int4" 
+           description="Receita de Crédito" 
+           inivalue="0" 
+           label="Receita de Crédito" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Receita de Crédito" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="19739" 
+           campo_api='' 
+           name="k00_exercicioscarne" 
+           conteudo="int4" 
+           description="Números de exercícios (anos) que os carnês serão gerados em moeda corrente.
+Após, serão exibidos a quantidade do inflator." 
+           inivalue="0" 
+           label="Exercícios Carnês" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Exercícios Carnês" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010043" 
+           campo_api='' 
+           name="k00_dtvencimento" 
+           conteudo="text" 
+           description="Esse campo foi criado para ser utilizado no E-cidade online, para bloquear data de vencimento do recibo" 
+           inivalue="" 
+           label="k00_dtvencimento" 
+           size="12" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="k00_dtvencimento" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010650" 
+           campo_api='' 
+           name="k00_horainicial" 
+           conteudo="char(5)" 
+           description="Hora Inicial do Bloqueio de Emissão no Ecidade Online" 
+           inivalue="" 
+           label="Hora Inicial" 
+           size="5" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Hora Inicial" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010651" 
+           campo_api='' 
+           name="k00_horafinal" 
+           conteudo="char(5)" 
+           description="Hora Final do Bloqueio de Emissão no Ecidade Online" 
+           inivalue="" 
+           label="Hora Final" 
+           size="5" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Hora Final" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1010680" 
+           campo_api='' 
+           name="k00_bloqnutil" 
+           conteudo="boolean" 
+           description="Define se bloqueia emissão no dia não util" 
+           inivalue="f" 
+           label="Bloqueia dia não útil" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="" 
+           tipoobj="" 
+           labelrel="Bloqueia dia não útil" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011172" 
+           campo_api='' 
+           name="k00_parcelainternet" 
+           conteudo="bool" 
+           description="Define se permite parcelamento pela Internet" 
+           inivalue="f" 
+           label="Parcelamento pela Internet" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Parcelamento pela Internet" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1011642" 
+           campo_api='' 
+           name="k00_taxaespecifica" 
+           conteudo="int4" 
+           description="Taxa Específica a ser aplicada no tipo de débito." 
+           inivalue="0" 
+           label="Taxa Específica" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Taxa Específica" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1012019" 
+           campo_api='' 
+           name="k00_liberacarnepref" 
+           conteudo="bool" 
+           description="Emitir carnê banco vencidos no DBPref" 
+           inivalue="t" 
+           label="Emitir carnê banco vencidos no DBPref" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Emitir carnê banco vencidos no DBPref" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="363" 
+           campo_api='' 
+           name="k00_codbco" 
+           conteudo="int4" 
+           description="codigo do banco" 
+           inivalue="0" 
+           label="codigo do banco" 
+           size="4" 
+           null="" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="" 
+           tipoobj="" 
+           labelrel="codigo do banco" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+    <field codigo="1012018" 
+           campo_api='' 
+           name="k00_liberacarnesis" 
+           conteudo="bool" 
+           description="Emitir carnê banco vencidos no sistema" 
+           inivalue="t" 
+           label="Emitir carnê banco vencidos no sistema" 
+           size="1" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="5" 
+           tipoobj="text" 
+           labelrel="Emitir carnê banco vencidos no sistema" 
+           reference="" 
+           ispk="f" 
+           hassequence="f" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="k00_tipo"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="tabdesc" inner='f'>
+      <fieldfk name="k00_taxaespecifica" reference="codsubrec" /> 
+    </foreignkey>
+    <foreignkey reference="db_config" inner='t'>
+      <fieldfk name="k00_instit" reference="codigo" /> 
+    </foreignkey>
+    <foreignkey reference="cadtipo" inner='t'>
+      <fieldfk name="k03_tipo" reference="k03_tipo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -438,7 +438,7 @@ class db_calendario {
       $sql = "select * 
               from calend
               where k13_data = '".date('Y-m-d',$datat)."'";
-      $resultc = pg_query($sql);
+      $resultc = db_query($sql);
       if( pg_numrows($resultc) > 0 ){
         $cor = 'lightblue';
       }

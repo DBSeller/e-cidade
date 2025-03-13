@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("classes/db_orcreceita_classe.php");
-include ("dbforms/db_funcoes.php");
-require ("libs/db_liborcamento.php");
-include ("classes/db_orcparametro_classe.php");
-include ("classes/db_orcfontes_classe.php");
-include ("classes/db_orcfontesdes_classe.php");
-include ("dbforms/db_classesgenericas.php");
-include ("classes/db_orcreceitaval_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_orcreceita_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_liborcamento.php"));
+include(modification("classes/db_orcparametro_classe.php"));
+include(modification("classes/db_orcfontes_classe.php"));
+include(modification("classes/db_orcfontesdes_classe.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("classes/db_orcreceitaval_classe.php"));
 
 db_postmemory($HTTP_POST_VARS);	
 
@@ -184,10 +184,10 @@ db_menu(db_getsession("DB_id_usuario"), db_getsession("DB_modulo"), db_getsessio
 <script>
 function js_receitas(mostra){
    if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcreceita','func_orcreceita.php?funcao_js=parent.js_mostraReceita|o70_codrec','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcreceita','func_orcreceita.php?funcao_js=parent.js_mostraReceita|o70_codrec','Pesquisa',true);
   }else{
     rec = document.form2.o70_codrec.value;
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcreceita','func_orcreceita.php?pesquisa_chave='+rec+'&funcao_js=parent.js_mostraReceita1','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcreceita','func_orcreceita.php?pesquisa_chave='+rec+'&funcao_js=parent.js_mostraReceita1','Pesquisa',false);
   }	 
 }
 function js_mostraReceita(chave1){

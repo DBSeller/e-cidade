@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -108,7 +108,7 @@ if($cldb_usuarios->numrows > 0){
                     
                      $sCamposDiv  = " t30_codigo, ";
                      $sCamposDiv .= " t30_descr   ";
-                     $sWhereDiv   = " t30_depto =  {$t93_depart} ";
+                     $sWhereDiv   = " t30_depto =  {$t93_depart} AND t30_ativo = true ORDER BY t30_descr";
                    
                      $rsConsultaDiv = $cldepartdiv->sql_record($cldepartdiv->sql_query_file(null,$sCamposDiv,null,$sWhereDiv));
                 
@@ -185,7 +185,7 @@ if($cldb_usuarios->numrows > 0){
                     
                      $sCamposDiv  = " t30_codigo, ";
                      $sCamposDiv .= " t30_descr   ";
-                     $sWhereDiv   = " t30_depto =  {$t94_depart} ";
+                     $sWhereDiv   = " t30_depto =  {$t94_depart} AND t30_ativo = true ORDER BY t30_descr";
                    
                      $rsConsultaDiv = $cldepartdiv->sql_record($cldepartdiv->sql_query_file(null,$sCamposDiv,null,$sWhereDiv));
                   

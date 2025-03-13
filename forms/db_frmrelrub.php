@@ -1,33 +1,7 @@
 <?
 /*
- *     E-cidade Software Público para Gestão Municipal                
- *  Copyright (C) 2014  DBseller Serviços de Informática             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa é software livre; você pode redistribuí-lo e/ou     
- *  modificá-lo sob os termos da Licença Pública Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versão 2 da      
- *  Licença como (a seu critério) qualquer versão mais nova.          
- *                                                                    
- *  Este programa e distribuído na expectativa de ser útil, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implícita de              
- *  COMERCIALIZAÇÃO ou de ADEQUAÇÃO A QUALQUER PROPÓSITO EM           
- *  PARTICULAR. Consulte a Licença Pública Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Você deve ter recebido uma cópia da Licença Pública Geral GNU     
- *  junto com este programa; se não, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Cópia da licença no diretório licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
-/*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -123,10 +97,10 @@ db_input('rh45_codigo',6,$Irh45_codigo,true,'text',3,"")
 <script>
 function js_pesquisarh45_selecao(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_relrub','db_iframe_selecao','func_selecao.php?funcao_js=top.corpo.iframe_relrub.js_mostraselecao1|r44_selec|r44_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_relrub','db_iframe_selecao','func_selecao.php?funcao_js=parent.CurrentWindow.corpo.iframe_relrub.js_mostraselecao1|r44_selec|r44_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.rh45_selecao.value != ''){
-        js_OpenJanelaIframe('top.corpo.iframe_relrub','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.rh45_selecao.value+'&funcao_js=top.corpo.iframe_relrub.js_mostraselecao','Pesquisa',false,'0');
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_relrub','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.rh45_selecao.value+'&funcao_js=parent.CurrentWindow.corpo.iframe_relrub.js_mostraselecao','Pesquisa',false,'0');
      }else{
        document.form1.r44_descr.value = '';
      }
@@ -145,7 +119,7 @@ function js_mostraselecao1(chave1,chave2){
   db_iframe_selecao.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_relrub','db_iframe_relrub','func_relrub.php?funcao_js=parent.js_preenchepesquisa|rh45_codigo','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_relrub','db_iframe_relrub','func_relrub.php?funcao_js=parent.js_preenchepesquisa|rh45_codigo','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_relrub.hide();

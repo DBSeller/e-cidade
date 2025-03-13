@@ -98,10 +98,10 @@ function js_testacampos(){
 }
 function js_pesquisar30_regist(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cadferia','func_cadferiaalt.php?testarescisao=ra&funcao_js=parent.js_mostrapessoal1|r30_regist|z01_nome|r30_perai|r30_peraf|r30_proc1|r30_proc2|r30_proc1d|r30_proc2d|r30_per1i|r30_per2i|r30_per1f|r30_per2f|r30_tip1&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadferia','func_cadferiaalt.php?testarescisao=ra&funcao_js=parent.js_mostrapessoal1|r30_regist|z01_nome|r30_perai|r30_peraf|r30_proc1|r30_proc2|r30_proc1d|r30_proc2d|r30_per1i|r30_per2i|r30_per1f|r30_per2f|r30_tip1&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',true);
   }else{
     if(document.form1.r30_regist.value != ''){ 
-      js_OpenJanelaIframe('top.corpo','db_iframe_cadferia','func_cadferiaalt.php?testarescisao=ra&pesquisa_chave='+document.form1.r30_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cadferia','func_cadferiaalt.php?testarescisao=ra&pesquisa_chave='+document.form1.r30_regist.value+'&funcao_js=parent.js_mostrapessoal&instit=<?=(db_getsession("DB_instit"))?>','Pesquisa',false);
     }else{
       document.form1.z01_nome.value = '';
       document.form1.r30_perai_dia.value = '';

@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_saltes_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_saltes_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clsaltes = new cl_saltes;
@@ -89,25 +89,26 @@ $campos="saltes.*";
 if(!isset($pesquisa_chave)){
   $txt_where="";
   if(isset($k13_conta) && (trim($k13_conta)!="") ){
-    $txt_where = "and saltesplan.k13_conta= $k13_conta";
+    $txt_where = "and saltes.k13_conta= $k13_conta";
   }else if(isset($k13_descr) && (trim($k13_descr)!="") ){
     $txt_where = "and upper(conplano.c60_descr) like '$k13_descr%' ";
   } else if(isset($reduzido) && (trim($reduzido)!="")){
     $txt_where = "and conplanoreduz.c61_reduz = $reduzido ";
   }
   
-  $sql = "select c60_codcon, c62_reduz, c60_estrut, c60_descr
-  from conplano
-  inner join conplanoreduz on  c61_anousu=c60_anousu and
-  c61_codcon = c60_codcon and 
-  c61_instit = " . db_getsession("DB_instit") . "  
-  inner join conplanoexe   on c62_reduz  = c61_reduz and
-  c62_anousu = c60_anousu
-  left outer join saltes  on saltes.k13_reduz = conplanoreduz.c61_reduz  
-  where 
-  saltes.k13_reduz is null and 
-  c60_anousu = ".db_getsession("DB_anousu")."
-  $txt_where and c60_codsis in (5,6)
+  $sql = "select c60_codcon, 
+                 c62_reduz, c60_estrut, c60_descr
+            from conplano
+                 inner join consistema on  c52_codsis  = c60_codsis
+                 inner join conplanoreduz on c61_anousu=c60_anousu 
+                                         and c61_codcon = c60_codcon 
+                                         and c61_instit = " . db_getsession("DB_instit") . "  
+                 inner join conplanoexe   on c62_reduz  = c61_reduz 
+                                         and c62_anousu = c60_anousu
+                 left outer join saltes  on saltes.k13_reduz = conplanoreduz.c61_reduz  
+           where saltes.k13_reduz is null 
+             and c60_anousu = ".db_getsession("DB_anousu")."
+  $txt_where and c52_descrred = 'F'
   order by c60_estrut";
   //echo $sql;
   
@@ -118,7 +119,7 @@ if(!isset($pesquisa_chave)){
   
   */
   
-  db_lovrot($sql,50 ,"()","",$funcao_js, "", "NoMe", array(), false);
+  db_lovrot($sql, 15 ,"()","",$funcao_js, "", "NoMe", array(), false);
   
 }else{
   if($pesquisa_chave!=null && $pesquisa_chave!=""){
@@ -147,3 +148,9 @@ if(!isset($pesquisa_chave)){
   <?
 }
 ?>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
+</script>

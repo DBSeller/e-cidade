@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,25 +25,25 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//require("libs/db_stdlib.php");
-include("fpdf151/pdf.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_libgertxtfolha.php");
-include("libs/db_libpessoal.php");
-include("classes/db_codmovsefip_classe.php");
-include("classes/db_db_config_classe.php");
-include("classes/db_cfpess_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_rhpessoalmov_classe.php");
-include("classes/db_rhpesdoc_classe.php");
-include("classes/db_rhpesrescisao_classe.php");
-include("classes/db_rescisao_classe.php");
-include("classes/db_afasta_classe.php");
-include("classes/db_inssirf_classe.php");
-include("classes/db_rhlota_classe.php");
-include("dbforms/db_funcoes.php");
+//require(modification("libs/db_stdlib.php"));
+include(modification("fpdf151/pdf.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libgertxtfolha.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("classes/db_codmovsefip_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
+include(modification("classes/db_cfpess_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_rhpessoalmov_classe.php"));
+include(modification("classes/db_rhpesdoc_classe.php"));
+include(modification("classes/db_rhpesrescisao_classe.php"));
+include(modification("classes/db_rescisao_classe.php"));
+include(modification("classes/db_afasta_classe.php"));
+include(modification("classes/db_inssirf_classe.php"));
+include(modification("classes/db_rhlota_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 db_postmemory($HTTP_POST_VARS);
 $clcodmovsefip   = new cl_codmovsefip;
@@ -122,7 +122,7 @@ if(isset($gerar)){
       $res_prev = $clinssirf->sql_record($clinssirf->sql_query_file(null,null,"r33_rubmat","r33_nome limit 1","r33_anousu = $anousu and r33_mesusu = $mesusu and r33_codtab = $r11_tbprev + 2 and r33_instit = ".db_getsession('DB_instit')));
       db_fieldsmemory($res_prev,0);   
 
-      include("libs/db_sql.php");
+      include(modification("libs/db_sql.php"));
       $clgera_sql_folha = new cl_gera_sql_folha;
       $clgera_sql_folha->usar_res  = true;
       $clgera_sql_folha->usar_doc  = true;
@@ -235,7 +235,7 @@ if(isset($gerar)){
                                                       db_getsession("DB_instit")
                                                      );
                                                      
-            $result_ger = pg_exec($sql_ger);
+            $result_ger = db_query($sql_ger);
             $numrows_ger = pg_numrows($result_ger);
             for($im=0; $im<$numrows_ger; $im++){
               db_fieldsmemory($result_ger, $im);
@@ -634,12 +634,12 @@ if(isset($gerar)){
                       ((int)db_subdata($r45_dtreto,"a") > (int)$anousu)
                      ){
                      $situacao = $r45_situac;
-                     $dataafasta = ($situacao == 3 || $situacao == 6)?date("Y-m-d",mktime(0,0,0,db_subdata($r45_dtafas,"m"), db_subdata($r45_dtafas,"d") - 15, db_subdata($r45_dtafas,"a"))):$r45_dtafas;
+                     $dataafasta = ($situacao == 3 || $situacao == 6 || $situacao == 8)?date("Y-m-d",mktime(0,0,0,db_subdata($r45_dtafas,"m"), db_subdata($r45_dtafas,"d") - 15, db_subdata($r45_dtafas,"a"))):$r45_dtafas;
                      $dataretorno = $r45_dtreto;
                  
                      $dataini = $dataafasta;
                      $datafim = $dataretorno;
-                     if($situacao == 3 || $situacao == 6){
+                     if($situacao == 3 || $situacao == 6 || $situacao == 8){
                        $dataini = $r45_dtafas;
                      }
                  
@@ -996,7 +996,7 @@ if(isset($gerar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
       <center>
       <?
-      include("forms/db_frmcodmovsefip.php");
+      include(modification("forms/db_frmcodmovsefip.php"));
       ?>
       </center>
     </td>

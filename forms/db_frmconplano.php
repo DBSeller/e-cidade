@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -418,7 +418,7 @@ function js_configsistema(){
  
   if (estrut[0] == "3" || estrut[0] == "4"){
     document.form1.c60_codsis.value = "1";
-    js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_consistema','func_consistema.php?pesquisa_chave='+document.form1.c60_codsis.value+'&funcao_js=parent.js_mostraconsistema','Pesquisa',false);
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_consistema','func_consistema.php?pesquisa_chave='+document.form1.c60_codsis.value+'&funcao_js=parent.js_mostraconsistema','Pesquisa',false);
   } else {
     document.form1.c60_codsis.value = "";
     document.form1.c52_descr.value  = ""; 
@@ -441,10 +441,10 @@ function js_divbanco(codsis){
 
 function js_pesquisac60_codsis(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_consistema','func_consistema.php?funcao_js=parent.js_mostraconsistema1|c52_codsis|c52_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_consistema','func_consistema.php?funcao_js=parent.js_mostraconsistema1|c52_codsis|c52_descr','Pesquisa',true,'0');
   } else {
     if(document.form1.c60_codsis.value != ''){ 
-      js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_consistema','func_consistema.php?pesquisa_chave='+document.form1.c60_codsis.value+'&funcao_js=parent.js_mostraconsistema','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_consistema','func_consistema.php?pesquisa_chave='+document.form1.c60_codsis.value+'&funcao_js=parent.js_mostraconsistema','Pesquisa',false);
     } else {
       document.form1.c52_descr.value = ''; 
     }
@@ -471,10 +471,10 @@ function js_mostraconsistema1(chave1,chave2){
 
 function js_pesquisac60_codcla(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_conclass','func_conclass.php?funcao_js=parent.js_mostraconclass1|c51_codcla|c51_descr','Pesquisa',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_conclass','func_conclass.php?funcao_js=parent.js_mostraconclass1|c51_codcla|c51_descr','Pesquisa',true,'0');
   }else{
      if(document.form1.c60_codcla.value != ''){ 
-        js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_conclass','func_conclass.php?pesquisa_chave='+document.form1.c60_codcla.value+'&funcao_js=parent.js_mostraconclass','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_conclass','func_conclass.php?pesquisa_chave='+document.form1.c60_codcla.value+'&funcao_js=parent.js_mostraconclass','Pesquisa',false);
      }else{
        document.form1.c51_descr.value = ''; 
      }
@@ -501,11 +501,11 @@ function js_pesquisaAgencia(mostra){
   lLimpaConta = true;
   
   if ( mostra ) {
-    js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_agencia','func_bancoagenciaconta.php?funcao_js=parent.js_mostraAgencia1|db90_codban|db90_descr|db89_codagencia|db89_digito|db89_sequencial','Pesquisa Agência',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_agencia','func_bancoagenciaconta.php?funcao_js=parent.js_mostraAgencia1|db90_codban|db90_descr|db89_codagencia|db89_digito|db89_sequencial','Pesquisa Agência',true,'0');
   } else {
   
     if(document.form1.db89_codagencia.value != ''){ 
-      js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_agencia','func_bancoagenciaconta.php?pesquisa_chave='+document.form1.db89_codagencia.value+'&funcao_js=parent.js_mostraAgencia','Pesquisa Agência',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_agencia','func_bancoagenciaconta.php?pesquisa_chave='+document.form1.db89_codagencia.value+'&funcao_js=parent.js_mostraAgencia','Pesquisa Agência',false);
     } else {
 		  document.form1.db89_db_bancos.value    = '';
 		  document.form1.db90_descr.value        = '';
@@ -520,7 +520,7 @@ function js_pesquisaAgencia(mostra){
 
 function js_consultaBancoAgencia(iBancoAgencia){
   lLimpaConta = false;
-  js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_agencia','func_bancoagenciaconta.php?pesquisaSeq=true&pesquisa_chave='+iBancoAgencia+'&funcao_js=parent.js_mostraAgencia','Pesquisa Agência',false);
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_agencia','func_bancoagenciaconta.php?pesquisaSeq=true&pesquisa_chave='+iBancoAgencia+'&funcao_js=parent.js_mostraAgencia','Pesquisa Agência',false);
 }
 
 
@@ -561,10 +561,10 @@ function js_pesquisaContaBancaria(mostra){
   }
   
   if ( mostra ) {
-    js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_contabancaria','func_contabancaria.php?'+sQuery+'funcao_js=parent.js_mostraContaBancaria1|db83_conta|db83_dvconta|db83_identificador|db83_codigooperacao|db83_tipoconta|db83_bancoagencia|db83_sequencial','Pesquisa Conta Bancária',true,'0');
+    js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_contabancaria','func_contabancaria.php?'+sQuery+'funcao_js=parent.js_mostraContaBancaria1|db83_conta|db83_dvconta|db83_identificador|db83_codigooperacao|db83_tipoconta|db83_bancoagencia|db83_sequencial','Pesquisa Conta Bancária',true,'0');
   } else {
     if(document.form1.db83_conta.value != ''){ 
-      js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_contabancaria','func_contabancaria.php?'+sQuery+'pesquisa_chave='+document.form1.db83_conta.value+'&funcao_js=parent.js_mostraContaBancaria','Pesquisa Conta Bancária',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_contabancaria','func_contabancaria.php?'+sQuery+'pesquisa_chave='+document.form1.db83_conta.value+'&funcao_js=parent.js_mostraContaBancaria','Pesquisa Conta Bancária',false);
     } else {
       js_limpaContaBancaria();
     }
@@ -633,7 +633,7 @@ function js_getDescrTipoConta(iTipo) {
 }
 
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_conta','db_iframe_conplano','func_conplanogeral.php?funcao_js=parent.js_preenchepesquisa|c60_codcon','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_conta','db_iframe_conplano','func_conplanogeral.php?funcao_js=parent.js_preenchepesquisa|c60_codcon','Pesquisa',true,'0');
 }
 
 function js_preenchepesquisa(chave){

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
 
-require_once("classes/db_db_depart_classe.php");
+require_once(modification("classes/db_db_depart_classe.php"));
 $clDBDepart    = new cl_db_depart();
 
-require_once("classes/db_db_usuarios_classe.php");
+require_once(modification("classes/db_db_usuarios_classe.php"));
 $clDBUsuarios  = new cl_db_usuarios();
 
-require_once("classes/db_ouvidor_classe.php");
+require_once(modification("classes/db_ouvidor_classe.php"));
 $clOuvidor     = new cl_ouvidor();
 
 
@@ -239,7 +239,7 @@ $depto   = db_getsession('DB_coddepto');
   function js_retornoDadosProcessos(oAjax){
   
     js_removeObj("msgBox");
-    var aRetorno = eval("("+oAjax.responseText+")");
+    var aRetorno = JSON.parse(oAjax.responseText);
     
     oDBGridListaProcessos.clearAll(true);
     $('aObjProcessos').value = Object.toJSON(aRetorno.aListaProcessos);
@@ -282,11 +282,11 @@ $depto   = db_getsession('DB_coddepto');
   
   
   function js_consultaProcesso(iCodProcesso,lRecebido){
-    js_OpenJanelaIframe('top.corpo','db_iframe_detalhes','ouv1_detalhesdespacho001.php?iCodProcesso='+iCodProcesso+'&lRecebido='+lRecebido+'&iDepto='+$F('depto'),'Detalhes do Processo',true);    
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_detalhes','ouv1_detalhesdespacho001.php?iCodProcesso='+iCodProcesso+'&lRecebido='+lRecebido+'&iDepto='+$F('depto'),'Detalhes do Processo',true);    
   }
   
   function js_pesquisaProcessoIni(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_processoIni','func_protprocesso.php?grupo=2&funcao_js=parent.js_mostraProcessoIni|p58_codproc','Processos',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processoIni','func_protprocesso.php?grupo=2&funcao_js=parent.js_mostraProcessoIni|p58_codproc','Processos',true);
   }
 
   function js_mostraProcessoIni(iCodProc){
@@ -295,7 +295,7 @@ $depto   = db_getsession('DB_coddepto');
   }
   
   function js_pesquisaProcessoFin(){
-    js_OpenJanelaIframe('top.corpo','db_iframe_processoFin','func_protprocesso.php?grupo=2&funcao_js=parent.js_mostraProcessoFin|p58_codproc','Processos',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_processoFin','func_protprocesso.php?grupo=2&funcao_js=parent.js_mostraProcessoFin|p58_codproc','Processos',true);
   }
 
   function js_mostraProcessoFin(iCodProc){
@@ -306,10 +306,10 @@ $depto   = db_getsession('DB_coddepto');
   function js_pesquisaTipoProcesso( lMostra ){
     
     if( lMostra ){
-      js_OpenJanelaIframe('top.corpo','db_iframe_tipoproc','func_tipoproc.php?grupo=2&funcao_js=parent.js_mostraTipoProcesso1|p51_codigo|p51_descr','Tipo de Processo',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoproc','func_tipoproc.php?grupo=2&funcao_js=parent.js_mostraTipoProcesso1|p51_codigo|p51_descr','Tipo de Processo',true);
     }else{
        if( $F('proctipo') != '' ){ 
-         js_OpenJanelaIframe('top.corpo','db_iframe_tipoproc','func_tipoproc.php?grupo=2&pesquisa_chave='+$F('proctipo')+'&funcao_js=parent.js_mostraTipoProcesso','Tipo de Processo',false);
+         js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_tipoproc','func_tipoproc.php?grupo=2&pesquisa_chave='+$F('proctipo')+'&funcao_js=parent.js_mostraTipoProcesso','Tipo de Processo',false);
        }else{
          document.form1.descrtipo.value = ''; 
        }

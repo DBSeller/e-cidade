@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_liclicita_classe.php");
+require(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_liclicita_classe.php"));
 $clliclicita = new cl_liclicita;
 $clliclicita->rotulo->label();
 $clrotulo = new rotulocampo;
@@ -282,19 +282,19 @@ function js_mostra(tipo){
   if ( tipo == 'mn' ) {
   
     var sUrl = 'lic3_infolicminuta002.php?l20_codigo='+document.form1.l20_codigo.value;
-    js_OpenJanelaIframe('top.corpo','db_iframe_mostra',sUrl,'Consulta Minutas da Licitação',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mostra',sUrl,'Consulta Minutas da Licitação',true);
   } else if ( tipo == 'a' ) {
   
     var sUrl = 'lic3_infolicata002.php?l20_codigo='+document.form1.l20_codigo.value;
-    js_OpenJanelaIframe('top.corpo','db_iframe_mostra',sUrl,'Consulta Atas da Licitação',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mostra',sUrl,'Consulta Atas da Licitação',true);
   } else if ( tipo == 'e' ) {
   
     var sUrl = 'lic3_infolicanexo002.php?l20_codigo='+document.form1.l20_codigo.value;
-    js_OpenJanelaIframe('top.corpo','db_iframe_mostra',sUrl,'Consulta Editais da Licitação',true);    
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mostra',sUrl,'Consulta Editais da Licitação',true);    
   } else {
   
     var sUrl = 'lic3_infolic003.php?l20_codigo='+document.form1.l20_codigo.value+'&tipo='+tipo;
-		js_OpenJanelaIframe('top.corpo','db_iframe_mostra',sUrl,'Consulta Licitação',true);	
+		js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_mostra',sUrl,'Consulta Licitação',true);	
   }
 }
 </script>

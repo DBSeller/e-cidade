@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_folha_classe.php");
-include("classes/db_selecao_classe.php");
-include("classes/db_gerfsal_classe.php");
-include("classes/db_gerfadi_classe.php");
-include("classes/db_gerffer_classe.php");
-include("classes/db_gerfres_classe.php");
-include("classes/db_gerfs13_classe.php");
-include("classes/db_gerfcom_classe.php");
-include("classes/db_gerffx_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_folha_classe.php"));
+include(modification("classes/db_selecao_classe.php"));
+include(modification("classes/db_gerfsal_classe.php"));
+include(modification("classes/db_gerfadi_classe.php"));
+include(modification("classes/db_gerffer_classe.php"));
+include(modification("classes/db_gerfres_classe.php"));
+include(modification("classes/db_gerfs13_classe.php"));
+include(modification("classes/db_gerfcom_classe.php"));
+include(modification("classes/db_gerffx_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 db_postmemory($HTTP_POST_VARS);
 $clfolha = new cl_folha;
 $clselecao = new cl_selecao;
@@ -138,7 +138,7 @@ $db_botao = true;
                  ";
           }
         }
-        include("dbforms/db_classesgenericas.php");
+        include(modification("dbforms/db_classesgenericas.php"));
         $geraform = new cl_formulario_rel_pes;
         if(!isset($anofolha) || (isset($anofolha) && trim($anofolha) == "")){
           $anofolha = db_anofolha();

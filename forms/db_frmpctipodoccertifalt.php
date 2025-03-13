@@ -66,9 +66,9 @@ db_input('pc70_descr',40,$Ipc70_descr,true,'text',3,'')
 <script>
 function js_pesquisapc72_pctipocertif(mostra){
     if(mostra==true){
-      js_OpenJanelaIframe('top.corpo','db_iframe_pctipocertif','func_pctipocertif.php?funcao_js=parent.js_mostrapctipocertif1|pc70_codigo|pc70_descr','Pesquisa',true);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pctipocertif','func_pctipocertif.php?funcao_js=parent.js_mostrapctipocertif1|pc70_codigo|pc70_descr','Pesquisa',true);
     }else{
-      js_OpenJanelaIframe('top.corpo','db_iframe_pctipocertif','func_pctipocertif.php?pesquisa_chave='+document.form1.pc72_pctipocertif.value+'&funcao_js=parent.js_mostrapctipocertif','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pctipocertif','func_pctipocertif.php?pesquisa_chave='+document.form1.pc72_pctipocertif.value+'&funcao_js=parent.js_mostrapctipocertif','Pesquisa',false);
     }
   if(document.form1.pc72_pctipocertif.value!=""){
     document.form1.atualizar.disabled=false;

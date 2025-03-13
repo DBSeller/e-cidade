@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -274,6 +274,11 @@ abstract class CgmBase {
    */
   private $lCgmMunicipio;
 
+    /**
+     * @var string
+     */
+  private $sNomeMae;
+
   function __construct( $iCgm = null ) {
 
     if ( !empty($iCgm) ) {
@@ -314,6 +319,7 @@ abstract class CgmBase {
         $this->setEmailComercial      ($oDadosCgm->z01_emailc);
         $this->setFax                 ($oDadosCgm->z01_fax);
         $this->setObs                 ($oDadosCgm->z01_obs);
+        $this->setCadastro            ($oDadosCgm->z01_cadast);
 
         if ( strlen(trim($oDadosCgm->z01_cgccpf)) == 14 ) {
           $this->lJuridico = true;
@@ -331,7 +337,7 @@ abstract class CgmBase {
                                                                   and z07_tipo = 'P'"
                                                                   );
         $rsEnderecoPrimario = $oDaoCGMEndereco->sql_record($sSqlEnderecoPrimario);
-        if ($oDaoCGMEndereco->numrows == 1) {
+        if ($oDaoCGMEndereco->numrows >= 1) {
           $this->iEnderecoPrimario = db_utils::fieldsMemory($rsEnderecoPrimario, 0)->z07_endereco;
         }
       }
@@ -736,14 +742,14 @@ abstract class CgmBase {
   }
 
 /**
-   * @return unknown_type
+   * @return string
    */
   public function getUf () {
     return $this->sUf;
   }
 
 /**
-   * @param unknown_type $sUf
+   * @param string $sUf
    */
   public function setUf ($sUf) {
     $this->sUf = $sUf;
@@ -791,6 +797,10 @@ abstract class CgmBase {
     $this->iTipoEmpresa = $iTipoEmpresa;
   }
 
+  public function getCodigoTipoEmpresa() {
+    return $this->iTipoEmpresa;
+  }
+
   public function getTipoEmpresa() {
     $oRetorno  = false;
     $iNumCgm   = $this->getCodigo();
@@ -834,10 +844,17 @@ abstract class CgmBase {
     $oDaoCgmCgc      = db_utils::getDao('db_cgmcgc');
     $oDaoCgmEndereco = db_utils::getDao('cgmendereco');
     $oDaoTipoEmpresa = db_utils::getDao('cgmtipoempresa');
+    $oDaoCgmEnderecoExterior = db_utils::getDao('cgmenderecoexterior');
 
     // Excluindo Relacionamentos
     $sWhereCgmEndereco = "z07_numcgm = ".$this->getCodigo();
     $oDaoCgmEndereco->excluir(null, $sWhereCgmEndereco);
+    if ($oDaoCgmEndereco->erro_status == '0') {
+        throw new Exception($oDaoCgmEndereco->erro_msg);
+    }
+
+    $sWhereCgmEnderecoExterior = "z19_numcgm = ".$this->getCodigo();
+    $oDaoCgmEnderecoExterior->excluir(null, $sWhereCgmEnderecoExterior);
     if ($oDaoCgmEndereco->erro_status == '0') {
         throw new Exception($oDaoCgmEndereco->erro_msg);
     }
@@ -912,31 +929,14 @@ abstract class CgmBase {
       throw new Exception("{$sMsgErro}, nenhuma transação encontrada!");
     }
 
-    $oDaoDBConfig  = db_utils::getDao('db_config');
     $oDaoCgm       = db_utils::getDao('cgm');
-    $oDaoCgmBairro = db_utils::getDao('db_cgmbairro');
-    $oDaoCgmRuas   = db_utils::getDao('db_cgmruas');
-    $oDaoRuas      = db_utils::getDao('ruas');
-    $oDaoBairro    = db_utils::getDao('bairro');
     $oDaoCgmEndereco = db_utils::getDao('cgmendereco');
-    /**
-     *  Consulta o código do município
-     */
-    $sSqlConfig = $oDaoDBConfig->sql_query_file(db_getsession('DB_instit'),"munic");
-    $rsConfig   = $oDaoDBConfig->sql_record($sSqlConfig);
-
-    if ( $oDaoDBConfig->numrows > 0 ) {
-      $sMunicipio = db_utils::fieldsMemory($rsConfig,0)->munic;
-    } else {
-      throw new Exception("{$sMsgErro}, {$oDaoDBConfig->erro_msg}");
-    }
-
 
     /**
      * Inclui os registros na tabela CGM
      */
-    $oDaoCgm->z01_nome       = addslashes($this->getNome());
-    $oDaoCgm->z01_nomecomple = addslashes($this->getNomeCompleto());
+    $oDaoCgm->z01_nome       = addslashes(substr($this->getNome(), 0, 40));
+    $oDaoCgm->z01_nomecomple = addslashes(substr($this->getNomeCompleto(), 0, 100));
     $oDaoCgm->z01_ender      = addslashes($this->getLogradouro());
     $oDaoCgm->z01_numero     = $this->getNumero();
     $oDaoCgm->z01_compl      = addslashes($this->getComplemento());
@@ -965,8 +965,7 @@ abstract class CgmBase {
     $oDaoCgm->z01_cadast     = $this->getCadastro();
     $oDaoCgm->z01_obs        = $this->getObs();
     $oDaoCgm->z01_hora       = db_hora();
-
-    //var_dump($oDaoCgm);
+    $oDaoCgm->z01_mae       = $this->getNomeMae();
 
     if ( trim($this->getCodigo()) == '' ) {
       $oDaoCgm->incluir(null);
@@ -984,18 +983,113 @@ abstract class CgmBase {
      */
     $this->setCodigo($oDaoCgm->z01_numcgm);
 
-
     /**
      * Caso o CGM informado seja do município da instituição então é verificado se
      * exite a rua e bairro informado nos respectivos cadastros do sistema
      *
      */
+    $this->salvaBairroRua();
+
+
+   /**
+    * inseri registro na cgmendereco {Primário}
+    */
+    if ($this->getEnderecoPrimario() != "" && $this->getEnderecoPrimario() != null) {
+      $this->salvaCgmEndereco();
+    }
+
+    /**
+    * inseri registro na cgmendereco {Secundário}
+    */
+    if ($this->getEnderecoSecundario() != "" && $this->getEnderecoSecundario() != null) {
+      $this->salvaCgmEnderecoSecundario();
+    } else if ($this->getEnderecoSecundario() == "") {
+      $sWhereCgmEnderSecundario = "z07_numcgm=".$this->getCodigo()." and z07_tipo = 'S' ";
+      $oDaoCgmEndereco->excluir(null,$sWhereCgmEnderSecundario);
+
+      if ( $oDaoCgmEndereco->erro_status == '0' ) {
+        throw new Exception("{$oDaoCgmEndereco->erro_msg}");
+      }
+    }
+  }
+
+  public function salvaCgmEnderecoSecundario() {
+    $oDaoCgmEndereco = new \cl_cgmendereco();
+
+    $sWhereCgmEnderSecundario = " z07_numcgm = ".$this->getCodigo()." and z07_tipo='S' ";
+    $sSqlConsultaCgmEnderSecundario = $oDaoCgmEndereco->sql_query_file(null,'z07_sequencial',null,$sWhereCgmEnderSecundario);
+    $rsConsultaCgmEnderSecundario = $oDaoCgmEndereco->sql_record($sSqlConsultaCgmEnderSecundario);
+
+    if (trim($this->getEnderecoSecundario()) != ""){
+      $oDaoCgmEndereco->z07_endereco = $this->getEnderecoSecundario();
+      $oDaoCgmEndereco->z07_numcgm   = $this->getCodigo();
+      $oDaoCgmEndereco->z07_tipo     = 'S';
+
+      if ($oDaoCgmEndereco->numrows > 0) {
+          $oDaoCgmEndereco->z07_sequencial = db_utils::fieldsMemory($rsConsultaCgmEnderSecundario,0)->z07_sequencial;
+          $oDaoCgmEndereco->alterar($oDaoCgmEndereco->z07_sequencial);
+      } else if ($this->getEnderecoSecundario() != "" && $this->getEnderecoSecundario() != null) {
+        $oDaoCgmEndereco->z07_sequencial = "";
+        $oDaoCgmEndereco->incluir(null);
+      }
+
+      if ( $oDaoCgmEndereco->erro_status == '0' ) {
+          throw new Exception("{$oDaoCgmEndereco->erro_msg}");
+      }
+    }
+  }
+
+  public function salvaCgmEndereco() {
+    $oDaoCgmEndereco = new \cl_cgmendereco();
+
+    $sWhereCgmEnderPrimario = " z07_numcgm = ".$this->getCodigo()." and z07_tipo='P' ";
+    $sSqlConsultaCgmEnderPrimario = $oDaoCgmEndereco->sql_query_file(null,'z07_sequencial',null,$sWhereCgmEnderPrimario);
+    $rsConsultaCgmEnderPrimario = $oDaoCgmEndereco->sql_record($sSqlConsultaCgmEnderPrimario);
+
+    $oDaoCgmEndereco->z07_endereco = $this->getEnderecoPrimario();
+    $oDaoCgmEndereco->z07_numcgm   = $this->getCodigo();
+    $oDaoCgmEndereco->z07_tipo     = 'P';
+
+    if ($oDaoCgmEndereco->numrows > 0) {
+
+        $oDaoCgmEndereco->z07_sequencial = db_utils::fieldsMemory($rsConsultaCgmEnderPrimario,0)->z07_sequencial;
+        $oDaoCgmEndereco->alterar($oDaoCgmEndereco->z07_sequencial);
+    } else if ($this->getEnderecoPrimario() != "" && $this->getEnderecoPrimario() != null) {
+      $oDaoCgmEndereco->z07_sequencial = "";
+      $oDaoCgmEndereco->incluir(null);
+    }
+
+    if ( $oDaoCgmEndereco->erro_status == '0' ) {
+        throw new Exception("{$oDaoCgmEndereco->erro_msg}");
+    }
+
+  }
+
+  public function salvaBairroRua() {
+    /**
+     *  Consulta o código do município
+     */
+    $oDaoDBConfig  = new \cl_db_config();
+
+    $sSqlConfig = $oDaoDBConfig->sql_query_file(db_getsession('DB_instit'), "munic");
+    $rsConfig   = $oDaoDBConfig->sql_record($sSqlConfig);
+
+    if ( $oDaoDBConfig->numrows > 0 ) {
+      $sMunicipio = db_utils::fieldsMemory($rsConfig,0)->munic;
+    } else {
+      throw new Exception("Falha ao salvar CGM, {$oDaoDBConfig->erro_msg}");
+    }
+
+    $oDaoCgm = new \cl_cgm();
+    $oDaoCgmBairro = new \cl_db_cgmbairro();
+    $oDaoCgmRuas = new \cl_db_cgmruas();
+    $oDaoRuas = new \cl_ruas();
+    $oDaoBairro = new \cl_bairro();
+
     if ( trim($sMunicipio) == trim($this->getMunicipio())) {
-
-
       $rsEnderCGM = $oDaoCgm->sql_record($oDaoCgm->sql_query_ender($this->getCodigo()));
-      $oEnderCGM  = db_utils::fieldsMemory($rsEnderCGM,0);
-      $iCodRuaCgm    = trim($oEnderCGM->j14_codigo);
+      $oEnderCGM = db_utils::fieldsMemory($rsEnderCGM,0);
+      $iCodRuaCgm = trim($oEnderCGM->j14_codigo);
       $iCodBairroCgm = trim($oEnderCGM->j13_codi);
 
       /**
@@ -1007,7 +1101,6 @@ abstract class CgmBase {
       $rsConsultaRuas  = $oDaoRuas->sql_record($sSqlConsultaRua);
 
       if ( $oDaoRuas->numrows > 0 ) {
-
         $oDaoCgmRuas->z01_numcgm = $this->getCodigo();
         $oDaoCgmRuas->j14_codigo = db_utils::fieldsMemory($rsConsultaRuas,0)->j14_codigo;
 
@@ -1018,9 +1111,8 @@ abstract class CgmBase {
         }
 
         if ( $oDaoCgmRuas->erro_status == 0 ) {
-          throw new Exception("{$sMsgErro}, {$oDaoCgmRuas->erro_msg}");
+          throw new Exception("Falha ao salvar CGM, {$oDaoCgmRuas->erro_msg}");
         }
-
       }
 
       /**
@@ -1043,74 +1135,65 @@ abstract class CgmBase {
         }
 
         if ( $oDaoCgmBairro->erro_status == 0 ) {
-          throw new Exception("{$sMsgErro}, {$oDaoCgmBairro->erro_msg}");
+          throw new Exception("Falha ao salvar CGM, {$oDaoCgmBairro->erro_msg}");
         }
 
       }
 
     }
+  }
 
-   /**
-    * inseri registro na cgmendereco {Primário}
-    */
-    if ($this->getEnderecoPrimario() != "" && $this->getEnderecoPrimario() != null) {
+  public function salvaCgmTipoEmpresa()
+  {
+    $iCodigoTipoEmpresa = $this->getCodigoTipoEmpresa();
+    $iNumCgm = $this->getCodigo();
 
-      $sWhereCgmEnderPrimario = " z07_numcgm = ".$this->getCodigo()." and z07_tipo='P' ";
-      $sSqlConsultaCgmEnderPrimario = $oDaoCgmEndereco->sql_query_file(null,'z07_sequencial',null,$sWhereCgmEnderPrimario);
-      $rsConsultaCgmEnderPrimario = $oDaoCgmEndereco->sql_record($sSqlConsultaCgmEnderPrimario);
-
-      $oDaoCgmEndereco->z07_endereco = $this->getEnderecoPrimario();
-      $oDaoCgmEndereco->z07_numcgm   = $this->getCodigo();
-      $oDaoCgmEndereco->z07_tipo     = 'P';
-
-      if ($oDaoCgmEndereco->numrows > 0) {
-
-         $oDaoCgmEndereco->z07_sequencial = db_utils::fieldsMemory($rsConsultaCgmEnderPrimario,0)->z07_sequencial;
-         $oDaoCgmEndereco->alterar($oDaoCgmEndereco->z07_sequencial);
-      } else if ($this->getEnderecoPrimario() != "" && $this->getEnderecoPrimario() != null) {
-        $oDaoCgmEndereco->z07_sequencial = "";
-        $oDaoCgmEndereco->incluir(null);
-      }
-
-      if ( $oDaoCgmEndereco->erro_status == '0' ) {
-         throw new Exception("{$oDaoCgmEndereco->erro_msg}");
-      }
+    if (empty($iCodigoTipoEmpresa)) {
+      $iCodigoTipoEmpresa = $this->getTipoEmpresaPadrao();
     }
-    /**
-    * inseri registro na cgmendereco {Secundário}
-    */
-    if ($this->getEnderecoSecundario() != "" && $this->getEnderecoSecundario() != null) {
 
-      $sWhereCgmEnderSecundario = " z07_numcgm = ".$this->getCodigo()." and z07_tipo='S' ";
-      $sSqlConsultaCgmEnderSecundario = $oDaoCgmEndereco->sql_query_file(null,'z07_sequencial',null,$sWhereCgmEnderSecundario);
-      $rsConsultaCgmEnderSecundario = $oDaoCgmEndereco->sql_record($sSqlConsultaCgmEnderSecundario);
+    $oDaoCgmTipoEmpresa = new cl_cgmtipoempresa;
+    $sSqlCgmTipoEmpresa = $oDaoCgmTipoEmpresa->sql_query_file(
+      null,
+      'z03_sequencial',
+      null,
+      "z03_numcgm = {$iNumCgm}"
+    );
 
-      if (trim($this->getEnderecoSecundario()) != ""){
-        $oDaoCgmEndereco->z07_endereco = $this->getEnderecoSecundario();
-        $oDaoCgmEndereco->z07_numcgm   = $this->getCodigo();
-        $oDaoCgmEndereco->z07_tipo     = 'S';
+    $rsConsultaCgmTipoEmpresa = $oDaoCgmTipoEmpresa->sql_record($sSqlCgmTipoEmpresa);
+    $iResultCount = $oDaoCgmTipoEmpresa->numrows;
 
-        if ($oDaoCgmEndereco->numrows > 0) {
+    if (empty($iResultCount)) {
+      $oDaoCgmTipoEmpresa->z03_tipoempresa = $iCodigoTipoEmpresa;
+      $oDaoCgmTipoEmpresa->z03_numcgm = $iNumCgm;
 
-           $oDaoCgmEndereco->z07_sequencial = db_utils::fieldsMemory($rsConsultaCgmEnderSecundario,0)->z07_sequencial;
-           $oDaoCgmEndereco->alterar($oDaoCgmEndereco->z07_sequencial);
-        } else if ($this->getEnderecoSecundario() != "" && $this->getEnderecoSecundario() != null) {
-          $oDaoCgmEndereco->z07_sequencial = "";
-          $oDaoCgmEndereco->incluir(null);
-        }
-
-        if ( $oDaoCgmEndereco->erro_status == '0' ) {
-           throw new Exception("{$oDaoCgmEndereco->erro_msg}");
-        }
-      }
-    } else if ($this->getEnderecoSecundario() == "") {
-
-      $sWhereCgmEnderSecundario = "z07_numcgm=".$this->getCodigo()." and z07_tipo = 'S' ";
-      $oDaoCgmEndereco->excluir(null,$sWhereCgmEnderSecundario);
-      if ( $oDaoCgmEndereco->erro_status == '0' ) {
-        throw new Exception("{$oDaoCgmEndereco->erro_msg}");
-      }
+      $oDaoCgmTipoEmpresa->incluir(null);
     }
+
+    if (!empty($iResultCount)) {
+      $oResultFields = db_utils::fieldsMemory($rsConsultaCgmTipoEmpresa, 0);
+
+      $oDaoCgmTipoEmpresa->z03_tipoempresa = $iCodigoTipoEmpresa;
+      $oDaoCgmTipoEmpresa->z03_sequencial = $oResultFields->z03_sequencial;
+      $oDaoCgmTipoEmpresa->alterar($oResultFields->z03_sequencial);
+    }
+
+    if ($oDaoCgmTipoEmpresa->erro_status == 0) {
+      throw new Exception("{$oDaoCgmTipoEmpresa->erro_msg}");
+    }
+  }
+
+  public function getTipoEmpresaPadrao()
+  {
+    if ($this instanceof CgmFisico) {
+      return 31;
+    }
+
+    if ($this instanceof CgmJuridico) {
+      return 36;
+    }
+
+    return 32; // Sem definição
   }
 
   /**
@@ -1360,5 +1443,31 @@ abstract class CgmBase {
 
     return $aDebitosEmAberto;
   }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return array(
+            'codigo' => $this->getCodigo(),
+            'nome' => $this->getNome()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getNomeMae()
+    {
+        return $this->sNomeMae;
+    }
+
+    /**
+     * @param string $sNomeMae
+     */
+    public function setNomeMae($sNomeMae)
+    {
+        $this->sNomeMae = $sNomeMae;
+    }
 }
-?>

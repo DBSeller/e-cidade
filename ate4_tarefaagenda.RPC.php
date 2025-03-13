@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/JSON.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+@require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/JSON.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(str_replace("\\","",$_POST["json"]));
@@ -135,7 +135,7 @@ if ( $oParam->exec == "removerLembrete" ){
   $sSqlUsuariosAgenda .= " order by id_usuario      ";
   
   $rsUsuariosAgenda = $oDaoTarefaagenda->sql_record($sSqlUsuariosAgenda);
-  $aUsuariosAgenda  = db_utils::getColectionByRecord($rsUsuariosAgenda,false,false,true);
+  $aUsuariosAgenda  = db_utils::getCollectionByRecord($rsUsuariosAgenda,false,false,true);
 
   $sSqlClientesAgenda  = " select 0                     as at01_codcli,  ";
   $sSqlClientesAgenda .= "        'Selecione o Cliente' as at01_nomecli ";
@@ -147,13 +147,13 @@ if ( $oParam->exec == "removerLembrete" ){
   $sSqlClientesAgenda .= " order by at01_codcli ";
 
   $rsClientesAgenda = $oDaoTarefaagenda->sql_record($sSqlClientesAgenda);
-  $aClientesAgenda  = db_utils::getColectionByRecord($rsClientesAgenda,false,false,true);
+  $aClientesAgenda  = db_utils::getCollectionByRecord($rsClientesAgenda,false,false,true);
 
   $sSqlDepartamentosAgenda  = "   select 0 as coddepto,'Selecione o Departamento' as descrdepto ";
   $sSqlDepartamentosAgenda .= " union ";
   $sSqlDepartamentosAgenda .= "   select coddepto,descrdepto from db_depart order by coddepto ";
   $rsDepartamentosAgenda = $oDaoTarefaagenda->sql_record($sSqlDepartamentosAgenda);
-  $aDepartamentosAgenda  = db_utils::getColectionByRecord($rsDepartamentosAgenda,false,false,true);
+  $aDepartamentosAgenda  = db_utils::getCollectionByRecord($rsDepartamentosAgenda,false,false,true);
   
   $aRegistros = array("iStatus"=>$iStatus, "aUsuarios"=>$aUsuariosAgenda,"aClientes"=>$aClientesAgenda, "aDepartamentos"=>$aDepartamentosAgenda);
 
@@ -200,7 +200,7 @@ if ( $oParam->exec == "removerLembrete" ){
   $sSqlConsulta .= " $where ";
 
   $rsConsulta     = $oDaoTarefaagenda->sql_record($sSqlConsulta);
-  $aDadosConsulta = db_utils::getColectionByRecord($rsConsulta,false,false,true);
+  $aDadosConsulta = db_utils::getCollectionByRecord($rsConsulta,false,false,true);
   $aRegistros = array("iStatus"=>$iStatus, "aRegistros"=>$aDadosConsulta);
 
   echo $oJson->encode($aRegistros);

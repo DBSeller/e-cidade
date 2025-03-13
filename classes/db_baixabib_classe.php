@@ -1,33 +1,7 @@
 <?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
- */
-
 //MODULO: biblioteca
 //CLASSE DA ENTIDADE baixabib
-class cl_baixa { 
+class cl_baixabib { 
    // cria variaveis de erro 
    var $rotulo     = null; 
    var $query_sql  = null; 
@@ -59,7 +33,7 @@ class cl_baixa {
                  bi08_usuario = int8 = Usuário 
                  ";
    //funcao construtor da classe 
-   function cl_baixa() { 
+   function cl_baixabib() { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("baixabib"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
@@ -92,11 +66,11 @@ class cl_baixa {
        $this->bi08_codigo = ($this->bi08_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["bi08_codigo"]:$this->bi08_codigo);
      }
    }
-   // funcao para inclusao
+   // funcao para Inclusão
    function incluir ($bi08_codigo){ 
       $this->atualizacampos();
      if($this->bi08_descr == null ){ 
-       $this->erro_sql = " Campo Descrição da Baixa nao Informado.";
+       $this->erro_sql = " Campo Descrição da Baixa não informado.";
        $this->erro_campo = "bi08_descr";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -105,7 +79,7 @@ class cl_baixa {
        return false;
      }
      if($this->bi08_exemplar == null ){ 
-       $this->erro_sql = " Campo Exemplar nao Informado.";
+       $this->erro_sql = " Campo Exemplar não informado.";
        $this->erro_campo = "bi08_exemplar";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -114,7 +88,7 @@ class cl_baixa {
        return false;
      }
      if($this->bi08_inclusao == null ){ 
-       $this->erro_sql = " Campo Data da Baixa nao Informado.";
+       $this->erro_sql = " Campo Data da Baixa não informado.";
        $this->erro_campo = "bi08_inclusao_dia";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -123,7 +97,7 @@ class cl_baixa {
        return false;
      }
      if($this->bi08_usuario == null ){ 
-       $this->erro_sql = " Campo Usuário nao Informado.";
+       $this->erro_sql = " Campo Usuário não informado.";
        $this->erro_campo = "bi08_usuario";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -156,7 +130,7 @@ class cl_baixa {
        }
      }
      if(($this->bi08_codigo == null) || ($this->bi08_codigo == "") ){ 
-       $this->erro_sql = " Campo bi08_codigo nao declarado.";
+       $this->erro_sql = " Campo bi08_codigo não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -181,12 +155,12 @@ class cl_baixa {
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Baixa de exemplares do acervo ($this->bi08_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Baixa de exemplares do acervo ($this->bi08_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_banco = "Baixa de exemplares do acervo já Cadastrado";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Baixa de exemplares do acervo ($this->bi08_codigo) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Baixa de exemplares do acervo ($this->bi08_codigo) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -195,28 +169,34 @@ class cl_baixa {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->bi08_codigo;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
-     $resaco = $this->sql_record($this->sql_query_file($this->bi08_codigo));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,1008133,'$this->bi08_codigo','I')");
-       $resac = db_query("insert into db_acount values($acount,1008016,1008133,'','".AddSlashes(pg_result($resaco,0,'bi08_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1008016,1008134,'','".AddSlashes(pg_result($resaco,0,'bi08_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1008016,1008136,'','".AddSlashes(pg_result($resaco,0,'bi08_exemplar'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1008016,1008188,'','".AddSlashes(pg_result($resaco,0,'bi08_inclusao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,1008016,1008937,'','".AddSlashes(pg_result($resaco,0,'bi08_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->bi08_codigo  ));
+       if(($resaco!=false)||($this->numrows!=0)){
+
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+         $acount = pg_result($resac,0,0);
+         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+         $resac = db_query("insert into db_acountkey values($acount,1008133,'$this->bi08_codigo','I')");
+         $resac = db_query("insert into db_acount values($acount,1008016,1008133,'','".AddSlashes(pg_result($resaco,0,'bi08_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008016,1008134,'','".AddSlashes(pg_result($resaco,0,'bi08_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008016,1008136,'','".AddSlashes(pg_result($resaco,0,'bi08_exemplar'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008016,1008188,'','".AddSlashes(pg_result($resaco,0,'bi08_inclusao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,1008016,1008937,'','".AddSlashes(pg_result($resaco,0,'bi08_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       }
      }
      return true;
    } 
    // funcao para alteracao
-   function alterar ($bi08_codigo=null) { 
+   public function alterar ($bi08_codigo=null) { 
       $this->atualizacampos();
      $sql = " update baixabib set ";
      $virgula = "";
@@ -224,7 +204,7 @@ class cl_baixa {
        $sql  .= $virgula." bi08_codigo = $this->bi08_codigo ";
        $virgula = ",";
        if(trim($this->bi08_codigo) == null ){ 
-         $this->erro_sql = " Campo Código nao Informado.";
+         $this->erro_sql = " Campo Código não informado.";
          $this->erro_campo = "bi08_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -237,7 +217,7 @@ class cl_baixa {
        $sql  .= $virgula." bi08_descr = '$this->bi08_descr' ";
        $virgula = ",";
        if(trim($this->bi08_descr) == null ){ 
-         $this->erro_sql = " Campo Descrição da Baixa nao Informado.";
+         $this->erro_sql = " Campo Descrição da Baixa não informado.";
          $this->erro_campo = "bi08_descr";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -250,7 +230,7 @@ class cl_baixa {
        $sql  .= $virgula." bi08_exemplar = $this->bi08_exemplar ";
        $virgula = ",";
        if(trim($this->bi08_exemplar) == null ){ 
-         $this->erro_sql = " Campo Exemplar nao Informado.";
+         $this->erro_sql = " Campo Exemplar não informado.";
          $this->erro_campo = "bi08_exemplar";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -263,7 +243,7 @@ class cl_baixa {
        $sql  .= $virgula." bi08_inclusao = '$this->bi08_inclusao' ";
        $virgula = ",";
        if(trim($this->bi08_inclusao) == null ){ 
-         $this->erro_sql = " Campo Data da Baixa nao Informado.";
+         $this->erro_sql = " Campo Data da Baixa não informado.";
          $this->erro_campo = "bi08_inclusao_dia";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -276,7 +256,7 @@ class cl_baixa {
          $sql  .= $virgula." bi08_inclusao = null ";
          $virgula = ",";
          if(trim($this->bi08_inclusao) == null ){ 
-           $this->erro_sql = " Campo Data da Baixa nao Informado.";
+           $this->erro_sql = " Campo Data da Baixa não informado.";
            $this->erro_campo = "bi08_inclusao_dia";
            $this->erro_banco = "";
            $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -290,7 +270,7 @@ class cl_baixa {
        $sql  .= $virgula." bi08_usuario = $this->bi08_usuario ";
        $virgula = ",";
        if(trim($this->bi08_usuario) == null ){ 
-         $this->erro_sql = " Campo Usuário nao Informado.";
+         $this->erro_sql = " Campo Usuário não informado.";
          $this->erro_campo = "bi08_usuario";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -303,46 +283,53 @@ class cl_baixa {
      if($bi08_codigo!=null){
        $sql .= " bi08_codigo = $this->bi08_codigo";
      }
-     $resaco = $this->sql_record($this->sql_query_file($this->bi08_codigo));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,1008133,'$this->bi08_codigo','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["bi08_codigo"]))
-           $resac = db_query("insert into db_acount values($acount,1008016,1008133,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_codigo'))."','$this->bi08_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["bi08_descr"]))
-           $resac = db_query("insert into db_acount values($acount,1008016,1008134,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_descr'))."','$this->bi08_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["bi08_exemplar"]))
-           $resac = db_query("insert into db_acount values($acount,1008016,1008136,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_exemplar'))."','$this->bi08_exemplar',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["bi08_inclusao"]))
-           $resac = db_query("insert into db_acount values($acount,1008016,1008188,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_inclusao'))."','$this->bi08_inclusao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["bi08_usuario"]))
-           $resac = db_query("insert into db_acount values($acount,1008016,1008937,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_usuario'))."','$this->bi08_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->bi08_codigo));
+       if ($this->numrows > 0) {
+
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
+
+           $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac = db_query("insert into db_acountkey values($acount,1008133,'$this->bi08_codigo','A')");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["bi08_codigo"]) || $this->bi08_codigo != "")
+             $resac = db_query("insert into db_acount values($acount,1008016,1008133,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_codigo'))."','$this->bi08_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["bi08_descr"]) || $this->bi08_descr != "")
+             $resac = db_query("insert into db_acount values($acount,1008016,1008134,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_descr'))."','$this->bi08_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["bi08_exemplar"]) || $this->bi08_exemplar != "")
+             $resac = db_query("insert into db_acount values($acount,1008016,1008136,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_exemplar'))."','$this->bi08_exemplar',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["bi08_inclusao"]) || $this->bi08_inclusao != "")
+             $resac = db_query("insert into db_acount values($acount,1008016,1008188,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_inclusao'))."','$this->bi08_inclusao',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["bi08_usuario"]) || $this->bi08_usuario != "")
+             $resac = db_query("insert into db_acount values($acount,1008016,1008937,'".AddSlashes(pg_result($resaco,$conresaco,'bi08_usuario'))."','$this->bi08_usuario',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Baixa de exemplares do acervo nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Baixa de exemplares do acervo não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->bi08_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Baixa de exemplares do acervo nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Baixa de exemplares do acervo não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->bi08_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Alteração efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$this->bi08_codigo;
@@ -355,59 +342,68 @@ class cl_baixa {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($bi08_codigo=null,$dbwhere=null) { 
-     if($dbwhere==null || $dbwhere==""){
-       $resaco = $this->sql_record($this->sql_query_file($bi08_codigo));
-     }else{ 
-       $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
-     }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,1008133,'$bi08_codigo','E')");
-         $resac = db_query("insert into db_acount values($acount,1008016,1008133,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1008016,1008134,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1008016,1008136,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_exemplar'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1008016,1008188,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_inclusao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,1008016,1008937,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+   public function excluir ($bi08_codigo=null,$dbwhere=null) { 
+
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       if (empty($dbwhere)) {
+
+         $resaco = $this->sql_record($this->sql_query_file($bi08_codigo));
+       } else { 
+         $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
+       }
+       if (($resaco != false) || ($this->numrows!=0)) {
+
+         for ($iresaco = 0; $iresaco < $this->numrows; $iresaco++) {
+
+           $resac  = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac  = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac  = db_query("insert into db_acountkey values($acount,1008133,'$bi08_codigo','E')");
+           $resac  = db_query("insert into db_acount values($acount,1008016,1008133,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1008016,1008134,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1008016,1008136,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_exemplar'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1008016,1008188,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_inclusao'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,1008016,1008937,'','".AddSlashes(pg_result($resaco,$iresaco,'bi08_usuario'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $sql = " delete from baixabib
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($bi08_codigo != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($bi08_codigo)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " bi08_codigo = $bi08_codigo ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Baixa de exemplares do acervo nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Baixa de exemplares do acervo não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$bi08_codigo;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Baixa de exemplares do acervo nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Baixa de exemplares do acervo não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$bi08_codigo;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
          $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
          $this->erro_sql .= "Valores : ".$bi08_codigo;
@@ -420,9 +416,9 @@ class cl_baixa {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -431,8 +427,8 @@ class cl_baixa {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:baixabib";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -442,77 +438,50 @@ class cl_baixa {
       }
      return $result;
    }
-   function sql_query ( $bi08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from baixabib ";
+   // funcao do sql 
+   public function sql_query ($bi08_codigo = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from baixabib ";
      $sql .= "      inner join db_usuarios  on  db_usuarios.id_usuario = baixabib.bi08_usuario";
      $sql .= "      inner join exemplar  on  exemplar.bi23_codigo = baixabib.bi08_exemplar";
+     $sql .= "      inner join aquisicao  on  aquisicao.bi04_codigo = exemplar.bi23_aquisicao";
      $sql .= "      inner join acervo  on  acervo.bi06_seq = exemplar.bi23_acervo";
      $sql2 = "";
-     if($dbwhere==""){
-       if($bi08_codigo!=null ){
-         $sql2 .= " where baixabib.bi08_codigo = $bi08_codigo ";
+     if (empty($dbwhere)) {
+       if (!empty($bi08_codigo)) {
+         $sql2 .= " where baixabib.bi08_codigo = $bi08_codigo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-   function sql_query_file ( $bi08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from baixabib ";
+   // funcao do sql 
+   public function sql_query_file ($bi08_codigo = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from baixabib ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($bi08_codigo!=null ){
-         $sql2 .= " where baixabib.bi08_codigo = $bi08_codigo ";
+     if (empty($dbwhere)) {
+       if (!empty($bi08_codigo)){
+         $sql2 .= " where baixabib.bi08_codigo = $bi08_codigo "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
 
-  function sql_query_baixa_acervo ( $bi08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
+   function sql_query_baixa_acervo ( $bi08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){
     $sql = "select ";
     if($campos != "*" ){
       $campos_sql = split("#",$campos);
@@ -550,4 +519,3 @@ class cl_baixa {
     return $sql;
   }
 }
-?>

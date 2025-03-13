@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,21 +25,21 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("std/db_stdClass.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("std/db_stdClass.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
 
-include("classes/db_conciliapendcorrente_classe.php");
-include("classes/db_conciliapendextrato_classe.php");
-include("classes/db_conciliacor_classe.php");
-include("classes/db_conciliaextrato_classe.php");
-include("classes/db_conciliaitem_classe.php");
-include("classes/db_concilia_classe.php");
-include("classes/db_conciliazeralog_classe.php");
+include(modification("classes/db_conciliapendcorrente_classe.php"));
+include(modification("classes/db_conciliapendextrato_classe.php"));
+include(modification("classes/db_conciliacor_classe.php"));
+include(modification("classes/db_conciliaextrato_classe.php"));
+include(modification("classes/db_conciliaitem_classe.php"));
+include(modification("classes/db_concilia_classe.php"));
+include(modification("classes/db_conciliazeralog_classe.php"));
 
 $oJson    = new services_json();
 $oParam   = $oJson->decode(db_stdClass::db_stripTagsJson(str_replace("\\","",$_POST["json"])));
@@ -62,7 +62,7 @@ switch($oParam->exec) {
 	    /*
 	     * Set de Objetos
 	     */
-	    $sDataProcessamento    = implode('-',array_reverse(explode('/',$oParam->data)));
+	  $sDataProcessamento    = implode('-',array_reverse(explode('/',$oParam->data)));
       $oConciliaPendCorrente = new cl_conciliapendcorrente();
       $oConciliaPendExtrato  = new cl_conciliapendextrato();
       $oConciliaCor          = new cl_conciliacor();
@@ -71,24 +71,29 @@ switch($oParam->exec) {
       $oConciliaExcluir      = new cl_concilia();
       
       /*
-       * Validamos a data de encerramento da contabilidade, não podendo ser alterada nenhuma conciliação anterior a esta data
-      */
-      $sSqlValidaDataConciliacao  = "select max(c99_data) ";
-      $sSqlValidaDataConciliacao .= "  from condataconf ";
-      $sSqlValidaDataConciliacao .= " where c99_instit = ".db_getsession("DB_instit");
-      $sSqlValidaDataConciliacao .= "having max(c99_data) >= '{$sDataProcessamento}'";
-      $rsValidaDataConciliacao   = db_query($sSqlValidaDataConciliacao);
-      if ($rsValidaDataConciliacao && pg_num_rows($rsValidaDataConciliacao) > 0) {
-      	throw new Exception("Operação não permitida!\n\nData da conciliação menor que a data do encerramento da contabilidade para a instituicao!");
-      }    
-      
-	    $rsConcilia = $oConciliaExcluir->sql_record($oConciliaExcluir->sql_query_file("",
-		  					                                                                    "k68_sequencial",
-		  					                                                                    "",
-		  					                                                                    "k68_contabancaria 
-		  					                                                                     in ({$oParam->db83_sequencial}) 
-		  																																							 and k68_data >= '{$sDataProcessamento}'
-		  																																							"));
+       * Validamos a data de encerramento da contabilidade, não podendo ser alterada nenhuma conciliação 
+	   * anterior a esta data
+	   * a partir de 2020 essa validacao se tornou desnecessaria
+	   * 
+	   $sSqlValidaDataConciliacao  = "select max(c99_data) ";
+	   $sSqlValidaDataConciliacao .= "  from condataconf ";
+	   $sSqlValidaDataConciliacao .= " where c99_instit = ".db_getsession("DB_instit");
+	   $sSqlValidaDataConciliacao .= "having max(c99_data) >= '{$sDataProcessamento}'";
+	   $rsValidaDataConciliacao   = db_query($sSqlValidaDataConciliacao);
+	   if ($rsValidaDataConciliacao && pg_num_rows($rsValidaDataConciliacao) > 0) {
+		   throw new Exception("Operação não permitida!\n\n
+		   Data da conciliação menor que a data do encerramento da contabilidade para a instituicao!");
+		}    
+		*/
+	  
+	    $sSql = $oConciliaExcluir->sql_query_file("",
+		"k68_sequencial",
+		"",
+		"k68_contabancaria 
+		 in ({$oParam->db83_sequencial}) 
+		 and k68_data >= '{$sDataProcessamento}' ");
+
+	    $rsConcilia = $oConciliaExcluir->sql_record($sSql);
 		  /*
 		   * Verifica se houve resultados
 		   * Se não tiver mata a operação e define a variavel mensagem como erro
@@ -102,7 +107,7 @@ switch($oParam->exec) {
 		  	 * Percorre o array excluindo registros das tabelas:
 		  	 *   conciliapendcorrente, conciliapendextrato, conciliacor, conciliaextrato, conciliaitem e concilia
 		  	 */
-		    $aConcilia = db_utils::getColectionByRecord($rsConcilia);
+		    $aConcilia = db_utils::getCollectionByRecord($rsConcilia);
 		    
 		    foreach ($aConcilia as $oConcilia){
 	    
@@ -126,7 +131,7 @@ switch($oParam->exec) {
 	                                                                                    k83_concilia = 
 	                                                                                    {$oConcilia->k68_sequencial}
 	                                                                                    "));
-	        $aConciliaItem  = db_utils::getColectionByRecord($rsConciliaItem);
+	        $aConciliaItem  = db_utils::getCollectionByRecord($rsConciliaItem);
 	        
 	        foreach ($aConciliaItem as $oConciliaItemLaco) {
 	        

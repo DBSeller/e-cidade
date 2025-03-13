@@ -1,0 +1,611 @@
+<?php
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class M21058AtualizacaoPad extends Migration
+{
+    public function up()
+    {
+        $sql = <<<SQL
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,138 ,'datavantagem' ,'DATA INICIAL VANTAGENS' ,4 ,398 ,'' ,8 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,138 ,'matricula' ,'MATRICULA' ,2 ,406 ,'' ,12 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,138 ,'matricula_vinculo' ,'MATRICULA VINCULO' ,2 ,418 ,'00' ,2 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,144 ,'codigo_conta' ,'CÓDIGO DA CONTA' ,2 ,212 ,'' ,6 ,'f' ,'t' ,'e' ,'Codificação TCE' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,144 ,'piso_magisterio' ,'COMPÕE PISO DO MAGISTÉRIO' ,1 ,218 ,'' ,1 ,'f' ,'t' ,'d' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,144 ,'compoe_empenho' ,'COMPÕE EMPENHO' ,1 ,219 ,'' ,1 ,'f' ,'t' ,'d' ,'' ,0 );
+
+        -- Novo Layout Dependente.txt
+        insert into configuracoes.db_layouttxt( db50_codigo ,db50_layouttxtgrupo ,db50_descr ,db50_quantlinhas ,db50_obs ) values (309 ,2 ,'TCE_DEPENDENTE - CADASTRO DE DEPENDENTES' ,0 ,'' );
+
+        insert into configuracoes.db_layoutlinha( db51_codigo ,db51_layouttxt ,db51_descr ,db51_tipolinha ,db51_tamlinha ,db51_linhasantes ,db51_linhasdepois ,db51_obs ,db51_separador ,db51_compacta ) values ( 1029 ,309 ,'HEADER DO ARQUIVO' ,1 ,130 ,0 ,0 ,'' ,'' ,'0' );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1029 ,'cnpjsetorgoverno' ,'CNPJ SETOR DE GOVERNO (ÓRGÃO/ENTIDADE)' ,2 ,1 ,'' ,14 ,'false' ,'true' ,'e' ,'Informar o CNPJ do Setor de Governo, (órgão/entidade) junto ao Ministério da Fazenda' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1029 ,'datainicialinformacao' ,'DATA INICIAL DA INFORMAÇÃO' ,4 ,15 ,'' ,8 ,'false' ,'true' ,'e' ,'Informar a data inicial do período (1º de janeiro do exercício referente a entrega dos dados), no formato ddmmaaaa' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1029 ,'datafinalinformacao' ,'DATA FINAL DA INFORMAÇÃO' ,4 ,23 ,'' ,8 ,'false' ,'true' ,'e' ,'Informar a data final do período a que se referem os dados, no formato ddmmaaaa' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1029 ,'datageracaoarquivo' ,'DATA DA GERAÇÃO DO ARQUIVO' ,4 ,31 ,'' ,8 ,'false' ,'true' ,'e' ,'Informar a data da geração do arquivo noformato ddmmaaaa' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1029 ,'nomesetorgoverno' ,'NOME SETOR DE GOVERNO (ÓRGÃO/ENTIDADE)' ,13 ,39 ,'' ,80 ,'false' ,'true' ,'d' ,'Nome do órgão ou entidade responsável pelos dados e informações' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1029 ,'codigoremessa' ,'CÓDIGO DA REMESSA' ,2 ,119 ,'' ,12 ,'false' ,'true' ,'e' ,'Código da Remessa. Deverá ser gerado pelo próprio Órgão/Entidade, e será utilizado como identificador exclusivo da remessa' ,0 );
+
+        insert into configuracoes.db_layoutlinha( db51_codigo ,db51_layouttxt ,db51_descr ,db51_tipolinha ,db51_tamlinha ,db51_linhasantes ,db51_linhasdepois ,db51_obs ,db51_separador ,db51_compacta ) values ( 1031 ,309 ,'REGISTRO' ,3 ,138 ,0 ,0 ,'' ,'' ,'0' );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1031 ,'matricula' ,'MATRÍCULA DO RESPONSÁVEL' ,2 ,1 ,'' ,14 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1031 ,'nomedependente' ,'NOME DO DEPENDENTE' ,1 ,13 ,'' ,70 ,'f' ,'t' ,'d' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1031 ,'cpf_depentente' ,'CPF DO DEPENDENTE' ,2 ,83 ,'' ,14 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1031 ,'nascimento_dependente' ,'DATA NASCIMENTO DEPENDENTE' ,4 ,99 ,'00000000' ,8 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1031 ,'parentesco_dependente' ,'CODIGO DE PARENTESCO' ,2 ,107 ,'' ,2 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1031 ,'observacao' ,'OBSERVACAO' ,1 ,109 ,'' ,30 ,'f' ,'t' ,'d' ,'Definir o Código de Parentesco “Outros\"' ,0 );
+
+        insert into configuracoes.db_layoutlinha( db51_codigo ,db51_layouttxt ,db51_descr ,db51_tipolinha ,db51_tamlinha ,db51_linhasantes ,db51_linhasdepois ,db51_obs ,db51_separador ,db51_compacta ) values ( 1032 ,309 ,'TRAILLER DO ARQUIVO' ,5 ,22 ,0 ,0 ,'' ,'' ,'0' );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1032 ,'descricao' ,'DESCRICAO' ,13 ,1 ,'' ,11 ,'false' ,'true' ,'d' ,'Valor padrão “FINALIZADOR”' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1032 ,'totalregistros' ,'TOTAL REGISTROS' ,2 ,12 ,'' ,10 ,'false' ,'true' ,'e' ,'Totalizador de Registros, onde contem a quantidade de registros gerada no arquivo' ,0 );
+
+        -- Novo Layout Pensionista.txt
+        insert into db_layouttxt( db50_codigo ,db50_layouttxtgrupo ,db50_descr ,db50_quantlinhas ,db50_obs ) values ( 310 ,2 ,'TCE_PENSIONISTA - CADASTRO DE PENSIONIST' ,0 ,'' );
+        insert into configuracoes.db_layoutlinha( db51_codigo ,db51_layouttxt ,db51_descr ,db51_tipolinha ,db51_tamlinha ,db51_linhasantes ,db51_linhasdepois ,db51_obs ,db51_separador ,db51_compacta ) values ( 1033 ,310 ,'HEADER DO ARQUIVO' ,1 ,130 ,0 ,0 ,'' ,'' ,'0' );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1033 ,'cnpjsetorgoverno' ,'CNPJ SETOR DE GOVERNO (ÓRGÃO/ENTIDADE)' ,2 ,1 ,'' ,14 ,'false' ,'true' ,'e' ,'Informar o CNPJ do Setor de Governo, (órgão/entidade) junto ao Ministério da Fazenda' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1033 ,'datainicialinformacao' ,'DATA INICIAL DA INFORMAÇÃO' ,4 ,15 ,'' ,8 ,'false' ,'true' ,'e' ,'Informar a data inicial do período (1º de janeiro do exercício referente a entrega dos dados), no formato ddmmaaaa' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1033 ,'datafinalinformacao' ,'DATA FINAL DA INFORMAÇÃO' ,4 ,23 ,'' ,8 ,'false' ,'true' ,'e' ,'Informar a data final do período a que se referem os dados, no formato ddmmaaaa' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1033 ,'datageracaoarquivo' ,'DATA DA GERAÇÃO DO ARQUIVO' ,4 ,31 ,'' ,8 ,'false' ,'true' ,'e' ,'Informar a data da geração do arquivo noformato ddmmaaaa' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1033 ,'nomesetorgoverno' ,'NOME SETOR DE GOVERNO (ÓRGÃO/ENTIDADE)' ,13 ,39 ,'' ,80 ,'false' ,'true' ,'d' ,'Nome do órgão ou entidade responsável pelos dados e informações' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1033 ,'codigoremessa' ,'CÓDIGO DA REMESSA' ,2 ,119 ,'' ,12 ,'false' ,'true' ,'e' ,'Código da Remessa. Deverá ser gerado pelo próprio Órgão/Entidade, e será utilizado como identificador exclusivo da remessa' ,0 );
+
+        insert into configuracoes.db_layoutlinha( db51_codigo ,db51_layouttxt ,db51_descr ,db51_tipolinha ,db51_tamlinha ,db51_linhasantes ,db51_linhasdepois ,db51_obs ,db51_separador ,db51_compacta ) values ( 1034 ,310 ,'REGISTRO' ,3 ,82 ,0 ,0 ,'' ,'' ,'0' );
+
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1034 ,'matricula_instituidor' ,'MATRÍCULA DO Instituidor' ,2 ,1 ,'' ,14 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1034 ,'data_obito' ,'DATA DO OBITO' ,4 ,15 ,'00000000' ,8 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1034 ,'data_concessao' ,'DATA DA CONCESSAO' ,4 ,23 ,'00000000' ,8 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1034 ,'data_exclusao' ,'DATA DA EXCLUSAO' ,4 ,31 ,'00000000' ,8 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1034 ,'matricula' ,'MATRÍCULA DO SERVIDOR' ,2 ,39 ,'' ,12 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1034 ,'parentesco_dependente' ,'CODIGO DE PARENTESCO' ,2 ,51 ,'' ,2 ,'f' ,'t' ,'e' ,'' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1034 ,'observacao' ,'OBSERVACAO' ,1 ,53 ,'' ,30 ,'f' ,'t' ,'d' ,'Definir o Código de Parentesco “Outros\"' ,0 );
+
+        insert into configuracoes.db_layoutlinha( db51_codigo ,db51_layouttxt ,db51_descr ,db51_tipolinha ,db51_tamlinha ,db51_linhasantes ,db51_linhasdepois ,db51_obs ,db51_separador ,db51_compacta ) values ( 1035 ,310 ,'TRAILLER DO ARQUIVO' ,5 ,22 ,0 ,0 ,'' ,'' ,'0' );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1035 ,'descricao' ,'DESCRICAO' ,13 ,1 ,'' ,11 ,'false' ,'true' ,'d' ,'Valor padrão “FINALIZADOR”' ,0 );
+        insert into configuracoes.db_layoutcampos( db52_codigo ,db52_layoutlinha ,db52_nome ,db52_descr ,db52_layoutformat ,db52_posicao ,db52_default ,db52_tamanho ,db52_ident ,db52_imprimir ,db52_alinha ,db52_obs ,db52_quebraapos ) values ( nextval('db_layoutcampos_db52_codigo_seq') ,1035 ,'totalregistros' ,'TOTAL REGISTROS' ,2 ,12 ,'' ,10 ,'false' ,'true' ,'e' ,'Totalizador de Registros, onde contem a quantidade de registros gerada no arquivo' ,0 );
+
+        -- dicionario de dados
+
+        insert into configuracoes.db_sysarquivo values (1010945, 'rubricasubgrupotce', 'Vinculo da rubrica com o subgrupo do TCE/RS, ela fica vinculada na esocialrubricas', 'rh263', '2022-06-21', 'Subgrupo da Rubrica', 0, 'f', 'f', 'f', 'f' );
+        insert into configuracoes.db_sysarqmod values (81,1010945);
+        insert into configuracoes.db_syscampo values(1014218,'rh263_sequencial','int4','Código sequencial da tabela','0', 'Código Sequencial',10,'f','f','f',1,'text','Código Sequencial');
+        insert into configuracoes.db_syscampo values(1014219,'rh263_grupo','varchar(4)','A Natureza é baseada na tabela 03 do eSocial','', 'Natureza do subgrupo',4,'f','t','f',0,'text','Natureza do subgrupo');
+        insert into configuracoes.db_syscampo values(1014220,'rh263_subgrupo','varchar(2)','Subgrupo da Natureza da rubrica','', 'Subgrupo da Natureza',2,'f','t','f',0,'text','Subgrupo da Natureza');
+        insert into configuracoes.db_syscampo values(1014221,'rh263_descricao','varchar(100)','Descrição do subgrupo da Natureza.','', 'Descrição',100,'f','t','f',0,'text','Descrição');
+        insert into configuracoes.db_syscampo values(1014222,'eso26_subgrupotce','varchar(2)','Subgrupo da Natureza da rubrica para o TCE/RS.','', 'Subgrupo da Natureza',2,'f','t','f',0,'text','Subgrupo da Natureza');
+        delete from configuracoes.db_sysarqcamp where codarq = 1010945;
+        insert into configuracoes.db_sysarqcamp values(1010945,1014218,1,0);
+        insert into configuracoes.db_sysarqcamp values(1010945,1014219,2,0);
+        insert into configuracoes.db_sysarqcamp values(1010945,1014220,3,0);
+        insert into configuracoes.db_sysarqcamp values(1010945,1014221,4,0);
+        delete from configuracoes.db_sysprikey where codarq = 1010945;
+        insert into configuracoes.db_sysprikey (codarq,codcam,sequen,camiden) values(1010945,1014218,1,1014218);
+        insert into configuracoes.db_syssequencia values(1001071, 'rubricasubgrupotce_rh263_sequencial_seq', 1, 1, 9223372036854775807, 1, 1);
+        update configuracoes.db_sysarqcamp set codsequencia = 1001071 where codarq = 1010945 and codcam = 1014218;
+        update configuracoes.db_syscampo set nomecam = 'eso26_subgrupotce', conteudo = 'varchar(2)', descricao = 'Subgrupo da Natureza da rubrica para o TCE/RS.', valorinicial = '', rotulo = 'Subgrupo da Natureza', nulo = 't', tamanho = 2, maiusculo = 't', autocompl = 'f', aceitatipo = 0, tipoobj = 'text', rotulorel = 'Subgrupo da Natureza' where codcam = 1014222;
+        delete from configuracoes.db_syscampodep where codcam = 1014222;
+        delete from configuracoes.db_syscampodef where codcam = 1014222;
+        insert into configuracoes.db_sysarqcamp values(1010325,1014222,12,0);
+
+
+        -- estrutura
+        -- Criando  sequences
+        CREATE SEQUENCE esocial.rubricasubgrupotce_rh263_sequencial_seq
+            INCREMENT 1
+            MINVALUE 1
+            MAXVALUE 9223372036854775807
+            START 1
+            CACHE 1;
+
+        -- TABELAS E ESTRUTURA
+
+        -- Módulo: esocial
+        CREATE TABLE esocial.rubricasubgrupotce(
+        rh263_sequencial		int4 NOT NULL default 0,
+        rh263_grupo		varchar(4) NOT NULL,
+        rh263_subgrupo		varchar(2) NOT NULL,
+        rh263_descricao		varchar(100)  NOT NULL,
+        CONSTRAINT rubricasubgrupotce_sequ_pk PRIMARY KEY (rh263_sequencial));
+
+        alter table esocial.esocialrubricas add column eso26_subgrupotce varchar(2) default null;
+
+        -- dados
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '01', 'Vencimento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '02', 'Outros Valores');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '03', 'Cargo comissionado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '04', 'Diferença Vencimento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '05', 'Diferença Outros valores');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '06', 'Diferença Cargo Comissionado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '07', 'Parcela Autônoma');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '08', 'Diferença de Parcela Autônoma');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '09', 'Complemento Salário Mínimo');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '10', 'Classe/Nível/Padrão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '11', 'Alteração Classe/Nível/Padrão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '12', 'Diferença Alteração Classe/Nível');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '13', 'Complemento Piso Magistério');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '14', 'Convocação - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '15', 'Convocação - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '16', 'Diferença Convocação');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '17', 'Progressão Funcional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '18', 'Diferença de Progressão Funcional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '19', 'Promoção Funcional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '20', 'Diferença de Promoção Funcional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '21', 'Complementos Diversos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '22', 'Plantão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1000', '23', 'Diferença de Plantão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1001', '01', 'Subsídio');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1001', '02', 'Diferença de Subsídio');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1002', '01', 'DSR - Descanso Semanal Remunerado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1002', '02', 'Diferença DSR - Descanso Semanal Remunerado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '01', 'Horas Extras 25%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '02', 'Horas Extras 33,33%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '03', 'Horas Extras 50%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '04', 'Horas Extras 60%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '05', 'Horas Extras 70%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '06', 'Horas Extras 75%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '07', 'Horas Extras 80%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '08', 'Horas Extras 100%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '09', 'Horas Extras 120%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '10', 'Horas Extras 125%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '11', 'Horas Extras 130%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '12', 'Horas Extras 150%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '13', 'Horas Extras Judiciais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '14', 'Diferenças Horas Extras');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '15', 'Horas Extras Incorporadas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '16', 'Média Horas Extras 13º Salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1003', '17', 'Média Horas Extras Férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1004', '01', 'Indenização de Horas Extras - Banco de Horas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1004', '02', 'Diferença Indenização de Horas Extras - Banco de Horas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1005', '01', 'Direito de arena');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1005', '02', 'Diferenças Direito de arena');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1006', '01', 'Intervalos intra e inter jornadas não concedidos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1006', '02', 'Diferenças Intervalos intra e inter jornadas não concedidos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1007', '01', 'Luvas e premiações');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1007', '02', 'Diferenças Luvas e premiações');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1009', '01', 'Salário-família - complemento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1009', '02', 'Diferença Salário-família - complemento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1010', '01', 'Salário in natura - pagos em bens ou serviços');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1010', '02', 'Diferença Salário in natura - pagos em bens ou serviços');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1011', '01', 'Sobreaviso - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1011', '02', 'Sobreaviso - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1011', '03', 'Diferença de Sobreaviso');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1011', '04', 'Média Sobreaviso');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1020', '01', 'Férias Normais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1020', '02', 'Férias Proporcionais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1020', '03', '1/3 de Férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1020', '04', 'Diferença de Férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1020', '05', 'Médias Férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1021', '01', 'Férias - abono ou gratificação de férias superior a 20 dias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1021', '02', 'Diferença Férias - abono ou gratificação de férias superior a 20 dias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1022', '01', 'Férias - abono ou gratificação de férias não excedente a 20 dias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1022', '02', 'Diferença Férias - abono ou gratificação de férias não excedente a 20 dias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1023', '01', 'Férias - abono pecuniário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1023', '02', 'Diferença Férias - abono pecuniário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1024', '01', 'Férias Vencidas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1024', '02', 'Multa Férias Vencidas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1024', '03', 'Diferença Férias Vencidas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1040', '01', 'Licença-prêmio - Gozo');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1040', '02', 'Diferença Licença-prêmio - Gozo');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1041', '01', 'Licença-prêmio - Conversão Pecúnia');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1041', '02', 'Diferença Licença-prêmio - Conversão Pecúnia');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1050', '01', 'Falta Justificada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1050', '02', 'Diferença Falta Justificada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1050', '03', 'Licença Saúde/Auxílio Doença');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1050', '04', 'Diferença Licença Saúde/Auxílio Doença');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1050', '05', 'Licença Paternidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1050', '06', 'Diferença Licença Paternidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1050', '07', 'Outras Licenças Remuneradas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1050', '08', 'Diferença Outras Licenças Remuneradas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1080', '01', 'Stock Option');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1099', '01', 'Outras verbas salariais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1099', '02', 'Diferenças Outras Verbas Salariais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1201', '01', 'Função Gratificada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1201', '02', 'Substituição de Função Gratificada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1201', '03', 'Diferença Função Gratificada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1201', '04', 'Função Gratificada Incorporada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '01', 'Insalubridade 10% S/ salário mínimo nacional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '02', 'Insalubridade 20% S/ salário mínimo nacional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '03', 'Insalubridade 30% S/ salário mínimo nacional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '04', 'Insalubridade 40% S/ salário mínimo nacional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '05', 'Insalubridade 10% S/ menor padrão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '06', 'Insalubridade 20% S/ menor padrão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '07', 'Insalubridade 30% S/ menor padrão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '08', 'Insalubridade 40% S/ menor padrão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '09', 'Insalubridade 10% S/ vencimento básico');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '10', 'Insalubridade 20% S/ vencimento básico');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '11', 'Insalubridade 30% S/ vencimento básico');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '12', 'Insalubridade 40% S/ vencimento básico');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '13', 'Insalubridade 10% S/ salário mínimo regional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '14', 'Insalubridade 20% S/ salário mínimo regional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '15', 'Insalubridade 30% S/ salário mínimo regional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '16', 'Insalubridade 40% S/ salário mínimo regional');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '17', 'Média Insalubridade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '18', 'Diferença Insalubridade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1202', '19', 'Insalubridade Incorporada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1203', '01', 'Periculosidade Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1203', '02', 'Média Periculosidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1203', '03', 'Diferença Periculosidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1203', '04', 'Periculosidade Incorporada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1204', '01', 'Adicional de transferência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1204', '02', 'Diferença Adicional de transferência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1205', '01', 'Adicional noturno');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1205', '02', 'Média Adicional noturno 13º Salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1205', '03', 'Média Adicional noturno Férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1205', '04', 'Diferença Adicional Noturno');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1205', '05', 'Adicional noturno incorporado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '01', 'Anuênio 1%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '02', 'Triênio 3%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '03', 'Triênio 5%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '04', 'Quinquênio 3%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '05', 'Quinquênio 5%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '06', 'Adicional 15%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '07', 'Adicional 25%');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '08', 'Adicional outro percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '09', 'Média Adicional Tempo Serviço para fins de 13º salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '10', 'Média Adicional Tempo Serviço para fins de férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1206', '11', 'Diferença Adicional Tempo de Serviço');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1207', '01', 'Comissões, porcentagens, produção');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1207', '02', 'Diferença de Comissões, porcentagens, produção');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1208', '01', 'Gueltas ou gorjetas - repassadas por fornecedores ou clientes');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1208', '02', 'Diferença Gueltas ou gorjetas - repassadas por fornecedores ou clientes');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1209', '01', 'Gueltas ou gorjetas - repassadas pelo empregador');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1209', '02', 'Diferença Gueltas ou gorjetas - repassadas pelo empregador');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '01', 'Gratificação Risco de Vida');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '02', 'Diferença Gratificação Risco de Vida');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '03', 'Média Gratificação Risco de Vida');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '04', 'Regime Especial de Trabalho - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '05', 'Regime Especial de Trabalho - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '06', 'Diferença Regime Especial de Trabalho');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '07', 'Média Regime Especial de Trabalho');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '08', 'Gratificação de Produtividade - Valor Fixo');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '09', 'Gratificação de Produtividade - Valor Variável');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '10', 'Gratificação de Produtividade - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '11', 'Diferença Gratificação de Produtividade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '12', 'Média Gratificação de Produtividade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '13', 'Gratificação Jeton');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '14', 'Diferença Gratificação Jeton');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '15', 'Média Gratificação Jeton');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '16', 'Verba de Representação - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '17', 'Verba de Representação - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '18', 'Diferença de Verba de Representação');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '19', 'Média Verba de Representação');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '20', 'Auxílio Funeral');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '21', 'Diferença Auxílio Funeral');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '22', 'Gratificação por acordo ou convenção coletiva');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '23', 'Média Gratificação por acordo ou convenção coletiva');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1210', '24', 'Diferença Gratificação por acordo ou convenção coletiva');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1211', '01', 'Gratificação não estabelecida por acordo ou convenção coletiva');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1211', '02', 'Média Gratificação não estabelecida por acordo ou convenção coletiva');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1211', '03', 'Diferença Gratificação não estabelecida por acordo ou convenção coletiva');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '01', 'Gratificação pelo Cargo - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '02', 'Gratificação pelo Cargo - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '03', 'Gratificação por Escolaridade/Titulação - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '04', 'Gratificação por Escolaridade/Titulação - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '05', 'Gratificação Permanente Adicional - Tempo - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '06', 'Gratificação Permanente Adicional - FG ou CC - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '07', 'Média Gratificação Permanente');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '08', 'Diferença Gratificação Permanente');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '09', 'Gratificação Incorporada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '10', 'Diferença Gratificação Incorporada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '11', 'Gratificação de Unidocência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '12', 'Diferença de Gratificação de Unidocência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1212', '13', 'Gratificação de Unidocência Incorporada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '01', 'Gratificação por Lotação - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '02', 'Gratificação por Lotação - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '03', 'Gratificação por Metas - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '04', 'Gratificação por Metas - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '05', 'Gratificação por Atividades - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '06', 'Gratificação por Atividades - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '07', 'Gratificação Transitória Adicional - Tempo');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '08', 'Gratificação Transitória Adicional - FG ou CC');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '09', 'Honorários Advocatícios/Sucumbenciais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '10', 'Diferença Honorários Advocatícios/Sucumbenciais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '11', 'Média Gratificação Transitória');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '12', 'Diferença Gratificação Transitória');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '13', 'Desdobramento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '14', 'Diferença Desdobramento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '15', 'Média Desdobramento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '16', 'Incentivo Financeiro');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '17', 'Diferença Incentivo Financeiro');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1213', '18', 'Média Incentivo Financeiro');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1214', '01', 'Adicional de Penosidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1214', '02', 'Diferença Adicional de Penosidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1214', '03', 'Média Adicional de Penosidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1214', '04', 'Adicional de Risco de Vida - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1214', '05', 'Adicional de Risco de Vida - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1214', '06', 'Diferença Adicional de Risco de Vida');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1214', '07', 'Média Adicional de Risco de Vida');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1215', '01', 'Adicional de Unidocência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1215', '02', 'Diferença Adicional de Unidocência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1215', '03', 'Média Adicional de Unidocência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1216', '01', 'Adicional de localidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1216', '02', 'Diferença de adicional de localidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1217', '01', 'Gratificação de curso/concurso');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1217', '02', 'Diferença Gratificação de curso/concurso');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1225', '01', 'Quebra de Caixa - Valor Fixo');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1225', '02', 'Quebra de Caixa - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1225', '03', 'Diferença Quebra de Caixa');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1225', '04', 'Quebra de Caixa Incorporada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1225', '05', 'Média Quebra de Caixa');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1230', '01', 'Remuneração do dirigente sindical');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1230', '02', 'Diferença Remuneração do dirigente sindical');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1299', '01', 'Outros adicionais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1299', '02', 'Diferença Outros Adicionais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1299', '03', 'Média Outros Adicionais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1300', '01', 'PLR - Participação em Lucros ou Resultados');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1300', '02', 'Diferença PLR - Participação em Lucros ou Resultados');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1300', '03', 'Média PLR - Participação em Lucros ou Resultados');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1350', '01', 'Bolsa Estágio - Nível Médio');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1350', '02', 'Bolsa Estágio - Nível Superior');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1350', '03', 'Diferença Bolsa Estágio');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1351', '01', 'Bolsa de estudo - médico residente');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1351', '02', 'Diferença Bolsa de estudo - médico residente');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1352', '01', 'Bolsa de estudo ou pesquisa');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1352', '02', 'Diferença Bolsa de estudo ou pesquisa');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1401', '01', 'Abono Permanência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1401', '02', 'Abono Família');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1401', '03', 'Abono (outros)');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1401', '04', 'Diferença de Abono');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1402', '01', 'Abono PIS / PASEP');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1402', '02', 'Diferença Abono PIS / PASEP');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1403', '01', 'Abono legal');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1403', '02', 'Diferença Abono legal');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1404', '01', 'Auxílio Babá');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1404', '02', 'Diferença Auxílio Babá');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1405', '01', 'Assistência médica');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1405', '02', 'Diferença - Assistência médica');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1406', '01', 'Auxílio-creche');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1406', '02', 'Diferença Auxílio-creche');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1407', '01', 'Auxílio-educação');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1407', '02', 'Diferença Auxílio-educação');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1409', '01', 'Salário/Abono Família');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1409', '02', 'Diferença Salário/Abono Família');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1410', '01', 'Difícil Acesso - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1410', '02', 'Difícil Acesso - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1410', '03', 'Diferença Difícil Acesso');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1410', '04', 'Gratificação de Difícil Acesso Incorporada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1410', '05', 'Média Difícil Acesso');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1411', '01', 'Auxílio-natalidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1411', '02', 'Diferença Auxílio-natalidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1412', '01', 'Abono permanência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1412', '02', 'Diferença Abono permanência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1601', '01', 'Ajuda de custo - aeronauta');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1602', '01', 'Ajuda de custo de transferência');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1603', '01', 'Ajuda de custo - até 50% da remuneração mensal');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1604', '01', 'Ajuda de custo - acima de 50% da remuneração mensal');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1619', '01', 'Ajuda compensatória - Lei 14.020/2020');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1619', '02', 'Diferença de Ajuda compensatória - Lei 14.020/2020');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1620', '01', 'Ressarcimento de despesas pelo uso de veículo próprio');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1621', '01', 'Ressarcimento de despesas de viagem, exceto despesas com veículos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1623', '01', 'Ressarcimento de provisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1629', '01', 'Ressarcimento de outras despesas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1650', '01', 'Diárias de viagem');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1651', '01', 'Diárias de viagem - até 50% do salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1652', '01', 'Diárias de viagem - acima de 50% do salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1800', '01', 'Alimentação concedida em pecúnia');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1800', '02', 'Diferença de Alimentação concedida em pecúnica');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1801', '01', 'Auxílio Alimentação');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1801', '02', 'Diferença Auxílio Alimentação');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1802', '01', 'Etapas (marítimos)');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1805', '01', 'Auxílio-moradia');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1805', '02', 'Diferença Auxílio-moradia');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1806', '01', 'Alimentação em ticket ou cartão, vinculada ao PAT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1806', '02', 'Diferença Alimentação em ticket ou cartão, vinculada ao PAT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1807', '01', 'Alimentação em ticket ou cartão, não vinculada ao PAT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1807', '02', 'Diferença Alimentação em ticket ou cartão, não vinculada ao PAT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1808', '01', 'Cesta básica ou refeição, vinculada ao PAT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1808', '02', 'Diferença Cesta básica ou refeição, vinculada ao PAT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1809', '01', 'Cesta básica ou refeição, não vinculada ao PAT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1809', '02', 'Diferença Cesta básica ou refeição, não vinculada ao PAT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1810', '01', 'Auxílio Transporte/Locomoção - Valor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1810', '02', 'Auxílio Transporte/Locomoção - Percentual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1810', '03', 'Diferença Auxílio Transporte/Locomoção');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1899', '01', 'Outros auxílios');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '1899', '02', 'Diferença Outros auxílios');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2501', '01', 'Prêmio Assiduidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2501', '02', 'Diferença Prêmio Assiduidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2501', '03', 'Média Prêmio Assiduidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2501', '04', 'Prêmio Produtividade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2501', '05', 'Diferença Prêmio Produtividade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2501', '06', 'Média Prêmio Produtividade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2502', '01', 'Liberalidades concedidas em mais de duas parcelas anuais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2510', '01', 'Direitos autorais e intelectuais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2801', '01', 'Quarentena remunerada');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2901', '01', 'Empréstimos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2902', '01', 'Vestuário e equipamentos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2920', '01', 'Restituição de Descontos Indevidos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2930', '01', 'Insuficiência de Saldo');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '2999', '01', 'Arredondamentos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3501', '01', 'Remuneração por prestação de serviços');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3505', '01', 'Retiradas (pró-labore) de diretores empregados');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3506', '01', 'Retiradas (pró-labore) de diretores não empregados');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3508', '01', 'Retiradas (pró-labore) de proprietários ou sócios');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3509', '01', 'Honorários a conselheiros');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3510', '01', 'Gratificação (jeton)');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3510', '02', 'Diferença Gratificação (jeton)');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3511', '01', 'Gratificação eleitoral');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3511', '02', 'Diferença Gratificação eleitoral');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3520', '01', 'Remuneração de cooperado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '3525', '01', 'Côngruas, prebendas e afins');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '4010', '01', 'Complementação salarial de auxílio-doença');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '4050', '01', 'Salário/Licença Maternidade/Adotante');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '4050', '02', 'Diferença Salário/Licença Maternidade/Adotante');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '4051', '01', 'Salário/Licença Maternidade/Adotante - 13º');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '4051', '02', 'Diferença Salário/Licença Maternidade/Adotante - 13º');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '5001', '01', 'Vantagem 13º Salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '5001', '02', 'Médias 13º Salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '5001', '03', 'Diferença de 13º Salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '5005', '01', '13° salário complementar');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '5501', '01', 'Adiantamento de salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '5504', '01', '13º salário - Adiantamento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '5504', '02', 'Médias 13º salário - Adiantamento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '5510', '01', 'Adiantamento de benefícios previdenciários');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6000', '01', 'Saldo de salários na rescisão contratual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6000', '02', 'Diferença Saldo de salários na rescisão contratual');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6001', '01', '13º salário relativo ao aviso-prévio indenizado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6001', '02', 'Diferença 13º salário relativo ao aviso-prévio indenizado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6002', '01', '13° salário proporcional na rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6002', '02', 'Diferença 13° salário proporcional na rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6003', '01', 'Indenização compensatória do aviso-prévio');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6003', '02', 'Aviso-Prévio Trabalhado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6004', '01', 'Férias Dobro Rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6004', '02', 'Médias - Férias Dobro Rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6006', '01', 'Férias Proporcionais Rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6006', '02', 'Médias - Férias Proporcionais Rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6007', '01', 'Férias Vencidas Rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6007', '02', 'Médias - Férias Vencidas Rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6101', '01', 'Indenização compensatória - multa rescisória 20 ou 40% (CF/88)');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6102', '01', 'Indenização do art. 9º lei nº 7.238/84');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6103', '01', 'Indenização do art. 14 da lei nº 5.889, de 8 de junho de 1973');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6104', '01', 'Indenização do art. 479 da CLT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6105', '01', 'Indenização recebida a título de incentivo a demissão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6106', '01', 'Multa do art. 477 da CLT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6107', '01', 'Indenização por quebra de estabilidade');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6119', '01', 'Indenização rescisória - Lei 14.020/2020');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6129', '01', 'Outras Indenizações');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7001', '01', 'Proventos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7001', '02', 'Diferença Proventos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7001', '03', 'Complemento de Proventos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7002', '01', 'Pensão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7002', '02', 'Diferença Pensão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7003', '01', 'Proventos - Reserva');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7003', '02', 'Diferença Proventos - Reserva');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7004', '01', 'Proventos - Reforma');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7004', '02', 'Diferença Proventos - Reforma');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7005', '01', 'Pensão Militar');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7005', '02', 'Diferença Pensão Militar');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7006', '01', 'Auxílio-reclusão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7006', '02', 'Diferença Auxílio-reclusão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7007', '01', 'Pensões especiais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7007', '02', 'Diferença Pensões especiais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7008', '01', 'Complementação de aposentadoria/ pensão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '7008', '02', 'Diferença Complementação de aposentadoria/ pensão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6901', '01', 'Desconto do aviso-prévio');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '6904', '01', 'Multa prevista no art. 480 da CLT');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9200', '01', 'Desconto de Adiantamentos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9201', '01', 'Contribuição Previdenciária Folha Normal');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9201', '02', 'Contribuição Previdenciária Férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9201', '03', 'Contribuição Previdenciária 13º Salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9201', '04', 'Contribuição Previdenciária Rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9202', '01', 'Contribuição militar - Folha normal');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9202', '02', 'Contribuição militar - Férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9202', '03', 'Contribuição militar - 13º Salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9203', '01', 'Imposto de renda retido na fonte - Folha Normal');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9203', '02', 'Imposto de renda retido na fonte - Férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9203', '03', 'Imposto de renda retido na fonte - 13º Salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9203', '04', 'Imposto de renda retido na fonte - Rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9205', '01', 'Provisão de contribuição previdenciária');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9207', '01', 'Faltas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9208', '01', 'Atrasos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9209', '01', 'Faltas ou atrasos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9209', '02', 'Afastamentos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9210', '01', 'DSR s/faltas e atrasos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9211', '01', 'DSR sobre faltas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9212', '01', 'DSR sobre atrasos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9213', '01', 'Pensão alimentícia - Folha Normal');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9213', '02', 'Pensão alimentícia - Férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9213', '03', 'Pensão alimentícia - 13º Salário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9213', '04', 'Pensão alimentícia - Rescisão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9213', '05', 'Pensão alimentícia - Sobre outras verbas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9214', '01', '13° salário - desconto de adiantamento');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9216', '01', 'Desconto de vale-transporte');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9217', '01', 'Contribuição a Outras Entidades e Fundos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9218', '01', 'Retenções judiciais');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9219', '01', 'Desconto de assistência médica ou odontológica');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9220', '01', 'Alimentação - desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9221', '01', 'Desconto de férias');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9222', '01', 'Desconto de outros impostos e contribuições');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9223', '01', 'Previdência complementar - parte do empregado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9224', '01', 'FAPI - parte do empregado');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9225', '01', 'Previdência complementar - parte do servidor');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9226', '01', 'Desconto de férias - abono');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9230', '01', 'Contribuição Sindical - Compulsória');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9231', '01', 'Contribuição Sindical - Associativa');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9232', '01', 'Contribuição Sindical - Assistencial');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9233', '01', 'Contribuição sindical - Confederativa');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9240', '01', 'Alimentação concedida em pecúnia - Desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9241', '01', 'Alimentação em ticket ou cartão, vinculada ao PAT - Desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9242', '01', 'Alimentação em ticket ou cartão, não vinculada ao PAT - Desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9243', '01', 'Cesta básica ou refeição, vinculada ao PAT - Desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9244', '01', 'Cesta básica ou refeição, não vinculada ao PAT - Desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9250', '01', 'Seguro de vida - desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9254', '01', 'Empréstimos consignados - desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9255', '01', 'Empréstimos do empregador - desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9258', '01', 'Convênios');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9260', '01', 'Fies ? desconto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9270', '01', 'Danos e prejuízos causados pelo trabalhador');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9290', '01', 'Desconto de pagamento indevido em meses anteriores');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9291', '01', 'Abate-teto');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9292', '01', 'Ressarcimento ao erário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9293', '01', 'Honorários advocatícios');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9294', '01', 'Redutor EC 41/03');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9299', '01', 'Suspensão');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9299', '02', 'Diária');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9299', '03', 'Dívida Ativa');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9299', '04', 'Outros descontos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9901', '01', 'Base de cálculo da contribuição previdenciária');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9902', '01', 'Total da base de cálculo do FGTS');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9903', '01', 'Total da base de cálculo do IRRF');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9904', '01', 'Total da base de cálculo do FGTS rescisório');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9905', '01', 'Serviço militar');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9906', '01', 'Remuneração no exterior');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9907', '01', 'Total da contribuição da previdenciária patronal - RPPS');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9908', '01', 'FGTS - depósito');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9910', '01', 'Seguros');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9911', '01', 'Assistência Médica');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9930', '01', 'Salário maternidade pago pela Previdência Social');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9931', '01', '13° salário maternidade pago pela Previdência Social');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9932', '01', 'Auxílio-doença acidentário');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9933', '01', 'Auxílio-doença');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9938', '01', 'Isenção IRRF - 65 anos');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9939', '01', 'Outros valores tributáveis');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9950', '01', 'Horas extraordinárias - Banco de horas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9951', '01', 'Horas compensadas - Banco de horas');
+        insert into esocial.rubricasubgrupotce values(nextval('rubricasubgrupotce_rh263_sequencial_seq'), '9989', '01', 'Outros valores informativos');
+
+        update esocial.esocialrubricas set eso26_subgrupotce = '01';
+        update esocial.esocialrubricas set eso26_subgrupotce = '02' where eso26_rubrica in ('1212');
+        update esocial.esocialrubricas set eso26_subgrupotce = '03' where eso26_rubrica in ('1003', '1050', '1206', '1401');
+        update esocial.esocialrubricas set eso26_subgrupotce = '04' where eso26_rubrica in ('2501', '9299');
+        update esocial.esocialrubricas set eso26_subgrupotce = '06' where eso26_rubrica in ('1213');
+        update esocial.esocialrubricas set eso26_subgrupotce = '12' where eso26_rubrica in ('1202');
+SQL;
+        DB::connection()->getPdo()->exec($sql);
+    }
+
+    public function down()
+    {
+        $sql = <<<SQL
+        delete from configuracoes.db_layoutcampos where db52_layoutlinha = 138 and db52_nome in ('datavantagem', 'matricula', 'matricula_vinculo');
+        delete from configuracoes.db_layoutcampos where db52_layoutlinha = 144 and db52_nome in ('codigo_conta', 'piso_magisterio', 'compoe_empenho');
+
+        delete from configuracoes.db_layoutcampos where db52_layoutlinha in (select db51_codigo from configuracoes.db_layoutlinha where db51_layouttxt in (309));
+        delete from configuracoes.db_layoutlinha where db51_layouttxt in (309);
+        delete from configuracoes.db_layouttxt where db50_codigo in (309);
+
+        delete from configuracoes.db_layoutcampos where db52_layoutlinha in (select db51_codigo from configuracoes.db_layoutlinha where db51_layouttxt in (310));
+        delete from configuracoes.db_layoutlinha where db51_layouttxt in (310);
+        delete from configuracoes.db_layouttxt where db50_codigo in (310);
+
+        -- dicionario
+        delete from configuracoes.db_sysarqcamp where codcam = 1014222;
+        delete from configuracoes.db_syscampo where codcam = 1014222;
+
+        delete from configuracoes.db_syssequencia where codsequencia = 1001071;
+        delete from configuracoes.db_sysprikey where codarq = 1010945;
+        delete from configuracoes.db_sysarqcamp where codarq = 1010945;
+        delete from configuracoes.db_syscampo where codcam in (1014218, 1014219, 1014220, 1014221);
+        delete from configuracoes.db_sysarqmod where codarq = 1010945;
+        delete from configuracoes.db_sysarquivo where  codarq = 1010945;
+
+        -- estrutura
+        --DROP TABLE:
+        DROP TABLE esocial.rubricasubgrupotce;
+        --Criando drop sequences
+        DROP SEQUENCE esocial.rubricasubgrupotce_rh263_sequencial_seq;
+
+        alter table esocial.esocialrubricas drop column eso26_subgrupotce;
+
+SQL;
+        DB::connection()->getPdo()->exec($sql);
+    }
+}

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,41 +29,41 @@
 //CLASSE DA ENTIDADE itbialt
 class cl_itbialt { 
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
+   public $rotulo     = null; 
+   public $query_sql  = null; 
+   public $numrows    = 0; 
+   public $numrows_incluir = 0; 
+   public $numrows_alterar = 0; 
+   public $numrows_excluir = 0; 
+   public $erro_status= null; 
+   public $erro_sql   = null; 
+   public $erro_banco = null;  
+   public $erro_msg   = null;  
+   public $erro_campo = null;  
+   public $pagina_retorno = null; 
    // cria variaveis do arquivo 
-   var $it30_sequencial = 0; 
-   var $it30_guia = 0; 
-   var $it30_usuario = 0; 
-   var $it30_dataalt_dia = null; 
-   var $it30_dataalt_mes = null; 
-   var $it30_dataalt_ano = null; 
-   var $it30_dataalt = null; 
-   var $it30_hora = null; 
-   var $it30_dataliberacao_dia = null; 
-   var $it30_dataliberacao_mes = null; 
-   var $it30_dataliberacao_ano = null; 
-   var $it30_dataliberacao = null; 
-   var $it30_datavenc_dia = null; 
-   var $it30_datavenc_mes = null; 
-   var $it30_datavenc_ano = null; 
-   var $it30_datavenc = null; 
-   var $it30_dataitbi_dia = null; 
-   var $it30_dataitbi_mes = null; 
-   var $it30_dataitbi_ano = null; 
-   var $it30_dataitbi = null; 
+   public $it30_sequencial = 0; 
+   public $it30_guia = 0; 
+   public $it30_usuario = 0; 
+   public $it30_dataalt_dia = null; 
+   public $it30_dataalt_mes = null; 
+   public $it30_dataalt_ano = null; 
+   public $it30_dataalt = null; 
+   public $it30_hora = null; 
+   public $it30_dataliberacao_dia = null; 
+   public $it30_dataliberacao_mes = null; 
+   public $it30_dataliberacao_ano = null; 
+   public $it30_dataliberacao = null; 
+   public $it30_datavenc_dia = null; 
+   public $it30_datavenc_mes = null; 
+   public $it30_datavenc_ano = null; 
+   public $it30_datavenc = null; 
+   public $it30_dataitbi_dia = null; 
+   public $it30_dataitbi_mes = null; 
+   public $it30_dataitbi_ano = null; 
+   public $it30_dataitbi = null; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+   public $campos = "
                  it30_sequencial = int4 = Codigo sequencial 
                  it30_guia = int8 = Código da ITBI 
                  it30_usuario = int4 = Cod. Usuário 
@@ -74,13 +74,13 @@ class cl_itbialt {
                  it30_dataitbi = date = Data da itbi 
                  ";
    //funcao construtor da classe 
-   function cl_itbialt() { 
+   public function cl_itbialt() { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("itbialt"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
    //funcao erro 
-   function erro($mostra,$retorna) { 
+   public function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -89,7 +89,7 @@ class cl_itbialt {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->it30_sequencial = ($this->it30_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["it30_sequencial"]:$this->it30_sequencial);
        $this->it30_guia = ($this->it30_guia == ""?@$GLOBALS["HTTP_POST_VARS"]["it30_guia"]:$this->it30_guia);
@@ -132,7 +132,7 @@ class cl_itbialt {
      }
    }
    // funcao para inclusao
-   function incluir ($it30_sequencial){ 
+   public function incluir ($it30_sequencial){ 
       $this->atualizacampos();
      if($this->it30_guia == null ){ 
        $this->erro_sql = " Campo Código da ITBI nao Informado.";
@@ -291,7 +291,7 @@ class cl_itbialt {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($it30_sequencial=null) { 
+   public function alterar ($it30_sequencial=null) { 
       $this->atualizacampos();
      $sql = " update itbialt set ";
      $virgula = "";
@@ -517,7 +517,7 @@ class cl_itbialt {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($it30_sequencial=null,$dbwhere=null) { 
+   public function excluir ($it30_sequencial=null,$dbwhere=null) { 
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($it30_sequencial));
      }else{ 
@@ -585,7 +585,7 @@ class cl_itbialt {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -608,10 +608,10 @@ class cl_itbialt {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $it30_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query ( $it30_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -636,7 +636,7 @@ class cl_itbialt {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -646,10 +646,10 @@ class cl_itbialt {
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $it30_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_file ( $it30_sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -670,7 +670,7 @@ class cl_itbialt {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

@@ -72,10 +72,10 @@ db_input('j34_setor',4,$Ij34_setor,true,'text',3,'')
 <script>
 function js_pesquisaob05_codobra(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_obras','func_obras.php?funcao_js=parent.js_mostraobras1|ob01_codobra|ob01_nomeobra','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obras','func_obras.php?funcao_js=parent.js_mostraobras1|ob01_codobra|ob01_nomeobra','Pesquisa',true);
   }else{
      if(document.form1.ob05_codobra.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_obras','func_obras.php?pesquisa_chave='+document.form1.ob05_codobra.value+'&funcao_js=parent.js_mostraobras','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obras','func_obras.php?pesquisa_chave='+document.form1.ob05_codobra.value+'&funcao_js=parent.js_mostraobras','Pesquisa',false);
      }else{
        document.form1.ob01_nomeobra.value = ''; 
      }
@@ -95,10 +95,10 @@ function js_mostraobras1(chave1,chave2){
 }
 function js_pesquisaob05_idbql(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_lote','func_lote.php?funcao_js=parent.js_mostralote1|j34_idbql|j34_setor','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lote','func_lote.php?funcao_js=parent.js_mostralote1|j34_idbql|j34_setor','Pesquisa',true);
   }else{
      if(document.form1.ob05_idbql.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_lote','func_lote.php?pesquisa_chave='+document.form1.ob05_idbql.value+'&funcao_js=parent.js_mostralote','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_lote','func_lote.php?pesquisa_chave='+document.form1.ob05_idbql.value+'&funcao_js=parent.js_mostralote','Pesquisa',false);
      }else{
        document.form1.j34_setor.value = ''; 
      }
@@ -117,7 +117,7 @@ function js_mostralote1(chave1,chave2){
   db_iframe_lote.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_obraslote','func_obraslote.php?funcao_js=parent.js_preenchepesquisa|ob05_codobra','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_obraslote','func_obraslote.php?funcao_js=parent.js_preenchepesquisa|ob05_codobra','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_obraslote.hide();

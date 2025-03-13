@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,39 +25,39 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("libs/db_utils.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_calendarioescola_classe.php");
-include("classes/db_telefoneescola_classe.php");
-include("classes/db_censodistrito_classe.php");
-include("classes/db_escoladiretor_classe.php");
-include("classes/db_rechumanoescola_classe.php");
-include("classes/db_escolaestrutura_classe.php");
-include("classes/db_matricula_classe.php");
-include("classes/db_censoregradisc_classe.php");
-include("classes/db_censoetapamodal_classe.php");
-include("classes/db_censoetapa_classe.php");
-include("classes/db_censoorgreg_classe.php");
-include("classes/db_rechumano_classe.php");
-include("classes/db_cgm_classe.php");
-include("classes/db_formacao_classe.php");
-include("classes/db_rhpessoal_classe.php");
-include("classes/db_regenciahorario_classe.php");
-include("classes/db_turma_classe.php");
-include("classes/db_regencia_classe.php");
-include("classes/db_caddisciplina_classe.php");
-include("classes/db_turmaac_classe.php");
-include("classes/db_turmaacativ_classe.php");
-include("classes/db_turmaacativnova_classe.php");
-include("classes/db_alunonecessidade_classe.php");
-include("classes/db_turmaacmatricula_classe.php");
-include("classes/db_turmaserieregimemat_classe.php");
-include("classes/db_turmaachorario_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_utils.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_calendarioescola_classe.php"));
+include(modification("classes/db_telefoneescola_classe.php"));
+include(modification("classes/db_censodistrito_classe.php"));
+include(modification("classes/db_escoladiretor_classe.php"));
+include(modification("classes/db_rechumanoescola_classe.php"));
+include(modification("classes/db_escolaestrutura_classe.php"));
+include(modification("classes/db_matricula_classe.php"));
+include(modification("classes/db_censoregradisc_classe.php"));
+include(modification("classes/db_censoetapamodal_classe.php"));
+include(modification("classes/db_censoetapa_classe.php"));
+include(modification("classes/db_censoorgreg_classe.php"));
+include(modification("classes/db_rechumano_classe.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("classes/db_formacao_classe.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
+include(modification("classes/db_regenciahorario_classe.php"));
+include(modification("classes/db_turma_classe.php"));
+include(modification("classes/db_regencia_classe.php"));
+include(modification("classes/db_caddisciplina_classe.php"));
+include(modification("classes/db_turmaac_classe.php"));
+include(modification("classes/db_turmaacativ_classe.php"));
+include(modification("classes/db_turmaacativnova_classe.php"));
+include(modification("classes/db_alunonecessidade_classe.php"));
+include(modification("classes/db_turmaacmatricula_classe.php"));
+include(modification("classes/db_turmaserieregimemat_classe.php"));
+include(modification("classes/db_turmaachorario_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $clrotulo              = new rotulocampo;
 $clcalendarioescola    = new cl_calendarioescola;
@@ -1214,7 +1214,7 @@ if (!isset($ed52_i_ano)) {
              if ($oDadosTurma->ed36_i_codigo == 3) $campo_etapa = "ed266_c_eja";
              
              $sWhereCensoEtapa  = " ed266_i_codigo = $ed11_i_codcenso AND $campo_etapa = 'S'";
-             $sSqlCensoEtapa    = $clcensoetapa->sql_query("","ed266_i_codigo","",$sWhereCensoEtapa);
+             $sSqlCensoEtapa    = $clcensoetapa->sql_query("", "", "ed266_i_codigo","",$sWhereCensoEtapa);
              $sResultCensoEtapa = $clcensoetapa->sql_record($sSqlCensoEtapa);
              
              if ($clcensoetapa->numrows == 0) {

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,17 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_averbatipo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_averbatipo_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $claverbatipo = new cl_averbatipo;
 $claverbatipo->rotulo->label("j93_codigo");
-$claverbatipo->rotulo->label("j93_codigo");
+$claverbatipo->rotulo->label("j93_descr");
 ?>
 <html>
 <head>
@@ -47,38 +47,38 @@ $claverbatipo->rotulo->label("j93_codigo");
 <table height="100%" border="0"  align="center" cellspacing="0" bgcolor="#CCCCCC">
   <tr> 
     <td height="63" align="center" valign="top">
-        <table width="35%" border="0" align="center" cellspacing="0">
-	     <form name="form2" method="post" action="" >
+      <table width="35%" border="0" align="center" cellspacing="0">
+	      <form name="form2" method="post" action="" >
           <tr> 
             <td width="4%" align="right" nowrap title="<?=$Tj93_codigo?>">
               <?=$Lj93_codigo?>
             </td>
             <td width="96%" align="left" nowrap> 
               <?
-		       db_input("j93_codigo",6,$Ij93_codigo,true,"text",4,"","chave_j93_codigo");
-		       ?>
+	              db_input("j93_codigo",6,$Ij93_codigo,true,"text",4,"","chave_j93_codigo");
+	            ?>
             </td>
           </tr>
           <tr> 
-            <td width="4%" align="right" nowrap title="<?=$Tj93_codigo?>">
-              <?=$Lj93_codigo?>
+            <td width="4%" align="right" nowrap title="<?=$Tj93_descr?>">
+              <?=$Lj93_descr?>
             </td>
             <td width="96%" align="left" nowrap> 
               <?
-		       db_input("j93_codigo",6,$Ij93_codigo,true,"text",4,"","chave_j93_codigo");
-		       ?>
+	              db_input("j93_descr",20,$Ij93_descr,true,"text",4,"","chave_j93_descr");
+	            ?>
             </td>
           </tr>
           <tr> 
-            <td colspan="2" align="center"> 
-              <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
-              <input name="limpar" type="reset" id="limpar" value="Limpar" >
-              <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_averbatipo.hide();">
-             </td>
+           <td colspan="2" align="center"> 
+             <input name="pesquisar" type="submit" id="pesquisar2" value="Pesquisar"> 
+             <input name="limpar" type="reset" id="limpar" value="Limpar" >
+             <input name="Fechar" type="button" id="fechar" value="Fechar" onClick="parent.db_iframe_averbatipo.hide();">
+            </td>
           </tr>
         </form>
-        </table>
-      </td>
+      </table>
+    </td>
   </tr>
   <tr> 
     <td align="center" valign="top"> 
@@ -86,21 +86,21 @@ $claverbatipo->rotulo->label("j93_codigo");
       if(!isset($pesquisa_chave)){
         if(isset($campos)==false){
            if(file_exists("funcoes/db_func_averbatipo.php")==true){
-             include("funcoes/db_func_averbatipo.php");
+             include(modification("funcoes/db_func_averbatipo.php"));
            }else{
            $campos = "averbatipo.*";
            }
         }
         if(isset($chave_j93_codigo) && (trim($chave_j93_codigo)!="") ){
 	         $sql = $claverbatipo->sql_query($chave_j93_codigo,$campos,"j93_codigo");
-        }else if(isset($chave_j93_codigo) && (trim($chave_j93_codigo)!="") ){
-	         $sql = $claverbatipo->sql_query("",$campos,"j93_codigo"," j93_codigo like '$chave_j93_codigo%' ");
+        }else if(isset($chave_j93_descr) && (trim($chave_j93_descr)!="") ){
+	         $sql = $claverbatipo->sql_query("",$campos,"j93_descr"," j93_descr ilike '$chave_j93_descr%' ");
         }else{
            $sql = $claverbatipo->sql_query("",$campos,"j93_codigo","");
         }
         $repassa = array();
-        if(isset($chave_j93_codigo)){
-          $repassa = array("chave_j93_codigo"=>$chave_j93_codigo,"chave_j93_codigo"=>$chave_j93_codigo);
+        if(isset($chave_j93_descr)){
+          $repassa = array("chave_j93_codigo"=>$chave_j93_codigo,"chave_j93_descr"=>$chave_j93_descr);
         }
         db_lovrot($sql,15,"()","",$funcao_js,"","NoMe",$repassa);
       }else{
@@ -108,7 +108,7 @@ $claverbatipo->rotulo->label("j93_codigo");
           $result = $claverbatipo->sql_record($claverbatipo->sql_query($pesquisa_chave));
           if($claverbatipo->numrows!=0){
             db_fieldsmemory($result,0);
-            echo "<script>".$funcao_js."('$j93_codigo',false);</script>";
+            echo "<script>".$funcao_js."('$j93_descr',false);</script>";
           }else{
 	         echo "<script>".$funcao_js."('Chave(".$pesquisa_chave.") não Encontrado',true);</script>";
           }
@@ -131,5 +131,11 @@ if(!isset($pesquisa_chave)){
 }
 ?>
 <script>
-js_tabulacaoforms("form2","chave_j93_codigo",true,1,"chave_j93_codigo",true);
+js_tabulacaoforms("form2","chave_j93_descr",true,1,"chave_j93_descr",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

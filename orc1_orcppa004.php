@@ -25,27 +25,27 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcppa_classe.php");
-include("classes/db_orcppaval_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcppa_classe.php"));
+include(modification("classes/db_orcppaval_classe.php"));
 
 $clorcppa = new cl_orcppa;
-include("classes/db_orcdotacao_classe.php");
-include("classes/db_orcdotacaocontr_classe.php");
-include("classes/db_orcelemento_classe.php");
-include("classes/db_orcparametro_classe.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_orcunidade_classe.php");
-include("classes/db_orcfuncao_classe.php");
-include("classes/db_orcsubfuncao_classe.php");
-include("classes/db_orcprograma_classe.php");
-include("classes/db_orcprojativ_classe.php");
-include("classes/db_orcproduto_classe.php");
-include("classes/db_orcppalei_classe.php");
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcdotacaocontr_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_orcparametro_classe.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcunidade_classe.php"));
+include(modification("classes/db_orcfuncao_classe.php"));
+include(modification("classes/db_orcsubfuncao_classe.php"));
+include(modification("classes/db_orcprograma_classe.php"));
+include(modification("classes/db_orcprojativ_classe.php"));
+include(modification("classes/db_orcproduto_classe.php"));
+include(modification("classes/db_orcppalei_classe.php"));
 
 $clorcprojativ = new cl_orcprojativ;
 $clorcdotacao = new cl_orcdotacao;
@@ -158,7 +158,7 @@ $db_botao = true;
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmorcppa.php");
+	include(modification("forms/db_frmorcppa.php"));
 	?>
     </center>
 	</td>
@@ -182,7 +182,7 @@ if(isset($chavepesquisa) && empty($chave_nova)){
   <script>
       function js_db_libera(){
          parent.document.formaba.orcppaval.disabled=false;
-         top.corpo.iframe_orcppaval.location.href='orc1_orcppaval001.php?o24_codppa=".@$o23_codppa."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_orcppaval.location.href='orc1_orcppaval001.php?o24_codppa=".@$o23_codppa."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('orcppaval');";

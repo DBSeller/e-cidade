@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,17 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-require("libs/db_utils.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_retencaotiporec_classe.php");
-include("classes/db_retencaotiporeccgm_classe.php");
-include("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+parse_str($_SERVER["QUERY_STRING"]);
+db_postmemory($_POST);
 
 $clretencaotiporec    = new cl_retencaotiporec();
 $clretencaotiporeccgm = new cl_retencaotiporeccgm();
@@ -44,21 +42,23 @@ $db_opcao = 22;
 $db_botao = false;
 
 if(isset($alterar)){
-	
+
   db_inicio_transacao();
   $db_opcao = 2;
   $lSqlErro = false;
+  $clretencaotiporec->e21_enterecebedor = $_POST["e21_enterecebedor"];
+  $clretencaotiporec->e21_receitaenterecebedor = $_POST["e21_receitaenterecebedor"];
   $clretencaotiporec->alterar($e21_sequencial);
   if ($clretencaotiporec->erro_status == 0) {
   	 $lSqlErro = true;
   } else {
   	
   	//deletamos da tabela retencaonaturezatiporec
-  	$oDaoRetencaoNaturezaTipoRec = db_utils::getDao("retencaonaturezatiporec");
+  	$oDaoRetencaoNaturezaTipoRec = new cl_retencaonaturezatiporec();
   	$oDaoRetencaoNaturezaTipoRec->excluir(null,"e31_retencaotiporec  = {$e21_sequencial}");
   	if ($e31_retencaonatureza != '') {
 
-  	  $oDaoRetencaoNaturezaTipoRec = db_utils::getDao("retencaonaturezatiporec");
+  	  $oDaoRetencaoNaturezaTipoRec = new cl_retencaonaturezatiporec();
   	  $oDaoRetencaoNaturezaTipoRec->e31_retencaonatureza = $e31_retencaonatureza;
   	  $oDaoRetencaoNaturezaTipoRec->e31_retencaotiporec  = $e21_sequencial;
   	  $oDaoRetencaoNaturezaTipoRec->incluir(null);
@@ -87,7 +87,7 @@ if(isset($alterar)){
 }else if(isset($chavepesquisa)){
    $db_opcao = 2;
    $sWhere   = "e21_sequencial = {$chavepesquisa} and e21_instit = ".db_getsession("DB_instit");
-   $result   = $clretencaotiporec->sql_record($clretencaotiporec->sql_query_irrf(null,"*",null,$sWhere)); 
+   $result   = $clretencaotiporec->sql_record($clretencaotiporec->sql_query_irrf(null,"*,receitaente.k02_descr as k02_descrrecebedora",null,$sWhere));
    db_fieldsmemory($result,0);
    $db_botao = true;
 }
@@ -101,25 +101,16 @@ if(isset($alterar)){
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellpadding="0" cellspacing="0" bgcolor="#5786B2">
-  <tr> 
-    <td width="360" height="18">&nbsp;</td>
-    <td width="263">&nbsp;</td>
-    <td width="25">&nbsp;</td>
-    <td width="140">&nbsp;</td>
-  </tr>
-</table>
-    <center>
-	<?
-	include("forms/db_frmretencaotiporec.php");
-	?>
-    </center>
-<?
-db_menu(db_getsession("DB_id_usuario"),db_getsession("DB_modulo"),db_getsession("DB_anousu"),db_getsession("DB_instit"));
+<div class="container">
+<?php
+  include(modification("forms/db_frmretencaotiporec.php"));
+  db_menu();
 ?>
+</div>
+
 </body>
 </html>
-<?
+<?php
 if(isset($alterar)){
   if($clretencaotiporec->erro_status=="0"){
     $clretencaotiporec->erro(true,false);

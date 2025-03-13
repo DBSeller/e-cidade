@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_classesgenericas.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 db_postmemory($HTTP_POST_VARS);
 ?>
 
@@ -174,11 +174,11 @@ db_postmemory($HTTP_POST_VARS);
 function js_pesquisaInscricao(mostra){
 
   if (mostra == true) {
-    js_OpenJanelaIframe('top.corpo','db_iframe_orcelemento','func_habitinscricao.php?funcao_js=parent.js_mostraInscricao1|ht15_sequencial|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcelemento','func_habitinscricao.php?funcao_js=parent.js_mostraInscricao1|ht15_sequencial|z01_nome','Pesquisa',true);
   } else {
   
      if(document.form1.ht15_sequencial.value != ''){
-        js_OpenJanelaIframe('top.corpo','db_iframe_orcelemento','func_habitinscricao.php?pesquisa_chave='+document.form1.ht15_sequencial.value+'&funcao_js=parent.js_mostraInscricao','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_orcelemento','func_habitinscricao.php?pesquisa_chave='+document.form1.ht15_sequencial.value+'&funcao_js=parent.js_mostraInscricao','Pesquisa',false);
      }else{
        document.form1.ht15_sequencial.value = ''; 
      }

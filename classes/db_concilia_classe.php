@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -490,6 +490,10 @@ class cl_concilia {
      $sql .= "      inner join conciliastatus  on  conciliastatus.k95_sequencial = concilia.k68_conciliastatus";
      $sql .= "      inner join contabancaria  on  contabancaria.db83_sequencial = concilia.k68_contabancaria";
      $sql .= "      inner join bancoagencia  on  bancoagencia.db89_sequencial = contabancaria.db83_bancoagencia";
+     $sql .= "      inner join conplanocontabancaria  on c56_contabancaria            = db83_sequencial";
+     $sql .= "      inner join conplano               on c60_codcon                   = c56_codcon ";
+     $sql .= "                                       and c60_anousu                   = c56_anousu ";
+     $sql .= "      inner join conplanoreduz          on c61_codcon                   = c60_codcon ";
      $sql2 = "";
      if($dbwhere==""){
        if($k68_sequencial!=null ){

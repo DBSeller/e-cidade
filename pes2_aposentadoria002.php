@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-include("libs/db_libpessoal.php");
-include("classes/db_rhpessoal_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("classes/db_rhpessoal_classe.php"));
 $clrhpessoal = new cl_rhpessoal;
 $clrotulo = new rotulocampo;
 $clrotulo->label('r06_pd');
@@ -45,7 +45,7 @@ $sql_base = "select r09_rubric from basesr where r09_base   = '$base1'
                                              and r09_anousu = ".db_anofolha()."
                                   					 and r09_mesusu = ".db_mesfolha();
 
-$result_base = pg_exec($sql_base);
+$result_base = db_query($sql_base);
 
 $numrows_base = pg_numrows($result_base);
 $sel_base = "'";

@@ -1,33 +1,33 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-include ("fpdf151/scpdf.php");
-include ("fpdf151/impcarne.php");
-include ("classes/db_saltes_classe.php");
+include(modification("fpdf151/scpdf.php"));
+include(modification("fpdf151/impcarne.php"));
+include(modification("classes/db_saltes_classe.php"));
 
 $clsaltes = new cl_saltes;
 
@@ -35,14 +35,14 @@ parse_str(base64_decode($HTTP_SERVER_VARS['QUERY_STRING']));
 
 // Dados
 $sql = "select slip.*,
-               z01_numcgm , 
-	       z01_nome , 
-	       c60_descr as descr_debito, 
-	       p2.k13_descr as descr_credito, 
-	       c50_codhist as db_hist, 
+               z01_numcgm ,
+	       z01_nome ,
+	       c60_descr as descr_debito,
+	       p2.k13_descr as descr_credito,
+	       c50_codhist as db_hist,
 	       c50_descr as descr_hist,
 	       k18_motivo,
-	       coalesce(k18_codigo,0) as k18_codigo
+	       coalesce(k18_codigo,0) as k18_codigo,e151_codigo,e151_descricao
 	from slip
 	       left outer join slipanul		on slip.k17_codigo = slipanul.k18_codigo
 	       left outer join slipnum 		on slip.k17_codigo = slipnum.k17_codigo
@@ -50,16 +50,18 @@ $sql = "select slip.*,
 	       left outer join conplanoreduz 	on slip.k17_debito = c61_reduz and
 	              	                           c61_instit     = ".db_getsession('DB_instit')." and
                                                    c61_anousu = ".db_getsession("DB_anousu")."
-	       left outer join conplano 	on c61_codcon = c60_codcon and 
+	       left outer join conplano 	on c61_codcon = c60_codcon and
                                                    c60_anousu = ".db_getsession("DB_anousu")."
 	       left outer join saltes p2 	on slip.k17_credito = p2.k13_reduz
 	       left outer join conhist 		on slip.k17_hist = conhist.c50_codhist
+           left join slipfinalidadepagamentofundeb on e153_slip = slip.k17_codigo
+           left join finalidadepagamentofundeb on e151_sequencial = slipfinalidadepagamentofundeb.e153_finalidadepagamentofundeb
         where slip.k17_codigo in($slips) and k17_instit = ".db_getsession('DB_instit');
 
-$dados = pg_exec($sql);
+$dados = db_query($sql);
 
 
-      
+
 // se houverem registros, monta um array
 $array_recursos =  array();
 
@@ -75,9 +77,11 @@ if (pg_numrows($dados) == 0) {
 }
 
 db_fieldsmemory($dados,0);
+$usuario = UsuarioSistemaRepository::getPorCodigo($k17_idusuario);
+
 
 $sqlcai = "select * from caiparametro where k29_instit = ".db_getsession('DB_instit');
-$resultcai = pg_exec($sqlcai) or die($sqlcai);
+$resultcai = db_query($sqlcai) or die($sqlcai);
 if (pg_numrows($resultcai) == 0) {
 	$k29_modslipnormal = 36;
 	$k29_modsliptransf = 36;
@@ -93,13 +97,13 @@ if (pg_numrows($resultcai) == 0) {
 
 $quantdeb = 0;
 if ($k17_debito > 0) {
-	$clsaltes->sql_record($clsaltes->sql_query_file($k17_debito)); 
+	$clsaltes->sql_record($clsaltes->sql_query_file($k17_debito));
 	$quantdeb = $clsaltes->numrows;
 }
 
 $quantcre = 0;
 if ($k17_credito > 0) {
-	$clsaltes->sql_record($clsaltes->sql_query_file($k17_credito)); 
+	$clsaltes->sql_record($clsaltes->sql_query_file($k17_credito));
 	$quantcre = $clsaltes->numrows;
 }
 
@@ -115,7 +119,7 @@ $pdf1->Open();
 $pdf = new db_impcarne($pdf1, 36);
 $pdf->objpdf->AddPage();
 $pdf->objpdf->SetTextColor(0, 0, 0);
-  
+
  // trecho para relatorio
 $head1 = "Texto numero 1";
 $head2 = "Texto numero 2";
@@ -128,14 +132,14 @@ $head8 = "Texto numero 8";
 $head9 = "Texto numero 9";
 $head10 = "Texto numero 10";
   // trecho para relatorio
-  
-$sql = "select * from db_config where codigo = ".db_getsession('DB_instit');
-$dadospref = pg_exec($sql);
-db_fieldsmemory($dadospref, 0);
 
+$sql = "select * from db_config where codigo = ".db_getsession('DB_instit');
+$dadospref = db_query($sql);
+db_fieldsmemory($dadospref, 0);
+$pdf->nome_usuario = $usuario->getNome();
 $pdf->dados    = $dados;
 $pdf->recursos = $array_recursos;
-  
+
 $pdf->logo		 = $logo;
 $pdf->nomeinst     = $nomeinst;
 $pdf->ender        = $ender;

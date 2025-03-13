@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,26 +25,31 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("classes/db_db_usuarios_classe.php");
-require_once("classes/db_db_usuacgm_classe.php");
-require_once("classes/db_db_userinst_classe.php");
-require_once("classes/db_db_depusu_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_db_usuarios_classe.php"));
+require_once(modification("classes/db_db_usuacgm_classe.php"));
+require_once(modification("classes/db_db_userinst_classe.php"));
+require_once(modification("classes/db_db_depusu_classe.php"));
 
 $cldb_usuarios = new cl_db_usuarios;
 $cldb_usuacgm  = new cl_db_usuacgm;
 $cldb_userinst = new cl_db_userinst;
 $cldb_depusu   = new cl_db_depusu;
+$cldb_auditoria = new cl_db_auditoria;
 
 db_postmemory($HTTP_POST_VARS);
 
 $db_opcao = 22;
 $db_botao = false;
 $sMensagens = "configuracao.configuracao.con1_db_usuarios";
+
+$dataexpira_dia = null;
+$dataexpira_mes = null;
+$dataexpira_ano = null;
 
 if (isset($alterar)) {
 
@@ -72,13 +77,35 @@ if (isset($alterar)) {
       throw new Exception(_M("{$sMensagens}.situacao_usuario_invalida"));
     }
 
-    if ($usuarioativo != 3) {
+    // busca usuario do banco
+    $rsUsuario = $cldb_usuarios->sql_record( $cldb_usuarios->sql_query_file($id_usuario, "usuarioativo, login") );
 
-      $rsUsuario = $cldb_usuarios->sql_record( $cldb_usuarios->sql_query_file($id_usuario, "usuarioativo") );
+    if (!$rsUsuario || !pg_num_rows($rsUsuario)) {
+      throw new Exception(_M("{$sMensagens}.usuario_invalido"));
+    }
 
-      if (!$rsUsuario || !pg_num_rows($rsUsuario)) {
-        throw new Exception(_M("{$sMensagens}.usuario_invalido"));
+    // validacao de troca de login
+    if ( isset($login) ) {
+
+      // se for diferente houve alteracao no login
+      if ($login != db_utils::fieldsMemory($rsUsuario, 0)->login) {
+
+        //verifica se existe registro na auditoria, se existir não pode alterar o login
+        $rsAuditoria = $cldb_auditoria->sql_record("select exists( " . $cldb_auditoria->sql_query_file(null, "usuario", "usuario = '" . $login . "'") . ")");
+
+        if (!$rsAuditoria) {
+          throw new Exception("Erro verificar auditoria do usuário.");
+        }
+
+        if (db_utils::fieldsMemory($rsAuditoria, 0)->exists == "t") {
+          throw new Exception(_M("{$sMensagens}.alteracao_login_nao_permitida"));
+        }
+
       }
+
+    }
+
+    if ($usuarioativo != 3) {
 
       if (db_utils::fieldsMemory($rsUsuario, 0)->usuarioativo == 3 && empty($senha)) {
 
@@ -156,7 +183,8 @@ if (isset($alterar)) {
       }
     }
 
-    if ($sqlerro==false){
+    if ($sqlerro==false) {
+
       for($i = 0;$i < sizeof($instit);$i++){
         $cldb_userinst->id_usuario=$id_usuario;
         $cldb_userinst->id_instit=$instit[$i];
@@ -223,7 +251,7 @@ if (isset($alterar)) {
   </head>
   <body class="body-default">
   	<?php
-  	  include("forms/db_frmdb_usuarios.php");
+  	  include(modification("forms/db_frmdb_usuarios.php"));
   	?>
   </body>
 </html>
@@ -248,12 +276,14 @@ if (isset($chavepesquisa)) {
  echo "
   <script>
       function js_db_libera(){
-         parent.document.formaba.db_depusu.disabled=false;
-		 parent.document.formaba.permemp.disabled=false;
-		 parent.document.formaba.permmenu.disabled=false;
-         top.corpo.iframe_db_depusu.location.href='con1_db_depusu001.php?id_usuario=".@$id_usuario."&nome=".@addslashes($z01_nome)."';
-		 top.corpo.iframe_permemp.location.href='con1_db_permempusu001.php?id_usuario=".@$id_usuario."';
-		 top.corpo.iframe_permmenu.location.href='con4_permitensusu.php?usuario=".@$id_usuario."';
+        parent.document.formaba.db_depusu.disabled=false;
+        parent.document.formaba.permemp.disabled=false;
+        parent.document.formaba.permmenu.disabled=false;
+        parent.document.formaba.lotacoes.disabled=false;
+        (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_db_depusu.location.href='con1_db_depusu001.php?id_usuario=".@$id_usuario."&nome=".@addslashes($z01_nome)."';
+        (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_permemp.location.href='con1_aba_permissoesdadespesa.php?id_usuario=".@$id_usuario."&nome=".@addslashes($z01_nome)."&nao_retorna=1';
+        (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_permmenu.location.href='con4_permitensusu.php?usuario=".@$id_usuario."&nome=".@addslashes($z01_nome)."';
+        (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_lotacoes.location.href='con4_permissaolotacao001.php?iCodigoUsuario=".@$id_usuario."&nome=".@addslashes($z01_nome)."';
      ";
          if(isset($liberaaba)){
            echo "  parent.mo_camada('db_depusu');";
@@ -264,8 +294,11 @@ if (isset($chavepesquisa)) {
  ";
 }
 
-if($db_opcao==22||$db_opcao==33){
+if (isset($id_usuario) && isset($alterar)) {
+  db_redireciona("con1_db_usuarios005.php?chavepesquisa={$id_usuario}");
+}
 
+if ( $db_opcao == 22 || $db_opcao == 33 ) {
   echo "<script>document.form1.pesquisar.click();</script>";
 }
 

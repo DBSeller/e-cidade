@@ -1,42 +1,44 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once ("fpdf151/pdf.php");
-require_once ("libs/db_sql.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_conecta.php");
-require_once ("libs/db_sessoes.php");
-require_once ("libs/db_utils.php");
-require_once ("libs/db_stdlib.php");
-require_once ("libs/db_usuariosonline.php");
-require_once ("libs/db_app.utils.php");
-require_once ("libs/JSON.php");
-require_once ("std/DBDate.php");
-require_once ("dbforms/db_funcoes.php");
+ini_set('memory_limit', -1);
+
+require_once(modification("fpdf151/pdf.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
+require_once(modification("std/DBDate.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 $oParam = db_utils::postMemory($_GET);
 
@@ -66,7 +68,7 @@ $oFiltros->iTamanhoMaximoLinha = 192;
  */
 $sEnsino = 'TODOS';
 if ($oFiltros->iEnsino != 0) {
-  
+
   $oEnsino = new Ensino($oFiltros->iEnsino);
   $sEnsino = $oEnsino->getNome();
   unset($oEnsino);
@@ -103,7 +105,7 @@ $oFiltros->aQuebras = array();
 $oFiltros->aCabecalho = array();
 
 if ($oFiltros->sOrientacao == 'L') {
-  
+
   $oFiltros->iTamanhoMaximoLinha = 280;
   $oFiltros->iTamanhoNome        = 268;
 }
@@ -141,9 +143,9 @@ $oFiltros->aCabecalho[$iPosicaoArray] = $oFiltros->oNomeAluno;
  * Verifica se deve ser impressa a coluna com o curso
  */
 if (in_array('ed10_i_codigo', $oFiltros->aCampos)) {
-  
+
   $iPosicaoArray = array_search('ed10_i_codigo', $oFiltros->aCampos);
-  
+
   /**
    * stdClass referente ao CURSO DO ALUNO
    * sDescricao: Descricao impressa no cabecalho
@@ -163,9 +165,9 @@ if (in_array('ed10_i_codigo', $oFiltros->aCampos)) {
  * Verifica se deve ser impressa a coluna com a etapa
  */
 if (in_array('ed11_i_codigo', $oFiltros->aCampos)) {
-  
+
   $iPosicaoArray = array_search('ed11_i_codigo', $oFiltros->aCampos);
-  
+
   /**
    * stdClass referente a ETAPA QUE SE ENCONTRA O ALUNO
    * sDescricao: Descricao impressa no cabecalho
@@ -185,9 +187,9 @@ if (in_array('ed11_i_codigo', $oFiltros->aCampos)) {
  * Verifica se deve ser impressa a coluna com a data da matricula do aluno
  */
 if (in_array('ed60_d_datamatricula', $oFiltros->aCampos)) {
-  
+
   $iPosicaoArray = array_search('ed60_d_datamatricula', $oFiltros->aCampos);
-  
+
   /**
    * stdClass referente a DATA DE MATRICULA DO ALUNO
    * sDescricao: Descricao impressa no cabecalho
@@ -234,16 +236,19 @@ $aAno = array();
 $oFiltros->oMatriculaInicial = null;
 $oFiltros->oMatriculaFinal   = null;
 
+$aFiltrarMatricula = array();
 if (!empty($oFiltros->dtMatriculaInicial)) {
 
   $oFiltros->oMatriculaInicial = new DBDate($oFiltros->dtMatriculaInicial);
   $aAno[]                      = $oFiltros->oMatriculaInicial->getAno();
+  $aFiltrarMatricula[]         = " ed60_d_datamatricula >= '{$oFiltros->oMatriculaInicial->convertTo(DBDate::DATA_EN)}'" ;
 }
 
 if (!empty($oFiltros->dtMatriculaFinal)) {
 
   $oFiltros->oMatriculaFinal = new DBDate($oFiltros->dtMatriculaFinal);
   $aAno[]                    = $oFiltros->oMatriculaFinal->getAno();
+  $aFiltrarMatricula[]       = " ed60_d_datamatricula <= '{$oFiltros->oMatriculaFinal->convertTo(DBDate::DATA_EN)}'" ;
 }
 
 if (empty($oFiltros->dtMatriculaInicial) && empty($oFiltros->dtMatriculaFinal)) {
@@ -268,6 +273,21 @@ if ($oFiltros->iEtapa != 0) {
 
 $sWhereEscola = implode(" and ", $aWhereEscola);
 
+
+/**
+ * Ao filtrar um período de matricula, retorna somente as escolas que possuem alunos matriculados no período informado
+ */
+if (count($aFiltrarMatricula) > 0) {
+
+  $sFiltroMatricula = implode(" and ", $aFiltrarMatricula);
+
+  $sWhereEscola .= " and exists( SELECT 1 from matricula ";
+  $sWhereEscola .= "              inner join matriculaserie on matriculaserie.ed221_i_matricula = matricula.ed60_i_codigo" ;
+  $sWhereEscola .= "                                       and matriculaserie.ed221_i_serie     = ed11_i_codigo ";
+  $sWhereEscola .= "              where matricula.ed60_i_turma = turma.ed57_i_codigo ";
+  $sWhereEscola .= "                and {$sFiltroMatricula} )";
+}
+
 /**
  * SQL para buscar as escolas, ensinos e etapas. Monta um array da seguinte forma
  * $oFiltros->aQuebras[codigo da escola]
@@ -284,30 +304,33 @@ $rsTurma       = $oDaoTurma->sql_record($sSqlTurma);
 $iTotalTurma   = $oDaoTurma->numrows;
 
 if ($iTotalTurma > 0) {
-  
+
   for ($iContador = 0; $iContador < $iTotalTurma; $iContador++) {
-    
+
     $oDadosSqlTurma  = db_utils::fieldsMemory($rsTurma, $iContador);
     $aAlunos         = buscaAlunos($oDadosSqlTurma->codigo_turma, $oDadosSqlTurma->codigo_etapa);
-    
+
     if (count($aAlunos) == 0) {
       continue;
     }
-    
+
     $oFiltros->aQuebras[$oDadosSqlTurma->codigo_escola]
                        [$oDadosSqlTurma->ensino]
                        [$oDadosSqlTurma->codigo_turma]
                        [$oDadosSqlTurma->codigo_etapa]->sDescricao = $oDadosSqlTurma->descricao_etapa;
-    
+
     $aEscolas[$oDadosSqlTurma->codigo_escola] = $oDadosSqlTurma->nome_escola;
   }
 }
+// echo "<pre>";
+// print_r($oFiltros);
 
 if ($iTotalTurma == 0 || count($oFiltros->aQuebras) == 0) {
 
   $sMsgErro = "ERRO: Não foram encontrados dados com os filtros informados.<br>";
   db_redireciona("db_erros.php?fechar=true&db_erro={$sMsgErro}");
 }
+// exit();
 
 /**
  * Iniciamos o PDF
@@ -344,6 +367,11 @@ $oFiltros->iEscolasPercorridas = 0;
 $oFiltros->iTotalAlunos = 0;
 
 /**
+ * Controla o total de alunos impressos
+ */
+$oFiltros->iTotalAlunosImpresso = 0;
+
+/**
  * Controla o total de matrículas ativas na escola
  */
 $oFiltros->iTotalMatriculas = 0;
@@ -357,15 +385,15 @@ $oFiltros->iTotalMatriculasMunicipio = 0;
  * Percorremos o array quebrado a pagina e totalizando os alunos por escola
  */
 foreach ($oFiltros->aQuebras as $iEscola => $aEscola) {
-  
+
   $oFiltros->iEscolasPercorridas++;
   $oFiltros->iTotalAlunos     = 0;
   $oFiltros->iTotalMatriculas = 0;
-  
+
   if (array_key_exists($iEscola, $aEscolas)) {
     $head2 = "Escola: {$aEscolas[$iEscola]}";
   }
-  
+
   $oPdf->AddPage();
   cabecalhoRelatorio($oPdf, $oFiltros);
   corpoRelatorio($oPdf, $oFiltros, $aEscola);
@@ -379,11 +407,11 @@ foreach ($oFiltros->aQuebras as $iEscola => $aEscola) {
  * @return array
  */
 function buscaAlunos($iTurma, $iEtapa) {
-  
+
   $oTurma  = TurmaRepository::getTurmaByCodigo($iTurma);
   $oEtapa  = EtapaRepository::getEtapaByCodigo($iEtapa);
   $aAlunos = $oTurma->getAlunosMatriculadosNaTurmaPorSerie($oEtapa);
-  
+
   return $aAlunos;
 }
 
@@ -393,7 +421,7 @@ function buscaAlunos($iTurma, $iEtapa) {
  * @param stdClass $oFiltros
  */
 function cabecalhoRelatorio(PDF $oPdf, $oFiltros) {
-  
+
   $oPdf->SetFont('arial', 'b', $oFiltros->iFonte);
   foreach ($oFiltros->aCabecalho as $oCabecalho) {
     $oPdf->Cell($oCabecalho->iTamanho, 4, $oCabecalho->sDescricao, 1, 0, 'C', 1);
@@ -409,103 +437,104 @@ function cabecalhoRelatorio(PDF $oPdf, $oFiltros) {
  * @param array $aEscola
  */
 function corpoRelatorio(PDF $oPdf, $oFiltros, $aEscola) {
-  
+
   foreach ($aEscola as $iEnsino => $aEnsino) {
-  
+
     foreach ($aEnsino as $iTurma => $aTurma) {
-  
+
       foreach ($aTurma as $iEtapa => $sEtapa) {
-  
+
         $aAlunos = buscaAlunos($iTurma, $iEtapa);
-        
+
         /**
          * Percorremos os alunos matriculados na turma
          */
         foreach ($aAlunos as $oMatricula ) {
-          
+
           if (($oPdf->GetY() > $oPdf->h - 15)) {
-            
+
             $oPdf->AddPage();
             cabecalhoRelatorio($oPdf, $oFiltros);
           }
-          
+
           if ( $oMatricula->getSituacao() != 'MATRICULADO' || !$oMatricula->isAtiva() ) {
             continue;
           }
-          
+
           $dtMatricula  = $oMatricula->getDataMatricula()->convertTo(DBDate::DATA_PTBR);
-          
+
           /**
-           * Validamos as datas dos periodos que tenham sido setadas, com a data de matricula do aluno 
+           * Validamos as datas dos periodos que tenham sido setadas, com a data de matricula do aluno
            */
-          if (   !empty($oFiltros->dtMatriculaInicial) 
-              && !empty($oFiltros->dtMatriculaFinal) 
+
+          if (   !empty($oFiltros->dtMatriculaInicial)
+              && !empty($oFiltros->dtMatriculaFinal)
               && !DBDate::dataEstaNoIntervalo($oMatricula->getDataMatricula(), $oFiltros->oMatriculaInicial, $oFiltros->oMatriculaFinal)) {
-            
+
             continue;
-          } else if (   !empty($oFiltros->dtMatriculaInicial) 
+          } else if (   !empty($oFiltros->dtMatriculaInicial)
                      && DBDate::calculaIntervaloEntreDatas($oMatricula->getDataMatricula(), $oFiltros->oMatriculaInicial, 'd') < 0) {
-            
+
             continue;
-          } else if (   !empty($oFiltros->dtMatriculaFinal) 
+          } else if (   !empty($oFiltros->dtMatriculaFinal)
                      && DBDate::calculaIntervaloEntreDatas($oMatricula->getDataMatricula(), $oFiltros->oMatriculaFinal, 'd') > 0) {
             continue;
           }
 
           if (!in_array($oMatricula->getAluno()->getCodigoAluno(), $oFiltros->aControleAlunos)) {
-
             $oFiltros->aControleAlunos[] = $oMatricula->getAluno()->getCodigoAluno();
-            $oFiltros->iTotalAlunos++;
+            $oFiltros->iTotalAlunos ++;
+            $oFiltros->iTotalAlunosImpresso ++;
           }
-          
+
           $oPdf->SetFont('arial', '', $oFiltros->iFonte);
-          
+
           /**
-           * Percorremos o array dos cabecalhos a serem impressos, e de acordo com o tipo selecionado, imprimimos os 
+           * Percorremos o array dos cabecalhos a serem impressos, e de acordo com o tipo selecionado, imprimimos os
            * devidos campos com tamanho correto
            */
           foreach ($oFiltros->aCabecalho as $oCabecalho) {
-  
+
             switch ($oCabecalho->iTipo) {
-  
+
               /**
                * Codigo do Aluno
                */
               case 1:
-  
+
                 $oPdf->Cell($oCabecalho->iTamanho, 4, $oMatricula->getAluno()->getCodigoAluno(), 1, 0, $oCabecalho->sAlinhamento);
                 break;
-                 
+
               /**
                * Nome do aluno
                */
               case 2:
-  
+
                 $oPdf->Cell($oCabecalho->iTamanho, 4, $oMatricula->getAluno()->getNome(), 1, 0, $oCabecalho->sAlinhamento);
                 break;
-  
+
               /**
                * Nome do curso
                */
               case 3:
-  
+
                 $sNome = $oMatricula->getTurma()->getBaseCurricular()->getCurso()->getEnsino()->getNome();
                 $oPdf->Cell($oCabecalho->iTamanho, 4, $sNome, 1, 0, $oCabecalho->sAlinhamento);
                 break;
-  
+
               /**
                * Descricao da etapa
                */
               case 4:
-  
+
                 $oPdf->Cell($oCabecalho->iTamanho, 4, $sEtapa->sDescricao, 1, 0, $oCabecalho->sAlinhamento);
                 break;
-  
+
               /**
                * Data da matricula
                */
               case 5:
-  
+
                 $oPdf->Cell($oCabecalho->iTamanho, 4, $dtMatricula, 1, 0, $oCabecalho->sAlinhamento);
                 break;
             }
@@ -528,9 +557,9 @@ function corpoRelatorio(PDF $oPdf, $oFiltros, $aEscola) {
  * @param stdClass $oFiltros
  */
 function imprimeTotalizador(PDF $oPdf, $oFiltros, $iTipoTotalizador) {
-  
+
   $oPdf->SetFont('arial', 'b', $oFiltros->iFonte);
-  
+
   if ($iTipoTotalizador == 1) {
 
     $sMensagem  = "Total de Matrículas Ativas na Escola: {$oFiltros->iTotalMatriculas} / ";
@@ -548,15 +577,16 @@ function imprimeTotalizador(PDF $oPdf, $oFiltros, $iTipoTotalizador) {
  * Imprimimos o totalizador de alunos no municipio, caso tenham sido selecionadas todas as escolas
  */
 if ($oFiltros->iEscola == 0) {
-  
+
   $oPdf->Ln();
   imprimeTotalizador($oPdf, $oFiltros, 2);
 }
 
+
 /**
  * Caso nenhum aluno seja apresentado no relatório e todas as escolas tenham sido percorridas, apresenta a mensagem
  */
-if ($oFiltros->iTotalAlunos == 0 && $oFiltros->iEscolasPercorridas == $oFiltros->iTotalEscolas) {
+if ($oFiltros->iTotalAlunosImpresso == 0 && $oFiltros->iEscolasPercorridas == $oFiltros->iTotalEscolas) {
 
   $sMsgErro = "ERRO: Não foram encontrados dados com os filtros informados.<br>";
   db_redireciona("db_erros.php?fechar=true&db_erro={$sMsgErro}");

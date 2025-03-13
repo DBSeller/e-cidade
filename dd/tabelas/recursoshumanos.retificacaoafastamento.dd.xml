@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010273' name='recursoshumanos.retificacaoafastamento' description="Retificação de afastamento para o eSocial." prefix="rh220" label="Retificação de Afastamento" type="0">
+  <fields>
+    <field codigo="1009687" 
+           campo_api='' 
+           name="rh220_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial da tabela." 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='recursoshumanos.retificacaoafastamento_rh220_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009688" 
+           campo_api='' 
+           name="rh220_assenta" 
+           conteudo="int4" 
+           description="Vínculo com o novo assentamento." 
+           inivalue="0" 
+           label="Afastamento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Afastamento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009690" 
+           campo_api='' 
+           name="rh220_origemretificacao" 
+           conteudo="int4" 
+           description="Origem da retificação do afastamento." 
+           inivalue="0" 
+           label="Origem de retificação" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Origem de retificação" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009691" 
+           campo_api='' 
+           name="rh220_tipoprocesso" 
+           conteudo="int4" 
+           description="Tipo de processo." 
+           inivalue="0" 
+           label="Tipo de processo" 
+           size="10" 
+           null="t" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Tipo de processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009692" 
+           campo_api='' 
+           name="rh220_numeroprocesso" 
+           conteudo="text" 
+           description="Número do Processo." 
+           inivalue="" 
+           label="Número do Processo" 
+           size="1" 
+           null="t" 
+           uppercase="t" 
+           autocompl="f" 
+           aceitatipo="0" 
+           tipoobj="text" 
+           labelrel="Número do Processo" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="rh220_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="assenta" inner='t'>
+      <fieldfk name="rh220_assenta" reference="h16_codigo" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

@@ -28,16 +28,16 @@
 /**
  * Cadastro de licitações desertas
  * @author Iuri Guntchnigg
- * @revision $Author: dbiuri $
- * @version $Revision: 1.3 $
+ * @revision $Author: dbjeferson.belmiro $
+ * @version $Revision: 1.5 $
  */
-require("libs/db_stdlib.php");
-require("libs/db_utils.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require("model/licitacao.model.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_utils.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("model/licitacao.model.php"));
 $db_botao = false;
 $db_opcao = 3;
 $oGet     = db_utils::postMemory($_GET);
@@ -112,7 +112,7 @@ if (isset($oGet->chavepesquisa) && $oGet->chavepesquisa != "") {
   </table>
   <center>
   <?
-    include("forms/db_frmlicitacaodeserta.php");
+    include(modification("forms/db_frmlicitacaodeserta.php"));
   ?>
   </center>
 </body>

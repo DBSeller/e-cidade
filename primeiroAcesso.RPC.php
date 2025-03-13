@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,12 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_autoload.php");
-require_once("libs/db_conn.php");
-require_once("libs/db_app.utils.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conn.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/JSON.php"));
 
 $conn = @pg_connect(  "host={$DB_SERVIDOR} "
                      ."dbname={$DB_BASE} "
@@ -85,7 +84,7 @@ try {
       /**
        * Valida se usuário é apto para setar senha
        */
-      $oUsuarioSistema  = new UsuarioSistema( $oParametros->id_usuario );
+      $oUsuarioSistema  = new UsuarioSistema( pg_escape_string($oParametros->id_usuario) );
 
       if ( $oUsuarioSistema->validaPrimeiroAcesso() ) {
         /**
@@ -95,7 +94,7 @@ try {
 
         db_inicio_transacao();
 
-        $oUsuarioSistema->setSenha( Encriptacao::hash($oParametros->senha) );
+        $oUsuarioSistema->setSenha( Encriptacao::hash(pg_escape_string($oParametros->senha)) );
         $oUsuarioSistema->ativo( 1 );
         $oUsuarioSistema->salvar();
 
@@ -125,9 +124,13 @@ try {
         throw new BusinessException( _M( MENSAGEM . 'email_obrigatorio' ) );
       }
 
-      $sWhere  = "     cgm.z01_email  = '{$oParametros->email}'          ";
-      $sWhere .= " and cgm.z01_cgccpf = '{$oParametros->cpf}'            ";
-      $sWhere .= " and cgm.z01_nasc   = '{$oParametros->datanascimento}' ";
+        $email = pg_escape_string($oParametros->email);
+        $cpf = pg_escape_string($oParametros->cpf);
+        $datanascimento = pg_escape_string($oParametros->datanascimento);
+
+      $sWhere  = "     cgm.z01_email  = '{$email}'          ";
+      $sWhere .= " and cgm.z01_cgccpf = '{$cpf}'            ";
+      $sWhere .= " and cgm.z01_nasc   = '{$datanascimento}' ";
 
       $oDaoDBUsuaCgm = db_utils::getDao('db_usuacgm');
       $sSqlDBUsuaCgm = $oDaoDBUsuaCgm->sql_query( null, '*', null, $sWhere );

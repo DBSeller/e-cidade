@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlibwebseller.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_turmaac_classe.php");
-include("classes/db_turmaacmatricula_classe.php");
-include("classes/db_turmaacativ_classe.php");
-include("classes/db_turmaachorario_classe.php");
-include("classes/db_turmalogac_classe.php");
-include("classes/db_escola_classe.php");
-include("classes/db_escolaestrutura_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_jsplibwebseller.php");
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_turmaac_classe.php"));
+include(modification("classes/db_turmaacmatricula_classe.php"));
+include(modification("classes/db_turmaacativ_classe.php"));
+include(modification("classes/db_turmaachorario_classe.php"));
+include(modification("classes/db_turmalogac_classe.php"));
+include(modification("classes/db_escola_classe.php"));
+include(modification("classes/db_escolaestrutura_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_jsplibwebseller.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clturmaac          = new cl_turmaac;
@@ -93,7 +93,7 @@ if (isset($excluir)) {
    <br>
    <center>
    <fieldset style="width:95%"><legend><b>Exclusão de Turma com Atividade Complementar / AEE</b></legend>
-    <?include("forms/db_frmturmaac.php");?>
+    <?include(modification("forms/db_frmturmaac.php"));?>
    </fieldset>
    </center>
   </td>

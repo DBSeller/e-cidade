@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -24,5 +24,5 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt
  *                                licenca/licenca_pt.txt
  */
-$campos = "matmater.m60_codmater, m60_descr, matmater.m60_codmatunid,matmater.m60_quantent,matmater.m60_codant,matmater.m60_controlavalidade";
+$campos = "matmater.m60_codmater, m60_descr, (select m61_descr from matunid where  m61_codmatunid = matmater.m60_codmatunid) as m60_codmatunid ,matmater.m60_quantent,matmater.m60_codant,matmater.m60_controlavalidade";
 ?>

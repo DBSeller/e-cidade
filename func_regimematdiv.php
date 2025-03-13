@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_regimematdiv_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_regimematdiv_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clregimematdiv = new cl_regimematdiv;
@@ -83,7 +83,7 @@ $clregimematdiv->rotulo->label("ed219_c_nome");
    if(!isset($pesquisa_chave)){
     if(isset($campos)==false){
      if(file_exists("funcoes/db_func_regimematdiv.php")==true){
-      include("funcoes/db_func_regimematdiv.php");
+      include(modification("funcoes/db_func_regimematdiv.php"));
      }else{
       $campos = "regimematdiv.*";
      }
@@ -121,4 +121,10 @@ $clregimematdiv->rotulo->label("ed219_c_nome");
 </html>
 <script>
 js_tabulacaoforms("form2","chave_ed219_i_codigo",true,1,"chave_ed219_i_codigo",true);
+</script>
+<script type="text/javascript">
+(function() {
+  var query = frameElement.getAttribute('name').replace('IF', ''), input = document.querySelector('input[value="Fechar"]');
+  input.onclick = parent[query] ? parent[query].hide.bind(parent[query]) : input.onclick;
+})();
 </script>

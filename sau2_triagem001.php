@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 //$unidade = @$unidade;
 $descrdepto = db_getsession("DB_coddepto");
@@ -45,7 +45,7 @@ $sql_pront = "select *
                  and ( sd24_v_motivo is null or sd24_v_motivo = '' )
                order by sd24_i_unidade, sd24_i_codigo";
 
-$query_pront = @pg_query($sql_pront) or die(pg_errormessage());
+$query_pront = @db_query($sql_pront) or die(pg_errormessage());
 $linhas = @pg_num_rows($query_pront);
 if($linhas == 0){
  echo "<table width='100%'>

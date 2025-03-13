@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_stdlibwebseller.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_progconfig_classe.php");
-include("classes/db_progmatricula_classe.php");
-include("classes/db_proginterrompe_classe.php");
-include("classes/db_progfalta_classe.php");
-include("classes/db_progsuspdisc_classe.php");
-include("classes/db_progadvert_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_stdlibwebseller.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_progconfig_classe.php"));
+include(modification("classes/db_progmatricula_classe.php"));
+include(modification("classes/db_proginterrompe_classe.php"));
+include(modification("classes/db_progfalta_classe.php"));
+include(modification("classes/db_progsuspdisc_classe.php"));
+include(modification("classes/db_progadvert_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 $ed113_d_data_dia = date("d",db_getsession("DB_datausu"));
 $ed113_d_data_mes = date("m",db_getsession("DB_datausu"));
 $ed113_d_data_ano = date("Y",db_getsession("DB_datausu"));

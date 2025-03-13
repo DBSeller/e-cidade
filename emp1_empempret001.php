@@ -25,16 +25,16 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_pagordemtiporec_classe.php");
-include("classes/db_empautret_classe.php");
-include("classes/db_empempret_classe.php");
-include("classes/db_empretencao_classe.php");
-include("classes/db_empautitem_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_pagordemtiporec_classe.php"));
+include(modification("classes/db_empautret_classe.php"));
+include(modification("classes/db_empempret_classe.php"));
+include(modification("classes/db_empretencao_classe.php"));
+include(modification("classes/db_empautitem_classe.php"));
 $clpagordemtiporec = new cl_pagordemtiporec;
 $clempautret = new cl_empautret;
 $clempempret = new cl_empempret;
@@ -66,7 +66,7 @@ if (!isset($op)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
       <center>
         <?
-        include("forms/db_frmempautret.php");
+        include(modification("forms/db_frmempautret.php"));
         ?>
       </center>
     </td>

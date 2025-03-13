@@ -25,18 +25,18 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("libs/db_sql.php");
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_tarefaanexos_classe.php");
+include(modification("libs/db_sql.php"));
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tarefaanexos_classe.php"));
 db_postmemory($HTTP_POST_VARS);
 $cltarefaanexos = new cl_tarefaanexos;
 if (isset($oid_arq)&&$oid_arq!=""){
 	
-   pg_query ($conn, "begin");
+   db_query ($conn, "begin");
    $loid = pg_lo_open($conn,$oid_arq, "r");
    header('Accept-Ranges: bytes');
    //header('Content-Length: 32029974'); //this is the size of the zipped file
@@ -47,7 +47,7 @@ if (isset($oid_arq)&&$oid_arq!=""){
    header('Content-Disposition: attachment; filename="'.$at25_nomearq.'"');
    pg_lo_read_all ($loid);
    pg_lo_close ($loid);
-   pg_query ($conn, "commit"); 
+   db_query ($conn, "commit"); 
    exit;
 }
 ?>
@@ -155,7 +155,7 @@ if (isset($oid_arq)&&$oid_arq!=""){
 
 $sql = "select distinct on (at80_tarefa, at80_arquivos, at80_versaocvs, at80_data, at80_hora) * from tarefa_arquivos where  at80_tarefa = $at25_tarefa ";
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 if(pg_numrows($result)>0){
   echo "<table>";
   echo "<tr>";
@@ -186,5 +186,5 @@ if(pg_numrows($result)>0){
 </html>
 <?
 // ....   incluir o anexo   ..... 
-//include("ate1_tarefaanexos002.php");
+//include(modification("ate1_tarefaanexos002.php"));
 ?>

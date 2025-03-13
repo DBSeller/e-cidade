@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,94 +25,98 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("SubSistemaConta.model.php"); 
-require_once("SistemaContaCompensado.model.php");
-require_once("SistemaContaFinanceiroBanco.model.php");
-require_once("SistemaContaFinanceiroCaixa.model.php");
-require_once("SistemaContaFinanceiroExtraOrcamentaria.model.php");
-require_once("SistemaContaFinanceiro.model.php");
-require_once("SistemaContaPatrimonial.model.php");
-require_once("SistemaContaOrcamentario.model.php");
-require_once("SistemaContaNaoAplicado.model.php");
+require_once(modification("model/contabilidade/planoconta/SubSistemaConta.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaCompensado.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaFinanceiroBanco.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaFinanceiroCaixa.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaFinanceiroExtraOrcamentaria.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaFinanceiro.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaPatrimonial.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaOrcamentario.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaNaoAplicado.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaDividaConsolidada.model.php"));
+require_once(modification("model/contabilidade/planoconta/SistemaContaFinanceiroInterferencia.model.php"));
+
 
 /**
-*
-* Strategy para encapsular os tipos de consistema
-* @author dbseller
-* @name SistemaConta
-* @package contabilidade
-* @subpackage planoconta
-* 
-*/
-class SistemaConta {
-  
-  /**
-   * Instancia do sistema de Contas
-   * @var ISistemaConta
-   */
-  private $oSistemaConta = null;
-  
-  public function __construct($iCodigoSistema) {
-    
-    switch ($iCodigoSistema) {
-      
-      case 1:
-         
-        $this->oSistemaConta = new SistemaContaFinanceiro();
-        break;
-      case 2:
-         
-        $this->oSistemaConta = new SistemaContaPatrimonial();
-        break;
-      case 3:
-         
-        $this->oSistemaConta = new SistemaContaOrcamentario();
-        break;
-      case 4:
-         
-        $this->oSistemaConta = new SistemaContaCompensado();
-        break;
-      case 5:
-         
-        $this->oSistemaConta = new SistemaContaFinanceiroCaixa();
-        break;
-      case 6:
-         
-        $this->oSistemaConta = new SistemaContaFinanceiroBanco();
-        break;
-      case 7:
-         
-        $this->oSistemaConta = new SistemaContaFinanceiroExtraOrcamentaria();
-        break;
-      case 0:
-         
-        $this->oSistemaConta = new SistemaContaNaoAplicado();
-        break;
-      default: 
-        
-        $this->oSistemaConta = new SistemaContaNaoAplicado();
-        break;
+ *
+ * Strategy para encapsular os tipos de consistema
+ * @author dbseller
+ * @name SistemaConta
+ * @package contabilidade
+ * @subpackage planoconta
+ *
+ */
+class SistemaConta
+{
+
+    /**
+     * Instancia do sistema de Contas
+     * @var ISistemaConta
+     */
+    private $oSistemaConta = null;
+
+    public function __construct($iCodigoSistema)
+    {
+        switch ($iCodigoSistema) {
+            case 1:
+                $this->oSistemaConta = new SistemaContaFinanceiro();
+                break;
+            case 2:
+                $this->oSistemaConta = new SistemaContaPatrimonial();
+                break;
+            case 3:
+                $this->oSistemaConta = new SistemaContaOrcamentario();
+                break;
+            case 4:
+                $this->oSistemaConta = new SistemaContaCompensado();
+                break;
+            case 5:
+                $this->oSistemaConta = new SistemaContaFinanceiroCaixa();
+                break;
+            case 6:
+                $this->oSistemaConta = new SistemaContaFinanceiroBanco();
+                break;
+            case 7:
+                $this->oSistemaConta = new SistemaContaFinanceiroExtraOrcamentaria();
+                break;
+            case 8:
+                $this->oSistemaConta = new SistemaContaFinanceiroInterferencia();
+                break;
+            case 9:
+                $this->oSistemaConta = new SistemaContaDividaConsolidada();
+                break;
+            case 0:
+                $this->oSistemaConta = new SistemaContaNaoAplicado();
+                break;
+            default:
+                $this->oSistemaConta = new SistemaContaNaoAplicado();
+                break;
+        }
     }
-  }
-  
-  
-  public function integrarDados(ContaPlano $oContaPlano) {
-    $this->oSistemaConta->integrarDados($oContaPlano);
-  }
-  
-  public function excluirDadosIntegrados(ContaPlano $oContaPlano) {
-    $this->oSistemaConta->excluirDadosIntegrados($oContaPlano);
-  }
-  
-  /**
-  * Retorna o código do tipo Financeiro
-  * @see ISistemaConta::getCodigoSistemaConta()
-  */
-  public function getCodigoSistemaConta() {
-    return $this->oSistemaConta->getCodigoSistemaConta();
-  }
-  
-  public function getDescricao() {
-   return  $this->oSistemaConta->getDescricao();
-  }
+
+
+    public function integrarDados(ContaPlano $oContaPlano)
+    {
+        $this->oSistemaConta->integrarDados($oContaPlano);
+    }
+
+    public function excluirDadosIntegrados(ContaPlano $oContaPlano)
+    {
+        $this->oSistemaConta->excluirDadosIntegrados($oContaPlano);
+    }
+
+    /**
+     * Retorna o código do tipo Financeiro
+     * @see ISistemaConta::getCodigoSistemaConta()
+     */
+    public function getCodigoSistemaConta()
+    {
+        return $this->oSistemaConta->getCodigoSistemaConta();
+    }
+
+    public function getDescricao()
+    {
+        return $this->oSistemaConta->getDescricao();
+    }
 }

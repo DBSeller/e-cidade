@@ -1,32 +1,32 @@
 <?
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clregimetrabalho->rotulo->label();
 $db_botao1 = false;
@@ -57,6 +57,16 @@ if(isset($opcao) && $opcao=="alterar"){
   </td>
  </tr>
  <tr>
+     <td nowrap title="<?=@$Ted24_horas?>">
+         <?=@$Led24_horas?>
+     </td>
+     <td>
+         <input type="text" name="ed24_horas" id="ed24_horas" value="<?= @$ed24_horas ?>" size="5" maxlength="10"
+                oninput="js_ValidaCampos(this,4,'Horas','f','f',event);"
+                onkeydown="return js_controla_tecla_enter(this,event);">
+     </td>
+ </tr>
+ <tr>
   <td nowrap title="<?=@$Ted24_c_descr?>">
    <?=@$Led24_c_descr?>
   </td>
@@ -71,20 +81,20 @@ if(isset($opcao) && $opcao=="alterar"){
  <tr>
   <td valign="top">
   <?
-   $chavepri= array("ed24_i_codigo"=>@$ed24_i_codigo,"ed24_c_descr"=>@$ed24_c_descr);
+   $chavepri= array("ed24_i_codigo"=>@$ed24_i_codigo,"ed24_horas"=>@$ed24_horas,"ed24_c_descr"=>@$ed24_c_descr);
    $cliframe_alterar_excluir->chavepri=$chavepri;
    @$cliframe_alterar_excluir->sql = $clregimetrabalho->sql_query($ed24_i_codigo,"*","ed24_c_descr");
-   $cliframe_alterar_excluir->campos  ="ed24_i_codigo,ed24_c_descr";
+   $cliframe_alterar_excluir->campos  ="ed24_i_codigo,ed24_horas,ed24_c_descr";
    $cliframe_alterar_excluir->legenda="Registros";
    $cliframe_alterar_excluir->msg_vazio ="Não foi encontrado nenhum registro.";
    $cliframe_alterar_excluir->textocabec ="#DEB887";
    $cliframe_alterar_excluir->textocorpo ="#444444";
    $cliframe_alterar_excluir->fundocabec ="#444444";
    $cliframe_alterar_excluir->fundocorpo ="#eaeaea";
-   $cliframe_alterar_excluir->iframe_height ="200";
+   $cliframe_alterar_excluir->iframe_height ="250";
    $cliframe_alterar_excluir->iframe_width ="100%";
-   $cliframe_alterar_excluir->tamfontecabec = 9;
-   $cliframe_alterar_excluir->tamfontecorpo = 9;
+   $cliframe_alterar_excluir->tamfontecabec = 12;
+   $cliframe_alterar_excluir->tamfontecorpo = 10;
    $cliframe_alterar_excluir->formulario = false;
    $cliframe_alterar_excluir->iframe_alterar_excluir($db_opcao);
   ?>

@@ -26,7 +26,7 @@
  */
 
 //MODULO: itbi
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $clitbipropriold->rotulo->label();
 $clrotulo = new rotulocampo;
 $clrotulo->label("it01_guia");
@@ -113,10 +113,10 @@ db_select('it20_pri',$x,true,$db_opcao,"");
 <script>
 function js_pesquisait20_guia(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_itbi','func_itbi.php?funcao_js=parent.js_mostraitbi1|it01_guia|it01_guia','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbi','func_itbi.php?funcao_js=parent.js_mostraitbi1|it01_guia|it01_guia','Pesquisa',true);
   }else{
      if(document.form1.it20_guia.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_itbi','func_itbi.php?pesquisa_chave='+document.form1.it20_guia.value+'&funcao_js=parent.js_mostraitbi','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbi','func_itbi.php?pesquisa_chave='+document.form1.it20_guia.value+'&funcao_js=parent.js_mostraitbi','Pesquisa',false);
      }else{
        document.form1.it01_guia.value = ''; 
      }
@@ -158,7 +158,7 @@ function js_mostracgm1(chave1,chave2){
   db_iframe_cgm.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_itbipropriold','func_itbipropriold.php?funcao_js=parent.js_preenchepesquisa|it20_guia','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_itbipropriold','func_itbipropriold.php?funcao_js=parent.js_preenchepesquisa|it20_guia','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_itbipropriold.hide();

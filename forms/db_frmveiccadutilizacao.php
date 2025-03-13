@@ -58,7 +58,7 @@ db_input('ve14_descr',40,$Ive14_descr,true,'text',$db_opcao,"")
 </form>
 <script>
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_veiccadutilizacao','func_veiccadutilizacao.php?funcao_js=parent.js_preenchepesquisa|ve14_sequencial','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_veiccadutilizacao','func_veiccadutilizacao.php?funcao_js=parent.js_preenchepesquisa|ve14_sequencial','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_veiccadutilizacao.hide();

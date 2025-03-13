@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -28,7 +28,7 @@
 /**
  * Class File
  * @author Matheus Felini <matheus.felini@dbseller.com.br>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 class File {
 
@@ -127,6 +127,31 @@ class File {
     return File::compressFiles(array($this), $this->getFileName());
   }
 
+  /**
+   * Corta o nome do arquivo sem perder a extensão, caso ultrapasse o tamanho máximo.
+   *
+   * @param  string  $sNomeArquivo   Nome do arquivo
+   * @param  integer $iTamanhoMaximo Tamanho máximo para o nome do arquivo
+   * @return string
+   */
+  public static function cutName($sNomeArquivo, $iTamanhoMaximo) {
+
+    if (strlen($sNomeArquivo) > $iTamanhoMaximo) {
+
+      $oArquivo  = new SplFileInfo($sNomeArquivo);
+      $sExtensao = $oArquivo->getExtension();
+      $iTamanhoExtensao = strlen($sExtensao) + 1;
+      $iTamanhoMaximo  -= $iTamanhoExtensao;
+
+      if ($iTamanhoExtensao > $iTamanhoMaximo) {
+        throw new Exception('Nome de arquivo com extensão inválida.');
+      }
+
+      $sNomeArquivo = substr($sNomeArquivo, 0, $iTamanhoMaximo) . '.' . $sExtensao;
+    }
+
+    return $sNomeArquivo;
+  }
 
   /**
    * @param File[] $aFiles

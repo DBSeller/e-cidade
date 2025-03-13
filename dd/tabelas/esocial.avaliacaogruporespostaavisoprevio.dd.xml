@@ -1,0 +1,97 @@
+<?xml version="1.0" standalone="yes" ?>
+<table codigo='1010267' name='esocial.avaliacaogruporespostaavisoprevio' description="Tabela de controle das respostas de aviso prévio do esocial." prefix="eso07" label="avaliacaogruporespostaavisoprevio" type="0">
+  <fields>
+    <field codigo="1009661" 
+           campo_api='' 
+           name="eso07_sequencial" 
+           conteudo="int4" 
+           description="Código sequencial" 
+           inivalue="0" 
+           label="Código" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Código" 
+           reference="" 
+           ispk="t" 
+           hassequence="t" > 
+           
+      <sequence name='esocial.avaliacaogruporespostaavisoprevio_eso07_sequencial_seq' />
+     
+    </field> 
+    <field codigo="1009662" 
+           campo_api='' 
+           name="eso07_avaliacaogruporesposta" 
+           conteudo="int4" 
+           description="Código do Preenchimento" 
+           inivalue="0" 
+           label="Preenchimento" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Preenchimento" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009663" 
+           campo_api='' 
+           name="eso07_empregador" 
+           conteudo="int4" 
+           description="Código do Empregador" 
+           inivalue="0" 
+           label="Empregador" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Empregador" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+    <field codigo="1009664" 
+           campo_api='' 
+           name="eso07_regist" 
+           conteudo="int4" 
+           description="Código da Matrícula" 
+           inivalue="0" 
+           label="Matrícula" 
+           size="10" 
+           null="f" 
+           uppercase="f" 
+           autocompl="f" 
+           aceitatipo="1" 
+           tipoobj="text" 
+           labelrel="Matrícula" 
+           reference="" 
+           ispk="f" 
+           hassequence="t" > 
+            
+    </field> 
+  </fields>
+  <primarykey>
+    <fieldpk name="eso07_sequencial"></fieldpk> 
+  </primarykey>
+  <foreignkeys>
+    <foreignkey reference="cgm" inner='t'>
+      <fieldfk name="eso07_empregador" reference="z01_numcgm" /> 
+    </foreignkey>
+    <foreignkey reference="rhpessoal" inner='t'>
+      <fieldfk name="eso07_regist" reference="rh01_regist" /> 
+    </foreignkey>
+    <foreignkey reference="avaliacaogrupopergunta" inner='t'>
+      <fieldfk name="eso07_avaliacaogruporesposta" reference="db102_sequencial" /> 
+    </foreignkey>
+  </foreignkeys>
+</table>

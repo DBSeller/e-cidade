@@ -25,13 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_padroes_classe.php");
-include("classes/db_rhcadregime_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_libpessoal.php"));
+include(modification("classes/db_padroes_classe.php"));
+include(modification("classes/db_rhcadregime_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clpadroes = new cl_padroes;
@@ -42,12 +44,54 @@ if(isset($alterar)){
   db_inicio_transacao();
   $db_opcao = 2;
   $clpadroes->r02_instit = db_getsession("DB_instit");
-  $clpadroes->alterar($r02_anousu,$r02_mesusu,$r02_regime,$r02_codigo,db_getsession("DB_instit"));
-  db_fim_transacao();
-}else if(isset($chavepesquisa)){
-   $db_opcao = 2;      
    
-   $result = $clpadroes->sql_record($clpadroes->sql_query_diversos($chavepesquisa,$chavepesquisa1,$chavepesquisa2,$chavepesquisa3,"*",null,"r02_codigo='$chavepesquisa3' and r02_anousu=$chavepesquisa and r02_mesusu=$chavepesquisa1 and r02_regime =$chavepesquisa2 and r02_instit = ".db_getsession("DB_instit"))); 
+  if(!empty($r02_padraopai_codigo)) {
+
+    $clpadroes->r02_padraopai_regime = $r02_regime;
+    $clpadroes->r02_padraopai_instit = $clpadroes->r02_instit;
+    
+    $validacaoNivel = validarPadraoSalarioServidor($r02_codigo, $r02_padraopai_codigo, $r02_regime, db_getsession("DB_instit"));
+
+    if($validacaoNivel !== true) {
+      
+      $clpadroes->erro_status = '0';
+      $clpadroes->erro_msg    = $validacaoNivel;
+    }
+
+  } else {
+
+    $clpadroes->r02_padraopai_codigo = 'null';
+    $clpadroes->r02_padraopai_regime = 'null';
+    $clpadroes->r02_padraopai_instit = 'null';
+  }
+
+  if($clpadroes->erro_status != '0') {
+    $erro = $clpadroes->alterar($r02_anousu,$r02_mesusu,$r02_regime,$r02_codigo,db_getsession("DB_instit"));
+  }
+
+  db_fim_transacao();
+
+} else if(isset($chavepesquisa)) {
+
+   $db_opcao = 2;        
+   $campos   = "*,";
+   $campos  .= "(select r02_descr from padroes as p where p.r02_codigo = padroes.r02_padraopai_codigo
+                                                      and p.r02_anousu = {$chavepesquisa}
+                                                      and p.r02_mesusu = {$chavepesquisa1}
+                                                      and p.r02_regime = {$chavepesquisa2}
+                                                      and p.r02_instit = ". db_getsession("DB_instit") .") as r02_descr_padraopai ";
+
+   $result = $clpadroes->sql_record($sqll = $clpadroes->sql_query_diversos($chavepesquisa,
+                                                                           $chavepesquisa1,
+                                                                           $chavepesquisa2,
+                                                                           $chavepesquisa3,
+                                                                           $campos, 
+                                                                           null,
+                                                                           "     r02_codigo='$chavepesquisa3' 
+                                                                             and r02_anousu=$chavepesquisa
+                                                                             and r02_mesusu=$chavepesquisa1
+                                                                             and r02_regime =$chavepesquisa2
+                                                                             and r02_instit = ".db_getsession("DB_instit"))); 
    db_fieldsmemory($result,0);
    $formulaanterior = $r02_form;
    $db_botao = true;
@@ -59,6 +103,7 @@ if(isset($alterar)){
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="Expires" CONTENT="0">
 <script language="JavaScript" type="text/javascript" src="scripts/scripts.js"></script>
+<script language="JavaScript" type="text/javascript" src="scripts/widgets/DBLookUp.widget.js"></script>
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
@@ -75,7 +120,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
     <?
-    include("forms/db_frmpadroes.php");
+    include(modification("forms/db_frmpadroes.php"));
     ?>
     </center>
     </td>

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,8 +30,8 @@
  *
  * @author   Rafael Serpa Nery rafael.nery@dbseller.com.br
  * @package  Recursos Humanos
- * @revision  $Author: dbrafael.nery $
- * @version  $Revision: 1.1 $
+ * @revision  $Author: dbjeferson.belmiro $
+ * @version  $Revision: 1.4 $
  */
 class PromocaoFechamento  {
 
@@ -60,7 +60,7 @@ class PromocaoFechamento  {
 	 */
 	public function __construct($iCodigoFechamento = null) {
 		 
-		require_once("classes/db_rhpromocaofechamento_classe.php");
+		require_once(modification("classes/db_rhpromocaofechamento_classe.php"));
 		 
 		if ( !is_null($iCodigoFechamento) ) {
 			 
@@ -154,7 +154,7 @@ class PromocaoFechamento  {
 	 */
 	public function adicionarAssentamento($iCodigoAssentamento) {
 
-		require_once("classes/db_rhpromocaofechamentoassentamento_classe.php");
+		require_once(modification("classes/db_rhpromocaofechamentoassentamento_classe.php"));
 
 		$oDaoRhpromocaoFechamentoAssentamento                           = new cl_rhpromocaofechamentoassentamento();
 		$oDaoRhpromocaoFechamentoAssentamento->h78_rhpromocaofechamento = $this->getCodigoFechamento();

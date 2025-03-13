@@ -1,10 +1,10 @@
 <?php
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_rhfundamentacaolegal_classe.php");
-require_once("dbforms/db_funcoes.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_rhfundamentacaolegal_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
 
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
@@ -18,7 +18,9 @@ if (isset($alterar)) {
 
   db_inicio_transacao();
   $db_opcao = 2;
+  $oDaoRhfundamentacaolegal->rh137_instituicao = db_getsession("DB_instit");
   $oDaoRhfundamentacaolegal->alterar($rh137_sequencial);
+
   db_fim_transacao();
 
   $sPosScripts .= 'alert("' . $oDaoRhfundamentacaolegal->erro_msg . '");' . "\n";
@@ -49,5 +51,4 @@ if ($db_opcao == 22) {
 
 $sPosScripts .=  'js_tabulacaoforms("form1", "rh137_tipodocumentacao", true, 1, "rh137_tipodocumentacao", true);';
 
-include("forms/db_frmrhfundamentacaolegal.php");
-?>
+include(modification("forms/db_frmrhfundamentacaolegal.php"));

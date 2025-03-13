@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_rhlocaltrab_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_rhlocaltrab_classe.php"));
 $clrhlocaltrab = new cl_rhlocaltrab;
 $clrotulo = new rotulocampo;
 $clrotulo->label('DBtxt23');
@@ -178,6 +178,22 @@ db_postmemory($HTTP_POST_VARS);
     </td>
   </tr>
   <tr>
+    <td align="right" nowrap >
+      <strong>Inat/Pens/Gest/Aux.Doenca :</strong>
+    </td>
+    <td align="left">
+      <?
+      $xinat = array("T"=>"Todos",
+                     "I"=>"Inativos", 
+                     "P"=>"Pensionistas", 
+                     "M"=>"Maternidade", 
+                     "D"=>"Aux.Doenca" 
+                    );
+      db_select('inapen',$xinat,true,1);
+      ?>
+    </td>
+  </tr>
+  <tr>
     <td align="center" colspan="2">
       <?
       $result_local = $clrhlocaltrab->sql_record($clrhlocaltrab->sql_query_file(null,db_getsession('DB_instit'), "rh55_codigo, rh55_codigo||'-'||rh55_descr as rh55_descr", "rh55_descr" ));
@@ -214,6 +230,7 @@ function js_emite(){
   qry += "&comissionados="+document.form1.comissionados.value;
   qry += "&tip_fol="+document.form1.tip_fol.value;
   qry += "&sel="+document.form1.r44_selec.value;
+  qry += "&inapen="+document.form1.inapen.value;
   qry += "&local="+ selecionados;
   ////jan = window.open('pes2_ararelcontabilidade1002.php' + qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
   jan = window.open('pes2_araresumototal002.php' + qry,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
@@ -221,10 +238,10 @@ function js_emite(){
 }
 function js_pesquisasel(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_mostrasel1|r44_selec|r44_descr','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?funcao_js=parent.js_mostrasel1|r44_selec|r44_descr','Pesquisa',true);
   }else{
      if(document.form1.r44_selec.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostrasel','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_selecao','func_selecao.php?pesquisa_chave='+document.form1.r44_selec.value+'&funcao_js=parent.js_mostrasel','Pesquisa',false);
      }else{
        document.form1.r44_descr.value = '';
      }

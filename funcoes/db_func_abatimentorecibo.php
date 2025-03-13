@@ -1,7 +1,7 @@
-<?
-/*
+<?php
+/**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -24,6 +24,5 @@
  *  Copia da licenca no diretorio licenca/licenca_en.txt 
  *                                licenca/licenca_pt.txt 
  */
-
-$campos = "abatimentorecibo.k127_sequencial,abatimentorecibo.k127_abatimento,abatimentorecibo.k127_numprerecibo";
+$campos = "abatimentorecibo.k127_sequencial,abatimentorecibo.k127_abatimento,abatimentorecibo.k127_numprerecibo,abatimentorecibo.k127_numpreoriginal";
 ?>

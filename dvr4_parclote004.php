@@ -25,9 +25,9 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("fpdf151/scpdf.php");
-include("dbforms/db_funcoes.php");
-//require("db_conn.php");
+require(modification("fpdf151/scpdf.php"));
+include(modification("dbforms/db_funcoes.php"));
+//require(modification("db_conn.php"));
 //if(!($conn = pg_connect("host=$DB_SERVIDOR dbname=$DB_BASE port=$DB_PORTA user=$DB_USUARIO password=$DB_SENHA"))) {
 //  $pdf->Cell(200,4,"Erro ao conectar","LRBT",1,"C",0);
 //  exit;
@@ -50,7 +50,7 @@ db_postmemory($HTTP_POST_VARS);
 		where j34_loteam = $loteam
 		order by z01_ender,z01_numero,z01_compl
 		";
-   $principal= pg_exec($sql);
+   $principal= db_query($sql);
 $tipo = 25;   
 //db_postmemory($HTTP_POST_VARS,2);
 //exit;
@@ -62,7 +62,7 @@ $fazenda = 'SECRETARIA DA FAZENDA';
 $imposto = 'PARCELAMENTO DE LOTEAMENTO';
 $pdf->SetMargins(5,2);
 
-pg_exec("BEGIN");
+db_query("BEGIN");
 
 for($k = 148;$k < 298;$k++) {
 //for($k = 0;$k < pg_numrows($principal);$k++) {
@@ -70,18 +70,18 @@ for($k = 148;$k < 298;$k++) {
    $ver_numcgm = $j01_numcgm;
    $matric = $j01_matric;
    $ver_matric = $j01_matric;
-   $totpar = pg_exec("select k00_numpre,k00_numpar,k00_numtot from arrecad where k00_numpre = $k00_numpre ");
+   $totpar = db_query("select k00_numpre,k00_numpar,k00_numtot from arrecad where k00_numpre = $k00_numpre ");
 for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
    db_fieldsmemory($totpar,$volta);
   //gera um nuvo numpre. "numnov"
-  $result = pg_exec("select k00_descr,k00_codbco,k00_codage,k00_txban,k00_rectx,k00_hist1,k00_hist2,
+  $result = db_query("select k00_descr,k00_codbco,k00_codage,k00_txban,k00_rectx,k00_hist1,k00_hist2,
                             k00_hist3,k00_hist4,k00_hist5,k00_hist6,k00_hist7,k00_hist8 
                      from arretipo 
 					 where k00_tipo = $tipo");
   db_fieldsmemory($result,0);
 
   // gera codigo do banco
-  $result = pg_exec("select fc_numbco($k00_codbco,'$k00_codage')");
+  $result = db_query("select fc_numbco($k00_codbco,'$k00_codage')");
   db_fieldsmemory($result,0);
   $k03_anousu = db_getsession("DB_datausu");
   $k03_numpre = $k00_numpre;
@@ -96,7 +96,7 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
                    group by r.k00_dtoper,r.k00_receit,t.k02_descr,
 				         t.k02_drecei,r.k00_numcgm,k00_dtvenc,k00_numpre,
 						 k00_numpar,k00_numtot";
-  $DadosPagamento = pg_exec($sql);
+  $DadosPagamento = db_query($sql);
 
   $k00_valor = 0;
   for($i=0;$i<pg_numrows($DadosPagamento);$i++){
@@ -116,7 +116,7 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
    $vlrbar = db_formatar(str_replace('.','',str_pad(number_format($k00_valor,2,"","."),11,"0",STR_PAD_LEFT)),'s','0',11,'e');
 //   $vlrbar = "0".str_replace('.','',str_pad(number_format($k00_valor,2,"","."),11,"0",STR_PAD_LEFT));
 //   $numbanco = "4268" ;// deve ser tirado do db_config
-   $resultnumbco = pg_exec("select numbanco, segmento, formvencfebraban from db_config where codigo = " . db_getsession("DB_instit"));
+   $resultnumbco = db_query("select numbanco, segmento, formvencfebraban from db_config where codigo = " . db_getsession("DB_instit"));
    db_fieldsmemory($resultnumbco,0) ;// deve ser tirado do db_config
 
    $numpre = db_numpre($k03_numpre).db_formatar($k00_numpar,'s',"0",3,"e");
@@ -133,7 +133,7 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
    }
 
    $inibar="8" . $segmento . "6";
-   $resultcod = pg_exec("select fc_febraban('$inibar'||'$vlrbar'||'".$numbanco."'||'".$vencbar."'||'$numpre')");
+   $resultcod = db_query("select fc_febraban('$inibar'||'$vlrbar'||'".$numbanco."'||'".$vencbar."'||'$numpre')");
    db_fieldsmemory($resultcod,0);
 
    if ($fc_febraban == "") {
@@ -151,13 +151,13 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
      
     $numero = $ver_matric;
 
-    $Identificacao = pg_exec("select *
+    $Identificacao = db_query("select *
 	                 from proprietario
 					 where j01_matric = $ver_matric limit 1");
 
   } else if($ver_inscr == '') {
     $numero = $ver_inscr;
-    $Identificacao = pg_exec("select cgm.z01_nome,cgm.z01_numero,cgm.z01_compl,cgm.z01_ender,cgm.z01_munic,cgm.z01_uf,cgm.z01_cep,c.j14_nome as nomepri,issruas.q02_compl as j39_compl,issruas.q02_numero as j39_numero,j13_descr  
+    $Identificacao = db_query("select cgm.z01_nome,cgm.z01_numero,cgm.z01_compl,cgm.z01_ender,cgm.z01_munic,cgm.z01_uf,cgm.z01_cep,c.j14_nome as nomepri,issruas.q02_compl as j39_compl,issruas.q02_numero as j39_numero,j13_descr  
                      from cgm
 					 inner join issbase i 
 					 on i.q02_numcgm = cgm.z01_numcgm
@@ -171,7 +171,7 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
 
   } else {
    $numero = $ver_numcgm;
-    $Identificacao = pg_exec("select z01_nome,z01_ender,z01_munic,z01_uf,z01_cep,''::bpchar as nomepri,''::bpchar as j39_compl,''::bpchar as j39_numero,z01_bairro as j13_descr 
+    $Identificacao = db_query("select z01_nome,z01_ender,z01_munic,z01_uf,z01_cep,''::bpchar as nomepri,''::bpchar as j39_compl,''::bpchar as j39_numero,z01_bairro as j13_descr 
                      from cgm
 					 where z01_numcgm = $numero");
   } 
@@ -184,13 +184,13 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
 	               trim(nomepri)||' '||j39_numero||' '||j39_compl as j14_nome,proprietario
 		    from proprietario
 			where j01_matric = $j01_matric limit 1";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
 	db_fieldsmemory($result,0);
     $sql = "select 0
 	        from arrematric a
 			     inner join arrecad r on a.k00_numpre = r.k00_numpre 
 			where k00_matric = $j01_matric and k00_dtvenc < '".date('Y-m-d',db_getsession("DB_datausu"))."'::date limit 1";
-	$result = pg_exec($sql);
+	$result = db_query($sql);
     if(pg_numrows($result)!=0){
 	   $temdivida = "Existem Débitos Pendente. Verifique sua Situação.";
 	}else{    
@@ -207,7 +207,7 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
 			      where j22_anousu = ".db_getsession("DB_anousu")." and
   		                j22_matric = $j01_matric) e
 			where j23_matric = $j01_matric and j23_anousu = ".db_getsession("DB_anousu");
-	$result = pg_exec($sql);
+	$result = db_query($sql);
     if(pg_numrows($result)==0){
 	   echo "Carne nao gerado para este Imóvel.";
 	   exit;
@@ -216,10 +216,10 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
   }
 
   //select pras observacoes
-  $result = pg_exec("select fc_numbco($k00_codbco,'$k00_codage')");
+  $result = db_query("select fc_numbco($k00_codbco,'$k00_codage')");
   db_fieldsmemory($result,0);
 
-  $result = pg_exec("select k15_local,k15_aceite,k15_carte,k15_espec,k15_ageced
+  $result = db_query("select k15_local,k15_aceite,k15_carte,k15_espec,k15_ageced
 				   from cadban
                    where k15_codbco = $k00_codbco and
 				   k15_codage = '$k00_codage'");
@@ -236,7 +236,7 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
   $numpre = $numpre . db_CalculaDV($numpre,11);
 
   $ip = db_getsession("DB_ip");
-  $result = pg_exec("select nomeinst
+  $result = db_query("select nomeinst
                      from db_config 
 					 where codigo = " . db_getsession("DB_instit"));
   db_fieldsmemory($result,0);
@@ -247,7 +247,7 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
          $pdf->AddPage();
     }
 	$sql = "select * from procdiver where receita = $k00_receit";
-    $result = pg_exec($sql);
+    $result = db_query($sql);
     db_fieldsmemory($result,0);
   if ( $loteam == 38 ){
      $texto1 = 'PRESTAÇÃO DE LOTE URBANIZADO - LOT. SOL NASCENTE';
@@ -389,7 +389,7 @@ for($volta = 0;$volta < pg_numrows($totpar);$volta++) {
 
 }
 }
- pg_exec("COMMIT");
+ db_query("COMMIT");
 
 $tmpfile = tempnam('tmp','tmppdf').'.pdf';
 $pdf->Output($tmpfile);
@@ -397,7 +397,7 @@ $pdf->Output($tmpfile);
 
 //$pdf->Output();
 ////////FIM CARNES DE LOTEAMENTO
-pg_exec("commit");
+db_query("commit");
 echo "<script> alert('Processamento Concluído.')</script>";
 echo "<script> location.href='dvr3_parclote003.php'</script>";
 //    $pdf->Output();

@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBselller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -28,9 +28,11 @@
 $campos  = "agrupamentorubrica.rh113_sequencial,                      ";
 $campos .= "agrupamentorubrica.rh113_codigo,                          ";
 $campos .= "agrupamentorubrica.rh113_descricao,                       ";
+$campos .= "agrupamentorubrica.rh113_tipogrupo,                       ";
 $campos .= "case                                                      ";
 $campos .= "  when agrupamentorubrica.rh113_tipo = 1 then 'PROVENTO'  ";
 $campos .= "  when agrupamentorubrica.rh113_tipo = 2 then 'DESCONTO'  ";
 $campos .= "  else ''                                                 ";
-$campos .= "end as rh113_tipo                                         ";
+$campos .= "end as rh113_tipo,                                        ";
+$campos .= "tipoagrupamentorubrica.rh238_descricao                    ";
 ?>

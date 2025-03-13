@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,13 +26,13 @@
  */
 
 //21.833.694.
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_cgm_classe.php");
-include("dbforms/db_funcoes.php");
-include("libs/db_sql.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_cgm_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("libs/db_sql.php"));
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 $clcgm = new cl_cgm;
 $clcgm->rotulo->label();
@@ -122,7 +122,7 @@ a.nome:hover {
 	    $HTTP_POST_VARS["j01_matric"] = $matricula;
 	
 	  if(!empty($HTTP_POST_VARS["z01_numcgm"])) {
-	    $result = pg_exec("select z01_numcgm as k00_numcgm from cgm where z01_numcgm = ".$HTTP_POST_VARS["z01_numcgm"]);
+	    $result = db_query("select z01_numcgm as k00_numcgm from cgm where z01_numcgm = ".$HTTP_POST_VARS["z01_numcgm"]);
 		if(pg_numrows($result) == 0) {
 		  db_msgbox("Numcgm inexistente");
 		  db_redireciona();
@@ -138,7 +138,7 @@ a.nome:hover {
 		  $arg = "numcgm=".$HTTP_POST_VARS["z01_numcgm"];		  
 	    }
 	  } else if(!empty($HTTP_POST_VARS["z01_numcgm"])) {
- 	    $result = pg_exec("select z01_numcgm as k00_numcgm from cgm where z01_numcgm = ".$HTTP_POST_VARS["db_numcgm"]);
+ 	    $result = db_query("select z01_numcgm as k00_numcgm from cgm where z01_numcgm = ".$HTTP_POST_VARS["db_numcgm"]);
 		if(pg_numrows($result) == 0) {
 		  db_msgbox("Numcgm inexistente");
 		  db_redireciona();
@@ -154,7 +154,7 @@ a.nome:hover {
 		  $arg = "numcgm=".$HTTP_POST_VARS["db_numcgm"];
 		}
 	  } else if(!empty($HTTP_POST_VARS["j01_matric"])) {
-  	    $result = pg_exec("select j01_matric,j01_numcgm as k00_numcgm 
+  	    $result = db_query("select j01_matric,j01_numcgm as k00_numcgm 
 		                   from iptubase 
 		                   where j01_matric = ".$HTTP_POST_VARS["j01_matric"]);
 		if(pg_numrows($result) == 0) {
@@ -172,7 +172,7 @@ a.nome:hover {
 		  $arg = "matric=".$HTTP_POST_VARS["j01_matric"];
 		}
 	  } else if(!empty($HTTP_POST_VARS["q02_inscr"])) {
-  	    $result = pg_exec("select q02_inscr,q02_numcgm as k00_numcgm from issbase where q02_inscr = ".$HTTP_POST_VARS["q02_inscr"]);
+  	    $result = db_query("select q02_inscr,q02_numcgm as k00_numcgm from issbase where q02_inscr = ".$HTTP_POST_VARS["q02_inscr"]);
 		if(pg_numrows($result) == 0) {
 		  db_msgbox("Inscrição inexistente");
 		  db_redireciona();
@@ -190,7 +190,7 @@ a.nome:hover {
 	  } else if(!empty($HTTP_POST_VARS["k00_numpre"])) {
 		if(!($result = debitos_tipos_numpre($HTTP_POST_VARS["k00_numpre"]))) {
 
-/*          $result = pg_query("select k00_numpre,k00_numpar
+/*          $result = db_query("select k00_numpre,k00_numpar
 		                       from recibopaga 
 							        left outer join tabrec on k02_codigo = k00_receit
 									left outer join histcalc on k01_codigo = k00_hist
@@ -216,7 +216,7 @@ a.nome:hover {
 		$resultaux = 1;
 	    $arg = "numpre=".$HTTP_POST_VARS["k00_numpre"];
 	  }  else if(!empty($HTTP_POST_VARS["v07_parcel"])) {
-	    $Rec = pg_exec("select v07_numpre from termo where v07_parcel = ".$HTTP_POST_VARS["v07_parcel"]);
+	    $Rec = db_query("select v07_numpre from termo where v07_parcel = ".$HTTP_POST_VARS["v07_parcel"]);
 		if(pg_numrows($Rec) == 0)
 		  db_erro("Erro(175) não foi encontrado numpre pelo codigo do parcelamento ".$HTTP_POST_VARS["v07_parcel"]);
 	    if(!($result = debitos_tipos_numpre(pg_result($Rec,0,0)))) {
@@ -230,7 +230,7 @@ a.nome:hover {
 		$Parcelamento = $HTTP_POST_VARS["v07_parcel"];		
 		pg_freeresult($Rec);
 	  }
-	  $dados = pg_exec("select z01_numcgm,z01_nome,z01_ender,z01_munic,z01_uf,z01_cgccpf,z01_ident 
+	  $dados = db_query("select z01_numcgm,z01_nome,z01_ender,z01_munic,z01_uf,z01_cgccpf,z01_ident 
 	                    from cgm 
 						where z01_numcgm = ".pg_result($result,0,"k00_numcgm"));
 	  db_fieldsmemory($dados,0);	  

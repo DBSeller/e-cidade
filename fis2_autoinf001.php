@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBseller Servicos de Informatica
+ *  Copyright (C) 2009  DBseller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("classes/db_auto_classe.php");
-require_once("dbforms/db_funcoes.php");
-require_once("dbforms/db_classesgenericas.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("classes/db_auto_classe.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("dbforms/db_classesgenericas.php"));
 
 db_postmemory($HTTP_POST_VARS);
 
@@ -104,12 +104,12 @@ function js_mostracodauto(chave,erro){
 function js_codauto(mostra){
 
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_auto','func_autoalt.php?funcao_js=parent.js_mostracodauto1|dl_auto|z01_nome','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_auto','func_autoalt.php?funcao_js=parent.js_mostracodauto1|dl_auto|z01_nome','Pesquisa',true);
   }else{
 
     y50_codauto = document.form1.y50_codauto.value;
     if(y50_codauto!=""){
-      js_OpenJanelaIframe('top.corpo','db_iframe_auto','func_autoalt.php?pesquisa_chave='+y50_codauto+'&funcao_js=parent.js_mostracodauto','Pesquisa',false);
+      js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_auto','func_autoalt.php?pesquisa_chave='+y50_codauto+'&funcao_js=parent.js_mostracodauto','Pesquisa',false);
     }else{
       document.form1.y50_nome.value='';
     }

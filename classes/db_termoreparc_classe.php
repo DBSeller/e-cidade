@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,36 +29,36 @@
 //CLASSE DA ENTIDADE termoreparc
 class cl_termoreparc { 
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
+   public $rotulo     = null; 
+   public $query_sql  = null; 
+   public $numrows    = 0; 
+   public $numrows_incluir = 0; 
+   public $numrows_alterar = 0; 
+   public $numrows_excluir = 0; 
+   public $erro_status= null; 
+   public $erro_sql   = null; 
+   public $erro_banco = null;  
+   public $erro_msg   = null;  
+   public $erro_campo = null;  
+   public $pagina_retorno = null; 
    // cria variaveis do arquivo 
-   var $v08_sequencial = 0; 
-   var $v08_parcel = 0; 
-   var $v08_parcelorigem = 0; 
+   public $v08_sequencial = 0; 
+   public $v08_parcel = 0; 
+   public $v08_parcelorigem = 0; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+   public $campos = "
                  v08_sequencial = int4 = Sequencial 
                  v08_parcel = int4 = Código do Parcelamento 
                  v08_parcelorigem = int4 = Código do Parcelamento 
                  ";
    //funcao construtor da classe 
-   function cl_termoreparc() { 
+   public function cl_termoreparc() { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("termoreparc"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
    //funcao erro 
-   function erro($mostra,$retorna) { 
+   public function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -67,7 +67,7 @@ class cl_termoreparc {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->v08_sequencial = ($this->v08_sequencial == ""?@$GLOBALS["HTTP_POST_VARS"]["v08_sequencial"]:$this->v08_sequencial);
        $this->v08_parcel = ($this->v08_parcel == ""?@$GLOBALS["HTTP_POST_VARS"]["v08_parcel"]:$this->v08_parcel);
@@ -77,7 +77,7 @@ class cl_termoreparc {
      }
    }
    // funcao para inclusao
-   function incluir ($v08_sequencial){ 
+   public function incluir ($v08_sequencial){ 
       $this->atualizacampos();
      if($this->v08_parcel == null ){ 
        $this->erro_sql = " Campo Código do Parcelamento nao Informado.";
@@ -176,7 +176,7 @@ class cl_termoreparc {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($v08_sequencial=null) { 
+   public function alterar ($v08_sequencial=null) { 
       $this->atualizacampos();
      $sql = " update termoreparc set ";
      $virgula = "";
@@ -271,7 +271,7 @@ class cl_termoreparc {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($v08_sequencial=null,$dbwhere=null) { 
+   public function excluir ($v08_sequencial=null,$dbwhere=null) { 
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($v08_sequencial));
      }else{ 
@@ -334,7 +334,7 @@ class cl_termoreparc {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -356,5 +356,59 @@ class cl_termoreparc {
       }
      return $result;
    }
+
+    public function sql_query_file( $sequencial=null,$campos="*",$ordem=null,$dbwhere=""){ 
+      $sql = "select ";
+      if($campos != "*" ){
+       $campos_sql = explode("#",$campos);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+      }else{
+       $sql .= $campos;
+      }
+      $sql .= " from termoreparc ";
+      $sql2 = "";
+      if($dbwhere==""){
+       if($sequencial!=null ){
+         $sql2 .= " where termoreparc.v08_sequencial = $sequencial "; 
+       }  
+      }else if($dbwhere != ""){
+       $sql2 = " where $dbwhere";
+      }
+      $sql .= $sql2;
+      if($ordem != null ){
+       $sql .= " order by ";
+       $campos_sql = explode("#",$ordem);
+       $virgula = "";
+       for($i=0;$i<sizeof($campos_sql);$i++){
+         $sql .= $virgula.$campos_sql[$i];
+         $virgula = ",";
+       }
+      }
+return $sql;
+    }
+
+    public function sql_query_termos($v08_sequencial = null, $campos = "*", $ordem = null, $where = null)
+    {
+        $sql = "SELECT {$campos} FROM termoreparc
+                INNER JOIN termo ON termoreparc.v08_parcel = termo.v07_parcel
+                INNER JOIN termo as termo_origem ON termoreparc.v08_parcelorigem = termo_origem.v07_parcel
+        ";
+
+        if (!empty($where)) {
+            $sql .= " WHERE {$where} ";
+        } elseif (!empty($v08_sequencial)) {
+            $sql .= " WHERE v08_sequencial = {$v08_sequencial} ";
+        }
+
+        if (!empty($ordem)) {
+            $sql .= " ORDER BY {$ordem} ";
+        }
+
+        return $sql;
+    }
 }
 ?>

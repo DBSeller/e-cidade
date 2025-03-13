@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_relac_classe.php");
-include("dbforms/db_funcoes.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_relac_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 db_postmemory($HTTP_POST_VARS);
 $clrelac = new cl_relac;
@@ -44,7 +44,7 @@ if(isset($alterar)){
   db_fim_transacao();
 }else if(isset($chavepesquisa)){
   $db_opcao = 2;
-  $result = $clrelac->sql_record($clrelac->sql_query_rubricas($chavepesquisa,"r55_codeve,r55_descr,r55_rubr01,a.rh27_descr as rh27_descr01,r55_rubr02,b.rh27_descr as rh27_descr02,r55_rubr03,c.rh27_descr as rh27_descr03",null," r55_codeve::int = $chavepesquisa and r55_instit = ".db_getsession("DB_instit"))); 
+  $result = $clrelac->sql_record($clrelac->sql_query_rubricas($chavepesquisa,"r55_codeve,r55_descr,r55_rubr01,a.rh27_descr as rh27_descr01,r55_rubr02,b.rh27_descr as rh27_descr02,r55_rubr03,c.rh27_descr as rh27_descr03",null," r55_codeve = '$chavepesquisa' and r55_instit = ".db_getsession("DB_instit"))); 
   db_fieldsmemory($result,0);
   $db_botao = true;
 }
@@ -71,7 +71,7 @@ if(isset($alterar)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmrelac.php");
+	include(modification("forms/db_frmrelac.php"));
 	?>
     </center>
 	</td>

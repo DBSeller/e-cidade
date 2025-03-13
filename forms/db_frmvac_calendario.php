@@ -93,7 +93,7 @@ function js_valida() {
 }
 
 function js_pesquisa() {
-  js_OpenJanelaIframe('top.corpo',
+  js_OpenJanelaIframe('CurrentWindow.corpo',
                       'db_iframe_vac_calendario',
                       'func_vac_calendario.php?funcao_js=parent.js_preenchepesquisa|vc05_i_codigo',
                       'Pesquisa',

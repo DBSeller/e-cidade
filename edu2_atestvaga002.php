@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,8 +25,8 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdfwebseller.php");
-include("classes/db_atestvaga_classe.php");
+include(modification("fpdf151/pdfwebseller.php"));
+include(modification("classes/db_atestvaga_classe.php"));
 $escola = db_getsession("DB_coddepto");
 $clatestvaga = new cl_atestvaga;
 $sql = $clatestvaga->sql_query("","*","ed47_v_nome"," ed102_i_codigo in ($alunos)");

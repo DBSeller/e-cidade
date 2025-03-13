@@ -27,7 +27,7 @@
 
 //MODULO: educação
 $cldocaluno->rotulo->label();
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 $cliframe_alterar_excluir = new cl_iframe_alterar_excluir;
 $clrotulo = new rotulocampo;
 $clrotulo->label("ed47_i_codigo");
@@ -59,7 +59,7 @@ db_fieldsmemory($result1,0);
 if ($ed49_i_aluno != "") {
 	
   $sql4 = "SELECT ed56_i_escola as cod_escola FROM alunocurso WHERE ed56_i_aluno = $ed49_i_aluno";
-  $query4 = pg_query($sql4);
+  $query4 = db_query($sql4);
   $linhas4 = pg_num_rows($query4);
   if ($linhas4 == 0) {
     $db_botao = true;

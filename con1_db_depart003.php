@@ -25,17 +25,19 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_db_depart_classe.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_orcorgao_classe.php");
-include("classes/db_orcunidade_classe.php");
-include("classes/db_db_departorg_classe.php");
-include("classes/db_db_departender_classe.php");
-include("classes/db_db_config_classe.php");
+use App\Domain\Configuracao\Configuracao\Services\OrganogramaService;
+
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_db_depart_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_orcorgao_classe.php"));
+include(modification("classes/db_orcunidade_classe.php"));
+include(modification("classes/db_db_departorg_classe.php"));
+include(modification("classes/db_db_departender_classe.php"));
+include(modification("classes/db_db_config_classe.php"));
 $clorcorgao       = new cl_orcorgao;
 $clorcunidade     = new cl_orcunidade;
 $cldb_depart      = new cl_db_depart;
@@ -50,7 +52,10 @@ $db_opcao = 33;
 $anousu = db_getsession("DB_anousu");
 if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir"){
   $db_opcao = 3;
+
   db_inicio_transacao();
+  $serviceOrganograma = new OrganogramaService();
+  $serviceOrganograma->excluir($coddepto);
   $result = $cldb_departorg->sql_record($cldb_departorg->sql_query_file($coddepto,$anousu,'db01_orgao , db01_unidade')); 
   if($cldb_departorg->numrows>0){
     $cldb_departorg->excluir($coddepto,$anousu);
@@ -89,7 +94,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmdb_depart.php");
+	include(modification("forms/db_frmdb_depart.php"));
 	?>
     </center>
 	</td>
@@ -101,6 +106,7 @@ if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir
 if((isset($HTTP_POST_VARS["db_opcao"]) && $HTTP_POST_VARS["db_opcao"])=="Excluir"){
   if($cldb_depart->erro_status=="0"){
     $cldb_depart->erro(true,false);
+    
   }else{
     $cldb_depart->erro(true,true);
   };

@@ -1,28 +1,28 @@
-<?
-/*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+<?php
+/**
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
 //MODULO: protocolo
@@ -44,19 +44,21 @@ class cl_procdoc {
    // cria variaveis do arquivo 
    var $p56_coddoc = 0; 
    var $p56_descr = null; 
-   // cria propriedade com as variaveis do arquivo 
+   var $p56_ouvidoriatipodado = null;
+   // cria propriedade com as variaveis do arquivo
    var $campos = "
                  p56_coddoc = int4 = Código 
                  p56_descr = varchar(100) = Descrição 
+                 p56_ouvidoriatipodado = int4 = Tipo de Dado 
                  ";
-   //funcao construtor da classe 
-   function cl_procdoc() { 
+   //funcao construtor da classe
+   function cl_procdoc() {
      //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("procdoc"); 
+     $this->rotulo = new rotulo("procdoc");
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+   //funcao erro
+   function erro($mostra,$retorna) {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -69,14 +71,15 @@ class cl_procdoc {
      if($exclusao==false){
        $this->p56_coddoc = ($this->p56_coddoc == ""?@$GLOBALS["HTTP_POST_VARS"]["p56_coddoc"]:$this->p56_coddoc);
        $this->p56_descr = ($this->p56_descr == ""?@$GLOBALS["HTTP_POST_VARS"]["p56_descr"]:$this->p56_descr);
+       $this->p56_ouvidoriatipodado = ($this->p56_ouvidoriatipodado == ""?@$GLOBALS["HTTP_POST_VARS"]["p56_ouvidoriatipodado"]:$this->p56_ouvidoriatipodado);
      }else{
        $this->p56_coddoc = ($this->p56_coddoc == ""?@$GLOBALS["HTTP_POST_VARS"]["p56_coddoc"]:$this->p56_coddoc);
      }
    }
    // funcao para inclusao
-   function incluir ($p56_coddoc){ 
+   function incluir ($p56_coddoc){
       $this->atualizacampos();
-     if($this->p56_descr == null ){ 
+     if($this->p56_descr == null ){
        $this->erro_sql = " Campo Descrição nao Informado.";
        $this->erro_campo = "p56_descr";
        $this->erro_banco = "";
@@ -86,16 +89,16 @@ class cl_procdoc {
        return false;
      }
      if($p56_coddoc == "" || $p56_coddoc == null ){
-       $result = db_query("select nextval('procdoc_p56_coddoc_seq')"); 
+       $result = db_query("select nextval('procdoc_p56_coddoc_seq')");
        if($result==false){
          $this->erro_banco = str_replace("\n","",@pg_last_error());
-         $this->erro_sql   = "Verifique o cadastro da sequencia: procdoc_p56_coddoc_seq do campo: p56_coddoc"; 
+         $this->erro_sql   = "Verifique o cadastro da sequencia: procdoc_p56_coddoc_seq do campo: p56_coddoc";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "0";
-         return false; 
+         return false;
        }
-       $this->p56_coddoc = pg_result($result,0,0); 
+       $this->p56_coddoc = pg_result($result,0,0);
      }else{
        $result = db_query("select last_value from procdoc_p56_coddoc_seq");
        if(($result != false) && (pg_result($result,0,0) < $p56_coddoc)){
@@ -106,10 +109,10 @@ class cl_procdoc {
          $this->erro_status = "0";
          return false;
        }else{
-         $this->p56_coddoc = $p56_coddoc; 
+         $this->p56_coddoc = $p56_coddoc;
        }
      }
-     if(($this->p56_coddoc == null) || ($this->p56_coddoc == "") ){ 
+     if(($this->p56_coddoc == null) || ($this->p56_coddoc == "") ){
        $this->erro_sql = " Campo p56_coddoc nao declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -117,16 +120,23 @@ class cl_procdoc {
        $this->erro_status = "0";
        return false;
      }
+
+     if(empty($this->p56_ouvidoriatipodado)) {
+         $this->p56_ouvidoriatipodado = 'null';
+     }
+
      $sql = "insert into procdoc(
                                        p56_coddoc 
                                       ,p56_descr 
+                                      ,p56_ouvidoriatipodado 
                        )
                 values (
                                 $this->p56_coddoc 
                                ,'$this->p56_descr' 
+                               ,$this->p56_ouvidoriatipodado 
                       )";
-     $result = db_query($sql); 
-     if($result==false){ 
+     $result = db_query($sql);
+     if($result==false){
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
          $this->erro_sql   = "Documentos ($this->p56_coddoc) nao Incluído. Inclusao Abortada.";
@@ -157,18 +167,19 @@ class cl_procdoc {
        $resac = db_query("insert into db_acountkey values($acount,2450,'$this->p56_coddoc','I')");
        $resac = db_query("insert into db_acount values($acount,400,2450,'','".AddSlashes(pg_result($resaco,0,'p56_coddoc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        $resac = db_query("insert into db_acount values($acount,400,2451,'','".AddSlashes(pg_result($resaco,0,'p56_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       $resac = db_query("insert into db_acount values($acount,400,1010636,'','".AddSlashes(pg_result($resaco,0,'p56_ouvidoriatipodado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
      }
      return true;
-   } 
+   }
    // funcao para alteracao
-   function alterar ($p56_coddoc=null) { 
+   function alterar ($p56_coddoc=null) {
       $this->atualizacampos();
      $sql = " update procdoc set ";
      $virgula = "";
-     if(trim($this->p56_coddoc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p56_coddoc"])){ 
+     if(trim($this->p56_coddoc)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p56_coddoc"])){
        $sql  .= $virgula." p56_coddoc = $this->p56_coddoc ";
        $virgula = ",";
-       if(trim($this->p56_coddoc) == null ){ 
+       if(trim($this->p56_coddoc) == null ){
          $this->erro_sql = " Campo Código nao Informado.";
          $this->erro_campo = "p56_coddoc";
          $this->erro_banco = "";
@@ -178,10 +189,10 @@ class cl_procdoc {
          return false;
        }
      }
-     if(trim($this->p56_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p56_descr"])){ 
+     if(trim($this->p56_descr)!="" || isset($GLOBALS["HTTP_POST_VARS"]["p56_descr"])){
        $sql  .= $virgula." p56_descr = '$this->p56_descr' ";
        $virgula = ",";
-       if(trim($this->p56_descr) == null ){ 
+       if(trim($this->p56_descr) == null ){
          $this->erro_sql = " Campo Descrição nao Informado.";
          $this->erro_campo = "p56_descr";
          $this->erro_banco = "";
@@ -191,6 +202,11 @@ class cl_procdoc {
          return false;
        }
      }
+
+     if(!empty($this->p56_ouvidoriatipodado)) {
+         $sql  .= $virgula." p56_ouvidoriatipodado = '{$this->p56_ouvidoriatipodado}' ";
+     }
+
      $sql .= " where ";
      if($p56_coddoc!=null){
        $sql .= " p56_coddoc = $this->p56_coddoc";
@@ -206,6 +222,8 @@ class cl_procdoc {
            $resac = db_query("insert into db_acount values($acount,400,2450,'".AddSlashes(pg_result($resaco,$conresaco,'p56_coddoc'))."','$this->p56_coddoc',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          if(isset($GLOBALS["HTTP_POST_VARS"]["p56_descr"]))
            $resac = db_query("insert into db_acount values($acount,400,2451,'".AddSlashes(pg_result($resaco,$conresaco,'p56_descr'))."','$this->p56_descr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         if(isset($GLOBALS["HTTP_POST_VARS"]["p56_ouvidoriatipodado"]))
+             $resac = db_query("insert into db_acount values($acount,400,1010636,'".AddSlashes(pg_result($resaco,$conresaco,'p56_ouvidoriatipodado'))."','$this->p56_ouvidoriatipodado',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $result = db_query($sql);
@@ -255,6 +273,7 @@ class cl_procdoc {
          $resac = db_query("insert into db_acountkey values($acount,2450,'$p56_coddoc','E')");
          $resac = db_query("insert into db_acount values($acount,400,2450,'','".AddSlashes(pg_result($resaco,$iresaco,'p56_coddoc'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
          $resac = db_query("insert into db_acount values($acount,400,2451,'','".AddSlashes(pg_result($resaco,$iresaco,'p56_descr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,400,1010636,'','".AddSlashes(pg_result($resaco,0,'p56_ouvidoriatipodado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
        }
      }
      $sql = " delete from procdoc

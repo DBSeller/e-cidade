@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,36 +25,37 @@
  *                                licenca/licenca_pt.txt 
  */
 
-//MODULO: cadastro
-//CLASSE DA ENTIDADE face
-class cl_face { 
+class cl_face
+{
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
-   // cria variaveis do arquivo 
-   var $j37_face = 0; 
-   var $j37_setor = null; 
-   var $j37_quadra = null; 
-   var $j37_codigo = 0; 
-   var $j37_lado = null; 
-   var $j37_valor = 0; 
-   var $j37_exten = 0; 
-   var $j37_profr = 0; 
-   var $j37_outros = null; 
-   var $j37_vlcons = 0; 
-   var $j37_zona = 0; 
+    public $rotulo = null; 
+    public $query_sql = null; 
+    public $numrows = 0; 
+    public $numrows_incluir = 0; 
+    public $numrows_alterar = 0; 
+    public $numrows_excluir = 0; 
+    public $erro_status = null; 
+    public $erro_sql = null; 
+    public $erro_banco = null;  
+    public $erro_msg = null;  
+    public $erro_campo = null;  
+    public $pagina_retorno = null; 
+    /* Variáveis do Arquivo */
+    public $j37_face = 0; 
+    public $j37_setor = null; 
+    public $j37_quadra = null; 
+    public $j37_codigo = 0; 
+    public $j37_lado = null; 
+    public $j37_valor = '0';
+    public $j37_exten = 0; 
+    public $j37_profr = 0; 
+    public $j37_outros = null; 
+    public $j37_vlcons = '0';
+    public $j37_zona = 0; 
+    public $j37_segmento = 0; 
+    public $j37_sequencia = 0; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+    public $campos = "
                  j37_face = int4 = Cód. Face 
                  j37_setor = char(4) = Setor 
                  j37_quadra = char(4) = Quadra 
@@ -66,24 +67,28 @@ class cl_face {
                  j37_outros = varchar(40) = Outros Dados 
                  j37_vlcons = float8 = Valor M2 Construção 
                  j37_zona = int4 = Zona 
+                 j37_segmento = int4 = Segmento 
+                 j37_sequencia = int4 = Sequencia 
                  ";
-   //funcao construtor da classe 
-   function cl_face() { 
-     //classes dos rotulos dos campos
-     $this->rotulo = new rotulo("face"); 
-     $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
-   }
-   //funcao erro 
-   function erro($mostra,$retorna) { 
+
+    public function __construct()
+    {
+        $this->rotulo = new rotulo("face"); 
+        $this->pagina_retorno = basename($_SERVER['PHP_SELF']);
+    }
+
+    public function erro($mostra, $retorna)
+    {
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
-        echo "<script>alert(\"".$this->erro_msg."\");</script>";
+        echo "<script>alert(\"".$this->erro_msg."\")</script>";
         if($retorna==true){
            echo "<script>location.href='".$this->pagina_retorno."'</script>";
         }
      }
    }
-   // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+
+    public function atualizacampos($exclusao = false)
+    {
      if($exclusao==false){
        $this->j37_face = ($this->j37_face == ""?@$GLOBALS["HTTP_POST_VARS"]["j37_face"]:$this->j37_face);
        $this->j37_setor = ($this->j37_setor == ""?@$GLOBALS["HTTP_POST_VARS"]["j37_setor"]:$this->j37_setor);
@@ -96,15 +101,18 @@ class cl_face {
        $this->j37_outros = ($this->j37_outros == ""?@$GLOBALS["HTTP_POST_VARS"]["j37_outros"]:$this->j37_outros);
        $this->j37_vlcons = ($this->j37_vlcons == ""?@$GLOBALS["HTTP_POST_VARS"]["j37_vlcons"]:$this->j37_vlcons);
        $this->j37_zona = ($this->j37_zona == ""?@$GLOBALS["HTTP_POST_VARS"]["j37_zona"]:$this->j37_zona);
+       $this->j37_segmento = ($this->j37_segmento == ""?@$GLOBALS["HTTP_POST_VARS"]["j37_segmento"]:$this->j37_segmento);
+       $this->j37_sequencia = ($this->j37_sequencia == ""?@$GLOBALS["HTTP_POST_VARS"]["j37_sequencia"]:$this->j37_sequencia);
      }else{
        $this->j37_face = ($this->j37_face == ""?@$GLOBALS["HTTP_POST_VARS"]["j37_face"]:$this->j37_face);
      }
    }
-   // funcao para inclusao
-   function incluir ($j37_face){ 
+
+    public function incluir($j37_face)
+    {
       $this->atualizacampos();
      if($this->j37_setor == null ){ 
-       $this->erro_sql = " Campo Setor nao Informado.";
+       $this->erro_sql = " Campo Setor não informado.";
        $this->erro_campo = "j37_setor";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -113,7 +121,7 @@ class cl_face {
        return false;
      }
      if($this->j37_quadra == null ){ 
-       $this->erro_sql = " Campo Quadra nao Informado.";
+       $this->erro_sql = " Campo Quadra não informado.";
        $this->erro_campo = "j37_quadra";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -122,7 +130,7 @@ class cl_face {
        return false;
      }
      if($this->j37_codigo == null ){ 
-       $this->erro_sql = " Campo Logradouro nao Informado.";
+       $this->erro_sql = " Campo Logradouro não informado.";
        $this->erro_campo = "j37_codigo";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -131,7 +139,7 @@ class cl_face {
        return false;
      }
      if($this->j37_lado == null ){ 
-       $this->erro_sql = " Campo Lado nao Informado.";
+       $this->erro_sql = " Campo Lado não informado.";
        $this->erro_campo = "j37_lado";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -140,7 +148,7 @@ class cl_face {
        return false;
      }
      if($this->j37_valor == null ){ 
-       $this->erro_sql = " Campo Valor M2 terreno nao Informado.";
+       $this->erro_sql = " Campo Valor M2 terreno não informado.";
        $this->erro_campo = "j37_valor";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -154,8 +162,8 @@ class cl_face {
      if($this->j37_profr == null ){ 
        $this->j37_profr = "0";
      }
-     if($this->j37_vlcons == null ){ 
-       $this->erro_sql = " Campo Valor M2 Construção nao Informado.";
+     if($this->j37_vlcons === null ){
+       $this->erro_sql = " Campo Valor M2 Construção não informado.";
        $this->erro_campo = "j37_vlcons";
        $this->erro_banco = "";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -165,6 +173,12 @@ class cl_face {
      }
      if($this->j37_zona == null ){ 
        $this->j37_zona = "0";
+     }
+     if($this->j37_segmento == null ){ 
+       $this->j37_segmento = "0";
+     }
+     if($this->j37_sequencia == null ){ 
+       $this->j37_sequencia = "0";
      }
      if($j37_face == "" || $j37_face == null ){
        $result = db_query("select nextval('face_j37_face_seq')"); 
@@ -191,7 +205,7 @@ class cl_face {
        }
      }
      if(($this->j37_face == null) || ($this->j37_face == "") ){ 
-       $this->erro_sql = " Campo j37_face nao declarado.";
+       $this->erro_sql = " Campo j37_face não declarado.";
        $this->erro_banco = "Chave Primaria zerada.";
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -210,6 +224,8 @@ class cl_face {
                                       ,j37_outros 
                                       ,j37_vlcons 
                                       ,j37_zona 
+                                      ,j37_segmento 
+                                      ,j37_sequencia 
                        )
                 values (
                                 $this->j37_face 
@@ -223,17 +239,19 @@ class cl_face {
                                ,'$this->j37_outros' 
                                ,$this->j37_vlcons 
                                ,$this->j37_zona 
+                               ,$this->j37_segmento 
+                               ,$this->j37_sequencia 
                       )";
      $result = db_query($sql); 
      if($result==false){ 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        if( strpos(strtolower($this->erro_banco),"duplicate key") != 0 ){
-         $this->erro_sql   = "Face de Quadra ($this->j37_face) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Face de Quadra ($this->j37_face) não Incluída. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
-         $this->erro_banco = "Face de Quadra já Cadastrado";
+         $this->erro_banco = "Face de Quadra já Cadastrada";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }else{
-         $this->erro_sql   = "Face de Quadra ($this->j37_face) nao Incluído. Inclusao Abortada.";
+         $this->erro_sql   = "Face de Quadra ($this->j37_face) não Incluído. Inclusão Abortada.";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        }
@@ -242,34 +260,43 @@ class cl_face {
        return false;
      }
      $this->erro_banco = "";
-     $this->erro_sql = "Inclusao efetuada com Sucesso\\n";
+     $this->erro_sql = "Inclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->j37_face;
      $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
      $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
      $this->erro_status = "1";
      $this->numrows_incluir= pg_affected_rows($result);
-     $resaco = $this->sql_record($this->sql_query_file($this->j37_face));
-     if(($resaco!=false)||($this->numrows!=0)){
-       $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-       $acount = pg_result($resac,0,0);
-       $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-       $resac = db_query("insert into db_acountkey values($acount,62,'$this->j37_face','I')");
-       $resac = db_query("insert into db_acount values($acount,15,62,'','".AddSlashes(pg_result($resaco,0,'j37_face'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,63,'','".AddSlashes(pg_result($resaco,0,'j37_setor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,64,'','".AddSlashes(pg_result($resaco,0,'j37_quadra'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,65,'','".AddSlashes(pg_result($resaco,0,'j37_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,66,'','".AddSlashes(pg_result($resaco,0,'j37_lado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,67,'','".AddSlashes(pg_result($resaco,0,'j37_valor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,68,'','".AddSlashes(pg_result($resaco,0,'j37_exten'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,69,'','".AddSlashes(pg_result($resaco,0,'j37_profr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,70,'','".AddSlashes(pg_result($resaco,0,'j37_outros'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,807,'','".AddSlashes(pg_result($resaco,0,'j37_vlcons'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-       $resac = db_query("insert into db_acount values($acount,15,5086,'','".AddSlashes(pg_result($resaco,0,'j37_zona'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->j37_face  ));
+       if(($resaco!=false)||($this->numrows!=0)){
+
+         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+         $acount = pg_result($resac,0,0);
+         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+         $resac = db_query("insert into db_acountkey values($acount,62,'$this->j37_face','I')");
+         $resac = db_query("insert into db_acount values($acount,15,62,'','".AddSlashes(pg_result($resaco,0,'j37_face'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,63,'','".AddSlashes(pg_result($resaco,0,'j37_setor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,64,'','".AddSlashes(pg_result($resaco,0,'j37_quadra'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,65,'','".AddSlashes(pg_result($resaco,0,'j37_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,66,'','".AddSlashes(pg_result($resaco,0,'j37_lado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,67,'','".AddSlashes(pg_result($resaco,0,'j37_valor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,68,'','".AddSlashes(pg_result($resaco,0,'j37_exten'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,69,'','".AddSlashes(pg_result($resaco,0,'j37_profr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,70,'','".AddSlashes(pg_result($resaco,0,'j37_outros'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,807,'','".AddSlashes(pg_result($resaco,0,'j37_vlcons'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,5086,'','".AddSlashes(pg_result($resaco,0,'j37_zona'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,1014006,'','".AddSlashes(pg_result($resaco,0,'j37_segmento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         $resac = db_query("insert into db_acount values($acount,15,1014007,'','".AddSlashes(pg_result($resaco,0,'j37_sequencia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+       }
      }
      return true;
    } 
-   // funcao para alteracao
-   function alterar ($j37_face=null) { 
+
+    public function alterar($j37_face=null)
+    {
       $this->atualizacampos();
      $sql = " update face set ";
      $virgula = "";
@@ -277,7 +304,7 @@ class cl_face {
        $sql  .= $virgula." j37_face = $this->j37_face ";
        $virgula = ",";
        if(trim($this->j37_face) == null ){ 
-         $this->erro_sql = " Campo Cód. Face nao Informado.";
+         $this->erro_sql = " Campo Cód. Face não informado.";
          $this->erro_campo = "j37_face";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -290,7 +317,7 @@ class cl_face {
        $sql  .= $virgula." j37_setor = '$this->j37_setor' ";
        $virgula = ",";
        if(trim($this->j37_setor) == null ){ 
-         $this->erro_sql = " Campo Setor nao Informado.";
+         $this->erro_sql = " Campo Setor não informado.";
          $this->erro_campo = "j37_setor";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -303,7 +330,7 @@ class cl_face {
        $sql  .= $virgula." j37_quadra = '$this->j37_quadra' ";
        $virgula = ",";
        if(trim($this->j37_quadra) == null ){ 
-         $this->erro_sql = " Campo Quadra nao Informado.";
+         $this->erro_sql = " Campo Quadra não informado.";
          $this->erro_campo = "j37_quadra";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -316,7 +343,7 @@ class cl_face {
        $sql  .= $virgula." j37_codigo = $this->j37_codigo ";
        $virgula = ",";
        if(trim($this->j37_codigo) == null ){ 
-         $this->erro_sql = " Campo Logradouro nao Informado.";
+         $this->erro_sql = " Campo Logradouro não informado.";
          $this->erro_campo = "j37_codigo";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -329,7 +356,7 @@ class cl_face {
        $sql  .= $virgula." j37_lado = '$this->j37_lado' ";
        $virgula = ",";
        if(trim($this->j37_lado) == null ){ 
-         $this->erro_sql = " Campo Lado nao Informado.";
+         $this->erro_sql = " Campo Lado não informado.";
          $this->erro_campo = "j37_lado";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -341,8 +368,8 @@ class cl_face {
      if(trim($this->j37_valor)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j37_valor"])){ 
        $sql  .= $virgula." j37_valor = $this->j37_valor ";
        $virgula = ",";
-       if(trim($this->j37_valor) == null ){ 
-         $this->erro_sql = " Campo Valor M2 terreno nao Informado.";
+       if(trim($this->j37_valor) === null ){ 
+         $this->erro_sql = " Campo Valor M2 terreno não informado.";
          $this->erro_campo = "j37_valor";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -372,8 +399,8 @@ class cl_face {
      if(trim($this->j37_vlcons)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j37_vlcons"])){ 
        $sql  .= $virgula." j37_vlcons = $this->j37_vlcons ";
        $virgula = ",";
-       if(trim($this->j37_vlcons) == null ){ 
-         $this->erro_sql = " Campo Valor M2 Construção nao Informado.";
+       if(trim($this->j37_vlcons) === null ){
+         $this->erro_sql = " Campo Valor M2 Construção não informado.";
          $this->erro_campo = "j37_vlcons";
          $this->erro_banco = "";
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -389,64 +416,89 @@ class cl_face {
        $sql  .= $virgula." j37_zona = $this->j37_zona ";
        $virgula = ",";
      }
+     if(trim($this->j37_segmento)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j37_segmento"])){ 
+        if(trim($this->j37_segmento)=="" && isset($GLOBALS["HTTP_POST_VARS"]["j37_segmento"])){ 
+           $this->j37_segmento = "0" ; 
+        } 
+       $sql  .= $virgula." j37_segmento = $this->j37_segmento ";
+       $virgula = ",";
+     }
+     if(trim($this->j37_sequencia)!="" || isset($GLOBALS["HTTP_POST_VARS"]["j37_sequencia"])){ 
+        if(trim($this->j37_sequencia)=="" && isset($GLOBALS["HTTP_POST_VARS"]["j37_sequencia"])){ 
+           $this->j37_sequencia = "0" ; 
+        } 
+       $sql  .= $virgula." j37_sequencia = $this->j37_sequencia ";
+       $virgula = ",";
+     }
      $sql .= " where ";
      if($j37_face!=null){
        $sql .= " j37_face = $this->j37_face";
      }
-     $resaco = $this->sql_record($this->sql_query_file($this->j37_face));
-     if($this->numrows>0){
-       for($conresaco=0;$conresaco<$this->numrows;$conresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,62,'$this->j37_face','A')");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_face"]))
-           $resac = db_query("insert into db_acount values($acount,15,62,'".AddSlashes(pg_result($resaco,$conresaco,'j37_face'))."','$this->j37_face',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_setor"]))
-           $resac = db_query("insert into db_acount values($acount,15,63,'".AddSlashes(pg_result($resaco,$conresaco,'j37_setor'))."','$this->j37_setor',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_quadra"]))
-           $resac = db_query("insert into db_acount values($acount,15,64,'".AddSlashes(pg_result($resaco,$conresaco,'j37_quadra'))."','$this->j37_quadra',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_codigo"]))
-           $resac = db_query("insert into db_acount values($acount,15,65,'".AddSlashes(pg_result($resaco,$conresaco,'j37_codigo'))."','$this->j37_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_lado"]))
-           $resac = db_query("insert into db_acount values($acount,15,66,'".AddSlashes(pg_result($resaco,$conresaco,'j37_lado'))."','$this->j37_lado',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_valor"]))
-           $resac = db_query("insert into db_acount values($acount,15,67,'".AddSlashes(pg_result($resaco,$conresaco,'j37_valor'))."','$this->j37_valor',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_exten"]))
-           $resac = db_query("insert into db_acount values($acount,15,68,'".AddSlashes(pg_result($resaco,$conresaco,'j37_exten'))."','$this->j37_exten',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_profr"]))
-           $resac = db_query("insert into db_acount values($acount,15,69,'".AddSlashes(pg_result($resaco,$conresaco,'j37_profr'))."','$this->j37_profr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_outros"]))
-           $resac = db_query("insert into db_acount values($acount,15,70,'".AddSlashes(pg_result($resaco,$conresaco,'j37_outros'))."','$this->j37_outros',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_vlcons"]))
-           $resac = db_query("insert into db_acount values($acount,15,807,'".AddSlashes(pg_result($resaco,$conresaco,'j37_vlcons'))."','$this->j37_vlcons',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         if(isset($GLOBALS["HTTP_POST_VARS"]["j37_zona"]))
-           $resac = db_query("insert into db_acount values($acount,15,5086,'".AddSlashes(pg_result($resaco,$conresaco,'j37_zona'))."','$this->j37_zona',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       $resaco = $this->sql_record($this->sql_query_file($this->j37_face));
+       if ($this->numrows > 0) {
+
+         for ($conresaco = 0; $conresaco < $this->numrows; $conresaco++) {
+
+           $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac = db_query("insert into db_acountkey values($acount,62,'$this->j37_face','A')");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_face"]) || $this->j37_face != "")
+             $resac = db_query("insert into db_acount values($acount,15,62,'".AddSlashes(pg_result($resaco,$conresaco,'j37_face'))."','$this->j37_face',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_setor"]) || $this->j37_setor != "")
+             $resac = db_query("insert into db_acount values($acount,15,63,'".AddSlashes(pg_result($resaco,$conresaco,'j37_setor'))."','$this->j37_setor',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_quadra"]) || $this->j37_quadra != "")
+             $resac = db_query("insert into db_acount values($acount,15,64,'".AddSlashes(pg_result($resaco,$conresaco,'j37_quadra'))."','$this->j37_quadra',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_codigo"]) || $this->j37_codigo != "")
+             $resac = db_query("insert into db_acount values($acount,15,65,'".AddSlashes(pg_result($resaco,$conresaco,'j37_codigo'))."','$this->j37_codigo',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_lado"]) || $this->j37_lado != "")
+             $resac = db_query("insert into db_acount values($acount,15,66,'".AddSlashes(pg_result($resaco,$conresaco,'j37_lado'))."','$this->j37_lado',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_valor"]) || $this->j37_valor != "")
+             $resac = db_query("insert into db_acount values($acount,15,67,'".AddSlashes(pg_result($resaco,$conresaco,'j37_valor'))."','$this->j37_valor',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_exten"]) || $this->j37_exten != "")
+             $resac = db_query("insert into db_acount values($acount,15,68,'".AddSlashes(pg_result($resaco,$conresaco,'j37_exten'))."','$this->j37_exten',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_profr"]) || $this->j37_profr != "")
+             $resac = db_query("insert into db_acount values($acount,15,69,'".AddSlashes(pg_result($resaco,$conresaco,'j37_profr'))."','$this->j37_profr',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_outros"]) || $this->j37_outros != "")
+             $resac = db_query("insert into db_acount values($acount,15,70,'".AddSlashes(pg_result($resaco,$conresaco,'j37_outros'))."','$this->j37_outros',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_vlcons"]) || $this->j37_vlcons != "")
+             $resac = db_query("insert into db_acount values($acount,15,807,'".AddSlashes(pg_result($resaco,$conresaco,'j37_vlcons'))."','$this->j37_vlcons',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_zona"]) || $this->j37_zona != "")
+             $resac = db_query("insert into db_acount values($acount,15,5086,'".AddSlashes(pg_result($resaco,$conresaco,'j37_zona'))."','$this->j37_zona',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_segmento"]) || $this->j37_segmento != "")
+             $resac = db_query("insert into db_acount values($acount,15,1014006,'".AddSlashes(pg_result($resaco,$conresaco,'j37_segmento'))."','$this->j37_segmento',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           if (isset($GLOBALS["HTTP_POST_VARS"]["j37_sequencia"]) || $this->j37_sequencia != "")
+             $resac = db_query("insert into db_acount values($acount,15,1014007,'".AddSlashes(pg_result($resaco,$conresaco,'j37_sequencia'))."','$this->j37_sequencia',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $result = db_query($sql);
-     if($result==false){ 
+     if (!$result) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Face de Quadra nao Alterado. Alteracao Abortada.\\n";
+       $this->erro_sql   = "Face de Quadra não Alterado. Alteração Abortada.\\n";
          $this->erro_sql .= "Valores : ".$this->j37_face;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_alterar = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Face de Quadra nao foi Alterado. Alteracao Executada.\\n";
+         $this->erro_sql = "Face de Quadra não foi Alterado. Alteração Executada.\\n";
          $this->erro_sql .= "Valores : ".$this->j37_face;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_alterar = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Alteração efetuada com Sucesso\\n";
+         $this->erro_sql = "Alteração efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$this->j37_face;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -456,68 +508,79 @@ class cl_face {
        } 
      } 
    } 
-   // funcao para exclusao 
-   function excluir ($j37_face=null,$dbwhere=null) { 
-     if($dbwhere==null || $dbwhere==""){
-       $resaco = $this->sql_record($this->sql_query_file($j37_face));
-     }else{ 
-       $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
-     }
-     if(($resaco!=false)||($this->numrows!=0)){
-       for($iresaco=0;$iresaco<$this->numrows;$iresaco++){
-         $resac = db_query("select nextval('db_acount_id_acount_seq') as acount");
-         $acount = pg_result($resac,0,0);
-         $resac = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
-         $resac = db_query("insert into db_acountkey values($acount,62,'$j37_face','E')");
-         $resac = db_query("insert into db_acount values($acount,15,62,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_face'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,63,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_setor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,64,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_quadra'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,65,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,66,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_lado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,67,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_valor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,68,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_exten'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,69,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_profr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,70,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_outros'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,807,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_vlcons'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
-         $resac = db_query("insert into db_acount values($acount,15,5086,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_zona'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+
+    public function excluir($j37_face=null, $dbwhere = null)
+    {
+     $lSessaoDesativarAccount = db_getsession("DB_desativar_account", false);
+     if (!isset($lSessaoDesativarAccount) || (isset($lSessaoDesativarAccount)
+       && ($lSessaoDesativarAccount === false))) {
+
+       if (empty($dbwhere)) {
+
+         $resaco = $this->sql_record($this->sql_query_file($j37_face));
+       } else { 
+         $resaco = $this->sql_record($this->sql_query_file(null,"*",null,$dbwhere));
+       }
+       if (($resaco != false) || ($this->numrows!=0)) {
+
+         for ($iresaco = 0; $iresaco < $this->numrows; $iresaco++) {
+
+           $resac  = db_query("select nextval('db_acount_id_acount_seq') as acount");
+           $acount = pg_result($resac,0,0);
+           $resac  = db_query("insert into db_acountacesso values($acount,".db_getsession("DB_acessado").")");
+           $resac  = db_query("insert into db_acountkey values($acount,62,'$j37_face','E')");
+           $resac  = db_query("insert into db_acount values($acount,15,62,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_face'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,63,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_setor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,64,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_quadra'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,65,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_codigo'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,66,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_lado'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,67,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_valor'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,68,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_exten'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,69,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_profr'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,70,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_outros'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,807,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_vlcons'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,5086,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_zona'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,1014006,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_segmento'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+           $resac  = db_query("insert into db_acount values($acount,15,1014007,'','".AddSlashes(pg_result($resaco,$iresaco,'j37_sequencia'))."',".db_getsession('DB_datausu').",".db_getsession('DB_id_usuario').")");
+         }
        }
      }
      $sql = " delete from face
                     where ";
      $sql2 = "";
-     if($dbwhere==null || $dbwhere ==""){
-        if($j37_face != ""){
-          if($sql2!=""){
+     if (empty($dbwhere)) {
+        if (!empty($j37_face)){
+          if (!empty($sql2)) {
             $sql2 .= " and ";
           }
           $sql2 .= " j37_face = $j37_face ";
         }
-     }else{
+     } else {
        $sql2 = $dbwhere;
      }
      $result = db_query($sql.$sql2);
-     if($result==false){ 
+     if ($result == false) { 
        $this->erro_banco = str_replace("\n","",@pg_last_error());
-       $this->erro_sql   = "Face de Quadra nao Excluído. Exclusão Abortada.\\n";
+       $this->erro_sql   = "Face de Quadra não Excluído. Exclusão Abortada.\\n";
        $this->erro_sql .= "Valores : ".$j37_face;
        $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
        $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
        $this->erro_status = "0";
        $this->numrows_excluir = 0;
        return false;
-     }else{
-       if(pg_affected_rows($result)==0){
+     } else {
+       if (pg_affected_rows($result) == 0) {
          $this->erro_banco = "";
-         $this->erro_sql = "Face de Quadra nao Encontrado. Exclusão não Efetuada.\\n";
+         $this->erro_sql = "Face de Quadra não Encontrado. Exclusão não Efetuada.\\n";
          $this->erro_sql .= "Valores : ".$j37_face;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
          $this->erro_status = "1";
          $this->numrows_excluir = 0;
          return true;
-       }else{
+       } else {
          $this->erro_banco = "";
-         $this->erro_sql = "Exclusão efetuada com Sucesso\\n";
+         $this->erro_sql = "Exclusão efetuada com sucesso.\\n";
          $this->erro_sql .= "Valores : ".$j37_face;
          $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
          $this->erro_msg   .=  str_replace('"',"",str_replace("'","",  "Administrador: \\n\\n ".$this->erro_banco." \\n"));
@@ -527,10 +590,11 @@ class cl_face {
        } 
      } 
    } 
-   // funcao do recordset 
-   function sql_record($sql) { 
+
+    public function sql_record($sql)
+    {
      $result = db_query($sql);
-     if($result==false){
+     if (!$result) {
        $this->numrows    = 0;
        $this->erro_banco = str_replace("\n","",@pg_last_error());
        $this->erro_sql   = "Erro ao selecionar os registros.";
@@ -539,8 +603,8 @@ class cl_face {
        $this->erro_status = "0";
        return false;
      }
-     $this->numrows = pg_numrows($result);
-      if($this->numrows==0){
+     $this->numrows = pg_num_rows($result);
+      if ($this->numrows == 0) {
         $this->erro_banco = "";
         $this->erro_sql   = "Record Vazio na Tabela:face";
         $this->erro_msg   = "Usuário: \\n\\n ".$this->erro_sql." \\n\\n";
@@ -550,73 +614,46 @@ class cl_face {
       }
      return $result;
    }
-   function sql_query ( $j37_face=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from face ";
-     $sql .= "      inner join ruas  on  ruas.j14_codigo = face.j37_codigo";
-     $sql .= "      inner join setor  on  setor.j30_codi = face.j37_setor";
+
+    public function sql_query($j37_face = null,$campos = "*", $ordem = null, $dbwhere = "") { 
+
+     $sql  = "select {$campos}";
+     $sql .= "  from face ";
+     $sql .= "      inner join ruas     on ruas.j14_codigo = face.j37_codigo";
+     $sql .= "      inner join setor    on setor.j30_codi  = face.j37_setor";
+     $sql .= "       left join ruastipo on ruas.j14_tipo   = ruastipo.j88_codigo";
      $sql2 = "";
-     if($dbwhere==""){
-       if($j37_face!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($j37_face)) {
          $sql2 .= " where face.j37_face = $j37_face "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
-   function sql_query_file ( $j37_face=null,$campos="*",$ordem=null,$dbwhere=""){ 
-     $sql = "select ";
-     if($campos != "*" ){
-       $campos_sql = split("#",$campos);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
-     }else{
-       $sql .= $campos;
-     }
-     $sql .= " from face ";
+
+    public function sql_query_file($j37_face = null, $campos = "*", $ordem = null, $dbwhere = "") {
+
+     $sql  = "select {$campos} ";
+     $sql .= "  from face ";
      $sql2 = "";
-     if($dbwhere==""){
-       if($j37_face!=null ){
+     if (empty($dbwhere)) {
+       if (!empty($j37_face)){
          $sql2 .= " where face.j37_face = $j37_face "; 
        } 
-     }else if($dbwhere != ""){
+     } else if (!empty($dbwhere)) {
        $sql2 = " where $dbwhere";
      }
      $sql .= $sql2;
-     if($ordem != null ){
-       $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
-       $virgula = "";
-       for($i=0;$i<sizeof($campos_sql);$i++){
-         $sql .= $virgula.$campos_sql[$i];
-         $virgula = ",";
-       }
+     if (!empty($ordem)) {
+       $sql .= " order by {$ordem}";
      }
      return $sql;
   }
+
 }
-?>

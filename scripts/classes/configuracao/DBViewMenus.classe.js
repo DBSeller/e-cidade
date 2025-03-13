@@ -165,7 +165,7 @@ DBViewMenus.prototype.buscaModulos = function() {
 DBViewMenus.prototype.retornoBuscaModulos = function( oResponse, oSelf ) {
 
   js_removeObj( "msgBox" );
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if ( oRetorno.iStatus != 1 ) {
 
@@ -220,7 +220,7 @@ DBViewMenus.prototype.retornoItensFilhos = function( oResponse, oSelf ) {
   
   js_removeObj( "msgBox" );
   var oSelf    = this;
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if ( oRetorno.iStatus != 1 ) {
 
@@ -376,7 +376,7 @@ DBViewMenus.prototype.salvaVinculo = function() {
 DBViewMenus.prototype.retornoSalvaVinculo = function( oResponse, oSelf ) {
 
   js_removeObj( "msgBox" );
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   alert( oRetorno.sMensagem.urlDecode() );
 
@@ -419,7 +419,7 @@ DBViewMenus.prototype.retornoMenusVinculados = function( oResponse, oSelf ) {
 
   js_removeObj( "msgBox" );
   var oSelf    = this;
-  var oRetorno = eval( '(' + oResponse.responseText + ')' );
+  var oRetorno = JSON.parse(oResponse.responseText);
 
   if ( oRetorno.iStatus != 1 ) {
 

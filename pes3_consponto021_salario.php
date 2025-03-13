@@ -1,7 +1,7 @@
 <?php
 /**
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2014  DBSeller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -63,6 +63,7 @@ $aResultado  = db_utils::getCollectionByRecord($rsResultado);
  * O valor guardado é um array com todos os objetos
  * trazidos do banco de dados.
  */
+$aSuplementar = array();
 foreach ($aResultado as $oResultado) {
   $aSuplementar[$oResultado->codigo][] = $oResultado;
 }
@@ -173,7 +174,8 @@ foreach ($aResultado as $oResultado) {
 </head>
 <body onload="js_altetaHeightPontoSuplementar();">
   <form name="form1" method="post">
-    <?php foreach (array_reverse($aSuplementar) as $iCodigo => $aResultado) { ?>
+    <?php if (is_array($aSuplementar) && count($aSuplementar) > 0) {?>
+      <?php foreach (array_reverse($aSuplementar) as $iCodigo => $aResultado) { ?>
      
         <table id="suplementar" width="100%">
           <tr class="gray">
@@ -251,6 +253,7 @@ foreach ($aResultado as $oResultado) {
             </td>
           </tr>
         </table>
+      <?php } ?>
     <?php } ?>
     <input type="hidden" name="matricula" value="<?= @$matricula; ?>">
     <input type="hidden" name="numcgm" value="<?= @$numcgm; ?>">
@@ -271,6 +274,7 @@ foreach ($aResultado as $oResultado) {
         fieldset = parent.document.getElementById('calculoFolha');
 
       fieldset.style.height = html.scrollHeight + 7 + 'px';
+      parent.iframeLoaded();
     }
   </script>
 </body>

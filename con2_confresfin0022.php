@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,16 +26,16 @@
  */
 
 
-include ("fpdf151/pdf.php");
-include ("fpdf151/assinatura.php");
-include ("libs/db_sql.php");
-include ("libs/db_liborcamento.php");
-include ("libs/db_libcontabilidade.php");
-include ("dbforms/db_funcoes.php");
-include ("dbforms/db_relatorio_recurso.php");
-// include ("dbforms/db_relrestos.php");
-include ("classes/db_orctiporec_classe.php");
-include ("classes/db_empresto_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("fpdf151/assinatura.php"));
+include(modification("libs/db_sql.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("libs/db_libcontabilidade.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_relatorio_recurso.php"));
+// include(modification("dbforms/db_relrestos.php"));
+include(modification("classes/db_orctiporec_classe.php"));
+include(modification("classes/db_empresto_classe.php"));
 
 $classinatura = new cl_assinatura;
 $clorctiporec = new cl_orctiporec;
@@ -51,7 +51,7 @@ $anousu_ant = $anousu-1;
 $data_ini = $anousu."-01-01";
 
 $xinstit = split("-", $db_selinstit);
-$resultinst = pg_exec("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
+$resultinst = db_query("select codigo,nomeinst from db_config where codigo in (".str_replace('-', ', ', $db_selinstit).") ");
 $descr_inst = '';
 $xvirg = '';
 for ($xins = 0; $xins < pg_numrows($resultinst); $xins ++) {
@@ -61,7 +61,7 @@ for ($xins = 0; $xins < pg_numrows($resultinst); $xins ++) {
 }
 
 // cria uma tabela temporaria para receber os dados
-pg_exec("begin");
+db_query("begin");
 $sql = " create temp table work_rel ( 
                         recurso integer, 
                         recurso_descr varchar(35),
@@ -76,7 +76,7 @@ $sql = " create temp table work_rel (
 						banco float8,
 						resultado float8)
 			";
-$res = pg_exec($sql);                      
+$res = db_query($sql);                      
 
 
 
@@ -115,23 +115,23 @@ $sql = "
 	    o15_descr
               
   ";
-$result = pg_exec($sql);
+$result = db_query($sql);
 for ($x = 0; $x < pg_numrows($result); $x ++) {	
 	  db_fieldsmemory($result, $x);
 	  $sql = "select * from work_rel where recurso = $o15_codigo";
-	  $rr = pg_exec($sql);
+	  $rr = db_query($sql);
 	  if (pg_numrows($rr) > 0) {
 			$sql = " update work_rel
 						            set rp_anterior = coalesce(".$rp_anterior.",0)  , 
 										  rp_atual     = coalesce(".$rp_atual.",0)
 						 where recurso = $o15_codigo
 					  ";
-			pg_exec($sql);
+			db_query($sql);
 	  } else {
 			$sql = " insert into work_rel  (recurso, recurso_descr, rp_anterior,rp_atual)
 						 values ($o15_codigo, '".substr($o15_descr,0,30)."',".round($rp_anterior,2)." , ".round($rp_atual,2) ." ) 
 					   ";
-			pg_exec($sql);
+			db_query($sql);
 	  }
 }
 
@@ -151,25 +151,25 @@ $sql_baldesp = "select o58_codigo as o15_codigo,
                          group by o58_codigo,o15_descr
                          having o58_codigo > 0 
                           ";
-$result_baldesp = pg_exec($sql_baldesp);
+$result_baldesp = db_query($sql_baldesp);
 if (pg_numrows($result_baldesp) > 0) {
 	for ($x = 0; $x < pg_numrows($result_baldesp); $x ++) {
 	 	 db_fieldsmemory($result_baldesp, $x);
 
          $sql = "select * from work_rel where recurso = $o15_codigo";
-	     $rr = pg_exec($sql);
+	     $rr = db_query($sql);
 	     if (pg_numrows($rr) > 0) {
 			$sql = " update work_rel
 						 set liquidado         = coalesce(".$liquidado.",0)  , 
 							  nao_liquidado  = coalesce(".($empenhado - $liquidado).",0)
 						 where recurso = $o15_codigo
 					  ";
-		 	pg_exec($sql);
+		 	db_query($sql);
 	     } else {
 		  	$sql = " insert into work_rel  (recurso, recurso_descr, liquidado, nao_liquidado)
 						 values ($o15_codigo, '".substr($o15_descr,0,30)."',".round($liquidado,2)." , ".round(($empenhado-$liquidado),2) ." ) 
 					   ";
-			pg_exec($sql);
+			db_query($sql);
 	     }
 	}
 }	
@@ -193,24 +193,29 @@ $sql="select
                        o15_descr,
 					   fc_saltessaldo(k13_conta,'$data_limite','$data_limite', null, c61_instit)   as valor
 			from saltes 
-			    inner join conplanoexe on c62_anousu = ".$anousu."  and c62_reduz = k13_conta
-                inner join conplanoreduz on c62_reduz = c61_reduz  and c61_anousu=".db_getsession("DB_anousu")."                                                      
-				inner join conplano on c61_codcon = c60_codcon and c61_anousu = c60_anousu
-				inner join orctiporec on o15_codigo = c61_codigo
-				left join conplanoconta on c63_codcon = conplano.c60_codcon and c63_anousu=c60_anousu
+			    inner join conplanoexe   on c62_anousu = ".$anousu."  
+			                            and c62_reduz  = k13_conta
+                inner join conplanoreduz on c62_reduz  = c61_reduz  
+                                        and c61_anousu = ".db_getsession("DB_anousu")."                                                      
+				inner join conplano      on c61_codcon = c60_codcon 
+				                        and c61_anousu = c60_anousu
+				inner join orctiporec    on o15_codigo = c61_codigo
+				left join conplanoconta  on c63_codcon = conplanoreduz.c61_codcon 
+				                        and c63_anousu = conplanoreduz.c61_anousu
+				                        and c63_reduz  = conplanoreduz.c61_reduz
 				left join db_bancos on trim(db90_codban) = conplanoconta.c63_banco::varchar(10)  
 			where  c60_codsis in (5,6)
                        $sql_where and c61_instit  in  (".str_replace('-', ', ', $db_selinstit).")                
           ) as x
                  group by c61_codigo,c60_codsis,o15_descr		                      
 		 ";
-$result_contas = pg_exec($sql);
+$result_contas = db_query($sql);
 $nrows = pg_numrows($result_contas);
 if (pg_numrows($result_contas) > 0) {
 	for ($x = 0; $x < pg_numrows($result_contas); $x ++) {
 		db_fieldsmemory($result_contas, $x);
 		$sql = "select * from work_rel where recurso = $c61_codigo";
-		$rr = pg_exec($sql);
+		$rr = db_query($sql);
 		if (pg_numrows($rr) > 0) {
 			if ($c60_codsis == 5)
 				$sql = "update work_rel 
@@ -222,7 +227,7 @@ if (pg_numrows($result_contas) > 0) {
 							 set banco= ".$final."    ,
 								   recurso_descr='".$o15_descr."'				  						  
 				 			where recurso =".$c61_codigo;
-			pg_exec($sql);
+			db_query($sql);
 		} else {
 			if ($c60_codsis == 5)
 				$sql = " insert into work_rel  (recurso, recurso_descr, caixa)  
@@ -230,7 +235,7 @@ if (pg_numrows($result_contas) > 0) {
 			else
 				$sql = " insert into work_rel  (recurso, recurso_descr, banco )
 							 values ($c61_codigo, '".substr($o15_descr,0,30)."', $final  )  ";
-			pg_exec($sql);
+			db_query($sql);
 		}
 	}
 }
@@ -254,32 +259,32 @@ $sql_bver = "select
 					where c61_reduz >0   
 				    group by c61_codigo
 				   ";				   
-$result_bver = pg_exec($sql_bver);
+$result_bver = db_query($sql_bver);
 if (pg_numrows($result_bver) > 0) {
 	for ($x = 0; $x < pg_numrows($result_bver); $x ++) {
 	 	 db_fieldsmemory($result_bver, $x);
 
          $sql = "select * from work_rel where recurso = $c61_codigo";
-	     $rr = pg_exec($sql);
+	     $rr = db_query($sql);
 	     if (pg_numrows($rr) > 0) {
 			$sql = " update work_rel
 						 set receita     = coalesce(".($saldo_anterior_credito).",0)  , 
 							  despesa  = coalesce(".($saldo_anterior_debito).",0)
 						 where recurso = $c61_codigo
 					  ";
-		 	pg_exec($sql);
+		 	db_query($sql);
 	     } else {
 		  	$sql = " insert into work_rel  (recurso, recurso_descr, receita, despesa)
 						 values ($o15_codigo, '".substr($o15_descr,0,30)."',".round($saldo_anterior_credito,2)." , ".round($saldo_anterior_debito,2) ." ) 
 					   ";
-			pg_exec($sql);
+			db_query($sql);
 	     }	    
 	     
 	}
 }	
 
 //  ------------------------------------------------------ //
-$res = pg_query("select *  from work_rel order by recurso");
+$res = db_query("select *  from work_rel order by recurso");
 // db_criatabela($res);exit;
 
 $rows = pg_numrows($res);
@@ -400,7 +405,7 @@ $pdf->cell($tam, $alt, db_formatar($t9,'f'), 'TB', 0, "R", 0);
 $pdf->cell($tam+5, $alt, db_formatar($t10,'f')   , 'TB', 0, "R", 0);
 $pdf->Ln();
 
-pg_exec("commit");
+db_query("commit");
 
 
 $pdf->Output();

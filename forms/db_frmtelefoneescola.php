@@ -26,7 +26,7 @@
  */
 
 //MODULO: Educação
-include("dbforms/db_classesgenericas.php");
+include(modification("dbforms/db_classesgenericas.php"));
 
 //escola
 $clescola->rotulo->label();

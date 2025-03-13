@@ -1,0 +1,1 @@
+update db_itensmenu set descricao = 'A partir de 2015' where  id_item = 10118;

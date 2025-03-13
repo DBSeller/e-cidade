@@ -1,0 +1,1 @@
+update cadenderestadosistema set db300_codigo = lpad(db300_codigo, 2, '0') where db300_db_sistemaexterno = 8;

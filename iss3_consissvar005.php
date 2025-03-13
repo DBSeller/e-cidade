@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,12 +25,12 @@
  *                                licenca/licenca_pt.txt 
  */
   
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("classes/db_issplanit_classe.php");
-  include("classes/db_issplanitinscr_classe.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
+  include(modification("classes/db_issplanit_classe.php"));
+  include(modification("classes/db_issplanitinscr_classe.php"));
   parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
   $clissplanit = new cl_issplanit;
   $clissplanitinscr = new cl_issplanitinscr;
@@ -84,7 +84,7 @@
 				        where q21_planilha = $q21_planilha and q21_status = 1 
 								order by q21_nota ";
 							//	die("xxxxxxxxxx".$sql1);
-				$result1 = pg_query($sql1);			
+				$result1 = db_query($sql1);			
         $linhas  = pg_num_rows($result1);
         $notas="";
         $susteni="";

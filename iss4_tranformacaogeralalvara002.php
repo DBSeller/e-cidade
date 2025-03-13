@@ -1,38 +1,38 @@
 <?php
 /*
- *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
- *                            www.dbseller.com.br                     
- *                         e-cidade@dbseller.com.br                   
- *                                                                    
- *  Este programa e software livre; voce pode redistribui-lo e/ou     
- *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme  
- *  publicada pela Free Software Foundation; tanto a versao 2 da      
- *  Licenca como (a seu criterio) qualquer versao mais nova.          
- *                                                                    
- *  Este programa e distribuido na expectativa de ser util, mas SEM   
- *  QUALQUER GARANTIA; sem mesmo a garantia implicita de              
- *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM           
- *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais  
- *  detalhes.                                                         
- *                                                                    
- *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU     
- *  junto com este programa; se nao, escreva para a Free Software     
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA          
- *  02111-1307, USA.                                                  
- *  
- *  Copia da licenca no diretorio licenca/licenca_en.txt 
- *                                licenca/licenca_pt.txt 
+ *     E-cidade Software Publico para Gestao Municipal
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
+ *                            www.dbseller.com.br
+ *                         e-cidade@dbseller.com.br
+ *
+ *  Este programa e software livre; voce pode redistribui-lo e/ou
+ *  modifica-lo sob os termos da Licenca Publica Geral GNU, conforme
+ *  publicada pela Free Software Foundation; tanto a versao 2 da
+ *  Licenca como (a seu criterio) qualquer versao mais nova.
+ *
+ *  Este programa e distribuido na expectativa de ser util, mas SEM
+ *  QUALQUER GARANTIA; sem mesmo a garantia implicita de
+ *  COMERCIALIZACAO ou de ADEQUACAO A QUALQUER PROPOSITO EM
+ *  PARTICULAR. Consulte a Licenca Publica Geral GNU para obter mais
+ *  detalhes.
+ *
+ *  Voce deve ter recebido uma copia da Licenca Publica Geral GNU
+ *  junto com este programa; se nao, escreva para a Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ *  Copia da licenca no diretorio licenca/licenca_en.txt
+ *                                licenca/licenca_pt.txt
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_app.utils.php");
-require_once("libs/JSON.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_app.utils.php"));
+require_once(modification("libs/JSON.php"));
 ?>
 <html>
 <head>
@@ -52,7 +52,7 @@ require_once("libs/JSON.php");
 	<link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <?php
-	
+
 	$oGet = db_utils::postMemory( $_GET );
 	$sDataValidadeInicial = db_formatar($oGet->sDataValidadeInicial, 'd');
 	$sDataValidadeFinal   = db_formatar($oGet->sDataValidadeFinal, 'd');
@@ -78,11 +78,11 @@ require_once("libs/JSON.php");
 
 	  	if ($oTipoAlvara->q98_tipovalidade == 2) {
 	  		$aTiposAlvaraVariavel[] = $oTipoAlvara->q98_sequencial;
-	  	} 
+	  	}
 
 	  	if ($oTipoAlvara->q98_tipovalidade == 1) {
 	  		$aTiposAlvaraFixo[ $oTipoAlvara->q98_sequencial ] = $oTipoAlvara->q98_quantvalidade;
-	  	} 
+	  	}
 
 	    $aTiposAlvara[ $oTipoAlvara->q98_sequencial ] = $oTipoAlvara->q98_descricao;
 	  }
@@ -104,8 +104,8 @@ require_once("libs/JSON.php");
   if ( !empty($oGet->sDataValidadeFinal) ) {
   	$sDataFinal = $oGet->sDataValidadeFinal;
   }
-  
-  
+
+
 ?>
 <body bgcolor="#cccccc">
 
@@ -161,7 +161,7 @@ require_once("libs/JSON.php");
 				<tr>
 					<td width="155"><label> Tipo de Alvará Destino:</label></td>
 					<td>
-							<?php 
+							<?php
 								db_select('tipo_alvara', $aTiposAlvara, true, 4, "onChange='js_tipoAlvaras();'");
 							?>
 					</td>
@@ -203,7 +203,7 @@ require_once("libs/JSON.php");
 <script type="text/javascript">
 
 /**
-* Verifica se o tipo de alvara selecionado é do tipo variavel, 
+* Verifica se o tipo de alvara selecionado é do tipo variavel,
 * se for habilita o campo data de validade caso contrario desabilita.
 *
 * @access public
@@ -219,7 +219,7 @@ function js_tipoAlvaras() {
 
   /**
    * Tipo de alvara fixo
-   * - Altera o valor de dias para vencimento, usa o valor da tabela isstipoalvara 
+   * - Altera o valor de dias para vencimento, usa o valor da tabela isstipoalvara
    */
   for (  iTipoAlvaraFixo in oTiposAlvarasFixos ) {
 
@@ -230,7 +230,7 @@ function js_tipoAlvaras() {
   }
 
   /**
-   * Tipo de alvara variavel, habilita botao dias para vencimento 
+   * Tipo de alvara variavel, habilita botao dias para vencimento
    */
   if ( aTiposAlvarasVariaveis.in_array(iTipoAlvara) ) {
 
@@ -255,7 +255,7 @@ function js_tipoAlvaras() {
 var oGridResultadoBusca = new DBGrid('resultadoBusca');
 
 (function() {
-  
+
   js_tipoAlvaras();
 
   /**
@@ -271,7 +271,7 @@ var oGridResultadoBusca = new DBGrid('resultadoBusca');
 
    /**
     * REaliza a busca pelas rubricas a partir dos parametros enviados por $_GET
-    */ 
+    */
     var iTipoAlvara         = <?php echo $oGet->iTipoAlvara; ?>;
     var sDataInicial        = <?php echo "'".$sDataInicial."'"; ?>;
     var sDataFinal          = <?php echo "'".$sDataFinal  ."'"; ?>;
@@ -300,7 +300,7 @@ var oGridResultadoBusca = new DBGrid('resultadoBusca');
  */
 function js_retornoAlvaras( oAlvaras ) {
 
-   var aRetorno = eval("("+oAlvaras.responseText+")");
+   var aRetorno = JSON.parse(oAlvaras.responseText);
    var aAlvaras = aRetorno.dados;
 
    oGridResultadoBusca.clearAll(true);
@@ -311,8 +311,8 @@ function js_retornoAlvaras( oAlvaras ) {
 
      oGridResultadoBusca.addRow(
        [
-         oAlvara.q120_sequencial, 
-         oAlvara.q123_inscr, 
+         oAlvara.q120_sequencial,
+         oAlvara.q123_inscr,
          oAlvara.z01_nome,
          oAlvara.q120_issalvara,
          js_formatar(oAlvara.q120_dtmov,"d"),
@@ -343,13 +343,13 @@ function js_processarAlvara() {
 
   var aAlvaras    = new Array();
   var aLinhasGrid = oGridResultadoBusca.getSelection();
-  
+
   for ( var iLinhaGrid = 0; iLinhaGrid < aLinhasGrid.length; iLinhaGrid++ ) {
 
     var oDadosAlvara = new Object();
 
-    oDadosAlvara.iAlvara       = aLinhasGrid[ iLinhaGrid ][4]; 
-    oDadosAlvara.iMovimentacao = aLinhasGrid[ iLinhaGrid ][0]; 
+    oDadosAlvara.iAlvara       = aLinhasGrid[ iLinhaGrid ][4];
+    oDadosAlvara.iMovimentacao = aLinhasGrid[ iLinhaGrid ][0];
 
     aAlvaras.push(oDadosAlvara);
   }
@@ -400,7 +400,7 @@ function js_processarAlvara() {
     * Valida se foir informado o tipo de alvara de origem
     */
    if( $('tipo_alvara').value == 0 ) {
- 
+
       alert('Por favor, informe o Tipo de alvará destino.');
       return false;
    }
@@ -415,8 +415,8 @@ function js_processarAlvara() {
    oQuery.iDiasVencimento  = iDiasVencimento;
    oQuery.sDescricaoAlvara = sDescricaoAlvara.urlEncode();
 
-   var oAjax = new Ajax.Request( 
-     sUrl, 
+   var oAjax = new Ajax.Request(
+     sUrl,
      {
        method     : 'post',
        parameters : "json=" + JSON.stringify(oQuery),
@@ -434,11 +434,11 @@ function js_processarAlvara() {
  */
 function js_retornoProcessarAlvara(oAjax) {
 
-  var oRetorno  = eval("("+oAjax.responseText+")");
+  var oRetorno  = JSON.parse(oAjax.responseText);
   var sMensagem = oRetorno.sMensagem.urlDecode();
 
   /**
-   * Erro no RPC 
+   * Erro no RPC
    */
   if ( oRetorno.iStatus > 1 ) {
 

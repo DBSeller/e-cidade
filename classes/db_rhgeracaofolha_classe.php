@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBSeller Servicos de Informatica
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -639,14 +639,18 @@ class cl_rhgeracaofolha {
 	 */
 	function sqlGeracaoFolha($oParam, $aFiltroSelecionados = null, $geraFormularioOculto= false){
 
-      global $DB_COMPLEMENTAR;
-
 	    if($aFiltroSelecionados == null and count($aFiltroSelecionados) == 0){
 	      $sFiltroInclusao     = " ";
 	    } else {
 	      $sFiltroSelecionados = implode(",",$aFiltroSelecionados);
 	      $sFiltroInclusao     = " and regist in ({$sFiltroSelecionados}) ";
 	    }
+
+            if (DBPessoal::utilizaFiltroLotacoesPorUsuario()) {
+              $oLotacoesUsuario = DBPessoal::buscaLotacoesPorUsuario();
+              $sFiltroInclusao .= (!empty(trim($sFiltroInclusao))?" and ":"")." rhpessoalmov.rh02_lota in (".implode(",",$oLotacoesUsuario->aLotacoes).")";
+            }
+
 
 	   // echo $sFiltroInclusao;exit;
 	    $oDados    = $oParam->oDados;
@@ -720,7 +724,7 @@ class cl_rhgeracaofolha {
 	            $campos1   = str_replace("[tipo_folha]","$iFolhaSelecionada",$campos1);
 	            $sqlsal    = $clgerfsal->sql_query_file(null,null,null,null,$campos1,"",$DBwhere1);
 
-              if ( isset($DB_COMPLEMENTAR) ) {
+              if ( DBPessoal::verificarUtilizacaoEstruturaSuplementar() ) {
 
                 $oCompetencia         = new DBCompetencia($oDados->anofolha, $oDados->mesfolha);
                 $clrhhistoricocalculo = new cl_rhhistoricocalculo();
@@ -768,12 +772,12 @@ class cl_rhgeracaofolha {
 	            $campos6 = str_replace("[tipo_folha]","$iFolhaSelecionada",$campos6);
 	            $sqlcom  = $clgerfcom->sql_query_file(null,null,null,null,$campos6,"",$DBwhere6);
               
-              if (isset($DB_COMPLEMENTAR)){
+              if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()){
 
                 $oCompetencia         = new DBCompetencia($oDados->anofolha, $oDados->mesfolha);
                 $clrhhistoricocalculo = new cl_rhhistoricocalculo();
                 $aFolhaPagamento      = FolhaPagamento::getFolhaCompetenciaTipo( $oCompetencia, FolhaPagamento::TIPO_FOLHA_COMPLEMENTAR, $oDados->ListaFolhas );
-                $sqlcom               = $clrhhistoricocalculo->sql_query_geracao( $aFolhaPagamento[0]->getSequencial(), "Complementar", $oDados->ListaFolhas );
+                $sqlcom               = $clrhhistoricocalculo->sql_query_geracao( $aFolhaPagamento[0]->getSequencial(), "Complementar", $iFolhaSelecionada);
               }
 	          break;
 	          case 6:
@@ -786,12 +790,12 @@ class cl_rhgeracaofolha {
 	            $sqlffx  = $clgerffx->sql_query_file(null,null,null,null,$campos7,"",$DBwhere7);
 
 
-              if (isset($DB_COMPLEMENTAR)){
+              if (DBPessoal::verificarUtilizacaoEstruturaSuplementar()){
 
                 $oCompetencia         = new DBCompetencia($oDados->anofolha, $oDados->mesfolha);
                 $clrhhistoricocalculo = new cl_rhhistoricocalculo();
                 $aFolhaPagamento      = FolhaPagamento::getFolhaCompetenciaTipo( $oCompetencia, FolhaPagamento::TIPO_FOLHA_SUPLEMENTAR, $oDados->ListaFolhas);
-                $sqlsupl              = $clrhhistoricocalculo->sql_query_geracao($aFolhaPagamento[0]->getSequencial(), "Suplementar", $oDados->ListaFolhas);
+                $sqlsupl              = $clrhhistoricocalculo->sql_query_geracao($aFolhaPagamento[0]->getSequencial(), "Suplementar", $iFolhaSelecionada);
               }
 
 	          break;
@@ -1046,8 +1050,8 @@ class cl_rhgeracaofolha {
 	     $sSql.="                                                                                                       \n";
 	     $sSql.=" order by tipo_folha,regist                                                                            \n";
 
-	    }
-      
+      }
+
 	    return $sSql;
 	}
 
@@ -1090,6 +1094,44 @@ class cl_rhgeracaofolha {
 
     return $sSql;
 	}
-
+  
+  /**
+   * Retorna uma query com os seguintes relacionamentos:
+   * ==> rhgeracaofolha
+   * ==> rhgeracaofolhareg
+   * ==> rhpessoalmov
+   * ==> rhgeracaofolhatipo
+   * 
+   * @access public
+   * @param Integer $rh102_sequencial
+   * @param String $sCampos
+   * @param String $sOrdem
+   * @param String $sWhere
+   * @return String
+   */
+  public function sql_query_rhgeracaofolha ($rh102_sequencial = null, $sCampos = "*", $sOrdem = null, $sWhere = ""){
+    
+    $sSql  = "select {$sCampos}";
+    $sSql .= " from rhgeracaofolha ";
+    $sSql .= "      inner join rhgeracaofolhareg  on rhgeracaofolhareg.rh104_rhgeracaofolha = rhgeracaofolha.rh102_sequencial ";
+    $sSql .= "      inner join rhpessoalmov       on rhpessoalmov.rh02_seqpes = rhgeracaofolhareg.rh104_seqpes and  rhpessoalmov.rh02_instit = rhgeracaofolhareg.rh104_instit";
+    $sSql .= "      inner join rhgeracaofolhatipo on rhgeracaofolhatipo.rh103_rhgeracaofolhareg = rhgeracaofolhareg.rh104_sequencial ";
+    
+    $sSql2 = "";
+    
+    if (empty($sWhere)) {
+       if (!empty($rh102_sequencial)){
+         $sSql2 .= " where rhgeracaofolha.rh102_sequencial = $rh102_sequencial "; 
+       } 
+     } else if (!empty($sWhere)) {
+       $sSql2 = " where $sWhere";
+     }
+     $sSql .= $sSql2;
+     if (!empty($sOrdem)) {
+       $sSql .= " order by {$sOrdem}";
+     }
+     return $sSql;
+  }
+  
 }
-?>
+

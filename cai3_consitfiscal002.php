@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,14 +25,14 @@
  *                                licenca/licenca_pt.txt 
  */
 
-  require("libs/db_stdlib.php");
-  require("libs/db_conecta.php");
-  include("libs/db_sessoes.php");
-  include("libs/db_usuariosonline.php");
-  include("classes/db_cgm_classe.php");
-  include("classes/db_issbase_classe.php");
-  include("classes/db_iptubase_classe.php");
-  include("classes/db_termo_classe.php");
+  require(modification("libs/db_stdlib.php"));
+  require(modification("libs/db_conecta.php"));
+  include(modification("libs/db_sessoes.php"));
+  include(modification("libs/db_usuariosonline.php"));
+  include(modification("classes/db_cgm_classe.php"));
+  include(modification("classes/db_issbase_classe.php"));
+  include(modification("classes/db_iptubase_classe.php"));
+  include(modification("classes/db_termo_classe.php"));
   parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
   $clcgm = new cl_cgm;
   $clissbase = new cl_issbase;
@@ -53,7 +53,7 @@
           $sql=$cltermo->sql_query_consulta($cod,"*,resp.z01_nome as nome, resp.z01_numcgm as cgm");
      }
 
-  $result= pg_exec($sql);
+  $result= db_query($sql);
   $num= pg_numrows($result);
 }
 

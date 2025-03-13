@@ -127,10 +127,10 @@ db_input('cp05_codsubordinacao',10,$Icp05_codsubordinacao,true,'text',$db_opcao,
 <script>
 function js_pesquisacp05_sigla(mostra){
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_cepestados','func_cepestados.php?funcao_js=parent.js_mostracepestados1|cp03_sigla|cp03_estado','Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cepestados','func_cepestados.php?funcao_js=parent.js_mostracepestados1|cp03_sigla|cp03_estado','Pesquisa',true);
   }else{
      if(document.form1.cp05_sigla.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_cepestados','func_cepestados.php?pesquisa_chave='+document.form1.cp05_sigla.value+'&funcao_js=parent.js_mostracepestados','Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_cepestados','func_cepestados.php?pesquisa_chave='+document.form1.cp05_sigla.value+'&funcao_js=parent.js_mostracepestados','Pesquisa',false);
      }else{
        document.form1.cp03_estado.value = ''; 
      }
@@ -149,7 +149,7 @@ function js_mostracepestados1(chave1,chave2){
   db_iframe_cepestados.hide();
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo','db_iframe_ceplocalidades','func_ceplocalidades.php?funcao_js=parent.js_preenchepesquisa|cp05_codlocalidades','Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_ceplocalidades','func_ceplocalidades.php?funcao_js=parent.js_preenchepesquisa|cp05_codlocalidades','Pesquisa',true);
 }
 function js_preenchepesquisa(chave){
   db_iframe_ceplocalidades.hide();

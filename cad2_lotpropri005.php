@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_usuariosonline.php");
-include("classes/db_face_classe.php");
-include("dbforms/db_funcoes.php");
-include("dbforms/db_classesgenericas.php");
-include("libs/db_app.utils.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("classes/db_face_classe.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("libs/db_app.utils.php"));
 parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
 $clface = new cl_face;
 $cliframe_seleciona = new cl_iframe_seleciona;
@@ -107,7 +107,7 @@ function js_retornoLotes(oAjax){
   
   js_removeObj("msgBox");
   
-  var aRetorno = eval("("+oAjax.responseText+")");
+  var aRetorno = JSON.parse(oAjax.responseText);
   
   var sExpReg  = new RegExp('\\\\n','g');
     

@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_veiculos_classe.php");
-include("classes/db_veicresp_classe.php");
-include("classes/db_veicpatri_classe.php");
-include("classes/db_veicparam_classe.php");
-include("classes/db_veictipoabast_classe.php");
-include("classes/db_veiccentral_classe.php");
-include("classes/db_veicabast_classe.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("classes/db_veiculos_classe.php"));
+require_once(modification("classes/db_veicresp_classe.php"));
+require_once(modification("classes/db_veicpatri_classe.php"));
+require_once(modification("classes/db_veicparam_classe.php"));
+require_once(modification("classes/db_veictipoabast_classe.php"));
+require_once(modification("classes/db_veiccentral_classe.php"));
+require_once(modification("classes/db_veicabast_classe.php"));
 
 
-parse_str($HTTP_SERVER_VARS["QUERY_STRING"]);
-db_postmemory($HTTP_POST_VARS);
+parse_str($_SERVER["QUERY_STRING"]);
+db_postmemory($_POST);
 
 $clveiculos      = new cl_veiculos;
 $clveicresp      = new cl_veicresp;
@@ -58,7 +58,7 @@ if(isset($alterar)){
   $db_opcao = 2;
 
 if (isset($ve01_placa) && $ve01_placa==null){
-    $erro_msg = "Informar a placa do veiculo.Verifique.";
+    $erro_msg = "Informar a placa do veiculo. Verifique.";
     $sqlerro  = true;
     db_msgbox($erro_msg);
 
@@ -66,98 +66,95 @@ if (isset($ve01_placa) && $ve01_placa==null){
 
 
 if (isset($ve01_veiccadmarca) && $ve01_veiccadmarca=="0"){
-      $erro_msg = "Informar a marca .Verifique.";
+      $erro_msg = "Informar a marca. Verifique.";
       $sqlerro  = true;
       db_msgbox($erro_msg);
 }
 
 
 if (isset($ve01_veiccadmodelo) && $ve01_veiccadmodelo==null){
-        $erro_msg = "Informar o modelo .Verifique.";
+        $erro_msg = "Informar o modelo. Verifique.";
         $sqlerro  = true;
         db_msgbox($erro_msg);
 }
 
 if (isset($ve01_veiccadcor) && $ve01_veiccadcor=="0"){
-          $erro_msg = "Informar a cor .Verifique.";
+          $erro_msg = "Informar a cor. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
 
 if (isset($ve01_chassi) && $ve01_chassi==null){
-            $erro_msg = "Informar o chassi .Verifique.";
+            $erro_msg = "Informar o chassi. Verifique.";
             $sqlerro  = true;
             db_msgbox($erro_msg);
 }
 
 if (isset($ve01_ranavam) && $ve01_ranavam==null){
-              $erro_msg = "Informar o renavam .Verifique.";
+              $erro_msg = "Informar o renavam. Verifique.";
               $sqlerro  = true;
               db_msgbox($erro_msg);
 }
 
 if (isset($ve01_placanum) && $ve01_placanum==null){
-          $erro_msg = "Informar a placa em número .Verifique.";
+          $erro_msg = "Informar a placa em número. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
 if (isset($ve01_certif) && $ve01_certif==null){
-          $erro_msg = "Informar o número do certificado .Verifique.";
+          $erro_msg = "Informar o número do certificado. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
 
 if (isset($ve01_quantpotencia) && $ve01_quantpotencia==null){
-            $erro_msg = "Informar quantidade de potência .Verifique.";
+            $erro_msg = "Informar quantidade de potência. Verifique.";
             $sqlerro  = true;
             db_msgbox($erro_msg);
 }
 
 
-if (isset($ve01_veictipoabast) && $ve01_veictipoabast==null){
-          $erro_msg = "Informar o tipo de abastecimento .Verifique.";
+if (isset($ve01_veictipoabast) && empty(trim($ve01_veictipoabast))){
+          $erro_msg = "Informar o tipo de abastecimento. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
 
 if (isset($ve01_medidaini) && $ve01_medidaini==null){
-          $erro_msg = "Informar a medida inicial .Verifique.";
+          $erro_msg = "Informar a medida inicial. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
 
 if (isset($ve01_quantcapacidad) && $ve01_quantcapacidad==null){
-          $erro_msg = "Informar a quantidade capacidade .Verifique.";
+          $erro_msg = "Informar a quantidade capacidade. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
 
 
 if (isset($ve01_dtaquis) && $ve01_dtaquis==null){
-          $erro_msg = "Informar a data de aquisição .Verifique.";
+          $erro_msg = "Informar a data de aquisição. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
 
 if (isset($ve06_veiccadcomb) && $ve06_veiccadcomb==null){
-          $erro_msg = "Informar o combustível.Verifique.";
+          $erro_msg = "Informar o combustível. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
 if (isset($ve01_anofab) && $ve01_anofab==null){
-          $erro_msg = "Informar o ano de fabricação .Verifique.";
+          $erro_msg = "Informar o ano de fabricação. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
 
 if (isset($ve01_anomod) && $ve01_anomod==null){
-          $erro_msg = "Informar o ano do modelo .Verifique.";
+          $erro_msg = "Informar o ano do modelo. Verifique.";
           $sqlerro  = true;
           db_msgbox($erro_msg);
 }
-
-
-
 
 $result = $clveiculos->sql_record($clveiculos->sql_query_file(null,"ve01_veictipoabast as tipoabast ",null,"ve01_codigo = $ve01_codigo"));
   if ($clveiculos->numrows>0){
@@ -171,11 +168,6 @@ $result = $clveiculos->sql_record($clveiculos->sql_query_file(null,"ve01_veictip
        }
     }
 }
-
-
-
-
-
 
   $result = $clveiculos->sql_record($clveiculos->sql_query_file(null,"ve01_placa",null,"ve01_codigo != $ve01_codigo and ve01_placa = '$ve01_placa'"));
   if ($clveiculos->numrows > 0){
@@ -290,20 +282,20 @@ $result = $clveiculos->sql_record($clveiculos->sql_query_file(null,"ve01_veictip
 ?>
     <script>
        parent.document.formaba.veicitensobrig.disabled=false;
-       top.corpo.iframe_veicitensobrig.location.href='vei1_veicitensobrig001.php?ve09_veiculos=<?=@$chavepesquisa?>';
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_veicitensobrig.location.href='vei1_veicitensobrig001.php?ve09_veiculos=<?=@$chavepesquisa?>';
        parent.document.formaba.veicutilizacao.disabled=false;
-       top.corpo.iframe_veicutilizacao.location.href='vei1_veicutilizacao001.php?ve15_veiculos=<?=@$chavepesquisa?>';
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_veicutilizacao.location.href='vei1_veicutilizacao001.php?ve15_veiculos=<?=@$chavepesquisa?>';
        parent.document.formaba.veiccentral.disabled=false;
-       top.corpo.iframe_veiccentral.location.href='vei1_veiccentralveiculos001.php?ve09_veiculos=<?=@$chavepesquisa?>';
-<?
+       (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_veiccentral.location.href='vei1_veiccentralveiculos001.php?ve09_veiculos=<?=@$chavepesquisa?>';
+<?php
    if (isset($liberaaba) && $liberaaba == true){
 ?>
-       parent.mo_camada('veicitensobrig');
-<?
+      parent.mo_camada('veicitensobrig');
+<?php
    }
 ?>
     </script>
-<?         
+<?php    
 }
 ?>
 <html>
@@ -315,20 +307,18 @@ $result = $clveiculos->sql_record($clveiculos->sql_query_file(null,"ve01_veictip
 <link href="estilos.css" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor=#CCCCCC leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="a=1" >
-<table width="790" border="0" cellspacing="0" cellpadding="0">
+<table class="container" width="790" border="0" cellspacing="0" cellpadding="0">
   <tr> 
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
-    <center>
-	<?
-	include("forms/db_frmveiculos.php");
-	?>
-    </center>
-	</td>
+      <?php
+      include(modification("forms/db_frmveiculos.php"));
+      ?>
+    </td>
   </tr>
 </table>
 </body>
 </html>
-<?
+<?php
 if(isset($alterar)){
   if($clveiculos->erro_status=="0"&&$sqlerro==true){
     //$clveiculos->erro(true,false);

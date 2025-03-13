@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,20 +25,20 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-include("classes/db_tarefa_classe.php");
-include("classes/db_tarefamodulo_classe.php");
-include("classes/db_tarefaprojeto_classe.php");
-include("classes/db_tarefasituacao_classe.php");
-include("classes/db_tarefaitem_classe.php");
-include("classes/db_tarefausu_classe.php");
-include ("classes/db_tarefaenvol_classe.php");
-include("classes/db_tarefamotivo_classe.php");
-include("classes/db_tarefaclientes_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_tarefa_classe.php"));
+include(modification("classes/db_tarefamodulo_classe.php"));
+include(modification("classes/db_tarefaprojeto_classe.php"));
+include(modification("classes/db_tarefasituacao_classe.php"));
+include(modification("classes/db_tarefaitem_classe.php"));
+include(modification("classes/db_tarefausu_classe.php"));
+include(modification("classes/db_tarefaenvol_classe.php"));
+include(modification("classes/db_tarefamotivo_classe.php"));
+include(modification("classes/db_tarefaclientes_classe.php"));
 $cltarefa         = new cl_tarefa;
 $cltarefamodulo   = new cl_tarefamodulo;
 $cltarefaprojeto  = new cl_tarefaprojeto;
@@ -141,7 +141,7 @@ if(isset($excluir)){
     <td height="430" align="left" valign="top" bgcolor="#CCCCCC"> 
     <center>
 	<?
-	include("forms/db_frmcontarefa.php");
+	include(modification("forms/db_frmcontarefa.php"));
 	?>
     </center>
 	</td>
@@ -174,7 +174,7 @@ if(isset($chavepesquisa)||isset($at40_sequencial)){
   <script>
       function js_db_libera(){
          // parent.document.formaba.tarefausu.disabled=false;
-         top.corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?db_opcaoal=33&at42_tarefa=".@$at40_sequencial."';
+         (window.CurrentWindow || parent.CurrentWindow).corpo.iframe_tarefausu.location.href='ate1_tarefausu001.php?db_opcaoal=33&at42_tarefa=".@$at40_sequencial."';
      ";
          if(isset($liberaaba)){
 //           echo "  parent.mo_camada('tarefausu');";

@@ -25,13 +25,13 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require("libs/db_stdlib.php");
-require("libs/db_conecta.php");
-include("libs/db_sessoes.php");
-include("libs/db_usuariosonline.php");
-include("dbforms/db_funcoes.php");
-require("libs/db_utils.php");
-include("classes/db_termo_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("dbforms/db_funcoes.php"));
+require(modification("libs/db_utils.php"));
+include(modification("classes/db_termo_classe.php"));
 
 $cltermo = new cl_termo();
 
@@ -41,7 +41,7 @@ $rsTermo   = $cltermo->sql_record($cltermo->sql_query_file(null,"v07_numpre",nul
 if ( $cltermo->numrows > 0 ) {
   $oTermo  = db_utils::fieldsMemory($rsTermo,0);
 }else{
-  db_msgbox("Parcelamento n√£o encontrado");
+  db_msgbox("Parcelamento n„o encontrado");
   echo " <script> parent.db_iframe_consultaparc".$oGet->parcelamento.".hide(); </script>";
   exit;
 }
@@ -59,10 +59,12 @@ if ( $cltermo->numrows > 0 ) {
     <td align="center" valign="top"> 
       <? 
         $camposDetalhe = "";
+        $camposDetalheDiversos = "";
         $funcao_js     = "js_mudaFiltro|DB_parametro";
 
         if (isset($oGet->tipoFiltro) && $oGet->tipoFiltro == 'a') {
           $camposDetalhe = "v01_coddiv,v01_numpre,v01_numpar, ";
+          $camposDetalheDiversos = "dv05_coddiver as v01_coddiv, dv05_numpre as v01_numpre, 1 as v01_numpar, ";
           $funcao_js     = "js_consultaDivida|v01_coddiv";
         }
 
@@ -101,7 +103,20 @@ if ( $cltermo->numrows > 0 ) {
         $sqlDividas .= "                        inner join certdiv         on v14_certid        = v51_certidao     ";
         $sqlDividas .= "                        inner join divida          on v01_coddiv        = v14_coddiv       ";
         $sqlDividas .= "                                                  and v01_instit        = ".db_getsession('DB_instit');
-        $sqlDividas .= "                        inner join proced          on proced.v03_codigo = divida.v01_proced  ) as x ";      
+        $sqlDividas .= "                        inner join proced          on proced.v03_codigo = divida.v01_proced";
+        $sqlDividas .= "             union                                                                         ";
+        $sqlDividas .= "                select $camposDetalheDiversos                                              ";
+        $sqlDividas .= "                       'a' as db_parametro,                                                ";
+        $sqlDividas .= "                       dv05_exerc,                                                         ";
+        $sqlDividas .= "                       dv09_descr,                                                         ";
+        $sqlDividas .= "                       dv05_vlrhis,                                                        ";
+        $sqlDividas .= "                       dv05_valor,                                                         ";
+        $sqlDividas .= "                       rdtlanc                                                             ";
+        $sqlDividas .= "                   from fc_origemparcelamento({$oTermo->v07_numpre}) as origemparcelamento ";
+        $sqlDividas .= "                        inner join termo      on termo.v07_parcel       = riparcel         ";
+        $sqlDividas .= "                        inner join termodiver on termodiver.dv10_parcel = riparcel         ";
+        $sqlDividas .= "                        inner join diversos   on dv05_coddiver          = dv10_coddiver    ";
+        $sqlDividas .= "                        inner join procdiver  on dv09_procdiver         = dv05_procdiver) as x ";
         $sqlDividas .= "        group by $camposDetalhe                                                            ";
         $sqlDividas .= "                 v01_exerc,                                                                ";
         $sqlDividas .= "                 v03_descr,                                                                ";
@@ -141,16 +156,14 @@ function js_mudaFiltro(valor){
 }
 
 function js_consultaDivida(codigoOrigem){
+
   /* alert(' inicio -- '+codigoOrigem); return false; */
   var  arquivo    = 'div1_consulta003.php';
   var  parametros = 'codDiv='+codigoOrigem;    
   var  nomeIframe = 'db_iframe_consultadivida';
 
-  js_OpenJanelaIframe('top.corpo',nomeIframe,arquivo+'?'+parametros,'Detalhes da Pesquisa',true);
+  js_OpenJanelaIframe('CurrentWindow.corpo',nomeIframe,arquivo+'?'+parametros,'Detalhes da Pesquisa',true);
 
 }
-
-
-
 
 </script>

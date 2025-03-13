@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2012  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -30,10 +30,10 @@ class estagioAvaliacao {
   function estagioAvaliacao($iCodAvaliacao,$setSession=true){
 
      if (!class_exists("rhestagioagendadata")){
-         require_once "classes/db_rhestagioagendadata_classe.php";
+         require_once modification("classes/db_rhestagioagendadata_classe.php");
      }
      if (!class_exists("db_utils")){
-         require_once "libs/db_utils.php";
+         require_once modification("libs/db_utils.php");
      }
      $campos = "*,nomeavaliador.z01_nome as nomeavaliador";
      $this->agendaData        = new cl_rhestagioagendadata(); 
@@ -56,7 +56,7 @@ class estagioAvaliacao {
 
      if (!class_exists("rhestagioquesito")){
         
-        require_once "classes/db_rhestagioquesito_classe.php";
+        require_once modification("classes/db_rhestagioquesito_classe.php");
      }
      $sFiltroQuesito   = null;
      if ($iCodQuesito != ''){
@@ -85,7 +85,7 @@ class estagioAvaliacao {
   function getQuestoesQuesito($iCodQuesito){
 
      if (!class_exists("rhestagioquesitopergunta")){
-        require_once "classes/db_rhestagioquesitopergunta_classe.php";
+        require_once modification("classes/db_rhestagioquesitopergunta_classe.php");
      }
      $this->estagioQuestoes = new cl_rhestagioquesitopergunta();
      $this->rEstagioQuestao = $this->estagioQuestoes->sql_record($this->estagioQuestoes->sql_query(null,"*","h53_sequencial",
@@ -98,7 +98,7 @@ class estagioAvaliacao {
 
      if (!class_exists("rhestagioquesitoresposta")){
 
-        require_once "classes/db_rhestagioquesitoresposta_classe.php";
+        require_once modification("classes/db_rhestagioquesitoresposta_classe.php");
      }
      $this->estagioResposta = new cl_rhestagioquesitoresposta();
      $this->rEstagioResposta = $this->estagioResposta->sql_record($this->estagioResposta->sql_query(null,"*","h54_sequencial",
@@ -112,7 +112,7 @@ class estagioAvaliacao {
   function getDadosExame($iCodQuesito = null){
       
       if (!class_exists("services_json")){
-         require_once "libs/JSON.php";
+         require_once modification("libs/JSON.php");
       }
       $objJson = new services_JSON();
       $strJson["status"]        = 1;
@@ -207,7 +207,7 @@ class estagioAvaliacao {
           $sSQLTot  .= "        inner join rhestagioquesitopergunta   on h54_rhestagioquesitopergunta = h53_sequencial ";
           $sSQLTot  .= "  where h56_rhestagioagenda  = {$this->codAvaliacao}";
           $sSQLTot  .= "    and h53_rhestagioquesito = {$oQuesitos->h51_sequencial}";
-          $rsTot     = pg_query($sSQLTot);
+          $rsTot     = db_query($sSQLTot);
           $oTot      = db_utils::fieldsMemory($rsTot,0);
           $totalResp = 0;
           if ($oTot->total == $this->iTotQuestoes){
@@ -221,7 +221,7 @@ class estagioAvaliacao {
         }
       }
       if (!class_exists("services_json")){
-         require_once "libs/JSON.php";
+         require_once modification("libs/JSON.php");
       }
       $objJson = new services_JSON();
       return $objJson->encode($strJson);
@@ -261,7 +261,7 @@ class estagioAvaliacao {
      unset($_SESSION["avaliacao"]) ;
      $_SESSION["avaliacao"]["questoes"] = array();
      if (!class_exists("rhestagioavaliacao")){
-        require_once("classes/db_rhestagioavaliacao_classe.php");
+        require_once(modification("classes/db_rhestagioavaliacao_classe.php"));
      }
      $this->estagioAvaliacao  = new cl_rhestagioavaliacao();
      $this->rEstagioAvaliacao = $this->estagioAvaliacao->sql_record(
@@ -271,11 +271,11 @@ class estagioAvaliacao {
 
         
        if (!class_exists("rhestagioavaliacaoresposta")){
-          require_once("classes/db_rhestagioavaliacaoresposta_classe.php");
+          require_once(modification("classes/db_rhestagioavaliacaoresposta_classe.php"));
        }
        $this->avaliacaoResposta = new  cl_rhestagioavaliacaoresposta();
        if (!class_exists("rhestagioavaliacaoobs")){
-          require_once("classes/db_rhestagioavaliacaoobs_classe.php");
+          require_once(modification("classes/db_rhestagioavaliacaoobs_classe.php"));
        }
        $this->avaliacaoObs = new  cl_rhestagioavaliacaoObs();
        for ($i = 0; $i < $this->estagioAvaliacao->numrows; $i++){
@@ -324,23 +324,23 @@ class estagioAvaliacao {
    function salvarExame($aPars){
 
      if (!class_exists("rhestagioavaliacao")){
-        require_once("classes/db_rhestagioavaliacao_classe.php");
+        require_once(modification("classes/db_rhestagioavaliacao_classe.php"));
      }
      $this->estagioAvaliacao  = new cl_rhestagioavaliacao();
      if (!class_exists("rhestagioavaliacaoresposta")){
-        require_once("classes/db_rhestagioavaliacaoresposta_classe.php");
+        require_once(modification("classes/db_rhestagioavaliacaoresposta_classe.php"));
      }
      $this->avaliacaoResposta = new  cl_rhestagioavaliacaoresposta();
      if (!class_exists("rhestagioavaliacaoobs")){
-       require_once("classes/db_rhestagioavaliacaoobs_classe.php");
+       require_once(modification("classes/db_rhestagioavaliacaoobs_classe.php"));
      }
      $this->avaliacaoObs = new  cl_rhestagioavaliacaoobs();
      if (!class_exists("rhestagioavaliacaoobspergunta")){
-        require_once("classes/db_rhestagioavaliacaoobspergunta_classe.php");
+        require_once(modification("classes/db_rhestagioavaliacaoobspergunta_classe.php"));
      }
      $this->avaliacaoObsPergunta = new  cl_rhestagioavaliacaoobspergunta();
      if (!class_exists("rhestagioavaliacaoobsquesito")){
-        require_once("classes/db_rhestagioavaliacaoobsquesito_classe.php");
+        require_once(modification("classes/db_rhestagioavaliacaoobsquesito_classe.php"));
      }
      $this->avaliacaoObsQuesito = new  cl_rhestagioavaliacaoobsquesito();
      $this->lSqlErro = false;
@@ -454,7 +454,7 @@ class estagioAvaliacao {
    function array2json($array){
 
       if (!class_exists("services_json")){
-         require_once "libs/JSON.php";
+         require_once modification("libs/JSON.php");
       }
       $objJson = new services_JSON();
       return $objJson->encode($array);
@@ -470,14 +470,14 @@ class estagioAvaliacao {
      $SQLAvaliacao  = "select h56_sequencial";
      $SQLAvaliacao .= "  from rhestagioavaliacao";
      $SQLAvaliacao .= " where h56_rhestagioagenda = {$this->codAvaliacao}";
-     $rAvaliacao   = pg_query($SQLAvaliacao);
+     $rAvaliacao   = db_query($SQLAvaliacao);
      if (pg_num_rows($rAvaliacao) > 0){
        $oAvaliacao  = db_utils::fieldsMemory($rAvaliacao,0);
        $sDeleteObs  = "delete ";
        $sDeleteObs .= "  from rhestagioavaliacaoobspergunta ";
        $sDeleteObs .= " using rhestagioavaliacaoobs";
        $sDeleteObs .= " where h61_rhestagioavaliacao = {$oAvaliacao->h56_sequencial}";
-       if (!pg_query($sDeleteObs)){
+       if (!db_query($sDeleteObs)){
            $this->lSqlErro = true;
            $this->sErroMsg = "Erro[6]: Nao foi possivel Excluir Avaliacão:\n".pg_last_Error();
        }
@@ -488,7 +488,7 @@ class estagioAvaliacao {
           $sDeleteObs .= "  from rhestagioavaliacaoobsquesito";
           $sDeleteObs .= " using rhestagioavaliacaoobs";
           $sDeleteObs .= " where h61_rhestagioavaliacao = {$oAvaliacao->h56_sequencial}";
-          if (!@pg_query($sDeleteObs)){
+          if (!@db_query($sDeleteObs)){
              $this->lSqlErro = true;
              $this->sErroMsg = "Erro[7]: Nao foi possivel Excluir Avaliacão:\n".pg_last_Error();
           }
@@ -497,7 +497,7 @@ class estagioAvaliacao {
            $sDeleteObs  = "delete ";
            $sDeleteObs .= "  from rhestagioavaliacaoobs ";
            $sDeleteObs .= " where h61_rhestagioavaliacao = {$oAvaliacao->h56_sequencial}";
-           if (!@pg_query($sDeleteObs)){
+           if (!@db_query($sDeleteObs)){
               $this->lSqlErro = true;
               $this->sErroMsg = "Erro[8]: Nao foi possivel Excluir Avaliacão:\n".pg_last_Error();
           }
@@ -506,7 +506,7 @@ class estagioAvaliacao {
            $sDeleteperg  = "delete ";
            $sDeleteperg .= "  from rhestagioavaliacaoresposta ";
            $sDeleteperg .= " where h58_rhestagioavaliacao = {$oAvaliacao->h56_sequencial}";
-           if (!@pg_query($sDeleteperg)){
+           if (!@db_query($sDeleteperg)){
               $this->lSqlErro = true;
               $this->sErroMsg = "Erro[9]: Nao foi possivel Excluir Avaliacão:\n".pg_last_Error();
           }
@@ -515,7 +515,7 @@ class estagioAvaliacao {
            $sDeleteaval  = "delete ";
            $sDeleteaval .= "  from rhestagioavaliacao ";
            $sDeleteaval .= " where h56_sequencial = {$oAvaliacao->h56_sequencial}";
-           if (!pg_query($sDeleteaval)){
+           if (!db_query($sDeleteaval)){
               $this->lSqlErro = true;
               $this->sErroMsg = "Erro[10]: Nao foi possivel Excluir Avaliacão:\n".pg_last_Error();
           }
@@ -546,7 +546,7 @@ class estagioAvaliacao {
    function getPresidenteComissao(){
      
      if (!class_exists("rhestagioavaliacao")){
-         require_once "classes/db_rhestagioavaliacao_classe.php";
+         require_once modification("classes/db_rhestagioavaliacao_classe.php");
      }
      $this->oEstagioAvaliacao = new cl_rhestagioavaliacao();
      $rAvaliacao =  $this->oEstagioAvaliacao->sql_record($this->oEstagioAvaliacao->sql_query_comissao(null,"distinct z01_nome",null, 

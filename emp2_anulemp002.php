@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal
- *  Copyright (C) 2014  DBselller Servicos de Informatica
+ *  Copyright (C) 2009  DBselller Servicos de Informatica
  *                            www.dbseller.com.br
  *                         e-cidade@dbseller.com.br
  *
@@ -25,157 +25,122 @@
  *                                licenca/licenca_pt.txt
  */
 
-require_once("fpdf151/impcarne.php");
-require_once("fpdf151/scpdf.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_sql.php");
-require_once("classes/db_empparametro_classe.php");
-require_once("classes/db_empanulado_classe.php");
-require_once("classes/db_empanuladoele_classe.php");
-require_once("classes/db_pcforneconpad_classe.php");
-require_once("libs/db_liborcamento.php");
+require_once(modification("fpdf151/impcarne.php"));
+require_once(modification("fpdf151/scpdf.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_sql.php"));
+require_once(modification("classes/db_empparametro_classe.php"));
+require_once(modification("classes/db_empanulado_classe.php"));
+require_once(modification("classes/db_empanuladoele_classe.php"));
+require_once(modification("classes/db_pcforneconpad_classe.php"));
+require_once(modification("libs/db_liborcamento.php"));
+
+try
+{
 
 $clempparametro	    = new cl_empparametro;
 $clempanulado	      = new cl_empanulado;
 $cldb_pcforneconpad = new cl_pcforneconpad;
 $clempanuladoele    = new cl_empanuladoele;
 $atual              = 0;
+$anosessao = db_getsession('DB_anousu');
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
-//db_postmemory($HTTP_SERVER_VARS,2);
+$where  = "";
 
-$where1 = '';
-if(isset($e94_codanu)) {
-
-  $re = db_query("select distinct e94_numemp from empanulado where e94_codanu = $e94_codanu");
-  if(pg_numrows($re) == 0 ){
-    db_redireciona('db_erros.php?fechar=true&db_erro=Anulação n'.chr(176).' '.$e94_codanu.' não encontrada. Verifique!');
-  }
-  db_fieldsmemory($re,0);
-  $e60_numemp = $e94_numemp;
-  $where1 = " where e94_codanu = $e94_codanu";
-
-} elseif(isset($e60_codemp)) {
-
-  $arr = split("/",$e60_codemp);
-  if (count($arr) == 2  && isset($arr[1]) && $arr[1] != '' ) {
-	  $ano = " and e60_anousu = ".$arr[1];
-  } else {
-	  $ano = " and e60_anousu = ".db_getsession("DB_anousu");
-  }
-
-  $where  = "where e60_codemp =  '".$arr[0]."' $ano";
-  $where .= " and e60_instit = " . db_getsession('DB_instit');
-
-  $re = db_query("select distinct e94_numemp  from empanulado inner join empempenho on e94_numemp = e60_numemp $where");
-  if(!$re || pg_num_rows($re) == 0) {
-    db_redireciona('db_erros.php?fechar=true&db_erro=Anulação n'.chr(176).' '.$e94_codanu.' não encontrada. Verifique!');
-  }
-  db_fieldsmemory($re,0);
-  $e60_numemp = $e94_numemp;
-  $where1 = " where e94_numemp = $e94_numemp";
-
-} else {
-  $where1 = " where e94_numemp = $e60_numemp";
+if(!empty($e94_codanu)){
+  $where .= "AND e94_codanu = {$e94_codanu} ";
 }
 
-$dbwhere = " e60_numemp = ".$e60_numemp;
+if(!empty($e60_codemp)){
+    $codeempeano = explode("/",$e60_codemp);
+    if(!empty($codeempeano[0]) and !empty($codeempeano[1])){
+        $where .= "AND e60_codemp = '{$codeempeano[0]}' AND e60_anousu = '{$codeempeano[1]}' ";
+    }else{
+        $where .= "AND e60_codemp = '{$codeempeano[0]}' AND e60_anousu = '{$anosessao}' ";
+    }
+}
+
+if(!empty($e60_numemp)){
+  $where .= "AND e60_numemp = {$e60_numemp} ";
+}
+
+if(isset($data_inicio) or isset($data_fim)){
+   if(empty($data_inicio) or empty($data_fim)){
+     throw new \Exception("Consulta por data deve informar, data inicial e final");
+   }
+  $where .= "AND e94_data BETWEEN '{$data_inicio}' AND '{$data_fim}' ";
+}
+
+if(empty($where)){
+  throw new \Exception("Nenhum filtro foi aplicado para a consulta!");
+}
+
+$where.= "AND e60_instit = " . db_getsession('DB_instit');
+
 $head3 = "CADASTRO DE CÓDIGOS";
-
-$sqlpref = "select * from db_config where codigo = ".db_getsession("DB_instit");
-$resultpref = db_query($sqlpref);
-db_fieldsmemory($resultpref,0);
-
-$sqlemp  = "select empempenho.*,                                                              ";
-$sqlemp .= "       cgm.* ,                                                                    ";
-$sqlemp .= "       o58_orgao,                                                                 ";
-$sqlemp .= "       o40_descr,                                                                 ";
-$sqlemp .= "       o58_unidade,                                                               ";
-$sqlemp .= "       o41_descr,                                                                 ";
-$sqlemp .= "       o58_funcao,                                                                ";
-$sqlemp .= "       o52_descr,                                                                 ";
-$sqlemp .= "       o58_subfuncao,                                                             ";
-$sqlemp .= "       o53_descr,                                                                 ";
-$sqlemp .= "       o58_programa,                                                              ";
-$sqlemp .= "       o54_descr,                                                                 ";
-$sqlemp .= "       o58_projativ,                                                              ";
-$sqlemp .= "       o55_descr,                                                                 ";
-$sqlemp .= "       o58_coddot,                                                                ";
-$sqlemp .= "       o58_anousu,                                                                ";
-$sqlemp .= "       o56_elemento as sintetico,                                                 ";
-$sqlemp .= "       o56_descr as descr_sintetico,                                              ";
-$sqlemp .= "       o58_codigo,                                                                ";
-$sqlemp .= "       o15_descr,                                                                 ";
-$sqlemp .= "       e61_autori,                                                                ";
-$sqlemp .= "       l03_descr,                                                                 ";
-$sqlemp .= "       fc_estruturaldotacao(o58_anousu,o58_coddot) as estrutural                  ";
-$sqlemp .= "  from empempenho                                                                 ";
-$sqlemp .= "       left join cflicita	     on l03_tipo         = e60_tipol                  ";
-$sqlemp .= "       left join orcdotacao    	 on o58_coddot       = e60_coddot                 ";
-$sqlemp .= "                                and o58_instit       = ".db_getsession("DB_instit");
-$sqlemp .= "	                            and o58_anousu       = e60_anousu                 ";
-$sqlemp .= "       inner join orcorgao   	 on o58_orgao        = o40_orgao                  ";
-$sqlemp .= "                                and o40_anousu       = e60_anousu                 ";
-$sqlemp .= "       inner join orcunidade 	 on o58_unidade      = o41_unidade                ";
-$sqlemp .= "                                and o58_orgao        = o41_orgao                  ";
-$sqlemp .= "                                and o41_anousu       = o58_anousu                 ";
-$sqlemp .= "       inner join orcfuncao   	 on o58_funcao       = o52_funcao                 ";
-$sqlemp .= "       inner join orcsubfuncao   on o58_subfuncao    = o53_subfuncao              ";
-$sqlemp .= "       inner join orcprograma    on o58_programa     = o54_programa               ";
-$sqlemp .= "                                and o54_anousu       = o58_anousu                 ";
-$sqlemp .= "       inner join orcprojativ  	 on o58_projativ     = o55_projativ               ";
-$sqlemp .= "                                and o55_anousu       = o58_anousu                 ";
-$sqlemp .= "       inner join orcelemento a	 on o58_codele       = o56_codele                 ";
-$sqlemp .= "                                and o58_anousu       = o56_anousu                 ";
-$sqlemp .= "       inner join orctiporec  	 on o58_codigo       = o15_codigo                 ";
-$sqlemp .= "       inner join cgm 		     on z01_numcgm       = e60_numcgm                 ";
-$sqlemp .= "       left join empempaut	     on e60_numemp       = e61_numemp                 ";
-$sqlemp .= "	where  $dbwhere ";
-$result = db_query($sqlemp);
+$sql  = "
+          SELECT
+              *
+          FROM
+              empanulado
+          INNER JOIN empempenho  on  empempenho.e60_numemp = empanulado.e94_numemp
+          INNER JOIN db_config  on  db_config.codigo = empempenho.e60_instit
+          LEFT JOIN  cflicita ON l03_tipo = e60_tipol AND l03_instit = e60_instit
+          INNER JOIN  orcdotacao ON o58_coddot = e60_coddot AND o58_anousu = e60_anousu
+          INNER JOIN orcorgao ON o58_orgao = o40_orgao AND o40_anousu = e60_anousu
+          INNER JOIN orcunidade ON o58_unidade = o41_unidade AND o58_orgao = o41_orgao AND o41_anousu = o58_anousu
+          INNER JOIN orcfuncao ON o58_funcao = o52_funcao
+          INNER JOIN orcsubfuncao ON o58_subfuncao = o53_subfuncao
+          INNER JOIN orcprograma ON o58_programa = o54_programa AND o54_anousu = o58_anousu
+          INNER JOIN orcprojativ ON o58_projativ = o55_projativ AND o55_anousu = o58_anousu
+          INNER JOIN orcelemento a ON o58_codele = o56_codele AND o58_anousu = o56_anousu
+          INNER JOIN orctiporec ON o58_codigo = o15_codigo
+          INNER JOIN cgm ON z01_numcgm = e60_numcgm
+          LEFT JOIN empempaut ON e60_numemp = e61_numemp
+          WHERE
+              TRUE
+              {$where}
+          ORDER BY e94_codanu ASC
+";
+$result = db_query($sql);
 if($result==false || pg_numrows($result) == 0 ){
-  db_redireciona('db_erros.php?fechar=true&db_erro=Anulação n'.chr(176).' '.$e94_codanu.' não encontrada. Verifique!');
+  throw new \Exception("Anulação n".chr(176)." {$e94_codanu} não encontrada. Verifique!");
 }
 db_fieldsmemory($result,0);
-
-/**
- *
- * Busca dados bancários
- */
-$sSqlPcFornecOnPad  = $cldb_pcforneconpad->sql_query(null, "*", null, "pc63_numcgm = {$e60_numcgm}");
-$rsSqlPcFornecOnPad = $cldb_pcforneconpad->sql_record($sSqlPcFornecOnPad);
-
-if (!$rsSqlPcFornecOnPad == false && $cldb_pcforneconpad->numrows > 0) {
-  $oPcFornecOnPad     = db_utils::fieldsMemory($rsSqlPcFornecOnPad,0);
-} else {
-
-  $oPcFornecOnPad = new stdClass();
-  $oPcFornecOnPad->pc63_banco       = '';
-  $oPcFornecOnPad->pc63_agencia     = '';
-  $oPcFornecOnPad->pc63_agencia_dig = '';
-  $oPcFornecOnPad->pc63_conta       = '';
-  $oPcFornecOnPad->pc63_conta_dig   = '';
-}
-
-$res_dot = db_dotacaosaldo(8,2,2,true," o58_coddot = $o58_coddot and o58_anousu = $o58_anousu");
-if (pg_numrows($res_dot)>0){
-  db_fieldsmemory($res_dot,0);
-}
-
 
 $pdf = new scpdf();
 $pdf->Open();
 $pdf1 = new db_impcarne($pdf,'12');
 $pdf1->objpdf->SetTextColor(0,0,0);
 
-//rotina que pega o numero de vias
-$result02 = db_query("select * from empanulado $where1 ");
-if($clempparametro->numrows>0){
-  db_fieldsmemory($result02,0);
-}
 
 $pdf1->nvias= 1;
 $nValorTotalAnulado = 0;
-for($i = 0;$i < pg_numrows($result02);$i++){
-   db_fieldsmemory($result02,$i);
+for($i = 0;$i < pg_numrows($result);$i++){
+   db_fieldsmemory($result,$i);
+    /**
+     *
+     * Busca dados bancários
+     */
+    $sSqlPcFornecOnPad  = $cldb_pcforneconpad->sql_query(null, "*", null, "pc63_numcgm = {$e60_numcgm}");
+    $rsSqlPcFornecOnPad = $cldb_pcforneconpad->sql_record($sSqlPcFornecOnPad);
+
+    if (!$rsSqlPcFornecOnPad == false && $cldb_pcforneconpad->numrows > 0) {
+      $oPcFornecOnPad     = db_utils::fieldsMemory($rsSqlPcFornecOnPad,0);
+    } else {
+      $oPcFornecOnPad = new stdClass();
+      $oPcFornecOnPad->pc63_banco       = '';
+      $oPcFornecOnPad->pc63_agencia     = '';
+      $oPcFornecOnPad->pc63_agencia_dig = '';
+      $oPcFornecOnPad->pc63_conta       = '';
+      $oPcFornecOnPad->pc63_conta_dig   = '';
+    }
+
+    $res_dot = db_dotacaosaldo(8,2,2,true," o58_coddot = $o58_coddot and o58_anousu = $o58_anousu");
+    if (pg_numrows($res_dot)>0){
+      db_fieldsmemory($res_dot,0);
+    }
+
 
    $sqlitens  = "select distinct *                                                                           ";
    $sqlitens .= "     from empanuladoele                                                                     ";
@@ -251,6 +216,7 @@ for($i = 0;$i < pg_numrows($result02);$i++){
    $pdf1->emissao          = db_formatar($e94_data,'d');
    $pdf1->texto		         = db_getsession("DB_login").'  -  '.date("d-m-Y",db_getsession("DB_datausu")).'    '.db_hora(db_getsession("DB_datausu"));
    $pdf1->cnpj             = $z01_cgccpf;
+   $pdf1->cep              = $z01_cep;
 
    /**
     * Dados Bancários
@@ -262,4 +228,9 @@ for($i = 0;$i < pg_numrows($result02);$i++){
 
    $pdf1->imprime();
 }
+
 $pdf1->objpdf->Output();
+
+}catch(\Exception $ex){
+  db_redireciona("db_erros.php?fechar=true&db_erro={$ex->getMessage()}");
+}

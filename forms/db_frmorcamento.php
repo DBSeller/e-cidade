@@ -242,7 +242,7 @@ function js_verifica_hora(valor,campo){
   }
 }
 function js_pesquisa(){
-  js_OpenJanelaIframe('top.corpo.iframe_orcam','db_iframe_pcorcam','func_orcsolicita.php?sol=true&funcao_js=parent.js_preenchepesquisa|pc20_codorc&departamento=<?=db_getsession("DB_coddepto")?>','Pesquisa',true,'0');
+  js_OpenJanelaIframe('CurrentWindow.corpo.iframe_orcam','db_iframe_pcorcam','func_orcsolicita.php?sol=true&funcao_js=parent.js_preenchepesquisa|pc20_codorc&departamento=<?=db_getsession("DB_coddepto")?>','Pesquisa',true,'0');
 }
 function js_preenchepesquisa(chave){
   db_iframe_pcorcam.hide();

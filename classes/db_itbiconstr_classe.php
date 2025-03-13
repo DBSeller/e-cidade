@@ -1,7 +1,7 @@
-<?
+<?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -29,28 +29,28 @@
 //CLASSE DA ENTIDADE itbiconstr
 class cl_itbiconstr { 
    // cria variaveis de erro 
-   var $rotulo     = null; 
-   var $query_sql  = null; 
-   var $numrows    = 0; 
-   var $numrows_incluir = 0; 
-   var $numrows_alterar = 0; 
-   var $numrows_excluir = 0; 
-   var $erro_status= null; 
-   var $erro_sql   = null; 
-   var $erro_banco = null;  
-   var $erro_msg   = null;  
-   var $erro_campo = null;  
-   var $pagina_retorno = null; 
+   public $rotulo     = null; 
+   public $query_sql  = null; 
+   public $numrows    = 0; 
+   public $numrows_incluir = 0; 
+   public $numrows_alterar = 0; 
+   public $numrows_excluir = 0; 
+   public $erro_status= null; 
+   public $erro_sql   = null; 
+   public $erro_banco = null;  
+   public $erro_msg   = null;  
+   public $erro_campo = null;  
+   public $pagina_retorno = null; 
    // cria variaveis do arquivo 
-   var $it08_codigo = 0; 
-   var $it08_guia = 0; 
-   var $it08_area = 0; 
-   var $it08_areatrans = 0; 
-   var $it08_ano = 0; 
-   var $it08_obs = null; 
-   var $it08_coordenadas = null; 
+   public $it08_codigo = 0; 
+   public $it08_guia = 0; 
+   public $it08_area = 0; 
+   public $it08_areatrans = 0; 
+   public $it08_ano = 0; 
+   public $it08_obs = null; 
+   public $it08_coordenadas = null; 
    // cria propriedade com as variaveis do arquivo 
-   var $campos = "
+   public $campos = "
                  it08_codigo = int8 = Código 
                  it08_guia = int8 = Número da guia de ITBI 
                  it08_area = float8 = Área 
@@ -60,13 +60,13 @@ class cl_itbiconstr {
                  it08_coordenadas = varchar(50) = Longitude/Latitude 
                  ";
    //funcao construtor da classe 
-   function cl_itbiconstr() { 
+   public function cl_itbiconstr() { 
      //classes dos rotulos dos campos
      $this->rotulo = new rotulo("itbiconstr"); 
      $this->pagina_retorno =  basename($GLOBALS["HTTP_SERVER_VARS"]["PHP_SELF"]);
    }
    //funcao erro 
-   function erro($mostra,$retorna) { 
+   public function erro($mostra,$retorna) { 
      if(($this->erro_status == "0") || ($mostra == true && $this->erro_status != null )){
         echo "<script>alert(\"".$this->erro_msg."\");</script>";
         if($retorna==true){
@@ -75,7 +75,7 @@ class cl_itbiconstr {
      }
    }
    // funcao para atualizar campos
-   function atualizacampos($exclusao=false) {
+   public function atualizacampos($exclusao=false) {
      if($exclusao==false){
        $this->it08_codigo = ($this->it08_codigo == ""?@$GLOBALS["HTTP_POST_VARS"]["it08_codigo"]:$this->it08_codigo);
        $this->it08_guia = ($this->it08_guia == ""?@$GLOBALS["HTTP_POST_VARS"]["it08_guia"]:$this->it08_guia);
@@ -89,7 +89,7 @@ class cl_itbiconstr {
      }
    }
    // funcao para inclusao
-   function incluir ($it08_codigo){ 
+   public function incluir ($it08_codigo){ 
       $this->atualizacampos();
      if($this->it08_guia == null ){ 
        $this->erro_sql = " Campo Número da guia de ITBI nao Informado.";
@@ -218,7 +218,7 @@ class cl_itbiconstr {
      return true;
    } 
    // funcao para alteracao
-   function alterar ($it08_codigo=null) { 
+   public function alterar ($it08_codigo=null) { 
       $this->atualizacampos();
      $sql = " update itbiconstr set ";
      $virgula = "";
@@ -355,7 +355,7 @@ class cl_itbiconstr {
      } 
    } 
    // funcao para exclusao 
-   function excluir ($it08_codigo=null,$dbwhere=null) { 
+   public function excluir ($it08_codigo=null,$dbwhere=null) { 
      if($dbwhere==null || $dbwhere==""){
        $resaco = $this->sql_record($this->sql_query_file($it08_codigo));
      }else{ 
@@ -422,7 +422,7 @@ class cl_itbiconstr {
      } 
    } 
    // funcao do recordset 
-   function sql_record($sql) { 
+   public function sql_record($sql) { 
      $result = db_query($sql);
      if($result==false){
        $this->numrows    = 0;
@@ -445,10 +445,10 @@ class cl_itbiconstr {
      return $result;
    }
    // funcao do sql 
-   function sql_query ( $it08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query ( $it08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -471,7 +471,7 @@ class cl_itbiconstr {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -481,10 +481,10 @@ class cl_itbiconstr {
      return $sql;
   }
    // funcao do sql 
-   function sql_query_file ( $it08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_file ( $it08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -505,7 +505,7 @@ class cl_itbiconstr {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -515,10 +515,10 @@ class cl_itbiconstr {
      return $sql;
   }
 
-   function sql_query_espec( $it08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
+   public function sql_query_espec( $it08_codigo=null,$campos="*",$ordem=null,$dbwhere=""){ 
      $sql = "select ";
      if($campos != "*" ){
-       $campos_sql = split("#",$campos);
+       $campos_sql = explode("#",$campos);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];
@@ -542,7 +542,7 @@ class cl_itbiconstr {
      $sql .= $sql2;
      if($ordem != null ){
        $sql .= " order by ";
-       $campos_sql = split("#",$ordem);
+       $campos_sql = explode("#",$ordem);
        $virgula = "";
        for($i=0;$i<sizeof($campos_sql);$i++){
          $sql .= $virgula.$campos_sql[$i];

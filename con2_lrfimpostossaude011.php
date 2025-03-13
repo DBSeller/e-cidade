@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2013  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,15 +25,15 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require_once("libs/db_stdlib.php");
-require_once("libs/db_utils.php");
-require_once("libs/db_conecta.php");
-require_once("libs/db_sessoes.php");
-require_once("libs/db_usuariosonline.php");
-require_once("dbforms/db_funcoes.php");
-require_once("libs/db_liborcamento.php");
-require_once("model/relatorioContabil.model.php");
-require_once("model/linhaRelatorioContabil.model.php");
+require_once(modification("libs/db_stdlib.php"));
+require_once(modification("libs/db_utils.php"));
+require_once(modification("libs/db_conecta.php"));
+require_once(modification("libs/db_sessoes.php"));
+require_once(modification("libs/db_usuariosonline.php"));
+require_once(modification("dbforms/db_funcoes.php"));
+require_once(modification("libs/db_liborcamento.php"));
+require_once(modification("model/relatorioContabil.model.php"));
+require_once(modification("model/linhaRelatorioContabil.model.php"));
 $oGet = db_utils::postMemory($_GET);
 db_postmemory($HTTP_POST_VARS);
 
@@ -42,7 +42,7 @@ $clrotulo->label('DBtxt21');
 $clrotulo->label('DBtxt22');
 
 $anousu = db_getsession("DB_anousu");
-$sLabelMsg = "Anexo XVI - Impostos e Despesas com Saúde";
+$sLabelMsg = "Anexo XII - Impostos e Despesas com Saúde";
 $oRelatorio = new relatorioContabil($oGet->codrel);
 
 
@@ -74,25 +74,21 @@ js_buscaEdicaoLrf(<?=db_getsession("DB_anousu")?>,"con2_lrfimpostossaude002");
 
 function js_emite(anousu){
 
-  /**
-   * A partir de 2013 utilizamos outro arquivo para emissão do relatório.
-   */
-  if (anousu >= 2013) {
-    sNomeArquivoEdicao = 'con2_lrfimpostossaude002_2013.php';
-  }
-  obj                = document.form1;
-  query              = "";
-  query             += sNomeArquivoEdicao+"?periodo="+obj.o116_periodo.value;
+    if (anousu >= 2019) {
+        sNomeArquivoEdicao = 'con2_emissaoanexoXII002.php';
+    }
+    obj = document.form1;
+    query = `${sNomeArquivoEdicao}?periodo=${obj.o116_periodo.value}&ano=${anousu}`;
 
-  if (obj.o116_periodo.value == 0) {
+    if (obj.o116_periodo.value == 0) {
 
-    alert('Selecione um período.');
-    return false;
-  }
+        alert('Selecione um período.');
+        return false;
+    }
 
-  
-  jan = window.open(query,'','width='+(screen.availWidth-5)+',height='+(screen.availHeight-40)+',scrollbars=1,location=0 ');
-  jan.moveTo(0,0);
+
+    jan = window.open(query, '', 'width=' + (screen.availWidth - 5) + ',height=' + (screen.availHeight - 40) + ',scrollbars=1,location=0 ');
+    jan.moveTo(0, 0);
 }
 </script>  
 <link href="estilos.css" rel="stylesheet" type="text/css">

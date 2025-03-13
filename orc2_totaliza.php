@@ -26,7 +26,7 @@
  */
 
 
-include("libs/db_liborcamento.php");
+include(modification("libs/db_liborcamento.php"));
 
 
 // pesquisa a conta mae da receita
@@ -50,8 +50,8 @@ $tipo_filtra = 1;
 // 1 = somente o nivel
 // 0 = até o nivel
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
 
 parse_str($HTTP_SERVER_VARS['QUERY_STRING']);
 
@@ -60,7 +60,7 @@ $head4 = "ANEXO (6) EXERCICIO: ".db_getsession("DB_anousu");
 
 // funcao para gerar work
 
-pg_exec("begin");
+db_query("begin");
 
   
 $sql = "create temp table work as 
@@ -140,14 +140,14 @@ $sql .= $sql2 ."
 	group by ";
 $sql .= $sql2;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 $sql = "select ".$sql3." as codigo ,".$descr." as descr,o58_valor
                    from work w
                         $leftj
 		   order by ".$sql2;
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 //db_criatabela($result);
 //exit;
@@ -185,6 +185,6 @@ for($i=0;$i<pg_numrows($result);$i++){
 }
 $pdf->Output();
 
-pg_exec("commit");
+db_query("commit");
 
 ?>

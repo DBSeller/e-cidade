@@ -112,6 +112,53 @@ DBViewFormularioFolha.FiltroDinamicoPesquisaServidores = {
 
       this.oInstancia.abrirJanela(false);
     };
+  },
+
+  "makeLookUpPadrao" : function(oElemento) {
+
+    require_once("scripts/widgets/DBLookUp.widget.js");
+    var oValores               = DBViewFormularioFolha.FiltroDinamicoPesquisaServidores.oValores;
+    var oLabel                 = document.createElement("label");
+    var oAncoraPesquisa        = document.createElement("a"); 
+    var oInputCodigoPadrao     = document.createElement("input");
+    var oInputDescricaoPadrao  = document.createElement("input");
+
+    oLabel.appendChild(oAncoraPesquisa);
+
+    oInputCodigoPadrao.setAttribute("lang", "r02_codigo");
+    oInputCodigoPadrao.setAttribute("name", "r02_codigo");
+    oInputCodigoPadrao.setValue(oValores.r02_codigo);
+
+    oInputDescricaoPadrao.setAttribute("lang", "r02_descr");
+    oInputDescricaoPadrao.setAttribute("name", "r02_descr");
+    oInputDescricaoPadrao.setValue(oValores.r02_descr);
+
+    oInputCodigoPadrao.ondrop = function() {
+      return false;
+    };
+
+    oAncoraPesquisa.innerHTML = "Padrão:";
+
+    oElemento.appendChild(oLabel);
+    oElemento.appendChild(document.createTextNode(" "));//Hack Alinhamento por causa da identação do fonte
+    oElemento.appendChild(oInputCodigoPadrao);
+    oElemento.appendChild(document.createTextNode(" "));//Hack Alinhamento por causa da identação do fonte
+    oElemento.appendChild(oInputDescricaoPadrao);
+
+    var oLookUp = new DBLookUp(oAncoraPesquisa, oInputCodigoPadrao, oInputDescricaoPadrao, {
+        "sArquivo"      : "func_padroes.php",
+        "sObjetoLookUp" : "db_iframe_padroes"
+      });
+    
+    oLookUp.oInputID.onchange = function(oEvento) {
+      
+      if (!js_ValidaCampos( this, 1, 'Padrao', 't', 'f', oEvento)) {
+        this.oInstancia.oInputDescricao.value = "";
+        return false;
+      }
+
+      this.oInstancia.abrirJanela(false);
+    };
   }
 };
 
@@ -120,5 +167,7 @@ DBViewFormularioFolha.FiltroDinamicoPesquisaServidores.oValores = {
   "r70_codigo"   : "",
   "r70_descr"    : "",
   "rh37_funcao"  : "",
-  "rh37_descr"   : ""
+  "rh37_descr"   : "",
+  "r02_codigo"   : "",
+  "r02_descr"    : ""
 }

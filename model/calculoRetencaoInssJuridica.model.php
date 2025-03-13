@@ -1,7 +1,7 @@
 <?php
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -26,7 +26,7 @@
  */
 
 
-require_once ('interfaces/calculoRetencao.interface.php');
+require_once(modification('interfaces/calculoRetencao.interface.php'));
 
 class calculoRetencaoInssJuridica implements iCalculoRetencao {
   

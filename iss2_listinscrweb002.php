@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,10 +25,10 @@
  *                                licenca/licenca_pt.txt 
  */
 
-include("fpdf151/pdf.php");
-include("libs/db_sql.php");
-//include("classes/db_listainscrcab_classe.php");
-//include("classes/db_listainscr_classe.php");
+include(modification("fpdf151/pdf.php"));
+include(modification("libs/db_sql.php"));
+//include(modification("classes/db_listainscrcab_classe.php"));
+//include(modification("classes/db_listainscr_classe.php"));
 
 //$cllistainscrcab= new cl_listainscrcab;
 //$cllistainscr = new cl_listainscr;
@@ -95,7 +95,7 @@ if (($data!="--")&&($data1!="--")) {
 $sql = "select * from listainscrcab inner join cgm on p11_numcgm = z01_numcgm  where $where";
 
 
-$result = pg_exec($sql);
+$result = db_query($sql);
 
 if (pg_numrows($result) == 0){
    db_redireciona('db_erros.php?fechar=true&db_erro=Não existem registros cadastrados.');
@@ -155,7 +155,7 @@ for($x = 0; $x < pg_numrows($result) ;$x++){
    $pdf->cell(20,$alt,$processado,0,0,"C",0);
    $separa=0;
    $sql2 = "select * from listainscr  where p12_codigo = $p11_codigo "; 
-   $result2 = pg_exec($sql2);  
+   $result2 = db_query($sql2);  
    if (pg_numrows($result2)==0){
      $qln=1;
    }else $qln=0;

@@ -1,7 +1,7 @@
 <?
 /*
  *     E-cidade Software Publico para Gestao Municipal                
- *  Copyright (C) 2009  DBselller Servicos de Informatica             
+ *  Copyright (C) 2009  DBSeller Servicos de Informatica             
  *                            www.dbseller.com.br                     
  *                         e-cidade@dbseller.com.br                   
  *                                                                    
@@ -25,22 +25,22 @@
  *                                licenca/licenca_pt.txt 
  */
 
-require ("libs/db_stdlib.php");
-require ("libs/db_conecta.php");
-include ("libs/db_sessoes.php");
-include ("libs/db_usuariosonline.php");
-include ("libs/db_liborcamento.php");
-include ("dbforms/db_classesgenericas.php");
-include ("dbforms/db_funcoes.php");
-include ("classes/db_pcproc_classe.php");
-include ("classes/db_pcprocitem_classe.php");
-include ("classes/db_pcdotac_classe.php");
-include ("classes/db_orcdotacao_classe.php");
-include ("classes/db_orcelemento_classe.php");
-include ("classes/db_solicitempcmater_classe.php");
-include ("classes/db_solicitemele_classe.php");
-include ("classes/db_solicitem_classe.php");
-include ("classes/db_pcmater_classe.php");
+require(modification("libs/db_stdlib.php"));
+require(modification("libs/db_conecta.php"));
+include(modification("libs/db_sessoes.php"));
+include(modification("libs/db_usuariosonline.php"));
+include(modification("libs/db_liborcamento.php"));
+include(modification("dbforms/db_classesgenericas.php"));
+include(modification("dbforms/db_funcoes.php"));
+include(modification("classes/db_pcproc_classe.php"));
+include(modification("classes/db_pcprocitem_classe.php"));
+include(modification("classes/db_pcdotac_classe.php"));
+include(modification("classes/db_orcdotacao_classe.php"));
+include(modification("classes/db_orcelemento_classe.php"));
+include(modification("classes/db_solicitempcmater_classe.php"));
+include(modification("classes/db_solicitemele_classe.php"));
+include(modification("classes/db_solicitem_classe.php"));
+include(modification("classes/db_pcmater_classe.php"));
 $clpcproc = new cl_pcproc;
 $clpcprocitem = new cl_pcprocitem;
 $clpcdotac = new cl_pcdotac;
@@ -294,10 +294,10 @@ function js_buscavalores(){
 function js_pesquisapc16_codmater(mostra){
   qry = "&o56_codele="+document.form1.o56_codele.value;	
   if(mostra==true){
-    js_OpenJanelaIframe('top.corpo','db_iframe_pcmater','func_pcmater.php?funcao_js=parent.js_mostrapcmater1|pc01_codmater|pc01_descrmater'+qry,'Pesquisa',true);
+    js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcmater','func_pcmater.php?funcao_js=parent.js_mostrapcmater1|pc01_codmater|pc01_descrmater'+qry,'Pesquisa',true);
   }else{
      if(document.form1.pc16_codmater.value != ''){ 
-        js_OpenJanelaIframe('top.corpo','db_iframe_pcmater','func_pcmater.php?pesquisa_chave='+document.form1.pc16_codmater.value+'&funcao_js=parent.js_mostrapcmater'+qry,'Pesquisa',false);
+        js_OpenJanelaIframe('CurrentWindow.corpo','db_iframe_pcmater','func_pcmater.php?pesquisa_chave='+document.form1.pc16_codmater.value+'&funcao_js=parent.js_mostrapcmater'+qry,'Pesquisa',false);
      }else{
        document.form1.pc01_descrmater.value = ''; 
      }
@@ -321,7 +321,7 @@ if(isset($incluir) || $semitem==true){
   if($sqlerro==true){
     db_msgbox($erro_msg);
   }else if(isset($incluir)){
-    echo "<script>top.corpo.location.href = 'com1_solicitemele001.php';</script>";
+    echo "<script>(window.CurrentWindow || parent.CurrentWindow).corpo.location.href = 'com1_solicitemele001.php';</script>";
   }
 }
 ?>
